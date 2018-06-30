@@ -16,8 +16,6 @@
 class wxExItemDialog;
 class wxExMenu;
 
-#if wxUSE_GUI
-
 /*! \file */
 /// Sort types.
 enum wxExSortType
@@ -210,4 +208,3 @@ private:
   
   static wxExItemDialog* m_ConfigDialog;
 };
-#endif // wx_USE_GUI

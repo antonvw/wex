@@ -17,14 +17,12 @@
 #include <wx/extension/util.h> // for wxExEllipsed
 #include <wx/extension/vcs.h>
 
-#if wxUSE_GUI
-
 wxExMenu::wxExMenu(long style)
   : m_Style(style)
 {
 }
 
-wxExMenu::wxExMenu(const wxString& title, long style)
+wxExMenu::wxExMenu(const std::string& title, long style)
   : wxMenu(title)
   , m_Style(style)
 {
@@ -32,8 +30,8 @@ wxExMenu::wxExMenu(const wxString& title, long style)
   
 wxMenuItem* wxExMenu::Append(
   int id,
-  const wxString& name,
-  const wxString& helptext,
+  const std::string& name,
+  const std::string& helptext,
   const wxArtID& artid)
 {
   wxMenuItem* item = new wxMenuItem(this, id, name, helptext);
@@ -115,7 +113,7 @@ void wxExMenu::AppendEdit(bool add_invert)
 
 void wxExMenu::AppendPrint()
 {
-  Append(wxID_PRINT_SETUP, wxString(wxExEllipsed(_("Page &Setup"))));
+  Append(wxID_PRINT_SETUP, wxExEllipsed(_("Page &Setup")));
   Append(wxID_PREVIEW);
   Append(wxID_PRINT);
 }
@@ -134,8 +132,8 @@ void wxExMenu::AppendSeparator()
 
 void wxExMenu::AppendSubMenu(
   wxMenu *submenu,
-  const wxString& text,
-  const wxString& help,
+  const std::string& text,
+  const std::string& help,
   int itemid)
 {
   if (itemid == wxID_ANY)
@@ -170,7 +168,7 @@ bool wxExMenu::AppendTools(int itemid)
     }
   }
 
-  AppendSubMenu(menuTool, _("&Tools"), wxEmptyString, itemid);
+  AppendSubMenu(menuTool, _("&Tools"), std::string(), itemid);
 
   return true;
 }
@@ -205,4 +203,3 @@ bool wxExMenu::AppendVCS(const wxExPath& filename, bool show_modal)
   
   return false;
 }
-#endif // wxUSE_GUI

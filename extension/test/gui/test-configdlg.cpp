@@ -2,7 +2,7 @@
 // Name:      test-configdlg.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -27,7 +27,7 @@ TEST_CASE("wxExConfigDialog")
     wxExWindowData().Button(wxOK | wxCANCEL | wxAPPLY));
   dlg->Show();
   
-  REQUIRE( std::any_cast<wxString>(dlg->GetItemValue("string1")).empty());
+  REQUIRE( std::any_cast<std::string>(dlg->GetItemValue("string1")).empty());
   
   dlg->Reload();
   

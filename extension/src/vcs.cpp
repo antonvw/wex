@@ -50,7 +50,6 @@ wxExVCS::wxExVCS(const std::vector< wxExPath > & files, int command_no)
   }
 }
 
-#if wxUSE_GUI
 int wxExVCS::ConfigDialog(const wxExWindowData& par) const
 {
   if (m_Entries.empty())
@@ -58,7 +57,7 @@ int wxExVCS::ConfigDialog(const wxExWindowData& par) const
     return wxID_CANCEL;
   }
   
-  wxExItem::Choices choices{{(long)VCS_NONE, _("None").c_str()}};
+  wxExItem::Choices choices{{(long)VCS_NONE, _("None")}};
   
   // Using auto vcs is not useful if we only have one vcs.
   if (m_Entries.size() > 1)
@@ -70,7 +69,7 @@ int wxExVCS::ConfigDialog(const wxExWindowData& par) const
 
   for (const auto& it : m_Entries)
   {
-    choices.insert({i++, it.GetName().c_str()});
+    choices.insert({i++, it.GetName()});
   }
 
   // Estimate number of columns used by the radiobox.
@@ -110,7 +109,6 @@ int wxExVCS::ConfigDialog(const wxExWindowData& par) const
     return wxExItemDialog(v, data).ShowModal();
   }
 }
-#endif
 
 bool wxExVCS::DirExists(const wxExPath& filename)
 {
@@ -317,7 +315,6 @@ bool wxExVCS::LoadDocument()
   return true;
 }
 
-#if wxUSE_GUI
 wxStandardID wxExVCS::Request(const wxExWindowData& data)
 {
   if (ShowDialog(data) == wxID_CANCEL)
@@ -334,7 +331,6 @@ wxStandardID wxExVCS::Request(const wxExWindowData& data)
 
   return wxID_OK;
 }
-#endif
 
 bool wxExVCS::SetEntryFromBase(wxWindow* parent)
 {
@@ -384,7 +380,6 @@ bool wxExVCS::SetEntryFromBase(wxWindow* parent)
   return !m_Entry.GetName().empty();
 }
 
-#if wxUSE_GUI
 int wxExVCS::ShowDialog(const wxExWindowData& arg)
 {
   if (m_Entry.GetCommand().GetCommand().empty())
@@ -420,15 +415,15 @@ int wxExVCS::ShowDialog(const wxExWindowData& arg)
       _("Path"), ITEM_COMBOBOX, std::any(), wxExControlData().Required(true)): 
       wxExItem(), 
     m_Entry.GetCommand().AskFlags() ?  
-      wxExItem(_("Flags"), wxEmptyString, ITEM_TEXTCTRL, wxExControlData(), LABEL_LEFT, 
+      wxExItem(_("Flags"), std::string(), ITEM_TEXTCTRL, wxExControlData(), LABEL_LEFT, 
         [=](wxWindow* user, const std::any& value, bool save) {
           wxConfigBase::Get()->Write(m_Entry.GetFlagsKey(), wxString(m_Entry.GetFlags()));}): 
       wxExItem(),
     m_Entry.GetFlagsLocation() == wxExVCSEntry::VCS_FLAGS_LOCATION_PREFIX ? 
-      wxExItem(_("Prefix flags"), wxEmptyString): 
+      wxExItem(_("Prefix flags"), std::string()): 
       wxExItem(),
     m_Entry.GetCommand().UseSubcommand() ? 
-      wxExItem(_("Subcommand"), wxEmptyString): 
+      wxExItem(_("Subcommand"), std::string()): 
       wxExItem()});
 
   bool all_empty = true;
@@ -450,7 +445,6 @@ int wxExVCS::ShowDialog(const wxExWindowData& arg)
 
   return (data.Button() & wxAPPLY) ? m_ItemDialog->Show(): m_ItemDialog->ShowModal();
 }
-#endif
   
 bool wxExVCS::Use() const
 {

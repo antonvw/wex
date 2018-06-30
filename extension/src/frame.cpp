@@ -24,8 +24,6 @@
 #include <wx/extension/tostring.h>
 #include <wx/extension/vcsentry.h>
 
-#if wxUSE_GUI
-
 #define wxCAST_TO(classname)                                 \
   if (m_FindFocus != nullptr && m_FindFocus->IsShown())      \
   {                                                          \
@@ -142,7 +140,6 @@ wxExFrame::wxExFrame(const wxExWindowData& data)
     m_FindReplaceDialog->Destroy();
     m_FindReplaceDialog = nullptr;});
 
-#if wxUSE_STATUSBAR
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (GetStatusBar() != nullptr)
     {
@@ -158,7 +155,6 @@ wxExFrame::wxExFrame(const wxExWindowData& data)
     {
       UpdateStatusBar(lv);
     }}, ID_UPDATE_STATUS_BAR);
-#endif
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {FIND_REPLACE(_("Find"), 0 );}, wxID_FIND);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {FIND_REPLACE( _("Replace") , wxFR_REPLACEDIALOG );}, wxID_REPLACE);
@@ -243,7 +239,6 @@ bool wxExFrame::IsOpen(const wxExPath& filename)
   return false;
 }
   
-#if wxUSE_STATUSBAR
 wxStatusBar* wxExFrame::OnCreateStatusBar(
   int number,
   long style,
@@ -255,7 +250,6 @@ wxStatusBar* wxExFrame::OnCreateStatusBar(
   m_StatusBar->SetFieldsCount(number);
   return m_StatusBar;
 }
-#endif
 
 wxExSTC* wxExFrame::OpenFile(
   const wxExPath& filename,
@@ -312,7 +306,6 @@ void wxExFrame::SetMenuBar(wxMenuBar* bar)
       bar);
 }
 
-#if wxUSE_STATUSBAR
 void wxExFrame::StatusBarClicked(const std::string& pane)
 {
   if (auto* stc = GetSTC(); pane == "PaneInfo")
@@ -438,5 +431,3 @@ bool wxExFrame::UpdateStatusBar(wxExSTC* stc, const std::string& pane)
 
   return StatusText(text, pane);
 }
-#endif // wxUSE_STATUSBAR
-#endif // wxUSE_GUI

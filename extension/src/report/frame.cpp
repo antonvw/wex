@@ -41,7 +41,7 @@ wxExFrameWithHistory::wxExFrameWithHistory(
     wxConfigBase::Get()->Write(m_TextRecursive, true); 
   }
 
-  std::set<wxString> t(m_Info);
+  std::set<std::string> t(m_Info);
   t.insert(m_TextRecursive);
   
   const std::vector<wxExItem> f {
@@ -64,7 +64,7 @@ wxExFrameWithHistory::wxExFrameWithHistory(
       {wxExFindReplaceData::Get()->GetTextReplaceWith(), ITEM_COMBOBOX},
       f.at(1),
       f.at(2),
-      {_X("Max replacements"), -1, INT_MAX},
+      {_("Max replacements"), -1, INT_MAX},
       // Match whole word does not work with replace.
       {{wxExFindReplaceData::Get()->GetTextMatchCase(),
         wxExFindReplaceData::Get()->GetTextRegEx(),

@@ -34,8 +34,6 @@
 #include <wx/extension/vi-macros.h>
 #include "eval.h"
 
-#if wxUSE_GUI
-
 #define POST_CLOSE( ID, VETO )                              \
 {                                                           \
   wxCloseEvent event(ID);                                   \
@@ -928,4 +926,3 @@ bool wxExEx::Yank(const char name, bool show_message) const
   
   return true;
 }
-#endif // wxUSE_GUI

@@ -1471,7 +1471,7 @@ EditorsNotebook::EditorsNotebook(const wxExWindowData& data)
       split->Append(ID_REARRANGE_HORIZONTALLY, _("Rearrange Horizontally"));
     }
 
-    menu.AppendSubMenu(split, _("Split"), wxEmptyString, ID_SPLIT_MENU);
+    menu.AppendSubMenu(split, _("Split"), std::string(), ID_SPLIT_MENU);
     menu.AppendSeparator();
     menu.Append(wxID_CLOSE);
     menu.Append(ID_ALL_CLOSE, _("Close A&ll"));

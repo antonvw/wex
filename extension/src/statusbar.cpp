@@ -14,9 +14,6 @@
 #include <wx/extension/defs.h>
 #include <wx/extension/frame.h>
 
-#if wxUSE_GUI
-#if wxUSE_STATUSBAR
-
 const int FIELD_NOT_SHOWN = -1;
 
 std::string ConfigName(wxExStatusBar* sb, const std::string& item, int f)
@@ -307,6 +304,3 @@ bool wxExStatusBar::ShowField(const std::string& field, bool show)
   
   return !changes.empty() || changed;
 }
-
-#endif // wxUSE_STATUSBAR
-#endif // wxUSE_GUI

@@ -11,9 +11,6 @@
 #include <wx/menu.h>
 #include <wx/extension/path.h>
 
-// Only if we have a gui.
-#if wxUSE_GUI
-
 /// Adds artid, edit, printing and tool menu items to wxMenu.
 class WXDLLIMPEXP_BASE wxExMenu : public wxMenu
 {
@@ -35,16 +32,16 @@ public:
   wxExMenu(long style = MENU_DEFAULT);
   
   /// Construct a menu with a title.
-  wxExMenu(const wxString& title, long style = 0);
+  wxExMenu(const std::string& title, long style = 0);
 
   /// Appends a menu item for stock menu id's
   /// using automatic naming, help text and art id.
   /// Appends a menu item.
   wxMenuItem* Append(
     int id,
-    const wxString& name = wxEmptyString,
-    const wxString& helptext = wxEmptyString,
-    const wxArtID& artid = wxEmptyString);
+    const std::string& name = std::string(),
+    const std::string& helptext = std::string(),
+    const wxArtID& artid = std::string());
 
   /// Appends edit menu items, depending on the style 
   /// specified during construction.
@@ -61,8 +58,8 @@ public:
   /// Appends a submenu.
   void AppendSubMenu(
     wxMenu *submenu,
-    const wxString& text,
-    const wxString& help = wxEmptyString,
+    const std::string& text,
+    const std::string& help = std::string(),
     int itemid = wxID_ANY);
 
   /// Appends a tools submenu.
@@ -86,4 +83,3 @@ public:
 private:
   long m_Style;
 };
-#endif // wxUSE_GUI

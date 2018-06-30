@@ -31,8 +31,6 @@
 #include <wx/extension/tokenizer.h>
 #include <wx/extension/util.h>
 
-#if wxUSE_GUI
-
 class ListViewDefaults : public wxExConfigDefaults
 {
 public:
@@ -90,7 +88,7 @@ public:
     {
       for (size_t i = 0; i < filenames.GetCount(); i++)
       {
-        m_ListView->ItemFromText(filenames[i].ToStdString());
+        m_ListView->ItemFromText(filenames[i]);
       }
     
       return true;
@@ -118,7 +116,7 @@ private:
       // Only drop text if nothing is selected,
       // so dropping on your own selection is impossible.
       return (m_ListView->GetSelectedItemCount() == 0 ?
-        m_ListView->ItemFromText(text.ToStdString()): false);};
+        m_ListView->ItemFromText(text): false);};
         
   wxExListView* m_ListView;
 };
@@ -267,7 +265,7 @@ wxExListView::wxExListView(const wxExListViewData& data)
         if (wxExListItem item(this, m_ItemNumber); 
             item.GetFileName().FileExists() &&
             (item.GetFileName().GetStat().GetModificationTime() != 
-             GetItemText(m_ItemNumber, _("Modified").ToStdString()) ||
+             GetItemText(m_ItemNumber, _("Modified")) ||
              item.GetFileName().GetStat().IsReadOnly() != item.IsReadOnly())
            )
         {
@@ -288,9 +286,9 @@ wxExListView::wxExListView(const wxExListViewData& data)
           {
             if (
               wxConfigBase::Get()->ReadBool("List/SortSync", true) &&
-              GetSortedColumnNo() == FindColumn(_("Modified").ToStdString()))
+              GetSortedColumnNo() == FindColumn(_("Modified")))
             {
-              SortColumn(_("Modified").ToStdString(), SORT_KEEP);
+              SortColumn(_("Modified"), SORT_KEEP);
             }
           }
     
@@ -500,7 +498,7 @@ const std::string wxExListView::BuildPage()
 
   text << "</TABLE>\n";
 
-  return text.ToStdString();
+  return text;
 }
 
 void wxExListView::BuildPopupMenu(wxExMenu& menu)
@@ -555,37 +553,37 @@ wxExColumn wxExListView::Column(const std::string& name) const
 int wxExListView::ConfigDialog(const wxExWindowData& par)
 {
   const wxExWindowData data(wxExWindowData(par).
-    Title(_("List Options").ToStdString()));
+    Title(_("List Options")));
 
   if (m_ConfigDialog == nullptr)
   {
     ListViewDefaults use;
 
     m_ConfigDialog = new wxExItemDialog({{"notebook", {
-      {_X("General"),
-        {{_X("Header"), ITEM_CHECKBOX},
-         {_X("Single selection"), ITEM_CHECKBOX},
-         {_X("Comparator"), ITEM_FILEPICKERCTRL},
-         {_X("Sort method"), {
-           {SORT_ASCENDING, _X("Sort ascending")},
-           {SORT_DESCENDING, _X("Sort descending")},
-           {SORT_TOGGLE, _X("Sort toggle")}}},
-         {_X("Context size"), 0, 80},
-         {_X("Rulers"),  {
-           {wxLC_HRULES, _X("Horizontal rulers")},
-           {wxLC_VRULES, _X("Vertical rulers")}}, false}}},
-      {_X("Font"),
+      {_("General"),
+        {{_("Header"), ITEM_CHECKBOX},
+         {_("Single selection"), ITEM_CHECKBOX},
+         {_("Comparator"), ITEM_FILEPICKERCTRL},
+         {_("Sort method"), {
+           {SORT_ASCENDING, _("Sort ascending")},
+           {SORT_DESCENDING, _("Sort descending")},
+           {SORT_TOGGLE, _("Sort toggle")}}},
+         {_("Context size"), 0, 80},
+         {_("Rulers"),  {
+           {wxLC_HRULES, _("Horizontal rulers")},
+           {wxLC_VRULES, _("Vertical rulers")}}, false}}},
+      {_("Font"),
 #ifndef __WXOSX__
-        {{_X("List font"), ITEM_FONTPICKERCTRL},
-         {_X("List tab font"), ITEM_FONTPICKERCTRL}}},
+        {{_("List font"), ITEM_FONTPICKERCTRL},
+         {_("List tab font"), ITEM_FONTPICKERCTRL}}},
 #else
-        {{_X("List font")},
-         {_X("List tab font")}}},
+        {{_("List font")},
+         {_("List tab font")}}},
 #endif
-      {_X("Colour"),
-        {{_X("Background colour"), ITEM_COLOURPICKERWIDGET},
-         {_X("Foreground colour"), ITEM_COLOURPICKERWIDGET},
-         {_X("Readonly colour"), ITEM_COLOURPICKERWIDGET}}}}}}, data);
+      {_("Colour"),
+        {{_("Background colour"), ITEM_COLOURPICKERWIDGET},
+         {_("Foreground colour"), ITEM_COLOURPICKERWIDGET},
+         {_("Readonly colour"), ITEM_COLOURPICKERWIDGET}}}}}}, data);
   }
 
   return (data.Button() & wxAPPLY) ?
@@ -761,7 +759,7 @@ const std::string wxExListView::GetItemText(
 {
   if (col_name.empty())
   {
-    return wxListView::GetItemText(item_number).ToStdString();
+    return wxListView::GetItemText(item_number);
   }
   
   const int col = FindColumn(col_name);
@@ -839,12 +837,12 @@ void wxExListView::ItemActivated(long item_number)
       if (auto* frame = dynamic_cast<wxExFrame*>(wxTheApp->GetTopWindow());
         frame != nullptr)
       {
-        const auto no(GetItemText(item_number, _("Line No").ToStdString()));
+        const auto no(GetItemText(item_number, _("Line No")));
         auto data(
           (m_Data.Type() == LIST_FIND && !no.empty() ?
              wxExControlData().
                Line(std::stoi(no)). 
-               Find(GetItemText(item_number, _("Match").ToStdString())): 
+               Find(GetItemText(item_number, _("Match"))): 
              wxExControlData()));
 
         frame->OpenFile(item.GetFileName(), data);
@@ -855,11 +853,11 @@ void wxExListView::ItemActivated(long item_number)
       wxTextEntryDialog dlg(this,
         _("Input") + ":",
         _("Folder Type"),
-        GetItemText(item_number, _("Type").ToStdString()));
+        GetItemText(item_number, _("Type")));
   
       if (dlg.ShowModal() == wxID_OK)
       {
-        item.SetItem(_("Type").ToStdString(), dlg.GetValue().ToStdString());
+        item.SetItem(_("Type"), dlg.GetValue());
       }
     }
   }
@@ -905,10 +903,10 @@ bool wxExListView::ItemFromText(const std::string& text)
             {
               const auto value = tk.GetNextToken();
     
-              if (col != FindColumn(_("Type").ToStdString()) &&
-                  col != FindColumn(_("In Folder").ToStdString()) &&
-                  col != FindColumn(_("Size").ToStdString()) &&
-                  col != FindColumn(_("Modified").ToStdString()))
+              if (col != FindColumn(_("Type")) &&
+                  col != FindColumn(_("In Folder")) &&
+                  col != FindColumn(_("Size")) &&
+                  col != FindColumn(_("Modified")))
               {
                 if (!SetItem(item.GetId(), col, value)) return false;
               }
@@ -972,12 +970,12 @@ const std::string wxExListView::ItemToText(long item_number) const
 
       if (item.GetFileName().DirExists() && !item.GetFileName().FileExists())
       {
-        text += GetFieldSeparator() + GetItemText(item_number, _("Type").ToStdString());
+        text += GetFieldSeparator() + GetItemText(item_number, _("Type"));
       }
       }
 
     case LIST_FOLDER:
-      return wxListView::GetItemText(item_number).ToStdString();
+      return wxListView::GetItemText(item_number);
       break;
     
     default:
@@ -1098,8 +1096,7 @@ bool wxExListView::SetItem(
       case wxExColumn::COL_STRING: break;
     }
 
-    wxListView::SetItem(index, column, text, imageId);
-    return true;
+    return wxListView::SetItem(index, column, text, imageId);
   }
   catch (std::exception& e)
   {
@@ -1128,7 +1125,7 @@ bool wxExListView::SortColumn(int column_no, wxExSortType sort_method)
 
   for (int i = 0; i < GetItemCount(); i++)
   {
-    items.emplace_back(wxListView::GetItemText(i, column_no).ToStdString());
+    items.emplace_back(wxListView::GetItemText(i, column_no));
     SetItemData(i, i);
   }
 
@@ -1173,4 +1170,3 @@ void wxExListView::SortColumnReset()
     m_SortedColumnNo = -1;
   }
 }
-#endif // wxUSE_GUI

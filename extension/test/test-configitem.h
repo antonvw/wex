@@ -2,7 +2,7 @@
 // Name:      test-configitem.h
 // Purpose:   Declaration and implementation of TestConfigItems
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -80,8 +80,8 @@ const auto TestConfigItems(
         {{"STC", "cpp", ITEM_STC}}},
       {"Strings",
         {{"String"},
-         {"String Validator", wxEmptyString, ITEM_TEXTCTRL, wxExControlData().Validator(validator)},
-         {"String Multiline", wxEmptyString, ITEM_TEXTCTRL, wxExControlData().Window(wxExWindowData().Style(wxTE_MULTILINE))}}},
+         {"String Validator", std::string(), ITEM_TEXTCTRL, wxExControlData().Validator(validator)},
+         {"String Multiline", std::string(), ITEM_TEXTCTRL, wxExControlData().Window(wxExWindowData().Style(wxTE_MULTILINE))}}},
       {"Toggle buttons",
         {{"Toggle Button", ITEM_TOGGLEBUTTON}}},
       {"User Controls",

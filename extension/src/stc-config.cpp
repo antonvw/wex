@@ -125,50 +125,50 @@ int wxExSTC::ConfigDialog(const wxExWindowData& par)
     STCDefaults use;
   
     m_ConfigDialog = new wxExItemDialog({{"stc-notebook", {
-      {_X("General"),
+      {_("General"),
         {{"stc-subnotebook", {
-          {_X("Page1"), 
-            {{{_X("End of line"),
-               _X("Line numbers"),
-               _X("Use tabs"),
-               _X("Caret line"),
-               _X("Scroll bars"),
-               _X("Autocomplete"),
-               _X("vi mode"),
-               _X("vi tag fullpath")}},
-            {_X("Search engine"), ITEM_COMBOBOX}}},
-          {_X("Page2"), 
-            {{_X("Auto indent"), {
-               {INDENT_NONE, _X("None")},
-               {INDENT_WHITESPACE, _X("Whitespace")},
-               {INDENT_LEVEL, _X("Level")},
-               {INDENT_ALL, _X("Both")}}, true, 4},
-             {_X("Wrap visual flags"), {
-               {wxSTC_WRAPVISUALFLAG_NONE, _X("None")},
-               {wxSTC_WRAPVISUALFLAG_END, _X("End")},
-               {wxSTC_WRAPVISUALFLAG_START, _X("Start")},
-               {wxSTC_WRAPVISUALFLAG_MARGIN, _X("Margin")}}, true, 4},
+          {_("Page1"), 
+            {{{_("End of line"),
+               _("Line numbers"),
+               _("Use tabs"),
+               _("Caret line"),
+               _("Scroll bars"),
+               _("Autocomplete"),
+               _("vi mode"),
+               _("vi tag fullpath")}},
+            {_("Search engine"), ITEM_COMBOBOX}}},
+          {_("Page2"), 
+            {{_("Auto indent"), {
+               {INDENT_NONE, _("None")},
+               {INDENT_WHITESPACE, _("Whitespace")},
+               {INDENT_LEVEL, _("Level")},
+               {INDENT_ALL, _("Both")}}, true, 4},
+             {_("Wrap visual flags"), {
+               {wxSTC_WRAPVISUALFLAG_NONE, _("None")},
+               {wxSTC_WRAPVISUALFLAG_END, _("End")},
+               {wxSTC_WRAPVISUALFLAG_START, _("Start")},
+               {wxSTC_WRAPVISUALFLAG_MARGIN, _("Margin")}}, true, 4},
 #if wxCHECK_VERSION(3,1,1)
-             {_X("Tab draw mode"), {
-               {wxSTC_TD_LONGARROW, _X("Longarrow")},
-               {wxSTC_TD_STRIKEOUT, _X("Strikeout")}}, true, 2},
+             {_("Tab draw mode"), {
+               {wxSTC_TD_LONGARROW, _("Longarrow")},
+               {wxSTC_TD_STRIKEOUT, _("Strikeout")}}, true, 2},
 #endif
-             {_X("Whitespace visible"), {
-               {wxSTC_WS_INVISIBLE, _X("Off")},
-               {wxSTC_WS_VISIBLEAFTERINDENT, _X("After indent")},
-               {wxSTC_WS_VISIBLEALWAYS, _X("Always")}
+             {_("Whitespace visible"), {
+               {wxSTC_WS_INVISIBLE, _("Off")},
+               {wxSTC_WS_VISIBLEAFTERINDENT, _("After indent")},
+               {wxSTC_WS_VISIBLEALWAYS, _("Always")}
 #if wxCHECK_VERSION(3,1,1)
-               ,{wxSTC_WS_VISIBLEONLYININDENT, _X("Only indent")}},
+               ,{wxSTC_WS_VISIBLEONLYININDENT, _("Only indent")}},
 #else
                },
 #endif  
                true, 2},
-             {_X("Wrap line"), {
-               {wxSTC_WRAP_NONE, _X("None")},
-               {wxSTC_WRAP_WORD, _X("Word")},
-               {wxSTC_WRAP_CHAR, _X("Char")}
+             {_("Wrap line"), {
+               {wxSTC_WRAP_NONE, _("None")},
+               {wxSTC_WRAP_WORD, _("Word")},
+               {wxSTC_WRAP_CHAR, _("Char")}
 #if wxCHECK_VERSION(3,1,0)
-              ,{wxSTC_WRAP_WHITESPACE, _X("Whitespace")}},
+              ,{wxSTC_WRAP_WHITESPACE, _("Whitespace")}},
 #else
                },
 #endif  
@@ -177,48 +177,48 @@ int wxExSTC::ConfigDialog(const wxExWindowData& par)
             ,ITEM_NOTEBOOK_AUI
 #endif
             }}},
-      {_X("Font"), 
-        {{_X("Default font"), ITEM_FONTPICKERCTRL},
-         {_X("Tab font"), ITEM_FONTPICKERCTRL},
-         {_X("Text font"), ITEM_FONTPICKERCTRL}}},
-      {_X("Edge"),
-        {{_X("Edge column"), 0, 500},
-         { _X("Edge line"), {
-           {wxSTC_EDGE_NONE, _X("None")},
-           {wxSTC_EDGE_LINE, _X("Line")},
-           {wxSTC_EDGE_BACKGROUND, _X("Background")}
+      {_("Font"), 
+        {{_("Default font"), ITEM_FONTPICKERCTRL},
+         {_("Tab font"), ITEM_FONTPICKERCTRL},
+         {_("Text font"), ITEM_FONTPICKERCTRL}}},
+      {_("Edge"),
+        {{_("Edge column"), 0, 500},
+         { _("Edge line"), {
+           {wxSTC_EDGE_NONE, _("None")},
+           {wxSTC_EDGE_LINE, _("Line")},
+           {wxSTC_EDGE_BACKGROUND, _("Background")}
 #if wxCHECK_VERSION(3,1,0)
-           ,{wxSTC_EDGE_MULTILINE, _X("Multiline")}},
+           ,{wxSTC_EDGE_MULTILINE, _("Multiline")}},
 #else
            },
 #endif
            true, 1}}},
-      {_X("Margin"),
-        {{_X("Tab width"), 1, 500},
-         {_X("Indent"), 0, 500},
-         {_X("Divider"), 0, 40},
-         {_X("Folding"), 0, 40},
-         {_X("Line number"), 0, 100},
-         {_X("Autocomplete maxwidth"), 0, 100}}},
-      {_X("Folding"),
-        {{_X("Indentation guide"), ITEM_CHECKBOX},
-         {_X("Auto fold"), 0l, INT_MAX},
-         {_X("Fold flags"), {
-             {wxSTC_FOLDFLAG_LINEBEFORE_EXPANDED, _X("Line before expanded")},
-             {wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED, _X("Line before contracted")},
-             {wxSTC_FOLDFLAG_LINEAFTER_EXPANDED, _X("Line after expanded")},
-             {wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED, _X("Line after contracted")},
-             {wxSTC_FOLDFLAG_LEVELNUMBERS, _X("Level numbers")}},
+      {_("Margin"),
+        {{_("Tab width"), 1, 500},
+         {_("Indent"), 0, 500},
+         {_("Divider"), 0, 40},
+         {_("Folding"), 0, 40},
+         {_("Line number"), 0, 100},
+         {_("Autocomplete maxwidth"), 0, 100}}},
+      {_("Folding"),
+        {{_("Indentation guide"), ITEM_CHECKBOX},
+         {_("Auto fold"), 0l, INT_MAX},
+         {_("Fold flags"), {
+             {wxSTC_FOLDFLAG_LINEBEFORE_EXPANDED, _("Line before expanded")},
+             {wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED, _("Line before contracted")},
+             {wxSTC_FOLDFLAG_LINEAFTER_EXPANDED, _("Line after expanded")},
+             {wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED, _("Line after contracted")},
+             {wxSTC_FOLDFLAG_LEVELNUMBERS, _("Level numbers")}},
              false}}},
-      {_X("Printer"),
-        {{_X("Print flags"), {
-           {wxSTC_PRINT_NORMAL, _X("Normal")},
-           {wxSTC_PRINT_INVERTLIGHT, _X("Invert on white")},
-           {wxSTC_PRINT_BLACKONWHITE, _X("Black on white")},
-           {wxSTC_PRINT_COLOURONWHITE, _X("Colour on white")},
-           {wxSTC_PRINT_COLOURONWHITEDEFAULTBG, _X("Colour on white normal")}}, true, 1}}},
-      {_X("Directory"),
-        {{_X("Include directory"), wxExListViewData().Type(LIST_FOLDER).
+      {_("Printer"),
+        {{_("Print flags"), {
+           {wxSTC_PRINT_NORMAL, _("Normal")},
+           {wxSTC_PRINT_INVERTLIGHT, _("Invert on white")},
+           {wxSTC_PRINT_BLACKONWHITE, _("Black on white")},
+           {wxSTC_PRINT_COLOURONWHITE, _("Colour on white")},
+           {wxSTC_PRINT_COLOURONWHITEDEFAULTBG, _("Colour on white normal")}}, true, 1}}},
+      {_("Directory"),
+        {{_("Include directory"), wxExListViewData().Type(LIST_FOLDER).
           Window(wxExWindowData().Size({200, 200}))}}}}}},
       wxExWindowData(data).
         Title(data.Id() == wxID_PREFERENCES ? wxGetStockLabel(data.Id(), 0).ToStdString(): data.Title()));

@@ -38,15 +38,6 @@
 #include <wx/extension/vi-macros.h>
 #include <easylogging++.h>
 
-const char* _X(const char* text)
-{
-#if wxUSE_STL
-  return text;
-#else
-  return _(text);
-#endif
-}
-
 const std::string wxExAfter(const std::string& text, char c, bool first)
 {
   const auto pos = (first ? text.find(c): text.rfind(c));
@@ -227,12 +218,10 @@ const std::string wxExClipboardGet()
   return std::string();
 }
 
-#if wxUSE_GUI
 void wxExComboBoxFromList(wxComboBox* cb, const std::list < std::string > & text)
 {
   wxExComboBoxAs<const std::list < std::string >>(cb, text);
 }
-#endif
 
 bool wxExCompareFile(const wxExPath& file1, const wxExPath& file2)
 {
@@ -603,7 +592,6 @@ bool wxExOneLetterAfter(const std::string& text, const std::string& letter)
   return std::regex_match(letter, std::regex("^" + text + "[a-zA-Z]$"));
 }
 
-#if wxUSE_GUI
 int wxExOpenFiles(wxExFrame* frame, const std::vector< wxExPath > & files,
   const wxExSTCData& stc_data, int dir_flags)
 {
@@ -691,7 +679,6 @@ void wxExOpenFilesDialog(wxExFrame* frame,
 
   wxExOpenFiles(frame, wxExToVectorPath(paths).Get(), data, dir_flags);
 }
-#endif // wxUSE_GUI
 
 const std::string wxExPrintCaption(const wxExPath& filename)
 {

@@ -19,7 +19,6 @@
 #include <wx/extension/util.h> // for STAT_ etc.
 #include <easylogging++.h>
 
-#if wxUSE_GUI
 void CheckWellFormed(wxExSTC* stc, const wxExPath& fn)
 {
   if (fn.GetLexer().GetLanguage() == "xml")
@@ -183,4 +182,3 @@ void wxExSTCFile::ResetContentsChanged()
 {
   m_STC->SetSavePoint();
 }
-#endif // wxUSE_GUI

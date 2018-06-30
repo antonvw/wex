@@ -108,7 +108,10 @@ else ()
     stdc++fs
     )
 endif ()
-  cotire(${PROJECT_NAME})
+
+  if (NOT (CMAKE_BUILD_TYPE MATCHES "Coverage"))
+    cotire(${PROJECT_NAME})
+  endif()
 endmacro()  
 
 if (WIN32)

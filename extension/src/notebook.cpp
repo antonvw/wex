@@ -11,8 +11,6 @@
 #endif
 #include <wx/extension/notebook.h>
 
-#if wxUSE_GUI
-
 wxExNotebook::wxExNotebook(const wxExWindowData& data)
   : wxAuiNotebook(
       data.Parent(), 
@@ -215,4 +213,3 @@ bool wxExNotebook::Split(const std::string& key, int direction)
     return true;
   }
 }
-#endif // wxUSE_GUI

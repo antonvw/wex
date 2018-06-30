@@ -19,8 +19,6 @@
 #include <wx/extension/vi-macros-mode.h>
 #include <easylogging++.h>
 
-#if wxUSE_GUI
-
 wxExSTCEntryDialog* wxExVariable::m_Dialog = nullptr;
 
 wxExVariable::wxExVariable(const pugi::xml_node& node)
@@ -401,4 +399,3 @@ void wxExVariable::SetAskForInput(bool value)
     m_AskForInput = value;
   }
 }
-#endif // wxUSE_GUI

@@ -2,7 +2,7 @@
 // Name:      stcdlg.cpp
 // Purpose:   Implementation of class wxExSTCEntryDialog
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -12,8 +12,6 @@
 #include <wx/persist/toplevel.h>
 #include <wx/extension/stcdlg.h>
 #include <wx/extension/stc.h>
-
-#if wxUSE_GUI
 
 wxExSTCEntryDialog::wxExSTCEntryDialog(
   const std::string& text,
@@ -43,4 +41,3 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(
 
   LayoutSizers();
 }
-#endif // wxUSE_GUI

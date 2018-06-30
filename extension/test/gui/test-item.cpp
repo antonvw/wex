@@ -11,7 +11,6 @@
 #endif
 #include <wx/artprov.h>
 #include <wx/imaglist.h>
-#include <wx/numformatter.h>
 #include <wx/extension/item.h>
 #include <wx/extension/itemdlg.h>
 #include <wx/extension/managedframe.h>
@@ -32,7 +31,7 @@ TEST_CASE("wxExItem")
     wxExItem item("item", "hello string", ITEM_TEXTCTRL, wxExControlData().Required(true));
     
     REQUIRE( item.GetColumns() == 1);
-    REQUIRE( std::any_cast<wxString>(item.GetInitial()) == "hello string");
+    REQUIRE( std::any_cast<std::string>(item.GetInitial()) == "hello string");
     REQUIRE( item.GetData().Required());
     REQUIRE( item.GetLabel() == "item");
     REQUIRE( item.GetPage().empty());
@@ -51,16 +50,16 @@ TEST_CASE("wxExItem")
     item.SetImageList(nullptr);
     
     // setting value if window is nullptr should have no effect.
-    REQUIRE(!item.SetValue(wxString("test")));
+    REQUIRE(!item.SetValue("test"));
     REQUIRE(!item.GetValue().has_value());
     
     item.SetRowGrowable(true);
     REQUIRE( item.IsRowGrowable());
     
-    wxExItem item_int("int", ITEM_TEXTCTRL_INT, wxString("100"));
+    wxExItem item_int("int", ITEM_TEXTCTRL_INT, std::string("100"));
     REQUIRE( item_int.GetType() == ITEM_TEXTCTRL_INT);
     
-    wxExItem item_int2("int", ITEM_TEXTCTRL_INT, wxString("xxx"));
+    wxExItem item_int2("int", ITEM_TEXTCTRL_INT, std::string("xxx"));
     REQUIRE( item_int2.GetType() == ITEM_TEXTCTRL_INT);
     item_int2.Layout(panel, sizer);
     REQUIRE( item_int2.GetWindow() != nullptr);
@@ -76,24 +75,23 @@ TEST_CASE("wxExItem")
     {
     }
     
-    const char ds(wxNumberFormatter::GetDecimalSeparator());
-    wxExItem item_float("float", ITEM_TEXTCTRL_FLOAT, wxString("100") + wxString(ds) + wxString("001"));
+    wxExItem item_float("float", ITEM_TEXTCTRL_FLOAT, std::string("100.001"));
     REQUIRE( item_float.GetType() == ITEM_TEXTCTRL_FLOAT);
     
     wxExItem item_spin("spindouble", 20.0, 30.0, 25.0, 0.1);
     REQUIRE( item_spin.GetType() == ITEM_SPINCTRLDOUBLE);
 
 #ifdef __UNIX__
-    wxExItem item_picker("picker", ITEM_FILEPICKERCTRL, wxString("/usr/bin/git"));
+    wxExItem item_picker("picker", ITEM_FILEPICKERCTRL, std::string("/usr/bin/git"));
 #endif
     
 #if wxCHECK_VERSION(3,1,0)
     item.Layout(panel, sizer);
     REQUIRE( item.GetWindow() != nullptr);
-    REQUIRE( std::any_cast<wxString>(item.GetValue()) == "hello string");
-    REQUIRE( item.SetValue(wxString("value changed")));
-    REQUIRE( std::any_cast<wxString>(item.GetValue()) == "value changed");
-    REQUIRE( std::any_cast<wxString>(item.GetInitial()) == "hello string");
+    REQUIRE( std::any_cast<std::string>(item.GetValue()) == "hello string");
+    REQUIRE( item.SetValue(std::string("value changed")));
+    REQUIRE( std::any_cast<std::string>(item.GetValue()) == "value changed");
+    REQUIRE( std::any_cast<std::string>(item.GetInitial()) == "hello string");
     // TODO: Add Flags to window data.
     // REQUIRE( item.GetWindow()->GetWindowStyleFlag() == 1);
     
@@ -110,7 +108,7 @@ TEST_CASE("wxExItem")
 
 #ifdef __UNIX__
     REQUIRE( item_picker.Layout(panel, sizer) != nullptr);
-    REQUIRE( std::any_cast<wxString>(item_picker.GetValue()) == "/usr/bin/git");
+    REQUIRE( std::any_cast<std::string>(item_picker.GetValue()) == "/usr/bin/git");
 #endif
 #endif
     
@@ -186,10 +184,10 @@ TEST_CASE("wxExItem")
       dlg->Show();
 
 #if wxCHECK_VERSION(3,1,0)
-      REQUIRE(std::any_cast<wxString>(dlg->GetItem("string1").GetInitial()) == "first");
-      REQUIRE(std::any_cast<wxString>(dlg->GetItem("string1").GetValue()) == "first");
-      REQUIRE(dlg->SetItemValue("string1", wxString("xxx")));
-      REQUIRE(std::any_cast<wxString>(dlg->GetItem("string1").GetValue()) == "xxx");
+      REQUIRE(std::any_cast<std::string>(dlg->GetItem("string1").GetInitial()) == "first");
+      REQUIRE(std::any_cast<std::string>(dlg->GetItem("string1").GetValue()) == "first");
+      REQUIRE(dlg->SetItemValue("string1", std::string("xxx")));
+      REQUIRE(std::any_cast<std::string>(dlg->GetItem("string1").GetValue()) == "xxx");
 #endif
 
       wxPostEvent(dlg, wxCommandEvent(wxEVT_BUTTON, wxAPPLY));

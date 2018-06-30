@@ -5,12 +5,11 @@
   - ctags update
 
 **v18.04** *April 8, 2018*
-  - c++1z
   - easylogging++ lib
   - fsm lib
 
 **v17.10** *September 30, 2017* 
-  - c++14
+  - c++1z
 
 **v17.04** *April 8, 2017*
   - git submodules

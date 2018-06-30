@@ -11,7 +11,6 @@
 #endif
 #include <wx/extension/dialog.h>
 
-#if wxUSE_GUI
 wxExDialog::wxExDialog(const wxExWindowData& data)
   : wxDialog(
       data.Parent(),
@@ -73,11 +72,10 @@ void wxExDialog::LayoutSizers(bool add_separator_line)
   // Then, if buttons were specified, the button sizer.
   if (m_Data.Button() != 0)
   {
-    wxSizer* sizer = (add_separator_line ?
+    if (wxSizer* sizer = (add_separator_line ?
       CreateSeparatedButtonSizer(m_Data.Button()):
       CreateButtonSizer(m_Data.Button()));
-
-    if (sizer != nullptr)
+      sizer != nullptr)
     {
       m_TopSizer->Add(sizer, flag);
     }
@@ -95,5 +93,3 @@ void wxExDialog::LayoutSizers(bool add_separator_line)
     SetSizer(m_TopSizer);
   }
 }
-
-#endif // wxUSE_GUI

@@ -111,9 +111,7 @@ void wxExFileHistory::PopupMenu(wxWindow* win,
 
   for (size_t i = 0; i < GetCount(); i++)
   {
-    const wxExPath file(GetHistoryFile(i));
-    
-    if (file.FileExists())
+    if (const wxExPath file(GetHistoryFile(i)); file.FileExists())
     {
       wxMenuItem* item = new wxMenuItem(
         menu, 

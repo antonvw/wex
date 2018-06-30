@@ -19,8 +19,6 @@
 #include <wx/extension/util.h>
 #include <wx/extension/vi-macros.h>
 
-#if wxUSE_GUI
-
 class GlobalEnv
 {
 public:
@@ -890,4 +888,3 @@ bool wxExAddressRange::Yank(const char name) const
 {
   return SetSelection() && m_Ex->Yank(name);
 }
-#endif // wxUSE_GUI

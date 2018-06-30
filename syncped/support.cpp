@@ -88,7 +88,7 @@ DecoratedFrame::DecoratedFrame(App* app)
   menuFile->Append(wxID_SAVE);
   menuFile->Append(wxID_SAVEAS);
   menuFile->Append(ID_ALL_SAVE,
-    _("Save A&ll"), wxEmptyString, wxART_FILE_SAVE);
+    _("Save A&ll"), std::string(), wxART_FILE_SAVE);
   menuFile->AppendSeparator();
   menuFile->AppendPrint();
   menuFile->AppendSeparator();
@@ -152,7 +152,7 @@ DecoratedFrame::DecoratedFrame(App* app)
     menuMacro->Append(ID_EDIT_MACRO, wxGetStockLabel(wxID_EDIT));
   }
   
-  menuEdit->AppendSubMenu(menuMacro, _("&Macro"), wxEmptyString, ID_EDIT_MACRO_MENU);
+  menuEdit->AppendSubMenu(menuMacro, _("&Macro"), std::string(), ID_EDIT_MACRO_MENU);
 
   auto *menuView = new wxExMenu;
   AppendPanes(menuView);
@@ -173,20 +173,20 @@ DecoratedFrame::DecoratedFrame(App* app)
 
   auto *menuProject = new wxExMenu();
   menuProject->Append(
-    ID_PROJECT_NEW, wxGetStockLabel(wxID_NEW), wxEmptyString, wxART_NEW);
+    ID_PROJECT_NEW, wxGetStockLabel(wxID_NEW), std::string(), wxART_NEW);
   menuProject->Append(
-    ID_PROJECT_OPEN, wxGetStockLabel(wxID_OPEN), wxEmptyString, wxART_FILE_OPEN);
+    ID_PROJECT_OPEN, wxGetStockLabel(wxID_OPEN), std::string(), wxART_FILE_OPEN);
   GetProjectHistory().UseMenu(ID_RECENT_PROJECT_MENU, menuProject);
   menuProject->Append(ID_PROJECT_OPENTEXT, _("&Open as Text"));
   menuProject->AppendSeparator();
   menuProject->Append(
-    ID_PROJECT_CLOSE, wxGetStockLabel(wxID_CLOSE), wxEmptyString, wxART_CLOSE);
+    ID_PROJECT_CLOSE, wxGetStockLabel(wxID_CLOSE), std::string(), wxART_CLOSE);
   menuProject->AppendSeparator();
   menuProject->Append(
-    ID_PROJECT_SAVE, wxGetStockLabel(wxID_SAVE), wxEmptyString, wxART_FILE_SAVE);
+    ID_PROJECT_SAVE, wxGetStockLabel(wxID_SAVE), std::string(), wxART_FILE_SAVE);
   menuProject->Append(
     ID_PROJECT_SAVEAS,
-    wxGetStockLabel(wxID_SAVEAS), wxEmptyString, wxART_FILE_SAVE_AS);
+    wxGetStockLabel(wxID_SAVEAS), std::string(), wxART_FILE_SAVE_AS);
   menuProject->AppendSeparator();
   menuProject->AppendCheckItem(ID_SORT_SYNC, _("&Auto Sort"));
   

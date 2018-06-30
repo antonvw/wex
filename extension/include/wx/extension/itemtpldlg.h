@@ -19,7 +19,6 @@
 #include <wx/extension/item.h> 
 #include <wx/extension/path.h>
 
-#if wxUSE_GUI
 /// Offers a dialog template to set several items.
 /// If you only specify a wxCANCEL button, the dialog is readonly.
 /// When pressing the:
@@ -122,7 +121,7 @@ public:
   
   /// Returns the (first) item that has specified label,
   /// or empty item if item does not exist.
-  const T GetItem(const wxString& label) const {
+  const T GetItem(const std::string& label) const {
     for (const auto& item : m_Items)
     {
       if (item.GetLabel() == label)
@@ -137,11 +136,11 @@ public:
 
   /// Returns the item actual value for specified label, or 
   /// empty object if item does not exist.
-  const auto GetItemValue(const wxString& label) const {
+  const auto GetItemValue(const std::string& label) const {
     return GetItem(label).GetValue();};
  
   /// Sets the item actual value for specified label.
-  bool SetItemValue(const wxString& label, const std::any& value) const {
+  bool SetItemValue(const std::string& label, const std::any& value) const {
     for (auto& item : m_Items)
     {
       if (item.GetLabel() == label)
@@ -169,8 +168,8 @@ protected:
       case ITEM_CHECKBOX:
         if (m_ForceCheckBoxChecked)
         {
-          if (wxCheckBox* cb = (wxCheckBox*)item.GetWindow(); 
-            item.GetLabel().Lower().Contains(m_Contains.Lower()) && 
+          if (auto* cb = (wxCheckBox*)item.GetWindow(); 
+            wxString(item.GetLabel()).Lower().Contains(m_Contains.Lower()) && 
               cb->IsChecked() &&
               item.GetPage() == m_Page)
           {
@@ -182,7 +181,7 @@ protected:
       case ITEM_CHECKLISTBOX_BOOL:
         if (m_ForceCheckBoxChecked)
         {
-          wxCheckListBox* clb = (wxCheckListBox*)item.GetWindow();
+          auto* clb = (wxCheckListBox*)item.GetWindow();
           for (
             size_t i = 0;
             i < clb->GetCount();
@@ -310,4 +309,3 @@ private:
   wxString m_Contains;
   wxString m_Page;
 };
-#endif // wxUSE_GUI

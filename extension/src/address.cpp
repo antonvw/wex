@@ -18,8 +18,6 @@
 #include <wx/extension/util.h>
 #include <wx/extension/vi-macros.h>
 
-#if wxUSE_GUI
-
 #define SEPARATE                                                \
   if (separator)                                                \
   {                                                             \
@@ -165,8 +163,8 @@ int wxExAddress::GetLine() const
     return 0;
   }
   
-  // Try address calculation.
-  if ([[maybe_unused]]const auto [sum, width] = m_Ex->Calculator(m_Address); std::isnan(sum))
+  // Try address calculation. studio not yet: [[maybe_unused]]
+  if (const auto [sum, width] = m_Ex->Calculator(m_Address); std::isnan(sum))
   {
     return 0;
   }
@@ -300,4 +298,3 @@ bool wxExAddress::WriteLineNumber() const
   
   return true;
 }
-#endif // wxUSE_GUI

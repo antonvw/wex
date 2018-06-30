@@ -25,8 +25,6 @@
 #include <wx/extension/vi-macros.h>
 #include <wx/extension/vi-macros-mode.h>
 
-#if wxUSE_GUI
-
 const int ID_REGISTER = wxWindow::NewControlId();
 
 // Support class.
@@ -381,7 +379,8 @@ wxExTextCtrl::wxExTextCtrl(
           wxExPath::Current(m_ex->GetSTC()->GetFileName().GetPath());
         }
 
-        if ([[maybe_unused]]const auto& [r, e, v] = wxExAutoCompleteFileName(m_Command.Command());
+        // studio not yet: [[maybe_unused]]
+        if (const auto& [r, e, v] = wxExAutoCompleteFileName(m_Command.Command());
           r)
         {
           m_Command.Append(e);
@@ -582,4 +581,3 @@ bool wxExTextCtrl::SetEx(wxExEx* ex, const std::string& command)
 
   return true;
 }
-#endif // wxUSE_GUI

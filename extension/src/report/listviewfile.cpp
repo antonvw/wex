@@ -29,7 +29,7 @@ wxExListViewFile::wxExListViewFile(const std::string& file, const wxExListViewDa
   , m_AddItemsDialog(new wxExItemDialog({
         {m_TextAddWhat,ITEM_COMBOBOX, std::any(), wxExControlData().Required(true)},
         {m_TextInFolder,ITEM_COMBOBOX_DIR, std::any(), wxExControlData().Required(true)},
-        {std::set<wxString> {
+        {std::set<std::string> {
           m_TextAddFiles, m_TextAddFolders, m_TextAddRecursive}}},
       wxExWindowData().
         Title(_("Add Items").ToStdString()).
@@ -45,9 +45,8 @@ wxExListViewFile::wxExListViewFile(const std::string& file, const wxExListViewDa
     // If no item has been selected, then show 
     // filename mod time in the statusbar.
     int flags = wxLIST_HITTEST_ONITEM;
-    const int index = HitTest(wxPoint(event.GetX(), event.GetY()), flags);
 
-    if (index < 0)
+    if (const int index = HitTest(wxPoint(event.GetX(), event.GetY()), flags); index < 0)
     {
       wxExLogStatus(GetFileName());
     }
@@ -173,9 +172,7 @@ bool wxExListViewFile::DoFileLoad(bool synced)
 
   for (const auto& child: doc.document_element().children())
   {
-    const std::string value = child.text().get();
-
-    if (strcmp(child.name(), "file") == 0)
+    if (const std::string value = child.text().get(); strcmp(child.name(), "file") == 0)
     {
       wxExListItem(this, value).Insert();
     }

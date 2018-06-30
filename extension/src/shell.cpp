@@ -18,8 +18,6 @@
 #include <wx/extension/tokenizer.h>
 #include <wx/extension/util.h>
 
-#if wxUSE_GUI
-
 wxExShell::wxExShell(
   const wxExSTCData& data,
   const std::string& prompt, 
@@ -708,4 +706,3 @@ void wxExShell::Undo()
   
   m_Command.clear();
 }
-#endif // wxUSE_GUI

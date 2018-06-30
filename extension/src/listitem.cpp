@@ -21,13 +21,13 @@ wxExListItem::wxExListItem(
   long itemnumber)
   : m_ListView(lv)
   , m_Path(
-    (!lv->GetItemText(itemnumber, _("File Name").ToStdString()).empty() &&
-     !lv->GetItemText(itemnumber, _("In Folder").ToStdString()).empty() ?
+    (!lv->GetItemText(itemnumber, _("File Name")).empty() &&
+     !lv->GetItemText(itemnumber, _("In Folder")).empty() ?
         wxExPath(
-          lv->GetItemText(itemnumber, _("In Folder").ToStdString()),
-          lv->GetItemText(itemnumber, _("File Name").ToStdString())) : 
+          lv->GetItemText(itemnumber, _("In Folder")),
+          lv->GetItemText(itemnumber, _("File Name"))) : 
         wxExPath(lv->GetItemText(itemnumber))))
-  , m_FileSpec(lv->GetItemText(itemnumber, _("Type").ToStdString()))
+  , m_FileSpec(lv->GetItemText(itemnumber, _("Type")))
 {
   SetId(itemnumber);
   m_IsReadOnly = (m_ListView->GetItemData(GetId()) > 0);
@@ -54,7 +54,7 @@ void wxExListItem::Insert(long index)
   
   if (m_ListView->InReportView())
   {
-    col = m_ListView->FindColumn(_("File Name").ToStdString());
+    col = m_ListView->FindColumn(_("File Name"));
     wxASSERT(col >= 0);
     filename = (
       m_Path.FileExists() || m_Path.DirExists() ? m_Path.GetFullName(): m_Path.Path().string());
@@ -119,11 +119,11 @@ void wxExListItem::Update()
      m_ListView->InReportView() &&
      m_Path.GetStat().IsOk())
   {
-    SetItem(_("Type").ToStdString(),
+    SetItem(_("Type"),
       m_Path.DirExists() ? m_FileSpec: m_Path.GetExtension());
-    SetItem(_("In Folder").ToStdString(), m_Path.GetPath());
-    SetItem(_("Size").ToStdString(),
+    SetItem(_("In Folder"), m_Path.GetPath());
+    SetItem(_("Size"),
       m_Path.FileExists() ? std::to_string(m_Path.GetStat().st_size): std::string());
-    SetItem(_("Modified").ToStdString(), m_Path.GetStat().GetModificationTime());
+    SetItem(_("Modified"), m_Path.GetStat().GetModificationTime());
   }
 }

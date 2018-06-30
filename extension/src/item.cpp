@@ -47,10 +47,8 @@
 #include <wx/extension/tocontainer.h>
 #include <wx/extension/util.h>
 
-#if wxUSE_GUI
-
 wxExItem::wxExItem(wxExItemType type, 
-  const wxString& label, const std::any& value, wxExLabelType label_type,
+  const std::string& label, const std::any& value, wxExLabelType label_type,
   int major_dimension, const std::any& min, const std::any& max, const std::any& inc,
   wxWindow* window, 
   UserWindowCreate create, UserWindowToConfig config,
@@ -165,23 +163,24 @@ wxFlexGridSizer* wxExItem::AddBrowseButton(wxSizer* sizer)
 }
 
 void wxExItem::AddItems(
-  std::pair<wxString, std::vector<wxExItem>> & page, bool readonly)
+  std::pair<std::string, std::vector<wxExItem>> & page, bool readonly)
 {
   wxFlexGridSizer* previous_item_sizer = nullptr;
   int previous_type = -1;
   m_Page = page.first;
   int use_cols = 1;
   if (m_MajorDimension != -1) use_cols = m_MajorDimension;
-  const size_t col = m_Page.find(":");
-  if (col != std::string::npos)
+  
+  if (const size_t col = m_Page.find(":"); col != std::string::npos)
   {
-    use_cols = std::stoi(m_Page.substr(col + 1).ToStdString());
+    use_cols = std::stoi(m_Page.substr(col + 1));
     m_Page = m_Page.substr(0, col);
   }
 
   wxBookCtrlBase* bookctrl = (wxBookCtrlBase*)m_Window;
   
   int imageId = wxWithImages::NO_IMAGE;
+
   if (m_ImageList != nullptr)
   {
     if ((int)bookctrl->GetPageCount() < m_ImageList->GetImageCount())
@@ -311,7 +310,7 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
     case ITEM_CHECKLISTBOX_BOOL:
       {
       wxArrayString arraychoices;
-      const std::set<wxString> & choices(std::any_cast<std::set<wxString>>(m_Initial));
+      const std::set<std::string> & choices(std::any_cast<std::set<std::string>>(m_Initial));
       arraychoices.resize(choices.size()); // required!
       std::copy (choices.begin(), choices.end(), arraychoices.begin());
       m_Window = new wxCheckListBox(parent,
@@ -349,8 +348,8 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
     case ITEM_COMMANDLINKBUTTON:
       m_Window = new wxCommandLinkButton(parent, 
         m_Data.Window().Id(), 
-        m_Label.BeforeFirst('\t'), 
-        m_Label.AfterFirst('\t'),
+        wxExBefore(m_Label, '\t'), 
+        wxExAfter(m_Label, '\t'),
         m_Data.Window().Pos(), 
         m_Data.Window().Size(), 
         m_Data.Window().Style());
@@ -360,7 +359,7 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       {
       wxDirPickerCtrl* pc = new wxDirPickerCtrl(parent, 
         m_Data.Window().Id(), 
-        !m_Initial.has_value() ? wxString(): std::any_cast<wxString>(m_Initial),
+        !m_Initial.has_value() ? std::string(): std::any_cast<std::string>(m_Initial),
         wxDirSelectorPromptStr, 
         m_Data.Window().Pos(), 
         m_Data.Window().Size(), 
@@ -385,7 +384,7 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
 
       wxFilePickerCtrl* pc = new wxFilePickerCtrl(parent, 
         m_Data.Window().Id(), 
-        !m_Initial.has_value() ? wxString(): std::any_cast<wxString>(m_Initial),
+        !m_Initial.has_value() ? std::string(): std::any_cast<std::string>(m_Initial),
         wxFileSelectorPromptStr, wc,
         m_Data.Window().Pos(), 
         m_Data.Window().Size(),
@@ -423,7 +422,7 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       m_Window = new wxHyperlinkCtrl(parent, 
         m_Data.Window().Id(), 
         m_Label,
-        std::any_cast<wxString>(m_Initial), 
+        std::any_cast<std::string>(m_Initial), 
         m_Data.Window().Pos(), 
         m_Data.Window().Size(), 
         m_Data.Window().Style() == 0 ? wxHL_DEFAULT_STYLE: m_Data.Window().Style());
@@ -594,14 +593,14 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
 
       if (m_Initial.has_value())
       {
-        ((wxExSTC* )m_Window)->GetLexer().Set(std::any_cast<wxString>(m_Initial).ToStdString());
+        ((wxExSTC* )m_Window)->GetLexer().Set(std::any_cast<std::string>(m_Initial));
       }
       break;
 
     case ITEM_TEXTCTRL:
       m_Window = new wxTextCtrl(parent, 
         m_Data.Window().Id(), 
-        !m_Initial.has_value() ? wxString(): std::any_cast<wxString>(m_Initial),
+        !m_Initial.has_value() ? std::string(): std::any_cast<std::string>(m_Initial),
         m_Data.Window().Pos(),
         m_Data.Window().Size(),
         m_Data.Window().Style() | (readonly ? wxTE_READONLY: 0));
@@ -612,7 +611,7 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
     case ITEM_TEXTCTRL_FLOAT:
       m_Window = new wxTextCtrl(parent, 
         m_Data.Window().Id(), 
-        !m_Initial.has_value() ? wxString(): std::any_cast<wxString>(m_Initial),
+        !m_Initial.has_value() ? std::string(): std::any_cast<std::string>(m_Initial),
         m_Data.Window().Pos(), 
         m_Data.Window().Size(), 
         m_Data.Window().Style() | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT);
@@ -631,7 +630,7 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
     case ITEM_TEXTCTRL_INT:
       m_Window = new wxTextCtrl(parent, 
         m_Data.Window().Id(), 
-        !m_Initial.has_value() ? wxString(): std::any_cast<wxString>(m_Initial),
+        !m_Initial.has_value() ? std::string(): std::any_cast<std::string>(m_Initial),
         m_Data.Window().Pos(), 
         m_Data.Window().Size(), 
         m_Data.Window().Style() | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT);
@@ -688,49 +687,56 @@ const std::any wxExItem::GetValue() const
   if (m_Window == nullptr) return std::any();
   
   std::any any;
-  
-  switch (m_Type)
-  {
-    case ITEM_CHECKBOX: any = ((wxCheckBox* )m_Window)->GetValue(); break;
-    case ITEM_COLOURPICKERWIDGET: any = ((wxColourPickerWidget* )m_Window)->GetColour(); break;
-    case ITEM_COMBOBOX: 
-    case ITEM_COMBOBOX_DIR: 
-    case ITEM_COMBOBOX_FILE: any = wxExToContainer<wxArrayString>((wxComboBox*)m_Window).Get(); break;
-    case ITEM_DIRPICKERCTRL: any = ((wxDirPickerCtrl* )m_Window)->GetPath(); break;
-    case ITEM_FILEPICKERCTRL: any = ((wxFilePickerCtrl* )m_Window)->GetPath(); break;
-    case ITEM_FONTPICKERCTRL: any = ((wxFontPickerCtrl* )m_Window)->GetSelectedFont(); break;
-    case ITEM_HYPERLINKCTRL: any = ((wxHyperlinkCtrl* )m_Window)->GetURL(); break;
-    case ITEM_LISTVIEW: any = ((wxExListView* )m_Window)->ItemToText(-1); break;
-    case ITEM_SLIDER: any = ((wxSlider* )m_Window)->GetValue(); break;
-    case ITEM_SPINCTRL: any = ((wxSpinCtrl* )m_Window)->GetValue(); break;
-    case ITEM_SPINCTRLDOUBLE: any = ((wxSpinCtrlDouble* )m_Window)->GetValue(); break;
-    case ITEM_STC: any = ((wxStyledTextCtrl* )m_Window)->GetValue(); break;
-    case ITEM_TEXTCTRL: any = ((wxTextCtrl* )m_Window)->GetValue(); break;
-    case ITEM_TEXTCTRL_FLOAT: any = std::stod(((wxTextCtrl* )m_Window)->GetValue().ToStdString()); break;
-    case ITEM_TEXTCTRL_INT: any = std::stol(((wxTextCtrl* )m_Window)->GetValue().ToStdString()); break;
-    case ITEM_TOGGLEBUTTON: any = ((wxToggleButton* )m_Window)->GetValue(); break;
-    
-    case ITEM_CHECKLISTBOX_BIT: {
-      auto* clb = (wxCheckListBox*)GetWindow();
-      long value = 0;
-      int item = 0;
 
-      for (const auto& b : std::any_cast<wxExItem::Choices>(m_Initial))
-      {
-        if (clb->IsChecked(item))
+  try
+  {  
+    switch (m_Type)
+    {
+      case ITEM_CHECKBOX: any = ((wxCheckBox* )m_Window)->GetValue(); break;
+      case ITEM_COLOURPICKERWIDGET: any = ((wxColourPickerWidget* )m_Window)->GetColour(); break;
+      case ITEM_COMBOBOX: 
+      case ITEM_COMBOBOX_DIR: 
+      case ITEM_COMBOBOX_FILE: any = wxExToContainer<wxArrayString>((wxComboBox*)m_Window).Get(); break;
+      case ITEM_DIRPICKERCTRL: any = ((wxDirPickerCtrl* )m_Window)->GetPath().ToStdString(); break;
+      case ITEM_FILEPICKERCTRL: any = ((wxFilePickerCtrl* )m_Window)->GetPath().ToStdString(); break;
+      case ITEM_FONTPICKERCTRL: any = ((wxFontPickerCtrl* )m_Window)->GetSelectedFont(); break;
+      case ITEM_HYPERLINKCTRL: any = ((wxHyperlinkCtrl* )m_Window)->GetURL().ToStdString(); break;
+      case ITEM_LISTVIEW: any = ((wxExListView* )m_Window)->ItemToText(-1); break;
+      case ITEM_SLIDER: any = ((wxSlider* )m_Window)->GetValue(); break;
+      case ITEM_SPINCTRL: any = ((wxSpinCtrl* )m_Window)->GetValue(); break;
+      case ITEM_SPINCTRLDOUBLE: any = ((wxSpinCtrlDouble* )m_Window)->GetValue(); break;
+      case ITEM_STC: any = ((wxStyledTextCtrl* )m_Window)->GetValue().ToStdString(); break;
+      case ITEM_TEXTCTRL: any = ((wxTextCtrl* )m_Window)->GetValue().ToStdString(); break;
+      case ITEM_TEXTCTRL_FLOAT: any = std::stod(((wxTextCtrl* )m_Window)->GetValue().ToStdString()); break;
+      case ITEM_TEXTCTRL_INT: any = std::stol(((wxTextCtrl* )m_Window)->GetValue().ToStdString()); break;
+      case ITEM_TOGGLEBUTTON: any = ((wxToggleButton* )m_Window)->GetValue(); break;
+      
+      case ITEM_CHECKLISTBOX_BIT: {
+        auto* clb = (wxCheckListBox*)GetWindow();
+        long value = 0;
+        int item = 0;
+
+        for (const auto& b : std::any_cast<wxExItem::Choices>(m_Initial))
         {
-          value |= b.first;
+          if (clb->IsChecked(item))
+          {
+            value |= b.first;
+          }
+          item++;
         }
-        item++;
-      }
 
-      any = value;
-      }
-      break;
-    
-    default: ; // prevent warning
+        any = value;
+        }
+        break;
+      
+      default: ; // prevent warning
+    }
   }
-  
+  catch (std::bad_cast& e)
+  {
+    wxExLog(e) << *this << "GetValue";
+  }
+
   return any;
 }
   
@@ -802,7 +808,7 @@ wxFlexGridSizer* wxExItem::Layout(
   }
   catch (std::bad_cast& e)
   {
-    wxExLog(e) << *this;
+    wxExLog(e) << *this << "Layout";
   }
   
   return nullptr;
@@ -844,10 +850,6 @@ std::stringstream wxExItem::Log(const std::string& name, const std::any& any) co
       {
         s << std::any_cast<double>(any);
       }
-      else if (any.type() == typeid(wxString)) 
-      {
-        s << std::any_cast<wxString>(any);
-      }
       else if (any.type() == typeid(std::string)) 
       {
         s << std::any_cast<std::string>(any);
@@ -859,7 +861,7 @@ std::stringstream wxExItem::Log(const std::string& name, const std::any& any) co
     }
     catch (std::bad_cast& e)
     {
-      s << "<bad cast: " << e.what() << ">";
+      s << "<log bad cast: " << e.what() << ">";
     }
   }
   else
@@ -884,48 +886,54 @@ bool wxExItem::SetValue(const std::any& value) const
     return false;
   }
 
-  switch (m_Type)
+  try
   {
-    case ITEM_CHECKBOX: ((wxCheckBox* )m_Window)->SetValue(std::any_cast<bool>(value)); break;
-    case ITEM_COLOURPICKERWIDGET: ((wxColourPickerWidget* )m_Window)->SetColour(std::any_cast<wxColour>(value)); break;
-    case ITEM_COMBOBOX: wxExComboBoxAs((wxComboBox* )m_Window, std::any_cast<wxArrayString>(value)); break;
-    case ITEM_DIRPICKERCTRL: ((wxDirPickerCtrl* )m_Window)->SetPath(std::any_cast<wxString>(value)); break;
-    case ITEM_FILEPICKERCTRL: ((wxFilePickerCtrl* )m_Window)->SetPath(std::any_cast<wxString>(value)); break;
-    case ITEM_FONTPICKERCTRL: ((wxFontPickerCtrl* )m_Window)->SetSelectedFont(std::any_cast<wxFont>(value)); break;
-    case ITEM_SLIDER: ((wxSlider* )m_Window)->SetValue(std::any_cast<int>(value)); break;
-    case ITEM_SPINCTRL: ((wxSpinCtrl* )m_Window)->SetValue(std::any_cast<int>(value)); break;
-    case ITEM_SPINCTRLDOUBLE: ((wxSpinCtrlDouble* )m_Window)->SetValue(std::any_cast<double>(value)); break;
-    case ITEM_STC: ((wxStyledTextCtrl* )m_Window)->SetValue(std::any_cast<wxString>(value)); break;
-    case ITEM_TEXTCTRL: ((wxTextCtrl* )m_Window)->SetValue(std::any_cast<wxString>(value)); break;
-    case ITEM_TEXTCTRL_FLOAT: ((wxTextCtrl* )m_Window)->SetValue(wxString::Format("%lf", std::any_cast<double>(value))); break;
-    case ITEM_TEXTCTRL_INT: ((wxTextCtrl* )m_Window)->SetValue(wxString::Format("%ld", std::any_cast<long>(value))); break;
-    case ITEM_TOGGLEBUTTON: ((wxToggleButton* )m_Window)->SetValue(std::any_cast<bool>(value)); break;
+    switch (m_Type)
+    {
+      case ITEM_CHECKBOX: ((wxCheckBox* )m_Window)->SetValue(std::any_cast<bool>(value)); break;
+      case ITEM_COLOURPICKERWIDGET: ((wxColourPickerWidget* )m_Window)->SetColour(std::any_cast<wxColour>(value)); break;
+      case ITEM_COMBOBOX: wxExComboBoxAs((wxComboBox* )m_Window, std::any_cast<wxArrayString>(value)); break;
+      case ITEM_DIRPICKERCTRL: ((wxDirPickerCtrl* )m_Window)->SetPath(std::any_cast<std::string>(value)); break;
+      case ITEM_FILEPICKERCTRL: ((wxFilePickerCtrl* )m_Window)->SetPath(std::any_cast<std::string>(value)); break;
+      case ITEM_FONTPICKERCTRL: ((wxFontPickerCtrl* )m_Window)->SetSelectedFont(std::any_cast<wxFont>(value)); break;
+      case ITEM_SLIDER: ((wxSlider* )m_Window)->SetValue(std::any_cast<int>(value)); break;
+      case ITEM_SPINCTRL: ((wxSpinCtrl* )m_Window)->SetValue(std::any_cast<int>(value)); break;
+      case ITEM_SPINCTRLDOUBLE: ((wxSpinCtrlDouble* )m_Window)->SetValue(std::any_cast<double>(value)); break;
+      case ITEM_STC: ((wxStyledTextCtrl* )m_Window)->SetValue(std::any_cast<std::string>(value)); break;
+      case ITEM_TEXTCTRL: ((wxTextCtrl* )m_Window)->SetValue(std::any_cast<std::string>(value)); break;
+      case ITEM_TEXTCTRL_FLOAT: ((wxTextCtrl* )m_Window)->SetValue(wxString::Format("%lf", std::any_cast<double>(value))); break;
+      case ITEM_TEXTCTRL_INT: ((wxTextCtrl* )m_Window)->SetValue(wxString::Format("%ld", std::any_cast<long>(value))); break;
+      case ITEM_TOGGLEBUTTON: ((wxToggleButton* )m_Window)->SetValue(std::any_cast<bool>(value)); break;
 
-    case ITEM_CHECKLISTBOX_BIT:
-      {
-      wxCheckListBox* clb = (wxCheckListBox*)m_Window;
-      int item = 0;
+      case ITEM_CHECKLISTBOX_BIT:
+        {
+        auto* clb = (wxCheckListBox*)m_Window;
+        int item = 0;
 
-      for (const auto& b : std::any_cast<wxExItem::Choices>(m_Initial))
-      {
-        clb->Check(item, (std::any_cast<long>(value) & b.first) > 0);
-        item++;
-      }
-      }
-      break;
-    
-    case ITEM_LISTVIEW:
-      {
-      auto* win = (wxExListView*)GetWindow();
-      win->DeleteAllItems();
-      win->ItemFromText(std::any_cast<std::string>(value));
-      }
-      break;
+        for (const auto& b : std::any_cast<wxExItem::Choices>(m_Initial))
+        {
+          clb->Check(item, (std::any_cast<long>(value) & b.first) > 0);
+          item++;
+        }
+        }
+        break;
+      
+      case ITEM_LISTVIEW:
+        {
+        auto* win = (wxExListView*)GetWindow();
+        win->DeleteAllItems();
+        win->ItemFromText(std::any_cast<std::string>(value));
+        }
+        break;
 
-    default: return false;
+      default: return false;
+    }
+  }
+  catch (std::bad_cast& e)
+  {
+    wxExLog(e) << *this << "SetValue";
+    return false;
   }
   
   return true;
 }
-
-#endif // wxUSE_GUI

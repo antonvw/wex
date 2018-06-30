@@ -100,12 +100,10 @@ public:
   /// Construct the shell component.
   static void PrepareOutput(wxWindow* parent);
 
-#if wxUSE_GUI
   /// Shows std output from Execute on the shell component.
   /// You can override this method to e.g. prepare a lexer on GetShell
   /// before calling this base method.
   virtual void ShowOutput(const std::string& caption = std::string()) const;
-#endif
 
   /// Writes text to stdin of process.
   bool Write(const std::string& text);
@@ -114,11 +112,9 @@ private:
 
   std::string m_Command, m_StdErr, m_StdOut;
   
-  static wxString m_WorkingDirKey;
+  static std::string m_WorkingDirKey;
 
-#if wxUSE_GUI
   static inline wxExShell* m_Shell = nullptr;
-#endif  
 
   std::unique_ptr<wxExProcessImp> m_Process;
   

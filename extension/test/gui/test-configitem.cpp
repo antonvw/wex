@@ -35,7 +35,7 @@ TEST_CASE("wxExConfigItem")
   const wxExItem ci_sp_d("ci-sp-d", 1.0, 5.0);
   const wxExItem ci_sl("ci-sl", 1, 5, 2, ITEM_SLIDER);
   const wxExItem ci_vl(wxLI_HORIZONTAL);
-  wxExItem ci_str("ci-string", wxEmptyString);
+  wxExItem ci_str("ci-string", std::string());
   const wxExItem ci_hl("ci-hyper", "www.wxwidgets.org", ITEM_HYPERLINKCTRL);
   wxExItem ci_st("ci-static", "HELLO", ITEM_STATICTEXT);
   const wxExItem ci_int("ci-int",ITEM_TEXTCTRL_INT);
@@ -154,7 +154,7 @@ TEST_CASE("wxExConfigItem")
 #if wxCHECK_VERSION(3,1,0)
 TEST_CASE("wxExConfigDefaults")
 {
-  wxExConfigDefaults def(std::vector<std::tuple<wxString, wxExItemType, std::any>> {
+  wxExConfigDefaults def({
     {"def-colour", ITEM_COLOURPICKERWIDGET, *wxWHITE},
     {"def-font", ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT)},
     {"def-double", ITEM_TEXTCTRL_FLOAT, 8.8},

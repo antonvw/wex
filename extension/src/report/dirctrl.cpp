@@ -2,7 +2,7 @@
 // Name:      dirctrl.cpp
 // Purpose:   Implementation of class wxExGenericDirCtrl
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/stockitem.h> // for wxGetStockLabel
@@ -75,9 +75,8 @@ wxExGenericDirCtrl::wxExGenericDirCtrl(
     
   Bind(wxEVT_TREE_ITEM_ACTIVATED, [=](wxTreeEvent& event) {
     GET_VECTOR_FILES
-    const wxExPath fn(files[0]);
     
-    if (!fn.FileExists() && fn.DirExists())
+    if (const wxExPath fn(files[0]); !fn.FileExists() && fn.DirExists())
     {
       if (!GetTreeCtrl()->IsExpanded(event.GetItem()))
       {
@@ -106,7 +105,7 @@ wxExGenericDirCtrl::wxExGenericDirCtrl(
     }
     
     menu.Append(ID_TREE_COPY,
-      wxGetStockLabel(wxID_COPY), wxEmptyString, wxART_COPY);
+      wxGetStockLabel(wxID_COPY), std::string(), wxART_COPY);
 
     if (wxExVCS::DirExists(filename))
     {

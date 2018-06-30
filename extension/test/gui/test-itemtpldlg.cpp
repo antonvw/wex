@@ -2,7 +2,7 @@
 // Name:      test-itemtpldlg.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -20,9 +20,9 @@ class wxExTestItem : public wxExItem
 {
 public:
   wxExTestItem(): wxExItem() {;};
-  wxExTestItem(const wxString& label, const wxString& value = wxEmptyString)
+  wxExTestItem(const std::string& label, const std::string& value = std::string())
     : wxExItem(label, value) {;};
-  wxExTestItem(const wxString& label, wxExItemType type)
+  wxExTestItem(const std::string& label, wxExItemType type)
     : wxExItem(label, type) {;};
   void SetDialog(wxExItemTemplateDialog<wxExTestItem>* dlg) {;};
 };
@@ -53,17 +53,17 @@ TEST_CASE("wxExItemTemplateDialog")
     
     dlg->Show();
     
-    REQUIRE( std::any_cast<wxString>(dlg->GetItem("fruit").GetLabel()) == "fruit");
-    REQUIRE( std::any_cast<wxString>(dlg->GetItemValue("fruit")) == "apple");
+    REQUIRE( std::any_cast<std::string>(dlg->GetItem("fruit").GetLabel()) == "fruit");
+    REQUIRE( std::any_cast<std::string>(dlg->GetItemValue("fruit")) == "apple");
     REQUIRE(!dlg->GetItemValue("xxx").has_value());
-    REQUIRE( std::any_cast<wxString>(dlg->GetItem("xxx").GetLabel()).empty());
+    REQUIRE( std::any_cast<std::string>(dlg->GetItem("xxx").GetLabel()).empty());
     REQUIRE(!dlg->GetItemValue("yyy").has_value());
     
     // asserts in 3.0
 #if wxCHECK_VERSION(3,1,0)
-    REQUIRE( dlg->SetItemValue("fruit", wxString("strawberry")));
+    REQUIRE( dlg->SetItemValue("fruit", std::string("strawberry")));
     REQUIRE(!dlg->SetItemValue("xxx", "blueberry"));
-    REQUIRE( std::any_cast<wxString>(dlg->GetItemValue("fruit")) == "strawberry");
+    REQUIRE( std::any_cast<std::string>(dlg->GetItemValue("fruit")) == "strawberry");
 #endif
     
     dlg->ForceCheckBoxChecked();

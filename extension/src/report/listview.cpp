@@ -135,10 +135,7 @@ wxExListViewWithFrame::wxExListViewWithFrame(const wxExListViewData& data)
 
 void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
 {
-  bool exists = true;
-  bool is_folder = false;
-  bool read_only = false;
-  bool is_make = false;
+  bool exists = true, is_folder = false, is_make = false, read_only = false;
 
   if (GetSelectedItemCount() >= 1)
   {
@@ -171,17 +168,16 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
         !wxExVCS().Use() &&
          exists && !is_folder)
     {
-      auto* list = m_Frame->Activate(LIST_FILE);
-
-      if (list != nullptr && list->GetSelectedItemCount() == 1)
+      if (auto* list = m_Frame->Activate(LIST_FILE);
+        list != nullptr && list->GetSelectedItemCount() == 1)
       {
         wxExListItem thislist(this, GetFirstSelected());
         const wxString current_file = thislist.GetFileName().Path().string();
 
         wxExListItem otherlist(list, list->GetFirstSelected());
-        const std::string with_file = otherlist.GetFileName().Path().string();
 
-        if (current_file != with_file &&
+        if (const std::string with_file = otherlist.GetFileName().Path().string(); 
+          current_file != with_file &&
             !wxConfigBase::Get()->Read(_("Comparator")).empty())
         {
           menu.AppendSeparator();

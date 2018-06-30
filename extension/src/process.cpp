@@ -91,7 +91,7 @@ auto ShowProcess(wxExManagedFrame* frame, bool show)
   return false;  
 }
       
-wxString wxExProcess::m_WorkingDirKey = _("Process folder");
+std::string wxExProcess::m_WorkingDirKey = _("Process folder");
 
 wxExProcess::wxExProcess() 
   : m_Command(wxExConfigFirstOf(_("Process")))
@@ -262,7 +262,6 @@ void wxExProcess::PrepareOutput(wxWindow* parent)
   }
 }
 
-#if wxUSE_GUI
 void wxExProcess::ShowOutput(const std::string& caption) const
 {
   if (!m_Error)
@@ -279,7 +278,6 @@ void wxExProcess::ShowOutput(const std::string& caption) const
     wxExLog() << "could not execute:" <<  m_Command;
   }
 }
-#endif
 
 bool wxExProcess::Write(const std::string& text)
 {

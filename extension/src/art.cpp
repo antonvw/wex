@@ -2,7 +2,7 @@
 // Name:      art.cpp
 // Purpose:   Implementation of wxExStockArt class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -10,8 +10,6 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/art.h>
-
-#if wxUSE_GUI
 
 std::map<wxWindowID, wxArtID> wxExStockArt::m_ArtIDs;
 
@@ -78,4 +76,3 @@ const wxBitmap wxExStockArt::GetBitmap(
 
   return wxBitmap();
 }
-#endif // wxUSE_GUI

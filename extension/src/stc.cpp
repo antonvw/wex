@@ -22,8 +22,6 @@
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
 
-#if wxUSE_GUI
-
 wxExSTC::wxExSTC(const std::string& text, const wxExSTCData& data)
   : wxExSTC(wxExPath(), data)
 {
@@ -907,4 +905,3 @@ void wxExSTC::WordRightRectExtend()
     CharRightRectExtend();
   }
 }
-#endif // wxUSE_GUI

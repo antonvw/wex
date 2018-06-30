@@ -22,9 +22,9 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-            - g++-7
+            - g++-8
       env:
-        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
 
     - os: osx
       osx_image: xcode9.2
@@ -32,7 +32,7 @@ matrix:
         apt:
           update: true
       env:
-        - MATRIX_EVAL="rm /usr/local/include/c++ && brew update && brew install --force gcc && CC=gcc-7 && CXX=g++-7 && brew link --overwrite gcc && brew link cmake"
+        - MATRIX_EVAL="rm /usr/local/include/c++ && brew update && brew install --force gcc && CC=gcc-8 && CXX=g++-8 && brew link --overwrite gcc && brew link cmake"
 
   allow_failures:
     - os: osx
@@ -52,11 +52,12 @@ before_script:
 
 script:
     - mkdir build${TRAVIS_OS_NAME} && pushd build${TRAVIS_OS_NAME}
-    - cmake -DCMAKE_BUILD_TYPE=Coverage -DwxExBUILD_SP=ON -DwxExBUILD_TESTS=ON ..
+    - cmake -DwxExBUILD_SP=ON -DwxExBUILD_TESTS=ON ..
+#    - cmake -DCMAKE_BUILD_TYPE=Coverage -DwxExBUILD_SP=ON -DwxExBUILD_TESTS=ON ..
     - make -j 4
-    - if [ "$TRAVIS_OS_NAME" != "osx" ]; then make lcov-prep; fi
+#    - if [ "$TRAVIS_OS_NAME" != "osx" ]; then make lcov-prep; fi
     - ctest --timeout 120 -V ..
         
 after_success:
-    - if [ "$TRAVIS_OS_NAME" != "osx" ]; then make lcov; fi
-    - if [ "$TRAVIS_OS_NAME" != "osx" ]; then make lcov-coveralls; fi
+#    - if [ "$TRAVIS_OS_NAME" != "osx" ]; then make lcov; fi
+#    - if [ "$TRAVIS_OS_NAME" != "osx" ]; then make lcov-coveralls; fi

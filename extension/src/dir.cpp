@@ -151,7 +151,6 @@ int wxExDir::FindFiles()
   return matches;
 }
 
-#if wxUSE_GUI
 wxExDirOpenFile::wxExDirOpenFile(wxExFrame* frame,
   const wxExPath& path, 
   const std::string& filespec, 
@@ -168,4 +167,3 @@ bool wxExDirOpenFile::OnFile(const wxExPath& file)
   m_Frame->OpenFile(file, wxExSTCData().Flags(m_Flags));
   return true;
 }
-#endif

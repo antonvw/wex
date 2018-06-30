@@ -45,12 +45,10 @@ wxExVCSEntry::wxExVCSEntry(const pugi::xml_node& node)
 {
 }
 
-#if wxUSE_GUI
 int wxExVCSEntry::BuildMenu(int base_id, wxExMenu* menu, bool is_popup) const
 {
   return wxExMenus::BuildMenu(GetCommands(), base_id, menu, is_popup);
 }
-#endif
 
 bool wxExVCSEntry::Execute(
   const std::string& args,
@@ -153,7 +151,6 @@ const std::string wxExVCSEntry::GetFlags() const
   return wxConfigBase::Get()->Read(_("Flags")).ToStdString();
 }
 
-#if wxUSE_GUI
 void wxExVCSEntry::ShowOutput(const std::string& caption) const
 {
   if (!GetError() && GetShell() != nullptr)
@@ -173,4 +170,3 @@ void wxExVCSEntry::ShowOutput(const std::string& caption) const
 
   wxExProcess::ShowOutput(caption);
 }
-#endif

@@ -27,8 +27,6 @@
 #include <wx/extension/vi-macros.h>
 #include <wx/extension/vi-macros-mode.h>
 
-#if wxUSE_GUI
-
 // compares two strings in compile time constant fashion
 constexpr int c_strcmp( char const* lhs, char const* rhs )
 {
@@ -1448,4 +1446,3 @@ void wxExVi::VisualExtend(int begin_pos, int end_pos)
     break;
   }
 }
-#endif // wxUSE_GUI

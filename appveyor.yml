@@ -1,7 +1,5 @@
 version: 18.10.0.{build}
 
-platform: x86 
-
 image: Visual Studio 2017
 
 clone_folder: c:\projects\wxex
@@ -19,7 +17,7 @@ before_build:
 
 build_script:
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat"
-  - cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_PROGRAM_PATH="C:\cygwin\bin" -DwxExBUILD_SP=ON -DwxExBUILD_TESTS=ON -DENABLE_GETTEXT=ON ..
+  - cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DwxExBUILD_SP=ON -DwxExBUILD_TESTS=ON -DENABLE_GETTEXT=ON ..
   - nmake
   - ..\ci\pack.bat
 

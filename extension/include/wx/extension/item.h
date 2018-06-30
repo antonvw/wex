@@ -16,7 +16,6 @@
 #include <wx/imaglist.h>
 #include <wx/sizer.h> // for wxSizer, and wxSizerFlags
 #include <wx/slider.h>
-#include <wx/string.h>
 #include <wx/extension/control-data.h>
 #include <wx/extension/listview-data.h>
 
@@ -24,7 +23,6 @@ class wxFlexGridSizer;
 class wxWindow;
 template <class T> class wxExItemTemplateDialog;
 
-#if wxUSE_GUI
 /*! \file */
 /// The item types supported.
 enum wxExItemType
@@ -87,10 +85,10 @@ class WXDLLIMPEXP_BASE wxExItem
 {
 public:
   /// Choices for radioboxes.
-  typedef std::map<long, const char*> Choices;
+  typedef std::map<long, const std::string> Choices;
     
   /// This is vector of a pair of pages with a vector of items.
-  typedef std::vector<std::pair<wxString, std::vector<wxExItem>>> 
+  typedef std::vector<std::pair<std::string, std::vector<wxExItem>>> 
     ItemsNotebook;
   
   /// A function that you can provide to e.g. specify what 
@@ -110,7 +108,7 @@ public:
     UserWindowToConfig;
 
   /// Default constructor for a ITEM_EMPTY item.
-  wxExItem() : wxExItem(ITEM_EMPTY, wxEmptyString) {;};
+  wxExItem() : wxExItem(ITEM_EMPTY, std::string()) {;};
 
   /// Constructor for a ITEM_SPACER item.
   /// The size is the size for the spacer used.
@@ -127,9 +125,9 @@ public:
     /// label for the window as on the dialog,
     /// might also contain the note after a tab for a command link button
     /// if the window supports it you can use a markup label
-    const wxString& label,
+    const std::string& label,
     /// initial value, also used as default for a hyperlink ctrl, or as lexer for STC
-    const wxString& value = wxEmptyString,
+    const std::string& value = std::string(),
     /// type of this item:
     /// - ITEM_HYPERLINKCTRL
     /// - ITEM_STATICTEXT
@@ -152,7 +150,7 @@ public:
   /// Constructor for spin items.
   wxExItem(
     /// label for this item
-    const wxString& label,
+    const std::string& label,
     /// min value
     int min, 
     /// max value
@@ -174,7 +172,7 @@ public:
   /// Constructor for a ITEM_SPINCTRLDOUBLE item.
   wxExItem(
     /// label for this item
-    const wxString& label,
+    const std::string& label,
     /// min value
     double min, 
     /// max value
@@ -195,7 +193,7 @@ public:
   /// This checklistbox can be used to get/set several boolean values.
   wxExItem(
     /// the set with names of boolean items
-    const std::set<wxString> & choices,
+    const std::set<std::string> & choices,
     /// control data
     const wxExControlData& data = wxExControlData(),
     /// callback to apply
@@ -220,7 +218,7 @@ public:
   /// \endcode
   wxExItem(
     /// label for this item
-    const wxString& label,
+    const std::string& label,
     /// notebook items
     const ItemsNotebook & v,
     /// type of this item (kind of notebook):
@@ -258,7 +256,7 @@ public:
   /// set of possible individual values.
   wxExItem(
     /// label for this item
-    const wxString& label,
+    const std::string& label,
     /// the map with values and text
     const Choices & choices,
     /// indicates whether to use a radiobox or a checklistbox.
@@ -277,7 +275,7 @@ public:
   /// Constructor for a ITEM_USER item.
   wxExItem(
     /// label for this item
-    const wxString& label,
+    const std::string& label,
     /// the window (use default constructor for it)
     wxWindow* window,
     /// callback for window creation (required, useless without one)
@@ -289,13 +287,13 @@ public:
     wxExLabelType label_type = LABEL_LEFT,
     /// callback to apply
     UserApply apply = nullptr)
-    : wxExItem(ITEM_USER, label, wxEmptyString, label_type, 1, 0, 1, 1, window, create, config) {
+    : wxExItem(ITEM_USER, label, std::string(), label_type, 1, 0, 1, 1, window, create, config) {
         m_Apply = apply;};
 
   /// Constuctor a ITEM_LISTVIEW item.
   wxExItem(
     /// label for this item
-    const wxString& label,
+    const std::string& label,
     /// listview data
     const wxExListViewData& data,
     /// initial value
@@ -311,7 +309,7 @@ public:
   /// Constuctor several items.
   wxExItem(
     /// label for this item
-    const wxString& label,
+    const std::string& label,
     /// type of item:
     /// - ITEM_BUTTON
     /// - ITEM_CHECKBOX
@@ -429,9 +427,9 @@ protected:
     /// the item type
     wxExItemType type, 
     /// the label to appear in front of the item
-    const wxString& label = wxEmptyString, 
+    const std::string& label = std::string(), 
     /// intitial value if appropriate
-    const std::any& value = wxString(),
+    const std::any& value = std::string(),
     /// If you specify add label, then the label is added as a label in front of
     /// the item, otherwise the label is not added
     wxExLabelType label_type = LABEL_NONE,
@@ -454,7 +452,7 @@ protected:
 private:
   wxFlexGridSizer* Add(wxSizer* sizer, wxFlexGridSizer* current) const;
   wxFlexGridSizer* AddBrowseButton(wxSizer* sizer);
-  void AddItems(std::pair<wxString, std::vector<wxExItem>> & items, bool readonly);
+  void AddItems(std::pair<std::string, std::vector<wxExItem>> & items, bool readonly);
   wxFlexGridSizer* AddStaticText(wxSizer* sizer) const;
   bool CreateWindow(wxWindow* parent, bool readonly);
   std::stringstream Log(const std::string& name, const std::any& any) const;
@@ -465,7 +463,7 @@ private:
   wxExItemType m_Type;
   wxExLabelType m_LabelType;
   std::any m_Initial, m_Min, m_Max, m_Inc;
-  wxString m_Label, m_Page;
+  std::string m_Label, m_Page;
   wxSizerFlags m_SizerFlags;
   wxWindow* m_Window;
   wxImageList* m_ImageList;
@@ -486,11 +484,12 @@ class wxConfigBase;
 class WXDLLIMPEXP_BASE wxExConfigDefaults
 {
 public:
+  /// A default with name, item type, and default value.
+  typedef std::tuple<std::string, wxExItemType, std::any> Defaults;
+
   /// Constructor, records default values,
   /// if not yet in the config.
-  wxExConfigDefaults(
-    /// supply name, item type, and default value
-    const std::vector<std::tuple<wxString, wxExItemType, std::any>> & items);
+  wxExConfigDefaults(const std::vector<Defaults> & items);
   
   /// Destructor, stops recording.
  ~wxExConfigDefaults();
@@ -500,4 +499,3 @@ public:
 private:
   wxConfigBase* m_Config;
 };
-#endif // wxUSE_GUI

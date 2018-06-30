@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Include file for wxExFrameWithHistory class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -118,11 +118,11 @@ private:
   wxExListView* m_FileHistoryList {nullptr};
   wxExFileHistory m_ProjectHistory;
 
-  const wxString m_TextInFiles {_("In files")};
-  const wxString m_TextInFolder  {_("In folder")};
-  const wxString m_TextRecursive {_("Recursive")};
+  const std::string m_TextInFiles {_("In files")};
+  const std::string m_TextInFolder  {_("In folder")};
+  const std::string m_TextRecursive {_("Recursive")};
 
   // This set determines what fields are placed on the Find Files dialogs
   // as a list of checkboxes.
-  const std::set < wxString > m_Info;
+  const std::set < std::string > m_Info;
 };

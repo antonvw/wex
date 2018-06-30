@@ -133,8 +133,8 @@ private:
   void ParseNodeTheme(const pugi::xml_node& node);
   void ParseNodeThemes(const pugi::xml_node& node);
 
-  std::map<std::string, std::string> m_DefaultColours;
-  std::map<std::string, std::string> m_Keywords;
+  std::map<std::string, std::string> m_DefaultColours, m_Keywords;
+
   std::map<std::string, std::map<std::string, std::string> > 
     m_Macros, m_ThemeColours, m_ThemeMacros;
 

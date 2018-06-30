@@ -2,7 +2,7 @@
 // Name:      toolbar.cpp
 // Purpose:   Implementation of wxExToolBar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
@@ -22,8 +22,6 @@
 #include <wx/extension/process.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
-
-#if wxUSE_GUI
 
 /// Support class.
 /// Offers a find text ctrl that allows you to find text
@@ -134,9 +132,7 @@ wxAuiToolBarItem* wxExToolBar::AddTool(
   const wxString& shortHelp,
   wxItemKind kind)
 {
-  const wxExStockArt art(toolId);
-
-  if (art.GetBitmap(wxART_TOOLBAR).IsOk())
+  if (const wxExStockArt art(toolId); art.GetBitmap(wxART_TOOLBAR).IsOk())
   {
     return wxAuiToolBar::AddTool(
       toolId, 
@@ -309,8 +305,7 @@ wxExFindTextCtrl::wxExFindTextCtrl(wxWindow* parent, wxExFrame* frame,
     }});
   
   Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
-    auto* stc = m_Frame->GetSTC();
-    if (stc != nullptr)
+    if (auto* stc = m_Frame->GetSTC(); stc != nullptr)
     {
       stc->PositionSave();
     }
@@ -333,11 +328,7 @@ void wxExFindTextCtrl::Find(bool find_next, bool restore_position)
 {
   // We cannot use events here, as OnFindDialog in stc uses frd data,
   // whereas we need the GetValue here.
-  auto* stc = m_Frame->GetSTC();
-  auto* grid = m_Frame->GetGrid();
-  auto* lv = m_Frame->GetListView();
-
-  if (stc != nullptr)
+  if (auto* stc = m_Frame->GetSTC(); stc != nullptr)
   {
     if (restore_position)
     {
@@ -349,13 +340,12 @@ void wxExFindTextCtrl::Find(bool find_next, bool restore_position)
       -1,
       find_next);
   }
-  else if (grid != nullptr)
+  else if (auto* grid = m_Frame->GetGrid(); grid != nullptr)
   {
     grid->FindNext(GetValue(), find_next);
   }
-  else if (lv != nullptr)
+  else if (auto* lv = m_Frame->GetListView(); lv != nullptr)
   {
     lv->FindNext(GetValue().ToStdString(), find_next);
   }
 }
-#endif // wxUSE_GUI

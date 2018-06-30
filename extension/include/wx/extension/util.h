@@ -32,9 +32,6 @@ class wxExVCSCommand;
 
 /*! \file */
 
-// This one is necessary for translation macro if STL is enabled.
-const char* _X(const char* text);
-
 /// Returns string after first or last occurrence of c
 /// Returns the whole string if c is not found.
 const std::string wxExAfter(const std::string& text, char c, bool first = true);
@@ -96,7 +93,6 @@ bool wxExClipboardAdd(const std::string& text);
 /// Returns data from the clipboard.
 const std::string wxExClipboardGet();
 
-#if wxUSE_GUI
 /// Adds entries to a combobox from a container.
 template <typename T> 
 void wxExComboBoxAs(wxComboBox* cb, const T& t)
@@ -118,7 +114,6 @@ void wxExComboBoxAs(wxComboBox* cb, const T& t)
 void wxExComboBoxFromList(
   wxComboBox* cb,
   const std::list < std::string > & text);
-#endif
   
 /// Compares the files, using comparator set in the config.
 bool wxExCompareFile(const wxExPath& file1, const wxExPath& file2);
@@ -268,7 +263,6 @@ void wxExNodeStyles(
 /// Returns whether there is one letter after.
 bool wxExOneLetterAfter(const std::string& text, const std::string& letter);
 
-#if wxUSE_GUI
 /// Opens all files specified by files.
 /// Returns number of files opened.
 int wxExOpenFiles(
@@ -281,10 +275,8 @@ int wxExOpenFiles(
   const wxExSTCData& data = wxExSTCData(),
   /// flags to be used with wxExDirOpenFile
   int dir_flags = DIR_DEFAULT);
-#endif
 
 /// Shows a dialog and opens selected files
-#if wxUSE_GUI
 /// (calls wxExOpenFiles).
 void wxExOpenFilesDialog(
   /// frame
@@ -299,7 +291,6 @@ void wxExOpenFilesDialog(
   const wxExSTCData& data = wxExSTCData(),
   /// flags to be used with wxExDirOpenFile
   int dir_flags = DIR_DEFAULT);
-#endif
 
 /// Adds a caption.
 const std::string wxExPrintCaption(const wxExPath& filename);
@@ -373,7 +364,6 @@ const std::string wxExSort(
   /// string::npos indicates all characters until eol
   size_t len = std::string::npos);
   
-#if wxUSE_GUI
 /// Sorts specified component, returns true if sorted ok.
 bool wxExSortSelection(
   /// Component with selected text to be sorted
@@ -385,12 +375,10 @@ bool wxExSortSelection(
   /// number of characters to replace
   /// string::npos indicates all characters until eol
   size_t len = std::string::npos);
-#endif
 
 /// This takes care of the translation.
 const std::string wxExTranslate(const std::string& text, int pageNum, int numPages);
 
-#if wxUSE_GUI
 /// Use specified VCS command to set lexer on STC document.
 void wxExVCSCommandOnSTC(
   /// VCS command, used to check for diff or open command
@@ -399,9 +387,7 @@ void wxExVCSCommandOnSTC(
   const wxExLexer& lexer,
   /// stc on which lexer is set
   wxExSTC* stc);
-#endif
 
-#if wxUSE_GUI
 /// Executes VCS command id for specified files
 /// and opens component if necessary.
 void wxExVCSExecute(
@@ -411,7 +397,6 @@ void wxExVCSExecute(
   int id,
   /// files on which to operate
   const std::vector< wxExPath > & files);
-#endif
 
 /// Shows xml error.
 void wxExXmlError(

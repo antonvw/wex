@@ -40,11 +40,12 @@ std::tuple<double, int, std::string> wxExEvaluator::Eval(wxExEx* ex, const std::
   // Determine the width.
   const std::string rt((ds == '.' ? "\\.": std::string(1, ds)) + std::string("[0-9]+"));
   std::regex re(rt);
-  const auto words_begin = std::sregex_iterator(text.begin(), text.end(), re);
-  const auto words_end = std::sregex_iterator();  
+  
   int width = 0;
 
-  if (words_begin != words_end)
+  if (const auto words_begin = std::sregex_iterator(text.begin(), text.end(), re),
+    words_end = std::sregex_iterator();  
+    words_begin != words_end)
   {
     if (std::smatch match = *words_begin; !match.empty())
     {
