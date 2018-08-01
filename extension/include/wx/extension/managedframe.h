@@ -2,7 +2,7 @@
 // Name:      managedframe.h
 // Purpose:   Declaration of wxExManagedFrame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -15,9 +15,6 @@
 #include <wx/extension/defs.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/path.h>
-
-// Only if we have a gui.
-#if wxUSE_GUI
 
 class wxPanel;
 class wxExExCommand;
@@ -176,4 +173,3 @@ private:
   wxExTextCtrl* m_TextCtrl;
   wxExToolBar* m_ToolBar;
 };
-#endif // wxUSE_GUI

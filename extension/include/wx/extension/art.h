@@ -2,17 +2,13 @@
 // Name:      art.h
 // Purpose:   Declaration of wxExStockArt class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXART_H
-#define _EXART_H
+#pragma once
 
 #include <map>
 #include <wx/artprov.h> // for wxArtID
-
-// Only if we have a gui.
-#if wxUSE_GUI
 
 /// Offers a collection of art, mapping stock id's to art id's.
 class WXDLLIMPEXP_BASE wxExStockArt
@@ -32,5 +28,3 @@ private:
   static std::map<wxWindowID, wxArtID> m_ArtIDs;
   const wxWindowID m_Id;
 };
-#endif // wxUSE_GUI
-#endif

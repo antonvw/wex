@@ -590,9 +590,7 @@ void wxExSTC::BindAll()
     
         ConvertEOLs(eol_mode);
         SetEOLMode(eol_mode);
-#if wxUSE_STATUSBAR
         wxExFrame::UpdateStatusBar(this, "PaneFileType");
-#endif
       }
     }}, idEolDos, idEolMac);
     

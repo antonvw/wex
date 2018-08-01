@@ -2,12 +2,10 @@
 // Name:      address.h
 // Purpose:   Declaration of class wxExAddress
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
-
-#if wxUSE_GUI
 
 class wxExEx;
 class wxExAddressRange;
@@ -80,4 +78,3 @@ private:
   
   std::string m_Address; // set by address range
 };
-#endif // wxUSE_GUI

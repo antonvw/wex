@@ -2,7 +2,7 @@
 // Name:      test-vi-mode.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -23,26 +23,32 @@ TEST_CASE("wxExViMode")
 
   // normal
   REQUIRE( mode.Normal());
-  REQUIRE(!mode.Transition("x"));
-  REQUIRE(!mode.Transition("y"));
+  std::string command("x");
+  REQUIRE(!mode.Transition(command));
+  command = "y";
+  REQUIRE(!mode.Transition(command));
   REQUIRE( mode.String().empty());
   
   // insert
-  REQUIRE( mode.Transition("i"));
+  command = "i";
+  REQUIRE( mode.Transition(command));
   REQUIRE( mode.Insert());
-  REQUIRE(!mode.Transition("i"));
+  command = "i";
+  REQUIRE(!mode.Transition(command));
   REQUIRE( mode.Insert());
   REQUIRE( mode.String() == "insert");
   REQUIRE( mode.Escape());
   REQUIRE( mode.Normal());
 
-  REQUIRE( mode.Transition("cc"));
+  command = "cc";
+  REQUIRE( mode.Transition(command));
   REQUIRE( mode.Insert());
   REQUIRE( mode.Escape());
   REQUIRE( mode.Normal());
   
   GetSTC()->SetReadOnly(true);
-  REQUIRE( mode.Transition("i"));
+  command = "i";
+  REQUIRE( mode.Transition(command));
   REQUIRE( mode.Normal());
   GetSTC()->SetReadOnly(false);
   
@@ -51,9 +57,11 @@ TEST_CASE("wxExViMode")
     {"V",wxExViModes::VISUAL_LINE},
     {"K",wxExViModes::VISUAL_RECT}})
   {
-    REQUIRE( mode.Transition(visual.first));
+    std::string command(visual.first);
+    REQUIRE( mode.Transition(command));
     REQUIRE( mode.Get() == visual.second);
-    REQUIRE( mode.Transition(visual.first)); // ignore
+    command = visual.first;
+    REQUIRE( mode.Transition(command)); // ignore
     REQUIRE( mode.Get() == visual.second);
     REQUIRE( mode.Escape());
     REQUIRE( mode.Normal());

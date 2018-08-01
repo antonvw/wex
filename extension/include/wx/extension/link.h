@@ -11,8 +11,6 @@
 #include <string>
 #include <wx/extension/path.h>
 
-#if wxUSE_GUI
-
 #define LINK_LINE_OPEN_URL          -1
 #define LINK_LINE_OPEN_MIME         -2
 #define LINK_LINE_OPEN_URL_AND_MIME -3
@@ -55,4 +53,3 @@ private:
   std::unique_ptr<wxExPaths> m_Paths;
   wxExSTC* m_STC;
 };
-#endif // wxUSE_GUI

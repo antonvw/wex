@@ -167,38 +167,28 @@ const std::string wxExViMode::String() const
   return m_FSM->String();
 }
   
-bool wxExViMode::Transition(const std::string& command)
+bool wxExViMode::Transition(std::string& command)
 {
+  if (command.empty() || (command.size() == 1 && command[0] == 'c'))
+  {
+    return false;
+  }
+
   Triggers trigger = Triggers::INSERT;
   
-  switch (command.size())
+  if (std::find_if(m_InsertCommands.begin(), m_InsertCommands.end(), 
+    [command](auto const& e) {return e.first == command[0];}) 
+    != m_InsertCommands.end())
   {
-    case 0: return false;
-    case 1:
-      if (command[0] == 'c' && m_vi->GetSTC()->GetSelectedText().empty())
-      {
-        return false;
-      }
-      else if (std::find_if(m_InsertCommands.begin(), m_InsertCommands.end(), 
-        [command](auto const& e) {return e.first == command[0];}) 
-        != m_InsertCommands.end())
-      {
-        trigger = Triggers::INSERT;
-      }
-      else switch (command[0])
-      {
-        case 'K': trigger = Triggers::VISUAL_RECT; break;
-        case 'v': trigger = Triggers::VISUAL; break;
-        case 'V': trigger = Triggers::VISUAL_LINE; break;
-        case 27:  trigger = Triggers::ESCAPE; break;
-        default: return false;
-      }
-      break;
-    default:
-      if (command[0] != 'c')
-      {
-        return false;
-      }
+    trigger = Triggers::INSERT;
+  }
+  else switch (command[0])
+  {
+    case 'K': trigger = Triggers::VISUAL_RECT; break;
+    case 'v': trigger = Triggers::VISUAL; break;
+    case 'V': trigger = Triggers::VISUAL_LINE; break;
+    case 27:  trigger = Triggers::ESCAPE; break;
+    default: return false;
   }
   
   if (m_FSM->Execute(command, trigger) != FSM::Fsm_Success)
@@ -207,6 +197,7 @@ bool wxExViMode::Transition(const std::string& command)
     {
       wxBell();
     }
+
     return false;
   }
   
@@ -218,7 +209,10 @@ bool wxExViMode::Transition(const std::string& command)
         if (const auto& it = std::find_if(m_InsertCommands.begin(), m_InsertCommands.end(), 
           [command](auto const& e) {return e.first == command[0];});
           it != m_InsertCommands.end() && it->second != nullptr)
-          it->second();
+          {
+            it->second();
+            m_vi->AppendInsertCommand(command.substr(0, 1));
+          }
       }
       break;
       
@@ -249,6 +243,8 @@ bool wxExViMode::Transition(const std::string& command)
        wxConfigBase::Get()->ReadBool(_("Show mode"), false));
 
   wxExFrame::StatusText(String(), "PaneMode");
+
+  command = command.substr(1);
 
   return true;
 }

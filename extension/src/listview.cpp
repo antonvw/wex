@@ -234,9 +234,7 @@ wxExListView::wxExListView(const wxExListViewData& data)
       wxFAIL;
   }
 
-#if wxUSE_STATUSBAR
   wxExFrame::UpdateStatusBar(this);
-#endif  
 
   Bind(wxEVT_FIND, [=](wxFindDialogEvent& event) {
     FindNext(
@@ -314,10 +312,8 @@ wxExListView::wxExListView(const wxExListViewData& data)
   Bind(wxEVT_LIST_ITEM_ACTIVATED, [=] (wxListEvent& event) {
     ItemActivated(event.GetIndex());});
   
-#if wxUSE_STATUSBAR
   Bind(wxEVT_LIST_ITEM_DESELECTED, [=](wxListEvent& event) {
     wxExFrame::UpdateStatusBar(this);});
-#endif  
   
   Bind(wxEVT_LIST_ITEM_SELECTED, [=](wxListEvent& event) {
     if (m_Data.Type() != LIST_NONE && GetSelectedItemCount() == 1)
@@ -440,11 +436,9 @@ wxExListView::wxExListView(const wxExListViewData& data)
     }
     event.Skip();});
   
-#if wxUSE_STATUSBAR
   Bind(wxEVT_SHOW, [=](wxShowEvent& event) {
     event.Skip();
     wxExFrame::UpdateStatusBar(this);});
-#endif  
 }    
 
 bool wxExListView::AppendColumns(const std::vector <wxExColumn>& cols)
@@ -624,9 +618,7 @@ void wxExListView::EditClearAll()
 
   SortColumnReset();
 
-#if wxUSE_STATUSBAR
   wxExFrame::UpdateStatusBar(this);
-#endif
 }
 
 void wxExListView::EditDelete()

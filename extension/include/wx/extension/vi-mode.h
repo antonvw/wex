@@ -2,7 +2,7 @@
 // Name:      vi-mode.h
 // Purpose:   Declaration of class wxExViFSMEntry and wxExViMode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -44,7 +44,9 @@ public:
  ~wxExViMode();
 
   /// Escapes current mode.
-  bool Escape() {return Transition("\x1b");};
+  bool Escape() {
+    std::string command("\x1b");
+    return Transition(command);};
 
   /// Returns the mode we are in.
   wxExViModes Get() const;
@@ -67,7 +69,7 @@ public:
   /// Returns true if command represents a mode change, otherwise false.
   /// If true is returned, it does not mean that mode was changed, in case 
   /// of readonly doc.
-  bool Transition(const std::string& command);
+  bool Transition(std::string& command);
 
   /// Returns true if in visual mode.
   bool Visual() const {return 

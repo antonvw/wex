@@ -888,7 +888,7 @@ bool wxExSortSelection(wxExSTC* stc,
   const auto start_pos = stc->GetSelectionStart();
   
   if (start_pos == -1 || 
-    pos > stc->GetSelectionEnd() || pos == std::string::npos)
+    pos > (size_t)stc->GetSelectionEnd() || pos == std::string::npos)
   {
     return false;
   }

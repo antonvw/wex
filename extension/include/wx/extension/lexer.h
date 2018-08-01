@@ -165,7 +165,7 @@ public:
   void SetProperty(const std::string& name, const std::string& value);
 
   /// Returns number of chars that fit on a line, skipping comment chars.
-  int UsableCharactersPerLine() const;
+  size_t UsableCharactersPerLine() const;
 private:
   void AutoMatch(const std::string& lexer);
   const std::string GetFormattedText(
@@ -192,7 +192,7 @@ private:
   std::vector<wxExStyle> m_Styles;
   
   bool m_IsOk {false}, m_Previewable {false};
-  int m_LineSize {80};
+  size_t m_LineSize {80};
   wxExEdgeMode m_EdgeMode {wxExEdgeMode::ABSENT};
   wxExSTC* m_STC {nullptr};
 };

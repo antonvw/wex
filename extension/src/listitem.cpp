@@ -72,9 +72,7 @@ void wxExListItem::Insert(long index)
 
   ((wxListView* )m_ListView)->InsertItem(*this);
   
-#if wxUSE_STATUSBAR
   wxExFrame::UpdateStatusBar(m_ListView);
-#endif
 
   Update();
 

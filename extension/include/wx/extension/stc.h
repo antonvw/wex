@@ -17,7 +17,6 @@
 #include <wx/extension/stc-data.h>
 #include <wx/extension/vi.h>
 
-#if wxUSE_GUI
 class wxExIndicator;
 class wxExItemDialog;
 class wxExLexer;
@@ -344,4 +343,3 @@ private:
   static inline wxExSTCEntryDialog* m_EntryDialog = nullptr;
   static inline int m_Zoom = -1;
 };
-#endif // wxUSE_GUI

@@ -585,7 +585,7 @@ void wxExLexer::SetProperty(const std::string& name, const std::string& value)
   else m_Properties.emplace_back(name, value);
 }
 
-int wxExLexer::UsableCharactersPerLine() const
+size_t wxExLexer::UsableCharactersPerLine() const
 {
   // We adjust this here for
   // the space the beginning and end of the comment characters occupy.

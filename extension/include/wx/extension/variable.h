@@ -2,12 +2,10 @@
 // Name:      variable.h
 // Purpose:   Declaration of class wxExVariable
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
-
-#if wxUSE_GUI
 
 #include <pugixml.hpp>
 
@@ -88,4 +86,3 @@ private:
   // The dialog used.
   static wxExSTCEntryDialog* m_Dialog;
 };
-#endif // wxUSE_GUI

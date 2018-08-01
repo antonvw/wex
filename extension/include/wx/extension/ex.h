@@ -16,8 +16,6 @@
 #include <wx/extension/ex-command.h>
 #include <wx/extension/marker.h>
 
-#if wxUSE_GUI
-
 class wxExCTags;
 class wxExEvaluator;
 class wxExManagedFrame;
@@ -191,4 +189,3 @@ private:
     const std::string, 
     std::function<bool(const std::string& command)>>> m_Commands;
 };
-#endif // wxUSE_GUI

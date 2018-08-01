@@ -2,7 +2,7 @@
 // Name:      itemdlg.h
 // Purpose:   Declaration of wxExItemDialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -11,7 +11,6 @@
 #include <wx/extension/item.h>
 #include <wx/extension/itemtpldlg.h>
 
-#if wxUSE_GUI
 /// Offers an item dialog.
 class WXDLLIMPEXP_BASE wxExItemDialog: public wxExItemTemplateDialog <wxExItem>
 {
@@ -39,4 +38,3 @@ protected:
     Reload(event.GetId() != wxID_CANCEL);
     event.Skip();};
 };
-#endif // wxUSE_GUI

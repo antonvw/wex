@@ -46,7 +46,6 @@ public:
   /// Returns true if admin dir is only at top level.
   bool AdminDirIsTopLevel() const {return m_AdminDirIsTopLevel;};
 
-#if wxUSE_GUI
   /// Builds a menu from all vcs commands.
   /// Returns (total) number of items in menu.
   int BuildMenu(
@@ -56,7 +55,6 @@ public:
     wxExMenu* menu, 
     /// default assumes this is a popup menu
     bool is_popup = true) const;
-#endif
 
   /// Executes the current vcs command (from SetCommand), or
   /// the first command if SetCommand was not yet invoked.
@@ -94,9 +92,7 @@ public:
   /// Returns pos end.
   const auto & GetPosEnd() const {return m_PosEnd;};
 
-#if wxUSE_GUI
   virtual void ShowOutput(const std::string& caption = std::string()) const override;
-#endif
 private:
   // no const, as entry is set using operator+ in wxExVCS.
   bool m_AdminDirIsTopLevel {false};

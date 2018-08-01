@@ -8,7 +8,6 @@
 #include <regex>
 #include <wx/log.h>
 #include <wx/extension/stc.h>
-#include <wx/extension/log.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/util.h>
 #include <easylogging++.h>
@@ -168,7 +167,7 @@ bool wxExSTC::FindNext(
     
     recursive = false;
 
-    if (m_vi.Mode().Normal())
+    if (m_vi.Mode().Normal() || m_vi.Mode().Insert())
     {
       SetSelection(GetTargetStart(), GetTargetEnd());
     }

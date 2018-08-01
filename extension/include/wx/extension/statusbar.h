@@ -11,10 +11,6 @@
 #include <wx/statusbr.h> 
 #include <wx/extension/window-data.h> 
 
-// Only if we have a gui.
-#if wxUSE_GUI
-#if wxUSE_STATUSBAR
-
 /// This class defines our statusbar panes, used by wxExFrame::SetupStatusBar.
 /// It just adds some members to the base class
 /// (that offers GetText(), GetStyle() and GetWidth()).
@@ -155,5 +151,3 @@ private:
   wxExFrame* m_Frame;
   static std::vector<wxExStatusBarPane> m_Panes;
 };
-#endif // wxUSE_STATUSBAR
-#endif // wxUSE_GUI

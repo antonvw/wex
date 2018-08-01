@@ -14,14 +14,15 @@
 #include <wx/extension/ex.h>
 #include <wx/extension/vi-mode.h>
 
-#if wxUSE_GUI
-
 /// Offers a class that extends wxExSTC with vi behaviour.
 class WXDLLIMPEXP_BASE wxExVi : public wxExEx
 {
 public:
   /// Constructor.
   wxExVi(wxExSTC* stc);
+
+  /// Appends string to executed insert command.
+  void AppendInsertCommand(const std::string& s);
   
   /// Executes vi command.
   /// Returns true if the command was executed.
@@ -64,23 +65,29 @@ private:
     /// by this command
     std::function<size_t(const std::string& command)>>> Commands;
 
+  enum MotionType
+  {
+    MOTION_CHANGE,
+    MOTION_DELETE,
+    MOTION_NAVIGATE,
+    MOTION_YANK,
+  };
+
   void AddText(const std::string& text);
   void CommandCalc(const std::string& reg);
   void CommandReg(const char reg);
-  void FilterCount(std::string& command, const std::string& prefix = "");
+  void FilterCount(std::string& command);
   bool InsertMode(const std::string& text);
   void InsertModeNormal(const std::string& text);
-  bool MotionCommand(int type, std::string& command);
-  bool OtherCommand(std::string& command) const;
+  bool MotionCommand(MotionType type, std::string& command);
+  bool OtherCommand(std::string& command);
   bool ParseCommand(std::string& command);
   bool Put(bool after);
-  bool TransitionCommand(std::string& command);
 
   static inline std::string m_LastFindCharCommand;
   bool m_Dot{false}, m_SearchForward{true};
   int m_Count{1};
-  std::string m_CommandKeep, m_InsertText;
+  std::string m_InsertCommand, m_InsertText;
   wxExViMode m_Mode;
   const Commands m_MotionCommands, m_OtherCommands;
 };
-#endif // wxUSE_GUI

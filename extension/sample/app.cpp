@@ -226,12 +226,10 @@ wxExSampleFrame::wxExSampleFrame()
     else             m_ListView->SetItemImage(i, wxART_TICK_MARK);
   }
 
-#if wxUSE_STATUSBAR
   SetupStatusBar({
     {"PaneFileType", 50, "File type"},
     {"PaneInfo", 100, "Lines or items"},
     {"PaneLexer", 60}});
-#endif
 
   GetToolBar()->AddControls();
   GetOptionsToolBar()->AddControls();
@@ -389,9 +387,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
         wxExLexers::Get()->LoadDocument();
         VLOG(9) << "File contains: " << wxExLexers::Get()->GetLexers().size() << " lexers";
           // As the lexer might have changed, update status bar field as well.
-  #if wxUSE_STATUSBAR
         UpdateStatusBar(m_STC, "PaneLexer");
-  #endif
       }
       break;
   

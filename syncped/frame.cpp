@@ -251,9 +251,7 @@ Frame::Frame(App* app)
     }
     m_CheckBoxHistory->SetValue(GetManager().GetPane("HISTORY").IsShown());
     GetToolBar()->Realize();
-  #if wxUSE_STATUSBAR
     UpdateStatusBar(m_History);
-  #endif
     }, ID_VIEW_HISTORY);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -755,10 +753,8 @@ void Frame::OnCommand(wxCommandEvent& event)
         {
           m_Editors->ForEach<wxExSTC>(ID_ALL_STC_SET_LEXER);
 
-#if wxUSE_STATUSBAR
           // As the lexer might have changed, update status bar field as well.
           UpdateStatusBar(editor, "PaneLexer");
-#endif
         }
       }
       else if (editor->GetFileName() == wxExMenus::GetFileName())

@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of classes for syncsocketserver
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <functional>
@@ -120,7 +120,6 @@ Frame::Frame()
 
   Show(); // otherwise statusbar is not placed correctly
 
-#if wxUSE_STATUSBAR
   // Statusbar setup before STC construction.
   SetupStatusBar({
     {"PaneConnections", 75, _("Number of local, remote connections").ToStdString()},
@@ -130,7 +129,6 @@ Frame::Frame()
     {"PaneTheme", 50, _("Theme").ToStdString()},
     {"PaneInfo", 100, _("Lines").ToStdString()},
     {"PaneMode", 100}});
-#endif
 
   if (wxExLexers::Get()->GetThemes() <= 1)
   {
@@ -482,9 +480,7 @@ Frame::Frame()
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     m_Timer.Stop();
     AppendText(m_LogWindow, _("timer stopped"), DATA_MESSAGE);
-#if wxUSE_STATUSBAR
     StatusText(std::string(), "PaneTimer");
-#endif
    }, ID_TIMER_STOP);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -610,12 +606,10 @@ Frame::Frame()
 
         delete [] buffer;
 
-#if wxUSE_STATUSBAR
         StatusText(
           std::to_string(m_Statistics.Get("Bytes Received")) + "," +
           std::to_string(m_Statistics.Get("Bytes Sent")),
           "PaneBytes");
-#endif
 
 #if wxUSE_TASKBARICON
         UpdateTaskBar();
@@ -984,9 +978,7 @@ void Frame::TimerDialog()
       wxTimeSpan(0, 0, val, 0).Format().c_str()),
       DATA_MESSAGE);
       
-#if wxUSE_STATUSBAR
     StatusText(std::to_string(val), "PaneTimer");
-#endif
   }
   else if (val == 0)
   {
@@ -994,20 +986,16 @@ void Frame::TimerDialog()
     
     AppendText(m_LogWindow, _("timer stopped"), DATA_MESSAGE);
     
-#if wxUSE_STATUSBAR
     StatusText(std::string(), "PaneTimer");
-#endif
   }
 }
 
 void Frame::UpdateConnectionsPane() const
 {
-#if wxUSE_STATUSBAR
   StatusText(
     std::to_string(m_Clients.size()) + "," + 
     std::to_string(m_SocketRemoteClient != nullptr && m_SocketRemoteClient->IsConnected() ? 1: 0), 
     "PaneConnections");
-#endif
 }
 
 #if wxUSE_TASKBARICON
@@ -1060,12 +1048,10 @@ void Frame::WriteDataToSocket(const wxCharBuffer& buffer, wxSocketBase* sock)
   m_Statistics.Inc("Bytes Sent", written);
   m_Statistics.Inc("Messages Sent");
 
-#if wxUSE_STATUSBAR
   StatusText(
     std::to_string(m_Statistics.Get("Bytes Received")) + "," + 
     std::to_string(m_Statistics.Get("Bytes Sent")),
     "PaneBytes");
-#endif
 
 #if wxUSE_TASKBARICON
   UpdateTaskBar();

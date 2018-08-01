@@ -2,7 +2,7 @@
 // Name:      stcfile.h
 // Purpose:   Declaration of class wxExSTCFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -11,7 +11,6 @@
 
 class wxExSTC;
 
-#if wxUSE_GUI
 /// Adds file read and write to wxExSTC.
 class WXDLLIMPEXP_BASE wxExSTCFile: public wxExFile
 {
@@ -37,4 +36,3 @@ private:
   wxExSTC* m_STC;
   wxFileOffset m_PreviousLength;
 };
-#endif // wxUSE_GUI

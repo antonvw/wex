@@ -1,8 +1,9 @@
 **v18.10**
   - c++17
   - wxWidgets used as submodule
-  - cotire
+  - vi improved
   - ctags update
+  - cotire
 
 **v18.04** *April 8, 2018*
   - easylogging++ lib
@@ -51,12 +52,14 @@
 **v2.9.3** *March 24, 2012*
   - wxWidgets 2.9.3
   - rfw lexer
+  - ex mode derived from vi mode
 
 **v2.9.2** *December 16, 2011*
   - c++0x
   - wxWidgets 2.9.2
   - Microsoft Visual Studio 2010
   - use git (github)
+  - vi mode
 
 **v6.0** *November 20, 2008*
   - use svn (sliksvn, xp-dev)
@@ -64,6 +67,7 @@
   - multi-threaded architecture
   - doxygen
   - otlv4.0 lib
+  - use bakefile
 
 **v5.1** *September 10, 2007*
   - recent project support

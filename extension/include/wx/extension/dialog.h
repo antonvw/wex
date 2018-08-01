@@ -2,7 +2,7 @@
 // Name:      dialog.h
 // Purpose:   Declaration of wxExDialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,8 +10,6 @@
 #include <wx/dialog.h>
 #include <wx/sizer.h>
 #include <wx/extension/window-data.h>
-
-#if wxUSE_GUI
 
 /// Offers a general dialog, with a separated button sizer at the bottom.
 /// Derived dialogs can use the user sizer for laying out their controls.
@@ -45,4 +43,3 @@ private:
   wxFlexGridSizer* m_TopSizer;
   wxFlexGridSizer* m_UserSizer;
 };
-#endif // wxUSE_GUI

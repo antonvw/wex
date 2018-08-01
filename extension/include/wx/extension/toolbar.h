@@ -2,7 +2,7 @@
 // Name:      toolbar.h
 // Purpose:   Declaration of wxExToolBar classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017
+// Copyright: (c) 2018
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,9 +10,6 @@
 #include <vector>
 #include <wx/aui/auibar.h> 
 #include <wx/extension/window-data.h> 
-
-// Only if we have a gui.
-#if wxUSE_GUI
 
 class wxExManagedFrame;
 
@@ -74,4 +71,3 @@ public:
 private:
   std::vector<wxCheckBox*> m_CheckBoxes;
 };
-#endif // wxUSE_GUI

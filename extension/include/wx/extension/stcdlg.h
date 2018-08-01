@@ -2,7 +2,7 @@
 // Name:      stcdlg.h
 // Purpose:   Declaration of class wxExSTCEntryDialog
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,7 +10,6 @@
 #include <wx/extension/dialog.h>
 #include <wx/extension/window-data.h>
 
-#if wxUSE_GUI
 class wxExSTC;
 
 /// Offers an wxExSTC as a dialog (like wxTextEntryDialog).
@@ -33,4 +32,3 @@ public:
 private:
   wxExSTC* m_STC;
 };
-#endif // wxUSE_GUI

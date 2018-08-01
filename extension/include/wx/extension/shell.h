@@ -2,7 +2,7 @@
 // Name:      shell.h
 // Purpose:   Declaration of class wxExShell
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -11,7 +11,6 @@
 #include <vector>
 #include <wx/extension/stc.h>
 
-#if wxUSE_GUI
 class wxExProcess;
 
 /// This class offers a wxExSTC with support for commands.
@@ -125,4 +124,3 @@ private:
   
   wxExProcess* m_Process = nullptr;
 };
-#endif // wxUSE_GUI

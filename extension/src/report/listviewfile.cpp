@@ -68,9 +68,7 @@ wxExListViewFile::wxExListViewFile(const std::string& file, const wxExListViewDa
     {
       event.Skip();
       m_ContentsChanged = true;
-#if wxUSE_STATUSBAR
       wxExFrame::UpdateStatusBar(this);
-#endif
     }}, wxID_EDIT, wxID_REPLACE_ALL);
 }
 

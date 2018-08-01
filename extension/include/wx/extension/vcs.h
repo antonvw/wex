@@ -29,12 +29,10 @@ public:
     /// (index in vcs entry commands).
     int command_no = -1);
   
-#if wxUSE_GUI
   /// Shows a dialog allowing you to choose which vcs to use
   /// and to set the path for each vcs entry.
   /// Returns dialog return code.
   int ConfigDialog(const wxExWindowData& data = wxExWindowData()) const;
-#endif    
 
   /// Returns true if specified filename (a path) is a vcs directory.
   static bool DirExists(const wxExPath& filename);
@@ -62,13 +60,11 @@ public:
   /// Returns true if document is loaded.
   static bool LoadDocument();
 
-#if wxUSE_GUI
   /// Combines ShowDialog, Execute and vcs entry ShowOutput in one method. 
   /// - Returns wxID_CANCEL if dialog was cancelled, or an execute error occurred.
   /// - Returns wxID_OK if okay (use vcs entry GetError
   ///   to check whether the output contains errors or normal info).
   wxStandardID Request(const wxExWindowData& data = wxExWindowData());
-#endif  
 
   /// Sets the vcs entry using base folder.
   /// If not, it will show
@@ -79,10 +75,8 @@ public:
     /// there is not a current directory.
     wxWindow* parent = nullptr);
 
-#if wxUSE_GUI
   /// Shows dialog for the current vcs entry.
   int ShowDialog(const wxExWindowData& data = wxExWindowData());
-#endif
 
   /// Returns true if vcs usage is set in the config.
   bool Use() const;

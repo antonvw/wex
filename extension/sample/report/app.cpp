@@ -68,12 +68,10 @@ wxExRepSampleFrame::wxExRepSampleFrame() : wxExFrameWithHistory()
 
   GetToolBar()->AddControls();
   
-#if wxUSE_STATUSBAR
   SetupStatusBar({
     {"PaneFileType", 50},
     {"PaneInfo", 100},
     {"PaneLexer", 60}});
-#endif
 
   m_NotebookWithLists = new wxExNotebook(
     wxExWindowData().Style(wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_WINDOWLIST_BUTTON));

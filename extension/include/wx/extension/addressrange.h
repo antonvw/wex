@@ -11,8 +11,6 @@
 #include <wx/extension/address.h>
 #include <wx/extension/indicator.h>
 
-#if wxUSE_GUI
-
 class wxExProcess;
 class wxExSTC;
 
@@ -158,4 +156,3 @@ private:
   wxExEx* m_Ex;
   wxExSTC* m_STC;
 };
-#endif // wxUSE_GUI

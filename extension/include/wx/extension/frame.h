@@ -14,9 +14,6 @@
 #include <wx/extension/stc-enums.h>
 #include <wx/extension/window-data.h>
 
-// Only if we have a gui.
-#if wxUSE_GUI
-
 class wxFindReplaceDialog;
 class wxListView;
 
@@ -91,7 +88,6 @@ public:
   /// Allows derived class to update file history.
   virtual void SetRecentFile(const wxExPath& path) {;};
 
-#if wxUSE_STATUSBAR
   /// Sets up the status bar if you want to use StatusText.
   wxExStatusBar* SetupStatusBar(
     const std::vector<wxExStatusBarPane>& panes,
@@ -121,17 +117,12 @@ public:
 
   /// Are we closing?
   static bool IsClosing() {return m_IsClosing;};
-#endif // wxUSE_STATUSBAR
 protected:
-#if wxUSE_STATUSBAR
   // Interface from wxFrame.
   virtual wxStatusBar* OnCreateStatusBar(int number,
     long style, wxWindowID id, const wxString& name) override;
-#endif
 
-#if wxUSE_STATUSBAR
   static inline wxExStatusBar* m_StatusBar = nullptr;
-#endif
 private:
   static inline bool m_IsClosing = false;
   
@@ -140,4 +131,3 @@ private:
   wxFindReplaceDialog* m_FindReplaceDialog {nullptr};
   wxMenuBar* m_MenuBar {nullptr};
 };
-#endif // wxUSE_GUI

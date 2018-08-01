@@ -106,11 +106,9 @@ Frame::Frame()
 
   m_Shell->SetFocus();
 
-#if wxUSE_STATUSBAR
   SetupStatusBar({
     {"PaneInfo", 100, _("Lines").ToStdString()},
     {"PaneTheme", 50, _("Theme").ToStdString()}});
-#endif
 
   if (wxExLexers::Get()->GetThemes() <= 1)
   {

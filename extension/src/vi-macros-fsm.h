@@ -77,6 +77,7 @@ public:
       case States::PLAYINGBACK: return "playback";
       case States::PLAYINGBACK_WHILE_RECORDING: return "recording playback";
       case States::RECORDING: return "recording";
+      default: return "unhandled state";
     };};
 
   /// Returns any trigger as a string.
@@ -88,6 +89,7 @@ public:
       case Triggers::EXPAND_VARIABLE: return "expand_variable";
       case Triggers::PLAYBACK: return "playback";
       case Triggers::RECORD: return "record";
+      default: return "unhandled trigger";
     };};
 private:
   void ExpandingTemplate();

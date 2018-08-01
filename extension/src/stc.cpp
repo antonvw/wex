@@ -334,9 +334,7 @@ void wxExSTC::GuessType()
   else if (text.find("\r") != std::string::npos)   SetEOLMode(wxSTC_EOL_CR);
   else return; // do nothing
 
-#if wxUSE_STATUSBAR
   wxExFrame::UpdateStatusBar(this, "PaneFileType");
-#endif
 }
 
 bool wxExSTC::LinkOpen()
@@ -583,7 +581,6 @@ void wxExSTC::PropertiesMessage(long flags)
 {
   wxExLogStatus(GetFileName(), flags);
   
-#if wxUSE_STATUSBAR
   if (flags != STAT_SYNC)
   {
     wxExFrame::UpdateStatusBar(this, "PaneFileType");
@@ -592,7 +589,6 @@ void wxExSTC::PropertiesMessage(long flags)
   }
   
   wxExFrame::UpdateStatusBar(this, "PaneInfo");
-#endif
 
   if (!(flags & STAT_SYNC) && m_Frame != nullptr)
   {

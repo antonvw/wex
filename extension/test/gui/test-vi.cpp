@@ -111,7 +111,7 @@ TEST_CASE("wxExVi")
   REQUIRE( vi->GetLastCommand() == "i");
   ChangeMode( vi, ESC, wxExViModes::NORMAL);
   REQUIRE( vi->GetRegisterInsert() == "xxxxxxxx");
-  REQUIRE( vi->GetLastCommand() == wxString("ixxxxxxxx") + ESC);
+  REQUIRE( vi->GetLastCommand() == std::string("ixxxxxxxx") + ESC);
   for (int i = 0; i < 10; i++)
     REQUIRE( vi->Command("."));
   REQUIRE( stc->GetText().Contains("xxxxxxxxxxxxxxxxxxxxxxxxxxx"));
@@ -163,7 +163,7 @@ TEST_CASE("wxExVi")
   REQUIRE( stc->GetText().Contains("yyyyy"));
   REQUIRE(!stc->GetText().Contains("iyyyyy"));
   ChangeMode( vi, ESC, wxExViModes::NORMAL);
-  const wxString lastcmd = wxString("iyyyyy") + ESC;
+  const std::string lastcmd = std::string("iyyyyy") + ESC;
   REQUIRE( vi->GetLastCommand() == lastcmd);
   REQUIRE( vi->GetInsertedText() == "yyyyy");
   REQUIRE( vi->Command("."));
@@ -176,7 +176,7 @@ TEST_CASE("wxExVi")
   REQUIRE( vi->Mode().Insert());
   REQUIRE(!stc->GetText().Contains("izz"));
   ChangeMode( vi, ESC, wxExViModes::NORMAL);
-  REQUIRE( stc->GetText().Contains(wxString('z', 200)));
+  REQUIRE( stc->GetText().Contains(std::string('z', 200)));
 
   // Test insert \n.
   ChangeMode( vi, "i\n\n\n\n", wxExViModes::INSERT);
@@ -281,6 +281,7 @@ TEST_CASE("wxExVi")
 
   // Test motion commands: navigate, yank, delete, and change.
   wxExFindReplaceData::Get()->SetFindString("xx");
+
   for (auto& motion_command : vi->GetMotionCommands())
   {
     for (auto c : motion_command.first)
@@ -517,8 +518,6 @@ TEST_CASE("wxExVi")
   REQUIRE( vi->Command("@Nl@"));
   
   // Test illegal command.
-  REQUIRE(!vi->Command("dx"));
-  REQUIRE( vi->GetLastCommand() != "dx");
   REQUIRE(!vi->Command(":xxx"));
   ChangeMode( vi, ESC, wxExViModes::NORMAL);
 
@@ -628,4 +627,6 @@ TEST_CASE("wxExVi")
   stc->SetText("wxExTestApp");
   REQUIRE( vi->Command("Q"));
   REQUIRE( vi->Command("S"));
+
+  vi->AppendInsertCommand("xyz");
 }

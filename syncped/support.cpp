@@ -41,7 +41,6 @@ DecoratedFrame::DecoratedFrame(App* app)
 
   const bool vi_mode = wxConfigBase::Get()->ReadBool(_("vi mode"), false);
   
-#if wxUSE_STATUSBAR
 #ifdef __WXMSW__
   const int lexer_size = 60;
 #else
@@ -74,7 +73,6 @@ DecoratedFrame::DecoratedFrame(App* app)
   
   m_StatusBar->ShowField("PaneMacro", vi_mode);
   m_StatusBar->ShowField("PaneMode", false);
-#endif
 
   auto *menuFile = new wxExMenu();
   menuFile->Append(wxID_NEW,
@@ -273,10 +271,8 @@ void DecoratedFrame::OnNotebook(wxWindowID id, wxWindow* page)
     case ID_NOTEBOOK_LISTS:
     break;
     case ID_NOTEBOOK_PROJECTS:
-#if wxUSE_STATUSBAR
       wxExLogStatus(((wxExListViewFile*)page)->GetFileName());
       UpdateStatusBar((wxExListViewFile*)page);
-#endif
     break;
     default:
       wxFAIL;

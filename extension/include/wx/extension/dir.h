@@ -2,7 +2,7 @@
 // Name:      dir.h
 // Purpose:   Declaration of class wxExDir and wxExDirOpenFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -88,7 +88,6 @@ std::vector <std::string> wxExGetAllFiles(
   /// finds all
   int flags = DIR_FILES | DIR_DIRS); 
 
-#if wxUSE_GUI
 class wxExFrame;
 
 /// Allows you to easily open all files on specified path.
@@ -111,4 +110,3 @@ private:
   wxExFrame* m_Frame;
   wxExSTCWindowFlags m_Flags;
 };
-#endif

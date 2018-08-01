@@ -32,6 +32,7 @@
 #include <wx/extension/util.h>
 #include <wx/extension/version.h>
 #include <wx/extension/vi-macros.h>
+#include <easylogging++.h>
 #include "eval.h"
 
 #define POST_CLOSE( ID, VETO )                              \
@@ -359,6 +360,8 @@ bool wxExEx::Command(const std::string& cmd)
   auto command(cmd);
 
   if (!m_IsActive || command.empty() || command.front() != ':') return false;
+
+  VLOG(9) << "ex command: " << cmd;
 
   const auto& it = m_Macros.GetMap().find(command);
   command = (it != m_Macros.GetMap().end() ? it->second: command);
@@ -800,7 +803,7 @@ void wxExEx::SetLastCommand(
   const std::string& command,
   bool always)
 {
-  // First on commands that should not be a last command,
+  // First filter commands that should not be a last command,
   // even if always were true.
   if (
     command.empty() ||
@@ -818,7 +821,8 @@ void wxExEx::SetLastCommand(
     ( command.size() > 2 && command.front() == ':' && 
       command.find(":ve") != 0 &&
       command.find(":help") != 0 &&
-      command.find(":new") != 0) ||
+      command.find(":new") != 0 &&
+      command.find(":set") != 0) ||
     ( command.size() > 1 && command.front() != ':' && command.front() != '\t'))
   {
     m_LastCommand = command;

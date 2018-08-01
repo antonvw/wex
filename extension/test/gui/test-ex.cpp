@@ -32,7 +32,7 @@ TEST_CASE("wxExEx")
   REQUIRE(stc->GetEdgeColumn() == 40);
   REQUIRE(stc->GetIndent() == 4);
   REQUIRE(stc->GetLexer().GetScintillaLexer() == "sql");
-  REQUIRE( ex->GetLastCommand() == ":" + modeline + "*");
+  REQUIRE( ex->GetLastCommand() != ":" + modeline + "*");
 
   wxExSTC* stco = new wxExSTC(wxExPath("test-modeline.txt"));
   AddPane(GetFrame(), stco);

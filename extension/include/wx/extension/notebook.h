@@ -2,7 +2,7 @@
 // Name:      notebook.h
 // Purpose:   Declaration of class wxExNotebook
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -16,8 +16,6 @@
 #include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/window-data.h>
-
-#if wxUSE_GUI
 
 class wxExManagedFrame;
 
@@ -183,4 +181,3 @@ private:
   std::map<std::string, wxWindow*> m_Keys;
   std::map<wxWindow*, std::string> m_Windows;
 };
-#endif // wxUSE_GUI
