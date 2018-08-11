@@ -1,6 +1,8 @@
 function(pack)
   if (WIN32)
     set(CONFIG_INSTALL_DIR bin)
+  elseif (APPLE)
+    set(CONFIG_INSTALL_DIR /Users/$ENV{USER}/.config/${PROJECT_NAME})
   else ()
     set(CONFIG_INSTALL_DIR /home/${user}/.config/${PROJECT_NAME})
   endif ()
@@ -90,28 +92,24 @@ macro(target_link_all)
   set (extra_macro_args ${ARGN})
   set (wxWidgets_LIBRARIES aui stc html adv core base net)
           
-if (WIN32)
-  target_link_libraries(
-    ${PROJECT_NAME}
-    wxex-rep
-    wxex
-    ${wxWidgets_LIBRARIES} wxscintilla
-    ${extra_macro_args}
-    )
-else ()
-  target_link_libraries(
-    ${PROJECT_NAME}
-    wxex-rep
-    wxex
-    ${wxWidgets_LIBRARIES} 
-    ${extra_macro_args}
-    stdc++fs
-    )
-endif ()
-
-  if (NOT (CMAKE_BUILD_TYPE MATCHES "Coverage"))
-    cotire(${PROJECT_NAME})
-  endif()
+  if (WIN32)
+    target_link_libraries(
+      ${PROJECT_NAME}
+      wxex-rep
+      wxex
+      ${wxWidgets_LIBRARIES} wxscintilla
+      ${extra_macro_args}
+      )
+  else ()
+    target_link_libraries(
+      ${PROJECT_NAME}
+      wxex-rep
+      wxex
+      ${wxWidgets_LIBRARIES} 
+      ${extra_macro_args}
+      stdc++fs
+      )
+  endif ()
 endmacro()  
 
 if (WIN32)

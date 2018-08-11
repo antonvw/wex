@@ -2,7 +2,7 @@
 // Name:      grid.h
 // Purpose:   Declaration of wxExGrid class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -11,8 +11,6 @@
 #include <wx/grid.h>
 #include <wx/extension/menu.h> // for wxExMenu
 #include <wx/extension/window-data.h>
-
-#if wxUSE_GRID
 
 /// Offers popup menu with copy/paste, printing.
 /// It also offers drag/drop functionality.
@@ -89,4 +87,3 @@ private:
   bool m_UseDragAndDrop;
 #endif
 };
-#endif // wxUSE_GRID

@@ -31,6 +31,9 @@ public:
   /// Returns inserted text.
   const auto & GetInsertedText() const {return m_InsertText;};
   
+  /// Returns last entered command.
+  const auto & GetLastCommand() const {return m_LastCommand;};
+
   /// Returns motion commands.
   const auto & GetMotionCommands() const {return m_MotionCommands;};
 
@@ -83,11 +86,15 @@ private:
   bool OtherCommand(std::string& command);
   bool ParseCommand(std::string& command);
   bool Put(bool after);
-
+  void SetLastCommand(const std::string& command);
+  
+  static inline std::string m_LastCommand;
   static inline std::string m_LastFindCharCommand;
+
   bool m_Dot{false}, m_SearchForward{true};
   int m_Count{1};
   std::string m_InsertCommand, m_InsertText;
   wxExViMode m_Mode;
   const Commands m_MotionCommands, m_OtherCommands;
+  const std::vector<std::string> m_LastCommands;
 };

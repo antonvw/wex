@@ -12,7 +12,7 @@
 #include <wx/extension/tool.h>
 #include "test.h"
 
-TEST_CASE("wxEx")
+TEST_CASE("wxExReport")
 {
   wxExTool tool(ID_TOOL_REPORT_FIND);
 

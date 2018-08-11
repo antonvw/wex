@@ -40,7 +40,7 @@ public:
     {_("Line number"), ITEM_TEXTCTRL_INT, 60l},
     {_("Print flags"), ITEM_TEXTCTRL_INT, (long)wxSTC_PRINT_BLACKONWHITE},
     {_("Scroll bars"), ITEM_CHECKBOX, true},
-    {_("Search engine"), ITEM_COMBOBOX, wxString("https://duckduckgo.com")},
+    {_("Search engine"), ITEM_COMBOBOX, std::string("https://duckduckgo.com")},
     {_("Show mode"), ITEM_CHECKBOX, true},
 #if wxCHECK_VERSION(3,1,1)
     {_("Tab draw mode"), ITEM_TEXTCTRL_INT, (long)wxSTC_TD_LONGARROW},

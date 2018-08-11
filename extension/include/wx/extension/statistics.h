@@ -12,7 +12,6 @@
 #include <vector>
 #include <wx/extension/grid.h>
 
-#if wxUSE_GRID
 template <class T> class wxExStatistics;
 
 /// Helper class for adding clear menu to the grid, and 
@@ -38,7 +37,6 @@ protected:
 private:
   wxExStatistics <T> * m_Statistics;
 };
-#endif
 
 /// Offers base statistics. All statistics involve a key value pair,
 /// where the key is a string, and the value a template.
@@ -67,7 +65,6 @@ public:
   /// the window is updated as well.
   void Clear() {
     m_Items.clear();
-#if wxUSE_GRID
     m_Rows.clear();
 
     if (m_Grid != nullptr)
@@ -78,7 +75,6 @@ public:
         m_Grid->DeleteRows(0, m_Grid->GetNumberRows());
       }
     }
-#endif
   };
 
   /// Returns all items as a string. All items are returned as a string,
@@ -116,7 +112,6 @@ public:
   /// the window is updated as well.
   const T Set(const std::string& key, T value) {
     m_Items[key] = value;
-#if wxUSE_GRID
     if (m_Grid != nullptr)
     {
       const auto& it = m_Rows.find(key);
@@ -140,10 +135,8 @@ public:
 
       m_Grid->ForceRefresh();
     }
-#endif
     return value;};
 
-#if wxUSE_GRID
   /// Shows the statistics as a grid window on the parent,
   /// and specify whether to show row labels and col labels.
   /// Returns the window that is created, or is activated,
@@ -201,12 +194,8 @@ public:
 
   /// Access to the grid, returns nullptr if the grid has not been shown yet.
   const wxExGrid* GetGrid() const {return m_Grid;}
-#endif
 private:
   std::map<std::string, T> m_Items;
-
-#if wxUSE_GRID
   std::map<std::string, int> m_Rows;
   wxExGridStatistics<T>* m_Grid {nullptr};
-#endif
 };

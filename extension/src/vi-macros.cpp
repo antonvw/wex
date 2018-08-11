@@ -107,14 +107,14 @@ const std::vector< std::string > wxExViMacros::GetRegisters() const
   {
     if (it.first.size() == 1)
     {
-      r.emplace_back(it.first + "=" + wxExSkipWhiteSpace(
+      r.emplace_back(it.first + " = " + wxExSkipWhiteSpace(
         std::accumulate(it.second.begin(), it.second.end(), std::string())));
     }
   }
    
   if (const std::string clipboard(wxExSkipWhiteSpace(wxExClipboardGet())); !clipboard.empty())
   {
-    r.emplace_back("*=" + clipboard);
+    r.emplace_back("* = " + clipboard);
   }
                 
   return r;
@@ -204,8 +204,8 @@ void wxExViMacros::ParseNode(
   if (const S value = wxExTypeToValue<S>(node.attribute("name").value()).get();
     container.find(value) != container.end())
   {
-    wxExLog() << "duplicate " << 
-      name << ": " << value << " from: " << 
+    wxExLog() << "duplicate" << 
+      name << ":" << value << "from:" << 
       node.attribute("name").value() << node;
   }
   else
@@ -226,7 +226,7 @@ void wxExViMacros::ParseNodeMacro(const pugi::xml_node& node)
   if (const auto& it = m_Macros.find(node.attribute("name").value());
     it != m_Macros.end())
   {
-    wxExLog() << "duplicate macro: " << node.attribute("name").value() << node;
+    wxExLog() << "duplicate macro:" << node.attribute("name").value() << node;
   }
   else
   {
@@ -238,10 +238,16 @@ void wxExViMacros::ParseNodeVariable(const pugi::xml_node& node)
 {
   const wxExVariable variable(node);
 
+  if (variable.GetName().empty())
+  {
+    wxExLog() << "empty variable:" << node;
+    return;
+  }
+
   if (const auto& it = m_Variables.find(variable.GetName());
     it != m_Variables.end())
   {
-    wxExLog() << "duplicate variable: " << variable.GetName() << node;
+    wxExLog() << "duplicate variable:" << variable.GetName() << node;
   }
   else
   {

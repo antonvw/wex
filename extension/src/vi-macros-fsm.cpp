@@ -35,18 +35,10 @@ wxExViMacrosFSM::wxExViMacrosFSM()
       nullptr},
     // idle
     {States::IDLE, States::EXPANDING_TEMPLATE, Triggers::EXPAND_TEMPLATE, 
-      [&]{
-        if (!m_variable.IsTemplate())
-        {
-          wxExLog() << "variable:" << m_variable.GetName() << "is no template";
-          return false;
-        }
-        if (m_variable.GetValue().empty())
-        {
-          wxExLog() << "template variable:" << m_variable.GetName() << "is empty";
-          return false;
-        }
-        return true;},
+      [&]{return 
+           !m_variable.GetName().empty() &&
+            m_variable.IsTemplate() &&
+           !m_variable.GetValue().empty();},
       [&]{ExpandingTemplate();}},
     {States::IDLE, States::EXPANDING_VARIABLE, Triggers::EXPAND_VARIABLE, 
       nullptr,
@@ -135,7 +127,7 @@ void wxExViMacrosFSM::ExpandingTemplate()
   
   if (!ifs.is_open())
   {
-    wxExLog() << "could not open template file:" << filename.Path().string();
+    VLOG(9) << "could not open template file:" << filename.Path().string();
     m_error = true;
     return;
   }
@@ -278,9 +270,8 @@ bool wxExViMacrosFSM::IsPlayback() const
 
 void wxExViMacrosFSM::Playback()
 {
-  m_ex->GetSTC()->BeginUndoAction();
-  
   wxBusyCursor wait;
+  m_ex->GetSTC()->BeginUndoAction();
   m_playback = true;
     
   SetAskForInput();

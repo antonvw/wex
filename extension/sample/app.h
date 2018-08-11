@@ -2,7 +2,7 @@
 // Name:      app.h
 // Purpose:   Declaration of sample classes for wxExtension
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017
+// Copyright: (c) 2018
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/app.h>
@@ -26,7 +26,6 @@ private:
   virtual bool OnInit() override;
 };
 
-#if wxUSE_GRID
 /// Use wxExDir.
 class wxExSampleDir: public wxExDir
 {
@@ -40,7 +39,6 @@ private:
   virtual bool OnFile(const wxExPath& file) override;
   wxExGrid* m_Grid;
 };
-#endif
 
 /// Use wxExManagedFrame.
 class wxExSampleFrame: public wxExManagedFrame
@@ -55,9 +53,7 @@ public:
 protected:
   void OnCommand(wxCommandEvent& event);
 private:
-#if wxUSE_GRID
   wxExGrid* m_Grid;
-#endif
   wxExListView* m_ListView;
   wxExNotebook* m_Notebook;
   wxExProcess* m_Process;

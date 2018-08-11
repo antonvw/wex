@@ -24,4 +24,4 @@ build_script:
 test: OFF
 
 artifacts:
-  - path: 'build\syncped-v{version}.zip'
+  - path: 'build\syncped-v18.10.0.zip'

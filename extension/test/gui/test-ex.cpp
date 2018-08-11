@@ -12,6 +12,7 @@
 #endif
 #include <wx/numformatter.h>
 #include <wx/extension/ex.h>
+#include <wx/extension/frd.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/path.h>
 #include <wx/extension/stc.h>
@@ -32,7 +33,6 @@ TEST_CASE("wxExEx")
   REQUIRE(stc->GetEdgeColumn() == 40);
   REQUIRE(stc->GetIndent() == 4);
   REQUIRE(stc->GetLexer().GetScintillaLexer() == "sql");
-  REQUIRE( ex->GetLastCommand() != ":" + modeline + "*");
 
   wxExSTC* stco = new wxExSTC(wxExPath("test-modeline.txt"));
   AddPane(GetFrame(), stco);
@@ -62,7 +62,7 @@ TEST_CASE("wxExEx")
   // GetSearchFlags
   REQUIRE( (ex->GetSearchFlags() & wxSTC_FIND_REGEXP) > 0);
 
-  // Test commands and GetLastCommand. 
+  // Test commands. 
   // Most commands are tested using the :so command.
   for (const auto& command : std::vector<std::pair<std::string, bool>> {
     {":ab",true},
@@ -71,18 +71,6 @@ TEST_CASE("wxExEx")
   {
     CAPTURE( command );
     REQUIRE( ex->Command(command.first));
-      
-    if (command.second)
-    {
-      if (command.first != ":.=")
-      {
-        REQUIRE( ex->GetLastCommand() == command.first);
-      }
-    }
-    else
-    {
-      REQUIRE( ex->GetLastCommand() != command.first);
-    }
   }
     
   ex->AddText("XXX");
@@ -109,14 +97,12 @@ TEST_CASE("wxExEx")
   {
     CAPTURE( command );
     REQUIRE(!ex->Command(command));
-    REQUIRE( ex->GetLastCommand() != command);
   }
 
   // Test map.
   stc->SetText("123456789");
   REQUIRE( ex->Command(":map :xx :%d"));
   REQUIRE( ex->Command(":xx"));
-  REQUIRE( ex->GetLastCommand() == ":%d");
   REQUIRE( ex->Command(":xx"));
   REQUIRE( stc->GetText().empty());
   REQUIRE( ex->Command(":unm xx"));
@@ -185,7 +171,6 @@ TEST_CASE("wxExEx")
   REQUIRE( ex->Command(":$"));
   REQUIRE( ex->MarkerAdd('u'));
   REQUIRE( ex->Command(":'t,'us/s/w/"));
-  REQUIRE( ex->GetLastCommand() == ":'t,'us/s/w/");
   REQUIRE( ex->Command(":'t,$s/s/w/"));
   REQUIRE( ex->Command(":1,'us/s/w/"));
   
@@ -216,7 +201,7 @@ TEST_CASE("wxExEx")
   REQUIRE( ex->Command(":%s/ccccc/ddd"));
   REQUIRE( stc->GetText() == "we have ddd yyyy zzzz");
   stc->SetText("we have xxxx yyyy zzzz");
-  REQUIRE( ex->Command(":set re"));
+  wxExFindReplaceData::Get()->SetUseRegEx(true);
   REQUIRE( ex->Command(":%s/\\(x+\\) *\\(y+\\)/\\\\2 \\\\1"));
   REQUIRE( stc->GetText() == "we have yyyy xxxx zzzz");
   stc->SetText("we have xxxx 'zzzz'");
@@ -321,6 +306,4 @@ TEST_CASE("wxExEx")
       }
     }
   }
-
-  REQUIRE( remove("test-ex.txt") == 0);
 }

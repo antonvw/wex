@@ -70,7 +70,6 @@ bool wxExSampleApp::OnInit()
   return true;
 }
 
-#if wxUSE_GRID
 wxExSampleDir::wxExSampleDir(
   const std::string& fullpath, const std::string& findfiles, wxExGrid* grid)
   : wxExDir(fullpath, findfiles)
@@ -91,7 +90,6 @@ bool wxExSampleDir::OnFile(const wxExPath& file)
   m_Grid->SetCellBackgroundColour(no, 1, *wxLIGHT_GREY);
   return true;
 }
-#endif
 
 wxExSampleFrame::wxExSampleFrame()
   : wxExManagedFrame(4)
@@ -168,9 +166,7 @@ wxExSampleFrame::wxExSampleFrame()
   menubar->Append(menuHelp, "&Help");
   SetMenuBar(menubar);
 
-#if wxUSE_GRID
   m_Grid = new wxExGrid(wxExWindowData().Parent(m_Notebook));
-#endif
   m_ListView = new wxExListView(wxExWindowData().Parent(m_Notebook));
 
   GetManager().AddPane(m_Notebook, 
@@ -190,14 +186,12 @@ wxExSampleFrame::wxExSampleFrame()
   m_Notebook->AddPage(m_STCLexers, wxExLexers::Get()->GetFileName().GetFullName());
   m_Notebook->AddPage(m_ListView, "wxExListView");
 
-#if wxUSE_GRID
   m_Notebook->AddPage(m_Grid, "wxExGrid");
   m_Grid->CreateGrid(0, 0);
   m_Grid->AppendCols(2);
   wxExSampleDir dir(wxExPath::Current(), "*.*", m_Grid);
   dir.FindFiles();
   m_Grid->AutoSizeColumns();
-#endif
 
   m_ListView->AppendColumns({
     {"String", wxExColumn::COL_STRING},

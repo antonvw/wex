@@ -99,7 +99,7 @@ void wxExLog::Log() const
   switch (m_Level)
   {
     case LEVEL_INFO:
-      LOG(INFO) << m_ss.str();
+      VLOG(9) << m_ss.str();
       break;
     case LEVEL_DEBUG:
       LOG(DEBUG) << m_ss.str();

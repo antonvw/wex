@@ -20,6 +20,7 @@
 #include <wx/extension/stc.h>
 #include <wx/extension/tokenizer.h>
 #include <wx/extension/util.h> // for wxExAlignText
+#include <easylogging++.h>
 
 wxExLexer& wxExLexer::operator=(const wxExLexer& l)
 {
@@ -219,7 +220,8 @@ const std::string wxExLexer::GetFormattedText(
   bool fill_out_with_space,
   bool fill_out) const
 {
-  std::string text = lines, header_to_use = header, out;
+  std::string_view text = lines, header_to_use = header;
+  std::string out;
 
   // Process text between the carriage return line feeds.
   for (size_t nCharIndex; (nCharIndex = text.find("\n")) != std::string::npos; )
@@ -308,13 +310,13 @@ const std::string wxExLexer::MakeComment(
 }
 
 const std::string wxExLexer::MakeSingleLineComment(
-  const std::string& text,
+  const std::string_view& text,
   bool fill_out_with_space,
   bool fill_out) const
 {
   if (m_CommentBegin.empty() && m_CommentEnd.empty())
   {
-    return text;
+    return std::string(text);
   }
 
   // First set the fill_out_character.
@@ -335,7 +337,7 @@ const std::string wxExLexer::MakeSingleLineComment(
     else   fill_out_character = ' ';
   }
 
-  std::string out = m_CommentBegin + fill_out_character + text;
+  std::string out = m_CommentBegin + fill_out_character + std::string(text);
 
   // Fill out characters (prevent filling out spaces)
   if (fill_out && 
@@ -505,7 +507,7 @@ bool wxExLexer::Set(const std::string& lexer, bool fold)
     !wxExLexers::Get()->GetLexers().empty() &&
     !lexer.empty())
   {
-    wxExLog("lexer is not known") << lexer;
+    VLOG(9) << "lexer is not known: " << lexer;
   }
   
   return m_IsOk;

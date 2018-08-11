@@ -37,10 +37,6 @@ else()
     PROPERTIES MACOSX_PACKAGE_LOCATION Resources )
 endif()
 
-if (NOT (CMAKE_BUILD_TYPE MATCHES "Coverage"))
-  cotire(${PROJECT_NAME})
-endif ()
- 
 target_link_all()
 
 add_subdirectory(locale)

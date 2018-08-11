@@ -30,6 +30,7 @@
 #include <wx/extension/printing.h>
 #include <wx/extension/tokenizer.h>
 #include <wx/extension/util.h>
+#include <easylogging++.h>
 
 class ListViewDefaults : public wxExConfigDefaults
 {
@@ -794,7 +795,7 @@ bool wxExListView::InsertItem(const std::vector < std::string > & item)
     }
     catch (std::exception& e)
     {
-      wxExLog(e) << col;
+      VLOG(9) << "InsertItem: " << col;
       return false;
     }
   }

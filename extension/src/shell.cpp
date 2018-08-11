@@ -44,10 +44,10 @@ wxExShell::wxExShell(
   if (m_CommandsSaveInConfig > 0)
   {
     // Get all previous commands.
-    wxExTokenizer tkz(wxConfigBase::Get()->Read("Shell").ToStdString(),
+    for (wxExTokenizer tkz(
+      wxConfigBase::Get()->Read("Shell").ToStdString(),
       std::string(1, AutoCompGetSeparator()));
-
-    while (tkz.HasMoreTokens())
+      tkz.HasMoreTokens(); )
     {
       m_Commands.push_front(tkz.GetNextToken());
     }

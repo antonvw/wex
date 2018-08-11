@@ -48,7 +48,7 @@ const std::string wxExTextCtrlInput::Get() const
   }
   catch (std::exception& e)
   {
-    wxExLog(e) << "TCI: " << m_Name;
+    wxExLog(e) << "TCI:" << m_Name;
     return std::string();
   }
 }

@@ -38,7 +38,8 @@
 #include <wx/extension/vi-macros.h>
 #include <easylogging++.h>
 
-const std::string wxExAfter(const std::string& text, char c, bool first)
+const std::string wxExAfter(
+  const std::string& text, char c, bool first)
 {
   const auto pos = (first ? text.find(c): text.rfind(c));
   return
@@ -46,7 +47,7 @@ const std::string wxExAfter(const std::string& text, char c, bool first)
 }
 
 const std::string wxExAlignText(
-  const std::string& lines, const std::string& header,
+  const std::string_view& lines, const std::string_view& header,
   bool fill_out_with_space, bool fill_out, const wxExLexer& lexer)
 {
   const auto line_length = lexer.UsableCharactersPerLine();
@@ -55,8 +56,8 @@ const std::string wxExAlignText(
   const auto header_with_spaces =
     (header.empty()) ? std::string() : std::string(header.size(), ' ');
 
-  auto in = lines;
-  auto line = header;
+  std::string in(lines);
+  std::string line(header);
 
   bool at_begin = true;
   std::string out;
@@ -153,7 +154,8 @@ bool wxExAutoCompleteText(const std::string& text,
   return (matches == 1);
 }
 
-const std::string wxExBefore(const std::string& text, char c, bool first)
+const std::string wxExBefore(
+  const std::string& text, char c, bool first)
 {
   if (const auto pos = (first ? text.find(c): text.rfind(c));
     pos != std::string::npos)
@@ -755,7 +757,7 @@ const std::string GetColumn(InputIterator first, InputIterator last)
 }
     
 template <typename InputIterator>
-const std::string GetLines(std::vector<wxString> & lines,
+const std::string GetLines(std::vector<std::string> & lines,
   size_t pos, size_t len, InputIterator ii)
 {
   std::string text;
@@ -824,17 +826,17 @@ const std::string wxExSort(const std::string& input,
   wxBusyCursor wait;
 
   // Empty lines are not kept after sorting, as they are used as separator.
-  std::map<wxString, wxString> m;
-  std::multimap<wxString, wxString> mm;
-  std::multiset<wxString> ms;
-  std::vector<wxString> lines;
+  std::map<std::string, std::string> m;
+  std::multimap<std::string, std::string> mm;
+  std::multiset<std::string> ms;
+  std::vector<std::string> lines;
   
   for (wxExTokenizer tkz(input, eol); tkz.HasMoreTokens(); )
   {
-    const wxString line = tkz.GetNextToken() + eol;
+    const std::string line = tkz.GetNextToken() + eol;
     
     // Use an empty key if line is to short.
-    wxString key;
+    std::string key;
     
     if (pos < line.length())
     {

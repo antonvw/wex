@@ -88,7 +88,6 @@ wxExCommandArg ParseCommandWithArg(const std::string& command)
 wxExEvaluator wxExEx::m_Evaluator;
 wxExSTCEntryDialog* wxExEx::m_Dialog = nullptr;
 wxExViMacros wxExEx::m_Macros;
-std::string wxExEx::m_LastCommand;
 
 wxExEx::wxExEx(wxExSTC* stc)
   : m_Command(wxExExCommand(stc))
@@ -262,12 +261,12 @@ wxExEx::wxExEx(wxExSTC* stc)
         {
           if (line == command)
           {
-            wxExLog(line) << "recursive (line: " << i + 1 << ")";
+            VLOG(9) << "recursive (line: " << i + 1 << ")";
             return false;
           }
           else if (!Command(line))
           {
-            wxExLog(line) << "command error (line: " << i + 1 << ")";
+            VLOG(9) << "command error (line: " << i + 1 << ")";
             return false;
           }
         }
@@ -384,7 +383,6 @@ bool wxExEx::Command(const std::string& cmd)
     return false;
   }
 
-  SetLastCommand(command);
   m_Macros.Record(command);
   m_Command.clear();
 
@@ -696,7 +694,7 @@ bool wxExEx::MarkerAdd(char marker, int line)
     
   if (id == -1)
   {
-    wxExLog("could not add marker") << marker  << " to line: " << lin;
+    wxExLog("could not add marker") << marker  << "to line:" << lin;
     return false;  
   }
     
@@ -799,36 +797,6 @@ void wxExEx::ResetSearchFlags()
     );
 }
 
-void wxExEx::SetLastCommand(
-  const std::string& command,
-  bool always)
-{
-  // First filter commands that should not be a last command,
-  // even if always were true.
-  if (
-    command.empty() ||
-    command[0] == '.' || 
-    command[0] == ';' || 
-    command[0] == '/' || 
-    command[0] == '?' || 
-    command[0] == 'm' ||
-    command[0] == 'u')
-  {
-  }
-  else if (
-    always || 
-    command == "~" || 
-    ( command.size() > 2 && command.front() == ':' && 
-      command.find(":ve") != 0 &&
-      command.find(":help") != 0 &&
-      command.find(":new") != 0 &&
-      command.find(":set") != 0) ||
-    ( command.size() > 1 && command.front() != ':' && command.front() != '\t'))
-  {
-    m_LastCommand = command;
-  }
-}
- 
 void wxExEx::SetRegistersDelete(const std::string& value) const
 {
   if (value.empty())

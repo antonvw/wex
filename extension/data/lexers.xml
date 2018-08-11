@@ -2494,7 +2494,7 @@ Copyright: (c) 2018, Anton van Wezenbeek
       stod stof stoi stol stold stoll
       stoul stoull str strcat strchr strcmp
       strcoll strcpy strcspn stream streambuf strerror
-      strftime string string stringbuf stringstream strlen
+      strftime string string string_view stringbuf stringstream strlen
       strncat strncmp strncpy strpbrk strrchr strspn
       strstr strstream strstreambuf strtod strtof strtoimax
       strtok strtol strtold strtoll strtoul strtoumax
@@ -3310,7 +3310,7 @@ Copyright: (c) 2018, Anton van Wezenbeek
     <style no="section"> fore:sky blue </style>
     <style no="assignment"> fore:khaki</style>
     <style no="defval"> fore:red</style>
-    <style no="key"> fore:grey </style>
+    <style no="key"> fore:white </style>
     </styles>
   </lexer>
   <lexer name="ps"/>

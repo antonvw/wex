@@ -2,7 +2,7 @@
 // Name:      otl.h
 // Purpose:   Declaration of wxExOTL class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -54,7 +54,6 @@ public:
   /// Runs the query using direct_exec and returns result.
   long Query(const std::string& query);
 
-#if wxUSE_GRID
   /// Runs the query and puts results on the grid.
   /// If empty_results then the grid is cleared first.
   /// Returns number of rows appended.
@@ -63,7 +62,6 @@ public:
     bool& stopped,
     bool empty_results = true,
     int buffer_size = 1024);
-#endif // wxUSE_GRID
 
   /// Runs the query and appends results to the stc.
   /// Returns number of lines added.

@@ -16,6 +16,7 @@
 #include <wx/extension/lexers.h>
 #include <wx/extension/log.h>
 #include <wx/extension/tokenizer.h>
+#include <easylogging++.h>
 
 void wxExStyle::Apply(wxStyledTextCtrl* stc) const
 {
@@ -55,12 +56,10 @@ void wxExStyle::Set(const pugi::xml_node& node, const std::string& macro)
 
   // The style is parsed using the themed macros, and
   // you can specify several styles separated by a + sign.
-  wxExTokenizer fields(node.text().get(), "+");
-
-  // Collect each single field style.
-  while (fields.HasMoreTokens())
+  for (wxExTokenizer tkz(node.text().get(), "+"); tkz.HasMoreTokens(); )
   {
-    const auto& single = fields.GetNextToken();
+    // Collect each single field style.
+    const auto& single = tkz.GetNextToken();
 
     if (const auto& it = wxExLexers::Get()->GetThemeMacros().find(single);
       it != wxExLexers::Get()->GetThemeMacros().end())
@@ -113,13 +112,11 @@ void wxExStyle::SetNo(
   const pugi::xml_node& node)
 {
   m_No.clear();
-  
-  wxExTokenizer no_fields(no, ",");
 
   // Collect each single no in the vector.
-  while (no_fields.HasMoreTokens())
+  for (wxExTokenizer tkz(no, ","); tkz.HasMoreTokens(); )
   {
-    const auto& single = wxExLexers::Get()->ApplyMacro(no_fields.GetNextToken(), macro);
+    const auto& single = wxExLexers::Get()->ApplyMacro(tkz.GetNextToken(), macro);
  
     try
     {
@@ -130,12 +127,12 @@ void wxExStyle::SetNo(
       }
       else
       {
-        wxExLog("illegal style") << no << node;
+        VLOG(9) << "illegal style: " << no;
       }
     }
     catch (std::exception& e)
     {
-      wxExLog(e) << "style:" << single;
+      VLOG(9) << "style: " << single;
     }
   }
 }

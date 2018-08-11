@@ -2,7 +2,7 @@
 // Name:      vi-macros.h
 // Purpose:   Declaration of class wxExViMacros
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -170,7 +170,6 @@ private:
   /// All variables, as a map of name and variable.
   static std::map<std::string, wxExVariable> m_Variables;
 
-  static wxExViMacrosMapType m_MapAltKeys;
-  static wxExViMacrosMapType m_MapControlKeys;
-  static wxExViMacrosMapType m_MapKeys; /// All normal key maps.
+  static wxExViMacrosMapType 
+    m_MapAltKeys, m_MapControlKeys, m_MapKeys; /// All normal key maps.
 };

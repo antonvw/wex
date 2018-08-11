@@ -1,9 +1,9 @@
 **v18.10**
   - c++17
   - wxWidgets used as submodule
+  - use more string_view
   - vi improved
   - ctags update
-  - cotire
 
 **v18.04** *April 8, 2018*
   - easylogging++ lib
@@ -24,7 +24,7 @@
 
 **v3.1.0** *March 11, 2016*
   - wxWidgets 3.1.0
-  - catch lib instead of cppunit
+  - catch lib instead of cppunit lib
   - c++14
   - cmake build system
   - Microsoft Visual Studio 2015
@@ -41,7 +41,7 @@
   - wxWidgets 3.0.0
   - Microsoft Visual Studio 2012
   - sourceforge
-  - cppunit
+  - cppunit lib
 
 **v2.9.5** *July 20, 2013*
   - wxWidgets 2.9.5

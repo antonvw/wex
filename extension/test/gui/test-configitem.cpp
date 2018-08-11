@@ -2,7 +2,7 @@
 // Name:      test-configitem.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -158,7 +158,7 @@ TEST_CASE("wxExConfigDefaults")
     {"def-colour", ITEM_COLOURPICKERWIDGET, *wxWHITE},
     {"def-font", ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT)},
     {"def-double", ITEM_TEXTCTRL_FLOAT, 8.8},
-    {"def-string", ITEM_TEXTCTRL, wxString("a string")},
+    {"def-string", ITEM_TEXTCTRL, std::string("a string")},
     {"def-int", ITEM_TEXTCTRL_INT, 10l}});
   
   REQUIRE( def.Get() != nullptr);

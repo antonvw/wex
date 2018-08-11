@@ -190,8 +190,8 @@ int wxExViMacrosMode::Transition(
   }
 
   const wxExExCommand cmd(ex != nullptr ? ex->GetCommand(): wxExExCommand());
-  const bool result = m_FSM->Execute(trigger, macro, ex, repeat);
+  m_FSM->Execute(trigger, macro, ex, repeat);
   if (ex != nullptr) ex->m_Command.Restore(cmd);
 
-  return result ? command.size(): 0;
+  return command.size();
 }

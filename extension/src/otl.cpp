@@ -2,7 +2,7 @@
 // Name:      otl.cpp
 // Purpose:   Implementation of wxExOTL class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -99,7 +99,6 @@ long wxExOTL::Query(const std::string& query)
   return otl_cursor::direct_exec(m_Connect, query.c_str());
 }
 
-#if wxUSE_GRID
 // Cannot be const because of open call.
 long wxExOTL::Query(
   const std::string& query,
@@ -196,7 +195,6 @@ long wxExOTL::Query(
 
   return rows;
 }
-#endif //wxUSE_GRID
 
 // Cannot be const because of open call.
 long wxExOTL::Query(

@@ -34,16 +34,17 @@ class wxExVCSCommand;
 
 /// Returns string after first or last occurrence of c
 /// Returns the whole string if c is not found.
-const std::string wxExAfter(const std::string& text, char c, bool first = true);
+const std::string wxExAfter(
+  const std::string& text, char c, bool first = true);
 
 /// Aligns text.
 const std::string wxExAlignText(
   /// lines to align
-  const std::string& lines,
+  const std::string_view& lines,
   /// The header is used as a prefix for the line, directly 
   /// followed by the lines, and if necessary on the next line
   /// the header is repeated as a string of spaces.
-  const std::string& header,
+  const std::string_view& header,
   /// if fill out, then use space
   bool fill_out_with_space,
   /// fill out
@@ -81,7 +82,8 @@ bool wxExAutoCompleteText(
 
 /// Returns string before first or last occurrence of c
 /// Returns the whole string if c is not found.
-const std::string wxExBefore(const std::string& text, char c, bool first = true);
+const std::string wxExBefore(
+  const std::string& text, char c, bool first = true);
 
 /// Launch default browser and search for text.
 /// Returns false if search engine is empty.

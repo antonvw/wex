@@ -52,12 +52,11 @@ before_script:
 
 script:
     - mkdir build${TRAVIS_OS_NAME} && pushd build${TRAVIS_OS_NAME}
-    - cmake -DwxExBUILD_SP=ON -DwxExBUILD_TESTS=ON ..
-#    - cmake -DCMAKE_BUILD_TYPE=Coverage -DwxExBUILD_SP=ON -DwxExBUILD_TESTS=ON ..
+    - cmake -DCMAKE_BUILD_TYPE=Coverage -DwxExBUILD_SP=ON -DwxExBUILD_TESTS=ON ..
     - make -j 4
-#    - if [ "$TRAVIS_OS_NAME" != "osx" ]; then make lcov-prep; fi
+    - if [ "$TRAVIS_OS_NAME" != "osx" ]; then make lcov-prep; fi
     - ctest --timeout 120 -V ..
         
 after_success:
-#    - if [ "$TRAVIS_OS_NAME" != "osx" ]; then make lcov; fi
-#    - if [ "$TRAVIS_OS_NAME" != "osx" ]; then make lcov-coveralls; fi
+    - if [ "$TRAVIS_OS_NAME" != "osx" ]; then make lcov; fi
+    - if [ "$TRAVIS_OS_NAME" != "osx" ]; then make lcov-coveralls; fi

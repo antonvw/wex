@@ -18,7 +18,6 @@
 #include <wx/extension/tokenizer.h>
 #include <wx/extension/util.h>
 
-#if wxUSE_GRID
 #if wxUSE_DRAG_AND_DROP
 // A support class for implementing drag/drop on a grid.
 class wxExTextDropTarget : public wxTextDropTarget
@@ -577,5 +576,3 @@ void wxExGrid::UseDragAndDrop(bool use)
   m_UseDragAndDrop = use;
 }
 #endif
-
-#endif //wxUSE_GRID

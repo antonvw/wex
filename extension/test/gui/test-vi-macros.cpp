@@ -2,7 +2,7 @@
 // Name:      test-vi-macros.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -93,7 +93,7 @@ TEST_CASE("wxExViMacros")
   macros.Record("a");
   macros.Mode()->Transition("q", vi);
   
-  REQUIRE(!macros.Mode()->Transition("@a", vi) );
+  REQUIRE( macros.Mode()->Transition("@a", vi) );
   
   // Test all builtin macro variables.
   for (auto& builtin : GetBuiltinVariables())

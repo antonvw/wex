@@ -373,7 +373,7 @@ void wxExCTags::Init(const std::string& filename)
 
     if (filename != DEFAULT_TAGFILE && m_File == nullptr)
     {
-      wxExLog() << "could not open ctags file:" << filename;
+      VLOG(9) << "could not locate ctags file:" << filename;
     }
   }
 }

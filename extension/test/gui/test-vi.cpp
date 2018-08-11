@@ -230,7 +230,6 @@ TEST_CASE("wxExVi")
   REQUIRE( vi->Command(":1,$s/xx/yy/g"));
   REQUIRE(!stc->GetText().Contains("xx"));
   REQUIRE( stc->GetText().Contains("yy"));
-  REQUIRE( vi->GetLastCommand() == ":1,$s/xx/yy/g");
   
   // Test change command.
   stc->SetText("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
@@ -387,7 +386,7 @@ TEST_CASE("wxExVi")
   for (auto& fold: std::vector<std::string> {"zo", "zc", "zE", "zf"})
   {
     REQUIRE( vi->Command(fold));
-    REQUIRE( vi->GetLastCommand() == fold);
+    REQUIRE( vi->GetLastCommand() != fold);
   }
   
   // Test other commands (ZZ not tested).
@@ -402,7 +401,7 @@ TEST_CASE("wxExVi")
       for (auto c : other_command.first)
       {
         // prevent wxExBrowserSearch (for travis)
-        if (c == 'T')
+        if (c == 'U')
         {
           continue;
         }

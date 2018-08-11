@@ -140,7 +140,7 @@ public:
 
   /// Returns a lexer comment string filled out over one line.
   const std::string MakeSingleLineComment(
-    const std::string& text,
+    const std::string_view& text,
     bool fill_out_with_space = true,
     bool fill_out = true) const;
     

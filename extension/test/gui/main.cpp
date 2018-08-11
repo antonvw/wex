@@ -2,7 +2,7 @@
 // Name:      main.cpp
 // Purpose:   main for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017
+// Copyright: (c) 2018
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -34,6 +34,12 @@ class wxExTestGuiApp : public wxExTestApp
 {
 public: 
   wxExTestGuiApp() : wxExTestApp() {;};
+  
+  virtual int OnExit() override
+  {
+    remove("test-ex.txt");
+    return wxExTestApp::OnExit();
+  }
   
   virtual bool OnInit() override
   {

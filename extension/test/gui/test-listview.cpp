@@ -50,7 +50,7 @@ TEST_CASE("wxExListView")
   REQUIRE(!listView->FindNext("test"));
   
   REQUIRE(!listView->ItemFromText("a new item"));
-  REQUIRE(!listView->FindNext("a new item"));
+  REQUIRE(!listView->FindNext("another new item"));
   REQUIRE( listView->ItemFromText("999"));
   
   REQUIRE( listView->ItemToText(0).find("95") != std::string::npos);

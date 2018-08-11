@@ -53,7 +53,7 @@ TEST_CASE("wxEx")
   {
     REQUIRE( wxExAlignText("test", "header", true, true,
       wxExLexers::Get()->FindByName("cpp")).size() 
-        == wxString("// headertest").size());
+        == std::string("// headertest").size());
   }
       
   SUBCASE("wxExAutoCompleteText")
@@ -445,6 +445,7 @@ TEST_CASE("wxEx")
   {
     wxExPath fn("xml-err.xml");
     pugi::xml_parse_result pr;
+    pr.status = pugi::xml_parse_status::status_ok;
     wxExXmlError(fn, &pr);
   }
 }

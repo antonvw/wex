@@ -54,7 +54,7 @@ wxExVariable::wxExVariable(const pugi::xml_node& node)
     }
     else
     {
-      wxExLog() << "variable type is not supported:" << type;
+      VLOG(9) << "variable type is not supported:" << type;
     }
   }
 }
@@ -78,14 +78,14 @@ bool wxExVariable::CheckLink(std::string& value) const
       {
         if (!value.empty())
         {
-          VLOG(9) << "variable: " << m_Name << " (" << v[0] << ") expanded: " << value;
+          VLOG(9) << "variable:" << m_Name << " (" << v[0] << ") expanded: " << value;
           return true;
         }
       }
     }
     else
     {
-      wxExLog() << "variable: " << m_Name << "(" << v[0] << ") is not found";
+      wxExLog() << "variable:" << m_Name << "(" << v[0] << ") is not found";
     }
   }
   

@@ -104,18 +104,16 @@ bool wxExPath::Canonical(const std::string& wd)
 
 void wxExPath::Current(const std::string& path) 
 {
-  if (path.empty())
+  if (!path.empty())
   {
-    return;
-  }
-
-  try
-  {
-    std::experimental::filesystem::current_path(path);
-  }
-  catch (const std::exception& e)
-  {
-    wxExLog(e) << "path:" << path;
+    try
+    {
+      std::experimental::filesystem::current_path(path);
+    }
+    catch (const std::exception& e)
+    {
+      wxExLog(e) << "path:" << path;
+    }
   }
 }
 
@@ -149,7 +147,8 @@ bool wxExPath::OpenMIME() const
 {
   if (const auto & ex = GetExtension(); ex.empty())
   {
-    if (wxURL url(m_path.string()); url.IsOk())
+    if (wxURL(m_path.string()).IsOk() || 
+        m_path.string().substr(0, 4) == "http")
     {
       return wxLaunchDefaultBrowser(m_path.string());
     }

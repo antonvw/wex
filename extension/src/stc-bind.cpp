@@ -342,7 +342,7 @@ void wxExSTC::BindAll()
     }
     else
     {
-      if (long val; (val = wxGetNumberFromUser(
+      if (static long val; (val = wxGetNumberFromUser(
         _("Input") + wxString::Format(" 1 - %d:", GetLineCount()),
         wxEmptyString,
         _("Enter Line Number"),
@@ -351,6 +351,7 @@ void wxExSTC::BindAll()
         GetLineCount(),
         this)) > 0)
       {
+        m_Data.Control().Line(val);
         wxExSTCData(wxExControlData().Line(val), this).Inject();
       }
     }

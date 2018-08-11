@@ -86,7 +86,7 @@ std::string wxExEvaluator::GetInfo(const wxExEx* ex)
   }
 
   output += "[Filename buffer]\n";
-  output += "%: " + ex->GetCommand().STC()->GetFileName().GetFullName() + "\n";
+  output += "% = " + ex->GetCommand().STC()->GetFileName().GetFullName() + "\n";
 
   if (!m_eval->variables.empty()) 
   {
@@ -94,7 +94,7 @@ std::string wxExEvaluator::GetInfo(const wxExEx* ex)
 
     for (const auto &var : m_eval->variables) 
     {
-      output += var + "=" + std::to_string(m_eval->eval(var, nullptr)) + "\n";
+      output += var + " = " + std::to_string(m_eval->eval(var, nullptr)) + "\n";
     }
   }
 

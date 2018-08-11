@@ -68,9 +68,6 @@ public:
   /// Returns whether ex is active.
   auto GetIsActive() const {return m_IsActive;};
   
-  /// Returns last entered command.
-  const auto & GetLastCommand() const {return m_LastCommand;};
-  
   /// Returns the macros.
   static auto & GetMacros() {return m_Macros;};
 
@@ -137,11 +134,6 @@ public:
   /// Returns false if no text was selected.
   bool Yank(const char name = '0', bool show_message = true) const;
 protected:
-  /// Sets last command.
-  void SetLastCommand(
-    const std::string& command,
-    bool always = false);
-  
   /// Sets register name.
   /// Setting register 0 results in
   /// disabling current register.
@@ -170,7 +162,6 @@ private:
   // relate a marker to mark number
   std::map<char, int> m_MarkerNumbers;
   
-  static std::string m_LastCommand;
   static wxExSTCEntryDialog* m_Dialog;
   static wxExViMacros m_Macros;
   static wxExEvaluator m_Evaluator;

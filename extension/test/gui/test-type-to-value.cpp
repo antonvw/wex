@@ -12,7 +12,7 @@
 #include <wx/extension/type-to-value.h>
 #include "test.h"
 
-TEST_CASE("wxEx")
+TEST_CASE("wxExTypeToValue")
 {
   REQUIRE( wxExTypeToValue<int>("100").get() == 100);
   REQUIRE( wxExTypeToValue<int>("A").get() == 65);
