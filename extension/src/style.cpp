@@ -132,7 +132,7 @@ void wxExStyle::SetNo(
     }
     catch (std::exception& e)
     {
-      VLOG(9) << "style: " << single;
+      VLOG(9) << "style exception: " << e.what() << ": " << single;
     }
   }
 }

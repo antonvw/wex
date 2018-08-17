@@ -50,7 +50,7 @@ wxExIndicator::wxExIndicator(const pugi::xml_node& node)
   }
   catch (std::exception& e)
   {
-    VLOG(9) << "indicator exception";
+    VLOG(9) << "indicator exception: " << e.what();
   }
 }
 

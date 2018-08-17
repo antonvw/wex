@@ -568,13 +568,8 @@ int wxExListView::ConfigDialog(const wxExWindowData& par)
            {wxLC_HRULES, _("Horizontal rulers")},
            {wxLC_VRULES, _("Vertical rulers")}}, false}}},
       {_("Font"),
-#ifndef __WXOSX__
         {{_("List font"), ITEM_FONTPICKERCTRL},
          {_("List tab font"), ITEM_FONTPICKERCTRL}}},
-#else
-        {{_("List font")},
-         {_("List tab font")}}},
-#endif
       {_("Colour"),
         {{_("Background colour"), ITEM_COLOURPICKERWIDGET},
          {_("Foreground colour"), ITEM_COLOURPICKERWIDGET},
@@ -795,7 +790,7 @@ bool wxExListView::InsertItem(const std::vector < std::string > & item)
     }
     catch (std::exception& e)
     {
-      VLOG(9) << "InsertItem: " << col;
+      VLOG(9) << "InsertItem exception: " << e.what() << ": " << col;
       return false;
     }
   }

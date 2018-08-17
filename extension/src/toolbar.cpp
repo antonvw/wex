@@ -34,8 +34,7 @@ class wxExFindTextCtrl : public wxTextCtrl
 public:
   /// Constructor. Fills the text ctrl with value 
   /// from FindReplace from config.
-  wxExFindTextCtrl(wxWindow* parent, wxExFrame* frame, 
-    const wxExWindowData& data = wxExWindowData());
+  wxExFindTextCtrl(wxExFrame* frame, const wxExWindowData& data);
     
   /// Finds current value in control.
   void Find(bool find_next = true, bool restore_position = false);
@@ -166,7 +165,8 @@ wxExFindToolBar::wxExFindToolBar(
   const wxWindowID ID_MATCH_CASE = NewControlId();
   const wxWindowID ID_REGULAR_EXPRESSION = NewControlId();
 
-  wxExFindTextCtrl* findCtrl = new wxExFindTextCtrl(this, GetFrame());
+  wxExFindTextCtrl* findCtrl = new wxExFindTextCtrl(GetFrame(),
+    wxExWindowData().Parent(this));
   wxCheckBox* matchCase = new wxCheckBox(this, 
     ID_MATCH_CASE, wxExFindReplaceData::Get()->GetTextMatchCase());
   wxCheckBox* matchWholeWord = new wxCheckBox(this, 
@@ -284,12 +284,15 @@ bool wxExOptionsToolBar::Update(const wxString& name, bool show)
 
 // Implementation of support class.
 
-wxExFindTextCtrl::wxExFindTextCtrl(wxWindow* parent, wxExFrame* frame,
-  const wxExWindowData& data)
-  : wxTextCtrl(parent, 
+wxExFindTextCtrl::wxExFindTextCtrl(
+  wxExFrame* frame, const wxExWindowData& data)
+  : wxTextCtrl(
+      data.Parent(), 
       data.Id(),
       wxExFindReplaceData::Get()->GetFindString(), 
-      data.Pos(), data.Size(), wxTE_PROCESS_ENTER)
+      data.Pos(), 
+      data.Size(), 
+      data.Style() | wxTE_PROCESS_ENTER)
   , m_Frame(frame)
 {
   const int accels = 1;
@@ -311,6 +314,22 @@ wxExFindTextCtrl::wxExFindTextCtrl(wxWindow* parent, wxExFrame* frame,
     }
     event.Skip();});
 
+#ifdef __WXOSX__      
+  // FIXME. See also managedframe.
+  Bind(wxEVT_KEY_DOWN, [=](wxKeyEvent& event) {
+    switch (event.GetKeyCode())
+    {
+      case WXK_RETURN:
+        {
+        wxCommandEvent event(wxEVT_TEXT_ENTER, m_windowId);
+        event.SetEventObject( this );
+        event.SetString( GetValue() );
+        HandleWindowEvent(event);
+        }
+        break;
+    }});
+#endif
+  
   Bind(wxEVT_TEXT, [=](wxCommandEvent& event) {
     event.Skip();
     Find(true, true);});

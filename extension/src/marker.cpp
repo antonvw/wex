@@ -47,7 +47,7 @@ wxExMarker::wxExMarker(const pugi::xml_node& node)
   }
   catch (std::exception& e)
   {
-    VLOG(9) << "marker: " << single;
+    VLOG(9) << "marker exception: " << e.what() << ": " << single;
   }
 }
 

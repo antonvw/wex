@@ -220,8 +220,7 @@ wxPanel* wxExManagedFrame::CreateExPanel()
   // comes the ex ctrl for getting user input.
   wxPanel* panel = new wxPanel(this);
   wxStaticText* text = new wxStaticText(panel, wxID_ANY, " ");
-  m_TextCtrl = new wxExTextCtrl(this, text, 
-    wxExWindowData().Style(wxTE_PROCESS_ENTER).Parent(panel));
+  m_TextCtrl = new wxExTextCtrl(this, text, wxExWindowData().Parent(panel));
   
   wxFlexGridSizer* sizer = new wxFlexGridSizer(2);
   sizer->AddGrowableCol(1);
@@ -347,7 +346,12 @@ wxExTextCtrl::wxExTextCtrl(
   wxStaticText* prefix,
   const wxExWindowData& data)
   : wxTextCtrl(
-    data.Parent(), data.Id(), wxEmptyString, data.Pos(), data.Size(), data.Style())
+      data.Parent(), 
+      data.Id(), 
+      wxEmptyString, 
+      data.Pos(), 
+      data.Size(), 
+      data.Style() | wxTE_PROCESS_ENTER)
   , m_Frame(frame)
   , m_Prefix(prefix)
 {
@@ -452,8 +456,21 @@ wxExTextCtrl::wxExTextCtrl(
         m_ControlR = false;
         m_UserInput = false;
         break;
+
+#ifdef __WXOSX__      
+      // FIXME. See also toolbar.
+      case WXK_RETURN:
+        {
+        wxCommandEvent event(wxEVT_TEXT_ENTER, m_windowId);
+        event.SetEventObject( this );
+        event.SetString( GetValue() );
+        HandleWindowEvent(event);
+        }
+        break;
+#endif
       
-      default: event.Skip();
+      default: 
+        event.Skip();
         break;
       }});
   

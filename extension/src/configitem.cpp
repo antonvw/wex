@@ -77,12 +77,7 @@ bool wxExItem::ToConfig(bool save) const
     case ITEM_COLOURPICKERWIDGET: PERSISTENT(ReadObject, wxColour, *wxWHITE); break;
     case ITEM_DIRPICKERCTRL:      PERSISTENT_STR(m_Label); break;
     case ITEM_TEXTCTRL_FLOAT:     PERSISTENT(ReadDouble, double, 0); break;
-    case ITEM_FONTPICKERCTRL:     
-#ifdef __WXOSX__
-                                  return false;
-#else
-                                  PERSISTENT(ReadObject, wxFont, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)); break;
-#endif
+    case ITEM_FONTPICKERCTRL:     PERSISTENT(ReadObject, wxFont, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)); break;
     case ITEM_TEXTCTRL_INT:       PERSISTENT(ReadLong, long, 0); break;
     case ITEM_SLIDER:             PERSISTENT(ReadLong, int, ((wxSlider* )GetWindow())->GetMin()); break;
     case ITEM_SPINCTRL:           PERSISTENT(ReadLong, int, ((wxSpinCtrl* )GetWindow())->GetMin()); break;

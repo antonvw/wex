@@ -93,12 +93,6 @@ wxExEx::wxExEx(wxExSTC* stc)
   : m_Command(wxExExCommand(stc))
   , m_CTags(new wxExCTags(this))
   , m_Frame(wxDynamicCast(wxTheApp->GetTopWindow(), wxExManagedFrame))
-  , m_SearchFlags((wxExFindReplaceData::Get()->MatchCase() ? wxSTC_FIND_MATCHCASE: 0) | 
-      wxSTC_FIND_REGEXP
-#if wxCHECK_VERSION(3,1,1)
-      | wxSTC_FIND_CXX11REGEX
-#endif
-      )
   , m_Commands {
     {":ab", [&](const std::string& command) {
       return HandleContainer<std::string, std::map<std::string, std::string>>(
@@ -321,6 +315,7 @@ wxExEx::wxExEx(wxExSTC* stc)
       return true;}}}
 {
   wxASSERT(m_Frame != nullptr);
+  ResetSearchFlags();
 }
 
 wxExEx::~wxExEx()

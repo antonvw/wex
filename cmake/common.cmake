@@ -10,7 +10,6 @@ function(pack)
   set(CPACK_GENERATOR "ZIP")
   set(CPACK_PACKAGE_NAME "${PROJECT_NAME}")
   set(CPACK_PACKAGE_VERSION "${EX_VERSION}")
-  set(CPACK_PACKAGING_INSTALL_PREFIX ".")
   set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-v${CPACK_PACKAGE_VERSION}")
 
   if (MSVC)
@@ -30,11 +29,19 @@ function(pack)
     install(FILES ${dlls} DESTINATION ${CONFIG_INSTALL_DIR})
   endif()
 
-  configure_file(../extension/data/conf.elp ${CONFIG_INSTALL_DIR}/conf.elp)
+  configure_file(../extension/data/conf.elp.cmake conf.elp)
+
   install(DIRECTORY ../extension/data/ DESTINATION ${CONFIG_INSTALL_DIR} 
-    USE_SOURCE_PERMISSIONS
-    FILES_MATCHING PATTERN "*.elp" EXCLUDE )
+    FILES_MATCHING PATTERN "*.xml" )
   
+  install(DIRECTORY ../extension/data/ DESTINATION ${CONFIG_INSTALL_DIR} 
+    FILES_MATCHING PATTERN "*.xsd" )
+  
+  install(DIRECTORY ../extension/data/ DESTINATION ${CONFIG_INSTALL_DIR} 
+    FILES_MATCHING PATTERN "*.txt" )
+  
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/conf.elp DESTINATION ${CONFIG_INSTALL_DIR})
+          
   if (NOT WIN32)
     install(CODE "EXECUTE_PROCESS(COMMAND chown -R ${user} ${CONFIG_INSTALL_DIR})")
   endif()
@@ -48,7 +55,6 @@ function(process_po_files)
       file(GLOB files *.po)
       
       foreach(filename ${files})
-      
         string(FIND ${filename} "-" pos1 REVERSE)
         string(FIND ${filename} "." pos2 REVERSE)
         
@@ -67,19 +73,11 @@ function(process_po_files)
           set(locale "fr_FR")
         endif ()
           
-        if (NOT WIN32)
-          # TODO: this should be part of cmake,
-          # however wxWidgets_ROOT_DIR is empty for linux, so set it here,
-          # search at several places...
-          if (EXISTS "$ENV{HOME}/wxWidgets")
-            set(wxWidgets_ROOT_DIR $ENV{HOME}/wxWidgets)
-          endif ()
-        endif ()
-        
         gettext_process_po_files(${locale} ALL INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
           PO_FILES ${filename})
 
-        if (wxWidgets_ROOT_DIR AND ${ARGC} GREATER 0)
+        if (${ARGC} GREATER 0)
+          set(wxWidgets_ROOT_DIR ${CMAKE_SOURCE_DIR}/external/wxWidgets)
           gettext_process_po_files(${locale} ALL INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
             PO_FILES ${wxWidgets_ROOT_DIR}/locale/${lang}.po)
         endif ()
@@ -100,6 +98,16 @@ macro(target_link_all)
       ${wxWidgets_LIBRARIES} wxscintilla
       ${extra_macro_args}
       )
+  elseif (APPLE)
+    target_link_libraries(
+      ${PROJECT_NAME}
+      wxex-rep
+      wxex
+      ${wxWidgets_LIBRARIES} 
+      ${extra_macro_args}
+      stdc++
+      c++experimental
+      )
   else ()
     target_link_libraries(
       ${PROJECT_NAME}
@@ -107,7 +115,9 @@ macro(target_link_all)
       wxex
       ${wxWidgets_LIBRARIES} 
       ${extra_macro_args}
+      stdc++
       stdc++fs
+      m
       )
   endif ()
 endmacro()  

@@ -24,4 +24,5 @@ foreach(p ${pattern_files})
 endforeach()
 
 file(COPY data/.odbc.ini DESTINATION ${CONFIG_INSTALL_DIR})
-configure_file(../data/conf.elp ${CONFIG_INSTALL_DIR}/conf.elp)
+
+configure_file(../data/conf.elp.cmake ${CONFIG_INSTALL_DIR}/conf.elp)

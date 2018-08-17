@@ -9,7 +9,7 @@
 
 #include <tuple>
 
-class evaluator_extra;
+struct evaluator_extra;
 class wxExEx;
 
 /// This class offers methods to evaluate expressions.

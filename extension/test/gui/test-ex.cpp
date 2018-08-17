@@ -201,7 +201,7 @@ TEST_CASE("wxExEx")
   REQUIRE( ex->Command(":%s/ccccc/ddd"));
   REQUIRE( stc->GetText() == "we have ddd yyyy zzzz");
   stc->SetText("we have xxxx yyyy zzzz");
-  wxExFindReplaceData::Get()->SetUseRegEx(true);
+  ex->ResetSearchFlags();
   REQUIRE( ex->Command(":%s/\\(x+\\) *\\(y+\\)/\\\\2 \\\\1"));
   REQUIRE( stc->GetText() == "we have yyyy xxxx zzzz");
   stc->SetText("we have xxxx 'zzzz'");
