@@ -60,7 +60,7 @@ bool wxExOTL::Logon(const wxExWindowData& par)
     if (wxExItemDialog({
         {_("Datasource"), ITEM_COMBOBOX, std::any(), wxExControlData().Required(true)},
         {_("User")},
-        {_("Password"), wxEmptyString, ITEM_TEXTCTRL, wxExControlData().Window(wxExWindowData().Style(wxTE_PASSWORD))}}, 
+        {_("Password"), std::string(), ITEM_TEXTCTRL, wxExControlData().Window(wxExWindowData().Style(wxTE_PASSWORD))}}, 
         data).ShowModal() == wxID_CANCEL)
     {
       return false;

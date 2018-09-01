@@ -2,7 +2,7 @@
 // Name:      app.h
 // Purpose:   Declaration of class 'App'
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -27,6 +27,7 @@ private:
 #ifdef __WXOSX__  
   virtual void MacOpenFiles(const wxArrayString& fileNames) override;
 #endif
+  
   virtual bool OnInit() override;
 
   std::string m_Tag; 

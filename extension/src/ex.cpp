@@ -99,7 +99,6 @@ wxExEx::wxExEx(wxExSTC* stc)
         "Abbreviations", command, &m_Macros.GetAbbreviations(),
         [=](const std::string& name, const std::string& value) {
           m_Macros.SetAbbreviation(name, value);return true;});}},
-#if wxCHECK_VERSION(3,1,0)
     {":ar", [&](const std::string& command) {
       wxString text;
       for (size_t i = 1; i < wxTheApp->argv.GetArguments().size(); i++)
@@ -108,7 +107,6 @@ wxExEx::wxExEx(wxExSTC* stc)
       }
       if (!text.empty()) ShowDialog("ar", text.ToStdString());
       return true;}},
-#endif
     {":chd", [&](const std::string& command) {
       if (command.find(" ") == std::string::npos) return true;
       wxExPath::Current(wxExFirstOf(command, " ")); return true;}},
@@ -185,17 +183,12 @@ wxExEx::wxExEx(wxExSTC* stc)
            {{"e", "re", "Regular Expression"}, [&](bool on){
              if (on) 
              {
-               m_SearchFlags |= wxSTC_FIND_REGEXP;
-#if wxCHECK_VERSION(3,1,1)
-               m_SearchFlags |= wxSTC_FIND_CXX11REGEX;
-#endif
+               m_SearchFlags |= wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX;
              }
              else    
              {
                m_SearchFlags &= ~wxSTC_FIND_REGEXP;
-#if wxCHECK_VERSION(3,1,1)
                m_SearchFlags &= ~wxSTC_FIND_CXX11REGEX;
-#endif
              }
              wxExFindReplaceData::Get()->SetUseRegEx(on);}},
            {{"l", "el", "Edge Line"}, [&](bool on){
@@ -276,7 +269,7 @@ wxExEx::wxExEx(wxExSTC* stc)
       else if (wxString(command).EndsWith("off"))
       {
         m_Command.STC()->GetLexer().Reset();
-        wxExLexers::Get()->SetThemeNone();
+        wxExLexers::Get()->ResetTheme();
       }
       else
       {
@@ -784,12 +777,9 @@ std::string wxExEx::ReportContainer(const T & container) const
 
 void wxExEx::ResetSearchFlags()
 {
-  m_SearchFlags = ((wxExFindReplaceData::Get()->MatchCase() ? wxSTC_FIND_MATCHCASE: 0) | 
-    wxSTC_FIND_REGEXP
-#if wxCHECK_VERSION(3,1,1)
-    | wxSTC_FIND_CXX11REGEX
-#endif
-    );
+  m_SearchFlags = ((wxExFindReplaceData::Get()->MatchCase() ? 
+    wxSTC_FIND_MATCHCASE: 0) | 
+    wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX);
 }
 
 void wxExEx::SetRegistersDelete(const std::string& value) const

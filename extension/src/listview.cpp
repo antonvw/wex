@@ -51,11 +51,18 @@ bool GetTime(const std::string& text, time_t& t)
 {
 #ifdef __WXMSW__
   wxDateTime dt; 
-  if (!dt.ParseFormat(text, "%c")) return false; 
+  if (!dt.ParseFormat(text, EX_MOD_TIME_FORMAT)) return false; 
   t = dt.GetTicks();
 #else
-  struct tm tm;
-  if (strptime(text.c_str(), "%c", &tm) == nullptr) return false;
+  std::tm tm = { 0 };
+  std::stringstream ss(text);
+  ss >> std::get_time(&tm, EX_MOD_TIME_FORMAT);
+  
+  if (ss.fail())
+  {
+    return false;
+  }
+  
   t = mktime(&tm);
 #endif
 
@@ -190,8 +197,10 @@ wxExListView::wxExListView(const wxExListViewData& data)
       data.Window().Id(), 
       data.Window().Pos(), 
       data.Window().Size(), 
-      data.Window().Style() == DATA_NUMBER_NOT_SET ? wxLC_REPORT: data.Window().Style(), 
-      data.Control().Validator() != nullptr ? *data.Control().Validator(): wxDefaultValidator, 
+      data.Window().Style() == DATA_NUMBER_NOT_SET ? 
+        wxLC_REPORT: data.Window().Style(), 
+      data.Control().Validator() != nullptr ? 
+        *data.Control().Validator(): wxDefaultValidator, 
       data.Window().Name())
   , m_ImageHeight(16) // not used if IMAGE_FILE_ICON is used, then 16 is fixed
   , m_ImageWidth(16)
@@ -220,7 +229,8 @@ wxExListView::wxExListView(const wxExListViewData& data)
   
   switch (m_Data.Image())
   {
-    case IMAGE_NONE: break;
+    case IMAGE_NONE: 
+      break;
     case IMAGE_ART:
     case IMAGE_OWN:
       AssignImageList(
@@ -350,12 +360,18 @@ wxExListView::wxExListView(const wxExListViewData& data)
     PopupMenu(&menu);});
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {EditClearAll();}, wxID_CLEAR);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {CopySelectedItemsToClipboard();}, wxID_COPY);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {CopySelectedItemsToClipboard();},
+    wxID_COPY);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {EditDelete();}, wxID_DELETE);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {ItemFromText(wxExClipboardGet());}, wxID_PASTE);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SetItemState(-1, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);}, wxID_SELECTALL);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SortColumn(m_ToBeSortedColumnNo, SORT_ASCENDING);}, wxID_SORT_ASCENDING);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SortColumn(m_ToBeSortedColumnNo, SORT_DESCENDING);}, wxID_SORT_DESCENDING);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    ItemFromText(wxExClipboardGet());}, wxID_PASTE);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    SetItemState(-1, 
+      wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);}, wxID_SELECTALL);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    SortColumn(m_ToBeSortedColumnNo, SORT_ASCENDING);}, wxID_SORT_ASCENDING);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    SortColumn(m_ToBeSortedColumnNo, SORT_DESCENDING);}, wxID_SORT_DESCENDING);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     CopySelectedItemsToClipboard();
@@ -751,18 +767,21 @@ const std::string wxExListView::GetItemText(
   }
   
   const int col = FindColumn(col_name);
-  return col < 0 ? std::string(): wxListView::GetItemText(item_number, col).ToStdString();
+  return col < 0 ? 
+    std::string(): wxListView::GetItemText(item_number, col).ToStdString();
 }
 
 bool wxExListView::InsertItem(const std::vector < std::string > & item)
 {
-  if (item.empty() || item.front().empty() || item.size() > m_Columns.size()) 
+  if (
+    item.empty() || 
+    item.front().empty() || 
+    item.size() > m_Columns.size()) 
   {
     return false;
   }
 
   long no = 0;
-  int index = 0;
 
   for (const auto& col : item)
   {
@@ -773,14 +792,22 @@ bool wxExListView::InsertItem(const std::vector < std::string > & item)
         case wxExColumn::COL_DATE:
           if (time_t tm; !GetTime(col, tm)) return false;
           break;
-        case wxExColumn::COL_FLOAT: std::stof(col); break;
-        case wxExColumn::COL_INT: std::stoi(col); break;
-        case wxExColumn::COL_STRING: break;
+        case wxExColumn::COL_FLOAT: std::stof(col); 
+          break;
+        case wxExColumn::COL_INT: std::stoi(col); 
+          break;
+        case wxExColumn::COL_STRING: 
+          break;
+        default: 
+          break;
       }
 
-      if (no == 0)
+      if (int index = 0; no == 0)
       {
-        if (index = wxListView::InsertItem(GetItemCount(), col); index == -1) return false;
+        if ((index = wxListView::InsertItem(GetItemCount(), col)) == -1)
+        {
+          return false;
+        }
       }
       else
       {
@@ -949,8 +976,7 @@ const std::string wxExListView::ItemToText(long item_number) const
   switch (m_Data.Type())
   {
     case LIST_FILE:
-    case LIST_HISTORY:
-      {
+    case LIST_HISTORY: {
       const wxExListItem item(const_cast< wxExListView * >(this), item_number);
       text = (item.GetFileName().GetStat().IsOk() ? 
         item.GetFileName().Path().string(): 
@@ -959,8 +985,8 @@ const std::string wxExListView::ItemToText(long item_number) const
       if (item.GetFileName().DirExists() && !item.GetFileName().FileExists())
       {
         text += GetFieldSeparator() + GetItemText(item_number, _("Type"));
-      }
-      }
+      }}
+      break;
 
     case LIST_FOLDER:
       return wxListView::GetItemText(item_number);
@@ -1023,15 +1049,31 @@ int wxCALLBACK CompareFunctionCB(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortDa
   const auto& str1 = (*pitems)[item1];
   const auto& str2 = (*pitems)[item2];
 
+  // should return 0 if the items are equal, 
+  // negative value if the first item is less than the second one 
+  // and positive value if the first one is greater than the second one
+  
+  if (str1.empty() && str2.empty())
+  {
+    return 0;
+  }
+  else if (str1.empty())
+  {
+    return -1;
+  }
+  else if (str2.empty())
+  {
+    return 1;
+  }
+  
   switch (const auto type = 
     (wxExColumn::wxExColumnType)std::abs(sortData); type) 
   {
     case wxExColumn::COL_DATE:
-      if (!str1.empty() && !str2.empty())
       {
         time_t tm1, tm2;
         if (!GetTime(str1, tm1) ||
-            !GetTime(str2, tm2)) return false;
+            !GetTime(str2, tm2)) return 0;
         if (ascending) return Compare((unsigned long)tm1, (unsigned long)tm2);
         else           return Compare((unsigned long)tm2, (unsigned long)tm1);
       }
@@ -1082,6 +1124,7 @@ bool wxExListView::SetItem(
       case wxExColumn::COL_FLOAT: std::stof(text); break;
       case wxExColumn::COL_INT: std::stoi(text); break;
       case wxExColumn::COL_STRING: break;
+      default: break;
     }
 
     return wxListView::SetItem(index, column, text, imageId);

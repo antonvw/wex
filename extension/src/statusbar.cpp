@@ -157,7 +157,7 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
 
 wxExStatusBar* wxExStatusBar::Setup(
   wxExFrame* frame,
-  const std::vector<wxExStatusBarPane> panes,
+  const std::vector<wxExStatusBarPane>& panes,
   long style,
   const wxString& name)
 {

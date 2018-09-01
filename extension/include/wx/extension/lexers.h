@@ -88,9 +88,6 @@ public:
   /// Returns the theme macros for the current theme.
   const auto & GetThemeMacros() {return m_ThemeMacros[m_Theme];};
 
-  /// Returns whether the current theme is not the empty theme.
-  bool GetThemeOk() const {return GetTheme() != m_NoTheme;};
-  
   /// Returns number of themes (should at least contain empty theme).
   auto GetThemes() const {return m_ThemeMacros.size();};
   
@@ -106,16 +103,21 @@ public:
   bool MarkerIsLoaded(const wxExMarker& marker) const {
     return m_Markers.find(marker) != m_Markers.end();};
 
-  /// Restores theme from config (after SetThemeNone).
-  void RestoreTheme();
+  /// Resets the theme.
+  void ResetTheme() {
+    if (!m_Theme.empty()) 
+    {
+      m_ThemePrevious = m_Theme; 
+      m_Theme.clear();
+    }};
+  
+  /// Restores the theme from previous theme.
+  void RestoreTheme() {m_Theme = m_ThemePrevious;};
   
   /// Sets the object as the current one, returns the pointer 
   /// to the previous current object 
   /// (both the parameter and returned value may be nullptr). 
   static wxExLexers* Set(wxExLexers* lexers);
-  
-  /// Temporary use the no theme, until you do RestoreTheme.
-  void SetThemeNone() {m_Theme = m_NoTheme;};
   
   /// Shows a dialog with all lexers, allowing you to choose one.
   /// Returns true and sets the lexer on the stc component if you selected one.
@@ -149,8 +151,13 @@ private:
   wxExStyle m_DefaultStyle;
 
   const wxExPath m_Path;
-  const std::string m_NoTheme;
-  std::string m_FoldingBackgroundColour, m_FoldingForegroundColour, m_Theme;
+  
+  std::string 
+    m_FoldingBackgroundColour, 
+    m_FoldingForegroundColour,
+    m_Theme,
+    m_ThemePrevious;
+  
   int m_StyleNoTextMargin {-1};
 
   static inline wxExLexers* m_Self = nullptr;

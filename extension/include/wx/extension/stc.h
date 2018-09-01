@@ -180,6 +180,14 @@ public:
   /// Returns false if marker change is not loaded.
   bool MarkerDeleteAllChange();
   
+  /// Saves static data in cofig.
+  /// Invoked once during wxExApp::OnExit.
+  static void OnExit();
+  
+  /// Reads static data from config (e.g. zooming).
+  /// Invoked once during wxExApp::OnInit.
+  static void OnInit();
+  
   /// Opens the file, reads the content into the window, then closes the file
   /// and sets the lexer.
   bool Open(const wxExPath& filename, const wxExSTCData& data = wxExSTCData());

@@ -12,6 +12,7 @@
 #include <wx/config.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/listitem.h>
+#include <wx/extension/log.h>
 #include <wx/extension/util.h>
 
 // Do not give an error if columns do not exist.
@@ -56,8 +57,8 @@ void wxExListItem::Insert(long index)
   {
     col = m_ListView->FindColumn(_("File Name"));
     wxASSERT(col >= 0);
-    filename = (
-      m_Path.FileExists() || m_Path.DirExists() ? m_Path.GetFullName(): m_Path.Path().string());
+    filename = (m_Path.FileExists() || m_Path.DirExists() ? 
+      m_Path.GetFullName(): m_Path.Path().string());
   }
   else
   {
@@ -82,12 +83,30 @@ void wxExListItem::Insert(long index)
   }
 }
 
-void wxExListItem::SetItem(const std::string& col_name, const std::string& text) 
+bool wxExListItem::SetItem(
+  const std::string& col_name, const std::string& text) 
 {
+  if (text.empty())
+  {
+    wxExLog() << *this << col_name << "empty";
+    return false;
+  }
+  
   if (const auto col = m_ListView->FindColumn(col_name); col != -1)
   {
-    m_ListView->SetItem(GetId(), col, text);
+    if (!m_ListView->SetItem(GetId(), col, text))
+    {
+      wxExLog() << *this << "col:" << col << "id:" << GetId() << "text:" << text;
+      return false;
+    }
   }
+  else
+  {
+    wxExLog() << *this << col_name << "unknown";
+    return false;
+  }
+  
+  return true;
 }
 
 void wxExListItem::SetReadOnly(bool readonly)
@@ -120,8 +139,11 @@ void wxExListItem::Update()
     SetItem(_("Type"),
       m_Path.DirExists() ? m_FileSpec: m_Path.GetExtension());
     SetItem(_("In Folder"), m_Path.GetPath());
-    SetItem(_("Size"),
-      m_Path.FileExists() ? std::to_string(m_Path.GetStat().st_size): std::string());
     SetItem(_("Modified"), m_Path.GetStat().GetModificationTime());
+  
+    if (m_Path.FileExists())
+    {
+      SetItem(_("Size"), std::to_string(m_Path.GetStat().st_size));
+    }
   }
 }

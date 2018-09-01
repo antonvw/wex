@@ -20,6 +20,7 @@
 #include <wx/extension/lexers.h>
 #include <wx/extension/log.h>
 #include <wx/extension/printing.h>
+#include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/version.h>
@@ -51,7 +52,8 @@ int wxExApp::OnExit()
   delete wxExLexers::Set(nullptr);
   delete wxExPrinting::Set(nullptr);
 
-  wxExAddressRange::Cleanup();
+  wxExAddressRange::OnExit();
+  wxExSTC::OnExit();
 
   VLOG(1) << "exit";
 
@@ -140,55 +142,60 @@ bool wxExApp::OnInit()
   
   if (wxConfigBase::Get()->Exists("LANG"))
   {
-    if ((info = wxLocale::FindLanguageInfo(wxConfigBase::Get()->Read("LANG"))) == nullptr)
+    if ((info = wxLocale::FindLanguageInfo(
+      wxConfigBase::Get()->Read("LANG"))) == nullptr)
     {
       wxExLog() << "unknown language:" << wxConfigBase::Get()->Read("LANG");
     }
   }
-  
-  const int lang = (info != nullptr ? info->Language: wxLANGUAGE_DEFAULT); 
     
   // Init the localization, from now on things will be translated.
   // Do not load wxstd, we load all files ourselves,
   // and do not want messages about loading non existing wxstd files.
-  if (!m_Locale.Init(lang, wxLOCALE_DONT_LOAD_DEFAULT) &&
-    !wxLocale::GetLanguageName(lang).empty())
+  if (const auto lang = (info != nullptr ? info->Language: wxLANGUAGE_DEFAULT);
+    !m_Locale.Init(lang, wxLOCALE_DONT_LOAD_DEFAULT))
   {
-    wxExLog() << "could not init locale for:" << wxLocale::GetLanguageName(lang);
+    VLOG(9) << "could not init locale for: " << 
+      (!wxLocale::GetLanguageName(lang).empty() ?
+        wxLocale::GetLanguageName(lang).ToStdString(): 
+        std::to_string(lang));
   }
-  
-  // If there are catalogs in the catalog_dir, then add them to the m_Locale.
-  // README: We use the canonical name, also for windows, not sure whether that is
-  // the best.
-  m_CatalogDir = wxStandardPaths::Get().GetLocalizedResourcesDir(
-    m_Locale.GetCanonicalName()
-#ifndef __WXMSW__
-    , wxStandardPaths::ResourceCat_Messages
-#endif
-    ).ToStdString();
-
-  if (fs::is_directory(m_CatalogDir))
+  else
   {
-    for (const auto& p: fs::recursive_directory_iterator(m_CatalogDir))
+    // If there are catalogs in the catalog_dir, then add them to the m_Locale.
+    // README: We use the canonical name, also for windows, not sure whether that is
+    // the best.
+    m_CatalogDir = wxStandardPaths::Get().GetLocalizedResourcesDir(
+      m_Locale.GetCanonicalName()
+#ifndef __WXMSW__
+      , wxStandardPaths::ResourceCat_Messages
+#endif
+      ).ToStdString();
+
+    if (fs::is_directory(m_CatalogDir))
     {
-      if (fs::is_regular_file(p.path()) && 
-        wxExMatchesOneOf(p.path().filename().string(), "*.mo"))
+      for (const auto& p: fs::recursive_directory_iterator(m_CatalogDir))
       {
-        if (!m_Locale.AddCatalog(p.path().stem().string()))
+        if (fs::is_regular_file(p.path()) && 
+          wxExMatchesOneOf(p.path().filename().string(), "*.mo"))
         {
-          wxExLog() << "could not add catalog:" << p.path().stem().string();
+          if (!m_Locale.AddCatalog(p.path().stem().string()))
+          {
+            wxExLog() << "could not add catalog:" << p.path().stem().string();
+          }
         }
       }
     }
-  }
-  else if (info != nullptr)
-  {
-    wxExLog() << "missing locale files for:" << GetLocale().GetName();
+    else if (info != nullptr)
+    {
+      wxExLog() << "missing locale files for:" << m_Locale.GetName();
+    }
   }
 
   // Necessary for autocomplete images.
   wxInitAllImageHandlers();
 
+  wxExSTC::OnInit();
   wxExVCS::LoadDocument();
   wxExViMacros().LoadDocument();
 

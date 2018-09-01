@@ -85,15 +85,12 @@ TEST_CASE("wxExItem")
     wxExItem item_picker("picker", ITEM_FILEPICKERCTRL, std::string("/usr/bin/git"));
 #endif
     
-#if wxCHECK_VERSION(3,1,0)
     item.Layout(panel, sizer);
     REQUIRE( item.GetWindow() != nullptr);
     REQUIRE( std::any_cast<std::string>(item.GetValue()) == "hello string");
     REQUIRE( item.SetValue(std::string("value changed")));
     REQUIRE( std::any_cast<std::string>(item.GetValue()) == "value changed");
     REQUIRE( std::any_cast<std::string>(item.GetInitial()) == "hello string");
-    // TODO: Add Flags to window data.
-    // REQUIRE( item.GetWindow()->GetWindowStyleFlag() == 1);
     
     REQUIRE( item_int.Layout(panel, sizer) != nullptr);
     REQUIRE( item_int.GetWindow() != nullptr);
@@ -110,7 +107,6 @@ TEST_CASE("wxExItem")
     REQUIRE( item_picker.Layout(panel, sizer) != nullptr);
     REQUIRE( std::any_cast<std::string>(item_picker.GetValue()) == "/usr/bin/git");
 #endif
-#endif
     
     std::vector <wxExItem> items {item, item_int, item_spin
 #ifdef __UNIX__
@@ -121,7 +117,6 @@ TEST_CASE("wxExItem")
     const auto more(TestItems());
     items.insert(items.end(), more.begin(), more.end());
     
-#if wxCHECK_VERSION(3,1,0)
     // Layout the items and check control is created.
     for (auto& it : items)
     {
@@ -138,7 +133,6 @@ TEST_CASE("wxExItem")
         REQUIRE(it.GetWindow() != nullptr);
       }
     }
-#endif
   }
 
   SUBCASE("Notebooks")
@@ -183,12 +177,10 @@ TEST_CASE("wxExItem")
         
       dlg->Show();
 
-#if wxCHECK_VERSION(3,1,0)
       REQUIRE(std::any_cast<std::string>(dlg->GetItem("string1").GetInitial()) == "first");
       REQUIRE(std::any_cast<std::string>(dlg->GetItem("string1").GetValue()) == "first");
       REQUIRE(dlg->SetItemValue("string1", std::string("xxx")));
       REQUIRE(std::any_cast<std::string>(dlg->GetItem("string1").GetValue()) == "xxx");
-#endif
 
       wxPostEvent(dlg, wxCommandEvent(wxEVT_BUTTON, wxAPPLY));
       wxPostEvent(dlg, wxCommandEvent(wxEVT_BUTTON, wxOK));

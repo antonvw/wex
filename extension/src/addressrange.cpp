@@ -244,11 +244,6 @@ bool wxExAddressRange::Change(const std::string& text) const
   return true;
 }
   
-void wxExAddressRange::Cleanup()
-{
-  delete m_Process;
-}
-  
 int wxExAddressRange::Confirm(
   const std::string& pattern, const std::string& replacement)
 {
@@ -568,6 +563,11 @@ bool wxExAddressRange::Move(const wxExAddress& destination) const
   return true;
 }
 
+void wxExAddressRange::OnExit()
+{
+  delete m_Process;
+}
+  
 bool wxExAddressRange::Parse(
   const std::string& command_org, 
   std::string& pattern, std::string& replacement, std::string& options) const

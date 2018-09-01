@@ -315,7 +315,6 @@ bool wxExFrameWithHistory::Grep(const std::string& arg, bool sed)
 
   if (!wxExStreamToListView::SetupTool(tool, this))
   {
-    wxExLog() << "setup failed";
     return false;
   }
 

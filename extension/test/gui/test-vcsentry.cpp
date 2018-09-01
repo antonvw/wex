@@ -39,6 +39,7 @@ TEST_CASE("wxExVCSEntry")
   REQUIRE( test.BuildMenu(0, &menu) == 0);
 
 #ifndef __WXMSW__
+#ifndef __WXOSX__
   // This should have no effect.  
   REQUIRE(!test.SetCommand(5));
   REQUIRE(!test.SetCommand(ID_EDIT_VCS_LOWEST));
@@ -58,5 +59,6 @@ TEST_CASE("wxExVCSEntry")
   wxExVCSEntry* git_async = new wxExVCSEntry("git", std::string(), {wxExVCSCommand("status")});
   REQUIRE( git_async->Execute(std::string(), wxExLexer(), PROCESS_EXEC_WAIT));
   git_async->ShowOutput();
+#endif
 #endif
 }

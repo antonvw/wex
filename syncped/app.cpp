@@ -27,6 +27,7 @@ void App::MacOpenFiles(const wxArrayString& fileNames)
   wxExOpenFiles(frame, wxExToVectorPath(fileNames).Get(), m_Data);
 }
 #endif
+
 bool App::OnInit()
 {
   SetAppName("syncped");

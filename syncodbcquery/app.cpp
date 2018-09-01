@@ -425,7 +425,7 @@ void Frame::StatusBarClicked(const std::string& pane)
 
       m_StatusBar->ShowField(
         "PaneLexer", 
-        wxExLexers::Get()->GetThemeOk());
+        !wxExLexers::Get()->GetTheme().empty());
         
       StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
     }

@@ -96,11 +96,7 @@ wxExSTC::wxExSTC(const wxExPath& filename, const wxExSTCData& data)
   }
 
   // we have our own popup
-#if wxCHECK_VERSION(3,1,1)
   UsePopUp(wxSTC_POPUP_NEVER);
-#else
-  UsePopUp(false);
-#endif
 
   BindAll();
 
@@ -457,8 +453,23 @@ void wxExSTC::MarkModified(const wxStyledTextEvent& event)
     
   UseModificationMarkers(true);
 }
-  
 
+void wxExSTC::OnExit()
+{
+  if (wxConfigBase::Get()->ReadLong(_("Keep zoom"), 0))
+  {
+    wxConfigBase::Get()->Write("zoom", m_Zoom);
+  }
+}
+  
+void wxExSTC::OnInit()
+{
+  if (wxConfigBase::Get()->ReadLong(_("Keep zoom"), 0))
+  {
+    m_Zoom = wxConfigBase::Get()->ReadLong("zoom", -1);
+  }
+}
+  
 void wxExSTC::OnIdle(wxIdleEvent& event)
 {
   event.Skip();
@@ -765,9 +776,7 @@ void wxExSTC::SetSearchFlags(int flags)
     if (frd->UseRegEx()) 
     {
       flags |= wxSTC_FIND_REGEXP;
-#if wxCHECK_VERSION(3,1,1)
       flags |= wxSTC_FIND_CXX11REGEX;
-#endif
     }
     if (frd->MatchWord()) flags |= wxSTC_FIND_WHOLEWORD;
     if (frd->MatchCase()) flags |= wxSTC_FIND_MATCHCASE;

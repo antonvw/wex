@@ -157,17 +157,19 @@ private:
     
   const wxExMarker m_MarkerSymbol = wxExMarker(0);
 
-  // relate a marker to identifier
-  std::map<char, int> m_MarkerIdentifiers;
-  // relate a marker to mark number
-  std::map<char, int> m_MarkerNumbers;
+  std::map<char, int> 
+    // relate a marker to identifier
+    m_MarkerIdentifiers,
+    // relate a marker to mark number
+    m_MarkerNumbers;
   
   static wxExSTCEntryDialog* m_Dialog;
   static wxExViMacros m_Macros;
   static wxExEvaluator m_Evaluator;
 
-  bool m_IsActive {true}; // are we actively using ex mode?
-  bool m_Copy {false}; // this is a copy, result of split
+  bool 
+    m_IsActive {true}, // are we actively using ex mode?
+    m_Copy {false};    // this is a copy, result of split
   
   int m_SearchFlags;
   

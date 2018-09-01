@@ -57,8 +57,8 @@ DecoratedFrame::DecoratedFrame(App* app)
   
   if (wxExVCS vcs; vcs.Use() && wxExVCS::GetCount() > 0)
   {
-    vcs.SetEntryFromBase();
-    StatusText(!vcs.GetBranch().empty() ? vcs.GetBranch(): vcs.GetName(), "PaneVCS");
+    const auto b(vcs.SetEntryFromBase() ? vcs.GetBranch(): std::string());
+    StatusText(!b.empty() ? b: vcs.GetName(), "PaneVCS");
   }
   else
   {
@@ -101,6 +101,8 @@ DecoratedFrame::DecoratedFrame(App* app)
   menuEdit->Append(wxID_PASTE);
   menuEdit->AppendSeparator();
   menuEdit->Append(wxID_JUMP_TO);
+  menuEdit->Append(wxID_CLEAR);
+  menuEdit->Append(wxID_SELECTALL);
   menuEdit->AppendSeparator();
   auto* menuFind = new wxExMenu();
   

@@ -147,9 +147,11 @@ wxExCTags::~wxExCTags()
   tagsClose(m_File);
 }
 
-std::string skipConst(const char* text)
+std::string skipConst(const std::string& text)
 {
-  if (std::vector<std::string> v; wxExMatch("(.*) *const$", text, v) == 1)
+  if (text.empty())
+    return std::string();
+  else if (std::vector<std::string> v; wxExMatch("(.*) *const$", text, v) == 1)
     return v[0];
   else
     return text;
@@ -158,7 +160,10 @@ std::string skipConst(const char* text)
 std::string wxExCTags::AutoComplete(
   const std::string& text, const wxExCTagsEntry& filter)
 {
-  if (m_File == nullptr) return std::string();
+  if (m_File == nullptr) 
+  {
+    return std::string();
+  }
 
   tagEntry entry;
   
@@ -177,16 +182,16 @@ std::string wxExCTags::AutoComplete(
     return std::string();
   }
 
+  if (!m_Prepare)
+  {
+    AutoCompletePrepare();
+  }
+
   std::string s, prev_tag;
 
   const int max{100};
   int count {0};
   tagResult result = TagSuccess;
-
-  if (!m_Prepare)
-  {
-    AutoCompletePrepare();
-  }
 
   do
   {
@@ -195,7 +200,10 @@ std::string wxExCTags::AutoComplete(
     if (const auto tag(Filtered(entry, filter, image)); !tag.empty() && 
       tag != prev_tag)
     {
-      if (!s.empty()) s.append(std::string(1, m_Separator));
+      if (!s.empty()) 
+      {
+        s.append(std::string(1, m_Separator));
+      }
 
       s.append(tag);
       count++;
@@ -204,10 +212,16 @@ std::string wxExCTags::AutoComplete(
 
       if (filter.Kind() == "f")
       {
-        s.append(skipConst(tagsField(&entry, "signature")));
+        const char* value = tagsField(&entry, "signature");
+        
+        if (value != nullptr)
+        {
+          s.append(skipConst(value));
+        }
       }
 
-      s.append(image != IMAGE_NONE ? "?" + std::to_string(image): std::string());
+      s.append(image != IMAGE_NONE ? 
+        "?" + std::to_string(image): std::string());
 
       prev_tag = tag;
     } 

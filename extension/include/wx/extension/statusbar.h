@@ -128,7 +128,7 @@ public:
   /// Returns created statusbar.
   static wxExStatusBar* Setup(
     wxExFrame* frame,
-    const std::vector<wxExStatusBarPane> panes,
+    const std::vector<wxExStatusBarPane>& panes,
     long style = wxST_SIZEGRIP,
     const wxString& name = "statusBar");
 

@@ -235,6 +235,8 @@ bool wxExViMode::Transition(std::string& command)
         m_vi->GetSTC()->HomeExtend();
       }
       break;
+    
+    default: break;
   }
 
   ((wxExStatusBar *)m_vi->GetFrame()->GetStatusBar())->ShowField(

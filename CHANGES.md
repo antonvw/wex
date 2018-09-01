@@ -1,9 +1,9 @@
-**v18.10**
+**v18.10** *October 7, 2018*
   - c++17
   - wxWidgets used as submodule
-  - use more string_view
   - vi improved
   - ctags update
+  - osx fixes
 
 **v18.04** *April 8, 2018*
   - easylogging++ lib
@@ -21,6 +21,7 @@
 
 **v16.10** *September 30, 2016*
   - eval lib
+  - osx support
 
 **v3.1.0** *March 11, 2016*
   - wxWidgets 3.1.0

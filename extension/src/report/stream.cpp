@@ -18,6 +18,7 @@
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/frame.h>
 #include <wx/extension/report/listview.h>
+#include <easylogging++.h>
 
 wxExListView* wxExStreamToListView::m_Report = nullptr;
 wxExFrameWithHistory* wxExStreamToListView::m_Frame = nullptr;
@@ -331,6 +332,7 @@ bool wxExStreamToListView::SetupTool(
       if ((m_Report = 
         m_Frame->Activate(wxExListViewWithFrame::GetTypeTool(tool))) == nullptr)
       {
+        VLOG(9) << "Activate failed";
         return false;
       }
     }
@@ -338,6 +340,12 @@ bool wxExStreamToListView::SetupTool(
   else
   {
     m_Report = report;
+  } 
+
+  if (m_Report->GetData().Type() != LIST_FIND)
+  {
+    VLOG(9) << "report list type is not LIST_FIND";
+    return false;
   }
 
   return true;

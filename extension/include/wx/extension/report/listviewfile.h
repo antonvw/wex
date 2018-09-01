@@ -2,7 +2,7 @@
 // Name:      listviewfile.h
 // Purpose:   Declaration of class wxExListViewFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -30,8 +30,8 @@ public:
   /// deault this thread runs detached, otherwise this method
   /// waits for the thread to finish.
   void AddItems(
-    const wxString& folder,
-    const wxString& files,
+    const std::string& folder,
+    const std::string& files,
     long flags,
     bool detach = true);
 
@@ -46,11 +46,11 @@ public:
   wxExFile& GetFile() {return *this;};
 
   // Access to members.
-  const wxString GetTextAddFiles() const {return m_TextAddFiles;};
-  const wxString GetTextAddFolders() const {return m_TextAddFolders;};
-  const wxString GetTextAddRecursive() const {return m_TextAddRecursive;};
-  const wxString GetTextAddWhat() const {return m_TextAddWhat;};
-  const wxString GetTextInFolder() const {return m_TextInFolder;};
+  const auto& GetTextAddFiles() const {return m_TextAddFiles;};
+  const auto& GetTextAddFolders() const {return m_TextAddFolders;};
+  const auto& GetTextAddRecursive() const {return m_TextAddRecursive;};
+  const auto& GetTextAddWhat() const {return m_TextAddWhat;};
+  const auto& GetTextInFolder() const {return m_TextInFolder;};
 
   /// Adds item from text.
   virtual bool ItemFromText(const std::string& text) override;
@@ -65,11 +65,13 @@ protected:
   void OnIdle(wxIdleEvent& event);
 private:
   bool m_ContentsChanged = false;
-  const wxString m_TextAddFiles = _("Add files");
-  const wxString m_TextAddFolders = _("Add folders");
-  const wxString m_TextAddRecursive = _("Recursive");
-  const wxString m_TextAddWhat = _("Add what");
-  const wxString m_TextInFolder = _("In folder");
+  
+  const std::string 
+    m_TextAddFiles = _("Add files"),
+    m_TextAddFolders = _("Add folders"),
+    m_TextAddRecursive = _("Recursive"),
+    m_TextAddWhat = _("Add what"),
+    m_TextInFolder = _("In folder");
   
   wxExItemDialog* m_AddItemsDialog;
 };

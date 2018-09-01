@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      listitem.h
-// Purpose:   Declaration of class 'wxExListItem'
+// Purpose:   Declaration of class wxExListItem
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -42,7 +42,8 @@ public:
   bool IsReadOnly() const {return m_IsReadOnly;};
 
   /// Sets the item text using column name.
-  void SetItem(const std::string& col_name, const std::string& text);
+  /// Returns false if text could not be set.
+  bool SetItem(const std::string& col_name, const std::string& text);
 
   /// Updates all attributes.
   void Update();

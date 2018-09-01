@@ -2064,10 +2064,49 @@ Copyright: (c) 2018, Anton van Wezenbeek
       <def no ="operator"/>
     </def>
     
-    <!-- These are the themes, including style macro's and colours. -->
+    <!-- These are the themes, including style macro's and colours. 
+         The first theme is the default theme.
+      -->
     <themes>
+      <!-- The torte theme, resembles vi torte -->
+      <theme name="torte">
+        <def style ="attribute"> fore:green </def>
+        <def style ="bracelight"> back:blue,fore:white</def>
+        <def style ="char"> fore:pink </def>
+        <def style ="command"> fore:steel blue </def>
+        <def style ="comment"> fore:#80a0ff,italic,back:#2D2D2D,eol </def>
+        <def style ="commentdockeyword"> fore:medium sea green,italic </def>
+        <def style ="error"> fore:red,italic,eol </def>
+        <def style ="folder"> blue </def>
+        <def style ="folder-back"> light blue </def>
+        <def style ="foldmarginbackground"> dim grey </def>
+        <def style ="foldmarginforeground"> black </def>
+        <def style ="identifier"> fore:white</def>
+        <def style ="keyword1"> fore:yellow </def>
+        <def style ="keyword2"> fore:yellow green </def>
+        <def style ="keyword3"> fore:medium spring green </def>
+        <def style ="label"> fore:medium slate blue,italic </def>
+        <def style ="number"> fore:plum </def>
+        <def style ="operator"> fore:white </def>
+        <def style ="preprocessor"> fore:grey </def>
+        <def style ="processor"> fore:dark grey </def>
+        <def style ="string"> fore:#ffab8f </def>
+        <def style ="styledefault"> default-font,back:#2B2B2B,fore:#BBBBBB </def>
+        <def style ="styledefault-back"> default-font,back:#2E2E2E,fore:#BBBBBB,eol </def>
+        <def style ="styleindicatorfind"> red </def>
+        <def style ="styletextmargin"> back:#3B3B3B,face:ABeeZee,size:8 </def>
+        <def style ="tag"> fore:cadet blue </def>
+        <def style ="variable"> fore:green </def>
+        
+        <colour name="caretforeground"> white </colour>
+        <colour name="caretlinebackground"> dark slate grey </colour>
+        <colour name="edge"> dim grey </colour>
+        <colour name="selforeground"> black </colour>
+        <colour name="selbackground"> green </colour>
+      </theme>
+      
       <!-- The studio theme, resembles Visual Studio -->
-      <theme name = "studio">
+      <theme name="studio">
         <def style ="attribute"> fore:steel blue </def>
         <def style ="bracelight"> back:yellow,fore:black</def>
         <def style ="char"> fore:pink </def>
@@ -2076,7 +2115,9 @@ Copyright: (c) 2018, Anton van Wezenbeek
         <def style ="commentdockeyword"> fore:medium sea green,italic </def>
         <def style ="error"> fore:red,italic,eol </def>
         <def style ="folder"> blue </def>
-        <def style ="folder-back"> light blue </def>
+        <def style ="folder-back"> steel blue </def>
+        <def style ="foldmarginbackground"> white </def>
+        <def style ="foldmarginforeground"> light blue </def>
         <def style ="identifier"> fore:black</def>
         <def style ="keyword1"> fore:dark turquoise </def>
         <def style ="keyword2"> fore:dark green </def>
@@ -2097,41 +2138,6 @@ Copyright: (c) 2018, Anton van Wezenbeek
         <colour name="caretforeground"> black </colour>
         <colour name="caretlinebackground"> wheat </colour>
         <colour name="edge"> light blue </colour>
-        <colour name="selforeground"> white </colour>
-        <colour name="selbackground"> green </colour>
-      </theme>
-      
-      <!-- The torte theme, resembles vi torte -->
-      <theme name = "torte">
-        <def style ="attribute"> fore:green </def>
-        <def style ="bracelight"> back:blue,fore:white</def>
-        <def style ="char"> fore:pink </def>
-        <def style ="command"> fore:steel blue </def>
-        <def style ="comment"> fore:#80a0ff,italic,back:#2D2D2D,eol </def>
-        <def style ="commentdockeyword"> fore:medium sea green,italic </def>
-        <def style ="error"> fore:red,italic,eol </def>
-        <def style ="folder"> blue </def>
-        <def style ="folder-back"> light blue </def>
-        <def style ="identifier"> fore:white</def>
-        <def style ="keyword1"> fore:yellow </def>
-        <def style ="keyword2"> fore:yellow green </def>
-        <def style ="keyword3"> fore:medium spring green </def>
-        <def style ="label"> fore:medium slate blue,italic </def>
-        <def style ="number"> fore:red </def>
-        <def style ="operator"> fore:white </def>
-        <def style ="preprocessor"> fore:grey </def>
-        <def style ="processor"> fore:dark grey </def>
-        <def style ="string"> fore:#ffab8f </def>
-        <def style ="styledefault"> default-font,back:#2B2B2B,fore:#BBBBBB </def>
-        <def style ="styledefault-back"> default-font,back:#2E2E2E,fore:#BBBBBB,eol </def>
-        <def style ="styleindicatorfind"> red </def>
-        <def style ="styletextmargin"> back:#3B3B3B,face:ABeeZee,size:8 </def>
-        <def style ="tag"> fore:cadet blue </def>
-        <def style ="variable"> fore:green </def>
-        
-        <colour name="caretforeground"> white </colour>
-        <colour name="caretlinebackground"> dark slate grey </colour>
-        <colour name="edge"> dim grey </colour>
         <colour name="selforeground"> black </colour>
         <colour name="selbackground"> green </colour>
       </theme>
@@ -2143,7 +2149,7 @@ Copyright: (c) 2018, Anton van Wezenbeek
    and <text> children are supported. -->
   <global>
     <!-- checker board colours: background colour, foreground colour -->
-    <foldmargin> dim grey,black </foldmargin>
+    <foldmargin> foldmarginbackground,foldmarginforeground </foldmargin>
     
     <hex no="style_bracelight"> back:red </hex>
 

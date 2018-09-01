@@ -19,6 +19,7 @@
 #include <wx/extension/stc.h>
 #include <wx/extension/tokenizer.h>
 #include <wx/extension/util.h> // for wxExMatchesOneOf
+#include <easylogging++.h>
 
 // Constructor for lexers from specified filename.
 // This must be an existing xml file containing all lexers.
@@ -26,9 +27,7 @@
 // it both constructs and loads the lexers.
 wxExLexers::wxExLexers(const wxExPath& filename)
   : m_Path(filename)
-  // Here the default theme is set, and used if the application
-  // is run for the first time.
-  , m_Theme(wxConfigBase::Get()->Read("theme", "studio"))
+  , m_Theme(wxConfigBase::Get()->Read("theme", std::string()))
 {
 }
 
@@ -64,14 +63,21 @@ void wxExLexers::ApplyGlobalStyles(wxExSTC* stc)
 
   if (!m_FoldingBackgroundColour.empty())
   {
-    const wxString col(m_FoldingBackgroundColour);
-    stc->SetFoldMarginHiColour(true, col);
+    stc->SetFoldMarginHiColour(true, m_FoldingBackgroundColour.c_str());
+  }
+  else
+  {
+    // See ViewStyle.cxx foldmarginColour
+    stc->SetFoldMarginHiColour(true, wxColour(0xc0, 0xc0, 0xc0));
   }
 
   if (!m_FoldingForegroundColour.empty())
   {
-    const wxString col((m_FoldingForegroundColour));
-    stc->SetFoldMarginColour(true, col);
+    stc->SetFoldMarginColour(true, m_FoldingForegroundColour.c_str());
+  }
+  else
+  {
+    stc->SetFoldMarginColour(true, wxColour(0xff, 0, 0));
   }
 
   if (const auto& colour_it = m_ThemeColours.find(m_Theme);
@@ -79,13 +85,13 @@ void wxExLexers::ApplyGlobalStyles(wxExSTC* stc)
   {
     for (const auto& it : colour_it->second)
     {
-           if (it.first == "caretforeground") stc->SetCaretForeground(wxString(it.second));
-      else if (it.first == "caretlinebackground") stc->SetCaretLineBackground(wxString(it.second));
-      else if (it.first == "selbackground") stc->SetSelBackground(true, wxString(it.second));
-      else if (it.first == "selforeground") stc->SetSelForeground(true, wxString(it.second));
-      else if (it.first == "calltipbackground") stc->CallTipSetBackground(wxString(it.second));
-      else if (it.first == "calltipforeground") stc->CallTipSetForeground(wxString(it.second));
-      else if (it.first == "edge") stc->SetEdgeColour(wxString(it.second));
+           if (it.first == "caretforeground") stc->SetCaretForeground(it.second.c_str());
+      else if (it.first == "caretlinebackground") stc->SetCaretLineBackground(it.second.c_str());
+      else if (it.first == "selbackground") stc->SetSelBackground(true, it.second.c_str());
+      else if (it.first == "selforeground") stc->SetSelForeground(true, it.second.c_str());
+      else if (it.first == "calltipbackground") stc->CallTipSetBackground(it.second.c_str());
+      else if (it.first == "calltipforeground") stc->CallTipSetForeground(it.second.c_str());
+      else if (it.first == "edge") stc->SetEdgeColour(it.second.c_str());
     }
   }
 }
@@ -192,19 +198,23 @@ bool wxExLexers::LoadDocument()
   }
   
   m_DefaultStyle = wxExStyle();
-  m_ThemeColours.clear();
+  m_FoldingBackgroundColour.clear();
+  m_FoldingForegroundColour.clear();
   m_GlobalProperties.clear();
   m_Indicators.clear();
   m_Keywords.clear();
   m_Lexers.clear();
   m_Macros.clear();
-  m_ThemeMacros.clear();
   m_Markers.clear();
   m_Styles.clear();
+  m_StylesHex.clear();
   m_Texts.clear();
-  m_ThemeColours[m_NoTheme] = m_DefaultColours;
-  m_ThemeMacros[m_NoTheme] = std::map<std::string, std::string>{};  
-
+  m_ThemeColours.clear();
+  m_ThemeMacros.clear();
+  
+  m_ThemeColours[std::string()] = m_DefaultColours;
+  m_ThemeMacros[std::string()] = std::map<std::string, std::string>{};  
+  
   for (const auto& node: doc.document_element().children())
   {
          if (strcmp(node.name(), "macro") == 0) ParseNodeMacro(node);
@@ -226,31 +236,47 @@ bool wxExLexers::LoadDocument()
         if (!b.GetExtensions().empty())
           return a.empty() ? b.GetExtensions() : a + wxExGetFieldSeparator() + b.GetExtensions();
         else return a;}));
-    if (!config->Exists(_("Add what"))) config->Write(_("Add what"), wxString(extensions));
-    if (!config->Exists(_("In files"))) config->Write(_("In files"), wxString(extensions));
+    if (!config->Exists(_("Add what"))) config->Write(_("Add what"), extensions.c_str());
+    if (!config->Exists(_("In files"))) config->Write(_("In files"), extensions.c_str());
     if (!config->Exists(_("In folder"))) config->Write(_("In folder"), wxGetHomeDir());
   }
   
   // Do some checking.
-  if (!m_Lexers.empty())
+  if (!m_Lexers.empty() && !m_Theme.empty())
   {
     if (!m_DefaultStyle.IsOk()) wxExLog() << "default style not ok";
     if (!m_DefaultStyle.ContainsDefaultStyle()) wxExLog() << "default style does not contain default style";
   }  
 
-  if (m_ThemeMacros.size() <= 1) // NoTheme is always present
+  if (m_ThemeMacros.empty())
   {
     wxExLog() << "themes are missing";
   }
-
-  for (const auto& it : m_ThemeMacros)
+  else 
   {
-    if (!it.first.empty() && it.second.empty())
+    for (const auto& it : m_ThemeMacros)
     {
-      wxExLog("theme") << it.first << " is unknown";
-    }
-  } 
+      if (!it.first.empty() && it.second.empty())
+      {
+        wxExLog("theme") << it.first << " is unknown";
+      }
+    } 
+  }
 
+  VLOG(9) << 
+    "default colors: " << m_DefaultColours.size() <<
+    " global properties: " << m_GlobalProperties.size() <<
+    " indicators: " << m_Indicators.size() <<
+    " keywords: " << m_Keywords.size() <<
+    " lexers: " << m_Lexers.size() <<
+    " macros: " << m_Macros.size() <<
+    " markers: " << m_Markers.size() <<
+    " styles: " << m_Styles.size() <<
+    " styles hex: " << m_StylesHex.size() <<
+    " texts: " << m_Texts.size() <<
+    " theme colours: " << m_ThemeColours.size() <<
+    " theme macros: " << m_ThemeMacros.size();
+  
   return true;
 }
 
@@ -266,7 +292,7 @@ void wxExLexers::ParseNodeGlobal(const pugi::xml_node& node)
 {
   for (const auto& child: node.children())
   {
-    if (m_Theme == m_NoTheme)
+    if (m_Theme.empty())
     {
       // Do nothing.
     }
@@ -383,6 +409,11 @@ void wxExLexers::ParseNodeMacro(const pugi::xml_node& node)
 
 void wxExLexers::ParseNodeTheme(const pugi::xml_node& node)
 {
+  if (m_Theme.empty() && !wxConfigBase::Get(false)->Exists("theme"))
+  {
+    m_Theme = std::string(node.attribute("name").value());
+  }
+  
   std::map<std::string, std::string> tmpColours;
   std::map<std::string, std::string> tmpMacros;
   
@@ -418,11 +449,6 @@ void wxExLexers::ParseNodeThemes(const pugi::xml_node& node)
   for (const auto& child: node.children()) ParseNodeTheme(child);
 }
       
-void wxExLexers::RestoreTheme()
-{
-  m_Theme = wxConfigBase::Get()->Read("theme", "studio");
-}
-  
 wxExLexers* wxExLexers::Set(wxExLexers* lexers)
 {
   wxExLexers* old = m_Self;
@@ -430,7 +456,7 @@ wxExLexers* wxExLexers::Set(wxExLexers* lexers)
   return old;
 }
 
-bool SingleChoice(wxWindow* parent, const wxString& title, 
+bool SingleChoice(wxWindow* parent, const std::string& title, 
   const wxArrayString& s, std::string& selection)
 {
   wxSingleChoiceDialog dlg(parent, _("Input") + ":", title, s);
@@ -447,8 +473,8 @@ bool SingleChoice(wxWindow* parent, const wxString& title,
 bool wxExLexers::ShowDialog(wxExSTC* stc) const
 {
   wxArrayString s;
+  s.Add(std::string());
   for (const auto& it : m_Lexers) s.Add(it.GetDisplayLexer());
-  s.Add(wxEmptyString);
 
   auto lexer = stc->GetLexer().GetDisplayLexer();
   if (!SingleChoice(stc, _("Enter Lexer"), s, lexer)) return false;
@@ -465,7 +491,7 @@ bool wxExLexers::ShowThemeDialog(wxWindow* parent)
 
   if (!SingleChoice(parent, _("Enter Theme"), s, m_Theme)) return false;
 
-  wxConfigBase::Get()->Write("theme", wxString(m_Theme));
+  wxConfigBase::Get()->Write("theme", m_Theme.c_str());
 
   return LoadDocument();
 }

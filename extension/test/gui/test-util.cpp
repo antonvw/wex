@@ -367,6 +367,7 @@ TEST_CASE("wxEx")
   }
 
 #ifdef __UNIX__
+#ifndef __WXOSX__
   SUBCASE("wxExShellExpansion")
   {
     std::string command("xxx `pwd` `pwd`");
@@ -379,6 +380,7 @@ TEST_CASE("wxEx")
     REQUIRE(!wxExShellExpansion(command));
     REQUIRE( command == "illegal process `xyz`");
   }
+#endif
 #endif
   
   SUBCASE("wxExSort")

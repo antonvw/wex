@@ -118,11 +118,11 @@ bool wxExSTCData::Inject() const
       }
       else if (m_Data.Line() == 0)
       {
-        m_STC->FindNext(m_Data.Find(), 0);
+        m_STC->FindNext(m_Data.Find(), m_Data.FindFlags());
       }
       else
       {
-        m_STC->FindNext(m_Data.Find(), 0, false);
+        m_STC->FindNext(m_Data.Find(), m_Data.FindFlags(), false);
       }
       return true;},
     [&]() {

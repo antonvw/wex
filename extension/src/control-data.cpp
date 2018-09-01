@@ -19,9 +19,13 @@ wxExControlData& wxExControlData::Command(const std::string& command)
   return *this;
 }
   
-wxExControlData& wxExControlData::Find(const std::string& text) 
+wxExControlData& wxExControlData::Find(
+  const std::string& text,
+  int flags) 
 {
   m_Find = text;
+  m_FindFlags = flags;
+  
   return *this;
 }
 

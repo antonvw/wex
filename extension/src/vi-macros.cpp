@@ -264,7 +264,6 @@ void wxExViMacros::Record(const std::string& text, bool new_command)
   
   if (new_command) 
   {
-    // TODO: Improve.
     m_Macros[m_Macro].emplace_back(text == " " ? "l": text);
   }
   else

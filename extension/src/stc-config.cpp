@@ -37,19 +37,18 @@ public:
     {_("Fold flags"), ITEM_TEXTCTRL_INT, (long)wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED},
     {_("Folding"), ITEM_TEXTCTRL_INT, 16l},
     {_("Indent"), ITEM_TEXTCTRL_INT, 2l},
+    {_("Keep zoom"), ITEM_CHECKBOX, true},
     {_("Line number"), ITEM_TEXTCTRL_INT, 60l},
     {_("Print flags"), ITEM_TEXTCTRL_INT, (long)wxSTC_PRINT_BLACKONWHITE},
     {_("Scroll bars"), ITEM_CHECKBOX, true},
     {_("Search engine"), ITEM_COMBOBOX, std::string("https://duckduckgo.com")},
     {_("Show mode"), ITEM_CHECKBOX, true},
-#if wxCHECK_VERSION(3,1,1)
     {_("Tab draw mode"), ITEM_TEXTCTRL_INT, (long)wxSTC_TD_LONGARROW},
-#endif
     {_("Tab font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
     {_("Tab width"), ITEM_TEXTCTRL_INT, 2l},
     {_("Text font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
     {_("vi mode"), ITEM_CHECKBOX, true},
-    {_("vi tag fullpath"), ITEM_CHECKBOX, true}}) {;};
+    {_("vi tag fullpath"), ITEM_CHECKBOX, false}}) {;};
 };
   
 bool wxExSTC::AutoIndentation(int c)
@@ -134,6 +133,7 @@ int wxExSTC::ConfigDialog(const wxExWindowData& par)
                _("Caret line"),
                _("Scroll bars"),
                _("Autocomplete"),
+               _("Keep zoom"),
                _("vi mode"),
                _("vi tag fullpath")}},
             {_("Search engine"), ITEM_COMBOBOX}}},
@@ -148,31 +148,19 @@ int wxExSTC::ConfigDialog(const wxExWindowData& par)
                {wxSTC_WRAPVISUALFLAG_END, _("End")},
                {wxSTC_WRAPVISUALFLAG_START, _("Start")},
                {wxSTC_WRAPVISUALFLAG_MARGIN, _("Margin")}}, true, 4},
-#if wxCHECK_VERSION(3,1,1)
              {_("Tab draw mode"), {
                {wxSTC_TD_LONGARROW, _("Longarrow")},
                {wxSTC_TD_STRIKEOUT, _("Strikeout")}}, true, 2},
-#endif
              {_("Whitespace visible"), {
                {wxSTC_WS_INVISIBLE, _("Off")},
                {wxSTC_WS_VISIBLEAFTERINDENT, _("After indent")},
-               {wxSTC_WS_VISIBLEALWAYS, _("Always")}
-#if wxCHECK_VERSION(3,1,1)
-               ,{wxSTC_WS_VISIBLEONLYININDENT, _("Only indent")}},
-#else
-               },
-#endif  
-               true, 2},
+               {wxSTC_WS_VISIBLEALWAYS, _("Always")},
+               {wxSTC_WS_VISIBLEONLYININDENT, _("Only indent")}}, true, 2},
              {_("Wrap line"), {
                {wxSTC_WRAP_NONE, _("None")},
                {wxSTC_WRAP_WORD, _("Word")},
-               {wxSTC_WRAP_CHAR, _("Char")}
-#if wxCHECK_VERSION(3,1,0)
-              ,{wxSTC_WRAP_WHITESPACE, _("Whitespace")}},
-#else
-               },
-#endif  
-              true, 4}}}} 
+               {wxSTC_WRAP_CHAR, _("Char")},
+               {wxSTC_WRAP_WHITESPACE, _("Whitespace")}}, true, 4}}}} 
 #ifdef __WXMSW__
             ,ITEM_NOTEBOOK_AUI
 #endif
@@ -186,13 +174,8 @@ int wxExSTC::ConfigDialog(const wxExWindowData& par)
          { _("Edge line"), {
            {wxSTC_EDGE_NONE, _("None")},
            {wxSTC_EDGE_LINE, _("Line")},
-           {wxSTC_EDGE_BACKGROUND, _("Background")}
-#if wxCHECK_VERSION(3,1,0)
-           ,{wxSTC_EDGE_MULTILINE, _("Multiline")}},
-#else
-           },
-#endif
-           true, 1}}},
+           {wxSTC_EDGE_BACKGROUND, _("Background")},
+           {wxSTC_EDGE_MULTILINE, _("Multiline")}}, true, 1}}},
       {_("Margin"),
         {{_("Tab width"), 1, 500},
          {_("Indent"), 0, 500},
@@ -277,9 +260,7 @@ void wxExSTC::ConfigGet()
   SetIndentationGuides( cfg->ReadBool(_("Indentation guide"), false));
   SetMarginWidth(m_MarginDividerNumber,  cfg->ReadLong(_("Divider"), 0));
   SetPrintColourMode(cfg->ReadLong(_("Print flags"), 0));
-#if wxCHECK_VERSION(3,1,1)
   SetTabDrawMode(cfg->ReadLong(_("Tab draw mode"), wxSTC_TD_LONGARROW));
-#endif
   SetTabWidth(cfg->ReadLong(_("Tab width"), 0));
   SetUseHorizontalScrollBar(cfg->ReadBool(_("Scroll bars"), true));
   SetUseTabs(cfg->ReadBool(_("Use tabs"), false));

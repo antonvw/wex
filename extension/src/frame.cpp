@@ -405,7 +405,7 @@ bool wxExFrame::UpdateStatusBar(wxExSTC* stc, const std::string& pane)
   }
   else if (pane == "PaneLexer")
   {
-    if (wxExLexers::Get()->GetThemeOk())
+    if (!wxExLexers::Get()->GetTheme().empty())
     {
       text = stc->GetLexer().GetDisplayLexer();
     }

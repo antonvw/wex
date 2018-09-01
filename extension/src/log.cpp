@@ -7,6 +7,7 @@
 
 #include <wx/extension/log.h>
 #include <wx/extension/item.h>
+#include <wx/extension/listitem.h>
 #include <easylogging++.h>
 
 wxExLog::wxExLog(const std::string& topic, wxExLogLevel level)
@@ -91,6 +92,12 @@ wxExLog& wxExLog::operator<<(const pugi::xml_node& r)
 wxExLog& wxExLog::operator<<(const wxExItem& r)
 {
   m_ss << S() << "item:" << S() << r.Log().str();
+  return *this;
+}
+
+wxExLog& wxExLog::operator<<(const wxExListItem& r)
+{
+  m_ss << S() << "list item:" << S() << r.GetFileName().Path().string();
   return *this;
 }
 

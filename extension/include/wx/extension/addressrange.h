@@ -46,9 +46,6 @@ public:
   /// Changes range into text.
   bool Change(const std::string& text) const;
   
-  /// Cleans up (process).
-  static void Cleanup();
-  
   /// Copies range to destination.
   bool Copy(const wxExAddress& destination) const;
   
@@ -90,6 +87,9 @@ public:
   
   /// Moves range to destination.
   bool Move(const wxExAddress& destination) const;
+  
+  /// Cleans up (process).
+  static void OnExit();
   
   /// Prints range to print file.
   bool Print(const std::string& flags = std::string()) const;

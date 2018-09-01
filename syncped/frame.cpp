@@ -701,15 +701,20 @@ void Frame::OnCommand(wxCommandEvent& event)
   // That causes appl to hang.
   case wxID_UNDO:
   case wxID_REDO:
-  case wxID_DELETE:
-  case wxID_SELECTALL:
-  case wxID_JUMP_TO:
-  case wxID_CUT:  case wxID_COPY:
-  case wxID_PASTE:
   case wxID_CLEAR:
+  case wxID_COPY:
+  case wxID_CUT:
+  case wxID_DELETE:
+  case wxID_JUMP_TO:  
+  case wxID_PASTE:
+  case wxID_SELECTALL:
     if (editor != nullptr)
     {
       wxPostEvent(editor, event);
+    }
+    else if (GetListView() != nullptr)
+    {
+      wxPostEvent(GetListView(), event);
     }
   break;
 
@@ -1311,7 +1316,7 @@ void Frame::StatusBarClicked(const std::string& pane)
 
       m_StatusBar->ShowField(
         "PaneLexer", 
-        wxExLexers::Get()->GetThemeOk());
+        !wxExLexers::Get()->GetTheme().empty());
         
       StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
     }
@@ -1365,20 +1370,31 @@ void Frame::StatusBarClickedRight(const std::string& pane)
           !stc->GetLexer().GetScintillaLexer().empty() && 
            stc->GetLexer().GetScintillaLexer() == stc->GetLexer().GetDisplayLexer())
         {
-          match = "lexer name=\"" + stc->GetLexer().GetScintillaLexer() + "\"";
+          match = "lexer *name *= *\"" + stc->GetLexer().GetScintillaLexer() + "\"";
         }
         else if (!stc->GetLexer().GetDisplayLexer().empty())
         {
-          match = "display=\"" + stc->GetLexer().GetDisplayLexer() + "\"";
+          match = "display *= *\"" + stc->GetLexer().GetDisplayLexer() + "\"";
+        }
+        else
+        {
+          return;
         }
       }
     }
     else
     {
-      match = wxExLexers::Get()->GetTheme();
+      if (wxExLexers::Get()->GetTheme().empty())
+      {
+        return;
+      }
+      
+      match = "theme *name *= *\"" + wxExLexers::Get()->GetTheme() + "\"";
     }
     
-    OpenFile(wxExLexers::Get()->GetFileName(), wxExControlData().Find(match));
+    OpenFile(
+      wxExLexers::Get()->GetFileName(), 
+      wxExControlData().Find(match, wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX));
   }
   else if (pane == "PaneMacro")
   {

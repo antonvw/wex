@@ -109,7 +109,8 @@ Frame::Frame()
   , m_Timer(this)
   , m_Answer(ANSWER_OFF)
   , m_DataWindow(new wxExSTC)
-  , m_LogWindow(new wxExSTC(std::string(), wxExSTCData().Flags(STC_WIN_NO_INDICATOR)))
+  , m_LogWindow(new wxExSTC(
+      std::string(), wxExSTCData().Flags(STC_WIN_NO_INDICATOR)))
   , m_Shell(new wxExShell)
 {
   SetIcon(wxICON(app));
@@ -451,7 +452,7 @@ Frame::Frame()
     // Configuring only possible if server is stopped,
     // otherwise just show settings readonly mode.
     wxExItemDialog({
-        {_("Hostname"), wxEmptyString, ITEM_TEXTCTRL, wxExControlData().Required(true)},
+        {_("Hostname"), std::string(), ITEM_TEXTCTRL, wxExControlData().Required(true)},
         // Well known ports are in the range from 0 to 1023.
         // Just allow here for most flexibility.
         {_("Port"), 1, 65536}},
@@ -942,7 +943,7 @@ void Frame::StatusBarClicked(const std::string& pane)
 
       m_StatusBar->ShowField(
         "PaneLexer", 
-        wxExLexers::Get()->GetThemeOk());
+        !wxExLexers::Get()->GetTheme().empty());
         
       StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
     }

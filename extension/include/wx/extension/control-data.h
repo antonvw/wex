@@ -50,11 +50,22 @@ public:
   /// Sets find.
   /// If not empty selects the text on that line (if line was specified)
   /// or finds text from begin (if line was 0) or end (line was -1).
-  wxExControlData& Find(const std::string& text);
+  wxExControlData& Find(
+    /// text to find
+    const std::string& text,
+    /// find flags to be used
+    int find_flags = 0);
 
-  /// Sets specified flags.  
+  /// Returns find flags.
+  const auto FindFlags() const {return m_FindFlags;};
+  
+  /// Sets specified flags.
+  /// This is used by the other data classes as generic 
+  /// method to operate on flags.
   template<typename T>
-  wxExControlData& Flags(T flags, T& result, wxExDataAction action = DATA_SET) {
+  wxExControlData& Flags(
+    T flags, T& result, 
+    wxExDataAction action = DATA_SET) {
     switch (action)
     {
       case DATA_INV: result = static_cast<T>(result & ~flags); break;
@@ -113,7 +124,12 @@ private:
   wxExWindowData m_Data;
 
   bool m_Required {false};
-  int m_Col {DATA_NUMBER_NOT_SET}, m_Line {DATA_NUMBER_NOT_SET};
+  
+  int 
+    m_Col {DATA_NUMBER_NOT_SET}, 
+    m_FindFlags {DATA_NUMBER_NOT_SET}, 
+    m_Line {DATA_NUMBER_NOT_SET};
+  
   std::string m_Find {std::string()};
   
   wxExExCommand m_Command {std::string()};

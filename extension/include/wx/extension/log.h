@@ -21,6 +21,7 @@ enum wxExLogLevel
 };
 
 class wxExItem;
+class wxExListItem;
 
 /// This class offers logging.
 /// You should give at least one << following one of the
@@ -66,6 +67,9 @@ public:
 
   /// Logs item according to level.
   wxExLog& operator<<(const wxExItem&);
+
+  /// Logs listitem according to level.
+  wxExLog& operator<<(const wxExListItem&);
 
   /// Returns current logging.
   const std::string Get() const {return m_ss.str();};

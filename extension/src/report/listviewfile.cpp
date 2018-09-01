@@ -23,12 +23,15 @@
 #include <wx/extension/report/frame.h>
 #include <easylogging++.h>
 
-wxExListViewFile::wxExListViewFile(const std::string& file, const wxExListViewData& data)
+wxExListViewFile::wxExListViewFile(
+  const std::string& file, const wxExListViewData& data)
   : wxExListViewWithFrame(wxExListViewData(data).Type(LIST_FILE))
   , wxExFile(false) // do not open files in FileLoad and Save
   , m_AddItemsDialog(new wxExItemDialog({
-        {m_TextAddWhat,ITEM_COMBOBOX, std::any(), wxExControlData().Required(true)},
-        {m_TextInFolder,ITEM_COMBOBOX_DIR, std::any(), wxExControlData().Required(true)},
+        {m_TextAddWhat,ITEM_COMBOBOX, std::any(), 
+           wxExControlData().Required(true)},
+        {m_TextInFolder,ITEM_COMBOBOX_DIR, std::any(), 
+           wxExControlData().Required(true)},
         {std::set<std::string> {
           m_TextAddFiles, m_TextAddFolders, m_TextAddRecursive}}},
       wxExWindowData().
@@ -46,7 +49,8 @@ wxExListViewFile::wxExListViewFile(const std::string& file, const wxExListViewDa
     // filename mod time in the statusbar.
     int flags = wxLIST_HITTEST_ONITEM;
 
-    if (const int index = HitTest(wxPoint(event.GetX(), event.GetY()), flags); index < 0)
+    if (const int index = HitTest(wxPoint(event.GetX(), event.GetY()), flags); 
+      index < 0)
     {
       wxExLogStatus(GetFileName());
     }
@@ -59,14 +63,15 @@ wxExListViewFile::wxExListViewFile(const std::string& file, const wxExListViewDa
     {
       wxExItem item(m_AddItemsDialog->GetItem(m_TextInFolder));
       wxComboBox* cb = (wxComboBox* )item.GetWindow();
-      cb->SetValue(wxExListItem(this, GetFirstSelected()).GetFileName().GetPath());
+      cb->SetValue(wxExListItem(
+        this, GetFirstSelected()).GetFileName().GetPath());
     }
     m_AddItemsDialog->Show();}, wxID_ADD);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    event.Skip();
     if (!GetFileName().FileExists() || !GetFileName().IsReadOnly())
     {
-      event.Skip();
       m_ContentsChanged = true;
       wxExFrame::UpdateStatusBar(this);
     }}, wxID_EDIT, wxID_REPLACE_ALL);
@@ -78,8 +83,8 @@ wxExListViewFile::~wxExListViewFile()
 }
 
 void wxExListViewFile::AddItems(
-  const wxString& folder,
-  const wxString& files,
+  const std::string& folder,
+  const std::string& files,
   long flags,
   bool detached)
 {
@@ -89,7 +94,7 @@ void wxExListViewFile::AddItems(
   std::thread t([=] {
 #endif
     const int old_count = GetItemCount();
-    wxExDirWithListView dir(this, folder.ToStdString(), files.ToStdString(), flags);
+    wxExDirWithListView dir(this, folder, files, flags);
   
     dir.FindFiles();
     
@@ -105,10 +110,10 @@ void wxExListViewFile::AddItems(
       }
     }
   
-    const wxString text = 
-      _("Added") + wxString::Format(" %d ", added) + _("file(s)");
+    const std::string text = 
+      _("Added") + " " + std::to_string(added) + " " + _("file(s)");
   
-    wxLogStatus(text);
+    wxLogStatus(text.c_str());
     
     Bind(wxEVT_IDLE, &wxExListViewFile::OnIdle, this);
 #ifdef __WXMSW__ 
@@ -134,7 +139,6 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
   const bool ok =
      !GetFileName().FileExists() || 
      (GetFileName().FileExists() && !GetFileName().IsReadOnly());
-     
   const auto style = menu.GetStyle() | (!ok ? wxExMenu::MENU_IS_READ_ONLY: 0);
 
   menu.SetStyle(style);
@@ -170,7 +174,8 @@ bool wxExListViewFile::DoFileLoad(bool synced)
 
   for (const auto& child: doc.document_element().children())
   {
-    if (const std::string value = child.text().get(); strcmp(child.name(), "file") == 0)
+    if (const std::string value = child.text().get(); 
+      strcmp(child.name(), "file") == 0)
     {
       wxExListItem(this, value).Insert();
     }

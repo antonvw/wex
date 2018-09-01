@@ -129,7 +129,10 @@ void wxExAutoComplete::Reset()
 
 bool wxExAutoComplete::ShowCTags(bool show) const
 {
-  if (!show) return false;
+  if (!show) 
+  {
+    return false;
+  }
 
   if (const auto comp(m_STC->GetVi().GetCTags()->AutoComplete(
     m_Text, m_Filter));

@@ -60,7 +60,10 @@ constexpr int c_strcmp( char const* lhs, char const* rhs )
             c_strcmp((#SCOPE), "Word") != 0)                           \
           GetSTC()->SCOPE##DIRECTION##Extend();                        \
         break;                                                         \
-      case wxExViModes::VISUAL_RECT: GetSTC()->SCOPE##DIRECTION##RectExtend(); \
+      case wxExViModes::VISUAL_RECT:                                   \
+        GetSTC()->SCOPE##DIRECTION##RectExtend();                      \
+        break;                                                         \
+      default:                                                         \
         break;                                                         \
     }                                                                  \
   }                                                                    \
@@ -75,7 +78,10 @@ constexpr int c_strcmp( char const* lhs, char const* rhs )
           GetSTC()->GetLineIndentation(GetSTC()->GetCurrentLine()))    \
           GetSTC()->VCHome(); break;                                   \
       case wxExViModes::VISUAL:                                        \
-        if (COND) GetSTC()->VCHomeExtend(); break;                     \
+        if (COND) GetSTC()->VCHomeExtend();                            \
+        break;                                                         \
+      default:                                                         \
+        break;                                                         \
     }                                                                  \
   }                                                                    \
   return 1;                                                            \
@@ -394,7 +400,7 @@ wxExVi::wxExVi(wxExSTC* stc)
         {
           GetSTC()->SetTargetStart(GetSTC()->GetCurrentPos());
           GetSTC()->SetTargetEnd(GetSTC()->GetCurrentPos() + m_Count);
-          GetSTC()->ReplaceTarget(wxString(command.back(), m_Count));
+          GetSTC()->ReplaceTarget(std::string(m_Count, command.back()));
         }
         return (size_t)2;
       }
@@ -533,11 +539,15 @@ wxExVi::wxExVi(wxExSTC* stc)
       switch (Mode().Get())
       {
         case wxExViModes::NORMAL:
-          wxExAddressRange(this, m_Count).Indent(command == ">"); break;
+          wxExAddressRange(this, m_Count).Indent(command == ">"); 
+          break;
         case wxExViModes::VISUAL:
         case wxExViModes::VISUAL_LINE:
         case wxExViModes::VISUAL_RECT:
-          wxExAddressRange(this, "'<,'>").Indent(command == ">"); break;
+          wxExAddressRange(this, "'<,'>").Indent(command == ">"); 
+          break;
+        default:
+          break;
       }
       return 1;}},
     {"*#U", [&](const std::string& command){
@@ -1499,7 +1509,7 @@ void wxExVi::VisualExtend(int begin_pos, int end_pos)
   {
     case wxExViModes::VISUAL:
       GetSTC()->SetSelection(begin_pos, end_pos);
-    break;
+      break;
 
     case wxExViModes::VISUAL_LINE:
       if (begin_pos < end_pos)
@@ -1514,7 +1524,7 @@ void wxExVi::VisualExtend(int begin_pos, int end_pos)
           GetSTC()->PositionFromLine(GetSTC()->LineFromPosition(end_pos)), 
           GetSTC()->PositionFromLine(GetSTC()->LineFromPosition(begin_pos) + 1));
       } 
-    break;
+      break;
 
     case wxExViModes::VISUAL_RECT:
       if (begin_pos < end_pos)
@@ -1531,6 +1541,9 @@ void wxExVi::VisualExtend(int begin_pos, int end_pos)
           GetSTC()->CharLeftRectExtend();
         }
       }
-    break;
+      break;
+    
+    default:
+      break;
   }
 }

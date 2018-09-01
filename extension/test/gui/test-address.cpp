@@ -113,4 +113,6 @@ TEST_CASE("wxExAddress")
   
   // Test WriteLineNumber.
   REQUIRE( address3.WriteLineNumber());
+  
+  stc->ClearDocument();
 }

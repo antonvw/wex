@@ -34,6 +34,7 @@ TEST_CASE("wxExVCS")
   REQUIRE( vcs.DirExists(file));
   
 #ifndef __WXMSW__
+#ifndef __WXOSX__
   // Execute
   REQUIRE( vcs.Execute());
   
@@ -64,5 +65,6 @@ TEST_CASE("wxExVCS")
   
   // Use
   REQUIRE( vcs.Use());
+#endif
 #endif
 }

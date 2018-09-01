@@ -20,6 +20,8 @@ TEST_CASE("wxExControlData")
     REQUIRE( wxExControlData().Col(3).Col() == 3);
     REQUIRE( wxExControlData().Command("xx").Command().Command() == "xx");
     REQUIRE( wxExControlData().Find("xx").Find() == "xx");
+    REQUIRE( wxExControlData().Find("xx").FindFlags() == 0);
+    REQUIRE( wxExControlData().Find("xx", 1).FindFlags() == 1);
     REQUIRE( wxExControlData().Line() == DATA_NUMBER_NOT_SET);
     REQUIRE( wxExControlData().Line(-1).Line() == -1);
     REQUIRE( wxExControlData().Line(3).Line() == 3);

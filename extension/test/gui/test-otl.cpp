@@ -2,7 +2,7 @@
 // Name:      test-otl.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -20,7 +20,11 @@ TEST_CASE("wxExOTL")
 {
 #if wxExUSE_OTL
   // Ensure we have a database and a table.
-  system("mysql test < otl-create.sql");
+  if (system("mysql test < otl-create.sql") == -1)
+  {
+    // if no mysql just quit
+    return;
+  }
 
   wxConfigBase* config = wxConfigBase::Get(false);
   config->Write(_("Datasource"), "Test");

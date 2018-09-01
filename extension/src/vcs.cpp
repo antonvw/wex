@@ -207,16 +207,14 @@ const wxExVCSEntry wxExVCS::FindEntry(const wxExPath& filename)
 
 const std::string wxExVCS::GetBranch() const
 {
-  switch (wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO))
-  {
-    case VCS_NONE: return std::string();
-    default: return m_Entry.GetBranch();
-  }
+  return wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO) == VCS_NONE ?
+    std::string(): 
+    m_Entry.GetBranch();
 }
 
 const wxExPath wxExVCS::GetFile() const
 {
-  return (m_Files.empty() ? wxExConfigFirstOf(_("Base folder")): m_Files[0]);
+  return m_Files.empty() ? wxExConfigFirstOf(_("Base folder")): m_Files[0];
 }
 
 const std::string wxExVCS::GetName() const

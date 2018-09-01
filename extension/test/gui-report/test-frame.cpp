@@ -32,9 +32,12 @@ TEST_CASE("wxExFrameWithHistory")
   
   wxExFindReplaceData::Get()->SetFindString("wxExTestApp");
 
+  // All find in files, grep fail, because there is no
+  // LIST_FIND list.
+  
   REQUIRE(!GetFrame()->FindInFiles({}, ID_TOOL_REPORT_FIND, false));
 
-  REQUIRE( GetFrame()->FindInFiles(
+  REQUIRE(!GetFrame()->FindInFiles(
     {GetTestPath("test.h").Path().string()}, ID_TOOL_REPORT_FIND, false));
 
   // GetFrame()->FindInFilesDialog(ID_TOOL_REPORT_FIND);
@@ -48,12 +51,12 @@ TEST_CASE("wxExFrameWithHistory")
 
   VLOG(9) << "pwd: " << wxExPath::Current();
 
-  REQUIRE( GetFrame()->Grep("xxxxxxx *.cpp ./"));
-  REQUIRE( GetFrame()->Grep("xxxxxxx yyy"));
-  REQUIRE( GetFrame()->Grep("xxxxxxx"));
+  REQUIRE(!GetFrame()->Grep("xxxxxxx *.cpp ./"));
+  REQUIRE(!GetFrame()->Grep("xxxxxxx yyy"));
+  REQUIRE(!GetFrame()->Grep("xxxxxxx"));
 
 #ifndef __WXMSW__
-  REQUIRE( GetFrame()->Sed("xxxxxxx yyy"));
+  REQUIRE(!GetFrame()->Sed("xxxxxxx yyy"));
 #endif
   
   GetFrame()->SetRecentProject("xxx.prj");

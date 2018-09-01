@@ -2,7 +2,7 @@
 // Name:      test.cpp
 // Purpose:   Implementation for wxExtension report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <chrono>
@@ -16,7 +16,7 @@ TEST_CASE("wxExReport")
 {
   wxExTool tool(ID_TOOL_REPORT_FIND);
 
-  wxExListView* report = new wxExListView(wxExListViewData().Type(LIST_FILE));
+  wxExListView* report = new wxExListView(wxExListViewData().Type(LIST_FIND));
   
   AddPane(GetFrame(), report);
     

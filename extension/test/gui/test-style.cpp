@@ -58,9 +58,9 @@ TEST_CASE("wxExStyle")
     REQUIRE( doc.load_string("<style no = \"2\">string</style>"));
 
     REQUIRE( std::stoi(wxExStyle(doc.document_element(), "").GetNo()) == 2);
-    REQUIRE( wxExStyle(doc.document_element(), "").GetValue() == "fore:blue");
+    REQUIRE( wxExStyle(doc.document_element(), "").GetValue() == "fore:#ffab8f");
     REQUIRE( std::stoi(wxExStyle(doc.document_element(), "cpp").GetNo()) == 2);
-    REQUIRE( wxExStyle(doc.document_element(), "").GetValue() == "fore:blue");
+    REQUIRE( wxExStyle(doc.document_element(), "").GetValue() == "fore:#ffab8f");
 
     REQUIRE( doc.load_string("<style no = \"2\">styledefault+comment</style>"));
     

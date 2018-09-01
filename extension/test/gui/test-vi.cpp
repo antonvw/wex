@@ -142,13 +142,13 @@ TEST_CASE("wxExVi")
   }
 
   // Test insert on hexmode document.
-  // TODO: add real chars and test.
   stc->SetReadOnly(false);
   stc->GetHexMode().Set(true);
   REQUIRE( stc->HexMode());
   REQUIRE(!stc->GetModify());
   REQUIRE( vi->Command("a") );
   REQUIRE( vi->Mode().Insert());
+  REQUIRE(!vi->Command("xxxxxxxx"));
   ChangeMode( vi, ESC, wxExViModes::NORMAL);
   REQUIRE(!stc->GetModify());
   stc->GetHexMode().Set(false);
@@ -176,7 +176,7 @@ TEST_CASE("wxExVi")
   REQUIRE( vi->Mode().Insert());
   REQUIRE(!stc->GetText().Contains("izz"));
   ChangeMode( vi, ESC, wxExViModes::NORMAL);
-  REQUIRE( stc->GetText().Contains(std::string('z', 200)));
+  REQUIRE( stc->GetText().Contains(std::string(100, 'z')));
 
   // Test insert \n.
   ChangeMode( vi, "i\n\n\n\n", wxExViModes::INSERT);
@@ -348,8 +348,6 @@ TEST_CASE("wxExVi")
   REQUIRE( vi->Command("yb"));
   REQUIRE( vi->Mode().Normal());
   REQUIRE(!vi->Command("/xfind"));
-  // TODO: fix
-  // REQUIRE( vi->Command("/"  + std::string(1, WXK_CONTROL_R) + "0"));
 
   // Test % navigate.
   stc->SetText("{a brace and a close brace}");

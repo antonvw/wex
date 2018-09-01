@@ -139,7 +139,7 @@ bool wxExLexer::Apply() const
 
   wxExLexers::Get()->ApplyGlobalStyles(m_STC);
 
-  if (wxExLexers::Get()->GetThemeOk())
+  if (!wxExLexers::Get()->GetTheme().empty())
   {
     for (const auto& k : m_KeywordsSet)
     {
