@@ -89,7 +89,7 @@ TEST_CASE("wxExListView")
   listView->SortColumnReset();
   REQUIRE( listView->GetSortedColumnNo() == -1);
   
-  REQUIRE(!listView->SetItem(0, 1, "incorrect date"));
+  listView->SetItem(0, 1, "incorrect date"); // return value on osx different from linux
   REQUIRE( listView->SortColumn("Date"));
   
   listView->SetItemImage(0, wxART_WARNING);
