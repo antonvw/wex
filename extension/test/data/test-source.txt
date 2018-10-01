@@ -7,19 +7,17 @@
 :pwd
 :reg
 :sed
-:set
 :set ac
 :set ai
 :set el
 :set ic
 :set mw
 :set nu
-:set re
 :set sm
 :set ut
-:set wl
+:set wm
 :set ws
-:set ec=5
+:set ec=80
 :set sw=4
 :set sy=cpp
 :set ts=10

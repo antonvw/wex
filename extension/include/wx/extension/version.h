@@ -1,27 +1,35 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      version.h
-// Purpose:   Declaration of version macro
+// Purpose:   Declaration of class wxExVersionInfo
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/versioninfo.h>
+class wxVersionInfo;
 
-/// This class offers adds GetVersionOnlyString.
-class WXDLLIMPEXP_BASE wxExVersionInfo : public wxVersionInfo
+/// This class offers version info.
+class wxExVersionInfo
 {
 public:
   /// Constructor.
-  wxExVersionInfo(const wxString& name = wxString(),
+  wxExVersionInfo(const std::string& name = std::string(),
     int major = 0,
     int minor = 0,
     int micro = 0,
-    const wxString& description = wxString(),
-    const wxString& copyright = wxString());
+    const std::string& description = std::string(),
+    const std::string& copyright = std::string());
        
-  /// Base offers GetVersionString,
-  /// this one does not include name.
-  const wxString GetVersionOnlyString() const;
+  /// Returns copyright.
+  const std::string Copyright() const;
+        
+  /// Returns description.
+  const std::string Description() const;
+        
+  /// Returns string version.
+  const std::string Get() const;
+private:
+  wxVersionInfo m_version;
 };
 
+/// Returns instantiation of version info class.
 const wxExVersionInfo wxExGetVersionInfo();

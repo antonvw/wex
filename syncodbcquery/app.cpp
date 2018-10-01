@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of classes for syncodbcquery
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <chrono>
@@ -73,8 +73,8 @@ Frame::Frame()
   menuQuery->Append(wxID_EXECUTE);
   menuQuery->Append(wxID_STOP);
 
-  wxMenu* menuOptions = new wxMenu();
 #ifndef __WXOSX__
+  wxMenu* menuOptions = new wxMenu();
   menuOptions->Append(wxID_PREFERENCES);
 #else
   menuQuery->Append(wxID_PREFERENCES); // is moved!
@@ -167,8 +167,8 @@ Frame::Frame()
     wxAboutDialogInfo info;
     info.SetIcon(GetIcon());
     info.SetDescription(_("This program offers a general ODBC query."));
-    info.SetVersion(wxExGetVersionInfo().GetVersionOnlyString());
-    info.SetCopyright(wxExGetVersionInfo().GetCopyright());
+    info.SetVersion(wxExGetVersionInfo().Get());
+    info.SetCopyright(wxExGetVersionInfo().Copyright());
     info.AddDeveloper(wxExOTL::VersionInfo().GetVersionString());
     wxAboutBox(info);
     }, wxID_ABOUT);

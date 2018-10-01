@@ -59,11 +59,11 @@ public:
     }
     return tokens;};
 
-  /// Tokenizes the complete string into a vector of integers.
+  /// Tokenizes the complete string into a vector of integers (size_t).
   /// Always restarts, so you can use HasMoreTokens before.
   /// Returns the filled in vector.
   auto Tokenize() {
-    std::vector <int> tokens;
+    std::vector <size_t> tokens;
     m_TokenEndPos = 0;
     while (HasMoreTokens()) 
     {

@@ -11,6 +11,7 @@
 #include <functional>
 #include <utility>
 #include <vector>
+#include <wx/extension/window-data.h>
 
 /// Types for commandline.
 enum wxExCmdLineTypes
@@ -26,22 +27,34 @@ class wxExCmdLineParser;
 class wxExCmdLineSwitch;
 
 /// This class offers a command line parser.
-class WXDLLIMPEXP_BASE wxExCmdLine
+class wxExCmdLine
 {
 public:
   /// Switches: 
   typedef std::vector<std::pair<
-    /// tuple of option flag, name, description
-    const std::tuple<const std::string, const std::string, const std::string>, 
+    /// vector of switch flag, name, description
+    /// - if sizeof first element is greater than one,
+    ///   it is supposed to be the name, and a flag is generated,
+    ///   starting with 'A'
+    /// - after description you can also add a default true value,
+    ///   otherwise false is assumed
+    const std::vector<const std::string>, 
     /// process callback if option is found
     std::function<void(bool)>>> CmdSwitches;
 
   /// Options:
   typedef std::vector<std::pair<
-    /// tuple of option flag, name and description
-    const std::tuple<const std::string, const std::string, const std::string>, 
+    /// vector of option flag, name, description
+    /// - if sizeof first element is greater than one,
+    ///   it is supposed to be the name, and a flag is generated
+    ///   starting with 'A'
+    /// - after description you can also add a default value,
+    ///   otherwise 0 is assumed
+    const std::vector<const std::string>, 
     /// pair of command line param type and process callback if option is found
-    std::pair<wxExCmdLineTypes, std::function<void(const std::any& any)>>>> CmdOptions;
+    std::pair<
+      wxExCmdLineTypes, 
+      std::function<void(const std::any& any)>>>> CmdOptions;
 
   /// Params (currently only string value supported): 
   typedef std::pair<
@@ -77,13 +90,18 @@ public:
   /// Parses the specified command line 
   /// (should start with app name, and if empty
   /// the command line from wxTheApp is used).
+  /// Returns false if error is found, or exit
+  /// condition is true.
   bool Parse(
     /// command line
     const std::string& cmdline = std::string(),
-    /// allow to toggle between switches
-    bool toggle = false,
+    /// keep changed values in config
+    bool save = false,
     /// delimiter
     const char delimiter = ' ');
+
+  /// Shows current options.
+  void ShowOptions(const wxExWindowData& data = wxExWindowData()) const;
 private:
   std::vector<wxExCmdLineOption*> m_Options; 
   std::vector<wxExCmdLineParam*> m_Params; 

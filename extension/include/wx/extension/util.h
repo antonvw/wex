@@ -124,16 +124,16 @@ bool wxExCompareFile(const wxExPath& file1, const wxExPath& file2);
 const std::string wxExConfigDir();
 
 /// Returns first of a list of values from config key.
-const std::string wxExConfigFirstOf(const wxString& key);
+const std::string wxExConfigFirstOf(const std::string& key);
 
 /// Sets first of a list of values in config key.
 /// And returns the value.
-const std::string wxExConfigFirstOfWrite(const wxString& key, const wxString& value);
+const std::string wxExConfigFirstOfWrite(const std::string& key, const std::string& value);
 
 /// Adds an ellipses after text.
 /// The control, if present is postfixed, after a tab character (for accels).
 const std::string wxExEllipsed(
-  const wxString& text,
+  const std::string& text,
   const std::string& control = std::string(),
   bool ellipse = true);
 
@@ -286,7 +286,7 @@ void wxExOpenFilesDialog(
   /// style for wxExFileDialog dialog
   long style = wxFD_OPEN | wxFD_MULTIPLE | wxFD_CHANGE_DIR,
   /// wilcards for wxExFileDialog dialog
-  const wxString& wildcards = wxFileSelectorDefaultWildcardStr,
+  const std::string& wildcards = wxFileSelectorDefaultWildcardStr,
   /// flags to be used with wxExFileDialog
   bool ask_for_continue = false,
   /// data to be used with OpenFile

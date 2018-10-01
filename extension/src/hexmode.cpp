@@ -36,14 +36,14 @@ int GetHexNumberFromUser(
 }
 
 const std::string MakeLine(wxExSTC* stc, const std::string& buffer, 
-  wxFileOffset offset, wxFileOffset bytesPerLine, wxFileOffset eachHexField)
+  size_t offset, size_t bytesPerLine, size_t eachHexField)
 {
   std::string field_hex, field_ascii;
   
   auto count = buffer.size() - offset;
   count = (bytesPerLine < count ? bytesPerLine : count);
 
-  for (wxFileOffset byte = 0; byte < count; byte++)
+  for (size_t byte = 0; byte < count; byte++)
   {
     const unsigned char c = buffer[offset + byte];
 
@@ -63,7 +63,7 @@ const std::string MakeLine(wxExSTC* stc, const std::string& buffer,
 }
 
 // If bytesPerLine is changed, update Convert.
-wxExHexMode::wxExHexMode(wxExSTC* stc, wxFileOffset bytesPerLine)
+wxExHexMode::wxExHexMode(wxExSTC* stc, size_t bytesPerLine)
   : m_STC(stc)
   , m_BytesPerLine(bytesPerLine)
   , m_EachHexField(3)
@@ -103,7 +103,7 @@ void wxExHexMode::AppendText(const std::string& buffer)
     // ascii field:
     buffer.size());
 
-  for (wxFileOffset offset = 0; offset < buffer.size(); offset += m_BytesPerLine)
+  for (size_t offset = 0; offset < buffer.size(); offset += m_BytesPerLine)
   {
     text += MakeLine(m_STC, buffer, offset, m_BytesPerLine, m_EachHexField);
   }

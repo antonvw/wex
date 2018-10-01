@@ -2326,6 +2326,7 @@ Copyright: (c) 2018, Anton van Wezenbeek
     </set>
     <set name="cpp-stl">
       <!-- see https://github.com/Mizuchi/STL-Syntax -->
+      openmode streampos streamsize
       ATOMIC_FLAG_INIT ATOMIC_VAR_INIT ECMAScript FLT_EVAL_METHOD FP_INFINITY FP_NAN
       FP_NORMAL FP_SUBNORMAL FP_ZERO HUGE_VALF HUGE_VALL INFINITY
       MATH_ERREXCEPT MATH_ERRNO NAN abort abs accumulate
@@ -3318,6 +3319,7 @@ Copyright: (c) 2018, Anton van Wezenbeek
     <style no="defval"> fore:red</style>
     <style no="key"> fore:white </style>
     </styles>
+    <comments begin1=";" />
   </lexer>
   <lexer name="ps"/>
   <lexer name="purebasic" macro="vb"/>

@@ -27,7 +27,7 @@ class wxExViMacrosMode;
 enum class wxExInfoMessage;
 
 /// Offers a class that adds ex editor to wxExSTC.
-class WXDLLIMPEXP_BASE wxExEx
+class wxExEx
 {
   friend class wxExViMacrosMode;
 public:
@@ -134,6 +134,10 @@ public:
   /// Returns false if no text was selected.
   bool Yank(const char name = '0', bool show_message = true) const;
 protected:
+  /// If autowrite is on and document is modified,
+  /// save the document.
+  bool AutoWrite();
+
   /// Sets register name.
   /// Setting register 0 results in
   /// disabling current register.
@@ -168,6 +172,7 @@ private:
   static wxExEvaluator m_Evaluator;
 
   bool 
+    m_AutoWrite {false},
     m_IsActive {true}, // are we actively using ex mode?
     m_Copy {false};    // this is a copy, result of split
   

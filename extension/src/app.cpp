@@ -133,7 +133,7 @@ bool wxExApp::OnInit()
 
   VLOG(1) 
     << "started: " 
-    << GetAppName() << "-" << wxExGetVersionInfo().GetVersionOnlyString().c_str()
+    << GetAppName() << "-" << wxExGetVersionInfo().Get()
     << " verbosity: " 
     << el::Loggers::verboseLevel()
     << " config: " << elp.Path().string();

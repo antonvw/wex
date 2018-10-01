@@ -2,7 +2,7 @@
 // Name:      filedlg.h
 // Purpose:   Declaration of wxExtension file dialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -13,7 +13,7 @@
 class wxExFile;
 
 /// Adds an wxExFile to wxFileDialog.
-class WXDLLIMPEXP_BASE wxExFileDialog : public wxFileDialog
+class wxExFileDialog : public wxFileDialog
 {
 public:
   /// Constructor.
@@ -25,7 +25,7 @@ public:
     /// wildcard
     /// if wildcard is default and file is initialized, 
     /// the wildcard is taken from the file
-    const wxString& wildcard = wxFileSelectorDefaultWildcardStr);
+    const std::string& wildcard = wxFileSelectorDefaultWildcardStr);
 
   /// Shows the dialog depending on the changes on the file.
   /// If you specify show_modal then dialog is always shown.

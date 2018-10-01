@@ -20,7 +20,7 @@ TEST_CASE("wxExOTL")
 {
 #if wxExUSE_OTL
   // Ensure we have a database and a table.
-  if (system("mysql test < otl-create.sql") == -1)
+  if (system("mysql test < otl-create.sql") != 0)
   {
     // if no mysql just quit
     return;

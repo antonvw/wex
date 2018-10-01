@@ -88,7 +88,7 @@ endfunction()
 
 macro(target_link_all)
   set (extra_macro_args ${ARGN})
-  set (wxWidgets_LIBRARIES aui stc html adv core base net)
+  set (wxWidgets_LIBRARIES aui stc html core base net)
           
   if (WIN32)
     target_link_libraries(

@@ -2,7 +2,7 @@
 // Name:      test-stcfile.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -27,8 +27,7 @@ TEST_CASE("wxExSTCFile")
   REQUIRE(!file.GetFileName().GetStat().IsOk());
   REQUIRE(!file.GetContentsChanged());
 
-  file.FileNew("test-file.txt"); // clears stc document
-  
+  REQUIRE( file.FileNew("test-file.txt"));
   REQUIRE( stc->GetText().empty());
   stc->SetText("No, the game never ends "
     "when your whole world depends "

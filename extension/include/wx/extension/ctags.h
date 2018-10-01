@@ -18,7 +18,7 @@ class wxExFrame;
 typedef struct sTagFile tagFile;
 
 /// Offers ctags handling.
-class WXDLLIMPEXP_BASE wxExCTags
+class wxExCTags
 {
 public:  
   /// Constructor, opens ctags file.
@@ -80,7 +80,7 @@ private:
   wxExEx* m_Ex {nullptr};
   wxExFrame* m_Frame;
   tagFile* m_File {nullptr};
-  const int m_Separator;
+  const int m_Separator {3};
   bool m_Prepare {false};
   static std::map< std::string, wxExCTagsInfo > m_Matches;
   static std::map< std::string, wxExCTagsInfo >::iterator m_Iterator;

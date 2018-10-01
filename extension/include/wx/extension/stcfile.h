@@ -7,12 +7,12 @@
 
 #pragma once
 
-#include <wx/extension/file.h> // for wxExFile
+#include <wx/extension/file.h>
 
 class wxExSTC;
 
 /// Adds file read and write to wxExSTC.
-class WXDLLIMPEXP_BASE wxExSTCFile: public wxExFile
+class wxExSTCFile: public wxExFile
 {
 public:
   /// Constructor.
@@ -23,16 +23,14 @@ public:
     /// the filename to be assigned if not empty
     const std::string& filename = std::string());
   
-  /// Override virtual methods.
   virtual bool GetContentsChanged() const override;
   virtual void ResetContentsChanged() override;
-protected:
+private:
   virtual bool DoFileLoad(bool synced = false) override;
   virtual void DoFileNew() override;
   virtual void DoFileSave(bool save_as = false) override;
-private:
   void ReadFromFile(bool get_only_new_data);
 
   wxExSTC* m_STC;
-  wxFileOffset m_PreviousLength;
+  std::streampos m_PreviousLength {0};
 };

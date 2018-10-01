@@ -58,7 +58,7 @@ public:
   bool Kill(int sig);
   static int KillAll(int sig);
   void Read();
-  bool Write(const std::string& text);
+  void Write(const std::string& text);
 private:
   void HandleCommand(const std::string& command);
   virtual void OnTerminate(int pid, int status) override {
@@ -416,7 +416,7 @@ void wxExProcessImp::Read()
   }
 }
 
-bool wxExProcessImp::Write(const std::string& text)
+void wxExProcessImp::Write(const std::string& text)
 {
   m_Timer->Stop();
   
@@ -444,6 +444,4 @@ bool wxExProcessImp::Write(const std::string& text)
     Read();
     m_Timer->Start();
   }
-
-  return true;
 }

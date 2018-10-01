@@ -19,7 +19,7 @@ class wxExSTC;
 /// - or by a range string (including visual range for 
 ///   already selected text on the STC component).
 /// All methods return false if the range is not ok.
-class WXDLLIMPEXP_BASE wxExAddressRange
+class wxExAddressRange
 {
 public:
   /// Constructor for a range from current position 
@@ -76,9 +76,6 @@ public:
     /// performs command if line does not match
     bool inverse = false) const;
   
-  /// Indents range.
-  bool Indent(bool forward = true) const;
-  
   /// Is this range ok.
   bool IsOk() const;
   
@@ -94,6 +91,12 @@ public:
   /// Prints range to print file.
   bool Print(const std::string& flags = std::string()) const;
   
+  /// Shifts the specified lines to the start of the line.
+  bool ShiftLeft() const {return Indent(false);};
+
+  /// Shifts the specified lines away from the start of the line.
+  bool ShiftRight() const {return Indent(true);};
+
   /// Sorts range, with optional parameters:
   /// -u to sort unique lines
   /// -r to sort reversed (descending)
@@ -131,6 +134,8 @@ public:
 private:  
   const std::string BuildReplacement(const std::string& text) const;
   int Confirm(const std::string& pattern, const std::string& replacement);
+  /// Indents range.
+  bool Indent(bool forward = true) const;
   bool Parse(const std::string& command, 
     std::string& pattern, std::string& replacement, std::string& options) const;
   void Set(const std::string& begin, const std::string& end) {
@@ -148,7 +153,7 @@ private:
 
   static inline std::string m_Pattern;
   static inline std::string m_Replacement;
-  static inline wxExProcess* m_Process = nullptr;
+  static inline wxExProcess* m_Process {nullptr};
   
   const wxExIndicator m_FindIndicator {wxExIndicator(0)};
 

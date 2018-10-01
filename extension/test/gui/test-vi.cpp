@@ -10,6 +10,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/config.h>
 #include <wx/extension/vi.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/managedframe.h>
@@ -277,6 +278,7 @@ TEST_CASE("wxExVi")
   REQUIRE( stc->GetText().Contains("second"));
   
   vi->ResetSearchFlags();
+  wxConfigBase::Get()->Write(_("Wrap scan"), true);
 
   // Test motion commands: navigate, yank, delete, and change.
   wxExFindReplaceData::Get()->SetFindString("xx");

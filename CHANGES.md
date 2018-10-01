@@ -1,8 +1,6 @@
-**v18.10** *October 7, 2018*
+**v18.10** *October 1, 2018*
   - c++17
   - wxWidgets used as submodule
-  - vi improved
-  - ctags update
   - osx fixes
 
 **v18.04** *April 8, 2018*
@@ -24,9 +22,9 @@
   - osx support
 
 **v3.1.0** *March 11, 2016*
+  - c++14
   - wxWidgets 3.1.0
   - catch lib instead of cppunit lib
-  - c++14
   - cmake build system
   - Microsoft Visual Studio 2015
 
@@ -39,10 +37,10 @@
   - Microsoft Visual Studio 2013
 
 **v3.0.0** *November 14, 2013*
+  - cppunit lib
   - wxWidgets 3.0.0
   - Microsoft Visual Studio 2012
   - sourceforge
-  - cppunit lib
 
 **v2.9.5** *July 20, 2013*
   - wxWidgets 2.9.5
@@ -51,16 +49,16 @@
   - wxWidgets 2.9.4
 
 **v2.9.3** *March 24, 2012*
+  - ex mode derived from vi mode
   - wxWidgets 2.9.3
   - rfw lexer
-  - ex mode derived from vi mode
 
 **v2.9.2** *December 16, 2011*
+  - use git (github)
+  - vi mode
   - c++0x
   - wxWidgets 2.9.2
   - Microsoft Visual Studio 2010
-  - use git (github)
-  - vi mode
 
 **v6.0** *November 20, 2008*
   - use svn (sliksvn, xp-dev)
@@ -78,7 +76,7 @@
   - MDI projects
 
 **v4.4** *December 14, 2006*
-  - portable verion that reads and saves all config
+  - portable version that reads and saves all config
     files from exe directory
 
 **v4.3** *June 19, 2006*

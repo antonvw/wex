@@ -32,6 +32,7 @@ matrix:
           update: true
 
   allow_failures:
+    - os: linux
     - os: osx
 
 git:
@@ -49,7 +50,7 @@ before_script:
 
 script:
     - mkdir build${TRAVIS_OS_NAME} && pushd build${TRAVIS_OS_NAME}
-    - cmake -DCMAKE_BUILD_TYPE=Coverage -DwxExBUILD_SP=ON -DwxExBUILD_TESTS=ON ..
+    - cmake -DCMAKE_BUILD_TYPE=Coverage -DwxExBUILD_TESTS=ON ..
     - make -j 4
     - if [ "$TRAVIS_OS_NAME" != "osx" ]; then make lcov-prep; fi
     - if [ "$TRAVIS_OS_NAME" != "osx" ]; then ctest --timeout 120 -V ..

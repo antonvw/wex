@@ -169,9 +169,23 @@ const std::string wxExViMode::String() const
   
 bool wxExViMode::Transition(std::string& command)
 {
-  if (command.empty() || (command.size() == 1 && command[0] == 'c'))
+  if (command.empty())
   {
     return false;
+  }
+  else if (command[0] == 'c')
+  {
+    if (command.size() == 1)
+    {
+       return false;
+    }
+    else
+    {
+      if (command.size() == 2 && (command[1] == 'f' || command[1] == 'F'))
+      {
+        return false;
+      }
+    }
   }
 
   Triggers trigger = Triggers::INSERT;

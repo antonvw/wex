@@ -43,8 +43,8 @@ bool App::OnInit()
       {{"i", "info", "show version"}, [&](bool on) {
         if (!on) return;
         std::cout << 
-          "syncped-" << wxExGetVersionInfo().GetVersionOnlyString().c_str() << " using\n" << 
-            wxExGetVersionInfo().GetDescription().c_str() << " and:\n" << 
+          "syncped-" << wxExGetVersionInfo().Get().c_str() << " using\n" << 
+            wxExGetVersionInfo().Description().c_str() << " and:\n" << 
             wxGetLibraryVersionInfo().GetDescription().c_str();
         exit = true;}},
       {{"l", "locale", "show locale"}, [&](bool on) {
@@ -89,9 +89,9 @@ bool App::OnInit()
         m_Data.CTagsFileName(std::any_cast<std::string>(s));}}},
       {{"V", "v", "activates verbosity upto verbose level (valid range: 0-9)"}, {CMD_LINE_INT, [&](const std::any& s) {}}},
       {{"w", "scriptout", "script out write"}, {CMD_LINE_STRING, [&](const std::any& s) {
-        m_Scriptout.Open(std::any_cast<std::string>(s), wxFile::write);}}},
+        m_Scriptout.Open(std::any_cast<std::string>(s), std::ios_base::out);}}},
       {{"W", "append", "script out append"}, {CMD_LINE_STRING, [&](const std::any& s) {
-        m_Scriptout.Open(std::any_cast<std::string>(s), wxFile::write_append);}}}},
+        m_Scriptout.Open(std::any_cast<std::string>(s), std::ios_base::app);}}}},
      {{"files", "input file[:line number][:column number]"}, [&](const std::vector<std::string> & v) {
         for (const auto & f : v) m_Files.emplace_back(f);
         return true;}}).Parse() || exit)

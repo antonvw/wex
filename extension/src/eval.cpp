@@ -13,6 +13,7 @@
 #include <eval.hpp>
 #include <wx/numformatter.h>
 #include <wx/extension/ex.h>
+#include <wx/extension/lexer-props.h>
 #include <wx/extension/log.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
@@ -24,7 +25,8 @@ wxExEvaluator::~wxExEvaluator()
   delete m_eval;
 }
 
-std::tuple<double, int, std::string> wxExEvaluator::Eval(wxExEx* ex, const std::string& text)
+std::tuple<double, int, std::string> wxExEvaluator::Eval(
+  wxExEx* ex, const std::string& text)
 {
   Init();
 
@@ -77,24 +79,25 @@ std::tuple<double, int, std::string> wxExEvaluator::Eval(wxExEx* ex, const std::
 std::string wxExEvaluator::GetInfo(const wxExEx* ex)
 {
   Init();
-
-  std::string output("[Named buffers]\n");
+  
+  const wxExLexerProps l;
+  std::string output(l.MakeSection("Named buffers"));
 
   for (const auto& it : ex->GetMacros().GetRegisters())
   {
-    output += it + "\n";
+    output += it;
   }
 
-  output += "[Filename buffer]\n";
-  output += "% = " + ex->GetCommand().STC()->GetFileName().GetFullName() + "\n";
+  output += l.MakeSection("Filename buffer");
+  output += l.MakeKey("%", ex->GetCommand().STC()->GetFileName().GetFullName());
 
   if (!m_eval->variables.empty()) 
   {
-    output += "[Variables]\n";
+    output += l.MakeSection("Variables");
 
     for (const auto &var : m_eval->variables) 
     {
-      output += var + " = " + std::to_string(m_eval->eval(var, nullptr)) + "\n";
+      output += l.MakeKey(var, std::to_string(m_eval->eval(var, nullptr)));
     }
   }
 

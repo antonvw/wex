@@ -154,7 +154,7 @@ TEST_CASE("wxExLexer")
     REQUIRE( lexer.GetScintillaLexer() == "pascal");
     REQUIRE( std::regex_match(lexer.CommentComplete("(*test"), std::regex(" +\\*\\)")));
   }
-
+  
   SUBCASE("lexers")
   {
     REQUIRE( wxExLexer("ada").IsOk());

@@ -21,6 +21,7 @@ TEST_CASE("wxExSTC")
 {
   wxExSTC* stc = GetSTC();
   stc->GetVi().Command("\x1b");
+  wxConfigBase::Get()->Write(_("Wrap scan"), true);
   
   SUBCASE("ConfigDialog")
   {

@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <regex>
+#include <wx/config.h>
 #include <wx/log.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/managedframe.h>
@@ -32,6 +33,7 @@ bool wxExSTC::FindNext(
 
   static bool recursive = false;
   static int start_pos, end_pos;
+  const bool wrapscan(wxConfigBase::Get()->ReadLong(_("Wrap scan"), 1));
 
   if (find_next)
   {
@@ -89,7 +91,7 @@ bool wxExSTC::FindNext(
         }
       } while (line <= LineFromPosition(end_pos) && !found);
 
-      if (!found && !recursive)
+      if (!found && !recursive && wrapscan)
       {
         recursive = true;
         found = FindNext(text, find_flags, find_next);
@@ -115,7 +117,7 @@ bool wxExSTC::FindNext(
         }
       } while (line >= LineFromPosition(end_pos) && !found);
 
-      if (!found && !recursive)
+      if (!found && !recursive && wrapscan)
       {
         recursive = true;
         found = FindNext(text, find_flags, find_next);
@@ -144,7 +146,7 @@ bool wxExSTC::FindNext(
     
     bool found = false;
     
-    if (!recursive)
+    if (!recursive && wrapscan)
     {
       recursive = true;
       found = FindNext(text, find_flags, find_next);

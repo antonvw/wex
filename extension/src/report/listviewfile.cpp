@@ -240,9 +240,14 @@ void wxExListViewFile::DoFileSave(bool save_as)
     }
   }
   
-  doc.save_file(GetFileName().Path().string().c_str());
-
-  VLOG(1) << "saved: " << GetFileName().Path().string();
+  if (doc.save_file(GetFileName().Path().string().c_str()))
+  {
+    VLOG(1) << "saved: " << GetFileName().Path().string();
+  }
+  else
+  {
+    wxExLog("xml save") << GetFileName().Path().string();
+  }
 }
 
 bool wxExListViewFile::ItemFromText(const std::string& text)

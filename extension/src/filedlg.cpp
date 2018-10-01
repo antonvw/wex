@@ -17,7 +17,7 @@
 wxExFileDialog::wxExFileDialog(
   wxExFile* file,
   const wxExWindowData& data,
-  const wxString &wildcard)
+  const std::string& wildcard)
   : wxFileDialog(
       data.Parent(), 
       data.Title(), 
@@ -35,7 +35,7 @@ wxExFileDialog::wxExFileDialog(
   if (wildcard == wxFileSelectorDefaultWildcardStr &&
       m_File->GetFileName().GetStat().IsOk())
   {
-    wxString wildcards = 
+    std::string wildcards = 
       _("All Files") + wxString::Format(" (%s)|%s",
         wxFileSelectorDefaultWildcardStr,
         wxFileSelectorDefaultWildcardStr);
@@ -44,7 +44,7 @@ wxExFileDialog::wxExFileDialog(
     {
       if (!it.GetExtensions().empty())
       {
-        const wxString wildcard =
+        const std::string wildcard =
           it.GetDisplayLexer() +
           " (" + it.GetExtensions() + ") |" +
           it.GetExtensions();

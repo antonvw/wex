@@ -340,7 +340,7 @@ bool wxExAddressRange::Escape(const std::string& command)
     return false;
   }
   
-  const std::string filename("__TMPFILE__");
+  const std::string filename(std::tmpnam(nullptr));
   
   if (m_STC->GetReadOnly() || m_STC->HexMode() || !Write(filename))
   {
@@ -505,14 +505,9 @@ bool wxExAddressRange::Indent(bool forward) const
 
 bool wxExAddressRange::IsOk() const
 {
-  if (
-    m_Begin.GetLine() <= 0 || m_End.GetLine() <= 0 || 
-    m_Begin.GetLine() > m_End.GetLine())
-  {
-    return false;
-  }
-
-  return true;
+  return 
+    m_Begin.GetLine() > 0 && m_End.GetLine() > 0 &&
+    m_Begin.GetLine() <= m_End.GetLine();
 }
 
 bool wxExAddressRange::Join() const
@@ -881,7 +876,7 @@ bool wxExAddressRange::Write(const std::string& text) const
 #endif
 
   return wxExFile(filename, text.find(">>") != std::string::npos ? 
-    wxFile::write_append: wxFile::write).Write(m_Ex->GetSelectedText());
+    std::ios_base::app: std::ios::out).Write(m_Ex->GetSelectedText());
 }
 
 bool wxExAddressRange::Yank(const char name) const

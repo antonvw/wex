@@ -33,13 +33,9 @@ void CheckWellFormed(wxExSTC* stc, const wxExPath& fn)
 }
 
 wxExSTCFile::wxExSTCFile(wxExSTC* stc, const std::string& filename)
-  : m_STC(stc)
-  , m_PreviousLength(0)
+  : wxExFile(filename)
+  , m_STC(stc)
 {
-  if (!filename.empty())
-  {
-    Assign(wxExPath(filename));
-  }
 }
 
 bool wxExSTCFile::DoFileLoad(bool synced)
@@ -100,7 +96,7 @@ void wxExSTCFile::DoFileSave(bool save_as)
   }
   else
   {
-    Write(m_STC->GetTextRaw());
+    Write(m_STC->GetTextRaw().data(), m_STC->GetTextRaw().length());
   }
   
   if (save_as)
@@ -130,9 +126,9 @@ void wxExSTCFile::ReadFromFile(bool get_only_new_data)
   int startPos, endPos;
   m_STC->GetSelection(&startPos, &endPos);
 
-  wxFileOffset offset = 0;
+  std::streampos offset = 0;
 
-  if (m_PreviousLength < Length() && get_only_new_data)
+  if (m_PreviousLength < m_STC->GetFileName().GetStat().st_size && get_only_new_data)
   {
     offset = m_PreviousLength;
   }
@@ -142,19 +138,26 @@ void wxExSTCFile::ReadFromFile(bool get_only_new_data)
     m_STC->ClearDocument();
   }
 
-  m_PreviousLength = Length();
+  m_PreviousLength = m_STC->GetFileName().GetStat().st_size;
 
-  if (const auto buffer = Read(offset); !m_STC->GetHexMode().Active())
+  if (const auto buffer = Read(offset); buffer != nullptr)
   {
-    m_STC->Allocate(buffer->length());
+    if (!m_STC->GetHexMode().Active())
+    {
+      m_STC->Allocate(buffer->length());
     
-    get_only_new_data ? 
-      m_STC->AppendTextRaw((const char *)buffer->data(), buffer->length()):
-      m_STC->AddTextRaw((const char *)buffer->data(), buffer->length());
+      get_only_new_data ? 
+        m_STC->AppendTextRaw((const char *)buffer->data(), buffer->length()):
+        m_STC->AddTextRaw((const char *)buffer->data(), buffer->length());
+    }
+    else
+    {
+      m_STC->GetHexMode().AppendText(std::string(buffer->data(), buffer->length()));
+    }
   }
   else
   {
-    m_STC->GetHexMode().AppendText(std::string(buffer->data(), buffer->length()));
+     m_STC->SetText("READ FAILED");
   }
 
   if (get_only_new_data)

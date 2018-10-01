@@ -132,7 +132,7 @@ int wxExSTC::ConfigDialog(const wxExWindowData& par)
                _("Use tabs"),
                _("Caret line"),
                _("Scroll bars"),
-               _("Autocomplete"),
+               _("Auto complete"),
                _("Keep zoom"),
                _("vi mode"),
                _("vi tag fullpath")}},
@@ -170,7 +170,7 @@ int wxExSTC::ConfigDialog(const wxExWindowData& par)
          {_("Tab font"), ITEM_FONTPICKERCTRL},
          {_("Text font"), ITEM_FONTPICKERCTRL}}},
       {_("Edge"),
-        {{_("Edge column"), 0, 500},
+        {{_("Edge column"), 0, 80l},
          { _("Edge line"), {
            {wxSTC_EDGE_NONE, _("None")},
            {wxSTC_EDGE_LINE, _("Line")},
@@ -193,16 +193,17 @@ int wxExSTC::ConfigDialog(const wxExWindowData& par)
              {wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED, _("Line after contracted")},
              {wxSTC_FOLDFLAG_LEVELNUMBERS, _("Level numbers")}},
              false}}},
+      {_("Directory"),
+        {{_("Include directory"), wxExListViewData().Type(LIST_FOLDER).
+          Window(wxExWindowData().Size({200, 200}))}}},
       {_("Printer"),
         {{_("Print flags"), {
            {wxSTC_PRINT_NORMAL, _("Normal")},
            {wxSTC_PRINT_INVERTLIGHT, _("Invert on white")},
            {wxSTC_PRINT_BLACKONWHITE, _("Black on white")},
            {wxSTC_PRINT_COLOURONWHITE, _("Colour on white")},
-           {wxSTC_PRINT_COLOURONWHITEDEFAULTBG, _("Colour on white normal")}}, true, 1}}},
-      {_("Directory"),
-        {{_("Include directory"), wxExListViewData().Type(LIST_FOLDER).
-          Window(wxExWindowData().Size({200, 200}))}}}}}},
+           {wxSTC_PRINT_COLOURONWHITEDEFAULTBG, _("Colour on white normal")}}, true, 1}}}
+      }}},
       wxExWindowData(data).
         Title(data.Id() == wxID_PREFERENCES ? wxGetStockLabel(data.Id(), 0).ToStdString(): data.Title()));
   }
@@ -239,7 +240,7 @@ void wxExSTC::ConfigGet()
     }
     else
     {
-      SetEdgeColumn(cfg->ReadLong(_("Edge column"), 0));
+      SetEdgeColumn(cfg->ReadLong(_("Edge column"), 80l));
     
       if (const auto el = cfg->ReadLong(_("Edge line"), wxSTC_EDGE_NONE);
         el != wxSTC_EDGE_NONE)

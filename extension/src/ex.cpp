@@ -22,6 +22,7 @@
 #include <wx/extension/debug.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/lexer-props.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/log.h>
 #include <wx/extension/managedframe.h>
@@ -158,13 +159,7 @@ wxExEx::wxExEx(wxExSTC* stc)
       return true;}},
     {":sed", [&](const std::string& command) {POST_COMMAND( ID_TOOL_REPLACE ) return true;}},
     {":set", [&](const std::string& command) {
-      if (command.find(" ") == std::string::npos)
-      {
-        POST_COMMAND( wxID_PREFERENCES )
-      }
-      else
-      {
-        const bool toggle = command.back() != '*'; // modeline does not toggle
+        const bool save = command.back() != '*';
         std::string text(command.substr(4, 
           command.back() == '*' ? command.size() - 5: std::string::npos));
         // Convert arguments (add -- to each group, remove all =).
@@ -172,64 +167,85 @@ wxExEx::wxExEx(wxExSTC* stc)
         std::regex re("[0-9a-z=]+");
         text = std::regex_replace(text, re, "--&", std::regex_constants::format_sed);
         std::replace(text.begin(), text.end(), '=', ' ');
-        wxExCmdLine(
-          {{{"a", "ac", "Auto Complete"}, [](bool on){wxConfigBase::Get()->Write(_("Auto complete"), on);}},
-           {{"b", "eb", "Error Bells"}, [](bool on){wxConfigBase::Get()->Write(_("Error bells"), on ? 2: 0);}},
-           {{"C", "ic", "Ignore Case"}, [&](bool on){
+        wxExCmdLine cmdline(
+          // switches
+          {
+           {{"ac", "autocomplete"}, [](bool on){
+             wxConfigBase::Get()->Write(_("Auto complete"), on);}},
+           {{"ai", "autoindent"}, [](bool on){
+             wxConfigBase::Get()->Write(_("Auto indent"), on ? 2: 0);}},
+           {{"aw", "autowrite"}, [&](bool on){
+             wxConfigBase::Get()->Write(_("Auto write"), on);
+             m_AutoWrite = on;}},
+           {{"eb", "errorbells"}, [](bool on){
+             wxConfigBase::Get()->Write(_("Error bells"), on);}},
+           {{"el", "edgeline"}, [&](bool on){
+             m_Command.STC()->SetEdgeMode(
+               on ? wxSTC_EDGE_LINE: wxSTC_EDGE_NONE);
+             wxConfigBase::Get()->Write(_("Edge line"), 
+               on ? wxSTC_EDGE_LINE: wxSTC_EDGE_NONE);}},
+           {{"ic", "ignorecase"}, [&](bool on){
              if (!on) m_SearchFlags |= wxSTC_FIND_MATCHCASE;
              else     m_SearchFlags &= ~wxSTC_FIND_MATCHCASE;
              wxExFindReplaceData::Get()->SetMatchCase(!on);}},
-           {{"i", "ai", "Auto Indent"}, [](bool on){wxConfigBase::Get()->Write(_("Auto indent"), on ? 2: 0);}},
-           {{"e", "re", "Regular Expression"}, [&](bool on){
-             if (on) 
-             {
-               m_SearchFlags |= wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX;
-             }
-             else    
-             {
-               m_SearchFlags &= ~wxSTC_FIND_REGEXP;
-               m_SearchFlags &= ~wxSTC_FIND_CXX11REGEX;
-             }
-             wxExFindReplaceData::Get()->SetUseRegEx(on);}},
-           {{"l", "el", "Edge Line"}, [&](bool on){
-             m_Command.STC()->SetEdgeMode(on ? wxSTC_EDGE_LINE: wxSTC_EDGE_NONE);     
-             wxConfigBase::Get()->Write(_("Edge line"), on ? wxSTC_EDGE_LINE: wxSTC_EDGE_NONE);}},
-           {{"m", "sm", "Show Mode"}, [&](bool on){
-             ((wxExStatusBar *)m_Frame->GetStatusBar())->ShowField("PaneMode", on);
-             wxConfigBase::Get()->Write(_("Show mode"), on);}},
-           {{"n", "nu", "show lineNUmbers"}, [&](bool on){
-             m_Command.STC()->ShowLineNumbers(on);
-             wxConfigBase::Get()->Write(_("Line numbers"), on);}},
-           {{"s", "ws", "show WhiteSpace"}, [&](bool on){
-             m_Command.STC()->SetViewEOL(on);
-             m_Command.STC()->SetViewWhiteSpace(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);
-             wxConfigBase::Get()->Write(_("Whitespace"), on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);}},
-           {{"u", "ut", "Use Tabs"}, [&](bool on){
-             m_Command.STC()->SetUseTabs(on);
-             wxConfigBase::Get()->Write(_("Use tabs"), on);}},
-           {{"w", "mw", "Match Words"}, [&](bool on){
+           {{"mw", "matchwords"}, [&](bool on){
              if (on) m_SearchFlags |= wxSTC_FIND_WHOLEWORD;
              else    m_SearchFlags &= ~wxSTC_FIND_WHOLEWORD;
              wxExFindReplaceData::Get()->SetMatchWord(on);}},
-           {{"W", "wl", "Wrap Line"}, [&](bool on){
+           {{"nu", "number"}, [&](bool on){
+             m_Command.STC()->ShowLineNumbers(on);
+             wxConfigBase::Get()->Write(_("Line numbers"), on);}},
+           {{"readonly", "readonly"}, [&](bool on){
+             m_Command.STC()->SetReadOnly(on);}},
+           {{"showmode", "showmode"}, [&](bool on){
+             ((wxExStatusBar *)m_Frame->GetStatusBar())->ShowField("PaneMode", on);
+             wxConfigBase::Get()->Write(_("Show mode"), on);}},
+           {{"sm", "showmatch"}, [&](bool on){
+             wxConfigBase::Get()->Write(_("Show match"), on);}},
+           {{"sws", "showwhitespace"}, [&](bool on){
+             m_Command.STC()->SetViewEOL(on);
+             m_Command.STC()->SetViewWhiteSpace(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);
+             wxConfigBase::Get()->Write(_("Whitespace"), on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);}},
+           {{"ut", "usetabs"}, [&](bool on){
+             m_Command.STC()->SetUseTabs(on);
+             wxConfigBase::Get()->Write(_("Use tabs"), on);}},
+           {{"wm", "wrapmargin"}, [&](bool on){
              m_Command.STC()->SetWrapMode(on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);
-             wxConfigBase::Get()->Write(_("Wrap line"), on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);}}},
-          {{{"c", "ec", "Edge Column"}, {CMD_LINE_INT, [&](const std::any& val) {
+             wxConfigBase::Get()->Write(_("Wrap line"), on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);}},
+           {{"ws", "wrapscan", "1"}, [&](bool on){
+             wxConfigBase::Get()->Write(_("Wrap scan"), on);}}
+          },
+
+          // options
+          {
+           {{"dir", "dir"}, {CMD_LINE_STRING, [&](const std::any& val) {
+             wxExPath::Current(std::any_cast<std::string>(val));}}},
+           {{"ec", "edgecolumn", "80"}, {CMD_LINE_INT, [&](const std::any& val) {
              m_Command.STC()->SetEdgeColumn(std::any_cast<int>(val));
              wxConfigBase::Get()->Write(_("Edge column"), std::any_cast<int>(val));}}},
-           {{"r", "rp", "reported lines"}, {CMD_LINE_INT, [&](const std::any& val) {
-             wxConfigBase::Get()->Write("Reported lines",  std::any_cast<int>(val));}}},
-           {{"S", "sw", "Shift Width"}, {CMD_LINE_INT, [&](const std::any& val) {
+           {{"report", "report", "5"}, {CMD_LINE_INT, [&](const std::any& val) {
+             wxConfigBase::Get()->Write("Reported lines", std::any_cast<int>(val));}}},
+           {{"sw", "shiftwidth", "8"}, {CMD_LINE_INT, [&](const std::any& val) {
              m_Command.STC()->SetIndent(std::any_cast<int>(val));
              wxConfigBase::Get()->Write(_("Indent"), std::any_cast<int>(val));}}},
-           {{"t", "ts", "Tab Stop"}, {CMD_LINE_INT, [&](const std::any& val) {
-             m_Command.STC()->SetTabWidth(std::any_cast<int>(val));
-             wxConfigBase::Get()->Write(_("Tab width"), std::any_cast<int>(val));}}},
-           {{"y", "sy", "SYntax (lexer or 'off')"}, {CMD_LINE_STRING, [&](const std::any& val) {
+           {{"sy", "syntax (lexer or 'off')"}, {CMD_LINE_STRING, [&](const std::any& val) {
              if (std::any_cast<std::string>(val) != "off") 
                m_Command.STC()->GetLexer().Set(std::any_cast<std::string>(val), true); // allow folding
              else              
-               m_Command.STC()->GetLexer().Reset();}}}}).Parse(command.substr(0, 4) + text, toggle);
+               m_Command.STC()->GetLexer().Reset();}}},
+           {{"ts", "tabstop","8"}, {CMD_LINE_INT, [&](const std::any& val) {
+             m_Command.STC()->SetTabWidth(std::any_cast<int>(val));
+             wxConfigBase::Get()->Write(_("Tab width"), std::any_cast<int>(val));}}}
+          }
+        );
+
+      if (command.find(" ") == std::string::npos)
+      {
+        cmdline.ShowOptions(wxExWindowData().Size({200, 450}));
+      }
+      else
+      {
+        cmdline.Parse(command.substr(0, 4) + text, save);
       }
       return true;}},
     {":so", [&](const std::string& command) {
@@ -300,7 +316,7 @@ wxExEx::wxExEx(wxExSTC* stc)
       }
       return true;}},
     {":ve", [&](const std::string& command) {ShowDialog("Version", 
-      wxExGetVersionInfo().GetVersionOnlyString().ToStdString()); return true;}},
+      wxExGetVersionInfo().Get()); return true;}},
     {":x", [&](const std::string& command) {
       if (command != ":x") return false;
       POST_COMMAND( wxID_SAVE )
@@ -309,6 +325,7 @@ wxExEx::wxExEx(wxExSTC* stc)
 {
   wxASSERT(m_Frame != nullptr);
   ResetSearchFlags();
+  m_AutoWrite = wxConfigBase::Get()->ReadLong(_("Auto write"), 0);
 }
 
 wxExEx::~wxExEx()
@@ -328,6 +345,21 @@ void wxExEx::AddText(const std::string& text)
   }
 
   InfoMessage(text, wxExInfoMessage::ADD);
+}
+
+bool wxExEx::AutoWrite()
+{
+  if (!m_AutoWrite || !m_Command.STC()->IsModified())
+  {
+    return true;
+  }
+
+  wxCommandEvent event(
+    wxEVT_COMMAND_MENU_SELECTED, wxID_SAVE);
+
+  wxPostEvent(wxTheApp->GetTopWindow(), event);
+
+  return true;
 }
 
 std::tuple<double, int> wxExEx::Calculator(const std::string& text)
@@ -356,12 +388,11 @@ bool wxExEx::Command(const std::string& cmd)
   if (m_Frame->ExecExCommand(m_Command.Command(cmd)))
   {
     m_Command.clear();
-    return true;
+    return AutoWrite();
   }
   else if (command == ":" || command == ":'<,'>" || command == ":!")
   {
-    m_Frame->GetExCommand(this, command);
-    return true;
+    return m_Frame->GetExCommand(this, command);
   }
   else if (
     !CommandHandle(command) &&
@@ -374,7 +405,7 @@ bool wxExEx::Command(const std::string& cmd)
   m_Macros.Record(command);
   m_Command.clear();
 
-  return true;
+  return AutoWrite();
 }
 
 bool wxExEx::CommandAddress(const std::string& command)
@@ -522,8 +553,8 @@ bool wxExEx::CommandAddress(const std::string& command)
       }
       break;
     case 'y': return range.Yank(rest.empty() ? '0': (char)rest[0]);
-    case '>': return range.Indent(true);
-    case '<': return range.Indent(false);
+    case '>': return range.ShiftRight();
+    case '<': return range.ShiftLeft();
     case '!': return range.Escape(rest);
     default:
       wxLogStatus("Unknown range command: %s", cmd);
@@ -763,13 +794,14 @@ void wxExEx::Print(const std::string& text)
 }
   
 template <typename S, typename T>
-std::string wxExEx::ReportContainer(const T & container) const
+std::string wxExEx::ReportContainer(const T & t) const
 {
+  const wxExLexerProps l;
   std::string output;
 
-  for (const auto& it : container)
+  for (const auto& it : t)
   {
-    output += wxExTypeToValue<S>(it.first).getString() + "=" + it.second + "\n";
+    output += l.MakeKey(wxExTypeToValue<S>(it.first).getString(), it.second);
   }
 
   return output;
@@ -854,7 +886,7 @@ void wxExEx::ShowDialog(
   }
   
   m_Dialog->GetSTC()->GetLexer().Set(
-    prop_lexer ? wxExLexer("props"): m_Command.STC()->GetLexer());
+    prop_lexer ? wxExLexerProps(): m_Command.STC()->GetLexer());
   m_Dialog->Show();
 }
 

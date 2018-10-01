@@ -232,7 +232,7 @@ wxExVi::wxExVi(wxExSTC* stc)
       REPEAT(
         if (!GetSTC()->FindNext(
           std::string(1, c), 
-          GetSearchFlags() & ~wxSTC_FIND_REGEXP & ~wxSTC_FIND_WHOLEWORD, 
+          0,
           islower(d) > 0))
         {
           return m_Command.clear();
@@ -326,7 +326,8 @@ wxExVi::wxExVi(wxExSTC* stc)
         return 2;
       } 
       return 0;}},
-    {"0^", [&](const std::string& command){MOTION(Line, Home, false, false);}},
+    {"0", [&](const std::string& command){MOTION(Line, Home, false, false);}},
+    {"^", [&](const std::string& command){MOTION(VC, Home, false, false);}},
     {"[]", [&](const std::string& command){REPEAT(
       if (!GetSTC()->FindNext("{", GetSearchFlags(), command == "]"))
       {
@@ -345,14 +346,22 @@ wxExVi::wxExVi(wxExSTC* stc)
     {"%", [&](const std::string& command){
       auto pos = GetSTC()->GetCurrentPos();
       auto brace_match = GetSTC()->BraceMatch(pos);
+
       if (brace_match == wxSTC_INVALID_POSITION)
       {
         brace_match = GetSTC()->BraceMatch(--pos);
       }
+
       if (brace_match != wxSTC_INVALID_POSITION)
       {
         GetSTC()->GotoPos(brace_match);
         VisualExtend(pos, brace_match + 1);
+      }
+      else
+      {
+        GetSTC()->FindNext(
+          "[(\[{\\])}]",
+          wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX);
       }
       return 1;}},
     {"!", [&](const std::string& command){
@@ -539,12 +548,16 @@ wxExVi::wxExVi(wxExSTC* stc)
       switch (Mode().Get())
       {
         case wxExViModes::NORMAL:
-          wxExAddressRange(this, m_Count).Indent(command == ">"); 
+          command == ">" ? 
+            wxExAddressRange(this, m_Count).ShiftRight(): 
+            wxExAddressRange(this, m_Count).ShiftLeft();
           break;
         case wxExViModes::VISUAL:
         case wxExViModes::VISUAL_LINE:
         case wxExViModes::VISUAL_RECT:
-          wxExAddressRange(this, "'<,'>").Indent(command == ">"); 
+          command == ">" ? 
+            wxExAddressRange(this, "'<,'>").ShiftRight(): 
+            wxExAddressRange(this, "'<,'>").ShiftLeft();
           break;
         default:
           break;
@@ -648,12 +661,15 @@ bool wxExVi::Command(const std::string& command)
     return false;
   }
 
-  VLOG(9) << "vi command: " << command;
+  if (command.front() != ':')
+  {
+    VLOG(9) << "vi command: " << command;
+  }
 
   if (Mode().Visual() && command.find("'<,'>") == std::string::npos &&
     wxExEx::Command(command + "'<,'>"))
   {
-    return true;
+    return AutoWrite();
   }
   else if (command.front() == '=' ||
    (command.size() > 2 && 
@@ -661,7 +677,7 @@ bool wxExVi::Command(const std::string& command)
   {
     CommandCalc(command);
     GetMacros().Record(command);
-    return true;
+    return AutoWrite();
   }
   else if (Mode().Insert())
   {
@@ -672,7 +688,7 @@ bool wxExVi::Command(const std::string& command)
     m_Mode.Escape();
     m_Command.clear();
     m_InsertCommand.clear();
-    return true;
+    return AutoWrite();
   }
 
   if (
@@ -688,12 +704,13 @@ bool wxExVi::Command(const std::string& command)
     }
         
     if (GetMacros().Mode()->IsRecording() && 
-      command[0] != 'q' && command != "/" && command != "?")
+      command[0] != 'q' && command[0] != ':' && 
+      command != "/" && command != "?")
     {
       GetMacros().Record(command);
     }  
 
-    return true;
+    return AutoWrite();
   }
 }
 
@@ -1211,6 +1228,16 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
         }
         else
         {
+#ifdef __WXOSX__
+          if (event.GetModifiers() & wxMOD_RAW_CONTROL)
+          {
+            if (m_Command.AppendExec(event.GetKeyCode()))
+            {
+              m_Command.clear();
+            }
+          }
+          else
+#endif
           if (m_Command.AppendExec(event.GetUnicodeKey()))
           {
             m_Command.clear();

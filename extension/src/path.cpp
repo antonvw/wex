@@ -135,6 +135,8 @@ wxExPath& wxExPath::MakeAbsolute(const wxExPath& base)
     std::experimental::filesystem::current_path(): 
     std::experimental::filesystem::path(base.GetPath()));
 
+  m_Stat.Sync();
+
   if (!std::experimental::filesystem::is_directory(m_path.parent_path())) 
   {
     m_path.clear();

@@ -2,7 +2,7 @@
 // Name:      test-file.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <chrono>
@@ -24,6 +24,7 @@ TEST_CASE( "wxExFile" )
     file.ResetContentsChanged();
 
     REQUIRE(!file.FileSave());
+    REQUIRE( file.FileSave("test-save"));
     REQUIRE( file.GetFileName().GetStat().IsOk());
     // The fullpath should be normalized, test it.
     REQUIRE( file.GetFileName().Path().string() != "./test.h");
@@ -32,16 +33,16 @@ TEST_CASE( "wxExFile" )
     REQUIRE( file.Open(GetTestPath("test.bin").Path().string()));
     REQUIRE( file.IsOpened());
 
-    const wxCharBuffer* buffer = file.Read();
+    const std::string* buffer = file.Read();
     REQUIRE(buffer->length() == 40);
     
-    file.FileNew("test-xxx");
-    
-    REQUIRE( file.Open(wxFile::write));
-    REQUIRE( file.Write(*buffer));
+    REQUIRE( file.FileNew("test-xxx"));
+    REQUIRE( file.Open(std::ios_base::out));
+    REQUIRE( file.IsOpened());
     REQUIRE( file.Write(std::string("OK")));
+    REQUIRE( file.Write(*buffer));
 
-    wxExFile create(std::string("test-create"), wxFile::write);
+    wxExFile create(std::string("test-create"), std::ios_base::out);
     REQUIRE( create.IsOpened());
     REQUIRE( create.Write(std::string("OK")));
   }
@@ -50,6 +51,7 @@ TEST_CASE( "wxExFile" )
   SUBCASE( "remove")
   {
     REQUIRE( remove("test-create") == 0);
+    REQUIRE( remove("test-save") == 0);
     REQUIRE( remove("test-xxx") == 0);
   }
 
@@ -67,21 +69,6 @@ TEST_CASE( "wxExFile" )
 
     const auto ex_milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - ex_start);
     
-    wxFile wxfile(GetTestPath("test.h").Path().string());
-    const size_t l = wxfile.Length();
-    const auto wx_start = std::chrono::system_clock::now();
-    
-    for (int j = 0; j < max; j++)
-    {
-      char* charbuffer = new char[l];
-      wxfile.Read(charbuffer, l);
-      REQUIRE(sizeof(charbuffer) > 0);
-      delete[] charbuffer;
-    }
-
-    const auto wx_milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - wx_start);
-
     CHECK(ex_milli.count() < 2000);
-    CHECK(wx_milli.count() < 2000);
   }
 }

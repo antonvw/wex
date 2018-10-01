@@ -2,7 +2,7 @@
 // Name:      hexmode.h
 // Purpose:   Declaration of class wxExHexMode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -13,7 +13,7 @@ class wxExHexModeLine;
 class wxExSTC;
 
 /// Offers a hex mode.
-class WXDLLIMPEXP_BASE wxExHexMode
+class wxExHexMode
 {
   friend wxExHexModeLine;
 public:
@@ -28,7 +28,7 @@ public:
     /// 78 43 6d 64 4c 69 6e 65 50 61 72 73 65 72 0a 23 xCmdLineParser #
     /// <---------------------------------------------> bytesPerLine
     /// @endcode
-    wxFileOffset bytesPerLine = 16);
+    size_t bytesPerLine = 16);
   
   /// Returns true if hex mode is on.
   bool Active() const {return m_Active;};
@@ -105,7 +105,7 @@ private:
   void Activate();
   void Deactivate();
   
-  const wxFileOffset m_BytesPerLine, m_EachHexField;
+  const size_t m_BytesPerLine, m_EachHexField;
 
   bool m_Active = false;
   int m_Goto = 0;

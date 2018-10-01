@@ -2,7 +2,7 @@
 // Name:      test-version.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -14,6 +14,6 @@
 
 TEST_CASE("wxExVersion")
 {
-  REQUIRE(!wxExVersionInfo().GetVersionOnlyString().empty());
-  REQUIRE(!wxExGetVersionInfo().GetVersionOnlyString().empty());
+  REQUIRE(!wxExVersionInfo().Get().empty());
+  REQUIRE(!wxExGetVersionInfo().Get().empty());
 }

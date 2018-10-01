@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
+#include <wx/config.h>
 #include <wx/fdrepdlg.h> // for wxFindDialogEvent
 #include <wx/log.h>
 #include <wx/msgdlg.h>
@@ -14,6 +15,7 @@
 #include <wx/extension/debug.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/lexer-props.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/log.h>
 #include <wx/extension/managedframe.h>
@@ -385,38 +387,44 @@ void wxExSTC::BindAll()
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     const std::string propnames(PropertyNames());
-    std::string properties = (!propnames.empty() ? "[Current properties]\n": std::string());
+    const wxExLexerProps l;
+
+    std::string properties = (!propnames.empty() ? 
+      l.MakeSection("Current properties"): std::string());
     
     // Add current (global and lexer) properties.  
     for (const auto& it : wxExLexers::Get()->GetProperties())
     {
-      properties += it.GetName() + "=" + GetProperty(it.GetName()) + "\n";
+      properties += l.MakeKey(it.GetName(), GetProperty(it.GetName()));
     }
+
     for (const auto& it : m_Lexer.GetProperties())
     {
-      properties += it.GetName() + "=" + GetProperty(it.GetName()) + "\n";
+      properties += l.MakeKey(it.GetName(), GetProperty(it.GetName()));
     }
+
     // Add available properties.
     if (!propnames.empty())
     {
-      properties += "\n[Available properties]\n";
-    
+      properties += "\n" + l.MakeSection("Available properties");
+
       for (wxExTokenizer tkz(propnames, "\n"); tkz.HasMoreTokens(); )
       {
         const auto prop(tkz.GetNextToken());
-        const std::string description(DescribeProperty(prop));
-        properties += prop + 
-          (!GetProperty(prop).empty() ? "=" + GetProperty(prop).ToStdString(): std::string()) + 
-          (!description.empty() ? ": " + description: std::string()) + "\n";
+        properties += l.MakeKey(prop, GetProperty(prop), DescribeProperty(prop));
       }
     }
+
     if (m_EntryDialog == nullptr)
     {
       m_EntryDialog = new wxExSTCEntryDialog(
         properties, 
         std::string(), 
-        wxExWindowData().Button(wxOK).Title(_("Properties").ToStdString()));
-      m_EntryDialog->GetSTC()->GetLexer().Set("props");
+        wxExWindowData().
+          Size({300, 450}).
+          Button(wxOK).
+          Title(_("Properties").ToStdString()));
+      m_EntryDialog->GetSTC()->GetLexer().Set(l);
     }
     else
     {
@@ -729,6 +737,11 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
 
 void wxExSTC::CheckBrace()
 {
+  if (!wxConfigBase::Get()->ReadLong(_("Show match"), 1))
+  {
+    return;
+  }
+
   if (HexMode())
   {
     m_HexMode.HighlightOther();

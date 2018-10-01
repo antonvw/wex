@@ -65,7 +65,7 @@ TEST_CASE("wxExFileHistory")
     history.Clear();
     // file should be closed before remove (at least for windows)
     {
-      wxExFile file(std::string("test-history.txt"), wxFile::write);
+      wxExFile file(std::string("test-history.txt"), std::ios_base::out);
       REQUIRE( file.Write(std::string("test")));
     }
     history.AddFileToHistory("test-history.txt");

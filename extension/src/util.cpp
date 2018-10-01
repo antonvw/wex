@@ -261,20 +261,20 @@ const std::string wxExConfigDir()
 #endif
 }
   
-const std::string wxExConfigFirstOf(const wxString& key)
+const std::string wxExConfigFirstOf(const std::string& key)
 {
   return 
     wxConfigBase::Get()->Read(key).BeforeFirst(wxExGetFieldSeparator()).ToStdString();
 }
 
-const std::string wxExConfigFirstOfWrite(const wxString& key, const wxString& value)
+const std::string wxExConfigFirstOfWrite(const std::string& key, const std::string& value)
 {
-  std::vector<wxString> v{value};
+  std::vector<std::string> v{value};
 
   for (wxExTokenizer tkz(wxConfigBase::Get()->Read(key).ToStdString(), 
     std::string(1, wxExGetFieldSeparator())); tkz.HasMoreTokens(); )
   {
-    if (const wxString val = tkz.GetNextToken(); val != value)
+    if (const std::string val = tkz.GetNextToken(); val != value)
     {
       v.emplace_back(val);
     }
@@ -284,13 +284,13 @@ const std::string wxExConfigFirstOfWrite(const wxString& key, const wxString& va
     [&](const wxString& a, const wxString& b) {
       return a + b + wxExGetFieldSeparator();}));
   
-  return value.ToStdString();
+  return value;
 }
   
 const std::string wxExEllipsed(
-  const wxString& text, const std::string& control, bool ellipse)
+  const std::string& text, const std::string& control, bool ellipse)
 {
-  return text.ToStdString() + 
+  return text + 
     (ellipse ? "...": std::string()) + 
     (!control.empty() ? "\t" + control: std::string());
 }
@@ -454,24 +454,24 @@ void wxExListToConfig(const std::list < std::string > & l, const std::string& co
 
 void wxExLogStatus(const wxExPath& fn, long flags)
 {
-  wxString text = ((flags & STAT_FULLPATH) ? 
+  std::string text = ((flags & STAT_FULLPATH) ? 
     fn.Path().string(): fn.GetFullName());
 
   if (fn.GetStat().IsOk())
   {
-    const wxString what = ((flags & STAT_SYNC) ? 
+    const std::string what = ((flags & STAT_SYNC) ? 
       _("Synchronized"):
       _("Modified"));
         
     text += " " + what + " " + fn.GetStat().GetModificationTime();
   }
 
-  wxLogStatus(text);
+  wxExLogStatus(text);
 }
 
 void wxExLogStatus(const std::string& text)
 {
-  wxLogStatus(wxString(text));
+  wxLogStatus(text.c_str());
 }
 
 long wxExMake(const wxExPath& makefile)
@@ -641,17 +641,17 @@ int wxExOpenFiles(wxExFrame* frame, const std::vector< wxExPath > & files,
 }
 
 void wxExOpenFilesDialog(wxExFrame* frame,
-  long style, const wxString& wildcards, bool ask_for_continue,
+  long style, const std::string& wildcards, bool ask_for_continue,
   const wxExSTCData& data, int dir_flags)
 {
   wxArrayString paths;
-  const wxString caption(_("Select Files"));
+  const std::string caption(_("Select Files"));
       
   if (auto* stc = frame->GetSTC(); stc != nullptr)
   {
     wxExFileDialog dlg(
       &stc->GetFile(),
-      wxExWindowData().Style(style).Title(caption.ToStdString()),
+      wxExWindowData().Style(style).Title(caption),
       wildcards);
 
     if (ask_for_continue)

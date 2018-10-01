@@ -11,6 +11,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/vi-macros.h>
+#include <wx/extension/lexer-props.h>
 #include <wx/extension/log.h>
 #include <wx/extension/path.h>
 #include <wx/extension/type-to-value.h>
@@ -102,19 +103,20 @@ const std::string wxExViMacros::GetRegister(const char name) const
 const std::vector< std::string > wxExViMacros::GetRegisters() const
 {
   std::vector< std::string > r;
+  wxExLexerProps l;
   
   for (const auto& it : m_Macros)
   {
     if (it.first.size() == 1)
     {
-      r.emplace_back(it.first + " = " + wxExSkipWhiteSpace(
-        std::accumulate(it.second.begin(), it.second.end(), std::string())));
+      r.emplace_back(l.MakeKey(it.first, wxExSkipWhiteSpace(
+        std::accumulate(it.second.begin(), it.second.end(), std::string()))));
     }
   }
    
   if (const std::string clipboard(wxExSkipWhiteSpace(wxExClipboardGet())); !clipboard.empty())
   {
-    r.emplace_back("* = " + clipboard);
+    r.emplace_back(l.MakeKey("*", clipboard));
   }
                 
   return r;

@@ -183,5 +183,5 @@ bool wxExAutoComplete::ShowKeywords(bool show) const
 
 bool wxExAutoComplete::Use() const
 {
-  return m_Use && wxConfigBase::Get()->ReadBool(_("Autocomplete"), true);
+  return m_Use || wxConfigBase::Get()->ReadBool(_("Auto complete"), false);
 }

@@ -14,7 +14,7 @@ one of these applications, being a full featured source code text editor.
 ```
 git clone --recursive https://github.com/antonvw/wxExtension.git    
 mkdir build && cd build   
-cmake -DwxExBUILD_SP=ON .. && make
+cmake .. && make
 ```
 
 for Visual Studio add `-G "NMake Makefiles"` and do `nmake`,

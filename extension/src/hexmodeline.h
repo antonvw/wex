@@ -2,7 +2,7 @@
 // Name:      hexmodeline.h
 // Purpose:   Declaration of class wxExHexModeLine
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -16,7 +16,7 @@ class wxExSTC;
 char Printable(unsigned int c, wxExSTC* stc);
 
 /// Offers a hex mode line.
-class WXDLLIMPEXP_BASE wxExHexModeLine
+class wxExHexModeLine
 {
 public:
   /// Constructor.
@@ -85,7 +85,7 @@ private:
     const int offset = m_ColumnNo - m_StartAsciiField;
     return m_Hex->m_EachHexField * offset;};
   
-  const wxFileOffset m_StartAsciiField;
+  const size_t m_StartAsciiField;
 
   std::string m_Line;
   int m_ColumnNo, m_LineNo;

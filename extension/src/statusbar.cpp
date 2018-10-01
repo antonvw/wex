@@ -61,12 +61,14 @@ const wxExStatusBarPane& wxExStatusBar::GetField(int n) const
   return m_Panes[n];
 }
 
-bool wxExStatusBar::GetFieldNo(
-  const std::string& field, int& shown_pane_no, int& pane_no) const
+// Returns true if the field exists.
+// The shown_pane_no, pane_no is FIELD_NOT_SHOWN if the field is not shown.
+std::tuple <bool, int, int> 
+  wxExStatusBar::GetFieldNo(const std::string& field) const
 {
   const std::string use_field = field.empty() ? "PaneText": field;
-  shown_pane_no = 0;
-  pane_no = 0;
+  int pane_no = 0;
+  int shown_pane_no = 0;
   
   for (const auto& it : m_Panes)
   {
@@ -74,7 +76,7 @@ bool wxExStatusBar::GetFieldNo(
     {
       if (it.GetName() == use_field)
       {
-        return true;
+        return {true, shown_pane_no, pane_no};
       }
       
       shown_pane_no++;
@@ -83,21 +85,20 @@ bool wxExStatusBar::GetFieldNo(
     {
       if (it.GetName() == use_field)
       {
-        shown_pane_no = FIELD_NOT_SHOWN;
-        return true;
+        return {true, FIELD_NOT_SHOWN, pane_no};
       }
     }
   
     pane_no++;
   }
   
-  return false;
+  return {false, 0, 0};
 }
   
 const std::string wxExStatusBar::GetStatusText(const std::string& field) const
 {
-  int shown_pane_no, dummy;
-  return !GetFieldNo(field, shown_pane_no, dummy) || shown_pane_no == FIELD_NOT_SHOWN ?
+  const auto& [res, shown_pane_no, pane_no] = GetFieldNo(field);
+  return !res || shown_pane_no == FIELD_NOT_SHOWN ?
     // Do not show error, as you might explicitly want to ignore messages.
     std::string(): wxStatusBar::GetStatusText(shown_pane_no).ToStdString();
 }
@@ -203,7 +204,7 @@ wxExStatusBar* wxExStatusBar::Setup(
 bool wxExStatusBar::SetStatusText(
   const std::string& text, const std::string& field)
 {
-  if (int shown_pane_no, pane_no; !GetFieldNo(field, shown_pane_no, pane_no))
+  if (const auto& [res, shown_pane_no, pane_no] = GetFieldNo(field); !res)
   {
     // Do not show error, as you might explicitly want to ignore messages.
     return false;

@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <tuple>
 #include <vector>
 #include <wx/statusbr.h> 
 #include <wx/extension/window-data.h> 
@@ -14,7 +15,7 @@
 /// This class defines our statusbar panes, used by wxExFrame::SetupStatusBar.
 /// It just adds some members to the base class
 /// (that offers GetText(), GetStyle() and GetWidth()).
-class WXDLLIMPEXP_BASE wxExStatusBarPane : public wxStatusBarPane
+class wxExStatusBarPane : public wxStatusBarPane
 {
 public:
   /// Default constructor.
@@ -140,12 +141,7 @@ protected:
   /// moving over.
   void OnMouse(wxMouseEvent& event);
 private:
-  /// Returns true if the field exists.
-  /// The visible_pane_no is FIELD_NOT_SHOWN if the field is not shown.
-  bool GetFieldNo(
-    const std::string& field, 
-    int& shown_pane_no,
-    int& pane_no) const;
+  std::tuple <bool, int, int> GetFieldNo(const std::string& field) const;
   void Handle(wxMouseEvent& event, const wxExStatusBarPane& wxExStatusBarPane);
   
   wxExFrame* m_Frame;

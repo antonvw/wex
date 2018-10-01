@@ -733,8 +733,8 @@ bool wxExSTC::ReplaceNext(
 void wxExSTC::ResetMargins(wxExSTCMarginFlags flags)
 {
   if (flags & STC_MARGIN_FOLDING) SetMarginWidth(m_MarginFoldingNumber, 0);
-  if (flags & STC_MARGIN_DIVIDER) SetMarginWidth(m_MarginLineNumber, 0);
-  if (flags & STC_MARGIN_LINENUMBER) SetMarginWidth(m_MarginDividerNumber, 0);
+  if (flags & STC_MARGIN_DIVIDER) SetMarginWidth(m_MarginDividerNumber, 0);
+  if (flags & STC_MARGIN_LINENUMBER) SetMarginWidth(m_MarginLineNumber, 0);
   if (flags & STC_MARGIN_TEXT) SetMarginWidth(m_MarginTextNumber, 0);
 }
 
@@ -773,11 +773,7 @@ void wxExSTC::SetSearchFlags(int flags)
     flags = 0;
     
     auto* frd = wxExFindReplaceData::Get();
-    if (frd->UseRegEx()) 
-    {
-      flags |= wxSTC_FIND_REGEXP;
-      flags |= wxSTC_FIND_CXX11REGEX;
-    }
+    if (frd->UseRegEx()) flags |= wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX;
     if (frd->MatchWord()) flags |= wxSTC_FIND_WHOLEWORD;
     if (frd->MatchCase()) flags |= wxSTC_FIND_MATCHCASE;
   }

@@ -13,13 +13,14 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/config.h>
 #include <wx/extension/lexer.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/log.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/tokenizer.h>
-#include <wx/extension/util.h> // for wxExAlignText
+#include <wx/extension/util.h>
 #include <easylogging++.h>
 
 wxExLexer& wxExLexer::operator=(const wxExLexer& l)
@@ -38,7 +39,6 @@ wxExLexer& wxExLexer::operator=(const wxExLexer& l)
     m_Keywords = l.m_Keywords;
     m_KeywordsSet = l.m_KeywordsSet;
     m_Language = l.m_Language;
-    m_LineSize = l.m_LineSize;
     m_Previewable = l.m_Previewable;
     m_Properties = l.m_Properties;
     m_ScintillaLexer = l.m_ScintillaLexer;
@@ -177,10 +177,15 @@ void wxExLexer::AutoMatch(const std::string& lexer)
       else
       {
         // Then, a partial using find_if.
-        if (const auto& style = std::find_if(wxExLexers::Get()->GetThemeMacros().begin(), wxExLexers::Get()->GetThemeMacros().end(), 
-          [&](auto const& e) {return it.first.find(e.first) != std::string::npos;});
+        if (const auto& style = 
+          std::find_if(wxExLexers::Get()->GetThemeMacros().begin(), 
+            wxExLexers::Get()->GetThemeMacros().end(), 
+            [&](auto const& e) {
+            return it.first.find(e.first) != std::string::npos;});
           style != wxExLexers::Get()->GetThemeMacros().end())
+        {
           m_Styles.emplace_back(it.second, style->second);
+        }
       }
     }
   }
@@ -203,7 +208,7 @@ const std::string wxExLexer::CommentComplete(const std::string& comment) const
   if (m_CommentEnd.empty()) return std::string();
   
   // Fill out rest of comment with spaces, and comment end string.
-  if (const int n = m_LineSize - comment.size() - m_CommentEnd.size(); n <= 0) 
+  if (const int n = GetLineSize() - comment.size() - m_CommentEnd.size(); n <= 0) 
   {
     return std::string();
   }
@@ -267,6 +272,13 @@ const std::string wxExLexer::GetKeywordsString(
   }
 
   return std::string();
+}
+
+size_t wxExLexer::GetLineSize() const 
+{
+  return !m_EdgeColumns.empty() ?
+    m_EdgeColumns.back():
+    (size_t)wxConfigBase::Get()->ReadLong(_("Edge column"), 80l);
 }
 
 bool wxExLexer::IsKeyword(const std::string& word) const
@@ -343,7 +355,8 @@ const std::string wxExLexer::MakeSingleLineComment(
   if (fill_out && 
       (fill_out_character != ' ' || !m_CommentEnd.empty()))
   {
-    if (const auto fill_chars = UsableCharactersPerLine() - text.size(); fill_chars > 0)
+    if (const auto fill_chars = 
+      UsableCharactersPerLine() - text.size(); fill_chars > 0)
     {
       out += std::string(fill_chars, fill_out_character);
     }
@@ -461,7 +474,8 @@ void wxExLexer::Set(const pugi::xml_node* node)
           const auto pos = nm.find("-");
           try
           {
-            const auto setno = (pos == std::string::npos ? 0: std::stoi(nm.substr(pos + 1)));
+            const auto setno = (pos == std::string::npos ? 
+              0: std::stoi(nm.substr(pos + 1)));
             const auto keywords = wxExLexers::Get()->GetKeywords(att.value());
 
             if (keywords.empty())
@@ -538,12 +552,8 @@ bool wxExLexer::Set(const wxExLexer& lexer, bool fold)
         break;
         
       case wxExEdgeMode::LINE:
-#if wxCHECK_VERSION(3,1,1)
         m_STC->SetEdgeMode(m_EdgeColumns.size() <= 1 ? 
           wxSTC_EDGE_LINE: wxSTC_EDGE_MULTILINE); 
-#else
-        m_STC->SetEdgeMode(wxSTC_EDGE_LINE);
-#endif
         break;
         
       case wxExEdgeMode::NONE:
@@ -559,13 +569,11 @@ bool wxExLexer::Set(const wxExLexer& lexer, bool fold)
         m_STC->SetEdgeColumn(m_EdgeColumns.front());
         break;
 
-#if wxCHECK_VERSION(3,1,1)
       default:
         for (const auto& c : m_EdgeColumns)
         {
           m_STC->MultiEdgeAddLine(c, m_STC->GetEdgeColour());
         }
-#endif
     }
   }
 
@@ -591,7 +599,7 @@ size_t wxExLexer::UsableCharactersPerLine() const
 {
   // We adjust this here for
   // the space the beginning and end of the comment characters occupy.
-  return m_LineSize
+  return GetLineSize()
     - ((m_CommentBegin.size() != 0) ? m_CommentBegin.size() + 1 : 0)
     - ((m_CommentEnd.size() != 0) ? m_CommentEnd.size() + 1 : 0);
 }

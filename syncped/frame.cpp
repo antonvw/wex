@@ -297,7 +297,7 @@ Frame::Frame(App* app)
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxAboutDialogInfo info;
     info.SetIcon(GetIcon());
-    info.SetVersion(wxExGetVersionInfo().GetVersionOnlyString());
+    info.SetVersion(wxExGetVersionInfo().Get());
     wxString description(
       _("This program offers a portable text or binary editor\n"
         "with automatic syncing."));
@@ -307,7 +307,7 @@ Frame::Frame(App* app)
         "and saved in the same directory as where the executable is.");
 #endif
     info.SetDescription(description);
-    info.SetCopyright(wxExGetVersionInfo().GetCopyright());
+    info.SetCopyright(wxExGetVersionInfo().Copyright());
     info.SetWebSite("http://sourceforge.net/projects/syncped/");
     wxAboutBox(info);}, wxID_ABOUT);
   
@@ -321,7 +321,7 @@ Frame::Frame(App* app)
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxLaunchDefaultBrowser(
       "http://antonvw.github.io/syncped/v" + 
-      wxExGetVersionInfo().GetVersionOnlyString() + 
+      wxExGetVersionInfo().Get() + 
       "/syncped.htm");}, wxID_HELP);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -425,8 +425,14 @@ Frame::Frame(App* app)
       m_ProjectWildcard,
       wxFD_OPEN | wxFD_MULTIPLE);
     if (dlg.ShowModal() == wxID_CANCEL) return;
+    const std::vector < wxExPath > v(
+#ifdef __WXOSX__
+      {dlg.GetPath().ToStdString()});
+#else
+      wxExToVectorPath(dlg).Get());
+#endif
     wxExOpenFiles(this, 
-      wxExToVectorPath(dlg).Get(), wxExSTCData().Flags(STC_WIN_IS_PROJECT));}, 
+      v, wxExSTCData().Flags(STC_WIN_IS_PROJECT));}, 
     ID_PROJECT_OPEN);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {

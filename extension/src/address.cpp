@@ -239,32 +239,30 @@ bool wxExAddress::Read(const std::string& arg) const
   }
   else
   {
-    wxExPath fn(arg);
-
-    if (fn.IsRelative())
-    {
-      fn.Canonical(m_Ex->GetSTC()->GetFileName().GetPath());
-    }
+    wxExPath::Current(m_Ex->GetSTC()->GetFileName().GetPath());
     
-    wxExFile file;
-
-    if (!fn.FileExists() || !file.Open(fn.Path().string()))
+    if (wxExFile file(arg); !file.IsOpened())
     {
-      wxLogStatus(_("file: %s does not exist"), arg);
+      wxLogStatus(_("file: %s open error"), file.GetFileName().Path().string());
       return false;
     }
-    
-    const auto buffer(file.Read());
-    
-    if (m_Address == ".")
+    else if (const auto buffer(file.Read()); buffer != nullptr)
     {
-      m_Ex->GetSTC()->AddTextRaw((const char *)buffer->data(), buffer->length());
+      if (m_Address == ".")
+      {
+        m_Ex->GetSTC()->AddTextRaw(buffer->data(), buffer->size());
+      }
+      else
+      {
+        // README: InsertTextRaw does not have length argument.
+        m_Ex->GetSTC()->InsertTextRaw(
+          m_Ex->GetSTC()->PositionFromLine(GetLine()), buffer->data());
+      }
     }
     else
     {
-      // README: InsertTextRaw does not have length argument.
-      m_Ex->GetSTC()->InsertTextRaw(
-        m_Ex->GetSTC()->PositionFromLine(GetLine()), (const char *)buffer->data());
+      wxLogStatus(_("file: %s read failed"), arg);
+      return false;
     }
       
     return true;

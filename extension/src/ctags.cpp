@@ -130,14 +130,12 @@ std::map< std::string, wxExCTagsInfo >::iterator wxExCTags::m_Iterator;
 wxExCTags::wxExCTags(wxExEx* ex)
   : m_Ex(ex)
   , m_Frame(ex->GetFrame())
-  , m_Separator(3)
 {
   Init(m_Ex->GetCommand().STC()->GetData().CTagsFileName());
 }
 
 wxExCTags::wxExCTags(wxExFrame* frame)
   : m_Frame(frame)
-  , m_Separator(3)
 {
   Init(DEFAULT_TAGFILE);
 }

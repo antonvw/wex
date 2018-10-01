@@ -35,7 +35,7 @@ enum class wxExEdgeMode
 /// syntax colouring and comment definitions.
 /// This lexer is one of the Scintilla lexers.
 /// The lexers are read by and kept in the wxExLexers class.
-class WXDLLIMPEXP_BASE wxExLexer
+class wxExLexer
 {
 public:
   /// Default constructor.
@@ -106,7 +106,7 @@ public:
   const auto & GetLanguage() const {return m_Language;};
   
   /// Returns the line size.
-  const auto GetLineSize() const {return m_LineSize;};
+  size_t GetLineSize() const;
   
   /// Returns the properties.
   const auto & GetProperties() const {return m_Properties;};
@@ -137,7 +137,7 @@ public:
   const std::string MakeComment(
     const std::string& prefix,
     const std::string& text) const;
-
+  
   /// Returns a lexer comment string filled out over one line.
   const std::string MakeSingleLineComment(
     const std::string_view& text,
@@ -187,12 +187,11 @@ private:
   // each keyword set in a separate keyword set
   std::map< int, std::set<std::string> > m_KeywordsSet;
   std::set<std::string> m_Keywords;
-  std::vector<int> m_EdgeColumns;
+  std::vector<size_t> m_EdgeColumns; // last one is used for line size
   std::vector<wxExProperty> m_Properties;
   std::vector<wxExStyle> m_Styles;
   
   bool m_IsOk {false}, m_Previewable {false};
-  size_t m_LineSize {80};
   wxExEdgeMode m_EdgeMode {wxExEdgeMode::ABSENT};
   wxExSTC* m_STC {nullptr};
 };

@@ -209,8 +209,12 @@ Frame::Frame()
   menuView->AppendCheckItem(ID_VIEW_SHELL, _("Shell"));
   menuView->AppendCheckItem(ID_VIEW_STATISTICS, _("Statistics"));
 
+#ifndef __WXOSX__
   wxMenu* menuOptions = new wxMenu();
   menuOptions->Append(wxID_PREFERENCES);
+#else
+  menuFile->Append(wxID_PREFERENCES); // is moved!
+#endif
 
   wxMenu* menuHelp = new wxMenu();
   menuHelp->Append(wxID_ABOUT);
@@ -287,8 +291,8 @@ Frame::Frame()
     wxAboutDialogInfo info;
     info.SetIcon(GetIcon());
     info.SetDescription(_("This program offers a general socket server."));
-    info.SetVersion(wxExGetVersionInfo().GetVersionOnlyString());
-    info.SetCopyright(wxExGetVersionInfo().GetCopyright());
+    info.SetVersion(wxExGetVersionInfo().Get());
+    info.SetCopyright(wxExGetVersionInfo().Copyright());
     wxAboutBox(info);
     }, wxID_ABOUT);
 

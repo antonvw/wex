@@ -45,7 +45,7 @@ TEST_CASE("wxExAddressRange")
   REQUIRE(!wxExAddressRange(ex, "x,3").IsOk());
   REQUIRE(!wxExAddressRange(ex, "x,3").Delete());
   REQUIRE(!wxExAddressRange(ex, "3,x").Escape("ls"));
-  REQUIRE(!wxExAddressRange(ex, "3,x").Indent());
+  REQUIRE(!wxExAddressRange(ex, "3,x").ShiftRight());
   REQUIRE(!wxExAddressRange(ex, "3,!").IsOk());
   REQUIRE(!wxExAddressRange(ex, "3,@").Move(wxExAddress(ex, "2")));
   REQUIRE(!wxExAddressRange(ex, "1,2").Move(wxExAddress(ex, "x")));
@@ -130,10 +130,10 @@ TEST_CASE("wxExAddressRange")
   }
 #endif
   
-  // Test Indent.
+  // Test Shift.
   stc->SetText(contents);
-  REQUIRE( wxExAddressRange(ex, 5).Indent());
-  REQUIRE( wxExAddressRange(ex, 5).Indent(false));
+  REQUIRE( wxExAddressRange(ex, 5).ShiftRight());
+  REQUIRE( wxExAddressRange(ex, 5).ShiftLeft());
   
   // Test IsOk.
   // See above.
