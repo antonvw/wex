@@ -236,7 +236,7 @@ wxExCmdLine::wxExCmdLine(
     for (auto it = o.rbegin(); it != o.rend(); ++it)
     {
       std::string flag(it->first[0]);
-      int p_n{1}, p_d{2}; // par name, description
+      size_t p_n{1}, p_d{2}; // par name, description
 
       if (it->first[0].size() > 1)
       {
@@ -293,7 +293,7 @@ wxExCmdLine::wxExCmdLine(
     for (auto it = s.rbegin(); it != s.rend(); ++it)
     {
       std::string flag(it->first[0]);
-      int p_n{1}, p_d{2}; // par name, description
+      size_t p_n{1}, p_d{2}; // par name, description
 
       if (it->first[0].size() > 1)
       {

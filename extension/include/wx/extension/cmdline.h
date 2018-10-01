@@ -38,7 +38,7 @@ public:
     ///   starting with 'A'
     /// - after description you can also add a default true value,
     ///   otherwise false is assumed
-    const std::vector<const std::string>, 
+    const std::vector<std::string>, 
     /// process callback if option is found
     std::function<void(bool)>>> CmdSwitches;
 
@@ -50,7 +50,7 @@ public:
     ///   starting with 'A'
     /// - after description you can also add a default value,
     ///   otherwise 0 is assumed
-    const std::vector<const std::string>, 
+    const std::vector<std::string>, 
     /// pair of command line param type and process callback if option is found
     std::pair<
       wxExCmdLineTypes, 
