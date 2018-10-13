@@ -1,65 +1,65 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      stc-wnidow.cpp
-// Purpose:   Implementation of wxExWindowData
+// Purpose:   Implementation of wex::window_data
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/app.h>
 #include <wx/extension/window-data.h>
 #include <wx/extension/managedframe.h>
 
-wxExWindowData::wxExWindowData()
+wex::window_data::window_data()
 {
   if (m_Parent == nullptr && wxTheApp != nullptr)
   {
-    m_Parent = dynamic_cast<wxExManagedFrame*>(wxTheApp->GetTopWindow());
+    m_Parent = dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
   }
 }
 
-wxExWindowData& wxExWindowData::Button(long button)
+wex::window_data& wex::window_data::Button(long button)
 {
   m_Button = button;
   return *this;
 }
 
-wxExWindowData& wxExWindowData::Id(wxWindowID id) 
+wex::window_data& wex::window_data::Id(wxWindowID id) 
 {
   m_Id = id;
   return *this;
 }
   
-wxExWindowData& wxExWindowData::Name(const std::string& name) 
+wex::window_data& wex::window_data::Name(const std::string& name) 
 {
   m_Name = name;
   return *this;
 }
   
-wxExWindowData& wxExWindowData::Parent(wxWindow* parent)
+wex::window_data& wex::window_data::Parent(wxWindow* parent)
 {
   m_Parent = parent;
   return *this;
 }
 
-wxExWindowData& wxExWindowData::Pos(const wxPoint& point)
+wex::window_data& wex::window_data::Pos(const wxPoint& point)
 {
   m_Pos = point;
   return *this;
 }
   
-wxExWindowData& wxExWindowData::Size(const wxSize& size)
+wex::window_data& wex::window_data::Size(const wxSize& size)
 {
   m_Size = size;
   return *this;
 }
   
-wxExWindowData& wxExWindowData::Style(long style) 
+wex::window_data& wex::window_data::Style(long style) 
 {
   m_Style = style;
   return *this;
 }
 
-wxExWindowData& wxExWindowData::Title(const std::string& title) 
+wex::window_data& wex::window_data::Title(const std::string& title) 
 {
   m_Title = title;
   return *this;

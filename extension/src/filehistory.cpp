@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      filehistory.cpp
-// Purpose:   Implementation of wxExFileHistory class methods
+// Name:      file_history.cpp
+// Purpose:   Implementation of wex::file_history class methods
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -18,25 +18,26 @@
 #include <wx/extension/path.h>
 #include <wx/extension/util.h>
 
-class wxExFileHistoryImp : public wxFileHistory
+namespace wex
 {
-public:
-  wxExFileHistoryImp(
-    size_t maxFiles = 9, 
-    wxWindowID idBase = wxID_FILE1)
-    : wxFileHistory(maxFiles, idBase) {;};
+  class file_history_imp : public wxFileHistory
+  {
+  public:
+    file_history_imp(
+      size_t maxFiles = 9, 
+      wxWindowID idBase = wxID_FILE1)
+      : wxFileHistory(maxFiles, idBase) {;};
 
-  virtual void AddFileToHistory(const wxString& file) override;
-  virtual wxString GetHistoryFile(size_t index = 0) const override;
+    virtual void AddFileToHistory(const wxString& file) override;
+    virtual wxString GetHistoryFile(size_t index = 0) const override;
+  };
 };
 
-wxExFileHistory::wxExFileHistory(
+wex::file_history::file_history(
   size_t maxFiles, wxWindowID idBase, const std::string& key)
-  : m_History(new wxExFileHistoryImp(maxFiles, idBase))
+  : m_History(new file_history_imp(maxFiles, idBase))
   , m_Key(key)
 {
-  // There is only support for one history in the config.
-  // We use file history for this, so update project history ourselves.
   // The order should be inverted, as the last one added is the most recent used.
   if (!key.empty())
   {
@@ -48,20 +49,20 @@ wxExFileHistory::wxExFileHistory(
   }
 }
 
-wxExFileHistory::~wxExFileHistory()
+wex::file_history::~file_history()
 {
   delete m_History;
 }
   
-void wxExFileHistory::AddFileToHistory(const wxExPath& file)
+void wex::file_history::Add(const path& p)
 {
-  if (file.FileExists())
+  if (p.FileExists())
   {
-    m_History->AddFileToHistory(file.Path().string());
+    m_History->AddFileToHistory(p.Path().string());
   }
 }
 
-void wxExFileHistory::Clear()
+void wex::file_history::Clear()
 {
   if (GetCount() > 0)
   {
@@ -72,29 +73,29 @@ void wxExFileHistory::Clear()
   }
 }
 
-wxWindowID wxExFileHistory::GetBaseId() const
+wxWindowID wex::file_history::GetBaseId() const
 {
   return m_History->GetBaseId();
 }
   
-size_t wxExFileHistory::GetCount() const
+size_t wex::file_history::GetCount() const
 {
   return m_History->GetCount();
 }
   
-int wxExFileHistory::GetMaxFiles() const
+int wex::file_history::GetMaxFiles() const
 {
   return m_History->GetMaxFiles();
 }
 
-wxExPath wxExFileHistory::GetHistoryFile(size_t index) const
+wex::path wex::file_history::GetHistoryFile(size_t index) const
 {
-  return wxExPath(m_History->GetHistoryFile(index).ToStdString());
+  return path(m_History->GetHistoryFile(index).ToStdString());
 }
     
-std::vector<wxExPath> wxExFileHistory::GetHistoryFiles(size_t count) const
+std::vector<wex::path> wex::file_history::GetHistoryFiles(size_t count) const
 {
-  std::vector<wxExPath> v;
+  std::vector<path> v;
   
   for (size_t i = 0; i < count && i < GetCount(); i++)
   {
@@ -104,14 +105,14 @@ std::vector<wxExPath> wxExFileHistory::GetHistoryFiles(size_t count) const
   return v;
 }
   
-void wxExFileHistory::PopupMenu(wxWindow* win,
+void wex::file_history::PopupMenu(wxWindow* win,
   int clear_id, const wxPoint& pos) const
 {
   wxMenu* menu = new wxMenu();
 
   for (size_t i = 0; i < GetCount(); i++)
   {
-    if (const wxExPath file(GetHistoryFile(i)); file.FileExists())
+    if (const wex::path file(GetHistoryFile(i)); file.FileExists())
     {
       wxMenuItem* item = new wxMenuItem(
         menu, 
@@ -119,7 +120,7 @@ void wxExFileHistory::PopupMenu(wxWindow* win,
         file.GetFullName());
 
       item->SetBitmap(wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
-        wxExGetIconID(file)));
+        get_iconid(file)));
     
       menu->Append(item);
     }
@@ -140,7 +141,7 @@ void wxExFileHistory::PopupMenu(wxWindow* win,
   delete menu;
 }
 
-void wxExFileHistory::Save()
+void wex::file_history::Save()
 {
   if (m_Key.empty())
   {
@@ -162,7 +163,7 @@ void wxExFileHistory::Save()
   }
 }
   
-void wxExFileHistory::UseMenu(wxWindowID id, wxMenu* menu)
+void wex::file_history::UseMenu(wxWindowID id, wxMenu* menu)
 {
   wxMenu* submenu = new wxMenu;
   menu->Append(id, _("Open &Recent"), submenu);
@@ -181,7 +182,7 @@ void wxExFileHistory::UseMenu(wxWindowID id, wxMenu* menu)
 
 // Implementation
 
-void wxExFileHistoryImp::AddFileToHistory(const wxString& file)
+void wex::file_history_imp::AddFileToHistory(const wxString& file)
 {
   if (!file.empty() && GetMaxFiles() > 0)
   {
@@ -189,7 +190,7 @@ void wxExFileHistoryImp::AddFileToHistory(const wxString& file)
   }
 }
 
-wxString wxExFileHistoryImp::GetHistoryFile(size_t index) const
+wxString wex::file_history_imp::GetHistoryFile(size_t index) const
 {
   if (GetCount() > 0 && (int)index < GetMaxFiles())
   {
@@ -216,7 +217,7 @@ wxString wxExFileHistoryImp::GetHistoryFile(size_t index) const
 
     if (error)
     {
-      const_cast< wxExFileHistoryImp * >( this )->RemoveFileFromHistory(index);
+      const_cast< file_history_imp * >( this )->RemoveFileFromHistory(index);
       wxLogStatus(_("Removed not existing file: %s from history"), file.c_str());
     }
   }

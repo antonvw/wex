@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-variable.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -15,19 +15,19 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-TEST_CASE("wxExVariable")
+TEST_CASE("wex::variable")
 {
-  wxExEx* ex = new wxExEx(GetSTC());
+  wex::ex* ex = new wex::ex(GetSTC());
 
   SUBCASE("Default constructor")
   {
     std::string value;
-    REQUIRE( wxExVariable("test").GetName() == "test");
-    REQUIRE( wxExVariable("test").GetValue().empty());
-    REQUIRE(!wxExVariable("test").IsBuiltIn());
-    REQUIRE(!wxExVariable("test").IsTemplate());
+    REQUIRE( wex::variable("test").GetName() == "test");
+    REQUIRE( wex::variable("test").GetValue().empty());
+    REQUIRE(!wex::variable("test").IsBuiltIn());
+    REQUIRE(!wex::variable("test").IsTemplate());
 
-    wxExVariable var("test");
+    wex::variable var("test");
     var.SetAskForInput(false);
 
     REQUIRE( var.Expand(nullptr));
@@ -60,7 +60,7 @@ TEST_CASE("wxExVariable")
       REQUIRE( doc.load_string(text.c_str()));
       pugi::xml_node node = doc.document_element();
 
-      wxExVariable var(node);
+      wex::variable var(node);
       var.SetAskForInput(false);
 
       REQUIRE( var.GetName() == std::get<0>(it));
@@ -88,7 +88,7 @@ TEST_CASE("wxExVariable")
       REQUIRE( doc.load_string(text.c_str()));
       pugi::xml_node node = doc.document_element();
 
-      wxExVariable var(node);
+      wex::variable var(node);
 
       REQUIRE( var.GetName() == it);
       REQUIRE( var.GetValue().empty());

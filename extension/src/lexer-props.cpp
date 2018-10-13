@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      lexer.cpp
-// Purpose:   Implementation of wxExLexer class
+// Purpose:   Implementation of wex::lexer class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -11,18 +11,18 @@
 #endif
 #include <wx/extension/lexer-props.h>
 
-wxExLexerProps::wxExLexerProps()
-  : wxExLexer("props")
+wex::lexer_props::lexer_props()
+  : lexer("props")
 {
 }
   
-const std::string wxExLexerProps::MakeComment(const std::string& comment) const
+const std::string wex::lexer_props::MakeComment(const std::string& comment) const
 {
   return !comment.empty() ? 
-    wxExLexer::MakeComment(comment) + "\n": std::string();
+    lexer::MakeComment(comment) + "\n": std::string();
 }
   
-const std::string wxExLexerProps::MakeKey(
+const std::string wex::lexer_props::MakeKey(
   const std::string& name, 
   const std::string& value,
   const std::string& comment) const
@@ -32,7 +32,7 @@ const std::string wxExLexerProps::MakeKey(
     name + "=" + value + "\n";
 }
 
-const std::string wxExLexerProps::MakeSection(const std::string& section) const
+const std::string wex::lexer_props::MakeSection(const std::string& section) const
 {
   return "[" + section + "]\n";
 }

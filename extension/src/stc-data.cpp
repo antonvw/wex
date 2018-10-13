@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      stc-data.cpp
-// Purpose:   Implementation of wxExSTCData
+// Purpose:   Implementation of wex::stc_data
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -9,30 +9,30 @@
 #include <wx/extension/indicator.h>
 #include <wx/extension/stc.h>
 
-wxExSTCData::wxExSTCData(wxExSTC* stc)
+wex::stc_data::stc_data(stc* stc)
   : m_STC(stc)
 {
 }
   
-wxExSTCData::wxExSTCData(wxExSTC* stc, const wxExSTCData& r)
+wex::stc_data::stc_data(stc* stc, const stc_data& r)
   : m_STC(stc)
 {
   *this = r;
 }
 
-wxExSTCData::wxExSTCData(wxExControlData& data, wxExSTC* stc)
+wex::stc_data::stc_data(control_data& data, stc* stc)
   : m_Data(data)
   , m_STC(stc)
 {
 }
 
-wxExSTCData::wxExSTCData(wxExWindowData& data, wxExSTC* stc)
-  : m_Data(wxExControlData().Window(data))
+wex::stc_data::stc_data(window_data& data, stc* stc)
+  : m_Data(control_data().Window(data))
   , m_STC(stc)
 {
 }
 
-wxExSTCData& wxExSTCData::operator=(const wxExSTCData& r)
+wex::stc_data& wex::stc_data::operator=(const stc_data& r)
 {
   if (this != &r)
   {
@@ -50,21 +50,21 @@ wxExSTCData& wxExSTCData::operator=(const wxExSTCData& r)
   return *this;
 }
   
-wxExSTCData& wxExSTCData::CTagsFileName(const std::string& text)
+wex::stc_data& wex::stc_data::CTagsFileName(const std::string& text)
 {
   m_CTagsFileName = text;
   return *this;
 }
 
-wxExSTCData& wxExSTCData::Flags(
-  wxExSTCWindowFlags flags, wxExDataAction action)
+wex::stc_data& wex::stc_data::Flags(
+  stc_window_flags flags, data_action action)
 {
-  m_Data.Flags<wxExSTCWindowFlags>(flags, m_WinFlags, action);
+  m_Data.Flags<stc_window_flags>(flags, m_WinFlags, action);
 
   return *this;
 }
   
-bool wxExSTCData::Inject() const
+bool wex::stc_data::Inject() const
 {
   if (m_STC == nullptr) return false;
   
@@ -77,7 +77,7 @@ bool wxExSTCData::Inject() const
         m_STC->EnsureCaretVisible();
         
         m_STC->IndicatorClearRange(0, m_STC->GetTextLength() - 1);
-        m_STC->SetIndicator(wxExIndicator(0), 
+        m_STC->SetIndicator(indicator(0), 
           m_STC->PositionFromLine(m_Data.Line() -1), 
           m_Data.Col() > 0 ? 
             m_STC->PositionFromLine(m_Data.Line() -1) + m_Data.Col() - 1:
@@ -153,10 +153,10 @@ bool wxExSTCData::Inject() const
   return injected;
 }
   
-wxExSTCData& wxExSTCData::Menu(
-  wxExSTCMenuFlags flags, wxExDataAction action)
+wex::stc_data& wex::stc_data::Menu(
+  stc_menu_flags flags, data_action action)
 {
-  m_Data.Flags<wxExSTCMenuFlags>(flags, m_MenuFlags, action);
+  m_Data.Flags<stc_menu_flags>(flags, m_MenuFlags, action);
 
   return *this;
 }

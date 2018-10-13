@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-stc.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -17,16 +17,16 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-TEST_CASE("wxExSTC")
+TEST_CASE("wex::stc")
 {
-  wxExSTC* stc = GetSTC();
+  wex::stc* stc = GetSTC();
   stc->GetVi().Command("\x1b");
   wxConfigBase::Get()->Write(_("Wrap scan"), true);
   
   SUBCASE("ConfigDialog")
   {
 #if wxCHECK_VERSION(3,1,0)
-    wxExSTC::ConfigDialog(wxExWindowData().Button(wxCANCEL | wxAPPLY));
+    wex::stc::ConfigDialog(wex::window_data().Button(wxCANCEL | wxAPPLY));
 #endif
   }
   
@@ -50,12 +50,12 @@ TEST_CASE("wxExSTC")
     REQUIRE(!stc->FindNext(std::string("HELLO"), wxSTC_FIND_MATCHCASE));
     REQUIRE((stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE) > 0);
     
-    wxExFindReplaceData::Get()->SetMatchCase(false);
+    wex::find_replace_data::Get()->SetMatchCase(false);
     REQUIRE( stc->FindNext(std::string("HELLO"))); // uses flags from frd
     
-    REQUIRE(!stc->SetIndicator(wxExIndicator(4,5), 100, 200));
+    REQUIRE(!stc->SetIndicator(wex::indicator(4,5), 100, 200));
     REQUIRE(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
-    wxExFindReplaceData::Get()->SetMatchCase(false);
+    wex::find_replace_data::Get()->SetMatchCase(false);
     stc->SetSearchFlags(-1);
     REQUIRE(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
     
@@ -64,7 +64,7 @@ TEST_CASE("wxExSTC")
     REQUIRE( stc->CanPaste());
     
     stc->DocumentStart();
-    wxExFindReplaceData::Get()->SetMatchWord(false);
+    wex::find_replace_data::Get()->SetMatchWord(false);
     REQUIRE( stc->FindNext(std::string("more text")));
     REQUIRE( stc->GetFindString() == "more text");
     REQUIRE( stc->ReplaceAll("more", "less") == 1);
@@ -86,7 +86,7 @@ TEST_CASE("wxExSTC")
     REQUIRE(stc->GetVi().Mode().Normal());
     stc->SetText("more text\notherline");
     stc->GetVi().Command("V");
-    REQUIRE( stc->GetVi().Mode().Get() == wxExViModes::VISUAL_LINE);
+    REQUIRE( stc->GetVi().Mode().Get() == wex::vi_modes::VISUAL_LINE);
     REQUIRE( stc->FindNext(std::string("more text")));
   }
 
@@ -98,7 +98,7 @@ TEST_CASE("wxExSTC")
     stc->GetLexer().Reset();
     REQUIRE(stc->GetLexer().GetScintillaLexer().empty());
 
-    wxExLexer lexer;
+    wex::lexer lexer;
     lexer.Reset();
     REQUIRE( lexer.Set("cpp", true));
     REQUIRE(!lexer.Set("xyz"));
@@ -107,7 +107,7 @@ TEST_CASE("wxExSTC")
 
   SUBCASE("Open")
   {
-    // do the same test as with wxExFile in base for a binary file
+    // do the same test as with wex::file in base for a binary file
     REQUIRE(stc->Open(GetTestPath("test.bin")));
     REQUIRE(stc->GetData().Flags() == 0);
     const wxCharBuffer& buffer = stc->GetTextRaw();
@@ -238,7 +238,7 @@ TEST_CASE("wxExSTC")
 
   SUBCASE("Load file")
   {
-    wxExSTC stc(GetTestPath("test.h"));
+    wex::stc stc(GetTestPath("test.h"));
     REQUIRE( stc.GetFileName().Path().string().find("test.h") != std::string::npos);
     REQUIRE( stc.Open(GetTestPath("test.h")));
     REQUIRE(!stc.Open("XXX"));

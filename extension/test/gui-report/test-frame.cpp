@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-frame.cpp
-// Purpose:   Implementation for wxExtension report unit testing
+// Purpose:   Implementation for wex report unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -11,9 +11,9 @@
 #include "test.h"
 #include <easylogging++.h>
 
-TEST_CASE("wxExFrameWithHistory")
+TEST_CASE("wex::history_frame")
 {
-  wxExListView* list = new wxExListView(wxExListViewData().Type(LIST_HISTORY));
+  wex::listview* list = new wex::listview(wex::listview_data().Type(wex::LISTVIEW_HISTORY));
 
   AddPane(GetFrame(), list);
 
@@ -27,21 +27,21 @@ TEST_CASE("wxExFrameWithHistory")
     GetHistoryFile().Path().string().find("../test.h") == std::string::npos);
 
   REQUIRE(!GetFrame()->OpenFile(
-    wxExPath(GetProject()),
-    wxExSTCData().Flags(STC_WIN_IS_PROJECT)));
+    wex::path(GetProject()),
+    wex::stc_data().Flags(wex::STC_WIN_IS_PROJECT)));
   
-  wxExFindReplaceData::Get()->SetFindString("wxExTestApp");
+  wex::find_replace_data::Get()->SetFindString("wex::test_app");
 
   // All find in files, grep fail, because there is no
-  // LIST_FIND list.
+  // LISTVIEW_FIND list.
   
-  REQUIRE(!GetFrame()->FindInFiles({}, ID_TOOL_REPORT_FIND, false));
+  REQUIRE(!GetFrame()->FindInFiles({}, wex::ID_TOOL_REPORT_FIND, false));
 
   REQUIRE(!GetFrame()->FindInFiles(
-    {GetTestPath("test.h").Path().string()}, ID_TOOL_REPORT_FIND, false));
+    {GetTestPath("test.h").Path().string()}, wex::ID_TOOL_REPORT_FIND, false));
 
   // GetFrame()->FindInFilesDialog(ID_TOOL_REPORT_FIND);
-  REQUIRE(!GetFrame()->GetFindInCaption(ID_TOOL_REPORT_FIND).empty());
+  REQUIRE(!GetFrame()->GetFindInCaption(wex::ID_TOOL_REPORT_FIND).empty());
   
   // It does not open, next should fail.
   REQUIRE( GetFrame()->GetProjectHistory().
@@ -49,7 +49,7 @@ TEST_CASE("wxExFrameWithHistory")
   
   REQUIRE( GetFrame()->GetProject() == nullptr);
 
-  VLOG(9) << "pwd: " << wxExPath::Current();
+  VLOG(9) << "pwd: " << wex::path::Current();
 
   REQUIRE(!GetFrame()->Grep("xxxxxxx *.cpp ./"));
   REQUIRE(!GetFrame()->Grep("xxxxxxx yyy"));
@@ -65,7 +65,7 @@ TEST_CASE("wxExFrameWithHistory")
   GetFrame()->SetRecentFile(GetTestPath("test.h"));
 
   for (auto id : std::vector<int> {
-    ID_CLEAR_PROJECTS, ID_PROJECT_SAVE, ID_TOOL_REPORT_FIND, ID_TOOL_REPLACE}) 
+    wex::ID_CLEAR_PROJECTS, wex::ID_PROJECT_SAVE, wex::ID_TOOL_REPORT_FIND, wex::ID_TOOL_REPLACE}) 
   {
     wxCommandEvent* event = new wxCommandEvent(wxEVT_MENU, id);
     wxQueueEvent(GetFrame(), event);

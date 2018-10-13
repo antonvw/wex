@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      main.cpp
-// Purpose:   main for wxExtension report unit testing
+// Purpose:   main for wex report unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -12,56 +12,59 @@
 
 #include "test.h"
 
-class FrameWithHistory : public wxExFrameWithHistory
+namespace wex
 {
-public:
-  FrameWithHistory()
-    : wxExFrameWithHistory() {
-      wxExLexer lexer("cpp");
-      m_Report = new wxExListView(wxExListViewData().
-        Type(LIST_KEYWORD).Lexer(&lexer));
-      AddPane(this, m_Report);};
+  class rptframe : public history_frame
+  {
+  public:
+    rptframe()
+      : history_frame() {
+        lexer lexer("cpp");
+        m_Report = new listview(listview_data().
+          Type(LISTVIEW_KEYWORD).Lexer(&lexer));
+        AddPane(this, m_Report);};
 
-  virtual wxExListView* Activate(
-    wxExListType list_type, const wxExLexer* lexer) override {
-    // only for coverage
-    wxExFrameWithHistory::Activate(list_type, lexer);
-    return m_Report;};
-  void MoreCoverage() {
-    GetFileHistoryList();};
-private:
-  wxExListView* m_Report;
+    virtual listview* Activate(
+      listview_type listview_type, const lexer* lexer) override {
+      // only for coverage
+      history_frame::Activate(listview_type, lexer);
+      return m_Report;};
+    void MoreCoverage() {
+      GetFileHistoryList();};
+  private:
+    listview* m_Report;
+  };
+
+  class gui_test_app : public test_app
+  {
+  public: 
+    gui_test_app() : test_app() {;};
+
+    bool OnInit() override
+    {
+      if (!test_app::OnInit())
+      {
+        return false;
+      }
+    
+      m_Frame = new rptframe();
+      m_Frame->MoreCoverage();
+      m_Frame->Show();
+      
+      return true;
+    }
+    
+    static auto* GetFrame() {return m_Frame;};
+  private:
+    static rptframe* m_Frame;
+  }; 
 };
 
-class wxExTestGuiApp : public wxExTestApp
+wex::rptframe* wex::gui_test_app::m_Frame = nullptr;
+
+wex::history_frame* GetFrame()
 {
-public: 
-  wxExTestGuiApp() : wxExTestApp() {;};
-
-  bool OnInit() override
-  {
-    if (!wxExTestApp::OnInit())
-    {
-      return false;
-    }
-  
-    m_Frame = new FrameWithHistory();
-    m_Frame->MoreCoverage();
-    m_Frame->Show();
-    
-    return true;
-  }
-  
-  static auto* GetFrame() {return m_Frame;};
-private:
-  static FrameWithHistory* m_Frame;
-}; 
-
-FrameWithHistory* wxExTestGuiApp::m_Frame = nullptr;
-
-wxExFrameWithHistory* GetFrame()
-{
-  return wxExTestGuiApp::GetFrame();
+  return wex::gui_test_app::GetFrame();
 }
   
 const std::string GetProject()
@@ -69,9 +72,9 @@ const std::string GetProject()
   return "test-rep.prj";
 }
   
-IMPLEMENT_APP_NO_MAIN(wxExTestGuiApp);
+IMPLEMENT_APP_NO_MAIN(wex::gui_test_app);
 
 int main(int argc, char* argv[])
 {
-  return wxExTestMain(argc, argv, new wxExTestGuiApp());
+  return wex::testmain(argc, argv, new wex::gui_test_app());
 }

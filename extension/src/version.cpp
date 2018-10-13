@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      version.cpp
-// Purpose:   Implementation of version info
+// Purpose:   Implementation of wex::version_info
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,15 +14,15 @@
 #include <wx/versioninfo.h>
 #include <wx/extension/version.h>
 
-const wxExVersionInfo wxExGetVersionInfo() 
+const wex::version_info wex::get_version_info() 
 {
-  return wxExVersionInfo("wxExtension", 
-    18, 10, 0, 
-    "wxExtension Library (a collection of wxWidgets extension classes)",
+  return version_info("wex", 
+    19, 4, 0, 
+    "wex Library (a collection of wxWidgets extension classes)",
     "(c) 1998-2018, Anton van Wezenbeek." + std::string(_("All rights reserved.")));
 }
 
-wxExVersionInfo::wxExVersionInfo(const std::string& name,
+wex::version_info::version_info(const std::string& name,
   int major,
   int minor,
   int micro,
@@ -32,17 +32,17 @@ wxExVersionInfo::wxExVersionInfo(const std::string& name,
 {
 }
 
-const std::string wxExVersionInfo::Copyright() const
+const std::string wex::version_info::Copyright() const
 {
   return m_version.GetCopyright();
 }
 
-const std::string wxExVersionInfo::Description() const
+const std::string wex::version_info::Description() const
 {
   return m_version.GetDescription();
 }
 
-const std::string wxExVersionInfo::Get() const
+const std::string wex::version_info::Get() const
 {
   std::stringstream ss;
   ss << 

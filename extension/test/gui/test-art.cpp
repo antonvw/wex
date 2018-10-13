@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-art.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -12,10 +12,10 @@
 #include <wx/extension/art.h>
 #include "test.h"
 
-TEST_CASE("wxExArt")
+TEST_CASE("wex::art")
 {
-  REQUIRE(!wxExStockArt(0).GetBitmap().IsOk());
-  REQUIRE(!wxExStockArt(wxID_ANY).GetBitmap().IsOk());
-  REQUIRE( wxExStockArt(wxID_NEW).GetBitmap().IsOk());
-  REQUIRE( wxExStockArt(wxID_OPEN).GetBitmap().IsOk());
+  REQUIRE(!wex::stockart(0).GetBitmap().IsOk());
+  REQUIRE(!wex::stockart(wxID_ANY).GetBitmap().IsOk());
+  REQUIRE( wex::stockart(wxID_NEW).GetBitmap().IsOk());
+  REQUIRE( wex::stockart(wxID_OPEN).GetBitmap().IsOk());
 }

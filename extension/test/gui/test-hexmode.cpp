@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-hexmode.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -15,20 +15,20 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-TEST_CASE("wxExHexMode")
+TEST_CASE("wex::hexmode")
 {
   // 0000000000111111111122222222223333333333444444444455555555555666666666
   // 0123456789012345678901234567890123456789012345678901234567890123456789
   // 30 31 32 33 34 35 36 37 38 39                   0123456789
-  wxExSTC* stc = new wxExSTC(
-    std::string("0123456789"), wxExSTCData().Flags(STC_WIN_HEX));
+  wex::stc* stc = new wex::stc(
+    std::string("0123456789"), wex::stc_data().Flags(wex::STC_WIN_HEX));
 
   AddPane(GetFrame(), stc);
   REQUIRE(stc->GetText() != "0123456789");
   
   stc->SetCurrentPos(48); // 0 <-
   
-  wxExHexMode* hm = &stc->GetHexMode();
+  wex::hexmode* hm = &stc->GetHexMode();
   
   REQUIRE( hm->Active());
   REQUIRE( hm->GetSTC() == stc);
@@ -143,7 +143,7 @@ TEST_CASE("wxExHexMode")
   wxKeyEvent event(wxEVT_KEY_DOWN);
   hm->SetPos(event);
   
-  wxExLexers::Get()->Apply(stc);
+  wex::lexers::Get()->Apply(stc);
   
   REQUIRE( remove("test.hex") == 0);
   

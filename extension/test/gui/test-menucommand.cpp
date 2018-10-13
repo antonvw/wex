@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-menucommand.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Name:      test-menu_command.cpp
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -12,33 +12,33 @@
 #include <wx/extension/menucommand.h>
 #include "test.h"
 
-TEST_CASE("wxExMenuCommand")
+TEST_CASE("wex::menu_command")
 {
-  const wxExMenuCommand add("a&dd");
-  const wxExMenuCommand blame("blame");
-  const wxExMenuCommand co("checkou&t");
-  const wxExMenuCommand commit("commit", "main");
-  const wxExMenuCommand diff("diff", "popup", "submenu");
-  const wxExMenuCommand log("log", "main");
-  const wxExMenuCommand help("h&elp", "", "", "m&e");
-  const wxExMenuCommand update("update");
-  const wxExMenuCommand none;
+  const wex::menu_command add("a&dd");
+  const wex::menu_command blame("blame");
+  const wex::menu_command co("checkou&t");
+  const wex::menu_command commit("commit", "main");
+  const wex::menu_command diff("diff", "popup", "submenu");
+  const wex::menu_command log("log", "main");
+  const wex::menu_command help("h&elp", "", "", "m&e");
+  const wex::menu_command update("update");
+  const wex::menu_command none;
 
   REQUIRE(add.GetCommand() == "add");
-  REQUIRE(add.GetCommand(COMMAND_INCLUDE_SUBCOMMAND | COMMAND_INCLUDE_ACCELL) == "a&dd");
+  REQUIRE(add.GetCommand(wex::COMMAND_INCLUDE_SUBCOMMAND | wex::COMMAND_INCLUDE_ACCELL) == "a&dd");
   REQUIRE(help.GetCommand() == "help me");
-  REQUIRE(help.GetCommand(COMMAND_INCLUDE_SUBCOMMAND | COMMAND_INCLUDE_ACCELL) == "h&elp m&e");
-  REQUIRE(help.GetCommand(COMMAND_INCLUDE_ACCELL) == "h&elp");
-  REQUIRE(help.GetCommand(COMMAND_INCLUDE_NONE) == "help");
+  REQUIRE(help.GetCommand(wex::COMMAND_INCLUDE_SUBCOMMAND | wex::COMMAND_INCLUDE_ACCELL) == "h&elp m&e");
+  REQUIRE(help.GetCommand(wex::COMMAND_INCLUDE_ACCELL) == "h&elp");
+  REQUIRE(help.GetCommand(wex::COMMAND_INCLUDE_NONE) == "help");
   
-  REQUIRE((add.GetType() & MENU_COMMAND_IS_MAIN) > 0);
-  REQUIRE((add.GetType() & MENU_COMMAND_IS_POPUP) > 0);
-  REQUIRE((blame.GetType() & MENU_COMMAND_IS_MAIN) > 0);
-  REQUIRE((blame.GetType() & MENU_COMMAND_IS_POPUP) > 0);
-  REQUIRE((commit.GetType() & MENU_COMMAND_IS_MAIN) > 0);
-  REQUIRE((diff.GetType() & MENU_COMMAND_IS_POPUP) > 0);
-  REQUIRE((help.GetType() & MENU_COMMAND_IS_MAIN) > 0);
-  REQUIRE((help.GetType() & MENU_COMMAND_IS_POPUP) > 0);
+  REQUIRE((add.GetType() & wex::MENU_COMMAND_IS_MAIN) > 0);
+  REQUIRE((add.GetType() & wex::MENU_COMMAND_IS_POPUP) > 0);
+  REQUIRE((blame.GetType() & wex::MENU_COMMAND_IS_MAIN) > 0);
+  REQUIRE((blame.GetType() & wex::MENU_COMMAND_IS_POPUP) > 0);
+  REQUIRE((commit.GetType() & wex::MENU_COMMAND_IS_MAIN) > 0);
+  REQUIRE((diff.GetType() & wex::MENU_COMMAND_IS_POPUP) > 0);
+  REQUIRE((help.GetType() & wex::MENU_COMMAND_IS_MAIN) > 0);
+  REQUIRE((help.GetType() & wex::MENU_COMMAND_IS_POPUP) > 0);
 
   REQUIRE(!help.AskFlags());
   REQUIRE( help.IsHelp());
@@ -48,5 +48,5 @@ TEST_CASE("wxExMenuCommand")
   REQUIRE(diff.GetSubMenu() == "submenu");
   REQUIRE(help.GetSubMenu() == "m&e");
 
-  REQUIRE(none.GetType() == MENU_COMMAND_IS_NONE);
+  REQUIRE(none.GetType() == wex::MENU_COMMAND_IS_NONE);
 }

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-vi-macros.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -17,16 +17,16 @@
 
 #define ESC "\x1b"
 
-TEST_CASE("wxExViMacros")
+TEST_CASE("wex::vi_macros")
 {
-  wxExSTC* stc = new wxExSTC(std::string("hello"));
+  wex::stc* stc = new wex::stc(std::string("hello"));
   AddPane(GetFrame(), stc);
-  wxExVi* vi = &stc->GetVi();
+  wex::vi* vi = &stc->GetVi();
 
-  wxExViMacros macros;
+  wex::vi_macros macros;
   
   REQUIRE(!macros.GetFileName().Path().empty());
-  REQUIRE( wxExViMacros::LoadDocument());
+  REQUIRE( wex::vi_macros::LoadDocument());
   REQUIRE( macros.GetCount() > 0);
   REQUIRE(!macros.GetAbbreviations().empty());
   
@@ -104,13 +104,13 @@ TEST_CASE("wxExViMacros")
 
   std::string expanded;
 
-  REQUIRE(!wxExViMacros::Mode()->Expand(vi, wxExVariable(), expanded));
+  REQUIRE(!wex::vi_macros::Mode()->Expand(vi, wex::variable(), expanded));
 
 #ifdef __UNIX__
   // Test all environment macro variables.
   for (auto& env : std::vector<std::string> {"HOME","PWD"})
   {
-    REQUIRE( wxExViMacros::Mode()->Transition("@" + env, vi));
+    REQUIRE( wex::vi_macros::Mode()->Transition("@" + env, vi));
   }
 #endif
   
@@ -118,7 +118,7 @@ TEST_CASE("wxExViMacros")
   // Test template macro variables (requires input).
 
   // So save as last test.
-  REQUIRE( wxExViMacros::SaveDocument());
+  REQUIRE( wex::vi_macros::SaveDocument());
   
   REQUIRE(!macros.IsModified());
   
@@ -154,5 +154,5 @@ TEST_CASE("wxExViMacros")
   
   REQUIRE( macros.GetAbbreviations().size() == GetAbbreviations().size() + 1);
   REQUIRE( macros.IsModified());
-  REQUIRE( wxExViMacros::SaveDocument());
+  REQUIRE( wex::vi_macros::SaveDocument());
 }

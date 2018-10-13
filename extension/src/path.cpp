@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      path.cpp
-// Purpose:   Implementation of class wxExPath
+// Purpose:   Implementation of class wex::path
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -15,15 +15,15 @@
 const std::string SubstituteTilde(const std::string& text)
 {
   auto out(text);
-  wxExReplaceAll(out, "~", wxGetHomeDir().ToStdString());
+  wex::replace_all(out, "~", wxGetHomeDir().ToStdString());
   return out;
 }
 
-wxExPath::wxExPath(const std::experimental::filesystem::path& p)
+wex::path::path(const std::experimental::filesystem::path& p)
   : m_path(p)
   , m_Stat(p.string()) 
-  , m_Lexer(wxExLexers::Get(false) != nullptr ? 
-      wxExLexers::Get(false)->FindByFileName(p.filename().string()):
+  , m_Lexer(lexers::Get(false) != nullptr ? 
+      lexers::Get(false)->FindByFileName(p.filename().string()):
       std::string())
 {
   if (p.empty())
@@ -32,29 +32,29 @@ wxExPath::wxExPath(const std::experimental::filesystem::path& p)
   }
 }
 
-wxExPath::wxExPath(const std::string& path, const std::string& name)
-  : wxExPath(std::experimental::filesystem::path(SubstituteTilde(path)).
+wex::path::path(const std::string& path, const std::string& name)
+  : wex::path(std::experimental::filesystem::path(SubstituteTilde(path)).
       append(name).string())
 {
 }
 
-wxExPath::wxExPath(const std::string& path)
-  : wxExPath(std::experimental::filesystem::path(SubstituteTilde(path)))
+wex::path::path(const std::string& path)
+  : wex::path(std::experimental::filesystem::path(SubstituteTilde(path)))
 {
 }
 
-wxExPath::wxExPath(const char* path)
-  : wxExPath(std::experimental::filesystem::path(path))
+wex::path::path(const char* path)
+  : wex::path(std::experimental::filesystem::path(path))
 {
 }
 
-wxExPath::wxExPath(const wxExPath& r)
-  : wxExPath(r.Path()) 
+wex::path::path(const path& r)
+  : path(r.Path()) 
 {
 }
 
-wxExPath::wxExPath(const std::vector<std::string> v)
-  : wxExPath() 
+wex::path::path(const std::vector<std::string> v)
+  : path() 
 {
   for (const auto& it : v)
   {
@@ -62,7 +62,7 @@ wxExPath::wxExPath(const std::vector<std::string> v)
   }
 }
 
-wxExPath::~wxExPath()
+wex::path::~path()
 {
   if (!m_path_original.empty())
   {
@@ -70,7 +70,7 @@ wxExPath::~wxExPath()
   }
 }
 
-wxExPath& wxExPath::operator=(const wxExPath& r)
+wex::path& wex::path::operator=(const wex::path& r)
 {
   if (this != &r)
   {
@@ -82,14 +82,14 @@ wxExPath& wxExPath::operator=(const wxExPath& r)
   return *this;
 }
 
-wxExPath& wxExPath::Append(const wxExPath& path)
+wex::path& wex::path::Append(const wex::path& path)
 {
   m_path /= std::experimental::filesystem::path(path.Path());
 
   return *this;
 }
 
-bool wxExPath::Canonical(const std::string& wd)
+bool wex::path::Canonical(const std::string& wd)
 {
   if (!std::experimental::filesystem::is_directory(wd) || 
       !std::experimental::filesystem::is_regular_file(wd))
@@ -102,7 +102,7 @@ bool wxExPath::Canonical(const std::string& wd)
   return true;
 }
 
-void wxExPath::Current(const std::string& path) 
+void wex::path::Current(const std::string& path) 
 {
   if (!path.empty())
   {
@@ -112,14 +112,14 @@ void wxExPath::Current(const std::string& path)
     }
     catch (const std::exception& e)
     {
-      wxExLog(e) << "path:" << path;
+      log(e) << "path:" << path;
     }
   }
 }
 
-const std::vector<wxExPath> wxExPath::GetPaths() const
+const std::vector<wex::path> wex::path::GetPaths() const
 {
-  std::vector<wxExPath> v;
+  std::vector<path> v;
 
   for (const auto& e : m_path)
   {
@@ -129,7 +129,7 @@ const std::vector<wxExPath> wxExPath::GetPaths() const
   return v;
 }
 
-wxExPath& wxExPath::MakeAbsolute(const wxExPath& base) 
+wex::path& wex::path::MakeAbsolute(const path& base) 
 {
   m_path = std::experimental::filesystem::absolute(m_path, base.Path().empty() ? 
     std::experimental::filesystem::current_path(): 
@@ -145,7 +145,7 @@ wxExPath& wxExPath::MakeAbsolute(const wxExPath& base)
   return *this;
 }
 
-bool wxExPath::OpenMIME() const
+bool wex::path::OpenMIME() const
 {
   if (const auto & ex = GetExtension(); ex.empty())
   {
@@ -174,7 +174,7 @@ bool wxExPath::OpenMIME() const
   }
 }
 
-wxExPath& wxExPath::ReplaceFileName(const std::string& filename)
+wex::path& wex::path::ReplaceFileName(const std::string& filename)
 {
   m_path.replace_filename(filename);
 

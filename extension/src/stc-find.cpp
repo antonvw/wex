@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      stc-find.cpp
-// Purpose:   Implementation of class wxExSTC Find methods
+// Purpose:   Implementation of class wex::stc Find methods
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -13,7 +13,7 @@
 #include <wx/extension/util.h>
 #include <easylogging++.h>
 
-bool wxExSTC::FindNext(bool find_next)
+bool wex::stc::FindNext(bool find_next)
 {
   return FindNext(
     GetFindString(),
@@ -21,7 +21,7 @@ bool wxExSTC::FindNext(bool find_next)
     find_next);
 }
 
-bool wxExSTC::FindNext(
+bool wex::stc::FindNext(
   const std::string& text, 
   int find_flags,
   bool find_next)
@@ -127,7 +127,7 @@ bool wxExSTC::FindNext(
 
     if (found)
     {
-      wxExSTCData(wxExControlData().Line(line + 1), this).Inject();
+      stc_data(control_data().Line(line + 1), this).Inject();
       VLOG(9) << GetFileName().GetFullName() << 
         " found margin text: " << text << " on line: " << line + 1;
     }
@@ -141,8 +141,8 @@ bool wxExSTC::FindNext(
 
   if (SearchInTarget(text) == -1)
   {
-    wxExFrame::StatusText(
-      wxExGetFindResult(text, find_next, recursive), std::string());
+    frame::StatusText(
+      get_find_result(text, find_next, recursive), std::string());
     
     bool found = false;
     

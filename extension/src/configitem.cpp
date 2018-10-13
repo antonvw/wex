@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      configitem.cpp
-// Purpose:   Implementation of wxExItem class config methods
+// Name:      config_item.cpp
+// Purpose:   Implementation of wex::item class config methods
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -36,7 +36,7 @@
     SetValue(wxConfigBase::Get()->Read(m_Label, DEFAULT).ToStdString());     \
 }                                                                            \
 
-bool Update(wxExFindReplaceData* frd, wxCheckListBox* clb, int item, bool save, bool value)
+bool Update(wex::find_replace_data* frd, wxCheckListBox* clb, int item, bool save, bool value)
 {
   if (const wxString field(clb->GetString(item));
     field == frd->GetTextMatchWholeWord())
@@ -63,7 +63,7 @@ bool Update(wxExFindReplaceData* frd, wxCheckListBox* clb, int item, bool save, 
   return true;
 }
 
-bool wxExItem::ToConfig(bool save) const
+bool wex::item::ToConfig(bool save) const
 {
   if (!m_UseConfig)
   {
@@ -92,7 +92,7 @@ bool wxExItem::ToConfig(bool save) const
       {
         for (size_t i = 0; i < clb->GetCount(); i++)
         {
-          if (!Update(wxExFindReplaceData::Get(), clb, i, save, clb->IsChecked(i)))
+          if (!Update(find_replace_data::Get(), clb, i, save, clb->IsChecked(i)))
           {
             if (save)
               wxConfigBase::Get()->Write(clb->GetString(i), clb->IsChecked(i));
@@ -108,23 +108,23 @@ bool wxExItem::ToConfig(bool save) const
     case ITEM_COMBOBOX_FILE:
       if (auto* cb = (wxComboBox*)GetWindow(); save)
       {
-        if (const auto l = wxExToListString(cb, m_MaxItems).Get();
-          m_Label == wxExFindReplaceData::Get()->GetTextFindWhat())
+        if (const auto l = to_list_string(cb, m_MaxItems).Get();
+          m_Label == find_replace_data::Get()->GetTextFindWhat())
         {
-          wxExFindReplaceData::Get()->SetFindStrings(l);
+          find_replace_data::Get()->SetFindStrings(l);
         }
-        else if (m_Label == wxExFindReplaceData::Get()->GetTextReplaceWith())
+        else if (m_Label == find_replace_data::Get()->GetTextReplaceWith())
         {
-          wxExFindReplaceData::Get()->SetReplaceStrings(l);
+          find_replace_data::Get()->SetReplaceStrings(l);
         }
         else
         {
-          wxExListToConfig(l, m_Label);
+          list_to_config(l, m_Label);
         }
       }
       else
       {
-        wxExComboBoxFromList(cb, wxExListFromConfig(m_Label));
+        combobox_from_list(cb, list_from_config(m_Label));
       }
       break;
 
@@ -159,7 +159,7 @@ bool wxExItem::ToConfig(bool save) const
     case ITEM_RADIOBOX:
       if (auto* rb = (wxRadioBox*)GetWindow(); save)
       {
-        for (const auto& b : std::any_cast<wxExItem::Choices>(GetInitial()))
+        for (const auto& b : std::any_cast<item::Choices>(GetInitial()))
         {
           if (b.second == rb->GetStringSelection())
           {
@@ -169,7 +169,7 @@ bool wxExItem::ToConfig(bool save) const
       }
       else
       {
-        const wxExItem::Choices & choices(std::any_cast<wxExItem::Choices>(GetInitial()));
+        const item::Choices & choices(std::any_cast<item::Choices>(GetInitial()));
         
         if (const auto c = choices.find(wxConfigBase::Get()->ReadLong(m_Label, 0));
           c != choices.end())
@@ -201,7 +201,7 @@ bool wxExItem::ToConfig(bool save) const
   return true;
 }
 
-wxExConfigDefaults::wxExConfigDefaults(const std::vector<Defaults> & items)
+wex::config_defaults::config_defaults(const std::vector<Defaults> & items)
   : m_Config(wxConfigBase::Get())
 {
   if (!m_Config->Exists(std::get<0>(items.front())))
@@ -239,18 +239,18 @@ wxExConfigDefaults::wxExConfigDefaults(const std::vector<Defaults> & items)
             m_Config->ReadLong(std::get<0>(it), std::any_cast<long>(std::get<2>(it)));
             break;
           default:
-            wxExLog("unsupported default type for") << std::get<0>(it);
+            log("unsupported default type for") << std::get<0>(it);
         }
       }
       catch (std::bad_cast& e)
       {
-        wxExLog(e) << std::get<0>(it);
+        log(e) << std::get<0>(it);
       }
     }
   }
 }
 
-wxExConfigDefaults::~wxExConfigDefaults()
+wex::config_defaults::~config_defaults()
 {
   if (m_Config->IsRecordingDefaults())
   {

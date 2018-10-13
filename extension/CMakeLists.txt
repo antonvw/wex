@@ -3,11 +3,11 @@ project(wxExtensionLibrary)
 add_subdirectory(src)
 add_subdirectory(src/report)
 
-if (wxExBUILD_SAMPLES)
+if (wexBUILD_SAMPLES)
   add_subdirectory(sample)
 endif ()
 
-if (wxExBUILD_TESTS)
+if (wexBUILD_TESTS)
   add_subdirectory(test)
 endif ()
 

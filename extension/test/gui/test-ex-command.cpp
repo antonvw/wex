@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-ex-command.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -13,19 +13,19 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-TEST_CASE("wxExExCommand")
+TEST_CASE("wex::ex_command")
 {
-  wxExSTC* stc = GetSTC();
+  wex::stc* stc = GetSTC();
   stc->SetText("more text\notherline\nother line");
 
   SUBCASE("Constructor STC")
   {
-    wxExExCommand command(stc);
+    wex::ex_command command(stc);
 
     REQUIRE( command.Command().empty());
     REQUIRE(!command.IsHandled());
     REQUIRE( command.STC() == stc);
-    REQUIRE( command.Type() == wxExExCommandType::NONE);
+    REQUIRE( command.Type() == wex::ex_command_type::NONE);
 
     command.Command("G");
     REQUIRE( command.Command() == "G");
@@ -46,22 +46,22 @@ TEST_CASE("wxExExCommand")
     REQUIRE( command.AppendExec('g'));
     REQUIRE( stc->GetCurrentLine() == 0);
 
-    command.Set(wxExExCommand("dd"));
+    command.Set(wex::ex_command("dd"));
     REQUIRE( command.Command() == "dd");
     REQUIRE( command.STC() == stc);
-    command.Restore(wxExExCommand("ww"));
+    command.Restore(wex::ex_command("ww"));
     REQUIRE( command.Command() == "ww");
     REQUIRE( command.STC() == stc);
   }
   
   SUBCASE("Constructor command")
   {
-    wxExExCommand command("G");
+    wex::ex_command command("G");
 
     REQUIRE( command.Command() == "G");
     REQUIRE(!command.IsHandled());
     REQUIRE( command.STC() == nullptr);
-    REQUIRE( command.Type() == wxExExCommandType::VI);
+    REQUIRE( command.Type() == wex::ex_command_type::VI);
 
     REQUIRE(!command.Exec() );
     REQUIRE( stc->GetCurrentLine() == 0);

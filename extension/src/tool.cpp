@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      tool.cpp
-// Purpose:   Implementation of wxExTool class
+// Purpose:   Implementation of wex::tool class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -12,9 +12,9 @@
 #include <wx/extension/tool.h>
 #include <wx/extension/statistics.h>
 
-std::map < int, wxExToolInfo > wxExTool::m_ToolInfo;
+std::map < int, wex::tool_info > wex::tool::m_ToolInfo;
 
-wxExTool::wxExTool(int type)
+wex::tool::tool(int type)
   : m_Id(type)
 {
   if (m_ToolInfo.empty())
@@ -26,7 +26,7 @@ wxExTool::wxExTool(int type)
   }
 }
 
-const std::string wxExTool::Info() const
+const std::string wex::tool::Info() const
 {
   if (const auto& it = m_ToolInfo.find(m_Id); it != m_ToolInfo.end())
     return it->second.GetInfo();
@@ -34,7 +34,7 @@ const std::string wxExTool::Info() const
     return std::string();
 }
 
-const std::string wxExTool::Info(const wxExStatistics<int>* stat) const
+const std::string wex::tool::Info(const wex::statistics<int>* stat) const
 {
   wxString logtext(Info());
 

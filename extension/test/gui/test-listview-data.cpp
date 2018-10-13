@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-listview-data.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -13,23 +13,23 @@
 #include <wx/extension/listview.h>
 #include "test.h"
 
-TEST_CASE("wxExListViewData")
+TEST_CASE("wex::listview_data")
 {
   SUBCASE("Constructor")
   {
-    REQUIRE( wxExListViewData().Image() == IMAGE_ART);
-    REQUIRE( wxExListViewData().Type() == LIST_NONE);
-    REQUIRE(!wxExListViewData().TypeDescription().empty());
-    REQUIRE( wxExListViewData().Image(IMAGE_NONE).Image() == IMAGE_NONE);
-    REQUIRE( wxExListViewData(wxExControlData().Col(3)).Control().Col() == 3);
-    REQUIRE( wxExListViewData(wxExWindowData().Name("XX")).Window().Name() == "XX");
+    REQUIRE( wex::listview_data().Image() == wex::IMAGE_ART);
+    REQUIRE( wex::listview_data().Type() == wex::LISTVIEW_NONE);
+    REQUIRE(!wex::listview_data().TypeDescription().empty());
+    REQUIRE( wex::listview_data().Image(wex::IMAGE_NONE).Image() == wex::IMAGE_NONE);
+    REQUIRE( wex::listview_data(wex::control_data().Col(3)).Control().Col() == 3);
+    REQUIRE( wex::listview_data(wex::window_data().Name("XX")).Window().Name() == "XX");
   }
   
   SUBCASE("Inject")
   {
-    wxExListView* lv = new wxExListView();
+    wex::listview* lv = new wex::listview();
     AddPane(GetFrame(), lv);
-    REQUIRE( wxExListViewData(lv).Inject());
-    REQUIRE( wxExListViewData(lv, wxExControlData().Line(2)).Inject());
+    REQUIRE( wex::listview_data(lv).Inject());
+    REQUIRE( wex::listview_data(lv, wex::control_data().Line(2)).Inject());
   }
 }

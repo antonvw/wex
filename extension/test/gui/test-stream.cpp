@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-stream.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <chrono>
@@ -15,14 +15,14 @@
 #include <wx/extension/frd.h>
 #include "test.h"
 
-TEST_CASE("wxExStreamStatistics")
+TEST_CASE("wex::stream_statistics")
 {
-  wxExStreamStatistics ss;
+  wex::stream_statistics ss;
   
   REQUIRE(ss.Get().empty());
   REQUIRE(ss.Get("xx") == 0);
 
-  wxExStreamStatistics ss2;
+  wex::stream_statistics ss2;
   REQUIRE(ss2.Get().empty());
 
   ss += ss2;
@@ -30,19 +30,19 @@ TEST_CASE("wxExStreamStatistics")
   REQUIRE(ss.Get().empty());
 }
 
-TEST_CASE("wxExStream")
+TEST_CASE("wex::stream")
 {
   SUBCASE("Test find")
   {
-    wxExStream s(GetTestPath("test.h"), ID_TOOL_REPORT_FIND);
+    wex::stream s(GetTestPath("test.h"), wex::ID_TOOL_REPORT_FIND);
     
     REQUIRE( s.GetFileName() == GetTestPath("test.h"));
-    REQUIRE( s.GetTool().GetId() == ID_TOOL_REPORT_FIND);
+    REQUIRE( s.GetTool().GetId() == wex::ID_TOOL_REPORT_FIND);
     
-    wxExFindReplaceData::Get()->SetFindString("test");
-    wxExFindReplaceData::Get()->SetMatchCase(true);
-    wxExFindReplaceData::Get()->SetMatchWord(true);
-    wxExFindReplaceData::Get()->SetUseRegEx(false);
+    wex::find_replace_data::Get()->SetFindString("test");
+    wex::find_replace_data::Get()->SetMatchCase(true);
+    wex::find_replace_data::Get()->SetMatchWord(true);
+    wex::find_replace_data::Get()->SetUseRegEx(false);
     
     const auto start = std::chrono::system_clock::now();
     REQUIRE( s.RunTool());
@@ -55,9 +55,9 @@ TEST_CASE("wxExStream")
   
   SUBCASE("Test replace")
   {
-    wxExStream s(GetTestPath("test.h"), ID_TOOL_REPLACE);
+    wex::stream s(GetTestPath("test.h"), wex::ID_TOOL_REPLACE);
     
-    wxExFindReplaceData::Get()->SetReplaceString("test");
+    wex::find_replace_data::Get()->SetReplaceString("test");
     
     const auto start = std::chrono::system_clock::now();
     REQUIRE( s.RunTool());

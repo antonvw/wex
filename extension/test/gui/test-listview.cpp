@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-listview.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -9,33 +9,32 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/datetime.h>
 #include <wx/artprov.h> // for wxArt
 #include <wx/extension/listview.h>
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-TEST_CASE("wxExListView")
+TEST_CASE("wex::listview")
 {
-  wxExListView* listView = new wxExListView();
+  wex::listview* listView = new wex::listview();
   AddPane(GetFrame(), listView);
   
-  wxExListView::ConfigDialog(wxExWindowData().Button(wxAPPLY | wxCANCEL));
+  wex::listview::ConfigDialog(wex::window_data().Button(wxAPPLY | wxCANCEL));
   
-  REQUIRE(listView->GetData().Image() == IMAGE_ART);
+  REQUIRE(listView->GetData().Image() == wex::IMAGE_ART);
   
   listView->ConfigGet();
   
-  wxExColumn intcol(wxExColumn("Int", wxExColumn::COL_INT));
+  wex::column intcol(wex::column("Int", wex::column::COL_INT));
   REQUIRE(!intcol.GetIsSortedAscending());
-  intcol.SetIsSortedAscending(SORT_ASCENDING);
+  intcol.SetIsSortedAscending(wex::SORT_ASCENDING);
   REQUIRE( intcol.GetIsSortedAscending());
   
   REQUIRE( listView->AppendColumns({{intcol}}));
   REQUIRE( listView->AppendColumns({
-    {"Date", wxExColumn::COL_DATE},
-    {"Float", wxExColumn::COL_FLOAT},
-    {"String", wxExColumn::COL_STRING}}));
+    {"Date", wex::column::COL_DATE},
+    {"Float", wex::column::COL_FLOAT},
+    {"String", wex::column::COL_STRING}}));
 
   REQUIRE(listView->FindColumn("Int") == 0);
   REQUIRE(listView->FindColumn("Date") == 1);
@@ -75,10 +74,10 @@ TEST_CASE("wxExListView")
   
   // Test sorting.
   REQUIRE(!listView->SortColumn("xxx"));
-  REQUIRE( listView->SortColumn("Int", SORT_ASCENDING));
+  REQUIRE( listView->SortColumn("Int", wex::SORT_ASCENDING));
   REQUIRE( listView->GetItemText(0, "Int") == "0");
   REQUIRE( listView->GetItemText(1, "Int") == "1");
-  REQUIRE( listView->SortColumn("Int", SORT_DESCENDING));
+  REQUIRE( listView->SortColumn("Int", wex::SORT_DESCENDING));
   REQUIRE( listView->GetItemText(0, "Int") == "9");
   REQUIRE( listView->GetItemText(1, "Int") == "8");
   REQUIRE( listView->SortColumn("Date"));
@@ -95,10 +94,10 @@ TEST_CASE("wxExListView")
   listView->SetItemImage(0, wxART_WARNING);
   listView->ItemsUpdate();
   
-  wxExListView* listView2 = new wxExListView(wxExListViewData().Type(LIST_FILE));
+  wex::listview* listView2 = new wex::listview(wex::listview_data().Type(wex::LISTVIEW_FILE));
   AddPane(GetFrame(), listView2);
   
-  REQUIRE( listView2->GetData().Image() == IMAGE_FILE_ICON);
+  REQUIRE( listView2->GetData().Image() == wex::IMAGE_FILE_ICON);
   REQUIRE(!listView2->GetData().TypeDescription().empty());
   
   REQUIRE( listView2->ItemFromText("test.h\ntest.h"));
@@ -113,7 +112,7 @@ TEST_CASE("wxExListView")
   }
   
   for (auto id : std::vector<int> {
-    ID_EDIT_SELECT_INVERT, ID_EDIT_SELECT_NONE}) 
+    wex::ID_EDIT_SELECT_INVERT, wex::ID_EDIT_SELECT_NONE}) 
   {
     wxCommandEvent* event = new wxCommandEvent(wxEVT_MENU, id);
     wxQueueEvent(listView2, event);

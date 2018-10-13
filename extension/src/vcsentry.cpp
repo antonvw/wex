@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      vcsentry.cpp
-// Purpose:   Implementation of wxExVCSEntry class
+// Name:      vcs_entry.cpp
+// Purpose:   Implementation of wex::vcs_entry class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -18,21 +18,21 @@
 #include <wx/extension/tokenizer.h>
 #include <wx/extension/vcs.h>
 
-wxExVCSEntry::wxExVCSEntry(
+wex::vcs_entry::vcs_entry(
   const std::string& name,
   const std::string& admin_dir,
-  const std::vector<wxExVCSCommand> & commands,
+  const std::vector<vcs_command> & commands,
   int flags_location)
-  : wxExProcess()
-  , wxExMenuCommands(name, commands)
+  : process()
+  , menu_commands(name, commands)
   , m_AdminDir(admin_dir)
   , m_FlagsLocation(flags_location)
 {
 }
 
-wxExVCSEntry::wxExVCSEntry(const pugi::xml_node& node)
-  : wxExProcess()
-  , wxExMenuCommands(node)
+wex::vcs_entry::vcs_entry(const pugi::xml_node& node)
+  : process()
+  , menu_commands(node)
   , m_AdminDir(node.attribute("admin-dir").value())
   , m_AdminDirIsTopLevel(
       strcmp(node.attribute("toplevel").value(), "true") == 0)
@@ -45,14 +45,14 @@ wxExVCSEntry::wxExVCSEntry(const pugi::xml_node& node)
 {
 }
 
-int wxExVCSEntry::BuildMenu(int base_id, wxExMenu* menu, bool is_popup) const
+int wex::vcs_entry::BuildMenu(int base_id, menu* menu, bool is_popup) const
 {
-  return wxExMenus::BuildMenu(GetCommands(), base_id, menu, is_popup);
+  return menus::BuildMenu(GetCommands(), base_id, menu, is_popup);
 }
 
-bool wxExVCSEntry::Execute(
+bool wex::vcs_entry::Execute(
   const std::string& args,
-  const wxExLexer& lexer,
+  const lexer& lexer,
   long pflags,
   const std::string& wd)
 {
@@ -107,7 +107,7 @@ bool wxExVCSEntry::Execute(
   if (GetCommand().IsCommit())
   {
     comment = 
-      "-m \"" + wxExConfigFirstOf(_("Revision comment")) + "\" ";
+      "-m \"" + config_firstof(_("Revision comment")) + "\" ";
   }
 
   std::string my_args(args);
@@ -118,7 +118,7 @@ bool wxExVCSEntry::Execute(
     my_args.clear();
   }
 
-  return wxExProcess::Execute(
+  return process::Execute(
     wxConfigBase::Get()->Read(GetName(), GetName()).ToStdString() + " " + 
       prefix +
       GetCommand().GetCommand() + " " + 
@@ -127,17 +127,17 @@ bool wxExVCSEntry::Execute(
     wd);
 }
 
-const std::string wxExVCSEntry::GetBranch() const
+const std::string wex::vcs_entry::GetBranch() const
 {
   if (GetName() == "git")
   { 
-    if (wxExProcess p; p.Execute("git branch", PROCESS_EXEC_WAIT))
+    if (process p; p.Execute("git branch", PROCESS_EXEC_WAIT))
     {
-      for (wxExTokenizer tkz(p.GetStdOut(), "\r\n"); tkz.HasMoreTokens(); )
+      for (tokenizer tkz(p.GetStdOut(), "\r\n"); tkz.HasMoreTokens(); )
       {
         if (const auto token(tkz.GetNextToken()); token.find('*') == 0)
         {
-          return wxExSkipWhiteSpace(token.substr(1));
+          return skip_white_space(token.substr(1));
         }
       }
     }
@@ -146,12 +146,12 @@ const std::string wxExVCSEntry::GetBranch() const
   return std::string();
 }
 
-const std::string wxExVCSEntry::GetFlags() const
+const std::string wex::vcs_entry::GetFlags() const
 {
   return wxConfigBase::Get()->Read(_("Flags")).ToStdString();
 }
 
-void wxExVCSEntry::ShowOutput(const std::string& caption) const
+void wex::vcs_entry::ShowOutput(const std::string& caption) const
 {
   if (!GetError() && GetShell() != nullptr)
   {
@@ -161,12 +161,12 @@ void wxExVCSEntry::ShowOutput(const std::string& caption) const
     }
     else
     {
-      wxExVCSCommandOnSTC(
+      vcs_command_stc(
         GetCommand(), 
         m_Lexer, 
         GetShell());
     }
   }
 
-  wxExProcess::ShowOutput(caption);
+  wex::process::ShowOutput(caption);
 }

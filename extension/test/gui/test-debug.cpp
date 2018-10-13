@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-debug.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -17,20 +17,20 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-TEST_CASE("wxExDebug")
+TEST_CASE("wex::debug")
 {
   // obtain a menu item id
-  wxExMenu menu;
+  wex::menu menu;
 
   // start test
-  wxExDebug dbg(GetFrame());
+  wex::debug dbg(GetFrame());
 
   REQUIRE( dbg.GetProcess() == nullptr);
   REQUIRE( dbg.GetBreakpoints().empty());
   REQUIRE( dbg.GetMarkerBreakpoint().GetNo() > 0);
 
   
-  wxExSTC* stc = GetSTC();
+  wex::stc* stc = GetSTC();
   
   if (stc != nullptr)
   {
@@ -42,8 +42,8 @@ TEST_CASE("wxExDebug")
   REQUIRE( dbg.AddMenu(&menu, true) > 0);
   const int item = menu.FindItem("break");
   REQUIRE( item != wxNOT_FOUND);
-  REQUIRE( item > ID_EDIT_DEBUG_FIRST );
-  REQUIRE( item < ID_EDIT_DEBUG_LAST);
+  REQUIRE( item > wex::ID_EDIT_DEBUG_FIRST );
+  REQUIRE( item < wex::ID_EDIT_DEBUG_LAST);
 
 #ifndef __WXMSW__
   REQUIRE( dbg.Execute("break"));
@@ -56,7 +56,7 @@ TEST_CASE("wxExDebug")
 #endif
 
 #ifndef __WXMSW__
-  REQUIRE( dbg.Execute(item - ID_EDIT_DEBUG_FIRST));
+  REQUIRE( dbg.Execute(item - wex::ID_EDIT_DEBUG_FIRST));
 #endif
   REQUIRE(!dbg.Execute(item));
   
@@ -64,12 +64,12 @@ TEST_CASE("wxExDebug")
   dbg.ProcessStdOut("test");
 
 /*    
-  wxExSTC* stc = GetSTC();
+  wex::stc* stc = GetSTC();
   stc->SetText("#include <stdio.h>\n\nmain()\n{printf(\"hello world\");\n}\n");
   stc->GetFile().FileSave("example.cc");
   system("cc -g example.cc");
   
-  wxExProcess process;
+  wex::process process;
   REQUIRE( !dbg.Execute(item));
   
   process.Execute("gdb a.out");

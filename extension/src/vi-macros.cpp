@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      vi-macros.cpp
-// Purpose:   Implementation of class wxExViMacros
+// Purpose:   Implementation of class wex::vi_macros
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -18,28 +18,28 @@
 #include <wx/extension/util.h>
 #include <wx/extension/vi-macros-mode.h>
 
-pugi::xml_document wxExViMacros::m_doc;
-bool wxExViMacros::m_IsModified = false;
-std::string wxExViMacros::m_Macro;
-wxExViMacrosMode* wxExViMacros::m_Mode = nullptr;
+pugi::xml_document wex::vi_macros::m_doc;
+bool wex::vi_macros::m_IsModified = false;
+std::string wex::vi_macros::m_Macro;
+wex::vi_macros_mode* wex::vi_macros::m_Mode = nullptr;
 
-std::map <std::string, std::string> wxExViMacros::m_Abbreviations;
-std::map <std::string, std::vector< std::string > > wxExViMacros::m_Macros;
-std::map<std::string, std::string> wxExViMacros::m_Map;
-wxExViMacrosMapType wxExViMacros::m_MapAltKeys;
-wxExViMacrosMapType wxExViMacros::m_MapControlKeys;
-wxExViMacrosMapType wxExViMacros::m_MapKeys;
-std::map <std::string, wxExVariable > wxExViMacros::m_Variables;
+std::map <std::string, std::string> wex::vi_macros::m_Abbreviations;
+std::map <std::string, std::vector< std::string > > wex::vi_macros::m_Macros;
+std::map<std::string, std::string> wex::vi_macros::m_Map;
+wex::vi_macros_maptype wex::vi_macros::m_MapAltKeys;
+wex::vi_macros_maptype wex::vi_macros::m_MapControlKeys;
+wex::vi_macros_maptype wex::vi_macros::m_MapKeys;
+std::map <std::string, wex::variable > wex::vi_macros::m_Variables;
 
-wxExViMacros::wxExViMacros()
+wex::vi_macros::vi_macros()
 { 
   if (m_Mode == nullptr)
   {
-    m_Mode = new wxExViMacrosMode();
+    m_Mode = new vi_macros_mode();
   }
 }
 
-const std::vector< std::string > wxExViMacros::Get()
+const std::vector< std::string > wex::vi_macros::Get()
 {
   std::vector< std::string > v;
     
@@ -61,7 +61,7 @@ const std::vector< std::string > wxExViMacros::Get()
   return v;
 }
 
-const std::vector< std::string > wxExViMacros::Get(const std::string& macro)
+const std::vector< std::string > wex::vi_macros::Get(const std::string& macro)
 {
   if (const auto& it = m_Macros.find(macro); it != m_Macros.end())
   {
@@ -80,17 +80,17 @@ const std::vector< std::string > wxExViMacros::Get(const std::string& macro)
   }
 }
 
-const wxExPath wxExViMacros::GetFileName()
+const wex::path wex::vi_macros::GetFileName()
 {
-  return wxExPath(wxExConfigDir(), "macros.xml");
+  return path(config_dir(), "macros.xml");
 }
 
-const std::string wxExViMacros::GetRegister(const char name) const
+const std::string wex::vi_macros::GetRegister(const char name) const
 {
   switch (name)
   {
     case '*':
-    case '\"': return wxExClipboardGet();
+    case '\"': return clipboard_get();
     default: {   
       const auto& it = m_Macros.find(std::string(1, name));
       return it != m_Macros.end() ?
@@ -100,21 +100,21 @@ const std::string wxExViMacros::GetRegister(const char name) const
   }
 }
 
-const std::vector< std::string > wxExViMacros::GetRegisters() const
+const std::vector< std::string > wex::vi_macros::GetRegisters() const
 {
   std::vector< std::string > r;
-  wxExLexerProps l;
+  lexer_props l;
   
   for (const auto& it : m_Macros)
   {
     if (it.first.size() == 1)
     {
-      r.emplace_back(l.MakeKey(it.first, wxExSkipWhiteSpace(
+      r.emplace_back(l.MakeKey(it.first, skip_white_space(
         std::accumulate(it.second.begin(), it.second.end(), std::string()))));
     }
   }
    
-  if (const std::string clipboard(wxExSkipWhiteSpace(wxExClipboardGet())); !clipboard.empty())
+  if (const std::string clipboard(skip_white_space(clipboard_get())); !clipboard.empty())
   {
     r.emplace_back(l.MakeKey("*", clipboard));
   }
@@ -122,17 +122,17 @@ const std::vector< std::string > wxExViMacros::GetRegisters() const
   return r;
 }
 
-bool wxExViMacros::IsRecorded(const std::string& macro)
+bool wex::vi_macros::IsRecorded(const std::string& macro)
 {
   return !Get(macro).empty();
 }
 
-bool wxExViMacros::IsRecordedMacro(const std::string& macro)
+bool wex::vi_macros::IsRecordedMacro(const std::string& macro)
 {
   return m_Macros.find(macro) != m_Macros.end();
 }
 
-bool wxExViMacros::LoadDocument()
+bool wex::vi_macros::LoadDocument()
 {
   if (!GetFileName().FileExists())
   {
@@ -143,13 +143,13 @@ bool wxExViMacros::LoadDocument()
     pugi::parse_default | pugi::parse_comments);
     !result)
   {
-    wxExXmlError(GetFileName(), &result);
+    xml_error(GetFileName(), &result);
     return false;
   }
 
   if (m_Mode == nullptr)
   {
-    m_Mode = new wxExViMacrosMode();
+    m_Mode = new vi_macros_mode();
   }
 
   m_IsModified = false;
@@ -178,15 +178,15 @@ bool wxExViMacros::LoadDocument()
     }
     else if (strcmp(child.name(), "map-alt") == 0)
     {
-      ParseNode<int, wxExViMacrosMapType>(child, "map-alt", m_MapAltKeys);
+      ParseNode<int, vi_macros_maptype>(child, "map-alt", m_MapAltKeys);
     }
     else if (strcmp(child.name(), "map-control") == 0)
     {
-      ParseNode<int, wxExViMacrosMapType>(child, "map-control", m_MapControlKeys);
+      ParseNode<int, vi_macros_maptype>(child, "map-control", m_MapControlKeys);
     }
     else if (strcmp(child.name(), "map-key") == 0)
     {
-      ParseNode<int, wxExViMacrosMapType>(child, "map-key", m_MapKeys);
+      ParseNode<int, vi_macros_maptype>(child, "map-key", m_MapKeys);
     }
     else if (strcmp(child.name(), "variable") == 0)
     {
@@ -198,15 +198,15 @@ bool wxExViMacros::LoadDocument()
 }
 
 template <typename S, typename T> 
-void wxExViMacros::ParseNode(
+void wex::vi_macros::ParseNode(
   const pugi::xml_node& node,
   const std::string& name,
   T & container)
 {
-  if (const S value = wxExTypeToValue<S>(node.attribute("name").value()).get();
+  if (const S value = type_to_value<S>(node.attribute("name").value()).get();
     container.find(value) != container.end())
   {
-    wxExLog() << "duplicate" << 
+    log() << "duplicate" << 
       name << ":" << value << "from:" << 
       node.attribute("name").value() << node;
   }
@@ -216,7 +216,7 @@ void wxExViMacros::ParseNode(
   }
 }
 
-void wxExViMacros::ParseNodeMacro(const pugi::xml_node& node)
+void wex::vi_macros::ParseNodeMacro(const pugi::xml_node& node)
 {
   std::vector<std::string> v;
   
@@ -228,7 +228,7 @@ void wxExViMacros::ParseNodeMacro(const pugi::xml_node& node)
   if (const auto& it = m_Macros.find(node.attribute("name").value());
     it != m_Macros.end())
   {
-    wxExLog() << "duplicate macro:" << node.attribute("name").value() << node;
+    log() << "duplicate macro:" << node.attribute("name").value() << node;
   }
   else
   {
@@ -236,20 +236,20 @@ void wxExViMacros::ParseNodeMacro(const pugi::xml_node& node)
   }
 }
 
-void wxExViMacros::ParseNodeVariable(const pugi::xml_node& node)
+void wex::vi_macros::ParseNodeVariable(const pugi::xml_node& node)
 {
-  const wxExVariable variable(node);
+  const variable variable(node);
 
   if (variable.GetName().empty())
   {
-    wxExLog() << "empty variable:" << node;
+    log() << "empty variable:" << node;
     return;
   }
 
   if (const auto& it = m_Variables.find(variable.GetName());
     it != m_Variables.end())
   {
-    wxExLog() << "duplicate variable:" << variable.GetName() << node;
+    log() << "duplicate variable:" << variable.GetName() << node;
   }
   else
   {
@@ -257,7 +257,7 @@ void wxExViMacros::ParseNodeVariable(const pugi::xml_node& node)
   }
 }
 
-void wxExViMacros::Record(const std::string& text, bool new_command)
+void wex::vi_macros::Record(const std::string& text, bool new_command)
 {
   if (!m_Mode->IsRecording() || text.empty())
   {
@@ -280,7 +280,7 @@ void wxExViMacros::Record(const std::string& text, bool new_command)
   }
 }
 
-bool wxExViMacros::SaveDocument(bool only_if_modified)
+bool wex::vi_macros::SaveDocument(bool only_if_modified)
 {
   if (!GetFileName().FileExists() || (!m_IsModified && only_if_modified))
   {
@@ -297,7 +297,7 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
   return ok;
 }
 
-void wxExViMacros::SaveMacro(const std::string& macro)
+void wex::vi_macros::SaveMacro(const std::string& macro)
 {
   try
   {
@@ -320,12 +320,12 @@ void wxExViMacros::SaveMacro(const std::string& macro)
   }
   catch (pugi::xpath_exception& e)
   {
-    wxExLog(e) << macro;
+    log(e) << macro;
   }
 }
 
 template <typename S, typename T> 
-void wxExViMacros::Set(
+void wex::vi_macros::Set(
   T  & container,
   const std::string& xpath,
   const std::string& name,
@@ -342,7 +342,7 @@ void wxExViMacros::Set(
 
     if (value.empty())
     {
-      container.erase(wxExTypeToValue<S>(name).get());
+      container.erase(type_to_value<S>(name).get());
     }
     else
     {
@@ -350,43 +350,43 @@ void wxExViMacros::Set(
       child.append_attribute("name") = name.c_str();
       child.text().set(value.c_str());
 
-      container[wxExTypeToValue<S>(name).get()] = value;
+      container[type_to_value<S>(name).get()] = value;
     }
 
     m_IsModified = true;
   }
   catch (pugi::xpath_exception& e)
   {
-    wxExLog(e) << name;
+    log(e) << name;
   }
 }
 
-void wxExViMacros::SetAbbreviation(const std::string& name, const std::string& value)
+void wex::vi_macros::SetAbbreviation(const std::string& name, const std::string& value)
 {
   Set<std::string, std::map<std::string, std::string>>(m_Abbreviations, "abbreviation", name, value);
 }
 
-void wxExViMacros::SetKeyMap(
+void wex::vi_macros::SetKeyMap(
   const std::string& name, 
   const std::string& value,
-  wxExViMacrosKeyType type)
+  vi_macros_keytype type)
 {
   switch (type)
   {
-    case KEY_ALT: Set<int, wxExViMacrosMapType>(m_MapAltKeys, "map-alt", name, value); break;
-    case KEY_CONTROL: Set<int, wxExViMacrosMapType>(m_MapControlKeys, "map-control", name, value); break;
-    case KEY_NORMAL: Set<int, wxExViMacrosMapType>(m_MapKeys, "map-key", name, value); break;
+    case KEY_ALT: Set<int, vi_macros_maptype>(m_MapAltKeys, "map-alt", name, value); break;
+    case KEY_CONTROL: Set<int, vi_macros_maptype>(m_MapControlKeys, "map-control", name, value); break;
+    case KEY_NORMAL: Set<int, vi_macros_maptype>(m_MapKeys, "map-key", name, value); break;
   }
 }
 
-void wxExViMacros::SetMap(
+void wex::vi_macros::SetMap(
   const std::string& name, 
   const std::string& value)
 {
   Set<std::string, std::map<std::string, std::string>>(m_Map, "map", name, value);
 }
 
-bool wxExViMacros::SetRegister(const char name, const std::string& value)
+bool wex::vi_macros::SetRegister(const char name, const std::string& value)
 {
   if (!isalnum(name) && !isdigit(name) && 
        name != '%' && name != '_' && name != '*' && name != '.')
@@ -396,7 +396,7 @@ bool wxExViMacros::SetRegister(const char name, const std::string& value)
   
   if (name == '*')
   {
-    wxExClipboardAdd(value);
+    clipboard_add(value);
     return true;
   }
 
@@ -421,7 +421,7 @@ bool wxExViMacros::SetRegister(const char name, const std::string& value)
   return true;
 }
 
-bool wxExViMacros::StartsWith(const std::string_view& text)
+bool wex::vi_macros::StartsWith(const std::string_view& text)
 {
   if (text.empty() || isdigit(text[0]))
   {

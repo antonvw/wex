@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      dirctrl.h
-// Purpose:   Declaration of class wxExGenericDirCtrl
+// Purpose:   Declaration of class wex::dirctrl
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,24 +10,24 @@
 #include <wx/generic/dirctrlg.h>
 #include <wx/extension/window-data.h>
 
-#if wxUSE_DIRDLG
-
-class wxExFrameWithHistory;
-
-/// Offers our generic dir control.
-/// It adds a popup menu and handling of the commands.
-class WXDLLIMPEXP_BASE wxExGenericDirCtrl : public wxGenericDirCtrl
+namespace wex
 {
-public:
-  /// Default constructor.
-  wxExGenericDirCtrl(
-    wxExFrameWithHistory* frame,
-    const wxString& filter = wxEmptyString, 
-    int defaultFilter = 0,
-    const wxExWindowData& data = wxExWindowData().
-      Style(wxDIRCTRL_3D_INTERNAL | wxDIRCTRL_MULTIPLE));
+  class history_frame;
 
-  /// Expands path and selects it.
-  void ExpandAndSelectPath(const wxExPath& path);
+  /// Offers our generic dir control.
+  /// It adds a popup menu and handling of the commands.
+  class dirctrl : public wxGenericDirCtrl
+  {
+  public:
+    /// Default constructor.
+    dirctrl(
+      history_frame* frame,
+      const wxString& filter = wxEmptyString, 
+      int defaultFilter = 0,
+      const window_data& data = window_data().
+        Style(wxDIRCTRL_3D_INTERNAL | wxDIRCTRL_MULTIPLE));
+
+    /// Expands path and selects it.
+    void ExpandAndSelectPath(const path& path);
+  };
 };
-#endif // wxUSE_DIRDLG

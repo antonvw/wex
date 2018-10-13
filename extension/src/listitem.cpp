@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      listitem.cpp
-// Purpose:   Implementation of class 'wxExListItem'
+// Purpose:   Implementation of class 'wex::listitem'
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -17,26 +17,26 @@
 
 // Do not give an error if columns do not exist.
 // E.g. the LIST_PROCESS has none of the file columns.
-wxExListItem::wxExListItem(
-  wxExListView* lv, 
+wex::listitem::listitem(
+  listview* lv, 
   long itemnumber)
   : m_ListView(lv)
   , m_Path(
     (!lv->GetItemText(itemnumber, _("File Name")).empty() &&
      !lv->GetItemText(itemnumber, _("In Folder")).empty() ?
-        wxExPath(
+        path(
           lv->GetItemText(itemnumber, _("In Folder")),
           lv->GetItemText(itemnumber, _("File Name"))) : 
-        wxExPath(lv->GetItemText(itemnumber))))
+        path(lv->GetItemText(itemnumber))))
   , m_FileSpec(lv->GetItemText(itemnumber, _("Type")))
 {
   SetId(itemnumber);
   m_IsReadOnly = (m_ListView->GetItemData(GetId()) > 0);
 }
 
-wxExListItem::wxExListItem(
-  wxExListView* listview,
-  const wxExPath& filename,
+wex::listitem::listitem(
+  listview* listview,
+  const path& filename,
   const std::string& filespec)
   : m_ListView(listview)
   , m_Path(filename)
@@ -46,7 +46,7 @@ wxExListItem::wxExListItem(
   SetId(-1);
 }
 
-void wxExListItem::Insert(long index)
+void wex::listitem::Insert(long index)
 {
   SetId(index == -1 ? m_ListView->GetItemCount(): index);
   
@@ -73,7 +73,7 @@ void wxExListItem::Insert(long index)
 
   ((wxListView* )m_ListView)->InsertItem(*this);
   
-  wxExFrame::UpdateStatusBar(m_ListView);
+  frame::UpdateStatusBar(m_ListView);
 
   Update();
 
@@ -83,12 +83,12 @@ void wxExListItem::Insert(long index)
   }
 }
 
-bool wxExListItem::SetItem(
+bool wex::listitem::SetItem(
   const std::string& col_name, const std::string& text) 
 {
   if (text.empty())
   {
-    wxExLog() << *this << col_name << "empty";
+    log() << *this << col_name << "empty";
     return false;
   }
   
@@ -96,20 +96,20 @@ bool wxExListItem::SetItem(
   {
     if (!m_ListView->SetItem(GetId(), col, text))
     {
-      wxExLog() << *this << "col:" << col << "id:" << GetId() << "text:" << text;
+      log() << *this << "col:" << col << "id:" << GetId() << "text:" << text;
       return false;
     }
   }
   else
   {
-    wxExLog() << *this << col_name << "unknown";
+    log() << *this << col_name << "unknown";
     return false;
   }
   
   return true;
 }
 
-void wxExListItem::SetReadOnly(bool readonly)
+void wex::listitem::SetReadOnly(bool readonly)
 {
   SetTextColour(readonly ? 
     wxConfigBase::Get()->ReadObject(_("Readonly colour"), *wxRED):
@@ -122,11 +122,11 @@ void wxExListItem::SetReadOnly(bool readonly)
   m_ListView->SetItemData(GetId(), m_IsReadOnly);
 }
 
-void wxExListItem::Update()
+void wex::listitem::Update()
 {
   SetImage(
     m_ListView->GetData().Image() == IMAGE_FILE_ICON && 
-    m_Path.GetStat().IsOk() ? wxExGetIconID(m_Path): -1);
+    m_Path.GetStat().IsOk() ? get_iconid(m_Path): -1);
 
   ((wxListView *)m_ListView)->SetItem(*this);
 

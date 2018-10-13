@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      log.h
-// Purpose:   Declaration of wxExLog class
+// Purpose:   Declaration of wex::log class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -10,74 +10,76 @@
 #include <sstream>
 #include <pugixml.hpp>
 
-/// The loglevel.
-enum wxExLogLevel
+namespace wex
 {
-  LEVEL_INFO,    ///< info
-  LEVEL_DEBUG,   ///< debug
-  LEVEL_WARNING, ///< warning
-  LEVEL_ERROR,   ///< error
-  LEVEL_FATAL,   ///< fatal
-};
+  class item;
+  class listitem;
 
-class wxExItem;
-class wxExListItem;
+  /// The log level.
+  enum log_level
+  {
+    LEVEL_INFO,    ///< info
+    LEVEL_DEBUG,   ///< debug
+    LEVEL_WARNING, ///< warning
+    LEVEL_ERROR,   ///< error
+    LEVEL_FATAL,   ///< fatal
+  };
 
-/// This class offers logging.
-/// You should give at least one << following one of the
-/// constructors.
-class wxExLog
-{
-public:
-  /// Default constructor. 
-  /// This prepares a logging with default level error.
-  wxExLog(
-    const std::string& topic = std::string(), 
-    wxExLogLevel level = LEVEL_ERROR);
+  /// This class offers logging.
+  /// You should give at least one << following one of the
+  /// constructors.
+  class log
+  {
+  public:
+    /// Default constructor. 
+    /// This prepares a logging with default level error.
+    log(const std::string& topic = std::string(), 
+        log_level level = LEVEL_ERROR);
 
-  /// Constructor for specified log level.
-  wxExLog(wxExLogLevel level);
+    /// Constructor for specified log level.
+    log(log_level level);
 
-  /// Constructor for level error from a std exception.
-  wxExLog(const std::exception&);
+    /// Constructor for level error from a std exception.
+    log(const std::exception&);
 
-  /// Constructor for level error fron a pugi exception.
-  wxExLog(const pugi::xpath_exception&);
+    /// Constructor for level error fron a pugi exception.
+    log(const pugi::xpath_exception&);
 
-  /// Constructor for level error from a pugi parse result.
-  wxExLog(const pugi::xml_parse_result&);
+    /// Constructor for level error from a pugi parse result.
+    log(const pugi::xml_parse_result&);
 
-  /// Destructor, flushes stringstream to logging.
- ~wxExLog();
+    /// Destructor, flushes stringstream to logging.
+   ~log();
 
-  /// Logs int according to level.
-  wxExLog& operator<<(int);
+    /// Logs int according to level.
+    log& operator<<(int);
 
-  /// Logs stringstream according to level.
-  wxExLog& operator<<(const std::stringstream& ss);
+    /// Logs stringstream according to level.
+    log& operator<<(const std::stringstream& ss);
 
-  /// Logs string according to level.
-  wxExLog& operator<<(const std::string&);
+    /// Logs string according to level.
+    log& operator<<(const std::string&);
 
-  /// Logs char* according to level.
-  wxExLog& operator<<(const char*);
+    /// Logs char* according to level.
+    log& operator<<(const char*);
 
-  /// Logs pugi according to level.
-  wxExLog& operator<<(const pugi::xml_node&);
+    /// Logs pugi according to level.
+    log& operator<<(const pugi::xml_node&);
 
-  /// Logs item according to level.
-  wxExLog& operator<<(const wxExItem&);
+    /// Logs item according to level.
+    log& operator<<(const item&);
 
-  /// Logs listitem according to level.
-  wxExLog& operator<<(const wxExListItem&);
+    /// Logs listitem according to level.
+    log& operator<<(const listitem&);
 
-  /// Returns current logging.
-  const std::string Get() const {return m_ss.str();};
-private:
-  void Log() const;
-  const std::string S(); // separator
+    /// Returns current logging.
+    const std::string Get() const {return m_ss.str();};
+  private:
+    void Log() const;
+    const std::string S(); // separator
 
-  std::stringstream m_ss;
-  bool m_Separator {true};
-  wxExLogLevel m_Level {LEVEL_ERROR};
+    std::stringstream m_ss;
+    bool m_Separator {true};
+    log_level m_Level {LEVEL_ERROR};
+  };
 };

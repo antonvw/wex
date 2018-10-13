@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      dialog.cpp
-// Purpose:   Implementation of wxExDialog class
+// Purpose:   Implementation of wex::dialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -11,7 +11,7 @@
 #endif
 #include <wx/extension/dialog.h>
 
-wxExDialog::wxExDialog(const wxExWindowData& data)
+wex::dialog::dialog(const wex::window_data& data)
   : wxDialog(
       data.Parent(),
       data.Id(), 
@@ -19,14 +19,14 @@ wxExDialog::wxExDialog(const wxExWindowData& data)
       data.Pos(), data.Size(), 
       data.Style() == DATA_NUMBER_NOT_SET ? 
         wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER: data.Style(), 
-      data.Name().empty() ? "wxExDialog": data.Name())
+      data.Name().empty() ? "dialog": data.Name())
   , m_Data(data)
   , m_TopSizer(new wxFlexGridSizer(1, 0, 0))
   , m_UserSizer(new wxFlexGridSizer(1, 0, 0))
 {
 }
 
-wxSizerItem* wxExDialog::AddUserSizer(
+wxSizerItem* wex::dialog::AddUserSizer(
   wxWindow* window,
   const wxSizerFlags& flags)
 {
@@ -40,7 +40,7 @@ wxSizerItem* wxExDialog::AddUserSizer(
   return item;
 }
 
-wxSizerItem* wxExDialog::AddUserSizer(
+wxSizerItem* wex::dialog::AddUserSizer(
   wxSizer* sizer,
   const wxSizerFlags& flags)
 {
@@ -54,7 +54,7 @@ wxSizerItem* wxExDialog::AddUserSizer(
   return item;
 }
 
-void wxExDialog::LayoutSizers(bool add_separator_line)
+void wex::dialog::LayoutSizers(bool add_separator_line)
 {
   m_TopSizer->AddGrowableCol(0);
   m_UserSizer->AddGrowableCol(0);

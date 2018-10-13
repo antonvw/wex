@@ -1,22 +1,22 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-tool.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/tool.h>
 #include <wx/extension/statistics.h>
 #include "../test.h"
 
-TEST_CASE( "wxExTool" ) 
+TEST_CASE( "wex::tool" ) 
 {
   const int id = 1000;
   
-  wxExTool tool(id);
+  wex::tool tool(id);
   tool.AddInfo(id, "this is ok");
   
-  wxExStatistics<int> stat;
+  wex::statistics<int> stat;
   
   REQUIRE( tool.GetId() == id);
   REQUIRE(!tool.GetToolInfo().empty());
@@ -24,8 +24,8 @@ TEST_CASE( "wxExTool" )
   REQUIRE(!tool.IsFindType());
   REQUIRE(!tool.IsReportType());
   
-  REQUIRE(!wxExTool(ID_TOOL_REPORT_FIND).Info().empty());
+  REQUIRE(!wex::tool(wex::ID_TOOL_REPORT_FIND).Info().empty());
   
-  REQUIRE( wxExTool(ID_TOOL_REPORT_FIND).IsFindType());
-  REQUIRE( wxExTool(ID_TOOL_REPLACE).IsFindType());
+  REQUIRE( wex::tool(wex::ID_TOOL_REPORT_FIND).IsFindType());
+  REQUIRE( wex::tool(wex::ID_TOOL_REPLACE).IsFindType());
 }

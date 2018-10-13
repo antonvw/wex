@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-printing.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -14,17 +14,17 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-TEST_CASE("wxExPrinting")
+TEST_CASE("wex::printing")
 {
-  REQUIRE(wxExPrinting::Get() != nullptr);
-  REQUIRE(wxExPrinting::Get()->GetPrinter() != nullptr);
-  REQUIRE(wxExPrinting::Get()->GetHtmlPrinter() != nullptr);
-  wxExPrinting* old = wxExPrinting::Get();
-  REQUIRE(wxExPrinting::Get()->Set(nullptr) == old);
-  REQUIRE(wxExPrinting::Get(false) == nullptr);
-  REQUIRE(wxExPrinting::Get(true) != nullptr);
+  REQUIRE(wex::printing::Get() != nullptr);
+  REQUIRE(wex::printing::Get()->GetPrinter() != nullptr);
+  REQUIRE(wex::printing::Get()->GetHtmlPrinter() != nullptr);
+  wex::printing* old = wex::printing::Get();
+  REQUIRE(wex::printing::Get()->Set(nullptr) == old);
+  REQUIRE(wex::printing::Get(false) == nullptr);
+  REQUIRE(wex::printing::Get(true) != nullptr);
   
-  wxExPrintout* printout = new wxExPrintout(GetSTC());
+  wex::printout* printout = new wex::printout(GetSTC());
   
   printout->OnPreparePrinting();
   int min, max, from, to;

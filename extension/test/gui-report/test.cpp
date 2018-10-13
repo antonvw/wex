@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test.cpp
-// Purpose:   Implementation for wxExtension report unit testing
+// Purpose:   Implementation for wex::tension report unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -12,22 +12,22 @@
 #include <wx/extension/tool.h>
 #include "test.h"
 
-TEST_CASE("wxExReport")
+TEST_CASE("wex::report")
 {
-  wxExTool tool(ID_TOOL_REPORT_FIND);
+  wex::tool tool(wex::ID_TOOL_REPORT_FIND);
 
-  wxExListView* report = new wxExListView(wxExListViewData().Type(LIST_FIND));
+  wex::listview* report = new wex::listview(wex::listview_data().Type(wex::LISTVIEW_FIND));
   
   AddPane(GetFrame(), report);
     
-  const auto files = wxExGetAllFiles(
-    wxExPath("../../../extension/test/gui-report"), 
+  const auto files = wex::get_all_files(
+    wex::path("../../../extension/test/gui-report"), 
     "*.cpp", 
-    DIR_FILES | DIR_DIRS);
+    wex::DIR_FILES | wex::DIR_DIRS);
   
   REQUIRE(files.size() > 5);
     
-  wxExFindReplaceData* frd = wxExFindReplaceData::Get(); 
+  wex::find_replace_data* frd = wex::find_replace_data::Get(); 
   
   // This string should occur only once, that is here!
   frd->SetUseRegEx(false);
@@ -35,7 +35,7 @@ TEST_CASE("wxExReport")
   
   REQUIRE(GetFrame()->FindInFiles(
     files, 
-    ID_TOOL_REPORT_FIND, 
+    wex::ID_TOOL_REPORT_FIND, 
     false, 
     report));
   
@@ -51,7 +51,7 @@ TEST_CASE("wxExReport")
 
   REQUIRE(GetFrame()->FindInFiles(
     files, 
-    ID_TOOL_REPORT_FIND, 
+    wex::ID_TOOL_REPORT_FIND, 
     false, 
     report));
     

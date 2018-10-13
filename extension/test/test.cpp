@@ -22,14 +22,14 @@
 #include <wx/extension/util.h>
 #include "test.h"
 
-void AddExtension(wxExPath& fn)
+void AddExtension(wex::path& fn)
 {
   const auto v(fn.GetPaths());
-  const auto it = std::find(v.begin(), v.end(), "wxExtension");
+  const auto it = std::find(v.begin(), v.end(), "wex::tension");
   
-  fn = wxExPath();
+  fn = wex::path();
   
-  // If wxExtension is present, copy all subdirectories.
+  // If wex::tension is present, copy all subdirectories.
   if (it != v.end())
   {
     for (auto i = v.begin(); i != it; i++)
@@ -37,7 +37,7 @@ void AddExtension(wxExPath& fn)
       fn.Append(*i);
     }
 
-    fn.Append("wxExtension").Append("extension");
+    fn.Append("wex::tension").Append("extension");
   }
   else
   {
@@ -60,7 +60,7 @@ void AddExtension(wxExPath& fn)
   }
 }
     
-const std::string AddPane(wxExManagedFrame* frame, wxWindow* pane)
+const std::string AddPane(wex::managed_frame* frame, wxWindow* pane)
 {
   static int no = 0;
   
@@ -80,25 +80,25 @@ const std::string AddPane(wxExManagedFrame* frame, wxWindow* pane)
   return name;
 }
 
-const wxExPath GetTestPath(const std::string& file) 
+const wex::path GetTestPath(const std::string& file) 
 {
-  return wxExTestApp::GetTestPath(file);
+  return wex::test_app::GetTestPath(file);
 }
 
-wxExPath wxExTestApp::GetTestPath(const std::string& file)
+wex::path wex::test_app::GetTestPath(const std::string& file)
 {
   return file.empty() ?
     m_TestPath:
-    wxExPath(m_TestPath.Path().string(), file);
+    wex::path(m_TestPath.Path().string(), file);
 }
 
-bool wxExTestApp::OnInit()
+bool wex::test_app::OnInit()
 {
-  SetAppName("wxex-test"); // as in CMakeLists
+  SetAppName("wex-test"); // as in CMakeLists
   SetTestPath();
-  wxExLexers::Get();
+  wex::lexers::Get();
   
-  if (!wxExApp::OnInit())
+  if (!wex::app::OnInit())
   {
     return false;
   }
@@ -109,7 +109,7 @@ bool wxExTestApp::OnInit()
   return true;
 }
 
-int wxExTestApp::OnRun()
+int wex::test_app::OnRun()
 {
   wxTimer* timer = new wxTimer(this);
   timer->StartOnce(1000);
@@ -117,7 +117,7 @@ int wxExTestApp::OnRun()
   Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
     m_Context->run();
     wxConfigBase::Get()->Write("AllowSync", 0);
-    wxExProcess::KillAll();
+    wex::process::KillAll();
 
     if (m_Context->shouldExit())
     {
@@ -125,20 +125,20 @@ int wxExTestApp::OnRun()
       ExitMainLoop();
     }});
 
-  return wxExApp::OnRun();
+  return wex::app::OnRun();
 }
 
-void wxExTestApp::SetContext(doctest::Context* context)
+void wex::test_app::SetContext(doctest::Context* context)
 {
   m_Context = context;
 }
   
-void wxExTestApp::SetTestPath()
+void wex::test_app::SetTestPath()
 {
-  m_TestPath = wxExPath(wxExPath::Current(), "");
+  m_TestPath = wex::path(wex::path::Current(), "");
   auto v(m_TestPath.GetPaths());
   
-  if (std::find(v.begin(), v.end(), "wxExtension") == v.end())
+  if (std::find(v.begin(), v.end(), "wex::tension") == v.end())
   {
     if (std::find(v.begin(), v.end(), "extension") == v.end())
     {
@@ -161,10 +161,10 @@ void wxExTestApp::SetTestPath()
     m_TestPath.Append("test").Append("data");
   }
 
-  wxExPath::Current(m_TestPath.Path().string());
+  wex::path::Current(m_TestPath.Path().string());
 }
 
-int wxExTestMain(int argc, char* argv[], wxExTestApp* app)
+int wex::testmain(int argc, char* argv[], wex::test_app* app)
 {
   try
   {
@@ -180,7 +180,7 @@ int wxExTestMain(int argc, char* argv[], wxExTestApp* app)
   }
   catch (const std::exception& e)
   {
-    wxExLog(e) << "app";
+    wex::log(e) << "app";
     exit(EXIT_FAILURE);
   }
 }

@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-menu.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -14,9 +14,9 @@
 #include <wx/extension/menu.h>
 #include "test.h"
 
-TEST_CASE("wxExMenu")
+TEST_CASE("wex::menu")
 {
-  wxExMenu* menu = new wxExMenu;
+  wex::menu* menu = new wex::menu;
   
   // AppendSeparator
   menu->AppendSeparator();
@@ -44,17 +44,17 @@ TEST_CASE("wxExMenu")
   REQUIRE( menu->AppendTools());
 
   // AppendVCS  
-  menu->AppendVCS(wxExPath(), false);
+  menu->AppendVCS(wex::path(), false);
   wxConfigBase::Get()->Write(_("Base folder"), wxGetCwd());
-  REQUIRE( menu->AppendVCS(wxExPath(), false));
-  REQUIRE( menu->AppendVCS(wxExPath::Current(), false));
+  REQUIRE( menu->AppendVCS(wex::path(), false));
+  REQUIRE( menu->AppendVCS(wex::path::Current(), false));
 
   // GetStyle
-  REQUIRE(menu->GetStyle() == wxExMenu::MENU_DEFAULT);
+  REQUIRE(menu->GetStyle() == wex::menu::MENU_DEFAULT);
   
   // SetStyle
-  menu->SetStyle(wxExMenu::MENU_IS_READ_ONLY);
-  REQUIRE(menu->GetStyle() == wxExMenu::MENU_IS_READ_ONLY);
+  menu->SetStyle(wex::menu::MENU_IS_READ_ONLY);
+  REQUIRE(menu->GetStyle() == wex::menu::MENU_IS_READ_ONLY);
 
   wxMenuBar *menubar = new wxMenuBar;
   menubar->Append(menu, "&Menu");

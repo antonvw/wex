@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      dir.cpp
-// Purpose:   Implementation of wxExDirWithListView and wxExDirTool classes
+// Purpose:   Implementation of wex::listview_dir and wex::tool_dir classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -14,17 +14,17 @@
 #include <wx/extension/report/dir.h>
 #include <wx/extension/report/stream.h>
 
-wxExDirTool::wxExDirTool(const wxExTool& tool,
-  const wxExPath& fullpath, const std::string& filespec, int flags)
-  : wxExDir(fullpath, filespec, flags)
+wex::tool_dir::tool_dir(const tool& tool,
+  const path& fullpath, const std::string& filespec, int flags)
+  : dir(fullpath, filespec, flags)
   , m_Statistics()
   , m_Tool(tool)
 {
 }
 
-bool wxExDirTool::OnFile(const wxExPath& file)
+bool wex::tool_dir::OnFile(const path& file)
 {
-  wxExStreamToListView report(file, m_Tool);
+  listview_stream report(file, m_Tool);
 
   bool ret = report.RunTool();
   m_Statistics += report.GetStatistics();
@@ -38,21 +38,21 @@ bool wxExDirTool::OnFile(const wxExPath& file)
   return true;
 }
 
-wxExDirWithListView::wxExDirWithListView(wxExListView* listview,
-  const wxExPath& fullpath, const std::string& filespec, int flags)
-  : wxExDir(fullpath, filespec, flags)
+wex::listview_dir::listview_dir(listview* listview,
+  const path& fullpath, const std::string& filespec, int flags)
+  : dir(fullpath, filespec, flags)
   , m_ListView(listview)
 {
 }
 
-bool wxExDirWithListView::OnDir(const wxExPath& dir)
+bool wex::listview_dir::OnDir(const path& dir)
 {
-  wxExListItem(m_ListView, dir, GetFileSpec()).Insert();
+  listitem(m_ListView, dir, GetFileSpec()).Insert();
   return true;
 }
 
-bool wxExDirWithListView::OnFile(const wxExPath& file)
+bool wex::listview_dir::OnFile(const path& file)
 {
-  wxExListItem(m_ListView, file, GetFileSpec()).Insert();
+  listitem(m_ListView, file, GetFileSpec()).Insert();
   return true;
 }

@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-notebook.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -15,9 +15,9 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-TEST_CASE("wxExNotebook")
+TEST_CASE("wex::notebook")
 {
-  wxExNotebook* notebook = new wxExNotebook();
+  wex::notebook* notebook = new wex::notebook();
   AddPane(GetFrame(), notebook);
   
   wxWindow* page1 = new wxWindow(GetFrame(), wxID_ANY);
@@ -81,22 +81,22 @@ TEST_CASE("wxExNotebook")
   REQUIRE(notebook->GetPageCount() == 0);
   
   // Test ForEach.
-  wxExSTC* stc_x = new wxExSTC(std::string("hello stc"));
-  wxExSTC* stc_y = new wxExSTC(std::string("hello stc"));
-  wxExSTC* stc_z = new wxExSTC(std::string("hello stc"));
+  wex::stc* stc_x = new wex::stc(std::string("hello stc"));
+  wex::stc* stc_y = new wex::stc(std::string("hello stc"));
+  wex::stc* stc_z = new wex::stc(std::string("hello stc"));
   
   REQUIRE(notebook->AddPage(stc_x, "key1") != nullptr);
   REQUIRE(notebook->AddPage(stc_y, "key2") != nullptr);
   REQUIRE(notebook->AddPage(stc_z, "key3") != nullptr);
   
-  REQUIRE(notebook->ForEach<wxExSTC>(ID_ALL_STC_SET_LEXER));
-  REQUIRE(notebook->ForEach<wxExSTC>(ID_ALL_STC_SET_LEXER_THEME));
-  REQUIRE(notebook->ForEach<wxExSTC>(ID_ALL_STC_SYNC));
-  REQUIRE(notebook->ForEach<wxExSTC>(ID_ALL_CONFIG_GET));
-  REQUIRE(notebook->ForEach<wxExSTC>(ID_ALL_SAVE));
-  REQUIRE(notebook->ForEach<wxExSTC>(ID_ALL_CLOSE_OTHERS));
+  REQUIRE(notebook->ForEach<wex::stc>(wex::ID_ALL_STC_SET_LEXER));
+  REQUIRE(notebook->ForEach<wex::stc>(wex::ID_ALL_STC_SET_LEXER_THEME));
+  REQUIRE(notebook->ForEach<wex::stc>(wex::ID_ALL_STC_SYNC));
+  REQUIRE(notebook->ForEach<wex::stc>(wex::ID_ALL_CONFIG_GET));
+  REQUIRE(notebook->ForEach<wex::stc>(wex::ID_ALL_SAVE));
+  REQUIRE(notebook->ForEach<wex::stc>(wex::ID_ALL_CLOSE_OTHERS));
   REQUIRE(notebook->GetPageCount() == 1);
-  REQUIRE(notebook->ForEach<wxExSTC>(ID_ALL_CLOSE));
+  REQUIRE(notebook->ForEach<wex::stc>(wex::ID_ALL_CLOSE));
   REQUIRE(notebook->GetPageCount() == 0);
   
   // Test Rearrange.

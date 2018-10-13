@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      addressrange.cpp
-// Purpose:   Implementation of class wxExAddressRange
+// Purpose:   Implementation of class wex::addressrange
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -19,107 +19,110 @@
 #include <wx/extension/util.h>
 #include <wx/extension/vi-macros.h>
 
-class GlobalEnv
+namespace wex
 {
-public:
-  GlobalEnv(wxExEx* ex, 
-    const wxExIndicator& indicator, const std::string& commands)
-  : m_Ex(ex)
-  , m_FindIndicator(indicator) {
-    m_Ex->GetSTC()->SetSearchFlags(m_Ex->GetSearchFlags());
-    m_Ex->GetSTC()->BeginUndoAction();
+  class global_env
+  {
+  public:
+    global_env(ex* ex, 
+      const indicator& indicator, const std::string& commands)
+    : m_Ex(ex)
+    , m_FindIndicator(indicator) {
+      m_Ex->GetSTC()->SetSearchFlags(m_Ex->GetSearchFlags());
+      m_Ex->GetSTC()->BeginUndoAction();
+      
+      for (tokenizer tkz(commands, "|"); tkz.HasMoreTokens(); )
+      {
+        // Prevent recursive global.
+        if (const auto cmd(tkz.GetNextToken()); cmd[0] != 'g' && cmd[0] != 'v')
+        {
+          if (cmd[0] == 'd' || cmd[0] == 'm')
+          {
+            m_Changes++;
+          }
+          
+          m_Commands.emplace_back(cmd);
+        }
+      }}
     
-    for (wxExTokenizer tkz(commands, "|"); tkz.HasMoreTokens(); )
+   ~global_env()
     {
-      // Prevent recursive global.
-      if (const auto cmd(tkz.GetNextToken()); cmd[0] != 'g' && cmd[0] != 'v')
-      {
-        if (cmd[0] == 'd' || cmd[0] == 'm')
-        {
-          m_Changes++;
-        }
-        
-        m_Commands.emplace_back(cmd);
-      }
-    }}
-  
- ~GlobalEnv()
-  {
-    m_Ex->GetSTC()->EndUndoAction();
-    m_Ex->MarkerDelete('%');
-  }
-  
-  auto Changes() const {return m_Changes;};
-  
-  bool Commands() const {return !m_Commands.empty();};
-  
-  bool ForEach(int line) const
-  {
-    if (!Commands())
-    {
-      m_Ex->GetSTC()->SetIndicator(m_FindIndicator, 
-        m_Ex->GetSTC()->GetTargetStart(), m_Ex->GetSTC()->GetTargetEnd());
-    }
-    else
-    {
-      for (const auto& it : m_Commands)
-      {
-        if (!m_Ex->Command(":" + std::to_string(line + 1) + it))
-        {
-          m_Ex->GetFrame()->ShowExMessage(m_Ex->GetCommand().Command() + " failed");
-          return false;
-        }
-      }
+      m_Ex->GetSTC()->EndUndoAction();
+      m_Ex->MarkerDelete('%');
     }
     
-    return true;
-  }
+    auto Changes() const {return m_Changes;};
+    
+    bool Commands() const {return !m_Commands.empty();};
+    
+    bool ForEach(int line) const
+    {
+      if (!Commands())
+      {
+        m_Ex->GetSTC()->SetIndicator(m_FindIndicator, 
+          m_Ex->GetSTC()->GetTargetStart(), m_Ex->GetSTC()->GetTargetEnd());
+      }
+      else
+      {
+        for (const auto& it : m_Commands)
+        {
+          if (!m_Ex->Command(":" + std::to_string(line + 1) + it))
+          {
+            m_Ex->GetFrame()->ShowExMessage(m_Ex->GetCommand().Command() + " failed");
+            return false;
+          }
+        }
+      }
+      
+      return true;
+    }
 
-  bool ForEach(int start, int& end, int& hits) const
-  {
-    if (start < end)
+    bool ForEach(int start, int& end, int& hits) const
     {
-      for (int i = start;  i < end && i < m_Ex->GetSTC()->GetLineCount() - 1; )
+      if (start < end)
       {
-        if (Commands())
+        for (int i = start;  i < end && i < m_Ex->GetSTC()->GetLineCount() - 1; )
         {
-          if (!ForEach(i)) return false;
+          if (Commands())
+          {
+            if (!ForEach(i)) return false;
+          }
+          else
+          {
+            m_Ex->GetSTC()->SetIndicator(
+              m_FindIndicator, 
+              m_Ex->GetSTC()->PositionFromLine(i), 
+              m_Ex->GetSTC()->GetLineEndPosition(i));
+          }
+          
+          if (m_Changes == 0) 
+          {
+            i++;
+          }
+          else 
+          {
+            end -= m_Changes;
+          }
+          
+          hits++;
         }
-        else
-        {
-          m_Ex->GetSTC()->SetIndicator(
-            m_FindIndicator, 
-            m_Ex->GetSTC()->PositionFromLine(i), 
-            m_Ex->GetSTC()->GetLineEndPosition(i));
-        }
-        
-        if (m_Changes == 0) 
-        {
-          i++;
-        }
-        else 
-        {
-          end -= m_Changes;
-        }
-        
-        hits++;
       }
-    }
-    else
-    {
-      end++;
-    }
-    
-    return true;
-  }        
-private:
-  const wxExIndicator m_FindIndicator;
-  std::vector<std::string> m_Commands;
-  int m_Changes {0};
-  wxExEx* m_Ex;
+      else
+      {
+        end++;
+      }
+      
+      return true;
+    }        
+  private:
+    const indicator m_FindIndicator;
+    std::vector<std::string> m_Commands;
+    int m_Changes {0};
+    ex* m_Ex;
+  };
 };
 
-wxExAddressRange::wxExAddressRange(wxExEx* ex, int lines)
+wex::addressrange::addressrange(wex::ex* ex, int lines)
   : m_Begin(ex)
   , m_End(ex)
   , m_Ex(ex)
@@ -135,7 +138,7 @@ wxExAddressRange::wxExAddressRange(wxExEx* ex, int lines)
   }
 }
 
-wxExAddressRange::wxExAddressRange(wxExEx* ex, const std::string& range)
+wex::addressrange::addressrange(wex::ex* ex, const std::string& range)
   : m_Begin(ex)
   , m_End(ex)
   , m_Ex(ex)
@@ -161,7 +164,7 @@ wxExAddressRange::wxExAddressRange(wxExEx* ex, const std::string& range)
   }
 }
 
-const std::string wxExAddressRange::BuildReplacement(const std::string& text) const
+const std::string wex::addressrange::BuildReplacement(const std::string& text) const
 {
   if (text.find("&") == std::string::npos && 
       text.find("\0") == std::string::npos)
@@ -232,7 +235,7 @@ const std::string wxExAddressRange::BuildReplacement(const std::string& text) co
   return replacement;
 }
   
-bool wxExAddressRange::Change(const std::string& text) const
+bool wex::addressrange::Change(const std::string& text) const
 {
   if (!Delete())
   {
@@ -244,7 +247,7 @@ bool wxExAddressRange::Change(const std::string& text) const
   return true;
 }
   
-int wxExAddressRange::Confirm(
+int wex::addressrange::Confirm(
   const std::string& pattern, const std::string& replacement)
 {
   wxMessageDialog msgDialog(m_STC, 
@@ -265,7 +268,7 @@ int wxExAddressRange::Confirm(
   return msgDialog.ShowModal();
 }
 
-bool wxExAddressRange::Copy(const wxExAddress& destination) const
+bool wex::addressrange::Copy(const wex::address& destination) const
 {
   const auto dest_line = destination.GetLine();
 
@@ -286,7 +289,7 @@ bool wxExAddressRange::Copy(const wxExAddress& destination) const
 
   m_STC->EndUndoAction();
   
-  const auto lines = wxExGetNumberOfLines(m_Ex->GetRegisterText());
+  const auto lines = get_number_of_lines(m_Ex->GetRegisterText());
 
   if (lines >= 2)
   {
@@ -297,7 +300,7 @@ bool wxExAddressRange::Copy(const wxExAddress& destination) const
   return true;
 }
   
-bool wxExAddressRange::Delete(bool show_message) const
+bool wex::addressrange::Delete(bool show_message) const
 {
   if (m_STC->GetReadOnly() || m_STC->HexMode() || !SetSelection())
   {
@@ -312,19 +315,19 @@ bool wxExAddressRange::Delete(bool show_message) const
   return true;
 }
 
-bool wxExAddressRange::Escape(const std::string& command)
+bool wex::addressrange::Escape(const std::string& command)
 {
   if (m_Begin.m_Address.empty() && m_End.m_Address.empty())
   {
     auto expanded(command);
 
     if (
-      !wxExMarkerAndRegisterExpansion(m_Ex, expanded) ||
-      !wxExShellExpansion(expanded)) return false;
+      !marker_and_register_expansion(m_Ex, expanded) ||
+      !shell_expansion(expanded)) return false;
 
     if (m_Process == nullptr)
     {
-      m_Process = new wxExProcess();
+      m_Process = new wex::process();
     }
     else
     {
@@ -347,7 +350,7 @@ bool wxExAddressRange::Escape(const std::string& command)
     return false;
   }
 
-  wxExProcess process;
+  wex::process process;
   
   const bool ok = process.Execute(command + " " + filename, PROCESS_EXEC_WAIT);
   
@@ -381,11 +384,11 @@ bool wxExAddressRange::Escape(const std::string& command)
   return false;
 }
 
-bool wxExAddressRange::Global(const std::string& text, bool inverse) const
+bool wex::addressrange::Global(const std::string& text, bool inverse) const
 {
   m_STC->IndicatorClearRange(0, m_STC->GetTextLength() - 1);
   
-  wxExTokenizer next(text, "/", false);
+  tokenizer next(text, "/", false);
 
   if (next.CountTokens() <= 1)
   {
@@ -431,7 +434,7 @@ bool wxExAddressRange::Global(const std::string& text, bool inverse) const
     return true;  
   }
   
-  const GlobalEnv g(m_Ex, m_FindIndicator, rest);
+  const global_env g(m_Ex, m_FindIndicator, rest);
   m_Ex->MarkerAdd('%', m_End.GetLine() - 1);
   m_STC->SetTargetStart(m_STC->PositionFromLine(m_Begin.GetLine() - 1));
   m_STC->SetTargetEnd(m_STC->GetLineEndPosition(m_Ex->MarkerLine('%')));
@@ -489,7 +492,7 @@ bool wxExAddressRange::Global(const std::string& text, bool inverse) const
   return true;
 }
 
-bool wxExAddressRange::Indent(bool forward) const
+bool wex::addressrange::Indent(bool forward) const
 {
   if (m_STC->GetReadOnly() || m_STC->HexMode() || !IsOk() || !SetSelection())
   {
@@ -503,14 +506,14 @@ bool wxExAddressRange::Indent(bool forward) const
   return true;
 }
 
-bool wxExAddressRange::IsOk() const
+bool wex::addressrange::IsOk() const
 {
   return 
     m_Begin.GetLine() > 0 && m_End.GetLine() > 0 &&
     m_Begin.GetLine() <= m_End.GetLine();
 }
 
-bool wxExAddressRange::Join() const
+bool wex::addressrange::Join() const
 {
   if (m_STC->GetReadOnly() || m_STC->HexMode() || !IsOk())
   {
@@ -526,7 +529,7 @@ bool wxExAddressRange::Join() const
   return true;
 }
   
-bool wxExAddressRange::Move(const wxExAddress& destination) const
+bool wex::addressrange::Move(const address& destination) const
 {
   const auto dest_line = destination.GetLine();
 
@@ -547,7 +550,7 @@ bool wxExAddressRange::Move(const wxExAddress& destination) const
 
   m_STC->EndUndoAction();
   
-  const auto lines = wxExGetNumberOfLines(m_Ex->GetRegisterText());
+  const auto lines = get_number_of_lines(m_Ex->GetRegisterText());
 
   if (lines >= 2)
   {
@@ -558,12 +561,12 @@ bool wxExAddressRange::Move(const wxExAddress& destination) const
   return true;
 }
 
-void wxExAddressRange::OnExit()
+void wex::addressrange::OnExit()
 {
   delete m_Process;
 }
   
-bool wxExAddressRange::Parse(
+bool wex::addressrange::Parse(
   const std::string& command_org, 
   std::string& pattern, std::string& replacement, std::string& options) const
 {
@@ -579,7 +582,7 @@ bool wxExAddressRange::Parse(
   {
     if (command.find(char(1)) == std::string::npos)
     {
-      wxExReplaceAll(command, "\\/", "\x01");
+      replace_all(command, "\\/", "\x01");
       escaped = true;
     }
     else
@@ -590,9 +593,9 @@ bool wxExAddressRange::Parse(
   }
 
   if (std::vector<std::string> v;
-    wxExMatch("/(.*)/(.*)/([cgi]*)", command, v) == 3 ||
-    wxExMatch("/(.*)/(.*)", command, v) == 2 ||
-    wxExMatch("/(.*)", command, v) == 1)
+    match("/(.*)/(.*)/([cgi]*)", command, v) == 3 ||
+    match("/(.*)/(.*)", command, v) == 2 ||
+    match("/(.*)", command, v) == 1)
   {
     pattern = v[0];
     if (v.size() >= 2) replacement = v[1];
@@ -611,7 +614,7 @@ bool wxExAddressRange::Parse(
   return false;
 }
     
-bool wxExAddressRange::Print(const std::string& flags) const
+bool wex::addressrange::Print(const std::string& flags) const
 {
   if (!IsOk() || !m_Begin.Flags(flags))
   {
@@ -634,13 +637,13 @@ bool wxExAddressRange::Print(const std::string& flags) const
   return true;
 }
   
-void wxExAddressRange::Set(wxExAddress& begin, wxExAddress& end, int lines)
+void wex::addressrange::Set(address& begin, address& end, int lines)
 {
   begin.SetLine(m_STC->LineFromPosition(m_STC->GetCurrentPos()) + 1);
   end.SetLine(begin.GetLine() + lines - 1);
 }
 
-bool wxExAddressRange::SetSelection() const
+bool wex::addressrange::SetSelection() const
 {
   if (!m_STC->GetSelectedText().empty())
   {
@@ -658,7 +661,7 @@ bool wxExAddressRange::SetSelection() const
   return true;
 }
 
-bool wxExAddressRange::Sort(const std::string& parameters) const
+bool wex::addressrange::Sort(const std::string& parameters) const
 {
   if (m_STC->GetReadOnly() || m_STC->HexMode() || !SetSelection())
   {
@@ -705,10 +708,10 @@ bool wxExAddressRange::Sort(const std::string& parameters) const
     }
   }
 
-  return wxExSortSelection(m_STC, sort_type, pos, len);
+  return sort_selection(m_STC, sort_type, pos, len);
 }
   
-bool wxExAddressRange::Substitute(const std::string& text, const char cmd)
+bool wex::addressrange::Substitute(const std::string& text, const char cmd)
 {
   if (m_STC->GetReadOnly() || !IsOk())
   {
@@ -858,15 +861,15 @@ bool wxExAddressRange::Substitute(const std::string& text, const char cmd)
   return true;
 }
 
-bool wxExAddressRange::Write(const std::string& text) const
+bool wex::addressrange::Write(const std::string& text) const
 {
   if (!SetSelection())
   {
     return false;
   }
   
-  auto filename(wxExSkipWhiteSpace(text.find(">>") != std::string::npos ? 
-    wxExAfter(text, '>', false): text, SKIP_LEFT));
+  auto filename(skip_white_space(text.find(">>") != std::string::npos ? 
+    wex::after(text, '>', false): text, SKIP_LEFT));
 
 #ifdef __UNIX__
   if (filename.find("~") != std::string::npos)
@@ -875,11 +878,11 @@ bool wxExAddressRange::Write(const std::string& text) const
   }
 #endif
 
-  return wxExFile(filename, text.find(">>") != std::string::npos ? 
+  return wex::file(filename, text.find(">>") != std::string::npos ? 
     std::ios_base::app: std::ios::out).Write(m_Ex->GetSelectedText());
 }
 
-bool wxExAddressRange::Yank(const char name) const
+bool wex::addressrange::Yank(const char name) const
 {
   return SetSelection() && m_Ex->Yank(name);
 }

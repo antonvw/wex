@@ -1,16 +1,16 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-statistics.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/statistics.h>
 #include "../test.h"
 
-TEST_CASE( "wxExStatistics" ) 
+TEST_CASE( "wex::statistics" ) 
 {
-  wxExStatistics<long> statistics;
+  wex::statistics<long> statistics;
   statistics.Inc("test");
   REQUIRE(statistics.Get("test") == 1);
   statistics.Inc("test");
@@ -24,7 +24,7 @@ TEST_CASE( "wxExStatistics" )
   REQUIRE(statistics.Get().find("test") != std::string::npos);
   REQUIRE(statistics.Get().find("test2") != std::string::npos);
 
-  wxExStatistics<long> copy(statistics);
+  wex::statistics<long> copy(statistics);
   REQUIRE(copy.Get("test") == 12);
   REQUIRE(copy.Get("test2") == 1);
 

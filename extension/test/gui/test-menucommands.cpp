@@ -1,21 +1,21 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-menucommands.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Name:      test-menu_commands.cpp
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/menucommands.h>
 #include <wx/extension/menucommand.h>
+#include <wx/extension/menucommands.h>
 #include "test.h"
 
-TEST_CASE("wxExMenuCommands")
+TEST_CASE("wex::menu_commands")
 {
-  wxExMenuCommands<wxExMenuCommand> cmnds("test", {{"x"},{"y"},{"z"}});
+  wex::menu_commands<wex::menu_command> cmnds("test", {{"x"},{"y"},{"z"}});
   
   REQUIRE( cmnds.GetCommand().GetCommand()  == "x");
   REQUIRE( cmnds.GetCommands().size() == 3);

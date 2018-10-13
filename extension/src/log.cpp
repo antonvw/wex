@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      log.cpp
-// Purpose:   Implementation of class wxExLog
+// Purpose:   Implementation of class wex::log
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -10,7 +10,7 @@
 #include <wx/extension/listitem.h>
 #include <easylogging++.h>
 
-wxExLog::wxExLog(const std::string& topic, wxExLogLevel level)
+wex::log::log(const std::string& topic, log_level level)
   : m_Level(level)
   , m_Separator(!topic.empty())
 {
@@ -20,23 +20,23 @@ wxExLog::wxExLog(const std::string& topic, wxExLogLevel level)
   }
 }
 
-wxExLog::wxExLog(wxExLogLevel level)
+wex::log::log(log_level level)
   : m_Level(level)
   , m_Separator(false)
 {
 }
 
-wxExLog::wxExLog(const std::exception& e)
+wex::log::log(const std::exception& e)
 {
   m_ss << "std::exception:" << S() << e.what();
 }
 
-wxExLog::wxExLog(const pugi::xpath_exception& e)
+wex::log::log(const pugi::xpath_exception& e)
 {
   m_ss << "pugi::exception:" << S() << e.what();
 }
 
-wxExLog::wxExLog(const pugi::xml_parse_result& r)
+wex::log::log(const pugi::xml_parse_result& r)
 {
   if (r.status != pugi::xml_parse_status::status_ok)
   {
@@ -51,7 +51,7 @@ wxExLog::wxExLog(const pugi::xml_parse_result& r)
   }
 }
 
-wxExLog::~wxExLog()
+wex::log::~log()
 {
   if (!m_ss.str().empty())
   {
@@ -59,49 +59,49 @@ wxExLog::~wxExLog()
   }
 }
 
-wxExLog& wxExLog::operator<<(int r)
+wex::log& wex::log::operator<<(int r)
 {
   m_ss << S() << r;
   return *this;
 }
 
-wxExLog& wxExLog::operator<<(const char* r)
+wex::log& wex::log::operator<<(const char* r)
 {
   m_ss << S() << r;
   return *this;
 }
 
-wxExLog& wxExLog::operator<<(const std::string& r)
+wex::log& wex::log::operator<<(const std::string& r)
 {
   m_ss << S() << r;
   return *this;
 }
 
-wxExLog& wxExLog::operator<<(const std::stringstream& r)
+wex::log& wex::log::operator<<(const std::stringstream& r)
 {
   m_ss << S() << r.str();
   return *this;
 }
 
-wxExLog& wxExLog::operator<<(const pugi::xml_node& r)
+wex::log& wex::log::operator<<(const pugi::xml_node& r)
 {
   m_ss << S() << "at offset:" << S() << r.offset_debug();
   return *this;
 }
 
-wxExLog& wxExLog::operator<<(const wxExItem& r)
+wex::log& wex::log::operator<<(const item& r)
 {
   m_ss << S() << "item:" << S() << r.Log().str();
   return *this;
 }
 
-wxExLog& wxExLog::operator<<(const wxExListItem& r)
+wex::log& wex::log::operator<<(const listitem& r)
 {
   m_ss << S() << "list item:" << S() << r.GetFileName().Path().string();
   return *this;
 }
 
-void wxExLog::Log() const
+void wex::log::Log() const
 {  
   switch (m_Level)
   {
@@ -123,7 +123,7 @@ void wxExLog::Log() const
   }
 }  
 
-const std::string wxExLog::S()
+const std::string wex::log::S()
 {  
   const std::string s(m_Separator ? " ": "");
   m_Separator = true;

@@ -106,8 +106,8 @@ msgstr "Valeur"
 
 #: ../include/wx/extension/stc.h:91 ../include/wx/extension/stc.h:119
 #: ../include/wx/extension/stc.h:120 ../include/wx/extension/stc.h:126
-#: ../src/managedframe.cpp:129 ../src/managedframe.cpp:130
-#: ../src/managedframe.cpp:140 ../src/managedframe.cpp:141
+#: ../src/managed_frame.cpp:129 ../src/managedframe.cpp:130
+#: ../src/managed_frame.cpp:140 ../src/managedframe.cpp:141
 msgid "Editor Options"
 msgstr "options de l'éditeur"
 
@@ -322,14 +322,14 @@ msgstr "confirmer"
 msgid "Save changes to"
 msgstr "enregistrer les modifications apportées"
 
-#: ../src/filehistory.cpp:64 ../src/filehistory.cpp:66
-#: ../src/filehistory.cpp:199
+#: ../src/file_history.cpp:64 ../src/filehistory.cpp:66
+#: ../src/file_history.cpp:199
 #, c-format
 msgid "Removed not existing file: %s from history"
 msgstr "Retiré un fichier non existant: %s de l'histoire"
 
-#: ../src/filehistory.cpp:147 ../src/filehistory.cpp:149
-#: ../src/filehistory.cpp:166
+#: ../src/file_history.cpp:147 ../src/filehistory.cpp:149
+#: ../src/file_history.cpp:166
 msgid "Open &Recent"
 msgstr "Ouvrez&récents"
 
@@ -639,51 +639,51 @@ msgstr "Aucun"
 msgid "Folder Type"
 msgstr "Type de fichier"
 
-#: ../src/managedframe.cpp:81 ../src/managedframe.cpp:84
-#: ../src/managedframe.cpp:94 ../src/managedframe.cpp:95
+#: ../src/managed_frame.cpp:81 ../src/managedframe.cpp:84
+#: ../src/managed_frame.cpp:94 ../src/managedframe.cpp:95
 msgid "&Findbar"
 msgstr "&Barre de recherche"
 
-#: ../src/managedframe.cpp:82 ../src/managedframe.cpp:85
-#: ../src/managedframe.cpp:95 ../src/managedframe.cpp:96
+#: ../src/managed_frame.cpp:82 ../src/managedframe.cpp:85
+#: ../src/managed_frame.cpp:95 ../src/managedframe.cpp:96
 msgid "&Optionsbar"
 msgstr ""
 
-#: ../src/managedframe.cpp:83 ../src/managedframe.cpp:86
-#: ../src/managedframe.cpp:96 ../src/managedframe.cpp:97
+#: ../src/managed_frame.cpp:83 ../src/managedframe.cpp:86
+#: ../src/managed_frame.cpp:96 ../src/managedframe.cpp:97
 msgid "&Toolbar"
 msgstr "&Barre d'outils"
 
-#: ../src/managedframe.cpp:84 ../src/managedframe.cpp:87
-#: ../src/managedframe.cpp:97 ../src/managedframe.cpp:98
+#: ../src/managed_frame.cpp:84 ../src/managedframe.cpp:87
+#: ../src/managed_frame.cpp:97 ../src/managedframe.cpp:98
 msgid "&Process"
 msgstr ""
 
-#: ../src/managedframe.cpp:88 ../src/managedframe.cpp:91
-#: ../src/managedframe.cpp:100 ../src/managedframe.cpp:101
+#: ../src/managed_frame.cpp:88 ../src/managedframe.cpp:91
+#: ../src/managed_frame.cpp:100 ../src/managedframe.cpp:101
 msgid "Toolbar"
 msgstr "barre d'outils"
 
-#: ../src/managedframe.cpp:89 ../src/managedframe.cpp:92
-#: ../src/managedframe.cpp:101 ../src/managedframe.cpp:102
+#: ../src/managed_frame.cpp:89 ../src/managedframe.cpp:92
+#: ../src/managed_frame.cpp:101 ../src/managedframe.cpp:102
 msgid "Findbar"
 msgstr "barre de recherche"
 
-#: ../src/managedframe.cpp:90 ../src/managedframe.cpp:93
-#: ../src/managedframe.cpp:102 ../src/managedframe.cpp:103
+#: ../src/managed_frame.cpp:90 ../src/managedframe.cpp:93
+#: ../src/managed_frame.cpp:102 ../src/managedframe.cpp:103
 msgid "Optionsbar"
 msgstr ""
 
-#: ../src/managedframe.cpp:212 ../src/managedframe.cpp:218
-#: ../src/managedframe.cpp:222
+#: ../src/managed_frame.cpp:212 ../src/managedframe.cpp:218
+#: ../src/managed_frame.cpp:222
 msgid "&Menubar\tCtrl+I"
 msgstr "&Barre de recherche\tCtrl+I"
 
-#: ../src/managedframe.cpp:221 ../src/managedframe.cpp:225
+#: ../src/managed_frame.cpp:221 ../src/managedframe.cpp:225
 msgid "&Statusbar"
 msgstr "&Statut"
 
-#: ../src/managedframe.cpp:386 ../src/managedframe.cpp:392 ../src/stc.cpp:74
+#: ../src/managed_frame.cpp:386 ../src/managedframe.cpp:392 ../src/stc.cpp:74
 #: ../src/stc.cpp:78 ../src/stc.cpp:482 ../src/stc.cpp:486 ../src/stc.cpp:496
 #: ../src/stc.cpp:500
 msgid "Text font"
@@ -1162,11 +1162,11 @@ msgstr "Entrer Position de trier"
 msgid "Readonly"
 msgstr "Lecture seule"
 
-#: ../src/stcfile.cpp:80 ../src/stcfile.cpp:86
+#: ../src/stc_file.cpp:80 ../src/stcfile.cpp:86
 msgid "Opened"
 msgstr "Ouvert"
 
-#: ../src/stcfile.cpp:119 ../src/stcfile.cpp:125 ../src/stcfile.cpp:131
+#: ../src/stc_file.cpp:119 ../src/stcfile.cpp:125 ../src/stcfile.cpp:131
 msgid "Saved"
 msgstr "Sauvé"
 
@@ -1276,8 +1276,8 @@ msgid "Printed"
 msgstr "imprimé"
 
 #: ../src/vcs.cpp:140 ../src/vcs.cpp:143 ../src/vcs.cpp:144 ../src/vcs.cpp:147
-#: ../src/vcsentry.cpp:154 ../src/vcsentry.cpp:286 ../src/vcsentry.cpp:319
-#: ../src/vcsentry.cpp:324
+#: ../src/vcs_entry.cpp:154 ../src/vcsentry.cpp:286 ../src/vcsentry.cpp:319
+#: ../src/vcs_entry.cpp:324
 msgid "Path"
 msgstr "Trajet"
 
@@ -1289,8 +1289,8 @@ msgstr "Trajet"
 #: ../src/vcs.cpp:448 ../src/vcs.cpp:450 ../src/vcs.cpp:451 ../src/vcs.cpp:452
 #: ../src/vcs.cpp:454 ../src/vcs.cpp:455 ../src/vcs.cpp:457 ../src/vcs.cpp:461
 #: ../src/vcs.cpp:465 ../src/vcs.cpp:466 ../src/vcs.cpp:472
-#: ../src/vcsentry.cpp:152 ../src/vcsentry.cpp:284 ../src/vcsentry.cpp:313
-#: ../src/vcsentry.cpp:318
+#: ../src/vcs_entry.cpp:152 ../src/vcsentry.cpp:284 ../src/vcsentry.cpp:313
+#: ../src/vcs_entry.cpp:318
 msgid "Base folder"
 msgstr "Dossier de base"
 
@@ -1299,32 +1299,32 @@ msgstr "Dossier de base"
 msgid "Select VCS Folder"
 msgstr "Sélectionnez le dossier VCS"
 
-#: ../src/vcsentry.cpp:65 ../src/vcsentry.cpp:158 ../src/vcsentry.cpp:179
-#: ../src/vcsentry.cpp:200 ../src/vcsentry.cpp:205 ../src/vcsentry.cpp:290
-#: ../src/vcsentry.cpp:326 ../src/vcsentry.cpp:331
+#: ../src/vcs_entry.cpp:65 ../src/vcsentry.cpp:158 ../src/vcsentry.cpp:179
+#: ../src/vcs_entry.cpp:200 ../src/vcsentry.cpp:205 ../src/vcsentry.cpp:290
+#: ../src/vcs_entry.cpp:326 ../src/vcsentry.cpp:331
 msgid "Prefix flags"
 msgstr "Drapeaux Préfixes"
 
-#: ../src/vcsentry.cpp:77 ../src/vcsentry.cpp:160 ../src/vcsentry.cpp:191
-#: ../src/vcsentry.cpp:212 ../src/vcsentry.cpp:217 ../src/vcsentry.cpp:292
-#: ../src/vcsentry.cpp:328 ../src/vcsentry.cpp:333
+#: ../src/vcs_entry.cpp:77 ../src/vcsentry.cpp:160 ../src/vcsentry.cpp:191
+#: ../src/vcs_entry.cpp:212 ../src/vcsentry.cpp:217 ../src/vcsentry.cpp:292
+#: ../src/vcs_entry.cpp:328 ../src/vcsentry.cpp:333
 msgid "Subcommand"
 msgstr "Sous-commande"
 
-#: ../src/vcsentry.cpp:107 ../src/vcsentry.cpp:150 ../src/vcsentry.cpp:221
-#: ../src/vcsentry.cpp:242 ../src/vcsentry.cpp:247 ../src/vcsentry.cpp:282
-#: ../src/vcsentry.cpp:308 ../src/vcsentry.cpp:313
+#: ../src/vcs_entry.cpp:107 ../src/vcsentry.cpp:150 ../src/vcsentry.cpp:221
+#: ../src/vcs_entry.cpp:242 ../src/vcsentry.cpp:247 ../src/vcsentry.cpp:282
+#: ../src/vcs_entry.cpp:308 ../src/vcsentry.cpp:313
 msgid "Revision comment"
 msgstr "Révision commentaire"
 
-#: ../src/vcsentry.cpp:127 ../src/vcsentry.cpp:144 ../src/vcsentry.cpp:156
-#: ../src/vcsentry.cpp:241 ../src/vcsentry.cpp:267 ../src/vcsentry.cpp:272
-#: ../src/vcsentry.cpp:275 ../src/vcsentry.cpp:288 ../src/vcsentry.cpp:301
-#: ../src/vcsentry.cpp:306 ../src/vcsentry.cpp:324 ../src/vcsentry.cpp:329
+#: ../src/vcs_entry.cpp:127 ../src/vcsentry.cpp:144 ../src/vcsentry.cpp:156
+#: ../src/vcs_entry.cpp:241 ../src/vcsentry.cpp:267 ../src/vcsentry.cpp:272
+#: ../src/vcs_entry.cpp:275 ../src/vcsentry.cpp:288 ../src/vcsentry.cpp:301
+#: ../src/vcs_entry.cpp:306 ../src/vcsentry.cpp:324 ../src/vcsentry.cpp:329
 msgid "Flags"
 msgstr "drapeaux"
 
-#: ../src/vcsentry.cpp:180 ../src/vcsentry.cpp:185
+#: ../src/vcs_entry.cpp:180 ../src/vcsentry.cpp:185
 msgid "Select"
 msgstr "Sélectionner"
 
@@ -1332,42 +1332,42 @@ msgstr "Sélectionner"
 msgid "All rights reserved."
 msgstr "Tous droits réservés"
 
-#: ../src/vimacros.cpp:52 ../src/vimacros.cpp:115 ../src/vimacros.cpp:123
-#: ../src/vimacros.cpp:176
+#: ../src/vi_macros.cpp:52 ../src/vimacros.cpp:115 ../src/vimacros.cpp:123
+#: ../src/vi_macros.cpp:176
 msgid "Added variable"
 msgstr "Ajouter variabele"
 
-#: ../src/vimacros.cpp:85 ../src/vimacros.cpp:154 ../src/vimacros.cpp:157
-#: ../src/vimacros.cpp:213
+#: ../src/vi_macros.cpp:85 ../src/vimacros.cpp:154 ../src/vimacros.cpp:157
+#: ../src/vi_macros.cpp:213
 msgid "Variable expanded"
 msgstr ""
 
-#: ../src/vimacros.cpp:98 ../src/vimacros.cpp:148 ../src/vimacros.cpp:153
-#: ../src/vimacros.cpp:209
+#: ../src/vi_macros.cpp:98 ../src/vimacros.cpp:148 ../src/vimacros.cpp:153
+#: ../src/vi_macros.cpp:209
 msgid "Could not expand variable"
 msgstr "Impossible de développer variable"
 
-#: ../src/vimacros.cpp:454 ../src/vimacros.cpp:557 ../src/vimacros.cpp:569
+#: ../src/vi_macros.cpp:454 ../src/vimacros.cpp:557 ../src/vimacros.cpp:569
 msgid "Unknown macro"
 msgstr "macro inconnue"
 
-#: ../src/vimacros.cpp:460 ../src/vimacros.cpp:563 ../src/vimacros.cpp:575
+#: ../src/vi_macros.cpp:460 ../src/vimacros.cpp:563 ../src/vimacros.cpp:575
 msgid "Already playing back"
 msgstr "déjà joue"
 
-#: ../src/vimacros.cpp:495 ../src/vimacros.cpp:596 ../src/vimacros.cpp:608
+#: ../src/vi_macros.cpp:495 ../src/vimacros.cpp:596 ../src/vimacros.cpp:608
 msgid "Macro aborted at '"
 msgstr "Macro a joué retour a '"
 
-#: ../src/vimacros.cpp:505 ../src/vimacros.cpp:606 ../src/vimacros.cpp:618
+#: ../src/vi_macros.cpp:505 ../src/vimacros.cpp:606 ../src/vimacros.cpp:618
 msgid "Macro played back"
 msgstr "Macro a joué retour"
 
-#: ../src/vimacros.cpp:684 ../src/vimacros.cpp:780 ../src/vimacros.cpp:805
+#: ../src/vi_macros.cpp:684 ../src/vimacros.cpp:780 ../src/vimacros.cpp:805
 msgid "Macro recording"
 msgstr "Macro enregistre"
 
-#: ../src/vimacros.cpp:725 ../src/vimacros.cpp:825 ../src/vimacros.cpp:850
+#: ../src/vi_macros.cpp:725 ../src/vimacros.cpp:825 ../src/vimacros.cpp:850
 #, c-format
 msgid "Macro '%s' is recorded"
 msgstr "Macro '%s' est enregistré"

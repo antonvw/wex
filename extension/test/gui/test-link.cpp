@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-link.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -16,20 +16,20 @@
 #include "test.h"
 
 void link(
-  const wxExLink& link,
+  const wex::link& link,
   const std::string& path, 
   const std::string& expect = std::string(),
   int expect_line_no = 0,
   int expect_col_no = 0);
 
 void link(
-  const wxExLink& link,
+  const wex::link& link,
   const std::string& path, 
   const std::string& expect,
   int expect_line_no,
   int expect_col_no)
 {
-  wxExControlData data;
+  wex::control_data data;
   
   if (!expect.empty())
   {
@@ -48,18 +48,18 @@ void link(
 }
 
 #ifdef __UNIX__
-TEST_CASE("wxExLink")
+TEST_CASE("wex::link")
 {
-  wxExSTC* stc = GetSTC();
+  wex::stc* stc = GetSTC();
   
   SUBCASE("Default constructor")
   {
-    link(wxExLink(), "xxxxx");
+    link(wex::link(), "xxxxx");
   }
   
   SUBCASE("Constructor with STC")
   {
-    wxExLink lnk(stc);  
+    wex::link lnk(stc);  
     wxConfigBase::Get()->Write(_("Include directory"), "/usr/bin");
     lnk.SetFromConfig();
     
@@ -127,11 +127,11 @@ TEST_CASE("wxExLink")
   
   SUBCASE("http link")
   { 
-    wxExLink lnk(stc);
+    wex::link lnk(stc);
     wxConfigBase::Get()->Write(_("Include directory"), "/usr/bin");
     lnk.SetFromConfig();
 
-    wxExControlData data;
+    wex::control_data data;
     data.Line(LINK_LINE_OPEN_URL);
     REQUIRE( lnk.GetPath("www.wxwidgets.org", data).Path() == "www.wxwidgets.org" );
     REQUIRE( lnk.GetPath("xxx.wxwidgets.org", data).Path().empty());
@@ -140,12 +140,12 @@ TEST_CASE("wxExLink")
     REQUIRE( lnk.GetPath("gcc>", data).Path().empty());
     REQUIRE( lnk.GetPath("<gcc>", data).Path().empty());
     REQUIRE( lnk.GetPath("some text www.wxwidgets.org", data).Path() == "www.wxwidgets.org" );
-    REQUIRE( lnk.GetPath("some text https://github.com/antonvw/wxExtension", data).Path() == 
-      "https://github.com/antonvw/wxExtension" );
-    REQUIRE( lnk.GetPath("some text (https://github.com/antonvw/wxExtension)", data).Path() == 
-      "https://github.com/antonvw/wxExtension" );
-    REQUIRE( lnk.GetPath("some text [https://github.com/antonvw/wxExtension]", data).Path() == 
-      "https://github.com/antonvw/wxExtension" );
+    REQUIRE( lnk.GetPath("some text https://github.com/antonvw/wex::tension", data).Path() == 
+      "https://github.com/antonvw/wex::tension" );
+    REQUIRE( lnk.GetPath("some text (https://github.com/antonvw/wex::tension)", data).Path() == 
+      "https://github.com/antonvw/wex::tension" );
+    REQUIRE( lnk.GetPath("some text [https://github.com/antonvw/wex::tension]", data).Path() == 
+      "https://github.com/antonvw/wex::tension" );
     REQUIRE( lnk.GetPath("httpd = new httpd", data).Path().empty());
 
     // MIME file

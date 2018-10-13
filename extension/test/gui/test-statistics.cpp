@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-statistics.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -13,10 +13,10 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-TEST_CASE("wxExStatistics")
+TEST_CASE("wex::statistics")
 {
-  wxExStatistics<int>* statistics1 = new wxExStatistics<int>;
-  wxExStatistics<int>* statistics2 = new wxExStatistics<int>;
+  wex::statistics<int>* statistics1 = new wex::statistics<int>;
+  wex::statistics<int>* statistics2 = new wex::statistics<int>;
   
   REQUIRE(statistics1->Get().empty());
   REQUIRE(statistics1->GetItems().empty());
@@ -31,12 +31,12 @@ TEST_CASE("wxExStatistics")
   REQUIRE(!statistics1->Get().empty());
   REQUIRE( statistics1->Get("xx") == 2);
 
-  wxExGrid* grid1 = statistics1->Show(GetFrame());
+  wex::grid* grid1 = statistics1->Show(GetFrame());
   REQUIRE(grid1 != nullptr);
   REQUIRE(grid1 == statistics1->GetGrid());
   AddPane(GetFrame(), grid1);
   
-  wxExGrid* grid2 = statistics2->Show(GetFrame());
+  wex::grid* grid2 = statistics2->Show(GetFrame());
   AddPane(GetFrame(), grid2);
   
   REQUIRE(statistics1->Show(GetFrame()) == grid1);

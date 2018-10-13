@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      support.cpp
-// Purpose:   Implementation of DecoratedFrame class
+// Purpose:   Implementation of decorated_frame class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -28,16 +28,16 @@
 #include "app.h"
 #include "defs.h"
 
-DecoratedFrame::DecoratedFrame(App* app)
-  : wxExFrameWithHistory(
+decorated_frame::decorated_frame(app* app)
+  : wex::history_frame(
       25,  // maxFiles
       4,   // maxProjects
-      wxExWindowData().Name("mainFrame").Style(wxDEFAULT_FRAME_STYLE))
+      wex::window_data().Name("mainFrame").Style(wxDEFAULT_FRAME_STYLE))
   , m_App(app)
 {
   SetIcon(wxICON(app));
   
-  wxExProcess::PrepareOutput(this);
+  wex::process::PrepareOutput(this);
 
   const bool vi_mode = wxConfigBase::Get()->ReadBool(_("vi mode"), false);
   
@@ -55,7 +55,7 @@ DecoratedFrame::DecoratedFrame(App* app)
     {"PaneMacro", 75},
     {"PaneMode", 100}});
   
-  if (wxExVCS vcs; vcs.Use() && wxExVCS::GetCount() > 0)
+  if (wex::vcs vcs; vcs.Use() && wex::vcs::GetCount() > 0)
   {
     const auto b(vcs.SetEntryFromBase() ? vcs.GetBranch(): std::string());
     StatusText(!b.empty() ? b: vcs.GetName(), "PaneVCS");
@@ -65,7 +65,7 @@ DecoratedFrame::DecoratedFrame(App* app)
     m_StatusBar->ShowField("PaneVCS", false);
   }
   
-  if (wxExLexers::Get()->GetLexers().empty())
+  if (wex::lexers::Get()->GetLexers().empty())
   {
     m_StatusBar->ShowField("PaneLexer", false);
     m_StatusBar->ShowField("PaneTheme", false);
@@ -74,9 +74,9 @@ DecoratedFrame::DecoratedFrame(App* app)
   m_StatusBar->ShowField("PaneMacro", vi_mode);
   m_StatusBar->ShowField("PaneMode", false);
 
-  auto *menuFile = new wxExMenu();
+  auto *menuFile = new wex::menu();
   menuFile->Append(wxID_NEW,
-    wxExEllipsed(wxGetStockLabel(wxID_NEW, wxSTOCK_NOFLAGS), "\tCtrl+N"));
+    wex::ellipsed(wxGetStockLabel(wxID_NEW, wxSTOCK_NOFLAGS), "\tCtrl+N"));
   menuFile->Append(wxID_OPEN);
   GetFileHistory().UseMenu(ID_RECENT_FILE_MENU, menuFile);
   menuFile->AppendSeparator();
@@ -85,14 +85,14 @@ DecoratedFrame::DecoratedFrame(App* app)
   menuFile->AppendSeparator();
   menuFile->Append(wxID_SAVE);
   menuFile->Append(wxID_SAVEAS);
-  menuFile->Append(ID_ALL_SAVE,
+  menuFile->Append(wex::ID_ALL_SAVE,
     _("Save A&ll"), std::string(), wxART_FILE_SAVE);
   menuFile->AppendSeparator();
   menuFile->AppendPrint();
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT);
 
-  auto *menuEdit = new wxExMenu();
+  auto *menuEdit = new wex::menu();
   menuEdit->Append(wxID_UNDO);
   menuEdit->Append(wxID_REDO);
   menuEdit->AppendSeparator();
@@ -104,14 +104,14 @@ DecoratedFrame::DecoratedFrame(App* app)
   menuEdit->Append(wxID_CLEAR);
   menuEdit->Append(wxID_SELECTALL);
   menuEdit->AppendSeparator();
-  auto* menuFind = new wxExMenu();
+  auto* menuFind = new wex::menu();
   
   if (vi_mode)
   {
     // No accelerators for vi mode, Ctrl F is page down.
     menuFind->Append(wxID_FIND, wxGetStockLabel(wxID_FIND, wxSTOCK_NOFLAGS));
 
-    if (!(m_App->GetData().Flags() & STC_WIN_READ_ONLY))
+    if (!(m_App->GetData().Flags() & wex::STC_WIN_READ_ONLY))
     {
       menuFind->Append(wxID_REPLACE, wxGetStockLabel(wxID_REPLACE, wxSTOCK_NOFLAGS));
     }
@@ -120,33 +120,33 @@ DecoratedFrame::DecoratedFrame(App* app)
   {
     menuFind->Append(wxID_FIND);
 
-    if (!(m_App->GetData().Flags() & STC_WIN_READ_ONLY))
+    if (!(m_App->GetData().Flags() & wex::STC_WIN_READ_ONLY))
     {
       menuFind->Append(wxID_REPLACE);
     }
   }
   
-  menuFind->Append(ID_TOOL_REPORT_FIND, wxExEllipsed(_("Find &in Files")));
+  menuFind->Append(wex::ID_TOOL_REPORT_FIND, wex::ellipsed(_("Find &in Files")));
 
-  if (!(m_App->GetData().Flags() & STC_WIN_READ_ONLY))
+  if (!(m_App->GetData().Flags() & wex::STC_WIN_READ_ONLY))
   {
-    menuFind->Append(ID_TOOL_REPLACE, wxExEllipsed(_("Replace in File&s")));
+    menuFind->Append(wex::ID_TOOL_REPLACE, wex::ellipsed(_("Replace in File&s")));
   }
 
-  menuEdit->AppendSubMenu(menuFind, !(m_App->GetData().Flags() & STC_WIN_READ_ONLY) ?
+  menuEdit->AppendSubMenu(menuFind, !(m_App->GetData().Flags() & wex::STC_WIN_READ_ONLY) ?
     _("&Find and Replace"): _("&Find"));
   menuEdit->AppendSeparator();
   menuEdit->Append(
-    ID_EDIT_CONTROL_CHAR, wxExEllipsed(_("&Control Char"), "Ctrl+K"));
+    wex::ID_EDIT_CONTROL_CHAR, wex::ellipsed(_("&Control Char"), "Ctrl+K"));
   menuEdit->AppendSeparator();
   
-  auto* menuMacro = new wxExMenu();
-  menuMacro->Append(ID_EDIT_MACRO_START_RECORD, wxExEllipsed(_("Start Record")));
+  auto* menuMacro = new wex::menu();
+  menuMacro->Append(ID_EDIT_MACRO_START_RECORD, wex::ellipsed(_("Start Record")));
   menuMacro->Append(ID_EDIT_MACRO_STOP_RECORD, _("Stop Record"));
   menuMacro->AppendSeparator();
-  menuMacro->Append(ID_EDIT_MACRO_PLAYBACK, wxExEllipsed(_("Playback"), "Ctrl+M"));
+  menuMacro->Append(ID_EDIT_MACRO_PLAYBACK, wex::ellipsed(_("Playback"), "Ctrl+M"));
   
-  if (wxExViMacros::GetFileName().FileExists())
+  if (wex::vi_macros::GetFileName().FileExists())
   {
     menuMacro->AppendSeparator();
     menuMacro->Append(ID_EDIT_MACRO, wxGetStockLabel(wxID_EDIT));
@@ -154,7 +154,7 @@ DecoratedFrame::DecoratedFrame(App* app)
   
   menuEdit->AppendSubMenu(menuMacro, _("&Macro"), std::string(), ID_EDIT_MACRO_MENU);
 
-  auto *menuView = new wxExMenu;
+  auto *menuView = new wex::menu;
   AppendPanes(menuView);
   menuView->AppendSeparator();
   menuView->AppendCheckItem(ID_VIEW_FILES, _("&Files"));
@@ -165,13 +165,13 @@ DecoratedFrame::DecoratedFrame(App* app)
   menuView->AppendSeparator();
   menuView->AppendCheckItem(ID_VIEW_ASCII_TABLE, _("&Ascii Table"));
 
-  auto *menuProcess = new wxExMenu();
-  menuProcess->Append(ID_PROCESS_SELECT, wxExEllipsed(_("&Select")));
+  auto *menuProcess = new wex::menu();
+  menuProcess->Append(ID_PROCESS_SELECT, wex::ellipsed(_("&Select")));
   menuProcess->AppendSeparator();
   menuProcess->Append(wxID_EXECUTE);
   menuProcess->Append(wxID_STOP);
 
-  auto *menuProject = new wxExMenu();
+  auto *menuProject = new wex::menu();
   menuProject->Append(
     ID_PROJECT_NEW, wxGetStockLabel(wxID_NEW), std::string(), wxART_NEW);
   menuProject->Append(
@@ -183,44 +183,44 @@ DecoratedFrame::DecoratedFrame(App* app)
     ID_PROJECT_CLOSE, wxGetStockLabel(wxID_CLOSE), std::string(), wxART_CLOSE);
   menuProject->AppendSeparator();
   menuProject->Append(
-    ID_PROJECT_SAVE, wxGetStockLabel(wxID_SAVE), std::string(), wxART_FILE_SAVE);
+    wex::ID_PROJECT_SAVE, wxGetStockLabel(wxID_SAVE), std::string(), wxART_FILE_SAVE);
   menuProject->Append(
     ID_PROJECT_SAVEAS,
     wxGetStockLabel(wxID_SAVEAS), std::string(), wxART_FILE_SAVE_AS);
   menuProject->AppendSeparator();
   menuProject->AppendCheckItem(ID_SORT_SYNC, _("&Auto Sort"));
   
-  wxExMenu* menuDebug = nullptr;
+  wex::menu* menuDebug = nullptr;
 
   if (m_App->GetDebug())
   {
-    menuDebug = new wxExMenu();
+    menuDebug = new wex::menu();
 
     if (GetDebug()->AddMenu(menuDebug) == 0)
     {
       delete menuDebug;
       menuDebug = nullptr;
-      wxExLog() << "no debug menu present";
+      wex::log() << "no debug menu present";
     }
   }
 
   wxMenu* menuOptions = new wxMenu();
   
-  if (wxExVCS::GetCount() > 0)
+  if (wex::vcs::GetCount() > 0)
   {
-    menuOptions->Append(ID_OPTION_VCS, wxExEllipsed(_("Set &VCS")));
+    menuOptions->Append(ID_OPTION_VCS, wex::ellipsed(_("Set &VCS")));
     menuOptions->AppendSeparator();
   }
 
 #ifndef __WXOSX__
-  menuOptions->Append(wxID_PREFERENCES, wxExEllipsed(_("Set &Editor Options")));
+  menuOptions->Append(wxID_PREFERENCES, wex::ellipsed(_("Set &Editor Options")));
 #else
   menuOptions->Append(wxID_PREFERENCES);
 #endif  
   menuOptions->AppendSeparator();
-  menuOptions->Append(ID_OPTION_LIST, wxExEllipsed(_("Set &List Options")));
+  menuOptions->Append(ID_OPTION_LIST, wex::ellipsed(_("Set &List Options")));
 
-  auto *menuHelp = new wxExMenu();
+  auto *menuHelp = new wex::menu();
   menuHelp->Append(wxID_ABOUT);
   menuHelp->Append(wxID_HELP);
 
@@ -238,43 +238,43 @@ DecoratedFrame::DecoratedFrame(App* app)
   SetMenuBar(menubar);
 }
 
-bool DecoratedFrame::AllowClose(wxWindowID id, wxWindow* page)
+bool decorated_frame::AllowClose(wxWindowID id, wxWindow* page)
 {
   switch (id)
   {
-  case ID_NOTEBOOK_EDITORS:
-    if (wxExFileDialog(
-      &((wxExSTC*)page)->GetFile()).ShowModalIfChanged() == wxID_CANCEL)
+  case wex::ID_NOTEBOOK_EDITORS:
+    if (wex::file_dialog(
+      &((wex::stc*)page)->GetFile()).ShowModalIfChanged() == wxID_CANCEL)
     {
       return false;
     }
   break;
-  case ID_NOTEBOOK_PROJECTS:
-    if (wxExFileDialog(
-       (wxExListViewFile*)page).ShowModalIfChanged() == wxID_CANCEL)
+  case wex::ID_NOTEBOOK_PROJECTS:
+    if (wex::file_dialog(
+       (wex::listview_file*)page).ShowModalIfChanged() == wxID_CANCEL)
     {
       return false;
     }
   break;
   }
   
-  return wxExFrameWithHistory::AllowClose(id, page);
+  return wex::history_frame::AllowClose(id, page);
 }
 
-void DecoratedFrame::OnNotebook(wxWindowID id, wxWindow* page)
+void decorated_frame::OnNotebook(wxWindowID id, wxWindow* page)
 {
-  wxExFrameWithHistory::OnNotebook(id, page);
+  wex::history_frame::OnNotebook(id, page);
   
   switch (id)
   {
-    case ID_NOTEBOOK_EDITORS:
-      ((wxExSTC*)page)->PropertiesMessage();
+    case wex::ID_NOTEBOOK_EDITORS:
+      ((wex::stc*)page)->PropertiesMessage();
     break;
-    case ID_NOTEBOOK_LISTS:
+    case wex::ID_NOTEBOOK_LISTS:
     break;
-    case ID_NOTEBOOK_PROJECTS:
-      wxExLogStatus(((wxExListViewFile*)page)->GetFileName());
-      UpdateStatusBar((wxExListViewFile*)page);
+    case wex::ID_NOTEBOOK_PROJECTS:
+      wex::log_status(((wex::listview_file*)page)->GetFileName());
+      UpdateStatusBar((wex::listview_file*)page);
     break;
     default:
       wxFAIL;

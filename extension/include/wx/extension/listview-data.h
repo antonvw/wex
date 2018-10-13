@@ -1,91 +1,93 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      listview-data.h
-// Purpose:   Declaration of wxExListViewData
+// Purpose:   Declaration of wex::listview_data
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wx/dlimpexp.h>
 #include <wx/extension/control-data.h>
 #include <wx/extension/listview-enums.h>
 
-class wxExLexer;
-class wxExListView;
-
-/// Offers user data to be used by wxExListView. 
-class WXDLLIMPEXP_BASE wxExListViewData
+namespace wex
 {
-public:
-  /// Default constructor.
-  wxExListViewData(wxExListView* lv = nullptr);
+  class lexer;
+  class listview;
 
-  /// Copy constructor.
-  wxExListViewData(wxExListView* lv, const wxExListViewData& r);
+  /// Offers user data to be used by listview. 
+  class listview_data
+  {
+  public:
+    /// Default constructor.
+    listview_data(listview* lv = nullptr);
 
-  /// Constructor from control data.
-  wxExListViewData(wxExControlData& data, wxExListView* lv = nullptr);
+    /// Copy constructor.
+    listview_data(listview* lv, const listview_data& r);
 
-  /// Constructor from window data.
-  wxExListViewData(wxExWindowData& data, wxExListView* lv = nullptr);
+    /// Constructor from control data.
+    listview_data(control_data& data, listview* lv = nullptr);
 
-  /// Assignment operator.
-  wxExListViewData& operator=(const wxExListViewData& r);
+    /// Constructor from window data.
+    listview_data(window_data& data, listview* lv = nullptr);
 
-  /// Returns control data.
-  const auto& Control() const {return m_Data;};
+    /// Assignment operator.
+    listview_data& operator=(const listview_data& r);
 
-  /// Sets control data.
-  wxExListViewData& Control(wxExControlData& data) {m_Data = data; return *this;};
-  
-  /// Returns image type.
-  const auto& Image() const {return m_ImageType;};
+    /// Returns control data.
+    const auto& Control() const {return m_Data;};
 
-  /// Sets image type.
-  wxExListViewData& Image(wxExImageType type);
+    /// Sets control data.
+    listview_data& Control(control_data& data) {m_Data = data; return *this;};
+    
+    /// Returns image type.
+    const auto& Image() const {return m_ImageType;};
 
-  /// Injects data.  
-  bool Inject();
+    /// Sets image type.
+    listview_data& Image(image_type type);
 
-  /// Returns lexer.
-  const auto& Lexer() const {return m_Lexer;};
+    /// Injects data.  
+    bool Inject();
 
-  /// Sets lexer.
-  wxExListViewData& Lexer(const wxExLexer* lexer);
+    /// Returns lexer.
+    const auto& Lexer() const {return m_Lexer;};
 
-  /// Returns menu flags.
-  const auto& Menu() const {return m_MenuFlags;};
+    /// Sets lexer.
+    listview_data& Lexer(const lexer* lexer);
 
-  /// Sets menu flags.
-  wxExListViewData& Menu(long flags, wxExDataAction action = DATA_SET);
+    /// Returns menu flags.
+    const auto& Menu() const {return m_MenuFlags;};
 
-  /// Returns type.
-  const auto& Type() const {return m_Type;};
-  
-  /// Sets listtype.
-  wxExListViewData& Type(wxExListType type);
+    /// Sets menu flags.
+    listview_data& Menu(long flags, data_action action = DATA_SET);
 
-  /// Returns the list type as a string.
-  const std::string TypeDescription() const;
+    /// Returns type.
+    const auto& Type() const {return m_Type;};
+    
+    /// Sets listview_type.
+    listview_data& Type(listview_type type);
 
-  /// Returns window data.
-  const auto& Window() const {return m_Data.Window();};
+    /// Returns the list type as a string.
+    const std::string TypeDescription() const;
 
-  /// Sets window data.
-  wxExListViewData& Window(wxExWindowData& data) {m_Data.Window(data); return *this;};
-private:  
-  void AddColumns();
+    /// Returns window data.
+    const auto& Window() const {return m_Data.Window();};
 
-  wxExControlData m_Data;
+    /// Sets window data.
+    listview_data& Window(window_data& data) {m_Data.Window(data); return *this;};
+  private:  
+    void AddColumns();
 
-  long m_MenuFlags = LIST_MENU_DEFAULT;
+    control_data m_Data;
 
-  const wxExLexer* m_Lexer = nullptr;
-  wxExListView* m_ListView = nullptr;
+    long m_MenuFlags = LISTVIEW_MENU_DEFAULT;
 
-  wxExImageType m_ImageType = IMAGE_ART;
-  wxExListType m_Type = LIST_NONE;
+    const lexer* m_Lexer = nullptr;
+    listview* m_ListView = nullptr;
 
-  bool m_Initialized = false;
+    image_type m_ImageType = IMAGE_ART;
+    listview_type m_Type = LISTVIEW_NONE;
+
+    bool m_Initialized = false;
+  };
 };

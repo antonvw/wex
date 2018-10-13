@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-ctags.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,47 +14,47 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-TEST_CASE("wxExCTags")
+TEST_CASE("wex::ctags")
 {
-  wxExSTCData data;
+  wex::stc_data data;
 
   SUBCASE("tags default")
   {
-    wxExEx* ex = &GetSTC()->GetVi();
+    wex::ex* ex = &GetSTC()->GetVi();
 
-    REQUIRE( wxExCTags(ex).Find("wxExTestApp") );
-    REQUIRE( wxExCTags(GetFrame()).Find("wxExTestApp") );
-    REQUIRE( wxExCTags(ex).AutoComplete("wxExTest") == "wxExTestApp");
+    REQUIRE( wex::ctags(ex).Find("wxExTestApp") );
+    REQUIRE( wex::ctags(GetFrame()).Find("wxExTestApp") );
+    REQUIRE( wex::ctags(ex).AutoComplete("wxExTest") == "wxExTestApp");
 
-    wxExCTagsEntry current;
-    wxExCTagsEntry filter;
-    REQUIRE( wxExCTags(ex).Find("wxExTestApp", current, filter));
+    wex::ctags_entry current;
+    wex::ctags_entry filter;
+    REQUIRE( wex::ctags(ex).Find("wxExTestApp", current, filter));
     REQUIRE( current.Kind() == "c" );
   }
 
   SUBCASE("tags non-existing file")
   {
     data.CTagsFileName("xxx");
-    wxExSTC* stc = new wxExSTC(std::string("test"), data);
+    wex::stc* stc = new wex::stc(std::string("test"), data);
     AddPane(GetFrame(), stc);
-    wxExEx* ex = &stc->GetVi();
+    wex::ex* ex = &stc->GetVi();
 
-    REQUIRE(!wxExCTags(ex).Find("wxExTestApp") );
+    REQUIRE(!wex::ctags(ex).Find("wxExTestApp") );
   }
   
   SUBCASE("tags own file")
   {
     data.CTagsFileName("test-ctags");
-    wxExSTC* stc = new wxExSTC(std::string("test"), data);
+    wex::stc* stc = new wex::stc(std::string("test"), data);
     AddPane(GetFrame(), stc);
-    wxExEx* ex = &stc->GetVi();
+    wex::ex* ex = &stc->GetVi();
 
-    REQUIRE(!wxExCTags(ex).Find("") );
-    REQUIRE(!wxExCTags(ex).Next() );
-    REQUIRE(!wxExCTags(ex).Previous() );
-    REQUIRE(!wxExCTags(ex).Find("xxxx") );
-    REQUIRE( wxExCTags(ex).Find("wxExTestApp") );
-    REQUIRE(!wxExCTags(ex).Next() );
-    REQUIRE( wxExCTags(ex).Separator() != ' ');
+    REQUIRE(!wex::ctags(ex).Find("") );
+    REQUIRE(!wex::ctags(ex).Next() );
+    REQUIRE(!wex::ctags(ex).Previous() );
+    REQUIRE(!wex::ctags(ex).Find("xxxx") );
+    REQUIRE( wex::ctags(ex).Find("wxExTestApp") );
+    REQUIRE(!wex::ctags(ex).Next() );
+    REQUIRE( wex::ctags(ex).Separator() != ' ');
   }
 }

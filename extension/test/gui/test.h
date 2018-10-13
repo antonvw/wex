@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test.h
-// Purpose:   Declaration of classes for wxExtension unit testing
+// Purpose:   Declaration of classes for wex::tension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -13,10 +13,13 @@
 
 #include "../test.h"
 
-class wxExManagedFrame;
-class wxExStatusBar;
-class wxExShell;
-class wxExSTC;
+namespace wex
+{
+  class managed_frame;
+  class shell;
+  class statusbar;
+  class stc;
+};
 
 /// Returns abbreviations.
 std::vector<std::pair<std::string, std::string>> GetAbbreviations();
@@ -25,13 +28,13 @@ std::vector<std::pair<std::string, std::string>> GetAbbreviations();
 std::vector<std::string> GetBuiltinVariables();
 
 /// Returns the frame.
-wxExManagedFrame* GetFrame();
+wex::managed_frame* GetFrame();
 
 /// Returns the statusbar.
-wxExStatusBar* GetStatusBar();
+wex::statusbar* GetStatusBar();
 
 /// Returns an STC.
-wxExSTC* GetSTC();
+wex::stc* GetSTC();
 
 /// Processes string on shell.
-void Process(const std::string& str, wxExShell* shell);
+void Process(const std::string& str, wex::shell* shell);

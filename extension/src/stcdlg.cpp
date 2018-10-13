@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      stcdlg.cpp
-// Purpose:   Implementation of class wxExSTCEntryDialog
+// Purpose:   Implementation of class wex::stc_entry_dialog
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -13,12 +13,12 @@
 #include <wx/extension/stcdlg.h>
 #include <wx/extension/stc.h>
 
-wxExSTCEntryDialog::wxExSTCEntryDialog(
+wex::stc_entry_dialog::stc_entry_dialog(
   const std::string& text,
   const std::string& prompt,
-  const wxExWindowData& data)
-  : wxExDialog(data)
-  , m_STC(new wxExSTC(text, wxExSTCData().Window(wxExWindowData().Parent(this))))
+  const window_data& data)
+  : dialog(data)
+  , m_STC(new stc(text, stc_data().Window(window_data().Parent(this))))
 {
 #if wxUSE_STATTEXT
   if (!prompt.empty())

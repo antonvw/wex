@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      main.cpp
-// Purpose:   main for wxExtension unit testing
+// Purpose:   main for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018
 ////////////////////////////////////////////////////////////////////////////////
@@ -17,73 +17,76 @@
 
 #include "test.h"
 
-class wxExTestManagedFrame : public wxExManagedFrame
+namespace wex
 {
-public:
-  wxExTestManagedFrame()
-  : wxExManagedFrame()
-  , m_Process(new wxExProcess()) {;};
-  virtual wxExProcess* Process(const std::string& command) override {
-    m_Process->Execute(command);
-    return m_Process;};
-private:
-  wxExProcess* m_Process;
+  class test_managed_frame : public managed_frame
+  {
+  public:
+    test_managed_frame()
+    : managed_frame()
+    , m_Process(new process()) {;};
+    virtual process* Process(const std::string& command) override {
+      m_Process->Execute(command);
+      return m_Process;};
+  private:
+    process* m_Process;
+  };
+
+  class gui_test_app : public test_app
+  {
+  public: 
+    gui_test_app() : test_app() {;};
+    
+    virtual int OnExit() override
+    {
+      remove("test-ex.txt");
+      return test_app::OnExit();
+    }
+    
+    virtual bool OnInit() override
+    {
+      if (!test_app::OnInit())
+      {
+        return false;
+      }
+    
+      m_Frame = new test_managed_frame();
+      m_StatusBar = m_Frame->SetupStatusBar({
+        {"Pane0"}, // the order of panes is tested
+        {"Pane1"},
+        {"Pane2"},
+        {"Pane3"},
+        {"Pane4"},
+        {"PaneInfo"},
+        {"PaneLexer"},
+        {"PaneMode"},
+        {"PaneFileType"},
+        {"LastPane"}});
+      m_STC = new stc();
+
+      m_Frame->Show();
+
+      process::PrepareOutput(m_Frame); // before adding pane
+      
+      AddPane(m_Frame, m_STC);
+      AddPane(m_Frame, process::GetShell());
+      
+      return true;
+    }
+    
+    static auto* GetFrame() {return m_Frame;};
+    static auto* GetStatusBar() {return m_StatusBar;};
+    static auto* GetSTC() {return m_STC;};
+  private:
+    static test_managed_frame* m_Frame;
+    static statusbar* m_StatusBar;
+    static stc* m_STC;
+  }; 
 };
 
-class wxExTestGuiApp : public wxExTestApp
-{
-public: 
-  wxExTestGuiApp() : wxExTestApp() {;};
-  
-  virtual int OnExit() override
-  {
-    remove("test-ex.txt");
-    return wxExTestApp::OnExit();
-  }
-  
-  virtual bool OnInit() override
-  {
-    if (!wxExTestApp::OnInit())
-    {
-      return false;
-    }
-  
-    m_Frame = new wxExTestManagedFrame();
-    m_StatusBar = m_Frame->SetupStatusBar({
-      {"Pane0"}, // the order of panes is tested
-      {"Pane1"},
-      {"Pane2"},
-      {"Pane3"},
-      {"Pane4"},
-      {"PaneInfo"},
-      {"PaneLexer"},
-      {"PaneMode"},
-      {"PaneFileType"},
-      {"LastPane"}});
-    m_STC = new wxExSTC();
-
-    m_Frame->Show();
-
-    wxExProcess::PrepareOutput(m_Frame); // before adding pane
-    
-    AddPane(m_Frame, m_STC);
-    AddPane(m_Frame, wxExProcess::GetShell());
-    
-    return true;
-  }
-  
-  static auto* GetFrame() {return m_Frame;};
-  static auto* GetStatusBar() {return m_StatusBar;};
-  static auto* GetSTC() {return m_STC;};
-private:
-  static wxExTestManagedFrame* m_Frame;
-  static wxExStatusBar* m_StatusBar;
-  static wxExSTC* m_STC;
-}; 
-
-wxExTestManagedFrame* wxExTestGuiApp::m_Frame = nullptr;
-wxExStatusBar* wxExTestGuiApp::m_StatusBar = nullptr;
-wxExSTC* wxExTestGuiApp::m_STC = nullptr;
+wex::test_managed_frame* wex::gui_test_app::m_Frame = nullptr;
+wex::statusbar* wex::gui_test_app::m_StatusBar = nullptr;
+wex::stc* wex::gui_test_app::m_STC = nullptr;
   
 std::vector<std::pair<std::string, std::string>> GetAbbreviations()
 {
@@ -97,7 +100,7 @@ std::vector<std::string> GetBuiltinVariables()
 {
   std::vector<std::string> v;
 
-  for (const auto i : wxExViMacros::GetVariables())
+  for (const auto i : wex::vi_macros::GetVariables())
   {
     if (i.second.IsBuiltIn())
     {
@@ -108,22 +111,22 @@ std::vector<std::string> GetBuiltinVariables()
   return v;
 }
 
-wxExManagedFrame* GetFrame()
+wex::managed_frame* GetFrame()
 {
-  return wxExTestGuiApp::GetFrame();
+  return wex::gui_test_app::GetFrame();
 }
   
-wxExStatusBar* GetStatusBar()
+wex::statusbar* GetStatusBar()
 {
-  return wxExTestGuiApp::GetStatusBar();
+  return wex::gui_test_app::GetStatusBar();
 }
 
-wxExSTC* GetSTC()
+wex::stc* GetSTC()
 {
-  return wxExTestGuiApp::GetSTC();
+  return wex::gui_test_app::GetSTC();
 }
   
-void Process(const std::string& str, wxExShell* shell)
+void Process(const std::string& str, wex::shell* shell)
 {
   for (unsigned i = 0; i < str.length(); ++i)
   {
@@ -131,9 +134,9 @@ void Process(const std::string& str, wxExShell* shell)
   }
 }
 
-IMPLEMENT_APP_NO_MAIN(wxExTestGuiApp);
+IMPLEMENT_APP_NO_MAIN(wex::gui_test_app);
 
 int main(int argc, char* argv[])
 {
-  return wxExTestMain(argc, argv, new wxExTestGuiApp());
+  return wex::testmain(argc, argv, new wex::gui_test_app());
 }

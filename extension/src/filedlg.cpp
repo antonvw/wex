@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      filedlg.cpp
-// Purpose:   Implementation of wxExtension file dialog class
+// Purpose:   Implementation of wex::file_dialog class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,9 +14,9 @@
 #include <wx/extension/lexers.h>
 #include <wx/extension/util.h>
 
-wxExFileDialog::wxExFileDialog(
-  wxExFile* file,
-  const wxExWindowData& data,
+wex::file_dialog::file_dialog(
+  wex::file* file,
+  const window_data& data,
   const std::string& wildcard)
   : wxFileDialog(
       data.Parent(), 
@@ -40,7 +40,7 @@ wxExFileDialog::wxExFileDialog(
         wxFileSelectorDefaultWildcardStr,
         wxFileSelectorDefaultWildcardStr);
 
-    for (const auto& it : wxExLexers::Get()->GetLexers())
+    for (const auto& it : lexers::Get()->GetLexers())
     {
       if (!it.GetExtensions().empty())
       {
@@ -48,7 +48,7 @@ wxExFileDialog::wxExFileDialog(
           it.GetDisplayLexer() +
           " (" + it.GetExtensions() + ") |" +
           it.GetExtensions();
-        wildcards = (wxExMatchesOneOf(file->GetFileName().GetFullName(), it.GetExtensions()) ?
+        wildcards = (matches_one_of(file->GetFileName().GetFullName(), it.GetExtensions()) ?
           wildcard + "|" + wildcards: wildcards + "|" + wildcard);
       }
     }
@@ -57,7 +57,7 @@ wxExFileDialog::wxExFileDialog(
   }
 }
 
-int wxExFileDialog::ShowModalIfChanged(bool show_modal)
+int wex::file_dialog::ShowModalIfChanged(bool show_modal)
 {
   bool reset = false;
   

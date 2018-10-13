@@ -93,16 +93,16 @@ macro(target_link_all)
   if (WIN32)
     target_link_libraries(
       ${PROJECT_NAME}
-      wxex-rep
-      wxex
+      wex-rep
+      wex
       ${wxWidgets_LIBRARIES} wxscintilla
       ${extra_macro_args}
       )
   elseif (APPLE)
     target_link_libraries(
       ${PROJECT_NAME}
-      wxex-rep
-      wxex
+      wex-rep
+      wex
       ${wxWidgets_LIBRARIES} 
       ${extra_macro_args}
       stdc++
@@ -111,8 +111,8 @@ macro(target_link_all)
   else ()
     target_link_libraries(
       ${PROJECT_NAME}
-      wxex-rep
-      wxex
+      wex-rep
+      wex
       ${wxWidgets_LIBRARIES} 
       ${extra_macro_args}
       stdc++
@@ -152,14 +152,14 @@ else ()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wno-overloaded-virtual -Wno-reorder -Wno-write-strings -Wno-deprecated-declarations -Wno-unused-result")
 endif ()
 
-file(GLOB_RECURSE wxExSETUP_H ${wxExtension_BINARY_DIR}/*.h)
+file(GLOB_RECURSE wexSETUP_H ${wxExtension_BINARY_DIR}/*.h)
 # use only first element from list
-list(GET wxExSETUP_H 0 wxExSETUP_H) 
-get_filename_component(wxExSETUP_H ${wxExSETUP_H} DIRECTORY)
-get_filename_component(wxExSETUP_H ${wxExSETUP_H} DIRECTORY)
+list(GET wexSETUP_H 0 wexSETUP_H) 
+get_filename_component(wexSETUP_H ${wexSETUP_H} DIRECTORY)
+get_filename_component(wexSETUP_H ${wexSETUP_H} DIRECTORY)
 
 list(APPEND wxTOOLKIT_INCLUDE_DIRS 
-  ${wxExSETUP_H}
+  ${wexSETUP_H}
   external/wxWidgets/include 
   extension/include 
   external/ctags external/easyloggingpp/src 

@@ -1,4 +1,4 @@
-project(wxex-test-base)
+project(wex-test-base)
 
 file(GLOB SRCS "*.cpp" "../*.cpp")
   

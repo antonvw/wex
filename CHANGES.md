@@ -1,3 +1,6 @@
+**v19.04** *2019*
+  - uses namespace
+
 **v18.10** *October 1, 2018*
   - c++17
   - wxWidgets used as submodule

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      menu.cpp
-// Purpose:   Implementation of wxExMenu class
+// Purpose:   Implementation of wex::menu class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,21 +14,21 @@
 #include <wx/extension/art.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/tool.h>
-#include <wx/extension/util.h> // for wxExEllipsed
+#include <wx/extension/util.h> // for wex::ellipsed
 #include <wx/extension/vcs.h>
 
-wxExMenu::wxExMenu(long style)
+wex::menu::menu(long style)
   : m_Style(style)
 {
 }
 
-wxExMenu::wxExMenu(const std::string& title, long style)
+wex::menu::menu(const std::string& title, long style)
   : wxMenu(title)
   , m_Style(style)
 {
 }
   
-wxMenuItem* wxExMenu::Append(
+wxMenuItem* wex::menu::Append(
   int id,
   const std::string& name,
   const std::string& helptext,
@@ -36,7 +36,7 @@ wxMenuItem* wxExMenu::Append(
 {
   wxMenuItem* item = new wxMenuItem(this, id, name, helptext);
 
-  const wxExStockArt art(id);
+  const stockart art(id);
 
   if (art.GetBitmap().IsOk())
   {
@@ -61,7 +61,7 @@ wxMenuItem* wxExMenu::Append(
   return wxMenu::Append(item);
 }
 
-void wxExMenu::AppendEdit(bool add_invert)
+void wex::menu::AppendEdit(bool add_invert)
 {
   if (!(m_Style & MENU_IS_READ_ONLY) &&
        (m_Style & MENU_IS_SELECTED))
@@ -111,14 +111,14 @@ void wxExMenu::AppendEdit(bool add_invert)
   }
 }
 
-void wxExMenu::AppendPrint()
+void wex::menu::AppendPrint()
 {
-  Append(wxID_PRINT_SETUP, wxExEllipsed(_("Page &Setup")));
+  Append(wxID_PRINT_SETUP, ellipsed(_("Page &Setup")));
   Append(wxID_PREVIEW);
   Append(wxID_PRINT);
 }
 
-void wxExMenu::AppendSeparator()
+void wex::menu::AppendSeparator()
 {
   if (
     GetMenuItemCount() == 0 ||
@@ -130,7 +130,7 @@ void wxExMenu::AppendSeparator()
   wxMenu::AppendSeparator();
 }
 
-void wxExMenu::AppendSubMenu(
+void wex::menu::AppendSubMenu(
   wxMenu *submenu,
   const std::string& text,
   const std::string& help,
@@ -148,16 +148,16 @@ void wxExMenu::AppendSubMenu(
   }
 }
 
-bool wxExMenu::AppendTools(int itemid)
+bool wex::menu::AppendTools(int itemid)
 {
-  if (wxExLexers::Get()->GetLexers().empty())
+  if (lexers::Get()->GetLexers().empty())
   {
     return false;
   }
 
-  wxExMenu* menuTool = new wxExMenu(m_Style);
+  wex::menu* menuTool = new wex::menu(m_Style);
 
-  for (const auto& it : wxExTool().GetToolInfo())
+  for (const auto& it : tool().GetToolInfo())
   {
     if (!it.second.GetText().empty())
     {
@@ -173,11 +173,11 @@ bool wxExMenu::AppendTools(int itemid)
   return true;
 }
 
-bool wxExMenu::AppendVCS(const wxExPath& filename, bool show_modal)
+bool wex::menu::AppendVCS(const path& filename, bool show_modal)
 {
   if (!filename.GetStat().IsOk())
   {
-    wxExVCS vcs;
+    wex::vcs vcs;
        
     if (vcs.SetEntryFromBase(
       show_modal ? wxTheApp->GetTopWindow(): nullptr))
@@ -190,9 +190,9 @@ bool wxExMenu::AppendVCS(const wxExPath& filename, bool show_modal)
   }
   else
   {
-    wxExMenu* vcsmenu = new wxExMenu;
+    wex::menu* vcsmenu = new wex::menu;
   
-    const wxExVCS vcs({filename.Path().string()});
+    const wex::vcs vcs({filename.Path().string()});
 
     if (vcs.GetEntry().BuildMenu(ID_EDIT_VCS_LOWEST + 1, vcsmenu))
     { 

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-statusbar.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -13,7 +13,7 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-TEST_CASE("wxExStatusBar")
+TEST_CASE("wex::statusbar")
 {
   REQUIRE( GetStatusBar()->GetFieldsCount() >= 10);
 
@@ -50,7 +50,7 @@ TEST_CASE("wxExStatusBar")
   REQUIRE( GetStatusBar()->ShowField("LastPane", true));
   REQUIRE( GetStatusBar()->GetStatusText("LastPane") == "BackAgain");
 
-  wxExStatusBarPane pane1("PaneInfo", 15, "hello");
+  wex::statusbarpane pane1("PaneInfo", 15, "hello");
   REQUIRE( pane1.GetName() == "PaneInfo");
   REQUIRE( pane1.GetHelpText() == "hello");
   REQUIRE( pane1.GetHiddenText().empty());

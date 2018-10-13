@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      stream.cpp
-// Purpose:   Implementation of wxExStream class
+// Purpose:   Implementation of wex::stream class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -22,17 +22,17 @@
 #include <wx/extension/frd.h>
 #include <wx/extension/util.h>
 
-bool wxExStream::m_Asked = false;
+bool wex::stream::m_Asked = false;
 
-wxExStream::wxExStream(const wxExPath& filename, const wxExTool& tool)
+wex::stream::stream(const path& filename, const tool& tool)
   : m_Path(filename)
   , m_Tool(tool)
-  , m_FRD(wxExFindReplaceData::Get())
+  , m_FRD(find_replace_data::Get())
   , m_Threshold(wxConfigBase::Get()->ReadLong(_("Max replacements"), -1))
 {
 }
 
-bool wxExStream::Process(std::string& line, size_t line_no)
+bool wex::stream::Process(std::string& line, size_t line_no)
 {
   bool match = false;
   int count = 1;
@@ -78,7 +78,7 @@ bool wxExStream::Process(std::string& line, size_t line_no)
     }
     else
     {
-      count = wxExReplaceAll(
+      count = replace_all(
         line, 
         m_FRD->GetFindString(), 
         m_FRD->GetReplaceString(),
@@ -117,21 +117,21 @@ bool wxExStream::Process(std::string& line, size_t line_no)
   return true;
 }
 
-bool wxExStream::ProcessBegin()
+bool wex::stream::ProcessBegin()
 {
   if (
     !m_Tool.IsFindType() || 
     (m_Tool.GetId() == ID_TOOL_REPLACE && m_Path.GetStat().IsReadOnly()) ||
-     wxExFindReplaceData::Get()->GetFindString().empty())
+     find_replace_data::Get()->GetFindString().empty())
   {
     return false;
   }
 
-  m_FindString = wxExFindReplaceData::Get()->GetFindString();
+  m_FindString = find_replace_data::Get()->GetFindString();
   m_Prev = m_Stats.Get(_("Actions Completed").ToStdString());
   m_Write = (m_Tool.GetId() == ID_TOOL_REPLACE);
 
-  if (!wxExFindReplaceData::Get()->MatchCase())
+  if (!find_replace_data::Get()->MatchCase())
   {
     for (auto & c : m_FindString) c = std::toupper(c);
   }
@@ -139,7 +139,7 @@ bool wxExStream::ProcessBegin()
   return true;
 }
   
-bool wxExStream::RunTool()
+bool wex::stream::RunTool()
 {
   std::ifstream ifs(m_Path.Path());
 
@@ -178,7 +178,7 @@ bool wxExStream::RunTool()
   return true;
 }
 
-void wxExStream::Reset()
+void wex::stream::Reset()
 {
   m_Asked = false;
 }

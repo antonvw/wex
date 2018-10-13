@@ -2,7 +2,7 @@
 // Name:      defs.h
 // Purpose:   Constant definitions
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -12,7 +12,7 @@
 // Command id's used.
 enum
 {
-  ID_APPL_LOWEST = ID_EXTENSION_REPORT_HIGHEST + 1,
+  ID_APPL_LOWEST = wex::ID_REPORT_HIGHEST + 1,
   ID_EDIT_MACRO,
   ID_EDIT_MACRO_MENU,
   ID_EDIT_MACRO_PLAYBACK,

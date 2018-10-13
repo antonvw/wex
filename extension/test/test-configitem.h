@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-configitem.h
+// Name:      test-config_item.h
 // Purpose:   Declaration and implementation of TestConfigItems
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
@@ -20,17 +20,17 @@ const auto TestConfigItems(
   wxTextValidator* validator = new wxTextValidator(wxFILTER_INCLUDE_CHAR_LIST);
   validator->SetCharIncludes("0123");
   
-  return std::vector<wxExItem> {
+  return std::vector<wex::item> {
     {"notebook", {
       {"Buttons",
-        {{"<span size='x-large' color='blue'>Big</span> <b>bold</b> button", ITEM_BUTTON},
-         {"lambda", ITEM_BUTTON, std::any(), wxExControlData(), LABEL_LEFT,
+        {{"<span size='x-large' color='blue'>Big</span> <b>bold</b> button", wex::ITEM_BUTTON},
+         {"lambda", wex::ITEM_BUTTON, std::any(), wex::control_data(), wex::LABEL_LEFT,
            [=](wxWindow* user, const std::any& value, bool save) {
              wxLogStatus("click on lambda");}}}},
       {"Checkboxes",
-        {{"Checkbox", ITEM_CHECKBOX}, 
-         {"Group Checkbox1", ITEM_CHECKBOX}, 
-         {"Group Checkbox2", ITEM_CHECKBOX}}}, 
+        {{"Checkbox", wex::ITEM_CHECKBOX}, 
+         {"Group Checkbox1", wex::ITEM_CHECKBOX}, 
+         {"Group Checkbox2", wex::ITEM_CHECKBOX}}}, 
       {"Checkbox lists",
         {{"Bin Choices", {
            {1, "Bit One"}, 
@@ -40,50 +40,50 @@ const auto TestConfigItems(
            false}, 
          {{"This", "Or", "Other", "a", "b", "c", "d", "e", "f", "g", "h"}}}},
       {"Colours",
-        {{"Colour1", ITEM_COLOURPICKERWIDGET}}}, 
+        {{"Colour1", wex::ITEM_COLOURPICKERWIDGET}}}, 
       {"Comboboxes",
-        {{"Combobox", ITEM_COMBOBOX}, 
-         {"Combobox No Label", ITEM_COMBOBOX},
-         {"Combobox Dir Required", ITEM_COMBOBOX_DIR, std::any(), wxExControlData().Required(true)},
-         {"Combobox Dir", ITEM_COMBOBOX_DIR},
-         {"Combobox File", ITEM_COMBOBOX_FILE}}},
+        {{"Combobox", wex::ITEM_COMBOBOX}, 
+         {"Combobox No Label", wex::ITEM_COMBOBOX},
+         {"Combobox Dir Required", wex::ITEM_COMBOBOX_DIR, std::any(), wex::control_data().Required(true)},
+         {"Combobox Dir", wex::ITEM_COMBOBOX_DIR},
+         {"Combobox File", wex::ITEM_COMBOBOX_FILE}}},
       {"Command Link Buttons",
-        {{"Command Link Button\tThis text describes what the button does", ITEM_COMMANDLINKBUTTON}}},
+        {{"Command Link Button\tThis text describes what the button does", wex::ITEM_COMMANDLINKBUTTON}}},
       {"Pickers",
         {{10},
-         {"Dir Picker", ITEM_DIRPICKERCTRL}, 
-         {"File Picker", ITEM_FILEPICKERCTRL}, 
-         {"Font Picker", ITEM_FONTPICKERCTRL}}}, 
+         {"Dir Picker", wex::ITEM_DIRPICKERCTRL}, 
+         {"File Picker", wex::ITEM_FILEPICKERCTRL}, 
+         {"Font Picker", wex::ITEM_FONTPICKERCTRL}}}, 
       {"Floats", 
-        {{"Float", ITEM_TEXTCTRL_FLOAT}}},
+        {{"Float", wex::ITEM_TEXTCTRL_FLOAT}}},
       {"Hyperlinks", 
-        {{"Hyper Link 1", "www.wxwidgets.org", ITEM_HYPERLINKCTRL},
-         {"Hyper Link 2", "www.scintilla.org", ITEM_HYPERLINKCTRL}}},
+        {{"Hyper Link 1", "www.wxwidgets.org", wex::ITEM_HYPERLINKCTRL},
+         {"Hyper Link 2", "www.scintilla.org", wex::ITEM_HYPERLINKCTRL}}},
       {"Integers", 
-        {{"Integer", ITEM_TEXTCTRL_INT}}},
+        {{"Integer", wex::ITEM_TEXTCTRL_INT}}},
       {"ListView",
-        {{"ListView", wxExListViewData()}}},
+        {{"ListView", wex::listview_data()}}},
       {"Radioboxes",
         {{"Radio Box", {
            {0, "Zero"}, {1, "One"}, {2, "Two"}, {3, "Three"}, {4, "Four"}, {5, "Five"}},
            true}}}, 
       {"Spin controls",
-        {{"Slider", 1, 3, 2, ITEM_SLIDER},
+        {{"Slider", 1, 3, 2, wex::ITEM_SLIDER},
          {"Spin Control", 1, 2}, 
          {"Spin Control Double", 1.0, 3.0, 1.0, 0.01}}},
       {"Static Text",
-        {{"Static Text", "this is my static text", ITEM_STATICTEXT}}},
+        {{"Static Text", "this is my static text", wex::ITEM_STATICTEXT}}},
       {"Static Line", 
         {{wxHORIZONTAL},
          {wxVERTICAL}}},
       {"STC",
-        {{"STC", "cpp", ITEM_STC}}},
+        {{"STC", "cpp", wex::ITEM_STC}}},
       {"Strings",
         {{"String"},
-         {"String Validator", std::string(), ITEM_TEXTCTRL, wxExControlData().Validator(validator)},
-         {"String Multiline", std::string(), ITEM_TEXTCTRL, wxExControlData().Window(wxExWindowData().Style(wxTE_MULTILINE))}}},
+         {"String Validator", std::string(), wex::ITEM_TEXTCTRL, wex::control_data().Validator(validator)},
+         {"String Multiline", std::string(), wex::ITEM_TEXTCTRL, wex::control_data().Window(wex::window_data().Style(wxTE_MULTILINE))}}},
       {"Toggle buttons",
-        {{"Toggle Button", ITEM_TOGGLEBUTTON}}},
+        {{"Toggle Button", wex::ITEM_TOGGLEBUTTON}}},
       {"User Controls",
         {{"HTML Control", 
            new wxHtmlWindow(),
@@ -98,9 +98,9 @@ const auto TestConfigItems(
            [=](wxWindow* user, bool save) {
              if (save) wxConfigBase::Get()->Write("mytext", ((wxTextCtrl *)user)->GetValue());
              return true;},
-           LABEL_LEFT,
+           wex::LABEL_LEFT,
            [=](wxWindow* user, const std::any& value, bool save) {
              wxLogStatus(((wxTextCtrl *)user)->GetValue());
              }}}}}, 
-    ITEM_NOTEBOOK_LIST, rows, cols}};
+    wex::ITEM_NOTEBOOK_LIST, rows, cols}};
 }

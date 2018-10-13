@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      otl.cpp
-// Purpose:   Implementation of wxExOTL class
+// Purpose:   Implementation of wex::otl class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -21,24 +21,24 @@
 #include <wx/extension/stcdlg.h>
 #include <wx/extension/util.h>
 
-#if wxExUSE_OTL
+#if wexUSE_OTL
 
-wxExOTL::wxExOTL(int threaded_mode)
+wex::otl::otl(int threaded_mode)
 {
   otl_connect::otl_initialize(threaded_mode);
 }
 
-wxExOTL::~wxExOTL()
+wex::otl::~otl()
 {
   Logoff();
 }
 
-const std::string wxExOTL::Datasource() const
+const std::string wex::otl::Datasource() const
 {
-  return wxExConfigFirstOf(_("Datasource"));
+  return config_firstof(_("Datasource"));
 }
 
-bool wxExOTL::Logoff()
+bool wex::otl::Logoff()
 {
   if (!IsConnected())
   {
@@ -50,17 +50,17 @@ bool wxExOTL::Logoff()
   return true;
 }
 
-bool wxExOTL::Logon(const wxExWindowData& par)
+bool wex::otl::Logon(const wex::window_data& par)
 {
-  const wxExWindowData data(wxExWindowData(par).
+  const window_data data(window_data(par).
     Title(_("Open ODBC Connection").ToStdString()));
 
   if (data.Button() != 0)
   {
-    if (wxExItemDialog({
-        {_("Datasource"), ITEM_COMBOBOX, std::any(), wxExControlData().Required(true)},
+    if (item_dialog({
+        {_("Datasource"), ITEM_COMBOBOX, std::any(), control_data().Required(true)},
         {_("User")},
-        {_("Password"), std::string(), ITEM_TEXTCTRL, wxExControlData().Window(wxExWindowData().Style(wxTE_PASSWORD))}}, 
+        {_("Password"), std::string(), ITEM_TEXTCTRL, control_data().Window(window_data().Style(wxTE_PASSWORD))}}, 
         data).ShowModal() == wxID_CANCEL)
     {
       return false;
@@ -81,7 +81,7 @@ bool wxExOTL::Logon(const wxExWindowData& par)
   }
   catch (otl_exception& p)
   {
-    wxExSTCEntryDialog(
+    stc_entry_dialog(
       "Cannot logon to " + Datasource() + 
       " because of: " + std::string((const char *)p.msg)).ShowModal();
   }
@@ -89,7 +89,7 @@ bool wxExOTL::Logon(const wxExWindowData& par)
   return IsConnected();
 }
 
-long wxExOTL::Query(const std::string& query)
+long wex::otl::Query(const std::string& query)
 {
   if (!IsConnected())
   {
@@ -100,7 +100,7 @@ long wxExOTL::Query(const std::string& query)
 }
 
 // Cannot be const because of open call.
-long wxExOTL::Query(
+long wex::otl::Query(
   const std::string& query,
   wxGrid* grid,
   bool& stopped,
@@ -197,7 +197,7 @@ long wxExOTL::Query(
 }
 
 // Cannot be const because of open call.
-long wxExOTL::Query(
+long wex::otl::Query(
   const std::string& query,
   wxStyledTextCtrl* stc,
   bool& stopped,
@@ -282,14 +282,14 @@ long wxExOTL::Query(
   return rows;
 }
 
-const wxVersionInfo wxExOTL::VersionInfo()
+const wex::version_info wex::otl::VersionInfo()
 {
   const long version = OTL_VERSION_NUMBER;
 
-  return wxVersionInfo(
+  return version_info(
     "OTL", 
      version >> 16,
      0,
     (version & 0xffff));
 }
-#endif // wxExUSE_OTL
+#endif // wex::use_OTL

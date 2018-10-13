@@ -1,20 +1,20 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      main.cpp
-// Purpose:   main for wxExtension unit testing
+// Purpose:   main for wex::tension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
 
-IMPLEMENT_APP_NO_MAIN(wxExTestApp);
+IMPLEMENT_APP_NO_MAIN(wex::test_app);
 
 int main (int argc, char* argv[])
 {
-  return wxExTestMain(argc, argv, new wxExTestApp());
+  return wex::testmain(argc, argv, new wex::test_app());
 }  
 
-TEST_CASE( "wxExTestApp" ) 
+TEST_CASE( "wex::test_app" ) 
 {
   wxASSERT( 1 == 0 ); // to test OnAssertFailure
   

@@ -1,7 +1,7 @@
 file(GLOB SRCS "*.cpp")
   
 add_library(
-  wxex-rep
+  wex-rep
   ${SRCS})
 
-set_target_properties(wxex-rep PROPERTIES DEBUG_POSTFIX "d")
+set_target_properties(wex-rep PROPERTIES DEBUG_POSTFIX "d")

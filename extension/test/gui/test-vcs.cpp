@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-vcs.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -16,19 +16,19 @@
 #include <wx/extension/menu.h>
 #include "test.h"
 
-TEST_CASE("wxExVCS")
+TEST_CASE("wex::vcs")
 {
   // GetCount
-  REQUIRE( wxExVCS::GetCount() > 0);
+  REQUIRE( wex::vcs::GetCount() > 0);
 
-  wxExPath file(GetTestPath("test.h"));
+  wex::path file(GetTestPath("test.h"));
   file.MakeAbsolute();
   
-  // In wxExApp the vcs is Read, so current vcs is known,
+  // In wex::app the vcs is Read, so current vcs is known,
   // using this constructor results in command id 1, being add.
-  wxExVCS vcs(std::vector< wxExPath >{file.Path().string()}, 1);
+  wex::vcs vcs(std::vector< wex::path >{file.Path().string()}, 1);
   
-  vcs.ConfigDialog(wxExWindowData().Button(wxAPPLY | wxCANCEL));
+  vcs.ConfigDialog(wex::window_data().Button(wxAPPLY | wxCANCEL));
   
   // DirExists
   REQUIRE( vcs.DirExists(file));
@@ -39,13 +39,13 @@ TEST_CASE("wxExVCS")
   REQUIRE( vcs.Execute());
   
   /// ShowDialog.  
-  REQUIRE( vcs.ShowDialog(wxExWindowData().Button(wxAPPLY | wxCANCEL)));
+  REQUIRE( vcs.ShowDialog(wex::window_data().Button(wxAPPLY | wxCANCEL)));
   
   /// Request.  
-  REQUIRE( vcs.Request(wxExWindowData().Button(wxAPPLY | wxCANCEL)));
+  REQUIRE( vcs.Request(wex::window_data().Button(wxAPPLY | wxCANCEL)));
 
   // GetEntry  
-  REQUIRE( vcs.GetEntry().BuildMenu(100, new wxExMenu("test")) > 0);
+  REQUIRE( vcs.GetEntry().BuildMenu(100, new wex::menu("test")) > 0);
   REQUIRE( vcs.GetEntry().GetStdOut().empty());
   REQUIRE( vcs.GetEntry().GetCommand().GetCommand() == "add");
   
@@ -57,7 +57,7 @@ TEST_CASE("wxExVCS")
   REQUIRE(!vcs.GetEntry().GetCommand().IsOpen());
 
   // LoadDocument
-  REQUIRE( wxExVCS::LoadDocument());
+  REQUIRE( wex::vcs::LoadDocument());
   
   // SetEntryFromBase
   wxConfigBase::Get()->Write(_("Base folder"), wxGetCwd());

@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-frd.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -13,9 +13,9 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-TEST_CASE("wxExFrd")
+TEST_CASE("wex::frd")
 {
-  wxExFindReplaceData* frd = wxExFindReplaceData::Get(); 
+  wex::find_replace_data* frd = wex::find_replace_data::Get(); 
   
   REQUIRE(frd != nullptr);
   

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-path.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -9,27 +9,27 @@
 #include <wx/extension/path.h>
 #include "../test.h"
 
-TEST_CASE( "wxExPath" ) 
+TEST_CASE( "wex::path" ) 
 {
   SUBCASE( "Constructor" ) 
   {
-    REQUIRE( wxExPath().Path().empty());
-    REQUIRE( wxExPath("xxx").Path().string() == "xxx");
-    REQUIRE( wxExPath(wxExPath("yyy")).Path().string() == "yyy");
-    wxExPath fn = GetTestPath("test.h");
+    REQUIRE( wex::path().Path().empty());
+    REQUIRE( wex::path("xxx").Path().string() == "xxx");
+    REQUIRE( wex::path(wex::path("yyy")).Path().string() == "yyy");
+    wex::path fn = GetTestPath("test.h");
     REQUIRE( fn.GetLexer().GetScintillaLexer() == "cpp");
-    REQUIRE( wxExPath(fn).GetFullName() == "test.h");
-    REQUIRE( wxExPath("..").IsRelative());
-    REQUIRE(!wxExPath("..").IsAbsolute());
-    REQUIRE( wxExPath("xx") == wxExPath("xx"));
-    REQUIRE( wxExPath("xx") != wxExPath("xy"));
-    REQUIRE(!wxExPath().GetOriginal().empty());
-    REQUIRE(!wxExPath().Current().empty());
+    REQUIRE( wex::path(fn).GetFullName() == "test.h");
+    REQUIRE( wex::path("..").IsRelative());
+    REQUIRE(!wex::path("..").IsAbsolute());
+    REQUIRE( wex::path("xx") == wex::path("xx"));
+    REQUIRE( wex::path("xx") != wex::path("xy"));
+    REQUIRE(!wex::path().GetOriginal().empty());
+    REQUIRE(!wex::path().Current().empty());
   }
   
   SUBCASE( "Basic" ) 
   {
-    wxExPath path(GetTestPath("test.h"));
+    wex::path path(GetTestPath("test.h"));
   
     REQUIRE(!path.DirExists());
     REQUIRE( path.FileExists());
@@ -48,18 +48,18 @@ TEST_CASE( "wxExPath" )
 
     path.ReplaceFileName("xxx");
 
-    REQUIRE(!wxExPath("XXXXX").GetStat().IsOk());
-    REQUIRE(!wxExPath("XXXXX").OpenMIME());
+    REQUIRE(!wex::path("XXXXX").GetStat().IsOk());
+    REQUIRE(!wex::path("XXXXX").OpenMIME());
 
-    REQUIRE( wxExPath("XXXXX").MakeAbsolute().GetFullName() == "XXXXX");
-    REQUIRE( wxExPath("XXXXX").MakeAbsolute().Path().string() != "XXXXX");
-    REQUIRE( wxExPath("XXXXX").MakeAbsolute("yyy").GetFullName() == "XXXXX");
+    REQUIRE( wex::path("XXXXX").MakeAbsolute().GetFullName() == "XXXXX");
+    REQUIRE( wex::path("XXXXX").MakeAbsolute().Path().string() != "XXXXX");
+    REQUIRE( wex::path("XXXXX").MakeAbsolute("yyy").GetFullName() == "XXXXX");
   }
 
   SUBCASE( "Timing" ) 
   {
     const int max = 1000;
-    const wxExPath exfile(GetTestPath("test.h"));
+    const wex::path exfile(GetTestPath("test.h"));
     const auto ex_start = std::chrono::system_clock::now();
 
     for (int i = 0; i < max; i++)
@@ -68,7 +68,7 @@ TEST_CASE( "wxExPath" )
     }
 
     const auto ex_milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - ex_start);
-    const wxExPath file(GetTestPath("test.h"));
+    const wex::path file(GetTestPath("test.h"));
     const auto wx_start = std::chrono::system_clock::now();
 
     for (int j = 0; j < max; j++)

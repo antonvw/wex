@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-addressrange.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -15,89 +15,89 @@
 #include <wx/extension/vi-macros.h>
 #include "test.h"
 
-TEST_CASE("wxExAddressRange")
+TEST_CASE("wex::addressrange")
 {
-  wxExSTC* stc = new wxExSTC();
+  wex::stc* stc = new wex::stc();
   AddPane(GetFrame(), stc);
 
   stc->SetText("hello\nhello1\nhello2");
-  wxExEx* ex = new wxExEx(stc);
+  wex::ex* ex = new wex::ex(stc);
   ex->MarkerAdd('x', 1);
   ex->MarkerAdd('y', 2);
   ex->GetMacros().SetRegister('*', "ls");
   stc->GotoLine(2);
 
   // Test valid ranges when no selection is active.
-  REQUIRE( wxExAddressRange(ex).IsOk());
-  REQUIRE( wxExAddressRange(ex, -1).IsOk());
-  REQUIRE( wxExAddressRange(ex, 5).IsOk());
-  REQUIRE( wxExAddressRange(ex, "%").IsOk());
-  REQUIRE( wxExAddressRange(ex, "*").IsOk());
-  REQUIRE( wxExAddressRange(ex, ".").IsOk());
-  REQUIRE( wxExAddressRange(ex, "1,2").IsOk());
-  REQUIRE( wxExAddressRange(ex, "/1/,/2/").IsOk());
-  REQUIRE( wxExAddressRange(ex, "?1?,?2?").IsOk());
+  REQUIRE( wex::addressrange(ex).IsOk());
+  REQUIRE( wex::addressrange(ex, -1).IsOk());
+  REQUIRE( wex::addressrange(ex, 5).IsOk());
+  REQUIRE( wex::addressrange(ex, "%").IsOk());
+  REQUIRE( wex::addressrange(ex, "*").IsOk());
+  REQUIRE( wex::addressrange(ex, ".").IsOk());
+  REQUIRE( wex::addressrange(ex, "1,2").IsOk());
+  REQUIRE( wex::addressrange(ex, "/1/,/2/").IsOk());
+  REQUIRE( wex::addressrange(ex, "?1?,?2?").IsOk());
   
   // Test invalid ranges when no selection is active.
-  REQUIRE(!wxExAddressRange(ex, 0).IsOk());
-  REQUIRE(!wxExAddressRange(ex, "0").IsOk());
-  REQUIRE(!wxExAddressRange(ex, "x").IsOk());
-  REQUIRE(!wxExAddressRange(ex, "x,3").IsOk());
-  REQUIRE(!wxExAddressRange(ex, "x,3").Delete());
-  REQUIRE(!wxExAddressRange(ex, "3,x").Escape("ls"));
-  REQUIRE(!wxExAddressRange(ex, "3,x").ShiftRight());
-  REQUIRE(!wxExAddressRange(ex, "3,!").IsOk());
-  REQUIRE(!wxExAddressRange(ex, "3,@").Move(wxExAddress(ex, "2")));
-  REQUIRE(!wxExAddressRange(ex, "1,2").Move(wxExAddress(ex, "x")));
-  REQUIRE(!wxExAddressRange(ex, "1,3").Move(wxExAddress(ex, "2")));
-  REQUIRE(!wxExAddressRange(ex, "3,@").Copy(wxExAddress(ex, "2")));
-  REQUIRE(!wxExAddressRange(ex, "3,x").Write("flut"));
-  REQUIRE(!wxExAddressRange(ex, " ,").Yank());
-  REQUIRE(!wxExAddressRange(ex, "'<,'>").IsOk());
-  REQUIRE(!wxExAddressRange(ex, "/xx/,/2/").IsOk());
-  REQUIRE(!wxExAddressRange(ex, "?2?,?1?").IsOk());
+  REQUIRE(!wex::addressrange(ex, 0).IsOk());
+  REQUIRE(!wex::addressrange(ex, "0").IsOk());
+  REQUIRE(!wex::addressrange(ex, "x").IsOk());
+  REQUIRE(!wex::addressrange(ex, "x,3").IsOk());
+  REQUIRE(!wex::addressrange(ex, "x,3").Delete());
+  REQUIRE(!wex::addressrange(ex, "3,x").Escape("ls"));
+  REQUIRE(!wex::addressrange(ex, "3,x").ShiftRight());
+  REQUIRE(!wex::addressrange(ex, "3,!").IsOk());
+  REQUIRE(!wex::addressrange(ex, "3,@").Move(wex::address(ex, "2")));
+  REQUIRE(!wex::addressrange(ex, "1,2").Move(wex::address(ex, "x")));
+  REQUIRE(!wex::addressrange(ex, "1,3").Move(wex::address(ex, "2")));
+  REQUIRE(!wex::addressrange(ex, "3,@").Copy(wex::address(ex, "2")));
+  REQUIRE(!wex::addressrange(ex, "3,x").Write("flut"));
+  REQUIRE(!wex::addressrange(ex, " ,").Yank());
+  REQUIRE(!wex::addressrange(ex, "'<,'>").IsOk());
+  REQUIRE(!wex::addressrange(ex, "/xx/,/2/").IsOk());
+  REQUIRE(!wex::addressrange(ex, "?2?,?1?").IsOk());
   
   stc->SelectAll();
   
   // Test valid ranges when selection is active.
-  REQUIRE( wxExAddressRange(ex, 5).IsOk());
-  REQUIRE( wxExAddressRange(ex, "'<,'>").IsOk());
+  REQUIRE( wex::addressrange(ex, 5).IsOk());
+  REQUIRE( wex::addressrange(ex, "'<,'>").IsOk());
   
   // Test invalid ranges when selection is active.
-  REQUIRE(!wxExAddressRange(ex, 0).IsOk());
-  REQUIRE(!wxExAddressRange(ex, "0").IsOk());
-  REQUIRE(!wxExAddressRange(ex, "x").IsOk());
-  REQUIRE(!wxExAddressRange(ex, "x,3").IsOk());
+  REQUIRE(!wex::addressrange(ex, 0).IsOk());
+  REQUIRE(!wex::addressrange(ex, "0").IsOk());
+  REQUIRE(!wex::addressrange(ex, "x").IsOk());
+  REQUIRE(!wex::addressrange(ex, "x,3").IsOk());
   
   stc->SelectNone();
   
-  REQUIRE( wxExAddressRange(ex, "1,3").Delete());
-  REQUIRE( wxExAddressRange(ex, "1,3").Delete());
+  REQUIRE( wex::addressrange(ex, "1,3").Delete());
+  REQUIRE( wex::addressrange(ex, "1,3").Delete());
   
   // Test implementation.  
   const std::string contents("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
   
   // Test Change.
   stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
-  REQUIRE( wxExAddressRange(ex, 4).Change("changed"));
+  REQUIRE( wex::addressrange(ex, 4).Change("changed"));
   REQUIRE( stc->GetText().Contains("changed"));
   
   // Test Copy.
   stc->SetText(contents);
   REQUIRE( stc->GetLineCount() == 8);
-  REQUIRE( wxExAddressRange(ex, "1,2").Copy(wxExAddress(ex, "$")));
+  REQUIRE( wex::addressrange(ex, "1,2").Copy(wex::address(ex, "$")));
   REQUIRE( stc->GetLineCount() == 10);
   
   // Test Delete.
   stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
   stc->GotoLine(1);
-  REQUIRE( wxExAddressRange(ex, 5).Delete());
+  REQUIRE( wex::addressrange(ex, 5).Delete());
   REQUIRE( stc->GetLineCount() == 3);
-  REQUIRE(!wxExAddressRange(ex, 0).Delete());
+  REQUIRE(!wex::addressrange(ex, 0).Delete());
   REQUIRE( stc->GetLineCount() == 3);
   stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
   stc->SelectAll();
-  REQUIRE( wxExAddressRange(ex, "'<,'>").Delete());
+  REQUIRE( wex::addressrange(ex, "'<,'>").Delete());
   REQUIRE( stc->GetLineCount() == 1);
   stc->SelectNone();
   
@@ -105,13 +105,13 @@ TEST_CASE("wxExAddressRange")
 #ifdef __UNIX__
   stc->SetText(contents);
   REQUIRE( stc->GetLineCount() == 8);
-  REQUIRE( wxExAddressRange(ex, "%").Escape("uniq"));
+  REQUIRE( wex::addressrange(ex, "%").Escape("uniq"));
   REQUIRE( stc->GetLineCount() == 5);
-  REQUIRE( wxExAddressRange(ex).Escape("ls -l"));
-  REQUIRE( wxExAddressRange::GetProcess() != nullptr);
-  REQUIRE( wxExAddressRange(ex).Escape("ls `pwd`"));
-  REQUIRE( wxExAddressRange(ex).Escape("ls \x12*"));
-  REQUIRE( wxExAddressRange(ex).Escape("ls  `echo \x12*`"));
+  REQUIRE( wex::addressrange(ex).Escape("ls -l"));
+  REQUIRE( wex::addressrange::GetProcess() != nullptr);
+  REQUIRE( wex::addressrange(ex).Escape("ls `pwd`"));
+  REQUIRE( wex::addressrange(ex).Escape("ls \x12*"));
+  REQUIRE( wex::addressrange(ex).Escape("ls  `echo \x12*`"));
 #endif
   
 #ifdef __UNIX__
@@ -119,63 +119,63 @@ TEST_CASE("wxExAddressRange")
   for (bool b : { false, true })
   {
     stc->SetText(contents);
-    REQUIRE(!wxExAddressRange(ex, 5).Global(std::string(), b));
-    REQUIRE(!wxExAddressRange(ex, 5).Global("XXX", b));
-    REQUIRE( wxExAddressRange(ex, 5).Global("/", b));
-    REQUIRE( wxExAddressRange(ex, 5).Global("/xx/p", b));
-    REQUIRE( wxExAddressRange(ex, 5).Global("/xx/p#", b));
-    REQUIRE( wxExAddressRange(ex, 5).Global("/xx/g", b));
-    REQUIRE( wxExAddressRange(ex, 5).Global("/a/s/a/XX", b));
-    REQUIRE( wxExAddressRange(ex, 5).Global("/b/s/b/XX|s/c/yy", b));
+    REQUIRE(!wex::addressrange(ex, 5).Global(std::string(), b));
+    REQUIRE(!wex::addressrange(ex, 5).Global("XXX", b));
+    REQUIRE( wex::addressrange(ex, 5).Global("/", b));
+    REQUIRE( wex::addressrange(ex, 5).Global("/xx/p", b));
+    REQUIRE( wex::addressrange(ex, 5).Global("/xx/p#", b));
+    REQUIRE( wex::addressrange(ex, 5).Global("/xx/g", b));
+    REQUIRE( wex::addressrange(ex, 5).Global("/a/s/a/XX", b));
+    REQUIRE( wex::addressrange(ex, 5).Global("/b/s/b/XX|s/c/yy", b));
   }
 #endif
   
   // Test Shift.
   stc->SetText(contents);
-  REQUIRE( wxExAddressRange(ex, 5).ShiftRight());
-  REQUIRE( wxExAddressRange(ex, 5).ShiftLeft());
+  REQUIRE( wex::addressrange(ex, 5).ShiftRight());
+  REQUIRE( wex::addressrange(ex, 5).ShiftLeft());
   
   // Test IsOk.
   // See above.
   
   // Test Join.
   stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
-  REQUIRE( wxExAddressRange(ex, "%").Join());
+  REQUIRE( wex::addressrange(ex, "%").Join());
   REQUIRE( stc->GetText().Contains("a"));
   REQUIRE( stc->GetLineCount() == 1);
   
   // Test Move.
   stc->SetText(contents);
   REQUIRE( stc->GetLineCount() == 8);
-  REQUIRE( wxExAddressRange(ex, "1,2").Move(wxExAddress(ex, "$")));
+  REQUIRE( wex::addressrange(ex, "1,2").Move(wex::address(ex, "$")));
   REQUIRE( stc->GetLineCount() == 8);
   
   // Test Print.
   stc->SetText(contents);
-  REQUIRE( wxExAddressRange(ex, 5).Print());
+  REQUIRE( wex::addressrange(ex, 5).Print());
   
   // Test Sort.
-  REQUIRE( wxExAddressRange(ex, "1").Sort());
-  REQUIRE(!wxExAddressRange(ex, "1").Sort("x"));
-  REQUIRE( wxExAddressRange(ex, "1").Sort("u"));
-  REQUIRE( wxExAddressRange(ex, "1").Sort("r"));
-  REQUIRE( wxExAddressRange(ex, "1").Sort("ur"));
+  REQUIRE( wex::addressrange(ex, "1").Sort());
+  REQUIRE(!wex::addressrange(ex, "1").Sort("x"));
+  REQUIRE( wex::addressrange(ex, "1").Sort("u"));
+  REQUIRE( wex::addressrange(ex, "1").Sort("r"));
+  REQUIRE( wex::addressrange(ex, "1").Sort("ur"));
   
   // Test Substitute.
   stc->SetText(contents);
   stc->GotoLine(1);
-  REQUIRE( wxExAddressRange(ex, "%").Substitute("/tiger//"));
+  REQUIRE( wex::addressrange(ex, "%").Substitute("/tiger//"));
   REQUIRE(!stc->GetText().Contains("tiger"));
   
   stc->SetText(contents);
-  REQUIRE( wxExAddressRange(ex, "%").
+  REQUIRE( wex::addressrange(ex, "%").
     Substitute("/tiger/\\U&/"));
   REQUIRE( stc->GetText().Contains("TIGER"));
   REQUIRE(!stc->GetText().Contains("tiger"));
   REQUIRE(!stc->GetText().Contains("\\U"));
   
   stc->SetText(contents);
-  REQUIRE( wxExAddressRange(ex, "%").
+  REQUIRE( wex::addressrange(ex, "%").
     Substitute("/tiger/\\U&&\\L& \\0 \\0 & & \\U&/"));
   REQUIRE( stc->GetText().Contains("TIGER"));
   REQUIRE( stc->GetText().Contains("tiger"));
@@ -184,54 +184,54 @@ TEST_CASE("wxExAddressRange")
   REQUIRE(!stc->GetText().Contains("\\0"));
   
   stc->SetText(contents);
-  REQUIRE( wxExAddressRange(ex, "%").Substitute("/tiger/lion/"));
+  REQUIRE( wex::addressrange(ex, "%").Substitute("/tiger/lion/"));
   REQUIRE( stc->GetText().Contains("lion"));
     
   stc->SetText(contents);
-  REQUIRE( wxExAddressRange(ex, "%").Substitute("", '&'));
+  REQUIRE( wex::addressrange(ex, "%").Substitute("", '&'));
   REQUIRE( stc->GetText().Contains("lion"));
   
   stc->SetText(contents);
-  REQUIRE( wxExAddressRange(ex, "%").Substitute("", '~'));
+  REQUIRE( wex::addressrange(ex, "%").Substitute("", '~'));
   REQUIRE( stc->GetText().Contains("lion"));
   
   stc->SetText("special char \\ present");
-  REQUIRE( wxExAddressRange(ex, "%").Substitute("/\\\\//"));
+  REQUIRE( wex::addressrange(ex, "%").Substitute("/\\\\//"));
   REQUIRE( stc->GetText().Contains("char  present"));
   
   stc->SetText("special char / present");
-  REQUIRE( wxExAddressRange(ex, "%").Substitute("/\\///"));
+  REQUIRE( wex::addressrange(ex, "%").Substitute("/\\///"));
   REQUIRE( stc->GetText().Contains("char  present"));
   
   stc->SetText("special char ' present");
-  REQUIRE( wxExAddressRange(ex, "%").Substitute("/'//"));
+  REQUIRE( wex::addressrange(ex, "%").Substitute("/'//"));
   REQUIRE( stc->GetText().Contains("char  present"));
   
   // Test Substitute and flags.
-  REQUIRE(!wxExAddressRange(ex, "1").Substitute("//y"));
-  REQUIRE(!wxExAddressRange(ex, "0").Substitute("/x/y"));
-  REQUIRE( wxExAddressRange(ex, "2").Substitute("/x/y/f"));
-  REQUIRE( wxExAddressRange(ex, "1,2").Substitute("/x/y"));
-  REQUIRE( wxExAddressRange(ex, "1,2").Substitute("/x/y/i"));
-  REQUIRE( wxExAddressRange(ex, "1,2").Substitute("/x/y/f"));
-  REQUIRE( wxExAddressRange(ex, "1,2").Substitute("/x/y/g"));
-  REQUIRE( wxExAddressRange(ex, "1,2").Substitute("g", '&'));
-  REQUIRE( wxExAddressRange(ex, "1,2").Substitute("g", '~'));
-  REQUIRE(!wxExAddressRange(ex, "1,2").Substitute("g", 'x'));
+  REQUIRE(!wex::addressrange(ex, "1").Substitute("//y"));
+  REQUIRE(!wex::addressrange(ex, "0").Substitute("/x/y"));
+  REQUIRE( wex::addressrange(ex, "2").Substitute("/x/y/f"));
+  REQUIRE( wex::addressrange(ex, "1,2").Substitute("/x/y"));
+  REQUIRE( wex::addressrange(ex, "1,2").Substitute("/x/y/i"));
+  REQUIRE( wex::addressrange(ex, "1,2").Substitute("/x/y/f"));
+  REQUIRE( wex::addressrange(ex, "1,2").Substitute("/x/y/g"));
+  REQUIRE( wex::addressrange(ex, "1,2").Substitute("g", '&'));
+  REQUIRE( wex::addressrange(ex, "1,2").Substitute("g", '~'));
+  REQUIRE(!wex::addressrange(ex, "1,2").Substitute("g", 'x'));
 
   // Test Write.
   stc->SetText(contents);
-  REQUIRE( wxExAddressRange(ex, 5).Write("sample.txt"));
+  REQUIRE( wex::addressrange(ex, 5).Write("sample.txt"));
   REQUIRE( remove("sample.txt") == 0);
   
   // Test Yank.
   stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
   stc->GotoLine(0);
-  REQUIRE( wxExAddressRange(ex, 2).Yank());
+  REQUIRE( wex::addressrange(ex, 2).Yank());
   stc->SelectNone();
   stc->AddText(stc->GetVi().GetMacros().GetRegister('0'));
   REQUIRE( stc->GetLineCount() == 10);
-  REQUIRE( wxExAddressRange(ex, -2).Delete());
+  REQUIRE( wex::addressrange(ex, -2).Delete());
   stc->GotoLine(0);
-  REQUIRE( wxExAddressRange(ex, -2).Delete());
+  REQUIRE( wex::addressrange(ex, -2).Delete());
 }

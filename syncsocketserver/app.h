@@ -2,7 +2,7 @@
 // Name:      app.h
 // Purpose:   Declaration of classes for syncsocketserver
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
@@ -19,29 +19,29 @@
 class TaskBarIcon;
 #endif
 
-class App : public wxExApp
+class app : public wex::app
 {
 private:
   virtual bool OnInit() override;
 };
 
-class Frame : public wxExFrameWithHistory
+class frame : public wex::history_frame
 {
 public:
-  Frame();
- ~Frame();
+  frame();
+ ~frame();
   bool ServerNotListening() const {
     return m_SocketServer == nullptr;}
 private:
   void AppendText(
-    wxExSTC* stc, 
+    wex::stc* stc, 
     const wxString& text,
     int mode);
   virtual void OnCommandItemDialog(
     wxWindowID dialogid, const wxCommandEvent& event) override;
-  virtual wxExSTC* OpenFile(
-    const wxExPath& filename, 
-    const wxExSTCData& data = wxExSTCData()) override;
+  virtual wex::stc* OpenFile(
+    const wex::path& filename, 
+    const wex::stc_data& data = wex::stc_data()) override;
   virtual void StatusBarClicked(const std::string& pane) override;
 
   void LogConnection(
@@ -61,11 +61,11 @@ private:
 
   std::list<wxSocketBase*> m_Clients;
 
-  wxExSTC* m_DataWindow;
-  wxExSTC* m_LogWindow;
-  wxExShell* m_Shell;
+  wex::stc* m_DataWindow;
+  wex::stc* m_LogWindow;
+  wex::shell* m_Shell;
 
-  wxExStatistics < int > m_Statistics {{
+  wex::statistics < int > m_Statistics {{
     {"Messages Received", 0},
     {"Messages Sent", 0},
     {"Bytes Received", 0},
@@ -89,10 +89,10 @@ private:
 class TaskBarIcon: public wxTaskBarIcon
 {
 public:
-  explicit TaskBarIcon(Frame* frame);
+  explicit TaskBarIcon(frame* frame);
 private:
   virtual wxMenu* CreatePopupMenu() override;
-  Frame* m_Frame;
+  frame* m_Frame;
 };
 #endif
 

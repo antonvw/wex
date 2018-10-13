@@ -13,45 +13,48 @@
 #include <wx/extension/path.h>
 #include "doctest.h"
 
-class wxExManagedFrame;
-
 namespace doctest
 {
   class Context;
 }
 
-/// Derive your application from wxExApp.
-class wxExTestApp: public wxExApp
+namespace wex
 {
-public:
-  /// Constructor.
-  wxExTestApp() {};
+  class managed_frame;
 
-  /// Returns test path.  
-  static wxExPath GetTestPath(const std::string& file = std::string());
+  /// Derive your application from app.
+  class test_app: public app
+  {
+  public:
+    /// Constructor.
+    test_app() {};
 
-  /// Prepare environment.
-  virtual bool OnInit() override;
+    /// Returns test path.  
+    static path GetTestPath(const std::string& file = std::string());
 
-  /// Start event loop and start testing.
-  virtual int OnRun() override;
+    /// Prepare environment.
+    virtual bool OnInit() override;
 
-  /// Sets context.
-  void SetContext(doctest::Context* context);
-private:
-  void SetTestPath();
+    /// Start event loop and start testing.
+    virtual int OnRun() override;
 
-  doctest::Context* m_Context;
+    /// Sets context.
+    void SetContext(doctest::Context* context);
+  private:
+    void SetTestPath();
+
+    doctest::Context* m_Context;
+    
+    static inline path m_TestPath;
+  };
   
-  static inline wxExPath m_TestPath;
+  /// Invoke UI action on window, 
+  int testmain(int argc, char* argv[], test_app* app);
 };
 
 /// Adds managed pane.
 /// Returns name of pane.
-const std::string AddPane(wxExManagedFrame* frame, wxWindow* pane);
+const std::string AddPane(wex::managed_frame* frame, wxWindow* pane);
 
 /// Returns test path or file in dir if specified.
-const wxExPath GetTestPath(const std::string& file = std::string());
-  
-/// Invoke UI action on window, 
-int wxExTestMain(int argc, char* argv[], wxExTestApp* app);
+const wex::path GetTestPath(const std::string& file = std::string());

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      dialog.h
-// Purpose:   Declaration of wxExDialog class
+// Purpose:   Declaration of wex::dialog class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -11,35 +11,38 @@
 #include <wx/sizer.h>
 #include <wx/extension/window-data.h>
 
-/// Offers a general dialog, with a separated button sizer at the bottom.
-/// Derived dialogs can use the user sizer for laying out their controls.
-class WXDLLIMPEXP_BASE wxExDialog : public wxDialog
+namespace wex
 {
-public:
-  /// Default constructor.
-  wxExDialog(const wxExWindowData& data = wxExWindowData());
+  /// Offers a general dialog, with a separated button sizer at the bottom.
+  /// Derived dialogs can use the user sizer for laying out their controls.
+  class dialog : public wxDialog
+  {
+  public:
+    /// Default constructor.
+    dialog(const window_data& data = window_data());
 
-  /// Returns the window data.
-  const auto& GetData() const {return m_Data;};
-protected:
-  /// Adds to the user sizer using the sizer flags.
-  wxSizerItem* AddUserSizer(
-    wxWindow* window,
-    const wxSizerFlags& flags = wxSizerFlags().Expand());
+    /// Returns the window data.
+    const auto& GetData() const {return m_Data;};
+  protected:
+    /// Adds to the user sizer using the sizer flags.
+    wxSizerItem* AddUserSizer(
+      wxWindow* window,
+      const wxSizerFlags& flags = wxSizerFlags().Expand());
 
-  /// Adds to the user sizer using the sizer flags.
-  wxSizerItem* AddUserSizer(
-    wxSizer* sizer,
-    const wxSizerFlags& flags = wxSizerFlags().Expand());
+    /// Adds to the user sizer using the sizer flags.
+    wxSizerItem* AddUserSizer(
+      wxSizer* sizer,
+      const wxSizerFlags& flags = wxSizerFlags().Expand());
 
-  /// Layouts the sizers. Should be invoked after adding to sizers.
-  /// If you specified button flags,
-  /// they will be put at the bottom of the top sizer,
-  /// and a sepator line will be added as specified.
-  void LayoutSizers(bool add_separator_line = true);
-private:
-  const wxExWindowData m_Data;
-  
-  wxFlexGridSizer* m_TopSizer;
-  wxFlexGridSizer* m_UserSizer;
+    /// Layouts the sizers. Should be invoked after adding to sizers.
+    /// If you specified button flags,
+    /// they will be put at the bottom of the top sizer,
+    /// and a sepator line will be added as specified.
+    void LayoutSizers(bool add_separator_line = true);
+  private:
+    const window_data m_Data;
+    
+    wxFlexGridSizer* m_TopSizer;
+    wxFlexGridSizer* m_UserSizer;
+  };
 };

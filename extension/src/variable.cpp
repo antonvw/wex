@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      variable.cpp
-// Purpose:   Implementation of class wxExVariable
+// Purpose:   Implementation of class wex::variable
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -19,9 +19,9 @@
 #include <wx/extension/vi-macros-mode.h>
 #include <easylogging++.h>
 
-wxExSTCEntryDialog* wxExVariable::m_Dialog = nullptr;
+wex::stc_entry_dialog* wex::variable::m_Dialog = nullptr;
 
-wxExVariable::wxExVariable(const pugi::xml_node& node)
+wex::variable::variable(const pugi::xml_node& node)
   : m_Name(node.attribute("name").value())
   , m_Value(node.text().get())
   , m_Prefix(node.attribute("prefix").value())
@@ -59,19 +59,19 @@ wxExVariable::wxExVariable(const pugi::xml_node& node)
   }
 }
 
-bool wxExVariable::CheckLink(std::string& value) const
+bool wex::variable::CheckLink(std::string& value) const
 {
   if (std::vector <std::string> v;
-    wxExMatch("@([a-zA-Z].+)@", m_Value, v) > 0)
+    match("@([a-zA-Z].+)@", m_Value, v) > 0)
   {
-    if (const auto& it = wxExViMacros::GetVariables().find(v[0]);
-      it != wxExViMacros::GetVariables().end())
+    if (const auto& it = vi_macros::GetVariables().find(v[0]);
+      it != vi_macros::GetVariables().end())
     {
       if (!it->second.Expand(value))
       {
         if (!IsInput())
         {
-          wxExLog() << "variable:" << m_Name << "(" << v[0] << ") could not be expanded";
+          log() << "variable:" << m_Name << "(" << v[0] << ") could not be expanded";
         }
       }
       else
@@ -85,14 +85,14 @@ bool wxExVariable::CheckLink(std::string& value) const
     }
     else
     {
-      wxExLog() << "variable:" << m_Name << "(" << v[0] << ") is not found";
+      log() << "variable:" << m_Name << "(" << v[0] << ") is not found";
     }
   }
   
   return false;
 }
 
-bool wxExVariable::Expand(wxExEx* ex)
+bool wex::variable::Expand(ex* ex)
 {
   std::string value;
 
@@ -152,7 +152,7 @@ bool wxExVariable::Expand(wxExEx* ex)
   return true;
 }
 
-bool wxExVariable::Expand(std::string& value, wxExEx* ex) const
+bool wex::variable::Expand(std::string& value, ex* ex) const
 {
   CheckLink(value);
 
@@ -194,7 +194,7 @@ bool wxExVariable::Expand(std::string& value, wxExEx* ex) const
       break;
       
     case VARIABLE_TEMPLATE:
-      if (!wxExViMacros::Mode()->Expand(ex, *this, value))
+      if (!vi_macros::Mode()->Expand(ex, *this, value))
       {
         return false;
       }
@@ -206,7 +206,7 @@ bool wxExVariable::Expand(std::string& value, wxExEx* ex) const
   return true;
 }
 
-bool wxExVariable::ExpandBuiltIn(wxExEx* ex, std::string& expanded) const
+bool wex::variable::ExpandBuiltIn(ex* ex, std::string& expanded) const
 {
   if (m_Name == "Date")
   {
@@ -248,7 +248,7 @@ bool wxExVariable::ExpandBuiltIn(wxExEx* ex, std::string& expanded) const
     }
     else if (m_Name == "Created")
     {
-      if (wxExPath file(ex->GetSTC()->GetFileName());
+      if (path file(ex->GetSTC()->GetFileName());
         ex->GetSTC()->GetFileName().GetStat().IsOk())
       {
         expanded = wxDateTime(file.GetStat().st_ctime).FormatISODate();
@@ -287,7 +287,7 @@ bool wxExVariable::ExpandBuiltIn(wxExEx* ex, std::string& expanded) const
   return true;
 }
 
-bool wxExVariable::ExpandInput(std::string& expanded)  const
+bool wex::variable::ExpandInput(std::string& expanded)  const
 {
   if (m_AskForInput)
   {
@@ -295,10 +295,10 @@ bool wxExVariable::ExpandInput(std::string& expanded)  const
 
     if (m_Dialog == nullptr)
     {
-      m_Dialog = new wxExSTCEntryDialog(
+      m_Dialog = new stc_entry_dialog(
         use,
         std::string(),
-        wxExWindowData().Title(m_Name + ":"));
+        window_data().Title(m_Name + ":"));
         
       m_Dialog->GetSTC()->GetVi().Use(false);
       m_Dialog->GetSTC()->SetWrapMode(wxSTC_WRAP_WORD);
@@ -345,7 +345,7 @@ bool wxExVariable::ExpandInput(std::string& expanded)  const
   return true;
 }
 
-void wxExVariable::Save(pugi::xml_node& node, const std::string* value)
+void wex::variable::Save(pugi::xml_node& node, const std::string* value)
 {
   wxASSERT(!m_Name.empty());
 
@@ -388,7 +388,7 @@ void wxExVariable::Save(pugi::xml_node& node, const std::string* value)
   }
 } 
 
-void wxExVariable::SetAskForInput(bool value) 
+void wex::variable::SetAskForInput(bool value) 
 {
   if (!value)
   {

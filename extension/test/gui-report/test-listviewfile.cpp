@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-listviewfile.cpp
-// Purpose:   Implementation for wxExtension report unit testing
+// Name:      test-listview_file.cpp
+// Purpose:   Implementation for wex report unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -9,9 +9,9 @@
 #include <wx/extension/report/listviewfile.h>
 #include "test.h"
 
-TEST_CASE("wxExListViewFile")
+TEST_CASE("wex::listview_file")
 {
-  wxExListViewFile* listView = new wxExListViewFile(GetProject());
+  wex::listview_file* listView = new wex::listview_file(GetProject());
   AddPane(GetFrame(), listView);
 
   REQUIRE(listView->GetFile().GetFileName().GetFullName() == GetProject());
@@ -23,8 +23,8 @@ TEST_CASE("wxExListViewFile")
   REQUIRE(!listView->GetTextInFolder().empty());
   
   listView->AppendColumns({
-    {"String", wxExColumn::COL_STRING}, 
-    {"Number", wxExColumn::COL_INT}});
+    {"String", wex::column::COL_STRING}, 
+    {"Number", wex::column::COL_INT}});
 
   // Remember that listview file already has columns.
   REQUIRE(listView->FindColumn("String") > 1);
@@ -45,7 +45,7 @@ TEST_CASE("wxExListViewFile")
   listView->AddItems(
     "./",
     "*.h", 
-    DIR_FILES, 
+    wex::DIR_FILES, 
     false); // join the thread
 #endif
 

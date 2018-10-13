@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      filedlg.h
-// Purpose:   Declaration of wxExtension file dialog class
+// Purpose:   Declaration of wex::file_dialog class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -10,26 +10,29 @@
 #include <wx/filedlg.h>
 #include <wx/extension/window-data.h>
 
-class wxExFile;
-
-/// Adds an wxExFile to wxFileDialog.
-class wxExFileDialog : public wxFileDialog
+namespace wex
 {
-public:
-  /// Constructor.
-  wxExFileDialog(
-    /// specify file
-    wxExFile* file,
-    /// window data
-    const wxExWindowData& data = wxExWindowData().Style(wxFD_DEFAULT_STYLE),
-    /// wildcard
-    /// if wildcard is default and file is initialized, 
-    /// the wildcard is taken from the file
-    const std::string& wildcard = wxFileSelectorDefaultWildcardStr);
+  class file;
 
-  /// Shows the dialog depending on the changes on the file.
-  /// If you specify show_modal then dialog is always shown.
-  int ShowModalIfChanged(bool show_modal = false);
-private:
-  wxExFile* m_File;
+  /// Adds an file to wxFileDialog.
+  class file_dialog : public wxFileDialog
+  {
+  public:
+    /// Constructor.
+    file_dialog(
+      /// specify file
+      file* file,
+      /// window data
+      const window_data& data = window_data().Style(wxFD_DEFAULT_STYLE),
+      /// wildcard
+      /// if wildcard is default and file is initialized, 
+      /// the wildcard is taken from the file
+      const std::string& wildcard = wxFileSelectorDefaultWildcardStr);
+
+    /// Shows the dialog depending on the changes on the file.
+    /// If you specify show_modal then dialog is always shown.
+    int ShowModalIfChanged(bool show_modal = false);
+  private:
+    file* m_File;
+  };
 };

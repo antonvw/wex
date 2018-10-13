@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-property.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -14,12 +14,12 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-TEST_CASE("wxExProperty")
+TEST_CASE("wex::property")
 {
-  wxExProperty inv;
+  wex::property inv;
   REQUIRE( !inv.IsOk() );
   
-  wxExProperty prop("man", "ugly");
+  wex::property prop("man", "ugly");
   
   REQUIRE( prop.IsOk());
   REQUIRE( prop.GetName() == "man");
@@ -34,7 +34,7 @@ TEST_CASE("wxExProperty")
   pugi::xml_document doc;
   REQUIRE( doc.load_string("<property name = \"fold.comment\">2</property>"));
 
-  wxExProperty prop2(doc.document_element());
+  wex::property prop2(doc.document_element());
   REQUIRE( prop2.GetName() == "fold.comment");
   REQUIRE( prop2.GetValue() == "2");
   REQUIRE( prop2.IsOk());

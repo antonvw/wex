@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      autocomplete.cpp
-// Purpose:   Implementation of class wxExSTC
+// Purpose:   Implementation of class wex::stc
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -13,20 +13,20 @@
 #include <wx/extension/util.h>
 #include <easylogging++.h>
 
-wxExAutoComplete::wxExAutoComplete(wxExSTC* stc)
+wex::autocomplete::autocomplete(wex::stc* stc)
   : m_STC(stc)
   , m_MinSize(3)
 {
 }
 
-bool wxExAutoComplete::Activate(const std::string& text)
+bool wex::autocomplete::Activate(const std::string& text)
 {
   if (text.empty() || !Use())
   {
     return false;
   }
 
-  wxExCTagsEntry current;
+  wex::ctags_entry current;
 
   m_STC->GetVi().GetCTags()->Find(text, current, m_Filter);
 
@@ -50,7 +50,7 @@ bool wxExAutoComplete::Activate(const std::string& text)
   return true;
 }
 
-bool wxExAutoComplete::Apply(char c)
+bool wex::autocomplete::Apply(char c)
 {
   if (!Use() || m_STC->SelectionIsRectangle())
   {
@@ -94,7 +94,7 @@ bool wxExAutoComplete::Apply(char c)
   }
   else
   {
-    if (wxExIsCodewordSeparator(
+    if (is_codeword_separator(
       m_STC->GetCharAt(m_STC->GetCurrentPos() - 1)))
     {
       m_Text = c;
@@ -116,18 +116,18 @@ bool wxExAutoComplete::Apply(char c)
   return true;
 }
 
-void wxExAutoComplete::Clear()
+void wex::autocomplete::Clear()
 {
   m_Text.clear();
   m_STC->AutoCompCancel();
 }
 
-void wxExAutoComplete::Reset()
+void wex::autocomplete::Reset()
 {
   m_Filter.Clear();
 }
 
-bool wxExAutoComplete::ShowCTags(bool show) const
+bool wex::autocomplete::ShowCTags(bool show) const
 {
   if (!show) 
   {
@@ -149,11 +149,11 @@ bool wxExAutoComplete::ShowCTags(bool show) const
   }
 }
 
-bool wxExAutoComplete::ShowInserts(bool show) const
+bool wex::autocomplete::ShowInserts(bool show) const
 {
   if (show && !m_Text.empty() && !m_Inserts.empty())
   {
-    if (const auto comp(wxExGetStringSet(
+    if (const auto comp(get_string_set(
       m_Inserts, m_MinSize, m_Text));
       !comp.empty())
     {
@@ -165,7 +165,7 @@ bool wxExAutoComplete::ShowInserts(bool show) const
   return false;
 }
 
-bool wxExAutoComplete::ShowKeywords(bool show) const
+bool wex::autocomplete::ShowKeywords(bool show) const
 {
   if (show && !m_Text.empty() && m_STC->GetLexer().KeywordStartsWith(m_Text))
   {
@@ -181,7 +181,7 @@ bool wxExAutoComplete::ShowKeywords(bool show) const
   return false;
 }
 
-bool wxExAutoComplete::Use() const
+bool wex::autocomplete::Use() const
 {
   return m_Use || wxConfigBase::Get()->ReadBool(_("Auto complete"), false);
 }

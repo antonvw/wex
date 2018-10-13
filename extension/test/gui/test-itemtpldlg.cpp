@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-itemtpldlg.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -16,38 +16,41 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-class wxExTestItem : public wxExItem
+namespace wex
 {
-public:
-  wxExTestItem(): wxExItem() {;};
-  wxExTestItem(const std::string& label, const std::string& value = std::string())
-    : wxExItem(label, value) {;};
-  wxExTestItem(const std::string& label, wxExItemType type)
-    : wxExItem(label, type) {;};
-  void SetDialog(wxExItemTemplateDialog<wxExTestItem>* dlg) {;};
+  class testitem : public item
+  {
+  public:
+    testitem(): item() {;};
+    testitem(const std::string& label, const std::string& value = std::string())
+      : item(label, value) {;};
+    testitem(const std::string& label, itemtype type)
+      : item(label, type) {;};
+    void SetDialog(item_template_dialog<testitem>* dlg) {;};
+  };
 };
 
-TEST_CASE("wxExItemTemplateDialog")
+TEST_CASE("wex::item_template_dialog")
 {
-  wxExItem::UseConfig(false);
+  wex::item::UseConfig(false);
 
   SUBCASE("Basic")
   {
-    wxExItemTemplateDialog<wxExTestItem>* dlg = new wxExItemTemplateDialog<wxExTestItem>(
-      std::vector <wxExTestItem> {
+    wex::item_template_dialog<wex::testitem>* dlg = new wex::item_template_dialog<wex::testitem>(
+      std::vector <wex::testitem> {
         {"fruit", "apple"},
-        {"button", ITEM_BUTTON},
+        {"button", wex::ITEM_BUTTON},
         {"string1"},
         {"string2"},
         {"more fruit", "citron"}},
-      wxExWindowData().Title("3 columns"), 0, 3);
+      wex::window_data().Title("3 columns"), 0, 3);
     
-    REQUIRE( wxExTestItem("test", ITEM_BUTTON).GetType() == ITEM_BUTTON);
+    REQUIRE( wex::testitem("test", wex::ITEM_BUTTON).GetType() == wex::ITEM_BUTTON);
     
     REQUIRE(!dlg->BindButton({}));
-    REQUIRE(!dlg->BindButton({"test", ITEM_COMBOBOX}));
-    REQUIRE(!dlg->BindButton({"test", ITEM_BUTTON})); // not yet laid out0
-    REQUIRE(!dlg->BindButton({"test", ITEM_COMBOBOX_DIR})); // same
+    REQUIRE(!dlg->BindButton({"test", wex::ITEM_COMBOBOX}));
+    REQUIRE(!dlg->BindButton({"test", wex::ITEM_BUTTON})); // not yet laid out0
+    REQUIRE(!dlg->BindButton({"test", wex::ITEM_COMBOBOX_DIR})); // same
 
     REQUIRE( dlg->BindButton(dlg->GetItem("button")));
     
@@ -71,9 +74,9 @@ TEST_CASE("wxExItemTemplateDialog")
 
   SUBCASE("Test dialog with checkbox item")
   {
-    wxExItemTemplateDialog<wxExTestItem>* dlg = new wxExItemTemplateDialog<wxExTestItem>(
-      std::vector <wxExTestItem> {{"checkbox", ITEM_CHECKBOX}},
-      wxExWindowData().Title("checkbox items"));
+    wex::item_template_dialog<wex::testitem>* dlg = new wex::item_template_dialog<wex::testitem>(
+      std::vector <wex::testitem> {{"checkbox", wex::ITEM_CHECKBOX}},
+      wex::window_data().Title("checkbox items"));
 
     dlg->ForceCheckBoxChecked();
     dlg->Show();
@@ -81,27 +84,27 @@ TEST_CASE("wxExItemTemplateDialog")
 
   SUBCASE("Test dialog without buttons")
   {
-    wxExItemTemplateDialog<wxExTestItem>* dlg = new wxExItemTemplateDialog<wxExTestItem>(
-      std::vector <wxExTestItem> {
+    wex::item_template_dialog<wex::testitem>* dlg = new wex::item_template_dialog<wex::testitem>(
+      std::vector <wex::testitem> {
         {"string1"},
         {"string2"}},
-      wxExWindowData().Button(0).Title("no buttons"));
+      wex::window_data().Button(0).Title("no buttons"));
     dlg->Show();
   }
 
   SUBCASE("Test dialog without items")
   {
-    wxExItemTemplateDialog<wxExTestItem>* dlg = new wxExItemTemplateDialog<wxExTestItem>(
-      std::vector <wxExTestItem>(),
-      wxExWindowData().Title("no items"));
+    wex::item_template_dialog<wex::testitem>* dlg = new wex::item_template_dialog<wex::testitem>(
+      std::vector <wex::testitem>(),
+      wex::window_data().Title("no items"));
     dlg->Show();
   }
   
   SUBCASE("Test dialog with empty items")
   {
-    wxExItemTemplateDialog<wxExTestItem>* dlg = new wxExItemTemplateDialog<wxExTestItem>(
-      std::vector <wxExTestItem> {{}, {}, {}},
-      wxExWindowData().Title("empty items"));
+    wex::item_template_dialog<wex::testitem>* dlg = new wex::item_template_dialog<wex::testitem>(
+      std::vector <wex::testitem> {{}, {}, {}},
+      wex::window_data().Title("empty items"));
     dlg->Show();
   }
 }

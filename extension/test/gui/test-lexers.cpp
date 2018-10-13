@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-lexers.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -15,12 +15,12 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-TEST_CASE("wxExLexers")
+TEST_CASE("wex::lexers")
 {
   SUBCASE("Get")
   {
-    REQUIRE( wxExLexers::Get() != nullptr);
-    REQUIRE(!wxExLexers::Get()->GetLexers().empty());
+    REQUIRE( wex::lexers::Get() != nullptr);
+    REQUIRE(!wex::lexers::Get()->GetLexers().empty());
   }
   
   SUBCASE("lexer and global macros")
@@ -36,25 +36,25 @@ TEST_CASE("wxExLexers")
       {{"mark_circle","global"},"0"},
       {{"iv_none","global"},"0"}})
     {
-      REQUIRE( wxExLexers::Get()->ApplyMacro(
+      REQUIRE( wex::lexers::Get()->ApplyMacro(
         macro.first.first, macro.first.second) == macro.second);
     }
   }
 
   SUBCASE("Properties")
   {
-    REQUIRE( wxExLexers::Get()->GetProperties().empty());
+    REQUIRE( wex::lexers::Get()->GetProperties().empty());
   }
   
   SUBCASE("FindBy")
   {
-    REQUIRE( wxExLexers::Get()->FindByFileName(
+    REQUIRE( wex::lexers::Get()->FindByFileName(
       GetTestPath("test.h").GetFullName()).GetScintillaLexer() == "cpp");
       
-    REQUIRE( wxExLexers::Get()->FindByName(
+    REQUIRE( wex::lexers::Get()->FindByName(
       "xxx").GetScintillaLexer().empty());
       
-    REQUIRE( wxExLexers::Get()->FindByName(
+    REQUIRE( wex::lexers::Get()->FindByName(
       "cpp").GetScintillaLexer() == "cpp");
     
     for (const auto& findby : std::vector<std::pair<
@@ -71,46 +71,46 @@ TEST_CASE("wxExLexers")
       {"<html>",{"hypertext","hypertext"}},
       {"<?xml",{"hypertext","xml"}}})
     {
-      REQUIRE( wxExLexers::Get()->FindByText(
+      REQUIRE( wex::lexers::Get()->FindByText(
         findby.first).GetScintillaLexer() == findby.second.first);
-      REQUIRE( wxExLexers::Get()->FindByText(
+      REQUIRE( wex::lexers::Get()->FindByText(
         findby.first).GetDisplayLexer() == findby.second.second);
     }
   }
     
   SUBCASE("Rest")
   {
-    REQUIRE(!wxExLexers::Get()->GetFileName().Path().empty());
+    REQUIRE(!wex::lexers::Get()->GetFileName().Path().empty());
 
-    REQUIRE(!wxExLexers::Get()->GetMacros("global").empty());
-    REQUIRE(!wxExLexers::Get()->GetMacros("cpp").empty());
-    REQUIRE(!wxExLexers::Get()->GetMacros("pascal").empty());
-    REQUIRE( wxExLexers::Get()->GetMacros("XXX").empty());
+    REQUIRE(!wex::lexers::Get()->GetMacros("global").empty());
+    REQUIRE(!wex::lexers::Get()->GetMacros("cpp").empty());
+    REQUIRE(!wex::lexers::Get()->GetMacros("pascal").empty());
+    REQUIRE( wex::lexers::Get()->GetMacros("XXX").empty());
     
-    REQUIRE(!wxExLexers::Get()->GetTheme().empty());
-    REQUIRE(!wxExLexers::Get()->GetThemeMacros().empty());
-    REQUIRE( wxExLexers::Get()->GetThemes() > 1);
+    REQUIRE(!wex::lexers::Get()->GetTheme().empty());
+    REQUIRE(!wex::lexers::Get()->GetThemeMacros().empty());
+    REQUIRE( wex::lexers::Get()->GetThemes() > 1);
 
-    wxExLexers::Get()->ResetTheme();
-    REQUIRE( wxExLexers::Get()->GetTheme().empty());
-    wxExLexers::Get()->RestoreTheme();
-    REQUIRE(!wxExLexers::Get()->GetTheme().empty());
+    wex::lexers::Get()->ResetTheme();
+    REQUIRE( wex::lexers::Get()->GetTheme().empty());
+    wex::lexers::Get()->RestoreTheme();
+    REQUIRE(!wex::lexers::Get()->GetTheme().empty());
     
-    REQUIRE(!wxExLexers::Get()->IndicatorIsLoaded(wxExIndicator(99)));
-    REQUIRE( wxExLexers::Get()->IndicatorIsLoaded(wxExIndicator(0)));
-    REQUIRE( wxExLexers::Get()->MarkerIsLoaded(wxExMarker(0)));
-    REQUIRE( wxExLexers::Get()->GetIndicator(wxExIndicator(0)).IsOk());
-    REQUIRE( wxExLexers::Get()->GetMarker(wxExMarker(0)).IsOk());
+    REQUIRE(!wex::lexers::Get()->IndicatorIsLoaded(wex::indicator(99)));
+    REQUIRE( wex::lexers::Get()->IndicatorIsLoaded(wex::indicator(0)));
+    REQUIRE( wex::lexers::Get()->MarkerIsLoaded(wex::marker(0)));
+    REQUIRE( wex::lexers::Get()->GetIndicator(wex::indicator(0)).IsOk());
+    REQUIRE( wex::lexers::Get()->GetMarker(wex::marker(0)).IsOk());
     
     wxString lexer("cpp");
-    REQUIRE(!wxExLexers::Get()->GetKeywords("cpp").empty());
-    REQUIRE(!wxExLexers::Get()->GetKeywords("csh").empty());
-    REQUIRE( wxExLexers::Get()->GetKeywords("xxx").empty());
-    REQUIRE( wxExLexers::Get()->GetKeywords(std::string()).empty());
+    REQUIRE(!wex::lexers::Get()->GetKeywords("cpp").empty());
+    REQUIRE(!wex::lexers::Get()->GetKeywords("csh").empty());
+    REQUIRE( wex::lexers::Get()->GetKeywords("xxx").empty());
+    REQUIRE( wex::lexers::Get()->GetKeywords(std::string()).empty());
 
-    REQUIRE( wxExLexers::Get()->LoadDocument());
+    REQUIRE( wex::lexers::Get()->LoadDocument());
     
-    wxExLexers::Get()->ApplyGlobalStyles(GetSTC());
-    wxExLexers::Get()->Apply(GetSTC());
+    wex::lexers::Get()->ApplyGlobalStyles(GetSTC());
+    wex::lexers::Get()->Apply(GetSTC());
   }
 }

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      printing.cpp
-// Purpose:   Implementation of wxExPrinting class
+// Purpose:   Implementation of wex::printing class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,9 +14,9 @@
 #include <wx/extension/path.h>
 #include <wx/extension/util.h>
 
-wxExPrinting* wxExPrinting::m_Self = nullptr;
+wex::printing* wex::printing::m_Self = nullptr;
 
-wxExPrinting::wxExPrinting()
+wex::printing::printing()
 #if wxUSE_PRINTING_ARCHITECTURE
   : m_Printer(std::make_unique<wxPrinter>())
 #if wxUSE_HTML
@@ -29,31 +29,31 @@ wxExPrinting::wxExPrinting()
   m_HtmlPrinter->GetPageSetupData()->SetMarginBottomRight(wxPoint(15, 5));
   m_HtmlPrinter->GetPageSetupData()->SetMarginTopLeft(wxPoint(15, 5));
 
-  m_HtmlPrinter->SetHeader(wxExPrintHeader(wxExPath()));
-  m_HtmlPrinter->SetFooter(wxExPrintFooter());
+  m_HtmlPrinter->SetHeader(print_header(path()));
+  m_HtmlPrinter->SetFooter(print_footer());
 #endif
 }
 
-wxExPrinting* wxExPrinting::Get(bool createOnDemand)
+wex::printing* wex::printing::Get(bool createOnDemand)
 {
   if (m_Self == nullptr && createOnDemand)
   {
-    m_Self = new wxExPrinting();
+    m_Self = new printing();
   }
 
   return m_Self;
 }
 
-wxExPrinting* wxExPrinting::Set(wxExPrinting* printing)
+wex::printing* wex::printing::Set(printing* printing)
 {
-  wxExPrinting* old = m_Self;
+  wex::printing* old = m_Self;
   m_Self = printing;
   return old;
 }
 
 #if wxUSE_PRINTING_ARCHITECTURE
-wxExPrintout::wxExPrintout(wxStyledTextCtrl* owner)
-  : wxPrintout(wxExPrintCaption(owner->GetName().ToStdString()))
+wex::printout::printout(wxStyledTextCtrl* owner)
+  : wxPrintout(print_caption(owner->GetName().ToStdString()))
   , m_PageRect()
   , m_PrintRect()
   , m_PageBreaks()
@@ -61,7 +61,7 @@ wxExPrintout::wxExPrintout(wxStyledTextCtrl* owner)
 {
 }
 
-void wxExPrintout::CountPages()
+void wex::printout::CountPages()
 {
   if (GetDC() == nullptr) return;
 
@@ -88,7 +88,7 @@ void wxExPrintout::CountPages()
   }
 }
 
-void wxExPrintout::GetPageInfo(
+void wex::printout::GetPageInfo(
   int* minPage, int* maxPage, int* pageFrom, int* pageTo)
 {
   *minPage = 1;
@@ -97,13 +97,13 @@ void wxExPrintout::GetPageInfo(
   *pageTo = m_PageBreaks.size() - 1;
 }
 
-void wxExPrintout::OnPreparePrinting()
+void wex::printout::OnPreparePrinting()
 {
   const double factor = 22.4;
   wxSize ppiScr;
   GetPPIScreen(&ppiScr.x, &ppiScr.y);
 
-  wxPageSetupDialogData* dlg_data = wxExPrinting::Get()->GetHtmlPrinter()->GetPageSetupData();
+  wxPageSetupDialogData* dlg_data = printing::Get()->GetHtmlPrinter()->GetPageSetupData();
   wxSize page = dlg_data->GetPaperSize();
 
   if (page.x == 0 || page.y == 0)
@@ -131,7 +131,7 @@ void wxExPrintout::OnPreparePrinting()
   CountPages();
 }
 
-bool wxExPrintout::OnPrintPage(int pageNum)
+bool wex::printout::OnPrintPage(int pageNum)
 {
   if (GetDC() == nullptr) return false;
 
@@ -160,14 +160,14 @@ bool wxExPrintout::OnPrintPage(int pageNum)
   GetDC()->SetPen(*wxBLACK_PEN);
 
   // Print a header.
-  const std::string header = wxExPrintHeader(m_Owner->GetName().ToStdString());
+  const std::string header = print_header(m_Owner->GetName().ToStdString());
   if (!header.empty())
   {
     const int text_from_top = 23;
     const int line_from_top = 8;
     
     GetDC()->DrawText(
-      wxExTranslate(header, pageNum, m_PageBreaks.size() - 1),
+      translate(header, pageNum, m_PageBreaks.size() - 1),
       m_PrintRect.GetTopLeft().x,
       m_PrintRect.GetTopLeft().y - text_from_top);
 
@@ -179,11 +179,11 @@ bool wxExPrintout::OnPrintPage(int pageNum)
   }
 
   // Print a footer
-  const std::string footer = wxExPrintFooter();
+  const std::string footer = print_footer();
   if (!footer.empty())
   {
     GetDC()->DrawText(
-      wxExTranslate(footer, pageNum, m_PageBreaks.size() - 1),
+      translate(footer, pageNum, m_PageBreaks.size() - 1),
       m_PrintRect.GetBottomRight().x / 2,
       m_PrintRect.GetBottomRight().y);
 
@@ -197,7 +197,7 @@ bool wxExPrintout::OnPrintPage(int pageNum)
   return true;
 }
 
-void wxExPrintout::SetScale()
+void wex::printout::SetScale()
 {
   if (GetDC() == nullptr) return;
 

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      listviewfile.cpp
-// Purpose:   Implementation of class wxExListViewFile
+// Name:      listview_file.cpp
+// Purpose:   Implementation of class wex::listview_file
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -23,24 +23,24 @@
 #include <wx/extension/report/frame.h>
 #include <easylogging++.h>
 
-wxExListViewFile::wxExListViewFile(
-  const std::string& file, const wxExListViewData& data)
-  : wxExListViewWithFrame(wxExListViewData(data).Type(LIST_FILE))
-  , wxExFile(false) // do not open files in FileLoad and Save
-  , m_AddItemsDialog(new wxExItemDialog({
+wex::listview_file::listview_file(
+  const std::string& file, const listview_data& data)
+  : history_listview(listview_data(data).Type(LISTVIEW_FILE))
+  , wex::file(false) // do not open files in FileLoad and Save
+  , m_AddItemsDialog(new item_dialog({
         {m_TextAddWhat,ITEM_COMBOBOX, std::any(), 
-           wxExControlData().Required(true)},
+           control_data().Required(true)},
         {m_TextInFolder,ITEM_COMBOBOX_DIR, std::any(), 
-           wxExControlData().Required(true)},
+           control_data().Required(true)},
         {std::set<std::string> {
           m_TextAddFiles, m_TextAddFolders, m_TextAddRecursive}}},
-      wxExWindowData().
+      window_data().
         Title(_("Add Items").ToStdString()).
         Button(wxAPPLY | wxCANCEL).Id(wxID_ADD)))
 {
   FileLoad(file);
   
-  Bind(wxEVT_IDLE, &wxExListViewFile::OnIdle, this);
+  Bind(wxEVT_IDLE, &listview_file::OnIdle, this);
   
   Bind(wxEVT_LEFT_DOWN, [=](wxMouseEvent& event) {
     event.Skip();
@@ -52,7 +52,7 @@ wxExListViewFile::wxExListViewFile(
     if (const int index = HitTest(wxPoint(event.GetX(), event.GetY()), flags); 
       index < 0)
     {
-      wxExLogStatus(GetFileName());
+      log_status(GetFileName());
     }
   });
   
@@ -61,9 +61,9 @@ wxExListViewFile::wxExListViewFile(
     m_AddItemsDialog->ForceCheckBoxChecked(_("Add"));
     if (GetSelectedItemCount() > 0)
     {
-      wxExItem item(m_AddItemsDialog->GetItem(m_TextInFolder));
+      wex::item item(m_AddItemsDialog->GetItem(m_TextInFolder));
       wxComboBox* cb = (wxComboBox* )item.GetWindow();
-      cb->SetValue(wxExListItem(
+      cb->SetValue(listitem(
         this, GetFirstSelected()).GetFileName().GetPath());
     }
     m_AddItemsDialog->Show();}, wxID_ADD);
@@ -73,28 +73,28 @@ wxExListViewFile::wxExListViewFile(
     if (!GetFileName().FileExists() || !GetFileName().IsReadOnly())
     {
       m_ContentsChanged = true;
-      wxExFrame::UpdateStatusBar(this);
+      frame::UpdateStatusBar(this);
     }}, wxID_EDIT, wxID_REPLACE_ALL);
 }
 
-wxExListViewFile::~wxExListViewFile()
+wex::listview_file::~listview_file()
 {
   m_AddItemsDialog->Destroy();
 }
 
-void wxExListViewFile::AddItems(
+void wex::listview_file::AddItems(
   const std::string& folder,
   const std::string& files,
   long flags,
   bool detached)
 {
-  Unbind(wxEVT_IDLE, &wxExListViewFile::OnIdle, this);
+  Unbind(wxEVT_IDLE, &listview_file::OnIdle, this);
   
 #ifdef __WXMSW__ 
   std::thread t([=] {
 #endif
     const int old_count = GetItemCount();
-    wxExDirWithListView dir(this, folder, files, flags);
+    listview_dir dir(this, folder, files, flags);
   
     dir.FindFiles();
     
@@ -115,7 +115,7 @@ void wxExListViewFile::AddItems(
   
     wxLogStatus(text.c_str());
     
-    Bind(wxEVT_IDLE, &wxExListViewFile::OnIdle, this);
+    Bind(wxEVT_IDLE, &listview_file::OnIdle, this);
 #ifdef __WXMSW__ 
     });
   if (detached)  
@@ -125,7 +125,7 @@ void wxExListViewFile::AddItems(
 #endif
 }
 
-void wxExListViewFile::AfterSorting()
+void wex::listview_file::AfterSorting()
 {
   // Only if we are not sort syncing set contents changed.
   if (!wxConfigBase::Get()->ReadBool("List/SortSync", true))
@@ -134,16 +134,16 @@ void wxExListViewFile::AfterSorting()
   }
 }
 
-void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
+void wex::listview_file::BuildPopupMenu(wex::menu& menu)
 {
   const bool ok =
      !GetFileName().FileExists() || 
      (GetFileName().FileExists() && !GetFileName().IsReadOnly());
-  const auto style = menu.GetStyle() | (!ok ? wxExMenu::MENU_IS_READ_ONLY: 0);
+  const auto style = menu.GetStyle() | (!ok ? wex::menu::MENU_IS_READ_ONLY: 0);
 
   menu.SetStyle(style);
 
-  wxExListViewWithFrame::BuildPopupMenu(menu);
+  history_listview::BuildPopupMenu(menu);
     
   if (ok)
   {
@@ -152,7 +152,7 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
   }
 }
 
-bool wxExListViewFile::DoFileLoad(bool synced)
+bool wex::listview_file::DoFileLoad(bool synced)
 {
   pugi::xml_document doc;
   const pugi::xml_parse_result result = doc.load_file(
@@ -161,7 +161,7 @@ bool wxExListViewFile::DoFileLoad(bool synced)
 
   if (!result)
   {
-    wxExXmlError(GetFileName(), &result);
+    xml_error(GetFileName(), &result);
     return false;
   }
 
@@ -177,19 +177,19 @@ bool wxExListViewFile::DoFileLoad(bool synced)
     if (const std::string value = child.text().get(); 
       strcmp(child.name(), "file") == 0)
     {
-      wxExListItem(this, value).Insert();
+      listitem(this, value).Insert();
     }
     else if (strcmp(child.name(), "folder") == 0)
     {
-      wxExListItem(this, value, child.attribute("extensions").value()).Insert();
+      listitem(this, value, child.attribute("extensions").value()).Insert();
     }
 
-    if (wxExInterruptable::Cancelled()) break;
+    if (interruptable::Cancelled()) break;
   }
 
   if (synced)
   {
-    wxExLogStatus(GetFileName(), STAT_SYNC | STAT_FULLPATH);
+    log_status(GetFileName(), STAT_SYNC | STAT_FULLPATH);
   }
 
   GetFrame()->SetRecentProject(GetFileName());
@@ -207,12 +207,12 @@ bool wxExListViewFile::DoFileLoad(bool synced)
   return true;
 }
 
-void wxExListViewFile::DoFileNew()
+void wex::listview_file::DoFileNew()
 {
   EditClearAll();
 }
 
-void wxExListViewFile::DoFileSave(bool save_as)
+void wex::listview_file::DoFileSave(bool save_as)
 {
   pugi::xml_document doc;
 
@@ -228,7 +228,7 @@ void wxExListViewFile::DoFileSave(bool save_as)
 
   for (int i = 0; i < GetItemCount(); i++)
   {
-    const wxExPath fn = wxExListItem(this, i).GetFileName();
+    const wex::path fn = listitem(this, i).GetFileName();
     
     pugi::xml_node node = root.append_child(fn.FileExists() ? "file": "folder");
     node.text().set(fn.Path().string().c_str());
@@ -246,15 +246,15 @@ void wxExListViewFile::DoFileSave(bool save_as)
   }
   else
   {
-    wxExLog("xml save") << GetFileName().Path().string();
+    log("xml save") << GetFileName().Path().string();
   }
 }
 
-bool wxExListViewFile::ItemFromText(const std::string& text)
+bool wex::listview_file::ItemFromText(const std::string& text)
 {
   bool result = false;
   
-  if (wxExListView::ItemFromText(text))
+  if (listview::ItemFromText(text))
   {
     m_ContentsChanged = true;
     result = true;
@@ -272,7 +272,7 @@ bool wxExListViewFile::ItemFromText(const std::string& text)
   return result;
 }
 
-void wxExListViewFile::OnIdle(wxIdleEvent& event)
+void wex::listview_file::OnIdle(wxIdleEvent& event)
 {
   event.Skip();
   

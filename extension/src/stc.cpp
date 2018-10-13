@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      stc.cpp
-// Purpose:   Implementation of class wxExSTC
+// Purpose:   Implementation of class wex::stc
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -22,8 +22,8 @@
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
 
-wxExSTC::wxExSTC(const std::string& text, const wxExSTCData& data)
-  : wxExSTC(wxExPath(), data)
+wex::stc::stc(const std::string& text, const stc_data& data)
+  : stc(path(), data)
 {
   if (!text.empty())
   {
@@ -34,7 +34,7 @@ wxExSTC::wxExSTC(const std::string& text, const wxExSTCData& data)
   m_Data.Inject();
 }
 
-wxExSTC::wxExSTC(const wxExPath& filename, const wxExSTCData& data)
+wex::stc::stc(const path& filename, const stc_data& data)
   : wxStyledTextCtrl(
       data.Window().Parent(),
       data.Window().Id(), 
@@ -47,13 +47,13 @@ wxExSTC::wxExSTC(const wxExPath& filename, const wxExSTCData& data)
   , m_vi(this)
   , m_File(this, data.Window().Name())
   , m_Link(this)
-  , m_HexMode(wxExHexMode(this))
-  , m_Frame(dynamic_cast<wxExManagedFrame*>(wxTheApp->GetTopWindow()))
+  , m_HexMode(hexmode(this))
+  , m_Frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
   , m_Lexer(this)
 {
   if (wxConfig::Get()->ReadBool("AllowSync", true)) Sync();
   
-  if (!wxExLexers::Get()->GetLexers().empty())
+  if (!lexers::Get()->GetLexers().empty())
   {
     m_DefaultFont = wxConfigBase::Get()->ReadObject(
       _("Default font"), wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT));
@@ -114,24 +114,24 @@ wxExSTC::wxExSTC(const wxExPath& filename, const wxExSTCData& data)
   Fold();
 }
 
-bool wxExSTC::CanCut() const
+bool wex::stc::CanCut() const
 {
   return wxStyledTextCtrl::CanCut() && !GetReadOnly() && !HexMode();
 }
 
-bool wxExSTC::CanPaste() const
+bool wex::stc::CanPaste() const
 {
   return wxStyledTextCtrl::CanPaste() && !GetReadOnly() && !HexMode();
 }
 
-void wxExSTC::Clear()
+void wex::stc::Clear()
 {
   m_vi.GetIsActive() && GetSelectedText().empty() ?
     (void)m_vi.Command(std::string(1, WXK_DELETE)):
     wxStyledTextCtrl::Clear();
 }
 
-void wxExSTC::ClearDocument(bool set_savepoint)
+void wex::stc::ClearDocument(bool set_savepoint)
 {
   SetReadOnly(false);
   
@@ -144,7 +144,7 @@ void wxExSTC::ClearDocument(bool set_savepoint)
   }
 }
 
-void wxExSTC::Copy()
+void wex::stc::Copy()
 {
   if (CanCopy()) 
   {
@@ -152,7 +152,7 @@ void wxExSTC::Copy()
   }
 }
 
-void wxExSTC::Cut()
+void wex::stc::Cut()
 {
   if (CanCut()) 
   {
@@ -167,7 +167,7 @@ void wxExSTC::Cut()
   }
 }
   
-bool wxExSTC::FileReadOnlyAttributeChanged()
+bool wex::stc::FileReadOnlyAttributeChanged()
 {
   SetReadOnly(GetFileName().IsReadOnly()); // does not return anything
   wxLogStatus(_("Readonly attribute changed"));
@@ -175,7 +175,7 @@ bool wxExSTC::FileReadOnlyAttributeChanged()
   return true;
 }
 
-void wxExSTC::Fold(bool foldall)
+void wex::stc::Fold(bool foldall)
 {
   if (
      GetProperty("fold") == "1" &&
@@ -202,7 +202,7 @@ void wxExSTC::Fold(bool foldall)
   }
 }
   
-void wxExSTC::FoldAll()
+void wex::stc::FoldAll()
 {
   if (GetProperty("fold") != "1") return;
 
@@ -232,7 +232,7 @@ void wxExSTC::FoldAll()
   GotoLine(current_line);
 }
 
-const std::string wxExSTC::GetEOL() const
+const std::string wex::stc::GetEOL() const
 {
   switch (GetEOLMode())
   {
@@ -246,10 +246,10 @@ const std::string wxExSTC::GetEOL() const
 }
 
 // Cannot be const because of GetSelectedText (not const in 2.9.4).
-const std::string wxExSTC::GetFindString()
+const std::string wex::stc::GetFindString()
 {
   if (const auto selection = GetSelectedText().ToStdString();
-    !selection.empty() && wxExGetNumberOfLines(selection) == 1)
+    !selection.empty() && get_number_of_lines(selection) == 1)
   {
     bool alnum = true;
     
@@ -273,35 +273,35 @@ const std::string wxExSTC::GetFindString()
 
     if (alnum)
     {  
-      wxExFindReplaceData::Get()->SetFindString(selection);
+      find_replace_data::Get()->SetFindString(selection);
     }
   }
 
-  return wxExFindReplaceData::Get()->GetFindString();
+  return find_replace_data::Get()->GetFindString();
 }
 
 
-const std::string wxExSTC::GetWordAtPos(int pos) const
+const std::string wex::stc::GetWordAtPos(int pos) const
 {
   const auto word_start = 
-    const_cast< wxExSTC * >( this )->WordStartPosition(pos, true);
+    const_cast< stc * >( this )->WordStartPosition(pos, true);
   const auto word_end = 
-    const_cast< wxExSTC * >( this )->WordEndPosition(pos, true);
+    const_cast< stc * >( this )->WordEndPosition(pos, true);
 
   if (word_start == word_end && word_start < GetTextLength())
   {
     const std::string word = 
-      const_cast< wxExSTC * >( this )->GetTextRange(word_start, word_start + 1).ToStdString();
+      const_cast< stc * >( this )->GetTextRange(word_start, word_start + 1).ToStdString();
 
     return !isspace(word[0]) ? word: std::string();
   }
   else
   {
-    return const_cast< wxExSTC * >( this )->GetTextRange(word_start, word_end).ToStdString();
+    return const_cast< stc * >( this )->GetTextRange(word_start, word_end).ToStdString();
   }
 }
 
-void wxExSTC::GuessType()
+void wex::stc::GuessType()
 {
   // Get a small sample from this document to detect the file mode.
   const auto length = (!HexMode() ? GetTextLength(): m_HexMode.GetBuffer().size());
@@ -316,8 +316,8 @@ void wxExSTC::GuessType()
   // If we have a modeline comment.
   if (
     m_vi.GetIsActive() && 
-     (wxExMatch("vi: *(set [a-z0-9:= ]+)", text, v) > 0 ||
-      wxExMatch("vi: *(set [a-z0-9:= ]+)", text2, v) > 0))
+     (match("vi: *(set [a-z0-9:= ]+)", text, v) > 0 ||
+      match("vi: *(set [a-z0-9:= ]+)", text2, v) > 0))
   {
     if (!m_vi.Command(":" + v[0] + "*")) // add * to indicate modelin
     {
@@ -330,15 +330,15 @@ void wxExSTC::GuessType()
   else if (text.find("\r") != std::string::npos)   SetEOLMode(wxSTC_EOL_CR);
   else return; // do nothing
 
-  wxExFrame::UpdateStatusBar(this, "PaneFileType");
+  frame::UpdateStatusBar(this, "PaneFileType");
 }
 
-bool wxExSTC::LinkOpen()
+bool wex::stc::LinkOpen()
 {
   return LinkOpen(LINK_OPEN | LINK_OPEN_MIME);
 }
 
-bool wxExSTC::LinkOpen(int mode, std::string* filename)
+bool wex::stc::LinkOpen(int mode, std::string* filename)
 {
   const auto sel = GetSelectedText().ToStdString();
 
@@ -352,8 +352,8 @@ bool wxExSTC::LinkOpen(int mode, std::string* filename)
 
   if (mode & LINK_OPEN_MIME)
   {
-    const wxExPath path(m_Link.GetPath(text, 
-      wxExControlData().Line(LINK_LINE_OPEN_URL_AND_MIME)));
+    const path path(m_Link.GetPath(text, 
+      control_data().Line(LINK_LINE_OPEN_URL_AND_MIME)));
     
     if (!path.Path().string().empty()) 
     {
@@ -368,9 +368,9 @@ bool wxExSTC::LinkOpen(int mode, std::string* filename)
 
   if (mode & LINK_OPEN)
   {
-    wxExControlData data;
+    control_data data;
     
-    if (const wxExPath path(m_Link.GetPath(text, data));
+    if (const wex::path path(m_Link.GetPath(text, data));
       !path.Path().string().empty()) 
     {
       if (filename != nullptr)
@@ -393,9 +393,9 @@ bool wxExSTC::LinkOpen(int mode, std::string* filename)
   return false;
 }
 
-bool wxExSTC::MarkerDeleteAllChange()
+bool wex::stc::MarkerDeleteAllChange()
 {
-  if (!wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
+  if (!lexers::Get()->MarkerIsLoaded(m_MarkerChange))
   {
     return false;
   }
@@ -405,9 +405,9 @@ bool wxExSTC::MarkerDeleteAllChange()
   return true;
 }
   
-void wxExSTC::MarkModified(const wxStyledTextEvent& event)
+void wex::stc::MarkModified(const wxStyledTextEvent& event)
 {
-  if (!wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
+  if (!lexers::Get()->MarkerIsLoaded(m_MarkerChange))
   {
     return;
   }
@@ -454,7 +454,7 @@ void wxExSTC::MarkModified(const wxStyledTextEvent& event)
   UseModificationMarkers(true);
 }
 
-void wxExSTC::OnExit()
+void wex::stc::OnExit()
 {
   if (wxConfigBase::Get()->ReadLong(_("Keep zoom"), 0))
   {
@@ -462,7 +462,7 @@ void wxExSTC::OnExit()
   }
 }
   
-void wxExSTC::OnInit()
+void wex::stc::OnInit()
 {
   if (wxConfigBase::Get()->ReadLong(_("Keep zoom"), 0))
   {
@@ -470,7 +470,7 @@ void wxExSTC::OnInit()
   }
 }
   
-void wxExSTC::OnIdle(wxIdleEvent& event)
+void wex::stc::OnIdle(wxIdleEvent& event)
 {
   event.Skip();
   
@@ -485,20 +485,20 @@ void wxExSTC::OnIdle(wxIdleEvent& event)
   }
 }
 
-void wxExSTC::OnStyledText(wxStyledTextEvent& event)
+void wex::stc::OnStyledText(wxStyledTextEvent& event)
 {
   MarkModified(event); 
   event.Skip();
 }
 
-bool wxExSTC::Open(const wxExPath& filename, const wxExSTCData& data)
+bool wex::stc::Open(const path& filename, const stc_data& data)
 {
   if (GetFileName() != filename && !m_File.FileLoad(filename))
   {
     return false;
   }
 
-  m_Data = wxExSTCData(data).Window(wxExWindowData().Name(filename.Path().string()));
+  m_Data = stc_data(data).Window(window_data().Name(filename.Path().string()));
   m_Data.Inject();
 
   if (m_Frame != nullptr)
@@ -509,7 +509,7 @@ bool wxExSTC::Open(const wxExPath& filename, const wxExSTCData& data)
   return true;
 }
 
-void wxExSTC::Paste()
+void wex::stc::Paste()
 {
   if (CanPaste())
   {
@@ -517,7 +517,7 @@ void wxExSTC::Paste()
   }
 }
 
-bool wxExSTC::PositionRestore()
+bool wex::stc::PositionRestore()
 {
   if (m_vi.Mode().Visual())
   {
@@ -543,7 +543,7 @@ bool wxExSTC::PositionRestore()
   return true;
 }
   
-void wxExSTC::PositionSave()
+void wex::stc::PositionSave()
 {
   m_SavedPos = GetCurrentPos();
 
@@ -555,25 +555,25 @@ void wxExSTC::PositionSave()
 }
 
 #if wxUSE_PRINTING_ARCHITECTURE
-void wxExSTC::Print(bool prompt)
+void wex::stc::Print(bool prompt)
 {
-  wxPrintData* data = wxExPrinting::Get()->GetHtmlPrinter()->GetPrintData();
-  wxExPrinting::Get()->GetPrinter()->GetPrintDialogData().SetPrintData(*data);
-  wxExPrinting::Get()->GetPrinter()->Print(this, new wxExPrintout(this), prompt);
+  wxPrintData* data = printing::Get()->GetHtmlPrinter()->GetPrintData();
+  printing::Get()->GetPrinter()->GetPrintDialogData().SetPrintData(*data);
+  printing::Get()->GetPrinter()->Print(this, new printout(this), prompt);
 }
 #endif
 
 #if wxUSE_PRINTING_ARCHITECTURE
-void wxExSTC::PrintPreview(wxPreviewFrameModalityKind kind)
+void wex::stc::PrintPreview(wxPreviewFrameModalityKind kind)
 {
   auto* preview = new wxPrintPreview(
-    new wxExPrintout(this), 
-    new wxExPrintout(this));
+    new printout(this), 
+    new printout(this));
 
   if (!preview->Ok())
   {
     delete preview;
-    wxExSTCEntryDialog("There was a problem previewing.\n"
+    stc_entry_dialog("There was a problem previewing.\n"
       "Perhaps your current printer is not set correctly?").ShowModal();
     return;
   }
@@ -581,25 +581,25 @@ void wxExSTC::PrintPreview(wxPreviewFrameModalityKind kind)
   auto* frame = new wxPreviewFrame(
     preview,
     this,
-    wxExPrintCaption(GetName().ToStdString()));
+    print_caption(GetName().ToStdString()));
 
   frame->InitializeWithModality(kind);
   frame->Show();
 }
 #endif
 
-void wxExSTC::PropertiesMessage(long flags)
+void wex::stc::PropertiesMessage(long flags)
 {
-  wxExLogStatus(GetFileName(), flags);
+  log_status(GetFileName(), flags);
   
   if (flags != STAT_SYNC)
   {
-    wxExFrame::UpdateStatusBar(this, "PaneFileType");
-    wxExFrame::UpdateStatusBar(this, "PaneLexer");
-    wxExFrame::UpdateStatusBar(this, "PaneMode");
+    frame::UpdateStatusBar(this, "PaneFileType");
+    frame::UpdateStatusBar(this, "PaneLexer");
+    frame::UpdateStatusBar(this, "PaneMode");
   }
   
-  wxExFrame::UpdateStatusBar(this, "PaneInfo");
+  frame::UpdateStatusBar(this, "PaneInfo");
 
   if (!(flags & STAT_SYNC) && m_Frame != nullptr)
   {
@@ -610,13 +610,13 @@ void wxExSTC::PropertiesMessage(long flags)
   }
 }
 
-int wxExSTC::ReplaceAll(
+int wex::stc::ReplaceAll(
   const std::string& find_text,
   const std::string& replace_text)
 {
   int selection_from_end = 0;
 
-  if (SelectionIsRectangle() || wxExGetNumberOfLines(GetSelectedText().ToStdString()) > 1)
+  if (SelectionIsRectangle() || get_number_of_lines(GetSelectedText().ToStdString()) > 1)
   {
     TargetFromSelection();
     selection_from_end = GetLength() - GetTargetEnd();
@@ -661,7 +661,7 @@ int wxExSTC::ReplaceAll(
       }
       else
       {
-        wxExFindReplaceData::Get()->UseRegEx() ?
+        find_replace_data::Get()->UseRegEx() ?
           ReplaceTargetRE(replace_text):
           ReplaceTarget(replace_text);
       }
@@ -686,16 +686,16 @@ int wxExSTC::ReplaceAll(
   return nr_replacements;
 }
 
-bool wxExSTC::ReplaceNext(bool find_next)
+bool wex::stc::ReplaceNext(bool find_next)
 {
   return ReplaceNext(
-    wxExFindReplaceData::Get()->GetFindString(),
-    wxExFindReplaceData::Get()->GetReplaceString(),
+    find_replace_data::Get()->GetFindString(),
+    find_replace_data::Get()->GetReplaceString(),
     -1,
     find_next);
 }
 
-bool wxExSTC::ReplaceNext(
+bool wex::stc::ReplaceNext(
   const std::string& find_text, 
   const std::string& replace_text,
   int find_flags,
@@ -719,7 +719,7 @@ bool wxExSTC::ReplaceNext(
   }
   else
   {
-    wxExFindReplaceData::Get()->UseRegEx() ?
+    find_replace_data::Get()->UseRegEx() ?
       ReplaceTargetRE(replace_text):
       ReplaceTarget(replace_text);
   }
@@ -730,7 +730,7 @@ bool wxExSTC::ReplaceNext(
 }
 
  
-void wxExSTC::ResetMargins(wxExSTCMarginFlags flags)
+void wex::stc::ResetMargins(stc_margin_flags flags)
 {
   if (flags & STC_MARGIN_FOLDING) SetMarginWidth(m_MarginFoldingNumber, 0);
   if (flags & STC_MARGIN_DIVIDER) SetMarginWidth(m_MarginDividerNumber, 0);
@@ -738,7 +738,7 @@ void wxExSTC::ResetMargins(wxExSTCMarginFlags flags)
   if (flags & STC_MARGIN_TEXT) SetMarginWidth(m_MarginTextNumber, 0);
 }
 
-void wxExSTC::SelectNone()
+void wex::stc::SelectNone()
 {
   if (SelectionIsRectangle())
   {
@@ -753,9 +753,9 @@ void wxExSTC::SelectNone()
   }
 }
 
-bool wxExSTC::SetIndicator(const wxExIndicator& indicator, int start, int end)
+bool wex::stc::SetIndicator(const indicator& indicator, int start, int end)
 {
-  if (!wxExLexers::Get()->IndicatorIsLoaded(indicator))
+  if (!lexers::Get()->IndicatorIsLoaded(indicator))
   {
     return false;
   }
@@ -766,13 +766,13 @@ bool wxExSTC::SetIndicator(const wxExIndicator& indicator, int start, int end)
   return true;
 }
 
-void wxExSTC::SetSearchFlags(int flags)
+void wex::stc::SetSearchFlags(int flags)
 {
   if (flags == -1)
   {
     flags = 0;
     
-    auto* frd = wxExFindReplaceData::Get();
+    auto* frd = find_replace_data::Get();
     if (frd->UseRegEx()) flags |= wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX;
     if (frd->MatchWord()) flags |= wxSTC_FIND_WHOLEWORD;
     if (frd->MatchCase()) flags |= wxSTC_FIND_MATCHCASE;
@@ -781,7 +781,7 @@ void wxExSTC::SetSearchFlags(int flags)
   wxStyledTextCtrl::SetSearchFlags(flags);
 }
 
-void wxExSTC::SetText(const std::string& value)
+void wex::stc::SetText(const std::string& value)
 {
   ClearDocument();
 
@@ -793,13 +793,13 @@ void wxExSTC::SetText(const std::string& value)
   EmptyUndoBuffer();
 }
 
-void wxExSTC::ShowLineNumbers(bool show)
+void wex::stc::ShowLineNumbers(bool show)
 {
   SetMarginWidth(m_MarginLineNumber, 
     show ? wxConfigBase::Get()->ReadLong(_("Line number"), 0): 0);
 }
 
-bool wxExSTC::ShowVCS(const wxExVCSEntry* vcs)
+bool wex::stc::ShowVCS(const vcs_entry* vcs)
 {
   if (vcs->GetMarginWidth() <= 0)
   {
@@ -835,7 +835,7 @@ bool wxExSTC::ShowVCS(const wxExVCSEntry* vcs)
   int line = 0;
   bool found = false;
 
-  for (wxExTokenizer tkz(vcs->GetStdOut(), "\r\n"); tkz.HasMoreTokens(); )
+  for (tokenizer tkz(vcs->GetStdOut(), "\r\n"); tkz.HasMoreTokens(); )
   {
     const auto text(tkz.GetNextToken());
 
@@ -852,7 +852,7 @@ bool wxExSTC::ShowVCS(const wxExVCSEntry* vcs)
     if (begin != std::string::npos && end != std::string::npos)
     {
       MarginSetText(line, text.substr(begin + 1, end - begin - 1));
-      wxExLexers::Get()->ApplyMarginTextStyle(this, line);
+      lexers::Get()->ApplyMarginTextStyle(this, line);
       found = true;
     }
  
@@ -867,27 +867,27 @@ bool wxExSTC::ShowVCS(const wxExVCSEntry* vcs)
   return found;
 }
 
-void wxExSTC::Sync(bool start)
+void wex::stc::Sync(bool start)
 {
   start ?
-    Bind(wxEVT_IDLE, &wxExSTC::OnIdle, this):
-    (void)Unbind(wxEVT_IDLE, &wxExSTC::OnIdle, this);
+    Bind(wxEVT_IDLE, &stc::OnIdle, this):
+    (void)Unbind(wxEVT_IDLE, &stc::OnIdle, this);
 }
 
-void wxExSTC::Undo()
+void wex::stc::Undo()
 {
   wxStyledTextCtrl::Undo();
   m_HexMode.Undo();
 }
 
-void wxExSTC::UseModificationMarkers(bool use)
+void wex::stc::UseModificationMarkers(bool use)
 {
   use ?
-    Bind(wxEVT_STC_MODIFIED, &wxExSTC::OnStyledText, this):
-    (void)Unbind(wxEVT_STC_MODIFIED, &wxExSTC::OnStyledText, this);
+    Bind(wxEVT_STC_MODIFIED, &stc::OnStyledText, this):
+    (void)Unbind(wxEVT_STC_MODIFIED, &stc::OnStyledText, this);
 }
 
-void wxExSTC::WordLeftRectExtend() 
+void wex::stc::WordLeftRectExtend() 
 {
   const auto repeat = GetCurrentPos() - WordStartPosition(GetCurrentPos(), false);
   
@@ -897,7 +897,7 @@ void wxExSTC::WordLeftRectExtend()
   }
 }
 
-void wxExSTC::WordRightRectExtend() 
+void wex::stc::WordRightRectExtend() 
 {
   const auto repeat = WordEndPosition(GetCurrentPos(), false) - GetCurrentPos();
   

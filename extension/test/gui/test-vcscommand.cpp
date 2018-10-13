@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-vcscommand.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Name:      test-vcs_command.cpp
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -12,19 +12,19 @@
 #include <wx/extension/vcscommand.h>
 #include "test.h"
 
-TEST_CASE("wxExVCSCommand")
+TEST_CASE("wex::vcs_command")
 {
-  const wxExVCSCommand add("a&dd");
-  const wxExVCSCommand blame("blame");
-  const wxExVCSCommand co("checkou&t");
-  const wxExVCSCommand commit("commit", "main");
-  const wxExVCSCommand diff("diff", "popup", "submenu");
-  const wxExVCSCommand log("log", "main");
-  const wxExVCSCommand help("h&elp", "error", "", "m&e");
-  const wxExVCSCommand none;
+  const wex::vcs_command add("a&dd");
+  const wex::vcs_command blame("blame");
+  const wex::vcs_command co("checkou&t");
+  const wex::vcs_command commit("commit", "main");
+  const wex::vcs_command diff("diff", "popup", "submenu");
+  const wex::vcs_command log("log", "main");
+  const wex::vcs_command help("h&elp", "error", "", "m&e");
+  const wex::vcs_command none;
 
   REQUIRE(add.GetCommand() == "add");
-  REQUIRE(add.GetCommand(COMMAND_INCLUDE_SUBCOMMAND | COMMAND_INCLUDE_ACCELL) == "a&dd");
+  REQUIRE(add.GetCommand(wex::COMMAND_INCLUDE_SUBCOMMAND | wex::COMMAND_INCLUDE_ACCELL) == "a&dd");
   
   REQUIRE(add.IsAdd());
   REQUIRE(blame.IsBlame());

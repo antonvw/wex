@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      file.cpp
-// Purpose:   Implementation of class wxExFile
+// Purpose:   Implementation of class wex::file
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,101 +14,104 @@
 #include <wx/extension/file.h>
 #include <wx/extension/stat.h>
 
-class wxExFileImp
+namespace wex
 {
-public:
-  wxExFileImp() {;};
-  wxExFileImp(
-    const wxExPath& filename,
-    std::ios_base::openmode mode = std::ios_base::in) 
-    : m_Path(filename)
-    , m_Stat(m_Path.Path().string()) 
-    , m_fs(m_Path.Path(), mode) {;};
+  class file_imp
+  {
+  public:
+    file_imp() {;};
+    file_imp(
+      const path& filename,
+      std::ios_base::openmode mode = std::ios_base::in) 
+      : m_Path(filename)
+      , m_Stat(m_Path.Path().string()) 
+      , m_fs(m_Path.Path(), mode) {;};
 
-  void Assign(const wxExPath& p) {
-    Close();
+    void Assign(const path& p) {
+      Close();
 
-    m_Path = p;
-    m_Stat.Sync(m_Path.Path().string());
-    m_fs = std::fstream(m_Path.Path());};
+      m_Path = p;
+      m_Stat.Sync(m_Path.Path().string());
+      m_fs = std::fstream(m_Path.Path());};
 
-  bool Close() {
-    if (!m_fs.is_open()) return true;
-    m_fs.close();
-    return !m_fs.is_open();};
+    bool Close() {
+      if (!m_fs.is_open()) return true;
+      m_fs.close();
+      return !m_fs.is_open();};
 
-  bool Open(
-    const wxExPath& p, 
-    std::ios_base::openmode mode = std::ios_base::in | std::ios_base::out) {
-    if (m_fs.is_open())
-    { 
-      return true;
-    }
-    if (m_Path != p)
-    {
-      Assign(p);
-    }
-    m_fs.open(m_Path.Path(), mode);
-    return m_fs.is_open();};
+    bool Open(
+      const path& p, 
+      std::ios_base::openmode mode = std::ios_base::in | std::ios_base::out) {
+      if (m_fs.is_open())
+      { 
+        return true;
+      }
+      if (m_Path != p)
+      {
+        Assign(p);
+      }
+      m_fs.open(m_Path.Path(), mode);
+      return m_fs.is_open();};
 
-  auto & Path() {return m_Path;};
+    auto & Path() {return m_Path;};
 
-  bool Read(char* s, std::streamsize n) {
-    m_fs.read(s, n);
-    return m_fs.gcount() == n;};
+    bool Read(char* s, std::streamsize n) {
+      m_fs.read(s, n);
+      return m_fs.gcount() == n;};
 
-  auto & Stat() {return m_Stat;};
+    auto & Stat() {return m_Stat;};
 
-  auto & Stream() {return m_fs;};
+    auto & Stream() {return m_fs;};
 
-  bool Write(const char* c, size_t s) {
-    if (!m_fs.is_open()) return false;
-    m_fs.write(c, s);
-    return m_fs.good();};
-private:
-  wxExPath m_Path;
-  wxExStat m_Stat; // used to check for sync
+    bool Write(const char* c, size_t s) {
+      if (!m_fs.is_open()) return false;
+      m_fs.write(c, s);
+      return m_fs.good();};
+  private:
+    path m_Path;
+    stat m_Stat; // used to check for sync
 
-  std::fstream m_fs;
+    std::fstream m_fs;
+  };
 };
 
-wxExFile::wxExFile(bool open_file)
+wex::file::file(bool open_file)
   : m_OpenFile(open_file)
-  , m_File(std::make_unique<wxExFileImp>()) 
+  , m_File(std::make_unique<file_imp>()) 
 {
 }
 
-wxExFile::wxExFile(
-  const wxExPath& p,
+wex::file::file(
+  const path& p,
   std::ios_base::openmode mode,
   bool open_file)
-  : m_File(std::make_unique<wxExFileImp>(p, mode))
+  : m_File(std::make_unique<file_imp>(p, mode))
   , m_OpenFile(open_file)
 {
 }
   
-wxExFile::wxExFile(
+wex::file::file(
   const std::string& filename,
   std::ios_base::openmode mode,
   bool open_file)
-  : wxExFile(wxExPath(filename), mode, open_file) 
+  : wex::file(path(filename), mode, open_file) 
 {
 }
 
-wxExFile::wxExFile(const wxExFile& rhs) 
+wex::file::file(const file& rhs) 
 {
   *this = rhs;
 }
 
-wxExFile::~wxExFile()
+wex::file::~file()
 {
 }
 
-wxExFile& wxExFile::operator=(const wxExFile& f)
+wex::file& wex::file::operator=(const file& f)
 {
   if (this != &f)
   {
-    m_File = std::make_unique<wxExFileImp>(f.m_File->Path());
+    m_File = std::make_unique<file_imp>(f.m_File->Path());
     m_IsLoaded = f.m_IsLoaded;
     m_OpenFile = f.m_OpenFile;
   }
@@ -116,13 +119,13 @@ wxExFile& wxExFile::operator=(const wxExFile& f)
   return *this;
 }
 
-void wxExFile::Assign(const wxExPath& p) 
+void wex::file::Assign(const path& p) 
 {
   m_IsLoaded = true;
   m_File->Assign(p);
 }
 
-bool wxExFile::CheckSync()
+bool wex::file::CheckSync()
 {
   // config might be used without wxApp.
   if (auto* config = wxConfigBase::Get(false); 
@@ -166,7 +169,7 @@ bool wxExFile::CheckSync()
   return false;
 }
 
-bool wxExFile::FileLoad(bool synced)
+bool wex::file::FileLoad(bool synced)
 {
   if ((synced && !Open()) ||
      (!synced && m_OpenFile && !Open()))
@@ -189,7 +192,7 @@ bool wxExFile::FileLoad(bool synced)
   return true;
 }
 
-bool wxExFile::FileLoad(const wxExPath& p)
+bool wex::file::FileLoad(const path& p)
 {
   if (!p.FileExists())
   {
@@ -202,7 +205,7 @@ bool wxExFile::FileLoad(const wxExPath& p)
   return true;
 }
 
-bool wxExFile::FileNew(const wxExPath& p)
+bool wex::file::FileNew(const path& p)
 {
   Assign(p);
   DoFileNew();
@@ -210,7 +213,7 @@ bool wxExFile::FileNew(const wxExPath& p)
   return true;
 }
 
-bool wxExFile::FileSave(const wxExPath& p)
+bool wex::file::FileSave(const path& p)
 {
   bool save_as = false;
 
@@ -243,27 +246,27 @@ bool wxExFile::FileSave(const wxExPath& p)
   return true;
 }
 
-const wxExPath& wxExFile::GetFileName() const 
+const wex::path& wex::file::GetFileName() const 
 {
   return m_File->Path();
 }
 
-bool wxExFile::IsOpened() const 
+bool wex::file::IsOpened() const 
 {
   return m_File->Stream().is_open();
 }
 
-bool wxExFile::Open(std::ios_base::openmode mode)
+bool wex::file::Open(std::ios_base::openmode mode)
 {
   return Open(m_File->Path(), mode);
 }
 
-bool wxExFile::Open(const wxExPath& p, std::ios_base::openmode mode)
+bool wex::file::Open(const path& p, std::ios_base::openmode mode)
 {
   return m_File->Open(p, mode);
 }
 
-const std::string* wxExFile::Read(std::streampos seek_position)
+const std::string* wex::file::Read(std::streampos seek_position)
 {
   wxASSERT(IsOpened());
   
@@ -284,12 +287,12 @@ const std::string* wxExFile::Read(std::streampos seek_position)
   return m_Buffer.get();
 }
 
-bool wxExFile::Write(const char* s, size_t n)
+bool wex::file::Write(const char* s, size_t n)
 {
   return m_File->Write(s, n);
 }
 
-bool wxExFile::Write(const std::string& s) 
+bool wex::file::Write(const std::string& s) 
 {
   return m_File->Write(s.c_str(), s.size());
 } 

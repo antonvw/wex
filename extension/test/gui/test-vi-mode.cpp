@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-vi-mode.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -15,9 +15,9 @@
 #include <wx/extension/vi.h>
 #include "test.h"
 
-TEST_CASE("wxExViMode")
+TEST_CASE("wex::vi_mode")
 {
-  wxExViMode mode(&GetSTC()->GetVi());
+  wex::vi_mode mode(&GetSTC()->GetVi());
   
   REQUIRE(!mode.GetInsertCommands().empty());
 
@@ -52,10 +52,10 @@ TEST_CASE("wxExViMode")
   REQUIRE( mode.Normal());
   GetSTC()->SetReadOnly(false);
   
-  for (const auto& visual : std::vector<std::pair<std::string, wxExViModes>> {
-    {"v",wxExViModes::VISUAL},
-    {"V",wxExViModes::VISUAL_LINE},
-    {"K",wxExViModes::VISUAL_RECT}})
+  for (const auto& visual : std::vector<std::pair<std::string, wex::vi_modes>> {
+    {"v",wex::vi_modes::VISUAL},
+    {"V",wex::vi_modes::VISUAL_LINE},
+    {"K",wex::vi_modes::VISUAL_RECT}})
   {
     std::string command(visual.first);
     REQUIRE( mode.Transition(command));

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      address.cpp
-// Purpose:   Implementation of class wxExAddress
+// Purpose:   Implementation of class wex::address
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -24,11 +24,11 @@
     output += std::string(40, '-') + m_Ex->GetSTC()->GetEOL();  \
   }                                                             \
 
-bool wxExAddress::AdjustWindow(const std::string& text) const
+bool wex::address::AdjustWindow(const std::string& text) const
 {
   std::vector<std::string> v;
   
-  if (wxExMatch("([-+=.^]*)([0-9]+)?(.*)", text, v) != 3)
+  if (match("([-+=.^]*)([0-9]+)?(.*)", text, v) != 3)
   {
     return false;
   }
@@ -81,7 +81,7 @@ bool wxExAddress::AdjustWindow(const std::string& text) const
   return true;
 }
   
-bool wxExAddress::Append(const std::string& text) const
+bool wex::address::Append(const std::string& text) const
 {
   if (m_Ex->GetSTC()->GetReadOnly() || m_Ex->GetSTC()->HexMode() || GetLine() <= 0)
   {
@@ -93,14 +93,14 @@ bool wxExAddress::Append(const std::string& text) const
   return true;
 }
   
-bool wxExAddress::Flags(const std::string& flags) const
+bool wex::address::Flags(const std::string& flags) const
 {
   if (flags.empty())
   {
     return true;
   }
   
-  if (std::vector<std::string> v; wxExMatch("([-+#pl])", flags, v) < 0)
+  if (std::vector<std::string> v; match("([-+#pl])", flags, v) < 0)
   {
     wxLogStatus("Unsupported flags: %s", flags.c_str());
     return false;
@@ -109,7 +109,7 @@ bool wxExAddress::Flags(const std::string& flags) const
   return true;
 }
   
-int wxExAddress::GetLine() const
+int wex::address::GetLine() const
 {
   // We already have a line number, return that one.
   if (m_Line >= 1)
@@ -121,7 +121,7 @@ int wxExAddress::GetLine() const
 
   // If this is a // address, return line with first forward match.
   if (std::vector <std::string> v;
-    wxExMatch("/(.*)/$", m_Address, v) > 0)
+    match("/(.*)/$", m_Address, v) > 0)
   {
     m_Ex->GetSTC()->SetTargetStart(m_Ex->GetSTC()->GetCurrentPos());
     m_Ex->GetSTC()->SetTargetEnd(m_Ex->GetSTC()->GetTextLength());
@@ -142,7 +142,7 @@ int wxExAddress::GetLine() const
     return 0;
   }
   // If this is a ?? address, return line with first backward match.
-  else if (wxExMatch("\\?(.*)\\?", m_Address, v) > 0)
+  else if (match("\\?(.*)\\?", m_Address, v) > 0)
   {
     m_Ex->GetSTC()->SetTargetStart(m_Ex->GetSTC()->GetCurrentPos());
     m_Ex->GetSTC()->SetTargetEnd(0);
@@ -182,7 +182,7 @@ int wxExAddress::GetLine() const
   }
 }
 
-bool wxExAddress::Insert(const std::string& text) const
+bool wex::address::Insert(const std::string& text) const
 {
   if (m_Ex->GetSTC()->GetReadOnly() || m_Ex->GetSTC()->HexMode() || GetLine() <= 0)
   {
@@ -194,18 +194,18 @@ bool wxExAddress::Insert(const std::string& text) const
   return true;
 }
   
-bool wxExAddress::MarkerAdd(char marker) const
+bool wex::address::MarkerAdd(char marker) const
 {
   return GetLine() > 0 && m_Ex->MarkerAdd(marker, GetLine() - 1);
 }
   
-bool wxExAddress::MarkerDelete() const
+bool wex::address::MarkerDelete() const
 {
   return m_Address.size() > 1 && m_Address[0] == '\'' &&
     m_Ex->MarkerDelete(m_Address[1]);
 }
 
-bool wxExAddress::Put(char name) const
+bool wex::address::Put(char name) const
 {
   if (m_Ex->GetSTC()->GetReadOnly() || m_Ex->GetSTC()->HexMode() || GetLine() <= 0)
   {
@@ -219,7 +219,7 @@ bool wxExAddress::Put(char name) const
   return true;
 }
 
-bool wxExAddress::Read(const std::string& arg) const
+bool wex::address::Read(const std::string& arg) const
 {
   if (m_Ex->GetSTC()->GetReadOnly() || m_Ex->GetSTC()->HexMode() || GetLine() <= 0)
   {
@@ -228,7 +228,7 @@ bool wxExAddress::Read(const std::string& arg) const
   
   if (arg.find("!") == 0)
   {
-    wxExProcess process;
+    process process;
     
     if (!process.Execute(arg.substr(1), PROCESS_EXEC_WAIT))
     {
@@ -239,9 +239,9 @@ bool wxExAddress::Read(const std::string& arg) const
   }
   else
   {
-    wxExPath::Current(m_Ex->GetSTC()->GetFileName().GetPath());
+    path::Current(m_Ex->GetSTC()->GetFileName().GetPath());
     
-    if (wxExFile file(arg); !file.IsOpened())
+    if (file file(arg); !file.IsOpened())
     {
       wxLogStatus(_("file: %s open error"), file.GetFileName().Path().string());
       return false;
@@ -269,7 +269,7 @@ bool wxExAddress::Read(const std::string& arg) const
   }
 }
   
-void wxExAddress::SetLine(int line)
+void wex::address::SetLine(int line)
 {
   if (line > m_Ex->GetSTC()->GetLineCount())
   {
@@ -285,7 +285,7 @@ void wxExAddress::SetLine(int line)
   }
 }
 
-bool wxExAddress::WriteLineNumber() const
+bool wex::address::WriteLineNumber() const
 {
   if (GetLine() <= 0)
   {

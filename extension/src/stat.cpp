@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      stat.cpp
-// Purpose:   Implementation of wxExStat class
+// Purpose:   Implementation of wex::stat class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -18,7 +18,7 @@
 #endif
 
 // See also GetTime in listview.cpp
-const std::string wxExStat::GetModificationTime(
+const std::string wex::stat::GetModificationTime(
   const std::string& format) const 
 {
 #ifdef _MSC_VER
@@ -31,7 +31,7 @@ const std::string wxExStat::GetModificationTime(
 #endif
 }
 
-bool wxExStat::IsReadOnly() const 
+bool wex::stat::IsReadOnly() const 
 {
 #ifdef _MSC_VER
   return (m_IsOk && ((st_mode & wxS_IWUSR) == 0));
@@ -40,7 +40,7 @@ bool wxExStat::IsReadOnly() const
 #endif
 }
 
-bool wxExStat::Sync() 
+bool wex::stat::Sync() 
 {
   if (m_FullPath.empty())
   {

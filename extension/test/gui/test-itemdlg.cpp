@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-itemdlg.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -14,19 +14,19 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-TEST_CASE("wxExItemDialog")
+TEST_CASE("wex::item_dialog")
 {
 #if wxCHECK_VERSION(3,1,0)
-  wxExItem::UseConfig(false);
+  wex::item::UseConfig(false);
   
   // Test dialog without pages.
-  wxExItemDialog* dlg1 = new wxExItemDialog({
+  wex::item_dialog* dlg1 = new wex::item_dialog({
       {"string1", "hello1"},
       {"string2", "hello2"},
-      {"int1", ITEM_TEXTCTRL_INT, std::string("10")},
-      {"int2", ITEM_TEXTCTRL_INT, std::string("20")},
-      {"float1", ITEM_TEXTCTRL_FLOAT, std::string("20.0")}},
-    wxExWindowData().Button(wxOK | wxCANCEL | wxAPPLY));
+      {"int1", wex::ITEM_TEXTCTRL_INT, std::string("10")},
+      {"int2", wex::ITEM_TEXTCTRL_INT, std::string("20")},
+      {"float1", wex::ITEM_TEXTCTRL_FLOAT, std::string("20.0")}},
+    wex::window_data().Button(wxOK | wxCANCEL | wxAPPLY));
 
   dlg1->Show();
   dlg1->ForceCheckBoxChecked();
@@ -46,11 +46,11 @@ TEST_CASE("wxExItemDialog")
   REQUIRE(std::any_cast<double>(dlg1->GetItemValue(std::string("float1"))) == 20.0);
   
   // Test dialog without items.
-  wxExItemDialog* dlg2 = new wxExItemDialog(std::vector <wxExItem>());
+  wex::item_dialog* dlg2 = new wex::item_dialog(std::vector <wex::item>());
   dlg2->Show();
   
   // Test dialog with empty items.
-  wxExItemDialog* dlg3 = new wxExItemDialog({{}, {}, {}}, wxExWindowData());
+  wex::item_dialog* dlg3 = new wex::item_dialog({{}, {}, {}}, wex::window_data());
   dlg3->Show();
 #endif
 }

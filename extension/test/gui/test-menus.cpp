@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-menus.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -14,22 +14,22 @@
 #include <wx/extension/menucommands.h>
 #include "test.h"
 
-TEST_CASE("wxExMenus")
+TEST_CASE("wex::menus")
 {
-  wxExMenuCommands <wxExMenuCommand > menucommands("test");
+  wex::menu_commands <wex::menu_command > menucommands("test");
 
   pugi::xml_document doc;
   REQUIRE( doc.load_string("<menus name = \"fold.comment\">2</menus>"));
 
-  wxExMenu* menu = new wxExMenu;
-  REQUIRE(!wxExMenus::BuildMenu(menucommands.GetCommands(), 500, menu, false));
+  wex::menu* menu = new wex::menu;
+  REQUIRE(!wex::menus::BuildMenu(menucommands.GetCommands(), 500, menu, false));
 
-  std::vector < wxExMenuCommand > commands;
-  REQUIRE(!wxExMenus::AddCommands(doc, commands));
+  std::vector < wex::menu_command > commands;
+  REQUIRE(!wex::menus::AddCommands(doc, commands));
   
-  REQUIRE(!wxExMenus::GetFileName().Path().empty());
+  REQUIRE(!wex::menus::GetFileName().Path().empty());
 
-  std::vector < wxExMenuCommands <wxExMenuCommand > > entries;
-  REQUIRE( wxExMenus::Load("debug", entries));
-  REQUIRE(!wxExMenus::Load("xxx", entries));
+  std::vector < wex::menu_commands <wex::menu_command > > entries;
+  REQUIRE( wex::menus::Load("debug", entries));
+  REQUIRE(!wex::menus::Load("xxx", entries));
 }

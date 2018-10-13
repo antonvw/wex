@@ -1,4 +1,4 @@
-project(wxex-test)
+project(wex-test)
 
 include_directories(../include/)
 include_directories(../../external/doctest/doctest)

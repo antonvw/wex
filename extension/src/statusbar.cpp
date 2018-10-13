@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      statusbar.cpp
-// Purpose:   Implementation of wxExStatusbar class
+// Purpose:   Implementation of wex::statusbar class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -16,12 +16,12 @@
 
 const int FIELD_NOT_SHOWN = -1;
 
-std::string ConfigName(wxExStatusBar* sb, const std::string& item, int f)
+std::string ConfigName(wex::statusbar* sb, const std::string& item, int f)
 {
   return "SB" + sb->GetField(f).GetName() + item;
 }
 
-void wxExStatusBarPane::Show(bool show)
+void wex::statusbarpane::Show(bool show)
 {
   m_IsShown = show;
   
@@ -35,9 +35,9 @@ void wxExStatusBarPane::Show(bool show)
   }
 }
 
-std::vector<wxExStatusBarPane> wxExStatusBar::m_Panes = {{}};
+std::vector<wex::statusbarpane> wex::statusbar::m_Panes = {{}};
 
-wxExStatusBar::wxExStatusBar(wxExFrame* parent, const wxExWindowData& data)
+wex::statusbar::statusbar(frame* parent, const window_data& data)
   : wxStatusBar(parent, data.Id(), data.Style(), data.Name())
   , m_Frame(parent)
 {
@@ -45,7 +45,7 @@ wxExStatusBar::wxExStatusBar(wxExFrame* parent, const wxExWindowData& data)
   Show(wxConfigBase::Get()->ReadBool("ShowStatusBar", true));
 }
 
-wxExStatusBar::~wxExStatusBar()
+wex::statusbar::~statusbar()
 { 
   wxConfigBase::Get()->Write("ShowStatusBar", IsShown());
 
@@ -56,7 +56,7 @@ wxExStatusBar::~wxExStatusBar()
   }
 }
 
-const wxExStatusBarPane& wxExStatusBar::GetField(int n) const
+const wex::statusbarpane& wex::statusbar::GetField(int n) const
 {
   return m_Panes[n];
 }
@@ -64,7 +64,7 @@ const wxExStatusBarPane& wxExStatusBar::GetField(int n) const
 // Returns true if the field exists.
 // The shown_pane_no, pane_no is FIELD_NOT_SHOWN if the field is not shown.
 std::tuple <bool, int, int> 
-  wxExStatusBar::GetFieldNo(const std::string& field) const
+  wex::statusbar::GetFieldNo(const std::string& field) const
 {
   const std::string use_field = field.empty() ? "PaneText": field;
   int pane_no = 0;
@@ -95,7 +95,7 @@ std::tuple <bool, int, int>
   return {false, 0, 0};
 }
   
-const std::string wxExStatusBar::GetStatusText(const std::string& field) const
+const std::string wex::statusbar::GetStatusText(const std::string& field) const
 {
   const auto& [res, shown_pane_no, pane_no] = GetFieldNo(field);
   return !res || shown_pane_no == FIELD_NOT_SHOWN ?
@@ -103,7 +103,7 @@ const std::string wxExStatusBar::GetStatusText(const std::string& field) const
     std::string(): wxStatusBar::GetStatusText(shown_pane_no).ToStdString();
 }
 
-void wxExStatusBar::Handle(wxMouseEvent& event, const wxExStatusBarPane& pane)
+void wex::statusbar::Handle(wxMouseEvent& event, const statusbarpane& pane)
 {
   if (event.LeftUp())
   {
@@ -132,7 +132,7 @@ void wxExStatusBar::Handle(wxMouseEvent& event, const wxExStatusBarPane& pane)
   }
 }
 
-void wxExStatusBar::OnMouse(wxMouseEvent& event)
+void wex::statusbar::OnMouse(wxMouseEvent& event)
 {
   event.Skip();
 
@@ -156,9 +156,9 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
   }
 }
 
-wxExStatusBar* wxExStatusBar::Setup(
-  wxExFrame* frame,
-  const std::vector<wxExStatusBarPane>& panes,
+wex::statusbar* wex::statusbar::Setup(
+  frame* frame,
+  const std::vector<statusbarpane>& panes,
   long style,
   const wxString& name)
 {
@@ -169,10 +169,10 @@ wxExStatusBar* wxExStatusBar::Setup(
 
   m_Panes.insert(std::end(m_Panes), std::begin(panes), std::end(panes));
 
-  wxExStatusBar* sb = (frame->GetStatusBar() == nullptr ?
-    (wxExStatusBar *)frame->CreateStatusBar(
+  statusbar* sb = (frame->GetStatusBar() == nullptr ?
+    (statusbar *)frame->CreateStatusBar(
         m_Panes.size(), style, ID_UPDATE_STATUS_BAR, name):
-    (wxExStatusBar *)frame->GetStatusBar());
+    (statusbar *)frame->GetStatusBar());
 
   int* styles = new int[m_Panes.size()];
   int* widths = new int[m_Panes.size()];
@@ -194,14 +194,14 @@ wxExStatusBar* wxExStatusBar::Setup(
   delete[] styles;
   delete[] widths;
 
-  sb->Bind(wxEVT_LEFT_UP, &wxExStatusBar::OnMouse, sb);
-  sb->Bind(wxEVT_RIGHT_UP, &wxExStatusBar::OnMouse, sb);
-  sb->Bind(wxEVT_MOTION, &wxExStatusBar::OnMouse, sb);
+  sb->Bind(wxEVT_LEFT_UP, &statusbar::OnMouse, sb);
+  sb->Bind(wxEVT_RIGHT_UP, &statusbar::OnMouse, sb);
+  sb->Bind(wxEVT_MOTION, &statusbar::OnMouse, sb);
 
   return sb;
 }
 
-bool wxExStatusBar::SetStatusText(
+bool wex::statusbar::SetStatusText(
   const std::string& text, const std::string& field)
 {
   if (const auto& [res, shown_pane_no, pane_no] = GetFieldNo(field); !res)
@@ -225,7 +225,7 @@ bool wxExStatusBar::SetStatusText(
   }
 }
 
-bool wxExStatusBar::ShowField(const std::string& field, bool show)
+bool wex::statusbar::ShowField(const std::string& field, bool show)
 {
   wxASSERT(!m_Panes.empty());
   

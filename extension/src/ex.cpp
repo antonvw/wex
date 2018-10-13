@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      ex.cpp
-// Purpose:   Implementation of class wxExEx
+// Purpose:   Implementation of class wex::ex
 //            http://pubs.opengroup.org/onlinepubs/9699919799/utilities/ex.html
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
@@ -56,44 +56,47 @@
   wxPostEvent(wxTheApp->GetTopWindow(), event);             \
 };                                                          \
 
-enum class wxExCommandArg
+namespace wex
 {
-  INT,
-  NONE,
-  OTHER,
-};
-
-enum class wxExInfoMessage
-{
-  ADD,
-  COPY,
-  DEL,
-};
-
-wxExCommandArg ParseCommandWithArg(const std::string& command)
-{
-  if (const auto post(wxExAfter(command, ' ')); post == command)
+  enum class commandarg
   {
-    return wxExCommandArg::NONE;
+    INT,
+    NONE,
+    OTHER,
+  };
+
+  enum class info_message
+  {
+    ADD,
+    COPY,
+    DEL,
+  };
+};
+
+wex::commandarg ParseCommandWithArg(const std::string& command)
+{
+  if (const auto post(wex::after(command, ' ')); post == command)
+  {
+    return wex::commandarg::NONE;
   }
   else if (atoi(post.c_str()) > 0)
   {
-    return wxExCommandArg::INT;
+    return wex::commandarg::INT;
   }
   else
   {
-    return wxExCommandArg::OTHER;
+    return wex::commandarg::OTHER;
   }
 }
 
-wxExEvaluator wxExEx::m_Evaluator;
-wxExSTCEntryDialog* wxExEx::m_Dialog = nullptr;
-wxExViMacros wxExEx::m_Macros;
+wex::evaluator wex::ex::m_Evaluator;
+wex::stc_entry_dialog* wex::ex::m_Dialog = nullptr;
+wex::vi_macros wex::ex::m_Macros;
 
-wxExEx::wxExEx(wxExSTC* stc)
-  : m_Command(wxExExCommand(stc))
-  , m_CTags(new wxExCTags(this))
-  , m_Frame(wxDynamicCast(wxTheApp->GetTopWindow(), wxExManagedFrame))
+wex::ex::ex(stc* stc)
+  : m_Command(ex_command(stc))
+  , m_CTags(new ctags(this))
+  , m_Frame(wxDynamicCast(wxTheApp->GetTopWindow(), managed_frame))
   , m_Commands {
     {":ab", [&](const std::string& command) {
       return HandleContainer<std::string, std::map<std::string, std::string>>(
@@ -110,10 +113,10 @@ wxExEx::wxExEx(wxExSTC* stc)
       return true;}},
     {":chd", [&](const std::string& command) {
       if (command.find(" ") == std::string::npos) return true;
-      wxExPath::Current(wxExFirstOf(command, " ")); return true;}},
+      wex::path::Current(wex::firstof(command, " ")); return true;}},
     {":close", [&](const std::string& command) {POST_COMMAND( wxID_CLOSE ) return true;}},
     {":de", [&](const std::string& command) {
-      m_Frame->GetDebug()->Execute(wxExFirstOf(command, " "), m_Command.STC());
+      m_Frame->GetDebug()->Execute(wex::firstof(command, " "), m_Command.STC());
       return true;}},
     {":e", [&](const std::string& command) {POST_COMMAND( wxID_OPEN ) return true;}},
     {":f", [&](const std::string& command) {InfoMessage(); return true;}},
@@ -123,26 +126,26 @@ wxExEx::wxExEx(wxExSTC* stc)
     {":map", [&](const std::string& command) {
       switch (ParseCommandWithArg(command))
       {
-        case wxExCommandArg::INT:
+        case wex::commandarg::INT:
           // TODO: at this moment you cannot set KEY_CONTROL
-          return HandleContainer<int, wxExViMacrosMapType>(
+          return HandleContainer<int, wex::vi_macros_maptype>(
             "Map", command, nullptr,
             [=](const std::string& name, const std::string& value) {
               m_Macros.SetKeyMap(name, value);return true;}); 
         break;
-        case wxExCommandArg::NONE: ShowDialog("Maps", 
+        case wex::commandarg::NONE: ShowDialog("Maps", 
             "[String map]\n" +
             ReportContainer<std::string, std::map<std::string, std::string>>(m_Macros.GetMap()) +
             "[Key map]\n" +
-            ReportContainer<int, wxExViMacrosMapType>(m_Macros.GetKeysMap()) +
+            ReportContainer<int, wex::vi_macros_maptype>(m_Macros.GetKeysMap()) +
             "[Alt key map]\n" +
-            ReportContainer<int, wxExViMacrosMapType>(m_Macros.GetKeysMap(KEY_ALT)) +
+            ReportContainer<int, wex::vi_macros_maptype>(m_Macros.GetKeysMap(KEY_ALT)) +
             "[Control key map]\n" +
-            ReportContainer<int, wxExViMacrosMapType>(m_Macros.GetKeysMap(KEY_CONTROL)), 
+            ReportContainer<int, wex::vi_macros_maptype>(m_Macros.GetKeysMap(KEY_CONTROL)), 
             true);
           return true;
         break;
-        case wxExCommandArg::OTHER:
+        case wex::commandarg::OTHER:
           return HandleContainer<std::string, std::map<std::string, std::string>>(
             "Map", command, nullptr,
             [=](const std::string& name, const std::string& value) {
@@ -151,7 +154,7 @@ wxExEx::wxExEx(wxExSTC* stc)
       return false;}},
     {":new", [&](const std::string& command) {POST_COMMAND( wxID_NEW ) return true;}},
     {":print", [&](const std::string& command) {m_Command.STC()->Print(command.find(" ") == std::string::npos); return true;}},
-    {":pwd", [&](const std::string& command) {wxExLogStatus(wxExPath::Current()); return true;}},
+    {":pwd", [&](const std::string& command) {wex::log_status(wex::path::Current()); return true;}},
     {":q!", [&](const std::string& command) {POST_CLOSE( wxEVT_CLOSE_WINDOW, false ) return true;}},
     {":q", [&](const std::string& command) {POST_CLOSE( wxEVT_CLOSE_WINDOW, true ) return true;}},
     {":reg", [&](const std::string& command) {
@@ -167,7 +170,7 @@ wxExEx::wxExEx(wxExSTC* stc)
         std::regex re("[0-9a-z=]+");
         text = std::regex_replace(text, re, "--&", std::regex_constants::format_sed);
         std::replace(text.begin(), text.end(), '=', ' ');
-        wxExCmdLine cmdline(
+        wex::cmdline cmdline(
           // switches
           {
            {{"ac", "autocomplete"}, [](bool on){
@@ -187,18 +190,18 @@ wxExEx::wxExEx(wxExSTC* stc)
            {{"ic", "ignorecase"}, [&](bool on){
              if (!on) m_SearchFlags |= wxSTC_FIND_MATCHCASE;
              else     m_SearchFlags &= ~wxSTC_FIND_MATCHCASE;
-             wxExFindReplaceData::Get()->SetMatchCase(!on);}},
+             wex::find_replace_data::Get()->SetMatchCase(!on);}},
            {{"mw", "matchwords"}, [&](bool on){
              if (on) m_SearchFlags |= wxSTC_FIND_WHOLEWORD;
              else    m_SearchFlags &= ~wxSTC_FIND_WHOLEWORD;
-             wxExFindReplaceData::Get()->SetMatchWord(on);}},
+             wex::find_replace_data::Get()->SetMatchWord(on);}},
            {{"nu", "number"}, [&](bool on){
              m_Command.STC()->ShowLineNumbers(on);
              wxConfigBase::Get()->Write(_("Line numbers"), on);}},
            {{"readonly", "readonly"}, [&](bool on){
              m_Command.STC()->SetReadOnly(on);}},
            {{"showmode", "showmode"}, [&](bool on){
-             ((wxExStatusBar *)m_Frame->GetStatusBar())->ShowField("PaneMode", on);
+             ((wex::statusbar *)m_Frame->GetStatusBar())->ShowField("PaneMode", on);
              wxConfigBase::Get()->Write(_("Show mode"), on);}},
            {{"sm", "showmatch"}, [&](bool on){
              wxConfigBase::Get()->Write(_("Show match"), on);}},
@@ -219,7 +222,7 @@ wxExEx::wxExEx(wxExSTC* stc)
           // options
           {
            {{"dir", "dir"}, {CMD_LINE_STRING, [&](const std::any& val) {
-             wxExPath::Current(std::any_cast<std::string>(val));}}},
+             wex::path::Current(std::any_cast<std::string>(val));}}},
            {{"ec", "edgecolumn", "80"}, {CMD_LINE_INT, [&](const std::any& val) {
              m_Command.STC()->SetEdgeColumn(std::any_cast<int>(val));
              wxConfigBase::Get()->Write(_("Edge column"), std::any_cast<int>(val));}}},
@@ -241,7 +244,7 @@ wxExEx::wxExEx(wxExSTC* stc)
 
       if (command.find(" ") == std::string::npos)
       {
-        cmdline.ShowOptions(wxExWindowData().Size({200, 450}));
+        cmdline.ShowOptions(wex::window_data().Size({200, 450}));
       }
       else
       {
@@ -250,7 +253,7 @@ wxExEx::wxExEx(wxExSTC* stc)
       return true;}},
     {":so", [&](const std::string& command) {
       if (command.find(" ") == std::string::npos) return false;
-      wxExPath path(wxExFirstOf(command, " "));
+      wex::path path(wex::firstof(command, " "));
       if (path.IsRelative())
       {
         path.MakeAbsolute();
@@ -279,44 +282,44 @@ wxExEx::wxExEx(wxExSTC* stc)
     {":syntax", [&](const std::string& command) {
       if (wxString(command).EndsWith("on"))
       {
-        wxExLexers::Get()->RestoreTheme();
+        wex::lexers::Get()->RestoreTheme();
         m_Command.STC()->GetLexer().Set(m_Command.STC()->GetFileName().GetLexer().GetDisplayLexer(), true); // allow folding
       }
       else if (wxString(command).EndsWith("off"))
       {
         m_Command.STC()->GetLexer().Reset();
-        wxExLexers::Get()->ResetTheme();
+        wex::lexers::Get()->ResetTheme();
       }
       else
       {
         return false;
       }
-      m_Frame->StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
+      m_Frame->StatusText(wex::lexers::Get()->GetTheme(), "PaneTheme");
       return true;}},
     {":ta", [&](const std::string& command) {
-      m_CTags->Find(wxExFirstOf(command, " "));
+      m_CTags->Find(wex::firstof(command, " "));
       return true;}},
     {":una", [&](const std::string& command) {
-      if (wxExTokenizer tkz(command); tkz.CountTokens() >= 1)
+      if (wex::tokenizer tkz(command); tkz.CountTokens() >= 1)
       {
         tkz.GetNextToken(); // skip :una
         m_Macros.SetAbbreviation(tkz.GetNextToken(), "");
       }
       return true;}},
     {":unm", [&](const std::string& command) {
-      if (wxExTokenizer tkz(command); tkz.CountTokens() >= 1)
+      if (wex::tokenizer tkz(command); tkz.CountTokens() >= 1)
       {
         tkz.GetNextToken(); // skip :unm
         switch (ParseCommandWithArg(command))
         {
-          case wxExCommandArg::INT: m_Macros.SetKeyMap(tkz.GetNextToken(), ""); break; 
-          case wxExCommandArg::NONE: break;
-          case wxExCommandArg::OTHER: m_Macros.SetMap(tkz.GetNextToken(), ""); break;
+          case wex::commandarg::INT: m_Macros.SetKeyMap(tkz.GetNextToken(), ""); break; 
+          case wex::commandarg::NONE: break;
+          case wex::commandarg::OTHER: m_Macros.SetMap(tkz.GetNextToken(), ""); break;
         }
       }
       return true;}},
     {":ve", [&](const std::string& command) {ShowDialog("Version", 
-      wxExGetVersionInfo().Get()); return true;}},
+      wex::get_version_info().Get()); return true;}},
     {":x", [&](const std::string& command) {
       if (command != ":x") return false;
       POST_COMMAND( wxID_SAVE )
@@ -328,12 +331,12 @@ wxExEx::wxExEx(wxExSTC* stc)
   m_AutoWrite = wxConfigBase::Get()->ReadLong(_("Auto write"), 0);
 }
 
-wxExEx::~wxExEx()
+wex::ex::~ex()
 {
   delete m_CTags;
 }
   
-void wxExEx::AddText(const std::string& text)
+void wex::ex::AddText(const std::string& text)
 {
   if (m_Register)
   {
@@ -344,10 +347,10 @@ void wxExEx::AddText(const std::string& text)
     m_Command.STC()->AddTextRaw((const char *)text.c_str(), text.length());
   }
 
-  InfoMessage(text, wxExInfoMessage::ADD);
+  InfoMessage(text, wex::info_message::ADD);
 }
 
-bool wxExEx::AutoWrite()
+bool wex::ex::AutoWrite()
 {
   if (!m_AutoWrite || !m_Command.STC()->IsModified())
   {
@@ -362,7 +365,7 @@ bool wxExEx::AutoWrite()
   return true;
 }
 
-std::tuple<double, int> wxExEx::Calculator(const std::string& text)
+std::tuple<double, int> wex::ex::Calculator(const std::string& text)
 {
   const auto& [val, width, err] = m_Evaluator.Eval(this, text);
 
@@ -374,7 +377,7 @@ std::tuple<double, int> wxExEx::Calculator(const std::string& text)
   return {val, width};
 }
 
-bool wxExEx::Command(const std::string& cmd)
+bool wex::ex::Command(const std::string& cmd)
 {
   auto command(cmd);
 
@@ -408,7 +411,7 @@ bool wxExEx::Command(const std::string& cmd)
   return AutoWrite();
 }
 
-bool wxExEx::CommandAddress(const std::string& command)
+bool wex::ex::CommandAddress(const std::string& command)
 {
   auto rest(command);
   std::string range_str, cmd;
@@ -435,21 +438,21 @@ bool wxExEx::CommandAddress(const std::string& command)
     
     if (std::vector <std::string> v;
       // a % address range
-      wxExMatch("^%" + cmd_group2, rest, v) == 2 ||
+      match("^%" + cmd_group2, rest, v) == 2 ||
       // addr2 search
-      wxExMatch("^(" + addrs + ")(," + addrs + ")" + cmd_group2, rest, v) == 4 ||
+      match("^(" + addrs + ")(," + addrs + ")" + cmd_group2, rest, v) == 4 ||
       // addr1 search
-      wxExMatch("^(" + addrs + ")" + cmd_group1, rest, v) == 3 ||
+      match("^(" + addrs + ")" + cmd_group1, rest, v) == 3 ||
       // addr2 markers
-      wxExMatch("^(" + addrm + ")(," + addrm + ")" + cmd_group2, rest, v) == 4 ||
-      wxExMatch("^(" + addr  + ")(," + addrm + ")" + cmd_group2, rest, v) == 4 ||
-      wxExMatch("^(" + addrm + ")(," +  addr + ")" + cmd_group2, rest, v) == 4 ||
+      match("^(" + addrm + ")(," + addrm + ")" + cmd_group2, rest, v) == 4 ||
+      match("^(" + addr  + ")(," + addrm + ")" + cmd_group2, rest, v) == 4 ||
+      match("^(" + addrm + ")(," +  addr + ")" + cmd_group2, rest, v) == 4 ||
       // addr1 marker
-      wxExMatch("^(" + addrm + ")" + cmd_group1, rest, v) == 3 ||
+      match("^(" + addrm + ")" + cmd_group1, rest, v) == 3 ||
       // addr1
-      wxExMatch("^(" + addr + ")?" + cmd_group1, rest, v) == 3 ||
+      match("^(" + addr + ")?" + cmd_group1, rest, v) == 3 ||
       // addr2
-      wxExMatch("^(" + addr + ")?(," + addr + ")?" + cmd_group2, rest, v) == 4)
+      match("^(" + addr + ")?(," + addr + ")?" + cmd_group2, rest, v) == 4)
     {
       switch (v.size())
       {
@@ -462,7 +465,7 @@ bool wxExEx::CommandAddress(const std::string& command)
           addr1 = true;
           range_str = v[0];
           cmd = v[1];
-          rest = wxExSkipWhiteSpace(v[2], SKIP_LEFT);
+          rest = skip_white_space(v[2], SKIP_LEFT);
           break;
         case 4:
           range_str = v[0] + v[1];
@@ -472,15 +475,15 @@ bool wxExEx::CommandAddress(const std::string& command)
         default: wxFAIL; break;
       }
 
-      if (!wxExMarkerAndRegisterExpansion(this, range_str))
+      if (!marker_and_register_expansion(this, range_str))
       {
         return false;
       }
     }
     else 
     {
-      const auto line(wxExAddress(this, rest).GetLine());
-      if (line > 0) wxExSTCData(m_Command.STC()).Control(wxExControlData().Line(line)).Inject();
+      const auto line(address(this, rest).GetLine());
+      if (line > 0) stc_data(m_Command.STC()).Control(control_data().Line(line)).Inject();
       return line > 0;
     }
     
@@ -492,7 +495,7 @@ bool wxExEx::CommandAddress(const std::string& command)
   
   if (addr1)
   {
-    switch (const wxExAddress addr(this, range_str); (int)cmd[0])
+    switch (const address addr(this, range_str); (int)cmd[0])
     {
     case 0: return false;
     case 'a': return addr.Append(rest);
@@ -518,7 +521,7 @@ bool wxExEx::CommandAddress(const std::string& command)
   }
   else
   {
-    switch (wxExAddressRange range(this, range_str); (int)cmd[0])
+    switch (addressrange range(this, range_str); (int)cmd[0])
     {
     case 0: return false;
     case 'c': return range.Change(rest);
@@ -526,7 +529,7 @@ bool wxExEx::CommandAddress(const std::string& command)
     case 'v':
     case 'g': return range.Global(rest, cmd[0] == 'v');
     case 'j': return range.Join();
-    case 'm': return range.Move(wxExAddress(this, rest));
+    case 'm': return range.Move(address(this, rest));
     case 'p': 
       if (m_Command.STC()->GetName() != "Print")
       {
@@ -540,7 +543,7 @@ bool wxExEx::CommandAddress(const std::string& command)
     case '&':
     case '~': return range.Substitute(rest, cmd[0]);
     case 'S': return range.Sort(rest);
-    case 't': return range.Copy(wxExAddress(this, rest));
+    case 't': return range.Copy(address(this, rest));
     case 'w': 
       if (!rest.empty())
       {
@@ -563,7 +566,7 @@ bool wxExEx::CommandAddress(const std::string& command)
   }
 }
 
-bool wxExEx::CommandHandle(const std::string& command) const
+bool wex::ex::CommandHandle(const std::string& command) const
 {
   const auto& it = std::find_if(m_Commands.begin(), m_Commands.end(), 
     [command](auto const& e) {return e.first == command.substr(0, e.first.size());});
@@ -571,13 +574,13 @@ bool wxExEx::CommandHandle(const std::string& command) const
   return it != m_Commands.end() && it->second(command);
 }
 
-void wxExEx::Copy(const wxExEx* ex)
+void wex::ex::Copy(const wex::ex* ex)
 {
   m_MarkerIdentifiers = ex->m_MarkerIdentifiers;
   m_Copy = true; // no char numbers for a copy
 }
 
-void wxExEx::Cut(bool show_message)
+void wex::ex::Cut(bool show_message)
 {
   const auto sel(GetSelectedText());
   
@@ -587,22 +590,22 @@ void wxExEx::Cut(bool show_message)
   
   SetRegistersDelete(sel);
   
-  InfoMessage(sel, wxExInfoMessage::DEL);
+  InfoMessage(sel, wex::info_message::DEL);
 }
 
-const std::string wxExEx::GetRegisterInsert() const
+const std::string wex::ex::GetRegisterInsert() const
 {
   return m_Macros.GetRegister('.');
 }
 
-const std::string wxExEx::GetRegisterText() const
+const std::string wex::ex::GetRegisterText() const
 {
   return m_Register ? 
     m_Macros.GetRegister(m_Register):
     m_Macros.GetRegister('0');
 }
   
-const std::string wxExEx::GetSelectedText() const
+const std::string wex::ex::GetSelectedText() const
 {
   // This also supports rectangular text.
   if (m_Command.STC()->GetSelectedText().empty())
@@ -615,13 +618,13 @@ const std::string wxExEx::GetSelectedText() const
 }
 
 template <typename S, typename T> 
-bool wxExEx::HandleContainer(
+bool wex::ex::HandleContainer(
   const std::string& kind,
   const std::string& command,
   const T * container,
   std::function<bool(const std::string&, const std::string&)> cb)
 {
-  if (wxExTokenizer tkz(command); tkz.CountTokens() >= 2)
+  if (tokenizer tkz(command); tkz.CountTokens() >= 2)
   {
     tkz.GetNextToken(); // skip
     const auto name(tkz.GetNextToken());
@@ -635,7 +638,7 @@ bool wxExEx::HandleContainer(
   return true;
 }
 
-void wxExEx::InfoMessage() const
+void wex::ex::InfoMessage() const
 {
   m_Frame->ShowExMessage(wxString::Format("%s line %d of %d --%d%%-- level %d", 
     m_Command.STC()->GetFileName().GetFullName().c_str(), 
@@ -646,33 +649,33 @@ void wxExEx::InfoMessage() const
      - wxSTC_FOLDLEVELBASE).ToStdString());
 }
 
-void wxExEx::InfoMessage(const std::string& text, wxExInfoMessage type) const
+void wex::ex::InfoMessage(const std::string& text, wex::info_message type) const
 {
-  if (const auto lines = wxExGetNumberOfLines(text);
+  if (const auto lines = get_number_of_lines(text);
     lines >= wxConfig::Get()->Read("Reported lines", 5))
   {
     wxString msg;
 
     switch (type)
     {
-      case wxExInfoMessage::ADD: msg = _("%d lines added"); break;
-      case wxExInfoMessage::COPY: msg = _("%d lines yanked"); break;
-      case wxExInfoMessage::DEL: msg = _("%d fewer lines"); break;
+      case wex::info_message::ADD: msg = _("%d lines added"); break;
+      case wex::info_message::COPY: msg = _("%d lines yanked"); break;
+      case wex::info_message::DEL: msg = _("%d fewer lines"); break;
     }
 
     m_Frame->ShowExMessage(wxString::Format(msg, lines - 1).ToStdString());
   }
 }
 
-bool wxExEx::MarkerAdd(char marker, int line)
+bool wex::ex::MarkerAdd(char marker, int line)
 {
   if (m_Copy) return false;
 
-  const wxExMarker lm(wxExLexers::Get()->GetMarker(m_MarkerSymbol));
+  const wex::marker lm(wex::lexers::Get()->GetMarker(m_MarkerSymbol));
 
   if (!lm.IsOk())
   {
-    wxExLog("could not find marker symbol") << m_MarkerSymbol.GetNo() << " in lexers";
+    wex::log("could not find marker symbol") << m_MarkerSymbol.GetNo() << " in lexers";
     return false;
   }
   
@@ -713,7 +716,7 @@ bool wxExEx::MarkerAdd(char marker, int line)
     
   if (id == -1)
   {
-    wxExLog("could not add marker") << marker  << "to line:" << lin;
+    log("could not add marker") << marker  << "to line:" << lin;
     return false;  
   }
     
@@ -722,7 +725,7 @@ bool wxExEx::MarkerAdd(char marker, int line)
   return true;
 }  
 
-bool wxExEx::MarkerDelete(char marker)
+bool wex::ex::MarkerDelete(char marker)
 {
   if (const auto& it = m_MarkerIdentifiers.find(marker); it != m_MarkerIdentifiers.end())
   {
@@ -734,18 +737,18 @@ bool wxExEx::MarkerDelete(char marker)
   return false;
 }
 
-bool wxExEx::MarkerGoto(char marker)
+bool wex::ex::MarkerGoto(char marker)
 {
   if (const auto line = MarkerLine(marker); line != -1)
   {
-    wxExSTCData(m_Command.STC()).Control(wxExControlData().Line(line + 1)).Inject();
+    stc_data(m_Command.STC()).Control(control_data().Line(line + 1)).Inject();
     return true;
   }
   
   return false;
 }
 
-int wxExEx::MarkerLine(char marker) const
+int wex::ex::MarkerLine(char marker) const
 {
   if (marker == '<')
   {
@@ -788,33 +791,33 @@ int wxExEx::MarkerLine(char marker) const
   return -1;
 }
 
-void wxExEx::Print(const std::string& text)
+void wex::ex::Print(const std::string& text)
 {
   ShowDialog("Print", text);
 }
   
 template <typename S, typename T>
-std::string wxExEx::ReportContainer(const T & t) const
+std::string wex::ex::ReportContainer(const T & t) const
 {
-  const wxExLexerProps l;
+  const wex::lexer_props l;
   std::string output;
 
   for (const auto& it : t)
   {
-    output += l.MakeKey(wxExTypeToValue<S>(it.first).getString(), it.second);
+    output += l.MakeKey(type_to_value<S>(it.first).getString(), it.second);
   }
 
   return output;
 }
 
-void wxExEx::ResetSearchFlags()
+void wex::ex::ResetSearchFlags()
 {
-  m_SearchFlags = ((wxExFindReplaceData::Get()->MatchCase() ? 
+  m_SearchFlags = ((find_replace_data::Get()->MatchCase() ? 
     wxSTC_FIND_MATCHCASE: 0) | 
     wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX);
 }
 
-void wxExEx::SetRegistersDelete(const std::string& value) const
+void wex::ex::SetRegistersDelete(const std::string& value) const
 {
   if (value.empty())
   {
@@ -833,7 +836,7 @@ void wxExEx::SetRegistersDelete(const std::string& value) const
   m_Macros.SetRegister('1', value);
 }
   
-void wxExEx::SetRegisterInsert(const std::string& value) const
+void wex::ex::SetRegisterInsert(const std::string& value) const
 {
   if (value.empty())
   {
@@ -843,7 +846,7 @@ void wxExEx::SetRegisterInsert(const std::string& value) const
   m_Macros.SetRegister('.', value);
 }
 
-void wxExEx::SetRegisterYank(const std::string& value) const
+void wex::ex::SetRegisterYank(const std::string& value) const
 {
   if (value.empty())
   {
@@ -853,15 +856,15 @@ void wxExEx::SetRegisterYank(const std::string& value) const
   m_Macros.SetRegister('0', value);
 }
 
-void wxExEx::ShowDialog(
+void wex::ex::ShowDialog(
   const std::string& title, const std::string& text, bool prop_lexer)
 {
   if (m_Dialog == nullptr)
   {
-    m_Dialog = new wxExSTCEntryDialog(
+    m_Dialog = new stc_entry_dialog(
       text,
       std::string(),
-      wxExWindowData().Button(wxOK).Title(title));
+      window_data().Button(wxOK).Title(title));
   }
   else
   {
@@ -886,11 +889,11 @@ void wxExEx::ShowDialog(
   }
   
   m_Dialog->GetSTC()->GetLexer().Set(
-    prop_lexer ? wxExLexerProps(): m_Command.STC()->GetLexer());
+    prop_lexer ? lexer_props(): m_Command.STC()->GetLexer());
   m_Dialog->Show();
 }
 
-bool wxExEx::Yank(const char name, bool show_message) const
+bool wex::ex::Yank(const char name, bool show_message) const
 {
   const auto range(GetSelectedText());
   
@@ -911,7 +914,7 @@ bool wxExEx::Yank(const char name, bool show_message) const
     SetRegisterYank(range);
   }
 
-  InfoMessage(range, wxExInfoMessage::COPY);
+  InfoMessage(range, wex::info_message::COPY);
   
   return true;
 }

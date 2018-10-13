@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      art.cpp
-// Purpose:   Implementation of wxExStockArt class
+// Purpose:   Implementation of wex::stockart class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -11,9 +11,9 @@
 #endif
 #include <wx/extension/art.h>
 
-std::map<wxWindowID, wxArtID> wxExStockArt::m_ArtIDs;
+std::map<wxWindowID, wxArtID> wex::stockart::m_ArtIDs;
 
-wxExStockArt::wxExStockArt(wxWindowID id)
+wex::stockart::stockart(wxWindowID id)
   : m_Id(id)
 {
   if (m_ArtIDs.empty())
@@ -51,12 +51,12 @@ wxExStockArt::wxExStockArt(wxWindowID id)
   }
 }
 
-void wxExStockArt::Add(int id, const wxArtID art)
+void wex::stockart::Add(int id, const wxArtID art)
 {    
   m_ArtIDs.insert({(wxWindowID)id, art});
 }
 
-const wxBitmap wxExStockArt::GetBitmap(
+const wxBitmap wex::stockart::GetBitmap(
   const wxArtClient& client,
   const wxSize& bitmap_size) const
 {

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      app.cpp
-// Purpose:   Implementation of wxExApp class
+// Purpose:   Implementation of wex::app class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -33,7 +33,7 @@ INITIALIZE_EASYLOGGINGPP
 
 namespace fs = std::experimental::filesystem;
 
-void wxExApp::OnAssertFailure(
+void wex::app::OnAssertFailure(
   const wxChar* file, int line, const wxChar* func, 
   const wxChar* cond, const wxChar* msg)
 {
@@ -46,25 +46,25 @@ void wxExApp::OnAssertFailure(
 #endif
 }
     
-int wxExApp::OnExit()
+int wex::app::OnExit()
 {
-  delete wxExFindReplaceData::Set(nullptr);
-  delete wxExLexers::Set(nullptr);
-  delete wxExPrinting::Set(nullptr);
+  delete wex::find_replace_data::Set(nullptr);
+  delete wex::lexers::Set(nullptr);
+  delete wex::printing::Set(nullptr);
 
-  wxExAddressRange::OnExit();
-  wxExSTC::OnExit();
+  wex::addressrange::OnExit();
+  wex::stc::OnExit();
 
   VLOG(1) << "exit";
 
   return wxApp::OnExit(); // this destroys the config
 }
 
-bool wxExApp::OnInit()
+bool wex::app::OnInit()
 {
   // This should be before first use of wxConfigBase::Get().
   wxConfigBase::Set(new wxFileConfig(wxEmptyString, wxEmptyString,
-    wxFileName(wxExConfigDir(), GetAppName().Lower() + 
+    wxFileName(wex::config_dir(), GetAppName().Lower() + 
 #ifdef __WXMSW__
     ".ini"
 #else
@@ -73,7 +73,7 @@ bool wxExApp::OnInit()
       ).GetFullPath(), wxEmptyString, wxCONFIG_USE_LOCAL_FILE));
 
   // Load elp configuration from file.
-  const wxExPath elp(wxExConfigDir(), "conf.elp");
+  const wex::path elp(wex::config_dir(), "conf.elp");
 
   if (elp.FileExists())
   {
@@ -133,7 +133,7 @@ bool wxExApp::OnInit()
 
   VLOG(1) 
     << "started: " 
-    << GetAppName() << "-" << wxExGetVersionInfo().Get()
+    << GetAppName() << "-" << wex::get_version_info().Get()
     << " verbosity: " 
     << el::Loggers::verboseLevel()
     << " config: " << elp.Path().string();
@@ -145,7 +145,7 @@ bool wxExApp::OnInit()
     if ((info = wxLocale::FindLanguageInfo(
       wxConfigBase::Get()->Read("LANG"))) == nullptr)
     {
-      wxExLog() << "unknown language:" << wxConfigBase::Get()->Read("LANG");
+      wex::log() << "unknown language:" << wxConfigBase::Get()->Read("LANG");
     }
   }
     
@@ -177,27 +177,27 @@ bool wxExApp::OnInit()
       for (const auto& p: fs::recursive_directory_iterator(m_CatalogDir))
       {
         if (fs::is_regular_file(p.path()) && 
-          wxExMatchesOneOf(p.path().filename().string(), "*.mo"))
+          wex::matches_one_of(p.path().filename().string(), "*.mo"))
         {
           if (!m_Locale.AddCatalog(p.path().stem().string()))
           {
-            wxExLog() << "could not add catalog:" << p.path().stem().string();
+            wex::log() << "could not add catalog:" << p.path().stem().string();
           }
         }
       }
     }
     else if (info != nullptr)
     {
-      wxExLog() << "missing locale files for:" << m_Locale.GetName();
+      wex::log() << "missing locale files for:" << m_Locale.GetName();
     }
   }
 
   // Necessary for autocomplete images.
   wxInitAllImageHandlers();
 
-  wxExSTC::OnInit();
-  wxExVCS::LoadDocument();
-  wxExViMacros().LoadDocument();
+  wex::stc::OnInit();
+  wex::vcs::LoadDocument();
+  wex::vi_macros().LoadDocument();
 
   return true; // wxApp::OnInit(); // we have our own cmd line processing
 }

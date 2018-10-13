@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-autocomplete.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -12,9 +12,9 @@
 #include <wx/extension/autocomplete.h>
 #include "test.h"
 
-TEST_CASE("wxExAutoComplete")
+TEST_CASE("wex::autocomplete")
 {
-  wxExAutoComplete ac(GetSTC());
+  wex::autocomplete ac(GetSTC());
 
   REQUIRE(!ac.Activate(std::string()));
   REQUIRE(!ac.Apply(WXK_BACK));

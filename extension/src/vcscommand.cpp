@@ -1,19 +1,19 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      vcscommand.cpp
-// Purpose:   Implementation of wxExVCSCommand class
+// Name:      vcs_command.cpp
+// Purpose:   Implementation of wex::vcs_command class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/vcscommand.h>
 
-bool wxExVCSCommand::IsAdd() const
+bool wex::vcs_command::IsAdd() const
 {
   return 
     GetCommand(false) == "add";
 }
 
-bool wxExVCSCommand::IsBlame() const
+bool wex::vcs_command::IsBlame() const
 {
   return 
     GetCommand(false) == "annotate" ||
@@ -21,14 +21,14 @@ bool wxExVCSCommand::IsBlame() const
     GetCommand(false) == "print";
 }
 
-bool wxExVCSCommand::IsCheckout() const
+bool wex::vcs_command::IsCheckout() const
 {
   return 
     GetCommand(false) == "checkout" ||
     GetCommand(false) == "co";
 }
 
-bool wxExVCSCommand::IsCommit() const
+bool wex::vcs_command::IsCommit() const
 {
   return 
     GetCommand(false) == "commit" ||
@@ -36,13 +36,13 @@ bool wxExVCSCommand::IsCommit() const
     GetCommand(false) == "delta";
 }
 
-bool wxExVCSCommand::IsDiff() const
+bool wex::vcs_command::IsDiff() const
 {
   return 
     GetCommand(false).find("diff") != std::string::npos;
 }
 
-bool wxExVCSCommand::IsHistory() const
+bool wex::vcs_command::IsHistory() const
 {
   return 
     GetCommand(false) == "log" ||
@@ -50,7 +50,7 @@ bool wxExVCSCommand::IsHistory() const
     GetCommand(false) == "prt";
 }
 
-bool wxExVCSCommand::IsOpen() const
+bool wex::vcs_command::IsOpen() const
 {
   return
     GetCommand(false) == "cat" ||

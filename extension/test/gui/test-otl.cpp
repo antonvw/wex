@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-otl.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -16,9 +16,9 @@
 #include <wx/extension/otl.h>
 #include <wx/extension/stc.h>
 
-TEST_CASE("wxExOTL")
+TEST_CASE("wex::otl")
 {
-#if wxExUSE_OTL
+#if wexUSE_OTL
   // Ensure we have a database and a table.
   if (system("mysql test < otl-create.sql") != 0)
   {
@@ -31,16 +31,16 @@ TEST_CASE("wxExOTL")
   config->Write(_("User"), "");
   config->Write(_("Password"), "");
   
-  wxExOTL otl;
+  wex::otl otl;
   
-  REQUIRE( otl.VersionInfo().GetMajor() > 0);
+  REQUIRE(!otl.VersionInfo().Get().empty());
   REQUIRE(!otl.Datasource().empty());
   
-  otl.Logon(wxExWindowData().Button(0));
+  otl.Logon(wex::window_data().Button(0));
 
   bool stopped = false;
 
-  wxExGrid* grid = new wxExGrid();
+  wex::grid* grid = new wex::grid();
   AddPane(GetFrame(), grid);
   
   if (!otl.IsConnected())

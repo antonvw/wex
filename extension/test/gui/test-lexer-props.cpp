@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-lexer-props.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -13,9 +13,9 @@
 #include <wx/extension/lexer-props.h>
 #include "test.h"
 
-TEST_CASE("wxExLexerProps")
+TEST_CASE("wex::lexer_props")
 {
-  const wxExLexerProps l;
+  const wex::lexer_props l;
   
   REQUIRE( l.MakeComment("").find(';') == std::string::npos);
   REQUIRE( l.MakeComment("test").find(';') != std::string::npos);

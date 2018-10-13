@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      listview-data.cpp
-// Purpose:   Implementation of wxExListViewData
+// Purpose:   Implementation of wex::listview_data
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -9,30 +9,30 @@
 #include <wx/extension/listview-data.h>
 #include <wx/extension/listview.h>
 
-wxExListViewData::wxExListViewData(wxExListView* lv)
+wex::listview_data::listview_data(listview* lv)
   : m_ListView(lv)
 {
 }
   
-wxExListViewData::wxExListViewData(wxExListView* lv, const wxExListViewData& r)
+wex::listview_data::listview_data(listview* lv, const listview_data& r)
   : m_ListView(lv)
 {
   *this = r;
 }
   
-wxExListViewData::wxExListViewData(wxExControlData& data, wxExListView* lv)
+wex::listview_data::listview_data(control_data& data, listview* lv)
   : m_Data(data)
   , m_ListView(lv)
 {
 }
 
-wxExListViewData::wxExListViewData(wxExWindowData& data, wxExListView* lv)
-  : m_Data(wxExControlData().Window(data))
+wex::listview_data::listview_data(window_data& data, listview* lv)
+  : m_Data(control_data().Window(data))
   , m_ListView(lv)
 {
 }
 
-wxExListViewData& wxExListViewData::operator=(const wxExListViewData& r)
+wex::listview_data& wex::listview_data::operator=(const listview_data& r)
 {
   if (this != &r)
   {
@@ -52,22 +52,22 @@ wxExListViewData& wxExListViewData::operator=(const wxExListViewData& r)
   return *this;
 }
   
-void wxExListViewData::AddColumns()
+void wex::listview_data::AddColumns()
 {
-  m_ListView->AppendColumns({{_("File Name").ToStdString(), wxExColumn::COL_STRING}});
+  m_ListView->AppendColumns({{_("File Name").ToStdString(), column::COL_STRING}});
 
   switch (m_Type)
   {
-    case LIST_FIND:
+    case LISTVIEW_FIND:
       m_ListView->AppendColumns({
-        {_("Line").ToStdString(), wxExColumn::COL_STRING, 250},
-        {_("Match").ToStdString(), wxExColumn::COL_STRING},
+        {_("Line").ToStdString(), column::COL_STRING, 250},
+        {_("Match").ToStdString(), column::COL_STRING},
         {_("Line No").ToStdString()}});
     break;
-    case LIST_KEYWORD:
+    case LISTVIEW_KEYWORD:
       for (const auto& it : m_Lexer->GetKeywords())
       {
-        m_ListView->AppendColumns({{wxExColumn(it)}});
+        m_ListView->AppendColumns({{column(it)}});
       }
 
       m_ListView->AppendColumns({{_("Keywords").ToStdString()}});
@@ -76,19 +76,19 @@ void wxExListViewData::AddColumns()
   }
 
   m_ListView->AppendColumns({
-    {_("Modified").ToStdString(), wxExColumn::COL_DATE},
-    {_("In Folder").ToStdString(), wxExColumn::COL_STRING, 175},
-    {_("Type").ToStdString(), wxExColumn::COL_STRING},
+    {_("Modified").ToStdString(), column::COL_DATE},
+    {_("In Folder").ToStdString(), column::COL_STRING, 175},
+    {_("Type").ToStdString(), column::COL_STRING},
     {_("Size").ToStdString()}});
 }
 
-wxExListViewData& wxExListViewData::Image(wxExImageType type)
+wex::listview_data& wex::listview_data::Image(image_type type)
 {
   m_ImageType = type;
   return *this;
 }
 
-bool wxExListViewData::Inject()
+bool wex::listview_data::Inject()
 {
    bool injected = 
      m_ListView != nullptr && 
@@ -118,12 +118,12 @@ bool wxExListViewData::Inject()
 
     switch (m_Type)
     {
-      case LIST_FOLDER:
-      case LIST_NONE:
+      case LISTVIEW_FOLDER:
+      case LISTVIEW_NONE:
         m_ListView->SetSingleStyle(wxLC_LIST);
         break;
       
-      case LIST_KEYWORD:
+      case LISTVIEW_KEYWORD:
         if (m_Lexer != nullptr)
         {
           name += " " + m_Lexer->GetDisplayLexer();
@@ -136,42 +136,42 @@ bool wxExListViewData::Inject()
     }
 
     m_ListView->SetName(name);
-    m_Data.Window(wxExWindowData().Name(name));
+    m_Data.Window(window_data().Name(name));
   }
 
   return injected;
 }
   
-wxExListViewData& wxExListViewData::Lexer(const wxExLexer* lexer)
+wex::listview_data& wex::listview_data::Lexer(const lexer* lexer)
 {
   m_Lexer = lexer;
   return *this;
 }
 
-wxExListViewData& wxExListViewData::Menu(long flags, wxExDataAction action)
+wex::listview_data& wex::listview_data::Menu(long flags, data_action action)
 {
   m_Data.Flags<long>(flags, m_MenuFlags, action);
   return *this;
 }
   
-wxExListViewData& wxExListViewData::Type(wxExListType type)
+wex::listview_data& wex::listview_data::Type(listview_type type)
 {
   m_Type = type;
   return *this;
 }
 
-const std::string wxExListViewData::TypeDescription() const
+const std::string wex::listview_data::TypeDescription() const
 {
   wxString value;
 
   switch (m_Type)
   {
-    case LIST_FOLDER: value = _("Folder"); break;
-    case LIST_FIND: value = _("Find Results"); break;
-    case LIST_HISTORY: value = _("History"); break;
-    case LIST_KEYWORD: value = _("Keywords"); break;
-    case LIST_FILE: value = _("File"); break;
-    case LIST_NONE: value = _("None"); break;
+    case LISTVIEW_FOLDER: value = _("Folder"); break;
+    case LISTVIEW_FIND: value = _("Find Results"); break;
+    case LISTVIEW_HISTORY: value = _("History"); break;
+    case LISTVIEW_KEYWORD: value = _("Keywords"); break;
+    case LISTVIEW_FILE: value = _("File"); break;
+    case LISTVIEW_NONE: value = _("None"); break;
     default: wxFAIL;
   }
 

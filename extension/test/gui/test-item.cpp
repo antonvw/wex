@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-Item.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -17,7 +17,7 @@
 #include "../test-item.h"
 #include "test.h"
 
-TEST_CASE("wxExItem")
+TEST_CASE("wex::item")
 {
   SUBCASE("Item and Layout")
   {
@@ -26,25 +26,25 @@ TEST_CASE("wxExItem")
     wxGridSizer* sizer = new wxGridSizer(3);
     panel->SetSizer(sizer);
     
-    wxExItem::UseConfig(false);
+    wex::item::UseConfig(false);
     
-    wxExItem item("item", "hello string", ITEM_TEXTCTRL, wxExControlData().Required(true));
+    wex::item item("item", "hello string", wex::ITEM_TEXTCTRL, wex::control_data().Required(true));
     
     REQUIRE( item.GetColumns() == 1);
     REQUIRE( std::any_cast<std::string>(item.GetInitial()) == "hello string");
     REQUIRE( item.GetData().Required());
     REQUIRE( item.GetLabel() == "item");
     REQUIRE( item.GetPage().empty());
-    REQUIRE( item.GetType() == ITEM_TEXTCTRL);
+    REQUIRE( item.GetType() == wex::ITEM_TEXTCTRL);
     REQUIRE( item.GetWindow() == nullptr);
     REQUIRE(!item.GetValue().has_value());
     REQUIRE(!item.IsRowGrowable());
     REQUIRE(!item.Apply());
     
     REQUIRE(!item.ToConfig(false));
-    wxExItem::UseConfig(true);
+    wex::item::UseConfig(true);
     REQUIRE( item.ToConfig(false));
-    wxExItem::UseConfig(false);
+    wex::item::UseConfig(false);
     
     item.SetDialog(nullptr);
     item.SetImageList(nullptr);
@@ -56,11 +56,11 @@ TEST_CASE("wxExItem")
     item.SetRowGrowable(true);
     REQUIRE( item.IsRowGrowable());
     
-    wxExItem item_int("int", ITEM_TEXTCTRL_INT, std::string("100"));
-    REQUIRE( item_int.GetType() == ITEM_TEXTCTRL_INT);
+    wex::item item_int("int", wex::ITEM_TEXTCTRL_INT, std::string("100"));
+    REQUIRE( item_int.GetType() == wex::ITEM_TEXTCTRL_INT);
     
-    wxExItem item_int2("int", ITEM_TEXTCTRL_INT, std::string("xxx"));
-    REQUIRE( item_int2.GetType() == ITEM_TEXTCTRL_INT);
+    wex::item item_int2("int", wex::ITEM_TEXTCTRL_INT, std::string("xxx"));
+    REQUIRE( item_int2.GetType() == wex::ITEM_TEXTCTRL_INT);
     item_int2.Layout(panel, sizer);
     REQUIRE( item_int2.GetWindow() != nullptr);
     try
@@ -75,14 +75,14 @@ TEST_CASE("wxExItem")
     {
     }
     
-    wxExItem item_float("float", ITEM_TEXTCTRL_FLOAT, std::string("100.001"));
-    REQUIRE( item_float.GetType() == ITEM_TEXTCTRL_FLOAT);
+    wex::item item_float("float", wex::ITEM_TEXTCTRL_FLOAT, std::string("100.001"));
+    REQUIRE( item_float.GetType() == wex::ITEM_TEXTCTRL_FLOAT);
     
-    wxExItem item_spin("spindouble", 20.0, 30.0, 25.0, 0.1);
-    REQUIRE( item_spin.GetType() == ITEM_SPINCTRLDOUBLE);
+    wex::item item_spin("spindouble", 20.0, 30.0, 25.0, 0.1);
+    REQUIRE( item_spin.GetType() == wex::ITEM_SPINCTRLDOUBLE);
 
 #ifdef __UNIX__
-    wxExItem item_picker("picker", ITEM_FILEPICKERCTRL, std::string("/usr/bin/git"));
+    wex::item item_picker("picker", wex::ITEM_FILEPICKERCTRL, std::string("/usr/bin/git"));
 #endif
     
     item.Layout(panel, sizer);
@@ -98,7 +98,7 @@ TEST_CASE("wxExItem")
     REQUIRE( item_int.SetValue(300l));
     REQUIRE( std::any_cast<long>(item_int.GetValue()) == 300);
 
-    // Write is tested in wxExItemDialog.
+    // Write is tested in wex::item_dialog.
     
     item_float.Layout(panel, sizer);
     REQUIRE( std::any_cast<double>(item_float.GetValue()) == 100.001);
@@ -108,7 +108,7 @@ TEST_CASE("wxExItem")
     REQUIRE( std::any_cast<std::string>(item_picker.GetValue()) == "/usr/bin/git");
 #endif
     
-    std::vector <wxExItem> items {item, item_int, item_spin
+    std::vector <wex::item> items {item, item_int, item_spin
 #ifdef __UNIX__
       , item_picker
 #endif
@@ -120,15 +120,15 @@ TEST_CASE("wxExItem")
     // Layout the items and check control is created.
     for (auto& it : items)
     {
-      // ITEM_USER is not yet laid out ok, gives errors.
-      if (it.GetType() != ITEM_USER)
+      // wex::ITEM_USER is not yet laid out ok, gives errors.
+      if (it.GetType() != wex::ITEM_USER)
       {
         // Testing on not nullptr not possible,
         // not all items need a sizer.
         it.Layout(panel, sizer);
       }
    
-      if (it.GetType() != ITEM_EMPTY && it.GetType() != ITEM_SPACER)
+      if (it.GetType() != wex::ITEM_EMPTY && it.GetType() != wex::ITEM_SPACER)
       {
         REQUIRE(it.GetWindow() != nullptr);
       }
@@ -147,17 +147,17 @@ TEST_CASE("wxExItem")
       "ITEM_NOTEBOOK_TOOL",
       "ITEM_NOTEBOOK_TREE"};
     
-    REQUIRE(titles.size() == ITEM_NOTEBOOK_TREE - ITEM_NOTEBOOK + 1); 
+    REQUIRE(titles.size() == wex::ITEM_NOTEBOOK_TREE - wex::ITEM_NOTEBOOK + 1); 
     
     // Test dialog using notebook with pages.
     for (
-      int style = ITEM_NOTEBOOK; 
-      style <= ITEM_NOTEBOOK_TREE;
+      int style = wex::ITEM_NOTEBOOK; 
+      style <= wex::ITEM_NOTEBOOK_TREE;
       style++)
     {
       wxImageList* il = nullptr;
       
-      if (style == ITEM_NOTEBOOK_TOOL)
+      if (style == wex::ITEM_NOTEBOOK_TOOL)
       {
         const wxSize imageSize(32, 32);
 
@@ -169,11 +169,11 @@ TEST_CASE("wxExItem")
         il->Add(wxArtProvider::GetIcon(wxART_ERROR, wxART_OTHER, imageSize));
       }
 
-      wxExItemDialog* dlg = new wxExItemDialog(
-        {NotebookItem((wxExItemType)style, LABEL_NONE, il)},
-        wxExWindowData().
+      wex::item_dialog* dlg = new wex::item_dialog(
+        {NotebookItem((wex::itemtype)style, wex::LABEL_NONE, il)},
+        wex::window_data().
           Button(wxOK | wxCANCEL | wxAPPLY).
-          Title(titles[style - ITEM_NOTEBOOK]));
+          Title(titles[style - wex::ITEM_NOTEBOOK]));
         
       dlg->Show();
 
@@ -187,11 +187,11 @@ TEST_CASE("wxExItem")
     }
   }
   
-  SUBCASE("wxExConfigDefaults")
+  SUBCASE("wex::config_defaults")
   {
-    wxExConfigDefaults def ({
-      {"item1", ITEM_TEXTCTRL_INT, 1500l},
-      {"item2", ITEM_TEXTCTRL_INT, 1510l}});
+    wex::config_defaults def ({
+      {"item1", wex::ITEM_TEXTCTRL_INT, 1500l},
+      {"item2", wex::ITEM_TEXTCTRL_INT, 1510l}});
     REQUIRE(def.Get() != nullptr);
   }
 }

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      frame.cpp
-// Purpose:   Implementation of wxExFrameWithHistory class
+// Purpose:   Implementation of wex::history_frame class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -24,16 +24,16 @@
 #include <wx/extension/report/listviewfile.h>
 #include <wx/extension/report/stream.h>
 
-wxExFrameWithHistory::wxExFrameWithHistory(
+wex::history_frame::history_frame(
   size_t maxFiles,
   size_t maxProjects,
-  const wxExWindowData& data)
-  : wxExManagedFrame(maxFiles, data)
+  const window_data& data)
+  : managed_frame(maxFiles, data)
   , m_ProjectHistory(maxProjects, ID_RECENT_PROJECT_LOWEST, "RecentProject")
   , m_Info({
-      wxExFindReplaceData::Get()->GetTextMatchWholeWord(),
-      wxExFindReplaceData::Get()->GetTextMatchCase(),
-      wxExFindReplaceData::Get()->GetTextRegEx()})
+      find_replace_data::Get()->GetTextMatchWholeWord(),
+      find_replace_data::Get()->GetTextMatchCase(),
+      find_replace_data::Get()->GetTextRegEx()})
 {
   // Take care of default value.
   if (!wxConfigBase::Get()->Exists(m_TextRecursive))
@@ -44,38 +44,38 @@ wxExFrameWithHistory::wxExFrameWithHistory(
   std::set<std::string> t(m_Info);
   t.insert(m_TextRecursive);
   
-  const std::vector<wxExItem> f {
-    {wxExFindReplaceData::Get()->GetTextFindWhat(), 
-       ITEM_COMBOBOX, std::any(), wxExControlData().Required(true)},
-    {m_TextInFiles, ITEM_COMBOBOX, std::any(), wxExControlData().Required(true)},
-    {m_TextInFolder, ITEM_COMBOBOX_DIR, std::any(), wxExControlData().Required(true)},
+  const std::vector<item> f {
+    {find_replace_data::Get()->GetTextFindWhat(), 
+       ITEM_COMBOBOX, std::any(), control_data().Required(true)},
+    {m_TextInFiles, ITEM_COMBOBOX, std::any(), control_data().Required(true)},
+    {m_TextInFolder, ITEM_COMBOBOX_DIR, std::any(), control_data().Required(true)},
     {t}};
   
-  m_FiFDialog = new wxExItemDialog(
+  m_FiFDialog = new item_dialog(
     f,
-    wxExWindowData().
+    window_data().
       Button(wxAPPLY | wxCANCEL).
       Id(ID_FIND_IN_FILES).
       Title(_("Find In Files").ToStdString()).
       Style(wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxSTAY_ON_TOP));
     
-  m_RiFDialog = new wxExItemDialog({
+  m_RiFDialog = new item_dialog({
       f.at(0),
-      {wxExFindReplaceData::Get()->GetTextReplaceWith(), ITEM_COMBOBOX},
+      {find_replace_data::Get()->GetTextReplaceWith(), ITEM_COMBOBOX},
       f.at(1),
       f.at(2),
       {_("Max replacements"), -1, INT_MAX},
       // Match whole word does not work with replace.
-      {{wxExFindReplaceData::Get()->GetTextMatchCase(),
-        wxExFindReplaceData::Get()->GetTextRegEx(),
+      {{find_replace_data::Get()->GetTextMatchCase(),
+        find_replace_data::Get()->GetTextRegEx(),
         m_TextRecursive}}},
-    wxExWindowData().
+    window_data().
       Button(wxAPPLY | wxCANCEL).
       Id(ID_REPLACE_IN_FILES).
       Title(_("Replace In Files").ToStdString()).
       Style(wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxSTAY_ON_TOP));
 
-  Bind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
+  Bind(wxEVT_IDLE, &history_frame::OnIdle, this);
   
   Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
     m_ProjectHistory.Save();
@@ -123,33 +123,33 @@ wxExFrameWithHistory::wxExFrameWithHistory(
     m_ProjectHistory.GetBaseId(), m_ProjectHistory.GetBaseId() + m_ProjectHistory.GetMaxFiles());
 }
 
-void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
+void wex::history_frame::FindInFiles(wxWindowID dialogid)
 {
   const bool replace = (dialogid == ID_REPLACE_IN_FILES);
-  const wxExTool tool = (replace ?
+  const wex::tool tool = (replace ?
     ID_TOOL_REPLACE: ID_TOOL_REPORT_FIND);
 
-  if (!wxExStreamToListView::SetupTool(tool, this)) return;
+  if (!listview_stream::SetupTool(tool, this)) return;
 
 #ifdef __WXMSW__
   std::thread t([=]{
 #endif
     wxLogStatus(GetFindReplaceInfoText(replace));
       
-    Unbind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
+    Unbind(wxEVT_IDLE, &history_frame::OnIdle, this);
 
-    if (wxExDirTool dir(
+    if (tool_dir dir(
       tool,
-      wxExConfigFirstOf(m_TextInFolder),
-      wxExConfigFirstOf(m_TextInFiles),
+      config_firstof(m_TextInFolder),
+      config_firstof(m_TextInFiles),
       DIR_FILES | (wxConfigBase::Get()->ReadBool(m_TextRecursive, true) ? 
         DIR_RECURSIVE : 0));
       dir.FindFiles() >= 0)
     {
-      wxExLogStatus(tool.Info(&dir.GetStatistics().GetElements()));
+      log_status(tool.Info(&dir.GetStatistics().GetElements()));
     }
     
-    Bind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
+    Bind(wxEVT_IDLE, &history_frame::OnIdle, this);
 
 #ifdef __WXMSW__
     });
@@ -157,27 +157,27 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
 #endif
 }
 
-bool wxExFrameWithHistory::FindInFiles(
-  const std::vector< wxExPath > & files,
+bool wex::history_frame::FindInFiles(
+  const std::vector< wex::path > & files,
   int id,
   bool show_dialog,
-  wxExListView* report)
+  listview* report)
 {
   if (files.empty())
   {
     return false;
   }
   
-  const wxExTool tool(id);
+  const wex::tool tool(id);
   
-  if (const wxExPath filename(files[0]); show_dialog && FindInFilesDialog(
+  if (const wex::path filename(files[0]); show_dialog && FindInFilesDialog(
     tool.GetId(),
     filename.DirExists() && !filename.FileExists()) == wxID_CANCEL)
   {
     return false;
   }
   
-  if (!wxExStreamToListView::SetupTool(tool, this, report))
+  if (!listview_stream::SetupTool(tool, this, report))
   {
     return false;
   }
@@ -185,30 +185,30 @@ bool wxExFrameWithHistory::FindInFiles(
 #ifdef __WXMSW__
   std::thread t([=]{
 #endif
-    wxExStatistics<int> stats;
+    statistics<int> stats;
     
     for (const auto& it : files)
     {
       if (it.FileExists())
       {
-        if (wxExStreamToListView file(it, tool); file.RunTool())
+        if (listview_stream file(it, tool); file.RunTool())
         {
           stats += file.GetStatistics().GetElements();
         }
       }
       else if (it.DirExists())
       {
-        wxExDirTool dir(
+        tool_dir dir(
           tool, 
           it, 
-          wxExConfigFirstOf(m_TextInFiles));
+          config_firstof(m_TextInFiles));
           
         dir.FindFiles();
         stats += dir.GetStatistics().GetElements();
       }
     }
     
-    wxExLogStatus(tool.Info(&stats));
+    log_status(tool.Info(&stats));
     
 #ifdef __WXMSW__
     });
@@ -218,7 +218,7 @@ bool wxExFrameWithHistory::FindInFiles(
   return true;
 }
 
-int wxExFrameWithHistory::FindInFilesDialog(
+int wex::history_frame::FindInFilesDialog(
   int id,
   bool add_in_files)
 {
@@ -227,12 +227,12 @@ int wxExFrameWithHistory::FindInFilesDialog(
     GetSTC()->GetFindString();
   }
 
-  if (wxExItemDialog({
-      {wxExFindReplaceData::Get()->GetTextFindWhat(), ITEM_COMBOBOX, std::any(), wxExControlData().Required(true)}, 
-      (add_in_files ? wxExItem(m_TextInFiles, ITEM_COMBOBOX, std::any(), wxExControlData().Required(true)) : wxExItem()),
-      (id == ID_TOOL_REPLACE ? wxExItem(wxExFindReplaceData::Get()->GetTextReplaceWith(), ITEM_COMBOBOX): wxExItem()),
-      wxExItem(m_Info)},
-    wxExWindowData().Title(GetFindInCaption(id))).ShowModal() == wxID_CANCEL)
+  if (item_dialog({
+      {find_replace_data::Get()->GetTextFindWhat(), ITEM_COMBOBOX, std::any(), control_data().Required(true)}, 
+      (add_in_files ? item(m_TextInFiles, ITEM_COMBOBOX, std::any(), control_data().Required(true)) : item()),
+      (id == ID_TOOL_REPLACE ? item(find_replace_data::Get()->GetTextReplaceWith(), ITEM_COMBOBOX): item()),
+      item(m_Info)},
+    window_data().Title(GetFindInCaption(id))).ShowModal() == wxID_CANCEL)
   {
     return wxID_CANCEL;
   }
@@ -242,37 +242,37 @@ int wxExFrameWithHistory::FindInFilesDialog(
   return wxID_OK;
 }
 
-const std::string wxExFrameWithHistory::GetFindInCaption(int id) const
+const std::string wex::history_frame::GetFindInCaption(int id) const
 {
   return (id == ID_TOOL_REPLACE ?
     _("Replace In Selection").ToStdString():
     _("Find In Selection").ToStdString());
 }
 
-const wxString wxExFrameWithHistory::GetFindReplaceInfoText(bool replace) const
+const wxString wex::history_frame::GetFindReplaceInfoText(bool replace) const
 {
   wxString log;
   
   // Printing a % in wxLogStatus gives assert
   if (
-    wxExFindReplaceData::Get()->GetFindString().find("%") == std::string::npos &&
-    wxExFindReplaceData::Get()->GetReplaceString().find("%") == std::string::npos )
+    find_replace_data::Get()->GetFindString().find("%") == std::string::npos &&
+    find_replace_data::Get()->GetReplaceString().find("%") == std::string::npos )
   {
-    log = _("Searching for") + ": " + wxExFindReplaceData::Get()->GetFindString();
+    log = _("Searching for") + ": " + find_replace_data::Get()->GetFindString();
 
     if (replace)
     {
-      log += " " + _("replacing with") + ": " + wxExFindReplaceData::Get()->GetReplaceString();
+      log += " " + _("replacing with") + ": " + find_replace_data::Get()->GetReplaceString();
     }
   }
 
   return log;
 }
 
-bool wxExFrameWithHistory::Grep(const std::string& arg, bool sed)
+bool wex::history_frame::Grep(const std::string& arg, bool sed)
 {
-  static wxString arg1 = wxExConfigFirstOf(m_TextInFolder);
-  static wxString arg2 = wxExConfigFirstOf(m_TextInFiles);
+  static wxString arg1 = config_firstof(m_TextInFolder);
+  static wxString arg2 = config_firstof(m_TextInFiles);
   static int arg3 = DIR_FILES;
 
   if (GetSTC() != nullptr)
@@ -280,24 +280,24 @@ bool wxExFrameWithHistory::Grep(const std::string& arg, bool sed)
     GetSTC()->GetFindString();
   }
 
-  if (!wxExCmdLine(
+  if (!cmdline(
     {{{"r", "recursive", "recursive"}, [&](bool on) {arg3 |= (on ? DIR_RECURSIVE: 0);}}},
     {},
     {{"rest", "match " + std::string(sed ? "replace": "") + " [extension] [folder]"}, 
        [&](const std::vector<std::string> & v) {
        size_t i = 0;
-       wxExFindReplaceData::Get()->SetFindString(v[i++]);
+       find_replace_data::Get()->SetFindString(v[i++]);
        if (sed) 
        {
          if (v.size() <= i) return false;
-         wxExFindReplaceData::Get()->SetReplaceString(v[i++]);
+         find_replace_data::Get()->SetReplaceString(v[i++]);
        }
        arg2 = (v.size() > i ? 
-         wxExConfigFirstOfWrite(m_TextInFiles, v[i++]): 
-         wxExConfigFirstOf(m_TextInFiles));
+         config_firstof_write(m_TextInFiles, v[i++]): 
+         config_firstof(m_TextInFiles));
        arg1 = (v.size() > i ? 
-         wxExConfigFirstOfWrite(m_TextInFolder, v[i++]): 
-         wxExConfigFirstOf(m_TextInFolder));
+         config_firstof_write(m_TextInFolder, v[i++]): 
+         config_firstof(m_TextInFolder));
        return true;}}).Parse(std::string(sed ? ":sed": ":grep") + " " + arg))
   {
     return false;
@@ -305,15 +305,15 @@ bool wxExFrameWithHistory::Grep(const std::string& arg, bool sed)
   
   if (arg1.empty() || arg2.empty())
   {
-    wxExLog("empty arguments") << arg1.ToStdString() << arg2.ToStdString();
+    log("empty arguments") << arg1.ToStdString() << arg2.ToStdString();
     return false;
   }
   
-  const wxExTool tool = (sed ?
+  const wex::tool tool = (sed ?
     ID_TOOL_REPLACE:
     ID_TOOL_REPORT_FIND);
 
-  if (!wxExStreamToListView::SetupTool(tool, this))
+  if (!listview_stream::SetupTool(tool, this))
   {
     return false;
   }
@@ -322,16 +322,16 @@ bool wxExFrameWithHistory::Grep(const std::string& arg, bool sed)
   std::thread t([=]{
 #endif
     if (auto* stc = GetSTC(); stc != nullptr)
-      wxExPath::Current(stc->GetFileName().GetPath());
-    wxExFindReplaceData::Get()->SetUseRegEx(true);
+      wex::path::Current(stc->GetFileName().GetPath());
+    find_replace_data::Get()->SetUseRegEx(true);
     wxLogStatus(GetFindReplaceInfoText());
-    Unbind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
+    Unbind(wxEVT_IDLE, &history_frame::OnIdle, this);
 
-    wxExDirTool dir(tool, arg1.ToStdString(), arg2.ToStdString(), arg3);
+    tool_dir dir(tool, arg1.ToStdString(), arg2.ToStdString(), arg3);
     dir.FindFiles();
 
-    wxExLogStatus(tool.Info(&dir.GetStatistics().GetElements()));
-    Bind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
+    log_status(tool.Info(&dir.GetStatistics().GetElements()));
+    Bind(wxEVT_IDLE, &history_frame::OnIdle, this);
   
 #ifdef __WXMSW__
     });
@@ -341,14 +341,14 @@ bool wxExFrameWithHistory::Grep(const std::string& arg, bool sed)
   return true;
 }
 
-void wxExFrameWithHistory::OnCommandItemDialog(
+void wex::history_frame::OnCommandItemDialog(
   wxWindowID dialogid,
   const wxCommandEvent& event)
 {
   switch (event.GetId())
   {
     case wxID_CANCEL:
-      if (wxExInterruptable::Cancel())
+      if (interruptable::Cancel())
       {
         wxLogStatus(_("Cancelled"));
       }
@@ -369,8 +369,8 @@ void wxExFrameWithHistory::OnCommandItemDialog(
             if (cfg->ReadBool(GetProject()->GetTextAddFolders(), true)) flags |= DIR_DIRS;
 
             GetProject()->AddItems(
-              wxExConfigFirstOf(GetProject()->GetTextInFolder()),
-              wxExConfigFirstOf(GetProject()->GetTextAddWhat()),
+              config_firstof(GetProject()->GetTextInFolder()),
+              config_firstof(GetProject()->GetTextAddWhat()),
               flags);
           }
           break;
@@ -388,7 +388,7 @@ void wxExFrameWithHistory::OnCommandItemDialog(
   }
 }
 
-void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
+void wex::history_frame::OnIdle(wxIdleEvent& event)
 {
   event.Skip();
 
@@ -425,19 +425,19 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
   }
 }
 
-void wxExFrameWithHistory::SetRecentFile(const wxExPath& path)
+void wex::history_frame::SetRecentFile(const wex::path& path)
 {
-  wxExManagedFrame::SetRecentFile(path);
+  managed_frame::SetRecentFile(path);
   
   if (m_FileHistoryList != nullptr && path.FileExists())
   {
-    wxExListItem(m_FileHistoryList, path).Insert(0);
+    listitem(m_FileHistoryList, path).Insert(0);
 
     if (m_FileHistoryList->GetItemCount() > 1)
     {
       for (auto i = m_FileHistoryList->GetItemCount() - 1; i >= 1 ; i--)
       {
-        if (wxExListItem item(m_FileHistoryList, i); item.GetFileName() == path)
+        if (listitem item(m_FileHistoryList, i); item.GetFileName() == path)
         {
           item.Delete();
         }
@@ -446,9 +446,9 @@ void wxExFrameWithHistory::SetRecentFile(const wxExPath& path)
   }
 }
 
-void wxExFrameWithHistory::UseFileHistoryList(wxExListView* list)
+void wex::history_frame::UseFileHistoryList(listview* list)
 {
-  wxASSERT(list->GetData().Type() == LIST_HISTORY);
+  wxASSERT(list->GetData().Type() == LISTVIEW_HISTORY);
   
   m_FileHistoryList = list;
   m_FileHistoryList->Hide();
@@ -456,7 +456,7 @@ void wxExFrameWithHistory::UseFileHistoryList(wxExListView* list)
   // Add all (existing) items from FileHistory.
   for (size_t i = 0; i < GetFileHistory().GetCount(); i++)
   {
-    if (wxExListItem item(m_FileHistoryList, 
+    if (listitem item(m_FileHistoryList, 
       GetFileHistory().GetHistoryFile(i));
       item.GetFileName().GetStat().IsOk())
     {

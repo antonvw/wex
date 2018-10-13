@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test.h
-// Purpose:   Declaration of classes for wxExtension report unit testing
+// Purpose:   Declaration of classes for wex::tension report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -12,7 +12,7 @@
 #include "../test.h"
 
 /// Returns the frame.
-wxExFrameWithHistory* GetFrame();
+wex::history_frame* GetFrame();
 
 /// Returns the project.
 const std::string GetProject();

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      style.cpp
-// Purpose:   Implementation of wxExStyle class
+// Purpose:   Implementation of wex::style class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -18,7 +18,7 @@
 #include <wx/extension/tokenizer.h>
 #include <easylogging++.h>
 
-void wxExStyle::Apply(wxStyledTextCtrl* stc) const
+void wex::style::Apply(wxStyledTextCtrl* stc) const
 {
   // Currently the default style is constructed using
   // default constructor.
@@ -36,33 +36,33 @@ void wxExStyle::Apply(wxStyledTextCtrl* stc) const
   }
 }
 
-bool wxExStyle::ContainsDefaultStyle() const
+bool wex::style::ContainsDefaultStyle() const
 {
   return (m_No.find(wxSTC_STYLE_DEFAULT) != m_No.end());
 }
 
-const std::string wxExStyle::GetNo() const
+const std::string wex::style::GetNo() const
 {
   return std::accumulate(m_No.begin(), m_No.end(), std::string{}, 
     [](const std::string& a, int b) {return a + std::to_string(b) + ' ';});
 }
 
-void wxExStyle::Set(const pugi::xml_node& node, const std::string& macro)
+void wex::style::Set(const pugi::xml_node& node, const std::string& macro)
 {
   m_Define = node.attribute("no").value();
 
   SetNo(
-    wxExLexers::Get()->ApplyMacro(m_Define, macro), macro, node);
+    lexers::Get()->ApplyMacro(m_Define, macro), macro, node);
 
   // The style is parsed using the themed macros, and
   // you can specify several styles separated by a + sign.
-  for (wxExTokenizer tkz(node.text().get(), "+"); tkz.HasMoreTokens(); )
+  for (tokenizer tkz(node.text().get(), "+"); tkz.HasMoreTokens(); )
   {
     // Collect each single field style.
     const auto& single = tkz.GetNextToken();
 
-    if (const auto& it = wxExLexers::Get()->GetThemeMacros().find(single);
-      it != wxExLexers::Get()->GetThemeMacros().end())
+    if (const auto& it = lexers::Get()->GetThemeMacros().find(single);
+      it != lexers::Get()->GetThemeMacros().end())
     {
       wxString value = it->second;
 
@@ -102,11 +102,11 @@ void wxExStyle::Set(const pugi::xml_node& node, const std::string& macro)
 
   if (m_Value.empty())
   {
-    wxExLog("empty style") << GetNo() << node;
+    log("empty style") << GetNo() << node;
   }
 }
 
-void wxExStyle::SetNo(
+void wex::style::SetNo(
   const std::string& no, 
   const std::string& macro, 
   const pugi::xml_node& node)
@@ -114,9 +114,9 @@ void wxExStyle::SetNo(
   m_No.clear();
 
   // Collect each single no in the vector.
-  for (wxExTokenizer tkz(no, ","); tkz.HasMoreTokens(); )
+  for (tokenizer tkz(no, ","); tkz.HasMoreTokens(); )
   {
-    const auto& single = wxExLexers::Get()->ApplyMacro(tkz.GetNextToken(), macro);
+    const auto& single = lexers::Get()->ApplyMacro(tkz.GetNextToken(), macro);
  
     try
     {

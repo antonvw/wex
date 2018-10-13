@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      app.cpp
-// Purpose:   Implementation of sample classes for wxExRep
+// Purpose:   Implementation of wex report sample classes
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -26,38 +26,38 @@
 #include "app.xpm"
 #endif
 
-wxIMPLEMENT_APP(wxExRepSampleApp);
+wxIMPLEMENT_APP(report_sample_app);
 
-bool wxExRepSampleApp::OnInit()
+bool report_sample_app::OnInit()
 {
-  SetAppName("wxex-sample-rep");
+  SetAppName("wex-sample-rep");
 
-  if (!wxExApp::OnInit())
+  if (!wex::app::OnInit())
   {
     return false;
   }
 
-  wxExRepSampleFrame *frame = new wxExRepSampleFrame();
+  report_sample_frame *frame = new report_sample_frame();
   frame->Show(true);
 
   return true;
 }
 
-wxExRepSampleFrame::wxExRepSampleFrame() : wxExFrameWithHistory()
+report_sample_frame::report_sample_frame() : wex::history_frame()
 {
   SetIcon(wxICON(app));
 
-  wxExMenu *menuFile = new wxExMenu;
+  wex::menu *menuFile = new wex::menu;
   menuFile->Append(wxID_OPEN);
   menuFile->AppendSeparator();
   menuFile->AppendPrint();
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT);
 
-  wxExMenu *menuView = new wxExMenu;
+  wex::menu *menuView = new wex::menu;
   AppendPanes(menuView);
 
-  wxExMenu* menuHelp = new wxExMenu;
+  wex::menu* menuHelp = new wex::menu;
   menuHelp->Append(wxID_ABOUT);
 
   wxMenuBar *menubar = new wxMenuBar;
@@ -73,17 +73,17 @@ wxExRepSampleFrame::wxExRepSampleFrame() : wxExFrameWithHistory()
     {"PaneInfo", 100},
     {"PaneLexer", 60}});
 
-  m_NotebookWithLists = new wxExNotebook(
-    wxExWindowData().Style(wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_WINDOWLIST_BUTTON));
+  m_NotebookWithLists = new wex::notebook(
+    wex::window_data().Style(wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_WINDOWLIST_BUTTON));
 
-  m_STC = new wxExSTC();
+  m_STC = new wex::stc();
 
-  const wxExLexer lexer = wxExLexers::Get()->FindByName("cpp");
+  const wex::lexer lexer = wex::lexers::Get()->FindByName("cpp");
 
-  for (int i = LIST_FOLDER; i <= LIST_FILE; i++)
+  for (int i = wex::LISTVIEW_FOLDER; i <= wex::LISTVIEW_FILE; i++)
   {
-    auto* vw = new wxExListViewWithFrame(
-      wxExListViewData().Type((wxExListType)i).Lexer(&lexer));
+    auto* vw = new wex::history_listview(
+      wex::listview_data().Type((wex::listview_type)i).Lexer(&lexer));
 
     m_NotebookWithLists->AddPage(
       vw, 
@@ -101,31 +101,31 @@ wxExRepSampleFrame::wxExRepSampleFrame() : wxExFrameWithHistory()
     wxAuiPaneInfo().CloseButton(false).Bottom().MinSize(wxSize(250, 250)));
 
   GetManager().AddPane(
-    new wxExGenericDirCtrl(this),
+    new wex::dirctrl(this),
     wxAuiPaneInfo().Caption("DirCtrl").Left().MinSize(wxSize(250, 250)));
 
   GetManager().Update();
 
-  wxExDirWithListView dir(
-    (wxExListView*)m_NotebookWithLists->GetPageByKey(
-      wxExListViewData().Type(LIST_FILE).TypeDescription()),
-    wxExPath::Current(),
+  wex::listview_dir dir(
+    (wex::listview*)m_NotebookWithLists->GetPageByKey(
+      wex::listview_data().Type(wex::LISTVIEW_FILE).TypeDescription()),
+    wex::path::Current(),
     "*.cpp;*.h");
 
   dir.FindFiles();
 
-  wxExListItem item(
-    (wxExListView*)m_NotebookWithLists->GetPageByKey(
-      wxExListViewData().Type(LIST_FILE).TypeDescription()),
-    wxExPath("NOT EXISTING ITEM"));
+  wex::listitem item(
+    (wex::listview*)m_NotebookWithLists->GetPageByKey(
+      wex::listview_data().Type(wex::LISTVIEW_FILE).TypeDescription()),
+    wex::path("NOT EXISTING ITEM"));
 
   item.Insert();
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxAboutDialogInfo info;
     info.SetIcon(GetIcon());
-    info.SetVersion(wxExGetVersionInfo().GetVersionOnlyString());
-    info.SetCopyright(wxExGetVersionInfo().GetCopyright());
+    info.SetVersion(wex::get_version_info().Get());
+    info.SetCopyright(wex::get_version_info().Copyright());
     wxAboutBox(info);}, wxID_ABOUT);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -134,7 +134,7 @@ wxExRepSampleFrame::wxExRepSampleFrame() : wxExFrameWithHistory()
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {;}, wxID_HELP);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_STC->GetFile().FileNew(wxExPath());}, wxID_NEW);
+    m_STC->GetFile().FileNew(wex::path());}, wxID_NEW);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (m_STC->HasCapture())
@@ -168,23 +168,23 @@ wxExRepSampleFrame::wxExRepSampleFrame() : wxExFrameWithHistory()
     }}, wxID_PRINT);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-	  wxExPrinting::Get()->GetHtmlPrinter()->PageSetup();}, wxID_PRINT_SETUP);
+	  wex::printing::Get()->GetHtmlPrinter()->PageSetup();}, wxID_PRINT_SETUP);
 }
 
-wxExListView* wxExRepSampleFrame::Activate(
-  wxExListType type, 
-  const wxExLexer* lexer)
+wex::listview* report_sample_frame::Activate(
+  wex::listview_type type, 
+  const wex::lexer* lexer)
 {
   for (
     size_t i = 0;
     i < m_NotebookWithLists->GetPageCount();
     i++)
   {
-    wxExListView* vw = (wxExListView*)m_NotebookWithLists->GetPage(i);
+    wex::listview* vw = (wex::listview*)m_NotebookWithLists->GetPage(i);
 
     if (vw->GetData().Type() == type)
     {
-      if (type == LIST_KEYWORD)
+      if (type == wex::LISTVIEW_KEYWORD)
       {
         if (lexer != nullptr)
         {
@@ -207,7 +207,7 @@ wxExListView* wxExRepSampleFrame::Activate(
   return nullptr;
 }
 
-bool wxExRepSampleFrame::AllowClose(wxWindowID id, wxWindow* page)
+bool report_sample_frame::AllowClose(wxWindowID id, wxWindow* page)
 {
   if (page == GetFileHistoryList())
   {
@@ -217,29 +217,26 @@ bool wxExRepSampleFrame::AllowClose(wxWindowID id, wxWindow* page)
   }  
   else
   {
-    return wxExFrameWithHistory::AllowClose(id, page);
+    return wex::history_frame::AllowClose(id, page);
   }
 }
 
-wxExListView* wxExRepSampleFrame::GetListView()
+wex::listview* report_sample_frame::GetListView()
 {
-  return (wxExListView*)m_NotebookWithLists->GetPage(
+  return (wex::listview*)m_NotebookWithLists->GetPage(
     m_NotebookWithLists->GetSelection());
 }
 
 
-wxExSTC* wxExRepSampleFrame::GetSTC()
+wex::stc* report_sample_frame::GetSTC()
 {
   return m_STC;
 }
   
-wxExSTC* wxExRepSampleFrame::OpenFile(const wxExPath& file, const wxExSTCData& data)
+wex::stc* report_sample_frame::OpenFile(const wex::path& file, const wex::stc_data& data)
 {
   m_STC->GetLexer().Reset();
-
-  // We cannot use the wxExFrameWithHistory::OpenFile, as that uses GetSTC.
-  // Prevent recursion.
-  m_STC->Open(file, wxExSTCData(data).Flags(STC_WIN_DEFAULT));
+  m_STC->Open(file, wex::stc_data(data).Flags(wex::STC_WIN_DEFAULT));
   
   return m_STC;
 }

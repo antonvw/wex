@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      cmdline.cpp
-// Purpose:   Implementation of wxExCmdLine class
+// Purpose:   Implementation of wex::cmdline class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -18,213 +18,216 @@
 #include <wx/extension/tokenizer.h>
 #include <wx/extension/version.h>
 
-class wxExCmdLineOption
+namespace wex
 {
-public:
-  wxExCmdLineOption(
-    TCLAP::ValueArg<float>* f, std::function<void(const std::any& any)> fu)
-    : m_val(f), m_f(fu) {;};
-
-  wxExCmdLineOption(
-    TCLAP::ValueArg<int>* i, std::function<void(const std::any& any)> fu)
-    : m_val(i), m_f(fu) {;};
-
-  wxExCmdLineOption(
-    TCLAP::ValueArg<std::string>* s, std::function<void(const std::any& any)> fu)
-    : m_val(s), m_f(fu) {;};
-
- ~wxExCmdLineOption()
+  class cmdline_option
   {
-    if (std::holds_alternative<TCLAP::ValueArg<float>*>(m_val))
-      delete std::get<0>(m_val);
-    else if (std::holds_alternative<TCLAP::ValueArg<int>*>(m_val))
-      delete std::get<1>(m_val);
-    else if (std::holds_alternative<TCLAP::ValueArg<std::string>*>(m_val))
-      delete std::get<2>(m_val);
+  public:
+    cmdline_option(
+      TCLAP::ValueArg<float>* f, std::function<void(const std::any& any)> fu)
+      : m_val(f), m_f(fu) {;};
+
+    cmdline_option(
+      TCLAP::ValueArg<int>* i, std::function<void(const std::any& any)> fu)
+      : m_val(i), m_f(fu) {;};
+
+    cmdline_option(
+      TCLAP::ValueArg<std::string>* s, std::function<void(const std::any& any)> fu)
+      : m_val(s), m_f(fu) {;};
+
+   ~cmdline_option()
+    {
+      if (std::holds_alternative<TCLAP::ValueArg<float>*>(m_val))
+        delete std::get<0>(m_val);
+      else if (std::holds_alternative<TCLAP::ValueArg<int>*>(m_val))
+        delete std::get<1>(m_val);
+      else if (std::holds_alternative<TCLAP::ValueArg<std::string>*>(m_val))
+        delete std::get<2>(m_val);
+    };
+
+    const std::string GetDescription() const {
+      if (auto pval = std::get_if<TCLAP::ValueArg<float>*>(&m_val))
+      {
+        return (*pval)->getDescription();
+      }
+      else if (auto pval = std::get_if<TCLAP::ValueArg<int>*>(&m_val))
+      {
+        return (*pval)->getDescription();
+      }
+      else if (auto pval = std::get_if<TCLAP::ValueArg<std::string>*>(&m_val))
+      {
+        return (*pval)->getDescription();
+      }
+      return std::string();};
+
+    
+    const std::string GetName() const {
+      if (auto pval = std::get_if<TCLAP::ValueArg<float>*>(&m_val))
+      {
+        return (*pval)->getName();
+      }
+      else if (auto pval = std::get_if<TCLAP::ValueArg<int>*>(&m_val))
+      {
+        return (*pval)->getName();
+      }
+      else if (auto pval = std::get_if<TCLAP::ValueArg<std::string>*>(&m_val))
+      {
+        return (*pval)->getName();
+      }
+      return std::string();};
+
+    const std::string GetValue() const {
+      if (auto pval = std::get_if<TCLAP::ValueArg<float>*>(&m_val))
+      {
+        if (const int v = (*pval)->getValue(); v != -1) 
+        {
+          return std::to_string(v);
+        }
+      }
+      else if (auto pval = std::get_if<TCLAP::ValueArg<int>*>(&m_val))
+      {
+        if (const int v = (*pval)->getValue(); v != -1) 
+        {
+          return std::to_string(v);
+        }
+      }
+      else if (auto pval = std::get_if<TCLAP::ValueArg<std::string>*>(&m_val))
+      {
+        if (const std::string v = (*pval)->getValue(); !v.empty()) 
+        {
+          return v;
+        }
+      }
+      return std::string();};
+
+    void Run(bool save) const
+    {
+      if (auto pval = std::get_if<TCLAP::ValueArg<float>*>(&m_val))
+      {
+        if (const float v = (*pval)->getValue(); v != -1) 
+        {
+          m_f(v);
+
+          if (save)
+          {
+            wxConfigBase::Get()->Write(GetName(), v);
+          }
+        }
+      }
+      else if (auto pval = std::get_if<TCLAP::ValueArg<int>*>(&m_val))
+      {
+        if (const int v = (*pval)->getValue(); v != -1) 
+        {
+          m_f(v);
+
+          if (save)
+          {
+            wxConfigBase::Get()->Write(GetName(), v);
+          }
+        }
+      }
+      else if (auto pval = std::get_if<TCLAP::ValueArg<std::string>*>(&m_val))
+      {
+        if (const std::string v = (*pval)->getValue(); !v.empty()) 
+        {
+          m_f(v);
+
+          if (save)
+          {
+            wxConfigBase::Get()->Write(GetName(), v.c_str());
+          }
+        }
+      }
+    }
+  private:    
+    std::function<void(const std::any& any)> m_f; 
+
+    const std::variant <
+      TCLAP::ValueArg<float>*,
+      TCLAP::ValueArg<int>*,
+      TCLAP::ValueArg<std::string>*> m_val; 
   };
 
-  const std::string GetDescription() const {
-    if (auto pval = std::get_if<TCLAP::ValueArg<float>*>(&m_val))
-    {
-      return (*pval)->getDescription();
-    }
-    else if (auto pval = std::get_if<TCLAP::ValueArg<int>*>(&m_val))
-    {
-      return (*pval)->getDescription();
-    }
-    else if (auto pval = std::get_if<TCLAP::ValueArg<std::string>*>(&m_val))
-    {
-      return (*pval)->getDescription();
-    }
-    return std::string();};
-
-  
-  const std::string GetName() const {
-    if (auto pval = std::get_if<TCLAP::ValueArg<float>*>(&m_val))
-    {
-      return (*pval)->getName();
-    }
-    else if (auto pval = std::get_if<TCLAP::ValueArg<int>*>(&m_val))
-    {
-      return (*pval)->getName();
-    }
-    else if (auto pval = std::get_if<TCLAP::ValueArg<std::string>*>(&m_val))
-    {
-      return (*pval)->getName();
-    }
-    return std::string();};
-
-  const std::string GetValue() const {
-    if (auto pval = std::get_if<TCLAP::ValueArg<float>*>(&m_val))
-    {
-      if (const int v = (*pval)->getValue(); v != -1) 
-      {
-        return std::to_string(v);
-      }
-    }
-    else if (auto pval = std::get_if<TCLAP::ValueArg<int>*>(&m_val))
-    {
-      if (const int v = (*pval)->getValue(); v != -1) 
-      {
-        return std::to_string(v);
-      }
-    }
-    else if (auto pval = std::get_if<TCLAP::ValueArg<std::string>*>(&m_val))
-    {
-      if (const std::string v = (*pval)->getValue(); !v.empty()) 
-      {
-        return v;
-      }
-    }
-    return std::string();};
-
-  void Run(bool save) const
+  class cmdline_param
   {
-    if (auto pval = std::get_if<TCLAP::ValueArg<float>*>(&m_val))
+  public:
+    cmdline_param(
+      TCLAP::UnlabeledMultiArg<std::string>* arg, 
+      std::function<bool(std::vector<std::string>)> f) 
+    : m_val({arg, f}) {;}; 
+
+   ~cmdline_param() {delete m_val.first;};
+
+    bool Run() const
     {
-      if (const float v = (*pval)->getValue(); v != -1) 
-      {
-        m_f(v);
-
-        if (save)
-        {
-          wxConfigBase::Get()->Write(GetName(), v);
-        }
-      }
+      return 
+        m_val.first->getValue().empty() || m_val.second(m_val.first->getValue());
     }
-    else if (auto pval = std::get_if<TCLAP::ValueArg<int>*>(&m_val))
-    {
-      if (const int v = (*pval)->getValue(); v != -1) 
-      {
-        m_f(v);
+  private:
+    const std::pair<
+      TCLAP::UnlabeledMultiArg<std::string>*, 
+      std::function<bool(std::vector<std::string>)>> m_val; 
+  };
 
-        if (save)
-        {
-          wxConfigBase::Get()->Write(GetName(), v);
-        }
-      }
-    }
-    else if (auto pval = std::get_if<TCLAP::ValueArg<std::string>*>(&m_val))
-    {
-      if (const std::string v = (*pval)->getValue(); !v.empty()) 
-      {
-        m_f(v);
-
-        if (save)
-        {
-          wxConfigBase::Get()->Write(GetName(), v.c_str());
-        }
-      }
-    }
-  }
-private:    
-  std::function<void(const std::any& any)> m_f; 
-
-  const std::variant <
-    TCLAP::ValueArg<float>*,
-    TCLAP::ValueArg<int>*,
-    TCLAP::ValueArg<std::string>*> m_val; 
-};
-
-class wxExCmdLineParam
-{
-public:
-  wxExCmdLineParam(
-    TCLAP::UnlabeledMultiArg<std::string>* arg, 
-    std::function<bool(std::vector<std::string>)> f) 
-  : m_val({arg, f}) {;}; 
-
- ~wxExCmdLineParam() {delete m_val.first;};
-
-  bool Run() const
+  class cmdline_parser : public TCLAP::CmdLine
   {
-    return 
-      m_val.first->getValue().empty() || m_val.second(m_val.first->getValue());
-  }
-private:
-  const std::pair<
-    TCLAP::UnlabeledMultiArg<std::string>*, 
-    std::function<bool(std::vector<std::string>)>> m_val; 
-};
+  public:
+    cmdline_parser(
+      const std::string& message,
+      char delim,
+      const std::string& version,
+      bool help)
+    : TCLAP::CmdLine(message, delim, version, help) {;};
+  };
 
-class wxExCmdLineParser : public TCLAP::CmdLine
-{
-public:
-  wxExCmdLineParser(
-    const std::string& message,
-    char delim,
-    const std::string& version,
-    bool help)
-  : TCLAP::CmdLine(message, delim, version, help) {;};
-};
-
-class wxExCmdLineSwitch
-{
-public:
-  wxExCmdLineSwitch(
-    TCLAP::SwitchArg* arg, 
-    std::function<void(bool)> f)
-  : m_val({arg, f}) {;};
-
- ~wxExCmdLineSwitch() {delete m_val.first;};
-
-  const std::string GetDescription() const {return m_val.first->getDescription();};
-  
-  const std::string& GetName() const {return m_val.first->getName();};
-
-  bool GetValue() const {return *m_val.first;};
-
-  void Run(bool save) const
+  class cmdline_switch
   {
-    const bool def = wxConfigBase::Get()->ReadBool(GetName(), false);
+  public:
+    cmdline_switch(
+      TCLAP::SwitchArg* arg, 
+      std::function<void(bool)> f)
+    : m_val({arg, f}) {;};
+
+   ~cmdline_switch() {delete m_val.first;};
+
+    const std::string GetDescription() const {return m_val.first->getDescription();};
     
-    if (def != GetValue())
-    {
-      m_val.second(GetValue());
+    const std::string& GetName() const {return m_val.first->getName();};
 
-      if (save)
+    bool GetValue() const {return *m_val.first;};
+
+    void Run(bool save) const
+    {
+      const bool def = wxConfigBase::Get()->ReadBool(GetName(), false);
+      
+      if (def != GetValue())
       {
-        wxConfigBase::Get()->Write(GetName(), GetValue());
+        m_val.second(GetValue());
+
+        if (save)
+        {
+          wxConfigBase::Get()->Write(GetName(), GetValue());
+        }
       }
     }
-  }
-private:
-  const std::pair<
-    TCLAP::SwitchArg*, 
-    std::function<void(bool)>> m_val; 
+  private:
+    const std::pair<
+      TCLAP::SwitchArg*, 
+      std::function<void(bool)>> m_val; 
+  };
 };
 
-wxExCmdLine::wxExCmdLine(
-  const CmdSwitches & s, 
-  const CmdOptions & o, 
-  const CmdParams & p,
+wex::cmdline::cmdline(
+  const cmd_switches & s, 
+  const cmd_options & o, 
+  const cmd_params & p,
   const std::string& message,
   const std::string& version,
   bool helpAndVersion)
-  : m_Parser(new wxExCmdLineParser(
+  : m_Parser(new cmdline_parser(
       message, ' ', 
       version.empty() ? 
-        wxExGetVersionInfo().Get(): version, 
+        get_version_info().Get(): version, 
       helpAndVersion))
 {
   m_Parser->setExceptionHandling(false);
@@ -258,7 +261,7 @@ wxExCmdLine::wxExCmdLine(
             flag, it->first[p_n], it->first[p_d],
             false, def, "float");
           m_Parser->add(arg);
-          m_Options.emplace_back(new wxExCmdLineOption(arg, it->second.second));
+          m_Options.emplace_back(new cmdline_option(arg, it->second.second));
           }
           break;
 
@@ -270,7 +273,7 @@ wxExCmdLine::wxExCmdLine(
             flag, it->first[p_n], it->first[p_d],
             false, def, "int");
           m_Parser->add(arg);
-          m_Options.emplace_back(new wxExCmdLineOption(arg, it->second.second));
+          m_Options.emplace_back(new cmdline_option(arg, it->second.second));
           }
           break;
         
@@ -282,11 +285,11 @@ wxExCmdLine::wxExCmdLine(
             flag, it->first[p_n], it->first[p_d],
             false, def_specified, "string");
           m_Parser->add(arg);
-          m_Options.emplace_back(new wxExCmdLineOption(arg, it->second.second));
+          m_Options.emplace_back(new cmdline_option(arg, it->second.second));
           }
           break;
         
-        default: wxExLog() << "unknown type";
+        default: log() << "unknown type";
       }
     }
 
@@ -310,7 +313,7 @@ wxExCmdLine::wxExCmdLine(
       
       auto* arg = new TCLAP::SwitchArg(
         flag, it->first[p_n], it->first[p_d], def); 
-      m_Switches.emplace_back(new wxExCmdLineSwitch(arg, it->second));
+      m_Switches.emplace_back(new cmdline_switch(arg, it->second));
       m_Parser->add(arg);
     }
 
@@ -318,24 +321,24 @@ wxExCmdLine::wxExCmdLine(
     {
       auto* arg = new TCLAP::UnlabeledMultiArg<std::string>(
         p.first.first, p.first.second, false, std::string());
-      m_Params.emplace_back(new wxExCmdLineParam(arg, p.second));
+      m_Params.emplace_back(new cmdline_param(arg, p.second));
       m_Parser->add(arg);
     }
   }
   catch (TCLAP::ArgException& e)
   {
-    wxExLog(e) << "tclap";
+    log(e) << "tclap";
   }
   catch (TCLAP::ExitException& )
   {
   }
   catch (std::exception& e)
   {
-    wxExLog(e) << "wxExCmdLine";
+    log(e) << "wex::cmdline";
   }
 }
 
-wxExCmdLine::~wxExCmdLine()
+wex::cmdline::~cmdline()
 {
   for (auto& it : m_Options) delete it;
   for (auto& it : m_Params) delete it;
@@ -344,17 +347,17 @@ wxExCmdLine::~wxExCmdLine()
   delete m_Parser;
 }
   
-char wxExCmdLine::Delimiter() const
+char wex::cmdline::Delimiter() const
 {
   return TCLAP::Arg::delimiter();
 }
   
-void wxExCmdLine::Delimiter(char c)
+void wex::cmdline::Delimiter(char c)
 {
   TCLAP::Arg::setDelimiter(c);
 }
 
-bool wxExCmdLine::Parse(
+bool wex::cmdline::Parse(
   const std::string& cmdline, bool save, const char delimiter)
 {
   Delimiter(delimiter);
@@ -367,7 +370,7 @@ bool wxExCmdLine::Parse(
     }
     else
     {
-      wxExTokenizer tkz(cmdline);
+      tokenizer tkz(cmdline);
       auto v = tkz.Tokenize<std::vector<std::string>>();
       m_Parser->parse(v);
     }
@@ -384,7 +387,7 @@ bool wxExCmdLine::Parse(
 
     if (!m_Params.empty() && !m_Params[0]->Run())
     {
-      wxExLog() << "could not run params";
+      log() << "could not run params";
       return false;
     }
     
@@ -392,7 +395,7 @@ bool wxExCmdLine::Parse(
   }
   catch (TCLAP::ArgException& e)
   {
-    wxExLog(e) << "tclap";
+    log(e) << "tclap";
     return false;
   }
   catch (TCLAP::ExitException& )
@@ -401,22 +404,22 @@ bool wxExCmdLine::Parse(
   }
   catch (std::exception& e)
   {
-    wxExLog(e) << "parse";
+    log(e) << "parse";
     return false;
   }
 }
 
-void wxExCmdLine::ShowOptions(const wxExWindowData& data) const
+void wex::cmdline::ShowOptions(const window_data& data) const
 {
-  static wxExSTCEntryDialog* dlg = nullptr;
-  const wxExLexerProps l;
+  static stc_entry_dialog* dlg = nullptr;
+  const lexer_props l;
 
   if (dlg == nullptr)
   {
-    dlg = new wxExSTCEntryDialog(
+    dlg = new stc_entry_dialog(
       std::string(),
       std::string(),
-      wxExWindowData(data).Button(wxOK).Title("Options"));
+      window_data(data).Button(wxOK).Title("Options"));
 
     dlg->GetSTC()->GetLexer().Set(l);
   }

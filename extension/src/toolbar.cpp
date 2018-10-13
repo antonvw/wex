@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      toolbar.cpp
-// Purpose:   Implementation of wxExToolBar class
+// Purpose:   Implementation of wex::toolbar class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -23,23 +23,26 @@
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 
-/// Support class.
-/// Offers a find text ctrl that allows you to find text
-/// on a current Grid, ListView or STC on an wxExFrame.
-/// Pressing key up and down browses through values from
-/// wxExFindReplaceData, and pressing enter sets value
-/// in wxExFindReplaceData.
-class wxExFindTextCtrl : public wxTextCtrl
+namespace wex
 {
-public:
-  /// Constructor. Fills the text ctrl with value 
-  /// from FindReplace from config.
-  wxExFindTextCtrl(wxExFrame* frame, const wxExWindowData& data);
-    
-  /// Finds current value in control.
-  void Find(bool find_next = true, bool restore_position = false);
-private:
-  wxExFrame* m_Frame;
+  /// Support class.
+  /// Offers a find text ctrl that allows you to find text
+  /// on a current Grid, ListView or STC on an frame.
+  /// Pressing key up and down browses through values from
+  /// find_replace_data, and pressing enter sets value
+  /// in find_replace_data.
+  class find_textctrl : public wxTextCtrl
+  {
+  public:
+    /// Constructor. Fills the text ctrl with value 
+    /// from FindReplace from config.
+    find_textctrl(frame* frame, const window_data& data);
+      
+    /// Finds current value in control.
+    void Find(bool find_next = true, bool restore_position = false);
+  private:
+    frame* m_Frame;
+  };
 };
 
 void FindPopupMenu(wxWindow* win, const std::list < std::string > & l, const wxPoint& pos)
@@ -52,16 +55,16 @@ void FindPopupMenu(wxWindow* win, const std::list < std::string > & l, const wxP
   for (const auto& it : l)
   {
     menu->Append(new wxMenuItem(menu, 
-      ID_FIND_FIRST + i++, 
+      wex::ID_FIND_FIRST + i++, 
       (it.size() >= max_size - 3 ? it.substr(0, max_size) + "..." : it)));
     
-    if (i >= FIND_MAX_FINDS) break;
+    if (i >= wex::FIND_MAX_FINDS) break;
   }
   
   if (menu->GetMenuItemCount() > 0)
   {
     menu->AppendSeparator();
-    menu->Append(ID_CLEAR_FINDS, wxGetStockLabel(wxID_CLEAR));
+    menu->Append(wex::ID_CLEAR_FINDS, wxGetStockLabel(wxID_CLEAR));
     win->PopupMenu(menu, pos);
   }
     
@@ -86,14 +89,14 @@ bool PrepDropDown(wxAuiToolBar* tb, wxAuiToolBarEvent& event)
   return true;
 }
     
-wxExToolBar::wxExToolBar(wxExManagedFrame* frame, const wxExWindowData& data)
+wex::toolbar::toolbar(managed_frame* frame, const window_data& data)
   : wxAuiToolBar(frame, data.Id(), data.Pos(), data.Size(), 
       data.Style() | wxAUI_TB_HORZ_TEXT | wxAUI_TB_PLAIN_BACKGROUND)
   , m_Frame(frame)
 {
 }
 
-void wxExToolBar::AddControls(bool realize)
+void wex::toolbar::AddControls(bool realize)
 {
   AddTool(wxID_NEW);
   AddTool(wxID_OPEN);
@@ -103,7 +106,7 @@ void wxExToolBar::AddControls(bool realize)
   AddTool(wxID_REDO);
   AddTool(wxID_FIND);
   
-  if (wxExProcess::GetShell() != nullptr)
+  if (process::GetShell() != nullptr)
   {
     AddTool(wxID_EXECUTE);
   }
@@ -113,7 +116,7 @@ void wxExToolBar::AddControls(bool realize)
 
   Bind(wxEVT_AUITOOLBAR_TOOL_DROPDOWN, [=](wxAuiToolBarEvent& event) {
     if (!PrepDropDown(this, event)) return;
-    FindPopupMenu(this, wxExFindReplaceData::Get()->GetFindStrings(), GetPoint(this, event));
+    FindPopupMenu(this, find_replace_data::Get()->GetFindStrings(), GetPoint(this, event));
     SetToolSticky(event.GetId(), false);}, wxID_FIND);
   
   Bind(wxEVT_AUITOOLBAR_TOOL_DROPDOWN, [=](wxAuiToolBarEvent& event) {
@@ -124,14 +127,14 @@ void wxExToolBar::AddControls(bool realize)
   if (realize) Realize();
 }
 
-wxAuiToolBarItem* wxExToolBar::AddTool(
+wxAuiToolBarItem* wex::toolbar::AddTool(
   int toolId,
   const wxString& label,
   const wxBitmap& bitmap,
   const wxString& shortHelp,
   wxItemKind kind)
 {
-  if (const wxExStockArt art(toolId); art.GetBitmap(wxART_TOOLBAR).IsOk())
+  if (const stockart art(toolId); art.GetBitmap(wxART_TOOLBAR).IsOk())
   {
     return wxAuiToolBar::AddTool(
       toolId, 
@@ -157,22 +160,22 @@ wxAuiToolBarItem* wxExToolBar::AddTool(
   return nullptr;
 }
 
-wxExFindToolBar::wxExFindToolBar(
-  wxExManagedFrame* frame, const wxExWindowData& data)
-  : wxExToolBar(frame, data)
+wex::find_toolbar::find_toolbar(
+  managed_frame* frame, const window_data& data)
+  : toolbar(frame, data)
 {
   const wxWindowID ID_MATCH_WHOLE_WORD = NewControlId();
   const wxWindowID ID_MATCH_CASE = NewControlId();
   const wxWindowID ID_REGULAR_EXPRESSION = NewControlId();
 
-  wxExFindTextCtrl* findCtrl = new wxExFindTextCtrl(GetFrame(),
-    wxExWindowData().Parent(this));
+  find_textctrl* findCtrl = new find_textctrl(GetFrame(),
+    window_data().Parent(this));
   wxCheckBox* matchCase = new wxCheckBox(this, 
-    ID_MATCH_CASE, wxExFindReplaceData::Get()->GetTextMatchCase());
+    ID_MATCH_CASE, find_replace_data::Get()->GetTextMatchCase());
   wxCheckBox* matchWholeWord = new wxCheckBox(this, 
-    ID_MATCH_WHOLE_WORD, wxExFindReplaceData::Get()->GetTextMatchWholeWord());
+    ID_MATCH_WHOLE_WORD, find_replace_data::Get()->GetTextMatchWholeWord());
   wxCheckBox* isRegularExpression = new wxCheckBox(this, 
-    ID_REGULAR_EXPRESSION, wxExFindReplaceData::Get()->GetTextRegEx());
+    ID_REGULAR_EXPRESSION, find_replace_data::Get()->GetTextRegEx());
 
 #if wxUSE_TOOLTIPS
   matchCase->SetToolTip(_("Search case sensitive"));
@@ -180,9 +183,9 @@ wxExFindToolBar::wxExFindToolBar(
   isRegularExpression->SetToolTip(_("Search using regular expressions"));
 #endif
 
-  matchCase->SetValue(wxExFindReplaceData::Get()->MatchCase());
-  matchWholeWord->SetValue(wxExFindReplaceData::Get()->MatchWord());
-  isRegularExpression->SetValue(wxExFindReplaceData::Get()->UseRegEx());
+  matchCase->SetValue(find_replace_data::Get()->MatchCase());
+  matchWholeWord->SetValue(find_replace_data::Get()->MatchWord());
+  isRegularExpression->SetValue(find_replace_data::Get()->UseRegEx());
 
   // And place the controls on the toolbar.
   AddControl(findCtrl);
@@ -205,13 +208,13 @@ wxExFindToolBar::wxExFindToolBar(
   Realize();
   
   Bind(wxEVT_CHECKBOX, [=](wxCommandEvent& event) {
-    wxExFindReplaceData::Get()->SetMatchWord(
+    find_replace_data::Get()->SetMatchWord(
       matchWholeWord->GetValue());}, ID_MATCH_WHOLE_WORD);
   Bind(wxEVT_CHECKBOX, [=](wxCommandEvent& event) {
-    wxExFindReplaceData::Get()->SetMatchCase(
+    find_replace_data::Get()->SetMatchCase(
       matchCase->GetValue());}, ID_MATCH_CASE);
   Bind(wxEVT_CHECKBOX, [=](wxCommandEvent& event) {
-    wxExFindReplaceData::Get()->SetUseRegEx(
+    find_replace_data::Get()->SetUseRegEx(
       isRegularExpression->GetValue());}, ID_REGULAR_EXPRESSION);
       
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -225,13 +228,13 @@ wxExFindToolBar::wxExFindToolBar(
     event.Enable(!findCtrl->GetValue().empty());}, wxID_UP);
 }
 
-wxExOptionsToolBar::wxExOptionsToolBar(
-  wxExManagedFrame* frame, const wxExWindowData& data)
-  : wxExToolBar(frame, data)
+wex::options_toolbar::options_toolbar(
+  managed_frame* frame, const window_data& data)
+  : toolbar(frame, data)
 {
 }
 
-void wxExOptionsToolBar::AddControls(bool realize)
+void wex::options_toolbar::AddControls(bool realize)
 {
   const wxWindowID ID_VIEW_PROCESS = NewControlId();
   
@@ -242,7 +245,7 @@ void wxExOptionsToolBar::AddControls(bool realize)
     {NewControlId(), "Hex", "HEX", "HexMode", _("Open in hex mode"), false},
     {NewControlId(), "Sync", "SYNC", "AllowSync", _("Synchronize modified files"), true}})
   {
-    if (std::get<0>(it) == ID_VIEW_PROCESS && wxExProcess::GetShell() == nullptr)
+    if (std::get<0>(it) == ID_VIEW_PROCESS && process::GetShell() == nullptr)
     {
       continue;
     }
@@ -268,7 +271,7 @@ void wxExOptionsToolBar::AddControls(bool realize)
   }
 }
 
-bool wxExOptionsToolBar::Update(const wxString& name, bool show)
+bool wex::options_toolbar::Update(const wxString& name, bool show)
 {
   for (auto& it : m_CheckBoxes)
   {
@@ -284,12 +287,12 @@ bool wxExOptionsToolBar::Update(const wxString& name, bool show)
 
 // Implementation of support class.
 
-wxExFindTextCtrl::wxExFindTextCtrl(
-  wxExFrame* frame, const wxExWindowData& data)
+wex::find_textctrl::find_textctrl(
+  frame* frame, const window_data& data)
   : wxTextCtrl(
       data.Parent(), 
       data.Id(),
-      wxExFindReplaceData::Get()->GetFindString(), 
+      find_replace_data::Get()->GetFindString(), 
       data.Pos(), 
       data.Size(), 
       data.Style() | wxTE_PROCESS_ENTER)
@@ -302,7 +305,7 @@ wxExFindTextCtrl::wxExFindTextCtrl(
   SetAcceleratorTable(accel);
   
   Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
-    if (!wxExFindReplaceData::Get()->m_FindStrings.Set(event.GetKeyCode(), this))
+    if (!find_replace_data::Get()->m_FindStrings.Set(event.GetKeyCode(), this))
     {
       event.Skip();
     }});
@@ -315,7 +318,7 @@ wxExFindTextCtrl::wxExFindTextCtrl(
     event.Skip();});
 
 #ifdef __WXOSX__      
-  // FIXME. See also managedframe.
+  // FIXME. See also managed_frame.
   Bind(wxEVT_KEY_DOWN, [=](wxKeyEvent& event) {
     switch (event.GetKeyCode())
     {
@@ -338,12 +341,12 @@ wxExFindTextCtrl::wxExFindTextCtrl(
     event.Skip();
     if (!GetValue().empty())
     {
-      wxExFindReplaceData::Get()->SetFindString(GetValue().ToStdString());
+      find_replace_data::Get()->SetFindString(GetValue().ToStdString());
       Find();
     }});
 }
 
-void wxExFindTextCtrl::Find(bool find_next, bool restore_position)
+void wex::find_textctrl::Find(bool find_next, bool restore_position)
 {
   // We cannot use events here, as OnFindDialog in stc uses frd data,
   // whereas we need the GetValue here.

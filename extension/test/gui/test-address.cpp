@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-address.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -15,19 +15,19 @@
 #include <wx/extension/vi-macros.h>
 #include "test.h"
 
-TEST_CASE("wxExAddress")
+TEST_CASE("wex::address")
 {
-  wxExSTC* stc = GetSTC();
+  wex::stc* stc = GetSTC();
   stc->SetText("hello0\nhello1\nhello2\nhello3\nhello4\nhello5");
   
   const int lines = stc->GetLineCount();
-  wxExEx* ex = new wxExEx(stc);
-  wxExSTCData(stc).Control(wxExControlData().Line(1)).Inject();
+  wex::ex* ex = new wex::ex(stc);
+  wex::stc_data(stc).Control(wex::control_data().Line(1)).Inject();
   ex->MarkerAdd('a'); // put marker a on line
-  wxExSTCData(stc).Control(wxExControlData().Line(2)).Inject();
+  wex::stc_data(stc).Control(wex::control_data().Line(2)).Inject();
   ex->MarkerAdd('b'); // put marker b on line
   
-  REQUIRE( wxExAddress(ex).GetLine() == 0);
+  REQUIRE( wex::address(ex).GetLine() == 0);
   
   for (const auto& it : std::vector< std::pair<std::string, int>> {
     {"30", lines},
@@ -52,10 +52,10 @@ TEST_CASE("wxExAddress")
     {"'b+'a", 3},
     {"'b-'a", 1}})
   {
-    REQUIRE( wxExAddress(ex, it.first).GetLine() == it.second);
+    REQUIRE( wex::address(ex, it.first).GetLine() == it.second);
   }
 
-  wxExAddress address3(ex, "5");
+  wex::address address3(ex, "5");
   
   // Test AdjustWindow.
   REQUIRE( address3.AdjustWindow(""));
@@ -76,14 +76,14 @@ TEST_CASE("wxExAddress")
   REQUIRE(!address3.Flags("x"));
 
   // Test Get, GetLine.
-  REQUIRE( wxExAddress(ex).GetLine() == 0);
-  REQUIRE( wxExAddress(ex, "-1").GetLine() == 1);
-  REQUIRE( wxExAddress(ex, "-1").Get() == "-1");
-  REQUIRE( wxExAddress(ex, "1").GetLine() == 1);
-  REQUIRE( wxExAddress(ex, "1").Get() == "1");
-  REQUIRE( wxExAddress(ex, "100").GetLine() == lines);
+  REQUIRE( wex::address(ex).GetLine() == 0);
+  REQUIRE( wex::address(ex, "-1").GetLine() == 1);
+  REQUIRE( wex::address(ex, "-1").Get() == "-1");
+  REQUIRE( wex::address(ex, "1").GetLine() == 1);
+  REQUIRE( wex::address(ex, "1").Get() == "1");
+  REQUIRE( wex::address(ex, "100").GetLine() == lines);
   
-  wxExAddress address2(ex, "'a");
+  wex::address address2(ex, "'a");
   REQUIRE( address2.GetLine() == 1);
   address2.MarkerDelete();
   REQUIRE( address2.GetLine() == 0);
@@ -97,7 +97,7 @@ TEST_CASE("wxExAddress")
   
   // Test MarkerDelete.
   REQUIRE(!address3.MarkerDelete());
-  REQUIRE( wxExAddress(ex, "'x").MarkerDelete());
+  REQUIRE( wex::address(ex, "'x").MarkerDelete());
   
   // Test Put.
   ex->GetMacros().SetRegister('z', "zzzzz");

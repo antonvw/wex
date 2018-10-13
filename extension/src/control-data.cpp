@@ -1,25 +1,25 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      control-data.cpp
-// Purpose:   Implementation of wxExControlData
+// Purpose:   Implementation of wex::control_data
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/control-data.h>
 
-wxExControlData& wxExControlData::Col(int col)
+wex::control_data& wex::control_data::Col(int col)
 {
   m_Col = col;
   return *this;
 }
   
-wxExControlData& wxExControlData::Command(const std::string& command)
+wex::control_data& wex::control_data::Command(const std::string& command)
 {
   m_Command = command;
   return *this;
 }
   
-wxExControlData& wxExControlData::Find(
+wex::control_data& wex::control_data::Find(
   const std::string& text,
   int flags) 
 {
@@ -29,7 +29,7 @@ wxExControlData& wxExControlData::Find(
   return *this;
 }
 
-bool wxExControlData::Inject(
+bool wex::control_data::Inject(
   std::function<bool(void)> line,
   std::function<bool(void)> col,
   std::function<bool(void)> find,
@@ -72,14 +72,14 @@ bool wxExControlData::Inject(
   return injected;
 }
 
-wxExControlData& wxExControlData::Line(int line, std::function<int(int)> valid)
+wex::control_data& wex::control_data::Line(int line, std::function<int(int)> valid)
 {
   m_Line = (valid != nullptr ? valid(line): line);
 
   return *this;
 }
 
-void wxExControlData::Reset()
+void wex::control_data::Reset()
 {
   m_Col = DATA_NUMBER_NOT_SET;
   m_Command.clear();
@@ -89,7 +89,7 @@ void wxExControlData::Reset()
   m_Validator = nullptr;
 }
 
-wxExControlData& wxExControlData::Validator(wxValidator* validator)
+wex::control_data& wex::control_data::Validator(wxValidator* validator)
 {
   m_Validator = validator;
 

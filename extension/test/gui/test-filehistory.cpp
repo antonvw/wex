@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-filehistory.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -10,16 +10,16 @@
 #include <wx/wx.h>
 #endif
 #include <wx/menu.h>
-#include <wx/extension/filehistory.h>
 #include <wx/extension/file.h>
+#include <wx/extension/filehistory.h>
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-TEST_CASE("wxExFileHistory")
+TEST_CASE("wex::file_history")
 {
   SUBCASE("Default constructor")
   {
-    wxExFileHistory history;
+    wex::file_history history;
     REQUIRE( history.GetCount() == 0);
     
     wxMenu* menu = new wxMenu();
@@ -27,12 +27,12 @@ TEST_CASE("wxExFileHistory")
     menu->Append(2, "y");
 
     history.UseMenu(100, menu);
-    history.AddFileToHistory("xxx.cpp");
-    history.AddFileToHistory("");
+    history.Add("xxx.cpp");
+    history.Add("");
     REQUIRE( history.GetCount() == 0);
     REQUIRE( history.GetHistoryFile().Path().empty());
     
-    history.AddFileToHistory(GetTestPath("test.h"));
+    history.Add(GetTestPath("test.h"));
     REQUIRE( history.GetCount() == 1);
     REQUIRE( history.GetHistoryFiles(0).size() == 0);
     REQUIRE( history.GetHistoryFiles(5).size() == 1);
@@ -51,8 +51,8 @@ TEST_CASE("wxExFileHistory")
 
   SUBCASE("Other constructor")
   {
-    wxExFileHistory history(4, 1000, "MY-KEY");
-    history.AddFileToHistory(GetTestPath("test.h"));
+    wex::file_history history(4, 1000, "MY-KEY");
+    history.Add(GetTestPath("test.h"));
     REQUIRE( history.GetCount() == 1);
     REQUIRE( history.GetBaseId() == 1000);
     REQUIRE( history.GetMaxFiles() == 4);
@@ -61,14 +61,14 @@ TEST_CASE("wxExFileHistory")
   
   SUBCASE("Delete file")
   {
-    wxExFileHistory history;
+    wex::file_history history;
     history.Clear();
     // file should be closed before remove (at least for windows)
     {
-      wxExFile file(std::string("test-history.txt"), std::ios_base::out);
+      wex::file file(std::string("test-history.txt"), std::ios_base::out);
       REQUIRE( file.Write(std::string("test")));
     }
-    history.AddFileToHistory("test-history.txt");
+    history.Add("test-history.txt");
     REQUIRE( history.GetHistoryFile(0) == "test-history.txt");
     REQUIRE( remove("test-history.txt") == 0);
     REQUIRE( history.GetHistoryFile(0).Path().empty());

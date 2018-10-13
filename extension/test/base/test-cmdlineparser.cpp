@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-cmdlineparser.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -13,7 +13,7 @@
 #include <wx/extension/cmdline.h>
 #include "../test.h"
 
-TEST_CASE("wxExCmdLine")
+TEST_CASE("wex::cmdline")
 {
   int a;
   float b;
@@ -22,18 +22,18 @@ TEST_CASE("wxExCmdLine")
   const wxChar ds(wxNumberFormatter::GetDecimalSeparator());
   
   const std::string str(ds == '.' ?
-    "wxExCmdLine -a 10 -b 5.1 -c test -s -t -u -v --xx one two three":
-    "wxExCmdLine -a 10 -b 5.1 -c test -s -t -u -v --xx one two three");
+    "wex::cmdline -a 10 -b 5.1 -c test -s -t -u -v --xx one two three":
+    "wex::cmdline -a 10 -b 5.1 -c test -s -t -u -v --xx one two three");
 
-  wxExCmdLine cmdl(
+  wex::cmdline cmdl(
      {{{"s", "1", "bool"}, [&](bool on){s = on;}},
       {{"t", "2", "bool"}, [&](bool on){t = on;}},
       {{"u", "3", "bool"}, [&](bool on){u = true;}},
       {{"v", "4", "bool"}, [&](bool on){v = on;}},
       {{"xx", "bool"}, [&](bool on){x = on;}}},
-     {{{"a", "5", "int"}, {CMD_LINE_INT, [&](const std::any& i) {a = std::any_cast<int>(i);}}},
-      {{"b", "6", "float"}, {CMD_LINE_FLOAT, [&](const std::any& f) {b = std::any_cast<float>(f);}}},
-      {{"c", "7", "string"}, {CMD_LINE_STRING, [&](const std::any& s) {c = std::any_cast<std::string>(s);}}}},
+     {{{"a", "5", "int"}, {wex::CMD_LINE_INT, [&](const std::any& i) {a = std::any_cast<int>(i);}}},
+      {{"b", "6", "float"}, {wex::CMD_LINE_FLOAT, [&](const std::any& f) {b = std::any_cast<float>(f);}}},
+      {{"c", "7", "string"}, {wex::CMD_LINE_STRING, [&](const std::any& s) {c = std::any_cast<std::string>(s);}}}},
      {{"rest", "rest"}, [&](const std::vector<std::string> & v) {
         p = v[0];
         q = v[1];

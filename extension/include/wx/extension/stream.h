@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      stream.h
-// Purpose:   Declaration of wxExStream class
+// Purpose:   Declaration of wex::stream class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -11,83 +11,86 @@
 #include <wx/extension/stream-statistics.h>
 #include <wx/extension/tool.h>
 
-class wxExFindReplaceData;
-
-/// Adds RunTool methods and statistics to a file stream.
-class WXDLLIMPEXP_BASE wxExStream
+namespace wex
 {
-public:
-  /// Constructor.
-  wxExStream(
-    const wxExPath& filename,
-    const wxExTool& tool);
-  
-  /// Destructor.
- ~wxExStream() {;};
+  class find_replace_data;
 
-  /// Returns the filename.
-  const auto & GetFileName() const {return m_Path;};
-
-  /// Returns the statistics.
-  const auto & GetStatistics() const {return m_Stats;}
-
-  /// Returns the tool.
-  const auto & GetTool() const {return m_Tool;};
-  
-  /// Runs the tool.
-  bool RunTool();
-
-  /// Resets static members.
-  static void Reset();
-protected:
-  /// Processes line.
-  /// The default performs a ID_TOOL_REPORT_FIND or REPLACE.
-  virtual bool Process(
-    /// contents of the line
-    std::string& line, 
-    /// line number
-    size_t line_no);
-  
-  /// Override to do action before processing begins.
-  /// The default checks correct tool for find and replace.
-  virtual bool ProcessBegin();
-  
-  /// Override to do action after processing has ended.
-  virtual void ProcessEnd() {;};
-  
-  /// Override to do action for a match.
-  /// Data is available in find replace data.
-  virtual void ProcessMatch(
-    /// matching line
-    const std::string& line, 
-    /// line number containing match
-    size_t line_no,
-    /// pos on line where match starts, -1 not known
-    int pos) {;};
-protected:
-  /// Increments the actions completed.
-  auto IncActionsCompleted(int inc_value = 1) {return
-    m_Stats.m_Elements.Inc(_("Actions Completed").ToStdString(), inc_value);};
+  /// Adds RunTool methods and statistics to a file stream.
+  class stream
+  {
+  public:
+    /// Constructor.
+    stream(
+      const path& filename,
+      const tool& tool);
     
-  /// Increments statistics keyword.
-  auto IncStatistics(const std::string& keyword) {return
-    m_Stats.m_Elements.Inc(keyword);};
-private:
-  bool IsWordCharacter(int c) const {return isalnum(c) || c == '_';};
+    /// Destructor.
+   ~stream() {;};
 
-  const wxExPath m_Path;
-  const wxExTool m_Tool;
+    /// Returns the filename.
+    const auto & GetFileName() const {return m_Path;};
 
-  wxExStreamStatistics m_Stats;
+    /// Returns the statistics.
+    const auto & GetStatistics() const {return m_Stats;}
 
-  int m_Prev;
-  bool m_Modified = false, m_Write = false;
+    /// Returns the tool.
+    const auto & GetTool() const {return m_Tool;};
+    
+    /// Runs the tool.
+    bool RunTool();
 
-  const int m_Threshold;
-  
-  wxExFindReplaceData* m_FRD;
+    /// Resets static members.
+    static void Reset();
+  protected:
+    /// Processes line.
+    /// The default performs a ID_TOOL_REPORT_FIND or REPLACE.
+    virtual bool Process(
+      /// contents of the line
+      std::string& line, 
+      /// line number
+      size_t line_no);
+    
+    /// Override to do action before processing begins.
+    /// The default checks correct tool for find and replace.
+    virtual bool ProcessBegin();
+    
+    /// Override to do action after processing has ended.
+    virtual void ProcessEnd() {;};
+    
+    /// Override to do action for a match.
+    /// Data is available in find replace data.
+    virtual void ProcessMatch(
+      /// matching line
+      const std::string& line, 
+      /// line number containing match
+      size_t line_no,
+      /// pos on line where match starts, -1 not known
+      int pos) {;};
+  protected:
+    /// Increments the actions completed.
+    auto IncActionsCompleted(int inc_value = 1) {return
+      m_Stats.m_Elements.Inc(_("Actions Completed").ToStdString(), inc_value);};
+      
+    /// Increments statistics keyword.
+    auto IncStatistics(const std::string& keyword) {return
+      m_Stats.m_Elements.Inc(keyword);};
+  private:
+    bool IsWordCharacter(int c) const {return isalnum(c) || c == '_';};
 
-  std::string m_FindString;
+    const path m_Path;
+    const tool m_Tool;
 
-  static bool m_Asked;
+    stream_statistics m_Stats;
+
+    int m_Prev;
+    bool m_Modified = false, m_Write = false;
+
+    const int m_Threshold;
+    
+    find_replace_data* m_FRD;
+
+    std::string m_FindString;
+
+    static bool m_Asked;
+  };
 };

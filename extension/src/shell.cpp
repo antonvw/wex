@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      shell.cpp
-// Purpose:   Implementation of class wxExShell
+// Purpose:   Implementation of class wex::shell
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -18,14 +18,14 @@
 #include <wx/extension/tokenizer.h>
 #include <wx/extension/util.h>
 
-wxExShell::wxExShell(
-  const wxExSTCData& data,
+wex::shell::shell(
+  const stc_data& data,
   const std::string& prompt, 
   const std::string& command_end,
   bool echo, 
   const std::string& lexer,
   int commands_save_in_config)
-  : wxExSTC(std::string(), wxExSTCData(data).Flags(STC_WIN_NO_INDICATOR, DATA_OR))
+  : stc(std::string(), stc_data(data).Flags(STC_WIN_NO_INDICATOR, DATA_OR))
   , m_CommandEnd(command_end == std::string() ? GetEOL(): command_end)
   , m_Echo(echo)
   , m_CommandsSaveInConfig(commands_save_in_config)
@@ -33,7 +33,7 @@ wxExShell::wxExShell(
 {
   // Override defaults from config.
   SetEdgeMode(wxSTC_EDGE_NONE);
-  ResetMargins(static_cast<wxExSTCMarginFlags>(STC_MARGIN_FOLDING | STC_MARGIN_LINENUMBER));
+  ResetMargins(static_cast<stc_margin_flags>(STC_MARGIN_FOLDING | STC_MARGIN_LINENUMBER));
 
   AutoComplete().Use(false); // we have our own autocomplete
   AutoCompSetSeparator(3);
@@ -44,7 +44,7 @@ wxExShell::wxExShell(
   if (m_CommandsSaveInConfig > 0)
   {
     // Get all previous commands.
-    for (wxExTokenizer tkz(
+    for (tokenizer tkz(
       wxConfigBase::Get()->Read("Shell").ToStdString(),
       std::string(1, AutoCompGetSeparator()));
       tkz.HasMoreTokens(); )
@@ -227,7 +227,7 @@ wxExShell::wxExShell(
     {
       event.Skip();
     }
-    // do nothing, keep event from sent to wxExSTC.
+    // do nothing, keep event from sent to stc.
     });
   
   Bind(wxEVT_STC_DO_DROP, [=](wxStyledTextEvent& event) {
@@ -253,7 +253,7 @@ wxExShell::wxExShell(
     event.Skip();});
 }
 
-wxExShell::~wxExShell()
+wex::shell::~shell()
 {
   if (m_CommandsSaveInConfig > 0)
   {
@@ -273,11 +273,11 @@ wxExShell::~wxExShell()
   }
 }
 
-void wxExShell::AppendText(const wxString& text)
+void wex::shell::AppendText(const wxString& text)
 {
   const bool pos_at_end = (GetCurrentPos() >= GetTextLength());
 
-  wxExSTC::AppendText(text);
+  stc::AppendText(text);
   
   m_CommandStartPosition = GetTextLength();
   
@@ -290,7 +290,7 @@ void wxExShell::AppendText(const wxString& text)
   }
 }
 
-void wxExShell::EnableShell(bool enabled)
+void wex::shell::EnableShell(bool enabled)
 {
   m_Enabled = enabled;
   
@@ -306,7 +306,7 @@ void wxExShell::EnableShell(bool enabled)
   }
 }
 
-void wxExShell::Expand()
+void wex::shell::Expand()
 {
   // We might have commands:
   // 1) ls -l s
@@ -324,7 +324,7 @@ void wxExShell::Expand()
   // path:   src/vi
   // subdir: src
   // prefix: vi
-  wxExPath path(wxExAfter(m_Command, ' ', false));
+  wex::path path(after(m_Command, ' ', false));
   std::string expansion;
   
   if (const auto prefix(path.GetFullName()); AutoCompActive())
@@ -337,7 +337,7 @@ void wxExShell::Expand()
     
     AutoCompCancel();
   }
-  else if (const auto [r, e, v] = wxExAutoCompleteFileName(m_Command); r)
+  else if (const auto [r, e, v] = autocomplete_filename(m_Command); r)
   {
     if (v.size() > 1)
     {
@@ -359,33 +359,33 @@ void wxExShell::Expand()
     
     // We cannot use our AppendText, as command start pos
     // should not be changed.
-    wxExSTC::AppendText(expansion);
+    wex::stc::AppendText(expansion);
     DocumentEnd();
   }
 }
     
-const std::string wxExShell::GetCommand() const
+const std::string wex::shell::GetCommand() const
 {
   return !m_Commands.empty() ? m_Commands.back(): std::string();
 }
 
-const std::string wxExShell::GetHistory() const
+const std::string wex::shell::GetHistory() const
 {
   return std::accumulate(m_Commands.begin(), m_Commands.end(), std::string());
 }
 
-void wxExShell::KeepCommand()
+void wex::shell::KeepCommand()
 {
   // Prevent large commands, in case command end is not eol.
   if (m_CommandEnd != GetEOL())
   {
-    m_Command = wxExSkipWhiteSpace(m_Command);
+    m_Command = skip_white_space(m_Command);
   }
   
   m_Commands.emplace_back(m_Command);
 }
 
-void wxExShell::Paste()
+void wex::shell::Paste()
 {
   if (!CanPaste())
   {
@@ -398,12 +398,12 @@ void wxExShell::Paste()
     DocumentEnd();
   }
   
-  wxExSTC::Paste();
+  wex::stc::Paste();
   
-  m_Command += wxExClipboardGet();  
+  m_Command += clipboard_get();  
 }
 
-bool wxExShell::ProcessChar(int key)
+bool wex::shell::ProcessChar(int key)
 {
   bool processed = false;
   
@@ -528,7 +528,7 @@ bool wxExShell::ProcessChar(int key)
   return processed;
 }
 
-void wxExShell::ProcessCharDefault(int key)
+void wex::shell::ProcessCharDefault(int key)
 {
   // Insert the key at current position.
   if (const int index = GetCurrentPos() - m_CommandStartPosition;
@@ -543,7 +543,7 @@ void wxExShell::ProcessCharDefault(int key)
   }
 }
   
-bool wxExShell::Prompt(const std::string& text, bool add_eol)
+bool wex::shell::Prompt(const std::string& text, bool add_eol)
 {
   if (!m_Enabled)
   {
@@ -582,7 +582,7 @@ bool wxExShell::Prompt(const std::string& text, bool add_eol)
   return true;
 }
 
-bool wxExShell::SetCommandFromHistory(const std::string& short_command)
+bool wex::shell::SetCommandFromHistory(const std::string& short_command)
 {
   if (const auto no_asked_for = atoi(short_command.c_str()); no_asked_for > 0)
   {
@@ -632,12 +632,12 @@ bool wxExShell::SetCommandFromHistory(const std::string& short_command)
   return false;
 }
 
-void wxExShell::SetProcess(wxExProcess* process)
+void wex::shell::SetProcess(process* process)
 {
   m_Process = process;
 }
 
-bool wxExShell::SetPrompt(const std::string& prompt, bool do_prompt) 
+bool wex::shell::SetPrompt(const std::string& prompt, bool do_prompt) 
 {
   if (!m_Enabled)
   {
@@ -654,7 +654,7 @@ bool wxExShell::SetPrompt(const std::string& prompt, bool do_prompt)
   return true;
 }
 
-void wxExShell::ShowCommand(int key)
+void wex::shell::ShowCommand(int key)
 {
   SetTargetStart(m_CommandStartPosition);
   SetTargetEnd(GetTextLength());
@@ -687,7 +687,7 @@ void wxExShell::ShowCommand(int key)
   DocumentEnd();
 }
 
-void wxExShell::ShowHistory()
+void wex::shell::ShowHistory()
 {
   int command_no = 1;
 
@@ -697,11 +697,11 @@ void wxExShell::ShowHistory()
   }
 }
 
-void wxExShell::Undo()
+void wex::shell::Undo()
 {
   if (CanUndo())
   {
-    wxExSTC::Undo();
+    wex::stc::Undo();
   }
   
   m_Command.clear();

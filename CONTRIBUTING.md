@@ -46,7 +46,7 @@
 
 ```
 mkdir build && cd build   
-cmake -DwxExBUILD_TESTS=ON ..   
+cmake -DwexBUILD_TESTS=ON ..   
 make   
 make test   
 ```
@@ -56,7 +56,7 @@ make test
 
 ```
 mkdir Coverage && cd Coverage
-cmake -DCMAKE_BUILD_TYPE=Coverage -DwxExBUILD_TESTS=ON ..   
+cmake -DCMAKE_BUILD_TYPE=Coverage -DwexBUILD_TESTS=ON ..   
 make  
 make lcov-prep  
 make test  

@@ -1,16 +1,16 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-stat.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/stat.h>
 #include "../test.h"
 
-TEST_CASE( "wxExStat" ) 
+TEST_CASE( "wex::stat" ) 
 {
-  wxExStat stat(GetTestPath("test.h").Path().string());
+  wex::stat stat(GetTestPath("test.h").Path().string());
 
   REQUIRE( stat.IsOk());
   REQUIRE(!stat.GetModificationTime().empty());
@@ -20,6 +20,6 @@ TEST_CASE( "wxExStat" )
   REQUIRE(!stat.GetModificationTime().empty());
 
 #ifdef __UNIX__
-  REQUIRE( wxExStat("/etc/hosts").IsReadOnly());
+  REQUIRE( wex::stat("/etc/hosts").IsReadOnly());
 #endif
 }

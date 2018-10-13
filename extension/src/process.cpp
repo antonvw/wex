@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      process.cpp
-// Purpose:   Implementation of class wxExProcess
+// Purpose:   Implementation of class wex::process
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -21,7 +21,7 @@
 #include <wx/extension/log.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/shell.h>
-#include <wx/extension/util.h> // for wxExConfigFirstOf
+#include <wx/extension/util.h>
 #include <easylogging++.h>
 
 #define GET_STREAM(SCOPE)                         \
@@ -42,45 +42,48 @@
   }                                               \
 };                                                \
 
-class wxExProcessImp : public wxProcess
+namespace wex
 {
-public:
-  wxExProcessImp(wxExManagedFrame* frame, wxExShell* shell, bool debug)
-    : wxProcess(wxPROCESS_REDIRECT) 
-    , m_Debug(debug)
-    , m_Frame(frame)
-    , m_Shell(shell)
-    , m_Timer(std::make_unique<wxTimer>(this)) {
-    Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {Read();});};
-  virtual ~wxExProcessImp() {;};
+  class process_imp : public wxProcess
+  {
+  public:
+    process_imp(managed_frame* frame, shell* shell, bool debug)
+      : wxProcess(wxPROCESS_REDIRECT) 
+      , m_Debug(debug)
+      , m_Frame(frame)
+      , m_Shell(shell)
+      , m_Timer(std::make_unique<wxTimer>(this)) {
+      Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {Read();});};
+    virtual ~process_imp() {;};
 
-  bool Execute(const std::string& command, const std::string& path);
-  bool Kill(int sig);
-  static int KillAll(int sig);
-  void Read();
-  void Write(const std::string& text);
-private:
-  void HandleCommand(const std::string& command);
-  virtual void OnTerminate(int pid, int status) override {
-    if (const auto& it = std::find(m_pids.begin(), m_pids.end(), pid);
-      it != m_pids.end())
-    {
-      m_pids.erase(it);
-    }
-    m_Timer->Stop();
-    m_Frame->GetDebug()->GetBreakpoints().clear();
-    Read();};
-  
-  const bool m_Debug;
-  std::string m_Command, m_StdIn;
-  wxExManagedFrame* m_Frame;
-  wxExShell* m_Shell;
-  std::unique_ptr<wxTimer> m_Timer;
-  wxCriticalSection m_Critical;
-  static inline std::vector<int> m_pids;
+    bool Execute(const std::string& command, const std::string& path);
+    bool Kill(int sig);
+    static int KillAll(int sig);
+    void Read();
+    void Write(const std::string& text);
+  private:
+    void HandleCommand(const std::string& command);
+    virtual void OnTerminate(int pid, int status) override {
+      if (const auto& it = std::find(m_pids.begin(), m_pids.end(), pid);
+        it != m_pids.end())
+      {
+        m_pids.erase(it);
+      }
+      m_Timer->Stop();
+      m_Frame->GetDebug()->GetBreakpoints().clear();
+      Read();};
+    
+    const bool m_Debug;
+    std::string m_Command, m_StdIn;
+    managed_frame* m_Frame;
+    shell* m_Shell;
+    std::unique_ptr<wxTimer> m_Timer;
+    wxCriticalSection m_Critical;
+    static inline std::vector<int> m_pids;
+  };
 };
 
-auto ShowProcess(wxExManagedFrame* frame, bool show)
+auto ShowProcess(wex::managed_frame* frame, bool show)
 {
   if (frame != nullptr)
   {
@@ -91,24 +94,24 @@ auto ShowProcess(wxExManagedFrame* frame, bool show)
   return false;  
 }
       
-std::string wxExProcess::m_WorkingDirKey = _("Process folder");
+std::string wex::process::m_WorkingDirKey = _("Process folder");
 
-wxExProcess::wxExProcess() 
-  : m_Command(wxExConfigFirstOf(_("Process")))
-  , m_Frame(dynamic_cast<wxExManagedFrame*>(wxTheApp->GetTopWindow()))
+wex::process::process() 
+  : m_Command(config_firstof(_("Process")))
+  , m_Frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
 {
 }
 
-wxExProcess::~wxExProcess()
+wex::process::~process()
 {
 }
   
-wxExProcess::wxExProcess(const wxExProcess& process)
+wex::process::process(const process& process)
 {
   *this = process;
 }
   
-wxExProcess& wxExProcess::operator=(const wxExProcess& p)
+wex::process& wex::process::operator=(const process& p)
 {
   if (this != &p)
   {
@@ -121,27 +124,27 @@ wxExProcess& wxExProcess::operator=(const wxExProcess& p)
   return *this;
 }
 
-int wxExProcess::ConfigDialog(const wxExWindowData& par)
+int wex::process::ConfigDialog(const window_data& par)
 {
   wxTextValidator validator(wxFILTER_EXCLUDE_CHAR_LIST);
   validator.SetCharExcludes("?%*\"");
-  const wxExWindowData data(wxExWindowData(par).Title(_("Select Process").ToStdString()));
-  const std::vector<wxExItem> v {
-    {_("Process"), ITEM_COMBOBOX, std::any(), wxExControlData().Validator(&validator).Required(true)},
-    {m_WorkingDirKey, ITEM_COMBOBOX_DIR, std::any(), wxExControlData().Required(true)}};
+  const window_data data(window_data(par).Title(_("Select Process").ToStdString()));
+  const std::vector<item> v {
+    {_("Process"), ITEM_COMBOBOX, std::any(), control_data().Validator(&validator).Required(true)},
+    {m_WorkingDirKey, ITEM_COMBOBOX_DIR, std::any(), control_data().Required(true)}};
 
   if (data.Button() & wxAPPLY)
   {
-    wxExItemDialog* dlg = new wxExItemDialog(v, data);
+    auto * dlg = new item_dialog(v, data);
     return dlg->Show();
   }
   else
   {
-    return wxExItemDialog(v, data).ShowModal();
+    return item_dialog(v, data).ShowModal();
   }
 }
 
-bool wxExProcess::Execute(
+bool wex::process::Execute(
   const std::string& command,
   long flags,
   const std::string& wd)
@@ -152,7 +155,7 @@ bool wxExProcess::Execute(
     
   if (command.empty())
   {
-    if (wxExConfigFirstOf(_("Process")).empty())
+    if (config_firstof(_("Process")).empty())
     {
       if (ConfigDialog() == wxID_CANCEL)
       {
@@ -160,8 +163,8 @@ bool wxExProcess::Execute(
       }
     }
     
-    m_Command = wxExConfigFirstOf(_("Process"));
-    cwd = wxExConfigFirstOf(m_WorkingDirKey);
+    m_Command = config_firstof(_("Process"));
+    cwd = config_firstof(m_WorkingDirKey);
   }
   else
   {
@@ -184,7 +187,7 @@ bool wxExProcess::Execute(
       m_Command.find("tcsh") == 0 ||
       m_Command.find("sh") == 0 ? ">" : "");
     
-    m_Process = std::make_unique<wxExProcessImp>(m_Frame, m_Shell, command == "gdb");
+    m_Process = std::make_unique<process_imp>(m_Frame, m_Shell, command == "gdb");
 
     if (!m_Process->Execute(m_Command, cwd))
     {
@@ -223,12 +226,12 @@ bool wxExProcess::Execute(
   return !m_Error;
 }
 
-bool wxExProcess::IsRunning() const
+bool wex::process::IsRunning() const
 {
   return m_Process != nullptr && wxProcess::Exists(m_Process->GetPid());
 }
 
-bool wxExProcess::Kill(int sig)
+bool wex::process::Kill(int sig)
 {
   bool killed = false;
 
@@ -247,22 +250,22 @@ bool wxExProcess::Kill(int sig)
   return killed;
 }
 
-int wxExProcess::KillAll(int sig)
+int wex::process::KillAll(int sig)
 {
-  return wxExProcessImp::KillAll(sig);
+  return process_imp::KillAll(sig);
 }
 
-void wxExProcess::PrepareOutput(wxWindow* parent)
+void wex::process::PrepareOutput(wxWindow* parent)
 {
   if (m_Shell == nullptr)
   {
-    m_Shell = new wxExShell(
-      wxExSTCData().Window(wxExWindowData().Parent(parent)),
+    m_Shell = new shell(
+      stc_data().Window(window_data().Parent(parent)),
       std::string()); // empty prompt
   }
 }
 
-void wxExProcess::ShowOutput(const std::string& caption) const
+void wex::process::ShowOutput(const std::string& caption) const
 {
   if (!m_Error)
   {
@@ -275,11 +278,11 @@ void wxExProcess::ShowOutput(const std::string& caption) const
   }
   else
   {
-    wxExLog() << "could not execute:" <<  m_Command;
+    log() << "could not execute:" <<  m_Command;
   }
 }
 
-bool wxExProcess::Write(const std::string& text)
+bool wex::process::Write(const std::string& text)
 {
   if (!IsRunning()) 
   {
@@ -299,7 +302,7 @@ bool wxExProcess::Write(const std::string& text)
 
 // Implementation.
 
-bool wxExProcessImp::Execute(
+bool wex::process_imp::Execute(
   const std::string& command, const std::string& path)
 {
   struct wxExecuteEnv env;
@@ -322,7 +325,7 @@ bool wxExProcessImp::Execute(
   return true;
 }
 
-void wxExProcessImp::HandleCommand(const std::string& command)
+void wex::process_imp::HandleCommand(const std::string& command)
 {
   const std::string cd = 
 #ifdef __WXMSW__
@@ -334,7 +337,7 @@ void wxExProcessImp::HandleCommand(const std::string& command)
   if (command.find(cd) == 0)
   {
     wxLogNull logNo;
-    if (const auto rest (wxExSkipWhiteSpace(wxExAfter(command, cd.back())));
+    if (const auto rest (skip_white_space(after(command, cd.back())));
       rest.empty() || rest == "~")
     {
 #ifdef __WXMSW__
@@ -349,7 +352,7 @@ void wxExProcessImp::HandleCommand(const std::string& command)
   }
 }
 
-bool wxExProcessImp::Kill(int sig)
+bool wex::process_imp::Kill(int sig)
 {
   if (const auto pid = GetPid(); wxProcess::Kill(pid, (wxSignal)sig) != wxKILL_OK)
   {
@@ -367,7 +370,7 @@ bool wxExProcessImp::Kill(int sig)
   return true;
 }
 
-int wxExProcessImp::KillAll(int sig)
+int wex::process_imp::KillAll(int sig)
 {
   int killed = 0;
   
@@ -381,13 +384,13 @@ int wxExProcessImp::KillAll(int sig)
   
   if (killed != m_pids.size())
   {
-    wxExLog() << "could not kill all processes";
+    log() << "could not kill all processes";
   }
  
   return killed;
 }
 
-void wxExProcessImp::Read()
+void wex::process_imp::Read()
 {
   wxCriticalSectionLocker lock(m_Critical);
   
@@ -416,7 +419,7 @@ void wxExProcessImp::Read()
   }
 }
 
-void wxExProcessImp::Write(const std::string& text)
+void wex::process_imp::Write(const std::string& text)
 {
   m_Timer->Stop();
   

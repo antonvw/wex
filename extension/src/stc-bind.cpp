@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      stc-bind.cpp
-// Purpose:   Implementation of class wxExSTC method BindAll
+// Purpose:   Implementation of class wex::stc method BindAll
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -48,7 +48,7 @@ const int idUppercase = wxWindow::NewControlId();
 const int idZoomIn = wxWindow::NewControlId();
 const int idZoomOut = wxWindow::NewControlId();
 
-void wxExSTC::BindAll()
+void wex::stc::BindAll()
 {
   const int accels = 20; // take max number of entries
   wxAcceleratorEntry entries[accels];
@@ -162,7 +162,7 @@ void wxExSTC::BindAll()
        }
      }});
 	  
-  auto* frd = wxExFindReplaceData::Get();
+  auto* frd = find_replace_data::Get();
   
   Bind(wxEVT_FIND, [=](wxFindDialogEvent& event) {
     frd->SetFindString(frd->GetFindString());
@@ -173,7 +173,7 @@ void wxExSTC::BindAll()
     FindNext(frd->SearchDown());});
 
   Bind(wxEVT_FIND_REPLACE, [=](wxFindDialogEvent& event) {
-    ReplaceNext(wxExFindReplaceData::Get()->SearchDown());});
+    ReplaceNext(find_replace_data::Get()->SearchDown());});
     
   Bind(wxEVT_FIND_REPLACE_ALL, [=](wxFindDialogEvent& event) {
     ReplaceAll(
@@ -237,11 +237,11 @@ void wxExSTC::BindAll()
       try
       {
         int style = 0; // otherwise CAN_PASTE already on
-        if ( GetReadOnly() || HexMode()) style |= wxExMenu::MENU_IS_READ_ONLY;
-        if (!GetSelectedText().empty())  style |= wxExMenu::MENU_IS_SELECTED;
-        if ( GetTextLength() == 0)       style |= wxExMenu::MENU_IS_EMPTY;
-        if ( CanPaste())                 style |= wxExMenu::MENU_CAN_PASTE;
-        wxExMenu menu(style);
+        if ( GetReadOnly() || HexMode()) style |= menu::MENU_IS_READ_ONLY;
+        if (!GetSelectedText().empty())  style |= menu::MENU_IS_SELECTED;
+        if ( GetTextLength() == 0)       style |= menu::MENU_IS_EMPTY;
+        if ( CanPaste())                 style |= menu::MENU_CAN_PASTE;
+        menu menu(style);
         BuildPopupMenu(menu);
         if (menu.GetMenuItemCount() > 0)
         {
@@ -256,7 +256,7 @@ void wxExSTC::BindAll()
       }
       catch (std::exception& e)
       {
-        wxExLog(e) << "menu";
+        log(e) << "menu";
       }});
   }
   
@@ -295,7 +295,7 @@ void wxExSTC::BindAll()
 
   // if we support automatic fold, this can be removed,
   // not yet possible for wx3.0. And add wxSTC_AUTOMATICFOLD_CLICK
-  // to configdialog, and SetAutomaticFold.
+  // to config_dialog, and SetAutomaticFold.
   Bind(wxEVT_STC_MARGINCLICK, [=](wxStyledTextEvent& event) {
     if (const auto line = LineFromPosition(event.GetPosition());
       event.GetMargin() == m_MarginFoldingNumber)
@@ -326,7 +326,7 @@ void wxExSTC::BindAll()
 
   Bind(wxEVT_STC_UPDATEUI, [=](wxStyledTextEvent& event) {
     event.Skip();
-    wxExFrame::UpdateStatusBar(this, "PaneInfo");});
+    frame::UpdateStatusBar(this, "PaneInfo");});
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {Copy();}, wxID_COPY);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {Cut();}, wxID_CUT);
@@ -354,7 +354,7 @@ void wxExSTC::BindAll()
         this)) > 0)
       {
         m_Data.Control().Line(val);
-        wxExSTCData(wxExControlData().Line(val), this).Inject();
+        stc_data(control_data().Line(val), this).Inject();
       }
     }
     return true;}, wxID_JUMP_TO);
@@ -373,27 +373,27 @@ void wxExSTC::BindAll()
       GetLineEndPosition(GetCurrentLine()),
       this)) > 0)
     {
-      wxExSortSelection(this, event.GetId() == wxID_SORT_ASCENDING ? STRING_SORT_ASCENDING: STRING_SORT_DESCENDING, pos - 1);
+      sort_selection(this, event.GetId() == wxID_SORT_ASCENDING ? STRING_SORT_ASCENDING: STRING_SORT_DESCENDING, pos - 1);
     }}, wxID_SORT_ASCENDING, wxID_SORT_DESCENDING);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     m_Frame->GetDebug()->Execute(event.GetId() - ID_EDIT_DEBUG_FIRST, this);}, ID_EDIT_DEBUG_FIRST, ID_EDIT_DEBUG_LAST);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wxExBrowserSearch(GetSelectedText().ToStdString());}, idOpenWWW);
+    browser_search(GetSelectedText().ToStdString());}, idOpenWWW);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     LinkOpen(LINK_OPEN);}, idOpenLink);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     const std::string propnames(PropertyNames());
-    const wxExLexerProps l;
+    const lexer_props l;
 
     std::string properties = (!propnames.empty() ? 
       l.MakeSection("Current properties"): std::string());
     
     // Add current (global and lexer) properties.  
-    for (const auto& it : wxExLexers::Get()->GetProperties())
+    for (const auto& it : lexers::Get()->GetProperties())
     {
       properties += l.MakeKey(it.GetName(), GetProperty(it.GetName()));
     }
@@ -408,7 +408,7 @@ void wxExSTC::BindAll()
     {
       properties += "\n" + l.MakeSection("Available properties");
 
-      for (wxExTokenizer tkz(propnames, "\n"); tkz.HasMoreTokens(); )
+      for (tokenizer tkz(propnames, "\n"); tkz.HasMoreTokens(); )
       {
         const auto prop(tkz.GetNextToken());
         properties += l.MakeKey(prop, GetProperty(prop), DescribeProperty(prop));
@@ -417,10 +417,10 @@ void wxExSTC::BindAll()
 
     if (m_EntryDialog == nullptr)
     {
-      m_EntryDialog = new wxExSTCEntryDialog(
+      m_EntryDialog = new stc_entry_dialog(
         properties, 
         std::string(), 
-        wxExWindowData().
+        window_data().
           Size({300, 450}).
           Button(wxOK).
           Title(_("Properties").ToStdString()));
@@ -548,7 +548,7 @@ void wxExSTC::BindAll()
     if (!stream.str().empty())
     {
       CallTipShow(pos, stream.str());
-      wxExClipboardAdd(stream.str());
+      clipboard_add(stream.str());
     }}, idHexDecCalltip);
   
 #if wxCHECK_VERSION(3,1,0)
@@ -575,8 +575,8 @@ void wxExSTC::BindAll()
     ToggleFold(line_to_fold);}, idToggleFold);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wxExVCSExecute(m_Frame, event.GetId() - ID_EDIT_VCS_LOWEST - 1, 
-      std::vector< wxExPath >{GetFileName().Path()});},
+    vcs_execute(m_Frame, event.GetId() - ID_EDIT_VCS_LOWEST - 1, 
+      std::vector< path >{GetFileName().Path()});},
       ID_EDIT_VCS_LOWEST, ID_EDIT_VCS_HIGHEST);
       
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -599,7 +599,7 @@ void wxExSTC::BindAll()
     
         ConvertEOLs(eol_mode);
         SetEOLMode(eol_mode);
-        wxExFrame::UpdateStatusBar(this, "PaneFileType");
+        frame::UpdateStatusBar(this, "PaneFileType");
       }
     }}, idEolDos, idEolMac);
     
@@ -626,11 +626,11 @@ void wxExSTC::BindAll()
     }}, idMarkerNext, idMarkerPrevious);
 }
 
-void wxExSTC::BuildPopupMenu(wxExMenu& menu)
+void wex::stc::BuildPopupMenu(menu& menu)
 {
   const auto sel(GetSelectedText().ToStdString());
 
-  if (GetCurrentLine() == 0 && !wxExLexers::Get()->GetLexers().empty())
+  if (GetCurrentLine() == 0 && !lexers::Get()->GetLexers().empty())
   {
     menu.Append(idShowProperties, _("Properties"));
   }
@@ -671,7 +671,7 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
   
   if ((m_Data.Menu() & STC_MENU_VCS) &&
        GetFileName().FileExists() && sel.empty() &&
-       wxExVCS::DirExists(GetFileName()))
+       vcs::DirExists(GetFileName()))
   {
     menu.AppendSeparator();
     menu.AppendVCS(GetFileName());
@@ -695,13 +695,13 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
   {
     if (!sel.empty())
     {
-      auto* menuSelection = new wxExMenu(menu.GetStyle());
+      auto* menuSelection = new wex::menu(menu.GetStyle());
       menuSelection->Append(idUppercase, _("&Uppercase\tF11"));
       menuSelection->Append(idLowercase, _("&Lowercase\tF12"));
 
-      if (wxExGetNumberOfLines(sel) > 1)
+      if (get_number_of_lines(sel) > 1)
       {
-        auto* menuSort = new wxExMenu(menu.GetStyle());
+        auto* menuSort = new wex::menu(menu.GetStyle());
         menuSort->Append(wxID_SORT_ASCENDING);
         menuSort->Append(wxID_SORT_DESCENDING);
         menuSelection->AppendSeparator();
@@ -735,7 +735,7 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
   }
 }
 
-void wxExSTC::CheckBrace()
+void wex::stc::CheckBrace()
 {
   if (!wxConfigBase::Get()->ReadLong(_("Show match"), 1))
   {
@@ -752,7 +752,7 @@ void wxExSTC::CheckBrace()
   }
 }
 
-bool wxExSTC::CheckBrace(int pos)
+bool wex::stc::CheckBrace(int pos)
 {
   if (const auto brace_match = BraceMatch(pos); brace_match != wxSTC_INVALID_POSITION)
   {
@@ -766,7 +766,7 @@ bool wxExSTC::CheckBrace(int pos)
   }
 }
 
-void wxExSTC::FileTypeMenu()
+void wex::stc::FileTypeMenu()
 {
   auto* menu = new wxMenu();
 

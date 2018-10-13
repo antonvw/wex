@@ -1,79 +1,81 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      stc-data.h
-// Purpose:   Declaration of wxExSTCData
+// Purpose:   Declaration of wex::stc_data
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wx/dlimpexp.h>
 #include <wx/extension/control-data.h>
 #include <wx/extension/stc-enums.h>
 
 #define DEFAULT_TAGFILE "tags"
 
-class wxExSTC;
-
-/// Offers user data to be used by wxExSTC. 
-class WXDLLIMPEXP_BASE wxExSTCData
+namespace wex
 {
-public:
-  /// Default constructor.
-  wxExSTCData(wxExSTC* stc = nullptr);
+  class stc;
 
-  /// Constructor from control data.
-  wxExSTCData(wxExControlData& data, wxExSTC* stc = nullptr);
+  /// Offers user data to be used by stc. 
+  class stc_data
+  {
+  public:
+    /// Default constructor.
+    stc_data(stc* stc = nullptr);
 
-  /// Constructor from window data.
-  wxExSTCData(wxExWindowData& data, wxExSTC* stc = nullptr);
+    /// Constructor from control data.
+    stc_data(control_data& data, stc* stc = nullptr);
 
-  /// Copy constructor.
-  wxExSTCData(wxExSTC* stc, const wxExSTCData& r);
+    /// Constructor from window data.
+    stc_data(window_data& data, stc* stc = nullptr);
 
-  /// Assignment operator.
-  wxExSTCData& operator=(const wxExSTCData& r);
-  
-  /// Returns control data.
-  auto& Control() {return m_Data;};
+    /// Copy constructor.
+    stc_data(stc* stc, const stc_data& r);
 
-  /// Sets control data.
-  wxExSTCData& Control(wxExControlData& data) {m_Data = data; return *this;};
+    /// Assignment operator.
+    stc_data& operator=(const stc_data& r);
+    
+    /// Returns control data.
+    auto& Control() {return m_Data;};
 
-  /// Returns ctags filename.
-  const auto& CTagsFileName() const {return m_CTagsFileName;};
+    /// Sets control data.
+    stc_data& Control(control_data& data) {m_Data = data; return *this;};
 
-  /// Sets ctags filename.
-  wxExSTCData& CTagsFileName(const std::string& text);
+    /// Returns ctags filename.
+    const auto& CTagsFileName() const {return m_CTagsFileName;};
 
-  /// Returns window flags.
-  const auto& Flags() const {return m_WinFlags;};
-  
-  /// Set window flags.
-  wxExSTCData& Flags(wxExSTCWindowFlags flags, wxExDataAction action = DATA_SET);
+    /// Sets ctags filename.
+    stc_data& CTagsFileName(const std::string& text);
 
-  /// Injects data.  
-  bool Inject() const;
+    /// Returns window flags.
+    const auto& Flags() const {return m_WinFlags;};
+    
+    /// Set window flags.
+    stc_data& Flags(stc_window_flags flags, data_action action = DATA_SET);
 
-  /// Returns menu flags.
-  const auto& Menu() const {return m_MenuFlags;};
+    /// Injects data.  
+    bool Inject() const;
 
-  /// Sets menu flags.
-  wxExSTCData& Menu(wxExSTCMenuFlags flags, wxExDataAction action = DATA_SET);
+    /// Returns menu flags.
+    const auto& Menu() const {return m_MenuFlags;};
 
-  /// Returns window data.
-  const auto& Window() const {return m_Data.Window();};
+    /// Sets menu flags.
+    stc_data& Menu(stc_menu_flags flags, data_action action = DATA_SET);
 
-  /// Sets window data.
-  wxExSTCData& Window(wxExWindowData& data) {m_Data.Window(data); return *this;};
-private:  
-  wxExSTC* m_STC {nullptr};
+    /// Returns window data.
+    const auto& Window() const {return m_Data.Window();};
 
-  wxExControlData m_Data;
+    /// Sets window data.
+    stc_data& Window(window_data& data) {m_Data.Window(data); return *this;};
+  private:  
+    stc* m_STC {nullptr};
 
-  std::string m_CTagsFileName {DEFAULT_TAGFILE};
+    control_data m_Data;
 
-  wxExSTCMenuFlags m_MenuFlags {static_cast<wxExSTCMenuFlags>(
-    STC_MENU_CONTEXT | STC_MENU_OPEN_LINK | STC_MENU_OPEN_WWW | STC_MENU_VCS)};
-  wxExSTCWindowFlags m_WinFlags {STC_WIN_DEFAULT};
+    std::string m_CTagsFileName {DEFAULT_TAGFILE};
+
+    stc_menu_flags m_MenuFlags {static_cast<stc_menu_flags>(
+      STC_MENU_CONTEXT | STC_MENU_OPEN_LINK | STC_MENU_OPEN_WWW | STC_MENU_VCS)};
+    stc_window_flags m_WinFlags {STC_WIN_DEFAULT};
+  };
 };

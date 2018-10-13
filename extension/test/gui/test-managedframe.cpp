@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-managedframe.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Name:      test-managed_frame.cpp
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -16,16 +16,16 @@
 #include <wx/extension/vi.h>
 #include "test.h"
 
-// Also test the toolbar (wxExToolBar).
-TEST_CASE("wxExManagedFrame")
+// Also test the toolbar (wex::toolbar).
+TEST_CASE("wex::managed_frame")
 {
   REQUIRE(GetFrame()->AllowClose(100, nullptr));
   
   GetSTC()->SetFocus();
   GetSTC()->Show();
-  wxExVi* vi = &GetSTC()->GetVi();
+  wex::vi* vi = &GetSTC()->GetVi();
   
-  wxExExCommand command(":n");
+  wex::ex_command command(":n");
   REQUIRE(!GetFrame()->ExecExCommand(command));
   
   REQUIRE(!GetFrame()->GetExCommand(vi, ""));
@@ -38,10 +38,10 @@ TEST_CASE("wxExManagedFrame")
   REQUIRE(!GetFrame()->SaveCurrentPage("key"));
   REQUIRE( GetFrame()->RestorePage("key") == nullptr);
   
-  GetFrame()->HideExBar(wxExManagedFrame::HIDE_BAR);
-  GetFrame()->HideExBar(wxExManagedFrame::HIDE_BAR_FOCUS_STC);
-  GetFrame()->HideExBar(wxExManagedFrame::HIDE_BAR_FORCE);
-  GetFrame()->HideExBar(wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC);
+  GetFrame()->HideExBar(wex::managed_frame::HIDE_BAR);
+  GetFrame()->HideExBar(wex::managed_frame::HIDE_BAR_FOCUS_STC);
+  GetFrame()->HideExBar(wex::managed_frame::HIDE_BAR_FORCE);
+  GetFrame()->HideExBar(wex::managed_frame::HIDE_BAR_FORCE_FOCUS_STC);
   
   REQUIRE(!GetFrame()->GetManager().GetPane("VIBAR").IsShown());
   
@@ -91,9 +91,9 @@ TEST_CASE("wxExManagedFrame")
 #ifndef __WXMSW__
   for (auto id : std::vector<int> {
     wxID_PREFERENCES, 
-    ID_FIND_FIRST, ID_FIND_LAST,
-    ID_CLEAR_FILES, ID_CLEAR_FINDS,
-    ID_VIEW_LOWEST + 1, ID_VIEW_LOWEST + 2, ID_VIEW_LOWEST + 3, ID_VIEW_LOWEST + 4}) 
+    wex::ID_FIND_FIRST, wex::ID_FIND_LAST,
+    wex::ID_CLEAR_FILES, wex::ID_CLEAR_FINDS,
+    wex::ID_VIEW_LOWEST + 1, wex::ID_VIEW_LOWEST + 2, wex::ID_VIEW_LOWEST + 3, wex::ID_VIEW_LOWEST + 4}) 
   {
     wxCommandEvent* event = new wxCommandEvent(wxEVT_MENU, id);
     wxQueueEvent(GetFrame(), event);

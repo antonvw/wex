@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      hexmodeline.cpp
-// Purpose:   Implementation of class wxExHexModeLine
+// Purpose:   Implementation of class hexmode_line
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -12,24 +12,7 @@
 #include <wx/extension/stc.h>
 #include "hexmodeline.h"
 
-char Printable(unsigned int c, wxExSTC* stc) 
-{
-  // We do not want control chars (\n etc.) to be printed,
-  // as that disturbs the hex view field.
-  if (isascii(c) && !iscntrl(c))
-  {
-    return c;
-  }
-  else
-  {
-    // If we already defined our own symbol, use that one,
-    // otherwise print an ordinary ascii char.
-    const int symbol = stc->GetControlCharSymbol();
-    return symbol == 0 ?  '.': symbol;
-  }
-}
-
-wxExHexModeLine::wxExHexModeLine(wxExHexMode* hex)
+wex::hexmode_line::hexmode_line(hexmode* hex)
   : m_Line(hex->GetSTC()->GetCurLine())
   , m_LineNo(hex->GetSTC()->GetCurrentLine())
   , m_ColumnNo(hex->GetSTC()->GetColumn(hex->GetSTC()->GetCurrentPos()))
@@ -39,7 +22,7 @@ wxExHexModeLine::wxExHexModeLine(wxExHexMode* hex)
   wxASSERT(m_Hex->Active());
 }  
 
-wxExHexModeLine::wxExHexModeLine(wxExHexMode* hex, 
+wex::hexmode_line::hexmode_line(hexmode* hex, 
   int pos_or_offset, bool is_position)
   : m_Hex(hex)
   , m_StartAsciiField(hex->m_EachHexField * hex->m_BytesPerLine)
@@ -72,7 +55,7 @@ wxExHexModeLine::wxExHexModeLine(wxExHexMode* hex,
   }
 }
 
-bool wxExHexModeLine::Delete(int count, bool settext)
+bool wex::hexmode_line::Delete(int count, bool settext)
 {
   const int index = GetBufferIndex();
   
@@ -90,7 +73,7 @@ bool wxExHexModeLine::Delete(int count, bool settext)
   return true;
 }
 
-int wxExHexModeLine::GetBufferIndex() const
+int wex::hexmode_line::GetBufferIndex() const
 {
   if (m_ColumnNo >= m_StartAsciiField + m_Hex->m_BytesPerLine)
   {
@@ -111,7 +94,7 @@ int wxExHexModeLine::GetBufferIndex() const
   return wxSTC_INVALID_POSITION;
 }
   
-const std::string wxExHexModeLine::GetInfo() const
+const std::string wex::hexmode_line::GetInfo() const
 {
   if (IsHexField())
   {
@@ -131,7 +114,7 @@ const std::string wxExHexModeLine::GetInfo() const
   return std::string();
 }
 
-bool wxExHexModeLine::Goto() const
+bool wex::hexmode_line::Goto() const
 {
   if (m_LineNo < 0 || m_ColumnNo < 0) return false;
   
@@ -143,7 +126,7 @@ bool wxExHexModeLine::Goto() const
   return true;
 }
 
-bool wxExHexModeLine::Insert(const std::string& text)
+bool wex::hexmode_line::Insert(const std::string& text)
 {
   const int index = GetBufferIndex();
   
@@ -181,7 +164,7 @@ bool wxExHexModeLine::Insert(const std::string& text)
   return true;
 }
   
-bool wxExHexModeLine::Replace(char c)
+bool wex::hexmode_line::Replace(char c)
 {
   const int index = GetBufferIndex();
   
@@ -231,7 +214,7 @@ bool wxExHexModeLine::Replace(char c)
     const int code = std::stoi(hex, nullptr, 16);
     
     m_Hex->GetSTC()->wxStyledTextCtrl::Replace(
-      pos + OtherField(), pos + OtherField() + 1, Printable(code, m_Hex->GetSTC()));
+      pos + OtherField(), pos + OtherField() + 1, wex::printable(code, m_Hex->GetSTC()));
       
     c = code;
   }
@@ -245,7 +228,7 @@ bool wxExHexModeLine::Replace(char c)
   return true;
 }
 
-void wxExHexModeLine::Replace(const std::string& hex, bool settext)
+void wex::hexmode_line::Replace(const std::string& hex, bool settext)
 {
   const int index = GetBufferIndex();
   
@@ -259,7 +242,7 @@ void wxExHexModeLine::Replace(const std::string& hex, bool settext)
   }
 }
   
-void wxExHexModeLine::ReplaceHex(int value)
+void wex::hexmode_line::ReplaceHex(int value)
 {
   const int index = GetBufferIndex();
   
@@ -276,12 +259,12 @@ void wxExHexModeLine::ReplaceHex(int value)
         
   // replace ascii field with code
   m_Hex->GetSTC()->wxStyledTextCtrl::Replace(
-    pos + OtherField(), pos + OtherField() + 1, Printable(value, m_Hex->GetSTC()));
+    pos + OtherField(), pos + OtherField() + 1, printable(value, m_Hex->GetSTC()));
       
   m_Hex->m_Buffer[index] = value;
 }
 
-void wxExHexModeLine::SetPos(const wxKeyEvent& event)
+void wex::hexmode_line::SetPos(const wxKeyEvent& event)
 {
   const int start = m_Hex->GetSTC()->PositionFromLine(m_LineNo);
   const bool right = (event.GetKeyCode() == WXK_RIGHT);
@@ -326,5 +309,22 @@ void wxExHexModeLine::SetPos(const wxKeyEvent& event)
         m_Hex->GetSTC()->SetCurrentPos(m_Hex->GetSTC()->GetLineEndPosition(m_LineNo - 1) - 1);
       }
     }
+  }
+}
+
+char wex::printable(unsigned int c, wex::stc* stc) 
+{
+  // We do not want control chars (\n etc.) to be printed,
+  // as that disturbs the hex view field.
+  if (isascii(c) && !iscntrl(c))
+  {
+    return c;
+  }
+  else
+  {
+    // If we already defined our own symbol, use that one,
+    // otherwise print an ordinary ascii char.
+    const int symbol = stc->GetControlCharSymbol();
+    return symbol == 0 ?  '.': symbol;
   }
 }

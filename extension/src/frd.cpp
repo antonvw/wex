@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      frd.cpp
-// Purpose:   Implementation of wxExFindReplaceData class
+// Purpose:   Implementation of wex::find_replace_data class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,17 +14,17 @@
 #include <wx/extension/ex-command.h>
 #include <wx/extension/util.h>
 
-wxExFindReplaceData* wxExFindReplaceData::m_Self = nullptr;
-std::string wxExFindReplaceData::m_TextFindWhat = _("Find what").ToStdString();
-std::string wxExFindReplaceData::m_TextMatchCase = _("Match case").ToStdString();
-std::string wxExFindReplaceData::m_TextMatchWholeWord = _("Match whole word").ToStdString();
-std::string wxExFindReplaceData::m_TextRegEx = _("Regular expression").ToStdString();
-std::string wxExFindReplaceData::m_TextReplaceWith = _("Replace with").ToStdString();
-std::string wxExFindReplaceData::m_TextSearchDown = _("Search down").ToStdString();
+wex::find_replace_data* wex::find_replace_data::m_Self = nullptr;
+std::string wex::find_replace_data::m_TextFindWhat = _("Find what").ToStdString();
+std::string wex::find_replace_data::m_TextMatchCase = _("Match case").ToStdString();
+std::string wex::find_replace_data::m_TextMatchWholeWord = _("Match whole word").ToStdString();
+std::string wex::find_replace_data::m_TextRegEx = _("Regular expression").ToStdString();
+std::string wex::find_replace_data::m_TextReplaceWith = _("Replace with").ToStdString();
+std::string wex::find_replace_data::m_TextSearchDown = _("Search down").ToStdString();
 
-wxExFindReplaceData::wxExFindReplaceData()
-  : m_FindStrings(wxExExCommandType::FIND)
-  , m_ReplaceStrings(wxExExCommandType::REPLACE)
+wex::find_replace_data::find_replace_data()
+  : m_FindStrings(ex_command_type::FIND)
+  , m_ReplaceStrings(ex_command_type::REPLACE)
 {
   int flags = 0;
   flags |= wxFR_DOWN *      (wxConfigBase::Get()->ReadBool(m_TextSearchDown, true));
@@ -35,11 +35,11 @@ wxExFindReplaceData::wxExFindReplaceData()
 
   // Start with this one, as it is used by SetFindString.
   SetUseRegEx(wxConfigBase::Get()->ReadBool(m_TextRegEx, m_UseRegEx));
-  SetFindStrings(wxExListFromConfig(m_TextFindWhat));
-  SetReplaceStrings(wxExListFromConfig(m_TextReplaceWith));
+  SetFindStrings(list_from_config(m_TextFindWhat));
+  SetReplaceStrings(list_from_config(m_TextReplaceWith));
 }
 
-wxExFindReplaceData::~wxExFindReplaceData()
+wex::find_replace_data::~find_replace_data()
 {
   wxConfigBase::Get()->Write(m_TextMatchCase, MatchCase());
   wxConfigBase::Get()->Write(m_TextMatchWholeWord, MatchWord());
@@ -47,17 +47,17 @@ wxExFindReplaceData::~wxExFindReplaceData()
   wxConfigBase::Get()->Write(m_TextSearchDown, SearchDown());
 }
 
-wxExFindReplaceData* wxExFindReplaceData::Get(bool createOnDemand)
+wex::find_replace_data* wex::find_replace_data::Get(bool createOnDemand)
 {
   if (m_Self == nullptr && createOnDemand)
   {
-    m_Self = new wxExFindReplaceData();
+    m_Self = new find_replace_data();
   }
 
   return m_Self;
 }
 
-int wxExFindReplaceData::RegExMatches(const std::string& text) const
+int wex::find_replace_data::RegExMatches(const std::string& text) const
 {
   std::smatch m;
 
@@ -69,7 +69,7 @@ int wxExFindReplaceData::RegExMatches(const std::string& text) const
   return m.position();
 }
   
-int wxExFindReplaceData::RegExReplaceAll(std::string& text) const
+int wex::find_replace_data::RegExReplaceAll(std::string& text) const
 {
   const auto words_begin = std::sregex_iterator(text.begin(), text.end(), m_FindRegEx);
   const auto words_end = std::sregex_iterator();  
@@ -83,21 +83,21 @@ int wxExFindReplaceData::RegExReplaceAll(std::string& text) const
   return result;
 }
   
-wxExFindReplaceData* wxExFindReplaceData::Set(wxExFindReplaceData* frd)
+wex::find_replace_data* wex::find_replace_data::Set(find_replace_data* frd)
 {
-  wxExFindReplaceData* old = m_Self;
+  find_replace_data* old = m_Self;
   m_Self = frd;
   return old;
 }
 
-void wxExFindReplaceData::SetFindString(const std::string& value)
+void wex::find_replace_data::SetFindString(const std::string& value)
 {
   if (!m_FindStrings.Set(value)) return;
   m_FRD.SetFindString(value);
   SetUseRegEx(m_UseRegEx);
 }
 
-void wxExFindReplaceData::SetFindStrings(
+void wex::find_replace_data::SetFindStrings(
   const std::list < std::string > & values)
 {
   m_FindStrings.Set(values);
@@ -105,7 +105,7 @@ void wxExFindReplaceData::SetFindStrings(
   SetUseRegEx(m_UseRegEx);
 }
 
-void wxExFindReplaceData::SetMatchCase(bool value)
+void wex::find_replace_data::SetMatchCase(bool value)
 {
   auto flags = GetFlags();
   if (value) flags |= wxFR_MATCHCASE;
@@ -113,7 +113,7 @@ void wxExFindReplaceData::SetMatchCase(bool value)
   SetFlags(flags);
 }
 
-void wxExFindReplaceData::SetMatchWord(bool value)
+void wex::find_replace_data::SetMatchWord(bool value)
 {
   auto flags = GetFlags();
   
@@ -129,20 +129,20 @@ void wxExFindReplaceData::SetMatchWord(bool value)
   }
 }
 
-void wxExFindReplaceData::SetReplaceString(const std::string& value)
+void wex::find_replace_data::SetReplaceString(const std::string& value)
 {
   m_ReplaceStrings.Set(value);
   m_FRD.SetReplaceString(value);
 }
 
-void wxExFindReplaceData::SetReplaceStrings(
+void wex::find_replace_data::SetReplaceStrings(
   const std::list < std::string > & value)
 {
   m_ReplaceStrings.Set(value);
   m_FRD.SetReplaceString(m_ReplaceStrings.Get());
 }
 
-void wxExFindReplaceData::SetUseRegEx(bool value) 
+void wex::find_replace_data::SetUseRegEx(bool value) 
 {
   if (!value)
   {

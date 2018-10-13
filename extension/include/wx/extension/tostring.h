@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      tostring.h
-// Purpose:   Declaration of specializations of wxExToContainer class
+// Purpose:   Declaration of specializations of wex::to_container class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -12,6 +12,9 @@
 #include <wx/extension/path.h>
 #include <wx/extension/tocontainer.h>
 
-using wxExToListString = wxExToContainer<std::list < std::string > >;
-using wxExToVectorPath = wxExToContainer<std::vector < wxExPath > >;
-using wxExToVectorString = wxExToContainer<std::vector < std::string > >;
+namespace wex
+{
+  using to_list_string = to_container<std::list < std::string > >;
+  using to_vector_path = to_container<std::vector < path > >;
+  using to_vector_string = to_container<std::vector < std::string > >;
+};

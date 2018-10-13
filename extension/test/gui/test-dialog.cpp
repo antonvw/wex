@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-dialog.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -13,11 +13,11 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-TEST_CASE("wxExDialog")
+TEST_CASE("wex::dialog")
 {
-  wxExDialog().Show();
+  wex::dialog().Show();
   
-  wxExDialog* dlg = new wxExDialog(wxExWindowData().Button(0).Title("no buttons"));
+  wex::dialog* dlg = new wex::dialog(wex::window_data().Button(0).Title("no buttons"));
   dlg->Show();
 
   REQUIRE(dlg->GetData().Button() == 0);

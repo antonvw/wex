@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      hexmode.cpp
-// Purpose:   Implementation of class wxExHexMode
+// Purpose:   Implementation of class wex::hexmode
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -25,9 +25,9 @@ int GetHexNumberFromUser(
   int value, int min, int max,
   wxWindow *parent)
 {
-  wxExItem::UseConfig(false);
-  wxExItemDialog dlg({{message, min, max, value}}, wxExWindowData().Title(caption).Parent(parent));
-  wxExItem::UseConfig(true);
+  wex::item::UseConfig(false);
+  wex::item_dialog dlg({{message, min, max, value}}, wex::window_data().Title(caption).Parent(parent));
+  wex::item::UseConfig(true);
   
   ((wxSpinCtrl* )dlg.GetItem(message).GetWindow())->SetBase(16);
   
@@ -35,7 +35,7 @@ int GetHexNumberFromUser(
     -1: std::any_cast<int>(dlg.GetItemValue(message));
 }
 
-const std::string MakeLine(wxExSTC* stc, const std::string& buffer, 
+const std::string MakeLine(wex::stc* stc, const std::string& buffer, 
   size_t offset, size_t bytesPerLine, size_t eachHexField)
 {
   std::string field_hex, field_ascii;
@@ -50,7 +50,7 @@ const std::string MakeLine(wxExSTC* stc, const std::string& buffer,
     char buff[4];
     sprintf(buff, "%02X ", c);
     field_hex += buff;
-    field_ascii += Printable(c, stc);
+    field_ascii += wex::printable(c, stc);
   }
 
   const auto field_spaces = std::string(
@@ -63,14 +63,14 @@ const std::string MakeLine(wxExSTC* stc, const std::string& buffer,
 }
 
 // If bytesPerLine is changed, update Convert.
-wxExHexMode::wxExHexMode(wxExSTC* stc, size_t bytesPerLine)
+wex::hexmode::hexmode(wex::stc* stc, size_t bytesPerLine)
   : m_STC(stc)
   , m_BytesPerLine(bytesPerLine)
   , m_EachHexField(3)
 {
 }
   
-void wxExHexMode::Activate()
+void wex::hexmode::Activate()
 {
   m_Active = true;
 
@@ -83,10 +83,10 @@ void wxExHexMode::Activate()
   wxCharBuffer buffer(m_STC->GetTextRaw());
   SetText(std::string(buffer.data(), buffer.length()));
   
-  wxExLexers::Get()->Apply(m_STC);
+  lexers::Get()->Apply(m_STC);
 }
 
-void wxExHexMode::AppendText(const std::string& buffer)
+void wex::hexmode::AppendText(const std::string& buffer)
 {
   if (!m_Active) return;
 
@@ -111,9 +111,9 @@ void wxExHexMode::AppendText(const std::string& buffer)
   m_STC->AppendTextRaw(text.data(), text.size());
 }
 
-void wxExHexMode::ControlCharDialog(const std::string& caption)
+void wex::hexmode::ControlCharDialog(const std::string& caption)
 {
-  if (wxExHexModeLine ml(this, m_STC->GetSelectionStart());
+  if (hexmode_line ml(this, m_STC->GetSelectionStart());
     ml.IsAsciiField() &&
     m_STC->GetSelectedText().size() == 1)
   {
@@ -145,7 +145,7 @@ void wxExHexMode::ControlCharDialog(const std::string& caption)
   }
 }
     
-void wxExHexMode::Deactivate() 
+void wex::hexmode::Deactivate() 
 {
   m_Active = false;
 
@@ -159,19 +159,19 @@ void wxExHexMode::Deactivate()
   m_STC->BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);
 }
 
-bool wxExHexMode::Delete(int count, int pos) 
+bool wex::hexmode::Delete(int count, int pos) 
 {
   return pos == -1 ? 
-    wxExHexModeLine(this).Delete(count):
-    wxExHexModeLine(this, pos).Delete(count);
+    hexmode_line(this).Delete(count):
+    hexmode_line(this, pos).Delete(count);
 }
   
-const std::string wxExHexMode::GetInfo()
+const std::string wex::hexmode::GetInfo()
 {
-  return wxExHexModeLine(this).GetInfo();
+  return hexmode_line(this).GetInfo();
 }
   
-bool wxExHexMode::GotoDialog()
+bool wex::hexmode::GotoDialog()
 {
   long val;
   if ((val = wxGetNumberFromUser(
@@ -188,10 +188,10 @@ bool wxExHexMode::GotoDialog()
 
   m_Goto = val;
   
-  return wxExHexModeLine(this, val, false).Goto();
+  return hexmode_line(this, val, false).Goto();
 }
 
-bool wxExHexMode::HighlightOther()
+bool wex::hexmode::HighlightOther()
 {
   if (const auto pos = m_STC->GetCurrentPos(); HighlightOther(pos))
   {
@@ -205,9 +205,9 @@ bool wxExHexMode::HighlightOther()
   return false;
 }
     
-bool wxExHexMode::HighlightOther(int pos)
+bool wex::hexmode::HighlightOther(int pos)
 {
-  if (const auto brace_match = wxExHexModeLine(this, pos).OtherField();
+  if (const auto brace_match = hexmode_line(this, pos).OtherField();
     brace_match != wxSTC_INVALID_POSITION)
   {
     m_STC->BraceHighlight(pos, 
@@ -221,21 +221,21 @@ bool wxExHexMode::HighlightOther(int pos)
   }
 }
 
-bool wxExHexMode::Insert(const std::string& text, int pos)
+bool wex::hexmode::Insert(const std::string& text, int pos)
 {
   return pos == -1 ? 
-    wxExHexModeLine(this).Insert(text):
-    wxExHexModeLine(this, pos).Insert(text);
+    hexmode_line(this).Insert(text):
+    hexmode_line(this, pos).Insert(text);
 }
   
-bool wxExHexMode::Replace(char c, int pos)
+bool wex::hexmode::Replace(char c, int pos)
 {
   return pos == -1 ? 
-    wxExHexModeLine(this).Replace(c):
-    wxExHexModeLine(this, pos).Replace(c);
+    hexmode_line(this).Replace(c):
+    hexmode_line(this, pos).Replace(c);
 }
   
-bool wxExHexMode::ReplaceTarget(const std::string& replacement, bool settext)
+bool wex::hexmode::ReplaceTarget(const std::string& replacement, bool settext)
 {
   if (m_STC->GetTargetStart() == wxSTC_INVALID_POSITION || 
       m_STC->GetTargetEnd() == wxSTC_INVALID_POSITION || 
@@ -264,20 +264,20 @@ bool wxExHexMode::ReplaceTarget(const std::string& replacement, bool settext)
     // replace
     if (start <= m_STC->GetTargetEnd())
     {
-      wxExHexModeLine(this, start).Replace(
+      hexmode_line(this, start).Replace(
         {replacement[i], replacement[i + 1]}, settext);
     }
     // insert
     else
     {
-      wxExHexModeLine(this, start).Insert({replacement[i], replacement[i + 1]});
+      hexmode_line(this, start).Insert({replacement[i], replacement[i + 1]});
     }
   }
   
   // delete
   if (start < m_STC->GetTargetEnd())
   {
-    wxExHexModeLine(this, start).Delete(
+    hexmode_line(this, start).Delete(
       (m_STC->GetTargetEnd() - start) /  m_EachHexField, settext);
   }
 
@@ -286,7 +286,7 @@ bool wxExHexMode::ReplaceTarget(const std::string& replacement, bool settext)
   return true;
 }
   
-bool wxExHexMode::Set(bool on)
+bool wex::hexmode::Set(bool on)
 {
   if (m_Active == on) return false;
 
@@ -307,12 +307,12 @@ bool wxExHexMode::Set(bool on)
   return true;
 }
 
-void wxExHexMode::SetPos(const wxKeyEvent& event)
+void wex::hexmode::SetPos(const wxKeyEvent& event)
 {
-  wxExHexModeLine(this).SetPos(event);
+  hexmode_line(this).SetPos(event);
 }
       
-void wxExHexMode::SetText(const std::string text)
+void wex::hexmode::SetText(const std::string text)
 {
   if (!m_Active) return;
 
@@ -328,7 +328,7 @@ void wxExHexMode::SetText(const std::string text)
   m_STC->PositionRestore();
 }
   
-void wxExHexMode::Undo()
+void wex::hexmode::Undo()
 {
   if (m_Active)
   {

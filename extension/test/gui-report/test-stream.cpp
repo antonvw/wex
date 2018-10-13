@@ -1,27 +1,27 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-stream.cpp
-// Purpose:   Implementation for wxExtension report unit testing
+// Purpose:   Implementation for wex report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/frd.h>
 #include <wx/extension/report/stream.h>
 #include "test.h"
 
-TEST_CASE("wxExStreamToListView")
+TEST_CASE("wex::listview_stream")
 {
-  wxExTool tool(ID_TOOL_REPORT_FIND);
+  wex::tool tool(wex::ID_TOOL_REPORT_FIND);
 
-  wxExListView* report = new wxExListView(wxExListViewData().Type(LIST_FIND));
+  wex::listview* report = new wex::listview(wex::listview_data().Type(wex::LISTVIEW_FIND));
     
   AddPane(GetFrame(), report);
 
-  wxExFindReplaceData::Get()->SetFindString("xx");
+  wex::find_replace_data::Get()->SetFindString("xx");
   
-  REQUIRE(wxExStreamToListView::SetupTool(tool, GetFrame(), report));
+  REQUIRE(wex::listview_stream::SetupTool(tool, GetFrame(), report));
   
-  wxExStreamToListView textFile(GetTestPath("test.h"), tool);
+  wex::listview_stream textFile(GetTestPath("test.h"), tool);
   
   REQUIRE( textFile.RunTool());
   REQUIRE(!textFile.GetStatistics().GetElements().GetItems().empty());
@@ -29,13 +29,13 @@ TEST_CASE("wxExStreamToListView")
   REQUIRE( textFile.RunTool()); // do the same test
   REQUIRE(!textFile.GetStatistics().GetElements().GetItems().empty());
 
-  wxExStreamToListView textFile2(GetTestPath("test.h"), tool);
+  wex::listview_stream textFile2(GetTestPath("test.h"), tool);
   REQUIRE( textFile2.RunTool());
   REQUIRE(!textFile2.GetStatistics().GetElements().GetItems().empty());
   
-  wxExTool tool3(ID_TOOL_REPORT_KEYWORD);
-  REQUIRE(wxExStreamToListView::SetupTool(tool3, GetFrame()));
-  wxExStreamToListView textFile3(GetTestPath("test.h"), tool3);
+  wex::tool tool3(wex::ID_TOOL_REPORT_KEYWORD);
+  REQUIRE(wex::listview_stream::SetupTool(tool3, GetFrame()));
+  wex::listview_stream textFile3(GetTestPath("test.h"), tool3);
   REQUIRE( textFile3.RunTool());
   REQUIRE(!textFile3.GetStatistics().GetElements().GetItems().empty());
 }

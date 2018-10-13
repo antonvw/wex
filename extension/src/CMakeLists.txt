@@ -6,7 +6,7 @@ file(GLOB SRCS
   "../../external/shunting-yard/*.cpp")
 
 add_library(
-  wxex 
+  wex 
   ${SRCS})
 
-set_target_properties(wxex PROPERTIES DEBUG_POSTFIX "d")
+set_target_properties(wex PROPERTIES DEBUG_POSTFIX "d")

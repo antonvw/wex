@@ -1,22 +1,22 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      support.h
-// Purpose:   Declaration of DecoratedFrame class
+// Purpose:   Declaration of decoratedframe class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma
 
 #include <wx/extension/report/frame.h>
 
-class App;
+class app;
 
-class DecoratedFrame : public wxExFrameWithHistory
+class decorated_frame : public wex::history_frame
 {
 public:
-  DecoratedFrame(App* app);
+  decorated_frame(app* app);
   virtual bool AllowClose(wxWindowID id, wxWindow* page) override;
   virtual void OnNotebook(wxWindowID id, wxWindow* page) override;
 protected:
-  App* m_App;
+  app* m_App;
 };

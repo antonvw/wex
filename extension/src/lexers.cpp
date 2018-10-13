@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      lexers.cpp
-// Purpose:   Implementation of wxExLexers class
+// Purpose:   Implementation of wex::lexers class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -18,20 +18,20 @@
 #include <wx/extension/log.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/tokenizer.h>
-#include <wx/extension/util.h> // for wxExMatchesOneOf
+#include <wx/extension/util.h>
 #include <easylogging++.h>
 
 // Constructor for lexers from specified filename.
 // This must be an existing xml file containing all lexers.
 // It does not do LoadDocument, however if you use the global Get,
 // it both constructs and loads the lexers.
-wxExLexers::wxExLexers(const wxExPath& filename)
+wex::lexers::lexers(const path& filename)
   : m_Path(filename)
   , m_Theme(wxConfigBase::Get()->Read("theme", std::string()))
 {
 }
 
-void wxExLexers::Apply(wxExSTC* stc) const
+void wex::lexers::Apply(stc* stc) const
 {
   m_DefaultStyle.Apply(stc);
 
@@ -46,7 +46,7 @@ void wxExLexers::Apply(wxExSTC* stc) const
 }
   
 // No longer const, as it updates m_DefaultColours.
-void wxExLexers::ApplyGlobalStyles(wxExSTC* stc)
+void wex::lexers::ApplyGlobalStyles(stc* stc)
 {
   if (m_DefaultColours.empty())
   {
@@ -96,7 +96,7 @@ void wxExLexers::ApplyGlobalStyles(wxExSTC* stc)
   }
 }
 
-const std::string wxExLexers::ApplyMacro(const std::string& text, const std::string& lexer)
+const std::string wex::lexers::ApplyMacro(const std::string& text, const std::string& lexer)
 {
   if (const auto& it = GetMacros(lexer).find(text);
     it != GetMacros(lexer).end())
@@ -108,7 +108,7 @@ const std::string wxExLexers::ApplyMacro(const std::string& text, const std::str
     return text;
 }
 
-void wxExLexers::ApplyMarginTextStyle(wxExSTC* stc, int line) const
+void wex::lexers::ApplyMarginTextStyle(stc* stc, int line) const
 {
   if (m_StyleNoTextMargin != -1)
   {
@@ -116,22 +116,22 @@ void wxExLexers::ApplyMarginTextStyle(wxExSTC* stc, int line) const
   }
 }
 
-const wxExLexer wxExLexers::FindByFileName(const std::string& fullname) const
+const wex::lexer wex::lexers::FindByFileName(const std::string& fullname) const
 {
   const auto& it = std::find_if(m_Lexers.begin(), m_Lexers.end(), 
     [fullname](auto const& e) {return !e.GetExtensions().empty() && 
-       wxExMatchesOneOf(fullname, e.GetExtensions());});
-  return it != m_Lexers.end() ? *it: wxExLexer();
+       matches_one_of(fullname, e.GetExtensions());});
+  return it != m_Lexers.end() ? *it: lexer();
 }
 
-const wxExLexer wxExLexers::FindByName(const std::string& name) const
+const wex::lexer wex::lexers::FindByName(const std::string& name) const
 {
   const auto& it = std::find_if(m_Lexers.begin(), m_Lexers.end(), 
     [name](auto const& e) {return e.GetDisplayLexer() == name;});
-  return it != m_Lexers.end() ? *it: wxExLexer();
+  return it != m_Lexers.end() ? *it: lexer();
 }
 
-const wxExLexer wxExLexers::FindByText(const std::string& text) const
+const wex::lexer wex::lexers::FindByText(const std::string& text) const
 {
   try
   {
@@ -146,42 +146,42 @@ const wxExLexer wxExLexers::FindByText(const std::string& text) const
   }
   catch (std::exception& e)
   {
-    wxExLog(e) << "findbytext";
+    log(e) << "findbytext";
   }
 
-  return wxExLexer();
+  return lexer();
 }
 
-wxExLexers* wxExLexers::Get(bool createOnDemand)
+wex::lexers* wex::lexers::Get(bool createOnDemand)
 {
   if (m_Self == nullptr && createOnDemand)
   {
-    m_Self = new wxExLexers(wxExPath(wxExConfigDir(), "lexers.xml"));
+    m_Self = new lexers(path(config_dir(), "lexers.xml"));
     m_Self->LoadDocument();
   }
 
   return m_Self;
 }
 
-const wxExIndicator wxExLexers::GetIndicator(const wxExIndicator& indicator) const
+const wex::indicator wex::lexers::GetIndicator(const indicator& indicator) const
 {
   const auto& it = m_Indicators.find(indicator);
-  return (it != m_Indicators.end() ? *it: wxExIndicator());
+  return (it != m_Indicators.end() ? *it: wex::indicator());
 }
 
-const std::string wxExLexers::GetKeywords(const std::string& set) const
+const std::string wex::lexers::GetKeywords(const std::string& set) const
 {
   const auto& it = m_Keywords.find(set);
   return (it != m_Keywords.end() ? it->second: std::string());
 }
 
-const wxExMarker wxExLexers::GetMarker(const wxExMarker& marker) const
+const wex::marker wex::lexers::GetMarker(const marker& marker) const
 {
   const auto& it = m_Markers.find(marker);
-  return (it != m_Markers.end() ? *it: wxExMarker());
+  return (it != m_Markers.end() ? *it: wex::marker());
 }
   
-bool wxExLexers::LoadDocument()
+bool wex::lexers::LoadDocument()
 {
   // This test is to prevent showing an error if the lexers file does not exist,
   // as this is not required.
@@ -193,11 +193,11 @@ bool wxExLexers::LoadDocument()
     pugi::parse_default | pugi::parse_trim_pcdata);
     !result)
   {
-    wxExXmlError(m_Path, &result);
+    xml_error(m_Path, &result);
     return false;
   }
   
-  m_DefaultStyle = wxExStyle();
+  m_DefaultStyle = style();
   m_FoldingBackgroundColour.clear();
   m_FoldingForegroundColour.clear();
   m_GlobalProperties.clear();
@@ -222,7 +222,7 @@ bool wxExLexers::LoadDocument()
     else if (strcmp(node.name(), "keyword")== 0) ParseNodeKeyword(node);
     else if (strcmp(node.name(), "lexer") ==  0) 
     {
-      if (const wxExLexer lexer(&node); lexer.IsOk()) 
+      if (const wex::lexer lexer(&node); lexer.IsOk()) 
         m_Lexers.emplace_back(lexer);
     }
   }
@@ -232,9 +232,9 @@ bool wxExLexers::LoadDocument()
   {
     const std::string extensions(std::accumulate(
       m_Lexers.begin(), m_Lexers.end(), std::string(wxFileSelectorDefaultWildcardStr), 
-      [&](const std::string& a, const wxExLexer& b) {
+      [&](const std::string& a, const wex::lexer& b) {
         if (!b.GetExtensions().empty())
-          return a.empty() ? b.GetExtensions() : a + wxExGetFieldSeparator() + b.GetExtensions();
+          return a.empty() ? b.GetExtensions() : a + get_field_separator() + b.GetExtensions();
         else return a;}));
     if (!config->Exists(_("Add what"))) config->Write(_("Add what"), extensions.c_str());
     if (!config->Exists(_("In files"))) config->Write(_("In files"), extensions.c_str());
@@ -244,13 +244,13 @@ bool wxExLexers::LoadDocument()
   // Do some checking.
   if (!m_Lexers.empty() && !m_Theme.empty())
   {
-    if (!m_DefaultStyle.IsOk()) wxExLog() << "default style not ok";
-    if (!m_DefaultStyle.ContainsDefaultStyle()) wxExLog() << "default style does not contain default style";
+    if (!m_DefaultStyle.IsOk()) log() << "default style not ok";
+    if (!m_DefaultStyle.ContainsDefaultStyle()) log() << "default style does not contain default style";
   }  
 
   if (m_ThemeMacros.empty())
   {
-    wxExLog() << "themes are missing";
+    log() << "themes are missing";
   }
   else 
   {
@@ -258,7 +258,7 @@ bool wxExLexers::LoadDocument()
     {
       if (!it.first.empty() && it.second.empty())
       {
-        wxExLog("theme") << it.first << " is unknown";
+        log("theme") << it.first << " is unknown";
       }
     } 
   }
@@ -280,15 +280,15 @@ bool wxExLexers::LoadDocument()
   return true;
 }
 
-void wxExLexers::ParseNodeFolding(const pugi::xml_node& node)
+void wex::lexers::ParseNodeFolding(const pugi::xml_node& node)
 {
-  wxExTokenizer fields(node.text().get(), ",");
+  tokenizer fields(node.text().get(), ",");
 
   m_FoldingBackgroundColour = ApplyMacro(fields.GetNextToken());
   m_FoldingForegroundColour = ApplyMacro(fields.GetNextToken());
 }
 
-void wxExLexers::ParseNodeGlobal(const pugi::xml_node& node)
+void wex::lexers::ParseNodeGlobal(const pugi::xml_node& node)
 {
   for (const auto& child: node.children())
   {
@@ -306,26 +306,26 @@ void wxExLexers::ParseNodeGlobal(const pugi::xml_node& node)
     }
     else if (strcmp(child.name(), "indicator") == 0)
     {
-      if (const wxExIndicator indicator(child); indicator.IsOk())
+      if (const wex::indicator indicator(child); indicator.IsOk())
       {
         m_Indicators.insert(indicator);
       }
     }
     else if (strcmp(child.name(), "marker") == 0)
     {
-      if (const wxExMarker marker(child); marker.IsOk()) m_Markers.insert(marker);
+      if (const wex::marker marker(child); marker.IsOk()) m_Markers.insert(marker);
     }
     else if (strcmp(child.name(), "properties") == 0)
     {
-      wxExNodeProperties(&child, m_GlobalProperties);
+      node_properties(&child, m_GlobalProperties);
     }
     else if (strcmp(child.name(), "style") == 0)
     {
-      if (const wxExStyle style(child, "global"); style.ContainsDefaultStyle())
+      if (const wex::style style(child, "global"); style.ContainsDefaultStyle())
       {
         if (m_DefaultStyle.IsOk())
         {
-          wxExLog("duplicate default style") << child.name() << child;
+          log("duplicate default style") << child.name() << child;
         }
         else
         {
@@ -349,7 +349,7 @@ void wxExLexers::ParseNodeGlobal(const pugi::xml_node& node)
   }
 }
 
-void wxExLexers::ParseNodeKeyword(const pugi::xml_node& node)
+void wex::lexers::ParseNodeKeyword(const pugi::xml_node& node)
 {
   for (const auto& child: node.children())
   {
@@ -357,7 +357,7 @@ void wxExLexers::ParseNodeKeyword(const pugi::xml_node& node)
   }
 }
 
-void wxExLexers::ParseNodeMacro(const pugi::xml_node& node)
+void wex::lexers::ParseNodeMacro(const pugi::xml_node& node)
 {
   for (const auto& child: node.children())
   {
@@ -373,7 +373,7 @@ void wxExLexers::ParseNodeMacro(const pugi::xml_node& node)
         {
           if (const auto& it = macro_map.find(no); it != macro_map.end())
           {
-            wxExLog("macro") << no << macro << " already exists";
+            log("macro") << no << macro << " already exists";
           }
           else
           {
@@ -386,7 +386,7 @@ void wxExLexers::ParseNodeMacro(const pugi::xml_node& node)
               }
               catch (std::exception& e)
               {
-                wxExLog(e) << "macro";
+                log(e) << "macro";
               }
             }
             else
@@ -407,7 +407,7 @@ void wxExLexers::ParseNodeMacro(const pugi::xml_node& node)
   }
 }
 
-void wxExLexers::ParseNodeTheme(const pugi::xml_node& node)
+void wex::lexers::ParseNodeTheme(const pugi::xml_node& node)
 {
   if (m_Theme.empty() && !wxConfigBase::Get(false)->Exists("theme"))
   {
@@ -426,7 +426,7 @@ void wxExLexers::ParseNodeTheme(const pugi::xml_node& node)
       {
         if (const auto& it = tmpMacros.find(style); it != tmpMacros.end())
         {
-          wxExLog("macro style") <<  style << child << " already exists";
+          log("macro style") <<  style << child << " already exists";
         }
         else
         {
@@ -444,14 +444,14 @@ void wxExLexers::ParseNodeTheme(const pugi::xml_node& node)
   m_ThemeMacros[node.attribute("name").value()] = tmpMacros;
 }
 
-void wxExLexers::ParseNodeThemes(const pugi::xml_node& node)
+void wex::lexers::ParseNodeThemes(const pugi::xml_node& node)
 {
   for (const auto& child: node.children()) ParseNodeTheme(child);
 }
       
-wxExLexers* wxExLexers::Set(wxExLexers* lexers)
+wex::lexers* wex::lexers::Set(wex::lexers* lexers)
 {
-  wxExLexers* old = m_Self;
+  wex::lexers* old = m_Self;
   m_Self = lexers;
   return old;
 }
@@ -470,7 +470,7 @@ bool SingleChoice(wxWindow* parent, const std::string& title,
   return true;
 }
   
-bool wxExLexers::ShowDialog(wxExSTC* stc) const
+bool wex::lexers::ShowDialog(stc* stc) const
 {
   wxArrayString s;
   s.Add(std::string());
@@ -484,7 +484,7 @@ bool wxExLexers::ShowDialog(wxExSTC* stc) const
   return true;
 }
 
-bool wxExLexers::ShowThemeDialog(wxWindow* parent)
+bool wex::lexers::ShowThemeDialog(wxWindow* parent)
 { 
   wxArrayString s;
   for (const auto& it : m_ThemeMacros) s.Add(it.first);

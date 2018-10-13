@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      ex-command.cpp
-// Purpose:   Implementation of class wxExExCommand
+// Purpose:   Implementation of class wex::ex_command
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -9,23 +9,23 @@
 #include <wx/extension/stc.h>
 #include <wx/extension/vi.h>
 
-wxExExCommand::wxExExCommand(const std::string command)
+wex::ex_command::ex_command(const std::string& command)
   : m_Command(command)
 {
 }
 
-wxExExCommand::wxExExCommand(wxExSTC* stc)
+wex::ex_command::ex_command(wex::stc* stc)
   : m_STC(stc) 
   , m_STC_original(stc)
 {
 }
 
-wxExExCommand::wxExExCommand(const wxExExCommand& c)
+wex::ex_command::ex_command(const wex::ex_command& c)
 {
   *this = c;
 }
   
-wxExExCommand& wxExExCommand::operator=(const wxExExCommand& c)
+wex::ex_command& wex::ex_command::operator=(const wex::ex_command& c)
 {
   if (this != &c)
   {
@@ -46,27 +46,27 @@ wxExExCommand& wxExExCommand::operator=(const wxExExCommand& c)
   return *this;
 }
 
-size_t wxExExCommand::clear()
+size_t wex::ex_command::clear()
 {
   m_Command.clear(); 
   m_IsHandled = false;
   return 0;
 }
 
-bool wxExExCommand::AppendExec(char c)
+bool wex::ex_command::AppendExec(char c)
 {
   Append(c);
   return Exec();
 }
 
-bool wxExExCommand::Exec(const std::string& command)
+bool wex::ex_command::Exec(const std::string& command)
 {
   return m_IsHandled || ((m_STC != nullptr) && (command.empty() ? 
     m_STC->GetVi().Command(Command()):
     m_STC->GetVi().Command(command)));
 }
 
-void wxExExCommand::Restore(const wxExExCommand& c)
+void wex::ex_command::Restore(const wex::ex_command& c)
 {
   m_Command = c.m_Command;
   m_IsHandled = c.m_IsHandled;
@@ -77,7 +77,7 @@ void wxExExCommand::Restore(const wxExExCommand& c)
   }
 }
 
-void wxExExCommand::Set(const wxExExCommand& c)
+void wex::ex_command::Set(const wex::ex_command& c)
 {
   m_Command = c.m_Command;
   m_IsHandled = c.m_IsHandled;
@@ -88,22 +88,22 @@ void wxExExCommand::Set(const wxExExCommand& c)
   }
 }
 
-wxExExCommandType wxExExCommand::Type() const
+wex::ex_command_type wex::ex_command::Type() const
 {
   if (m_Command.empty()) 
   {
-    return wxExExCommandType::NONE;
+    return wex::ex_command_type::NONE;
   }
   else switch (m_Command[0])
   {
-    case ':': return wxExExCommandType::COMMAND;
-    case '=': return wxExExCommandType::CALC;
+    case ':': return wex::ex_command_type::COMMAND;
+    case '=': return wex::ex_command_type::CALC;
     case '/':
     case '?': 
       return m_STC != nullptr && m_STC->GetMarginTextClick() > 0 ?
-        wxExExCommandType::FIND_MARGIN:
-        wxExExCommandType::FIND;
-    case '!': return wxExExCommandType::EXEC;
-    default: return wxExExCommandType::VI;
+        wex::ex_command_type::FIND_MARGIN:
+        wex::ex_command_type::FIND;
+    case '!': return wex::ex_command_type::EXEC;
+    default: return wex::ex_command_type::VI;
   }
 }

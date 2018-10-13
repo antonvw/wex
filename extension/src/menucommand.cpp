@@ -1,16 +1,16 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      menucommand.cpp
-// Purpose:   Implementation of wxExMenuCommand class
+// Name:      menu_command.cpp
+// Purpose:   Implementation of wex::menu_command class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
-#include <wx/extension/menucommand.h>
 #include <wx/extension/menu.h>
+#include <wx/extension/menucommand.h>
 #include <wx/extension/util.h>
 
-wxExMenuCommand::wxExMenuCommand(
+wex::menu_command::menu_command(
   const std::string& command,
   const std::string& type,
   const std::string& submenu,
@@ -40,7 +40,7 @@ wxExMenuCommand::wxExMenuCommand(
 {
 }
   
-const std::string wxExMenuCommand::GetCommand(long type) const
+const std::string wex::menu_command::GetCommand(long type) const
 {
   auto command = m_Command;
 
@@ -60,7 +60,7 @@ const std::string wxExMenuCommand::GetCommand(long type) const
   return command;
 }
 
-bool wxExMenuCommand::UseSubcommand() const
+bool wex::menu_command::UseSubcommand() const
 {
   return IsHelp() || (m_SubMenuIsCommand && !m_SubMenu.empty());
 }

@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-indicator.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -14,29 +14,29 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-TEST_CASE("wxExIndicator")
+TEST_CASE("wex::indicator")
 {
   SUBCASE("Default constructor")
   {
-    REQUIRE(!wxExIndicator().IsOk() );
+    REQUIRE(!wex::indicator().IsOk() );
   }
   
   SUBCASE("Constructor using no, symbol")
   {
-    wxExIndicator indx(5, 2);
-    wxExIndicator indy(7, 5);
+    wex::indicator indx(5, 2);
+    wex::indicator indy(7, 5);
 
-    REQUIRE(!wxExIndicator(5).IsOk() );
+    REQUIRE(!wex::indicator(5).IsOk() );
     REQUIRE( indx.IsOk());
     REQUIRE( indy.IsOk());
     REQUIRE( indx < indy );
     REQUIRE( indx == indx );
     REQUIRE( indx != indy );
-    REQUIRE( wxExIndicator(5) == wxExIndicator(5));
-    REQUIRE( wxExIndicator(5) == wxExIndicator(5, 2));
-    REQUIRE( wxExIndicator(5) != wxExIndicator(4));
-    REQUIRE( wxExIndicator(5, 2) == wxExIndicator(5, 2));
-    REQUIRE( wxExIndicator(5, 1) != wxExIndicator(5, 2));
+    REQUIRE( wex::indicator(5) == wex::indicator(5));
+    REQUIRE( wex::indicator(5) == wex::indicator(5, 2));
+    REQUIRE( wex::indicator(5) != wex::indicator(4));
+    REQUIRE( wex::indicator(5, 2) == wex::indicator(5, 2));
+    REQUIRE( wex::indicator(5, 1) != wex::indicator(5, 2));
   }
   
   SUBCASE("Constructor xml")
@@ -45,7 +45,7 @@ TEST_CASE("wxExIndicator")
     pugi::xml_parse_result result = doc.load_string("<indicator no = \"5\">indic_box,green</indicator>");
     REQUIRE( result );
 
-    wxExIndicator ind(doc.document_element());
+    wex::indicator ind(doc.document_element());
     REQUIRE( ind.GetForegroundColour() == "green");
     REQUIRE( ind.GetNo() == 5);
     REQUIRE( ind.GetStyle() == 6);
@@ -60,7 +60,7 @@ TEST_CASE("wxExIndicator")
   {
     pugi::xml_document doc;
     REQUIRE( doc.load_string("<indicator no = \"x\"></indicator>"));
-    wxExIndicator ind(doc.document_element());
+    wex::indicator ind(doc.document_element());
     REQUIRE(!ind.IsOk());
   }
 }

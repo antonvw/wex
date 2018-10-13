@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      marker.cpp
-// Purpose:   Implementation of class wxExMarker
+// Purpose:   Implementation of class wex::marker
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -16,33 +16,33 @@
 #include <wx/extension/tokenizer.h>
 #include <easylogging++.h>
 
-wxExMarker::wxExMarker(const pugi::xml_node& node)
+wex::marker::marker(const pugi::xml_node& node)
 {
   if (node.empty()) return;
 
   const auto single = 
-    wxExLexers::Get()->ApplyMacro(node.attribute("no").value());
+    lexers::Get()->ApplyMacro(node.attribute("no").value());
 
   try
   {
-    wxExTokenizer fields(node.text().get(), ",");
+    tokenizer fields(node.text().get(), ",");
 
     m_No = std::stoi(single);
-    m_Symbol = std::stoi(wxExLexers::Get()->ApplyMacro(fields.GetNextToken()));
+    m_Symbol = std::stoi(lexers::Get()->ApplyMacro(fields.GetNextToken()));
 
     if (fields.HasMoreTokens())
     {
-      m_ForegroundColour = wxExLexers::Get()->ApplyMacro(fields.GetNextToken());
+      m_ForegroundColour = lexers::Get()->ApplyMacro(fields.GetNextToken());
 
       if (fields.HasMoreTokens())
       {
-        m_BackgroundColour = wxExLexers::Get()->ApplyMacro(fields.GetNextToken());
+        m_BackgroundColour = lexers::Get()->ApplyMacro(fields.GetNextToken());
       }
     }
 
     if (!IsOk())
     {
-      wxExLog() << "illegal marker:" << m_No << node;
+      log() << "illegal marker:" << m_No << node;
     }
   }
   catch (std::exception& e)
@@ -51,25 +51,25 @@ wxExMarker::wxExMarker(const pugi::xml_node& node)
   }
 }
 
-wxExMarker::wxExMarker(int no, int symbol)
+wex::marker::marker(int no, int symbol)
   : m_No(no)
   , m_Symbol(symbol)
 {
 }
 
-bool wxExMarker::operator<(const wxExMarker& m) const
+bool wex::marker::operator<(const marker& m) const
 {
   return m_No < m.m_No;
 }
 
-bool wxExMarker::operator==(const wxExMarker& m) const
+bool wex::marker::operator==(const marker& m) const
 {
   return m_Symbol == -1 ? 
     m_No == m.m_No: 
     m_No == m.m_No && m_Symbol == m.m_Symbol;
 }
 
-void wxExMarker::Apply(wxStyledTextCtrl* stc) const
+void wex::marker::Apply(wxStyledTextCtrl* stc) const
 {
   if (IsOk())
   {
@@ -80,7 +80,7 @@ void wxExMarker::Apply(wxStyledTextCtrl* stc) const
   }
 }
 
-bool wxExMarker::IsOk() const
+bool wex::marker::IsOk() const
 {
   return 
     m_No >= 0 && m_No <= wxSTC_MARKER_MAX &&

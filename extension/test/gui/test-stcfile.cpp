@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-stcfile.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Name:      test-stc_file.cpp
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,14 +14,14 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-TEST_CASE("wxExSTCFile")
+TEST_CASE("wex::stc_file")
 {
-  wxExSTC* stc = new wxExSTC(GetTestPath("test.h"));
+  wex::stc* stc = new wex::stc(GetTestPath("test.h"));
   stc->SetText("and still they came");
   
   AddPane(GetFrame(), stc);
   
-  wxExSTCFile file(stc);
+  wex::stc_file file(stc);
 
   // The file itself is not assigned.  
   REQUIRE(!file.GetFileName().GetStat().IsOk());

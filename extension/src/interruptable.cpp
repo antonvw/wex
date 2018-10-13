@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      interruptable.cpp
-// Purpose:   Implementation of class wxExInterruptable
+// Purpose:   Implementation of class wex::interruptable
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -11,10 +11,10 @@
 #endif
 #include <wx/extension/interruptable.h>
 
-bool wxExInterruptable::m_Cancelled = false;
-bool wxExInterruptable::m_Running = false;
+bool wex::interruptable::m_Cancelled = false;
+bool wex::interruptable::m_Running = false;
 
-bool wxExInterruptable::Cancel()
+bool wex::interruptable::Cancel()
 {
   if (!m_Running)
   {
@@ -27,7 +27,7 @@ bool wxExInterruptable::Cancel()
   return true;
 }
 
-bool wxExInterruptable::Start()
+bool wex::interruptable::Start()
 {
   if (m_Running)
   {
@@ -40,7 +40,7 @@ bool wxExInterruptable::Start()
   return true;
 }
 
-void wxExInterruptable::Stop()
+void wex::interruptable::Stop()
 {
   m_Running = false;
 }

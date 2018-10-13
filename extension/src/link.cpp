@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      link.cpp
-// Purpose:   Implementation of class wxExLink
+// Purpose:   Implementation of class wex::link
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -18,44 +18,47 @@
 #include <wx/extension/tokenizer.h>
 #include <wx/extension/util.h>
 
-class wxExPaths
+namespace wex
 {
-public:
-  wxExPaths() : m_Paths(wxExTokenizer(
-    wxConfigBase::Get()->Read(_("Include directory")).ToStdString(),
-      "\r\n").Tokenize<std::vector<std::string>>()) {;};
+  class paths
+  {
+  public:
+    paths() : m_Paths(tokenizer(
+      wxConfigBase::Get()->Read(_("Include directory")).ToStdString(),
+        "\r\n").Tokenize<std::vector<std::string>>()) {;};
 
-  wxExPath FindPath(const std::string& path) const {
-    for (const auto& it : m_Paths)
-    {
-      if (const wxExPath valid(it, path); valid.FileExists())
+    path FindPath(const std::string& path) const {
+      for (const auto& it : m_Paths)
       {
-        return valid;
+        if (const wex::path valid(it, path); valid.FileExists())
+        {
+          return valid;
+        }
       }
-    }
-    return wxExPath();};
-private:
-  const std::vector<std::string> m_Paths;
+      return wex::path();};
+  private:
+    const std::vector<std::string> m_Paths;
+  };
 };
 
-wxExLink::wxExLink(wxExSTC* stc)
+wex::link::link(stc* stc)
   : m_STC(stc)
-  , m_Paths(std::make_unique<wxExPaths>())
+  , m_Paths(std::make_unique<paths>())
 {
 }
 
-wxExLink::~wxExLink()
+wex::link::~link()
 {
 }
 
-const wxExPath wxExLink::FindPath(
-  const std::string& text, const wxExControlData& data) const
+const wex::path wex::link::FindPath(
+  const std::string& text, const control_data& data) const
 {
   if (text.empty() &&
     data.Line() != LINK_LINE_OPEN_MIME &&
     data.Line() != LINK_LINE_OPEN_URL_AND_MIME)
   {
-    return wxExPath();
+    return wex::path();
   }
 
   // Path in .po files.
@@ -69,8 +72,8 @@ const wxExPath wxExLink::FindPath(
   // hypertext link
   if (std::vector <std::string> v; 
       (data.Line() == LINK_LINE_OPEN_URL || LINK_LINE_OPEN_URL_AND_MIME) && 
-      (wxExMatch("(https?:.*)", text, v) > 0 || 
-       wxExMatch("(www.*)", text, v) > 0))
+      (match("(https?:.*)", text, v) > 0 || 
+       match("(www.*)", text, v) > 0))
   {
     // with a possible delimiter
     const auto match(v[0]);
@@ -104,7 +107,7 @@ const wxExPath wxExLink::FindPath(
     if (pos1 != std::string::npos && pos2 != std::string::npos && pos2 > pos1)
     {
       // Okay, get everything inbetween, and make sure we skip white space.
-      return wxExSkipWhiteSpace(text.substr(pos1 + 1, pos2 - pos1 - 1));
+      return skip_white_space(text.substr(pos1 + 1, pos2 - pos1 - 1));
     }
   }
 
@@ -123,14 +126,14 @@ const wxExPath wxExLink::FindPath(
     }
   }
   
-  return wxExSkipWhiteSpace(text);
+  return skip_white_space(text);
 }
 
 // text contains selected text, or current line
-const wxExPath wxExLink::GetPath(
-  const std::string& text, wxExControlData& data) const
+const wex::path wex::link::GetPath(
+  const std::string& text, control_data& data) const
 {
-  const wxExPath path(FindPath(text, data));
+  const wex::path path(FindPath(text, data));
 
   // if http link requested  
   if (data.Line() == LINK_LINE_OPEN_MIME || 
@@ -140,7 +143,7 @@ const wxExPath wxExLink::GetPath(
     return path;
   }
   
-  wxExPath link(path);
+  wex::path link(path);
   
   SetLink(link, data);
   
@@ -149,7 +152,7 @@ const wxExPath wxExLink::GetPath(
     return link;
   }
 
-  wxExPath file(link);
+  wex::path file(link);
 
   if (file.FileExists())
   {
@@ -159,7 +162,7 @@ const wxExPath wxExLink::GetPath(
   if (file.IsRelative() && 
       m_STC != nullptr && m_STC->GetFileName().FileExists())
   {
-    if (wxExPath path(file.MakeAbsolute(m_STC->GetFileName())); path.FileExists())
+    if (wex::path path(file.MakeAbsolute(m_STC->GetFileName())); path.FileExists())
     {
       return path;
     }
@@ -167,7 +170,7 @@ const wxExPath wxExLink::GetPath(
 
   // Check whether last word is a file.
   const auto pos = path.Path().string().find_last_of(' ');
-  wxExPath word = wxExSkipWhiteSpace((
+  wex::path word = skip_white_space((
     pos != std::string::npos ? path.Path().string().substr(pos): std::string()));
 
   if (!word.Path().empty())
@@ -179,7 +182,7 @@ const wxExPath wxExLink::GetPath(
     }
   }
 
-  wxExPath fullpath = m_Paths->FindPath(link.Path().string());
+  wex::path fullpath = m_Paths->FindPath(link.Path().string());
 
   if (!fullpath.Path().empty())
   {
@@ -194,7 +197,7 @@ const wxExPath wxExLink::GetPath(
   return fullpath;
 }
 
-bool wxExLink::SetLink(wxExPath& link, wxExControlData& data) const
+bool wex::link::SetLink(path& link, control_data& data) const
 {
   if (link.Path().empty())
   {
@@ -202,7 +205,7 @@ bool wxExLink::SetLink(wxExPath& link, wxExControlData& data) const
   }
 
   // The harddrive letter is filtered, it does not work
-  // when adding it to wxExMatch.
+  // when adding it to match.
   std::string prefix;
 
 #ifdef __WXMSW__
@@ -217,7 +220,7 @@ bool wxExLink::SetLink(wxExPath& link, wxExControlData& data) const
 
   // file[:line[:column]]
   if (std::vector <std::string> v;
-    wxExMatch("([0-9A-Za-z _/.-]+):([0-9]*):?([0-9]*)", link.Path().string(), v) > 0)
+    match("([0-9A-Za-z _/.-]+):([0-9]*):?([0-9]*)", link.Path().string(), v) > 0)
   {
     link = v[0];
     data.Reset();
@@ -232,7 +235,7 @@ bool wxExLink::SetLink(wxExPath& link, wxExControlData& data) const
       }
     }
       
-    link = wxExPath(wxExSkipWhiteSpace(prefix + link.Path().string()));
+    link = wex::path(skip_white_space(prefix + link.Path().string()));
     
     return true;
   }
@@ -240,8 +243,8 @@ bool wxExLink::SetLink(wxExPath& link, wxExControlData& data) const
   return false;
 }
   
-void wxExLink::SetFromConfig()
+void wex::link::SetFromConfig()
 {
   delete m_Paths.release();
-  m_Paths = std::make_unique<wxExPaths>();
+  m_Paths = std::make_unique<wex::paths>();
 }

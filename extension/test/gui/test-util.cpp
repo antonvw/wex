@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-util.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,6 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
-#include <wx/filehistory.h>
 #include <wx/extension/util.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/lexers.h>
@@ -21,7 +20,7 @@
 #include <wx/extension/vi-macros.h>
 #include "test.h"
 
-TEST_CASE("wxEx")
+TEST_CASE("wex")
 {
   std::list < std::string > l{"x","y","z"};
   std::vector<int> cs{'(',')','{','<','>'};
@@ -40,367 +39,367 @@ TEST_CASE("wxEx")
 345y56781234567890123\n\
 456z45672345678901234\n");
 
-  SUBCASE("wxExAfter")
+  SUBCASE("wex::after")
   {
-    REQUIRE( wxExAfter("nospace", ' ', false) == "nospace");
-    REQUIRE( wxExAfter("nospace", ' ', true) == "nospace");
-    REQUIRE( wxExAfter("some space and more", ' ', false) == "more");
-    REQUIRE( wxExAfter("some space and more", ' ', true) == "space and more");
-    REQUIRE( wxExAfter("some space and more", 'm', false) == "ore");
+    REQUIRE( wex::after("nospace", ' ', false) == "nospace");
+    REQUIRE( wex::after("nospace", ' ', true) == "nospace");
+    REQUIRE( wex::after("some space and more", ' ', false) == "more");
+    REQUIRE( wex::after("some space and more", ' ', true) == "space and more");
+    REQUIRE( wex::after("some space and more", 'm', false) == "ore");
   }
 
-  SUBCASE("wxExAlignText")
+  SUBCASE("wex::align_text")
   {
-    REQUIRE( wxExAlignText("test", "header", true, true,
-      wxExLexers::Get()->FindByName("cpp")).size() 
+    REQUIRE( wex::align_text("test", "header", true, true,
+      wex::lexers::Get()->FindByName("cpp")).size() 
         == std::string("// headertest").size());
   }
       
-  SUBCASE("wxExAutoCompleteText")
+  SUBCASE("wex::autocomplete_text")
   {
-    REQUIRE( wxExViMacros::LoadDocument());
+    REQUIRE( wex::vi_macros::LoadDocument());
     std::string s;
-    REQUIRE(!wxExAutoCompleteText("xxxx", GetSTC()->GetVi().GetMacros().Get(), s));
-    REQUIRE(!wxExAutoCompleteText("Date", // not unique!
+    REQUIRE(!wex::autocomplete_text("xxxx", GetSTC()->GetVi().GetMacros().Get(), s));
+    REQUIRE(!wex::autocomplete_text("Date", // not unique!
       GetSTC()->GetVi().GetMacros().Get(), s));
-    REQUIRE( wxExAutoCompleteText("Datet", GetSTC()->GetVi().GetMacros().Get(), s));
+    REQUIRE( wex::autocomplete_text("Datet", GetSTC()->GetVi().GetMacros().Get(), s));
     REQUIRE( s == "Datetime");
   }
   
-  SUBCASE("wxExAutoCompleteFileName")
+  SUBCASE("wex::autocomplete_filename")
   {
-    REQUIRE( std::get<0> (wxExAutoCompleteFileName("te")));
-    REQUIRE( std::get<1> (wxExAutoCompleteFileName("te")) == "st");
-    REQUIRE(!std::get<0> (wxExAutoCompleteFileName("XX")));
+    REQUIRE( std::get<0> (wex::autocomplete_filename("te")));
+    REQUIRE( std::get<1> (wex::autocomplete_filename("te")) == "st");
+    REQUIRE(!std::get<0> (wex::autocomplete_filename("XX")));
     
 #ifdef __UNIX__
 #ifndef __WXOSX__    
-    REQUIRE( std::get<0> (wxExAutoCompleteFileName("/usr/include/s")));
-    REQUIRE( std::get<0> (wxExAutoCompleteFileName("../../../extension/src/v")));
+    REQUIRE( std::get<0> (wex::autocomplete_filename("/usr/include/s")));
+    REQUIRE( std::get<0> (wex::autocomplete_filename("../../../extension/src/v")));
     // It is not clear whether ~ is relative or absolute...
-    //REQUIRE( wxExAutoCompleteFileName("~/", expansion, v));
+    //REQUIRE( wex::autocomplete_filename("~/", expansion, v));
 #endif    
 #endif
   }
   
-  SUBCASE("wxExBefore")
+  SUBCASE("wex::before")
   {
-    REQUIRE( wxExBefore("nospace", ' ', false) == "nospace");
-    REQUIRE( wxExBefore("nospace", ' ', true) == "nospace");
-    REQUIRE( wxExBefore("some space and more", ' ', false) == "some space and");
-    REQUIRE( wxExBefore("some space and more", ' ', true) == "some");
-    REQUIRE( wxExBefore("some space and more", 'm', false) == "some space and ");
+    REQUIRE( wex::before("nospace", ' ', false) == "nospace");
+    REQUIRE( wex::before("nospace", ' ', true) == "nospace");
+    REQUIRE( wex::before("some space and more", ' ', false) == "some space and");
+    REQUIRE( wex::before("some space and more", ' ', true) == "some");
+    REQUIRE( wex::before("some space and more", 'm', false) == "some space and ");
   }
 
-  SUBCASE("wxExBrowserSearch")
+  SUBCASE("wex::browser_search")
   {
     // Causes travis to hang.
-    // REQUIRE( wxExBrowserSearch("test"));
+    // REQUIRE( wex::browser_search("test"));
   }
 
-  SUBCASE("wxExClipboardAdd")
+  SUBCASE("wex::clipboard_add")
   {
-    REQUIRE( wxExClipboardAdd("test"));
+    REQUIRE( wex::clipboard_add("test"));
   }
   
-  SUBCASE("wxExClipboardGet")
+  SUBCASE("wex::clipboard_get")
   {
-    REQUIRE( wxExClipboardGet() == "test");
+    REQUIRE( wex::clipboard_get() == "test");
   }
   
-  SUBCASE("wxExComboBoxAs")
+  SUBCASE("wex::combobox_as")
   {
     wxComboBox* cb = new wxComboBox(GetFrame(), wxID_ANY);
 #ifndef __WXOSX__
     AddPane(GetFrame(), cb);
 #endif
-    wxExComboBoxAs<const std::list < std::string >>(cb, l);
+    wex::combobox_as<const std::list < std::string >>(cb, l);
   }
   
-  SUBCASE("wxExComboBoxFromList")
+  SUBCASE("wex::combobox_from_list")
   {
     wxComboBox* cb = new wxComboBox(GetFrame(), wxID_ANY);
 #ifndef __WXOSX__
     AddPane(GetFrame(), cb);
 #endif
-    wxExComboBoxFromList(cb, l);
+    wex::combobox_from_list(cb, l);
     REQUIRE( cb->GetCount() == 3);
   }
   
-  SUBCASE("wxExCompareFile")
+  SUBCASE("wex::comparefile")
   {
   }
   
-  SUBCASE("wxExConfigDir")
+  SUBCASE("wex::config_dir")
   {
 #ifdef __WXMSW__
-    REQUIRE(!wxExConfigDir().empty());
+    REQUIRE(!wex::config_dir().empty());
 #else
-    REQUIRE(wxExConfigDir().find(".config") != std::string::npos);
+    REQUIRE(wex::config_dir().find(".config") != std::string::npos);
 #endif
   }
   
-  SUBCASE("wxExConfigFirstOf")
+  SUBCASE("wex::config_firstof")
   {
-    wxExConfigFirstOf("xxxx");
+    wex::config_firstof("xxxx");
   }
   
-  SUBCASE("wxExConfigFirstOfWrite")
+  SUBCASE("wex::config_firstof_write")
   {
-    REQUIRE( wxExConfigFirstOfWrite("xxxx", "zz") == "zz");
+    REQUIRE( wex::config_firstof_write("xxxx", "zz") == "zz");
   }
   
-  SUBCASE("wxExEllipsed")
+  SUBCASE("wex::ellipsed")
   {
-    REQUIRE( wxExEllipsed("xxx").find("...") != std::string::npos);
+    REQUIRE( wex::ellipsed("xxx").find("...") != std::string::npos);
   }
   
-  SUBCASE("wxExFirstOf")
+  SUBCASE("wex::firstof")
   {
-    REQUIRE( wxExFirstOf("this is ok", "x") == std::string());
-    REQUIRE( wxExFirstOf("this is ok", " ;,") == "is ok");
-    REQUIRE( wxExFirstOf("this is ok", " ;,i") == "s is ok");
-    REQUIRE( wxExFirstOf("this is ok", " ;,i", std::string::npos, FIRST_OF_FROM_END) == "ok");
-    REQUIRE( wxExFirstOf("this is ok", " ", 0, FIRST_OF_BEFORE) == "this");
-    REQUIRE( wxExFirstOf("this is ok", "x", 0, FIRST_OF_BEFORE) == "this is ok");
+    REQUIRE( wex::firstof("this is ok", "x") == std::string());
+    REQUIRE( wex::firstof("this is ok", " ;,") == "is ok");
+    REQUIRE( wex::firstof("this is ok", " ;,i") == "s is ok");
+    REQUIRE( wex::firstof("this is ok", " ;,i", std::string::npos, wex::FIRST_OF_FROM_END) == "ok");
+    REQUIRE( wex::firstof("this is ok", " ", 0, wex::FIRST_OF_BEFORE) == "this");
+    REQUIRE( wex::firstof("this is ok", "x", 0, wex::FIRST_OF_BEFORE) == "this is ok");
   }
 
-  SUBCASE("wxExGetEndOfText")
+  SUBCASE("wex::get_endoftext")
   {
-    REQUIRE( wxExGetEndOfText("test", 3).size() == 3);
-    REQUIRE( wxExGetEndOfText("testtest", 3).size() == 3);
+    REQUIRE( wex::get_endoftext("test", 3).size() == 3);
+    REQUIRE( wex::get_endoftext("testtest", 3).size() == 3);
   }
   
-  SUBCASE("wxExGetFieldSeparator")
+  SUBCASE("wex::get_field_separator")
   {
-    REQUIRE((wxExGetFieldSeparator() != 'a'));
+    REQUIRE((wex::get_field_separator() != 'a'));
   }
 
-  SUBCASE("wxExGetFindResult")
+  SUBCASE("wex::get_find_result")
   {
-    REQUIRE( wxExGetFindResult("test", true, true).find("test") != std::string::npos);
-    REQUIRE( wxExGetFindResult("test", true, false).find("test") != std::string::npos);
-    REQUIRE( wxExGetFindResult("test", false, true).find("test") != std::string::npos);
-    REQUIRE( wxExGetFindResult("test", false, false).find("test") != std::string::npos);
+    REQUIRE( wex::get_find_result("test", true, true).find("test") != std::string::npos);
+    REQUIRE( wex::get_find_result("test", true, false).find("test") != std::string::npos);
+    REQUIRE( wex::get_find_result("test", false, true).find("test") != std::string::npos);
+    REQUIRE( wex::get_find_result("test", false, false).find("test") != std::string::npos);
     
-    REQUIRE( wxExGetFindResult("%d", true, true).find("%d") != std::string::npos);
-    REQUIRE( wxExGetFindResult("%d", true, false).find("%d") != std::string::npos);
-    REQUIRE( wxExGetFindResult("%d", false, true).find("%d") != std::string::npos);
-    REQUIRE( wxExGetFindResult("%d", false, false).find("%d") != std::string::npos);
+    REQUIRE( wex::get_find_result("%d", true, true).find("%d") != std::string::npos);
+    REQUIRE( wex::get_find_result("%d", true, false).find("%d") != std::string::npos);
+    REQUIRE( wex::get_find_result("%d", false, true).find("%d") != std::string::npos);
+    REQUIRE( wex::get_find_result("%d", false, false).find("%d") != std::string::npos);
   }
   
-  SUBCASE("wxExGetIconID")
+  SUBCASE("wex::get_iconid")
   {
-    REQUIRE( wxExGetIconID( GetTestPath("test.h")) != -1);
+    REQUIRE( wex::get_iconid( GetTestPath("test.h")) != -1);
   }
 
-  SUBCASE("wxExGetNumberOfLines  ")
+  SUBCASE("wex::get_number_of_lines  ")
   {
-    REQUIRE( wxExGetNumberOfLines("test") == 1);
-    REQUIRE( wxExGetNumberOfLines("test\n") == 2);
-    REQUIRE( wxExGetNumberOfLines("test\ntest") == 2);
-    REQUIRE( wxExGetNumberOfLines("test\ntest\n") == 3);
-    REQUIRE( wxExGetNumberOfLines("test\rtest\r") == 3);
-    REQUIRE( wxExGetNumberOfLines("test\r\ntest\n") == 3);
+    REQUIRE( wex::get_number_of_lines("test") == 1);
+    REQUIRE( wex::get_number_of_lines("test\n") == 2);
+    REQUIRE( wex::get_number_of_lines("test\ntest") == 2);
+    REQUIRE( wex::get_number_of_lines("test\ntest\n") == 3);
+    REQUIRE( wex::get_number_of_lines("test\rtest\r") == 3);
+    REQUIRE( wex::get_number_of_lines("test\r\ntest\n") == 3);
     
-    REQUIRE( wxExGetNumberOfLines("test\r\ntest\n\n\n", true) == 2);
-    REQUIRE( wxExGetNumberOfLines("test\r\ntest\n\n", true) == 2);
-    REQUIRE( wxExGetNumberOfLines("test\r\ntest\n\n", true) == 2);
+    REQUIRE( wex::get_number_of_lines("test\r\ntest\n\n\n", true) == 2);
+    REQUIRE( wex::get_number_of_lines("test\r\ntest\n\n", true) == 2);
+    REQUIRE( wex::get_number_of_lines("test\r\ntest\n\n", true) == 2);
   }
   
-  SUBCASE("wxExGetStringSet")
+  SUBCASE("wex::get_string_set")
   {
-    REQUIRE( wxExGetStringSet({"one", "two", "three"}) == "one three two ");
-    REQUIRE( wxExGetStringSet({"one", "two", "three"}, 4) == "three ");
+    REQUIRE( wex::get_string_set({"one", "two", "three"}) == "one three two ");
+    REQUIRE( wex::get_string_set({"one", "two", "three"}, 4) == "three ");
   }
 
-  SUBCASE("wxExGetWord")
+  SUBCASE("wex::get_word")
   {
   }
   
-  SUBCASE("wxExIsBrace")
+  SUBCASE("wex::is_brace")
   {
     for (const auto& c : cs)
     {
-      REQUIRE( wxExIsBrace(c));
+      REQUIRE( wex::is_brace(c));
     }
     
-    REQUIRE(!wxExIsBrace('a'));
+    REQUIRE(!wex::is_brace('a'));
   }
 
-  SUBCASE("wxExIsCodewordSeparator")
+  SUBCASE("wex::is_codeword_separator")
   {
     cs.insert(cs.end(), {',',';',':','@'});
     
     for (const auto& c : cs)
     {
-      REQUIRE( wxExIsCodewordSeparator(c));
+      REQUIRE( wex::is_codeword_separator(c));
     }
     
-    REQUIRE(!wxExIsCodewordSeparator('x'));
+    REQUIRE(!wex::is_codeword_separator('x'));
   }
   
-  SUBCASE("wxExListFromConfig")
+  SUBCASE("wex::list_from_config")
   {
-    REQUIRE( wxExListFromConfig("xxx").size() == 0);
+    REQUIRE( wex::list_from_config("xxx").size() == 0);
   }
   
-  SUBCASE("wxExListToConfig")
+  SUBCASE("wex::list_to_config")
   {
     l.clear();
     l.emplace_back("1");
     l.emplace_back("2");
-    wxExListToConfig(l, "list_items");
+    wex::list_to_config(l, "list_items");
     REQUIRE( l.size() == 2);
     REQUIRE(wxConfigBase::Get()->Read("list_items", "").Contains("1"));
     REQUIRE(wxConfigBase::Get()->Read("list_items", "").Contains("2"));
   }
   
-  SUBCASE("wxExLogStatus")
+  SUBCASE("wex::log_status")
   {
-    wxExLogStatus( GetTestPath("test.h"));
-    wxExLogStatus( std::string("hello world") );
+    wex::log_status( GetTestPath("test.h"));
+    wex::log_status( std::string("hello world") );
   }
 
 #ifdef __UNIX__
-  SUBCASE("wxExMake")
+  SUBCASE("wex::make")
   {
-    wxExPath cwd; // as /usr/bin/git changes wd
-    REQUIRE( wxExMake(wxExPath("xxx")) != -1);
-    REQUIRE( wxExMake(wxExPath("make.tst")) != -1);
-    REQUIRE( wxExMake(wxExPath("/usr/bin/git")) != -1);
+    wex::path cwd; // as /usr/bin/git changes wd
+    REQUIRE( wex::make(wex::path("xxx")) != -1);
+    REQUIRE( wex::make(wex::path("make.tst")) != -1);
+    REQUIRE( wex::make(wex::path("/usr/bin/git")) != -1);
   }
 #endif
   
-  SUBCASE("wxExMatch")
+  SUBCASE("wex::match")
   {
     std::vector<std::string> v;
-    REQUIRE( wxExMatch("hllo", "hello world", v) == -1);
-    REQUIRE( wxExMatch("hello", "hello world", v) == 0);
-    REQUIRE( wxExMatch("([0-9]+)ok([0-9]+)nice", "19999ok245nice", v) == 2);
-    REQUIRE( wxExMatch("(\\d+)ok(\\d+)nice", "19999ok245nice", v) == 2);
-    REQUIRE( wxExMatch(" ([\\d\\w]+)", " 19999ok245nice ", v) == 1);
-    REQUIRE( wxExMatch("([?/].*[?/])(,[?/].*[?/])([msy])", "/xx/,/yy/y", v) == 3);
+    REQUIRE( wex::match("hllo", "hello world", v) == -1);
+    REQUIRE( wex::match("hello", "hello world", v) == 0);
+    REQUIRE( wex::match("([0-9]+)ok([0-9]+)nice", "19999ok245nice", v) == 2);
+    REQUIRE( wex::match("(\\d+)ok(\\d+)nice", "19999ok245nice", v) == 2);
+    REQUIRE( wex::match(" ([\\d\\w]+)", " 19999ok245nice ", v) == 1);
+    REQUIRE( wex::match("([?/].*[?/])(,[?/].*[?/])([msy])", "/xx/,/yy/y", v) == 3);
   }
   
-  SUBCASE("wxExMatchesOneOf")
+  SUBCASE("wex::matches_one_of")
   {
-    REQUIRE(!wxExMatchesOneOf("test.txt", "*.cpp"));
-    REQUIRE( wxExMatchesOneOf("test.txt", "*.txt"));
-    REQUIRE( wxExMatchesOneOf("test.txt", "*.cpp;*.txt"));
+    REQUIRE(!wex::matches_one_of("test.txt", "*.cpp"));
+    REQUIRE( wex::matches_one_of("test.txt", "*.txt"));
+    REQUIRE( wex::matches_one_of("test.txt", "*.cpp;*.txt"));
   }
   
-  SUBCASE("wxExNodeProperties")
-  {
-  }
-  
-  SUBCASE("wxExNodeStyles")
+  SUBCASE("wex::node_properties")
   {
   }
   
-  SUBCASE("wxExOpenFiles")
+  SUBCASE("wex::node_styles")
   {
-    REQUIRE( wxExOpenFiles(GetFrame(), std::vector<wxExPath>()) == 0);
-    REQUIRE( wxExOpenFiles(GetFrame(), std::vector<wxExPath> {
+  }
+  
+  SUBCASE("wex::open_files")
+  {
+    REQUIRE( wex::open_files(GetFrame(), std::vector<wex::path>()) == 0);
+    REQUIRE( wex::open_files(GetFrame(), std::vector<wex::path> {
       GetTestPath("test.h").Path(), "test.cpp", "*xxxxxx*.cpp"}) == 2);
-    REQUIRE( wxExOpenFiles(GetFrame(), 
-      std::vector<wxExPath> {GetTestPath("test.h").Path()}) == 1);
+    REQUIRE( wex::open_files(GetFrame(), 
+      std::vector<wex::path> {GetTestPath("test.h").Path()}) == 1);
     REQUIRE( 
-      wxExOpenFiles(GetFrame(), std::vector<wxExPath> {"../../data/menus.xml"}) == 1);
+      wex::open_files(GetFrame(), std::vector<wex::path> {"../../data/menus.xml"}) == 1);
   }
 
-  SUBCASE("wxExOpenFilesDialog")
+  SUBCASE("wex::open_files_dialog")
   {
   }
   
-  SUBCASE("wxExPrintCaption")
+  SUBCASE("wex::print_caption")
   {
-    REQUIRE( wxExPrintCaption(wxExPath("test")).find("test") != std::string::npos);
+    REQUIRE( wex::print_caption(wex::path("test")).find("test") != std::string::npos);
   }
   
-  SUBCASE("wxExPrintFooter")
+  SUBCASE("wex::print_footer")
   {
-    REQUIRE( wxExPrintFooter().find("@") != std::string::npos);
+    REQUIRE( wex::print_footer().find("@") != std::string::npos);
   }
   
-  SUBCASE("wxExPrintHeader")
+  SUBCASE("wex::print_header")
   {
-    REQUIRE( wxExPrintHeader(GetTestPath("test.h")).find("test") != std::string::npos);
+    REQUIRE( wex::print_header(GetTestPath("test.h")).find("test") != std::string::npos);
   }
   
-  SUBCASE("wxExMarkerAndRegisterExpansion")
+  SUBCASE("wex::marker_and_register_expansion")
   {
     GetSTC()->SetText("this is some text");
-    wxExEx* ex = new wxExEx(GetSTC());
+    wex::ex* ex = new wex::ex(GetSTC());
     std::string command("xxx");
-    REQUIRE(!wxExMarkerAndRegisterExpansion(nullptr, command));
-    REQUIRE( wxExMarkerAndRegisterExpansion(ex, command));
+    REQUIRE(!wex::marker_and_register_expansion(nullptr, command));
+    REQUIRE( wex::marker_and_register_expansion(ex, command));
     command = "'yxxx";
-    REQUIRE(!wxExMarkerAndRegisterExpansion(ex, command));
-    wxExClipboardAdd("yanked");
+    REQUIRE(!wex::marker_and_register_expansion(ex, command));
+    wex::clipboard_add("yanked");
     command = "this is * end";
-    REQUIRE( wxExMarkerAndRegisterExpansion(ex, command));
+    REQUIRE( wex::marker_and_register_expansion(ex, command));
 #ifndef __WXMSW__    
     REQUIRE( command == "this is yanked end");
 #endif
   }
   
-  SUBCASE("wxExQuoted")
+  SUBCASE("wex::quoted")
   {
-    REQUIRE( wxExQuoted("test") == "'test'");
-    REQUIRE( wxExQuoted("%d") == "'%d'");
-    REQUIRE( wxExQuoted(wxExSkipWhiteSpace(" %d ")) == "'%d'");
+    REQUIRE( wex::quoted("test") == "'test'");
+    REQUIRE( wex::quoted("%d") == "'%d'");
+    REQUIRE( wex::quoted(wex::skip_white_space(" %d ")) == "'%d'");
   }
   
-  SUBCASE("wxExReplaceAll")
+  SUBCASE("wex::replace_all")
   {
     int match_pos;
     const std::string org("test x y z x y z");
     std::string text(org);
 
-    REQUIRE( wxExReplaceAll(text, "x", "aha", &match_pos) == 2);
+    REQUIRE( wex::replace_all(text, "x", "aha", &match_pos) == 2);
     REQUIRE( match_pos == 5);
 
     text = org;
-    REQUIRE( wxExReplaceAll(text, "xy", "aha", &match_pos) == 0);
+    REQUIRE( wex::replace_all(text, "xy", "aha", &match_pos) == 0);
     REQUIRE( match_pos == 5);
   }
 
 #ifdef __UNIX__
 #ifndef __WXOSX__
-  SUBCASE("wxExShellExpansion")
+  SUBCASE("wex::shell_expansion")
   {
     std::string command("xxx `pwd` `pwd`");
-    REQUIRE( wxExShellExpansion(command));
+    REQUIRE( wex::shell_expansion(command));
     REQUIRE( command.find("`") == std::string::npos);
     command = "no quotes";
-    REQUIRE( wxExShellExpansion(command));
+    REQUIRE( wex::shell_expansion(command));
     REQUIRE( command == "no quotes");
     command = "illegal process `xyz`";
-    REQUIRE(!wxExShellExpansion(command));
+    REQUIRE(!wex::shell_expansion(command));
     REQUIRE( command == "illegal process `xyz`");
   }
 #endif
 #endif
   
-  SUBCASE("wxExSort")
+  SUBCASE("wex::sort")
   {
-    REQUIRE(wxExSort("z\ny\nx\n", STRING_SORT_ASCENDING, 0, "\n") == "x\ny\nz\n");
-    REQUIRE(wxExSort("z\ny\nx\n", STRING_SORT_DESCENDING, 0, "\n") == "z\ny\nx\n");
-    REQUIRE(wxExSort("z\nz\ny\nx\n", STRING_SORT_ASCENDING, 0, "\n") == "x\ny\nz\nz\n");
-    REQUIRE(wxExSort("z\nz\ny\nx\n", STRING_SORT_ASCENDING | STRING_SORT_UNIQUE, 0, "\n") == "x\ny\nz\n");
-    REQUIRE(wxExSort(rect, STRING_SORT_ASCENDING, 3, "\n", 5) == sorted);
+    REQUIRE(wex::sort("z\ny\nx\n", wex::STRING_SORT_ASCENDING, 0, "\n") == "x\ny\nz\n");
+    REQUIRE(wex::sort("z\ny\nx\n", wex::STRING_SORT_DESCENDING, 0, "\n") == "z\ny\nx\n");
+    REQUIRE(wex::sort("z\nz\ny\nx\n", wex::STRING_SORT_ASCENDING, 0, "\n") == "x\ny\nz\nz\n");
+    REQUIRE(wex::sort("z\nz\ny\nx\n", wex::STRING_SORT_ASCENDING | wex::STRING_SORT_UNIQUE, 0, "\n") == "x\ny\nz\n");
+    REQUIRE(wex::sort(rect, wex::STRING_SORT_ASCENDING, 3, "\n", 5) == sorted);
   }
 
-  SUBCASE("wxExSortSelection")
+  SUBCASE("wex::sort_selection")
   {
     GetSTC()->SelectNone();
-    REQUIRE( wxExSortSelection(GetSTC()));
+    REQUIRE( wex::sort_selection(GetSTC()));
     GetSTC()->SetText("aaaaa\nbbbbb\nccccc\n");
     GetSTC()->SelectAll();
-    REQUIRE( wxExSortSelection(GetSTC()));
-    REQUIRE( wxExSortSelection(GetSTC(), STRING_SORT_ASCENDING, 3, 10));
-    REQUIRE(!wxExSortSelection(GetSTC(), STRING_SORT_ASCENDING, 20, 10));
+    REQUIRE( wex::sort_selection(GetSTC()));
+    REQUIRE( wex::sort_selection(GetSTC(), wex::STRING_SORT_ASCENDING, 3, 10));
+    REQUIRE(!wex::sort_selection(GetSTC(), wex::STRING_SORT_ASCENDING, 20, 10));
     GetSTC()->SelectNone();
     GetSTC()->SetText(rect);
     // force rectangular selection.
@@ -408,46 +407,46 @@ TEST_CASE("wxEx")
     (void)GetSTC()->GetVi().Command("K");
     (void)GetSTC()->GetVi().Command("4j");
     (void)GetSTC()->GetVi().Command("5l");
-    REQUIRE( wxExSortSelection(GetSTC(), STRING_SORT_ASCENDING, 3, 5));
+    REQUIRE( wex::sort_selection(GetSTC(), wex::STRING_SORT_ASCENDING, 3, 5));
 #ifdef __WXGTK__
-    REQUIRE( wxExSkipWhiteSpace(GetSTC()->GetText().ToStdString()) == wxExSkipWhiteSpace(sorted));
+    REQUIRE( wex::skip_white_space(GetSTC()->GetText().ToStdString()) == wex::skip_white_space(sorted));
 #endif
-    REQUIRE( wxExSortSelection(GetSTC(), STRING_SORT_DESCENDING, 3, 5));
+    REQUIRE( wex::sort_selection(GetSTC(), wex::STRING_SORT_DESCENDING, 3, 5));
     REQUIRE( GetSTC()->GetText() != sorted);
   }
   
-  SUBCASE("wxExSkipWhiteSpace")
+  SUBCASE("wex::skip_white_space")
   {
-    REQUIRE( wxExSkipWhiteSpace("\n\tt \n    es   t\n", SKIP_ALL) == "t es t");
-    REQUIRE( wxExSkipWhiteSpace("\n\tt \n    es   t\n", SKIP_LEFT) == "t \n    es   t\n");
-    REQUIRE( wxExSkipWhiteSpace("\n\tt \n    es   t\n", SKIP_RIGHT) == "\n\tt \n    es   t");
-    REQUIRE( wxExSkipWhiteSpace("\n\tt \n    es   t\n", SKIP_BOTH) == "t \n    es   t");
+    REQUIRE( wex::skip_white_space("\n\tt \n    es   t\n", wex::SKIP_ALL) == "t es t");
+    REQUIRE( wex::skip_white_space("\n\tt \n    es   t\n", wex::SKIP_LEFT) == "t \n    es   t\n");
+    REQUIRE( wex::skip_white_space("\n\tt \n    es   t\n", wex::SKIP_RIGHT) == "\n\tt \n    es   t");
+    REQUIRE( wex::skip_white_space("\n\tt \n    es   t\n", wex::SKIP_BOTH) == "t \n    es   t");
   }
   
-  SUBCASE("wxExTranslate")
+  SUBCASE("wex::translate")
   {
-    REQUIRE(wxExTranslate(
+    REQUIRE(wex::translate(
       "hello @PAGENUM@ from @PAGESCNT@", 1, 2).find("@") == std::string::npos);
   }
 
-  SUBCASE("wxExVCSCommandOnSTC")
+  SUBCASE("wex::vcs_command_stc")
   {
-    wxExVCSCommand command("status");
-    wxExVCSCommandOnSTC(command, wxExLexer(GetSTC(), "cpp"), GetSTC());
-    wxExVCSCommandOnSTC(command, wxExLexer(nullptr, "cpp"), GetSTC());
-    wxExVCSCommandOnSTC(command, wxExLexer(), GetSTC());
+    wex::vcs_command command("status");
+    wex::vcs_command_stc(command, wex::lexer(GetSTC(), "cpp"), GetSTC());
+    wex::vcs_command_stc(command, wex::lexer(nullptr, "cpp"), GetSTC());
+    wex::vcs_command_stc(command, wex::lexer(), GetSTC());
   }
   
-  SUBCASE("wxExVCSExecute")
+  SUBCASE("wex::vcs_execute")
   {
-    // wxExVCSExecute(GetFrame(), 0, std::vector< wxString > {}); // calls dialog
+    // wex::vcs_execute(GetFrame(), 0, std::vector< wxString > {}); // calls dialog
   }
 
-  SUBCASE("wxExXmlError")
+  SUBCASE("wex::xml_error")
   {
-    wxExPath fn("xml-err.xml");
+    wex::path fn("xml-err.xml");
     pugi::xml_parse_result pr;
     pr.status = pugi::xml_parse_status::status_ok;
-    wxExXmlError(fn, &pr);
+    wex::xml_error(fn, &pr);
   }
 }

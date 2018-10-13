@@ -1,13 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      tokenizer.cpp
-// Purpose:   Implementation of class wxExTokenizer
+// Purpose:   Implementation of class wex::tokenizer
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/tokenizer.h>
 
-wxExTokenizer::wxExTokenizer(
+wex::tokenizer::tokenizer(
   const std::string& text, const std::string& delimiters, bool skip_empty_tokens)
   : m_Delimiters(delimiters)
   , m_SkipEmptyTokens(skip_empty_tokens)
@@ -15,11 +15,11 @@ wxExTokenizer::wxExTokenizer(
 {
 }
 
-size_t wxExTokenizer::CountTokens() const 
+size_t wex::tokenizer::CountTokens() const 
 {
   size_t count = 0;
 
-  for (wxExTokenizer tkz(m_Text, m_Delimiters, m_SkipEmptyTokens); tkz.HasMoreTokens(); )
+  for (tokenizer tkz(m_Text, m_Delimiters, m_SkipEmptyTokens); tkz.HasMoreTokens(); )
   {
     tkz.GetNextToken();
     count++;
@@ -28,7 +28,7 @@ size_t wxExTokenizer::CountTokens() const
   return count;
 }
 
-const std::string wxExTokenizer::GetNextToken() 
+const std::string wex::tokenizer::GetNextToken() 
 {
   if (!HasMoreTokens()) return std::string();
 
@@ -58,7 +58,7 @@ const std::string wxExTokenizer::GetNextToken()
   return GetToken();
 }
 
-const std::string wxExTokenizer::GetString() const
+const std::string wex::tokenizer::GetString() const
 {
   if (m_TokenEndPos == std::string::npos)
   {
@@ -76,14 +76,14 @@ const std::string wxExTokenizer::GetString() const
   return m_Text.substr(pos);
 }
   
-const std::string wxExTokenizer::GetToken() const
+const std::string wex::tokenizer::GetToken() const
 {
   return m_Text.substr(
     m_TokenStartPos, 
     m_TokenEndPos != std::string::npos ? m_TokenEndPos - m_TokenStartPos: std::string::npos);
 }
   
-bool wxExTokenizer::HasMoreTokens() const
+bool wex::tokenizer::HasMoreTokens() const
 {
   return 
     !m_Delimiters.empty() && 

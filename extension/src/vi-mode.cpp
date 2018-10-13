@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      vi-mode.cpp
-// Purpose:   Implementation of class wxExViMode
+// Purpose:   Implementation of class wex::vi_mode
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -17,122 +17,125 @@
 #include <easylogging++.h>
 #include "fsm.h"
 
-enum class Triggers
+namespace wex
 {
-  INSERT,
-  VISUAL,
-  VISUAL_LINE,
-  VISUAL_RECT,
-  ESCAPE
-};
-
-/// This class holds the table containing the states.
-class wxExViFSM
-{
-public:
-  wxExViFSM(wxExSTC* stc, 
-    std::function<void(const std::string& command)> insert, 
-    std::function<void()> normal)
-    : m_STC(stc)
-    , m_Insert(insert)
+  enum class Triggers
   {
-      // from state              to state                  triggers               guard    action
-    m_fsm.add_transitions({
-      // insert
-      {wxExViModes::INSERT,      wxExViModes::NORMAL,      Triggers::ESCAPE,      nullptr, normal},
-      {wxExViModes::INSERT_RECT, wxExViModes::VISUAL_RECT, Triggers::ESCAPE,      nullptr, nullptr},
-      // normal
-      {wxExViModes::NORMAL,      wxExViModes::INSERT,      Triggers::INSERT,      
-         [&]{return m_writeable;}, [&]{InsertMode();}},
-      {wxExViModes::NORMAL,      wxExViModes::VISUAL,      Triggers::VISUAL,      nullptr, nullptr},
-      {wxExViModes::NORMAL,      wxExViModes::VISUAL_LINE, Triggers::VISUAL_LINE, nullptr, nullptr},
-      {wxExViModes::NORMAL,      wxExViModes::VISUAL_RECT, Triggers::VISUAL_RECT, nullptr, nullptr},
-      // visual
-      {wxExViModes::VISUAL,      wxExViModes::NORMAL,      Triggers::ESCAPE,      nullptr, nullptr},
-      {wxExViModes::VISUAL,      wxExViModes::INSERT,      Triggers::INSERT,      
-         [&]{return m_writeable;}, [&]{InsertMode();}},
-      {wxExViModes::VISUAL,      wxExViModes::VISUAL,      Triggers::VISUAL,      nullptr, nullptr},
-      {wxExViModes::VISUAL,      wxExViModes::VISUAL_LINE, Triggers::VISUAL_LINE, nullptr, nullptr},
-      {wxExViModes::VISUAL,      wxExViModes::VISUAL_RECT, Triggers::VISUAL_RECT, nullptr, nullptr},
-      // visual line
-      {wxExViModes::VISUAL_LINE, wxExViModes::NORMAL,      Triggers::ESCAPE,      nullptr, nullptr},
-      {wxExViModes::VISUAL_LINE, wxExViModes::VISUAL_LINE, Triggers::INSERT,      nullptr, nullptr},
-      {wxExViModes::VISUAL_LINE, wxExViModes::VISUAL,      Triggers::VISUAL,      nullptr, nullptr},
-      {wxExViModes::VISUAL_LINE, wxExViModes::VISUAL_LINE, Triggers::VISUAL_LINE, nullptr, nullptr},
-      {wxExViModes::VISUAL_LINE, wxExViModes::VISUAL_RECT, Triggers::VISUAL_RECT, nullptr, nullptr},
-      // visual rect
-      {wxExViModes::VISUAL_RECT, wxExViModes::NORMAL,      Triggers::ESCAPE,      nullptr, nullptr},
-      {wxExViModes::VISUAL_RECT, wxExViModes::INSERT_RECT, Triggers::INSERT,      
-         [&]{return m_writeable;}, [&]{InsertMode();}},
-      {wxExViModes::VISUAL_RECT, wxExViModes::VISUAL,      Triggers::VISUAL,      nullptr, nullptr},
-      {wxExViModes::VISUAL_RECT, wxExViModes::VISUAL_LINE, Triggers::VISUAL_LINE, nullptr, nullptr},
-      {wxExViModes::VISUAL_RECT, wxExViModes::VISUAL_RECT, Triggers::VISUAL_RECT, nullptr, nullptr}});
-
-    m_fsm.add_debug_fn(Verbose);
+    INSERT,
+    VISUAL,
+    VISUAL_LINE,
+    VISUAL_RECT,
+    ESCAPE
   };
-  
-  FSM::Fsm_Errors Execute(const std::string& command, Triggers trigger) {
-    m_Command = command;
-    m_writeable = !m_STC->GetReadOnly();
-    return m_fsm.execute(trigger);};
 
-  wxExViModes Get() const {return m_fsm.state();};
-
-  void InsertMode() {
-    if (m_Insert != nullptr)
-    {
-      m_Insert(m_Command);
-    }};
-
-  const std::string String() const {return String(Get(), m_STC);};
-   
-  static const std::string String(wxExViModes state, wxExSTC* stc) {
-    switch (state)
-    {
-      case wxExViModes::INSERT:      
-        return stc != nullptr && stc->GetOvertype() ? "replace": "insert";
-      case wxExViModes::INSERT_RECT: 
-        return stc != nullptr && stc->GetOvertype() ? "replace rect": "insert rect";
-      case wxExViModes::VISUAL:      return "visual";
-      case wxExViModes::VISUAL_LINE: return "visual line";
-      case wxExViModes::VISUAL_RECT: return "visual rect";
-      default: return wxExViMacros::Mode()->String();
-    }};
-
-  static const std::string String(Triggers trigger) {
-    switch (trigger)
-    {
-      case Triggers::INSERT: return "insert";
-      case Triggers::VISUAL: return "visual";
-      case Triggers::VISUAL_LINE: return "visual line";
-      case Triggers::VISUAL_RECT: return "visual rect";
-      case Triggers::ESCAPE: return "escape";
-      default: return "unhandled";
-    }};
-  
-  static void Verbose(wxExViModes from, wxExViModes to, Triggers trigger)
+  /// This class holds the table containing the states.
+  class vifsm
   {
-    VLOG(2) << 
-      "vi mode trigger " << String(trigger) <<
-      " state from " << String(from, nullptr) << 
-      " to " << String(to, nullptr);
+  public:
+    vifsm(stc* stc, 
+      std::function<void(const std::string& command)> insert, 
+      std::function<void()> normal)
+      : m_STC(stc)
+      , m_Insert(insert)
+    {
+        // from state              to state                  triggers               guard    action
+      m_fsm.add_transitions({
+        // insert
+        {vi_modes::INSERT,      vi_modes::NORMAL,      Triggers::ESCAPE,      nullptr, normal},
+        {vi_modes::INSERT_RECT, vi_modes::VISUAL_RECT, Triggers::ESCAPE,      nullptr, nullptr},
+        // normal
+        {vi_modes::NORMAL,      vi_modes::INSERT,      Triggers::INSERT,      
+           [&]{return m_writeable;}, [&]{InsertMode();}},
+        {vi_modes::NORMAL,      vi_modes::VISUAL,      Triggers::VISUAL,      nullptr, nullptr},
+        {vi_modes::NORMAL,      vi_modes::VISUAL_LINE, Triggers::VISUAL_LINE, nullptr, nullptr},
+        {vi_modes::NORMAL,      vi_modes::VISUAL_RECT, Triggers::VISUAL_RECT, nullptr, nullptr},
+        // visual
+        {vi_modes::VISUAL,      vi_modes::NORMAL,      Triggers::ESCAPE,      nullptr, nullptr},
+        {vi_modes::VISUAL,      vi_modes::INSERT,      Triggers::INSERT,      
+           [&]{return m_writeable;}, [&]{InsertMode();}},
+        {vi_modes::VISUAL,      vi_modes::VISUAL,      Triggers::VISUAL,      nullptr, nullptr},
+        {vi_modes::VISUAL,      vi_modes::VISUAL_LINE, Triggers::VISUAL_LINE, nullptr, nullptr},
+        {vi_modes::VISUAL,      vi_modes::VISUAL_RECT, Triggers::VISUAL_RECT, nullptr, nullptr},
+        // visual line
+        {vi_modes::VISUAL_LINE, vi_modes::NORMAL,      Triggers::ESCAPE,      nullptr, nullptr},
+        {vi_modes::VISUAL_LINE, vi_modes::VISUAL_LINE, Triggers::INSERT,      nullptr, nullptr},
+        {vi_modes::VISUAL_LINE, vi_modes::VISUAL,      Triggers::VISUAL,      nullptr, nullptr},
+        {vi_modes::VISUAL_LINE, vi_modes::VISUAL_LINE, Triggers::VISUAL_LINE, nullptr, nullptr},
+        {vi_modes::VISUAL_LINE, vi_modes::VISUAL_RECT, Triggers::VISUAL_RECT, nullptr, nullptr},
+        // visual rect
+        {vi_modes::VISUAL_RECT, vi_modes::NORMAL,      Triggers::ESCAPE,      nullptr, nullptr},
+        {vi_modes::VISUAL_RECT, vi_modes::INSERT_RECT, Triggers::INSERT,      
+           [&]{return m_writeable;}, [&]{InsertMode();}},
+        {vi_modes::VISUAL_RECT, vi_modes::VISUAL,      Triggers::VISUAL,      nullptr, nullptr},
+        {vi_modes::VISUAL_RECT, vi_modes::VISUAL_LINE, Triggers::VISUAL_LINE, nullptr, nullptr},
+        {vi_modes::VISUAL_RECT, vi_modes::VISUAL_RECT, Triggers::VISUAL_RECT, nullptr, nullptr}});
+
+      m_fsm.add_debug_fn(Verbose);
+    };
+    
+    FSM::Fsm_Errors Execute(const std::string& command, Triggers trigger) {
+      m_Command = command;
+      m_writeable = !m_STC->GetReadOnly();
+      return m_fsm.execute(trigger);};
+
+    vi_modes Get() const {return m_fsm.state();};
+
+    void InsertMode() {
+      if (m_Insert != nullptr)
+      {
+        m_Insert(m_Command);
+      }};
+
+    const std::string String() const {return String(Get(), m_STC);};
+     
+    static const std::string String(vi_modes state, stc* stc) {
+      switch (state)
+      {
+        case vi_modes::INSERT:      
+          return stc != nullptr && stc->GetOvertype() ? "replace": "insert";
+        case vi_modes::INSERT_RECT: 
+          return stc != nullptr && stc->GetOvertype() ? "replace rect": "insert rect";
+        case vi_modes::VISUAL:      return "visual";
+        case vi_modes::VISUAL_LINE: return "visual line";
+        case vi_modes::VISUAL_RECT: return "visual rect";
+        default: return vi_macros::Mode()->String();
+      }};
+
+    static const std::string String(Triggers trigger) {
+      switch (trigger)
+      {
+        case Triggers::INSERT: return "insert";
+        case Triggers::VISUAL: return "visual";
+        case Triggers::VISUAL_LINE: return "visual line";
+        case Triggers::VISUAL_RECT: return "visual rect";
+        case Triggers::ESCAPE: return "escape";
+        default: return "unhandled";
+      }};
+    
+    static void Verbose(vi_modes from, vi_modes to, Triggers trigger)
+    {
+      VLOG(2) << 
+        "vi mode trigger " << String(trigger) <<
+        " state from " << String(from, nullptr) << 
+        " to " << String(to, nullptr);
+    };
+  private:
+    stc* m_STC;
+    std::string m_Command;
+    std::function<void(const std::string& command)> m_Insert;
+    bool m_writeable;
+    FSM::Fsm<vi_modes, vi_modes::NORMAL, Triggers> m_fsm;
   };
-private:
-  wxExSTC* m_STC;
-  std::string m_Command;
-  std::function<void(const std::string& command)> m_Insert;
-  bool m_writeable;
-  FSM::Fsm<wxExViModes, wxExViModes::NORMAL, Triggers> m_fsm;
 };
 
 #define NAVIGATE(SCOPE, DIRECTION)                   \
   m_vi->GetSTC()->SCOPE##DIRECTION();                \
   
-wxExViMode::wxExViMode(wxExVi* vi, 
+wex::vi_mode::vi_mode(vi* vi, 
   std::function<void(const std::string&)> insert, 
   std::function<void()> normal)
   : m_vi(vi)
-  , m_FSM(std::make_unique<wxExViFSM>(vi->GetSTC(), insert, normal))
+  , m_FSM(std::make_unique<vifsm>(vi->GetSTC(), insert, normal))
   , m_InsertCommands {
     {'a', [&](){NAVIGATE(Char, Right);}},
     {'c', [&](){;}},
@@ -153,21 +156,21 @@ wxExViMode::wxExViMode(wxExVi* vi,
 {
 }
 
-wxExViMode::~wxExViMode()
+wex::vi_mode::~vi_mode()
 {
 }
 
-wxExViModes wxExViMode::Get() const
+wex::vi_modes wex::vi_mode::Get() const
 {
   return m_FSM->Get();
 }
 
-const std::string wxExViMode::String() const
+const std::string wex::vi_mode::String() const
 {
   return m_FSM->String();
 }
   
-bool wxExViMode::Transition(std::string& command)
+bool wex::vi_mode::Transition(std::string& command)
 {
   if (command.empty())
   {
@@ -217,7 +220,7 @@ bool wxExViMode::Transition(std::string& command)
   
   switch (Get())
   {
-    case wxExViModes::INSERT:
+    case vi_modes::INSERT:
       if (!m_vi->GetSTC()->HexMode())
       {
         if (const auto& it = std::find_if(m_InsertCommands.begin(), m_InsertCommands.end(), 
@@ -230,7 +233,7 @@ bool wxExViMode::Transition(std::string& command)
       }
       break;
       
-    case wxExViModes::VISUAL_LINE:
+    case vi_modes::VISUAL_LINE:
       if (m_vi->GetSTC()->SelectionIsRectangle())
       {
         m_vi->GetSTC()->Home();
@@ -253,12 +256,12 @@ bool wxExViMode::Transition(std::string& command)
     default: break;
   }
 
-  ((wxExStatusBar *)m_vi->GetFrame()->GetStatusBar())->ShowField(
+  ((statusbar *)m_vi->GetFrame()->GetStatusBar())->ShowField(
     "PaneMode", 
-    (!Normal() || wxExViMacros::Mode()->IsRecording()) && 
+    (!Normal() || vi_macros::Mode()->IsRecording()) && 
        wxConfigBase::Get()->ReadBool(_("Show mode"), false));
 
-  wxExFrame::StatusText(String(), "PaneMode");
+  frame::StatusText(String(), "PaneMode");
 
   command = command.substr(1);
 

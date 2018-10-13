@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-ex.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -20,13 +20,13 @@
 #include <wx/extension/vi-macros-mode.h>
 #include "test.h"
 
-TEST_CASE("wxExEx")
+TEST_CASE("wex::ex")
 {
   // Test modeline.
   const std::string modeline("set ts=120 ec=40 sy=sql sw=4 nu el");
-  wxExSTC* stc = new wxExSTC(std::string("-- vi: " + modeline));
+  wex::stc* stc = new wex::stc(std::string("-- vi: " + modeline));
   AddPane(GetFrame(), stc);
-  wxExEx* ex = new wxExEx(stc);
+  wex::ex* ex = new wex::ex(stc);
 
   REQUIRE(stc->GetVi().GetIsActive());
   REQUIRE(stc->GetTabWidth() == 120);
@@ -34,11 +34,11 @@ TEST_CASE("wxExEx")
   REQUIRE(stc->GetIndent() == 4);
   REQUIRE(stc->GetLexer().GetScintillaLexer() == "sql");
 
-  wxExSTC* stco = new wxExSTC(wxExPath("test-modeline.txt"));
+  wex::stc* stco = new wex::stc(wex::path("test-modeline.txt"));
   AddPane(GetFrame(), stco);
   REQUIRE(stco->GetLexer().GetScintillaLexer() == "sql");
 
-  wxExSTC* stcp = new wxExSTC(wxExPath("test-modeline2.txt"));
+  wex::stc* stcp = new wex::stc(wex::path("test-modeline2.txt"));
   AddPane(GetFrame(), stcp);
   REQUIRE(stcp->GetLexer().GetScintillaLexer() == "sql");
 

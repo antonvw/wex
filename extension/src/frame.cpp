@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      frame.cpp
-// Purpose:   Implementation of wxExFrame class
+// Purpose:   Implementation of wex::frame class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -47,21 +47,21 @@
                                                              \
   auto* win = wxWindow::FindFocus();                         \
                                                              \
-  if (auto* cl = dynamic_cast<wxExSTC*>(win);                \
+  if (auto* cl = dynamic_cast<wex::stc*>(win);               \
     cl != nullptr)                                           \
   {                                                          \
     m_FindFocus = cl;                                        \
   }                                                          \
   else                                                       \
   {                                                          \
-    if (auto* cl = dynamic_cast<wxExListView*>(win);         \
+    if (auto* cl = dynamic_cast<wex::listview*>(win);        \
       cl != nullptr)                                         \
     {                                                        \
       m_FindFocus = cl;                                      \
     }                                                        \
     else                                                     \
     {                                                        \
-      if (auto* grid = dynamic_cast<wxExGrid*>(win);         \
+      if (auto* grid = dynamic_cast<wex::grid*>(win);        \
         grid != nullptr)                                     \
       {                                                      \
         m_FindFocus = grid;                                  \
@@ -75,27 +75,28 @@
   }                                                          \
                                                              \
   m_FindReplaceDialog = new wxFindReplaceDialog(             \
-    this, &wxExFindReplaceData::Get()->GetFRD(), text, dlg); \
+    this, &wex::find_replace_data::Get()->GetFRD(), text, dlg); \
   m_FindReplaceDialog->Show();                               \
 };                                                           \
   
-#if wxUSE_DRAG_AND_DROP
-class FileDropTarget : public wxFileDropTarget
+namespace wex
 {
-public:
-  explicit FileDropTarget(wxExFrame* frame) 
-    : m_Frame(frame){;};
+  class file_droptarget : public wxFileDropTarget
+  {
+  public:
+    explicit file_droptarget(frame* frame) 
+      : m_Frame(frame){;};
 
-  virtual bool OnDropFiles(wxCoord x, wxCoord y, 
-    const wxArrayString& filenames) override {
-      wxExOpenFiles(m_Frame, wxExToVectorPath(filenames).Get());
-      return true;}
-private:
-  wxExFrame* m_Frame;
+    virtual bool OnDropFiles(wxCoord x, wxCoord y, 
+      const wxArrayString& filenames) override {
+        open_files(m_Frame, to_vector_path(filenames).Get());
+        return true;}
+  private:
+    frame* m_Frame;
+  };
 };
-#endif
 
-wxExFrame::wxExFrame(const wxExWindowData& data)
+wex::frame::frame(const window_data& data)
   : wxFrame(
       data.Parent(), 
       data.Id(), 
@@ -103,10 +104,10 @@ wxExFrame::wxExFrame(const wxExWindowData& data)
       data.Pos(), data.Size(), 
       data.Style() == DATA_NUMBER_NOT_SET ? 
         wxDEFAULT_FRAME_STYLE: data.Style(), 
-      data.Name().empty() ? "wxExFrame": data.Name())
+      data.Name().empty() ? "frame": data.Name())
 {
 #if wxUSE_DRAG_AND_DROP
-  SetDropTarget(new FileDropTarget(this));
+  SetDropTarget(new file_droptarget(this));
 #endif
 
   wxAcceleratorEntry entries[4];
@@ -121,7 +122,7 @@ wxExFrame::wxExFrame(const wxExWindowData& data)
   wxPersistentRegisterAndRestore(this);
   
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  wxExPrinting::Get()->GetHtmlPrinter()->SetParentWindow(this);
+  printing::Get()->GetHtmlPrinter()->SetParentWindow(this);
 #endif
 
   Bind(wxEVT_FIND, [=](wxFindDialogEvent& event) {
@@ -165,21 +166,21 @@ wxExFrame::wxExFrame(const wxExWindowData& data)
       std::string text(event.GetString());
       if (auto* stc = GetSTC(); stc != nullptr)
       {
-        wxExPath::Current(stc->GetFileName().GetPath());
-        if (!wxExMarkerAndRegisterExpansion(&stc->GetVi(), text)) return;
+        wex::path::Current(stc->GetFileName().GetPath());
+        if (!marker_and_register_expansion(&stc->GetVi(), text)) return;
       }
-      if (!wxExShellExpansion(text)) return;
+      if (!shell_expansion(text)) return;
       std::string cmd;
-      if (std::vector <std::string> v; wxExMatch("\\+([^ \t]+)* *(.*)", text, v) > 1)
+      if (std::vector <std::string> v; match("\\+([^ \t]+)* *(.*)", text, v) > 1)
       {
         cmd = v[0];
         text = v[1];
       }
-      wxExOpenFiles(this, wxExToVectorPath(text).Get(), wxExControlData().Command(cmd));
+      open_files(this, to_vector_path(text).Get(), control_data().Command(cmd));
     }
     else
     {
-      wxExOpenFilesDialog(this);
+      open_files_dialog(this);
     }}, wxID_OPEN);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     SetMenuBar(GetMenuBar() != nullptr ? nullptr: m_MenuBar);}, ID_VIEW_MENUBAR);
@@ -198,7 +199,7 @@ wxExFrame::wxExFrame(const wxExWindowData& data)
 	event.Skip(); });
 }
 
-wxExFrame::~wxExFrame()
+wex::frame::~frame()
 {
   if (m_FindReplaceDialog != nullptr)
   {
@@ -209,27 +210,27 @@ wxExFrame::~wxExFrame()
     GetMenuBar() != nullptr && GetMenuBar()->IsShown());
 }
 
-wxExGrid* wxExFrame::GetGrid()
+wex::grid* wex::frame::GetGrid()
 {
-  wxCAST_TO(wxExGrid);
+  wxCAST_TO(wex::grid);
 }
 
-wxExListView* wxExFrame::GetListView()
+wex::listview* wex::frame::GetListView()
 {
-  wxCAST_TO(wxExListView);
+  wxCAST_TO(wex::listview);
 }
 
-std::string wxExFrame::GetStatusText(const std::string& pane)
+std::string wex::frame::GetStatusText(const std::string& pane)
 {
   return (m_StatusBar == nullptr ? std::string(): m_StatusBar->GetStatusText(pane));
 }
 
-wxExSTC* wxExFrame::GetSTC()
+wex::stc* wex::frame::GetSTC()
 {
-  wxCAST_TO(wxExSTC);
+  wxCAST_TO(wex::stc);
 }
   
-bool wxExFrame::IsOpen(const wxExPath& filename)
+bool wex::frame::IsOpen(const wex::path& filename)
 {
   if (auto* stc = GetSTC(); stc != nullptr)
   {
@@ -239,21 +240,21 @@ bool wxExFrame::IsOpen(const wxExPath& filename)
   return false;
 }
   
-wxStatusBar* wxExFrame::OnCreateStatusBar(
+wxStatusBar* wex::frame::OnCreateStatusBar(
   int number,
   long style,
   wxWindowID id,
   const wxString& name)
 {
-  m_StatusBar = new wxExStatusBar(this, 
-    wxExWindowData().Id(id).Style(style).Name(name.ToStdString()));
+  m_StatusBar = new wex::statusbar(this, 
+    wex::window_data().Id(id).Style(style).Name(name.ToStdString()));
   m_StatusBar->SetFieldsCount(number);
   return m_StatusBar;
 }
 
-wxExSTC* wxExFrame::OpenFile(
-  const wxExPath& filename,
-  const wxExSTCData& data)
+wex::stc* wex::frame::OpenFile(
+  const wex::path& filename,
+  const wex::stc_data& data)
 {
   if (auto* stc = GetSTC(); stc != nullptr)
   {
@@ -264,25 +265,25 @@ wxExSTC* wxExFrame::OpenFile(
   return nullptr;
 }
 
-wxExSTC* wxExFrame::OpenFile(
-  const wxExPath& filename,
-  const wxExVCSEntry& vcs,
-  const wxExSTCData& data)
+wex::stc* wex::frame::OpenFile(
+  const wex::path& filename,
+  const vcs_entry& vcs,
+  const stc_data& data)
 {
   if (auto* stc = GetSTC(); stc != nullptr)
   {
     stc->SetText(vcs.GetStdOut());
-    wxExVCSCommandOnSTC(vcs.GetCommand(), filename.GetLexer(), stc);
+    vcs_command_stc(vcs.GetCommand(), filename.GetLexer(), stc);
     return stc;
   }
 
   return nullptr;
 }
 
-wxExSTC* wxExFrame::OpenFile(
-  const wxExPath& filename,
+wex::stc* wex::frame::OpenFile(
+  const path& filename,
   const std::string& text,
-  const wxExSTCData& data)
+  const stc_data& data)
 {
   if (auto* stc = GetSTC(); stc != nullptr)
   {
@@ -293,7 +294,7 @@ wxExSTC* wxExFrame::OpenFile(
   return nullptr;
 }
     
-void wxExFrame::SetMenuBar(wxMenuBar* bar)
+void wex::frame::SetMenuBar(wxMenuBar* bar)
 {
   if (bar != nullptr)
   {
@@ -306,7 +307,7 @@ void wxExFrame::SetMenuBar(wxMenuBar* bar)
       bar);
 }
 
-void wxExFrame::StatusBarClicked(const std::string& pane)
+void wex::frame::StatusBarClicked(const std::string& pane)
 {
   if (auto* stc = GetSTC(); pane == "PaneInfo")
   {
@@ -322,7 +323,7 @@ void wxExFrame::StatusBarClicked(const std::string& pane)
   }
   else if (pane == "PaneLexer")
   {
-    if (stc != nullptr) wxExLexers::Get()->ShowDialog(stc);
+    if (stc != nullptr) lexers::Get()->ShowDialog(stc);
   }
   else if (pane == "PaneFileType")
   {
@@ -334,14 +335,14 @@ void wxExFrame::StatusBarClicked(const std::string& pane)
   }
 }
 
-bool wxExFrame::StatusText(const std::string& text, const std::string& pane)
+bool wex::frame::StatusText(const std::string& text, const std::string& pane)
 {
   return (m_IsClosing || m_StatusBar == nullptr ? 
     false: 
     m_StatusBar->SetStatusText(text, pane));
 }
 
-bool wxExFrame::UpdateStatusBar(const wxListView* lv)
+bool wex::frame::UpdateStatusBar(const wxListView* lv)
 {
   if (!m_IsClosing && lv->IsShown())
   {
@@ -356,7 +357,7 @@ bool wxExFrame::UpdateStatusBar(const wxListView* lv)
 }
 
 // Do not make it const, too many const_casts needed,
-bool wxExFrame::UpdateStatusBar(wxExSTC* stc, const std::string& pane)
+bool wex::frame::UpdateStatusBar(stc* stc, const std::string& pane)
 {
   if (stc == nullptr || m_IsClosing)
   {
@@ -394,7 +395,7 @@ bool wxExFrame::UpdateStatusBar(wxExSTC* stc, const std::string& pane)
           if (const auto number_of_lines = 
             // There might be null's inside selection.
             // So use the GetSelectedTextRaw variant.
-            wxExGetNumberOfLines(wxString(stc->GetSelectedTextRaw()).ToStdString());
+            get_number_of_lines(wxString(stc->GetSelectedTextRaw()).ToStdString());
               number_of_lines <= 1) 
             text = wxString::Format("%d,%d,%d", line, pos, len);
           else
@@ -405,7 +406,7 @@ bool wxExFrame::UpdateStatusBar(wxExSTC* stc, const std::string& pane)
   }
   else if (pane == "PaneLexer")
   {
-    if (!wxExLexers::Get()->GetTheme().empty())
+    if (!lexers::Get()->GetTheme().empty())
     {
       text = stc->GetLexer().GetDisplayLexer();
     }

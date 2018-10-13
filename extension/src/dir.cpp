@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      dir.cpp
-// Purpose:   Implementation of class wxExDir and wxExDirOpenFile
+// Purpose:   Implementation of class wex::dir and wex::open_file_dir
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -16,94 +16,97 @@
 #include <wx/extension/util.h>
 #include <easylogging++.h>
 
-/// Collects files into container.
-template <class T>
-class wxExDirToContainer : public wxExDir
+namespace wex
 {
-public:
-  wxExDirToContainer(const T & path, const std::string& filespec, int flags) 
-  : wxExDir(path, filespec, flags) {;};
+  /// Collects files into container.
+  template <class T>
+  class container_dir : public dir
+  {
+  public:
+    container_dir(const T & path, const std::string& filespec, int flags) 
+    : dir(path, filespec, flags) {;};
 
-  const auto & Get() const {return m_Container;};
-private:
-  virtual bool OnDir(const wxExPath& p) override {
-    m_Container.emplace_back(p);
-    return true;};
-  virtual bool OnFile(const wxExPath& p) override {
-    m_Container.emplace_back(p);
-    return true;};
+    const auto & Get() const {return m_Container;};
+  private:
+    virtual bool OnDir(const path& p) override {
+      m_Container.emplace_back(p);
+      return true;};
+    virtual bool OnFile(const path& p) override {
+      m_Container.emplace_back(p);
+      return true;};
 
-  std::vector <T> m_Container;
+    std::vector <T> m_Container;
+  };
+
+  class string_dir : public dir
+  {
+  public:
+    string_dir(const std::string & path, const std::string& filespec, int flags) 
+    : dir(path, filespec, flags) {;};
+
+    const auto & Get() const {return m_Container;};
+  private:
+    virtual bool OnDir(const path& p) override {
+      m_Container.emplace_back(p.GetFullName());
+      return true;};
+    virtual bool OnFile(const path& p) override {
+      m_Container.emplace_back(p.GetFullName());
+      return true;};
+
+    std::vector <std::string> m_Container;
+  };
 };
 
-class wxExDirToString : public wxExDir
+std::vector <wex::path> wex::get_all_files(
+  const wex::path& path, const std::string& filespec, int flags) 
 {
-public:
-  wxExDirToString(const std::string & path, const std::string& filespec, int flags) 
-  : wxExDir(path, filespec, flags) {;};
-
-  const auto & Get() const {return m_Container;};
-private:
-  virtual bool OnDir(const wxExPath& p) override {
-    m_Container.emplace_back(p.GetFullName());
-    return true;};
-  virtual bool OnFile(const wxExPath& p) override {
-    m_Container.emplace_back(p.GetFullName());
-    return true;};
-
-  std::vector <std::string> m_Container;
-};
-
-std::vector <wxExPath> wxExGetAllFiles(
-  const wxExPath& path, const std::string& filespec, int flags) 
-{
-  wxExDirToContainer<wxExPath> dir(path, filespec, flags);
+  wex::container_dir<wex::path> dir(path, filespec, flags);
   dir.FindFiles();
   return dir.Get();
 }
 
-std::vector <std::string> wxExGetAllFiles(
+std::vector <std::string> wex::get_all_files(
   const std::string& path, const std::string& filespec, int flags) 
 {
-  wxExDirToString dir(path, filespec, flags);
+  wex::string_dir dir(path, filespec, flags);
   dir.FindFiles();
   return dir.Get();
 }
 
 namespace fs = std::experimental::filesystem;
 
-wxExDir::wxExDir(const wxExPath& dir, const std::string& filespec, int flags)
+wex::dir::dir(const wex::path& dir, const std::string& filespec, int flags)
   : m_Dir(dir)
   , m_FileSpec(filespec)
   , m_Flags(flags)
 {
 }
 
-bool Handle(const fs::directory_entry& e, wxExDir* dir, int& matches)
+bool Handle(const fs::directory_entry& e, wex::dir* dir, int& matches)
 {
   if (fs::is_regular_file(e.path()))
   {
-    if ((dir->GetFlags() & DIR_FILES) && 
-      wxExMatchesOneOf(e.path().filename().string(), dir->GetFileSpec()))
+    if ((dir->GetFlags() & wex::DIR_FILES) && 
+      wex::matches_one_of(e.path().filename().string(), dir->GetFileSpec()))
     {
       dir->OnFile(e.path());
       matches++;
     }
   }
-  else if ((dir->GetFlags() & DIR_DIRS) && fs::is_directory(e.path()) &&
-    wxExMatchesOneOf(e.path().filename().string(), dir->GetFileSpec()))
+  else if ((dir->GetFlags() & wex::DIR_DIRS) && fs::is_directory(e.path()) &&
+    wex::matches_one_of(e.path().filename().string(), dir->GetFileSpec()))
   {
     dir->OnDir(e.path());
   }
 
-  return !wxExInterruptable::Cancelled();
+  return !wex::interruptable::Cancelled();
 }
 
-int wxExDir::FindFiles()
+int wex::dir::FindFiles()
 {
   if (!m_Dir.DirExists())
   {
-    wxExLog("invalid path") << m_Dir.Path().string();
+    wex::log("invalid path") << m_Dir.Path().string();
     return -1;
   }
 
@@ -119,7 +122,7 @@ int wxExDir::FindFiles()
 
   try
   {
-    if (m_Flags & DIR_RECURSIVE)
+    if (m_Flags & wex::DIR_RECURSIVE)
     {
       const fs::directory_options options = 
 #ifdef __WXMSW__
@@ -143,7 +146,7 @@ int wxExDir::FindFiles()
   }
   catch (fs::filesystem_error& e)
   {
-    wxExLog(e) << "filesystem";
+    wex::log(e) << "filesystem";
   }
 
   Stop();
@@ -151,19 +154,19 @@ int wxExDir::FindFiles()
   return matches;
 }
 
-wxExDirOpenFile::wxExDirOpenFile(wxExFrame* frame,
-  const wxExPath& path, 
+wex::open_file_dir::open_file_dir(wex::frame* frame,
+  const wex::path& path, 
   const std::string& filespec, 
-  wxExSTCWindowFlags file_flags,
+  wex::stc_window_flags file_flags,
   int dir_flags)
-  : wxExDir(path, filespec, dir_flags)
+  : wex::dir(path, filespec, dir_flags)
   , m_Frame(frame)
   , m_Flags(file_flags)
 {
 }
 
-bool wxExDirOpenFile::OnFile(const wxExPath& file)
+bool wex::open_file_dir::OnFile(const wex::path& file)
 {
-  m_Frame->OpenFile(file, wxExSTCData().Flags(m_Flags));
+  m_Frame->OpenFile(file, wex::stc_data().Flags(m_Flags));
   return true;
 }

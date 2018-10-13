@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      app.h
-// Purpose:   Declaration of sample classes for wxExtension report
+// Purpose:   Declaration of wex report sample classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/app.h>
@@ -10,32 +10,32 @@
 #include <wx/extension/stc.h>
 #include <wx/extension/report/frame.h>
 
-/// Derive your application from wxExApp.
-class wxExRepSampleApp: public wxExApp
+/// Derive your application from wex::app.
+class report_sample_app: public wex::app
 {
 public:
-  wxExRepSampleApp() {}
+  report_sample_app() {}
 private:
   virtual bool OnInit() override;
 };
 
-/// Use wxExFrameWithHistory.
-class wxExRepSampleFrame: public wxExFrameWithHistory
+/// Use wex::framewithhistory.
+class report_sample_frame: public wex::history_frame
 {
 public:
   /// Constructor.
-  wxExRepSampleFrame();
+  report_sample_frame();
 protected:
-  // Interface from wxExFrameWithHistory.
-  virtual wxExListView* Activate(
-    wxExListType type, const wxExLexer* lexer = nullptr) override;
+  // Interface from wex::framewithhistory.
+  virtual wex::listview* Activate(
+    wex::listview_type type, const wex::lexer* lexer = nullptr) override;
   virtual bool AllowClose(wxWindowID id, wxWindow* page) override;
-  virtual wxExListView* GetListView() override;
-  virtual wxExSTC* GetSTC() override;
-  virtual wxExSTC* OpenFile(
-    const wxExPath& file,
-    const wxExSTCData& stc_data = wxExSTCData()) override;
+  virtual wex::listview* GetListView() override;
+  virtual wex::stc* GetSTC() override;
+  virtual wex::stc* OpenFile(
+    const wex::path& file,
+    const wex::stc_data& stc_data = wex::stc_data()) override;
 private:
-  wxExNotebook* m_NotebookWithLists; ///< all listviews
-  wxExSTC* m_STC;
+  wex::notebook* m_NotebookWithLists; ///< all listviews
+  wex::stc* m_STC;
 };

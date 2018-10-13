@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      stcfile.cpp
-// Purpose:   Implementation of class wxExSTCFile
+// Name:      stc_file.cpp
+// Purpose:   Implementation of class wex::stc_file
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -19,7 +19,7 @@
 #include <wx/extension/util.h> // for STAT_ etc.
 #include <easylogging++.h>
 
-void CheckWellFormed(wxExSTC* stc, const wxExPath& fn)
+void CheckWellFormed(wex::stc* stc, const wex::path& fn)
 {
   if (fn.GetLexer().GetLanguage() == "xml")
   {
@@ -27,22 +27,22 @@ void CheckWellFormed(wxExSTC* stc, const wxExPath& fn)
       pugi::xml_document().load_file(fn.Path().string().c_str());
       !result)
     {
-      wxExXmlError(fn, &result, stc);
+      wex::xml_error(fn, &result, stc);
     }
   }
 }
 
-wxExSTCFile::wxExSTCFile(wxExSTC* stc, const std::string& filename)
-  : wxExFile(filename)
+wex::stc_file::stc_file(stc* stc, const std::string& filename)
+  : file(filename)
   , m_STC(stc)
 {
 }
 
-bool wxExSTCFile::DoFileLoad(bool synced)
+bool wex::stc_file::DoFileLoad(bool synced)
 {
   if (
    GetContentsChanged() &&
-   wxExFileDialog(this).ShowModalIfChanged() == wxID_CANCEL)
+   file_dialog(this).ShowModalIfChanged() == wxID_CANCEL)
   {
     return false;
   }
@@ -80,7 +80,7 @@ bool wxExSTCFile::DoFileLoad(bool synced)
   return true;
 }
 
-void wxExSTCFile::DoFileNew()
+void wex::stc_file::DoFileNew()
 {
   m_STC->SetName(GetFileName().Path().string());
   m_STC->PropertiesMessage();
@@ -88,7 +88,7 @@ void wxExSTCFile::DoFileNew()
   m_STC->GetLexer().Set(GetFileName().GetLexer(), true); // allow fold
 }
 
-void wxExSTCFile::DoFileSave(bool save_as)
+void wex::stc_file::DoFileSave(bool save_as)
 {
   if (m_STC->GetHexMode().Active())
   {
@@ -114,12 +114,12 @@ void wxExSTCFile::DoFileSave(bool save_as)
   CheckWellFormed(m_STC, GetFileName());
 }
 
-bool wxExSTCFile::GetContentsChanged() const 
+bool wex::stc_file::GetContentsChanged() const 
 {
   return m_STC->GetModify();
 }
 
-void wxExSTCFile::ReadFromFile(bool get_only_new_data)
+void wex::stc_file::ReadFromFile(bool get_only_new_data)
 {
   const bool pos_at_end = (m_STC->GetCurrentPos() >= m_STC->GetTextLength() - 1);
 
@@ -133,7 +133,7 @@ void wxExSTCFile::ReadFromFile(bool get_only_new_data)
     offset = m_PreviousLength;
   }
 
-  if (offset == 0)
+  if (offset == std::streampos(0))
   {
     m_STC->ClearDocument();
   }
@@ -181,7 +181,7 @@ void wxExSTCFile::ReadFromFile(bool get_only_new_data)
   m_STC->EmptyUndoBuffer();
 }
 
-void wxExSTCFile::ResetContentsChanged()
+void wex::stc_file::ResetContentsChanged()
 {
   m_STC->SetSavePoint();
 }

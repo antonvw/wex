@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      app.h
-// Purpose:   Declaration of class 'App'
+// Purpose:   Declaration of class 'app'
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -9,7 +9,7 @@
 
 #include <wx/extension/app.h>
 
-class App : public wxExApp
+class app : public wex::app
 {
 public:
   auto& GetData() {return m_Data;};
@@ -31,10 +31,10 @@ private:
   virtual bool OnInit() override;
 
   std::string m_Tag; 
-  std::vector< wxExPath > m_Files;
+  std::vector< wex::path > m_Files;
   
   bool m_Debug = false;
   int m_Split;
-  wxExSTCData m_Data;
-  wxExFile m_Scriptin, m_Scriptout;
+  wex::stc_data m_Data;
+  wex::file m_Scriptin, m_Scriptout;
 };

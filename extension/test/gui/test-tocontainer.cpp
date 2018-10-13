@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-tocontainer.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Name:      test-to_container.cpp
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
@@ -17,7 +17,7 @@
 #include <wx/extension/util.h>
 #include "test.h"
 
-TEST_CASE("wxExToContainer")
+TEST_CASE("wex::to_container")
 {
   wxComboBox* cb = new wxComboBox(GetFrame(), wxID_ANY);
 #ifndef __WXOSX__
@@ -33,30 +33,30 @@ TEST_CASE("wxExToContainer")
 #ifdef __WXGTK__
   wxFileDialog dlg;
   wxGenericDirCtrl dir;
-  REQUIRE( wxExToVectorString(dlg).Get().empty());
-  REQUIRE( wxExToVectorString(dir).Get().empty());
+  REQUIRE( wex::to_vector_string(dlg).Get().empty());
+  REQUIRE( wex::to_vector_string(dir).Get().empty());
 #endif
-  REQUIRE( wxExToVectorString(a).Get().size() == 4);
-  REQUIRE( wxExToVectorString("test test test").Get().size() == 3);
-  REQUIRE( wxExToVectorString("test\\ test test").Get().size() == 2);
+  REQUIRE( wex::to_vector_string(a).Get().size() == 4);
+  REQUIRE( wex::to_vector_string("test test test").Get().size() == 3);
+  REQUIRE( wex::to_vector_string("test\\ test test").Get().size() == 2);
   
 #ifdef __WXGTK__
-  REQUIRE( wxExToListString(dlg).Get().empty());
-  REQUIRE( wxExToListString(dir).Get().empty());
+  REQUIRE( wex::to_list_string(dlg).Get().empty());
+  REQUIRE( wex::to_list_string(dir).Get().empty());
 #endif
-  REQUIRE( wxExToListString(a).Get().size() == 4);
-  REQUIRE( wxExToListString("test test test").Get().size() == 3);
-  REQUIRE( wxExToContainer<std::list < std::string >>(cb, 5).Get().size() == 0);
+  REQUIRE( wex::to_list_string(a).Get().size() == 4);
+  REQUIRE( wex::to_list_string("test test test").Get().size() == 3);
+  REQUIRE( wex::to_container<std::list < std::string >>(cb, 5).Get().size() == 0);
   
-  wxExComboBoxFromList(cb, std::list < std::string > {"x","y","z"});
-  REQUIRE( wxExToListString(cb).Get().size() == cb->GetCount());
-  REQUIRE( wxExToContainer<std::list < std::string >>(cb, 2).Get().size() == 2);
-  REQUIRE( wxExToContainer<std::list < std::string >>(cb, 0).Get().empty());
+  wex::combobox_from_list(cb, std::list < std::string > {"x","y","z"});
+  REQUIRE( wex::to_list_string(cb).Get().size() == cb->GetCount());
+  REQUIRE( wex::to_container<std::list < std::string >>(cb, 2).Get().size() == 2);
+  REQUIRE( wex::to_container<std::list < std::string >>(cb, 0).Get().empty());
   
   cb->SetValue(wxEmptyString);
-  REQUIRE( wxExToListString(cb).Get().size() == cb->GetCount());
+  REQUIRE( wex::to_list_string(cb).Get().size() == cb->GetCount());
 
   cb->SetValue("other");
-  REQUIRE( wxExToListString(cb).Get().size() == cb->GetCount() + 1);
-  REQUIRE( wxExToListString(cb).Get().front() == "other");
+  REQUIRE( wex::to_list_string(cb).Get().size() == cb->GetCount() + 1);
+  REQUIRE( wex::to_list_string(cb).Get().front() == "other");
 }

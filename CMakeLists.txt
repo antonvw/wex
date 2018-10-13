@@ -32,15 +32,15 @@ set(EX_COPYRIGHT ${EX_COPYRIGHT})
 
 add_definitions(-DELPP_NO_DEFAULT_LOG_FILE)
 
-if (${wxExUSE_OTL} MATCHES ON)
-  add_definitions(-DwxExUSE_OTL)
+if (${wexUSE_OTL} MATCHES ON)
+  add_definitions(-DwexUSE_OTL)
 endif ()
 
 if (ENABLE_GETTEXT)
   include(FindGettext)
 endif ()
 
-if (wxExUSE_OTL)
+if (wexUSE_OTL)
   include(cmake/otl.cmake)
 endif ()
 
@@ -53,14 +53,14 @@ include(cmake/common.cmake)
 
 add_subdirectory(extension)
 
-if (wxExBUILD_SP)
+if (wexBUILD_SP)
   add_subdirectory(syncped)
 endif ()
 
-if (wxExBUILD_SOQ)
+if (wexBUILD_SOQ)
   add_subdirectory(syncodbcquery)
 endif ()
 
-if (wxExBUILD_SSS)
+if (wexBUILD_SSS)
   add_subdirectory(syncsocketserver)
 endif ()

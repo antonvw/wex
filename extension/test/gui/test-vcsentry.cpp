@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-vcsentry.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Name:      test-vcs_entry.cpp
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,13 +14,13 @@
 #include <wx/extension/defs.h>
 #include "test.h"
 
-TEST_CASE("wxExVCSEntry")
+TEST_CASE("wex::vcs_entry")
 {
-  REQUIRE( wxExVCSEntry().GetCommands().size() == 1); // the empty command
+  REQUIRE( wex::vcs_entry().GetCommands().size() == 1); // the empty command
   
-  wxExVCSEntry test("my-vcs", "./",
-    {wxExVCSCommand("one", "main"), wxExVCSCommand("two", "main")},
-    wxExVCSEntry::VCS_FLAGS_LOCATION_POSTFIX);
+  wex::vcs_entry test("my-vcs", "./",
+    {wex::vcs_command("one", "main"), wex::vcs_command("two", "main")},
+    wex::vcs_entry::VCS_FLAGS_LOCATION_POSTFIX);
   
   REQUIRE( test.GetCommands().size() == 2);
   REQUIRE(!test.GetCommand().GetCommand().empty());
@@ -31,11 +31,11 @@ TEST_CASE("wxExVCSEntry")
   REQUIRE( test.GetName() == "my-vcs");
   REQUIRE( test.GetStdOut().empty());
   
-  REQUIRE( wxExVCSEntry().GetFlagsLocation() == wxExVCSEntry::VCS_FLAGS_LOCATION_POSTFIX);
+  REQUIRE( wex::vcs_entry().GetFlagsLocation() == wex::vcs_entry::VCS_FLAGS_LOCATION_POSTFIX);
   
   test.ShowOutput();
   
-  wxExMenu menu;
+  wex::menu menu;
   REQUIRE( test.BuildMenu(0, &menu) == 0);
 
 #ifndef __WXMSW__
@@ -51,13 +51,13 @@ TEST_CASE("wxExVCSEntry")
   REQUIRE( test.GetStdOut().empty());
   REQUIRE(!test.Execute());
   
-  wxExVCSEntry git("git");
+  wex::vcs_entry git("git");
   REQUIRE( git.Execute()); // executes just git, shows help
   REQUIRE( git.GetStdOut().find("usage: ") != std::string::npos);
   git.ShowOutput();
 
-  wxExVCSEntry* git_async = new wxExVCSEntry("git", std::string(), {wxExVCSCommand("status")});
-  REQUIRE( git_async->Execute(std::string(), wxExLexer(), PROCESS_EXEC_WAIT));
+  wex::vcs_entry* git_async = new wex::vcsentry("git", std::string(), {wex::vcs_command("status")});
+  REQUIRE( git_async->Execute(std::string(), wex::lexer(), PROCESS_EXEC_WAIT));
   git_async->ShowOutput();
 #endif
 #endif

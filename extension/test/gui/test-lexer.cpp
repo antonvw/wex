@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-lexer.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -16,9 +16,9 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-TEST_CASE("wxExLexer")
+TEST_CASE("wex::lexer")
 {
-  wxExLexer lexer;
+  wex::lexer lexer;
 
   SUBCASE("Default constructor")
   {
@@ -32,15 +32,15 @@ TEST_CASE("wxExLexer")
 
   SUBCASE("Default constructor with lexer")
   {
-    REQUIRE( wxExLexer("cpp").IsOk());
-    REQUIRE( wxExLexer("pascal").IsOk());
-    REQUIRE(!wxExLexer("xxx").IsOk());
-    REQUIRE(!wxExLexer().Set("xxx"));
+    REQUIRE( wex::lexer("cpp").IsOk());
+    REQUIRE( wex::lexer("pascal").IsOk());
+    REQUIRE(!wex::lexer("xxx").IsOk());
+    REQUIRE(!wex::lexer().Set("xxx"));
   }
   
   SUBCASE("Constructor using STC")
   {
-    wxExLexer lexer(GetSTC());
+    wex::lexer lexer(GetSTC());
     REQUIRE(!lexer.IsOk());
     lexer.Apply();
   }
@@ -51,23 +51,23 @@ TEST_CASE("wxExLexer")
     REQUIRE( lexer.GetLanguage() == "xml");
 
     REQUIRE( lexer.Set("pascal"));
-    wxExLexer lexer2;
+    wex::lexer lexer2;
     REQUIRE( lexer2.Set(lexer));
     REQUIRE( lexer2.Set(lexer, true));
     REQUIRE( lexer2.GetDisplayLexer() == "pascal");
     REQUIRE( lexer2.GetScintillaLexer() == "pascal");
 
-    REQUIRE(!lexer.Set(wxExLexers::Get()->FindByText("XXXX")));
+    REQUIRE(!lexer.Set(wex::lexers::Get()->FindByText("XXXX")));
     REQUIRE( lexer.GetDisplayLexer().empty());
     REQUIRE(!lexer.IsOk());
-    REQUIRE( lexer.Set(wxExLexers::Get()->FindByText("<html>")));
+    REQUIRE( lexer.Set(wex::lexers::Get()->FindByText("<html>")));
     REQUIRE( lexer.IsOk());
     REQUIRE( lexer.GetScintillaLexer() == "hypertext");
     REQUIRE( lexer.GetDisplayLexer() == "hypertext");
     REQUIRE( lexer.Previewable());
-    REQUIRE( lexer.Set(wxExLexers::Get()->FindByText("// this is a cpp comment text")));
+    REQUIRE( lexer.Set(wex::lexers::Get()->FindByText("// this is a cpp comment text")));
     REQUIRE( lexer.IsOk());
-    REQUIRE( wxExLexer(lexer).IsOk());
+    REQUIRE( wex::lexer(lexer).IsOk());
     REQUIRE( lexer.GetDisplayLexer() == "cpp");
     REQUIRE( lexer.GetScintillaLexer() == "cpp");
   }
@@ -75,11 +75,11 @@ TEST_CASE("wxExLexer")
   SUBCASE("Reset")
   {
     lexer.Set("markdown");
-    REQUIRE( lexer.GetEdgeMode() == wxExEdgeMode::NONE);
+    REQUIRE( lexer.GetEdgeMode() == wex::edgemode::NONE);
     lexer.Reset();
     REQUIRE( lexer.GetDisplayLexer().empty());
     REQUIRE( lexer.GetScintillaLexer().empty());
-    REQUIRE( lexer.GetEdgeMode() == wxExEdgeMode::ABSENT);
+    REQUIRE( lexer.GetEdgeMode() == wex::edgemode::ABSENT);
   }
 
   SUBCASE("Testing several methods")
@@ -157,8 +157,8 @@ TEST_CASE("wxExLexer")
   
   SUBCASE("lexers")
   {
-    REQUIRE( wxExLexer("ada").IsOk());
-    REQUIRE( wxExLexer("rfw").IsOk());
-    REQUIRE(!wxExLexer("xxx").IsOk());
+    REQUIRE( wex::lexer("ada").IsOk());
+    REQUIRE( wex::lexer("rfw").IsOk());
+    REQUIRE(!wex::lexer("xxx").IsOk());
   }
 }

@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-interruptable.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -12,9 +12,9 @@
 #include <wx/extension/interruptable.h>
 #include "../test.h"
 
-TEST_CASE( "wxExInterruptable" ) 
+TEST_CASE( "wex::interruptable" ) 
 {
-  wxExInterruptable interruptable;
+  wex::interruptable interruptable;
   
   REQUIRE(!interruptable.Running());
   REQUIRE(!interruptable.Cancelled());

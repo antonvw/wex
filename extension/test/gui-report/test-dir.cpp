@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-dir.cpp
-// Purpose:   Implementation for wxExtension report unit testing
+// Purpose:   Implementation for wex report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/util.h>
@@ -11,34 +11,34 @@
 #include <wx/extension/report/stream.h>
 #include "test.h"
 
-TEST_CASE("wxExDirTool")
+TEST_CASE("wex::tool_dir")
 {
-  const wxExTool tool = ID_TOOL_REPORT_FIND;
+  const wex::tool tool = wex::ID_TOOL_REPORT_FIND;
 
-  wxExListView* report = new wxExListView(wxExListViewData().Type(LIST_FIND));
+  wex::listview* report = new wex::listview(wex::listview_data().Type(wex::LISTVIEW_FIND));
     
-  if (!wxExStreamToListView::SetupTool(tool, GetFrame(), report))
+  if (!wex::listview_stream::SetupTool(tool, GetFrame(), report))
   {
     return;
   }
 
   AddPane(GetFrame(), report);
   
-  wxExDirTool dir(
+  wex::tool_dir dir(
     tool,
     "./",
     "*.cpp;*.h",
-    DIR_FILES | DIR_HIDDEN | DIR_DIRS);
+    wex::DIR_FILES | wex::DIR_HIDDEN | wex::DIR_DIRS);
 
   dir.FindFiles();
 
-  wxExLogStatus(tool.Info(&dir.GetStatistics().GetElements()));
+  wex::log_status(tool.Info(&dir.GetStatistics().GetElements()));
 }
 
-TEST_CASE("wxExDirWithListView")
+TEST_CASE("wex::listview_dir")
 {
-  wxExListViewFile* listView = new wxExListViewFile(GetProject());
+  wex::listview_file* listView = new wex::listview_file(GetProject());
   AddPane(GetFrame(), listView);
-  wxExDirWithListView* dir = new wxExDirWithListView(listView, GetTestPath());
+  wex::listview_dir* dir = new wex::listview_dir(listView, GetTestPath());
   REQUIRE(dir->FindFiles() == 0);
 }

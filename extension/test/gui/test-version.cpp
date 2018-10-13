@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-version.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -12,8 +12,8 @@
 #include <wx/extension/version.h>
 #include "test.h"
 
-TEST_CASE("wxExVersion")
+TEST_CASE("wex::version")
 {
-  REQUIRE(!wxExVersionInfo().Get().empty());
-  REQUIRE(!wxExGetVersionInfo().Get().empty());
+  REQUIRE(!wex::version_info().Get().empty());
+  REQUIRE(!wex::get_version_info().Get().empty());
 }

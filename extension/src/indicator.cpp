@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      indicator.cpp
-// Purpose:   Implementation of class wxExIndicator
+// Purpose:   Implementation of class wex::indicator
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -16,26 +16,26 @@
 #include <wx/extension/tokenizer.h>
 #include <easylogging++.h>
 
-wxExIndicator::wxExIndicator(const pugi::xml_node& node)
+wex::indicator::indicator(const pugi::xml_node& node)
 {
   if (node.empty()) return;
 
   try
   {
     const auto single = 
-      wxExLexers::Get()->ApplyMacro(node.attribute("no").value());
+      lexers::Get()->ApplyMacro(node.attribute("no").value());
 
     m_No = std::stoi(single);
 
-    wxExTokenizer fields(node.text().get(), ",");
+    tokenizer fields(node.text().get(), ",");
 
-    const auto style = wxExLexers::Get()->ApplyMacro(fields.GetNextToken());
+    const auto style = lexers::Get()->ApplyMacro(fields.GetNextToken());
 
     m_Style = std::stoi(style);
 
     if (fields.HasMoreTokens())
     {
-      m_ForegroundColour = wxExLexers::Get()->ApplyMacro(fields.GetNextToken());
+      m_ForegroundColour = lexers::Get()->ApplyMacro(fields.GetNextToken());
 
       if (fields.HasMoreTokens())
       {
@@ -45,7 +45,7 @@ wxExIndicator::wxExIndicator(const pugi::xml_node& node)
 
     if (!IsOk())
     {
-      wxExLog("illegal indicator number:") << m_No << node;
+      log("illegal indicator number:") << m_No << node;
     }
   }
   catch (std::exception& e)
@@ -54,25 +54,25 @@ wxExIndicator::wxExIndicator(const pugi::xml_node& node)
   }
 }
 
-wxExIndicator::wxExIndicator(int no, int style)
+wex::indicator::indicator(int no, int style)
   : m_No(no)
   , m_Style(style)
 {
 }
 
-bool wxExIndicator::operator<(const wxExIndicator& i) const
+bool wex::indicator::operator<(const wex::indicator& i) const
 {
   return m_No < i.m_No;
 }
 
-bool wxExIndicator::operator==(const wxExIndicator& i) const
+bool wex::indicator::operator==(const wex::indicator& i) const
 {
   return m_Style == -1 ?
     m_No == i.m_No:
     m_No == i.m_No && m_Style == i.m_Style;
 }
 
-void wxExIndicator::Apply(wxStyledTextCtrl* stc) const
+void wex::indicator::Apply(wxStyledTextCtrl* stc) const
 {
   if (IsOk())
   {
@@ -87,7 +87,7 @@ void wxExIndicator::Apply(wxStyledTextCtrl* stc) const
   }
 }
 
-bool wxExIndicator::IsOk() const
+bool wex::indicator::IsOk() const
 {
   return 
     m_No >= 0 && m_No <= wxSTC_INDIC_MAX &&

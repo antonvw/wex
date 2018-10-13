@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-window-data.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -12,9 +12,9 @@
 #include <wx/extension/window-data.h>
 #include "test.h"
 
-TEST_CASE("wxExWindowData")
+TEST_CASE("wex::window_data")
 {
-  REQUIRE( wxExWindowData().Id() == wxID_ANY);
-  REQUIRE( wxExWindowData().Name().empty());
-  REQUIRE( wxExWindowData().Name("xxx").Name() == "xxx");
+  REQUIRE( wex::window_data().Id() == wxID_ANY);
+  REQUIRE( wex::window_data().Name().empty());
+  REQUIRE( wex::window_data().Name("xxx").Name() == "xxx");
 }

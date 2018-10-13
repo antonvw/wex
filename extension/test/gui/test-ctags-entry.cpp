@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-ctags-entry`.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -12,9 +12,9 @@
 #include <wx/extension/ctags-entry.h>
 #include "test.h"
 
-TEST_CASE("wxExCTagsEntry")
+TEST_CASE("wex::ctags_entry")
 {
-  wxExCTagsEntry filter;
+  wex::ctags_entry filter;
 
   REQUIRE(!filter.Active() );
 

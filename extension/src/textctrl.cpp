@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      textctrl.cpp
-// Purpose:   Implementation of wxExTextCtrlInput class
+// Purpose:   Implementation of wex::textctrl_input class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -16,31 +16,31 @@
 #include <wx/extension/util.h>
 #include <easylogging++.h>
 
-wxExTextCtrlInput::wxExTextCtrlInput(wxExExCommandType type) 
+wex::textctrl_input::textctrl_input(ex_command_type type) 
   : m_Type(type)
-  , m_Name([](wxExExCommandType type) {
+  , m_Name([](ex_command_type type) {
       switch (type)
       {
-        case wxExExCommandType::CALC: return std::string("excalc");
-        case wxExExCommandType::COMMAND: return std::string("excommand");
-        case wxExExCommandType::EXEC: return std::string("exexec");
-        case wxExExCommandType::FIND: return wxExFindReplaceData::GetTextFindWhat();
-        case wxExExCommandType::FIND_MARGIN: return std::string("exmargin");
-        case wxExExCommandType::REPLACE: return wxExFindReplaceData::GetTextReplaceWith();
+        case ex_command_type::CALC: return std::string("excalc");
+        case ex_command_type::COMMAND: return std::string("excommand");
+        case ex_command_type::EXEC: return std::string("exexec");
+        case ex_command_type::FIND: return find_replace_data::GetTextFindWhat();
+        case ex_command_type::FIND_MARGIN: return std::string("exmargin");
+        case ex_command_type::REPLACE: return find_replace_data::GetTextReplaceWith();
         default: return std::string("exother");
       }}(type))
-  , m_Values(wxExListFromConfig(m_Name))
+  , m_Values(list_from_config(m_Name))
   , m_Iterator(m_Values.cbegin())
 {
   VLOG(9) << "TCI " << m_Name << " size: " << m_Values.size();
 }
 
-wxExTextCtrlInput::~wxExTextCtrlInput() 
+wex::textctrl_input::~textctrl_input() 
 {
-  wxExListToConfig(m_Values, m_Name);
+  list_to_config(m_Values, m_Name);
 }
 
-const std::string wxExTextCtrlInput::Get() const 
+const std::string wex::textctrl_input::Get() const 
 {
   try
   {
@@ -48,24 +48,24 @@ const std::string wxExTextCtrlInput::Get() const
   }
   catch (std::exception& e)
   {
-    wxExLog(e) << "TCI:" << m_Name;
+    log(e) << "TCI:" << m_Name;
     return std::string();
   }
 }
   
-bool wxExTextCtrlInput::Set(const std::string& value)
+bool wex::textctrl_input::Set(const std::string& value)
 {
   if (value.empty()) return false;
 
   m_Values.remove(value);
   m_Values.push_front(value);
   m_Iterator = m_Values.cbegin();
-  wxExListToConfig(m_Values, m_Name);
+  list_to_config(m_Values, m_Name);
   
   return true;
 }
 
-bool wxExTextCtrlInput::Set(int key, wxTextCtrl* tc) 
+bool wex::textctrl_input::Set(int key, wxTextCtrl* tc) 
 {
   if (m_Values.empty()) return false;
   
@@ -106,9 +106,9 @@ bool wxExTextCtrlInput::Set(int key, wxTextCtrl* tc)
   return true;
 }
 
-void wxExTextCtrlInput::Set(const std::list < std::string > & values)
+void wex::textctrl_input::Set(const std::list < std::string > & values)
 {
   m_Values.assign(values.cbegin(), values.cend());
   m_Iterator = m_Values.cbegin();
-  wxExListToConfig(values, m_Name);
+  list_to_config(values, m_Name);
 }

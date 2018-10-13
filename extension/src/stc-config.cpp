@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      stc-config.cpp
-// Purpose:   Implementation of config related methods of class wxExSTC
+// Purpose:   Implementation of config related methods of class wex::stc
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,44 +14,47 @@
 #include <wx/extension/lexers.h>
 #include <wx/extension/util.h>
 
-enum
+namespace wex
 {
-  INDENT_NONE,
-  INDENT_WHITESPACE,
-  INDENT_LEVEL,
-  INDENT_ALL,
-};
+  enum
+  {
+    INDENT_NONE,
+    INDENT_WHITESPACE,
+    INDENT_LEVEL,
+    INDENT_ALL,
+  };
 
-class STCDefaults : public wxExConfigDefaults
-{
-public:
-  STCDefaults() 
-  : wxExConfigDefaults({
-    {_("Auto fold"), ITEM_TEXTCTRL_INT, 1500l},
-    {_("Auto indent"), ITEM_TEXTCTRL_INT, (long)INDENT_ALL},
-    {_("Caret line"), ITEM_CHECKBOX, true},
-    {_("Default font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)},
-    {_("Divider"), ITEM_TEXTCTRL_INT, 16l},
-    {_("Edge column"), ITEM_TEXTCTRL_INT, 80l},
-    {_("Edge line"), ITEM_TEXTCTRL_INT, (long)wxSTC_EDGE_NONE},
-    {_("Fold flags"), ITEM_TEXTCTRL_INT, (long)wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED},
-    {_("Folding"), ITEM_TEXTCTRL_INT, 16l},
-    {_("Indent"), ITEM_TEXTCTRL_INT, 2l},
-    {_("Keep zoom"), ITEM_CHECKBOX, true},
-    {_("Line number"), ITEM_TEXTCTRL_INT, 60l},
-    {_("Print flags"), ITEM_TEXTCTRL_INT, (long)wxSTC_PRINT_BLACKONWHITE},
-    {_("Scroll bars"), ITEM_CHECKBOX, true},
-    {_("Search engine"), ITEM_COMBOBOX, std::string("https://duckduckgo.com")},
-    {_("Show mode"), ITEM_CHECKBOX, true},
-    {_("Tab draw mode"), ITEM_TEXTCTRL_INT, (long)wxSTC_TD_LONGARROW},
-    {_("Tab font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
-    {_("Tab width"), ITEM_TEXTCTRL_INT, 2l},
-    {_("Text font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
-    {_("vi mode"), ITEM_CHECKBOX, true},
-    {_("vi tag fullpath"), ITEM_CHECKBOX, false}}) {;};
+  class stc_defaults : public config_defaults
+  {
+  public:
+    stc_defaults() 
+    : config_defaults({
+      {_("Auto fold"), ITEM_TEXTCTRL_INT, 1500l},
+      {_("Auto indent"), ITEM_TEXTCTRL_INT, (long)INDENT_ALL},
+      {_("Caret line"), ITEM_CHECKBOX, true},
+      {_("Default font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)},
+      {_("Divider"), ITEM_TEXTCTRL_INT, 16l},
+      {_("Edge column"), ITEM_TEXTCTRL_INT, 80l},
+      {_("Edge line"), ITEM_TEXTCTRL_INT, (long)wxSTC_EDGE_NONE},
+      {_("Fold flags"), ITEM_TEXTCTRL_INT, (long)wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED},
+      {_("Folding"), ITEM_TEXTCTRL_INT, 16l},
+      {_("Indent"), ITEM_TEXTCTRL_INT, 2l},
+      {_("Keep zoom"), ITEM_CHECKBOX, true},
+      {_("Line number"), ITEM_TEXTCTRL_INT, 60l},
+      {_("Print flags"), ITEM_TEXTCTRL_INT, (long)wxSTC_PRINT_BLACKONWHITE},
+      {_("Scroll bars"), ITEM_CHECKBOX, true},
+      {_("Search engine"), ITEM_COMBOBOX, std::string("https://duckduckgo.com")},
+      {_("Show mode"), ITEM_CHECKBOX, true},
+      {_("Tab draw mode"), ITEM_TEXTCTRL_INT, (long)wxSTC_TD_LONGARROW},
+      {_("Tab font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
+      {_("Tab width"), ITEM_TEXTCTRL_INT, 2l},
+      {_("Text font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
+      {_("vi mode"), ITEM_CHECKBOX, true},
+      {_("vi tag fullpath"), ITEM_CHECKBOX, false}}) {;};
+  };
 };
   
-bool wxExSTC::AutoIndentation(int c)
+bool wex::stc::AutoIndentation(int c)
 {
   if (const auto ai = wxConfigBase::Get()->ReadLong(_("Auto indent"), INDENT_ALL);
     ai == INDENT_NONE)
@@ -114,16 +117,16 @@ bool wxExSTC::AutoIndentation(int c)
   return true;
 }
 
-int wxExSTC::ConfigDialog(const wxExWindowData& par)
+int wex::stc::ConfigDialog(const window_data& par)
 {
-  const wxExWindowData data(wxExWindowData(par).
+  const window_data data(window_data(par).
     Title(_("Editor Options").ToStdString()));
 
   if (m_ConfigDialog == nullptr)
   {
-    STCDefaults use;
+    stc_defaults use;
   
-    m_ConfigDialog = new wxExItemDialog({{"stc-notebook", {
+    m_ConfigDialog = new item_dialog({{"stc-notebook", {
       {_("General"),
         {{"stc-subnotebook", {
           {_("Page1"), 
@@ -194,8 +197,8 @@ int wxExSTC::ConfigDialog(const wxExWindowData& par)
              {wxSTC_FOLDFLAG_LEVELNUMBERS, _("Level numbers")}},
              false}}},
       {_("Directory"),
-        {{_("Include directory"), wxExListViewData().Type(LIST_FOLDER).
-          Window(wxExWindowData().Size({200, 200}))}}},
+        {{_("Include directory"), listview_data().Type(LISTVIEW_FOLDER).
+          Window(window_data().Size({200, 200}))}}},
       {_("Printer"),
         {{_("Print flags"), {
            {wxSTC_PRINT_NORMAL, _("Normal")},
@@ -204,7 +207,7 @@ int wxExSTC::ConfigDialog(const wxExWindowData& par)
            {wxSTC_PRINT_COLOURONWHITE, _("Colour on white")},
            {wxSTC_PRINT_COLOURONWHITEDEFAULTBG, _("Colour on white normal")}}, true, 1}}}
       }}},
-      wxExWindowData(data).
+      window_data(data).
         Title(data.Id() == wxID_PREFERENCES ? wxGetStockLabel(data.Id(), 0).ToStdString(): data.Title()));
   }
 
@@ -212,9 +215,9 @@ int wxExSTC::ConfigDialog(const wxExWindowData& par)
     m_ConfigDialog->Show(): m_ConfigDialog->ShowModal();
 }
 
-void wxExSTC::ConfigGet()
+void wex::stc::ConfigGet()
 {
-  STCDefaults use;
+  stc_defaults use;
   auto* cfg = use.Get();
   
   const wxFont font(cfg->ReadObject(
@@ -227,12 +230,12 @@ void wxExSTC::ConfigGet()
     StyleResetDefault();
     
     // Doing this once is enough, not yet possible.
-    wxExLexers::Get()->LoadDocument();
+    lexers::Get()->LoadDocument();
     
     m_Lexer.Apply();
   }
 
-  if (m_Lexer.GetEdgeMode() == wxExEdgeMode::ABSENT)
+  if (m_Lexer.GetEdgeMode() == edgemode::ABSENT)
   {
     if (!m_Lexer.IsOk())
     {

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-process->cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,12 +14,12 @@
 #include <wx/extension/shell.h>
 #include "test.h"
 
-TEST_CASE("wxExProcess")
+TEST_CASE("wex::process")
 {
   // Test commands entered in shell.
-  wxExPath cwd;
+  wex::path cwd;
   
-  wxExProcess* process = new wxExProcess;
+  wex::process* process = new wex::process;
   
   REQUIRE(!process->GetError());
   REQUIRE( process->GetStdOut().empty());
@@ -27,7 +27,7 @@ TEST_CASE("wxExProcess")
   REQUIRE(!process->IsRunning());
   process->GetShell()->SetText(std::string());
   
-  process->ConfigDialog(wxExWindowData().Button(wxAPPLY | wxCANCEL));
+  process->ConfigDialog(wex::window_data().Button(wxAPPLY | wxCANCEL));
   
 #ifdef __UNIX__
   // Test wait for prcess (sync)
@@ -63,18 +63,18 @@ TEST_CASE("wxExProcess")
   // Test not wait for process (async)
   REQUIRE( process->Execute("bash"));
   REQUIRE( process->IsRunning());
-  wxExShell* shell = process->GetShell();  
+  wex::shell* shell = process->GetShell();  
   REQUIRE( shell != nullptr);
   Process("cd ~\rpwd\r", shell);
   REQUIRE( shell->GetText().Contains("home"));
-  REQUIRE( cwd.GetOriginal() != wxExPath::Current());
+  REQUIRE( cwd.GetOriginal() != wex::path::Current());
   REQUIRE( process->Kill());
 
   // Test working directory for process (should change).
   REQUIRE( process->Execute("ls -l", PROCESS_EXEC_DEFAULT, ".."));
   REQUIRE(!process->GetError());
   REQUIRE(!wxGetCwd().Contains("data"));
-  wxExPath::Current(cwd.GetOriginal());
+  wex::path::Current(cwd.GetOriginal());
   REQUIRE( process->Kill());
   
   // Test invalid process (the process gets a process id, and exits immediately).
@@ -84,7 +84,7 @@ TEST_CASE("wxExProcess")
 #endif
 #endif
   
-  wxExProcess::PrepareOutput(GetFrame()); // in fact already done
+  wex::process::PrepareOutput(GetFrame()); // in fact already done
 
   // KillAll is done in main.
 }

@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-frame.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -15,15 +15,15 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-TEST_CASE("wxExFrame")
+TEST_CASE("wex::frame")
 {
   GetSTC()->SetFocus();
   GetSTC()->GetFile().ResetContentsChanged();
 
-  REQUIRE( ((wxExFrame *)GetFrame())->OpenFile(GetTestPath("test.h")));
-  REQUIRE( ((wxExFrame *)GetFrame())->OpenFile(GetTestPath("test.h"), "contents"));
-  REQUIRE( ((wxExFrame *)GetFrame())->IsOpen(GetTestPath("test.h")));
-  REQUIRE(!((wxExFrame *)GetFrame())->IsOpen(wxExPath("xxx")));
+  REQUIRE( ((wex::frame *)GetFrame())->OpenFile(GetTestPath("test.h")));
+  REQUIRE( ((wex::frame *)GetFrame())->OpenFile(GetTestPath("test.h"), "contents"));
+  REQUIRE( ((wex::frame *)GetFrame())->IsOpen(GetTestPath("test.h")));
+  REQUIRE(!((wex::frame *)GetFrame())->IsOpen(wex::path("xxx")));
   
   REQUIRE( GetFrame()->GetGrid() == nullptr);
   REQUIRE( GetFrame()->GetListView() == nullptr);
@@ -35,7 +35,7 @@ TEST_CASE("wxExFrame")
   GetFrame()->SetFindFocus(GetFrame());
   
   wxMenuBar* bar = new wxMenuBar();
-  wxExMenu* menu = new wxExMenu();
+  wex::menu* menu = new wex::menu();
   menu->AppendEdit();
   bar->Append(menu, "Edit");
   GetFrame()->SetMenuBar(bar);
@@ -63,7 +63,7 @@ TEST_CASE("wxExFrame")
   REQUIRE( GetFrame()->UpdateStatusBar(GetFrame()->GetSTC(), "PaneInfo"));
 #endif
   
-  wxExSTC* stc = new wxExSTC();
+  wex::stc* stc = new wex::stc();
   AddPane(GetFrame(), stc);
   stc->SetFocus();
   
@@ -84,7 +84,7 @@ TEST_CASE("wxExFrame")
 #ifndef __WXMSW__
   for (const auto& id : std::vector<int> {
     wxID_FIND, wxID_REPLACE, 
-    ID_VIEW_MENUBAR, ID_VIEW_STATUSBAR, ID_VIEW_TITLEBAR}) 
+    wex::ID_VIEW_MENUBAR, wex::ID_VIEW_STATUSBAR, wex::ID_VIEW_TITLEBAR}) 
   {
     wxCommandEvent* event = new wxCommandEvent(wxEVT_MENU, id);
     wxQueueEvent(GetFrame(), event);

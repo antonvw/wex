@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-tokenizer.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,13 +14,13 @@
 #include <wx/extension/tokenizer.h>
 #include "../test.h"
 
-TEST_CASE( "wxExTokenizer" ) 
+TEST_CASE( "wex::tokenizer" ) 
 {
-  REQUIRE( wxExTokenizer("one two three four").GetString() == "one two three four");
-  REQUIRE( wxExTokenizer("one two three four").GetToken().empty());
-  REQUIRE( wxExTokenizer("one two three four").GetNextToken() == "one");
+  REQUIRE( wex::tokenizer("one two three four").GetString() == "one two three four");
+  REQUIRE( wex::tokenizer("one two three four").GetToken().empty());
+  REQUIRE( wex::tokenizer("one two three four").GetNextToken() == "one");
   
-  wxExTokenizer tkz("one   two 			three four");
+  wex::tokenizer tkz("one   two 			three four");
   REQUIRE( tkz.HasMoreTokens());
   REQUIRE( tkz.GetNextToken() == "one");
   REQUIRE( tkz.GetNextToken() == "two");
@@ -34,7 +34,7 @@ TEST_CASE( "wxExTokenizer" )
   REQUIRE( tkz.GetNextToken().empty());
   REQUIRE(!tkz.HasMoreTokens());
   
-  wxExTokenizer tkz2("*.txt", ";");
+  wex::tokenizer tkz2("*.txt", ";");
   REQUIRE( tkz2.GetNextToken() == "*.txt");
   
   const auto l(tkz.Tokenize<std::list<std::string>>());
@@ -42,13 +42,13 @@ TEST_CASE( "wxExTokenizer" )
   REQUIRE( l.size() == 4);
   REQUIRE( v.size() == 4);
   
-  REQUIRE( wxExTokenizer("one two three four").CountTokens() == 4);
-  REQUIRE( wxExTokenizer("one;two;three;four").CountTokens() == 1);
-  REQUIRE( wxExTokenizer("one two three;four", "; ").CountTokens() == 4);
-  REQUIRE( wxExTokenizer("one two three four", "").CountTokens() == 0);
+  REQUIRE( wex::tokenizer("one two three four").CountTokens() == 4);
+  REQUIRE( wex::tokenizer("one;two;three;four").CountTokens() == 1);
+  REQUIRE( wex::tokenizer("one two three;four", "; ").CountTokens() == 4);
+  REQUIRE( wex::tokenizer("one two three four", "").CountTokens() == 0);
 
-  REQUIRE( wxExTokenizer(";one;two;three;four", "; ").CountTokens() == 4);
-  REQUIRE( wxExTokenizer(";;;one;two;three;four", "; ", false).CountTokens() == 7);
+  REQUIRE( wex::tokenizer(";one;two;three;four", "; ").CountTokens() == 4);
+  REQUIRE( wex::tokenizer(";;;one;two;three;four", "; ", false).CountTokens() == 7);
 
-  REQUIRE( wxExTokenizer(" 1 2 3 4 5").Tokenize().size() == 5);
+  REQUIRE( wex::tokenizer(" 1 2 3 4 5").Tokenize().size() == 5);
 }

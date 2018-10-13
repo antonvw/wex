@@ -22,38 +22,40 @@ enum
   ID_LAST 
 };
 
-class wxExGrid;
-class wxExSTC;
-class wxExShell;
+namespace wex
+{
+  class grid;
+  class shell;
+  class stc;
+};
 
-class App: public wxExApp
+class app: public wex::app
 {
 public:
-  App() {}
+  app() {}
   virtual bool OnInit() override;
 };
 
-class Frame: public wxExFrameWithHistory
+class frame: public wex::history_frame
 {
 public:
-  Frame();
+  frame();
 private:
   virtual void OnCommandItemDialog(
     wxWindowID dialogid, 
     const wxCommandEvent& event) override;
-  virtual wxExSTC* OpenFile(
-    const wxExPath& filename, 
-    const wxExSTCData& data = wxExSTCData()) override;
+  virtual wex::stc* OpenFile(
+    const wex::path& filename, 
+    const wex::stc_data& data = wex::stc_data()) override;
   virtual void StatusBarClicked(const std::string& pane) override;
 
   void RunQuery(const std::string& query, bool empty_results = false);
 
-  wxExGrid* m_Results;
-  wxExSTC* m_Query;
-  wxExShell* m_Shell;
-  
-  wxExStatistics <int> m_Statistics;
-  wxExOTL m_otl;
+  wex::grid* m_Results;
+  wex::otl m_otl;
+  wex::shell* m_Shell;
+  wex::statistics <int> m_Statistics;
+  wex::stc* m_Query;
   
   bool m_Running = false;
   bool m_Stopped = false;

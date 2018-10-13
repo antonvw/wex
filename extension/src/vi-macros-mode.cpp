@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      vi-macros-mode.cpp
-// Purpose:   Implementation of class wxExViMacrosMode
+// Purpose:   Implementation of class wex::vi_macros_mode
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -19,7 +19,7 @@
 
 bool ShowDialog(wxWindow* parent, std::string& macro)
 {
-  if (const auto& v(wxExViMacros::Get()); !v.empty())
+  if (const auto& v(wex::vi_macros::Get()); !v.empty())
   {
     wxArrayString macros;
     macros.resize(v.size());
@@ -30,7 +30,7 @@ bool ShowDialog(wxWindow* parent, std::string& macro)
       _("Select Macro"),
       macros);
 
-    if (const auto index = macros.Index(wxExViMacros::GetMacro()); index != wxNOT_FOUND)
+    if (const auto index = macros.Index(wex::vi_macros::GetMacro()); index != wxNOT_FOUND)
     {
       dialog.SetSelection(index);
     }
@@ -45,39 +45,39 @@ bool ShowDialog(wxWindow* parent, std::string& macro)
   return false;
 }
 
-wxExViMacrosMode::wxExViMacrosMode()
-  : m_FSM(new wxExViMacrosFSM())
+wex::vi_macros_mode::vi_macros_mode()
+  : m_FSM(new vi_macros_fsm())
 {
 }
 
-wxExViMacrosMode::~wxExViMacrosMode()
+wex::vi_macros_mode::~vi_macros_mode()
 {
   delete m_FSM;
 }
 
-bool wxExViMacrosMode::Expand(
-  wxExEx* ex, const wxExVariable& v, std::string& expanded)
+bool wex::vi_macros_mode::Expand(
+  ex* ex, const variable& v, std::string& expanded)
 {
   return m_FSM->Expand(ex, v, expanded);
 }
 
-bool wxExViMacrosMode::IsPlayback() const
+bool wex::vi_macros_mode::IsPlayback() const
 {
   return m_FSM->IsPlayback();
 }
 
-bool wxExViMacrosMode::IsRecording() const 
+bool wex::vi_macros_mode::IsRecording() const 
 {
   return m_FSM->Get() == States::RECORDING;
 }
 
-const std::string wxExViMacrosMode::String() const
+const std::string wex::vi_macros_mode::String() const
 {
   return m_FSM->State();
 }
 
-int wxExViMacrosMode::Transition(
-  const std::string& command, wxExEx* ex, bool complete, int repeat)
+int wex::vi_macros_mode::Transition(
+  const std::string& command, ex* ex, bool complete, int repeat)
 {
   if (command.empty() || repeat <= 0)
   {
@@ -103,7 +103,7 @@ int wxExViMacrosMode::Transition(
           wxTextEntryDialog dlg(parent,
             _("Input") + ":",
             _("Enter Macro"),
-            wxExViMacros::GetMacro());
+            vi_macros::GetMacro());
         
           wxTextValidator validator(wxFILTER_ALPHANUMERIC);
           dlg.SetTextValidator(validator);
@@ -139,17 +139,17 @@ int wxExViMacrosMode::Transition(
       }
       else if (macro == "@@") 
       {
-        if ((macro = wxExViMacros::GetMacro()) == std::string() &&
+        if ((macro = vi_macros::GetMacro()) == std::string() &&
             !ShowDialog(parent, macro))
         {
           return 2;
         }
       }
-      else if (wxExRegAfter("@", macro))
+      else if (regafter("@", macro))
       {
         macro = std::string(1, macro.back());
 
-        if (!wxExViMacros::IsRecorded(macro))
+        if (!vi_macros::IsRecorded(macro))
         {
           return 2;
         }
@@ -157,39 +157,39 @@ int wxExViMacrosMode::Transition(
       else
       {
         if (std::vector <std::string> v;
-          wxExMatch("@([a-zA-Z].+)@", macro, v) > 0)
+          match("@([a-zA-Z].+)@", macro, v) > 0)
         {
           macro = v[0];
         }
-        else if (wxExViMacros::StartsWith(macro.substr(1)))
+        else if (vi_macros::StartsWith(macro.substr(1)))
         {
           if (std::string s;
-            wxExAutoCompleteText(macro.substr(1), wxExViMacros::Get(), s))
+            autocomplete_text(macro.substr(1), vi_macros::Get(), s))
           {
-            wxExFrame::StatusText(s, "PaneMacro");
+            frame::StatusText(s, "PaneMacro");
             macro = s;
           }
           else
           {
-            wxExFrame::StatusText(macro.substr(1), "PaneMacro");
+            frame::StatusText(macro.substr(1), "PaneMacro");
             return 0;
           }
         }
         else
         {
-          wxExFrame::StatusText(wxExViMacros::GetMacro(), "PaneMacro");
+          frame::StatusText(vi_macros::GetMacro(), "PaneMacro");
           return macro.size();
         }
       }
 
-      trigger = wxExViMacros::IsRecordedMacro(macro) ? 
+      trigger = vi_macros::IsRecordedMacro(macro) ? 
         Triggers::PLAYBACK: Triggers::EXPAND_VARIABLE; 
     break;
 
     default: return 0;
   }
 
-  const wxExExCommand cmd(ex != nullptr ? ex->GetCommand(): wxExExCommand());
+  const ex_command cmd(ex != nullptr ? ex->GetCommand(): ex_command());
   m_FSM->Execute(trigger, macro, ex, repeat);
   if (ex != nullptr) ex->m_Command.Restore(cmd);
 

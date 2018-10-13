@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-file.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -9,13 +9,13 @@
 #include <wx/extension/file.h>
 #include "../test.h"
 
-TEST_CASE( "wxExFile" ) 
+TEST_CASE( "wex::file" ) 
 {
   SUBCASE( "basic" ) 
   {
-    REQUIRE(!wxExFile("XXXXX").IsOpened());
+    REQUIRE(!wex::file("XXXXX").IsOpened());
     
-    wxExFile file(GetTestPath("test.h"));
+    wex::file file(GetTestPath("test.h"));
   
     REQUIRE(!file.CheckSync());
     REQUIRE(!file.GetContentsChanged());
@@ -42,7 +42,7 @@ TEST_CASE( "wxExFile" )
     REQUIRE( file.Write(std::string("OK")));
     REQUIRE( file.Write(*buffer));
 
-    wxExFile create(std::string("test-create"), std::ios_base::out);
+    wex::file create(std::string("test-create"), std::ios_base::out);
     REQUIRE( create.IsOpened());
     REQUIRE( create.Write(std::string("OK")));
   }
@@ -57,7 +57,7 @@ TEST_CASE( "wxExFile" )
 
   SUBCASE( "timing" ) 
   {
-    wxExFile file(GetTestPath("test.h"));
+    wex::file file(GetTestPath("test.h"));
   
     const int max = 10000;
     const auto ex_start = std::chrono::system_clock::now();

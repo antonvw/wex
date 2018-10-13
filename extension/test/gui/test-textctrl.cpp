@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-textctrl.cpp
-// Purpose:   Implementation for wxExtension unit testing
+// Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -13,16 +13,16 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-TEST_CASE("wxExTextCtrl")
+TEST_CASE("wex::textctrl")
 {
   wxTextCtrl* tc = new wxTextCtrl(GetFrame(), wxID_ANY);
   AddPane(GetFrame(), tc);
   
-  REQUIRE( wxExTextCtrlInput(wxExExCommandType::NONE).Get().empty());
-  REQUIRE( wxExTextCtrlInput(wxExExCommandType::NONE).GetValues().empty());
-  REQUIRE(!wxExTextCtrlInput(wxExExCommandType::NONE).Set(WXK_UP, tc));
+  REQUIRE( wex::textctrl_input(wex::ex_command_type::NONE).Get().empty());
+  REQUIRE( wex::textctrl_input(wex::ex_command_type::NONE).GetValues().empty());
+  REQUIRE(!wex::textctrl_input(wex::ex_command_type::NONE).Set(WXK_UP, tc));
   
-  wxExTextCtrlInput tip(wxExExCommandType::FIND);
+  wex::textctrl_input tip(wex::ex_command_type::FIND);
   REQUIRE( tip.Set("one"));
   REQUIRE(!tip.Set(std::string()));
   REQUIRE( tip.Get() == "one");

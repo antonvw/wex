@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      notebook.cpp
-// Purpose:   Implementation of class wxExNotebook
+// Purpose:   Implementation of class wex::notebook
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #endif
 #include <wx/extension/notebook.h>
 
-wxExNotebook::wxExNotebook(const wxExWindowData& data)
+wex::notebook::notebook(const window_data& data)
   : wxAuiNotebook(
       data.Parent(), 
       data.Id(), 
@@ -20,7 +20,7 @@ wxExNotebook::wxExNotebook(const wxExWindowData& data)
       data.Style() == DATA_NUMBER_NOT_SET ?
         wxAUI_NB_TOP | wxAUI_NB_TAB_SPLIT | wxAUI_NB_TAB_MOVE | wxAUI_NB_SCROLL_BUTTONS: 
         data.Style())
-  , m_Frame(dynamic_cast<wxExManagedFrame*>(wxTheApp->GetTopWindow()))
+  , m_Frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
 {
   // Here you could use another art provider.
   // SetArtProvider(new wxAuiSimpleTabArt); 
@@ -69,7 +69,7 @@ wxExNotebook::wxExNotebook(const wxExWindowData& data)
     }});
 }
 
-wxWindow* wxExNotebook::AddPage(
+wxWindow* wex::notebook::AddPage(
   wxWindow* page,
   const std::string& key,
   const std::string& text,
@@ -87,7 +87,7 @@ wxWindow* wxExNotebook::AddPage(
   return page;
 }
 
-const std::string wxExNotebook::ChangeSelection(const std::string& key)
+const std::string wex::notebook::ChangeSelection(const std::string& key)
 {
   int previous;
   
@@ -103,7 +103,7 @@ const std::string wxExNotebook::ChangeSelection(const std::string& key)
   return std::string();
 }
   
-bool wxExNotebook::DeletePage(const std::string& key)
+bool wex::notebook::DeletePage(const std::string& key)
 {
   if (const auto index = GetPageIndexByKey(key);
     index != wxNOT_FOUND && wxAuiNotebook::DeletePage(index))
@@ -126,13 +126,13 @@ bool wxExNotebook::DeletePage(const std::string& key)
   }
 }
 
-const std::string wxExNotebook::GetCurrentPage()
+const std::string wex::notebook::GetCurrentPage()
 {
   auto* page = wxAuiNotebook::GetCurrentPage();
   return GetKeyByPage(page);
 }
   
-wxWindow* wxExNotebook::InsertPage(
+wxWindow* wex::notebook::InsertPage(
   size_t page_idx,
   wxWindow* page,
   const std::string& key,
@@ -151,7 +151,7 @@ wxWindow* wxExNotebook::InsertPage(
   return page;
 }
 
-void wxExNotebook::Rearrange(int direction)
+void wex::notebook::Rearrange(int direction)
 {
   for (size_t i = 0; i < GetPageCount(); ++i)
   {
@@ -159,7 +159,7 @@ void wxExNotebook::Rearrange(int direction)
   }
 }
 
-bool wxExNotebook::SetPageText(
+bool wex::notebook::SetPageText(
   const std::string& key,
   const std::string& new_key,
   const std::string& text,
@@ -186,7 +186,7 @@ bool wxExNotebook::SetPageText(
   }
 }
 
-wxWindow* wxExNotebook::SetSelection(const std::string& key)
+wxWindow* wex::notebook::SetSelection(const std::string& key)
 {
   if (const auto index = GetPageIndexByKey(key); index == wxNOT_FOUND)
   {
@@ -201,7 +201,7 @@ wxWindow* wxExNotebook::SetSelection(const std::string& key)
   }
 }
   
-bool wxExNotebook::Split(const std::string& key, int direction)
+bool wex::notebook::Split(const std::string& key, int direction)
 {
   if (const auto index = GetPageIndexByKey(key); index == wxNOT_FOUND)
   {

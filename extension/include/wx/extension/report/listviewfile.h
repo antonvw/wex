@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      listviewfile.h
-// Purpose:   Declaration of class wxExListViewFile
+// Name:      listview_file.h
+// Purpose:   Declaration of class wex::listview_file
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -10,68 +10,70 @@
 #include <wx/extension/file.h>
 #include <wx/extension/report/listview.h>
 
-class wxExItemDialog;
-
-/// Combines wxExListViewWithFrame and wxExFile,
-/// giving you a list control with file synchronization support.
-class WXDLLIMPEXP_BASE wxExListViewFile : 
-  public wxExListViewWithFrame, public wxExFile
+namespace wex
 {
-public:
-  /// Constructor for a LIST_FILE, opens the file.
-  wxExListViewFile(
-    const std::string& file,
-    const wxExListViewData& data = wxExListViewData());
+  class item_dialog;
 
-  /// Destructor.
-  virtual ~wxExListViewFile();
+  /// Combines history_listview and file,
+  /// giving you a list control with file synchronization support.
+  class listview_file : public history_listview, public file
+  {
+  public:
+    /// Constructor for a LISTVIEW_FILE, opens the file.
+    listview_file(
+      const std::string& file,
+      const listview_data& data = listview_data());
 
-  /// Adds items. The items are added using a separate thread,
-  /// deault this thread runs detached, otherwise this method
-  /// waits for the thread to finish.
-  void AddItems(
-    const std::string& folder,
-    const std::string& files,
-    long flags,
-    bool detach = true);
+    /// Destructor.
+    virtual ~listview_file();
 
-  // Interface, for wxExListView overriden methods.
-  /// Sets contents changed if we are not syncing.
-  virtual void AfterSorting() override;
-  
-  /// Returns member.
-  virtual bool GetContentsChanged() const override {return m_ContentsChanged;};
+    /// Adds items. The items are added using a separate thread,
+    /// default this thread runs detached, otherwise this method
+    /// waits for the thread to finish.
+    void AddItems(
+      const std::string& folder,
+      const std::string& files,
+      long flags,
+      bool detach = true);
 
-  /// Returns the file.
-  wxExFile& GetFile() {return *this;};
+    // Interface, for listview overriden methods.
+    /// Sets contents changed if we are not syncing.
+    virtual void AfterSorting() override;
+    
+    /// Returns member.
+    virtual bool GetContentsChanged() const override {return m_ContentsChanged;};
 
-  // Access to members.
-  const auto& GetTextAddFiles() const {return m_TextAddFiles;};
-  const auto& GetTextAddFolders() const {return m_TextAddFolders;};
-  const auto& GetTextAddRecursive() const {return m_TextAddRecursive;};
-  const auto& GetTextAddWhat() const {return m_TextAddWhat;};
-  const auto& GetTextInFolder() const {return m_TextInFolder;};
+    /// Returns the file.
+    file& GetFile() {return *this;};
 
-  /// Adds item from text.
-  virtual bool ItemFromText(const std::string& text) override;
+    // Access to members.
+    const auto& GetTextAddFiles() const {return m_TextAddFiles;};
+    const auto& GetTextAddFolders() const {return m_TextAddFolders;};
+    const auto& GetTextAddRecursive() const {return m_TextAddRecursive;};
+    const auto& GetTextAddWhat() const {return m_TextAddWhat;};
+    const auto& GetTextInFolder() const {return m_TextInFolder;};
 
-  /// Resets the member.
-  virtual void ResetContentsChanged() override {m_ContentsChanged = false;};
-protected:
-  virtual void BuildPopupMenu(wxExMenu& menu) override;
-  virtual bool DoFileLoad(bool synced = false) override;
-  virtual void DoFileNew() override;
-  virtual void DoFileSave(bool save_as = false) override;
-  void OnIdle(wxIdleEvent& event);
-private:
-  bool m_ContentsChanged = false;
-  
-  const std::string 
-    m_TextAddFiles = _("Add files"),
-    m_TextAddFolders = _("Add folders"),
-    m_TextAddRecursive = _("Recursive"),
-    m_TextAddWhat = _("Add what"),
-    m_TextInFolder = _("In folder");
-  
-  wxExItemDialog* m_AddItemsDialog;
+    /// Adds item from text.
+    virtual bool ItemFromText(const std::string& text) override;
+
+    /// Resets the member.
+    virtual void ResetContentsChanged() override {m_ContentsChanged = false;};
+  protected:
+    virtual void BuildPopupMenu(menu& menu) override;
+    virtual bool DoFileLoad(bool synced = false) override;
+    virtual void DoFileNew() override;
+    virtual void DoFileSave(bool save_as = false) override;
+    void OnIdle(wxIdleEvent& event);
+  private:
+    bool m_ContentsChanged = false;
+    
+    const std::string 
+      m_TextAddFiles = _("Add files"),
+      m_TextAddFolders = _("Add folders"),
+      m_TextAddRecursive = _("Recursive"),
+      m_TextAddWhat = _("Add what"),
+      m_TextInFolder = _("In folder");
+    
+    item_dialog* m_AddItemsDialog;
+  };
 };

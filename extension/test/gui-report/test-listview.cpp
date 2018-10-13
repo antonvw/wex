@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-listview.cpp
-// Purpose:   Implementation for wxExtension report unit testing
+// Purpose:   Implementation for wex report unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -10,17 +10,17 @@
 #include <wx/extension/report/defs.h>
 #include "test.h"
 
-TEST_CASE("wxExListViewWithFrame")
+TEST_CASE("wex::history_listview")
 {
-  REQUIRE(wxExListViewWithFrame::GetTypeTool(wxExTool(ID_TOOL_REPORT_FIND)) == 
-    LIST_FIND);
-  REQUIRE(wxExListViewWithFrame::GetTypeTool(wxExTool(ID_TOOL_REPORT_KEYWORD)) == 
-    LIST_KEYWORD);
+  REQUIRE(wex::history_listview::GetTypeTool(wex::tool(wex::ID_TOOL_REPORT_FIND)) == 
+    wex::LISTVIEW_FIND);
+  REQUIRE(wex::history_listview::GetTypeTool(wex::tool(wex::ID_TOOL_REPORT_KEYWORD)) == 
+    wex::LISTVIEW_KEYWORD);
     
-  wxExListViewWithFrame* listView = new wxExListViewWithFrame(wxExListViewData().Type(LIST_FIND));
+  wex::history_listview* listView = new wex::history_listview(wex::listview_data().Type(wex::LISTVIEW_FIND));
   AddPane(GetFrame(), listView);
 
-  wxExListItem item(listView, GetTestPath("test.h"));
+  wex::listitem item(listView, GetTestPath("test.h"));
   item.Insert();
   item.Insert();
   item.Insert();
@@ -30,13 +30,13 @@ TEST_CASE("wxExListViewWithFrame")
 
 #ifndef __WXMSW__
   for (auto id : std::vector<int> {
-    ID_EDIT_OPEN, ID_EDIT_VCS_LOWEST, ID_LIST_COMPARE, ID_LIST_RUN_MAKE}) 
+    wex::ID_EDIT_OPEN, wex::ID_EDIT_VCS_LOWEST, wex::ID_LIST_COMPARE, wex::ID_LIST_RUN_MAKE}) 
   {
     wxCommandEvent* event = new wxCommandEvent(wxEVT_MENU, id);
     wxQueueEvent(listView, event);
   }
 #endif
   
-  wxExListViewWithFrame* listView2 = new wxExListViewWithFrame(wxExListViewData().Type(LIST_FIND));
+  wex::history_listview* listView2 = new wex::history_listview(wex::listview_data().Type(wex::LISTVIEW_FIND));
   listView2->Destroy();
 }

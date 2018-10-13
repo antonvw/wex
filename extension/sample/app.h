@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      app.h
-// Purpose:   Declaration of sample classes for wxExtension
+// Purpose:   Declaration of wex sample classes
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018
 ////////////////////////////////////////////////////////////////////////////////
@@ -16,51 +16,51 @@
 #include <wx/extension/statistics.h>
 #include <wx/extension/stc.h>
 
-/// Derive your application from wxExApp.
-class wxExSampleApp: public wxExApp
+/// Derive your application from wex::app.
+class sample_app: public wex::app
 {
 public:
   /// Constructor.
-  wxExSampleApp() {}
+  sample_app() {}
 private:
   virtual bool OnInit() override;
 };
 
-/// Use wxExDir.
-class wxExSampleDir: public wxExDir
+/// Use wex::dir.
+class sample_dir: public wex::dir
 {
 public:
   /// Constructor.
-  wxExSampleDir(
+  sample_dir(
     const std::string& fullpath, 
     const std::string& findfiles, 
-    wxExGrid* grid);
+    wex::grid* grid);
 private:
-  virtual bool OnFile(const wxExPath& file) override;
-  wxExGrid* m_Grid;
+  virtual bool OnFile(const wex::path& file) override;
+  wex::grid* m_Grid;
 };
 
-/// Use wxExManagedFrame.
-class wxExSampleFrame: public wxExManagedFrame
+/// Use wex::managedframe.
+class sample_frame: public wex::managed_frame
 {
 public:
   /// Constructor.
-  wxExSampleFrame();
-  virtual wxExListView* GetListView() override {return m_ListView;};
+  sample_frame();
+  virtual wex::listview* GetListView() override {return m_ListView;};
   virtual void OnCommandItemDialog(
     wxWindowID id, 
     const wxCommandEvent& event) override;
 protected:
   void OnCommand(wxCommandEvent& event);
 private:
-  wxExGrid* m_Grid;
-  wxExListView* m_ListView;
-  wxExNotebook* m_Notebook;
-  wxExProcess* m_Process;
-  wxExSTC* m_STC;
-  wxExSTC* m_STCLexers;
-  wxExShell* m_Shell;
+  wex::grid* m_Grid;
+  wex::listview* m_ListView;
+  wex::notebook* m_Notebook;
+  wex::process* m_Process;
+  wex::stc* m_STC;
+  wex::stc* m_STCLexers;
+  wex::shell* m_Shell;
 
   long m_FlagsSTC = 0;
-  wxExStatistics <int> m_Statistics;
+  wex::statistics <int> m_Statistics;
 };
