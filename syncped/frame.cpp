@@ -429,7 +429,7 @@ frame::frame(app* app)
 #ifdef __WXOSX__
       {dlg.GetPath().ToStdString()});
 #else
-      wex::tovectorpath(dlg).Get());
+      wex::to_vector_path(dlg).Get());
 #endif
     wex::open_files(this, 
       v, wex::stc_data().Flags(wex::STC_WIN_IS_PROJECT));}, 

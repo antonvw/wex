@@ -42,8 +42,8 @@ TEST_CASE("wex::vcs_entry")
 #ifndef __WXOSX__
   // This should have no effect.  
   REQUIRE(!test.SetCommand(5));
-  REQUIRE(!test.SetCommand(ID_EDIT_VCS_LOWEST));
-  REQUIRE(!test.SetCommand(ID_VCS_LOWEST));
+  REQUIRE(!test.SetCommand(wex::ID_EDIT_VCS_LOWEST));
+  REQUIRE(!test.SetCommand(wex::ID_VCS_LOWEST));
   
   REQUIRE( test.GetCommands().size() == 2);
   REQUIRE( test.GetFlags().empty());
@@ -56,8 +56,8 @@ TEST_CASE("wex::vcs_entry")
   REQUIRE( git.GetStdOut().find("usage: ") != std::string::npos);
   git.ShowOutput();
 
-  wex::vcs_entry* git_async = new wex::vcsentry("git", std::string(), {wex::vcs_command("status")});
-  REQUIRE( git_async->Execute(std::string(), wex::lexer(), PROCESS_EXEC_WAIT));
+  wex::vcs_entry* git_async = new wex::vcs_entry("git", std::string(), {wex::vcs_command("status")});
+  REQUIRE( git_async->Execute(std::string(), wex::lexer(), wex::PROCESS_EXEC_WAIT));
   git_async->ShowOutput();
 #endif
 #endif
