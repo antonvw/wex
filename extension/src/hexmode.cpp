@@ -10,14 +10,14 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
 #include <wx/numdlg.h>
 #include <wx/spinctrl.h>
-#include <wx/extension/hexmode.h>
-#include <wx/extension/item.h>
-#include <wx/extension/itemdlg.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/stc.h>
+#include <wex/hexmode.h>
+#include <wex/config.h>
+#include <wex/item.h>
+#include <wex/itemdlg.h>
+#include <wex/lexers.h>
+#include <wex/stc.h>
 #include "hexmodeline.h"
 
 int GetHexNumberFromUser(
@@ -151,9 +151,9 @@ void wex::hexmode::Deactivate()
 
   m_STC->EndUndoAction();
   m_STC->SetControlCharSymbol(0);
-  m_STC->SetEdgeMode(wxConfigBase::Get()->ReadLong(_("Edge line"), wxSTC_EDGE_NONE));
-  m_STC->SetViewEOL(wxConfigBase::Get()->ReadBool(_("End of line"), false));
-  m_STC->SetViewWhiteSpace(wxConfigBase::Get()->ReadLong(_("Whitespace visible"), wxSTC_WS_INVISIBLE));
+  m_STC->SetEdgeMode(config(_("Edge line")).get(wxSTC_EDGE_NONE));
+  m_STC->SetViewEOL(config(_("End of line")).get(false));
+  m_STC->SetViewWhiteSpace(config(_("Whitespace visible")).get(wxSTC_WS_INVISIBLE));
   m_STC->ClearDocument(false);
   m_STC->AppendTextRaw(m_Buffer.data(), m_Buffer.size());
   m_STC->BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);

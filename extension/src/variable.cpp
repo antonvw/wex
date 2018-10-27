@@ -9,14 +9,14 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/variable.h>
-#include <wx/extension/ex.h>
-#include <wx/extension/log.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/stcdlg.h>
-#include <wx/extension/util.h>
-#include <wx/extension/vi-macros.h>
-#include <wx/extension/vi-macros-mode.h>
+#include <wex/variable.h>
+#include <wex/ex.h>
+#include <wex/log.h>
+#include <wex/stc.h>
+#include <wex/stcdlg.h>
+#include <wex/util.h>
+#include <wex/vi-macros.h>
+#include <wex/vi-macros-mode.h>
 #include <easylogging++.h>
 
 wex::stc_entry_dialog* wex::variable::m_Dialog = nullptr;
@@ -249,7 +249,7 @@ bool wex::variable::ExpandBuiltIn(ex* ex, std::string& expanded) const
     else if (m_Name == "Created")
     {
       if (path file(ex->GetSTC()->GetFileName());
-        ex->GetSTC()->GetFileName().GetStat().IsOk())
+        ex->GetSTC()->GetFileName().GetStat().is_ok())
       {
         expanded = wxDateTime(file.GetStat().st_ctime).FormatISODate();
       }

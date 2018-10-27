@@ -5,8 +5,8 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/extension/dir.h>
-#include <wx/extension/report/listviewfile.h>
+#include <wex/dir.h>
+#include <wex/report/listviewfile.h>
 #include "test.h"
 
 TEST_CASE("wex::listview_file")
@@ -23,8 +23,8 @@ TEST_CASE("wex::listview_file")
   REQUIRE(!listView->GetTextInFolder().empty());
   
   listView->AppendColumns({
-    {"String", wex::column::COL_STRING}, 
-    {"Number", wex::column::COL_INT}});
+    {"String", wex::column::STRING}, 
+    {"Number", wex::column::INT}});
 
   // Remember that listview file already has columns.
   REQUIRE(listView->FindColumn("String") > 1);
@@ -45,7 +45,7 @@ TEST_CASE("wex::listview_file")
   listView->AddItems(
     "./",
     "*.h", 
-    wex::DIR_FILES, 
+    wex::dir::FILES, 
     false); // join the thread
 #endif
 

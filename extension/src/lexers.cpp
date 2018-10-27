@@ -13,12 +13,12 @@
 #include <functional>
 #include <numeric>
 #include <regex>
-#include <wx/config.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/log.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/tokenizer.h>
-#include <wx/extension/util.h>
+#include <wex/lexers.h>
+#include <wex/config.h>
+#include <wex/log.h>
+#include <wex/stc.h>
+#include <wex/tokenizer.h>
+#include <wex/util.h>
 #include <easylogging++.h>
 
 // Constructor for lexers from specified filename.
@@ -27,7 +27,7 @@
 // it both constructs and loads the lexers.
 wex::lexers::lexers(const path& filename)
   : m_Path(filename)
-  , m_Theme(wxConfigBase::Get()->Read("theme", std::string()))
+  , m_Theme(config("theme").get())
 {
 }
 
@@ -156,7 +156,7 @@ wex::lexers* wex::lexers::Get(bool createOnDemand)
 {
   if (m_Self == nullptr && createOnDemand)
   {
-    m_Self = new lexers(path(config_dir(), "lexers.xml"));
+    m_Self = new lexers(path(config().dir(), "lexers.xml"));
     m_Self->LoadDocument();
   }
 
@@ -222,29 +222,27 @@ bool wex::lexers::LoadDocument()
     else if (strcmp(node.name(), "keyword")== 0) ParseNodeKeyword(node);
     else if (strcmp(node.name(), "lexer") ==  0) 
     {
-      if (const wex::lexer lexer(&node); lexer.IsOk()) 
+      if (const wex::lexer lexer(&node); lexer.is_ok()) 
         m_Lexers.emplace_back(lexer);
     }
   }
 
-  // Check config, but do not create one.
-  if (auto* config = wxConfigBase::Get(false); config != nullptr)
-  {
-    const std::string extensions(std::accumulate(
-      m_Lexers.begin(), m_Lexers.end(), std::string(wxFileSelectorDefaultWildcardStr), 
-      [&](const std::string& a, const wex::lexer& b) {
-        if (!b.GetExtensions().empty())
-          return a.empty() ? b.GetExtensions() : a + get_field_separator() + b.GetExtensions();
-        else return a;}));
-    if (!config->Exists(_("Add what"))) config->Write(_("Add what"), extensions.c_str());
-    if (!config->Exists(_("In files"))) config->Write(_("In files"), extensions.c_str());
-    if (!config->Exists(_("In folder"))) config->Write(_("In folder"), wxGetHomeDir());
-  }
+  const std::string extensions(std::accumulate(
+    m_Lexers.begin(), m_Lexers.end(), std::string(wxFileSelectorDefaultWildcardStr), 
+    [&](const std::string& a, const wex::lexer& b) {
+      if (!b.GetExtensions().empty())
+        return a.empty() ? b.GetExtensions() : a + get_field_separator() + b.GetExtensions();
+      else return a;}));
+  
+  config conf(config::DATA_NO_STORE);
+  if (!conf.item(_("Add what")).exists()) conf.set(extensions);
+  if (!conf.item(_("In files")).exists()) conf.set(extensions);
+  if (!conf.item(_("In folder")).exists()) conf.set(wxGetHomeDir().ToStdString());
   
   // Do some checking.
   if (!m_Lexers.empty() && !m_Theme.empty())
   {
-    if (!m_DefaultStyle.IsOk()) log() << "default style not ok";
+    if (!m_DefaultStyle.is_ok()) log() << "default style not ok";
     if (!m_DefaultStyle.ContainsDefaultStyle()) log() << "default style does not contain default style";
   }  
 
@@ -306,14 +304,14 @@ void wex::lexers::ParseNodeGlobal(const pugi::xml_node& node)
     }
     else if (strcmp(child.name(), "indicator") == 0)
     {
-      if (const wex::indicator indicator(child); indicator.IsOk())
+      if (const wex::indicator indicator(child); indicator.is_ok())
       {
         m_Indicators.insert(indicator);
       }
     }
     else if (strcmp(child.name(), "marker") == 0)
     {
-      if (const wex::marker marker(child); marker.IsOk()) m_Markers.insert(marker);
+      if (const wex::marker marker(child); marker.is_ok()) m_Markers.insert(marker);
     }
     else if (strcmp(child.name(), "properties") == 0)
     {
@@ -323,7 +321,7 @@ void wex::lexers::ParseNodeGlobal(const pugi::xml_node& node)
     {
       if (const wex::style style(child, "global"); style.ContainsDefaultStyle())
       {
-        if (m_DefaultStyle.IsOk())
+        if (m_DefaultStyle.is_ok())
         {
           log("duplicate default style") << child.name() << child;
         }
@@ -409,13 +407,12 @@ void wex::lexers::ParseNodeMacro(const pugi::xml_node& node)
 
 void wex::lexers::ParseNodeTheme(const pugi::xml_node& node)
 {
-  if (m_Theme.empty() && !wxConfigBase::Get(false)->Exists("theme"))
+  if (m_Theme.empty() && !config().item("theme").exists())
   {
     m_Theme = std::string(node.attribute("name").value());
   }
   
-  std::map<std::string, std::string> tmpColours;
-  std::map<std::string, std::string> tmpMacros;
+  std::map<std::string, std::string> tmpColours, tmpMacros;
   
   for (const auto& child: node.children())
   {
@@ -491,7 +488,7 @@ bool wex::lexers::ShowThemeDialog(wxWindow* parent)
 
   if (!SingleChoice(parent, _("Enter Theme"), s, m_Theme)) return false;
 
-  wxConfigBase::Get()->Write("theme", m_Theme.c_str());
+  config("theme").set(m_Theme);
 
   return LoadDocument();
 }

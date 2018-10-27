@@ -9,7 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/window-data.h>
+#include <wex/window-data.h>
 #include "test.h"
 
 TEST_CASE("wex::window_data")

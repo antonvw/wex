@@ -9,9 +9,9 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/menu.h>
+#include <wex/config.h>
+#include <wex/managedframe.h>
+#include <wex/menu.h>
 #include "test.h"
 
 TEST_CASE("wex::menu")
@@ -45,16 +45,16 @@ TEST_CASE("wex::menu")
 
   // AppendVCS  
   menu->AppendVCS(wex::path(), false);
-  wxConfigBase::Get()->Write(_("Base folder"), wxGetCwd());
+  wex::config(_("Base folder")).set(wxGetCwd().ToStdString());
   REQUIRE( menu->AppendVCS(wex::path(), false));
   REQUIRE( menu->AppendVCS(wex::path::Current(), false));
 
   // GetStyle
-  REQUIRE(menu->GetStyle() == wex::menu::MENU_DEFAULT);
+  REQUIRE(menu->GetStyle() == wex::menu::DEFAULT);
   
   // SetStyle
-  menu->SetStyle(wex::menu::MENU_IS_READ_ONLY);
-  REQUIRE(menu->GetStyle() == wex::menu::MENU_IS_READ_ONLY);
+  menu->SetStyle(wex::menu::IS_READ_ONLY);
+  REQUIRE(menu->GetStyle() == wex::menu::IS_READ_ONLY);
 
   wxMenuBar *menubar = new wxMenuBar;
   menubar->Append(menu, "&Menu");

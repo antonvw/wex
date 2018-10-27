@@ -9,8 +9,8 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/tool.h>
-#include <wx/extension/statistics.h>
+#include <wex/tool.h>
+#include <wex/statistics.h>
 
 std::map < int, wex::tool_info > wex::tool::m_ToolInfo;
 

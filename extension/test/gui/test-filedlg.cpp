@@ -9,9 +9,9 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/filedlg.h>
-#include <wx/extension/file.h>
-#include <wx/extension/managedframe.h>
+#include <wex/filedlg.h>
+#include <wex/file.h>
+#include <wex/managedframe.h>
 #include "test.h"
 
 TEST_CASE("wex::file_dialog")

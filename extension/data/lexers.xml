@@ -2,7 +2,7 @@
 <?xml-stylesheet href="lexers.xsl" type="text/xsl" ?>
 <!--
 Name:      lexers.xml
-Purpose:   Lexers configuration for wxExtension.
+Purpose:   Lexers configuration for wex.
            See scintilla 3.7.2 (www.scintilla.org).
 Author:    Anton van Wezenbeek
 Copyright: (c) 2018, Anton van Wezenbeek
@@ -88,11 +88,11 @@ Copyright: (c) 2018, Anton van Wezenbeek
       <def no ="iv_lookforward"/>
       <def no ="iv_lookboth"/>
       
-      <!-- Macro's for wxExtension -->
+      <!-- Macro's for wex -->
       <def no ="ex_marknum_change"> 1 </def>
-      <!-- Macro for wxExtension vi markers -->
+      <!-- Macro for wex vi markers -->
       <def no ="ex_marknum_vi"> 0 </def>
-      <!-- Macro for wxExtension breakpoint markers -->
+      <!-- Macro for wex breakpoint markers -->
       <def no ="ex_marknum_break"> 2 </def>
     </def>
 

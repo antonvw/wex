@@ -9,12 +9,12 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
-#include <wx/extension/managedframe.h>
+#include <wex/managedframe.h>
 #include "test.h"
-#include <wx/extension/grid.h>
-#include <wx/extension/otl.h>
-#include <wx/extension/stc.h>
+#include <wex/config.h>
+#include <wex/grid.h>
+#include <wex/otl.h>
+#include <wex/stc.h>
 
 TEST_CASE("wex::otl")
 {
@@ -26,10 +26,9 @@ TEST_CASE("wex::otl")
     return;
   }
 
-  wxConfigBase* config = wxConfigBase::Get(false);
-  config->Write(_("Datasource"), "Test");
-  config->Write(_("User"), "");
-  config->Write(_("Password"), "");
+  wex::config(_("Datasource")).set("Test");
+  wex::config(_("User")).set("");
+  wex::config(_("Password")).set("");
   
   wex::otl otl;
   

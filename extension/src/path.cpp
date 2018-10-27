@@ -7,10 +7,12 @@
 
 #include <wx/mimetype.h>
 #include <wx/url.h>
-#include <wx/extension/path.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/log.h>
-#include <wx/extension/util.h>
+#include <wex/path.h>
+#include <wex/lexers.h>
+#include <wex/log.h>
+#include <wex/util.h>
+
+namespace fs = std::filesystem;
 
 const std::string SubstituteTilde(const std::string& text)
 {
@@ -19,7 +21,7 @@ const std::string SubstituteTilde(const std::string& text)
   return out;
 }
 
-wex::path::path(const std::experimental::filesystem::path& p)
+wex::path::path(const fs::path& p)
   : m_path(p)
   , m_Stat(p.string()) 
   , m_Lexer(lexers::Get(false) != nullptr ? 
@@ -32,19 +34,18 @@ wex::path::path(const std::experimental::filesystem::path& p)
   }
 }
 
-wex::path::path(const std::string& path, const std::string& name)
-  : wex::path(std::experimental::filesystem::path(SubstituteTilde(path)).
-      append(name).string())
+wex::path::path(const std::string& p, const std::string& name)
+  : path(fs::path(SubstituteTilde(p)).append(name).string())
 {
 }
 
-wex::path::path(const std::string& path)
-  : wex::path(std::experimental::filesystem::path(SubstituteTilde(path)))
+wex::path::path(const std::string& p)
+  : path(fs::path(SubstituteTilde(p)))
 {
 }
 
-wex::path::path(const char* path)
-  : wex::path(std::experimental::filesystem::path(path))
+wex::path::path(const char* p)
+  : path(fs::path(p))
 {
 }
 
@@ -53,7 +54,7 @@ wex::path::path(const path& r)
 {
 }
 
-wex::path::path(const std::vector<std::string> v)
+wex::path::path(const std::vector<std::string> & v)
   : path() 
 {
   for (const auto& it : v)
@@ -84,22 +85,9 @@ wex::path& wex::path::operator=(const wex::path& r)
 
 wex::path& wex::path::Append(const wex::path& path)
 {
-  m_path /= std::experimental::filesystem::path(path.Path());
+  m_path /= fs::path(path.Path());
 
   return *this;
-}
-
-bool wex::path::Canonical(const std::string& wd)
-{
-  if (!std::experimental::filesystem::is_directory(wd) || 
-      !std::experimental::filesystem::is_regular_file(wd))
-  {
-    return false;
-  }
-
-  m_path = std::experimental::filesystem::canonical(m_path, wd);
-
-  return true;
 }
 
 void wex::path::Current(const std::string& path) 
@@ -108,7 +96,7 @@ void wex::path::Current(const std::string& path)
   {
     try
     {
-      std::experimental::filesystem::current_path(path);
+      fs::current_path(path);
     }
     catch (const std::exception& e)
     {
@@ -117,7 +105,7 @@ void wex::path::Current(const std::string& path)
   }
 }
 
-const std::vector<wex::path> wex::path::GetPaths() const
+const std::vector<wex::path> wex::path::paths() const
 {
   std::vector<path> v;
 
@@ -129,15 +117,12 @@ const std::vector<wex::path> wex::path::GetPaths() const
   return v;
 }
 
-wex::path& wex::path::MakeAbsolute(const path& base) 
+wex::path& wex::path::make_absolute() 
 {
-  m_path = std::experimental::filesystem::absolute(m_path, base.Path().empty() ? 
-    std::experimental::filesystem::current_path(): 
-    std::experimental::filesystem::path(base.GetPath()));
+  m_path = fs::absolute(m_path);
+  m_Stat.sync();
 
-  m_Stat.Sync();
-
-  if (!std::experimental::filesystem::is_directory(m_path.parent_path())) 
+  if (!fs::is_directory(m_path.parent_path())) 
   {
     m_path.clear();
   }
@@ -145,7 +130,7 @@ wex::path& wex::path::MakeAbsolute(const path& base)
   return *this;
 }
 
-bool wex::path::OpenMIME() const
+bool wex::path::open_mime() const
 {
   if (const auto & ex = GetExtension(); ex.empty())
   {
@@ -174,7 +159,7 @@ bool wex::path::OpenMIME() const
   }
 }
 
-wex::path& wex::path::ReplaceFileName(const std::string& filename)
+wex::path& wex::path::replace_filename(const std::string& filename)
 {
   m_path.replace_filename(filename);
 

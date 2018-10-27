@@ -5,15 +5,11 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wx/stc/stc.h>
-#include <wx/extension/indicator.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/log.h>
-#include <wx/extension/tokenizer.h>
+#include <wex/indicator.h>
+#include <wex/lexers.h>
+#include <wex/log.h>
+#include <wex/stc.h>
+#include <wex/tokenizer.h>
 #include <easylogging++.h>
 
 wex::indicator::indicator(const pugi::xml_node& node)
@@ -43,7 +39,7 @@ wex::indicator::indicator(const pugi::xml_node& node)
       }
     }
 
-    if (!IsOk())
+    if (!is_ok())
     {
       log("illegal indicator number:") << m_No << node;
     }
@@ -72,9 +68,9 @@ bool wex::indicator::operator==(const wex::indicator& i) const
     m_No == i.m_No && m_Style == i.m_Style;
 }
 
-void wex::indicator::Apply(wxStyledTextCtrl* stc) const
+void wex::indicator::Apply(stc* stc) const
 {
-  if (IsOk())
+  if (is_ok())
   {
     stc->IndicatorSetStyle(m_No, m_Style);
 
@@ -87,7 +83,7 @@ void wex::indicator::Apply(wxStyledTextCtrl* stc) const
   }
 }
 
-bool wex::indicator::IsOk() const
+bool wex::indicator::is_ok() const
 {
   return 
     m_No >= 0 && m_No <= wxSTC_INDIC_MAX &&

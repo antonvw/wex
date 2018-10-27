@@ -6,25 +6,25 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
-#include <wx/config.h>
 #include <wx/fdrepdlg.h> // for wxFindDialogEvent
 #include <wx/log.h>
 #include <wx/msgdlg.h>
 #include <wx/numdlg.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/debug.h>
-#include <wx/extension/defs.h>
-#include <wx/extension/frd.h>
-#include <wx/extension/lexer-props.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/log.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/menu.h>
-#include <wx/extension/path.h>
-#include <wx/extension/stcdlg.h>
-#include <wx/extension/tokenizer.h>
-#include <wx/extension/util.h>
-#include <wx/extension/vcs.h>
+#include <wex/stc.h>
+#include <wex/config.h>
+#include <wex/debug.h>
+#include <wex/defs.h>
+#include <wex/frd.h>
+#include <wex/lexer-props.h>
+#include <wex/lexers.h>
+#include <wex/log.h>
+#include <wex/managedframe.h>
+#include <wex/menu.h>
+#include <wex/path.h>
+#include <wex/stcdlg.h>
+#include <wex/tokenizer.h>
+#include <wex/util.h>
+#include <wex/vcs.h>
 
 const int idEdgeClear = wxWindow::NewControlId(); 
 const int idEdgeSet = wxWindow::NewControlId();
@@ -39,7 +39,7 @@ const int idMarginTextHide = wxWindow::NewControlId();
 const int idMarkerNext = wxWindow::NewControlId(2);
 const int idMarkerPrevious = idMarkerNext + 1;
 const int idOpenLink = wxWindow::NewControlId();
-const int idOpenMIME = wxWindow::NewControlId();
+const int idopen_mime = wxWindow::NewControlId();
 const int idOpenWWW = wxWindow::NewControlId();
 const int idShowProperties = wxWindow::NewControlId();
 const int idToggleFold = wxWindow::NewControlId();
@@ -231,16 +231,16 @@ void wex::stc::BindAll()
       (GetFoldLevel(GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK) 
       - wxSTC_FOLDLEVELBASE;});
   
-  if (m_Data.Menu() != STC_MENU_NONE)
+  if (m_Data.Menu() != stc_data::MENU_NONE)
   {
     Bind(wxEVT_RIGHT_UP, [=](wxMouseEvent& event) {
       try
       {
         int style = 0; // otherwise CAN_PASTE already on
-        if ( GetReadOnly() || HexMode()) style |= menu::MENU_IS_READ_ONLY;
-        if (!GetSelectedText().empty())  style |= menu::MENU_IS_SELECTED;
-        if ( GetTextLength() == 0)       style |= menu::MENU_IS_EMPTY;
-        if ( CanPaste())                 style |= menu::MENU_CAN_PASTE;
+        if ( GetReadOnly() || HexMode()) style |= menu::IS_READ_ONLY;
+        if (!GetSelectedText().empty())  style |= menu::IS_SELECTED;
+        if ( GetTextLength() == 0)       style |= menu::IS_EMPTY;
+        if ( CanPaste())                 style |= menu::CAN_PASTE;
         menu menu(style);
         BuildPopupMenu(menu);
         if (menu.GetMenuItemCount() > 0)
@@ -311,11 +311,7 @@ void wex::stc::BindAll()
       m_MarginTextClick = line;
     }});
 
-#if wxCHECK_VERSION(3,1,0)
   Bind(wxEVT_STC_MARGIN_RIGHT_CLICK, [=](wxStyledTextEvent& event) {
-#else
-  Bind(wxEVT_STC_MARGINCLICK, [=](wxStyledTextEvent& event) {
-#endif
     if (event.GetMargin() == m_MarginTextNumber)
     {
       auto* menu = new wxMenu();
@@ -551,22 +547,19 @@ void wex::stc::BindAll()
       clipboard_add(stream.str());
     }}, idHexDecCalltip);
   
-#if wxCHECK_VERSION(3,1,0)
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {MultiEdgeClearAll();}, idEdgeClear);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     MultiEdgeAddLine(GetColumn(GetCurrentPos()), GetEdgeColour());}, idEdgeSet);
-#endif
-
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {LowerCase();}, idLowercase);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {UpperCase();}, idUppercase);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {FoldAll();}, idFoldAll);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {for (int i = 0; i < GetLineCount(); i++) EnsureVisible(i);}, idUnfoldAll);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {m_Data.Flags(STC_WIN_HEX, DATA_XOR).Inject();}, idHex);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {m_Data.Flags(stc_data::WIN_HEX, control_data::XOR).Inject();}, idHex);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SetZoom(++m_Zoom);}, idZoomIn);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SetZoom(--m_Zoom);}, idZoomOut);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {GetFindString(); FindNext(true);}, ID_EDIT_FIND_NEXT);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {GetFindString(); FindNext(false);}, ID_EDIT_FIND_PREVIOUS);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {LinkOpen(LINK_OPEN_MIME);}, idOpenMIME);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {LinkOpen(LINK_OPEN_MIME);}, idopen_mime);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     const auto level = GetFoldLevel(GetCurrentLine());
@@ -603,7 +596,7 @@ void wex::stc::BindAll()
       }
     }}, idEolDos, idEolMac);
     
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {ResetMargins(STC_MARGIN_TEXT);}, 
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {ResetMargins(stc::MARGIN_TEXT);}, 
     idMarginTextHide);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -630,17 +623,17 @@ void wex::stc::BuildPopupMenu(menu& menu)
 {
   const auto sel(GetSelectedText().ToStdString());
 
-  if (GetCurrentLine() == 0 && !lexers::Get()->GetLexers().empty())
+  if (GetCurrentLine() == 0 && !lexers::Get()->get().empty())
   {
     menu.Append(idShowProperties, _("Properties"));
   }
     
-  if (m_Data.Menu() & STC_MENU_OPEN_LINK)
+  if (m_Data.Menu() & stc_data::MENU_OPEN_LINK)
   {
     if (sel.empty() && LinkOpen(LINK_OPEN_MIME | LINK_CHECK))
     {
       menu.AppendSeparator();
-      menu.Append(idOpenMIME, _("&Preview"));
+      menu.Append(idopen_mime, _("&Preview"));
     }
     else if (std::string filename; LinkOpen(LINK_OPEN | LINK_CHECK, &filename))
     {
@@ -649,27 +642,25 @@ void wex::stc::BuildPopupMenu(menu& menu)
     }
   }
 
-#if wxCHECK_VERSION(3,1,0)
   if (GetEdgeMode() == wxSTC_EDGE_MULTILINE)
   {
     menu.AppendSeparator();
     menu.Append(idEdgeSet, _("Edge Column"));
     menu.Append(idEdgeClear, _("Edge Column Reset"));
   }
-#endif
 
-  if (m_Data.Menu() & STC_MENU_OPEN_WWW && !sel.empty())
+  if (m_Data.Menu() & stc_data::MENU_OPEN_WWW && !sel.empty())
   {
     menu.AppendSeparator();
     menu.Append(idOpenWWW, _("&Search"));
   }
   
-  if (m_Data.Menu() & STC_MENU_DEBUG)
+  if (m_Data.Menu() & stc_data::MENU_DEBUG)
   {
     m_Frame->GetDebug()->AddMenu(&menu, true);
   }
   
-  if ((m_Data.Menu() & STC_MENU_VCS) &&
+  if ((m_Data.Menu() & stc_data::MENU_VCS) &&
        GetFileName().FileExists() && sel.empty() &&
        vcs::DirExists(GetFileName()))
   {
@@ -725,7 +716,7 @@ void wex::stc::BuildPopupMenu(menu& menu)
   if (
      sel.empty() && 
      GetProperty("fold") == "1" &&
-     m_Lexer.IsOk() &&
+     m_Lexer.is_ok() &&
     !m_Lexer.GetScintillaLexer().empty())
   {
     menu.AppendSeparator();
@@ -737,7 +728,7 @@ void wex::stc::BuildPopupMenu(menu& menu)
 
 void wex::stc::CheckBrace()
 {
-  if (!wxConfigBase::Get()->ReadLong(_("Show match"), 1))
+  if (!config(_("Show match")).get(1))
   {
     return;
   }

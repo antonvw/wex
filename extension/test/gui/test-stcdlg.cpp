@@ -9,8 +9,8 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/stcdlg.h>
-#include <wx/extension/stc.h>
+#include <wex/stcdlg.h>
+#include <wex/stc.h>
 #include "test.h"
 
 TEST_CASE("wex::stc_entry_dialog")

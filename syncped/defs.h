@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <wx/extension/report/defs.h>
+#include <wex/report/defs.h>
 
 // Command id's used.
 enum

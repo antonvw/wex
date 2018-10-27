@@ -5,57 +5,57 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/extension/vcscommand.h>
+#include <wex/vcscommand.h>
 
 bool wex::vcs_command::IsAdd() const
 {
   return 
-    GetCommand(false) == "add";
+    GetCommand(menu_command::INCLUDE_NONE) == "add";
 }
 
 bool wex::vcs_command::IsBlame() const
 {
   return 
-    GetCommand(false) == "annotate" ||
-    GetCommand(false) == "blame" ||
-    GetCommand(false) == "print";
+    GetCommand(menu_command::INCLUDE_NONE) == "annotate" ||
+    GetCommand(menu_command::INCLUDE_NONE) == "blame" ||
+    GetCommand(menu_command::INCLUDE_NONE) == "print";
 }
 
 bool wex::vcs_command::IsCheckout() const
 {
   return 
-    GetCommand(false) == "checkout" ||
-    GetCommand(false) == "co";
+    GetCommand(menu_command::INCLUDE_NONE) == "checkout" ||
+    GetCommand(menu_command::INCLUDE_NONE) == "co";
 }
 
 bool wex::vcs_command::IsCommit() const
 {
   return 
-    GetCommand(false) == "commit" ||
-    GetCommand(false) == "ci" ||
-    GetCommand(false) == "delta";
+    GetCommand(menu_command::INCLUDE_NONE) == "commit" ||
+    GetCommand(menu_command::INCLUDE_NONE) == "ci" ||
+    GetCommand(menu_command::INCLUDE_NONE) == "delta";
 }
 
 bool wex::vcs_command::IsDiff() const
 {
   return 
-    GetCommand(false).find("diff") != std::string::npos;
+    GetCommand(menu_command::INCLUDE_NONE).find("diff") != std::string::npos;
 }
 
 bool wex::vcs_command::IsHistory() const
 {
   return 
-    GetCommand(false) == "log" ||
-    GetCommand(false) == "prs" ||
-    GetCommand(false) == "prt";
+    GetCommand(menu_command::INCLUDE_NONE) == "log" ||
+    GetCommand(menu_command::INCLUDE_NONE) == "prs" ||
+    GetCommand(menu_command::INCLUDE_NONE) == "prt";
 }
 
 bool wex::vcs_command::IsOpen() const
 {
   return
-    GetCommand(false) == "cat" ||
-    GetCommand(false) == "get" ||
-    GetCommand(false) == "show" ||
+    GetCommand(menu_command::INCLUDE_NONE) == "cat" ||
+    GetCommand(menu_command::INCLUDE_NONE) == "get" ||
+    GetCommand(menu_command::INCLUDE_NONE) == "show" ||
     IsBlame() ||
     IsDiff() ||
     IsHistory();

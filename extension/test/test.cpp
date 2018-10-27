@@ -13,23 +13,23 @@
 #include <wx/wx.h>
 #endif
 #include <functional>
-#include <wx/config.h>
 #include <wx/timer.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/log.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/process.h>
-#include <wx/extension/util.h>
+#include <wex/config.h>
+#include <wex/lexers.h>
+#include <wex/log.h>
+#include <wex/managedframe.h>
+#include <wex/process.h>
+#include <wex/util.h>
 #include "test.h"
 
 void AddExtension(wex::path& fn)
 {
-  const auto v(fn.GetPaths());
-  const auto it = std::find(v.begin(), v.end(), "wex::tension");
+  const auto v(fn.paths());
+  const auto it = std::find(v.begin(), v.end(), "wxExtension");
   
   fn = wex::path();
   
-  // If wex::tension is present, copy all subdirectories.
+  // If wxExtension is present, copy all subdirectories.
   if (it != v.end())
   {
     for (auto i = v.begin(); i != it; i++)
@@ -37,7 +37,7 @@ void AddExtension(wex::path& fn)
       fn.Append(*i);
     }
 
-    fn.Append("wex::tension").Append("extension");
+    fn.Append("wxExtension").Append("extension");
   }
   else
   {
@@ -89,22 +89,22 @@ wex::path wex::test_app::GetTestPath(const std::string& file)
 {
   return file.empty() ?
     m_TestPath:
-    wex::path(m_TestPath.Path().string(), file);
+    path(m_TestPath.Path().string(), file);
 }
 
 bool wex::test_app::OnInit()
 {
   SetAppName("wex-test"); // as in CMakeLists
   SetTestPath();
-  wex::lexers::Get();
+  lexers::Get();
   
-  if (!wex::app::OnInit())
+  if (!app::OnInit())
   {
     return false;
   }
   
-  wxConfigBase::Get()->Write(_("vi mode"), true);
-  wxConfigBase::Get()->Write(_("locale"), GetLocale().GetName()); // for coverage
+  wex::config(_("vi mode")).set(true);
+  wex::config(_("locale")).set(GetLocale().GetName().ToStdString()); // for coverage
   
   return true;
 }
@@ -116,8 +116,8 @@ int wex::test_app::OnRun()
 
   Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
     m_Context->run();
-    wxConfigBase::Get()->Write("AllowSync", 0);
-    wex::process::KillAll();
+    wex::config("AllowSync").set(false);
+    process::KillAll();
 
     if (m_Context->shouldExit())
     {
@@ -125,7 +125,7 @@ int wex::test_app::OnRun()
       ExitMainLoop();
     }});
 
-  return wex::app::OnRun();
+  return app::OnRun();
 }
 
 void wex::test_app::SetContext(doctest::Context* context)
@@ -135,14 +135,14 @@ void wex::test_app::SetContext(doctest::Context* context)
   
 void wex::test_app::SetTestPath()
 {
-  m_TestPath = wex::path(wex::path::Current(), "");
-  auto v(m_TestPath.GetPaths());
+  m_TestPath = path(path::Current(), "");
+  auto v(m_TestPath.paths());
   
-  if (std::find(v.begin(), v.end(), "wex::tension") == v.end())
+  if (std::find(v.begin(), v.end(), "wxExtension") == v.end())
   {
     if (std::find(v.begin(), v.end(), "extension") == v.end())
     {
-      m_TestPath.ReplaceFileName("extension");
+      m_TestPath.replace_filename("extension");
     }
     else
     {
@@ -154,7 +154,7 @@ void wex::test_app::SetTestPath()
     AddExtension(m_TestPath);
   }
 
-  v = m_TestPath.GetPaths();
+  v = m_TestPath.paths();
 
   if (std::find(v.begin(), v.end(), "test") == v.end())
   {

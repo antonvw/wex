@@ -12,12 +12,12 @@
 #endif
 #include <eval.hpp>
 #include <wx/numformatter.h>
-#include <wx/extension/ex.h>
-#include <wx/extension/lexer-props.h>
-#include <wx/extension/log.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/util.h>
-#include <wx/extension/vi-macros.h>
+#include <wex/ex.h>
+#include <wex/lexer-props.h>
+#include <wex/log.h>
+#include <wex/stc.h>
+#include <wex/util.h>
+#include <wex/vi-macros.h>
 #include "eval.h"
 
 wex::evaluator::~evaluator()
@@ -34,7 +34,7 @@ std::tuple<double, int, std::string> wex::evaluator::Eval(
 
   if (expr.empty() || expr.find("%s") != std::string::npos)
   {
-    return {0, 0, "empty expression"};
+    return {0, 0, std::string()};
   }
   
   const char ds(wxNumberFormatter::GetDecimalSeparator());

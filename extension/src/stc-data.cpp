@@ -5,9 +5,9 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/extension/stc-data.h>
-#include <wx/extension/indicator.h>
-#include <wx/extension/stc.h>
+#include <wex/stc-data.h>
+#include <wex/indicator.h>
+#include <wex/stc.h>
 
 wex::stc_data::stc_data(stc* stc)
   : m_STC(stc)
@@ -57,9 +57,9 @@ wex::stc_data& wex::stc_data::CTagsFileName(const std::string& text)
 }
 
 wex::stc_data& wex::stc_data::Flags(
-  stc_window_flags flags, data_action action)
+  window_flags flags, control_data::action action)
 {
-  m_Data.Flags<stc_window_flags>(flags, m_WinFlags, action);
+  m_Data.Flags<window_flags>(flags, m_WinFlags, action);
 
   return *this;
 }
@@ -133,14 +133,14 @@ bool wex::stc_data::Inject() const
     m_STC->SetName(m_Data.Window().Name());
   }
   
-  if ((m_WinFlags & STC_WIN_READ_ONLY) ||
+  if ((m_WinFlags & WIN_READ_ONLY) ||
       (m_STC->GetFileName().FileExists() && m_STC->GetFileName().IsReadOnly()))
   {
     m_STC->SetReadOnly(true);
     injected = true;
   }
 
-  if (m_STC->GetHexMode().Set((m_WinFlags & STC_WIN_HEX) > 0))
+  if (m_STC->GetHexMode().Set((m_WinFlags & WIN_HEX) > 0))
   {
     injected = true;
   }
@@ -154,9 +154,9 @@ bool wex::stc_data::Inject() const
 }
   
 wex::stc_data& wex::stc_data::Menu(
-  stc_menu_flags flags, data_action action)
+  menu_flags flags, control_data::action action)
 {
-  m_Data.Flags<stc_menu_flags>(flags, m_MenuFlags, action);
+  m_Data.Flags<menu_flags>(flags, m_MenuFlags, action);
 
   return *this;
 }

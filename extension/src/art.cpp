@@ -9,7 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/art.h>
+#include <wex/art.h>
 
 std::map<wxWindowID, wxArtID> wex::stockart::m_ArtIDs;
 

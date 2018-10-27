@@ -9,10 +9,10 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/addressrange.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/vi-macros.h>
+#include <wex/addressrange.h>
+#include <wex/managedframe.h>
+#include <wex/stc.h>
+#include <wex/vi-macros.h>
 #include "test.h"
 
 TEST_CASE("wex::addressrange")
@@ -28,46 +28,46 @@ TEST_CASE("wex::addressrange")
   stc->GotoLine(2);
 
   // Test valid ranges when no selection is active.
-  REQUIRE( wex::addressrange(ex).IsOk());
-  REQUIRE( wex::addressrange(ex, -1).IsOk());
-  REQUIRE( wex::addressrange(ex, 5).IsOk());
-  REQUIRE( wex::addressrange(ex, "%").IsOk());
-  REQUIRE( wex::addressrange(ex, "*").IsOk());
-  REQUIRE( wex::addressrange(ex, ".").IsOk());
-  REQUIRE( wex::addressrange(ex, "1,2").IsOk());
-  REQUIRE( wex::addressrange(ex, "/1/,/2/").IsOk());
-  REQUIRE( wex::addressrange(ex, "?1?,?2?").IsOk());
+  REQUIRE( wex::addressrange(ex).is_ok());
+  REQUIRE( wex::addressrange(ex, -1).is_ok());
+  REQUIRE( wex::addressrange(ex, 5).is_ok());
+  REQUIRE( wex::addressrange(ex, "%").is_ok());
+  REQUIRE( wex::addressrange(ex, "*").is_ok());
+  REQUIRE( wex::addressrange(ex, ".").is_ok());
+  REQUIRE( wex::addressrange(ex, "1,2").is_ok());
+  REQUIRE( wex::addressrange(ex, "/1/,/2/").is_ok());
+  REQUIRE( wex::addressrange(ex, "?1?,?2?").is_ok());
   
   // Test invalid ranges when no selection is active.
-  REQUIRE(!wex::addressrange(ex, 0).IsOk());
-  REQUIRE(!wex::addressrange(ex, "0").IsOk());
-  REQUIRE(!wex::addressrange(ex, "x").IsOk());
-  REQUIRE(!wex::addressrange(ex, "x,3").IsOk());
+  REQUIRE(!wex::addressrange(ex, 0).is_ok());
+  REQUIRE(!wex::addressrange(ex, "0").is_ok());
+  REQUIRE(!wex::addressrange(ex, "x").is_ok());
+  REQUIRE(!wex::addressrange(ex, "x,3").is_ok());
   REQUIRE(!wex::addressrange(ex, "x,3").Delete());
   REQUIRE(!wex::addressrange(ex, "3,x").Escape("ls"));
   REQUIRE(!wex::addressrange(ex, "3,x").ShiftRight());
-  REQUIRE(!wex::addressrange(ex, "3,!").IsOk());
+  REQUIRE(!wex::addressrange(ex, "3,!").is_ok());
   REQUIRE(!wex::addressrange(ex, "3,@").Move(wex::address(ex, "2")));
   REQUIRE(!wex::addressrange(ex, "1,2").Move(wex::address(ex, "x")));
   REQUIRE(!wex::addressrange(ex, "1,3").Move(wex::address(ex, "2")));
   REQUIRE(!wex::addressrange(ex, "3,@").Copy(wex::address(ex, "2")));
   REQUIRE(!wex::addressrange(ex, "3,x").Write("flut"));
   REQUIRE(!wex::addressrange(ex, " ,").Yank());
-  REQUIRE(!wex::addressrange(ex, "'<,'>").IsOk());
-  REQUIRE(!wex::addressrange(ex, "/xx/,/2/").IsOk());
-  REQUIRE(!wex::addressrange(ex, "?2?,?1?").IsOk());
+  REQUIRE(!wex::addressrange(ex, "'<,'>").is_ok());
+  REQUIRE(!wex::addressrange(ex, "/xx/,/2/").is_ok());
+  REQUIRE(!wex::addressrange(ex, "?2?,?1?").is_ok());
   
   stc->SelectAll();
   
   // Test valid ranges when selection is active.
-  REQUIRE( wex::addressrange(ex, 5).IsOk());
-  REQUIRE( wex::addressrange(ex, "'<,'>").IsOk());
+  REQUIRE( wex::addressrange(ex, 5).is_ok());
+  REQUIRE( wex::addressrange(ex, "'<,'>").is_ok());
   
   // Test invalid ranges when selection is active.
-  REQUIRE(!wex::addressrange(ex, 0).IsOk());
-  REQUIRE(!wex::addressrange(ex, "0").IsOk());
-  REQUIRE(!wex::addressrange(ex, "x").IsOk());
-  REQUIRE(!wex::addressrange(ex, "x,3").IsOk());
+  REQUIRE(!wex::addressrange(ex, 0).is_ok());
+  REQUIRE(!wex::addressrange(ex, "0").is_ok());
+  REQUIRE(!wex::addressrange(ex, "x").is_ok());
+  REQUIRE(!wex::addressrange(ex, "x,3").is_ok());
   
   stc->SelectNone();
   
@@ -135,7 +135,7 @@ TEST_CASE("wex::addressrange")
   REQUIRE( wex::addressrange(ex, 5).ShiftRight());
   REQUIRE( wex::addressrange(ex, 5).ShiftLeft());
   
-  // Test IsOk.
+  // Test is_ok.
   // See above.
   
   // Test Join.

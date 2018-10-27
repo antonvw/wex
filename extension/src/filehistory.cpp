@@ -5,18 +5,18 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <experimental/filesystem>
+#include <filesystem>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
 #include <wx/filehistory.h>
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/imaglist.h>
-#include <wx/extension/filehistory.h>
-#include <wx/extension/path.h>
-#include <wx/extension/util.h>
+#include <wex/filehistory.h>
+#include <wex/config.h>
+#include <wex/path.h>
+#include <wex/util.h>
 
 namespace wex
 {
@@ -44,7 +44,7 @@ wex::file_history::file_history(
     for (int i = GetMaxFiles() - 1 ; i >=0 ; i--)
     {
       m_History->AddFileToHistory(
-        wxConfigBase::Get()->Read(wxString::Format("%s/%d", key.c_str(), i)));
+        config(wxString::Format("%s/%d", key.c_str(), i).ToStdString()).get());
     }
   }
 }
@@ -145,19 +145,18 @@ void wex::file_history::Save()
 {
   if (m_Key.empty())
   {
-    m_History->Save(*wxConfigBase::Get());
+    m_History->Save(*config::wx_config());
   }
   else
   {
     if (GetCount() > 0)
     {
-      wxConfigBase::Get()->DeleteGroup(m_Key);
+      config(m_Key).erase();
       
       for (size_t i = 0; i < GetCount(); i++)
       {
-        wxConfigBase::Get()->Write(
-          wxString::Format("%s/%lu", m_Key, i),
-          m_History->GetHistoryFile(i));
+        config(wxString::Format("%s/%lu", m_Key, i).ToStdString()).set(
+          m_History->GetHistoryFile(i).ToStdString());
       }
     }
   }
@@ -172,7 +171,7 @@ void wex::file_history::UseMenu(wxWindowID id, wxMenu* menu)
   if (m_Key.empty())
   {
     // We can load file history now.
-    m_History->Load(*wxConfigBase::Get());
+    m_History->Load(*config::wx_config());
   }
   else
   {
@@ -201,7 +200,7 @@ wxString wex::file_history_imp::GetHistoryFile(size_t index) const
     {
       file = wxFileHistory::GetHistoryFile(index);
 
-      if (!std::experimental::filesystem::is_regular_file(file.ToStdString()))
+      if (!std::filesystem::is_regular_file(file.ToStdString()))
       {
         error = true;
       }

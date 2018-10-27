@@ -5,14 +5,9 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wx/config.h>
-#include <wx/extension/listitem.h>
-#include <wx/extension/report/dir.h>
-#include <wx/extension/report/stream.h>
+#include <wex/listitem.h>
+#include <wex/report/dir.h>
+#include <wex/report/stream.h>
 
 wex::tool_dir::tool_dir(const tool& tool,
   const path& fullpath, const std::string& filespec, int flags)

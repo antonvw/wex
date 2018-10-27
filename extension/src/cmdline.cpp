@@ -9,17 +9,20 @@
 #include <variant>
 #include <tclap/CmdLine.h>
 #include <wx/app.h>
-#include <wx/config.h>
-#include <wx/extension/cmdline.h>
-#include <wx/extension/lexer-props.h>
-#include <wx/extension/log.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/stcdlg.h>
-#include <wx/extension/tokenizer.h>
-#include <wx/extension/version.h>
+#include <wex/cmdline.h>
+#include <wex/config.h>
+#include <wex/lexer-props.h>
+#include <wex/log.h>
+#include <wex/stc.h>
+#include <wex/stcdlg.h>
+#include <wex/tokenizer.h>
+#include <wex/version.h>
 
 namespace wex
 {
+  template<class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
+  template<class... Ts> overloaded(Ts...) -> overloaded<Ts...>;
+  
   class cmdline_option
   {
   public:
@@ -35,111 +38,51 @@ namespace wex
       TCLAP::ValueArg<std::string>* s, std::function<void(const std::any& any)> fu)
       : m_val(s), m_f(fu) {;};
 
-   ~cmdline_option()
-    {
-      if (std::holds_alternative<TCLAP::ValueArg<float>*>(m_val))
-        delete std::get<0>(m_val);
-      else if (std::holds_alternative<TCLAP::ValueArg<int>*>(m_val))
-        delete std::get<1>(m_val);
-      else if (std::holds_alternative<TCLAP::ValueArg<std::string>*>(m_val))
-        delete std::get<2>(m_val);
-    };
+   ~cmdline_option() {
+      std::visit(overloaded {
+        [](auto arg) {delete arg;}}, m_val);};
 
     const std::string GetDescription() const {
-      if (auto pval = std::get_if<TCLAP::ValueArg<float>*>(&m_val))
-      {
-        return (*pval)->getDescription();
-      }
-      else if (auto pval = std::get_if<TCLAP::ValueArg<int>*>(&m_val))
-      {
-        return (*pval)->getDescription();
-      }
-      else if (auto pval = std::get_if<TCLAP::ValueArg<std::string>*>(&m_val))
-      {
-        return (*pval)->getDescription();
-      }
-      return std::string();};
-
+      return std::visit(overloaded {
+        [](auto arg) {return arg->getDescription();}}, m_val);};
     
     const std::string GetName() const {
-      if (auto pval = std::get_if<TCLAP::ValueArg<float>*>(&m_val))
-      {
-        return (*pval)->getName();
-      }
-      else if (auto pval = std::get_if<TCLAP::ValueArg<int>*>(&m_val))
-      {
-        return (*pval)->getName();
-      }
-      else if (auto pval = std::get_if<TCLAP::ValueArg<std::string>*>(&m_val))
-      {
-        return (*pval)->getName();
-      }
-      return std::string();};
+      return std::visit(overloaded {
+        [](auto arg) {return arg->getName();}}, m_val);};
 
     const std::string GetValue() const {
-      if (auto pval = std::get_if<TCLAP::ValueArg<float>*>(&m_val))
-      {
-        if (const int v = (*pval)->getValue(); v != -1) 
-        {
-          return std::to_string(v);
-        }
-      }
-      else if (auto pval = std::get_if<TCLAP::ValueArg<int>*>(&m_val))
-      {
-        if (const int v = (*pval)->getValue(); v != -1) 
-        {
-          return std::to_string(v);
-        }
-      }
-      else if (auto pval = std::get_if<TCLAP::ValueArg<std::string>*>(&m_val))
-      {
-        if (const std::string v = (*pval)->getValue(); !v.empty()) 
-        {
-          return v;
-        }
-      }
-      return std::string();};
+      return std::visit(overloaded {
+        [](auto arg) {return 
+          arg->getValue() != -1 ? std::to_string(arg->getValue()): std::string();},
+        [](TCLAP::ValueArg<std::string>* arg) {return arg->getValue();},
+        }, m_val);};
 
     void Run(bool save) const
     {
-      if (auto pval = std::get_if<TCLAP::ValueArg<float>*>(&m_val))
-      {
-        if (const float v = (*pval)->getValue(); v != -1) 
-        {
-          m_f(v);
-
-          if (save)
+      std::visit(overloaded {
+        [&](auto arg) {
+          if (const auto v = arg->getValue(); v != -1) 
           {
-            wxConfigBase::Get()->Write(GetName(), v);
-          }
-        }
-      }
-      else if (auto pval = std::get_if<TCLAP::ValueArg<int>*>(&m_val))
-      {
-        if (const int v = (*pval)->getValue(); v != -1) 
-        {
-          m_f(v);
+            m_f(v);
 
-          if (save)
+            if (save)
+            {
+              config(GetName()).set(v);
+            }
+          };},
+        [&](TCLAP::ValueArg<std::string>* arg) {
+          if (const auto v = arg->getValue(); !v.empty()) 
           {
-            wxConfigBase::Get()->Write(GetName(), v);
-          }
-        }
-      }
-      else if (auto pval = std::get_if<TCLAP::ValueArg<std::string>*>(&m_val))
-      {
-        if (const std::string v = (*pval)->getValue(); !v.empty()) 
-        {
-          m_f(v);
+            m_f(v);
 
-          if (save)
-          {
-            wxConfigBase::Get()->Write(GetName(), v.c_str());
-          }
-        }
-      }
+            if (save)
+            {
+              config(GetName()).set(v.c_str());
+            }
+          }},
+      }, m_val);
     }
-  private:    
+  private:
     std::function<void(const std::any& any)> m_f; 
 
     const std::variant <
@@ -198,7 +141,7 @@ namespace wex
 
     void Run(bool save) const
     {
-      const bool def = wxConfigBase::Get()->ReadBool(GetName(), false);
+      const bool def = config(GetName()).get(false);
       
       if (def != GetValue())
       {
@@ -206,7 +149,7 @@ namespace wex
 
         if (save)
         {
-          wxConfigBase::Get()->Write(GetName(), GetValue());
+          config(GetName()).set(GetValue());
         }
       }
     }
@@ -253,9 +196,9 @@ wex::cmdline::cmdline(
 
       switch (it->second.first)
       {
-        case CMD_LINE_FLOAT: {
-          const float def = wxConfigBase::Get()->ReadDouble(
-            it->first[p_n], def_specified.empty() ? -1: std::stod(def_specified));
+        case FLOAT: {
+          const float def = config(it->first[p_n]).get(
+            def_specified.empty() ? (float)-1: (float)std::stod(def_specified));
           
           auto* arg = new TCLAP::ValueArg<float>(
             flag, it->first[p_n], it->first[p_d],
@@ -265,9 +208,9 @@ wex::cmdline::cmdline(
           }
           break;
 
-        case CMD_LINE_INT: {
-          const int def = wxConfigBase::Get()->ReadLong(
-            it->first[p_n], def_specified.empty() ? -1: std::stoi(def_specified));
+        case INT: {
+          const int def = config(it->first[p_n]).get(
+            def_specified.empty() ? -1: std::stoi(def_specified));
           
           auto* arg = new TCLAP::ValueArg<int>(
             flag, it->first[p_n], it->first[p_d],
@@ -277,9 +220,8 @@ wex::cmdline::cmdline(
           }
           break;
         
-        case CMD_LINE_STRING: {
-          const std::string def = wxConfigBase::Get()->Read(
-            it->first[p_n], std::string());
+        case STRING: {
+          const std::string def = config(it->first[p_n]).get();
           
           auto* arg = new TCLAP::ValueArg<std::string>(
             flag, it->first[p_n], it->first[p_d],
@@ -308,8 +250,8 @@ wex::cmdline::cmdline(
       const std::string def_specified = 
         (it->first.size() > p_d + 1 ? it->first.back(): std::string());
 
-      const bool def = wxConfigBase::Get()->ReadBool(
-        it->first[p_n], def_specified.empty() ? false: std::stoi(def_specified));
+      const bool def = config(it->first[p_n]).get(
+        def_specified.empty() ? false: (bool)std::stoi(def_specified));
       
       auto* arg = new TCLAP::SwitchArg(
         flag, it->first[p_n], it->first[p_d], def); 

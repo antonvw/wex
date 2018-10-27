@@ -9,7 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/autocomplete.h>
+#include <wex/autocomplete.h>
 #include "test.h"
 
 TEST_CASE("wex::autocomplete")

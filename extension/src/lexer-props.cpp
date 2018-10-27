@@ -9,7 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/lexer-props.h>
+#include <wex/lexer-props.h>
 
 wex::lexer_props::lexer_props()
   : lexer("props")

@@ -9,7 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/control-data.h>
+#include <wex/control-data.h>
 #include "test.h"
 
 TEST_CASE("wex::control_data")

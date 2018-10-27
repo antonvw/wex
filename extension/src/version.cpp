@@ -12,7 +12,7 @@
 #include <iomanip>	
 #include <sstream>
 #include <wx/versioninfo.h>
-#include <wx/extension/version.h>
+#include <wex/version.h>
 
 const wex::version_info wex::get_version_info() 
 {

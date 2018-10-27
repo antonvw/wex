@@ -5,15 +5,15 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/extension/frd.h>
-#include <wx/extension/report/stream.h>
+#include <wex/frd.h>
+#include <wex/report/stream.h>
 #include "test.h"
 
 TEST_CASE("wex::listview_stream")
 {
   wex::tool tool(wex::ID_TOOL_REPORT_FIND);
 
-  wex::listview* report = new wex::listview(wex::listview_data().Type(wex::LISTVIEW_FIND));
+  wex::listview* report = new wex::listview(wex::listview_data().Type(wex::listview_data::FIND));
     
   AddPane(GetFrame(), report);
 

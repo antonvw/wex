@@ -12,26 +12,26 @@
 #include <wx/aboutdlg.h>
 #include <wx/config.h>
 #include <wx/imaglist.h>
-#include <wx/extension/ctags.h>
-#include <wx/extension/debug.h>
-#include <wx/extension/filedlg.h>
-#include <wx/extension/itemdlg.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/menu.h>
-#include <wx/extension/menus.h>
-#include <wx/extension/otl.h>
-#include <wx/extension/printing.h>
-#include <wx/extension/shell.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/tokenizer.h>
-#include <wx/extension/tostring.h>
-#include <wx/extension/toolbar.h>
-#include <wx/extension/util.h>
-#include <wx/extension/vcs.h>
-#include <wx/extension/version.h>
-#include <wx/extension/vi-macros.h>
-#include <wx/extension/vi-macros-mode.h>
-#include <wx/extension/report/listviewfile.h>
+#include <wex/ctags.h>
+#include <wex/debug.h>
+#include <wex/filedlg.h>
+#include <wex/itemdlg.h>
+#include <wex/lexers.h>
+#include <wex/menu.h>
+#include <wex/menus.h>
+#include <wex/otl.h>
+#include <wex/printing.h>
+#include <wex/shell.h>
+#include <wex/stc.h>
+#include <wex/tokenizer.h>
+#include <wex/tostring.h>
+#include <wex/toolbar.h>
+#include <wex/util.h>
+#include <wex/vcs.h>
+#include <wex/version.h>
+#include <wex/vi-macros.h>
+#include <wex/vi-macros-mode.h>
+#include <wex/report/listviewfile.h>
 #include "frame.h"
 #include "app.h"
 #include "defs.h"
@@ -183,7 +183,7 @@ frame::frame(app* app)
       {
         OpenFile(
           wex::path(GetProjectHistory().GetHistoryFile()),
-          wex::stc_data().Flags(wex::STC_WIN_IS_PROJECT));
+          wex::stc_data().Flags(wex::stc_data::WIN_IS_PROJECT));
       }
       else
       {
@@ -194,7 +194,7 @@ frame::frame(app* app)
   else
   {
     GetManager().GetPane("PROJECTS").Hide();
-    wex::open_files(this, m_App->GetFiles(), m_App->GetData(), wex::DIR_FILES);
+    wex::open_files(this, m_App->GetFiles(), m_App->GetData(), wex::dir::FILES);
   }
   
   StatusText(wex::lexers::Get()->GetTheme(), "PaneTheme");
@@ -407,7 +407,7 @@ frame::frame(app* app)
     const std::string text = wxString::Format("%s%d", _("project"), m_NewProjectNo++).ToStdString();
     const wex::path fn(
        (!GetProjectHistory().GetHistoryFile().Path().empty() ? 
-           GetProjectHistory().GetHistoryFile().GetPath(): wex::config_dir()),
+           GetProjectHistory().GetHistoryFile().GetPath(): wex::config().dir()),
       text + ".prj");
     wxWindow* page = new wex::listview_file(fn.Path().string(), wex::window_data().Parent(m_Projects));
     ((wex::listview_file*)page)->FileNew(fn.Path().string());
@@ -420,7 +420,7 @@ frame::frame(app* app)
     wxFileDialog dlg(this,
       _("Select Projects"),
        (!GetProjectHistory().GetHistoryFile().Path().empty() ? 
-           GetProjectHistory().GetHistoryFile().GetPath(): wex::config_dir()),
+           GetProjectHistory().GetHistoryFile().GetPath(): wex::config().dir()),
       wxEmptyString,
       m_ProjectWildcard,
       wxFD_OPEN | wxFD_MULTIPLE);
@@ -432,7 +432,7 @@ frame::frame(app* app)
       wex::to_vector_path(dlg).Get());
 #endif
     wex::open_files(this, 
-      v, wex::stc_data().Flags(wex::STC_WIN_IS_PROJECT));}, 
+      v, wex::stc_data().Flags(wex::stc_data::WIN_IS_PROJECT));}, 
     ID_PROJECT_OPEN);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -581,9 +581,9 @@ frame::frame(app* app)
   m_App->Reset();
 }    
 
-wex::listview* frame::Activate(wex::listview_type type, const wex::lexer* lexer)
+wex::listview* frame::Activate(wex::listview_data::type type, const wex::lexer* lexer)
 {
-  if (type == wex::LISTVIEW_FILE)
+  if (type == wex::listview_data::FILE)
   {
     return GetProject();
   }
@@ -595,7 +595,7 @@ wex::listview* frame::Activate(wex::listview_type type, const wex::lexer* lexer)
       (lexer != nullptr ?  " " + lexer->GetDisplayLexer(): std::string());
     auto* list = (wex::history_listview*)m_Lists->GetPageByKey(name);
 
-    if (list == nullptr && type != wex::LISTVIEW_FILE)
+    if (list == nullptr && type != wex::listview_data::FILE)
     {
       list = new wex::history_listview(wex::listview_data(wex::window_data().Parent(m_Lists)).
         Type(type).
@@ -610,7 +610,7 @@ wex::listview* frame::Activate(wex::listview_type type, const wex::lexer* lexer)
 
 void frame::AddPaneHistory()
 {
-  m_History = new wex::history_listview(wex::listview_data().Type(wex::LISTVIEW_HISTORY));
+  m_History = new wex::history_listview(wex::listview_data().Type(wex::listview_data::HISTORY));
         
   GetManager().AddPane(m_History, wxAuiPaneInfo()
     .Left()
@@ -808,7 +808,7 @@ void frame::OnCommand(wxCommandEvent& event)
         }
       }
       
-      const wxBitmap bitmap = (editor->GetFileName().GetStat().IsOk() ? 
+      const wxBitmap bitmap = (editor->GetFileName().GetStat().is_ok() ? 
         wxTheFileIconsTable->GetSmallImageList()->GetBitmap(wex::get_iconid(editor->GetFileName())) : 
         wxNullBitmap);
 
@@ -1142,20 +1142,20 @@ wex::stc* frame::OpenFile(
   
 wex::stc* frame::OpenFile(const wex::path& filename, const wex::stc_data& data)
 {
-  if ((data.Flags() & wex::STC_WIN_IS_PROJECT) && m_Projects == nullptr)
+  if ((data.Flags() & wex::stc_data::WIN_IS_PROJECT) && m_Projects == nullptr)
   {
     AddPaneProjects();
     GetManager().Update();
   }
   
-  wex::notebook* notebook = ((data.Flags() & wex::STC_WIN_IS_PROJECT)
+  wex::notebook* notebook = ((data.Flags() & wex::stc_data::WIN_IS_PROJECT)
     ? m_Projects : m_Editors);
     
   wxASSERT(notebook != nullptr);
   
   wxWindow* page = notebook->SetSelection(filename.Path().string());
 
-  if (data.Flags() & wex::STC_WIN_IS_PROJECT)
+  if (data.Flags() & wex::stc_data::WIN_IS_PROJECT)
   {
     if (page == nullptr)
     {
@@ -1199,9 +1199,9 @@ wex::stc* frame::OpenFile(const wex::path& filename, const wex::stc_data& data)
       editor = new wex::stc(filename, 
         wex::stc_data(data).
           Window(wex::window_data().Parent(m_Editors)).
-          Flags(m_App->GetData().Flags(), wex::DATA_OR).
-          Flags(wxConfigBase::Get()->ReadBool("HexMode", false) ? wex::STC_WIN_HEX: wex::STC_WIN_DEFAULT, wex::DATA_OR).
-          Menu(m_App->GetDebug() ? wex::STC_MENU_DEBUG: wex::STC_MENU_NONE, wex::DATA_OR));
+          Flags(m_App->GetData().Flags(), wex::control_data::OR).
+          Flags(wxConfigBase::Get()->ReadBool("HexMode", false) ? wex::stc_data::WIN_HEX: wex::stc_data::WIN_DEFAULT, wex::control_data::OR).
+          Menu(m_App->GetDebug() ? wex::stc_data::MENU_DEBUG: wex::stc_data::MENU_NONE, wex::control_data::OR));
       
       if (m_App->GetDebug())
       {
@@ -1291,7 +1291,7 @@ void frame::PrintEx(wex::ex* ex, const std::string& text)
   
 wex::process* frame::Process(const std::string& command)
 {
-  m_Process->Execute(command, wex::PROCESS_EXEC_DEFAULT);
+  m_Process->Execute(command, wex::process::EXEC_DEFAULT);
   return m_Process;
 }
 

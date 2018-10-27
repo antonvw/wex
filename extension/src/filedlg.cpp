@@ -9,10 +9,10 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/filedlg.h>
-#include <wx/extension/file.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/util.h>
+#include <wex/filedlg.h>
+#include <wex/file.h>
+#include <wex/lexers.h>
+#include <wex/util.h>
 
 wex::file_dialog::file_dialog(
   wex::file* file,
@@ -33,14 +33,14 @@ wex::file_dialog::file_dialog(
   , m_File(file)
 {
   if (wildcard == wxFileSelectorDefaultWildcardStr &&
-      m_File->GetFileName().GetStat().IsOk())
+      m_File->GetFileName().GetStat().is_ok())
   {
     std::string wildcards = 
       _("All Files") + wxString::Format(" (%s)|%s",
         wxFileSelectorDefaultWildcardStr,
         wxFileSelectorDefaultWildcardStr);
 
-    for (const auto& it : lexers::Get()->GetLexers())
+    for (const auto& it : lexers::Get()->get())
     {
       if (!it.GetExtensions().empty())
       {
@@ -63,7 +63,7 @@ int wex::file_dialog::ShowModalIfChanged(bool show_modal)
   
   if (m_File->GetContentsChanged())
   {
-    if (!m_File->GetFileName().GetStat().IsOk())
+    if (!m_File->GetFileName().GetStat().is_ok())
     {
       switch (wxMessageBox(
         _("Save changes") + "?",

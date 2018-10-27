@@ -9,9 +9,9 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/printing.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/stc.h>
+#include <wex/printing.h>
+#include <wex/managedframe.h>
+#include <wex/stc.h>
 #include "test.h"
 
 TEST_CASE("wex::printing")

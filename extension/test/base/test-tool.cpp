@@ -5,8 +5,8 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/extension/tool.h>
-#include <wx/extension/statistics.h>
+#include <wex/tool.h>
+#include <wex/statistics.h>
 #include "../test.h"
 
 TEST_CASE( "wex::tool" ) 

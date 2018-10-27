@@ -1,13 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test.h
-// Purpose:   Declaration of classes for wex::tension report unit testing
+// Purpose:   Declaration of classes for wex report unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wx/extension/report/frame.h>
+#include <wex/report/frame.h>
 
 #include "../test.h"
 

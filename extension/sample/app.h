@@ -5,16 +5,16 @@
 // Copyright: (c) 2018
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/extension/app.h>
-#include <wx/extension/dir.h>
-#include <wx/extension/grid.h>
-#include <wx/extension/listview.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/notebook.h>
-#include <wx/extension/process.h>
-#include <wx/extension/shell.h>
-#include <wx/extension/statistics.h>
-#include <wx/extension/stc.h>
+#include <wex/app.h>
+#include <wex/dir.h>
+#include <wex/grid.h>
+#include <wex/listview.h>
+#include <wex/managedframe.h>
+#include <wex/notebook.h>
+#include <wex/process.h>
+#include <wex/shell.h>
+#include <wex/statistics.h>
+#include <wex/stc.h>
 
 /// Derive your application from wex::app.
 class sample_app: public wex::app

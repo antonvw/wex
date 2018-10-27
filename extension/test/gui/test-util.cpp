@@ -10,14 +10,13 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
-#include <wx/extension/util.h>
-#include <wx/extension/ex.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/vcscommand.h>
-#include <wx/extension/vi-macros.h>
+#include <wex/util.h>
+#include <wex/ex.h>
+#include <wex/lexers.h>
+#include <wex/managedframe.h>
+#include <wex/stc.h>
+#include <wex/vcscommand.h>
+#include <wex/vi-macros.h>
 #include "test.h"
 
 TEST_CASE("wex")
@@ -130,25 +129,6 @@ TEST_CASE("wex")
   {
   }
   
-  SUBCASE("wex::config_dir")
-  {
-#ifdef __WXMSW__
-    REQUIRE(!wex::config_dir().empty());
-#else
-    REQUIRE(wex::config_dir().find(".config") != std::string::npos);
-#endif
-  }
-  
-  SUBCASE("wex::config_firstof")
-  {
-    wex::config_firstof("xxxx");
-  }
-  
-  SUBCASE("wex::config_firstof_write")
-  {
-    REQUIRE( wex::config_firstof_write("xxxx", "zz") == "zz");
-  }
-  
   SUBCASE("wex::ellipsed")
   {
     REQUIRE( wex::ellipsed("xxx").find("...") != std::string::npos);
@@ -237,22 +217,6 @@ TEST_CASE("wex")
     }
     
     REQUIRE(!wex::is_codeword_separator('x'));
-  }
-  
-  SUBCASE("wex::list_from_config")
-  {
-    REQUIRE( wex::list_from_config("xxx").size() == 0);
-  }
-  
-  SUBCASE("wex::list_to_config")
-  {
-    l.clear();
-    l.emplace_back("1");
-    l.emplace_back("2");
-    wex::list_to_config(l, "list_items");
-    REQUIRE( l.size() == 2);
-    REQUIRE(wxConfigBase::Get()->Read("list_items", "").Contains("1"));
-    REQUIRE(wxConfigBase::Get()->Read("list_items", "").Contains("2"));
   }
   
   SUBCASE("wex::log_status")

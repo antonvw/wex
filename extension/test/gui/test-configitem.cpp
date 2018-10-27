@@ -11,8 +11,9 @@
 #include <wx/wx.h>
 #endif
 #include <wx/vscroll.h>
-#include <wx/extension/item.h>
-#include <wx/extension/managedframe.h>
+#include <wex/config.h>
+#include <wex/item.h>
+#include <wex/managedframe.h>
 #include "../test-configitem.h"
 #include "test.h"
 
@@ -29,16 +30,16 @@ TEST_CASE("wex::config_item")
   // Use specific constructors.
   const wex::item ci_empty;
   const wex::item ci_spacer(5);
-  const wex::item ci_cb("ci-cb", wex::ITEM_COMBOBOX);
-  const wex::item ci_cb_dir("ci-cb-dir", wex::ITEM_COMBOBOX_DIR);
+  const wex::item ci_cb("ci-cb", wex::item::COMBOBOX);
+  const wex::item ci_cb_dir("ci-cb-dir", wex::item::COMBOBOX_DIR);
   const wex::item ci_sp("ci-sp", 1, 5);
   const wex::item ci_sp_d("ci-sp-d", 1.0, 5.0);
-  const wex::item ci_sl("ci-sl", 1, 5, 2, wex::ITEM_SLIDER);
+  const wex::item ci_sl("ci-sl", 1, 5, 2, wex::item::SLIDER);
   const wex::item ci_vl(wxLI_HORIZONTAL);
   wex::item ci_str("ci-string", std::string());
-  const wex::item ci_hl("ci-hyper", "www.wxwidgets.org", wex::ITEM_HYPERLINKCTRL);
-  wex::item ci_st("ci-static", "HELLO", wex::ITEM_STATICTEXT);
-  const wex::item ci_int("ci-int",wex::ITEM_TEXTCTRL_INT);
+  const wex::item ci_hl("ci-hyper", "www.wxwidgets.org", wex::item::HYPERLINKCTRL);
+  wex::item ci_st("ci-static", "HELLO", wex::item::STATICTEXT);
+  const wex::item ci_int("ci-int",wex::item::TEXTCTRL_INT);
   const wex::item ci_rb("ci-rb", {
       {0, "Zero"},
       {1, "One"},
@@ -56,31 +57,31 @@ TEST_CASE("wex::config_item")
     [=](wxWindow* user, wxWindow* parent, bool readonly) {
      ((wxTextCtrl*)user)->Create(parent, 100);}, 
     [=](wxWindow* user, bool save) {
-      if (save) wxConfigBase::Get()->Write("mytext", ((wxTextCtrl *)user)->GetValue());
+      if (save) wex::config("mytext").set(((wxTextCtrl *)user)->GetValue().ToStdString());
       return true;},
-    wex::LABEL_LEFT,
+    wex::item::LABEL_LEFT,
     [=](wxWindow* user, const std::any& value, bool save) {
       wxLogStatus(((wxTextCtrl *)user)->GetValue());});
   
-  REQUIRE(ci_empty.GetType() == wex::ITEM_EMPTY);
+  REQUIRE(ci_empty.GetType() == wex::item::EMPTY);
   REQUIRE(!ci_empty.IsRowGrowable());
-  REQUIRE(ci_cb.GetType() == wex::ITEM_COMBOBOX);
-  REQUIRE(ci_cb_dir.GetType() == wex::ITEM_COMBOBOX_DIR);
-  REQUIRE(ci_spacer.GetType() == wex::ITEM_SPACER);
+  REQUIRE(ci_cb.GetType() == wex::item::COMBOBOX);
+  REQUIRE(ci_cb_dir.GetType() == wex::item::COMBOBOX_DIR);
+  REQUIRE(ci_spacer.GetType() == wex::item::SPACER);
   REQUIRE(ci_sl.GetLabel() == "ci-sl");
-  REQUIRE(ci_sl.GetType() == wex::ITEM_SLIDER);
-  REQUIRE(ci_vl.GetType() == wex::ITEM_STATICLINE);
+  REQUIRE(ci_sl.GetType() == wex::item::SLIDER);
+  REQUIRE(ci_vl.GetType() == wex::item::STATICLINE);
   REQUIRE(ci_sp.GetLabel() == "ci-sp");
-  REQUIRE(ci_sp.GetType() == wex::ITEM_SPINCTRL);
-  REQUIRE(ci_sp_d.GetType() == wex::ITEM_SPINCTRLDOUBLE);
-  REQUIRE(ci_str.GetType() == wex::ITEM_TEXTCTRL);
-  REQUIRE(ci_hl.GetType() == wex::ITEM_HYPERLINKCTRL);
-  REQUIRE(ci_st.GetType() == wex::ITEM_STATICTEXT);
-  REQUIRE(ci_int.GetType() == wex::ITEM_TEXTCTRL_INT);
-  REQUIRE(ci_rb.GetType() == wex::ITEM_RADIOBOX);
-  REQUIRE(ci_bc.GetType() == wex::ITEM_CHECKLISTBOX_BIT);
-  REQUIRE(ci_cl_n.GetType() == wex::ITEM_CHECKLISTBOX_BOOL);
-  REQUIRE(ci_user.GetType() == wex::ITEM_USER);
+  REQUIRE(ci_sp.GetType() == wex::item::SPINCTRL);
+  REQUIRE(ci_sp_d.GetType() == wex::item::SPINCTRLDOUBLE);
+  REQUIRE(ci_str.GetType() == wex::item::TEXTCTRL);
+  REQUIRE(ci_hl.GetType() == wex::item::HYPERLINKCTRL);
+  REQUIRE(ci_st.GetType() == wex::item::STATICTEXT);
+  REQUIRE(ci_int.GetType() == wex::item::TEXTCTRL_INT);
+  REQUIRE(ci_rb.GetType() == wex::item::RADIOBOX);
+  REQUIRE(ci_bc.GetType() == wex::item::CHECKLISTBOX_BIT);
+  REQUIRE(ci_cl_n.GetType() == wex::item::CHECKLISTBOX_BOOL);
+  REQUIRE(ci_user.GetType() == wex::item::USER);
 
   std::vector <wex::item> items {
     ci_empty, ci_spacer, ci_cb, ci_cb_dir, ci_sl, ci_vl, ci_sp, ci_sp_d,
@@ -94,15 +95,15 @@ TEST_CASE("wex::config_item")
   {
     REQUIRE( it.GetColumns() == 1);
     
-    if (it.GetType() == wex::ITEM_USER)
+    if (it.GetType() == wex::item::USER)
       REQUIRE( it.GetWindow() != nullptr);
     else 
       REQUIRE( it.GetWindow() == nullptr);
       
     if (
-       it.GetType() != wex::ITEM_STATICLINE &&
-       it.GetType() != wex::ITEM_SPACER &&
-       it.GetType() != wex::ITEM_EMPTY)
+       it.GetType() != wex::item::STATICLINE &&
+       it.GetType() != wex::item::SPACER &&
+       it.GetType() != wex::item::EMPTY)
     {
       REQUIRE(!it.GetLabel().empty());
     }
@@ -117,17 +118,17 @@ TEST_CASE("wex::config_item")
     // not all items need a sizer.
     it.Layout(panel, sizer);
  
-    if (it.GetType() != wex::ITEM_EMPTY && it.GetType() != wex::ITEM_SPACER)
+    if (it.GetType() != wex::item::EMPTY && it.GetType() != wex::item::SPACER)
     {
       REQUIRE( it.GetWindow() != nullptr);
       
       if (
-          it.GetType() == wex::ITEM_CHECKLISTBOX_BOOL ||
-         (it.GetType() >= wex::ITEM_NOTEBOOK && it.GetType() <= wex::ITEM_NOTEBOOK_TREE) || 
-          it.GetType() == wex::ITEM_RADIOBOX ||
-          it.GetType() == wex::ITEM_STATICLINE ||
-          it.GetType() == wex::ITEM_USER ||
-          it.GetType() == wex::ITEM_STATICTEXT)
+          it.GetType() == wex::item::CHECKLISTBOX_BOOL ||
+         (it.GetType() >= wex::item::NOTEBOOK && it.GetType() <= wex::item::NOTEBOOK_TREE) || 
+          it.GetType() == wex::item::RADIOBOX ||
+          it.GetType() == wex::item::STATICLINE ||
+          it.GetType() == wex::item::USER ||
+          it.GetType() == wex::item::STATICTEXT)
       {
         REQUIRE(!it.GetValue().has_value());
       }
@@ -151,17 +152,14 @@ TEST_CASE("wex::config_item")
   REQUIRE( ci_user.ToConfig(false));
 }
 
-#if wxCHECK_VERSION(3,1,0)
 TEST_CASE("wex::config_defaults")
 {
   wex::config_defaults def({
-    {"def-colour", wex::ITEM_COLOURPICKERWIDGET, *wxWHITE},
-    {"def-font", wex::ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT)},
-    {"def-double", wex::ITEM_TEXTCTRL_FLOAT, 8.8},
-    {"def-string", wex::ITEM_TEXTCTRL, std::string("a string")},
-    {"def-int", wex::ITEM_TEXTCTRL_INT, 10l}});
+    {"def-colour", wex::item::COLOURPICKERWIDGET, *wxWHITE},
+    {"def-font", wex::item::FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT)},
+    {"def-double", wex::item::TEXTCTRL_FLOAT, 8.8},
+    {"def-string", wex::item::TEXTCTRL, std::string("a string")},
+    {"def-int", wex::item::TEXTCTRL_INT, 10l}});
   
-  REQUIRE( def.Get() != nullptr);
-  REQUIRE( def.Get()->Exists("def-colour"));
+  REQUIRE( wex::config("def-colour").exists());
 }
-#endif

@@ -10,10 +10,10 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
-#include <wx/extension/vcs.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/menu.h>
+#include <wex/vcs.h>
+#include <wex/config.h>
+#include <wex/managedframe.h>
+#include <wex/menu.h>
 #include "test.h"
 
 TEST_CASE("wex::vcs")
@@ -22,7 +22,7 @@ TEST_CASE("wex::vcs")
   REQUIRE( wex::vcs::GetCount() > 0);
 
   wex::path file(GetTestPath("test.h"));
-  file.MakeAbsolute();
+  file.make_absolute();
   
   // In wex::app the vcs is Read, so current vcs is known,
   // using this constructor results in command id 1, being add.
@@ -60,7 +60,7 @@ TEST_CASE("wex::vcs")
   REQUIRE( wex::vcs::LoadDocument());
   
   // SetEntryFromBase
-  wxConfigBase::Get()->Write(_("Base folder"), wxGetCwd());
+  wex::config(_("Base folder")).set(wxGetCwd().ToStdString());
   REQUIRE( vcs.SetEntryFromBase());
   
   // Use

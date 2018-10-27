@@ -5,9 +5,9 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/extension/log.h>
-#include <wx/extension/item.h>
-#include <wx/extension/listitem.h>
+#include <wex/log.h>
+#include <wex/item.h>
+#include <wex/listitem.h>
 #include <easylogging++.h>
 
 wex::log::log(const std::string& topic, log_level level)
@@ -46,7 +46,7 @@ wex::log::log(const pugi::xml_parse_result& r)
   }
   else 
   {
-    m_Level = LEVEL_INFO;
+    m_Level = INFO;
     m_Separator = false;
   }
 }
@@ -105,21 +105,11 @@ void wex::log::Log() const
 {  
   switch (m_Level)
   {
-    case LEVEL_INFO:
-      VLOG(9) << m_ss.str();
-      break;
-    case LEVEL_DEBUG:
-      LOG(DEBUG) << m_ss.str();
-      break;
-    case LEVEL_WARNING:
-      LOG(WARNING) << m_ss.str();
-      break;
-    case LEVEL_ERROR:
-      LOG(ERROR) << m_ss.str();
-      break;
-    case LEVEL_FATAL:
-      LOG(FATAL) << m_ss.str();
-      break;
+    case INFO:    VLOG(9) << m_ss.str(); break;     
+    case DEBUG:   LOG(DEBUG) << m_ss.str(); break;     
+    case WARNING: LOG(WARNING) << m_ss.str(); break;
+    case ERROR:   LOG(ERROR) << m_ss.str(); break;
+    case FATAL:   LOG(FATAL) << m_ss.str(); break;
   }
 }  
 

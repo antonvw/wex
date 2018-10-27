@@ -1,5 +1,7 @@
 **v19.04** *2019*
   - uses namespace
+  - uses std::filesystem instead of std::experimental::filesystem
+  - changed include files
 
 **v18.10** *October 1, 2018*
   - c++17
@@ -11,7 +13,7 @@
   - fsm lib
 
 **v17.10** *September 30, 2017* 
-  - c++1z
+  - c++1z, using std::experimental::filesystem
 
 **v17.04** *April 8, 2017*
   - git submodules

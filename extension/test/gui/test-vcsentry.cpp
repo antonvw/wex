@@ -9,9 +9,9 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/vcsentry.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/defs.h>
+#include <wex/vcsentry.h>
+#include <wex/managedframe.h>
+#include <wex/defs.h>
 #include "test.h"
 
 TEST_CASE("wex::vcs_entry")
@@ -20,7 +20,7 @@ TEST_CASE("wex::vcs_entry")
   
   wex::vcs_entry test("my-vcs", "./",
     {wex::vcs_command("one", "main"), wex::vcs_command("two", "main")},
-    wex::vcs_entry::VCS_FLAGS_LOCATION_POSTFIX);
+    wex::vcs_entry::FLAGS_LOCATION_POSTFIX);
   
   REQUIRE( test.GetCommands().size() == 2);
   REQUIRE(!test.GetCommand().GetCommand().empty());
@@ -31,7 +31,7 @@ TEST_CASE("wex::vcs_entry")
   REQUIRE( test.GetName() == "my-vcs");
   REQUIRE( test.GetStdOut().empty());
   
-  REQUIRE( wex::vcs_entry().GetFlagsLocation() == wex::vcs_entry::VCS_FLAGS_LOCATION_POSTFIX);
+  REQUIRE( wex::vcs_entry().GetFlagsLocation() == wex::vcs_entry::FLAGS_LOCATION_POSTFIX);
   
   test.ShowOutput();
   

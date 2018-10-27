@@ -6,13 +6,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
-#include <wx/config.h>
 #include <wx/settings.h>
 #include <wx/stockitem.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/itemdlg.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/util.h>
+#include <wex/stc.h>
+#include <wex/config.h>
+#include <wex/itemdlg.h>
+#include <wex/lexers.h>
+#include <wex/util.h>
 
 namespace wex
 {
@@ -29,34 +29,34 @@ namespace wex
   public:
     stc_defaults() 
     : config_defaults({
-      {_("Auto fold"), ITEM_TEXTCTRL_INT, 1500l},
-      {_("Auto indent"), ITEM_TEXTCTRL_INT, (long)INDENT_ALL},
-      {_("Caret line"), ITEM_CHECKBOX, true},
-      {_("Default font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)},
-      {_("Divider"), ITEM_TEXTCTRL_INT, 16l},
-      {_("Edge column"), ITEM_TEXTCTRL_INT, 80l},
-      {_("Edge line"), ITEM_TEXTCTRL_INT, (long)wxSTC_EDGE_NONE},
-      {_("Fold flags"), ITEM_TEXTCTRL_INT, (long)wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED},
-      {_("Folding"), ITEM_TEXTCTRL_INT, 16l},
-      {_("Indent"), ITEM_TEXTCTRL_INT, 2l},
-      {_("Keep zoom"), ITEM_CHECKBOX, true},
-      {_("Line number"), ITEM_TEXTCTRL_INT, 60l},
-      {_("Print flags"), ITEM_TEXTCTRL_INT, (long)wxSTC_PRINT_BLACKONWHITE},
-      {_("Scroll bars"), ITEM_CHECKBOX, true},
-      {_("Search engine"), ITEM_COMBOBOX, std::string("https://duckduckgo.com")},
-      {_("Show mode"), ITEM_CHECKBOX, true},
-      {_("Tab draw mode"), ITEM_TEXTCTRL_INT, (long)wxSTC_TD_LONGARROW},
-      {_("Tab font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
-      {_("Tab width"), ITEM_TEXTCTRL_INT, 2l},
-      {_("Text font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
-      {_("vi mode"), ITEM_CHECKBOX, true},
-      {_("vi tag fullpath"), ITEM_CHECKBOX, false}}) {;};
+      {_("Auto fold"), item::TEXTCTRL_INT, 1500l},
+      {_("Auto indent"), item::TEXTCTRL_INT, (long)INDENT_ALL},
+      {_("Caret line"), item::CHECKBOX, true},
+      {_("Default font"), item::FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)},
+      {_("Divider"), item::TEXTCTRL_INT, 16l},
+      {_("Edge column"), item::TEXTCTRL_INT, 80l},
+      {_("Edge line"), item::TEXTCTRL_INT, (long)wxSTC_EDGE_NONE},
+      {_("Fold flags"), item::TEXTCTRL_INT, (long)wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED},
+      {_("Folding"), item::TEXTCTRL_INT, 16l},
+      {_("Indent"), item::TEXTCTRL_INT, 2l},
+      {_("Keep zoom"), item::CHECKBOX, true},
+      {_("Line number"), item::TEXTCTRL_INT, 60l},
+      {_("Print flags"), item::TEXTCTRL_INT, (long)wxSTC_PRINT_BLACKONWHITE},
+      {_("Scroll bars"), item::CHECKBOX, true},
+      {_("Search engine"), item::COMBOBOX, std::string("https://duckduckgo.com")},
+      {_("Show mode"), item::CHECKBOX, true},
+      {_("Tab draw mode"), item::TEXTCTRL_INT, (long)wxSTC_TD_LONGARROW},
+      {_("Tab font"), item::FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
+      {_("Tab width"), item::TEXTCTRL_INT, 2l},
+      {_("Text font"), item::FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
+      {_("vi mode"), item::CHECKBOX, true},
+      {_("vi tag fullpath"), item::CHECKBOX, false}}) {;};
   };
 };
   
 bool wex::stc::AutoIndentation(int c)
 {
-  if (const auto ai = wxConfigBase::Get()->ReadLong(_("Auto indent"), INDENT_ALL);
+  if (const auto ai = config(_("Auto indent")).get(INDENT_ALL);
     ai == INDENT_NONE)
   {
     return false;
@@ -139,7 +139,7 @@ int wex::stc::ConfigDialog(const window_data& par)
                _("Keep zoom"),
                _("vi mode"),
                _("vi tag fullpath")}},
-            {_("Search engine"), ITEM_COMBOBOX}}},
+            {_("Search engine"), item::COMBOBOX}}},
           {_("Page2"), 
             {{_("Auto indent"), {
                {INDENT_NONE, _("None")},
@@ -165,13 +165,13 @@ int wex::stc::ConfigDialog(const window_data& par)
                {wxSTC_WRAP_CHAR, _("Char")},
                {wxSTC_WRAP_WHITESPACE, _("Whitespace")}}, true, 4}}}} 
 #ifdef __WXMSW__
-            ,ITEM_NOTEBOOK_AUI
+            ,item::NOTEBOOK_AUI
 #endif
             }}},
       {_("Font"), 
-        {{_("Default font"), ITEM_FONTPICKERCTRL},
-         {_("Tab font"), ITEM_FONTPICKERCTRL},
-         {_("Text font"), ITEM_FONTPICKERCTRL}}},
+        {{_("Default font"), item::FONTPICKERCTRL},
+         {_("Tab font"), item::FONTPICKERCTRL},
+         {_("Text font"), item::FONTPICKERCTRL}}},
       {_("Edge"),
         {{_("Edge column"), 0, 80l},
          { _("Edge line"), {
@@ -187,7 +187,7 @@ int wex::stc::ConfigDialog(const window_data& par)
          {_("Line number"), 0, 100},
          {_("Autocomplete maxwidth"), 0, 100}}},
       {_("Folding"),
-        {{_("Indentation guide"), ITEM_CHECKBOX},
+        {{_("Indentation guide"), item::CHECKBOX},
          {_("Auto fold"), 0l, INT_MAX},
          {_("Fold flags"), {
              {wxSTC_FOLDFLAG_LINEBEFORE_EXPANDED, _("Line before expanded")},
@@ -197,7 +197,7 @@ int wex::stc::ConfigDialog(const window_data& par)
              {wxSTC_FOLDFLAG_LEVELNUMBERS, _("Level numbers")}},
              false}}},
       {_("Directory"),
-        {{_("Include directory"), listview_data().Type(LISTVIEW_FOLDER).
+        {{_("Include directory"), listview_data().Type(listview_data::FOLDER).
           Window(window_data().Size({200, 200}))}}},
       {_("Printer"),
         {{_("Print flags"), {
@@ -218,10 +218,9 @@ int wex::stc::ConfigDialog(const window_data& par)
 void wex::stc::ConfigGet()
 {
   stc_defaults use;
-  auto* cfg = use.Get();
   
-  const wxFont font(cfg->ReadObject(
-    _("Default font"), wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT)));
+  const wxFont font(config(_("Default font")).get( 
+    wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT)));
 
   if (m_DefaultFont != font)
   {
@@ -235,17 +234,17 @@ void wex::stc::ConfigGet()
     m_Lexer.Apply();
   }
 
-  if (m_Lexer.GetEdgeMode() == edgemode::ABSENT)
+  if (m_Lexer.GetEdgeMode() == edge_mode::ABSENT)
   {
-    if (!m_Lexer.IsOk())
+    if (!m_Lexer.is_ok())
     {
       SetEdgeMode(wxSTC_EDGE_NONE);
     }
     else
     {
-      SetEdgeColumn(cfg->ReadLong(_("Edge column"), 80l));
+      SetEdgeColumn(config(_("Edge column")).get(80l));
     
-      if (const auto el = cfg->ReadLong(_("Edge line"), wxSTC_EDGE_NONE);
+      if (const auto el = config(_("Edge line")).get(wxSTC_EDGE_NONE);
         el != wxSTC_EDGE_NONE)
       {
         SetEdgeMode(font.IsFixedWidth() ? el: wxSTC_EDGE_BACKGROUND);
@@ -257,25 +256,25 @@ void wex::stc::ConfigGet()
     }
   }
   
-  AutoCompSetMaxWidth(cfg->ReadLong(_("Autocomplete maxwidth"), 0));
-  SetCaretLineVisible(cfg->ReadBool(_("Caret line"), true));
-  SetFoldFlags(cfg->ReadLong( _("Fold flags"), 0));
-  SetIndent(cfg->ReadLong(_("Indent"), 0));
-  SetIndentationGuides( cfg->ReadBool(_("Indentation guide"), false));
-  SetMarginWidth(m_MarginDividerNumber,  cfg->ReadLong(_("Divider"), 0));
-  SetPrintColourMode(cfg->ReadLong(_("Print flags"), 0));
-  SetTabDrawMode(cfg->ReadLong(_("Tab draw mode"), wxSTC_TD_LONGARROW));
-  SetTabWidth(cfg->ReadLong(_("Tab width"), 0));
-  SetUseHorizontalScrollBar(cfg->ReadBool(_("Scroll bars"), true));
-  SetUseTabs(cfg->ReadBool(_("Use tabs"), false));
-  SetUseVerticalScrollBar(cfg->ReadBool(_("Scroll bars"), true));
-  SetViewEOL(cfg->ReadBool(_("End of line"), false));
-  SetViewWhiteSpace(cfg->ReadLong(_("Whitespace visible"), wxSTC_WS_INVISIBLE));
-  SetWrapMode(cfg->ReadLong(_("Wrap line"), wxSTC_WRAP_NONE));
-  SetWrapVisualFlags(cfg->ReadLong(_("Wrap visual flags"),  wxSTC_WRAPVISUALFLAG_END));
-  m_vi.Use(cfg->ReadBool(_("vi mode"), false));
+  AutoCompSetMaxWidth(config(_("Autocomplete maxwidth")).get(0));
+  SetCaretLineVisible(config(_("Caret line")).get(true));
+  SetFoldFlags(config( _("Fold flags")).get(0));
+  SetIndent(config(_("Indent")).get(0));
+  SetIndentationGuides( config(_("Indentation guide")).get(false));
+  SetMarginWidth(m_MarginDividerNumber, config(_("Divider")).get(0));
+  SetPrintColourMode(config(_("Print flags")).get(0));
+  SetTabDrawMode(config(_("Tab draw mode")).get(wxSTC_TD_LONGARROW));
+  SetTabWidth(config(_("Tab width")).get(0));
+  SetUseHorizontalScrollBar(config(_("Scroll bars")).get(true));
+  SetUseTabs(config(_("Use tabs")).get(false));
+  SetUseVerticalScrollBar(config(_("Scroll bars")).get(true));
+  SetViewEOL(config(_("End of line")).get(false));
+  SetViewWhiteSpace(config(_("Whitespace visible")).get(wxSTC_WS_INVISIBLE));
+  SetWrapMode(config(_("Wrap line")).get(wxSTC_WRAP_NONE));
+  SetWrapVisualFlags(config(_("Wrap visual flags")).get( wxSTC_WRAPVISUALFLAG_END));
+  m_vi.Use(config(_("vi mode")).get(false));
 
-  ShowLineNumbers(cfg->ReadBool(_("Line numbers"), false));
+  ShowLineNumbers(config(_("Line numbers")).get(false));
 
   m_Link.SetFromConfig();
 }

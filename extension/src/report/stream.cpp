@@ -6,18 +6,14 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cctype> // for isspace
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wx/config.h>
-#include <wx/extension/report/stream.h>
-#include <wx/extension/frd.h>
-#include <wx/extension/listitem.h>
-#include <wx/extension/util.h>
-#include <wx/extension/report/defs.h>
-#include <wx/extension/report/frame.h>
-#include <wx/extension/report/listview.h>
+#include <wex/report/stream.h>
+#include <wex/config.h>
+#include <wex/frd.h>
+#include <wex/listitem.h>
+#include <wex/util.h>
+#include <wex/report/defs.h>
+#include <wex/report/frame.h>
+#include <wex/report/listview.h>
 #include <easylogging++.h>
 
 wex::listview* wex::listview_stream::m_Report = nullptr;
@@ -30,7 +26,7 @@ wex::listview_stream::listview_stream(
 {
 }
 
-wex::listview_stream::commenttype wex::listview_stream::CheckCommentSyntax(
+wex::listview_stream::comment_type wex::listview_stream::CheckCommentSyntax(
   const std::string& syntax_begin,
   const std::string& syntax_end,
   const std::string& text) const
@@ -62,7 +58,7 @@ wex::listview_stream::commenttype wex::listview_stream::CheckCommentSyntax(
   return COMMENT_NONE;
 }
 
-wex::listview_stream::commenttype wex::listview_stream::CheckForComment(
+wex::listview_stream::comment_type wex::listview_stream::CheckForComment(
   const std::string& text)
 {
   if (GetFileName().GetLexer().GetCommentBegin2().empty())
@@ -72,7 +68,7 @@ wex::listview_stream::commenttype wex::listview_stream::CheckForComment(
       GetFileName().GetLexer().GetCommentEnd(), text);
   }
 
-  commenttype comment_type1 = COMMENT_NONE;
+  comment_type comment_type1 = COMMENT_NONE;
 
   if (m_SyntaxType == SYNTAX_NONE || m_SyntaxType == SYNTAX_ONE)
   {
@@ -82,7 +78,7 @@ wex::listview_stream::commenttype wex::listview_stream::CheckForComment(
       m_SyntaxType = SYNTAX_ONE;
   }
 
-  commenttype comment_type2 = COMMENT_NONE;
+  comment_type comment_type2 = COMMENT_NONE;
 
   if (m_SyntaxType == SYNTAX_NONE || m_SyntaxType == SYNTAX_TWO)
   {
@@ -92,18 +88,18 @@ wex::listview_stream::commenttype wex::listview_stream::CheckForComment(
       m_SyntaxType = SYNTAX_TWO;
   }
 
-  commenttype comment_type = COMMENT_NONE;
+  comment_type comment_type = COMMENT_NONE;
 
   switch (comment_type1)
   {
-  case COMMENT_NONE:  comment_type = comment_type2; break;
-  case COMMENT_BEGIN: comment_type = COMMENT_BEGIN; break;
-  case COMMENT_END:   comment_type = COMMENT_END; break;
-  case COMMENT_BOTH:  comment_type = COMMENT_BOTH; break;
-  case COMMENT_INCOMPLETE:
-    comment_type = (comment_type2 == COMMENT_NONE) ? COMMENT_INCOMPLETE: comment_type2;
-    break;
-  default: wxFAIL;
+    case COMMENT_NONE:  comment_type = comment_type2; break;
+    case COMMENT_BEGIN: comment_type = COMMENT_BEGIN; break;
+    case COMMENT_END:   comment_type = COMMENT_END; break;
+    case COMMENT_BOTH:  comment_type = COMMENT_BOTH; break;
+    case COMMENT_INCOMPLETE:
+      comment_type = (comment_type2 == COMMENT_NONE) ? COMMENT_INCOMPLETE: comment_type2;
+      break;
+    default: wxFAIL;
   }
 
   if (comment_type == COMMENT_END)
@@ -243,7 +239,7 @@ bool wex::listview_stream::Process(std::string& line, size_t line_no)
 
 bool wex::listview_stream::ProcessBegin()
 {
-  m_ContextSize = wxConfigBase::Get()->ReadLong(_("Context size"), 10);
+  m_ContextSize = config(_("Context size")).get(10);
 
   if (GetTool().GetId() != ID_TOOL_REPORT_KEYWORD)
   {
@@ -254,8 +250,8 @@ bool wex::listview_stream::ProcessBegin()
     if (
       m_Frame == nullptr ||
      (m_Report = m_Frame->Activate(
-      history_listview::GetTypeTool(GetTool()),
-      &GetFileName().GetLexer())) == nullptr)
+        history_listview::GetTypeTool(GetTool()),
+        &GetFileName().GetLexer())) == nullptr)
     {
       return false;
     }
@@ -321,6 +317,11 @@ bool wex::listview_stream::SetupTool(
   history_frame* frame,
   listview* report)
 {
+  if (tool.GetId() == ID_TOOL_REPLACE)
+  {
+    return true;
+  }
+  
   m_Frame = frame;
 
   Reset();
@@ -342,9 +343,9 @@ bool wex::listview_stream::SetupTool(
     m_Report = report;
   } 
 
-  if (m_Report->GetData().Type() != LISTVIEW_FIND)
+  if (m_Report != nullptr && m_Report->GetData().Type() != listview_data::FIND)
   {
-    VLOG(9) << "report list type is not LISTVIEW_FIND";
+    VLOG(9) << "report list type is not listview_data::FIND";
     return false;
   }
 

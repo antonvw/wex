@@ -9,8 +9,8 @@
 
 #include <memory>
 #include <string>
-#include <wx/extension/app.h>
-#include <wx/extension/path.h>
+#include <wex/app.h>
+#include <wex/path.h>
 #include "doctest.h"
 
 namespace doctest

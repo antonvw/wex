@@ -10,7 +10,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/lexer-props.h>
+#include <wex/lexer-props.h>
 #include "test.h"
 
 TEST_CASE("wex::lexer_props")

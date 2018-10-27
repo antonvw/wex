@@ -9,8 +9,8 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/ex-command.h>
-#include <wx/extension/stc.h>
+#include <wex/ex-command.h>
+#include <wex/stc.h>
 #include "test.h"
 
 TEST_CASE("wex::ex_command")
@@ -25,7 +25,7 @@ TEST_CASE("wex::ex_command")
     REQUIRE( command.Command().empty());
     REQUIRE(!command.IsHandled());
     REQUIRE( command.STC() == stc);
-    REQUIRE( command.Type() == wex::ex_command_type::NONE);
+    REQUIRE( command.Type() == wex::ex_command::type::NONE);
 
     command.Command("G");
     REQUIRE( command.Command() == "G");
@@ -61,7 +61,7 @@ TEST_CASE("wex::ex_command")
     REQUIRE( command.Command() == "G");
     REQUIRE(!command.IsHandled());
     REQUIRE( command.STC() == nullptr);
-    REQUIRE( command.Type() == wex::ex_command_type::VI);
+    REQUIRE( command.Type() == wex::ex_command::type::VI);
 
     REQUIRE(!command.Exec() );
     REQUIRE( stc->GetCurrentLine() == 0);

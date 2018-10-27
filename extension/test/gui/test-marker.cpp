@@ -9,30 +9,30 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/marker.h>
-#include <wx/extension/stc.h>
+#include <wex/marker.h>
+#include <wex/stc.h>
 #include "test.h"
 
 TEST_CASE("wex::marker")
 {
   SUBCASE("Default constructor")
   {
-    REQUIRE( !wex::marker().IsOk() );
+    REQUIRE( !wex::marker().is_ok() );
   }
   
   SUBCASE("Constructor using no, symbol")
   {
-    REQUIRE(!wex::marker(1, 100).IsOk());
-    REQUIRE( wex::marker(1, wxSTC_MARK_CHARACTER).IsOk());
-    REQUIRE( wex::marker(1, wxSTC_MARK_CHARACTER + 100).IsOk());
-    REQUIRE(!wex::marker(1, wxSTC_MARK_CHARACTER + 300).IsOk());
+    REQUIRE(!wex::marker(1, 100).is_ok());
+    REQUIRE( wex::marker(1, wxSTC_MARK_CHARACTER).is_ok());
+    REQUIRE( wex::marker(1, wxSTC_MARK_CHARACTER + 100).is_ok());
+    REQUIRE(!wex::marker(1, wxSTC_MARK_CHARACTER + 300).is_ok());
     
     wex::marker markerx(5, 2);
     wex::marker markery(7, 5);
     
-    REQUIRE(!wex::marker(0).IsOk());
-    REQUIRE( markerx.IsOk());
-    REQUIRE( markery.IsOk());
+    REQUIRE(!wex::marker(0).is_ok());
+    REQUIRE( markerx.is_ok());
+    REQUIRE( markery.is_ok());
     REQUIRE( markerx < markery );
     REQUIRE( markerx == markerx );
     REQUIRE( wex::marker(5) == wex::marker(5));
@@ -54,7 +54,7 @@ TEST_CASE("wex::marker")
     REQUIRE( marker.GetSymbol() == wxSTC_MARK_CHARACTER);
     REQUIRE( marker.GetForegroundColour() == "green");
     REQUIRE( marker.GetBackgroundColour() == "white");
-    REQUIRE( marker.IsOk());
+    REQUIRE( marker.is_ok());
   }
     
   SUBCASE("Constructor xml invalid no")
@@ -62,6 +62,6 @@ TEST_CASE("wex::marker")
     pugi::xml_document doc;
     REQUIRE( doc.load_string("<marker no = \"x\"></marker>"));
     wex::marker marker(doc.document_element());
-    REQUIRE(!marker.IsOk());
+    REQUIRE(!marker.is_ok());
   }
 }

@@ -9,10 +9,10 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/address.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/vi-macros.h>
+#include <wex/address.h>
+#include <wex/managedframe.h>
+#include <wex/stc.h>
+#include <wex/vi-macros.h>
 #include "test.h"
 
 TEST_CASE("wex::address")

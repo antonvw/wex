@@ -12,15 +12,15 @@
 #include <algorithm>
 #include <cctype>
 #ifndef __WXMSW__
-#include <experimental/algorithm>
-#include <experimental/functional>
+#include <algorithm>
+#include <functional>
 #endif
 #include <fstream>
 #include <iostream>
-#include <wx/config.h>
-#include <wx/extension/stream.h>
-#include <wx/extension/frd.h>
-#include <wx/extension/util.h>
+#include <wex/stream.h>
+#include <wex/config.h>
+#include <wex/frd.h>
+#include <wex/util.h>
 
 bool wex::stream::m_Asked = false;
 
@@ -28,7 +28,7 @@ wex::stream::stream(const path& filename, const tool& tool)
   : m_Path(filename)
   , m_Tool(tool)
   , m_FRD(find_replace_data::Get())
-  , m_Threshold(wxConfigBase::Get()->ReadLong(_("Max replacements"), -1))
+  , m_Threshold(config(_("Max replacements")).get(-1))
 {
 }
 
@@ -56,9 +56,9 @@ bool wex::stream::Process(std::string& line, size_t line_no)
       if (const auto it = (!m_FRD->MatchCase() ?
         std::search(line.begin(), line.end(), m_FindString.begin(), m_FindString.end(),
           [](char ch1, char ch2) {return std::toupper(ch1) == ch2;}):
-#ifndef __WXMSW__
-        std::experimental::search(line.begin(), line.end(), 
-          std::experimental::make_boyer_moore_searcher(m_FindString.begin(), m_FindString.end())));
+#ifdef __WXGTK__
+        std::search(line.begin(), line.end(), 
+          std::boyer_moore_searcher(m_FindString.begin(), m_FindString.end())));
 #else
         std::search(line.begin(), line.end(), 
           m_FindString.begin(), m_FindString.end()));
@@ -121,7 +121,7 @@ bool wex::stream::ProcessBegin()
 {
   if (
     !m_Tool.IsFindType() || 
-    (m_Tool.GetId() == ID_TOOL_REPLACE && m_Path.GetStat().IsReadOnly()) ||
+    (m_Tool.GetId() == ID_TOOL_REPLACE && m_Path.GetStat().is_readonly()) ||
      find_replace_data::Get()->GetFindString().empty())
   {
     return false;
@@ -141,9 +141,9 @@ bool wex::stream::ProcessBegin()
   
 bool wex::stream::RunTool()
 {
-  std::ifstream ifs(m_Path.Path());
+  std::fstream fs(m_Path.Path(), std::ios_base::in);
 
-  if (!ifs.is_open() || !ProcessBegin())
+  if (!fs.is_open() || !ProcessBegin())
   {
     return false;
   }
@@ -151,28 +151,31 @@ bool wex::stream::RunTool()
   m_Stats.m_Elements.Set(_("Files").ToStdString(), 1);
   
   int line_no = 0;
-  std::vector<std::string> v;
-
-  for (std::string line; std::getline(ifs, line); )
+  std::string s;
+  
+  for (std::string line; std::getline(fs, line); )
   {
     if (!Process(line, line_no++)) return false;
 
     if (m_Write)
     {
-      v.emplace_back(line);
+      s += line + "\n";
     }
+  }
+  
+  if (line_no <= 1 || (m_Write && s.empty()))
+  {
+    log_status(std::string("processing error"));
+    return false;
+  }
+  else if (m_Modified && m_Write)
+  {
+    fs.close();
+    fs.open(m_Path.Path(), std::ios_base::out);
+    if (!fs.is_open()) return false;
+    fs.write(s.c_str(), s.size());
   }
 
-  if (m_Modified && m_Write)
-  {
-    std::ofstream ofs(m_Path.Path());
-  
-    for (const auto & it : v)
-    {
-      ofs << it << std::endl;
-    }
-  }
-  
   ProcessEnd();
 
   return true;

@@ -14,16 +14,16 @@
 #include <wx/aboutdlg.h>
 #include <wx/config.h>
 #include <wx/stockitem.h>
-#include <wx/extension/filedlg.h>
-#include <wx/extension/grid.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/shell.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/toolbar.h>
-#include <wx/extension/util.h>
-#include <wx/extension/tokenizer.h>
-#include <wx/extension/version.h>
-#include <wx/extension/report/defs.h>
+#include <wex/filedlg.h>
+#include <wex/grid.h>
+#include <wex/lexers.h>
+#include <wex/shell.h>
+#include <wex/stc.h>
+#include <wex/toolbar.h>
+#include <wex/util.h>
+#include <wex/tokenizer.h>
+#include <wex/version.h>
+#include <wex/report/defs.h>
 #include "app.h"
 
 #ifndef __WXMSW__

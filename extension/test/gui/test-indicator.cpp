@@ -9,16 +9,16 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/indicator.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/stc.h>
+#include <wex/indicator.h>
+#include <wex/managedframe.h>
+#include <wex/stc.h>
 #include "test.h"
 
 TEST_CASE("wex::indicator")
 {
   SUBCASE("Default constructor")
   {
-    REQUIRE(!wex::indicator().IsOk() );
+    REQUIRE(!wex::indicator().is_ok() );
   }
   
   SUBCASE("Constructor using no, symbol")
@@ -26,9 +26,9 @@ TEST_CASE("wex::indicator")
     wex::indicator indx(5, 2);
     wex::indicator indy(7, 5);
 
-    REQUIRE(!wex::indicator(5).IsOk() );
-    REQUIRE( indx.IsOk());
-    REQUIRE( indy.IsOk());
+    REQUIRE(!wex::indicator(5).is_ok() );
+    REQUIRE( indx.is_ok());
+    REQUIRE( indy.is_ok());
     REQUIRE( indx < indy );
     REQUIRE( indx == indx );
     REQUIRE( indx != indy );
@@ -50,10 +50,10 @@ TEST_CASE("wex::indicator")
     REQUIRE( ind.GetNo() == 5);
     REQUIRE( ind.GetStyle() == 6);
     REQUIRE(!ind.GetUnder());
-    REQUIRE( ind.IsOk());
+    REQUIRE( ind.is_ok());
     
     ind.Apply(GetSTC());
-    REQUIRE( ind.IsOk());
+    REQUIRE( ind.is_ok());
   }
 
   SUBCASE("Constructor xml invalid no")
@@ -61,6 +61,6 @@ TEST_CASE("wex::indicator")
     pugi::xml_document doc;
     REQUIRE( doc.load_string("<indicator no = \"x\"></indicator>"));
     wex::indicator ind(doc.document_element());
-    REQUIRE(!ind.IsOk());
+    REQUIRE(!ind.is_ok());
   }
 }

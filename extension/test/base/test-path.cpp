@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <chrono>
-#include <wx/extension/path.h>
+#include <wex/path.h>
 #include "../test.h"
 
 TEST_CASE( "wex::path" ) 
@@ -19,11 +19,11 @@ TEST_CASE( "wex::path" )
     wex::path fn = GetTestPath("test.h");
     REQUIRE( fn.GetLexer().GetScintillaLexer() == "cpp");
     REQUIRE( wex::path(fn).GetFullName() == "test.h");
-    REQUIRE( wex::path("..").IsRelative());
-    REQUIRE(!wex::path("..").IsAbsolute());
+    REQUIRE( wex::path("..").is_relative());
+    REQUIRE(!wex::path("..").is_absolute());
     REQUIRE( wex::path("xx") == wex::path("xx"));
     REQUIRE( wex::path("xx") != wex::path("xy"));
-    REQUIRE(!wex::path().GetOriginal().empty());
+    REQUIRE(!wex::path().original().empty());
     REQUIRE(!wex::path().Current().empty());
   }
   
@@ -39,21 +39,19 @@ TEST_CASE( "wex::path" )
     REQUIRE( path.GetLexer().GetScintillaLexer() == "cpp");
     REQUIRE( path.GetName() == "test");
     REQUIRE(!path.GetPath().empty());
-    REQUIRE(!path.GetPaths().empty());
-    REQUIRE( path.GetStat().IsOk());
+    REQUIRE(!path.paths().empty());
+    REQUIRE( path.GetStat().is_ok());
     REQUIRE(!path.IsReadOnly());
 
     REQUIRE( path.Append("error").Path().string().find("error") != std::string::npos);
-    REQUIRE(!path.Canonical("xxx"));
 
-    path.ReplaceFileName("xxx");
+    path.replace_filename("xxx");
 
-    REQUIRE(!wex::path("XXXXX").GetStat().IsOk());
-    REQUIRE(!wex::path("XXXXX").OpenMIME());
+    REQUIRE(!wex::path("XXXXX").GetStat().is_ok());
+    REQUIRE(!wex::path("XXXXX").open_mime());
 
-    REQUIRE( wex::path("XXXXX").MakeAbsolute().GetFullName() == "XXXXX");
-    REQUIRE( wex::path("XXXXX").MakeAbsolute().Path().string() != "XXXXX");
-    REQUIRE( wex::path("XXXXX").MakeAbsolute("yyy").GetFullName() == "XXXXX");
+    REQUIRE( wex::path("XXXXX").make_absolute().GetFullName() == "XXXXX");
+    REQUIRE( wex::path("XXXXX").make_absolute().Path().string() != "XXXXX");
   }
 
   SUBCASE( "Timing" ) 
@@ -64,7 +62,7 @@ TEST_CASE( "wex::path" )
 
     for (int i = 0; i < max; i++)
     {
-      REQUIRE(!exfile.GetStat().IsReadOnly());
+      REQUIRE(!exfile.GetStat().is_readonly());
     }
 
     const auto ex_milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - ex_start);

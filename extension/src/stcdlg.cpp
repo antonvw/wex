@@ -10,8 +10,8 @@
 #include <wx/wx.h>
 #endif
 #include <wx/persist/toplevel.h>
-#include <wx/extension/stcdlg.h>
-#include <wx/extension/stc.h>
+#include <wex/stcdlg.h>
+#include <wex/stc.h>
 
 wex::stc_entry_dialog::stc_entry_dialog(
   const std::string& text,

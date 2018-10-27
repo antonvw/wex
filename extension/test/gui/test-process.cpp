@@ -9,9 +9,9 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/process.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/shell.h>
+#include <wex/process.h>
+#include <wex/managedframe.h>
+#include <wex/shell.h>
 #include "test.h"
 
 TEST_CASE("wex::process")
@@ -67,14 +67,14 @@ TEST_CASE("wex::process")
   REQUIRE( shell != nullptr);
   Process("cd ~\rpwd\r", shell);
   REQUIRE( shell->GetText().Contains("home"));
-  REQUIRE( cwd.GetOriginal() != wex::path::Current());
+  REQUIRE( cwd.original() != wex::path::Current());
   REQUIRE( process->Kill());
 
   // Test working directory for process (should change).
   REQUIRE( process->Execute("ls -l", wex::PROCESS_EXEC_DEFAULT, ".."));
   REQUIRE(!process->GetError());
   REQUIRE(!wxGetCwd().Contains("data"));
-  wex::path::Current(cwd.GetOriginal());
+  wex::path::Current(cwd.original());
   REQUIRE( process->Kill());
   
   // Test invalid process (the process gets a process id, and exits immediately).

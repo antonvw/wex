@@ -10,25 +10,25 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
-#include <wx/extension/interruptable.h>
-#include <wx/extension/itemdlg.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/listitem.h>
-#include <wx/extension/util.h>
-#include <wx/extension/vcs.h>
-#include <wx/extension/report/listview.h>
-#include <wx/extension/report/defs.h>
-#include <wx/extension/report/dir.h>
-#include <wx/extension/report/frame.h>
-#include <wx/extension/report/stream.h>
+#include <wex/config.h>
+#include <wex/interruptable.h>
+#include <wex/itemdlg.h>
+#include <wex/lexers.h>
+#include <wex/listitem.h>
+#include <wex/util.h>
+#include <wex/vcs.h>
+#include <wex/report/listview.h>
+#include <wex/report/defs.h>
+#include <wex/report/dir.h>
+#include <wex/report/frame.h>
+#include <wex/report/stream.h>
 
 wex::history_listview::history_listview(const listview_data& data)
   : listview(data)
   , m_Frame(dynamic_cast<history_frame*>(wxTheApp->GetTopWindow()))
   , m_MenuFlags(data.Menu())
 {
-  if (GetData().Type() == LISTVIEW_HISTORY)
+  if (GetData().Type() == listview_data::HISTORY)
   {
     m_Frame->UseFileHistoryList(this);
   }
@@ -58,7 +58,7 @@ wex::history_listview::history_listview(const listview_data& data)
         {
           if (GetSelectedItemCount() == 1)
           {
-            list = m_Frame->Activate(LISTVIEW_FILE);
+            list = m_Frame->Activate(listview_data::FILE);
             if (list == nullptr) return;
             const int main_selected = list->GetFirstSelected();
             comparefile(listitem(list, main_selected).GetFileName(), *filename);
@@ -87,7 +87,7 @@ wex::history_listview::history_listview(const listview_data& data)
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     const wex::tool& tool(event.GetId());
-    if (tool.GetId() == ID_TOOL_REPORT_KEYWORD && GetData().Type() == LISTVIEW_KEYWORD) return;
+    if (tool.GetId() == ID_TOOL_REPORT_KEYWORD && GetData().Type() == listview_data::KEYWORD) return;
     if (tool.IsFindType() && m_Frame->FindInFilesDialog(tool.GetId()) == wxID_CANCEL) return;
     if (!listview_stream::SetupTool(tool, m_Frame)) return;
 
@@ -141,16 +141,16 @@ void wex::history_listview::BuildPopupMenu(wex::menu& menu)
   {
     const listitem item(this, GetFirstSelected());
 
-    exists = item.GetFileName().GetStat().IsOk();
+    exists = item.GetFileName().GetStat().is_ok();
     is_folder = item.GetFileName().DirExists();
-    read_only = item.GetFileName().GetStat().IsReadOnly();
+    read_only = item.GetFileName().GetStat().is_readonly();
     is_make = item.GetFileName().GetLexer().GetScintillaLexer() == "makefile";
   }
 
   listview::BuildPopupMenu(menu);
 
   if (GetSelectedItemCount() > 1 && exists &&
-     !wxConfigBase::Get()->Read(_("Comparator")).empty())
+     !config(_("Comparator")).empty())
   {
     menu.AppendSeparator();
     menu.Append(ID_LIST_COMPARE, _("C&ompare") + "\tCtrl+M");
@@ -164,11 +164,11 @@ void wex::history_listview::BuildPopupMenu(wex::menu& menu)
       menu.Append(ID_LIST_RUN_MAKE, _("&Make"));
     }
 
-    if ( GetData().Type() != LISTVIEW_FILE &&
+    if ( GetData().Type() != listview_data::FILE &&
         !wex::vcs().Use() &&
          exists && !is_folder)
     {
-      if (auto* list = m_Frame->Activate(LISTVIEW_FILE);
+      if (auto* list = m_Frame->Activate(listview_data::FILE);
         list != nullptr && list->GetSelectedItemCount() == 1)
       {
         listitem thislist(this, GetFirstSelected());
@@ -178,7 +178,7 @@ void wex::history_listview::BuildPopupMenu(wex::menu& menu)
 
         if (const std::string with_file = otherlist.GetFileName().Path().string(); 
           current_file != with_file &&
-            !wxConfigBase::Get()->Read(_("Comparator")).empty())
+            !config(_("Comparator")).empty())
         {
           menu.AppendSeparator();
           menu.Append(ID_LIST_COMPARE,
@@ -200,9 +200,9 @@ void wex::history_listview::BuildPopupMenu(wex::menu& menu)
       }
     }
 
-    // Finding in the LISTVIEW_FIND would result in recursive calls, do not add it.
+    // Finding in the listview_data::FIND would result in recursive calls, do not add it.
     if ( exists &&
-         GetData().Type() != LISTVIEW_FIND && (m_MenuFlags & LISTVIEW_MENU_REPORT_FIND))
+         GetData().Type() != listview_data::FIND && (m_MenuFlags & listview_data::MENU_REPORT_FIND))
     {
       menu.AppendSeparator();
       menu.Append(ID_TOOL_REPORT_FIND, 
@@ -217,7 +217,7 @@ void wex::history_listview::BuildPopupMenu(wex::menu& menu)
   }
 
   if (GetSelectedItemCount() > 0 && exists && 
-     (m_MenuFlags & LISTVIEW_MENU_TOOL) && !lexers::Get()->GetLexers().empty())
+     (m_MenuFlags & listview_data::MENU_TOOL) && !lexers::Get()->get().empty())
   {
     menu.AppendSeparator();
     menu.AppendTools();
@@ -230,13 +230,19 @@ bool wex::history_listview::Destroy()
   return listview::Destroy();
 }
 
-wex::listview_type wex::history_listview::GetTypeTool(
+wex::listview_data::type wex::history_listview::GetTypeTool(
   const tool& tool)
 {
   switch (tool.GetId())
   {
-    case ID_TOOL_REPORT_FIND: return LISTVIEW_FIND;
-    case ID_TOOL_REPORT_KEYWORD: return LISTVIEW_KEYWORD;
-    default: return LISTVIEW_NONE;
+    case ID_TOOL_REPLACE:
+    case ID_TOOL_REPORT_FIND: 
+      return listview_data::FIND;
+    
+    case ID_TOOL_REPORT_KEYWORD: 
+      return listview_data::KEYWORD;
+    
+    default: 
+      return listview_data::NONE;
   }
 }

@@ -6,17 +6,14 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <numeric>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wx/extension/vi-macros.h>
-#include <wx/extension/lexer-props.h>
-#include <wx/extension/log.h>
-#include <wx/extension/path.h>
-#include <wx/extension/type-to-value.h>
-#include <wx/extension/util.h>
-#include <wx/extension/vi-macros-mode.h>
+#include <wex/vi-macros.h>
+#include <wex/config.h>
+#include <wex/lexer-props.h>
+#include <wex/log.h>
+#include <wex/path.h>
+#include <wex/type-to-value.h>
+#include <wex/util.h>
+#include <wex/vi-macros-mode.h>
 
 pugi::xml_document wex::vi_macros::m_doc;
 bool wex::vi_macros::m_IsModified = false;
@@ -82,7 +79,7 @@ const std::vector< std::string > wex::vi_macros::Get(const std::string& macro)
 
 const wex::path wex::vi_macros::GetFileName()
 {
-  return path(config_dir(), "macros.xml");
+  return path(config().dir(), "macros.xml");
 }
 
 const std::string wex::vi_macros::GetRegister(const char name) const
@@ -369,7 +366,7 @@ void wex::vi_macros::SetAbbreviation(const std::string& name, const std::string&
 void wex::vi_macros::SetKeyMap(
   const std::string& name, 
   const std::string& value,
-  vi_macros_keytype type)
+  vi_macros::key_type type)
 {
   switch (type)
   {

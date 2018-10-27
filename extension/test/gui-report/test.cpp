@@ -1,29 +1,30 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test.cpp
-// Purpose:   Implementation for wex::tension report unit testing
+// Purpose:   Implementation for wex report unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <chrono>
-#include <wx/extension/dir.h>
-#include <wx/extension/frd.h>
-#include <wx/extension/tostring.h>
-#include <wx/extension/tool.h>
+#include <wex/dir.h>
+#include <wex/frd.h>
+#include <wex/tostring.h>
+#include <wex/tool.h>
 #include "test.h"
 
 TEST_CASE("wex::report")
 {
   wex::tool tool(wex::ID_TOOL_REPORT_FIND);
 
-  wex::listview* report = new wex::listview(wex::listview_data().Type(wex::LISTVIEW_FIND));
+  wex::listview* report = new wex::listview(
+    wex::listview_data().Type(wex::listview_data::FIND));
   
   AddPane(GetFrame(), report);
     
   const auto files = wex::get_all_files(
     wex::path("../../../extension/test/gui-report"), 
     "*.cpp", 
-    wex::DIR_FILES | wex::DIR_DIRS);
+    wex::dir::FILES | wex::dir::DIRS);
   
   REQUIRE(files.size() > 5);
     
@@ -55,7 +56,8 @@ TEST_CASE("wex::report")
     false, 
     report));
     
-  const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
+  const auto milli = std::chrono::duration_cast<
+    std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
   
   REQUIRE(milli.count() < 1500);
 

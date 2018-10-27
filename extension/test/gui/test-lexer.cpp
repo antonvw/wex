@@ -10,10 +10,10 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/lexer.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/stc.h>
+#include <wex/lexer.h>
+#include <wex/managedframe.h>
+#include <wex/lexers.h>
+#include <wex/stc.h>
 #include "test.h"
 
 TEST_CASE("wex::lexer")
@@ -22,7 +22,7 @@ TEST_CASE("wex::lexer")
 
   SUBCASE("Default constructor")
   {
-    REQUIRE(!lexer.IsOk());
+    REQUIRE(!lexer.is_ok());
     REQUIRE(!lexer.Previewable());
     REQUIRE( lexer.GetStyles().empty());
     REQUIRE( lexer.GetDisplayLexer().empty());
@@ -32,16 +32,16 @@ TEST_CASE("wex::lexer")
 
   SUBCASE("Default constructor with lexer")
   {
-    REQUIRE( wex::lexer("cpp").IsOk());
-    REQUIRE( wex::lexer("pascal").IsOk());
-    REQUIRE(!wex::lexer("xxx").IsOk());
+    REQUIRE( wex::lexer("cpp").is_ok());
+    REQUIRE( wex::lexer("pascal").is_ok());
+    REQUIRE(!wex::lexer("xxx").is_ok());
     REQUIRE(!wex::lexer().Set("xxx"));
   }
   
   SUBCASE("Constructor using STC")
   {
     wex::lexer lexer(GetSTC());
-    REQUIRE(!lexer.IsOk());
+    REQUIRE(!lexer.is_ok());
     lexer.Apply();
   }
 
@@ -59,15 +59,15 @@ TEST_CASE("wex::lexer")
 
     REQUIRE(!lexer.Set(wex::lexers::Get()->FindByText("XXXX")));
     REQUIRE( lexer.GetDisplayLexer().empty());
-    REQUIRE(!lexer.IsOk());
+    REQUIRE(!lexer.is_ok());
     REQUIRE( lexer.Set(wex::lexers::Get()->FindByText("<html>")));
-    REQUIRE( lexer.IsOk());
+    REQUIRE( lexer.is_ok());
     REQUIRE( lexer.GetScintillaLexer() == "hypertext");
     REQUIRE( lexer.GetDisplayLexer() == "hypertext");
     REQUIRE( lexer.Previewable());
     REQUIRE( lexer.Set(wex::lexers::Get()->FindByText("// this is a cpp comment text")));
-    REQUIRE( lexer.IsOk());
-    REQUIRE( wex::lexer(lexer).IsOk());
+    REQUIRE( lexer.is_ok());
+    REQUIRE( wex::lexer(lexer).is_ok());
     REQUIRE( lexer.GetDisplayLexer() == "cpp");
     REQUIRE( lexer.GetScintillaLexer() == "cpp");
   }
@@ -75,11 +75,11 @@ TEST_CASE("wex::lexer")
   SUBCASE("Reset")
   {
     lexer.Set("markdown");
-    REQUIRE( lexer.GetEdgeMode() == wex::edgemode::NONE);
+    REQUIRE( lexer.GetEdgeMode() == wex::edge_mode::NONE);
     lexer.Reset();
     REQUIRE( lexer.GetDisplayLexer().empty());
     REQUIRE( lexer.GetScintillaLexer().empty());
-    REQUIRE( lexer.GetEdgeMode() == wex::edgemode::ABSENT);
+    REQUIRE( lexer.GetEdgeMode() == wex::edge_mode::ABSENT);
   }
 
   SUBCASE("Testing several methods")
@@ -157,8 +157,8 @@ TEST_CASE("wex::lexer")
   
   SUBCASE("lexers")
   {
-    REQUIRE( wex::lexer("ada").IsOk());
-    REQUIRE( wex::lexer("rfw").IsOk());
-    REQUIRE(!wex::lexer("xxx").IsOk());
+    REQUIRE( wex::lexer("ada").is_ok());
+    REQUIRE( wex::lexer("rfw").is_ok());
+    REQUIRE(!wex::lexer("xxx").is_ok());
   }
 }

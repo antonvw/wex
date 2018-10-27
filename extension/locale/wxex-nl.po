@@ -234,7 +234,7 @@ msgid "Line numbers"
 msgstr "Regel nummers"
 
 #: ../src/ex.cpp:215 ../src/ex.cpp:216 ../src/stc.cpp:71 ../src/stc.cpp:72
-#: ../src/vifsm.cpp:178
+#: ../src/vi_fsm.cpp:178
 msgid "Show mode"
 msgstr "Laat modus zien"
 

@@ -10,12 +10,12 @@
 #include <wx/wx.h>
 #endif
 #include <numeric>
-#include <wx/config.h>
 #include <wx/stc/stc.h>
-#include <wx/extension/style.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/log.h>
-#include <wx/extension/tokenizer.h>
+#include <wex/style.h>
+#include <wex/config.h>
+#include <wex/lexers.h>
+#include <wex/log.h>
+#include <wex/tokenizer.h>
 #include <easylogging++.h>
 
 void wex::style::Apply(wxStyledTextCtrl* stc) const
@@ -68,7 +68,7 @@ void wex::style::Set(const pugi::xml_node& node, const std::string& macro)
 
       if (value.Contains("default-font"))
       {
-        const wxFont font(wxConfigBase::Get()->ReadObject(_("Default font"), 
+        const wxFont font(config(_("Default font")).get(
           wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT)));
         
         value.Replace("default-font", 

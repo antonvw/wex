@@ -13,13 +13,13 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
 #include <wx/grid.h>
 #include <wx/stc/stc.h>
-#include <wx/extension/otl.h>
-#include <wx/extension/itemdlg.h>
-#include <wx/extension/stcdlg.h>
-#include <wx/extension/util.h>
+#include <wex/otl.h>
+#include <wex/config.h>
+#include <wex/itemdlg.h>
+#include <wex/stcdlg.h>
+#include <wex/util.h>
 
 #if wexUSE_OTL
 
@@ -35,7 +35,7 @@ wex::otl::~otl()
 
 const std::string wex::otl::Datasource() const
 {
-  return config_firstof(_("Datasource"));
+  return wex::config(_("Datasource")).firstof();
 }
 
 bool wex::otl::Logoff()
@@ -58,22 +58,20 @@ bool wex::otl::Logon(const wex::window_data& par)
   if (data.Button() != 0)
   {
     if (item_dialog({
-        {_("Datasource"), ITEM_COMBOBOX, std::any(), control_data().Required(true)},
+        {_("Datasource"), item::COMBOBOX, std::any(), control_data().Required(true)},
         {_("User")},
-        {_("Password"), std::string(), ITEM_TEXTCTRL, control_data().Window(window_data().Style(wxTE_PASSWORD))}}, 
+        {_("Password"), std::string(), item::TEXTCTRL, control_data().Window(window_data().Style(wxTE_PASSWORD))}}, 
         data).ShowModal() == wxID_CANCEL)
     {
       return false;
     }
   }
 
-  auto* config = wxConfigBase::Get(); 
-
   try
   {
-    const wxString connect =
-      config->Read(_("User"), "") + "/" + 
-      config->Read(_("Password"), "") + "@" +
+    const std::string connect =
+      config(_("User")).get() + "/" + 
+      config(_("Password")).get() + "@" +
       Datasource();
 
     m_Connect.rlogon(connect.c_str(),

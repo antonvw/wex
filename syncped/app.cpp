@@ -9,11 +9,11 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/cmdline.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/tostring.h>
-#include <wx/extension/util.h>
-#include <wx/extension/version.h>
+#include <wex/cmdline.h>
+#include <wex/stc.h>
+#include <wex/tostring.h>
+#include <wex/util.h>
+#include <wex/version.h>
 #include <easylogging++.h>
 #include "app.h"
 #include "frame.h"
@@ -39,7 +39,7 @@ bool app::OnInit()
      {{{"d", "debug", "use debug mode"}, [&](bool on) {m_Debug = on;}},
       {{"H", "hex", "hex mode"}, [&](bool on) {
         if (!on) return;
-        m_Data.Flags(wex::STC_WIN_HEX, wex::DATA_OR);}},
+        m_Data.Flags(wex::stc_data::WIN_HEX, wex::control_data::OR);}},
       {{"i", "info", "show version"}, [&](bool on) {
         if (!on) return;
         std::cout << 
@@ -55,7 +55,7 @@ bool app::OnInit()
           "\nCanonical name: " << GetLocale().GetCanonicalName().c_str() <<
           "\nLanguage: " << GetLocale().GetLanguage() <<
           "\nLocale: " << GetLocale().GetLocale().c_str() <<
-          "\nIs ok: " << GetLocale().IsOk();
+          "\nIs ok: " << GetLocale().is_ok();
           if (const auto *info = wxLocale::GetLanguageInfo(GetLocale().GetLanguage());
             info == nullptr)
           {
@@ -72,25 +72,25 @@ bool app::OnInit()
       {{"O", "splitver", "split tabs vertically"}, [&](bool on) {
         if (on) m_Split = wxRIGHT;}},
       {{"R", "readonly", "readonly mode"}, [&](bool on) {
-        if (on) m_Data.Flags(wex::STC_WIN_READ_ONLY, wex::DATA_OR);}}},
-     {{{"c", "command", "vi command"}, {wex::CMD_LINE_STRING, [&](const std::any& s) {
+        if (on) m_Data.Flags(wex::stc_data::WIN_READ_ONLY, wex::control_data::OR);}}},
+     {{{"c", "command", "vi command"}, {wex::cmdline::STRING, [&](const std::any& s) {
         m_Data.Control(wex::control_data().Command(std::any_cast<std::string>(s)));}}},
-      {{"D", "logfile", "sets log file"}, {wex::CMD_LINE_STRING, [&](const std::any& s) {}}},
-      {{"L", "logflags", "sets log flags"}, {wex::CMD_LINE_INT, [&](const std::any& s) {
+      {{"D", "logfile", "sets log file"}, {wex::cmdline::STRING, [&](const std::any& s) {}}},
+      {{"L", "logflags", "sets log flags"}, {wex::cmdline::INT, [&](const std::any& s) {
         el::Loggers::addFlag((el::LoggingFlag)std::any_cast<int>(s));}}},
-      {{"m", "vmodule", "activates verbosity for files starting with main to level"}, {wex::CMD_LINE_STRING, [&](const std::any& s) {}}},
-      {{"s", "scriptin", "script in"}, {wex::CMD_LINE_STRING, [&](const std::any& s) {
+      {{"m", "vmodule", "activates verbosity for files starting with main to level"}, {wex::cmdline::STRING, [&](const std::any& s) {}}},
+      {{"s", "scriptin", "script in"}, {wex::cmdline::STRING, [&](const std::any& s) {
         m_Scriptin.Open(std::any_cast<std::string>(s));}}},
-      {{"S", "source", "source file"}, {wex::CMD_LINE_STRING, [&](const std::any& s) {
+      {{"S", "source", "source file"}, {wex::cmdline::STRING, [&](const std::any& s) {
         m_Data.Control(wex::control_data().Command(":so " + std::any_cast<std::string>(s)));}}},
-      {{"t", "tag", "start at tag"}, {wex::CMD_LINE_STRING, [&](const std::any& s) {
+      {{"t", "tag", "start at tag"}, {wex::cmdline::STRING, [&](const std::any& s) {
         m_Tag = std::any_cast<std::string>(s);}}},
-      {{"u", "tagfile", "use tagfile"}, {wex::CMD_LINE_STRING, [&](const std::any& s) {
+      {{"u", "tagfile", "use tagfile"}, {wex::cmdline::STRING, [&](const std::any& s) {
         m_Data.CTagsFileName(std::any_cast<std::string>(s));}}},
-      {{"V", "v", "activates verbosity upto verbose level (valid range: 0-9)"}, {wex::CMD_LINE_INT, [&](const std::any& s) {}}},
-      {{"w", "scriptout", "script out write"}, {wex::CMD_LINE_STRING, [&](const std::any& s) {
+      {{"V", "v", "activates verbosity upto verbose level (valid range: 0-9)"}, {wex::cmdline::INT, [&](const std::any& s) {}}},
+      {{"w", "scriptout", "script out write"}, {wex::cmdline::STRING, [&](const std::any& s) {
         m_Scriptout.Open(std::any_cast<std::string>(s), std::ios_base::out);}}},
-      {{"W", "append", "script out append"}, {wex::CMD_LINE_STRING, [&](const std::any& s) {
+      {{"W", "append", "script out append"}, {wex::cmdline::STRING, [&](const std::any& s) {
         m_Scriptout.Open(std::any_cast<std::string>(s), std::ios_base::app);}}}},
      {{"files", "input file[:line number][:column number]"}, [&](const std::vector<std::string> & v) {
         for (const auto & f : v) m_Files.emplace_back(f);

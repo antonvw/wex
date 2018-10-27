@@ -10,25 +10,6 @@
 
 namespace wex
 {
-  enum class States
-  {
-    IDLE,
-    PLAYINGBACK,
-    PLAYINGBACK_WHILE_RECORDING,
-    RECORDING,
-    EXPANDING_TEMPLATE,
-    EXPANDING_VARIABLE,
-  };
-
-  enum class Triggers
-  {
-    DONE,
-    EXPAND_TEMPLATE,
-    EXPAND_VARIABLE,
-    PLAYBACK,
-    RECORD,
-  };
-
   class ex;
   class variable;
 
@@ -36,13 +17,32 @@ namespace wex
   class vi_macros_fsm
   {
   public:
+    enum state
+    {
+      IDLE,
+      PLAYINGBACK,
+      PLAYINGBACK_WHILE_RECORDING,
+      RECORDING,
+      EXPANDING_TEMPLATE,
+      EXPANDING_VARIABLE,
+    };
+
+    enum trigger
+    {
+      DONE,
+      EXPAND_TEMPLATE,
+      EXPAND_VARIABLE,
+      PLAYBACK,
+      RECORD,
+    };
+
     /// Default constructor.
     vi_macros_fsm();
 
     /// Transitions according to trigger.
     bool Execute(
       /// trigger
-      Triggers trigger, 
+      trigger trigger, 
       /// command
       const std::string& macro = std::string(), 
       // ex component
@@ -67,30 +67,30 @@ namespace wex
 
     /// Returns internal state as a string.
     const std::string State() const {
-      return Get() == States::IDLE ? std::string(): State(Get());};
+      return Get() == IDLE ? std::string(): State(Get());};
 
     /// Returns any state as a string.
-    static const std::string State(States state) {
+    static const std::string State(state state) {
       switch (state)
       {
-        case States::IDLE: return "idle"; 
-        case States::EXPANDING_TEMPLATE: return "template";
-        case States::EXPANDING_VARIABLE: return "variable";
-        case States::PLAYINGBACK: return "playback";
-        case States::PLAYINGBACK_WHILE_RECORDING: return "recording playback";
-        case States::RECORDING: return "recording";
+        case IDLE: return "idle"; 
+        case EXPANDING_TEMPLATE: return "template";
+        case EXPANDING_VARIABLE: return "variable";
+        case PLAYINGBACK: return "playback";
+        case PLAYINGBACK_WHILE_RECORDING: return "recording playback";
+        case RECORDING: return "recording";
         default: return "unhandled state";
       };};
 
     /// Returns any trigger as a string.
-    static const std::string Trigger(Triggers trigger) {
+    static const std::string Trigger(trigger trigger) {
       switch (trigger)
       {
-        case Triggers::DONE: return "done";
-        case Triggers::EXPAND_TEMPLATE: return "expand_template";
-        case Triggers::EXPAND_VARIABLE: return "expand_variable";
-        case Triggers::PLAYBACK: return "playback";
-        case Triggers::RECORD: return "record";
+        case DONE: return "done";
+        case EXPAND_TEMPLATE: return "expand_template";
+        case EXPAND_VARIABLE: return "expand_variable";
+        case PLAYBACK: return "playback";
+        case RECORD: return "record";
         default: return "unhandled trigger";
       };};
   private:
@@ -101,7 +101,7 @@ namespace wex
     void SetAskForInput() const;
     void StartRecording();
     void StopRecording();
-    static void Verbose(States, States, Triggers);
+    static void Verbose(state, state, trigger);
 
     int m_count{1};
     bool m_error {false}, m_playback {false};
@@ -110,6 +110,6 @@ namespace wex
     std::string* m_expanded {nullptr};
     static inline std::string m_macro;
 
-    FSM::Fsm<States, States::IDLE, Triggers> m_fsm;
+    FSM::Fsm<state, IDLE, trigger> m_fsm;
   };
 };

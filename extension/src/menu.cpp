@@ -10,12 +10,12 @@
 #include <wx/wx.h>
 #endif
 #include <map>
-#include <wx/extension/menu.h>
-#include <wx/extension/art.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/tool.h>
-#include <wx/extension/util.h> // for wex::ellipsed
-#include <wx/extension/vcs.h>
+#include <wex/menu.h>
+#include <wex/art.h>
+#include <wex/lexers.h>
+#include <wex/tool.h>
+#include <wex/util.h> // for wex::ellipsed
+#include <wex/vcs.h>
 
 wex::menu::menu(long style)
   : m_Style(style)
@@ -63,49 +63,49 @@ wxMenuItem* wex::menu::Append(
 
 void wex::menu::AppendEdit(bool add_invert)
 {
-  if (!(m_Style & MENU_IS_READ_ONLY) &&
-       (m_Style & MENU_IS_SELECTED))
+  if (!(m_Style & IS_READ_ONLY) &&
+       (m_Style & IS_SELECTED))
   {
     Append(wxID_CUT);
   }
 
-  if (m_Style & MENU_IS_SELECTED)
+  if (m_Style & IS_SELECTED)
   {
     Append(wxID_COPY);
   }
 
-  if (!(m_Style & MENU_IS_READ_ONLY) &&
-       (m_Style & MENU_CAN_PASTE))
+  if (!(m_Style & IS_READ_ONLY) &&
+       (m_Style & CAN_PASTE))
   {
     Append(wxID_PASTE);
   }
 
-  if (!(m_Style & MENU_IS_SELECTED) &&
-      !(m_Style & MENU_IS_EMPTY))
+  if (!(m_Style & IS_SELECTED) &&
+      !(m_Style & IS_EMPTY))
   {
     Append(wxID_SELECTALL);
   }
   else
   {
-    if (add_invert && !(m_Style & MENU_IS_EMPTY))
+    if (add_invert && !(m_Style & IS_EMPTY))
     {
       Append(ID_EDIT_SELECT_NONE, _("&Deselect All"));
     }
   }
 
-  if (m_Style & MENU_ALLOW_CLEAR)
+  if (m_Style & ALLOW_CLEAR)
   {
     Append(wxID_CLEAR);
   }
 
-  if (add_invert && !(m_Style & MENU_IS_EMPTY))
+  if (add_invert && !(m_Style & IS_EMPTY))
   {
     Append(ID_EDIT_SELECT_INVERT, _("&Invert"));
   }
 
-  if (!(m_Style & MENU_IS_READ_ONLY) &&
-       (m_Style & MENU_IS_SELECTED) &&
-      !(m_Style & MENU_IS_EMPTY))
+  if (!(m_Style & IS_READ_ONLY) &&
+       (m_Style & IS_SELECTED) &&
+      !(m_Style & IS_EMPTY))
   {
     Append(wxID_DELETE);
   }
@@ -150,7 +150,7 @@ void wex::menu::AppendSubMenu(
 
 bool wex::menu::AppendTools(int itemid)
 {
-  if (lexers::Get()->GetLexers().empty())
+  if (lexers::Get()->get().empty())
   {
     return false;
   }
@@ -175,7 +175,7 @@ bool wex::menu::AppendTools(int itemid)
 
 bool wex::menu::AppendVCS(const path& filename, bool show_modal)
 {
-  if (!filename.GetStat().IsOk())
+  if (!filename.GetStat().is_ok())
   {
     wex::vcs vcs;
        

@@ -9,23 +9,20 @@
 #include <functional>
 #include <regex>
 #include <sstream>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wx/config.h>
-#include <wx/extension/vi.h>
-#include <wx/extension/addressrange.h>
-#include <wx/extension/ctags.h>
-#include <wx/extension/frd.h>
-#include <wx/extension/hexmode.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/tokenizer.h>
-#include <wx/extension/util.h>
-#include <wx/extension/vi-macros.h>
-#include <wx/extension/vi-macros-mode.h>
+#include <wex/vi.h>
+#include <wex/addressrange.h>
+#include <wex/app.h>
+#include <wex/config.h>
+#include <wex/ctags.h>
+#include <wex/frd.h>
+#include <wex/hexmode.h>
+#include <wex/lexers.h>
+#include <wex/managedframe.h>
+#include <wex/stc.h>
+#include <wex/tokenizer.h>
+#include <wex/util.h>
+#include <wex/vi-macros.h>
+#include <wex/vi-macros-mode.h>
 #include <easylogging++.h>
 
 // compares two strings in compile time constant fashion
@@ -42,8 +39,8 @@ constexpr int c_strcmp( char const* lhs, char const* rhs )
   {                                                                    \
     switch (Mode().Get())                                              \
     {                                                                  \
-      case wex::vi_modes::NORMAL:                                      \
-      case wex::vi_modes::INSERT:                                      \
+      case wex::vi_mode::state::NORMAL:                                \
+      case wex::vi_mode::state::INSERT:                                \
         if (WRAP && c_strcmp((#SCOPE), "Line") ==0)                    \
         {                                                              \
           if (c_strcmp((#DIRECTION), "Down") == 0)                     \
@@ -53,14 +50,14 @@ constexpr int c_strcmp( char const* lhs, char const* rhs )
         }                                                              \
         GetSTC()->SCOPE##DIRECTION();                                  \
         break;                                                         \
-      case wex::vi_modes::VISUAL: GetSTC()->SCOPE##DIRECTION##Extend(); \
+      case wex::vi_mode::state::VISUAL: GetSTC()->SCOPE##DIRECTION##Extend(); \
         break;                                                         \
-      case wex::vi_modes::VISUAL_LINE:                                 \
+      case wex::vi_mode::state::VISUAL_LINE:                           \
         if (c_strcmp((#SCOPE), "Char") != 0 &&                         \
             c_strcmp((#SCOPE), "Word") != 0)                           \
           GetSTC()->SCOPE##DIRECTION##Extend();                        \
         break;                                                         \
-      case wex::vi_modes::VISUAL_RECT:                                 \
+      case wex::vi_mode::state::VISUAL_RECT:                           \
         GetSTC()->SCOPE##DIRECTION##RectExtend();                      \
         break;                                                         \
       default:                                                         \
@@ -71,13 +68,13 @@ constexpr int c_strcmp( char const* lhs, char const* rhs )
   {                                                                    \
     switch (Mode().Get())                                              \
     {                                                                  \
-      case wex::vi_modes::NORMAL:                                      \
-      case wex::vi_modes::INSERT:                                      \
+      case wex::vi_mode::state::NORMAL:                                \
+      case wex::vi_mode::state::INSERT:                                \
         if ((COND) &&                                                  \
           GetSTC()->GetColumn(GetSTC()->GetCurrentPos()) !=            \
           GetSTC()->GetLineIndentation(GetSTC()->GetCurrentLine()))    \
           GetSTC()->VCHome(); break;                                   \
-      case wex::vi_modes::VISUAL:                                      \
+      case wex::vi_mode::state::VISUAL:                                \
         if (COND) GetSTC()->VCHomeExtend();                            \
         break;                                                         \
       default:                                                         \
@@ -248,7 +245,7 @@ wex::vi::vi(stc* stc)
       return command.size();}},
     {"nN", [&](const std::string& command){REPEAT(
       if (const std::string find(GetSTC()->GetMarginTextClick() > 0 ?
-        list_from_config("exmargin").front():
+        config("exmargin").get_list().front():
         find_replace_data::Get()->GetFindString());
         !GetSTC()->FindNext(
         find,
@@ -418,7 +415,7 @@ wex::vi::vi(stc* stc)
       if (GetSTC()->CanUndo()) GetSTC()->Undo();
       else 
       {
-        if (wxConfigBase::Get()->ReadLong(_("Error bells"), 1))
+        if (config(_("Error bells")).get(true))
         {
           wxBell();
         }
@@ -547,14 +544,14 @@ wex::vi::vi(stc* stc)
     {"><", [&](const std::string& command){
       switch (Mode().Get())
       {
-        case vi_modes::NORMAL:
+        case vi_mode::state::NORMAL:
           command == ">" ? 
             addressrange(this, m_Count).ShiftRight(): 
             addressrange(this, m_Count).ShiftLeft();
           break;
-        case vi_modes::VISUAL:
-        case vi_modes::VISUAL_LINE:
-        case vi_modes::VISUAL_RECT:
+        case vi_mode::state::VISUAL:
+        case vi_mode::state::VISUAL_LINE:
+        case vi_mode::state::VISUAL_RECT:
           command == ">" ? 
             addressrange(this, "'<,'>").ShiftRight(): 
             addressrange(this, "'<,'>").ShiftLeft();
@@ -654,6 +651,11 @@ void wex::vi::AppendInsertCommand(const std::string& s)
   m_InsertCommand.append(s);
 }
 
+void wex::vi::AppendInsertText(const std::string& s)
+{
+  m_InsertText.append(s);
+}
+  
 bool wex::vi::Command(const std::string& command)
 {
   if (command.empty() || !GetIsActive())
@@ -1305,8 +1307,8 @@ bool wex::vi::OnKeyDown(const wxKeyEvent& event)
   }
   else if ((event.GetModifiers() & wxMOD_CONTROL) && event.GetKeyCode() != WXK_NONE)
   {
-    if (const auto& it = GetMacros().GetKeysMap(KEY_CONTROL).find(event.GetKeyCode());
-      it != GetMacros().GetKeysMap(KEY_CONTROL).end()) 
+    if (const auto& it = GetMacros().GetKeysMap(vi_macros::key_type::KEY_CONTROL).find(event.GetKeyCode());
+      it != GetMacros().GetKeysMap(vi_macros::key_type::KEY_CONTROL).end()) 
     {
       Command(it->second);
       return false;
@@ -1321,8 +1323,8 @@ bool wex::vi::OnKeyDown(const wxKeyEvent& event)
       Command("\x1b");
     }
 
-    if (const auto& it = GetMacros().GetKeysMap(KEY_ALT).find(event.GetKeyCode());
-      it != GetMacros().GetKeysMap(KEY_ALT).end()) 
+    if (const auto& it = GetMacros().GetKeysMap(vi_macros::key_type::KEY_ALT).find(event.GetKeyCode());
+      it != GetMacros().GetKeysMap(vi_macros::key_type::KEY_ALT).end()) 
     {
       Command(it->second);
       return false;
@@ -1534,11 +1536,11 @@ void wex::vi::VisualExtend(int begin_pos, int end_pos)
 
   switch (Mode().Get())
   {
-    case vi_modes::VISUAL:
+    case vi_mode::state::VISUAL:
       GetSTC()->SetSelection(begin_pos, end_pos);
       break;
 
-    case vi_modes::VISUAL_LINE:
+    case vi_mode::state::VISUAL_LINE:
       if (begin_pos < end_pos)
       {
         GetSTC()->SetSelection(
@@ -1553,7 +1555,7 @@ void wex::vi::VisualExtend(int begin_pos, int end_pos)
       } 
       break;
 
-    case vi_modes::VISUAL_RECT:
+    case vi_mode::state::VISUAL_RECT:
       if (begin_pos < end_pos)
       {
         while (GetSTC()->GetCurrentPos() < end_pos)

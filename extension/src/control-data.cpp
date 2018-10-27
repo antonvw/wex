@@ -5,7 +5,7 @@
 // Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/extension/control-data.h>
+#include <wex/control-data.h>
 
 wex::control_data& wex::control_data::Col(int col)
 {

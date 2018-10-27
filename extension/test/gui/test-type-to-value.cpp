@@ -9,7 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/type-to-value.h>
+#include <wex/type-to-value.h>
 #include "test.h"
 
 TEST_CASE("wex::type_to_value")

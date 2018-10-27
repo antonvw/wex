@@ -9,10 +9,10 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/vi-mode.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/vi.h>
+#include <wex/vi-mode.h>
+#include <wex/managedframe.h>
+#include <wex/stc.h>
+#include <wex/vi.h>
 #include "test.h"
 
 TEST_CASE("wex::vi_mode")
@@ -52,10 +52,10 @@ TEST_CASE("wex::vi_mode")
   REQUIRE( mode.Normal());
   GetSTC()->SetReadOnly(false);
   
-  for (const auto& visual : std::vector<std::pair<std::string, wex::vi_modes>> {
-    {"v",wex::vi_modes::VISUAL},
-    {"V",wex::vi_modes::VISUAL_LINE},
-    {"K",wex::vi_modes::VISUAL_RECT}})
+  for (const auto& visual : std::vector<std::pair<std::string, wex::vi_mode::state>> {
+    {"v",wex::vi_mode::state::VISUAL},
+    {"V",wex::vi_mode::state::VISUAL_LINE},
+    {"K",wex::vi_mode::state::VISUAL_RECT}})
   {
     std::string command(visual.first);
     REQUIRE( mode.Transition(command));

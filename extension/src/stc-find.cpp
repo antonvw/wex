@@ -6,11 +6,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <regex>
-#include <wx/config.h>
 #include <wx/log.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/util.h>
+#include <wex/stc.h>
+#include <wex/config.h>
+#include <wex/managedframe.h>
+#include <wex/util.h>
 #include <easylogging++.h>
 
 bool wex::stc::FindNext(bool find_next)
@@ -33,7 +33,7 @@ bool wex::stc::FindNext(
 
   static bool recursive = false;
   static int start_pos, end_pos;
-  const bool wrapscan(wxConfigBase::Get()->ReadLong(_("Wrap scan"), 1));
+  const bool wrapscan(config(_("Wrap scan")).get(true));
 
   if (find_next)
   {

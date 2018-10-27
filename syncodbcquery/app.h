@@ -5,10 +5,10 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/extension/app.h>
-#include <wx/extension/otl.h>
-#include <wx/extension/statistics.h>
-#include <wx/extension/report/frame.h>
+#include <wex/app.h>
+#include <wex/otl.h>
+#include <wex/statistics.h>
+#include <wex/report/frame.h>
 
 enum
 {

@@ -5,10 +5,10 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/extension/app.h>
-#include <wx/extension/notebook.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/report/frame.h>
+#include <wex/app.h>
+#include <wex/notebook.h>
+#include <wex/stc.h>
+#include <wex/report/frame.h>
 
 /// Derive your application from wex::app.
 class report_sample_app: public wex::app
@@ -28,7 +28,7 @@ public:
 protected:
   // Interface from wex::framewithhistory.
   virtual wex::listview* Activate(
-    wex::listview_type type, const wex::lexer* lexer = nullptr) override;
+    wex::listview_data::type type, const wex::lexer* lexer = nullptr) override;
   virtual bool AllowClose(wxWindowID id, wxWindow* page) override;
   virtual wex::listview* GetListView() override;
   virtual wex::stc* GetSTC() override;

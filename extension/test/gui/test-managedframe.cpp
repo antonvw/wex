@@ -9,11 +9,11 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/managedframe.h>
-#include <wx/extension/defs.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/toolbar.h>
-#include <wx/extension/vi.h>
+#include <wex/managedframe.h>
+#include <wex/defs.h>
+#include <wex/stc.h>
+#include <wex/toolbar.h>
+#include <wex/vi.h>
 #include "test.h"
 
 // Also test the toolbar (wex::toolbar).
@@ -82,7 +82,7 @@ TEST_CASE("wex::managed_frame")
   REQUIRE( GetFrame()->GetManager().GetPane("VIBAR").IsShown());
   
   REQUIRE(!GetFrame()->TogglePane("XXXXBAR"));
-  REQUIRE(!GetFrame()->GetManager().GetPane("XXXXBAR").IsOk());
+  REQUIRE(!GetFrame()->GetManager().GetPane("XXXXBAR").is_ok());
   
   GetFrame()->OnNotebook(100, GetSTC());
   

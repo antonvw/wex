@@ -5,15 +5,11 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wx/stc/stc.h>
-#include <wx/extension/marker.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/log.h>
-#include <wx/extension/tokenizer.h>
+#include <wex/marker.h>
+#include <wex/lexers.h>
+#include <wex/log.h>
+#include <wex/stc.h>
+#include <wex/tokenizer.h>
 #include <easylogging++.h>
 
 wex::marker::marker(const pugi::xml_node& node)
@@ -40,7 +36,7 @@ wex::marker::marker(const pugi::xml_node& node)
       }
     }
 
-    if (!IsOk())
+    if (!is_ok())
     {
       log() << "illegal marker:" << m_No << node;
     }
@@ -69,9 +65,9 @@ bool wex::marker::operator==(const marker& m) const
     m_No == m.m_No && m_Symbol == m.m_Symbol;
 }
 
-void wex::marker::Apply(wxStyledTextCtrl* stc) const
+void wex::marker::Apply(stc* stc) const
 {
-  if (IsOk())
+  if (is_ok())
   {
     stc->MarkerDefine(m_No, 
       m_Symbol, 
@@ -80,7 +76,7 @@ void wex::marker::Apply(wxStyledTextCtrl* stc) const
   }
 }
 
-bool wex::marker::IsOk() const
+bool wex::marker::is_ok() const
 {
   return 
     m_No >= 0 && m_No <= wxSTC_MARKER_MAX &&

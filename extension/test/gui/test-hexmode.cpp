@@ -9,10 +9,10 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/hexmode.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/stc.h>
+#include <wex/hexmode.h>
+#include <wex/lexers.h>
+#include <wex/managedframe.h>
+#include <wex/stc.h>
 #include "test.h"
 
 TEST_CASE("wex::hexmode")
@@ -21,7 +21,7 @@ TEST_CASE("wex::hexmode")
   // 0123456789012345678901234567890123456789012345678901234567890123456789
   // 30 31 32 33 34 35 36 37 38 39                   0123456789
   wex::stc* stc = new wex::stc(
-    std::string("0123456789"), wex::stc_data().Flags(wex::STC_WIN_HEX));
+    std::string("0123456789"), wex::stc_data().Flags(wex::stc_data::WIN_HEX));
 
   AddPane(GetFrame(), stc);
   REQUIRE(stc->GetText() != "0123456789");

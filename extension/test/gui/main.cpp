@@ -10,10 +10,10 @@
 #include <wx/wx.h>
 #endif
 
-#include <wx/extension/managedframe.h>
-#include <wx/extension/process.h>
-#include <wx/extension/shell.h>
-#include <wx/extension/vi-macros.h>
+#include <wex/managedframe.h>
+#include <wex/process.h>
+#include <wex/shell.h>
+#include <wex/vi-macros.h>
 
 #include "test.h"
 

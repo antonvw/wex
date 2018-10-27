@@ -10,22 +10,22 @@
 #include <vector>
 #include <wx/artprov.h>
 #include <wx/choicdlg.h>
-#include <wx/config.h>
 #include <wx/log.h>
-#include <wx/extension/ctags.h>
-#include <wx/extension/ex.h>
-#include <wx/extension/frd.h>
-#include <wx/extension/log.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/path.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/util.h>
+#include <wex/ctags.h>
+#include <wex/config.h>
+#include <wex/ex.h>
+#include <wex/frd.h>
+#include <wex/log.h>
+#include <wex/managedframe.h>
+#include <wex/path.h>
+#include <wex/stc.h>
+#include <wex/util.h>
 #include <easylogging++.h>
 #include <readtags.h>
 
 namespace wex
 {
-  enum imageaccesstype
+  enum image_access_type
   {
     IMAGE_NONE,
     IMAGE_PUBLIC,
@@ -51,7 +51,7 @@ namespace wex
     // Returns name, being fullpath or path name depending on
     // config settings.
     const std::string GetName() const {return 
-      wxConfigBase::Get()->ReadBool(_("vi tag fullpath"), false) ?
+      config(_("vi tag fullpath")).get(false) ?
         m_Path.Path().string(): m_Path.GetFullName();};
 
     // Opens file in specified frame.
@@ -67,7 +67,7 @@ namespace wex
   };
 };
 
-void SetImage(const tagEntry& entry, wex::imageaccesstype& image)
+void SetImage(const tagEntry& entry, wex::image_access_type& image)
 {
   if (const char* value = tagsField(&entry, "access"); value != nullptr)
   {
@@ -97,7 +97,7 @@ bool Compare(const tagEntry& entry,
 const std::string Filtered(
   const tagEntry& entry, 
   const wex::ctags_entry& filter, 
-  wex::imageaccesstype& image)
+  wex::image_access_type& image)
 {
   if (!filter.Active()) return entry.name;
 
@@ -196,7 +196,7 @@ std::string wex::ctags::AutoComplete(
 
   do
   {
-    wex::imageaccesstype image = IMAGE_NONE;
+    wex::image_access_type image = IMAGE_NONE;
 
     if (const auto tag(Filtered(entry, filter, image)); !tag.empty() && 
       tag != prev_tag)
@@ -365,7 +365,7 @@ void wex::ctags::Init(const std::string& filename)
 {
   m_Iterator = m_Matches.begin();
 
-  if (wex::path path(filename); path.IsAbsolute())
+  if (wex::path path(filename); path.is_absolute())
   {
     // an absolute file should exist
     Open(path.Path().string(), true);
@@ -375,7 +375,7 @@ void wex::ctags::Init(const std::string& filename)
     // First check whether default tagfile with extension 
     // exists, then without extension.
     for (const auto & it : std::vector < std::string > {
-      "./", wex::config_dir() + "/"})
+      "./", config().dir() + "/"})
     {
       if (
         (m_Ex != nullptr && (

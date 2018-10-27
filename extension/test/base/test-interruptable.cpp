@@ -9,7 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/interruptable.h>
+#include <wex/interruptable.h>
 #include "../test.h"
 
 TEST_CASE( "wex::interruptable" ) 

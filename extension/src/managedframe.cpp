@@ -10,20 +10,20 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
 #include <wx/panel.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/debug.h>
-#include <wx/extension/defs.h>
-#include <wx/extension/ex.h>
-#include <wx/extension/frd.h>
-#include <wx/extension/process.h>
-#include <wx/extension/shell.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/toolbar.h>
-#include <wx/extension/util.h>
-#include <wx/extension/vi-macros.h>
-#include <wx/extension/vi-macros-mode.h>
+#include <wex/managedframe.h>
+#include <wex/config.h>
+#include <wex/debug.h>
+#include <wex/defs.h>
+#include <wex/ex.h>
+#include <wex/frd.h>
+#include <wex/process.h>
+#include <wex/shell.h>
+#include <wex/stc.h>
+#include <wex/toolbar.h>
+#include <wex/util.h>
+#include <wex/vi-macros.h>
+#include <wex/vi-macros-mode.h>
 
 const int ID_REGISTER = wxWindow::NewControlId();
 
@@ -50,9 +50,9 @@ namespace wex
     textctrl_input& TCI() {
       switch (m_Command.Type())
       {
-        case ex_command_type::CALC: return m_Calcs;
-        case ex_command_type::EXEC: return m_Execs;
-        case ex_command_type::FIND_MARGIN: return m_FindMargins;
+        case ex_command::type::CALC: return m_Calcs;
+        case ex_command::type::EXEC: return m_Execs;
+        case ex_command::type::FIND_MARGIN: return m_FindMargins;
         default: return m_Commands;
       }};
     ex_command m_Command;
@@ -61,10 +61,10 @@ namespace wex
     wxStaticText* m_Prefix;
     bool m_ControlR {false}, m_ModeVisual {false}, m_UserInput {false};
     textctrl_input 
-      m_Calcs {ex_command_type::CALC},
-      m_Commands {ex_command_type::COMMAND},
-      m_Execs {ex_command_type::EXEC},
-      m_FindMargins {ex_command_type::FIND_MARGIN};
+      m_Calcs {ex_command::type::CALC},
+      m_Commands {ex_command::type::COMMAND},
+      m_Execs {ex_command::type::EXEC},
+      m_FindMargins {ex_command::type::FIND_MARGIN};
   };
 };
 
@@ -238,7 +238,7 @@ wxPanel* wex::managed_frame::CreateExPanel()
 void wex::managed_frame::DoRecent(
   const file_history& history, 
   size_t index, 
-  stc_window_flags flags)
+  stc_data::window_flags flags)
 {
   if (const path file(history.GetHistoryFile(index)); !file.Path().empty())
   {
@@ -280,9 +280,9 @@ void wex::managed_frame::OnNotebook(wxWindowID id, wxWindow* page)
 
 wex::stc* wex::managed_frame::OpenFile(
   const path& file,
-  const wex::stc_data& stc_data)
+  const stc_data& data)
 {
-  if (auto* stc = frame::OpenFile(file, stc_data); stc != nullptr)
+  if (auto* stc = frame::OpenFile(file, data); stc != nullptr)
   {
     SetRecentFile(file);
     return stc;
@@ -333,7 +333,7 @@ void wex::managed_frame::SyncAll()
 {
   if (auto* stc = GetSTC(); stc != nullptr)
   {
-    stc->Sync(wxConfigBase::Get()->ReadBool("AllowSync", true));
+    stc->Sync(config("AllowSync").get(true));
   }
 }
 
@@ -358,7 +358,7 @@ wex::textctrl::textctrl(
   , m_Frame(frame)
   , m_Prefix(prefix)
 {
-  SetFont(wxConfigBase::Get()->ReadObject(_("Text font"), 
+  SetFont(config(_("Text font")).get(
     wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
 
   Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
@@ -440,7 +440,7 @@ wex::textctrl::textctrl(
         {
           event.Skip();
         }
-        else if (m_Command.Type() == ex_command_type::FIND)
+        else if (m_Command.Type() == ex_command::type::FIND)
         {
           find_replace_data::Get()->m_FindStrings.Set(event.GetKeyCode(), this); 
         }
@@ -489,7 +489,7 @@ wex::textctrl::textctrl(
 
   Bind(wxEVT_TEXT, [=](wxCommandEvent& event) {
     event.Skip();
-    if (m_UserInput && m_ex != nullptr && m_Command.Type() == ex_command_type::FIND)
+    if (m_UserInput && m_ex != nullptr && m_Command.Type() == ex_command::type::FIND)
     {
       m_ex->GetSTC()->PositionRestore();
       m_ex->GetSTC()->FindNext(
@@ -506,15 +506,15 @@ wex::textctrl::textctrl(
     }
 
     m_Command.Command(m_Prefix->GetLabel().ToStdString() + GetValue().ToStdString());
-    m_Command.IsHandled(m_UserInput && m_Command.Type() == ex_command_type::FIND);
+    m_Command.IsHandled(m_UserInput && m_Command.Type() == ex_command::type::FIND);
 
     if (m_Command.Exec())
     {
-      int focus = (m_Command.Type() == ex_command_type::FIND ? 
+      int focus = (m_Command.Type() == ex_command::type::FIND ? 
         managed_frame::HIDE_BAR_FORCE_FOCUS_STC: 
         managed_frame::HIDE_BAR_FOCUS_STC);
 
-      if (m_Command.Type() == ex_command_type::FIND)
+      if (m_Command.Type() == ex_command::type::FIND)
       {
         find_replace_data::Get()->SetFindString(GetValue().ToStdString());
       }
@@ -522,7 +522,7 @@ wex::textctrl::textctrl(
       {
         TCI().Set(this); 
 
-        if (m_Command.Type() == ex_command_type::COMMAND)
+        if (m_Command.Type() == ex_command::type::COMMAND)
         {
           if (
             GetValue() == "gt" || 
@@ -557,14 +557,14 @@ bool wex::textctrl::SetEx(ex* ex, const std::string& command)
 
   switch (m_Command.Type())
   {
-    case ex_command_type::CALC: 
-    case ex_command_type::EXEC: 
-    case ex_command_type::FIND_MARGIN: 
+    case ex_command::type::CALC: 
+    case ex_command::type::EXEC: 
+    case ex_command::type::FIND_MARGIN: 
       SetValue(TCI().Get()); 
       SelectAll();
       break;
 
-    case ex_command_type::COMMAND:
+    case ex_command::type::COMMAND:
       if (command == ":!")
       {
         SetValue("!");
@@ -583,7 +583,7 @@ bool wex::textctrl::SetEx(ex* ex, const std::string& command)
       }
       break;
 
-    case ex_command_type::FIND: 
+    case ex_command::type::FIND: 
       SetValue(!m_ModeVisual ? ex->GetSTC()->GetFindString(): std::string()); 
       SelectAll();
       break;

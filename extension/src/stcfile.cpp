@@ -10,13 +10,13 @@
 #include <wx/wx.h>
 #endif
 #include <pugixml.hpp>
-#include <wx/extension/stcfile.h>
-#include <wx/extension/filedlg.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/log.h>
-#include <wx/extension/path.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/util.h> // for STAT_ etc.
+#include <wex/stcfile.h>
+#include <wex/filedlg.h>
+#include <wex/lexers.h>
+#include <wex/log.h>
+#include <wex/path.h>
+#include <wex/stc.h>
+#include <wex/util.h> // for STAT_ etc.
 #include <easylogging++.h>
 
 void CheckWellFormed(wex::stc* stc, const wex::path& fn)

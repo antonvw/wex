@@ -9,11 +9,11 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
-#include <wx/extension/frame.h>
-#include <wx/extension/listitem.h>
-#include <wx/extension/log.h>
-#include <wx/extension/util.h>
+#include <wex/config.h>
+#include <wex/frame.h>
+#include <wex/listitem.h>
+#include <wex/log.h>
+#include <wex/util.h>
 
 // Do not give an error if columns do not exist.
 // E.g. the LIST_PROCESS has none of the file columns.
@@ -112,8 +112,8 @@ bool wex::listitem::SetItem(
 void wex::listitem::SetReadOnly(bool readonly)
 {
   SetTextColour(readonly ? 
-    wxConfigBase::Get()->ReadObject(_("Readonly colour"), *wxRED):
-    wxConfigBase::Get()->ReadObject(_("Foreground colour"), *wxBLACK));
+    config(_("Readonly colour")).get(*wxRED):
+    config(_("Foreground colour")).get(*wxBLACK));
 
   ((wxListView* )m_ListView)->SetItem(*this);
 
@@ -125,21 +125,21 @@ void wex::listitem::SetReadOnly(bool readonly)
 void wex::listitem::Update()
 {
   SetImage(
-    m_ListView->GetData().Image() == IMAGE_FILE_ICON && 
-    m_Path.GetStat().IsOk() ? get_iconid(m_Path): -1);
+    m_ListView->GetData().Image() == listview_data::IMAGE_FILE_ICON && 
+    m_Path.GetStat().is_ok() ? get_iconid(m_Path): -1);
 
   ((wxListView *)m_ListView)->SetItem(*this);
 
-  SetReadOnly(m_Path.GetStat().IsReadOnly());
+  SetReadOnly(m_Path.GetStat().is_readonly());
 
   if (
      m_ListView->InReportView() &&
-     m_Path.GetStat().IsOk())
+     m_Path.GetStat().is_ok())
   {
     SetItem(_("Type"),
       m_Path.DirExists() ? m_FileSpec: m_Path.GetExtension());
     SetItem(_("In Folder"), m_Path.GetPath());
-    SetItem(_("Modified"), m_Path.GetStat().GetModificationTime());
+    SetItem(_("Modified"), m_Path.GetStat().get_modification_time());
   
     if (m_Path.FileExists())
     {

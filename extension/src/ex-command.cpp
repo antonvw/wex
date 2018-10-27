@@ -5,9 +5,9 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/extension/ex-command.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/vi.h>
+#include <wex/ex-command.h>
+#include <wex/stc.h>
+#include <wex/vi.h>
 
 wex::ex_command::ex_command(const std::string& command)
   : m_Command(command)
@@ -20,12 +20,12 @@ wex::ex_command::ex_command(wex::stc* stc)
 {
 }
 
-wex::ex_command::ex_command(const wex::ex_command& c)
+wex::ex_command::ex_command(const ex_command& c)
 {
   *this = c;
 }
   
-wex::ex_command& wex::ex_command::operator=(const wex::ex_command& c)
+wex::ex_command& wex::ex_command::operator=(const ex_command& c)
 {
   if (this != &c)
   {
@@ -66,7 +66,7 @@ bool wex::ex_command::Exec(const std::string& command)
     m_STC->GetVi().Command(command)));
 }
 
-void wex::ex_command::Restore(const wex::ex_command& c)
+void wex::ex_command::Restore(const ex_command& c)
 {
   m_Command = c.m_Command;
   m_IsHandled = c.m_IsHandled;
@@ -77,7 +77,7 @@ void wex::ex_command::Restore(const wex::ex_command& c)
   }
 }
 
-void wex::ex_command::Set(const wex::ex_command& c)
+void wex::ex_command::Set(const ex_command& c)
 {
   m_Command = c.m_Command;
   m_IsHandled = c.m_IsHandled;
@@ -88,22 +88,23 @@ void wex::ex_command::Set(const wex::ex_command& c)
   }
 }
 
-wex::ex_command_type wex::ex_command::Type() const
+wex::ex_command::type wex::ex_command::Type() const
 {
   if (m_Command.empty()) 
   {
-    return wex::ex_command_type::NONE;
+    return type::NONE;
   }
   else switch (m_Command[0])
   {
-    case ':': return wex::ex_command_type::COMMAND;
-    case '=': return wex::ex_command_type::CALC;
+    case ':': return type::COMMAND;
+    case '=': return type::CALC;
+    case '!': return type::EXEC;
+    
     case '/':
     case '?': 
       return m_STC != nullptr && m_STC->GetMarginTextClick() > 0 ?
-        wex::ex_command_type::FIND_MARGIN:
-        wex::ex_command_type::FIND;
-    case '!': return wex::ex_command_type::EXEC;
-    default: return wex::ex_command_type::VI;
+        type::FIND_MARGIN: type::FIND;
+    
+    default: return type::VI;
   }
 }

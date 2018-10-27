@@ -5,15 +5,11 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <experimental/filesystem>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wx/extension/dir.h>
-#include <wx/extension/frame.h>
-#include <wx/extension/log.h>
-#include <wx/extension/util.h>
+#include <filesystem>
+#include <wex/dir.h>
+#include <wex/frame.h>
+#include <wex/log.h>
+#include <wex/util.h>
 #include <easylogging++.h>
 
 namespace wex
@@ -73,7 +69,7 @@ std::vector <std::string> wex::get_all_files(
   return dir.Get();
 }
 
-namespace fs = std::experimental::filesystem;
+namespace fs = std::filesystem;
 
 wex::dir::dir(const wex::path& dir, const std::string& filespec, int flags)
   : m_Dir(dir)
@@ -86,14 +82,14 @@ bool Handle(const fs::directory_entry& e, wex::dir* dir, int& matches)
 {
   if (fs::is_regular_file(e.path()))
   {
-    if ((dir->GetFlags() & wex::DIR_FILES) && 
+    if ((dir->GetFlags() & wex::dir::FILES) && 
       wex::matches_one_of(e.path().filename().string(), dir->GetFileSpec()))
     {
       dir->OnFile(e.path());
       matches++;
     }
   }
-  else if ((dir->GetFlags() & wex::DIR_DIRS) && fs::is_directory(e.path()) &&
+  else if ((dir->GetFlags() & wex::dir::DIRS) && fs::is_directory(e.path()) &&
     wex::matches_one_of(e.path().filename().string(), dir->GetFileSpec()))
   {
     dir->OnDir(e.path());
@@ -112,7 +108,7 @@ int wex::dir::FindFiles()
 
   if (!Start())
   {
-    wxLogStatus(_("Busy"));
+    wex::log_status(_("Busy"));
     return -1;
   }
 
@@ -122,7 +118,7 @@ int wex::dir::FindFiles()
 
   try
   {
-    if (m_Flags & wex::DIR_RECURSIVE)
+    if (m_Flags & RECURSIVE)
     {
       const fs::directory_options options = 
 #ifdef __WXMSW__
@@ -157,7 +153,7 @@ int wex::dir::FindFiles()
 wex::open_file_dir::open_file_dir(wex::frame* frame,
   const wex::path& path, 
   const std::string& filespec, 
-  wex::stc_window_flags file_flags,
+  wex::stc_data::window_flags file_flags,
   int dir_flags)
   : wex::dir(path, filespec, dir_flags)
   , m_Frame(frame)

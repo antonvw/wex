@@ -9,7 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/hexmode.h>
+#include <wex/hexmode.h>
 
 namespace wex
 {

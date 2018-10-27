@@ -9,7 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/dialog.h>
+#include <wex/dialog.h>
 
 wex::dialog::dialog(const wex::window_data& data)
   : wxDialog(

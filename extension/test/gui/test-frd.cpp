@@ -9,8 +9,8 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/frd.h>
-#include <wx/extension/managedframe.h>
+#include <wex/frd.h>
+#include <wex/managedframe.h>
 #include "test.h"
 
 TEST_CASE("wex::frd")

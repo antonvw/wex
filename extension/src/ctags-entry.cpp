@@ -5,8 +5,8 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/extension/ctags-entry.h>
-#include <wx/extension/log.h>
+#include <wex/ctags-entry.h>
+#include <wex/log.h>
 #include <easylogging++.h>
 
 wex::ctags_entry& wex::ctags_entry::Access(const std::string& v) 

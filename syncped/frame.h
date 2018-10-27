@@ -7,10 +7,10 @@
 
 #pragma once
 
-#include <wx/extension/notebook.h>
-#include <wx/extension/process.h>
-#include <wx/extension/report/dirctrl.h>
-#include <wx/extension/report/listview.h>
+#include <wex/notebook.h>
+#include <wex/process.h>
+#include <wex/report/dirctrl.h>
+#include <wex/report/listview.h>
 #include "support.h"
 
 class app;
@@ -25,7 +25,7 @@ protected:
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   virtual wex::listview* Activate(
-    wex::listview_type type, const wex::lexer* lexer = nullptr) override;
+    wex::listview_data::type type, const wex::lexer* lexer = nullptr) override;
   virtual bool ExecExCommand(wex::ex_command& command) override;
   virtual wex::listview_file* GetProject() override;
   virtual bool IsOpen(const wex::path& filename) override;

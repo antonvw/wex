@@ -10,16 +10,16 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/style.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/stc.h>
+#include <wex/style.h>
+#include <wex/managedframe.h>
+#include <wex/stc.h>
 #include "test.h"
 
 TEST_CASE("wex::style")
 {
   SUBCASE("Default constructor")
   {
-    REQUIRE(!wex::style().IsOk() );
+    REQUIRE(!wex::style().is_ok() );
   }
   
   SUBCASE("Constructor using no and value")
@@ -41,13 +41,13 @@ TEST_CASE("wex::style")
       
       if (!style.first.second.empty())
       {
-        REQUIRE( test.IsOk());
+        REQUIRE( test.is_ok());
         REQUIRE( test.GetNo() == style.first.second);
         REQUIRE( test.GetValue() == style.second.first);
       }
       else
       {
-        REQUIRE(!test.IsOk());
+        REQUIRE(!test.is_ok());
       }
     }
   }
@@ -73,7 +73,7 @@ TEST_CASE("wex::style")
   {
     wex::style style("mark_circle", "0");
     style.Apply(GetSTC());
-    REQUIRE( style.IsOk());
+    REQUIRE( style.is_ok());
     REQUIRE(!style.ContainsDefaultStyle());
   
     wex::style().Apply(GetSTC());

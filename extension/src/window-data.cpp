@@ -6,8 +6,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/app.h>
-#include <wx/extension/window-data.h>
-#include <wx/extension/managedframe.h>
+#include <wex/window-data.h>
+#include <wex/managedframe.h>
 
 wex::window_data::window_data()
 {

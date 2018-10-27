@@ -11,13 +11,13 @@
 #include <wx/wx.h>
 #endif
 #include <wx/numformatter.h>
-#include <wx/extension/ex.h>
-#include <wx/extension/frd.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/path.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/vi-macros.h>
-#include <wx/extension/vi-macros-mode.h>
+#include <wex/ex.h>
+#include <wex/frd.h>
+#include <wex/managedframe.h>
+#include <wex/path.h>
+#include <wex/stc.h>
+#include <wex/vi-macros.h>
+#include <wex/vi-macros-mode.h>
 #include "test.h"
 
 TEST_CASE("wex::ex")

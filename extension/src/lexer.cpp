@@ -9,18 +9,14 @@
 #include <functional>
 #include <numeric>
 #include <pugixml.hpp>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wx/config.h>
-#include <wx/extension/lexer.h>
-#include <wx/extension/frame.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/log.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/tokenizer.h>
-#include <wx/extension/util.h>
+#include <wex/lexer.h>
+#include <wex/config.h>
+#include <wex/frame.h>
+#include <wex/lexers.h>
+#include <wex/log.h>
+#include <wex/stc.h>
+#include <wex/tokenizer.h>
+#include <wex/util.h>
 #include <easylogging++.h>
 
 wex::lexer& wex::lexer::operator=(const wex::lexer& l)
@@ -35,7 +31,7 @@ wex::lexer& wex::lexer::operator=(const wex::lexer& l)
     m_EdgeColumns = l.m_EdgeColumns;
     m_EdgeMode = l.m_EdgeMode;
     m_Extensions = l.m_Extensions;
-    m_IsOk = l.m_IsOk;
+    m_is_ok = l.m_is_ok;
     m_Keywords = l.m_Keywords;
     m_KeywordsSet = l.m_KeywordsSet;
     m_Language = l.m_Language;
@@ -278,7 +274,7 @@ size_t wex::lexer::GetLineSize() const
 {
   return !m_EdgeColumns.empty() ?
     m_EdgeColumns.back():
-    (size_t)wxConfigBase::Get()->ReadLong(_("Edge column"), 80l);
+    (size_t)config(_("Edge column")).get(80l);
 }
 
 bool wex::lexer::IsKeyword(const std::string& word) const
@@ -383,26 +379,26 @@ void wex::lexer::Reset()
   m_ScintillaLexer.clear();
   m_Styles.clear();
 
-  m_IsOk = false;
+  m_is_ok = false;
   m_Previewable = false;
 
-  m_EdgeMode = wex::edgemode::ABSENT;
+  m_EdgeMode = edge_mode::ABSENT;
   
   if (m_STC != nullptr)
   {
     ((wxStyledTextCtrl *)m_STC)->SetLexer(wxSTC_LEX_NULL);
     Apply();
     frame::StatusText(GetDisplayLexer(), "PaneLexer");
-    m_STC->ResetMargins(STC_MARGIN_FOLDING);
+    m_STC->ResetMargins(stc::MARGIN_FOLDING);
   }
 }
 
 void wex::lexer::Set(const pugi::xml_node* node)
 {
   m_ScintillaLexer = node->attribute("name").value();
-  m_IsOk = !m_ScintillaLexer.empty();
+  m_is_ok = !m_ScintillaLexer.empty();
 
-  if (!m_IsOk)
+  if (!m_is_ok)
   {
     log("missing lexer") << *node;
   }
@@ -418,11 +414,11 @@ void wex::lexer::Set(const pugi::xml_node* node)
     if (const std::string em(node->attribute("edgemode").value()); !em.empty())
     {
       if (em == "none")
-        m_EdgeMode = wex::edgemode::NONE;
+        m_EdgeMode = edge_mode::NONE;
       else if (em == "line")
-        m_EdgeMode = wex::edgemode::LINE;
+        m_EdgeMode = edge_mode::LINE;
       else if (em == "background")
-        m_EdgeMode = wex::edgemode::BACKGROUND;
+        m_EdgeMode = edge_mode::BACKGROUND;
       else
         log("unsupported edge mode") << em << *node;
     }
@@ -518,13 +514,13 @@ bool wex::lexer::Set(const std::string& lexer, bool fold)
 {
   if (
     !Set(lexers::Get()->FindByName(lexer), fold) &&
-    !lexers::Get()->GetLexers().empty() &&
+    !lexers::Get()->get().empty() &&
     !lexer.empty())
   {
     VLOG(9) << "lexer is not known: " << lexer;
   }
   
-  return m_IsOk;
+  return m_is_ok;
 }
 
 bool wex::lexer::Set(const lexer& lexer, bool fold)
@@ -532,7 +528,7 @@ bool wex::lexer::Set(const lexer& lexer, bool fold)
   (*this) = (lexer.GetScintillaLexer().empty() && m_STC != nullptr ?
      lexers::Get()->FindByText(m_STC->GetLine(0).ToStdString()): lexer);
 
-  if (m_STC == nullptr) return m_IsOk;
+  if (m_STC == nullptr) return m_is_ok;
 
   m_STC->SetLexerLanguage(m_ScintillaLexer);
 
@@ -545,18 +541,18 @@ bool wex::lexer::Set(const lexer& lexer, bool fold)
   {
     switch (m_EdgeMode)
     {
-      case wex::edgemode::ABSENT: break;
+      case edge_mode::ABSENT: break;
         
-      case wex::edgemode::BACKGROUND:
+      case edge_mode::BACKGROUND:
         m_STC->SetEdgeMode(wxSTC_EDGE_BACKGROUND); 
         break;
         
-      case wex::edgemode::LINE:
+      case edge_mode::LINE:
         m_STC->SetEdgeMode(m_EdgeColumns.size() <= 1 ? 
           wxSTC_EDGE_LINE: wxSTC_EDGE_MULTILINE); 
         break;
         
-      case wex::edgemode::NONE:
+      case edge_mode::NONE:
         m_STC->SetEdgeMode(wxSTC_EDGE_NONE); 
         break;
     }
@@ -577,7 +573,7 @@ bool wex::lexer::Set(const lexer& lexer, bool fold)
     }
   }
 
-  wex::frame::StatusText(GetDisplayLexer(), "PaneLexer");
+  frame::StatusText(GetDisplayLexer(), "PaneLexer");
 
   if (fold)
   {

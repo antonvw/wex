@@ -11,26 +11,26 @@
 #include <wx/wx.h>
 #endif
 #include <pugixml.hpp>
-#include <wx/config.h>
-#include <wx/extension/frame.h>
-#include <wx/extension/itemdlg.h>
-#include <wx/extension/listitem.h>
-#include <wx/extension/log.h>
-#include <wx/extension/util.h>
-#include <wx/extension/report/listviewfile.h>
-#include <wx/extension/report/defs.h>
-#include <wx/extension/report/dir.h>
-#include <wx/extension/report/frame.h>
+#include <wex/config.h>
+#include <wex/frame.h>
+#include <wex/itemdlg.h>
+#include <wex/listitem.h>
+#include <wex/log.h>
+#include <wex/util.h>
+#include <wex/report/listviewfile.h>
+#include <wex/report/defs.h>
+#include <wex/report/dir.h>
+#include <wex/report/frame.h>
 #include <easylogging++.h>
 
 wex::listview_file::listview_file(
   const std::string& file, const listview_data& data)
-  : history_listview(listview_data(data).Type(LISTVIEW_FILE))
+  : history_listview(listview_data(data).Type(listview_data::FILE))
   , wex::file(false) // do not open files in FileLoad and Save
   , m_AddItemsDialog(new item_dialog({
-        {m_TextAddWhat,ITEM_COMBOBOX, std::any(), 
+        {m_TextAddWhat,item::COMBOBOX, std::any(), 
            control_data().Required(true)},
-        {m_TextInFolder,ITEM_COMBOBOX_DIR, std::any(), 
+        {m_TextInFolder,item::COMBOBOX_DIR, std::any(), 
            control_data().Required(true)},
         {std::set<std::string> {
           m_TextAddFiles, m_TextAddFolders, m_TextAddRecursive}}},
@@ -104,7 +104,7 @@ void wex::listview_file::AddItems(
     {
       m_ContentsChanged = true;
   
-      if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
+      if (config("List/SortSync").get(true))
       {
         SortColumn(GetSortedColumnNo(), SORT_KEEP);
       }
@@ -128,7 +128,7 @@ void wex::listview_file::AddItems(
 void wex::listview_file::AfterSorting()
 {
   // Only if we are not sort syncing set contents changed.
-  if (!wxConfigBase::Get()->ReadBool("List/SortSync", true))
+  if (!config("List/SortSync").get(true))
   {
     m_ContentsChanged = true;
   }
@@ -139,7 +139,7 @@ void wex::listview_file::BuildPopupMenu(wex::menu& menu)
   const bool ok =
      !GetFileName().FileExists() || 
      (GetFileName().FileExists() && !GetFileName().IsReadOnly());
-  const auto style = menu.GetStyle() | (!ok ? wex::menu::MENU_IS_READ_ONLY: 0);
+  const auto style = menu.GetStyle() | (!ok ? wex::menu::IS_READ_ONLY: 0);
 
   menu.SetStyle(style);
 
@@ -259,7 +259,7 @@ bool wex::listview_file::ItemFromText(const std::string& text)
     m_ContentsChanged = true;
     result = true;
     
-    if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
+    if (config("List/SortSync").get(true))
     {
       SortColumn(GetSortedColumnNo(), SORT_KEEP);
     }
@@ -279,7 +279,7 @@ void wex::listview_file::OnIdle(wxIdleEvent& event)
   if (
     IsShown() &&
     GetItemCount() > 0 &&
-    wxConfigBase::Get()->ReadBool("AllowSync", true))
+    config("AllowSync").get(true))
   {
     CheckSync();
   }

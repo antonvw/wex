@@ -11,20 +11,20 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
 #include <wx/numdlg.h>
-#include <wx/extension/debug.h>
-#include <wx/extension/defs.h>
-#include <wx/extension/itemdlg.h>
-#include <wx/extension/listview.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/menu.h>
-#include <wx/extension/menus.h>
-#include <wx/extension/process.h>
-#include <wx/extension/shell.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/tokenizer.h>
-#include <wx/extension/util.h>
+#include <wex/debug.h>
+#include <wex/config.h>
+#include <wex/defs.h>
+#include <wex/itemdlg.h>
+#include <wex/listview.h>
+#include <wex/managedframe.h>
+#include <wex/menu.h>
+#include <wex/menus.h>
+#include <wex/process.h>
+#include <wex/shell.h>
+#include <wex/stc.h>
+#include <wex/tokenizer.h>
+#include <wex/util.h>
 
 #ifdef __WXGTK__
 namespace wex
@@ -70,7 +70,7 @@ wex::debug::debug(wex::managed_frame* frame, wex::process* debug)
   if (std::vector< wex::menu_commands<wex::menu_command>> entries;
     wex::menus::Load("debug", entries))
   {
-    const size_t use = wxConfigBase::Get()->ReadLong("DEBUG", 0);
+    const size_t use = config("DEBUG").get((long)0);
     m_Entry = entries[use < entries.size() ? use: 0];
   }
 }
@@ -148,7 +148,7 @@ bool wex::debug::GetArgs(
       init = true;
       m_Dialog = new item_dialog({
 #ifdef __WXGTK__
-      {"processes", listview_data(), std::any(), LABEL_NONE,
+      {"processes", listview_data(), std::any(), item::LABEL_NONE,
         [&](wxWindow* user, const std::any& value, bool save) {
         lv = ((wex::listview *)user);
         if (save && lv->GetFirstSelected() != -1)
@@ -157,8 +157,8 @@ bool wex::debug::GetArgs(
         }
         }}},
 #else
-      {"pid", ITEM_TEXTCTRL_INT, std::any(), control_data().Required(true),
-        LABEL_LEFT,
+      {"pid", item::TEXTCTRL_INT, std::any(), control_data().Required(true),
+        item::LABEL_LEFT,
         [&](wxWindow* user, const std::any& value, bool save) {
            if (save) args += " " + std::to_string(std::any_cast<long>(value));}}},
 #endif
@@ -197,11 +197,11 @@ bool wex::debug::GetArgs(
   else if (command == "file")
   {
     return item_dialog(
-      {{"File", ITEM_COMBOBOX_FILE, std::any(), control_data().Required(true),
-          LABEL_LEFT,
+      {{"File", item::COMBOBOX_FILE, std::any(), control_data().Required(true),
+          item::LABEL_LEFT,
           [&](wxWindow* user, const std::any& value, bool save) {
              if (save) args += " " + std::any_cast<wxArrayString>(value)[0];}},
-       {m_Entry.GetName(), ITEM_FILEPICKERCTRL}},
+       {m_Entry.GetName(), item::FILEPICKERCTRL}},
       window_data().Title("Debug").Parent(m_Frame)).ShowModal() != wxID_CANCEL;
   }
   else if ((match("^(p|print)", command, v) == 1) && stc != nullptr)
@@ -251,7 +251,7 @@ void wex::debug::ProcessStdOut(const std::string& text)
     match("Breakpoint ([0-9]+) at 0x[0-9a-f]+: (.*):([0-9]+)", text, v) == 3)
   {
     wex::path filename(v[1]);
-    filename.MakeAbsolute();
+    filename.make_absolute();
     if (filename.FileExists())
     {
       auto* stc = m_Frame->OpenFile(filename);
@@ -266,7 +266,7 @@ void wex::debug::ProcessStdOut(const std::string& text)
   else if (DeleteAllBreakpoints(text)) {}
   else if (match("at (.*):([0-9]+)", text, v) > 1)
   {
-    m_Path = path(v[0]).MakeAbsolute();
+    m_Path = path(v[0]).make_absolute();
     data.Line(std::stoi(v[1]));
   }
   else if (match("^([0-9]+)", text, v) > 0)

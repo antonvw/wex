@@ -9,7 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/version.h>
+#include <wex/version.h>
 #include "test.h"
 
 TEST_CASE("wex::version")

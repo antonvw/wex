@@ -11,9 +11,9 @@
 #endif
 #include <wx/artprov.h>
 #include <wx/imaglist.h>
-#include <wx/extension/item.h>
-#include <wx/extension/itemdlg.h>
-#include <wx/extension/managedframe.h>
+#include <wex/item.h>
+#include <wex/itemdlg.h>
+#include <wex/managedframe.h>
 #include "../test-item.h"
 #include "test.h"
 
@@ -28,14 +28,14 @@ TEST_CASE("wex::item")
     
     wex::item::UseConfig(false);
     
-    wex::item item("item", "hello string", wex::ITEM_TEXTCTRL, wex::control_data().Required(true));
+    wex::item item("item", "hello string", wex::item::TEXTCTRL, wex::control_data().Required(true));
     
     REQUIRE( item.GetColumns() == 1);
     REQUIRE( std::any_cast<std::string>(item.GetInitial()) == "hello string");
     REQUIRE( item.GetData().Required());
     REQUIRE( item.GetLabel() == "item");
     REQUIRE( item.GetPage().empty());
-    REQUIRE( item.GetType() == wex::ITEM_TEXTCTRL);
+    REQUIRE( item.GetType() == wex::item::TEXTCTRL);
     REQUIRE( item.GetWindow() == nullptr);
     REQUIRE(!item.GetValue().has_value());
     REQUIRE(!item.IsRowGrowable());
@@ -56,11 +56,11 @@ TEST_CASE("wex::item")
     item.SetRowGrowable(true);
     REQUIRE( item.IsRowGrowable());
     
-    wex::item item_int("int", wex::ITEM_TEXTCTRL_INT, std::string("100"));
-    REQUIRE( item_int.GetType() == wex::ITEM_TEXTCTRL_INT);
+    wex::item item_int("int", wex::item::TEXTCTRL_INT, std::string("100"));
+    REQUIRE( item_int.GetType() == wex::item::TEXTCTRL_INT);
     
-    wex::item item_int2("int", wex::ITEM_TEXTCTRL_INT, std::string("xxx"));
-    REQUIRE( item_int2.GetType() == wex::ITEM_TEXTCTRL_INT);
+    wex::item item_int2("int", wex::item::TEXTCTRL_INT, std::string("xxx"));
+    REQUIRE( item_int2.GetType() == wex::item::TEXTCTRL_INT);
     item_int2.Layout(panel, sizer);
     REQUIRE( item_int2.GetWindow() != nullptr);
     try
@@ -75,14 +75,14 @@ TEST_CASE("wex::item")
     {
     }
     
-    wex::item item_float("float", wex::ITEM_TEXTCTRL_FLOAT, std::string("100.001"));
-    REQUIRE( item_float.GetType() == wex::ITEM_TEXTCTRL_FLOAT);
+    wex::item item_float("float", wex::item::TEXTCTRL_FLOAT, std::string("100.001"));
+    REQUIRE( item_float.GetType() == wex::item::TEXTCTRL_FLOAT);
     
     wex::item item_spin("spindouble", 20.0, 30.0, 25.0, 0.1);
-    REQUIRE( item_spin.GetType() == wex::ITEM_SPINCTRLDOUBLE);
+    REQUIRE( item_spin.GetType() == wex::item::SPINCTRLDOUBLE);
 
 #ifdef __UNIX__
-    wex::item item_picker("picker", wex::ITEM_FILEPICKERCTRL, std::string("/usr/bin/git"));
+    wex::item item_picker("picker", wex::item::FILEPICKERCTRL, std::string("/usr/bin/git"));
 #endif
     
     item.Layout(panel, sizer);
@@ -120,15 +120,15 @@ TEST_CASE("wex::item")
     // Layout the items and check control is created.
     for (auto& it : items)
     {
-      // wex::ITEM_USER is not yet laid out ok, gives errors.
-      if (it.GetType() != wex::ITEM_USER)
+      // wex::item::USER is not yet laid out ok, gives errors.
+      if (it.GetType() != wex::item::USER)
       {
         // Testing on not nullptr not possible,
         // not all items need a sizer.
         it.Layout(panel, sizer);
       }
    
-      if (it.GetType() != wex::ITEM_EMPTY && it.GetType() != wex::ITEM_SPACER)
+      if (it.GetType() != wex::item::EMPTY && it.GetType() != wex::item::SPACER)
       {
         REQUIRE(it.GetWindow() != nullptr);
       }
@@ -138,26 +138,26 @@ TEST_CASE("wex::item")
   SUBCASE("Notebooks")
   {
     const std::vector<std::string> titles {
-      "ITEM_NOTEBOOK",
-      "ITEM_NOTEBOOK_AUI",
-      "ITEM_NOTEBOOK_CHOICE",
-      "ITEM_NOTEBOOK_EX",
-      "ITEM_NOTEBOOK_LIST",
-      "ITEM_NOTEBOOK_SIMPLE",
-      "ITEM_NOTEBOOK_TOOL",
-      "ITEM_NOTEBOOK_TREE"};
+      "item::NOTEBOOK",
+      "item::NOTEBOOK_AUI",
+      "item::NOTEBOOK_CHOICE",
+      "item::NOTEBOOK_EX",
+      "item::NOTEBOOK_LIST",
+      "item::NOTEBOOK_SIMPLE",
+      "item::NOTEBOOK_TOOL",
+      "item::NOTEBOOK_TREE"};
     
-    REQUIRE(titles.size() == wex::ITEM_NOTEBOOK_TREE - wex::ITEM_NOTEBOOK + 1); 
+    REQUIRE(titles.size() == wex::item::NOTEBOOK_TREE - wex::item::NOTEBOOK + 1); 
     
     // Test dialog using notebook with pages.
     for (
-      int style = wex::ITEM_NOTEBOOK; 
-      style <= wex::ITEM_NOTEBOOK_TREE;
+      int style = wex::item::NOTEBOOK; 
+      style <= wex::item::NOTEBOOK_TREE;
       style++)
     {
       wxImageList* il = nullptr;
       
-      if (style == wex::ITEM_NOTEBOOK_TOOL)
+      if (style == wex::item::NOTEBOOK_TOOL)
       {
         const wxSize imageSize(32, 32);
 
@@ -170,10 +170,10 @@ TEST_CASE("wex::item")
       }
 
       wex::item_dialog* dlg = new wex::item_dialog(
-        {NotebookItem((wex::itemtype)style, wex::LABEL_NONE, il)},
+        {NotebookItem((wex::item::type)style, wex::item::LABEL_NONE, il)},
         wex::window_data().
           Button(wxOK | wxCANCEL | wxAPPLY).
-          Title(titles[style - wex::ITEM_NOTEBOOK]));
+          Title(titles[style - wex::item::NOTEBOOK]));
         
       dlg->Show();
 
@@ -190,8 +190,7 @@ TEST_CASE("wex::item")
   SUBCASE("wex::config_defaults")
   {
     wex::config_defaults def ({
-      {"item1", wex::ITEM_TEXTCTRL_INT, 1500l},
-      {"item2", wex::ITEM_TEXTCTRL_INT, 1510l}});
-    REQUIRE(def.Get() != nullptr);
+      {"item1", wex::item::TEXTCTRL_INT, 1500l},
+      {"item2", wex::item::TEXTCTRL_INT, 1510l}});
   }
 }

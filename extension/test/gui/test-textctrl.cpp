@@ -9,8 +9,8 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/textctrl.h>
-#include <wx/extension/managedframe.h>
+#include <wex/textctrl.h>
+#include <wex/managedframe.h>
 #include "test.h"
 
 TEST_CASE("wex::textctrl")
@@ -18,11 +18,11 @@ TEST_CASE("wex::textctrl")
   wxTextCtrl* tc = new wxTextCtrl(GetFrame(), wxID_ANY);
   AddPane(GetFrame(), tc);
   
-  REQUIRE( wex::textctrl_input(wex::ex_command_type::NONE).Get().empty());
-  REQUIRE( wex::textctrl_input(wex::ex_command_type::NONE).GetValues().empty());
-  REQUIRE(!wex::textctrl_input(wex::ex_command_type::NONE).Set(WXK_UP, tc));
+  REQUIRE( wex::textctrl_input(wex::ex_command::type::NONE).Get().empty());
+  REQUIRE( wex::textctrl_input(wex::ex_command::type::NONE).GetValues().empty());
+  REQUIRE(!wex::textctrl_input(wex::ex_command::type::NONE).Set(WXK_UP, tc));
   
-  wex::textctrl_input tip(wex::ex_command_type::FIND);
+  wex::textctrl_input tip(wex::ex_command::type::FIND);
   REQUIRE( tip.Set("one"));
   REQUIRE(!tip.Set(std::string()));
   REQUIRE( tip.Get() == "one");

@@ -5,7 +5,7 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/extension/statistics.h>
+#include <wex/statistics.h>
 #include "../test.h"
 
 TEST_CASE( "wex::statistics" ) 

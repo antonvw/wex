@@ -9,8 +9,8 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/grid.h>
-#include <wx/extension/managedframe.h>
+#include <wex/grid.h>
+#include <wex/managedframe.h>
 #include "test.h"
 
 TEST_CASE("wex::grid")

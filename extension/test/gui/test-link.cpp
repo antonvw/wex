@@ -9,10 +9,10 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
-#include <wx/extension/link.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/stc.h>
+#include <wex/link.h>
+#include <wex/config.h>
+#include <wex/managedframe.h>
+#include <wex/stc.h>
 #include "test.h"
 
 void link(
@@ -60,7 +60,7 @@ TEST_CASE("wex::link")
   SUBCASE("Constructor with STC")
   {
     wex::link lnk(stc);  
-    wxConfigBase::Get()->Write(_("Include directory"), "/usr/bin");
+    wex::config(_("Include directory")).set("/usr/bin");
     lnk.SetFromConfig();
     
     // Test empty, or illegal paths.
@@ -128,11 +128,11 @@ TEST_CASE("wex::link")
   SUBCASE("http link")
   { 
     wex::link lnk(stc);
-    wxConfigBase::Get()->Write(_("Include directory"), "/usr/bin");
+    wex::config(_("Include directory")).set("/usr/bin");
     lnk.SetFromConfig();
 
     wex::control_data data;
-    data.Line(LINK_LINE_OPEN_URL);
+    data.Line(wex::link::LINE_OPEN_URL);
     REQUIRE( lnk.GetPath("www.wxwidgets.org", data).Path() == "www.wxwidgets.org" );
     REQUIRE( lnk.GetPath("xxx.wxwidgets.org", data).Path().empty());
     REQUIRE( lnk.GetPath("test.cpp", data).Path().empty());
@@ -140,16 +140,16 @@ TEST_CASE("wex::link")
     REQUIRE( lnk.GetPath("gcc>", data).Path().empty());
     REQUIRE( lnk.GetPath("<gcc>", data).Path().empty());
     REQUIRE( lnk.GetPath("some text www.wxwidgets.org", data).Path() == "www.wxwidgets.org" );
-    REQUIRE( lnk.GetPath("some text https://github.com/antonvw/wex::tension", data).Path() == 
-      "https://github.com/antonvw/wex::tension" );
-    REQUIRE( lnk.GetPath("some text (https://github.com/antonvw/wex::tension)", data).Path() == 
-      "https://github.com/antonvw/wex::tension" );
-    REQUIRE( lnk.GetPath("some text [https://github.com/antonvw/wex::tension]", data).Path() == 
-      "https://github.com/antonvw/wex::tension" );
+    REQUIRE( lnk.GetPath("some text https://github.com/antonvw/wxExtension", data).Path() == 
+      "https://github.com/antonvw/wxExtension" );
+    REQUIRE( lnk.GetPath("some text (https://github.com/antonvw/wxExtension)", data).Path() == 
+      "https://github.com/antonvw/wxExtension" );
+    REQUIRE( lnk.GetPath("some text [https://github.com/antonvw/wxExtension]", data).Path() == 
+      "https://github.com/antonvw/wxExtension" );
     REQUIRE( lnk.GetPath("httpd = new httpd", data).Path().empty());
 
     // MIME file
-    data.Line(LINK_LINE_OPEN_URL_AND_MIME);
+    data.Line(wex::link::LINE_OPEN_URL_AND_MIME);
     stc->GetFile().FileNew("test.html");
     REQUIRE( lnk.GetPath("www.wxwidgets.org", data).Path() == "www.wxwidgets.org" );
     REQUIRE( lnk.GetPath("xxx.wxwidgets.org", data) == "test.html" );

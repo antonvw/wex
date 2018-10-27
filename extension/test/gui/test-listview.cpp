@@ -9,9 +9,8 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/artprov.h> // for wxArt
-#include <wx/extension/listview.h>
-#include <wx/extension/managedframe.h>
+#include <wex/listview.h>
+#include <wex/managedframe.h>
 #include "test.h"
 
 TEST_CASE("wex::listview")
@@ -21,20 +20,20 @@ TEST_CASE("wex::listview")
   
   wex::listview::ConfigDialog(wex::window_data().Button(wxAPPLY | wxCANCEL));
   
-  REQUIRE(listView->GetData().Image() == wex::IMAGE_ART);
+  REQUIRE(listView->GetData().Image() == wex::listview_data::IMAGE_ART);
   
   listView->ConfigGet();
   
-  wex::column intcol(wex::column("Int", wex::column::COL_INT));
+  wex::column intcol(wex::column("Int", wex::column::INT));
   REQUIRE(!intcol.GetIsSortedAscending());
   intcol.SetIsSortedAscending(wex::SORT_ASCENDING);
   REQUIRE( intcol.GetIsSortedAscending());
   
   REQUIRE( listView->AppendColumns({{intcol}}));
   REQUIRE( listView->AppendColumns({
-    {"Date", wex::column::COL_DATE},
-    {"Float", wex::column::COL_FLOAT},
-    {"String", wex::column::COL_STRING}}));
+    {"Date", wex::column::DATE},
+    {"Float", wex::column::FLOAT},
+    {"String", wex::column::STRING}}));
 
   REQUIRE(listView->FindColumn("Int") == 0);
   REQUIRE(listView->FindColumn("Date") == 1);
@@ -67,7 +66,7 @@ TEST_CASE("wex::listview")
   {
     REQUIRE( listView->InsertItem({
       std::to_string(i),
-      GetTestPath("test.h").GetStat().GetModificationTime(),
+      GetTestPath("test.h").GetStat().get_modification_time(),
       std::to_string((float)i / 2.0),
       "hello " + std::to_string(i)}));
   }
@@ -94,10 +93,10 @@ TEST_CASE("wex::listview")
   listView->SetItemImage(0, wxART_WARNING);
   listView->ItemsUpdate();
   
-  wex::listview* listView2 = new wex::listview(wex::listview_data().Type(wex::LISTVIEW_FILE));
+  wex::listview* listView2 = new wex::listview(wex::listview_data().Type(wex::listview_data::FILE));
   AddPane(GetFrame(), listView2);
   
-  REQUIRE( listView2->GetData().Image() == wex::IMAGE_FILE_ICON);
+  REQUIRE( listView2->GetData().Image() == wex::listview_data::IMAGE_FILE_ICON);
   REQUIRE(!listView2->GetData().TypeDescription().empty());
   
   REQUIRE( listView2->ItemFromText("test.h\ntest.h"));

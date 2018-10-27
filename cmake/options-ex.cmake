@@ -1,4 +1,4 @@
-# wxExtension options
+# wex options
 
 option(ENABLE_GETTEXT "Use gettext for i18n")
 

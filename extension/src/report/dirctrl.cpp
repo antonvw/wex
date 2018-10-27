@@ -6,14 +6,14 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/stockitem.h> // for wxGetStockLabel
-#include <wx/extension/menu.h>
-#include <wx/extension/path.h>
-#include <wx/extension/tostring.h>
-#include <wx/extension/util.h>
-#include <wx/extension/vcs.h>
-#include <wx/extension/report/defs.h>
-#include <wx/extension/report/dirctrl.h>
-#include <wx/extension/report/frame.h>
+#include <wex/menu.h>
+#include <wex/path.h>
+#include <wex/tostring.h>
+#include <wex/util.h>
+#include <wex/vcs.h>
+#include <wex/report/defs.h>
+#include <wex/report/dirctrl.h>
+#include <wex/report/frame.h>
 
 #if wxUSE_DIRDLG
 
@@ -58,7 +58,7 @@ wex::dirctrl::dirctrl(
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     open_files(frame, 
-      to_vector_path(*this).Get(), stc_data(), DIR_FILES);
+      to_vector_path(*this).Get(), stc_data(), dir::FILES);
     }, ID_EDIT_OPEN);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -89,7 +89,7 @@ wex::dirctrl::dirctrl(
     }
     else
     {
-      open_files(frame, files, stc_data(), DIR_FILES);
+      open_files(frame, files, stc_data(), dir::FILES);
     }});
   
   Bind(wxEVT_TREE_ITEM_MENU, [=](wxTreeEvent& event) {

@@ -8,10 +8,10 @@
 #include <list>
 #include <wx/socket.h>
 #include <wx/taskbar.h>
-#include <wx/extension/app.h>
-#include <wx/extension/shell.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/report/frame.h>
+#include <wex/app.h>
+#include <wex/shell.h>
+#include <wex/stc.h>
+#include <wex/report/frame.h>
 
 #if wxUSE_SOCKETS
 

@@ -9,9 +9,9 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/stcfile.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/stc.h>
+#include <wex/stcfile.h>
+#include <wex/managedframe.h>
+#include <wex/stc.h>
 #include "test.h"
 
 TEST_CASE("wex::stc_file")
@@ -24,7 +24,7 @@ TEST_CASE("wex::stc_file")
   wex::stc_file file(stc);
 
   // The file itself is not assigned.  
-  REQUIRE(!file.GetFileName().GetStat().IsOk());
+  REQUIRE(!file.GetFileName().GetStat().is_ok());
   REQUIRE(!file.GetContentsChanged());
 
   REQUIRE( file.FileNew("test-file.txt"));

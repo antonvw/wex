@@ -11,16 +11,16 @@
 #endif
 #include <wx/config.h>
 #include <wx/stockitem.h> // for wxGetStockLabel
-#include <wx/extension/debug.h>
-#include <wx/extension/filedlg.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/log.h>
-#include <wx/extension/menu.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/util.h>
-#include <wx/extension/vcs.h>
-#include <wx/extension/vi-macros.h>
-#include <wx/extension/report/listviewfile.h>
+#include <wex/debug.h>
+#include <wex/filedlg.h>
+#include <wex/lexers.h>
+#include <wex/log.h>
+#include <wex/menu.h>
+#include <wex/stc.h>
+#include <wex/util.h>
+#include <wex/vcs.h>
+#include <wex/vi-macros.h>
+#include <wex/report/listviewfile.h>
 #ifndef __WXMSW__
 #include "app.xpm"
 #endif
@@ -65,7 +65,7 @@ decorated_frame::decorated_frame(app* app)
     m_StatusBar->ShowField("PaneVCS", false);
   }
   
-  if (wex::lexers::Get()->GetLexers().empty())
+  if (wex::lexers::Get()->lexers().empty())
   {
     m_StatusBar->ShowField("PaneLexer", false);
     m_StatusBar->ShowField("PaneTheme", false);
@@ -111,7 +111,7 @@ decorated_frame::decorated_frame(app* app)
     // No accelerators for vi mode, Ctrl F is page down.
     menuFind->Append(wxID_FIND, wxGetStockLabel(wxID_FIND, wxSTOCK_NOFLAGS));
 
-    if (!(m_App->GetData().Flags() & wex::STC_WIN_READ_ONLY))
+    if (!(m_App->GetData().Flags() & wex::stc_data::WIN_READ_ONLY))
     {
       menuFind->Append(wxID_REPLACE, wxGetStockLabel(wxID_REPLACE, wxSTOCK_NOFLAGS));
     }
@@ -120,7 +120,7 @@ decorated_frame::decorated_frame(app* app)
   {
     menuFind->Append(wxID_FIND);
 
-    if (!(m_App->GetData().Flags() & wex::STC_WIN_READ_ONLY))
+    if (!(m_App->GetData().Flags() & wex::stc_data::WIN_READ_ONLY))
     {
       menuFind->Append(wxID_REPLACE);
     }
@@ -128,12 +128,12 @@ decorated_frame::decorated_frame(app* app)
   
   menuFind->Append(wex::ID_TOOL_REPORT_FIND, wex::ellipsed(_("Find &in Files")));
 
-  if (!(m_App->GetData().Flags() & wex::STC_WIN_READ_ONLY))
+  if (!(m_App->GetData().Flags() & wex::stc_data::WIN_READ_ONLY))
   {
     menuFind->Append(wex::ID_TOOL_REPLACE, wex::ellipsed(_("Replace in File&s")));
   }
 
-  menuEdit->AppendSubMenu(menuFind, !(m_App->GetData().Flags() & wex::STC_WIN_READ_ONLY) ?
+  menuEdit->AppendSubMenu(menuFind, !(m_App->GetData().Flags() & wex::stc_data::WIN_READ_ONLY) ?
     _("&Find and Replace"): _("&Find"));
   menuEdit->AppendSeparator();
   menuEdit->Append(

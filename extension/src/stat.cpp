@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      stat.cpp
-// Purpose:   Implementation of wex::stat class
+// Purpose:   Implementation of wex::file_stat class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -12,13 +12,13 @@
 #include <sstream>
 #include <wx/datetime.h>
 #include <wx/filefn.h>
-#include <wx/extension/stat.h>
+#include <wex/stat.h>
 #ifdef __UNIX__
 #include <unistd.h>
 #endif
 
 // See also GetTime in listview.cpp
-const std::string wex::stat::GetModificationTime(
+const std::string wex::file_stat::get_modification_time(
   const std::string& format) const 
 {
 #ifdef _MSC_VER
@@ -31,29 +31,29 @@ const std::string wex::stat::GetModificationTime(
 #endif
 }
 
-bool wex::stat::IsReadOnly() const 
+bool wex::file_stat::is_readonly() const 
 {
 #ifdef _MSC_VER
-  return (m_IsOk && ((st_mode & wxS_IWUSR) == 0));
+  return (m_is_ok && ((st_mode & wxS_IWUSR) == 0));
 #else
-  return (m_IsOk && access(m_FullPath.c_str(), W_OK) == -1);
+  return (m_is_ok && access(m_FullPath.c_str(), W_OK) == -1);
 #endif
 }
 
-bool wex::stat::Sync() 
+bool wex::file_stat::sync() 
 {
   if (m_FullPath.empty())
   {
-    m_IsOk = false;
+    m_is_ok = false;
   }
   else
   {
 #ifdef _MSC_VER
-    m_IsOk = (stat(m_FullPath.c_str(), this) != -1);
+    m_is_ok = (stat(m_FullPath.c_str(), this) != -1);
 #else
-    m_IsOk = (::stat(m_FullPath.c_str(), this) != -1);
+    m_is_ok = (::stat(m_FullPath.c_str(), this) != -1);
 #endif
   }
 
-  return m_IsOk;
+  return m_is_ok;
 }

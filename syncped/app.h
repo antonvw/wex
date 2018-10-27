@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <wx/extension/app.h>
+#include <wex/app.h>
 
 class app : public wex::app
 {

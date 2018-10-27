@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <chrono>
-#include <wx/extension/file.h>
+#include <wex/file.h>
 #include "../test.h"
 
 TEST_CASE( "wex::file" ) 
@@ -25,10 +25,10 @@ TEST_CASE( "wex::file" )
 
     REQUIRE(!file.FileSave());
     REQUIRE( file.FileSave("test-save"));
-    REQUIRE( file.GetFileName().GetStat().IsOk());
+    REQUIRE( file.GetFileName().GetStat().is_ok());
     // The fullpath should be normalized, test it.
     REQUIRE( file.GetFileName().Path().string() != "./test.h");
-    REQUIRE(!file.GetFileName().GetStat().IsReadOnly());
+    REQUIRE(!file.GetFileName().GetStat().is_readonly());
     REQUIRE( file.FileLoad(GetTestPath("test.bin")));
     REQUIRE( file.Open(GetTestPath("test.bin").Path().string()));
     REQUIRE( file.IsOpened());

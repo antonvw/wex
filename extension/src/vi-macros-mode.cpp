@@ -9,12 +9,12 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/vi-macros-mode.h>
-#include <wx/extension/ex.h>
-#include <wx/extension/frame.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/util.h>
-#include <wx/extension/vi-macros.h>
+#include <wex/vi-macros-mode.h>
+#include <wex/ex.h>
+#include <wex/frame.h>
+#include <wex/stc.h>
+#include <wex/util.h>
+#include <wex/vi-macros.h>
 #include "vi-macros-fsm.h"
 
 bool ShowDialog(wxWindow* parent, std::string& macro)
@@ -68,7 +68,7 @@ bool wex::vi_macros_mode::IsPlayback() const
 
 bool wex::vi_macros_mode::IsRecording() const 
 {
-  return m_FSM->Get() == States::RECORDING;
+  return m_FSM->Get() == vi_macros_fsm::state::RECORDING;
 }
 
 const std::string wex::vi_macros_mode::String() const
@@ -84,7 +84,7 @@ int wex::vi_macros_mode::Transition(
     return 0;
   }
 
-  Triggers trigger = Triggers::DONE;
+  vi_macros_fsm::trigger trigger = vi_macros_fsm::trigger::DONE;
   wxWindow* parent = (ex != nullptr ? ex->GetSTC(): wxTheApp->GetTopWindow());
 
   std::string macro(command);
@@ -92,7 +92,7 @@ int wex::vi_macros_mode::Transition(
   switch (macro[0])
   {
     case 'q': 
-      trigger = Triggers::RECORD;
+      trigger = vi_macros_fsm::trigger::RECORD;
 
       macro = macro.substr(1);
 
@@ -116,7 +116,7 @@ int wex::vi_macros_mode::Transition(
           macro = dlg.GetValue();
         }
       }
-      else if (m_FSM->Get() == States::IDLE && macro.empty())
+      else if (m_FSM->Get() == vi_macros_fsm::state::IDLE && macro.empty())
       {
         return 0;
       }
@@ -183,7 +183,7 @@ int wex::vi_macros_mode::Transition(
       }
 
       trigger = vi_macros::IsRecordedMacro(macro) ? 
-        Triggers::PLAYBACK: Triggers::EXPAND_VARIABLE; 
+        vi_macros_fsm::trigger::PLAYBACK: vi_macros_fsm::trigger::EXPAND_VARIABLE; 
     break;
 
     default: return 0;

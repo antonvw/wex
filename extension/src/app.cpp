@@ -5,33 +5,33 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <experimental/filesystem>
+#include <filesystem>
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/fileconf.h> 
 #include <wx/stdpaths.h>
-#include <wx/extension/app.h>
-#include <wx/extension/addressrange.h>
-#include <wx/extension/ex.h>
-#include <wx/extension/frd.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/log.h>
-#include <wx/extension/printing.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/util.h>
-#include <wx/extension/vcs.h>
-#include <wx/extension/version.h>
-#include <wx/extension/vi-macros.h>
+#include <wex/app.h>
+#include <wex/addressrange.h>
+#include <wex/config.h>
+#include <wex/ex.h>
+#include <wex/frd.h>
+#include <wex/lexers.h>
+#include <wex/log.h>
+#include <wex/printing.h>
+#include <wex/stc.h>
+#include <wex/util.h>
+#include <wex/vcs.h>
+#include <wex/version.h>
+#include <wex/vi-macros.h>
 #include <easylogging++.h>
 
 #define NO_ASSERT 1
 
 INITIALIZE_EASYLOGGINGPP
 
-namespace fs = std::experimental::filesystem;
+namespace fs = std::filesystem;
 
 void wex::app::OnAssertFailure(
   const wxChar* file, int line, const wxChar* func, 
@@ -48,12 +48,12 @@ void wex::app::OnAssertFailure(
     
 int wex::app::OnExit()
 {
-  delete wex::find_replace_data::Set(nullptr);
-  delete wex::lexers::Set(nullptr);
-  delete wex::printing::Set(nullptr);
+  delete find_replace_data::Set(nullptr);
+  delete lexers::Set(nullptr);
+  delete printing::Set(nullptr);
 
-  wex::addressrange::OnExit();
-  wex::stc::OnExit();
+  addressrange::OnExit();
+  stc::OnExit();
 
   VLOG(1) << "exit";
 
@@ -62,18 +62,10 @@ int wex::app::OnExit()
 
 bool wex::app::OnInit()
 {
-  // This should be before first use of wxConfigBase::Get().
-  wxConfigBase::Set(new wxFileConfig(wxEmptyString, wxEmptyString,
-    wxFileName(wex::config_dir(), GetAppName().Lower() + 
-#ifdef __WXMSW__
-    ".ini"
-#else
-    ".conf"
-#endif
-      ).GetFullPath(), wxEmptyString, wxCONFIG_USE_LOCAL_FILE));
+  config::init();
 
   // Load elp configuration from file.
-  const wex::path elp(wex::config_dir(), "conf.elp");
+  const path elp(config().dir(), "conf.elp");
 
   if (elp.FileExists())
   {
@@ -133,19 +125,19 @@ bool wex::app::OnInit()
 
   VLOG(1) 
     << "started: " 
-    << GetAppName() << "-" << wex::get_version_info().Get()
+    << GetAppName() << "-" << get_version_info().Get()
     << " verbosity: " 
     << el::Loggers::verboseLevel()
     << " config: " << elp.Path().string();
 
   const wxLanguageInfo* info = nullptr;
   
-  if (wxConfigBase::Get()->Exists("LANG"))
+  if (config("LANG").exists())
   {
     if ((info = wxLocale::FindLanguageInfo(
-      wxConfigBase::Get()->Read("LANG"))) == nullptr)
+      config("LANG").get())) == nullptr)
     {
-      wex::log() << "unknown language:" << wxConfigBase::Get()->Read("LANG");
+      log() << "unknown language:" << config("LANG").get();
     }
   }
     
@@ -177,27 +169,27 @@ bool wex::app::OnInit()
       for (const auto& p: fs::recursive_directory_iterator(m_CatalogDir))
       {
         if (fs::is_regular_file(p.path()) && 
-          wex::matches_one_of(p.path().filename().string(), "*.mo"))
+          matches_one_of(p.path().filename().string(), "*.mo"))
         {
           if (!m_Locale.AddCatalog(p.path().stem().string()))
           {
-            wex::log() << "could not add catalog:" << p.path().stem().string();
+            log() << "could not add catalog:" << p.path().stem().string();
           }
         }
       }
     }
     else if (info != nullptr)
     {
-      wex::log() << "missing locale files for:" << m_Locale.GetName();
+      log() << "missing locale files for:" << m_Locale.GetName();
     }
   }
 
   // Necessary for autocomplete images.
   wxInitAllImageHandlers();
 
-  wex::stc::OnInit();
-  wex::vcs::LoadDocument();
-  wex::vi_macros().LoadDocument();
+  stc::OnInit();
+  vcs::LoadDocument();
+  vi_macros().LoadDocument();
 
   return true; // wxApp::OnInit(); // we have our own cmd line processing
 }

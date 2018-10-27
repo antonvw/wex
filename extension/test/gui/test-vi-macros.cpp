@@ -9,10 +9,10 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/vi-macros.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/vi-macros-mode.h>
+#include <wex/vi-macros.h>
+#include <wex/managedframe.h>
+#include <wex/stc.h>
+#include <wex/vi-macros-mode.h>
 #include "test.h"
 
 #define ESC "\x1b"

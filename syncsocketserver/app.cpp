@@ -14,14 +14,14 @@
 #include <wx/aboutdlg.h>
 #include <wx/config.h>
 #include <wx/numdlg.h>
-#include <wx/extension/filedlg.h>
-#include <wx/extension/grid.h>
-#include <wx/extension/itemdlg.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/statistics.h>
-#include <wx/extension/toolbar.h>
-#include <wx/extension/util.h>
-#include <wx/extension/version.h>
+#include <wex/filedlg.h>
+#include <wex/grid.h>
+#include <wex/itemdlg.h>
+#include <wex/lexers.h>
+#include <wex/statistics.h>
+#include <wex/toolbar.h>
+#include <wex/util.h>
+#include <wex/version.h>
 #include "app.h"
 
 #ifndef __WXMSW__
@@ -110,7 +110,7 @@ frame::frame()
   , m_Answer(ANSWER_OFF)
   , m_DataWindow(new wex::stc)
   , m_LogWindow(new wex::stc(
-      std::string(), wex::stc_data().Flags(wex::STC_WIN_NO_INDICATOR)))
+      std::string(), wex::stc_data().Flags(wex::stc_data::WIN_NO_INDICATOR)))
   , m_Shell(new wex::shell)
 {
   SetIcon(wxICON(app));
@@ -398,7 +398,7 @@ frame::frame()
     // Configuring only possible if no client is active,
     // otherwise just show settings readonly mode.
     wex::item_dialog({
-        {_("Remote Hostname"), wex::ITEM_COMBOBOX, std::any(), wex::control_data().Required(true)},
+        {_("Remote Hostname"), wex::item::COMBOBOX, std::any(), wex::control_data().Required(true)},
         // Well known ports are in the range from 0 to 1023.
         // Just allow here for most flexibility.
         {_("Remote Port"), 1, 65536}},
@@ -456,7 +456,7 @@ frame::frame()
     // Configuring only possible if server is stopped,
     // otherwise just show settings readonly mode.
     wex::item_dialog({
-        {_("Hostname"), std::string(), wex::ITEM_TEXTCTRL, wex::control_data().Required(true)},
+        {_("Hostname"), std::string(), wex::item::TEXTCTRL, wex::control_data().Required(true)},
         // Well known ports are in the range from 0 to 1023.
         // Just allow here for most flexibility.
         {_("Port"), 1, 65536}},

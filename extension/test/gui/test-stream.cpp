@@ -11,8 +11,8 @@
 #include <wx/wx.h>
 #endif
 #include <wx/buffer.h>
-#include <wx/extension/stream.h>
-#include <wx/extension/frd.h>
+#include <wex/stream.h>
+#include <wex/frd.h>
 #include "test.h"
 
 TEST_CASE("wex::stream_statistics")

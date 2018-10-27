@@ -12,9 +12,9 @@
 #include <wx/wx.h>
 #endif
 #include <wx/generic/dirctrlg.h>
-#include <wx/extension/tostring.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/util.h>
+#include <wex/tostring.h>
+#include <wex/managedframe.h>
+#include <wex/util.h>
 #include "test.h"
 
 TEST_CASE("wex::to_container")

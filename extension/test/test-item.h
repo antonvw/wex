@@ -7,12 +7,12 @@
 
 #pragma once
 
-#include <wx/extension/item.h>
+#include <wex/item.h>
 
 // Returns a notebook item (no subnotebook yet).
 const auto NotebookItem(
-  wex::itemtype style = wex::ITEM_NOTEBOOK, 
-  wex::labeltype label = wex::LABEL_LEFT, 
+  wex::item::type style = wex::item::NOTEBOOK, 
+  wex::item::label_type label = wex::item::LABEL_LEFT, 
   wxImageList* il = nullptr)
 {
   return wex::item("notebook", {
@@ -25,10 +25,10 @@ const auto NotebookItem(
       {"string2"},
       {"string3"}}},
     {"checkboxes", 
-     {{"checkbox1", wex::ITEM_CHECKBOX},
-      {"checkbox2", wex::ITEM_CHECKBOX},
-      {"checkbox3", wex::ITEM_CHECKBOX},
-      {"checkbox4", wex::ITEM_CHECKBOX}}},
+     {{"checkbox1", wex::item::CHECKBOX},
+      {"checkbox2", wex::item::CHECKBOX},
+      {"checkbox3", wex::item::CHECKBOX},
+      {"checkbox4", wex::item::CHECKBOX}}},
     {"spins", 
       {{"spin1", 0, 10},
        {"spin2", 0, 10},
@@ -52,10 +52,10 @@ const auto TestItems()
     {"string1"},
     {"string2"},
     {"string3"},
-    {"slider1", 10, 15, 10, wex::ITEM_SLIDER},
-    {"slider2", 10, 15, 10, wex::ITEM_SLIDER},
+    {"slider1", 10, 15, 10, wex::item::SLIDER},
+    {"slider2", 10, 15, 10, wex::item::SLIDER},
     {NotebookItem()},
-    {"button1", wex::ITEM_BUTTON},
-    {"button2", wex::ITEM_BUTTON},
-    {"combobox", wex::ITEM_COMBOBOX, as}};
+    {"button1", wex::item::BUTTON},
+    {"button2", wex::item::BUTTON},
+    {"combobox", wex::item::COMBOBOX, as}};
 }

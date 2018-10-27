@@ -5,9 +5,9 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/extension/report/dir.h> // necessary?
-#include <wx/extension/report/dirctrl.h>
-#include <wx/extension/report/defs.h>
+#include <wex/report/dir.h> // necessary?
+#include <wex/report/dirctrl.h>
+#include <wex/report/defs.h>
 #include "test.h"
 
 void Test(wex::dirctrl* ctrl)

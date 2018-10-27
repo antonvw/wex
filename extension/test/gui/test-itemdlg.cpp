@@ -10,8 +10,8 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/itemdlg.h>
-#include <wx/extension/managedframe.h>
+#include <wex/itemdlg.h>
+#include <wex/managedframe.h>
 #include "test.h"
 
 TEST_CASE("wex::item_dialog")
@@ -23,9 +23,9 @@ TEST_CASE("wex::item_dialog")
   wex::item_dialog* dlg1 = new wex::item_dialog({
       {"string1", "hello1"},
       {"string2", "hello2"},
-      {"int1", wex::ITEM_TEXTCTRL_INT, std::string("10")},
-      {"int2", wex::ITEM_TEXTCTRL_INT, std::string("20")},
-      {"float1", wex::ITEM_TEXTCTRL_FLOAT, std::string("20.0")}},
+      {"int1", wex::item::TEXTCTRL_INT, std::string("10")},
+      {"int2", wex::item::TEXTCTRL_INT, std::string("20")},
+      {"float1", wex::item::TEXTCTRL_FLOAT, std::string("20.0")}},
     wex::window_data().Button(wxOK | wxCANCEL | wxAPPLY));
 
   dlg1->Show();

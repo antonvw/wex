@@ -9,8 +9,8 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/vi-macros-mode.h>
-#include <wx/extension/variable.h>
+#include <wex/vi-macros-mode.h>
+#include <wex/variable.h>
 #include "test.h"
 
 TEST_CASE("wex::vi_macros_mode")

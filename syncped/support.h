@@ -7,7 +7,7 @@
 
 #pragma
 
-#include <wx/extension/report/frame.h>
+#include <wex/report/frame.h>
 
 class app;
 

@@ -37,17 +37,17 @@
 #include <wx/simplebook.h>
 #include <wx/toolbook.h>
 
-#include <wx/extension/item.h>
-#include <wx/extension/itemtpldlg.h>
-#include <wx/extension/listview.h>
-#include <wx/extension/log.h>
-#include <wx/extension/notebook.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/tocontainer.h>
-#include <wx/extension/util.h>
+#include <wex/item.h>
+#include <wex/itemtpldlg.h>
+#include <wex/listview.h>
+#include <wex/log.h>
+#include <wex/notebook.h>
+#include <wex/stc.h>
+#include <wex/tocontainer.h>
+#include <wex/util.h>
 
-wex::item::item(itemtype type, 
-  const std::string& label, const std::any& value, labeltype label_type,
+wex::item::item(type type, 
+  const std::string& label, const std::any& value, label_type label_type,
   int major_dimension, const std::any& min, const std::any& max, const std::any& inc,
   wxWindow* window, 
   UserWindowCreate create, UserWindowToConfig config,
@@ -68,39 +68,39 @@ wex::item::item(itemtype type,
 {
   switch (m_Type)
   {
-    case ITEM_CHECKLISTBOX_BIT:
-    case ITEM_CHECKLISTBOX_BOOL:
-    case ITEM_LISTVIEW:
-    case ITEM_NOTEBOOK: 
-    case ITEM_NOTEBOOK_AUI: 
-    case ITEM_NOTEBOOK_EX: 
-    case ITEM_NOTEBOOK_LIST: 
-    case ITEM_NOTEBOOK_SIMPLE: 
-    case ITEM_NOTEBOOK_TOOL: 
-    case ITEM_NOTEBOOK_TREE: 
-    case ITEM_RADIOBOX:
-    case ITEM_STC:
+    case CHECKLISTBOX_BIT:
+    case CHECKLISTBOX_BOOL:
+    case LISTVIEW:
+    case NOTEBOOK: 
+    case NOTEBOOK_AUI: 
+    case NOTEBOOK_EX: 
+    case NOTEBOOK_LIST: 
+    case NOTEBOOK_SIMPLE: 
+    case NOTEBOOK_TOOL: 
+    case NOTEBOOK_TREE: 
+    case RADIOBOX:
+    case STC:
       m_IsRowGrowable = true;
       m_SizerFlags.Expand();
       break;
 
-    case ITEM_STATICTEXT:
-    case ITEM_TEXTCTRL:
-    case ITEM_TEXTCTRL_FLOAT:
-    case ITEM_TEXTCTRL_INT:
+    case STATICTEXT:
+    case TEXTCTRL:
+    case TEXTCTRL_FLOAT:
+    case TEXTCTRL_INT:
       m_IsRowGrowable = (m_Data.Window().Style() & wxTE_MULTILINE) > 0;
       m_SizerFlags.Expand();
       break;
   
-    case ITEM_CHECKBOX:
-    case ITEM_COMBOBOX:
-    case ITEM_COMBOBOX_DIR:
-    case ITEM_COMBOBOX_FILE:
-    case ITEM_DIRPICKERCTRL:
-    case ITEM_FILEPICKERCTRL:
-    case ITEM_SPACER:
-    case ITEM_STATICLINE:
-    case ITEM_USER:
+    case CHECKBOX:
+    case COMBOBOX:
+    case COMBOBOX_DIR:
+    case COMBOBOX_FILE:
+    case DIRPICKERCTRL:
+    case FILEPICKERCTRL:
+    case SPACER:
+    case STATICLINE:
+    case USER:
       m_SizerFlags.Expand();
       break;
     
@@ -255,7 +255,7 @@ wxFlexGridSizer* wex::item::AddStaticText(wxSizer* sizer) const
 
 bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
 {
-  if (m_Type != ITEM_USER && m_Window != nullptr)
+  if (m_Type != USER && m_Window != nullptr)
   {
     return false;
   }
@@ -264,11 +264,11 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
 
   switch (m_Type)
   {
-    case ITEM_EMPTY:
-    case ITEM_SPACER:
+    case EMPTY:
+    case SPACER:
       break;
       
-    case ITEM_BUTTON:
+    case BUTTON:
       // Using a label is necessary for wxGTK.
       m_Window = new wxButton(parent, 
         m_Data.Window().Id(), 
@@ -279,7 +279,7 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
       ((wxButton *)m_Window)->SetLabelMarkup(m_Label);
       break;
 
-    case ITEM_CHECKBOX:
+    case CHECKBOX:
       m_Window = new wxCheckBox(parent, 
         m_Data.Window().Id(), 
         m_Label, 
@@ -288,7 +288,7 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
         m_Data.Window().Style());
       break;
 
-    case ITEM_CHECKLISTBOX_BIT:
+    case CHECKLISTBOX_BIT:
       {
       wxArrayString arraychoices;
 
@@ -306,7 +306,7 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
       }
       break;
 
-    case ITEM_CHECKLISTBOX_BOOL:
+    case CHECKLISTBOX_BOOL:
       {
       wxArrayString arraychoices;
       const std::set<std::string> & choices(std::any_cast<std::set<std::string>>(m_Initial));
@@ -321,7 +321,7 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
       }
       break;
 
-    case ITEM_COLOURPICKERWIDGET:
+    case COLOURPICKERWIDGET:
       m_Window = new wxColourPickerWidget(parent, 
         m_Data.Window().Id(), 
         *wxBLACK, 
@@ -330,9 +330,9 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
         m_Data.Window().Style() == 0 ? wxCLRBTN_DEFAULT_STYLE: m_Data.Window().Style());
       break;
 
-    case ITEM_COMBOBOX:
-    case ITEM_COMBOBOX_DIR:
-    case ITEM_COMBOBOX_FILE:
+    case COMBOBOX:
+    case COMBOBOX_DIR:
+    case COMBOBOX_FILE:
       m_Window = new wxComboBox(parent, 
         m_Data.Window().Id(), 
         wxEmptyString,
@@ -344,7 +344,7 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
         m_Window->SetValidator(*m_Data.Validator());
       break;
 
-    case ITEM_COMMANDLINKBUTTON:
+    case COMMANDLINKBUTTON:
       m_Window = new wxCommandLinkButton(parent, 
         m_Data.Window().Id(), 
         before(m_Label, '\t'), 
@@ -354,7 +354,7 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
         m_Data.Window().Style());
       break;
 
-    case ITEM_DIRPICKERCTRL:
+    case DIRPICKERCTRL:
       {
       wxDirPickerCtrl* pc = new wxDirPickerCtrl(parent, 
         m_Data.Window().Id(), 
@@ -373,7 +373,7 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
       }
       break;
 
-    case ITEM_FILEPICKERCTRL:
+    case FILEPICKERCTRL:
       {
 #if defined(__WXMSW__) || defined(__OS2__)
       const wxString wc = "*.exe";
@@ -398,7 +398,7 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
       }
       break;
 
-    case ITEM_FONTPICKERCTRL:
+    case FONTPICKERCTRL:
       {
       wxFontPickerCtrl* pc = new wxFontPickerCtrl(parent, 
         m_Data.Window().Id(), 
@@ -416,7 +416,7 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
       }
       break;
 
-    case ITEM_HYPERLINKCTRL:
+    case HYPERLINKCTRL:
 #if wxUSE_HYPERLINKCTRL
       m_Window = new wxHyperlinkCtrl(parent, 
         m_Data.Window().Id(), 
@@ -428,7 +428,7 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
 #endif      
       break;
 
-    case ITEM_LISTVIEW:
+    case LISTVIEW:
       {
       listview* lv = new listview(m_ListViewData.
         Window(window_data(m_Data.Window()).Parent(parent)));
@@ -437,7 +437,7 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
       }
       break;
 
-    case ITEM_NOTEBOOK: 
+    case NOTEBOOK: 
       bookctrl = new wxNotebook(parent, 
         m_Data.Window().Id(), 
         m_Data.Window().Pos(), 
@@ -445,7 +445,7 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
         m_Data.Window().Style());
       break;
 
-    case ITEM_NOTEBOOK_AUI: 
+    case NOTEBOOK_AUI: 
       bookctrl = new wxAuiNotebook(parent,
         m_Data.Window().Id(), 
         m_Data.Window().Pos(), 
@@ -453,7 +453,7 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
         m_Data.Window().Style() == 0 ? wxAUI_NB_TOP: m_Data.Window().Style());
       break;
 
-    case ITEM_NOTEBOOK_CHOICE: 
+    case NOTEBOOK_CHOICE: 
       bookctrl = new wxChoicebook(parent, 
         m_Data.Window().Id(), 
         m_Data.Window().Pos(), 
@@ -461,13 +461,13 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
         m_Data.Window().Style());
       break;
 
-    case ITEM_NOTEBOOK_EX: 
+    case NOTEBOOK_EX: 
       bookctrl = new notebook(
         m_Data.Window(
           window_data().Style(wxAUI_NB_TOP).Parent(parent)).Window()); 
       break;
 
-    case ITEM_NOTEBOOK_LIST: 
+    case NOTEBOOK_LIST: 
       bookctrl = new wxListbook(parent, 
         m_Data.Window().Id(), 
         m_Data.Window().Pos(), 
@@ -475,7 +475,7 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
         m_Data.Window().Style());
       break;
 
-    case ITEM_NOTEBOOK_SIMPLE: 
+    case NOTEBOOK_SIMPLE: 
       bookctrl = new wxSimplebook(parent, 
         m_Data.Window().Id(), 
         m_Data.Window().Pos(), 
@@ -483,7 +483,7 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
         m_Data.Window().Style());
       break;
           
-    case ITEM_NOTEBOOK_TOOL: 
+    case NOTEBOOK_TOOL: 
       bookctrl = new wxToolbook(parent, 
         m_Data.Window().Id(), 
         m_Data.Window().Pos(), 
@@ -497,7 +497,7 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
       }
       break;
     
-    case ITEM_NOTEBOOK_TREE: 
+    case NOTEBOOK_TREE: 
       bookctrl = new wxTreebook(parent, 
         m_Data.Window().Id(), 
         m_Data.Window().Pos(), 
@@ -505,7 +505,7 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
         m_Data.Window().Style());
       break;
     
-    case ITEM_RADIOBOX:
+    case RADIOBOX:
       {
       wxArrayString arraychoices;
 
@@ -525,7 +525,7 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
       }
       break;
 
-    case ITEM_SLIDER:
+    case SLIDER:
       m_Window = new wxSlider(parent, 
         m_Data.Window().Id(), 
         std::any_cast<int>(m_Initial),
@@ -536,7 +536,7 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
         m_Data.Window().Style());
       break;
 
-    case ITEM_SPINCTRL:
+    case SPINCTRL:
       m_Window = new wxSpinCtrl(parent, 
         m_Data.Window().Id(), 
         wxEmptyString,
@@ -548,7 +548,7 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
         !m_Initial.has_value() ? std::any_cast<int>(m_Min): std::any_cast<int>(m_Initial));
       break;
 
-    case ITEM_SPINCTRLDOUBLE:
+    case SPINCTRLDOUBLE:
       m_Window = new wxSpinCtrlDouble(parent, 
         m_Data.Window().Id(), 
         wxEmptyString,
@@ -561,7 +561,7 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
         std::any_cast<double>(m_Inc));
       break;
 
-    case ITEM_STATICLINE:
+    case STATICLINE:
       m_Window = new wxStaticLine(parent, 
         m_Data.Window().Id(),
         m_Data.Window().Pos(), 
@@ -569,7 +569,7 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
         m_Data.Window().Style());
       break;
 
-    case ITEM_STATICTEXT:
+    case STATICTEXT:
       m_Window = new wxStaticText(parent, 
         m_Data.Window().Id(), 
         wxEmptyString,
@@ -579,10 +579,11 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
       ((wxStaticText* )m_Window)->SetLabelMarkup(m_Label);
       break;
 
-    case ITEM_STC:
+    case STC:
       m_Window = new stc(std::string(),
         stc_data().
-          Menu(static_cast<stc_menu_flags>(STC_MENU_CONTEXT | STC_MENU_OPEN_LINK | STC_MENU_VCS)).
+          Menu(static_cast<stc_data::menu_flags>(
+            stc_data::MENU_CONTEXT | stc_data::MENU_OPEN_LINK | stc_data::MENU_VCS)).
           Window(window_data(m_Data.Window()).
             Parent(parent)));
       
@@ -596,7 +597,7 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
       }
       break;
 
-    case ITEM_TEXTCTRL:
+    case TEXTCTRL:
       m_Window = new wxTextCtrl(parent, 
         m_Data.Window().Id(), 
         !m_Initial.has_value() ? std::string(): std::any_cast<std::string>(m_Initial),
@@ -607,7 +608,7 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
         m_Window->SetValidator(*m_Data.Validator());
       break;
 
-    case ITEM_TEXTCTRL_FLOAT:
+    case TEXTCTRL_FLOAT:
       m_Window = new wxTextCtrl(parent, 
         m_Data.Window().Id(), 
         !m_Initial.has_value() ? std::string(): std::any_cast<std::string>(m_Initial),
@@ -626,7 +627,7 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
         m_Window->SetValidator(*m_Data.Validator());
       break;
       
-    case ITEM_TEXTCTRL_INT:
+    case TEXTCTRL_INT:
       m_Window = new wxTextCtrl(parent, 
         m_Data.Window().Id(), 
         !m_Initial.has_value() ? std::string(): std::any_cast<std::string>(m_Initial),
@@ -643,7 +644,7 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
         m_Window->SetValidator(*m_Data.Validator());
       break;
 
-    case ITEM_TOGGLEBUTTON:
+    case TOGGLEBUTTON:
       m_Window = new wxToggleButton(parent, 
         m_Data.Window().Id(), 
         m_Label,
@@ -652,7 +653,7 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
         m_Data.Window().Style());
       break;
 
-    case ITEM_USER:
+    case USER:
       if (m_UserWindowCreate != nullptr)
       {
         wxASSERT(m_Window != nullptr);
@@ -673,7 +674,7 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
     }
   }
   
-  if (m_Type != ITEM_EMPTY && m_Type != ITEM_SPACER)
+  if (m_Type != EMPTY && m_Type != SPACER)
   {
     wxASSERT(m_Window != nullptr);
   }
@@ -691,26 +692,26 @@ const std::any wex::item::GetValue() const
   {  
     switch (m_Type)
     {
-      case ITEM_CHECKBOX: any = ((wxCheckBox* )m_Window)->GetValue(); break;
-      case ITEM_COLOURPICKERWIDGET: any = ((wxColourPickerWidget* )m_Window)->GetColour(); break;
-      case ITEM_COMBOBOX: 
-      case ITEM_COMBOBOX_DIR: 
-      case ITEM_COMBOBOX_FILE: any = to_container<wxArrayString>((wxComboBox*)m_Window).Get(); break;
-      case ITEM_DIRPICKERCTRL: any = ((wxDirPickerCtrl* )m_Window)->GetPath().ToStdString(); break;
-      case ITEM_FILEPICKERCTRL: any = ((wxFilePickerCtrl* )m_Window)->GetPath().ToStdString(); break;
-      case ITEM_FONTPICKERCTRL: any = ((wxFontPickerCtrl* )m_Window)->GetSelectedFont(); break;
-      case ITEM_HYPERLINKCTRL: any = ((wxHyperlinkCtrl* )m_Window)->GetURL().ToStdString(); break;
-      case ITEM_LISTVIEW: any = ((wex::listview* )m_Window)->ItemToText(-1); break;
-      case ITEM_SLIDER: any = ((wxSlider* )m_Window)->GetValue(); break;
-      case ITEM_SPINCTRL: any = ((wxSpinCtrl* )m_Window)->GetValue(); break;
-      case ITEM_SPINCTRLDOUBLE: any = ((wxSpinCtrlDouble* )m_Window)->GetValue(); break;
-      case ITEM_STC: any = ((wxStyledTextCtrl* )m_Window)->GetValue().ToStdString(); break;
-      case ITEM_TEXTCTRL: any = ((wxTextCtrl* )m_Window)->GetValue().ToStdString(); break;
-      case ITEM_TEXTCTRL_FLOAT: any = std::stod(((wxTextCtrl* )m_Window)->GetValue().ToStdString()); break;
-      case ITEM_TEXTCTRL_INT: any = std::stol(((wxTextCtrl* )m_Window)->GetValue().ToStdString()); break;
-      case ITEM_TOGGLEBUTTON: any = ((wxToggleButton* )m_Window)->GetValue(); break;
+      case CHECKBOX: any = ((wxCheckBox* )m_Window)->GetValue(); break;
+      case COLOURPICKERWIDGET: any = ((wxColourPickerWidget* )m_Window)->GetColour(); break;
+      case COMBOBOX: 
+      case COMBOBOX_DIR: 
+      case COMBOBOX_FILE: any = to_container<wxArrayString>((wxComboBox*)m_Window).Get(); break;
+      case DIRPICKERCTRL: any = ((wxDirPickerCtrl* )m_Window)->GetPath().ToStdString(); break;
+      case FILEPICKERCTRL: any = ((wxFilePickerCtrl* )m_Window)->GetPath().ToStdString(); break;
+      case FONTPICKERCTRL: any = ((wxFontPickerCtrl* )m_Window)->GetSelectedFont(); break;
+      case HYPERLINKCTRL: any = ((wxHyperlinkCtrl* )m_Window)->GetURL().ToStdString(); break;
+      case LISTVIEW: any = ((wex::listview* )m_Window)->ItemToText(-1); break;
+      case SLIDER: any = ((wxSlider* )m_Window)->GetValue(); break;
+      case SPINCTRL: any = ((wxSpinCtrl* )m_Window)->GetValue(); break;
+      case SPINCTRLDOUBLE: any = ((wxSpinCtrlDouble* )m_Window)->GetValue(); break;
+      case STC: any = ((wxStyledTextCtrl* )m_Window)->GetValue().ToStdString(); break;
+      case TEXTCTRL: any = ((wxTextCtrl* )m_Window)->GetValue().ToStdString(); break;
+      case TEXTCTRL_FLOAT: any = std::stod(((wxTextCtrl* )m_Window)->GetValue().ToStdString()); break;
+      case TEXTCTRL_INT: any = std::stol(((wxTextCtrl* )m_Window)->GetValue().ToStdString()); break;
+      case TOGGLEBUTTON: any = ((wxToggleButton* )m_Window)->GetValue(); break;
       
-      case ITEM_CHECKLISTBOX_BIT: {
+      case CHECKLISTBOX_BIT: {
         auto* clb = (wxCheckListBox*)GetWindow();
         long value = 0;
         int item = 0;
@@ -758,16 +759,16 @@ wxFlexGridSizer* wex::item::Layout(
     
     switch (m_Type)
     {
-      case ITEM_COMBOBOX_DIR: 
-      case ITEM_COMBOBOX_FILE: 
+      case COMBOBOX_DIR: 
+      case COMBOBOX_FILE: 
         return_sizer = AddBrowseButton(sizer);
         break;
 
-      case ITEM_EMPTY: return fgz;
-      case ITEM_SPACER: sizer->AddSpacer(m_Data.Window().Style()); return fgz;
+      case EMPTY: return fgz;
+      case SPACER: sizer->AddSpacer(m_Data.Window().Style()); return fgz;
       
       default: 
-        if (m_Type >= ITEM_NOTEBOOK && m_Type <= ITEM_NOTEBOOK_TREE)
+        if (m_Type >= NOTEBOOK && m_Type <= NOTEBOOK_TREE)
         {
           if (!m_Initial.has_value())
           {
@@ -889,22 +890,22 @@ bool wex::item::SetValue(const std::any& value) const
   {
     switch (m_Type)
     {
-      case ITEM_CHECKBOX: ((wxCheckBox* )m_Window)->SetValue(std::any_cast<bool>(value)); break;
-      case ITEM_COLOURPICKERWIDGET: ((wxColourPickerWidget* )m_Window)->SetColour(std::any_cast<wxColour>(value)); break;
-      case ITEM_COMBOBOX: combobox_as((wxComboBox* )m_Window, std::any_cast<wxArrayString>(value)); break;
-      case ITEM_DIRPICKERCTRL: ((wxDirPickerCtrl* )m_Window)->SetPath(std::any_cast<std::string>(value)); break;
-      case ITEM_FILEPICKERCTRL: ((wxFilePickerCtrl* )m_Window)->SetPath(std::any_cast<std::string>(value)); break;
-      case ITEM_FONTPICKERCTRL: ((wxFontPickerCtrl* )m_Window)->SetSelectedFont(std::any_cast<wxFont>(value)); break;
-      case ITEM_SLIDER: ((wxSlider* )m_Window)->SetValue(std::any_cast<int>(value)); break;
-      case ITEM_SPINCTRL: ((wxSpinCtrl* )m_Window)->SetValue(std::any_cast<int>(value)); break;
-      case ITEM_SPINCTRLDOUBLE: ((wxSpinCtrlDouble* )m_Window)->SetValue(std::any_cast<double>(value)); break;
-      case ITEM_STC: ((wxStyledTextCtrl* )m_Window)->SetValue(std::any_cast<std::string>(value)); break;
-      case ITEM_TEXTCTRL: ((wxTextCtrl* )m_Window)->SetValue(std::any_cast<std::string>(value)); break;
-      case ITEM_TEXTCTRL_FLOAT: ((wxTextCtrl* )m_Window)->SetValue(wxString::Format("%lf", std::any_cast<double>(value))); break;
-      case ITEM_TEXTCTRL_INT: ((wxTextCtrl* )m_Window)->SetValue(wxString::Format("%ld", std::any_cast<long>(value))); break;
-      case ITEM_TOGGLEBUTTON: ((wxToggleButton* )m_Window)->SetValue(std::any_cast<bool>(value)); break;
+      case CHECKBOX: ((wxCheckBox* )m_Window)->SetValue(std::any_cast<bool>(value)); break;
+      case COLOURPICKERWIDGET: ((wxColourPickerWidget* )m_Window)->SetColour(std::any_cast<wxColour>(value)); break;
+      case COMBOBOX: combobox_as((wxComboBox* )m_Window, std::any_cast<wxArrayString>(value)); break;
+      case DIRPICKERCTRL: ((wxDirPickerCtrl* )m_Window)->SetPath(std::any_cast<std::string>(value)); break;
+      case FILEPICKERCTRL: ((wxFilePickerCtrl* )m_Window)->SetPath(std::any_cast<std::string>(value)); break;
+      case FONTPICKERCTRL: ((wxFontPickerCtrl* )m_Window)->SetSelectedFont(std::any_cast<wxFont>(value)); break;
+      case SLIDER: ((wxSlider* )m_Window)->SetValue(std::any_cast<int>(value)); break;
+      case SPINCTRL: ((wxSpinCtrl* )m_Window)->SetValue(std::any_cast<int>(value)); break;
+      case SPINCTRLDOUBLE: ((wxSpinCtrlDouble* )m_Window)->SetValue(std::any_cast<double>(value)); break;
+      case STC: ((wxStyledTextCtrl* )m_Window)->SetValue(std::any_cast<std::string>(value)); break;
+      case TEXTCTRL: ((wxTextCtrl* )m_Window)->SetValue(std::any_cast<std::string>(value)); break;
+      case TEXTCTRL_FLOAT: ((wxTextCtrl* )m_Window)->SetValue(wxString::Format("%lf", std::any_cast<double>(value))); break;
+      case TEXTCTRL_INT: ((wxTextCtrl* )m_Window)->SetValue(wxString::Format("%ld", std::any_cast<long>(value))); break;
+      case TOGGLEBUTTON: ((wxToggleButton* )m_Window)->SetValue(std::any_cast<bool>(value)); break;
 
-      case ITEM_CHECKLISTBOX_BIT:
+      case CHECKLISTBOX_BIT:
         {
         auto* clb = (wxCheckListBox*)m_Window;
         int item = 0;
@@ -917,7 +918,7 @@ bool wex::item::SetValue(const std::any& value) const
         }
         break;
       
-      case ITEM_LISTVIEW:
+      case LISTVIEW:
         {
         auto* win = (listview*)GetWindow();
         win->DeleteAllItems();

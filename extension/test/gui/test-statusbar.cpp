@@ -9,8 +9,8 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/statusbar.h>
-#include <wx/extension/managedframe.h>
+#include <wex/statusbar.h>
+#include <wex/managedframe.h>
 #include "test.h"
 
 TEST_CASE("wex::statusbar")
@@ -50,7 +50,7 @@ TEST_CASE("wex::statusbar")
   REQUIRE( GetStatusBar()->ShowField("LastPane", true));
   REQUIRE( GetStatusBar()->GetStatusText("LastPane") == "BackAgain");
 
-  wex::statusbarpane pane1("PaneInfo", 15, "hello");
+  wex::statusbar_pane pane1("PaneInfo", 15, "hello");
   REQUIRE( pane1.GetName() == "PaneInfo");
   REQUIRE( pane1.GetHelpText() == "hello");
   REQUIRE( pane1.GetHiddenText().empty());

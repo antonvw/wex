@@ -21,11 +21,11 @@ namespace wex
       : history_frame() {
         lexer lexer("cpp");
         m_Report = new listview(listview_data().
-          Type(LISTVIEW_KEYWORD).Lexer(&lexer));
+          Type(listview_data::KEYWORD).Lexer(&lexer));
         AddPane(this, m_Report);};
 
     virtual listview* Activate(
-      listview_type listview_type, const lexer* lexer) override {
+      listview_data::type listview_type, const lexer* lexer) override {
       // only for coverage
       history_frame::Activate(listview_type, lexer);
       return m_Report;};

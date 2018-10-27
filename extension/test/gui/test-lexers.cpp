@@ -9,10 +9,10 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/lexers.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/path.h>
-#include <wx/extension/stc.h>
+#include <wex/lexers.h>
+#include <wex/managedframe.h>
+#include <wex/path.h>
+#include <wex/stc.h>
 #include "test.h"
 
 TEST_CASE("wex::lexers")
@@ -20,7 +20,7 @@ TEST_CASE("wex::lexers")
   SUBCASE("Get")
   {
     REQUIRE( wex::lexers::Get() != nullptr);
-    REQUIRE(!wex::lexers::Get()->GetLexers().empty());
+    REQUIRE(!wex::lexers::Get()->lexers().empty());
   }
   
   SUBCASE("lexer and global macros")
@@ -99,8 +99,8 @@ TEST_CASE("wex::lexers")
     REQUIRE(!wex::lexers::Get()->IndicatorIsLoaded(wex::indicator(99)));
     REQUIRE( wex::lexers::Get()->IndicatorIsLoaded(wex::indicator(0)));
     REQUIRE( wex::lexers::Get()->MarkerIsLoaded(wex::marker(0)));
-    REQUIRE( wex::lexers::Get()->GetIndicator(wex::indicator(0)).IsOk());
-    REQUIRE( wex::lexers::Get()->GetMarker(wex::marker(0)).IsOk());
+    REQUIRE( wex::lexers::Get()->GetIndicator(wex::indicator(0)).is_ok());
+    REQUIRE( wex::lexers::Get()->GetMarker(wex::marker(0)).is_ok());
     
     wxString lexer("cpp");
     REQUIRE(!wex::lexers::Get()->GetKeywords("cpp").empty());

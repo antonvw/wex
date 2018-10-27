@@ -7,20 +7,20 @@
 
 #include <vector>
 #include <wx/app.h>
-#include <wx/config.h>
 #include <wx/defs.h>
 #include <wx/settings.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/frd.h>
-#include <wx/extension/indicator.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/path.h>
-#include <wx/extension/printing.h>
-#include <wx/extension/stcdlg.h>
-#include <wx/extension/tokenizer.h>
-#include <wx/extension/util.h>
-#include <wx/extension/vcs.h>
+#include <wex/stc.h>
+#include <wex/config.h>
+#include <wex/frd.h>
+#include <wex/indicator.h>
+#include <wex/lexers.h>
+#include <wex/managedframe.h>
+#include <wex/path.h>
+#include <wex/printing.h>
+#include <wex/stcdlg.h>
+#include <wex/tokenizer.h>
+#include <wex/util.h>
+#include <wex/vcs.h>
 
 wex::stc::stc(const std::string& text, const stc_data& data)
   : stc(path(), data)
@@ -51,12 +51,12 @@ wex::stc::stc(const path& filename, const stc_data& data)
   , m_Frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
   , m_Lexer(this)
 {
-  if (wxConfig::Get()->ReadBool("AllowSync", true)) Sync();
+  if (config("AllowSync").get(true)) Sync();
   
-  if (!lexers::Get()->GetLexers().empty())
+  if (!lexers::Get()->get().empty())
   {
-    m_DefaultFont = wxConfigBase::Get()->ReadObject(
-      _("Default font"), wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT));
+    m_DefaultFont = config(_("Default font")).get(
+      wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT));
   }
   
 #ifdef __WXMSW__
@@ -100,7 +100,7 @@ wex::stc::stc(const path& filename, const stc_data& data)
 
   BindAll();
 
-  if (filename.GetStat().IsOk())
+  if (filename.GetStat().is_ok())
   {
     Open(filename, data);
   }
@@ -179,19 +179,17 @@ void wex::stc::Fold(bool foldall)
 {
   if (
      GetProperty("fold") == "1" &&
-     m_Lexer.IsOk() &&
+     m_Lexer.is_ok() &&
     !m_Lexer.GetScintillaLexer().empty())
   {
-    SetMarginWidth(m_MarginFoldingNumber, 
-      wxConfigBase::Get()->ReadLong(_("Folding"), 0));
-    SetFoldFlags(
-      wxConfigBase::Get()->ReadLong(_("Fold flags"),
+    SetMarginWidth(m_MarginFoldingNumber, config(_("Folding")).get(0));
+    SetFoldFlags(config(_("Fold flags")).get(
       wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | 
-        wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
+      wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
         
     if (
       foldall || 
-      GetLineCount() > wxConfigBase::Get()->ReadLong(_("Auto fold"), 0))
+      GetLineCount() > config(_("Auto fold")).get(0))
     {
       FoldAll();
     }
@@ -353,13 +351,13 @@ bool wex::stc::LinkOpen(int mode, std::string* filename)
   if (mode & LINK_OPEN_MIME)
   {
     const path path(m_Link.GetPath(text, 
-      control_data().Line(LINK_LINE_OPEN_URL_AND_MIME)));
+      control_data().Line(link::LINE_OPEN_URL_AND_MIME)));
     
     if (!path.Path().string().empty()) 
     {
       if (!(mode & LINK_CHECK)) 
       {
-        path.OpenMIME();
+        path.open_mime();
       }
 
       return true;
@@ -456,17 +454,17 @@ void wex::stc::MarkModified(const wxStyledTextEvent& event)
 
 void wex::stc::OnExit()
 {
-  if (wxConfigBase::Get()->ReadLong(_("Keep zoom"), 0))
+  if (config(_("Keep zoom")).get(false))
   {
-    wxConfigBase::Get()->Write("zoom", m_Zoom);
+    config("zoom").set(m_Zoom);
   }
 }
   
 void wex::stc::OnInit()
 {
-  if (wxConfigBase::Get()->ReadLong(_("Keep zoom"), 0))
+  if (config(_("Keep zoom")).get(false))
   {
-    m_Zoom = wxConfigBase::Get()->ReadLong("zoom", -1);
+    m_Zoom = config("zoom").get(-1);
   }
 }
   
@@ -478,8 +476,8 @@ void wex::stc::OnIdle(wxIdleEvent& event)
     m_File.CheckSync() &&
     // the readonly flags bit of course can differ from file actual readonly mode,
     // therefore add this check
-    !(m_Data.Flags() & STC_WIN_READ_ONLY) &&
-      GetFileName().GetStat().IsReadOnly() != GetReadOnly())
+    !(m_Data.Flags() & stc_data::WIN_READ_ONLY) &&
+      GetFileName().GetStat().is_readonly() != GetReadOnly())
   {
     FileReadOnlyAttributeChanged();
   }
@@ -730,12 +728,12 @@ bool wex::stc::ReplaceNext(
 }
 
  
-void wex::stc::ResetMargins(stc_margin_flags flags)
+void wex::stc::ResetMargins(margin_flags flags)
 {
-  if (flags & STC_MARGIN_FOLDING) SetMarginWidth(m_MarginFoldingNumber, 0);
-  if (flags & STC_MARGIN_DIVIDER) SetMarginWidth(m_MarginDividerNumber, 0);
-  if (flags & STC_MARGIN_LINENUMBER) SetMarginWidth(m_MarginLineNumber, 0);
-  if (flags & STC_MARGIN_TEXT) SetMarginWidth(m_MarginTextNumber, 0);
+  if (flags & MARGIN_FOLDING) SetMarginWidth(m_MarginFoldingNumber, 0);
+  if (flags & MARGIN_DIVIDER) SetMarginWidth(m_MarginDividerNumber, 0);
+  if (flags & MARGIN_LINENUMBER) SetMarginWidth(m_MarginLineNumber, 0);
+  if (flags & MARGIN_TEXT) SetMarginWidth(m_MarginTextNumber, 0);
 }
 
 void wex::stc::SelectNone()
@@ -796,7 +794,7 @@ void wex::stc::SetText(const std::string& value)
 void wex::stc::ShowLineNumbers(bool show)
 {
   SetMarginWidth(m_MarginLineNumber, 
-    show ? wxConfigBase::Get()->ReadLong(_("Line number"), 0): 0);
+    show ? config(_("Line number")).get(0): 0);
 }
 
 bool wex::stc::ShowVCS(const vcs_entry* vcs)

@@ -10,16 +10,16 @@
 #include <wx/wx.h>
 #endif
 #include <wx/aboutdlg.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/listitem.h>
-#include <wx/extension/log.h>
-#include <wx/extension/printing.h>
-#include <wx/extension/toolbar.h>
-#include <wx/extension/util.h>
-#include <wx/extension/version.h>
-#include <wx/extension/report/dir.h>
-#include <wx/extension/report/dirctrl.h>
-#include <wx/extension/report/listview.h>
+#include <wex/lexers.h>
+#include <wex/listitem.h>
+#include <wex/log.h>
+#include <wex/printing.h>
+#include <wex/toolbar.h>
+#include <wex/util.h>
+#include <wex/version.h>
+#include <wex/report/dir.h>
+#include <wex/report/dirctrl.h>
+#include <wex/report/listview.h>
 #include <easylogging++.h>
 #include "app.h"
 #ifndef __WXMSW__
@@ -80,10 +80,10 @@ report_sample_frame::report_sample_frame() : wex::history_frame()
 
   const wex::lexer lexer = wex::lexers::Get()->FindByName("cpp");
 
-  for (int i = wex::LISTVIEW_FOLDER; i <= wex::LISTVIEW_FILE; i++)
+  for (int i = wex::listview_data::FOLDER; i <= wex::listview_data::FILE; i++)
   {
     auto* vw = new wex::history_listview(
-      wex::listview_data().Type((wex::listview_type)i).Lexer(&lexer));
+      wex::listview_data().Type((wex::listview_data::type)i).Lexer(&lexer));
 
     m_NotebookWithLists->AddPage(
       vw, 
@@ -108,7 +108,7 @@ report_sample_frame::report_sample_frame() : wex::history_frame()
 
   wex::listview_dir dir(
     (wex::listview*)m_NotebookWithLists->GetPageByKey(
-      wex::listview_data().Type(wex::LISTVIEW_FILE).TypeDescription()),
+      wex::listview_data().Type(wex::listview_data::FILE).TypeDescription()),
     wex::path::Current(),
     "*.cpp;*.h");
 
@@ -116,7 +116,7 @@ report_sample_frame::report_sample_frame() : wex::history_frame()
 
   wex::listitem item(
     (wex::listview*)m_NotebookWithLists->GetPageByKey(
-      wex::listview_data().Type(wex::LISTVIEW_FILE).TypeDescription()),
+      wex::listview_data().Type(wex::listview_data::FILE).TypeDescription()),
     wex::path("NOT EXISTING ITEM"));
 
   item.Insert();
@@ -168,11 +168,11 @@ report_sample_frame::report_sample_frame() : wex::history_frame()
     }}, wxID_PRINT);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-	  wex::printing::Get()->GetHtmlPrinter()->PageSetup();}, wxID_PRINT_SETUP);
+    wex::printing::Get()->GetHtmlPrinter()->PageSetup();}, wxID_PRINT_SETUP);
 }
 
 wex::listview* report_sample_frame::Activate(
-  wex::listview_type type, 
+  wex::listview_data::type type, 
   const wex::lexer* lexer)
 {
   for (
@@ -184,7 +184,7 @@ wex::listview* report_sample_frame::Activate(
 
     if (vw->GetData().Type() == type)
     {
-      if (type == wex::LISTVIEW_KEYWORD)
+      if (type == wex::listview_data::KEYWORD)
       {
         if (lexer != nullptr)
         {
@@ -233,10 +233,11 @@ wex::stc* report_sample_frame::GetSTC()
   return m_STC;
 }
   
-wex::stc* report_sample_frame::OpenFile(const wex::path& file, const wex::stc_data& data)
+wex::stc* report_sample_frame::OpenFile(
+  const wex::path& file, const wex::stc_data& data)
 {
   m_STC->GetLexer().Reset();
-  m_STC->Open(file, wex::stc_data(data).Flags(wex::STC_WIN_DEFAULT));
+  m_STC->Open(file, wex::stc_data(data).Flags(wex::stc_data::WIN_DEFAULT));
   
   return m_STC;
 }

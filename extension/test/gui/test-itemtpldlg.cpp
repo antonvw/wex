@@ -10,10 +10,10 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/itemtpldlg.h>
-#include <wx/extension/item.h>
-#include <wx/extension/report/defs.h>
-#include <wx/extension/managedframe.h>
+#include <wex/itemtpldlg.h>
+#include <wex/item.h>
+#include <wex/report/defs.h>
+#include <wex/managedframe.h>
 #include "test.h"
 
 namespace wex
@@ -24,7 +24,7 @@ namespace wex
     testitem(): item() {;};
     testitem(const std::string& label, const std::string& value = std::string())
       : item(label, value) {;};
-    testitem(const std::string& label, itemtype type)
+    testitem(const std::string& label, item::type type)
       : item(label, type) {;};
     void SetDialog(item_template_dialog<testitem>* dlg) {;};
   };
@@ -39,18 +39,18 @@ TEST_CASE("wex::item_template_dialog")
     wex::item_template_dialog<wex::testitem>* dlg = new wex::item_template_dialog<wex::testitem>(
       std::vector <wex::testitem> {
         {"fruit", "apple"},
-        {"button", wex::ITEM_BUTTON},
+        {"button", wex::item::BUTTON},
         {"string1"},
         {"string2"},
         {"more fruit", "citron"}},
       wex::window_data().Title("3 columns"), 0, 3);
     
-    REQUIRE( wex::testitem("test", wex::ITEM_BUTTON).GetType() == wex::ITEM_BUTTON);
+    REQUIRE( wex::testitem("test", wex::item::BUTTON).GetType() == wex::item::BUTTON);
     
     REQUIRE(!dlg->BindButton({}));
-    REQUIRE(!dlg->BindButton({"test", wex::ITEM_COMBOBOX}));
-    REQUIRE(!dlg->BindButton({"test", wex::ITEM_BUTTON})); // not yet laid out0
-    REQUIRE(!dlg->BindButton({"test", wex::ITEM_COMBOBOX_DIR})); // same
+    REQUIRE(!dlg->BindButton({"test", wex::item::COMBOBOX}));
+    REQUIRE(!dlg->BindButton({"test", wex::item::BUTTON})); // not yet laid out0
+    REQUIRE(!dlg->BindButton({"test", wex::item::COMBOBOX_DIR})); // same
 
     REQUIRE( dlg->BindButton(dlg->GetItem("button")));
     
@@ -75,7 +75,7 @@ TEST_CASE("wex::item_template_dialog")
   SUBCASE("Test dialog with checkbox item")
   {
     wex::item_template_dialog<wex::testitem>* dlg = new wex::item_template_dialog<wex::testitem>(
-      std::vector <wex::testitem> {{"checkbox", wex::ITEM_CHECKBOX}},
+      std::vector <wex::testitem> {{"checkbox", wex::item::CHECKBOX}},
       wex::window_data().Title("checkbox items"));
 
     dlg->ForceCheckBoxChecked();

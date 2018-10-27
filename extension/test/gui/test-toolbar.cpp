@@ -9,8 +9,8 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/toolbar.h>
-#include <wx/extension/managedframe.h>
+#include <wex/toolbar.h>
+#include <wex/managedframe.h>
 #include "test.h"
 
 TEST_CASE("wex::toolbar")

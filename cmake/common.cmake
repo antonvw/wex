@@ -106,7 +106,7 @@ macro(target_link_all)
       ${wxWidgets_LIBRARIES} 
       ${extra_macro_args}
       stdc++
-      c++experimental
+      c++fs
       )
   else ()
     target_link_libraries(
@@ -152,7 +152,7 @@ else ()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wno-overloaded-virtual -Wno-reorder -Wno-write-strings -Wno-deprecated-declarations -Wno-unused-result")
 endif ()
 
-file(GLOB_RECURSE wexSETUP_H ${wxExtension_BINARY_DIR}/*.h)
+file(GLOB_RECURSE wexSETUP_H ${wex_BINARY_DIR}/*.h)
 # use only first element from list
 list(GET wexSETUP_H 0 wexSETUP_H) 
 get_filename_component(wexSETUP_H ${wexSETUP_H} DIRECTORY)

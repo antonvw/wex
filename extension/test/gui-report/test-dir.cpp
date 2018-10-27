@@ -5,17 +5,17 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/extension/util.h>
-#include <wx/extension/report/dir.h>
-#include <wx/extension/report/listviewfile.h>
-#include <wx/extension/report/stream.h>
+#include <wex/util.h>
+#include <wex/report/dir.h>
+#include <wex/report/listviewfile.h>
+#include <wex/report/stream.h>
 #include "test.h"
 
 TEST_CASE("wex::tool_dir")
 {
   const wex::tool tool = wex::ID_TOOL_REPORT_FIND;
 
-  wex::listview* report = new wex::listview(wex::listview_data().Type(wex::LISTVIEW_FIND));
+  wex::listview* report = new wex::listview(wex::listview_data().Type(wex::listview_data::FIND));
     
   if (!wex::listview_stream::SetupTool(tool, GetFrame(), report))
   {
@@ -28,7 +28,7 @@ TEST_CASE("wex::tool_dir")
     tool,
     "./",
     "*.cpp;*.h",
-    wex::DIR_FILES | wex::DIR_HIDDEN | wex::DIR_DIRS);
+    wex::dir::FILES | wex::dir::HIDDEN | wex::dir::DIRS);
 
   dir.FindFiles();
 

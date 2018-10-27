@@ -5,7 +5,7 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/extension/tokenizer.h>
+#include <wex/tokenizer.h>
 
 wex::tokenizer::tokenizer(
   const std::string& text, const std::string& delimiters, bool skip_empty_tokens)

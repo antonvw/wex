@@ -5,19 +5,19 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/extension/listitem.h>
-#include <wx/extension/report/listview.h>
-#include <wx/extension/report/defs.h>
+#include <wex/listitem.h>
+#include <wex/report/listview.h>
+#include <wex/report/defs.h>
 #include "test.h"
 
 TEST_CASE("wex::history_listview")
 {
   REQUIRE(wex::history_listview::GetTypeTool(wex::tool(wex::ID_TOOL_REPORT_FIND)) == 
-    wex::LISTVIEW_FIND);
+    wex::listview_data::FIND);
   REQUIRE(wex::history_listview::GetTypeTool(wex::tool(wex::ID_TOOL_REPORT_KEYWORD)) == 
-    wex::LISTVIEW_KEYWORD);
+    wex::listview_data::KEYWORD);
     
-  wex::history_listview* listView = new wex::history_listview(wex::listview_data().Type(wex::LISTVIEW_FIND));
+  wex::history_listview* listView = new wex::history_listview(wex::listview_data().Type(wex::listview_data::FIND));
   AddPane(GetFrame(), listView);
 
   wex::listitem item(listView, GetTestPath("test.h"));
@@ -37,6 +37,6 @@ TEST_CASE("wex::history_listview")
   }
 #endif
   
-  wex::history_listview* listView2 = new wex::history_listview(wex::listview_data().Type(wex::LISTVIEW_FIND));
+  wex::history_listview* listView2 = new wex::history_listview(wex::listview_data().Type(wex::listview_data::FIND));
   listView2->Destroy();
 }

@@ -10,7 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/numformatter.h>
-#include <wx/extension/cmdline.h>
+#include <wex/cmdline.h>
 #include "../test.h"
 
 TEST_CASE("wex::cmdline")
@@ -31,9 +31,9 @@ TEST_CASE("wex::cmdline")
       {{"u", "3", "bool"}, [&](bool on){u = true;}},
       {{"v", "4", "bool"}, [&](bool on){v = on;}},
       {{"xx", "bool"}, [&](bool on){x = on;}}},
-     {{{"a", "5", "int"}, {wex::CMD_LINE_INT, [&](const std::any& i) {a = std::any_cast<int>(i);}}},
-      {{"b", "6", "float"}, {wex::CMD_LINE_FLOAT, [&](const std::any& f) {b = std::any_cast<float>(f);}}},
-      {{"c", "7", "string"}, {wex::CMD_LINE_STRING, [&](const std::any& s) {c = std::any_cast<std::string>(s);}}}},
+     {{{"a", "5", "int"}, {wex::cmdline::INT, [&](const std::any& i) {a = std::any_cast<int>(i);}}},
+      {{"b", "6", "float"}, {wex::cmdline::FLOAT, [&](const std::any& f) {b = std::any_cast<float>(f);}}},
+      {{"c", "7", "string"}, {wex::cmdline::STRING, [&](const std::any& s) {c = std::any_cast<std::string>(s);}}}},
      {{"rest", "rest"}, [&](const std::vector<std::string> & v) {
         p = v[0];
         q = v[1];

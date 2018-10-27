@@ -6,36 +6,35 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
+#include <numeric>
+#include <pugixml.hpp>
+#include <regex>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <numeric>
-#include <pugixml.hpp>
-#include <regex>
 #include <wx/app.h>
 #include <wx/clipbrd.h>
-#include <wx/config.h>
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
-#include <wx/stdpaths.h>
 #include <wx/wupdlock.h>
-#include <wx/extension/util.h>
-#include <wx/extension/dir.h>
-#include <wx/extension/ex.h>
-#include <wx/extension/filedlg.h>
-#include <wx/extension/frame.h>
-#include <wx/extension/frd.h>
-#include <wx/extension/lexer.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/log.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/path.h>
-#include <wx/extension/process.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/tokenizer.h>
-#include <wx/extension/tostring.h>
-#include <wx/extension/vcs.h>
-#include <wx/extension/vi-macros.h>
+#include <wex/util.h>
+#include <wex/config.h>
+#include <wex/dir.h>
+#include <wex/ex.h>
+#include <wex/filedlg.h>
+#include <wex/frame.h>
+#include <wex/frd.h>
+#include <wex/lexer.h>
+#include <wex/lexers.h>
+#include <wex/log.h>
+#include <wex/managedframe.h>
+#include <wex/path.h>
+#include <wex/process.h>
+#include <wex/stc.h>
+#include <wex/tokenizer.h>
+#include <wex/tostring.h>
+#include <wex/vcs.h>
+#include <wex/vi-macros.h>
 #include <easylogging++.h>
 
 const std::string wex::after(
@@ -97,9 +96,9 @@ std::tuple<bool, const std::string, const std::vector<std::string>>
   // And text might be prefixed by a command, e.g.: e src/vi
   path path(after(text, ' ', false));
   
-  if (path.IsRelative())
+  if (path.is_relative())
   {
-    path.MakeAbsolute();
+    path.make_absolute();
   }
 
   const auto prefix(path.GetFullName());
@@ -170,7 +169,7 @@ const std::string wex::before(
 
 bool wex::browser_search(const std::string& text)
 {
-  if (const auto search_engine(config_firstof(_("Search engine")));
+  if (const auto search_engine(config(_("Search engine")).firstof());
     search_engine.empty())
   {
     return false;
@@ -227,7 +226,7 @@ void wex::combobox_from_list(wxComboBox* cb, const std::list < std::string > & t
 
 bool wex::comparefile(const path& file1, const path& file2)
 {
-  if (wxConfigBase::Get()->Read(_("Comparator")).empty())
+  if (config(_("Comparator")).empty())
   {
     return false;
   }
@@ -238,8 +237,8 @@ bool wex::comparefile(const path& file1, const path& file2)
        "\"" + file2.Path().string() + "\" \"" + file1.Path().string() + "\"";
 
   if (!process().Execute(
-    wxConfigBase::Get()->Read(_("Comparator")).ToStdString() + " " + arguments, 
-    PROCESS_EXEC_WAIT))
+    config(_("Comparator")).get() + " " + arguments, 
+    process::EXEC_WAIT))
   {
     return false;
   }
@@ -249,44 +248,6 @@ bool wex::comparefile(const path& file1, const path& file2)
   return true;
 }
 
-const std::string wex::config_dir()
-{
-#ifdef __WXMSW__
-  return wxPathOnly(wxStandardPaths::Get().GetExecutablePath()).ToStdString();
-#else
-  return path({
-    wxGetHomeDir().ToStdString(), 
-    ".config", 
-    wxTheApp->GetAppName().Lower().ToStdString()}).Path().string();
-#endif
-}
-  
-const std::string wex::config_firstof(const std::string& key)
-{
-  return 
-    wxConfigBase::Get()->Read(key).BeforeFirst(get_field_separator()).ToStdString();
-}
-
-const std::string wex::config_firstof_write(const std::string& key, const std::string& value)
-{
-  std::vector<std::string> v{value};
-
-  for (tokenizer tkz(wxConfigBase::Get()->Read(key).ToStdString(), 
-    std::string(1, get_field_separator())); tkz.HasMoreTokens(); )
-  {
-    if (const std::string val = tkz.GetNextToken(); val != value)
-    {
-      v.emplace_back(val);
-    }
-  }
-
-  wxConfigBase::Get()->Write(key, std::accumulate(v.begin(), v.end(), wxString{}, 
-    [&](const wxString& a, const wxString& b) {
-      return a + b + get_field_separator();}));
-  
-  return value;
-}
-  
 const std::string wex::ellipsed(
   const std::string& text, const std::string& control, bool ellipse)
 {
@@ -351,7 +312,7 @@ const std::string wex::get_find_result(const std::string& find_text,
   }
   else
   {
-    if (wxConfigBase::Get()->ReadLong(_("Error bells"), 1))
+    if (config(_("Error bells")).get(true))
     {
       wxBell();
     }
@@ -427,43 +388,18 @@ bool wex::is_codeword_separator(int c)
          c == ',' || c == ';' || c == ':' || c == '@';
 }
 
-const std::list < std::string > wex::list_from_config(const std::string& config)
-{
-  return tokenizer(
-    wxConfigBase::Get()->Read(config).ToStdString(), 
-    std::string(1, get_field_separator())).Tokenize<std::list < std::string >>();
-}
-
-/// Saves entries from a list with strings to the config.
-void wex::list_to_config(const std::list < std::string > & l, const std::string& config)
-{
-  if (l.empty()) return;
-
-  std::string text;
-  const int commandsSaveInConfig = 75;
-  int items = 0;
-
-  for (const auto& it : l)
-  {
-    if (items++ > commandsSaveInConfig) break;
-    text += it + get_field_separator();
-  }
-  
-  wxConfigBase::Get()->Write(config, text.c_str());
-}
-
 void wex::log_status(const path& fn, long flags)
 {
   std::string text = ((flags & STAT_FULLPATH) ? 
     fn.Path().string(): fn.GetFullName());
 
-  if (fn.GetStat().IsOk())
+  if (fn.GetStat().is_ok())
   {
     const std::string what = ((flags & STAT_SYNC) ? 
       _("Synchronized"):
       _("Modified"));
         
-    text += " " + what + " " + fn.GetStat().GetModificationTime();
+    text += " " + what + " " + fn.GetStat().get_modification_time();
   }
 
   log_status(text);
@@ -479,10 +415,10 @@ long wex::make(const path& makefile)
   wex::process* process = new wex::process;
 
   return process->Execute(
-    wxConfigBase::Get()->Read("Make", "make").ToStdString() + " " +
-      wxConfigBase::Get()->Read("MakeSwitch", "-f").ToStdString() + " " +
+    config("Make").get("make") + " " +
+      config("MakeSwitch").get("-f") + " " +
       makefile.Path().string(),
-    PROCESS_EXEC_DEFAULT,
+    process::EXEC_DEFAULT,
     makefile.GetPath());
 }
 
@@ -627,7 +563,7 @@ int wex::open_files(frame* frame, const std::vector< path > & files,
 
       if (!fn.FileExists())
       {
-        fn.MakeAbsolute();
+        fn.make_absolute();
       }
        
       if (frame->OpenFile(fn, data) != nullptr)
@@ -780,7 +716,7 @@ bool wex::shell_expansion(std::string& command)
   while (match(re_str, command, v) > 0)
   {
     process process;
-    if (!process.Execute(v[0], PROCESS_EXEC_WAIT)) return false;
+    if (!process.Execute(v[0], process::EXEC_WAIT)) return false;
     
     command = std::regex_replace(
       command, 

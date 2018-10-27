@@ -10,13 +10,13 @@
 #include <wx/wx.h>
 #endif
 #include <wx/dnd.h>
-#include <wx/extension/grid.h>
-#include <wx/extension/defs.h>
-#include <wx/extension/frame.h>
-#include <wx/extension/frd.h>
-#include <wx/extension/printing.h>
-#include <wx/extension/tokenizer.h>
-#include <wx/extension/util.h>
+#include <wex/grid.h>
+#include <wex/defs.h>
+#include <wex/frame.h>
+#include <wex/frd.h>
+#include <wex/printing.h>
+#include <wex/tokenizer.h>
+#include <wex/util.h>
 
 namespace wex
 {
@@ -159,8 +159,8 @@ wex::grid::grid(const window_data& data)
     });
   
   Bind(wxEVT_GRID_CELL_RIGHT_CLICK, [=](wxGridEvent& event) {
-    int style = (IsEditable() ? wex::menu::MENU_DEFAULT: wex::menu::MENU_IS_READ_ONLY);
-    if (IsSelection()) style |= wex::menu::MENU_IS_SELECTED;
+    int style = (IsEditable() ? wex::menu::DEFAULT: wex::menu::IS_READ_ONLY);
+    if (IsSelection()) style |= wex::menu::IS_SELECTED;
 
     wex::menu menu(style);
     BuildPopupMenu(menu);

@@ -11,18 +11,19 @@
 #endif
 #include <wx/fdrepdlg.h> // for wxFindDialogDialog and Event
 #include <wx/persist/toplevel.h>
-#include <wx/extension/frame.h>
-#include <wx/extension/defs.h>
-#include <wx/extension/frd.h>
-#include <wx/extension/grid.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/listview.h>
-#include <wx/extension/path.h>
-#include <wx/extension/printing.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/util.h>
-#include <wx/extension/tostring.h>
-#include <wx/extension/vcsentry.h>
+#include <wex/frame.h>
+#include <wex/config.h>
+#include <wex/defs.h>
+#include <wex/frd.h>
+#include <wex/grid.h>
+#include <wex/lexers.h>
+#include <wex/listview.h>
+#include <wex/path.h>
+#include <wex/printing.h>
+#include <wex/stc.h>
+#include <wex/util.h>
+#include <wex/tostring.h>
+#include <wex/vcsentry.h>
 
 #define wxCAST_TO(classname)                                 \
   if (m_FindFocus != nullptr && m_FindFocus->IsShown())      \
@@ -206,7 +207,7 @@ wex::frame::~frame()
     m_FindReplaceDialog->Destroy();
   }
   
-  wxConfigBase::Get()->Write("ShowMenuBar", 
+  config("ShowMenuBar").set(
     GetMenuBar() != nullptr && GetMenuBar()->IsShown());
 }
 
@@ -302,9 +303,8 @@ void wex::frame::SetMenuBar(wxMenuBar* bar)
   }
   
   wxFrame::SetMenuBar(
-   !m_IsCommand && !wxConfigBase::Get()->ReadBool("ShowMenuBar", true) ? 
-      nullptr: 
-      bar);
+   !m_IsCommand && !config("ShowMenuBar").get(true) ? 
+      nullptr: bar);
 }
 
 void wex::frame::StatusBarClicked(const std::string& pane)

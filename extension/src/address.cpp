@@ -10,13 +10,13 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/address.h>
-#include <wx/extension/ex.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/process.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/util.h>
-#include <wx/extension/vi-macros.h>
+#include <wex/address.h>
+#include <wex/ex.h>
+#include <wex/managedframe.h>
+#include <wex/process.h>
+#include <wex/stc.h>
+#include <wex/util.h>
+#include <wex/vi-macros.h>
 
 #define SEPARATE                                                \
   if (separator)                                                \
@@ -230,7 +230,7 @@ bool wex::address::Read(const std::string& arg) const
   {
     process process;
     
-    if (!process.Execute(arg.substr(1), PROCESS_EXEC_WAIT))
+    if (!process.Execute(arg.substr(1), process::EXEC_WAIT))
     {
       return false;
     }

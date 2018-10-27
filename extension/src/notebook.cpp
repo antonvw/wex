@@ -9,7 +9,8 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/notebook.h>
+#include <wex/notebook.h>
+#include <wex/config.h>
 
 wex::notebook::notebook(const window_data& data)
   : wxAuiNotebook(
@@ -28,13 +29,13 @@ wex::notebook::notebook(const window_data& data)
   switch (data.Id())
   {
     case ID_NOTEBOOK_EDITORS:
-      SetFont(wxConfigBase::Get()->ReadObject(_("Tab font"), 
+      SetFont(config(_("Tab font")).get(
         wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT))); break;
     case ID_NOTEBOOK_LISTS:
-      SetFont(wxConfigBase::Get()->ReadObject(_("List tab font"), 
+      SetFont(config(_("List tab font")).get(
         wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT))); break;
     case ID_NOTEBOOK_PROJECTS:
-      SetFont(wxConfigBase::Get()->ReadObject(_("Project tab font"), 
+      SetFont(config(_("Project tab font")).get(
         wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT))); break;
   }
   

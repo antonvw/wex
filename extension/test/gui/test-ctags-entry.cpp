@@ -9,7 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/ctags-entry.h>
+#include <wex/ctags-entry.h>
 #include "test.h"
 
 TEST_CASE("wex::ctags_entry")

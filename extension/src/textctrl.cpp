@@ -5,31 +5,26 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wx/extension/textctrl.h>
-#include <wx/extension/ex-command.h>
-#include <wx/extension/frd.h>
-#include <wx/extension/log.h>
-#include <wx/extension/util.h>
+#include <wex/textctrl.h>
+#include <wex/config.h>
+#include <wex/frd.h>
+#include <wex/log.h>
 #include <easylogging++.h>
 
-wex::textctrl_input::textctrl_input(ex_command_type type) 
+wex::textctrl_input::textctrl_input(ex_command::type type) 
   : m_Type(type)
-  , m_Name([](ex_command_type type) {
+  , m_Name([](ex_command::type type) {
       switch (type)
       {
-        case ex_command_type::CALC: return std::string("excalc");
-        case ex_command_type::COMMAND: return std::string("excommand");
-        case ex_command_type::EXEC: return std::string("exexec");
-        case ex_command_type::FIND: return find_replace_data::GetTextFindWhat();
-        case ex_command_type::FIND_MARGIN: return std::string("exmargin");
-        case ex_command_type::REPLACE: return find_replace_data::GetTextReplaceWith();
+        case ex_command::type::CALC: return std::string("excalc");
+        case ex_command::type::COMMAND: return std::string("excommand");
+        case ex_command::type::EXEC: return std::string("exexec");
+        case ex_command::type::FIND: return find_replace_data::GetTextFindWhat();
+        case ex_command::type::FIND_MARGIN: return std::string("exmargin");
+        case ex_command::type::REPLACE: return find_replace_data::GetTextReplaceWith();
         default: return std::string("exother");
       }}(type))
-  , m_Values(list_from_config(m_Name))
+  , m_Values(config(m_Name).get_list())
   , m_Iterator(m_Values.cbegin())
 {
   VLOG(9) << "TCI " << m_Name << " size: " << m_Values.size();
@@ -37,7 +32,7 @@ wex::textctrl_input::textctrl_input(ex_command_type type)
 
 wex::textctrl_input::~textctrl_input() 
 {
-  list_to_config(m_Values, m_Name);
+  wex::config(m_Name).set(m_Values);
 }
 
 const std::string wex::textctrl_input::Get() const 
@@ -60,7 +55,7 @@ bool wex::textctrl_input::Set(const std::string& value)
   m_Values.remove(value);
   m_Values.push_front(value);
   m_Iterator = m_Values.cbegin();
-  list_to_config(m_Values, m_Name);
+  config(m_Name).set(m_Values);
   
   return true;
 }
@@ -110,5 +105,5 @@ void wex::textctrl_input::Set(const std::list < std::string > & values)
 {
   m_Values.assign(values.cbegin(), values.cend());
   m_Iterator = m_Values.cbegin();
-  list_to_config(values, m_Name);
+  config(m_Name).set(values);
 }

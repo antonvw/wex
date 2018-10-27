@@ -11,12 +11,12 @@
 #endif
 #include <functional>
 #include <numeric>
-#include <wx/config.h>
-#include <wx/extension/shell.h>
-#include <wx/extension/defs.h> // for ID_SHELL_COMMAND
-#include <wx/extension/process.h>
-#include <wx/extension/tokenizer.h>
-#include <wx/extension/util.h>
+#include <wex/shell.h>
+#include <wex/config.h>
+#include <wex/defs.h> // for ID_SHELL_COMMAND
+#include <wex/process.h>
+#include <wex/tokenizer.h>
+#include <wex/util.h>
 
 wex::shell::shell(
   const stc_data& data,
@@ -25,7 +25,8 @@ wex::shell::shell(
   bool echo, 
   const std::string& lexer,
   int commands_save_in_config)
-  : stc(std::string(), stc_data(data).Flags(STC_WIN_NO_INDICATOR, DATA_OR))
+  : stc(std::string(), stc_data(data).
+      Flags(stc_data::WIN_NO_INDICATOR, control_data::OR))
   , m_CommandEnd(command_end == std::string() ? GetEOL(): command_end)
   , m_Echo(echo)
   , m_CommandsSaveInConfig(commands_save_in_config)
@@ -33,7 +34,7 @@ wex::shell::shell(
 {
   // Override defaults from config.
   SetEdgeMode(wxSTC_EDGE_NONE);
-  ResetMargins(static_cast<stc_margin_flags>(STC_MARGIN_FOLDING | STC_MARGIN_LINENUMBER));
+  ResetMargins(static_cast<margin_flags>(MARGIN_FOLDING | MARGIN_LINENUMBER));
 
   AutoComplete().Use(false); // we have our own autocomplete
   AutoCompSetSeparator(3);
@@ -45,7 +46,7 @@ wex::shell::shell(
   {
     // Get all previous commands.
     for (tokenizer tkz(
-      wxConfigBase::Get()->Read("Shell").ToStdString(),
+      config("Shell").get(),
       std::string(1, AutoCompGetSeparator()));
       tkz.HasMoreTokens(); )
     {
@@ -105,7 +106,7 @@ wex::shell::shell(
     }
     else
     {
-      if (wxConfigBase::Get()->ReadBool(_("vi mode"), true) && (GetCurrentPos() < m_CommandStartPosition))
+      if (config(_("vi mode")).get(true) && (GetCurrentPos() < m_CommandStartPosition))
       {
         EnableShell(false);
         event.Skip();
@@ -269,7 +270,7 @@ wex::shell::~shell()
       items++;
     }
 
-    wxConfigBase::Get()->Write("Shell", values.c_str());
+    config("Shell").set(values);
   }
 }
 
@@ -297,7 +298,7 @@ void wex::shell::EnableShell(bool enabled)
   if (!m_Enabled)
   {
     // A disabled shell follows STC vi mode.
-    GetVi().Use(wxConfigBase::Get()->ReadBool(_("vi mode"), true));
+    GetVi().Use(config(_("vi mode")).get(true));
   }
   else
   {

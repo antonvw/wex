@@ -10,13 +10,13 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/listitem.h>
-#include <wx/extension/managedframe.h>
+#include <wex/listitem.h>
+#include <wex/managedframe.h>
 #include "test.h"
 
 TEST_CASE("wex::listitem")
 {
-  wex::listview* listView = new wex::listview(wex::listview_data().Type(wex::LISTVIEW_FILE));
+  wex::listview* listView = new wex::listview(wex::listview_data().Type(wex::listview_data::FILE));
   AddPane(GetFrame(), listView);
   
   const auto start = std::chrono::system_clock::now();

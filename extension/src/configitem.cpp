@@ -5,36 +5,28 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <experimental/filesystem>
+#include <filesystem>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 #include <wx/checklst.h>
-#include <wx/config.h>
 #include <wx/spinctrl.h>
 #include <wx/window.h>
-#include <wx/extension/item.h>
-#include <wx/extension/frd.h>
-#include <wx/extension/log.h>
-#include <wx/extension/tostring.h>
-#include <wx/extension/util.h>
+#include <wex/config.h>
+#include <wex/item.h>
+#include <wex/frd.h>
+#include <wex/log.h>
+#include <wex/tostring.h>
+#include <wex/util.h>
 
-#define PERSISTENT(READ, TYPE, DEFAULT)                                      \
-{                                                                            \
-  if (save)                                                                  \
-    wxConfigBase::Get()->Write(m_Label, std::any_cast<TYPE>(GetValue()));    \
-  else                                                                       \
-    SetValue((TYPE)wxConfigBase::Get()->READ(m_Label, DEFAULT));             \
-}                                                                            \
-
-#define PERSISTENT_STR(DEFAULT)                                              \
-{                                                                            \
-  if (save)                                                                  \
-    wxConfigBase::Get()->Write(m_Label, wxString(std::any_cast<std::string>(GetValue()))); \
-  else                                                                       \
-    SetValue(wxConfigBase::Get()->Read(m_Label, DEFAULT).ToStdString());     \
-}                                                                            \
+#define PERSISTENT(TYPE, DEFAULT)                         \
+{                                                         \
+  if (save)                                               \
+    config(m_Label).set(std::any_cast<TYPE>(GetValue())); \
+  else                                                    \
+    SetValue((TYPE)config(m_Label).get(DEFAULT));         \
+}                                                         \
 
 bool Update(wex::find_replace_data* frd, wxCheckListBox* clb, int item, bool save, bool value)
 {
@@ -72,21 +64,21 @@ bool wex::item::ToConfig(bool save) const
   
   switch (GetType())
   {
-    case ITEM_CHECKBOX:           PERSISTENT(ReadBool, bool, false); break;
-    case ITEM_CHECKLISTBOX_BIT:   PERSISTENT(ReadLong, long, 0); break;
-    case ITEM_COLOURPICKERWIDGET: PERSISTENT(ReadObject, wxColour, *wxWHITE); break;
-    case ITEM_DIRPICKERCTRL:      PERSISTENT_STR(m_Label); break;
-    case ITEM_TEXTCTRL_FLOAT:     PERSISTENT(ReadDouble, double, 0); break;
-    case ITEM_FONTPICKERCTRL:     PERSISTENT(ReadObject, wxFont, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)); break;
-    case ITEM_TEXTCTRL_INT:       PERSISTENT(ReadLong, long, 0); break;
-    case ITEM_SLIDER:             PERSISTENT(ReadLong, int, ((wxSlider* )GetWindow())->GetMin()); break;
-    case ITEM_SPINCTRL:           PERSISTENT(ReadLong, int, ((wxSpinCtrl* )GetWindow())->GetMin()); break;
-    case ITEM_SPINCTRLDOUBLE:     PERSISTENT(ReadDouble, double, ((wxSpinCtrlDouble* )GetWindow())->GetMin()); break;
-    case ITEM_STC:                PERSISTENT_STR(std::string()); break;
-    case ITEM_TEXTCTRL:           PERSISTENT_STR(std::string()); break;
-    case ITEM_TOGGLEBUTTON:       PERSISTENT(ReadBool, bool, false); break;
+    case CHECKBOX:           PERSISTENT(bool, false); break;
+    case CHECKLISTBOX_BIT:   PERSISTENT(long, 0); break;
+    case COLOURPICKERWIDGET: PERSISTENT(wxColour, *wxWHITE); break;
+    case DIRPICKERCTRL:      PERSISTENT(std::string, m_Label); break;
+    case TEXTCTRL_FLOAT:     PERSISTENT(double, 0); break;
+    case FONTPICKERCTRL:     PERSISTENT(wxFont, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)); break;
+    case TEXTCTRL_INT:       PERSISTENT(long, 0); break;
+    case SLIDER:             PERSISTENT(int, ((wxSlider* )GetWindow())->GetMin()); break;
+    case SPINCTRL:           PERSISTENT(int, ((wxSpinCtrl* )GetWindow())->GetMin()); break;
+    case SPINCTRLDOUBLE:     PERSISTENT(double, ((wxSpinCtrlDouble* )GetWindow())->GetMin()); break;
+    case STC:                PERSISTENT(std::string, std::string()); break;
+    case TEXTCTRL:           PERSISTENT(std::string, std::string()); break;
+    case TOGGLEBUTTON:       PERSISTENT(bool, false); break;
 
-    case ITEM_CHECKLISTBOX_BOOL:
+    case CHECKLISTBOX_BOOL:
       if (auto* clb = (wxCheckListBox*)GetWindow();
         clb != nullptr)
       {
@@ -95,17 +87,17 @@ bool wex::item::ToConfig(bool save) const
           if (!Update(find_replace_data::Get(), clb, i, save, clb->IsChecked(i)))
           {
             if (save)
-              wxConfigBase::Get()->Write(clb->GetString(i), clb->IsChecked(i));
+              config(clb->GetString(i)).set(clb->IsChecked(i));
             else
-              clb->Check(i, wxConfigBase::Get()->ReadBool(clb->GetString(i), false));
+              clb->Check(i, config(clb->GetString(i)).get(false));
           }
         }
       }
       break;
 
-    case ITEM_COMBOBOX:
-    case ITEM_COMBOBOX_DIR:
-    case ITEM_COMBOBOX_FILE:
+    case COMBOBOX:
+    case COMBOBOX_DIR:
+    case COMBOBOX_FILE:
       if (auto* cb = (wxComboBox*)GetWindow(); save)
       {
         if (const auto l = to_list_string(cb, m_MaxItems).Get();
@@ -119,19 +111,19 @@ bool wex::item::ToConfig(bool save) const
         }
         else
         {
-          list_to_config(l, m_Label);
+          config(m_Label).set(l);
         }
       }
       else
       {
-        combobox_from_list(cb, list_from_config(m_Label));
+        combobox_from_list(cb, config(m_Label).get_list());
       }
       break;
 
-    case ITEM_FILEPICKERCTRL:
+    case FILEPICKERCTRL:
       if (save)
       {
-        wxConfigBase::Get()->Write(m_Label, wxString(std::any_cast<std::string>(GetValue())));
+        config(m_Label).set(std::any_cast<std::string>(GetValue()));
       }
       else
       {
@@ -140,30 +132,30 @@ bool wex::item::ToConfig(bool save) const
 #ifdef __WXGTK__
         initial = "/usr/bin/" + m_Label;
 
-        if (!std::experimental::filesystem::is_regular_file(initial))
+        if (!std::filesystem::is_regular_file(initial))
         {
           initial.clear();
         }
 #endif
-        SetValue(wxConfigBase::Get()->Read(m_Label, initial).ToStdString());
+        SetValue(config(m_Label).get(initial));
       }
       break;
 
-    case ITEM_LISTVIEW:
+    case LISTVIEW:
       if (save)
-        wxConfigBase::Get()->Write(m_Label, wxString(std::any_cast<std::string>(GetValue())));
+        config(m_Label).set(std::any_cast<std::string>(GetValue()));
       else
-        SetValue(wxConfigBase::Get()->Read(m_Label, "").ToStdString());
+        SetValue(config(m_Label).get());
       break;
 
-    case ITEM_RADIOBOX:
+    case RADIOBOX:
       if (auto* rb = (wxRadioBox*)GetWindow(); save)
       {
         for (const auto& b : std::any_cast<item::Choices>(GetInitial()))
         {
           if (b.second == rb->GetStringSelection())
           {
-            wxConfigBase::Get()->Write(m_Label, b.first);
+            config(m_Label).set(b.first);
           }
         }
       }
@@ -171,7 +163,7 @@ bool wex::item::ToConfig(bool save) const
       {
         const item::Choices & choices(std::any_cast<item::Choices>(GetInitial()));
         
-        if (const auto c = choices.find(wxConfigBase::Get()->ReadLong(m_Label, 0));
+        if (const auto c = choices.find(config(m_Label).get((int)0));
           c != choices.end())
         {
           rb->SetStringSelection(c->second);
@@ -179,7 +171,7 @@ bool wex::item::ToConfig(bool save) const
       }
       break;
 
-    case ITEM_USER:
+    case USER:
       if (m_UserWindowToConfig != nullptr &&
         !(m_UserWindowToConfig)(GetWindow(), save))
       { 
@@ -202,11 +194,12 @@ bool wex::item::ToConfig(bool save) const
 }
 
 wex::config_defaults::config_defaults(const std::vector<Defaults> & items)
-  : m_Config(wxConfigBase::Get())
 {
-  if (!m_Config->Exists(std::get<0>(items.front())))
+  config cfg(config::DATA_NO_STORE);
+  
+  if (!cfg.item(std::get<0>(items.front())).exists())
   {
-    m_Config->SetRecordDefaults(true);
+    config::set_record_defaults(true);
     
     for (const auto& it : items)
     {
@@ -214,29 +207,29 @@ wex::config_defaults::config_defaults(const std::vector<Defaults> & items)
       {
         switch (std::get<1>(it))
         {
-          case ITEM_CHECKBOX:
-            m_Config->ReadBool(std::get<0>(it), std::any_cast<bool>(std::get<2>(it)));
+          case item::CHECKBOX:
+            cfg.item(std::get<0>(it)).set(std::any_cast<bool>(std::get<2>(it)));
             break;
-          case ITEM_COLOURPICKERWIDGET:
-            m_Config->ReadObject(std::get<0>(it), std::any_cast<wxColour>(std::get<2>(it)));
+          case item::COLOURPICKERWIDGET:
+            cfg.item(std::get<0>(it)).set(std::any_cast<wxColour>(std::get<2>(it)));
             break;
-          case ITEM_COMBOBOX:
-            m_Config->Read(std::get<0>(it), std::any_cast<std::string>(std::get<2>(it)));
+          case item::COMBOBOX:
+            cfg.item(std::get<0>(it)).set(std::any_cast<std::string>(std::get<2>(it)));
             break;
-          case ITEM_FONTPICKERCTRL:
-            m_Config->ReadObject(std::get<0>(it), std::any_cast<wxFont>(std::get<2>(it)));
+          case item::FONTPICKERCTRL:
+            cfg.item(std::get<0>(it)).set(std::any_cast<wxFont>(std::get<2>(it)));
             break;
-          case ITEM_SPINCTRL:
-            m_Config->ReadLong(std::get<0>(it), std::any_cast<long>(std::get<2>(it)));
+          case item::SPINCTRL:
+            cfg.item(std::get<0>(it)).set(std::any_cast<long>(std::get<2>(it)));
             break;
-          case ITEM_TEXTCTRL:
-            m_Config->Read(std::get<0>(it), std::any_cast<std::string>(std::get<2>(it)));
+          case item::TEXTCTRL:
+            cfg.item(std::get<0>(it)).set(std::any_cast<std::string>(std::get<2>(it)));
             break;
-          case ITEM_TEXTCTRL_FLOAT:
-            m_Config->ReadDouble(std::get<0>(it), std::any_cast<double>(std::get<2>(it)));
+          case item::TEXTCTRL_FLOAT:
+            cfg.item(std::get<0>(it)).set(std::any_cast<double>(std::get<2>(it)));
             break;
-          case ITEM_TEXTCTRL_INT:
-            m_Config->ReadLong(std::get<0>(it), std::any_cast<long>(std::get<2>(it)));
+          case item::TEXTCTRL_INT:
+            cfg.item(std::get<0>(it)).set(std::any_cast<long>(std::get<2>(it)));
             break;
           default:
             log("unsupported default type for") << std::get<0>(it);
@@ -252,8 +245,5 @@ wex::config_defaults::config_defaults(const std::vector<Defaults> & items)
 
 wex::config_defaults::~config_defaults()
 {
-  if (m_Config->IsRecordingDefaults())
-  {
-    m_Config->SetRecordDefaults(false);
-  }
+  config::set_record_defaults(false);
 }

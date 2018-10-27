@@ -9,10 +9,10 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/defs.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/menu.h>
-#include <wx/extension/stc.h>
+#include <wex/defs.h>
+#include <wex/managedframe.h>
+#include <wex/menu.h>
+#include <wex/stc.h>
 #include "test.h"
 
 TEST_CASE("wex::frame")

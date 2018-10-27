@@ -9,27 +9,27 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/property.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/stc.h>
+#include <wex/property.h>
+#include <wex/managedframe.h>
+#include <wex/stc.h>
 #include "test.h"
 
 TEST_CASE("wex::property")
 {
   wex::property inv;
-  REQUIRE( !inv.IsOk() );
+  REQUIRE( !inv.is_ok() );
   
   wex::property prop("man", "ugly");
   
-  REQUIRE( prop.IsOk());
+  REQUIRE( prop.is_ok());
   REQUIRE( prop.GetName() == "man");
   REQUIRE( prop.GetValue() == "ugly");
   
   prop.Apply(GetSTC());
-  REQUIRE( prop.IsOk());
+  REQUIRE( prop.is_ok());
   
   prop.ApplyReset(GetSTC());
-  REQUIRE( prop.IsOk());
+  REQUIRE( prop.is_ok());
   
   pugi::xml_document doc;
   REQUIRE( doc.load_string("<property name = \"fold.comment\">2</property>"));
@@ -37,5 +37,5 @@ TEST_CASE("wex::property")
   wex::property prop2(doc.document_element());
   REQUIRE( prop2.GetName() == "fold.comment");
   REQUIRE( prop2.GetValue() == "2");
-  REQUIRE( prop2.IsOk());
+  REQUIRE( prop2.is_ok());
 }

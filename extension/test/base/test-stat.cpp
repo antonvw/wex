@@ -5,21 +5,21 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/extension/stat.h>
+#include <wex/stat.h>
 #include "../test.h"
 
-TEST_CASE( "wex::stat" ) 
+TEST_CASE( "wex::file_stat" ) 
 {
-  wex::stat stat(GetTestPath("test.h").Path().string());
+  wex::file_stat stat(GetTestPath("test.h").Path().string());
 
-  REQUIRE( stat.IsOk());
-  REQUIRE(!stat.GetModificationTime().empty());
-  REQUIRE(!stat.IsReadOnly());
-  REQUIRE( stat.Sync(GetTestPath("test-base.link").Path().string()));
-  REQUIRE( stat.Sync());
-  REQUIRE(!stat.GetModificationTime().empty());
+  REQUIRE( stat.is_ok());
+  REQUIRE(!stat.get_modification_time().empty());
+  REQUIRE(!stat.is_readonly());
+  REQUIRE( stat.sync(GetTestPath("test-base.link").Path().string()));
+  REQUIRE( stat.sync());
+  REQUIRE(!stat.get_modification_time().empty());
 
 #ifdef __UNIX__
-  REQUIRE( wex::stat("/etc/hosts").IsReadOnly());
+  REQUIRE( wex::file_stat("/etc/hosts").is_readonly());
 #endif
 }

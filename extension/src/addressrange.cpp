@@ -9,15 +9,15 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/addressrange.h>
-#include <wx/extension/ex.h>
-#include <wx/extension/frd.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/process.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/tokenizer.h>
-#include <wx/extension/util.h>
-#include <wx/extension/vi-macros.h>
+#include <wex/addressrange.h>
+#include <wex/ex.h>
+#include <wex/frd.h>
+#include <wex/managedframe.h>
+#include <wex/process.h>
+#include <wex/stc.h>
+#include <wex/tokenizer.h>
+#include <wex/util.h>
+#include <wex/vi-macros.h>
 
 namespace wex
 {
@@ -272,7 +272,7 @@ bool wex::addressrange::Copy(const wex::address& destination) const
 {
   const auto dest_line = destination.GetLine();
 
-  if (m_STC->GetReadOnly() || m_STC->HexMode() || !IsOk() ||
+  if (m_STC->GetReadOnly() || m_STC->HexMode() || !is_ok() ||
      dest_line == 0 || 
     (dest_line >= m_Begin.GetLine() && dest_line <= m_End.GetLine()))
   {
@@ -335,10 +335,10 @@ bool wex::addressrange::Escape(const std::string& command)
     }
     
     return m_Process->Execute(expanded, 
-      PROCESS_EXEC_DEFAULT, m_STC->GetFileName().GetPath());
+      process::EXEC_DEFAULT, m_STC->GetFileName().GetPath());
   }
   
-  if (!IsOk())
+  if (!is_ok())
   {
     return false;
   }
@@ -352,7 +352,7 @@ bool wex::addressrange::Escape(const std::string& command)
 
   wex::process process;
   
-  const bool ok = process.Execute(command + " " + filename, PROCESS_EXEC_WAIT);
+  const bool ok = process.Execute(command + " " + filename, process::EXEC_WAIT);
   
   if (remove(filename.c_str()) != 0)
   {
@@ -494,7 +494,7 @@ bool wex::addressrange::Global(const std::string& text, bool inverse) const
 
 bool wex::addressrange::Indent(bool forward) const
 {
-  if (m_STC->GetReadOnly() || m_STC->HexMode() || !IsOk() || !SetSelection())
+  if (m_STC->GetReadOnly() || m_STC->HexMode() || !is_ok() || !SetSelection())
   {
     return false;
   }
@@ -506,7 +506,7 @@ bool wex::addressrange::Indent(bool forward) const
   return true;
 }
 
-bool wex::addressrange::IsOk() const
+bool wex::addressrange::is_ok() const
 {
   return 
     m_Begin.GetLine() > 0 && m_End.GetLine() > 0 &&
@@ -515,7 +515,7 @@ bool wex::addressrange::IsOk() const
 
 bool wex::addressrange::Join() const
 {
-  if (m_STC->GetReadOnly() || m_STC->HexMode() || !IsOk())
+  if (m_STC->GetReadOnly() || m_STC->HexMode() || !is_ok())
   {
     return false;
   }
@@ -533,7 +533,7 @@ bool wex::addressrange::Move(const address& destination) const
 {
   const auto dest_line = destination.GetLine();
 
-  if (m_STC->GetReadOnly() || m_STC->HexMode() || !IsOk() ||
+  if (m_STC->GetReadOnly() || m_STC->HexMode() || !is_ok() ||
      dest_line == 0 || 
     (dest_line >= m_Begin.GetLine() && dest_line <= m_End.GetLine()))
   {
@@ -616,7 +616,7 @@ bool wex::addressrange::Parse(
     
 bool wex::addressrange::Print(const std::string& flags) const
 {
-  if (!IsOk() || !m_Begin.Flags(flags))
+  if (!is_ok() || !m_Begin.Flags(flags))
   {
     return false;
   }
@@ -649,7 +649,7 @@ bool wex::addressrange::SetSelection() const
   {
     return true;
   }
-  else if (!IsOk())
+  else if (!is_ok())
   {
     return false;
   }
@@ -713,7 +713,7 @@ bool wex::addressrange::Sort(const std::string& parameters) const
   
 bool wex::addressrange::Substitute(const std::string& text, const char cmd)
 {
-  if (m_STC->GetReadOnly() || !IsOk())
+  if (m_STC->GetReadOnly() || !is_ok())
   {
     return false;
   }

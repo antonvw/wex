@@ -10,9 +10,9 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
-#include <wx/extension/file.h>
-#include <wx/extension/stat.h>
+#include <wex/config.h>
+#include <wex/file.h>
+#include <wex/stat.h>
 
 namespace wex
 {
@@ -31,7 +31,7 @@ namespace wex
       Close();
 
       m_Path = p;
-      m_Stat.Sync(m_Path.Path().string());
+      m_Stat.sync(m_Path.Path().string());
       m_fs = std::fstream(m_Path.Path());};
 
     bool Close() {
@@ -69,7 +69,7 @@ namespace wex
       return m_fs.good();};
   private:
     path m_Path;
-    stat m_Stat; // used to check for sync
+    file_stat m_Stat; // used to check for sync
 
     std::fstream m_fs;
   };
@@ -128,15 +128,15 @@ void wex::file::Assign(const path& p)
 bool wex::file::CheckSync()
 {
   // config might be used without wxApp.
-  if (auto* config = wxConfigBase::Get(false); 
+  if (config con(config::DATA_NO_STORE);
       IsOpened() ||
-      !m_File->Path().GetStat().IsOk() ||
-      (config != nullptr && !config->ReadBool("AllowSync", true)))
+      !m_File->Path().GetStat().is_ok() ||
+      !con.item("AllowSync").get(true))
   {
     return false;
   }
 
-  if (m_File->Path().m_Stat.Sync())
+  if (m_File->Path().m_Stat.sync())
   {
     bool sync_needed = false;
     
@@ -149,7 +149,7 @@ bool wex::file::CheckSync()
       sync_needed = true;
     }
     
-    if (m_File->Path().m_Stat.IsReadOnly() != m_File->Stat().IsReadOnly())
+    if (m_File->Path().m_Stat.is_readonly() != m_File->Stat().is_readonly())
     {
       sync_needed = true;
     }
@@ -157,7 +157,7 @@ bool wex::file::CheckSync()
     if (sync_needed)
     {
       // Update the stat member, so next time no sync.
-      if (!m_File->Stat().Sync())
+      if (!m_File->Stat().sync())
       {
         wxLogStatus("Could not sync: ", m_File->Path().Path().string().c_str());
       }
@@ -240,8 +240,8 @@ bool wex::file::FileSave(const path& p)
 
   ResetContentsChanged();
   
-  m_File->Path().m_Stat.Sync();
-  m_File->Stat().Sync();
+  m_File->Path().m_Stat.sync();
+  m_File->Stat().sync();
 
   return true;
 }

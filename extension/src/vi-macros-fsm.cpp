@@ -7,63 +7,46 @@
 
 #include <fstream>
 #include <pugixml.hpp>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wx/config.h>
-#include <wx/extension/ex.h>
-#include <wx/extension/log.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/util.h>
-#include <wx/extension/variable.h>
-#include <wx/extension/vi-macros.h>
+#include <wex/ex.h>
+#include <wex/config.h>
+#include <wex/log.h>
+#include <wex/managedframe.h>
+#include <wex/stc.h>
+#include <wex/util.h>
+#include <wex/variable.h>
+#include <wex/vi-macros.h>
 #include <easylogging++.h>
 #include "vi-macros-fsm.h"
 
 wex::vi_macros_fsm::vi_macros_fsm()
 {
-  // from-state, to-state, trigger, guard, action
   m_fsm.add_transitions({
+     // from-state,              to-state,            trigger,    guard,         action
     // expanding
-    {States::EXPANDING_TEMPLATE, States::IDLE, Triggers::DONE, 
-      nullptr,
-      nullptr},
-    {States::EXPANDING_VARIABLE, States::IDLE, Triggers::DONE, 
-      nullptr,
-      nullptr},
+    {EXPANDING_TEMPLATE,         IDLE,                DONE,       nullptr,       nullptr},
+    {EXPANDING_VARIABLE,         IDLE,                DONE,       nullptr,       nullptr},
     // idle
-    {States::IDLE, States::EXPANDING_TEMPLATE, Triggers::EXPAND_TEMPLATE, 
+    {IDLE,                       EXPANDING_TEMPLATE,  EXPAND_TEMPLATE, 
       [&]{return 
            !m_variable.GetName().empty() &&
             m_variable.IsTemplate() &&
            !m_variable.GetValue().empty();},
       [&]{ExpandingTemplate();}},
-    {States::IDLE, States::EXPANDING_VARIABLE, Triggers::EXPAND_VARIABLE, 
-      nullptr,
+    {IDLE,                        EXPANDING_VARIABLE, EXPAND_VARIABLE, nullptr,
       [&]{ExpandingVariable();}},
-    {States::IDLE, States::PLAYINGBACK, Triggers::PLAYBACK, 
-      [&]{return m_count > 0;}, 
+    {IDLE,                        PLAYINGBACK,        PLAYBACK,   [&]{return m_count > 0;}, 
       [&]{Playback();}},
-    {States::IDLE, States::RECORDING, Triggers::RECORD, 
-      nullptr,
+    {IDLE,                        RECORDING,          RECORD,     nullptr,
       [&]{StartRecording();}},
     // playingback
-    {States::PLAYINGBACK, States::IDLE, Triggers::DONE, 
-      nullptr, 
-      nullptr},
-    {States::PLAYINGBACK, States::PLAYINGBACK, Triggers::PLAYBACK, 
+    {PLAYINGBACK,                 IDLE,               DONE,       nullptr,       nullptr},
+    {PLAYINGBACK,                 PLAYINGBACK,        PLAYBACK, 
       [&]{return m_count > 0 && m_macro != vi_macros::m_Macro;}, 
       [&]{Playback();}},
     // recording
-    {States::PLAYINGBACK_WHILE_RECORDING, States::RECORDING, Triggers::DONE, 
-      nullptr,
-      nullptr},
-    {States::RECORDING, States::IDLE, Triggers::RECORD, 
-      nullptr, 
-      [&]{StopRecording();}},
-    {States::RECORDING, States::PLAYINGBACK_WHILE_RECORDING, Triggers::PLAYBACK, 
+    {PLAYINGBACK_WHILE_RECORDING, RECORDING,          DONE,       nullptr,       nullptr},
+    {RECORDING,                   IDLE,               RECORD,     nullptr,       [&]{StopRecording();}},
+    {RECORDING,                   PLAYINGBACK_WHILE_RECORDING, PLAYBACK, 
       [&]{return m_count > 0 && m_macro != vi_macros::m_Macro;}, 
       [&]{Playback();}}});
 
@@ -71,7 +54,7 @@ wex::vi_macros_fsm::vi_macros_fsm()
 }
 
 bool wex::vi_macros_fsm::Execute(
-  Triggers trigger, const std::string& macro, ex* ex, int repeat) 
+  trigger trigger, const std::string& macro, ex* ex, int repeat) 
 {
   m_count = repeat;
   m_error = false;
@@ -83,11 +66,11 @@ bool wex::vi_macros_fsm::Execute(
     return false;
   }
 
-  if (m_fsm.state() == States::PLAYINGBACK || 
-      m_fsm.state() == States::PLAYINGBACK_WHILE_RECORDING ||
-      m_fsm.state() == States::EXPANDING_VARIABLE)
+  if (m_fsm.state() == PLAYINGBACK || 
+      m_fsm.state() == PLAYINGBACK_WHILE_RECORDING ||
+      m_fsm.state() == EXPANDING_VARIABLE)
   {
-    m_fsm.execute(Triggers::DONE);
+    m_fsm.execute(DONE);
   }
 
   frame::StatusText(vi_macros::m_Macro, "PaneMacro");
@@ -97,7 +80,7 @@ bool wex::vi_macros_fsm::Execute(
   {
     ((statusbar *)m_ex->GetFrame()->GetStatusBar())->ShowField(
       "PaneMode", 
-      m_fsm.state() != States::IDLE && wxConfigBase::Get()->ReadBool(_("Show mode"), false));
+      m_fsm.state() != IDLE && config(_("Show mode")).get(false));
   }
 
   return !m_error;
@@ -111,8 +94,8 @@ bool wex::vi_macros_fsm::Expand(
   m_expanded = &expanded;
   m_variable = v;
 
-  FSM::Fsm_Errors r1 = m_fsm.execute(Triggers::EXPAND_TEMPLATE);
-  FSM::Fsm_Errors r2 = m_fsm.execute(Triggers::DONE);
+  FSM::Fsm_Errors r1 = m_fsm.execute(EXPAND_TEMPLATE);
+  FSM::Fsm_Errors r2 = m_fsm.execute(DONE);
 
   return r1 == FSM::Fsm_Success && r2 == FSM::Fsm_Success && !m_error;
 }
@@ -121,7 +104,7 @@ void wex::vi_macros_fsm::ExpandingTemplate()
 {
   // Read the file (file name is in variable value), expand
   // all macro variables in it, and set expanded to the result.
-  const path filename(config_dir(), m_variable.GetValue());
+  const path filename(config().dir(), m_variable.GetValue());
 
   std::ifstream ifs(filename.Path());
   
@@ -188,7 +171,7 @@ void wex::vi_macros_fsm::ExpandingTemplate()
   vi_macros::m_Macro = m_variable.GetName();
   frame::StatusText(vi_macros::m_Macro, "PaneMacro");
     
-  wxLogStatus(_("Macro expanded"));
+  log_status(_("Macro expanded"));
 }
 
 void wex::vi_macros_fsm::ExpandingVariable()
@@ -258,7 +241,7 @@ bool wex::vi_macros_fsm::ExpandingVariable(
   var->SetAskForInput(false);
   vi_macros::m_IsModified = true;
   var->Save(node, value);
-  wxLogStatus(_("Variable expanded"));
+  log_status(_("Variable expanded"));
 
   return true;
 }
@@ -285,7 +268,7 @@ void wex::vi_macros_fsm::Playback()
       if (!m_ex->Command(it))
       {
         m_error = true;
-        wxLogStatus(_("Macro aborted at '") + it + "'");
+        log_status(_("Macro aborted at '") + it + "'");
         break;
       }
     }
@@ -297,7 +280,7 @@ void wex::vi_macros_fsm::Playback()
   if (!m_error)
   {
     vi_macros::m_Macro = m_macro;
-    wxLogStatus(_("Macro played back"));
+    log_status(_("Macro played back"));
   }
 }
 
@@ -333,7 +316,7 @@ void wex::vi_macros_fsm::StartRecording()
     vi_macros::m_Macros[vi_macros::m_Macro].clear();
   }
 
-  wxLogStatus(_("Macro recording"));
+  log_status(_("Macro recording"));
 }
 
 void wex::vi_macros_fsm::StopRecording()
@@ -341,17 +324,17 @@ void wex::vi_macros_fsm::StopRecording()
   if (!vi_macros::Get(vi_macros::m_Macro).empty())
   {
     vi_macros::SaveMacro(vi_macros::m_Macro);
-    wxLogStatus(wxString::Format(_("Macro '%s' is recorded"), vi_macros::m_Macro.c_str()));
+    log_status("Macro '" + vi_macros::m_Macro + " is recorded");
   }
   else
   {
     vi_macros::m_Macros.erase(vi_macros::m_Macro);
     vi_macros::m_Macro.clear();
-    wxLogStatus(wxEmptyString);
+    log_status(std::string());
   }
 }
 
-void wex::vi_macros_fsm::Verbose(States from, States to, Triggers trigger)
+void wex::vi_macros_fsm::Verbose(state from, state to, trigger trigger)
 {
   VLOG(2) << 
     "vi macro " << m_macro <<

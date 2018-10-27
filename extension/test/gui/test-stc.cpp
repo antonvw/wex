@@ -9,25 +9,23 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/defs.h>
-#include <wx/extension/frd.h>
-#include <wx/extension/indicator.h>
-#include <wx/extension/managedframe.h>
+#include <wex/stc.h>
+#include <wex/config.h>
+#include <wex/defs.h>
+#include <wex/frd.h>
+#include <wex/indicator.h>
+#include <wex/managedframe.h>
 #include "test.h"
 
 TEST_CASE("wex::stc")
 {
   wex::stc* stc = GetSTC();
   stc->GetVi().Command("\x1b");
-  wxConfigBase::Get()->Write(_("Wrap scan"), true);
+  wex::config(_("Wrap scan")).set(true);
   
   SUBCASE("ConfigDialog")
   {
-#if wxCHECK_VERSION(3,1,0)
     wex::stc::ConfigDialog(wex::window_data().Button(wxCANCEL | wxAPPLY));
-#endif
   }
   
   SUBCASE("SetText")
@@ -86,7 +84,7 @@ TEST_CASE("wex::stc")
     REQUIRE(stc->GetVi().Mode().Normal());
     stc->SetText("more text\notherline");
     stc->GetVi().Command("V");
-    REQUIRE( stc->GetVi().Mode().Get() == wex::vi_modes::VISUAL_LINE);
+    REQUIRE( stc->GetVi().Mode().Get() == wex::vi_mode::state::VISUAL_LINE);
     REQUIRE( stc->FindNext(std::string("more text")));
   }
 
@@ -152,7 +150,7 @@ TEST_CASE("wex::stc")
     //  stc->FileTypeMenu();
     stc->Fold();
     // FoldAll
-    wxConfigBase::Get()->Write(_("Auto fold"), 3);
+    wex::config(_("Auto fold")).set(3);
     stc->Fold(true); 
     stc->GuessType();
     stc->Paste();
@@ -198,8 +196,8 @@ TEST_CASE("wex::stc")
   SUBCASE("AutoIndentation")
   {
     // first test auto indentation on next line
-    wxConfigBase::Get()->Write(_("Auto indent"), 3);
-    REQUIRE( wxConfigBase::Get()->ReadLong(_("Auto indent"), 1) == 3);
+    wex::config(_("Auto indent")).set(3);
+    REQUIRE( wex::config(_("Auto indent")).get(3) == 3);
     stc->SetText("  \n  line with indentation");
     stc->DocumentEnd();
     REQUIRE(!stc->AutoIndentation('x'));

@@ -11,17 +11,17 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
 #include <wx/process.h>
 #include <wx/timer.h>
 #include <wx/txtstrm.h> // for wxTextInputStream
-#include <wx/extension/process.h>
-#include <wx/extension/debug.h>
-#include <wx/extension/itemdlg.h>
-#include <wx/extension/log.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/shell.h>
-#include <wx/extension/util.h>
+#include <wex/process.h>
+#include <wex/config.h>
+#include <wex/debug.h>
+#include <wex/itemdlg.h>
+#include <wex/log.h>
+#include <wex/managedframe.h>
+#include <wex/shell.h>
+#include <wex/util.h>
 #include <easylogging++.h>
 
 #define GET_STREAM(SCOPE)                         \
@@ -97,7 +97,7 @@ auto ShowProcess(wex::managed_frame* frame, bool show)
 std::string wex::process::m_WorkingDirKey = _("Process folder");
 
 wex::process::process() 
-  : m_Command(config_firstof(_("Process")))
+  : m_Command(config(_("Process")).firstof())
   , m_Frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
 {
 }
@@ -130,8 +130,8 @@ int wex::process::ConfigDialog(const window_data& par)
   validator.SetCharExcludes("?%*\"");
   const window_data data(window_data(par).Title(_("Select Process").ToStdString()));
   const std::vector<item> v {
-    {_("Process"), ITEM_COMBOBOX, std::any(), control_data().Validator(&validator).Required(true)},
-    {m_WorkingDirKey, ITEM_COMBOBOX_DIR, std::any(), control_data().Required(true)}};
+    {_("Process"), item::COMBOBOX, std::any(), control_data().Validator(&validator).Required(true)},
+    {m_WorkingDirKey, item::COMBOBOX_DIR, std::any(), control_data().Required(true)}};
 
   if (data.Button() & wxAPPLY)
   {
@@ -155,7 +155,7 @@ bool wex::process::Execute(
     
   if (command.empty())
   {
-    if (config_firstof(_("Process")).empty())
+    if (config(_("Process")).firstof().empty())
     {
       if (ConfigDialog() == wxID_CANCEL)
       {
@@ -163,15 +163,15 @@ bool wex::process::Execute(
       }
     }
     
-    m_Command = config_firstof(_("Process"));
-    cwd = config_firstof(m_WorkingDirKey);
+    m_Command = config(_("Process")).firstof();
+    cwd = config(m_WorkingDirKey).firstof();
   }
   else
   {
     m_Command = command;
   }
 
-  if (!(flags & PROCESS_EXEC_WAIT))
+  if (!(flags & process::EXEC_WAIT))
   { 
     // We need a shell for output.
     if (m_Shell == nullptr) return false;

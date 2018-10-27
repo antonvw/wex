@@ -9,7 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/vcscommand.h>
+#include <wex/vcscommand.h>
 #include "test.h"
 
 TEST_CASE("wex::vcs_command")
@@ -24,7 +24,7 @@ TEST_CASE("wex::vcs_command")
   const wex::vcs_command none;
 
   REQUIRE(add.GetCommand() == "add");
-  REQUIRE(add.GetCommand(wex::COMMAND_INCLUDE_SUBCOMMAND | wex::COMMAND_INCLUDE_ACCELL) == "a&dd");
+  REQUIRE(add.GetCommand(wex::menu_command::INCLUDE_SUBCOMMAND | wex::menu_command::INCLUDE_ACCELL) == "a&dd");
   
   REQUIRE(add.IsAdd());
   REQUIRE(blame.IsBlame());

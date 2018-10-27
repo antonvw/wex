@@ -14,16 +14,16 @@
 #endif
 #include <wx/aboutdlg.h>
 #include <wx/numdlg.h>
-#include <wx/extension/defs.h>
-#include <wx/extension/filedlg.h>
-#include <wx/extension/itemdlg.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/printing.h>
-#include <wx/extension/stcdlg.h>
-#include <wx/extension/toolbar.h>
-#include <wx/extension/util.h>
-#include <wx/extension/vcs.h>
-#include <wx/extension/version.h>
+#include <wex/defs.h>
+#include <wex/filedlg.h>
+#include <wex/itemdlg.h>
+#include <wex/lexers.h>
+#include <wex/printing.h>
+#include <wex/stcdlg.h>
+#include <wex/toolbar.h>
+#include <wex/util.h>
+#include <wex/vcs.h>
+#include <wex/version.h>
 #include <easylogging++.h>
 #include "app.h"
 #ifndef __WXMSW__
@@ -194,10 +194,10 @@ sample_frame::sample_frame()
   m_Grid->AutoSizeColumns();
 
   m_ListView->AppendColumns({
-    {"String", wex::column::COL_STRING},
-    {"Number", wex::column::COL_INT},
-    {"Float", wex::column::COL_FLOAT},
-    {"Date", wex::column::COL_DATE}});
+    {"String", wex::column::STRING},
+    {"Number", wex::column::INT},
+    {"Float", wex::column::FLOAT},
+    {"Date", wex::column::DATE}});
 
   const int items = 50;
 
@@ -367,10 +367,13 @@ void sample_frame::OnCommand(wxCommandEvent& event)
       wex::file_dialog dlg(&m_STC->GetFile());
       if (dlg.ShowModalIfChanged(true) == wxID_CANCEL) return;
       const auto start = std::chrono::system_clock::now();
-      m_STC->Open(dlg.GetPath().ToStdString(), wex::stc_data().Flags((wex::stc_window_flags)m_FlagsSTC));
-      const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
+      m_STC->Open(dlg.GetPath().ToStdString(), 
+        wex::stc_data().Flags((wex::stc_data::window_flags)m_FlagsSTC));
+      const auto milli = std::chrono::duration_cast
+        <std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
       wxLogStatus(
-        "wex::stc::Open:%ld milliseconds, %d bytes", milli.count(), m_STC->GetTextLength());
+        "wex::stc::Open:%ld milliseconds, %d bytes", 
+        milli.count(), m_STC->GetTextLength());
       }
       break;
     case wxID_SAVE:
@@ -379,7 +382,7 @@ void sample_frame::OnCommand(wxCommandEvent& event)
       if (m_STC->GetFileName().Path() == wex::lexers::Get()->GetFileName().Path())
       {
         wex::lexers::Get()->LoadDocument();
-        VLOG(9) << "File contains: " << wex::lexers::Get()->GetLexers().size() << " lexers";
+        VLOG(9) << "File contains: " << wex::lexers::Get()->get().size() << " lexers";
           // As the lexer might have changed, update status bar field as well.
         UpdateStatusBar(m_STC, "PaneLexer");
       }

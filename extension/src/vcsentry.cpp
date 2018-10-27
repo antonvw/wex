@@ -5,18 +5,14 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wx/config.h>
-#include <wx/extension/vcsentry.h>
-#include <wx/extension/defs.h> // for VCS_MAX_COMMANDS
-#include <wx/extension/menu.h>
-#include <wx/extension/menus.h>
-#include <wx/extension/shell.h>
-#include <wx/extension/tokenizer.h>
-#include <wx/extension/vcs.h>
+#include <wex/vcsentry.h>
+#include <wex/config.h>
+#include <wex/defs.h> // for VCS_MAX_COMMANDS
+#include <wex/menu.h>
+#include <wex/menus.h>
+#include <wex/shell.h>
+#include <wex/tokenizer.h>
+#include <wex/vcs.h>
 
 wex::vcs_entry::vcs_entry(
   const std::string& name,
@@ -38,7 +34,7 @@ wex::vcs_entry::vcs_entry(const pugi::xml_node& node)
       strcmp(node.attribute("toplevel").value(), "true") == 0)
   , m_FlagsLocation(
       (strcmp(node.attribute("flags-location").value(), "prefix") == 0 ?
-         VCS_FLAGS_LOCATION_PREFIX: VCS_FLAGS_LOCATION_POSTFIX))
+         FLAGS_LOCATION_PREFIX: FLAGS_LOCATION_POSTFIX))
   , m_MarginWidth(atoi(node.attribute("margin-width").value()))
   , m_PosBegin(node.attribute("pos-begin").value())
   , m_PosEnd(node.attribute("pos-end").value())
@@ -60,9 +56,9 @@ bool wex::vcs_entry::Execute(
   
   std::string prefix;
   
-  if (m_FlagsLocation == VCS_FLAGS_LOCATION_PREFIX)
+  if (m_FlagsLocation == FLAGS_LOCATION_PREFIX)
   {
-    prefix = wxConfigBase::Get()->Read(_("Prefix flags"));
+    prefix = config(_("Prefix flags")).get();
     
     if (!prefix.empty())
     {
@@ -74,7 +70,7 @@ bool wex::vcs_entry::Execute(
   
   if (GetCommand().UseSubcommand())
   {
-    subcommand = wxConfigBase::Get()->Read(_("Subcommand"));
+    subcommand = config(_("Subcommand")).get();
 
     if (!subcommand.empty())
     {
@@ -107,7 +103,7 @@ bool wex::vcs_entry::Execute(
   if (GetCommand().IsCommit())
   {
     comment = 
-      "-m \"" + config_firstof(_("Revision comment")) + "\" ";
+      "-m \"" + config(_("Revision comment")).firstof() + "\" ";
   }
 
   std::string my_args(args);
@@ -119,7 +115,7 @@ bool wex::vcs_entry::Execute(
   }
 
   return process::Execute(
-    wxConfigBase::Get()->Read(GetName(), GetName()).ToStdString() + " " + 
+    config(GetName()).get(GetName()) + " " + 
       prefix +
       GetCommand().GetCommand() + " " + 
       subcommand + flags + comment + my_args, 
@@ -131,7 +127,7 @@ const std::string wex::vcs_entry::GetBranch() const
 {
   if (GetName() == "git")
   { 
-    if (process p; p.Execute("git branch", PROCESS_EXEC_WAIT))
+    if (process p; p.Execute("git branch", process::EXEC_WAIT))
     {
       for (tokenizer tkz(p.GetStdOut(), "\r\n"); tkz.HasMoreTokens(); )
       {
@@ -148,7 +144,7 @@ const std::string wex::vcs_entry::GetBranch() const
 
 const std::string wex::vcs_entry::GetFlags() const
 {
-  return wxConfigBase::Get()->Read(_("Flags")).ToStdString();
+  return config(_("Flags")).get();
 }
 
 void wex::vcs_entry::ShowOutput(const std::string& caption) const

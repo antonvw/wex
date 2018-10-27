@@ -9,7 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/interruptable.h>
+#include <wex/interruptable.h>
 
 bool wex::interruptable::m_Cancelled = false;
 bool wex::interruptable::m_Running = false;

@@ -10,19 +10,19 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
-#include <wx/extension/cmdline.h>
-#include <wx/extension/frd.h>
-#include <wx/extension/itemdlg.h>
-#include <wx/extension/listitem.h>
-#include <wx/extension/log.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/util.h>
-#include <wx/extension/report/frame.h>
-#include <wx/extension/report/defs.h>
-#include <wx/extension/report/dir.h>
-#include <wx/extension/report/listviewfile.h>
-#include <wx/extension/report/stream.h>
+#include <wex/cmdline.h>
+#include <wex/config.h>
+#include <wex/frd.h>
+#include <wex/itemdlg.h>
+#include <wex/listitem.h>
+#include <wex/log.h>
+#include <wex/stc.h>
+#include <wex/util.h>
+#include <wex/report/frame.h>
+#include <wex/report/defs.h>
+#include <wex/report/dir.h>
+#include <wex/report/listviewfile.h>
+#include <wex/report/stream.h>
 
 wex::history_frame::history_frame(
   size_t maxFiles,
@@ -36,9 +36,9 @@ wex::history_frame::history_frame(
       find_replace_data::Get()->GetTextRegEx()})
 {
   // Take care of default value.
-  if (!wxConfigBase::Get()->Exists(m_TextRecursive))
+  if (!config(m_TextRecursive).exists())
   {
-    wxConfigBase::Get()->Write(m_TextRecursive, true); 
+    config(m_TextRecursive).set(true); 
   }
 
   std::set<std::string> t(m_Info);
@@ -46,9 +46,9 @@ wex::history_frame::history_frame(
   
   const std::vector<item> f {
     {find_replace_data::Get()->GetTextFindWhat(), 
-       ITEM_COMBOBOX, std::any(), control_data().Required(true)},
-    {m_TextInFiles, ITEM_COMBOBOX, std::any(), control_data().Required(true)},
-    {m_TextInFolder, ITEM_COMBOBOX_DIR, std::any(), control_data().Required(true)},
+       item::COMBOBOX, std::any(), control_data().Required(true)},
+    {m_TextInFiles, item::COMBOBOX, std::any(), control_data().Required(true)},
+    {m_TextInFolder, item::COMBOBOX_DIR, std::any(), control_data().Required(true)},
     {t}};
   
   m_FiFDialog = new item_dialog(
@@ -61,7 +61,7 @@ wex::history_frame::history_frame(
     
   m_RiFDialog = new item_dialog({
       f.at(0),
-      {find_replace_data::Get()->GetTextReplaceWith(), ITEM_COMBOBOX},
+      {find_replace_data::Get()->GetTextReplaceWith(), item::COMBOBOX},
       f.at(1),
       f.at(2),
       {_("Max replacements"), -1, INT_MAX},
@@ -119,7 +119,7 @@ wex::history_frame::history_frame(
     }}, ID_TOOL_REPLACE);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    DoRecent(m_ProjectHistory, event.GetId() - m_ProjectHistory.GetBaseId(), STC_WIN_IS_PROJECT);},
+    DoRecent(m_ProjectHistory, event.GetId() - m_ProjectHistory.GetBaseId(), stc_data::WIN_IS_PROJECT);},
     m_ProjectHistory.GetBaseId(), m_ProjectHistory.GetBaseId() + m_ProjectHistory.GetMaxFiles());
 }
 
@@ -140,10 +140,9 @@ void wex::history_frame::FindInFiles(wxWindowID dialogid)
 
     if (tool_dir dir(
       tool,
-      config_firstof(m_TextInFolder),
-      config_firstof(m_TextInFiles),
-      DIR_FILES | (wxConfigBase::Get()->ReadBool(m_TextRecursive, true) ? 
-        DIR_RECURSIVE : 0));
+      config(m_TextInFolder).firstof(),
+      config(m_TextInFiles).firstof(),
+      dir::FILES | (config(m_TextRecursive).get(true) ? dir::RECURSIVE : 0));
       dir.FindFiles() >= 0)
     {
       log_status(tool.Info(&dir.GetStatistics().GetElements()));
@@ -158,7 +157,7 @@ void wex::history_frame::FindInFiles(wxWindowID dialogid)
 }
 
 bool wex::history_frame::FindInFiles(
-  const std::vector< wex::path > & files,
+  const std::vector< path > & files,
   int id,
   bool show_dialog,
   listview* report)
@@ -201,7 +200,7 @@ bool wex::history_frame::FindInFiles(
         tool_dir dir(
           tool, 
           it, 
-          config_firstof(m_TextInFiles));
+          config(m_TextInFiles).firstof());
           
         dir.FindFiles();
         stats += dir.GetStatistics().GetElements();
@@ -228,9 +227,9 @@ int wex::history_frame::FindInFilesDialog(
   }
 
   if (item_dialog({
-      {find_replace_data::Get()->GetTextFindWhat(), ITEM_COMBOBOX, std::any(), control_data().Required(true)}, 
-      (add_in_files ? item(m_TextInFiles, ITEM_COMBOBOX, std::any(), control_data().Required(true)) : item()),
-      (id == ID_TOOL_REPLACE ? item(find_replace_data::Get()->GetTextReplaceWith(), ITEM_COMBOBOX): item()),
+      {find_replace_data::Get()->GetTextFindWhat(), item::COMBOBOX, std::any(), control_data().Required(true)}, 
+      (add_in_files ? item(m_TextInFiles, item::COMBOBOX, std::any(), control_data().Required(true)) : item()),
+      (id == ID_TOOL_REPLACE ? item(find_replace_data::Get()->GetTextReplaceWith(), item::COMBOBOX): item()),
       item(m_Info)},
     window_data().Title(GetFindInCaption(id))).ShowModal() == wxID_CANCEL)
   {
@@ -271,9 +270,9 @@ const wxString wex::history_frame::GetFindReplaceInfoText(bool replace) const
 
 bool wex::history_frame::Grep(const std::string& arg, bool sed)
 {
-  static wxString arg1 = config_firstof(m_TextInFolder);
-  static wxString arg2 = config_firstof(m_TextInFiles);
-  static int arg3 = DIR_FILES;
+  static wxString arg1 = config(m_TextInFolder).firstof();
+  static wxString arg2 = config(m_TextInFiles).firstof();
+  static int arg3 = dir::FILES;
 
   if (GetSTC() != nullptr)
   {
@@ -281,7 +280,7 @@ bool wex::history_frame::Grep(const std::string& arg, bool sed)
   }
 
   if (!cmdline(
-    {{{"r", "recursive", "recursive"}, [&](bool on) {arg3 |= (on ? DIR_RECURSIVE: 0);}}},
+    {{{"r", "recursive", "recursive"}, [&](bool on) {arg3 |= (on ? dir::RECURSIVE: 0);}}},
     {},
     {{"rest", "match " + std::string(sed ? "replace": "") + " [extension] [folder]"}, 
        [&](const std::vector<std::string> & v) {
@@ -293,11 +292,11 @@ bool wex::history_frame::Grep(const std::string& arg, bool sed)
          find_replace_data::Get()->SetReplaceString(v[i++]);
        }
        arg2 = (v.size() > i ? 
-         config_firstof_write(m_TextInFiles, v[i++]): 
-         config_firstof(m_TextInFiles));
+         config(m_TextInFiles).firstof_write(v[i++]): 
+         config(m_TextInFiles).firstof());
        arg1 = (v.size() > i ? 
-         config_firstof_write(m_TextInFolder, v[i++]): 
-         config_firstof(m_TextInFolder));
+         config(m_TextInFolder).firstof_write(v[i++]): 
+         config(m_TextInFolder).firstof());
        return true;}}).Parse(std::string(sed ? ":sed": ":grep") + " " + arg))
   {
     return false;
@@ -322,7 +321,7 @@ bool wex::history_frame::Grep(const std::string& arg, bool sed)
   std::thread t([=]{
 #endif
     if (auto* stc = GetSTC(); stc != nullptr)
-      wex::path::Current(stc->GetFileName().GetPath());
+      path::Current(stc->GetFileName().GetPath());
     find_replace_data::Get()->SetUseRegEx(true);
     wxLogStatus(GetFindReplaceInfoText());
     Unbind(wxEVT_IDLE, &history_frame::OnIdle, this);
@@ -362,15 +361,14 @@ void wex::history_frame::OnCommandItemDialog(
           if (GetProject() != nullptr)
           {
             long flags = 0;
-            auto* cfg = wxConfigBase::Get();
           
-            if (cfg->ReadBool(GetProject()->GetTextAddFiles(), true)) flags |= DIR_FILES;
-            if (cfg->ReadBool(GetProject()->GetTextAddRecursive(), true)) flags |= DIR_RECURSIVE;
-            if (cfg->ReadBool(GetProject()->GetTextAddFolders(), true)) flags |= DIR_DIRS;
+            if (config(GetProject()->GetTextAddFiles()).get(true)) flags |= dir::FILES;
+            if (config(GetProject()->GetTextAddRecursive()).get(true)) flags |= dir::RECURSIVE;
+            if (config(GetProject()->GetTextAddFolders()).get(true)) flags |= dir::DIRS;
 
             GetProject()->AddItems(
-              config_firstof(GetProject()->GetTextInFolder()),
-              config_firstof(GetProject()->GetTextAddWhat()),
+              config(GetProject()->GetTextInFolder()).firstof(),
+              config(GetProject()->GetTextAddWhat()).firstof(),
               flags);
           }
           break;
@@ -407,7 +405,7 @@ void wex::history_frame::OnIdle(wxIdleEvent& event)
     (project != nullptr && project->GetContentsChanged()) ||
      // using GetContentsChanged gives assert in vcs dialog
     (stc != nullptr && stc->GetModify() && 
-      (!(stc->GetData().Flags() & STC_WIN_NO_INDICATOR))))
+      (!(stc->GetData().Flags() & stc_data::WIN_NO_INDICATOR))))
   {
     // Project or editor changed, add indicator if not yet done.
     if (title.substr(pos) != indicator)
@@ -448,7 +446,7 @@ void wex::history_frame::SetRecentFile(const wex::path& path)
 
 void wex::history_frame::UseFileHistoryList(listview* list)
 {
-  wxASSERT(list->GetData().Type() == LISTVIEW_HISTORY);
+  wxASSERT(list->GetData().Type() == listview_data::HISTORY);
   
   m_FileHistoryList = list;
   m_FileHistoryList->Hide();
@@ -458,7 +456,7 @@ void wex::history_frame::UseFileHistoryList(listview* list)
   {
     if (listitem item(m_FileHistoryList, 
       GetFileHistory().GetHistoryFile(i));
-      item.GetFileName().GetStat().IsOk())
+      item.GetFileName().GetStat().is_ok())
     {
       item.Insert();
     }

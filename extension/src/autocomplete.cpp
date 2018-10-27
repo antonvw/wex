@@ -5,12 +5,12 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/config.h>
-#include <wx/extension/autocomplete.h>
-#include <wx/extension/ctags.h>
-#include <wx/extension/log.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/util.h>
+#include <wex/autocomplete.h>
+#include <wex/config.h>
+#include <wex/ctags.h>
+#include <wex/log.h>
+#include <wex/stc.h>
+#include <wex/util.h>
 #include <easylogging++.h>
 
 wex::autocomplete::autocomplete(wex::stc* stc)
@@ -30,19 +30,21 @@ bool wex::autocomplete::Activate(const std::string& text)
 
   m_STC->GetVi().GetCTags()->Find(text, current, m_Filter);
 
+  VLOG(9) << "autocomplete: " << text;
+  
   if (current.Active())
   {
-    VLOG(9) << "current: " << current.Get();
+    VLOG(9) << "autocomplete current: " << current.Get();
   }
 
   if (m_Filter.Active())
   {
-    VLOG(9) << "filter: " << m_Filter.Get();
+    VLOG(9) << "autocomplete filter: " << m_Filter.Get();
   }
 
-  // TODO: update vi insert text
   if (m_STC->GetVi().GetIsActive())
   {
+    m_STC->GetVi().AppendInsertText(text.substr(m_Text.size()));
   }
 
   m_Text.clear();
@@ -183,5 +185,5 @@ bool wex::autocomplete::ShowKeywords(bool show) const
 
 bool wex::autocomplete::Use() const
 {
-  return m_Use || wxConfigBase::Get()->ReadBool(_("Auto complete"), false);
+  return m_Use || config(_("Auto complete")).get(false);
 }

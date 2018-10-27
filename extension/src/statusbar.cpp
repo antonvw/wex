@@ -9,10 +9,10 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
-#include <wx/extension/statusbar.h>
-#include <wx/extension/defs.h>
-#include <wx/extension/frame.h>
+#include <wex/statusbar.h>
+#include <wex/config.h>
+#include <wex/defs.h>
+#include <wex/frame.h>
 
 const int FIELD_NOT_SHOWN = -1;
 
@@ -21,7 +21,7 @@ std::string ConfigName(wex::statusbar* sb, const std::string& item, int f)
   return "SB" + sb->GetField(f).GetName() + item;
 }
 
-void wex::statusbarpane::Show(bool show)
+void wex::statusbar_pane::Show(bool show)
 {
   m_IsShown = show;
   
@@ -35,28 +35,28 @@ void wex::statusbarpane::Show(bool show)
   }
 }
 
-std::vector<wex::statusbarpane> wex::statusbar::m_Panes = {{}};
+std::vector<wex::statusbar_pane> wex::statusbar::m_Panes = {{}};
 
 wex::statusbar::statusbar(frame* parent, const window_data& data)
   : wxStatusBar(parent, data.Id(), data.Style(), data.Name())
   , m_Frame(parent)
 {
   // The statusbar is not managed by Aui, so show/hide it explicitly.    
-  Show(wxConfigBase::Get()->ReadBool("ShowStatusBar", true));
+  Show(config("ShowStatusBar").get(true));
 }
 
 wex::statusbar::~statusbar()
 { 
-  wxConfigBase::Get()->Write("ShowStatusBar", IsShown());
+  config("ShowStatusBar").set(IsShown());
 
   for (int i = 0; i < GetFieldsCount(); i++)
   {
-    wxConfigBase::Get()->Write(ConfigName(this, "Style", i), GetField(i).GetStyle());
-    wxConfigBase::Get()->Write(ConfigName(this, "Width", i), GetField(i).GetWidth());
+    config(ConfigName(this, "Style", i)).set(GetField(i).GetStyle());
+    config(ConfigName(this, "Width", i)).set(GetField(i).GetWidth());
   }
 }
 
-const wex::statusbarpane& wex::statusbar::GetField(int n) const
+const wex::statusbar_pane& wex::statusbar::GetField(int n) const
 {
   return m_Panes[n];
 }
@@ -103,7 +103,7 @@ const std::string wex::statusbar::GetStatusText(const std::string& field) const
     std::string(): wxStatusBar::GetStatusText(shown_pane_no).ToStdString();
 }
 
-void wex::statusbar::Handle(wxMouseEvent& event, const statusbarpane& pane)
+void wex::statusbar::Handle(wxMouseEvent& event, const statusbar_pane& pane)
 {
   if (event.LeftUp())
   {
@@ -158,7 +158,7 @@ void wex::statusbar::OnMouse(wxMouseEvent& event)
 
 wex::statusbar* wex::statusbar::Setup(
   frame* frame,
-  const std::vector<statusbarpane>& panes,
+  const std::vector<statusbar_pane>& panes,
   long style,
   const wxString& name)
 {
@@ -179,10 +179,8 @@ wex::statusbar* wex::statusbar::Setup(
 
   for (int i = 0; i < (int)m_Panes.size(); i++)
   {
-    styles[i] = wxConfigBase::Get()->ReadLong(ConfigName(sb, "Style", i),
-      m_Panes[i].GetStyle());
-    widths[i] = wxConfigBase::Get()->ReadLong(ConfigName(sb, "Width", i),
-      m_Panes[i].GetWidth());
+    styles[i] = config(ConfigName(sb, "Style", i)).get(m_Panes[i].GetStyle());
+    widths[i] = config(ConfigName(sb, "Width", i)).get(m_Panes[i].GetWidth());
 
     m_Panes[i].SetStyle(styles[i]);
     m_Panes[i].SetWidth(widths[i]);

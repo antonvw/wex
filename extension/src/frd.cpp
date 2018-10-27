@@ -5,14 +5,11 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wx/config.h> 
-#include <wx/extension/frd.h>
-#include <wx/extension/ex-command.h>
-#include <wx/extension/util.h>
+#include <wex/frd.h>
+#include <wex/config.h> 
+#include <wex/ex-command.h>
+#include <wex/config.h> 
+#include <wex/util.h>
 
 wex::find_replace_data* wex::find_replace_data::m_Self = nullptr;
 std::string wex::find_replace_data::m_TextFindWhat = _("Find what").ToStdString();
@@ -23,28 +20,28 @@ std::string wex::find_replace_data::m_TextReplaceWith = _("Replace with").ToStdS
 std::string wex::find_replace_data::m_TextSearchDown = _("Search down").ToStdString();
 
 wex::find_replace_data::find_replace_data()
-  : m_FindStrings(ex_command_type::FIND)
-  , m_ReplaceStrings(ex_command_type::REPLACE)
+  : m_FindStrings(ex_command::type::FIND)
+  , m_ReplaceStrings(ex_command::type::REPLACE)
 {
   int flags = 0;
-  flags |= wxFR_DOWN *      (wxConfigBase::Get()->ReadBool(m_TextSearchDown, true));
-  flags |= wxFR_MATCHCASE * (wxConfigBase::Get()->ReadBool(m_TextMatchCase, false));
-  flags |= wxFR_WHOLEWORD * (wxConfigBase::Get()->ReadBool(m_TextMatchWholeWord, false));
+  flags |= wxFR_DOWN *      (config(m_TextSearchDown).get(true));
+  flags |= wxFR_MATCHCASE * (config(m_TextMatchCase).get(false));
+  flags |= wxFR_WHOLEWORD * (config(m_TextMatchWholeWord).get(false));
 
   SetFlags(flags);
 
   // Start with this one, as it is used by SetFindString.
-  SetUseRegEx(wxConfigBase::Get()->ReadBool(m_TextRegEx, m_UseRegEx));
-  SetFindStrings(list_from_config(m_TextFindWhat));
-  SetReplaceStrings(list_from_config(m_TextReplaceWith));
+  SetUseRegEx(config(m_TextRegEx).get(m_UseRegEx));
+  SetFindStrings(config(m_TextFindWhat).get_list());
+  SetReplaceStrings(config(m_TextReplaceWith).get_list());
 }
 
 wex::find_replace_data::~find_replace_data()
 {
-  wxConfigBase::Get()->Write(m_TextMatchCase, MatchCase());
-  wxConfigBase::Get()->Write(m_TextMatchWholeWord, MatchWord());
-  wxConfigBase::Get()->Write(m_TextRegEx, m_UseRegEx);
-  wxConfigBase::Get()->Write(m_TextSearchDown, SearchDown());
+  config(m_TextMatchCase).set(MatchCase());
+  config(m_TextMatchWholeWord).set(MatchWord());
+  config(m_TextRegEx).set(m_UseRegEx);
+  config(m_TextSearchDown).set(SearchDown());
 }
 
 wex::find_replace_data* wex::find_replace_data::Get(bool createOnDemand)
@@ -161,6 +158,8 @@ void wex::find_replace_data::SetUseRegEx(bool value)
   catch (std::regex_error& e) 
   {
     m_UseRegEx = false;
-    wxLogStatus("regex error: %s %s", e.what(), GetFindString());
+    std::stringstream ss;
+    ss << "regex error: " << e.what() << " " << GetFindString();
+    log_status(ss.str());
   }
 }

@@ -1,4 +1,4 @@
-project(wxExtensionLibrary)
+project(wex-lib)
 
 add_subdirectory(src)
 add_subdirectory(src/report)

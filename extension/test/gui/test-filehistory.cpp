@@ -10,9 +10,9 @@
 #include <wx/wx.h>
 #endif
 #include <wx/menu.h>
-#include <wx/extension/file.h>
-#include <wx/extension/filehistory.h>
-#include <wx/extension/managedframe.h>
+#include <wex/file.h>
+#include <wex/filehistory.h>
+#include <wex/managedframe.h>
 #include "test.h"
 
 TEST_CASE("wex::file_history")

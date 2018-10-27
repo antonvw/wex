@@ -6,17 +6,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wx/config.h>
-#include <wx/extension/link.h>
-#include <wx/extension/lexer.h>
-#include <wx/extension/path.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/tokenizer.h>
-#include <wx/extension/util.h>
+#include <wex/link.h>
+#include <wex/config.h>
+#include <wex/lexer.h>
+#include <wex/path.h>
+#include <wex/stc.h>
+#include <wex/tokenizer.h>
+#include <wex/util.h>
 
 namespace wex
 {
@@ -24,8 +20,8 @@ namespace wex
   {
   public:
     paths() : m_Paths(tokenizer(
-      wxConfigBase::Get()->Read(_("Include directory")).ToStdString(),
-        "\r\n").Tokenize<std::vector<std::string>>()) {;};
+      config(_("Include directory")).get(
+        std::string("\r\n"))).Tokenize<std::vector<std::string>>()) {;};
 
     path FindPath(const std::string& path) const {
       for (const auto& it : m_Paths)
@@ -55,10 +51,10 @@ const wex::path wex::link::FindPath(
   const std::string& text, const control_data& data) const
 {
   if (text.empty() &&
-    data.Line() != LINK_LINE_OPEN_MIME &&
-    data.Line() != LINK_LINE_OPEN_URL_AND_MIME)
+    data.Line() != LINE_OPEN_MIME &&
+    data.Line() != LINE_OPEN_URL_AND_MIME)
   {
-    return wex::path();
+    return path();
   }
 
   // Path in .po files.
@@ -71,7 +67,7 @@ const wex::path wex::link::FindPath(
   
   // hypertext link
   if (std::vector <std::string> v; 
-      (data.Line() == LINK_LINE_OPEN_URL || LINK_LINE_OPEN_URL_AND_MIME) && 
+      (data.Line() == LINE_OPEN_URL || LINE_OPEN_URL_AND_MIME) && 
       (match("(https?:.*)", text, v) > 0 || 
        match("(www.*)", text, v) > 0))
   {
@@ -91,7 +87,7 @@ const wex::path wex::link::FindPath(
     return match;
   }
   
-  if (data.Line() == LINK_LINE_OPEN_URL)
+  if (data.Line() == LINE_OPEN_URL)
   {
     return std::string();
   }
@@ -113,8 +109,8 @@ const wex::path wex::link::FindPath(
 
   // Previewable (MIME) file
   if (
-    data.Line() == LINK_LINE_OPEN_MIME || 
-    data.Line() == LINK_LINE_OPEN_URL_AND_MIME)
+    data.Line() == LINE_OPEN_MIME || 
+    data.Line() == LINE_OPEN_URL_AND_MIME)
   {
     if (m_STC != nullptr && m_STC->GetLexer().Previewable())
     {
@@ -136,9 +132,9 @@ const wex::path wex::link::GetPath(
   const wex::path path(FindPath(text, data));
 
   // if http link requested  
-  if (data.Line() == LINK_LINE_OPEN_MIME || 
-      data.Line() == LINK_LINE_OPEN_URL ||
-      data.Line() == LINK_LINE_OPEN_URL_AND_MIME)
+  if (data.Line() == LINE_OPEN_MIME || 
+      data.Line() == LINE_OPEN_URL ||
+      data.Line() == LINE_OPEN_URL_AND_MIME)
   { 
     return path;
   }
@@ -156,13 +152,13 @@ const wex::path wex::link::GetPath(
 
   if (file.FileExists())
   {
-    return file.MakeAbsolute();
+    return file.make_absolute();
   }
 
-  if (file.IsRelative() && 
+  if (file.is_relative() && 
       m_STC != nullptr && m_STC->GetFileName().FileExists())
   {
-    if (wex::path path(file.MakeAbsolute(m_STC->GetFileName())); path.FileExists())
+    if (wex::path path(m_STC->GetFileName().GetPath(), file.GetFullName()); path.FileExists())
     {
       return path;
     }
@@ -178,7 +174,7 @@ const wex::path wex::link::GetPath(
     if (word.FileExists())
     {
       data.Reset();
-      return word.MakeAbsolute();
+      return word.make_absolute();
     }
   }
 
@@ -246,5 +242,5 @@ bool wex::link::SetLink(path& link, control_data& data) const
 void wex::link::SetFromConfig()
 {
   delete m_Paths.release();
-  m_Paths = std::make_unique<wex::paths>();
+  m_Paths = std::make_unique<paths>();
 }

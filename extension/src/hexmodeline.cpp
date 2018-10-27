@@ -9,7 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/stc.h>
+#include <wex/stc.h>
 #include "hexmodeline.h"
 
 wex::hexmode_line::hexmode_line(hexmode* hex)

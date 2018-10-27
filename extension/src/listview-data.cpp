@@ -5,9 +5,9 @@
 // Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/extension/lexer.h>
-#include <wx/extension/listview-data.h>
-#include <wx/extension/listview.h>
+#include <wex/lexer.h>
+#include <wex/listview-data.h>
+#include <wex/listview.h>
 
 wex::listview_data::listview_data(listview* lv)
   : m_ListView(lv)
@@ -54,17 +54,17 @@ wex::listview_data& wex::listview_data::operator=(const listview_data& r)
   
 void wex::listview_data::AddColumns()
 {
-  m_ListView->AppendColumns({{_("File Name").ToStdString(), column::COL_STRING}});
+  m_ListView->AppendColumns({{_("File Name").ToStdString(), column::STRING}});
 
   switch (m_Type)
   {
-    case LISTVIEW_FIND:
+    case FIND:
       m_ListView->AppendColumns({
-        {_("Line").ToStdString(), column::COL_STRING, 250},
-        {_("Match").ToStdString(), column::COL_STRING},
+        {_("Line").ToStdString(), column::STRING, 250},
+        {_("Match").ToStdString(), column::STRING},
         {_("Line No").ToStdString()}});
     break;
-    case LISTVIEW_KEYWORD:
+    case KEYWORD:
       for (const auto& it : m_Lexer->GetKeywords())
       {
         m_ListView->AppendColumns({{column(it)}});
@@ -76,9 +76,9 @@ void wex::listview_data::AddColumns()
   }
 
   m_ListView->AppendColumns({
-    {_("Modified").ToStdString(), column::COL_DATE},
-    {_("In Folder").ToStdString(), column::COL_STRING, 175},
-    {_("Type").ToStdString(), column::COL_STRING},
+    {_("Modified").ToStdString(), column::DATE},
+    {_("In Folder").ToStdString(), column::STRING, 175},
+    {_("Type").ToStdString(), column::STRING},
     {_("Size").ToStdString()}});
 }
 
@@ -118,12 +118,12 @@ bool wex::listview_data::Inject()
 
     switch (m_Type)
     {
-      case LISTVIEW_FOLDER:
-      case LISTVIEW_NONE:
+      case FOLDER:
+      case NONE:
         m_ListView->SetSingleStyle(wxLC_LIST);
         break;
       
-      case LISTVIEW_KEYWORD:
+      case KEYWORD:
         if (m_Lexer != nullptr)
         {
           name += " " + m_Lexer->GetDisplayLexer();
@@ -148,13 +148,14 @@ wex::listview_data& wex::listview_data::Lexer(const lexer* lexer)
   return *this;
 }
 
-wex::listview_data& wex::listview_data::Menu(long flags, data_action action)
+wex::listview_data& wex::listview_data::Menu(
+  long flags, control_data::action action)
 {
   m_Data.Flags<long>(flags, m_MenuFlags, action);
   return *this;
 }
   
-wex::listview_data& wex::listview_data::Type(listview_type type)
+wex::listview_data& wex::listview_data::Type(type type)
 {
   m_Type = type;
   return *this;
@@ -166,12 +167,12 @@ const std::string wex::listview_data::TypeDescription() const
 
   switch (m_Type)
   {
-    case LISTVIEW_FOLDER: value = _("Folder"); break;
-    case LISTVIEW_FIND: value = _("Find Results"); break;
-    case LISTVIEW_HISTORY: value = _("History"); break;
-    case LISTVIEW_KEYWORD: value = _("Keywords"); break;
-    case LISTVIEW_FILE: value = _("File"); break;
-    case LISTVIEW_NONE: value = _("None"); break;
+    case FOLDER: value = _("Folder"); break;
+    case FIND: value = _("Find Results"); break;
+    case HISTORY: value = _("History"); break;
+    case KEYWORD: value = _("Keywords"); break;
+    case FILE: value = _("File"); break;
+    case NONE: value = _("None"); break;
     default: wxFAIL;
   }
 

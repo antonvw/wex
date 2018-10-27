@@ -10,9 +10,9 @@
 #include <wx/wx.h>
 #endif
 #include <wx/stc/stc.h>
-#include <wx/extension/printing.h>
-#include <wx/extension/path.h>
-#include <wx/extension/util.h>
+#include <wex/printing.h>
+#include <wex/path.h>
+#include <wex/util.h>
 
 wex::printing* wex::printing::m_Self = nullptr;
 

@@ -11,17 +11,17 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
-#include <wx/extension/toolbar.h>
-#include <wx/extension/art.h>
-#include <wx/extension/defs.h>
-#include <wx/extension/frd.h>
-#include <wx/extension/grid.h>
-#include <wx/extension/listview.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/process.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/util.h>
+#include <wex/toolbar.h>
+#include <wex/config.h>
+#include <wex/art.h>
+#include <wex/defs.h>
+#include <wex/frd.h>
+#include <wex/grid.h>
+#include <wex/listview.h>
+#include <wex/managedframe.h>
+#include <wex/process.h>
+#include <wex/stc.h>
+#include <wex/util.h>
 
 namespace wex
 {
@@ -177,11 +177,9 @@ wex::find_toolbar::find_toolbar(
   wxCheckBox* isRegularExpression = new wxCheckBox(this, 
     ID_REGULAR_EXPRESSION, find_replace_data::Get()->GetTextRegEx());
 
-#if wxUSE_TOOLTIPS
   matchCase->SetToolTip(_("Search case sensitive"));
   matchWholeWord->SetToolTip(_("Search matching words"));
   isRegularExpression->SetToolTip(_("Search using regular expressions"));
-#endif
 
   matchCase->SetValue(find_replace_data::Get()->MatchCase());
   matchWholeWord->SetValue(find_replace_data::Get()->MatchWord());
@@ -252,14 +250,13 @@ void wex::options_toolbar::AddControls(bool realize)
     
     wxCheckBox* cb = new wxCheckBox(this, std::get<0>(it), std::get<1>(it));
     m_CheckBoxes.emplace_back(cb);
-#if wxUSE_TOOLTIPS
+
     cb->SetToolTip(std::get<4>(it));
-#endif
-    cb->SetValue(wxConfigBase::Get()->ReadBool(std::get<3>(it), std::get<5>(it)));
+    cb->SetValue(config(std::get<3>(it)).get(std::get<5>(it)));
     cb->SetName(std::get<2>(it));
     AddControl(cb);
     Bind(wxEVT_CHECKBOX, [=](wxCommandEvent& event) {
-      wxConfigBase::Get()->Write(std::get<3>(it), cb->GetValue());
+      config(std::get<3>(it)).set(cb->GetValue());
       if (event.GetId() == ID_VIEW_PROCESS)
       {
         GetFrame()->ShowPane("PROCESS", cb->GetValue());};}, std::get<0>(it));

@@ -13,26 +13,26 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
-#include <wx/extension/ex.h>
-#include <wx/extension/address.h>
-#include <wx/extension/addressrange.h>
-#include <wx/extension/cmdline.h>
-#include <wx/extension/ctags.h>
-#include <wx/extension/debug.h>
-#include <wx/extension/defs.h>
-#include <wx/extension/frd.h>
-#include <wx/extension/lexer-props.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/log.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/stcdlg.h>
-#include <wx/extension/tokenizer.h>
-#include <wx/extension/type-to-value.h>
-#include <wx/extension/util.h>
-#include <wx/extension/version.h>
-#include <wx/extension/vi-macros.h>
+#include <wex/ex.h>
+#include <wex/address.h>
+#include <wex/addressrange.h>
+#include <wex/cmdline.h>
+#include <wex/config.h>
+#include <wex/ctags.h>
+#include <wex/debug.h>
+#include <wex/defs.h>
+#include <wex/frd.h>
+#include <wex/lexer-props.h>
+#include <wex/lexers.h>
+#include <wex/log.h>
+#include <wex/managedframe.h>
+#include <wex/stc.h>
+#include <wex/stcdlg.h>
+#include <wex/tokenizer.h>
+#include <wex/type-to-value.h>
+#include <wex/util.h>
+#include <wex/version.h>
+#include <wex/vi-macros.h>
 #include <easylogging++.h>
 #include "eval.h"
 
@@ -58,7 +58,7 @@
 
 namespace wex
 {
-  enum class commandarg
+  enum class command_arg
   {
     INT,
     NONE,
@@ -73,19 +73,19 @@ namespace wex
   };
 };
 
-wex::commandarg ParseCommandWithArg(const std::string& command)
+wex::command_arg ParseCommandWithArg(const std::string& command)
 {
   if (const auto post(wex::after(command, ' ')); post == command)
   {
-    return wex::commandarg::NONE;
+    return wex::command_arg::NONE;
   }
   else if (atoi(post.c_str()) > 0)
   {
-    return wex::commandarg::INT;
+    return wex::command_arg::INT;
   }
   else
   {
-    return wex::commandarg::OTHER;
+    return wex::command_arg::OTHER;
   }
 }
 
@@ -126,26 +126,26 @@ wex::ex::ex(stc* stc)
     {":map", [&](const std::string& command) {
       switch (ParseCommandWithArg(command))
       {
-        case wex::commandarg::INT:
+        case wex::command_arg::INT:
           // TODO: at this moment you cannot set KEY_CONTROL
           return HandleContainer<int, wex::vi_macros_maptype>(
             "Map", command, nullptr,
             [=](const std::string& name, const std::string& value) {
               m_Macros.SetKeyMap(name, value);return true;}); 
         break;
-        case wex::commandarg::NONE: ShowDialog("Maps", 
+        case wex::command_arg::NONE: ShowDialog("Maps", 
             "[String map]\n" +
             ReportContainer<std::string, std::map<std::string, std::string>>(m_Macros.GetMap()) +
             "[Key map]\n" +
             ReportContainer<int, wex::vi_macros_maptype>(m_Macros.GetKeysMap()) +
             "[Alt key map]\n" +
-            ReportContainer<int, wex::vi_macros_maptype>(m_Macros.GetKeysMap(KEY_ALT)) +
+            ReportContainer<int, wex::vi_macros_maptype>(m_Macros.GetKeysMap(vi_macros::KEY_ALT)) +
             "[Control key map]\n" +
-            ReportContainer<int, wex::vi_macros_maptype>(m_Macros.GetKeysMap(KEY_CONTROL)), 
+            ReportContainer<int, wex::vi_macros_maptype>(m_Macros.GetKeysMap(vi_macros::KEY_CONTROL)), 
             true);
           return true;
         break;
-        case wex::commandarg::OTHER:
+        case wex::command_arg::OTHER:
           return HandleContainer<std::string, std::map<std::string, std::string>>(
             "Map", command, nullptr,
             [=](const std::string& name, const std::string& value) {
@@ -174,19 +174,19 @@ wex::ex::ex(stc* stc)
           // switches
           {
            {{"ac", "autocomplete"}, [](bool on){
-             wxConfigBase::Get()->Write(_("Auto complete"), on);}},
+             config(_("Auto complete")).set(on);}},
            {{"ai", "autoindent"}, [](bool on){
-             wxConfigBase::Get()->Write(_("Auto indent"), on ? 2: 0);}},
+             config("Auto indent").set(on ? (long)2: (long)0);}},
            {{"aw", "autowrite"}, [&](bool on){
-             wxConfigBase::Get()->Write(_("Auto write"), on);
+             config(_("Auto write")).set(on);
              m_AutoWrite = on;}},
            {{"eb", "errorbells"}, [](bool on){
-             wxConfigBase::Get()->Write(_("Error bells"), on);}},
+             config(_("Error bells")).set(on);}},
            {{"el", "edgeline"}, [&](bool on){
              m_Command.STC()->SetEdgeMode(
                on ? wxSTC_EDGE_LINE: wxSTC_EDGE_NONE);
-             wxConfigBase::Get()->Write(_("Edge line"), 
-               on ? wxSTC_EDGE_LINE: wxSTC_EDGE_NONE);}},
+             config(_("Edge line")).set( 
+               on ? (long)wxSTC_EDGE_LINE: (long)wxSTC_EDGE_NONE);}},
            {{"ic", "ignorecase"}, [&](bool on){
              if (!on) m_SearchFlags |= wxSTC_FIND_MATCHCASE;
              else     m_SearchFlags &= ~wxSTC_FIND_MATCHCASE;
@@ -197,48 +197,48 @@ wex::ex::ex(stc* stc)
              wex::find_replace_data::Get()->SetMatchWord(on);}},
            {{"nu", "number"}, [&](bool on){
              m_Command.STC()->ShowLineNumbers(on);
-             wxConfigBase::Get()->Write(_("Line numbers"), on);}},
+             config(_("Line numbers")).set(on);}},
            {{"readonly", "readonly"}, [&](bool on){
              m_Command.STC()->SetReadOnly(on);}},
            {{"showmode", "showmode"}, [&](bool on){
              ((wex::statusbar *)m_Frame->GetStatusBar())->ShowField("PaneMode", on);
-             wxConfigBase::Get()->Write(_("Show mode"), on);}},
+             config(_("Show mode")).set(on);}},
            {{"sm", "showmatch"}, [&](bool on){
-             wxConfigBase::Get()->Write(_("Show match"), on);}},
+             config(_("Show match")).set(on);}},
            {{"sws", "showwhitespace"}, [&](bool on){
              m_Command.STC()->SetViewEOL(on);
              m_Command.STC()->SetViewWhiteSpace(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);
-             wxConfigBase::Get()->Write(_("Whitespace"), on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);}},
+             config(_("Whitespace")).set(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);}},
            {{"ut", "usetabs"}, [&](bool on){
              m_Command.STC()->SetUseTabs(on);
-             wxConfigBase::Get()->Write(_("Use tabs"), on);}},
+             config(_("Use tabs")).set(on);}},
            {{"wm", "wrapmargin"}, [&](bool on){
              m_Command.STC()->SetWrapMode(on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);
-             wxConfigBase::Get()->Write(_("Wrap line"), on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);}},
+             config(_("Wrap line")).set(on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);}},
            {{"ws", "wrapscan", "1"}, [&](bool on){
-             wxConfigBase::Get()->Write(_("Wrap scan"), on);}}
+             config(_("Wrap scan")).set(on);}}
           },
 
           // options
           {
-           {{"dir", "dir"}, {CMD_LINE_STRING, [&](const std::any& val) {
+           {{"dir", "dir"}, {cmdline::STRING, [&](const std::any& val) {
              wex::path::Current(std::any_cast<std::string>(val));}}},
-           {{"ec", "edgecolumn", "80"}, {CMD_LINE_INT, [&](const std::any& val) {
+           {{"ec", "edgecolumn", "80"}, {cmdline::INT, [&](const std::any& val) {
              m_Command.STC()->SetEdgeColumn(std::any_cast<int>(val));
-             wxConfigBase::Get()->Write(_("Edge column"), std::any_cast<int>(val));}}},
-           {{"report", "report", "5"}, {CMD_LINE_INT, [&](const std::any& val) {
-             wxConfigBase::Get()->Write("Reported lines", std::any_cast<int>(val));}}},
-           {{"sw", "shiftwidth", "8"}, {CMD_LINE_INT, [&](const std::any& val) {
+             config(_("Edge column")).set(std::any_cast<int>(val));}}},
+           {{"report", "report", "5"}, {cmdline::INT, [&](const std::any& val) {
+             config("Reported lines").set(std::any_cast<int>(val));}}},
+           {{"sw", "shiftwidth", "8"}, {cmdline::INT, [&](const std::any& val) {
              m_Command.STC()->SetIndent(std::any_cast<int>(val));
-             wxConfigBase::Get()->Write(_("Indent"), std::any_cast<int>(val));}}},
-           {{"sy", "syntax (lexer or 'off')"}, {CMD_LINE_STRING, [&](const std::any& val) {
+             config(_("Indent")).set(std::any_cast<int>(val));}}},
+           {{"sy", "syntax (lexer or 'off')"}, {cmdline::STRING, [&](const std::any& val) {
              if (std::any_cast<std::string>(val) != "off") 
                m_Command.STC()->GetLexer().Set(std::any_cast<std::string>(val), true); // allow folding
              else              
                m_Command.STC()->GetLexer().Reset();}}},
-           {{"ts", "tabstop","8"}, {CMD_LINE_INT, [&](const std::any& val) {
+           {{"ts", "tabstop","8"}, {cmdline::INT, [&](const std::any& val) {
              m_Command.STC()->SetTabWidth(std::any_cast<int>(val));
-             wxConfigBase::Get()->Write(_("Tab width"), std::any_cast<int>(val));}}}
+             config(_("Tab width")).set(std::any_cast<int>(val));}}}
           }
         );
 
@@ -254,9 +254,9 @@ wex::ex::ex(stc* stc)
     {":so", [&](const std::string& command) {
       if (command.find(" ") == std::string::npos) return false;
       wex::path path(wex::firstof(command, " "));
-      if (path.IsRelative())
+      if (path.is_relative())
       {
-        path.MakeAbsolute();
+        path.make_absolute();
       }
       std::ifstream ifs(path.Path());
       if (!ifs.is_open()) return false;
@@ -312,9 +312,9 @@ wex::ex::ex(stc* stc)
         tkz.GetNextToken(); // skip :unm
         switch (ParseCommandWithArg(command))
         {
-          case wex::commandarg::INT: m_Macros.SetKeyMap(tkz.GetNextToken(), ""); break; 
-          case wex::commandarg::NONE: break;
-          case wex::commandarg::OTHER: m_Macros.SetMap(tkz.GetNextToken(), ""); break;
+          case wex::command_arg::INT: m_Macros.SetKeyMap(tkz.GetNextToken(), ""); break; 
+          case wex::command_arg::NONE: break;
+          case wex::command_arg::OTHER: m_Macros.SetMap(tkz.GetNextToken(), ""); break;
         }
       }
       return true;}},
@@ -328,7 +328,7 @@ wex::ex::ex(stc* stc)
 {
   wxASSERT(m_Frame != nullptr);
   ResetSearchFlags();
-  m_AutoWrite = wxConfigBase::Get()->ReadLong(_("Auto write"), 0);
+  m_AutoWrite = config(_("Auto write")).get(false);
 }
 
 wex::ex::~ex()
@@ -652,7 +652,7 @@ void wex::ex::InfoMessage() const
 void wex::ex::InfoMessage(const std::string& text, wex::info_message type) const
 {
   if (const auto lines = get_number_of_lines(text);
-    lines >= wxConfig::Get()->Read("Reported lines", 5))
+    lines >= config("Reported lines").get(5))
   {
     wxString msg;
 
@@ -673,7 +673,7 @@ bool wex::ex::MarkerAdd(char marker, int line)
 
   const wex::marker lm(wex::lexers::Get()->GetMarker(m_MarkerSymbol));
 
-  if (!lm.IsOk())
+  if (!lm.is_ok())
   {
     wex::log("could not find marker symbol") << m_MarkerSymbol.GetNo() << " in lexers";
     return false;
@@ -783,7 +783,7 @@ int wex::ex::MarkerLine(char marker) const
     }
   }
 
-  if (wxConfigBase::Get()->ReadLong(_("Error bells"), 1))
+  if (config(_("Error bells")).get(true))
   {
     wxBell();
   }

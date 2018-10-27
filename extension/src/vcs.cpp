@@ -10,12 +10,12 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
-#include <wx/extension/vcs.h>
-#include <wx/extension/itemdlg.h>
-#include <wx/extension/menus.h>
-#include <wx/extension/path.h>
-#include <wx/extension/util.h>
+#include <wex/vcs.h>
+#include <wex/config.h>
+#include <wex/itemdlg.h>
+#include <wex/menus.h>
+#include <wex/path.h>
+#include <wex/util.h>
 
 // The vcs id's here can be set using the config dialog, and are not
 // present in the vcs.xml. 
@@ -95,7 +95,7 @@ int wex::vcs::ConfigDialog(const window_data& par) const
 
   for (const auto& it2 : m_Entries)
   {
-    v.push_back({it2.GetName(), ITEM_FILEPICKERCTRL});
+    v.push_back({it2.GetName(), item::FILEPICKERCTRL});
   }
 
   if (const window_data data(window_data(par).
@@ -129,10 +129,10 @@ bool wex::vcs::Execute()
   if (GetFile().Path().empty())
   {
     return m_Entry.Execute(
-      m_Entry.GetCommand().IsAdd() ? config_firstof(_("Path")): std::string(), 
+      m_Entry.GetCommand().IsAdd() ? config(_("Path")).firstof(): std::string(), 
       lexer(), 
-      PROCESS_EXEC_WAIT,
-      config_firstof(_("Base folder")));
+      process::EXEC_WAIT,
+      config(_("Base folder")).firstof());
   }
   else
   {
@@ -155,7 +155,8 @@ bool wex::vcs::Execute()
       
       if (!filename.GetFullName().empty())
       {
-        args = (m_Entry.GetCommand().GetCommand(false) == "show" ? 
+        args = (m_Entry.GetCommand().GetCommand(
+          menu_command::INCLUDE_NONE) == "show" ? 
           GetRelativeFile(admin_dir, filename): filename.Path().string());
       }
     }
@@ -165,7 +166,7 @@ bool wex::vcs::Execute()
     }
     
     return m_Entry.Execute(args, 
-      filename.GetLexer(), PROCESS_EXEC_WAIT, wd.Path().string());
+      filename.GetLexer(), process::EXEC_WAIT, wd.Path().string());
   }
 }
 
@@ -176,7 +177,7 @@ const wex::vcs_entry wex::vcs::FindEntry(const std::string& filename)
 
 const wex::vcs_entry wex::vcs::FindEntry(const path& filename)
 {
-  if (const int vcs = wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO);
+  if (const int vcs = config("VCS").get(VCS_AUTO);
     vcs == VCS_AUTO)
   {
     if (!filename.Path().empty())
@@ -207,19 +208,19 @@ const wex::vcs_entry wex::vcs::FindEntry(const path& filename)
 
 const std::string wex::vcs::GetBranch() const
 {
-  return wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO) == VCS_NONE ?
+  return config("VCS").get(VCS_AUTO) == VCS_NONE ?
     std::string(): 
     m_Entry.GetBranch();
 }
 
 const wex::path wex::vcs::GetFile() const
 {
-  return m_Files.empty() ? config_firstof(_("Base folder")): m_Files[0];
+  return m_Files.empty() ? config(_("Base folder")).firstof(): m_Files[0];
 }
 
 const std::string wex::vcs::GetName() const
 {
-  switch (wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO))
+  switch (config("VCS").get(VCS_AUTO))
   {
     case VCS_NONE: return std::string();
     case VCS_AUTO: return "Auto";
@@ -297,9 +298,9 @@ bool wex::vcs::LoadDocument()
   if (old_entries == 0)
   {
     // Add default VCS.
-    if (!wxConfigBase::Get()->Exists("VCS"))
+    if (config c("VCS"); c.exists())
     {
-      wxConfigBase::Get()->Write("VCS", (long)VCS_AUTO);
+      c.set(VCS_AUTO);
     }
   }
   else if (old_entries != m_Entries.size())
@@ -307,7 +308,7 @@ bool wex::vcs::LoadDocument()
     // If current number of entries differs from old one,
     // we added or removed an entry. That might give problems
     // with the vcs id stored in the config, so reset it. 
-    wxConfigBase::Get()->Write("VCS", (long)VCS_AUTO);
+    config("VCS").set(VCS_AUTO);
   }
   
   return true;
@@ -342,8 +343,8 @@ bool wex::vcs::SetEntryFromBase(wxWindow* parent)
   if (
     // See also vcs_entry, same item is used there.
     const std::vector<item> v{{
-      _("Base folder"), ITEM_COMBOBOX_DIR, std::any(), control_data().Required(true)}};
-    config_firstof(_("Base folder")).empty()) 
+      _("Base folder"), item::COMBOBOX_DIR, std::any(), control_data().Required(true)}};
+    config(_("Base folder")).firstof().empty()) 
   {
     if (
       parent != nullptr && 
@@ -354,11 +355,11 @@ bool wex::vcs::SetEntryFromBase(wxWindow* parent)
       return false;
     }
     
-    m_Entry = FindEntry(config_firstof(_("Base folder")));
+    m_Entry = FindEntry(config(_("Base folder")).firstof());
   }
   else
   {
-    m_Entry = FindEntry(config_firstof(_("Base folder")));
+    m_Entry = FindEntry(config(_("Base folder")).firstof());
   
     if (m_Entry.GetName().empty())
     {
@@ -371,7 +372,7 @@ bool wex::vcs::SetEntryFromBase(wxWindow* parent)
         return false;
       }
       
-      m_Entry = FindEntry(config_firstof(_("Base folder")));
+      m_Entry = FindEntry(config(_("Base folder")).firstof());
     }
   }
   
@@ -390,9 +391,7 @@ int wex::vcs::ShowDialog(const window_data& arg)
 
   if (m_Entry.GetCommand().AskFlags())
   {
-    wxConfigBase::Get()->Write(
-      _("Flags"), 
-      wxConfigBase::Get()->Read(m_Entry.GetFlagsKey()));
+    config(_("Flags")).set(config(m_Entry.GetFlagsKey()).get());
   }
 
   if (m_ItemDialog != nullptr)
@@ -404,20 +403,20 @@ int wex::vcs::ShowDialog(const window_data& arg)
 
   const std::vector <item> v({
     m_Entry.GetCommand().IsCommit() ? 
-      item(_("Revision comment"), ITEM_COMBOBOX, std::any(), control_data().Required(true)): 
+      item(_("Revision comment"), item::COMBOBOX, std::any(), control_data().Required(true)): 
       item(),
     add_folder && !m_Entry.GetCommand().IsHelp() ? 
-      item(_("Base folder"), ITEM_COMBOBOX_DIR, std::any(), control_data().Required(true)): 
+      item(_("Base folder"), item::COMBOBOX_DIR, std::any(), control_data().Required(true)): 
       item(),
     add_folder && !m_Entry.GetCommand().IsHelp() && m_Entry.GetCommand().IsAdd() ? item(
-      _("Path"), ITEM_COMBOBOX, std::any(), control_data().Required(true)): 
+      _("Path"), item::COMBOBOX, std::any(), control_data().Required(true)): 
       item(), 
     m_Entry.GetCommand().AskFlags() ?  
-      item(_("Flags"), std::string(), ITEM_TEXTCTRL, control_data(), LABEL_LEFT, 
+      item(_("Flags"), std::string(), item::TEXTCTRL, control_data(), item::LABEL_LEFT, 
         [=](wxWindow* user, const std::any& value, bool save) {
-          wxConfigBase::Get()->Write(m_Entry.GetFlagsKey(), wxString(m_Entry.GetFlags()));}): 
+          config(m_Entry.GetFlagsKey()).set(m_Entry.GetFlags());}): 
       item(),
-    m_Entry.GetFlagsLocation() == vcs_entry::VCS_FLAGS_LOCATION_PREFIX ? 
+    m_Entry.GetFlagsLocation() == vcs_entry::FLAGS_LOCATION_PREFIX ? 
       item(_("Prefix flags"), std::string()): 
       item(),
     m_Entry.GetCommand().UseSubcommand() ? 
@@ -428,7 +427,7 @@ int wex::vcs::ShowDialog(const window_data& arg)
 
   for (const auto& i : v)
   {
-    if (i.GetType() != ITEM_EMPTY)
+    if (i.GetType() != item::EMPTY)
     {
       all_empty = false;
     }
@@ -446,5 +445,5 @@ int wex::vcs::ShowDialog(const window_data& arg)
   
 bool wex::vcs::Use() const
 {
-  return wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO) != VCS_NONE;
+  return config("VCS").get(VCS_AUTO) != VCS_NONE;
 }

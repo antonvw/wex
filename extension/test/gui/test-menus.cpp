@@ -9,9 +9,9 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/menus.h>
-#include <wx/extension/menucommand.h>
-#include <wx/extension/menucommands.h>
+#include <wex/menus.h>
+#include <wex/menucommand.h>
+#include <wex/menucommands.h>
 #include "test.h"
 
 TEST_CASE("wex::menus")
