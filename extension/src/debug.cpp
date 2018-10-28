@@ -37,11 +37,11 @@ namespace wex
   {
   public:
     process_dir(listview* lv, bool init)
-      : dir("/proc", "[0-9]+", DIR_DIRS)
+      : dir("/proc", "[0-9]+", dir::DIRS)
       , m_ListView(lv) {
       if (init)
       {
-        m_ListView->AppendColumns({{"Name", column::COL_STRING, 200}, {"Pid"}});
+        m_ListView->AppendColumns({{"Name", column::STRING, 200}, {"Pid"}});
       }
       else
       {

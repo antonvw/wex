@@ -57,7 +57,7 @@ TEST_CASE("wex::vcs_entry")
   git.ShowOutput();
 
   wex::vcs_entry* git_async = new wex::vcs_entry("git", std::string(), {wex::vcs_command("status")});
-  REQUIRE( git_async->Execute(std::string(), wex::lexer(), wex::PROCESS_EXEC_WAIT));
+  REQUIRE( git_async->Execute(std::string(), wex::lexer(), wex::process::EXEC_WAIT));
   git_async->ShowOutput();
 #endif
 #endif

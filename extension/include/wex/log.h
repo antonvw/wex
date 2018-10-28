@@ -9,6 +9,7 @@
 
 #include <sstream>
 #include <pugixml.hpp>
+#undef ERROR
 
 namespace wex
 {
