@@ -665,7 +665,7 @@ void wex::stc::BuildPopupMenu(menu& menu)
        vcs::DirExists(GetFileName()))
   {
     menu.AppendSeparator();
-    menu.AppendVCS(GetFileName());
+    menu.append_vcs(GetFileName());
   }
 
   if (!m_vi.GetIsActive() && GetTextLength() > 0)
@@ -680,27 +680,27 @@ void wex::stc::BuildPopupMenu(menu& menu)
   }
 
   menu.AppendSeparator();
-  menu.AppendEdit();
+  menu.append_edit();
 
   if (!GetReadOnly())
   {
     if (!sel.empty())
     {
-      auto* menuSelection = new wex::menu(menu.GetStyle());
+      auto* menuSelection = new wex::menu(menu.style());
       menuSelection->Append(idUppercase, _("&Uppercase\tF11"));
       menuSelection->Append(idLowercase, _("&Lowercase\tF12"));
 
       if (get_number_of_lines(sel) > 1)
       {
-        auto* menuSort = new wex::menu(menu.GetStyle());
+        auto* menuSort = new wex::menu(menu.style());
         menuSort->Append(wxID_SORT_ASCENDING);
         menuSort->Append(wxID_SORT_DESCENDING);
         menuSelection->AppendSeparator();
-        menuSelection->AppendSubMenu(menuSort, _("&Sort"));
+        menuSelection->append_submenu(menuSort, _("&Sort"));
       }
 
       menu.AppendSeparator();
-      menu.AppendSubMenu(menuSelection, _("&Selection"));
+      menu.append_submenu(menuSelection, _("&Selection"));
     }
   }
 

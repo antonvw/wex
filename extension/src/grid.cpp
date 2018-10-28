@@ -233,7 +233,7 @@ const wxString wex::grid::BuildPage()
 
 void wex::grid::BuildPopupMenu(wex::menu& menu)
 {
-  menu.AppendEdit();
+  menu.append_edit();
 }
 
 bool wex::grid::CopySelectedCellsToClipboard() const

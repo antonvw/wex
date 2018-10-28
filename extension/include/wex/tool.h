@@ -44,7 +44,7 @@ namespace wex
   template <class T> class statistics;
 
   /// Offers tool methods and contains the tool info's.
-  /// A tool with non empty text is used by menu::AppendTools.
+  /// A tool with non empty text is used by menu::append_tools.
   class tool
   {
   public:

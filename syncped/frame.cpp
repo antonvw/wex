@@ -1338,7 +1338,7 @@ void frame::StatusBarClicked(const std::string& pane)
     {
       auto* menu = new wex::menu;
       
-      if (menu->AppendVCS())
+      if (menu->append_vcs())
       {
         PopupMenu(menu);
       }
@@ -1489,7 +1489,7 @@ editors::editors(const wex::window_data& data)
       split->Append(ID_REARRANGE_HORIZONTALLY, _("Rearrange Horizontally"));
     }
 
-    menu.AppendSubMenu(split, _("Split"), std::string(), ID_SPLIT_MENU);
+    menu.append_submenu(split, _("Split"), std::string(), ID_SPLIT_MENU);
     menu.AppendSeparator();
     menu.Append(wxID_CLOSE);
     menu.Append(wex::ID_ALL_CLOSE, _("Close A&ll"));
@@ -1504,7 +1504,7 @@ editors::editors(const wex::window_data& data)
         wex::vcs::DirExists(stc->GetFile().GetFileName()))
     {
       menu.AppendSeparator();
-      menu.AppendVCS(stc->GetFile().GetFileName());
+      menu.append_vcs(stc->GetFile().GetFileName());
     }
     
     PopupMenu(&menu);});

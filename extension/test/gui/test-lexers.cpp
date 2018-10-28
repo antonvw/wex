@@ -20,7 +20,7 @@ TEST_CASE("wex::lexers")
   SUBCASE("Get")
   {
     REQUIRE( wex::lexers::Get() != nullptr);
-    REQUIRE(!wex::lexers::Get()->lexers().empty());
+    REQUIRE(!wex::lexers::Get()->get().empty());
   }
   
   SUBCASE("lexer and global macros")

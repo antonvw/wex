@@ -82,7 +82,7 @@ TEST_CASE("wex::managed_frame")
   REQUIRE( GetFrame()->GetManager().GetPane("VIBAR").IsShown());
   
   REQUIRE(!GetFrame()->TogglePane("XXXXBAR"));
-  REQUIRE(!GetFrame()->GetManager().GetPane("XXXXBAR").is_ok());
+  REQUIRE(!GetFrame()->GetManager().GetPane("XXXXBAR").IsOk());
   
   GetFrame()->OnNotebook(100, GetSTC());
   

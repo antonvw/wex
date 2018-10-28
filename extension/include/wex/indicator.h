@@ -45,7 +45,7 @@ namespace wex
     int GetNo() const {return m_No;};
 
     /// Returns the style.
-    int GetStyle() const {return m_Style;};
+    int style() const {return m_Style;};
     
     /// Returns underline.
     bool GetUnder() const {return m_Under;};

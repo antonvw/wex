@@ -71,7 +71,7 @@ namespace wex
             submenu = new wex::menu();
             prev_menu = it.GetSubMenu();
             menu->AppendSeparator();
-            menu->AppendSubMenu(submenu, it.GetSubMenu());
+            menu->append_submenu(submenu, it.GetSubMenu());
           }
           else if (it.GetSubMenu().empty())
           {

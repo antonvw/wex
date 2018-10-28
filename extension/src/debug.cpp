@@ -86,7 +86,7 @@ int wex::debug::AddMenu(wex::menu* menu, bool popup) const
   if (ret > 0 && popup)
   {
     menu->AppendSeparator();
-    menu->AppendSubMenu(sub, "debug");
+    menu->append_submenu(sub, "debug");
   }
 
   return ret;

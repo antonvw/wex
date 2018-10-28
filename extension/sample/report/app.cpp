@@ -50,7 +50,7 @@ report_sample_frame::report_sample_frame() : wex::history_frame()
   wex::menu *menuFile = new wex::menu;
   menuFile->Append(wxID_OPEN);
   menuFile->AppendSeparator();
-  menuFile->AppendPrint();
+  menuFile->append_print();
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT);
 

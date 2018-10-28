@@ -47,18 +47,18 @@ namespace wex
 
     /// Appends edit menu items, depending on the style 
     /// specified during construction.
-    void AppendEdit(bool add_invert = false);
+    void append_edit(bool add_invert = false);
 
     /// Appends print menu items.
-    void AppendPrint();
+    void append_print();
 
     /// Appends a separator.
     /// If previous item was a separator, it ignores this one.
     /// If no items have yet been appended, it ignores this one.
-    void AppendSeparator();
+    void append_separator();
 
     /// Appends a submenu.
-    void AppendSubMenu(
+    void append_submenu(
       wxMenu *submenu,
       const std::string& text,
       const std::string& help = std::string(),
@@ -66,11 +66,11 @@ namespace wex
 
     /// Appends a tools submenu.
     /// Returns true if items have been appended.
-    bool AppendTools(int itemid = wxID_ANY);
+    bool append_tools(int itemid = wxID_ANY);
 
     /// Appends VCS menu items.
     /// Returns true if items have been appended.
-    bool AppendVCS(
+    bool append_vcs(
       /// if a filename is specified the menu is built as a submenu,
       /// otherwise as menu items.
       const path& filename = path(),
@@ -78,10 +78,10 @@ namespace wex
       bool show_modal = true);
 
     /// Returns the style.
-    auto GetStyle() const {return m_Style;};
+    auto style() const {return m_Style;};
 
     /// Sets the style.
-    void SetStyle(long style) {m_Style = style;};
+    void style(long style) {m_Style = style;};
   private:
     long m_Style;
   };

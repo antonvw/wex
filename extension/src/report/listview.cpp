@@ -196,7 +196,7 @@ void wex::history_listview::BuildPopupMenu(wex::menu& menu)
         listitem(this, GetFirstSelected()).GetFileName()))
       {
         menu.AppendSeparator();
-        menu.AppendVCS(listitem(this, GetFirstSelected()).GetFileName());
+        menu.append_vcs(listitem(this, GetFirstSelected()).GetFileName());
       }
     }
 
@@ -220,7 +220,7 @@ void wex::history_listview::BuildPopupMenu(wex::menu& menu)
      (m_MenuFlags & listview_data::MENU_TOOL) && !lexers::Get()->get().empty())
   {
     menu.AppendSeparator();
-    menu.AppendTools();
+    menu.append_tools();
   }
 }
 

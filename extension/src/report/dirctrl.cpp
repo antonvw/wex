@@ -96,7 +96,7 @@ wex::dirctrl::dirctrl(
     GET_VECTOR_FILES
     const wex::path filename(files[0]);
   
-    wex::menu menu; // uses AppendVCS
+    wex::menu menu; // uses append_vcs
     
     if (filename.FileExists())
     {
@@ -110,7 +110,7 @@ wex::dirctrl::dirctrl(
     if (vcs::DirExists(filename))
     {
       menu.AppendSeparator();
-      menu.AppendVCS(filename);
+      menu.append_vcs(filename);
     }
 
     if (filename.GetLexer().GetScintillaLexer() == "makefile")

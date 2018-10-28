@@ -55,7 +55,7 @@ bool app::OnInit()
           "\nCanonical name: " << GetLocale().GetCanonicalName().c_str() <<
           "\nLanguage: " << GetLocale().GetLanguage() <<
           "\nLocale: " << GetLocale().GetLocale().c_str() <<
-          "\nIs ok: " << GetLocale().is_ok();
+          "\nIsOk: " << GetLocale().IsOk();
           if (const auto *info = wxLocale::GetLanguageInfo(GetLocale().GetLanguage());
             info == nullptr)
           {

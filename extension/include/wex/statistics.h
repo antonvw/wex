@@ -34,7 +34,7 @@ namespace wex
     void BuildPopupMenu(menu& menu) override {
       long style = menu::ALLOW_CLEAR;
       if (IsSelection()) style |= menu::IS_SELECTED;
-      menu.SetStyle(style);
+      menu.style(style);
       grid::BuildPopupMenu(menu);};
   private:
     statistics <T> * m_Statistics;

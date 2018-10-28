@@ -184,7 +184,7 @@ frame::frame()
     _("Send file contents back to connection"));
     
   wex::menu* menuConnection = new wex::menu();
-  menuConnection->AppendSubMenu(menuAnswer, _("&Answer"));
+  menuConnection->append_submenu(menuAnswer, _("&Answer"));
   menuConnection->AppendSeparator();
   menuConnection->AppendCheckItem(ID_CLIENT_LOG_DATA, _("Log Data"),
     _("Logs data read from and written to connection"));

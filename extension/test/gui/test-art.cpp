@@ -14,8 +14,8 @@
 
 TEST_CASE("wex::art")
 {
-  REQUIRE(!wex::stockart(0).GetBitmap().is_ok());
-  REQUIRE(!wex::stockart(wxID_ANY).GetBitmap().is_ok());
-  REQUIRE( wex::stockart(wxID_NEW).GetBitmap().is_ok());
-  REQUIRE( wex::stockart(wxID_OPEN).GetBitmap().is_ok());
+  REQUIRE(!wex::stockart(0).GetBitmap().IsOk());
+  REQUIRE(!wex::stockart(wxID_ANY).GetBitmap().IsOk());
+  REQUIRE( wex::stockart(wxID_NEW).GetBitmap().IsOk());
+  REQUIRE( wex::stockart(wxID_OPEN).GetBitmap().IsOk());
 }

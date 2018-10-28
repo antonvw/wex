@@ -117,7 +117,7 @@ namespace wex
     const auto & GetScintillaLexer() const {return m_ScintillaLexer;};
 
     /// Returns the styles.
-    const auto & GetStyles() const {return m_Styles;};
+    const auto & styles() const {return m_Styles;};
     
     /// Is this word a keyword (allways all keywords), case sensitive.
     bool IsKeyword(const std::string& word) const;

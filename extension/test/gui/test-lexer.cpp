@@ -24,7 +24,7 @@ TEST_CASE("wex::lexer")
   {
     REQUIRE(!lexer.is_ok());
     REQUIRE(!lexer.Previewable());
-    REQUIRE( lexer.GetStyles().empty());
+    REQUIRE( lexer.styles().empty());
     REQUIRE( lexer.GetDisplayLexer().empty());
     REQUIRE( lexer.GetScintillaLexer().empty());
     REQUIRE( lexer.GetLineSize() > 0);
@@ -95,7 +95,7 @@ TEST_CASE("wex::lexer")
     REQUIRE(!lexer.GetCommentEnd2().empty());
     REQUIRE( lexer.GetLanguage().empty());
     REQUIRE(!lexer.GetKeywords().empty());
-    REQUIRE(!lexer.GetStyles().empty());
+    REQUIRE(!lexer.styles().empty());
     REQUIRE(!lexer.GetKeywordsString().empty());
     REQUIRE(!lexer.GetKeywordsString(-1, 0).empty());
     REQUIRE(!lexer.GetKeywordsString(-1, 6).empty());

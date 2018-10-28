@@ -22,9 +22,9 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-            - g++-7
+            - g++-8
       env:
-        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7 && GCOV="gcov-7"
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8 && GCOV="gcov-8"
 
     - os: osx
       addons:

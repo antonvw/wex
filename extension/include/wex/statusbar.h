@@ -16,7 +16,7 @@ namespace wex
 {
   /// This class defines our statusbar panes, used by wex::frame::SetupStatusBar.
   /// It just adds some members to the base class
-  /// (that offers GetText(), GetStyle() and GetWidth()).
+  /// (that offers GetText(), style() and GetWidth()).
   class statusbar_pane : public wxStatusBarPane
   {
   public:

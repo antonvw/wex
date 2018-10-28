@@ -65,7 +65,7 @@ decorated_frame::decorated_frame(app* app)
     m_StatusBar->ShowField("PaneVCS", false);
   }
   
-  if (wex::lexers::Get()->lexers().empty())
+  if (wex::lexers::Get()->get().empty())
   {
     m_StatusBar->ShowField("PaneLexer", false);
     m_StatusBar->ShowField("PaneTheme", false);
@@ -79,31 +79,31 @@ decorated_frame::decorated_frame(app* app)
     wex::ellipsed(wxGetStockLabel(wxID_NEW, wxSTOCK_NOFLAGS), "\tCtrl+N"));
   menuFile->Append(wxID_OPEN);
   GetFileHistory().UseMenu(ID_RECENT_FILE_MENU, menuFile);
-  menuFile->AppendSeparator();
+  menuFile->append_separator();
   menuFile->Append(wxID_CLOSE,
     wxGetStockLabel(wxID_CLOSE, wxSTOCK_NOFLAGS) + "\tCtrl+W");
-  menuFile->AppendSeparator();
+  menuFile->append_separator();
   menuFile->Append(wxID_SAVE);
   menuFile->Append(wxID_SAVEAS);
   menuFile->Append(wex::ID_ALL_SAVE,
     _("Save A&ll"), std::string(), wxART_FILE_SAVE);
-  menuFile->AppendSeparator();
-  menuFile->AppendPrint();
-  menuFile->AppendSeparator();
+  menuFile->append_separator();
+  menuFile->append_print();
+  menuFile->append_separator();
   menuFile->Append(wxID_EXIT);
 
   auto *menuEdit = new wex::menu();
   menuEdit->Append(wxID_UNDO);
   menuEdit->Append(wxID_REDO);
-  menuEdit->AppendSeparator();
+  menuEdit->append_separator();
   menuEdit->Append(wxID_CUT);
   menuEdit->Append(wxID_COPY);
   menuEdit->Append(wxID_PASTE);
-  menuEdit->AppendSeparator();
+  menuEdit->append_separator();
   menuEdit->Append(wxID_JUMP_TO);
   menuEdit->Append(wxID_CLEAR);
   menuEdit->Append(wxID_SELECTALL);
-  menuEdit->AppendSeparator();
+  menuEdit->append_separator();
   auto* menuFind = new wex::menu();
   
   if (vi_mode)
@@ -133,41 +133,41 @@ decorated_frame::decorated_frame(app* app)
     menuFind->Append(wex::ID_TOOL_REPLACE, wex::ellipsed(_("Replace in File&s")));
   }
 
-  menuEdit->AppendSubMenu(menuFind, !(m_App->GetData().Flags() & wex::stc_data::WIN_READ_ONLY) ?
+  menuEdit->append_submenu(menuFind, !(m_App->GetData().Flags() & wex::stc_data::WIN_READ_ONLY) ?
     _("&Find and Replace"): _("&Find"));
-  menuEdit->AppendSeparator();
+  menuEdit->append_separator();
   menuEdit->Append(
     wex::ID_EDIT_CONTROL_CHAR, wex::ellipsed(_("&Control Char"), "Ctrl+K"));
-  menuEdit->AppendSeparator();
+  menuEdit->append_separator();
   
   auto* menuMacro = new wex::menu();
   menuMacro->Append(ID_EDIT_MACRO_START_RECORD, wex::ellipsed(_("Start Record")));
   menuMacro->Append(ID_EDIT_MACRO_STOP_RECORD, _("Stop Record"));
-  menuMacro->AppendSeparator();
+  menuMacro->append_separator();
   menuMacro->Append(ID_EDIT_MACRO_PLAYBACK, wex::ellipsed(_("Playback"), "Ctrl+M"));
   
   if (wex::vi_macros::GetFileName().FileExists())
   {
-    menuMacro->AppendSeparator();
+    menuMacro->append_separator();
     menuMacro->Append(ID_EDIT_MACRO, wxGetStockLabel(wxID_EDIT));
   }
   
-  menuEdit->AppendSubMenu(menuMacro, _("&Macro"), std::string(), ID_EDIT_MACRO_MENU);
+  menuEdit->append_submenu(menuMacro, _("&Macro"), std::string(), ID_EDIT_MACRO_MENU);
 
   auto *menuView = new wex::menu;
   AppendPanes(menuView);
-  menuView->AppendSeparator();
+  menuView->append_separator();
   menuView->AppendCheckItem(ID_VIEW_FILES, _("&Files"));
   menuView->AppendCheckItem(ID_VIEW_PROJECTS, _("&Projects"));
   menuView->AppendCheckItem(ID_VIEW_DIRCTRL, _("&Explorer"));
   menuView->AppendCheckItem(ID_VIEW_HISTORY, _("&History"));
   menuView->AppendCheckItem(ID_VIEW_OUTPUT, _("&Output"));
-  menuView->AppendSeparator();
+  menuView->append_separator();
   menuView->AppendCheckItem(ID_VIEW_ASCII_TABLE, _("&Ascii Table"));
 
   auto *menuProcess = new wex::menu();
   menuProcess->Append(ID_PROCESS_SELECT, wex::ellipsed(_("&Select")));
-  menuProcess->AppendSeparator();
+  menuProcess->append_separator();
   menuProcess->Append(wxID_EXECUTE);
   menuProcess->Append(wxID_STOP);
 
@@ -178,16 +178,16 @@ decorated_frame::decorated_frame(app* app)
     ID_PROJECT_OPEN, wxGetStockLabel(wxID_OPEN), std::string(), wxART_FILE_OPEN);
   GetProjectHistory().UseMenu(ID_RECENT_PROJECT_MENU, menuProject);
   menuProject->Append(ID_PROJECT_OPENTEXT, _("&Open as Text"));
-  menuProject->AppendSeparator();
+  menuProject->append_separator();
   menuProject->Append(
     ID_PROJECT_CLOSE, wxGetStockLabel(wxID_CLOSE), std::string(), wxART_CLOSE);
-  menuProject->AppendSeparator();
+  menuProject->append_separator();
   menuProject->Append(
     wex::ID_PROJECT_SAVE, wxGetStockLabel(wxID_SAVE), std::string(), wxART_FILE_SAVE);
   menuProject->Append(
     ID_PROJECT_SAVEAS,
     wxGetStockLabel(wxID_SAVEAS), std::string(), wxART_FILE_SAVE_AS);
-  menuProject->AppendSeparator();
+  menuProject->append_separator();
   menuProject->AppendCheckItem(ID_SORT_SYNC, _("&Auto Sort"));
   
   wex::menu* menuDebug = nullptr;

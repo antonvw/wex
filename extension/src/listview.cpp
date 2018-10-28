@@ -509,7 +509,7 @@ void wex::listview::BuildPopupMenu(wex::menu& menu)
   }
 
   menu.AppendSeparator();
-  menu.AppendEdit(true);
+  menu.append_edit(true);
   
   if (
     GetItemCount() > 0 && 
@@ -525,7 +525,7 @@ void wex::listview::BuildPopupMenu(wex::menu& menu)
       menuSort->Append(ID_COL_FIRST + it.GetColumn(), it.GetText());
     }
 
-    menu.AppendSubMenu(menuSort, _("Sort On"));
+    menu.append_submenu(menuSort, _("Sort On"));
   }
   
   if (m_Data.Type() == listview_data::FOLDER && GetSelectedItemCount() <= 1)

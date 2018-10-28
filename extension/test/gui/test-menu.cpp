@@ -18,11 +18,11 @@ TEST_CASE("wex::menu")
 {
   wex::menu* menu = new wex::menu;
   
-  // AppendSeparator
-  menu->AppendSeparator();
-  menu->AppendSeparator();
-  menu->AppendSeparator();
-  menu->AppendSeparator();
+  // append_separator
+  menu->append_separator();
+  menu->append_separator();
+  menu->append_separator();
+  menu->append_separator();
   REQUIRE(menu->GetMenuItemCount() == 0);
   
   // Append  
@@ -30,31 +30,31 @@ TEST_CASE("wex::menu")
   REQUIRE(menu->GetMenuItemCount() > 0);
   menu->Append(wxID_SAVE, "mysave");
   
-  // AppendEdit
-  menu->AppendEdit();
-  menu->AppendEdit(true);
+  // append_edit
+  menu->append_edit();
+  menu->append_edit(true);
   
-  // AppendPrint
-  menu->AppendPrint();
+  // append_print
+  menu->append_print();
   
-  // AppendSubMenu
-  menu->AppendSubMenu(new wxMenu("submenu"), "submenu");
+  // append_submenu
+  menu->append_submenu(new wxMenu("submenu"), "submenu");
   
-  // AppendTools
-  REQUIRE( menu->AppendTools());
+  // append_tools
+  REQUIRE( menu->append_tools());
 
-  // AppendVCS  
-  menu->AppendVCS(wex::path(), false);
+  // append_vcs  
+  menu->append_vcs(wex::path(), false);
   wex::config(_("Base folder")).set(wxGetCwd().ToStdString());
-  REQUIRE( menu->AppendVCS(wex::path(), false));
-  REQUIRE( menu->AppendVCS(wex::path::Current(), false));
+  REQUIRE( menu->append_vcs(wex::path(), false));
+  REQUIRE( menu->append_vcs(wex::path::Current(), false));
 
-  // GetStyle
-  REQUIRE(menu->GetStyle() == wex::menu::DEFAULT);
+  // style
+  REQUIRE(menu->style() == wex::menu::DEFAULT);
   
-  // SetStyle
-  menu->SetStyle(wex::menu::IS_READ_ONLY);
-  REQUIRE(menu->GetStyle() == wex::menu::IS_READ_ONLY);
+  // style
+  menu->style(wex::menu::IS_READ_ONLY);
+  REQUIRE(menu->style() == wex::menu::IS_READ_ONLY);
 
   wxMenuBar *menubar = new wxMenuBar;
   menubar->Append(menu, "&Menu");

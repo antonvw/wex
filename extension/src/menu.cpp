@@ -61,7 +61,7 @@ wxMenuItem* wex::menu::Append(
   return wxMenu::Append(item);
 }
 
-void wex::menu::AppendEdit(bool add_invert)
+void wex::menu::append_edit(bool add_invert)
 {
   if (!(m_Style & IS_READ_ONLY) &&
        (m_Style & IS_SELECTED))
@@ -111,14 +111,14 @@ void wex::menu::AppendEdit(bool add_invert)
   }
 }
 
-void wex::menu::AppendPrint()
+void wex::menu::append_print()
 {
   Append(wxID_PRINT_SETUP, ellipsed(_("Page &Setup")));
   Append(wxID_PREVIEW);
   Append(wxID_PRINT);
 }
 
-void wex::menu::AppendSeparator()
+void wex::menu::append_separator()
 {
   if (
     GetMenuItemCount() == 0 ||
@@ -130,7 +130,7 @@ void wex::menu::AppendSeparator()
   wxMenu::AppendSeparator();
 }
 
-void wex::menu::AppendSubMenu(
+void wex::menu::append_submenu(
   wxMenu *submenu,
   const std::string& text,
   const std::string& help,
@@ -138,7 +138,7 @@ void wex::menu::AppendSubMenu(
 {
   if (itemid == wxID_ANY)
   {
-    wxMenu::AppendSubMenu(submenu, text, help);
+    AppendSubMenu(submenu, text, help);
   }
   else
   {
@@ -148,7 +148,7 @@ void wex::menu::AppendSubMenu(
   }
 }
 
-bool wex::menu::AppendTools(int itemid)
+bool wex::menu::append_tools(int itemid)
 {
   if (lexers::Get()->get().empty())
   {
@@ -168,12 +168,12 @@ bool wex::menu::AppendTools(int itemid)
     }
   }
 
-  AppendSubMenu(menuTool, _("&Tools"), std::string(), itemid);
+  append_submenu(menuTool, _("&Tools"), std::string(), itemid);
 
   return true;
 }
 
-bool wex::menu::AppendVCS(const path& filename, bool show_modal)
+bool wex::menu::append_vcs(const path& filename, bool show_modal)
 {
   if (!filename.GetStat().is_ok())
   {
@@ -196,7 +196,7 @@ bool wex::menu::AppendVCS(const path& filename, bool show_modal)
 
     if (vcs.GetEntry().BuildMenu(ID_EDIT_VCS_LOWEST + 1, vcsmenu))
     { 
-      AppendSubMenu(vcsmenu, vcs.GetEntry().GetName());
+      append_submenu(vcsmenu, vcs.GetEntry().GetName());
       return true;
     }
   }

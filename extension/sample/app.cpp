@@ -108,7 +108,7 @@ sample_frame::sample_frame()
   GetFileHistory().UseMenu(ID_RECENTFILE_MENU, menuFile);
   menuFile->AppendSeparator();
   menuFile->Append(ID_SHOW_VCS, "Show VCS");
-  menuFile->AppendPrint();
+  menuFile->append_print();
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXECUTE);
   menuFile->Append(wxID_STOP);
@@ -128,7 +128,7 @@ sample_frame::sample_frame()
   wex::menu* menuFind = new wex::menu();
   menuFind->Append(wxID_FIND);
   menuFind->Append(wxID_REPLACE);
-  menuEdit->AppendSubMenu(menuFind, _("&Find And Replace"));
+  menuEdit->append_submenu(menuFind, _("&Find And Replace"));
   
   wex::menu* menuDialog = new wex::menu;
   menuDialog->Append(ID_DLG_ITEM, wex::ellipsed("Item Dialog"));

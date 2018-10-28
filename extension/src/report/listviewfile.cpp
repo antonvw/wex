@@ -139,9 +139,9 @@ void wex::listview_file::BuildPopupMenu(wex::menu& menu)
   const bool ok =
      !GetFileName().FileExists() || 
      (GetFileName().FileExists() && !GetFileName().IsReadOnly());
-  const auto style = menu.GetStyle() | (!ok ? wex::menu::IS_READ_ONLY: 0);
+  const auto style = menu.style() | (!ok ? wex::menu::IS_READ_ONLY: 0);
 
-  menu.SetStyle(style);
+  menu.style(style);
 
   history_listview::BuildPopupMenu(menu);
     

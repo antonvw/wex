@@ -36,7 +36,7 @@ TEST_CASE("wex::frame")
   
   wxMenuBar* bar = new wxMenuBar();
   wex::menu* menu = new wex::menu();
-  menu->AppendEdit();
+  menu->append_edit();
   bar->Append(menu, "Edit");
   GetFrame()->SetMenuBar(bar);
   
