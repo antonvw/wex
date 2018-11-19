@@ -54,7 +54,7 @@ namespace wex
       std::ifstream ifs(wex::path(p.data(), "comm").data());
       if (std::string line; ifs.is_open() && std::getline(ifs, line))
       {
-        m_ListView->insert_item({line, p.GetName()});
+        m_ListView->insert_item({line, p.name()});
       }
       return true;};
 

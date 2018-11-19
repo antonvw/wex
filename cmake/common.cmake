@@ -149,7 +149,7 @@ else ()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0")
   endif ()
   
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wno-overloaded-virtual -Wno-reorder -Wno-write-strings -Wno-deprecated-declarations -Wno-unused-result")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -fpermissive -Wno-overloaded-virtual -Wno-reorder -Wno-write-strings -Wno-deprecated-declarations -Wno-unused-result")
 endif ()
 
 file(GLOB_RECURSE wexSETUP_H ${wex_BINARY_DIR}/*.h)

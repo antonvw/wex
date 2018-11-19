@@ -38,7 +38,7 @@ TEST_CASE("wex::process")
   REQUIRE(!process->get_stdout().empty());
   
   REQUIRE(!process->is_running());
-  REQUIRE(!process->get_command().empty());
+  REQUIRE(!process->get_command_executed().empty());
   REQUIRE(!process->kill());
   
   process->show_output();
@@ -67,14 +67,14 @@ TEST_CASE("wex::process")
   REQUIRE( shell != nullptr);
   Process("cd ~\rpwd\r", shell);
   REQUIRE( shell->GetText().Contains("home"));
-  REQUIRE( cwd.original() != wex::path::Current());
+  REQUIRE( cwd.original() != wex::path::current());
   REQUIRE( process->kill());
 
   // Test working directory for process (should change).
   REQUIRE( process->execute("ls -l", wex::process::EXEC_DEFAULT, ".."));
   REQUIRE(!process->error());
   REQUIRE(!wxGetCwd().Contains("data"));
-  wex::path::Current(cwd.original());
+  wex::path::current(cwd.original());
   REQUIRE( process->kill());
   
   // Test invalid process (the process gets a process id, and exits immediately).

@@ -36,7 +36,7 @@ TEST_CASE("wex::vcs")
 #ifndef __WXMSW__
 #ifndef __WXOSX__
   // Execute
-  REQUIRE( vcs.Execute());
+  REQUIRE( vcs.execute());
   
   /// show_dialog.  
   REQUIRE( vcs.show_dialog(wex::window_data().button(wxAPPLY | wxCANCEL)));
@@ -64,7 +64,7 @@ TEST_CASE("wex::vcs")
   REQUIRE( vcs.set_entry_from_base());
   
   // Use
-  REQUIRE( vcs.Use());
+  REQUIRE( vcs.use());
 #endif
 #endif
 }

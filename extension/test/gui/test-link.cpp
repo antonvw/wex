@@ -114,7 +114,7 @@ TEST_CASE("wex::link")
 
     // po file format
     link(lnk, "#: test:120", "/usr/bin/test", 120);
-    stc->get_lexer().Set("po");
+    stc->get_lexer().set("po");
     link(lnk, "#: test:120", "/usr/bin/test", 120);
 #endif
 

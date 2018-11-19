@@ -18,11 +18,11 @@
 #include <wex/util.h>
 #include <wex/vi-macros.h>
 
-#define SEPARATE                                                \
-  if (separator)                                                \
-  {                                                             \
+#define SEPARATE                                          \
+  if (separator)                                          \
+  {                                                       \
     output += std::string(40, '-') + m_Ex->stc()->eol();  \
-  }                                                             \
+  }                                                       \
 
 bool wex::address::adjust_window(const std::string& text) const
 {
