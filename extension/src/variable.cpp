@@ -64,12 +64,12 @@ bool wex::variable::CheckLink(std::string& value) const
   if (std::vector <std::string> v;
     match("@([a-zA-Z].+)@", m_Value, v) > 0)
   {
-    if (const auto& it = vi_macros::GetVariables().find(v[0]);
-      it != vi_macros::GetVariables().end())
+    if (const auto& it = vi_macros::get_variables().find(v[0]);
+      it != vi_macros::get_variables().end())
     {
-      if (!it->second.Expand(value))
+      if (!it->second.expand(value))
       {
-        if (!IsInput())
+        if (!is_input())
         {
           log() << "variable:" << m_Name << "(" << v[0] << ") could not be expanded";
         }
@@ -92,7 +92,7 @@ bool wex::variable::CheckLink(std::string& value) const
   return false;
 }
 
-bool wex::variable::Expand(ex* ex)
+bool wex::variable::expand(ex* ex)
 {
   std::string value;
 
@@ -102,9 +102,9 @@ bool wex::variable::Expand(ex* ex)
     value.clear();
   }
 
-  if (!Expand(value, ex))
+  if (!expand(value, ex))
   {
-    if (!IsInput())
+    if (!is_input())
     // Now only show log status if this is no input variable,
     // as it was cancelled in that case.    
     {
@@ -119,18 +119,18 @@ bool wex::variable::Expand(ex* ex)
 
   if (ex != nullptr)
   { 
-    if (ex->GetSTC()->GetReadOnly() || ex->GetSTC()->HexMode())
+    if (ex->stc()->GetReadOnly() || ex->stc()->is_hexmode())
     {
       return false;
     }
 
     if (!m_Prefix.empty())
     {
-      commented = ex->GetSTC()->GetLexer().MakeComment(
+      commented = ex->stc()->get_lexer().make_comment(
         m_Prefix == "WRAP" ? std::string(): m_Prefix, value);
     }
 
-    ex->AddText(commented);
+    ex->add_text(commented);
   }
   
   if (m_Type == VARIABLE_INPUT_SAVE || m_Type == VARIABLE_INPUT_ONCE)
@@ -152,7 +152,7 @@ bool wex::variable::Expand(ex* ex)
   return true;
 }
 
-bool wex::variable::Expand(std::string& value, ex* ex) const
+bool wex::variable::expand(std::string& value, ex* ex) const
 {
   CheckLink(value);
 
@@ -194,13 +194,13 @@ bool wex::variable::Expand(std::string& value, ex* ex) const
       break;
       
     case VARIABLE_TEMPLATE:
-      if (!vi_macros::Mode()->Expand(ex, *this, value))
+      if (!vi_macros::mode()->expand(ex, *this, value))
       {
         return false;
       }
       break;
       
-    default: wxFAIL; break;
+    default: assert(0); break;
   }
   
   return true;
@@ -228,30 +228,30 @@ bool wex::variable::ExpandBuiltIn(ex* ex, std::string& expanded) const
   {
     if (m_Name == "Cb")
     {
-      expanded = ex->GetSTC()->GetLexer().GetCommentBegin();
+      expanded = ex->stc()->get_lexer().comment_begin();
     }
     else if (m_Name == "Cc")
     {
-      const int line = ex->GetSTC()->GetCurrentLine();
-      const int startPos = ex->GetSTC()->PositionFromLine(line);
-      const int endPos = ex->GetSTC()->GetLineEndPosition(line);
-      expanded = ex->GetSTC()->GetLexer().CommentComplete(
-        ex->GetSTC()->GetTextRange(startPos, endPos).ToStdString());
+      const int line = ex->stc()->GetCurrentLine();
+      const int startPos = ex->stc()->PositionFromLine(line);
+      const int endPos = ex->stc()->GetLineEndPosition(line);
+      expanded = ex->stc()->get_lexer().comment_complete(
+        ex->stc()->GetTextRange(startPos, endPos).ToStdString());
     }
     else if (m_Name == "Ce")
     {
-      expanded = ex->GetSTC()->GetLexer().GetCommentEnd();
+      expanded = ex->stc()->get_lexer().comment_end();
     }
     else if (m_Name == "Cl")
     {
-      expanded = ex->GetSTC()->GetLexer().MakeComment(std::string(), false);
+      expanded = ex->stc()->get_lexer().make_comment(std::string(), false);
     }
     else if (m_Name == "Created")
     {
-      if (path file(ex->GetSTC()->GetFileName());
-        ex->GetSTC()->GetFileName().GetStat().is_ok())
+      if (path file(ex->stc()->get_filename());
+        ex->stc()->get_filename().stat().is_ok())
       {
-        expanded = wxDateTime(file.GetStat().st_ctime).FormatISODate();
+        expanded = wxDateTime(file.stat().st_ctime).FormatISODate();
       }
       else
       {
@@ -260,23 +260,23 @@ bool wex::variable::ExpandBuiltIn(ex* ex, std::string& expanded) const
     }
     else if (m_Name == "Filename")
     {
-      expanded = ex->GetSTC()->GetFileName().GetName();
+      expanded = ex->stc()->get_filename().name();
     }
     else if (m_Name == "Fullname")
     {
-      expanded = ex->GetSTC()->GetFileName().GetFullName();
+      expanded = ex->stc()->get_filename().fullname();
     }
     else if (m_Name == "Fullpath")
     {
-      expanded = ex->GetSTC()->GetFileName().Path().string();
+      expanded = ex->stc()->get_filename().data().string();
     }
     else if (m_Name == "Nl")
     {
-      expanded = ex->GetSTC()->GetEOL();
+      expanded = ex->stc()->eol();
     }
     else if (m_Name == "Path")
     {
-      expanded = ex->GetSTC()->GetFileName().GetPath();
+      expanded = ex->stc()->get_filename().get_path();
     }
     else
     {
@@ -298,15 +298,15 @@ bool wex::variable::ExpandInput(std::string& expanded)  const
       m_Dialog = new stc_entry_dialog(
         use,
         std::string(),
-        window_data().Title(m_Name + ":"));
+        window_data().title(m_Name + ":"));
         
-      m_Dialog->GetSTC()->GetVi().Use(false);
-      m_Dialog->GetSTC()->SetWrapMode(wxSTC_WRAP_WORD);
+      m_Dialog->stc()->get_vi().use(false);
+      m_Dialog->stc()->SetWrapMode(wxSTC_WRAP_WORD);
     }
 
     m_Dialog->SetTitle(m_Name);
-    m_Dialog->GetSTC()->SetText(use);
-    m_Dialog->GetSTC()->SetFocus();
+    m_Dialog->stc()->set_text(use);
+    m_Dialog->stc()->SetFocus();
     
     bool ended = false;
     
@@ -328,7 +328,7 @@ bool wex::variable::ExpandInput(std::string& expanded)  const
       return false;
     }
       
-    const wxString value = m_Dialog->GetSTC()->GetText();
+    const wxString value = m_Dialog->stc()->GetText();
     
     if (value.empty())
     {
@@ -345,9 +345,9 @@ bool wex::variable::ExpandInput(std::string& expanded)  const
   return true;
 }
 
-void wex::variable::Save(pugi::xml_node& node, const std::string* value)
+void wex::variable::save(pugi::xml_node& node, const std::string* value)
 {
-  wxASSERT(!m_Name.empty());
+  assert(!m_Name.empty());
 
   if (!node.attribute("name"))
   {
@@ -368,7 +368,7 @@ void wex::variable::Save(pugi::xml_node& node, const std::string* value)
       case VARIABLE_READ: break;
       case VARIABLE_TEMPLATE: type.set_value("TEMPLATE"); break;
 
-      default: wxFAIL; break;
+      default: assert(0); break;
     }
   }
   
@@ -388,13 +388,13 @@ void wex::variable::Save(pugi::xml_node& node, const std::string* value)
   }
 } 
 
-void wex::variable::SetAskForInput(bool value) 
+void wex::variable::set_ask_for_input(bool value) 
 {
   if (!value)
   {
     m_AskForInput = value;
   }
-  else if (IsInput() && m_Type != VARIABLE_INPUT_ONCE)
+  else if (is_input() && m_Type != VARIABLE_INPUT_ONCE)
   {
     m_AskForInput = value;
   }

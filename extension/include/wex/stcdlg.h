@@ -30,8 +30,8 @@ namespace wex
       const window_data& data = window_data());
       
     /// Returns the STC.
-    auto* GetSTC() {return m_STC;};
+    auto* stc() {return m_STC;};
   private:
-    stc* m_STC;
+    wex::stc* m_STC;
   };
 };

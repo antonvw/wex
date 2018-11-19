@@ -91,13 +91,13 @@ wex::log& wex::log::operator<<(const pugi::xml_node& r)
 
 wex::log& wex::log::operator<<(const item& r)
 {
-  m_ss << S() << "item:" << S() << r.Log().str();
+  m_ss << S() << "item:" << S() << r.log().str();
   return *this;
 }
 
 wex::log& wex::log::operator<<(const listitem& r)
 {
-  m_ss << S() << "list item:" << S() << r.GetFileName().Path().string();
+  m_ss << S() << "list item:" << S() << r.get_filename().data().string();
   return *this;
 }
 

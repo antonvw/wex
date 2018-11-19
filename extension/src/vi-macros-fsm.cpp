@@ -28,9 +28,9 @@ wex::vi_macros_fsm::vi_macros_fsm()
     // idle
     {IDLE,                       EXPANDING_TEMPLATE,  EXPAND_TEMPLATE, 
       [&]{return 
-           !m_variable.GetName().empty() &&
-            m_variable.IsTemplate() &&
-           !m_variable.GetValue().empty();},
+           !m_variable.get_name().empty() &&
+            m_variable.is_template() &&
+           !m_variable.get_value().empty();},
       [&]{ExpandingTemplate();}},
     {IDLE,                        EXPANDING_VARIABLE, EXPAND_VARIABLE, nullptr,
       [&]{ExpandingVariable();}},
@@ -50,11 +50,11 @@ wex::vi_macros_fsm::vi_macros_fsm()
       [&]{return m_count > 0 && m_macro != vi_macros::m_Macro;}, 
       [&]{Playback();}}});
 
-  m_fsm.add_debug_fn(Verbose);
+  m_fsm.add_debug_fn(verbose);
 }
 
-bool wex::vi_macros_fsm::Execute(
-  trigger trigger, const std::string& macro, ex* ex, int repeat) 
+bool wex::vi_macros_fsm::execute(
+  trigger_t trigger, const std::string& macro, ex* ex, int repeat) 
 {
   m_count = repeat;
   m_error = false;
@@ -73,12 +73,12 @@ bool wex::vi_macros_fsm::Execute(
     m_fsm.execute(DONE);
   }
 
-  frame::StatusText(vi_macros::m_Macro, "PaneMacro");
-  frame::StatusText(State(), "PaneMode");
+  frame::statustext(vi_macros::m_Macro, "PaneMacro");
+  frame::statustext(state(), "PaneMode");
 
   if (m_ex != nullptr)
   {
-    ((statusbar *)m_ex->GetFrame()->GetStatusBar())->ShowField(
+    ((statusbar *)m_ex->frame()->GetStatusBar())->show_field(
       "PaneMode", 
       m_fsm.state() != IDLE && config(_("Show mode")).get(false));
   }
@@ -86,7 +86,7 @@ bool wex::vi_macros_fsm::Execute(
   return !m_error;
 }
 
-bool wex::vi_macros_fsm::Expand(
+bool wex::vi_macros_fsm::expand(
   ex* ex, const variable& v, std::string& expanded)
 {
   m_error = false;
@@ -104,18 +104,18 @@ void wex::vi_macros_fsm::ExpandingTemplate()
 {
   // Read the file (file name is in variable value), expand
   // all macro variables in it, and set expanded to the result.
-  const path filename(config().dir(), m_variable.GetValue());
+  const path filename(config().dir(), m_variable.get_value());
 
-  std::ifstream ifs(filename.Path());
+  std::ifstream ifs(filename.data());
   
   if (!ifs.is_open())
   {
-    VLOG(9) << "could not open template file:" << filename.Path().string();
+    VLOG(9) << "could not open template file:" << filename.data().string();
     m_error = true;
     return;
   }
 
-  SetAskForInput();
+  set_ask_for_input();
 
   for (char c; ifs.get(c) && !m_error; )
   {
@@ -146,7 +146,7 @@ void wex::vi_macros_fsm::ExpandingTemplate()
         m_error = true;
       }
       // Prevent recursion.
-      else if (variable == m_variable.GetName())
+      else if (variable == m_variable.get_name())
       {
         log() << "recursive variable:" << variable;
         m_error = true;
@@ -166,10 +166,10 @@ void wex::vi_macros_fsm::ExpandingTemplate()
   }
   
   // Set back to normal value.  
-  SetAskForInput();
+  set_ask_for_input();
     
-  vi_macros::m_Macro = m_variable.GetName();
-  frame::StatusText(vi_macros::m_Macro, "PaneMacro");
+  vi_macros::m_Macro = m_variable.get_name();
+  frame::statustext(vi_macros::m_Macro, "PaneMacro");
     
   log_status(_("Macro expanded"));
 }
@@ -228,25 +228,25 @@ bool wex::vi_macros_fsm::ExpandingVariable(
 
   if (value == nullptr)
   {
-    if (!var->Expand(m_ex))
+    if (!var->expand(m_ex))
     {
       return false;
     }
   }
-  else if (!var->Expand(*value, m_ex))     
+  else if (!var->expand(*value, m_ex))     
   {
     return false;
   }
 
-  var->SetAskForInput(false);
-  vi_macros::m_IsModified = true;
-  var->Save(node, value);
+  var->set_ask_for_input(false);
+  vi_macros::m_is_modified = true;
+  var->save(node, value);
   log_status(_("Variable expanded"));
 
   return true;
 }
 
-bool wex::vi_macros_fsm::IsPlayback() const
+bool wex::vi_macros_fsm::is_playback() const
 {
   return m_playback;
 }
@@ -254,10 +254,10 @@ bool wex::vi_macros_fsm::IsPlayback() const
 void wex::vi_macros_fsm::Playback()
 {
   wxBusyCursor wait;
-  m_ex->GetSTC()->BeginUndoAction();
+  m_ex->stc()->BeginUndoAction();
   m_playback = true;
     
-  SetAskForInput();
+  set_ask_for_input();
   
   const auto& macro_commands(vi_macros::m_Macros[m_macro]);
 
@@ -265,7 +265,7 @@ void wex::vi_macros_fsm::Playback()
   {
     for (const auto& it : macro_commands)
     { 
-      if (!m_ex->Command(it))
+      if (!m_ex->command(it))
       {
         m_error = true;
         log_status(_("Macro aborted at '") + it + "'");
@@ -274,7 +274,7 @@ void wex::vi_macros_fsm::Playback()
     }
   }
 
-  m_ex->GetSTC()->EndUndoAction();
+  m_ex->stc()->EndUndoAction();
   m_playback = false;
 
   if (!m_error)
@@ -284,17 +284,17 @@ void wex::vi_macros_fsm::Playback()
   }
 }
 
-void wex::vi_macros_fsm::SetAskForInput() const
+void wex::vi_macros_fsm::set_ask_for_input() const
 {
   for (auto& it : vi_macros::m_Variables)
   {
-    it.second.SetAskForInput();
+    it.second.set_ask_for_input();
   }
 }
 
 void wex::vi_macros_fsm::StartRecording()
 {
-  vi_macros::m_IsModified = true;
+  vi_macros::m_is_modified = true;
   
   if (m_macro.size() == 1)
   {
@@ -321,9 +321,9 @@ void wex::vi_macros_fsm::StartRecording()
 
 void wex::vi_macros_fsm::StopRecording()
 {
-  if (!vi_macros::Get(vi_macros::m_Macro).empty())
+  if (!vi_macros::get(vi_macros::m_Macro).empty())
   {
-    vi_macros::SaveMacro(vi_macros::m_Macro);
+    vi_macros::save_macro(vi_macros::m_Macro);
     log_status("Macro '" + vi_macros::m_Macro + " is recorded");
   }
   else
@@ -334,11 +334,11 @@ void wex::vi_macros_fsm::StopRecording()
   }
 }
 
-void wex::vi_macros_fsm::Verbose(state from, state to, trigger trigger)
+void wex::vi_macros_fsm::verbose(state_t from, state_t to, trigger_t t)
 {
   VLOG(2) << 
     "vi macro " << m_macro <<
-    " trigger " << Trigger(trigger) <<
-    " state from " << State(from) << 
-    " to " << State(to);
+    " trigger " << trigger(t) <<
+    " state from " << state(from) << 
+    " to " << state(to);
 }

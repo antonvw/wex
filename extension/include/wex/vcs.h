@@ -34,54 +34,54 @@ namespace wex
     /// Shows a dialog allowing you to choose which vcs to use
     /// and to set the path for each vcs entry.
     /// Returns dialog return code.
-    int ConfigDialog(const window_data& data = window_data()) const;
+    int config_dialog(const window_data& data = window_data()) const;
 
     /// Returns true if specified filename (a path) is a vcs directory.
-    static bool DirExists(const path& filename);
+    static bool dir_exists(const path& filename);
 
     /// Executes the current vcs command for the current
     /// vcs entry, and collects the output.
     /// Returns return code from vcs entry Execute.
-    bool Execute();
+    bool execute();
+    
+    /// Returns the current vcs entry.
+    const auto& entry() const {return m_Entry;};
     
     /// Returns branch for current vcs entry, or empty string
     /// if vcs is not used.
-    const std::string GetBranch() const;
-    
-    /// Returns the number of vcs entries.
-    static auto GetCount() {return m_Entries.size();};
-
-    /// Returns the current vcs entry.
-    const auto& GetEntry() const {return m_Entry;};
-    
-    /// Returns name for current vcs entry, or empty string
-    /// if vcs is not used.
-    const std::string GetName() const;
+    const std::string get_branch() const;
     
     /// Loads all entries (first clears them) from vcs document.
     /// Returns true if document is loaded.
-    static bool LoadDocument();
+    static bool load_document();
 
-    /// Combines ShowDialog, Execute and vcs entry ShowOutput in one method. 
+    /// Returns name for current vcs entry, or empty string
+    /// if vcs is not used.
+    const std::string name() const;
+    
+    /// Combines show_dialog, Execute and vcs entry show_output in one method. 
     /// - Returns wxID_CANCEL if dialog was cancelled, or an execute error occurred.
-    /// - Returns wxID_OK if okay (use vcs entry GetError
+    /// - Returns wxID_OK if okay (use vcs entry error
     ///   to check whether the output contains errors or normal info).
-    wxStandardID Request(const window_data& data = window_data());
+    wxStandardID request(const window_data& data = window_data());
 
     /// Sets the vcs entry using base folder.
     /// If not, it will show
     /// a dialog for selecting a vcs folder (if parent is not nullptr).
     /// Returns true if entry is under vcs control.
-    bool SetEntryFromBase(
+    bool set_entry_from_base(
       /// Parent window for showing dir dialog if 
       /// there is not a current directory.
       wxWindow* parent = nullptr);
 
     /// Shows dialog for the current vcs entry.
-    int ShowDialog(const window_data& data = window_data());
+    int show_dialog(const window_data& data = window_data());
+
+    /// Returns the number of vcs entries.
+    static auto size() {return m_Entries.size();};
 
     /// Returns true if vcs usage is set in the config.
-    bool Use() const;
+    bool use() const;
   private:
     static const vcs_entry FindEntry(const std::string& filename);
     static const vcs_entry FindEntry(const path& filename);
@@ -95,7 +95,7 @@ namespace wex
       const std::string& admin_dir, 
       const path& fn);
 
-    const path GetFile() const;
+    const path get_file() const;
     const std::string GetRelativeFile(
       const std::string& admin_dir, 
       const path& file) const;

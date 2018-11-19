@@ -16,23 +16,23 @@ wex::lexer_props::lexer_props()
 {
 }
   
-const std::string wex::lexer_props::MakeComment(const std::string& comment) const
+const std::string wex::lexer_props::make_comment(const std::string& comment) const
 {
   return !comment.empty() ? 
-    lexer::MakeComment(comment) + "\n": std::string();
+    lexer::make_comment(comment) + "\n": std::string();
 }
   
-const std::string wex::lexer_props::MakeKey(
+const std::string wex::lexer_props::make_key(
   const std::string& name, 
   const std::string& value,
   const std::string& comment) const
 {
   return 
-    MakeComment(comment) +
+    make_comment(comment) +
     name + "=" + value + "\n";
 }
 
-const std::string wex::lexer_props::MakeSection(const std::string& section) const
+const std::string wex::lexer_props::make_section(const std::string& section) const
 {
   return "[" + section + "]\n";
 }

@@ -27,10 +27,11 @@ namespace wex
   {
   public:
     /// Default constructor.
-    notebook(const window_data& data = window_data().Style(wxAUI_NB_DEFAULT_STYLE));
+    notebook(const window_data& data = 
+      window_data().style(wxAUI_NB_DEFAULT_STYLE));
 
     /// Adds the page with given key and fills the keys.
-    wxWindow* AddPage(
+    wxWindow* add_page(
       wxWindow* page,
       const std::string& key,
       const std::string& text = std::string(), // in that case uses key as text
@@ -39,17 +40,20 @@ namespace wex
 
     /// Changes the selection for the given page, returning the previous selection.
     /// If the key does not exist an empty string is returned.
-    const std::string ChangeSelection(const std::string& key);
+    const std::string change_selection(const std::string& key);
+
+    /// Returns key for the current page.
+    const std::string current_page_key();
 
     /// Deletes the page with the given key.
     /// Returns true if page could be deleted.
-    bool DeletePage(const std::string& key);
+    bool delete_page(const std::string& key);
 
     /// Do something for each page in the notebook.
     /// The id should be inbetween ID_ALL_LOWEST and ID_ALL_HIGHEST.
-    /// Cannot be const as it can call DeletePage.
+    /// Cannot be const as it can call delete_page.
     template <class T> 
-    bool ForEach(int id) {
+    bool for_each(int id) {
       wxWindowUpdateLocker locker(m_Frame != nullptr ? (wxWindow*)m_Frame: (wxWindow*)this);
       
       // The page should be an int (no), otherwise page >= 0 never fails!
@@ -64,7 +68,7 @@ namespace wex
                id == ID_ALL_CLOSE)
           {
             if (file_dialog(
-              &win->GetFile()).ShowModalIfChanged() == wxID_CANCEL) 
+              &win->get_file()).show_modal_if_changed() == wxID_CANCEL) 
             {
               return false;
             }
@@ -75,12 +79,12 @@ namespace wex
           }
           break;
 
-        case ID_ALL_CONFIG_GET: win->ConfigGet(); break;
+        case ID_ALL_CONFIG_GET: win->config_get(); break;
           
         case ID_ALL_SAVE:
-          if (win->GetFile().GetContentsChanged())
+          if (win->get_file().get_contents_changed())
           {
-            win->GetFile().FileSave();
+            win->get_file().file_save();
           }
           break;
 
@@ -88,52 +92,49 @@ namespace wex
         case ID_ALL_STC_SET_LEXER: 
           // At this moment same as themed change,
           // as we want default colour updates as well.
-          ((stc*)GetPage(page))->GetLexer().Set(((stc*)GetPage(page))->GetLexer().GetDisplayLexer());
+          ((stc*)GetPage(page))->get_lexer().set(((stc*)GetPage(page))->get_lexer().display_lexer());
           break;
 
         case ID_ALL_STC_SET_LEXER_THEME: 
-          ((stc*)GetPage(page))->GetLexer().Set(((stc*)GetPage(page))->GetLexer().GetDisplayLexer());
+          ((stc*)GetPage(page))->get_lexer().set(((stc*)GetPage(page))->get_lexer().display_lexer());
           break;
 
         case ID_ALL_STC_SYNC: 
-          ((stc*)GetPage(page))->Sync(config("AllowSync").get(true)); 
+          ((stc*)GetPage(page))->sync(config("AllowSync").get(true)); 
           break;
           
         default: 
-          wxFAIL; 
+          assert(0); 
           break;
         }
       }
       if (m_Frame != nullptr && m_Keys.empty())
       {
-        m_Frame->SyncCloseAll(GetId());
+        m_Frame->sync_close_all(GetId());
       }
       return true;};
     
-    /// Returns key for the current page.
-    const std::string GetCurrentPage();
-
     /// Returns the key specified by the given page.
     /// If the page does not exist or is nullptr an empty string is returned.
-    const std::string GetKeyByPage(wxWindow* page) const {
+    const std::string key_by_page(wxWindow* page) const {
       if (page == nullptr) return std::string();
       const auto& it = m_Windows.find(page);
       return (it != m_Windows.end() ? it->second: std::string());};
     
     /// Returns the page specified by the given key.
     /// If the key does not exist nullptr is returned.
-    wxWindow* GetPageByKey(const std::string& key) const {
+    wxWindow* page_by_key(const std::string& key) const {
       const auto& it = m_Keys.find(key);
       return (it != m_Keys.end() ? it->second: nullptr);};
     
     /// Returns the page index specified by the given key.
     /// If the key does not exist wxNOT_FOUND is returned.
-    int GetPageIndexByKey(const std::string& key) const {
-      wxWindow* page = GetPageByKey(key);
+    int page_index_by_key(const std::string& key) const {
+      wxWindow* page = page_by_key(key);
       return (page != nullptr ? GetPageIndex(page): wxNOT_FOUND);};
     
     /// Inserts the page with given key and fills the keys.
-    wxWindow* InsertPage(
+    wxWindow* insert_page(
       size_t page_idx,
       wxWindow* page,
       const std::string& key,
@@ -142,7 +143,7 @@ namespace wex
       const wxBitmap& bitmap = wxNullBitmap);
 
     /// Rearranges all pages.
-    void Rearrange(
+    void rearrange(
       /// Specify where the pane should go.
       /// It should be one of the following: 
       /// - wxTOP
@@ -154,7 +155,7 @@ namespace wex
     /// Sets the pagetext for the given new key,
     /// on the page for the given key.
     /// If the key does not exist false is returned.
-    bool SetPageText(
+    bool set_page_text(
       const std::string& key,
       const std::string& new_key,
       const std::string& text,
@@ -162,11 +163,11 @@ namespace wex
         
     /// Selects (and returns) the page specified by the given key.
     /// If the key does not exist nullptr is returned.
-    wxWindow* SetSelection(const std::string& key);
+    wxWindow* set_selection(const std::string& key);
     
     /// Split performs a split operation programmatically. 
     /// If the key does not exist false is returned.
-    bool Split(
+    bool split(
       /// The page that will be split off. 
       /// This page will also become the active page after the split.
       const std::string& key, 

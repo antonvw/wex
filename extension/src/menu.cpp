@@ -17,18 +17,18 @@
 #include <wex/util.h> // for wex::ellipsed
 #include <wex/vcs.h>
 
-wex::menu::menu(long style)
+wex::menu::menu(menu_t style)
   : m_Style(style)
 {
 }
 
-wex::menu::menu(const std::string& title, long style)
+wex::menu::menu(const std::string& title, menu_t style)
   : wxMenu(title)
   , m_Style(style)
 {
 }
   
-wxMenuItem* wex::menu::Append(
+wxMenuItem* wex::menu::append(
   int id,
   const std::string& name,
   const std::string& helptext,
@@ -38,9 +38,9 @@ wxMenuItem* wex::menu::Append(
 
   const stockart art(id);
 
-  if (art.GetBitmap().IsOk())
+  if (art.get_bitmap().IsOk())
   {
-    item->SetBitmap(art.GetBitmap(
+    item->SetBitmap(art.get_bitmap(
       wxART_MENU, 
       wxArtProvider::GetSizeHint(wxART_MENU, true)));
   }
@@ -58,64 +58,61 @@ wxMenuItem* wex::menu::Append(
     }
   }
 
-  return wxMenu::Append(item);
+  return Append(item);
 }
 
 void wex::menu::append_edit(bool add_invert)
 {
-  if (!(m_Style & IS_READ_ONLY) &&
-       (m_Style & IS_SELECTED))
+  if (!m_Style[IS_READ_ONLY] && m_Style[IS_SELECTED])
   {
-    Append(wxID_CUT);
+    append(wxID_CUT);
   }
 
-  if (m_Style & IS_SELECTED)
+  if (m_Style[IS_SELECTED])
   {
-    Append(wxID_COPY);
+    append(wxID_COPY);
   }
 
-  if (!(m_Style & IS_READ_ONLY) &&
-       (m_Style & CAN_PASTE))
+  if (!m_Style[IS_READ_ONLY] && m_Style[CAN_PASTE])
   {
-    Append(wxID_PASTE);
+    append(wxID_PASTE);
   }
 
-  if (!(m_Style & IS_SELECTED) &&
-      !(m_Style & IS_EMPTY))
+  if (!m_Style[IS_SELECTED] && !m_Style[IS_EMPTY])
   {
-    Append(wxID_SELECTALL);
+    append(wxID_SELECTALL);
   }
   else
   {
-    if (add_invert && !(m_Style & IS_EMPTY))
+    if (add_invert && !m_Style[IS_EMPTY])
     {
-      Append(ID_EDIT_SELECT_NONE, _("&Deselect All"));
+      append(ID_EDIT_SELECT_NONE, _("&Deselect All"));
     }
   }
 
-  if (m_Style & ALLOW_CLEAR)
+  if (m_Style[ALLOW_CLEAR])
   {
-    Append(wxID_CLEAR);
+    append(wxID_CLEAR);
   }
 
-  if (add_invert && !(m_Style & IS_EMPTY))
+  if (add_invert && !m_Style[IS_EMPTY])
   {
-    Append(ID_EDIT_SELECT_INVERT, _("&Invert"));
+    append(ID_EDIT_SELECT_INVERT, _("&Invert"));
   }
 
-  if (!(m_Style & IS_READ_ONLY) &&
-       (m_Style & IS_SELECTED) &&
-      !(m_Style & IS_EMPTY))
+  if (!m_Style[IS_READ_ONLY] &&
+       m_Style[IS_SELECTED] &&
+      !m_Style[IS_EMPTY])
   {
-    Append(wxID_DELETE);
+    append(wxID_DELETE);
   }
 }
 
 void wex::menu::append_print()
 {
-  Append(wxID_PRINT_SETUP, ellipsed(_("Page &Setup")));
-  Append(wxID_PREVIEW);
-  Append(wxID_PRINT);
+  append(wxID_PRINT_SETUP, ellipsed(_("Page &Setup")));
+  append(wxID_PREVIEW);
+  append(wxID_PRINT);
 }
 
 void wex::menu::append_separator()
@@ -127,7 +124,7 @@ void wex::menu::append_separator()
     return;
   }
 
-  wxMenu::AppendSeparator();
+  AppendSeparator();
 }
 
 void wex::menu::append_submenu(
@@ -144,27 +141,27 @@ void wex::menu::append_submenu(
   {
     // This one is deprecated, but is necessary if
     // we have an explicit itemid.
-    wxMenu::Append(itemid, text, submenu, help);
+    Append(itemid, text, submenu, help);
   }
 }
 
 bool wex::menu::append_tools(int itemid)
 {
-  if (lexers::Get()->get().empty())
+  if (lexers::get()->get_lexers().empty())
   {
     return false;
   }
 
   wex::menu* menuTool = new wex::menu(m_Style);
 
-  for (const auto& it : tool().GetToolInfo())
+  for (const auto& it : tool().get_tool_info())
   {
-    if (!it.second.GetText().empty())
+    if (!it.second.text().empty())
     {
-      menuTool->Append(
+      menuTool->append(
         it.first, 
-        it.second.GetText(), 
-        it.second.GetHelpText());
+        it.second.text(), 
+        it.second.help_text());
     }
   }
 
@@ -175,14 +172,14 @@ bool wex::menu::append_tools(int itemid)
 
 bool wex::menu::append_vcs(const path& filename, bool show_modal)
 {
-  if (!filename.GetStat().is_ok())
+  if (!filename.stat().is_ok())
   {
     wex::vcs vcs;
        
-    if (vcs.SetEntryFromBase(
+    if (vcs.set_entry_from_base(
       show_modal ? wxTheApp->GetTopWindow(): nullptr))
     {
-      return vcs.GetEntry().BuildMenu(
+      return vcs.entry().build_menu(
         ID_VCS_LOWEST + 1, 
         this, 
         false) > 0; // no popup
@@ -192,11 +189,11 @@ bool wex::menu::append_vcs(const path& filename, bool show_modal)
   {
     wex::menu* vcsmenu = new wex::menu;
   
-    const wex::vcs vcs({filename.Path().string()});
+    const wex::vcs vcs({filename.data().string()});
 
-    if (vcs.GetEntry().BuildMenu(ID_EDIT_VCS_LOWEST + 1, vcsmenu))
+    if (vcs.entry().build_menu(ID_EDIT_VCS_LOWEST + 1, vcsmenu))
     { 
-      append_submenu(vcsmenu, vcs.GetEntry().GetName());
+      append_submenu(vcsmenu, vcs.entry().name());
       return true;
     }
   }

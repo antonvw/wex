@@ -20,8 +20,8 @@ TEST_CASE( "wex::log" )
   wex::log log("shark", wex::log::DEBUG);
   log << std::stringstream("is hungry") << "eats" << 25 << "fish";
 
-  REQUIRE( log.Get().find("shark") == 0);
-  REQUIRE( log.Get().find("is hungry") != std::string::npos);
-  REQUIRE( log.Get().find(" eats ") != std::string::npos);
-  REQUIRE( log.Get().find("25") != std::string::npos);
+  REQUIRE( log.get().find("shark") == 0);
+  REQUIRE( log.get().find("is hungry") != std::string::npos);
+  REQUIRE( log.get().find(" eats ") != std::string::npos);
+  REQUIRE( log.get().find("25") != std::string::npos);
 }

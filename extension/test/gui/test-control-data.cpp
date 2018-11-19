@@ -16,26 +16,26 @@ TEST_CASE("wex::control_data")
 {
   SUBCASE("Constructor")
   {
-    REQUIRE( wex::control_data().Col() == DATA_NUMBER_NOT_SET);
-    REQUIRE( wex::control_data().Col(3).Col() == 3);
-    REQUIRE( wex::control_data().Command("xx").Command().Command() == "xx");
-    REQUIRE( wex::control_data().Find("xx").Find() == "xx");
-    REQUIRE( wex::control_data().Find("xx").FindFlags() == 0);
-    REQUIRE( wex::control_data().Find("xx", 1).FindFlags() == 1);
-    REQUIRE( wex::control_data().Line() == DATA_NUMBER_NOT_SET);
-    REQUIRE( wex::control_data().Line(-1).Line() == -1);
-    REQUIRE( wex::control_data().Line(3).Line() == 3);
-    REQUIRE(!wex::control_data().Required());
-    REQUIRE( wex::control_data().Required(true).Required());
-    wex::control_data data(wex::control_data().Line(3));
-    data.Reset();
-    REQUIRE( data.Line() == DATA_NUMBER_NOT_SET);
-    REQUIRE( wex::control_data().Validator() == nullptr);
+    REQUIRE( wex::control_data().col() == wex::DATA_NUMBER_NOT_SET);
+    REQUIRE( wex::control_data().col(3).col() == 3);
+    REQUIRE( wex::control_data().command("xx").command().command() == "xx");
+    REQUIRE( wex::control_data().find("xx").find() == "xx");
+    REQUIRE( wex::control_data().find("xx").find_flags() == 0);
+    REQUIRE( wex::control_data().find("xx", 1).find_flags() == 1);
+    REQUIRE( wex::control_data().line() == wex::DATA_NUMBER_NOT_SET);
+    REQUIRE( wex::control_data().line(-1).line() == -1);
+    REQUIRE( wex::control_data().line(3).line() == 3);
+    REQUIRE(!wex::control_data().is_required());
+    REQUIRE( wex::control_data().is_required(true).is_required());
+    wex::control_data data(wex::control_data().line(3));
+    data.reset();
+    REQUIRE( data.line() == wex::DATA_NUMBER_NOT_SET);
+    REQUIRE( wex::control_data().validator() == nullptr);
   }
   
-  SUBCASE("Inject")
+  SUBCASE("inject")
   {
-    REQUIRE(!wex::control_data().Inject());
-    REQUIRE(!wex::control_data().Line(1).Col(5).Inject());
+    REQUIRE(!wex::control_data().inject());
+    REQUIRE(!wex::control_data().line(1).col(5).inject());
   }
 }

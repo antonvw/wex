@@ -11,41 +11,41 @@
 
 TEST_CASE("wex::listview_file")
 {
-  wex::listview_file* listView = new wex::listview_file(GetProject());
-  AddPane(GetFrame(), listView);
+  wex::listview_file* listView = new wex::listview_file(get_project());
+  AddPane(frame(), listView);
 
-  REQUIRE(listView->GetFile().GetFileName().GetFullName() == GetProject());
+  REQUIRE(listView->get_file().get_filename().fullname() == get_project());
   
-  REQUIRE(!listView->GetTextAddFiles().empty());
-  REQUIRE(!listView->GetTextAddFolders().empty());
-  REQUIRE(!listView->GetTextAddRecursive().empty());
-  REQUIRE(!listView->GetTextAddWhat().empty());
-  REQUIRE(!listView->GetTextInFolder().empty());
+  REQUIRE(!listView->text_addfiles().empty());
+  REQUIRE(!listView->text_addfolders().empty());
+  REQUIRE(!listView->text_addrecursive().empty());
+  REQUIRE(!listView->text_addwhat().empty());
+  REQUIRE(!listView->text_infolder().empty());
   
-  listView->AppendColumns({
+  listView->append_columns({
     {"String", wex::column::STRING}, 
     {"Number", wex::column::INT}});
 
   // Remember that listview file already has columns.
-  REQUIRE(listView->FindColumn("String") > 1);
-  REQUIRE(listView->FindColumn("Number") > 1);
+  REQUIRE(listView->find_column("String") > 1);
+  REQUIRE(listView->find_column("Number") > 1);
 
-  REQUIRE(listView->FileLoad(GetProject()));
-  REQUIRE(listView->FileSave("test-rep.prj.bck"));
+  REQUIRE(listView->file_load(get_project()));
+  REQUIRE(listView->file_save("test-rep.prj.bck"));
   REQUIRE(remove("test-rep.prj.bck") == 0);
 
-  REQUIRE(listView->ItemFromText("test1\ntest2\n"));
+  REQUIRE(listView->item_from_text("test1\ntest2\n"));
   
-  REQUIRE( listView->GetContentsChanged());
-  listView->ResetContentsChanged();
-  REQUIRE(!listView->GetContentsChanged());
-  listView->AfterSorting();
+  REQUIRE( listView->get_contents_changed());
+  listView->reset_contents_changed();
+  REQUIRE(!listView->get_contents_changed());
+  listView->after_sorting();
 
 #ifdef __UNIX__
-  listView->AddItems(
+  listView->add_items(
     "./",
     "*.h", 
-    wex::dir::FILES, 
+    wex::dir::type_t().set(wex::dir::FILES), 
     false); // join the thread
 #endif
 

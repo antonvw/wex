@@ -20,41 +20,41 @@ TEST_CASE("wex::ctags")
 
   SUBCASE("tags default")
   {
-    wex::ex* ex = &GetSTC()->GetVi();
+    wex::ex* ex = &get_stc()->get_vi();
 
-    REQUIRE( wex::ctags(ex).Find("wxExTestApp") );
-    REQUIRE( wex::ctags(GetFrame()).Find("wxExTestApp") );
-    REQUIRE( wex::ctags(ex).AutoComplete("wxExTest") == "wxExTestApp");
+    REQUIRE( wex::ctags(ex).find("wxExTestApp") );
+    REQUIRE( wex::ctags(frame()).find("wxExTestApp") );
+    REQUIRE( wex::ctags(ex).auto_complete("wxExTest") == "wxExTestApp");
 
     wex::ctags_entry current;
     wex::ctags_entry filter;
-    REQUIRE( wex::ctags(ex).Find("wxExTestApp", current, filter));
-    REQUIRE( current.Kind() == "c" );
+    REQUIRE( wex::ctags(ex).find("wxExTestApp", current, filter));
+    REQUIRE( current.kind() == "c" );
   }
 
   SUBCASE("tags non-existing file")
   {
-    data.CTagsFileName("xxx");
+    data.ctags_filename("xxx");
     wex::stc* stc = new wex::stc(std::string("test"), data);
-    AddPane(GetFrame(), stc);
-    wex::ex* ex = &stc->GetVi();
+    AddPane(frame(), stc);
+    wex::ex* ex = &stc->get_vi();
 
-    REQUIRE(!wex::ctags(ex).Find("wxExTestApp") );
+    REQUIRE(!wex::ctags(ex).find("wxExTestApp") );
   }
   
   SUBCASE("tags own file")
   {
-    data.CTagsFileName("test-ctags");
+    data.ctags_filename("test-ctags");
     wex::stc* stc = new wex::stc(std::string("test"), data);
-    AddPane(GetFrame(), stc);
-    wex::ex* ex = &stc->GetVi();
+    AddPane(frame(), stc);
+    wex::ex* ex = &stc->get_vi();
 
-    REQUIRE(!wex::ctags(ex).Find("") );
-    REQUIRE(!wex::ctags(ex).Next() );
-    REQUIRE(!wex::ctags(ex).Previous() );
-    REQUIRE(!wex::ctags(ex).Find("xxxx") );
-    REQUIRE( wex::ctags(ex).Find("wxExTestApp") );
-    REQUIRE(!wex::ctags(ex).Next() );
-    REQUIRE( wex::ctags(ex).Separator() != ' ');
+    REQUIRE(!wex::ctags(ex).find("") );
+    REQUIRE(!wex::ctags(ex).next() );
+    REQUIRE(!wex::ctags(ex).previous() );
+    REQUIRE(!wex::ctags(ex).find("xxxx") );
+    REQUIRE( wex::ctags(ex).find("wxExTestApp") );
+    REQUIRE(!wex::ctags(ex).next() );
+    REQUIRE( wex::ctags(ex).separator() != ' ');
   }
 }

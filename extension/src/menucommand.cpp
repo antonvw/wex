@@ -21,37 +21,35 @@ wex::menu_command::menu_command(
   , m_SubMenu(!submenu.empty() ? submenu: subcommand)
   , m_SubMenuIsCommand(!subcommand.empty())
   , m_Type([](const std::string& text) {
-      long id = (
-        text.empty() || 
-       (text.find("popup") == std::string::npos && 
-        text.find("main") == std::string::npos)) ? 
-        IS_POPUP | IS_MAIN: IS_NONE;
-
-      id |= (text.find("popup") != std::string::npos ? 
-        IS_POPUP: IS_NONE);
-      id |= (text.find("main") != std::string::npos ? 
-        IS_MAIN: IS_NONE);
-      id |= (text.find("separator") != std::string::npos ? 
-        SEPARATOR: IS_NONE);
-      id |= (text.find("ellipses") != std::string::npos ? 
-        ELLIPSES: IS_NONE);
+      type_t id;
+    
+      if (text.empty() || 
+         (text.find("popup") == std::string::npos && 
+          text.find("main") == std::string::npos))
+        id.set(IS_POPUP).set(IS_MAIN);
+      if (text.find("popup") != std::string::npos)
+        id.set(IS_POPUP);
+      if (text.find("main") != std::string::npos)
+        id.set(IS_MAIN);
+      if (text.find("separator") != std::string::npos)
+        id.set(SEPARATOR);
+      if (text.find("ellipses") != std::string::npos)
+        id.set(ELLIPSES);
 
       return id;} (type_text))
 {
 }
   
-const std::string wex::menu_command::GetCommand(long type) const
+const std::string wex::menu_command::get_command(include_t type) const
 {
   auto command = m_Command;
 
-  if (m_SubMenuIsCommand && 
-     (type & INCLUDE_SUBCOMMAND))
+  if (m_SubMenuIsCommand && (type[INCLUDE_SUBCOMMAND]))
   {
     command += " " + m_SubMenu;
   }
 
-  if (command.find("&") != std::string::npos && 
-    !(type & INCLUDE_ACCELL))
+  if (command.find("&") != std::string::npos && !type[INCLUDE_ACCELL])
   {
     command.erase(
       std::remove(command.begin(), command.end(), '&'), command.end());
@@ -60,7 +58,7 @@ const std::string wex::menu_command::GetCommand(long type) const
   return command;
 }
 
-bool wex::menu_command::UseSubcommand() const
+bool wex::menu_command::use_subcommand() const
 {
-  return IsHelp() || (m_SubMenuIsCommand && !m_SubMenu.empty());
+  return is_help() || (m_SubMenuIsCommand && !m_SubMenu.empty());
 }

@@ -58,12 +58,12 @@ std::tuple<double, int, std::string> wex::evaluator::Eval(
   {
     // Replace . with current line.
     replace_all(expr, ".", std::to_string(
-      ex->GetCommand().STC()->GetCurrentLine() + 1));
+      ex->get_command().stc()->GetCurrentLine() + 1));
   }
   
   // Replace $ with line count.
   replace_all(expr, "$", 
-    std::to_string(ex->GetCommand().STC()->GetLineCount()));
+    std::to_string(ex->get_command().stc()->GetLineCount()));
   
   // Expand all markers and registers.
   if (!marker_and_register_expansion(ex, expr))
@@ -76,28 +76,28 @@ std::tuple<double, int, std::string> wex::evaluator::Eval(
   return {m_eval->eval(expr, &err), width, err};
 }
 
-std::string wex::evaluator::GetInfo(const wex::ex* ex)
+std::string wex::evaluator::info(const wex::ex* ex)
 {
   Init();
   
   const lexer_props l;
-  std::string output(l.MakeSection("Named buffers"));
+  std::string output(l.make_section("Named buffers"));
 
-  for (const auto& it : ex->GetMacros().GetRegisters())
+  for (const auto& it : ex->get_macros().registers())
   {
     output += it;
   }
 
-  output += l.MakeSection("Filename buffer");
-  output += l.MakeKey("%", ex->GetCommand().STC()->GetFileName().GetFullName());
+  output += l.make_section("Filename buffer");
+  output += l.make_key("%", ex->get_command().stc()->get_filename().fullname());
 
   if (!m_eval->variables.empty()) 
   {
-    output += l.MakeSection("Variables");
+    output += l.make_section("Variables");
 
     for (const auto &var : m_eval->variables) 
     {
-      output += l.MakeKey(var, std::to_string(m_eval->eval(var, nullptr)));
+      output += l.make_key(var, std::to_string(m_eval->eval(var, nullptr)));
     }
   }
 

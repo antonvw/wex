@@ -18,29 +18,29 @@ namespace wex
     /// Default constructor.
     ctags_entry() {;};
 
-    /// Returns true if one of the members is filled.
-    bool Active() const;
-
     /// Returns access member.
-    const auto & Access() const {return m_access;};
+    const auto & access() const {return m_access;};
 
     /// Sets access member.
-    ctags_entry& Access(const std::string& v);
+    ctags_entry& access(const std::string& v);
 
     /// Returns class member.
-    const auto & Class() const {return m_class;};
+    const auto & class_name() const {return m_class;};
 
     /// Sets class member.
-    ctags_entry& Class(const std::string& v);
+    ctags_entry& class_name(const std::string& v);
 
     /// Clear the member.
-    void Clear();
+    void clear();
 
     /// Returns member as a string.
-    const std::string Get() const;
+    const std::string get() const;
+
+    /// Returns true if one of the members is filled.
+    bool is_active() const;
 
     /// Returns kind member.
-    const auto & Kind() const {return m_kind;};
+    const auto & kind() const {return m_kind;};
 
     /// Sets kind of tag. The value depends on the language.  For C and
     /// C++ these kinds are recommended:
@@ -56,13 +56,13 @@ namespace wex
     /// - t	typedef
     /// - u	union name
     /// - v	variable
-    ctags_entry& Kind(const std::string& v);
+    ctags_entry& kind(const std::string& v);
 
     /// Returns signature member.
-    const auto & Signature() const {return m_signature;};
+    const auto & signature() const {return m_signature;};
 
     /// Sets signature member.
-    ctags_entry& Signature(const std::string& v);
+    ctags_entry& signature(const std::string& v);
   private:
     std::string m_access, m_class, m_kind, m_signature;
   };

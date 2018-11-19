@@ -34,10 +34,10 @@ void AddExtension(wex::path& fn)
   {
     for (auto i = v.begin(); i != it; i++)
     {
-      fn.Append(*i);
+      fn.append(*i);
     }
 
-    fn.Append("wxExtension").Append("extension");
+    fn.append("wxExtension").append("extension");
   }
   else
   {
@@ -46,11 +46,11 @@ void AddExtension(wex::path& fn)
       if (it == "build" || it == "Release" || 
           it == "Debug" || it == "Coverage")
       {
-        fn.Append("extension");
+        fn.append("extension");
         break;      
       }
     
-      fn.Append(it);
+      fn.append(it);
     
       if (it == "extension")
       {
@@ -64,18 +64,18 @@ const std::string AddPane(wex::managed_frame* frame, wxWindow* pane)
 {
   static int no = 0;
   
-  wxAuiPaneInfo info(frame->GetManager().GetAllPanes().GetCount() == 5 ?
+  wxAuiPaneInfo info(frame->manager().GetAllPanes().GetCount() == 5 ?
     wxAuiPaneInfo().Center():
     wxAuiPaneInfo().Bottom());
 
   const std::string name("PANE " + std::to_string(no++));
   
-  frame->GetManager().AddPane(pane, wxAuiPaneInfo(info)
+  frame->manager().AddPane(pane, wxAuiPaneInfo(info)
     .Name(name)
     .MinSize(250, 200)
     .Caption(name));
   
-  frame->GetManager().Update();
+  frame->manager().Update();
   
   return name;
 }
@@ -89,14 +89,14 @@ wex::path wex::test_app::GetTestPath(const std::string& file)
 {
   return file.empty() ?
     m_TestPath:
-    path(m_TestPath.Path().string(), file);
+    path(m_TestPath.data().string(), file);
 }
 
 bool wex::test_app::OnInit()
 {
   SetAppName("wex-test"); // as in CMakeLists
   SetTestPath();
-  lexers::Get();
+  lexers::get();
   
   if (!app::OnInit())
   {
@@ -104,7 +104,7 @@ bool wex::test_app::OnInit()
   }
   
   wex::config(_("vi mode")).set(true);
-  wex::config(_("locale")).set(GetLocale().GetName().ToStdString()); // for coverage
+  wex::config(_("locale")).set(get_locale().GetName().ToStdString()); // for coverage
   
   return true;
 }
@@ -117,7 +117,7 @@ int wex::test_app::OnRun()
   Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
     m_Context->run();
     wex::config("AllowSync").set(false);
-    process::KillAll();
+    process::kill_all();
 
     if (m_Context->shouldExit())
     {
@@ -135,7 +135,7 @@ void wex::test_app::SetContext(doctest::Context* context)
   
 void wex::test_app::SetTestPath()
 {
-  m_TestPath = path(path::Current(), "");
+  m_TestPath = path(path::current(), "");
   auto v(m_TestPath.paths());
   
   if (std::find(v.begin(), v.end(), "wxExtension") == v.end())
@@ -158,10 +158,10 @@ void wex::test_app::SetTestPath()
 
   if (std::find(v.begin(), v.end(), "test") == v.end())
   {
-    m_TestPath.Append("test").Append("data");
+    m_TestPath.append("test").append("data");
   }
 
-  wex::path::Current(m_TestPath.Path().string());
+  wex::path::current(m_TestPath.data().string());
 }
 
 int wex::testmain(int argc, char* argv[], wex::test_app* app)

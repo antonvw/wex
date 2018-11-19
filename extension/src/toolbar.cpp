@@ -19,6 +19,7 @@
 #include <wex/grid.h>
 #include <wex/listview.h>
 #include <wex/managedframe.h>
+#include <wex/menu.h>
 #include <wex/process.h>
 #include <wex/stc.h>
 #include <wex/util.h>
@@ -47,7 +48,7 @@ namespace wex
 
 void FindPopupMenu(wxWindow* win, const std::list < std::string > & l, const wxPoint& pos)
 {
-  wxMenu* menu = new wxMenu();
+  auto* menu = new wex::menu();
 
   const int max_size = 25;
   int i = 0;
@@ -63,7 +64,7 @@ void FindPopupMenu(wxWindow* win, const std::list < std::string > & l, const wxP
   
   if (menu->GetMenuItemCount() > 0)
   {
-    menu->AppendSeparator();
+    menu->append_separator();
     menu->Append(wex::ID_CLEAR_FINDS, wxGetStockLabel(wxID_CLEAR));
     win->PopupMenu(menu, pos);
   }
@@ -90,25 +91,28 @@ bool PrepDropDown(wxAuiToolBar* tb, wxAuiToolBarEvent& event)
 }
     
 wex::toolbar::toolbar(managed_frame* frame, const window_data& data)
-  : wxAuiToolBar(frame, data.Id(), data.Pos(), data.Size(), 
-      data.Style() | wxAUI_TB_HORZ_TEXT | wxAUI_TB_PLAIN_BACKGROUND)
+  : wxAuiToolBar(frame, 
+      data.id(), 
+      data.pos(), 
+      data.size(), 
+      data.style() | wxAUI_TB_HORZ_TEXT | wxAUI_TB_PLAIN_BACKGROUND)
   , m_Frame(frame)
 {
 }
 
-void wex::toolbar::AddControls(bool realize)
+void wex::toolbar::add_controls(bool realize)
 {
-  AddTool(wxID_NEW);
-  AddTool(wxID_OPEN);
-  AddTool(wxID_SAVE);
-  AddTool(wxID_PRINT);
-  AddTool(wxID_UNDO);
-  AddTool(wxID_REDO);
-  AddTool(wxID_FIND);
+  add_tool(wxID_NEW);
+  add_tool(wxID_OPEN);
+  add_tool(wxID_SAVE);
+  add_tool(wxID_PRINT);
+  add_tool(wxID_UNDO);
+  add_tool(wxID_REDO);
+  add_tool(wxID_FIND);
   
-  if (process::GetShell() != nullptr)
+  if (process::get_shell() != nullptr)
   {
-    AddTool(wxID_EXECUTE);
+    add_tool(wxID_EXECUTE);
   }
 
   SetToolDropDown(wxID_FIND, true);
@@ -116,40 +120,40 @@ void wex::toolbar::AddControls(bool realize)
 
   Bind(wxEVT_AUITOOLBAR_TOOL_DROPDOWN, [=](wxAuiToolBarEvent& event) {
     if (!PrepDropDown(this, event)) return;
-    FindPopupMenu(this, find_replace_data::Get()->GetFindStrings(), GetPoint(this, event));
+    FindPopupMenu(this, find_replace_data::get()->get_find_strings(), GetPoint(this, event));
     SetToolSticky(event.GetId(), false);}, wxID_FIND);
   
   Bind(wxEVT_AUITOOLBAR_TOOL_DROPDOWN, [=](wxAuiToolBarEvent& event) {
     if (!PrepDropDown(this, event)) return;
-    m_Frame->GetFileHistory().PopupMenu(this, ID_CLEAR_FILES, GetPoint(this, event));
+    m_Frame->file_history().popup_menu(this, ID_CLEAR_FILES, GetPoint(this, event));
     SetToolSticky(event.GetId(), false);}, wxID_OPEN);
       
   if (realize) Realize();
 }
 
-wxAuiToolBarItem* wex::toolbar::AddTool(
+wxAuiToolBarItem* wex::toolbar::add_tool(
   int toolId,
   const wxString& label,
   const wxBitmap& bitmap,
   const wxString& shortHelp,
   wxItemKind kind)
 {
-  if (const stockart art(toolId); art.GetBitmap(wxART_TOOLBAR).IsOk())
+  if (const stockart art(toolId); art.get_bitmap(wxART_TOOLBAR).IsOk())
   {
-    return wxAuiToolBar::AddTool(
+    return AddTool(
       toolId, 
       wxEmptyString, // no label
 #ifdef __WXGTK__
-      art.GetBitmap(wxART_TOOLBAR),
+      art.get_bitmap(wxART_TOOLBAR),
 #else
-      art.GetBitmap(wxART_MENU, wxSize(16, 16)),
+      art.get_bitmap(wxART_MENU, wxSize(16, 16)),
 #endif
       wxGetStockLabel(toolId, wxSTOCK_NOFLAGS), // short help
       kind);
   }
   else if (bitmap.IsOk())
   {
-    return wxAuiToolBar::AddTool(
+    return AddTool(
       toolId, 
       label,
       bitmap,
@@ -168,32 +172,32 @@ wex::find_toolbar::find_toolbar(
   const wxWindowID ID_MATCH_CASE = NewControlId();
   const wxWindowID ID_REGULAR_EXPRESSION = NewControlId();
 
-  find_textctrl* findCtrl = new find_textctrl(GetFrame(),
-    window_data().Parent(this));
+  find_textctrl* findCtrl = new find_textctrl(frame,
+    window_data().parent(this));
   wxCheckBox* matchCase = new wxCheckBox(this, 
-    ID_MATCH_CASE, find_replace_data::Get()->GetTextMatchCase());
+    ID_MATCH_CASE, find_replace_data::get()->text_match_case());
   wxCheckBox* matchWholeWord = new wxCheckBox(this, 
-    ID_MATCH_WHOLE_WORD, find_replace_data::Get()->GetTextMatchWholeWord());
+    ID_MATCH_WHOLE_WORD, find_replace_data::get()->text_match_word());
   wxCheckBox* isRegularExpression = new wxCheckBox(this, 
-    ID_REGULAR_EXPRESSION, find_replace_data::Get()->GetTextRegEx());
+    ID_REGULAR_EXPRESSION, find_replace_data::get()->text_regex());
 
   matchCase->SetToolTip(_("Search case sensitive"));
   matchWholeWord->SetToolTip(_("Search matching words"));
   isRegularExpression->SetToolTip(_("Search using regular expressions"));
 
-  matchCase->SetValue(find_replace_data::Get()->MatchCase());
-  matchWholeWord->SetValue(find_replace_data::Get()->MatchWord());
-  isRegularExpression->SetValue(find_replace_data::Get()->UseRegEx());
+  matchCase->SetValue(find_replace_data::get()->match_case());
+  matchWholeWord->SetValue(find_replace_data::get()->match_word());
+  isRegularExpression->SetValue(find_replace_data::get()->use_regex());
 
   // And place the controls on the toolbar.
   AddControl(findCtrl);
 
-  AddTool(
+  add_tool(
     wxID_DOWN, 
     wxEmptyString, 
     wxArtProvider::GetBitmap(wxART_GO_DOWN, wxART_TOOLBAR),
     _("Find next"));
-  AddTool(
+  add_tool(
     wxID_UP, 
     wxEmptyString, 
     wxArtProvider::GetBitmap(wxART_GO_UP, wxART_TOOLBAR),
@@ -206,13 +210,13 @@ wex::find_toolbar::find_toolbar(
   Realize();
   
   Bind(wxEVT_CHECKBOX, [=](wxCommandEvent& event) {
-    find_replace_data::Get()->SetMatchWord(
+    find_replace_data::get()->set_match_word(
       matchWholeWord->GetValue());}, ID_MATCH_WHOLE_WORD);
   Bind(wxEVT_CHECKBOX, [=](wxCommandEvent& event) {
-    find_replace_data::Get()->SetMatchCase(
+    find_replace_data::get()->set_match_case(
       matchCase->GetValue());}, ID_MATCH_CASE);
   Bind(wxEVT_CHECKBOX, [=](wxCommandEvent& event) {
-    find_replace_data::Get()->SetUseRegEx(
+    find_replace_data::get()->set_use_regex(
       isRegularExpression->GetValue());}, ID_REGULAR_EXPRESSION);
       
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -232,7 +236,7 @@ wex::options_toolbar::options_toolbar(
 {
 }
 
-void wex::options_toolbar::AddControls(bool realize)
+void wex::options_toolbar::add_controls(bool realize)
 {
   const wxWindowID ID_VIEW_PROCESS = NewControlId();
   
@@ -240,10 +244,10 @@ void wex::options_toolbar::AddControls(bool realize)
   // id, label, name, config, tooltip, default
   for (const auto& it : std::vector<std::tuple<int, wxString, wxString, wxString, wxString, bool>> {
     {ID_VIEW_PROCESS, _("Process"), "PROCESS", "ViewProcess", _("View process"), false},
-    {NewControlId(), "Hex", "HEX", "HexMode", _("Open in hex mode"), false},
+    {NewControlId(), "Hex", "HEX", "is_hexmode", _("Open in hex mode"), false},
     {NewControlId(), "Sync", "SYNC", "AllowSync", _("Synchronize modified files"), true}})
   {
-    if (std::get<0>(it) == ID_VIEW_PROCESS && process::GetShell() == nullptr)
+    if (std::get<0>(it) == ID_VIEW_PROCESS && process::get_shell() == nullptr)
     {
       continue;
     }
@@ -259,7 +263,7 @@ void wex::options_toolbar::AddControls(bool realize)
       config(std::get<3>(it)).set(cb->GetValue());
       if (event.GetId() == ID_VIEW_PROCESS)
       {
-        GetFrame()->ShowPane("PROCESS", cb->GetValue());};}, std::get<0>(it));
+        frame()->show_pane("PROCESS", cb->GetValue());};}, std::get<0>(it));
   }
 
   if (realize)
@@ -268,7 +272,7 @@ void wex::options_toolbar::AddControls(bool realize)
   }
 }
 
-bool wex::options_toolbar::Update(const wxString& name, bool show)
+bool wex::options_toolbar::update(const wxString& name, bool show)
 {
   for (auto& it : m_CheckBoxes)
   {
@@ -287,12 +291,12 @@ bool wex::options_toolbar::Update(const wxString& name, bool show)
 wex::find_textctrl::find_textctrl(
   frame* frame, const window_data& data)
   : wxTextCtrl(
-      data.Parent(), 
-      data.Id(),
-      find_replace_data::Get()->GetFindString(), 
-      data.Pos(), 
-      data.Size(), 
-      data.Style() | wxTE_PROCESS_ENTER)
+      data.parent(), 
+      data.id(),
+      find_replace_data::get()->get_find_string(), 
+      data.pos(), 
+      data.size(), 
+      data.style() | wxTE_PROCESS_ENTER)
   , m_Frame(frame)
 {
   const int accels = 1;
@@ -302,15 +306,15 @@ wex::find_textctrl::find_textctrl(
   SetAcceleratorTable(accel);
   
   Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
-    if (!find_replace_data::Get()->m_FindStrings.Set(event.GetKeyCode(), this))
+    if (!find_replace_data::get()->m_FindStrings.set(event.GetKeyCode(), this))
     {
       event.Skip();
     }});
   
   Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
-    if (auto* stc = m_Frame->GetSTC(); stc != nullptr)
+    if (auto* stc = m_Frame->get_stc(); stc != nullptr)
     {
-      stc->PositionSave();
+      stc->position_save();
     }
     event.Skip();});
 
@@ -338,7 +342,7 @@ wex::find_textctrl::find_textctrl(
     event.Skip();
     if (!GetValue().empty())
     {
-      find_replace_data::Get()->SetFindString(GetValue().ToStdString());
+      find_replace_data::get()->set_find_string(GetValue().ToStdString());
       Find();
     }});
 }
@@ -347,24 +351,24 @@ void wex::find_textctrl::Find(bool find_next, bool restore_position)
 {
   // We cannot use events here, as OnFindDialog in stc uses frd data,
   // whereas we need the GetValue here.
-  if (auto* stc = m_Frame->GetSTC(); stc != nullptr)
+  if (auto* stc = m_Frame->get_stc(); stc != nullptr)
   {
     if (restore_position)
     {
-      stc->PositionRestore();
+      stc->position_restore();
     }
     
-    stc->FindNext(
+    stc->find_next(
       GetValue().ToStdString(), 
       -1,
       find_next);
   }
-  else if (auto* grid = m_Frame->GetGrid(); grid != nullptr)
+  else if (auto* grid = m_Frame->get_grid(); grid != nullptr)
   {
-    grid->FindNext(GetValue(), find_next);
+    grid->find_next(GetValue(), find_next);
   }
-  else if (auto* lv = m_Frame->GetListView(); lv != nullptr)
+  else if (auto* lv = m_Frame->get_listview(); lv != nullptr)
   {
-    lv->FindNext(GetValue().ToStdString(), find_next);
+    lv->find_next(GetValue().ToStdString(), find_next);
   }
 }

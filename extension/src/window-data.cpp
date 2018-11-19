@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      stc-wnidow.cpp
+// Name:      window-data.cpp
 // Purpose:   Implementation of wex::window_data
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
@@ -17,49 +17,49 @@ wex::window_data::window_data()
   }
 }
 
-wex::window_data& wex::window_data::Button(long button)
+wex::window_data& wex::window_data::button(long button)
 {
   m_Button = button;
   return *this;
 }
 
-wex::window_data& wex::window_data::Id(wxWindowID id) 
+wex::window_data& wex::window_data::id(wxWindowID id) 
 {
   m_Id = id;
   return *this;
 }
   
-wex::window_data& wex::window_data::Name(const std::string& name) 
+wex::window_data& wex::window_data::name(const std::string& name) 
 {
   m_Name = name;
   return *this;
 }
   
-wex::window_data& wex::window_data::Parent(wxWindow* parent)
+wex::window_data& wex::window_data::parent(wxWindow* parent)
 {
   m_Parent = parent;
   return *this;
 }
 
-wex::window_data& wex::window_data::Pos(const wxPoint& point)
+wex::window_data& wex::window_data::pos(const wxPoint& point)
 {
   m_Pos = point;
   return *this;
 }
   
-wex::window_data& wex::window_data::Size(const wxSize& size)
+wex::window_data& wex::window_data::size(const wxSize& size)
 {
   m_Size = size;
   return *this;
 }
   
-wex::window_data& wex::window_data::Style(long style) 
+wex::window_data& wex::window_data::style(long style) 
 {
   m_Style = style;
   return *this;
 }
 
-wex::window_data& wex::window_data::Title(const std::string& title) 
+wex::window_data& wex::window_data::title(const std::string& title) 
 {
   m_Title = title;
   return *this;

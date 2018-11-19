@@ -15,30 +15,30 @@ TEST_CASE("wex::tool_dir")
 {
   const wex::tool tool = wex::ID_TOOL_REPORT_FIND;
 
-  wex::listview* report = new wex::listview(wex::listview_data().Type(wex::listview_data::FIND));
+  wex::listview* report = new wex::listview(wex::listview_data().type(wex::listview_data::FIND));
     
-  if (!wex::listview_stream::SetupTool(tool, GetFrame(), report))
+  if (!wex::listview_stream::setup_tool(tool, frame(), report))
   {
     return;
   }
 
-  AddPane(GetFrame(), report);
+  AddPane(frame(), report);
   
   wex::tool_dir dir(
     tool,
     "./",
     "*.cpp;*.h",
-    wex::dir::FILES | wex::dir::HIDDEN | wex::dir::DIRS);
+    wex::dir::type_t().set());
 
-  dir.FindFiles();
+  dir.find_files();
 
-  wex::log_status(tool.Info(&dir.GetStatistics().GetElements()));
+  wex::log_status(tool.info(&dir.get_statistics().get_elements()));
 }
 
 TEST_CASE("wex::listview_dir")
 {
-  wex::listview_file* listView = new wex::listview_file(GetProject());
-  AddPane(GetFrame(), listView);
+  wex::listview_file* listView = new wex::listview_file(get_project());
+  AddPane(frame(), listView);
   wex::listview_dir* dir = new wex::listview_dir(listView, GetTestPath());
-  REQUIRE(dir->FindFiles() == 0);
+  REQUIRE(dir->find_files() == 0);
 }

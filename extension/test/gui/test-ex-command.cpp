@@ -15,55 +15,55 @@
 
 TEST_CASE("wex::ex_command")
 {
-  wex::stc* stc = GetSTC();
-  stc->SetText("more text\notherline\nother line");
+  wex::stc* stc = get_stc();
+  stc->set_text("more text\notherline\nother line");
 
   SUBCASE("Constructor STC")
   {
     wex::ex_command command(stc);
 
-    REQUIRE( command.Command().empty());
-    REQUIRE(!command.IsHandled());
-    REQUIRE( command.STC() == stc);
-    REQUIRE( command.Type() == wex::ex_command::type::NONE);
+    REQUIRE( command.command().empty());
+    REQUIRE(!command.is_handled());
+    REQUIRE( command.stc() == stc);
+    REQUIRE( command.type() == wex::ex_command::type_t::NONE);
 
-    command.Command("G");
-    REQUIRE( command.Command() == "G");
-    REQUIRE( command.Exec() );
+    command.command("G");
+    REQUIRE( command.command() == "G");
+    REQUIRE( command.exec() );
     REQUIRE( stc->GetCurrentLine() == 2);
 
     command.clear();
-    REQUIRE( command.Command().empty());
-    command.Append('g');
-    REQUIRE( command.Command() == "g");
-    command.Append('g');
-    REQUIRE( command.Command() == "gg");
+    REQUIRE( command.command().empty());
+    command.append('g');
+    REQUIRE( command.command() == "g");
+    command.append('g');
+    REQUIRE( command.command() == "gg");
     REQUIRE( command.front() == 'g');
     REQUIRE( command.back() == 'g');
     REQUIRE( command.size() == 2);
     command.pop_back();
     REQUIRE( command.size() == 1);
-    REQUIRE( command.AppendExec('g'));
+    REQUIRE( command.append_exec('g'));
     REQUIRE( stc->GetCurrentLine() == 0);
 
-    command.Set(wex::ex_command("dd"));
-    REQUIRE( command.Command() == "dd");
-    REQUIRE( command.STC() == stc);
-    command.Restore(wex::ex_command("ww"));
-    REQUIRE( command.Command() == "ww");
-    REQUIRE( command.STC() == stc);
+    command.set(wex::ex_command("dd"));
+    REQUIRE( command.command() == "dd");
+    REQUIRE( command.stc() == stc);
+    command.restore(wex::ex_command("ww"));
+    REQUIRE( command.command() == "ww");
+    REQUIRE( command.stc() == stc);
   }
   
   SUBCASE("Constructor command")
   {
     wex::ex_command command("G");
 
-    REQUIRE( command.Command() == "G");
-    REQUIRE(!command.IsHandled());
-    REQUIRE( command.STC() == nullptr);
-    REQUIRE( command.Type() == wex::ex_command::type::VI);
+    REQUIRE( command.command() == "G");
+    REQUIRE(!command.is_handled());
+    REQUIRE( command.stc() == nullptr);
+    REQUIRE( command.type() == wex::ex_command::type_t::VI);
 
-    REQUIRE(!command.Exec() );
+    REQUIRE(!command.exec() );
     REQUIRE( stc->GetCurrentLine() == 0);
   }
 }

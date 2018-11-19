@@ -9,28 +9,21 @@
 #include <wex/log.h>
 #include <easylogging++.h>
 
-wex::ctags_entry& wex::ctags_entry::Access(const std::string& v) 
+wex::ctags_entry& wex::ctags_entry::access(const std::string& v) 
 {
   m_access = v;
   return *this;
 }
 
-bool wex::ctags_entry::Active() const
-{
-  return 
-    !m_access.empty() || !m_class.empty() ||
-    !m_kind.empty() || !m_signature.empty();
-}
-
-wex::ctags_entry& wex::ctags_entry::Class(const std::string& v)
+wex::ctags_entry& wex::ctags_entry::class_name(const std::string& v)
 {
   m_class = v;
   return *this;
 }
 
-void wex::ctags_entry::Clear()
+void wex::ctags_entry::clear()
 {
-  VLOG(9) << "filter: " << Get() << " cleared";
+  VLOG(9) << "filter: " << get() << " cleared";
 
   m_access.clear();
   m_class.clear();
@@ -38,7 +31,7 @@ void wex::ctags_entry::Clear()
   m_signature.clear();
 }
 
-const std::string wex::ctags_entry::Get() const
+const std::string wex::ctags_entry::get() const
 {
   return 
     (!m_access.empty() ? "access: " + m_access + " ": std::string()) + 
@@ -47,13 +40,20 @@ const std::string wex::ctags_entry::Get() const
     (!m_signature.empty() ? "signature: " + m_signature + " ": std::string());
 }
 
-wex::ctags_entry& wex::ctags_entry::Kind(const std::string& v)
+bool wex::ctags_entry::is_active() const
+{
+  return 
+    !m_access.empty() || !m_class.empty() ||
+    !m_kind.empty() || !m_signature.empty();
+}
+
+wex::ctags_entry& wex::ctags_entry::kind(const std::string& v)
 {
   m_kind = v;
   return *this;
 }
 
-wex::ctags_entry& wex::ctags_entry::Signature(const std::string& v)
+wex::ctags_entry& wex::ctags_entry::signature(const std::string& v)
 {
   m_signature = v;
   return *this;

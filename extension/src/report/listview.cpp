@@ -26,11 +26,11 @@
 wex::history_listview::history_listview(const listview_data& data)
   : listview(data)
   , m_Frame(dynamic_cast<history_frame*>(wxTheApp->GetTopWindow()))
-  , m_MenuFlags(data.Menu())
+  , m_MenuFlags(data.menu())
 {
-  if (GetData().Type() == listview_data::HISTORY)
+  if (data.type() == listview_data::HISTORY)
   {
-    m_Frame->UseFileHistoryList(this);
+    m_Frame->use_file_history_list(this);
   }
 
   wxAcceleratorEntry entries[5];
@@ -50,30 +50,30 @@ wex::history_listview::history_listview(const listview_data& data)
     for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
     {
       listitem li(this, i);
-      const wex::path* filename = &li.GetFileName();
-      if (!filename->FileExists()) continue;
+      const wex::path* filename = &li.get_filename();
+      if (!filename->file_exists()) continue;
       switch (event.GetId())
       {
         case ID_LIST_COMPARE:
         {
           if (GetSelectedItemCount() == 1)
           {
-            list = m_Frame->Activate(listview_data::FILE);
+            list = m_Frame->activate(listview_data::FILE);
             if (list == nullptr) return;
             const int main_selected = list->GetFirstSelected();
-            comparefile(listitem(list, main_selected).GetFileName(), *filename);
+            comparefile(listitem(list, main_selected).get_filename(), *filename);
           }
           else
           {
             if (first)
             {
               first = false;
-              file1 = filename->Path().string();
+              file1 = filename->data().string();
             }
             else
             {
               first = true;
-              file2 = filename->Path().string();
+              file2 = filename->data().string();
             }
             if (first) comparefile(path(file1), path(file2));
           }
@@ -83,13 +83,13 @@ wex::history_listview::history_listview(const listview_data& data)
     }}, ID_LIST_COMPARE);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    make(listitem(this, GetFirstSelected()).GetFileName());}, ID_LIST_RUN_MAKE);
+    make(listitem(this, GetFirstSelected()).get_filename());}, ID_LIST_RUN_MAKE);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     const wex::tool& tool(event.GetId());
-    if (tool.GetId() == ID_TOOL_REPORT_KEYWORD && GetData().Type() == listview_data::KEYWORD) return;
-    if (tool.IsFindType() && m_Frame->FindInFilesDialog(tool.GetId()) == wxID_CANCEL) return;
-    if (!listview_stream::SetupTool(tool, m_Frame)) return;
+    if (tool.id() == ID_TOOL_REPORT_KEYWORD && data.type() == listview_data::KEYWORD) return;
+    if (tool.is_find_type() && m_Frame->find_in_files_dialog(tool.id()) == wxID_CANCEL) return;
+    if (!listview_stream::setup_tool(tool, m_Frame)) return;
 
 #ifdef __WXMSW__    
     std::thread t([=] {
@@ -100,23 +100,23 @@ wex::history_listview::history_listview(const listview_data& data)
     for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
     {
       const listitem item(this, i);
-      wxLogStatus(item.GetFileName().Path().string().c_str());
-      if (item.GetFileName().FileExists())
+      wxLogStatus(item.get_filename().data().string().c_str());
+      if (item.get_filename().file_exists())
       {
-        listview_stream file(item.GetFileName(), tool);
-        file.RunTool();
-        stats += file.GetStatistics().GetElements();
+        listview_stream file(item.get_filename(), tool);
+        file.run_tool();
+        stats += file.get_statistics().get_elements();
       }
       else
       {
         tool_dir dir(tool, 
-          item.GetFileName().Path().string(), 
-          item.GetFileSpec());
-        dir.FindFiles();
-        stats += dir.GetStatistics().GetElements();
+          item.get_filename().data().string(), 
+          item.file_spec());
+        dir.find_files();
+        stats += dir.get_statistics().get_elements();
       }
     }
-    log_status(tool.Info(&stats));
+    log_status(tool.info(&stats));
 #ifdef __WXMSW__    
     });
     t.detach();
@@ -127,13 +127,13 @@ wex::history_listview::history_listview(const listview_data& data)
     std::vector< path > files;
     for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
     {
-      files.emplace_back(listitem(this, i).GetFileName().Path());
+      files.emplace_back(listitem(this, i).get_filename().data());
     }
     vcs_execute(m_Frame, event.GetId() - ID_EDIT_VCS_LOWEST - 1, files);
     }, ID_EDIT_VCS_LOWEST, ID_EDIT_VCS_HIGHEST);
 }
 
-void wex::history_listview::BuildPopupMenu(wex::menu& menu)
+void wex::history_listview::build_popup_menu(wex::menu& menu)
 {
   bool exists = true, is_folder = false, is_make = false, read_only = false;
 
@@ -141,47 +141,47 @@ void wex::history_listview::BuildPopupMenu(wex::menu& menu)
   {
     const listitem item(this, GetFirstSelected());
 
-    exists = item.GetFileName().GetStat().is_ok();
-    is_folder = item.GetFileName().DirExists();
-    read_only = item.GetFileName().GetStat().is_readonly();
-    is_make = item.GetFileName().GetLexer().GetScintillaLexer() == "makefile";
+    exists = item.get_filename().stat().is_ok();
+    is_folder = item.get_filename().dir_exists();
+    read_only = item.get_filename().stat().is_readonly();
+    is_make = item.get_filename().lexer().scintilla_lexer() == "makefile";
   }
 
-  listview::BuildPopupMenu(menu);
+  listview::build_popup_menu(menu);
 
   if (GetSelectedItemCount() > 1 && exists &&
      !config(_("Comparator")).empty())
   {
-    menu.AppendSeparator();
-    menu.Append(ID_LIST_COMPARE, _("C&ompare") + "\tCtrl+M");
+    menu.append_separator();
+    menu.append(ID_LIST_COMPARE, _("C&ompare") + "\tCtrl+M");
   }
 
   if (GetSelectedItemCount() == 1)
   {
     if (is_make)
     {
-      menu.AppendSeparator();
-      menu.Append(ID_LIST_RUN_MAKE, _("&Make"));
+      menu.append_separator();
+      menu.append(ID_LIST_RUN_MAKE, _("&Make"));
     }
 
-    if ( GetData().Type() != listview_data::FILE &&
-        !wex::vcs().Use() &&
+    if (data().type() != listview_data::FILE &&
+        !wex::vcs().use() &&
          exists && !is_folder)
     {
-      if (auto* list = m_Frame->Activate(listview_data::FILE);
+      if (auto* list = m_Frame->activate(listview_data::FILE);
         list != nullptr && list->GetSelectedItemCount() == 1)
       {
         listitem thislist(this, GetFirstSelected());
-        const wxString current_file = thislist.GetFileName().Path().string();
+        const wxString current_file = thislist.get_filename().data().string();
 
         listitem otherlist(list, list->GetFirstSelected());
 
-        if (const std::string with_file = otherlist.GetFileName().Path().string(); 
+        if (const std::string with_file = otherlist.get_filename().data().string(); 
           current_file != with_file &&
             !config(_("Comparator")).empty())
         {
-          menu.AppendSeparator();
-          menu.Append(ID_LIST_COMPARE,
+          menu.append_separator();
+          menu.append(ID_LIST_COMPARE,
             _("&Compare With") + " " + wxString(get_endoftext(with_file)));
         }
       }
@@ -192,48 +192,50 @@ void wex::history_listview::BuildPopupMenu(wex::menu& menu)
   {
     if (exists && !is_folder)
     {
-      if (vcs::DirExists(
-        listitem(this, GetFirstSelected()).GetFileName()))
+      if (vcs::dir_exists(
+        listitem(this, GetFirstSelected()).get_filename()))
       {
-        menu.AppendSeparator();
-        menu.append_vcs(listitem(this, GetFirstSelected()).GetFileName());
+        menu.append_separator();
+        menu.append_vcs(listitem(this, GetFirstSelected()).get_filename());
       }
     }
 
     // Finding in the listview_data::FIND would result in recursive calls, do not add it.
-    if ( exists &&
-         GetData().Type() != listview_data::FIND && (m_MenuFlags & listview_data::MENU_REPORT_FIND))
+    if (exists &&
+        data().type() != listview_data::FIND && 
+        m_MenuFlags.test(listview_data::MENU_REPORT_FIND))
     {
-      menu.AppendSeparator();
-      menu.Append(ID_TOOL_REPORT_FIND, 
-        ellipsed(m_Frame->GetFindInCaption(ID_TOOL_REPORT_FIND)));
+      menu.append_separator();
+      menu.append(ID_TOOL_REPORT_FIND, 
+        ellipsed(m_Frame->find_in_files_title(ID_TOOL_REPORT_FIND)));
 
       if (!read_only)
       {
-        menu.Append(ID_TOOL_REPLACE, 
-          ellipsed(m_Frame->GetFindInCaption(ID_TOOL_REPLACE)));
+        menu.append(ID_TOOL_REPLACE, 
+          ellipsed(m_Frame->find_in_files_title(ID_TOOL_REPLACE)));
       }
     }
   }
 
   if (GetSelectedItemCount() > 0 && exists && 
-     (m_MenuFlags & listview_data::MENU_TOOL) && !lexers::Get()->get().empty())
+      m_MenuFlags.test(listview_data::MENU_TOOL) && 
+     !lexers::get()->get_lexers().empty())
   {
-    menu.AppendSeparator();
+    menu.append_separator();
     menu.append_tools();
   }
 }
 
 bool wex::history_listview::Destroy()	
 {
-  interruptable::Cancel();
+  interruptable::cancel();
   return listview::Destroy();
 }
 
-wex::listview_data::type wex::history_listview::GetTypeTool(
+wex::listview_data::type_t wex::history_listview::type_tool(
   const tool& tool)
 {
-  switch (tool.GetId())
+  switch (tool.id())
   {
     case ID_TOOL_REPLACE:
     case ID_TOOL_REPORT_FIND: 

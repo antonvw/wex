@@ -27,7 +27,7 @@ wex::stc_data::stc_data(control_data& data, stc* stc)
 }
 
 wex::stc_data::stc_data(window_data& data, stc* stc)
-  : m_Data(control_data().Window(data))
+  : m_Data(control_data().window(data))
   , m_STC(stc)
 {
 }
@@ -36,7 +36,7 @@ wex::stc_data& wex::stc_data::operator=(const stc_data& r)
 {
   if (this != &r)
   {
-    m_CTagsFileName = r.m_CTagsFileName;
+    m_ctags_filename = r.m_ctags_filename;
     m_Data = r.m_Data;
     m_MenuFlags = r.m_MenuFlags;
     m_WinFlags = r.m_WinFlags;
@@ -50,40 +50,40 @@ wex::stc_data& wex::stc_data::operator=(const stc_data& r)
   return *this;
 }
   
-wex::stc_data& wex::stc_data::CTagsFileName(const std::string& text)
+wex::stc_data& wex::stc_data::ctags_filename(const std::string& text)
 {
-  m_CTagsFileName = text;
+  m_ctags_filename = text;
   return *this;
 }
 
-wex::stc_data& wex::stc_data::Flags(
-  window_flags flags, control_data::action action)
+wex::stc_data& wex::stc_data::flags(
+  window_t flags, control_data::action_t action)
 {
-  m_Data.Flags<window_flags>(flags, m_WinFlags, action);
+  m_Data.flags<4>(flags, m_WinFlags, action);
 
   return *this;
 }
   
-bool wex::stc_data::Inject() const
+bool wex::stc_data::inject() const
 {
   if (m_STC == nullptr) return false;
   
-  bool injected = m_Data.Inject(
+  bool injected = m_Data.inject(
     [&]() {
-      if (m_Data.Line() > 0)
+      if (m_Data.line() > 0)
       {
-        m_STC->GotoLine(m_Data.Line() -1);
-        m_STC->EnsureVisible(m_Data.Line() -1);
+        m_STC->GotoLine(m_Data.line() -1);
+        m_STC->EnsureVisible(m_Data.line() -1);
         m_STC->EnsureCaretVisible();
         
         m_STC->IndicatorClearRange(0, m_STC->GetTextLength() - 1);
-        m_STC->SetIndicator(indicator(0), 
-          m_STC->PositionFromLine(m_Data.Line() -1), 
-          m_Data.Col() > 0 ? 
-            m_STC->PositionFromLine(m_Data.Line() -1) + m_Data.Col() - 1:
-            m_STC->GetLineEndPosition(m_Data.Line() -1));
+        m_STC->set_indicator(indicator(0), 
+          m_STC->PositionFromLine(m_Data.line() -1), 
+          m_Data.col() > 0 ? 
+            m_STC->PositionFromLine(m_Data.line() -1) + m_Data.col() - 1:
+            m_STC->GetLineEndPosition(m_Data.line() -1));
       }
-      else if (m_Data.Line() == DATA_NUMBER_NOT_SET)
+      else if (m_Data.line() == DATA_NUMBER_NOT_SET)
       {
         return false;
       }
@@ -93,8 +93,9 @@ bool wex::stc_data::Inject() const
       }
       return true;},
     [&]() {
-      const int max = (m_Data.Line() > 0) ? m_STC->GetLineEndPosition(m_Data.Line() - 1): 0;
-      const int asked = m_STC->GetCurrentPos() + m_Data.Col() - 1;
+      const int max = (m_Data.line() > 0) ? 
+        m_STC->GetLineEndPosition(m_Data.line() - 1): 0;
+      const int asked = m_STC->GetCurrentPos() + m_Data.col() - 1;
           
       m_STC->SetCurrentPos(asked < max ? asked: max);
           
@@ -102,61 +103,61 @@ bool wex::stc_data::Inject() const
       m_STC->SelectNone();
       return true;},
     [&]() {
-      if (m_Data.Line() > 0)
+      if (m_Data.line() > 0)
       {
-        const int start_pos = m_STC->PositionFromLine(m_Data.Line() -1);
-        const int end_pos = m_STC->GetLineEndPosition(m_Data.Line() -1);
+        const int start_pos = m_STC->PositionFromLine(m_Data.line() -1);
+        const int end_pos = m_STC->GetLineEndPosition(m_Data.line() -1);
 
-        m_STC->SetSearchFlags(-1);
+        m_STC->set_search_flags(-1);
         m_STC->SetTargetStart(start_pos);
         m_STC->SetTargetEnd(end_pos);
 
-        if (m_STC->SearchInTarget(m_Data.Find()) != -1)
+        if (m_STC->SearchInTarget(m_Data.find()) != -1)
         {
           m_STC->SetSelection(m_STC->GetTargetStart(), m_STC->GetTargetEnd());
         }
       }
-      else if (m_Data.Line() == 0)
+      else if (m_Data.line() == 0)
       {
-        m_STC->FindNext(m_Data.Find(), m_Data.FindFlags());
+        m_STC->find_next(m_Data.find(), m_Data.find_flags());
       }
       else
       {
-        m_STC->FindNext(m_Data.Find(), m_Data.FindFlags(), false);
+        m_STC->find_next(m_Data.find(), m_Data.find_flags(), false);
       }
       return true;},
     [&]() {
-      return m_STC->GetVi().Command(m_Data.Command().Command());});
+      return m_STC->get_vi().command(m_Data.command().command());});
 
-  if (!m_Data.Window().Name().empty())
+  if (!m_Data.window().name().empty())
   {
-    m_STC->SetName(m_Data.Window().Name());
+    m_STC->SetName(m_Data.window().name());
   }
   
-  if ((m_WinFlags & WIN_READ_ONLY) ||
-      (m_STC->GetFileName().FileExists() && m_STC->GetFileName().IsReadOnly()))
+  if ( m_WinFlags[WIN_READ_ONLY] ||
+      (m_STC->get_filename().file_exists() && m_STC->get_filename().is_readonly()))
   {
     m_STC->SetReadOnly(true);
     injected = true;
   }
 
-  if (m_STC->GetHexMode().Set((m_WinFlags & WIN_HEX) > 0))
+  if (m_STC->get_hexmode().set(m_WinFlags[WIN_HEX]))
   {
     injected = true;
   }
   
   if (injected)
   {
-    m_STC->PropertiesMessage();
+    m_STC->properties_message();
   }
   
   return injected;
 }
   
-wex::stc_data& wex::stc_data::Menu(
-  menu_flags flags, control_data::action action)
+wex::stc_data& wex::stc_data::menu(
+  menu_t flags, control_data::action_t action)
 {
-  m_Data.Flags<menu_flags>(flags, m_MenuFlags, action);
+  m_Data.flags<5>(flags, m_MenuFlags, action);
 
   return *this;
 }

@@ -15,20 +15,20 @@ namespace wex
   public:
     /// Cancel interruptable process.
     /// Returns false if process was not running.
-    static bool Cancel();
+    static bool cancel();
 
     /// Check whether process was cancelled.
-    static bool Cancelled() {return m_Cancelled;};
+    static bool is_cancelled() {return m_Cancelled;};
 
     /// Is process running.
-    static bool Running() {return m_Running;};
+    static bool is_running() {return m_Running;};
     
     /// Starts interruptable process.
     /// Returns false if process is already running.
-    static bool Start();
+    static bool start();
     
     /// Stops interruptable process.
-    static void Stop();
+    static void stop();
   private:
     static bool m_Cancelled;
     static bool m_Running;

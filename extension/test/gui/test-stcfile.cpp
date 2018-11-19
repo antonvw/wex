@@ -17,23 +17,23 @@
 TEST_CASE("wex::stc_file")
 {
   wex::stc* stc = new wex::stc(GetTestPath("test.h"));
-  stc->SetText("and still they came");
+  stc->set_text("and still they came");
   
-  AddPane(GetFrame(), stc);
+  AddPane(frame(), stc);
   
   wex::stc_file file(stc);
 
   // The file itself is not assigned.  
-  REQUIRE(!file.GetFileName().GetStat().is_ok());
-  REQUIRE(!file.GetContentsChanged());
+  REQUIRE(!file.get_filename().stat().is_ok());
+  REQUIRE(!file.get_contents_changed());
 
-  REQUIRE( file.FileNew("test-file.txt"));
+  REQUIRE( file.file_new("test-file.txt"));
   REQUIRE( stc->GetText().empty());
-  stc->SetText("No, the game never ends "
+  stc->set_text("No, the game never ends "
     "when your whole world depends "
     "on the turn of a friendly card.");
-  REQUIRE(!file.GetContentsChanged());
-  REQUIRE( file.FileSave());
-  REQUIRE(!file.GetContentsChanged());
+  REQUIRE(!file.get_contents_changed());
+  REQUIRE( file.file_save());
+  REQUIRE(!file.get_contents_changed());
   REQUIRE( remove("test-file.txt") == 0);
 }

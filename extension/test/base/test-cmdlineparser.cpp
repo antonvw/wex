@@ -40,11 +40,11 @@ TEST_CASE("wex::cmdline")
         r = v[2];
         return true;}});
   
-  REQUIRE( cmdl.Parse(str));
-  REQUIRE( cmdl.Delimiter() == ' ');
+  REQUIRE( cmdl.parse(str));
+  REQUIRE( cmdl.delimiter() == ' ');
 
-  cmdl.Delimiter('x');
-  REQUIRE( cmdl.Delimiter() == 'x');
+  cmdl.delimiter('x');
+  REQUIRE( cmdl.delimiter() == 'x');
 
   REQUIRE( a == 10 );
   REQUIRE( b == 5.1f );

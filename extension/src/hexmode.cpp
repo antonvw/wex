@@ -25,14 +25,15 @@ int GetHexNumberFromUser(
   int value, int min, int max,
   wxWindow *parent)
 {
-  wex::item::UseConfig(false);
-  wex::item_dialog dlg({{message, min, max, value}}, wex::window_data().Title(caption).Parent(parent));
-  wex::item::UseConfig(true);
+  wex::item::use_config(false);
+  wex::item_dialog dlg({{message, min, max, value}}, 
+    wex::window_data().title(caption).parent(parent));
+  wex::item::use_config(true);
   
-  ((wxSpinCtrl* )dlg.GetItem(message).GetWindow())->SetBase(16);
+  ((wxSpinCtrl* )dlg.get_item(message).window())->SetBase(16);
   
   return dlg.ShowModal() == wxID_CANCEL ? 
-    -1: std::any_cast<int>(dlg.GetItemValue(message));
+    -1: std::any_cast<int>(dlg.get_item_value(message));
 }
 
 const std::string MakeLine(wex::stc* stc, const std::string& buffer, 
@@ -59,7 +60,7 @@ const std::string MakeLine(wex::stc* stc, const std::string& buffer,
       
   return field_hex + field_spaces + field_ascii +
     (buffer.size() - offset > bytesPerLine ?
-       stc->GetEOL(): std::string());
+       stc->eol(): std::string());
 }
 
 // If bytesPerLine is changed, update Convert.
@@ -70,7 +71,7 @@ wex::hexmode::hexmode(wex::stc* stc, size_t bytesPerLine)
 {
 }
   
-void wex::hexmode::Activate()
+void wex::hexmode::activate()
 {
   m_Active = true;
 
@@ -81,12 +82,12 @@ void wex::hexmode::Activate()
   m_STC->BeginUndoAction();
   
   wxCharBuffer buffer(m_STC->GetTextRaw());
-  SetText(std::string(buffer.data(), buffer.length()));
+  set_text(std::string(buffer.data(), buffer.length()));
   
-  lexers::Get()->Apply(m_STC);
+  lexers::get()->apply(m_STC);
 }
 
-void wex::hexmode::AppendText(const std::string& buffer)
+void wex::hexmode::append_text(const std::string& buffer)
 {
   if (!m_Active) return;
 
@@ -111,7 +112,7 @@ void wex::hexmode::AppendText(const std::string& buffer)
   m_STC->AppendTextRaw(text.data(), text.size());
 }
 
-void wex::hexmode::ControlCharDialog(const std::string& caption)
+void wex::hexmode::control_char_dialog(const std::string& caption)
 {
   if (hexmode_line ml(this, m_STC->GetSelectionStart());
     ml.IsAsciiField() &&
@@ -154,24 +155,24 @@ void wex::hexmode::Deactivate()
   m_STC->SetEdgeMode(config(_("Edge line")).get(wxSTC_EDGE_NONE));
   m_STC->SetViewEOL(config(_("End of line")).get(false));
   m_STC->SetViewWhiteSpace(config(_("Whitespace visible")).get(wxSTC_WS_INVISIBLE));
-  m_STC->ClearDocument(false);
+  m_STC->clear(false);
   m_STC->AppendTextRaw(m_Buffer.data(), m_Buffer.size());
   m_STC->BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);
 }
 
-bool wex::hexmode::Delete(int count, int pos) 
+bool wex::hexmode::erase(int count, int pos) 
 {
   return pos == -1 ? 
     hexmode_line(this).Delete(count):
     hexmode_line(this, pos).Delete(count);
 }
   
-const std::string wex::hexmode::GetInfo()
+const std::string wex::hexmode::get_info()
 {
-  return hexmode_line(this).GetInfo();
+  return hexmode_line(this).info();
 }
   
-bool wex::hexmode::GotoDialog()
+bool wex::hexmode::goto_dialog()
 {
   long val;
   if ((val = wxGetNumberFromUser(
@@ -191,21 +192,21 @@ bool wex::hexmode::GotoDialog()
   return hexmode_line(this, val, false).Goto();
 }
 
-bool wex::hexmode::HighlightOther()
+bool wex::hexmode::highlight_other()
 {
-  if (const auto pos = m_STC->GetCurrentPos(); HighlightOther(pos))
+  if (const auto pos = m_STC->GetCurrentPos(); highlight_other(pos))
   {
     return true;
   }
   else if (m_STC->PositionFromLine(pos) != pos)
   {
-    return HighlightOther(pos - 1);
+    return highlight_other(pos - 1);
   }
   
   return false;
 }
     
-bool wex::hexmode::HighlightOther(int pos)
+bool wex::hexmode::highlight_other(int pos)
 {
   if (const auto brace_match = hexmode_line(this, pos).OtherField();
     brace_match != wxSTC_INVALID_POSITION)
@@ -221,21 +222,21 @@ bool wex::hexmode::HighlightOther(int pos)
   }
 }
 
-bool wex::hexmode::Insert(const std::string& text, int pos)
+bool wex::hexmode::insert(const std::string& text, int pos)
 {
   return pos == -1 ? 
     hexmode_line(this).Insert(text):
     hexmode_line(this, pos).Insert(text);
 }
   
-bool wex::hexmode::Replace(char c, int pos)
+bool wex::hexmode::replace(char c, int pos)
 {
   return pos == -1 ? 
     hexmode_line(this).Replace(c):
     hexmode_line(this, pos).Replace(c);
 }
   
-bool wex::hexmode::ReplaceTarget(const std::string& replacement, bool settext)
+bool wex::hexmode::replace_target(const std::string& replacement, bool settext)
 {
   if (m_STC->GetTargetStart() == wxSTC_INVALID_POSITION || 
       m_STC->GetTargetEnd() == wxSTC_INVALID_POSITION || 
@@ -286,15 +287,15 @@ bool wex::hexmode::ReplaceTarget(const std::string& replacement, bool settext)
   return true;
 }
   
-bool wex::hexmode::Set(bool on)
+bool wex::hexmode::set(bool on)
 {
   if (m_Active == on) return false;
 
-  m_STC->UseModificationMarkers(false);
+  m_STC->use_modification_markers(false);
   
   const bool modified = (m_STC->GetModify());
   
-  on ? Activate(): Deactivate();
+  on ? activate(): Deactivate();
   
   if (!modified)
   {
@@ -302,17 +303,17 @@ bool wex::hexmode::Set(bool on)
     m_STC->SetSavePoint();
   }
     
-  m_STC->UseModificationMarkers(true);
+  m_STC->use_modification_markers(true);
   
   return true;
 }
 
-void wex::hexmode::SetPos(const wxKeyEvent& event)
+void wex::hexmode::set_pos(const wxKeyEvent& event)
 {
   hexmode_line(this).SetPos(event);
 }
       
-void wex::hexmode::SetText(const std::string text)
+void wex::hexmode::set_text(const std::string text)
 {
   if (!m_Active) return;
 
@@ -320,15 +321,15 @@ void wex::hexmode::SetText(const std::string text)
   m_BufferOriginal.clear();
 
   m_STC->SelectNone();
-  m_STC->PositionSave();
-  m_STC->ClearDocument(false);
+  m_STC->position_save();
+  m_STC->clear(false);
   
-  AppendText(text);
+  append_text(text);
 
-  m_STC->PositionRestore();
+  m_STC->position_restore();
 }
   
-void wex::hexmode::Undo()
+void wex::hexmode::undo()
 {
   if (m_Active)
   {

@@ -131,11 +131,13 @@ namespace wex
 
   enum
   {
-    FIRST_OF_AFTER_FROM_BEGIN = 0x000, ///< substring after match, from begin
-    FIRST_OF_BEFORE           = 0x001, ///< substring before match
-    FIRST_OF_FROM_END         = 0x002, ///< substring from end
+    FIRST_OF_AFTER_FROM_BEGIN = 0, ///< substring after match, from begin
+    FIRST_OF_BEFORE           = 1, ///< substring before match
+    FIRST_OF_FROM_END         = 2, ///< substring from end
   };
 
+  typedef std::bitset<3> firstof_t;
+  
   /// Returns substring after (or before) first occurrence of one of specified chars.
   const std::string firstof(
     /// text to be searched
@@ -145,7 +147,7 @@ namespace wex
     /// start pos (from start or end of text, depending on flags)
     const size_t start_pos = 0,
     /// start searching at begin, or at end
-    long flags = FIRST_OF_AFTER_FROM_BEGIN);
+    firstof_t flags = firstof_t().set(FIRST_OF_AFTER_FROM_BEGIN));
 
   /// If text length exceeds max_chars,
   /// returns an ellipse prefix followed by the last max_chars from the text,
@@ -192,20 +194,22 @@ namespace wex
   bool is_codeword_separator(int c);
 
   /// Flags for log_status.
-  enum statusflags
+  enum
   {
-    STAT_DEFAULT  = 0x0000, ///< shows 'modified' and file 'fullname'
-    STAT_SYNC     = 0x0001, ///< shows 'synchronized' instead of 'modified'
-    STAT_FULLPATH = 0x0002  ///< shows file 'fullpath' instead of 'fullname'
+    STAT_SYNC     = 0, ///< shows 'synchronized' instead of 'modified'
+    STAT_FULLPATH = 1  ///< shows file 'fullpath' instead of 'fullname'
   };
 
-  /// Logs filename info on the statusbar.
-  // Using type statusflags instead of long gives compiler errors at
-  // invoking.
-  void log_status(const path& filename, long flags = STAT_DEFAULT);
+  typedef std::bitset<2> status_t;
+  
+  /// Logs text.
+  void log_status(const char* text);
 
   /// Logs text.
   void log_status(const std::string& text);
+
+  /// Logs path info on the statusbar.
+  void log_status(const path& filename, status_t flags = 0);
 
   /// Runs make on specified makefile.
   /// Returns value from executing the make process.
@@ -251,15 +255,15 @@ namespace wex
   /// Opens all files specified by files.
   /// Returns number of files opened.
   int open_files(
-    /// frame on which OpenFile for each file is called,
+    /// frame on which open_file for each file is called,
     /// and open_file_dir for each dir
     frame* frame,
     /// array with files
     const std::vector< path > & files,
-    /// data to be used with OpenFile
+    /// data to be used with open_file
     const stc_data& data = stc_data(),
     /// flags to be used with open_file_dir
-    int dir_flags = dir::DEFAULT);
+    dir::type_t type = dir::type_t().set());
 
   /// Shows a dialog and opens selected files
   /// (calls open_files).
@@ -272,10 +276,10 @@ namespace wex
     const std::string& wildcards = wxFileSelectorDefaultWildcardStr,
     /// flags to be used with file_dialog
     bool ask_for_continue = false,
-    /// data to be used with OpenFile
+    /// data to be used with open_file
     const stc_data& data = stc_data(),
     /// flags to be used with open_file_dir
-    int dir_flags = dir::DEFAULT);
+    dir::type_t type = dir::type_t().set());
 
   /// Adds a caption.
   const std::string print_caption(const path& filename);
@@ -299,7 +303,7 @@ namespace wex
   int replace_all(
     /// text to be replaced
     std::string& text, 
-    /// text to replace
+    /// text to replace (no regex)
     const std::string& search,
     /// replacement
     const std::string& replace,
@@ -313,34 +317,36 @@ namespace wex
 
   enum
   {
-    SKIP_LEFT    = 0x0001,  ///< skip space at left
-    SKIP_RIGHT   = 0x0002,  ///< skip space at right
-    SKIP_BOTH    = 0x0003,  ///< skip space at left and right
-    SKIP_ALL     = 0xFFFF,  ///< skip all space (also in the middle)
+    SKIP_LEFT  = 0, ///< skip space at left
+    SKIP_MID   = 1, ///< skip space at mid
+    SKIP_RIGHT = 2, ///< skip space at right
   };
     
+  typedef std::bitset<3> skip_t;
+  
   /// Returns a string without all white space in specified input.
   const std::string skip_white_space(
     /// text with white space to be skipped
     const std::string& text,
     /// kind of skip
-    size_t skip_type = SKIP_BOTH,
-    /// replace with (only for skip all)
+    skip_t type_t = skip_t().set(SKIP_LEFT).set(SKIP_RIGHT),
+    /// replace with (only for SKIP_MID)
     const std::string& replace_with = " ");
 
   enum
   {
-    STRING_SORT_ASCENDING  = 0x000, ///< default, keep doubles
-    STRING_SORT_DESCENDING = 0x001, ///< sort descending order
-    STRING_SORT_UNIQUE     = 0x002, ///< flag to remove doubles
+    STRING_SORT_DESCENDING = 0, ///< sort descending order
+    STRING_SORT_UNIQUE     = 1, ///< flag to remove doubles
   };
 
+  typedef std::bitset<2> string_sort_t;
+  
   /// Sorts specified text, returns string with sorted text.
   const std::string sort(
     /// text to sort
     const std::string& input, 
     /// sort type
-    size_t sort_type,
+    string_sort_t sort_t,
     /// position of the first character to be replaced
     size_t pos, 
     /// eol to split lines
@@ -354,7 +360,7 @@ namespace wex
     /// Component with selected text to be sorted
     stc* stc,
     /// sort type
-    size_t sort_type = STRING_SORT_ASCENDING,
+    string_sort_t sort_t = 0,
     /// position of the first character to be replaced
     size_t pos = 0,
     /// number of characters to replace
@@ -376,7 +382,7 @@ namespace wex
   /// Executes VCS command id for specified files
   /// and opens component if necessary.
   void vcs_execute(
-    /// frame on which OpenFile is called
+    /// frame on which open_file is called
     frame* frame, 
     /// VCS menu id to execute
     int id,

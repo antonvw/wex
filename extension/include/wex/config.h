@@ -20,7 +20,7 @@ namespace wex
   class config
   {
   public:
-    enum type
+    enum type_t
     {
       DATA_STORE_WRITE,     ///< create store if not present
       DATA_STORE_OVERWRITE, ///< always create new store
@@ -28,7 +28,7 @@ namespace wex
     };
     
     /// Default constructor.
-    config(type type = DATA_STORE_WRITE);
+    config(type_t type = DATA_STORE_WRITE);
     
     /// Constructor for item (key).
     config(const std::string& item);
@@ -135,6 +135,6 @@ namespace wex
     static wxConfigBase* wx_config();
   private:
     std::string m_item;
-    type m_type {DATA_STORE_WRITE};
+    type_t m_type {DATA_STORE_WRITE};
   };
 };

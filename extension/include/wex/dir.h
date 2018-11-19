@@ -17,23 +17,23 @@ namespace wex
 {
   class path;
 
-  /// Offers FindFiles method.
-  /// By overriding OnDir and OnFile you can take care
+  /// Offers find_files method.
+  /// By overriding on_dir and on_file you can take care
   /// of what to do with the result.
   class dir : public interruptable
   {
   public:
     /// dir flags.
-    enum dir_flags
+    enum
     {
-      FILES     = 0x0001, // include files
-      DIRS      = 0x0002, // include directories
-      RECURSIVE = 0x0004, // recursive
-      HIDDEN    = 0x0008, // include hidden files
-
-      DEFAULT = FILES | DIRS | RECURSIVE | HIDDEN
+      FILES     = 0, // include files
+      DIRS      = 1, // include directories
+      RECURSIVE = 2, // recursive
+      HIDDEN    = 3, // include hidden files
     };
 
+    typedef std::bitset<4> type_t;
+    
     /// Constructor.
     dir(
       /// the dir to start finding
@@ -41,35 +41,35 @@ namespace wex
       /// the files to be found
       const std::string& filespec = std::string(),
       /// finds all
-      int flags = DEFAULT); 
-
-    /// Finds matching files.
-    /// This results in recursive calls for OnDir and OnFile.
-    /// Returns number of files matching, or -1 if error.
-    int FindFiles();
-
-    /// Returns the dir.
-    const auto & GetDir() const {return m_Dir;};
+      type_t flags = type_t().set()); 
 
     /// Returns the file spec.
-    const auto & GetFileSpec() const {return m_FileSpec;};
+    const auto & file_spec() const {return m_FileSpec;};
+
+    /// Finds matching files.
+    /// This results in recursive calls for on_dir and on_file.
+    /// Returns number of files matching, or -1 if error.
+    int find_files();
+
+    /// Returns the path.
+    const auto & get_path() const {return m_Dir;};
 
     /// Returns the flags.
-    auto GetFlags() const {return m_Flags;};
+    auto type() const {return m_Flags;};
    
     /// Do something with the dir.
     /// Not made pure virtual, to allow this 
-    /// class to be tested by calling FindFiles.
-    virtual bool OnDir(const path& ) {return true;};
+    /// class to be tested by calling find_files.
+    virtual bool on_dir(const path& ) {return true;};
 
     /// Do something with the file.
     /// Not made pure virtual, to allow this 
-    /// class to be tested by calling FindFiles.
-    virtual bool OnFile(const path& ) {return true;};
+    /// class to be tested by calling find_files.
+    virtual bool on_file(const path& ) {return true;};
   private:
     const path m_Dir;
     const std::string m_FileSpec;
-    const int m_Flags;
+    const type_t m_Flags;
   };
 
   /// Returns all matching files into a vector of paths.
@@ -79,7 +79,7 @@ namespace wex
     /// the files to be found
     const std::string& filespec = std::string(),
     /// finds all
-    int flags = dir::DEFAULT); 
+    dir::type_t flags = dir::type_t().set()); 
 
   /// Returns all matching files into a vector of strings (without paths).
   std::vector <std::string> get_all_files(
@@ -88,28 +88,28 @@ namespace wex
     /// the files to be found
     const std::string& filespec = std::string(),
     /// finds all
-    int flags = dir::FILES | dir::DIRS); 
+    dir::type_t flags = dir::type_t().set());
 
   class frame;
 
   /// Allows you to easily open all files on specified path.
-  /// After constructing, invoke FindFiles which
-  /// causes all found files to be opened using OpenFile from frame.
+  /// After constructing, invoke find_files which
+  /// causes all found files to be opened using open_file from frame.
   class open_file_dir : public dir
   {
   public:
     /// Constructor.
-    /// Flags are passed on to OpenFile, and dir flags for treating subdirs.
+    /// Flags are passed on to open_file, and dir flags for treating subdirs.
     open_file_dir(frame* frame,
       const path& path,
       const std::string& filespec,
-      stc_data::window_flags file_flags = stc_data::WIN_DEFAULT,
-      int dir_flags = dir::DEFAULT);
+      stc_data::window_t file_flags = 0,
+      type_t type = dir::type_t().set());
 
     /// Opens each found file.
-    virtual bool OnFile(const path& file) override;
+    virtual bool on_file(const path& file) override;
   private:
     frame* m_Frame;
-    stc_data::window_flags m_Flags;
+    stc_data::window_t m_Flags;
   };
 };

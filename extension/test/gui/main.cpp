@@ -25,8 +25,8 @@ namespace wex
     test_managed_frame()
     : managed_frame()
     , m_Process(new process()) {;};
-    virtual process* Process(const std::string& command) override {
-      m_Process->Execute(command);
+    virtual process* get_process(const std::string& command) override {
+      m_Process->execute(command);
       return m_Process;};
   private:
     process* m_Process;
@@ -51,7 +51,7 @@ namespace wex
       }
     
       m_Frame = new test_managed_frame();
-      m_StatusBar = m_Frame->SetupStatusBar({
+      m_StatusBar = m_Frame->setup_statusbar({
         {"Pane0"}, // the order of panes is tested
         {"Pane1"},
         {"Pane2"},
@@ -66,17 +66,17 @@ namespace wex
 
       m_Frame->Show();
 
-      process::PrepareOutput(m_Frame); // before adding pane
+      process::prepare_output(m_Frame); // before adding pane
       
       AddPane(m_Frame, m_STC);
-      AddPane(m_Frame, process::GetShell());
+      AddPane(m_Frame, process::get_shell());
       
       return true;
     }
     
-    static auto* GetFrame() {return m_Frame;};
+    static auto* frame() {return m_Frame;};
     static auto* GetStatusBar() {return m_StatusBar;};
-    static auto* GetSTC() {return m_STC;};
+    static auto* get_stc() {return m_STC;};
   private:
     static test_managed_frame* m_Frame;
     static statusbar* m_StatusBar;
@@ -88,7 +88,7 @@ wex::test_managed_frame* wex::gui_test_app::m_Frame = nullptr;
 wex::statusbar* wex::gui_test_app::m_StatusBar = nullptr;
 wex::stc* wex::gui_test_app::m_STC = nullptr;
   
-std::vector<std::pair<std::string, std::string>> GetAbbreviations()
+std::vector<std::pair<std::string, std::string>> get_abbreviations()
 {
   return std::vector<std::pair<std::string, std::string>> {
     {"XX","GREAT"},
@@ -100,9 +100,9 @@ std::vector<std::string> GetBuiltinVariables()
 {
   std::vector<std::string> v;
 
-  for (const auto i : wex::vi_macros::GetVariables())
+  for (const auto i : wex::vi_macros::get_variables())
   {
-    if (i.second.IsBuiltIn())
+    if (i.second.is_builtin())
     {
        v.push_back(i.first);
     }
@@ -111,9 +111,9 @@ std::vector<std::string> GetBuiltinVariables()
   return v;
 }
 
-wex::managed_frame* GetFrame()
+wex::managed_frame* frame()
 {
-  return wex::gui_test_app::GetFrame();
+  return wex::gui_test_app::frame();
 }
   
 wex::statusbar* GetStatusBar()
@@ -121,16 +121,16 @@ wex::statusbar* GetStatusBar()
   return wex::gui_test_app::GetStatusBar();
 }
 
-wex::stc* GetSTC()
+wex::stc* get_stc()
 {
-  return wex::gui_test_app::GetSTC();
+  return wex::gui_test_app::get_stc();
 }
   
 void Process(const std::string& str, wex::shell* shell)
 {
   for (unsigned i = 0; i < str.length(); ++i)
   {
-    shell->ProcessChar(str.at(i));
+    shell->process_char(str.at(i));
   }
 }
 

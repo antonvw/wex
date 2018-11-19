@@ -16,17 +16,17 @@ namespace wex
   class managed_frame;
 
   /// Offers a toolbar together with stock art.
-  /// Default no controls are added, you have to call AddControls to do that.
+  /// Default no controls are added, you have to call add_controls to do that.
   class toolbar : public wxAuiToolBar
   {
   public:
     /// Constructor.
     toolbar(managed_frame* frame, 
-      const window_data& data = window_data().Style(wxAUI_TB_DEFAULT_STYLE));
+      const window_data& data = window_data().style(wxAUI_TB_DEFAULT_STYLE));
 
     /// Adds automatic naming (for stock menu id's) and 
     /// art id for toolbar normal items.
-    wxAuiToolBarItem* AddTool(int toolId,
+    wxAuiToolBarItem* add_tool(int toolId,
       const wxString& label = wxEmptyString,
       const wxBitmap& bitmap = wxNullBitmap,
       const wxString& shortHelp = wxEmptyString,
@@ -34,10 +34,10 @@ namespace wex
 
     /// Adds the standard controls.
     /// This adds a file open, save and print and find control.
-    void AddControls(bool realize = true);
+    void add_controls(bool realize = true);
     
     /// Returns the frame.
-    managed_frame* GetFrame() {return m_Frame;};
+    managed_frame* frame() {return m_Frame;};
   private:
     managed_frame* m_Frame;
   };
@@ -51,7 +51,7 @@ namespace wex
   public:
     /// Constructor.
     find_toolbar(managed_frame* frame, 
-      const window_data& data = window_data().Style(wxAUI_TB_DEFAULT_STYLE));
+      const window_data& data = window_data().style(wxAUI_TB_DEFAULT_STYLE));
   };
 
   /// Offers a options toolbar, containing checkboxes.
@@ -60,16 +60,16 @@ namespace wex
   public:
     /// Constructor.
     options_toolbar(managed_frame* frame, 
-      const window_data& data = window_data().Style(wxAUI_TB_DEFAULT_STYLE));
+      const window_data& data = window_data().style(wxAUI_TB_DEFAULT_STYLE));
     
     /// Adds the standard checkboxes.
     /// This is a hex and a sync checkbox, and a process check box
-    /// if you called PrepareOutput previously.
-    void AddControls(bool realize = true);
+    /// if you called prepare_output previously.
+    void add_controls(bool realize = true);
     
     /// Updates checkbox state.
     /// Returns true if checkbox was found.
-    bool Update(const wxString& name, bool show);
+    bool update(const wxString& name, bool show);
   private:
     std::vector<wxCheckBox*> m_CheckBoxes;
   };

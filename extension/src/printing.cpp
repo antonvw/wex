@@ -34,7 +34,7 @@ wex::printing::printing()
 #endif
 }
 
-wex::printing* wex::printing::Get(bool createOnDemand)
+wex::printing* wex::printing::get(bool createOnDemand)
 {
   if (m_Self == nullptr && createOnDemand)
   {
@@ -44,7 +44,7 @@ wex::printing* wex::printing::Get(bool createOnDemand)
   return m_Self;
 }
 
-wex::printing* wex::printing::Set(printing* printing)
+wex::printing* wex::printing::set(printing* printing)
 {
   wex::printing* old = m_Self;
   m_Self = printing;
@@ -103,7 +103,7 @@ void wex::printout::OnPreparePrinting()
   wxSize ppiScr;
   GetPPIScreen(&ppiScr.x, &ppiScr.y);
 
-  wxPageSetupDialogData* dlg_data = printing::Get()->GetHtmlPrinter()->GetPageSetupData();
+  wxPageSetupDialogData* dlg_data = printing::get()->get_html_printer()->GetPageSetupData();
   wxSize page = dlg_data->GetPaperSize();
 
   if (page.x == 0 || page.y == 0)
@@ -137,7 +137,7 @@ bool wex::printout::OnPrintPage(int pageNum)
 
   if (pageNum > (int)m_PageBreaks.size())
   {
-    wxFAIL;
+    assert(0);
     return false;
   }
 

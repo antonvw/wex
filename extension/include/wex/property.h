@@ -33,12 +33,12 @@ namespace wex
       , m_Value(value){;};
 
     /// Applies this property to stc component.
-    void Apply(wxStyledTextCtrl* stc) const {
+    void apply(wxStyledTextCtrl* stc) const {
       if (is_ok()) stc->SetProperty(m_Name, m_Value);};
 
     /// Resets this property (resets the value of this property
     /// on the stc component, but does not change the value).
-    void ApplyReset(wxStyledTextCtrl* stc) const {
+    void apply_reset(wxStyledTextCtrl* stc) const {
       stc->SetProperty(m_Name, wxEmptyString);};
     
     /// Returns the name of this property.

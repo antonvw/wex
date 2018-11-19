@@ -51,6 +51,9 @@ namespace wex
     /// Destructor, flushes stringstream to logging.
    ~log();
 
+    /// Returns current logging.
+    const std::string get() const {return m_ss.str();};
+
     /// Logs int according to level.
     log& operator<<(int);
 
@@ -71,9 +74,6 @@ namespace wex
 
     /// Logs listitem according to level.
     log& operator<<(const listitem&);
-
-    /// Returns current logging.
-    const std::string Get() const {return m_ss.str();};
   private:
     void Log() const;
     const std::string S(); // separator

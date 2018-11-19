@@ -17,25 +17,25 @@ namespace wex
   template <class T> class statistics;
 
   /// Helper class for adding clear menu to the grid, and 
-  /// calling Clear for the statistics.
+  /// calling clear for the statistics.
   template <class T> class grid_statistics: public grid
   {
   public:
     /// Constructor.
     grid_statistics(
       statistics <T> * statistics,
-      const window_data& data = window_data().Style(wxWANTS_CHARS))
+      const window_data& data = window_data().style(wxWANTS_CHARS))
       : grid(data)
       , m_Statistics(statistics)
     {
-      Bind(wxEVT_MENU, [=](wxCommandEvent& event) {m_Statistics->Clear();}, wxID_CLEAR);
+      Bind(wxEVT_MENU, [=](wxCommandEvent& event) {m_Statistics->clear();}, wxID_CLEAR);
     }
   protected:
-    void BuildPopupMenu(menu& menu) override {
-      long style = menu::ALLOW_CLEAR;
-      if (IsSelection()) style |= menu::IS_SELECTED;
-      menu.style(style);
-      grid::BuildPopupMenu(menu);};
+    void build_popup_menu(menu& menu) override {
+      menu.style().reset();
+      menu.style().set(menu::ALLOW_CLEAR);
+      if (IsSelection()) menu.style().set(menu::IS_SELECTED);
+      grid::build_popup_menu(menu);};
   private:
     statistics <T> * m_Statistics;
   };
@@ -52,20 +52,20 @@ namespace wex
     statistics(const std::vector<std::pair<const std::string, T>> & v = {}) {
       for (const auto& it : v)
       {
-        Set(it.first, it.second);
+        set(it.first, it.second);
       }};
 
     /// Adds other statistics.
     statistics& operator+=(const statistics& s) {
       for (const auto& it : s.m_Items)
       {
-        Inc(it.first, it.second);
+        inc(it.first, it.second);
       }
       return *this;}
 
-    /// Clears the items. If you have Shown the statistics
+    /// Clears the items. If you have shown the statistics
     /// the window is updated as well.
-    void Clear() {
+    void clear() {
       m_Items.clear();
       m_Rows.clear();
 
@@ -79,9 +79,13 @@ namespace wex
       }
     };
 
+    /// Decrements key with value.
+    const T dec(const std::string& key, T dec_value = 1) {
+      return set(key, get(key) - dec_value);};
+
     /// Returns all items as a string. All items are returned as a string,
     /// with comma's separating items, and a : separating key and value.
-    const std::string Get() const {
+    const std::string get() const {
       std::string text;
       for (const auto& it : m_Items)
       {
@@ -94,25 +98,21 @@ namespace wex
       }
       return text;};
 
-    /// Returns the items.
-    const auto & GetItems() const {return m_Items;};
-
     /// Returns value for specified key.
-    const T Get(const std::string& key) const {
+    const T get(const std::string& key) const {
       const auto it = m_Items.find(key);
       return it != m_Items.end() ? it->second: T();};
 
-    /// Decrements key with value.
-    const T Dec(const std::string& key, T dec_value = 1) {
-      return Set(key, Get(key) - dec_value);};
+    /// Returns the items.
+    const auto & get_items() const {return m_Items;};
 
     /// Increments key with value.
-    const T Inc(const std::string& key, T inc_value = 1) {
-      return Set(key, Get(key) + inc_value);};
+    const T inc(const std::string& key, T inc_value = 1) {
+      return set(key, get(key) + inc_value);};
 
-    /// Sets key to value. If you have Shown the statistics
+    /// Sets key to value. If you have shown the statistics
     /// the window is updated as well.
-    const T Set(const std::string& key, T value) {
+    const T set(const std::string& key, T value) {
       m_Items[key] = value;
       if (m_Grid != nullptr)
       {
@@ -143,7 +143,7 @@ namespace wex
     /// and specify whether to show row labels and col labels.
     /// Returns the window that is created, or is activated,
     /// if it already was created.
-    grid* Show(
+    grid* show(
       /// the parent for the grid
       wxWindow* parent,
       /// show row labels (i.e. row numbers)
@@ -156,13 +156,13 @@ namespace wex
       if (m_Grid == nullptr)
       {
         m_Grid = new grid_statistics<T>(this,
-          window_data().Style(wxWANTS_CHARS).Id(id));
+          window_data().style(wxWANTS_CHARS).id(id));
         m_Grid->CreateGrid(0, 0);
         m_Grid->AppendCols(2);
         m_Grid->EnableEditing(false);
 
 #if wxUSE_DRAG_AND_DROP
-        m_Grid->UseDragAndDrop(false);
+        m_Grid->use_drag_and_drop(false);
 #endif
 
         if (hide_row_labels)
@@ -195,7 +195,7 @@ namespace wex
       return m_Grid;}
 
     /// Access to the grid, returns nullptr if the grid has not been shown yet.
-    const grid* GetGrid() const {return m_Grid;}
+    const grid* get_grid() const {return m_Grid;}
   private:
     std::map<std::string, T> m_Items;
     std::map<std::string, int> m_Rows;

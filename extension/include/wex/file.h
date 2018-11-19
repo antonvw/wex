@@ -17,14 +17,14 @@ namespace wex
 
   /// Offers several methods to read / write files.
   /// Also takes care of synchronization,
-  /// all you have to do is call CheckSync once in a while.
+  /// all you have to do is call check_sync once in a while.
   class file
   {
   public:
     /// Default constructor.
-    /// The open_file parameter specifies the behaviour of FileLoad and
-    /// FileSave, if true, the file is opened before calling DoFileLoad
-    /// and DoFileSave, if false the file is not opened.
+    /// The open_file parameter specifies the behaviour of file_load and
+    /// file_save, if true, the file is opened before calling do_file_load
+    /// and do_file_save, if false the file is not opened.
     file(bool open_file = true);
 
     /// Constructor taking a path, and opens the file.
@@ -51,71 +51,69 @@ namespace wex
     file& operator=(const file& f);
 
     /// Checks whether this file can be synced, and 
-    /// syncs (invokes DoFileLoad) the file if so.
+    /// syncs (invokes do_file_load) the file if so.
     /// Returns true if this file was synced.
-    bool CheckSync();
+    bool check_sync();
 
     /// Sets the path, opens the file if asked for,
-    /// invokes DoFileLoad, and closes the file again.
-    bool FileLoad(const path& p);
+    /// invokes do_file_load, and closes the file again.
+    bool file_load(const path& p);
 
-    /// Sets the path and invokes DoFileNew.
-    bool FileNew(const path& p);
+    /// Sets the path and invokes do_file_new.
+    bool file_new(const path& p);
 
     /// Sets the path if path is ok, opens the file if asked for,
-    /// invokes DoFileSave, and closes the file again.
-    bool FileSave(const path& p = path());
+    /// invokes do_file_save, and closes the file again.
+    bool file_save(const path& p = path());
 
     /// Returns the path.
-    const path& GetFileName() const;
+    const path& get_filename() const;
     
     /// Returns true if file is opened.
-    bool IsOpened() const;
+    bool is_opened() const;
 
     /// Opens current path.
-    bool Open(
+    bool open(
       std::ios_base::openmode mode = std::ios_base::in | std::ios_base::out);
 
     /// Opens specified path.
-    bool Open(
+    bool open(
       const path& p, 
       std::ios_base::openmode mode = std::ios_base::in | std::ios_base::out);
 
     /// Reads this file into a buffer.
-    /// Return nullptr in case of error.
-    const std::string* Read(std::streampos seek_position = 0);
+    const std::string* read(std::streampos seek_position = 0);
 
     /// Writes file from buffer.
-    bool Write(const char* s, size_t n);
+    bool write(const char* s, size_t n);
     
     /// Writes file from string.
-    bool Write(const std::string& s);
+    bool write(const std::string& s);
   public:
     /// Returns whether contents have been changed.
-    virtual bool GetContentsChanged() const {return false;};
+    virtual bool get_contents_changed() const {return false;};
 
     /// Resets contents changed.
-    virtual void ResetContentsChanged() {;};
+    virtual void reset_contents_changed() {;};
   protected:
-    /// Invoked by FileLoad, allows you to load the file.
+    /// Invoked by file_load, allows you to load the file.
     /// The file is already opened, so you can call Read.
     /// If synced is true, this call was a result of
-    /// CheckSync and not of FileLoad.
-    virtual bool DoFileLoad(bool synced = false) {return false;};
+    /// check_sync and not of file_load.
+    virtual bool do_file_load(bool synced = false) {return false;};
 
-    /// Invoked by FileNew, allows you to make a new (empty) file.
-    virtual void DoFileNew() {;};
+    /// Invoked by file_new, allows you to make a new (empty) file.
+    virtual void do_file_new() {;};
 
-    /// Invoked by FileSave, allows you to save the file.
+    /// Invoked by file_save, allows you to save the file.
     /// The file is already opened.
-    virtual void DoFileSave(bool save_as = false) {;};
+    virtual void do_file_save(bool save_as = false) {;};
   private:
-    void Assign(const path& p);
-    bool FileLoad(bool synced);
+    void assign(const path& p);
+    bool file_load(bool synced);
     
-    bool m_IsLoaded {false}, m_OpenFile;
+    bool m_IsLoaded {false}, m_open_file;
     
-    std::unique_ptr<std::string> m_Buffer;
     std::unique_ptr<file_imp> m_File;
   };
 };

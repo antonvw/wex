@@ -16,8 +16,8 @@
 
 TEST_CASE("wex::listitem")
 {
-  wex::listview* listView = new wex::listview(wex::listview_data().Type(wex::listview_data::FILE));
-  AddPane(GetFrame(), listView);
+  wex::listview* listView = new wex::listview(wex::listview_data().type(wex::listview_data::FILE));
+  AddPane(frame(), listView);
   
   const auto start = std::chrono::system_clock::now();
 
@@ -25,9 +25,9 @@ TEST_CASE("wex::listitem")
   for (int j = 0; j < max; j++)
   {
     wex::listitem item1(listView, wex::path("./test.h"));
-    item1.Insert();
+    item1.insert();
     wex::listitem item2(listView, wex::path("./test-special.h"));
-    item2.Insert();
+    item2.insert();
   }
 
   const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
@@ -37,24 +37,24 @@ TEST_CASE("wex::listitem")
   const auto sort_start = std::chrono::system_clock::now();
   
   // The File Name column must be translated, otherwise test fails.
-  listView->SortColumn(_("File Name").ToStdString(), wex::SORT_ASCENDING);
+  listView->sort_column(_("File Name").ToStdString(), wex::SORT_ASCENDING);
   
   const auto sort_milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - sort_start);
   
   REQUIRE(sort_milli.count() < 10000);
   
-  REQUIRE(listView->GetItemText(0, _("File Name").ToStdString()).find("test-special.h") != std::string::npos);
+  REQUIRE(listView->get_item_text(0, _("File Name").ToStdString()).find("test-special.h") != std::string::npos);
   
   wex::listitem item(listView, wex::path("./test.h"));
-  item.Insert();
-  REQUIRE( item.GetFileName().GetFullName() == "test.h");
-  REQUIRE( item.GetFileSpec().empty());
+  item.insert();
+  REQUIRE( item.get_filename().fullname() == "test.h");
+  REQUIRE( item.file_spec().empty());
   REQUIRE( wex::listitem(listView, 
-    wex::path("./test.h"), "*.txt").GetFileSpec() == "*.txt");
-  REQUIRE( item.GetListView() == listView);
-  REQUIRE(!item.IsReadOnly());
+    wex::path("./test.h"), "*.txt").file_spec() == "*.txt");
+  REQUIRE( item.get_listview() == listView);
+  REQUIRE(!item.is_readOnly());
   
-  item.SetItem("xx", "yy");
-  item.Update();
-  item.Delete();
+  item.set_item("xx", "yy");
+  item.update();
+  item.erase();
 }

@@ -25,10 +25,10 @@ TEST_CASE("wex::property")
   REQUIRE( prop.GetName() == "man");
   REQUIRE( prop.GetValue() == "ugly");
   
-  prop.Apply(GetSTC());
+  prop.apply(get_stc());
   REQUIRE( prop.is_ok());
   
-  prop.ApplyReset(GetSTC());
+  prop.apply_reset(get_stc());
   REQUIRE( prop.is_ok());
   
   pugi::xml_document doc;

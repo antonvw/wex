@@ -15,35 +15,35 @@
 
 TEST_CASE("wex::stc_data")
 {
-  wex::stc* stc = GetSTC();
+  wex::stc* stc = get_stc();
 
   SUBCASE("Constructor")
   {
-    REQUIRE( wex::stc_data().Control().Line() == 0);
-    REQUIRE( wex::stc_data().Control(
-      wex::control_data().Col(3)).Control().Col() == 3);
+    REQUIRE( wex::stc_data().control().line() == 0);
+    REQUIRE( wex::stc_data().control(
+      wex::control_data().col(3)).control().col() == 3);
     REQUIRE( wex::stc_data(
-      wex::control_data().Col(3)).Control().Col() == 3);
+      wex::control_data().col(3)).control().col() == 3);
     REQUIRE( wex::stc_data(
-      wex::window_data().Name("XX")).Window().Name() == "XX");
-    REQUIRE( wex::stc_data().Flags(
-      wex::stc_data::WIN_READ_ONLY).Flags() == wex::stc_data::WIN_READ_ONLY);
-    REQUIRE( wex::stc_data().Flags(
-      wex::stc_data::WIN_READ_ONLY).Flags(wex::stc_data::WIN_HEX, wex::control_data::OR).
-      Flags() != wex::stc_data::WIN_READ_ONLY);
-    REQUIRE((wex::stc_data().Menu() & wex::stc_data::MENU_VCS));
-    REQUIRE((wex::stc_data().CTagsFileName() == "tags"));
+      wex::window_data().name("XX")).window().name() == "XX");
+    REQUIRE( wex::stc_data().flags(
+      wex::stc_data::WIN_READ_ONLY).flags() == wex::stc_data::WIN_READ_ONLY);
+    REQUIRE( wex::stc_data().flags(
+      wex::stc_data::WIN_READ_ONLY).flags(wex::stc_data::WIN_HEX, wex::control_data::OR).
+      flags() != wex::stc_data::WIN_READ_ONLY);
+    REQUIRE( wex::stc_data().menu().test(wex::stc_data::MENU_VCS));
+    REQUIRE( wex::stc_data().ctags_filename() == "tags");
   }
   
-  SUBCASE("Inject")
+  SUBCASE("inject")
   {
-    stc->SetText("line 1\nline 2\nline 3\n");
-    REQUIRE( wex::stc_data(stc).Control(
-      wex::control_data().Line(1).Col(5)).Inject());
+    stc->set_text("line 1\nline 2\nline 3\n");
+    REQUIRE( wex::stc_data(stc).control(
+      wex::control_data().line(1).col(5)).inject());
     REQUIRE( stc->GetCurrentLine() == 0);
     REQUIRE( stc->GetCurrentPos() == 4);
-    REQUIRE( wex::stc_data(stc, wex::control_data().Line(1).Col(5)).Inject());
-    REQUIRE(!wex::stc_data().Control(
-      wex::control_data().Line(1).Col(5)).Inject());
+    REQUIRE( wex::stc_data(stc, wex::control_data().line(1).col(5)).inject());
+    REQUIRE(!wex::stc_data().control(
+      wex::control_data().line(1).col(5)).inject());
   }
 }

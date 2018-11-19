@@ -192,7 +192,7 @@ extern tagResult tagsNext (tagFile *const file, tagEntry *const entry);
 /*
 *  Retrieve the value associated with the extension field for a specified key.
 *  It is passed a pointer to a structure already populated with values by a
-*  previous call to tagsNext(), tagsFind(), or tagsFindNext(), and a string
+*  previous call to tagsNext(), tagsFind(), or tagsfind_next(), and a string
 *  containing the key of the desired extension field. If no such field of the
 *  specified key exists, the function will return null.
 */
@@ -232,7 +232,7 @@ extern tagResult tagsFind (tagFile *const file, tagEntry *const entry, const cha
 *  function will return TagSuccess if another tag matching the name is found,
 *  or TagFailure if not.
 */
-extern tagResult tagsFindNext (tagFile *const file, tagEntry *const entry);
+extern tagResult tagsfind_next (tagFile *const file, tagEntry *const entry);
 
 /*
 *  Call tagsTerminate() at completion of reading the tag file, which will

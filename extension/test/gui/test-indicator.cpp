@@ -46,13 +46,13 @@ TEST_CASE("wex::indicator")
     REQUIRE( result );
 
     wex::indicator ind(doc.document_element());
-    REQUIRE( ind.GetForegroundColour() == "green");
-    REQUIRE( ind.GetNo() == 5);
+    REQUIRE( ind.foreground_colour() == "green");
+    REQUIRE( ind.number() == 5);
     REQUIRE( ind.style() == 6);
-    REQUIRE(!ind.GetUnder());
+    REQUIRE(!ind.underlined());
     REQUIRE( ind.is_ok());
     
-    ind.Apply(GetSTC());
+    ind.apply(get_stc());
     REQUIRE( ind.is_ok());
   }
 

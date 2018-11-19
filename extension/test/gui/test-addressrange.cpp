@@ -18,13 +18,13 @@
 TEST_CASE("wex::addressrange")
 {
   wex::stc* stc = new wex::stc();
-  AddPane(GetFrame(), stc);
+  AddPane(frame(), stc);
 
-  stc->SetText("hello\nhello1\nhello2");
+  stc->set_text("hello\nhello1\nhello2");
   wex::ex* ex = new wex::ex(stc);
-  ex->MarkerAdd('x', 1);
-  ex->MarkerAdd('y', 2);
-  ex->GetMacros().SetRegister('*', "ls");
+  ex->marker_add('x', 1);
+  ex->marker_add('y', 2);
+  ex->get_macros().set_register('*', "ls");
   stc->GotoLine(2);
 
   // Test valid ranges when no selection is active.
@@ -43,16 +43,16 @@ TEST_CASE("wex::addressrange")
   REQUIRE(!wex::addressrange(ex, "0").is_ok());
   REQUIRE(!wex::addressrange(ex, "x").is_ok());
   REQUIRE(!wex::addressrange(ex, "x,3").is_ok());
-  REQUIRE(!wex::addressrange(ex, "x,3").Delete());
-  REQUIRE(!wex::addressrange(ex, "3,x").Escape("ls"));
-  REQUIRE(!wex::addressrange(ex, "3,x").ShiftRight());
+  REQUIRE(!wex::addressrange(ex, "x,3").erase());
+  REQUIRE(!wex::addressrange(ex, "3,x").escape("ls"));
+  REQUIRE(!wex::addressrange(ex, "3,x").shift_right());
   REQUIRE(!wex::addressrange(ex, "3,!").is_ok());
-  REQUIRE(!wex::addressrange(ex, "3,@").Move(wex::address(ex, "2")));
-  REQUIRE(!wex::addressrange(ex, "1,2").Move(wex::address(ex, "x")));
-  REQUIRE(!wex::addressrange(ex, "1,3").Move(wex::address(ex, "2")));
-  REQUIRE(!wex::addressrange(ex, "3,@").Copy(wex::address(ex, "2")));
-  REQUIRE(!wex::addressrange(ex, "3,x").Write("flut"));
-  REQUIRE(!wex::addressrange(ex, " ,").Yank());
+  REQUIRE(!wex::addressrange(ex, "3,@").move(wex::address(ex, "2")));
+  REQUIRE(!wex::addressrange(ex, "1,2").move(wex::address(ex, "x")));
+  REQUIRE(!wex::addressrange(ex, "1,3").move(wex::address(ex, "2")));
+  REQUIRE(!wex::addressrange(ex, "3,@").copy(wex::address(ex, "2")));
+  REQUIRE(!wex::addressrange(ex, "3,x").write("flut"));
+  REQUIRE(!wex::addressrange(ex, " ,").yank());
   REQUIRE(!wex::addressrange(ex, "'<,'>").is_ok());
   REQUIRE(!wex::addressrange(ex, "/xx/,/2/").is_ok());
   REQUIRE(!wex::addressrange(ex, "?2?,?1?").is_ok());
@@ -71,167 +71,167 @@ TEST_CASE("wex::addressrange")
   
   stc->SelectNone();
   
-  REQUIRE( wex::addressrange(ex, "1,3").Delete());
-  REQUIRE( wex::addressrange(ex, "1,3").Delete());
+  REQUIRE( wex::addressrange(ex, "1,3").erase());
+  REQUIRE( wex::addressrange(ex, "1,3").erase());
   
   // Test implementation.  
   const std::string contents("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
   
-  // Test Change.
-  stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
-  REQUIRE( wex::addressrange(ex, 4).Change("changed"));
+  // Test change.
+  stc->set_text("a\nb\nc\nd\ne\nf\ng\n");
+  REQUIRE( wex::addressrange(ex, 4).change("changed"));
   REQUIRE( stc->GetText().Contains("changed"));
   
-  // Test Copy.
-  stc->SetText(contents);
+  // Test copy.
+  stc->set_text(contents);
   REQUIRE( stc->GetLineCount() == 8);
-  REQUIRE( wex::addressrange(ex, "1,2").Copy(wex::address(ex, "$")));
+  REQUIRE( wex::addressrange(ex, "1,2").copy(wex::address(ex, "$")));
   REQUIRE( stc->GetLineCount() == 10);
   
-  // Test Delete.
-  stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
+  // Test erase.
+  stc->set_text("a\nb\nc\nd\ne\nf\ng\n");
   stc->GotoLine(1);
-  REQUIRE( wex::addressrange(ex, 5).Delete());
+  REQUIRE( wex::addressrange(ex, 5).erase());
   REQUIRE( stc->GetLineCount() == 3);
-  REQUIRE(!wex::addressrange(ex, 0).Delete());
+  REQUIRE(!wex::addressrange(ex, 0).erase());
   REQUIRE( stc->GetLineCount() == 3);
-  stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
+  stc->set_text("a\nb\nc\nd\ne\nf\ng\n");
   stc->SelectAll();
-  REQUIRE( wex::addressrange(ex, "'<,'>").Delete());
+  REQUIRE( wex::addressrange(ex, "'<,'>").erase());
   REQUIRE( stc->GetLineCount() == 1);
   stc->SelectNone();
   
-  // Test Escape.
+  // Test escape.
 #ifdef __UNIX__
-  stc->SetText(contents);
+  stc->set_text(contents);
   REQUIRE( stc->GetLineCount() == 8);
-  REQUIRE( wex::addressrange(ex, "%").Escape("uniq"));
+  REQUIRE( wex::addressrange(ex, "%").escape("uniq"));
   REQUIRE( stc->GetLineCount() == 5);
-  REQUIRE( wex::addressrange(ex).Escape("ls -l"));
-  REQUIRE( wex::addressrange::GetProcess() != nullptr);
-  REQUIRE( wex::addressrange(ex).Escape("ls `pwd`"));
-  REQUIRE( wex::addressrange(ex).Escape("ls \x12*"));
-  REQUIRE( wex::addressrange(ex).Escape("ls  `echo \x12*`"));
+  REQUIRE( wex::addressrange(ex).escape("ls -l"));
+  REQUIRE( wex::addressrange::process() != nullptr);
+  REQUIRE( wex::addressrange(ex).escape("ls `pwd`"));
+  REQUIRE( wex::addressrange(ex).escape("ls \x12*"));
+  REQUIRE( wex::addressrange(ex).escape("ls  `echo \x12*`"));
 #endif
   
 #ifdef __UNIX__
-  // Test Global and Global inverse.
+  // Test global and global inverse.
   for (bool b : { false, true })
   {
-    stc->SetText(contents);
-    REQUIRE(!wex::addressrange(ex, 5).Global(std::string(), b));
-    REQUIRE(!wex::addressrange(ex, 5).Global("XXX", b));
-    REQUIRE( wex::addressrange(ex, 5).Global("/", b));
-    REQUIRE( wex::addressrange(ex, 5).Global("/xx/p", b));
-    REQUIRE( wex::addressrange(ex, 5).Global("/xx/p#", b));
-    REQUIRE( wex::addressrange(ex, 5).Global("/xx/g", b));
-    REQUIRE( wex::addressrange(ex, 5).Global("/a/s/a/XX", b));
-    REQUIRE( wex::addressrange(ex, 5).Global("/b/s/b/XX|s/c/yy", b));
+    stc->set_text(contents);
+    REQUIRE(!wex::addressrange(ex, 5).global(std::string(), b));
+    REQUIRE(!wex::addressrange(ex, 5).global("XXX", b));
+    REQUIRE( wex::addressrange(ex, 5).global("/", b));
+    REQUIRE( wex::addressrange(ex, 5).global("/xx/p", b));
+    REQUIRE( wex::addressrange(ex, 5).global("/xx/p#", b));
+    REQUIRE( wex::addressrange(ex, 5).global("/xx/g", b));
+    REQUIRE( wex::addressrange(ex, 5).global("/a/s/a/XX", b));
+    REQUIRE( wex::addressrange(ex, 5).global("/b/s/b/XX|s/c/yy", b));
   }
 #endif
   
   // Test Shift.
-  stc->SetText(contents);
-  REQUIRE( wex::addressrange(ex, 5).ShiftRight());
-  REQUIRE( wex::addressrange(ex, 5).ShiftLeft());
+  stc->set_text(contents);
+  REQUIRE( wex::addressrange(ex, 5).shift_right());
+  REQUIRE( wex::addressrange(ex, 5).shift_left());
   
   // Test is_ok.
   // See above.
   
-  // Test Join.
-  stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
-  REQUIRE( wex::addressrange(ex, "%").Join());
+  // Test join.
+  stc->set_text("a\nb\nc\nd\ne\nf\ng\n");
+  REQUIRE( wex::addressrange(ex, "%").join());
   REQUIRE( stc->GetText().Contains("a"));
   REQUIRE( stc->GetLineCount() == 1);
   
-  // Test Move.
-  stc->SetText(contents);
+  // Test move.
+  stc->set_text(contents);
   REQUIRE( stc->GetLineCount() == 8);
-  REQUIRE( wex::addressrange(ex, "1,2").Move(wex::address(ex, "$")));
+  REQUIRE( wex::addressrange(ex, "1,2").move(wex::address(ex, "$")));
   REQUIRE( stc->GetLineCount() == 8);
   
-  // Test Print.
-  stc->SetText(contents);
-  REQUIRE( wex::addressrange(ex, 5).Print());
+  // Test print.
+  stc->set_text(contents);
+  REQUIRE( wex::addressrange(ex, 5).print());
   
-  // Test Sort.
-  REQUIRE( wex::addressrange(ex, "1").Sort());
-  REQUIRE(!wex::addressrange(ex, "1").Sort("x"));
-  REQUIRE( wex::addressrange(ex, "1").Sort("u"));
-  REQUIRE( wex::addressrange(ex, "1").Sort("r"));
-  REQUIRE( wex::addressrange(ex, "1").Sort("ur"));
+  // Test sort.
+  REQUIRE( wex::addressrange(ex, "1").sort());
+  REQUIRE(!wex::addressrange(ex, "1").sort("x"));
+  REQUIRE( wex::addressrange(ex, "1").sort("u"));
+  REQUIRE( wex::addressrange(ex, "1").sort("r"));
+  REQUIRE( wex::addressrange(ex, "1").sort("ur"));
   
-  // Test Substitute.
-  stc->SetText(contents);
+  // Test substitute.
+  stc->set_text(contents);
   stc->GotoLine(1);
-  REQUIRE( wex::addressrange(ex, "%").Substitute("/tiger//"));
+  REQUIRE( wex::addressrange(ex, "%").substitute("/tiger//"));
   REQUIRE(!stc->GetText().Contains("tiger"));
   
-  stc->SetText(contents);
+  stc->set_text(contents);
   REQUIRE( wex::addressrange(ex, "%").
-    Substitute("/tiger/\\U&/"));
+    substitute("/tiger/\\U&/"));
   REQUIRE( stc->GetText().Contains("TIGER"));
   REQUIRE(!stc->GetText().Contains("tiger"));
   REQUIRE(!stc->GetText().Contains("\\U"));
   
-  stc->SetText(contents);
+  stc->set_text(contents);
   REQUIRE( wex::addressrange(ex, "%").
-    Substitute("/tiger/\\U&&\\L& \\0 \\0 & & \\U&/"));
+    substitute("/tiger/\\U&&\\L& \\0 \\0 & & \\U&/"));
   REQUIRE( stc->GetText().Contains("TIGER"));
   REQUIRE( stc->GetText().Contains("tiger"));
   REQUIRE(!stc->GetText().Contains("\\U"));
   REQUIRE(!stc->GetText().Contains("\\L"));
   REQUIRE(!stc->GetText().Contains("\\0"));
   
-  stc->SetText(contents);
-  REQUIRE( wex::addressrange(ex, "%").Substitute("/tiger/lion/"));
+  stc->set_text(contents);
+  REQUIRE( wex::addressrange(ex, "%").substitute("/tiger/lion/"));
   REQUIRE( stc->GetText().Contains("lion"));
     
-  stc->SetText(contents);
-  REQUIRE( wex::addressrange(ex, "%").Substitute("", '&'));
+  stc->set_text(contents);
+  REQUIRE( wex::addressrange(ex, "%").substitute("", '&'));
   REQUIRE( stc->GetText().Contains("lion"));
   
-  stc->SetText(contents);
-  REQUIRE( wex::addressrange(ex, "%").Substitute("", '~'));
+  stc->set_text(contents);
+  REQUIRE( wex::addressrange(ex, "%").substitute("", '~'));
   REQUIRE( stc->GetText().Contains("lion"));
   
-  stc->SetText("special char \\ present");
-  REQUIRE( wex::addressrange(ex, "%").Substitute("/\\\\//"));
+  stc->set_text("special char \\ present");
+  REQUIRE( wex::addressrange(ex, "%").substitute("/\\\\//"));
   REQUIRE( stc->GetText().Contains("char  present"));
   
-  stc->SetText("special char / present");
-  REQUIRE( wex::addressrange(ex, "%").Substitute("/\\///"));
+  stc->set_text("special char / present");
+  REQUIRE( wex::addressrange(ex, "%").substitute("/\\///"));
   REQUIRE( stc->GetText().Contains("char  present"));
   
-  stc->SetText("special char ' present");
-  REQUIRE( wex::addressrange(ex, "%").Substitute("/'//"));
+  stc->set_text("special char ' present");
+  REQUIRE( wex::addressrange(ex, "%").substitute("/'//"));
   REQUIRE( stc->GetText().Contains("char  present"));
   
-  // Test Substitute and flags.
-  REQUIRE(!wex::addressrange(ex, "1").Substitute("//y"));
-  REQUIRE(!wex::addressrange(ex, "0").Substitute("/x/y"));
-  REQUIRE( wex::addressrange(ex, "2").Substitute("/x/y/f"));
-  REQUIRE( wex::addressrange(ex, "1,2").Substitute("/x/y"));
-  REQUIRE( wex::addressrange(ex, "1,2").Substitute("/x/y/i"));
-  REQUIRE( wex::addressrange(ex, "1,2").Substitute("/x/y/f"));
-  REQUIRE( wex::addressrange(ex, "1,2").Substitute("/x/y/g"));
-  REQUIRE( wex::addressrange(ex, "1,2").Substitute("g", '&'));
-  REQUIRE( wex::addressrange(ex, "1,2").Substitute("g", '~'));
-  REQUIRE(!wex::addressrange(ex, "1,2").Substitute("g", 'x'));
+  // Test substitute and flags.
+  REQUIRE(!wex::addressrange(ex, "1").substitute("//y"));
+  REQUIRE(!wex::addressrange(ex, "0").substitute("/x/y"));
+  REQUIRE( wex::addressrange(ex, "2").substitute("/x/y/f"));
+  REQUIRE( wex::addressrange(ex, "1,2").substitute("/x/y"));
+  REQUIRE( wex::addressrange(ex, "1,2").substitute("/x/y/i"));
+  REQUIRE( wex::addressrange(ex, "1,2").substitute("/x/y/f"));
+  REQUIRE( wex::addressrange(ex, "1,2").substitute("/x/y/g"));
+  REQUIRE( wex::addressrange(ex, "1,2").substitute("g", '&'));
+  REQUIRE( wex::addressrange(ex, "1,2").substitute("g", '~'));
+  REQUIRE(!wex::addressrange(ex, "1,2").substitute("g", 'x'));
 
-  // Test Write.
-  stc->SetText(contents);
-  REQUIRE( wex::addressrange(ex, 5).Write("sample.txt"));
+  // Test write.
+  stc->set_text(contents);
+  REQUIRE( wex::addressrange(ex, 5).write("sample.txt"));
   REQUIRE( remove("sample.txt") == 0);
   
   // Test Yank.
-  stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
+  stc->set_text("a\nb\nc\nd\ne\nf\ng\n");
   stc->GotoLine(0);
-  REQUIRE( wex::addressrange(ex, 2).Yank());
+  REQUIRE( wex::addressrange(ex, 2).yank());
   stc->SelectNone();
-  stc->AddText(stc->GetVi().GetMacros().GetRegister('0'));
+  stc->AddText(stc->get_vi().get_macros().get_register('0'));
   REQUIRE( stc->GetLineCount() == 10);
-  REQUIRE( wex::addressrange(ex, -2).Delete());
+  REQUIRE( wex::addressrange(ex, -2).erase());
   stc->GotoLine(0);
-  REQUIRE( wex::addressrange(ex, -2).Delete());
+  REQUIRE( wex::addressrange(ex, -2).erase());
 }

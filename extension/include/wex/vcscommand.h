@@ -35,25 +35,25 @@ namespace wex
       : menu_command(command, type, submenu, subcommand, flags) {;};
 
     /// Returns true if this is a add like command.
-    bool IsAdd() const;
+    bool is_add() const;
     
     /// Returns true if this is a blame like command.
-    bool IsBlame() const;
+    bool is_blame() const;
 
     /// Returns true if this is a checkout like command.
-    bool IsCheckout() const;
+    bool is_checkout() const;
 
     /// Returns true if this is a commit like command.
-    bool IsCommit() const;
+    bool is_commit() const;
 
     /// Returns true if this is a diff like command.
-    bool IsDiff() const;
+    bool is_diff() const;
 
     /// Returns true if this is a history like command.
-    bool IsHistory() const;
+    bool is_history() const;
     
     /// Returns true if this command can behave like
     /// opening a file.
-    bool IsOpen() const;
+    bool is_open() const;
   };
 };

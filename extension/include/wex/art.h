@@ -21,11 +21,11 @@ namespace wex
 
     /// If id is a stock id, returns stock bitmap from the stock art map.
     /// Check GetBitmap().is_ok for valid bitmap.
-    const wxBitmap GetBitmap(
+    const wxBitmap get_bitmap(
       const wxArtClient& client = wxART_OTHER, 
       const wxSize& bitmap_size = wxDefaultSize) const;
   private:
-    void Add(int id, const wxArtID art);
+    void add(int id, const wxArtID art);
     
     static std::map<wxWindowID, wxArtID> m_ArtIDs;
     const wxWindowID m_Id;

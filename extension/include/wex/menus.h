@@ -22,7 +22,7 @@ namespace wex
     /// Adds commands from xml to vector of menu commands.
     /// Returns number of commands added.
     template <typename T>
-    static auto AddCommands(
+    static auto add_commands(
       /// node with data
       const pugi::xml_node& node,
       /// the commands to be filled
@@ -39,7 +39,7 @@ namespace wex
     /// Builds menu from vector of menu commands.
     /// Returns number of items added to menu.
     template <typename T>
-    static int BuildMenu(
+    static int build_menu(
       /// the commands
       const T& commands, 
       /// base id for command
@@ -56,44 +56,44 @@ namespace wex
       for (const auto& it : commands)
       {
         bool add = false;
-        if (it.GetType() & menu_command::IS_POPUP &&
-            it.GetType() & menu_command::IS_MAIN)
+        if (it.type().test(menu_command::IS_POPUP) &&
+            it.type().test(menu_command::IS_MAIN))
           add = true;
-        else if (it.GetType() & menu_command::IS_POPUP)
+        else if (it.type().test(menu_command::IS_POPUP))
           add = is_popup;
-        else if (it.GetType() & menu_command::IS_MAIN)
+        else if (it.type().test(menu_command::IS_MAIN))
           add = !is_popup;
 
         if (add)
         {
-          if (!it.GetSubMenu().empty() && prev_menu != it.GetSubMenu())
+          if (!it.get_submenu().empty() && prev_menu != it.get_submenu())
           {
             submenu = new wex::menu();
-            prev_menu = it.GetSubMenu();
-            menu->AppendSeparator();
-            menu->append_submenu(submenu, it.GetSubMenu());
+            prev_menu = it.get_submenu();
+            menu->append_separator();
+            menu->append_submenu(submenu, it.get_submenu());
           }
-          else if (it.GetSubMenu().empty())
+          else if (it.get_submenu().empty())
           {
             if (prev_menu != unused)
             {
               prev_menu = unused;
-              menu->AppendSeparator();
+              menu->append_separator();
             }
             submenu = nullptr;
           }
 
           wex::menu* usemenu = (submenu == nullptr ? menu: submenu);
-          usemenu->Append(
+          usemenu->append(
             base_id + i, 
             ellipsed(
-              it.GetCommand(menu_command::INCLUDE_ACCELL),
+              it.get_command(menu_command::INCLUDE_ACCELL),
               std::string(),
-              (it.GetType() & menu_command::ELLIPSES) > 0));
+              (it.type().test(menu_command::ELLIPSES)) > 0));
 
-          if ((it.GetType() & menu_command::SEPARATOR) > 0)
+          if ((it.type().test(menu_command::SEPARATOR)) > 0)
           {
-            usemenu->AppendSeparator();
+            usemenu->append_separator();
           }
         }
         i++;
@@ -102,18 +102,18 @@ namespace wex
       return menu->GetMenuItemCount();};
     
     /// Returns the xml filename.
-    static const path GetFileName() {
+    static const path get_filename() {
       return path(config().dir(), "menus.xml");};
     
     /// Loads entries from xml document.
     /// Returns false if document could not be loaded, or
     /// no entries were added.
     template <typename T>
-    static bool Load(const std::string& name, T& entries) {
+    static bool load(const std::string& name, T& entries) {
       pugi::xml_document doc;
-      if (!GetFileName().FileExists() ||
+      if (!get_filename().file_exists() ||
           !doc.load_file(
-             GetFileName().Path().string().c_str(),
+             get_filename().data().string().c_str(),
              pugi::parse_default | pugi::parse_trim_pcdata))
       {
         return false;

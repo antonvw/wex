@@ -15,8 +15,8 @@ class decorated_frame : public wex::history_frame
 {
 public:
   decorated_frame(app* app);
-  virtual bool AllowClose(wxWindowID id, wxWindow* page) override;
-  virtual void OnNotebook(wxWindowID id, wxWindow* page) override;
+  virtual bool allow_close(wxWindowID id, wxWindow* page) override;
+  virtual void on_notebook(wxWindowID id, wxWindow* page) override;
 protected:
   app* m_App;
 };

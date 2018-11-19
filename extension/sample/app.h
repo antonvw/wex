@@ -36,7 +36,7 @@ public:
     const std::string& findfiles, 
     wex::grid* grid);
 private:
-  virtual bool OnFile(const wex::path& file) override;
+  virtual bool on_file(const wex::path& file) override;
   wex::grid* m_Grid;
 };
 
@@ -46,8 +46,8 @@ class sample_frame: public wex::managed_frame
 public:
   /// Constructor.
   sample_frame();
-  virtual wex::listview* GetListView() override {return m_ListView;};
-  virtual void OnCommandItemDialog(
+  virtual wex::listview* get_listview() override {return m_ListView;};
+  virtual void on_command_item_dialog(
     wxWindowID id, 
     const wxCommandEvent& event) override;
 protected:

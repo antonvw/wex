@@ -41,7 +41,7 @@ TEST_CASE("wex::marker")
     REQUIRE( wex::marker(5, 2) == wex::marker(5, 2));
     REQUIRE( wex::marker(5, 1) != wex::marker(5, 2));
     
-    markerx.Apply(GetSTC());
+    markerx.apply(get_stc());
   }
 
   SUBCASE("Constructor xml")
@@ -50,10 +50,10 @@ TEST_CASE("wex::marker")
     REQUIRE( doc.load_string("<marker no = \"5\">mark_character,green,white</marker>"));
 
     wex::marker marker(doc.document_element());
-    REQUIRE( marker.GetNo() == 5);
-    REQUIRE( marker.GetSymbol() == wxSTC_MARK_CHARACTER);
-    REQUIRE( marker.GetForegroundColour() == "green");
-    REQUIRE( marker.GetBackgroundColour() == "white");
+    REQUIRE( marker.number() == 5);
+    REQUIRE( marker.symbol() == wxSTC_MARK_CHARACTER);
+    REQUIRE( marker.foreground_colour() == "green");
+    REQUIRE( marker.background_colour() == "white");
     REQUIRE( marker.is_ok());
   }
     

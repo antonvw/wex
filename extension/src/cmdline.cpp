@@ -42,22 +42,22 @@ namespace wex
       std::visit(overloaded {
         [](auto arg) {delete arg;}}, m_val);};
 
-    const std::string GetDescription() const {
+    const std::string get_description() const {
       return std::visit(overloaded {
         [](auto arg) {return arg->getDescription();}}, m_val);};
     
-    const std::string GetName() const {
+    const std::string get_name() const {
       return std::visit(overloaded {
         [](auto arg) {return arg->getName();}}, m_val);};
 
-    const std::string GetValue() const {
+    const std::string get_value() const {
       return std::visit(overloaded {
         [](auto arg) {return 
           arg->getValue() != -1 ? std::to_string(arg->getValue()): std::string();},
         [](TCLAP::ValueArg<std::string>* arg) {return arg->getValue();},
         }, m_val);};
 
-    void Run(bool save) const
+    void run(bool save) const
     {
       std::visit(overloaded {
         [&](auto arg) {
@@ -67,7 +67,7 @@ namespace wex
 
             if (save)
             {
-              config(GetName()).set(v);
+              config(get_name()).set(v);
             }
           };},
         [&](TCLAP::ValueArg<std::string>* arg) {
@@ -77,7 +77,7 @@ namespace wex
 
             if (save)
             {
-              config(GetName()).set(v.c_str());
+              config(get_name()).set(v.c_str());
             }
           }},
       }, m_val);
@@ -101,7 +101,7 @@ namespace wex
 
    ~cmdline_param() {delete m_val.first;};
 
-    bool Run() const
+    bool run() const
     {
       return 
         m_val.first->getValue().empty() || m_val.second(m_val.first->getValue());
@@ -133,23 +133,23 @@ namespace wex
 
    ~cmdline_switch() {delete m_val.first;};
 
-    const std::string GetDescription() const {return m_val.first->getDescription();};
+    const std::string get_description() const {return m_val.first->getDescription();};
     
-    const std::string& GetName() const {return m_val.first->getName();};
+    const std::string& get_name() const {return m_val.first->getName();};
 
-    bool GetValue() const {return *m_val.first;};
+    bool get_value() const {return *m_val.first;};
 
-    void Run(bool save) const
+    void run(bool save) const
     {
-      const bool def = config(GetName()).get(false);
+      const bool def = config(get_name()).get(false);
       
-      if (def != GetValue())
+      if (def != get_value())
       {
-        m_val.second(GetValue());
+        m_val.second(get_value());
 
         if (save)
         {
-          config(GetName()).set(GetValue());
+          config(get_name()).set(get_value());
         }
       }
     }
@@ -170,7 +170,7 @@ wex::cmdline::cmdline(
   : m_Parser(new cmdline_parser(
       message, ' ', 
       version.empty() ? 
-        get_version_info().Get(): version, 
+        get_version_info().get(): version, 
       helpAndVersion))
 {
   m_Parser->setExceptionHandling(false);
@@ -289,20 +289,20 @@ wex::cmdline::~cmdline()
   delete m_Parser;
 }
   
-char wex::cmdline::Delimiter() const
+char wex::cmdline::delimiter() const
 {
   return TCLAP::Arg::delimiter();
 }
   
-void wex::cmdline::Delimiter(char c)
+void wex::cmdline::delimiter(char c)
 {
   TCLAP::Arg::setDelimiter(c);
 }
 
-bool wex::cmdline::Parse(
-  const std::string& cmdline, bool save, const char delimiter)
+bool wex::cmdline::parse(
+  const std::string& cmdline, bool save, const char delim)
 {
-  Delimiter(delimiter);
+  delimiter(delim);
   
   try
   {
@@ -313,21 +313,21 @@ bool wex::cmdline::Parse(
     else
     {
       tokenizer tkz(cmdline);
-      auto v = tkz.Tokenize<std::vector<std::string>>();
+      auto v = tkz.tokenize<std::vector<std::string>>();
       m_Parser->parse(v);
     }
 
     for (const auto& it : m_Switches) 
     {
-      it->Run(save);
+      it->run(save);
     }
 
     for (const auto& it : m_Options)
     {
-      it->Run(save);
+      it->run(save);
     }
 
-    if (!m_Params.empty() && !m_Params[0]->Run())
+    if (!m_Params.empty() && !m_Params[0]->run())
     {
       log() << "could not run params";
       return false;
@@ -351,7 +351,7 @@ bool wex::cmdline::Parse(
   }
 }
 
-void wex::cmdline::ShowOptions(const window_data& data) const
+void wex::cmdline::show_options(const window_data& data) const
 {
   static stc_entry_dialog* dlg = nullptr;
   const lexer_props l;
@@ -361,34 +361,34 @@ void wex::cmdline::ShowOptions(const window_data& data) const
     dlg = new stc_entry_dialog(
       std::string(),
       std::string(),
-      window_data(data).Button(wxOK).Title("Options"));
+      window_data(data).button(wxOK).title("Options"));
 
-    dlg->GetSTC()->GetLexer().Set(l);
+    dlg->stc()->get_lexer().set(l);
   }
   else
   {
-    dlg->GetSTC()->ClearAll();
+    dlg->stc()->ClearAll();
   }
 
   for (const auto& it : m_Options)
   {
-    dlg->GetSTC()->InsertText(0, l.MakeKey(
-      it->GetName(), 
-      it->GetValue(), 
-      it->GetDescription() != it->GetName() ? it->GetDescription(): std::string()));
+    dlg->stc()->InsertText(0, l.make_key(
+      it->get_name(), 
+      it->get_value(), 
+      it->get_description() != it->get_name() ? it->get_description(): std::string()));
   }
 
-  dlg->GetSTC()->InsertText(0, "\n" + l.MakeSection("options"));
+  dlg->stc()->InsertText(0, "\n" + l.make_section("options"));
   
   for (const auto& it : m_Switches)
   {
-    dlg->GetSTC()->InsertText(0, l.MakeKey(
-      it->GetName(), 
-      std::to_string(it->GetValue()), 
-      it->GetDescription() != it->GetName() ? it->GetDescription(): std::string()));
+    dlg->stc()->InsertText(0, l.make_key(
+      it->get_name(), 
+      std::to_string(it->get_value()), 
+      it->get_description() != it->get_name() ? it->get_description(): std::string()));
   }
 
-  dlg->GetSTC()->InsertText(0, l.MakeSection("switches"));
-  dlg->GetSTC()->EmptyUndoBuffer();
+  dlg->stc()->InsertText(0, l.make_section("switches"));
+  dlg->stc()->EmptyUndoBuffer();
   dlg->ShowModal();
 }

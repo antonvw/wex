@@ -17,24 +17,24 @@ TEST_CASE("wex::report")
   wex::tool tool(wex::ID_TOOL_REPORT_FIND);
 
   wex::listview* report = new wex::listview(
-    wex::listview_data().Type(wex::listview_data::FIND));
+    wex::listview_data().type(wex::listview_data::FIND));
   
-  AddPane(GetFrame(), report);
+  AddPane(frame(), report);
     
   const auto files = wex::get_all_files(
     wex::path("../../../extension/test/gui-report"), 
     "*.cpp", 
-    wex::dir::FILES | wex::dir::DIRS);
+    wex::dir::type_t().set());
   
   REQUIRE(files.size() > 5);
     
-  wex::find_replace_data* frd = wex::find_replace_data::Get(); 
+  wex::find_replace_data* frd = wex::find_replace_data::get(); 
   
   // This string should occur only once, that is here!
-  frd->SetUseRegEx(false);
-  frd->SetFindString("@@@@@@@@@@@@@@@@@@@");
+  frd->set_use_regex(false);
+  frd->set_find_string("@@@@@@@@@@@@@@@@@@@");
   
-  REQUIRE(GetFrame()->FindInFiles(
+  REQUIRE(frame()->find_in_files(
     files, 
     wex::ID_TOOL_REPORT_FIND, 
     false, 
@@ -46,11 +46,11 @@ TEST_CASE("wex::report")
 #endif
 #endif
   
-  frd->SetFindString("Author:");
+  frd->set_find_string("Author:");
   
   const auto start = std::chrono::system_clock::now();
 
-  REQUIRE(GetFrame()->FindInFiles(
+  REQUIRE(frame()->find_in_files(
     files, 
     wex::ID_TOOL_REPORT_FIND, 
     false, 
@@ -64,7 +64,7 @@ TEST_CASE("wex::report")
 #ifdef __UNIX__
 #ifndef __WXOSX__
   // Each other file has one author (files.GetCount()), and the one that is already 
-  // present on the list because of the first FindInFiles.
+  // present on the list because of the first find_in_files.
   REQUIRE(report->GetItemCount() == files.size() + 2);
 #endif
 #endif

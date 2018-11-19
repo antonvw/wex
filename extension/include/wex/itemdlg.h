@@ -20,7 +20,7 @@ namespace wex
     /// Constructor.
     item_dialog(
       const std::vector< item >& v,
-      const window_data& data = window_data().Title(_("Options").ToStdString()),
+      const window_data& data = window_data().title(_("Options").ToStdString()),
       int rows = 0,
       int cols = 1)
     : item_template_dialog(v, data, rows, cols) {
@@ -29,15 +29,15 @@ namespace wex
       Bind(wxEVT_BUTTON, &item_dialog::OnCommand, this, wxID_CLOSE);
       Bind(wxEVT_BUTTON, &item_dialog::OnCommand, this, wxID_OK);};
 
-    /// Reloads dialog from config.
-    void Reload(bool save = false) const {
-      for (const auto& it : GetItems())
+    /// reloads dialog from config.
+    void reload(bool save = false) const {
+      for (const auto& it : get_items())
       {
-        it.ToConfig(save);
+        it.to_config(save);
       }};
   protected:
     void OnCommand(wxCommandEvent& event) {
-      Reload(event.GetId() != wxID_CANCEL);
+      reload(event.GetId() != wxID_CANCEL);
       event.Skip();};
   };
 };

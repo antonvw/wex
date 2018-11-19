@@ -15,7 +15,7 @@ namespace wex
 {
   class find_replace_data;
 
-  /// Adds RunTool methods and statistics to a file stream.
+  /// Adds run_tool methods and statistics to a file stream.
   class stream
   {
   public:
@@ -28,38 +28,38 @@ namespace wex
     virtual ~stream() {;};
 
     /// Returns the filename.
-    const auto & GetFileName() const {return m_Path;};
+    const auto & get_filename() const {return m_Path;};
 
     /// Returns the statistics.
-    const auto & GetStatistics() const {return m_Stats;}
+    const auto & get_statistics() const {return m_Stats;}
 
     /// Returns the tool.
-    const auto & GetTool() const {return m_Tool;};
+    const auto & get_tool() const {return m_Tool;};
     
     /// Runs the tool.
-    bool RunTool();
+    bool run_tool();
 
     /// Resets static members.
-    static void Reset();
+    static void reset();
   protected:
     /// Processes line.
     /// The default performs a ID_TOOL_REPORT_FIND or REPLACE.
-    virtual bool Process(
-      /// contents of the line
-      std::string& line, 
+    virtual bool process(
+      /// contents to be processed (depends on std::getline)
+      std::string& text, 
       /// line number
       size_t line_no);
     
     /// Override to do action before processing begins.
     /// The default checks correct tool for find and replace.
-    virtual bool ProcessBegin();
+    virtual bool process_begin();
     
     /// Override to do action after processing has ended.
-    virtual void ProcessEnd() {;};
+    virtual void process_end() {;};
     
     /// Override to do action for a match.
     /// Data is available in find replace data.
-    virtual void ProcessMatch(
+    virtual void process_match(
       /// matching line
       const std::string& line, 
       /// line number containing match
@@ -68,29 +68,24 @@ namespace wex
       int pos) {;};
   protected:
     /// Increments the actions completed.
-    auto IncActionsCompleted(int inc_value = 1) {return
-      m_Stats.m_Elements.Inc(_("Actions Completed").ToStdString(), inc_value);};
+    auto inc_actions_completed(int inc_value = 1) {return
+      m_Stats.m_Elements.inc(_("Actions Completed").ToStdString(), inc_value);};
       
     /// Increments statistics keyword.
-    auto IncStatistics(const std::string& keyword) {return
-      m_Stats.m_Elements.Inc(keyword);};
+    auto inc_statistics(const std::string& keyword) {return
+      m_Stats.m_Elements.inc(keyword);};
   private:
     bool IsWordCharacter(int c) const {return isalnum(c) || c == '_';};
 
     const path m_Path;
     const tool m_Tool;
+    const int m_Threshold;
 
     stream_statistics m_Stats;
-
     int m_Prev;
     bool m_Modified = false, m_Write = false;
-
-    const int m_Threshold;
-    
-    find_replace_data* m_FRD;
-
-    std::string m_FindString;
-
-    static bool m_Asked;
+    find_replace_data* m_frd;
+    std::string m_find_string;
+    static inline bool m_Asked = false;
   };
 };

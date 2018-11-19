@@ -42,8 +42,8 @@ TEST_CASE("wex::style")
       if (!style.first.second.empty())
       {
         REQUIRE( test.is_ok());
-        REQUIRE( test.GetNo() == style.first.second);
-        REQUIRE( test.GetValue() == style.second.first);
+        REQUIRE( test.number() == style.first.second);
+        REQUIRE( test.value() == style.second.first);
       }
       else
       {
@@ -57,25 +57,25 @@ TEST_CASE("wex::style")
     pugi::xml_document doc;
     REQUIRE( doc.load_string("<style no = \"2\">string</style>"));
 
-    REQUIRE( std::stoi(wex::style(doc.document_element(), "").GetNo()) == 2);
-    REQUIRE( wex::style(doc.document_element(), "").GetValue() == "fore:#ffab8f");
-    REQUIRE( std::stoi(wex::style(doc.document_element(), "cpp").GetNo()) == 2);
-    REQUIRE( wex::style(doc.document_element(), "").GetValue() == "fore:#ffab8f");
+    REQUIRE( std::stoi(wex::style(doc.document_element(), "").number()) == 2);
+    REQUIRE( wex::style(doc.document_element(), "").value() == "fore:#ffab8f");
+    REQUIRE( std::stoi(wex::style(doc.document_element(), "cpp").number()) == 2);
+    REQUIRE( wex::style(doc.document_element(), "").value() == "fore:#ffab8f");
 
     REQUIRE( doc.load_string("<style no = \"2\">styledefault+comment</style>"));
     
-    REQUIRE( wex::style(doc.document_element(), "cpp").GetValue().find("default") == std::string::npos);
-    REQUIRE( wex::style(doc.document_element(), "cpp").GetValue().find("comment") == std::string::npos);
-    REQUIRE( wex::style(doc.document_element(), "cpp").GetValue().find("+") == std::string::npos);
+    REQUIRE( wex::style(doc.document_element(), "cpp").value().find("default") == std::string::npos);
+    REQUIRE( wex::style(doc.document_element(), "cpp").value().find("comment") == std::string::npos);
+    REQUIRE( wex::style(doc.document_element(), "cpp").value().find("+") == std::string::npos);
   }
   
-  SUBCASE("Apply")
+  SUBCASE("apply")
   {
     wex::style style("mark_circle", "0");
-    style.Apply(GetSTC());
+    style.apply(get_stc());
     REQUIRE( style.is_ok());
-    REQUIRE(!style.ContainsDefaultStyle());
+    REQUIRE(!style.contains_default_style());
   
-    wex::style().Apply(GetSTC());
+    wex::style().apply(get_stc());
   }
 }

@@ -16,7 +16,7 @@
 
 TEST_CASE("wex::config_dialog")
 {
-  wex::item::UseConfig(true);
+  wex::item::use_config(true);
   
   wex::item_dialog* dlg = new wex::item_dialog({
       {"string1", "test1"},
@@ -24,12 +24,12 @@ TEST_CASE("wex::config_dialog")
       {"string3", "test3"},
       {"string4", "test4"},
       {"string5", "test5"}},
-    wex::window_data().Button(wxOK | wxCANCEL | wxAPPLY));
+    wex::window_data().button(wxOK | wxCANCEL | wxAPPLY));
   dlg->Show();
   
-  REQUIRE( std::any_cast<std::string>(dlg->GetItemValue("string1")).empty());
+  REQUIRE( std::any_cast<std::string>(dlg->get_item_value("string1")).empty());
   
-  dlg->Reload();
+  dlg->reload();
   
   wxPostEvent(dlg, wxCommandEvent(wxEVT_BUTTON, wxCANCEL));
   
@@ -37,7 +37,7 @@ TEST_CASE("wex::config_dialog")
   wex::item_dialog* dlg1 = new wex::item_dialog({
       {"string1"},
       {"string2"}},
-    wex::window_data().Button(wxOK | wxCANCEL | wxAPPLY));
+    wex::window_data().button(wxOK | wxCANCEL | wxAPPLY));
   dlg1->Show();
   
   wxPostEvent(dlg1, wxCommandEvent(wxEVT_BUTTON, wxAPPLY));

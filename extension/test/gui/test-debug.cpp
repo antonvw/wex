@@ -23,14 +23,14 @@ TEST_CASE("wex::debug")
   wex::menu menu;
 
   // start test
-  wex::debug dbg(GetFrame());
+  wex::debug dbg(frame());
 
-  REQUIRE( dbg.GetProcess() == nullptr);
-  REQUIRE( dbg.GetBreakpoints().empty());
-  REQUIRE( dbg.GetMarkerBreakpoint().GetNo() > 0);
+  REQUIRE( dbg.process() == nullptr);
+  REQUIRE( dbg.breakpoints().empty());
+  REQUIRE( dbg.marker_breakpoint().number() > 0);
 
   
-  wex::stc* stc = GetSTC();
+  wex::stc* stc = get_stc();
   
   if (stc != nullptr)
   {
@@ -38,45 +38,45 @@ TEST_CASE("wex::debug")
     stc->SetSavePoint();
   }
   
-  REQUIRE( dbg.AddMenu(&menu) > 0);
-  REQUIRE( dbg.AddMenu(&menu, true) > 0);
+  REQUIRE( dbg.add_menu(&menu) > 0);
+  REQUIRE( dbg.add_menu(&menu, true) > 0);
   const int item = menu.FindItem("break");
   REQUIRE( item != wxNOT_FOUND);
   REQUIRE( item > wex::ID_EDIT_DEBUG_FIRST );
   REQUIRE( item < wex::ID_EDIT_DEBUG_LAST);
 
 #ifndef __WXMSW__
-  REQUIRE( dbg.Execute("break"));
-  REQUIRE( dbg.Execute("break all breakpoints"));
-  REQUIRE( dbg.Execute("break", GetSTC()));
+  REQUIRE( dbg.execute("break"));
+  REQUIRE( dbg.execute("break all breakpoints"));
+  REQUIRE( dbg.execute("break", get_stc()));
 #endif
-  REQUIRE( dbg.GetBreakpoints().empty()); // no file loaded
+  REQUIRE( dbg.breakpoints().empty()); // no file loaded
 #ifndef __WXMSW__
-  REQUIRE( dbg.GetProcess() != nullptr);
+  REQUIRE( dbg.process() != nullptr);
 #endif
 
 #ifndef __WXMSW__
-  REQUIRE( dbg.Execute(item - wex::ID_EDIT_DEBUG_FIRST));
+  REQUIRE( dbg.execute(item - wex::ID_EDIT_DEBUG_FIRST));
 #endif
-  REQUIRE(!dbg.Execute(item));
+  REQUIRE(!dbg.execute(item));
   
-  dbg.ProcessStdIn("test");
-  dbg.ProcessStdOut("test");
+  dbg.process_stdin("test");
+  dbg.process_stdout("test");
 
 /*    
-  wex::stc* stc = GetSTC();
-  stc->SetText("#include <stdio.h>\n\nmain()\n{printf(\"hello world\");\n}\n");
-  stc->GetFile().FileSave("example.cc");
+  wex::stc* stc = get_stc();
+  stc->set_text("#include <stdio.h>\n\nmain()\n{printf(\"hello world\");\n}\n");
+  stc->get_file().file_save("example.cc");
   system("cc -g example.cc");
   
   wex::process process;
-  REQUIRE( !dbg.Execute(item));
+  REQUIRE( !dbg.execute(item));
   
-  process.Execute("gdb a.out");
+  process.execute("gdb a.out");
   
-  REQUIRE(!dbg.Execute(item));
+  REQUIRE(!dbg.execute(item));
   stc->GotoLine(1);
-  REQUIRE( dbg.Execute(item, stc));
+  REQUIRE( dbg.execute(item, stc));
   REQUIRE( stc->MarkerGet(1) > 0);
   */
 }

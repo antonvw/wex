@@ -21,12 +21,12 @@ namespace wex
   public:
     paths() : m_Paths(tokenizer(
       config(_("Include directory")).get(
-        std::string("\r\n"))).Tokenize<std::vector<std::string>>()) {;};
+        std::string("\r\n"))).tokenize<std::vector<std::string>>()) {;};
 
     path FindPath(const std::string& path) const {
       for (const auto& it : m_Paths)
       {
-        if (const wex::path valid(it, path); valid.FileExists())
+        if (const wex::path valid(it, path); valid.file_exists())
         {
           return valid;
         }
@@ -51,8 +51,8 @@ const wex::path wex::link::FindPath(
   const std::string& text, const control_data& data) const
 {
   if (text.empty() &&
-    data.Line() != LINE_OPEN_MIME &&
-    data.Line() != LINE_OPEN_URL_AND_MIME)
+    data.line() != LINE_OPEN_MIME &&
+    data.line() != LINE_OPEN_URL_AND_MIME)
   {
     return path();
   }
@@ -60,14 +60,14 @@ const wex::path wex::link::FindPath(
   // Path in .po files.
   if (
     m_STC != nullptr &&
-    m_STC->GetLexer().GetScintillaLexer() == "po" && text.substr(0, 3) == "#: ")
+    m_STC->get_lexer().scintilla_lexer() == "po" && text.substr(0, 3) == "#: ")
   {
     return text.substr(3);
   }
   
   // hypertext link
   if (std::vector <std::string> v; 
-      (data.Line() == LINE_OPEN_URL || LINE_OPEN_URL_AND_MIME) && 
+      (data.line() == LINE_OPEN_URL || LINE_OPEN_URL_AND_MIME) && 
       (match("(https?:.*)", text, v) > 0 || 
        match("(www.*)", text, v) > 0))
   {
@@ -87,7 +87,7 @@ const wex::path wex::link::FindPath(
     return match;
   }
   
-  if (data.Line() == LINE_OPEN_URL)
+  if (data.line() == LINE_OPEN_URL)
   {
     return std::string();
   }
@@ -107,14 +107,14 @@ const wex::path wex::link::FindPath(
     }
   }
 
-  // Previewable (MIME) file
+  // previewable (MIME) file
   if (
-    data.Line() == LINE_OPEN_MIME || 
-    data.Line() == LINE_OPEN_URL_AND_MIME)
+    data.line() == LINE_OPEN_MIME || 
+    data.line() == LINE_OPEN_URL_AND_MIME)
   {
-    if (m_STC != nullptr && m_STC->GetLexer().Previewable())
+    if (m_STC != nullptr && m_STC->get_lexer().previewable())
     {
-      return m_STC->GetFileName();
+      return m_STC->get_filename();
     }
     else 
     {
@@ -126,15 +126,15 @@ const wex::path wex::link::FindPath(
 }
 
 // text contains selected text, or current line
-const wex::path wex::link::GetPath(
+const wex::path wex::link::get_path(
   const std::string& text, control_data& data) const
 {
   const wex::path path(FindPath(text, data));
 
   // if http link requested  
-  if (data.Line() == LINE_OPEN_MIME || 
-      data.Line() == LINE_OPEN_URL ||
-      data.Line() == LINE_OPEN_URL_AND_MIME)
+  if (data.line() == LINE_OPEN_MIME || 
+      data.line() == LINE_OPEN_URL ||
+      data.line() == LINE_OPEN_URL_AND_MIME)
   { 
     return path;
   }
@@ -143,51 +143,51 @@ const wex::path wex::link::GetPath(
   
   SetLink(link, data);
   
-  if (link.Path().empty())
+  if (link.data().empty())
   {
     return link;
   }
 
   wex::path file(link);
 
-  if (file.FileExists())
+  if (file.file_exists())
   {
     return file.make_absolute();
   }
 
   if (file.is_relative() && 
-      m_STC != nullptr && m_STC->GetFileName().FileExists())
+      m_STC != nullptr && m_STC->get_filename().file_exists())
   {
-    if (wex::path path(m_STC->GetFileName().GetPath(), file.GetFullName()); path.FileExists())
+    if (wex::path path(m_STC->get_filename().get_path(), file.fullname()); path.file_exists())
     {
       return path;
     }
   }
 
   // Check whether last word is a file.
-  const auto pos = path.Path().string().find_last_of(' ');
+  const auto pos = path.data().string().find_last_of(' ');
   wex::path word = skip_white_space((
-    pos != std::string::npos ? path.Path().string().substr(pos): std::string()));
+    pos != std::string::npos ? path.data().string().substr(pos): std::string()));
 
-  if (!word.Path().empty())
+  if (!word.data().empty())
   {
-    if (word.FileExists())
+    if (word.file_exists())
     {
-      data.Reset();
+      data.reset();
       return word.make_absolute();
     }
   }
 
-  wex::path fullpath = m_Paths->FindPath(link.Path().string());
+  wex::path fullpath = m_Paths->FindPath(link.data().string());
 
-  if (!fullpath.Path().empty())
+  if (!fullpath.data().empty())
   {
     return fullpath;
   }
 
-  if (!word.Path().empty() && SetLink(word, data))
+  if (!word.data().empty() && SetLink(word, data))
   {
-    fullpath = m_Paths->FindPath(word.Path().string());
+    fullpath = m_Paths->FindPath(word.data().string());
   }
   
   return fullpath;
@@ -195,7 +195,7 @@ const wex::path wex::link::GetPath(
 
 bool wex::link::SetLink(path& link, control_data& data) const
 {
-  if (link.Path().empty())
+  if (link.data().empty())
   {
     return false;
   }
@@ -205,33 +205,33 @@ bool wex::link::SetLink(path& link, control_data& data) const
   std::string prefix;
 
 #ifdef __WXMSW__
-  if (link.Path().string().size() > 1 && 
-    isalpha(link.Path().string()[0]) && 
-    link.Path().string()[1] == ':')
+  if (link.data().string().size() > 1 && 
+    isalpha(link.data().string()[0]) && 
+    link.data().string()[1] == ':')
   {
-    prefix = link.Path().string().substr(0, 1);
-    link = link.Path().string().substr(2);
+    prefix = link.data().string().substr(0, 1);
+    link = link.data().string().substr(2);
   }
 #endif
 
   // file[:line[:column]]
   if (std::vector <std::string> v;
-    match("([0-9A-Za-z _/.-]+):([0-9]*):?([0-9]*)", link.Path().string(), v) > 0)
+    match("([0-9A-Za-z _/.-]+):([0-9]*):?([0-9]*)", link.data().string(), v) > 0)
   {
     link = v[0];
-    data.Reset();
+    data.reset();
       
     if (v.size() > 1 && !v[1].empty())
     {
-      data.Line(std::stoi(v[1]));
+      data.line(std::stoi(v[1]));
         
       if (v.size() > 2 && !v[2].empty())
       {
-        data.Col(std::stoi(v[2]));
+        data.col(std::stoi(v[2]));
       }
     }
       
-    link = wex::path(skip_white_space(prefix + link.Path().string()));
+    link = wex::path(skip_white_space(prefix + link.data().string()));
     
     return true;
   }
@@ -239,7 +239,7 @@ bool wex::link::SetLink(path& link, control_data& data) const
   return false;
 }
   
-void wex::link::SetFromConfig()
+void wex::link::set_from_config()
 {
   delete m_Paths.release();
   m_Paths = std::make_unique<paths>();

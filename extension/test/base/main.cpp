@@ -18,6 +18,6 @@ TEST_CASE( "wex::test_app" )
 {
   wxASSERT( 1 == 0 ); // to test OnAssertFailure
   
-  wxGetApp().GetCatalogDir();
-  wxGetApp().GetLocale().IsOk();
+  wxGetApp().get_catalog_dir();
+  wxGetApp().get_locale().IsOk();
 }

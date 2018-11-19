@@ -12,8 +12,8 @@
 #include <wx/wx.h>
 #endif
 #include <wx/aboutdlg.h>
-#include <wx/config.h>
 #include <wx/stockitem.h>
+#include <wex/config.h>
 #include <wex/filedlg.h>
 #include <wex/grid.h>
 #include <wex/lexers.h>
@@ -56,33 +56,33 @@ frame::frame()
   SetIcon(wxICON(app));
 
   wex::menu* menuFile = new wex::menu;
-  menuFile->Append(wxID_NEW);
-  menuFile->Append(wxID_OPEN);
-  GetFileHistory().UseMenu(ID_RECENTFILE_MENU, menuFile);
-  menuFile->AppendSeparator();
-  menuFile->Append(wxID_SAVE);
-  menuFile->Append(wxID_SAVEAS);
-  menuFile->AppendSeparator();
-  menuFile->Append(wxID_EXIT);
+  menuFile->append(wxID_NEW);
+  menuFile->append(wxID_OPEN);
+  file_history().use_menu(ID_RECENTFILE_MENU, menuFile);
+  menuFile->append_separator();
+  menuFile->append(wxID_SAVE);
+  menuFile->append(wxID_SAVEAS);
+  menuFile->append_separator();
+  menuFile->append(wxID_EXIT);
 
   wex::menu* menuDatabase = new wex::menu;
-  menuDatabase->Append(ID_DATABASE_OPEN, wex::ellipsed(_("&Open")));
-  menuDatabase->Append(ID_DATABASE_CLOSE, _("&Close"));
+  menuDatabase->append(ID_DATABASE_OPEN, wex::ellipsed(_("&Open")));
+  menuDatabase->append(ID_DATABASE_CLOSE, _("&Close"));
 
   wex::menu* menuQuery = new wex::menu;
-  menuQuery->Append(wxID_EXECUTE);
-  menuQuery->Append(wxID_STOP);
+  menuQuery->append(wxID_EXECUTE);
+  menuQuery->append(wxID_STOP);
 
 #ifndef __WXOSX__
   wxMenu* menuOptions = new wxMenu();
   menuOptions->Append(wxID_PREFERENCES);
 #else
-  menuQuery->Append(wxID_PREFERENCES); // is moved!
+  menuQuery->append(wxID_PREFERENCES); // is moved!
 #endif
 
   wex::menu* menuView = new wex::menu();
-  AppendPanes(menuView);
-  menuView->AppendSeparator();
+  append_panes(menuView);
+  menuView->append_separator();
   menuView->AppendCheckItem(ID_VIEW_QUERY, _("Query"));
   menuView->AppendCheckItem(ID_VIEW_RESULTS, _("Results"));
   menuView->AppendCheckItem(ID_VIEW_STATISTICS, _("Statistics"));
@@ -106,29 +106,29 @@ frame::frame()
 
   m_Shell->SetFocus();
 
-  SetupStatusBar({
+  setup_statusbar({
     {"PaneInfo", 100, _("Lines").ToStdString()},
     {"PaneTheme", 50, _("Theme").ToStdString()}});
 
-  if (wex::lexers::Get()->GetThemes() <= 1)
+  if (wex::lexers::get()->get_themes_size() <= 1)
   {
-    m_StatusBar->ShowField("PaneTheme", false);
+    m_StatusBar->show_field("PaneTheme", false);
   }
 
-  GetToolBar()->AddControls(false); // no realize yet
-  GetToolBar()->AddTool(wxID_EXECUTE, 
+  get_toolbar()->add_controls(false); // no realize yet
+  get_toolbar()->add_tool(wxID_EXECUTE, 
     wxEmptyString,
     wxArtProvider::GetBitmap(
-      wxART_GO_FORWARD, wxART_TOOLBAR, GetToolBar()->GetToolBitmapSize()),
+      wxART_GO_FORWARD, wxART_TOOLBAR, get_toolbar()->GetToolBitmapSize()),
     wxGetStockLabel(wxID_EXECUTE, wxSTOCK_NOFLAGS));
-  GetToolBar()->Realize();
+  get_toolbar()->Realize();
 
-  GetManager().AddPane(m_Shell,
+  manager().AddPane(m_Shell,
     wxAuiPaneInfo().
       Name("CONSOLE").
       CenterPane());
 
-  GetManager().AddPane(m_Results,
+  manager().AddPane(m_Results,
     wxAuiPaneInfo().
       Name("RESULTS").
       Caption(_("Results")).
@@ -136,30 +136,30 @@ frame::frame()
       Bottom().
       MaximizeButton(true));
 
-  GetManager().AddPane(m_Query,
+  manager().AddPane(m_Query,
     wxAuiPaneInfo().
       Name("QUERY").
       Caption(_("Query")).
       CloseButton(true).
       MaximizeButton(true));
 
-  GetManager().AddPane(m_Statistics.Show(this),
+  manager().AddPane(m_Statistics.show(this),
     wxAuiPaneInfo().Left().
       Hide().
       MaximizeButton(true).
       Caption(_("Statistics")).
       Name("STATISTICS"));
 
-  GetManager().LoadPerspective(wxConfigBase::Get()->Read("Perspective"));
-  GetManager().GetPane("QUERY").Show(false);
+  manager().LoadPerspective(wex::config("Perspective").get());
+  manager().GetPane("QUERY").Show(false);
 
-  GetManager().Update();
+  manager().Update();
   
   Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
     if (wex::file_dialog(
-      &m_Query->GetFile()).ShowModalIfChanged()  != wxID_CANCEL)
+      &m_Query->get_file()).show_modal_if_changed()  != wxID_CANCEL)
     {
-      wxConfigBase::Get()->Write("Perspective", GetManager().SavePerspective());
+      wex::config("Perspective").set(manager().SavePerspective().ToStdString());
       event.Skip();
     }});
     
@@ -167,9 +167,9 @@ frame::frame()
     wxAboutDialogInfo info;
     info.SetIcon(GetIcon());
     info.SetDescription(_("This program offers a general ODBC query."));
-    info.SetVersion(wex::get_version_info().Get());
-    info.SetCopyright(wex::get_version_info().Copyright());
-    info.AddDeveloper(wex::otl::VersionInfo().Get());
+    info.SetVersion(wex::get_version_info().get());
+    info.SetCopyright(wex::get_version_info().copyright());
+    info.AddDeveloper(wex::otl::get_version_info().get());
     wxAboutBox(info);
     }, wxID_ABOUT);
 
@@ -189,9 +189,9 @@ frame::frame()
     m_Running = true;
     const auto start = std::chrono::system_clock::now();
     // Run all queries.
-    while (tkz.HasMoreTokens() && !m_Stopped)
+    while (tkz.has_more_tokens() && !m_Stopped)
     {
-      std::string query = tkz.GetNextToken();
+      std::string query = tkz.get_next_token();
       if (!query.empty())
       {
         try
@@ -201,7 +201,7 @@ frame::frame()
         }
         catch (otl_exception& p)
         {
-          m_Statistics.Inc("Number of query errors");
+          m_Statistics.inc("Number of query errors");
           m_Shell->AppendText(
             "\nerror: " +  wex::quoted(std::string((const char*)p.msg)) + 
             " in: " + wex::quoted(query));
@@ -211,7 +211,7 @@ frame::frame()
     const auto end = std::chrono::system_clock::now();
     const auto elapsed = end - start;
     const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
-    m_Shell->Prompt(wxString::Format(_("\n%d queries (%.3f seconds)"),
+    m_Shell->prompt(wxString::Format(_("\n%d queries (%.3f seconds)"),
       no_queries,
       (float)milli.count() / (float)1000).ToStdString());
     m_Running = false;}, wxID_EXECUTE);
@@ -220,9 +220,9 @@ frame::frame()
     Close(true);}, wxID_EXIT);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_Query->GetFile().FileNew(wex::path());
+    m_Query->get_file().file_new(wex::path());
     m_Query->SetFocus();
-    ShowPane("QUERY");}, wxID_NEW);
+    show_pane("QUERY");}, wxID_NEW);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wex::open_files_dialog(
@@ -235,18 +235,18 @@ frame::frame()
       true);}, wxID_OPEN);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_Query->GetFile().FileSave();}, wxID_SAVE);
+    m_Query->get_file().file_save();}, wxID_SAVE);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wex::file_dialog dlg(
-      &m_Query->GetFile(), 
+      &m_Query->get_file(), 
       wex::window_data().
-        Style(wxFD_SAVE).
-        Parent(this).
-        Title(wxGetStockLabel(wxID_SAVEAS).ToStdString()));
+        style(wxFD_SAVE).
+        parent(this).
+        title(wxGetStockLabel(wxID_SAVEAS).ToStdString()));
     if (dlg.ShowModal() == wxID_OK)
     {
-       m_Query->GetFile().FileSave(dlg.GetPath().ToStdString());
+       m_Query->get_file().file_save(dlg.GetPath().ToStdString());
     }}, wxID_SAVEAS);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -254,19 +254,19 @@ frame::frame()
     m_Stopped = true;}, wxID_STOP);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    if (m_otl.Logoff())
+    if (m_otl.logoff())
     {
-      m_Shell->SetPrompt(">");
+      m_Shell->set_prompt(">");
     }}, ID_DATABASE_CLOSE);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    if (m_otl.Logon())
+    if (m_otl.logon())
     {
-      m_Shell->SetPrompt(m_otl.Datasource() + ">");
+      m_Shell->set_prompt(m_otl.datasource() + ">");
     }}, ID_DATABASE_OPEN);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    if (m_otl.IsConnected())
+    if (m_otl.is_connected())
     {
       try
       {
@@ -295,18 +295,18 @@ frame::frame()
     {
       m_Shell->AppendText("\nnot connected");
     }
-    m_Shell->Prompt();}, wex::ID_SHELL_COMMAND);
+    m_Shell->prompt();}, wex::ID_SHELL_COMMAND);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     m_Stopped = true;
-    m_Shell->Prompt("cancelled");}, wex::ID_SHELL_COMMAND_STOP);
+    m_Shell->prompt("cancelled");}, wex::ID_SHELL_COMMAND_STOP);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    TogglePane("QUERY");}, ID_VIEW_QUERY);
+    toggle_pane("QUERY");}, ID_VIEW_QUERY);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    TogglePane("RESULTS");}, ID_VIEW_RESULTS);
+    toggle_pane("RESULTS");}, ID_VIEW_RESULTS);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    TogglePane("STATISTICS");}, ID_VIEW_STATISTICS);
+    toggle_pane("STATISTICS");}, ID_VIEW_STATISTICS);
   
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Enable(m_Query->GetModify());}, wxID_SAVE);
@@ -315,52 +315,52 @@ frame::frame()
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Enable(m_Running);}, wxID_STOP);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    event.Enable(m_otl.IsConnected());}, ID_DATABASE_CLOSE);
+    event.Enable(m_otl.is_connected());}, ID_DATABASE_CLOSE);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    event.Enable(!m_otl.IsConnected());}, ID_DATABASE_OPEN);
+    event.Enable(!m_otl.is_connected());}, ID_DATABASE_OPEN);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     // If we have a query, you can hide it, but still run it.
-    event.Enable(m_Query->GetLength() > 0 && m_otl.IsConnected());}, wxID_EXECUTE);
+    event.Enable(m_Query->GetLength() > 0 && m_otl.is_connected());}, wxID_EXECUTE);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    event.Enable(!GetFileHistory().GetHistoryFile().Path().empty());}, ID_RECENTFILE_MENU);
+    event.Enable(!file_history().get_history_file().data().empty());}, ID_RECENTFILE_MENU);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    event.Check(GetManager().GetPane("QUERY").IsShown());}, ID_VIEW_QUERY);
+    event.Check(manager().GetPane("QUERY").IsShown());}, ID_VIEW_QUERY);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    event.Check(GetManager().GetPane("RESULTS").IsShown());}, ID_VIEW_RESULTS);
+    event.Check(manager().GetPane("RESULTS").IsShown());}, ID_VIEW_RESULTS);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    event.Check(GetManager().GetPane("STATISTICS").IsShown());}, ID_VIEW_STATISTICS);
+    event.Check(manager().GetPane("STATISTICS").IsShown());}, ID_VIEW_STATISTICS);
   
   // Do automatic connect.
-  if (!m_otl.Datasource().empty() && m_otl.Logon(wex::window_data().Button(0)))
+  if (!m_otl.datasource().empty() && m_otl.logon(wex::window_data().button(0)))
   {
-    m_Shell->SetPrompt(m_otl.Datasource() + ">");
+    m_Shell->set_prompt(m_otl.datasource() + ">");
   }
   else
   {
-    m_Shell->SetPrompt(">");
+    m_Shell->set_prompt(">");
   }
 }
 
-void frame::OnCommandItemDialog(
+void frame::on_command_item_dialog(
   wxWindowID dialogid,
   const wxCommandEvent& event)
 {
   if (dialogid == wxID_PREFERENCES)
   {
-    m_Query->ConfigGet();
-    m_Shell->ConfigGet();
+    m_Query->config_get();
+    m_Shell->config_get();
   }
   else
   {
-    wex::history_frame::OnCommandItemDialog(dialogid, event);
+    wex::history_frame::on_command_item_dialog(dialogid, event);
   }
 }
 
-wex::stc* frame::OpenFile(const wex::path& filename, const wex::stc_data& data)
+wex::stc* frame::open_file(const wex::path& filename, const wex::stc_data& data)
 {
-  if (m_Query->Open(filename, data))
+  if (m_Query->open(filename, data))
   {
-    ShowPane("QUERY");
+    show_pane("QUERY");
   }
   
   return m_Query;
@@ -386,15 +386,15 @@ void frame::RunQuery(const std::string& query, bool empty_results)
       query_lower.find("$sql" == 0))
   {
     rpc = m_Results->IsShown() ? 
-      m_otl.Query(query, m_Results, m_Stopped, empty_results):
-      m_otl.Query(query, m_Shell, m_Stopped);
+      m_otl.query(query, m_Results, m_Stopped, empty_results):
+      m_otl.query(query, m_Shell, m_Stopped);
     const auto end = std::chrono::system_clock::now();
     const auto elapsed = end - start;
     milli = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
   }
   else
   {
-    rpc = m_otl.Query(query);
+    rpc = m_otl.query(query);
     const auto end = std::chrono::system_clock::now();
     const auto elapsed = end - start;
     milli = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
@@ -404,34 +404,34 @@ void frame::RunQuery(const std::string& query, bool empty_results)
     rpc,
     (float)milli.count() / (float)1000));
 
-  m_Statistics.Set("Rows processed", rpc);
-  m_Statistics.Set("Query runtime", milli.count());
+  m_Statistics.set("Rows processed", rpc);
+  m_Statistics.set("Query runtime", milli.count());
 
-  m_Statistics.Inc("Total number of queries run");
-  m_Statistics.Inc("Total query runtime", milli.count());
-  m_Statistics.Inc("Total rows processed", rpc);
+  m_Statistics.inc("Total number of queries run");
+  m_Statistics.inc("Total query runtime", milli.count());
+  m_Statistics.inc("Total rows processed", rpc);
 
   m_Shell->DocumentEnd();
 }
 
-void frame::StatusBarClicked(const std::string& pane)
+void frame::statusbar_clicked(const std::string& pane)
 {
   if (pane == "PaneTheme")
   {
-    if (wex::lexers::Get()->ShowThemeDialog(this))
+    if (wex::lexers::get()->show_theme_dialog(this))
     {
-      m_Query->GetLexer().Set(m_Query->GetLexer().GetDisplayLexer());
-      m_Shell->GetLexer().Set(m_Shell->GetLexer().GetDisplayLexer());
+      m_Query->get_lexer().set(m_Query->get_lexer().display_lexer());
+      m_Shell->get_lexer().set(m_Shell->get_lexer().display_lexer());
 
-      m_StatusBar->ShowField(
+      m_StatusBar->show_field(
         "PaneLexer", 
-        !wex::lexers::Get()->GetTheme().empty());
+        !wex::lexers::get()->theme().empty());
         
-      StatusText(wex::lexers::Get()->GetTheme(), "PaneTheme");
+      statustext(wex::lexers::get()->theme(), "PaneTheme");
     }
   }
   else
   {
-    wex::history_frame::StatusBarClicked(pane);
+    wex::history_frame::statusbar_clicked(pane);
   }
 }

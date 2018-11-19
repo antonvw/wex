@@ -31,83 +31,77 @@ namespace wex
   {
   public:
     /// Applies containers (except global styles) to specified component.
-    void Apply(stc* stc) const;
+    void apply(stc* stc) const;
 
     /// Sets global styles (and colours and indicators) 
     /// for current theme for specified component.
-    void ApplyGlobalStyles(stc* stc);
+    void apply_global_styles(stc* stc);
 
     /// Applies macro to text:
     /// if text is referring to a macro, text is replaced by the macro value.
     /// Otherwise the same text is returned.
-    const std::string ApplyMacro(
+    const std::string apply_macro(
       const std::string& text, 
       const std::string& lexer = "global");
 
     /// Applies margin text style to stc line.
-    void ApplyMarginTextStyle(stc* stc, int line) const;
+    void apply_margin_text_style(stc* stc, int line) const;
 
     /// Finds a lexer specified by a filename (fullname).
-    const lexer FindByFileName(const std::string& fullname) const;
+    const lexer find_by_filename(const std::string& fullname) const;
 
     /// Finds a lexer specified by the (display scintilla) name.
-    const lexer FindByName(const std::string& name) const;
+    const lexer find_by_name(const std::string& name) const;
 
     /// Finds a lexer if text starts with some special tokens.
-    const lexer FindByText(const std::string& text) const;
+    const lexer find_by_text(const std::string& text) const;
 
     /// Returns the lexers object.
     /// If this is the first invocation, and createOnDemand is true,
-    /// it also invokes LoadDocument.
-    static lexers* Get(bool createOnDemand = true);
+    /// it also invokes load_document.
+    static lexers* get(bool createOnDemand = true);
 
     /// Returns the filename.
-    const auto & GetFileName() const {return m_Path;};
+    const auto & get_filename() const {return m_Path;};
     
     /// Returns indicator from loaded indicators,
     /// based on the no of specified indicator.
-    const indicator GetIndicator(const indicator& indicator) const;
-    
-    /// Returns the keywords for the specified named set of keywords.
-    /// Returns empty string if set does not exist.
-    const std::string GetKeywords(const std::string& set) const;
+    const indicator get_indicator(const indicator& indicator) const;
 
     /// Returns the lexers.
-    const auto & get() const {return m_Lexers;};
+    const auto & get_lexers() const {return m_Lexers;};
 
     /// Returns the macros for specified lexer.
-    const auto & GetMacros(const std::string& lexer) {return m_Macros[lexer];};
+    const auto & get_macros(const std::string& lexer) {return m_Macros[lexer];};
 
     /// Returns marker from loaded markers,
     /// based on the no of specified marker.
-    const marker GetMarker(const marker& marker) const;
+    const marker get_marker(const marker& marker) const;
     
-    /// Returns global properties.
-    const auto & GetProperties() const {return m_GlobalProperties;};
-
-    /// Returns the current theme.
-    const auto & GetTheme() const {return m_Theme;};
-    
-    /// Returns the theme macros for the current theme.
-    const auto & GetThemeMacros() {return m_ThemeMacros[m_Theme];};
-
     /// Returns number of themes (should at least contain empty theme).
-    auto GetThemes() const {return m_ThemeMacros.size();};
+    auto get_themes_size() const {return m_ThemeMacros.size();};
     
     /// Returns true if specified indicator is available.
-    bool IndicatorIsLoaded(const indicator& indic) const {
+    bool indicator_is_loaded(const indicator& indic) const {
       return m_Indicators.find(indic) != m_Indicators.end();};
+
+    /// Returns the keywords for the specified named set of keywords.
+    /// Returns empty string if set does not exist.
+    const std::string keywords(const std::string& set) const;
 
     /// Loads all lexers (first clears them) from document.
     /// Returns true if the document is loaded.
-    bool LoadDocument();
+    bool load_document();
 
     /// Returns true if specified marker is available.
-    bool MarkerIsLoaded(const marker& marker) const {
+    bool marker_is_loaded(const marker& marker) const {
       return m_Markers.find(marker) != m_Markers.end();};
 
+    /// Returns global properties.
+    const auto & properties() const {return m_globalProperties;};
+
     /// Resets the theme.
-    void ResetTheme() {
+    void reset_theme() {
       if (!m_Theme.empty()) 
       {
         m_ThemePrevious = m_Theme; 
@@ -115,24 +109,30 @@ namespace wex
       }};
     
     /// Restores the theme from previous theme.
-    void RestoreTheme() {m_Theme = m_ThemePrevious;};
+    void restore_theme() {m_Theme = m_ThemePrevious;};
     
     /// Sets the object as the current one, returns the pointer 
     /// to the previous current object 
     /// (both the parameter and returned value may be nullptr). 
-    static lexers* Set(lexers* lexers);
+    static lexers* set(lexers* lexers);
     
     /// Shows a dialog with all lexers, allowing you to choose one.
     /// Returns true and sets the lexer on the stc component if you selected one.
-    bool ShowDialog(stc* stc) const;
+    bool show_dialog(stc* stc) const;
       
     /// Shows a dialog with all themes, allowing you to choose one.
     /// Returns true and sets current theme if you select one.
-    bool ShowThemeDialog(wxWindow* parent);
+    bool show_theme_dialog(wxWindow* parent);
+
+    /// Returns the current theme.
+    const auto & theme() const {return m_Theme;};
+    
+    /// Returns the theme macros for the current theme.
+    const auto & theme_macros() {return m_ThemeMacros[m_Theme];};
   private:
     lexers(const path& filename);
     void ParseNodeFolding(const pugi::xml_node& node);
-    void ParseNodeGlobal(const pugi::xml_node& node);
+    void ParseNodeglobal(const pugi::xml_node& node);
     void ParseNodeKeyword(const pugi::xml_node& node);
     void ParseNodeMacro(const pugi::xml_node& node);
     void ParseNodeTheme(const pugi::xml_node& node);
@@ -146,7 +146,7 @@ namespace wex
     std::set<indicator> m_Indicators;
     std::set<marker> m_Markers;
 
-    std::vector<property> m_GlobalProperties;
+    std::vector<property> m_globalProperties;
     std::vector<lexer> m_Lexers;
     std::vector<style> m_Styles, m_StylesHex;
     std::vector<std::pair<std::string, std::string>> m_Texts;

@@ -17,7 +17,7 @@ namespace wex
   class vi_macros_fsm
   {
   public:
-    enum state
+    enum state_t
     {
       IDLE,
       PLAYINGBACK,
@@ -27,7 +27,7 @@ namespace wex
       EXPANDING_VARIABLE,
     };
 
-    enum trigger
+    enum trigger_t
     {
       DONE,
       EXPAND_TEMPLATE,
@@ -39,10 +39,10 @@ namespace wex
     /// Default constructor.
     vi_macros_fsm();
 
-    /// Transitions according to trigger.
-    bool Execute(
+    /// transitions according to trigger.
+    bool execute(
       /// trigger
-      trigger trigger, 
+      trigger_t trigger, 
       /// command
       const std::string& macro = std::string(), 
       // ex component
@@ -51,7 +51,7 @@ namespace wex
       int count = 1);
 
     /// Expands template variable (transitions into expand and back to idle).
-    bool Expand(
+    bool expand(
       /// ex component
       ex* ex, 
       /// template variable
@@ -60,17 +60,17 @@ namespace wex
       std::string& expanded);
 
     /// Returns internal state.
-    auto Get() const {return m_fsm.state();};
+    auto get() const {return m_fsm.state();};
 
     /// Returns true if busy playing back.
-    bool IsPlayback() const;
+    bool is_playback() const;
 
     /// Returns internal state as a string.
-    const std::string State() const {
-      return Get() == IDLE ? std::string(): State(Get());};
+    const std::string state() const {
+      return get() == IDLE ? std::string(): state(get());};
 
     /// Returns any state as a string.
-    static const std::string State(state state) {
+    static const std::string state(state_t state) {
       switch (state)
       {
         case IDLE: return "idle"; 
@@ -83,7 +83,7 @@ namespace wex
       };};
 
     /// Returns any trigger as a string.
-    static const std::string Trigger(trigger trigger) {
+    static const std::string trigger(trigger_t trigger) {
       switch (trigger)
       {
         case DONE: return "done";
@@ -98,10 +98,10 @@ namespace wex
     void ExpandingVariable();
     bool ExpandingVariable(const std::string& name, std::string* value) const;
     void Playback();
-    void SetAskForInput() const;
+    void set_ask_for_input() const;
     void StartRecording();
     void StopRecording();
-    static void Verbose(state, state, trigger);
+    static void verbose(state_t, state_t, trigger_t);
 
     int m_count{1};
     bool m_error {false}, m_playback {false};
@@ -110,6 +110,6 @@ namespace wex
     std::string* m_expanded {nullptr};
     static inline std::string m_macro;
 
-    FSM::Fsm<state, IDLE, trigger> m_fsm;
+    FSM::Fsm<state_t, IDLE, trigger_t> m_fsm;
   };
 };

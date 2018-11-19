@@ -39,23 +39,23 @@ namespace wex
 
     /// Applies this style to stc component.
     /// If no style is present, STC StyleResetDefault is invoked.
-    void Apply(wxStyledTextCtrl* stc) const;
+    void apply(wxStyledTextCtrl* stc) const;
 
     /// Is the default style part of these styles.
-    bool ContainsDefaultStyle() const;
+    bool contains_default_style() const;
     
     /// Returns the original define.
-    const auto & GetDefine() const {return m_Define;};
-
-    /// Returns the no ('s).
-    const std::string GetNo() const;
-    
-    /// Returns the value.
-    const auto & GetValue() const {return m_Value;};
+    const auto & define() const {return m_Define;};
 
     /// Returns true if this style is valid.
     bool is_ok() const {
       return !m_No.empty() && !m_Value.empty();};
+
+    /// Returns the numbers ('s).
+    const std::string number() const;
+    
+    /// Returns the value.
+    const auto & value() const {return m_Value;};
   private:
     void Set(const pugi::xml_node& node, const std::string& macro);
     void SetNo(const std::string& no, const std::string& macro, 

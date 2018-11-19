@@ -18,100 +18,100 @@
 TEST_CASE("wex::notebook")
 {
   wex::notebook* notebook = new wex::notebook();
-  AddPane(GetFrame(), notebook);
+  AddPane(frame(), notebook);
   
-  wxWindow* page1 = new wxWindow(GetFrame(), wxID_ANY);
-  wxWindow* page2 = new wxWindow(GetFrame(), wxID_ANY);
-  wxWindow* page3 = new wxWindow(GetFrame(), wxID_ANY);
-  wxWindow* page4 = new wxWindow(GetFrame(), wxID_ANY);
-  wxWindow* page5 = new wxWindow(GetFrame(), wxID_ANY);
+  wxWindow* page1 = new wxWindow(frame(), wxID_ANY);
+  wxWindow* page2 = new wxWindow(frame(), wxID_ANY);
+  wxWindow* page3 = new wxWindow(frame(), wxID_ANY);
+  wxWindow* page4 = new wxWindow(frame(), wxID_ANY);
+  wxWindow* page5 = new wxWindow(frame(), wxID_ANY);
   
-  // Test AddPage. 
-  REQUIRE(notebook->AddPage(page1, "key1") != nullptr);
-  REQUIRE(notebook->AddPage(page2, "key2") != nullptr);
-  REQUIRE(notebook->AddPage(page3, "key3") != nullptr);
+  // Test add_page. 
+  REQUIRE(notebook->add_page(page1, "key1") != nullptr);
+  REQUIRE(notebook->add_page(page2, "key2") != nullptr);
+  REQUIRE(notebook->add_page(page3, "key3") != nullptr);
   // pages: 0,1,2 keys: key1, key2, key3 pages page1,page2,page3.
   
-  // Test GetKeyByPage, GetPageByKey, GetPageIndexByKey.
-  REQUIRE(notebook->GetKeyByPage(page1) == "key1");
-  REQUIRE(notebook->GetPageByKey("key1") == page1);
-  REQUIRE(notebook->GetPageIndexByKey("key1") == 0);
-  REQUIRE(notebook->GetPageIndexByKey("xxx") == wxNOT_FOUND);
+  // Test key_by_page, page_by_key, page_index_by_key.
+  REQUIRE(notebook->key_by_page(page1) == "key1");
+  REQUIRE(notebook->page_by_key("key1") == page1);
+  REQUIRE(notebook->page_index_by_key("key1") == 0);
+  REQUIRE(notebook->page_index_by_key("xxx") == wxNOT_FOUND);
   
-  // Test SetPageText.
-  REQUIRE(notebook->SetPageText("key1", "keyx", "hello"));
-  REQUIRE(notebook->GetPageByKey("keyx") == page1);
+  // Test set_page_text.
+  REQUIRE(notebook->set_page_text("key1", "keyx", "hello"));
+  REQUIRE(notebook->page_by_key("keyx") == page1);
   // pages: 0,1,2 keys: keyx, key2, key3 pages page1, page2,page3.
-  REQUIRE(notebook->GetPageIndexByKey("key1") == wxNOT_FOUND);
+  REQUIRE(notebook->page_index_by_key("key1") == wxNOT_FOUND);
   
-  // Test DeletePage.
-  REQUIRE(notebook->DeletePage("keyx"));
-  REQUIRE(notebook->GetPageByKey("keyx") == nullptr);
-  REQUIRE(notebook->DeletePage("key2"));
-  REQUIRE(!notebook->DeletePage("xxx"));
+  // Test delete_page.
+  REQUIRE(notebook->delete_page("keyx"));
+  REQUIRE(notebook->page_by_key("keyx") == nullptr);
+  REQUIRE(notebook->delete_page("key2"));
+  REQUIRE(!notebook->delete_page("xxx"));
   // pages: 0 keys: key3 pages:page3.
 
-  // Test InsertPage.
-  REQUIRE(notebook->InsertPage(0, page4, "KEY1") != nullptr);
-  REQUIRE(notebook->InsertPage(0, page5, "KEY0") != nullptr);
+  // Test insert_page.
+  REQUIRE(notebook->insert_page(0, page4, "KEY1") != nullptr);
+  REQUIRE(notebook->insert_page(0, page5, "KEY0") != nullptr);
   // pages: 0,1,2 keys: KEY0, KEY1, key3 pages: page5,page4,page3.
-  REQUIRE(notebook->GetPageIndexByKey("KEY0") == 0);
-  REQUIRE(notebook->GetPageIndexByKey("KEY1") == 1);
+  REQUIRE(notebook->page_index_by_key("KEY0") == 0);
+  REQUIRE(notebook->page_index_by_key("KEY1") == 1);
   
-  // Test SetSelection.
-  REQUIRE(notebook->SetSelection("KEY1") == page4);
-  REQUIRE(notebook->GetCurrentPage() == "KEY1");
-  REQUIRE(notebook->SetSelection("key3") == page3);
-  REQUIRE(notebook->GetCurrentPage() == "key3");
-  REQUIRE(notebook->SetSelection("XXX") == nullptr);
-  REQUIRE(notebook->GetCurrentPage() == "key3");
+  // Test set_selection.
+  REQUIRE(notebook->set_selection("KEY1") == page4);
+  REQUIRE(notebook->current_page_key() == "KEY1");
+  REQUIRE(notebook->set_selection("key3") == page3);
+  REQUIRE(notebook->current_page_key() == "key3");
+  REQUIRE(notebook->set_selection("XXX") == nullptr);
+  REQUIRE(notebook->current_page_key() == "key3");
 
-  // Test ChangeSelection.
-  REQUIRE(notebook->ChangeSelection("KEY1") == "key3");
-  REQUIRE(notebook->GetCurrentPage() == "KEY1");
-  REQUIRE(notebook->ChangeSelection("key3") == "KEY1");
-  REQUIRE(notebook->GetCurrentPage() == "key3");
-  REQUIRE(notebook->ChangeSelection("XXX") == std::string());
-  REQUIRE(notebook->GetCurrentPage() == "key3");
+  // Test change_selection.
+  REQUIRE(notebook->change_selection("KEY1") == "key3");
+  REQUIRE(notebook->current_page_key() == "KEY1");
+  REQUIRE(notebook->change_selection("key3") == "KEY1");
+  REQUIRE(notebook->current_page_key() == "key3");
+  REQUIRE(notebook->change_selection("XXX") == std::string());
+  REQUIRE(notebook->current_page_key() == "key3");
 
   // Prepare next test, delete all pages.
-  REQUIRE(notebook->DeletePage("KEY0"));
-  REQUIRE(notebook->DeletePage("KEY1"));
-  REQUIRE(notebook->DeletePage("key3"));
+  REQUIRE(notebook->delete_page("KEY0"));
+  REQUIRE(notebook->delete_page("KEY1"));
+  REQUIRE(notebook->delete_page("key3"));
   REQUIRE(notebook->GetPageCount() == 0);
   
-  // Test ForEach.
+  // Test for_each.
   wex::stc* stc_x = new wex::stc(std::string("hello stc"));
   wex::stc* stc_y = new wex::stc(std::string("hello stc"));
   wex::stc* stc_z = new wex::stc(std::string("hello stc"));
   
-  REQUIRE(notebook->AddPage(stc_x, "key1") != nullptr);
-  REQUIRE(notebook->AddPage(stc_y, "key2") != nullptr);
-  REQUIRE(notebook->AddPage(stc_z, "key3") != nullptr);
+  REQUIRE(notebook->add_page(stc_x, "key1") != nullptr);
+  REQUIRE(notebook->add_page(stc_y, "key2") != nullptr);
+  REQUIRE(notebook->add_page(stc_z, "key3") != nullptr);
   
-  REQUIRE(notebook->ForEach<wex::stc>(wex::ID_ALL_STC_SET_LEXER));
-  REQUIRE(notebook->ForEach<wex::stc>(wex::ID_ALL_STC_SET_LEXER_THEME));
-  REQUIRE(notebook->ForEach<wex::stc>(wex::ID_ALL_STC_SYNC));
-  REQUIRE(notebook->ForEach<wex::stc>(wex::ID_ALL_CONFIG_GET));
-  REQUIRE(notebook->ForEach<wex::stc>(wex::ID_ALL_SAVE));
-  REQUIRE(notebook->ForEach<wex::stc>(wex::ID_ALL_CLOSE_OTHERS));
+  REQUIRE(notebook->for_each<wex::stc>(wex::ID_ALL_STC_SET_LEXER));
+  REQUIRE(notebook->for_each<wex::stc>(wex::ID_ALL_STC_SET_LEXER_THEME));
+  REQUIRE(notebook->for_each<wex::stc>(wex::ID_ALL_STC_SYNC));
+  REQUIRE(notebook->for_each<wex::stc>(wex::ID_ALL_CONFIG_GET));
+  REQUIRE(notebook->for_each<wex::stc>(wex::ID_ALL_SAVE));
+  REQUIRE(notebook->for_each<wex::stc>(wex::ID_ALL_CLOSE_OTHERS));
   REQUIRE(notebook->GetPageCount() == 1);
-  REQUIRE(notebook->ForEach<wex::stc>(wex::ID_ALL_CLOSE));
+  REQUIRE(notebook->for_each<wex::stc>(wex::ID_ALL_CLOSE));
   REQUIRE(notebook->GetPageCount() == 0);
   
-  // Test Rearrange.
-  notebook->Rearrange(wxLEFT);
-  notebook->Rearrange(wxBOTTOM);
+  // Test rearrange.
+  notebook->rearrange(wxLEFT);
+  notebook->rearrange(wxBOTTOM);
   
-  // Test Split.
-  wxWindow* pagev = new wxWindow(GetFrame(), wxID_ANY);
-  REQUIRE( notebook->AddPage(pagev, "keyv") != nullptr);
+  // Test split.
+  wxWindow* pagev = new wxWindow(frame(), wxID_ANY);
+  REQUIRE( notebook->add_page(pagev, "keyv") != nullptr);
   // split having only one page
-  REQUIRE( notebook->Split("keyv", wxRIGHT));
-  wxWindow* pagew = new wxWindow(GetFrame(), wxID_ANY);
-  REQUIRE( notebook->AddPage(pagew, "keyw") != nullptr);
+  REQUIRE( notebook->split("keyv", wxRIGHT));
+  wxWindow* pagew = new wxWindow(frame(), wxID_ANY);
+  REQUIRE( notebook->add_page(pagew, "keyw") != nullptr);
   // split using incorrect key
-  REQUIRE(!notebook->Split("err", wxRIGHT));
-  REQUIRE( notebook->Split("keyv", wxRIGHT));
+  REQUIRE(!notebook->split("err", wxRIGHT));
+  REQUIRE( notebook->split("keyv", wxRIGHT));
   REQUIRE(notebook->GetPageCount() == 2);
 }

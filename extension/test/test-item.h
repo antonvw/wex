@@ -11,8 +11,8 @@
 
 // Returns a notebook item (no subnotebook yet).
 const auto NotebookItem(
-  wex::item::type style = wex::item::NOTEBOOK, 
-  wex::item::label_type label = wex::item::LABEL_LEFT, 
+  wex::item::type_t style = wex::item::NOTEBOOK, 
+  wex::item::label_t label = wex::item::LABEL_LEFT, 
   wxImageList* il = nullptr)
 {
   return wex::item("notebook", {

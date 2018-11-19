@@ -32,17 +32,17 @@ wex::version_info::version_info(const std::string& name,
 {
 }
 
-const std::string wex::version_info::Copyright() const
+const std::string wex::version_info::copyright() const
 {
   return m_version.GetCopyright();
 }
 
-const std::string wex::version_info::Description() const
+const std::string wex::version_info::description() const
 {
   return m_version.GetDescription();
 }
 
-const std::string wex::version_info::Get() const
+const std::string wex::version_info::get() const
 {
   std::stringstream ss;
   ss << 

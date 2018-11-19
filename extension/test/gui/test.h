@@ -22,19 +22,19 @@ namespace wex
 };
 
 /// Returns abbreviations.
-std::vector<std::pair<std::string, std::string>> GetAbbreviations();
+std::vector<std::pair<std::string, std::string>> get_abbreviations();
 
 /// Returns variables.
 std::vector<std::string> GetBuiltinVariables();
 
 /// Returns the frame.
-wex::managed_frame* GetFrame();
+wex::managed_frame* frame();
 
 /// Returns the statusbar.
 wex::statusbar* GetStatusBar();
 
 /// Returns an STC.
-wex::stc* GetSTC();
+wex::stc* get_stc();
 
 /// Processes string on shell.
 void Process(const std::string& str, wex::shell* shell);

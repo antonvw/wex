@@ -20,57 +20,57 @@
 #include <wex/stream.h>
 #include <wex/config.h>
 #include <wex/frd.h>
+#include <wex/log.h>
 #include <wex/util.h>
-
-bool wex::stream::m_Asked = false;
+#include <easylogging++.h>
 
 wex::stream::stream(const path& filename, const tool& tool)
   : m_Path(filename)
   , m_Tool(tool)
-  , m_FRD(find_replace_data::Get())
+  , m_frd(find_replace_data::get())
   , m_Threshold(config(_("Max replacements")).get(-1))
 {
 }
 
-bool wex::stream::Process(std::string& line, size_t line_no)
+bool wex::stream::process(std::string& text, size_t line_no)
 {
   bool match = false;
   int count = 1;
   int pos = -1;
 
-  if (m_FRD->UseRegEx())
+  if (m_frd->use_regex())
   {
-    pos = m_FRD->RegExMatches(line);
+    pos = m_frd->regex_search(text);
     match = (pos >= 0);
 
-    if (match && m_Tool.GetId() == ID_TOOL_REPLACE)
+    if (match && (m_Tool.id() == ID_TOOL_REPLACE))
     {
-      count = m_FRD->RegExReplaceAll(line);
+      count = m_frd->regex_replace(text);
       if (!m_Modified) m_Modified = (count > 0);
     }
   }
   else
   {
-    if (m_Tool.GetId() == ID_TOOL_REPORT_FIND)
+    if (m_Tool.id() == ID_TOOL_REPORT_FIND)
     {
-      if (const auto it = (!m_FRD->MatchCase() ?
-        std::search(line.begin(), line.end(), m_FindString.begin(), m_FindString.end(),
+      if (const auto it = (!m_frd->match_case() ?
+        std::search(text.begin(), text.end(), m_find_string.begin(), m_find_string.end(),
           [](char ch1, char ch2) {return std::toupper(ch1) == ch2;}):
 #ifdef __WXGTK__
-        std::search(line.begin(), line.end(), 
-          std::boyer_moore_searcher(m_FindString.begin(), m_FindString.end())));
+        std::search(text.begin(), text.end(), 
+          std::boyer_moore_searcher(m_find_string.begin(), m_find_string.end())));
 #else
-        std::search(line.begin(), line.end(), 
-          m_FindString.begin(), m_FindString.end()));
+        std::search(text.begin(), text.end(), 
+          m_find_string.begin(), m_find_string.end()));
 #endif
-        it != line.end())
+        it != text.end())
       {
         match = true;
-        pos = it - line.begin();
+        pos = it - text.begin();
 
-        if (m_FRD->MatchWord() && 
-            ((it != line.begin() && IsWordCharacter(*std::prev(it))) ||
-              IsWordCharacter(*std::next(it, m_FindString.length()))))
+        if (m_frd->match_word() && 
+            ((it != text.begin() && IsWordCharacter(*std::prev(it))) ||
+              IsWordCharacter(*std::next(it, m_find_string.length()))))
         {
           match = false;
         }
@@ -79,9 +79,9 @@ bool wex::stream::Process(std::string& line, size_t line_no)
     else
     {
       count = replace_all(
-        line, 
-        m_FRD->GetFindString(), 
-        m_FRD->GetReplaceString(),
+        text, 
+        m_frd->get_find_string(), 
+        m_frd->get_replace_string(),
         &pos);
 
       match = (count > 0);
@@ -91,17 +91,17 @@ bool wex::stream::Process(std::string& line, size_t line_no)
 
   if (match)
   {
-    if (m_Tool.GetId() == ID_TOOL_REPORT_FIND)
+    if (m_Tool.id() == ID_TOOL_REPORT_FIND)
     {
-      ProcessMatch(line, line_no, pos);
+      process_match(text, line_no, pos);
     }
     
-    if (const auto ac = IncActionsCompleted(count);
+    if (const auto ac = inc_actions_completed(count);
       !m_Asked && m_Threshold != -1 && (ac - m_Prev > m_Threshold))
     {
       if (wxMessageBox(
         "More than " + std::to_string(m_Threshold) + " matches in: " + 
-          m_Path.Path().string() + "?",
+          m_Path.data().string() + "?",
         _("Continue"),
         wxYES_NO | wxICON_QUESTION) == wxNO)
       {
@@ -117,71 +117,76 @@ bool wex::stream::Process(std::string& line, size_t line_no)
   return true;
 }
 
-bool wex::stream::ProcessBegin()
+bool wex::stream::process_begin()
 {
   if (
-    !m_Tool.IsFindType() || 
-    (m_Tool.GetId() == ID_TOOL_REPLACE && m_Path.GetStat().is_readonly()) ||
-     find_replace_data::Get()->GetFindString().empty())
+     m_frd->get_find_string().empty() ||
+    !m_Tool.is_find_type() || 
+    (m_Tool.id() == ID_TOOL_REPLACE && m_Path.stat().is_readonly()))
   {
     return false;
   }
 
-  m_FindString = find_replace_data::Get()->GetFindString();
-  m_Prev = m_Stats.Get(_("Actions Completed").ToStdString());
-  m_Write = (m_Tool.GetId() == ID_TOOL_REPLACE);
-
-  if (!find_replace_data::Get()->MatchCase())
+  m_Prev = m_Stats.get(_("Actions Completed").ToStdString());
+  m_Write = (m_Tool.id() == ID_TOOL_REPLACE);
+  
+  if (!m_frd->use_regex())
   {
-    for (auto & c : m_FindString) c = std::toupper(c);
-  }
+    m_find_string = m_frd->get_find_string();
   
-  return true;
-}
-  
-bool wex::stream::RunTool()
-{
-  std::fstream fs(m_Path.Path(), std::ios_base::in);
-
-  if (!fs.is_open() || !ProcessBegin())
-  {
-    return false;
-  }
-
-  m_Stats.m_Elements.Set(_("Files").ToStdString(), 1);
-  
-  int line_no = 0;
-  std::string s;
-  
-  for (std::string line; std::getline(fs, line); )
-  {
-    if (!Process(line, line_no++)) return false;
-
-    if (m_Write)
+    if (!m_frd->match_case())
     {
-      s += line + "\n";
+      for (auto & c : m_find_string) c = std::toupper(c);
     }
   }
   
-  if (line_no <= 1 || (m_Write && s.empty()))
-  {
-    log_status(std::string("processing error"));
-    return false;
-  }
-  else if (m_Modified && m_Write)
-  {
-    fs.close();
-    fs.open(m_Path.Path(), std::ios_base::out);
-    if (!fs.is_open()) return false;
-    fs.write(s.c_str(), s.size());
-  }
-
-  ProcessEnd();
-
   return true;
 }
+  
+bool wex::stream::run_tool()
+{
+  if (std::fstream fs(m_Path.data(), std::ios_base::in);
+    !fs.is_open() || !process_begin())
+  {
+    return false;
+  }
+  else
+  {
+    m_Stats.m_Elements.set(_("Files").ToStdString(), 1);
+    
+    int line_no = 0;
+    std::string s;
+    
+    VLOG(9) << "run_tool: " << m_Path.data().string();
+  
+    for (std::string line; std::getline(fs, line); )
+    {
+      if (!process(line, line_no++)) return false;
+      if (m_Write)
+      {
+        s += line + "\n";
+      }
+    }
+    
+    if (line_no == 0 || (m_Write && s.empty()))
+    {
+      log("stream processing error") << m_Path.data().string();
+      return false;
+    }
+    else if (m_Modified && m_Write)
+    {
+      fs.close();
+      fs.open(m_Path.data(), std::ios_base::out);
+      if (!fs.is_open()) return false;
+      fs.write(s.c_str(), s.size());
+    }
 
-void wex::stream::Reset()
+    process_end();
+    return true;
+  }
+}
+
+void wex::stream::reset()
 {
   m_Asked = false;
 }

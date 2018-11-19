@@ -15,6 +15,7 @@
 #include <wex/marker.h>
 #include <wex/stcfile.h>
 #include <wex/stc-data.h>
+#include <wex/util.h>
 #include <wex/vi.h>
 
 namespace wex
@@ -37,16 +38,16 @@ namespace wex
   {
   public:
     /// Margin flags.
-    enum margin_flags
+    enum
     {
-      MARGIN_NONE       = 0,      ///< no margins
-      MARGIN_DIVIDER    = 1 << 1, ///< divider margin
-      MARGIN_FOLDING    = 1 << 2, ///< folding margin
-      MARGIN_LINENUMBER = 1 << 3, ///< line number margin
-      MARGIN_TEXT       = 1 << 4, ///< text margin
-      MARGIN_ALL        = 0xFFFF, ///< all margins
+      MARGIN_DIVIDER    = 0, ///< divider margin
+      MARGIN_FOLDING    = 1, ///< folding margin
+      MARGIN_LINENUMBER = 2, ///< line number margin
+      MARGIN_TEXT       = 3, ///< text margin
     };
 
+    typedef std::bitset<4> margin_t;
+    
     /// Default constructor, sets text if not empty.
     stc(const std::string& text = std::string(), const stc_data& data = stc_data());
 
@@ -80,37 +81,50 @@ namespace wex
     /// If there is an undo facility and the last operation can be undone, 
     /// undoes the last operation. 
     virtual void Undo() override;
+    
+    /// Virtual interface
 
+    /// Processes specified char.
+    /// Default does nothing, but is invoked during control_char_dialog,
+    /// allowing you to add your own processing.
+    /// Return true if char was processed.
+    virtual bool process_char(int c) {return false;};
+    
     /// Other methods.
 
     /// Returns autocomplete.
-    auto & AutoComplete() {return m_AutoComplete;};
+    auto & auto_complete() {return m_auto_complete;};
 
     /// After pressing enter, starts new line at same place
     /// as previous line.
-    bool AutoIndentation(int c);
+    bool auto_indentation(int c);
     
     // Clears the component: all text is cleared and all styles are reset.
-    // Invoked by Open and DoFileNew.
+    // Invoked by Open and do_file_new.
     // (Clear is used by scintilla to clear the selection).
-    void ClearDocument(bool set_savepoint = true);
+    void clear(bool set_savepoint = true);
 
     /// Shows a dialog with options, returns dialog return code.
     /// If used modeless, it uses the dialog id as specified,
-    /// so you can use that id in frame::OnCommandItemDialog.
-    static int ConfigDialog(const window_data& data = window_data());
+    /// so you can use that id in frame::on_command_item_dialog.
+    static int config_dialog(const window_data& data = window_data());
 
     /// Sets the configurable parameters to values currently in config.
-    void ConfigGet();
+    void config_get();
+
+    /// Returns EOL string.
+    /// If you only want to insert a newline, use NewLine()
+    /// (from wxStyledTextCtrl).
+    const std::string eol() const;
 
     /// Shows a menu with current line type checked, and allows you to change it.
-    void FileTypeMenu();
+    void filetype_menu();
 
     /// Finds next with settings from find replace data.
-    bool FindNext(bool find_next = true);
+    bool find_next(bool stc_find_string = true);
 
     /// Finds next.
-    bool FindNext(
+    bool find_next(
       /// text to find
       const std::string& text, 
       /// search flags to be used:
@@ -125,125 +139,114 @@ namespace wex
       bool find_next = true);
       
     /// Enables or disables folding depending on fold property.
-    void Fold(
+    void fold(
       /// if document contains more than 'Auto fold' lines,
       /// or if foldall (and fold propertry is on) is specified, 
       /// always all lines are folded.
       bool foldall = false);
 
     /// Returns associated data.
-    const auto& GetData() const {return m_Data;};
-
-    /// Returns EOL string.
-    /// If you only want to insert a newline, use NewLine()
-    /// (from wxStyledTextCtrl).
-    const std::string GetEOL() const;
+    const auto& data() const {return m_Data;};
 
     /// Returns the file.
-    auto & GetFile() {return m_File;};
+    auto & get_file() {return m_File;};
 
     /// Returns the filename, as used by the file.
-    const auto & GetFileName() const {return m_File.GetFileName();};
+    const auto & get_filename() const {return m_File.get_filename();};
 
     /// Returns find string, from selected text or from config.
     /// The search flags are taken from frd.
     /// If text is selected, it also sets the find string.
-    const std::string GetFindString();
+    const std::string get_find_string();
 
     /// Returns hex mode component.
-    const auto & GetHexMode() const {return m_HexMode;};
+    const auto & get_hexmode() const {return m_hexmode;};
     
     /// Returns writable hex mode component.
-    auto & GetHexMode() {return m_HexMode;};
+    auto & get_hexmode() {return m_hexmode;};
     
     /// Returns the lexer.
-    const auto & GetLexer() const {return m_Lexer;};
+    const auto & get_lexer() const {return m_Lexer;};
 
     /// Returns the lexer.
-    auto & GetLexer() {return m_Lexer;};
+    auto & get_lexer() {return m_Lexer;};
 
     /// Returns line on which text margin was clicked,
     /// or -1 if not.
-    auto GetMarginTextClick() const {return m_MarginTextClick;};
+    auto get_margin_text_click() const {return m_MarginTextClick;};
 
     /// Returns vi component.
-    const auto & GetVi() const {return m_vi;};
+    const auto & get_vi() const {return m_vi;};
     
     /// Returns writable vi component.
     /// This allows you to do vi like editing:
-    /// - GetVi().Command(":1,$s/xx/yy/g")
-    /// - GetVi().Command(":w")
+    /// - get_vi().Command(":1,$s/xx/yy/g")
+    /// - get_vi().Command(":w")
     /// to replace all xx by yy, and save the file.
-    auto & GetVi() {return m_vi;};
+    auto & get_vi() {return m_vi;};
     
     /// Returns word at position.
-    const std::string GetWordAtPos(int pos) const;
+    const std::string get_word_at_pos(int pos) const;
 
     /// Guesses the file type using a small sample size from this document, 
     /// and sets EOL mode and updates statusbar if it found eols.
-    void GuessType();
+    void guess_type();
     
     /// Returns true if we are in hex mode.
-    bool HexMode() const {return m_HexMode.Active();};
+    bool is_hexmode() const {return m_hexmode.is_active();};
 
     /// If selected text is a link, opens the link.
-    bool LinkOpen();
+    bool link_open();
 
     /// Deletes all change markers.
     /// Returns false if marker change is not loaded.
-    bool MarkerDeleteAllChange();
+    bool marker_delete_all_change();
     
     /// Saves static data in cofig.
-    /// Invoked once during app::OnExit.
-    static void OnExit();
+    /// Invoked once during app::on_exit.
+    static void on_exit();
     
     /// Reads static data from config (e.g. zooming).
     /// Invoked once during app::OnInit.
-    static void OnInit();
+    static void on_init();
     
     /// Opens the file, reads the content into the window, then closes the file
     /// and sets the lexer.
-    bool Open(const path& filename, const stc_data& data = stc_data());
+    bool open(const path& filename, const stc_data& data = stc_data());
 
     /// Restores saved position.
     /// Returns true if position was saved before.
-    bool PositionRestore();
+    bool position_restore();
     
     /// Saves position.
-    void PositionSave();
+    void position_save();
 
     /// Prints the document.
-    void Print(bool prompt = true);
+    void print(bool prompt = true);
 
     /// Shows a print preview.
-    void PrintPreview(wxPreviewFrameModalityKind kind = wxPreviewFrame_AppModal);
+    void print_preview(wxPreviewFrameModalityKind kind = wxPreviewFrame_AppModal);
 
-    /// Processes specified char.
-    /// Default does nothing, but is invoked during ControlCharDialog,
-    /// allowing you to add your own processing.
-    /// Return true if char was processed.
-    virtual bool ProcessChar(int c) {return false;};
-    
     /// Shows properties on the statusbar.
     /// Flags used are from statusflags.
-    void PropertiesMessage(long flags = 0);
+    void properties_message(status_t flags = 0);
     
     /// Replaces all text.
     /// It there is a selection, it replaces in the selection, otherwise
     /// in the entire document.
     /// Returns the number of replacements.
-    int ReplaceAll(
+    int replace_all(
       const std::string& find_text, 
       const std::string& replace_text);
     
     /// Replaces text and calls find next.
     /// Uses settings from find replace data.
-    bool ReplaceNext(bool find_next = true);
+    bool replace_next(bool stc_find_string = true);
 
     /// Replaces text and calls find next.
     /// It there is a selection, it replaces in the selection, otherwise
     /// it starts at current position.
-    bool ReplaceNext(
+    bool replace_next(
       /// text to find
       const std::string& find_text, 
       /// text to replace with
@@ -256,15 +259,15 @@ namespace wex
       /// - wxSTC_FIND_POSIX
       /// - if -1, use flags from find replace data
       int find_flags = 0,
-      /// argument passed on to FindNext
-      bool find_next = true);
+      /// argument passed on to find_next
+      bool stc_find_string = true);
     
     /// Reset all margins.
     /// Default also resets the divider margin.
-    void ResetMargins(margin_flags flags = MARGIN_ALL);
+    void reset_margins(margin_t type = margin_t().set());
 
     /// Sets an indicator at specified start and end pos.
-    bool SetIndicator(const indicator& indicator, int start, int end);
+    bool set_indicator(const indicator& indicator, int start, int end);
 
     /// search flags to be used:
     /// - wxSTC_FIND_WHOLEWORD
@@ -273,29 +276,29 @@ namespace wex
     /// - wxSTC_FIND_REGEXP
     /// - wxSTC_FIND_POSIX
     /// - if -1, use flags from find replace data
-    void SetSearchFlags(int flags);
+    void set_search_flags(int flags);
     
     /// Sets the text.
-    void SetText(const std::string& value);
+    void set_text(const std::string& value);
 
     /// Returns true if line numbers are shown. 
-    bool ShownLineNumbers() const {return
+    bool is_shown_line_numbers() const {return
       GetMarginWidth(m_MarginLineNumber) > 0;};
 
     /// Shows or hides line numbers.
-    void ShowLineNumbers(bool show);
+    void show_line_numbers(bool show);
 
     /// Shows vcs info in text margin.
     /// Returns true if info was added.
-    bool ShowVCS(const vcs_entry* vcs);
+    bool show_vcs(const vcs_entry* vcs);
     
     /// Starts or stops syncing.
     /// Default syncing is started during construction.
-    void Sync(bool start = true);
+    void sync(bool start = true);
     
     /// Use and show modification markers in the margin.
     /// If you open a file, the modification markers are used.
-    void UseModificationMarkers(bool use);
+    void use_modification_markers(bool use);
     
     // These methods are not yet available in scintilla, create stubs
     // (for the vi MOTION macro).
@@ -317,18 +320,20 @@ namespace wex
   private:
     enum
     {
-      LINK_CHECK         = 0x0001,
-      LINK_OPEN          = 0x0002,
-      LINK_OPEN_MIME     = 0x0004,
+      LINK_CHECK     = 0,
+      LINK_OPEN      = 1,
+      LINK_OPEN_MIME = 2,
     };
 
+    typedef std::bitset<3> link_t;
+    
     void BindAll();
-    void BuildPopupMenu(menu& menu);
+    void build_popup_menu(menu& menu);
     void CheckBrace();
     bool CheckBrace(int pos);
     bool FileReadOnlyAttributeChanged(); // sets changed read-only attribute
     void FoldAll();
-    bool LinkOpen(int mode, std::string* filename = nullptr); // name of found file
+    bool link_open(link_t mode, std::string* filename = nullptr); // name of found file
     void MarkModified(const wxStyledTextEvent& event);
 
     const int 
@@ -344,8 +349,8 @@ namespace wex
     bool m_AddingChars {false};
 
     managed_frame* m_Frame;
-    autocomplete m_AutoComplete;
-    hexmode m_HexMode;
+    autocomplete m_auto_complete;
+    hexmode m_hexmode;
     stc_file m_File;
     // We use a separate lexer here as well
     // (though stc_file offers one), as you can manually override
@@ -358,7 +363,7 @@ namespace wex
     wxFont m_DefaultFont;
 
     // All objects share the following:
-    static inline item_dialog* m_ConfigDialog = nullptr;
+    static inline item_dialog* m_config_dialog = nullptr;
     static inline stc_entry_dialog* m_EntryDialog = nullptr;
     static inline int m_Zoom = -1;
   };

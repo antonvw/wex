@@ -24,13 +24,13 @@ namespace wex
       const std::string& copyright = std::string());
          
     /// Returns copyright.
-    const std::string Copyright() const;
+    const std::string copyright() const;
           
     /// Returns description.
-    const std::string Description() const;
+    const std::string description() const;
           
     /// Returns string version.
-    const std::string Get() const;
+    const std::string get() const;
   private:
     wxVersionInfo m_version;
   };

@@ -33,28 +33,25 @@ namespace wex
    ~file_history();
 
     /// Adds a file to the file history list.
-    void Add(const path& p);
+    void add(const path& p);
     
     /// Clears history.
-    void Clear();
+    void clear();
     
     /// Returns baseid.
-    wxWindowID GetBaseId() const;
-    
-    /// Returns number of items.
-    size_t GetCount() const;
+    wxWindowID get_base_id() const;
     
     /// Returns the file at this index (zero-based).
-    path GetHistoryFile(size_t index = 0) const;
+    path get_history_file(size_t index = 0) const;
 
     /// Returns a vector of max recent opened files.
-    std::vector<path> GetHistoryFiles(size_t max) const;
+    std::vector<path> get_history_files(size_t max) const;
     
     /// Returns max files.
-    int GetMaxFiles() const;
+    int get_max_files() const;
 
     /// Shows popup menu containing all recent opened files.
-    void PopupMenu(
+    void popup_menu(
       /// window which will get the popup menu
       wxWindow* win, 
       /// adds a clear menu items as well (if not -1)
@@ -63,11 +60,14 @@ namespace wex
       const wxPoint& pos = wxDefaultPosition) const;
     
     /// Saves the file history into the config. 
-    void Save();
+    void save();
 
+    /// Returns number of items.
+    size_t size() const;
+    
     /// Adds a recent file submenu to specified menu,
     /// and sets the file history to use it.
-    void UseMenu(wxWindowID id, wxMenu* menu);
+    void use_menu(wxWindowID id, wxMenu* menu);
   private:
     file_history_imp* m_History;
     const std::string m_Key;

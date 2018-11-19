@@ -16,15 +16,15 @@
 
 TEST_CASE("wex::printing")
 {
-  REQUIRE(wex::printing::Get() != nullptr);
-  REQUIRE(wex::printing::Get()->GetPrinter() != nullptr);
-  REQUIRE(wex::printing::Get()->GetHtmlPrinter() != nullptr);
-  wex::printing* old = wex::printing::Get();
-  REQUIRE(wex::printing::Get()->Set(nullptr) == old);
-  REQUIRE(wex::printing::Get(false) == nullptr);
-  REQUIRE(wex::printing::Get(true) != nullptr);
+  REQUIRE(wex::printing::get() != nullptr);
+  REQUIRE(wex::printing::get()->get_printer() != nullptr);
+  REQUIRE(wex::printing::get()->get_html_printer() != nullptr);
+  wex::printing* old = wex::printing::get();
+  REQUIRE(wex::printing::get()->set(nullptr) == old);
+  REQUIRE(wex::printing::get(false) == nullptr);
+  REQUIRE(wex::printing::get(true) != nullptr);
   
-  wex::printout* printout = new wex::printout(GetSTC());
+  wex::printout* printout = new wex::printout(get_stc());
   
   printout->OnPreparePrinting();
   int min, max, from, to;
@@ -34,5 +34,5 @@ TEST_CASE("wex::printing")
 
   // these wait for a click
 //  stc->Print(false);
-//  stc->PrintPreview(wxPreviewFrame_NonModal);
+//  stc->print_preview(wxPreviewFrame_NonModal);
 }

@@ -19,5 +19,5 @@ TEST_CASE("wex::file_dialog")
   wex::file file;
   wex::file_dialog dlg(&file);
   
-  REQUIRE(dlg.ShowModalIfChanged(false) == wxID_OK);
+  REQUIRE(dlg.show_modal_if_changed(false) == wxID_OK);
 }

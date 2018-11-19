@@ -10,12 +10,12 @@
 
 TEST_CASE( "wex::file_stat" ) 
 {
-  wex::file_stat stat(GetTestPath("test.h").Path().string());
+  wex::file_stat stat(GetTestPath("test.h").data().string());
 
   REQUIRE( stat.is_ok());
   REQUIRE(!stat.get_modification_time().empty());
   REQUIRE(!stat.is_readonly());
-  REQUIRE( stat.sync(GetTestPath("test-base.link").Path().string()));
+  REQUIRE( stat.sync(GetTestPath("test-base.link").data().string()));
   REQUIRE( stat.sync());
   REQUIRE(!stat.get_modification_time().empty());
 

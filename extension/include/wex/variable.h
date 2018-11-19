@@ -30,35 +30,35 @@ namespace wex
     /// Expands variable to ex component.
     /// This might update the internal value.
     /// Returns true if variable could be expanded.
-    bool Expand(ex* ex);
+    bool expand(ex* ex);
     
     /// Expands variable to value text.
     /// Returns true if variable could be expanded.
-    bool Expand(std::string& value, ex* ex = nullptr) const;
+    bool expand(std::string& value, ex* ex = nullptr) const;
     
     /// Returns variable name.
-    const auto& GetName() const {return m_Name;};
+    const auto& get_name() const {return m_Name;};
     
     /// Returns variable value.
-    const auto& GetValue() const {return m_Value;};
+    const auto& get_value() const {return m_Value;};
     
     /// Returns true if this variable is a built in.
-    bool IsBuiltIn() const {return m_Type == VARIABLE_BUILTIN;};
+    bool is_builtin() const {return m_Type == VARIABLE_BUILTIN;};
 
     /// Returns true if this is an input template.  
-    bool IsInput() const {return 
+    bool is_input() const {return 
       m_Type == VARIABLE_INPUT || 
       m_Type == VARIABLE_INPUT_ONCE ||
       m_Type == VARIABLE_INPUT_SAVE;};
 
     /// Returns true if this variable is a template.
-    bool IsTemplate() const {return m_Type == VARIABLE_TEMPLATE;};
+    bool is_template() const {return m_Type == VARIABLE_TEMPLATE;};
     
     /// Save in xml node.
-    void Save(pugi::xml_node& node, const std::string* value = nullptr);
+    void save(pugi::xml_node& node, const std::string* value = nullptr);
     
     /// Sets the ask for input member, if appropriate for type.
-    void SetAskForInput(bool value = true);
+    void set_ask_for_input(bool value = true);
   private:  
     // Several types of variables are supported.
     // See xml file.

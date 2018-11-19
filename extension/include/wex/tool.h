@@ -28,13 +28,13 @@ namespace wex
       , m_Text(text){};
 
     /// Returns the helptext.
-    const auto & GetHelpText() const {return m_HelpText;};
+    const auto & help_text() const {return m_HelpText;};
 
     /// Returns the info.
-    const auto & GetInfo() const {return m_Info;};
+    const auto & info() const {return m_Info;};
 
     /// Returns the text.
-    const auto & GetText() const {return m_Text;};
+    const auto & text() const {return m_Text;};
   private:
     std::string m_HelpText;
     std::string m_Info;
@@ -52,9 +52,9 @@ namespace wex
     tool(int id = -1);
 
     /// Adds your own info to the tool.
-    /// If you use a %d in the info string, it is replaced by GetStatistics
+    /// If you use a %d in the info string, it is replaced by get_statistics
     /// with the Actions Completed element.
-    void AddInfo(
+    void add_info(
       int tool_id,
       const std::string& info,
       const std::string& text = std::string(),
@@ -62,23 +62,23 @@ namespace wex
       m_ToolInfo[tool_id] = tool_info(info, text, helptext);};
 
     /// Returns the tool id.
-    int GetId() const {return m_Id;};
+    int id() const {return m_Id;};
 
     /// Returns all the tool info.
-    const auto & GetToolInfo() const {return m_ToolInfo;};
+    const auto & get_tool_info() const {return m_ToolInfo;};
 
     /// Returns info about current tool.
-    const std::string Info() const;
+    const std::string info() const;
 
     /// Returns info about current tool using specified statistics.
-    const std::string Info(const statistics<int>* stat) const;
+    const std::string info(const statistics<int>* stat) const;
     
     /// Is this tool a find type.
-    bool IsFindType() const {
+    bool is_find_type() const {
       return m_Id == ID_TOOL_REPORT_FIND || m_Id == ID_TOOL_REPLACE;}
 
     /// Is this tool a report type.
-    bool IsReportType() const {
+    bool is_report_type() const {
       return m_Id > ID_TOOL_REPORT_FIRST && m_Id < ID_TOOL_REPORT_LAST;}
   private:
     const int m_Id;

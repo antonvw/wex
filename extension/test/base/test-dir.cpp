@@ -12,30 +12,32 @@ TEST_CASE( "wex::dir" )
 {
   SUBCASE( "Not recursive" ) 
   {
-    wex::dir dir(GetTestPath(), "*.h", wex::dir::FILES);
-    REQUIRE(dir.GetDir().DirExists());
-    REQUIRE(dir.GetFlags() == wex::dir::FILES);
-    REQUIRE(dir.GetFileSpec() == "*.h");
-    REQUIRE(dir.FindFiles() == 2);
+    wex::dir dir(GetTestPath(), "*.h", wex::dir::type_t().set(wex::dir::FILES));
+    REQUIRE(dir.get_path().dir_exists());
+    REQUIRE(dir.type().test(wex::dir::FILES));
+    REQUIRE(dir.file_spec() == "*.h");
+    REQUIRE(dir.find_files() == 2);
   }
   
   SUBCASE( "Recursive" ) 
   {
     wex::dir dir("../../", "*.h");
-    REQUIRE(dir.GetDir().DirExists());
-    REQUIRE(dir.GetFileSpec() == "*.h");
-    REQUIRE(dir.FindFiles() > 50);
+    REQUIRE(dir.get_path().dir_exists());
+    REQUIRE(dir.file_spec() == "*.h");
+    REQUIRE(dir.find_files() > 50);
   }
 
   SUBCASE( "Invalid" ) 
   {
-    wex::dir dir("xxxx", "*.h", wex::dir::FILES);
-    REQUIRE(!dir.GetDir().DirExists());
+    wex::dir dir("xxxx", "*.h", wex::dir::type_t().set(wex::dir::FILES));
+    REQUIRE(!dir.get_path().dir_exists());
   }
 
   SUBCASE( "GetAllFiles" ) 
   {
-    REQUIRE(wex::get_all_files(std::string("./"), "*.txt", wex::dir::FILES).size() == 4);
-    REQUIRE(wex::get_all_files(wex::path("./"), "*.txt", wex::dir::DIRS).empty());
+    REQUIRE(wex::get_all_files(std::string("./"), "*.txt", 
+      wex::dir::type_t().set(wex::dir::FILES)).size() == 4);
+    REQUIRE(wex::get_all_files(wex::path("./"), "*.txt", 
+      wex::dir::type_t().set(wex::dir::DIRS)).empty());
   }
 }

@@ -19,10 +19,10 @@
 
 TEST_CASE("wex::to_container")
 {
-  wxComboBox* cb = new wxComboBox(GetFrame(), wxID_ANY);
+  wxComboBox* cb = new wxComboBox(frame(), wxID_ANY);
 #ifndef __WXOSX__
   // gives a warning about very large combobox
-  AddPane(GetFrame(), cb);
+  AddPane(frame(), cb);
 #endif
 
   wxArrayString a;
@@ -33,30 +33,30 @@ TEST_CASE("wex::to_container")
 #ifdef __WXGTK__
   wxFileDialog dlg;
   wxGenericDirCtrl dir;
-  REQUIRE( wex::to_vector_string(dlg).Get().empty());
-  REQUIRE( wex::to_vector_string(dir).Get().empty());
+  REQUIRE( wex::to_vector_string(dlg).get().empty());
+  REQUIRE( wex::to_vector_string(dir).get().empty());
 #endif
-  REQUIRE( wex::to_vector_string(a).Get().size() == 4);
-  REQUIRE( wex::to_vector_string("test test test").Get().size() == 3);
-  REQUIRE( wex::to_vector_string("test\\ test test").Get().size() == 2);
+  REQUIRE( wex::to_vector_string(a).get().size() == 4);
+  REQUIRE( wex::to_vector_string("test test test").get().size() == 3);
+  REQUIRE( wex::to_vector_string("test\\ test test").get().size() == 2);
   
 #ifdef __WXGTK__
-  REQUIRE( wex::to_list_string(dlg).Get().empty());
-  REQUIRE( wex::to_list_string(dir).Get().empty());
+  REQUIRE( wex::to_list_string(dlg).get().empty());
+  REQUIRE( wex::to_list_string(dir).get().empty());
 #endif
-  REQUIRE( wex::to_list_string(a).Get().size() == 4);
-  REQUIRE( wex::to_list_string("test test test").Get().size() == 3);
-  REQUIRE( wex::to_container<std::list < std::string >>(cb, 5).Get().size() == 0);
+  REQUIRE( wex::to_list_string(a).get().size() == 4);
+  REQUIRE( wex::to_list_string("test test test").get().size() == 3);
+  REQUIRE( wex::to_container<std::list < std::string >>(cb, 5).get().size() == 0);
   
   wex::combobox_from_list(cb, std::list < std::string > {"x","y","z"});
-  REQUIRE( wex::to_list_string(cb).Get().size() == cb->GetCount());
-  REQUIRE( wex::to_container<std::list < std::string >>(cb, 2).Get().size() == 2);
-  REQUIRE( wex::to_container<std::list < std::string >>(cb, 0).Get().empty());
+  REQUIRE( wex::to_list_string(cb).get().size() == cb->GetCount());
+  REQUIRE( wex::to_container<std::list < std::string >>(cb, 2).get().size() == 2);
+  REQUIRE( wex::to_container<std::list < std::string >>(cb, 0).get().empty());
   
   cb->SetValue(wxEmptyString);
-  REQUIRE( wex::to_list_string(cb).Get().size() == cb->GetCount());
+  REQUIRE( wex::to_list_string(cb).get().size() == cb->GetCount());
 
   cb->SetValue("other");
-  REQUIRE( wex::to_list_string(cb).Get().size() == cb->GetCount() + 1);
-  REQUIRE( wex::to_list_string(cb).Get().front() == "other");
+  REQUIRE( wex::to_list_string(cb).get().size() == cb->GetCount() + 1);
+  REQUIRE( wex::to_list_string(cb).get().front() == "other");
 }

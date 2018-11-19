@@ -15,19 +15,19 @@
 
 TEST_CASE("wex::toolbar")
 {
-  GetFrame()->GetToolBar()->AddControls(false);
-  GetFrame()->GetToolBar()->AddControls();
+  frame()->get_toolbar()->add_controls(false);
+  frame()->get_toolbar()->add_controls();
   
-  GetFrame()->GetToolBar()->AddTool(wxID_FIND);
-  GetFrame()->GetToolBar()->AddTool(wxID_CLEAR);
-  GetFrame()->GetToolBar()->AddTool(wxID_PREFERENCES);
-  GetFrame()->GetToolBar()->Realize();
+  frame()->get_toolbar()->add_tool(wxID_FIND);
+  frame()->get_toolbar()->add_tool(wxID_CLEAR);
+  frame()->get_toolbar()->add_tool(wxID_PREFERENCES);
+  frame()->get_toolbar()->Realize();
   
-  GetFrame()->GetOptionsToolBar()->AddControls();
+  frame()->get_options_toolbar()->add_controls();
   
-  GetFrame()->GetManager().GetPane("FINDBAR").Show();
-  GetFrame()->GetManager().GetPane("OPTIONSBAR").Show();
-  GetFrame()->GetManager().Update();
+  frame()->manager().GetPane("FINDBAR").Show();
+  frame()->manager().GetPane("OPTIONSBAR").Show();
+  frame()->manager().Update();
   
   // Send events to the find toolbar.
   wxKeyEvent event(wxEVT_CHAR);
@@ -36,10 +36,10 @@ TEST_CASE("wex::toolbar")
     WXK_PAGEUP, WXK_PAGEDOWN}) 
   {
     event.m_keyCode = key;
-    wxPostEvent(GetFrame()->GetFindToolBar(), event);
+    wxPostEvent(frame()->get_find_toolbar(), event);
   }
 
-  GetFrame()->GetManager().GetPane("FINDBAR").Hide();
-  GetFrame()->GetManager().GetPane("OPTIONSBAR").Hide();
-  GetFrame()->GetManager().Update();
+  frame()->manager().GetPane("FINDBAR").Hide();
+  frame()->manager().GetPane("OPTIONSBAR").Hide();
+  frame()->manager().Update();
 }

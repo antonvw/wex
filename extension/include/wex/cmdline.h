@@ -25,7 +25,7 @@ namespace wex
   {
   public:
     /// Types for command line.
-    enum type
+    enum type_t
     {
       FLOAT,
       INT,
@@ -55,7 +55,7 @@ namespace wex
       const std::vector<std::string>, 
       /// pair of command line param type and process callback if option is found
       std::pair<
-        type, 
+        type_t, 
         std::function<void(const std::any& any)>>>> cmd_options;
 
     /// Params (currently only string value supported): 
@@ -84,17 +84,17 @@ namespace wex
    ~cmdline();
 
     /// Returns current delimiter.
-    char Delimiter() const;
+    char delimiter() const;
     
     /// Sets delimiter.
-    void Delimiter(char c);
+    void delimiter(char c);
 
     /// Parses the specified command line 
     /// (should start with app name, and if empty
     /// the command line from wxTheApp is used).
     /// Returns false if error is found, or exit
     /// condition is true.
-    bool Parse(
+    bool parse(
       /// command line
       const std::string& cmdline = std::string(),
       /// keep changed values in config
@@ -103,7 +103,7 @@ namespace wex
       const char delimiter = ' ');
 
     /// Shows current options.
-    void ShowOptions(const window_data& data = window_data()) const;
+    void show_options(const window_data& data = window_data()) const;
   private:
     std::vector<cmdline_option*> m_Options; 
     std::vector<cmdline_param*> m_Params; 

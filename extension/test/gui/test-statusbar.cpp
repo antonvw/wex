@@ -17,55 +17,55 @@ TEST_CASE("wex::statusbar")
 {
   REQUIRE( GetStatusBar()->GetFieldsCount() >= 10);
 
-  REQUIRE( GetStatusBar()->SetStatusText("hello", ""));
-  REQUIRE( GetStatusBar()->SetStatusText("hello0", "Pane0"));
-  REQUIRE( GetStatusBar()->SetStatusText("hello1", "Pane1"));
-  REQUIRE( GetStatusBar()->SetStatusText("hello2", "Pane2"));
-  REQUIRE( GetStatusBar()->SetStatusText("hello3", "Pane3"));
-  REQUIRE( GetStatusBar()->SetStatusText("hello4", "Pane4"));
-  REQUIRE(!GetStatusBar()->SetStatusText("helloxxx", "Panexxx"));
-  REQUIRE(!GetStatusBar()->SetStatusText("hello25", "Pane25"));
-  REQUIRE( GetStatusBar()->SetStatusText("GoodBye", "LastPane"));
+  REQUIRE( GetStatusBar()->set_statustext("hello", ""));
+  REQUIRE( GetStatusBar()->set_statustext("hello0", "Pane0"));
+  REQUIRE( GetStatusBar()->set_statustext("hello1", "Pane1"));
+  REQUIRE( GetStatusBar()->set_statustext("hello2", "Pane2"));
+  REQUIRE( GetStatusBar()->set_statustext("hello3", "Pane3"));
+  REQUIRE( GetStatusBar()->set_statustext("hello4", "Pane4"));
+  REQUIRE(!GetStatusBar()->set_statustext("helloxxx", "Panexxx"));
+  REQUIRE(!GetStatusBar()->set_statustext("hello25", "Pane25"));
+  REQUIRE( GetStatusBar()->set_statustext("GoodBye", "LastPane"));
 
-  REQUIRE( GetStatusBar()->GetStatusText("Pane0") == "hello0");
+  REQUIRE( GetStatusBar()->get_statustext("Pane0") == "hello0");
   REQUIRE( ((wxStatusBar*) GetStatusBar())->GetStatusText(1) == "hello0");
-  REQUIRE( GetStatusBar()->GetStatusText("Pane1") == "hello1");
-  REQUIRE( GetStatusBar()->GetStatusText("Pane2") == "hello2");
-  REQUIRE( GetStatusBar()->GetStatusText("Panexxx").empty());
+  REQUIRE( GetStatusBar()->get_statustext("Pane1") == "hello1");
+  REQUIRE( GetStatusBar()->get_statustext("Pane2") == "hello2");
+  REQUIRE( GetStatusBar()->get_statustext("Panexxx").empty());
   
-  REQUIRE( GetStatusBar()->ShowField("Pane0", false));
-  REQUIRE( GetStatusBar()->GetField(0).GetName() == "PaneText");
+  REQUIRE( GetStatusBar()->show_field("Pane0", false));
+  REQUIRE( GetStatusBar()->get_field(0).get_name() == "PaneText");
   REQUIRE( ((wxStatusBar*) GetStatusBar())->GetStatusText(1) == "hello1");
-  REQUIRE(!GetStatusBar()->ShowField("Pane0", false));
-  REQUIRE( GetStatusBar()->ShowField("Pane3", false));
-  REQUIRE( GetStatusBar()->GetField(1).GetName() == "Pane0");
+  REQUIRE(!GetStatusBar()->show_field("Pane0", false));
+  REQUIRE( GetStatusBar()->show_field("Pane3", false));
+  REQUIRE( GetStatusBar()->get_field(1).get_name() == "Pane0");
   REQUIRE( ((wxStatusBar*) GetStatusBar())->GetStatusText(1) == "hello1");
-  REQUIRE( GetStatusBar()->GetStatusText("Pane0").empty());
-  REQUIRE( GetStatusBar()->ShowField("Pane0", true));
+  REQUIRE( GetStatusBar()->get_statustext("Pane0").empty());
+  REQUIRE( GetStatusBar()->show_field("Pane0", true));
   REQUIRE( ((wxStatusBar*) GetStatusBar())->GetStatusText(1) == "hello0");
-  REQUIRE( GetStatusBar()->GetStatusText("Pane0") == "hello0");
-  REQUIRE( GetStatusBar()->ShowField("LastPane", false));
-  REQUIRE( GetStatusBar()->GetStatusText("LastPane").empty());
-  REQUIRE(!GetStatusBar()->SetStatusText("BackAgain", "LastPane"));
-  REQUIRE( GetStatusBar()->ShowField("LastPane", true));
-  REQUIRE( GetStatusBar()->GetStatusText("LastPane") == "BackAgain");
+  REQUIRE( GetStatusBar()->get_statustext("Pane0") == "hello0");
+  REQUIRE( GetStatusBar()->show_field("LastPane", false));
+  REQUIRE( GetStatusBar()->get_statustext("LastPane").empty());
+  REQUIRE(!GetStatusBar()->set_statustext("BackAgain", "LastPane"));
+  REQUIRE( GetStatusBar()->show_field("LastPane", true));
+  REQUIRE( GetStatusBar()->get_statustext("LastPane") == "BackAgain");
 
   wex::statusbar_pane pane1("PaneInfo", 15, "hello");
-  REQUIRE( pane1.GetName() == "PaneInfo");
-  REQUIRE( pane1.GetHelpText() == "hello");
-  REQUIRE( pane1.GetHiddenText().empty());
+  REQUIRE( pane1.get_name() == "PaneInfo");
+  REQUIRE( pane1.help_text() == "hello");
+  REQUIRE( pane1.get_hidden_text().empty());
   REQUIRE( pane1.GetWidth() == 15);
-  REQUIRE( pane1.IsShown() );
-  pane1.SetHiddenText("hidden");
-  REQUIRE( pane1.GetHiddenText() == "hidden");
+  REQUIRE( pane1.is_shown() );
+  pane1.set_hidden_text("hidden");
+  REQUIRE( pane1.get_hidden_text() == "hidden");
   
-  GetStatusBar()->Setup(GetFrame(), {
+  GetStatusBar()->setup(frame(), {
     pane1,
     {"PaneLexer"},
     {"PaneFileType"},
     {"Pane1"},
     {"Pane2"}});
 
-  REQUIRE( GetStatusBar()->GetField(0).GetName() == "PaneInfo");
+  REQUIRE( GetStatusBar()->get_field(0).get_name() == "PaneInfo");
   REQUIRE( GetStatusBar()->GetFieldsCount() == 5);
 }

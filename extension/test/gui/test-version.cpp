@@ -14,6 +14,6 @@
 
 TEST_CASE("wex::version")
 {
-  REQUIRE(!wex::version_info().Get().empty());
-  REQUIRE(!wex::get_version_info().Get().empty());
+  REQUIRE(!wex::version_info().get().empty());
+  REQUIRE(!wex::get_version_info().get().empty());
 }

@@ -25,9 +25,9 @@ namespace wex
       const wxString& filter = wxEmptyString, 
       int defaultFilter = 0,
       const window_data& data = window_data().
-        Style(wxDIRCTRL_3D_INTERNAL | wxDIRCTRL_MULTIPLE));
+        style(wxDIRCTRL_3D_INTERNAL | wxDIRCTRL_MULTIPLE));
 
     /// Expands path and selects it.
-    void ExpandAndSelectPath(const path& path);
+    void expand_and_select_path(const path& path);
   };
 };

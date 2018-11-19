@@ -30,7 +30,7 @@ wex::ex_command& wex::ex_command::operator=(const ex_command& c)
   if (this != &c)
   {
     m_Command = c.m_Command;
-    m_IsHandled = c.m_IsHandled;
+    m_is_handled = c.m_is_handled;
 
     if (c.m_STC != nullptr)
     {
@@ -49,27 +49,27 @@ wex::ex_command& wex::ex_command::operator=(const ex_command& c)
 size_t wex::ex_command::clear()
 {
   m_Command.clear(); 
-  m_IsHandled = false;
+  m_is_handled = false;
   return 0;
 }
 
-bool wex::ex_command::AppendExec(char c)
+bool wex::ex_command::append_exec(char c)
 {
-  Append(c);
-  return Exec();
+  append(c);
+  return exec();
 }
 
-bool wex::ex_command::Exec(const std::string& command)
+bool wex::ex_command::exec(const std::string& cmd)
 {
-  return m_IsHandled || ((m_STC != nullptr) && (command.empty() ? 
-    m_STC->GetVi().Command(Command()):
-    m_STC->GetVi().Command(command)));
+  return m_is_handled || ((m_STC != nullptr) && (cmd.empty() ? 
+    m_STC->get_vi().command(command()):
+    m_STC->get_vi().command(cmd)));
 }
 
-void wex::ex_command::Restore(const ex_command& c)
+void wex::ex_command::restore(const ex_command& c)
 {
   m_Command = c.m_Command;
-  m_IsHandled = c.m_IsHandled;
+  m_is_handled = c.m_is_handled;
 
   if (c.m_STC != nullptr || c.m_STC_original != nullptr)
   {
@@ -77,10 +77,10 @@ void wex::ex_command::Restore(const ex_command& c)
   }
 }
 
-void wex::ex_command::Set(const ex_command& c)
+void wex::ex_command::set(const ex_command& c)
 {
   m_Command = c.m_Command;
-  m_IsHandled = c.m_IsHandled;
+  m_is_handled = c.m_is_handled;
 
   if (c.m_STC != nullptr || c.m_STC_original != nullptr)
   {
@@ -88,23 +88,23 @@ void wex::ex_command::Set(const ex_command& c)
   }
 }
 
-wex::ex_command::type wex::ex_command::Type() const
+wex::ex_command::type_t wex::ex_command::type() const
 {
   if (m_Command.empty()) 
   {
-    return type::NONE;
+    return type_t::NONE;
   }
   else switch (m_Command[0])
   {
-    case ':': return type::COMMAND;
-    case '=': return type::CALC;
-    case '!': return type::EXEC;
+    case ':': return type_t::COMMAND;
+    case '=': return type_t::CALC;
+    case '!': return type_t::EXEC;
     
     case '/':
     case '?': 
-      return m_STC != nullptr && m_STC->GetMarginTextClick() > 0 ?
-        type::FIND_MARGIN: type::FIND;
+      return m_STC != nullptr && m_STC->get_margin_text_click() > 0 ?
+        type_t::FIND_MARGIN: type_t::FIND;
     
-    default: return type::VI;
+    default: return type_t::VI;
   }
 }

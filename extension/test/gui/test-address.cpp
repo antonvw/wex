@@ -17,17 +17,17 @@
 
 TEST_CASE("wex::address")
 {
-  wex::stc* stc = GetSTC();
-  stc->SetText("hello0\nhello1\nhello2\nhello3\nhello4\nhello5");
+  wex::stc* stc = get_stc();
+  stc->set_text("hello0\nhello1\nhello2\nhello3\nhello4\nhello5");
   
   const int lines = stc->GetLineCount();
   wex::ex* ex = new wex::ex(stc);
-  wex::stc_data(stc).Control(wex::control_data().Line(1)).Inject();
-  ex->MarkerAdd('a'); // put marker a on line
-  wex::stc_data(stc).Control(wex::control_data().Line(2)).Inject();
-  ex->MarkerAdd('b'); // put marker b on line
+  wex::stc_data(stc).control(wex::control_data().line(1)).inject();
+  ex->marker_add('a'); // put marker a on line
+  wex::stc_data(stc).control(wex::control_data().line(2)).inject();
+  ex->marker_add('b'); // put marker b on line
   
-  REQUIRE( wex::address(ex).GetLine() == 0);
+  REQUIRE( wex::address(ex).get_line() == 0);
   
   for (const auto& it : std::vector< std::pair<std::string, int>> {
     {"30", lines},
@@ -52,67 +52,67 @@ TEST_CASE("wex::address")
     {"'b+'a", 3},
     {"'b-'a", 1}})
   {
-    REQUIRE( wex::address(ex, it.first).GetLine() == it.second);
+    REQUIRE( wex::address(ex, it.first).get_line() == it.second);
   }
 
   wex::address address3(ex, "5");
   
-  // Test AdjustWindow.
-  REQUIRE( address3.AdjustWindow(""));
-  REQUIRE( address3.AdjustWindow("-"));
-  REQUIRE( address3.AdjustWindow("+"));
-  REQUIRE( address3.AdjustWindow("^"));
-  REQUIRE( address3.AdjustWindow("="));
-  REQUIRE( address3.AdjustWindow("."));
-  REQUIRE(!address3.AdjustWindow("xxx"));
+  // Test adjust_window.
+  REQUIRE( address3.adjust_window(""));
+  REQUIRE( address3.adjust_window("-"));
+  REQUIRE( address3.adjust_window("+"));
+  REQUIRE( address3.adjust_window("^"));
+  REQUIRE( address3.adjust_window("="));
+  REQUIRE( address3.adjust_window("."));
+  REQUIRE(!address3.adjust_window("xxx"));
   
-  // Test Append.
-  REQUIRE( address3.Append("appended text"));
+  // Test append.
+  REQUIRE( address3.append("appended text"));
   REQUIRE( stc->GetText().Contains("appended text"));
   
   // Test Flags.
-  REQUIRE( address3.Flags(""));
-  REQUIRE( address3.Flags("#"));
-  REQUIRE(!address3.Flags("x"));
+  REQUIRE( address3.flags_supported(""));
+  REQUIRE( address3.flags_supported("#"));
+  REQUIRE(!address3.flags_supported("x"));
 
-  // Test Get, GetLine.
-  REQUIRE( wex::address(ex).GetLine() == 0);
-  REQUIRE( wex::address(ex, "-1").GetLine() == 1);
-  REQUIRE( wex::address(ex, "-1").Get() == "-1");
-  REQUIRE( wex::address(ex, "1").GetLine() == 1);
-  REQUIRE( wex::address(ex, "1").Get() == "1");
-  REQUIRE( wex::address(ex, "100").GetLine() == lines);
+  // Test get, get_line.
+  REQUIRE( wex::address(ex).get_line() == 0);
+  REQUIRE( wex::address(ex, "-1").get_line() == 1);
+  REQUIRE( wex::address(ex, "-1").get() == "-1");
+  REQUIRE( wex::address(ex, "1").get_line() == 1);
+  REQUIRE( wex::address(ex, "1").get() == "1");
+  REQUIRE( wex::address(ex, "100").get_line() == lines);
   
   wex::address address2(ex, "'a");
-  REQUIRE( address2.GetLine() == 1);
-  address2.MarkerDelete();
-  REQUIRE( address2.GetLine() == 0);
+  REQUIRE( address2.get_line() == 1);
+  address2.marker_delete();
+  REQUIRE( address2.get_line() == 0);
   
   // Test Insert.
-  REQUIRE( address3.Insert("inserted text"));
+  REQUIRE( address3.insert("inserted text"));
   REQUIRE( stc->GetText().Contains("inserted text"));
   
-  // Test MarkerAdd.
-  REQUIRE( address3.MarkerAdd('x'));
+  // Test marker_add.
+  REQUIRE( address3.marker_add('x'));
   
-  // Test MarkerDelete.
-  REQUIRE(!address3.MarkerDelete());
-  REQUIRE( wex::address(ex, "'x").MarkerDelete());
+  // Test marker_delete.
+  REQUIRE(!address3.marker_delete());
+  REQUIRE( wex::address(ex, "'x").marker_delete());
   
-  // Test Put.
-  ex->GetMacros().SetRegister('z', "zzzzz");
-  REQUIRE( address3.Put('z'));
+  // Test put.
+  ex->get_macros().set_register('z', "zzzzz");
+  REQUIRE( address3.put('z'));
   REQUIRE( stc->GetText().Contains("zzzz"));
   
   // Test Read.
-  REQUIRE(!address3.Read("XXXXX"));
-  REQUIRE( address3.Read(GetTestPath("test.bin").Path().string()));
+  REQUIRE(!address3.read("XXXXX"));
+  REQUIRE( address3.read(GetTestPath("test.bin").data().string()));
 #ifdef __UNIX__
-  REQUIRE( address3.Read("!ls"));
+  REQUIRE( address3.read("!ls"));
 #endif
   
-  // Test WriteLineNumber.
-  REQUIRE( address3.WriteLineNumber());
+  // Test write_line_number.
+  REQUIRE( address3.write_line_number());
   
-  stc->ClearDocument();
+  stc->clear();
 }

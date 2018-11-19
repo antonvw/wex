@@ -18,13 +18,13 @@ wex::stc_entry_dialog::stc_entry_dialog(
   const std::string& prompt,
   const window_data& data)
   : dialog(data)
-  , m_STC(new stc(text, stc_data().Window(window_data().Parent(this))))
+  , m_STC(new wex::stc(text, stc_data().window(window_data().parent(this))))
 {
 #if wxUSE_STATTEXT
   if (!prompt.empty())
   {
     // See wxWidgets: src\generic\textdlgg.cpp, use similar bottom border flags.
-    AddUserSizer(CreateTextSizer(prompt), 
+    add_user_sizer(CreateTextSizer(prompt), 
       wxSizerFlags().DoubleBorder(wxBOTTOM));
   }
 #endif
@@ -32,12 +32,12 @@ wex::stc_entry_dialog::stc_entry_dialog(
   wxPersistentRegisterAndRestore(this);
   
   m_STC->SetEdgeMode(wxSTC_EDGE_NONE);
-  m_STC->SetName(data.Title());
-  m_STC->ResetMargins();
+  m_STC->SetName(data.title());
+  m_STC->reset_margins();
   m_STC->SetViewEOL(false);
   m_STC->SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
 
-  AddUserSizer(m_STC);
+  add_user_sizer(m_STC);
 
-  LayoutSizers();
+  layout_sizers();
 }

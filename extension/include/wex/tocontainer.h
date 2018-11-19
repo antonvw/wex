@@ -47,13 +47,13 @@ namespace wex
       /// delimiter for elements
       const std::string& delims = " \t\r\n") {
       tokenizer tkz(in, delims);
-      while (tkz.HasMoreTokens())
+      while (tkz.has_more_tokens())
       {
-        std::string token(tkz.GetNextToken());
+        std::string token(tkz.get_next_token());
         // if escape space, add next token
         if (token.back() == '\\')
         {
-          token = token.substr(0, token.size() - 1) + " " + tkz.GetNextToken();
+          token = token.substr(0, token.size() - 1) + " " + tkz.get_next_token();
         }
         m_Container.emplace_back(token);
       }}
@@ -96,7 +96,7 @@ namespace wex
       }};
     
     /// Returns the container.
-    const auto & Get() const {return m_Container;};
+    const auto & get() const {return m_Container;};
   private:
     void FromArrayString(const wxArrayString& in) {
       for (const auto& it : in)

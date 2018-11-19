@@ -26,7 +26,7 @@ namespace wex
   public:
     explicit text_droptarget(grid* grid);
   private:
-    virtual bool OnDropText(wxCoord x, wxCoord y, const wxString& data);
+    virtual bool OnDropText(wxCoord x, wxCoord y, const wxString& data) override;
     grid* m_Grid;
   };
 
@@ -61,15 +61,21 @@ namespace wex
 };
 
 wex::grid::grid(const window_data& data)
-  : wxGrid(data.Parent(), data.Id(), data.Pos(), data.Size(), data.Style(), data.Name())
+  : wxGrid(
+    data.parent(), 
+    data.id(), 
+    data.pos(), 
+    data.size(), 
+    data.style(), 
+    data.name())
 {
 #if wxUSE_DRAG_AND_DROP
   SetDropTarget(new text_droptarget(this));
-  m_UseDragAndDrop = true;
+  m_use_drag_and_drop = true;
 #endif
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    EmptySelection();}, wxID_DELETE);
+    empty_selection();}, wxID_DELETE);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     SelectAll();}, wxID_SELECTALL);
@@ -78,24 +84,24 @@ wex::grid::grid(const window_data& data)
     ClearSelection();}, ID_EDIT_SELECT_NONE);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    CopySelectedCellsToClipboard();}, wxID_COPY);
+    copy_selected_cells_to_clipboard();}, wxID_COPY);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    CopySelectedCellsToClipboard();
-    EmptySelection();}, wxID_CUT);
+    copy_selected_cells_to_clipboard();
+    empty_selection();}, wxID_CUT);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    PasteCellsFromClipboard();}, wxID_PASTE);
+    paste_cells_from_clipboard();}, wxID_PASTE);
 
   Bind(wxEVT_FIND, [=](wxFindDialogEvent& event) {
-    FindNext(
-      find_replace_data::Get()->GetFindString(), 
-      find_replace_data::Get()->SearchDown());});
+    find_next(
+      find_replace_data::get()->get_find_string(), 
+      find_replace_data::get()->search_down());});
       
   Bind(wxEVT_FIND_NEXT, [=](wxFindDialogEvent& event) {
-    FindNext(
-      find_replace_data::Get()->GetFindString(), 
-      find_replace_data::Get()->SearchDown());});
+    find_next(
+      find_replace_data::get()->get_find_string(), 
+      find_replace_data::get()->search_down());});
 
   Bind(wxEVT_GRID_CELL_LEFT_CLICK, [=](wxGridEvent& event) {
     // Removed extra check for !IsEditable(),
@@ -107,7 +113,7 @@ wex::grid::grid(const window_data& data)
     }
 
 #if wxUSE_DRAG_AND_DROP
-    if (m_UseDragAndDrop)
+    if (m_use_drag_and_drop)
     {
       // This is because drag/drop is not really supported by the wxGrid.
       // Even the wxEVT_GRID_CELL_BEGIN_DRAG does not seem to come in.
@@ -128,7 +134,7 @@ wex::grid::grid(const window_data& data)
       }
 
       // Start drag operation.
-      wxTextDataObject textData(GetSelectedCellsValue());
+      wxTextDataObject textData(get_selected_cells_value());
       wxDropSource source(textData, this);
       wxDragResult result = source.DoDragDrop(wxDrag_DefaultMove);
 
@@ -138,9 +144,9 @@ wex::grid::grid(const window_data& data)
       {
         // The old contents is not deleted, as should be by moving.
         // To fix this, do not call Skip so selection remains active,
-        // and call EmptySelection.
+        // and call empty_selection.
         //  event.Skip();
-        EmptySelection();
+        empty_selection();
         ClearSelection();
       }
       else
@@ -163,19 +169,19 @@ wex::grid::grid(const window_data& data)
     if (IsSelection()) style |= wex::menu::IS_SELECTED;
 
     wex::menu menu(style);
-    BuildPopupMenu(menu);
+    build_popup_menu(menu);
     PopupMenu(&menu);
     });
     
   Bind(wxEVT_GRID_SELECT_CELL, [=](wxGridEvent& event) {
-    frame::StatusText(
+    frame::statustext(
       std::to_string(1 + event.GetCol()) + "," + std::to_string(1 + event.GetRow()),
       "PaneInfo");
     event.Skip();});
 
   Bind(wxEVT_GRID_RANGE_SELECT, [=](wxGridRangeSelectEvent& event) {
     event.Skip();
-    frame::StatusText(std::to_string(GetSelectedCells().GetCount()),
+    frame::statustext(std::to_string(GetSelectedCells().GetCount()),
       "PaneInfo");
     });
   
@@ -183,12 +189,12 @@ wex::grid::grid(const window_data& data)
     wex::frame* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
     if (frame != nullptr)
     {
-      frame->SetFindFocus(this);
+      frame->set_find_focus(this);
     }
     event.Skip();});
 }
 
-const wxString wex::grid::BuildPage()
+const wxString wex::grid::build_page()
 {
   wxString text;
 
@@ -231,15 +237,15 @@ const wxString wex::grid::BuildPage()
   return text;
 }
 
-void wex::grid::BuildPopupMenu(wex::menu& menu)
+void wex::grid::build_popup_menu(wex::menu& menu)
 {
   menu.append_edit();
 }
 
-bool wex::grid::CopySelectedCellsToClipboard() const
+bool wex::grid::copy_selected_cells_to_clipboard() const
 {
   wxBusyCursor wait;
-  return clipboard_add(GetSelectedCellsValue().ToStdString());
+  return clipboard_add(get_selected_cells_value().ToStdString());
 }
 
 #if wxUSE_DRAG_AND_DROP
@@ -247,13 +253,13 @@ bool wex::grid::DropSelection(
   const wxGridCellCoords& drop_coords, 
   const wxString& data)
 {
-  SetCellsValue(drop_coords, data);
+  set_cells_value(drop_coords, data);
 
   return true;
 }
 #endif
 
-void wex::grid::EmptySelection()
+void wex::grid::empty_selection()
 {
   wxBusyCursor wait;
 
@@ -269,7 +275,7 @@ void wex::grid::EmptySelection()
   }
 }
 
-bool wex::grid::FindNext(const wxString& text, bool find_next)
+bool wex::grid::find_next(const wxString& text, bool forward)
 {
   if (text.empty())
   {
@@ -285,14 +291,14 @@ bool wex::grid::FindNext(const wxString& text, bool find_next)
 
   wxString text_use = text;
 
-  if (!find_replace_data::Get()->MatchCase())
+  if (!find_replace_data::get()->match_case())
   {
     text_use.MakeUpper();
   }
 
   wxGridCellCoords grid_cursor(GetGridCursorRow(), GetGridCursorCol());
 
-  if (find_next)
+  if (forward)
   {
     init_row = 0;
 
@@ -341,20 +347,20 @@ bool wex::grid::FindNext(const wxString& text, bool find_next)
   
   wxGridCellCoords match;
 
-  for (int j = start_col; j != end_col && !match; (find_next ? j++: j--))
+  for (int j = start_col; j != end_col && !match; (forward ? j++: j--))
   {
     for (int i = (j == start_col ? start_row: init_row);
          i != end_row && !match;
-         (find_next ? i++: i--))
+         (forward ? i++: i--))
     {
       wxString text = GetCellValue(i, j);
 
-      if (!find_replace_data::Get()->MatchCase())
+      if (!find_replace_data::get()->match_case())
       {
         text.MakeUpper();
       }
 
-      if (find_replace_data::Get()->MatchWord())
+      if (find_replace_data::get()->match_word())
       {
         if (text == text_use)
         {
@@ -375,13 +381,13 @@ bool wex::grid::FindNext(const wxString& text, bool find_next)
   {
     bool result = false;
     
-    frame::StatusText(
-      get_find_result(text.ToStdString(), find_next, recursive), std::string());
+    frame::statustext(
+      get_find_result(text.ToStdString(), forward, recursive), std::string());
     
     if (!recursive)
     {
       recursive = true;
-      result = FindNext(text, find_next);
+      result = find_next(text, forward);
       recursive = false;
     }
     
@@ -396,18 +402,18 @@ bool wex::grid::FindNext(const wxString& text, bool find_next)
   }
 }
 
-const wxString wex::grid::GetFindString() const
+const wxString wex::grid::get_find_string() const
 {
   if (IsSelection())
   {
     // This does not work (if single cell selected, array count is 0!
     // const wxGridCellCoordsArray cells(GetSelectedCells());
-    tokenizer tkz(GetSelectedCellsValue().ToStdString(), "\n");
+    tokenizer tkz(get_selected_cells_value().ToStdString(), "\n");
 
     // Only if we have one cell, so one EOL.
-    if (tkz.CountTokens() == 1)
+    if (tkz.count_tokens() == 1)
     {
-      find_replace_data::Get()->SetFindString(tkz.GetNextToken());
+      find_replace_data::get()->set_find_string(tkz.get_next_token());
     }
   }
   else
@@ -419,14 +425,14 @@ const wxString wex::grid::GetFindString() const
 
     if (!val.empty())
     {
-      find_replace_data::Get()->SetFindString(val.ToStdString());
+      find_replace_data::get()->set_find_string(val.ToStdString());
     }
   }
     
-  return find_replace_data::Get()->GetFindString();
+  return find_replace_data::get()->get_find_string();
 }
 
-const wxString wex::grid::GetSelectedCellsValue() const
+const wxString wex::grid::get_selected_cells_value() const
 {
   // This does not work, only filled in for singly selected cells.
   // wxGridCellCoordsArray cells = GetSelectedCells();
@@ -474,16 +480,16 @@ bool wex::grid::IsAllowedDropSelection(const wxGridCellCoords& drop_coords, cons
 
   int start_at_row = drop_coords.GetRow();
 
-  while (tkz.HasMoreTokens())
+  while (tkz.has_more_tokens())
   {
-    const auto line(tkz.GetNextToken());
+    const auto line(tkz.get_next_token());
 
     tokenizer tkz(line, "\t");
 
     int next_col = drop_coords.GetCol();
-    while (tkz.HasMoreTokens() && next_col < GetNumberCols())
+    while (tkz.has_more_tokens() && next_col < GetNumberCols())
     {
-      tkz.GetNextToken(); // skip the value
+      tkz.get_next_token(); // skip the value
 
       // If readonly, or this cell is part of the current selection, or outside grid
       // do not allow. Otherwise when dropping and clearing old selection afterwards,
@@ -507,28 +513,28 @@ bool wex::grid::IsAllowedDropSelection(const wxGridCellCoords& drop_coords, cons
 }
 #endif
 
-void wex::grid::PasteCellsFromClipboard()
+void wex::grid::paste_cells_from_clipboard()
 {
-  SetCellsValue(
+  set_cells_value(
     wxGridCellCoords(
       GetGridCursorRow(), 
       GetGridCursorCol()), 
     clipboard_get());
 }
 
-void wex::grid::Print()
+void wex::grid::print()
 {
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   wxBusyCursor wait;
-  printing::Get()->GetHtmlPrinter()->PrintText(BuildPage());
+  printing::get()->get_html_printer()->PrintText(build_page());
 #endif
 }
 
-void wex::grid::PrintPreview()
+void wex::grid::print_preview()
 {
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   wxBusyCursor wait;
-  printing::Get()->GetHtmlPrinter()->PreviewText(BuildPage());
+  printing::get()->get_html_printer()->PreviewText(build_page());
 #endif
 }
 
@@ -539,7 +545,7 @@ void wex::grid::SetGridCellValue(
   SetCellValue(coords, data);
 }
 
-void wex::grid::SetCellsValue(
+void wex::grid::set_cells_value(
   const wxGridCellCoords& start_coords, 
   const wxString& data)
 {
@@ -547,17 +553,17 @@ void wex::grid::SetCellsValue(
 
   int start_at_row = start_coords.GetRow();
 
-  while (tkz.HasMoreTokens())
+  while (tkz.has_more_tokens())
   {
-    const auto line(tkz.GetNextToken());
+    const auto line(tkz.get_next_token());
 
     tokenizer tkz(line, "\t");
 
     int next_col = start_coords.GetCol();
 
-    while (tkz.HasMoreTokens() && next_col < GetNumberCols())
+    while (tkz.has_more_tokens() && next_col < GetNumberCols())
     {
-      const wxString value = tkz.GetNextToken();
+      const wxString value = tkz.get_next_token();
 
       if (!IsReadOnly(start_at_row, next_col))
       {
@@ -572,8 +578,8 @@ void wex::grid::SetCellsValue(
 }
 
 #if wxUSE_DRAG_AND_DROP
-void wex::grid::UseDragAndDrop(bool use)
+void wex::grid::use_drag_and_drop(bool use)
 {
-  m_UseDragAndDrop = use;
+  m_use_drag_and_drop = use;
 }
 #endif

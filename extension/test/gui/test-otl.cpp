@@ -27,32 +27,32 @@ TEST_CASE("wex::otl")
   }
 
   wex::config(_("Datasource")).set("Test");
-  wex::config(_("User")).set("");
-  wex::config(_("Password")).set("");
+  wex::config(_("User")).set();
+  wex::config(_("Password")).set();
   
   wex::otl otl;
   
-  REQUIRE(!otl.VersionInfo().Get().empty());
-  REQUIRE(!otl.Datasource().empty());
+  REQUIRE(!otl.get_version_info().get().empty());
+  REQUIRE(!otl.datasource().empty());
   
-  otl.Logon(wex::window_data().Button(0));
+  otl.logon(wex::window_data().button(0));
 
   bool stopped = false;
 
   wex::grid* grid = new wex::grid();
-  AddPane(GetFrame(), grid);
+  AddPane(frame(), grid);
   
-  if (!otl.IsConnected())
+  if (!otl.is_connected())
   {
-    REQUIRE( otl.Query("select * from one") == 0);
-    REQUIRE( otl.Query("select * from one", GetSTC(), stopped) == 0);
-    REQUIRE( otl.Query("select * from one", grid, stopped) == 0);
-    REQUIRE(!otl.Logoff());
+    REQUIRE( otl.query("select * from one") == 0);
+    REQUIRE( otl.query("select * from one", get_stc(), stopped) == 0);
+    REQUIRE( otl.query("select * from one", grid, stopped) == 0);
+    REQUIRE(!otl.logoff());
   }
   else
   {
-    REQUIRE( otl.Query("select * from one") == 9);
-    REQUIRE( otl.Logoff());
+    REQUIRE( otl.query("select * from one") == 9);
+    REQUIRE( otl.logoff());
   }
 #endif
 }

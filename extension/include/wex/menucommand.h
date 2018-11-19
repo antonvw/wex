@@ -7,6 +7,7 @@
  
 #pragma once
 
+#include <bitset>
 #include <string>
 
 namespace wex
@@ -17,24 +18,25 @@ namespace wex
   class menu_command
   {
   public:
-    /// The command as used by GetCommand.
+    /// The command flags as used by get_command.
     enum include
     {
-      INCLUDE_NONE        = 0x0000, ///< no other commands
-      INCLUDE_SUBCOMMAND  = 0x0001, ///< includes a possible subcommand
-      INCLUDE_ACCELL      = 0x0002, ///< includes accelerator
+      INCLUDE_SUBCOMMAND = 0, ///< includes a possible subcommand
+      INCLUDE_ACCELL     = 1, ///< includes accelerator
     };
 
-    /// The command type as read from xml file.  
-    enum type
+    /// The command type flags as read from xml file.  
+    enum
     {
-      IS_NONE   = 0x0000, ///< command invalid (from default constructor)
-      IS_POPUP  = 0x0001, ///< command in popup menu 
-      IS_MAIN   = 0x0002, ///< command in main menu 
-      SEPARATOR = 0x0004, ///< command is followed by a separator
-      ELLIPSES  = 0x0008, ///< command is followed by an ellipses
+      IS_POPUP  = 0, ///< command in popup menu 
+      IS_MAIN   = 1, ///< command in main menu 
+      SEPARATOR = 2, ///< command is followed by a separator
+      ELLIPSES  = 3, ///< command is followed by an ellipses
     };
 
+    typedef std::bitset<2> include_t;
+    typedef std::bitset<4> type_t;
+    
     /// Default constructor.
     menu_command() {;};
 
@@ -61,31 +63,31 @@ namespace wex
     /// Returns true if flags are requested for this command.
     /// All commands, except help, and if the flags are present
     /// in menus.xml, support flags.
-    bool AskFlags() const {return 
-      !IsHelp() && m_Flags.empty() && m_Flags != "none";};
+    bool ask_flags() const {return 
+      !is_help() && m_Flags.empty() && m_Flags != "none";};
       
-    /// Returns the command (and subcommand and accelerators if necessary).
-    const std::string GetCommand(
-      long type = INCLUDE_SUBCOMMAND) const;
-
     /// Returns the flags.
-    const auto& GetFlags() const {return m_Flags;};
+    const auto& flags() const {return m_Flags;};
+
+    /// Returns the command (and subcommand and accelerators if necessary).
+    const std::string get_command(
+      include_t type = include_t().set(INCLUDE_SUBCOMMAND)) const;
 
     /// Returns the submenu.
-    const auto& GetSubMenu() const {return m_SubMenu;};
+    const auto& get_submenu() const {return m_SubMenu;};
+
+    /// Returns true if this is a help like command.
+    bool is_help() const {return get_command(0) == "help";};
 
     /// Returns the type.
-    auto GetType() const {return m_Type;};
+    auto & type() const {return m_Type;};
     
-    /// Returns true if this is a help like command.
-    bool IsHelp() const {return GetCommand(INCLUDE_NONE) == "help";};
-
     /// Returns true if a subcommand can be used for this command.
-    bool UseSubcommand() const;
+    bool use_subcommand() const;
   private:
     std::string m_Command, m_Flags, m_SubMenu;
 
     bool m_SubMenuIsCommand {false};
-    long m_Type {IS_NONE};
+    type_t m_Type {0};
   };
 };

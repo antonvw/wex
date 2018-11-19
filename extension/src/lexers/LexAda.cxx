@@ -727,7 +727,7 @@ static bool IsValidNumber(const std::string& number) {
 		if (number[i] != 'e' && number[i] != 'E')
 			return false;
 
-		i++; // Move past 'E'
+		i++; // move past 'E'
 
 		if (i == length) {
 			return false;

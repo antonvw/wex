@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <bitset>
 #include <wx/artprov.h> // for wxArtID
 #include <wx/menu.h>
 #include <wex/path.h>
@@ -17,29 +18,31 @@ namespace wex
   class menu : public wxMenu
   {
   public:
-    /// The menu styles.
+    /// The menu flags.
     enum
     {
-      IS_READ_ONLY = 0x0001, ///< readonly control
-      IS_SELECTED  = 0x0002, ///< text is selected somewhere on the control
-      IS_EMPTY     = 0x0004, ///< control is empty
+      IS_READ_ONLY = 0, ///< readonly control
+      IS_SELECTED  = 1, ///< text is selected somewhere on the control
+      IS_EMPTY     = 2, ///< control is empty
 
-      ALLOW_CLEAR  = 0x0008, ///< add clear item in menu
-      CAN_PASTE    = 0x0010, ///< add paste item in menu
+      ALLOW_CLEAR  = 3, ///< add clear item in menu
+      CAN_PASTE    = 4, ///< add paste item in menu
 
       DEFAULT      = CAN_PASTE  ///< default
     };
+    
+    typedef std::bitset<5> menu_t;
 
     /// Default constructor.
-    menu(long style = DEFAULT);
+    menu(menu_t style = menu_t().set(DEFAULT));
     
     /// Construct a menu with a title.
-    menu(const std::string& title, long style = 0);
+    menu(const std::string& title, menu_t style = 0);
 
     /// Appends a menu item for stock menu id's
     /// using automatic naming, help text and art id.
     /// Appends a menu item.
-    wxMenuItem* Append(
+    wxMenuItem* append(
       int id,
       const std::string& name = std::string(),
       const std::string& helptext = std::string(),
@@ -78,11 +81,11 @@ namespace wex
       bool show_modal = true);
 
     /// Returns the style.
-    auto style() const {return m_Style;};
+    auto & style() const {return m_Style;};
 
     /// Sets the style.
-    void style(long style) {m_Style = style;};
+    auto & style() {return m_Style;};
   private:
-    long m_Style;
+    menu_t m_Style;
   };
 };

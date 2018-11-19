@@ -52,13 +52,13 @@ namespace wex
     // config settings.
     const std::string GetName() const {return 
       config(_("vi tag fullpath")).get(false) ?
-        m_Path.Path().string(): m_Path.GetFullName();};
+        m_Path.data().string(): m_Path.fullname();};
 
     // Opens file in specified frame.
-    auto OpenFile(frame* frame) const
+    auto open_file(frame* frame) const
     {
-      return frame->OpenFile(m_Path, 
-        control_data().Line(m_LineNumber).Command(m_Pattern));
+      return frame->open_file(m_Path, 
+        control_data().line(m_LineNumber).command(m_Pattern));
     }
   private:
     const path m_Path;
@@ -99,27 +99,27 @@ const std::string Filtered(
   const wex::ctags_entry& filter, 
   wex::image_access_type& image)
 {
-  if (!filter.Active()) return entry.name;
+  if (!filter.is_active()) return entry.name;
 
-  if (!filter.Kind().empty())
+  if (!filter.kind().empty())
   { 
-    if (entry.kind == nullptr || strcmp(filter.Kind().c_str(), entry.kind) != 0)
+    if (entry.kind == nullptr || strcmp(filter.kind().c_str(), entry.kind) != 0)
     {
       return std::string();
     }
   }
 
-  if (!filter.Access().empty() && !Compare(entry, filter.Access(), "access"))
+  if (!filter.access().empty() && !Compare(entry, filter.access(), "access"))
   {
     return std::string();
   }
 
-  if (!filter.Class().empty() && !Compare(entry, filter.Class(), "class"))
+  if (!filter.class_name().empty() && !Compare(entry, filter.class_name(), "class"))
   {
     return std::string();
   }
 
-  if (!filter.Signature().empty() && !Compare(entry, filter.Signature(), "signature"))
+  if (!filter.signature().empty() && !Compare(entry, filter.signature(), "signature"))
   {
     return std::string();
   }
@@ -132,9 +132,9 @@ std::map< std::string, wex::ctags_info >::iterator wex::ctags::m_Iterator;
 
 wex::ctags::ctags(wex::ex* ex)
   : m_Ex(ex)
-  , m_Frame(ex->GetFrame())
+  , m_Frame(ex->frame())
 {
-  Init(m_Ex->GetCommand().STC()->GetData().CTagsFileName());
+  Init(m_Ex->get_command().stc()->data().ctags_filename());
 }
 
 wex::ctags::ctags(wex::frame* frame)
@@ -158,7 +158,7 @@ std::string skipConst(const std::string& text)
     return text;
 }
 
-std::string wex::ctags::AutoComplete(
+std::string wex::ctags::auto_complete(
   const std::string& text, const ctags_entry& filter)
 {
   if (m_File == nullptr) 
@@ -185,7 +185,7 @@ std::string wex::ctags::AutoComplete(
 
   if (!m_Prepare)
   {
-    AutoCompletePrepare();
+    auto_complete_prepare();
   }
 
   std::string s, prev_tag;
@@ -211,7 +211,7 @@ std::string wex::ctags::AutoComplete(
 
       SetImage(entry, image);
 
-      if (filter.Kind() == "f")
+      if (filter.kind() == "f")
       {
         const char* value = tagsField(&entry, "signature");
         
@@ -228,34 +228,34 @@ std::string wex::ctags::AutoComplete(
     } 
 
     result = (text.empty() ?
-      tagsNext(m_File, &entry): tagsFindNext(m_File, &entry));
+      tagsNext(m_File, &entry): tagsfind_next(m_File, &entry));
   } while (result == TagSuccess && count < max);
 
-  VLOG(9) << "ctags AutoComplete: " << count;
+  VLOG(9) << "ctags auto_complete: " << count;
 
   return s;
 }
 
-void wex::ctags::AutoCompletePrepare()
+void wex::ctags::auto_complete_prepare()
 {
-  m_Ex->GetSTC()->AutoCompSetIgnoreCase(false);
-  m_Ex->GetSTC()->AutoCompSetAutoHide(false);
+  m_Ex->stc()->AutoCompSetIgnoreCase(false);
+  m_Ex->stc()->AutoCompSetAutoHide(false);
 
   wxLogNull logNo;
-  m_Ex->GetSTC()->RegisterImage(IMAGE_PUBLIC, wxArtProvider::GetBitmap(wxART_PLUS));
-  m_Ex->GetSTC()->RegisterImage(IMAGE_PROTECTED, wxArtProvider::GetBitmap(wxART_MINUS));
-  m_Ex->GetSTC()->RegisterImage(IMAGE_PRIVATE, wxArtProvider::GetBitmap(wxART_TICK_MARK));
+  m_Ex->stc()->RegisterImage(IMAGE_PUBLIC, wxArtProvider::GetBitmap(wxART_PLUS));
+  m_Ex->stc()->RegisterImage(IMAGE_PROTECTED, wxArtProvider::GetBitmap(wxART_MINUS));
+  m_Ex->stc()->RegisterImage(IMAGE_PRIVATE, wxArtProvider::GetBitmap(wxART_TICK_MARK));
 
   m_Prepare = true;
 }
 
-bool wex::ctags::Find(const std::string& tag)
+bool wex::ctags::find(const std::string& tag)
 {
   if (m_File == nullptr) return false;
 
   if (tag.empty())
   {
-    return Next();
+    return next();
   }
 
   tagEntry entry;
@@ -272,7 +272,7 @@ bool wex::ctags::Find(const std::string& tag)
   {
     const ctags_info ct(entry);
     m_Matches.insert({ct.GetName(), ct});
-  } while (tagsFindNext(m_File, &entry) == TagSuccess);
+  } while (tagsfind_next(m_File, &entry) == TagSuccess);
 
   m_Iterator = m_Matches.begin();
 
@@ -280,7 +280,7 @@ bool wex::ctags::Find(const std::string& tag)
 
   if (m_Matches.size() == 1)
   {
-    m_Matches.begin()->second.OpenFile(m_Frame);
+    m_Matches.begin()->second.open_file(m_Frame);
   }
   else
   {
@@ -295,11 +295,11 @@ bool wex::ctags::Find(const std::string& tag)
     for (const auto& sel : dialog.GetSelections())
     {
       m_Iterator = m_Matches.find(as[sel].ToStdString());
-      m_Iterator->second.OpenFile(m_Frame);
+      m_Iterator->second.open_file(m_Frame);
     }
   }
 
-  find_replace_data::Get()->SetFindString(tag);
+  find_replace_data::get()->set_find_string(tag);
 
   return true;
 }  
@@ -312,7 +312,7 @@ bool Master(const tagEntry& entry)
       (strcmp(entry.kind, "m") == 0));
 }
 
-bool wex::ctags::Find(const std::string& tag, 
+bool wex::ctags::find(const std::string& tag, 
   wex::ctags_entry& current,
   wex::ctags_entry& filter) const
 {
@@ -327,15 +327,15 @@ bool wex::ctags::Find(const std::string& tag,
     return false;
   }
 
-  filter.Clear();
+  filter.clear();
 
   do 
   {
-    current.Kind(entry.kind).Class(entry.name);
+    current.kind(entry.kind).class_name(entry.name);
 
     if (const char* value = tagsField(&entry, "signature"); value != nullptr)
     {
-      current.Signature(value);
+      current.signature(value);
     }
 
     // If this is not a master entry find next.
@@ -346,17 +346,17 @@ bool wex::ctags::Find(const std::string& tag,
       {
         if (const char* value = tagsField(&entry, "typeref"); value != nullptr)
         {
-          filter.Kind("f").Class(wex::before(wex::after(value, ':'), ' '));
+          filter.kind("f").class_name(wex::before(wex::after(value, ':'), ' '));
         }
       }
       else 
       {
-        filter.Kind("f").Class(entry.name);
+        filter.kind("f").class_name(entry.name);
       }
 
       return true;
     }
-  } while (!Master(entry) && tagsFindNext(m_File, &entry) == TagSuccess);
+  } while (!Master(entry) && tagsfind_next(m_File, &entry) == TagSuccess);
 
   return false;
 }
@@ -368,7 +368,7 @@ void wex::ctags::Init(const std::string& filename)
   if (wex::path path(filename); path.is_absolute())
   {
     // an absolute file should exist
-    Open(path.Path().string(), true);
+    Open(path.data().string(), true);
   }
   else
   {
@@ -379,7 +379,7 @@ void wex::ctags::Init(const std::string& filename)
     {
       if (
         (m_Ex != nullptr && (
-           Open(it + filename + m_Ex->GetSTC()->GetFileName().GetExtension()))) ||
+           Open(it + filename + m_Ex->stc()->get_filename().extension()))) ||
         Open(it + filename))
       {
         return; // finish, we found a file
@@ -393,7 +393,7 @@ void wex::ctags::Init(const std::string& filename)
   }
 }
 
-bool wex::ctags::Next()
+bool wex::ctags::next()
 {
   if (m_Matches.size() <= 1)
   {
@@ -406,7 +406,7 @@ bool wex::ctags::Next()
     m_Iterator = m_Matches.begin();
   }
 
-  m_Iterator->second.OpenFile(m_Frame);
+  m_Iterator->second.open_file(m_Frame);
 
   return true;
 }
@@ -426,7 +426,7 @@ bool wex::ctags::Open(const std::string& path, bool show_error)
   return false;
 }
 
-bool wex::ctags::Previous()
+bool wex::ctags::previous()
 {
   if (m_Matches.size() <= 1)
   {
@@ -440,7 +440,7 @@ bool wex::ctags::Previous()
   }
 
   m_Iterator--;
-  m_Iterator->second.OpenFile(m_Frame);
+  m_Iterator->second.open_file(m_Frame);
 
   return true;
 }

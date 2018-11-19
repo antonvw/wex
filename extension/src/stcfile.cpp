@@ -21,10 +21,10 @@
 
 void CheckWellFormed(wex::stc* stc, const wex::path& fn)
 {
-  if (fn.GetLexer().GetLanguage() == "xml")
+  if (fn.lexer().language() == "xml")
   {
     if (const pugi::xml_parse_result result = 
-      pugi::xml_document().load_file(fn.Path().string().c_str());
+      pugi::xml_document().load_file(fn.data().string().c_str());
       !result)
     {
       wex::xml_error(fn, &result, stc);
@@ -38,11 +38,11 @@ wex::stc_file::stc_file(stc* stc, const std::string& filename)
 {
 }
 
-bool wex::stc_file::DoFileLoad(bool synced)
+bool wex::stc_file::do_file_load(bool synced)
 {
   if (
-   GetContentsChanged() &&
-   file_dialog(this).ShowModalIfChanged() == wxID_CANCEL)
+   get_contents_changed() &&
+   file_dialog(this).show_modal_if_changed() == wxID_CANCEL)
   {
     return false;
   }
@@ -51,75 +51,75 @@ bool wex::stc_file::DoFileLoad(bool synced)
   // Other kind of files might get new data anywhere inside the file,
   // we cannot sync that by keeping pos. 
   // Also only do it for reasonably large files.
-  const bool isLog = (GetFileName().GetExtension().find(".log") == 0);
+  const bool isLog = (get_filename().extension().find(".log") == 0);
   
-  m_STC->UseModificationMarkers(false);
+  m_STC->use_modification_markers(false);
 
-  ReadFromFile(
+  read_from_file(
     synced &&
     isLog &&
     m_STC->GetTextLength() > 1024);
 
   if (!synced)
   {
-    // ReadFromFile might already have set the lexer using a modeline.
-    if (m_STC->GetLexer().GetScintillaLexer().empty())
+    // read_from_file might already have set the lexer using a modeline.
+    if (m_STC->get_lexer().scintilla_lexer().empty())
     {
-      m_STC->GetLexer().Set(GetFileName().GetLexer(), true);
+      m_STC->get_lexer().set(get_filename().lexer(), true);
     }
 
-    wxLogStatus(_("Opened") + ": " + GetFileName().Path().string());
-    VLOG(1) << "opened: " << GetFileName().Path().string();
+    wxLogStatus(_("Opened") + ": " + get_filename().data().string());
+    VLOG(1) << "opened: " << get_filename().data().string();
   }
   
-  m_STC->PropertiesMessage(synced ? STAT_SYNC: STAT_DEFAULT);
-  m_STC->UseModificationMarkers(true);
+  m_STC->properties_message(status_t().set(synced ? STAT_SYNC: 0));
+  m_STC->use_modification_markers(true);
   
-  CheckWellFormed(m_STC, GetFileName());
+  CheckWellFormed(m_STC, get_filename());
   
   return true;
 }
 
-void wex::stc_file::DoFileNew()
+void wex::stc_file::do_file_new()
 {
-  m_STC->SetName(GetFileName().Path().string());
-  m_STC->PropertiesMessage();
-  m_STC->ClearDocument();
-  m_STC->GetLexer().Set(GetFileName().GetLexer(), true); // allow fold
+  m_STC->SetName(get_filename().data().string());
+  m_STC->properties_message();
+  m_STC->clear();
+  m_STC->get_lexer().set(get_filename().lexer(), true); // allow fold
 }
 
-void wex::stc_file::DoFileSave(bool save_as)
+void wex::stc_file::do_file_save(bool save_as)
 {
-  if (m_STC->GetHexMode().Active())
+  if (m_STC->get_hexmode().is_active())
   {
-    Write(m_STC->GetHexMode().GetBuffer());
+    write(m_STC->get_hexmode().buffer());
   }
   else
   {
-    Write(m_STC->GetTextRaw().data(), m_STC->GetTextRaw().length());
+    write(m_STC->GetTextRaw().data(), m_STC->GetTextRaw().length());
   }
   
   if (save_as)
   {
-    m_STC->SetReadOnly(GetFileName().IsReadOnly());
-    m_STC->GetLexer().Set(GetFileName().GetLexer());
-    m_STC->SetName(GetFileName().Path().string());
+    m_STC->SetReadOnly(get_filename().is_readonly());
+    m_STC->get_lexer().set(get_filename().lexer());
+    m_STC->SetName(get_filename().data().string());
   }
   
-  m_STC->MarkerDeleteAllChange();
+  m_STC->marker_delete_all_change();
   
-  wxLogStatus(_("Saved") + ": " + GetFileName().Path().string());
-  VLOG(1) << "saved: " << GetFileName().Path().string();
+  wxLogStatus(_("Saved") + ": " + get_filename().data().string());
+  VLOG(1) << "saved: " << get_filename().data().string();
   
-  CheckWellFormed(m_STC, GetFileName());
+  CheckWellFormed(m_STC, get_filename());
 }
 
-bool wex::stc_file::GetContentsChanged() const 
+bool wex::stc_file::get_contents_changed() const 
 {
   return m_STC->GetModify();
 }
 
-void wex::stc_file::ReadFromFile(bool get_only_new_data)
+void wex::stc_file::read_from_file(bool get_only_new_data)
 {
   const bool pos_at_end = (m_STC->GetCurrentPos() >= m_STC->GetTextLength() - 1);
 
@@ -128,36 +128,32 @@ void wex::stc_file::ReadFromFile(bool get_only_new_data)
 
   std::streampos offset = 0;
 
-  if (m_PreviousLength < m_STC->GetFileName().GetStat().st_size && get_only_new_data)
+  if (m_PreviousLength < m_STC->get_filename().stat().st_size && get_only_new_data)
   {
     offset = m_PreviousLength;
   }
 
   if (offset == std::streampos(0))
   {
-    m_STC->ClearDocument();
+    m_STC->clear();
   }
 
-  m_PreviousLength = m_STC->GetFileName().GetStat().st_size;
+  m_PreviousLength = m_STC->get_filename().stat().st_size;
 
-  if (const auto buffer = Read(offset); buffer != nullptr)
+  const auto buffer = read(offset);
+
+  if (!m_STC->get_hexmode().is_active())
   {
-    if (!m_STC->GetHexMode().Active())
-    {
-      m_STC->Allocate(buffer->length());
+    m_STC->Allocate(buffer->size());
     
-      get_only_new_data ? 
-        m_STC->AppendTextRaw((const char *)buffer->data(), buffer->length()):
-        m_STC->AddTextRaw((const char *)buffer->data(), buffer->length());
-    }
-    else
-    {
-      m_STC->GetHexMode().AppendText(std::string(buffer->data(), buffer->length()));
-    }
+    get_only_new_data ? 
+      m_STC->AppendTextRaw((const char *)buffer->data(), buffer->size()):
+      m_STC->AddTextRaw((const char *)buffer->data(), buffer->size());
   }
   else
   {
-     m_STC->SetText("READ FAILED");
+    m_STC->get_hexmode().append_text(
+      std::string(buffer->data(), buffer->size()));
   }
 
   if (get_only_new_data)
@@ -169,7 +165,7 @@ void wex::stc_file::ReadFromFile(bool get_only_new_data)
   }
   else
   {
-    m_STC->GuessType();
+    m_STC->guess_type();
     m_STC->DocumentStart();
   }
 
@@ -181,7 +177,7 @@ void wex::stc_file::ReadFromFile(bool get_only_new_data)
   m_STC->EmptyUndoBuffer();
 }
 
-void wex::stc_file::ResetContentsChanged()
+void wex::stc_file::reset_contents_changed()
 {
   m_STC->SetSavePoint();
 }

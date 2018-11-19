@@ -19,15 +19,16 @@ namespace wex
   class container_dir : public dir
   {
   public:
-    container_dir(const T & path, const std::string& filespec, int flags) 
+    container_dir(
+      const T & path, const std::string& filespec, dir::type_t flags) 
     : dir(path, filespec, flags) {;};
 
     const auto & Get() const {return m_Container;};
   private:
-    virtual bool OnDir(const path& p) override {
+    virtual bool on_dir(const path& p) override {
       m_Container.emplace_back(p);
       return true;};
-    virtual bool OnFile(const path& p) override {
+    virtual bool on_file(const path& p) override {
       m_Container.emplace_back(p);
       return true;};
 
@@ -37,16 +38,17 @@ namespace wex
   class string_dir : public dir
   {
   public:
-    string_dir(const std::string & path, const std::string& filespec, int flags) 
+    string_dir(
+      const std::string & path, const std::string& filespec, dir::type_t flags) 
     : dir(path, filespec, flags) {;};
 
     const auto & Get() const {return m_Container;};
   private:
-    virtual bool OnDir(const path& p) override {
-      m_Container.emplace_back(p.GetFullName());
+    virtual bool on_dir(const path& p) override {
+      m_Container.emplace_back(p.fullname());
       return true;};
-    virtual bool OnFile(const path& p) override {
-      m_Container.emplace_back(p.GetFullName());
+    virtual bool on_file(const path& p) override {
+      m_Container.emplace_back(p.fullname());
       return true;};
 
     std::vector <std::string> m_Container;
@@ -54,24 +56,24 @@ namespace wex
 };
 
 std::vector <wex::path> wex::get_all_files(
-  const wex::path& path, const std::string& filespec, int flags) 
+  const wex::path& path, const std::string& filespec, dir::type_t flags) 
 {
   wex::container_dir<wex::path> dir(path, filespec, flags);
-  dir.FindFiles();
+  dir.find_files();
   return dir.Get();
 }
 
 std::vector <std::string> wex::get_all_files(
-  const std::string& path, const std::string& filespec, int flags) 
+  const std::string& path, const std::string& filespec, dir::type_t flags) 
 {
   wex::string_dir dir(path, filespec, flags);
-  dir.FindFiles();
+  dir.find_files();
   return dir.Get();
 }
 
 namespace fs = std::filesystem;
 
-wex::dir::dir(const wex::path& dir, const std::string& filespec, int flags)
+wex::dir::dir(const wex::path& dir, const std::string& filespec, type_t flags)
   : m_Dir(dir)
   , m_FileSpec(filespec)
   , m_Flags(flags)
@@ -82,43 +84,43 @@ bool Handle(const fs::directory_entry& e, wex::dir* dir, int& matches)
 {
   if (fs::is_regular_file(e.path()))
   {
-    if ((dir->GetFlags() & wex::dir::FILES) && 
-      wex::matches_one_of(e.path().filename().string(), dir->GetFileSpec()))
+    if (dir->type().test(wex::dir::FILES) && 
+      wex::matches_one_of(e.path().filename().string(), dir->file_spec()))
     {
-      dir->OnFile(e.path());
+      dir->on_file(e.path());
       matches++;
     }
   }
-  else if ((dir->GetFlags() & wex::dir::DIRS) && fs::is_directory(e.path()) &&
-    wex::matches_one_of(e.path().filename().string(), dir->GetFileSpec()))
+  else if (dir->type().test(wex::dir::DIRS) && fs::is_directory(e.path()) &&
+    wex::matches_one_of(e.path().filename().string(), dir->file_spec()))
   {
-    dir->OnDir(e.path());
+    dir->on_dir(e.path());
   }
 
-  return !wex::interruptable::Cancelled();
+  return !wex::interruptable::is_cancelled();
 }
 
-int wex::dir::FindFiles()
+int wex::dir::find_files()
 {
-  if (!m_Dir.DirExists())
+  if (!m_Dir.dir_exists())
   {
-    wex::log("invalid path") << m_Dir.Path().string();
+    wex::log("invalid path") << m_Dir.data().string();
     return -1;
   }
 
-  if (!Start())
+  if (!start())
   {
     wex::log_status(_("Busy"));
     return -1;
   }
 
-  VLOG(9) << "iterating: " << m_Dir.Path() << " on: " << m_FileSpec << " flags: " << m_Flags;
+  VLOG(9) << "iterating: " << m_Dir.data() << " on: " << m_FileSpec << " flags: " << m_Flags;
 
   int matches = 0;
 
   try
   {
-    if (m_Flags & RECURSIVE)
+    if (m_Flags.test(RECURSIVE))
     {
       const fs::directory_options options = 
 #ifdef __WXMSW__
@@ -127,14 +129,14 @@ int wex::dir::FindFiles()
         fs::directory_options::skip_permission_denied;
 #endif
       
-      for (const auto& p: fs::recursive_directory_iterator(m_Dir.Path(), options))
+      for (const auto& p: fs::recursive_directory_iterator(m_Dir.data(), options))
       {
         if (!Handle(p, this, matches)) break;
       }
     }
     else
     {
-      for (const auto& p: fs::directory_iterator(m_Dir.Path()))
+      for (const auto& p: fs::directory_iterator(m_Dir.data()))
       {
         if (!Handle(p, this, matches)) break;
       }
@@ -145,7 +147,7 @@ int wex::dir::FindFiles()
     wex::log(e) << "filesystem";
   }
 
-  Stop();
+  stop();
 
   return matches;
 }
@@ -153,16 +155,16 @@ int wex::dir::FindFiles()
 wex::open_file_dir::open_file_dir(wex::frame* frame,
   const wex::path& path, 
   const std::string& filespec, 
-  wex::stc_data::window_flags file_flags,
-  int dir_flags)
-  : wex::dir(path, filespec, dir_flags)
+  wex::stc_data::window_t file_flags,
+  dir::type_t type)
+  : wex::dir(path, filespec, type)
   , m_Frame(frame)
   , m_Flags(file_flags)
 {
 }
 
-bool wex::open_file_dir::OnFile(const wex::path& file)
+bool wex::open_file_dir::on_file(const wex::path& file)
 {
-  m_Frame->OpenFile(file, wex::stc_data().Flags(m_Flags));
+  m_Frame->open_file(file, wex::stc_data().flags(m_Flags));
   return true;
 }

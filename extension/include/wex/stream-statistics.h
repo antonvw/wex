@@ -26,15 +26,15 @@ namespace wex
 
     /// Returns all items as a string. All items are returned as a string,
     /// with newlines separating items.
-    const std::string Get() const {return m_Elements.Get();};
+    const std::string get() const {return m_Elements.get();};
 
     /// Returns the key, if not present 0 is returned.
-    int Get(const std::string& key) const {
-      const auto it = m_Elements.GetItems().find(key);
-      return (it != m_Elements.GetItems().end() ? it->second: 0);};
+    int get(const std::string& key) const {
+      const auto it = m_Elements.get_items().find(key);
+      return (it != m_Elements.get_items().end() ? it->second: 0);};
 
     /// Returns the elements.
-    const auto & GetElements() const {return m_Elements;};
+    const auto & get_elements() const {return m_Elements;};
   private:
     statistics<int> m_Elements;
   };

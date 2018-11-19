@@ -50,18 +50,18 @@ TEST_CASE("wex")
   SUBCASE("wex::align_text")
   {
     REQUIRE( wex::align_text("test", "header", true, true,
-      wex::lexers::Get()->FindByName("cpp")).size() 
+      wex::lexers::get()->find_by_name("cpp")).size() 
         == std::string("// headertest").size());
   }
       
   SUBCASE("wex::autocomplete_text")
   {
-    REQUIRE( wex::vi_macros::LoadDocument());
+    REQUIRE( wex::vi_macros::load_document());
     std::string s;
-    REQUIRE(!wex::autocomplete_text("xxxx", GetSTC()->GetVi().GetMacros().Get(), s));
+    REQUIRE(!wex::autocomplete_text("xxxx", get_stc()->get_vi().get_macros().get(), s));
     REQUIRE(!wex::autocomplete_text("Date", // not unique!
-      GetSTC()->GetVi().GetMacros().Get(), s));
-    REQUIRE( wex::autocomplete_text("Datet", GetSTC()->GetVi().GetMacros().Get(), s));
+      get_stc()->get_vi().get_macros().get(), s));
+    REQUIRE( wex::autocomplete_text("Datet", get_stc()->get_vi().get_macros().get(), s));
     REQUIRE( s == "Datetime");
   }
   
@@ -108,18 +108,18 @@ TEST_CASE("wex")
   
   SUBCASE("wex::combobox_as")
   {
-    wxComboBox* cb = new wxComboBox(GetFrame(), wxID_ANY);
+    wxComboBox* cb = new wxComboBox(frame(), wxID_ANY);
 #ifndef __WXOSX__
-    AddPane(GetFrame(), cb);
+    AddPane(frame(), cb);
 #endif
     wex::combobox_as<const std::list < std::string >>(cb, l);
   }
   
   SUBCASE("wex::combobox_from_list")
   {
-    wxComboBox* cb = new wxComboBox(GetFrame(), wxID_ANY);
+    wxComboBox* cb = new wxComboBox(frame(), wxID_ANY);
 #ifndef __WXOSX__
-    AddPane(GetFrame(), cb);
+    AddPane(frame(), cb);
 #endif
     wex::combobox_from_list(cb, l);
     REQUIRE( cb->GetCount() == 3);
@@ -139,9 +139,12 @@ TEST_CASE("wex")
     REQUIRE( wex::firstof("this is ok", "x") == std::string());
     REQUIRE( wex::firstof("this is ok", " ;,") == "is ok");
     REQUIRE( wex::firstof("this is ok", " ;,i") == "s is ok");
-    REQUIRE( wex::firstof("this is ok", " ;,i", std::string::npos, wex::FIRST_OF_FROM_END) == "ok");
-    REQUIRE( wex::firstof("this is ok", " ", 0, wex::FIRST_OF_BEFORE) == "this");
-    REQUIRE( wex::firstof("this is ok", "x", 0, wex::FIRST_OF_BEFORE) == "this is ok");
+    REQUIRE( wex::firstof("this is ok", " ;,i", std::string::npos, 
+      wex::firstof_t().set(wex::FIRST_OF_FROM_END)) == "ok");
+    REQUIRE( wex::firstof("this is ok", " ", 0, 
+      wex::firstof_t().set(wex::FIRST_OF_BEFORE)) == "this");
+    REQUIRE( wex::firstof("this is ok", "x", 0, 
+      wex::firstof_t().set(wex::FIRST_OF_BEFORE)) == "this is ok");
   }
 
   SUBCASE("wex::get_endoftext")
@@ -263,13 +266,13 @@ TEST_CASE("wex")
   
   SUBCASE("wex::open_files")
   {
-    REQUIRE( wex::open_files(GetFrame(), std::vector<wex::path>()) == 0);
-    REQUIRE( wex::open_files(GetFrame(), std::vector<wex::path> {
-      GetTestPath("test.h").Path(), "test.cpp", "*xxxxxx*.cpp"}) == 2);
-    REQUIRE( wex::open_files(GetFrame(), 
-      std::vector<wex::path> {GetTestPath("test.h").Path()}) == 1);
+    REQUIRE( wex::open_files(frame(), std::vector<wex::path>()) == 0);
+    REQUIRE( wex::open_files(frame(), std::vector<wex::path> {
+      GetTestPath("test.h").data(), "test.cpp", "*xxxxxx*.cpp"}) == 2);
+    REQUIRE( wex::open_files(frame(), 
+      std::vector<wex::path> {GetTestPath("test.h").data()}) == 1);
     REQUIRE( 
-      wex::open_files(GetFrame(), std::vector<wex::path> {"../../data/menus.xml"}) == 1);
+      wex::open_files(frame(), std::vector<wex::path> {"../../data/menus.xml"}) == 1);
   }
 
   SUBCASE("wex::open_files_dialog")
@@ -293,8 +296,8 @@ TEST_CASE("wex")
   
   SUBCASE("wex::marker_and_register_expansion")
   {
-    GetSTC()->SetText("this is some text");
-    wex::ex* ex = new wex::ex(GetSTC());
+    get_stc()->set_text("this is some text");
+    wex::ex* ex = new wex::ex(get_stc());
     std::string command("xxx");
     REQUIRE(!wex::marker_and_register_expansion(nullptr, command));
     REQUIRE( wex::marker_and_register_expansion(ex, command));
@@ -348,43 +351,50 @@ TEST_CASE("wex")
   
   SUBCASE("wex::sort")
   {
-    REQUIRE(wex::sort("z\ny\nx\n", wex::STRING_SORT_ASCENDING, 0, "\n") == "x\ny\nz\n");
-    REQUIRE(wex::sort("z\ny\nx\n", wex::STRING_SORT_DESCENDING, 0, "\n") == "z\ny\nx\n");
-    REQUIRE(wex::sort("z\nz\ny\nx\n", wex::STRING_SORT_ASCENDING, 0, "\n") == "x\ny\nz\nz\n");
-    REQUIRE(wex::sort("z\nz\ny\nx\n", wex::STRING_SORT_ASCENDING | wex::STRING_SORT_UNIQUE, 0, "\n") == "x\ny\nz\n");
-    REQUIRE(wex::sort(rect, wex::STRING_SORT_ASCENDING, 3, "\n", 5) == sorted);
+    REQUIRE(wex::sort("z\ny\nx\n", 0, 0, "\n") == "x\ny\nz\n");
+    REQUIRE(wex::sort("z\ny\nx\n", 
+      wex::string_sort_t().set(wex::STRING_SORT_DESCENDING), 0, "\n") == "z\ny\nx\n");
+    REQUIRE(wex::sort("z\nz\ny\nx\n", 0, 0, "\n") == "x\ny\nz\nz\n");
+    REQUIRE(wex::sort("z\nz\ny\nx\n", 
+      wex::string_sort_t().set(wex::STRING_SORT_UNIQUE), 0, "\n") == "x\ny\nz\n");
+    REQUIRE(wex::sort(rect, 0, 3, "\n", 5) == sorted);
   }
 
   SUBCASE("wex::sort_selection")
   {
-    GetSTC()->SelectNone();
-    REQUIRE( wex::sort_selection(GetSTC()));
-    GetSTC()->SetText("aaaaa\nbbbbb\nccccc\n");
-    GetSTC()->SelectAll();
-    REQUIRE( wex::sort_selection(GetSTC()));
-    REQUIRE( wex::sort_selection(GetSTC(), wex::STRING_SORT_ASCENDING, 3, 10));
-    REQUIRE(!wex::sort_selection(GetSTC(), wex::STRING_SORT_ASCENDING, 20, 10));
-    GetSTC()->SelectNone();
-    GetSTC()->SetText(rect);
+    get_stc()->SelectNone();
+    REQUIRE( wex::sort_selection(get_stc()));
+    get_stc()->set_text("aaaaa\nbbbbb\nccccc\n");
+    get_stc()->SelectAll();
+    REQUIRE( wex::sort_selection(get_stc()));
+    REQUIRE( wex::sort_selection(get_stc(), 0, 3, 10));
+    REQUIRE(!wex::sort_selection(get_stc(), 0, 20, 10));
+    get_stc()->SelectNone();
+    get_stc()->set_text(rect);
     // force rectangular selection.
-    (void)GetSTC()->GetVi().Command("3 ");
-    (void)GetSTC()->GetVi().Command("K");
-    (void)GetSTC()->GetVi().Command("4j");
-    (void)GetSTC()->GetVi().Command("5l");
-    REQUIRE( wex::sort_selection(GetSTC(), wex::STRING_SORT_ASCENDING, 3, 5));
+    (void)get_stc()->get_vi().command("3 ");
+    (void)get_stc()->get_vi().command("K");
+    (void)get_stc()->get_vi().command("4j");
+    (void)get_stc()->get_vi().command("5l");
+    REQUIRE( wex::sort_selection(get_stc(), 0, 3, 5));
 #ifdef __WXGTK__
-    REQUIRE( wex::skip_white_space(GetSTC()->GetText().ToStdString()) == wex::skip_white_space(sorted));
+    REQUIRE( wex::skip_white_space(get_stc()->GetText().ToStdString()) == 
+      wex::skip_white_space(sorted));
 #endif
-    REQUIRE( wex::sort_selection(GetSTC(), wex::STRING_SORT_DESCENDING, 3, 5));
-    REQUIRE( GetSTC()->GetText() != sorted);
+    REQUIRE( wex::sort_selection(get_stc(), 
+      wex::string_sort_t().set(wex::STRING_SORT_DESCENDING), 3, 5));
+    REQUIRE( get_stc()->GetText() != sorted);
   }
   
   SUBCASE("wex::skip_white_space")
   {
-    REQUIRE( wex::skip_white_space("\n\tt \n    es   t\n", wex::SKIP_ALL) == "t es t");
-    REQUIRE( wex::skip_white_space("\n\tt \n    es   t\n", wex::SKIP_LEFT) == "t \n    es   t\n");
-    REQUIRE( wex::skip_white_space("\n\tt \n    es   t\n", wex::SKIP_RIGHT) == "\n\tt \n    es   t");
-    REQUIRE( wex::skip_white_space("\n\tt \n    es   t\n", wex::SKIP_BOTH) == "t \n    es   t");
+    REQUIRE( wex::skip_white_space("\n\tt \n    es   t\n", wex::skip_t().set()) == "t es t");
+    REQUIRE( wex::skip_white_space("\n\tt \n    es   t\n", 
+      wex::skip_t().set(wex::SKIP_LEFT)) == "t \n    es   t\n");
+    REQUIRE( wex::skip_white_space("\n\tt \n    es   t\n", 
+      wex::skip_t().set(wex::SKIP_RIGHT)) == "\n\tt \n    es   t");
+    REQUIRE( wex::skip_white_space("\n\tt \n    es   t\n", 
+      wex::skip_t().set(wex::SKIP_LEFT).set(wex::SKIP_RIGHT)) ==  "t \n    es   t");
   }
   
   SUBCASE("wex::translate")
@@ -396,14 +406,14 @@ TEST_CASE("wex")
   SUBCASE("wex::vcs_command_stc")
   {
     wex::vcs_command command("status");
-    wex::vcs_command_stc(command, wex::lexer(GetSTC(), "cpp"), GetSTC());
-    wex::vcs_command_stc(command, wex::lexer(nullptr, "cpp"), GetSTC());
-    wex::vcs_command_stc(command, wex::lexer(), GetSTC());
+    wex::vcs_command_stc(command, wex::lexer(get_stc(), "cpp"), get_stc());
+    wex::vcs_command_stc(command, wex::lexer(nullptr, "cpp"), get_stc());
+    wex::vcs_command_stc(command, wex::lexer(), get_stc());
   }
   
   SUBCASE("wex::vcs_execute")
   {
-    // wex::vcs_execute(GetFrame(), 0, std::vector< wxString > {}); // calls dialog
+    // wex::vcs_execute(frame(), 0, std::vector< wxString > {}); // calls dialog
   }
 
   SUBCASE("wex::xml_error")

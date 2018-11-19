@@ -22,14 +22,14 @@ TEST_CASE("wex::menus")
   REQUIRE( doc.load_string("<menus name = \"fold.comment\">2</menus>"));
 
   wex::menu* menu = new wex::menu;
-  REQUIRE(!wex::menus::BuildMenu(menucommands.GetCommands(), 500, menu, false));
+  REQUIRE(!wex::menus::build_menu(menucommands.get_commands(), 500, menu, false));
 
   std::vector < wex::menu_command > commands;
-  REQUIRE(!wex::menus::AddCommands(doc, commands));
+  REQUIRE(!wex::menus::add_commands(doc, commands));
   
-  REQUIRE(!wex::menus::GetFileName().Path().empty());
+  REQUIRE(!wex::menus::get_filename().data().empty());
 
   std::vector < wex::menu_commands <wex::menu_command > > entries;
-  REQUIRE( wex::menus::Load("debug", entries));
-  REQUIRE(!wex::menus::Load("xxx", entries));
+  REQUIRE( wex::menus::load("debug", entries));
+  REQUIRE(!wex::menus::load("xxx", entries));
 }

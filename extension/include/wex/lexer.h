@@ -49,52 +49,58 @@ namespace wex
       : m_STC(stc) {
       if (!lexer.empty())
       {
-        Set(lexer);
+        set(lexer);
       }};
 
     /// Constructor using xml node.
-    lexer(const pugi::xml_node* node) {Set(node);};
+    lexer(const pugi::xml_node* node) {set(node);};
 
     /// Assignment operator.
     lexer& operator=(const lexer& l);
 
     /// Adds keywords (public for testing only).
-    bool AddKeywords(const std::string& text, int setno = 0);
+    bool add_keywords(const std::string& text, int setno = 0);
     
     /// Applies this lexer to stc component (and colours the component).
-    bool Apply() const;
+    bool apply() const;
 
     /// Returns a string that completes specified comment,
     /// by adding spaces and a comment end at the end.
     /// If the comment end string is empty, it returns empty string.
-    const std::string CommentComplete(const std::string& comment) const;
+    const std::string comment_complete(const std::string& comment) const;
       
     /// Returns the comment begin.
-    const auto & GetCommentBegin() const {return m_CommentBegin;};
+    const auto & comment_begin() const {return m_CommentBegin;};
 
     /// Returns the comment begin 2.
-    const auto & GetCommentBegin2() const {return m_CommentBegin2;};
+    const auto & comment_begin2() const {return m_CommentBegin2;};
 
     /// Returns the comment end.
-    const auto & GetCommentEnd() const {return m_CommentEnd;};
+    const auto & comment_end() const {return m_CommentEnd;};
 
     /// Returns the comment end 2.
-    const auto & GetCommentEnd2() const {return m_CommentEnd2;};
+    const auto & comment_end2() const {return m_CommentEnd2;};
 
     /// Returns the display lexer (as shown in dialog).
-    const auto & GetDisplayLexer() const {return m_DisplayLexer;};
+    const auto & display_lexer() const {return m_DisplayLexer;};
 
     /// Returns the edge mode.
-    const auto GetEdgeMode() const {return m_EdgeMode;};
+    const auto edge_mode() const {return m_EdgeMode;};
 
     /// Returns the extensions.
-    const auto & GetExtensions() const {return m_Extensions;};
+    const auto & extensions() const {return m_Extensions;};
+
+    /// Is this word a keyword (allways all keywords), case sensitive.
+    bool is_keyword(const std::string& word) const;
+
+    /// Is this lexer valid.
+    bool is_ok() const {return m_is_ok;};
 
     /// Returns the keywords.
-    const auto & GetKeywords() const {return m_Keywords;};
+    const auto & keywords() const {return m_Keywords;};
 
     /// Returns the keywords as one large string, 
-    const std::string GetKeywordsString(
+    const std::string keywords_string(
       /// if keyword_set -1 take all the sets,
       /// otherwise take the specified set.
       int keyword_set = -1,
@@ -104,70 +110,64 @@ namespace wex
       /// prefix keyword should start with
       const std::string& prefix = std::string()) const;
 
-    /// Returns the language.
-    const auto & GetLanguage() const {return m_Language;};
-    
-    /// Returns the line size.
-    size_t GetLineSize() const;
-    
-    /// Returns the properties.
-    const auto & GetProperties() const {return m_Properties;};
-    
-    /// Returns the scintilla lexer.
-    const auto & GetScintillaLexer() const {return m_ScintillaLexer;};
-
-    /// Returns the styles.
-    const auto & styles() const {return m_Styles;};
-    
-    /// Is this word a keyword (allways all keywords), case sensitive.
-    bool IsKeyword(const std::string& word) const;
-
-    /// Is this lexer valid.
-    bool is_ok() const {return m_is_ok;};
-
     /// Does any keyword (allways all keywords) start with this word,
     /// case insensitive.
-    bool KeywordStartsWith(const std::string& word) const;
+    bool keyword_starts_with(const std::string& word) const;
 
+    /// Returns the language.
+    const auto & language() const {return m_Language;};
+    
+    /// Returns the line size.
+    size_t line_size() const;
+    
     /// Returns a lexer comment string with text formatted.
-    const std::string MakeComment(
+    const std::string make_comment(
       const std::string& text,
       bool fill_out_with_space = true,
       bool fill_out = true) const;
 
     /// Returns a lexer comment string with prefix.
-    const std::string MakeComment(
+    const std::string make_comment(
       const std::string& prefix,
       const std::string& text) const;
     
     /// Returns a lexer comment string filled out over one line.
-    const std::string MakeSingleLineComment(
+    const std::string make_single_line_comment(
       const std::string_view& text,
       bool fill_out_with_space = true,
       bool fill_out = true) const;
       
     /// Returns true if the stc component 
     /// associated with this lexer can be previewed.
-    bool Previewable() const {return m_Previewable;};
+    bool previewable() const {return m_previewable;};
 
+    /// Returns the properties.
+    const auto & properties() const {return m_Properties;};
+    
     /// Resets lexer and applies it to stc.
     /// The is ok member is set to false.
-    void Reset();
+    void reset();
+
+    /// Returns the scintilla lexer.
+    const auto & scintilla_lexer() const {return m_ScintillaLexer;};
 
     /// Sets lexer to specified lexer (finds by name from lexers),
     /// invokes the other Set.
     /// Shows error message when lexer could not be set.
-    bool Set(const std::string& lexer, bool fold = false);
+    bool set(const std::string& lexer, bool fold = false);
       
     /// Sets lexer to specified lexer, and applies it to stc if present. 
     /// Returns true if a scintilla lexer has been set.
-    bool Set(const lexer& lexer, bool fold = false);
+    bool set(const lexer& lexer, bool fold = false);
         
     /// Overrides a local property.
-    void SetProperty(const std::string& name, const std::string& value);
+    void set_property(const std::string& name, const std::string& value);
 
+    /// Returns the styles.
+    const auto & styles() const {return m_Styles;};
+    
     /// Returns number of chars that fit on a line, skipping comment chars.
-    size_t UsableCharactersPerLine() const;
+    size_t usable_chars_per_line() const;
   private:
     void AutoMatch(const std::string& lexer);
     const std::string GetFormattedText(
@@ -175,7 +175,7 @@ namespace wex
       const std::string& header,
       bool fill_out_with_space,
       bool fill_out) const;
-    void Set(const pugi::xml_node* node);
+    void set(const pugi::xml_node* node);
 
     // The scintilla name for this lexer cannot be const, 
     // as in path the operator= is used on a lexer.
@@ -193,8 +193,8 @@ namespace wex
     std::vector<property> m_Properties;
     std::vector<style> m_Styles;
     
-    bool m_is_ok {false}, m_Previewable {false};
-    edge_mode m_EdgeMode {edge_mode::ABSENT};
+    bool m_is_ok {false}, m_previewable {false};
+    wex::edge_mode m_EdgeMode {edge_mode::ABSENT};
     stc* m_STC {nullptr};
   };
 };

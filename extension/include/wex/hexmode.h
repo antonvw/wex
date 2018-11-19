@@ -32,50 +32,50 @@ namespace wex
       /// @endcode
       size_t bytesPerLine = 16);
     
-    /// Returns true if hex mode is on.
-    bool Active() const {return m_Active;};
-    
     /// If hex mode is on, appends hex mode lines to stc component. 
     /// The text should be normal ascii text, it is encoded while appending.
-    void AppendText(const std::string& text);
+    void append_text(const std::string& text);
     
     /// Shows a control char dialog.  
-    void ControlCharDialog(const std::string& caption);
+    void control_char_dialog(const std::string& caption);
     
     /// Deletes chars at current index at current line for
     /// both ascii and hex field.
-    bool Delete(int count = 1, int pos = -1);
+    bool erase(int count = 1, int pos = -1);
     
     /// Returns the buffer.
     /// The buffer contains the normal text, without hex info.
-    const auto & GetBuffer() const {return m_Buffer;};
+    const auto & buffer() const {return m_Buffer;};
     
     /// Returns info about current index,
     /// depending on which field is current.
-    const std::string GetInfo();
+    const std::string get_info();
 
     /// Asks for a byte offset goes to that byte.
-    bool GotoDialog();
+    bool goto_dialog();
 
     /// Returns STC component.
-    auto * GetSTC() {return m_STC;};
+    auto * stc() {return m_STC;};
     
     /// Highlights the corresponding char for the other field
     /// for the current position.
-    bool HighlightOther();
+    bool highlight_other();
 
     /// Highlights the corresponding char for the other field.
-    bool HighlightOther(int pos);
+    bool highlight_other(int pos);
 
     /// Inserts text at position.
     /// Insert at ascii field or at hex field, 
     /// at hex field you should provide the ascii
     /// hex codes, e.g. "30" inserts one byte space.
-    bool Insert(const std::string& text, int pos = -1);
+    bool insert(const std::string& text, int pos = -1);
+    
+    /// Returns true if hex mode is on.
+    bool is_active() const {return m_Active;};
     
     /// Replaces current line at current index (if pos -1) with char for
     /// both ascii and hex field. Otherwise at specified pos.
-    bool Replace(char c, int pos = -1);
+    bool replace(char c, int pos = -1);
     
     /// Replaces target with replacement text.
     /// This is only possible for hex the field, 
@@ -83,7 +83,7 @@ namespace wex
     /// the hex field.
     /// Returns false if target outside area, or replacement
     /// text has invalid chars, or doc is readonly.
-    bool ReplaceTarget(
+    bool replace_target(
       /// should contain hex codes (uppercase): 303AFF.
       const std::string& replacement,
       /// invokes SetText after replacing.
@@ -91,20 +91,20 @@ namespace wex
 
     /// Sets hex mode.  
     /// Returns true if mode is changed.
-    bool Set(bool on);
+    bool set(bool on);
 
     /// Sets caret pos on stc, depending on event and 
     /// where we are.
-    void SetPos(const wxKeyEvent& event);
+    void set_pos(const wxKeyEvent& event);
     
     /// Sets text, if hex mode is on. 
     /// The text should be normal ascii text, it is encoded while appending.
-    void SetText(const std::string text);
+    void set_text(const std::string text);
 
     /// Undo change, sets the buffer to the original buffer.
-    void Undo();
+    void undo();
   private:
-    void Activate();
+    void activate();
     void Deactivate();
     
     const size_t m_BytesPerLine, m_EachHexField;
@@ -113,6 +113,6 @@ namespace wex
     int m_Goto = 0;
     
     std::string m_Buffer, m_BufferOriginal;
-    stc* m_STC;
+    wex::stc* m_STC;
   };
 };

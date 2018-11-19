@@ -40,7 +40,7 @@ namespace wex
     
     /// Tries to autocomplete text using the tags file.
     /// Returns a string with matches, or empty string if no match is found.
-    std::string AutoComplete(
+    std::string auto_complete(
       /// text to be completed
       const std::string& text,
       /// filter on ctags extension entry, default no filter
@@ -48,17 +48,17 @@ namespace wex
 
     /// Find the tags matching `tag', and fills matches.
     /// Returns true if a matching tag is found,
-    /// and calls frame OpenFile if name matches and
+    /// and calls frame open_file if name matches and
     /// there is no next match in another file.
     /// If the name is empty, Next is invoked.
     /// Otherwise shows a dialog to select a file from the matches.
     /// Returns false if dialog was cancelled.
-    bool Find(const std::string& tag);
+    bool find(const std::string& tag);
 
     /// Finds the tag matching 'tag' and uses it to fill the supplied entries.
     /// Returns true if a matching tag is found, 
     /// and can be used as a master.
-    bool Find(
+    bool find(
       /// tag
       const std::string& tag,
       /// tag properties to be filled
@@ -67,15 +67,15 @@ namespace wex
       ctags_entry& filter) const;
 
     /// Jumps to next match from a previous Find.
-    bool Next();
+    bool next();
 
     /// Jumps to previous match from a previous Find.
-    bool Previous();
+    bool previous();
 
     /// Autocomplete separator.
-    auto Separator() const {return m_Separator;};
+    auto separator() const {return m_Separator;};
   private:
-    void AutoCompletePrepare();
+    void auto_complete_prepare();
     void Init(const std::string& filename);
     bool Open(const std::string& path, bool show_error = false);
 

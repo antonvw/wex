@@ -24,17 +24,17 @@ namespace wex
       const tool& tool);
 
     /// Sets up the tool.
-    static bool SetupTool(
+    static bool setup_tool(
       /// tool to use
       const tool& tool, 
       /// frame
       history_frame* frame,
       /// listview to which is reported, if nullptr,
-      /// calls Activate on frame to find report
+      /// calls activate on frame to find report
       listview* report = nullptr);
   private:
     /// The comment type.
-    enum comment_type
+    enum comment_t
     {
       COMMENT_NONE = 0,  ///< no comment
       COMMENT_BEGIN,     ///< begin of comment
@@ -44,14 +44,14 @@ namespace wex
     };
 
     /// The syntax type.
-    enum syntax_type
+    enum syntax_t
     {
       SYNTAX_NONE = 0, ///< no syntax
       SYNTAX_ONE,      ///< syntax according to comment begin1 and end1
       SYNTAX_TWO       ///< syntax according to comment begin2 and end2
     };
 
-    comment_type CheckCommentSyntax(
+    comment_t CheckCommentSyntax(
       const std::string& syntax_begin,
       const std::string& syntax_end,
       const std::string& text) const;
@@ -59,26 +59,26 @@ namespace wex
     /// Returns the actual begin of comment, depending on the syntax type.
     const std::string CommentBegin() const {
       return (m_SyntaxType == SYNTAX_NONE || m_SyntaxType == SYNTAX_ONE) ?
-        GetFileName().GetLexer().GetCommentBegin() :
-        GetFileName().GetLexer().GetCommentBegin2();};
+        get_filename().lexer().comment_begin() :
+        get_filename().lexer().comment_begin2();};
 
     /// Returns the last end of comment detected, depending on the last syntax type.
     const std::string CommentEnd() const {
       return (m_LastSyntaxType == SYNTAX_NONE || m_LastSyntaxType == SYNTAX_ONE) ?
-        GetFileName().GetLexer().GetCommentEnd() :
-        GetFileName().GetLexer().GetCommentEnd2();};
+        get_filename().lexer().comment_end() :
+        get_filename().lexer().comment_end2();};
 
     /// Check whether specified text result in a comment.
-    comment_type CheckForComment(const std::string& text);
+    comment_t CheckForComment(const std::string& text);
     void CommentStatementEnd();
     void CommentStatementStart();
     std::string Context(const std::string& line, int pos) const;
     
     // Implement interface from stream.
-    virtual bool Process(std::string& line, size_t line_no) override;
-    virtual bool ProcessBegin() override;
-    virtual void ProcessEnd() override;
-    virtual void ProcessMatch(const std::string& line, size_t line_no, int pos) override;
+    virtual bool process(std::string& line, size_t line_no) override;
+    virtual bool process_begin() override;
+    virtual void process_end() override;
+    virtual void process_match(const std::string& line, size_t line_no, int pos) override;
     
     static listview* m_Report;
     static history_frame* m_Frame;
@@ -88,7 +88,7 @@ namespace wex
 
     int m_ContextSize;
     
-    syntax_type m_LastSyntaxType = SYNTAX_NONE;
-    syntax_type m_SyntaxType = SYNTAX_NONE;
+    syntax_t m_LastSyntaxType = SYNTAX_NONE;
+    syntax_t m_SyntaxType = SYNTAX_NONE;
   };
 };

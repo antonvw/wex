@@ -19,23 +19,23 @@ wex::indicator::indicator(const pugi::xml_node& node)
   try
   {
     const auto single = 
-      lexers::Get()->ApplyMacro(node.attribute("no").value());
+      lexers::get()->apply_macro(node.attribute("no").value());
 
     m_No = std::stoi(single);
 
     tokenizer fields(node.text().get(), ",");
 
-    const auto style = lexers::Get()->ApplyMacro(fields.GetNextToken());
+    const auto style = lexers::get()->apply_macro(fields.get_next_token());
 
     m_Style = std::stoi(style);
 
-    if (fields.HasMoreTokens())
+    if (fields.has_more_tokens())
     {
-      m_ForegroundColour = lexers::Get()->ApplyMacro(fields.GetNextToken());
+      m_ForegroundColour = lexers::get()->apply_macro(fields.get_next_token());
 
-      if (fields.HasMoreTokens())
+      if (fields.has_more_tokens())
       {
-        m_Under = (fields.GetNextToken() == "true");
+        m_Under = (fields.get_next_token() == "true");
       }
     }
 
@@ -68,7 +68,7 @@ bool wex::indicator::operator==(const wex::indicator& i) const
     m_No == i.m_No && m_Style == i.m_Style;
 }
 
-void wex::indicator::Apply(stc* stc) const
+void wex::indicator::apply(stc* stc) const
 {
   if (is_ok())
   {

@@ -18,50 +18,50 @@
 
 TEST_CASE("wex::vcs")
 {
-  // GetCount
-  REQUIRE( wex::vcs::GetCount() > 0);
+  // size
+  REQUIRE( wex::vcs::size() > 0);
 
   wex::path file(GetTestPath("test.h"));
   file.make_absolute();
   
   // In wex::app the vcs is Read, so current vcs is known,
   // using this constructor results in command id 1, being add.
-  wex::vcs vcs(std::vector< wex::path >{file.Path().string()}, 1);
+  wex::vcs vcs(std::vector< wex::path >{file.data().string()}, 1);
   
-  vcs.ConfigDialog(wex::window_data().Button(wxAPPLY | wxCANCEL));
+  vcs.config_dialog(wex::window_data().button(wxAPPLY | wxCANCEL));
   
-  // DirExists
-  REQUIRE( vcs.DirExists(file));
+  // dir_exists
+  REQUIRE( vcs.dir_exists(file));
   
 #ifndef __WXMSW__
 #ifndef __WXOSX__
   // Execute
   REQUIRE( vcs.Execute());
   
-  /// ShowDialog.  
-  REQUIRE( vcs.ShowDialog(wex::window_data().Button(wxAPPLY | wxCANCEL)));
+  /// show_dialog.  
+  REQUIRE( vcs.show_dialog(wex::window_data().button(wxAPPLY | wxCANCEL)));
   
-  /// Request.  
-  REQUIRE( vcs.Request(wex::window_data().Button(wxAPPLY | wxCANCEL)));
+  /// request.  
+  REQUIRE( vcs.request(wex::window_data().button(wxAPPLY | wxCANCEL)));
 
-  // GetEntry  
-  REQUIRE( vcs.GetEntry().BuildMenu(100, new wex::menu("test")) > 0);
-  REQUIRE( vcs.GetEntry().GetStdOut().empty());
-  REQUIRE( vcs.GetEntry().GetCommand().GetCommand() == "add");
+  // entry  
+  REQUIRE( vcs.entry().build_menu(100, new wex::menu("test")) > 0);
+  REQUIRE( vcs.entry().get_stdout().empty());
+  REQUIRE( vcs.entry().get_command().get_command() == "add");
   
-  // GetBranch
-  REQUIRE( vcs.GetBranch() == "master");
+  // get_branch
+  REQUIRE( vcs.get_branch() == "master");
 
-  // GetName
-  REQUIRE( vcs.GetName() == "Auto");
-  REQUIRE(!vcs.GetEntry().GetCommand().IsOpen());
+  // name
+  REQUIRE( vcs.name() == "Auto");
+  REQUIRE(!vcs.entry().get_command().is_open());
 
-  // LoadDocument
-  REQUIRE( wex::vcs::LoadDocument());
+  // load_document
+  REQUIRE( wex::vcs::load_document());
   
-  // SetEntryFromBase
+  // set_entry_from_base
   wex::config(_("Base folder")).set(wxGetCwd().ToStdString());
-  REQUIRE( vcs.SetEntryFromBase());
+  REQUIRE( vcs.set_entry_from_base());
   
   // Use
   REQUIRE( vcs.Use());

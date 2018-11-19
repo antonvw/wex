@@ -23,7 +23,7 @@ namespace wex
       /// specify file
       file* file,
       /// window data
-      const window_data& data = window_data().Style(wxFD_DEFAULT_STYLE),
+      const window_data& data = window_data().style(wxFD_DEFAULT_STYLE),
       /// wildcard
       /// if wildcard is default and file is initialized, 
       /// the wildcard is taken from the file
@@ -31,7 +31,7 @@ namespace wex
 
     /// Shows the dialog depending on the changes on the file.
     /// If you specify show_modal then dialog is always shown.
-    int ShowModalIfChanged(bool show_modal = false);
+    int show_modal_if_changed(bool show_modal = false);
   private:
     file* m_File;
   };

@@ -18,7 +18,7 @@
 #if wxUSE_DIRDLG
 
 #define GET_VECTOR_FILES \
-  const auto files(wex::to_vector_path(*this).Get()); \
+  const auto files(wex::to_vector_path(*this).get()); \
   if (files.empty()) \
   {                  \
     event.Skip();    \
@@ -31,26 +31,26 @@ wex::dirctrl::dirctrl(
   int defaultFilter, 
   const window_data& data)
   : wxGenericDirCtrl(
-      data.Parent(),
-      data.Id(),
+      data.parent(),
+      data.id(),
       wxDirDialogDefaultFolderStr,
-      data.Pos(),
-      data.Size(),
-      data.Style(),
+      data.pos(),
+      data.size(),
+      data.style(),
       (filter.empty() ? "*": filter),
       defaultFilter,
-      data.Name())
+      data.name())
 {
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
       vcs_execute(frame, 
-        event.GetId() - ID_EDIT_VCS_LOWEST - 1, to_vector_path(*this).Get());},
+        event.GetId() - ID_EDIT_VCS_LOWEST - 1, to_vector_path(*this).get());},
     ID_EDIT_VCS_LOWEST + 1, 
     ID_EDIT_VCS_HIGHEST - 1);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxBusyCursor wait;
     std::string clipboard;
-    for (const auto& it : to_vector_string(*this).Get())
+    for (const auto& it : to_vector_string(*this).get())
     {
       clipboard += it + "\n";
     }
@@ -58,7 +58,8 @@ wex::dirctrl::dirctrl(
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     open_files(frame, 
-      to_vector_path(*this).Get(), stc_data(), dir::FILES);
+      to_vector_path(*this).get(), 
+        stc_data(), dir::type_t().set(dir::FILES));
     }, ID_EDIT_OPEN);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -66,30 +67,30 @@ wex::dirctrl::dirctrl(
     make(files[0]);}, ID_TREE_RUN_MAKE);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    frame->FindInFiles(to_vector_path(*this).Get(), event.GetId());}, 
+    frame->find_in_files(to_vector_path(*this).get(), event.GetId());}, 
     ID_TOOL_REPORT_FIND);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    frame->FindInFiles(to_vector_path(*this).Get(), event.GetId());}, 
+    frame->find_in_files(to_vector_path(*this).get(), event.GetId());}, 
     ID_TOOL_REPLACE);
     
   Bind(wxEVT_TREE_ITEM_ACTIVATED, [=](wxTreeEvent& event) {
     GET_VECTOR_FILES
     
-    if (const wex::path fn(files[0]); !fn.FileExists() && fn.DirExists())
+    if (const wex::path fn(files[0]); !fn.file_exists() && fn.dir_exists())
     {
       if (!GetTreeCtrl()->IsExpanded(event.GetItem()))
       {
-        ExpandAndSelectPath(files[0]);
+        expand_and_select_path(files[0]);
       }
       else
       {
-        CollapsePath(files[0].Path().string());
+        CollapsePath(files[0].data().string());
       }
     }
     else
     {
-      open_files(frame, files, stc_data(), dir::FILES);
+      open_files(frame, files, stc_data(), dir::type_t().set(dir::FILES));
     }});
   
   Bind(wxEVT_TREE_ITEM_MENU, [=](wxTreeEvent& event) {
@@ -98,44 +99,44 @@ wex::dirctrl::dirctrl(
   
     wex::menu menu; // uses append_vcs
     
-    if (filename.FileExists())
+    if (filename.file_exists())
     {
-      menu.Append(ID_EDIT_OPEN, _("&Open"));
-      menu.AppendSeparator();
+      menu.append(ID_EDIT_OPEN, _("&Open"));
+      menu.append_separator();
     }
     
-    menu.Append(ID_TREE_COPY,
+    menu.append(ID_TREE_COPY,
       wxGetStockLabel(wxID_COPY), std::string(), wxART_COPY);
 
-    if (vcs::DirExists(filename))
+    if (vcs::dir_exists(filename))
     {
-      menu.AppendSeparator();
+      menu.append_separator();
       menu.append_vcs(filename);
     }
 
-    if (filename.GetLexer().GetScintillaLexer() == "makefile")
+    if (filename.lexer().scintilla_lexer() == "makefile")
     {
-      menu.AppendSeparator();
-      menu.Append(ID_TREE_RUN_MAKE, "&Make");
+      menu.append_separator();
+      menu.append(ID_TREE_RUN_MAKE, "&Make");
     }
 
-    menu.AppendSeparator();
-    menu.Append(ID_TOOL_REPORT_FIND, 
-      ellipsed(frame->GetFindInCaption(ID_TOOL_REPORT_FIND)));
+    menu.append_separator();
+    menu.append(ID_TOOL_REPORT_FIND, 
+      ellipsed(frame->find_in_files_title(ID_TOOL_REPORT_FIND)));
 
-    menu.Append(ID_TOOL_REPLACE, 
-      ellipsed(frame->GetFindInCaption(ID_TOOL_REPLACE)));
+    menu.append(ID_TOOL_REPLACE, 
+      ellipsed(frame->find_in_files_title(ID_TOOL_REPLACE)));
       
     PopupMenu(&menu);});
   
   Bind(wxEVT_TREE_SEL_CHANGED, [=](wxTreeEvent& event) {
     GET_VECTOR_FILES
-    log_status(files[0], STAT_FULLPATH);});
+    log_status(files[0], status_t().set(STAT_FULLPATH));});
 }
 
-void wex::dirctrl::ExpandAndSelectPath(const wex::path& path)
+void wex::dirctrl::expand_and_select_path(const wex::path& path)
 {
-  ExpandPath(path.Path().string());
-  SelectPath(path.Path().string());
+  ExpandPath(path.data().string());
+  SelectPath(path.data().string());
 }
 #endif

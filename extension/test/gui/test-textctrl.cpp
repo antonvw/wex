@@ -15,51 +15,51 @@
 
 TEST_CASE("wex::textctrl")
 {
-  wxTextCtrl* tc = new wxTextCtrl(GetFrame(), wxID_ANY);
-  AddPane(GetFrame(), tc);
+  wxTextCtrl* tc = new wxTextCtrl(frame(), wxID_ANY);
+  AddPane(frame(), tc);
   
-  REQUIRE( wex::textctrl_input(wex::ex_command::type::NONE).Get().empty());
-  REQUIRE( wex::textctrl_input(wex::ex_command::type::NONE).GetValues().empty());
-  REQUIRE(!wex::textctrl_input(wex::ex_command::type::NONE).Set(WXK_UP, tc));
+  REQUIRE( wex::textctrl_input(wex::ex_command::type_t::NONE).get().empty());
+  REQUIRE( wex::textctrl_input(wex::ex_command::type_t::NONE).values().empty());
+  REQUIRE(!wex::textctrl_input(wex::ex_command::type_t::NONE).set(WXK_UP, tc));
   
-  wex::textctrl_input tip(wex::ex_command::type::FIND);
-  REQUIRE( tip.Set("one"));
-  REQUIRE(!tip.Set(std::string()));
-  REQUIRE( tip.Get() == "one");
-  REQUIRE( tip.GetValues().front() == "one");
+  wex::textctrl_input tip(wex::ex_command::type_t::FIND);
+  REQUIRE( tip.set("one"));
+  REQUIRE(!tip.set(std::string()));
+  REQUIRE( tip.get() == "one");
+  REQUIRE( tip.values().front() == "one");
   
-  tip.Set(std::list < std::string > {"find3","find4","find5"});
-  REQUIRE( tip.Get() == "find3");
-  REQUIRE( tip.GetValues().size() == 3);
+  tip.set(std::list < std::string > {"find3","find4","find5"});
+  REQUIRE( tip.get() == "find3");
+  REQUIRE( tip.values().size() == 3);
   
   tc->SetValue("hello");
-  REQUIRE( tip.Set(tc));
-  REQUIRE( tip.Get() == "hello");
-  REQUIRE( tip.GetValues().size() == 4);
+  REQUIRE( tip.set(tc));
+  REQUIRE( tip.get() == "hello");
+  REQUIRE( tip.values().size() == 4);
   
   // Test keys.
-  REQUIRE( tip.Set(WXK_HOME));
-  REQUIRE( tip.Get() == "hello");
-  REQUIRE( tip.Set(WXK_END));
-  REQUIRE( tip.Get() == "find5");
-  REQUIRE( tip.Set(WXK_HOME));
-  REQUIRE( tip.Get() == "hello");
-  REQUIRE( tip.Set(WXK_DOWN));
-  REQUIRE( tip.Get() == "hello");
-  REQUIRE( tip.Set(WXK_PAGEDOWN));
-  REQUIRE( tip.Get() == "hello");
+  REQUIRE( tip.set(WXK_HOME));
+  REQUIRE( tip.get() == "hello");
+  REQUIRE( tip.set(WXK_END));
+  REQUIRE( tip.get() == "find5");
+  REQUIRE( tip.set(WXK_HOME));
+  REQUIRE( tip.get() == "hello");
+  REQUIRE( tip.set(WXK_DOWN));
+  REQUIRE( tip.get() == "hello");
+  REQUIRE( tip.set(WXK_PAGEDOWN));
+  REQUIRE( tip.get() == "hello");
 
-  REQUIRE(!tip.Set(WXK_NONE, tc));
+  REQUIRE(!tip.set(WXK_NONE, tc));
 
-  tip.Set(std::list < std::string > {"1","2", "3", "4", "5", "6", "7", "8",
+  tip.set(std::list < std::string > {"1","2", "3", "4", "5", "6", "7", "8",
     "9", "10", "11", "12"});
   for (auto key : std::vector<int> {WXK_UP, WXK_DOWN, WXK_HOME, WXK_END,
     WXK_PAGEUP, WXK_PAGEDOWN}) 
   {
-    REQUIRE( tip.Set(key, tc));
+    REQUIRE( tip.set(key, tc));
   }
 
   const std::list < std::string > e{};
-  tip.Set(e);
-  REQUIRE( tip.GetValues().empty());
+  tip.set(e);
+  REQUIRE( tip.values().empty());
 }

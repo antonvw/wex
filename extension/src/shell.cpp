@@ -26,21 +26,21 @@ wex::shell::shell(
   const std::string& lexer,
   int commands_save_in_config)
   : stc(std::string(), stc_data(data).
-      Flags(stc_data::WIN_NO_INDICATOR, control_data::OR))
-  , m_CommandEnd(command_end == std::string() ? GetEOL(): command_end)
+      flags(stc_data::WIN_NO_INDICATOR, control_data::OR))
+  , m_CommandEnd(command_end == std::string() ? eol(): command_end)
   , m_Echo(echo)
   , m_CommandsSaveInConfig(commands_save_in_config)
   , m_Prompt(prompt)
 {
   // Override defaults from config.
   SetEdgeMode(wxSTC_EDGE_NONE);
-  ResetMargins(static_cast<margin_flags>(MARGIN_FOLDING | MARGIN_LINENUMBER));
+  reset_margins(margin_t().set(MARGIN_FOLDING).set(MARGIN_LINENUMBER));
 
-  AutoComplete().Use(false); // we have our own autocomplete
+  auto_complete().use(false); // we have our own autocomplete
   AutoCompSetSeparator(3);
 
   // Start with a prompt.
-  Prompt(std::string(), false);
+  shell::prompt(std::string(), false);
 
   if (m_CommandsSaveInConfig > 0)
   {
@@ -48,23 +48,23 @@ wex::shell::shell(
     for (tokenizer tkz(
       config("Shell").get(),
       std::string(1, AutoCompGetSeparator()));
-      tkz.HasMoreTokens(); )
+      tkz.has_more_tokens(); )
     {
-      m_Commands.push_front(tkz.GetNextToken());
+      m_Commands.push_front(tkz.get_next_token());
     }
   }
 
   // Take care that m_CommandsIterator is valid.
   m_CommandsIterator = m_Commands.end();
   
-  EnableShell(true);
+  enable(true);
 
-  GetLexer().Set(lexer);
+  get_lexer().set(lexer);
   
   Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
     if (m_Enabled)
     {
-      ProcessChar(event.GetKeyCode());
+      process_char(event.GetKeyCode());
     }
     if (m_Echo)
     {
@@ -88,15 +88,15 @@ wex::shell::shell(
   Bind(wxEVT_KEY_DOWN, [=](wxKeyEvent& event) {
     if (!m_Enabled)
     {
-      if (GetVi().Mode().Insert())
+      if (get_vi().mode().insert())
       {
         DocumentEnd();
-        GetVi().Mode().Escape();
+        get_vi().mode().escape();
       }
       if (GetCurrentPos() >= m_CommandStartPosition && 
-          (m_Process == nullptr || m_Process->IsRunning()))
+          (m_Process == nullptr || m_Process->is_running()))
       {
-        EnableShell(true);
+        enable(true);
       }
       else
       {
@@ -108,7 +108,7 @@ wex::shell::shell(
     {
       if (config(_("vi mode")).get(true) && (GetCurrentPos() < m_CommandStartPosition))
       {
-        EnableShell(false);
+        enable(false);
         event.Skip();
         return;
       }
@@ -120,7 +120,7 @@ wex::shell::shell(
     {
       case WXK_RETURN:
       case WXK_TAB:
-        if (m_Echo && ProcessChar(key)) event.Skip();
+        if (m_Echo && process_char(key)) event.Skip();
         break;
       
       // Up or down key pressed, and at the end of document (and autocomplete active)
@@ -167,7 +167,7 @@ wex::shell::shell(
         else
         {
           // Allow.
-          ProcessChar(key);
+          process_char(key);
           if (m_Echo) event.Skip();
         }
         break;
@@ -190,7 +190,7 @@ wex::shell::shell(
           skip = false;
           if (m_Process != nullptr)
           {
-            m_Process->Kill(SIGINT);
+            m_Process->kill(SIGINT);
           }
         }
         // Ctrl-Q pressed, used to stop processing.
@@ -199,7 +199,7 @@ wex::shell::shell(
           skip = false;
           if (m_Process != nullptr)
           {
-            m_Process->Kill();
+            m_Process->kill();
           }
           else
           {
@@ -291,19 +291,19 @@ void wex::shell::AppendText(const wxString& text)
   }
 }
 
-void wex::shell::EnableShell(bool enabled)
+void wex::shell::enable(bool enabled)
 {
   m_Enabled = enabled;
   
   if (!m_Enabled)
   {
     // A disabled shell follows STC vi mode.
-    GetVi().Use(config(_("vi mode")).get(true));
+    get_vi().use(config(_("vi mode")).get(true));
   }
   else
   {
     // An enabled shell does not use vi mode.
-    GetVi().Use(false);
+    get_vi().use(false);
   }
 }
 
@@ -328,12 +328,12 @@ void wex::shell::Expand()
   wex::path path(after(m_Command, ' ', false));
   std::string expansion;
   
-  if (const auto prefix(path.GetFullName()); AutoCompActive())
+  if (const auto prefix(path.fullname()); AutoCompActive())
   {
     if (const auto index = AutoCompGetCurrent(); 
-      index >= 0 && index < (int)m_AutoCompleteList.size())
+      index >= 0 && index < (int)m_auto_complete_list.size())
     {
-      expansion = m_AutoCompleteList[index].substr(prefix.length());
+      expansion = m_auto_complete_list[index].substr(prefix.length());
     }
     
     AutoCompCancel();
@@ -342,7 +342,7 @@ void wex::shell::Expand()
   {
     if (v.size() > 1)
     {
-      m_AutoCompleteList = v;
+      m_auto_complete_list = v;
       AutoCompShow(prefix.length(), std::accumulate(
         v.begin(), v.end(), std::string(), 
         [&](const std::string& a, const std::string& b) {
@@ -365,12 +365,12 @@ void wex::shell::Expand()
   }
 }
     
-const std::string wex::shell::GetCommand() const
+const std::string wex::shell::get_command() const
 {
   return !m_Commands.empty() ? m_Commands.back(): std::string();
 }
 
-const std::string wex::shell::GetHistory() const
+const std::string wex::shell::get_history() const
 {
   return std::accumulate(m_Commands.begin(), m_Commands.end(), std::string());
 }
@@ -378,7 +378,7 @@ const std::string wex::shell::GetHistory() const
 void wex::shell::KeepCommand()
 {
   // Prevent large commands, in case command end is not eol.
-  if (m_CommandEnd != GetEOL())
+  if (m_CommandEnd != eol())
   {
     m_Command = skip_white_space(m_Command);
   }
@@ -404,7 +404,7 @@ void wex::shell::Paste()
   m_Command += clipboard_get();  
 }
 
-bool wex::shell::ProcessChar(int key)
+bool wex::shell::process_char(int key)
 {
   bool processed = false;
   
@@ -414,7 +414,7 @@ bool wex::shell::ProcessChar(int key)
     case WXK_RETURN:
       if (AutoCompActive())
       {
-        if (!m_AutoCompleteList.empty())
+        if (!m_auto_complete_list.empty())
         {
           Expand();
         }
@@ -427,8 +427,8 @@ bool wex::shell::ProcessChar(int key)
       {
         if (m_Process != nullptr)
         {
-          AppendText(GetEOL());
-          m_Process->Write(m_Command);
+          AppendText(eol());
+          m_Process->write(m_Command);
         }
         else
         {
@@ -438,7 +438,7 @@ bool wex::shell::ProcessChar(int key)
         }
       }
       else if (
-        m_CommandEnd == GetEOL() ||
+        m_CommandEnd == eol() ||
         wxString(m_Command).EndsWith(m_CommandEnd))
       {
         // We have a command.
@@ -446,24 +446,24 @@ bool wex::shell::ProcessChar(int key)
         
         // History command.
         if (m_Command == "history" +
-           (m_CommandEnd == GetEOL() ? std::string(): m_CommandEnd))
+           (m_CommandEnd == eol() ? std::string(): m_CommandEnd))
         {
           KeepCommand();
           ShowHistory();
-          Prompt();
+          prompt();
         }
         // !.. command, get it from history.
         else if (m_Command.substr(0, 1) == "!")
         {
           if (SetCommandFromHistory(m_Command.substr(1)))
           {
-            AppendText(GetEOL() + m_Command);
+            AppendText(eol() + m_Command);
             KeepCommand();
           
             if (m_Process != nullptr)
             {
-              AppendText(GetEOL());
-              m_Process->Write(m_Command);
+              AppendText(eol());
+              m_Process->write(m_Command);
             }
             else
             {
@@ -474,7 +474,7 @@ bool wex::shell::ProcessChar(int key)
           }
           else
           {
-            Prompt(GetEOL() + m_Command + ": event not found");
+            prompt(eol() + m_Command + ": event not found");
           }
         }
         // Other command, send to parent or process.
@@ -484,8 +484,8 @@ bool wex::shell::ProcessChar(int key)
           
           if (m_Process != nullptr)
           {
-            AppendText(GetEOL());
-            m_Process->Write(m_Command);
+            AppendText(eol());
+            m_Process->write(m_Command);
           }
           else
           {
@@ -499,7 +499,7 @@ bool wex::shell::ProcessChar(int key)
       }
       else
       {
-        ProcessCharDefault(key);
+        process_charDefault(key);
         processed = true;
       }
 
@@ -522,14 +522,14 @@ bool wex::shell::ProcessChar(int key)
       break;
       
     default:
-      ProcessCharDefault(key);
+      process_charDefault(key);
       processed = true;
   }
 
   return processed;
 }
 
-void wex::shell::ProcessCharDefault(int key)
+void wex::shell::process_charDefault(int key)
 {
   // Insert the key at current position.
   if (const int index = GetCurrentPos() - m_CommandStartPosition;
@@ -544,7 +544,7 @@ void wex::shell::ProcessCharDefault(int key)
   }
 }
   
-bool wex::shell::Prompt(const std::string& text, bool add_eol)
+bool wex::shell::prompt(const std::string& text, bool add_eol)
 {
   if (!m_Enabled)
   {
@@ -562,7 +562,7 @@ bool wex::shell::Prompt(const std::string& text, bool add_eol)
   if (add_eol)
   {
     appended = true;
-    AppendText(GetEOL());
+    AppendText(eol());
   }
 
   if (!m_Prompt.empty())
@@ -604,7 +604,7 @@ bool wex::shell::SetCommandFromHistory(const std::string& short_command)
   {
     std::string short_command_check;
 
-    if (m_CommandEnd == GetEOL())
+    if (m_CommandEnd == eol())
     {
       short_command_check = short_command;
     }
@@ -633,12 +633,12 @@ bool wex::shell::SetCommandFromHistory(const std::string& short_command)
   return false;
 }
 
-void wex::shell::SetProcess(process* process)
+void wex::shell::set_process(process* process)
 {
   m_Process = process;
 }
 
-bool wex::shell::SetPrompt(const std::string& prompt, bool do_prompt) 
+bool wex::shell::set_prompt(const std::string& prompt, bool do_prompt) 
 {
   if (!m_Enabled)
   {
@@ -649,7 +649,7 @@ bool wex::shell::SetPrompt(const std::string& prompt, bool do_prompt)
   
   if (do_prompt) 
   {
-    Prompt();
+    shell::prompt();
   }
   
   return true;

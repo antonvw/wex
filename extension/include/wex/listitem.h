@@ -25,35 +25,35 @@ namespace wex
       const std::string& filespec = std::string());
       
     // Deletes this item from the listview.
-    void Delete() {m_ListView->DeleteItem(GetId());};
-
-    /// Returns the filename.
-    const auto & GetFileName() const {return m_Path;};
+    void erase() {m_ListView->DeleteItem(GetId());};
 
     /// Returns the file spec.
-    const auto GetFileSpec() const {return m_FileSpec;};
+    const auto file_spec() const {return m_FileSpec;};
     
+    /// Returns the filename.
+    const auto & get_filename() const {return m_Path;};
+
     /// Returns the listview.
-    auto* GetListView() const {return m_ListView;};
+    auto* get_listview() const {return m_ListView;};
     
     /// Inserts the item at index (if -1 at the end of the listview),
     /// and sets all attributes.
-    void Insert(long index = -1);
+    void insert(long index = -1);
 
     /// Returns true if this item is readonly (on the listview).
-    bool IsReadOnly() const {return m_IsReadOnly;};
+    bool is_readOnly() const {return m_IsReadOnly;};
 
     /// Sets the item text using column name.
     /// Returns false if text could not be set.
-    bool SetItem(const std::string& col_name, const std::string& text);
+    bool set_item(const std::string& col_name, const std::string& text);
 
     /// Updates all attributes.
-    void Update();
+    void update();
   private:
     void SetReadOnly(bool readonly);
 
-    // Cannot be a wxListCtrl, as FindColumn is used from listview,
-    // and cannot be const, as it calls InsertItem on the list.
+    // Cannot be a wxListCtrl, as find_column is used from listview,
+    // and cannot be const, as it calls insert_item on the list.
     listview* m_ListView;
 
     const path m_Path;

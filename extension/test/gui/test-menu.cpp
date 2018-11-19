@@ -47,17 +47,17 @@ TEST_CASE("wex::menu")
   menu->append_vcs(wex::path(), false);
   wex::config(_("Base folder")).set(wxGetCwd().ToStdString());
   REQUIRE( menu->append_vcs(wex::path(), false));
-  REQUIRE( menu->append_vcs(wex::path::Current(), false));
+  REQUIRE( menu->append_vcs(wex::path::current(), false));
 
   // style
-  REQUIRE(menu->style() == wex::menu::DEFAULT);
+  REQUIRE(menu->style().test(wex::menu::DEFAULT));
   
   // style
-  menu->style(wex::menu::IS_READ_ONLY);
-  REQUIRE(menu->style() == wex::menu::IS_READ_ONLY);
+  menu->style().set(wex::menu::IS_READ_ONLY);
+  REQUIRE(menu->style().test(wex::menu::IS_READ_ONLY));
 
   wxMenuBar *menubar = new wxMenuBar;
   menubar->Append(menu, "&Menu");
-  GetFrame()->SetMenuBar(menubar);
-  GetFrame()->Update();
+  frame()->SetMenuBar(menubar);
+  frame()->Update();
 }

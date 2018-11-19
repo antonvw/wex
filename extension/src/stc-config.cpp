@@ -54,7 +54,7 @@ namespace wex
   };
 };
   
-bool wex::stc::AutoIndentation(int c)
+bool wex::stc::auto_indentation(int c)
 {
   if (const auto ai = config(_("Auto indent")).get(INDENT_ALL);
     ai == INDENT_NONE)
@@ -117,16 +117,16 @@ bool wex::stc::AutoIndentation(int c)
   return true;
 }
 
-int wex::stc::ConfigDialog(const window_data& par)
+int wex::stc::config_dialog(const window_data& par)
 {
   const window_data data(window_data(par).
-    Title(_("Editor Options").ToStdString()));
+    title(_("Editor Options").ToStdString()));
 
-  if (m_ConfigDialog == nullptr)
+  if (m_config_dialog == nullptr)
   {
     stc_defaults use;
   
-    m_ConfigDialog = new item_dialog({{"stc-notebook", {
+    m_config_dialog = new item_dialog({{"stc-notebook", {
       {_("General"),
         {{"stc-subnotebook", {
           {_("Page1"), 
@@ -197,8 +197,8 @@ int wex::stc::ConfigDialog(const window_data& par)
              {wxSTC_FOLDFLAG_LEVELNUMBERS, _("Level numbers")}},
              false}}},
       {_("Directory"),
-        {{_("Include directory"), listview_data().Type(listview_data::FOLDER).
-          Window(window_data().Size({200, 200}))}}},
+        {{_("Include directory"), listview_data().type(listview_data::FOLDER).
+          window(window_data().size({200, 200}))}}},
       {_("Printer"),
         {{_("Print flags"), {
            {wxSTC_PRINT_NORMAL, _("Normal")},
@@ -208,14 +208,14 @@ int wex::stc::ConfigDialog(const window_data& par)
            {wxSTC_PRINT_COLOURONWHITEDEFAULTBG, _("Colour on white normal")}}, true, 1}}}
       }}},
       window_data(data).
-        Title(data.Id() == wxID_PREFERENCES ? wxGetStockLabel(data.Id(), 0).ToStdString(): data.Title()));
+        title(data.id() == wxID_PREFERENCES ? wxGetStockLabel(data.id(), 0).ToStdString(): data.title()));
   }
 
-  return (data.Button() & wxAPPLY) ? 
-    m_ConfigDialog->Show(): m_ConfigDialog->ShowModal();
+  return (data.button() & wxAPPLY) ? 
+    m_config_dialog->Show(): m_config_dialog->ShowModal();
 }
 
-void wex::stc::ConfigGet()
+void wex::stc::config_get()
 {
   stc_defaults use;
   
@@ -229,12 +229,12 @@ void wex::stc::ConfigGet()
     StyleResetDefault();
     
     // Doing this once is enough, not yet possible.
-    lexers::Get()->LoadDocument();
+    lexers::get()->load_document();
     
-    m_Lexer.Apply();
+    m_Lexer.apply();
   }
 
-  if (m_Lexer.GetEdgeMode() == edge_mode::ABSENT)
+  if (m_Lexer.edge_mode() == edge_mode::ABSENT)
   {
     if (!m_Lexer.is_ok())
     {
@@ -272,9 +272,9 @@ void wex::stc::ConfigGet()
   SetViewWhiteSpace(config(_("Whitespace visible")).get(wxSTC_WS_INVISIBLE));
   SetWrapMode(config(_("Wrap line")).get(wxSTC_WRAP_NONE));
   SetWrapVisualFlags(config(_("Wrap visual flags")).get( wxSTC_WRAPVISUALFLAG_END));
-  m_vi.Use(config(_("vi mode")).get(false));
+  m_vi.use(config(_("vi mode")).get(false));
 
-  ShowLineNumbers(config(_("Line numbers")).get(false));
+  show_line_numbers(config(_("Line numbers")).get(false));
 
-  m_Link.SetFromConfig();
+  m_Link.set_from_config();
 }

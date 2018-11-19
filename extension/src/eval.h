@@ -34,7 +34,7 @@ namespace wex
       const std::string& text);
 
     /// Returns the info for variables.
-    std::string GetInfo(const ex* ex);
+    std::string info(const ex* ex);
   private:
     void Init();
 

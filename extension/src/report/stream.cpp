@@ -26,7 +26,7 @@ wex::listview_stream::listview_stream(
 {
 }
 
-wex::listview_stream::comment_type wex::listview_stream::CheckCommentSyntax(
+wex::listview_stream::comment_t wex::listview_stream::CheckCommentSyntax(
   const std::string& syntax_begin,
   const std::string& syntax_end,
   const std::string& text) const
@@ -58,61 +58,61 @@ wex::listview_stream::comment_type wex::listview_stream::CheckCommentSyntax(
   return COMMENT_NONE;
 }
 
-wex::listview_stream::comment_type wex::listview_stream::CheckForComment(
+wex::listview_stream::comment_t wex::listview_stream::CheckForComment(
   const std::string& text)
 {
-  if (GetFileName().GetLexer().GetCommentBegin2().empty())
+  if (get_filename().lexer().comment_begin2().empty())
   {
     return CheckCommentSyntax(
-      GetFileName().GetLexer().GetCommentBegin(),
-      GetFileName().GetLexer().GetCommentEnd(), text);
+      get_filename().lexer().comment_begin(),
+      get_filename().lexer().comment_end(), text);
   }
 
-  comment_type comment_type1 = COMMENT_NONE;
+  comment_t comment_t1 = COMMENT_NONE;
 
   if (m_SyntaxType == SYNTAX_NONE || m_SyntaxType == SYNTAX_ONE)
   {
-    if ((comment_type1 = CheckCommentSyntax(
-      GetFileName().GetLexer().GetCommentBegin(),
-      GetFileName().GetLexer().GetCommentEnd(), text)) == COMMENT_BEGIN)
+    if ((comment_t1 = CheckCommentSyntax(
+      get_filename().lexer().comment_begin(),
+      get_filename().lexer().comment_end(), text)) == COMMENT_BEGIN)
       m_SyntaxType = SYNTAX_ONE;
   }
 
-  comment_type comment_type2 = COMMENT_NONE;
+  comment_t comment_t2 = COMMENT_NONE;
 
   if (m_SyntaxType == SYNTAX_NONE || m_SyntaxType == SYNTAX_TWO)
   {
-    if ((comment_type2 = CheckCommentSyntax(
-      GetFileName().GetLexer().GetCommentBegin2(),
-      GetFileName().GetLexer().GetCommentEnd2(), text)) == COMMENT_BEGIN)
+    if ((comment_t2 = CheckCommentSyntax(
+      get_filename().lexer().comment_begin2(),
+      get_filename().lexer().comment_end2(), text)) == COMMENT_BEGIN)
       m_SyntaxType = SYNTAX_TWO;
   }
 
-  comment_type comment_type = COMMENT_NONE;
+  comment_t comment_t = COMMENT_NONE;
 
-  switch (comment_type1)
+  switch (comment_t1)
   {
-    case COMMENT_NONE:  comment_type = comment_type2; break;
-    case COMMENT_BEGIN: comment_type = COMMENT_BEGIN; break;
-    case COMMENT_END:   comment_type = COMMENT_END; break;
-    case COMMENT_BOTH:  comment_type = COMMENT_BOTH; break;
+    case COMMENT_NONE:  comment_t = comment_t2; break;
+    case COMMENT_BEGIN: comment_t = COMMENT_BEGIN; break;
+    case COMMENT_END:   comment_t = COMMENT_END; break;
+    case COMMENT_BOTH:  comment_t = COMMENT_BOTH; break;
     case COMMENT_INCOMPLETE:
-      comment_type = (comment_type2 == COMMENT_NONE) ? COMMENT_INCOMPLETE: comment_type2;
+      comment_t = (comment_t2 == COMMENT_NONE) ? COMMENT_INCOMPLETE: comment_t2;
       break;
-    default: wxFAIL;
+    default: assert(0);
   }
 
-  if (comment_type == COMMENT_END)
+  if (comment_t == COMMENT_END)
   {
     // E.g. we have a correct /* */ comment, with */ at the end of the line.
     // Then the end of line itself should not generate a COMMENT_END.
-    if (m_SyntaxType == SYNTAX_NONE) comment_type = COMMENT_NONE;
+    if (m_SyntaxType == SYNTAX_NONE) comment_t = COMMENT_NONE;
     // Keep the syntax type.
     m_LastSyntaxType = m_SyntaxType;
     m_SyntaxType = SYNTAX_NONE;
   }
 
-  return comment_type;
+  return comment_t;
 }
 
 void wex::listview_stream::CommentStatementEnd()
@@ -135,11 +135,11 @@ std::string wex::listview_stream::Context(
     line.substr(m_ContextSize < pos ? pos - m_ContextSize: 0); 
 }
 
-bool wex::listview_stream::Process(std::string& line, size_t line_no)
+bool wex::listview_stream::process(std::string& line, size_t line_no)
 {
-  if (GetTool().GetId() != ID_TOOL_REPORT_KEYWORD)
+  if (get_tool().id() != ID_TOOL_REPORT_KEYWORD)
   {
-    return stream::Process(line, line_no);
+    return stream::process(line, line_no);
   }
   
   bool sequence = false;
@@ -171,7 +171,7 @@ bool wex::listview_stream::Process(std::string& line, size_t line_no)
       }
 
       const auto max_check_size = 
-        GetFileName().GetLexer().GetCommentBegin().size();
+        get_filename().lexer().comment_begin().size();
       const auto check_size = (i > max_check_size ? max_check_size: i + 1);
       const auto text = line.substr(i + 1 - check_size, check_size);
 
@@ -208,18 +208,18 @@ bool wex::listview_stream::Process(std::string& line, size_t line_no)
         break;
 
       default: 
-        wxFAIL;
+        assert(0);
         break;
       }
 
       if ( sequence && 
           (is_codeword_separator(line[i]) || i ==0 || i == line.length() - 1))
       {
-        if (GetTool().GetId() == ID_TOOL_REPORT_KEYWORD)
+        if (get_tool().id() == ID_TOOL_REPORT_KEYWORD)
         {
-          if (GetFileName().GetLexer().IsKeyword(codeword))
+          if (get_filename().lexer().is_keyword(codeword))
           {
-            IncStatistics(codeword);
+            inc_statistics(codeword);
           }
         }
 
@@ -237,21 +237,21 @@ bool wex::listview_stream::Process(std::string& line, size_t line_no)
   return true;
 }
 
-bool wex::listview_stream::ProcessBegin()
+bool wex::listview_stream::process_begin()
 {
   m_ContextSize = config(_("Context size")).get(10);
 
-  if (GetTool().GetId() != ID_TOOL_REPORT_KEYWORD)
+  if (get_tool().id() != ID_TOOL_REPORT_KEYWORD)
   {
-    return stream::ProcessBegin();
+    return stream::process_begin();
   }
   else
   {
     if (
       m_Frame == nullptr ||
-     (m_Report = m_Frame->Activate(
-        history_listview::GetTypeTool(GetTool()),
-        &GetFileName().GetLexer())) == nullptr)
+     (m_Report = m_Frame->activate(
+        history_listview::type_tool(get_tool()),
+        &get_filename().lexer())) == nullptr)
     {
       return false;
     }
@@ -260,26 +260,26 @@ bool wex::listview_stream::ProcessBegin()
   return true;
 }
 
-void wex::listview_stream::ProcessEnd()
+void wex::listview_stream::process_end()
 {
-  if (GetTool().GetId() == ID_TOOL_REPORT_KEYWORD)
+  if (get_tool().id() == ID_TOOL_REPORT_KEYWORD)
   {
-    if (!GetFileName().GetLexer().GetKeywordsString().empty())
+    if (!get_filename().lexer().keywords_string().empty())
     {
-      IncActionsCompleted();
+      inc_actions_completed();
     }
 
-    listitem item(m_Report, GetFileName());
-    item.Insert();
+    listitem item(m_Report, get_filename());
+    item.insert();
 
     int total = 0;
     int col = 1;
     
-    for (const auto& setit : GetFileName().GetLexer().GetKeywords())
+    for (const auto& setit : get_filename().lexer().keywords())
     {
-      const statistics<int>& stat = GetStatistics().GetElements();
+      const statistics<int>& stat = get_statistics().get_elements();
       
-      if (const auto& it = stat.GetItems().find(setit); it != stat.GetItems().end())
+      if (const auto& it = stat.get_items().find(setit); it != stat.get_items().end())
       {
         m_Report->SetItem(
           item.GetId(), 
@@ -299,41 +299,41 @@ void wex::listview_stream::ProcessEnd()
   }
 }
 
-void wex::listview_stream::ProcessMatch(
+void wex::listview_stream::process_match(
   const std::string& line, size_t line_no, int pos)
 {
-  wxASSERT(m_Report != nullptr);
+  assert(m_Report != nullptr);
 
-  listitem item(m_Report, GetFileName());
-  item.Insert();
+  listitem item(m_Report, get_filename());
+  item.insert();
 
-  item.SetItem(_("Line No").ToStdString(), std::to_string(line_no + 1));
-  item.SetItem(_("Line").ToStdString(), Context(line, pos));
-  item.SetItem(_("Match").ToStdString(), find_replace_data::Get()->GetFindString());
+  item.set_item(_("Line No").ToStdString(), std::to_string(line_no + 1));
+  item.set_item(_("Line").ToStdString(), Context(line, pos));
+  item.set_item(_("Match").ToStdString(), find_replace_data::get()->get_find_string());
 }
 
-bool wex::listview_stream::SetupTool(
+bool wex::listview_stream::setup_tool(
   const tool& tool, 
   history_frame* frame,
   listview* report)
 {
-  if (tool.GetId() == ID_TOOL_REPLACE)
+  if (tool.id() == ID_TOOL_REPLACE)
   {
     return true;
   }
   
   m_Frame = frame;
 
-  Reset();
+  reset();
 
   if (report == nullptr)
   {
-    if (tool.IsReportType() && tool.GetId() != ID_TOOL_REPORT_KEYWORD)
+    if (tool.is_report_type() && tool.id() != ID_TOOL_REPORT_KEYWORD)
     {
       if ((m_Report = 
-        m_Frame->Activate(history_listview::GetTypeTool(tool))) == nullptr)
+        m_Frame->activate(history_listview::type_tool(tool))) == nullptr)
       {
-        VLOG(9) << "Activate failed";
+        VLOG(9) << "activate failed";
         return false;
       }
     }
@@ -343,7 +343,7 @@ bool wex::listview_stream::SetupTool(
     m_Report = report;
   } 
 
-  if (m_Report != nullptr && m_Report->GetData().Type() != listview_data::FIND)
+  if (m_Report != nullptr && m_Report->data().type() != listview_data::FIND)
   {
     VLOG(9) << "report list type is not listview_data::FIND";
     return false;

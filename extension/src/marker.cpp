@@ -17,22 +17,22 @@ wex::marker::marker(const pugi::xml_node& node)
   if (node.empty()) return;
 
   const auto single = 
-    lexers::Get()->ApplyMacro(node.attribute("no").value());
+    lexers::get()->apply_macro(node.attribute("no").value());
 
   try
   {
     tokenizer fields(node.text().get(), ",");
 
     m_No = std::stoi(single);
-    m_Symbol = std::stoi(lexers::Get()->ApplyMacro(fields.GetNextToken()));
+    m_Symbol = std::stoi(lexers::get()->apply_macro(fields.get_next_token()));
 
-    if (fields.HasMoreTokens())
+    if (fields.has_more_tokens())
     {
-      m_ForegroundColour = lexers::Get()->ApplyMacro(fields.GetNextToken());
+      m_ForegroundColour = lexers::get()->apply_macro(fields.get_next_token());
 
-      if (fields.HasMoreTokens())
+      if (fields.has_more_tokens())
       {
-        m_BackgroundColour = lexers::Get()->ApplyMacro(fields.GetNextToken());
+        m_BackgroundColour = lexers::get()->apply_macro(fields.get_next_token());
       }
     }
 
@@ -65,7 +65,7 @@ bool wex::marker::operator==(const marker& m) const
     m_No == m.m_No && m_Symbol == m.m_Symbol;
 }
 
-void wex::marker::Apply(stc* stc) const
+void wex::marker::apply(stc* stc) const
 {
   if (is_ok())
   {

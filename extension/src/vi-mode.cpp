@@ -98,7 +98,7 @@ namespace wex
         case vi_mode::state::VISUAL:      return "visual";
         case vi_mode::state::VISUAL_LINE: return "visual line";
         case vi_mode::state::VISUAL_RECT: return "visual rect";
-        default: return vi_macros::Mode()->String();
+        default: return vi_macros::mode()->string();
       }};
 
     static const std::string String(trigger trigger) {
@@ -128,31 +128,31 @@ namespace wex
   };
 };
 
-#define NAVIGATE(SCOPE, DIRECTION)                   \
-  m_vi->GetSTC()->SCOPE##DIRECTION();                \
+#define NAVIGATE(SCOPE, DIRECTION)        \
+  m_vi->stc()->SCOPE##DIRECTION();        \
   
 wex::vi_mode::vi_mode(vi* vi, 
   std::function<void(const std::string&)> insert, 
   std::function<void()> normal)
   : m_vi(vi)
-  , m_FSM(std::make_unique<vi_fsm>(vi->GetSTC(), insert, normal))
+  , m_FSM(std::make_unique<vi_fsm>(vi->stc(), insert, normal))
   , m_InsertCommands {
     {'a', [&](){NAVIGATE(Char, Right);}},
     {'c', [&](){;}},
     {'i', [&](){;}},
     {'o', [&](){
       NAVIGATE(Line, End);
-      m_vi->GetSTC()->NewLine();}},
+      m_vi->stc()->NewLine();}},
     {'A', [&](){NAVIGATE(Line, End);}},
     {'C', [&](){
-      m_vi->GetSTC()->LineEndExtend();
-      m_vi->Cut();}},
+      m_vi->stc()->LineEndExtend();
+      m_vi->cut();}},
     {'I', [&](){NAVIGATE(Line, Home);}},
     {'O', [&](){
       NAVIGATE(Line, Home); 
-      m_vi->GetSTC()->NewLine(); 
+      m_vi->stc()->NewLine(); 
       NAVIGATE(Line, Up);}},
-    {'R', [&](){m_vi->GetSTC()->SetOvertype(true);}}}
+    {'R', [&](){m_vi->stc()->SetOvertype(true);}}}
 {
 }
 
@@ -160,17 +160,17 @@ wex::vi_mode::~vi_mode()
 {
 }
 
-wex::vi_mode::state wex::vi_mode::Get() const
+wex::vi_mode::state wex::vi_mode::get() const
 {
   return m_FSM->Get();
 }
 
-const std::string wex::vi_mode::String() const
+const std::string wex::vi_mode::string() const
 {
   return m_FSM->String();
 }
   
-bool wex::vi_mode::Transition(std::string& command)
+bool wex::vi_mode::transition(std::string& command)
 {
   if (command.empty())
   {
@@ -218,50 +218,50 @@ bool wex::vi_mode::Transition(std::string& command)
     return false;
   }
   
-  switch (Get())
+  switch (get())
   {
     case INSERT:
-      if (!m_vi->GetSTC()->HexMode())
+      if (!m_vi->stc()->is_hexmode())
       {
         if (const auto& it = std::find_if(m_InsertCommands.begin(), m_InsertCommands.end(), 
           [command](auto const& e) {return e.first == command[0];});
           it != m_InsertCommands.end() && it->second != nullptr)
           {
             it->second();
-            m_vi->AppendInsertCommand(command.substr(0, 1));
+            m_vi->append_insert_command(command.substr(0, 1));
           }
       }
       break;
       
     case VISUAL_LINE:
-      if (m_vi->GetSTC()->SelectionIsRectangle())
+      if (m_vi->stc()->SelectionIsRectangle())
       {
-        m_vi->GetSTC()->Home();
-        m_vi->GetSTC()->LineDownExtend();
+        m_vi->stc()->Home();
+        m_vi->stc()->LineDownExtend();
       }
-      else if (m_vi->GetSTC()->GetSelectedText().empty())
+      else if (m_vi->stc()->GetSelectedText().empty())
       {
-        m_vi->GetSTC()->Home();
-        m_vi->GetSTC()->LineDownExtend();
+        m_vi->stc()->Home();
+        m_vi->stc()->LineDownExtend();
       }
       else
       {
-        const int selstart = m_vi->GetSTC()->PositionFromLine(m_vi->GetSTC()->LineFromPosition(m_vi->GetSTC()->GetSelectionStart()));
-        const int selend = m_vi->GetSTC()->PositionFromLine(m_vi->GetSTC()->LineFromPosition(m_vi->GetSTC()->GetSelectionEnd()) + 1);
-        m_vi->GetSTC()->SetSelection(selstart, selend);
-        m_vi->GetSTC()->HomeExtend();
+        const int selstart = m_vi->stc()->PositionFromLine(m_vi->stc()->LineFromPosition(m_vi->stc()->GetSelectionStart()));
+        const int selend = m_vi->stc()->PositionFromLine(m_vi->stc()->LineFromPosition(m_vi->stc()->GetSelectionEnd()) + 1);
+        m_vi->stc()->SetSelection(selstart, selend);
+        m_vi->stc()->HomeExtend();
       }
       break;
     
     default: break;
   }
 
-  ((statusbar *)m_vi->GetFrame()->GetStatusBar())->ShowField(
+  ((statusbar *)m_vi->frame()->GetStatusBar())->show_field(
     "PaneMode", 
-    (!Normal() || vi_macros::Mode()->IsRecording()) && 
+    (!normal() || vi_macros::mode()->is_recording()) && 
        config(_("Show mode")).get(false));
 
-  frame::StatusText(String(), "PaneMode");
+  frame::statustext(string(), "PaneMode");
 
   command = command.substr(1);
 

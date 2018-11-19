@@ -23,8 +23,8 @@
 
 void ChangeMode(wex::vi* vi, const std::string& command, wex::vi_mode::state mode)
 {
-  REQUIRE( vi->Command(command));
-  REQUIRE( vi->Mode().Get() == mode);
+  REQUIRE( vi->command(command));
+  REQUIRE( vi->mode().get() == mode);
 }
 
 TEST_CASE("wex::vi")
@@ -32,26 +32,26 @@ TEST_CASE("wex::vi")
   wex::stc* stc = new wex::stc(
     std::string("// vi: set ts=120 "
                 "// this is a modeline"));
-  AddPane(GetFrame(), stc);
-  wex::vi* vi = &stc->GetVi();
+  AddPane(frame(), stc);
+  wex::vi* vi = &stc->get_vi();
   wxKeyEvent event(wxEVT_CHAR);
   
   // Test for modeline support.
   REQUIRE(stc->GetTabWidth() == 120);
-  REQUIRE( vi->GetIsActive());
-  REQUIRE( vi->Mode().Normal());
+  REQUIRE( vi->is_active());
+  REQUIRE( vi->mode().normal());
 
   // Test WXK_NONE.
   event.m_uniChar = WXK_NONE;
-  REQUIRE( vi->OnChar(event));
+  REQUIRE( vi->on_char(event));
   
   // First i enters insert mode, so is handled by vi, not to be skipped.
   event.m_uniChar = 'i';
-  REQUIRE(!vi->OnChar(event));
-  REQUIRE( vi->Mode().Insert());
-  REQUIRE( vi->Mode().String() == "insert");
+  REQUIRE(!vi->on_char(event));
+  REQUIRE( vi->mode().insert());
+  REQUIRE( vi->mode().string() == "insert");
   // Second i (and more) all handled by vi.
-  for (int i = 0; i < 10; i++) REQUIRE(!vi->OnChar(event));
+  for (int i = 0; i < 10; i++) REQUIRE(!vi->on_char(event));
 
   // Test control keys.
   for (const auto& control_key : std::vector<int> {
@@ -59,8 +59,8 @@ TEST_CASE("wex::vi")
     WXK_CONTROL_J,WXK_CONTROL_P,WXK_CONTROL_Q})
   {
     event.m_uniChar = control_key;
-    REQUIRE( vi->OnKeyDown(event));
-    REQUIRE(!vi->OnChar(event));
+    REQUIRE( vi->on_key_down(event));
+    REQUIRE(!vi->on_char(event));
   }
   
   // Test change number.
@@ -68,11 +68,11 @@ TEST_CASE("wex::vi")
   for (const auto& number: std::vector<std::string> {
     "101", "0xf7", "077", "-99"})
   {
-    stc->SetText("number: " + number);
-    vi->Command("gg");
-    vi->Command("2w");
-    REQUIRE( vi->OnKeyDown(event));
-    REQUIRE(!vi->OnChar(event));
+    stc->set_text("number: " + number);
+    vi->command("gg");
+    vi->command("2w");
+    REQUIRE( vi->on_key_down(event));
+    REQUIRE(!vi->on_char(event));
     CAPTURE( number);
 //    REQUIRE(!stc->GetText().Contains(number));
   }
@@ -84,42 +84,42 @@ TEST_CASE("wex::vi")
   {
     event.m_keyCode = nav_key;
     CAPTURE( nav_key);
-//    REQUIRE(!vi->OnKeyDown(event));
+//    REQUIRE(!vi->on_key_down(event));
     ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
   }
   event.m_keyCode = WXK_NONE;
-  REQUIRE( vi->OnKeyDown(event));
+  REQUIRE( vi->on_key_down(event));
 
   // Test navigate with [ and ].
   event.m_uniChar = '[';
-  REQUIRE(!vi->OnChar(event));
+  REQUIRE(!vi->on_char(event));
   event.m_uniChar= ']';
-  REQUIRE(!vi->OnChar(event));
-  vi->GetSTC()->AppendText("{}");
+  REQUIRE(!vi->on_char(event));
+  vi->stc()->AppendText("{}");
   event.m_uniChar = '[';
-  REQUIRE(!vi->OnChar(event));
+  REQUIRE(!vi->on_char(event));
   event.m_uniChar= ']';
-  REQUIRE(!vi->OnChar(event));
+  REQUIRE(!vi->on_char(event));
   
   // Test insert command.
-  stc->SetText("aaaaa");
-  REQUIRE( vi->Mode().Normal());
-  REQUIRE( vi->Command("i"));
-  REQUIRE( vi->Mode().Insert());
-  REQUIRE( vi->GetLastCommand() == "i");
-  REQUIRE( vi->Command("xxxxxxxx"));
+  stc->set_text("aaaaa");
+  REQUIRE( vi->mode().normal());
+  REQUIRE( vi->command("i"));
+  REQUIRE( vi->mode().insert());
+  REQUIRE( vi->last_command() == "i");
+  REQUIRE( vi->command("xxxxxxxx"));
   REQUIRE( stc->GetText().Contains("xxxxxxxx"));
-  REQUIRE( vi->GetLastCommand() == "i");
+  REQUIRE( vi->last_command() == "i");
   ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
-  REQUIRE( vi->GetRegisterInsert() == "xxxxxxxx");
-  REQUIRE( vi->GetLastCommand() == std::string("ixxxxxxxx") + ESC);
+  REQUIRE( vi->register_insert() == "xxxxxxxx");
+  REQUIRE( vi->last_command() == std::string("ixxxxxxxx") + ESC);
   for (int i = 0; i < 10; i++)
-    REQUIRE( vi->Command("."));
+    REQUIRE( vi->command("."));
   REQUIRE( stc->GetText().Contains("xxxxxxxxxxxxxxxxxxxxxxxxxxx"));
   
   // Test insert commands.
   std::vector<std::string> commands;
-  for (auto& it1 : vi->Mode().GetInsertCommands())
+  for (auto& it1 : vi->mode().insert_commands())
   {
     if (it1.first != 'c')
     {
@@ -137,23 +137,23 @@ TEST_CASE("wex::vi")
   stc->SetSavePoint();
   for (auto& it2 : commands)
   {
-    REQUIRE( vi->Command(it2));
-    REQUIRE( vi->Mode().Normal());
+    REQUIRE( vi->command(it2));
+    REQUIRE( vi->mode().normal());
     REQUIRE(!stc->GetModify());
   }
 
   // Test insert on hexmode document.
   stc->SetReadOnly(false);
-  stc->GetHexMode().Set(true);
-  REQUIRE( stc->HexMode());
+  stc->get_hexmode().set(true);
+  REQUIRE( stc->is_hexmode());
   REQUIRE(!stc->GetModify());
-  REQUIRE( vi->Command("a") );
-  REQUIRE( vi->Mode().Insert());
-  REQUIRE(!vi->Command("xxxxxxxx"));
+  REQUIRE( vi->command("a") );
+  REQUIRE( vi->mode().insert());
+  REQUIRE(!vi->command("xxxxxxxx"));
   ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
   REQUIRE(!stc->GetModify());
-  stc->GetHexMode().Set(false);
-  REQUIRE(!stc->HexMode());
+  stc->get_hexmode().set(false);
+  REQUIRE(!stc->is_hexmode());
   REQUIRE(!stc->GetModify());
   stc->SetReadOnly(false);
 
@@ -165,16 +165,16 @@ TEST_CASE("wex::vi")
   REQUIRE(!stc->GetText().Contains("iyyyyy"));
   ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
   const std::string lastcmd = std::string("iyyyyy") + ESC;
-  REQUIRE( vi->GetLastCommand() == lastcmd);
-  REQUIRE( vi->GetInsertedText() == "yyyyy");
-  REQUIRE( vi->Command("."));
-  REQUIRE( vi->GetLastCommand() == lastcmd);
-  REQUIRE(!vi->Command(";"));
-  REQUIRE( vi->GetLastCommand() == lastcmd);
-  REQUIRE( vi->Command("ma"));
-  REQUIRE( vi->GetLastCommand() == lastcmd);
-  REQUIRE( vi->Command("100izz"));
-  REQUIRE( vi->Mode().Insert());
+  REQUIRE( vi->last_command() == lastcmd);
+  REQUIRE( vi->inserted_text() == "yyyyy");
+  REQUIRE( vi->command("."));
+  REQUIRE( vi->last_command() == lastcmd);
+  REQUIRE(!vi->command(";"));
+  REQUIRE( vi->last_command() == lastcmd);
+  REQUIRE( vi->command("ma"));
+  REQUIRE( vi->last_command() == lastcmd);
+  REQUIRE( vi->command("100izz"));
+  REQUIRE( vi->mode().insert());
   REQUIRE(!stc->GetText().Contains("izz"));
   ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
   REQUIRE( stc->GetText().Contains(std::string(100, 'z')));
@@ -184,77 +184,77 @@ TEST_CASE("wex::vi")
   REQUIRE( stc->GetText().Contains("\n"));
   REQUIRE(!stc->GetText().Contains("i"));
   ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
-  REQUIRE( vi->GetInsertedText() == "\n\n\n\n");
+  REQUIRE( vi->inserted_text() == "\n\n\n\n");
   
-  stc->SetText("");
+  stc->set_text("");
   event.m_uniChar = 'i';
-  REQUIRE(!vi->OnChar(event));
-  REQUIRE( vi->Mode().Insert());
-  REQUIRE( vi->GetInsertedText().empty());
-  REQUIRE( vi->Mode().Insert());
+  REQUIRE(!vi->on_char(event));
+  REQUIRE( vi->mode().insert());
+  REQUIRE( vi->inserted_text().empty());
+  REQUIRE( vi->mode().insert());
   event.m_uniChar = WXK_RETURN;
-  REQUIRE( vi->OnKeyDown(event));
-  REQUIRE(!vi->OnChar(event));
+  REQUIRE( vi->on_key_down(event));
+  REQUIRE(!vi->on_char(event));
   ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
 #ifndef __WXOSX__  
-  REQUIRE( wxString(vi->GetInsertedText()).Contains("\n"));
+  REQUIRE( wxString(vi->inserted_text()).Contains("\n"));
 #endif
   
   // Test abbreviate.
-  for (auto& abbrev : GetAbbreviations())
+  for (auto& abbrev : get_abbreviations())
   {
-    REQUIRE( vi->Command(":ab " + abbrev.first + " " + abbrev.second));
-    REQUIRE( vi->Command("iabbreviation " + abbrev.first + " "));
+    REQUIRE( vi->command(":ab " + abbrev.first + " " + abbrev.second));
+    REQUIRE( vi->command("iabbreviation " + abbrev.first + " "));
     ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
-    REQUIRE( vi->GetInsertedText() == "abbreviation "  + abbrev.first + " ");
+    REQUIRE( vi->inserted_text() == "abbreviation "  + abbrev.first + " ");
     REQUIRE( stc->GetText().Contains("abbreviation " + abbrev.second));
     REQUIRE(!stc->GetText().Contains(abbrev.first));
   }
  
   // Test maps.
-  stc->SetText("this text is not needed");
-  vi->Command(":map 7 :%d");
+  stc->set_text("this text is not needed");
+  vi->command(":map 7 :%d");
   int ctrl_g = 7;
-  vi->Command(std::string(1, ctrl_g));
+  vi->command(std::string(1, ctrl_g));
   REQUIRE(stc->GetText().empty());
 
   // Test substitute command.
-  stc->SetText("999");
-  REQUIRE( vi->Command(":1,$s/xx/yy/g")); // so &, ~ are ok
-  REQUIRE( vi->Command("i"));
-  REQUIRE( vi->Mode().Insert());
-  REQUIRE( vi->Command("b"));
+  stc->set_text("999");
+  REQUIRE( vi->command(":1,$s/xx/yy/g")); // so &, ~ are ok
+  REQUIRE( vi->command("i"));
+  REQUIRE( vi->mode().insert());
+  REQUIRE( vi->command("b"));
   ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
   REQUIRE( stc->GetText().Contains("b"));
-  stc->SetText("xxxxxxxxxx\nxxxxxxxx\naaaaaaaaaa\n");
-  REQUIRE( vi->Command(":.="));
-  REQUIRE( vi->Command(":1,$s/xx/yy/g"));
+  stc->set_text("xxxxxxxxxx\nxxxxxxxx\naaaaaaaaaa\n");
+  REQUIRE( vi->command(":.="));
+  REQUIRE( vi->command(":1,$s/xx/yy/g"));
   REQUIRE(!stc->GetText().Contains("xx"));
   REQUIRE( stc->GetText().Contains("yy"));
   
   // Test change command.
-  stc->SetText("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
+  stc->set_text("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
   REQUIRE( stc->GetLineCount() == 4);
-  REQUIRE( vi->Command(":1"));
-  REQUIRE( vi->Command("cw"));
-  REQUIRE( vi->Mode().Insert());
-  REQUIRE( vi->Command("zzz"));
+  REQUIRE( vi->command(":1"));
+  REQUIRE( vi->command("cw"));
+  REQUIRE( vi->mode().insert());
+  REQUIRE( vi->command("zzz"));
   ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
   REQUIRE( stc->GetLineCount() == 4);
   REQUIRE( stc->GetLineText(0) == "zzzsecond");
-  stc->SetText("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
-  REQUIRE( vi->Command(":1"));
-  REQUIRE( vi->Command("ce"));
-  REQUIRE( vi->Mode().Insert());
-  REQUIRE( vi->Command("zzz"));
+  stc->set_text("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
+  REQUIRE( vi->command(":1"));
+  REQUIRE( vi->command("ce"));
+  REQUIRE( vi->mode().insert());
+  REQUIRE( vi->command("zzz"));
   ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
   REQUIRE( stc->GetLineCount() == 4);
   REQUIRE( stc->GetLineText(0) == "zzz second");
-  stc->SetText("xxxxxxxxxx second third\nxxxxxxxx\naaaaaaaaaa\n");
-  REQUIRE( vi->Command(":1"));
-  REQUIRE( vi->Command("2ce"));
-  REQUIRE( vi->Mode().Insert());
-  REQUIRE( vi->Command("zzz"));
+  stc->set_text("xxxxxxxxxx second third\nxxxxxxxx\naaaaaaaaaa\n");
+  REQUIRE( vi->command(":1"));
+  REQUIRE( vi->command("2ce"));
+  REQUIRE( vi->mode().insert());
+  REQUIRE( vi->command("zzz"));
   ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
   REQUIRE( stc->GetLineCount() == 4);
   REQUIRE( stc->GetLineText(0) == "zzz third");
@@ -262,32 +262,32 @@ TEST_CASE("wex::vi")
   // Test special delete commands.
   for (auto& delete_command : std::vector<std::string> {"dgg","3dw", "d3w"})
   {
-    REQUIRE( vi->Command(delete_command));
-    REQUIRE( vi->GetLastCommand() == delete_command);
+    REQUIRE( vi->command(delete_command));
+    REQUIRE( vi->last_command() == delete_command);
   }
 
   // Test yank commands.
-  stc->SetText("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
-  REQUIRE( vi->Command(":1"));
-  REQUIRE( vi->Command("yw"));
+  stc->set_text("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
+  REQUIRE( vi->command(":1"));
+  REQUIRE( vi->command("yw"));
   REQUIRE( vi->GetSelectedText() == "xxxxxxxxxx ");
-  REQUIRE( vi->Command("w"));
-  REQUIRE( vi->Command("x"));
+  REQUIRE( vi->command("w"));
+  REQUIRE( vi->command("x"));
   REQUIRE( stc->GetText().Contains("second"));
-  REQUIRE( vi->Command("p"));
+  REQUIRE( vi->command("p"));
   REQUIRE( stc->GetText().Contains("second"));
   
-  vi->ResetSearchFlags();
+  vi->reset_search_flags();
   wex::config(_("Wrap scan")).set(true);
 
   // Test motion commands: navigate, yank, delete, and change.
-  wex::find_replace_data::Get()->SetFindString("xx");
+  wex::find_replace_data::get()->set_find_string("xx");
 
-  for (auto& motion_command : vi->GetMotionCommands())
+  for (auto& motion_command : vi->motion_commands())
   {
     for (auto c : motion_command.first)
     {
-      stc->SetText("xxxxxxxxxx\nyyyyyyyyyy\n"
+      stc->set_text("xxxxxxxxxx\nyyyyyyyyyy\n"
                    "zzzzzzzzzz\nftFT\n"
                    "{section}yyyy\n"
                    "{anothersection}{finalsection}");
@@ -302,14 +302,14 @@ TEST_CASE("wex::vi")
 
       CAPTURE( motion_command.first);
       CAPTURE( nc);
-      REQUIRE( vi->Command(nc));
+      REQUIRE( vi->command(nc));
       
       // test navigate while in rect mode
       ChangeMode( vi, "K", wex::vi_mode::state::VISUAL_RECT);
-      REQUIRE( vi->Command( nc ));
-      REQUIRE( vi->Mode().Visual());
+      REQUIRE( vi->command( nc ));
+      REQUIRE( vi->mode().visual());
       ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
-      REQUIRE( vi->Mode().Normal());
+      REQUIRE( vi->mode().normal());
       
       // test yank
       std::string mc(
@@ -321,78 +321,78 @@ TEST_CASE("wex::vi")
       mc[1] = c;
 
       CAPTURE( mc);
-      REQUIRE( vi->Command(mc));
-      REQUIRE( vi->GetLastCommand() == mc);
-      REQUIRE( vi->Mode().Normal());
+      REQUIRE( vi->command(mc));
+      REQUIRE( vi->last_command() == mc);
+      REQUIRE( vi->mode().normal());
 
       // test delete
       mc[0] = 'd';
       CAPTURE( mc);
-      REQUIRE( vi->Command(mc));
-      REQUIRE( vi->GetLastCommand() == mc);
-      REQUIRE( vi->Mode().Normal());
+      REQUIRE( vi->command(mc));
+      REQUIRE( vi->last_command() == mc);
+      REQUIRE( vi->mode().normal());
       
       // test change
       mc[0] = 'c';
       CAPTURE( mc);
-      REQUIRE( vi->Command(mc));
-      REQUIRE( vi->GetLastCommand() == mc);
+      REQUIRE( vi->command(mc));
+      REQUIRE( vi->last_command() == mc);
       ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
-      REQUIRE( vi->Mode().Normal());
+      REQUIRE( vi->mode().normal());
     }
   }
 
   // Test find.
-  stc->SetText("some text to find");
-  REQUIRE( vi->Mode().Normal());
-  REQUIRE( vi->Command("/find"));
-  REQUIRE( vi->Mode().Normal());
-  REQUIRE( vi->Command("yb"));
-  REQUIRE( vi->Mode().Normal());
-  REQUIRE(!vi->Command("/xfind"));
+  stc->set_text("some text to find");
+  REQUIRE( vi->mode().normal());
+  REQUIRE( vi->command("/find"));
+  REQUIRE( vi->mode().normal());
+  REQUIRE( vi->command("yb"));
+  REQUIRE( vi->mode().normal());
+  REQUIRE(!vi->command("/xfind"));
 
   // Test % navigate.
-  stc->SetText("{a brace and a close brace}");
-  REQUIRE( vi->Command("y%"));
+  stc->set_text("{a brace and a close brace}");
+  REQUIRE( vi->command("y%"));
   REQUIRE( stc->GetSelectedText().size() == 27);
   
   // Test delete navigate.
-  stc->SetText("xyz");
-  REQUIRE( vi->Command(std::string(1, WXK_DELETE)));
+  stc->set_text("xyz");
+  REQUIRE( vi->command(std::string(1, WXK_DELETE)));
   REQUIRE( stc->GetText() == "yz");
 
   // Test record find.
-  stc->SetText("abc\nuvw\nxyz\n");
+  stc->set_text("abc\nuvw\nxyz\n");
 
   // Test recording.
-  REQUIRE(!vi->GetMacros().Mode()->IsRecording());
-  vi->Command("");
-  REQUIRE( vi->Command("qa"));
-  REQUIRE( vi->GetMacros().Mode()->IsRecording());
-  REQUIRE( vi->Command("/abc"));
-  REQUIRE( vi->Command("q"));
-  REQUIRE(!vi->GetMacros().Mode()->IsRecording());
-  REQUIRE( vi->Command("@a"));
-  REQUIRE( vi->Command(" "));
-  REQUIRE( vi->Command("qb"));
-  REQUIRE( vi->GetMacros().Mode()->IsRecording());
-  REQUIRE( vi->Command("?abc"));
-  REQUIRE( vi->Command("q"));
-  REQUIRE(!vi->GetMacros().Mode()->IsRecording());
-  REQUIRE( vi->Command("@b"));
-  REQUIRE( vi->Command(" "));
+  REQUIRE(!vi->get_macros().mode()->is_recording());
+  vi->command("");
+  REQUIRE( vi->command("qa"));
+  REQUIRE( vi->get_macros().mode()->is_recording());
+  REQUIRE( vi->command("/abc"));
+  REQUIRE( vi->command("q"));
+  REQUIRE(!vi->get_macros().mode()->is_recording());
+  REQUIRE( vi->command("@a"));
+  REQUIRE( vi->command(" "));
+  REQUIRE( vi->command("qb"));
+  REQUIRE( vi->get_macros().mode()->is_recording());
+  REQUIRE( vi->command("?abc"));
+  REQUIRE( vi->command("q"));
+  REQUIRE(!vi->get_macros().mode()->is_recording());
+  REQUIRE( vi->command("@b"));
+  REQUIRE( vi->command(" "));
 
   // Test fold.
   for (auto& fold: std::vector<std::string> {"zo", "zc", "zE", "zf"})
   {
-    REQUIRE( vi->Command(fold));
-    REQUIRE( vi->GetLastCommand() != fold);
+    REQUIRE( vi->command(fold));
+    REQUIRE( vi->last_command() != fold);
   }
   
   // Test other commands (ZZ not tested).
-  for (auto& other_command : vi->GetOtherCommands())
+  for (auto& other_command : vi->other_commands())
   {
-    stc->SetText("first second\nthird\nfourth\n");
+    stc->set_text("first second\nthird\nfourth\n");
 
     if (!isalpha(other_command.first.front()) && 
         other_command.first.front() != '\x12' &&
@@ -407,9 +407,9 @@ TEST_CASE("wex::vi")
         }
 
         if (c != '\t')
-          REQUIRE( vi->Command(std::string(1, c)));
+          REQUIRE( vi->command(std::string(1, c)));
         else
-          REQUIRE(!vi->Command(std::string(1, c)));
+          REQUIRE(!vi->command(std::string(1, c)));
       }
     }
     else
@@ -424,47 +424,47 @@ TEST_CASE("wex::vi")
       CAPTURE( oc );
 
       if (oc != "z")
-        REQUIRE( vi->Command(oc));
+        REQUIRE( vi->command(oc));
       else if (oc != "qa")
-        REQUIRE(!vi->Command(oc));
+        REQUIRE(!vi->command(oc));
     }
   }
 
-  if (vi->GetMacros().Mode()->IsRecording())
+  if (vi->get_macros().mode()->is_recording())
   {
-    vi->Command("q");
+    vi->command("q");
   }
 
   // Special put test. 
   // Put should not put text within a line, but after it, or before it.
-  stc->SetText("the chances of anything coming from mars\n");
-  vi->Command("$");
-  vi->Command("h");
-  vi->Command("h");
-  vi->Command("yy");
+  stc->set_text("the chances of anything coming from mars\n");
+  vi->command("$");
+  vi->command("h");
+  vi->command("h");
+  vi->command("yy");
   REQUIRE( 
-    wxString(stc->GetVi().GetMacros().GetRegister('0')).Contains("the chances of anything"));
-  vi->Command("p");
-  vi->Command("P");
+    wxString(stc->get_vi().get_macros().get_register('0')).Contains("the chances of anything"));
+  vi->command("p");
+  vi->command("P");
   REQUIRE( stc->GetText().Contains(
     "the chances of anything coming from mars"));
   REQUIRE(!stc->GetText().Contains("mathe"));
 
   // Test calc.
-  stc->SetText("this text contains xx");
-  vi->Command("i");
-  vi->Command("=5+5");
-  vi->Command("");
+  stc->set_text("this text contains xx");
+  vi->command("i");
+  vi->command("=5+5");
+  vi->command("");
   REQUIRE( stc->GetText().Contains("10"));
   ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
-  vi->Command("=5+5");
-  REQUIRE( wxString(stc->GetVi().GetMacros().GetRegister('0')).Contains("10"));
-  vi->Command("=5+5+5");
-  REQUIRE( wxString(stc->GetVi().GetMacros().GetRegister('0')).Contains("15"));
+  vi->command("=5+5");
+  REQUIRE( wxString(stc->get_vi().get_macros().get_register('0')).Contains("10"));
+  vi->command("=5+5+5");
+  REQUIRE( wxString(stc->get_vi().get_macros().get_register('0')).Contains("15"));
 
   // Test macro.
   // First load macros.
-  REQUIRE( wex::vi_macros::LoadDocument());
+  REQUIRE( wex::vi_macros::load_document());
   for (const auto& macro : std::vector< std::vector< std::string> > {
     {"10w"},
     {"dw"},
@@ -473,86 +473,86 @@ TEST_CASE("wex::vi")
     {"yk"},
     {"/xx","rz"}})  
   {
-    stc->SetText("this text contains xx");
+    stc->set_text("this text contains xx");
     
-    REQUIRE( vi->Command("qt"));
-    REQUIRE( vi->GetMacros().Mode()->IsRecording());
+    REQUIRE( vi->command("qt"));
+    REQUIRE( vi->get_macros().mode()->is_recording());
     
     std::string all;
     
     for (auto& command : macro)
     {
-      REQUIRE( vi->Command(command));
+      REQUIRE( vi->command(command));
       all += command;
     }
 
-    REQUIRE( vi->Command("q"));
-    REQUIRE( stc->GetVi().GetMacros().GetRegister('t') == all);
+    REQUIRE( vi->command("q"));
+    REQUIRE( stc->get_vi().get_macros().get_register('t') == all);
   }
 
-  REQUIRE( vi->Command("@t"));
-  REQUIRE( vi->Command("@@"));
-  REQUIRE( vi->Command("."));
-  REQUIRE( vi->Command("10@t"));
+  REQUIRE( vi->command("@t"));
+  REQUIRE( vi->command("@@"));
+  REQUIRE( vi->command("."));
+  REQUIRE( vi->command("10@t"));
 
   // Next should be OK, but crashes due to input expand variable.
-  //REQUIRE( vi->Command("@hdr@"));
+  //REQUIRE( vi->command("@hdr@"));
   
   // Test variables.
-  stc->SetText("");
-  REQUIRE( vi->Command("@Date@"));
+  stc->set_text("");
+  REQUIRE( vi->command("@Date@"));
   REQUIRE(!stc->GetText().Contains("Date"));
-  stc->SetText("");
-  REQUIRE( vi->Command("@Year@"));
+  stc->set_text("");
+  REQUIRE( vi->command("@Year@"));
   REQUIRE( stc->GetText().Contains("20"));
-//  REQUIRE(!vi->Command("@xxx@"));
-  REQUIRE( stc->GetLexer().Set("cpp"));
-  stc->SetText("");
-  REQUIRE( vi->Command("@Cb@"));
-  REQUIRE( vi->Command("@Ce@"));
+//  REQUIRE(!vi->command("@xxx@"));
+  REQUIRE( stc->get_lexer().set("cpp"));
+  stc->set_text("");
+  REQUIRE( vi->command("@Cb@"));
+  REQUIRE( vi->command("@Ce@"));
   REQUIRE( stc->GetText().Contains("//"));
-  stc->SetText("");
-  REQUIRE( vi->Command("@Cl@"));
+  stc->set_text("");
+  REQUIRE( vi->command("@Cl@"));
   REQUIRE( stc->GetText().Contains("//"));
-  REQUIRE( vi->Command("@Nl@"));
+  REQUIRE( vi->command("@Nl@"));
   
   // Test illegal command.
-  REQUIRE(!vi->Command(":xxx"));
+  REQUIRE(!vi->command(":xxx"));
   ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
 
   // Test registers
-  stc->GetFile().FileNew("test.h");
-  stc->SetText("");
+  stc->get_file().file_new("test.h");
+  stc->set_text("");
   const std::string ctrl_r = "\x12";
-  REQUIRE( vi->Command("i"));
-  REQUIRE( vi->Command(ctrl_r + "_"));
+  REQUIRE( vi->command("i"));
+  REQUIRE( vi->command(ctrl_r + "_"));
   ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
   
-  stc->SetText("");
-  REQUIRE( vi->Command("i"));
-  REQUIRE( vi->Command(ctrl_r + "%"));
-  ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
-  REQUIRE( stc->GetText() == "test.h");
-  
-  REQUIRE( vi->Command("yy"));
-  stc->SetText("");
-  REQUIRE( vi->Command("i"));
-  REQUIRE( vi->Command(ctrl_r + "0"));
+  stc->set_text("");
+  REQUIRE( vi->command("i"));
+  REQUIRE( vi->command(ctrl_r + "%"));
   ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
   REQUIRE( stc->GetText() == "test.h");
   
-  stc->SetText("XXXXX");
-  REQUIRE( vi->Command("dd"));
-  REQUIRE( vi->Command("i"));
-  REQUIRE( vi->Command(ctrl_r + "1"));
+  REQUIRE( vi->command("yy"));
+  stc->set_text("");
+  REQUIRE( vi->command("i"));
+  REQUIRE( vi->command(ctrl_r + "0"));
+  ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
+  REQUIRE( stc->GetText() == "test.h");
+  
+  stc->set_text("XXXXX");
+  REQUIRE( vi->command("dd"));
+  REQUIRE( vi->command("i"));
+  REQUIRE( vi->command(ctrl_r + "1"));
   ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
   REQUIRE( stc->GetText() == "XXXXX");
   
-  stc->SetText("YYYYY");
-  REQUIRE( vi->Command("dd"));
-  REQUIRE( vi->Command("i"));
-  REQUIRE( vi->Command(ctrl_r + "2"));
-  REQUIRE( vi->Command("2"));
+  stc->set_text("YYYYY");
+  REQUIRE( vi->command("dd"));
+  REQUIRE( vi->command("i"));
+  REQUIRE( vi->command(ctrl_r + "2"));
+  REQUIRE( vi->command("2"));
   ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
   REQUIRE( stc->GetText().Contains("XXXXX"));
   
@@ -566,25 +566,25 @@ TEST_CASE("wex::vi")
     ChangeMode( vi, "jjj", visual.second);
     ChangeMode( vi, visual.first, visual.second); // second has no effect
     // enter illegal command
-    vi->Command("g");
-    vi->Command("j");
+    vi->command("g");
+    vi->command("j");
     ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
     
     event.m_uniChar = visual.first[0];
-    REQUIRE(!vi->OnChar(event));
-    REQUIRE( vi->Mode().Get() == visual.second);
+    REQUIRE(!vi->on_char(event));
+    REQUIRE( vi->mode().get() == visual.second);
     ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
   }
   
-  stc->SetText("123456789");
-  vi->Command("v");
-  REQUIRE( vi->Mode().Visual());
-  vi->VisualExtend(0, 10);
+  stc->set_text("123456789");
+  vi->command("v");
+  REQUIRE( vi->mode().visual());
+  vi->visual_extend(0, 10);
   REQUIRE( vi->GetSelectedText() == "123456789");
-  vi->Mode().Escape();
+  vi->mode().escape();
 
   // Test goto, /, ?, n and N.
-  stc->SetText("aaaaa\nbbbbb\nccccc\naaaaa\ne\nf\ng\nh\ni\nj\nk\n");
+  stc->set_text("aaaaa\nbbbbb\nccccc\naaaaa\ne\nf\ng\nh\ni\nj\nk\n");
   REQUIRE( stc->GetLineCount() == 12);
   stc->GotoLine(2);
   for (const auto& go : std::vector<std::pair<std::string, int>> {
@@ -607,25 +607,25 @@ TEST_CASE("wex::vi")
     {"N",0}}) {
 
     if (go.first.back() != 'd')
-      REQUIRE( vi->Command(go.first));
+      REQUIRE( vi->command(go.first));
     else
-      REQUIRE(!vi->Command(go.first));
+      REQUIRE(!vi->command(go.first));
     
     if (go.first[0] == '/' || go.first[0] == '?')
     {
       // A / or ? should not set a last command.
-      REQUIRE( vi->GetLastCommand()[0] != go.first[0]);
+      REQUIRE( vi->last_command()[0] != go.first[0]);
     }
 
     REQUIRE( stc->GetCurrentLine() == go.second);
   }
   
   // test ctags
-  stc->SetText("no tag");
-  REQUIRE( vi->Command("Q"));
-  stc->SetText("wex::test_app");
-  REQUIRE( vi->Command("Q"));
-  REQUIRE( vi->Command("S"));
+  stc->set_text("no tag");
+  REQUIRE( vi->command("Q"));
+  stc->set_text("wex::test_app");
+  REQUIRE( vi->command("Q"));
+  REQUIRE( vi->command("S"));
 
-  vi->AppendInsertCommand("xyz");
+  vi->append_insert_command("xyz");
 }

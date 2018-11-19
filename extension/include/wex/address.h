@@ -34,16 +34,16 @@ namespace wex
       , m_Ex(ex) {;};
     
     /// Prints this address, with context.
-    bool AdjustWindow(const std::string& text) const;
+    bool adjust_window(const std::string& text) const;
     
     /// Appends text to this address.
-    bool Append(const std::string& text) const;
+    bool append(const std::string& text) const;
     
     /// Returns false if flags are unsupported.
-    bool Flags(const std::string& flags) const;
+    bool flags_supported(const std::string& flags) const;
     
     /// Returns address as specified during construction.
-    const auto & Get() const {return m_Address;};
+    const auto & get() const {return m_Address;};
     
     /// If the line number was set using SetLine, it
     /// returns this line number, otherwise
@@ -51,26 +51,26 @@ namespace wex
     /// This is the vi line number,
     /// so subtract 1 for stc line number.
     /// Returns 0 on error in address. 
-    int GetLine() const;
+    int get_line() const;
     
     /// Inserts text at this address.
-    bool Insert(const std::string& text) const;
+    bool insert(const std::string& text) const;
     
     /// Marks this address.
-    bool MarkerAdd(char marker) const;
+    bool marker_add(char marker) const;
     
     /// Deletes marker (if this address concerns a marker).
-    bool MarkerDelete() const;
+    bool marker_delete() const;
     
     /// Append text from the specified register at this address, 
     /// default uses yank register.
-    bool Put(char name = '0') const;
+    bool put(char name = '0') const;
     
     /// Read file at this address.
-    bool Read(const std::string& arg) const;
+    bool read(const std::string& arg) const;
     
     /// Shows this address in the ex bar.
-    bool WriteLineNumber() const;
+    bool write_line_number() const;
   private:
     /// Sets (vi) line number.
     void SetLine(int line);

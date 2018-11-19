@@ -19,15 +19,15 @@ TEST_CASE("wex::stream_statistics")
 {
   wex::stream_statistics ss;
   
-  REQUIRE(ss.Get().empty());
-  REQUIRE(ss.Get("xx") == 0);
+  REQUIRE(ss.get().empty());
+  REQUIRE(ss.get("xx") == 0);
 
   wex::stream_statistics ss2;
-  REQUIRE(ss2.Get().empty());
+  REQUIRE(ss2.get().empty());
 
   ss += ss2;
   
-  REQUIRE(ss.Get().empty());
+  REQUIRE(ss.get().empty());
 }
 
 TEST_CASE("wex::stream")
@@ -36,35 +36,35 @@ TEST_CASE("wex::stream")
   {
     wex::stream s(GetTestPath("test.h"), wex::ID_TOOL_REPORT_FIND);
     
-    REQUIRE( s.GetFileName() == GetTestPath("test.h"));
-    REQUIRE( s.GetTool().GetId() == wex::ID_TOOL_REPORT_FIND);
+    REQUIRE( s.get_filename() == GetTestPath("test.h"));
+    REQUIRE( s.get_tool().id() == wex::ID_TOOL_REPORT_FIND);
     
-    wex::find_replace_data::Get()->SetFindString("test");
-    wex::find_replace_data::Get()->SetMatchCase(true);
-    wex::find_replace_data::Get()->SetMatchWord(true);
-    wex::find_replace_data::Get()->SetUseRegEx(false);
+    wex::find_replace_data::get()->set_find_string("test");
+    wex::find_replace_data::get()->set_match_case(true);
+    wex::find_replace_data::get()->set_match_word(true);
+    wex::find_replace_data::get()->set_use_regex(false);
     
     const auto start = std::chrono::system_clock::now();
-    REQUIRE( s.RunTool());
+    REQUIRE( s.run_tool());
     const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
     
     REQUIRE(milli.count() < 100);
-    REQUIRE(!s.GetStatistics().GetElements().GetItems().empty());
-    REQUIRE( s.GetStatistics().Get("Actions Completed") == 193);
+    REQUIRE(!s.get_statistics().get_elements().get_items().empty());
+    REQUIRE( s.get_statistics().get("Actions Completed") == 193);
   }
   
   SUBCASE("Test replace")
   {
     wex::stream s(GetTestPath("test.h"), wex::ID_TOOL_REPLACE);
     
-    wex::find_replace_data::Get()->SetReplaceString("test");
+    wex::find_replace_data::get()->set_replace_string("test");
     
     const auto start = std::chrono::system_clock::now();
-    REQUIRE( s.RunTool());
+    REQUIRE( s.run_tool());
     const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
     
     REQUIRE(milli.count() < 100);
-    REQUIRE(!s.GetStatistics().GetElements().GetItems().empty());
-    REQUIRE( s.GetStatistics().Get("Actions Completed") == 194);
+    REQUIRE(!s.get_statistics().get_elements().get_items().empty());
+    REQUIRE( s.get_statistics().get("Actions Completed") == 194);
   }
 }

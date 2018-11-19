@@ -891,7 +891,7 @@ extern tagResult tagsFind (tagFile *const file, tagEntry *const entry,
 	return result;
 }
 
-extern tagResult tagsFindNext (tagFile *const file, tagEntry *const entry)
+extern tagResult tagsfind_next (tagFile *const file, tagEntry *const entry)
 {
 	tagResult result = TagFailure;
 	if (file != NULL  &&  file->initialized)

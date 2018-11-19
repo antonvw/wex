@@ -14,7 +14,7 @@
 
 namespace fs = std::filesystem;
 
-const std::string SubstituteTilde(const std::string& text)
+const std::string substituteTilde(const std::string& text)
 {
   auto out(text);
   wex::replace_all(out, "~", wxGetHomeDir().ToStdString());
@@ -24,23 +24,23 @@ const std::string SubstituteTilde(const std::string& text)
 wex::path::path(const fs::path& p)
   : m_path(p)
   , m_Stat(p.string()) 
-  , m_Lexer(lexers::Get(false) != nullptr ? 
-      lexers::Get(false)->FindByFileName(p.filename().string()):
+  , m_Lexer(lexers::get(false) != nullptr ? 
+      lexers::get(false)->find_by_filename(p.filename().string()):
       std::string())
 {
   if (p.empty())
   {
-    m_path_original = Current();
+    m_path_original = current();
   }
 }
 
 wex::path::path(const std::string& p, const std::string& name)
-  : path(fs::path(SubstituteTilde(p)).append(name).string())
+  : path(fs::path(substituteTilde(p)).append(name).string())
 {
 }
 
 wex::path::path(const std::string& p)
-  : path(fs::path(SubstituteTilde(p)))
+  : path(fs::path(substituteTilde(p)))
 {
 }
 
@@ -50,7 +50,7 @@ wex::path::path(const char* p)
 }
 
 wex::path::path(const path& r)
-  : path(r.Path()) 
+  : path(r.data()) 
 {
 }
 
@@ -59,7 +59,7 @@ wex::path::path(const std::vector<std::string> & v)
 {
   for (const auto& it : v)
   {
-    Append(it);
+    append(it);
   }
 }
 
@@ -67,7 +67,7 @@ wex::path::~path()
 {
   if (!m_path_original.empty())
   {
-    Current(m_path_original);
+    current(m_path_original);
   }
 }
 
@@ -75,7 +75,7 @@ wex::path& wex::path::operator=(const wex::path& r)
 {
   if (this != &r)
   {
-    m_path = r.Path();
+    m_path = r.data();
     m_Lexer = r.m_Lexer;
     m_Stat = r.m_Stat;
   }
@@ -83,14 +83,14 @@ wex::path& wex::path::operator=(const wex::path& r)
   return *this;
 }
 
-wex::path& wex::path::Append(const wex::path& path)
+wex::path& wex::path::append(const wex::path& path)
 {
-  m_path /= fs::path(path.Path());
+  m_path /= fs::path(path.data());
 
   return *this;
 }
 
-void wex::path::Current(const std::string& path) 
+void wex::path::current(const std::string& path) 
 {
   if (!path.empty())
   {
@@ -132,7 +132,7 @@ wex::path& wex::path::make_absolute()
 
 bool wex::path::open_mime() const
 {
-  if (const auto & ex = GetExtension(); ex.empty())
+  if (const auto & ex = extension(); ex.empty())
   {
     if (wxURL(m_path.string()).IsOk() || 
         m_path.string().substr(0, 4) == "http")
@@ -149,7 +149,7 @@ bool wex::path::open_mime() const
   {
     return false;
   }
-  else if (const auto command(type->GetOpenCommand(Path().string())); command.empty())
+  else if (const auto command(type->GetOpenCommand(data().string())); command.empty())
   {
     return false;
   }

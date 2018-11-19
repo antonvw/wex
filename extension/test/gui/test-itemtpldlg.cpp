@@ -24,15 +24,15 @@ namespace wex
     testitem(): item() {;};
     testitem(const std::string& label, const std::string& value = std::string())
       : item(label, value) {;};
-    testitem(const std::string& label, item::type type)
+    testitem(const std::string& label, item::type_t type)
       : item(label, type) {;};
-    void SetDialog(item_template_dialog<testitem>* dlg) {;};
+    void set_dialog(item_template_dialog<testitem>* dlg) {;};
   };
 };
 
 TEST_CASE("wex::item_template_dialog")
 {
-  wex::item::UseConfig(false);
+  wex::item::use_config(false);
 
   SUBCASE("Basic")
   {
@@ -43,42 +43,42 @@ TEST_CASE("wex::item_template_dialog")
         {"string1"},
         {"string2"},
         {"more fruit", "citron"}},
-      wex::window_data().Title("3 columns"), 0, 3);
+      wex::window_data().title("3 columns"), 0, 3);
     
-    REQUIRE( wex::testitem("test", wex::item::BUTTON).GetType() == wex::item::BUTTON);
+    REQUIRE( wex::testitem("test", wex::item::BUTTON).type() == wex::item::BUTTON);
     
-    REQUIRE(!dlg->BindButton({}));
-    REQUIRE(!dlg->BindButton({"test", wex::item::COMBOBOX}));
-    REQUIRE(!dlg->BindButton({"test", wex::item::BUTTON})); // not yet laid out0
-    REQUIRE(!dlg->BindButton({"test", wex::item::COMBOBOX_DIR})); // same
+    REQUIRE(!dlg->bind_button({}));
+    REQUIRE(!dlg->bind_button({"test", wex::item::COMBOBOX}));
+    REQUIRE(!dlg->bind_button({"test", wex::item::BUTTON})); // not yet laid out0
+    REQUIRE(!dlg->bind_button({"test", wex::item::COMBOBOX_DIR})); // same
 
-    REQUIRE( dlg->BindButton(dlg->GetItem("button")));
+    REQUIRE( dlg->bind_button(dlg->get_item("button")));
     
     dlg->Show();
     
-    REQUIRE( std::any_cast<std::string>(dlg->GetItem("fruit").GetLabel()) == "fruit");
-    REQUIRE( std::any_cast<std::string>(dlg->GetItemValue("fruit")) == "apple");
-    REQUIRE(!dlg->GetItemValue("xxx").has_value());
-    REQUIRE( std::any_cast<std::string>(dlg->GetItem("xxx").GetLabel()).empty());
-    REQUIRE(!dlg->GetItemValue("yyy").has_value());
+    REQUIRE( std::any_cast<std::string>(dlg->get_item("fruit").label()) == "fruit");
+    REQUIRE( std::any_cast<std::string>(dlg->get_item_value("fruit")) == "apple");
+    REQUIRE(!dlg->get_item_value("xxx").has_value());
+    REQUIRE( std::any_cast<std::string>(dlg->get_item("xxx").label()).empty());
+    REQUIRE(!dlg->get_item_value("yyy").has_value());
     
     // asserts in 3.0
 #if wxCHECK_VERSION(3,1,0)
-    REQUIRE( dlg->SetItemValue("fruit", std::string("strawberry")));
-    REQUIRE(!dlg->SetItemValue("xxx", "blueberry"));
-    REQUIRE( std::any_cast<std::string>(dlg->GetItemValue("fruit")) == "strawberry");
+    REQUIRE( dlg->set_item_value("fruit", std::string("strawberry")));
+    REQUIRE(!dlg->set_item_value("xxx", "blueberry"));
+    REQUIRE( std::any_cast<std::string>(dlg->get_item_value("fruit")) == "strawberry");
 #endif
     
-    dlg->ForceCheckBoxChecked();
+    dlg->force_checkbox_checked();
   }
 
   SUBCASE("Test dialog with checkbox item")
   {
     wex::item_template_dialog<wex::testitem>* dlg = new wex::item_template_dialog<wex::testitem>(
       std::vector <wex::testitem> {{"checkbox", wex::item::CHECKBOX}},
-      wex::window_data().Title("checkbox items"));
+      wex::window_data().title("checkbox items"));
 
-    dlg->ForceCheckBoxChecked();
+    dlg->force_checkbox_checked();
     dlg->Show();
   }
 
@@ -88,7 +88,7 @@ TEST_CASE("wex::item_template_dialog")
       std::vector <wex::testitem> {
         {"string1"},
         {"string2"}},
-      wex::window_data().Button(0).Title("no buttons"));
+      wex::window_data().button(0).title("no buttons"));
     dlg->Show();
   }
 
@@ -96,7 +96,7 @@ TEST_CASE("wex::item_template_dialog")
   {
     wex::item_template_dialog<wex::testitem>* dlg = new wex::item_template_dialog<wex::testitem>(
       std::vector <wex::testitem>(),
-      wex::window_data().Title("no items"));
+      wex::window_data().title("no items"));
     dlg->Show();
   }
   
@@ -104,7 +104,7 @@ TEST_CASE("wex::item_template_dialog")
   {
     wex::item_template_dialog<wex::testitem>* dlg = new wex::item_template_dialog<wex::testitem>(
       std::vector <wex::testitem> {{}, {}, {}},
-      wex::window_data().Title("empty items"));
+      wex::window_data().title("empty items"));
     dlg->Show();
   }
 }

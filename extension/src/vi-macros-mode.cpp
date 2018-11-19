@@ -17,9 +17,9 @@
 #include <wex/vi-macros.h>
 #include "vi-macros-fsm.h"
 
-bool ShowDialog(wxWindow* parent, std::string& macro)
+bool show_dialog(wxWindow* parent, std::string& macro)
 {
-  if (const auto& v(wex::vi_macros::Get()); !v.empty())
+  if (const auto& v(wex::vi_macros::get()); !v.empty())
   {
     wxArrayString macros;
     macros.resize(v.size());
@@ -30,7 +30,8 @@ bool ShowDialog(wxWindow* parent, std::string& macro)
       _("Select Macro"),
       macros);
 
-    if (const auto index = macros.Index(wex::vi_macros::GetMacro()); index != wxNOT_FOUND)
+    if (const auto index = macros.Index(wex::vi_macros::get_macro()); 
+      index != wxNOT_FOUND)
     {
       dialog.SetSelection(index);
     }
@@ -55,28 +56,28 @@ wex::vi_macros_mode::~vi_macros_mode()
   delete m_FSM;
 }
 
-bool wex::vi_macros_mode::Expand(
+bool wex::vi_macros_mode::expand(
   ex* ex, const variable& v, std::string& expanded)
 {
-  return m_FSM->Expand(ex, v, expanded);
+  return m_FSM->expand(ex, v, expanded);
 }
 
-bool wex::vi_macros_mode::IsPlayback() const
+bool wex::vi_macros_mode::is_playback() const
 {
-  return m_FSM->IsPlayback();
+  return m_FSM->is_playback();
 }
 
-bool wex::vi_macros_mode::IsRecording() const 
+bool wex::vi_macros_mode::is_recording() const 
 {
-  return m_FSM->Get() == vi_macros_fsm::state::RECORDING;
+  return m_FSM->get() == vi_macros_fsm::state_t::RECORDING;
 }
 
-const std::string wex::vi_macros_mode::String() const
+const std::string wex::vi_macros_mode::string() const
 {
-  return m_FSM->State();
+  return m_FSM->state();
 }
 
-int wex::vi_macros_mode::Transition(
+int wex::vi_macros_mode::transition(
   const std::string& command, ex* ex, bool complete, int repeat)
 {
   if (command.empty() || repeat <= 0)
@@ -84,15 +85,15 @@ int wex::vi_macros_mode::Transition(
     return 0;
   }
 
-  vi_macros_fsm::trigger trigger = vi_macros_fsm::trigger::DONE;
-  wxWindow* parent = (ex != nullptr ? ex->GetSTC(): wxTheApp->GetTopWindow());
+  vi_macros_fsm::trigger_t trigger = vi_macros_fsm::trigger_t::DONE;
+  wxWindow* parent = (ex != nullptr ? ex->stc(): wxTheApp->GetTopWindow());
 
   std::string macro(command);
 
   switch (macro[0])
   {
     case 'q': 
-      trigger = vi_macros_fsm::trigger::RECORD;
+      trigger = vi_macros_fsm::trigger_t::RECORD;
 
       macro = macro.substr(1);
 
@@ -103,7 +104,7 @@ int wex::vi_macros_mode::Transition(
           wxTextEntryDialog dlg(parent,
             _("Input") + ":",
             _("Enter Macro"),
-            vi_macros::GetMacro());
+            vi_macros::get_macro());
         
           wxTextValidator validator(wxFILTER_ALPHANUMERIC);
           dlg.SetTextValidator(validator);
@@ -116,7 +117,7 @@ int wex::vi_macros_mode::Transition(
           macro = dlg.GetValue();
         }
       }
-      else if (m_FSM->Get() == vi_macros_fsm::state::IDLE && macro.empty())
+      else if (m_FSM->get() == vi_macros_fsm::state_t::IDLE && macro.empty())
       {
         return 0;
       }
@@ -127,7 +128,7 @@ int wex::vi_macros_mode::Transition(
       {
         if (complete)
         {
-          if (!ShowDialog(parent, macro))
+          if (!show_dialog(parent, macro))
           {
             return 1;
           }
@@ -139,8 +140,8 @@ int wex::vi_macros_mode::Transition(
       }
       else if (macro == "@@") 
       {
-        if ((macro = vi_macros::GetMacro()) == std::string() &&
-            !ShowDialog(parent, macro))
+        if ((macro = vi_macros::get_macro()) == std::string() &&
+            !show_dialog(parent, macro))
         {
           return 2;
         }
@@ -149,7 +150,7 @@ int wex::vi_macros_mode::Transition(
       {
         macro = std::string(1, macro.back());
 
-        if (!vi_macros::IsRecorded(macro))
+        if (!vi_macros::is_recorded(macro))
         {
           return 2;
         }
@@ -161,37 +162,37 @@ int wex::vi_macros_mode::Transition(
         {
           macro = v[0];
         }
-        else if (vi_macros::StartsWith(macro.substr(1)))
+        else if (vi_macros::starts_with(macro.substr(1)))
         {
           if (std::string s;
-            autocomplete_text(macro.substr(1), vi_macros::Get(), s))
+            autocomplete_text(macro.substr(1), vi_macros::get(), s))
           {
-            frame::StatusText(s, "PaneMacro");
+            frame::statustext(s, "PaneMacro");
             macro = s;
           }
           else
           {
-            frame::StatusText(macro.substr(1), "PaneMacro");
+            frame::statustext(macro.substr(1), "PaneMacro");
             return 0;
           }
         }
         else
         {
-          frame::StatusText(vi_macros::GetMacro(), "PaneMacro");
+          frame::statustext(vi_macros::get_macro(), "PaneMacro");
           return macro.size();
         }
       }
 
-      trigger = vi_macros::IsRecordedMacro(macro) ? 
-        vi_macros_fsm::trigger::PLAYBACK: vi_macros_fsm::trigger::EXPAND_VARIABLE; 
+      trigger = vi_macros::is_recorded_macro(macro) ? 
+        vi_macros_fsm::trigger_t::PLAYBACK: vi_macros_fsm::trigger_t::EXPAND_VARIABLE; 
     break;
 
     default: return 0;
   }
 
-  const ex_command cmd(ex != nullptr ? ex->GetCommand(): ex_command());
-  m_FSM->Execute(trigger, macro, ex, repeat);
-  if (ex != nullptr) ex->m_Command.Restore(cmd);
+  const ex_command cmd(ex != nullptr ? ex->get_command(): ex_command());
+  m_FSM->execute(trigger, macro, ex, repeat);
+  if (ex != nullptr) ex->m_Command.restore(cmd);
 
   return command.size();
 }

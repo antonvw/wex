@@ -18,31 +18,28 @@ namespace wex
   {
   public:
     /// Constructor, fills values from config.
-    textctrl_input(ex_command::type type);
+    textctrl_input(ex_command::type_t type);
     
     /// Destructor, writes values to config.
    ~textctrl_input();
 
     /// Returns value on the list pointed to by iterator, 
     /// or empty string, if iterator is at end.
-    const std::string Get() const;
+    const std::string get() const;
     
-    /// Gets all values.
-    const auto& GetValues() const {return m_Values;};
-
     /// Sets first value on the list.
     /// Sets iterator to begin of list.
     /// Returns false if value is empty.
-    bool Set(const std::string& value);
+    bool set(const std::string& value);
     
     /// Sets first value on the list from specified text control.
-    bool Set(const wxTextCtrl* tc) {return Set(tc->GetValue().ToStdString());};
+    bool set(const wxTextCtrl* tc) {return set(tc->GetValue().ToStdString());};
 
     /// Sets iterator according to specified key, and then
     /// sets value of text control (if not nullptr) to the list value 
     /// related to iterator.
     /// Returns false if current list is empty, or key not ok.
-    bool Set(
+    bool set(
       /// the key:
       /// - WXK_UP
       /// - WKK_DOWN
@@ -56,12 +53,15 @@ namespace wex
     
     /// Sets all values (values might be empty).
     /// Sets iterator to begin of list.
-    void Set(const std::list < std::string > & values);
+    void set(const std::list < std::string > & values);
 
     /// Returns type.
-    auto Type() const {return m_Type;};
+    auto type() const {return m_Type;};
+
+    /// Gets all values.
+    const auto& values() const {return m_Values;};
   private:
-    const ex_command::type m_Type;
+    const ex_command::type_t m_Type;
     const std::string m_Name;
     std::list < std::string > m_Values;
     std::list < std::string >::const_iterator m_Iterator;

@@ -14,16 +14,16 @@
 
 TEST_CASE("wex::autocomplete")
 {
-  wex::autocomplete ac(GetSTC());
+  wex::autocomplete ac(get_stc());
 
-  REQUIRE(!ac.Activate(std::string()));
-  REQUIRE(!ac.Apply(WXK_BACK));
-  REQUIRE( ac.Apply('x'));
-  REQUIRE( ac.Apply(WXK_BACK));
-  REQUIRE(!ac.Apply(WXK_BACK));
+  REQUIRE(!ac.activate(std::string()));
+  REQUIRE(!ac.apply(WXK_BACK));
+  REQUIRE( ac.apply('x'));
+  REQUIRE( ac.apply(WXK_BACK));
+  REQUIRE(!ac.apply(WXK_BACK));
 
-  ac.Use(false);
-  REQUIRE(!ac.Apply('x'));
+  ac.use(false);
+  REQUIRE(!ac.apply('x'));
 
-  ac.Reset();
+  ac.reset();
 }

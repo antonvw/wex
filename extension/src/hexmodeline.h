@@ -32,7 +32,7 @@ namespace wex
 
     bool Delete(int count, bool settext = true);
 
-    const std::string GetInfo() const;
+    const std::string info() const;
 
     bool Goto() const;
 
@@ -90,7 +90,7 @@ namespace wex
         return m_StartAsciiField + offset;
       }
       return wxSTC_INVALID_POSITION;};
-    int GetBufferIndex() const;
+    int buffer_index() const;
     int GetHexField() const {
       const int offset = m_ColumnNo - m_StartAsciiField;
       return m_Hex->m_EachHexField * offset;};

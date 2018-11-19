@@ -16,56 +16,56 @@
 TEST_CASE("wex::shell")
 {
   wex::shell* shell = new wex::shell();
-  AddPane(GetFrame(), shell);
+  AddPane(frame(), shell);
   
-  REQUIRE(shell->GetShellEnabled());
+  REQUIRE(shell->is_enabled());
   
-  shell->Prompt("test1");
-  shell->Prompt("test2");
-  shell->Prompt("test3");
-  shell->Prompt("test4");
+  shell->prompt("test1");
+  shell->prompt("test2");
+  shell->prompt("test3");
+  shell->prompt("test4");
 
   // Prompting does not add a command to history.
-  REQUIRE( shell->GetHistory().find("test4") == std::string::npos);
+  REQUIRE( shell->get_history().find("test4") == std::string::npos);
 
   // Post 3 'a' chars to the shell, and check whether it comes in the history.
   Process("aaa\r", shell);
-  REQUIRE(shell->GetHistory().find("aaa") != std::string::npos);
-  REQUIRE(shell->GetPrompt() == ">");
-  REQUIRE(shell->GetCommand() == "aaa");
+  REQUIRE(shell->get_history().find("aaa") != std::string::npos);
+  REQUIRE(shell->get_prompt() == ">");
+  REQUIRE(shell->get_command() == "aaa");
   
   // Post 3 'b' chars to the shell, and check whether it comes in the history.
   Process("bbb\r", shell);
-  REQUIRE(shell->GetHistory().find("aaa") != std::string::npos);
-  REQUIRE(shell->GetHistory().find("bbb") != std::string::npos);
-  REQUIRE(shell->GetPrompt() == ">");
-  REQUIRE(shell->GetCommand() == "bbb");
+  REQUIRE(shell->get_history().find("aaa") != std::string::npos);
+  REQUIRE(shell->get_history().find("bbb") != std::string::npos);
+  REQUIRE(shell->get_prompt() == ">");
+  REQUIRE(shell->get_command() == "bbb");
   
   Process("b\t", shell); // tests Expand
-  shell->ProcessChar(WXK_BACK);
-  shell->ProcessChar(WXK_BACK);
-  shell->ProcessChar(WXK_BACK);
-  shell->ProcessChar(WXK_BACK);
-  shell->ProcessChar(WXK_BACK);
-  shell->ProcessChar(WXK_DELETE);
+  shell->process_char(WXK_BACK);
+  shell->process_char(WXK_BACK);
+  shell->process_char(WXK_BACK);
+  shell->process_char(WXK_BACK);
+  shell->process_char(WXK_BACK);
+  shell->process_char(WXK_DELETE);
   
   shell->DocumentEnd();
   
   shell->AppendText("hello");
   
   // Test shell enable/disable.
-  shell->EnableShell(false);
-  REQUIRE(!shell->GetShellEnabled());
+  shell->enable(false);
+  REQUIRE(!shell->is_enabled());
   
-  REQUIRE(!shell->SetPrompt("---------->"));
-  REQUIRE( shell->GetPrompt() == ">");
+  REQUIRE(!shell->set_prompt("---------->"));
+  REQUIRE( shell->get_prompt() == ">");
   
-  REQUIRE(!shell->Prompt("test1"));
-  REQUIRE(!shell->Prompt("test2"));
-  REQUIRE( shell->GetPrompt() == ">");
+  REQUIRE(!shell->prompt("test1"));
+  REQUIRE(!shell->prompt("test2"));
+  REQUIRE( shell->get_prompt() == ">");
   
-  shell->EnableShell(true);
-  REQUIRE( shell->GetShellEnabled());
+  shell->enable(true);
+  REQUIRE( shell->is_enabled());
   
   shell->Paste();
   
@@ -86,7 +86,7 @@ TEST_CASE("wex::shell")
   REQUIRE( shell->GetText().find("aaa") != std::string::npos);
   REQUIRE( shell->GetText().find("bbb") == std::string::npos);
   
-  shell->SetProcess(nullptr);
+  shell->set_process(nullptr);
   
   shell->DocumentEnd();
   

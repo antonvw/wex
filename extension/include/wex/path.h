@@ -49,62 +49,67 @@ namespace wex
    ~path();
 
     /// == Operator. 
-    bool operator==(const path& r) const {return Path() == r.Path();};
+    bool operator==(const path& r) const {return data() == r.data();};
 
     /// != Operator.
     bool operator!=(const path& r) const {return !operator==(r);};
 
     /// Appends path.
-    path& Append(const path& path);
+    path& append(const path& path);
 
     /// Returns current path.
-    static std::string Current() {
+    static std::string current() {
       return std::filesystem::current_path().string();};
 
     /// Sets current path.
-    static void Current(const std::string& path);
+    static void current(const std::string& path);
 
+    /// Returns the internal path.
+    /// E.g. data().string() returns fullpath.
+    // (cannot be auto)
+    const std::filesystem::path& data() const {return m_path;};
+      
     /// Returns true if the directory with this name exists.
-    bool DirExists() const {
+    bool dir_exists() const {
       return std::filesystem::is_directory(m_path);};
 
     /// Returns true if the file with this name exists.
-    bool FileExists() const {
+    bool file_exists() const {
       return std::filesystem::is_regular_file(m_path);};
 
     /// Returns path extension component (including the .).
-    const std::string GetExtension() const {
+    const std::string extension() const {
       return m_path.extension().string();};
 
     /// Returns path fullname (including extension) component.
-    const std::string GetFullName() const {
+    const std::string fullname() const {
       return m_path.filename().string();};
 
     /// Returns the lexer.
-    const auto & GetLexer() const {return m_Lexer;};
+    const auto & lexer() const {return m_Lexer;};
 
     /// Returns path name component.
-    const std::string GetName() const {
+    const std::string name() const {
       return m_path.stem().string();};
 
     /// Returns original path.
     const auto & original() {return m_path_original;};
 
     /// Returns path path component (without fullname).
-    const std::string GetPath() const {
+    const std::string get_path() const {
       return m_path.parent_path().string();};
 
     /// Returns path components.
     const std::vector<path> paths() const;
 
     /// Returns the stat.
-    const auto & GetStat() const {return m_Stat;};
+    const auto & stat() const {return m_Stat;};
 
     /// Returns true if this path is absolute.
     bool is_absolute() const {return m_path.is_absolute();};
     
     /// Returns true if this path (stat) is readonly.
-    bool IsReadOnly() const {return m_Stat.is_readonly();};
+    bool is_readonly() const {return m_Stat.is_readonly();};
 
     /// Returns true if this path is relative.
     bool is_relative() const {return m_path.is_relative();};
@@ -116,17 +121,12 @@ namespace wex
     /// Returns false if no mime type is found.
     bool open_mime() const;
     
-    /// Returns path.
-    /// E.g. Path().string() returns fullpath.
-    // (cannot be auto)
-    const std::filesystem::path& Path() const {return m_path;};
-      
     /// Replaces filename.
     path& replace_filename(const std::string& filename);
   private:
     std::filesystem::path m_path;
     std::string m_path_original;
-    lexer m_Lexer;
+    wex::lexer m_Lexer;
     file_stat m_Stat;
   };
 };

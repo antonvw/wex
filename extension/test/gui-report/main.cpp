@@ -21,16 +21,16 @@ namespace wex
       : history_frame() {
         lexer lexer("cpp");
         m_Report = new listview(listview_data().
-          Type(listview_data::KEYWORD).Lexer(&lexer));
+          type(listview_data::KEYWORD).lexer(&lexer));
         AddPane(this, m_Report);};
 
-    virtual listview* Activate(
-      listview_data::type listview_type, const lexer* lexer) override {
+    virtual listview* activate(
+      listview_data::type_t listview_type, const lexer* lexer) override {
       // only for coverage
-      history_frame::Activate(listview_type, lexer);
+      history_frame::activate(listview_type, lexer);
       return m_Report;};
     void MoreCoverage() {
-      GetFileHistoryList();};
+      file_history_list();};
   private:
     listview* m_Report;
   };
@@ -54,7 +54,7 @@ namespace wex
       return true;
     }
     
-    static auto* GetFrame() {return m_Frame;};
+    static auto* frame() {return m_Frame;};
   private:
     static rptframe* m_Frame;
   }; 
@@ -62,12 +62,12 @@ namespace wex
 
 wex::rptframe* wex::gui_test_app::m_Frame = nullptr;
 
-wex::history_frame* GetFrame()
+wex::history_frame* frame()
 {
-  return wex::gui_test_app::GetFrame();
+  return wex::gui_test_app::frame();
 }
   
-const std::string GetProject()
+const std::string get_project()
 {
   return "test-rep.prj";
 }

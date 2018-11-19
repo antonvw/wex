@@ -16,21 +16,21 @@ TEST_CASE( "wex::interruptable" )
 {
   wex::interruptable interruptable;
   
-  REQUIRE(!interruptable.Running());
-  REQUIRE(!interruptable.Cancelled());
-  REQUIRE(!interruptable.Cancel());
+  REQUIRE(!interruptable.is_running());
+  REQUIRE(!interruptable.is_cancelled());
+  REQUIRE(!interruptable.cancel());
   
-  interruptable.Start();
-  REQUIRE( interruptable.Running());
-  REQUIRE(!interruptable.Cancelled());
+  interruptable.start();
+  REQUIRE( interruptable.is_running());
+  REQUIRE(!interruptable.is_cancelled());
   
-  interruptable.Stop();
-  REQUIRE(!interruptable.Running());
-  REQUIRE(!interruptable.Cancelled());
-  REQUIRE(!interruptable.Cancel());
+  interruptable.stop();
+  REQUIRE(!interruptable.is_running());
+  REQUIRE(!interruptable.is_cancelled());
+  REQUIRE(!interruptable.cancel());
   
-  interruptable.Start();
-  REQUIRE( interruptable.Cancel());
-  REQUIRE(!interruptable.Running());
-  REQUIRE( interruptable.Cancelled());
+  interruptable.start();
+  REQUIRE( interruptable.cancel());
+  REQUIRE(!interruptable.is_running());
+  REQUIRE( interruptable.is_cancelled());
 }

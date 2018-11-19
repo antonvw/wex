@@ -18,10 +18,10 @@ const int FIELD_NOT_SHOWN = -1;
 
 std::string ConfigName(wex::statusbar* sb, const std::string& item, int f)
 {
-  return "SB" + sb->GetField(f).GetName() + item;
+  return "SB" + sb->get_field(f).get_name() + item;
 }
 
-void wex::statusbar_pane::Show(bool show)
+void wex::statusbar_pane::show(bool show)
 {
   m_IsShown = show;
   
@@ -38,7 +38,10 @@ void wex::statusbar_pane::Show(bool show)
 std::vector<wex::statusbar_pane> wex::statusbar::m_Panes = {{}};
 
 wex::statusbar::statusbar(frame* parent, const window_data& data)
-  : wxStatusBar(parent, data.Id(), data.Style(), data.Name())
+  : wxStatusBar(parent, 
+      data.id(), 
+      data.style(), 
+      data.name())
   , m_Frame(parent)
 {
   // The statusbar is not managed by Aui, so show/hide it explicitly.    
@@ -51,12 +54,12 @@ wex::statusbar::~statusbar()
 
   for (int i = 0; i < GetFieldsCount(); i++)
   {
-    config(ConfigName(this, "Style", i)).set(GetField(i).GetStyle());
-    config(ConfigName(this, "Width", i)).set(GetField(i).GetWidth());
+    config(ConfigName(this, "Style", i)).set(get_field(i).GetStyle());
+    config(ConfigName(this, "Width", i)).set(get_field(i).GetWidth());
   }
 }
 
-const wex::statusbar_pane& wex::statusbar::GetField(int n) const
+const wex::statusbar_pane& wex::statusbar::get_field(int n) const
 {
   return m_Panes[n];
 }
@@ -72,9 +75,9 @@ std::tuple <bool, int, int>
   
   for (const auto& it : m_Panes)
   {
-    if (it.IsShown())
+    if (it.is_shown())
     {
-      if (it.GetName() == use_field)
+      if (it.get_name() == use_field)
       {
         return {true, shown_pane_no, pane_no};
       }
@@ -83,7 +86,7 @@ std::tuple <bool, int, int>
     }
     else
     {
-      if (it.GetName() == use_field)
+      if (it.get_name() == use_field)
       {
         return {true, FIELD_NOT_SHOWN, pane_no};
       }
@@ -95,38 +98,38 @@ std::tuple <bool, int, int>
   return {false, 0, 0};
 }
   
-const std::string wex::statusbar::GetStatusText(const std::string& field) const
+const std::string wex::statusbar::get_statustext(const std::string& field) const
 {
   const auto& [res, shown_pane_no, pane_no] = GetFieldNo(field);
   return !res || shown_pane_no == FIELD_NOT_SHOWN ?
     // Do not show error, as you might explicitly want to ignore messages.
-    std::string(): wxStatusBar::GetStatusText(shown_pane_no).ToStdString();
+    std::string(): GetStatusText(shown_pane_no).ToStdString();
 }
 
 void wex::statusbar::Handle(wxMouseEvent& event, const statusbar_pane& pane)
 {
   if (event.LeftUp())
   {
-    m_Frame->StatusBarClicked(pane.GetName());
+    m_Frame->statusbar_clicked(pane.get_name());
   }
   else if (event.RightUp())
   {
-    m_Frame->StatusBarClickedRight(pane.GetName());
+    m_Frame->statusbar_clicked_right(pane.get_name());
   }
   // Show tooltip if tooltip is available, and not yet presented.
   else if (event.Moving())
   {
 #if wxUSE_TOOLTIPS
-    if (const auto& tooltip = GetToolTipText(); pane.GetHelpText().empty())
+    if (const auto& tooltip = GetToolTipText(); pane.help_text().empty())
     {
       if (!tooltip.empty())
       {
         UnsetToolTip();
       }
     }
-    else if (tooltip != pane.GetHelpText())
+    else if (tooltip != pane.help_text())
     {
-      SetToolTip(pane.GetHelpText());
+      SetToolTip(pane.help_text());
     }
 #endif    
   }
@@ -140,7 +143,7 @@ void wex::statusbar::OnMouse(wxMouseEvent& event)
   
   for (const auto& it : m_Panes)
   {
-    if (it.IsShown())
+    if (it.is_shown())
     {
       if (wxRect rect; GetFieldRect(fieldno, rect))
       {
@@ -156,7 +159,7 @@ void wex::statusbar::OnMouse(wxMouseEvent& event)
   }
 }
 
-wex::statusbar* wex::statusbar::Setup(
+wex::statusbar* wex::statusbar::setup(
   frame* frame,
   const std::vector<statusbar_pane>& panes,
   long style,
@@ -199,7 +202,7 @@ wex::statusbar* wex::statusbar::Setup(
   return sb;
 }
 
-bool wex::statusbar::SetStatusText(
+bool wex::statusbar::set_statustext(
   const std::string& text, const std::string& field)
 {
   if (const auto& [res, shown_pane_no, pane_no] = GetFieldNo(field); !res)
@@ -209,7 +212,7 @@ bool wex::statusbar::SetStatusText(
   }
   else if (shown_pane_no == FIELD_NOT_SHOWN)
   {
-    m_Panes[pane_no].SetHiddenText(text);
+    m_Panes[pane_no].set_hidden_text(text);
     return false;
   }
   else
@@ -218,14 +221,14 @@ bool wex::statusbar::SetStatusText(
     
     // wxStatusBar checks whether new text differs from current,
     // and does nothing if the same to avoid flicker.
-    wxStatusBar::SetStatusText(text, shown_pane_no);
+    SetStatusText(text, shown_pane_no);
     return true;
   }
 }
 
-bool wex::statusbar::ShowField(const std::string& field, bool show)
+bool wex::statusbar::show_field(const std::string& field, bool show)
 {
-  wxASSERT(!m_Panes.empty());
+  assert(!m_Panes.empty());
   
   auto* widths = new int[m_Panes.size()];
   auto* styles = new int[m_Panes.size()];
@@ -235,19 +238,19 @@ bool wex::statusbar::ShowField(const std::string& field, bool show)
 
   for (auto& it : m_Panes)
   {
-    if (it.GetName() == field)
+    if (it.get_name() == field)
     {
       if (show)
       {
-        if (!it.IsShown())
+        if (!it.is_shown())
         {
-          changes.emplace_back(it.GetHiddenText());
+          changes.emplace_back(it.get_hidden_text());
           
-          it.Show(true);
+          it.show(true);
           
           for (auto j = panes_shown; j < GetFieldsCount(); j++)
           {
-            changes.emplace_back(wxStatusBar::GetStatusText(j));
+            changes.emplace_back(GetStatusText(j));
           }
         }
         
@@ -258,21 +261,21 @@ bool wex::statusbar::ShowField(const std::string& field, bool show)
       }
       else
       {
-        if (it.IsShown())
+        if (it.is_shown())
         {
-          it.Show(false);
+          it.show(false);
           changed = true;
           
           for (auto j = panes_shown + 1; j < GetFieldsCount(); j++)
           {
-            changes.emplace_back(wxStatusBar::GetStatusText(j));
+            changes.emplace_back(GetStatusText(j));
           }
         }
       }
     }
     else
     {
-      if (it.IsShown())
+      if (it.is_shown())
       {
         widths[panes_shown] = it.GetWidth();
         styles[panes_shown] = it.GetStyle();
@@ -292,7 +295,7 @@ bool wex::statusbar::ShowField(const std::string& field, bool show)
       int z = 0;
       for (int j = changes.size() - 1; j >= 0; j--)
       {
-        wxStatusBar::SetStatusText(changes[j], GetFieldsCount() - 1 - z);
+        SetStatusText(changes[j], GetFieldsCount() - 1 - z);
         z++;
       }
     }

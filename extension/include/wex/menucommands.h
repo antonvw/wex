@@ -37,29 +37,29 @@ namespace wex
       }
       else
       {
-        if (menus::AddCommands(node, m_Commands) == 0)
+        if (menus::add_commands(node, m_Commands) == 0)
         {
           log("no commands found for") << m_Name;
           m_Commands.push_back({});
         }  
       }};
     
+    /// Returns the flags key.
+    const auto & flags_key() const {return m_FlagsKey;};
+
     /// Returns the current command.  
-    const auto & GetCommand() const {
+    const auto & get_command() const {
       return m_Commands.at(m_CommandIndex);};
 
-    /// Returns the commands.
-    const auto & GetCommands() const {return m_Commands;};
-
-    /// Returns the flags key.
-    const auto & GetFlagsKey() const {return m_FlagsKey;};
+    /// Returns all the commands.
+    const auto & get_commands() const {return m_Commands;};
 
     /// Returns the name for this group of commands.
-    const auto & GetName() const {return m_Name;};
+    const auto & name() const {return m_Name;};
 
     /// Sets the current command.
     /// Returns true if command was set.
-    bool SetCommand(
+    bool set_command(
       /// a command no from commands
       int command_no) {
       if (command_no < 0 || command_no >= (int)m_Commands.size())

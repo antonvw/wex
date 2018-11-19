@@ -10,10 +10,11 @@
 #include <functional>
 #include <string>
 #include <vector>
-#define WHITESPACE_DELIMITERS " \t\r\n"
 
 namespace wex
 {
+  const std::string WHITESPACE_DELIMITERS = " \t\r\n";
+  
   /// Offers a class that allows you to tokenize a string into
   /// substrings or into some container.
   class tokenizer
@@ -29,46 +30,46 @@ namespace wex
       bool skip_empty_tokens = true);
 
     /// Returns total number of tokens in the string.
-    size_t CountTokens() const;
+    size_t count_tokens() const;
     
-    /// Get the delimiter which terminated the token last retrieved.
-    auto GetLastDelimiter() const {return m_LastDelimiter;};
-    
-    /// Returns the next token, will return empty string if !HasMoreTokens().
-    const std::string GetNextToken();
+    /// Returns the next token, will return empty string if !has_more_tokens().
+    const std::string get_next_token();
 
     /// Returns not yet tokenized part of string.
-    const std::string GetString() const;
+    const std::string get_string() const;
 
     /// Returns the current token.
-    const std::string GetToken() const;
+    const std::string get_token() const;
 
     /// Returns true if the string still contains delimiters, and so can be tokenized.
     /// A sequence of delimiters is skipped: an empty token is not returned.
-    bool HasMoreTokens() const;
+    bool has_more_tokens() const;
 
-    /// Tokenizes the complete string into a templatized class 
+    /// Get the delimiter which terminated the token last retrieved.
+    auto last_delimiter() const {return m_LastDelimiter;};
+    
+    /// tokenizes the complete string into a templatized class 
     /// (e.g. vector<std::string>).
-    /// Always restarts, so you can use HasMoreTokens before.
+    /// Always restarts, so you can use has_more_tokens before.
     /// Returns the filled in container.
-    template <typename T> T Tokenize() {
+    template <typename T> T tokenize() {
       T tokens;
       m_TokenEndPos = 0;
-      while (HasMoreTokens()) 
+      while (has_more_tokens()) 
       {
-        tokens.emplace_back(GetNextToken());
+        tokens.emplace_back(get_next_token());
       }
       return tokens;};
 
-    /// Tokenizes the complete string into a vector of integers (size_t).
-    /// Always restarts, so you can use HasMoreTokens before.
+    /// tokenizes the complete string into a vector of integers (size_t).
+    /// Always restarts, so you can use has_more_tokens before.
     /// Returns the filled in vector.
-    auto Tokenize() {
+    auto tokenize() {
       std::vector <size_t> tokens;
       m_TokenEndPos = 0;
-      while (HasMoreTokens()) 
+      while (has_more_tokens()) 
       {
-        tokens.emplace_back(std::stoi(GetNextToken()));
+        tokens.emplace_back(std::stoi(get_next_token()));
       }
       return tokens;};
   private:

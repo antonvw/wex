@@ -31,18 +31,18 @@ namespace wex
     history_frame(
       size_t maxFiles = 9,
       size_t maxProjects = 0,
-      const window_data& data = window_data().Style(wxDEFAULT_FRAME_STYLE));
+      const window_data& data = window_data().style(wxDEFAULT_FRAME_STYLE));
 
     /// This method is called to activate a certain listview.
     /// Default it returns nullptr.
-    virtual listview* Activate(
-      listview_data::type, 
+    virtual listview* activate(
+      listview_data::type_t, 
       const lexer* lexer = nullptr) {
       return nullptr;};
       
     /// Finds (or replaces) in specified files.
     /// Returns true if process started.
-    bool FindInFiles(
+    bool find_in_files(
       /// the files
       const std::vector< path > & files,
       /// ID_TOOL_REPORT_FIND or ID_TOOL_REPLACE
@@ -54,35 +54,35 @@ namespace wex
 
     /// Shows a modal find (or replace) in files dialog.
     /// Returns result from ShowModal.
-    int FindInFilesDialog(
+    int find_in_files_dialog(
       /// ID_TOOL_REPORT_FIND or ID_TOOL_REPLACE
       int id,
       /// add file types selection as well
       bool add_in_files = false);
     
-    /// Returns caption for FindInFilesDialog.
-    const std::string GetFindInCaption(int id) const;
+    /// Returns caption for find_in_files_dialog.
+    const std::string find_in_files_title(int id) const;
     
     /// If there is a project somewhere, 
     /// your implementation should return that one.
     /// Default it returns nullptr.
-    virtual listview_file* GetProject() {return nullptr;};
+    virtual listview_file* get_project() {return nullptr;};
 
     /// Returns project history.
-    auto& GetProjectHistory() {return m_ProjectHistory;};
+    auto& get_project_history() {return m_ProjectHistory;};
     
-    /// Greps for text.
+    /// greps for text.
     /// The base directory is the directory for the current stc
     /// component, if available.
     /// Returns true if process started.
-    bool Grep(
+    bool grep(
       /// text [extension] [folder]
       const std::string& line,
       /// normally grep does not replace, by setting sed, it can
       bool sed = false);
     
-    /// Override OnCommandItemDialog for add, find and replace in files.
-    virtual void OnCommandItemDialog(
+    /// Override on_command_item_dialog for add, find and replace in files.
+    virtual void on_command_item_dialog(
       wxWindowID dialogid,
       const wxCommandEvent& event) override;
     
@@ -90,35 +90,35 @@ namespace wex
     /// The base directory is the directory for the current stc
     /// component, if available.
     /// Returns true if process started.
-    bool Sed(
+    bool sed(
       /// text replacement [extension] [folder]
-      const std::string& line) {return Grep(line, true);};
+      const std::string& line) {return grep(line, true);};
       
     /// Updates file history.
-    virtual void SetRecentFile(const path& path) override;
+    virtual void set_recent_file(const path& path) override;
 
     /// Updates project history.
-    void SetRecentProject(const path& path) {
-      m_ProjectHistory.Add(path);};
+    void set_recent_project(const path& path) {
+      m_ProjectHistory.add(path);};
 
     /// Uses specified history list, and adds all elements from file history
     /// to the list.
-    void UseFileHistoryList(listview* list);
+    void use_file_history_list(listview* list);
   protected:
     /// Access to file history list, 
     /// if you use this as a page in a notebook,
     /// you might want prevent closing it.
-    listview* GetFileHistoryList() {return m_FileHistoryList;};
+    listview* file_history_list() {return m_FileHistoryList;};
     
     void OnIdle(wxIdleEvent& event);
   private:
-    void FindInFiles(wxWindowID dialogid);
+    void find_in_files(wxWindowID dialogid);
     const wxString GetFindReplaceInfoText(bool replace = false) const;
 
     item_dialog* m_FiFDialog {nullptr};
     item_dialog* m_RiFDialog {nullptr};
     listview* m_FileHistoryList {nullptr};
-    file_history m_ProjectHistory;
+    class file_history m_ProjectHistory;
 
     const std::string m_TextInFiles {_("In files")};
     const std::string m_TextInFolder  {_("In folder")};

@@ -17,40 +17,40 @@
 
 TEST_CASE("wex::vi_mode")
 {
-  wex::vi_mode mode(&GetSTC()->GetVi());
+  wex::vi_mode mode(&get_stc()->get_vi());
   
-  REQUIRE(!mode.GetInsertCommands().empty());
+  REQUIRE(!mode.insert_commands().empty());
 
   // normal
-  REQUIRE( mode.Normal());
+  REQUIRE( mode.normal());
   std::string command("x");
-  REQUIRE(!mode.Transition(command));
+  REQUIRE(!mode.transition(command));
   command = "y";
-  REQUIRE(!mode.Transition(command));
-  REQUIRE( mode.String().empty());
+  REQUIRE(!mode.transition(command));
+  REQUIRE( mode.string().empty());
   
   // insert
   command = "i";
-  REQUIRE( mode.Transition(command));
-  REQUIRE( mode.Insert());
+  REQUIRE( mode.transition(command));
+  REQUIRE( mode.insert());
   command = "i";
-  REQUIRE(!mode.Transition(command));
-  REQUIRE( mode.Insert());
-  REQUIRE( mode.String() == "insert");
-  REQUIRE( mode.Escape());
-  REQUIRE( mode.Normal());
+  REQUIRE(!mode.transition(command));
+  REQUIRE( mode.insert());
+  REQUIRE( mode.string() == "insert");
+  REQUIRE( mode.escape());
+  REQUIRE( mode.normal());
 
   command = "cc";
-  REQUIRE( mode.Transition(command));
-  REQUIRE( mode.Insert());
-  REQUIRE( mode.Escape());
-  REQUIRE( mode.Normal());
+  REQUIRE( mode.transition(command));
+  REQUIRE( mode.insert());
+  REQUIRE( mode.escape());
+  REQUIRE( mode.normal());
   
-  GetSTC()->SetReadOnly(true);
+  get_stc()->SetReadOnly(true);
   command = "i";
-  REQUIRE( mode.Transition(command));
-  REQUIRE( mode.Normal());
-  GetSTC()->SetReadOnly(false);
+  REQUIRE( mode.transition(command));
+  REQUIRE( mode.normal());
+  get_stc()->SetReadOnly(false);
   
   for (const auto& visual : std::vector<std::pair<std::string, wex::vi_mode::state>> {
     {"v",wex::vi_mode::state::VISUAL},
@@ -58,12 +58,12 @@ TEST_CASE("wex::vi_mode")
     {"K",wex::vi_mode::state::VISUAL_RECT}})
   {
     std::string command(visual.first);
-    REQUIRE( mode.Transition(command));
-    REQUIRE( mode.Get() == visual.second);
+    REQUIRE( mode.transition(command));
+    REQUIRE( mode.get() == visual.second);
     command = visual.first;
-    REQUIRE( mode.Transition(command)); // ignore
-    REQUIRE( mode.Get() == visual.second);
-    REQUIRE( mode.Escape());
-    REQUIRE( mode.Normal());
+    REQUIRE( mode.transition(command)); // ignore
+    REQUIRE( mode.get() == visual.second);
+    REQUIRE( mode.escape());
+    REQUIRE( mode.normal());
   }
 }

@@ -24,7 +24,7 @@ namespace wex
     const auto & get() const {return m_v;};
 
     /// Returns value as a string.
-    const auto & getString() const {return m_v;};
+    const auto & get_string() const {return m_v;};
   private:
     const std::string& m_v;
   };
@@ -66,7 +66,7 @@ namespace wex
     };
 
     /// Returns value a string.
-    const auto getString() const 
+    const auto get_string() const 
     {
       if (!m_s.empty()) return m_s;
 

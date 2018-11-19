@@ -48,12 +48,12 @@ void wex::app::OnAssertFailure(
     
 int wex::app::OnExit()
 {
-  delete find_replace_data::Set(nullptr);
-  delete lexers::Set(nullptr);
-  delete printing::Set(nullptr);
+  delete find_replace_data::set(nullptr);
+  delete lexers::set(nullptr);
+  delete printing::set(nullptr);
 
-  addressrange::OnExit();
-  stc::OnExit();
+  addressrange::on_exit();
+  stc::on_exit();
 
   VLOG(1) << "exit";
 
@@ -67,9 +67,9 @@ bool wex::app::OnInit()
   // Load elp configuration from file.
   const path elp(config().dir(), "conf.elp");
 
-  if (elp.FileExists())
+  if (elp.file_exists())
   {
-    el::Loggers::reconfigureAllLoggers(el::Configurations(elp.Path().string()));
+    el::Loggers::reconfigureAllLoggers(el::Configurations(elp.data().string()));
   }
 
   // We need to convert argc and argv, as elp expects = sign between values.
@@ -125,10 +125,10 @@ bool wex::app::OnInit()
 
   VLOG(1) 
     << "started: " 
-    << GetAppName() << "-" << get_version_info().Get()
+    << GetAppName() << "-" << get_version_info().get()
     << " verbosity: " 
     << el::Loggers::verboseLevel()
-    << " config: " << elp.Path().string();
+    << " config: " << elp.data().string();
 
   const wxLanguageInfo* info = nullptr;
   
@@ -187,9 +187,9 @@ bool wex::app::OnInit()
   // Necessary for autocomplete images.
   wxInitAllImageHandlers();
 
-  stc::OnInit();
-  vcs::LoadDocument();
-  vi_macros().LoadDocument();
+  stc::on_init();
+  vcs::load_document();
+  vi_macros().load_document();
 
   return true; // wxApp::OnInit(); // we have our own cmd line processing
 }

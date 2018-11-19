@@ -41,20 +41,20 @@ namespace wex
       , m_ListView(lv) {
       if (init)
       {
-        m_ListView->AppendColumns({{"Name", column::STRING, 200}, {"Pid"}});
+        m_ListView->append_columns({{"Name", column::STRING, 200}, {"Pid"}});
       }
       else
       {
         lv->DeleteAllItems();
       }};
    ~process_dir() {
-      m_ListView->SortColumn("Name", SORT_ASCENDING);};
+      m_ListView->sort_column("Name", SORT_ASCENDING);};
   private:
-    virtual bool OnDir(const path& p) override {
-      std::ifstream ifs(wex::path(p.Path(), "comm").Path());
+    virtual bool on_dir(const path& p) override {
+      std::ifstream ifs(wex::path(p.data(), "comm").data());
       if (std::string line; ifs.is_open() && std::getline(ifs, line))
       {
-        m_ListView->InsertItem({line, p.GetName()});
+        m_ListView->insert_item({line, p.GetName()});
       }
       return true;};
 
@@ -68,24 +68,24 @@ wex::debug::debug(wex::managed_frame* frame, wex::process* debug)
   , m_Process(debug)
 {
   if (std::vector< wex::menu_commands<wex::menu_command>> entries;
-    wex::menus::Load("debug", entries))
+    wex::menus::load("debug", entries))
   {
     const size_t use = config("DEBUG").get((long)0);
     m_Entry = entries[use < entries.size() ? use: 0];
   }
 }
   
-int wex::debug::AddMenu(wex::menu* menu, bool popup) const
+int wex::debug::add_menu(wex::menu* menu, bool popup) const
 {
   wex::menu* sub = (popup ? new wex::menu: nullptr);
   wex::menu* use = (popup ? sub: menu);
   
-  const auto ret = wex::menus::BuildMenu(
-    m_Entry.GetCommands(), ID_EDIT_DEBUG_FIRST, use, popup);
+  const auto ret = wex::menus::build_menu(
+    m_Entry.get_commands(), ID_EDIT_DEBUG_FIRST, use, popup);
   
   if (ret > 0 && popup)
   {
-    menu->AppendSeparator();
+    menu->append_separator();
     menu->append_submenu(sub, "debug");
   }
 
@@ -99,10 +99,10 @@ bool wex::debug::DeleteAllBreakpoints(const std::string& text)
   {
     for (const auto& it: m_Breakpoints)
     {
-      if (m_Frame->IsOpen(std::get<0>(it.second)))
+      if (m_Frame->is_open(std::get<0>(it.second)))
       {
-        auto* stc = m_Frame->OpenFile(std::get<0>(it.second));
-        stc->MarkerDeleteAll(m_MarkerBreakpoint.GetNo());
+        auto* stc = m_Frame->open_file(std::get<0>(it.second));
+        stc->MarkerDeleteAll(m_MarkerBreakpoint.number());
       }
     }
 
@@ -114,23 +114,23 @@ bool wex::debug::DeleteAllBreakpoints(const std::string& text)
   return false;
 }
   
-bool wex::debug::Execute(const std::string& action, wex::stc* stc)
+bool wex::debug::execute(const std::string& action, wex::stc* stc)
 {
   std::string args;
 
   if (!GetArgs(action, args, stc) ||
      (m_Process == nullptr &&
-     (m_Process = m_Frame->Process(m_Entry.GetName())) == nullptr))
+     (m_Process = m_Frame->get_process(m_Entry.name())) == nullptr))
      return false;
 
-  m_Frame->ShowPane("PROCESS"); 
+  m_Frame->show_pane("PROCESS"); 
 
-  if (!m_Process->IsRunning())
+  if (!m_Process->is_running())
   {
-    m_Process->Execute(m_Entry.GetName());
+    m_Process->execute(m_Entry.name());
   }
 
-  return m_Process->Write(action == "interrupt" ?
+  return m_Process->write(action == "interrupt" ?
     std::string(1, 3) : action + args);
 }
 
@@ -153,22 +153,22 @@ bool wex::debug::GetArgs(
         lv = ((wex::listview *)user);
         if (save && lv->GetFirstSelected() != -1)
         {
-          args = " " + lv->GetItemText(lv->GetFirstSelected(), "Pid");
+          args = " " + lv->get_item_text(lv->GetFirstSelected(), "Pid");
         }
         }}},
 #else
-      {"pid", item::TEXTCTRL_INT, std::any(), control_data().Required(true),
+      {"pid", item::TEXTCTRL_INT, std::any(), control_data().is_required(true),
         item::LABEL_LEFT,
         [&](wxWindow* user, const std::any& value, bool save) {
            if (save) args += " " + std::to_string(std::any_cast<long>(value));}}},
 #endif
-      window_data().Title("Attach").Size({400, 400}).Parent(m_Frame));
+      window_data().title("Attach").size({400, 400}).parent(m_Frame));
     }
 
     if (lv != nullptr)
     {
 #ifdef __WXGTK__
-      process_dir(lv, init).FindFiles();
+      process_dir(lv, init).find_files();
 #endif
     }
 
@@ -177,7 +177,7 @@ bool wex::debug::GetArgs(
   else if ((match("^(br|break)", command, v) == 1) && stc != nullptr)
   {
     args += " " +
-      stc->GetFileName().Path().string() + ":" + 
+      stc->get_filename().data().string() + ":" + 
       std::to_string(stc->GetCurrentLine() + 1); 
   }
   else if ((match("^(d|del|delete) (br|breakpoint)", command, v) > 0) && stc != nullptr)
@@ -185,7 +185,7 @@ bool wex::debug::GetArgs(
     for (const auto& it: m_Breakpoints)
     {
       if (
-        stc->GetFileName() == std::get<0>(it.second) &&
+        stc->get_filename() == std::get<0>(it.second) &&
         stc->GetCurrentLine() == std::get<2>(it.second))
       {
         args += " " + it.first;
@@ -197,12 +197,12 @@ bool wex::debug::GetArgs(
   else if (command == "file")
   {
     return item_dialog(
-      {{"File", item::COMBOBOX_FILE, std::any(), control_data().Required(true),
+      {{"File", item::COMBOBOX_FILE, std::any(), control_data().is_required(true),
           item::LABEL_LEFT,
           [&](wxWindow* user, const std::any& value, bool save) {
              if (save) args += " " + std::any_cast<wxArrayString>(value)[0];}},
-       {m_Entry.GetName(), item::FILEPICKERCTRL}},
-      window_data().Title("Debug").Parent(m_Frame)).ShowModal() != wxID_CANCEL;
+       {m_Entry.name(), item::FILEPICKERCTRL}},
+      window_data().title("Debug").parent(m_Frame)).ShowModal() != wxID_CANCEL;
   }
   else if ((match("^(p|print)", command, v) == 1) && stc != nullptr)
   {
@@ -216,7 +216,7 @@ bool wex::debug::GetArgs(
   return true;
 }
 
-void wex::debug::ProcessStdIn(const std::string& text)
+void wex::debug::process_stdin(const std::string& text)
 {
   if (std::vector<std::string> v;
     match("(d|del|delete) +([0-9 ]*)", text, v) > 0)
@@ -228,12 +228,12 @@ void wex::debug::ProcessStdIn(const std::string& text)
       break;
 
       case 2:
-        for (tokenizer tkz(v[1], " "); tkz.HasMoreTokens(); )
+        for (tokenizer tkz(v[1], " "); tkz.has_more_tokens(); )
         {
-          if (const auto& it = m_Breakpoints.find(tkz.GetNextToken());
-            it != m_Breakpoints.end() && m_Frame->IsOpen(std::get<0>(it->second)))
+          if (const auto& it = m_Breakpoints.find(tkz.get_next_token());
+            it != m_Breakpoints.end() && m_Frame->is_open(std::get<0>(it->second)))
           {
-            auto* stc = m_Frame->OpenFile(std::get<0>(it->second));
+            auto* stc = m_Frame->open_file(std::get<0>(it->second));
             stc->MarkerDeleteHandle(std::get<1>(it->second));
           }
         }
@@ -242,7 +242,7 @@ void wex::debug::ProcessStdIn(const std::string& text)
   }
 }
 
-void wex::debug::ProcessStdOut(const std::string& text)
+void wex::debug::process_stdout(const std::string& text)
 {
   control_data data;
 
@@ -252,13 +252,13 @@ void wex::debug::ProcessStdOut(const std::string& text)
   {
     wex::path filename(v[1]);
     filename.make_absolute();
-    if (filename.FileExists())
+    if (filename.file_exists())
     {
-      auto* stc = m_Frame->OpenFile(filename);
+      auto* stc = m_Frame->open_file(filename);
       if (stc != nullptr)
       {
         const int line = std::stoi(v[2]) - 1;
-        const auto id = stc->MarkerAdd(line, m_MarkerBreakpoint.GetNo());
+        const auto id = stc->MarkerAdd(line, m_MarkerBreakpoint.number());
         m_Breakpoints[v[0]] = std::make_tuple(filename, id, line);
       }
     }
@@ -267,16 +267,16 @@ void wex::debug::ProcessStdOut(const std::string& text)
   else if (match("at (.*):([0-9]+)", text, v) > 1)
   {
     m_Path = path(v[0]).make_absolute();
-    data.Line(std::stoi(v[1]));
+    data.line(std::stoi(v[1]));
   }
   else if (match("^([0-9]+)", text, v) > 0)
   {
-    data.Line(std::stoi(v[0]));
+    data.line(std::stoi(v[0]));
   }
 
-  if (data.Line() > 0 && m_Path.FileExists())
+  if (data.line() > 0 && m_Path.file_exists())
   {
-    m_Frame->OpenFile(m_Path, data);
-    m_Process->GetShell()->SetFocus();
+    m_Frame->open_file(m_Path, data);
+    m_Process->get_shell()->SetFocus();
   }
 }

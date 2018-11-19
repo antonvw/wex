@@ -21225,7 +21225,7 @@ public:
     int rc;
     boolean flag = 0;
     rc =
-        OCILobIsOpen(connect->get_svchp(), connect->get_errhp(), lob[0], &flag);
+        OCILobis_open(connect->get_svchp(), connect->get_errhp(), lob[0], &flag);
     if (rc != OCI_SUCCESS)
       return 0;
     if (flag != TRUE)

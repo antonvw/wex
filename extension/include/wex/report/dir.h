@@ -14,21 +14,21 @@
 namespace wex
 {
   /// Offers a dir with tool support.
-  /// RunTool is FindFiles invoked on all matching files.
+  /// run_tool is find_files invoked on all matching files.
   class tool_dir : public dir
   {
   public:
     /// Constructor, provide your tool and a path.
-    /// SetupTool should already be called.
+    /// setup_tool should already be called.
     tool_dir(const tool& tool,
       const path& fullpath,
       const std::string& filespec = std::string(),
-      int flags = dir::DEFAULT);
+      dir::type_t flags = dir::type_t().set());
       
     /// Returns the statistics.
-    auto & GetStatistics() {return m_Statistics;};
+    auto & get_statistics() {return m_Statistics;};
   protected:  
-    virtual bool OnFile(const path& file) override;
+    virtual bool on_file(const path& file) override;
   private:    
     stream_statistics m_Statistics;
     const tool m_Tool;
@@ -45,10 +45,10 @@ namespace wex
     listview_dir(listview* listview,
       const path& fullpath,
       const std::string& filespec = std::string(),
-      int flags = dir::DEFAULT);
+      dir::type_t flags = dir::type_t().set());
   protected:
-    virtual bool OnDir(const path& dir) override;
-    virtual bool OnFile(const path& file) override;
+    virtual bool on_dir(const path& dir) override;
+    virtual bool on_file(const path& file) override;
   private:
     listview* m_ListView;
   };

@@ -26,12 +26,12 @@ namespace wex
     virtual bool Destroy() override;
 
     /// Returns list type from tool id.
-    static listview_data::type GetTypeTool(const tool& tool);
+    static listview_data::type_t type_tool(const tool& tool);
   protected:
-    virtual void BuildPopupMenu(menu& menu) override;
-    history_frame* GetFrame() {return m_Frame;};
+    virtual void build_popup_menu(menu& menu) override;
+    history_frame* frame() {return m_Frame;};
   private:
-    const long m_MenuFlags;
+    const listview_data::menu_t m_MenuFlags;
     history_frame* m_Frame;
   };
 };

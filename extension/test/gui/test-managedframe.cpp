@@ -19,74 +19,74 @@
 // Also test the toolbar (wex::toolbar).
 TEST_CASE("wex::managed_frame")
 {
-  REQUIRE(GetFrame()->AllowClose(100, nullptr));
+  REQUIRE(frame()->allow_close(100, nullptr));
   
-  GetSTC()->SetFocus();
-  GetSTC()->Show();
-  wex::vi* vi = &GetSTC()->GetVi();
+  get_stc()->SetFocus();
+  get_stc()->Show();
+  wex::vi* vi = &get_stc()->get_vi();
   
   wex::ex_command command(":n");
-  REQUIRE(!GetFrame()->ExecExCommand(command));
+  REQUIRE(!frame()->exec_ex_command(command));
   
-  REQUIRE(!GetFrame()->GetExCommand(vi, ""));
-  REQUIRE(!GetFrame()->GetExCommand(vi, "x"));
-  REQUIRE(!GetFrame()->GetExCommand(vi, "xx"));
-  REQUIRE( GetFrame()->GetExCommand(vi, "/"));
-  REQUIRE( GetFrame()->GetExCommand(vi, "?"));
-  REQUIRE( GetFrame()->GetExCommand(vi, "="));
+  REQUIRE(!frame()->show_ex_command(vi, ""));
+  REQUIRE(!frame()->show_ex_command(vi, "x"));
+  REQUIRE(!frame()->show_ex_command(vi, "xx"));
+  REQUIRE( frame()->show_ex_command(vi, "/"));
+  REQUIRE( frame()->show_ex_command(vi, "?"));
+  REQUIRE( frame()->show_ex_command(vi, "="));
   
-  REQUIRE(!GetFrame()->SaveCurrentPage("key"));
-  REQUIRE( GetFrame()->RestorePage("key") == nullptr);
+  REQUIRE(!frame()->save_current_page("key"));
+  REQUIRE( frame()->restore_page("key") == nullptr);
   
-  GetFrame()->HideExBar(wex::managed_frame::HIDE_BAR);
-  GetFrame()->HideExBar(wex::managed_frame::HIDE_BAR_FOCUS_STC);
-  GetFrame()->HideExBar(wex::managed_frame::HIDE_BAR_FORCE);
-  GetFrame()->HideExBar(wex::managed_frame::HIDE_BAR_FORCE_FOCUS_STC);
+  frame()->hide_ex_bar(wex::managed_frame::HIDE_BAR);
+  frame()->hide_ex_bar(wex::managed_frame::HIDE_BAR_FOCUS_STC);
+  frame()->hide_ex_bar(wex::managed_frame::HIDE_BAR_FORCE);
+  frame()->hide_ex_bar(wex::managed_frame::HIDE_BAR_FORCE_FOCUS_STC);
   
-  REQUIRE(!GetFrame()->GetManager().GetPane("VIBAR").IsShown());
+  REQUIRE(!frame()->manager().GetPane("VIBAR").IsShown());
   
-  GetFrame()->GetFileHistory().Clear();
+  frame()->file_history().clear();
   
   wxMenu* menu = new wxMenu();
-  GetFrame()->GetFileHistory().UseMenu(1000, menu);
-  GetFrame()->SetFindFocus(GetFrame()->GetSTC());
-  GetFrame()->OpenFile(GetTestPath("test.h"));
+  frame()->file_history().use_menu(1000, menu);
+  frame()->set_find_focus(frame()->get_stc());
+  frame()->open_file(GetTestPath("test.h"));
   
-  GetFrame()->SetRecentFile(GetTestPath("test.h"));
-  GetFrame()->SetRecentFile("testing");
+  frame()->set_recent_file(GetTestPath("test.h"));
+  frame()->set_recent_file("testing");
   
-  REQUIRE( GetFrame()->GetFileHistory().GetHistoryFile().Path().string().find("test.h") != std::string::npos);
-  REQUIRE( GetFrame()->GetFileHistory().GetCount() > 0);
-  REQUIRE(!GetFrame()->GetFileHistory().GetHistoryFiles(5).empty());
+  REQUIRE( frame()->file_history().get_history_file().data().string().find("test.h") != std::string::npos);
+  REQUIRE( frame()->file_history().size() > 0);
+  REQUIRE(!frame()->file_history().get_history_files(5).empty());
   
-  GetFrame()->ShowExMessage("hello from GetFrame()");
-  REQUIRE(!GetFrame()->ShowPane("xxxx"));
-  REQUIRE(!GetFrame()->ShowPane("xxxx", false));
-  GetFrame()->PrintEx(vi, "hello vi");
+  frame()->show_ex_message("hello from frame()");
+  REQUIRE(!frame()->show_pane("xxxx"));
+  REQUIRE(!frame()->show_pane("xxxx", false));
+  frame()->print_ex(vi, "hello vi");
   
-  GetFrame()->SyncAll();
-  GetFrame()->SyncCloseAll(0);
+  frame()->sync_all();
+  frame()->sync_close_all(0);
   
-  REQUIRE( GetFrame()->GetToolBar() != nullptr);
-  REQUIRE( GetFrame()->GetOptionsToolBar() != nullptr);
+  REQUIRE( frame()->get_toolbar() != nullptr);
+  REQUIRE( frame()->get_options_toolbar() != nullptr);
   
-  GetFrame()->GetToolBar()->AddControls();
-  REQUIRE( GetFrame()->TogglePane("FINDBAR"));
-  REQUIRE( GetFrame()->GetManager().GetPane("FINDBAR").IsShown());
-  REQUIRE( GetFrame()->TogglePane("OPTIONSBAR"));
-  REQUIRE( GetFrame()->GetManager().GetPane("OPTIONSBAR").IsShown());
-  REQUIRE( GetFrame()->TogglePane("TOOLBAR"));
-  REQUIRE(!GetFrame()->GetManager().GetPane("TOOLBAR").IsShown());
-  REQUIRE( GetFrame()->ShowPane("TOOLBAR"));
-  REQUIRE( GetFrame()->TogglePane("VIBAR"));
-  REQUIRE( GetFrame()->GetManager().GetPane("VIBAR").IsShown());
+  frame()->get_toolbar()->add_controls();
+  REQUIRE( frame()->toggle_pane("FINDBAR"));
+  REQUIRE( frame()->manager().GetPane("FINDBAR").IsShown());
+  REQUIRE( frame()->toggle_pane("OPTIONSBAR"));
+  REQUIRE( frame()->manager().GetPane("OPTIONSBAR").IsShown());
+  REQUIRE( frame()->toggle_pane("TOOLBAR"));
+  REQUIRE(!frame()->manager().GetPane("TOOLBAR").IsShown());
+  REQUIRE( frame()->show_pane("TOOLBAR"));
+  REQUIRE( frame()->toggle_pane("VIBAR"));
+  REQUIRE( frame()->manager().GetPane("VIBAR").IsShown());
   
-  REQUIRE(!GetFrame()->TogglePane("XXXXBAR"));
-  REQUIRE(!GetFrame()->GetManager().GetPane("XXXXBAR").IsOk());
+  REQUIRE(!frame()->toggle_pane("XXXXBAR"));
+  REQUIRE(!frame()->manager().GetPane("XXXXBAR").IsOk());
   
-  GetFrame()->OnNotebook(100, GetSTC());
+  frame()->on_notebook(100, get_stc());
   
-  GetFrame()->AppendPanes(menu);
+  frame()->append_panes(menu);
 
 #ifndef __WXMSW__
   for (auto id : std::vector<int> {
@@ -96,7 +96,7 @@ TEST_CASE("wex::managed_frame")
     wex::ID_VIEW_LOWEST + 1, wex::ID_VIEW_LOWEST + 2, wex::ID_VIEW_LOWEST + 3, wex::ID_VIEW_LOWEST + 4}) 
   {
     wxCommandEvent* event = new wxCommandEvent(wxEVT_MENU, id);
-    wxQueueEvent(GetFrame(), event);
+    wxQueueEvent(frame(), event);
   }
 #endif
 }

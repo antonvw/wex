@@ -14,7 +14,7 @@
 
 namespace wex
 {
-  /// This class defines our statusbar panes, used by wex::frame::SetupStatusBar.
+  /// This class defines our statusbar panes, used by wex::frame::setup_statusbar.
   /// It just adds some members to the base class
   /// (that offers GetText(), style() and GetWidth()).
   class statusbar_pane : public wxStatusBarPane
@@ -59,24 +59,24 @@ namespace wex
       , m_HelpText(helptext.empty() ? name.substr(name.find('e') + 1): helptext)
       , m_Name(name) {};
       
-    /// Returns statusbar pane help text.
-    const auto& GetHelpText() const {return m_HelpText;};
-    
     /// Returns hidden text.
-    const auto& GetHiddenText() const {return m_HiddenText;};
+    const auto& get_hidden_text() const {return m_HiddenText;};
     
     /// Returns statusbar pane name.
-    const auto& GetName() const {return m_Name;};
+    const auto& get_name() const {return m_Name;};
+    
+    /// Returns statusbar pane help text.
+    const auto& help_text() const {return m_HelpText;};
     
     /// Returns whether this pane is shown.
-    bool IsShown() const {return m_IsShown;};
+    bool is_shown() const {return m_IsShown;};
     
     /// Sets hidden text.
-    void SetHiddenText(const std::string& text) {m_HiddenText = text;};
+    void set_hidden_text(const std::string& text) {m_HiddenText = text;};
     
     /// Sets whether this pane is shown.
     /// Resets the hidden text if show is true.
-    void Show(bool show);
+    void show(bool show);
   private:
     std::string m_HelpText, m_HiddenText, m_Name; // no const
     bool m_IsShown {true};
@@ -100,22 +100,22 @@ namespace wex
       /// - wxSTB_ELLIPSIZE_START
       /// - wxSTB_SHOW_TIPS
       /// - wxSTB_SIZEGRIP
-      const window_data& data = window_data().Style(wxSTB_DEFAULT_STYLE));
+      const window_data& data = window_data().style(wxSTB_DEFAULT_STYLE));
       
     /// Destructor.
    ~statusbar();  
 
     /// Returns the statusbar_pane representing the n-th pane. 
-    const statusbar_pane& GetField(int n) const;
+    const statusbar_pane& get_field(int n) const;
    
     /// Returns the status text on specified field.
     /// Returns empty string if field does not exist
     /// or is not shown.
-    const std::string GetStatusText(const std::string& field) const;
+    const std::string get_statustext(const std::string& field) const;
 
     /// Sets text on specified field.
     /// Returns false if field does not exist or is not shown.
-    bool SetStatusText(
+    bool set_statustext(
       /// text
       const std::string& text, 
       /// field, default field text pane,
@@ -129,7 +129,7 @@ namespace wex
     /// - PaneInfo, shows info for control, e.g. lines
     /// - PaneLexer, shows lexer
     /// Returns created statusbar.
-    static statusbar* Setup(
+    static statusbar* setup(
       frame* frame,
       const std::vector<statusbar_pane>& panes,
       long style = wxST_SIZEGRIP,
@@ -137,7 +137,7 @@ namespace wex
 
     /// Shows or hides the field.
     /// Returns true if field visibility actually changed.
-    bool ShowField(const std::string& field, bool show);
+    bool show_field(const std::string& field, bool show);
   protected:
     /// React on some mouse events line button down, double click and
     /// moving over.

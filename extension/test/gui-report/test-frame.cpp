@@ -13,61 +13,61 @@
 
 TEST_CASE("wex::history_frame")
 {
-  wex::listview* list = new wex::listview(wex::listview_data().Type(wex::listview_data::HISTORY));
+  wex::listview* list = new wex::listview(wex::listview_data().type(wex::listview_data::HISTORY));
 
-  AddPane(GetFrame(), list);
+  AddPane(frame(), list);
 
   wxMenu* menu = new wxMenu();
-  GetFrame()->UseFileHistoryList(list);
-  GetFrame()->GetProjectHistory().UseMenu(1000, menu);
+  frame()->use_file_history_list(list);
+  frame()->get_project_history().use_menu(1000, menu);
   list->Show();
   
-  REQUIRE(!GetFrame()->OpenFile(GetTestPath("test.h"))); // as we have no focused stc
-  REQUIRE( GetFrame()->GetFileHistory().
-    GetHistoryFile().Path().string().find("../test.h") == std::string::npos);
+  REQUIRE(!frame()->open_file(GetTestPath("test.h"))); // as we have no focused stc
+  REQUIRE( frame()->file_history().
+    get_history_file().data().string().find("../test.h") == std::string::npos);
 
-  REQUIRE(!GetFrame()->OpenFile(
-    wex::path(GetProject()),
-    wex::stc_data().Flags(wex::stc_data::WIN_IS_PROJECT)));
+  REQUIRE(!frame()->open_file(
+    wex::path(get_project()),
+    wex::stc_data().flags(wex::stc_data::WIN_IS_PROJECT)));
   
-  wex::find_replace_data::Get()->SetFindString("wex::test_app");
+  wex::find_replace_data::get()->set_find_string("wex::test_app");
 
   // All find in files, grep fail, because there is no
   // FIND list.
   
-  REQUIRE(!GetFrame()->FindInFiles({}, wex::ID_TOOL_REPORT_FIND, false));
+  REQUIRE(!frame()->find_in_files({}, wex::ID_TOOL_REPORT_FIND, false));
 
-  REQUIRE(!GetFrame()->FindInFiles(
-    {GetTestPath("test.h").Path().string()}, wex::ID_TOOL_REPORT_FIND, false));
+  REQUIRE(!frame()->find_in_files(
+    {GetTestPath("test.h").data().string()}, wex::ID_TOOL_REPORT_FIND, false));
 
-  // GetFrame()->FindInFilesDialog(ID_TOOL_REPORT_FIND);
-  REQUIRE(!GetFrame()->GetFindInCaption(wex::ID_TOOL_REPORT_FIND).empty());
+  // frame()->find_in_files_dialog(ID_TOOL_REPORT_FIND);
+  REQUIRE(!frame()->find_in_files_title(wex::ID_TOOL_REPORT_FIND).empty());
   
   // It does not open, next should fail.
-  REQUIRE( GetFrame()->GetProjectHistory().
-    GetHistoryFile().Path().string().find(GetProject()) == std::string::npos);
+  REQUIRE( frame()->get_project_history().
+    get_history_file().data().string().find(get_project()) == std::string::npos);
   
-  REQUIRE( GetFrame()->GetProject() == nullptr);
+  REQUIRE( frame()->get_project() == nullptr);
 
-  VLOG(9) << "pwd: " << wex::path::Current();
+  VLOG(9) << "pwd: " << wex::path::current();
 
-  REQUIRE(!GetFrame()->Grep("xxxxxxx *.xyz ./"));
-  REQUIRE(!GetFrame()->Grep("xxxxxxx yyy"));
-  REQUIRE(!GetFrame()->Grep("xxxxxxx"));
+  REQUIRE(!frame()->grep("xxxxxxx *.xyz ./"));
+  REQUIRE(!frame()->grep("xxxxxxx yyy"));
+  REQUIRE(!frame()->grep("xxxxxxx"));
 
 #ifndef __WXMSW__
-  REQUIRE( GetFrame()->Sed("xxxxxxx yyy *.xyz"));
+  REQUIRE( frame()->sed("xxxxxxx yyy *.xyz"));
 #endif
   
-  GetFrame()->SetRecentProject("xxx.prj");
-  REQUIRE( GetFrame()->GetProjectHistory().GetHistoryFile().Path().empty());
+  frame()->set_recent_project("xxx.prj");
+  REQUIRE( frame()->get_project_history().get_history_file().data().empty());
 
-  GetFrame()->SetRecentFile(GetTestPath("test.h"));
+  frame()->set_recent_file(GetTestPath("test.h"));
 
   for (auto id : std::vector<int> {
     wex::ID_CLEAR_PROJECTS, wex::ID_PROJECT_SAVE, wex::ID_TOOL_REPORT_FIND, wex::ID_TOOL_REPLACE}) 
   {
     wxCommandEvent* event = new wxCommandEvent(wxEVT_MENU, id);
-    wxQueueEvent(GetFrame(), event);
+    wxQueueEvent(frame(), event);
   }
 }

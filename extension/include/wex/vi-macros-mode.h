@@ -28,7 +28,7 @@ namespace wex
     /// Expands template variable.
     /// Returns true if the template file name exists,
     /// and all variables in it could be expanded.
-    bool Expand(
+    bool expand(
       /// ex component to use
       ex* ex, 
       /// variable (containing template file name)
@@ -37,21 +37,21 @@ namespace wex
       std::string& expanded);
 
     /// Are we playing back?
-    bool IsPlayback() const;
+    bool is_playback() const;
 
     /// Are we recording?
-    bool IsRecording() const;
+    bool is_recording() const;
 
     /// Returns the mode as a string.
-    const std::string String() const;
+    const std::string string() const;
 
-    /// Transitions between modes.
+    /// transitions between modes.
     /// If command starts with:
     /// q: Starts recording a macro (appends to 
     ///    existing macro if macro is single upper case character).
     /// @: Playsback the macro.
     /// Returns number of characters processed from command.
-    int Transition(
+    int transition(
       /// macro name after first character
       const std::string& command, 
       /// ex component to use, required in case of playback

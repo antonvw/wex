@@ -27,12 +27,12 @@ public:
   report_sample_frame();
 protected:
   // Interface from wex::framewithhistory.
-  virtual wex::listview* Activate(
-    wex::listview_data::type type, const wex::lexer* lexer = nullptr) override;
-  virtual bool AllowClose(wxWindowID id, wxWindow* page) override;
-  virtual wex::listview* GetListView() override;
-  virtual wex::stc* GetSTC() override;
-  virtual wex::stc* OpenFile(
+  virtual wex::listview* activate(
+    wex::listview_data::type_t type, const wex::lexer* lexer = nullptr) override;
+  virtual bool allow_close(wxWindowID id, wxWindow* page) override;
+  virtual wex::listview* get_listview() override;
+  virtual wex::stc* get_stc() override;
+  virtual wex::stc* open_file(
     const wex::path& file,
     const wex::stc_data& stc_data = wex::stc_data()) override;
 private:

@@ -6,25 +6,24 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <regex>
-#include <wx/log.h>
 #include <wex/stc.h>
 #include <wex/config.h>
+#include <wex/frd.h>
 #include <wex/managedframe.h>
 #include <wex/util.h>
 #include <easylogging++.h>
 
-bool wex::stc::FindNext(bool find_next)
+bool wex::stc::find_next(bool stc_find_string)
 {
-  return FindNext(
-    GetFindString(),
-    -1,
-    find_next);
+  return find_next(stc_find_string ? 
+    get_find_string(): find_replace_data::get()->get_find_string(),
+    -1);
 }
 
-bool wex::stc::FindNext(
+bool wex::stc::find_next(
   const std::string& text, 
   int find_flags,
-  bool find_next)
+  bool forward)
 {
   if (text.empty())
   {
@@ -35,7 +34,7 @@ bool wex::stc::FindNext(
   static int start_pos, end_pos;
   const bool wrapscan(config(_("Wrap scan")).get(true));
 
-  if (find_next)
+  if (forward || (find_flags == -1 && find_replace_data::get()->search_down()))
   {
     if (recursive) 
     {
@@ -72,7 +71,7 @@ bool wex::stc::FindNext(
     static int line;
     std::match_results<std::string::const_iterator> m;
 
-    if (find_next)
+    if (forward)
     {
       line = LineFromPosition(start_pos) + 1; 
 
@@ -94,7 +93,7 @@ bool wex::stc::FindNext(
       if (!found && !recursive && wrapscan)
       {
         recursive = true;
-        found = FindNext(text, find_flags, find_next);
+        found = find_next(text, find_flags, forward);
         recursive = false;
       }
     }
@@ -120,15 +119,15 @@ bool wex::stc::FindNext(
       if (!found && !recursive && wrapscan)
       {
         recursive = true;
-        found = FindNext(text, find_flags, find_next);
+        found = find_next(text, find_flags, forward);
         recursive = false;
       }
     }
 
     if (found)
     {
-      stc_data(control_data().Line(line + 1), this).Inject();
-      VLOG(9) << GetFileName().GetFullName() << 
+      stc_data(control_data().line(line + 1), this).inject();
+      VLOG(9) << get_filename().fullname() << 
         " found margin text: " << text << " on line: " << line + 1;
     }
 
@@ -137,24 +136,24 @@ bool wex::stc::FindNext(
 
   SetTargetStart(start_pos);
   SetTargetEnd(end_pos);
-  SetSearchFlags(find_flags);
-
+  set_search_flags(find_flags);
+  
   if (SearchInTarget(text) == -1)
   {
-    frame::StatusText(
-      get_find_result(text, find_next, recursive), std::string());
+    frame::statustext(
+      get_find_result(text, forward, recursive), std::string());
     
     bool found = false;
     
     if (!recursive && wrapscan)
     {
       recursive = true;
-      found = FindNext(text, find_flags, find_next);
+      found = find_next(text, find_flags, forward);
       recursive = false;
 
       if (!found)
       {
-        VLOG(9) << GetFileName().GetFullName() << " text: " << text << " not found";
+        VLOG(9) << get_filename().fullname() << " text: " << text << " not found";
       }
     }
     
@@ -164,27 +163,27 @@ bool wex::stc::FindNext(
   {
     if (!recursive)
     {
-      wxLogStatus(wxEmptyString);
+      log_status(std::string());
     }
     
     recursive = false;
 
-    if (m_vi.Mode().Normal() || m_vi.Mode().Insert())
+    if (m_vi.mode().normal() || m_vi.mode().insert())
     {
       SetSelection(GetTargetStart(), GetTargetEnd());
     }
-    else if (m_vi.Mode().Visual())
+    else if (m_vi.mode().visual())
     {
-      if (find_next)
-        m_vi.VisualExtend(GetSelectionStart(), GetTargetEnd());
+      if (forward)
+        m_vi.visual_extend(GetSelectionStart(), GetTargetEnd());
       else
-        m_vi.VisualExtend(GetTargetStart(), GetSelectionEnd());
+        m_vi.visual_extend(GetTargetStart(), GetSelectionEnd());
     }
       
     EnsureVisible(LineFromPosition(GetTargetStart()));
     EnsureCaretVisible();
 
-    VLOG(9) << GetFileName().GetFullName() << " found text: " << text;
+    VLOG(9) << get_filename().fullname() << " found text: " << text;
 
     return true;
   }

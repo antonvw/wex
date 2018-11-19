@@ -20,57 +20,57 @@ TEST_CASE("wex::file_history")
   SUBCASE("Default constructor")
   {
     wex::file_history history;
-    REQUIRE( history.GetCount() == 0);
+    REQUIRE( history.size() == 0);
     
     wxMenu* menu = new wxMenu();
     menu->Append(1, "x");
     menu->Append(2, "y");
 
-    history.UseMenu(100, menu);
-    history.Add("xxx.cpp");
-    history.Add("");
-    REQUIRE( history.GetCount() == 0);
-    REQUIRE( history.GetHistoryFile().Path().empty());
+    history.use_menu(100, menu);
+    history.add("xxx.cpp");
+    history.add("");
+    REQUIRE( history.size() == 0);
+    REQUIRE( history.get_history_file().data().empty());
     
-    history.Add(GetTestPath("test.h"));
-    REQUIRE( history.GetCount() == 1);
-    REQUIRE( history.GetHistoryFiles(0).size() == 0);
-    REQUIRE( history.GetHistoryFiles(5).size() == 1);
+    history.add(GetTestPath("test.h"));
+    REQUIRE( history.size() == 1);
+    REQUIRE( history.get_history_files(0).size() == 0);
+    REQUIRE( history.get_history_files(5).size() == 1);
 
     // next shows a popupmenu, but remains active
-    // history.PopupMenu(GetFrame(), 5);
+    // history.PopupMenu(frame(), 5);
 
-    history.Clear();
-    REQUIRE( history.GetCount() == 0);
-    REQUIRE( history.GetHistoryFile().Path().empty());
-    REQUIRE( history.GetHistoryFile(100).Path().empty());
+    history.clear();
+    REQUIRE( history.size() == 0);
+    REQUIRE( history.get_history_file().data().empty());
+    REQUIRE( history.get_history_file(100).data().empty());
     
-    history.PopupMenu(GetFrame(), 5);
-    history.Save();
+    history.popup_menu(frame(), 5);
+    history.save();
   }
 
   SUBCASE("Other constructor")
   {
     wex::file_history history(4, 1000, "MY-KEY");
-    history.Add(GetTestPath("test.h"));
-    REQUIRE( history.GetCount() == 1);
-    REQUIRE( history.GetBaseId() == 1000);
-    REQUIRE( history.GetMaxFiles() == 4);
-    history.Save();
+    history.add(GetTestPath("test.h"));
+    REQUIRE( history.size() == 1);
+    REQUIRE( history.get_base_id() == 1000);
+    REQUIRE( history.get_max_files() == 4);
+    history.save();
   }
   
   SUBCASE("Delete file")
   {
     wex::file_history history;
-    history.Clear();
+    history.clear();
     // file should be closed before remove (at least for windows)
     {
       wex::file file(std::string("test-history.txt"), std::ios_base::out);
-      REQUIRE( file.Write(std::string("test")));
+      REQUIRE( file.write(std::string("test")));
     }
-    history.Add("test-history.txt");
-    REQUIRE( history.GetHistoryFile(0) == "test-history.txt");
+    history.add("test-history.txt");
+    REQUIRE( history.get_history_file(0) == "test-history.txt");
     REQUIRE( remove("test-history.txt") == 0);
-    REQUIRE( history.GetHistoryFile(0).Path().empty());
+    REQUIRE( history.get_history_file(0).data().empty());
   }
 }

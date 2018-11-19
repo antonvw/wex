@@ -23,21 +23,23 @@ TEST_CASE("wex::vcs_command")
   const wex::vcs_command help("h&elp", "error", "", "m&e");
   const wex::vcs_command none;
 
-  REQUIRE(add.GetCommand() == "add");
-  REQUIRE(add.GetCommand(wex::menu_command::INCLUDE_SUBCOMMAND | wex::menu_command::INCLUDE_ACCELL) == "a&dd");
+  REQUIRE(add.get_command() == "add");
+  REQUIRE(add.get_command(wex::menu_command::include_t().
+    set(wex::menu_command::INCLUDE_SUBCOMMAND).
+    set(wex::menu_command::INCLUDE_ACCELL)) == "a&dd");
   
-  REQUIRE(add.IsAdd());
-  REQUIRE(blame.IsBlame());
-  REQUIRE(co.IsCheckout());
-  REQUIRE(commit.IsCommit());
-  REQUIRE(diff.IsDiff());
-  REQUIRE(help.IsHelp());
-  REQUIRE(log.IsHistory());
-  REQUIRE(blame.IsOpen());
-  REQUIRE(!help.AskFlags());
-  REQUIRE(help.UseSubcommand());
+  REQUIRE(add.is_add());
+  REQUIRE(blame.is_blame());
+  REQUIRE(co.is_checkout());
+  REQUIRE(commit.is_commit());
+  REQUIRE(diff.is_diff());
+  REQUIRE(help.is_help());
+  REQUIRE(log.is_history());
+  REQUIRE(blame.is_open());
+  REQUIRE(!help.ask_flags());
+  REQUIRE(help.use_subcommand());
 
-  REQUIRE(add.GetSubMenu().empty());
-  REQUIRE(diff.GetSubMenu() == "submenu");
-  REQUIRE(help.GetSubMenu() == "m&e");
+  REQUIRE(add.get_submenu().empty());
+  REQUIRE(diff.get_submenu() == "submenu");
+  REQUIRE(help.get_submenu() == "m&e");
 }

@@ -65,7 +65,7 @@ namespace wex
     OTHER,
   };
 
-  enum class info_message
+  enum class info_message_t
   {
     ADD,
     COPY,
@@ -93,35 +93,35 @@ wex::evaluator wex::ex::m_Evaluator;
 wex::stc_entry_dialog* wex::ex::m_Dialog = nullptr;
 wex::vi_macros wex::ex::m_Macros;
 
-wex::ex::ex(stc* stc)
+wex::ex::ex(wex::stc* stc)
   : m_Command(ex_command(stc))
-  , m_CTags(new ctags(this))
+  , m_CTags(new wex::ctags(this))
   , m_Frame(wxDynamicCast(wxTheApp->GetTopWindow(), managed_frame))
   , m_Commands {
     {":ab", [&](const std::string& command) {
       return HandleContainer<std::string, std::map<std::string, std::string>>(
-        "Abbreviations", command, &m_Macros.GetAbbreviations(),
+        "Abbreviations", command, &m_Macros.get_abbreviations(),
         [=](const std::string& name, const std::string& value) {
-          m_Macros.SetAbbreviation(name, value);return true;});}},
+          m_Macros.set_abbreviation(name, value);return true;});}},
     {":ar", [&](const std::string& command) {
       wxString text;
       for (size_t i = 1; i < wxTheApp->argv.GetArguments().size(); i++)
       {
         text << wxTheApp->argv.GetArguments()[i] << "\n";
       }
-      if (!text.empty()) ShowDialog("ar", text.ToStdString());
+      if (!text.empty()) show_dialog("ar", text.ToStdString());
       return true;}},
     {":chd", [&](const std::string& command) {
       if (command.find(" ") == std::string::npos) return true;
-      wex::path::Current(wex::firstof(command, " ")); return true;}},
+      wex::path::current(wex::firstof(command, " ")); return true;}},
     {":close", [&](const std::string& command) {POST_COMMAND( wxID_CLOSE ) return true;}},
     {":de", [&](const std::string& command) {
-      m_Frame->GetDebug()->Execute(wex::firstof(command, " "), m_Command.STC());
+      m_Frame->get_debug()->execute(wex::firstof(command, " "), m_Command.stc());
       return true;}},
     {":e", [&](const std::string& command) {POST_COMMAND( wxID_OPEN ) return true;}},
-    {":f", [&](const std::string& command) {InfoMessage(); return true;}},
+    {":f", [&](const std::string& command) {info_message(); return true;}},
     {":grep", [&](const std::string& command) {POST_COMMAND( ID_TOOL_REPORT_FIND ) return true;}},
-    {":gt", [&](const std::string& command) {return m_Command.STC()->LinkOpen();}},
+    {":gt", [&](const std::string& command) {return m_Command.stc()->link_open();}},
     {":help", [&](const std::string& command) {POST_COMMAND( wxID_HELP ) return true;}},
     {":map", [&](const std::string& command) {
       switch (ParseCommandWithArg(command))
@@ -131,17 +131,17 @@ wex::ex::ex(stc* stc)
           return HandleContainer<int, wex::vi_macros_maptype>(
             "Map", command, nullptr,
             [=](const std::string& name, const std::string& value) {
-              m_Macros.SetKeyMap(name, value);return true;}); 
+              m_Macros.set_key_map(name, value);return true;}); 
         break;
-        case wex::command_arg::NONE: ShowDialog("Maps", 
+        case wex::command_arg::NONE: show_dialog("Maps", 
             "[String map]\n" +
-            ReportContainer<std::string, std::map<std::string, std::string>>(m_Macros.GetMap()) +
+            ReportContainer<std::string, std::map<std::string, std::string>>(m_Macros.get_map()) +
             "[Key map]\n" +
-            ReportContainer<int, wex::vi_macros_maptype>(m_Macros.GetKeysMap()) +
+            ReportContainer<int, wex::vi_macros_maptype>(m_Macros.get_keys_map()) +
             "[Alt key map]\n" +
-            ReportContainer<int, wex::vi_macros_maptype>(m_Macros.GetKeysMap(vi_macros::KEY_ALT)) +
+            ReportContainer<int, wex::vi_macros_maptype>(m_Macros.get_keys_map(vi_macros::KEY_ALT)) +
             "[Control key map]\n" +
-            ReportContainer<int, wex::vi_macros_maptype>(m_Macros.GetKeysMap(vi_macros::KEY_CONTROL)), 
+            ReportContainer<int, wex::vi_macros_maptype>(m_Macros.get_keys_map(vi_macros::KEY_CONTROL)), 
             true);
           return true;
         break;
@@ -149,16 +149,16 @@ wex::ex::ex(stc* stc)
           return HandleContainer<std::string, std::map<std::string, std::string>>(
             "Map", command, nullptr,
             [=](const std::string& name, const std::string& value) {
-              m_Macros.SetMap(name, value);return true;});
+              m_Macros.set_map(name, value);return true;});
       }
       return false;}},
     {":new", [&](const std::string& command) {POST_COMMAND( wxID_NEW ) return true;}},
-    {":print", [&](const std::string& command) {m_Command.STC()->Print(command.find(" ") == std::string::npos); return true;}},
-    {":pwd", [&](const std::string& command) {wex::log_status(wex::path::Current()); return true;}},
+    {":print", [&](const std::string& command) {m_Command.stc()->print(command.find(" ") == std::string::npos); return true;}},
+    {":pwd", [&](const std::string& command) {wex::log_status(wex::path::current()); return true;}},
     {":q!", [&](const std::string& command) {POST_CLOSE( wxEVT_CLOSE_WINDOW, false ) return true;}},
     {":q", [&](const std::string& command) {POST_CLOSE( wxEVT_CLOSE_WINDOW, true ) return true;}},
     {":reg", [&](const std::string& command) {
-      ShowDialog("Registers", m_Evaluator.GetInfo(this), true);
+      show_dialog("Registers", m_Evaluator.info(this), true);
       return true;}},
     {":sed", [&](const std::string& command) {POST_COMMAND( ID_TOOL_REPLACE ) return true;}},
     {":set", [&](const std::string& command) {
@@ -183,37 +183,37 @@ wex::ex::ex(stc* stc)
            {{"eb", "errorbells"}, [](bool on){
              config(_("Error bells")).set(on);}},
            {{"el", "edgeline"}, [&](bool on){
-             m_Command.STC()->SetEdgeMode(
+             m_Command.stc()->SetEdgeMode(
                on ? wxSTC_EDGE_LINE: wxSTC_EDGE_NONE);
              config(_("Edge line")).set( 
                on ? (long)wxSTC_EDGE_LINE: (long)wxSTC_EDGE_NONE);}},
            {{"ic", "ignorecase"}, [&](bool on){
              if (!on) m_SearchFlags |= wxSTC_FIND_MATCHCASE;
              else     m_SearchFlags &= ~wxSTC_FIND_MATCHCASE;
-             wex::find_replace_data::Get()->SetMatchCase(!on);}},
+             wex::find_replace_data::get()->set_match_case(!on);}},
            {{"mw", "matchwords"}, [&](bool on){
              if (on) m_SearchFlags |= wxSTC_FIND_WHOLEWORD;
              else    m_SearchFlags &= ~wxSTC_FIND_WHOLEWORD;
-             wex::find_replace_data::Get()->SetMatchWord(on);}},
+             wex::find_replace_data::get()->set_match_word(on);}},
            {{"nu", "number"}, [&](bool on){
-             m_Command.STC()->ShowLineNumbers(on);
+             m_Command.stc()->show_line_numbers(on);
              config(_("Line numbers")).set(on);}},
            {{"readonly", "readonly"}, [&](bool on){
-             m_Command.STC()->SetReadOnly(on);}},
+             m_Command.stc()->SetReadOnly(on);}},
            {{"showmode", "showmode"}, [&](bool on){
-             ((wex::statusbar *)m_Frame->GetStatusBar())->ShowField("PaneMode", on);
+             ((wex::statusbar *)m_Frame->GetStatusBar())->show_field("PaneMode", on);
              config(_("Show mode")).set(on);}},
            {{"sm", "showmatch"}, [&](bool on){
              config(_("Show match")).set(on);}},
            {{"sws", "showwhitespace"}, [&](bool on){
-             m_Command.STC()->SetViewEOL(on);
-             m_Command.STC()->SetViewWhiteSpace(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);
+             m_Command.stc()->SetViewEOL(on);
+             m_Command.stc()->SetViewWhiteSpace(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);
              config(_("Whitespace")).set(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);}},
            {{"ut", "usetabs"}, [&](bool on){
-             m_Command.STC()->SetUseTabs(on);
+             m_Command.stc()->SetUseTabs(on);
              config(_("Use tabs")).set(on);}},
            {{"wm", "wrapmargin"}, [&](bool on){
-             m_Command.STC()->SetWrapMode(on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);
+             m_Command.stc()->SetWrapMode(on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);
              config(_("Wrap line")).set(on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);}},
            {{"ws", "wrapscan", "1"}, [&](bool on){
              config(_("Wrap scan")).set(on);}}
@@ -222,33 +222,33 @@ wex::ex::ex(stc* stc)
           // options
           {
            {{"dir", "dir"}, {cmdline::STRING, [&](const std::any& val) {
-             wex::path::Current(std::any_cast<std::string>(val));}}},
+             wex::path::current(std::any_cast<std::string>(val));}}},
            {{"ec", "edgecolumn", "80"}, {cmdline::INT, [&](const std::any& val) {
-             m_Command.STC()->SetEdgeColumn(std::any_cast<int>(val));
+             m_Command.stc()->SetEdgeColumn(std::any_cast<int>(val));
              config(_("Edge column")).set(std::any_cast<int>(val));}}},
            {{"report", "report", "5"}, {cmdline::INT, [&](const std::any& val) {
              config("Reported lines").set(std::any_cast<int>(val));}}},
            {{"sw", "shiftwidth", "8"}, {cmdline::INT, [&](const std::any& val) {
-             m_Command.STC()->SetIndent(std::any_cast<int>(val));
+             m_Command.stc()->SetIndent(std::any_cast<int>(val));
              config(_("Indent")).set(std::any_cast<int>(val));}}},
            {{"sy", "syntax (lexer or 'off')"}, {cmdline::STRING, [&](const std::any& val) {
              if (std::any_cast<std::string>(val) != "off") 
-               m_Command.STC()->GetLexer().Set(std::any_cast<std::string>(val), true); // allow folding
+               m_Command.stc()->get_lexer().set(std::any_cast<std::string>(val), true); // allow folding
              else              
-               m_Command.STC()->GetLexer().Reset();}}},
+               m_Command.stc()->get_lexer().reset();}}},
            {{"ts", "tabstop","8"}, {cmdline::INT, [&](const std::any& val) {
-             m_Command.STC()->SetTabWidth(std::any_cast<int>(val));
+             m_Command.stc()->SetTabWidth(std::any_cast<int>(val));
              config(_("Tab width")).set(std::any_cast<int>(val));}}}
           }
         );
 
       if (command.find(" ") == std::string::npos)
       {
-        cmdline.ShowOptions(wex::window_data().Size({200, 450}));
+        cmdline.show_options(wex::window_data().size({200, 450}));
       }
       else
       {
-        cmdline.Parse(command.substr(0, 4) + text, save);
+        cmdline.parse(command.substr(0, 4) + text, save);
       }
       return true;}},
     {":so", [&](const std::string& command) {
@@ -258,7 +258,7 @@ wex::ex::ex(stc* stc)
       {
         path.make_absolute();
       }
-      std::ifstream ifs(path.Path());
+      std::ifstream ifs(path.data());
       if (!ifs.is_open()) return false;
       int i = 0;
       for (std::string line; std::getline(ifs, line); )
@@ -270,7 +270,7 @@ wex::ex::ex(stc* stc)
             VLOG(9) << "recursive (line: " << i + 1 << ")";
             return false;
           }
-          else if (!Command(line))
+          else if (!ex::command(line))
           {
             VLOG(9) << "command error (line: " << i + 1 << ")";
             return false;
@@ -282,52 +282,52 @@ wex::ex::ex(stc* stc)
     {":syntax", [&](const std::string& command) {
       if (wxString(command).EndsWith("on"))
       {
-        wex::lexers::Get()->RestoreTheme();
-        m_Command.STC()->GetLexer().Set(m_Command.STC()->GetFileName().GetLexer().GetDisplayLexer(), true); // allow folding
+        wex::lexers::get()->restore_theme();
+        m_Command.stc()->get_lexer().set(m_Command.stc()->get_filename().lexer().display_lexer(), true); // allow folding
       }
       else if (wxString(command).EndsWith("off"))
       {
-        m_Command.STC()->GetLexer().Reset();
-        wex::lexers::Get()->ResetTheme();
+        m_Command.stc()->get_lexer().reset();
+        wex::lexers::get()->reset_theme();
       }
       else
       {
         return false;
       }
-      m_Frame->StatusText(wex::lexers::Get()->GetTheme(), "PaneTheme");
+      m_Frame->statustext(wex::lexers::get()->theme(), "PaneTheme");
       return true;}},
     {":ta", [&](const std::string& command) {
-      m_CTags->Find(wex::firstof(command, " "));
+      m_CTags->find(wex::firstof(command, " "));
       return true;}},
     {":una", [&](const std::string& command) {
-      if (wex::tokenizer tkz(command); tkz.CountTokens() >= 1)
+      if (wex::tokenizer tkz(command); tkz.count_tokens() >= 1)
       {
-        tkz.GetNextToken(); // skip :una
-        m_Macros.SetAbbreviation(tkz.GetNextToken(), "");
+        tkz.get_next_token(); // skip :una
+        m_Macros.set_abbreviation(tkz.get_next_token(), "");
       }
       return true;}},
     {":unm", [&](const std::string& command) {
-      if (wex::tokenizer tkz(command); tkz.CountTokens() >= 1)
+      if (wex::tokenizer tkz(command); tkz.count_tokens() >= 1)
       {
-        tkz.GetNextToken(); // skip :unm
+        tkz.get_next_token(); // skip :unm
         switch (ParseCommandWithArg(command))
         {
-          case wex::command_arg::INT: m_Macros.SetKeyMap(tkz.GetNextToken(), ""); break; 
+          case wex::command_arg::INT: m_Macros.set_key_map(tkz.get_next_token(), ""); break; 
           case wex::command_arg::NONE: break;
-          case wex::command_arg::OTHER: m_Macros.SetMap(tkz.GetNextToken(), ""); break;
+          case wex::command_arg::OTHER: m_Macros.set_map(tkz.get_next_token(), ""); break;
         }
       }
       return true;}},
-    {":ve", [&](const std::string& command) {ShowDialog("Version", 
-      wex::get_version_info().Get()); return true;}},
+    {":ve", [&](const std::string& command) {show_dialog("Version", 
+      wex::get_version_info().get()); return true;}},
     {":x", [&](const std::string& command) {
       if (command != ":x") return false;
       POST_COMMAND( wxID_SAVE )
       POST_CLOSE( wxEVT_CLOSE_WINDOW, true )
       return true;}}}
 {
-  wxASSERT(m_Frame != nullptr);
-  ResetSearchFlags();
+  assert(m_Frame != nullptr);
+  reset_search_flags();
   m_AutoWrite = config(_("Auto write")).get(false);
 }
 
@@ -336,23 +336,23 @@ wex::ex::~ex()
   delete m_CTags;
 }
   
-void wex::ex::AddText(const std::string& text)
+void wex::ex::add_text(const std::string& text)
 {
   if (m_Register)
   {
-    m_Macros.SetRegister(m_Register, text);
+    m_Macros.set_register(m_Register, text);
   }
   else
   {
-    m_Command.STC()->AddTextRaw((const char *)text.c_str(), text.length());
+    m_Command.stc()->AddTextRaw((const char *)text.c_str(), text.length());
   }
 
-  InfoMessage(text, wex::info_message::ADD);
+  info_message(text, wex::info_message_t::ADD);
 }
 
-bool wex::ex::AutoWrite()
+bool wex::ex::auto_write()
 {
-  if (!m_AutoWrite || !m_Command.STC()->IsModified())
+  if (!m_AutoWrite || !m_Command.stc()->IsModified())
   {
     return true;
   }
@@ -365,19 +365,19 @@ bool wex::ex::AutoWrite()
   return true;
 }
 
-std::tuple<double, int> wex::ex::Calculator(const std::string& text)
+std::tuple<double, int> wex::ex::calculator(const std::string& text)
 {
   const auto& [val, width, err] = m_Evaluator.Eval(this, text);
 
   if (!err.empty())
   {
-    ShowDialog("Error", text + "\n" + err);
+    show_dialog("Error", text + "\n" + err);
   }
 
   return {val, width};
 }
 
-bool wex::ex::Command(const std::string& cmd)
+bool wex::ex::command(const std::string& cmd)
 {
   auto command(cmd);
 
@@ -385,17 +385,17 @@ bool wex::ex::Command(const std::string& cmd)
 
   VLOG(9) << "ex command: " << cmd;
 
-  const auto& it = m_Macros.GetMap().find(command);
-  command = (it != m_Macros.GetMap().end() ? it->second: command);
+  const auto& it = m_Macros.get_map().find(command);
+  command = (it != m_Macros.get_map().end() ? it->second: command);
 
-  if (m_Frame->ExecExCommand(m_Command.Command(cmd)))
+  if (m_Frame->exec_ex_command(m_Command.command(cmd)))
   {
     m_Command.clear();
-    return AutoWrite();
+    return auto_write();
   }
   else if (command == ":" || command == ":'<,'>" || command == ":!")
   {
-    return m_Frame->GetExCommand(this, command);
+    return m_Frame->show_ex_command(this, command);
   }
   else if (
     !CommandHandle(command) &&
@@ -405,10 +405,10 @@ bool wex::ex::Command(const std::string& cmd)
     return false;
   }
 
-  m_Macros.Record(command);
+  m_Macros.record(command);
   m_Command.clear();
 
-  return AutoWrite();
+  return auto_write();
 }
 
 bool wex::ex::CommandAddress(const std::string& command)
@@ -465,14 +465,14 @@ bool wex::ex::CommandAddress(const std::string& command)
           addr1 = true;
           range_str = v[0];
           cmd = v[1];
-          rest = skip_white_space(v[2], SKIP_LEFT);
+          rest = skip_white_space(v[2], skip_t().set(SKIP_LEFT));
           break;
         case 4:
           range_str = v[0] + v[1];
           cmd = v[2];
           rest = v[3];
           break;
-        default: wxFAIL; break;
+        default: assert(0); break;
       }
 
       if (!marker_and_register_expansion(this, range_str))
@@ -482,8 +482,8 @@ bool wex::ex::CommandAddress(const std::string& command)
     }
     else 
     {
-      const auto line(address(this, rest).GetLine());
-      if (line > 0) stc_data(m_Command.STC()).Control(control_data().Line(line)).Inject();
+      const auto line(address(this, rest).get_line());
+      if (line > 0) stc_data(m_Command.stc()).control(control_data().line(line)).inject();
       return line > 0;
     }
     
@@ -498,22 +498,22 @@ bool wex::ex::CommandAddress(const std::string& command)
     switch (const address addr(this, range_str); (int)cmd[0])
     {
     case 0: return false;
-    case 'a': return addr.Append(rest);
-    case 'i': return addr.Insert(rest);
-    case 'k': return !rest.empty() ? addr.MarkerAdd(rest[0]): false;
+    case 'a': return addr.append(rest);
+    case 'i': return addr.insert(rest);
+    case 'k': return !rest.empty() ? addr.marker_add(rest[0]): false;
     case 'p': 
       if (cmd == "pu")
       { 
-        return !rest.empty() ? addr.Put(rest[0]): addr.Put();
+        return !rest.empty() ? addr.put(rest[0]): addr.put();
       }
       else
       {
         return false;
       }
       break;
-    case 'r': return addr.Read(rest);
-    case 'z': return addr.AdjustWindow(rest);
-    case '=': return addr.WriteLineNumber();
+    case 'r': return addr.read(rest);
+    case 'z': return addr.adjust_window(rest);
+    case '=': return addr.write_line_number();
     default:
       wxLogStatus("Unknown address command: %s", cmd);
       return false;
@@ -524,16 +524,16 @@ bool wex::ex::CommandAddress(const std::string& command)
     switch (addressrange range(this, range_str); (int)cmd[0])
     {
     case 0: return false;
-    case 'c': return range.Change(rest);
-    case 'd': return range.Delete();
+    case 'c': return range.change(rest);
+    case 'd': return range.erase();
     case 'v':
-    case 'g': return range.Global(rest, cmd[0] == 'v');
-    case 'j': return range.Join();
-    case 'm': return range.Move(address(this, rest));
+    case 'g': return range.global(rest, cmd[0] == 'v');
+    case 'j': return range.join();
+    case 'm': return range.move(address(this, rest));
     case 'p': 
-      if (m_Command.STC()->GetName() != "Print")
+      if (m_Command.stc()->GetName() != "Print")
       {
-        return range.Print(rest);
+        return range.print(rest);
       }
       else
       {
@@ -541,13 +541,13 @@ bool wex::ex::CommandAddress(const std::string& command)
       }
     case 's':
     case '&':
-    case '~': return range.Substitute(rest, cmd[0]);
-    case 'S': return range.Sort(rest);
-    case 't': return range.Copy(address(this, rest));
+    case '~': return range.substitute(rest, cmd[0]);
+    case 'S': return range.sort(rest);
+    case 't': return range.copy(address(this, rest));
     case 'w': 
       if (!rest.empty())
       {
-        return range.Write(rest);
+        return range.write(rest);
       }
       else
       {
@@ -555,10 +555,10 @@ bool wex::ex::CommandAddress(const std::string& command)
         return true;
       }
       break;
-    case 'y': return range.Yank(rest.empty() ? '0': (char)rest[0]);
-    case '>': return range.ShiftRight();
-    case '<': return range.ShiftLeft();
-    case '!': return range.Escape(rest);
+    case 'y': return range.yank(rest.empty() ? '0': (char)rest[0]);
+    case '>': return range.shift_right();
+    case '<': return range.shift_left();
+    case '!': return range.escape(rest);
     default:
       wxLogStatus("Unknown range command: %s", cmd);
       return false;
@@ -574,46 +574,46 @@ bool wex::ex::CommandHandle(const std::string& command) const
   return it != m_Commands.end() && it->second(command);
 }
 
-void wex::ex::Copy(const wex::ex* ex)
+void wex::ex::copy(const wex::ex* ex)
 {
   m_MarkerIdentifiers = ex->m_MarkerIdentifiers;
   m_Copy = true; // no char numbers for a copy
 }
 
-void wex::ex::Cut(bool show_message)
+void wex::ex::cut(bool show_message)
 {
   const auto sel(GetSelectedText());
   
-  Yank('0', false);
+  yank('0', false);
 
-  m_Command.STC()->ReplaceSelection(wxEmptyString);
+  m_Command.stc()->ReplaceSelection(wxEmptyString);
   
-  SetRegistersDelete(sel);
+  set_registers_delete(sel);
   
-  InfoMessage(sel, wex::info_message::DEL);
+  info_message(sel, wex::info_message_t::DEL);
 }
 
-const std::string wex::ex::GetRegisterInsert() const
+const std::string wex::ex::register_insert() const
 {
-  return m_Macros.GetRegister('.');
+  return m_Macros.get_register('.');
 }
 
-const std::string wex::ex::GetRegisterText() const
+const std::string wex::ex::register_text() const
 {
   return m_Register ? 
-    m_Macros.GetRegister(m_Register):
-    m_Macros.GetRegister('0');
+    m_Macros.get_register(m_Register):
+    m_Macros.get_register('0');
 }
   
 const std::string wex::ex::GetSelectedText() const
 {
   // This also supports rectangular text.
-  if (m_Command.STC()->GetSelectedText().empty())
+  if (m_Command.stc()->GetSelectedText().empty())
   {
     return std::string();
   }
 
-  const wxCharBuffer b(m_Command.STC()->GetSelectedTextRaw());
+  const wxCharBuffer b(m_Command.stc()->GetSelectedTextRaw());
   return std::string(b.data(), b.length() - 1);
 }
 
@@ -624,32 +624,32 @@ bool wex::ex::HandleContainer(
   const T * container,
   std::function<bool(const std::string&, const std::string&)> cb)
 {
-  if (tokenizer tkz(command); tkz.CountTokens() >= 2)
+  if (tokenizer tkz(command); tkz.count_tokens() >= 2)
   {
-    tkz.GetNextToken(); // skip
-    const auto name(tkz.GetNextToken());
-    cb(name, tkz.GetString());
+    tkz.get_next_token(); // skip
+    const auto name(tkz.get_next_token());
+    cb(name, tkz.get_string());
   }
   else if (container != nullptr)
   {
-    ShowDialog(kind, ReportContainer<S, T>(*container), true);
+    show_dialog(kind, ReportContainer<S, T>(*container), true);
   }
 
   return true;
 }
 
-void wex::ex::InfoMessage() const
+void wex::ex::info_message() const
 {
-  m_Frame->ShowExMessage(wxString::Format("%s line %d of %d --%d%%-- level %d", 
-    m_Command.STC()->GetFileName().GetFullName().c_str(), 
-    m_Command.STC()->GetCurrentLine() + 1,
-    m_Command.STC()->GetLineCount(),
-    100 * (m_Command.STC()->GetCurrentLine() + 1)/ m_Command.STC()->GetLineCount(),
-    (m_Command.STC()->GetFoldLevel(m_Command.STC()->GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK)
+  m_Frame->show_ex_message(wxString::Format("%s line %d of %d --%d%%-- level %d", 
+    m_Command.stc()->get_filename().fullname().c_str(), 
+    m_Command.stc()->GetCurrentLine() + 1,
+    m_Command.stc()->GetLineCount(),
+    100 * (m_Command.stc()->GetCurrentLine() + 1)/ m_Command.stc()->GetLineCount(),
+    (m_Command.stc()->GetFoldLevel(m_Command.stc()->GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK)
      - wxSTC_FOLDLEVELBASE).ToStdString());
 }
 
-void wex::ex::InfoMessage(const std::string& text, wex::info_message type) const
+void wex::ex::info_message(const std::string& text, wex::info_message_t type) const
 {
   if (const auto lines = get_number_of_lines(text);
     lines >= config("Reported lines").get(5))
@@ -658,33 +658,33 @@ void wex::ex::InfoMessage(const std::string& text, wex::info_message type) const
 
     switch (type)
     {
-      case wex::info_message::ADD: msg = _("%d lines added"); break;
-      case wex::info_message::COPY: msg = _("%d lines yanked"); break;
-      case wex::info_message::DEL: msg = _("%d fewer lines"); break;
+      case wex::info_message_t::ADD: msg = _("%d lines added"); break;
+      case wex::info_message_t::COPY: msg = _("%d lines yanked"); break;
+      case wex::info_message_t::DEL: msg = _("%d fewer lines"); break;
     }
 
-    m_Frame->ShowExMessage(wxString::Format(msg, lines - 1).ToStdString());
+    m_Frame->show_ex_message(wxString::Format(msg, lines - 1).ToStdString());
   }
 }
 
-bool wex::ex::MarkerAdd(char marker, int line)
+bool wex::ex::marker_add(char marker, int line)
 {
   if (m_Copy) return false;
 
-  const wex::marker lm(wex::lexers::Get()->GetMarker(m_MarkerSymbol));
+  const wex::marker lm(wex::lexers::get()->get_marker(m_MarkerSymbol));
 
   if (!lm.is_ok())
   {
-    wex::log("could not find marker symbol") << m_MarkerSymbol.GetNo() << " in lexers";
+    wex::log("could not find marker symbol") << m_MarkerSymbol.number() << " in lexers";
     return false;
   }
   
-  MarkerDelete(marker);
+  marker_delete(marker);
 
   int id;
-  const int lin = (line == -1 ? m_Command.STC()->GetCurrentLine(): line);
+  const int lin = (line == -1 ? m_Command.stc()->GetCurrentLine(): line);
 
-  if (lm.GetSymbol() == wxSTC_MARK_CHARACTER)
+  if (lm.symbol() == wxSTC_MARK_CHARACTER)
   {
     if (const auto& it = m_MarkerNumbers.find(marker); it == m_MarkerNumbers.end())
     {
@@ -696,22 +696,22 @@ bool wex::ex::MarkerAdd(char marker, int line)
       const auto marker_offset = 3;
       const auto marker_number = m_MarkerIdentifiers.size() + marker_offset;
 
-      m_Command.STC()->MarkerDefine(marker_number, 
+      m_Command.stc()->MarkerDefine(marker_number, 
         wxSTC_MARK_CHARACTER + marker, 
-        wxString(lm.GetForegroundColour()), 
-        wxString(lm.GetBackgroundColour()));
+        wxString(lm.foreground_colour()), 
+        wxString(lm.background_colour()));
 
-      id = m_Command.STC()->MarkerAdd(lin, marker_number);
+      id = m_Command.stc()->MarkerAdd(lin, marker_number);
       m_MarkerNumbers[marker] = marker_number;
     }
     else
     {
-      id = m_Command.STC()->MarkerAdd(lin, it->second);
+      id = m_Command.stc()->MarkerAdd(lin, it->second);
     }
   }
   else
   {
-    id = m_Command.STC()->MarkerAdd(lin, m_MarkerSymbol.GetNo());
+    id = m_Command.stc()->MarkerAdd(lin, m_MarkerSymbol.number());
   }
     
   if (id == -1)
@@ -725,11 +725,11 @@ bool wex::ex::MarkerAdd(char marker, int line)
   return true;
 }  
 
-bool wex::ex::MarkerDelete(char marker)
+bool wex::ex::marker_delete(char marker)
 {
   if (const auto& it = m_MarkerIdentifiers.find(marker); it != m_MarkerIdentifiers.end())
   {
-    m_Command.STC()->MarkerDeleteHandle(it->second);
+    m_Command.stc()->MarkerDeleteHandle(it->second);
     m_MarkerIdentifiers.erase(it);
     return true;
   }
@@ -737,38 +737,38 @@ bool wex::ex::MarkerDelete(char marker)
   return false;
 }
 
-bool wex::ex::MarkerGoto(char marker)
+bool wex::ex::marker_goto(char marker)
 {
-  if (const auto line = MarkerLine(marker); line != -1)
+  if (const auto line = marker_line(marker); line != -1)
   {
-    stc_data(m_Command.STC()).Control(control_data().Line(line + 1)).Inject();
+    stc_data(m_Command.stc()).control(control_data().line(line + 1)).inject();
     return true;
   }
   
   return false;
 }
 
-int wex::ex::MarkerLine(char marker) const
+int wex::ex::marker_line(char marker) const
 {
   if (marker == '<')
   {
     if (!GetSelectedText().empty())
     {
-      return m_Command.STC()->LineFromPosition(m_Command.STC()->GetSelectionStart());
+      return m_Command.stc()->LineFromPosition(m_Command.stc()->GetSelectionStart());
     }
   }
   else if (marker == '>')
   {
     if (!GetSelectedText().empty())
     {
-      return m_Command.STC()->LineFromPosition(m_Command.STC()->GetSelectionEnd());
+      return m_Command.stc()->LineFromPosition(m_Command.stc()->GetSelectionEnd());
     }
   }
   else
   {
     if (const auto& it = m_MarkerIdentifiers.find(marker); it != m_MarkerIdentifiers.end())
     {
-      if (const auto line = m_Command.STC()->MarkerLineFromHandle(it->second); line == -1)
+      if (const auto line = m_Command.stc()->MarkerLineFromHandle(it->second); line == -1)
       {
         wxLogStatus("Handle for marker: %c invalid", marker);
       }
@@ -791,9 +791,9 @@ int wex::ex::MarkerLine(char marker) const
   return -1;
 }
 
-void wex::ex::Print(const std::string& text)
+void wex::ex::print(const std::string& text)
 {
-  ShowDialog("Print", text);
+  show_dialog("Print", text);
 }
   
 template <typename S, typename T>
@@ -804,20 +804,20 @@ std::string wex::ex::ReportContainer(const T & t) const
 
   for (const auto& it : t)
   {
-    output += l.MakeKey(type_to_value<S>(it.first).getString(), it.second);
+    output += l.make_key(type_to_value<S>(it.first).get_string(), it.second);
   }
 
   return output;
 }
 
-void wex::ex::ResetSearchFlags()
+void wex::ex::reset_search_flags()
 {
-  m_SearchFlags = ((find_replace_data::Get()->MatchCase() ? 
+  m_SearchFlags = ((find_replace_data::get()->match_case() ? 
     wxSTC_FIND_MATCHCASE: 0) | 
     wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX);
 }
 
-void wex::ex::SetRegistersDelete(const std::string& value) const
+void wex::ex::set_registers_delete(const std::string& value) const
 {
   if (value.empty())
   {
@@ -826,37 +826,37 @@ void wex::ex::SetRegistersDelete(const std::string& value) const
   
   for (int i = 9; i >= 2; i--)
   {
-    if (const auto value(m_Macros.GetRegister(wxUniChar(48 + i - 1)));
+    if (const auto value(m_Macros.get_register(wxUniChar(48 + i - 1)));
       !value.empty())
     {
-      m_Macros.SetRegister(wxUniChar(48 + i), value);
+      m_Macros.set_register(wxUniChar(48 + i), value);
     }
   }
   
-  m_Macros.SetRegister('1', value);
+  m_Macros.set_register('1', value);
 }
   
-void wex::ex::SetRegisterInsert(const std::string& value) const
+void wex::ex::set_register_insert(const std::string& value) const
 {
   if (value.empty())
   {
     return;
   }
   
-  m_Macros.SetRegister('.', value);
+  m_Macros.set_register('.', value);
 }
 
-void wex::ex::SetRegisterYank(const std::string& value) const
+void wex::ex::set_register_yank(const std::string& value) const
 {
   if (value.empty())
   {
     return;
   }
   
-  m_Macros.SetRegister('0', value);
+  m_Macros.set_register('0', value);
 }
 
-void wex::ex::ShowDialog(
+void wex::ex::show_dialog(
   const std::string& title, const std::string& text, bool prop_lexer)
 {
   if (m_Dialog == nullptr)
@@ -864,7 +864,7 @@ void wex::ex::ShowDialog(
     m_Dialog = new stc_entry_dialog(
       text,
       std::string(),
-      window_data().Button(wxOK).Title(title));
+      window_data().button(wxOK).title(title));
   }
   else
   {
@@ -872,28 +872,28 @@ void wex::ex::ShowDialog(
     { 
       if (title != m_Dialog->GetTitle())
       {
-        m_Dialog->GetSTC()->SetText(text);
+        m_Dialog->stc()->set_text(text);
       }
       else
       {
-        m_Dialog->GetSTC()->AppendText(text);
-        m_Dialog->GetSTC()->DocumentEnd();
+        m_Dialog->stc()->AppendText(text);
+        m_Dialog->stc()->DocumentEnd();
       }
     }
     else
     {
-      m_Dialog->GetSTC()->SetText(text);
+      m_Dialog->stc()->set_text(text);
     }
     
     m_Dialog->SetTitle(title);
   }
   
-  m_Dialog->GetSTC()->GetLexer().Set(
-    prop_lexer ? lexer_props(): m_Command.STC()->GetLexer());
+  m_Dialog->stc()->get_lexer().set(
+    prop_lexer ? lexer_props(): m_Command.stc()->get_lexer());
   m_Dialog->Show();
 }
 
-bool wex::ex::Yank(const char name, bool show_message) const
+bool wex::ex::yank(const char name, bool show_message) const
 {
   const auto range(GetSelectedText());
   
@@ -901,20 +901,20 @@ bool wex::ex::Yank(const char name, bool show_message) const
   {
     return false;
   }
-  else if (GetRegister())
+  else if (register_name())
   {
-    m_Macros.SetRegister(GetRegister(), range);
+    m_Macros.set_register(register_name(), range);
   }
   else if (name != '0')
   {
-    m_Macros.SetRegister(name, range);
+    m_Macros.set_register(name, range);
   }
   else
   {
-    SetRegisterYank(range);
+    set_register_yank(range);
   }
 
-  InfoMessage(range, wex::info_message::COPY);
+  info_message(range, wex::info_message_t::COPY);
   
   return true;
 }

@@ -14,19 +14,19 @@
 
 wex::notebook::notebook(const window_data& data)
   : wxAuiNotebook(
-      data.Parent(), 
-      data.Id(), 
-      data.Pos(), 
-      data.Size(), 
-      data.Style() == DATA_NUMBER_NOT_SET ?
+      data.parent(), 
+      data.id(), 
+      data.pos(), 
+      data.size(), 
+      data.style() == DATA_NUMBER_NOT_SET ?
         wxAUI_NB_TOP | wxAUI_NB_TAB_SPLIT | wxAUI_NB_TAB_MOVE | wxAUI_NB_SCROLL_BUTTONS: 
-        data.Style())
+        data.style())
   , m_Frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
 {
   // Here you could use another art provider.
   // SetArtProvider(new wxAuiSimpleTabArt); 
 
-  switch (data.Id())
+  switch (data.id())
   {
     case ID_NOTEBOOK_EDITORS:
       SetFont(config(_("Tab font")).get(
@@ -43,13 +43,13 @@ wex::notebook::notebook(const window_data& data)
     event.Skip(); // call base
     if (m_Frame != nullptr)
     {
-      m_Frame->OnNotebook(GetId(), GetPage(event.GetSelection()));
+      m_Frame->on_notebook(GetId(), GetPage(event.GetSelection()));
     }});
   
   Bind(wxEVT_AUINOTEBOOK_PAGE_CLOSE, [=](wxAuiNotebookEvent& event) {
     if (const auto sel = event.GetSelection(); sel != wxNOT_FOUND)
     {
-      if (m_Frame != nullptr && !m_Frame->AllowClose(GetId(), GetPage(sel)))
+      if (m_Frame != nullptr && !m_Frame->allow_close(GetId(), GetPage(sel)))
       {
         event.Veto();
       }
@@ -63,21 +63,21 @@ wex::notebook::notebook(const window_data& data)
         
         if (m_Frame != nullptr)
         {
-          if (m_Keys.empty()) m_Frame->SyncCloseAll(GetId());
-          m_Frame->HideExBar();
+          if (m_Keys.empty()) m_Frame->sync_close_all(GetId());
+          m_Frame->hide_ex_bar();
         }
       }
     }});
 }
 
-wxWindow* wex::notebook::AddPage(
+wxWindow* wex::notebook::add_page(
   wxWindow* page,
   const std::string& key,
   const std::string& text,
   bool select,
   const wxBitmap& bitmap)
 {
-  if (!wxAuiNotebook::AddPage(page, (text.empty() ? key: text), select, bitmap))
+  if (!AddPage(page, (text.empty() ? key: text), select, bitmap))
   {
     return nullptr;
   }
@@ -88,26 +88,26 @@ wxWindow* wex::notebook::AddPage(
   return page;
 }
 
-const std::string wex::notebook::ChangeSelection(const std::string& key)
+const std::string wex::notebook::change_selection(const std::string& key)
 {
   int previous;
   
-  if (const auto index = GetPageIndexByKey(key); 
+  if (const auto index = page_index_by_key(key); 
     index != wxNOT_FOUND && ((previous = wxAuiNotebook::ChangeSelection(index))) >= 0)
   {
     auto* page = m_Keys[key];
     m_Keys[key] = page;
     m_Windows[page] = key;
-    return GetKeyByPage(GetPage(previous));
+    return key_by_page(GetPage(previous));
   }
   
   return std::string();
 }
   
-bool wex::notebook::DeletePage(const std::string& key)
+bool wex::notebook::delete_page(const std::string& key)
 {
-  if (const auto index = GetPageIndexByKey(key);
-    index != wxNOT_FOUND && wxAuiNotebook::DeletePage(index))
+  if (const auto index = page_index_by_key(key);
+    index != wxNOT_FOUND && DeletePage(index))
   {
     auto* page = m_Keys[key];
     m_Keys.erase(key);
@@ -116,7 +116,7 @@ bool wex::notebook::DeletePage(const std::string& key)
     
     if (m_Frame != nullptr && m_Keys.empty())
     {
-      m_Frame->SyncCloseAll(GetId());
+      m_Frame->sync_close_all(GetId());
     }
 
     return true;
@@ -127,13 +127,13 @@ bool wex::notebook::DeletePage(const std::string& key)
   }
 }
 
-const std::string wex::notebook::GetCurrentPage()
+const std::string wex::notebook::current_page_key()
 {
-  auto* page = wxAuiNotebook::GetCurrentPage();
-  return GetKeyByPage(page);
+  auto* page = GetCurrentPage();
+  return key_by_page(page);
 }
   
-wxWindow* wex::notebook::InsertPage(
+wxWindow* wex::notebook::insert_page(
   size_t page_idx,
   wxWindow* page,
   const std::string& key,
@@ -141,7 +141,7 @@ wxWindow* wex::notebook::InsertPage(
   bool select,
   const wxBitmap& bitmap)
 {
-  if (!wxAuiNotebook::InsertPage(page_idx, page, (text.empty() ? key: text), select, bitmap))
+  if (!InsertPage(page_idx, page, (text.empty() ? key: text), select, bitmap))
   {
     return nullptr;
   }
@@ -152,7 +152,7 @@ wxWindow* wex::notebook::InsertPage(
   return page;
 }
 
-void wex::notebook::Rearrange(int direction)
+void wex::notebook::rearrange(int direction)
 {
   for (size_t i = 0; i < GetPageCount(); ++i)
   {
@@ -160,14 +160,14 @@ void wex::notebook::Rearrange(int direction)
   }
 }
 
-bool wex::notebook::SetPageText(
+bool wex::notebook::set_page_text(
   const std::string& key,
   const std::string& new_key,
   const std::string& text,
   const wxBitmap& bitmap)
 {
-  if (const auto index = GetPageIndexByKey(key);
-    index == wxNOT_FOUND || !wxAuiNotebook::SetPageText(index, text))
+  if (const auto index = page_index_by_key(key);
+    index == wxNOT_FOUND || !SetPageText(index, text))
   {
     return false;
   }
@@ -187,9 +187,9 @@ bool wex::notebook::SetPageText(
   }
 }
 
-wxWindow* wex::notebook::SetSelection(const std::string& key)
+wxWindow* wex::notebook::set_selection(const std::string& key)
 {
-  if (const auto index = GetPageIndexByKey(key); index == wxNOT_FOUND)
+  if (const auto index = page_index_by_key(key); index == wxNOT_FOUND)
   {
     return nullptr;
   }
@@ -202,9 +202,9 @@ wxWindow* wex::notebook::SetSelection(const std::string& key)
   }
 }
   
-bool wex::notebook::Split(const std::string& key, int direction)
+bool wex::notebook::split(const std::string& key, int direction)
 {
-  if (const auto index = GetPageIndexByKey(key); index == wxNOT_FOUND)
+  if (const auto index = page_index_by_key(key); index == wxNOT_FOUND)
   {
     return false;
   }

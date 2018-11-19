@@ -22,23 +22,23 @@ namespace wex
     dialog(const window_data& data = window_data());
 
     /// Returns the window data.
-    const auto& GetData() const {return m_Data;};
+    const auto& data() const {return m_Data;};
   protected:
     /// Adds to the user sizer using the sizer flags.
-    wxSizerItem* AddUserSizer(
+    wxSizerItem* add_user_sizer(
       wxWindow* window,
       const wxSizerFlags& flags = wxSizerFlags().Expand());
 
     /// Adds to the user sizer using the sizer flags.
-    wxSizerItem* AddUserSizer(
+    wxSizerItem* add_user_sizer(
       wxSizer* sizer,
       const wxSizerFlags& flags = wxSizerFlags().Expand());
 
-    /// Layouts the sizers. Should be invoked after adding to sizers.
+    /// layouts the sizers. Should be invoked after adding to sizers.
     /// If you specified button flags,
     /// they will be put at the bottom of the top sizer,
     /// and a sepator line will be added as specified.
-    void LayoutSizers(bool add_separator_line = true);
+    void layout_sizers(bool add_separator_line = true);
   private:
     const window_data m_Data;
     

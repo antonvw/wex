@@ -44,39 +44,39 @@ namespace wex
     /// Destructor.
    ~vi_mode();
 
-    /// Escapes current mode.
-    bool Escape() {
+    /// escapes current mode.
+    bool escape() {
       std::string command("\x1b");
-      return Transition(command);};
+      return transition(command);};
 
     /// Returns the state we are in.
-    state Get() const;
+    state get() const;
+    
+    /// Returns true if in insert mode.
+    bool insert() const {return 
+      get() == INSERT || 
+      get() == INSERT_RECT;};
     
     /// Returns insert commands.
-    const auto & GetInsertCommands() const {return m_InsertCommands;};
+    const auto & insert_commands() const {return m_InsertCommands;};
 
-    /// Returns true if in insert mode.
-    bool Insert() const {return 
-      Get() == INSERT || 
-      Get() == INSERT_RECT;};
-    
     /// Returns true if in normal mode.
-    bool Normal() const {return Get() == NORMAL;};
+    bool normal() const {return get() == NORMAL;};
 
     /// Returns mode as a string.
-    const std::string String() const;
+    const std::string string() const;
     
-    /// Transitions to other mode depending on command.
+    /// transitions to other mode depending on command.
     /// Returns true if command represents a mode change, otherwise false.
     /// If true is returned, it does not mean that mode was changed, in case 
     /// of readonly doc.
-    bool Transition(std::string& command);
+    bool transition(std::string& command);
 
     /// Returns true if in visual mode.
-    bool Visual() const {return 
-      Get() == VISUAL || 
-      Get() == VISUAL_LINE || 
-      Get() == VISUAL_RECT;};
+    bool visual() const {return 
+      get() == VISUAL || 
+      get() == VISUAL_LINE || 
+      get() == VISUAL_RECT;};
   private:  
     vi* m_vi;
     std::unique_ptr<vi_fsm> m_FSM;

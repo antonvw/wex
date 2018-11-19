@@ -7,56 +7,56 @@
 
 #include <wex/vcscommand.h>
 
-bool wex::vcs_command::IsAdd() const
+bool wex::vcs_command::is_add() const
 {
   return 
-    GetCommand(menu_command::INCLUDE_NONE) == "add";
+    get_command(0) == "add";
 }
 
-bool wex::vcs_command::IsBlame() const
+bool wex::vcs_command::is_blame() const
 {
   return 
-    GetCommand(menu_command::INCLUDE_NONE) == "annotate" ||
-    GetCommand(menu_command::INCLUDE_NONE) == "blame" ||
-    GetCommand(menu_command::INCLUDE_NONE) == "print";
+    get_command(0) == "annotate" ||
+    get_command(0) == "blame" ||
+    get_command(0) == "print";
 }
 
-bool wex::vcs_command::IsCheckout() const
+bool wex::vcs_command::is_checkout() const
 {
   return 
-    GetCommand(menu_command::INCLUDE_NONE) == "checkout" ||
-    GetCommand(menu_command::INCLUDE_NONE) == "co";
+    get_command(0) == "checkout" ||
+    get_command(0) == "co";
 }
 
-bool wex::vcs_command::IsCommit() const
+bool wex::vcs_command::is_commit() const
 {
   return 
-    GetCommand(menu_command::INCLUDE_NONE) == "commit" ||
-    GetCommand(menu_command::INCLUDE_NONE) == "ci" ||
-    GetCommand(menu_command::INCLUDE_NONE) == "delta";
+    get_command(0) == "commit" ||
+    get_command(0) == "ci" ||
+    get_command(0) == "delta";
 }
 
-bool wex::vcs_command::IsDiff() const
+bool wex::vcs_command::is_diff() const
 {
   return 
-    GetCommand(menu_command::INCLUDE_NONE).find("diff") != std::string::npos;
+    get_command(0).find("diff") != std::string::npos;
 }
 
-bool wex::vcs_command::IsHistory() const
+bool wex::vcs_command::is_history() const
 {
   return 
-    GetCommand(menu_command::INCLUDE_NONE) == "log" ||
-    GetCommand(menu_command::INCLUDE_NONE) == "prs" ||
-    GetCommand(menu_command::INCLUDE_NONE) == "prt";
+    get_command(0) == "log" ||
+    get_command(0) == "prs" ||
+    get_command(0) == "prt";
 }
 
-bool wex::vcs_command::IsOpen() const
+bool wex::vcs_command::is_open() const
 {
   return
-    GetCommand(menu_command::INCLUDE_NONE) == "cat" ||
-    GetCommand(menu_command::INCLUDE_NONE) == "get" ||
-    GetCommand(menu_command::INCLUDE_NONE) == "show" ||
-    IsBlame() ||
-    IsDiff() ||
-    IsHistory();
+    get_command(0) == "cat" ||
+    get_command(0) == "get" ||
+    get_command() == "show" ||
+    is_blame() ||
+    is_diff() ||
+    is_history();
 }

@@ -43,12 +43,15 @@ namespace wex
     /// Constructor using xml node.
     vcs_entry(const pugi::xml_node& node);
 
+    /// Returns the administrative directory.
+    const auto& admin_dir() const {return m_AdminDir;};
+
     /// Returns true if admin dir is only at top level.
-    bool AdminDirIsTopLevel() const {return m_AdminDirIsTopLevel;};
+    bool admin_dir_is_toplevel() const {return m_admin_dir_is_toplevel;};
 
     /// Builds a menu from all vcs commands.
     /// Returns (total) number of items in menu.
-    int BuildMenu(
+    int build_menu(
       /// menu id to be added to the vcs commands
       int base_id, 
       /// menu to be built
@@ -61,7 +64,7 @@ namespace wex
     /// Might ask for vcs binary if it is not yet known.
     /// Return code is code from process Execute,
     /// and also can be false if dialog for vcs bin was cancelled.
-    bool Execute(
+    bool execute(
       /// args, like filenames, or vcs flags
       const std::string& args = std::string(),
       /// lexer that is used for presenting the output
@@ -71,31 +74,28 @@ namespace wex
       /// working directory
       const std::string& wd = std::string());
     
-    /// Returns the administrative directory.
-    const auto& GetAdminDir() const {return m_AdminDir;};
+    /// Returns flags location.
+    auto flags_location() const {return m_FlagsLocation;};
 
     /// Returns the name of current branch.
-    const std::string GetBranch() const;
+    const std::string get_branch() const;
 
     /// Returns the flags used to run the command.
-    const std::string GetFlags() const;
-
-    /// Returns flags location.
-    auto GetFlagsLocation() const {return m_FlagsLocation;};
+    const std::string get_flags() const;
 
     /// Returns margin size.
-    auto GetMarginWidth() const {return m_MarginWidth;};
+    auto margin_width() const {return m_MarginWidth;};
 
     /// Returns pos begin.
-    const auto & GetPosBegin() const {return m_PosBegin;};
+    const auto & pos_begin() const {return m_PosBegin;};
 
     /// Returns pos end.
-    const auto & GetPosEnd() const {return m_PosEnd;};
+    const auto & pos_end() const {return m_PosEnd;};
 
-    virtual void ShowOutput(const std::string& caption = std::string()) const override;
+    virtual void show_output(const std::string& caption = std::string()) const override;
   private:
     // no const, as entry is set using operator+ in vcs.
-    bool m_AdminDirIsTopLevel {false};
+    bool m_admin_dir_is_toplevel {false};
     int m_FlagsLocation, m_MarginWidth;
     std::string m_AdminDir, m_PosBegin, m_PosEnd;
     lexer m_Lexer;

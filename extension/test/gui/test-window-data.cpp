@@ -14,7 +14,7 @@
 
 TEST_CASE("wex::window_data")
 {
-  REQUIRE( wex::window_data().Id() == wxID_ANY);
-  REQUIRE( wex::window_data().Name().empty());
-  REQUIRE( wex::window_data().Name("xxx").Name() == "xxx");
+  REQUIRE( wex::window_data().id() == wxID_ANY);
+  REQUIRE( wex::window_data().name().empty());
+  REQUIRE( wex::window_data().name("xxx").name() == "xxx");
 }

@@ -30,7 +30,7 @@ wex::vcs_entry::vcs_entry(const pugi::xml_node& node)
   : process()
   , menu_commands(node)
   , m_AdminDir(node.attribute("admin-dir").value())
-  , m_AdminDirIsTopLevel(
+  , m_admin_dir_is_toplevel(
       strcmp(node.attribute("toplevel").value(), "true") == 0)
   , m_FlagsLocation(
       (strcmp(node.attribute("flags-location").value(), "prefix") == 0 ?
@@ -41,12 +41,12 @@ wex::vcs_entry::vcs_entry(const pugi::xml_node& node)
 {
 }
 
-int wex::vcs_entry::BuildMenu(int base_id, menu* menu, bool is_popup) const
+int wex::vcs_entry::build_menu(int base_id, menu* menu, bool is_popup) const
 {
-  return menus::BuildMenu(GetCommands(), base_id, menu, is_popup);
+  return menus::build_menu(get_commands(), base_id, menu, is_popup);
 }
 
-bool wex::vcs_entry::Execute(
+bool wex::vcs_entry::execute(
   const std::string& args,
   const lexer& lexer,
   long pflags,
@@ -68,7 +68,7 @@ bool wex::vcs_entry::Execute(
   
   std::string subcommand;
   
-  if (GetCommand().UseSubcommand())
+  if (get_command().use_subcommand())
   {
     subcommand = config(_("Subcommand")).get();
 
@@ -80,13 +80,13 @@ bool wex::vcs_entry::Execute(
 
   std::string flags;
 
-  if (GetCommand().AskFlags())
+  if (get_command().ask_flags())
   {
-    flags = GetFlags();
+    flags = get_flags();
   }
-  else if (GetCommand().GetFlags() != "none")
+  else if (get_command().flags() != "none")
   {
-    flags = GetCommand().GetFlags();
+    flags = get_command().flags();
   }
   
   // E.g. in git you can do
@@ -100,7 +100,7 @@ bool wex::vcs_entry::Execute(
 
   std::string comment;
 
-  if (GetCommand().IsCommit())
+  if (get_command().is_commit())
   {
     comment = 
       "-m \"" + config(_("Revision comment")).firstof() + "\" ";
@@ -109,29 +109,29 @@ bool wex::vcs_entry::Execute(
   std::string my_args(args);
 
   // If we specified help (flags), we do not need a file argument.      
-  if (GetCommand().IsHelp() || flags.find("help") != std::string::npos)
+  if (get_command().is_help() || flags.find("help") != std::string::npos)
   {
     my_args.clear();
   }
 
-  return process::Execute(
-    config(GetName()).get(GetName()) + " " + 
+  return process::execute(
+    config(name()).get(name()) + " " + 
       prefix +
-      GetCommand().GetCommand() + " " + 
+      get_command().get_command() + " " + 
       subcommand + flags + comment + my_args, 
     pflags,
     wd);
 }
 
-const std::string wex::vcs_entry::GetBranch() const
+const std::string wex::vcs_entry::get_branch() const
 {
-  if (GetName() == "git")
+  if (name() == "git")
   { 
-    if (process p; p.Execute("git branch", process::EXEC_WAIT))
+    if (process p; p.execute("git branch", process::EXEC_WAIT))
     {
-      for (tokenizer tkz(p.GetStdOut(), "\r\n"); tkz.HasMoreTokens(); )
+      for (tokenizer tkz(p.get_stdout(), "\r\n"); tkz.has_more_tokens(); )
       {
-        if (const auto token(tkz.GetNextToken()); token.find('*') == 0)
+        if (const auto token(tkz.get_next_token()); token.find('*') == 0)
         {
           return skip_white_space(token.substr(1));
         }
@@ -142,27 +142,27 @@ const std::string wex::vcs_entry::GetBranch() const
   return std::string();
 }
 
-const std::string wex::vcs_entry::GetFlags() const
+const std::string wex::vcs_entry::get_flags() const
 {
   return config(_("Flags")).get();
 }
 
-void wex::vcs_entry::ShowOutput(const std::string& caption) const
+void wex::vcs_entry::show_output(const std::string& caption) const
 {
-  if (!GetError() && GetShell() != nullptr)
+  if (!error() && get_shell() != nullptr)
   {
-    if (GetFlags().find("xml") != std::string::npos)
+    if (get_flags().find("xml") != std::string::npos)
     {
-      GetShell()->GetLexer().Set("xml");
+      get_shell()->get_lexer().set("xml");
     }
     else
     {
       vcs_command_stc(
-        GetCommand(), 
+        get_command(), 
         m_Lexer, 
-        GetShell());
+        get_shell());
     }
   }
 
-  wex::process::ShowOutput(caption);
+  wex::process::show_output(caption);
 }

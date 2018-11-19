@@ -30,17 +30,17 @@ wex::otl::otl(int threaded_mode)
 
 wex::otl::~otl()
 {
-  Logoff();
+  logoff();
 }
 
-const std::string wex::otl::Datasource() const
+const std::string wex::otl::datasource() const
 {
   return wex::config(_("Datasource")).firstof();
 }
 
-bool wex::otl::Logoff()
+bool wex::otl::logoff()
 {
-  if (!IsConnected())
+  if (!is_connected())
   {
     return false;
   }
@@ -50,17 +50,28 @@ bool wex::otl::Logoff()
   return true;
 }
 
-bool wex::otl::Logon(const wex::window_data& par)
+const wex::version_info wex::otl::get_version_info()
+{
+  const long version = OTL_VERSION_NUMBER;
+
+  return version_info(
+    "OTL", 
+     version >> 16,
+     0,
+    (version & 0xffff));
+}
+
+bool wex::otl::logon(const wex::window_data& par)
 {
   const window_data data(window_data(par).
-    Title(_("Open ODBC Connection").ToStdString()));
+    title(_("Open ODBC Connection").ToStdString()));
 
-  if (data.Button() != 0)
+  if (data.button() != 0)
   {
     if (item_dialog({
-        {_("Datasource"), item::COMBOBOX, std::any(), control_data().Required(true)},
+        {_("Datasource"), item::COMBOBOX, std::any(), control_data().is_required(true)},
         {_("User")},
-        {_("Password"), std::string(), item::TEXTCTRL, control_data().Window(window_data().Style(wxTE_PASSWORD))}}, 
+        {_("Password"), std::string(), item::TEXTCTRL, control_data().window(window_data().style(wxTE_PASSWORD))}}, 
         data).ShowModal() == wxID_CANCEL)
     {
       return false;
@@ -72,7 +83,7 @@ bool wex::otl::Logon(const wex::window_data& par)
     const std::string connect =
       config(_("User")).get() + "/" + 
       config(_("Password")).get() + "@" +
-      Datasource();
+      datasource();
 
     m_Connect.rlogon(connect.c_str(),
       1); // autocommit-flag
@@ -80,16 +91,16 @@ bool wex::otl::Logon(const wex::window_data& par)
   catch (otl_exception& p)
   {
     stc_entry_dialog(
-      "Cannot logon to " + Datasource() + 
+      "Cannot logon to " + datasource() + 
       " because of: " + std::string((const char *)p.msg)).ShowModal();
   }
 
-  return IsConnected();
+  return is_connected();
 }
 
-long wex::otl::Query(const std::string& query)
+long wex::otl::query(const std::string& query)
 {
-  if (!IsConnected())
+  if (!is_connected())
   {
     return 0;
   }
@@ -98,19 +109,19 @@ long wex::otl::Query(const std::string& query)
 }
 
 // Cannot be const because of open call.
-long wex::otl::Query(
+long wex::otl::query(
   const std::string& query,
   wxGrid* grid,
   bool& stopped,
   bool empty_results,
   int buffer_size)
 {
-  if (!IsConnected())
+  if (!is_connected())
   {
     return 0;
   }
   
-  wxASSERT(grid != nullptr);
+  assert(grid != nullptr);
 
   otl_stream i;
   i.set_all_column_types(otl_all_num2str | otl_all_date2str);
@@ -195,18 +206,18 @@ long wex::otl::Query(
 }
 
 // Cannot be const because of open call.
-long wex::otl::Query(
+long wex::otl::query(
   const std::string& query,
   wxStyledTextCtrl* stc,
   bool& stopped,
   int buffer_size)
 {
-  if (!IsConnected())
+  if (!is_connected())
   {
     return 0;
   }
   
-  wxASSERT(stc != nullptr);
+  assert(stc != nullptr);
 
   otl_stream i;
   i.set_all_column_types(otl_all_num2str | otl_all_date2str);
@@ -278,16 +289,5 @@ long wex::otl::Query(
   }
 
   return rows;
-}
-
-const wex::version_info wex::otl::VersionInfo()
-{
-  const long version = OTL_VERSION_NUMBER;
-
-  return version_info(
-    "OTL", 
-     version >> 16,
-     0,
-    (version & 0xffff));
 }
 #endif // wex::use_OTL

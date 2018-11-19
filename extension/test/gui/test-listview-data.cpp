@@ -17,19 +17,19 @@ TEST_CASE("wex::listview_data")
 {
   SUBCASE("Constructor")
   {
-    REQUIRE( wex::listview_data().Image() == wex::listview_data::IMAGE_ART);
-    REQUIRE( wex::listview_data().Type() == wex::listview_data::NONE);
-    REQUIRE(!wex::listview_data().TypeDescription().empty());
-    REQUIRE( wex::listview_data().Image(wex::listview_data::IMAGE_NONE).Image() == wex::listview_data::IMAGE_NONE);
-    REQUIRE( wex::listview_data(wex::control_data().Col(3)).Control().Col() == 3);
-    REQUIRE( wex::listview_data(wex::window_data().Name("XX")).Window().Name() == "XX");
+    REQUIRE( wex::listview_data().image() == wex::listview_data::IMAGE_ART);
+    REQUIRE( wex::listview_data().type() == wex::listview_data::NONE);
+    REQUIRE(!wex::listview_data().type_description().empty());
+    REQUIRE( wex::listview_data().image(wex::listview_data::IMAGE_NONE).image() == wex::listview_data::IMAGE_NONE);
+    REQUIRE( wex::listview_data(wex::control_data().col(3)).control().col() == 3);
+    REQUIRE( wex::listview_data(wex::window_data().name("XX")).window().name() == "XX");
   }
   
-  SUBCASE("Inject")
+  SUBCASE("inject")
   {
     wex::listview* lv = new wex::listview();
-    AddPane(GetFrame(), lv);
-    REQUIRE( wex::listview_data(lv).Inject());
-    REQUIRE( wex::listview_data(lv, wex::control_data().Line(2)).Inject());
+    AddPane(frame(), lv);
+    REQUIRE( wex::listview_data(lv).inject());
+    REQUIRE( wex::listview_data(lv, wex::control_data().line(2)).inject());
   }
 }

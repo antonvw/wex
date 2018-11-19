@@ -27,7 +27,7 @@ wex::listview_data::listview_data(control_data& data, listview* lv)
 }
 
 wex::listview_data::listview_data(window_data& data, listview* lv)
-  : m_Data(control_data().Window(data))
+  : m_Data(control_data().window(data))
   , m_ListView(lv)
 {
 }
@@ -52,48 +52,48 @@ wex::listview_data& wex::listview_data::operator=(const listview_data& r)
   return *this;
 }
   
-void wex::listview_data::AddColumns()
+void wex::listview_data::add_columns()
 {
-  m_ListView->AppendColumns({{_("File Name").ToStdString(), column::STRING}});
+  m_ListView->append_columns({{_("File Name").ToStdString(), column::STRING}});
 
   switch (m_Type)
   {
     case FIND:
-      m_ListView->AppendColumns({
+      m_ListView->append_columns({
         {_("Line").ToStdString(), column::STRING, 250},
         {_("Match").ToStdString(), column::STRING},
         {_("Line No").ToStdString()}});
     break;
     case KEYWORD:
-      for (const auto& it : m_Lexer->GetKeywords())
+      for (const auto& it : m_Lexer->keywords())
       {
-        m_ListView->AppendColumns({{column(it)}});
+        m_ListView->append_columns({{column(it)}});
       }
 
-      m_ListView->AppendColumns({{_("Keywords").ToStdString()}});
+      m_ListView->append_columns({{_("Keywords").ToStdString()}});
     break;
     default: break; // to prevent warnings
   }
 
-  m_ListView->AppendColumns({
+  m_ListView->append_columns({
     {_("Modified").ToStdString(), column::DATE},
     {_("In Folder").ToStdString(), column::STRING, 175},
     {_("Type").ToStdString(), column::STRING},
     {_("Size").ToStdString()}});
 }
 
-wex::listview_data& wex::listview_data::Image(image_type type)
+wex::listview_data& wex::listview_data::image(image_t type)
 {
   m_ImageType = type;
   return *this;
 }
 
-bool wex::listview_data::Inject()
+bool wex::listview_data::inject()
 {
    bool injected = 
      m_ListView != nullptr && 
      m_ListView->GetItemCount() > 0 && 
-     m_Data.Inject(
+     m_Data.inject(
     [&]() {
       const int initial_value = (
         m_ListView->GetFirstSelected() == -1 ? 1: m_ListView->GetFirstSelected() + 1);
@@ -102,19 +102,19 @@ bool wex::listview_data::Inject()
       {
         m_ListView->Select(initial_value - 1, false);
       }
-      m_ListView->Select(m_Data.Line() - 1);
-      m_ListView->EnsureVisible(m_Data.Line() - 1);
+      m_ListView->Select(m_Data.line() - 1);
+      m_ListView->EnsureVisible(m_Data.line() - 1);
       return true;},
     [&]() {return false;},
     [&]() {
-      return m_ListView->FindNext(m_Data.Find());},
+      return m_ListView->find_next(m_Data.find());},
     [&]() {return false;});
 
   if (!m_Initialized)
   {
     injected = true;
     m_Initialized = true;
-    auto name = TypeDescription();
+    auto name = type_description();
 
     switch (m_Type)
     {
@@ -126,42 +126,42 @@ bool wex::listview_data::Inject()
       case KEYWORD:
         if (m_Lexer != nullptr)
         {
-          name += " " + m_Lexer->GetDisplayLexer();
+          name += " " + m_Lexer->display_lexer();
         }
         // fall through
       default:
         m_ListView->SetSingleStyle(wxLC_REPORT);
-        AddColumns();
+        add_columns();
         break;
     }
 
     m_ListView->SetName(name);
-    m_Data.Window(window_data().Name(name));
+    m_Data.window(window_data().name(name));
   }
 
   return injected;
 }
   
-wex::listview_data& wex::listview_data::Lexer(const lexer* lexer)
+wex::listview_data& wex::listview_data::lexer(const wex::lexer* lexer)
 {
   m_Lexer = lexer;
   return *this;
 }
 
-wex::listview_data& wex::listview_data::Menu(
-  long flags, control_data::action action)
+wex::listview_data& wex::listview_data::menu(
+  menu_t flags, control_data::action_t action)
 {
-  m_Data.Flags<long>(flags, m_MenuFlags, action);
+  m_Data.flags<2>(flags, m_MenuFlags, action);
   return *this;
 }
   
-wex::listview_data& wex::listview_data::Type(type type)
+wex::listview_data& wex::listview_data::type(type_t type)
 {
   m_Type = type;
   return *this;
 }
 
-const std::string wex::listview_data::TypeDescription() const
+const std::string wex::listview_data::type_description() const
 {
   wxString value;
 
@@ -173,7 +173,7 @@ const std::string wex::listview_data::TypeDescription() const
     case KEYWORD: value = _("Keywords"); break;
     case FILE: value = _("File"); break;
     case NONE: value = _("None"); break;
-    default: wxFAIL;
+    default: assert(0);
   }
 
   return value.ToStdString();

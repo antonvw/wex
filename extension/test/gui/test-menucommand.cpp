@@ -24,29 +24,34 @@ TEST_CASE("wex::menu_command")
   const wex::menu_command update("update");
   const wex::menu_command none;
 
-  REQUIRE(add.GetCommand() == "add");
-  REQUIRE(add.GetCommand(wex::menu_command::INCLUDE_SUBCOMMAND | wex::menu_command::INCLUDE_ACCELL) == "a&dd");
-  REQUIRE(help.GetCommand() == "help me");
-  REQUIRE(help.GetCommand(wex::menu_command::INCLUDE_SUBCOMMAND | wex::menu_command::INCLUDE_ACCELL) == "h&elp m&e");
-  REQUIRE(help.GetCommand(wex::menu_command::INCLUDE_ACCELL) == "h&elp");
-  REQUIRE(help.GetCommand(wex::menu_command::INCLUDE_NONE) == "help");
+  REQUIRE(add.get_command() == "add");
+  REQUIRE(add.get_command(wex::menu_command::include_t().set(
+    wex::menu_command::INCLUDE_SUBCOMMAND).set(
+    wex::menu_command::INCLUDE_ACCELL)) == "a&dd");
   
-  REQUIRE((add.GetType() & wex::menu_command::IS_MAIN) > 0);
-  REQUIRE((add.GetType() & wex::menu_command::IS_POPUP) > 0);
-  REQUIRE((blame.GetType() & wex::menu_command::IS_MAIN) > 0);
-  REQUIRE((blame.GetType() & wex::menu_command::IS_POPUP) > 0);
-  REQUIRE((commit.GetType() & wex::menu_command::IS_MAIN) > 0);
-  REQUIRE((diff.GetType() & wex::menu_command::IS_POPUP) > 0);
-  REQUIRE((help.GetType() & wex::menu_command::IS_MAIN) > 0);
-  REQUIRE((help.GetType() & wex::menu_command::IS_POPUP) > 0);
+  REQUIRE(help.get_command() == "help me");
+  REQUIRE(help.get_command(wex::menu_command::include_t().set(
+    wex::menu_command::INCLUDE_SUBCOMMAND).set(
+    wex::menu_command::INCLUDE_ACCELL)) == "h&elp m&e");
+  REQUIRE(help.get_command(wex::menu_command::include_t().set(
+    wex::menu_command::INCLUDE_ACCELL)) == "h&elp");
+  
+  REQUIRE( add.type().test(wex::menu_command::IS_MAIN));
+  REQUIRE( add.type().test(wex::menu_command::IS_POPUP));
+  REQUIRE( blame.type().test(wex::menu_command::IS_MAIN));
+  REQUIRE( blame.type().test(wex::menu_command::IS_POPUP));
+  REQUIRE( commit.type().test(wex::menu_command::IS_MAIN));
+  REQUIRE( diff.type().test(wex::menu_command::IS_POPUP));
+  REQUIRE( help.type().test(wex::menu_command::IS_MAIN));
+  REQUIRE( help.type().test(wex::menu_command::IS_POPUP));
 
-  REQUIRE(!help.AskFlags());
-  REQUIRE( help.IsHelp());
-  REQUIRE( help.UseSubcommand());
+  REQUIRE(!help.ask_flags());
+  REQUIRE( help.is_help());
+  REQUIRE( help.use_subcommand());
 
-  REQUIRE(add.GetSubMenu().empty());
-  REQUIRE(diff.GetSubMenu() == "submenu");
-  REQUIRE(help.GetSubMenu() == "m&e");
+  REQUIRE( add.get_submenu().empty());
+  REQUIRE( diff.get_submenu() == "submenu");
+  REQUIRE( help.get_submenu() == "m&e");
 
-  REQUIRE(none.GetType() == wex::menu_command::IS_NONE);
+  REQUIRE(none.type().none());
 }

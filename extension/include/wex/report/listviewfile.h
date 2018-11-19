@@ -30,39 +30,39 @@ namespace wex
     /// Adds items. The items are added using a separate thread,
     /// default this thread runs detached, otherwise this method
     /// waits for the thread to finish.
-    void AddItems(
+    void add_items(
       const std::string& folder,
       const std::string& files,
-      long flags,
+      dir::type_t flags,
       bool detach = true);
 
     // Interface, for listview overriden methods.
     /// Sets contents changed if we are not syncing.
-    virtual void AfterSorting() override;
+    virtual void after_sorting() override;
     
     /// Returns member.
-    virtual bool GetContentsChanged() const override {return m_ContentsChanged;};
+    virtual bool get_contents_changed() const override {return m_ContentsChanged;};
 
     /// Returns the file.
-    file& GetFile() {return *this;};
+    file& get_file() {return *this;};
 
     // Access to members.
-    const auto& GetTextAddFiles() const {return m_TextAddFiles;};
-    const auto& GetTextAddFolders() const {return m_TextAddFolders;};
-    const auto& GetTextAddRecursive() const {return m_TextAddRecursive;};
-    const auto& GetTextAddWhat() const {return m_TextAddWhat;};
-    const auto& GetTextInFolder() const {return m_TextInFolder;};
+    const auto& text_addfiles() const {return m_TextAddFiles;};
+    const auto& text_addfolders() const {return m_TextAddFolders;};
+    const auto& text_addrecursive() const {return m_TextAddRecursive;};
+    const auto& text_addwhat() const {return m_TextAddWhat;};
+    const auto& text_infolder() const {return m_TextInFolder;};
 
     /// Adds item from text.
-    virtual bool ItemFromText(const std::string& text) override;
+    virtual bool item_from_text(const std::string& text) override;
 
     /// Resets the member.
-    virtual void ResetContentsChanged() override {m_ContentsChanged = false;};
+    virtual void reset_contents_changed() override {m_ContentsChanged = false;};
   protected:
-    virtual void BuildPopupMenu(menu& menu) override;
-    virtual bool DoFileLoad(bool synced = false) override;
-    virtual void DoFileNew() override;
-    virtual void DoFileSave(bool save_as = false) override;
+    virtual void build_popup_menu(menu& menu) override;
+    virtual bool do_file_load(bool synced = false) override;
+    virtual void do_file_new() override;
+    virtual void do_file_save(bool save_as = false) override;
     void OnIdle(wxIdleEvent& event);
   private:
     bool m_ContentsChanged = false;
@@ -74,6 +74,6 @@ namespace wex
       m_TextAddWhat = _("Add what"),
       m_TextInFolder = _("In folder");
     
-    item_dialog* m_AddItemsDialog;
+    item_dialog* m_add_itemsDialog;
   };
 };

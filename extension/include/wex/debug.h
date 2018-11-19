@@ -34,35 +34,35 @@ namespace wex
     /// Adds debug menu items to specified menu, default as no popup menu.
     /// These menus allow you to interact with the debug process.
     /// Returns number of items added to menu.
-    int AddMenu(menu* menu, bool popup = false) const;
+    int add_menu(menu* menu, bool popup = false) const;
+    
+    /// Returns brekpoints.
+    auto & breakpoints() {return m_Breakpoints;};
     
     /// Executes the item action using the current debug process,
     /// if there is not yet a debug process, invokes frame::Process
     /// to allow derived classed to provide one,
     /// and optionally use an stc component for extra input / output.
     /// Returns false if cancelled, or no debug process available.
-    bool Execute(const std::string& action, stc* stc = nullptr);
+    bool execute(const std::string& action, stc* stc = nullptr);
     
     /// As above, but for a menu action item.
-    bool Execute(int item, stc* stc = nullptr) {
+    bool execute(int item, stc* stc = nullptr) {
       return 
-        item < (int)m_Entry.GetCommands().size() &&
-        Execute(m_Entry.GetCommands().at(item).GetCommand(), stc);};
+        item < (int)m_Entry.get_commands().size() &&
+        execute(m_Entry.get_commands().at(item).get_command(), stc);};
 
-    /// Returns brekpoints.
-    auto & GetBreakpoints() {return m_Breakpoints;};
-    
     /// Returns marker for brekpoint.
-    const auto & GetMarkerBreakpoint() const {return m_MarkerBreakpoint;};
+    const auto & marker_breakpoint() const {return m_MarkerBreakpoint;};
 
     /// Returns process.
-    auto GetProcess() {return m_Process;};
+    auto process() {return m_Process;};
 
     /// Handles stdin from process.
-    void ProcessStdIn(const std::string& text);
+    void process_stdin(const std::string& text);
     
     /// Handles stdout from process.
-    void ProcessStdOut(const std::string& text);
+    void process_stdout(const std::string& text);
   private:
     bool DeleteAllBreakpoints(const std::string& text);
     bool GetArgs(
@@ -80,6 +80,6 @@ namespace wex
     path m_Path;
     managed_frame* m_Frame;
     menu_commands< menu_command> m_Entry;
-    process* m_Process {nullptr};
+    wex::process* m_Process {nullptr};
   };
 };

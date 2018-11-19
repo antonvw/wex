@@ -36,22 +36,22 @@ namespace wex
     bool operator!=(const marker& m) const {return !operator==(m);};
 
     /// Applies this marker to stc component.
-    void Apply(stc* stc) const;
+    void apply(stc* stc) const;
 
     /// Returns background colour.
-    const auto & GetBackgroundColour() const {return m_BackgroundColour;};
+    const auto & background_colour() const {return m_BackgroundColour;};
     
     /// Returns foreground colour.
-    const auto & GetForegroundColour() const {return m_ForegroundColour;};
-    
-    /// Returns the no.
-    int GetNo() const {return m_No;};
-
-    /// Returns symbol no.
-    int GetSymbol() const {return m_Symbol;};
+    const auto & foreground_colour() const {return m_ForegroundColour;};
     
     /// Returns true if marker is valid.
     bool is_ok() const;
+
+    /// Returns the no.
+    int number() const {return m_No;};
+
+    /// Returns symbol no.
+    int symbol() const {return m_Symbol;};
   private:
     std::string m_BackgroundColour, m_ForegroundColour;
     int m_No = -1, m_Symbol = -1;

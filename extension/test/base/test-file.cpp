@@ -13,38 +13,38 @@ TEST_CASE( "wex::file" )
 {
   SUBCASE( "basic" ) 
   {
-    REQUIRE(!wex::file("XXXXX").IsOpened());
+    REQUIRE(!wex::file("XXXXX").is_opened());
     
     wex::file file(GetTestPath("test.h"));
   
-    REQUIRE(!file.CheckSync());
-    REQUIRE(!file.GetContentsChanged());
-    REQUIRE( file.IsOpened());
+    REQUIRE(!file.check_sync());
+    REQUIRE(!file.get_contents_changed());
+    REQUIRE( file.is_opened());
     
-    file.ResetContentsChanged();
+    file.reset_contents_changed();
 
-    REQUIRE(!file.FileSave());
-    REQUIRE( file.FileSave("test-save"));
-    REQUIRE( file.GetFileName().GetStat().is_ok());
+    REQUIRE(!file.file_save());
+    REQUIRE( file.file_save("test-save"));
+    REQUIRE( file.get_filename().stat().is_ok());
     // The fullpath should be normalized, test it.
-    REQUIRE( file.GetFileName().Path().string() != "./test.h");
-    REQUIRE(!file.GetFileName().GetStat().is_readonly());
-    REQUIRE( file.FileLoad(GetTestPath("test.bin")));
-    REQUIRE( file.Open(GetTestPath("test.bin").Path().string()));
-    REQUIRE( file.IsOpened());
+    REQUIRE( file.get_filename().data().string() != "./test.h");
+    REQUIRE(!file.get_filename().stat().is_readonly());
+    REQUIRE( file.file_load(GetTestPath("test.bin")));
+    REQUIRE( file.open(GetTestPath("test.bin").data().string()));
+    REQUIRE( file.is_opened());
 
-    const std::string* buffer = file.Read();
+    const std::string* buffer = file.read();
     REQUIRE(buffer->length() == 40);
     
-    REQUIRE( file.FileNew("test-xxx"));
-    REQUIRE( file.Open(std::ios_base::out));
-    REQUIRE( file.IsOpened());
-    REQUIRE( file.Write(std::string("OK")));
-    REQUIRE( file.Write(*buffer));
+    REQUIRE( file.file_new("test-xxx"));
+    REQUIRE( file.open(std::ios_base::out));
+    REQUIRE( file.is_opened());
+    REQUIRE( file.write(std::string("OK")));
+    REQUIRE( file.write(*buffer));
 
     wex::file create(std::string("test-create"), std::ios_base::out);
-    REQUIRE( create.IsOpened());
-    REQUIRE( create.Write(std::string("OK")));
+    REQUIRE( create.is_opened());
+    REQUIRE( create.write(std::string("OK")));
   }
 
   // file should be closed before remove (at least for windows)
@@ -64,7 +64,7 @@ TEST_CASE( "wex::file" )
     
     for (int i = 0; i < max; i++)
     {
-      REQUIRE(file.Read()->length() > 0);
+      REQUIRE(file.read()->length() > 0);
     }
 
     const auto ex_milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - ex_start);

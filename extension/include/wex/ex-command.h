@@ -18,7 +18,7 @@ namespace wex
   {
   public:
     /// The type of ex command.
-    enum class type
+    enum class type_t
     {
       CALC,        ///< a calculation command (control R=)
       COMMAND,     ///< a normal command (:)
@@ -42,70 +42,70 @@ namespace wex
     /// Assignment operator.
     ex_command& operator=(const ex_command& c);
 
+    /// Appends a char to command.  
+    ex_command& append(char c) {
+      m_Command += std::string(1, c); return *this;};
+
+    /// Appends a string to command.  
+    ex_command& append(const std::string& s) {m_Command += s; return *this;};
+
+    /// Appends a char to command and tries to execute the command.  
+    bool append_exec(char c);
+
     /// Returns last char of command.
     auto back() const {return m_Command.back();};
 
     /// Clears data. 
     size_t clear();
 
+    /// Returns the command.
+    auto & command() {return m_Command;};
+
+    /// Returns the command.
+    const auto & command() const {return m_Command;};
+
+    /// Sets command.
+    ex_command& command(const std::string& command) {
+      m_Command = command; return *this;};
+
     /// Returns ture if command is empty.
     auto empty() const {return m_Command.empty();};
+
+    /// Executes the command.
+    /// If command is empty, use current command.
+    bool exec(const std::string& command = std::string());
 
     /// Returns front of command.
     auto front() const {return m_Command.front();};
 
+    /// Returns is handled.
+    bool is_handled() const {return m_is_handled;};
+
+    /// Sets handled.
+    ex_command& is_handled(bool is_handled) {
+      m_is_handled = is_handled; return *this;};
+
     /// Removes last char of command.
     void pop_back() {m_Command.pop_back();};
+
+    /// Restores values, if possible from original stc.
+    void restore(const ex_command& c);
+
+    /// Sets new values, except original stc.
+    /// This can be used in combination with Restore.
+    void set(const ex_command& c);
 
     /// Returns size of command.
     auto size() const {return m_Command.size();};
 
-    /// Appends a char to command.  
-    ex_command& Append(char c) {
-      m_Command += std::string(1, c); return *this;};
-
-    /// Appends a string to command.  
-    ex_command& Append(const std::string& s) {m_Command += s; return *this;};
-
-    /// Appends a char to command and tries to execute the command.  
-    bool AppendExec(char c);
-
-    /// Returns the command.
-    auto & Command() {return m_Command;};
-
-    /// Returns the command.
-    const auto & Command() const {return m_Command;};
-
-    /// Sets command.
-    ex_command& Command(const std::string& command) {
-      m_Command = command; return *this;};
-
-    /// Executes the command.
-    /// If command is empty, use current command.
-    bool Exec(const std::string& command = std::string());
-
-    /// Returns is handled.
-    bool IsHandled() const {return m_IsHandled;};
-
-    /// Sets handled.
-    ex_command& IsHandled(bool is_handled) {
-      m_IsHandled = is_handled; return *this;};
-
-    /// Restores values, if possible from original stc.
-    void Restore(const ex_command& c);
-
-    /// Sets new values, except original stc.
-    /// This can be used in combination with Restore.
-    void Set(const ex_command& c);
-
     /// Returns STC component.
-    auto * STC() const {return m_STC;};
+    auto * stc() const {return m_STC;};
 
     /// Returns type of command.
-    type Type() const;
+    type_t type() const;
   private:
     std::string m_Command;
-    bool m_IsHandled {false};
-    stc *m_STC {nullptr}, *m_STC_original {nullptr};
+    bool m_is_handled {false};
+    wex::stc *m_STC {nullptr}, *m_STC_original {nullptr};
   };
 };

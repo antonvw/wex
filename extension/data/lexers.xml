@@ -2432,7 +2432,7 @@ Copyright: (c) 2018, Anton van Wezenbeek
       iswgraph iswlower iswprint iswpunct iswspace iswupper
       iswxdigit isxdigit iter_swap iterator iterator_category iterator_traits
       itoa jmp_buf join joinable key_comp key_compare
-      key_eq key_equal key_type kill_dependency kilo knuth_b
+      key_eq key_equal key_t kill_dependency kilo knuth_b
       labs launch ldexp ldiv ldiv_t length
       length_error less less_equal lexical_cast lexicographical_compare lexicographical_compare_3way
       lgamma linear_congruential_engine list llabs lldiv lldiv_t

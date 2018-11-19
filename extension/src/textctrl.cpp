@@ -11,17 +11,17 @@
 #include <wex/log.h>
 #include <easylogging++.h>
 
-wex::textctrl_input::textctrl_input(ex_command::type type) 
+wex::textctrl_input::textctrl_input(ex_command::type_t type) 
   : m_Type(type)
-  , m_Name([](ex_command::type type) {
+  , m_Name([](ex_command::type_t type) {
       switch (type)
       {
-        case ex_command::type::CALC: return std::string("excalc");
-        case ex_command::type::COMMAND: return std::string("excommand");
-        case ex_command::type::EXEC: return std::string("exexec");
-        case ex_command::type::FIND: return find_replace_data::GetTextFindWhat();
-        case ex_command::type::FIND_MARGIN: return std::string("exmargin");
-        case ex_command::type::REPLACE: return find_replace_data::GetTextReplaceWith();
+        case ex_command::type_t::CALC: return std::string("excalc");
+        case ex_command::type_t::COMMAND: return std::string("excommand");
+        case ex_command::type_t::EXEC: return std::string("exexec");
+        case ex_command::type_t::FIND: return find_replace_data::text_find();
+        case ex_command::type_t::FIND_MARGIN: return std::string("exmargin");
+        case ex_command::type_t::REPLACE: return find_replace_data::text_replace_with();
         default: return std::string("exother");
       }}(type))
   , m_Values(config(m_Name).get_list())
@@ -35,7 +35,7 @@ wex::textctrl_input::~textctrl_input()
   wex::config(m_Name).set(m_Values);
 }
 
-const std::string wex::textctrl_input::Get() const 
+const std::string wex::textctrl_input::get() const 
 {
   try
   {
@@ -48,7 +48,7 @@ const std::string wex::textctrl_input::Get() const
   }
 }
   
-bool wex::textctrl_input::Set(const std::string& value)
+bool wex::textctrl_input::set(const std::string& value)
 {
   if (value.empty()) return false;
 
@@ -60,7 +60,7 @@ bool wex::textctrl_input::Set(const std::string& value)
   return true;
 }
 
-bool wex::textctrl_input::Set(int key, wxTextCtrl* tc) 
+bool wex::textctrl_input::set(int key, wxTextCtrl* tc) 
 {
   if (m_Values.empty()) return false;
   
@@ -94,14 +94,14 @@ bool wex::textctrl_input::Set(int key, wxTextCtrl* tc)
 
   if (tc != nullptr)
   {
-    tc->SetValue(Get());
+    tc->SetValue(get());
     tc->SetInsertionPointEnd();
   }
   
   return true;
 }
 
-void wex::textctrl_input::Set(const std::list < std::string > & values)
+void wex::textctrl_input::set(const std::list < std::string > & values)
 {
   m_Values.assign(values.cbegin(), values.cend());
   m_Iterator = m_Values.cbegin();

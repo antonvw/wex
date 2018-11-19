@@ -20,12 +20,12 @@ namespace wex
   {
   public:
     /// Default constructor.
-    grid(const window_data& data = window_data().Style(wxWANTS_CHARS));
+    grid(const window_data& data = window_data().style(wxWANTS_CHARS));
 
-    // Interface.
+    /// Virtual Interface.
 #if wxUSE_DRAG_AND_DROP
     /// This one is invoked after IsAllowedDropSelection, and drops the data.
-    /// Default it calls SetCellsValue.
+    /// Default it calls set_cells_value.
     /// If you return true, the selection is correctly dropped,
     /// and the (old) selection is emptied and cleared to simulate dragging.
     virtual bool DropSelection(const wxGridCellCoords& drop_coords, const wxString& data);
@@ -40,53 +40,55 @@ namespace wex
     virtual bool IsAllowedDropSelection(const wxGridCellCoords& drop_coords, const wxString& data);
 #endif
 
-    /// This one is called by EmptySelection, SetCellsValue,
+    /// This one is called by empty_selection, set_cells_value,
     /// and so during drag/drop as well, and allows you to
     /// override default here (which simply calls SetCellValue).
     /// So it is on a cell basis, whereas the DropSelection is on a range basis.
     virtual void SetGridCellValue(const wxGridCellCoords& coords, const wxString& data);
-
-    /// Empties selected cells.
-    void EmptySelection();
-
-    /// Finds next.
-    bool FindNext(const wxString& text, bool find_next = true);
-
-    /// Updates find replace text.
-    const wxString GetFindString() const;
-
-    /// Get text from selected cells,
-    const wxString GetSelectedCellsValue() const;
+    
+    /// Other methods
 
     /// Copy from selected cells.
-    bool CopySelectedCellsToClipboard() const;
+    bool copy_selected_cells_to_clipboard() const;
+
+    /// Empties selected cells.
+    void empty_selection();
+
+    /// Finds next.
+    bool find_next(const wxString& text, bool forward = true);
+
+    /// Updates find replace text.
+    const wxString get_find_string() const;
+
+    /// Get text from selected cells,
+    const wxString get_selected_cells_value() const;
 
     /// Paste starting at current grid cursor.
-    void PasteCellsFromClipboard();
+    void paste_cells_from_clipboard();
 
     /// Prints the grid.
-    void Print();
+    void print();
 
     /// Previews the grid.
-    void PrintPreview();
+    void print_preview();
 
     /// Fill cells with text starting at a cel.
-    void SetCellsValue(const wxGridCellCoords& start_coords, const wxString& data);
+    void set_cells_value(const wxGridCellCoords& start_coords, const wxString& data);
 
 #if wxUSE_DRAG_AND_DROP
     /// Specify whether you want to use drag/drop.
     /// Default it is used.
-    void UseDragAndDrop(bool use);
+    void use_drag_and_drop(bool use);
 #endif
   protected:
     /// Builds the page used for printing.
-    const wxString BuildPage();
+    const wxString build_page();
 
     /// Builds the popup menu.
-    virtual void BuildPopupMenu(menu& menu);
+    virtual void build_popup_menu(menu& menu);
   private:
 #if wxUSE_DRAG_AND_DROP
-    bool m_UseDragAndDrop;
+    bool m_use_drag_and_drop;
 #endif
   };
 };

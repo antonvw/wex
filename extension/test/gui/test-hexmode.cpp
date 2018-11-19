@@ -21,94 +21,95 @@ TEST_CASE("wex::hexmode")
   // 0123456789012345678901234567890123456789012345678901234567890123456789
   // 30 31 32 33 34 35 36 37 38 39                   0123456789
   wex::stc* stc = new wex::stc(
-    std::string("0123456789"), wex::stc_data().Flags(wex::stc_data::WIN_HEX));
+    std::string("0123456789"), wex::stc_data().flags(
+      wex::stc_data::window_t().set(wex::stc_data::WIN_HEX)));
 
-  AddPane(GetFrame(), stc);
+  AddPane(frame(), stc);
   REQUIRE(stc->GetText() != "0123456789");
   
   stc->SetCurrentPos(48); // 0 <-
   
-  wex::hexmode* hm = &stc->GetHexMode();
+  wex::hexmode* hm = &stc->get_hexmode();
   
-  REQUIRE( hm->Active());
-  REQUIRE( hm->GetSTC() == stc);
-  REQUIRE( hm->GetBuffer() == "0123456789");
+  REQUIRE( hm->is_active());
+  REQUIRE( hm->stc() == stc);
+  REQUIRE( hm->buffer() == "0123456789");
     
-  hm->AppendText("0123456789");
-  REQUIRE( hm->GetBuffer() == "01234567890123456789");
-  REQUIRE( hm->HighlightOther()); // current pos
-  REQUIRE( hm->HighlightOther(0));
-  REQUIRE( hm->HighlightOther(10));
-  REQUIRE( hm->HighlightOther(57));
-  hm->Undo();
-  REQUIRE( hm->GetBuffer() == "01234567890123456789");
+  hm->append_text("0123456789");
+  REQUIRE( hm->buffer() == "01234567890123456789");
+  REQUIRE( hm->highlight_other()); // current pos
+  REQUIRE( hm->highlight_other(0));
+  REQUIRE( hm->highlight_other(10));
+  REQUIRE( hm->highlight_other(57));
+  hm->undo();
+  REQUIRE( hm->buffer() == "01234567890123456789");
   
   stc->DiscardEdits();  
-  hm->Set(false);
+  hm->set(false);
   REQUIRE( stc->GetText() == "01234567890123456789");
   
   // Test hex field.
-  hm->Set(true);
-  REQUIRE(!hm->GetInfo().empty()); // 34 <- (ascii 4)
-  REQUIRE(!hm->Replace('x', 13));
-  REQUIRE(!hm->Replace('y', 13));
-  REQUIRE(!hm->Replace('g', 13));
-  REQUIRE( hm->Replace('a', 13));
-  REQUIRE( hm->Replace('9', 13));
-  REQUIRE( hm->Replace('2', 13));
+  hm->set(true);
+  REQUIRE(!hm->get_info().empty()); // 34 <- (ascii 4)
+  REQUIRE(!hm->replace('x', 13));
+  REQUIRE(!hm->replace('y', 13));
+  REQUIRE(!hm->replace('g', 13));
+  REQUIRE( hm->replace('a', 13));
+  REQUIRE( hm->replace('9', 13));
+  REQUIRE( hm->replace('2', 13));
   
-  REQUIRE( stc->GetFile().FileSave(GetTestPath("test.hex")));
-  hm->Set(false);
+  REQUIRE( stc->get_file().file_save(GetTestPath("test.hex")));
+  hm->set(false);
   REQUIRE( stc->GetText() == "01232567890123456789");
   
   // Test ascii field.
-  hm->Set(true);
-  REQUIRE(!hm->GetInfo().empty());
-  REQUIRE( hm->Replace('x', 54)); // 6 <-
+  hm->set(true);
+  REQUIRE(!hm->get_info().empty());
+  REQUIRE( hm->replace('x', 54)); // 6 <-
   
-  REQUIRE( stc->GetFile().FileSave());
-  hm->Set(false);
+  REQUIRE( stc->get_file().file_save());
+  hm->set(false);
   REQUIRE(stc->GetText() == "012325x7890123456789");
   
-  REQUIRE(!hm->Active());
+  REQUIRE(!hm->is_active());
   
-  hm->AppendText("0123456789");
-  REQUIRE(!hm->GetBuffer().empty());
+  hm->append_text("0123456789");
+  REQUIRE(!hm->buffer().empty());
 
-  hm->Set(false);
-  REQUIRE(!hm->Active());
+  hm->set(false);
+  REQUIRE(!hm->is_active());
 
   // Test delete, insert.
-  stc->SetText("0123456789");
-  hm->Set(true);
-  REQUIRE( hm->Active());
-  REQUIRE( hm->GetBuffer() == "0123456789");
-  REQUIRE( hm->Delete(1, 13));
-  REQUIRE( hm->GetBuffer() == "012356789");
-  REQUIRE( hm->Insert("30", 13)); // insert in hex field 
-  REQUIRE( hm->GetBuffer() == "0123056789");
-  REQUIRE( hm->Insert("abc", 52)); // insert in ascii field 
-  REQUIRE( hm->GetBuffer() == "0123abc056789");
+  stc->set_text("0123456789");
+  hm->set(true);
+  REQUIRE( hm->is_active());
+  REQUIRE( hm->buffer() == "0123456789");
+  REQUIRE( hm->erase(1, 13));
+  REQUIRE( hm->buffer() == "012356789");
+  REQUIRE( hm->insert("30", 13)); // insert in hex field 
+  REQUIRE( hm->buffer() == "0123056789");
+  REQUIRE( hm->insert("abc", 52)); // insert in ascii field 
+  REQUIRE( hm->buffer() == "0123abc056789");
   
   // Test replace target (replace in hex field).
-  hm->SetText("0123456789");
-  hm->Set(true);
+  hm->set_text("0123456789");
+  hm->set(true);
   stc->SetTargetStart(wxSTC_INVALID_POSITION);
-  REQUIRE(!hm->ReplaceTarget("AA"));
+  REQUIRE(!hm->replace_target("AA"));
   stc->SetTargetStart(3);
   stc->SetTargetEnd(4);
-  REQUIRE( hm->ReplaceTarget("AA"));
+  REQUIRE( hm->replace_target("AA"));
   stc->SetTargetStart(3); // second byte
   stc->SetTargetEnd(6);
-  REQUIRE(!hm->ReplaceTarget("A"));
-  REQUIRE(!hm->ReplaceTarget("AA AB"));
-  REQUIRE(!hm->ReplaceTarget("FG"));
-  REQUIRE(!hm->ReplaceTarget("aAAB"));
-  REQUIRE( hm->ReplaceTarget("AAAB"));
+  REQUIRE(!hm->replace_target("A"));
+  REQUIRE(!hm->replace_target("AA AB"));
+  REQUIRE(!hm->replace_target("FG"));
+  REQUIRE(!hm->replace_target("aAAB"));
+  REQUIRE( hm->replace_target("AAAB"));
   stc->SetTargetStart(3);
   stc->SetTargetEnd(6);
-  REQUIRE( hm->ReplaceTarget("2021"));
-  REQUIRE( hm->GetBuffer() == "0 !3456789");
+  REQUIRE( hm->replace_target("2021"));
+  REQUIRE( hm->buffer() == "0 !3456789");
   
   // If we have:
   // 30 31 32 33 34 35
@@ -118,32 +119,32 @@ TEST_CASE("wex::hexmode")
   //     30 39 39 33 34 35 (replace)
   // RT: 31 32 -> 39 39 39
   //     30 39 39 39 33 34 35 (insert)
-  hm->SetText("0123456789");
-  REQUIRE( hm->GetBuffer() == "0123456789");
+  hm->set_text("0123456789");
+  REQUIRE( hm->buffer() == "0123456789");
   stc->SetTargetStart(3);
   stc->SetTargetEnd(9);
-  REQUIRE( hm->ReplaceTarget("39"));
-  REQUIRE( hm->GetBuffer() == "093456789");
-  hm->SetText("0123456789");
+  REQUIRE( hm->replace_target("39"));
+  REQUIRE( hm->buffer() == "093456789");
+  hm->set_text("0123456789");
   stc->SetTargetStart(3);
   stc->SetTargetEnd(9);
-  REQUIRE( hm->ReplaceTarget("3939"));
-  REQUIRE( hm->GetBuffer() == "0993456789");
-  hm->SetText("0123456789");
+  REQUIRE( hm->replace_target("3939"));
+  REQUIRE( hm->buffer() == "0993456789");
+  hm->set_text("0123456789");
   stc->SetTargetStart(3);
   stc->SetTargetEnd(9);
-  REQUIRE( hm->ReplaceTarget("393939"));
-  REQUIRE( hm->GetBuffer() == "0999456789");
+  REQUIRE( hm->replace_target("393939"));
+  REQUIRE( hm->buffer() == "0999456789");
 
   // Test set text.
-  hm->SetText("hello world");
-  REQUIRE( hm->GetBuffer() == "hello world");
-  REQUIRE( hm->GetSTC()->GetText() != "hello world");
+  hm->set_text("hello world");
+  REQUIRE( hm->buffer() == "hello world");
+  REQUIRE( hm->stc()->GetText() != "hello world");
   
   wxKeyEvent event(wxEVT_KEY_DOWN);
-  hm->SetPos(event);
+  hm->set_pos(event);
   
-  wex::lexers::Get()->Apply(stc);
+  wex::lexers::get()->apply(stc);
   
   REQUIRE( remove("test.hex") == 0);
   

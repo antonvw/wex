@@ -17,9 +17,9 @@ TEST_CASE("wex::dialog")
 {
   wex::dialog().Show();
   
-  wex::dialog* dlg = new wex::dialog(wex::window_data().Button(0).Title("no buttons"));
+  wex::dialog* dlg = new wex::dialog(wex::window_data().button(0).title("no buttons"));
   dlg->Show();
 
-  REQUIRE(dlg->GetData().Button() == 0);
-  REQUIRE(dlg->GetData().Title() == "no buttons");
+  REQUIRE(dlg->data().button() == 0);
+  REQUIRE(dlg->data().title() == "no buttons");
 }

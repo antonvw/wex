@@ -21,70 +21,70 @@ TEST_CASE("wex::process")
   
   wex::process* process = new wex::process;
   
-  REQUIRE(!process->GetError());
-  REQUIRE( process->GetStdOut().empty());
-  REQUIRE( process->GetStdErr().empty());
-  REQUIRE(!process->IsRunning());
-  process->GetShell()->SetText(std::string());
+  REQUIRE(!process->error());
+  REQUIRE( process->get_stdout().empty());
+  REQUIRE( process->get_stderr().empty());
+  REQUIRE(!process->is_running());
+  process->get_shell()->SetText(std::string());
   
-  process->ConfigDialog(wex::window_data().Button(wxAPPLY | wxCANCEL));
+  process->config_dialog(wex::window_data().button(wxAPPLY | wxCANCEL));
   
 #ifdef __UNIX__
   // Test wait for prcess (sync)
 #ifndef __WXOSX__
-  REQUIRE( process->Execute("ls -l", wex::process::EXEC_WAIT));
-  REQUIRE(!process->GetError());
-  REQUIRE(!process->Write("hello world"));
-  REQUIRE(!process->GetStdOut().empty());
+  REQUIRE( process->execute("ls -l", wex::process::EXEC_WAIT));
+  REQUIRE(!process->error());
+  REQUIRE(!process->write("hello world"));
+  REQUIRE(!process->get_stdout().empty());
   
-  REQUIRE(!process->IsRunning());
-  REQUIRE(!process->GetExecuteCommand().empty());
-  REQUIRE(!process->Kill());
+  REQUIRE(!process->is_running());
+  REQUIRE(!process->get_command().empty());
+  REQUIRE(!process->kill());
   
-  process->ShowOutput();
+  process->show_output();
 
   // Repeat last process (using "" only for dialogs).
-  REQUIRE( process->Execute("ls -l", wex::process::EXEC_WAIT));
-  REQUIRE(!process->GetError());
-  REQUIRE(!process->GetStdOut().empty());
+  REQUIRE( process->execute("ls -l", wex::process::EXEC_WAIT));
+  REQUIRE(!process->error());
+  REQUIRE(!process->get_stdout().empty());
 
   // Test working directory (should not change).
-  REQUIRE( process->Execute("ls -l", wex::process::EXEC_WAIT, ".."));
-  REQUIRE(!process->GetError());
-  REQUIRE(!process->GetStdOut().empty());
+  REQUIRE( process->execute("ls -l", wex::process::EXEC_WAIT, ".."));
+  REQUIRE(!process->error());
+  REQUIRE(!process->get_stdout().empty());
   REQUIRE( wxGetCwd().Contains("data"));
 
   // Test invalid process
-  REQUIRE(!process->Execute("xxxx", wex::process::EXEC_WAIT));
-  REQUIRE( process->GetStdErr().empty());
-  REQUIRE( process->GetStdOut().empty());
-  REQUIRE(!process->Kill());
+  REQUIRE(!process->execute("xxxx", wex::process::EXEC_WAIT));
+  REQUIRE( process->get_stderr().empty());
+  REQUIRE( process->get_stdout().empty());
+  REQUIRE(!process->kill());
   
   // Test not wait for process (async)
-  REQUIRE( process->Execute("bash"));
-  REQUIRE( process->IsRunning());
-  wex::shell* shell = process->GetShell();  
+  REQUIRE( process->execute("bash"));
+  REQUIRE( process->is_running());
+  wex::shell* shell = process->get_shell();  
   REQUIRE( shell != nullptr);
   Process("cd ~\rpwd\r", shell);
   REQUIRE( shell->GetText().Contains("home"));
   REQUIRE( cwd.original() != wex::path::Current());
-  REQUIRE( process->Kill());
+  REQUIRE( process->kill());
 
   // Test working directory for process (should change).
-  REQUIRE( process->Execute("ls -l", wex::process::EXEC_DEFAULT, ".."));
-  REQUIRE(!process->GetError());
+  REQUIRE( process->execute("ls -l", wex::process::EXEC_DEFAULT, ".."));
+  REQUIRE(!process->error());
   REQUIRE(!wxGetCwd().Contains("data"));
   wex::path::Current(cwd.original());
-  REQUIRE( process->Kill());
+  REQUIRE( process->kill());
   
   // Test invalid process (the process gets a process id, and exits immediately).
-  REQUIRE( process->Execute("xxxx"));
-  REQUIRE(!process->GetError());
-  REQUIRE( process->Kill());
+  REQUIRE( process->execute("xxxx"));
+  REQUIRE(!process->error());
+  REQUIRE( process->kill());
 #endif
 #endif
   
-  wex::process::PrepareOutput(GetFrame()); // in fact already done
+  wex::process::prepare_output(frame()); // in fact already done
 
-  // KillAll is done in main.
+  // kill_all is done in main.
 }

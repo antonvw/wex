@@ -19,42 +19,43 @@
 
 TEST_CASE("wex::stc")
 {
-  wex::stc* stc = GetSTC();
-  stc->GetVi().Command("\x1b");
+  wex::stc* stc = get_stc();
+  stc->get_vi().command("\x1b");
   wex::config(_("Wrap scan")).set(true);
   
-  SUBCASE("ConfigDialog")
+  SUBCASE("config_dialog")
   {
-    wex::stc::ConfigDialog(wex::window_data().Button(wxCANCEL | wxAPPLY));
+    wex::stc::config_dialog(wex::window_data().button(wxCANCEL | wxAPPLY));
   }
   
-  SUBCASE("SetText")
+  SUBCASE("set_text")
   {
-    stc->SetText("hello stc");
+    stc->set_text("hello stc");
     REQUIRE( stc->GetText() == "hello stc");
   }
   
   SUBCASE("Find and Replace")
   {
-    stc->SetText("hello stc and more text");
-    REQUIRE( stc->FindNext(std::string("hello")));
-    REQUIRE( stc->GetWordAtPos(0) == "hello");
+    stc->set_text("hello stc and more text");
+    REQUIRE( stc->find_next(std::string("hello")));
+    REQUIRE( stc->get_word_at_pos(0) == "hello");
     
-    REQUIRE(!stc->FindNext(std::string("%d")));
-    REQUIRE(!stc->FindNext(std::string("%ld")));
-    REQUIRE(!stc->FindNext(std::string("%q")));
+    REQUIRE(!stc->find_next(std::string("%d")));
+    REQUIRE(!stc->find_next(std::string("%ld")));
+    REQUIRE(!stc->find_next(std::string("%q")));
     
-    REQUIRE( stc->FindNext(std::string("hello"), wxSTC_FIND_WHOLEWORD));
-    REQUIRE(!stc->FindNext(std::string("HELLO"), wxSTC_FIND_MATCHCASE));
+    REQUIRE( stc->find_next(std::string("hello"), wxSTC_FIND_WHOLEWORD));
+    REQUIRE(!stc->find_next(std::string("HELLO"), wxSTC_FIND_MATCHCASE));
     REQUIRE((stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE) > 0);
     
-    wex::find_replace_data::Get()->SetMatchCase(false);
-    REQUIRE( stc->FindNext(std::string("HELLO"))); // uses flags from frd
-    
-    REQUIRE(!stc->SetIndicator(wex::indicator(4,5), 100, 200));
+    wex::find_replace_data::get()->set_use_regex(false);
+    wex::find_replace_data::get()->set_match_case(false);
+    REQUIRE( stc->find_next(std::string("HELLO"))); // uses flags from frd
     REQUIRE(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
-    wex::find_replace_data::Get()->SetMatchCase(false);
-    stc->SetSearchFlags(-1);
+    
+    REQUIRE(!stc->set_indicator(wex::indicator(4,5), 100, 200));
+    wex::find_replace_data::get()->set_match_case(false);
+    stc->set_search_flags(-1);
     REQUIRE(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
     
     REQUIRE( stc->CanCut());
@@ -62,52 +63,52 @@ TEST_CASE("wex::stc")
     REQUIRE( stc->CanPaste());
     
     stc->DocumentStart();
-    wex::find_replace_data::Get()->SetMatchWord(false);
-    REQUIRE( stc->FindNext(std::string("more text")));
-    REQUIRE( stc->GetFindString() == "more text");
-    REQUIRE( stc->ReplaceAll("more", "less") == 1);
-    REQUIRE( stc->ReplaceAll("more", "less") == 0);
-    REQUIRE(!stc->FindNext(std::string("more text")));
+    wex::find_replace_data::get()->set_match_word(false);
+    REQUIRE( stc->find_next(std::string("more text")));
+    REQUIRE( stc->get_find_string() == "more text");
+    REQUIRE( stc->replace_all("more", "less") == 1);
+    REQUIRE( stc->replace_all("more", "less") == 0);
+    REQUIRE(!stc->find_next(std::string("more text")));
     stc->SelectNone();
-    REQUIRE(!stc->FindNext());
-    REQUIRE( stc->FindNext(std::string("less text")));
-    REQUIRE( stc->ReplaceNext("less text", ""));
-    REQUIRE(!stc->ReplaceNext());
-    REQUIRE(!stc->FindNext(std::string("less text")));
-    REQUIRE( stc->GetFindString() != "less text");
-    REQUIRE( stc->ReplaceAll("%", "percent") == 0);
+    REQUIRE(!stc->find_next());
+    REQUIRE( stc->find_next(std::string("less text")));
+    REQUIRE( stc->replace_next("less text", ""));
+    REQUIRE(!stc->replace_next());
+    REQUIRE(!stc->find_next(std::string("less text")));
+    REQUIRE( stc->get_find_string() != "less text");
+    REQUIRE( stc->replace_all("%", "percent") == 0);
   }
 
   SUBCASE("vi")
   {
-    stc->GetVi().Command("\x1b");
-    REQUIRE(stc->GetVi().Mode().Normal());
-    stc->SetText("more text\notherline");
-    stc->GetVi().Command("V");
-    REQUIRE( stc->GetVi().Mode().Get() == wex::vi_mode::state::VISUAL_LINE);
-    REQUIRE( stc->FindNext(std::string("more text")));
+    stc->get_vi().command("\x1b");
+    REQUIRE(stc->get_vi().mode().normal());
+    stc->set_text("more text\notherline");
+    stc->get_vi().command("V");
+    REQUIRE( stc->get_vi().mode().get() == wex::vi_mode::state::VISUAL_LINE);
+    REQUIRE( stc->find_next(std::string("more text")));
   }
 
   SUBCASE("Lexer")
   {
-    stc->SetText("new text");
-    REQUIRE(stc->GetLexer().Set("cpp"));
-    REQUIRE(stc->GetLexer().GetScintillaLexer() == "cpp");
-    stc->GetLexer().Reset();
-    REQUIRE(stc->GetLexer().GetScintillaLexer().empty());
+    stc->set_text("new text");
+    REQUIRE(stc->get_lexer().set("cpp"));
+    REQUIRE(stc->get_lexer().scintilla_lexer() == "cpp");
+    stc->get_lexer().reset();
+    REQUIRE(stc->get_lexer().scintilla_lexer().empty());
 
     wex::lexer lexer;
-    lexer.Reset();
-    REQUIRE( lexer.Set("cpp", true));
-    REQUIRE(!lexer.Set("xyz"));
-    REQUIRE( stc->GetLexer().Set(lexer));
+    lexer.reset();
+    REQUIRE( lexer.set("cpp", true));
+    REQUIRE(!lexer.set("xyz"));
+    REQUIRE( stc->get_lexer().set(lexer));
   }
 
   SUBCASE("Open")
   {
     // do the same test as with wex::file in base for a binary file
-    REQUIRE(stc->Open(GetTestPath("test.bin")));
-    REQUIRE(stc->GetData().Flags() == 0);
+    REQUIRE(stc->open(GetTestPath("test.bin")));
+    REQUIRE(stc->data().flags() == 0);
     const wxCharBuffer& buffer = stc->GetTextRaw();
     REQUIRE(buffer.length() == 40);
   }
@@ -116,9 +117,9 @@ TEST_CASE("wex::stc")
   {
     stc->AddText("added text");
     REQUIRE( stc->GetText().Contains("added text"));
-    REQUIRE( stc->GetFile().GetContentsChanged());
-    stc->GetFile().ResetContentsChanged();
-    REQUIRE(!stc->GetFile().GetContentsChanged());
+    REQUIRE( stc->get_file().get_contents_changed());
+    stc->get_file().reset_contents_changed();
+    REQUIRE(!stc->get_file().get_contents_changed());
 
     stc->AppendText("more text");
     REQUIRE( stc->GetText() != "hello stc");
@@ -126,47 +127,47 @@ TEST_CASE("wex::stc")
   
   SUBCASE("Marker")
   {
-    REQUIRE(stc->MarkerDeleteAllChange());
+    REQUIRE(stc->marker_delete_all_change());
   }
 
   SUBCASE("Margin")
   {
-    REQUIRE(stc->GetMarginTextClick() == -1);
+    REQUIRE(stc->get_margin_text_click() == -1);
 
-    REQUIRE(!stc->ShownLineNumbers());
-    stc->ShowLineNumbers(true);
-    REQUIRE( stc->ShownLineNumbers());
-    stc->ShowLineNumbers(false);
-    REQUIRE(!stc->ShownLineNumbers());
+    REQUIRE(!stc->is_shown_line_numbers());
+    stc->show_line_numbers(true);
+    REQUIRE( stc->is_shown_line_numbers());
+    stc->show_line_numbers(false);
+    REQUIRE(!stc->is_shown_line_numbers());
   }
 
   SUBCASE("Coverage")
   {
-    stc->GetLexer().Set("cpp");
+    stc->get_lexer().set("cpp");
     stc->Clear();
-    stc->ClearDocument();
-    stc->ConfigGet();
+    stc->clear();
+    stc->config_get();
     stc->Cut();
-    //  stc->FileTypeMenu();
-    stc->Fold();
+    //  stc->filetype_menu();
+    stc->fold();
     // FoldAll
     wex::config(_("Auto fold")).set(3);
-    stc->Fold(true); 
-    stc->GuessType();
+    stc->fold(true); 
+    stc->guess_type();
     stc->Paste();
     //  stc->Print();
-    stc->PrintPreview();
-    stc->ProcessChar(5);
-    stc->PropertiesMessage();
-    stc->ResetMargins();
+    stc->print_preview();
+    stc->process_char(5);
+    stc->properties_message();
+    stc->reset_margins();
     stc->SelectNone();
-    stc->Sync(false);
-    stc->Sync(true);
+    stc->sync(false);
+    stc->sync(true);
     stc->Undo();
-    stc->AutoComplete().Use(true);
-    stc->AutoComplete().Use(false);
-    stc->UseModificationMarkers(true);
-    stc->UseModificationMarkers(false);
+    stc->auto_complete().use(true);
+    stc->auto_complete().use(false);
+    stc->use_modification_markers(true);
+    stc->use_modification_markers(false);
     stc->LineHome();
     stc->LineHomeExtend();
     stc->LineHomeRectExtend();
@@ -183,75 +184,75 @@ TEST_CASE("wex::stc")
 
   SUBCASE("EOL")
   {
-    REQUIRE(!stc->GetEOL().empty());
+    REQUIRE(!stc->eol().empty());
   }
     
-  SUBCASE("PositionRestore and Save")
+  SUBCASE("position_restore and Save")
   {
-    REQUIRE(!stc->PositionRestore());
-    stc->PositionSave();
-    REQUIRE( stc->PositionRestore());
+    REQUIRE(!stc->position_restore());
+    stc->position_save();
+    REQUIRE( stc->position_restore());
   }
     
-  SUBCASE("AutoIndentation")
+  SUBCASE("auto_indentation")
   {
     // first test auto indentation on next line
     wex::config(_("Auto indent")).set(3);
     REQUIRE( wex::config(_("Auto indent")).get(3) == 3);
-    stc->SetText("  \n  line with indentation");
+    stc->set_text("  \n  line with indentation");
     stc->DocumentEnd();
-    REQUIRE(!stc->AutoIndentation('x'));
+    REQUIRE(!stc->auto_indentation('x'));
     REQUIRE( stc->GetText() == "  \n  line with indentation");
     REQUIRE( stc->GetLineCount() == 2);
 #ifdef __WXOSX__
     stc->SetEOLMode(wxSTC_EOL_CR);
-    REQUIRE( stc->AutoIndentation('\r'));
+    REQUIRE( stc->auto_indentation('\r'));
 #else
-    REQUIRE( stc->AutoIndentation('\n'));
+    REQUIRE( stc->auto_indentation('\n'));
 #endif
     // the \n is not added, but indentation does
     REQUIRE( stc->GetText() == "  \n  line with indentation");
     REQUIRE( stc->GetLineCount() == 2);
     // test auto indentation for level change
-    REQUIRE( stc->GetLexer().Set("cpp"));
-    stc->SetText("\nif ()\n{\n");
+    REQUIRE( stc->get_lexer().set("cpp"));
+    stc->set_text("\nif ()\n{\n");
     stc->DocumentEnd();
 #if wxCHECK_VERSION(3,1,0)
-    //  REQUIRE( stc->AutoIndentation('\n'));
+    //  REQUIRE( stc->auto_indentation('\n'));
 #endif
   }
   
   SUBCASE("Link")
   {
-    REQUIRE(!stc->LinkOpen());
+    REQUIRE(!stc->link_open());
   }
 
   SUBCASE("Hex")
   {
-    stc->GetHexMode().Set(true);
-    REQUIRE(stc->HexMode());
-    stc->GetHexMode().AppendText("in hex mode");
-    stc->GetHexMode().Set(false);
+    stc->get_hexmode().set(true);
+    REQUIRE(stc->is_hexmode());
+    stc->get_hexmode().append_text("in hex mode");
+    stc->get_hexmode().set(false);
   }
 
   SUBCASE("Load file")
   {
     wex::stc stc(GetTestPath("test.h"));
-    REQUIRE( stc.GetFileName().Path().string().find("test.h") != std::string::npos);
-    REQUIRE( stc.Open(GetTestPath("test.h")));
-    REQUIRE(!stc.Open("XXX"));
-    stc.PropertiesMessage();
+    REQUIRE( stc.get_filename().data().string().find("test.h") != std::string::npos);
+    REQUIRE( stc.open(GetTestPath("test.h")));
+    REQUIRE(!stc.open("XXX"));
+    stc.properties_message();
   }
 
   SUBCASE("xml complete")
   {
-    REQUIRE( stc->GetLexer().Set("xml"));
-    stc->GetVi().Command("i<xxxx>");
-    stc->GetVi().Command("\x1b");
+    REQUIRE( stc->get_lexer().set("xml"));
+    stc->get_vi().command("i<xxxx>");
+    stc->get_vi().command("\x1b");
   }
 
   SUBCASE("Popup")
   {
-    REQUIRE( stc->GetLexer().Set("cpp"));
+    REQUIRE( stc->get_lexer().set("cpp"));
   }
 }

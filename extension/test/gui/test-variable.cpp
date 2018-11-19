@@ -17,22 +17,22 @@
 
 TEST_CASE("wex::variable")
 {
-  wex::ex* ex = new wex::ex(GetSTC());
+  wex::ex* ex = new wex::ex(get_stc());
 
   SUBCASE("Default constructor")
   {
     std::string value;
-    REQUIRE( wex::variable("test").GetName() == "test");
-    REQUIRE( wex::variable("test").GetValue().empty());
-    REQUIRE(!wex::variable("test").IsBuiltIn());
-    REQUIRE(!wex::variable("test").IsTemplate());
+    REQUIRE( wex::variable("test").get_name() == "test");
+    REQUIRE( wex::variable("test").get_value().empty());
+    REQUIRE(!wex::variable("test").is_builtin());
+    REQUIRE(!wex::variable("test").is_template());
 
     wex::variable var("test");
-    var.SetAskForInput(false);
+    var.set_ask_for_input(false);
 
-    REQUIRE( var.Expand(nullptr));
-    REQUIRE( var.Expand(ex));
-    REQUIRE( var.Expand(value));
+    REQUIRE( var.expand(nullptr));
+    REQUIRE( var.expand(ex));
+    REQUIRE( var.expand(value));
   }
 
   pugi::xml_document doc;
@@ -61,17 +61,17 @@ TEST_CASE("wex::variable")
       pugi::xml_node node = doc.document_element();
 
       wex::variable var(node);
-      var.SetAskForInput(false);
+      var.set_ask_for_input(false);
 
-      REQUIRE( var.GetName() == std::get<0>(it));
-      REQUIRE( var.GetValue() == std::get<2>(it));
-      if (var.GetName() == "template")
-        REQUIRE(!var.Expand(ex));
+      REQUIRE( var.get_name() == std::get<0>(it));
+      REQUIRE( var.get_value() == std::get<2>(it));
+      if (var.get_name() == "template")
+        REQUIRE(!var.expand(ex));
       else
-        REQUIRE( var.Expand(ex));
-      REQUIRE( var.GetValue() == std::get<3>(it));
+        REQUIRE( var.expand(ex));
+      REQUIRE( var.get_value() == std::get<3>(it));
 
-      var.Save(doc);
+      var.save(doc);
 
       node.remove_attribute("name");
     }
@@ -90,13 +90,13 @@ TEST_CASE("wex::variable")
 
       wex::variable var(node);
 
-      REQUIRE( var.GetName() == it);
-      REQUIRE( var.GetValue().empty());
-      REQUIRE( var.IsBuiltIn());
-      REQUIRE( var.Expand(ex));
+      REQUIRE( var.get_name() == it);
+      REQUIRE( var.get_value().empty());
+      REQUIRE( var.is_builtin());
+      REQUIRE( var.expand(ex));
 
       std::string content;
-      REQUIRE( var.Expand(content, ex));
+      REQUIRE( var.expand(content, ex));
 
       if (it == "Year")
       {

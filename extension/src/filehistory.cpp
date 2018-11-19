@@ -15,6 +15,7 @@
 #include <wx/imaglist.h>
 #include <wex/filehistory.h>
 #include <wex/config.h>
+#include <wex/menu.h>
 #include <wex/path.h>
 #include <wex/util.h>
 
@@ -41,7 +42,7 @@ wex::file_history::file_history(
   // The order should be inverted, as the last one added is the most recent used.
   if (!key.empty())
   {
-    for (int i = GetMaxFiles() - 1 ; i >=0 ; i--)
+    for (int i = get_max_files() - 1 ; i >=0 ; i--)
     {
       m_History->AddFileToHistory(
         config(wxString::Format("%s/%d", key.c_str(), i).ToStdString()).get());
@@ -54,70 +55,70 @@ wex::file_history::~file_history()
   delete m_History;
 }
   
-void wex::file_history::Add(const path& p)
+void wex::file_history::add(const path& p)
 {
-  if (p.FileExists())
+  if (p.file_exists())
   {
-    m_History->AddFileToHistory(p.Path().string());
+    m_History->AddFileToHistory(p.data().string());
   }
 }
 
-void wex::file_history::Clear()
+void wex::file_history::clear()
 {
-  if (GetCount() > 0)
+  if (size() > 0)
   {
-    for (int i = GetCount() - 1; i >= 0; i--)
+    for (int i = size() - 1; i >= 0; i--)
     {
       m_History->RemoveFileFromHistory(i);
     }
   }
 }
 
-wxWindowID wex::file_history::GetBaseId() const
+wxWindowID wex::file_history::get_base_id() const
 {
   return m_History->GetBaseId();
 }
   
-size_t wex::file_history::GetCount() const
+size_t wex::file_history::size() const
 {
   return m_History->GetCount();
 }
   
-int wex::file_history::GetMaxFiles() const
+int wex::file_history::get_max_files() const
 {
   return m_History->GetMaxFiles();
 }
 
-wex::path wex::file_history::GetHistoryFile(size_t index) const
+wex::path wex::file_history::get_history_file(size_t index) const
 {
   return path(m_History->GetHistoryFile(index).ToStdString());
 }
     
-std::vector<wex::path> wex::file_history::GetHistoryFiles(size_t count) const
+std::vector<wex::path> wex::file_history::get_history_files(size_t count) const
 {
   std::vector<path> v;
   
-  for (size_t i = 0; i < count && i < GetCount(); i++)
+  for (size_t i = 0; i < count && i < size(); i++)
   {
-    v.emplace_back(GetHistoryFile(i));
+    v.emplace_back(get_history_file(i));
   }  
   
   return v;
 }
   
-void wex::file_history::PopupMenu(wxWindow* win,
+void wex::file_history::popup_menu(wxWindow* win,
   int clear_id, const wxPoint& pos) const
 {
-  wxMenu* menu = new wxMenu();
+  menu* menu = new wex::menu();
 
-  for (size_t i = 0; i < GetCount(); i++)
+  for (size_t i = 0; i < size(); i++)
   {
-    if (const wex::path file(GetHistoryFile(i)); file.FileExists())
+    if (const wex::path file(get_history_file(i)); file.file_exists())
     {
       wxMenuItem* item = new wxMenuItem(
         menu, 
-        GetBaseId() + i, 
-        file.GetFullName());
+        get_base_id() + i, 
+        file.fullname());
 
       item->SetBitmap(wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
         get_iconid(file)));
@@ -128,11 +129,11 @@ void wex::file_history::PopupMenu(wxWindow* win,
   
   if (menu->GetMenuItemCount() > 0)
   {
-    menu->AppendSeparator();
+    menu->append_separator();
     
     if (clear_id != -1)
     {
-      menu->Append(clear_id, wxGetStockLabel(wxID_CLEAR));
+      menu->append(clear_id, wxGetStockLabel(wxID_CLEAR));
     }
       
     win->PopupMenu(menu, pos);
@@ -141,7 +142,7 @@ void wex::file_history::PopupMenu(wxWindow* win,
   delete menu;
 }
 
-void wex::file_history::Save()
+void wex::file_history::save()
 {
   if (m_Key.empty())
   {
@@ -149,11 +150,11 @@ void wex::file_history::Save()
   }
   else
   {
-    if (GetCount() > 0)
+    if (size() > 0)
     {
       config(m_Key).erase();
       
-      for (size_t i = 0; i < GetCount(); i++)
+      for (size_t i = 0; i < size(); i++)
       {
         config(wxString::Format("%s/%lu", m_Key, i).ToStdString()).set(
           m_History->GetHistoryFile(i).ToStdString());
@@ -162,7 +163,7 @@ void wex::file_history::Save()
   }
 }
   
-void wex::file_history::UseMenu(wxWindowID id, wxMenu* menu)
+void wex::file_history::use_menu(wxWindowID id, wxMenu* menu)
 {
   wxMenu* submenu = new wxMenu;
   menu->Append(id, _("Open &Recent"), submenu);

@@ -17,12 +17,12 @@ TEST_CASE("wex::menu_commands")
 {
   wex::menu_commands<wex::menu_command> cmnds("test", {{"x"},{"y"},{"z"}});
   
-  REQUIRE( cmnds.GetCommand().GetCommand()  == "x");
-  REQUIRE( cmnds.GetCommands().size() == 3);
-  REQUIRE( cmnds.GetFlagsKey().empty());
-  REQUIRE( cmnds.GetName() == "test");
-  REQUIRE(!cmnds.SetCommand(4));
-  REQUIRE( cmnds.GetCommand().GetCommand()  == "x");
-  REQUIRE( cmnds.SetCommand(2));
-  REQUIRE( cmnds.GetCommand().GetCommand()  == "z");
+  REQUIRE( cmnds.get_command().get_command()  == "x");
+  REQUIRE( cmnds.get_commands().size() == 3);
+  REQUIRE( cmnds.flags_key().empty());
+  REQUIRE( cmnds.name() == "test");
+  REQUIRE(!cmnds.set_command(4));
+  REQUIRE( cmnds.get_command().get_command()  == "x");
+  REQUIRE( cmnds.set_command(2));
+  REQUIRE( cmnds.get_command().get_command()  == "z");
 }

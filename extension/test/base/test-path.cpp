@@ -13,45 +13,45 @@ TEST_CASE( "wex::path" )
 {
   SUBCASE( "Constructor" ) 
   {
-    REQUIRE( wex::path().Path().empty());
-    REQUIRE( wex::path("xxx").Path().string() == "xxx");
-    REQUIRE( wex::path(wex::path("yyy")).Path().string() == "yyy");
+    REQUIRE( wex::path().data().empty());
+    REQUIRE( wex::path("xxx").data().string() == "xxx");
+    REQUIRE( wex::path(wex::path("yyy")).data().string() == "yyy");
     wex::path fn = GetTestPath("test.h");
-    REQUIRE( fn.GetLexer().GetScintillaLexer() == "cpp");
-    REQUIRE( wex::path(fn).GetFullName() == "test.h");
+    REQUIRE( fn.lexer().scintilla_lexer() == "cpp");
+    REQUIRE( wex::path(fn).fullname() == "test.h");
     REQUIRE( wex::path("..").is_relative());
     REQUIRE(!wex::path("..").is_absolute());
     REQUIRE( wex::path("xx") == wex::path("xx"));
     REQUIRE( wex::path("xx") != wex::path("xy"));
     REQUIRE(!wex::path().original().empty());
-    REQUIRE(!wex::path().Current().empty());
+    REQUIRE(!wex::path().current().empty());
   }
   
   SUBCASE( "Basic" ) 
   {
     wex::path path(GetTestPath("test.h"));
   
-    REQUIRE(!path.DirExists());
-    REQUIRE( path.FileExists());
-    REQUIRE( path.GetExtension() == ".h");
-    REQUIRE( path.GetFullName() == "test.h");
-    REQUIRE(!path.Path().empty());
-    REQUIRE( path.GetLexer().GetScintillaLexer() == "cpp");
-    REQUIRE( path.GetName() == "test");
-    REQUIRE(!path.GetPath().empty());
+    REQUIRE(!path.dir_exists());
+    REQUIRE( path.file_exists());
+    REQUIRE( path.extension() == ".h");
+    REQUIRE( path.fullname() == "test.h");
+    REQUIRE(!path.data().empty());
+    REQUIRE( path.lexer().scintilla_lexer() == "cpp");
+    REQUIRE( path.name() == "test");
+    REQUIRE(!path.get_path().empty());
     REQUIRE(!path.paths().empty());
-    REQUIRE( path.GetStat().is_ok());
-    REQUIRE(!path.IsReadOnly());
+    REQUIRE( path.stat().is_ok());
+    REQUIRE(!path.is_readonly());
 
-    REQUIRE( path.Append("error").Path().string().find("error") != std::string::npos);
+    REQUIRE( path.append("error").data().string().find("error") != std::string::npos);
 
     path.replace_filename("xxx");
 
-    REQUIRE(!wex::path("XXXXX").GetStat().is_ok());
+    REQUIRE(!wex::path("XXXXX").stat().is_ok());
     REQUIRE(!wex::path("XXXXX").open_mime());
 
-    REQUIRE( wex::path("XXXXX").make_absolute().GetFullName() == "XXXXX");
-    REQUIRE( wex::path("XXXXX").make_absolute().Path().string() != "XXXXX");
+    REQUIRE( wex::path("XXXXX").make_absolute().fullname() == "XXXXX");
+    REQUIRE( wex::path("XXXXX").make_absolute().data().string() != "XXXXX");
   }
 
   SUBCASE( "Timing" ) 
@@ -62,7 +62,7 @@ TEST_CASE( "wex::path" )
 
     for (int i = 0; i < max; i++)
     {
-      REQUIRE(!exfile.GetStat().is_readonly());
+      REQUIRE(!exfile.stat().is_readonly());
     }
 
     const auto ex_milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - ex_start);
@@ -71,7 +71,7 @@ TEST_CASE( "wex::path" )
 
     for (int j = 0; j < max; j++)
     {
-      REQUIRE(!file.IsReadOnly());
+      REQUIRE(!file.is_readonly());
     }
 
     const auto wx_milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - wx_start);

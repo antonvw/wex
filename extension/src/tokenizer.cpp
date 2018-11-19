@@ -15,22 +15,22 @@ wex::tokenizer::tokenizer(
 {
 }
 
-size_t wex::tokenizer::CountTokens() const 
+size_t wex::tokenizer::count_tokens() const 
 {
   size_t count = 0;
 
-  for (tokenizer tkz(m_Text, m_Delimiters, m_SkipEmptyTokens); tkz.HasMoreTokens(); )
+  for (tokenizer tkz(m_Text, m_Delimiters, m_SkipEmptyTokens); tkz.has_more_tokens(); )
   {
-    tkz.GetNextToken();
+    tkz.get_next_token();
     count++;
   }
 
   return count;
 }
 
-const std::string wex::tokenizer::GetNextToken() 
+const std::string wex::tokenizer::get_next_token() 
 {
-  if (!HasMoreTokens()) return std::string();
+  if (!has_more_tokens()) return std::string();
 
   if (m_SkipEmptyTokens)
   {
@@ -55,10 +55,10 @@ const std::string wex::tokenizer::GetNextToken()
     m_StartPos = m_TokenEndPos + 1;
   }
 
-  return GetToken();
+  return get_token();
 }
 
-const std::string wex::tokenizer::GetString() const
+const std::string wex::tokenizer::get_string() const
 {
   if (m_TokenEndPos == std::string::npos)
   {
@@ -76,14 +76,14 @@ const std::string wex::tokenizer::GetString() const
   return m_Text.substr(pos);
 }
   
-const std::string wex::tokenizer::GetToken() const
+const std::string wex::tokenizer::get_token() const
 {
   return m_Text.substr(
     m_TokenStartPos, 
     m_TokenEndPos != std::string::npos ? m_TokenEndPos - m_TokenStartPos: std::string::npos);
 }
   
-bool wex::tokenizer::HasMoreTokens() const
+bool wex::tokenizer::has_more_tokens() const
 {
   return 
     !m_Delimiters.empty() && 

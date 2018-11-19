@@ -19,7 +19,7 @@ wex::autocomplete::autocomplete(wex::stc* stc)
 {
 }
 
-bool wex::autocomplete::Activate(const std::string& text)
+bool wex::autocomplete::activate(const std::string& text)
 {
   if (text.empty() || !Use())
   {
@@ -28,23 +28,23 @@ bool wex::autocomplete::Activate(const std::string& text)
 
   wex::ctags_entry current;
 
-  m_STC->GetVi().GetCTags()->Find(text, current, m_Filter);
+  m_STC->get_vi().ctags()->find(text, current, m_Filter);
 
   VLOG(9) << "autocomplete: " << text;
   
-  if (current.Active())
+  if (current.is_active())
   {
-    VLOG(9) << "autocomplete current: " << current.Get();
+    VLOG(9) << "autocomplete current: " << current.get();
   }
 
-  if (m_Filter.Active())
+  if (m_Filter.is_active())
   {
-    VLOG(9) << "autocomplete filter: " << m_Filter.Get();
+    VLOG(9) << "autocomplete filter: " << m_Filter.get();
   }
 
-  if (m_STC->GetVi().GetIsActive())
+  if (m_STC->get_vi().is_active())
   {
-    m_STC->GetVi().AppendInsertText(text.substr(m_Text.size()));
+    m_STC->get_vi().append_insert_text(text.substr(m_Text.size()));
   }
 
   m_Text.clear();
@@ -52,7 +52,7 @@ bool wex::autocomplete::Activate(const std::string& text)
   return true;
 }
 
-bool wex::autocomplete::Apply(char c)
+bool wex::autocomplete::apply(char c)
 {
   if (!Use() || m_STC->SelectionIsRectangle())
   {
@@ -66,7 +66,7 @@ bool wex::autocomplete::Apply(char c)
   if (c == '.' || 
      (c == '>' && m_STC->GetCharAt(m_STC->GetCurrentPos() - 1) == '-'))
   {
-    Clear();
+    clear();
     show_inserts = false;
     show_keywords = false;
   }
@@ -87,7 +87,7 @@ bool wex::autocomplete::Apply(char c)
       m_Inserts.emplace(m_Text);
     }
 
-    Clear();
+    clear();
     return true;
   }
   else if (iscntrl(c) || c == '+')
@@ -118,15 +118,15 @@ bool wex::autocomplete::Apply(char c)
   return true;
 }
 
-void wex::autocomplete::Clear()
+void wex::autocomplete::clear()
 {
   m_Text.clear();
   m_STC->AutoCompCancel();
 }
 
-void wex::autocomplete::Reset()
+void wex::autocomplete::reset()
 {
-  m_Filter.Clear();
+  m_Filter.clear();
 }
 
 bool wex::autocomplete::ShowCTags(bool show) const
@@ -136,7 +136,7 @@ bool wex::autocomplete::ShowCTags(bool show) const
     return false;
   }
 
-  if (const auto comp(m_STC->GetVi().GetCTags()->AutoComplete(
+  if (const auto comp(m_STC->get_vi().ctags()->auto_complete(
     m_Text, m_Filter));
     comp.empty())
   {
@@ -144,7 +144,7 @@ bool wex::autocomplete::ShowCTags(bool show) const
   }
   else 
   {
-    m_STC->AutoCompSetSeparator(m_STC->GetVi().GetCTags()->Separator());
+    m_STC->AutoCompSetSeparator(m_STC->get_vi().ctags()->separator());
     m_STC->AutoCompShow(m_Text.length() - 1, comp);
     m_STC->AutoCompSetSeparator(' ');
     return true;
@@ -169,10 +169,10 @@ bool wex::autocomplete::ShowInserts(bool show) const
 
 bool wex::autocomplete::ShowKeywords(bool show) const
 {
-  if (show && !m_Text.empty() && m_STC->GetLexer().KeywordStartsWith(m_Text))
+  if (show && !m_Text.empty() && m_STC->get_lexer().keyword_starts_with(m_Text))
   {
     if (const auto comp(
-      m_STC->GetLexer().GetKeywordsString(-1, m_MinSize, m_Text));
+      m_STC->get_lexer().keywords_string(-1, m_MinSize, m_Text));
       !comp.empty())
     {
       m_STC->AutoCompShow(m_Text.length() - 1, comp);

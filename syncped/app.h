@@ -12,17 +12,15 @@
 class app : public wex::app
 {
 public:
-  auto& GetData() {return m_Data;};
-  const auto& GetFiles() const {return m_Files;};
-  const auto& GetTag() const {return m_Tag;};
-
-  auto& GetScriptin() {return m_Scriptin;};
-  auto& GetScriptout() {return m_Scriptout;};
-
-  auto GetDebug() const {return m_Debug;};
-  auto GetSplit() const {return m_Split;};
+  auto& data() {return m_Data;};
+  auto  get_debug() const {return m_Debug;};
+  auto& get_files() const {return m_Files;};
+  auto& get_scriptin() {return m_Scriptin;};
+  auto& get_scriptout() {return m_Scriptout;};
+  auto  get_split() const {return m_Split;};
+  auto& get_tag() const {return m_Tag;};
   
-  void Reset();
+  void reset();
 private:
 #ifdef __WXOSX__  
   virtual void MacOpenFiles(const wxArrayString& fileNames) override;

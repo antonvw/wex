@@ -26,19 +26,19 @@ void Test(wex::dirctrl* ctrl)
 
 TEST_CASE("wex::dirctrl")
 {
-  wex::dirctrl* ctrl = new wex::dirctrl(GetFrame());
-  AddPane(GetFrame(), ctrl);
+  wex::dirctrl* ctrl = new wex::dirctrl(frame());
+  AddPane(frame(), ctrl);
 
   SUBCASE("Select directory")
   {
-    ctrl->ExpandAndSelectPath("./");
+    ctrl->expand_and_select_path("./");
     // Test(ctrl);
   }
   
 #ifdef __UNIX__
   SUBCASE("Select file")
   {
-    ctrl->ExpandAndSelectPath("/usr/bin/git");
+    ctrl->expand_and_select_path("./");
     // Test(ctrl);
   }
 #endif

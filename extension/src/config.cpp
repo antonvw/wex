@@ -21,7 +21,7 @@
 #include <wex/tokenizer.h>
 #include <wex/util.h>
 
-wex::config::config(type type)
+wex::config::config(type_t type)
   : m_type(type)
 {
 }
@@ -40,7 +40,7 @@ const std::string wex::config::dir()
   return path({
     wxGetHomeDir().ToStdString(), 
     ".config", 
-    wxTheApp->GetAppName().Lower().ToStdString()}).Path().string();
+    wxTheApp->GetAppName().Lower().ToStdString()}).data().string();
 #endif
 }
 
@@ -72,9 +72,9 @@ const std::string wex::config::firstof_write(const std::string& value) const
   std::vector<std::string> v{value};
 
   for (tokenizer tkz(wxConfigBase::Get()->Read(m_item).ToStdString(), 
-    std::string(1, get_field_separator())); tkz.HasMoreTokens(); )
+    std::string(1, get_field_separator())); tkz.has_more_tokens(); )
   {
-    if (const std::string val = tkz.GetNextToken(); val != value)
+    if (const std::string val = tkz.get_next_token(); val != value)
     {
       v.emplace_back(val);
     }
@@ -137,7 +137,7 @@ const std::list < std::string > wex::config::get_list() const
 {
   return tokenizer(
     get(std::string()), 
-    std::string(1, get_field_separator())).Tokenize<
+    std::string(1, get_field_separator())).tokenize<
       std::list < std::string >>();
 }
 

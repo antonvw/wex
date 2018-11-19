@@ -22,8 +22,8 @@ namespace wex
   {
   public:
     /// line number to be used for control_data 
-    /// Afterwards Line and Col from data are filled in if possible.
-    enum line_type
+    /// Afterwards line and col from data are filled in if possible.
+    enum
     {
       LINE_OPEN_URL          = -1,
       LINE_OPEN_MIME         = -2,
@@ -38,7 +38,7 @@ namespace wex
     
     /// Returns a path from text, using paths if necessary,
     /// returns empty path if no path could be found.
-    const path GetPath(
+    const path get_path(
       /// text containing a path somewhere
       const std::string& text,
       /// control data to be filled in Line from data
@@ -46,7 +46,7 @@ namespace wex
     
     /// Sets paths with info from config.
     /// If there is no config, paths will be empty.
-    void SetFromConfig();
+    void set_from_config();
   private:
     const path FindPath(const std::string& text, const control_data& data) const;
     bool SetLink(path& text, control_data& data) const;

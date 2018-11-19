@@ -14,7 +14,7 @@
 bool wex::interruptable::m_Cancelled = false;
 bool wex::interruptable::m_Running = false;
 
-bool wex::interruptable::Cancel()
+bool wex::interruptable::cancel()
 {
   if (!m_Running)
   {
@@ -27,7 +27,7 @@ bool wex::interruptable::Cancel()
   return true;
 }
 
-bool wex::interruptable::Start()
+bool wex::interruptable::start()
 {
   if (m_Running)
   {
@@ -40,7 +40,7 @@ bool wex::interruptable::Start()
   return true;
 }
 
-void wex::interruptable::Stop()
+void wex::interruptable::stop()
 {
   m_Running = false;
 }

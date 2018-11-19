@@ -22,25 +22,24 @@ namespace wex
     /// Constructor.
     autocomplete(stc* stc);
 
-    /// Activates the autocompleted text.
+    /// activates the autocompleted text.
     /// This might setup a filter for next
     /// autocomplete list.
-    bool Activate(const std::string& text);
+    bool activate(const std::string& text);
 
     /// Builds and shows autocomplete lists on the 
     /// STC component. This can be a list
     /// according to CTags, previously inserted text,
     /// or keywords for current lexer.
-    bool Apply(char c);
+    bool apply(char c);
 
     /// Clears filter.
-    void Reset();
+    void reset();
 
     /// Sets autocomplete on or off.
-    /// Default on.
-    void Use(bool use) {m_Use = use;};
+    void use(bool on) {m_Use = on;};
   private:
-    void Clear();
+    void clear();
     bool ShowCTags(bool show) const;
     bool ShowInserts(bool show) const;
     bool ShowKeywords(bool show) const;

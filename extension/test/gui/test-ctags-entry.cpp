@@ -16,24 +16,24 @@ TEST_CASE("wex::ctags_entry")
 {
   wex::ctags_entry filter;
 
-  REQUIRE(!filter.Active() );
+  REQUIRE(!filter.is_active() );
 
-  filter.Access("xx");
-  REQUIRE( filter.Active() );
-  REQUIRE( filter.Access() == "xx" );
+  filter.access("xx");
+  REQUIRE( filter.is_active() );
+  REQUIRE( filter.access() == "xx" );
 
-  filter.Class("yy");
-  REQUIRE( filter.Class() == "yy" );
+  filter.class_name("yy");
+  REQUIRE( filter.class_name() == "yy" );
 
-  filter.Kind("f");
-  REQUIRE( filter.Kind() == "f" );
+  filter.kind("f");
+  REQUIRE( filter.kind() == "f" );
 
-  filter.Signature("zz");
-  REQUIRE( filter.Signature() == "zz" );
+  filter.signature("zz");
+  REQUIRE( filter.signature() == "zz" );
 
-  REQUIRE(!filter.Get().empty() );
+  REQUIRE(!filter.get().empty() );
 
-  filter.Clear();
-  REQUIRE(!filter.Active() );
-  REQUIRE( filter.Get().empty() );
+  filter.clear();
+  REQUIRE(!filter.is_active() );
+  REQUIRE( filter.get().empty() );
 }

@@ -21,19 +21,19 @@ namespace wex
   {
   public:
     /// Returns the printing object.
-    static printing* Get(bool createOnDemand = true);
+    static printing* get(bool createOnDemand = true);
 
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
     /// Returns the html printer.
-    auto* GetHtmlPrinter() {return m_HtmlPrinter.get();};
+    auto* get_html_printer() {return m_HtmlPrinter.get();};
 #endif
 
     /// Returns the printer.
-    auto* GetPrinter() {return m_Printer.get();};
+    auto* get_printer() {return m_Printer.get();};
 
     /// Sets the object as the current one, returns the pointer 
     /// to the previous current object (both the parameter and returned value may be nullptr). 
-    static printing* Set(printing* printing);
+    static printing* set(printing* printing);
   private:
     printing();
 

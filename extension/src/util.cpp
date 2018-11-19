@@ -49,7 +49,7 @@ const std::string wex::align_text(
   const std::string_view& lines, const std::string_view& header,
   bool fill_out_with_space, bool fill_out, const lexer& lexer)
 {
-  const auto line_length = lexer.UsableCharactersPerLine();
+  const auto line_length = lexer.usable_chars_per_line();
 
   // Use the header, with one space extra to separate, or no header at all.
   const auto header_with_spaces =
@@ -66,7 +66,7 @@ const std::string wex::align_text(
     if (const auto word = get_word(in, false, false);
       line.size() + 1 + word.size() > line_length)
     {
-      out += lexer.MakeSingleLineComment(line, fill_out_with_space, fill_out) + "\n";
+      out += lexer.make_single_line_comment(line, fill_out_with_space, fill_out) + "\n";
       line = header_with_spaces + word;
     }
     else
@@ -76,7 +76,7 @@ const std::string wex::align_text(
     }
   }
 
-  out += lexer.MakeSingleLineComment(line, fill_out_with_space, fill_out);
+  out += lexer.make_single_line_comment(line, fill_out_with_space, fill_out);
 
   return out;
 }
@@ -101,8 +101,8 @@ std::tuple<bool, const std::string, const std::vector<std::string>>
     path.make_absolute();
   }
 
-  const auto prefix(path.GetFullName());
-  const std::vector <std::string > v(get_all_files(path.GetPath(), prefix + "*"));
+  const auto prefix(path.fullname());
+  const std::vector <std::string > v(get_all_files(path.get_path(), prefix + "*"));
 
   if (v.empty())
   {
@@ -232,18 +232,18 @@ bool wex::comparefile(const path& file1, const path& file2)
   }
 
   const auto arguments =
-     (file1.GetStat().st_mtime < file2.GetStat().st_mtime) ?
-       "\"" + file1.Path().string() + "\" \"" + file2.Path().string() + "\"":
-       "\"" + file2.Path().string() + "\" \"" + file1.Path().string() + "\"";
+     (file1.stat().st_mtime < file2.stat().st_mtime) ?
+       "\"" + file1.data().string() + "\" \"" + file2.data().string() + "\"":
+       "\"" + file2.data().string() + "\" \"" + file1.data().string() + "\"";
 
-  if (!process().Execute(
+  if (!process().execute(
     config(_("Comparator")).get() + " " + arguments, 
     process::EXEC_WAIT))
   {
     return false;
   }
 
-  wxLogStatus(_("Compared") + ": " + arguments);
+  log_status(_("Compared") + ": " + arguments);
 
   return true;
 }
@@ -260,13 +260,13 @@ const std::string wex::firstof(
   const std::string& text, 
   const std::string& chars, 
   size_t start_pos,
-  long flags)
+  firstof_t flags)
 {
-  const auto pos = !(flags & FIRST_OF_FROM_END) ? 
+  const auto pos = !flags[FIRST_OF_FROM_END] ? 
     text.find_first_of(chars, start_pos):
     text.find_last_of(chars, start_pos);
 
-  if (!(flags & FIRST_OF_BEFORE))
+  if (!flags[FIRST_OF_BEFORE])
   {
     return pos == std::string::npos ?
       std::string():
@@ -328,8 +328,8 @@ const char wex::get_field_separator()
 
 int wex::get_iconid(const path& filename)
 {
-  return filename.FileExists() ? 
-    wxFileIconsTable::file: (filename.DirExists() ? 
+  return filename.file_exists() ? 
+    wxFileIconsTable::file: (filename.dir_exists() ? 
     wxFileIconsTable::folder: 
     wxFileIconsTable::computer);
 }
@@ -368,9 +368,9 @@ const std::string wex::get_word(std::string& text,
   if (use_path_separator) field_separators = wxFILE_SEP_PATH;
   std::string token;
   tokenizer tkz(text, field_separators);
-  if (tkz.HasMoreTokens()) token = tkz.GetNextToken();
-  text = tkz.GetString();
-  text = skip_white_space(text, SKIP_LEFT);
+  if (tkz.has_more_tokens()) token = tkz.get_next_token();
+  text = tkz.get_string();
+  text = skip_white_space(text, skip_t().set(SKIP_LEFT));
   return token;
 }
 
@@ -388,57 +388,62 @@ bool wex::is_codeword_separator(int c)
          c == ',' || c == ';' || c == ':' || c == '@';
 }
 
-void wex::log_status(const path& fn, long flags)
+void wex::log_status(const char* text)
 {
-  std::string text = ((flags & STAT_FULLPATH) ? 
-    fn.Path().string(): fn.GetFullName());
-
-  if (fn.GetStat().is_ok())
-  {
-    const std::string what = ((flags & STAT_SYNC) ? 
-      _("Synchronized"):
-      _("Modified"));
-        
-    text += " " + what + " " + fn.GetStat().get_modification_time();
-  }
-
-  log_status(text);
+  wxLogStatus(text);
 }
 
 void wex::log_status(const std::string& text)
 {
-  wxLogStatus(text.c_str());
+  log_status(text.c_str());
+}
+
+void wex::log_status(const path& fn, status_t flags)
+{
+  std::string text = (flags[STAT_FULLPATH] ? 
+    fn.data().string(): fn.fullname());
+
+  if (fn.stat().is_ok())
+  {
+    const std::string what = (flags[STAT_SYNC] ? 
+      _("Synchronized"):
+      _("Modified"));
+        
+    text += " " + what + " " + fn.stat().get_modification_time();
+  }
+
+  log_status(text);
 }
 
 long wex::make(const path& makefile)
 {
   wex::process* process = new wex::process;
 
-  return process->Execute(
+  return process->execute(
     config("Make").get("make") + " " +
       config("MakeSwitch").get("-f") + " " +
-      makefile.Path().string(),
+      makefile.data().string(),
     process::EXEC_DEFAULT,
-    makefile.GetPath());
+    makefile.get_path());
 }
 
 bool wex::marker_and_register_expansion(ex* ex, std::string& text)
 {
   if (ex == nullptr) return false;
 
-  for (tokenizer tkz(text, "'" + std::string(1, WXK_CONTROL_R), false); tkz.HasMoreTokens(); )
+  for (tokenizer tkz(text, "'" + std::string(1, WXK_CONTROL_R), false); tkz.has_more_tokens(); )
   {
-    tkz.GetNextToken();
+    tkz.get_next_token();
     
-    if (const auto rest(tkz.GetString()); !rest.empty())
+    if (const auto rest(tkz.get_string()); !rest.empty())
     {
       // Replace marker.
-      if (const char name(rest[0]); tkz.GetLastDelimiter() == '\'')
+      if (const char name(rest[0]); tkz.last_delimiter() == '\'')
       {
-        if (const auto line = ex->MarkerLine(name); line >= 0)
+        if (const auto line = ex->marker_line(name); line >= 0)
         {
           replace_all(text, 
-            tkz.GetLastDelimiter() + std::string(1, name), 
+            tkz.last_delimiter() + std::string(1, name), 
             std::to_string(line + 1));
         }
         else
@@ -450,8 +455,8 @@ bool wex::marker_and_register_expansion(ex* ex, std::string& text)
       else
       {
         replace_all(text,
-          tkz.GetLastDelimiter() + std::string(1, name), 
-          name == '%' ? ex->GetSTC()->GetFileName().GetFullName(): ex->GetMacros().GetRegister(name));
+          tkz.last_delimiter() + std::string(1, name), 
+          name == '%' ? ex->stc()->get_filename().fullname(): ex->get_macros().get_register(name));
       }
     }
   }
@@ -494,9 +499,9 @@ bool wex::matches_one_of(const std::string& fullname, const std::string& pattern
   replace_all(re, "*", ".*");
   replace_all(re, "?", ".?");
   
-  for (tokenizer tkz(re, ";"); tkz.HasMoreTokens(); )
+  for (tokenizer tkz(re, ";"); tkz.has_more_tokens(); )
   {
-    if (std::regex_match(fullname, std::regex(tkz.GetNextToken()))) return true;
+    if (std::regex_match(fullname, std::regex(tkz.get_next_token()))) return true;
   }
   
   return false;
@@ -530,8 +535,11 @@ bool wex::one_letter_after(const std::string& text, const std::string& letter)
   return std::regex_match(letter, std::regex("^" + text + "[a-zA-Z]$"));
 }
 
-int wex::open_files(frame* frame, const std::vector< path > & files,
-  const stc_data& stc_data, int dir_flags)
+int wex::open_files(
+  frame* frame, 
+  const std::vector< path > & files,
+  const stc_data& stc_data, 
+  dir::type_t type)
 {
   wxWindowUpdateLocker locker(frame);
   
@@ -540,33 +548,33 @@ int wex::open_files(frame* frame, const std::vector< path > & files,
   for (const auto& it : files)
   {
     if (
-      it.Path().string().find("*") != std::string::npos || 
-      it.Path().string().find("?") != std::string::npos)
+      it.data().string().find("*") != std::string::npos || 
+      it.data().string().find("?") != std::string::npos)
     {
       count += open_file_dir(frame, 
-        path::Current(),
-        it.Path().string(), stc_data.Flags(), dir_flags).FindFiles();
+        path::current(),
+        it.data().string(), stc_data.flags(), type).find_files();
     }
     else
     {
       path fn(it);
       wex::stc_data data(stc_data);
 
-      if (!it.FileExists() && it.Path().string().find(":") != std::string::npos)
+      if (!it.file_exists() && it.data().string().find(":") != std::string::npos)
       {
-        if (const path& val(link().GetPath(it.Path().string(), data.Control()));
-          !val.Path().empty())
+        if (const path& val(link().get_path(it.data().string(), data.control()));
+          !val.data().empty())
         {
           fn = val;
         }
       }
 
-      if (!fn.FileExists())
+      if (!fn.file_exists())
       {
         fn.make_absolute();
       }
        
-      if (frame->OpenFile(fn, data) != nullptr)
+      if (frame->open_file(fn, data) != nullptr)
       {
         count++;
       }
@@ -577,22 +585,25 @@ int wex::open_files(frame* frame, const std::vector< path > & files,
 }
 
 void wex::open_files_dialog(frame* frame,
-  long style, const std::string& wildcards, bool ask_for_continue,
-  const stc_data& data, int dir_flags)
+  long style, 
+  const std::string& wildcards, 
+  bool ask_for_continue,
+  const stc_data& data, 
+  dir::type_t type)
 {
   wxArrayString paths;
   const std::string caption(_("Select Files"));
       
-  if (auto* stc = frame->GetSTC(); stc != nullptr)
+  if (auto* stc = frame->get_stc(); stc != nullptr)
   {
     file_dialog dlg(
-      &stc->GetFile(),
-      window_data().Style(style).Title(caption),
+      &stc->get_file(),
+      window_data().style(style).title(caption),
       wildcards);
 
     if (ask_for_continue)
     {
-      if (dlg.ShowModalIfChanged(true) == wxID_CANCEL) return;
+      if (dlg.show_modal_if_changed(true) == wxID_CANCEL) return;
     }
     else
     {
@@ -615,12 +626,12 @@ void wex::open_files_dialog(frame* frame,
     dlg.GetPaths(paths);
   }
 
-  open_files(frame, to_vector_path(paths).Get(), data, dir_flags);
+  open_files(frame, to_vector_path(paths).get(), data, type);
 }
 
 const std::string wex::print_caption(const path& filename)
 {
-  return filename.Path().string();
+  return filename.data().string();
 }
 
 const std::string wex::print_footer()
@@ -630,13 +641,13 @@ const std::string wex::print_footer()
 
 const std::string wex::print_header(const path& filename)
 {
-  if (filename.FileExists())
+  if (filename.file_exists())
   {
     return
       get_endoftext(
-        filename.Path().string() + " " +
-        wxDateTime(filename.GetStat().st_mtime).Format().ToStdString(), 
-        filename.GetLexer().GetLineSize());
+        filename.data().string() + " " +
+        wxDateTime(filename.stat().st_mtime).Format().ToStdString(), 
+        filename.lexer().line_size());
   }
   else
   {
@@ -716,12 +727,12 @@ bool wex::shell_expansion(std::string& command)
   while (match(re_str, command, v) > 0)
   {
     process process;
-    if (!process.Execute(v[0], process::EXEC_WAIT)) return false;
+    if (!process.execute(v[0], process::EXEC_WAIT)) return false;
     
     command = std::regex_replace(
       command, 
       re, 
-      process.GetStdOut(), 
+      process.get_stdout(), 
       std::regex_constants::format_sed);
   }
   
@@ -730,24 +741,24 @@ bool wex::shell_expansion(std::string& command)
 
 const std::string wex::skip_white_space(
   const std::string& text, 
-  size_t skip_type,
+  skip_t type,
   const std::string& replace_with)
 {
-  auto output(text); 
-
-  if (skip_type == SKIP_ALL)
+  auto output(text);
+  
+  if (type[SKIP_MID])
   {
     output = std::regex_replace(output, 
       std::regex("[ \t\n\v\f\r]+"), replace_with, std::regex_constants::format_sed);
   }
   
-  if (skip_type & SKIP_LEFT)
+  if (type[SKIP_LEFT])
   {
     output = std::regex_replace(output, 
       std::regex("^[ \t\n\v\f\r]+"), "", std::regex_constants::format_sed);
   }
 
-  if (skip_type & SKIP_RIGHT)
+  if (type[SKIP_RIGHT])
   {
     output = std::regex_replace(output, 
       std::regex("[ \t\n\v\f\r]+$"), "", std::regex_constants::format_sed);
@@ -756,8 +767,12 @@ const std::string wex::skip_white_space(
   return output;
 }
 
-const std::string wex::sort(const std::string& input, 
-  size_t sort_type, size_t pos, const std::string& eol, size_t len)
+const std::string wex::sort(
+  const std::string& input, 
+  string_sort_t sort_t, 
+  size_t pos, 
+  const std::string& eol, 
+  size_t len)
 {
   wxBusyCursor wait;
 
@@ -767,9 +782,9 @@ const std::string wex::sort(const std::string& input,
   std::multiset<std::string> ms;
   std::vector<std::string> lines;
   
-  for (tokenizer tkz(input, eol); tkz.HasMoreTokens(); )
+  for (tokenizer tkz(input, eol); tkz.has_more_tokens(); )
   {
-    const std::string line = tkz.GetNextToken() + eol;
+    const std::string line = tkz.get_next_token() + eol;
     
     // Use an empty key if line is to short.
     std::string key;
@@ -781,7 +796,7 @@ const std::string wex::sort(const std::string& input,
     
     if (len == std::string::npos)
     {
-      if (sort_type & STRING_SORT_UNIQUE)
+      if (sort_t[STRING_SORT_UNIQUE])
         m.insert({key, line});
       else
         mm.insert({key, line});
@@ -797,22 +812,22 @@ const std::string wex::sort(const std::string& input,
 
   if (len == std::string::npos)
   {
-    if (sort_type & STRING_SORT_DESCENDING)
+    if (sort_t[STRING_SORT_DESCENDING])
     {
-      text = ((sort_type & STRING_SORT_UNIQUE) ?
+      text = (sort_t[STRING_SORT_UNIQUE] ?
         GetColumn(m.rbegin(), m.rend()):
         GetColumn(mm.rbegin(), mm.rend()));
     }
     else
     {
-      text = ((sort_type & STRING_SORT_UNIQUE) ?
+      text = (sort_t[STRING_SORT_UNIQUE] ?
         GetColumn(m.begin(), m.end()):
         GetColumn(mm.begin(), mm.end()));
     }
   }
   else
   {
-    text = ((sort_type & STRING_SORT_DESCENDING) ? 
+    text = (sort_t[STRING_SORT_DESCENDING] ? 
       GetLines(lines, pos, len, ms.rbegin()):
       GetLines(lines, pos, len, ms.begin()));
   }
@@ -820,8 +835,11 @@ const std::string wex::sort(const std::string& input,
   return text;
 }
 
-bool wex::sort_selection(stc* stc,
-  size_t sort_type, size_t pos, size_t len)
+bool wex::sort_selection(
+  stc* stc,
+  string_sort_t sort_t, 
+  size_t pos, 
+  size_t len)
 {
   const auto start_pos = stc->GetSelectionStart();
   
@@ -838,15 +856,24 @@ bool wex::sort_selection(stc* stc,
   {
     if (stc->SelectionIsRectangle())
     {
-      const auto start_pos_line = stc->PositionFromLine(stc->LineFromPosition(start_pos));
-      const auto end_pos_line = stc->PositionFromLine(stc->LineFromPosition(stc->GetSelectionEnd()) + 1);
+      const auto start_pos_line = 
+        stc->PositionFromLine(stc->LineFromPosition(start_pos));
+      const auto end_pos_line = 
+        stc->PositionFromLine(stc->LineFromPosition(stc->GetSelectionEnd()) + 1);
       const auto nr_lines = 
         stc->LineFromPosition(stc->GetSelectionEnd()) - 
         stc->LineFromPosition(start_pos);
         
       const auto sel = stc->GetTextRange(start_pos_line, end_pos_line); 
       stc->DeleteRange(start_pos_line, end_pos_line - start_pos_line);
-      const auto text(sort(sel.ToStdString(), sort_type, pos, stc->GetEOL(), len));
+      
+      const auto text(sort(
+        sel.ToStdString(), 
+        sort_t, 
+        pos, 
+        stc->eol(), 
+        len));
+      
       stc->InsertText(start_pos_line, text);
 
       stc->SetCurrentPos(start_pos);
@@ -862,7 +889,13 @@ bool wex::sort_selection(stc* stc,
     }
     else
     {
-      const auto text(sort(stc->GetSelectedText().ToStdString(), sort_type, pos, stc->GetEOL(), len));
+      const auto text(sort(
+        stc->GetSelectedText().ToStdString(), 
+        sort_t, 
+        pos, 
+        stc->eol(), 
+        len));
+      
       stc->ReplaceSelection(text);
       stc->SetSelection(start_pos, start_pos + text.size());
     }
@@ -892,27 +925,27 @@ const std::string wex::translate(const std::string& text,
 void wex::vcs_command_stc(const vcs_command& command, 
   const lexer& lexer, stc* stc)
 {
-  if (command.IsBlame())
+  if (command.is_blame())
   {
     // Do not show an edge for blamed documents, they are too wide.
     stc->SetEdgeMode(wxSTC_EDGE_NONE);
   }
   
-  if (command.IsDiff())
+  if (command.is_diff())
   {
-    stc->GetLexer().Set("diff");
+    stc->get_lexer().set("diff");
   }
-  else if (command.IsHistory())
+  else if (command.is_history())
   {
-    stc->GetLexer().Reset();
+    stc->get_lexer().reset();
   }
-  else if (command.IsOpen())
+  else if (command.is_open())
   {
-    stc->GetLexer().Set(lexer, true); // fold
+    stc->get_lexer().set(lexer, true); // fold
   }
   else
   {
-    stc->GetLexer().Reset();
+    stc->get_lexer().reset();
   }
 }
 
@@ -920,26 +953,26 @@ void wex::vcs_execute(frame* frame, int id, const std::vector< path > & files)
 {
   if (files.empty()) return;
   
-  if (vcs vcs(files, id); vcs.GetEntry().GetCommand().IsOpen())
+  if (vcs vcs(files, id); vcs.entry().get_command().is_open())
   {
-    if (vcs.ShowDialog() == wxID_OK)
+    if (vcs.show_dialog() == wxID_OK)
     {
       for (const auto& it : files)
       {
-        if (wex::vcs vcs({it}, id); vcs.Execute())
+        if (wex::vcs vcs({it}, id); vcs.execute())
         {
-          if (!vcs.GetEntry().GetStdOut().empty())
+          if (!vcs.entry().get_stdout().empty())
           {
-            frame->OpenFile(it, vcs.GetEntry());
+            frame->open_file(it, vcs.entry());
           }
-          else if (!vcs.GetEntry().GetStdErr().empty())
+          else if (!vcs.entry().get_stderr().empty())
           {
-            log() << vcs.GetEntry().GetStdErr();
+            log() << vcs.entry().get_stderr();
           }
           else
           {
-            wxLogStatus("No difference");
-            VLOG(9) << "no output from: " << vcs.GetEntry().GetExecuteCommand();
+            log_status("No difference");
+            VLOG(9) << "no output from: " << vcs.entry().get_command_executed();
           }
         }
       }
@@ -947,7 +980,7 @@ void wex::vcs_execute(frame* frame, int id, const std::vector< path > & files)
   }
   else
   {
-    vcs.Request();
+    vcs.request();
   }
 }
 
@@ -957,21 +990,21 @@ void wex::xml_error(
   stc* stc)
 {
   log_status("xml error: " + std::string(result->description()));
-  log(*result) << filename.GetName();
+  log(*result) << filename.name();
 
   // prevent recursion
-  if (stc == nullptr && filename != lexers::Get()->GetFileName())
+  if (stc == nullptr && filename != lexers::get()->get_filename())
   {
     if (auto* frame = wxDynamicCast(wxTheApp->GetTopWindow(), managed_frame);
       frame != nullptr)
     {
-      stc = frame->OpenFile(filename);
+      stc = frame->open_file(filename);
     }
   }
 
   if (stc != nullptr && result->offset != 0)
   {
-    stc->GetVi().Command("gg");
-    stc->GetVi().Command(std::to_string(result->offset) + "|");
+    stc->get_vi().command("gg");
+    stc->get_vi().command(std::to_string(result->offset) + "|");
   }
 }

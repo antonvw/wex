@@ -25,13 +25,13 @@ namespace wex
       /// the filename to be assigned if not empty
       const std::string& filename = std::string());
     
-    virtual bool GetContentsChanged() const override;
-    virtual void ResetContentsChanged() override;
+    virtual bool get_contents_changed() const override;
+    virtual void reset_contents_changed() override;
   private:
-    virtual bool DoFileLoad(bool synced = false) override;
-    virtual void DoFileNew() override;
-    virtual void DoFileSave(bool save_as = false) override;
-    void ReadFromFile(bool get_only_new_data);
+    virtual bool do_file_load(bool synced = false) override;
+    virtual void do_file_new() override;
+    virtual void do_file_save(bool save_as = false) override;
+    void read_from_file(bool get_only_new_data);
 
     stc* m_STC;
     std::streampos m_PreviousLength {0};

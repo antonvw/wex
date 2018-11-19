@@ -70,13 +70,13 @@
     }                                                        \
   }                                                          \
                                                              \
-  if (auto* stc = GetSTC(); stc != nullptr)                  \
+  if (auto* stc = get_stc(); stc != nullptr)                 \
   {                                                          \
-    stc->GetFindString();                                    \
+    stc->get_find_string();                                  \
   }                                                          \
                                                              \
   m_FindReplaceDialog = new wxFindReplaceDialog(             \
-    this, &wex::find_replace_data::Get()->GetFRD(), text, dlg); \
+    this, wex::find_replace_data::get()->data(), text, dlg); \
   m_FindReplaceDialog->Show();                               \
 };                                                           \
   
@@ -90,7 +90,7 @@ namespace wex
 
     virtual bool OnDropFiles(wxCoord x, wxCoord y, 
       const wxArrayString& filenames) override {
-        open_files(m_Frame, to_vector_path(filenames).Get());
+        open_files(m_Frame, to_vector_path(filenames).get());
         return true;}
   private:
     frame* m_Frame;
@@ -99,13 +99,14 @@ namespace wex
 
 wex::frame::frame(const window_data& data)
   : wxFrame(
-      data.Parent(), 
-      data.Id(), 
-      data.Title().empty() ? std::string(wxTheApp->GetAppDisplayName()): data.Title(), 
-      data.Pos(), data.Size(), 
-      data.Style() == DATA_NUMBER_NOT_SET ? 
-        wxDEFAULT_FRAME_STYLE: data.Style(), 
-      data.Name().empty() ? "frame": data.Name())
+      data.parent(), 
+      data.id(), 
+      data.title().empty() ? std::string(wxTheApp->GetAppDisplayName()): data.title(), 
+      data.pos(), 
+      data.size(), 
+      data.style() == DATA_NUMBER_NOT_SET ? 
+        wxDEFAULT_FRAME_STYLE: data.style(), 
+      data.name().empty() ? "frame": data.name())
 {
 #if wxUSE_DRAG_AND_DROP
   SetDropTarget(new file_droptarget(this));
@@ -123,7 +124,7 @@ wex::frame::frame(const window_data& data)
   wxPersistentRegisterAndRestore(this);
   
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  printing::Get()->GetHtmlPrinter()->SetParentWindow(this);
+  printing::get()->get_html_printer()->SetParentWindow(this);
 #endif
 
   Bind(wxEVT_FIND, [=](wxFindDialogEvent& event) {
@@ -136,7 +137,7 @@ wex::frame::frame(const window_data& data)
   if (m_FindFocus != nullptr) wxPostEvent(m_FindFocus, event);});
 
   Bind(wxEVT_FIND_CLOSE, [=](wxFindDialogEvent& event) {
-    wxASSERT(m_FindReplaceDialog != nullptr);
+    assert(m_FindReplaceDialog != nullptr);
     // Hiding instead of destroying, does not 
     // show the dialog next time.
     m_FindReplaceDialog->Destroy();
@@ -153,9 +154,9 @@ wex::frame::frame(const window_data& data)
     ID_VIEW_STATUSBAR);
 
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    if (auto* lv = GetListView(); lv != nullptr && lv->HasFocus())
+    if (auto* lv = get_listview(); lv != nullptr && lv->HasFocus())
     {
-      UpdateStatusBar(lv);
+      update_statusbar(lv);
     }}, ID_UPDATE_STATUS_BAR);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {FIND_REPLACE(_("Find"), 0 );}, wxID_FIND);
@@ -165,10 +166,10 @@ wex::frame::frame(const window_data& data)
     if (!event.GetString().empty())
     {
       std::string text(event.GetString());
-      if (auto* stc = GetSTC(); stc != nullptr)
+      if (auto* stc = get_stc(); stc != nullptr)
       {
-        wex::path::Current(stc->GetFileName().GetPath());
-        if (!marker_and_register_expansion(&stc->GetVi(), text)) return;
+        wex::path::current(stc->get_filename().get_path());
+        if (!marker_and_register_expansion(&stc->get_vi(), text)) return;
       }
       if (!shell_expansion(text)) return;
       std::string cmd;
@@ -177,7 +178,7 @@ wex::frame::frame(const window_data& data)
         cmd = v[0];
         text = v[1];
       }
-      open_files(this, to_vector_path(text).Get(), control_data().Command(cmd));
+      open_files(this, to_vector_path(text).get(), control_data().command(cmd));
     }
     else
     {
@@ -196,7 +197,7 @@ wex::frame::frame(const window_data& data)
     ID_VIEW_MENUBAR);
   
   Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
-    m_IsClosing = true;
+    m_is_closing = true;
 	event.Skip(); });
 }
 
@@ -211,31 +212,31 @@ wex::frame::~frame()
     GetMenuBar() != nullptr && GetMenuBar()->IsShown());
 }
 
-wex::grid* wex::frame::GetGrid()
+wex::grid* wex::frame::get_grid()
 {
   wxCAST_TO(wex::grid);
 }
 
-wex::listview* wex::frame::GetListView()
+wex::listview* wex::frame::get_listview()
 {
   wxCAST_TO(wex::listview);
 }
 
-std::string wex::frame::GetStatusText(const std::string& pane)
+std::string wex::frame::get_statustext(const std::string& pane)
 {
-  return (m_StatusBar == nullptr ? std::string(): m_StatusBar->GetStatusText(pane));
+  return (m_StatusBar == nullptr ? std::string(): m_StatusBar->get_statustext(pane));
 }
 
-wex::stc* wex::frame::GetSTC()
+wex::stc* wex::frame::get_stc()
 {
   wxCAST_TO(wex::stc);
 }
   
-bool wex::frame::IsOpen(const wex::path& filename)
+bool wex::frame::is_open(const wex::path& filename)
 {
-  if (auto* stc = GetSTC(); stc != nullptr)
+  if (auto* stc = get_stc(); stc != nullptr)
   {
-    return stc->GetFileName() == filename;
+    return stc->get_filename() == filename;
   }
   
   return false;
@@ -248,47 +249,47 @@ wxStatusBar* wex::frame::OnCreateStatusBar(
   const wxString& name)
 {
   m_StatusBar = new wex::statusbar(this, 
-    wex::window_data().Id(id).Style(style).Name(name.ToStdString()));
+    wex::window_data().id(id).style(style).name(name.ToStdString()));
   m_StatusBar->SetFieldsCount(number);
   return m_StatusBar;
 }
 
-wex::stc* wex::frame::OpenFile(
+wex::stc* wex::frame::open_file(
   const wex::path& filename,
   const wex::stc_data& data)
 {
-  if (auto* stc = GetSTC(); stc != nullptr)
+  if (auto* stc = get_stc(); stc != nullptr)
   {
-    stc->Open(filename, data);
+    stc->open(filename, data);
     return stc;
   }
 
   return nullptr;
 }
 
-wex::stc* wex::frame::OpenFile(
+wex::stc* wex::frame::open_file(
   const wex::path& filename,
   const vcs_entry& vcs,
   const stc_data& data)
 {
-  if (auto* stc = GetSTC(); stc != nullptr)
+  if (auto* stc = get_stc(); stc != nullptr)
   {
-    stc->SetText(vcs.GetStdOut());
-    vcs_command_stc(vcs.GetCommand(), filename.GetLexer(), stc);
+    stc->set_text(vcs.get_stdout());
+    vcs_command_stc(vcs.get_command(), filename.lexer(), stc);
     return stc;
   }
 
   return nullptr;
 }
 
-wex::stc* wex::frame::OpenFile(
+wex::stc* wex::frame::open_file(
   const path& filename,
   const std::string& text,
   const stc_data& data)
 {
-  if (auto* stc = GetSTC(); stc != nullptr)
+  if (auto* stc = get_stc(); stc != nullptr)
   {
-    stc->SetText(text);
+    stc->set_text(text);
     return stc;
   }
 
@@ -307,9 +308,9 @@ void wex::frame::SetMenuBar(wxMenuBar* bar)
       nullptr: bar);
 }
 
-void wex::frame::StatusBarClicked(const std::string& pane)
+void wex::frame::statusbar_clicked(const std::string& pane)
 {
-  if (auto* stc = GetSTC(); pane == "PaneInfo")
+  if (auto* stc = get_stc(); pane == "PaneInfo")
   {
     if (stc != nullptr) 
     {
@@ -317,17 +318,17 @@ void wex::frame::StatusBarClicked(const std::string& pane)
     }
     else
     {
-      if (auto* lv = GetListView();
+      if (auto* lv = get_listview();
         lv != nullptr) wxPostEvent(lv, wxCommandEvent(wxEVT_MENU, wxID_JUMP_TO));
     }
   }
   else if (pane == "PaneLexer")
   {
-    if (stc != nullptr) lexers::Get()->ShowDialog(stc);
+    if (stc != nullptr) lexers::get()->show_dialog(stc);
   }
   else if (pane == "PaneFileType")
   {
-    if (stc != nullptr) stc->FileTypeMenu();
+    if (stc != nullptr) stc->filetype_menu();
   }
   else
   {
@@ -335,31 +336,31 @@ void wex::frame::StatusBarClicked(const std::string& pane)
   }
 }
 
-bool wex::frame::StatusText(const std::string& text, const std::string& pane)
+bool wex::frame::statustext(const std::string& text, const std::string& pane)
 {
-  return (m_IsClosing || m_StatusBar == nullptr ? 
+  return (m_is_closing || m_StatusBar == nullptr ? 
     false: 
-    m_StatusBar->SetStatusText(text, pane));
+    m_StatusBar->set_statustext(text, pane));
 }
 
-bool wex::frame::UpdateStatusBar(const wxListView* lv)
+bool wex::frame::update_statusbar(const wxListView* lv)
 {
-  if (!m_IsClosing && lv->IsShown())
+  if (!m_is_closing && lv->IsShown())
   {
     const auto text = std::to_string(lv->GetItemCount()) + 
       (lv->GetSelectedItemCount() > 0 ? "," + std::to_string(lv->GetSelectedItemCount()):
        std::string());
       
-    return StatusText(text, "PaneInfo");
+    return statustext(text, "PaneInfo");
   }
   
   return false;
 }
 
 // Do not make it const, too many const_casts needed,
-bool wex::frame::UpdateStatusBar(stc* stc, const std::string& pane)
+bool wex::frame::update_statusbar(stc* stc, const std::string& pane)
 {
-  if (stc == nullptr || m_IsClosing)
+  if (stc == nullptr || m_is_closing)
   {
     return false;
   }
@@ -406,9 +407,9 @@ bool wex::frame::UpdateStatusBar(stc* stc, const std::string& pane)
   }
   else if (pane == "PaneLexer")
   {
-    if (!lexers::Get()->GetTheme().empty())
+    if (!lexers::get()->theme().empty())
     {
-      text = stc->GetLexer().GetDisplayLexer();
+      text = stc->get_lexer().display_lexer();
     }
   }
   else if (pane == "PaneFileType")
@@ -423,12 +424,12 @@ bool wex::frame::UpdateStatusBar(stc* stc, const std::string& pane)
   }
   else if (pane == "PaneMode")
   {
-    text = stc->GetVi().Mode().String();
+    text = stc->get_vi().mode().string();
   }
   else
   {
     return false;
   }
 
-  return StatusText(text, pane);
+  return statustext(text, pane);
 }

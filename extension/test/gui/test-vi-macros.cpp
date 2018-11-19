@@ -20,97 +20,97 @@
 TEST_CASE("wex::vi_macros")
 {
   wex::stc* stc = new wex::stc(std::string("hello"));
-  AddPane(GetFrame(), stc);
-  wex::vi* vi = &stc->GetVi();
+  AddPane(frame(), stc);
+  wex::vi* vi = &stc->get_vi();
 
   wex::vi_macros macros;
   
-  REQUIRE(!macros.GetFileName().Path().empty());
-  REQUIRE( wex::vi_macros::LoadDocument());
-  REQUIRE( macros.GetCount() > 0);
-  REQUIRE(!macros.GetAbbreviations().empty());
+  REQUIRE(!macros.get_filename().data().empty());
+  REQUIRE( wex::vi_macros::load_document());
+  REQUIRE( macros.size() > 0);
+  REQUIRE(!macros.get_abbreviations().empty());
   
-  REQUIRE(!macros.IsModified());
-  REQUIRE(!macros.Mode()->IsRecording());
+  REQUIRE(!macros.is_modified());
+  REQUIRE(!macros.mode()->is_recording());
   
-  macros.Mode()->Transition("qa");
-  REQUIRE( macros.IsModified());
-  REQUIRE( macros.Mode()->IsRecording());
+  macros.mode()->transition("qa");
+  REQUIRE( macros.is_modified());
+  REQUIRE( macros.mode()->is_recording());
   
-  macros.Mode()->Transition("q");
-  REQUIRE(!macros.Mode()->IsRecording());
-  REQUIRE( macros.IsModified());
-  REQUIRE(!macros.IsRecorded("a")); // still no macro
-  REQUIRE(!macros.IsRecordedMacro("a"));
-  REQUIRE( macros.GetMacro().empty());
+  macros.mode()->transition("q");
+  REQUIRE(!macros.mode()->is_recording());
+  REQUIRE( macros.is_modified());
+  REQUIRE(!macros.is_recorded("a")); // still no macro
+  REQUIRE(!macros.is_recorded_macro("a"));
+  REQUIRE( macros.get_macro().empty());
   
-  macros.Mode()->Transition("qa");
-  macros.Record("a");
-  macros.Record("test");
-  macros.Record(ESC);
-  macros.Mode()->Transition("q");
+  macros.mode()->transition("qa");
+  macros.record("a");
+  macros.record("test");
+  macros.record(ESC);
+  macros.mode()->transition("q");
 
-  REQUIRE( macros.IsModified());
-  REQUIRE(!macros.Mode()->IsRecording());
-  REQUIRE( macros.IsRecorded("a"));
-  REQUIRE( macros.StartsWith("a"));
-  REQUIRE(!macros.StartsWith("xx"));
-  REQUIRE( macros.IsRecordedMacro("a"));
-  REQUIRE( macros.GetMacro() == "a");
-  REQUIRE( macros.Get("a").front() == "a");
-  REQUIRE(!macros.IsRecorded("b"));
+  REQUIRE( macros.is_modified());
+  REQUIRE(!macros.mode()->is_recording());
+  REQUIRE( macros.is_recorded("a"));
+  REQUIRE( macros.starts_with("a"));
+  REQUIRE(!macros.starts_with("xx"));
+  REQUIRE( macros.is_recorded_macro("a"));
+  REQUIRE( macros.get_macro() == "a");
+  REQUIRE( macros.get("a").front() == "a");
+  REQUIRE(!macros.is_recorded("b"));
 
-  REQUIRE(!macros.GetKeysMap().empty());
-  macros.SetKeyMap("4", "www");
+  REQUIRE(!macros.get_keys_map().empty());
+  macros.set_key_map("4", "www");
   
-  stc->SetText("");
-  REQUIRE( macros.Mode()->Transition("@a", vi));
+  stc->set_text("");
+  REQUIRE( macros.mode()->transition("@a", vi));
 
   REQUIRE( stc->GetText() == "test");
-  stc->SetText("");
-  REQUIRE(!macros.Mode()->Transition("@a", vi, true, 0));
-  REQUIRE(!macros.Mode()->Transition("@a", vi, true, -8));
+  stc->set_text("");
+  REQUIRE(!macros.mode()->transition("@a", vi, true, 0));
+  REQUIRE(!macros.mode()->transition("@a", vi, true, -8));
   REQUIRE(!stc->GetText().Contains("test"));
-  REQUIRE( macros.Mode()->Transition("@a", vi, true, 10));
+  REQUIRE( macros.mode()->transition("@a", vi, true, 10));
   REQUIRE( stc->GetText().Contains("testtesttesttest"));
   
-  REQUIRE( macros.Mode()->Transition("@b", vi) == 2);
+  REQUIRE( macros.mode()->transition("@b", vi) == 2);
   
-  REQUIRE(!macros.Get().empty());
+  REQUIRE(!macros.get().empty());
 
   // Test append to macro.
-  macros.Mode()->Transition("qA", vi);
-  macros.Record("w");
-  macros.Record("/test");
-  macros.Mode()->Transition("q", vi);
+  macros.mode()->transition("qA", vi);
+  macros.record("w");
+  macros.record("/test");
+  macros.mode()->transition("q", vi);
   
-  REQUIRE(!macros.IsRecorded("A"));
-  REQUIRE( macros.Get("a").front() == "a");
+  REQUIRE(!macros.is_recorded("A"));
+  REQUIRE( macros.get("a").front() == "a");
   
   // Test recursive macro.
-  macros.Mode()->Transition("qA", vi);
-  macros.Record("@");
-  macros.Record("a");
-  macros.Mode()->Transition("q", vi);
+  macros.mode()->transition("qA", vi);
+  macros.record("@");
+  macros.record("a");
+  macros.mode()->transition("q", vi);
   
-  REQUIRE( macros.Mode()->Transition("@a", vi) );
+  REQUIRE( macros.mode()->transition("@a", vi) );
   
   // Test all builtin macro variables.
   for (auto& builtin : GetBuiltinVariables())
   {
     CAPTURE( builtin );
-    REQUIRE( macros.Mode()->Transition("@" + builtin + "@", vi));
+    REQUIRE( macros.mode()->transition("@" + builtin + "@", vi));
   }
 
   std::string expanded;
 
-  REQUIRE(!wex::vi_macros::Mode()->Expand(vi, wex::variable(), expanded));
+  REQUIRE(!wex::vi_macros::mode()->expand(vi, wex::variable(), expanded));
 
 #ifdef __UNIX__
   // Test all environment macro variables.
   for (auto& env : std::vector<std::string> {"HOME","PWD"})
   {
-    REQUIRE( wex::vi_macros::Mode()->Transition("@" + env, vi));
+    REQUIRE( wex::vi_macros::mode()->transition("@" + env, vi));
   }
 #endif
   
@@ -118,41 +118,41 @@ TEST_CASE("wex::vi_macros")
   // Test template macro variables (requires input).
 
   // So save as last test.
-  REQUIRE( wex::vi_macros::SaveDocument());
+  REQUIRE( wex::vi_macros::save_document());
   
-  REQUIRE(!macros.IsModified());
+  REQUIRE(!macros.is_modified());
   
   // A second save is not necessary.
-  REQUIRE(!macros.SaveDocument());
+  REQUIRE(!macros.save_document());
   
   // Test registers.
-  REQUIRE(!macros.GetRegister('a').empty());
-  REQUIRE(!macros.GetRegisters().empty());
-  REQUIRE( macros.SetRegister('z', "hello z"));
-  REQUIRE(!macros.Get("z").empty());
-  REQUIRE( macros.GetRegister('z') == "hello z");
-  REQUIRE( macros.SetRegister('Z', " and more"));
-  REQUIRE( macros.GetRegister('Z').empty());
-  REQUIRE( macros.GetRegister('z') == "hello z and more");
-  REQUIRE(!macros.SetRegister('\x05', "hello z"));
-  REQUIRE( macros.SetRegister('*', "clipboard"));
-  REQUIRE( macros.SetRegister('_', "blackhole"));
-  REQUIRE( macros.GetRegister('_').empty());
+  REQUIRE(!macros.get_register('a').empty());
+  REQUIRE(!macros.registers().empty());
+  REQUIRE( macros.set_register('z', "hello z"));
+  REQUIRE(!macros.get("z").empty());
+  REQUIRE( macros.get_register('z') == "hello z");
+  REQUIRE( macros.set_register('Z', " and more"));
+  REQUIRE( macros.get_register('Z').empty());
+  REQUIRE( macros.get_register('z') == "hello z and more");
+  REQUIRE(!macros.set_register('\x05', "hello z"));
+  REQUIRE( macros.set_register('*', "clipboard"));
+  REQUIRE( macros.set_register('_', "blackhole"));
+  REQUIRE( macros.get_register('_').empty());
   
   // Test abbreviations.
-  for (auto& abbrev : GetAbbreviations())
+  for (auto& abbrev : get_abbreviations())
   {
-    macros.SetAbbreviation(abbrev.first, abbrev.second);
+    macros.set_abbreviation(abbrev.first, abbrev.second);
     
-    const auto& it = macros.GetAbbreviations().find(abbrev.first);
+    const auto& it = macros.get_abbreviations().find(abbrev.first);
             
-    if (it != macros.GetAbbreviations().end())
+    if (it != macros.get_abbreviations().end())
     {
       REQUIRE( abbrev.second == it->second);
     }
   }
   
-  REQUIRE( macros.GetAbbreviations().size() == GetAbbreviations().size() + 1);
-  REQUIRE( macros.IsModified());
-  REQUIRE( wex::vi_macros::SaveDocument());
+  REQUIRE( macros.get_abbreviations().size() == get_abbreviations().size() + 1);
+  REQUIRE( macros.is_modified());
+  REQUIRE( wex::vi_macros::save_document());
 }

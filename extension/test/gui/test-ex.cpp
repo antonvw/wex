@@ -25,42 +25,42 @@ TEST_CASE("wex::ex")
   // Test modeline.
   const std::string modeline("set ts=120 ec=40 sy=sql sw=4 nu el");
   wex::stc* stc = new wex::stc(std::string("-- vi: " + modeline));
-  AddPane(GetFrame(), stc);
+  AddPane(frame(), stc);
   wex::ex* ex = new wex::ex(stc);
 
-  REQUIRE(stc->GetVi().GetIsActive());
+  REQUIRE(stc->get_vi().is_active());
   REQUIRE(stc->GetTabWidth() == 120);
   REQUIRE(stc->GetEdgeColumn() == 40);
   REQUIRE(stc->GetIndent() == 4);
-  REQUIRE(stc->GetLexer().GetScintillaLexer() == "sql");
+  REQUIRE(stc->get_lexer().scintilla_lexer() == "sql");
 
   wex::stc* stco = new wex::stc(wex::path("test-modeline.txt"));
-  AddPane(GetFrame(), stco);
-  REQUIRE(stco->GetLexer().GetScintillaLexer() == "sql");
+  AddPane(frame(), stco);
+  REQUIRE(stco->get_lexer().scintilla_lexer() == "sql");
 
   wex::stc* stcp = new wex::stc(wex::path("test-modeline2.txt"));
-  AddPane(GetFrame(), stcp);
-  REQUIRE(stcp->GetLexer().GetScintillaLexer() == "sql");
+  AddPane(frame(), stcp);
+  REQUIRE(stcp->get_lexer().scintilla_lexer() == "sql");
 
-  stc->SetText("xx\nxx\nyy\nzz\n");
+  stc->set_text("xx\nxx\nyy\nzz\n");
   stc->DocumentStart();
   
-  // AddText
-  ex->AddText(" added");
+  // add_text
+  ex->add_text(" added");
   REQUIRE( stc->GetText().Contains("added"));
   
-  // GetFrame
-  REQUIRE( ex->GetFrame() == GetFrame());
+  // frame
+  REQUIRE( ex->frame() == frame());
 
-  // GetIsActive
-  REQUIRE( ex->GetIsActive());
-  ex->Use(false);
-  REQUIRE(!ex->GetIsActive());
-  ex->Use(true);
-  REQUIRE( ex->GetIsActive());
+  // is_active
+  REQUIRE( ex->is_active());
+  ex->use(false);
+  REQUIRE(!ex->is_active());
+  ex->use(true);
+  REQUIRE( ex->is_active());
   
-  // GetSearchFlags
-  REQUIRE( (ex->GetSearchFlags() & wxSTC_FIND_REGEXP) > 0);
+  // search_flags
+  REQUIRE( (ex->search_flags() & wxSTC_FIND_REGEXP) > 0);
 
   // Test commands. 
   // Most commands are tested using the :so command.
@@ -70,10 +70,10 @@ TEST_CASE("wex::ex")
     {":1,$s/s/w/",true}})
   {
     CAPTURE( command );
-    REQUIRE( ex->Command(command.first));
+    REQUIRE( ex->command(command.first));
   }
     
-  ex->AddText("XXX");
+  ex->add_text("XXX");
   
   // Test invalid commands.  
   for (const auto& command : std::vector<std::string> {
@@ -96,122 +96,122 @@ TEST_CASE("wex::ex")
     ":r test-xx.txt"})
   {
     CAPTURE( command );
-    REQUIRE(!ex->Command(command));
+    REQUIRE(!ex->command(command));
   }
 
   // Test map.
-  stc->SetText("123456789");
-  REQUIRE( ex->Command(":map :xx :%d"));
-  REQUIRE( ex->Command(":xx"));
-  REQUIRE( ex->Command(":xx"));
+  stc->set_text("123456789");
+  REQUIRE( ex->command(":map :xx :%d"));
+  REQUIRE( ex->command(":xx"));
+  REQUIRE( ex->command(":xx"));
   REQUIRE( stc->GetText().empty());
-  REQUIRE( ex->Command(":unm xx"));
+  REQUIRE( ex->command(":unm xx"));
   
   // Test abbreviations.
-  stc->SetText("xx\n");
-  REQUIRE( ex->Command(":ab t TTTT"));
-  const auto& it1 = ex->GetMacros().GetAbbreviations().find("t");
-  REQUIRE (it1 != ex->GetMacros().GetAbbreviations().end());
+  stc->set_text("xx\n");
+  REQUIRE( ex->command(":ab t TTTT"));
+  const auto& it1 = ex->get_macros().get_abbreviations().find("t");
+  REQUIRE (it1 != ex->get_macros().get_abbreviations().end());
   REQUIRE( it1->second == "TTTT");
-  REQUIRE( ex->Command(":una t"));
-  const auto& it2 = ex->GetMacros().GetAbbreviations().find("t");
-  REQUIRE (it2 == ex->GetMacros().GetAbbreviations().end());
+  REQUIRE( ex->command(":una t"));
+  const auto& it2 = ex->get_macros().get_abbreviations().find("t");
+  REQUIRE (it2 == ex->get_macros().get_abbreviations().end());
   
   // Test range.
-  stc->SetText("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
-  REQUIRE( ex->Command(":1,2>"));
+  stc->set_text("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
+  REQUIRE( ex->command(":1,2>"));
   stc->SelectNone();
-  REQUIRE(!ex->Command(":'<,'>>"));
+  REQUIRE(!ex->command(":'<,'>>"));
   stc->GotoLine(2);
   stc->LineDownExtend();
-  REQUIRE( ex->Command(":'<,'>m1"));
+  REQUIRE( ex->command(":'<,'>m1"));
   stc->GotoLine(2);
   stc->LineDownExtend();
   stc->LineDownExtend();
   stc->LineDownExtend();
-  REQUIRE( ex->Command(":'<,'>w test-ex.txt"));
-  REQUIRE( ex->Command(":'<,'><"));
-  REQUIRE( ex->Command(":'<,'>>"));
-  REQUIRE( ex->Command(":'<,'>!sort"));
+  REQUIRE( ex->command(":'<,'>w test-ex.txt"));
+  REQUIRE( ex->command(":'<,'><"));
+  REQUIRE( ex->command(":'<,'>>"));
+  REQUIRE( ex->command(":'<,'>!sort"));
 
   stc->GotoLine(2);
   stc->LineDownExtend();
-  REQUIRE(!ex->Command(":'<,'>x"));
+  REQUIRE(!ex->command(":'<,'>x"));
   
   // Test source.
 #ifdef __UNIX__
-  stc->SetText("xx\nxx\nyy\nzz\n");
-  REQUIRE( ex->Command(":so test-source.txt"));
-  stc->SetText("xx\nxx\nyy\nzz\n");
-  REQUIRE( ex->Command(":source test-source.txt"));
-  stc->SetText("xx\nxx\nyy\nzz\n");
-  REQUIRE(!ex->Command(":so test-surce.txt"));
-  stc->SetText("xx\nxx\nyy\nzz\n");
-  REQUIRE(!ex->Command(":so test-source-2.txt"));
+  stc->set_text("xx\nxx\nyy\nzz\n");
+  REQUIRE( ex->command(":so test-source.txt"));
+  stc->set_text("xx\nxx\nyy\nzz\n");
+  REQUIRE( ex->command(":source test-source.txt"));
+  stc->set_text("xx\nxx\nyy\nzz\n");
+  REQUIRE(!ex->command(":so test-surce.txt"));
+  stc->set_text("xx\nxx\nyy\nzz\n");
+  REQUIRE(!ex->command(":so test-source-2.txt"));
   
-  REQUIRE( ex->Command(":d"));
-  REQUIRE( ex->Command(":r !echo qwerty"));
+  REQUIRE( ex->command(":d"));
+  REQUIRE( ex->command(":r !echo qwerty"));
   REQUIRE( stc->GetText().Contains("qwerty"));
 #endif
 
   // Test macros.
-  REQUIRE(!ex->GetMacros().Mode()->IsRecording());
+  REQUIRE(!ex->get_macros().mode()->is_recording());
   
   // Test markers.
-  REQUIRE( ex->MarkerAdd('a'));
-  REQUIRE( ex->MarkerLine('a') != -1);
-  REQUIRE( ex->MarkerGoto('a'));
-  REQUIRE( ex->MarkerDelete('a'));
-  REQUIRE(!ex->MarkerDelete('b'));
-  REQUIRE(!ex->MarkerGoto('a'));
-  REQUIRE(!ex->MarkerDelete('a'));
-  stc->SetText("xx\nyy\nzz\n");
-  REQUIRE( ex->Command(":1"));
-  REQUIRE( ex->MarkerAdd('t'));
-  REQUIRE( ex->Command(":$"));
-  REQUIRE( ex->MarkerAdd('u'));
-  REQUIRE( ex->Command(":'t,'us/s/w/"));
-  REQUIRE( ex->Command(":'t,$s/s/w/"));
-  REQUIRE( ex->Command(":1,'us/s/w/"));
+  REQUIRE( ex->marker_add('a'));
+  REQUIRE( ex->marker_line('a') != -1);
+  REQUIRE( ex->marker_goto('a'));
+  REQUIRE( ex->marker_delete('a'));
+  REQUIRE(!ex->marker_delete('b'));
+  REQUIRE(!ex->marker_goto('a'));
+  REQUIRE(!ex->marker_delete('a'));
+  stc->set_text("xx\nyy\nzz\n");
+  REQUIRE( ex->command(":1"));
+  REQUIRE( ex->marker_add('t'));
+  REQUIRE( ex->command(":$"));
+  REQUIRE( ex->marker_add('u'));
+  REQUIRE( ex->command(":'t,'us/s/w/"));
+  REQUIRE( ex->command(":'t,$s/s/w/"));
+  REQUIRE( ex->command(":1,'us/s/w/"));
   
   // Test print.
-  ex->Print("This is printed");
+  ex->print("This is printed");
   
   // Test global delete (previous delete was on found text).
   const int max = 10;
   for (int i = 0; i < max; i++) stc->AppendText("line xxxx added\n");
   const int lines = stc->GetLineCount();
-  REQUIRE( ex->Command(":g/xxxx/d"));
+  REQUIRE( ex->command(":g/xxxx/d"));
   REQUIRE(stc->GetLineCount() == lines - max);
   
   // Test global substitute.
   stc->AppendText("line xxxx 6 added\n");
   stc->AppendText("line xxxx 7 added\n");
-  REQUIRE( ex->Command(":g/xxxx/s//yyyy"));
+  REQUIRE( ex->command(":g/xxxx/s//yyyy"));
   REQUIRE( stc->GetText().Contains("yyyy"));
-  REQUIRE( ex->Command(":g//"));
+  REQUIRE( ex->command(":g//"));
   
   // Test global move.
-  stc->SetText("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
-  REQUIRE(!ex->Command(":g/d/m$")); // possible infinite loop
+  stc->set_text("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
+  REQUIRE(!ex->command(":g/d/m$")); // possible infinite loop
   REQUIRE( stc->GetText().Contains("d"));
   
   // Test substitute.
-  stc->SetText("we have ccccc yyyy zzzz");
-  REQUIRE( ex->Command(":%s/ccccc/ddd"));
+  stc->set_text("we have ccccc yyyy zzzz");
+  REQUIRE( ex->command(":%s/ccccc/ddd"));
   REQUIRE( stc->GetText() == "we have ddd yyyy zzzz");
-  stc->SetText("we have xxxx yyyy zzzz");
-  ex->ResetSearchFlags();
-  REQUIRE( ex->Command(":%s/\\(x+\\) *\\(y+\\)/\\\\2 \\\\1"));
+  stc->set_text("we have xxxx yyyy zzzz");
+  ex->reset_search_flags();
+  REQUIRE( ex->command(":%s/\\(x+\\) *\\(y+\\)/\\\\2 \\\\1"));
   REQUIRE( stc->GetText() == "we have yyyy xxxx zzzz");
-  stc->SetText("we have xxxx 'zzzz'");
-  REQUIRE( ex->Command(":%s/'//g"));
+  stc->set_text("we have xxxx 'zzzz'");
+  REQUIRE( ex->command(":%s/'//g"));
   REQUIRE(stc->GetText() == "we have xxxx zzzz" );
-  REQUIRE(!ex->Command(":.s/x*//g"));
-  REQUIRE(!ex->Command(":.s/ *//g"));
+  REQUIRE(!ex->command(":.s/x*//g"));
+  REQUIRE(!ex->command(":.s/ *//g"));
   
   // Test goto.
-  stc->SetText("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
+  stc->set_text("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
   REQUIRE( stc->GetLineCount() == 12);
   stc->GotoLine(2);
 
@@ -222,40 +222,40 @@ TEST_CASE("wex::ex")
     {":/c/",2},
     {":10000",11}})
   {
-    REQUIRE(  ex->Command(go.first));
+    REQUIRE(  ex->command(go.first));
     REQUIRE( stc->GetCurrentLine() == go.second);
   }
   
   // Test registers.  
-  ex->SetRegistersDelete("x");
-  ex->SetRegisterYank("test");
-  REQUIRE( ex->GetMacros().GetRegister('0') == "test");
-  REQUIRE( ex->GetRegisterText() == "test");
-  ex->SetRegisterInsert("insert");
-  REQUIRE( ex->GetRegisterInsert() == "insert");
+  ex->set_registers_delete("x");
+  ex->set_register_yank("test");
+  REQUIRE( ex->get_macros().get_register('0') == "test");
+  REQUIRE( ex->register_text() == "test");
+  ex->set_register_insert("insert");
+  REQUIRE( ex->register_insert() == "insert");
   
-  stc->SetText("the chances");
+  stc->set_text("the chances");
   stc->SelectAll();
-  REQUIRE( ex->Yank());
+  REQUIRE( ex->yank());
   stc->SelectNone();
-  REQUIRE(!ex->Yank());
+  REQUIRE(!ex->yank());
 
-  REQUIRE( ex->GetRegisterText() == "the chances");
+  REQUIRE( ex->register_text() == "the chances");
   stc->SelectAll();
-  ex->Cut();
-  REQUIRE( ex->GetRegisterText() == "the chances");
-  REQUIRE( ex->GetMacros().GetRegister('1') == "the chances");
+  ex->cut();
+  REQUIRE( ex->register_text() == "the chances");
+  REQUIRE( ex->get_macros().get_register('1') == "the chances");
   REQUIRE( ex->GetSelectedText().empty());
   
-  SUBCASE("Calculator")
+  SUBCASE("calculator")
   {
-    stc->SetText("aaaaa\nbbbbb\nccccc\n");
+    stc->set_text("aaaaa\nbbbbb\nccccc\n");
     const wxChar ds(wxNumberFormatter::GetDecimalSeparator());
     int width = 0;
     
-    REQUIRE(ex->MarkerAdd('a', 1));
-    REQUIRE(ex->MarkerAdd('t', 1));
-    REQUIRE(ex->MarkerAdd('u', 2));
+    REQUIRE(ex->marker_add('a', 1));
+    REQUIRE(ex->marker_add('t', 1));
+    REQUIRE(ex->marker_add('u', 2));
     
     std::vector<std::pair<std::string, std::pair<double, int>>>calcs{
       {"",           {0,0}},
@@ -299,7 +299,7 @@ TEST_CASE("wex::ex")
     
     for (const auto& calc : calcs)
     {
-      if (const auto [val, width] = ex->Calculator(calc.first); !std::isnan(val))
+      if (const auto [val, width] = ex->calculator(calc.first); !std::isnan(val))
       {
         REQUIRE( val == calc.second.first);
         REQUIRE( width == calc.second.second);

@@ -38,28 +38,31 @@ namespace wex
    ~otl();
 
     /// Returns the datasource connected to or to connect to.
-    const std::string Datasource() const;
+    const std::string datasource() const;
+
+    /// Returns the OTL version.
+    static const version_info get_version_info();
 
     /// Returns true if we are connected.
-    bool IsConnected() const {return m_Connect.connected > 0;};
+    bool is_connected() const {return m_Connect.connected > 0;};
 
     /// Logs off.
     /// Returns true if you were connected.
-    bool Logoff();
+    bool logoff();
 
     /// Logons to the datasource (shows a connection dialog if parent 
     /// is not nullptr).
     /// max_items specifies max number of datasources in the combobox and config.
     /// Returns false if dialog cancelled or logon fails.
-    bool Logon(const window_data& data = window_data());
+    bool logon(const window_data& data = window_data());
 
     /// Runs the query using direct_exec and returns result.
-    long Query(const std::string& query);
+    long query(const std::string& query);
 
     /// Runs the query and puts results on the grid.
     /// If empty_results then the grid is cleared first.
     /// Returns number of rows appended.
-    long Query(const std::string& query,
+    long query(const std::string& query,
       wxGrid* grid,
       bool& stopped,
       bool empty_results = true,
@@ -67,13 +70,10 @@ namespace wex
 
     /// Runs the query and appends results to the stc.
     /// Returns number of lines added.
-    long Query(const std::string& query,
+    long query(const std::string& query,
       wxStyledTextCtrl* stc,
       bool& stopped,
       int buffer_size = 1024);
-
-    /// Returns the OTL version.
-    static const version_info VersionInfo();
   private:
     otl_connect m_Connect;
   };

@@ -21,10 +21,10 @@
 #define SEPARATE                                                \
   if (separator)                                                \
   {                                                             \
-    output += std::string(40, '-') + m_Ex->GetSTC()->GetEOL();  \
+    output += std::string(40, '-') + m_Ex->stc()->eol();  \
   }                                                             \
 
-bool wex::address::AdjustWindow(const std::string& text) const
+bool wex::address::adjust_window(const std::string& text) const
 {
   std::vector<std::string> v;
   
@@ -36,12 +36,12 @@ bool wex::address::AdjustWindow(const std::string& text) const
   const auto count = (v[1].empty() ? 2: std::stoi(v[1]));
   const auto flags(v[2]);
   
-  if (!Flags(flags))
+  if (!flags_supported(flags))
   {
     return false;
   }
   
-  int begin = GetLine();
+  int begin = get_line();
   bool separator = false;
   
   if (const auto type(v[0]); !type.empty())
@@ -72,28 +72,28 @@ bool wex::address::AdjustWindow(const std::string& text) const
     sprintf(buffer, "%6d ", i);
 
     output += (flags.find("#") != std::string::npos ? buffer: "") + 
-      m_Ex->GetSTC()->GetLine(i - 1);
+      m_Ex->stc()->GetLine(i - 1);
   }
   SEPARATE;
     
-  m_Ex->GetFrame()->PrintEx(m_Ex, output);
+  m_Ex->frame()->print_ex(m_Ex, output);
   
   return true;
 }
   
-bool wex::address::Append(const std::string& text) const
+bool wex::address::append(const std::string& text) const
 {
-  if (m_Ex->GetSTC()->GetReadOnly() || m_Ex->GetSTC()->HexMode() || GetLine() <= 0)
+  if (m_Ex->stc()->GetReadOnly() || m_Ex->stc()->is_hexmode() || get_line() <= 0)
   {
     return false;
   }
   
-  m_Ex->GetSTC()->InsertText(m_Ex->GetSTC()->PositionFromLine(GetLine()), text);
+  m_Ex->stc()->InsertText(m_Ex->stc()->PositionFromLine(get_line()), text);
   
   return true;
 }
   
-bool wex::address::Flags(const std::string& flags) const
+bool wex::address::flags_supported(const std::string& flags) const
 {
   if (flags.empty())
   {
@@ -102,14 +102,14 @@ bool wex::address::Flags(const std::string& flags) const
   
   if (std::vector<std::string> v; match("([-+#pl])", flags, v) < 0)
   {
-    wxLogStatus("Unsupported flags: %s", flags.c_str());
+    log_status("Unsupported flags: " + flags);
     return false;
   }
   
   return true;
 }
   
-int wex::address::GetLine() const
+int wex::address::get_line() const
 {
   // We already have a line number, return that one.
   if (m_Line >= 1)
@@ -117,26 +117,26 @@ int wex::address::GetLine() const
     return m_Line;
   }
 
-  m_Ex->GetSTC()->SetSearchFlags(m_Ex->GetSearchFlags());
+  m_Ex->stc()->set_search_flags(m_Ex->search_flags());
 
   // If this is a // address, return line with first forward match.
   if (std::vector <std::string> v;
     match("/(.*)/$", m_Address, v) > 0)
   {
-    m_Ex->GetSTC()->SetTargetStart(m_Ex->GetSTC()->GetCurrentPos());
-    m_Ex->GetSTC()->SetTargetEnd(m_Ex->GetSTC()->GetTextLength());
+    m_Ex->stc()->SetTargetStart(m_Ex->stc()->GetCurrentPos());
+    m_Ex->stc()->SetTargetEnd(m_Ex->stc()->GetTextLength());
     
-    if (m_Ex->GetSTC()->SearchInTarget(v[0]) != -1)
+    if (m_Ex->stc()->SearchInTarget(v[0]) != -1)
     {
-      return m_Ex->GetSTC()->LineFromPosition(m_Ex->GetSTC()->GetTargetStart()) + 1;
+      return m_Ex->stc()->LineFromPosition(m_Ex->stc()->GetTargetStart()) + 1;
     }
     
-    m_Ex->GetSTC()->SetTargetStart(0);
-    m_Ex->GetSTC()->SetTargetEnd(m_Ex->GetSTC()->GetCurrentPos());
+    m_Ex->stc()->SetTargetStart(0);
+    m_Ex->stc()->SetTargetEnd(m_Ex->stc()->GetCurrentPos());
     
-    if (m_Ex->GetSTC()->SearchInTarget(v[0]) != -1)
+    if (m_Ex->stc()->SearchInTarget(v[0]) != -1)
     {
-      return m_Ex->GetSTC()->LineFromPosition(m_Ex->GetSTC()->GetTargetStart()) + 1;
+      return m_Ex->stc()->LineFromPosition(m_Ex->stc()->GetTargetStart()) + 1;
     }
     
     return 0;
@@ -144,27 +144,27 @@ int wex::address::GetLine() const
   // If this is a ?? address, return line with first backward match.
   else if (match("\\?(.*)\\?", m_Address, v) > 0)
   {
-    m_Ex->GetSTC()->SetTargetStart(m_Ex->GetSTC()->GetCurrentPos());
-    m_Ex->GetSTC()->SetTargetEnd(0);
+    m_Ex->stc()->SetTargetStart(m_Ex->stc()->GetCurrentPos());
+    m_Ex->stc()->SetTargetEnd(0);
     
-    if (m_Ex->GetSTC()->SearchInTarget(v[0]) != -1)
+    if (m_Ex->stc()->SearchInTarget(v[0]) != -1)
     {
-      return m_Ex->GetSTC()->LineFromPosition(m_Ex->GetSTC()->GetTargetStart()) + 1;
+      return m_Ex->stc()->LineFromPosition(m_Ex->stc()->GetTargetStart()) + 1;
     }
     
-    m_Ex->GetSTC()->SetTargetStart(m_Ex->GetSTC()->GetTextLength());
-    m_Ex->GetSTC()->SetTargetEnd(m_Ex->GetSTC()->GetCurrentPos());
+    m_Ex->stc()->SetTargetStart(m_Ex->stc()->GetTextLength());
+    m_Ex->stc()->SetTargetEnd(m_Ex->stc()->GetCurrentPos());
     
-    if (m_Ex->GetSTC()->SearchInTarget(v[0]) != -1)
+    if (m_Ex->stc()->SearchInTarget(v[0]) != -1)
     {
-      return m_Ex->GetSTC()->LineFromPosition(m_Ex->GetSTC()->GetTargetStart()) + 1;
+      return m_Ex->stc()->LineFromPosition(m_Ex->stc()->GetTargetStart()) + 1;
     }
     
     return 0;
   }
   
   // Try address calculation. studio not yet: [[maybe_unused]]
-  if (const auto [sum, width] = m_Ex->Calculator(m_Address); std::isnan(sum))
+  if (const auto [sum, width] = m_Ex->calculator(m_Address); std::isnan(sum))
   {
     return 0;
   }
@@ -172,9 +172,9 @@ int wex::address::GetLine() const
   {
     return 1;
   }
-  else if (sum > m_Ex->GetSTC()->GetLineCount())
+  else if (sum > m_Ex->stc()->GetLineCount())
   {
-    return m_Ex->GetSTC()->GetLineCount();
+    return m_Ex->stc()->GetLineCount();
   }  
   else
   {
@@ -182,46 +182,46 @@ int wex::address::GetLine() const
   }
 }
 
-bool wex::address::Insert(const std::string& text) const
+bool wex::address::insert(const std::string& text) const
 {
-  if (m_Ex->GetSTC()->GetReadOnly() || m_Ex->GetSTC()->HexMode() || GetLine() <= 0)
+  if (m_Ex->stc()->GetReadOnly() || m_Ex->stc()->is_hexmode() || get_line() <= 0)
   {
     return false;
   }
   
-  m_Ex->GetSTC()->InsertText(m_Ex->GetSTC()->PositionFromLine(GetLine() - 1), text);
+  m_Ex->stc()->InsertText(m_Ex->stc()->PositionFromLine(get_line() - 1), text);
   
   return true;
 }
   
-bool wex::address::MarkerAdd(char marker) const
+bool wex::address::marker_add(char marker) const
 {
-  return GetLine() > 0 && m_Ex->MarkerAdd(marker, GetLine() - 1);
+  return get_line() > 0 && m_Ex->marker_add(marker, get_line() - 1);
 }
   
-bool wex::address::MarkerDelete() const
+bool wex::address::marker_delete() const
 {
   return m_Address.size() > 1 && m_Address[0] == '\'' &&
-    m_Ex->MarkerDelete(m_Address[1]);
+    m_Ex->marker_delete(m_Address[1]);
 }
 
-bool wex::address::Put(char name) const
+bool wex::address::put(char name) const
 {
-  if (m_Ex->GetSTC()->GetReadOnly() || m_Ex->GetSTC()->HexMode() || GetLine() <= 0)
+  if (m_Ex->stc()->GetReadOnly() || m_Ex->stc()->is_hexmode() || get_line() <= 0)
   {
     return false;
   }
   
-  m_Ex->GetSTC()->InsertText(
-    m_Ex->GetSTC()->PositionFromLine(GetLine()), 
-    m_Ex->GetMacros().GetRegister(name));
+  m_Ex->stc()->InsertText(
+    m_Ex->stc()->PositionFromLine(get_line()), 
+    m_Ex->get_macros().get_register(name));
 
   return true;
 }
 
-bool wex::address::Read(const std::string& arg) const
+bool wex::address::read(const std::string& arg) const
 {
-  if (m_Ex->GetSTC()->GetReadOnly() || m_Ex->GetSTC()->HexMode() || GetLine() <= 0)
+  if (m_Ex->stc()->GetReadOnly() || m_Ex->stc()->is_hexmode() || get_line() <= 0)
   {
     return false;
   }
@@ -230,33 +230,33 @@ bool wex::address::Read(const std::string& arg) const
   {
     process process;
     
-    if (!process.Execute(arg.substr(1), process::EXEC_WAIT))
+    if (!process.execute(arg.substr(1), process::EXEC_WAIT))
     {
       return false;
     }
     
-    return Append(process.GetStdOut());
+    return append(process.get_stdout());
   }
   else
   {
-    path::Current(m_Ex->GetSTC()->GetFileName().GetPath());
+    path::current(m_Ex->stc()->get_filename().get_path());
     
-    if (file file(arg); !file.IsOpened())
+    if (file file(arg); !file.is_opened())
     {
-      wxLogStatus(_("file: %s open error"), file.GetFileName().Path().string());
+      wxLogStatus(_("file: %s open error"), file.get_filename().data().string());
       return false;
     }
-    else if (const auto buffer(file.Read()); buffer != nullptr)
+    else if (const auto buffer(file.read()); buffer != nullptr)
     {
       if (m_Address == ".")
       {
-        m_Ex->GetSTC()->AddTextRaw(buffer->data(), buffer->size());
+        m_Ex->stc()->AddTextRaw(buffer->data(), buffer->size());
       }
       else
       {
         // README: InsertTextRaw does not have length argument.
-        m_Ex->GetSTC()->InsertTextRaw(
-          m_Ex->GetSTC()->PositionFromLine(GetLine()), buffer->data());
+        m_Ex->stc()->InsertTextRaw(
+          m_Ex->stc()->PositionFromLine(get_line()), buffer->data());
       }
     }
     else
@@ -271,9 +271,9 @@ bool wex::address::Read(const std::string& arg) const
   
 void wex::address::SetLine(int line)
 {
-  if (line > m_Ex->GetSTC()->GetLineCount())
+  if (line > m_Ex->stc()->GetLineCount())
   {
-    m_Line = m_Ex->GetSTC()->GetLineCount();
+    m_Line = m_Ex->stc()->GetLineCount();
   }
   else if (line < 1)
   {
@@ -285,14 +285,14 @@ void wex::address::SetLine(int line)
   }
 }
 
-bool wex::address::WriteLineNumber() const
+bool wex::address::write_line_number() const
 {
-  if (GetLine() <= 0)
+  if (get_line() <= 0)
   {
     return false;
   }
   
-  m_Ex->GetFrame()->ShowExMessage(std::to_string(GetLine()));
+  m_Ex->frame()->show_ex_message(std::to_string(get_line()));
   
   return true;
 }

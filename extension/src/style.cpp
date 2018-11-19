@@ -18,7 +18,7 @@
 #include <wex/tokenizer.h>
 #include <easylogging++.h>
 
-void wex::style::Apply(wxStyledTextCtrl* stc) const
+void wex::style::apply(wxStyledTextCtrl* stc) const
 {
   // Currently the default style is constructed using
   // default constructor.
@@ -36,12 +36,12 @@ void wex::style::Apply(wxStyledTextCtrl* stc) const
   }
 }
 
-bool wex::style::ContainsDefaultStyle() const
+bool wex::style::contains_default_style() const
 {
   return (m_No.find(wxSTC_STYLE_DEFAULT) != m_No.end());
 }
 
-const std::string wex::style::GetNo() const
+const std::string wex::style::number() const
 {
   return std::accumulate(m_No.begin(), m_No.end(), std::string{}, 
     [](const std::string& a, int b) {return a + std::to_string(b) + ' ';});
@@ -52,17 +52,17 @@ void wex::style::Set(const pugi::xml_node& node, const std::string& macro)
   m_Define = node.attribute("no").value();
 
   SetNo(
-    lexers::Get()->ApplyMacro(m_Define, macro), macro, node);
+    lexers::get()->apply_macro(m_Define, macro), macro, node);
 
   // The style is parsed using the themed macros, and
   // you can specify several styles separated by a + sign.
-  for (tokenizer tkz(node.text().get(), "+"); tkz.HasMoreTokens(); )
+  for (tokenizer tkz(node.text().get(), "+"); tkz.has_more_tokens(); )
   {
     // Collect each single field style.
-    const auto& single = tkz.GetNextToken();
+    const auto& single = tkz.get_next_token();
 
-    if (const auto& it = lexers::Get()->GetThemeMacros().find(single);
-      it != lexers::Get()->GetThemeMacros().end())
+    if (const auto& it = lexers::get()->theme_macros().find(single);
+      it != lexers::get()->theme_macros().end())
     {
       wxString value = it->second;
 
@@ -102,7 +102,7 @@ void wex::style::Set(const pugi::xml_node& node, const std::string& macro)
 
   if (m_Value.empty())
   {
-    log("empty style") << GetNo() << node;
+    log("empty style") << number() << node;
   }
 }
 
@@ -114,9 +114,9 @@ void wex::style::SetNo(
   m_No.clear();
 
   // Collect each single no in the vector.
-  for (tokenizer tkz(no, ","); tkz.HasMoreTokens(); )
+  for (tokenizer tkz(no, ","); tkz.has_more_tokens(); )
   {
-    const auto& single = lexers::Get()->ApplyMacro(tkz.GetNextToken(), macro);
+    const auto& single = lexers::get()->apply_macro(tkz.get_next_token(), macro);
  
     try
     {

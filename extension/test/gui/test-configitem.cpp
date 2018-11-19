@@ -19,13 +19,13 @@
 
 TEST_CASE("wex::config_item")
 {
-  wxScrolledWindow* panel = new wxScrolledWindow(GetFrame());
-  AddPane(GetFrame(), panel);
+  wxScrolledWindow* panel = new wxScrolledWindow(frame());
+  AddPane(frame(), panel);
   wxFlexGridSizer* sizer = new wxFlexGridSizer(4);
   panel->SetSizer(sizer);
   panel->SetScrollbars(20, 20, 50, 50);
   
-  wex::item::UseConfig(true);
+  wex::item::use_config(true);
 
   // Use specific constructors.
   const wex::item ci_empty;
@@ -63,25 +63,25 @@ TEST_CASE("wex::config_item")
     [=](wxWindow* user, const std::any& value, bool save) {
       wxLogStatus(((wxTextCtrl *)user)->GetValue());});
   
-  REQUIRE(ci_empty.GetType() == wex::item::EMPTY);
-  REQUIRE(!ci_empty.IsRowGrowable());
-  REQUIRE(ci_cb.GetType() == wex::item::COMBOBOX);
-  REQUIRE(ci_cb_dir.GetType() == wex::item::COMBOBOX_DIR);
-  REQUIRE(ci_spacer.GetType() == wex::item::SPACER);
-  REQUIRE(ci_sl.GetLabel() == "ci-sl");
-  REQUIRE(ci_sl.GetType() == wex::item::SLIDER);
-  REQUIRE(ci_vl.GetType() == wex::item::STATICLINE);
-  REQUIRE(ci_sp.GetLabel() == "ci-sp");
-  REQUIRE(ci_sp.GetType() == wex::item::SPINCTRL);
-  REQUIRE(ci_sp_d.GetType() == wex::item::SPINCTRLDOUBLE);
-  REQUIRE(ci_str.GetType() == wex::item::TEXTCTRL);
-  REQUIRE(ci_hl.GetType() == wex::item::HYPERLINKCTRL);
-  REQUIRE(ci_st.GetType() == wex::item::STATICTEXT);
-  REQUIRE(ci_int.GetType() == wex::item::TEXTCTRL_INT);
-  REQUIRE(ci_rb.GetType() == wex::item::RADIOBOX);
-  REQUIRE(ci_bc.GetType() == wex::item::CHECKLISTBOX_BIT);
-  REQUIRE(ci_cl_n.GetType() == wex::item::CHECKLISTBOX_BOOL);
-  REQUIRE(ci_user.GetType() == wex::item::USER);
+  REQUIRE(ci_empty.type() == wex::item::EMPTY);
+  REQUIRE(!ci_empty.is_row_growable());
+  REQUIRE(ci_cb.type() == wex::item::COMBOBOX);
+  REQUIRE(ci_cb_dir.type() == wex::item::COMBOBOX_DIR);
+  REQUIRE(ci_spacer.type() == wex::item::SPACER);
+  REQUIRE(ci_sl.label() == "ci-sl");
+  REQUIRE(ci_sl.type() == wex::item::SLIDER);
+  REQUIRE(ci_vl.type() == wex::item::STATICLINE);
+  REQUIRE(ci_sp.label() == "ci-sp");
+  REQUIRE(ci_sp.type() == wex::item::SPINCTRL);
+  REQUIRE(ci_sp_d.type() == wex::item::SPINCTRLDOUBLE);
+  REQUIRE(ci_str.type() == wex::item::TEXTCTRL);
+  REQUIRE(ci_hl.type() == wex::item::HYPERLINKCTRL);
+  REQUIRE(ci_st.type() == wex::item::STATICTEXT);
+  REQUIRE(ci_int.type() == wex::item::TEXTCTRL_INT);
+  REQUIRE(ci_rb.type() == wex::item::RADIOBOX);
+  REQUIRE(ci_bc.type() == wex::item::CHECKLISTBOX_BIT);
+  REQUIRE(ci_cl_n.type() == wex::item::CHECKLISTBOX_BOOL);
+  REQUIRE(ci_user.type() == wex::item::USER);
 
   std::vector <wex::item> items {
     ci_empty, ci_spacer, ci_cb, ci_cb_dir, ci_sl, ci_vl, ci_sp, ci_sp_d,
@@ -93,63 +93,63 @@ TEST_CASE("wex::config_item")
   // Check members are initialized.
   for (auto& it : items)
   {
-    REQUIRE( it.GetColumns() == 1);
+    REQUIRE( it.columns() == 1);
     
-    if (it.GetType() == wex::item::USER)
-      REQUIRE( it.GetWindow() != nullptr);
+    if (it.type() == wex::item::USER)
+      REQUIRE( it.window() != nullptr);
     else 
-      REQUIRE( it.GetWindow() == nullptr);
+      REQUIRE( it.window() == nullptr);
       
     if (
-       it.GetType() != wex::item::STATICLINE &&
-       it.GetType() != wex::item::SPACER &&
-       it.GetType() != wex::item::EMPTY)
+       it.type() != wex::item::STATICLINE &&
+       it.type() != wex::item::SPACER &&
+       it.type() != wex::item::EMPTY)
     {
-      REQUIRE(!it.GetLabel().empty());
+      REQUIRE(!it.label().empty());
     }
     
-    it.SetRowGrowable(true);
+    it.set_row_growable(true);
   }
 
-  // Layout the items and check control is created.
+  // layout the items and check control is created.
   for (auto& it : items)
   {
     // Testing on not nullptr not possible,
     // not all items need a sizer.
-    it.Layout(panel, sizer);
+    it.layout(panel, sizer);
  
-    if (it.GetType() != wex::item::EMPTY && it.GetType() != wex::item::SPACER)
+    if (it.type() != wex::item::EMPTY && it.type() != wex::item::SPACER)
     {
-      REQUIRE( it.GetWindow() != nullptr);
+      REQUIRE( it.window() != nullptr);
       
       if (
-          it.GetType() == wex::item::CHECKLISTBOX_BOOL ||
-         (it.GetType() >= wex::item::NOTEBOOK && it.GetType() <= wex::item::NOTEBOOK_TREE) || 
-          it.GetType() == wex::item::RADIOBOX ||
-          it.GetType() == wex::item::STATICLINE ||
-          it.GetType() == wex::item::USER ||
-          it.GetType() == wex::item::STATICTEXT)
+          it.type() == wex::item::CHECKLISTBOX_BOOL ||
+         (it.type() >= wex::item::NOTEBOOK && it.type() <= wex::item::NOTEBOOK_TREE) || 
+          it.type() == wex::item::RADIOBOX ||
+          it.type() == wex::item::STATICLINE ||
+          it.type() == wex::item::USER ||
+          it.type() == wex::item::STATICTEXT)
       {
-        REQUIRE(!it.GetValue().has_value());
+        REQUIRE(!it.get_value().has_value());
       }
       else
       {
-        REQUIRE( it.GetValue().has_value());
+        REQUIRE( it.get_value().has_value());
       }
     }
   }
 
-  REQUIRE(ci_user.Apply());
+  REQUIRE(ci_user.apply());
 
-  // Now check ToConfig (after Layout).  
-  REQUIRE( ci_str.Layout(panel, sizer) != nullptr);
-  REQUIRE( ci_st.Layout(panel, sizer) != nullptr);
-  REQUIRE( ci_str.ToConfig(true));
-  REQUIRE( ci_str.ToConfig(false));
-  REQUIRE(!ci_st.ToConfig(true));
-  REQUIRE(!ci_st.ToConfig(false));
-  REQUIRE( ci_user.ToConfig(true));
-  REQUIRE( ci_user.ToConfig(false));
+  // Now check to_config (after layout).  
+  REQUIRE( ci_str.layout(panel, sizer) != nullptr);
+  REQUIRE( ci_st.layout(panel, sizer) != nullptr);
+  REQUIRE( ci_str.to_config(true));
+  REQUIRE( ci_str.to_config(false));
+  REQUIRE(!ci_st.to_config(true));
+  REQUIRE(!ci_st.to_config(false));
+  REQUIRE( ci_user.to_config(true));
+  REQUIRE( ci_user.to_config(false));
 }
 
 TEST_CASE("wex::config_defaults")

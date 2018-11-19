@@ -19,15 +19,15 @@ namespace wex
     lexer_props();
 
     /// Returns a comment string.
-    const std::string MakeComment(const std::string& comment) const;
+    const std::string make_comment(const std::string& comment) const;
     
     /// Returns a key value string with optional comment.
-    const std::string MakeKey(
+    const std::string make_key(
       const std::string& name, 
       const std::string& value,
       const std::string& comment = std::string()) const;
     
     /// Returns a section string.
-    const std::string MakeSection(const std::string& section) const;
+    const std::string make_section(const std::string& section) const;
   };
 };

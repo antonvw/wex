@@ -29,7 +29,7 @@ namespace wex
   {
     friend class vi_macros_fsm;
   public:  
-    enum key_type
+    enum key_t
     {
       KEY_ALT,     ///< alt key
       KEY_CONTROL, ///< control key
@@ -39,11 +39,8 @@ namespace wex
     /// Default constructor.
     vi_macros();
     
-    /// Returns number of macros and variables available.
-    auto GetCount() const {return m_Macros.size() + m_Variables.size();};
-    
     /// Returns keys map.
-    const auto & GetKeysMap(key_type type = KEY_NORMAL) const {
+    const auto & get_keys_map(key_t type = KEY_NORMAL) const {
       switch (type)
       {
         case KEY_ALT: return m_MapAltKeys;
@@ -52,18 +49,14 @@ namespace wex
       }};
     
     /// Returns (string) map.
-    const auto & GetMap() const {return m_Map;};
+    const auto & get_map() const {return m_Map;};
     
     /// Returns content of register.
-    const std::string GetRegister(const char name) const;
+    const std::string get_register(const char name) const;
 
-    /// Returns all registers (with content) as a vector of strings.
-    /// Does not include macros.
-    const std::vector< std::string > GetRegisters() const;
-    
     /// Have macros been recorded (or variables 
-    /// expanded) without calling SaveDocument.
-    bool IsModified() const {return m_IsModified;};
+    /// expanded) without calling save_document.
+    bool is_modified() const {return m_is_modified;};
     
     /// Records text to current macro (or register) as a new command.
     /// The text to be recorded should be valid ex command,
@@ -71,73 +64,80 @@ namespace wex
     /// If you playback this macro the text
     /// is sent to the ex component to execute it, and then should be
     /// a valid command.
-    void Record(
+    void record(
       /// text to record
       const std::string& text, 
       /// normally each record is a new command, if not,
       /// the text is appended after the last command
       bool new_command = true);
     
+    /// Returns all registers (with content) as a vector of strings.
+    /// Does not include macros.
+    const std::vector< std::string > registers() const;
+    
     /// Sets abbreviation (overwrites existing abbreviation).
-    void SetAbbreviation(const std::string& name, const std::string& value);
+    void set_abbreviation(const std::string& name, const std::string& value);
     
     /// Sets key map (overwrites existing map).
-    void SetKeyMap(
+    void set_key_map(
       const std::string& name, 
       const std::string& value,
-      key_type type = KEY_NORMAL);
+      key_t type = KEY_NORMAL);
     
     /// Sets map (overwrites existing map).
-    void SetMap(
+    void set_map(
       const std::string& name, 
       const std::string& value);
 
     /// Sets register (overwrites existing register).
     /// The name should be a one letter register.
     /// Returns false if name is not appropriate.
-    bool SetRegister(const char name, const std::string& value);
+    bool set_register(const char name, const std::string& value);
+    
+    /// Returns number of macros and variables available.
+    auto size() const {return m_Macros.size() + m_Variables.size();};
     
     /// Returns all macro names as a vector of strings.
     /// Does not include registers.
-    static const std::vector< std::string > Get();
+    static const std::vector< std::string > get();
     
     /// Returns contents of macro as a vector of strings.
-    static const std::vector< std::string > Get(const std::string& name);
-    
-    /// Returns the filename with xml document.
-    static const path GetFileName();
+    static const std::vector< std::string > get(const std::string& name);
     
     /// Returns abbreviations.
-    static const auto & GetAbbreviations() {return m_Abbreviations;};
+    static const auto & get_abbreviations() {return m_Abbreviations;};
+    
+    /// Returns the filename with xml document.
+    static const path get_filename();
     
     /// Returns current or last macro played back (or variable expanded).
-    static const auto& GetMacro() {return m_Macro;};
+    static const auto& get_macro() {return m_Macro;};
     
     /// Returns variables.
-    static const auto& GetVariables() {return m_Variables;};
+    static const auto& get_variables() {return m_Variables;};
     
     /// Is macro or variable recorded.
-    static bool IsRecorded(const std::string& macro);
+    static bool is_recorded(const std::string& macro);
     
     /// Is macro recorded.
     /// Does not check for variables.
-    static bool IsRecordedMacro(const std::string& macro);
+    static bool is_recorded_macro(const std::string& macro);
     
     /// Loads all macros (and variables) from xml document.
     /// Returns true if document is loaded (macros still can be empty).
-    static bool LoadDocument();
+    static bool load_document();
     
     /// Returns the mode we are in.  
-    static auto Mode() {return m_Mode;};
+    static auto mode() {return m_Mode;};
 
     /// Saves all macros (and variables) to xml document.
     /// If you specify only_if_modified, then document is only saved
     /// if it was modified (if macros have been recorded since last save).
     /// Returns true if document is saved.
-    static bool SaveDocument(bool only_if_modified = true);
+    static bool save_document(bool only_if_modified = true);
 
     /// Does a recorded macro or variable starts with text.
-    static bool StartsWith(const std::string_view& text);
+    static bool starts_with(const std::string_view& text);
   private:  
     template <typename S, typename T> 
     void Set(
@@ -152,12 +152,12 @@ namespace wex
       const std::string& name,
       T & container);
 
+    static void save_macro(const std::string& macro);
     static void ParseNodeMacro(const pugi::xml_node& node);
     static void ParseNodeVariable(const pugi::xml_node& node);
-    static void SaveMacro(const std::string& macro);
 
     static vi_macros_mode* m_Mode;
-    static bool m_IsModified;
+    static bool m_is_modified;
     static pugi::xml_document m_doc;
     static std::string m_Macro;
     

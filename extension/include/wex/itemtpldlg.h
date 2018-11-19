@@ -29,7 +29,7 @@ namespace wex
   /// - a item::BUTTON
   /// - a item::COMMANDLINKBUTTON
   /// - a item::TOGGLEBUTTON
-  /// the method frame::OnCommandItemDialog is invoked.
+  /// the method frame::on_command_item_dialog is invoked.
   template <class T> class item_template_dialog: public dialog
   {
   public:
@@ -44,9 +44,9 @@ namespace wex
       /// number of columns
       int cols = 1)
     : dialog(data)
-    , m_ForceCheckBoxChecked(false)
+    , m_force_checkbox_checked(false)
     , m_Items(v) {
-      Layout(rows, cols);
+      layout(rows, cols);
       Bind(wxEVT_BUTTON, &item_template_dialog::OnCommand, this, wxID_APPLY);
       Bind(wxEVT_BUTTON, &item_template_dialog::OnCommand, this, wxID_CANCEL);
       Bind(wxEVT_BUTTON, &item_template_dialog::OnCommand, this, wxID_CLOSE);
@@ -55,22 +55,22 @@ namespace wex
       Bind(wxEVT_UPDATE_UI, &item_template_dialog::OnUpdateUI, this, wxID_OK);};
     
     /// Adds an item to the temp vector.
-    void Add(const T & item) {m_ItemsTemp.emplace_back(item);};
+    void add(const T & item) {m_ItemsTemp.emplace_back(item);};
 
     /// If this item is related to a button, bind to event handler.
     /// Returns true if bind was done.
-    bool BindButton(const T & item) {
-      if (item.GetWindow() == nullptr) return false;
-      switch (item.GetType())
+    bool bind_button(const T & item) {
+      if (item.window() == nullptr) return false;
+      switch (item.type())
       {
         case item::BUTTON:
         case item::COMMANDLINKBUTTON:
           Bind(wxEVT_BUTTON, [=](wxCommandEvent& event) {
-            if (!item.Apply()) Click(event);}, item.GetWindow()->GetId());
+            if (!item.apply()) Click(event);}, item.window()->GetId());
           break;
         case item::COMBOBOX_DIR:
           Bind(wxEVT_BUTTON, [=](wxCommandEvent& event) {
-            wxComboBox* browse = (wxComboBox*)item.GetWindow();
+            wxComboBox* browse = (wxComboBox*)item.window();
             wxDirDialog dlg(
               this,
               _(wxDirSelectorPromptStr),
@@ -81,17 +81,17 @@ namespace wex
               const wxString value = dlg.GetPath();
               const int item = browse->FindString(value);
               browse->SetSelection(item == wxNOT_FOUND ? browse->Append(value): item);
-            }}, item.GetWindow()->GetId());
+            }}, item.window()->GetId());
           break;
         case item::COMBOBOX_FILE:
           Bind(wxEVT_BUTTON, [=](wxCommandEvent& event) {
-            wxComboBox* browse = (wxComboBox*)item.GetWindow();
+            wxComboBox* browse = (wxComboBox*)item.window();
             const path path(browse->GetValue());
             wxFileDialog dlg(
               this,
               _(wxFileSelectorPromptStr),
-              path.GetPath(),
-              path.GetFullName(),
+              path.get_path(),
+              path.fullname(),
               wxFileSelectorDefaultWildcardStr,
               wxFD_DEFAULT_STYLE | wxFD_FILE_MUST_EXIST);
             if (dlg.ShowModal() == wxID_OK)
@@ -99,11 +99,11 @@ namespace wex
               const wxString value = dlg.GetPath();
               const int item = browse->FindString(value);
               browse->SetSelection(item == wxNOT_FOUND ? browse->Append(value): item);
-            }}, item.GetWindow()->GetId());
+            }}, item.window()->GetId());
           break;
         case item::TOGGLEBUTTON:
           Bind(wxEVT_TOGGLEBUTTON, [=](wxCommandEvent& event) {
-            if (!item.Apply()) Click(event);}, item.GetWindow()->GetId());
+            if (!item.apply()) Click(event);}, item.window()->GetId());
           break;
         default: return false;
       }
@@ -112,21 +112,21 @@ namespace wex
     /// If you specified some checkboxes, calling this method
     /// requires that one of them should be checked for the OK button
     /// to be enabled.
-    void ForceCheckBoxChecked(
+    void force_checkbox_checked(
       /// specify the (part of) the name of the checkbox
       const wxString& contains = wxEmptyString,
       /// specify on which page
       const wxString& page = wxEmptyString) {
-      m_ForceCheckBoxChecked = true;
+      m_force_checkbox_checked = true;
       m_Contains = contains;
       m_Page = page;};
     
     /// Returns the (first) item that has specified label,
     /// or empty item if item does not exist.
-    const T GetItem(const std::string& label) const {
+    const T get_item(const std::string& label) const {
       for (const auto& item : m_Items)
       {
-        if (item.GetLabel() == label)
+        if (item.label() == label)
         {
           return item;
         }
@@ -134,20 +134,20 @@ namespace wex
       return T();};
 
     /// Returns all items.
-    const auto & GetItems() const {return m_Items;};
+    const auto & get_items() const {return m_Items;};
 
     /// Returns the item actual value for specified label, or 
     /// empty object if item does not exist.
-    const auto GetItemValue(const std::string& label) const {
-      return GetItem(label).GetValue();};
+    const auto get_item_value(const std::string& label) const {
+      return get_item(label).get_value();};
    
     /// Sets the item actual value for specified label.
-    bool SetItemValue(const std::string& label, const std::any& value) const {
+    bool set_item_value(const std::string& label, const std::any& value) const {
       for (auto& item : m_Items)
       {
-        if (item.GetLabel() == label)
+        if (item.label() == label)
         {
-          return item.SetValue(value);
+          return item.set_value(value);
         }
       };
       return false;};
@@ -165,15 +165,15 @@ namespace wex
       bool one_checkbox_checked = false;
       for (const auto& item : m_Items)
       {
-        switch (item.GetType())
+        switch (item.type())
         {
         case item::CHECKBOX:
-          if (m_ForceCheckBoxChecked)
+          if (m_force_checkbox_checked)
           {
-            if (auto* cb = (wxCheckBox*)item.GetWindow(); 
-              wxString(item.GetLabel()).Lower().Contains(m_Contains.Lower()) && 
+            if (auto* cb = (wxCheckBox*)item.window(); 
+              wxString(item.label()).Lower().Contains(m_Contains.Lower()) && 
                 cb->IsChecked() &&
-                item.GetPage() == m_Page)
+                item.page() == m_Page)
             {
               one_checkbox_checked = true;
             }
@@ -181,9 +181,9 @@ namespace wex
           break;
 
         case item::CHECKLISTBOX_BOOL:
-          if (m_ForceCheckBoxChecked)
+          if (m_force_checkbox_checked)
           {
-            auto* clb = (wxCheckListBox*)item.GetWindow();
+            auto* clb = (wxCheckListBox*)item.window();
             for (
               size_t i = 0;
               i < clb->GetCount();
@@ -191,7 +191,7 @@ namespace wex
             {
               if (clb->GetString(i).Lower().Contains(m_Contains.Lower()) && 
                   clb->IsChecked(i) &&
-                  item.GetPage() == m_Page)
+                  item.page() == m_Page)
               {
                 one_checkbox_checked = true;
               }
@@ -202,7 +202,7 @@ namespace wex
         case item::COMBOBOX:
         case item::COMBOBOX_DIR:
         case item::COMBOBOX_FILE:
-          if (wxComboBox* cb = (wxComboBox*)item.GetWindow(); item.GetData().Required())
+          if (wxComboBox* cb = (wxComboBox*)item.window(); item.data().is_required())
           {
             if (cb->GetValue().empty())
             {
@@ -214,7 +214,7 @@ namespace wex
 
         case item::TEXTCTRL_INT:
         case item::TEXTCTRL:
-          if (wxTextCtrl* tc = (wxTextCtrl*)item.GetWindow(); item.GetData().Required())
+          if (wxTextCtrl* tc = (wxTextCtrl*)item.window(); item.data().is_required())
           {
             if (tc->GetValue().empty())
             {
@@ -225,8 +225,8 @@ namespace wex
           break;
 
         case item::DIRPICKERCTRL:
-          if (wxDirPickerCtrl* pc = (wxDirPickerCtrl*)item.GetWindow(); 
-            item.GetData().Required())
+          if (wxDirPickerCtrl* pc = (wxDirPickerCtrl*)item.window(); 
+            item.data().is_required())
           {
             if (pc->GetPath().empty())
             {
@@ -237,8 +237,8 @@ namespace wex
           break;
 
         case item::FILEPICKERCTRL:
-          if (wxFilePickerCtrl* pc = (wxFilePickerCtrl*)item.GetWindow(); 
-            item.GetData().Required())
+          if (wxFilePickerCtrl* pc = (wxFilePickerCtrl*)item.window(); 
+            item.data().is_required())
           {
             if (pc->GetPath().empty())
             {
@@ -251,16 +251,16 @@ namespace wex
         default: ; // do nothing
         }
       }
-      event.Enable(m_ForceCheckBoxChecked ? one_checkbox_checked: true);};
+      event.Enable(m_force_checkbox_checked ? one_checkbox_checked: true);};
   private:
     void Click(const wxCommandEvent& event) const {
       if (frame* frame = wxDynamicCast(wxTheApp->GetTopWindow(), wex::frame);
         frame != nullptr)
       {
-        frame->OnCommandItemDialog(GetId(), event);
+        frame->on_command_item_dialog(GetId(), event);
       }};
     
-    void Layout(int rows, int cols) {
+    void layout(int rows, int cols) {
       wxFlexGridSizer* previous_item_sizer = nullptr;
       wxFlexGridSizer* sizer = (rows > 0 ? 
         new wxFlexGridSizer(rows, cols, 0, 0): 
@@ -273,41 +273,41 @@ namespace wex
       int previous_type = -1;
       for (auto& item : m_Items)
       {
-        if (item.GetType() == item::EMPTY) continue; //skip
+        if (item.type() == item::EMPTY) continue; //skip
 
-        item.SetDialog(this);
+        item.set_dialog(this);
         
         // If this item has same type as previous type use previous sizer,
-        // otherwise use no sizer (Layout will create a new one).
-        wxFlexGridSizer* current_item_sizer = (item.GetType() == previous_type && cols == 1 ? 
+        // otherwise use no sizer (layout will create a new one).
+        wxFlexGridSizer* current_item_sizer = (item.type() == previous_type && cols == 1 ? 
           previous_item_sizer: 
           nullptr);
 
-        // Layout the item.
-        previous_item_sizer = item.Layout(
+        // layout the item.
+        previous_item_sizer = item.layout(
           this, 
           sizer, 
-          GetData().Button() == wxCANCEL,
+          data().button() == wxCANCEL,
           current_item_sizer);
-        previous_type = item.GetType();
+        previous_type = item.type();
         
         if (sizer->GetEffectiveRowsCount() >= 1 &&
            !sizer->IsRowGrowable(sizer->GetEffectiveRowsCount() - 1) &&
-            item.IsRowGrowable())
+            item.is_row_growable())
         {
           sizer->AddGrowableRow(sizer->GetEffectiveRowsCount() - 1);
         }
-        BindButton(item);
+        bind_button(item);
       }
-      AddUserSizer(sizer);
-      LayoutSizers();
+      add_user_sizer(sizer);
+      layout_sizers();
       m_Items.insert(m_Items.end(), m_ItemsTemp.begin(), m_ItemsTemp.end());
       m_ItemsTemp.clear();
       };
 
     std::vector< T > m_Items;
     std::vector< T > m_ItemsTemp;
-    bool m_ForceCheckBoxChecked;
+    bool m_force_checkbox_checked;
     wxString m_Contains;
     wxString m_Page;
   };

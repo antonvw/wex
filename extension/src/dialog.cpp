@@ -13,20 +13,21 @@
 
 wex::dialog::dialog(const wex::window_data& data)
   : wxDialog(
-      data.Parent(),
-      data.Id(), 
-      data.Title().empty() ? "Dialog": data.Title(), 
-      data.Pos(), data.Size(), 
-      data.Style() == DATA_NUMBER_NOT_SET ? 
-        wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER: data.Style(), 
-      data.Name().empty() ? "dialog": data.Name())
+      data.parent(),
+      data.id(), 
+      data.title().empty() ? "Dialog": data.title(), 
+      data.pos(), 
+      data.size(), 
+      data.style() == DATA_NUMBER_NOT_SET ? 
+        wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER: data.style(), 
+      data.name().empty() ? "dialog": data.name())
   , m_Data(data)
   , m_TopSizer(new wxFlexGridSizer(1, 0, 0))
   , m_UserSizer(new wxFlexGridSizer(1, 0, 0))
 {
 }
 
-wxSizerItem* wex::dialog::AddUserSizer(
+wxSizerItem* wex::dialog::add_user_sizer(
   wxWindow* window,
   const wxSizerFlags& flags)
 {
@@ -40,7 +41,7 @@ wxSizerItem* wex::dialog::AddUserSizer(
   return item;
 }
 
-wxSizerItem* wex::dialog::AddUserSizer(
+wxSizerItem* wex::dialog::add_user_sizer(
   wxSizer* sizer,
   const wxSizerFlags& flags)
 {
@@ -54,7 +55,7 @@ wxSizerItem* wex::dialog::AddUserSizer(
   return item;
 }
 
-void wex::dialog::LayoutSizers(bool add_separator_line)
+void wex::dialog::layout_sizers(bool add_separator_line)
 {
   m_TopSizer->AddGrowableCol(0);
   m_UserSizer->AddGrowableCol(0);
@@ -70,11 +71,11 @@ void wex::dialog::LayoutSizers(bool add_separator_line)
   m_TopSizer->AddGrowableRow(m_TopSizer->GetChildren().GetCount() - 1);
 
   // Then, if buttons were specified, the button sizer.
-  if (m_Data.Button() != 0)
+  if (m_Data.button() != 0)
   {
     if (wxSizer* sizer = (add_separator_line ?
-      CreateSeparatedButtonSizer(m_Data.Button()):
-      CreateButtonSizer(m_Data.Button()));
+      CreateSeparatedButtonSizer(m_Data.button()):
+      CreateButtonSizer(m_Data.button()));
       sizer != nullptr)
     {
       m_TopSizer->Add(sizer, flag);
@@ -84,7 +85,7 @@ void wex::dialog::LayoutSizers(bool add_separator_line)
   // The top sizer ends with a spacer as well.
   m_TopSizer->AddSpacer(wxSizerFlags::GetDefaultBorder());
 
-  if (m_Data.Size() == wxDefaultSize)
+  if (m_Data.size() == wxDefaultSize)
   {
     SetSizerAndFit(m_TopSizer);
   }

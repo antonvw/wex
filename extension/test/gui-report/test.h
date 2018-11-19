@@ -12,7 +12,7 @@
 #include "../test.h"
 
 /// Returns the frame.
-wex::history_frame* GetFrame();
+wex::history_frame* frame();
 
 /// Returns the project.
-const std::string GetProject();
+const std::string get_project();

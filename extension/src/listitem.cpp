@@ -22,13 +22,13 @@ wex::listitem::listitem(
   long itemnumber)
   : m_ListView(lv)
   , m_Path(
-    (!lv->GetItemText(itemnumber, _("File Name")).empty() &&
-     !lv->GetItemText(itemnumber, _("In Folder")).empty() ?
+    (!lv->get_item_text(itemnumber, _("File Name")).empty() &&
+     !lv->get_item_text(itemnumber, _("In Folder")).empty() ?
         path(
-          lv->GetItemText(itemnumber, _("In Folder")),
-          lv->GetItemText(itemnumber, _("File Name"))) : 
-        path(lv->GetItemText(itemnumber))))
-  , m_FileSpec(lv->GetItemText(itemnumber, _("Type")))
+          lv->get_item_text(itemnumber, _("In Folder")),
+          lv->get_item_text(itemnumber, _("File Name"))) : 
+        path(lv->get_item_text(itemnumber))))
+  , m_FileSpec(lv->get_item_text(itemnumber, _("Type")))
 {
   SetId(itemnumber);
   m_IsReadOnly = (m_ListView->GetItemData(GetId()) > 0);
@@ -46,7 +46,7 @@ wex::listitem::listitem(
   SetId(-1);
 }
 
-void wex::listitem::Insert(long index)
+void wex::listitem::insert(long index)
 {
   SetId(index == -1 ? m_ListView->GetItemCount(): index);
   
@@ -55,14 +55,14 @@ void wex::listitem::Insert(long index)
   
   if (m_ListView->InReportView())
   {
-    col = m_ListView->FindColumn(_("File Name"));
-    wxASSERT(col >= 0);
-    filename = (m_Path.FileExists() || m_Path.DirExists() ? 
-      m_Path.GetFullName(): m_Path.Path().string());
+    col = m_ListView->find_column(_("File Name"));
+    assert(col >= 0);
+    filename = (m_Path.file_exists() || m_Path.dir_exists() ? 
+      m_Path.fullname(): m_Path.data().string());
   }
   else
   {
-    filename = m_Path.Path().string();
+    filename = m_Path.data().string();
   }
 
   if (col == 0)
@@ -73,9 +73,9 @@ void wex::listitem::Insert(long index)
 
   ((wxListView* )m_ListView)->InsertItem(*this);
   
-  frame::UpdateStatusBar(m_ListView);
+  frame::update_statusbar(m_ListView);
 
-  Update();
+  update();
 
   if (col > 0)
   {
@@ -83,7 +83,7 @@ void wex::listitem::Insert(long index)
   }
 }
 
-bool wex::listitem::SetItem(
+bool wex::listitem::set_item(
   const std::string& col_name, const std::string& text) 
 {
   if (text.empty())
@@ -92,7 +92,7 @@ bool wex::listitem::SetItem(
     return false;
   }
   
-  if (const auto col = m_ListView->FindColumn(col_name); col != -1)
+  if (const auto col = m_ListView->find_column(col_name); col != -1)
   {
     if (!m_ListView->SetItem(GetId(), col, text))
     {
@@ -122,28 +122,28 @@ void wex::listitem::SetReadOnly(bool readonly)
   m_ListView->SetItemData(GetId(), m_IsReadOnly);
 }
 
-void wex::listitem::Update()
+void wex::listitem::update()
 {
   SetImage(
-    m_ListView->GetData().Image() == listview_data::IMAGE_FILE_ICON && 
-    m_Path.GetStat().is_ok() ? get_iconid(m_Path): -1);
+    m_ListView->data().image() == listview_data::IMAGE_FILE_ICON && 
+    m_Path.stat().is_ok() ? get_iconid(m_Path): -1);
 
   ((wxListView *)m_ListView)->SetItem(*this);
 
-  SetReadOnly(m_Path.GetStat().is_readonly());
+  SetReadOnly(m_Path.stat().is_readonly());
 
   if (
      m_ListView->InReportView() &&
-     m_Path.GetStat().is_ok())
+     m_Path.stat().is_ok())
   {
-    SetItem(_("Type"),
-      m_Path.DirExists() ? m_FileSpec: m_Path.GetExtension());
-    SetItem(_("In Folder"), m_Path.GetPath());
-    SetItem(_("Modified"), m_Path.GetStat().get_modification_time());
+    set_item(_("Type"),
+      m_Path.dir_exists() ? m_FileSpec: m_Path.extension());
+    set_item(_("In Folder"), m_Path.get_path());
+    set_item(_("Modified"), m_Path.stat().get_modification_time());
   
-    if (m_Path.FileExists())
+    if (m_Path.file_exists())
     {
-      SetItem(_("Size"), std::to_string(m_Path.GetStat().st_size));
+      set_item(_("Size"), std::to_string(m_Path.stat().st_size));
     }
   }
 }

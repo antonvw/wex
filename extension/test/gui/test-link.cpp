@@ -34,23 +34,23 @@ void link(
   if (!expect.empty())
   {
     CAPTURE(path);
-    REQUIRE(link.GetPath(path, data).Path().string().find(expect) != std::string::npos);
+    REQUIRE(link.get_path(path, data).data().string().find(expect) != std::string::npos);
   }
   else
   {
     CAPTURE(path);
     CAPTURE(expect);
-    REQUIRE(link.GetPath(path, data).Path().empty());
+    REQUIRE(link.get_path(path, data).data().empty());
   }
   
-  REQUIRE(data.Line() == expect_line_no);
-  REQUIRE(data.Col() == expect_col_no);
+  REQUIRE(data.line() == expect_line_no);
+  REQUIRE(data.col() == expect_col_no);
 }
 
 #ifdef __UNIX__
 TEST_CASE("wex::link")
 {
-  wex::stc* stc = GetSTC();
+  wex::stc* stc = get_stc();
   
   SUBCASE("Default constructor")
   {
@@ -61,7 +61,7 @@ TEST_CASE("wex::link")
   {
     wex::link lnk(stc);  
     wex::config(_("Include directory")).set("/usr/bin");
-    lnk.SetFromConfig();
+    lnk.set_from_config();
     
     // Test empty, or illegal paths.
     link(lnk, "");
@@ -114,7 +114,7 @@ TEST_CASE("wex::link")
 
     // po file format
     link(lnk, "#: test:120", "/usr/bin/test", 120);
-    stc->GetLexer().Set("po");
+    stc->get_lexer().Set("po");
     link(lnk, "#: test:120", "/usr/bin/test", 120);
 #endif
 
@@ -129,33 +129,33 @@ TEST_CASE("wex::link")
   { 
     wex::link lnk(stc);
     wex::config(_("Include directory")).set("/usr/bin");
-    lnk.SetFromConfig();
+    lnk.set_from_config();
 
     wex::control_data data;
-    data.Line(wex::link::LINE_OPEN_URL);
-    REQUIRE( lnk.GetPath("www.wxwidgets.org", data).Path() == "www.wxwidgets.org" );
-    REQUIRE( lnk.GetPath("xxx.wxwidgets.org", data).Path().empty());
-    REQUIRE( lnk.GetPath("test.cpp", data).Path().empty());
-    REQUIRE( lnk.GetPath("<test.cpp>", data).Path().empty());
-    REQUIRE( lnk.GetPath("gcc>", data).Path().empty());
-    REQUIRE( lnk.GetPath("<gcc>", data).Path().empty());
-    REQUIRE( lnk.GetPath("some text www.wxwidgets.org", data).Path() == "www.wxwidgets.org" );
-    REQUIRE( lnk.GetPath("some text https://github.com/antonvw/wxExtension", data).Path() == 
+    data.line(wex::link::LINE_OPEN_URL);
+    REQUIRE( lnk.get_path("www.wxwidgets.org", data).data() == "www.wxwidgets.org" );
+    REQUIRE( lnk.get_path("xxx.wxwidgets.org", data).data().empty());
+    REQUIRE( lnk.get_path("test.cpp", data).data().empty());
+    REQUIRE( lnk.get_path("<test.cpp>", data).data().empty());
+    REQUIRE( lnk.get_path("gcc>", data).data().empty());
+    REQUIRE( lnk.get_path("<gcc>", data).data().empty());
+    REQUIRE( lnk.get_path("some text www.wxwidgets.org", data).data() == "www.wxwidgets.org" );
+    REQUIRE( lnk.get_path("some text https://github.com/antonvw/wxExtension", data).data() == 
       "https://github.com/antonvw/wxExtension" );
-    REQUIRE( lnk.GetPath("some text (https://github.com/antonvw/wxExtension)", data).Path() == 
+    REQUIRE( lnk.get_path("some text (https://github.com/antonvw/wxExtension)", data).data() == 
       "https://github.com/antonvw/wxExtension" );
-    REQUIRE( lnk.GetPath("some text [https://github.com/antonvw/wxExtension]", data).Path() == 
+    REQUIRE( lnk.get_path("some text [https://github.com/antonvw/wxExtension]", data).data() == 
       "https://github.com/antonvw/wxExtension" );
-    REQUIRE( lnk.GetPath("httpd = new httpd", data).Path().empty());
+    REQUIRE( lnk.get_path("httpd = new httpd", data).data().empty());
 
     // MIME file
-    data.Line(wex::link::LINE_OPEN_URL_AND_MIME);
-    stc->GetFile().FileNew("test.html");
-    REQUIRE( lnk.GetPath("www.wxwidgets.org", data).Path() == "www.wxwidgets.org" );
-    REQUIRE( lnk.GetPath("xxx.wxwidgets.org", data) == "test.html" );
-    REQUIRE( lnk.GetPath("xx", data).Path() == "test.html" );
-    data.Line(-99);
-    REQUIRE( lnk.GetPath("xx", data).Path().empty());
+    data.line(wex::link::LINE_OPEN_URL_AND_MIME);
+    stc->get_file().file_new("test.html");
+    REQUIRE( lnk.get_path("www.wxwidgets.org", data).data() == "www.wxwidgets.org" );
+    REQUIRE( lnk.get_path("xxx.wxwidgets.org", data) == "test.html" );
+    REQUIRE( lnk.get_path("xx", data).data() == "test.html" );
+    data.line(-99);
+    REQUIRE( lnk.get_path("xx", data).data().empty());
   }
 }
 #endif

@@ -26,7 +26,7 @@ namespace wex
   class vi_macros;
   class vi_macros_mode;
 
-  enum class info_message;
+  enum class info_message_t;
 
   /// Offers a class that adds ex editor to wex::stc.
   class ex
@@ -40,63 +40,51 @@ namespace wex
     /// Destructor.
     virtual ~ex();
     
-    /// Adds text (to STC or register, if register is active).
-    void AddText(const std::string& text);
+    /// Adds text (to stc or register, if register is active).
+    void add_text(const std::string& text);
    
     /// Returns calculated value with precision width of text.
-    std::tuple<double, int> Calculator(const std::string& text);
+    std::tuple<double, int> calculator(const std::string& text);
     
     /// Executes ex: command that was entered on the command line,
     /// or present as modeline command inside a file.
     /// Returns true if the command was executed.
-    virtual bool Command(const std::string& command);
+    virtual bool command(const std::string& command);
 
     /// Copies data from other component.
-    void Copy(const ex* ex);
+    void copy(const ex* ex);
+    
+    /// Returns the ctags.
+    auto & ctags() {return m_CTags;};
     
     /// Cuts selected text to yank register,
     /// and updates delete registers.
-    void Cut(bool show_message = true);
+    void cut(bool show_message = true);
 
+    /// Returns the frame.
+    auto* frame() {return m_Frame;};
+    
     /// Returns command.
-    const auto & GetCommand() const {return m_Command;};
+    const auto & get_command() const {return m_Command;};
 
-    /// Returns the ctags.
-    auto & GetCTags() {return m_CTags;};
-    
-    /// Returns frame.
-    auto* GetFrame() {return m_Frame;};
-    
-    /// Returns whether ex is active.
-    auto GetIsActive() const {return m_IsActive;};
-    
     /// Returns the macros.
-    static auto & GetMacros() {return m_Macros;};
+    static auto & get_macros() {return m_Macros;};
 
-    /// Returns register name.
-    const auto GetRegister() const {return m_Register;};
-    
-    /// Returns text to be inserted.
-    const std::string GetRegisterInsert() const;
-    
-    /// Returns text from current register (or yank register if no register active).
-    const std::string GetRegisterText() const;
-    
-    /// Returns search flags.
-    auto GetSearchFlags() const {return m_SearchFlags;};
+    /// Returns whether ex is active.
+    auto is_active() const {return m_IsActive;};
     
     /// Returns selected text as a string.
     const std::string GetSelectedText() const;
     
-    /// Returns STC component.
-    auto * GetSTC() {return m_Command.STC();};
+    /// Returns stc component.
+    auto * stc() {return m_Command.stc();};
 
     /// Writes info message.
-    void InfoMessage() const;
+    void info_message() const;
     
     /// Adds marker at the specified line.
     /// Returns true if marker could be added.
-    bool MarkerAdd(
+    bool marker_add(
       /// marker
       char marker,
       /// line to add marker, default current line
@@ -104,46 +92,58 @@ namespace wex
     
     /// Deletes specified marker.
     /// Returns true if marker was deleted.
-    bool MarkerDelete(char marker);
+    bool marker_delete(char marker);
     
     /// Goes to specified marker.
     /// Returns true if marker exists.
-    bool MarkerGoto(char marker);
+    bool marker_goto(char marker);
     
     /// Returns line for specified marker.
     /// Returns -1 if marker does not exist.
-    int MarkerLine(char marker) const;
+    int marker_line(char marker) const;
     
     /// Prints text in the dialog.
-    void Print(const std::string& text);
+    void print(const std::string& text);
 
+    /// Returns current register name.
+    const auto register_name() const {return m_Register;};
+    
+    /// Returns text to be inserted.
+    const std::string register_insert() const;
+    
+    /// Returns text from current register (or yank register if no register active).
+    const std::string register_text() const;
+    
     /// Resets search flags.
-    void ResetSearchFlags();
+    void reset_search_flags();
+    
+    /// Returns search flags.
+    auto search_flags() const {return m_SearchFlags;};
     
     /// Sets delete registers 1 - 9 (if value not empty).
-    void SetRegistersDelete(const std::string& value) const;
+    void set_registers_delete(const std::string& value) const;
     
     /// Sets insert register (if value not empty).
-    void SetRegisterInsert(const std::string& value) const;
+    void set_register_insert(const std::string& value) const;
     
     /// Sets yank register (if value not empty).
-    void SetRegisterYank(const std::string& value) const;
+    void set_register_yank(const std::string& value) const;
     
     /// Set using ex mode.
-    void Use(bool mode) {m_IsActive = mode;};
+    void use(bool mode) {m_IsActive = mode;};
     
     /// Yanks selected text to yank register, default to yank register.
     /// Returns false if no text was selected.
-    bool Yank(const char name = '0', bool show_message = true) const;
+    bool yank(const char name = '0', bool show_message = true) const;
   protected:
     /// If autowrite is on and document is modified,
     /// save the document.
-    bool AutoWrite();
+    bool auto_write();
 
     /// Sets register name.
     /// Setting register 0 results in
     /// disabling current register.
-    void SetRegister(const char name) {m_Register = name;};
+    void set_register(const char name) {m_Register = name;};
 
     ex_command m_Command;
   private:
@@ -155,10 +155,10 @@ namespace wex
         const std::string& command,
         const T * container,
         std::function<bool(const std::string&, const std::string&)> cb);
-    void InfoMessage(const std::string& text, info_message type) const;
+    void info_message(const std::string& text, info_message_t type) const;
     template <typename S, typename T>
     std::string ReportContainer(const T & container) const;
-    void ShowDialog(
+    void show_dialog(
       const std::string& title, const std::string& text, bool prop_lexer = false);
       
     const marker m_MarkerSymbol = marker(0);
@@ -183,7 +183,7 @@ namespace wex
     char m_Register {0};
     
     managed_frame* m_Frame;  
-    ctags* m_CTags {nullptr};
+    wex::ctags* m_CTags {nullptr};
 
     const std::vector<std::pair<
       const std::string, 

@@ -41,13 +41,13 @@ class frame: public wex::history_frame
 public:
   frame();
 private:
-  virtual void OnCommandItemDialog(
+  virtual void on_command_item_dialog(
     wxWindowID dialogid, 
     const wxCommandEvent& event) override;
-  virtual wex::stc* OpenFile(
+  virtual wex::stc* open_file(
     const wex::path& filename, 
     const wex::stc_data& data = wex::stc_data()) override;
-  virtual void StatusBarClicked(const std::string& pane) override;
+  virtual void statusbar_clicked(const std::string& pane) override;
 
   void RunQuery(const std::string& query, bool empty_results = false);
 

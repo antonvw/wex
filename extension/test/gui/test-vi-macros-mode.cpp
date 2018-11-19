@@ -18,8 +18,8 @@ TEST_CASE("wex::vi_macros_mode")
   std::string expanded;
   wex::vi_macros_mode mode;
   
-  REQUIRE(!mode.IsRecording());
-  REQUIRE(!mode.Expand(nullptr, wex::variable("test"), expanded));
-  REQUIRE( mode.Transition("x") == 0);
-  REQUIRE( mode.String().empty());
+  REQUIRE(!mode.is_recording());
+  REQUIRE(!mode.expand(nullptr, wex::variable("test"), expanded));
+  REQUIRE( mode.transition("x") == 0);
+  REQUIRE( mode.string().empty());
 }

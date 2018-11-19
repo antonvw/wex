@@ -14,18 +14,18 @@ TEST_CASE( "wex::tool" )
   const int id = 1000;
   
   wex::tool tool(id);
-  tool.AddInfo(id, "this is ok");
+  tool.add_info(id, "this is ok");
   
   wex::statistics<int> stat;
   
-  REQUIRE( tool.GetId() == id);
-  REQUIRE(!tool.GetToolInfo().empty());
-  REQUIRE( tool.Info(&stat) == "this is ok 0 file(s)");
-  REQUIRE(!tool.IsFindType());
-  REQUIRE(!tool.IsReportType());
+  REQUIRE( tool.id() == id);
+  REQUIRE(!tool.get_tool_info().empty());
+  REQUIRE( tool.info(&stat) == "this is ok 0 file(s)");
+  REQUIRE(!tool.is_find_type());
+  REQUIRE(!tool.is_report_type());
   
-  REQUIRE(!wex::tool(wex::ID_TOOL_REPORT_FIND).Info().empty());
+  REQUIRE(!wex::tool(wex::ID_TOOL_REPORT_FIND).info().empty());
   
-  REQUIRE( wex::tool(wex::ID_TOOL_REPORT_FIND).IsFindType());
-  REQUIRE( wex::tool(wex::ID_TOOL_REPLACE).IsFindType());
+  REQUIRE( wex::tool(wex::ID_TOOL_REPORT_FIND).is_find_type());
+  REQUIRE( wex::tool(wex::ID_TOOL_REPLACE).is_find_type());
 }
