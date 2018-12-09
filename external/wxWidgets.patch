@@ -1,0 +1,13 @@
+diff --git a/build/cmake/setup.cmake b/build/cmake/setup.cmake
+index 5656b9dc30..0cbef707fb 100644
+--- a/build/cmake/setup.cmake
++++ b/build/cmake/setup.cmake
+@@ -152,7 +152,7 @@ if(wxUSE_STL)
+         string functional algorithm vector list
+         )
+     if(NOT wxTEST_STL)
+-        message(FATAL_ERROR "Can't use wxUSE_STL as basic STL functionality is missing")
++#        message(FATAL_ERROR "Can't use wxUSE_STL as basic STL functionality is missing")
+     endif()
+ 
+     wx_check_cxx_source_compiles("

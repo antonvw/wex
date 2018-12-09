@@ -30,15 +30,13 @@ namespace wex
     /// Constructor taking a path, and opens the file.
     file(
       const path& p,
-      std::ios_base::openmode mode = 
-        std::ios_base::in | std::ios_base::out,
+      std::ios_base::openmode mode = std::ios_base::in,
       bool open_file = true);
     
     /// Constructor taking a filename, and opens the file.
     file(
       const std::string& filename,
-      std::ios_base::openmode mode =
-        std::ios_base::in | std::ios_base::out,
+      std::ios_base::openmode mode = std::ios_base::in,
       bool open_file = true);
     
     /// Copy constructor.
@@ -74,12 +72,12 @@ namespace wex
 
     /// Opens current path.
     bool open(
-      std::ios_base::openmode mode = std::ios_base::in | std::ios_base::out);
+      std::ios_base::openmode mode = std::ios_base::in);
 
     /// Opens specified path.
     bool open(
       const path& p, 
-      std::ios_base::openmode mode = std::ios_base::in | std::ios_base::out);
+      std::ios_base::openmode mode = std::ios_base::in);
 
     /// Reads this file into a buffer.
     const std::string* read(std::streampos seek_position = 0);

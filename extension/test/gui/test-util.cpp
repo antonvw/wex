@@ -110,7 +110,7 @@ TEST_CASE("wex")
   {
     wxComboBox* cb = new wxComboBox(frame(), wxID_ANY);
 #ifndef __WXOSX__
-    AddPane(frame(), cb);
+    add_pane(frame(), cb);
 #endif
     wex::combobox_as<const std::list < std::string >>(cb, l);
   }
@@ -119,7 +119,7 @@ TEST_CASE("wex")
   {
     wxComboBox* cb = new wxComboBox(frame(), wxID_ANY);
 #ifndef __WXOSX__
-    AddPane(frame(), cb);
+    add_pane(frame(), cb);
 #endif
     wex::combobox_from_list(cb, l);
     REQUIRE( cb->GetCount() == 3);
@@ -173,7 +173,7 @@ TEST_CASE("wex")
   
   SUBCASE("wex::get_iconid")
   {
-    REQUIRE( wex::get_iconid( GetTestPath("test.h")) != -1);
+    REQUIRE( wex::get_iconid( get_testpath("test.h")) != -1);
   }
 
   SUBCASE("wex::get_number_of_lines  ")
@@ -224,7 +224,7 @@ TEST_CASE("wex")
   
   SUBCASE("wex::log_status")
   {
-    wex::log_status( GetTestPath("test.h"));
+    wex::log_status( get_testpath("test.h"));
     wex::log_status( std::string("hello world") );
   }
 
@@ -268,9 +268,9 @@ TEST_CASE("wex")
   {
     REQUIRE( wex::open_files(frame(), std::vector<wex::path>()) == 0);
     REQUIRE( wex::open_files(frame(), std::vector<wex::path> {
-      GetTestPath("test.h").data(), "test.cpp", "*xxxxxx*.cpp"}) == 2);
+      get_testpath("test.h").data(), "test.cpp", "*xxxxxx*.cpp"}) == 2);
     REQUIRE( wex::open_files(frame(), 
-      std::vector<wex::path> {GetTestPath("test.h").data()}) == 1);
+      std::vector<wex::path> {get_testpath("test.h").data()}) == 1);
     REQUIRE( 
       wex::open_files(frame(), std::vector<wex::path> {"../../data/menus.xml"}) == 1);
   }
@@ -291,7 +291,7 @@ TEST_CASE("wex")
   
   SUBCASE("wex::print_header")
   {
-    REQUIRE( wex::print_header(GetTestPath("test.h")).find("test") != std::string::npos);
+    REQUIRE( wex::print_header(get_testpath("test.h")).find("test") != std::string::npos);
   }
   
   SUBCASE("wex::marker_and_register_expansion")

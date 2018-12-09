@@ -16,6 +16,7 @@ TEST_CASE("wex::autocomplete")
 {
   wex::autocomplete ac(get_stc());
 
+  ac.use(true);
   REQUIRE(!ac.activate(std::string()));
   REQUIRE(!ac.apply(WXK_BACK));
   REQUIRE( ac.apply('x'));
@@ -23,6 +24,7 @@ TEST_CASE("wex::autocomplete")
   REQUIRE(!ac.apply(WXK_BACK));
 
   ac.use(false);
+  REQUIRE(!ac.use());
   REQUIRE(!ac.apply('x'));
 
   ac.reset();

@@ -1,8 +1,13 @@
 !_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
 !_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
-!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
-!_TAG_PROGRAM_NAME	Exuberant Ctags	//
-!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
-!_TAG_PROGRAM_VERSION	5.8	//
-wxExTestApp	test.h	/^  wxExTestApp() {}$/;"	f	class:wxExTestApp
-wxExTestApp	test.h	/^class wxExTestApp: public wxExApp$/;"	c
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	0.0.0	/c7d224bd/
+method_one	test.h	/^    void method_one() const {;};$/;"	f	class:wex::test_app	typeref:typename:void
+method_three	test.h	/^    bool method_three(const std::string& s1) {return 1;};$/;"	f	class:wex::test_app	typeref:typename:bool
+method_two	test.h	/^    bool method_two() const {return 1;};$/;"	f	class:wex::test_app	typeref:typename:bool
+test_app	test.h	/^    test_app() {;};$/;"	f	class:wex::test_app
+test_app	test.h	/^  class test_app: public app$/;"	c	namespace:wex
+wex	test.h	/^namespace wex$/;"	n

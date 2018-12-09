@@ -19,7 +19,7 @@ namespace wex
   /// Offers an address range for vi (ex).
   /// - The range is derived from a number of lines, 
   /// - or by a range string (including visual range for 
-  ///   already selected text on the STC component).
+  ///   already selected text on the stc component).
   /// All methods return false if the range is not ok.
   class addressrange
   {
@@ -91,7 +91,7 @@ namespace wex
     
     /// Acccess to the process.
     /// Returns NULLL if escape without range was not yet invoked.
-    static process* process() {return m_Process;};
+    static wex::process* process() {return m_Process;};
     
     /// Shifts the specified lines to the start of the line.
     bool shift_left() const {return Indent(false);};

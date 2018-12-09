@@ -65,7 +65,7 @@ bool wex::otl::logon(const wex::window_data& par)
 {
   const window_data data(window_data(par).
     title(_("Open ODBC Connection").ToStdString()));
-
+    
   if (data.button() != 0)
   {
     if (item_dialog({
@@ -92,7 +92,7 @@ bool wex::otl::logon(const wex::window_data& par)
   {
     stc_entry_dialog(
       "Cannot logon to " + datasource() + 
-      " because of: " + std::string((const char *)p.msg)).ShowModal();
+      " because of: " + std::string((const char *)p.msg)).Show();
   }
 
   return is_connected();

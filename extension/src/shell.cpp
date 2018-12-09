@@ -17,6 +17,7 @@
 #include <wex/process.h>
 #include <wex/tokenizer.h>
 #include <wex/util.h>
+#include <easylogging++.h>
 
 wex::shell::shell(
   const stc_data& data,
@@ -26,7 +27,7 @@ wex::shell::shell(
   const std::string& lexer,
   int commands_save_in_config)
   : stc(std::string(), stc_data(data).
-      flags(stc_data::WIN_NO_INDICATOR, control_data::OR))
+      flags(stc_data::window_t().set(stc_data::WIN_NO_INDICATOR), control_data::OR))
   , m_CommandEnd(command_end == std::string() ? eol(): command_end)
   , m_Echo(echo)
   , m_CommandsSaveInConfig(commands_save_in_config)
@@ -36,7 +37,6 @@ wex::shell::shell(
   SetEdgeMode(wxSTC_EDGE_NONE);
   reset_margins(margin_t().set(MARGIN_FOLDING).set(MARGIN_LINENUMBER));
 
-  auto_complete().use(false); // we have our own autocomplete
   AutoCompSetSeparator(3);
 
   // Start with a prompt.
@@ -58,6 +58,8 @@ wex::shell::shell(
   m_CommandsIterator = m_Commands.end();
   
   enable(true);
+  
+  auto_complete().use(false); // we have our own autocomplete
 
   get_lexer().set(lexer);
   
@@ -499,7 +501,7 @@ bool wex::shell::process_char(int key)
       }
       else
       {
-        process_charDefault(key);
+        process_char_default(key);
         processed = true;
       }
 
@@ -522,14 +524,14 @@ bool wex::shell::process_char(int key)
       break;
       
     default:
-      process_charDefault(key);
+      process_char_default(key);
       processed = true;
   }
 
   return processed;
 }
 
-void wex::shell::process_charDefault(int key)
+void wex::shell::process_char_default(int key)
 {
   // Insert the key at current position.
   if (const int index = GetCurrentPos() - m_CommandStartPosition;

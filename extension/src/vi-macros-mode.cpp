@@ -86,7 +86,7 @@ int wex::vi_macros_mode::transition(
   }
 
   vi_macros_fsm::trigger_t trigger = vi_macros_fsm::trigger_t::DONE;
-  wxWindow* parent = (ex != nullptr ? ex->stc(): wxTheApp->GetTopWindow());
+  wxWindow* parent = (ex != nullptr ? ex->get_stc(): wxTheApp->GetTopWindow());
 
   std::string macro(command);
 

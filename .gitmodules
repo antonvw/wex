@@ -13,3 +13,6 @@
 [submodule "external/wxWidgets"]
 	path = external/wxWidgets
 	url = https://github.com/wxWidgets/wxWidgets.git
+[submodule "external/ctags"]
+	path = external/ctags
+	url = https://github.com/universal-ctags/ctags.git

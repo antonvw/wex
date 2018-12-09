@@ -15,7 +15,7 @@ TEST_CASE( "wex::file" )
   {
     REQUIRE(!wex::file("XXXXX").is_opened());
     
-    wex::file file(GetTestPath("test.h"));
+    wex::file file(get_testpath("test.h"));
   
     REQUIRE(!file.check_sync());
     REQUIRE(!file.get_contents_changed());
@@ -29,8 +29,8 @@ TEST_CASE( "wex::file" )
     // The fullpath should be normalized, test it.
     REQUIRE( file.get_filename().data().string() != "./test.h");
     REQUIRE(!file.get_filename().stat().is_readonly());
-    REQUIRE( file.file_load(GetTestPath("test.bin")));
-    REQUIRE( file.open(GetTestPath("test.bin").data().string()));
+    REQUIRE( file.file_load(get_testpath("test.bin")));
+    REQUIRE( file.open(get_testpath("test.bin").data().string()));
     REQUIRE( file.is_opened());
 
     const std::string* buffer = file.read();
@@ -57,7 +57,7 @@ TEST_CASE( "wex::file" )
 
   SUBCASE( "timing" ) 
   {
-    wex::file file(GetTestPath("test.h"));
+    wex::file file(get_testpath("test.h"));
   
     const int max = 10000;
     const auto ex_start = std::chrono::system_clock::now();

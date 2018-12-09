@@ -929,7 +929,7 @@ bool wex::item::set_value(const std::any& value) const
       case LISTVIEW:
         {
         auto* win = (listview*)window();
-        win->DeleteAllItems();
+        win->clear();
         win->item_from_text(std::any_cast<std::string>(value));
         }
         break;

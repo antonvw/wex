@@ -24,7 +24,7 @@ TEST_CASE("wex::hexmode")
     std::string("0123456789"), wex::stc_data().flags(
       wex::stc_data::window_t().set(wex::stc_data::WIN_HEX)));
 
-  AddPane(frame(), stc);
+  add_pane(frame(), stc);
   REQUIRE(stc->GetText() != "0123456789");
   
   stc->SetCurrentPos(48); // 0 <-
@@ -32,7 +32,7 @@ TEST_CASE("wex::hexmode")
   wex::hexmode* hm = &stc->get_hexmode();
   
   REQUIRE( hm->is_active());
-  REQUIRE( hm->stc() == stc);
+  REQUIRE( hm->get_stc() == stc);
   REQUIRE( hm->buffer() == "0123456789");
     
   hm->append_text("0123456789");
@@ -58,7 +58,7 @@ TEST_CASE("wex::hexmode")
   REQUIRE( hm->replace('9', 13));
   REQUIRE( hm->replace('2', 13));
   
-  REQUIRE( stc->get_file().file_save(GetTestPath("test.hex")));
+  REQUIRE( stc->get_file().file_save(get_testpath("test.hex")));
   hm->set(false);
   REQUIRE( stc->GetText() == "01232567890123456789");
   
@@ -139,7 +139,7 @@ TEST_CASE("wex::hexmode")
   // Test set text.
   hm->set_text("hello world");
   REQUIRE( hm->buffer() == "hello world");
-  REQUIRE( hm->stc()->GetText() != "hello world");
+  REQUIRE( hm->get_stc()->GetText() != "hello world");
   
   wxKeyEvent event(wxEVT_KEY_DOWN);
   hm->set_pos(event);

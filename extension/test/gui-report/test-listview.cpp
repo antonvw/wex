@@ -18,9 +18,9 @@ TEST_CASE("wex::history_listview")
     wex::listview_data::KEYWORD);
     
   wex::history_listview* listView = new wex::history_listview(wex::listview_data().type(wex::listview_data::FIND));
-  AddPane(frame(), listView);
+  add_pane(frame(), listView);
 
-  wex::listitem item(listView, GetTestPath("test.h"));
+  wex::listitem item(listView, get_testpath("test.h"));
   item.insert();
   item.insert();
   item.insert();

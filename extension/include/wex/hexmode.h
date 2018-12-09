@@ -51,12 +51,12 @@ namespace wex
     /// depending on which field is current.
     const std::string get_info();
 
+    /// Returns stc component.
+    auto * get_stc() {return m_STC;};
+    
     /// Asks for a byte offset goes to that byte.
     bool goto_dialog();
 
-    /// Returns STC component.
-    auto * stc() {return m_STC;};
-    
     /// Highlights the corresponding char for the other field
     /// for the current position.
     bool highlight_other();

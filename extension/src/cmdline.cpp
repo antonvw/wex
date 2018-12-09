@@ -363,32 +363,32 @@ void wex::cmdline::show_options(const window_data& data) const
       std::string(),
       window_data(data).button(wxOK).title("Options"));
 
-    dlg->stc()->get_lexer().set(l);
+    dlg->get_stc()->get_lexer().set(l);
   }
   else
   {
-    dlg->stc()->ClearAll();
+    dlg->get_stc()->ClearAll();
   }
 
   for (const auto& it : m_Options)
   {
-    dlg->stc()->InsertText(0, l.make_key(
+    dlg->get_stc()->InsertText(0, l.make_key(
       it->get_name(), 
       it->get_value(), 
       it->get_description() != it->get_name() ? it->get_description(): std::string()));
   }
 
-  dlg->stc()->InsertText(0, "\n" + l.make_section("options"));
+  dlg->get_stc()->InsertText(0, "\n" + l.make_section("options"));
   
   for (const auto& it : m_Switches)
   {
-    dlg->stc()->InsertText(0, l.make_key(
+    dlg->get_stc()->InsertText(0, l.make_key(
       it->get_name(), 
       std::to_string(it->get_value()), 
       it->get_description() != it->get_name() ? it->get_description(): std::string()));
   }
 
-  dlg->stc()->InsertText(0, l.make_section("switches"));
-  dlg->stc()->EmptyUndoBuffer();
+  dlg->get_stc()->InsertText(0, l.make_section("switches"));
+  dlg->get_stc()->EmptyUndoBuffer();
   dlg->ShowModal();
 }

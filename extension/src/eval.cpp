@@ -58,12 +58,12 @@ std::tuple<double, int, std::string> wex::evaluator::Eval(
   {
     // Replace . with current line.
     replace_all(expr, ".", std::to_string(
-      ex->get_command().stc()->GetCurrentLine() + 1));
+      ex->get_command().get_stc()->GetCurrentLine() + 1));
   }
   
   // Replace $ with line count.
   replace_all(expr, "$", 
-    std::to_string(ex->get_command().stc()->GetLineCount()));
+    std::to_string(ex->get_command().get_stc()->GetLineCount()));
   
   // Expand all markers and registers.
   if (!marker_and_register_expansion(ex, expr))
@@ -89,7 +89,7 @@ std::string wex::evaluator::info(const wex::ex* ex)
   }
 
   output += l.make_section("Filename buffer");
-  output += l.make_key("%", ex->get_command().stc()->get_filename().fullname());
+  output += l.make_key("%", ex->get_command().get_stc()->get_filename().fullname());
 
   if (!m_eval->variables.empty()) 
   {

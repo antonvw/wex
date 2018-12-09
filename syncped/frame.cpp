@@ -1290,7 +1290,7 @@ void frame::print_ex(wex::ex* ex, const std::string& text)
     page->SetSavePoint();
   }
   
-  page->get_lexer().set(ex->stc()->get_lexer());
+  page->get_lexer().set(ex->get_stc()->get_lexer());
 }
   
 wex::process* frame::get_process(const std::string& command)

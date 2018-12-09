@@ -33,7 +33,7 @@ namespace wex
     /// Default constructor, command should start with a ':'
     ex_command(const std::string& command = std::string());
 
-    /// Constructor, supply STC component.
+    /// Constructor, supply stc component.
     ex_command(stc* stc);
 
     /// Copy constructor.
@@ -78,6 +78,9 @@ namespace wex
     /// Returns front of command.
     auto front() const {return m_Command.front();};
 
+    /// Returns stc component.
+    auto * get_stc() const {return m_STC;};
+
     /// Returns is handled.
     bool is_handled() const {return m_is_handled;};
 
@@ -97,9 +100,6 @@ namespace wex
 
     /// Returns size of command.
     auto size() const {return m_Command.size();};
-
-    /// Returns STC component.
-    auto * stc() const {return m_STC;};
 
     /// Returns type of command.
     type_t type() const;

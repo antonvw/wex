@@ -19,7 +19,7 @@ TEST_CASE("wex::report")
   wex::listview* report = new wex::listview(
     wex::listview_data().type(wex::listview_data::FIND));
   
-  AddPane(frame(), report);
+  add_pane(frame(), report);
     
   const auto files = wex::get_all_files(
     wex::path("../../../extension/test/gui-report"), 

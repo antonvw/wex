@@ -265,7 +265,7 @@ void wex::managed_frame::hide_ex_bar(int hide)
          m_TextCtrl != nullptr && 
          m_TextCtrl->ex() != nullptr)
     {
-      m_TextCtrl->ex()->stc()->SetFocus();
+      m_TextCtrl->ex()->get_stc()->SetFocus();
     }
   }
 }
@@ -381,9 +381,9 @@ wex::textctrl::textctrl(
         break;
 
       case WXK_TAB: {
-        if (m_ex != nullptr && m_ex->stc()->get_filename().file_exists())
+        if (m_ex != nullptr && m_ex->get_stc()->get_filename().file_exists())
         {
-          path::current(m_ex->stc()->get_filename().get_path());
+          path::current(m_ex->get_stc()->get_filename().get_path());
         }
 
         // studio not yet: [[maybe_unused]]
@@ -406,7 +406,7 @@ wex::textctrl::textctrl(
             wxCommandEvent event(wxEVT_MENU, ID_REGISTER);
             if (c == '%')
             {
-              if (m_ex != nullptr) event.SetString(m_ex->stc()->get_filename().fullname());
+              if (m_ex != nullptr) event.SetString(m_ex->get_stc()->get_filename().fullname());
             }
             else 
             {
@@ -453,7 +453,7 @@ wex::textctrl::textctrl(
       case WXK_ESCAPE:
         if (m_ex != nullptr)
         {
-          m_ex->stc()->position_restore();
+          m_ex->get_stc()->position_restore();
         }
         m_Frame->hide_ex_bar(managed_frame::HIDE_BAR_FORCE_FOCUS_STC);
         m_ControlR = false;
@@ -484,15 +484,15 @@ wex::textctrl::textctrl(
     event.Skip();
     if (m_ex != nullptr)
     {
-      m_ex->stc()->position_save();
+      m_ex->get_stc()->position_save();
     }});
 
   Bind(wxEVT_TEXT, [=](wxCommandEvent& event) {
     event.Skip();
     if (m_UserInput && m_ex != nullptr && m_Command.type() == ex_command::type_t::FIND)
     {
-      m_ex->stc()->position_restore();
-      m_ex->stc()->find_next(
+      m_ex->get_stc()->position_restore();
+      m_ex->get_stc()->find_next(
         GetValue().ToStdString(),
         m_ex->search_flags(),
         m_Prefix->GetLabel() == "/");
@@ -584,7 +584,7 @@ bool wex::textctrl::set_ex(wex::ex* ex, const std::string& command)
       break;
 
     case ex_command::type_t::FIND: 
-      SetValue(!m_ModeVisual ? ex->stc()->get_find_string(): std::string()); 
+      SetValue(!m_ModeVisual ? ex->get_stc()->get_find_string(): std::string()); 
       SelectAll();
       break;
 

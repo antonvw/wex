@@ -53,14 +53,14 @@ namespace wex
       , m_Frame(frame)
       , m_Shell(shell)
       , m_Timer(std::make_unique<wxTimer>(this)) {
-      Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {Read();});};
+      Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {read();});};
     virtual ~process_imp() {;};
 
-    bool Execute(const std::string& command, const std::string& path);
-    bool Kill(int sig);
-    static int KillAll(int sig);
-    void Read();
-    void Write(const std::string& text);
+    bool execute(const std::string& command, const std::string& path);
+    bool kill(int sig);
+    static int kill_all(int sig);
+    void read();
+    void write(const std::string& text);
   private:
     void HandleCommand(const std::string& command);
     virtual void OnTerminate(int pid, int status) override {
@@ -71,7 +71,7 @@ namespace wex
       }
       m_Timer->Stop();
       m_Frame->get_debug()->breakpoints().clear();
-      Read();};
+      read();};
     
     const bool m_Debug;
     std::string m_Command, m_StdIn;
@@ -222,7 +222,7 @@ bool wex::process::execute(
       
       m_Process = std::make_unique<process_imp>(m_Frame, m_Shell, command == "gdb");
 
-      if (!m_Process->Execute(m_Command, cwd))
+      if (!m_Process->execute(m_Command, cwd))
       {
         m_Process.release();
         m_Error = true;
@@ -259,7 +259,7 @@ bool wex::process::kill(int sig)
 
 int wex::process::kill_all(int sig)
 {
-  return process_imp::KillAll(sig);
+  return process_imp::kill_all(sig);
 }
 
 void wex::process::prepare_output(wxWindow* parent)
@@ -293,11 +293,11 @@ bool wex::process::write(const std::string& text)
 {
   if (!is_running()) 
   {
-    wxLogStatus("Process is not running");
+    log_status("Process is not running");
     return false;
   }
   
-  m_Process->Write(text);
+  m_Process->write(text);
   
   if (!is_running())
   {
@@ -309,7 +309,7 @@ bool wex::process::write(const std::string& text)
 
 // Implementation.
 
-bool wex::process_imp::Execute(
+bool wex::process_imp::execute(
   const std::string& command, const std::string& path)
 {
   struct wxExecuteEnv env;
@@ -359,7 +359,7 @@ void wex::process_imp::HandleCommand(const std::string& command)
   }
 }
 
-bool wex::process_imp::Kill(int sig)
+bool wex::process_imp::kill(int sig)
 {
   if (const auto pid = GetPid(); wxProcess::Kill(pid, (wxSignal)sig) != wxKILL_OK)
   {
@@ -377,7 +377,7 @@ bool wex::process_imp::Kill(int sig)
   return true;
 }
 
-int wex::process_imp::KillAll(int sig)
+int wex::process_imp::kill_all(int sig)
 {
   int killed = 0;
   
@@ -397,7 +397,7 @@ int wex::process_imp::KillAll(int sig)
   return killed;
 }
 
-void wex::process_imp::Read()
+void wex::process_imp::read()
 {
   wxCriticalSectionLocker lock(m_Critical);
   
@@ -426,7 +426,7 @@ void wex::process_imp::Read()
   }
 }
 
-void wex::process_imp::Write(const std::string& text)
+void wex::process_imp::write(const std::string& text)
 {
   m_Timer->Stop();
   
@@ -448,10 +448,15 @@ void wex::process_imp::Write(const std::string& text)
 
     const auto el = (text.size() == 1 && text[0] == 3 ? 
       std::string(): std::string("\n"));
+
     wxTextOutputStream(*os).WriteString(text + el);
+    
+    VLOG(9) << "process write: " << text;
+    
     m_StdIn = text;
     wxMilliSleep(10);
-    Read();
+
+    read();
     m_Timer->Start();
   }
 }

@@ -16,7 +16,7 @@
 TEST_CASE("wex::shell")
 {
   wex::shell* shell = new wex::shell();
-  AddPane(frame(), shell);
+  add_pane(frame(), shell);
   
   REQUIRE(shell->is_enabled());
   
@@ -29,19 +29,19 @@ TEST_CASE("wex::shell")
   REQUIRE( shell->get_history().find("test4") == std::string::npos);
 
   // Post 3 'a' chars to the shell, and check whether it comes in the history.
-  Process("aaa\r", shell);
+  process("aaa\r", shell);
   REQUIRE(shell->get_history().find("aaa") != std::string::npos);
   REQUIRE(shell->get_prompt() == ">");
   REQUIRE(shell->get_command() == "aaa");
   
   // Post 3 'b' chars to the shell, and check whether it comes in the history.
-  Process("bbb\r", shell);
+  process("bbb\r", shell);
   REQUIRE(shell->get_history().find("aaa") != std::string::npos);
   REQUIRE(shell->get_history().find("bbb") != std::string::npos);
   REQUIRE(shell->get_prompt() == ">");
   REQUIRE(shell->get_command() == "bbb");
   
-  Process("b\t", shell); // tests Expand
+  process("b\t", shell); // tests Expand
   shell->process_char(WXK_BACK);
   shell->process_char(WXK_BACK);
   shell->process_char(WXK_BACK);
@@ -72,17 +72,17 @@ TEST_CASE("wex::shell")
   // Test shell commands.
   shell->SetText("");
   shell->Undo(); // to reset command in shell
-  Process("history\r", shell);
+  process("history\r", shell);
   REQUIRE( shell->GetText().find("aaa") != std::string::npos);
   REQUIRE( shell->GetText().find("bbb") != std::string::npos);
   
   shell->SetText("");
-  Process("!1\r", shell);
+  process("!1\r", shell);
   REQUIRE( shell->GetText().find("aaa") != std::string::npos);
   REQUIRE( shell->GetText().find("bbb") == std::string::npos);
   
   shell->SetText("");
-  Process("!a\r", shell);
+  process("!a\r", shell);
   REQUIRE( shell->GetText().find("aaa") != std::string::npos);
   REQUIRE( shell->GetText().find("bbb") == std::string::npos);
   

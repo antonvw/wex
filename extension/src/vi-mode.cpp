@@ -129,30 +129,30 @@ namespace wex
 };
 
 #define NAVIGATE(SCOPE, DIRECTION)        \
-  m_vi->stc()->SCOPE##DIRECTION();        \
+  m_vi->get_stc()->SCOPE##DIRECTION();        \
   
 wex::vi_mode::vi_mode(vi* vi, 
   std::function<void(const std::string&)> insert, 
   std::function<void()> normal)
   : m_vi(vi)
-  , m_FSM(std::make_unique<vi_fsm>(vi->stc(), insert, normal))
+  , m_FSM(std::make_unique<vi_fsm>(vi->get_stc(), insert, normal))
   , m_InsertCommands {
     {'a', [&](){NAVIGATE(Char, Right);}},
     {'c', [&](){;}},
     {'i', [&](){;}},
     {'o', [&](){
       NAVIGATE(Line, End);
-      m_vi->stc()->NewLine();}},
+      m_vi->get_stc()->NewLine();}},
     {'A', [&](){NAVIGATE(Line, End);}},
     {'C', [&](){
-      m_vi->stc()->LineEndExtend();
+      m_vi->get_stc()->LineEndExtend();
       m_vi->cut();}},
     {'I', [&](){NAVIGATE(Line, Home);}},
     {'O', [&](){
       NAVIGATE(Line, Home); 
-      m_vi->stc()->NewLine(); 
+      m_vi->get_stc()->NewLine(); 
       NAVIGATE(Line, Up);}},
-    {'R', [&](){m_vi->stc()->SetOvertype(true);}}}
+    {'R', [&](){m_vi->get_stc()->SetOvertype(true);}}}
 {
 }
 
@@ -221,7 +221,7 @@ bool wex::vi_mode::transition(std::string& command)
   switch (get())
   {
     case INSERT:
-      if (!m_vi->stc()->is_hexmode())
+      if (!m_vi->get_stc()->is_hexmode())
       {
         if (const auto& it = std::find_if(m_InsertCommands.begin(), m_InsertCommands.end(), 
           [command](auto const& e) {return e.first == command[0];});
@@ -234,22 +234,22 @@ bool wex::vi_mode::transition(std::string& command)
       break;
       
     case VISUAL_LINE:
-      if (m_vi->stc()->SelectionIsRectangle())
+      if (m_vi->get_stc()->SelectionIsRectangle())
       {
-        m_vi->stc()->Home();
-        m_vi->stc()->LineDownExtend();
+        m_vi->get_stc()->Home();
+        m_vi->get_stc()->LineDownExtend();
       }
-      else if (m_vi->stc()->GetSelectedText().empty())
+      else if (m_vi->get_stc()->GetSelectedText().empty())
       {
-        m_vi->stc()->Home();
-        m_vi->stc()->LineDownExtend();
+        m_vi->get_stc()->Home();
+        m_vi->get_stc()->LineDownExtend();
       }
       else
       {
-        const int selstart = m_vi->stc()->PositionFromLine(m_vi->stc()->LineFromPosition(m_vi->stc()->GetSelectionStart()));
-        const int selend = m_vi->stc()->PositionFromLine(m_vi->stc()->LineFromPosition(m_vi->stc()->GetSelectionEnd()) + 1);
-        m_vi->stc()->SetSelection(selstart, selend);
-        m_vi->stc()->HomeExtend();
+        const int selstart = m_vi->get_stc()->PositionFromLine(m_vi->get_stc()->LineFromPosition(m_vi->get_stc()->GetSelectionStart()));
+        const int selend = m_vi->get_stc()->PositionFromLine(m_vi->get_stc()->LineFromPosition(m_vi->get_stc()->GetSelectionEnd()) + 1);
+        m_vi->get_stc()->SetSelection(selstart, selend);
+        m_vi->get_stc()->HomeExtend();
       }
       break;
     

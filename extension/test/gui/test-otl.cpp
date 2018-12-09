@@ -40,7 +40,7 @@ TEST_CASE("wex::otl")
   bool stopped = false;
 
   wex::grid* grid = new wex::grid();
-  AddPane(frame(), grid);
+  add_pane(frame(), grid);
   
   if (!otl.is_connected())
   {

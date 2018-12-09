@@ -767,38 +767,43 @@ bool wex::listview::insert_item(const std::vector < std::string > & item)
     return false;
   }
 
-  long no = 0;
+  int no = 0;
+  long index = 0;
 
   for (const auto& col : item)
   {
     try
     {
-      switch (m_Columns[no].type())
+      if (!col.empty())
       {
-        case column::DATE:
-          if (time_t tm; !GetTime(col, tm)) return false;
-          break;
-        case column::FLOAT: std::stof(col); 
-          break;
-        case column::INT: std::stoi(col); 
-          break;
-        case column::STRING: 
-          break;
-        default: 
-          break;
-      }
-
-      if (int index = 0; no == 0)
-      {
-        if ((index = InsertItem(GetItemCount(), col)) == -1)
+        switch (m_Columns[no].type())
         {
-          return false;
+          case column::DATE:
+            if (time_t tm; !GetTime(col, tm)) return false;
+            break;
+          case column::FLOAT: std::stof(col); 
+            break;
+          case column::INT: std::stoi(col); 
+            break;
+          case column::STRING: 
+            break;
+          default: 
+            break;
+        }
+
+        if (no == 0)
+        {
+          if ((index = InsertItem(GetItemCount(), col)) == -1)
+          {
+            return false;
+          }
+        }
+        else
+        {
+          if (!set_item(index, no, col)) return false;
         }
       }
-      else
-      {
-        if (!set_item(index, no, col)) return false;
-      }
+      
       no++;
     }
     catch (std::exception& e)
@@ -807,6 +812,8 @@ bool wex::listview::insert_item(const std::vector < std::string > & item)
       return false;
     }
   }
+  
+  SetItemTextColour(index, config(_("Foreground colour")).get(*wxBLACK));
 
   return true;
 }

@@ -23,7 +23,7 @@ namespace wex
   public:
     /// process execute type
     /// - default this call immediately returns.
-    ///   The STC component will be filled with output from the process.
+    ///   The stc component will be filled with output from the process.
     /// - if EXEC_WAIT this call returns after execute ends, 
     ///   and the output is available using get_stdout.
     enum 

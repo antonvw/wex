@@ -24,12 +24,14 @@ matrix:
           packages:
             - g++-8
       env:
-        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8 && GCOV="gcov-8"
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8 && GCOV=gcov-8"
 
     - os: osx
       addons:
         apt:
           update: true
+      env:
+        - MATRIX_EVAL="CC=clang && CXX=clang++"
 
   allow_failures:
     - os: linux

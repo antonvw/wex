@@ -23,7 +23,7 @@ namespace wex
       const T & path, const std::string& filespec, dir::type_t flags) 
     : dir(path, filespec, flags) {;};
 
-    const auto & Get() const {return m_Container;};
+    const auto & get() const {return m_Container;};
   private:
     virtual bool on_dir(const path& p) override {
       m_Container.emplace_back(p);
@@ -42,7 +42,7 @@ namespace wex
       const std::string & path, const std::string& filespec, dir::type_t flags) 
     : dir(path, filespec, flags) {;};
 
-    const auto & Get() const {return m_Container;};
+    const auto & get() const {return m_Container;};
   private:
     virtual bool on_dir(const path& p) override {
       m_Container.emplace_back(p.fullname());
@@ -60,7 +60,7 @@ std::vector <wex::path> wex::get_all_files(
 {
   wex::container_dir<wex::path> dir(path, filespec, flags);
   dir.find_files();
-  return dir.Get();
+  return dir.get();
 }
 
 std::vector <std::string> wex::get_all_files(
@@ -68,7 +68,7 @@ std::vector <std::string> wex::get_all_files(
 {
   wex::string_dir dir(path, filespec, flags);
   dir.find_files();
-  return dir.Get();
+  return dir.get();
 }
 
 namespace fs = std::filesystem;
@@ -80,7 +80,7 @@ wex::dir::dir(const wex::path& dir, const std::string& filespec, type_t flags)
 {
 }
 
-bool Handle(const fs::directory_entry& e, wex::dir* dir, int& matches)
+bool traverse(const fs::directory_entry& e, wex::dir* dir, int& matches)
 {
   if (fs::is_regular_file(e.path()))
   {
@@ -91,8 +91,7 @@ bool Handle(const fs::directory_entry& e, wex::dir* dir, int& matches)
       matches++;
     }
   }
-  else if (dir->type().test(wex::dir::DIRS) && fs::is_directory(e.path()) &&
-    wex::matches_one_of(e.path().filename().string(), dir->file_spec()))
+  else if (dir->type().test(wex::dir::DIRS) && fs::is_directory(e.path()))
   {
     dir->on_dir(e.path());
   }
@@ -131,14 +130,14 @@ int wex::dir::find_files()
       
       for (const auto& p: fs::recursive_directory_iterator(m_Dir.data(), options))
       {
-        if (!Handle(p, this, matches)) break;
+        if (!traverse(p, this, matches)) break;
       }
     }
     else
     {
       for (const auto& p: fs::directory_iterator(m_Dir.data()))
       {
-        if (!Handle(p, this, matches)) break;
+        if (!traverse(p, this, matches)) break;
       }
     }
   }

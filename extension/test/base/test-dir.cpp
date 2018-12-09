@@ -12,7 +12,7 @@ TEST_CASE( "wex::dir" )
 {
   SUBCASE( "Not recursive" ) 
   {
-    wex::dir dir(GetTestPath(), "*.h", wex::dir::type_t().set(wex::dir::FILES));
+    wex::dir dir(get_testpath(), "*.h", wex::dir::type_t().set(wex::dir::FILES));
     REQUIRE(dir.get_path().dir_exists());
     REQUIRE(dir.type().test(wex::dir::FILES));
     REQUIRE(dir.file_spec() == "*.h");

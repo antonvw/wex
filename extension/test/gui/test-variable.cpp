@@ -79,7 +79,7 @@ TEST_CASE("wex::variable")
   
   SUBCASE("builtin")
   {
-    for (const auto& it : GetBuiltinVariables())
+    for (const auto& it : get_builtin_variables())
     {
       const std::string text(
         "<variable name =\"" + it + 

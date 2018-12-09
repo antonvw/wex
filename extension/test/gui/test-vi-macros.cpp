@@ -20,7 +20,7 @@
 TEST_CASE("wex::vi_macros")
 {
   wex::stc* stc = new wex::stc(std::string("hello"));
-  AddPane(frame(), stc);
+  add_pane(frame(), stc);
   wex::vi* vi = &stc->get_vi();
 
   wex::vi_macros macros;
@@ -96,7 +96,7 @@ TEST_CASE("wex::vi_macros")
   REQUIRE( macros.mode()->transition("@a", vi) );
   
   // Test all builtin macro variables.
-  for (auto& builtin : GetBuiltinVariables())
+  for (auto& builtin : get_builtin_variables())
   {
     CAPTURE( builtin );
     REQUIRE( macros.mode()->transition("@" + builtin + "@", vi));

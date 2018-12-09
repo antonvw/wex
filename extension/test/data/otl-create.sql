@@ -1,6 +1,6 @@
 use test;
 
-drop table one;
+drop table if exists one;
 
 create table one(
   field1 varchar(10),

@@ -456,7 +456,7 @@ bool wex::marker_and_register_expansion(ex* ex, std::string& text)
       {
         replace_all(text,
           tkz.last_delimiter() + std::string(1, name), 
-          name == '%' ? ex->stc()->get_filename().fullname(): ex->get_macros().get_register(name));
+          name == '%' ? ex->get_stc()->get_filename().fullname(): ex->get_macros().get_register(name));
       }
     }
   }

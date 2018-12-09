@@ -9,7 +9,7 @@ clone_depth: 5
 configuration: Release
 
 install:
-  - git config http.postBuffer 524288000
+  - git config http.postBuffer 1048576000
   - git submodule init && git submodule update --init --recursive --depth 50
 
 before_build:

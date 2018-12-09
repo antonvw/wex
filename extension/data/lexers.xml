@@ -2821,7 +2821,11 @@ Copyright: (c) 2018, Anton van Wezenbeek
     </keywords>
     <comments begin1=";" />
   </lexer>
-  <lexer name="as" macro="asm"/>
+  <lexer name="as" extensions="*.s" macro="asm">
+    <keywords>    
+      movq call push pop ret jmp je imul popq cmp pushq subq leaq dec cmp jle
+    </keywords>
+  </lexer>
   <lexer name="asn1"/>
   <lexer name="asy"/>
   <lexer name="au3"/>
@@ -2951,7 +2955,11 @@ Copyright: (c) 2018, Anton van Wezenbeek
   <lexer name="eiffel"/>
   <lexer name="eiffelkw" macro="eiffel"/>
   <lexer name="erlang"/>
-  <lexer name="errorlist" edgemode="none"/>
+  <lexer name="errorlist" edgemode="none">
+    <styles>
+      <style no="ctag"> fore:lightblue </style>
+    </styles>
+  </lexer>
   <lexer name="escript"/>
   <lexer name="flagship"/>
   <lexer name="forth"/>

@@ -6,6 +6,11 @@ set(user $ENV{USER} CACHE INTERNAL "keep user")
 
 include(cmake/options.cmake)
 
+execute_process(
+  COMMAND git apply ../wxWidgets.patch
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets)
+  
+
 configure_file(
   extension/src/lexers/LexAda.cxx 
   ${CMAKE_SOURCE_DIR}/external/wxWidgets/src/stc/scintilla/lexers COPYONLY)

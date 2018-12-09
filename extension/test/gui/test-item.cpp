@@ -22,7 +22,7 @@ TEST_CASE("wex::item")
   SUBCASE("Item and layout")
   {
     wxPanel* panel = new wxPanel(frame());
-    AddPane(frame(), panel);
+    add_pane(frame(), panel);
     wxGridSizer* sizer = new wxGridSizer(3);
     panel->SetSizer(sizer);
     
@@ -114,7 +114,7 @@ TEST_CASE("wex::item")
 #endif
       };
     
-    const auto more(TestItems());
+    const auto more(test_items());
     items.insert(items.end(), more.begin(), more.end());
     
     // layout the items and check control is created.
@@ -170,7 +170,7 @@ TEST_CASE("wex::item")
       }
 
       wex::item_dialog* dlg = new wex::item_dialog(
-        {NotebookItem((wex::item::type_t)style, wex::item::LABEL_NONE, il)},
+        {test_notebook_item((wex::item::type_t)style, wex::item::LABEL_NONE, il)},
         wex::window_data().
           button(wxOK | wxCANCEL | wxAPPLY).
           title(titles[style - wex::item::NOTEBOOK]));

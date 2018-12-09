@@ -257,12 +257,12 @@ sample_frame::sample_frame()
       wxEmptyString, _("Columns"), 1, 1, 100);
     if (val >= 0)
     {
-      wex::item_dialog(TestConfigItems(0, val), 
+      wex::item_dialog(test_config_items(0, val), 
         wex::window_data().title("Config Dialog Columns"), 0, val).ShowModal();
     }}, ID_DLG_CONFIG_ITEM_COL);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wex::item_dialog* dlg = new wex::item_dialog(TestConfigItems(0, 1), 
+    wex::item_dialog* dlg = new wex::item_dialog(test_config_items(0, 1), 
       wex::window_data().
         title("Config Dialog").
         button(wxAPPLY | wxCANCEL).
@@ -275,13 +275,13 @@ sample_frame::sample_frame()
     dlg->Show();}, ID_DLG_CONFIG_ITEM);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wex::item_dialog(TestConfigItems(0, 1), 
+    wex::item_dialog(test_config_items(0, 1), 
       wex::window_data().
         button(wxCANCEL).
         title("Config Dialog Readonly"), 0, 4).ShowModal();}, ID_DLG_CONFIG_ITEM_READONLY);
       
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wex::item_dialog(TestItems()).ShowModal();}, ID_DLG_ITEM);
+    wex::item_dialog(test_items()).ShowModal();}, ID_DLG_ITEM);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     m_ListView->config_dialog();}, ID_DLG_LISTVIEW);

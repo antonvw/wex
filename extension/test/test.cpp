@@ -60,7 +60,7 @@ void AddExtension(wex::path& fn)
   }
 }
     
-const std::string AddPane(wex::managed_frame* frame, wxWindow* pane)
+const std::string add_pane(wex::managed_frame* frame, wxWindow* pane)
 {
   static int no = 0;
   
@@ -80,12 +80,12 @@ const std::string AddPane(wex::managed_frame* frame, wxWindow* pane)
   return name;
 }
 
-const wex::path GetTestPath(const std::string& file) 
+const wex::path get_testpath(const std::string& file) 
 {
-  return wex::test_app::GetTestPath(file);
+  return wex::test_app::get_testpath(file);
 }
 
-wex::path wex::test_app::GetTestPath(const std::string& file)
+wex::path wex::test_app::get_testpath(const std::string& file)
 {
   return file.empty() ?
     m_TestPath:
@@ -104,6 +104,7 @@ bool wex::test_app::OnInit()
   }
   
   wex::config(_("vi mode")).set(true);
+  wex::config(_("Auto complete")).set(true);
   wex::config(_("locale")).set(get_locale().GetName().ToStdString()); // for coverage
   
   return true;
@@ -128,7 +129,7 @@ int wex::test_app::OnRun()
   return app::OnRun();
 }
 
-void wex::test_app::SetContext(doctest::Context* context)
+void wex::test_app::set_context(doctest::Context* context)
 {
   m_Context = context;
 }
@@ -174,7 +175,7 @@ int wex::testmain(int argc, char* argv[], wex::test_app* app)
     doctest::Context context;
     context.setOption("exit", true);
     context.applyCommandLine(argc, argv);
-    app->SetContext(&context);
+    app->set_context(&context);
 
     return app->OnInit() && app->OnRun();
   }

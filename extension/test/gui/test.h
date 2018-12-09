@@ -25,16 +25,16 @@ namespace wex
 std::vector<std::pair<std::string, std::string>> get_abbreviations();
 
 /// Returns variables.
-std::vector<std::string> GetBuiltinVariables();
+std::vector<std::string> get_builtin_variables();
 
 /// Returns the frame.
 wex::managed_frame* frame();
 
 /// Returns the statusbar.
-wex::statusbar* GetStatusBar();
+wex::statusbar* get_statusbar();
 
 /// Returns an STC.
 wex::stc* get_stc();
 
 /// Processes string on shell.
-void Process(const std::string& str, wex::shell* shell);
+void process(const std::string& str, wex::shell* shell);

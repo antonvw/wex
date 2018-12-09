@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-item.h
-// Purpose:   Declaration and implementation of TestItems
+// Purpose:   Declaration and implementation of test_items
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -10,7 +10,7 @@
 #include <wex/item.h>
 
 // Returns a notebook item (no subnotebook yet).
-const auto NotebookItem(
+const auto test_notebook_item(
   wex::item::type_t style = wex::item::NOTEBOOK, 
   wex::item::label_t label = wex::item::LABEL_LEFT, 
   wxImageList* il = nullptr)
@@ -38,7 +38,7 @@ const auto NotebookItem(
 };
 
 /// Returns a vector with some items.
-const auto TestItems()
+const auto test_items()
 {
   wxArrayString as;
   as.push_back("test1");
@@ -54,7 +54,7 @@ const auto TestItems()
     {"string3"},
     {"slider1", 10, 15, 10, wex::item::SLIDER},
     {"slider2", 10, 15, 10, wex::item::SLIDER},
-    {NotebookItem()},
+    {test_notebook_item()},
     {"button1", wex::item::BUTTON},
     {"button2", wex::item::BUTTON},
     {"combobox", wex::item::COMBOBOX, as}};

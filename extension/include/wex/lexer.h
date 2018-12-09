@@ -96,6 +96,10 @@ namespace wex
     /// Is this lexer valid.
     bool is_ok() const {return m_is_ok;};
 
+    /// Does any keyword (allways all keywords) start with this word,
+    /// case insensitive.
+    bool keyword_starts_with(const std::string& word) const;
+
     /// Returns the keywords.
     const auto & keywords() const {return m_Keywords;};
 
@@ -109,10 +113,6 @@ namespace wex
       size_t min_size = 0,
       /// prefix keyword should start with
       const std::string& prefix = std::string()) const;
-
-    /// Does any keyword (allways all keywords) start with this word,
-    /// case insensitive.
-    bool keyword_starts_with(const std::string& word) const;
 
     /// Returns the language.
     const auto & language() const {return m_Language;};

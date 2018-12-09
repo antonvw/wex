@@ -116,12 +116,12 @@ wex::ex::ex(wex::stc* stc)
       wex::path::current(wex::firstof(command, " ")); return true;}},
     {":close", [&](const std::string& command) {POST_COMMAND( wxID_CLOSE ) return true;}},
     {":de", [&](const std::string& command) {
-      m_Frame->get_debug()->execute(wex::firstof(command, " "), m_Command.stc());
+      m_Frame->get_debug()->execute(wex::firstof(command, " "), m_Command.get_stc());
       return true;}},
     {":e", [&](const std::string& command) {POST_COMMAND( wxID_OPEN ) return true;}},
     {":f", [&](const std::string& command) {info_message(); return true;}},
     {":grep", [&](const std::string& command) {POST_COMMAND( ID_TOOL_REPORT_FIND ) return true;}},
-    {":gt", [&](const std::string& command) {return m_Command.stc()->link_open();}},
+    {":gt", [&](const std::string& command) {return m_Command.get_stc()->link_open();}},
     {":help", [&](const std::string& command) {POST_COMMAND( wxID_HELP ) return true;}},
     {":map", [&](const std::string& command) {
       switch (ParseCommandWithArg(command))
@@ -153,7 +153,7 @@ wex::ex::ex(wex::stc* stc)
       }
       return false;}},
     {":new", [&](const std::string& command) {POST_COMMAND( wxID_NEW ) return true;}},
-    {":print", [&](const std::string& command) {m_Command.stc()->print(command.find(" ") == std::string::npos); return true;}},
+    {":print", [&](const std::string& command) {m_Command.get_stc()->print(command.find(" ") == std::string::npos); return true;}},
     {":pwd", [&](const std::string& command) {wex::log_status(wex::path::current()); return true;}},
     {":q!", [&](const std::string& command) {POST_CLOSE( wxEVT_CLOSE_WINDOW, false ) return true;}},
     {":q", [&](const std::string& command) {POST_CLOSE( wxEVT_CLOSE_WINDOW, true ) return true;}},
@@ -183,7 +183,7 @@ wex::ex::ex(wex::stc* stc)
            {{"eb", "errorbells"}, [](bool on){
              config(_("Error bells")).set(on);}},
            {{"el", "edgeline"}, [&](bool on){
-             m_Command.stc()->SetEdgeMode(
+             m_Command.get_stc()->SetEdgeMode(
                on ? wxSTC_EDGE_LINE: wxSTC_EDGE_NONE);
              config(_("Edge line")).set( 
                on ? (long)wxSTC_EDGE_LINE: (long)wxSTC_EDGE_NONE);}},
@@ -196,24 +196,24 @@ wex::ex::ex(wex::stc* stc)
              else    m_SearchFlags &= ~wxSTC_FIND_WHOLEWORD;
              wex::find_replace_data::get()->set_match_word(on);}},
            {{"nu", "number"}, [&](bool on){
-             m_Command.stc()->show_line_numbers(on);
+             m_Command.get_stc()->show_line_numbers(on);
              config(_("Line numbers")).set(on);}},
            {{"readonly", "readonly"}, [&](bool on){
-             m_Command.stc()->SetReadOnly(on);}},
+             m_Command.get_stc()->SetReadOnly(on);}},
            {{"showmode", "showmode"}, [&](bool on){
              ((wex::statusbar *)m_Frame->GetStatusBar())->show_field("PaneMode", on);
              config(_("Show mode")).set(on);}},
            {{"sm", "showmatch"}, [&](bool on){
              config(_("Show match")).set(on);}},
            {{"sws", "showwhitespace"}, [&](bool on){
-             m_Command.stc()->SetViewEOL(on);
-             m_Command.stc()->SetViewWhiteSpace(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);
+             m_Command.get_stc()->SetViewEOL(on);
+             m_Command.get_stc()->SetViewWhiteSpace(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);
              config(_("Whitespace")).set(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);}},
            {{"ut", "usetabs"}, [&](bool on){
-             m_Command.stc()->SetUseTabs(on);
+             m_Command.get_stc()->SetUseTabs(on);
              config(_("Use tabs")).set(on);}},
            {{"wm", "wrapmargin"}, [&](bool on){
-             m_Command.stc()->SetWrapMode(on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);
+             m_Command.get_stc()->SetWrapMode(on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);
              config(_("Wrap line")).set(on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);}},
            {{"ws", "wrapscan", "1"}, [&](bool on){
              config(_("Wrap scan")).set(on);}}
@@ -224,20 +224,20 @@ wex::ex::ex(wex::stc* stc)
            {{"dir", "dir"}, {cmdline::STRING, [&](const std::any& val) {
              wex::path::current(std::any_cast<std::string>(val));}}},
            {{"ec", "edgecolumn", "80"}, {cmdline::INT, [&](const std::any& val) {
-             m_Command.stc()->SetEdgeColumn(std::any_cast<int>(val));
+             m_Command.get_stc()->SetEdgeColumn(std::any_cast<int>(val));
              config(_("Edge column")).set(std::any_cast<int>(val));}}},
            {{"report", "report", "5"}, {cmdline::INT, [&](const std::any& val) {
              config("Reported lines").set(std::any_cast<int>(val));}}},
            {{"sw", "shiftwidth", "8"}, {cmdline::INT, [&](const std::any& val) {
-             m_Command.stc()->SetIndent(std::any_cast<int>(val));
+             m_Command.get_stc()->SetIndent(std::any_cast<int>(val));
              config(_("Indent")).set(std::any_cast<int>(val));}}},
            {{"sy", "syntax (lexer or 'off')"}, {cmdline::STRING, [&](const std::any& val) {
              if (std::any_cast<std::string>(val) != "off") 
-               m_Command.stc()->get_lexer().set(std::any_cast<std::string>(val), true); // allow folding
+               m_Command.get_stc()->get_lexer().set(std::any_cast<std::string>(val), true); // allow folding
              else              
-               m_Command.stc()->get_lexer().reset();}}},
+               m_Command.get_stc()->get_lexer().reset();}}},
            {{"ts", "tabstop","8"}, {cmdline::INT, [&](const std::any& val) {
-             m_Command.stc()->SetTabWidth(std::any_cast<int>(val));
+             m_Command.get_stc()->SetTabWidth(std::any_cast<int>(val));
              config(_("Tab width")).set(std::any_cast<int>(val));}}}
           }
         );
@@ -283,11 +283,11 @@ wex::ex::ex(wex::stc* stc)
       if (wxString(command).EndsWith("on"))
       {
         wex::lexers::get()->restore_theme();
-        m_Command.stc()->get_lexer().set(m_Command.stc()->get_filename().lexer().display_lexer(), true); // allow folding
+        m_Command.get_stc()->get_lexer().set(m_Command.get_stc()->get_filename().lexer().display_lexer(), true); // allow folding
       }
       else if (wxString(command).EndsWith("off"))
       {
-        m_Command.stc()->get_lexer().reset();
+        m_Command.get_stc()->get_lexer().reset();
         wex::lexers::get()->reset_theme();
       }
       else
@@ -344,7 +344,7 @@ void wex::ex::add_text(const std::string& text)
   }
   else
   {
-    m_Command.stc()->AddTextRaw((const char *)text.c_str(), text.length());
+    m_Command.get_stc()->AddTextRaw((const char *)text.c_str(), text.length());
   }
 
   info_message(text, wex::info_message_t::ADD);
@@ -352,7 +352,7 @@ void wex::ex::add_text(const std::string& text)
 
 bool wex::ex::auto_write()
 {
-  if (!m_AutoWrite || !m_Command.stc()->IsModified())
+  if (!m_AutoWrite || !m_Command.get_stc()->IsModified())
   {
     return true;
   }
@@ -419,7 +419,7 @@ bool wex::ex::CommandAddress(const std::string& command)
 
   if (rest.compare(0, 5, "'<,'>") == 0)
   {
-    if (GetSelectedText().empty())
+    if (get_selected_text().empty())
     {
       return false;
     }
@@ -483,7 +483,7 @@ bool wex::ex::CommandAddress(const std::string& command)
     else 
     {
       const auto line(address(this, rest).get_line());
-      if (line > 0) stc_data(m_Command.stc()).control(control_data().line(line)).inject();
+      if (line > 0) stc_data(m_Command.get_stc()).control(control_data().line(line)).inject();
       return line > 0;
     }
     
@@ -531,7 +531,7 @@ bool wex::ex::CommandAddress(const std::string& command)
     case 'j': return range.join();
     case 'm': return range.move(address(this, rest));
     case 'p': 
-      if (m_Command.stc()->GetName() != "Print")
+      if (m_Command.get_stc()->GetName() != "Print")
       {
         return range.print(rest);
       }
@@ -582,11 +582,11 @@ void wex::ex::copy(const wex::ex* ex)
 
 void wex::ex::cut(bool show_message)
 {
-  const auto sel(GetSelectedText());
+  const auto sel(get_selected_text());
   
   yank('0', false);
 
-  m_Command.stc()->ReplaceSelection(wxEmptyString);
+  m_Command.get_stc()->ReplaceSelection(wxEmptyString);
   
   set_registers_delete(sel);
   
@@ -605,15 +605,15 @@ const std::string wex::ex::register_text() const
     m_Macros.get_register('0');
 }
   
-const std::string wex::ex::GetSelectedText() const
+const std::string wex::ex::get_selected_text() const
 {
   // This also supports rectangular text.
-  if (m_Command.stc()->GetSelectedText().empty())
+  if (m_Command.get_stc()->GetSelectedText().empty())
   {
     return std::string();
   }
 
-  const wxCharBuffer b(m_Command.stc()->GetSelectedTextRaw());
+  const wxCharBuffer b(m_Command.get_stc()->GetSelectedTextRaw());
   return std::string(b.data(), b.length() - 1);
 }
 
@@ -641,11 +641,11 @@ bool wex::ex::HandleContainer(
 void wex::ex::info_message() const
 {
   m_Frame->show_ex_message(wxString::Format("%s line %d of %d --%d%%-- level %d", 
-    m_Command.stc()->get_filename().fullname().c_str(), 
-    m_Command.stc()->GetCurrentLine() + 1,
-    m_Command.stc()->GetLineCount(),
-    100 * (m_Command.stc()->GetCurrentLine() + 1)/ m_Command.stc()->GetLineCount(),
-    (m_Command.stc()->GetFoldLevel(m_Command.stc()->GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK)
+    m_Command.get_stc()->get_filename().fullname().c_str(), 
+    m_Command.get_stc()->GetCurrentLine() + 1,
+    m_Command.get_stc()->GetLineCount(),
+    100 * (m_Command.get_stc()->GetCurrentLine() + 1)/ m_Command.get_stc()->GetLineCount(),
+    (m_Command.get_stc()->GetFoldLevel(m_Command.get_stc()->GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK)
      - wxSTC_FOLDLEVELBASE).ToStdString());
 }
 
@@ -682,7 +682,7 @@ bool wex::ex::marker_add(char marker, int line)
   marker_delete(marker);
 
   int id;
-  const int lin = (line == -1 ? m_Command.stc()->GetCurrentLine(): line);
+  const int lin = (line == -1 ? m_Command.get_stc()->GetCurrentLine(): line);
 
   if (lm.symbol() == wxSTC_MARK_CHARACTER)
   {
@@ -696,22 +696,22 @@ bool wex::ex::marker_add(char marker, int line)
       const auto marker_offset = 3;
       const auto marker_number = m_MarkerIdentifiers.size() + marker_offset;
 
-      m_Command.stc()->MarkerDefine(marker_number, 
+      m_Command.get_stc()->MarkerDefine(marker_number, 
         wxSTC_MARK_CHARACTER + marker, 
         wxString(lm.foreground_colour()), 
         wxString(lm.background_colour()));
 
-      id = m_Command.stc()->MarkerAdd(lin, marker_number);
+      id = m_Command.get_stc()->MarkerAdd(lin, marker_number);
       m_MarkerNumbers[marker] = marker_number;
     }
     else
     {
-      id = m_Command.stc()->MarkerAdd(lin, it->second);
+      id = m_Command.get_stc()->MarkerAdd(lin, it->second);
     }
   }
   else
   {
-    id = m_Command.stc()->MarkerAdd(lin, m_MarkerSymbol.number());
+    id = m_Command.get_stc()->MarkerAdd(lin, m_MarkerSymbol.number());
   }
     
   if (id == -1)
@@ -729,7 +729,7 @@ bool wex::ex::marker_delete(char marker)
 {
   if (const auto& it = m_MarkerIdentifiers.find(marker); it != m_MarkerIdentifiers.end())
   {
-    m_Command.stc()->MarkerDeleteHandle(it->second);
+    m_Command.get_stc()->MarkerDeleteHandle(it->second);
     m_MarkerIdentifiers.erase(it);
     return true;
   }
@@ -741,7 +741,7 @@ bool wex::ex::marker_goto(char marker)
 {
   if (const auto line = marker_line(marker); line != -1)
   {
-    stc_data(m_Command.stc()).control(control_data().line(line + 1)).inject();
+    stc_data(m_Command.get_stc()).control(control_data().line(line + 1)).inject();
     return true;
   }
   
@@ -752,23 +752,23 @@ int wex::ex::marker_line(char marker) const
 {
   if (marker == '<')
   {
-    if (!GetSelectedText().empty())
+    if (!get_selected_text().empty())
     {
-      return m_Command.stc()->LineFromPosition(m_Command.stc()->GetSelectionStart());
+      return m_Command.get_stc()->LineFromPosition(m_Command.get_stc()->GetSelectionStart());
     }
   }
   else if (marker == '>')
   {
-    if (!GetSelectedText().empty())
+    if (!get_selected_text().empty())
     {
-      return m_Command.stc()->LineFromPosition(m_Command.stc()->GetSelectionEnd());
+      return m_Command.get_stc()->LineFromPosition(m_Command.get_stc()->GetSelectionEnd());
     }
   }
   else
   {
     if (const auto& it = m_MarkerIdentifiers.find(marker); it != m_MarkerIdentifiers.end())
     {
-      if (const auto line = m_Command.stc()->MarkerLineFromHandle(it->second); line == -1)
+      if (const auto line = m_Command.get_stc()->MarkerLineFromHandle(it->second); line == -1)
       {
         wxLogStatus("Handle for marker: %c invalid", marker);
       }
@@ -872,30 +872,30 @@ void wex::ex::show_dialog(
     { 
       if (title != m_Dialog->GetTitle())
       {
-        m_Dialog->stc()->set_text(text);
+        m_Dialog->get_stc()->set_text(text);
       }
       else
       {
-        m_Dialog->stc()->AppendText(text);
-        m_Dialog->stc()->DocumentEnd();
+        m_Dialog->get_stc()->AppendText(text);
+        m_Dialog->get_stc()->DocumentEnd();
       }
     }
     else
     {
-      m_Dialog->stc()->set_text(text);
+      m_Dialog->get_stc()->set_text(text);
     }
     
     m_Dialog->SetTitle(title);
   }
   
-  m_Dialog->stc()->get_lexer().set(
-    prop_lexer ? lexer_props(): m_Command.stc()->get_lexer());
+  m_Dialog->get_stc()->get_lexer().set(
+    prop_lexer ? lexer_props(): m_Command.get_stc()->get_lexer());
   m_Dialog->Show();
 }
 
 bool wex::ex::yank(const char name, bool show_message) const
 {
-  const auto range(GetSelectedText());
+  const auto range(get_selected_text());
   
   if (range.empty())
   {

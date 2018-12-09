@@ -30,7 +30,7 @@ namespace wex
     test_app() {};
 
     /// Returns test path.  
-    static path GetTestPath(const std::string& file = std::string());
+    static path get_testpath(const std::string& file = std::string());
 
     /// Prepare environment.
     virtual bool OnInit() override;
@@ -39,7 +39,7 @@ namespace wex
     virtual int OnRun() override;
 
     /// Sets context.
-    void SetContext(doctest::Context* context);
+    void set_context(doctest::Context* context);
   private:
     void SetTestPath();
 
@@ -54,7 +54,7 @@ namespace wex
 
 /// Adds managed pane.
 /// Returns name of pane.
-const std::string AddPane(wex::managed_frame* frame, wxWindow* pane);
+const std::string add_pane(wex::managed_frame* frame, wxWindow* pane);
 
 /// Returns test path or file in dir if specified.
-const wex::path GetTestPath(const std::string& file = std::string());
+const wex::path get_testpath(const std::string& file = std::string());

@@ -37,7 +37,7 @@ namespace wex
   {
   public:
     process_dir(listview* lv, bool init)
-      : dir("/proc", "[0-9]+", dir::DIRS)
+      : dir("/proc", "[0-9]+", type_t().set(dir::DIRS))
       , m_ListView(lv) {
       if (init)
       {
@@ -45,7 +45,7 @@ namespace wex
       }
       else
       {
-        lv->DeleteAllItems();
+        m_ListView->clear();
       }};
    ~process_dir() {
       m_ListView->sort_column("Name", SORT_ASCENDING);};
@@ -250,28 +250,33 @@ void wex::debug::process_stdout(const std::string& text)
     match("Breakpoint ([0-9]+) at 0x[0-9a-f]+: file (.*), line ([0-9]+)", text, v) == 3 || 
     match("Breakpoint ([0-9]+) at 0x[0-9a-f]+: (.*):([0-9]+)", text, v) == 3)
   {
-    wex::path filename(v[1]);
-    filename.make_absolute();
+    wex::path filename(m_Path.get_path(), v[1]);
+  
     if (filename.file_exists())
     {
-      auto* stc = m_Frame->open_file(filename);
-      if (stc != nullptr)
+      if (auto* stc = m_Frame->open_file(filename); stc != nullptr)
       {
         const int line = std::stoi(v[2]) - 1;
         const auto id = stc->MarkerAdd(line, m_MarkerBreakpoint.number());
         m_Breakpoints[v[0]] = std::make_tuple(filename, id, line);
+        return;
       }
     }
+  }
+  else if (std::vector<std::string> v;
+    match("Reading symbols from (.*)\\.\\.\\.done", text, v) == 1)
+  {
+    m_Path = path(v[0]);
   }
   else if (DeleteAllBreakpoints(text)) {}
   else if (match("at (.*):([0-9]+)", text, v) > 1)
   {
-    m_Path = path(v[0]).make_absolute();
+    m_Path = path(m_Path.get_path(), v[0]);
     data.line(std::stoi(v[1]));
   }
-  else if (match("^([0-9]+)", text, v) > 0)
+  else if (match("(^|\\n)([0-9]+)", text, v) > 1)
   {
-    data.line(std::stoi(v[0]));
+    data.line(std::stoi(v[1]));
   }
 
   if (data.line() > 0 && m_Path.file_exists())

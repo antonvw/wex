@@ -168,7 +168,7 @@ bool wex::stream::run_tool()
       }
     }
     
-    if (line_no == 0 || (m_Write && s.empty()))
+    if (m_Write && s.empty())
     {
       log("stream processing error") << m_Path.data().string();
       return false;

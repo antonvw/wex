@@ -40,7 +40,7 @@ namespace wex
 
     bool open(
       const path& p, 
-      std::ios_base::openmode mode = std::ios_base::in | std::ios_base::out) {
+      std::ios_base::openmode mode = std::ios_base::in) {
       if (m_fs.is_open())
       { 
         return true;

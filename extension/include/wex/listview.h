@@ -99,6 +99,9 @@ namespace wex
     /// Returns false if appending a column failed.
     bool append_columns(const std::vector < column >& cols);
 
+    /// Clears all items.
+    void clear();
+
     /// Shows a dialog with options, returns dialog return code.
     /// If used modeless, it uses the dialog id as specified,
     /// so you can use that id in frame::on_command_item_dialog.
@@ -173,9 +176,6 @@ namespace wex
 
     /// Builds the popup menu.
     virtual void build_popup_menu(menu& menu);
-
-    /// Clears all items.
-    void clear();
 
     /// Returns the field separator.
     const auto& field_separator() const {return m_FieldSeparator;};

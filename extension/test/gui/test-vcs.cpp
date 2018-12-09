@@ -21,7 +21,7 @@ TEST_CASE("wex::vcs")
   // size
   REQUIRE( wex::vcs::size() > 0);
 
-  wex::path file(GetTestPath("test.h"));
+  wex::path file(get_testpath("test.h"));
   file.make_absolute();
   
   // In wex::app the vcs is Read, so current vcs is known,

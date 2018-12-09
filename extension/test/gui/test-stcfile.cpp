@@ -16,10 +16,10 @@
 
 TEST_CASE("wex::stc_file")
 {
-  wex::stc* stc = new wex::stc(GetTestPath("test.h"));
+  wex::stc* stc = new wex::stc(get_testpath("test.h"));
   stc->set_text("and still they came");
   
-  AddPane(frame(), stc);
+  add_pane(frame(), stc);
   
   wex::stc_file file(stc);
 

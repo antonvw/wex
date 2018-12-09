@@ -68,14 +68,14 @@ namespace wex
 
       process::prepare_output(m_Frame); // before adding pane
       
-      AddPane(m_Frame, m_STC);
-      AddPane(m_Frame, process::get_shell());
+      add_pane(m_Frame, m_STC);
+      add_pane(m_Frame, process::get_shell());
       
       return true;
     }
     
     static auto* frame() {return m_Frame;};
-    static auto* GetStatusBar() {return m_StatusBar;};
+    static auto* get_statusbar() {return m_StatusBar;};
     static auto* get_stc() {return m_STC;};
   private:
     static test_managed_frame* m_Frame;
@@ -96,7 +96,7 @@ std::vector<std::pair<std::string, std::string>> get_abbreviations()
     {"ZZ","SHARK"}};
 }
       
-std::vector<std::string> GetBuiltinVariables() 
+std::vector<std::string> get_builtin_variables() 
 {
   std::vector<std::string> v;
 
@@ -116,9 +116,9 @@ wex::managed_frame* frame()
   return wex::gui_test_app::frame();
 }
   
-wex::statusbar* GetStatusBar()
+wex::statusbar* get_statusbar()
 {
-  return wex::gui_test_app::GetStatusBar();
+  return wex::gui_test_app::get_statusbar();
 }
 
 wex::stc* get_stc()
@@ -126,7 +126,7 @@ wex::stc* get_stc()
   return wex::gui_test_app::get_stc();
 }
   
-void Process(const std::string& str, wex::shell* shell)
+void process(const std::string& str, wex::shell* shell)
 {
   for (unsigned i = 0; i < str.length(); ++i)
   {

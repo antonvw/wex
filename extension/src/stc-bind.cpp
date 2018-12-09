@@ -119,6 +119,7 @@ void wex::stc::BindAll()
             CharRight();
           }
         }
+std::cout << "hex\n";
         return;
       }
       if (!m_vi.is_active())
@@ -426,11 +427,11 @@ void wex::stc::BindAll()
           size({300, 450}).
           button(wxOK).
           title(_("Properties").ToStdString()));
-      m_EntryDialog->stc()->get_lexer().set(l);
+      m_EntryDialog->get_stc()->get_lexer().set(l);
     }
     else
     {
-      m_EntryDialog->stc()->set_text(properties);
+      m_EntryDialog->get_stc()->set_text(properties);
     }
     m_EntryDialog->Show();}, idShowProperties);
 

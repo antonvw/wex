@@ -16,7 +16,7 @@
 TEST_CASE("wex::grid")
 {
   wex::grid* grid = new wex::grid();
-  AddPane(frame(), grid);
+  add_pane(frame(), grid);
   
   REQUIRE(grid->CreateGrid(5, 5));
   

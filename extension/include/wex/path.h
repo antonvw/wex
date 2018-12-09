@@ -73,17 +73,21 @@ namespace wex
     bool dir_exists() const {
       return std::filesystem::is_directory(m_path);};
 
-    /// Returns true if the file with this name exists.
-    bool file_exists() const {
-      return std::filesystem::is_regular_file(m_path);};
-
     /// Returns path extension component (including the .).
     const std::string extension() const {
       return m_path.extension().string();};
 
+    /// Returns true if the file with this name exists.
+    bool file_exists() const {
+      return std::filesystem::is_regular_file(m_path);};
+
     /// Returns path fullname (including extension) component.
     const std::string fullname() const {
       return m_path.filename().string();};
+
+    /// Returns path path component (without fullname).
+    const std::string get_path() const {
+      return m_path.parent_path().string();};
 
     /// Returns the lexer.
     const auto & lexer() const {return m_Lexer;};
@@ -94,10 +98,6 @@ namespace wex
 
     /// Returns original path.
     const auto & original() {return m_path_original;};
-
-    /// Returns path path component (without fullname).
-    const std::string get_path() const {
-      return m_path.parent_path().string();};
 
     /// Returns path components.
     const std::vector<path> paths() const;

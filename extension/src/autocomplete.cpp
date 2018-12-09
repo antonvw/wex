@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      autocomplete.cpp
-// Purpose:   Implementation of class wex::stc
+// Purpose:   Implementation of class wex::autocomplete
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -21,7 +21,7 @@ wex::autocomplete::autocomplete(wex::stc* stc)
 
 bool wex::autocomplete::activate(const std::string& text)
 {
-  if (text.empty() || !Use())
+  if (text.empty() || !use())
   {
     return false;
   }
@@ -54,7 +54,7 @@ bool wex::autocomplete::activate(const std::string& text)
 
 bool wex::autocomplete::apply(char c)
 {
-  if (!Use() || m_STC->SelectionIsRectangle())
+  if (!use() || m_STC->SelectionIsRectangle())
   {
     return false;
   }
@@ -70,7 +70,6 @@ bool wex::autocomplete::apply(char c)
     show_inserts = false;
     show_keywords = false;
   }
-
   else if (c == WXK_BACK)
   {
     if (m_Text.empty())
@@ -106,6 +105,14 @@ bool wex::autocomplete::apply(char c)
       m_Text += c;
     }
   }
+    
+  if (const auto wsp = m_STC->WordStartPosition(m_STC->GetCurrentPos(), true);
+      (m_STC->GetCharAt(wsp -1) == '.') ||
+      (m_STC->GetCharAt(wsp -1) == '>' && m_STC->GetCharAt(wsp - 2) == '-'))
+  {
+    show_inserts = false;
+    show_keywords = false;
+  }
 
   if (
     !ShowCTags(show_ctags) &&
@@ -136,7 +143,7 @@ bool wex::autocomplete::ShowCTags(bool show) const
     return false;
   }
 
-  if (const auto comp(m_STC->get_vi().ctags()->auto_complete(
+  if (const auto comp(m_STC->get_vi().ctags()->autocomplete(
     m_Text, m_Filter));
     comp.empty())
   {
@@ -160,6 +167,7 @@ bool wex::autocomplete::ShowInserts(bool show) const
       !comp.empty())
     {
       m_STC->AutoCompShow(m_Text.length() - 1, comp);
+      VLOG(9) << "autocomplete::show_insert chars: " << comp.size();
       return true;
     }
   }
@@ -176,6 +184,7 @@ bool wex::autocomplete::ShowKeywords(bool show) const
       !comp.empty())
     {
       m_STC->AutoCompShow(m_Text.length() - 1, comp);
+      VLOG(9) << "autocomplete::show_keywords chars: " << comp.size();
       return true;
     }
   }
@@ -183,7 +192,7 @@ bool wex::autocomplete::ShowKeywords(bool show) const
   return false;
 }
 
-bool wex::autocomplete::Use() const
+bool wex::autocomplete::use() const
 {
-  return m_Use || config(_("Auto complete")).get(false);
+  return m_Use && config(_("Auto complete")).get(false);
 }

@@ -70,15 +70,15 @@ namespace wex
     /// Returns the macros.
     static auto & get_macros() {return m_Macros;};
 
+    /// Returns selected text as a string.
+    const std::string get_selected_text() const;
+    
+    /// Returns stc component.
+    auto * get_stc() {return m_Command.get_stc();};
+
     /// Returns whether ex is active.
     auto is_active() const {return m_IsActive;};
     
-    /// Returns selected text as a string.
-    const std::string GetSelectedText() const;
-    
-    /// Returns stc component.
-    auto * stc() {return m_Command.stc();};
-
     /// Writes info message.
     void info_message() const;
     

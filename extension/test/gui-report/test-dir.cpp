@@ -22,7 +22,7 @@ TEST_CASE("wex::tool_dir")
     return;
   }
 
-  AddPane(frame(), report);
+  add_pane(frame(), report);
   
   wex::tool_dir dir(
     tool,
@@ -38,7 +38,7 @@ TEST_CASE("wex::tool_dir")
 TEST_CASE("wex::listview_dir")
 {
   wex::listview_file* listView = new wex::listview_file(get_project());
-  AddPane(frame(), listView);
-  wex::listview_dir* dir = new wex::listview_dir(listView, GetTestPath());
+  add_pane(frame(), listView);
+  wex::listview_dir* dir = new wex::listview_dir(listView, get_testpath());
   REQUIRE(dir->find_files() == 0);
 }

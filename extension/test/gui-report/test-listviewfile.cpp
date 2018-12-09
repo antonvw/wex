@@ -12,7 +12,7 @@
 TEST_CASE("wex::listview_file")
 {
   wex::listview_file* listView = new wex::listview_file(get_project());
-  AddPane(frame(), listView);
+  add_pane(frame(), listView);
 
   REQUIRE(listView->get_file().get_filename().fullname() == get_project());
   

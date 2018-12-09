@@ -16,7 +16,7 @@ TEST_CASE( "wex::path" )
     REQUIRE( wex::path().data().empty());
     REQUIRE( wex::path("xxx").data().string() == "xxx");
     REQUIRE( wex::path(wex::path("yyy")).data().string() == "yyy");
-    wex::path fn = GetTestPath("test.h");
+    wex::path fn = get_testpath("test.h");
     REQUIRE( fn.lexer().scintilla_lexer() == "cpp");
     REQUIRE( wex::path(fn).fullname() == "test.h");
     REQUIRE( wex::path("..").is_relative());
@@ -29,7 +29,7 @@ TEST_CASE( "wex::path" )
   
   SUBCASE( "Basic" ) 
   {
-    wex::path path(GetTestPath("test.h"));
+    wex::path path(get_testpath("test.h"));
   
     REQUIRE(!path.dir_exists());
     REQUIRE( path.file_exists());
@@ -57,7 +57,7 @@ TEST_CASE( "wex::path" )
   SUBCASE( "Timing" ) 
   {
     const int max = 1000;
-    const wex::path exfile(GetTestPath("test.h"));
+    const wex::path exfile(get_testpath("test.h"));
     const auto ex_start = std::chrono::system_clock::now();
 
     for (int i = 0; i < max; i++)
@@ -66,7 +66,7 @@ TEST_CASE( "wex::path" )
     }
 
     const auto ex_milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - ex_start);
-    const wex::path file(GetTestPath("test.h"));
+    const wex::path file(get_testpath("test.h"));
     const auto wx_start = std::chrono::system_clock::now();
 
     for (int j = 0; j < max; j++)

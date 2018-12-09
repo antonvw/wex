@@ -56,7 +56,7 @@ namespace wex
     const auto & marker_breakpoint() const {return m_MarkerBreakpoint;};
 
     /// Returns process.
-    auto process() {return m_Process;};
+    auto * process() {return m_Process;};
 
     /// Handles stdin from process.
     void process_stdin(const std::string& text);

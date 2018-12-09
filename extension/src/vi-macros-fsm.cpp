@@ -254,7 +254,7 @@ bool wex::vi_macros_fsm::is_playback() const
 void wex::vi_macros_fsm::Playback()
 {
   wxBusyCursor wait;
-  m_ex->stc()->BeginUndoAction();
+  m_ex->get_stc()->BeginUndoAction();
   m_playback = true;
     
   set_ask_for_input();
@@ -274,7 +274,7 @@ void wex::vi_macros_fsm::Playback()
     }
   }
 
-  m_ex->stc()->EndUndoAction();
+  m_ex->get_stc()->EndUndoAction();
   m_playback = false;
 
   if (!m_error)

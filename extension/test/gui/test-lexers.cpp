@@ -49,7 +49,7 @@ TEST_CASE("wex::lexers")
   SUBCASE("FindBy")
   {
     REQUIRE( wex::lexers::get()->find_by_filename(
-      GetTestPath("test.h").fullname()).scintilla_lexer() == "cpp");
+      get_testpath("test.h").fullname()).scintilla_lexer() == "cpp");
       
     REQUIRE( wex::lexers::get()->find_by_name(
       "xxx").scintilla_lexer().empty());

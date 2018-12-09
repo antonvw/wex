@@ -22,7 +22,7 @@ namespace wex
         lexer lexer("cpp");
         m_Report = new listview(listview_data().
           type(listview_data::KEYWORD).lexer(&lexer));
-        AddPane(this, m_Report);};
+        add_pane(this, m_Report);};
 
     virtual listview* activate(
       listview_data::type_t listview_type, const lexer* lexer) override {

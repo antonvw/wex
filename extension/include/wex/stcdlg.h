@@ -16,7 +16,7 @@ namespace wex
 
   /// Offers an stc as a dialog (like wxTextEntryDialog).
   /// The prompt (if not empty) is first added as a text sizer to the user sizer.
-  /// Then the STC component is added to the user sizer.
+  /// Then the stc component is added to the user sizer.
   class stc_entry_dialog : public dialog
   {
   public:
@@ -29,8 +29,8 @@ namespace wex
       /// data
       const window_data& data = window_data());
       
-    /// Returns the STC.
-    auto* stc() {return m_STC;};
+    /// Returns stc component.
+    auto* get_stc() {return m_STC;};
   private:
     wex::stc* m_STC;
   };

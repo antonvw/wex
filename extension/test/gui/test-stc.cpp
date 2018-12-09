@@ -107,7 +107,7 @@ TEST_CASE("wex::stc")
   SUBCASE("Open")
   {
     // do the same test as with wex::file in base for a binary file
-    REQUIRE(stc->open(GetTestPath("test.bin")));
+    REQUIRE(stc->open(get_testpath("test.bin")));
     REQUIRE(stc->data().flags() == 0);
     const wxCharBuffer& buffer = stc->GetTextRaw();
     REQUIRE(buffer.length() == 40);
@@ -237,9 +237,9 @@ TEST_CASE("wex::stc")
 
   SUBCASE("Load file")
   {
-    wex::stc stc(GetTestPath("test.h"));
+    wex::stc stc(get_testpath("test.h"));
     REQUIRE( stc.get_filename().data().string().find("test.h") != std::string::npos);
-    REQUIRE( stc.open(GetTestPath("test.h")));
+    REQUIRE( stc.open(get_testpath("test.h")));
     REQUIRE(!stc.open("XXX"));
     stc.properties_message();
   }

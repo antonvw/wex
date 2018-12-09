@@ -65,7 +65,7 @@ TEST_CASE("wex::process")
   REQUIRE( process->is_running());
   wex::shell* shell = process->get_shell();  
   REQUIRE( shell != nullptr);
-  Process("cd ~\rpwd\r", shell);
+  ::process("cd ~\rpwd\r", shell);
   REQUIRE( shell->GetText().Contains("home"));
   REQUIRE( cwd.original() != wex::path::current());
   REQUIRE( process->kill());

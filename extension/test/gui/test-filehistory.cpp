@@ -32,7 +32,7 @@ TEST_CASE("wex::file_history")
     REQUIRE( history.size() == 0);
     REQUIRE( history.get_history_file().data().empty());
     
-    history.add(GetTestPath("test.h"));
+    history.add(get_testpath("test.h"));
     REQUIRE( history.size() == 1);
     REQUIRE( history.get_history_files(0).size() == 0);
     REQUIRE( history.get_history_files(5).size() == 1);
@@ -52,7 +52,7 @@ TEST_CASE("wex::file_history")
   SUBCASE("Other constructor")
   {
     wex::file_history history(4, 1000, "MY-KEY");
-    history.add(GetTestPath("test.h"));
+    history.add(get_testpath("test.h"));
     REQUIRE( history.size() == 1);
     REQUIRE( history.get_base_id() == 1000);
     REQUIRE( history.get_max_files() == 4);

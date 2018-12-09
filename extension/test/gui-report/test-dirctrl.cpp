@@ -27,7 +27,7 @@ void Test(wex::dirctrl* ctrl)
 TEST_CASE("wex::dirctrl")
 {
   wex::dirctrl* ctrl = new wex::dirctrl(frame());
-  AddPane(frame(), ctrl);
+  add_pane(frame(), ctrl);
 
   SUBCASE("Select directory")
   {

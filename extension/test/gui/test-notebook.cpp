@@ -18,7 +18,7 @@
 TEST_CASE("wex::notebook")
 {
   wex::notebook* notebook = new wex::notebook();
-  AddPane(frame(), notebook);
+  add_pane(frame(), notebook);
   
   wxWindow* page1 = new wxWindow(frame(), wxID_ANY);
   wxWindow* page2 = new wxWindow(frame(), wxID_ANY);

@@ -105,7 +105,7 @@ namespace wex
   private:
     void Expand();
     void KeepCommand();
-    void process_charDefault(int key);
+    void process_char_default(int key);
     /// Set command for command specified as number or as start of command,
     /// Returns true if found and m_Command was set.
     bool SetCommandFromHistory(const std::string& short_command);

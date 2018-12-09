@@ -34,10 +34,10 @@ TEST_CASE("wex::statistics")
   wex::grid* grid1 = statistics1->show(frame());
   REQUIRE(grid1 != nullptr);
   REQUIRE(grid1 == statistics1->get_grid());
-  AddPane(frame(), grid1);
+  add_pane(frame(), grid1);
   
   wex::grid* grid2 = statistics2->show(frame());
-  AddPane(frame(), grid2);
+  add_pane(frame(), grid2);
   
   REQUIRE(statistics1->show(frame()) == grid1);
   REQUIRE(statistics2->set("xx", 10) == 10);

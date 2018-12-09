@@ -39,18 +39,19 @@ namespace wex
    ~ctags();
     
     /// Tries to autocomplete text using the tags file.
-    /// Returns a string with matches, or empty string if no match is found.
-    std::string auto_complete(
+    /// Returns a string with matches separated by the 
+    /// separator character, or empty string if no match is found.
+    const std::string autocomplete(
       /// text to be completed
       const std::string& text,
       /// filter on ctags extension entry, default no filter
       const ctags_entry& filter = ctags_entry());
 
-    /// Find the tags matching `tag', and fills matches.
+    /// Find the tags matching `tag', and fills the matches container.
     /// Returns true if a matching tag is found,
     /// and calls frame open_file if name matches and
     /// there is no next match in another file.
-    /// If the name is empty, Next is invoked.
+    /// If the name is empty, next is invoked.
     /// Otherwise shows a dialog to select a file from the matches.
     /// Returns false if dialog was cancelled.
     bool find(const std::string& tag);
@@ -66,18 +67,18 @@ namespace wex
       /// tag filter to be filled
       ctags_entry& filter) const;
 
-    /// Jumps to next match from a previous Find.
+    /// Jumps to next match from a previous find.
     bool next();
 
-    /// Jumps to previous match from a previous Find.
+    /// Jumps to previous match from a previous find.
     bool previous();
 
     /// Autocomplete separator.
     auto separator() const {return m_Separator;};
   private:
-    void auto_complete_prepare();
-    void Init(const std::string& filename);
-    bool Open(const std::string& path, bool show_error = false);
+    void autocomplete_prepare();
+    void init(const std::string& filename);
+    bool open(const std::string& path, bool show_error = false);
 
     ex* m_Ex {nullptr};
     frame* m_Frame;

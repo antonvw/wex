@@ -20,7 +20,7 @@
 TEST_CASE("wex::config_item")
 {
   wxScrolledWindow* panel = new wxScrolledWindow(frame());
-  AddPane(frame(), panel);
+  add_pane(frame(), panel);
   wxFlexGridSizer* sizer = new wxFlexGridSizer(4);
   panel->SetSizer(sizer);
   panel->SetScrollbars(20, 20, 50, 50);
@@ -87,7 +87,7 @@ TEST_CASE("wex::config_item")
     ci_empty, ci_spacer, ci_cb, ci_cb_dir, ci_sl, ci_vl, ci_sp, ci_sp_d,
     ci_str, ci_hl, ci_st, ci_int, ci_rb, ci_bc, ci_cl_n, ci_user};
 
-  const auto more(TestConfigItems(0, 1));
+  const auto more(test_config_items(0, 1));
   items.insert(items.end(), more.begin(), more.end());
   
   // Check members are initialized.

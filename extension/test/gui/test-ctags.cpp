@@ -22,38 +22,50 @@ TEST_CASE("wex::ctags")
   {
     wex::ex* ex = &get_stc()->get_vi();
 
-    REQUIRE( wex::ctags(ex).find("wxExTestApp") );
-    REQUIRE( wex::ctags(frame()).find("wxExTestApp") );
-    REQUIRE( wex::ctags(ex).auto_complete("wxExTest") == "wxExTestApp");
+    // default find
+    REQUIRE( wex::ctags(ex).find("test_app") );
+    REQUIRE( wex::ctags(frame()).find("test_app") );
+    REQUIRE(!wex::ctags(ex).find("xest_app") );
+    
+    // default auto_complete
+    REQUIRE( wex::ctags(ex).autocomplete("test_").find("test_app") == 0);
 
+    // setup a filter using find
     wex::ctags_entry current;
     wex::ctags_entry filter;
-    REQUIRE( wex::ctags(ex).find("wxExTestApp", current, filter));
+    REQUIRE( wex::ctags(ex).find("test_app", current, filter));
+    REQUIRE( filter.class_name() == "test_app" );
+    REQUIRE( filter.kind() == "f" );
     REQUIRE( current.kind() == "c" );
+    REQUIRE( current.class_name() == "test_app" );
+    
+    // autocomplete using filter should now return member functions
+    REQUIRE( wex::ctags(ex).autocomplete("me", filter).find("method") == 0);
+    REQUIRE( wex::ctags(ex).autocomplete("he", filter).empty());
   }
 
   SUBCASE("tags non-existing file")
   {
     data.ctags_filename("xxx");
     wex::stc* stc = new wex::stc(std::string("test"), data);
-    AddPane(frame(), stc);
+    add_pane(frame(), stc);
     wex::ex* ex = &stc->get_vi();
 
-    REQUIRE(!wex::ctags(ex).find("wxExTestApp") );
+    REQUIRE(!wex::ctags(ex).find("test_app") );
   }
   
   SUBCASE("tags own file")
   {
     data.ctags_filename("test-ctags");
     wex::stc* stc = new wex::stc(std::string("test"), data);
-    AddPane(frame(), stc);
+    add_pane(frame(), stc);
     wex::ex* ex = &stc->get_vi();
 
     REQUIRE(!wex::ctags(ex).find("") );
     REQUIRE(!wex::ctags(ex).next() );
     REQUIRE(!wex::ctags(ex).previous() );
     REQUIRE(!wex::ctags(ex).find("xxxx") );
-    REQUIRE( wex::ctags(ex).find("wxExTestApp") );
+    REQUIRE( wex::ctags(ex).find("test_app") );
     REQUIRE(!wex::ctags(ex).next() );
     REQUIRE( wex::ctags(ex).separator() != ' ');
   }

@@ -16,7 +16,7 @@
 TEST_CASE("wex::textctrl")
 {
   wxTextCtrl* tc = new wxTextCtrl(frame(), wxID_ANY);
-  AddPane(frame(), tc);
+  add_pane(frame(), tc);
   
   REQUIRE( wex::textctrl_input(wex::ex_command::type_t::NONE).get().empty());
   REQUIRE( wex::textctrl_input(wex::ex_command::type_t::NONE).values().empty());

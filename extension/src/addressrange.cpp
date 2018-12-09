@@ -28,8 +28,8 @@ namespace wex
       const indicator& indicator, const std::string& commands)
     : m_Ex(ex)
     , m_FindIndicator(indicator) {
-      m_Ex->stc()->set_search_flags(m_Ex->search_flags());
-      m_Ex->stc()->BeginUndoAction();
+      m_Ex->get_stc()->set_search_flags(m_Ex->search_flags());
+      m_Ex->get_stc()->BeginUndoAction();
       
       for (tokenizer tkz(commands, "|"); tkz.has_more_tokens(); )
       {
@@ -47,20 +47,20 @@ namespace wex
     
    ~global_env()
     {
-      m_Ex->stc()->EndUndoAction();
+      m_Ex->get_stc()->EndUndoAction();
       m_Ex->marker_delete('%');
     }
     
-    auto Changes() const {return m_Changes;};
+    auto changes() const {return m_Changes;};
     
-    bool Commands() const {return !m_Commands.empty();};
+    bool commands() const {return !m_Commands.empty();};
     
     bool for_each(int line) const
     {
-      if (!Commands())
+      if (!commands())
       {
-        m_Ex->stc()->set_indicator(m_FindIndicator, 
-          m_Ex->stc()->GetTargetStart(), m_Ex->stc()->GetTargetEnd());
+        m_Ex->get_stc()->set_indicator(m_FindIndicator, 
+          m_Ex->get_stc()->GetTargetStart(), m_Ex->get_stc()->GetTargetEnd());
       }
       else
       {
@@ -81,18 +81,18 @@ namespace wex
     {
       if (start < end)
       {
-        for (int i = start;  i < end && i < m_Ex->stc()->GetLineCount() - 1; )
+        for (int i = start;  i < end && i < m_Ex->get_stc()->GetLineCount() - 1; )
         {
-          if (Commands())
+          if (commands())
           {
             if (!for_each(i)) return false;
           }
           else
           {
-            m_Ex->stc()->set_indicator(
+            m_Ex->get_stc()->set_indicator(
               m_FindIndicator, 
-              m_Ex->stc()->PositionFromLine(i), 
-              m_Ex->stc()->GetLineEndPosition(i));
+              m_Ex->get_stc()->PositionFromLine(i), 
+              m_Ex->get_stc()->GetLineEndPosition(i));
           }
           
           if (m_Changes == 0) 
@@ -126,7 +126,7 @@ wex::addressrange::addressrange(wex::ex* ex, int lines)
   : m_Begin(ex)
   , m_End(ex)
   , m_Ex(ex)
-  , m_STC(ex->stc())
+  , m_STC(ex->get_stc())
 {
   if (lines > 0) 
   {
@@ -142,7 +142,7 @@ wex::addressrange::addressrange(wex::ex* ex, const std::string& range)
   : m_Begin(ex)
   , m_End(ex)
   , m_Ex(ex)
-  , m_STC(ex->stc())
+  , m_STC(ex->get_stc())
 {
   if (range == "%")
   {
@@ -439,7 +439,7 @@ bool wex::addressrange::global(const std::string& text, bool inverse) const
   m_STC->SetTargetStart(m_STC->PositionFromLine(m_Begin.get_line() - 1));
   m_STC->SetTargetEnd(m_STC->GetLineEndPosition(m_Ex->marker_line('%')));
   
-  const bool infinite = (g.Changes() > 0 && rest != "$" && rest != "1");
+  const bool infinite = (g.changes() > 0 && rest != "$" && rest != "1");
   int hits = 0;
   int start = 0;
   
@@ -465,7 +465,7 @@ bool wex::addressrange::global(const std::string& text, bool inverse) const
       return false;
     }
     
-    m_STC->SetTargetStart(g.Changes() > 0 ? m_STC->PositionFromLine(match): m_STC->GetTargetEnd());
+    m_STC->SetTargetStart(g.changes() > 0 ? m_STC->PositionFromLine(match): m_STC->GetTargetEnd());
     m_STC->SetTargetEnd(m_STC->GetLineEndPosition(m_Ex->marker_line('%')));
   
     if (m_STC->GetTargetStart() >= m_STC->GetTargetEnd())
@@ -481,7 +481,7 @@ bool wex::addressrange::global(const std::string& text, bool inverse) const
   
   if (hits > 0)
   {
-    if (g.Commands())
+    if (g.commands())
       m_Ex->frame()->show_ex_message(
         wxString::Format(_("Executed: %d commands"), hits).ToStdString());
     else
@@ -880,7 +880,7 @@ bool wex::addressrange::write(const std::string& text) const
 #endif
 
   return wex::file(filename, text.find(">>") != std::string::npos ? 
-    std::ios_base::app: std::ios::out).write(m_Ex->GetSelectedText());
+    std::ios_base::app: std::ios::out).write(m_Ex->get_selected_text());
 }
 
 bool wex::addressrange::yank(const char name) const

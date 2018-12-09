@@ -17,7 +17,7 @@
 TEST_CASE("wex::listitem")
 {
   wex::listview* listView = new wex::listview(wex::listview_data().type(wex::listview_data::FILE));
-  AddPane(frame(), listView);
+  add_pane(frame(), listView);
   
   const auto start = std::chrono::system_clock::now();
 

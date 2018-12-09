@@ -1,6 +1,6 @@
 file(GLOB SRCS 
   "*.cpp"
-  "../../external/ctags/*.c"
+  "../../external/ctags/read/*.c"
   "../../external/easyloggingpp/src/*.cc"
   "../../external/pugixml/src/*.cpp"
   "../../external/shunting-yard/*.cpp")

@@ -2,21 +2,36 @@
 // Name:      test.h
 // Purpose:   Test file for running cppunit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 // The actual contents do not matter. This file is not compiled.
 #include <wx/extension/extension.h>
 
-/// Derive your application from wxExApp.
-class wxExTestApp: public wxExApp
+namespace wex
 {
-public:
-  /// Constructor.
-  wxExTestApp() {}
-private:
-  /// Override the OnInit.
-  virtual bool OnInit();
+  /// Derive your application from app.
+  class test_app: public app
+  {
+  public:
+    /// Constructor.
+    test_app() {;};
+    
+    void method_one() const {;};
+    
+    bool method_two() const {return 1;};
+    
+    bool method_three(const std::string& s1) {return 1;};
+  private:
+    /// Override the OnInit.
+    virtual bool OnInit();
+  };
+  
+  class helper
+  {
+  public:
+    void helper_method() {;};
+  };
 };
 
 /*

@@ -119,14 +119,14 @@ bool wex::variable::expand(ex* ex)
 
   if (ex != nullptr)
   { 
-    if (ex->stc()->GetReadOnly() || ex->stc()->is_hexmode())
+    if (ex->get_stc()->GetReadOnly() || ex->get_stc()->is_hexmode())
     {
       return false;
     }
 
     if (!m_Prefix.empty())
     {
-      commented = ex->stc()->get_lexer().make_comment(
+      commented = ex->get_stc()->get_lexer().make_comment(
         m_Prefix == "WRAP" ? std::string(): m_Prefix, value);
     }
 
@@ -228,28 +228,28 @@ bool wex::variable::ExpandBuiltIn(ex* ex, std::string& expanded) const
   {
     if (m_Name == "Cb")
     {
-      expanded = ex->stc()->get_lexer().comment_begin();
+      expanded = ex->get_stc()->get_lexer().comment_begin();
     }
     else if (m_Name == "Cc")
     {
-      const int line = ex->stc()->GetCurrentLine();
-      const int startPos = ex->stc()->PositionFromLine(line);
-      const int endPos = ex->stc()->GetLineEndPosition(line);
-      expanded = ex->stc()->get_lexer().comment_complete(
-        ex->stc()->GetTextRange(startPos, endPos).ToStdString());
+      const int line = ex->get_stc()->GetCurrentLine();
+      const int startPos = ex->get_stc()->PositionFromLine(line);
+      const int endPos = ex->get_stc()->GetLineEndPosition(line);
+      expanded = ex->get_stc()->get_lexer().comment_complete(
+        ex->get_stc()->GetTextRange(startPos, endPos).ToStdString());
     }
     else if (m_Name == "Ce")
     {
-      expanded = ex->stc()->get_lexer().comment_end();
+      expanded = ex->get_stc()->get_lexer().comment_end();
     }
     else if (m_Name == "Cl")
     {
-      expanded = ex->stc()->get_lexer().make_comment(std::string(), false);
+      expanded = ex->get_stc()->get_lexer().make_comment(std::string(), false);
     }
     else if (m_Name == "Created")
     {
-      if (path file(ex->stc()->get_filename());
-        ex->stc()->get_filename().stat().is_ok())
+      if (path file(ex->get_stc()->get_filename());
+        ex->get_stc()->get_filename().stat().is_ok())
       {
         expanded = wxDateTime(file.stat().st_ctime).FormatISODate();
       }
@@ -260,23 +260,23 @@ bool wex::variable::ExpandBuiltIn(ex* ex, std::string& expanded) const
     }
     else if (m_Name == "Filename")
     {
-      expanded = ex->stc()->get_filename().name();
+      expanded = ex->get_stc()->get_filename().name();
     }
     else if (m_Name == "Fullname")
     {
-      expanded = ex->stc()->get_filename().fullname();
+      expanded = ex->get_stc()->get_filename().fullname();
     }
     else if (m_Name == "Fullpath")
     {
-      expanded = ex->stc()->get_filename().data().string();
+      expanded = ex->get_stc()->get_filename().data().string();
     }
     else if (m_Name == "Nl")
     {
-      expanded = ex->stc()->eol();
+      expanded = ex->get_stc()->eol();
     }
     else if (m_Name == "Path")
     {
-      expanded = ex->stc()->get_filename().get_path();
+      expanded = ex->get_stc()->get_filename().get_path();
     }
     else
     {
@@ -300,13 +300,13 @@ bool wex::variable::ExpandInput(std::string& expanded)  const
         std::string(),
         window_data().title(m_Name + ":"));
         
-      m_Dialog->stc()->get_vi().use(false);
-      m_Dialog->stc()->SetWrapMode(wxSTC_WRAP_WORD);
+      m_Dialog->get_stc()->get_vi().use(false);
+      m_Dialog->get_stc()->SetWrapMode(wxSTC_WRAP_WORD);
     }
 
     m_Dialog->SetTitle(m_Name);
-    m_Dialog->stc()->set_text(use);
-    m_Dialog->stc()->SetFocus();
+    m_Dialog->get_stc()->set_text(use);
+    m_Dialog->get_stc()->SetFocus();
     
     bool ended = false;
     
@@ -328,7 +328,7 @@ bool wex::variable::ExpandInput(std::string& expanded)  const
       return false;
     }
       
-    const wxString value = m_Dialog->stc()->GetText();
+    const wxString value = m_Dialog->get_stc()->GetText();
     
     if (value.empty())
     {
