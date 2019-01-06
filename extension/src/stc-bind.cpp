@@ -119,7 +119,6 @@ void wex::stc::BindAll()
             CharRight();
           }
         }
-std::cout << "hex\n";
         return;
       }
       if (!m_vi.is_active())
@@ -612,7 +611,8 @@ std::cout << "hex\n";
     }}, idEolDos, idEolMac);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    reset_margins(margin_t().set(stc::MARGIN_TEXT));}, 
+    reset_margins(margin_t().set(stc::MARGIN_TEXT));
+    m_MarginTextClick = -1;}, 
     idMarginTextHide);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {

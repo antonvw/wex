@@ -3,7 +3,7 @@
 // Purpose:   Implementation of class wex::ex
 //            http://pubs.opengroup.org/onlinepubs/9699919799/utilities/ex.html
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <fstream>
@@ -71,26 +71,25 @@ namespace wex
     COPY,
     DEL,
   };
+
+  command_arg ParseCommandWithArg(const std::string& command)
+  {
+    if (const auto post(wex::after(command, ' ')); post == command)
+    {
+      return command_arg::NONE;
+    }
+    else if (atoi(post.c_str()) > 0)
+    {
+      return command_arg::INT;
+    }
+    else
+    {
+      return command_arg::OTHER;
+    }
+  }
 };
 
-wex::command_arg ParseCommandWithArg(const std::string& command)
-{
-  if (const auto post(wex::after(command, ' ')); post == command)
-  {
-    return wex::command_arg::NONE;
-  }
-  else if (atoi(post.c_str()) > 0)
-  {
-    return wex::command_arg::INT;
-  }
-  else
-  {
-    return wex::command_arg::OTHER;
-  }
-}
-
 wex::evaluator wex::ex::m_Evaluator;
-wex::stc_entry_dialog* wex::ex::m_Dialog = nullptr;
 wex::vi_macros wex::ex::m_Macros;
 
 wex::ex::ex(wex::stc* stc)

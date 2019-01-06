@@ -2,7 +2,7 @@
 // Name:      vcs_entry.cpp
 // Purpose:   Implementation of wex::vcs_entry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/vcsentry.h>
@@ -12,7 +12,7 @@
 #include <wex/menus.h>
 #include <wex/shell.h>
 #include <wex/tokenizer.h>
-#include <wex/vcs.h>
+#include <wex/vcsentry.h>
 
 wex::vcs_entry::vcs_entry(
   const std::string& name,
@@ -36,8 +36,8 @@ wex::vcs_entry::vcs_entry(const pugi::xml_node& node)
       (strcmp(node.attribute("flags-location").value(), "prefix") == 0 ?
          FLAGS_LOCATION_PREFIX: FLAGS_LOCATION_POSTFIX))
   , m_MarginWidth(atoi(node.attribute("margin-width").value()))
-  , m_PosBegin(node.attribute("pos-begin").value())
-  , m_PosEnd(node.attribute("pos-end").value())
+  , m_blame_pos_begin(node.attribute("pos-begin").value())
+  , m_blame_pos_end(node.attribute("pos-end").value())
 {
 }
 
@@ -49,7 +49,7 @@ int wex::vcs_entry::build_menu(int base_id, menu* menu, bool is_popup) const
 bool wex::vcs_entry::execute(
   const std::string& args,
   const lexer& lexer,
-  long pflags,
+  exec_t type,
   const std::string& wd)
 {
   m_Lexer = lexer;
@@ -119,7 +119,7 @@ bool wex::vcs_entry::execute(
       prefix +
       get_command().get_command() + " " + 
       subcommand + flags + comment + my_args, 
-    pflags,
+    type,
     wd);
 }
 
@@ -149,7 +149,7 @@ const std::string wex::vcs_entry::get_flags() const
 
 void wex::vcs_entry::show_output(const std::string& caption) const
 {
-  if (!error() && get_shell() != nullptr)
+  if (!get_stdout().empty() && get_shell() != nullptr)
   {
     if (get_flags().find("xml") != std::string::npos)
     {

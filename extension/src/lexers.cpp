@@ -2,7 +2,7 @@
 // Name:      lexers.cpp
 // Purpose:   Implementation of wex::lexers class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -96,7 +96,8 @@ void wex::lexers::apply_global_styles(stc* stc)
   }
 }
 
-const std::string wex::lexers::apply_macro(const std::string& text, const std::string& lexer)
+const std::string wex::lexers::apply_macro(
+  const std::string& text, const std::string& lexer)
 {
   if (const auto& it = get_macros(lexer).find(text);
     it != get_macros(lexer).end())
@@ -108,11 +109,35 @@ const std::string wex::lexers::apply_macro(const std::string& text, const std::s
     return text;
 }
 
-void wex::lexers::apply_margin_text_style(stc* stc, int line) const
+void wex::lexers::apply_margin_text_style(
+  stc* stc, int line, margin_style_t style, const std::string& text) const
 {
-  if (m_StyleNoTextMargin != -1)
+  switch (style)
   {
-    stc->MarginSetStyle(line, m_StyleNoTextMargin);
+    case MARGIN_STYLE_DAY:
+      stc->MarginSetStyle(line, m_StyleNoTextMarginDay);
+      break;
+    
+    case MARGIN_STYLE_MONTH:
+      stc->MarginSetStyle(line, m_StyleNoTextMarginMonth);
+      break;
+    
+    case MARGIN_STYLE_OTHER:
+      stc->MarginSetStyle(line, m_StyleNoTextMargin);
+      break;
+    
+    case MARGIN_STYLE_WEEK:
+      stc->MarginSetStyle(line, m_StyleNoTextMarginWeek);
+      break;
+    
+    case MARGIN_STYLE_YEAR:
+      stc->MarginSetStyle(line, m_StyleNoTextMarginYear);
+      break;
+  }
+  
+  if (!text.empty())
+  {
+    stc->MarginSetText(line, wxString(text.c_str()));
   }
 }
 
@@ -156,7 +181,7 @@ wex::lexers* wex::lexers::get(bool createOnDemand)
 {
   if (m_Self == nullptr && createOnDemand)
   {
-    m_Self = new lexers(path(config().dir(), "lexers.xml"));
+    m_Self = new lexers(path(config().dir(), "wex-lexers.xml"));
     m_Self->load_document();
   }
 
@@ -335,6 +360,22 @@ void wex::lexers::ParseNodeglobal(const pugi::xml_node& node)
         if (style.define() == "style_textmargin")
         {
           m_StyleNoTextMargin = std::stoi(style.number());
+        }
+        else if (style.define() == "style_textmargin_day")
+        {
+          m_StyleNoTextMarginDay = std::stoi(style.number());
+        }
+        else if (style.define() == "style_textmargin_week")
+        {
+          m_StyleNoTextMarginWeek = std::stoi(style.number());
+        }
+        else if (style.define() == "style_textmargin_month")
+        {
+          m_StyleNoTextMarginMonth = std::stoi(style.number());
+        }
+        else if (style.define() == "style_textmargin_year")
+        {
+          m_StyleNoTextMarginYear = std::stoi(style.number());
         }
 
         m_Styles.emplace_back(style);

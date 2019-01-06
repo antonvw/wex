@@ -2,7 +2,7 @@
 // Name:      vi-macros.cpp
 // Purpose:   Implementation of class wex::vi_macros
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <numeric>
@@ -79,7 +79,7 @@ const std::vector< std::string > wex::vi_macros::get(const std::string& macro)
 
 const wex::path wex::vi_macros::get_filename()
 {
-  return path(config().dir(), "macros.xml");
+  return path(config().dir(), "wex-macros.xml");
 }
 
 const std::string wex::vi_macros::get_register(const char name) const

@@ -2,7 +2,7 @@
 // Name:      addressrange.cpp
 // Purpose:   Implementation of class wex::addressrange
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -335,7 +335,7 @@ bool wex::addressrange::escape(const std::string& command)
     }
     
     return m_Process->execute(expanded, 
-      process::EXEC_DEFAULT, m_STC->get_filename().get_path());
+      process::EXEC_NO_WAIT, m_STC->get_filename().get_path());
   }
   
   if (!is_ok())
@@ -343,18 +343,20 @@ bool wex::addressrange::escape(const std::string& command)
     return false;
   }
   
-  const std::string filename(std::tmpnam(nullptr));
+  const std::string tmp_filename(path(
+    std::filesystem::temp_directory_path(),
+    std::to_string(std::time(nullptr))).data().string());
   
-  if (m_STC->GetReadOnly() || m_STC->is_hexmode() || !write(filename))
+  if (m_STC->GetReadOnly() || m_STC->is_hexmode() || !write(tmp_filename))
   {
     return false;
   }
 
   wex::process process;
   
-  const bool ok = process.execute(command + " " + filename, process::EXEC_WAIT);
+  const bool ok = process.execute(command + " " + tmp_filename, process::EXEC_WAIT);
   
-  if (remove(filename.c_str()) != 0)
+  if (remove(tmp_filename.c_str()) != 0)
   {
     log_status("Could not remove file");
   }
@@ -368,7 +370,6 @@ bool wex::addressrange::escape(const std::string& command)
       if (erase(false))
       {
         m_STC->AddText(process.get_stdout());
-        m_STC->AddText(m_STC->eol());
       }
       
       m_STC->EndUndoAction();

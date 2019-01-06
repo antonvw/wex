@@ -2,11 +2,10 @@
 // Name:      listview.cpp
 // Purpose:   Implementation of wex::listview and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cctype>
-#include <iomanip>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -48,46 +47,8 @@ namespace wex
       {_("Readonly colour"), item::COLOURPICKERWIDGET, *wxLIGHT_GREY},
       {_("Header"), item::CHECKBOX, true}}) {;};
   };
-};
-
-// See also get_modification_time in stat.cpp
-bool GetTime(const std::string& text, time_t& t)
-{
-#ifdef __WXMSW__
-  wxDateTime dt; 
-  if (!dt.ParseFormat(text, wex::file_stat::MOD_TIME_FORMAT)) return false; 
-  t = dt.GetTicks();
-#else
-  std::tm tm = { 0 };
-  std::stringstream ss(text);
-  ss >> std::get_time(&tm, wex::file_stat::MOD_TIME_FORMAT.c_str());
   
-  if (ss.fail())
-  {
-    return false;
-  }
-  
-  t = mktime(&tm);
-#endif
-
-  return true;
-}
-
-std::string IgnoreCase(const std::string& text)
-{
-  std::string output(text);
-
-  if (!wex::find_replace_data::get()->match_case())
-  {
-    for (auto & c : output) c = std::toupper(c);
-  }
-
-  return output;
-}
-
 #if wxUSE_DRAG_AND_DROP
-namespace wex
-{
   // file_droptarget is already used by wex::frame.
   class droptarget : public wxFileDropTarget
   {
@@ -115,8 +76,20 @@ namespace wex
   private:
     listview* m_ListView;
   };
-};
 #endif
+
+  std::string ignore_case(const std::string& text)
+  {
+    std::string output(text);
+
+    if (!wex::find_replace_data::get()->match_case())
+    {
+      for (auto & c : output) c = std::toupper(c);
+    }
+
+    return output;
+  };
+};
 
 wex::column::column()
 {
@@ -645,7 +618,7 @@ bool wex::listview::find_next(const std::string& text, bool forward)
     return false;
   }
 
-  std::string text_use = IgnoreCase(text);
+  std::string text_use = ignore_case(text);
 
   const auto firstselected = GetFirstSelected();
   static bool recursive = false;
@@ -674,7 +647,7 @@ bool wex::listview::find_next(const std::string& text, bool forward)
 
     for (int col = 0; col < GetColumnCount() && match == -1; col++)
     {
-      text = IgnoreCase(std::string(GetItemText(index, col)));
+      text = ignore_case(std::string(GetItemText(index, col)));
 
       if (find_replace_data::get()->match_word())
       {
@@ -779,7 +752,7 @@ bool wex::listview::insert_item(const std::vector < std::string > & item)
         switch (m_Columns[no].type())
         {
           case column::DATE:
-            if (time_t tm; !GetTime(col, tm)) return false;
+            if (const auto& [r, t] = get_time(col); !r) return false;
             break;
           case column::FLOAT: std::stof(col); 
             break;
@@ -1064,11 +1037,11 @@ int wxCALLBACK CompareFunctionCB(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortDa
   {
     case wex::column::DATE:
       {
-        time_t tm1, tm2;
-        if (!GetTime(str1, tm1) ||
-            !GetTime(str2, tm2)) return 0;
-        if (ascending) return Compare((unsigned long)tm1, (unsigned long)tm2);
-        else           return Compare((unsigned long)tm2, (unsigned long)tm1);
+        const auto& [r1, t1] = wex::get_time(str1);
+        const auto& [r2, t2] = wex::get_time(str2);
+        if (!r1 || !r2) return 0;
+        if (ascending) return Compare((unsigned long)t1, (unsigned long)t2);
+        else           return Compare((unsigned long)t2, (unsigned long)t1);
       }
     break;
 
@@ -1085,8 +1058,8 @@ int wxCALLBACK CompareFunctionCB(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortDa
     case wex::column::STRING:
       if (!wex::find_replace_data::get()->match_case())
       {
-        if (ascending) return IgnoreCase(str1).compare(IgnoreCase(str2));
-        else           return IgnoreCase(str2).compare(IgnoreCase(str1));
+        if (ascending) return wex::ignore_case(str1).compare(wex::ignore_case(str2));
+        else           return wex::ignore_case(str2).compare(wex::ignore_case(str1));
       }
       else
       {
@@ -1112,7 +1085,7 @@ bool wex::listview::set_item(
     switch (m_Columns[column].type())
     {
       case column::DATE:
-        if (time_t tm; !GetTime(text, tm)) return false;
+        if (const auto& [r, t] = get_time(text); !r) return false;
         break;
       case column::FLOAT: std::stof(text); break;
       case column::INT: std::stoi(text); break;

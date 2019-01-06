@@ -2,7 +2,7 @@
 // Name:      test-variable.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <tuple>
@@ -48,7 +48,7 @@ TEST_CASE("wex::variable")
       {"aa", "OTHER", "", ""},
       {"template", "TEMPLATE", "xxx.txt", "xxx.txt"},
       {"cc", "INPUT", "one", "one"},       
-      {"dd", "INPUT-ONCE", "@Year@", "2018"},
+      {"dd", "INPUT-ONCE", "@Year@", "2019"},
       {"ee", "INPUT-SAVE", "three", "three"}})
     {
       const std::string text(

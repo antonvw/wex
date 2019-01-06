@@ -29,13 +29,13 @@ function(pack)
     install(FILES ${dlls} DESTINATION ${CONFIG_INSTALL_DIR})
   endif()
 
-  configure_file(../extension/data/conf.elp.cmake conf.elp)
+  configure_file(../extension/data/wex-conf.elp.cmake conf.elp)
 
   install(DIRECTORY ../extension/data/ DESTINATION ${CONFIG_INSTALL_DIR} 
     FILES_MATCHING PATTERN "*.xml" )
   
   install(DIRECTORY ../extension/data/ DESTINATION ${CONFIG_INSTALL_DIR} 
-    FILES_MATCHING PATTERN "*.xsd" )
+    FILES_MATCHING PATTERN "*.xsl" )
   
   install(DIRECTORY ../extension/data/ DESTINATION ${CONFIG_INSTALL_DIR} 
     FILES_MATCHING PATTERN "*.txt" )
@@ -97,6 +97,7 @@ macro(target_link_all)
       wex
       ${wxWidgets_LIBRARIES} wxscintilla
       ${extra_macro_args}
+      tiny-process-library
       )
   elseif (APPLE)
     target_link_libraries(
@@ -105,6 +106,7 @@ macro(target_link_all)
       wex
       ${wxWidgets_LIBRARIES} 
       ${extra_macro_args}
+      tiny-process-library
       stdc++
       c++fs
       )
@@ -115,6 +117,7 @@ macro(target_link_all)
       wex
       ${wxWidgets_LIBRARIES} 
       ${extra_macro_args}
+      tiny-process-library
       stdc++
       stdc++fs
       m
@@ -162,7 +165,9 @@ list(APPEND wxTOOLKIT_INCLUDE_DIRS
   ${wexSETUP_H}
   external/wxWidgets/include 
   extension/include 
-  external/ctags/read external/easyloggingpp/src 
+  external/tiny-process-library
+  external/ctags/read 
+  external/easyloggingpp/src 
   external/fsm external/pugixml/src 
   external/shunting-yard external/tclap/include)
 

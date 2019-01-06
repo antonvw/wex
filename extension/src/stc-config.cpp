@@ -135,6 +135,7 @@ int wex::stc::config_dialog(const window_data& par)
                _("Use tabs"),
                _("Caret line"),
                _("Scroll bars"),
+               _("Auto blame"),
                _("Auto complete"),
                _("Keep zoom"),
                _("vi mode"),

@@ -2,7 +2,7 @@
 // Name:      vcs.cpp
 // Purpose:   Implementation of wex::vcs class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <map>
@@ -89,7 +89,7 @@ int wex::vcs::config_dialog(const window_data& par) const
       cols = 4;
       break;
   }
-  
+
   // use a radiobox 
   std::vector<item> v{{"VCS", choices, true, cols}};
 
@@ -149,14 +149,11 @@ bool wex::vcs::execute()
     }
     else if (m_Entry.name() == "git")
     {
-      const std::string admin_dir(FindEntry(filename).admin_dir());
-
-      wd = GetTopLevelDir(admin_dir, filename);
+      wd = filename.get_path();
       
       if (!filename.fullname().empty())
       {
-        args = (m_Entry.get_command().get_command() == "show" ? 
-          GetRelativeFile(admin_dir, filename): filename.data().string());
+        args = filename.data().string();
       }
     }
     else

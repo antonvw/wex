@@ -2,7 +2,7 @@
 // Name:      test-lexers.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -102,15 +102,17 @@ TEST_CASE("wex::lexers")
     REQUIRE( wex::lexers::get()->get_indicator(wex::indicator(0)).is_ok());
     REQUIRE( wex::lexers::get()->get_marker(wex::marker(0)).is_ok());
     
-    wxString lexer("cpp");
     REQUIRE(!wex::lexers::get()->keywords("cpp").empty());
     REQUIRE(!wex::lexers::get()->keywords("csh").empty());
     REQUIRE( wex::lexers::get()->keywords("xxx").empty());
     REQUIRE( wex::lexers::get()->keywords(std::string()).empty());
 
     REQUIRE( wex::lexers::get()->load_document());
-    
+
+    get_stc()->get_lexer().set("cpp");
+    get_stc()->open(get_testpath());
     wex::lexers::get()->apply_global_styles(get_stc());
     wex::lexers::get()->apply(get_stc());
+    wex::lexers::get()->apply_margin_text_style(get_stc(), 30, wex::lexers::MARGIN_STYLE_DAY);
   }
 }

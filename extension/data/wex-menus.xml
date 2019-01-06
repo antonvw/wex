@@ -1,10 +1,10 @@
 <?xml version="1.0" ?>
 <!--
-Name:      menus.xml
+Name:      wex-menus.xml
 Purpose:   setup of dynamic menus, like version control systems 
            and debuggers
 Author:    Anton van Wezenbeek
-Copyright: (c) 2018, Anton van Wezenbeek
+Copyright: (c) 2019 Anton van Wezenbeek
 -->
 
 <menus>
@@ -60,7 +60,8 @@ Copyright: (c) 2018, Anton van Wezenbeek
    supplying a margin-width it is shown on the text margin.
    By supplying a pos-begin and pos-end you can configure
    which positions to use to for the blame info in 
-   the text margin.
+   the text margin. The pos-time allows you to specify
+   which field to use for time info in the blame info.
    -->
   <vcs
     name="bazaar" 
@@ -100,7 +101,8 @@ Copyright: (c) 2018, Anton van Wezenbeek
     toplevel="true"
     margin-width="250" 
     pos-begin="(" 
-    pos-end="+">
+    pos-end="+"
+    pos-time="20">
 
     <commands>
       <command flags="none" type="separator"> &amp;blame </command>

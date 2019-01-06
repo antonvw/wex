@@ -367,7 +367,7 @@ void wex::cmdline::show_options(const window_data& data) const
   }
   else
   {
-    dlg->get_stc()->ClearAll();
+    dlg->get_stc()->clear();
   }
 
   for (const auto& it : m_Options)

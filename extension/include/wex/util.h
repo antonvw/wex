@@ -2,7 +2,7 @@
 // Name:      util.h
 // Purpose:   Include file for wex utility functions
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -180,6 +180,18 @@ namespace wex
     const std::set<std::string>& kset, 
     size_t min_size = 0,
     const std::string& prefix = std::string());
+
+  /// Converts time string into time_t.
+  /// The result is stored in the tuple.
+  std::tuple <
+    /// true if text could be converted into time_t
+    bool, 
+    /// the converted time
+    time_t> get_time(
+      /// text to be converted
+      const std::string& text, 
+      /// format to be used for cnoversion
+      const std::string& format = file_stat::MOD_TIME_FORMAT);
 
   /// Returns a word from a string.
   const std::string get_word(

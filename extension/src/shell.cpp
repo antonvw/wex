@@ -2,7 +2,7 @@
 // Name:      shell.cpp
 // Purpose:   Implementation of class wex::shell
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -73,6 +73,9 @@ wex::shell::shell(
       event.Skip();
     }});
 
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    AppendText(event.GetString());}, ID_SHELL_COMMAND);
+  
   Bind(wxEVT_MIDDLE_UP, [=](wxMouseEvent& event) {
     if (event.MiddleUp())
     {

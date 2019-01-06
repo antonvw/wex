@@ -2,7 +2,7 @@
 // Name:      link.cpp
 // Purpose:   Implementation of class wex::link
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -241,6 +241,6 @@ bool wex::link::SetLink(path& link, control_data& data) const
   
 void wex::link::set_from_config()
 {
-  delete m_Paths.release();
+  m_Paths.reset();
   m_Paths = std::make_unique<paths>();
 }

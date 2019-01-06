@@ -1,11 +1,11 @@
 <?xml version="1.0" ?>
-<?xml-stylesheet href="lexers.xsl" type="text/xsl" ?>
+<?xml-stylesheet href="wex-lexers.xsl" type="text/xsl" ?>
 <!--
-Name:      lexers.xml
+Name:      wex-lexers.xml
 Purpose:   Lexers configuration for wex.
            See scintilla 3.7.2 (www.scintilla.org).
 Author:    Anton van Wezenbeek
-Copyright: (c) 2018, Anton van Wezenbeek
+Copyright: (c) 2019, Anton van Wezenbeek
 -->
 
 <lexers>
@@ -59,6 +59,10 @@ Copyright: (c) 2018, Anton van Wezenbeek
       <def no ="style_indentguide"/>
       <def no ="style_calltip"/>
       <def no ="style_textmargin"> 55 </def>
+      <def no ="style_textmargin_day"/>
+      <def no ="style_textmargin_week"/>
+      <def no ="style_textmargin_month"/>
+      <def no ="style_textmargin_year"/>
       <def no ="indic_plain"> 0 </def>
       <def no ="indic_squiggle"/>
       <def no ="indic_tt"/>
@@ -2094,6 +2098,10 @@ Copyright: (c) 2018, Anton van Wezenbeek
         <def style ="styledefault"> default-font,back:#2B2B2B,fore:#BBBBBB </def>
         <def style ="styledefault-back"> default-font,back:#2E2E2E,fore:#BBBBBB,eol </def>
         <def style ="styleindicatorfind"> red </def>
+        <def style ="styletextmargin-day"> back:blue,face:ABeeZee,size:8 </def>
+        <def style ="styletextmargin-week"> back:#3333CC,face:ABeeZee,size:8 </def>
+        <def style ="styletextmargin-month"> back:#666699,face:ABeeZee,size:8 </def>
+        <def style ="styletextmargin-year"> back:#454554,face:ABeeZee,size:8 </def>
         <def style ="styletextmargin"> back:#3B3B3B,face:ABeeZee,size:8 </def>
         <def style ="tag"> fore:cadet blue </def>
         <def style ="variable"> fore:green </def>
@@ -2184,6 +2192,10 @@ Copyright: (c) 2018, Anton van Wezenbeek
     <style no="style_default"> styledefault </style>
     <style no="style_bracelight"> bracelight </style>
     <style no="style_textmargin"> styletextmargin </style>
+    <style no="style_textmargin_day"> styletextmargin-day </style>
+    <style no="style_textmargin_week"> styletextmargin-week </style>
+    <style no="style_textmargin_month"> styletextmargin-month </style>
+    <style no="style_textmargin_year"> styletextmargin-year </style>
 
     <!-- add automatic lexers if text starts with some special tokens, only first match is valid -->
     <text no="hypertext"> html </text>

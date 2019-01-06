@@ -2,7 +2,7 @@
 // Name:      vcs_entry.h
 // Purpose:   Declaration of wex::vcs_entry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -49,6 +49,12 @@ namespace wex
     /// Returns true if admin dir is only at top level.
     bool admin_dir_is_toplevel() const {return m_admin_dir_is_toplevel;};
 
+    /// Returns blame pos begin.
+    const auto & blame_pos_begin() const {return m_blame_pos_begin;};
+
+    /// Returns blame pos end.
+    const auto & blame_pos_end() const {return m_blame_pos_end;};
+
     /// Builds a menu from all vcs commands.
     /// Returns (total) number of items in menu.
     int build_menu(
@@ -70,7 +76,7 @@ namespace wex
       /// lexer that is used for presenting the output
       const lexer& lexer = wex::lexer(),
       /// wait to finish
-      long flags = process::EXEC_WAIT,
+      process::exec_t type = process::EXEC_WAIT,
       /// working directory
       const std::string& wd = std::string());
     
@@ -86,18 +92,12 @@ namespace wex
     /// Returns margin size.
     auto margin_width() const {return m_MarginWidth;};
 
-    /// Returns pos begin.
-    const auto & pos_begin() const {return m_PosBegin;};
-
-    /// Returns pos end.
-    const auto & pos_end() const {return m_PosEnd;};
-
     virtual void show_output(const std::string& caption = std::string()) const override;
   private:
     // no const, as entry is set using operator+ in vcs.
     bool m_admin_dir_is_toplevel {false};
     int m_FlagsLocation, m_MarginWidth;
-    std::string m_AdminDir, m_PosBegin, m_PosEnd;
+    std::string m_AdminDir, m_blame_pos_begin, m_blame_pos_end;
     lexer m_Lexer;
   };
 };

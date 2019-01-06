@@ -2,7 +2,7 @@
 // Name:      test-util.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -272,7 +272,7 @@ TEST_CASE("wex")
     REQUIRE( wex::open_files(frame(), 
       std::vector<wex::path> {get_testpath("test.h").data()}) == 1);
     REQUIRE( 
-      wex::open_files(frame(), std::vector<wex::path> {"../../data/menus.xml"}) == 1);
+      wex::open_files(frame(), std::vector<wex::path> {"../../data/wex-menus.xml"}) == 1);
   }
 
   SUBCASE("wex::open_files_dialog")

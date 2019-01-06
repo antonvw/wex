@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
-Name:      lexers.xsl
-Purpose:   Stylesheet for lexers.xml
+Name:      wex-lexers.xsl
+Purpose:   Stylesheet for wex-lexers.xml
 Author:    Anton van Wezenbeek
-Copyright: (c) 2017 Anton van Wezenbeek
+Copyright: (c) 2019 Anton van Wezenbeek
 -->
 
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">

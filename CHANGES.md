@@ -1,7 +1,7 @@
 **v19.04** *2019*
   - uses namespace
   - uses std::filesystem instead of std::experimental::filesystem
-  - changed include files
+  - tiny-process-library lib
 
 **v18.10** *October 1, 2018*
   - c++17

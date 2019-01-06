@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of class frame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -1244,7 +1244,17 @@ wex::stc* frame::open_file(const wex::path& filename, const wex::stc_data& data)
       {
         editor->SetEdgeMode(wxSTC_EDGE_NONE);
       }
-      
+
+      if (wex::config(_("Auto blame")).get(false))
+      {
+        wex::vcs vcs {{filename}, wex::ID_EDIT_VCS_LOWEST + 1};
+
+        if (vcs.execute())
+        {
+          editor->show_vcs(&vcs.entry());
+        }
+      }
+    
       if (m_App->get_scriptin().is_opened())
       {
         const auto buffer(m_App->get_scriptin().read());
@@ -1295,7 +1305,7 @@ void frame::print_ex(wex::ex* ex, const std::string& text)
   
 wex::process* frame::get_process(const std::string& command)
 {
-  m_Process->execute(command, wex::process::EXEC_DEFAULT);
+  m_Process->execute(command, wex::process::EXEC_NO_WAIT);
   return m_Process;
 }
 

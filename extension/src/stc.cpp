@@ -2,7 +2,7 @@
 // Name:      stc.cpp
 // Purpose:   Implementation of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -799,12 +799,7 @@ void wex::stc::show_line_numbers(bool show)
 
 bool wex::stc::show_vcs(const vcs_entry* vcs)
 {
-  if (vcs->margin_width() <= 0)
-  {
-    return false;
-  }
-
-  if (vcs->get_stdout().empty())
+  if (vcs->margin_width() <= 0 || vcs->get_stdout().empty())
   {
     return false;
   }
@@ -814,7 +809,7 @@ bool wex::stc::show_vcs(const vcs_entry* vcs)
 
   try
   {
-    begin = std::stoi(vcs->pos_begin());
+    begin = std::stoi(vcs->blame_pos_begin());
   }
   catch (std::exception& )
   {
@@ -823,7 +818,7 @@ bool wex::stc::show_vcs(const vcs_entry* vcs)
 
   try
   {
-    end = std::stoi(vcs->pos_end());
+    end = std::stoi(vcs->blame_pos_end());
   }
   catch (std::exception& )
   {
@@ -832,26 +827,74 @@ bool wex::stc::show_vcs(const vcs_entry* vcs)
 
   int line = 0;
   bool found = false;
-
+  std::string prev;
+  
   for (tokenizer tkz(vcs->get_stdout(), "\r\n"); tkz.has_more_tokens(); )
   {
-    const auto text(tkz.get_next_token());
+    const std::string text(tkz.get_next_token());
 
     if (!begin_is_number)
     {
-      begin = text.find(vcs->pos_begin());
+      begin = text.find(vcs->blame_pos_begin());
     }
 
     if (!end_is_number)
     {
-      end = text.find(vcs->pos_end());
+      end = text.find(vcs->blame_pos_end());
     }
 
     if (begin != std::string::npos && end != std::string::npos)
     {
-      MarginSetText(line, text.substr(begin + 1, end - begin - 1));
-      lexers::get()->apply_margin_text_style(this, line);
-      found = true;
+      const int seconds = 1;
+      const int seconds_in_minute = 60 * seconds;
+      const int seconds_in_hour = 60 * seconds_in_minute;
+      const int seconds_in_day = 24 * seconds_in_hour;
+      const int seconds_in_week = 7 * seconds_in_day;
+      const int seconds_in_month = 30 * seconds_in_day;
+      const int seconds_in_year = 365 * seconds_in_day;
+
+      const std::string blame(text.substr(begin + 1, end - begin - 2));
+      const int ts = 19;
+      const auto& [r, t] = get_time(
+        blame.substr(blame.size() - ts, ts), "%Y-%m-%d %H:%M:%S");
+      
+      if (!r)
+      {
+        log() << "invalid time: '" << blame.substr(blame.size() - ts, ts) << "' from: '" << blame << "'";
+      }
+      
+      const time_t now = time(nullptr);
+      const auto dt = difftime(now, t);
+      
+      lexers::margin_style_t style = lexers::MARGIN_STYLE_OTHER;
+      
+      if (dt < seconds_in_day)
+      {
+        style = lexers::MARGIN_STYLE_DAY;
+      }
+      else if (dt < seconds_in_week)
+      {
+        style = lexers::MARGIN_STYLE_WEEK;
+      }
+      else if (dt < seconds_in_month)
+      {
+        style = lexers::MARGIN_STYLE_MONTH;
+      }
+      else if (dt < seconds_in_year)
+      {
+        style = lexers::MARGIN_STYLE_YEAR;
+      }
+      
+      if (blame != prev)
+      {
+        lexers::get()->apply_margin_text_style(this, line, style, blame);
+        found = true;
+        prev = blame;
+      }
+      else
+      {
+        lexers::get()->apply_margin_text_style(this, line, style);
+      }
     }
  
     line++;

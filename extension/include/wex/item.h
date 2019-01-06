@@ -2,7 +2,7 @@
 // Name:      item.h
 // Purpose:   Declaration of wex::item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -59,11 +59,11 @@ namespace wex
       NOTEBOOK,           ///< a wxNotebook item
       NOTEBOOK_AUI,       ///< a wxAuiNotebook item
       NOTEBOOK_CHOICE,    ///< a wxChoicebook item
-      NOTEBOOK_EX,        ///< a wex::notebook  item
       NOTEBOOK_LIST,      ///< a wxListbook item
       NOTEBOOK_SIMPLE,    ///< a wxSimpleNotebook item
       NOTEBOOK_TOOL,      ///< a wxToolbook item
       NOTEBOOK_TREE,      ///< a wxTreebook item
+      NOTEBOOK_WEX,       ///< a wex::notebook  item
       RADIOBOX,           ///< a wxRadioBox item
       SLIDER,             ///< a wxSlider item
       SPACER,             ///< a spacer item
@@ -228,11 +228,11 @@ namespace wex
       /// - NOTEBOOK
       /// - NOTEBOOK_AUI
       /// - NOTEBOOK_CHOICE
-      /// - NOTEBOOK_EX
       /// - NOTEBOOK_LIST
       /// - NOTEBOOK_SIMPLE
       /// - NOTEBOOK_TOOL
       /// - NOTEBOOK_TREE
+      /// - NOTEBOOK_WEX
 #ifdef __WXMSW__
       type_t type = NOTEBOOK_LIST,
 #else
@@ -484,13 +484,14 @@ namespace wex
   /// Support class for keeping defaults in the config.
   class config_defaults
   {
-  public:
+  private:
     /// A default with name, item type, and default value.
-    typedef std::tuple<std::string, item::type_t, std::any> Defaults;
+    typedef std::tuple<std::string, item::type_t, std::any> default_t;
 
+  public:
     /// Constructor, records default values,
     /// if not yet in the config.
-    config_defaults(const std::vector<Defaults> & items);
+    config_defaults(const std::vector<default_t> & items);
     
     /// Destructor, stops recording.
    ~config_defaults();

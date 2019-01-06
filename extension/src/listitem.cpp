@@ -2,7 +2,7 @@
 // Name:      listitem.cpp
 // Purpose:   Implementation of class 'wex::listitem'
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -86,12 +86,6 @@ void wex::listitem::insert(long index)
 bool wex::listitem::set_item(
   const std::string& col_name, const std::string& text) 
 {
-  if (text.empty())
-  {
-    log() << *this << col_name << "empty";
-    return false;
-  }
-  
   if (const auto col = m_ListView->find_column(col_name); col != -1)
   {
     if (!m_ListView->SetItem(GetId(), col, text))

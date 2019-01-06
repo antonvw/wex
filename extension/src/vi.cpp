@@ -3,7 +3,7 @@
 // Purpose:   Implementation of class wex::vi
 //            http://pubs.opengroup.org/onlinepubs/9699919799/utilities/vi.html
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <functional>
@@ -1521,8 +1521,6 @@ bool wex::vi::put(bool after)
 
 void wex::vi::set_last_command(const std::string& command)
 {
-  VLOG(9) << "vi last command: " << command;
-
   size_t first = 0;
 
   if (std::vector<std::string> v; 
@@ -1538,10 +1536,8 @@ void wex::vi::set_last_command(const std::string& command)
     it != m_LastCommands.end())
   {
     m_LastCommand = command;
-  }
-  else
-  {
-    VLOG(9) << "vi last command not set";
+
+    VLOG(9) << "vi last command: " << command;
   }
 }
  

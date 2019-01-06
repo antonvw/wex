@@ -2,7 +2,7 @@
 // Name:      process.cpp
 // Purpose:   Implementation of class wex::process
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -22,6 +22,7 @@
 #include <wex/managedframe.h>
 #include <wex/shell.h>
 #include <wex/util.h>
+#include <process.hpp>
 #include <easylogging++.h>
 
 #define GET_STREAM(SCOPE)                         \
@@ -44,61 +45,73 @@
 
 namespace wex
 {
+  // an async process
   class process_imp : public wxProcess
   {
   public:
-    process_imp(managed_frame* frame, shell* shell, bool debug)
+    process_imp(process* process)
       : wxProcess(wxPROCESS_REDIRECT) 
-      , m_Debug(debug)
-      , m_Frame(frame)
-      , m_Shell(shell)
-      , m_Timer(std::make_unique<wxTimer>(this)) {
+      , m_process(process)
+      , m_debug(process->get_command_executed() == "gdb")
+      , m_timer(std::make_unique<wxTimer>(this)) {
       Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {read();});};
-    virtual ~process_imp() {;};
+    virtual ~process_imp() {
+      m_timer.reset();};
 
-    bool execute(const std::string& command, const std::string& path);
+    bool execute(const std::string& path);
     bool kill(int sig);
-    static int kill_all(int sig);
     void read();
     void write(const std::string& text);
   private:
-    void HandleCommand(const std::string& command);
     virtual void OnTerminate(int pid, int status) override {
-      if (const auto& it = std::find(m_pids.begin(), m_pids.end(), pid);
-        it != m_pids.end())
-      {
-        m_pids.erase(it);
-      }
-      m_Timer->Stop();
-      m_Frame->get_debug()->breakpoints().clear();
-      read();};
+      m_timer->Stop();
+      read();
+      m_process->is_finished(pid);};
     
-    const bool m_Debug;
-    std::string m_Command, m_StdIn;
-    managed_frame* m_Frame;
-    shell* m_Shell;
-    std::unique_ptr<wxTimer> m_Timer;
-    wxCriticalSection m_Critical;
-    static inline std::vector<int> m_pids;
+    const bool m_debug;
+    std::string m_stdin;
+    process* m_process;
+    std::unique_ptr<wxTimer> m_timer;
+    wxCriticalSection m_critical;
   };
-};
 
-auto ShowProcess(wex::managed_frame* frame, bool show)
-{
-  if (frame != nullptr)
+  bool process_run_and_collect_output(
+    const std::string& command, 
+    const std::string& cwd,
+    std::string* stdout,
+    std::string* stderr)
   {
-    frame->show_pane("PROCESS", show);
-    return true;
-  }
+    VLOG(1) << "process exec wait: " << command;
 
-  return false;  
+    stdout->clear();
+    stderr->clear();
+
+    TinyProcessLib::Process process(command, cwd,
+      [&](const char *bytes, size_t n) {stdout->append(bytes, n);},
+      [&](const char *bytes, size_t n) {stderr->append(bytes, n);});
+    
+    auto exit_status = process.get_exit_status();
+    
+    return exit_status != 0;
+  }
+      
+  auto show_process(wex::managed_frame* frame, bool show)
+  {
+    if (frame != nullptr)
+    {
+      frame->show_pane("PROCESS", show);
+      return true;
+    }
+
+    return false;  
+  }
 }
       
-std::string wex::process::m_WorkingDirKey = _("Process folder");
+std::string wex::process::m_working_dir_key = _("Process folder");
 
 wex::process::process() 
-  : m_Command(config(_("Process")).firstof())
-  , m_Frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
+  : m_command(config(_("Process")).firstof())
+  , m_frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
 {
 }
 
@@ -115,10 +128,9 @@ wex::process& wex::process::operator=(const process& p)
 {
   if (this != &p)
   {
-    m_Command = p.m_Command;
-    m_Error = p.m_Error;
-    m_StdErr = p.m_StdErr;
-    m_StdOut = p.m_StdOut;
+    m_command = p.m_command;
+    m_stderr = p.m_stderr;
+    m_stdout = p.m_stdout;
   }
 
   return *this;
@@ -133,7 +145,7 @@ int wex::process::config_dialog(const window_data& par)
   const std::vector<item> v {
     {_("Process"), item::COMBOBOX, std::any(), 
       control_data().validator(&validator).is_required(true)},
-    {m_WorkingDirKey, item::COMBOBOX_DIR, std::any(), 
+    {m_working_dir_key, item::COMBOBOX_DIR, std::any(), 
       control_data().is_required(true)}};
 
   if (data.button() & wxAPPLY)
@@ -149,11 +161,9 @@ int wex::process::config_dialog(const window_data& par)
 
 bool wex::process::execute(
   const std::string& command,
-  int type,
+  exec_t type,
   const std::string& wd)
 {
-  m_Error = false;
-    
   auto cwd(wd);
     
   if (command.empty())
@@ -166,107 +176,86 @@ bool wex::process::execute(
       }
     }
     
-    m_Command = config(_("Process")).firstof();
-    cwd = config(m_WorkingDirKey).firstof();
+    m_command = config(_("Process")).firstof();
+    cwd = config(m_working_dir_key).firstof();
   }
   else
   {
-    m_Command = command;
+    m_command = command;
   }
+  
+  bool error = false;
 
   switch (type)
   {
     case EXEC_WAIT:
-    {
-      wxArrayString output;
-      wxArrayString errors;
-      struct wxExecuteEnv env;
-      env.cwd = cwd;
-
-      VLOG(1) << "exec: " << m_Command;
-
-      if (wxExecute(m_Command, output, errors, wxEXEC_SYNC, &env) == -1)
-      {
-        m_StdErr.clear();
-        m_StdOut.clear();
-        m_Error = true;
-      }
-      else
-      {
-        // Set output by converting array strings into normal strings.
-        m_StdOut = wxJoin(output, '\n', '\n');
-        m_StdErr = wxJoin(errors, '\n', '\n');
-      }
-
-      if (m_Shell != nullptr)
-      {
-        m_Shell->enable(false);
-      }
-    }
+      error = process_run_and_collect_output(m_command, cwd, &m_stdout, &m_stderr);
     break;
 
-    case EXEC_DEFAULT:
+    case EXEC_NO_WAIT:
       // We need a shell for output.
-      if (m_Shell == nullptr) return false;
+      if (m_shell == nullptr) return false;
     
-      m_Shell->enable(true);
-      m_Shell->set_process(this);
-      m_Shell->SetName(m_Command);
-      m_Shell->set_prompt(
+      m_shell->enable(true);
+      m_shell->set_process(this);
+      m_shell->SetName(m_command);
+      m_shell->set_prompt(
         // a unix shell itself has no prompt, so put one here
-        m_Command.find("bash") == 0 ||
-        m_Command.find("csh") == 0 ||
-        m_Command.find("ksh") == 0 ||
-        m_Command.find("tcsh") == 0 ||
-        m_Command.find("sh") == 0 ? ">" : "");
+        m_command.find("bash") == 0 ||
+        m_command.find("csh") == 0 ||
+        m_command.find("ksh") == 0 ||
+        m_command.find("tcsh") == 0 ||
+        m_command.find("sh") == 0 ? ">" : "");
       
-      m_Process = std::make_unique<process_imp>(m_Frame, m_Shell, command == "gdb");
+      m_process = std::make_unique<process_imp>(this);
 
-      if (!m_Process->execute(m_Command, cwd))
+      if (!m_process->execute(cwd))
       {
-        m_Process.release();
-        m_Error = true;
+        m_process.reset();
+        error = true;
       }
     break;
   }
   
-  return !m_Error;
+  return !error;
 }
 
+void wex::process::is_finished(int pid)
+{
+  VLOG(1) << "process " << pid << " exit";
+  
+  m_frame->get_debug()->breakpoints().clear();
+  m_process.reset();
+}
+  
 bool wex::process::is_running() const
 {
-  return m_Process != nullptr && wxProcess::Exists(m_Process->GetPid());
+  return m_process != nullptr && wxProcess::Exists(m_process->GetPid());
 }
 
 bool wex::process::kill(int sig)
 {
   bool killed = false;
 
-  if (m_Process != nullptr)
+  if (m_process != nullptr)
   {
-    killed = m_Process->Kill(sig);
+    killed = m_process->Kill(sig);
 
     if ((sig == wxSIGKILL || sig == wxSIGTERM) && killed)
     {
-      m_Process.release();
-
-      ShowProcess(m_Frame, false);
+      m_process.reset();
+      show_process(m_frame, false);
     }
   }
 
   return killed;
 }
 
-int wex::process::kill_all(int sig)
-{
-  return process_imp::kill_all(sig);
-}
-
 void wex::process::prepare_output(wxWindow* parent)
 {
-  if (m_Shell == nullptr)
+  if (m_shell == nullptr)
   {
-    m_Shell = new shell(
+    m_shell = new shell(
       stc_data().window(window_data().parent(parent)),
       std::string()); // empty prompt
   }
@@ -274,18 +263,11 @@ void wex::process::prepare_output(wxWindow* parent)
 
 void wex::process::show_output(const std::string& caption) const
 {
-  if (!m_Error)
+  if (
+    (!m_stdout.empty() || !m_stderr.empty()) &&
+      m_shell != nullptr && show_process(m_frame, true))
   {
-    if (m_Shell != nullptr && ShowProcess(m_Frame, true))
-    {
-      m_Shell->AppendText(!m_StdOut.empty() ? m_StdOut: m_StdErr);
-    }
-
-    VLOG(2) << m_StdOut;
-  }
-  else
-  {
-    log() << "could not execute:" <<  m_Command;
+    m_shell->AppendText(!m_stdout.empty() ? m_stdout: m_stderr);
   }
 }
 
@@ -297,11 +279,11 @@ bool wex::process::write(const std::string& text)
     return false;
   }
   
-  m_Process->write(text);
+  m_process->write(text);
   
   if (!is_running())
   {
-    ShowProcess(m_Frame, false);
+    show_process(m_frame, false);
   }
 
   return true;
@@ -309,30 +291,65 @@ bool wex::process::write(const std::string& text)
 
 // Implementation.
 
-bool wex::process_imp::execute(
-  const std::string& command, const std::string& path)
+bool wex::process_imp::execute(const std::string& path)
 {
   struct wxExecuteEnv env;
   env.cwd = path;
-  m_Command = command;
   
-  VLOG(1) << "exec: " << command;
-
-  if (wxExecute(command, wxEXEC_ASYNC, this, &env) <= 0) 
+  if (wxExecute(m_process->get_command_executed(), wxEXEC_ASYNC, this, &env) <= 0) 
   {
     return false;
   }
   
-  m_pids.push_back(GetPid());
-  
-  ShowProcess(m_Frame, true);
-  m_Timer->Start(100); // milliseconds
-  m_Shell->SetFocus();
+  VLOG(1) << "process " << GetPid() << " exec no wait: " << m_process->get_command_executed();
+
+  show_process(m_process->get_frame(), true);
+  m_timer->Start(100); // milliseconds
+  m_process->get_shell()->SetFocus();
   
   return true;
 }
 
-void wex::process_imp::HandleCommand(const std::string& command)
+bool wex::process_imp::kill(int sig)
+{
+  if (const auto pid = GetPid(); wxProcess::Kill(pid, (wxSignal)sig) != wxKILL_OK)
+  {
+    return false;
+  }
+
+  return true;
+}
+
+void wex::process_imp::read()
+{
+  wxCriticalSectionLocker lock(m_critical);
+  
+  std::string text;
+  GET_STREAM(Input);
+  GET_STREAM(Error);
+  
+  if (!text.empty())
+  {
+    m_process->get_shell()->AppendText(
+      // prevent echo of last input
+      !m_stdin.empty() && text.find(m_stdin) == 0 ?
+        text.substr(m_stdin.length()):
+        text);
+    
+    if (m_debug && m_process->get_frame() != nullptr)
+    {
+      m_process->get_frame()->get_debug()->process_stdout(text);
+    }
+  }
+    
+  if (!m_stdin.empty())
+  {
+    m_stdin.clear();
+    m_process->get_shell()->prompt(std::string(), false);
+  }
+}
+
+void handle_command(const std::string& command)
 {
   const std::string cd = 
 #ifdef __WXMSW__
@@ -344,7 +361,7 @@ void wex::process_imp::HandleCommand(const std::string& command)
   if (command.find(cd) == 0)
   {
     wxLogNull logNo;
-    if (const auto rest (skip_white_space(after(command, cd.back())));
+    if (const auto rest (wex::skip_white_space(wex::after(command, cd.back())));
       rest.empty() || rest == "~")
     {
 #ifdef __WXMSW__
@@ -359,91 +376,24 @@ void wex::process_imp::HandleCommand(const std::string& command)
   }
 }
 
-bool wex::process_imp::kill(int sig)
-{
-  if (const auto pid = GetPid(); wxProcess::Kill(pid, (wxSignal)sig) != wxKILL_OK)
-  {
-    return false;
-  }
-  else if (sig == wxSIGKILL || sig == wxSIGTERM)
-  {
-    if (const auto& it = std::find(m_pids.begin(), m_pids.end(), pid);
-      it != m_pids.end())
-    {
-      m_pids.erase(it);
-    }
-  }
-
-  return true;
-}
-
-int wex::process_imp::kill_all(int sig)
-{
-  int killed = 0;
-  
-  for (auto pid : m_pids)
-  {
-    if (wxProcess::Kill(pid, (wxSignal)sig) == wxKILL_OK)
-    {
-      killed++;
-    }
-  }
-  
-  if (killed != m_pids.size())
-  {
-    log() << "could not kill all processes";
-  }
- 
-  return killed;
-}
-
-void wex::process_imp::read()
-{
-  wxCriticalSectionLocker lock(m_Critical);
-  
-  std::string text;
-  GET_STREAM(Input);
-  GET_STREAM(Error);
-  
-  if (!text.empty())
-  {
-    m_Shell->AppendText(
-      // prevent echo of last input
-      !m_StdIn.empty() && text.find(m_StdIn) == 0 ?
-        text.substr(m_StdIn.length()):
-        text);
-    
-    if (m_Debug && m_Frame != nullptr)
-    {
-      m_Frame->get_debug()->process_stdout(text);
-    }
-  }
-    
-  if (!m_StdIn.empty())
-  {
-    m_StdIn.clear();
-    m_Shell->prompt(std::string(), false);
-  }
-}
-
 void wex::process_imp::write(const std::string& text)
 {
-  m_Timer->Stop();
+  m_timer->Stop();
   
-  if (m_Command.find("cmd") == 0 ||
-      m_Command.find("powershell") == 0)
+  if (m_process->get_command_executed().find("cmd") == 0 ||
+      m_process->get_command_executed().find("powershell") == 0)
   {
-    m_Shell->DocumentEnd();
+    m_process->get_shell()->DocumentEnd();
   }
     
   // Write text to process and restart timer.
   if (wxOutputStream* os = GetOutputStream(); os != nullptr)
   {
-    HandleCommand(text);
+    handle_command(text);
 
-    if (m_Debug && m_Frame != nullptr)
+    if (m_debug && m_process->get_frame() != nullptr)
     {
-      m_Frame->get_debug()->process_stdin(text);
+      m_process->get_frame()->get_debug()->process_stdin(text);
     }
 
     const auto el = (text.size() == 1 && text[0] == 3 ? 
@@ -451,12 +401,12 @@ void wex::process_imp::write(const std::string& text)
 
     wxTextOutputStream(*os).WriteString(text + el);
     
-    VLOG(9) << "process write: " << text;
+    VLOG(9) << "process " << GetPid() << " write: " << text;
     
-    m_StdIn = text;
+    m_stdin = text;
     wxMilliSleep(10);
 
     read();
-    m_Timer->Start();
+    m_timer->Start();
   }
 }

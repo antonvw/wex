@@ -2,7 +2,7 @@
 // Name:      test.cpp
 // Purpose:   Implementation of general test functions.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #define DOCTEST_CONFIG_IMPLEMENT
@@ -118,7 +118,6 @@ int wex::test_app::OnRun()
   Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
     m_Context->run();
     wex::config("AllowSync").set(false);
-    process::kill_all();
 
     if (m_Context->shouldExit())
     {

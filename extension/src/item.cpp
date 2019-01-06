@@ -2,7 +2,7 @@
 // Name:      item.cpp
 // Purpose:   Implementation of wex::item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
@@ -79,11 +79,11 @@ wex::item::item(type_t type,
     case LISTVIEW:
     case NOTEBOOK: 
     case NOTEBOOK_AUI: 
-    case NOTEBOOK_EX: 
     case NOTEBOOK_LIST: 
     case NOTEBOOK_SIMPLE: 
     case NOTEBOOK_TOOL: 
     case NOTEBOOK_TREE: 
+    case NOTEBOOK_WEX: 
     case RADIOBOX:
     case STC:
       m_is_row_growable = true;
@@ -467,12 +467,6 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
         m_Data.window().style());
       break;
 
-    case NOTEBOOK_EX: 
-      bookctrl = new notebook(
-        m_Data.window(
-          window_data().style(wxAUI_NB_TOP).parent(parent)).window()); 
-      break;
-
     case NOTEBOOK_LIST: 
       bookctrl = new wxListbook(parent, 
         m_Data.window().id(), 
@@ -511,6 +505,12 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
         m_Data.window().style());
       break;
     
+    case NOTEBOOK_WEX: 
+      bookctrl = new notebook(
+        m_Data.window(
+          window_data().style(wxAUI_NB_TOP).parent(parent)).window()); 
+      break;
+
     case RADIOBOX:
       {
       wxArrayString arraychoices;

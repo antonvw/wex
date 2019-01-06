@@ -2,10 +2,11 @@
 // Name:      util.cpp
 // Purpose:   Implementation of wex utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
+#include <iomanip>
 #include <numeric>
 #include <pugixml.hpp>
 #include <regex>
@@ -359,6 +360,31 @@ const std::string wex::get_string_set(
       return (b.size() >= min_size && b.find(prefix) == 0) ? a + b + ' ': a;});
 }
 
+// See also get_modification_time in stat.cpp
+std::tuple <bool, time_t> wex::get_time(
+  const std::string& text, const std::string& format)
+{
+  time_t t;
+#ifdef __WXMSW__
+  wxDateTime dt; 
+  if (!dt.ParseFormat(text, format)) return {false, 0}; 
+  t = dt.GetTicks();
+#else
+  std::tm tm = { 0 };
+  std::stringstream ss(text);
+  ss >> std::get_time(&tm, format.c_str());
+  
+  if (ss.fail())
+  {
+    return {false, 0};
+  }
+  
+  if ((t = mktime(&tm)) == -1) return {false, 0};
+#endif
+
+  return {true, t};
+}
+
 const std::string wex::get_word(std::string& text,
   bool use_other_field_separators,
   bool use_path_separator)
@@ -423,7 +449,7 @@ long wex::make(const path& makefile)
     config("Make").get("make") + " " +
       config("MakeSwitch").get("-f") + " " +
       makefile.data().string(),
-    process::EXEC_DEFAULT,
+    process::EXEC_NO_WAIT,
     makefile.get_path());
 }
 

@@ -2,7 +2,7 @@
 // Name:      test-Item.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -141,18 +141,18 @@ TEST_CASE("wex::item")
       "item::NOTEBOOK",
       "item::NOTEBOOK_AUI",
       "item::NOTEBOOK_CHOICE",
-      "item::NOTEBOOK_EX",
       "item::NOTEBOOK_LIST",
       "item::NOTEBOOK_SIMPLE",
       "item::NOTEBOOK_TOOL",
-      "item::NOTEBOOK_TREE"};
+      "item::NOTEBOOK_TREE",
+      "item::NOTEBOOK_WEX"};
     
-    REQUIRE(titles.size() == wex::item::NOTEBOOK_TREE - wex::item::NOTEBOOK + 1); 
+    REQUIRE(titles.size() == wex::item::NOTEBOOK_WEX - wex::item::NOTEBOOK + 1); 
     
     // Test dialog using notebook with pages.
     for (
       int style = wex::item::NOTEBOOK; 
-      style <= wex::item::NOTEBOOK_TREE;
+      style <= wex::item::NOTEBOOK_TREE; // NOTEBOOK_WEX not tested
       style++)
     {
       wxImageList* il = nullptr;

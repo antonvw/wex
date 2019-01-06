@@ -35,5 +35,6 @@ for mingw add `-G "MinGW Makefiles"` and do `mingw32-make`
 - [OTL database lib](http://otl.sourceforge.net/)    
 - [pugixml lib](https://github.com/zeux/pugixml)    
 - [tclap lib](http://tclap.sourceforge.net/)    
+- [tiny-process-library lib](https://gitlab.com/eidheim/tiny-process-library)    
 - [universal-ctags lib](https://github.com/universal-ctags/ctags)    
 - [wxWidgets lib](https://github.com/wxWidgets/wxWidgets/)

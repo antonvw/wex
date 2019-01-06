@@ -2,7 +2,7 @@
 // Name:      ex.h
 // Purpose:   Declaration of class wex::ex
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -169,7 +169,7 @@ namespace wex
       // relate a marker to mark number
       m_MarkerNumbers;
     
-    static stc_entry_dialog* m_Dialog;
+    static inline stc_entry_dialog* m_Dialog = nullptr;
     static vi_macros m_Macros;
     static evaluator m_Evaluator;
 

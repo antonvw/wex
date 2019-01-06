@@ -2,7 +2,7 @@
 // Name:      version.cpp
 // Purpose:   Implementation of wex::version_info
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -19,7 +19,7 @@ const wex::version_info wex::get_version_info()
   return version_info("wex", 
     19, 4, 0, 
     "wex Library (a collection of wxWidgets extension classes)",
-    "(c) 1998-2018, Anton van Wezenbeek." + std::string(_("All rights reserved.")));
+    "(c) 1998-2019, Anton van Wezenbeek." + std::string(_("All rights reserved.")));
 }
 
 wex::version_info::version_info(const std::string& name,

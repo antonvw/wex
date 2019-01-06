@@ -2,12 +2,12 @@
 // Name:      addressrange.h
 // Purpose:   Declaration of class wex::addressrange
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <vector> 
+#include <string> 
 #include <wex/address.h>
 #include <wex/indicator.h>
 
@@ -90,7 +90,7 @@ namespace wex
     bool print(const std::string& flags = std::string()) const;
     
     /// Acccess to the process.
-    /// Returns NULLL if escape without range was not yet invoked.
+    /// Returns nullptr if escape without range was not yet invoked.
     static wex::process* process() {return m_Process;};
     
     /// Shifts the specified lines to the start of the line.

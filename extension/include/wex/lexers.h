@@ -2,7 +2,7 @@
 // Name:      lexers.h
 // Purpose:   Declaration of wex::lexers class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -25,11 +25,21 @@ namespace wex
   class stc;
   
   /// Collection of all lexers.
-  /// The lexers are loaded from lexers.xml, this is done
-  /// automatically during the first Get call.
+  /// The lexers are loaded from wex-lexers.xml, this is done
+  /// automatically during the first get call.
   class lexers
   {
   public:
+    /// Margin text style type.
+    enum margin_style_t
+    {
+      MARGIN_STYLE_DAY,
+      MARGIN_STYLE_WEEK,
+      MARGIN_STYLE_MONTH,
+      MARGIN_STYLE_YEAR,
+      MARGIN_STYLE_OTHER
+    };
+    
     /// Applies containers (except global styles) to specified component.
     void apply(stc* stc) const;
 
@@ -45,7 +55,16 @@ namespace wex
       const std::string& lexer = "global");
 
     /// Applies margin text style to stc line.
-    void apply_margin_text_style(stc* stc, int line) const;
+    /// If text is supplied also sets margin text.
+    void apply_margin_text_style(
+      /// stc component
+      stc* stc, 
+      /// line no
+      int line, 
+      /// style type
+      margin_style_t style, 
+      /// text to be set in the margin
+      const std::string& text = std::string()) const;
 
     /// Finds a lexer specified by a filename (fullname).
     const lexer find_by_filename(const std::string& fullname) const;
@@ -131,6 +150,7 @@ namespace wex
     const auto & theme_macros() {return m_ThemeMacros[m_Theme];};
   private:
     lexers(const path& filename);
+
     void ParseNodeFolding(const pugi::xml_node& node);
     void ParseNodeglobal(const pugi::xml_node& node);
     void ParseNodeKeyword(const pugi::xml_node& node);
@@ -161,7 +181,12 @@ namespace wex
       m_Theme,
       m_ThemePrevious;
     
-    int m_StyleNoTextMargin {-1};
+    int 
+      m_StyleNoTextMargin {-1}, 
+      m_StyleNoTextMarginDay {-1}, 
+      m_StyleNoTextMarginWeek {-1},
+      m_StyleNoTextMarginMonth {-1},
+      m_StyleNoTextMarginYear {-1};
 
     static inline lexers* m_Self = nullptr;
   };

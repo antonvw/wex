@@ -2,7 +2,7 @@
 // Name:      statusbar.cpp
 // Purpose:   Implementation of wex::statusbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -16,7 +16,7 @@
 
 const int FIELD_NOT_SHOWN = -1;
 
-std::string ConfigName(wex::statusbar* sb, const std::string& item, int f)
+std::string config_name(wex::statusbar* sb, const std::string& item, int f)
 {
   return "SB" + sb->get_field(f).get_name() + item;
 }
@@ -54,8 +54,8 @@ wex::statusbar::~statusbar()
 
   for (int i = 0; i < GetFieldsCount(); i++)
   {
-    config(ConfigName(this, "Style", i)).set(get_field(i).GetStyle());
-    config(ConfigName(this, "Width", i)).set(get_field(i).GetWidth());
+    config(config_name(this, "Style", i)).set(get_field(i).GetStyle());
+    config(config_name(this, "Width", i)).set(get_field(i).GetWidth());
   }
 }
 
@@ -64,8 +64,10 @@ const wex::statusbar_pane& wex::statusbar::get_field(int n) const
   return m_Panes[n];
 }
 
-// Returns true if the field exists.
-// The shown_pane_no, pane_no is FIELD_NOT_SHOWN if the field is not shown.
+// Returns a tuple with first field true if the specified field exists.
+// The second field is shown_pane_no, or FIELD_NOT_SHOWN if the field is not shown,
+// to be used as index in wxwidgets panes.
+// The third field the pane_no as index in the panes vector.
 std::tuple <bool, int, int> 
   wex::statusbar::GetFieldNo(const std::string& field) const
 {
@@ -103,7 +105,8 @@ const std::string wex::statusbar::get_statustext(const std::string& field) const
   const auto& [res, shown_pane_no, pane_no] = GetFieldNo(field);
   return !res || shown_pane_no == FIELD_NOT_SHOWN ?
     // Do not show error, as you might explicitly want to ignore messages.
-    std::string(): GetStatusText(shown_pane_no).ToStdString();
+    std::string(): 
+    GetStatusText(shown_pane_no).ToStdString();
 }
 
 void wex::statusbar::Handle(wxMouseEvent& event, const statusbar_pane& pane)
@@ -182,8 +185,8 @@ wex::statusbar* wex::statusbar::setup(
 
   for (int i = 0; i < (int)m_Panes.size(); i++)
   {
-    styles[i] = config(ConfigName(sb, "Style", i)).get(m_Panes[i].GetStyle());
-    widths[i] = config(ConfigName(sb, "Width", i)).get(m_Panes[i].GetWidth());
+    styles[i] = config(config_name(sb, "Style", i)).get(m_Panes[i].GetStyle());
+    widths[i] = config(config_name(sb, "Width", i)).get(m_Panes[i].GetWidth());
 
     m_Panes[i].SetStyle(styles[i]);
     m_Panes[i].SetWidth(widths[i]);

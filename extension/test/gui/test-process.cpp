@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-process->cpp
+// Name:      test-process.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -21,7 +21,6 @@ TEST_CASE("wex::process")
   
   wex::process* process = new wex::process;
   
-  REQUIRE(!process->error());
   REQUIRE( process->get_stdout().empty());
   REQUIRE( process->get_stderr().empty());
   REQUIRE(!process->is_running());
@@ -33,7 +32,6 @@ TEST_CASE("wex::process")
   // Test wait for prcess (sync)
 #ifndef __WXOSX__
   REQUIRE( process->execute("ls -l", wex::process::EXEC_WAIT));
-  REQUIRE(!process->error());
   REQUIRE(!process->write("hello world"));
   REQUIRE(!process->get_stdout().empty());
   
@@ -45,18 +43,16 @@ TEST_CASE("wex::process")
 
   // Repeat last process (using "" only for dialogs).
   REQUIRE( process->execute("ls -l", wex::process::EXEC_WAIT));
-  REQUIRE(!process->error());
   REQUIRE(!process->get_stdout().empty());
 
   // Test working directory (should not change).
   REQUIRE( process->execute("ls -l", wex::process::EXEC_WAIT, ".."));
-  REQUIRE(!process->error());
   REQUIRE(!process->get_stdout().empty());
   REQUIRE( wxGetCwd().Contains("data"));
 
   // Test invalid process
   REQUIRE(!process->execute("xxxx", wex::process::EXEC_WAIT));
-  REQUIRE( process->get_stderr().empty());
+  REQUIRE(!process->get_stderr().empty());
   REQUIRE( process->get_stdout().empty());
   REQUIRE(!process->kill());
   
@@ -71,20 +67,16 @@ TEST_CASE("wex::process")
   REQUIRE( process->kill());
 
   // Test working directory for process (should change).
-  REQUIRE( process->execute("ls -l", wex::process::EXEC_DEFAULT, ".."));
-  REQUIRE(!process->error());
+  REQUIRE( process->execute("ls -l", wex::process::EXEC_NO_WAIT, ".."));
   REQUIRE(!wxGetCwd().Contains("data"));
   wex::path::current(cwd.original());
   REQUIRE( process->kill());
   
   // Test invalid process (the process gets a process id, and exits immediately).
   REQUIRE( process->execute("xxxx"));
-  REQUIRE(!process->error());
   REQUIRE( process->kill());
 #endif
 #endif
   
   wex::process::prepare_output(frame()); // in fact already done
-
-  // kill_all is done in main.
 }
