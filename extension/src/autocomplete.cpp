@@ -2,7 +2,7 @@
 // Name:      autocomplete.cpp
 // Purpose:   Implementation of class wex::autocomplete
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/autocomplete.h>
@@ -11,7 +11,6 @@
 #include <wex/log.h>
 #include <wex/stc.h>
 #include <wex/util.h>
-#include <easylogging++.h>
 
 wex::autocomplete::autocomplete(wex::stc* stc)
   : m_STC(stc)
@@ -30,16 +29,16 @@ bool wex::autocomplete::activate(const std::string& text)
 
   m_STC->get_vi().ctags()->find(text, current, m_Filter);
 
-  VLOG(9) << "autocomplete: " << text;
+  log::verbose("autocomplete") << text;
   
   if (current.is_active())
   {
-    VLOG(9) << "autocomplete current: " << current.get();
+    log::verbose("autocomplete current") << current.get();
   }
 
   if (m_Filter.is_active())
   {
-    VLOG(9) << "autocomplete filter: " << m_Filter.get();
+    log::verbose("autocomplete filter") << m_Filter.get();
   }
 
   if (m_STC->get_vi().is_active())
@@ -167,7 +166,7 @@ bool wex::autocomplete::ShowInserts(bool show) const
       !comp.empty())
     {
       m_STC->AutoCompShow(m_Text.length() - 1, comp);
-      VLOG(9) << "autocomplete::show_insert chars: " << comp.size();
+      log::verbose("autocomplete::show_insert chars") << comp.size();
       return true;
     }
   }
@@ -184,7 +183,7 @@ bool wex::autocomplete::ShowKeywords(bool show) const
       !comp.empty())
     {
       m_STC->AutoCompShow(m_Text.length() - 1, comp);
-      VLOG(9) << "autocomplete::show_keywords chars: " << comp.size();
+      log::verbose("autocomplete::show_keywords chars") << comp.size();
       return true;
     }
   }

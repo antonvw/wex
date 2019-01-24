@@ -166,7 +166,7 @@ bool wex::file::check_sync()
       // Update the stat member, so next time no sync.
       if (!m_File->stat().sync())
       {
-        log_status("Could not sync: " + m_File->path().data().string());
+        log::status("Could not sync") << m_File->path();
       }
         
       return true;
@@ -232,7 +232,7 @@ bool wex::file::file_save(const path& p)
 
   if (!save_as && !m_IsLoaded)
   {
-    log_status("File has not been loaded");
+    log::status("File has not been loaded");
     return false;
   }
 

@@ -2,12 +2,11 @@
 // Name:      ctags-entry.cpp
 // Purpose:   Implementation of class wex::ctags_entry
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ctags-entry.h>
 #include <wex/log.h>
-#include <easylogging++.h>
 
 wex::ctags_entry& wex::ctags_entry::access(const std::string& v) 
 {
@@ -23,7 +22,7 @@ wex::ctags_entry& wex::ctags_entry::class_name(const std::string& v)
 
 void wex::ctags_entry::clear()
 {
-  VLOG(9) << "filter: " << get() << " cleared";
+  log::verbose("filter") << get() << " cleared";
 
   m_access.clear();
   m_class.clear();

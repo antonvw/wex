@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-Item.cpp
+// Name:      test-item.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2019 Anton van Wezenbeek
@@ -28,7 +28,9 @@ TEST_CASE("wex::item")
     
     wex::item::use_config(false);
     
-    wex::item item("item", "hello string", wex::item::TEXTCTRL, wex::control_data().is_required(true));
+    wex::item item("item", "hello string", 
+      wex::item::TEXTCTRL, 
+      wex::control_data().is_required(true));
     
     REQUIRE( item.columns() == 1);
     REQUIRE( std::any_cast<std::string>(item.initial()) == "hello string");
@@ -75,14 +77,16 @@ TEST_CASE("wex::item")
     {
     }
     
-    wex::item item_float("float", wex::item::TEXTCTRL_FLOAT, std::string("100.001"));
+    wex::item item_float("float", 
+      wex::item::TEXTCTRL_FLOAT, std::string("100.001"));
     REQUIRE( item_float.type() == wex::item::TEXTCTRL_FLOAT);
     
     wex::item item_spin("spindouble", 20.0, 30.0, 25.0, 0.1);
     REQUIRE( item_spin.type() == wex::item::SPINCTRLDOUBLE);
 
 #ifdef __UNIX__
-    wex::item item_picker("picker", wex::item::FILEPICKERCTRL, std::string("/usr/bin/git"));
+    wex::item item_picker("picker", 
+      wex::item::FILEPICKERCTRL, std::string("/usr/bin/git"));
 #endif
     
     item.layout(panel, sizer);
@@ -105,7 +109,8 @@ TEST_CASE("wex::item")
 
 #ifdef __UNIX__
     REQUIRE( item_picker.layout(panel, sizer) != nullptr);
-    REQUIRE( std::any_cast<std::string>(item_picker.get_value()) == "/usr/bin/git");
+    REQUIRE( std::any_cast<std::string>(item_picker.get_value()) == 
+      "/usr/bin/git");
 #endif
     
     std::vector <wex::item> items {item, item_int, item_spin
@@ -152,7 +157,7 @@ TEST_CASE("wex::item")
     // Test dialog using notebook with pages.
     for (
       int style = wex::item::NOTEBOOK; 
-      style <= wex::item::NOTEBOOK_TREE; // NOTEBOOK_WEX not tested
+      style <= wex::item::NOTEBOOK_WEX;
       style++)
     {
       wxImageList* il = nullptr;

@@ -2,7 +2,7 @@
 // Name:      stc.h
 // Purpose:   Declaration of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -23,6 +23,7 @@ namespace wex
   class indicator;
   class item_dialog;
   class lexer;
+  class log;
   class managed_frame;
   class menu;
   class path;
@@ -227,9 +228,8 @@ namespace wex
     /// Shows a print preview.
     void print_preview(wxPreviewFrameModalityKind kind = wxPreviewFrame_AppModal);
 
-    /// Shows properties on the statusbar.
-    /// Flags used are from statusflags.
-    void properties_message(status_t flags = 0);
+    /// Shows properties on the statusbar using specified flags.
+    void properties_message(log::status_t flags = 0);
     
     /// Replaces all text.
     /// It there is a selection, it replaces in the selection, otherwise
@@ -314,9 +314,6 @@ namespace wex
     void WordLeftRectExtend();
     void WordRightRectExtend();
     void WordRightEndRectExtend() {;};
-  protected:
-    void OnIdle(wxIdleEvent& event);
-    void OnStyledText(wxStyledTextEvent& event);
   private:
     enum
     {
@@ -335,6 +332,8 @@ namespace wex
     void FoldAll();
     bool link_open(link_t mode, std::string* filename = nullptr); // name of found file
     void MarkModified(const wxStyledTextEvent& event);
+    void OnIdle(wxIdleEvent& event);
+    void OnStyledText(wxStyledTextEvent& event);
 
     const int 
       m_MarginDividerNumber {1}, m_MarginFoldingNumber {2},

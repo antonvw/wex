@@ -2,7 +2,7 @@
 // Name:      dir.cpp
 // Purpose:   Implementation of class wex::dir and wex::open_file_dir
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <filesystem>
@@ -10,7 +10,8 @@
 #include <wex/frame.h>
 #include <wex/log.h>
 #include <wex/util.h>
-#include <easylogging++.h>
+
+namespace fs = std::filesystem;
 
 namespace wex
 {
@@ -53,12 +54,31 @@ namespace wex
 
     std::vector <std::string> m_Container;
   };
+
+  bool traverse(const fs::directory_entry& e, wex::dir* dir, int& matches)
+  {
+    if (fs::is_regular_file(e.path()))
+    {
+      if (dir->type().test(wex::dir::FILES) && 
+        wex::matches_one_of(e.path().filename().string(), dir->file_spec()))
+      {
+        dir->on_file(e.path());
+        matches++;
+      }
+    }
+    else if (dir->type().test(wex::dir::DIRS) && fs::is_directory(e.path()))
+    {
+      dir->on_dir(e.path());
+    }
+
+    return !wex::interruptable::is_cancelled();
+  }
 };
 
 std::vector <wex::path> wex::get_all_files(
   const wex::path& path, const std::string& filespec, dir::type_t flags) 
 {
-  wex::container_dir<wex::path> dir(path, filespec, flags);
+  container_dir<wex::path> dir(path, filespec, flags);
   dir.find_files();
   return dir.get();
 }
@@ -66,12 +86,10 @@ std::vector <wex::path> wex::get_all_files(
 std::vector <std::string> wex::get_all_files(
   const std::string& path, const std::string& filespec, dir::type_t flags) 
 {
-  wex::string_dir dir(path, filespec, flags);
+  string_dir dir(path, filespec, flags);
   dir.find_files();
   return dir.get();
 }
-
-namespace fs = std::filesystem;
 
 wex::dir::dir(const wex::path& dir, const std::string& filespec, type_t flags)
   : m_Dir(dir)
@@ -80,40 +98,21 @@ wex::dir::dir(const wex::path& dir, const std::string& filespec, type_t flags)
 {
 }
 
-bool traverse(const fs::directory_entry& e, wex::dir* dir, int& matches)
-{
-  if (fs::is_regular_file(e.path()))
-  {
-    if (dir->type().test(wex::dir::FILES) && 
-      wex::matches_one_of(e.path().filename().string(), dir->file_spec()))
-    {
-      dir->on_file(e.path());
-      matches++;
-    }
-  }
-  else if (dir->type().test(wex::dir::DIRS) && fs::is_directory(e.path()))
-  {
-    dir->on_dir(e.path());
-  }
-
-  return !wex::interruptable::is_cancelled();
-}
-
 int wex::dir::find_files()
 {
   if (!m_Dir.dir_exists())
   {
-    wex::log("invalid path") << m_Dir.data().string();
+    log("invalid path") << m_Dir.data().string();
     return -1;
   }
 
   if (!start())
   {
-    wex::log_status(_("Busy"));
+    log::status(_("Busy"));
     return -1;
   }
 
-  VLOG(9) << "iterating: " << m_Dir.data() << " on: " << m_FileSpec << " flags: " << m_Flags;
+  log::verbose("iterating") << m_Dir << "on:" << m_FileSpec << "flags:" << m_Flags;
 
   int matches = 0;
 
@@ -121,29 +120,25 @@ int wex::dir::find_files()
   {
     if (m_Flags.test(RECURSIVE))
     {
-      const fs::directory_options options = 
+      fs::recursive_directory_iterator rdi(m_Dir.data(),
 #ifdef __WXMSW__
-        fs::directory_options::none;
+        fs::directory_options::none), end;
 #else
-        fs::directory_options::skip_permission_denied;
+        fs::directory_options::skip_permission_denied), end;
 #endif
-      
-      for (const auto& p: fs::recursive_directory_iterator(m_Dir.data(), options))
-      {
-        if (!traverse(p, this, matches)) break;
-      }
+      std::all_of(rdi, end, [&] (const fs::directory_entry& p) 
+        {return traverse(p, this, matches);});
     }
     else
     {
-      for (const auto& p: fs::directory_iterator(m_Dir.data()))
-      {
-        if (!traverse(p, this, matches)) break;
-      }
+      fs::directory_iterator di(m_Dir.data()), end;
+      std::all_of(di, end, [&] (const fs::directory_entry& p) 
+        {return traverse(p, this, matches);});
     }
   }
   catch (fs::filesystem_error& e)
   {
-    wex::log(e) << "filesystem";
+    log(e) << "filesystem";
   }
 
   stop();
@@ -164,6 +159,6 @@ wex::open_file_dir::open_file_dir(wex::frame* frame,
 
 bool wex::open_file_dir::on_file(const wex::path& file)
 {
-  m_Frame->open_file(file, wex::stc_data().flags(m_Flags));
+  m_Frame->open_file(file, stc_data().flags(m_Flags));
   return true;
 }

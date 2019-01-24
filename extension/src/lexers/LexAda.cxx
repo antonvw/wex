@@ -2,6 +2,7 @@
 /** @file LexAda.cxx
  ** Lexer for Ada 95
  ** Converted to lexer object and added further folding features/properties by "Udo Lechner" <dlchnr(at)gmx(dot)net>
+ ** Fixed warnings by Anton van Wezenbeek  
  **/
 // Copyright 2002 by Sergey Koshcheyev <sergey.k@seznam.cz>
 // The License.txt file describes the conditions under which this software may be distributed.
@@ -41,24 +42,14 @@ enum tClassifiedKW {endKW=-1, unfitKW=0, nullKW=1, recordKW=2, ifKW, loopKW, cas
 
 // Options used for LexerAda
 struct OptionsAda { 
-	bool fold;
-	bool foldSyntaxBased;
-	bool foldCommentMultiline;
-	bool foldCommentExplicit;
-	std::string foldExplicitStart;
-	std::string foldExplicitEnd;
-	bool foldExplicitAnywhere;
-	bool foldCompact;
-	OptionsAda() {
-		fold = false;
-		foldSyntaxBased = true;
-		foldCommentMultiline = false;
-		foldCommentExplicit = false;
-		foldExplicitStart = "";
-		foldExplicitEnd   = "";
-		foldExplicitAnywhere = false;
-		foldCompact = true;
-	}
+	bool fold {false};
+	bool foldSyntaxBased {true};
+	bool foldCommentMultiline {false};
+	bool foldCommentExplicit {false};
+	std::string foldExplicitStart {false};
+	std::string foldExplicitEnd {false};
+	bool foldExplicitAnywhere {false};
+	bool foldCompact {true};
 };
 
 static const char * const adaWordListDesc[] = {

@@ -2,7 +2,7 @@
 // Name:      stream.cpp
 // Purpose:   Implementation of class wex::listview_stream
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cctype> // for isspace
@@ -14,7 +14,6 @@
 #include <wex/report/defs.h>
 #include <wex/report/frame.h>
 #include <wex/report/listview.h>
-#include <easylogging++.h>
 
 wex::listview* wex::listview_stream::m_Report = nullptr;
 wex::history_frame* wex::listview_stream::m_Frame = nullptr;
@@ -333,7 +332,7 @@ bool wex::listview_stream::setup_tool(
       if ((m_Report = 
         m_Frame->activate(history_listview::type_tool(tool))) == nullptr)
       {
-        VLOG(9) << "activate failed";
+        log::verbose("activate failed");
         return false;
       }
     }
@@ -345,7 +344,7 @@ bool wex::listview_stream::setup_tool(
 
   if (m_Report != nullptr && m_Report->data().type() != listview_data::FIND)
   {
-    VLOG(9) << "report list type is not listview_data::FIND";
+    log::verbose("report list type is not listview_data::FIND");
     return false;
   }
 

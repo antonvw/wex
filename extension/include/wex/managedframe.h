@@ -2,7 +2,7 @@
 // Name:      managedframe.h
 // Purpose:   Declaration of wex::managed_frame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -158,7 +158,7 @@ namespace wex
       const std::string& pane) {
         return show_pane(pane, !m_Manager.GetPane(pane).IsShown());};
   protected:
-    void DoRecent(
+    void on_menu_history(
       const class file_history& history, 
       size_t index, 
       stc_data::window_t flags = 0);

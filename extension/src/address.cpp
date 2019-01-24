@@ -2,7 +2,7 @@
 // Name:      address.cpp
 // Purpose:   Implementation of class wex::address
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <memory>
@@ -12,6 +12,7 @@
 #endif
 #include <wex/address.h>
 #include <wex/ex.h>
+#include <wex/log.h>
 #include <wex/managedframe.h>
 #include <wex/process.h>
 #include <wex/stc.h>
@@ -102,7 +103,7 @@ bool wex::address::flags_supported(const std::string& flags) const
   
   if (std::vector<std::string> v; match("([-+#pl])", flags, v) < 0)
   {
-    log_status("Unsupported flags: " + flags);
+    log::status("Unsupported flags") << flags;
     return false;
   }
   
@@ -243,7 +244,7 @@ bool wex::address::read(const std::string& arg) const
     
     if (file file(arg); !file.is_opened())
     {
-      wxLogStatus(_("file: %s open error"), file.get_filename().data().string());
+      log::status(_("File")) << file.get_filename() << "open error";
       return false;
     }
     else if (const auto buffer(file.read()); buffer != nullptr)
@@ -261,7 +262,7 @@ bool wex::address::read(const std::string& arg) const
     }
     else
     {
-      wxLogStatus(_("file: %s read failed"), arg);
+      log::status(_("File")) << arg << "read failed";
       return false;
     }
       

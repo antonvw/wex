@@ -2,7 +2,7 @@
 // Name:      itemtpldlg.h
 // Purpose:   Declaration of wex::item_template_dialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -151,7 +151,7 @@ namespace wex
         }
       };
       return false;};
-  protected:
+  private:
     void OnCommand(wxCommandEvent& event) {
       if (  event.GetId() == wxID_APPLY ||
           ((event.GetId() == wxID_OK ||
@@ -252,7 +252,7 @@ namespace wex
         }
       }
       event.Enable(m_force_checkbox_checked ? one_checkbox_checked: true);};
-  private:
+
     void Click(const wxCommandEvent& event) const {
       if (frame* frame = wxDynamicCast(wxTheApp->GetTopWindow(), wex::frame);
         frame != nullptr)

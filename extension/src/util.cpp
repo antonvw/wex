@@ -36,7 +36,6 @@
 #include <wex/tostring.h>
 #include <wex/vcs.h>
 #include <wex/vi-macros.h>
-#include <easylogging++.h>
 
 const std::string wex::after(
   const std::string& text, char c, bool first)
@@ -244,7 +243,7 @@ bool wex::comparefile(const path& file1, const path& file2)
     return false;
   }
 
-  log_status(_("Compared") + ": " + arguments);
+  log::status(_("Compared")) << arguments;
 
   return true;
 }
@@ -412,33 +411,6 @@ bool wex::is_codeword_separator(int c)
 {
   return isspace(c) || is_brace(c) || 
          c == ',' || c == ';' || c == ':' || c == '@';
-}
-
-void wex::log_status(const char* text)
-{
-  wxLogStatus(text);
-}
-
-void wex::log_status(const std::string& text)
-{
-  log_status(text.c_str());
-}
-
-void wex::log_status(const path& fn, status_t flags)
-{
-  std::string text = (flags[STAT_FULLPATH] ? 
-    fn.data().string(): fn.fullname());
-
-  if (fn.stat().is_ok())
-  {
-    const std::string what = (flags[STAT_SYNC] ? 
-      _("Synchronized"):
-      _("Modified"));
-        
-    text += " " + what + " " + fn.stat().get_modification_time();
-  }
-
-  log_status(text);
 }
 
 long wex::make(const path& makefile)
@@ -997,8 +969,8 @@ void wex::vcs_execute(frame* frame, int id, const std::vector< path > & files)
           }
           else
           {
-            log_status("No difference");
-            VLOG(9) << "no output from: " << vcs.entry().get_command_executed();
+            log::status("No difference");
+            log::verbose("no output from:") << vcs.entry().get_command_executed();
           }
         }
       }
@@ -1015,7 +987,7 @@ void wex::xml_error(
   const pugi::xml_parse_result* result,
   stc* stc)
 {
-  log_status("xml error: " + std::string(result->description()));
+  log::status("Xml error") << result->description();
   log(*result) << filename.name();
 
   // prevent recursion

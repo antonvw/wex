@@ -2,7 +2,7 @@
 // Name:      lexer.cpp
 // Purpose:   Implementation of wex::lexer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -17,7 +17,6 @@
 #include <wex/stc.h>
 #include <wex/tokenizer.h>
 #include <wex/util.h>
-#include <easylogging++.h>
 
 wex::lexer& wex::lexer::operator=(const wex::lexer& l)
 {
@@ -517,7 +516,7 @@ bool wex::lexer::set(const std::string& lexer, bool fold)
     !lexers::get()->get_lexers().empty() &&
     !lexer.empty())
   {
-    VLOG(9) << "lexer is not known: " << lexer;
+    log::verbose("lexer is not known") << lexer;
   }
   
   return m_is_ok;

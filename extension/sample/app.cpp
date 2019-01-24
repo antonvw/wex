@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of wex sample classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <chrono>
@@ -24,7 +24,6 @@
 #include <wex/util.h>
 #include <wex/vcs.h>
 #include <wex/version.h>
-#include <easylogging++.h>
 #include "app.h"
 #ifndef __WXMSW__
 #include "app.xpm"
@@ -64,8 +63,7 @@ bool sample_app::OnInit()
   sample_frame *frame = new sample_frame();
   frame->Show(true);
   
-  wxLogStatus(
-    "Locale: " + get_locale().GetLocale() + " dir: " + get_catalog_dir());
+  wex::log::status("Locale") << get_locale().GetLocale() << "dir" << get_catalog_dir();
 
   return true;
 }
@@ -372,9 +370,8 @@ void sample_frame::OnCommand(wxCommandEvent& event)
         wex::stc_data().flags((wex::stc_data::window_t)m_FlagsSTC));
       const auto milli = std::chrono::duration_cast
         <std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
-      wxLogStatus(
-        "wex::stc::Open:%ld milliseconds, %d bytes", 
-        milli.count(), m_STC->GetTextLength());
+      wex::log::status("Open") 
+         << milli.count() << "milliseconds" << m_STC->GetTextLength() << "bytes";
       }
       break;
     case wxID_SAVE:
@@ -383,7 +380,7 @@ void sample_frame::OnCommand(wxCommandEvent& event)
       if (m_STC->get_filename().data() == wex::lexers::get()->get_filename().data())
       {
         wex::lexers::get()->load_document();
-        VLOG(9) << "File contains: " << wex::lexers::get()->get_lexers().size() << " lexers";
+        wex::log::verbose("File contains") << wex::lexers::get()->get_lexers().size() << "lexers";
           // As the lexer might have changed, update status bar field as well.
         update_statusbar(m_STC, "PaneLexer");
       }
@@ -442,7 +439,7 @@ void sample_frame::on_command_item_dialog(
   }
   else if (event.GetId() >= 1000 && event.GetId() < 1050)
   {
-    VLOG(9) << "button: " << event.GetId() << " checked: " << event.IsChecked();
+    wex::log::verbose("button") << event.GetId() << "checked:" << event.IsChecked();
   }
   else
   {

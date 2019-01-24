@@ -19,7 +19,7 @@ wex::notebook::notebook(const window_data& data)
       data.pos(), 
       data.size(), 
       data.style() == DATA_NUMBER_NOT_SET ?
-        wxAUI_NB_TOP | wxAUI_NB_TAB_SPLIT | wxAUI_NB_TAB_MOVE | wxAUI_NB_SCROLL_BUTTONS: 
+        wxAUI_NB_DEFAULT_STYLE:
         data.style())
   , m_Frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
 {

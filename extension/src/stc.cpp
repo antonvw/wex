@@ -170,7 +170,7 @@ void wex::stc::Cut()
 bool wex::stc::FileReadOnlyAttributeChanged()
 {
   SetReadOnly(get_filename().is_readonly()); // does not return anything
-  wxLogStatus(_("Readonly attribute changed"));
+  log::status(_("Readonly attribute changed"));
 
   return true;
 }
@@ -319,7 +319,7 @@ void wex::stc::guess_type()
   {
     if (!m_vi.command(":" + v[0] + "*")) // add * to indicate modelin
     {
-      wxLogStatus("Could not apply vi settings");
+      log::status("Could not apply vi settings");
     }
   }
 
@@ -586,11 +586,11 @@ void wex::stc::print_preview(wxPreviewFrameModalityKind kind)
 }
 #endif
 
-void wex::stc::properties_message(status_t flags)
+void wex::stc::properties_message(log::status_t flags)
 {
-  log_status(get_filename(), flags);
+  log::status(flags) << get_filename();
   
-  if (!flags[STAT_SYNC])
+  if (!flags[log::STAT_SYNC])
   {
     frame::update_statusbar(this, "PaneFileType");
     frame::update_statusbar(this, "PaneLexer");
@@ -599,7 +599,7 @@ void wex::stc::properties_message(status_t flags)
   
   frame::update_statusbar(this, "PaneInfo");
 
-  if (!flags[STAT_SYNC] && m_Frame != nullptr)
+  if (!flags[log::STAT_SYNC] && m_Frame != nullptr)
   {
     const wxString file = GetName() + 
       (GetReadOnly() ? " [" + _("Readonly") + "]": wxString());
@@ -678,8 +678,7 @@ int wex::stc::replace_all(
 
   EndUndoAction();
 
-  wxLogStatus(_("Replaced: %d occurrences of: %s"),
-    nr_replacements, find_text.c_str());
+  log::status(_("Replaced")) << nr_replacements << "occurrences of" << find_text;
 
   return nr_replacements;
 }

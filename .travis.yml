@@ -24,7 +24,7 @@ matrix:
           packages:
             - g++-8
       env:
-        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8 && GCOV=gcov-8"
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
 
     - os: osx
       addons:
@@ -55,7 +55,7 @@ script:
     - cmake -DCMAKE_BUILD_TYPE=Coverage -DwexBUILD_TESTS=ON ..
     - make -j 4
     - if [ "$TRAVIS_OS_NAME" != "osx" ]; then make lcov-prep; fi
-    - if [ "$TRAVIS_OS_NAME" != "osx" ]; then ctest --timeout 120 -V ..
+    - if [ "$TRAVIS_OS_NAME" != "osx" ]; then ctest --timeout 120 -V .. ; fi
         
 after_success:
     - if [ "$TRAVIS_OS_NAME" != "osx" ]; then make lcov; fi

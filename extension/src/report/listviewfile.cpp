@@ -2,7 +2,7 @@
 // Name:      listview_file.cpp
 // Purpose:   Implementation of class wex::listview_file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -21,7 +21,6 @@
 #include <wex/report/defs.h>
 #include <wex/report/dir.h>
 #include <wex/report/frame.h>
-#include <easylogging++.h>
 
 wex::listview_file::listview_file(
   const std::string& file, const listview_data& data)
@@ -52,7 +51,7 @@ wex::listview_file::listview_file(
     if (const int index = HitTest(wxPoint(event.GetX(), event.GetY()), flags); 
       index < 0)
     {
-      log_status(get_filename());
+      log::status() << get_filename();
     }
   });
   
@@ -110,11 +109,8 @@ void wex::listview_file::add_items(
       }
     }
   
-    const std::string text = 
-      _("Added") + " " + std::to_string(added) + " " + _("file(s)");
+    log::status(_("Added")) << added << _("file(s)");
   
-    wxLogStatus(text.c_str());
-    
     Bind(wxEVT_IDLE, &listview_file::OnIdle, this);
 #ifdef __WXMSW__ 
     });
@@ -188,7 +184,7 @@ bool wex::listview_file::do_file_load(bool synced)
 
   if (synced)
   {
-    log_status(get_filename(), status_t().set(STAT_SYNC).set(STAT_FULLPATH));
+    log::status(log::status_t().set(log::STAT_SYNC).set(log::STAT_FULLPATH)) << get_filename();
   }
 
   frame()->set_recent_project(get_filename());
@@ -201,7 +197,7 @@ bool wex::listview_file::do_file_load(bool synced)
     t.join();
 #endif
 
-  VLOG(1) << "opened: " << get_filename().data().string();
+  log::verbose("opened", 1) << get_filename().data().string();
 
   return true;
 }
@@ -241,7 +237,7 @@ void wex::listview_file::do_file_save(bool save_as)
   
   if (doc.save_file(get_filename().data().string().c_str()))
   {
-    VLOG(1) << "saved: " << get_filename().data().string();
+    log::verbose("saved", 1) << get_filename().data().string();
   }
   else
   {

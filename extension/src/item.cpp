@@ -333,7 +333,9 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
         *wxBLACK, 
         m_Data.window().pos(), 
         m_Data.window().size(), 
-        m_Data.window().style() == 0 ? wxCLRBTN_DEFAULT_STYLE: m_Data.window().style());
+        m_Data.window().style() == DATA_NUMBER_NOT_SET ? 
+          wxCLRBTN_DEFAULT_STYLE: 
+          m_Data.window().style());
       break;
 
     case COMBOBOX:
@@ -368,7 +370,9 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
         wxDirSelectorPromptStr, 
         m_Data.window().pos(), 
         m_Data.window().size(), 
-        m_Data.window().style() == 0 ? wxDIRP_DEFAULT_STYLE: m_Data.window().style());
+        m_Data.window().style() == DATA_NUMBER_NOT_SET ? 
+           wxDIRP_DEFAULT_STYLE: 
+           m_Data.window().style());
 
       m_Window = pc;
 
@@ -393,7 +397,9 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
         wxFileSelectorPromptStr, wc,
         m_Data.window().pos(), 
         m_Data.window().size(),
-        m_Data.window().style() == 0 ? wxFLP_DEFAULT_STYLE: m_Data.window().style());
+        m_Data.window().style() == DATA_NUMBER_NOT_SET ? 
+          wxFLP_DEFAULT_STYLE: 
+          m_Data.window().style());
 
       m_Window = pc;
 
@@ -411,7 +417,9 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
         wxNullFont,
         m_Data.window().pos(), 
         m_Data.window().size(),
-        m_Data.window().style() == 0 ? wxFNTP_FONTDESC_AS_LABEL: m_Data.window().style());
+        m_Data.window().style() == DATA_NUMBER_NOT_SET ? 
+          wxFNTP_FONTDESC_AS_LABEL: 
+          m_Data.window().style());
 
       m_Window = pc;
 
@@ -430,7 +438,9 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
         std::any_cast<std::string>(m_Initial), 
         m_Data.window().pos(), 
         m_Data.window().size(), 
-        m_Data.window().style() == 0 ? wxHL_DEFAULT_STYLE: m_Data.window().style());
+        m_Data.window().style() == DATA_NUMBER_NOT_SET ? 
+          wxHL_DEFAULT_STYLE: 
+          m_Data.window().style());
 #endif      
       break;
 
@@ -456,7 +466,9 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
         m_Data.window().id(), 
         m_Data.window().pos(), 
         m_Data.window().size(), 
-        m_Data.window().style() == 0 ? wxAUI_NB_TOP: m_Data.window().style());
+        m_Data.window().style() == DATA_NUMBER_NOT_SET ? 
+          wxAUI_NB_DEFAULT_STYLE: 
+          m_Data.window().style());
       break;
 
     case NOTEBOOK_CHOICE: 
@@ -507,8 +519,7 @@ bool wex::item::CreateWindow(wxWindow* parent, bool readonly)
     
     case NOTEBOOK_WEX: 
       bookctrl = new notebook(
-        m_Data.window(
-          window_data().style(wxAUI_NB_TOP).parent(parent)).window()); 
+        m_Data.window(window_data().parent(parent)).window()); 
       break;
 
     case RADIOBOX:
@@ -776,7 +787,7 @@ wxFlexGridSizer* wex::item::layout(
       case SPACER: sizer->AddSpacer(m_Data.window().style()); return fgz;
       
       default: 
-        if (m_Type >= NOTEBOOK && m_Type <= NOTEBOOK_TREE)
+        if (m_Type >= NOTEBOOK && m_Type <= NOTEBOOK_WEX)
         {
           if (!m_Initial.has_value())
           {

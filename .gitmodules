@@ -6,7 +6,7 @@
 	url = https://github.com/zeux/pugixml.git
 [submodule "external/tclap"]
 	path = external/tclap
-	url = https://git.code.sf.net/p/tclap/code
+	url = https://git.code.sf.net/p/tclap/code.git
 [submodule "external/easyloggingpp"]
 	path = external/easyloggingpp
 	url = https://github.com/muflihun/easyloggingpp.git
@@ -18,4 +18,4 @@
 	url = https://github.com/universal-ctags/ctags.git
 [submodule "external/tiny-process-library"]
 	path = external/tiny-process-library
-	url = https://gitlab.com/eidheim/tiny-process-library
+	url = https://gitlab.com/eidheim/tiny-process-library.git

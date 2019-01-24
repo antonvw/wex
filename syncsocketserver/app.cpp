@@ -339,7 +339,7 @@ frame::frame()
     }
 
     const wxString text = _("server stopped");
-    wex::log_status(text);
+    wex::log::status(text);
     AppendText(m_LogWindow, text, DATA_MESSAGE);
 
     for (auto& it : m_Clients)
@@ -425,7 +425,7 @@ frame::frame()
     {
       // In fact, this should not happen, 
       // but using Ubuntu the OnUpdateUI does not prevent this...
-      wex::log_status(_("First stop remote server"));
+      wex::log::status(_("First stop remote server"));
       return;
     }
     
@@ -821,7 +821,7 @@ bool frame::SetupSocketServer()
   {
     // In fact, this should not happen, 
     // but using Ubuntu the OnUpdateUI does not prevent this...
-    wex::log_status(_("First stop server"));
+    wex::log::status(_("First stop server"));
     return false;
   }
   
@@ -853,7 +853,7 @@ bool frame::SetupSocketServer()
     m_SocketServer->Destroy();
     m_SocketServer = nullptr;
     
-    wex::log_status(text);
+    wex::log::status(text);
     AppendText(m_LogWindow, text, DATA_MESSAGE);
     
     return false;
@@ -868,7 +868,7 @@ bool frame::SetupSocketServer()
 #endif
   }
 
-  wex::log_status(text);
+  wex::log::status(text);
   AppendText(m_LogWindow, text, DATA_MESSAGE);
 
   // Setup the event handler and subscribe to connection events
@@ -1032,11 +1032,8 @@ void frame::WriteDataToSocket(const wxCharBuffer& buffer, wxSocketBase* sock)
   {
     if (sock->Write(buffer.data() + written, buffer.length() - written).Error())
     {
-      const std::string error = "Socket Error: " + std::to_string(sock->LastError());
-        
-      wex::log_status(error);
-
-      m_Statistics.inc(error);
+      wex::log::status("Socket Error") << std::to_string(sock->LastError());
+      m_Statistics.inc("Socket Error");
     }
 
     written += sock->LastWriteCount();

@@ -2,14 +2,13 @@
 // Name:      test-frame.cpp
 // Purpose:   Implementation for wex report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/menu.h>
 #include <wex/frd.h>
 #include <wex/report/defs.h>
 #include "test.h"
-#include <easylogging++.h>
 
 TEST_CASE("wex::history_frame")
 {
@@ -49,7 +48,7 @@ TEST_CASE("wex::history_frame")
   
   REQUIRE( frame()->get_project() == nullptr);
 
-  VLOG(9) << "pwd: " << wex::path::current();
+  wex::log::verbose(9) << "pwd:" << wex::path::current();
 
   REQUIRE(!frame()->grep("xxxxxxx *.xyz ./"));
   REQUIRE(!frame()->grep("xxxxxxx yyy"));

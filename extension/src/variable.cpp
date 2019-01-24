@@ -2,7 +2,7 @@
 // Name:      variable.cpp
 // Purpose:   Implementation of class wex::variable
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -17,7 +17,6 @@
 #include <wex/util.h>
 #include <wex/vi-macros.h>
 #include <wex/vi-macros-mode.h>
-#include <easylogging++.h>
 
 wex::stc_entry_dialog* wex::variable::m_Dialog = nullptr;
 
@@ -54,7 +53,7 @@ wex::variable::variable(const pugi::xml_node& node)
     }
     else
     {
-      VLOG(9) << "variable type is not supported:" << type;
+      log::verbose("variable type is not supported") << type;
     }
   }
 }
@@ -78,7 +77,7 @@ bool wex::variable::CheckLink(std::string& value) const
       {
         if (!value.empty())
         {
-          VLOG(9) << "variable:" << m_Name << " (" << v[0] << ") expanded: " << value;
+          log::verbose("variable") << m_Name << "(" << v[0] << ") expanded:" << value;
           return true;
         }
       }
@@ -108,7 +107,7 @@ bool wex::variable::expand(ex* ex)
     // Now only show log status if this is no input variable,
     // as it was cancelled in that case.    
     {
-      wxLogStatus(_("Could not expand variable") + ": "  +  m_Name);
+      log::status(_("Could not expand variable")) << m_Name;
     }
 
     return false;
@@ -137,11 +136,11 @@ bool wex::variable::expand(ex* ex)
   {
     m_Value = value;
 
-    VLOG(9) << "variable: " << m_Name << " expanded and saved: " << m_Value;
+    log::verbose("variable") << m_Name << "expanded and saved:" << m_Value;
   }
   else 
   {
-    VLOG(9) << "variable: " << m_Name << " expanded to: " << value;
+    log::verbose("variable") << m_Name << "expanded to:" << value;
   }
 
   if (m_Type == VARIABLE_INPUT_ONCE && !m_Value.empty())

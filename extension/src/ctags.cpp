@@ -3,7 +3,7 @@
 // Purpose:   Implementation of class wex::ctags
 //            https://github.com/universal-ctags/ctags
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -20,7 +20,6 @@
 #include <wex/path.h>
 #include <wex/stc.h>
 #include <wex/util.h>
-#include <easylogging++.h>
 #include <readtags.h>
 
 namespace wex
@@ -244,7 +243,7 @@ const std::string wex::ctags::autocomplete(
       tagsNext(m_File, &entry): tagsFindNext(m_File, &entry));
   } while (result == TagSuccess && count < max);
 
-  VLOG(9) << "ctags autocomplete: " << count;
+  log::verbose("ctags autocomplete") << count;
 
   return s;
 }
@@ -279,7 +278,7 @@ bool wex::ctags::find(const std::string& tag)
   
   if (tagsFind(m_File, &entry, tag.c_str(), TAG_FULLMATCH) == TagFailure)
   {
-    wxLogStatus("tag not found: " + wxString(tag));
+    log::status("Tag not found") << tag;
     return false;
   }
   
@@ -293,7 +292,7 @@ bool wex::ctags::find(const std::string& tag)
 
   m_Iterator = m_Matches.begin();
 
-  VLOG(9) << "ctags matches: " << m_Matches.size();
+  log::verbose("ctags matches") << m_Matches.size();
 
   if (m_Matches.size() == 1)
   {
@@ -405,7 +404,7 @@ void wex::ctags::init(const std::string& filename)
 
     if (filename != DEFAULT_TAGFILE && m_File == nullptr)
     {
-      VLOG(9) << "could not locate ctags file:" << filename;
+      log::verbose("could not locate ctags file") << filename;
     }
   }
 }
@@ -414,7 +413,7 @@ bool wex::ctags::next()
 {
   if (m_Matches.size() <= 1)
   {
-    VLOG(9) << "ctags no next match: " << m_Matches.size();
+    log::verbose("ctags no next match") << m_Matches.size();
     return false;
   }
 
@@ -432,7 +431,7 @@ bool wex::ctags::open(const std::string& path, bool show_error)
 {
   if (tagFileInfo info; (m_File = tagsOpen(path.c_str(), &info)) != nullptr)
   {
-    VLOG(9) << "ctags file: " << path;
+    log::verbose("ctags file") << path;
     return true;
   }
   else if (show_error)
@@ -447,7 +446,7 @@ bool wex::ctags::previous()
 {
   if (m_Matches.size() <= 1)
   {
-    VLOG(9) << "ctags no previous match: " << m_Matches.size();
+    log::verbose("ctags no previous match") << m_Matches.size();
     return false;
   }
 

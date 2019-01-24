@@ -19,7 +19,6 @@
 #include <wex/stc.h>
 #include <wex/tokenizer.h>
 #include <wex/util.h>
-#include <easylogging++.h>
 
 // Constructor for lexers from specified filename.
 // This must be an existing xml file containing all lexers.
@@ -286,19 +285,19 @@ bool wex::lexers::load_document()
     } 
   }
 
-  VLOG(9) << 
-    "default colors: " << m_DefaultColours.size() <<
-    " global properties: " << m_globalProperties.size() <<
-    " indicators: " << m_Indicators.size() <<
-    " keywords: " << m_Keywords.size() <<
-    " lexers: " << m_Lexers.size() <<
-    " macros: " << m_Macros.size() <<
-    " markers: " << m_Markers.size() <<
-    " styles: " << m_Styles.size() <<
-    " styles hex: " << m_StylesHex.size() <<
-    " texts: " << m_Texts.size() <<
-    " theme colours: " << m_ThemeColours.size() <<
-    " theme macros: " << m_ThemeMacros.size();
+  log::verbose("lexers info") << 
+    "default colors:" << m_DefaultColours.size() <<
+    "global properties:" << m_globalProperties.size() <<
+    "indicators:" << m_Indicators.size() <<
+    "keywords:" << m_Keywords.size() <<
+    "lexers:" << m_Lexers.size() <<
+    "macros:" << m_Macros.size() <<
+    "markers:" << m_Markers.size() <<
+    "styles:" << m_Styles.size() <<
+    "styles hex:" << m_StylesHex.size() <<
+    "texts:" << m_Texts.size() <<
+    "theme colours:" << m_ThemeColours.size() <<
+    "theme macros:" << m_ThemeMacros.size();
   
   return true;
 }

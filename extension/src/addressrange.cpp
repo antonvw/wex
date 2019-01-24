@@ -344,7 +344,7 @@ bool wex::addressrange::escape(const std::string& command)
   }
   
   const std::string tmp_filename(path(
-    std::filesystem::temp_directory_path(),
+    std::filesystem::temp_directory_path().string(),
     std::to_string(std::time(nullptr))).data().string());
   
   if (m_STC->GetReadOnly() || m_STC->is_hexmode() || !write(tmp_filename))
@@ -358,7 +358,7 @@ bool wex::addressrange::escape(const std::string& command)
   
   if (remove(tmp_filename.c_str()) != 0)
   {
-    log_status("Could not remove file");
+    log::status("Could not remove file");
   }
   
   if (ok)
@@ -428,7 +428,7 @@ bool wex::addressrange::global(const std::string& text, bool inverse) const
   {
     if (!rest.empty())
     {
-      log_status("Pattern is empty");
+      log::status("Pattern is empty");
       return false;
     }
     
@@ -588,7 +588,7 @@ bool wex::addressrange::Parse(
     }
     else
     {
-      log_status("Internal char exists");
+      log::status("Internal char exists");
       return false;
     }
   }
@@ -747,7 +747,7 @@ bool wex::addressrange::substitute(const std::string& text, const char cmd)
     
   if (pattern.empty())
   {
-    log_status("Pattern is empty");
+    log::status("Pattern is empty");
     return false;
   }
 
@@ -757,7 +757,7 @@ bool wex::addressrange::substitute(const std::string& text, const char cmd)
   if ((searchFlags & wxSTC_FIND_REGEXP) && 
     pattern.size() == 2 && pattern.back() == '*' && repl.empty())
   {
-    log_status("Replacement leads to infinite loop");
+    log::status("Replacement leads to infinite loop");
     return false;
   }
        

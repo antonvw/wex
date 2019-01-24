@@ -23,7 +23,6 @@
 #include <wex/shell.h>
 #include <wex/util.h>
 #include <process.hpp>
-#include <easylogging++.h>
 
 #define GET_STREAM(SCOPE)                         \
 {                                                 \
@@ -78,21 +77,40 @@ namespace wex
   bool process_run_and_collect_output(
     const std::string& command, 
     const std::string& cwd,
-    std::string* stdout,
-    std::string* stderr)
+    std::string* out,
+    std::string* err)
   {
-    VLOG(1) << "process exec wait: " << command;
+    log::verbose("process exec wait:", 1) << command;
 
-    stdout->clear();
-    stderr->clear();
+    out->clear();
+    err->clear();
 
+#ifdef __WXGTK__
     TinyProcessLib::Process process(command, cwd,
-      [&](const char *bytes, size_t n) {stdout->append(bytes, n);},
-      [&](const char *bytes, size_t n) {stderr->append(bytes, n);});
+      [&](const char *bytes, size_t n) {out->append(bytes, n);},
+      [&](const char *bytes, size_t n) {err->append(bytes, n);});
     
     auto exit_status = process.get_exit_status();
     
     return exit_status != 0;
+#else
+    wxArrayString output;
+    wxArrayString errors;
+    struct wxExecuteEnv env;
+    env.cwd = cwd;
+
+    if (wxExecute(command, output, errors, wxEXEC_SYNC, &env) == -1)
+    {
+      return false;
+    }
+    else
+    {
+      // Set output by converting array strings into normal strings.
+      *out = wxJoin(output, '\n', '\n');
+      *err = wxJoin(errors, '\n', '\n');
+      return true;
+    }
+#endif
   }
       
   auto show_process(wex::managed_frame* frame, bool show)
@@ -222,7 +240,7 @@ bool wex::process::execute(
 
 void wex::process::is_finished(int pid)
 {
-  VLOG(1) << "process " << pid << " exit";
+  log::verbose("process", 1) << pid << "exit";
   
   m_frame->get_debug()->breakpoints().clear();
   m_process.reset();
@@ -275,7 +293,7 @@ bool wex::process::write(const std::string& text)
 {
   if (!is_running()) 
   {
-    log_status("Process is not running");
+    log::status("Process is not running");
     return false;
   }
   
@@ -301,7 +319,7 @@ bool wex::process_imp::execute(const std::string& path)
     return false;
   }
   
-  VLOG(1) << "process " << GetPid() << " exec no wait: " << m_process->get_command_executed();
+  log::verbose("process", 1) << GetPid() << "exec no wait:" << m_process->get_command_executed();
 
   show_process(m_process->get_frame(), true);
   m_timer->Start(100); // milliseconds
@@ -401,7 +419,7 @@ void wex::process_imp::write(const std::string& text)
 
     wxTextOutputStream(*os).WriteString(text + el);
     
-    VLOG(9) << "process " << GetPid() << " write: " << text;
+    log::verbose("process") << GetPid() << "write:" << text;
     
     m_stdin = text;
     wxMilliSleep(10);

@@ -191,6 +191,12 @@ bool wex::vi_macros::load_document()
     }
   }
   
+  log::verbose("macros info") << 
+    "abbreviations:" << m_Abbreviations.size() <<
+    "maps:" << m_Map.size() <<
+    "macros:" << m_Macros.size() <<
+    "variables:" << m_Variables.size();
+
   return true;
 }
 

@@ -222,12 +222,6 @@ TEST_CASE("wex")
     REQUIRE(!wex::is_codeword_separator('x'));
   }
   
-  SUBCASE("wex::log_status")
-  {
-    wex::log_status( get_testpath("test.h"));
-    wex::log_status( std::string("hello world") );
-  }
-
 #ifdef __UNIX__
   SUBCASE("wex::make")
   {

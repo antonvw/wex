@@ -23,7 +23,6 @@
 #include <wex/util.h>
 #include <wex/vi-macros.h>
 #include <wex/vi-macros-mode.h>
-#include <easylogging++.h>
 
 // compares two strings in compile time constant fashion
 constexpr int c_strcmp( char const* lhs, char const* rhs )
@@ -665,7 +664,7 @@ bool wex::vi::command(const std::string& command)
 
   if (command.front() != ':')
   {
-    VLOG(9) << "vi command: " << command;
+    log::verbose("vi command") << command;
   }
 
   if (mode().visual() && command.find("'<,'>") == std::string::npos &&
@@ -1537,7 +1536,7 @@ void wex::vi::set_last_command(const std::string& command)
   {
     m_LastCommand = command;
 
-    VLOG(9) << "vi last command: " << command;
+    log::verbose("vi last command") << command;
   }
 }
  

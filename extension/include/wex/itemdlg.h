@@ -2,7 +2,7 @@
 // Name:      itemdlg.h
 // Purpose:   Declaration of wex::item_dialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -35,7 +35,7 @@ namespace wex
       {
         it.to_config(save);
       }};
-  protected:
+  private:
     void OnCommand(wxCommandEvent& event) {
       reload(event.GetId() != wxID_CANCEL);
       event.Skip();};

@@ -2,7 +2,7 @@
 // Name:      managed_frame.cpp
 // Purpose:   Implementation of wex::managed_frame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
@@ -55,9 +55,10 @@ namespace wex
         case ex_command::type_t::FIND_MARGIN: return m_FindMargins;
         default: return m_Commands;
       }};
+
+    wex::ex* m_ex {nullptr};
     ex_command m_Command;
     managed_frame* m_Frame;
-    wex::ex* m_ex {nullptr};
     wxStaticText* m_Prefix;
     bool m_ControlR {false}, m_ModeVisual {false}, m_UserInput {false};
     textctrl_input 
@@ -102,7 +103,7 @@ wex::managed_frame::managed_frame(size_t maxFiles, const window_data& data)
     event.Skip();});
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    DoRecent(m_FileHistory, event.GetId() - m_FileHistory.get_base_id());},
+    on_menu_history(m_FileHistory, event.GetId() - m_FileHistory.get_base_id());},
     m_FileHistory.get_base_id(), 
     m_FileHistory.get_base_id() + m_FileHistory.get_max_files());
 
@@ -235,7 +236,7 @@ wxPanel* wex::managed_frame::CreateExPanel()
   return panel;
 }
 
-void wex::managed_frame::DoRecent(
+void wex::managed_frame::on_menu_history(
   const class file_history& history, 
   size_t index, 
   stc_data::window_t flags)

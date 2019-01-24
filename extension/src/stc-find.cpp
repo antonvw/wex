@@ -2,7 +2,7 @@
 // Name:      stc-find.cpp
 // Purpose:   Implementation of class wex::stc Find methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <regex>
@@ -11,7 +11,6 @@
 #include <wex/frd.h>
 #include <wex/managedframe.h>
 #include <wex/util.h>
-#include <easylogging++.h>
 
 bool wex::stc::find_next(bool stc_find_string)
 {
@@ -127,8 +126,8 @@ bool wex::stc::find_next(
     if (found)
     {
       stc_data(control_data().line(line + 1), this).inject();
-      VLOG(9) << get_filename().fullname() << 
-        " found margin text: " << text << " on line: " << line + 1;
+      log::verbose(get_filename().fullname()) << 
+        "found margin text:" << text << "on line:" << line + 1;
     }
 
     return found;
@@ -153,7 +152,7 @@ bool wex::stc::find_next(
 
       if (!found)
       {
-        VLOG(9) << get_filename().fullname() << " text: " << text << " not found";
+        log::verbose(get_filename().fullname()) << "text:" << text << "not found";
       }
     }
     
@@ -163,7 +162,7 @@ bool wex::stc::find_next(
   {
     if (!recursive)
     {
-      log_status(std::string());
+      log::status(std::string());
     }
     
     recursive = false;
@@ -183,7 +182,7 @@ bool wex::stc::find_next(
     EnsureVisible(LineFromPosition(GetTargetStart()));
     EnsureCaretVisible();
 
-    VLOG(9) << get_filename().fullname() << " found text: " << text;
+    log::verbose(get_filename().fullname()) << "found text:" << text;
 
     return true;
   }

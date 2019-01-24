@@ -17,7 +17,6 @@
 #include <wex/process.h>
 #include <wex/tokenizer.h>
 #include <wex/util.h>
-#include <easylogging++.h>
 
 wex::shell::shell(
   const stc_data& data,

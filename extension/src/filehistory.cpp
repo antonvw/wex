@@ -218,7 +218,7 @@ wxString wex::file_history_imp::GetHistoryFile(size_t index) const
     if (error)
     {
       const_cast< file_history_imp * >( this )->RemoveFileFromHistory(index);
-      wxLogStatus(_("Removed not existing file: %s from history"), file.c_str());
+      log::status(_("Removed not existing file")) << file << "from history";
     }
   }
   

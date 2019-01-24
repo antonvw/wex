@@ -32,7 +32,7 @@ TEST_CASE("wex::tool_dir")
 
   dir.find_files();
 
-  wex::log_status(tool.info(&dir.get_statistics().get_elements()));
+  wex::log::status(tool.info(&dir.get_statistics().get_elements()));
 }
 
 TEST_CASE("wex::listview_dir")

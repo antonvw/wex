@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <bitset>
 #include <list>
 #include <vector>
 #include <wx/combobox.h>
@@ -204,24 +205,6 @@ namespace wex
            
   /// Returns true if char is a code word separator.
   bool is_codeword_separator(int c);
-
-  /// Flags for log_status.
-  enum
-  {
-    STAT_SYNC     = 0, ///< shows 'synchronized' instead of 'modified'
-    STAT_FULLPATH = 1  ///< shows file 'fullpath' instead of 'fullname'
-  };
-
-  typedef std::bitset<2> status_t;
-  
-  /// Logs text.
-  void log_status(const char* text);
-
-  /// Logs text.
-  void log_status(const std::string& text);
-
-  /// Logs path info on the statusbar.
-  void log_status(const path& filename, status_t flags = 0);
 
   /// Runs make on specified makefile.
   /// Returns value from executing the make process.

@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of wex report sample classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -20,7 +20,6 @@
 #include <wex/report/dir.h>
 #include <wex/report/dirctrl.h>
 #include <wex/report/listview.h>
-#include <easylogging++.h>
 #include "app.h"
 #ifndef __WXMSW__
 #include "app.xpm"
@@ -151,7 +150,7 @@ report_sample_frame::report_sample_frame() : wex::history_frame()
       }
       else
       {
-        wxLogStatus("No focus");
+        wex::log::status("No focus");
       }
     }}, wxID_PREVIEW);
 
@@ -164,7 +163,7 @@ report_sample_frame::report_sample_frame() : wex::history_frame()
     }
     else
     {
-      wxLogStatus("No focus");
+      wex::log::status("No focus");
     }}, wxID_PRINT);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -192,7 +191,7 @@ wex::listview* report_sample_frame::activate(
           {
             if (!lexer->display_lexer().empty())
             {
-              VLOG(9) << lexer->display_lexer() << ", only cpp for the sample";
+              wex::log::verbose(lexer->display_lexer()) << ", only cpp for the sample";
             }
               
             return nullptr;

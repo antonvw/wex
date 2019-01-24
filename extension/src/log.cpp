@@ -2,17 +2,22 @@
 // Name:      log.cpp
 // Purpose:   Implementation of class wex::log
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wx/log.h>
 #include <wex/log.h>
+#include <wex/config.h>
 #include <wex/item.h>
 #include <wex/listitem.h>
 #include <easylogging++.h>
 
-wex::log::log(const std::string& topic, log_level level)
-  : m_Level(level)
-  , m_Separator(!topic.empty())
+INITIALIZE_EASYLOGGINGPP
+
+wex::log::log(const std::string& topic, level_t level, status_t status)
+  : m_level(level)
+  , m_separator(!topic.empty())
+  , m_status(status)
 {
   if (!topic.empty())
   {
@@ -20,23 +25,23 @@ wex::log::log(const std::string& topic, log_level level)
   }
 }
 
-wex::log::log(log_level level)
-  : m_Level(level)
-  , m_Separator(false)
-{
-}
-
-wex::log::log(const std::exception& e)
+wex::log::log(const std::exception& e, level_t level, status_t status)
+  : m_level(level)
+  , m_status(status)
 {
   m_ss << "std::exception:" << S() << e.what();
 }
 
-wex::log::log(const pugi::xpath_exception& e)
+wex::log::log(const pugi::xpath_exception& e, level_t level, status_t status)
+  : m_level(level)
+  , m_status(status)
 {
   m_ss << "pugi::exception:" << S() << e.what();
 }
 
-wex::log::log(const pugi::xml_parse_result& r)
+wex::log::log(const pugi::xml_parse_result& r, level_t level, status_t status)
+  : m_level(level)
+  , m_status(status)
 {
   if (r.status != pugi::xml_parse_status::status_ok)
   {
@@ -46,9 +51,22 @@ wex::log::log(const pugi::xml_parse_result& r)
   }
   else 
   {
-    m_Level = INFO;
-    m_Separator = false;
+    m_level = VERBOSE;
+    m_separator = false;
   }
+}
+
+wex::log::log(level_t level)
+  : m_level(level)
+  , m_separator(false)
+{
+}
+
+wex::log::log(status_t status)
+  : m_level(STATUS)
+  , m_status(status)
+  , m_separator(false)
+{
 }
 
 wex::log::~log()
@@ -59,7 +77,25 @@ wex::log::~log()
   }
 }
 
+wex::log& wex::log::operator<<(char r)
+{
+  m_ss << S() << r;
+  return *this;
+}
+
 wex::log& wex::log::operator<<(int r)
+{
+  m_ss << S() << r;
+  return *this;
+}
+
+wex::log& wex::log::operator<<(size_t r)
+{
+  m_ss << S() << r;
+  return *this;
+}
+
+wex::log& wex::log::operator<<(long r)
 {
   m_ss << S() << r;
   return *this;
@@ -101,21 +137,88 @@ wex::log& wex::log::operator<<(const listitem& r)
   return *this;
 }
 
+wex::log& wex::log::operator<<(const path& r)
+{
+  m_ss << S() << (m_status[STAT_FULLPATH] ? r.data().string(): r.fullname());
+
+  if (r.stat().is_ok())
+  {
+    const std::string what = (m_status[STAT_SYNC] ? 
+      _("Synchronized"):
+      _("Modified"));
+        
+    m_ss << S() << what << S() << r.stat().get_modification_time();
+  }
+
+  return *this;
+}
+
+void wex::log::init(int argc, char** argv)
+{
+  // Load elp configuration from file.
+  const path elp(config().dir(), "conf.elp");
+
+  if (elp.file_exists())
+  {
+    el::Loggers::reconfigureAllLoggers(el::Configurations(elp.data().string()));
+  }
+
+  // We need to convert argc and argv, as elp expects = sign between values.
+  // The logging-flags are handled by syncped.
+  std::vector<const char*> v;
+  const std::vector <std::pair<
+    std::string, std::string>> supported {
+      {"-m", "-vmodule"},
+      {"-D", "--default-log-file"},
+      {"-L", "--loggingflags"},
+      {"--logfile", "--default-log-file"},
+      {"--logflags", "--loggingflags"},
+      {"--x", "--v"}, // for testing with verbosity
+      {"--v", "--v"}};
+
+  for (int i = 0; i < argc; i++)
+  {
+    bool found = false;
+
+    for (const auto& s : supported)
+    {
+      if (strcmp(argv[i], s.first.c_str()) == 0)
+      {
+        found = true;
+        const std::string option(argv[i + 1]);
+        v.push_back(std::string(s.second + "=" + option).c_str());
+        i++;
+      }
+    }
+
+    if (!found)
+    {
+      v.push_back(argv[i]);
+    }
+  }
+
+  START_EASYLOGGINGPP(v.size(), (const char**)&v[0]);
+
+  verbose(1) << "verbosity:" << el::Loggers::verboseLevel()
+    << "config:" << elp.data().string();
+}
+  
 void wex::log::Log() const
 {  
-  switch (m_Level)
+  switch (m_level)
   {
-    case INFO:    VLOG(9) << m_ss.str(); break;     
     case DEBUG:   LOG(DEBUG) << m_ss.str(); break;     
-    case WARNING: LOG(WARNING) << m_ss.str(); break;
     case ERROR:   LOG(ERROR) << m_ss.str(); break;
     case FATAL:   LOG(FATAL) << m_ss.str(); break;
+    case STATUS:  wxLogStatus(m_ss.str().c_str()); break;
+    case VERBOSE: VLOG(m_verbosity) << m_ss.str(); break;     
+    case WARNING: LOG(WARNING) << m_ss.str(); break;
   }
 }  
 
 const std::string wex::log::S()
 {  
-  const std::string s(m_Separator ? " ": "");
-  m_Separator = true;
+  const std::string s(m_separator ? " ": "");
+  m_separator = true;
   return s;
 }

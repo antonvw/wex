@@ -43,12 +43,9 @@ class editors : public wex::notebook
 public:
   editors(const wex::window_data& data); 
 
-  /// Returns true if notebook is splitted.
   bool is_split() const {return m_Split;};
-
-  /// Reset members.
   void reset() {m_Split = false;};
-protected:
+private:
   bool m_Split {false};
 };
 
@@ -279,7 +276,7 @@ frame::frame(app* app)
         event.Veto();
         if (m_Process->is_running())
         {
-          wxLogStatus(_("Process is running"));
+          wex::log::status(_("Process is running"));
         }
         return;
       }
@@ -839,7 +836,7 @@ void frame::OnCommand(wxCommandEvent& event)
   case ID_SPLIT_VERTICALLY:
     if (editor == nullptr)
     {
-      wxLogStatus("no valid focus");
+      wex::log::status("No valid focus");
     }
     else
     {
@@ -1263,7 +1260,7 @@ wex::stc* frame::open_file(const wex::path& filename, const wex::stc_data& data)
         {
           if (!editor->get_vi().command(tkz.get_next_token()))
           {
-            wxLogStatus("Aborted at: %s", tkz.get_token().c_str());
+            wex::log::status("Aborted at") << tkz.get_token();
             return editor;
           }
         }

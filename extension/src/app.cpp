@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of wex::app class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <filesystem>
@@ -25,11 +25,8 @@
 #include <wex/vcs.h>
 #include <wex/version.h>
 #include <wex/vi-macros.h>
-#include <easylogging++.h>
 
 #define NO_ASSERT 1
-
-INITIALIZE_EASYLOGGINGPP
 
 namespace fs = std::filesystem;
 
@@ -38,9 +35,10 @@ void wex::app::OnAssertFailure(
   const wxChar* cond, const wxChar* msg)
 {
 #ifdef NO_ASSERT
-  LOG(ERROR) << "OnAssertFailure: file: " << file << 
-    " line: " << line << " func: " << func << 
-    " cond: " << cond << " msg: " << msg;
+  log("OnAssertFailure") << 
+    "file:" << (char*)file << 
+    "line:" << line << "func:" << (char*)func << 
+    "cond:" << (char*)cond << "msg:" << (char*)msg;
 #else
   wxApp::OnAssertFailure(file, line, func, cond, msg);
 #endif
@@ -54,8 +52,7 @@ int wex::app::OnExit()
 
   addressrange::on_exit();
   stc::on_exit();
-
-  VLOG(1) << "exit";
+  log::verbose(1) << "exit";
 
   return wxApp::OnExit(); // this destroys the config
 }
@@ -63,72 +60,8 @@ int wex::app::OnExit()
 bool wex::app::OnInit()
 {
   config::init();
-
-  // Load elp configuration from file.
-  const path elp(config().dir(), "conf.elp");
-
-  if (elp.file_exists())
-  {
-    el::Loggers::reconfigureAllLoggers(el::Configurations(elp.data().string()));
-  }
-
-  // We need to convert argc and argv, as elp expects = sign between values.
-  // The logging-flags are handled by syncped.
-  int argc_elp = 0;
-  char *argv_elp[20]; // argc does not compile under MSW
-  const std::vector <std::pair<
-    std::string, std::string>> supported {
-      {"-m", "-vmodule"},
-      {"-D", "--default-log-file"},
-      {"-L", "--loggingflags"},
-      {"--logfile", "--default-log-file"},
-      {"--logflags", "--loggingflags"},
-      {"--x", "--v"}, // for testing with verbosity
-      {"--v", "--v"}};
-
-  for (int i = 0; i < argc; i++)
-  {
-    bool found = false;
-
-    for (const auto& s : supported)
-    {
-      if (strcmp(argv[i].c_str(), s.first.c_str()) == 0)
-      {
-        found = true;
-        char* buffer = (char *)malloc(strlen(argv[i + 1].c_str()));
-        strcpy(buffer, argv[i + 1].c_str());
-
-        argv_elp[argc_elp] = (char *)malloc(s.second.size() + 1 + strlen(argv[i + 1].c_str()));
-        sprintf(argv_elp[argc_elp], "%s=%s", s.second.c_str(), buffer);
-        argc_elp++;
-        i++;
-        free(buffer);
-      }
-    }
-
-    if (!found)
-    {
-      argv_elp[argc_elp] = (char *)malloc(strlen(argv[i].c_str()));
-      strcpy(argv_elp[argc_elp], argv[i].c_str());
-      argc_elp++;
-    }
-  }
-
-  START_EASYLOGGINGPP(argc_elp, argv_elp);
-
-#ifndef __WXMSW__
-  for (int i = 0; i < argc_elp; i++)
-  {
-    free(argv_elp[i]);
-  }
-#endif
-
-  VLOG(1) 
-    << "started: " 
-    << GetAppName() << "-" << get_version_info().get()
-    << " verbosity: " 
-    << el::Loggers::verboseLevel()
-    << " config: " << elp.data().string();
+  log::init(argc, argv);
+  log::verbose(1) << "started:" << GetAppName() << get_version_info().get();
 
   const wxLanguageInfo* info = nullptr;
   
@@ -147,7 +80,7 @@ bool wex::app::OnInit()
   if (const auto lang = (info != nullptr ? info->Language: wxLANGUAGE_DEFAULT);
     !m_Locale.Init(lang, wxLOCALE_DONT_LOAD_DEFAULT))
   {
-    VLOG(9) << "could not init locale for: " << 
+    log::verbose("could not init locale for") << 
       (!wxLocale::GetLanguageName(lang).empty() ?
         wxLocale::GetLanguageName(lang).ToStdString(): 
         std::to_string(lang));
@@ -180,7 +113,7 @@ bool wex::app::OnInit()
     }
     else if (info != nullptr)
     {
-      log() << "missing locale files for:" << m_Locale.GetName();
+      log("missing locale files for") << m_Locale.GetName();
     }
   }
 

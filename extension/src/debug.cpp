@@ -2,7 +2,7 @@
 // Name:      debug.cpp
 // Purpose:   Implementation of class wex::debug
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <fstream>
@@ -11,7 +11,6 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/numdlg.h>
 #include <wex/debug.h>
 #include <wex/config.h>
 #include <wex/defs.h>
@@ -182,13 +181,15 @@ bool wex::debug::GetArgs(
   }
   else if ((match("^(d|del|delete) (br|breakpoint)", command, v) > 0) && stc != nullptr)
   {
-    for (const auto& it: m_Breakpoints)
+    for (auto& it: m_Breakpoints)
     {
       if (
         stc->get_filename() == std::get<0>(it.second) &&
         stc->GetCurrentLine() == std::get<2>(it.second))
       {
         args += " " + it.first;
+        stc->MarkerDeleteHandle(std::get<1>(it.second));
+        m_Breakpoints.erase(it.first);
         break;
       }
     }

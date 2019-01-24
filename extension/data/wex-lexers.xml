@@ -2098,11 +2098,11 @@ Copyright: (c) 2019, Anton van Wezenbeek
         <def style ="styledefault"> default-font,back:#2B2B2B,fore:#BBBBBB </def>
         <def style ="styledefault-back"> default-font,back:#2E2E2E,fore:#BBBBBB,eol </def>
         <def style ="styleindicatorfind"> red </def>
-        <def style ="styletextmargin-day"> back:blue,face:ABeeZee,size:8 </def>
-        <def style ="styletextmargin-week"> back:#3333CC,face:ABeeZee,size:8 </def>
-        <def style ="styletextmargin-month"> back:#666699,face:ABeeZee,size:8 </def>
-        <def style ="styletextmargin-year"> back:#454554,face:ABeeZee,size:8 </def>
-        <def style ="styletextmargin"> back:#3B3B3B,face:ABeeZee,size:8 </def>
+        <def style ="styletextmargin-day"> back:blue,face:Monospace,size:8 </def>
+        <def style ="styletextmargin-week"> back:#3333CC,face:Monospace,size:8 </def>
+        <def style ="styletextmargin-month"> back:#666699,face:Monospace,size:8 </def>
+        <def style ="styletextmargin-year"> back:#454554,face:Monospace,size:8 </def>
+        <def style ="styletextmargin"> back:#3B3B3B,face:Monospace,size:8 </def>
         <def style ="tag"> fore:cadet blue </def>
         <def style ="variable"> fore:green </def>
         
@@ -2138,7 +2138,11 @@ Copyright: (c) 2019, Anton van Wezenbeek
         <def style ="string"> fore:blue </def>
         <def style ="styledefault"> default-font,back:white,fore:black </def>
         <def style ="styledefault-back"> default-font,back:#F1F1F1,fore:green,eol </def>
-        <def style ="styletextmargin"> size:8 </def>
+        <def style ="styletextmargin-day"> back:#444433,face:Monospace,size:8 </def>
+        <def style ="styletextmargin-week"> back:#3333CC,face:Monospace,size:8 </def>
+        <def style ="styletextmargin-month"> back:#666699,face:Monospace,size:8 </def>
+        <def style ="styletextmargin-year"> back:#DDDDDD,face:Monospace,size:8 </def>
+        <def style ="styletextmargin"> back:#EEEEEE,face:Monospace,size:8 </def>
         <def style ="styleindicatorfind"> red </def>
         <def style ="tag"> fore:dark slate blue </def>
         <def style ="variable"> fore:medium blue </def>

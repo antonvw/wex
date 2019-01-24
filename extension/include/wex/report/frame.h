@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Include file for wex::history_frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -32,14 +32,28 @@ namespace wex
       size_t maxFiles = 9,
       size_t maxProjects = 0,
       const window_data& data = window_data().style(wxDEFAULT_FRAME_STYLE));
+    
+    /// Virtual interface
 
     /// This method is called to activate a certain listview.
     /// Default it returns nullptr.
     virtual listview* activate(
       listview_data::type_t, 
-      const lexer* lexer = nullptr) {
-      return nullptr;};
+      const lexer* lexer = nullptr) {return nullptr;};
       
+    /// If there is a project somewhere, 
+    /// your implementation should return that one.
+    /// Default it returns nullptr.
+    virtual listview_file* get_project() {return nullptr;};
+
+    virtual void on_command_item_dialog(
+      wxWindowID dialogid,
+      const wxCommandEvent& event) override;
+    
+    virtual void set_recent_file(const path& path) override;
+
+    /// Other methods
+    
     /// Finds (or replaces) in specified files.
     /// Returns true if process started.
     bool find_in_files(
@@ -63,11 +77,6 @@ namespace wex
     /// Returns caption for find_in_files_dialog.
     const std::string find_in_files_title(int id) const;
     
-    /// If there is a project somewhere, 
-    /// your implementation should return that one.
-    /// Default it returns nullptr.
-    virtual listview_file* get_project() {return nullptr;};
-
     /// Returns project history.
     auto& get_project_history() {return m_ProjectHistory;};
     
@@ -81,11 +90,6 @@ namespace wex
       /// normally grep does not replace, by setting sed, it can
       bool sed = false);
     
-    /// Override on_command_item_dialog for add, find and replace in files.
-    virtual void on_command_item_dialog(
-      wxWindowID dialogid,
-      const wxCommandEvent& event) override;
-    
     /// Sed (replace in files).
     /// The base directory is the directory for the current stc
     /// component, if available.
@@ -94,9 +98,6 @@ namespace wex
       /// text replacement [extension] [folder]
       const std::string& line) {return grep(line, true);};
       
-    /// Updates file history.
-    virtual void set_recent_file(const path& path) override;
-
     /// Updates project history.
     void set_recent_project(const path& path) {
       m_ProjectHistory.add(path);};
@@ -109,11 +110,10 @@ namespace wex
     /// if you use this as a page in a notebook,
     /// you might want prevent closing it.
     listview* file_history_list() {return m_FileHistoryList;};
-    
-    void OnIdle(wxIdleEvent& event);
   private:
     void find_in_files(wxWindowID dialogid);
     const wxString GetFindReplaceInfoText(bool replace = false) const;
+    void OnIdle(wxIdleEvent& event);
 
     item_dialog* m_FiFDialog {nullptr};
     item_dialog* m_RiFDialog {nullptr};

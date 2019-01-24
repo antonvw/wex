@@ -2,7 +2,7 @@
 // Name:      vi-macros-fsm.cpp
 // Purpose:   Implementation of class wex::vi_macros_fsm
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <fstream>
@@ -15,7 +15,6 @@
 #include <wex/util.h>
 #include <wex/variable.h>
 #include <wex/vi-macros.h>
-#include <easylogging++.h>
 #include "vi-macros-fsm.h"
 
 wex::vi_macros_fsm::vi_macros_fsm()
@@ -110,7 +109,7 @@ void wex::vi_macros_fsm::ExpandingTemplate()
   
   if (!ifs.is_open())
   {
-    VLOG(9) << "could not open template file:" << filename.data().string();
+    log::verbose("could not open template file:") << filename.data().string();
     m_error = true;
     return;
   }
@@ -171,7 +170,7 @@ void wex::vi_macros_fsm::ExpandingTemplate()
   vi_macros::m_Macro = m_variable.get_name();
   frame::statustext(vi_macros::m_Macro, "PaneMacro");
     
-  log_status(_("Macro expanded"));
+  log::status(_("Macro expanded"));
 }
 
 void wex::vi_macros_fsm::ExpandingVariable()
@@ -241,7 +240,7 @@ bool wex::vi_macros_fsm::ExpandingVariable(
   var->set_ask_for_input(false);
   vi_macros::m_is_modified = true;
   var->save(node, value);
-  log_status(_("Variable expanded"));
+  log::status(_("Variable expanded"));
 
   return true;
 }
@@ -268,7 +267,7 @@ void wex::vi_macros_fsm::Playback()
       if (!m_ex->command(it))
       {
         m_error = true;
-        log_status(_("Macro aborted at '") + it + "'");
+        log::status(_("Macro aborted at")) <<  it;
         break;
       }
     }
@@ -280,7 +279,7 @@ void wex::vi_macros_fsm::Playback()
   if (!m_error)
   {
     vi_macros::m_Macro = m_macro;
-    log_status(_("Macro played back"));
+    log::status(_("Macro played back"));
   }
 }
 
@@ -316,7 +315,7 @@ void wex::vi_macros_fsm::StartRecording()
     vi_macros::m_Macros[vi_macros::m_Macro].clear();
   }
 
-  log_status(_("Macro recording"));
+  log::status(_("Macro recording"));
 }
 
 void wex::vi_macros_fsm::StopRecording()
@@ -324,21 +323,21 @@ void wex::vi_macros_fsm::StopRecording()
   if (!vi_macros::get(vi_macros::m_Macro).empty())
   {
     vi_macros::save_macro(vi_macros::m_Macro);
-    log_status("Macro '" + vi_macros::m_Macro + " is recorded");
+    log::status("Macro") << vi_macros::m_Macro << "is recorded";
   }
   else
   {
     vi_macros::m_Macros.erase(vi_macros::m_Macro);
     vi_macros::m_Macro.clear();
-    log_status(std::string());
+    log::status(std::string());
   }
 }
 
 void wex::vi_macros_fsm::verbose(state_t from, state_t to, trigger_t t)
 {
-  VLOG(2) << 
-    "vi macro " << m_macro <<
-    " trigger " << trigger(t) <<
-    " state from " << state(from) << 
-    " to " << state(to);
+  log::verbose(2) << 
+    "vi macro" << m_macro <<
+    "trigger" << trigger(t) <<
+    "state from" << state(from) << 
+    "to" << state(to);
 }

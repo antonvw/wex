@@ -17,8 +17,9 @@ before_build:
 
 build_script:
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat"
-  - cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release ..
-  - nmake
+  - set CL=/Zc:__cplusplus
+  - cmake -DCMAKE_BUILD_TYPE=Release ..
+  - msbuild syncped\syncped.sln
   - ..\ci\pack.bat
 
 test: OFF

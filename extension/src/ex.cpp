@@ -33,7 +33,6 @@
 #include <wex/util.h>
 #include <wex/version.h>
 #include <wex/vi-macros.h>
-#include <easylogging++.h>
 #include "eval.h"
 
 #define POST_CLOSE( ID, VETO )                              \
@@ -153,7 +152,7 @@ wex::ex::ex(wex::stc* stc)
       return false;}},
     {":new", [&](const std::string& command) {POST_COMMAND( wxID_NEW ) return true;}},
     {":print", [&](const std::string& command) {m_Command.get_stc()->print(command.find(" ") == std::string::npos); return true;}},
-    {":pwd", [&](const std::string& command) {wex::log_status(wex::path::current()); return true;}},
+    {":pwd", [&](const std::string& command) {wex::log::status(wex::path::current()); return true;}},
     {":q!", [&](const std::string& command) {POST_CLOSE( wxEVT_CLOSE_WINDOW, false ) return true;}},
     {":q", [&](const std::string& command) {POST_CLOSE( wxEVT_CLOSE_WINDOW, true ) return true;}},
     {":reg", [&](const std::string& command) {
@@ -266,12 +265,12 @@ wex::ex::ex(wex::stc* stc)
         {
           if (line == command)
           {
-            VLOG(9) << "recursive (line: " << i + 1 << ")";
+            log::verbose("recursive line") << i + 1;
             return false;
           }
           else if (!ex::command(line))
           {
-            VLOG(9) << "command error (line: " << i + 1 << ")";
+            log::verbose("command error line") << i + 1;
             return false;
           }
         }
@@ -382,7 +381,7 @@ bool wex::ex::command(const std::string& cmd)
 
   if (!m_IsActive || command.empty() || command.front() != ':') return false;
 
-  VLOG(9) << "ex command: " << cmd;
+  log::verbose("ex command") << cmd;
 
   const auto& it = m_Macros.get_map().find(command);
   command = (it != m_Macros.get_map().end() ? it->second: command);
@@ -514,7 +513,7 @@ bool wex::ex::CommandAddress(const std::string& command)
     case 'z': return addr.adjust_window(rest);
     case '=': return addr.write_line_number();
     default:
-      wxLogStatus("Unknown address command: %s", cmd);
+      log::status("Unknown address command") << cmd;
       return false;
     }
   }
@@ -559,7 +558,7 @@ bool wex::ex::CommandAddress(const std::string& command)
     case '<': return range.shift_left();
     case '!': return range.escape(rest);
     default:
-      wxLogStatus("Unknown range command: %s", cmd);
+      log::status("Unknown range command") << cmd;
       return false;
     }
   }
@@ -769,7 +768,7 @@ int wex::ex::marker_line(char marker) const
     {
       if (const auto line = m_Command.get_stc()->MarkerLineFromHandle(it->second); line == -1)
       {
-        wxLogStatus("Handle for marker: %c invalid", marker);
+        log::status("Handle for marker") << marker << "invalid";
       }
       else
       {
@@ -778,7 +777,7 @@ int wex::ex::marker_line(char marker) const
     }
     else
     {
-      wxLogStatus(_("Undefined marker: %c"), marker);
+      log::status("Undefined marker") << marker;
     }
   }
 

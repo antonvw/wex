@@ -2,7 +2,7 @@
 // Name:      style.cpp
 // Purpose:   Implementation of wex::style class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -16,7 +16,6 @@
 #include <wex/lexers.h>
 #include <wex/log.h>
 #include <wex/tokenizer.h>
-#include <easylogging++.h>
 
 void wex::style::apply(wxStyledTextCtrl* stc) const
 {
@@ -127,12 +126,12 @@ void wex::style::SetNo(
       }
       else
       {
-        VLOG(9) << "illegal style: " << no;
+        log::verbose("illegal style") << no;
       }
     }
     catch (std::exception& e)
     {
-      VLOG(9) << "style exception: " << e.what() << ": " << single;
+      log::verbose(e) << "style:" << single;
     }
   }
 }

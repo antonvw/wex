@@ -2,7 +2,7 @@
 // Name:      test-config_item.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -13,6 +13,7 @@
 #include <wx/vscroll.h>
 #include <wex/config.h>
 #include <wex/item.h>
+#include <wex/util.h>
 #include <wex/managedframe.h>
 #include "../test-configitem.h"
 #include "test.h"
@@ -61,7 +62,7 @@ TEST_CASE("wex::config_item")
       return true;},
     wex::item::LABEL_LEFT,
     [=](wxWindow* user, const std::any& value, bool save) {
-      wxLogStatus(((wxTextCtrl *)user)->GetValue());});
+      wex::log::status(((wxTextCtrl *)user)->GetValue());});
   
   REQUIRE(ci_empty.type() == wex::item::EMPTY);
   REQUIRE(!ci_empty.is_row_growable());

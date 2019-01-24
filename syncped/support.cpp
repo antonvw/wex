@@ -273,7 +273,7 @@ void decorated_frame::on_notebook(wxWindowID id, wxWindow* page)
     case wex::ID_NOTEBOOK_LISTS:
     break;
     case wex::ID_NOTEBOOK_PROJECTS:
-      wex::log_status(((wex::listview_file*)page)->get_filename());
+      wex::log::status() << ((wex::listview_file*)page)->get_filename();
       update_statusbar((wex::listview_file*)page);
     break;
     default:

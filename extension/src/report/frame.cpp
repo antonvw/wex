@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex::history_frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -119,7 +119,7 @@ wex::history_frame::history_frame(
     }}, ID_TOOL_REPLACE);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    DoRecent(m_ProjectHistory, event.GetId() - m_ProjectHistory.get_base_id(), stc_data::WIN_IS_PROJECT);},
+    on_menu_history(m_ProjectHistory, event.GetId() - m_ProjectHistory.get_base_id(), stc_data::WIN_IS_PROJECT);},
     m_ProjectHistory.get_base_id(), m_ProjectHistory.get_base_id() + m_ProjectHistory.get_max_files());
 }
 
@@ -134,7 +134,7 @@ void wex::history_frame::find_in_files(wxWindowID dialogid)
 #ifdef __WXMSW__
   std::thread t([=]{
 #endif
-    wxLogStatus(GetFindReplaceInfoText(replace));
+    log::status(GetFindReplaceInfoText(replace));
       
     Unbind(wxEVT_IDLE, &history_frame::OnIdle, this);
       
@@ -150,7 +150,7 @@ void wex::history_frame::find_in_files(wxWindowID dialogid)
 
       dir.find_files() >= 0)
     {
-      log_status(tool.info(&dir.get_statistics().get_elements()));
+      log::status(tool.info(&dir.get_statistics().get_elements()));
     }
     
     Bind(wxEVT_IDLE, &history_frame::OnIdle, this);
@@ -212,7 +212,7 @@ bool wex::history_frame::find_in_files(
       }
     }
     
-    log_status(tool.info(&stats));
+    log::status(tool.info(&stats));
     
 #ifdef __WXMSW__
     });
@@ -241,7 +241,7 @@ int wex::history_frame::find_in_files_dialog(
     return wxID_CANCEL;
   }
 
-  wxLogStatus(GetFindReplaceInfoText(id == ID_TOOL_REPLACE));
+  log::status(GetFindReplaceInfoText(id == ID_TOOL_REPLACE));
         
   return wxID_OK;
 }
@@ -328,13 +328,13 @@ bool wex::history_frame::grep(const std::string& arg, bool sed)
     if (auto* stc = get_stc(); stc != nullptr)
       path::current(stc->get_filename().get_path());
     find_replace_data::get()->set_use_regex(true);
-    wxLogStatus(GetFindReplaceInfoText());
+    log::status(GetFindReplaceInfoText());
     Unbind(wxEVT_IDLE, &history_frame::OnIdle, this);
 
     tool_dir dir(tool, arg1.ToStdString(), arg2.ToStdString(), arg3);
     dir.find_files();
 
-    log_status(tool.info(&dir.get_statistics().get_elements()));
+    log::status(tool.info(&dir.get_statistics().get_elements()));
     Bind(wxEVT_IDLE, &history_frame::OnIdle, this);
   
 #ifdef __WXMSW__
@@ -354,7 +354,7 @@ void wex::history_frame::on_command_item_dialog(
     case wxID_CANCEL:
       if (interruptable::cancel())
       {
-        wxLogStatus(_("Cancelled"));
+        log::status(_("Cancelled"));
       }
       break;
 

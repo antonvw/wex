@@ -2,7 +2,7 @@
 // Name:      stc_file.cpp
 // Purpose:   Implementation of class wex::stc_file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -17,7 +17,6 @@
 #include <wex/path.h>
 #include <wex/stc.h>
 #include <wex/util.h> // for STAT_ etc.
-#include <easylogging++.h>
 
 void CheckWellFormed(wex::stc* stc, const wex::path& fn)
 {
@@ -68,11 +67,11 @@ bool wex::stc_file::do_file_load(bool synced)
       m_STC->get_lexer().set(get_filename().lexer(), true);
     }
 
-    wxLogStatus(_("Opened") + ": " + get_filename().data().string());
-    VLOG(1) << "opened: " << get_filename().data().string();
+    log::status(_("Opened")) << get_filename();
+    log::verbose("opened", 1) << get_filename().data().string();
   }
   
-  m_STC->properties_message(status_t().set(synced ? STAT_SYNC: 0));
+  m_STC->properties_message(log::status_t().set(synced ? log::STAT_SYNC: 0));
   m_STC->use_modification_markers(true);
   
   CheckWellFormed(m_STC, get_filename());
@@ -108,8 +107,8 @@ void wex::stc_file::do_file_save(bool save_as)
   
   m_STC->marker_delete_all_change();
   
-  wxLogStatus(_("Saved") + ": " + get_filename().data().string());
-  VLOG(1) << "saved: " << get_filename().data().string();
+  log::status(_("Saved")) << get_filename();
+  log::verbose("saved", 1) << get_filename().data().string();
   
   CheckWellFormed(m_STC, get_filename());
 }

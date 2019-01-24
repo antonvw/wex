@@ -2,7 +2,7 @@
 // Name:      vi-mode.cpp
 // Purpose:   Implementation of class wex::vi_mode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -14,7 +14,6 @@
 #include <wex/vi.h>
 #include <wex/vi-macros.h>
 #include <wex/vi-macros-mode.h>
-#include <easylogging++.h>
 #include "fsm.h"
 
 namespace wex
@@ -114,10 +113,10 @@ namespace wex
     
     static void Verbose(vi_mode::state from, vi_mode::state to, trigger trigger)
     {
-      VLOG(2) << 
-        "vi mode trigger " << String(trigger) <<
-        " state from " << String(from, nullptr) << 
-        " to " << String(to, nullptr);
+      log::verbose(2) << 
+        "vi mode trigger" << String(trigger) <<
+        "state from" << String(from, nullptr) << 
+        "to" << String(to, nullptr);
     };
   private:
     stc* m_STC;

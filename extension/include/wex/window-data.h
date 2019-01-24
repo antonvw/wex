@@ -2,7 +2,7 @@
 // Name:      window-data.h
 // Purpose:   Declaration of wex::window_data
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -74,9 +74,6 @@ namespace wex
     /// Sets window style.
     /// The style bits available depend on the context.
     /// Therefore default style is DATA_NUMBER_NOT_SET,
-    /// actual style used depend on control
-    /// Therefore default style is DATA_NUMBER_NOT_SET,
-    /// actual style used depend on active control.
     window_data& style(long style);
 
     /// Returns window title.
@@ -89,9 +86,7 @@ namespace wex
     wxPoint m_Pos = wxDefaultPosition;
     wxSize m_Size = wxDefaultSize;
     wxWindow* m_Parent = nullptr;
-    std::string m_Name;
-    std::string m_Title;
-    long m_Button = wxOK | wxCANCEL;
-    long m_Style = DATA_NUMBER_NOT_SET;
+    std::string m_Name, m_Title;
+    long m_Button = wxOK | wxCANCEL, m_Style = DATA_NUMBER_NOT_SET;
   };
 };

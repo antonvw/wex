@@ -2,7 +2,7 @@
 // Name:      frd.cpp
 // Purpose:   Implementation of wex::find_replace_data class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/fdrepdlg.h>
@@ -10,7 +10,6 @@
 #include <wex/config.h> 
 #include <wex/ex-command.h>
 #include <wex/util.h>
-#include <easylogging++.h>
 
 wex::find_replace_data* wex::find_replace_data::m_Self = nullptr;
 std::string wex::find_replace_data::m_text_find = _("Find what").ToStdString();
@@ -203,14 +202,13 @@ void wex::find_replace_data::set_use_regex(bool value)
     m_regex = std::regex(get_find_string(), flags);
     m_use_regex = true;
 
-    VLOG(9) << "frd regex find: " << 
-      get_find_string() << " replace: " << get_replace_string();
+    log::verbose("frd regex") << 
+      "find" << get_find_string() << 
+      "replace" << get_replace_string();
   }
   catch (std::regex_error& e) 
   {
     m_use_regex = false;
-    std::stringstream ss;
-    ss << "regex error: " << e.what() << " " << get_find_string();
-    log_status(ss.str());
+    log::status(e) << "regex" << get_find_string();
   }
 }

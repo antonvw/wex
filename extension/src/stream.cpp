@@ -22,7 +22,6 @@
 #include <wex/frd.h>
 #include <wex/log.h>
 #include <wex/util.h>
-#include <easylogging++.h>
 
 wex::stream::stream(const path& filename, const tool& tool)
   : m_Path(filename)
@@ -157,7 +156,7 @@ bool wex::stream::run_tool()
     int line_no = 0;
     std::string s;
     
-    VLOG(9) << "run_tool: " << m_Path.data().string();
+    log::verbose("run_tool") << m_Path.data().string();
   
     for (std::string line; std::getline(fs, line); )
     {

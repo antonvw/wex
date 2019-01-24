@@ -2,7 +2,7 @@
 // Name:      listview.cpp
 // Purpose:   Implementation of class wex::history_listview
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -100,7 +100,7 @@ wex::history_listview::history_listview(const listview_data& data)
     for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
     {
       const listitem item(this, i);
-      wxLogStatus(item.get_filename().data().string().c_str());
+      log::status() << item.get_filename();
       if (item.get_filename().file_exists())
       {
         listview_stream file(item.get_filename(), tool);
@@ -116,7 +116,7 @@ wex::history_listview::history_listview(const listview_data& data)
         stats += dir.get_statistics().get_elements();
       }
     }
-    log_status(tool.info(&stats));
+    log::status(tool.info(&stats));
 #ifdef __WXMSW__    
     });
     t.detach();

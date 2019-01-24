@@ -30,7 +30,6 @@
 #include <wex/printing.h>
 #include <wex/tokenizer.h>
 #include <wex/util.h>
-#include <easylogging++.h>
 
 namespace wex
 {
@@ -240,7 +239,7 @@ wex::listview::listview(const listview_data& data)
            )
         {
           item.update();
-          log_status(item.get_filename(), status_t().set(STAT_SYNC).set(STAT_FULLPATH));
+          log::status(log::status_t().set(log::STAT_SYNC).set(log::STAT_FULLPATH)) << item.get_filename();
           m_ItemUpdated = true;
         }
     
@@ -293,11 +292,11 @@ wex::listview::listview(const listview_data& data)
       if (const wex::path fn(listitem(this, event.GetIndex()).get_filename());
         fn.stat().is_ok())
       {
-        log_status(fn, status_t().set(STAT_FULLPATH));
+        log::status(log::status_t().set(log::STAT_FULLPATH)) << fn;
       }
       else
       {
-        log_status(get_item_text(GetFirstSelected()));
+        log::status(get_item_text(GetFirstSelected()));
       }
     }
     frame::update_statusbar(this);});
@@ -781,7 +780,7 @@ bool wex::listview::insert_item(const std::vector < std::string > & item)
     }
     catch (std::exception& e)
     {
-      VLOG(9) << "insert_item exception: " << e.what() << ": " << col;
+      log::verbose(e) << "insert_item exception:" << col;
       return false;
     }
   }
@@ -1148,7 +1147,7 @@ bool wex::listview::sort_column(int column_no, sort_t sort_method)
       after_sorting();
     }
 
-    wxLogStatus(_("Sorted on") + ": " + sorted_col.GetText());
+    log::status(_("Sorted on")) << sorted_col.GetText();
   }
   catch (std::exception& e)
   {

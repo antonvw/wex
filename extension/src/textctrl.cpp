@@ -2,14 +2,13 @@
 // Name:      textctrl.cpp
 // Purpose:   Implementation of wex::textctrl_input class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/textctrl.h>
 #include <wex/config.h>
 #include <wex/frd.h>
 #include <wex/log.h>
-#include <easylogging++.h>
 
 wex::textctrl_input::textctrl_input(ex_command::type_t type) 
   : m_Type(type)
@@ -27,7 +26,7 @@ wex::textctrl_input::textctrl_input(ex_command::type_t type)
   , m_Values(config(m_Name).get_list())
   , m_Iterator(m_Values.cbegin())
 {
-  VLOG(9) << "TCI " << m_Name << " size: " << m_Values.size();
+  log::verbose("TCI") << m_Name << "size:" << m_Values.size();
 }
 
 wex::textctrl_input::~textctrl_input() 

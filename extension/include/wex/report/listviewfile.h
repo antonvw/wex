@@ -2,7 +2,7 @@
 // Name:      listview_file.h
 // Purpose:   Declaration of class wex::listview_file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -27,6 +27,14 @@ namespace wex
     /// Destructor.
     virtual ~listview_file();
 
+    /// Virtual interface
+    virtual void after_sorting() override;
+    virtual bool get_contents_changed() const override {return m_ContentsChanged;};
+    virtual bool item_from_text(const std::string& text) override;
+    virtual void reset_contents_changed() override {m_ContentsChanged = false;};
+
+    /// Other methods
+    
     /// Adds items. The items are added using a separate thread,
     /// default this thread runs detached, otherwise this method
     /// waits for the thread to finish.
@@ -35,13 +43,6 @@ namespace wex
       const std::string& files,
       dir::type_t flags,
       bool detach = true);
-
-    // Interface, for listview overriden methods.
-    /// Sets contents changed if we are not syncing.
-    virtual void after_sorting() override;
-    
-    /// Returns member.
-    virtual bool get_contents_changed() const override {return m_ContentsChanged;};
 
     /// Returns the file.
     file& get_file() {return *this;};
@@ -52,19 +53,13 @@ namespace wex
     const auto& text_addrecursive() const {return m_TextAddRecursive;};
     const auto& text_addwhat() const {return m_TextAddWhat;};
     const auto& text_infolder() const {return m_TextInFolder;};
-
-    /// Adds item from text.
-    virtual bool item_from_text(const std::string& text) override;
-
-    /// Resets the member.
-    virtual void reset_contents_changed() override {m_ContentsChanged = false;};
-  protected:
+  private:
     virtual void build_popup_menu(menu& menu) override;
     virtual bool do_file_load(bool synced = false) override;
     virtual void do_file_new() override;
     virtual void do_file_save(bool save_as = false) override;
     void OnIdle(wxIdleEvent& event);
-  private:
+
     bool m_ContentsChanged = false;
     
     const std::string 

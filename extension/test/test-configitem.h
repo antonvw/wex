@@ -2,7 +2,7 @@
 // Name:      test-config_item.h
 // Purpose:   Declaration and implementation of test_config_item
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -27,7 +27,7 @@ const auto test_config_items(
         {{"<span size='x-large' color='blue'>Big</span> <b>bold</b> button", wex::item::BUTTON},
          {"lambda", wex::item::BUTTON, std::any(), wex::control_data(), wex::item::LABEL_LEFT,
            [=](wxWindow* user, const std::any& value, bool save) {
-             wxLogStatus("click on lambda");}}}},
+             wex::log::status("Click on lambda");}}}},
       {"Checkboxes",
         {{"Checkbox", wex::item::CHECKBOX}, 
          {"Group Checkbox1", wex::item::CHECKBOX}, 
@@ -102,7 +102,7 @@ const auto test_config_items(
              return true;},
            wex::item::LABEL_LEFT,
            [=](wxWindow* user, const std::any& value, bool save) {
-             wxLogStatus(((wxTextCtrl *)user)->GetValue());
+             wex::log::status(((wxTextCtrl *)user)->GetValue());
              }}}}}, 
     wex::item::NOTEBOOK_LIST, rows, cols}};
 }

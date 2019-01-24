@@ -131,7 +131,7 @@ wex::dirctrl::dirctrl(
   
   Bind(wxEVT_TREE_SEL_CHANGED, [=](wxTreeEvent& event) {
     GET_VECTOR_FILES
-    log_status(files[0], status_t().set(STAT_FULLPATH));});
+    log::status(log::status_t().set(log::STAT_FULLPATH)) << files[0];});
 }
 
 void wex::dirctrl::expand_and_select_path(const wex::path& path)

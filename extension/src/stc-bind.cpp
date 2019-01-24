@@ -107,7 +107,7 @@ void wex::stc::BindAll()
         GetReadOnly() && 
         isalnum(event.GetUnicodeKey()))
       {
-        log_status(_("Document is readonly"));
+        log::status(_("Document is readonly"));
         return;
       }
       if (is_hexmode())
@@ -151,7 +151,7 @@ void wex::stc::BindAll()
                !m_vi.command("%") ||
                !m_vi.command("i"))
              {
-               log_status("Autocomplete failed");
+               log::status("Autocomplete failed");
              }
            }
            else
@@ -589,13 +589,13 @@ void wex::stc::BindAll()
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (GetReadOnly())
     {
-      log_status(_("Document is readonly"));
+      log::status(_("Document is readonly"));
     }
     else
     {
       if (is_hexmode())
       {
-        log_status(_("Not allowed in hex mode"));
+        log::status(_("Not allowed in hex mode"));
         return;
       }
       else
@@ -631,7 +631,7 @@ void wex::stc::BindAll()
     }
     else
     {
-      log_status(_("No markers present"));
+      log::status(_("No markers present"));
     }}, idMarkerNext, idMarkerPrevious);
 }
 
