@@ -85,7 +85,7 @@ TEST_CASE("wex::stc")
     REQUIRE(stc->get_vi().mode().normal());
     stc->set_text("more text\notherline");
     stc->get_vi().command("V");
-    REQUIRE( stc->get_vi().mode().get() == wex::vi_mode::state::VISUAL_LINE);
+    REQUIRE( stc->get_vi().mode().get() == wex::vi_mode::state_t::VISUAL_LINE);
     REQUIRE( stc->find_next(std::string("more text")));
   }
 

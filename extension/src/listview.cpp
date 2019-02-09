@@ -769,6 +769,8 @@ bool wex::listview::insert_item(const std::vector < std::string > & item)
           {
             return false;
           }
+
+          SetItemTextColour(index, config(_("Foreground colour")).get(*wxBLACK));
         }
         else
         {
@@ -784,8 +786,6 @@ bool wex::listview::insert_item(const std::vector < std::string > & item)
       return false;
     }
   }
-  
-  SetItemTextColour(index, config(_("Foreground colour")).get(*wxBLACK));
 
   return true;
 }

@@ -8,7 +8,6 @@
 #pragma once
 
 #include <memory>
-#include <signal.h>  
 #include <wex/window-data.h>
 
 namespace wex
@@ -30,6 +29,13 @@ namespace wex
     {
       EXEC_NO_WAIT = 0, ///< do not wait
       EXEC_WAIT    = 1, ///< wait for process finish
+    };
+
+    /// process kill type
+    enum kill_t
+    {
+      KILL_TERM,  /// terminate process
+      KILL_INT,   /// interrupt process
     };
 
     /// Default constructor.
@@ -82,15 +88,9 @@ namespace wex
     /// Returns true if this process is running.
     bool is_running() const;
 
-    /// Sends specified signal to this process.
-    /// Returns true if signalling is ok.
-    /// (SIGKILL is not ISO C99 and not known by windows).
-    bool kill(
-#ifdef __UNIX__
-      int sig = SIGKILL);
-#else
-      int sig = SIGTERM);
-#endif
+    /// Kills this process.
+    /// Returns true if kill is ok.
+    bool kill(kill_t type = KILL_TERM);
     
     /// Construct the shell component.
     static void prepare_output(wxWindow* parent);

@@ -112,7 +112,6 @@ namespace wex
     listview* file_history_list() {return m_FileHistoryList;};
   private:
     void find_in_files(wxWindowID dialogid);
-    const wxString GetFindReplaceInfoText(bool replace = false) const;
     void OnIdle(wxIdleEvent& event);
 
     item_dialog* m_FiFDialog {nullptr};

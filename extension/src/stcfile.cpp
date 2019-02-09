@@ -68,7 +68,7 @@ bool wex::stc_file::do_file_load(bool synced)
     }
 
     log::status(_("Opened")) << get_filename();
-    log::verbose("opened", 1) << get_filename().data().string();
+    log::verbose("opened", 1) << get_filename();
   }
   
   m_STC->properties_message(log::status_t().set(synced ? log::STAT_SYNC: 0));
@@ -108,7 +108,7 @@ void wex::stc_file::do_file_save(bool save_as)
   m_STC->marker_delete_all_change();
   
   log::status(_("Saved")) << get_filename();
-  log::verbose("saved", 1) << get_filename().data().string();
+  log::verbose("saved", 1) << get_filename();
   
   CheckWellFormed(m_STC, get_filename());
 }

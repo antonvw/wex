@@ -235,7 +235,7 @@ void wex::stc::config_get()
     m_Lexer.apply();
   }
 
-  if (m_Lexer.edge_mode() == edge_mode::ABSENT)
+  if (m_Lexer.edge_mode() == edge_mode_t::ABSENT)
   {
     if (!m_Lexer.is_ok())
     {

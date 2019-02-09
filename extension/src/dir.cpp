@@ -102,7 +102,7 @@ int wex::dir::find_files()
 {
   if (!m_Dir.dir_exists())
   {
-    log("invalid path") << m_Dir.data().string();
+    log("invalid path") << m_Dir;
     return -1;
   }
 

@@ -22,7 +22,7 @@ namespace wex
   {
   public:  
     /// The possible vi mode states.
-    enum state
+    enum state_t
     {
       NORMAL,      ///< normal (command or navigation) mode
       INSERT,      ///< pressing key inserts key
@@ -50,7 +50,7 @@ namespace wex
       return transition(command);};
 
     /// Returns the state we are in.
-    state get() const;
+    state_t get() const;
     
     /// Returns true if in insert mode.
     bool insert() const {return 

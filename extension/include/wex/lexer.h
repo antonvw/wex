@@ -23,7 +23,7 @@ namespace wex
   /// The edge mode as is specified in the lexers file.
   /// When ABSENT the edge mode is shown as specified
   /// by the editor option settings.
-  enum class edge_mode
+  enum class edge_mode_t
   {
     ABSENT,     ///< no edge mode present
     NONE,       ///< no edge is shown
@@ -194,7 +194,7 @@ namespace wex
     std::vector<style> m_Styles;
     
     bool m_is_ok {false}, m_previewable {false};
-    wex::edge_mode m_EdgeMode {edge_mode::ABSENT};
+    wex::edge_mode_t m_EdgeMode {edge_mode_t::ABSENT};
     stc* m_STC {nullptr};
   };
 };

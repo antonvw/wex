@@ -2,7 +2,7 @@
 // Name:      test-control-data.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -37,5 +37,14 @@ TEST_CASE("wex::control_data")
   {
     REQUIRE(!wex::control_data().inject());
     REQUIRE(!wex::control_data().line(1).col(5).inject());
+  }
+
+  SUBCASE("others")
+  {
+    const std::bitset<3> org(3); // 011
+    std::bitset<3> bs;
+    wex::control_data data;
+    data.flags(org, bs);
+    REQUIRE( bs.to_string() == "011");
   }
 }

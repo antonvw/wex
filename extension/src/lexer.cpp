@@ -381,7 +381,7 @@ void wex::lexer::reset()
   m_is_ok = false;
   m_previewable = false;
 
-  m_EdgeMode = edge_mode::ABSENT;
+  m_EdgeMode = edge_mode_t::ABSENT;
   
   if (m_STC != nullptr)
   {
@@ -413,11 +413,11 @@ void wex::lexer::set(const pugi::xml_node* node)
     if (const std::string em(node->attribute("edgemode").value()); !em.empty())
     {
       if (em == "none")
-        m_EdgeMode = edge_mode::NONE;
+        m_EdgeMode = edge_mode_t::NONE;
       else if (em == "line")
-        m_EdgeMode = edge_mode::LINE;
+        m_EdgeMode = edge_mode_t::LINE;
       else if (em == "background")
-        m_EdgeMode = edge_mode::BACKGROUND;
+        m_EdgeMode = edge_mode_t::BACKGROUND;
       else
         log("unsupported edge mode") << em << *node;
     }
@@ -540,18 +540,18 @@ bool wex::lexer::set(const lexer& lexer, bool fold)
   {
     switch (m_EdgeMode)
     {
-      case edge_mode::ABSENT: break;
+      case edge_mode_t::ABSENT: break;
         
-      case edge_mode::BACKGROUND:
+      case edge_mode_t::BACKGROUND:
         m_STC->SetEdgeMode(wxSTC_EDGE_BACKGROUND); 
         break;
         
-      case edge_mode::LINE:
+      case edge_mode_t::LINE:
         m_STC->SetEdgeMode(m_EdgeColumns.size() <= 1 ? 
           wxSTC_EDGE_LINE: wxSTC_EDGE_MULTILINE); 
         break;
         
-      case edge_mode::NONE:
+      case edge_mode_t::NONE:
         m_STC->SetEdgeMode(wxSTC_EDGE_NONE); 
         break;
     }

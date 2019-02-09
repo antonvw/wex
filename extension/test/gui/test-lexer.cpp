@@ -75,11 +75,11 @@ TEST_CASE("wex::lexer")
   SUBCASE("Reset")
   {
     lexer.set("markdown");
-    REQUIRE( lexer.edge_mode() == wex::edge_mode::NONE);
+    REQUIRE( lexer.edge_mode() == wex::edge_mode_t::NONE);
     lexer.reset();
     REQUIRE( lexer.display_lexer().empty());
     REQUIRE( lexer.scintilla_lexer().empty());
-    REQUIRE( lexer.edge_mode() == wex::edge_mode::ABSENT);
+    REQUIRE( lexer.edge_mode() == wex::edge_mode_t::ABSENT);
   }
 
   SUBCASE("Testing several methods")

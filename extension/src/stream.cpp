@@ -156,7 +156,7 @@ bool wex::stream::run_tool()
     int line_no = 0;
     std::string s;
     
-    log::verbose("run_tool") << m_Path.data().string();
+    log::verbose("run_tool") << m_Path;
   
     for (std::string line; std::getline(fs, line); )
     {
@@ -169,7 +169,7 @@ bool wex::stream::run_tool()
     
     if (m_Write && s.empty())
     {
-      log("stream processing error") << m_Path.data().string();
+      log("stream processing error") << m_Path;
       return false;
     }
     else if (m_Modified && m_Write)

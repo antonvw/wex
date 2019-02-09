@@ -2,7 +2,7 @@
 // Name:      test-vi.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -21,7 +21,7 @@
 
 #define ESC "\x1b"
 
-void ChangeMode(wex::vi* vi, const std::string& command, wex::vi_mode::state mode)
+void ChangeMode(wex::vi* vi, const std::string& command, wex::vi_mode::state_t mode)
 {
   REQUIRE( vi->command(command));
   REQUIRE( vi->mode().get() == mode);
@@ -85,7 +85,7 @@ TEST_CASE("wex::vi")
     event.m_keyCode = nav_key;
     CAPTURE( nav_key);
 //    REQUIRE(!vi->on_key_down(event));
-    ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
+    ChangeMode( vi, ESC, wex::vi_mode::state_t::NORMAL);
   }
   event.m_keyCode = WXK_NONE;
   REQUIRE( vi->on_key_down(event));
@@ -110,7 +110,7 @@ TEST_CASE("wex::vi")
   REQUIRE( vi->command("xxxxxxxx"));
   REQUIRE( stc->GetText().Contains("xxxxxxxx"));
   REQUIRE( vi->last_command() == "i");
-  ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
+  ChangeMode( vi, ESC, wex::vi_mode::state_t::NORMAL);
   REQUIRE( vi->register_insert() == "xxxxxxxx");
   REQUIRE( vi->last_command() == std::string("ixxxxxxxx") + ESC);
   for (int i = 0; i < 10; i++)
@@ -124,8 +124,8 @@ TEST_CASE("wex::vi")
     if (it1.first != 'c')
     {
       CAPTURE( it1.first);
-      ChangeMode( vi, std::string(1, it1.first), wex::vi_mode::state::INSERT);
-      ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
+      ChangeMode( vi, std::string(1, it1.first), wex::vi_mode::state_t::INSERT);
+      ChangeMode( vi, ESC, wex::vi_mode::state_t::NORMAL);
       commands.push_back(std::string(1, it1.first));
     }
   }
@@ -150,7 +150,7 @@ TEST_CASE("wex::vi")
   REQUIRE( vi->command("a") );
   REQUIRE( vi->mode().insert());
   REQUIRE(!vi->command("xxxxxxxx"));
-  ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
+  ChangeMode( vi, ESC, wex::vi_mode::state_t::NORMAL);
   REQUIRE(!stc->GetModify());
   stc->get_hexmode().set(false);
   REQUIRE(!stc->is_hexmode());
@@ -158,12 +158,12 @@ TEST_CASE("wex::vi")
   stc->SetReadOnly(false);
 
   // Test insert command.  
-  ChangeMode( vi, "i", wex::vi_mode::state::INSERT);
-  ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
-  ChangeMode( vi, "iyyyyy", wex::vi_mode::state::INSERT);
+  ChangeMode( vi, "i", wex::vi_mode::state_t::INSERT);
+  ChangeMode( vi, ESC, wex::vi_mode::state_t::NORMAL);
+  ChangeMode( vi, "iyyyyy", wex::vi_mode::state_t::INSERT);
   REQUIRE( stc->GetText().Contains("yyyyy"));
   REQUIRE(!stc->GetText().Contains("iyyyyy"));
-  ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
+  ChangeMode( vi, ESC, wex::vi_mode::state_t::NORMAL);
   const std::string lastcmd = std::string("iyyyyy") + ESC;
   REQUIRE( vi->last_command() == lastcmd);
   REQUIRE( vi->inserted_text() == "yyyyy");
@@ -176,14 +176,14 @@ TEST_CASE("wex::vi")
   REQUIRE( vi->command("100izz"));
   REQUIRE( vi->mode().insert());
   REQUIRE(!stc->GetText().Contains("izz"));
-  ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
+  ChangeMode( vi, ESC, wex::vi_mode::state_t::NORMAL);
   REQUIRE( stc->GetText().Contains(std::string(100, 'z')));
 
   // Test insert \n.
-  ChangeMode( vi, "i\n\n\n\n", wex::vi_mode::state::INSERT);
+  ChangeMode( vi, "i\n\n\n\n", wex::vi_mode::state_t::INSERT);
   REQUIRE( stc->GetText().Contains("\n"));
   REQUIRE(!stc->GetText().Contains("i"));
-  ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
+  ChangeMode( vi, ESC, wex::vi_mode::state_t::NORMAL);
   REQUIRE( vi->inserted_text() == "\n\n\n\n");
   
   stc->set_text("");
@@ -195,7 +195,7 @@ TEST_CASE("wex::vi")
   event.m_uniChar = WXK_RETURN;
   REQUIRE( vi->on_key_down(event));
   REQUIRE(!vi->on_char(event));
-  ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
+  ChangeMode( vi, ESC, wex::vi_mode::state_t::NORMAL);
 #ifndef __WXOSX__  
   REQUIRE( wxString(vi->inserted_text()).Contains("\n"));
 #endif
@@ -205,7 +205,7 @@ TEST_CASE("wex::vi")
   {
     REQUIRE( vi->command(":ab " + abbrev.first + " " + abbrev.second));
     REQUIRE( vi->command("iabbreviation " + abbrev.first + " "));
-    ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
+    ChangeMode( vi, ESC, wex::vi_mode::state_t::NORMAL);
     REQUIRE( vi->inserted_text() == "abbreviation "  + abbrev.first + " ");
     REQUIRE( stc->GetText().Contains("abbreviation " + abbrev.second));
     REQUIRE(!stc->GetText().Contains(abbrev.first));
@@ -224,7 +224,7 @@ TEST_CASE("wex::vi")
   REQUIRE( vi->command("i"));
   REQUIRE( vi->mode().insert());
   REQUIRE( vi->command("b"));
-  ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
+  ChangeMode( vi, ESC, wex::vi_mode::state_t::NORMAL);
   REQUIRE( stc->GetText().Contains("b"));
   stc->set_text("xxxxxxxxxx\nxxxxxxxx\naaaaaaaaaa\n");
   REQUIRE( vi->command(":.="));
@@ -239,7 +239,7 @@ TEST_CASE("wex::vi")
   REQUIRE( vi->command("cw"));
   REQUIRE( vi->mode().insert());
   REQUIRE( vi->command("zzz"));
-  ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
+  ChangeMode( vi, ESC, wex::vi_mode::state_t::NORMAL);
   REQUIRE( stc->GetLineCount() == 4);
   REQUIRE( stc->GetLineText(0) == "zzzsecond");
   stc->set_text("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
@@ -247,7 +247,7 @@ TEST_CASE("wex::vi")
   REQUIRE( vi->command("ce"));
   REQUIRE( vi->mode().insert());
   REQUIRE( vi->command("zzz"));
-  ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
+  ChangeMode( vi, ESC, wex::vi_mode::state_t::NORMAL);
   REQUIRE( stc->GetLineCount() == 4);
   REQUIRE( stc->GetLineText(0) == "zzz second");
   stc->set_text("xxxxxxxxxx second third\nxxxxxxxx\naaaaaaaaaa\n");
@@ -255,7 +255,7 @@ TEST_CASE("wex::vi")
   REQUIRE( vi->command("2ce"));
   REQUIRE( vi->mode().insert());
   REQUIRE( vi->command("zzz"));
-  ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
+  ChangeMode( vi, ESC, wex::vi_mode::state_t::NORMAL);
   REQUIRE( stc->GetLineCount() == 4);
   REQUIRE( stc->GetLineText(0) == "zzz third");
 
@@ -305,10 +305,10 @@ TEST_CASE("wex::vi")
       REQUIRE( vi->command(nc));
       
       // test navigate while in rect mode
-      ChangeMode( vi, "K", wex::vi_mode::state::VISUAL_RECT);
+      ChangeMode( vi, "K", wex::vi_mode::state_t::VISUAL_RECT);
       REQUIRE( vi->command( nc ));
       REQUIRE( vi->mode().visual());
-      ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
+      ChangeMode( vi, ESC, wex::vi_mode::state_t::NORMAL);
       REQUIRE( vi->mode().normal());
       
       // test yank
@@ -337,7 +337,7 @@ TEST_CASE("wex::vi")
       CAPTURE( mc);
       REQUIRE( vi->command(mc));
       REQUIRE( vi->last_command() == mc);
-      ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
+      ChangeMode( vi, ESC, wex::vi_mode::state_t::NORMAL);
       REQUIRE( vi->mode().normal());
     }
   }
@@ -456,7 +456,7 @@ TEST_CASE("wex::vi")
   vi->command("=5+5");
   vi->command("");
   REQUIRE( stc->GetText().Contains("10"));
-  ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
+  ChangeMode( vi, ESC, wex::vi_mode::state_t::NORMAL);
   vi->command("=5+5");
   REQUIRE( wxString(stc->get_vi().get_macros().get_register('0')).Contains("10"));
   vi->command("=5+5+5");
@@ -518,7 +518,7 @@ TEST_CASE("wex::vi")
   
   // Test illegal command.
   REQUIRE(!vi->command(":xxx"));
-  ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
+  ChangeMode( vi, ESC, wex::vi_mode::state_t::NORMAL);
 
   // Test registers
   stc->get_file().file_new("test.h");
@@ -526,26 +526,26 @@ TEST_CASE("wex::vi")
   const std::string ctrl_r = "\x12";
   REQUIRE( vi->command("i"));
   REQUIRE( vi->command(ctrl_r + "_"));
-  ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
+  ChangeMode( vi, ESC, wex::vi_mode::state_t::NORMAL);
   
   stc->set_text("");
   REQUIRE( vi->command("i"));
   REQUIRE( vi->command(ctrl_r + "%"));
-  ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
+  ChangeMode( vi, ESC, wex::vi_mode::state_t::NORMAL);
   REQUIRE( stc->GetText() == "test.h");
   
   REQUIRE( vi->command("yy"));
   stc->set_text("");
   REQUIRE( vi->command("i"));
   REQUIRE( vi->command(ctrl_r + "0"));
-  ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
+  ChangeMode( vi, ESC, wex::vi_mode::state_t::NORMAL);
   REQUIRE( stc->GetText() == "test.h");
   
   stc->set_text("XXXXX");
   REQUIRE( vi->command("dd"));
   REQUIRE( vi->command("i"));
   REQUIRE( vi->command(ctrl_r + "1"));
-  ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
+  ChangeMode( vi, ESC, wex::vi_mode::state_t::NORMAL);
   REQUIRE( stc->GetText() == "XXXXX");
   
   stc->set_text("YYYYY");
@@ -553,14 +553,14 @@ TEST_CASE("wex::vi")
   REQUIRE( vi->command("i"));
   REQUIRE( vi->command(ctrl_r + "2"));
   REQUIRE( vi->command("2"));
-  ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
+  ChangeMode( vi, ESC, wex::vi_mode::state_t::NORMAL);
   REQUIRE( stc->GetText().Contains("XXXXX"));
   
   // Test visual modes.
-  for (const auto& visual : std::vector<std::pair<std::string, wex::vi_mode::state>> {
-    {"v",wex::vi_mode::state::VISUAL},
-    {"V",wex::vi_mode::state::VISUAL_LINE},
-    {"K",wex::vi_mode::state::VISUAL_RECT}})
+  for (const auto& visual : std::vector<std::pair<std::string, wex::vi_mode::state_t>> {
+    {"v",wex::vi_mode::state_t::VISUAL},
+    {"V",wex::vi_mode::state_t::VISUAL_LINE},
+    {"K",wex::vi_mode::state_t::VISUAL_RECT}})
   {
     ChangeMode( vi, visual.first, visual.second);
     ChangeMode( vi, "jjj", visual.second);
@@ -568,12 +568,12 @@ TEST_CASE("wex::vi")
     // enter illegal command
     vi->command("g");
     vi->command("j");
-    ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
+    ChangeMode( vi, ESC, wex::vi_mode::state_t::NORMAL);
     
     event.m_uniChar = visual.first[0];
     REQUIRE(!vi->on_char(event));
     REQUIRE( vi->mode().get() == visual.second);
-    ChangeMode( vi, ESC, wex::vi_mode::state::NORMAL);
+    ChangeMode( vi, ESC, wex::vi_mode::state_t::NORMAL);
   }
   
   stc->set_text("123456789");

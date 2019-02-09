@@ -10,6 +10,7 @@
 #include <bitset>
 #include <sstream>
 #include <pugixml.hpp>
+#include <wx/chartype.h>
 #undef ERROR
 
 namespace wex
@@ -47,6 +48,9 @@ namespace wex
     /// Initializes logging.
     /// Should be called before constructing a log object.
     static void init(int arc, char** argv);
+    
+    /// Sets (easy) logging flags.
+    static void set_flags(int flags);
 
     /// Default constructor. 
     /// This prepares a logging with default level error.
@@ -56,9 +60,6 @@ namespace wex
 
     /// Constructor for level error from a std exception.
     log(const std::exception&, level_t = ERROR, status_t = 0);
-
-    /// Constructor for level error fron a pugi exception.
-    log(const pugi::xpath_exception&, level_t = ERROR, status_t = 0);
 
     /// Constructor for level error from a pugi parse result.
     log(const pugi::xml_parse_result&, level_t = ERROR, status_t = 0);
@@ -72,8 +73,8 @@ namespace wex
     /// Destructor, flushes stringstream to logging.
    ~log();
 
-    /// Returns current logging.
-    const std::string get() const {return m_ss.str();};
+    /// Returns topic and current logging.
+    const std::string get() const;
 
     /// Logs int according to level.
     log& operator<<(int);
@@ -95,6 +96,9 @@ namespace wex
 
     /// Logs char* according to level.
     log& operator<<(const char*);
+
+    /// Logs wxChar* according to level.
+    log& operator<<(const wxChar*);
 
     /// Logs a bitset according to level.
     template<std::size_t N>
@@ -138,9 +142,10 @@ namespace wex
     static log verbose(std::exception& e, int verbosity = 9) {
       m_verbosity = m_verbosity; return log(e, VERBOSE);};
   private:
-    void Log() const;
+    void flush();
     const std::string S(); // separator
 
+    const std::string m_topic;
     std::stringstream m_ss;
     bool m_separator {true};
     level_t m_level {ERROR};

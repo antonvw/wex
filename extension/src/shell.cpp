@@ -194,7 +194,7 @@ wex::shell::shell(
           skip = false;
           if (m_Process != nullptr)
           {
-            m_Process->kill(SIGINT);
+            m_Process->kill(process::KILL_INT);
           }
         }
         // Ctrl-Q pressed, used to stop processing.

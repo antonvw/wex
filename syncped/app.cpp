@@ -14,7 +14,6 @@
 #include <wex/tostring.h>
 #include <wex/util.h>
 #include <wex/version.h>
-#include <easylogging++.h>
 #include "app.h"
 #include "frame.h"
 
@@ -77,7 +76,7 @@ bool app::OnInit()
         m_Data.control(wex::control_data().command(std::any_cast<std::string>(s)));}}},
       {{"D", "logfile", "sets log file"}, {wex::cmdline::STRING, [&](const std::any& s) {}}},
       {{"L", "logflags", "sets log flags"}, {wex::cmdline::INT, [&](const std::any& s) {
-        el::Loggers::addFlag((el::LoggingFlag)std::any_cast<int>(s));}}},
+        wex::log::set_flags(std::any_cast<int>(s));}}},
       {{"m", "vmodule", "activates verbosity for files starting with main to level"}, {wex::cmdline::STRING, [&](const std::any& s) {}}},
       {{"s", "scriptin", "script in"}, {wex::cmdline::STRING, [&](const std::any& s) {
         m_Scriptin.open(std::any_cast<std::string>(s));}}},

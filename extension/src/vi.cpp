@@ -38,8 +38,8 @@ constexpr int c_strcmp( char const* lhs, char const* rhs )
   {                                                                    \
     switch (mode().get())                                              \
     {                                                                  \
-      case wex::vi_mode::state::NORMAL:                                \
-      case wex::vi_mode::state::INSERT:                                \
+      case wex::vi_mode::state_t::NORMAL:                              \
+      case wex::vi_mode::state_t::INSERT:                              \
         if (WRAP && c_strcmp((#SCOPE), "Line") ==0)                    \
         {                                                              \
           if (c_strcmp((#DIRECTION), "Down") == 0)                     \
@@ -49,14 +49,14 @@ constexpr int c_strcmp( char const* lhs, char const* rhs )
         }                                                              \
         get_stc()->SCOPE##DIRECTION();                                 \
         break;                                                         \
-      case wex::vi_mode::state::VISUAL: get_stc()->SCOPE##DIRECTION##Extend(); \
+      case wex::vi_mode::state_t::VISUAL: get_stc()->SCOPE##DIRECTION##Extend(); \
         break;                                                         \
-      case wex::vi_mode::state::VISUAL_LINE:                           \
+      case wex::vi_mode::state_t::VISUAL_LINE:                         \
         if (c_strcmp((#SCOPE), "Char") != 0 &&                         \
             c_strcmp((#SCOPE), "Word") != 0)                           \
           get_stc()->SCOPE##DIRECTION##Extend();                       \
         break;                                                         \
-      case wex::vi_mode::state::VISUAL_RECT:                           \
+      case wex::vi_mode::state_t::VISUAL_RECT:                         \
         get_stc()->SCOPE##DIRECTION##RectExtend();                     \
         break;                                                         \
       default:                                                         \
@@ -67,13 +67,13 @@ constexpr int c_strcmp( char const* lhs, char const* rhs )
   {                                                                    \
     switch (mode().get())                                              \
     {                                                                  \
-      case wex::vi_mode::state::NORMAL:                                \
-      case wex::vi_mode::state::INSERT:                                \
+      case wex::vi_mode::state_t::NORMAL:                              \
+      case wex::vi_mode::state_t::INSERT:                              \
         if ((COND) &&                                                  \
           get_stc()->GetColumn(get_stc()->GetCurrentPos()) !=          \
           get_stc()->GetLineIndentation(get_stc()->GetCurrentLine()))  \
           get_stc()->VCHome(); break;                                  \
-      case wex::vi_mode::state::VISUAL:                                \
+      case wex::vi_mode::state_t::VISUAL:                              \
         if (COND) get_stc()->VCHomeExtend();                           \
         break;                                                         \
       default:                                                         \
@@ -543,14 +543,14 @@ wex::vi::vi(wex::stc* arg)
     {"><", [&](const std::string& command){
       switch (mode().get())
       {
-        case vi_mode::state::NORMAL:
+        case vi_mode::state_t::NORMAL:
           command == ">" ? 
             addressrange(this, m_Count).shift_right(): 
             addressrange(this, m_Count).shift_left();
           break;
-        case vi_mode::state::VISUAL:
-        case vi_mode::state::VISUAL_LINE:
-        case vi_mode::state::VISUAL_RECT:
+        case vi_mode::state_t::VISUAL:
+        case vi_mode::state_t::VISUAL_LINE:
+        case vi_mode::state_t::VISUAL_RECT:
           command == ">" ? 
             addressrange(this, "'<,'>").shift_right(): 
             addressrange(this, "'<,'>").shift_left();
@@ -1549,11 +1549,11 @@ void wex::vi::visual_extend(int begin_pos, int end_pos)
 
   switch (mode().get())
   {
-    case vi_mode::state::VISUAL:
+    case vi_mode::state_t::VISUAL:
       get_stc()->SetSelection(begin_pos, end_pos);
       break;
 
-    case vi_mode::state::VISUAL_LINE:
+    case vi_mode::state_t::VISUAL_LINE:
       if (begin_pos < end_pos)
       {
         get_stc()->SetSelection(
@@ -1568,7 +1568,7 @@ void wex::vi::visual_extend(int begin_pos, int end_pos)
       } 
       break;
 
-    case vi_mode::state::VISUAL_RECT:
+    case vi_mode::state_t::VISUAL_RECT:
       if (begin_pos < end_pos)
       {
         while (get_stc()->GetCurrentPos() < end_pos)

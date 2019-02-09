@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of classes for syncsocketserver
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <functional>
@@ -110,7 +110,8 @@ frame::frame()
   , m_Answer(ANSWER_OFF)
   , m_DataWindow(new wex::stc)
   , m_LogWindow(new wex::stc(
-      std::string(), wex::stc_data().flags(wex::stc_data::WIN_NO_INDICATOR)))
+      std::string(), wex::stc_data().flags(
+        wex::stc_data::window_t().set(wex::stc_data::WIN_NO_INDICATOR))))
   , m_Shell(new wex::shell)
 {
   SetIcon(wxICON(app));

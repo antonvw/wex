@@ -50,10 +50,13 @@ namespace wex
       m_ListView->sort_column("Name", SORT_ASCENDING);};
   private:
     virtual bool on_dir(const path& p) override {
-      std::ifstream ifs(wex::path(p.data(), "comm").data());
-      if (std::string line; ifs.is_open() && std::getline(ifs, line))
+      if (!std::filesystem::is_symlink(p.data())) 
       {
-        m_ListView->insert_item({line, p.name()});
+        std::ifstream ifs(wex::path(p.data(), "comm").data());
+        if (std::string line; ifs.is_open() && std::getline(ifs, line))
+        {
+          m_ListView->insert_item({line, p.name()});
+        }
       }
       return true;};
 

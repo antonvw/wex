@@ -197,7 +197,7 @@ bool wex::listview_file::do_file_load(bool synced)
     t.join();
 #endif
 
-  log::verbose("opened", 1) << get_filename().data().string();
+  log::verbose("opened", 1) << get_filename();
 
   return true;
 }
@@ -237,11 +237,11 @@ void wex::listview_file::do_file_save(bool save_as)
   
   if (doc.save_file(get_filename().data().string().c_str()))
   {
-    log::verbose("saved", 1) << get_filename().data().string();
+    log::verbose("saved", 1) << get_filename();
   }
   else
   {
-    log("xml save") << get_filename().data().string();
+    log("xml save") << get_filename();
   }
 }
 

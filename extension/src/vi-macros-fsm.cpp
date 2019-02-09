@@ -109,7 +109,7 @@ void wex::vi_macros_fsm::ExpandingTemplate()
   
   if (!ifs.is_open())
   {
-    log::verbose("could not open template file:") << filename.data().string();
+    log::verbose("could not open template file") << filename;
     m_error = true;
     return;
   }

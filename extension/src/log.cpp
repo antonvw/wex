@@ -18,11 +18,8 @@ wex::log::log(const std::string& topic, level_t level, status_t status)
   : m_level(level)
   , m_separator(!topic.empty())
   , m_status(status)
+  , m_topic(topic)
 {
-  if (!topic.empty())
-  {
-    m_ss << topic << ":";
-  }
 }
 
 wex::log::log(const std::exception& e, level_t level, status_t status)
@@ -30,13 +27,6 @@ wex::log::log(const std::exception& e, level_t level, status_t status)
   , m_status(status)
 {
   m_ss << "std::exception:" << S() << e.what();
-}
-
-wex::log::log(const pugi::xpath_exception& e, level_t level, status_t status)
-  : m_level(level)
-  , m_status(status)
-{
-  m_ss << "pugi::exception:" << S() << e.what();
 }
 
 wex::log::log(const pugi::xml_parse_result& r, level_t level, status_t status)
@@ -71,12 +61,39 @@ wex::log::log(status_t status)
 
 wex::log::~log()
 {
-  if (!m_ss.str().empty())
-  {
-    Log();
-  }
+  flush();
 }
 
+void wex::log::flush()
+{  
+  const std::string topic = !m_topic.empty() && !m_ss.str().empty() ? 
+    m_topic + ":": m_topic;
+  const std::string text (topic + m_ss.str());
+  
+  if (!text.empty())
+  {
+    switch (m_level)
+    {
+      case DEBUG:   LOG(DEBUG) << text; break;     
+      case ERROR:   LOG(ERROR) << text; break;
+      case FATAL:   LOG(FATAL) << text; break;
+      case STATUS:  wxLogStatus(text.c_str()); break;
+      case VERBOSE: VLOG(m_verbosity) << text; break;     
+      case WARNING: LOG(WARNING) << text; break;
+    }
+  }
+}  
+
+const std::string wex::log::get() const 
+{
+  return (!m_topic.empty() ? m_topic + ":": std::string()) + m_ss.str();
+}
+
+void wex::log::set_flags(int flags)
+{  
+  el::Loggers::addFlag((el::LoggingFlag)flags);
+}
+  
 wex::log& wex::log::operator<<(char r)
 {
   m_ss << S() << r;
@@ -104,6 +121,12 @@ wex::log& wex::log::operator<<(long r)
 wex::log& wex::log::operator<<(const char* r)
 {
   m_ss << S() << r;
+  return *this;
+}
+
+wex::log& wex::log::operator<<(const wxChar* r)
+{
+  m_ss << S() << wxString(r).ToStdString();
   return *this;
 }
 
@@ -139,7 +162,8 @@ wex::log& wex::log::operator<<(const listitem& r)
 
 wex::log& wex::log::operator<<(const path& r)
 {
-  m_ss << S() << (m_status[STAT_FULLPATH] ? r.data().string(): r.fullname());
+  m_ss << S() << (m_status[STAT_FULLPATH] || m_level != STATUS ?
+    r.data().string(): r.fullname());
 
   if (r.stat().is_ok())
   {
@@ -203,19 +227,6 @@ void wex::log::init(int argc, char** argv)
     << "config:" << elp.data().string();
 }
   
-void wex::log::Log() const
-{  
-  switch (m_level)
-  {
-    case DEBUG:   LOG(DEBUG) << m_ss.str(); break;     
-    case ERROR:   LOG(ERROR) << m_ss.str(); break;
-    case FATAL:   LOG(FATAL) << m_ss.str(); break;
-    case STATUS:  wxLogStatus(m_ss.str().c_str()); break;
-    case VERBOSE: VLOG(m_verbosity) << m_ss.str(); break;     
-    case WARNING: LOG(WARNING) << m_ss.str(); break;
-  }
-}  
-
 const std::string wex::log::S()
 {  
   const std::string s(m_separator ? " ": "");

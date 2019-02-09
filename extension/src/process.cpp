@@ -251,19 +251,15 @@ bool wex::process::is_running() const
   return m_process != nullptr && wxProcess::Exists(m_process->GetPid());
 }
 
-bool wex::process::kill(int sig)
+bool wex::process::kill(kill_t type)
 {
   bool killed = false;
 
   if (m_process != nullptr)
   {
-    killed = m_process->Kill(sig);
-
-    if ((sig == wxSIGKILL || sig == wxSIGTERM) && killed)
-    {
-      m_process.reset();
-      show_process(m_frame, false);
-    }
+    killed = m_process->Kill(type == KILL_TERM ? wxSIGKILL: wxSIGINT);
+    m_process.reset();
+    show_process(m_frame, false);
   }
 
   return killed;

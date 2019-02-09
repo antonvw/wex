@@ -123,6 +123,20 @@ wex::history_frame::history_frame(
     m_ProjectHistory.get_base_id(), m_ProjectHistory.get_base_id() + m_ProjectHistory.get_max_files());
 }
 
+const std::string find_replace_string(bool replace)
+{
+  std::string log;
+  
+  log = _("Searching for") + ": " + wex::find_replace_data::get()->get_find_string();
+
+  if (replace)
+  {
+    log += " " + _("replacing with") + ": " + wex::find_replace_data::get()->get_replace_string();
+  }
+
+  return log;
+}
+
 void wex::history_frame::find_in_files(wxWindowID dialogid)
 {
   const bool replace = (dialogid == ID_REPLACE_IN_FILES);
@@ -134,7 +148,7 @@ void wex::history_frame::find_in_files(wxWindowID dialogid)
 #ifdef __WXMSW__
   std::thread t([=]{
 #endif
-    log::status(GetFindReplaceInfoText(replace));
+    log::status(find_replace_string(replace));
       
     Unbind(wxEVT_IDLE, &history_frame::OnIdle, this);
       
@@ -241,7 +255,7 @@ int wex::history_frame::find_in_files_dialog(
     return wxID_CANCEL;
   }
 
-  log::status(GetFindReplaceInfoText(id == ID_TOOL_REPLACE));
+  log::status(find_replace_string(id == ID_TOOL_REPLACE));
         
   return wxID_OK;
 }
@@ -253,30 +267,10 @@ const std::string wex::history_frame::find_in_files_title(int id) const
     _("Find In Selection").ToStdString());
 }
 
-const wxString wex::history_frame::GetFindReplaceInfoText(bool replace) const
-{
-  wxString log;
-  
-  // Printing a % in wxLogStatus gives assert
-  if (
-    find_replace_data::get()->get_find_string().find("%") == std::string::npos &&
-    find_replace_data::get()->get_replace_string().find("%") == std::string::npos )
-  {
-    log = _("Searching for") + ": " + find_replace_data::get()->get_find_string();
-
-    if (replace)
-    {
-      log += " " + _("replacing with") + ": " + find_replace_data::get()->get_replace_string();
-    }
-  }
-
-  return log;
-}
-
 bool wex::history_frame::grep(const std::string& arg, bool sed)
 {
-  static wxString arg1 = config(m_TextInFolder).firstof();
-  static wxString arg2 = config(m_TextInFiles).firstof();
+  static std::string arg1 = config(m_TextInFolder).firstof();
+  static std::string arg2 = config(m_TextInFiles).firstof();
   static dir::type_t arg3 = dir::FILES;
 
   if (get_stc() != nullptr)
@@ -309,7 +303,7 @@ bool wex::history_frame::grep(const std::string& arg, bool sed)
   
   if (arg1.empty() || arg2.empty())
   {
-    log("empty arguments") << arg1.ToStdString() << arg2.ToStdString();
+    log("empty arguments") << arg1 << arg2;
     return false;
   }
   
@@ -328,10 +322,10 @@ bool wex::history_frame::grep(const std::string& arg, bool sed)
     if (auto* stc = get_stc(); stc != nullptr)
       path::current(stc->get_filename().get_path());
     find_replace_data::get()->set_use_regex(true);
-    log::status(GetFindReplaceInfoText());
+    log::status(find_replace_string(false));
     Unbind(wxEVT_IDLE, &history_frame::OnIdle, this);
 
-    tool_dir dir(tool, arg1.ToStdString(), arg2.ToStdString(), arg3);
+    tool_dir dir(tool, arg1, arg2, arg3);
     dir.find_files();
 
     log::status(tool.info(&dir.get_statistics().get_elements()));

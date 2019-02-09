@@ -2,7 +2,7 @@
 // Name:      test-vi-mode.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -52,10 +52,10 @@ TEST_CASE("wex::vi_mode")
   REQUIRE( mode.normal());
   get_stc()->SetReadOnly(false);
   
-  for (const auto& visual : std::vector<std::pair<std::string, wex::vi_mode::state>> {
-    {"v",wex::vi_mode::state::VISUAL},
-    {"V",wex::vi_mode::state::VISUAL_LINE},
-    {"K",wex::vi_mode::state::VISUAL_RECT}})
+  for (const auto& visual : std::vector<std::pair<std::string, wex::vi_mode::state_t>> {
+    {"v",wex::vi_mode::state_t::VISUAL},
+    {"V",wex::vi_mode::state_t::VISUAL_LINE},
+    {"K",wex::vi_mode::state_t::VISUAL_RECT}})
   {
     std::string command(visual.first);
     REQUIRE( mode.transition(command));
