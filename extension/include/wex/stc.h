@@ -149,6 +149,9 @@ namespace wex
     /// Returns associated data.
     const auto& data() const {return m_Data;};
 
+    /// Returns the config dialog.
+    static item_dialog* get_config_dialog() {return m_config_dialog;};
+    
     /// Returns the file.
     auto & get_file() {return m_File;};
 

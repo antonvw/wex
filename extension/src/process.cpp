@@ -80,12 +80,12 @@ namespace wex
     std::string* out,
     std::string* err)
   {
-    log::verbose("process exec wait:", 1) << command;
+    log::verbose("process exec wait", 1) << command;
 
     out->clear();
     err->clear();
 
-#ifdef __WXGTK__
+#ifndef __WXMSW__
     TinyProcessLib::Process process(command, cwd,
       [&](const char *bytes, size_t n) {out->append(bytes, n);},
       [&](const char *bytes, size_t n) {err->append(bytes, n);});
@@ -101,14 +101,14 @@ namespace wex
 
     if (wxExecute(command, output, errors, wxEXEC_SYNC, &env) == -1)
     {
-      return false;
+      return true;
     }
     else
     {
       // Set output by converting array strings into normal strings.
       *out = wxJoin(output, '\n', '\n');
       *err = wxJoin(errors, '\n', '\n');
-      return true;
+      return false;
     }
 #endif
   }

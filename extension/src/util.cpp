@@ -102,19 +102,21 @@ std::tuple<bool, const std::string, const std::vector<std::string>>
   }
 
   const auto prefix(path.fullname());
-  const std::vector <std::string > v(get_all_files(path.get_path(), prefix + "*"));
+  const std::vector <std::string > v(get_all_files(
+    path.get_path(), 
+    prefix + "*",
+    prefix + "*",
+    dir::type_t().set(dir::FILES).set(dir::DIRS)));
 
   if (v.empty())
   {
     return {false, std::string(), v};
   }
 
-  auto rest_equal_size = std::string::npos;
-
   if (v.size() > 1)
   {
+    auto rest_equal_size = 0;
     bool all_ok = true;
-    rest_equal_size = 0;
       
     for (auto i = prefix.length(); i < v[0].size() && all_ok; i++)
     {
@@ -131,9 +133,13 @@ std::tuple<bool, const std::string, const std::vector<std::string>>
         rest_equal_size++;
       }
     }
+    
+    return {true, v[0].substr(prefix.size(), rest_equal_size), v};
   }
-
-  return {true, v[0].substr(prefix.length(), rest_equal_size), v};
+  else
+  {
+    return {true, v[0].substr(prefix.size()), v};
+  }
 }
 
 bool wex::autocomplete_text(const std::string& text, 
@@ -183,6 +189,12 @@ bool wex::browser_search(const std::string& text)
 
 bool wex::clipboard_add(const std::string& text)
 {
+  if (text.empty())
+  {
+    log("clipboard text empty");
+    return false;
+  }
+  
   if (wxClipboardLocker locker; !locker)
   {
     return false;
@@ -970,7 +982,7 @@ void wex::vcs_execute(frame* frame, int id, const std::vector< path > & files)
           else
           {
             log::status("No difference");
-            log::verbose("no output from:") << vcs.entry().get_command_executed();
+            log::verbose("no output from") << vcs.entry().get_command_executed();
           }
         }
       }

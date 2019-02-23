@@ -363,11 +363,13 @@ wex::vi::vi(wex::stc* arg)
     {"!", [&](const std::string& command){
       if (command.size() > 1)
       {
-        return ex::command(":" + command);
+        ex::command(":" + command);
+        return command.size();
       }
       else
       {
-        return frame()->show_ex_command(this, command);
+        frame()->show_ex_command(this, command);
+        return (size_t)1;
       }}},
     {"\r_", [&](const std::string& command){
       get_stc()->Home();
@@ -662,7 +664,7 @@ bool wex::vi::command(const std::string& command)
     return false;
   }
 
-  if (command.front() != ':')
+  if (command.front() != ':' && command.front() != '!')
   {
     log::verbose("vi command") << command;
   }

@@ -106,7 +106,7 @@ wex::stc::stc(const path& filename, const stc_data& data)
   }
   else
   {
-    m_File.file_load(filename);
+    m_File.file_new(filename);
     m_Lexer.set(filename.lexer(), true); // allow fold
   }
 
@@ -800,6 +800,8 @@ bool wex::stc::show_vcs(const vcs_entry* vcs)
 {
   if (vcs->margin_width() <= 0 || vcs->get_stdout().empty())
   {
+    log::verbose("margin") 
+      << vcs->margin_width() << "stdout" << vcs->get_stdout();
     return false;
   }
 

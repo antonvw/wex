@@ -119,7 +119,9 @@ wex::history_frame::history_frame(
     }}, ID_TOOL_REPLACE);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    on_menu_history(m_ProjectHistory, event.GetId() - m_ProjectHistory.get_base_id(), stc_data::WIN_IS_PROJECT);},
+    on_menu_history(m_ProjectHistory, 
+      event.GetId() - m_ProjectHistory.get_base_id(), 
+      wex::stc_data::window_t().set(stc_data::WIN_IS_PROJECT));},
     m_ProjectHistory.get_base_id(), m_ProjectHistory.get_base_id() + m_ProjectHistory.get_max_files());
 }
 

@@ -105,7 +105,7 @@ Copyright: (c) 2019 Anton van Wezenbeek
     pos-time="20">
 
     <commands>
-      <command flags="none" type="separator"> &amp;blame </command>
+      <command type="popup separator" flags="-w"> &amp;blame </command>
       <command type="main ellipses"> &amp;add </command>
       <command type="ellipses"> &amp;commit </command>
       <command type="ellipses"> &amp;diff </command>

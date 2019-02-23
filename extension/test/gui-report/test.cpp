@@ -2,7 +2,7 @@
 // Name:      test.cpp
 // Purpose:   Implementation for wex report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <chrono>
@@ -23,7 +23,7 @@ TEST_CASE("wex::report")
     
   const auto files = wex::get_all_files(
     wex::path("../../../extension/test/gui-report"), 
-    "*.cpp", 
+    "*.cpp", std::string(),
     wex::dir::type_t().set());
   
   REQUIRE(files.size() > 5);

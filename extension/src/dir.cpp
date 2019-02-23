@@ -21,8 +21,11 @@ namespace wex
   {
   public:
     container_dir(
-      const T & path, const std::string& filespec, dir::type_t flags) 
-    : dir(path, filespec, flags) {;};
+      const T & path, 
+      const std::string& filespec, 
+      const std::string& dirspec, 
+      dir::type_t flags) 
+    : dir(path, filespec, dirspec, flags) {;};
 
     const auto & get() const {return m_Container;};
   private:
@@ -40,8 +43,11 @@ namespace wex
   {
   public:
     string_dir(
-      const std::string & path, const std::string& filespec, dir::type_t flags) 
-    : dir(path, filespec, flags) {;};
+      const std::string & path, 
+      const std::string& filespec, 
+      const std::string& dirspec, 
+      dir::type_t flags) 
+    : dir(path, filespec, dirspec, flags) {;};
 
     const auto & get() const {return m_Container;};
   private:
@@ -59,16 +65,25 @@ namespace wex
   {
     if (fs::is_regular_file(e.path()))
     {
-      if (dir->type().test(wex::dir::FILES) && 
+      if (
+        dir->type().test(wex::dir::FILES) && 
         wex::matches_one_of(e.path().filename().string(), dir->file_spec()))
       {
         dir->on_file(e.path());
         matches++;
       }
     }
-    else if (dir->type().test(wex::dir::DIRS) && fs::is_directory(e.path()))
+    else if (
+       dir->type().test(wex::dir::DIRS) && fs::is_directory(e.path()) &&
+      (dir->dir_spec().empty() || 
+       wex::matches_one_of(e.path().filename().string(), dir->dir_spec())))
     {
       dir->on_dir(e.path());
+      
+      if (!dir->dir_spec().empty())
+      {
+        matches++;
+      }
     }
 
     return !wex::interruptable::is_cancelled();
@@ -76,23 +91,34 @@ namespace wex
 };
 
 std::vector <wex::path> wex::get_all_files(
-  const wex::path& path, const std::string& filespec, dir::type_t flags) 
+  const wex::path& path, 
+  const std::string& filespec, 
+  const std::string& dirspec, 
+  dir::type_t flags) 
 {
-  container_dir<wex::path> dir(path, filespec, flags);
+  container_dir<wex::path> dir(path, filespec, dirspec, flags);
   dir.find_files();
   return dir.get();
 }
 
 std::vector <std::string> wex::get_all_files(
-  const std::string& path, const std::string& filespec, dir::type_t flags) 
+  const std::string& path, 
+  const std::string& filespec, 
+  const std::string& dirspec, 
+  dir::type_t flags) 
 {
-  string_dir dir(path, filespec, flags);
+  string_dir dir(path, filespec, dirspec, flags);
   dir.find_files();
   return dir.get();
 }
 
-wex::dir::dir(const wex::path& dir, const std::string& filespec, type_t flags)
+wex::dir::dir(
+  const wex::path& dir, 
+  const std::string& filespec, 
+  const std::string& dirspec, 
+  type_t flags)
   : m_Dir(dir)
+  , m_DirSpec(dirspec)
   , m_FileSpec(filespec)
   , m_Flags(flags)
 {
@@ -111,8 +137,6 @@ int wex::dir::find_files()
     log::status(_("Busy"));
     return -1;
   }
-
-  log::verbose("iterating") << m_Dir << "on:" << m_FileSpec << "flags:" << m_Flags;
 
   int matches = 0;
 
@@ -143,6 +167,12 @@ int wex::dir::find_files()
 
   stop();
 
+  log::verbose("iterating") << m_Dir 
+    << "on files:" << m_FileSpec 
+    << "on dirs:" << m_DirSpec 
+    << "flags:" << m_Flags 
+    << "matches:" << matches;
+
   return matches;
 }
 
@@ -151,7 +181,7 @@ wex::open_file_dir::open_file_dir(wex::frame* frame,
   const std::string& filespec, 
   wex::stc_data::window_t file_flags,
   dir::type_t type)
-  : wex::dir(path, filespec, type)
+  : wex::dir(path, filespec, std::string(), type)
   , m_Frame(frame)
   , m_Flags(file_flags)
 {

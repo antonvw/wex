@@ -189,6 +189,7 @@ void wex::log::init(int argc, char** argv)
 
   // We need to convert argc and argv, as elp expects = sign between values.
   // The logging-flags are handled by syncped.
+  bool error = false;
   std::vector<const char*> v;
   const std::vector <std::pair<
     std::string, std::string>> supported {
@@ -209,8 +210,17 @@ void wex::log::init(int argc, char** argv)
       if (strcmp(argv[i], s.first.c_str()) == 0)
       {
         found = true;
-        const std::string option(argv[i + 1]);
-        v.push_back(std::string(s.second + "=" + option).c_str());
+
+        if (i + 1 < argc)
+        {
+	        const std::string option(argv[i + 1]);
+  	      v.push_back(std::string(s.second + "=" + option).c_str());
+        }
+        else
+        {
+          error = true;
+        }
+
         i++;
       }
     }
@@ -225,6 +235,11 @@ void wex::log::init(int argc, char** argv)
 
   verbose(1) << "verbosity:" << el::Loggers::verboseLevel()
     << "config:" << elp.data().string();
+  
+  if (error)
+  {
+    log("option value missing");
+  }
 }
   
 const std::string wex::log::S()

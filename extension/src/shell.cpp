@@ -640,6 +640,8 @@ bool wex::shell::SetCommandFromHistory(const std::string& short_command)
 void wex::shell::set_process(process* process)
 {
   m_Process = process;
+
+  wex::path::current(get_filename().get_path());
 }
 
 bool wex::shell::set_prompt(const std::string& prompt, bool do_prompt) 

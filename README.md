@@ -17,7 +17,7 @@ mkdir build && cd build
 cmake .. && make
 ```
 
-for Visual Studio add `set CL=/Zc:__cplusplus` before cmake and do `msbuild syncped\syncped.sln /p:Configuration=Release`,
+for Visual Studio add `set CL=/Zc:__cplusplus` before cmake and do `msbuild syncped\syncped.sln /p:Configuration=Debug`,
 for mingw add `-G "MinGW Makefiles"` and do `mingw32-make`   
 
 # Build process 

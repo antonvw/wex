@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -150,7 +150,8 @@ wex::frame::frame(const window_data& data)
       SendSizeEvent();
     }}, ID_VIEW_STATUSBAR);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    (GetStatusBar() != nullptr ? event.Check(GetStatusBar()->IsShown()): event.Check(false));},
+    (GetStatusBar() != nullptr ? 
+       event.Check(GetStatusBar()->IsShown()): event.Check(false));},
     ID_VIEW_STATUSBAR);
 
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
@@ -159,8 +160,10 @@ wex::frame::frame(const window_data& data)
       update_statusbar(lv);
     }}, ID_UPDATE_STATUS_BAR);
 
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {FIND_REPLACE(_("Find"), 0 );}, wxID_FIND);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {FIND_REPLACE( _("Replace") , wxFR_REPLACEDIALOG );}, wxID_REPLACE);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    FIND_REPLACE(_("Find"), 0 );}, wxID_FIND);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    FIND_REPLACE( _("Replace") , wxFR_REPLACEDIALOG );}, wxID_REPLACE);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     m_IsCommand = true;
     if (!event.GetString().empty())
@@ -171,19 +174,23 @@ wex::frame::frame(const window_data& data)
         wex::path::current(stc->get_filename().get_path());
         if (!marker_and_register_expansion(&stc->get_vi(), text)) return;
       }
+
       if (!shell_expansion(text)) return;
+
       std::string cmd;
       if (std::vector <std::string> v; match("\\+([^ \t]+)* *(.*)", text, v) > 1)
       {
         cmd = v[0];
         text = v[1];
       }
+
       open_files(this, to_vector_path(text).get(), control_data().command(cmd));
     }
     else
     {
       open_files_dialog(this);
     }}, wxID_OPEN);
+
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     SetMenuBar(GetMenuBar() != nullptr ? nullptr: m_MenuBar);}, ID_VIEW_MENUBAR);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -389,7 +396,8 @@ bool wex::frame::update_statusbar(stc* stc, const std::string& pane)
       {
         if (stc->SelectionIsRectangle())
         {
-          text = wxString::Format("%d,%d,%d", line, pos, (int)stc->GetSelectedText().length());
+          text = wxString::Format("%d,%d,%d", 
+            line, pos, (int)stc->GetSelectedText().length());
         }
         else
         {

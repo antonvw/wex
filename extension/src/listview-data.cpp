@@ -2,7 +2,7 @@
 // Name:      listview-data.cpp
 // Purpose:   Implementation of wex::listview_data
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/lexer.h>
@@ -151,7 +151,7 @@ wex::listview_data& wex::listview_data::lexer(const wex::lexer* lexer)
 wex::listview_data& wex::listview_data::menu(
   menu_t flags, control_data::action_t action)
 {
-  m_Data.flags<2>(flags, m_MenuFlags, action);
+  m_Data.flags<flags.size()>(flags, m_MenuFlags, action);
   return *this;
 }
   

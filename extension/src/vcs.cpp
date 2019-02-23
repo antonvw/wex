@@ -17,13 +17,16 @@
 #include <wex/path.h>
 #include <wex/util.h>
 
-// The vcs id's here can be set using the config dialog, and are not
-// present in the vcs.xml. 
-enum
+namespace wex
 {
-  VCS_NONE = -2, // no version control
-  VCS_AUTO = -1, // uses the VCS appropriate for current file
-  VCS_START = 0  // no where fixed VCS start (index in vector)
+  // The vcs id's here can be set using the config dialog, and are not
+  // present in the vcs.xml. 
+  enum
+  {
+    VCS_NONE = -2, // no version control
+    VCS_AUTO = -1, // uses the VCS appropriate for current file
+    VCS_START = 0  // no where fixed VCS start (index in vector)
+  };
 };
 
 std::vector<wex::vcs_entry> wex::vcs::m_Entries;
@@ -93,9 +96,9 @@ int wex::vcs::config_dialog(const window_data& par) const
   // use a radiobox 
   std::vector<item> v{{"VCS", choices, true, cols}};
 
-  for (const auto& it2 : m_Entries)
+  for (const auto& it : m_Entries)
   {
-    v.push_back({it2.name(), item::FILEPICKERCTRL});
+    v.push_back({it.name(), item::FILEPICKERCTRL});
   }
 
   if (const window_data data(window_data(par).
@@ -294,7 +297,7 @@ bool wex::vcs::load_document()
   if (old_entries == 0)
   {
     // Add default VCS.
-    if (config c("VCS"); c.exists())
+    if (config c("VCS"); !c.exists())
     {
       c.set(VCS_AUTO);
     }

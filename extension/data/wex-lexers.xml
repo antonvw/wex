@@ -2079,13 +2079,13 @@ Copyright: (c) 2019, Anton van Wezenbeek
         <def style ="char"> fore:pink </def>
         <def style ="command"> fore:steel blue </def>
         <def style ="comment"> fore:#80a0ff,italic,back:#2D2D2D,eol </def>
-        <def style ="commentdockeyword"> fore:medium sea green,italic </def>
+        <def style ="commentdockeyword"> fore:#80a0ff,italic,underline,back:#2D2D2D </def>
         <def style ="error"> fore:red,italic,eol </def>
         <def style ="folder"> blue </def>
         <def style ="folder-back"> light blue </def>
         <def style ="foldmarginbackground"> dim grey </def>
         <def style ="foldmarginforeground"> black </def>
-        <def style ="identifier"> fore:white</def>
+        <def style ="identifier"> fore:#DDDDDD</def>
         <def style ="keyword1"> fore:yellow </def>
         <def style ="keyword2"> fore:yellow green </def>
         <def style ="keyword3"> fore:medium spring green </def>
@@ -2095,14 +2095,15 @@ Copyright: (c) 2019, Anton van Wezenbeek
         <def style ="preprocessor"> fore:grey </def>
         <def style ="processor"> fore:dark grey </def>
         <def style ="string"> fore:#ffab8f </def>
-        <def style ="styledefault"> default-font,back:#2B2B2B,fore:#BBBBBB </def>
+        <def style ="styledefault"> default-font,back:#2B2B2B,fore:#EEEEEE </def>
+        <def style ="stylelinenumber"> fore:grey </def>
         <def style ="styledefault-back"> default-font,back:#2E2E2E,fore:#BBBBBB,eol </def>
         <def style ="styleindicatorfind"> red </def>
-        <def style ="styletextmargin-day"> back:blue,face:Monospace,size:8 </def>
-        <def style ="styletextmargin-week"> back:#3333CC,face:Monospace,size:8 </def>
-        <def style ="styletextmargin-month"> back:#666699,face:Monospace,size:8 </def>
-        <def style ="styletextmargin-year"> back:#454554,face:Monospace,size:8 </def>
-        <def style ="styletextmargin"> back:#3B3B3B,face:Monospace,size:8 </def>
+        <def style ="styletextmargin-day"> back:blue </def>
+        <def style ="styletextmargin-week"> back:#3333CC </def>
+        <def style ="styletextmargin-month"> back:#666699 </def>
+        <def style ="styletextmargin-year"> back:#454554 </def>
+        <def style ="styletextmargin"> back:#3B3B3B </def>
         <def style ="tag"> fore:cadet blue </def>
         <def style ="variable"> fore:green </def>
         
@@ -2137,6 +2138,7 @@ Copyright: (c) 2019, Anton van Wezenbeek
         <def style ="processor"> fore:dark grey </def>
         <def style ="string"> fore:blue </def>
         <def style ="styledefault"> default-font,back:white,fore:black </def>
+        <def style ="stylelinenumber"> back:white,fore:blue </def>
         <def style ="styledefault-back"> default-font,back:#F1F1F1,fore:green,eol </def>
         <def style ="styletextmargin-day"> back:#444433,face:Monospace,size:8 </def>
         <def style ="styletextmargin-week"> back:#3333CC,face:Monospace,size:8 </def>
@@ -2194,6 +2196,7 @@ Copyright: (c) 2019, Anton van Wezenbeek
 
     <!-- this style_default is applied before all other styles -->
     <style no="style_default"> styledefault </style>
+    <style no="style_linenumber"> stylelinenumber </style>
     <style no="style_bracelight"> bracelight </style>
     <style no="style_textmargin"> styletextmargin </style>
     <style no="style_textmargin_day"> styletextmargin-day </style>

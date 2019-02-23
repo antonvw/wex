@@ -2,7 +2,7 @@
 // Name:      stc-data.cpp
 // Purpose:   Implementation of wex::stc_data
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/stc-data.h>
@@ -59,7 +59,7 @@ wex::stc_data& wex::stc_data::ctags_filename(const std::string& text)
 wex::stc_data& wex::stc_data::flags(
   window_t flags, control_data::action_t action)
 {
-  m_Data.flags<4>(flags, m_WinFlags, action);
+  m_Data.flags<flags.size()>(flags, m_WinFlags, action);
 
   return *this;
 }
@@ -117,7 +117,7 @@ bool wex::stc_data::inject() const
           m_STC->SetSelection(m_STC->GetTargetStart(), m_STC->GetTargetEnd());
         }
       }
-      else if (m_Data.line() == 0)
+      else if (m_Data.line() == DATA_NUMBER_NOT_SET)
       {
         m_STC->find_next(m_Data.find(), m_Data.find_flags());
       }
@@ -157,7 +157,7 @@ bool wex::stc_data::inject() const
 wex::stc_data& wex::stc_data::menu(
   menu_t flags, control_data::action_t action)
 {
-  m_Data.flags<5>(flags, m_MenuFlags, action);
+  m_Data.flags<flags.size()>(flags, m_MenuFlags, action);
 
   return *this;
 }

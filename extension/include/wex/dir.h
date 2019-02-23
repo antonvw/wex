@@ -2,7 +2,7 @@
 // Name:      dir.h
 // Purpose:   Declaration of class wex::dir and wex::open_file_dir
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -40,8 +40,13 @@ namespace wex
       const path& path,
       /// the files to be found
       const std::string& filespec = std::string(),
+      /// the dirs to be found
+      const std::string& dirspec = std::string(),
       /// finds all
       type_t flags = type_t().set()); 
+
+    /// Returns the dir spec.
+    const auto & dir_spec() const {return m_DirSpec;};
 
     /// Returns the file spec.
     const auto & file_spec() const {return m_FileSpec;};
@@ -68,7 +73,7 @@ namespace wex
     virtual bool on_file(const path& ) {return true;};
   private:
     const path m_Dir;
-    const std::string m_FileSpec;
+    const std::string m_DirSpec, m_FileSpec;
     const type_t m_Flags;
   };
 
@@ -78,6 +83,8 @@ namespace wex
     const path& path,
     /// the files to be found
     const std::string& filespec = std::string(),
+    /// the dirs to be found
+    const std::string& dirspec = std::string(),
     /// finds all
     dir::type_t flags = dir::type_t().set()); 
 
@@ -87,6 +94,8 @@ namespace wex
     const std::string& path,
     /// the files to be found
     const std::string& filespec = std::string(),
+    /// the dirs to be found
+    const std::string& dirspec = std::string(),
     /// finds all
     dir::type_t flags = dir::type_t().set());
 

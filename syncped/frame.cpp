@@ -173,13 +173,14 @@ frame::frame(app* app)
         m_App->data());
     }
       
-    if (manager().GetPane("PROJECTS").IsShown() && m_Projects != nullptr)
+    if (m_Projects != nullptr)
     {
       if (!get_project_history().get_history_file().data().empty())
       {
         open_file(
           wex::path(get_project_history().get_history_file()),
-          wex::stc_data().flags(wex::stc_data::WIN_IS_PROJECT));
+          wex::stc_data().flags(
+            wex::stc_data::window_t().set(wex::stc_data::WIN_IS_PROJECT)));
       }
       else
       {
@@ -267,6 +268,9 @@ frame::frame(app* app)
         count++;
       }
     }
+
+    const bool project_open (m_Projects != nullptr && m_Projects->IsShown());
+
     if (event.CanVeto())
     {
       if ((m_Process->is_running() && m_Process->get_command_executed() != "gdb") || 
@@ -282,10 +286,12 @@ frame::frame(app* app)
       }
     }
     wex::vi_macros::save_document();
+
     wex::config("Perspective").set(manager().SavePerspective().ToStdString());
     wex::config("OpenFiles").set(count);
     wex::config("ShowHistory").set(m_History != nullptr && m_History->IsShown());
-    wex::config("ShowProjects").set(m_Projects != nullptr && m_Projects->IsShown());
+    wex::config("ShowProjects").set(project_open);
+
     if (m_App->data().control().command().empty())
     {
       wxDELETE(m_Process);
@@ -430,8 +436,8 @@ frame::frame(app* app)
 #else
       wex::to_vector_path(dlg).get());
 #endif
-    wex::open_files(this, 
-      v, wex::stc_data().flags(wex::stc_data::WIN_IS_PROJECT));}, 
+    wex::open_files(this, v, wex::stc_data().flags(
+        wex::stc_data::window_t().set(wex::stc_data::WIN_IS_PROJECT)));}, 
     ID_PROJECT_OPEN);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -919,6 +925,18 @@ void frame::on_command_item_dialog(
         m_Lists->for_each<wex::listview_file>(wex::ID_ALL_CONFIG_GET);
         if (m_Projects != nullptr) m_Projects->for_each<wex::listview_file>(wex::ID_ALL_CONFIG_GET);
         if (m_History != nullptr) m_History->config_get();
+
+        if (wex::item_dialog* dlg = wex::stc::get_config_dialog();
+          dlg != nullptr)
+        {
+          const wex::item item (dlg->get_item(_("Include directory")));
+          wex::listview* lv = (wex::listview*)item.window();
+
+          if (lv != nullptr)
+          {
+            lv->config_get();
+          }
+        }
       }
       break;
     
@@ -1073,6 +1091,9 @@ wex::stc* frame::open_file(
   const wex::vcs_entry& vcs,
   const wex::stc_data& data)
 {
+  wex::log::verbose("vcs") << 
+    vcs.get_command_executed() << "file" << filename;
+  
   if (vcs.get_command().is_blame())
   {
     if (auto* page = (wex::stc*)m_Editors->set_selection(filename.data().string());
@@ -1409,9 +1430,8 @@ void frame::statusbar_clicked_right(const std::string& pane)
       match = "theme *name *= *\"" + wex::lexers::get()->theme() + "\"";
     }
     
-    open_file(
-      wex::lexers::get()->get_filename(), 
-      wex::control_data().find(match, wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX));
+    wex::stc* stc = open_file(wex::lexers::get()->get_filename());
+    stc->find_next(match, wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX);
   }
   else if (pane == "PaneMacro")
   {

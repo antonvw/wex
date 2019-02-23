@@ -2,7 +2,7 @@
 // Name:      dirctrl.cpp
 // Purpose:   Implementation of class wex::dirctrl
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/stockitem.h> // for wxGetStockLabel
@@ -50,7 +50,8 @@ wex::dirctrl::dirctrl(
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxBusyCursor wait;
     std::string clipboard;
-    for (const auto& it : to_vector_string(*this).get())
+    const auto v (to_vector_string(*this).get());
+    for (const auto& it : v)
     {
       clipboard += it + "\n";
     }

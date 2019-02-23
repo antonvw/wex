@@ -2,7 +2,7 @@
 // Name:      dir.cpp
 // Purpose:   Implementation of wex::listview_dir and wex::tool_dir classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/listitem.h>
@@ -14,7 +14,7 @@ wex::tool_dir::tool_dir(
   const path& fullpath, 
   const std::string& filespec, 
   dir::type_t flags)
-  : dir(fullpath, filespec, flags)
+  : dir(fullpath, filespec, std::string(), flags)
   , m_Statistics()
   , m_Tool(tool)
 {
@@ -41,7 +41,7 @@ wex::listview_dir::listview_dir(
   const path& fullpath, 
   const std::string& filespec, 
   dir::type_t flags)
-  : dir(fullpath, filespec, flags)
+  : dir(fullpath, filespec, std::string(), flags)
   , m_ListView(listview)
 {
 }
