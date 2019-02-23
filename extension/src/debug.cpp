@@ -36,7 +36,7 @@ namespace wex
   {
   public:
     process_dir(listview* lv, bool init)
-      : dir("/proc", "[0-9]+", type_t().set(dir::DIRS))
+      : dir("/proc", "[0-9]+", std::string(), type_t().set(dir::DIRS))
       , m_ListView(lv) {
       if (init)
       {
