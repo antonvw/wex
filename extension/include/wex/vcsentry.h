@@ -50,9 +50,6 @@ namespace wex
     /// Returns true if admin dir is only at top level.
     bool admin_dir_is_toplevel() const {return m_admin_dir_is_toplevel;};
 
-    /// Returns blame info.
-    const blame& blame() const {return m_blame;};
-    
     /// Builds a menu from all vcs commands.
     /// Returns (total) number of items in menu.
     int build_menu(
@@ -89,6 +86,9 @@ namespace wex
     /// Returns flags location.
     auto flags_location() const {return m_FlagsLocation;};
 
+    /// Returns blame info.
+    const blame& get_blame() const {return m_blame;};
+    
     /// Returns the name of current branch.
     const std::string get_branch() const;
 

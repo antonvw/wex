@@ -809,7 +809,7 @@ void wex::stc::show_line_numbers(bool show)
 
 bool wex::stc::show_vcs(const vcs_entry* vcs)
 {
-  if (!vcs->blame().use())
+  if (!vcs->get_blame().use())
   {
     return false;
   }
@@ -825,7 +825,7 @@ bool wex::stc::show_vcs(const vcs_entry* vcs)
   
   for (tokenizer tkz(vcs->get_stdout(), "\r\n"); tkz.has_more_tokens(); )
   {
-    if (const auto [r, bl, t] = vcs->blame().get(tkz.get_next_token());
+    if (const auto [r, bl, t] = vcs->get_blame().get(tkz.get_next_token());
       bl != prev)
     {
       if (line == 0)
