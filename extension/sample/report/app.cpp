@@ -81,7 +81,7 @@ report_sample_frame::report_sample_frame() : wex::history_frame()
 
   for (int i = wex::listview_data::FOLDER; i <= wex::listview_data::FILE; i++)
   {
-    auto* vw = new wex::history_listview(
+    auto* vw = new wex::report::listview(
       wex::listview_data().type((wex::listview_data::type_t)i).lexer(&lexer));
 
     m_NotebookWithLists->add_page(
@@ -105,7 +105,7 @@ report_sample_frame::report_sample_frame() : wex::history_frame()
 
   manager().Update();
 
-  wex::listview_dir dir(
+  wex::report::dir dir(
     (wex::listview*)m_NotebookWithLists->page_by_key(
       wex::listview_data().type(wex::listview_data::FILE).type_description()),
     wex::path::current(),

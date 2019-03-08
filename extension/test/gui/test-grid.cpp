@@ -16,11 +16,11 @@
 TEST_CASE("wex::grid")
 {
   wex::grid* grid = new wex::grid();
-  add_pane(frame(), grid);
+  wex::test::add_pane(frame(), grid);
   
   REQUIRE(grid->CreateGrid(5, 5));
   
-  grid->SetGridCellValue(wxGridCellCoords(0, 0), "test");
+  grid->set_grid_cell_value(wxGridCellCoords(0, 0), "test");
   
   grid->GoToCell(0, 0);
   REQUIRE( grid->get_selected_cells_value().empty());
@@ -45,9 +45,7 @@ TEST_CASE("wex::grid")
 //  grid->Print();
   grid->print_preview();
   
-#if wxUSE_DRAG_AND_DROP
   grid->use_drag_and_drop(true);
-  REQUIRE(grid->IsAllowedDragSelection());
+  REQUIRE(grid->is_allowed_drag_selection());
   grid->use_drag_and_drop(false);
-#endif
 }

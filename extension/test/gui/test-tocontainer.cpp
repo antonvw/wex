@@ -22,7 +22,7 @@ TEST_CASE("wex::to_container")
   wxComboBox* cb = new wxComboBox(frame(), wxID_ANY);
 #ifndef __WXOSX__
   // gives a warning about very large combobox
-  add_pane(frame(), cb);
+  wex::test::add_pane(frame(), cb);
 #endif
 
   wxArrayString a;

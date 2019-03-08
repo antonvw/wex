@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      listview_file.h
-// Purpose:   Declaration of class wex::listview_file
+// Name:      listviewfile.h
+// Purpose:   Declaration of class wex::report::file
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -8,24 +8,23 @@
 #pragma once
 
 #include <wex/file.h>
+#include <wex/itemdlg.h>
 #include <wex/report/listview.h>
 
-namespace wex
+namespace wex::report
 {
-  class item_dialog;
-
-  /// Combines history_listview and file,
+  /// Combines report::listview and file,
   /// giving you a list control with file synchronization support.
-  class listview_file : public history_listview, public file
+  class file : public listview, public wex::file
   {
   public:
     /// Constructor for a listview_data::FILE, opens the file.
-    listview_file(
+    file(
       const std::string& file,
       const listview_data& data = listview_data());
 
     /// Destructor.
-    virtual ~listview_file();
+    virtual ~file();
 
     /// Virtual interface
     virtual void after_sorting() override;

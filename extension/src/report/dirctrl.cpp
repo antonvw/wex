@@ -25,8 +25,8 @@
     return;          \
   }
 
-wex::dirctrl::dirctrl(
-  history_frame* frame,
+wex::report::dirctrl::dirctrl(
+  frame* frame,
   const wxString &filter, 
   int defaultFilter, 
   const window_data& data)
@@ -135,7 +135,7 @@ wex::dirctrl::dirctrl(
     log::status(log::status_t().set(log::STAT_FULLPATH)) << files[0];});
 }
 
-void wex::dirctrl::expand_and_select_path(const wex::path& path)
+void wex::report::dirctrl::expand_and_select_path(const wex::path& path)
 {
   ExpandPath(path.data().string());
   SelectPath(path.data().string());

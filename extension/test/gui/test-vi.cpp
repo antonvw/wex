@@ -30,9 +30,9 @@ void ChangeMode(wex::vi* vi, const std::string& command, wex::vi_mode::state_t m
 TEST_CASE("wex::vi")
 {
   wex::stc* stc = new wex::stc(
-    std::string("// vi: set ts=120 "
+    std::string("// 	vim: set ts=120 "
                 "// this is a modeline"));
-  add_pane(frame(), stc);
+  wex::test::add_pane(frame(), stc);
   wex::vi* vi = &stc->get_vi();
   wxKeyEvent event(wxEVT_CHAR);
   
@@ -270,7 +270,7 @@ TEST_CASE("wex::vi")
   stc->set_text("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
   REQUIRE( vi->command(":1"));
   REQUIRE( vi->command("yw"));
-  REQUIRE( vi->get_selected_text() == "xxxxxxxxxx ");
+  REQUIRE( vi->get_stc()->get_selected_text() == "xxxxxxxxxx ");
   REQUIRE( vi->command("w"));
   REQUIRE( vi->command("x"));
   REQUIRE( stc->GetText().Contains("second"));
@@ -580,7 +580,7 @@ TEST_CASE("wex::vi")
   vi->command("v");
   REQUIRE( vi->mode().visual());
   vi->visual_extend(0, 10);
-  REQUIRE( vi->get_selected_text() == "123456789");
+  REQUIRE( vi->get_stc()->get_selected_text() == "123456789");
   vi->mode().escape();
 
   // Test goto, /, ?, n and N.

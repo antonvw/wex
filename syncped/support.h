@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      support.h
-// Purpose:   Declaration of decoratedframe class
+// Purpose:   Declaration of decorated_frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma
@@ -11,7 +11,7 @@
 
 class app;
 
-class decorated_frame : public wex::history_frame
+class decorated_frame : public wex::report::frame
 {
 public:
   decorated_frame(app* app);

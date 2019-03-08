@@ -10,6 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <wex/cmdline.h>
+#include <wex/ctags.h>
 #include <wex/stc.h>
 #include <wex/tostring.h>
 #include <wex/util.h>
@@ -85,7 +86,7 @@ bool app::OnInit()
       {{"t", "tag", "start at tag"}, {wex::cmdline::STRING, [&](const std::any& s) {
         m_Tag = std::any_cast<std::string>(s);}}},
       {{"u", "tagfile", "use tagfile"}, {wex::cmdline::STRING, [&](const std::any& s) {
-        m_Data.ctags_filename(std::any_cast<std::string>(s));}}},
+        wex::ctags::open(std::any_cast<std::string>(s));}}},
       {{"V", "v", "activates verbosity upto verbose level (valid range: 0-9)"}, {wex::cmdline::INT, [&](const std::any& s) {}}},
       {{"w", "scriptout", "script out write"}, {wex::cmdline::STRING, [&](const std::any& s) {
         m_Scriptout.open(std::any_cast<std::string>(s), std::ios_base::out);}}},

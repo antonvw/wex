@@ -1,18 +1,18 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-listview_file.cpp
+// Name:      test-report::file.cpp
 // Purpose:   Implementation for wex report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/dir.h>
 #include <wex/report/listviewfile.h>
 #include "test.h"
 
-TEST_CASE("wex::listview_file")
+TEST_CASE("wex::report::file")
 {
-  wex::listview_file* listView = new wex::listview_file(get_project());
-  add_pane(frame(), listView);
+  wex::report::file* listView = new wex::report::file(get_project());
+  wex::test::add_pane(frame(), listView);
 
   REQUIRE(listView->get_file().get_filename().fullname() == get_project());
   

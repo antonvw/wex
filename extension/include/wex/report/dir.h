@@ -1,13 +1,14 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      dir.h
-// Purpose:   Include file for wex::listview_dir and wex::tool_dir classes
+// Purpose:   Include file for wex::report::dir and wex::tool_dir classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wex/dir.h>
+#include <wex/listview.h>
 #include <wex/stream-statistics.h>
 #include <wex/tool.h>
 
@@ -33,16 +34,17 @@ namespace wex
     stream_statistics m_Statistics;
     const tool m_Tool;
   };
+};
 
-  class listview;
-
+namespace wex::report
+{
   /// Offers a dir with reporting to a listview.
   /// All matching files and folders are added as listitem to the listview.
-  class listview_dir : public dir
+  class dir : public wex::dir
   {
   public:
     /// Constructor, provide your listview and a path.
-    listview_dir(listview* listview,
+    dir(wex::listview* listview,
       const path& fullpath,
       const std::string& filespec = std::string(),
       dir::type_t flags = dir::type_t().set());
@@ -50,6 +52,6 @@ namespace wex
     virtual bool on_dir(const path& dir) override;
     virtual bool on_file(const path& file) override;
   private:
-    listview* m_ListView;
+    wex::listview* m_ListView;
   };
 };

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      listview_file.cpp
-// Purpose:   Implementation of class wex::listview_file
+// Name:      listviewfile.cpp
+// Purpose:   Implementation of class wex::report::file
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -13,7 +13,6 @@
 #include <pugixml.hpp>
 #include <wex/config.h>
 #include <wex/frame.h>
-#include <wex/itemdlg.h>
 #include <wex/listitem.h>
 #include <wex/log.h>
 #include <wex/util.h>
@@ -22,9 +21,9 @@
 #include <wex/report/dir.h>
 #include <wex/report/frame.h>
 
-wex::listview_file::listview_file(
+wex::report::file::file(
   const std::string& file, const listview_data& data)
-  : history_listview(listview_data(data).type(listview_data::FILE))
+  : report::listview(listview_data(data).type(listview_data::FILE))
   , wex::file(false) // do not open files in file_load and Save
   , m_add_itemsDialog(new item_dialog({
         {m_TextAddWhat,item::COMBOBOX, std::any(), 
@@ -39,7 +38,7 @@ wex::listview_file::listview_file(
 {
   file_load(file);
   
-  Bind(wxEVT_IDLE, &listview_file::OnIdle, this);
+  Bind(wxEVT_IDLE, &report::file::OnIdle, this);
   
   Bind(wxEVT_LEFT_DOWN, [=](wxMouseEvent& event) {
     event.Skip();
@@ -76,24 +75,24 @@ wex::listview_file::listview_file(
     }}, wxID_EDIT, wxID_REPLACE_ALL);
 }
 
-wex::listview_file::~listview_file()
+wex::report::file::~file()
 {
   m_add_itemsDialog->Destroy();
 }
 
-void wex::listview_file::add_items(
+void wex::report::file::add_items(
   const std::string& folder,
   const std::string& files,
   dir::type_t flags,
   bool detached)
 {
-  Unbind(wxEVT_IDLE, &listview_file::OnIdle, this);
+  Unbind(wxEVT_IDLE, &file::OnIdle, this);
   
 #ifdef __WXMSW__ 
   std::thread t([=] {
 #endif
     const int old_count = GetItemCount();
-    listview_dir dir(this, folder, files, flags);
+    report::dir dir(this, folder, files, flags);
   
     dir.find_files();
     
@@ -111,7 +110,7 @@ void wex::listview_file::add_items(
   
     log::status(_("Added")) << added << _("file(s)");
   
-    Bind(wxEVT_IDLE, &listview_file::OnIdle, this);
+    Bind(wxEVT_IDLE, &file::OnIdle, this);
 #ifdef __WXMSW__ 
     });
   if (detached)  
@@ -121,7 +120,7 @@ void wex::listview_file::add_items(
 #endif
 }
 
-void wex::listview_file::after_sorting()
+void wex::report::file::after_sorting()
 {
   // Only if we are not sort syncing set contents changed.
   if (!config("List/SortSync").get(true))
@@ -130,7 +129,7 @@ void wex::listview_file::after_sorting()
   }
 }
 
-void wex::listview_file::build_popup_menu(wex::menu& menu)
+void wex::report::file::build_popup_menu(wex::menu& menu)
 {
   const bool ok =
      !get_filename().file_exists() || 
@@ -138,7 +137,7 @@ void wex::listview_file::build_popup_menu(wex::menu& menu)
 
   menu.style().set(wex::menu::IS_READ_ONLY, ok);
 
-  history_listview::build_popup_menu(menu);
+  listview::build_popup_menu(menu);
     
   if (ok)
   {
@@ -147,7 +146,7 @@ void wex::listview_file::build_popup_menu(wex::menu& menu)
   }
 }
 
-bool wex::listview_file::do_file_load(bool synced)
+bool wex::report::file::do_file_load(bool synced)
 {
   pugi::xml_document doc;
   const pugi::xml_parse_result result = doc.load_file(
@@ -202,12 +201,12 @@ bool wex::listview_file::do_file_load(bool synced)
   return true;
 }
 
-void wex::listview_file::do_file_new()
+void wex::report::file::do_file_new()
 {
   clear();
 }
 
-void wex::listview_file::do_file_save(bool save_as)
+void wex::report::file::do_file_save(bool save_as)
 {
   pugi::xml_document doc;
 
@@ -245,7 +244,7 @@ void wex::listview_file::do_file_save(bool save_as)
   }
 }
 
-bool wex::listview_file::item_from_text(const std::string& text)
+bool wex::report::file::item_from_text(const std::string& text)
 {
   bool result = false;
   
@@ -267,7 +266,7 @@ bool wex::listview_file::item_from_text(const std::string& text)
   return result;
 }
 
-void wex::listview_file::OnIdle(wxIdleEvent& event)
+void wex::report::file::OnIdle(wxIdleEvent& event)
 {
   event.Skip();
   

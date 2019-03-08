@@ -2,17 +2,17 @@
 // Name:      test-filehistory.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/menu.h>
 #include <wex/file.h>
 #include <wex/filehistory.h>
 #include <wex/managedframe.h>
+#include <wex/menu.h>
 #include "test.h"
 
 TEST_CASE("wex::file_history")
@@ -22,7 +22,7 @@ TEST_CASE("wex::file_history")
     wex::file_history history;
     REQUIRE( history.size() == 0);
     
-    wxMenu* menu = new wxMenu();
+    wex::menu* menu = new wex::menu();
     menu->Append(1, "x");
     menu->Append(2, "y");
 
@@ -32,7 +32,7 @@ TEST_CASE("wex::file_history")
     REQUIRE( history.size() == 0);
     REQUIRE( history.get_history_file().data().empty());
     
-    history.add(get_testpath("test.h"));
+    history.add(wex::test::get_path("test.h"));
     REQUIRE( history.size() == 1);
     REQUIRE( history.get_history_files(0).size() == 0);
     REQUIRE( history.get_history_files(5).size() == 1);
@@ -52,7 +52,7 @@ TEST_CASE("wex::file_history")
   SUBCASE("Other constructor")
   {
     wex::file_history history(4, 1000, "MY-KEY");
-    history.add(get_testpath("test.h"));
+    history.add(wex::test::get_path("test.h"));
     REQUIRE( history.size() == 1);
     REQUIRE( history.get_base_id() == 1000);
     REQUIRE( history.get_max_files() == 4);

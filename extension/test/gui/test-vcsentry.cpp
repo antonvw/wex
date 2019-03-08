@@ -25,8 +25,6 @@ TEST_CASE("wex::vcs_entry")
     REQUIRE( test.admin_dir() == "./");
     REQUIRE( test.get_branch().empty());
     REQUIRE( test.get_flags().empty());
-    REQUIRE( test.blame_pos_begin().empty());
-    REQUIRE( test.blame_pos_end().empty());
     REQUIRE( test.name() == "my-vcs");
     REQUIRE( test.get_stdout().empty());
     
@@ -69,6 +67,5 @@ TEST_CASE("wex::vcs_entry")
 
     wex::vcs_entry entry(doc.document_element());
     REQUIRE( entry.name() == "git");
-    REQUIRE( entry.blame_pos_end() == "20");
   }
 }

@@ -16,6 +16,7 @@
 #include <wex/addressrange.h>
 #include <wex/config.h>
 #include <wex/ex.h>
+#include <wex/ctags.h>
 #include <wex/frd.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
@@ -48,8 +49,9 @@ int wex::app::OnExit()
   delete find_replace_data::set(nullptr);
   delete lexers::set(nullptr);
   delete printing::set(nullptr);
-
+  
   addressrange::on_exit();
+  ctags::close();
   stc::on_exit();
   log::verbose(1) << "exit";
 
@@ -59,6 +61,7 @@ int wex::app::OnExit()
 bool wex::app::OnInit()
 {
   config::init();
+
   log::init(argc, argv);
   log::verbose(1) << "started:" << GetAppName() << get_version_info().get();
 

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      frame.h
-// Purpose:   Include file for wex::history_frame class
+// Purpose:   Include file for wex::report::frame class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -15,20 +15,23 @@
 namespace wex
 {
   class item_dialog;
-  class listview;
-  class listview_file;
+};
+
+namespace wex::report
+{
+  class file;
 
   /// Adds file and project history support to managed_frame.
   /// It also sets a change indicator in the title of the frame if applicable.
   /// Finally it adds find in files and selection dialogs.
-  class history_frame : public managed_frame
+  class frame : public managed_frame
   {
   public:
     /// Default constructor.
     /// Default it gives file history support to be used from the file menu.
     /// So you should call UseFileHistory somewhere to set it up.
     /// Default it does not use a recent project file.
-    history_frame(
+    frame(
       size_t maxFiles = 9,
       size_t maxProjects = 0,
       const window_data& data = window_data().style(wxDEFAULT_FRAME_STYLE));
@@ -38,13 +41,13 @@ namespace wex
     /// This method is called to activate a certain listview.
     /// Default it returns nullptr.
     virtual listview* activate(
-      listview_data::type_t, 
+      wex::listview_data::type_t, 
       const lexer* lexer = nullptr) {return nullptr;};
       
     /// If there is a project somewhere, 
     /// your implementation should return that one.
     /// Default it returns nullptr.
-    virtual listview_file* get_project() {return nullptr;};
+    virtual file* get_project() {return nullptr;};
 
     virtual void on_command_item_dialog(
       wxWindowID dialogid,
@@ -64,7 +67,7 @@ namespace wex
       /// Default shows a dialog.
       bool show_dialog = true,
       /// report for output
-      listview* report = nullptr);
+      wex::listview* report = nullptr);
 
     /// Shows a modal find (or replace) in files dialog.
     /// Returns result from ShowModal.
@@ -104,7 +107,7 @@ namespace wex
 
     /// Uses specified history list, and adds all elements from file history
     /// to the list.
-    void use_file_history_list(listview* list);
+    void use_file_history_list(wex::listview* list);
   protected:
     /// Access to file history list, 
     /// if you use this as a page in a notebook,

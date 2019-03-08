@@ -2,7 +2,7 @@
 // Name:      main.cpp
 // Purpose:   main for wex report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -14,67 +14,67 @@
 
 namespace wex
 {
-  class rptframe : public history_frame
+  namespace test
   {
-  public:
-    rptframe()
-      : history_frame() {
-        lexer lexer("cpp");
-        m_Report = new listview(listview_data().
-          type(listview_data::KEYWORD).lexer(&lexer));
-        add_pane(this, m_Report);};
-
-    virtual listview* activate(
-      listview_data::type_t listview_type, const lexer* lexer) override {
-      // only for coverage
-      history_frame::activate(listview_type, lexer);
-      return m_Report;};
-    void MoreCoverage() {
-      file_history_list();};
-  private:
-    listview* m_Report;
-  };
-
-  class gui_test_app : public test_app
-  {
-  public: 
-    gui_test_app() : test_app() {;};
-
-    bool OnInit() override
+    class frame : public report::frame
     {
-      if (!test_app::OnInit())
+    public:
+      frame()
+        : report::frame() {
+          lexer lexer("cpp");
+          m_Report = new listview(listview_data().
+            type(listview_data::KEYWORD).lexer(&lexer));
+          wex::test::add_pane(this, m_Report);};
+
+      virtual listview* activate(
+        listview_data::type_t listview_type, const lexer* lexer) override {
+        // only for coverage
+        report::frame::activate(listview_type, lexer);
+        return m_Report;};
+
+      void more_coverage() {
+        file_history_list();};
+    private:
+      listview* m_Report;
+    };
+
+    class gui_app : public app
+    {
+    public: 
+      bool OnInit() override
       {
-        return false;
-      }
-    
-      m_Frame = new rptframe();
-      m_Frame->MoreCoverage();
-      m_Frame->Show();
+        if (!test::app::OnInit())
+        {
+          return false;
+        }
       
-      return true;
-    }
-    
-    static auto* frame() {return m_Frame;};
-  private:
-    static rptframe* m_Frame;
-  }; 
+        m_Frame = new test::frame();
+        m_Frame->more_coverage();
+        m_Frame->Show();
+        
+        return true;
+      }
+      
+      static auto* frame() {return m_Frame;};
+    private:
+      inline static test::frame* m_Frame = nullptr;
+    }; 
+  };
 };
 
-wex::rptframe* wex::gui_test_app::m_Frame = nullptr;
+IMPLEMENT_APP_NO_MAIN(wex::test::gui_app);
 
-wex::history_frame* frame()
+wex::report::frame* frame()
 {
-  return wex::gui_test_app::frame();
+  return wex::test::gui_app::frame();
 }
-  
+    
 const std::string get_project()
 {
   return "test-rep.prj";
 }
   
-IMPLEMENT_APP_NO_MAIN(wex::gui_test_app);
-
 int main(int argc, char* argv[])
 {
-  return wex::testmain(argc, argv, new wex::gui_test_app());
+  return wex::test::main(argc, argv, new wex::test::gui_app());
 }

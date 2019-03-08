@@ -22,7 +22,7 @@ TEST_CASE("wex::item")
   SUBCASE("Item and layout")
   {
     wxPanel* panel = new wxPanel(frame());
-    add_pane(frame(), panel);
+    wex::test::add_pane(frame(), panel);
     wxGridSizer* sizer = new wxGridSizer(3);
     panel->SetSizer(sizer);
     

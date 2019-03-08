@@ -2,7 +2,7 @@
 // Name:      test-dirctrl.cpp
 // Purpose:   Implementation for wex report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/report/dir.h> // necessary?
@@ -10,7 +10,7 @@
 #include <wex/report/defs.h>
 #include "test.h"
 
-void Test(wex::dirctrl* ctrl)
+void Test(wex::report::dirctrl* ctrl)
 {
   for (auto id : std::vector<int> {
     wex::ID_EDIT_VCS_LOWEST + 2, 
@@ -24,10 +24,10 @@ void Test(wex::dirctrl* ctrl)
   }
 }
 
-TEST_CASE("wex::dirctrl")
+TEST_CASE("wex::report::dirctrl")
 {
-  wex::dirctrl* ctrl = new wex::dirctrl(frame());
-  add_pane(frame(), ctrl);
+  wex::report::dirctrl* ctrl = new wex::report::dirctrl(frame());
+  wex::test::add_pane(frame(), ctrl);
 
   SUBCASE("Select directory")
   {

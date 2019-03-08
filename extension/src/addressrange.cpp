@@ -881,7 +881,7 @@ bool wex::addressrange::write(const std::string& text) const
 #endif
 
   return wex::file(filename, text.find(">>") != std::string::npos ? 
-    std::ios_base::app: std::ios::out).write(m_Ex->get_selected_text());
+    std::ios_base::app: std::ios::out).write(m_STC->get_selected_text());
 }
 
 bool wex::addressrange::yank(const char name) const

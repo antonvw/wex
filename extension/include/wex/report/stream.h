@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      stream.h
-// Purpose:   Declaration of class 'wex::listview_stream'
+// Purpose:   Declaration of class 'wex::report::stream'
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -11,15 +11,19 @@
 
 namespace wex
 {
-  class history_frame;
   class listview;
+};
 
+namespace wex::report
+{
+  class frame;
+  
   /// Offers a stream with reporting to a listview.
-  class listview_stream : public stream
+  class stream : public wex::stream
   {
   public:
     /// Constructor.
-    listview_stream(
+    stream(
       const path& filename,
       const tool& tool);
 
@@ -28,10 +32,10 @@ namespace wex
       /// tool to use
       const tool& tool, 
       /// frame
-      history_frame* frame,
+      report::frame* frame,
       /// listview to which is reported, if nullptr,
       /// calls activate on frame to find report
-      listview* report = nullptr);
+      wex::listview* report = nullptr);
   private:
     /// The comment type.
     enum comment_t
@@ -80,8 +84,8 @@ namespace wex
     virtual void process_end() override;
     virtual void process_match(const std::string& line, size_t line_no, int pos) override;
     
-    static listview* m_Report;
-    static history_frame* m_Frame;
+    static wex::listview* m_Report;
+    static report::frame* m_Frame;
 
     bool m_IsCommentStatement = false;
     bool m_IsString = false;

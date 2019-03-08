@@ -57,11 +57,16 @@ Copyright: (c) 2019 Anton van Wezenbeek
 
    You can also configure the text margin for blame info. 
    Default blame is shown in a separate window, but when 
-   supplying a margin-width it is shown on the text margin.
-   By supplying a pos-begin and pos-end you can configure
-   which positions to use to for the blame info in 
-   the text margin. The pos-time allows you to specify
-   which field to use for time info in the blame info.
+   supplying a pos-begin it is shown on the text margin.
+   - By supplying a pos-begin and pos-end you can configure
+     which positions to use to for the blame info in 
+     the text margin. 
+   - The date-format allows you to specify
+     the date-time info in the blame info.
+   - The pos-author-begin determines on which position 
+     the author begins.
+   - The pos-id-begin and end determine the place of
+     the commit id.
    -->
   <vcs
     name="bazaar" 
@@ -99,10 +104,13 @@ Copyright: (c) 2019 Anton van Wezenbeek
     name="git"
     admin-dir=".git"
     toplevel="true"
-    margin-width="250" 
-    pos-begin="(" 
+    date-format="%Y-%m-%d %H:%M:%S"
+    date-print="10"
+    pos-begin="0" 
     pos-end="+"
-    pos-time="20">
+    pos-author-begin="("
+    pos-id-begin="0"
+    pos-id-end=" ">
 
     <commands>
       <command type="popup separator" flags="-w"> &amp;blame </command>
@@ -158,10 +166,7 @@ Copyright: (c) 2019 Anton van Wezenbeek
   <vcs 
     name="svn"
     admin-dir=".svn"
-    toplevel="true"
-    margin-width="280"
-    pos-begin=" " 
-    pos-end="+">
+    toplevel="true">
 
     <commands>
       <command type="main"> &amp;add </command>

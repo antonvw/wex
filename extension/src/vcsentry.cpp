@@ -12,6 +12,7 @@
 #include <wex/menus.h>
 #include <wex/shell.h>
 #include <wex/tokenizer.h>
+#include <wex/util.h>
 #include <wex/vcsentry.h>
 
 wex::vcs_entry::vcs_entry(
@@ -35,9 +36,7 @@ wex::vcs_entry::vcs_entry(const pugi::xml_node& node)
   , m_FlagsLocation(
       (strcmp(node.attribute("flags-location").value(), "prefix") == 0 ?
          FLAGS_LOCATION_PREFIX: FLAGS_LOCATION_POSTFIX))
-  , m_MarginWidth(atoi(node.attribute("margin-width").value()))
-  , m_blame_pos_begin(node.attribute("pos-begin").value())
-  , m_blame_pos_end(node.attribute("pos-end").value())
+  , m_blame(node)
 {
 }
 
@@ -123,6 +122,24 @@ bool wex::vcs_entry::execute(
     wd);
 }
 
+bool wex::vcs_entry::execute(const std::string& command, const std::string& wd)
+{
+  // Get flags if available.
+  std::string flags;
+  std::string cmd(command);
+  
+  if (const vcs_command& vc(find_command(get_word(cmd)));
+    !vc.get_command().empty())
+  {
+    flags = " " + vc.flags();
+  }
+  
+  return process::execute(
+    config(name()).get(name()) + " " + command + flags, 
+    process::EXEC_WAIT, 
+    wd);
+}
+  
 const std::string wex::vcs_entry::get_branch() const
 {
   if (name() == "git")

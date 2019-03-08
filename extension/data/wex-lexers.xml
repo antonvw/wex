@@ -2072,8 +2072,8 @@ Copyright: (c) 2019, Anton van Wezenbeek
          The first theme is the default theme.
       -->
     <themes>
-      <!-- The torte theme, resembles vi torte -->
-      <theme name="torte">
+      <!-- The dark theme, resembles vi torte -->
+      <theme name="dark">
         <def style ="attribute"> fore:green </def>
         <def style ="bracelight"> back:blue,fore:white</def>
         <def style ="char"> fore:pink </def>
@@ -2114,8 +2114,8 @@ Copyright: (c) 2019, Anton van Wezenbeek
         <colour name="selbackground"> green </colour>
       </theme>
       
-      <!-- The studio theme, resembles Visual Studio -->
-      <theme name="studio">
+      <!-- The light theme, resembles Visual Studio -->
+      <theme name="light">
         <def style ="attribute"> fore:steel blue </def>
         <def style ="bracelight"> back:yellow,fore:black</def>
         <def style ="char"> fore:pink </def>

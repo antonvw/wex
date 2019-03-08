@@ -402,9 +402,7 @@ bool wex::frame::update_statusbar(stc* stc, const std::string& pane)
         else
         {
           if (const auto number_of_lines = 
-            // There might be null's inside selection.
-            // So use the GetSelectedTextRaw variant.
-            get_number_of_lines(wxString(stc->GetSelectedTextRaw()).ToStdString());
+            get_number_of_lines(stc->get_selected_text());
               number_of_lines <= 1) 
             text = wxString::Format("%d,%d,%d", line, pos, len);
           else

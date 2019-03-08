@@ -2,7 +2,7 @@
 // Name:      vi-macros-mode.cpp
 // Purpose:   Implementation of class wex::vi_macros_mode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -95,7 +95,7 @@ int wex::vi_macros_mode::transition(
     case 'q': 
       trigger = vi_macros_fsm::trigger_t::RECORD;
 
-      macro = macro.substr(1);
+      macro.erase(0, 1);
 
       if (complete)
       {
@@ -192,7 +192,7 @@ int wex::vi_macros_mode::transition(
 
   const ex_command cmd(ex != nullptr ? ex->get_command(): ex_command());
   m_FSM->execute(trigger, macro, ex, repeat);
-  if (ex != nullptr) ex->m_Command.restore(cmd);
+  if (ex != nullptr) ex->m_command.restore(cmd);
 
   return command.size();
 }

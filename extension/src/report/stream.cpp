@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      stream.cpp
-// Purpose:   Implementation of class wex::listview_stream
+// Purpose:   Implementation of class wex::report::stream
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -15,17 +15,17 @@
 #include <wex/report/frame.h>
 #include <wex/report/listview.h>
 
-wex::listview* wex::listview_stream::m_Report = nullptr;
-wex::history_frame* wex::listview_stream::m_Frame = nullptr;
+wex::listview* wex::report::stream::m_Report = nullptr;
+wex::report::frame* wex::report::stream::m_Frame = nullptr;
 
-wex::listview_stream::listview_stream(
+wex::report::stream::stream(
   const path& filename,
   const tool& tool)
-  : stream(filename, tool)
+  : wex::stream(filename, tool)
 {
 }
 
-wex::listview_stream::comment_t wex::listview_stream::CheckCommentSyntax(
+wex::report::stream::comment_t wex::report::stream::CheckCommentSyntax(
   const std::string& syntax_begin,
   const std::string& syntax_end,
   const std::string& text) const
@@ -57,7 +57,7 @@ wex::listview_stream::comment_t wex::listview_stream::CheckCommentSyntax(
   return COMMENT_NONE;
 }
 
-wex::listview_stream::comment_t wex::listview_stream::CheckForComment(
+wex::report::stream::comment_t wex::report::stream::CheckForComment(
   const std::string& text)
 {
   if (get_filename().lexer().comment_begin2().empty())
@@ -114,17 +114,17 @@ wex::listview_stream::comment_t wex::listview_stream::CheckForComment(
   return comment_t;
 }
 
-void wex::listview_stream::CommentStatementEnd()
+void wex::report::stream::CommentStatementEnd()
 {
   m_IsCommentStatement = false;
 }
 
-void wex::listview_stream::CommentStatementStart()
+void wex::report::stream::CommentStatementStart()
 {
   m_IsCommentStatement = true;
 }
 
-std::string wex::listview_stream::Context(
+std::string wex::report::stream::Context(
   const std::string& line, int pos) const
 {
   if (pos == -1 || m_ContextSize <= 0) return line;
@@ -134,11 +134,11 @@ std::string wex::listview_stream::Context(
     line.substr(m_ContextSize < pos ? pos - m_ContextSize: 0); 
 }
 
-bool wex::listview_stream::process(std::string& line, size_t line_no)
+bool wex::report::stream::process(std::string& line, size_t line_no)
 {
   if (get_tool().id() != ID_TOOL_REPORT_KEYWORD)
   {
-    return stream::process(line, line_no);
+    return wex::stream::process(line, line_no);
   }
   
   bool sequence = false;
@@ -236,20 +236,20 @@ bool wex::listview_stream::process(std::string& line, size_t line_no)
   return true;
 }
 
-bool wex::listview_stream::process_begin()
+bool wex::report::stream::process_begin()
 {
   m_ContextSize = config(_("Context size")).get(10);
 
   if (get_tool().id() != ID_TOOL_REPORT_KEYWORD)
   {
-    return stream::process_begin();
+    return wex::stream::process_begin();
   }
   else
   {
     if (
       m_Frame == nullptr ||
      (m_Report = m_Frame->activate(
-        history_listview::type_tool(get_tool()),
+        listview::type_tool(get_tool()),
         &get_filename().lexer())) == nullptr)
     {
       return false;
@@ -259,7 +259,7 @@ bool wex::listview_stream::process_begin()
   return true;
 }
 
-void wex::listview_stream::process_end()
+void wex::report::stream::process_end()
 {
   if (get_tool().id() == ID_TOOL_REPORT_KEYWORD)
   {
@@ -298,7 +298,7 @@ void wex::listview_stream::process_end()
   }
 }
 
-void wex::listview_stream::process_match(
+void wex::report::stream::process_match(
   const std::string& line, size_t line_no, int pos)
 {
   assert(m_Report != nullptr);
@@ -311,10 +311,10 @@ void wex::listview_stream::process_match(
   item.set_item(_("Match").ToStdString(), find_replace_data::get()->get_find_string());
 }
 
-bool wex::listview_stream::setup_tool(
+bool wex::report::stream::setup_tool(
   const tool& tool, 
-  history_frame* frame,
-  listview* report)
+  frame* frame,
+  wex::listview* report)
 {
   if (tool.id() == ID_TOOL_REPLACE)
   {
@@ -330,7 +330,7 @@ bool wex::listview_stream::setup_tool(
     if (tool.is_report_type() && tool.id() != ID_TOOL_REPORT_KEYWORD)
     {
       if ((m_Report = 
-        m_Frame->activate(history_listview::type_tool(tool))) == nullptr)
+        m_Frame->activate(listview::type_tool(tool))) == nullptr)
       {
         log::verbose("activate failed");
         return false;

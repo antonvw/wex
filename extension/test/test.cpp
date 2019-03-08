@@ -12,55 +12,14 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <functional>
 #include <wx/timer.h>
 #include <wex/config.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
 #include <wex/managedframe.h>
-#include <wex/process.h>
-#include <wex/util.h>
 #include "test.h"
 
-void AddExtension(wex::path& fn)
-{
-  const auto v(fn.paths());
-  const auto it = std::find(v.begin(), v.end(), "wxExtension");
-  
-  fn = wex::path();
-  
-  // If wxExtension is present, copy all subdirectories.
-  if (it != v.end())
-  {
-    for (auto i = v.begin(); i != it; i++)
-    {
-      fn.append(*i);
-    }
-
-    fn.append("wxExtension").append("extension");
-  }
-  else
-  {
-    for (const auto& it : v)
-    {
-      if (it == "build" || it == "Release" || 
-          it == "Debug" || it == "Coverage")
-      {
-        fn.append("extension");
-        break;      
-      }
-    
-      fn.append(it);
-    
-      if (it == "extension")
-      {
-        break;
-      }
-    }
-  }
-}
-    
-const std::string add_pane(wex::managed_frame* frame, wxWindow* pane)
+const std::string wex::test::add_pane(wex::managed_frame* frame, wxWindow* pane)
 {
   static int no = 0;
   
@@ -80,91 +39,64 @@ const std::string add_pane(wex::managed_frame* frame, wxWindow* pane)
   return name;
 }
 
-const wex::path get_testpath(const std::string& file) 
+const wex::path wex::test::get_path(const std::string& file) 
 {
-  return wex::test_app::get_testpath(file);
+  return wex::test::app::get_path(file);
 }
 
-wex::path wex::test_app::get_testpath(const std::string& file)
+wex::path wex::test::app::get_path(const std::string& file)
 {
   return file.empty() ?
-    m_TestPath:
-    path(m_TestPath.data().string(), file);
+    m_path:
+    path(m_path.data().string(), file);
 }
 
-bool wex::test_app::OnInit()
+bool wex::test::app::OnInit()
 {
   SetAppName("wex-test"); // as in CMakeLists
-  SetTestPath();
-  lexers::get();
-  
-  if (!app::OnInit())
+
+  m_path = path(path::current()).data().parent_path();
+  m_path.append("extension").append("test").append("data");
+  path::current(m_path.data().string());
+
+  if (!wex::app::OnInit() || !m_path.dir_exists())
   {
     return false;
   }
+
+  lexers::get();
   
-  wex::config(_("vi mode")).set(true);
-  wex::config(_("Auto complete")).set(true);
-  wex::config(_("locale")).set(get_locale().GetName().ToStdString()); // for coverage
+  config(_("vi mode")).set(true);
+  config(_("Auto complete")).set(true);
+  config(_("locale")).set(get_locale().GetName().ToStdString()); // for coverage
   
   return true;
 }
 
-int wex::test_app::OnRun()
+int wex::test::app::OnRun()
 {
   wxTimer* timer = new wxTimer(this);
   timer->StartOnce(1000);
 
   Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
-    m_Context->run();
-    wex::config("AllowSync").set(false);
+    m_context->run();
+    config("AllowSync").set(false);
 
-    if (m_Context->shouldExit())
+    if (m_context->shouldExit())
     {
       OnExit();
       ExitMainLoop();
     }});
 
-  return app::OnRun();
+  return wex::app::OnRun();
 }
 
-void wex::test_app::set_context(doctest::Context* context)
+void wex::test::app::set_context(doctest::Context* context)
 {
-  m_Context = context;
+  m_context = context;
 }
   
-void wex::test_app::SetTestPath()
-{
-  m_TestPath = path(path::current(), "");
-  auto v(m_TestPath.paths());
-  
-  if (std::find(v.begin(), v.end(), "wxExtension") == v.end())
-  {
-    if (std::find(v.begin(), v.end(), "extension") == v.end())
-    {
-      m_TestPath.replace_filename("extension");
-    }
-    else
-    {
-      AddExtension(m_TestPath);
-    }
-  }
-  else
-  {
-    AddExtension(m_TestPath);
-  }
-
-  v = m_TestPath.paths();
-
-  if (std::find(v.begin(), v.end(), "test") == v.end())
-  {
-    m_TestPath.append("test").append("data");
-  }
-
-  wex::path::current(m_TestPath.data().string());
-}
-
-int wex::testmain(int argc, char* argv[], wex::test_app* app)
+int wex::test::main(int argc, char* argv[], wex::test::app* app)
 {
   try
   {
@@ -180,7 +112,7 @@ int wex::testmain(int argc, char* argv[], wex::test_app* app)
   }
   catch (const std::exception& e)
   {
-    wex::log(e) << "app";
+    log(e) << app->GetAppName().ToStdString();
     exit(EXIT_FAILURE);
   }
 }

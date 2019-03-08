@@ -2,7 +2,7 @@
 // Name:      menus.h
 // Purpose:   Declaration of wex::menus class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -89,9 +89,9 @@ namespace wex
             ellipsed(
               it.get_command(menu_command::INCLUDE_ACCELL),
               std::string(),
-              (it.type().test(menu_command::ELLIPSES)) > 0));
+              it.type().test(menu_command::ELLIPSES)));
 
-          if ((it.type().test(menu_command::SEPARATOR)) > 0)
+          if (it.type().test(menu_command::SEPARATOR))
           {
             usemenu->append_separator();
           }

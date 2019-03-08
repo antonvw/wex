@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      listview.cpp
-// Purpose:   Implementation of class wex::history_listview
+// Purpose:   Implementation of class wex::report::listview
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -23,9 +23,9 @@
 #include <wex/report/frame.h>
 #include <wex/report/stream.h>
 
-wex::history_listview::history_listview(const listview_data& data)
-  : listview(data)
-  , m_Frame(dynamic_cast<history_frame*>(wxTheApp->GetTopWindow()))
+wex::report::listview::listview(const listview_data& data)
+  : wex::listview(data)
+  , m_Frame(dynamic_cast<report::frame*>(wxTheApp->GetTopWindow()))
   , m_MenuFlags(data.menu())
 {
   if (data.type() == listview_data::HISTORY)
@@ -89,7 +89,7 @@ wex::history_listview::history_listview(const listview_data& data)
     const wex::tool& tool(event.GetId());
     if (tool.id() == ID_TOOL_REPORT_KEYWORD && data.type() == listview_data::KEYWORD) return;
     if (tool.is_find_type() && m_Frame->find_in_files_dialog(tool.id()) == wxID_CANCEL) return;
-    if (!listview_stream::setup_tool(tool, m_Frame)) return;
+    if (!report::stream::setup_tool(tool, m_Frame)) return;
 
 #ifdef __WXMSW__    
     std::thread t([=] {
@@ -103,7 +103,7 @@ wex::history_listview::history_listview(const listview_data& data)
       log::status() << item.get_filename();
       if (item.get_filename().file_exists())
       {
-        listview_stream file(item.get_filename(), tool);
+        stream file(item.get_filename(), tool);
         file.run_tool();
         stats += file.get_statistics().get_elements();
       }
@@ -133,7 +133,7 @@ wex::history_listview::history_listview(const listview_data& data)
     }, ID_EDIT_VCS_LOWEST, ID_EDIT_VCS_HIGHEST);
 }
 
-void wex::history_listview::build_popup_menu(wex::menu& menu)
+void wex::report::listview::build_popup_menu(wex::menu& menu)
 {
   bool exists = true, is_folder = false, is_make = false, read_only = false;
 
@@ -226,13 +226,13 @@ void wex::history_listview::build_popup_menu(wex::menu& menu)
   }
 }
 
-bool wex::history_listview::Destroy()	
+bool wex::report::listview::Destroy()	
 {
   interruptable::cancel();
-  return listview::Destroy();
+  return wex::listview::Destroy();
 }
 
-wex::listview_data::type_t wex::history_listview::type_tool(
+wex::listview_data::type_t wex::report::listview::type_tool(
   const tool& tool)
 {
   switch (tool.id())

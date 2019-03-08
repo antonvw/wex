@@ -2,7 +2,7 @@
 // Name:      test-file.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <chrono>
@@ -15,7 +15,7 @@ TEST_CASE( "wex::file" )
   {
     REQUIRE(!wex::file("XXXXX").is_opened());
     
-    wex::file file(get_testpath("test.h"));
+    wex::file file(wex::test::get_path("test.h"));
   
     REQUIRE(!file.check_sync());
     REQUIRE(!file.get_contents_changed());
@@ -29,8 +29,8 @@ TEST_CASE( "wex::file" )
     // The fullpath should be normalized, test it.
     REQUIRE( file.get_filename().data().string() != "./test.h");
     REQUIRE(!file.get_filename().stat().is_readonly());
-    REQUIRE( file.file_load(get_testpath("test.bin")));
-    REQUIRE( file.open(get_testpath("test.bin").data().string()));
+    REQUIRE( file.file_load(wex::test::get_path("test.bin")));
+    REQUIRE( file.open(wex::test::get_path("test.bin").data().string()));
     REQUIRE( file.is_opened());
 
     const std::string* buffer = file.read();
@@ -57,7 +57,7 @@ TEST_CASE( "wex::file" )
 
   SUBCASE( "timing" ) 
   {
-    wex::file file(get_testpath("test.h"));
+    wex::file file(wex::test::get_path("test.h"));
   
     const int max = 10000;
     const auto ex_start = std::chrono::system_clock::now();

@@ -17,7 +17,7 @@
 const wex::version_info wex::get_version_info() 
 {
   return version_info("wex", 
-    19, 4, 0, 
+    19, 10, 0, 
     "wex Library (a collection of wxWidgets extension classes)",
     "(c) 1998-2019, Anton van Wezenbeek." + std::string(_("All rights reserved.")));
 }

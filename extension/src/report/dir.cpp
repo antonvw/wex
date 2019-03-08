@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      dir.cpp
-// Purpose:   Implementation of wex::listview_dir and wex::tool_dir classes
+// Purpose:   Implementation of wex::report::dir and wex::tool_dir classes
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -22,7 +22,7 @@ wex::tool_dir::tool_dir(
 
 bool wex::tool_dir::on_file(const path& file)
 {
-  listview_stream report(file, m_Tool);
+  report::stream report(file, m_Tool);
 
   bool ret = report.run_tool();
   m_Statistics += report.get_statistics();
@@ -36,23 +36,23 @@ bool wex::tool_dir::on_file(const path& file)
   return true;
 }
 
-wex::listview_dir::listview_dir(
-  listview* listview,
+wex::report::dir::dir(
+  wex::listview* listview,
   const path& fullpath, 
   const std::string& filespec, 
   dir::type_t flags)
-  : dir(fullpath, filespec, std::string(), flags)
+  : wex::dir(fullpath, filespec, std::string(), flags)
   , m_ListView(listview)
 {
 }
 
-bool wex::listview_dir::on_dir(const path& dir)
+bool wex::report::dir::on_dir(const path& dir)
 {
   listitem(m_ListView, dir, file_spec()).insert();
   return true;
 }
 
-bool wex::listview_dir::on_file(const path& file)
+bool wex::report::dir::on_file(const path& file)
 {
   listitem(m_ListView, file, file_spec()).insert();
   return true;

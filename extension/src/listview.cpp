@@ -24,6 +24,7 @@
 #include <wex/item.h>
 #include <wex/itemdlg.h>
 #include <wex/lexer.h>
+#include <wex/lexers.h>
 #include <wex/log.h>
 #include <wex/listitem.h>
 #include <wex/menu.h>
@@ -546,9 +547,7 @@ int wex::listview::config_dialog(const window_data& par)
         {{_("List font"), item::FONTPICKERCTRL},
          {_("List tab font"), item::FONTPICKERCTRL}}},
       {_("Colour"),
-        {{_("Background colour"), item::COLOURPICKERWIDGET},
-         {_("Foreground colour"), item::COLOURPICKERWIDGET},
-         {_("Readonly colour"), item::COLOURPICKERWIDGET}}}}}}, data);
+        {{_("Readonly colour"), item::COLOURPICKERWIDGET}}}}}}, data);
   }
 
   return (data.button() & wxAPPLY) ?
@@ -559,7 +558,12 @@ void wex::listview::config_get()
 {
   listview_defaults use;
   
-  SetBackgroundColour(config(_("Background colour")).get(wxColour("WHITE")));
+  if (std::vector<std::string> v; match(",back:(.*),", 
+    lexers::get()->get_default_style().value(), v) > 0)
+  {
+    SetBackgroundColour(wxColour(v[0]));
+  }
+
   SetFont(config(_("List font")).get(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
   SetSingleStyle(wxLC_HRULES, (config(_("Rulers")).get(0) & wxLC_HRULES) > 0);
   SetSingleStyle(wxLC_VRULES, (config(_("Rulers")).get(0) & wxLC_VRULES) > 0);

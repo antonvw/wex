@@ -2,7 +2,7 @@
 // Name:      test-dir.cpp
 // Purpose:   Implementation for wex report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/util.h>
@@ -13,16 +13,15 @@
 
 TEST_CASE("wex::tool_dir")
 {
-  const wex::tool tool = wex::ID_TOOL_REPORT_FIND;
-
-  wex::listview* report = new wex::listview(wex::listview_data().type(wex::listview_data::FIND));
+  const wex::tool tool(wex::ID_TOOL_REPORT_FIND);
+  
+  wex::listview* lv = 
+    new wex::listview(wex::listview_data().type(wex::listview_data::FIND));
     
-  if (!wex::listview_stream::setup_tool(tool, frame(), report))
-  {
-    return;
-  }
+  REQUIRE( tool.id() == wex::ID_TOOL_REPORT_FIND);
+  REQUIRE( wex::report::stream::setup_tool(tool, frame(), lv));
 
-  add_pane(frame(), report);
+  wex::test::add_pane(frame(), lv);
   
   wex::tool_dir dir(
     tool,
@@ -30,15 +29,15 @@ TEST_CASE("wex::tool_dir")
     "*.cpp;*.h",
     wex::dir::type_t().set());
 
-  dir.find_files();
-
-  wex::log::status(tool.info(&dir.get_statistics().get_elements()));
+  REQUIRE( dir.get_statistics().get_elements().get_items().empty());
+  REQUIRE( dir.find_files() > 0);
+  REQUIRE(!dir.get_statistics().get_elements().get_items().empty());
 }
 
-TEST_CASE("wex::listview_dir")
+TEST_CASE("wex::report::dir")
 {
-  wex::listview_file* listView = new wex::listview_file(get_project());
-  add_pane(frame(), listView);
-  wex::listview_dir* dir = new wex::listview_dir(listView, get_testpath());
+  wex::report::file* file = new wex::report::file(get_project());
+  wex::test::add_pane(frame(), file);
+  wex::report::dir* dir = new wex::report::dir(file, wex::test::get_path());  
   REQUIRE(dir->find_files() == 0);
 }

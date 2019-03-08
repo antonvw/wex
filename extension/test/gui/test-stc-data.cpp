@@ -2,7 +2,7 @@
 // Name:      test-stc-data.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -32,7 +32,6 @@ TEST_CASE("wex::stc_data")
       wex::stc_data::WIN_READ_ONLY).flags(wex::stc_data::WIN_HEX, wex::control_data::OR).
       flags() != wex::stc_data::WIN_READ_ONLY);
     REQUIRE( wex::stc_data().menu().test(wex::stc_data::MENU_VCS));
-    REQUIRE( wex::stc_data().ctags_filename() == "tags");
   }
   
   SUBCASE("inject")

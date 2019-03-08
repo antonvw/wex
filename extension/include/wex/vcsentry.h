@@ -9,6 +9,7 @@
 
 #include <vector>
 #include <pugixml.hpp>
+#include <wex/blame.h>
 #include <wex/lexer.h>
 #include <wex/menucommands.h>
 #include <wex/process.h>
@@ -17,7 +18,7 @@
 namespace wex
 {
   class menu;
-
+  
   /// This class collects a single vcs.
   class vcs_entry : public process, public menu_commands < vcs_command >
   {
@@ -49,12 +50,9 @@ namespace wex
     /// Returns true if admin dir is only at top level.
     bool admin_dir_is_toplevel() const {return m_admin_dir_is_toplevel;};
 
-    /// Returns blame pos begin.
-    const auto & blame_pos_begin() const {return m_blame_pos_begin;};
-
-    /// Returns blame pos end.
-    const auto & blame_pos_end() const {return m_blame_pos_end;};
-
+    /// Returns blame info.
+    const blame& blame() const {return m_blame;};
+    
     /// Builds a menu from all vcs commands.
     /// Returns (total) number of items in menu.
     int build_menu(
@@ -80,6 +78,14 @@ namespace wex
       /// working directory
       const std::string& wd = std::string());
     
+    /// Executes the command.
+    /// Return value is false if process could not execute.
+    bool execute(
+      /// command to be executed
+      const std::string& command,
+      /// working dir
+      const std::string& wd);
+
     /// Returns flags location.
     auto flags_location() const {return m_FlagsLocation;};
 
@@ -89,15 +95,13 @@ namespace wex
     /// Returns the flags used to run the command.
     const std::string get_flags() const;
 
-    /// Returns margin size.
-    auto margin_width() const {return m_MarginWidth;};
-
     virtual void show_output(const std::string& caption = std::string()) const override;
   private:
     // no const, as entry is set using operator+ in vcs.
     bool m_admin_dir_is_toplevel {false};
-    int m_FlagsLocation, m_MarginWidth;
-    std::string m_AdminDir, m_blame_pos_begin, m_blame_pos_end;
+    int m_FlagsLocation;
+    std::string m_AdminDir;
+    class blame m_blame;
     lexer m_Lexer;
   };
 };

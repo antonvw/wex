@@ -140,7 +140,7 @@ namespace wex
     
     /// Builds a verbose logger for an exception.
     static log verbose(std::exception& e, int verbosity = 9) {
-      m_verbosity = m_verbosity; return log(e, VERBOSE);};
+      m_verbosity = verbosity; return log(e, VERBOSE);};
   private:
     void flush();
     const std::string S(); // separator

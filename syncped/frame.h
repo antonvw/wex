@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Declaration of class frame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -20,15 +20,12 @@ class frame : public decorated_frame
 {
 public:
   explicit frame(app* app);
-protected:
-  void OnCommand(wxCommandEvent& event);
-  void OnUpdateUI(wxUpdateUIEvent& event);
 private:
-  virtual wex::listview* activate(
+  virtual wex::report::listview* activate(
     wex::listview_data::type_t type, const wex::lexer* lexer = nullptr) override;
   virtual bool exec_ex_command(wex::ex_command& command) override;
   virtual wex::process* get_process(const std::string& command) override;
-  virtual wex::listview_file* get_project() override;
+  virtual wex::report::file* get_project() override;
   virtual bool is_open(const wex::path& filename) override;
   virtual void on_command_item_dialog(
     wxWindowID dialogid, const wxCommandEvent& event) override;
@@ -54,6 +51,9 @@ private:
   void AddPaneHistory();
   void AddPaneProcess();
   void AddPaneProjects();
+  void OnCommand(wxCommandEvent& event);
+  void OnUpdateUI(wxUpdateUIEvent& event);
+  void update_listviews();
 
   const long m_PaneFlag = 
     wxAUI_NB_DEFAULT_STYLE |
@@ -61,8 +61,7 @@ private:
     wxAUI_NB_CLOSE_BUTTON |
     wxAUI_NB_WINDOWLIST_BUTTON |
     wxAUI_NB_SCROLL_BUTTONS;
-  const wxString m_ProjectWildcard = 
-    _("Project Files") + " (*.prj)|*.prj";
+  const std::string m_ProjectWildcard {_("Project Files") + " (*.prj)|*.prj"};
 
   bool m_Maximized {false};
   int m_NewProjectNo {1}, m_SplitId {1};
@@ -70,11 +69,14 @@ private:
   editors *m_Editors {nullptr};
 
   wxCheckBox *m_CheckBoxDirCtrl {nullptr}, *m_CheckBoxHistory {nullptr};
-  wex::dirctrl* m_DirCtrl {nullptr};
-  wex::history_listview* m_History {nullptr};
+  
   wex::notebook *m_Lists {nullptr}, *m_Projects {nullptr};
   wex::process* m_Process {nullptr};
   wex::stc* m_asciiTable {nullptr};
+  
+  wex::report::dirctrl* m_DirCtrl {nullptr};
+  wex::report::listview* m_History {nullptr};
+
   std::string m_SavedPage;
 
   DECLARE_EVENT_TABLE()

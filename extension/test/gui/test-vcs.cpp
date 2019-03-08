@@ -2,7 +2,7 @@
 // Name:      test-vcs.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -21,7 +21,7 @@ TEST_CASE("wex::vcs")
   // size
   REQUIRE( wex::vcs::size() > 0);
 
-  wex::path file(get_testpath("test.h"));
+  wex::path file(wex::test::get_path("test.h"));
   file.make_absolute();
   
   // In wex::app the vcs is Read, so current vcs is known,
@@ -34,9 +34,10 @@ TEST_CASE("wex::vcs")
   REQUIRE( vcs.dir_exists(file));
   
 #ifndef __WXMSW__
-#ifndef __WXOSX__
   // Execute
   REQUIRE( vcs.execute());
+  REQUIRE( vcs.execute("status"));
+  REQUIRE(!vcs.execute("xxx"));
   
   /// show_dialog.  
   REQUIRE( vcs.show_dialog(wex::window_data().button(wxAPPLY | wxCANCEL)));
@@ -50,7 +51,7 @@ TEST_CASE("wex::vcs")
   REQUIRE( vcs.entry().get_command().get_command() == "add");
   
   // get_branch
-  REQUIRE( vcs.get_branch() == "master");
+  REQUIRE(!vcs.get_branch().empty());
 
   // name
   REQUIRE( vcs.name() == "Auto");
@@ -65,6 +66,5 @@ TEST_CASE("wex::vcs")
   
   // Use
   REQUIRE( vcs.use());
-#endif
 #endif
 }

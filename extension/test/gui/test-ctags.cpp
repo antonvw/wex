@@ -24,9 +24,8 @@ TEST_CASE("wex::ctags")
 
     // default find
     REQUIRE( wex::ctags(ex).find("test_app") );
-    REQUIRE( wex::ctags(frame()).find("test_app") );
     REQUIRE(!wex::ctags(ex).find("xest_app") );
-    
+
     // default auto_complete
     REQUIRE( wex::ctags(ex).autocomplete("test_").find("test_app") == 0);
 
@@ -46,19 +45,21 @@ TEST_CASE("wex::ctags")
 
   SUBCASE("tags non-existing file")
   {
-    data.ctags_filename("xxx");
     wex::stc* stc = new wex::stc(std::string("test"), data);
-    add_pane(frame(), stc);
+    wex::ctags::close();
+    wex::ctags::open("xxx");
+    wex::test::add_pane(frame(), stc);
     wex::ex* ex = &stc->get_vi();
 
-    REQUIRE(!wex::ctags(ex).find("test_app") );
+    REQUIRE(!wex::ctags(ex, false).find("test_app") );
   }
   
   SUBCASE("tags own file")
   {
-    data.ctags_filename("test-ctags");
     wex::stc* stc = new wex::stc(std::string("test"), data);
-    add_pane(frame(), stc);
+    wex::ctags::close();
+    wex::ctags::open("test-ctags");
+    wex::test::add_pane(frame(), stc);
     wex::ex* ex = &stc->get_vi();
 
     REQUIRE(!wex::ctags(ex).find("") );

@@ -2,14 +2,13 @@
 // Name:      grid.h
 // Purpose:   Declaration of wex::grid class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wx/fdrepdlg.h> // for wxFindDialogEvent
 #include <wx/grid.h>
-#include <wex/menu.h> // for wex::menu
+#include <wex/menu.h>
 #include <wex/window-data.h>
 
 namespace wex
@@ -23,28 +22,29 @@ namespace wex
     grid(const window_data& data = window_data().style(wxWANTS_CHARS));
 
     /// Virtual Interface.
-#if wxUSE_DRAG_AND_DROP
     /// This one is invoked after IsAllowedDropSelection, and drops the data.
     /// Default it calls set_cells_value.
     /// If you return true, the selection is correctly dropped,
     /// and the (old) selection is emptied and cleared to simulate dragging.
-    virtual bool DropSelection(const wxGridCellCoords& drop_coords, const wxString& data);
+    virtual bool drop_selection(
+      const wxGridCellCoords& drop_coords, const std::string& data);
 
     /// This one is invoked before dragging, and you can indicate
     /// whether you like the current selection to be dragged elsewhere.
     /// Default it is allowed.
-    virtual bool IsAllowedDragSelection();
+    virtual bool is_allowed_drag_selection();
 
     /// This is invoked after dragging and before anything is really dropped.
     /// Default it checks for each cell whether it is read-only, etc.
-    virtual bool IsAllowedDropSelection(const wxGridCellCoords& drop_coords, const wxString& data);
-#endif
+    virtual bool is_allowed_drop_selection(
+      const wxGridCellCoords& drop_coords, const std::string& data);
 
     /// This one is called by empty_selection, set_cells_value,
     /// and so during drag/drop as well, and allows you to
     /// override default here (which simply calls SetCellValue).
     /// So it is on a cell basis, whereas the DropSelection is on a range basis.
-    virtual void SetGridCellValue(const wxGridCellCoords& coords, const wxString& data);
+    virtual void set_grid_cell_value(
+      const wxGridCellCoords& coords, const std::string& data);
     
     /// Other methods
 
@@ -55,13 +55,13 @@ namespace wex
     void empty_selection();
 
     /// Finds next.
-    bool find_next(const wxString& text, bool forward = true);
+    bool find_next(const std::string& text, bool forward = true);
 
     /// Updates find replace text.
-    const wxString get_find_string() const;
+    const std::string get_find_string() const;
 
     /// Get text from selected cells,
-    const wxString get_selected_cells_value() const;
+    const std::string get_selected_cells_value() const;
 
     /// Paste starting at current grid cursor.
     void paste_cells_from_clipboard();
@@ -73,22 +73,18 @@ namespace wex
     void print_preview();
 
     /// Fill cells with text starting at a cel.
-    void set_cells_value(const wxGridCellCoords& start_coords, const wxString& data);
+    void set_cells_value(const wxGridCellCoords& start_coords, const std::string& data);
 
-#if wxUSE_DRAG_AND_DROP
     /// Specify whether you want to use drag/drop.
     /// Default it is used.
     void use_drag_and_drop(bool use);
-#endif
   protected:
     /// Builds the page used for printing.
-    const wxString build_page();
+    const std::string build_page();
 
     /// Builds the popup menu.
     virtual void build_popup_menu(menu& menu);
   private:
-#if wxUSE_DRAG_AND_DROP
     bool m_use_drag_and_drop;
-#endif
   };
 };

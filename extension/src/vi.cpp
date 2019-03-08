@@ -171,7 +171,7 @@ wex::vi::vi(wex::stc* arg)
           get_macros().record(lc);
           get_macros().record(ESC);
         }
-        m_Command.clear();
+        m_command.clear();
         m_InsertCommand.clear();
         get_stc()->auto_complete().reset();
         get_stc()->EndUndoAction();})
@@ -231,7 +231,7 @@ wex::vi::vi(wex::stc* arg)
           0,
           islower(d) > 0))
         {
-          return m_Command.clear();
+          return m_command.clear();
         });
       if (command[0] != ',' && command[0] != ';')
       {
@@ -251,7 +251,7 @@ wex::vi::vi(wex::stc* arg)
         search_flags(), 
         command == "n" ? m_SearchForward: !m_SearchForward))
       {
-        return m_Command.clear();
+        return m_command.clear();
       });
       return (size_t)1;}},
     {"G", [&](const std::string& command){
@@ -327,7 +327,7 @@ wex::vi::vi(wex::stc* arg)
     {"[]", [&](const std::string& command){REPEAT(
       if (!get_stc()->find_next("{", search_flags(), command == "]"))
       {
-        return m_Command.clear();
+        return m_command.clear();
       })
       return (size_t)1;}},
     {"({", [&](const std::string& command){MOTION(Para, Up,   false, false);}},
@@ -400,7 +400,7 @@ wex::vi::vi(wex::stc* arg)
         {
           if (!get_stc()->get_hexmode().replace(command.back()))
           {
-            return m_Command.clear();
+            return m_command.clear();
           }
         }
         else
@@ -587,7 +587,7 @@ wex::vi::vi(wex::stc* arg)
       // just ignore tab, except on first col, then it indents
       if (get_stc()->GetColumn(get_stc()->GetCurrentPos()) == 0)
       {
-        return m_Command.clear();
+        return m_command.clear();
       }
       return (size_t)1;}},
     // ctrl-e, ctrl-j
@@ -689,7 +689,7 @@ bool wex::vi::command(const std::string& command)
   else if (!m_Dot && command.back() == WXK_ESCAPE)
   {
     m_Mode.escape();
-    m_Command.clear();
+    m_command.clear();
     m_InsertCommand.clear();
     return auto_write();
   }
@@ -1068,7 +1068,7 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
 
   filter_count(command);
   
-  if (!get_selected_text().empty()) 
+  if (!get_stc()->get_selected_text().empty()) 
   {
     if (type == MOTION_YANK)
     {
@@ -1101,13 +1101,13 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
   switch (type)
   {
     case MOTION_CHANGE:
-      if (!get_selected_text().empty())
+      if (!get_stc()->get_selected_text().empty())
       {
         get_stc()->SetCurrentPos(get_stc()->GetSelectionStart());
         start = get_stc()->GetCurrentPos();
       }
     
-      if (!m_Command.is_handled() && 
+      if (!m_command.is_handled() && 
         (parsed = it->second(command)) == 0) 
       {
         m_Mode.escape();
@@ -1124,14 +1124,14 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
         return true;
       }
     
-      if (!m_Command.is_handled() && 
+      if (!m_command.is_handled() && 
           (parsed = it->second(command)) == 0) return false;
 
       DeleteRange(this, start, get_stc()->GetCurrentPos());
       break;
     
     case MOTION_NAVIGATE: 
-      if (!m_Command.is_handled() && 
+      if (!m_command.is_handled() && 
           (parsed = it->second(command)) == 0) return false; 
       break;
     
@@ -1142,7 +1142,7 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
         m_Mode.transition(visual);
       }
     
-      if (!m_Command.is_handled() && 
+      if (!m_command.is_handled() && 
           (parsed = it->second(command)) == 0) return false;
     
       if (auto end = get_stc()->GetCurrentPos(); end - start > 0)
@@ -1170,11 +1170,11 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
       
       if (!register_name())
       {
-        set_register_yank(get_selected_text());
+        set_register_yank(get_stc()->get_selected_text());
       }
       else
       {
-        get_macros().set_register(register_name(), get_selected_text());
+        get_macros().set_register(register_name(), get_stc()->get_selected_text());
         get_stc()->SelectNone();
       }
       break;
@@ -1185,7 +1185,7 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
     append_insert_command(command.substr(0, parsed));
   }
 
-  command = (m_Command.is_handled() ? std::string(): command.substr(parsed));
+  command = (m_command.is_handled() ? std::string(): command.substr(parsed));
 
   m_Count = 1; // restart with a new count
 
@@ -1206,12 +1206,12 @@ bool wex::vi::on_char(const wxKeyEvent& event)
       return true;
     }
 
-    m_Command.append(ConvertKeyEvent(event));
-    const bool result = insert_mode(m_Command.command());
+    m_command.append(ConvertKeyEvent(event));
+    const bool result = insert_mode(m_command.command());
 
-    if (result || (get_stc()->is_hexmode() && m_Command.size() > 2))
+    if (result || (get_stc()->is_hexmode() && m_command.size() > 2))
     {
-      m_Command.clear();
+      m_command.clear();
     }
 
     return result && get_stc()->GetOvertype();
@@ -1221,31 +1221,31 @@ bool wex::vi::on_char(const wxKeyEvent& event)
     if (!(event.GetModifiers() & wxMOD_ALT))
     {
       // This check is important, as WXK_NONE (0)
-      // would add nullptr terminator at the end of m_Command,
+      // would add nullptr terminator at the end of m_command,
       // and pressing ESC would not help, (rest is empty
       // because of the nullptr).
       if (event.GetUnicodeKey() != (wxChar)WXK_NONE)
       {
-        if (!m_Command.empty() && 
-             m_Command.front() == '@' && event.GetKeyCode() == WXK_BACK)
+        if (!m_command.empty() && 
+             m_command.front() == '@' && event.GetKeyCode() == WXK_BACK)
         {
-          m_Command.pop_back();
+          m_command.pop_back();
         }
         else
         {
 #ifdef __WXOSX__
           if (event.GetModifiers() & wxMOD_RAW_CONTROL)
           {
-            if (m_Command.append_exec(event.GetKeyCode()))
+            if (m_command.append_exec(event.GetKeyCode()))
             {
-              m_Command.clear();
+              m_command.clear();
             }
           }
           else
 #endif
-          if (m_Command.append_exec(event.GetUnicodeKey()))
+          if (m_command.append_exec(event.GetUnicodeKey()))
           {
-            m_Command.clear();
+            m_command.clear();
           }
         }
       }
@@ -1269,16 +1269,16 @@ bool wex::vi::on_key_down(const wxKeyEvent& event)
   {
     return true;
   }
-  else if (!m_Command.empty() && m_Command.front() == '@')
+  else if (!m_command.empty() && m_command.front() == '@')
   { 
     if (event.GetKeyCode() == WXK_BACK)
     {
-      m_Command.pop_back();
-      frame()->statustext(m_Command.command().substr(1), "PaneMacro");
+      m_command.pop_back();
+      frame()->statustext(m_command.command().substr(1), "PaneMacro");
     }
     else if (event.GetKeyCode() == WXK_ESCAPE)
     {
-      m_Command.clear();
+      m_command.clear();
       m_InsertCommand.clear();
       frame()->statustext(get_macros().get_macro(), "PaneMacro");
     }
@@ -1309,9 +1309,9 @@ bool wex::vi::on_key_down(const wxKeyEvent& event)
         m_InsertText.pop_back();
       }
     }
-    else if (m_Command.append_exec(ConvertKeyEvent(event)))
+    else if (m_command.append_exec(ConvertKeyEvent(event)))
     {
-      m_Command.clear();
+      m_command.clear();
       m_InsertCommand.clear();
       return false;
     }
@@ -1406,7 +1406,7 @@ bool wex::vi::parse_command(std::string& command)
   {
     if (command.size() < 2) return false;
     set_register(command[1]);
-    command = command.substr(2);
+    command.erase(0, 2);
   }
   else if (command.front() == ':')
   {
@@ -1451,12 +1451,12 @@ bool wex::vi::parse_command(std::string& command)
 
         case 'd': 
           motion = MOTION_DELETE; 
-          command = command.substr(1);
+          command.erase(0, 1);
           break;
 
         case 'y': 
           motion = MOTION_YANK; 
-          command = command.substr(1);
+          command.erase(0, 1);
           break;
 
         default:

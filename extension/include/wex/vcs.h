@@ -2,7 +2,7 @@
 // Name:      vcs.h
 // Purpose:   Declaration of wex::vcs class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -25,7 +25,7 @@ namespace wex
     vcs(
       /// Specify several files for which you want vcs action.
       /// Sets the vcs entry for first of the specified files, or
-      /// to the base folder if array is empty.
+      /// to the base folder if vector is empty.
       const std::vector< path > & files = std::vector< path >(),
       /// The command no that is used to set the current vcs command
       /// (index in vcs entry commands).
@@ -39,13 +39,20 @@ namespace wex
     /// Returns true if specified filename (a path) is a vcs directory.
     static bool dir_exists(const path& filename);
 
+    /// Returns the current vcs entry.
+    auto& entry() {return m_Entry;};
+    
+    /// Returns the current vcs entry.
+    const auto& entry() const {return m_Entry;};
+    
     /// Executes the current vcs command for the current
     /// vcs entry, and collects the output.
     /// Returns return code from vcs entry Execute.
     bool execute();
     
-    /// Returns the current vcs entry.
-    const auto& entry() const {return m_Entry;};
+    /// Executes the specified command (git, svn subcommand).
+    /// Return value is false if process could not execute.
+    bool execute(const std::string& command);
     
     /// Returns branch for current vcs entry, or empty string
     /// if vcs is not used.
@@ -106,6 +113,6 @@ namespace wex
     std::string m_Title;
 
     static std::vector<vcs_entry> m_Entries;
-    static item_dialog* m_ItemDialog;
+    static inline item_dialog* m_ItemDialog = nullptr;
   };
 };

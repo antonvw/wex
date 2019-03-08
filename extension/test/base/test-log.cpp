@@ -35,14 +35,14 @@ TEST_CASE( "wex::log" )
   
   SUBCASE("status")
   {
-    wex::log::status() << get_testpath("test.h");
+    wex::log::status() << wex::test::get_path("test.h");
     wex::log::status(wex::log::status_t(wex::log::STAT_SYNC)) << "hello world";
     wex::log::status("hello") << "hello world";
   }
   
   SUBCASE("verbose")
   {
-    wex::log::verbose() << get_testpath("test.h");
+    wex::log::verbose() << wex::test::get_path("test.h");
     wex::log::verbose("hello") << "hello world";
   }
 }

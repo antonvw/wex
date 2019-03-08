@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      listview.h
-// Purpose:   Declaration of class wex::history_listview
+// Purpose:   Declaration of class wex::report::listview
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,17 +10,17 @@
 #include <wex/listview.h>
 #include <wex/tool.h>
 
-namespace wex
+namespace wex::report
 {
-  class history_frame;
+  class frame;
 
-  /// Adds a history_frame to listview.
+  /// Adds a report::frame to listview.
   /// It also adds a tool menu if appropriate.
-  class history_listview : public listview
+  class listview : public wex::listview
   {
   public:
     /// Default constructor.
-    history_listview(const listview_data& data = listview_data());
+    listview(const listview_data& data = listview_data());
       
     /// Destroys the window safely.
     virtual bool Destroy() override;
@@ -29,9 +29,9 @@ namespace wex
     static listview_data::type_t type_tool(const tool& tool);
   protected:
     virtual void build_popup_menu(menu& menu) override;
-    history_frame* frame() {return m_Frame;};
+    frame* frame() {return m_Frame;};
   private:
     const listview_data::menu_t m_MenuFlags;
-    history_frame* m_Frame;
+    class frame* m_Frame;
   };
 };

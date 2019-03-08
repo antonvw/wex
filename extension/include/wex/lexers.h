@@ -33,6 +33,7 @@ namespace wex
     /// Margin text style type.
     enum margin_style_t
     {
+      MARGIN_STYLE_UNKNOWN,
       MARGIN_STYLE_DAY,
       MARGIN_STYLE_WEEK,
       MARGIN_STYLE_MONTH,
@@ -80,6 +81,9 @@ namespace wex
     /// it also invokes load_document.
     static lexers* get(bool createOnDemand = true);
 
+    /// Returns the default style.
+    const style& get_default_style() const {return m_DefaultStyle;};
+    
     /// Returns the filename.
     const auto & get_filename() const {return m_Path;};
     

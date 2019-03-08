@@ -36,7 +36,6 @@ wex::stc_data& wex::stc_data::operator=(const stc_data& r)
 {
   if (this != &r)
   {
-    m_ctags_filename = r.m_ctags_filename;
     m_Data = r.m_Data;
     m_MenuFlags = r.m_MenuFlags;
     m_WinFlags = r.m_WinFlags;
@@ -50,12 +49,6 @@ wex::stc_data& wex::stc_data::operator=(const stc_data& r)
   return *this;
 }
   
-wex::stc_data& wex::stc_data::ctags_filename(const std::string& text)
-{
-  m_ctags_filename = text;
-  return *this;
-}
-
 wex::stc_data& wex::stc_data::flags(
   window_t flags, control_data::action_t action)
 {

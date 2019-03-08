@@ -179,6 +179,9 @@ namespace wex
     /// or -1 if not.
     auto get_margin_text_click() const {return m_MarginTextClick;};
 
+    /// Returns selected text as a string.
+    const std::string get_selected_text();
+    
     /// Returns vi component.
     const auto & get_vi() const {return m_vi;};
     

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      frame.cpp
-// Purpose:   Implementation of wex::history_frame class
+// Purpose:   Implementation of wex::report::frame class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -24,7 +24,7 @@
 #include <wex/report/listviewfile.h>
 #include <wex/report/stream.h>
 
-wex::history_frame::history_frame(
+wex::report::frame::frame(
   size_t maxFiles,
   size_t maxProjects,
   const window_data& data)
@@ -75,7 +75,7 @@ wex::history_frame::history_frame(
       title(_("Replace In Files").ToStdString()).
       style(wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxSTAY_ON_TOP));
 
-  Bind(wxEVT_IDLE, &history_frame::OnIdle, this);
+  Bind(wxEVT_IDLE, &frame::OnIdle, this);
   
   Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
     m_ProjectHistory.save();
@@ -139,20 +139,20 @@ const std::string find_replace_string(bool replace)
   return log;
 }
 
-void wex::history_frame::find_in_files(wxWindowID dialogid)
+void wex::report::frame::find_in_files(wxWindowID dialogid)
 {
   const bool replace = (dialogid == ID_REPLACE_IN_FILES);
   const wex::tool tool = (replace ?
     ID_TOOL_REPLACE: ID_TOOL_REPORT_FIND);
 
-  if (!listview_stream::setup_tool(tool, this)) return;
+  if (!stream::setup_tool(tool, this)) return;
 
 #ifdef __WXMSW__
   std::thread t([=]{
 #endif
     log::status(find_replace_string(replace));
       
-    Unbind(wxEVT_IDLE, &history_frame::OnIdle, this);
+    Unbind(wxEVT_IDLE, &frame::OnIdle, this);
       
     dir::type_t type;
     type.set(dir::FILES);
@@ -169,7 +169,7 @@ void wex::history_frame::find_in_files(wxWindowID dialogid)
       log::status(tool.info(&dir.get_statistics().get_elements()));
     }
     
-    Bind(wxEVT_IDLE, &history_frame::OnIdle, this);
+    Bind(wxEVT_IDLE, &frame::OnIdle, this);
 
 #ifdef __WXMSW__
     });
@@ -177,11 +177,11 @@ void wex::history_frame::find_in_files(wxWindowID dialogid)
 #endif
 }
 
-bool wex::history_frame::find_in_files(
+bool wex::report::frame::find_in_files(
   const std::vector< path > & files,
   int id,
   bool show_dialog,
-  listview* report)
+  wex::listview* report)
 {
   if (files.empty())
   {
@@ -197,7 +197,7 @@ bool wex::history_frame::find_in_files(
     return false;
   }
   
-  if (!listview_stream::setup_tool(tool, this, report))
+  if (!stream::setup_tool(tool, this, report))
   {
     return false;
   }
@@ -211,7 +211,7 @@ bool wex::history_frame::find_in_files(
     {
       if (it.file_exists())
       {
-        if (listview_stream file(it, tool); file.run_tool())
+        if (stream file(it, tool); file.run_tool())
         {
           stats += file.get_statistics().get_elements();
         }
@@ -238,7 +238,7 @@ bool wex::history_frame::find_in_files(
   return true;
 }
 
-int wex::history_frame::find_in_files_dialog(
+int wex::report::frame::find_in_files_dialog(
   int id,
   bool add_in_files)
 {
@@ -262,14 +262,14 @@ int wex::history_frame::find_in_files_dialog(
   return wxID_OK;
 }
 
-const std::string wex::history_frame::find_in_files_title(int id) const
+const std::string wex::report::frame::find_in_files_title(int id) const
 {
   return (id == ID_TOOL_REPLACE ?
     _("Replace In Selection").ToStdString():
     _("Find In Selection").ToStdString());
 }
 
-bool wex::history_frame::grep(const std::string& arg, bool sed)
+bool wex::report::frame::grep(const std::string& arg, bool sed)
 {
   static std::string arg1 = config(m_TextInFolder).firstof();
   static std::string arg2 = config(m_TextInFiles).firstof();
@@ -313,7 +313,7 @@ bool wex::history_frame::grep(const std::string& arg, bool sed)
     ID_TOOL_REPLACE:
     ID_TOOL_REPORT_FIND);
 
-  if (!listview_stream::setup_tool(tool, this))
+  if (!stream::setup_tool(tool, this))
   {
     return false;
   }
@@ -325,13 +325,13 @@ bool wex::history_frame::grep(const std::string& arg, bool sed)
       path::current(stc->get_filename().get_path());
     find_replace_data::get()->set_use_regex(true);
     log::status(find_replace_string(false));
-    Unbind(wxEVT_IDLE, &history_frame::OnIdle, this);
+    Unbind(wxEVT_IDLE, &frame::OnIdle, this);
 
     tool_dir dir(tool, arg1, arg2, arg3);
     dir.find_files();
 
     log::status(tool.info(&dir.get_statistics().get_elements()));
-    Bind(wxEVT_IDLE, &history_frame::OnIdle, this);
+    Bind(wxEVT_IDLE, &frame::OnIdle, this);
   
 #ifdef __WXMSW__
     });
@@ -341,7 +341,7 @@ bool wex::history_frame::grep(const std::string& arg, bool sed)
   return true;
 }
 
-void wex::history_frame::on_command_item_dialog(
+void wex::report::frame::on_command_item_dialog(
   wxWindowID dialogid,
   const wxCommandEvent& event)
 {
@@ -390,7 +390,7 @@ void wex::history_frame::on_command_item_dialog(
   }
 }
 
-void wex::history_frame::OnIdle(wxIdleEvent& event)
+void wex::report::frame::OnIdle(wxIdleEvent& event)
 {
   event.Skip();
 
@@ -427,7 +427,7 @@ void wex::history_frame::OnIdle(wxIdleEvent& event)
   }
 }
 
-void wex::history_frame::set_recent_file(const wex::path& path)
+void wex::report::frame::set_recent_file(const wex::path& path)
 {
   managed_frame::set_recent_file(path);
   
@@ -448,7 +448,7 @@ void wex::history_frame::set_recent_file(const wex::path& path)
   }
 }
 
-void wex::history_frame::use_file_history_list(listview* list)
+void wex::report::frame::use_file_history_list(wex::listview* list)
 {
   assert(list->data().type() == listview_data::HISTORY);
   

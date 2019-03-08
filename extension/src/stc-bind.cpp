@@ -2,7 +2,7 @@
 // Name:      stc-bind.cpp
 // Purpose:   Implementation of class wex::stc method BindAll
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -36,6 +36,9 @@ const int idHex = wxWindow::NewControlId();
 const int idHexDecCalltip = wxWindow::NewControlId();
 const int idLowercase = wxWindow::NewControlId();
 const int idMarginTextHide = wxWindow::NewControlId();
+const int idMarginTextAuthor = wxWindow::NewControlId();
+const int idMarginTextDate = wxWindow::NewControlId();
+const int idMarginTextId = wxWindow::NewControlId();
 const int idMarkerNext = wxWindow::NewControlId(2);
 const int idMarkerPrevious = idMarkerNext + 1;
 const int idOpenLink = wxWindow::NewControlId();
@@ -207,15 +210,16 @@ void wex::stc::BindAll()
   Bind(wxEVT_LEFT_DCLICK, [=](wxMouseEvent& event) {
     m_MarginTextClick = -1;
     
-    if (std::string filename; link_open(LINK_OPEN | LINK_CHECK, &filename)) 
+    if (std::string filename; 
+      link_open(link_t().set(LINK_OPEN).set(LINK_CHECK), &filename)) 
     {
-      if (!link_open(LINK_OPEN)) 
+      if (!link_open(link_t().set(LINK_OPEN)))
         event.Skip();
     }
     else if (m_Lexer.scintilla_lexer() != "hypertext" ||
       GetCurLine().Contains("href")) 
     {
-      if (!link_open(LINK_OPEN_MIME)) 
+      if (!link_open(link_t().set(LINK_OPEN_MIME)))
         event.Skip();
     }
     else event.Skip();});
@@ -309,13 +313,42 @@ void wex::stc::BindAll()
     else
     {
       m_MarginTextClick = line;
+        
+      if (config("blame_get_id").get(false))
+      {
+        wex::vcs vcs {{get_filename()}};
+
+        if (std::string margin(MarginGetText(line));
+          vcs.execute("log " + get_word(margin) + " -n 1"))
+        {
+          AnnotationSetText(line, vcs.entry().get_stdout());
+        }
+        else
+        {
+          log("margin") << vcs.entry().get_stderr();
+        }
+      }
     }});
 
   Bind(wxEVT_STC_MARGIN_RIGHT_CLICK, [=](wxStyledTextEvent& event) {
     if (event.GetMargin() == m_MarginTextNumber)
     {
       auto* menu = new wxMenu();
+
       menu->Append(idMarginTextHide, "&Hide");
+      menu->AppendSeparator();
+
+      auto* author = menu->AppendCheckItem(idMarginTextAuthor, "&Show Author");
+      auto* date = menu->AppendCheckItem(idMarginTextDate, "&Show Date");
+      auto* id = menu->AppendCheckItem(idMarginTextId, "&Show Id");
+
+      if (config("blame_get_author").get(true))
+        author->Check();
+      if (config("blame_get_date").get(true))
+        date->Check();
+      if (config("blame_get_id").get(false))
+        id->Check();
+
       PopupMenu(menu);
       delete menu;
     }});
@@ -385,7 +418,7 @@ void wex::stc::BindAll()
     browser_search(GetSelectedText().ToStdString());}, idOpenWWW);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    link_open(LINK_OPEN);}, idOpenLink);
+    link_open(link_t().set(LINK_OPEN));}, idOpenLink);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     const std::string propnames(PropertyNames());
@@ -561,10 +594,23 @@ void wex::stc::BindAll()
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {FoldAll();}, idFoldAll);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     for (int i = 0; i < GetLineCount(); i++) EnsureVisible(i);}, idUnfoldAll);
+
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     m_Data.flags(stc_data::window_t().set(stc_data::WIN_HEX), control_data::XOR).inject();}, idHex);
+  
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    config("blame_get_author").set(!config("blame_get_author").get(true));},
+    idMarginTextAuthor);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    config("blame_get_date").set(!config("blame_get_date").get(true));},
+    idMarginTextDate);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    config("blame_get_id").set(!config("blame_get_id").get(true));},
+    idMarginTextId);
+  
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SetZoom(++m_Zoom);}, idZoomIn);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SetZoom(--m_Zoom);}, idZoomOut);
+  
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     frd->set_search_down(true);
     find_next();}, 
@@ -573,8 +619,9 @@ void wex::stc::BindAll()
     frd->set_search_down(false);
     find_next();}, 
     ID_EDIT_FIND_PREVIOUS);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {link_open(LINK_OPEN_MIME);}, idopen_mime);
-
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    link_open(link_t().set(LINK_OPEN_MIME));}, idopen_mime);
+  
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     const auto level = GetFoldLevel(GetCurrentLine());
     const auto line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?
@@ -596,7 +643,6 @@ void wex::stc::BindAll()
       if (is_hexmode())
       {
         log::status(_("Not allowed in hex mode"));
-        return;
       }
       else
       {
@@ -785,7 +831,7 @@ void wex::stc::filetype_menu()
   menu->AppendRadioItem(idEolMac, "&MAC");
   menu->AppendRadioItem(idEolUnix, "&UNIX");
   menu->append_separator();
-  wxMenuItem* hex = menu->AppendCheckItem(idHex, "&HEX");
+  auto* hex = menu->AppendCheckItem(idHex, "&HEX");
   
   menu->FindItemByPosition(GetEOLMode())->Check();
   

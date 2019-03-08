@@ -34,9 +34,9 @@ TEST_CASE("wex::stream")
 {
   SUBCASE("Test find")
   {
-    wex::stream s(get_testpath("test.h"), wex::ID_TOOL_REPORT_FIND);
+    wex::stream s(wex::test::get_path("test.h"), wex::ID_TOOL_REPORT_FIND);
     
-    REQUIRE( s.get_filename() == get_testpath("test.h"));
+    REQUIRE( s.get_filename() == wex::test::get_path("test.h"));
     REQUIRE( s.get_tool().id() == wex::ID_TOOL_REPORT_FIND);
     
     wex::find_replace_data::get()->set_find_string("test");
@@ -55,7 +55,7 @@ TEST_CASE("wex::stream")
   
   SUBCASE("Test replace")
   {
-    wex::stream s(get_testpath("test.h"), wex::ID_TOOL_REPLACE);
+    wex::stream s(wex::test::get_path("test.h"), wex::ID_TOOL_REPLACE);
     
     wex::find_replace_data::get()->set_replace_string("test");
     

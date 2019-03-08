@@ -262,7 +262,7 @@ bool wex::vi_mode::transition(std::string& command)
 
   frame::statustext(string(), "PaneMode");
 
-  command = command.substr(1);
+  command.erase(0, 1);
 
   return true;
 }

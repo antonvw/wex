@@ -2,7 +2,7 @@
 // Name:      test-ex.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -25,7 +25,7 @@ TEST_CASE("wex::ex")
   // Test modeline.
   const std::string modeline("set ts=120 ec=40 sy=sql sw=4 nu el");
   wex::stc* stc = new wex::stc(std::string("-- vi: " + modeline));
-  add_pane(frame(), stc);
+  wex::test::add_pane(frame(), stc);
   wex::ex* ex = new wex::ex(stc);
 
   REQUIRE(stc->get_vi().is_active());
@@ -35,11 +35,11 @@ TEST_CASE("wex::ex")
   REQUIRE(stc->get_lexer().scintilla_lexer() == "sql");
 
   wex::stc* stco = new wex::stc(wex::path("test-modeline.txt"));
-  add_pane(frame(), stco);
+  wex::test::add_pane(frame(), stco);
   REQUIRE(stco->get_lexer().scintilla_lexer() == "sql");
 
   wex::stc* stcp = new wex::stc(wex::path("test-modeline2.txt"));
-  add_pane(frame(), stcp);
+  wex::test::add_pane(frame(), stcp);
   REQUIRE(stcp->get_lexer().scintilla_lexer() == "sql");
 
   stc->set_text("xx\nxx\nyy\nzz\n");
@@ -245,7 +245,7 @@ TEST_CASE("wex::ex")
   ex->cut();
   REQUIRE( ex->register_text() == "the chances");
   REQUIRE( ex->get_macros().get_register('1') == "the chances");
-  REQUIRE( ex->get_selected_text().empty());
+  REQUIRE( ex->get_stc()->get_selected_text().empty());
   
   SUBCASE("calculator")
   {

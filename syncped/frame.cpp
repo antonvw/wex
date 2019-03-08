@@ -94,7 +94,7 @@ frame::frame(app* app)
   , m_Editors(new editors(wex::window_data().id(wex::ID_NOTEBOOK_EDITORS).style(m_PaneFlag)))
   , m_Lists(new wex::notebook(
       wex::window_data().id(wex::ID_NOTEBOOK_LISTS).style(m_PaneFlag)))
-  , m_DirCtrl(new wex::dirctrl(this))
+  , m_DirCtrl(new wex::report::dirctrl(this))
   , m_CheckBoxDirCtrl(new wxCheckBox(
       get_toolbar(),
       ID_VIEW_DIRCTRL,
@@ -163,7 +163,7 @@ frame::frame(app* app)
   
   if (!m_App->get_tag().empty())
   {
-    wex::ctags(this).find(m_App->get_tag());
+    wex::ctags::find(m_App->get_tag());
   }
   else if (m_App->get_files().empty())
   {
@@ -191,6 +191,7 @@ frame::frame(app* app)
   else
   {
     manager().GetPane("PROJECTS").Hide();
+
     wex::open_files(this, 
       m_App->get_files(), 
       m_App->data(), 
@@ -275,7 +276,7 @@ frame::frame(app* app)
     {
       if ((m_Process->is_running() && m_Process->get_command_executed() != "gdb") || 
         !m_Editors->for_each<wex::stc>(wex::ID_ALL_CLOSE) || 
-        (m_Projects != nullptr && !m_Projects->for_each<wex::listview_file>(wex::ID_ALL_CLOSE)))
+        (m_Projects != nullptr && !m_Projects->for_each<wex::report::file>(wex::ID_ALL_CLOSE)))
       {
         event.Veto();
         if (m_Process->is_running())
@@ -414,8 +415,8 @@ frame::frame(app* app)
        (!get_project_history().get_history_file().data().empty() ? 
            get_project_history().get_history_file().get_path(): wex::config().dir()),
       text + ".prj");
-    wxWindow* page = new wex::listview_file(fn.data().string(), wex::window_data().parent(m_Projects));
-    ((wex::listview_file*)page)->file_new(fn.data().string());
+    wxWindow* page = new wex::report::file(fn.data().string(), wex::window_data().parent(m_Projects));
+    ((wex::report::file*)page)->file_new(fn.data().string());
     // This file does yet exist, so do not give it a bitmap.
     m_Projects->add_page(page, fn.data().string(), text, true);
     set_recent_project(fn.data().string());
@@ -586,7 +587,7 @@ frame::frame(app* app)
   m_App->reset();
 }    
 
-wex::listview* frame::activate(wex::listview_data::type_t type, const wex::lexer* lexer)
+wex::report::listview* frame::activate(wex::listview_data::type_t type, const wex::lexer* lexer)
 {
   if (type == wex::listview_data::FILE)
   {
@@ -598,11 +599,11 @@ wex::listview* frame::activate(wex::listview_data::type_t type, const wex::lexer
 
     const std::string name = wex::listview_data().type(type).type_description() +
       (lexer != nullptr ?  " " + lexer->display_lexer(): std::string());
-    auto* list = (wex::history_listview*)m_Lists->page_by_key(name);
+    auto* list = (wex::report::listview*)m_Lists->page_by_key(name);
 
     if (list == nullptr && type != wex::listview_data::FILE)
     {
-      list = new wex::history_listview(wex::listview_data(wex::window_data().parent(m_Lists)).
+      list = new wex::report::listview(wex::listview_data(wex::window_data().parent(m_Lists)).
         type(type).
         lexer(lexer));
 
@@ -615,7 +616,7 @@ wex::listview* frame::activate(wex::listview_data::type_t type, const wex::lexer
 
 void frame::AddPaneHistory()
 {
-  m_History = new wex::history_listview(wex::listview_data().type(wex::listview_data::HISTORY));
+  m_History = new wex::report::listview(wex::listview_data().type(wex::listview_data::HISTORY));
         
   manager().AddPane(m_History, wxAuiPaneInfo()
     .Left()
@@ -676,7 +677,7 @@ bool frame::exec_ex_command(wex::ex_command& command)
   return handled;
 }
 
-wex::listview_file* frame::get_project()
+wex::report::file* frame::get_project()
 {
   if (m_Projects == nullptr)
   {
@@ -690,7 +691,7 @@ wex::listview_file* frame::get_project()
   }
   else
   {
-    return (wex::listview_file*)m_Projects->
+    return (wex::report::file*)m_Projects->
       GetPage(m_Projects->GetSelection());
   }
 }
@@ -768,6 +769,7 @@ void frame::OnCommand(wxCommandEvent& event)
         if (wex::lexers::get()->load_document())
         {
           m_Editors->for_each<wex::stc>(wex::ID_ALL_STC_SET_LEXER);
+          update_listviews();
 
           // As the lexer might have changed, update status bar field as well.
           update_statusbar(editor, "PaneLexer");
@@ -922,21 +924,7 @@ void frame::on_command_item_dialog(
     case ID_OPTION_LIST:
       if (event.GetId() != wxID_CANCEL)
       {
-        m_Lists->for_each<wex::listview_file>(wex::ID_ALL_CONFIG_GET);
-        if (m_Projects != nullptr) m_Projects->for_each<wex::listview_file>(wex::ID_ALL_CONFIG_GET);
-        if (m_History != nullptr) m_History->config_get();
-
-        if (wex::item_dialog* dlg = wex::stc::get_config_dialog();
-          dlg != nullptr)
-        {
-          const wex::item item (dlg->get_item(_("Include directory")));
-          wex::listview* lv = (wex::listview*)item.window();
-
-          if (lv != nullptr)
-          {
-            lv->config_get();
-          }
-        }
+        update_listviews();
       }
       break;
     
@@ -1062,7 +1050,7 @@ void frame::OnUpdateUI(wxUpdateUIEvent& event)
           assert(0);
         }
       }
-      else if (auto* list = (wex::listview_file*)get_listview();
+      else if (auto* list = (wex::report::file*)get_listview();
         list != nullptr && list->IsShown())
       {
         event.Enable(false);
@@ -1179,7 +1167,7 @@ wex::stc* frame::open_file(const wex::path& filename, const wex::stc_data& data)
   {
     if (page == nullptr)
     {
-      auto* project = new wex::listview_file(filename.data().string(), wex::window_data().parent(m_Projects));
+      auto* project = new wex::report::file(filename.data().string(), wex::window_data().parent(m_Projects));
 
       notebook->add_page(
         project,
@@ -1265,9 +1253,8 @@ wex::stc* frame::open_file(const wex::path& filename, const wex::stc_data& data)
 
       if (wex::config(_("Auto blame")).get(false))
       {
-        wex::vcs vcs {{filename}, wex::ID_EDIT_VCS_LOWEST + 1};
-
-        if (vcs.execute())
+        if (wex::vcs vcs {{filename}};
+          vcs.execute("blame " + filename.data().string()))
         {
           editor->show_vcs(&vcs.entry());
         }
@@ -1351,6 +1338,7 @@ void frame::statusbar_clicked(const std::string& pane)
     if (wex::lexers::get()->show_theme_dialog(m_Editors))
     {
       m_Editors->for_each<wex::stc>(wex::ID_ALL_STC_SET_LEXER_THEME);
+      update_listviews();
 
       m_StatusBar->show_field(
         "PaneLexer", 
@@ -1430,8 +1418,8 @@ void frame::statusbar_clicked_right(const std::string& pane)
       match = "theme *name *= *\"" + wex::lexers::get()->theme() + "\"";
     }
     
-    wex::stc* stc = open_file(wex::lexers::get()->get_filename());
-    stc->find_next(match, wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX);
+    open_file(wex::lexers::get()->get_filename(),
+      wex::control_data().find(match, wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX));
   }
   else if (pane == "PaneMacro")
   {
@@ -1492,6 +1480,25 @@ void frame::sync_close_all(wxWindowID id)
   }
 }
 
+void frame::update_listviews()
+{
+  m_Lists->for_each<wex::report::file>(wex::ID_ALL_CONFIG_GET);
+
+  if (m_Projects != nullptr) m_Projects->for_each<wex::report::file>(wex::ID_ALL_CONFIG_GET);
+  if (m_History != nullptr) m_History->config_get();
+
+  if (wex::item_dialog* dlg = wex::stc::get_config_dialog();
+    dlg != nullptr)
+  {
+    const wex::item item (dlg->get_item(_("Include directory")));
+    
+    if (wex::listview* lv = (wex::listview*)item.window(); lv != nullptr)
+    {
+      lv->config_get();
+    }
+  }
+}
+          
 editors::editors(const wex::window_data& data)
   : wex::notebook(data)
 {

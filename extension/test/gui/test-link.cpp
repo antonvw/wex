@@ -2,7 +2,7 @@
 // Name:      test-link.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -140,12 +140,12 @@ TEST_CASE("wex::link")
     REQUIRE( lnk.get_path("gcc>", data).data().empty());
     REQUIRE( lnk.get_path("<gcc>", data).data().empty());
     REQUIRE( lnk.get_path("some text www.wxwidgets.org", data).data() == "www.wxwidgets.org" );
-    REQUIRE( lnk.get_path("some text https://github.com/antonvw/wxExtension", data).data() == 
-      "https://github.com/antonvw/wxExtension" );
-    REQUIRE( lnk.get_path("some text (https://github.com/antonvw/wxExtension)", data).data() == 
-      "https://github.com/antonvw/wxExtension" );
-    REQUIRE( lnk.get_path("some text [https://github.com/antonvw/wxExtension]", data).data() == 
-      "https://github.com/antonvw/wxExtension" );
+    REQUIRE( lnk.get_path("some text https://github.com/wxWidgets", data).data() == 
+      "https://github.com/wxWidgets" );
+    REQUIRE( lnk.get_path("some text (https://github.com/wxWidgets)", data).data() == 
+      "https://github.com/wxWidgets" );
+    REQUIRE( lnk.get_path("some text [https://github.com/wxWidgets]", data).data() == 
+      "https://github.com/wxWidgets" );
     REQUIRE( lnk.get_path("httpd = new httpd", data).data().empty());
 
     // MIME file

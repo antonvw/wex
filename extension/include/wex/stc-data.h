@@ -2,7 +2,7 @@
 // Name:      stc-data.h
 // Purpose:   Declaration of wex::stc_data
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -13,8 +13,6 @@ namespace wex
 {
   class stc;
   
-  const std::string DEFAULT_TAGFILE = "tags";
-
   /// Offers user data to be used by stc. 
   class stc_data
   {
@@ -63,12 +61,6 @@ namespace wex
     /// Sets control data.
     stc_data& control(control_data& data) {m_Data = data; return *this;};
 
-    /// Returns ctags filename.
-    const auto& ctags_filename() const {return m_ctags_filename;};
-
-    /// Sets ctags filename.
-    stc_data& ctags_filename(const std::string& text);
-
     /// Returns window flags.
     const auto& flags() const {return m_WinFlags;};
     
@@ -97,8 +89,6 @@ namespace wex
     stc* m_STC {nullptr};
 
     control_data m_Data;
-
-    std::string m_ctags_filename {DEFAULT_TAGFILE};
 
     menu_t m_MenuFlags {menu_t().set(
       MENU_CONTEXT).set(MENU_OPEN_LINK).set(MENU_OPEN_WWW).set(MENU_VCS)};

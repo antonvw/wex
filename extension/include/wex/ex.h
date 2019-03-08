@@ -55,32 +55,29 @@ namespace wex
     void copy(const ex* ex);
     
     /// Returns the ctags.
-    auto & ctags() {return m_CTags;};
+    auto & ctags() {return m_ctags;};
     
     /// Cuts selected text to yank register,
     /// and updates delete registers.
     void cut(bool show_message = true);
 
     /// Returns the frame.
-    auto* frame() {return m_Frame;};
+    auto* frame() {return m_frame;};
     
     /// Returns command.
-    const auto & get_command() const {return m_Command;};
+    const auto & get_command() const {return m_command;};
 
     /// Returns the macros.
-    static auto & get_macros() {return m_Macros;};
+    static auto & get_macros() {return m_macros;};
 
-    /// Returns selected text as a string.
-    const std::string get_selected_text() const;
-    
     /// Returns stc component.
-    auto * get_stc() {return m_Command.get_stc();};
+    auto * get_stc() const {return m_command.get_stc();};
 
-    /// Returns whether ex is active.
-    auto is_active() const {return m_IsActive;};
-    
     /// Writes info message.
     void info_message() const;
+    
+    /// Returns whether ex is active.
+    auto is_active() const {return m_is_active;};
     
     /// Adds marker at the specified line.
     /// Returns true if marker could be added.
@@ -106,7 +103,7 @@ namespace wex
     void print(const std::string& text);
 
     /// Returns current register name.
-    const auto register_name() const {return m_Register;};
+    const auto register_name() const {return m_register;};
     
     /// Returns text to be inserted.
     const std::string register_insert() const;
@@ -118,7 +115,7 @@ namespace wex
     void reset_search_flags();
     
     /// Returns search flags.
-    auto search_flags() const {return m_SearchFlags;};
+    auto search_flags() const {return m_search_flags;};
     
     /// Sets delete registers 1 - 9 (if value not empty).
     void set_registers_delete(const std::string& value) const;
@@ -130,7 +127,7 @@ namespace wex
     void set_register_yank(const std::string& value) const;
     
     /// Set using ex mode.
-    void use(bool mode) {m_IsActive = mode;};
+    void use(bool mode) {m_is_active = mode;};
     
     /// Yanks selected text to yank register, default to yank register.
     /// Returns false if no text was selected.
@@ -143,9 +140,9 @@ namespace wex
     /// Sets register name.
     /// Setting register 0 results in
     /// disabling current register.
-    void set_register(const char name) {m_Register = name;};
+    void set_register(const char name) {m_register = name;};
 
-    ex_command m_Command;
+    ex_command m_command;
   private:
     bool CommandHandle(const std::string& command) const;
     bool CommandAddress(const std::string& command);
@@ -162,31 +159,30 @@ namespace wex
       const std::string& title, const std::string& text, bool prop_lexer = false);
       
     const marker m_MarkerSymbol = marker(0);
+    const std::vector<std::pair<
+      const std::string, 
+      std::function<bool(const std::string& command)>>> m_commands;
+
+    static inline stc_entry_dialog* m_dialog = nullptr;
+    static evaluator m_evaluator;
+    static vi_macros m_macros;
+
+    bool 
+      m_auto_write {false},
+      m_is_active {true}, // are we actively using ex mode?
+      m_copy {false};    // this is a copy, result of split
+    
+    int m_search_flags;
+    
+    char m_register {0};
+    
+    wex::ctags* m_ctags;
+    managed_frame* m_frame;  
 
     std::map<char, int> 
       // relate a marker to identifier
-      m_MarkerIdentifiers,
+      m_marker_identifiers,
       // relate a marker to mark number
-      m_MarkerNumbers;
-    
-    static inline stc_entry_dialog* m_Dialog = nullptr;
-    static vi_macros m_Macros;
-    static evaluator m_Evaluator;
-
-    bool 
-      m_AutoWrite {false},
-      m_IsActive {true}, // are we actively using ex mode?
-      m_Copy {false};    // this is a copy, result of split
-    
-    int m_SearchFlags;
-    
-    char m_Register {0};
-    
-    managed_frame* m_Frame;  
-    wex::ctags* m_CTags {nullptr};
-
-    const std::vector<std::pair<
-      const std::string, 
-      std::function<bool(const std::string& command)>>> m_Commands;
+      m_marker_numbers;
   };
 };

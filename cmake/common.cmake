@@ -125,6 +125,23 @@ macro(target_link_all)
   endif ()
 endmacro()  
 
+function(test_app)
+  file(GLOB SRCS "*.cpp" "../*.cpp")
+    
+  add_executable(
+    ${PROJECT_NAME} 
+    ${SRCS})
+
+  if (ODBC_FOUND)
+    target_link_all(${ODBC_LIBRARIES})
+  else ()
+    target_link_all()
+  endif()
+  
+  add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME}
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/extension)
+endfunction()
+          
 if (WIN32)
   set(LOCALE_INSTALL_DIR bin)
 else ()

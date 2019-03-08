@@ -20,9 +20,9 @@ TEST_CASE("wex::frame")
   get_stc()->SetFocus();
   get_stc()->get_file().reset_contents_changed();
 
-  REQUIRE( ((wex::frame *)frame())->open_file(get_testpath("test.h")));
-  REQUIRE( ((wex::frame *)frame())->open_file(get_testpath("test.h"), "contents"));
-  REQUIRE( ((wex::frame *)frame())->is_open(get_testpath("test.h")));
+  REQUIRE( ((wex::frame *)frame())->open_file(wex::test::get_path("test.h")));
+  REQUIRE( ((wex::frame *)frame())->open_file(wex::test::get_path("test.h"), "contents"));
+  REQUIRE( ((wex::frame *)frame())->is_open(wex::test::get_path("test.h")));
   REQUIRE(!((wex::frame *)frame())->is_open(wex::path("xxx")));
   
   REQUIRE( frame()->get_grid() == nullptr);
@@ -64,7 +64,7 @@ TEST_CASE("wex::frame")
 #endif
   
   wex::stc* stc = new wex::stc();
-  add_pane(frame(), stc);
+  wex::test::add_pane(frame(), stc);
   stc->SetFocus();
   
   REQUIRE( frame()->get_stc() == stc);

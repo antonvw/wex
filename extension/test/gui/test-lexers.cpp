@@ -49,7 +49,7 @@ TEST_CASE("wex::lexers")
   SUBCASE("FindBy")
   {
     REQUIRE( wex::lexers::get()->find_by_filename(
-      get_testpath("test.h").fullname()).scintilla_lexer() == "cpp");
+      wex::test::get_path("test.h").fullname()).scintilla_lexer() == "cpp");
       
     REQUIRE( wex::lexers::get()->find_by_name(
       "xxx").scintilla_lexer().empty());
@@ -110,7 +110,7 @@ TEST_CASE("wex::lexers")
     REQUIRE( wex::lexers::get()->load_document());
 
     get_stc()->get_lexer().set("cpp");
-    get_stc()->open(get_testpath());
+    get_stc()->open(wex::test::get_path());
     wex::lexers::get()->apply_global_styles(get_stc());
     wex::lexers::get()->apply(get_stc());
     wex::lexers::get()->apply_margin_text_style(get_stc(), 30, wex::lexers::MARGIN_STYLE_DAY);

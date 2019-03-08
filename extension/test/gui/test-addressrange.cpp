@@ -18,7 +18,7 @@
 TEST_CASE("wex::addressrange")
 {
   wex::stc* stc = new wex::stc();
-  add_pane(frame(), stc);
+  wex::test::add_pane(frame(), stc);
 
   stc->set_text("hello\nhello1\nhello2");
   wex::ex* ex = new wex::ex(stc);

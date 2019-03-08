@@ -24,7 +24,7 @@ TEST_CASE("wex::hexmode")
     std::string("0123456789"), wex::stc_data().flags(
       wex::stc_data::window_t().set(wex::stc_data::WIN_HEX)));
 
-  add_pane(frame(), stc);
+  wex::test::add_pane(frame(), stc);
   REQUIRE(stc->GetText() != "0123456789");
   
   stc->SetCurrentPos(48); // 0 <-
@@ -58,7 +58,7 @@ TEST_CASE("wex::hexmode")
   REQUIRE( hm->replace('9', 13));
   REQUIRE( hm->replace('2', 13));
   
-  REQUIRE( stc->get_file().file_save(get_testpath("test.hex")));
+  REQUIRE( stc->get_file().file_save(wex::test::get_path("test.hex")));
   hm->set(false);
   REQUIRE( stc->GetText() == "01232567890123456789");
   

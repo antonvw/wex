@@ -2,7 +2,7 @@
 // Name:      support.cpp
 // Purpose:   Implementation of decorated_frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -29,7 +29,7 @@
 #include "defs.h"
 
 decorated_frame::decorated_frame(app* app)
-  : wex::history_frame(
+  : wex::report::frame(
       25,  // maxFiles
       4,   // maxProjects
       wex::window_data().name("mainFrame").style(wxDEFAULT_FRAME_STYLE))
@@ -224,7 +224,7 @@ decorated_frame::decorated_frame(app* app)
   menuHelp->append(wxID_ABOUT);
   menuHelp->append(wxID_HELP);
 
-  wxMenuBar* menubar = new wxMenuBar();
+  auto* menubar = new wxMenuBar();
   menubar->Append(menuFile, wxGetStockLabel(wxID_FILE));
   menubar->Append(menuEdit, wxGetStockLabel(wxID_EDIT));
   menubar->Append(menuView, _("&View"));
@@ -251,19 +251,19 @@ bool decorated_frame::allow_close(wxWindowID id, wxWindow* page)
   break;
   case wex::ID_NOTEBOOK_PROJECTS:
     if (wex::file_dialog(
-       (wex::listview_file*)page).show_modal_if_changed() == wxID_CANCEL)
+       (wex::report::file*)page).show_modal_if_changed() == wxID_CANCEL)
     {
       return false;
     }
   break;
   }
   
-  return wex::history_frame::allow_close(id, page);
+  return wex::report::frame::allow_close(id, page);
 }
 
 void decorated_frame::on_notebook(wxWindowID id, wxWindow* page)
 {
-  wex::history_frame::on_notebook(id, page);
+  wex::report::frame::on_notebook(id, page);
   
   switch (id)
   {
@@ -273,8 +273,8 @@ void decorated_frame::on_notebook(wxWindowID id, wxWindow* page)
     case wex::ID_NOTEBOOK_LISTS:
     break;
     case wex::ID_NOTEBOOK_PROJECTS:
-      wex::log::status() << ((wex::listview_file*)page)->get_filename();
-      update_statusbar((wex::listview_file*)page);
+      wex::log::status() << ((wex::report::file*)page)->get_filename();
+      update_statusbar((wex::report::file*)page);
     break;
     default:
       assert(0);

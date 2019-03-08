@@ -20,7 +20,7 @@
 TEST_CASE("wex::vi_macros")
 {
   wex::stc* stc = new wex::stc(std::string("hello"));
-  add_pane(frame(), stc);
+  wex::test::add_pane(frame(), stc);
   wex::vi* vi = &stc->get_vi();
 
   wex::vi_macros macros;

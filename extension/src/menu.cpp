@@ -2,14 +2,13 @@
 // Name:      menu.cpp
 // Purpose:   Implementation of wex::menu class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <map>
 #include <wex/menu.h>
 #include <wex/art.h>
 #include <wex/lexers.h>
@@ -34,11 +33,9 @@ wxMenuItem* wex::menu::append(
   const std::string& helptext,
   const wxArtID& artid)
 {
-  wxMenuItem* item = new wxMenuItem(this, id, name, helptext);
+  auto* item = new wxMenuItem(this, id, name, helptext);
 
-  const stockart art(id);
-
-  if (art.get_bitmap().IsOk())
+  if (const stockart art(id); art.get_bitmap().IsOk())
   {
     item->SetBitmap(art.get_bitmap(
       wxART_MENU, 
@@ -46,13 +43,11 @@ wxMenuItem* wex::menu::append(
   }
   else if (!artid.empty())
   {
-    const wxBitmap bitmap(
-      wxArtProvider::GetBitmap(
+    if (const wxBitmap bitmap(wxArtProvider::GetBitmap(
         artid, 
         wxART_MENU, 
         wxArtProvider::GetSizeHint(wxART_MENU, true)));
-
-    if (bitmap.IsOk())
+      bitmap.IsOk())
     {
       item->SetBitmap(bitmap);
     }
@@ -152,7 +147,7 @@ bool wex::menu::append_tools(int itemid)
     return false;
   }
 
-  wex::menu* menuTool = new wex::menu(m_Style);
+  auto* menuTool = new wex::menu(m_Style);
 
   for (const auto& it : tool().get_tool_info())
   {
@@ -187,11 +182,10 @@ bool wex::menu::append_vcs(const path& filename, bool show_modal)
   }
   else
   {
-    wex::menu* vcsmenu = new wex::menu;
-  
-    const wex::vcs vcs({filename.data().string()});
+    auto* vcsmenu = new wex::menu;
 
-    if (vcs.entry().build_menu(ID_EDIT_VCS_LOWEST + 1, vcsmenu))
+    if (const wex::vcs vcs({filename.data().string()});
+      vcs.entry().build_menu(ID_EDIT_VCS_LOWEST + 1, vcsmenu))
     { 
       append_submenu(vcsmenu, vcs.entry().name());
       return true;

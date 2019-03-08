@@ -30,7 +30,6 @@ namespace wex
 };
 
 std::vector<wex::vcs_entry> wex::vcs::m_Entries;
-wex::item_dialog* wex::vcs::m_ItemDialog = nullptr;
 
 wex::vcs::vcs(const std::vector< path > & files, int command_no)
   : m_Files(files)
@@ -169,6 +168,11 @@ bool wex::vcs::execute()
   }
 }
 
+bool wex::vcs::execute(const std::string& command)
+{
+  return m_Entry.execute(command, get_file().get_path());
+}
+  
 const wex::vcs_entry wex::vcs::FindEntry(const std::string& filename) 
 {
   return FindEntry(path(filename));
@@ -398,6 +402,7 @@ int wex::vcs::show_dialog(const window_data& arg)
     data.pos(m_ItemDialog->GetPosition());
     data.size(m_ItemDialog->GetSize());
     delete m_ItemDialog;
+    m_ItemDialog = nullptr;
   }
 
   const std::vector <item> v({

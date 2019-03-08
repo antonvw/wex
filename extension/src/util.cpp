@@ -981,7 +981,7 @@ void wex::vcs_execute(frame* frame, int id, const std::vector< path > & files)
           }
           else
           {
-            log::status("No difference");
+            log::status("No output");
             log::verbose("no output from") << vcs.entry().get_command_executed();
           }
         }

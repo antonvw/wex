@@ -149,14 +149,22 @@ bool wex::path::open_mime() const
   {
     return false;
   }
-  else if (const auto command(type->GetOpenCommand(data().string())); command.empty())
+  else if (const auto command(type->GetOpenCommand(data().string())); 
+    command.empty())
   {
+    log("open_mime open") << command;
     return false;
   }
   else
   {
-    return wxExecute(command) != -1;
+    if (wxExecute(command) == -1)
+    {
+      log("open_mime execute") << command;
+      return false;
+    }
   }
+  
+  return true;
 }
 
 wex::path& wex::path::replace_filename(const std::string& filename)

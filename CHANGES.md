@@ -1,5 +1,11 @@
-**v19.04** *2019*
-  - uses namespace
+**v19.10**
+  - uses wex::test and wex::report namespace
+  - listview follows theme
+  - ctags file static
+  - blame improvements
+  
+**v19.04** *March 9, 2019*
+  - uses wex namespace
   - uses std::filesystem instead of std::experimental::filesystem
   - tiny-process-library lib
 

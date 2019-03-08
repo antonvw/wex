@@ -17,27 +17,17 @@ namespace wex
 {
   class ctags_info;
   class ex;
-  class frame;
+  
+  const std::string DEFAULT_TAGFILE = "tags";
   
   /// Offers ctags handling.
   class ctags
   {
   public:  
-    /// Constructor, opens ctags file.
+    /// Constructor.
     /// Uses ex component for presenting ctags results.
-    /// The ctags file is obtained from the STCData associated with ex STC.
-    /// Default uses standard ctags file, but you can choose your own name.
-    /// This file is searched for in the current dir, and if not found in the 
-    /// config dir.
-    /// You can also specify an absolute filename.
-    ctags(ex* ex);
+    ctags(ex* ex, bool open = true);
 
-    /// Constructor, opens default ctags file.
-    ctags(frame* frame);
-    
-    /// Destructor, closes ctags file.
-   ~ctags();
-    
     /// Tries to autocomplete text using the tags file.
     /// Returns a string with matches separated by the 
     /// separator character, or empty string if no match is found.
@@ -47,6 +37,9 @@ namespace wex
       /// filter on ctags extension entry, default no filter
       const ctags_entry& filter = ctags_entry());
 
+    /// Closes ctags file.
+    static void close();
+    
     /// Find the tags matching `tag', and fills the matches container.
     /// Returns true if a matching tag is found,
     /// and calls frame open_file if name matches and
@@ -54,37 +47,44 @@ namespace wex
     /// If the name is empty, next is invoked.
     /// Otherwise shows a dialog to select a file from the matches.
     /// Returns false if dialog was cancelled.
-    bool find(const std::string& tag);
+    static bool find(const std::string& tag);
 
     /// Finds the tag matching 'tag' and uses it to fill the supplied entries.
     /// Returns true if a matching tag is found, 
     /// and can be used as a master.
-    bool find(
+    static bool find(
       /// tag
       const std::string& tag,
       /// tag properties to be filled
       ctags_entry& current,
       /// tag filter to be filled
-      ctags_entry& filter) const;
+      ctags_entry& filter);
 
+    /// Opens ctags file.
+    /// The ctags file is obtained from the STCData associated with ex STC.
+    /// Default uses standard ctags file, but you can choose your own name.
+    /// This file is searched for in the current dir, and if not found in the 
+    /// config dir.
+    /// You can also specify an absolute filename.
+    static void open(const std::string& filename = DEFAULT_TAGFILE);
+    
     /// Jumps to next match from a previous find.
-    bool next();
+    static bool next();
 
     /// Jumps to previous match from a previous find.
-    bool previous();
+    static bool previous();
 
     /// Autocomplete separator.
     auto separator() const {return m_Separator;};
   private:
     void autocomplete_prepare();
-    void init(const std::string& filename);
-    bool open(const std::string& path, bool show_error = false);
+    static bool do_open(const std::string& path);
 
     ex* m_Ex {nullptr};
-    frame* m_Frame;
-    tagFile* m_File {nullptr};
     const int m_Separator {3};
     bool m_Prepare {false};
+    
+    static inline tagFile* m_File = nullptr;
     static std::map< std::string, ctags_info > m_Matches;
     static std::map< std::string, ctags_info >::iterator m_Iterator;
   };

@@ -2,7 +2,7 @@
 // Name:      menu_commands.h
 // Purpose:   Declaration of class wex::menu_commands
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -43,6 +43,20 @@ namespace wex
           m_Commands.push_back({});
         }  
       }};
+    
+    /// Returns the menu command equal to name specified.  
+    /// or empty command if name could not be found.
+    const T find_command(const std::string& name) const {
+std::cout << "find: " << name << "\n";
+      for (const auto& i : m_Commands)
+      {
+std::cout << "compare with: " << i.get_command() << "\n";
+        if (i.get_command() == name)
+        {
+          return i;
+        }
+      }
+      return T();};
     
     /// Returns the flags key.
     const auto & flags_key() const {return m_FlagsKey;};

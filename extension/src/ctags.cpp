@@ -8,6 +8,7 @@
 
 #include <algorithm>
 #include <vector>
+#include <wx/app.h>
 #include <wx/artprov.h>
 #include <wx/choicdlg.h>
 #include <wx/log.h>
@@ -24,7 +25,7 @@
 
 namespace wex
 {
-  enum image_access_type
+  enum image_access_t
   {
     IMAGE_NONE,
     IMAGE_PUBLIC,
@@ -64,110 +65,106 @@ namespace wex
     const int m_LineNumber;
     std::string m_Pattern;
   };
-};
 
-bool equal(
-  const tagEntry& entry, 
-  const std::string& text, 
-  const std::string& field)
-{
-  const char* valuep = tagsField(&entry, field.c_str());
-
-  if (valuep == nullptr)
+  bool equal(
+    const tagEntry& entry, 
+    const std::string& text, 
+    const std::string& field)
   {
-    return false;
+    const char* valuep = tagsField(&entry, field.c_str());
+
+    if (valuep == nullptr)
+    {
+      return false;
+    }
+    
+    std::string value(valuep);
+    
+    if (value.find("::") != std::string::npos)
+    {
+      value = wex::after(value, ':', false);
+    }
+          
+    return text == value;
   }
-  
-  std::string value(valuep);
-  
-  if (value.find("::") != std::string::npos)
+
+  const std::string filtered(
+    const tagEntry& entry, 
+    const wex::ctags_entry& filter)
   {
-    value = wex::after(value, ':', false);
-  }
-        
-  return text == value;
-}
+    if (!filter.is_active()) return entry.name;
 
-const std::string filtered(
-  const tagEntry& entry, 
-  const wex::ctags_entry& filter)
-{
-  if (!filter.is_active()) return entry.name;
+    if (!filter.kind().empty())
+    { 
+      if (entry.kind == nullptr || strcmp(filter.kind().c_str(), entry.kind) != 0)
+      {
+        return std::string();
+      }
+    }
 
-  if (!filter.kind().empty())
-  { 
-    if (entry.kind == nullptr || strcmp(filter.kind().c_str(), entry.kind) != 0)
+    if (!filter.access().empty() && !equal(entry, filter.access(), "access"))
     {
       return std::string();
     }
-  }
 
-  if (!filter.access().empty() && !equal(entry, filter.access(), "access"))
-  {
-    return std::string();
-  }
-
-  if (!filter.class_name().empty() && !equal(entry, filter.class_name(), "class"))
-  {
-    return std::string();
-  }
-
-  if (!filter.signature().empty() && !equal(entry, filter.signature(), "signature"))
-  {
-    return std::string();
-  }
-
-  return entry.name;
-}
-
-void set_image(const tagEntry& entry, wex::image_access_type& image)
-{
-  if (const char* value = tagsField(&entry, "access"); value != nullptr)
-  {
-    if (strcmp(value, "public") == 0)
+    if (!filter.class_name().empty() && !equal(entry, filter.class_name(), "class"))
     {
-      image = wex::IMAGE_PUBLIC;
+      return std::string();
     }
-    else if (strcmp(value, "protected") == 0)
+
+    if (!filter.signature().empty() && !equal(entry, filter.signature(), "signature"))
     {
-      image = wex::IMAGE_PROTECTED;
+      return std::string();
     }
-    else if (strcmp(value, "private") == 0)
+
+    return entry.name;
+  }
+
+  frame* get_frame()
+  {
+    return dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
+  }
+  
+  void set_image(const tagEntry& entry, wex::image_access_t& image)
+  {
+    if (const char* value = tagsField(&entry, "access"); value != nullptr)
     {
-      image = wex::IMAGE_PRIVATE;
+      if (strcmp(value, "public") == 0)
+      {
+        image = wex::IMAGE_PUBLIC;
+      }
+      else if (strcmp(value, "protected") == 0)
+      {
+        image = wex::IMAGE_PROTECTED;
+      }
+      else if (strcmp(value, "private") == 0)
+      {
+        image = wex::IMAGE_PRIVATE;
+      }
     }
   }
-}
 
-std::string skip_const(const std::string& text)
-{
-  if (text.empty())
-    return std::string();
-  else if (std::vector<std::string> v; wex::match("(.*) *const$", text, v) == 1)
-    return v[0];
-  else
-    return text;
-}
+  std::string skip_const(const std::string& text)
+  {
+    if (text.empty())
+      return std::string();
+    else if (std::vector<std::string> v; wex::match("(.*) *const$", text, v) == 1)
+      return v[0];
+    else
+      return text;
+  }
+};
 
 std::map< std::string, wex::ctags_info > wex::ctags::m_Matches;
 std::map< std::string, wex::ctags_info >::iterator wex::ctags::m_Iterator;
 
-wex::ctags::ctags(wex::ex* ex)
+wex::ctags::ctags(wex::ex* ex, bool open_file)
   : m_Ex(ex)
-  , m_Frame(ex->frame())
 {
-  init(m_Ex->get_command().get_stc()->data().ctags_filename());
-}
-
-wex::ctags::ctags(wex::frame* frame)
-  : m_Frame(frame)
-{
-  init(DEFAULT_TAGFILE);
-}
-
-wex::ctags::~ctags()
-{
-  tagsClose(m_File);
+  if (open_file)
+  {
+    open();
+  }
 }
 
 const std::string wex::ctags::autocomplete(
@@ -208,7 +205,7 @@ const std::string wex::ctags::autocomplete(
 
   do
   {
-    wex::image_access_type image = IMAGE_NONE;
+    wex::image_access_t image = IMAGE_NONE;
 
     if (const auto tag(filtered(entry, filter)); 
       tag.size() > min_size && tag != prev_tag)
@@ -265,6 +262,23 @@ void wex::ctags::autocomplete_prepare()
   m_Prepare = true;
 }
 
+void wex::ctags::close()
+{
+  tagsClose(m_File);
+  m_File = nullptr;
+}
+
+bool wex::ctags::do_open(const std::string& path)
+{
+  if (tagFileInfo info; (m_File = tagsOpen(path.c_str(), &info)) != nullptr)
+  {
+    log::verbose("ctags file") << path;
+    return true;
+  }
+
+  return false;
+}
+
 bool wex::ctags::find(const std::string& tag)
 {
   if (m_File == nullptr) return false;
@@ -296,13 +310,13 @@ bool wex::ctags::find(const std::string& tag)
 
   if (m_Matches.size() == 1)
   {
-    m_Matches.begin()->second.open_file(m_Frame);
+    m_Matches.begin()->second.open_file(get_frame());
   }
   else
   {
     wxArrayString as;
     for (const auto& it : m_Matches) as.Add(it.second.name());
-    wxMultiChoiceDialog dialog(m_Frame,
+    wxMultiChoiceDialog dialog(get_frame(),
       _("Input") + ":", 
       _("Select File"),
       as);
@@ -311,7 +325,7 @@ bool wex::ctags::find(const std::string& tag)
     for (const auto& sel : dialog.GetSelections())
     {
       m_Iterator = m_Matches.find(as[sel].ToStdString());
-      m_Iterator->second.open_file(m_Frame);
+      m_Iterator->second.open_file(get_frame());
     }
   }
 
@@ -330,7 +344,7 @@ bool master(const tagEntry& entry)
 
 bool wex::ctags::find(const std::string& tag, 
   wex::ctags_entry& current,
-  wex::ctags_entry& filter) const
+  wex::ctags_entry& filter)
 {
   if (m_File == nullptr) return false;
 
@@ -377,38 +391,6 @@ bool wex::ctags::find(const std::string& tag,
   return false;
 }
 
-void wex::ctags::init(const std::string& filename)
-{
-  m_Iterator = m_Matches.begin();
-
-  if (wex::path path(filename); path.is_absolute())
-  {
-    // an absolute file should exist
-    open(path.data().string(), true);
-  }
-  else
-  {
-    // First check whether default tagfile with extension 
-    // exists, then without extension.
-    for (const auto & it : std::vector < std::string > {
-      "./", config().dir() + "/"})
-    {
-      if (
-        (m_Ex != nullptr && (
-           open(it + filename + m_Ex->get_stc()->get_filename().extension()))) ||
-        open(it + filename))
-      {
-        return; // finish, we found a file
-      }
-    }
-
-    if (filename != DEFAULT_TAGFILE && m_File == nullptr)
-    {
-      log::verbose("could not locate ctags file") << filename;
-    }
-  }
-}
-
 bool wex::ctags::next()
 {
   if (m_Matches.size() <= 1)
@@ -422,24 +404,37 @@ bool wex::ctags::next()
     m_Iterator = m_Matches.begin();
   }
 
-  m_Iterator->second.open_file(m_Frame);
+  m_Iterator->second.open_file(get_frame());
 
   return true;
 }
 
-bool wex::ctags::open(const std::string& path, bool show_error)
+void wex::ctags::open(const std::string& filename)
 {
-  if (tagFileInfo info; (m_File = tagsOpen(path.c_str(), &info)) != nullptr)
-  {
-    log::verbose("ctags file") << path;
-    return true;
-  }
-  else if (show_error)
-  {
-    wex::log() << "could not open ctags file:" << path;
-  }
+  if (m_File != nullptr) return;
 
-  return false;
+  m_Iterator = m_Matches.begin();
+
+  if (filename != DEFAULT_TAGFILE)
+  {
+    do_open(filename);
+  }
+  else
+  {
+    for (const auto & it : std::vector < std::string > {
+      "./", config().dir() + "/"})
+    {
+      if (do_open(it + filename))
+      {
+        return; // finish, we found a file
+      }
+    }
+  }
+  
+  if (filename != DEFAULT_TAGFILE && m_File == nullptr)
+  {
+    log("could not locate ctags file") << filename;
+  }
 }
 
 bool wex::ctags::previous()
@@ -456,7 +451,7 @@ bool wex::ctags::previous()
   }
 
   m_Iterator--;
-  m_Iterator->second.open_file(m_Frame);
+  m_Iterator->second.open_file(get_frame());
 
   return true;
 }

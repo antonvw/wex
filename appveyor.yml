@@ -1,4 +1,4 @@
-version: 19.04.0.{build}
+version: 19.10.0.{build}
 
 image: Visual Studio 2017
 
@@ -19,11 +19,10 @@ build_script:
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat"
   - set CL=/Zc:__cplusplus
   - cmake -DCMAKE_BUILD_TYPE=Release ..
-#  - msbuild syncped\syncped.sln /p:Configuration=Release
-  - msbuild syncped\syncped.sln
+  - devenv wex.sln /Build Release
   - ..\ci\pack.bat
 
 test: OFF
 
 artifacts:
-  - path: 'build\syncped-v19.04.0.zip'
+  - path: 'build\syncped-v19.10.0.zip'

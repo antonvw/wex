@@ -50,9 +50,9 @@ TEST_CASE("wex::managed_frame")
   wxMenu* menu = new wxMenu();
   frame()->file_history().use_menu(1000, menu);
   frame()->set_find_focus(frame()->get_stc());
-  frame()->open_file(get_testpath("test.h"));
+  frame()->open_file(wex::test::get_path("test.h"));
   
-  frame()->set_recent_file(get_testpath("test.h"));
+  frame()->set_recent_file(wex::test::get_path("test.h"));
   frame()->set_recent_file("testing");
   
   REQUIRE( frame()->file_history().get_history_file().data().string().find("test.h") != std::string::npos);

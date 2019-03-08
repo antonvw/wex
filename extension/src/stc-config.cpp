@@ -160,6 +160,11 @@ int wex::stc::config_dialog(const window_data& par)
                {wxSTC_WS_VISIBLEAFTERINDENT, _("After indent")},
                {wxSTC_WS_VISIBLEALWAYS, _("Always")},
                {wxSTC_WS_VISIBLEONLYININDENT, _("Only indent")}}, true, 2},
+             {_("Annotation style"), {
+               {wxSTC_ANNOTATION_HIDDEN, _("Hidden")},
+               {wxSTC_ANNOTATION_STANDARD, _("Standard")},
+               {wxSTC_ANNOTATION_BOXED, _("Boxed")},
+               {wxSTC_ANNOTATION_INDENTED, _("indented")}}, true, 2},
              {_("Wrap line"), {
                {wxSTC_WRAP_NONE, _("None")},
                {wxSTC_WRAP_WORD, _("Word")},
@@ -257,6 +262,7 @@ void wex::stc::config_get()
     }
   }
   
+  AnnotationSetVisible(config(_("Annotation style")).get(wxSTC_ANNOTATION_STANDARD));
   AutoCompSetMaxWidth(config(_("Autocomplete maxwidth")).get(0));
   SetCaretLineVisible(config(_("Caret line")).get(true));
   SetFoldFlags(config( _("Fold flags")).get(0));
@@ -273,6 +279,7 @@ void wex::stc::config_get()
   SetViewWhiteSpace(config(_("Whitespace visible")).get(wxSTC_WS_INVISIBLE));
   SetWrapMode(config(_("Wrap line")).get(wxSTC_WRAP_NONE));
   SetWrapVisualFlags(config(_("Wrap visual flags")).get( wxSTC_WRAPVISUALFLAG_END));
+  
   m_vi.use(config(_("vi mode")).get(false));
 
   show_line_numbers(config(_("Line numbers")).get(false));

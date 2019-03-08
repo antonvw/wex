@@ -16,7 +16,7 @@
 TEST_CASE("wex::listview")
 {
   wex::listview* lv = new wex::listview();
-  add_pane(frame(), lv);
+  wex::test::add_pane(frame(), lv);
   
   wex::listview::config_dialog(wex::window_data().button(wxAPPLY | wxCANCEL));
   
@@ -67,7 +67,7 @@ TEST_CASE("wex::listview")
   {
     REQUIRE( lv->insert_item({
       std::to_string(i),
-      get_testpath("test.h").stat().get_modification_time(),
+      wex::test::get_path("test.h").stat().get_modification_time(),
       std::to_string((float)i / 2.0),
       "hello " + std::to_string(i)}));
   }
@@ -95,7 +95,7 @@ TEST_CASE("wex::listview")
   lv->items_update();
   
   wex::listview* lv2 = new wex::listview(wex::listview_data().type(wex::listview_data::FILE));
-  add_pane(frame(), lv2);
+  wex::test::add_pane(frame(), lv2);
   
   REQUIRE( lv2->data().image() == wex::listview_data::IMAGE_FILE_ICON);
   REQUIRE(!lv2->data().type_description().empty());

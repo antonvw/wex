@@ -132,11 +132,14 @@ void wex::lexers::apply_margin_text_style(
     case MARGIN_STYLE_YEAR:
       stc->MarginSetStyle(line, m_StyleNoTextMarginYear);
       break;
+    
+    case MARGIN_STYLE_UNKNOWN:
+      break;
   }
   
   if (!text.empty())
   {
-    stc->MarginSetText(line, wxString(text.c_str()));
+    stc->MarginSetText(line, text);
   }
 }
 

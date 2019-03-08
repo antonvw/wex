@@ -10,6 +10,7 @@
 #include <wx/defs.h>
 #include <wx/settings.h>
 #include <wex/stc.h>
+#include <wex/blame.h>
 #include <wex/config.h>
 #include <wex/frd.h>
 #include <wex/indicator.h>
@@ -111,7 +112,6 @@ wex::stc::stc(const path& filename, const stc_data& data)
   }
 
   config_get();
-  fold();
 }
 
 bool wex::stc::CanCut() const
@@ -158,9 +158,8 @@ void wex::stc::Cut()
   {
     if (m_vi.is_active())
     {
-      const wxCharBuffer b(GetSelectedTextRaw());
-      m_vi.set_registers_delete(std::string(b.data(), b.length() - 1));
-      m_vi.set_register_yank(std::string(b.data(), b.length() - 1));
+      m_vi.set_registers_delete(get_selected_text());
+      m_vi.set_register_yank(get_selected_text());
     }
   
     wxStyledTextCtrl::Cut();
@@ -278,6 +277,17 @@ const std::string wex::stc::get_find_string()
   return find_replace_data::get()->get_find_string();
 }
 
+const std::string wex::stc::get_selected_text()
+{
+  // This also supports rectangular text.
+  if (GetSelectedText().empty())
+  {
+    return std::string();
+  }
+
+  const wxCharBuffer b(GetSelectedTextRaw());
+  return std::string(b.data(), b.length() - 1);
+}
 
 const std::string wex::stc::get_word_at_pos(int pos) const
 {
@@ -313,9 +323,10 @@ void wex::stc::guess_type()
   
   // If we have a modeline comment.
   if (
+    const std::string modeline("\\s+vim?:\\s*(set [a-z0-9:= ]+)");
     m_vi.is_active() && 
-     (match("vi: *(set [a-z0-9:= ]+)", text, v) > 0 ||
-      match("vi: *(set [a-z0-9:= ]+)", text2, v) > 0))
+     (match(modeline, text, v) > 0 ||
+      match(modeline, text2, v) > 0))
   {
     if (!m_vi.command(":" + v[0] + "*")) // add * to indicate modelin
     {
@@ -798,115 +809,45 @@ void wex::stc::show_line_numbers(bool show)
 
 bool wex::stc::show_vcs(const vcs_entry* vcs)
 {
-  if (vcs->margin_width() <= 0 || vcs->get_stdout().empty())
+  if (!vcs->blame().use())
   {
-    log::verbose("margin") 
-      << vcs->margin_width() << "stdout" << vcs->get_stdout();
+    return false;
+  }
+  
+  if (vcs->get_stdout().empty())
+  {
+    log::verbose("no vcs output");
     return false;
   }
 
-  int begin, end;
-  bool begin_is_number, end_is_number = true;
-
-  try
-  {
-    begin = std::stoi(vcs->blame_pos_begin());
-  }
-  catch (std::exception& )
-  {
-    begin_is_number = false;
-  }
-
-  try
-  {
-    end = std::stoi(vcs->blame_pos_end());
-  }
-  catch (std::exception& )
-  {
-    end_is_number = false;
-  }
-
   int line = 0;
-  bool found = false;
-  std::string prev;
+  std::string prev ("!@#$%");
   
   for (tokenizer tkz(vcs->get_stdout(), "\r\n"); tkz.has_more_tokens(); )
   {
-    const std::string text(tkz.get_next_token());
-
-    if (!begin_is_number)
+    if (const auto [r, bl, t] = vcs->blame().get(tkz.get_next_token());
+      bl != prev)
     {
-      begin = text.find(vcs->blame_pos_begin());
+      if (line == 0)
+      {
+        SetMarginWidth(
+          m_MarginTextNumber, 
+          bl.size() * 
+           (StyleGetFont(m_MarginTextNumber).GetPixelSize().GetWidth() + 1));
+      }
+      
+      lexers::get()->apply_margin_text_style(this, line, t, bl);
+      prev = bl;
     }
-
-    if (!end_is_number)
+    else
     {
-      end = text.find(vcs->blame_pos_end());
-    }
-
-    if (begin != std::string::npos && end != std::string::npos)
-    {
-      const int seconds = 1;
-      const int seconds_in_minute = 60 * seconds;
-      const int seconds_in_hour = 60 * seconds_in_minute;
-      const int seconds_in_day = 24 * seconds_in_hour;
-      const int seconds_in_week = 7 * seconds_in_day;
-      const int seconds_in_month = 30 * seconds_in_day;
-      const int seconds_in_year = 365 * seconds_in_day;
-
-      const std::string blame(text.substr(begin + 1, end - begin - 2));
-      const int ts = 19;
-      const auto& [r, t] = get_time(
-        blame.substr(blame.size() - ts, ts), "%Y-%m-%d %H:%M:%S");
-      
-      if (!r)
-      {
-        log() << "invalid time: '" << blame.substr(blame.size() - ts, ts) << "' from: '" << blame << "'";
-      }
-      
-      const time_t now = time(nullptr);
-      const auto dt = difftime(now, t);
-      
-      lexers::margin_style_t style = lexers::MARGIN_STYLE_OTHER;
-      
-      if (dt < seconds_in_day)
-      {
-        style = lexers::MARGIN_STYLE_DAY;
-      }
-      else if (dt < seconds_in_week)
-      {
-        style = lexers::MARGIN_STYLE_WEEK;
-      }
-      else if (dt < seconds_in_month)
-      {
-        style = lexers::MARGIN_STYLE_MONTH;
-      }
-      else if (dt < seconds_in_year)
-      {
-        style = lexers::MARGIN_STYLE_YEAR;
-      }
-      
-      if (blame != prev)
-      {
-        lexers::get()->apply_margin_text_style(this, line, style, blame);
-        found = true;
-        prev = blame;
-      }
-      else
-      {
-        lexers::get()->apply_margin_text_style(this, line, style);
-      }
+      lexers::get()->apply_margin_text_style(this, line, t);
     }
  
     line++;
   }
 
-  if (found)
-  {
-    SetMarginWidth(m_MarginTextNumber, vcs->margin_width());
-  }
-
-  return found;
+  return true;
 }
 
 void wex::stc::sync(bool start)

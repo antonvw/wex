@@ -110,7 +110,7 @@ TEST_CASE("wex")
   {
     wxComboBox* cb = new wxComboBox(frame(), wxID_ANY);
 #ifndef __WXOSX__
-    add_pane(frame(), cb);
+    wex::test::add_pane(frame(), cb);
 #endif
     wex::combobox_as<const std::list < std::string >>(cb, l);
   }
@@ -119,7 +119,7 @@ TEST_CASE("wex")
   {
     wxComboBox* cb = new wxComboBox(frame(), wxID_ANY);
 #ifndef __WXOSX__
-    add_pane(frame(), cb);
+    wex::test::add_pane(frame(), cb);
 #endif
     wex::combobox_from_list(cb, l);
     REQUIRE( cb->GetCount() == 3);
@@ -173,7 +173,7 @@ TEST_CASE("wex")
   
   SUBCASE("wex::get_iconid")
   {
-    REQUIRE( wex::get_iconid( get_testpath("test.h")) != -1);
+    REQUIRE( wex::get_iconid( wex::test::get_path("test.h")) != -1);
   }
 
   SUBCASE("wex::get_number_of_lines  ")
@@ -196,8 +196,21 @@ TEST_CASE("wex")
     REQUIRE( wex::get_string_set({"one", "two", "three"}, 4) == "three ");
   }
 
+  SUBCASE("wex::get_time")
+  {
+    const auto& [r, t] = wex::get_time("2019-02-01 12:20:06", "%Y-%m-%d %H:%M:%S");
+    REQUIRE ( r );
+    
+    const auto& [r2, t2] = wex::get_time("201902-01 12:20:06", "%Y-%m-%d %H:%M:%S");
+    REQUIRE ( !r2 );
+  }
+
   SUBCASE("wex::get_word")
   {
+    std::string word("this is a test");
+    REQUIRE( wex::get_word(word) == "this");
+    REQUIRE( wex::get_word(word) == "is");
+    REQUIRE( wex::get_word(word) == "a");
   }
   
   SUBCASE("wex::is_brace")
@@ -262,9 +275,9 @@ TEST_CASE("wex")
   {
     REQUIRE( wex::open_files(frame(), std::vector<wex::path>()) == 0);
     REQUIRE( wex::open_files(frame(), std::vector<wex::path> {
-      get_testpath("test.h").data(), "test.cpp", "*xxxxxx*.cpp"}) == 2);
+      wex::test::get_path("test.h").data(), "test.cpp", "*xxxxxx*.cpp"}) == 2);
     REQUIRE( wex::open_files(frame(), 
-      std::vector<wex::path> {get_testpath("test.h").data()}) == 1);
+      std::vector<wex::path> {wex::test::get_path("test.h").data()}) == 1);
     REQUIRE( 
       wex::open_files(frame(), std::vector<wex::path> {"../../data/wex-menus.xml"}) == 1);
   }
@@ -285,7 +298,7 @@ TEST_CASE("wex")
   
   SUBCASE("wex::print_header")
   {
-    REQUIRE( wex::print_header(get_testpath("test.h")).find("test") != std::string::npos);
+    REQUIRE( wex::print_header(wex::test::get_path("test.h")).find("test") != std::string::npos);
   }
   
   SUBCASE("wex::marker_and_register_expansion")

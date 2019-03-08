@@ -11,6 +11,7 @@
 #endif
 #include <wex/config.h>
 #include <wex/frame.h>
+#include <wex/lexers.h>
 #include <wex/listitem.h>
 #include <wex/log.h>
 #include <wex/util.h>
@@ -105,9 +106,18 @@ bool wex::listitem::set_item(
 
 void wex::listitem::SetReadOnly(bool readonly)
 {
-  SetTextColour(readonly ? 
-    config(_("Readonly colour")).get(*wxRED):
-    config(_("Foreground colour")).get(*wxBLACK));
+  if (!readonly)
+  {
+    if (std::vector<std::string> v; match(",fore:(.*)", 
+      lexers::get()->get_default_style().value(), v) > 0)
+    {
+      SetTextColour(wxColour(v[0]));
+    }
+  }
+  else
+  {
+    SetTextColour(config(_("Readonly colour")).get(*wxRED));
+  }
 
   ((wxListView* )m_ListView)->SetItem(*this);
 
@@ -122,9 +132,9 @@ void wex::listitem::update()
     m_ListView->data().image() == listview_data::IMAGE_FILE_ICON && 
     m_Path.stat().is_ok() ? get_iconid(m_Path): -1);
 
-  ((wxListView *)m_ListView)->SetItem(*this);
-
   SetReadOnly(m_Path.stat().is_readonly());
+
+  ((wxListView *)m_ListView)->SetItem(*this);
 
   if (
      m_ListView->InReportView() &&

@@ -10,18 +10,18 @@
 #include <wex/report/defs.h>
 #include "test.h"
 
-TEST_CASE("wex::history_frame")
+TEST_CASE("wex::report::frame")
 {
   wex::listview* list = new wex::listview(wex::listview_data().type(wex::listview_data::HISTORY));
 
-  add_pane(frame(), list);
+  wex::test::add_pane(frame(), list);
 
   wxMenu* menu = new wxMenu();
   frame()->use_file_history_list(list);
   frame()->get_project_history().use_menu(1000, menu);
   list->Show();
   
-  REQUIRE(!frame()->open_file(get_testpath("test.h"))); // as we have no focused stc
+  REQUIRE(!frame()->open_file(wex::test::get_path("test.h"))); // as we have no focused stc
   REQUIRE( frame()->file_history().
     get_history_file().data().string().find("../test.h") == std::string::npos);
 
@@ -37,7 +37,7 @@ TEST_CASE("wex::history_frame")
   REQUIRE(!frame()->find_in_files({}, wex::ID_TOOL_REPORT_FIND, false));
 
   REQUIRE(!frame()->find_in_files(
-    {get_testpath("test.h").data().string()}, wex::ID_TOOL_REPORT_FIND, false));
+    {wex::test::get_path("test.h").data().string()}, wex::ID_TOOL_REPORT_FIND, false));
 
   // frame()->find_in_files_dialog(ID_TOOL_REPORT_FIND);
   REQUIRE(!frame()->find_in_files_title(wex::ID_TOOL_REPORT_FIND).empty());
@@ -61,7 +61,7 @@ TEST_CASE("wex::history_frame")
   frame()->set_recent_project("xxx.prj");
   REQUIRE( frame()->get_project_history().get_history_file().data().empty());
 
-  frame()->set_recent_file(get_testpath("test.h"));
+  frame()->set_recent_file(wex::test::get_path("test.h"));
 
   for (auto id : std::vector<int> {
     wex::ID_CLEAR_PROJECTS, wex::ID_PROJECT_SAVE, wex::ID_TOOL_REPORT_FIND, wex::ID_TOOL_REPLACE}) 
