@@ -29,7 +29,7 @@ namespace wex::report
     static listview_data::type_t type_tool(const tool& tool);
   protected:
     virtual void build_popup_menu(menu& menu) override;
-    frame* frame() {return m_Frame;};
+    frame* get_frame() {return m_Frame;};
   private:
     const listview_data::menu_t m_MenuFlags;
     class frame* m_Frame;

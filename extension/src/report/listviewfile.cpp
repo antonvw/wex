@@ -186,7 +186,7 @@ bool wex::report::file::do_file_load(bool synced)
     log::status(log::status_t().set(log::STAT_SYNC).set(log::STAT_FULLPATH)) << get_filename();
   }
 
-  frame()->set_recent_project(get_filename());
+  get_frame()->set_recent_project(get_filename());
   
 #ifdef FIX__WXMSW__ 
     });
