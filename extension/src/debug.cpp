@@ -69,16 +69,16 @@ wex::debug::debug(wex::managed_frame* frame, wex::process* debug)
   : m_Frame(frame)
   , m_Process(debug)
 {
-  if (std::vector< wex::menu_commands<wex::menu_command>> entries;
-    wex::menus::load("debug", entries))
-  {
-    const size_t use = config("DEBUG").get((long)0);
-    m_Entry = entries[use < entries.size() ? use: 0];
-  }
+  set_entry(config("debugger").get());
 }
   
 int wex::debug::add_menu(wex::menu* menu, bool popup) const
 {
+  if (popup && m_Process == nullptr)
+  {
+    return 0;
+  }
+  
   wex::menu* sub = (popup ? new wex::menu: nullptr);
   wex::menu* use = (popup ? sub: menu);
   
@@ -94,7 +94,7 @@ int wex::debug::add_menu(wex::menu* menu, bool popup) const
   return ret;
 }
   
-bool wex::debug::DeleteAllBreakpoints(const std::string& text)
+bool wex::debug::clear_breakpoints(const std::string& text)
 {
   if (std::vector<std::string> v;
     wex::match("(d|del|delete|Delete) (all )?breakpoints", text, v) >= 1)
@@ -118,27 +118,37 @@ bool wex::debug::DeleteAllBreakpoints(const std::string& text)
   
 bool wex::debug::execute(const std::string& action, wex::stc* stc)
 {
-  std::string args;
+  const std::string exe(
+    m_Entry.name() + 
+          (!m_Entry.flags().empty() ? 
+             std::string(1, ' ') + m_Entry.flags(): std::string()));
 
-  if (!GetArgs(action, args, stc) ||
+  if (const auto & [r, args] = get_args(action, stc);
+    (!r ||
      (m_Process == nullptr &&
-     (m_Process = m_Frame->get_process(m_Entry.name())) == nullptr))
-     return false;
-
-  m_Frame->show_pane("PROCESS"); 
-
-  if (!m_Process->is_running())
+     (m_Process = m_Frame->get_process(exe)) == nullptr)))
   {
-    m_Process->execute(m_Entry.name());
+     return false;
   }
+  else
+  {
+    m_Frame->show_pane("PROCESS"); 
+    
+    if (!m_Process->is_running())
+    {
+      m_Process->execute(exe);
+    }
 
-  return m_Process->write(action == "interrupt" ?
-    std::string(1, 3) : action + args);
+    return m_Process->write(action == "interrupt" ?
+      std::string(1, 3) : action + args);
+  }
 }
 
-bool wex::debug::GetArgs(
-  const std::string& command, std::string& args, stc* stc)
+std::tuple<bool, std::string> wex::debug::get_args(
+  const std::string& command, stc* stc)
 {
+  std::string args;
+
   if (std::vector<std::string> v;
     match("^(at|attach)", command, v) == 1)
   {
@@ -167,22 +177,23 @@ bool wex::debug::GetArgs(
       window_data().title("Attach").size({400, 400}).parent(m_Frame));
     }
 
+#ifdef __WXGTK__
     if (lv != nullptr)
     {
-#ifdef __WXGTK__
       process_dir(lv, init).find_files();
-#endif
     }
+#endif
 
-    return m_Dialog->ShowModal() != wxID_CANCEL;
+    return {m_Dialog->ShowModal() != wxID_CANCEL, args};
   }
-  else if ((match("^(br|break)", command, v) == 1) && stc != nullptr)
+  else if ((match("^(b|break)", command, v) == 1) && stc != nullptr)
   {
     args += " " +
       stc->get_filename().data().string() + ":" + 
       std::to_string(stc->GetCurrentLine() + 1); 
   }
-  else if ((match("^(d|del|delete) (br|breakpoint)", command, v) > 0) && stc != nullptr)
+  else if ((match("^(d|del|delete) (br|breakpoint)", command, v) > 0) && 
+    stc != nullptr)
   {
     for (auto& it: m_Breakpoints)
     {
@@ -197,16 +208,16 @@ bool wex::debug::GetArgs(
       }
     }
   }
-  else if (DeleteAllBreakpoints(command)) {}
+  else if (clear_breakpoints(command)) {}
   else if (command == "file")
   {
-    return item_dialog(
+    return {item_dialog(
       {{"File", item::COMBOBOX_FILE, std::any(), control_data().is_required(true),
           item::LABEL_LEFT,
           [&](wxWindow* user, const std::any& value, bool save) {
              if (save) args += " " + std::any_cast<wxArrayString>(value)[0];}},
        {m_Entry.name(), item::FILEPICKERCTRL}},
-      window_data().title("Debug").parent(m_Frame)).ShowModal() != wxID_CANCEL;
+      window_data().title("Debug").parent(m_Frame)).ShowModal() != wxID_CANCEL, args};
   }
   else if ((match("^(p|print)", command, v) == 1) && stc != nullptr)
   {
@@ -217,25 +228,46 @@ bool wex::debug::GetArgs(
     args += " " + std::to_string(stc->GetCurrentLine());
   }
   
-  return true;
+  return {true, args};
+}
+
+const std::string wex::debug::print(const std::string& variable)
+{
+  std::string content;
+  
+  if (!m_Process->write("print " + variable, &content))
+  {
+    return std::string();
+  }
+  
+  if (std::vector<std::string> v;
+    match("\\$[0-9]+ = (.*)", content, v) > 0)
+  {
+    return v[0];
+  }
+  
+  return std::string();
 }
 
 void wex::debug::process_stdin(const std::string& text)
 {
+  // parse delete a breakpoint with text, numbers
   if (std::vector<std::string> v;
     match("(d|del|delete) +([0-9 ]*)", text, v) > 0)
   {
     switch (v.size())
     {
       case 1:
-        DeleteAllBreakpoints(text);
+        clear_breakpoints(text);
       break;
 
       case 2:
         for (tokenizer tkz(v[1], " "); tkz.has_more_tokens(); )
         {
-          if (const auto& it = m_Breakpoints.find(tkz.get_next_token());
-            it != m_Breakpoints.end() && m_Frame->is_open(std::get<0>(it->second)))
+          if (
+            const auto& it = m_Breakpoints.find(tkz.get_next_token());
+            it != m_Breakpoints.end() && 
+            m_Frame->is_open(std::get<0>(it->second)))
           {
             auto* stc = m_Frame->open_file(std::get<0>(it->second));
             stc->MarkerDeleteHandle(std::get<1>(it->second));
@@ -250,13 +282,14 @@ void wex::debug::process_stdout(const std::string& text)
 {
   control_data data;
 
+  // parse set a breakpoint with no, file, line
   if (std::vector<std::string> v;
-    match("Breakpoint ([0-9]+) at 0x[0-9a-f]+: file (.*), line ([0-9]+)", text, v) == 3 || 
-    match("Breakpoint ([0-9]+) at 0x[0-9a-f]+: (.*):([0-9]+)", text, v) == 3)
+    match("Breakpoint ([0-9]+) at 0x[0-9a-f]+: file (.*), line ([0-9]+)", 
+      text, v) == 3 || 
+    match("Breakpoint ([0-9]+) at 0x[0-9a-f]+: (.*):([0-9]+)", text, v) ==3 ||
+    match("Breakpoint ([0-9]+): .* at (.*):([0-9]+)", text, v) == 3)
   {
-    wex::path filename(m_Path.get_path(), v[1]);
-  
-    if (filename.file_exists())
+    if (wex::path filename(m_Path.get_path(), v[1]); filename.file_exists())
     {
       if (auto* stc = m_Frame->open_file(filename); stc != nullptr)
       {
@@ -267,20 +300,27 @@ void wex::debug::process_stdout(const std::string& text)
       }
     }
   }
+  // parse a path
   else if (std::vector<std::string> v;
     match("Reading symbols from (.*)\\.\\.\\.done", text, v) == 1)
   {
     m_Path = path(v[0]);
   }
-  else if (DeleteAllBreakpoints(text)) {}
+  else if (clear_breakpoints(text)) {}
+  // parse a path and line
   else if (match("at (.*):([0-9]+)", text, v) > 1)
   {
     m_Path = path(m_Path.get_path(), v[0]);
     data.line(std::stoi(v[1]));
   }
-  else if (match("(^|\\n)([0-9]+)", text, v) > 1)
+  // parse a line
+  else if (m_Entry.name() == "gdb" && match("(^|\\n)([0-9]+)", text, v) > 1)
   {
     data.line(std::stoi(v[1]));
+  }
+  else if (match("'(.*)'", text, v) == 1)
+  {
+    m_Path = path(v[0]);
   }
 
   if (data.line() > 0 && m_Path.file_exists())
@@ -288,4 +328,85 @@ void wex::debug::process_stdout(const std::string& text)
     m_Frame->open_file(m_Path, data);
     m_Process->get_shell()->SetFocus();
   }
+}
+
+bool wex::debug::set_entry(const std::string& debugger)
+{
+  if (std::vector< wex::debug_entry > v; menus::load("debug", v))
+  {
+    if (debugger.empty())
+    {
+       m_Entry = v[0];
+    }
+    else
+    {
+      bool found = false;
+
+      for (const auto & it : v)
+      {
+        if (it.name() == debugger)
+        {
+           m_Entry = it;
+           found = true;
+           break;
+        }
+      }
+
+      if (!found)
+      {
+        log("unknown debugger") << debugger;
+      }
+    }
+
+    log::verbose("debug entries") << v.size() << "debugger:" <<
+      m_Entry.name();
+  
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+bool wex::debug::show_dialog(frame* parent)
+{
+  wxArrayString s;
+  std::vector< wex::debug_entry > v; 
+  menus::load("debug", v);
+      
+  auto debugger = m_Entry.name();
+  
+  for (const auto & it : v)
+  {
+    s.Add(it.name());
+  }
+  
+  if (!single_choice_dialog(
+    parent, _("Enter Debugger"), s, debugger)) return false;
+  
+  config("debugger").set(debugger);
+  
+  set_entry(debugger);
+  
+  return true;
+}
+
+void wex::debug::toggle_breakpoint(int line, stc* stc)
+{
+  for (auto& it: m_Breakpoints)
+  {
+    if (
+      line == std::get<2>(it.second) &&
+      std::get<0>(it.second) == stc->get_filename().data().string())
+    {
+      m_Process->write(m_Entry.break_del() + " " + it.first);
+      stc->MarkerDeleteHandle(std::get<1>(it.second));
+      m_Breakpoints.erase(it.first);
+      return;
+    }
+  }
+
+  m_Process->write(m_Entry.break_set() + " " +
+    stc->get_filename().data().string() + ":" + std::to_string(line + 1));
 }

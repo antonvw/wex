@@ -81,6 +81,7 @@ wex::stc::stc(const path& filename, const stc_data& data)
 
   SetMarginMask(m_MarginFoldingNumber, wxSTC_MASK_FOLDERS);
 
+  SetMarginSensitive(m_MarginDividerNumber, true);
   SetMarginSensitive(m_MarginFoldingNumber, true);
   SetMarginSensitive(m_MarginTextNumber, true);
 
@@ -368,7 +369,7 @@ bool wex::stc::link_open(link_t mode, std::string* filename)
     {
       if (!mode[LINK_CHECK]) 
       {
-        path.open_mime();
+        return path.open_mime();
       }
 
       return true;

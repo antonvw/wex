@@ -109,18 +109,15 @@ TEST_CASE("wex")
   SUBCASE("wex::combobox_as")
   {
     wxComboBox* cb = new wxComboBox(frame(), wxID_ANY);
-#ifndef __WXOSX__
     wex::test::add_pane(frame(), cb);
-#endif
     wex::combobox_as<const std::list < std::string >>(cb, l);
   }
   
   SUBCASE("wex::combobox_from_list")
   {
     wxComboBox* cb = new wxComboBox(frame(), wxID_ANY);
-#ifndef __WXOSX__
     wex::test::add_pane(frame(), cb);
-#endif
+
     wex::combobox_from_list(cb, l);
     REQUIRE( cb->GetCount() == 3);
   }
@@ -340,7 +337,6 @@ TEST_CASE("wex")
   }
 
 #ifdef __UNIX__
-#ifndef __WXOSX__
   SUBCASE("wex::shell_expansion")
   {
     std::string command("xxx `pwd` `pwd`");
@@ -353,7 +349,6 @@ TEST_CASE("wex")
     REQUIRE(!wex::shell_expansion(command));
     REQUIRE( command == "illegal process `xyz`");
   }
-#endif
 #endif
   
   SUBCASE("wex::sort")

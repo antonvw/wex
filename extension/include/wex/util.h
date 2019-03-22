@@ -317,6 +317,13 @@ namespace wex
     SKIP_RIGHT = 2, ///< skip space at right
   };
     
+  /// Presents a dialog to choose one string out of an array.
+  bool single_choice_dialog(
+    wxWindow* parent, 
+    const std::string& title, 
+    const wxArrayString& s, 
+    std::string& selection);
+  
   typedef std::bitset<3> skip_t;
   
   /// Returns a string without all white space in specified input.

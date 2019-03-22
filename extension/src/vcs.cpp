@@ -298,6 +298,8 @@ bool wex::vcs::load_document()
   
   if (!menus::load("vcs", m_Entries)) return false;
 
+  log::verbose("vcs entries") << m_Entries.size();
+  
   if (old_entries == 0)
   {
     // Add default VCS.

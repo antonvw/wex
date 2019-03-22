@@ -7,13 +7,11 @@
 
 #include <wex/vcsentry.h>
 #include <wex/config.h>
-#include <wex/defs.h> // for VCS_MAX_COMMANDS
 #include <wex/menu.h>
 #include <wex/menus.h>
 #include <wex/shell.h>
 #include <wex/tokenizer.h>
 #include <wex/util.h>
-#include <wex/vcsentry.h>
 
 wex::vcs_entry::vcs_entry(
   const std::string& name,

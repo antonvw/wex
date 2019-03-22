@@ -274,9 +274,11 @@ frame::frame(app* app)
 
     if (event.CanVeto())
     {
-      if ((m_Process->is_running() && m_Process->get_command_executed() != "gdb") || 
+      if (
+         m_Process->is_running() ||
         !m_Editors->for_each<wex::stc>(wex::ID_ALL_CLOSE) || 
-        (m_Projects != nullptr && !m_Projects->for_each<wex::report::file>(wex::ID_ALL_CLOSE)))
+        (m_Projects != nullptr &&
+        !m_Projects->for_each<wex::report::file>(wex::ID_ALL_CLOSE)))
       {
         event.Veto();
         if (m_Process->is_running())
@@ -578,12 +580,18 @@ frame::frame(app* app)
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Check(manager().GetPane("FILES").IsShown());}, ID_VIEW_FILES);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    event.Check(m_History != nullptr && manager().GetPane("HISTORY").IsShown());}, ID_VIEW_HISTORY);
+    event.Check(m_History != nullptr && manager().GetPane("HISTORY").IsShown());}, 
+    ID_VIEW_HISTORY);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Check(manager().GetPane("OUTPUT").IsShown());}, ID_VIEW_OUTPUT);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    event.Check(m_Projects != nullptr && manager().GetPane("PROJECTS").IsShown());}, ID_VIEW_PROJECTS);
+    event.Check(m_Projects != nullptr && manager().GetPane("PROJECTS").IsShown());}, 
+    ID_VIEW_PROJECTS);
   
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Enable(get_debug()->process() != nullptr);}, 
+    wex::ID_EDIT_DEBUG_FIRST + 2, wex::ID_EDIT_DEBUG_LAST);
+    
   m_App->reset();
 }    
 
@@ -1333,7 +1341,19 @@ bool frame::save_current_page(const std::string& key)
 
 void frame::statusbar_clicked(const std::string& pane)
 {
-  if (pane == "PaneTheme")
+  if (pane == "PaneDBG")
+  {
+    if (get_debug()->show_dialog(this))
+    {
+      statustext(get_debug()->debug_entry().name(), "PaneDBG");
+    }
+  }
+  else if (pane == "PaneMacro")
+  {
+    if (auto* editor = get_stc(); editor != nullptr) 
+      editor->get_vi().get_macros().mode()->transition("@", &editor->get_vi(), true);
+  }
+  else if (pane == "PaneTheme")
   {
     if (wex::lexers::get()->show_theme_dialog(m_Editors))
     {
@@ -1346,11 +1366,6 @@ void frame::statusbar_clicked(const std::string& pane)
         
       statustext(wex::lexers::get()->theme(), "PaneTheme");
     }
-  }
-  else if (pane == "PaneMacro")
-  {
-    if (auto* editor = get_stc(); editor != nullptr) 
-      editor->get_vi().get_macros().mode()->transition("@", &editor->get_vi(), true);
   }
   else if (pane == "PaneVCS")
   {
@@ -1430,14 +1445,15 @@ void frame::statusbar_clicked_right(const std::string& pane)
           std::string()));
     }
   }
-  else if (pane == "PaneVCS")
+  else if (pane == "PaneDBG" || pane == "PaneVCS")
   {
     std::string match(get_statustext(pane));
 
     if (auto* stc = get_stc(); stc != nullptr)
     {
-      const wex::vcs vcs({stc->get_filename().data().string()});
-      match = vcs.entry().name();
+      match = (pane == "PaneVCS" ?
+        wex::vcs({stc->get_filename().data().string()}).entry().name():
+        wex::debug(this).debug_entry().name());
     }
 
     open_file(wex::menus::get_filename(), wex::control_data().find(match));

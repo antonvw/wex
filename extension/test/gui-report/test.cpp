@@ -41,9 +41,7 @@ TEST_CASE("wex::report")
     report));
   
 #ifdef __UNIX__    
-#ifndef __WXOSX__
   REQUIRE(report->GetItemCount() == 1);
-#endif
 #endif
   
   frd->set_find_string("Author:");
@@ -62,10 +60,8 @@ TEST_CASE("wex::report")
   REQUIRE(milli.count() < 1500);
 
 #ifdef __UNIX__
-#ifndef __WXOSX__
   // Each other file has one author (files.GetCount()), and the one that is already 
   // present on the list because of the first find_in_files.
   REQUIRE(report->GetItemCount() == files.size() + 2);
-#endif
 #endif
 }

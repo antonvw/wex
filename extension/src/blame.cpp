@@ -11,138 +11,44 @@
 
 namespace wex
 {
-  void build(std::string& text, const std::string& append)
+  void build(const std::string& key, std::string& text, const std::string& append)
   {
-    if (!text.empty()) 
+    if (config(key).get(true))
     {
-      text += " ";
+      if (!text.empty()) 
+      {
+        text += " ";
+      }
+      
+      text += append;
     }
-    
-    text += append;
-  };
-
-  const std::string from(
-    const blame::field& x, 
-    const blame::field& y, const std::string& text)
-  { 
-    const auto begin = x.pos(text);
-    const auto end = y.pos(text);
-
-    if (begin == std::string::npos && end == std::string::npos)
-    {
-      return std::string();  
-    }  
-    
-    const int xx = !x.is_number() ? 1: 0;
-    
-    if (begin + xx >= text.size())
-    {
-      return std::string();
-    }
-
-    return text.substr(begin + xx, end - begin - 1);
-  };
+  }
 }
   
-wex::blame::field::field(const std::string& value)
-  : m_value(value)
-{
-  try
-  {
-    m_number = std::stoi(value);
-  }
-  catch (std::exception& )
-  {
-    m_number = std::string::npos;
-  }
-}
-
-size_t wex::blame::field::pos(const std::string text) const
-{
-  return is_number() ? m_number: text.find(m_value);
-}
-
 wex::blame::blame(const pugi::xml_node& node)
-  : m_date_format(node.attribute("date-format").value())
+  : m_blame_format(node.attribute("blame-format").value())
+  , m_date_format(node.attribute("date-format").value())
   , m_date_print(node.attribute("date-print").as_uint())
-  , m_pos_author_begin(node.attribute("pos-author-begin").value())
-  , m_pos_begin(node.attribute("pos-begin").value())
-  , m_pos_end(node.attribute("pos-end").value())
-  , m_pos_id_begin(node.attribute("pos-id-begin").value())
-  , m_pos_id_end(node.attribute("pos-id-end").value())
 {
 }
   
 std::tuple <bool, const std::string, wex::lexers::margin_style_t> 
   wex::blame::get(const std::string& text) const
 {
-  if (const auto blame_text(from(m_pos_begin, m_pos_end, text)); blame_text.empty())
-  {
-    return {false, std::string(), lexers::MARGIN_STYLE_OTHER};
-  }
-  else
+  if (std::vector<std::string> v; match(m_blame_format, text, v) == 3)
   {
     std::string info;
   
-    if (config("blame_get_id").get(true))
-    {
-      build(info, get_id(blame_text));
-    }
-  
-    const auto date(get_date(blame_text));
-  
-    if (!date.empty() && config("blame_get_date").get(true))
-    {
-      build(info, date.substr(0, m_date_print));
-    }
+    build("blame_get_id", info, v[0]);
+    build("blame_get_author", info, v[1]);
+    build("blame_get_date", info, v[2].substr(0, m_date_print));
 
-    if (config("blame_get_author").get(true))
-    {
-      build(info, get_author(blame_text));
-    }
-    
-    if (info.empty())
-    {
-      info = " ";
-    }
-  
-    return {true, info, get_style(date)};
+    return {true, info.empty() ? " ": info, get_style(v[2])};
   }
-}
-
-const std::string wex::blame::get_author(const std::string& text) const
-{
-  const std::string search(from(m_pos_author_begin, m_pos_end, text));
-
-  if (std::vector<std::string> v;
-    match("([a-zA-Z ]+)", search, v) > 0)
-  {
-    return skip_white_space(v[0]);
-  }
-
-  log("author") << search;
   
-  return std::string();
+  return {false, std::string(), lexers::MARGIN_STYLE_OTHER};
 }
 
-const std::string wex::blame::get_date(const std::string& text) const
-{
-  if (std::vector<std::string> v;
-    match("([0-9]{2,4}.[0-9]{2}.[0-9]{2}.[0-9:]{8})", text, v) > 0)
-  {
-    return v[0];
-  }
-
-  log("date") << text;
-  
-  return std::string();
-}
-
-const std::string wex::blame::get_id(const std::string& text) const
-{
-  return from(m_pos_id_begin, m_pos_id_end, text);
-}
-      
 wex::lexers::margin_style_t wex::blame::get_style(const std::string& text) const
 {
   lexers::margin_style_t style = lexers::MARGIN_STYLE_UNKNOWN;
@@ -191,9 +97,4 @@ wex::lexers::margin_style_t wex::blame::get_style(const std::string& text) const
   }
         
   return style;
-}
-
-bool wex::blame::use() const 
-{
-  return !m_pos_begin.value().empty();
 }

@@ -2,7 +2,7 @@
 // Name:      debug.h
 // Purpose:   Declaration of class wex::debug
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,9 +10,8 @@
 #include <map>
 #include <string>
 #include <tuple>
+#include <wex/debug-entry.h>
 #include <wex/marker.h>
-#include <wex/menucommand.h>
-#include <wex/menucommands.h>
 #include <wex/path.h>
 
 namespace wex
@@ -39,6 +38,9 @@ namespace wex
     /// Returns brekpoints.
     auto & breakpoints() {return m_Breakpoints;};
     
+    /// Returns current entry.
+    const auto & debug_entry() const {return m_Entry;};
+    
     /// Executes the item action using the current debug process,
     /// if there is not yet a debug process, invokes frame::Process
     /// to allow derived classed to provide one,
@@ -54,7 +56,10 @@ namespace wex
 
     /// Returns marker for brekpoint.
     const auto & marker_breakpoint() const {return m_MarkerBreakpoint;};
-
+    
+    /// Prints contens of variable.
+    const std::string print(const std::string& variable);
+    
     /// Returns process.
     auto * process() {return m_Process;};
 
@@ -63,10 +68,17 @@ namespace wex
     
     /// Handles stdout from process.
     void process_stdout(const std::string& text);
+    
+    /// Shows dialog to select debug entry.
+    bool show_dialog(frame* parent);
+
+    /// Toggles breakpoint on line.
+    void toggle_breakpoint(int line, stc* stc);
   private:
-    bool DeleteAllBreakpoints(const std::string& text);
-    bool GetArgs(
-      const std::string& command, std::string& args, stc* stc);
+    bool clear_breakpoints(const std::string& text);
+    std::tuple<bool, std::string> get_args(
+      const std::string& command, stc* stc);
+    bool set_entry(const std::string& debugger);
 
     /// Marker for a breakpoint.
     const marker m_MarkerBreakpoint = wex::marker(2);
@@ -79,7 +91,7 @@ namespace wex
     static inline item_dialog* m_Dialog = nullptr;  
     path m_Path;
     managed_frame* m_Frame;
-    menu_commands< menu_command> m_Entry;
+    wex::debug_entry m_Entry;
     wex::process* m_Process {nullptr};
   };
 };

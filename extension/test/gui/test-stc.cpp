@@ -2,7 +2,7 @@
 // Name:      test-stc.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -204,12 +204,9 @@ TEST_CASE("wex::stc")
     REQUIRE(!stc->auto_indentation('x'));
     REQUIRE( stc->GetText() == "  \n  line with indentation");
     REQUIRE( stc->GetLineCount() == 2);
-#ifdef __WXOSX__
     stc->SetEOLMode(wxSTC_EOL_CR);
-    REQUIRE( stc->auto_indentation('\r'));
-#else
-    REQUIRE( stc->auto_indentation('\n'));
-#endif
+    REQUIRE( stc->auto_indentation(stc->eol().front()));
+
     // the \n is not added, but indentation does
     REQUIRE( stc->GetText() == "  \n  line with indentation");
     REQUIRE( stc->GetLineCount() == 2);

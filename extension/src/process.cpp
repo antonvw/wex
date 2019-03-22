@@ -51,23 +51,23 @@ namespace wex
     process_imp(process* process)
       : wxProcess(wxPROCESS_REDIRECT) 
       , m_process(process)
-      , m_debug(process->get_command_executed() == "gdb")
       , m_timer(std::make_unique<wxTimer>(this)) {
       Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {read();});};
     virtual ~process_imp() {
       m_timer.reset();};
 
     bool execute(const std::string& path);
+    bool is_debug() const {return m_debug;};
     bool kill(int sig);
-    void read();
-    void write(const std::string& text);
+    void read(std::string* stdout = nullptr);
+    void write(const std::string& text, std::string* stdout);
   private:
     virtual void OnTerminate(int pid, int status) override {
       m_timer->Stop();
       read();
       m_process->is_finished(pid);};
     
-    const bool m_debug;
+    bool m_debug {false};
     std::string m_stdin;
     process* m_process;
     std::unique_ptr<wxTimer> m_timer;
@@ -238,6 +238,11 @@ bool wex::process::execute(
   return !error;
 }
 
+bool wex::process::is_debug() const
+{
+  return m_process->is_debug();
+}
+  
 void wex::process::is_finished(int pid)
 {
   log::verbose("process", 1) << pid << "exit";
@@ -285,7 +290,7 @@ void wex::process::show_output(const std::string& caption) const
   }
 }
 
-bool wex::process::write(const std::string& text)
+bool wex::process::write(const std::string& text, std::string* stdout)
 {
   if (!is_running()) 
   {
@@ -293,7 +298,7 @@ bool wex::process::write(const std::string& text)
     return false;
   }
   
-  m_process->write(text);
+  m_process->write(text, stdout);
   
   if (!is_running())
   {
@@ -315,7 +320,12 @@ bool wex::process_imp::execute(const std::string& path)
     return false;
   }
   
-  log::verbose("process", 1) << GetPid() << "exec no wait:" << m_process->get_command_executed();
+  m_debug = m_process->get_frame()->get_debug()->debug_entry().name()
+    == before(m_process->get_command_executed(), ' ');
+
+  log::verbose("process", 1) 
+    << GetPid() 
+    << "exec no wait:" << m_process->get_command_executed();
 
   show_process(m_process->get_frame(), true);
   m_timer->Start(100); // milliseconds
@@ -334,7 +344,7 @@ bool wex::process_imp::kill(int sig)
   return true;
 }
 
-void wex::process_imp::read()
+void wex::process_imp::read(std::string* stdout)
 {
   wxCriticalSectionLocker lock(m_critical);
   
@@ -344,15 +354,22 @@ void wex::process_imp::read()
   
   if (!text.empty())
   {
-    m_process->get_shell()->AppendText(
-      // prevent echo of last input
-      !m_stdin.empty() && text.find(m_stdin) == 0 ?
-        text.substr(m_stdin.length()):
-        text);
-    
-    if (m_debug && m_process->get_frame() != nullptr)
+    if (stdout == nullptr)
     {
-      m_process->get_frame()->get_debug()->process_stdout(text);
+      m_process->get_shell()->AppendText(
+        // prevent echo of last input
+        !m_stdin.empty() && text.find(m_stdin) == 0 ?
+          text.substr(m_stdin.length()):
+          text);
+      
+      if (m_debug && m_process->get_frame() != nullptr)
+      {
+        m_process->get_frame()->get_debug()->process_stdout(text);
+      }
+    }
+    else
+    {
+      *stdout = text;
     }
   }
     
@@ -390,7 +407,7 @@ void handle_command(const std::string& command)
   }
 }
 
-void wex::process_imp::write(const std::string& text)
+void wex::process_imp::write(const std::string& text, std::string* stdout)
 {
   m_timer->Stop();
   
@@ -420,7 +437,8 @@ void wex::process_imp::write(const std::string& text)
     m_stdin = text;
     wxMilliSleep(10);
 
-    read();
+    read(stdout);
+
     m_timer->Start();
   }
 }

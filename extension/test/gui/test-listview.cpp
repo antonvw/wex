@@ -2,7 +2,7 @@
 // Name:      test-listview.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -88,7 +88,7 @@ TEST_CASE("wex::listview")
   lv->sort_column_reset();
   REQUIRE( lv->sorted_column_no() == -1);
   
-  lv->SetItem(0, 1, "incorrect date"); // return value on osx different from linux
+  lv->SetItem(0, 1, "incorrect date");
   REQUIRE( lv->sort_column("Date"));
   
   lv->set_item_image(0, wxART_WARNING);

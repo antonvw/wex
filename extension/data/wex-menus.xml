@@ -9,6 +9,12 @@ Copyright: (c) 2019 Anton van Wezenbeek
 
 <menus>
   <!--
+   Each <debug> has a name attribute (name of debugger used).
+   It can have a 
+   - 'break-set': command to set breakpoint
+   - 'flags': additional flags added to execute debugger
+   followed by a number of <commands>. 
+    
    Each <command> will be a menu item, the attribute type indicates
    how this item will be used:
      if type is 'popup' the item is only on the popup menu, 
@@ -22,7 +28,7 @@ Copyright: (c) 2019 Anton van Wezenbeek
    The latter is handled the same, but also used as command to execute.
    You can set an accelerator everywhere using an & char (&amp;).
    -->
-  <debug name="gdb">
+  <debug name="gdb" break-set="br">
     <commands>
       <command type="main ellipses" > file </command>
       <command type="main ellipses" > attach </command>
@@ -43,6 +49,26 @@ Copyright: (c) 2019 Anton van Wezenbeek
     </commands>
   </debug>
 
+  <debug name="lldb" break-set="b" break-del="breakpoint delete" flags="-X">
+    <commands>
+      <command type="main ellipses" > file </command>
+      <command type="main ellipses" > attach </command>
+      <command type="main separator" > detach </command>
+      <command type="main" > run </command>
+      <command type="main" > interrupt </command>
+      <command type="main separator" > continue </command>
+      <command type="main " > help </command>
+      <command type="popup" > next </command>
+      <command type="popup" > step </command>
+      <command type="popup separator" > until </command>
+      <command type="popup separator" > print </command>
+      <command type="popup" submenu = "break"> b </command>
+      <command type="popup separator" submenu = "break"> breakpoint delete</command>
+      <command type="popup" submenu = "break"> breakpoint clear</command>
+      <command type="popup" submenu = "break"> breakpoint list</command>
+    </commands>
+  </debug>
+  
   <!--
    Each <vcs> has a name attribute (name of vcs used),
    an admin-dir attribute (where admin dir is located),
@@ -57,16 +83,13 @@ Copyright: (c) 2019 Anton van Wezenbeek
 
    You can also configure the text margin for blame info. 
    Default blame is shown in a separate window, but when 
-   supplying a pos-begin it is shown on the text margin.
-   - By supplying a pos-begin and pos-end you can configure
-     which positions to use to for the blame info in 
-     the text margin. 
+   supplying a blame-format it is shown on the text margin.
+   - The blame-format should contain 3 regex groups to 
+     parse the id, author and date.
    - The date-format allows you to specify
      the date-time info in the blame info.
-   - The pos-author-begin determines on which position 
-     the author begins.
-   - The pos-id-begin and end determine the place of
-     the commit id.
+   - The date-print determines how many chars of the date-format
+     are shown in the margin.
    -->
   <vcs
     name="bazaar" 
@@ -104,13 +127,9 @@ Copyright: (c) 2019 Anton van Wezenbeek
     name="git"
     admin-dir=".git"
     toplevel="true"
+    blame-format="(^[a-zA-Z0-9]+) .*\(([a-zA-Z ]+)\s+([0-9]{2,4}.[0-9]{2}.[0-9]{2}.[0-9:]{8})"
     date-format="%Y-%m-%d %H:%M:%S"
-    date-print="10"
-    pos-begin="0" 
-    pos-end="+"
-    pos-author-begin="("
-    pos-id-begin="0"
-    pos-id-end=" ">
+    date-print="10">
 
     <commands>
       <command type="popup separator" flags="-w"> &amp;blame </command>

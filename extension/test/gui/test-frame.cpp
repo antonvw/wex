@@ -59,9 +59,6 @@ TEST_CASE("wex::frame")
   REQUIRE(!frame()->update_statusbar(frame()->get_stc(), "test"));
   REQUIRE(!frame()->update_statusbar(frame()->get_stc(), "Pane1"));
   REQUIRE(!frame()->update_statusbar(frame()->get_stc(), "Pane2"));
-#ifndef __WXOSX__
-  REQUIRE( frame()->update_statusbar(frame()->get_stc(), "PaneInfo"));
-#endif
   
   wex::stc* stc = new wex::stc();
   wex::test::add_pane(frame(), stc);

@@ -222,7 +222,10 @@ void wex::stc::BindAll()
       if (!link_open(link_t().set(LINK_OPEN_MIME)))
         event.Skip();
     }
-    else event.Skip();});
+    else 
+    {
+      event.Skip();
+    }});
   
   Bind(wxEVT_LEFT_UP, [=](wxMouseEvent& event) {
     properties_message();
@@ -231,7 +234,24 @@ void wex::stc::BindAll()
     m_AddingChars = false;
     m_FoldLevel = 
       (GetFoldLevel(GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK) 
-      - wxSTC_FOLDLEVELBASE;});
+      - wxSTC_FOLDLEVELBASE;
+      
+    if (
+      m_Frame->get_debug() != nullptr &&
+      m_Frame->get_debug()->process() != nullptr &&
+      m_Frame->get_debug()->process()->is_running())
+    {
+      const std::string word(get_word_at_pos(GetCurrentPos()));
+      if (!word.empty())
+      {
+        const std::string var(m_Frame->get_debug()->print(word));
+        if (!var.empty())
+        {
+          SetToolTip(var);
+        }
+      }
+    }
+    });
   
   if (m_Data.menu().any())
   {
@@ -310,7 +330,7 @@ void wex::stc::BindAll()
       }
       m_MarginTextClick = -1;
     }
-    else
+    else if (event.GetMargin() == m_MarginTextNumber)
     {
       m_MarginTextClick = line;
         
@@ -328,6 +348,24 @@ void wex::stc::BindAll()
           log("margin") << vcs.entry().get_stderr();
         }
       }
+    }
+    else if (event.GetMargin() == m_MarginDividerNumber)
+    {
+      if (
+        m_Frame->get_debug() != nullptr &&
+        m_Frame->get_debug()->process() != nullptr &&
+        m_Frame->get_debug()->process()->is_running())
+      {
+        m_Frame->get_debug()->toggle_breakpoint(line, this);
+      }
+      else
+      {
+        event.Skip();
+      }
+    }
+    else
+    {
+      event.Skip();
     }});
 
   Bind(wxEVT_STC_MARGIN_RIGHT_CLICK, [=](wxStyledTextEvent& event) {

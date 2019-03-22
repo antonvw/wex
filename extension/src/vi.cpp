@@ -733,9 +733,9 @@ void wex::vi::command_calc(const std::string& command)
     }
     else
     {
-      const wxString msg(wxString::Format("%.*f", width, sum));
-      set_register_yank(msg.ToStdString());
-      frame()->show_ex_message(msg.ToStdString());
+      const std::string msg(wxString::Format("%.*f", width, sum));
+      set_register_yank(msg);
+      frame()->show_ex_message(msg);
     }
   }
 }
@@ -923,7 +923,7 @@ bool wex::vi::insert_mode(const std::string& command)
           }
           else
           {
-            wxString text;
+            std::string text;
             get_stc()->SetTargetStart(get_stc()->GetCurrentPos());
             REPEAT(text += rest;);
             get_stc()->SetTargetEnd(get_stc()->GetCurrentPos() + text.size());

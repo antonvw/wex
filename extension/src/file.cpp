@@ -20,18 +20,18 @@ namespace wex
     file_imp(
       const path& filename,
       std::ios_base::openmode mode = std::ios_base::in) 
-      : m_Path(filename)
-      , m_Stat(m_Path.data().string()) 
-      , m_fs(m_Path.data(), mode) {;};
+      : m_path(filename)
+      , m_stat(m_path.data().string()) 
+      , m_fs(m_path.data(), mode) {;};
     
     virtual ~file_imp() {;};
 
     void assign(const path& p) {
       close();
 
-      m_Path = p;
-      m_Stat.sync(m_Path.data().string());
-      m_fs = std::fstream(m_Path.data());};
+      m_path = p;
+      m_stat.sync(m_path.data().string());
+      m_fs = std::fstream(m_path.data());};
 
     bool close() {
       if (!m_fs.is_open()) return true;
@@ -45,29 +45,38 @@ namespace wex
       { 
         return true;
       }
-      if (m_Path != p)
+      if (m_path != p)
       {
         assign(p);
       }
-      m_fs.open(m_Path.data(), mode);
+      m_fs.open(m_path.data(), mode);
       return m_fs.is_open();};
 
-    auto & path() {return m_Path;};
+    auto & path() {return m_path;};
 
     const std::string* read(std::streampos seek_position) {
-      if ((m_Buffer.get() != nullptr && seek_position > 0) || 
-          (m_Buffer.get() != nullptr && m_fs.tellg() != seek_position))
+      if ((m_buffer.get() != nullptr && seek_position > 0) || 
+          (m_buffer.get() != nullptr && m_fs.tellg() != seek_position))
       {
         m_fs.seekg(seek_position);
       }
 
-      m_Buffer = std::make_unique<std::string> ();
-      m_Buffer->resize(path().stat().st_size - seek_position);
-      m_fs.read(m_Buffer->data(), m_Buffer->size());
+      m_buffer = std::make_unique<std::string> ();
 
-      return m_Buffer.get();};
+#ifndef __WXMSW__      
+      m_buffer->resize(path().stat().st_size - seek_position);
+      m_fs.read(m_buffer->data(), m_buffer->size());
+#else      
+      char c;
+      while (m_fs.get(c))
+      { 
+        m_Buffer->push_back(c);
+      }
+#endif
+
+      return m_buffer.get();};
       
-    auto & stat() {return m_Stat;};
+    auto & stat() {return m_stat;};
 
     auto & stream() const {return m_fs;};
 
@@ -76,10 +85,10 @@ namespace wex
       m_fs.write(c, s);
       return m_fs.good();};
   private:
-    wex::path m_Path;
-    file_stat m_Stat; // used to check for sync
+    wex::path m_path;
+    file_stat m_stat; // used to check for sync
     std::fstream m_fs;
-    std::unique_ptr<std::string> m_Buffer;
+    std::unique_ptr<std::string> m_buffer;
   };
 };
 

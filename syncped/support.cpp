@@ -52,6 +52,7 @@ decorated_frame::decorated_frame(app* app)
     {"PaneLexer", lexer_size, _("Lexer").ToStdString()},
     {"PaneTheme", lexer_size, _("Theme").ToStdString()},
     {"PaneVCS", 150},
+    {"PaneDBG", 50},
     {"PaneMacro", 75},
     {"PaneMode", 100}});
   
@@ -202,6 +203,14 @@ decorated_frame::decorated_frame(app* app)
       menuDebug = nullptr;
       wex::log() << "no debug menu present";
     }
+    else
+    {
+      statustext(get_debug()->debug_entry().name(), "PaneDBG");
+    }
+  }
+  else
+  {
+    m_StatusBar->show_field("PaneDBG", false);
   }
 
   auto* menuOptions = new wex::menu();

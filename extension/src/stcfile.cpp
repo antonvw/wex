@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      stc_file.cpp
+// Name:      stcfile.cpp
 // Purpose:   Implementation of class wex::stc_file
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2019 Anton van Wezenbeek
@@ -95,7 +95,8 @@ void wex::stc_file::do_file_save(bool save_as)
   }
   else
   {
-    write(m_STC->GetTextRaw().data(), m_STC->GetTextRaw().length());
+    const auto& buffer(m_STC->GetTextRaw());
+    write(buffer.data(), buffer.length());
   }
   
   if (save_as)

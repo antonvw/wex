@@ -82,6 +82,9 @@ namespace wex
     /// Returns the stdout.
     const auto & get_stdout() const {return m_stdout;};
     
+    /// Is this a debug process.
+    bool is_debug() const;
+    
     /// Callback for finished pid.
     void is_finished(int pid);
     
@@ -101,7 +104,10 @@ namespace wex
     virtual void show_output(const std::string& caption = std::string()) const;
 
     /// Writes text to stdin of process.
-    bool write(const std::string& text);
+    /// Default the stdout is collected in the shell,
+    /// but if you specify a string pointer, the stdout is 
+    /// put into the string.
+    bool write(const std::string& text, std::string* stdout = nullptr);
   private:
     std::string m_command, m_stderr, m_stdout;
     static std::string m_working_dir_key;

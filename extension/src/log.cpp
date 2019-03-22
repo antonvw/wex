@@ -220,8 +220,6 @@ void wex::log::init(int argc, char** argv)
         {
           error = true;
         }
-
-        i++;
       }
     }
 

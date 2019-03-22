@@ -196,9 +196,7 @@ TEST_CASE("wex::vi")
   REQUIRE( vi->on_key_down(event));
   REQUIRE(!vi->on_char(event));
   ChangeMode( vi, ESC, wex::vi_mode::state_t::NORMAL);
-#ifndef __WXOSX__  
-  REQUIRE( wxString(vi->inserted_text()).Contains("\n"));
-#endif
+  REQUIRE( wxString(vi->inserted_text()).Contains(vi->get_stc()->eol()));
   
   // Test abbreviate.
   for (auto& abbrev : get_abbreviations())

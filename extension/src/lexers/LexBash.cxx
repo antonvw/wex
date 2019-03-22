@@ -27,6 +27,8 @@
 #include "CharacterSet.h"
 #include "LexerModule.h"
 
+#include <regex>
+
 #ifdef SCI_NAMESPACE
 using namespace Scintilla;
 #endif
@@ -904,31 +906,111 @@ LexerModule lmBash(SCLEX_BASH, ColouriseBashDoc, "bash", FoldBashDoc, bashWordLi
 
 // should be part of interface
 #define SCE_SH_TESTCASE      SCE_SH_HERE_DELIM // i.e. testcase in lexers.xml
+#define SCE_SH_WORD2         SCE_SH_HERE_Q
 
-static void ColouriseRFWDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
+void parseKeyword(
+  const CharacterSet& setWord, 
+  const WordList& cmdDelimiter,
+  WordList* keywordlists[],
+  StyleContext& sc, 
+  int cmdState, 
+  int& cmdStateNew)
+{
+  const WordList& keywords1 = *keywordlists[0];
+  const WordList& keywords2 = *keywordlists[1];
+  
+  WordList rfwStruct;
+  rfwStruct.Set("");
+  
+  WordList rfwStruct_in;
+  rfwStruct_in.Set(":FOR FOR");
+  
+  // "." never used in RFW variable names but used in file names
+  if (!setWord.Contains(sc.ch)) 
+  {
+    char s[500];
+    char s2[10];
+    sc.GetCurrent(s, sizeof(s));
+
+    // allow keywords ending in a whitespace or command delimiter
+    s2[0] = static_cast<char>(sc.ch);
+    s2[1] = '\0';
+
+    const bool keywordEnds = IsASpace(sc.ch) || cmdDelimiter.InList(s2);
+
+    // 'IN' may be construct keywords
+    if (cmdState == BASH_CMD_WORD && cmdStateNew != RFW_CMD_SKW_PARTIAL) 
+    {
+      if (strcmp(s, "IN") == 0 && keywordEnds)
+        cmdStateNew = BASH_CMD_BODY;
+      else
+        sc.ChangeState(SCE_SH_IDENTIFIER);
+
+      sc.SetState(SCE_SH_DEFAULT);
+      return;
+    }
+
+    // detect rfw construct keywords
+    if (rfwStruct.InList(s))
+    {
+      if (cmdState == BASH_CMD_START && keywordEnds)
+        cmdStateNew = BASH_CMD_START;
+      else if (cmdStateNew != RFW_CMD_SKW_PARTIAL)
+        sc.ChangeState(SCE_SH_IDENTIFIER);
+    }
+    // ':FOR' needs 'IN' to be highlighted later
+    else if (rfwStruct_in.InList(s)) 
+    {
+      if (cmdState == BASH_CMD_START && keywordEnds)
+        cmdStateNew = BASH_CMD_WORD;
+      else if (cmdStateNew != RFW_CMD_SKW_PARTIAL)
+        sc.ChangeState(SCE_SH_IDENTIFIER);
+    }
+    // disambiguate option items and file test operators
+    else if (s[0] == '-') 
+    {
+      if (cmdState != BASH_CMD_TEST && 
+          cmdStateNew != RFW_CMD_SKW_PARTIAL)
+        sc.ChangeState(SCE_SH_IDENTIFIER);
+    }
+    // disambiguate keywords and identifiers
+    else if (
+      cmdState != BASH_CMD_START || 
+      !((keywords1.InList(s) || keywords2.InList(s)) && keywordEnds))
+    {
+      if (cmdStateNew != RFW_CMD_SKW_PARTIAL)
+        sc.ChangeState(SCE_SH_IDENTIFIER);
+    }
+
+    if (cmdStateNew != RFW_CMD_SKW_PARTIAL)
+      sc.SetState(SCE_SH_DEFAULT);
+  }
+};
+
+static void ColouriseRFWDoc(
+  Sci_PositionU startPos, Sci_Position length, int initStyle,
   WordList *keywordlists[], Accessor &styler)
 {
-  WordList &keywords = *keywordlists[0];
-  WordList cmdDelimiter, rfwStruct, rfwStruct_in;
+  WordList cmdDelimiter;
   cmdDelimiter.Set("| || |& & && ; ;; ( ) { }");
-  rfwStruct.Set("");
-  rfwStruct_in.Set(":FOR");
-  std::vector<std::string> rfwStructSpaced;
-  rfwStructSpaced.push_back("Suite Setup");
-  rfwStructSpaced.push_back("*Test Case*");
-  rfwStructSpaced.push_back("*Test Cases*");
-  rfwStructSpaced.push_back("Test Setup");
 
-  CharacterSet setWordStart(CharacterSet::setAlpha, ":_[*");
-  CharacterSet setWordStartTSV(CharacterSet::setAlphaNum, ":_[*");
+  const std::vector<std::pair<std::string, bool>> spacedKeyword
+  {
+    {"IN RANGE", false}, 
+    {"Suite Setup", false}, 
+    {"*Test Cases*", true}, 
+    {"Test Setup", false}
+  };
+
+  const CharacterSet setWordStart(CharacterSet::setAlpha, ":_[*");
+  const CharacterSet setWordStartTSV(CharacterSet::setAlphaNum, ":_[*");
   // note that [+-] are often parts of identifiers in shell scripts
-  CharacterSet setWord(CharacterSet::setAlphaNum, "._+-]*");
-  CharacterSet setMetaCharacter(CharacterSet::setNone, "|&;()<> \t\r\n");
-  setMetaCharacter.Add(0);
-  CharacterSet setRFWOperator(CharacterSet::setNone, "^&%()-+={};>,/<?!.~@");
-  CharacterSet setSingleCharOp(CharacterSet::setNone, "rwxoRWXOezsfdlpSbctugkTBMACahGLNn");
-  CharacterSet setParam(CharacterSet::setAlphaNum, "$@_");
-  CharacterSet setLeftShift(CharacterSet::setDigits, "$");
+  const CharacterSet setWord(CharacterSet::setAlphaNum, "._+-]*");
+  const CharacterSet setMetaCharacter(CharacterSet::setNone, "|&;()<> \t\r\n");
+  const CharacterSet setRFWOperator(CharacterSet::setNone, "^&%()-+={};>,/<?!.~@");
+  const CharacterSet setSingleCharOp(CharacterSet::setNone, "rwxoRWXOezsfdlpSbctugkTBMACahGLNn");
+  const CharacterSet setParam(CharacterSet::setAlphaNum, "$@_");
+  const CharacterSet setLeftShift(CharacterSet::setDigits, "$");
 
   QuoteCls quote;
   QuoteStackCls quoteStack;
@@ -946,28 +1028,37 @@ static void ColouriseRFWDoc(Sci_PositionU startPos, Sci_Position length, int ini
 
   StyleContext sc(startPos, endPos - startPos, initStyle, styler);
 
-  for (; sc.More(); sc.Forward()) {
+  for (; sc.More(); sc.Forward()) 
+  {
     if (sc.ch == '|') 
     {
       pipes = true;
     }
 
     // handle line continuation, updates per-line stored state
-    if (sc.atLineStart) {
+    if (sc.atLineStart) 
+    {
       ln = styler.GetLine(sc.currentPos);
       if (sc.state == SCE_SH_STRING
        || sc.state == SCE_SH_BACKTICKS
        || sc.state == SCE_SH_CHARACTER
        || sc.state == SCE_SH_COMMENTLINE
-       || sc.state == SCE_SH_PARAM) {
+       || sc.state == SCE_SH_PARAM) 
+      {
         // force backtrack while retaining cmdState
         styler.SetLineState(ln, BASH_CMD_BODY);
-      } else {
-        if (ln > 0) {
-          if ((sc.GetRelative(-3) == '\\' && sc.GetRelative(-2) == '\r' && sc.chPrev == '\n')
-           || sc.GetRelative(-2) == '\\') {  // handle '\' line continuation
+      } 
+      else 
+      {
+        if (ln > 0) 
+        {
+          if ((sc.GetRelative(-3) == '\\' && 
+               sc.GetRelative(-2) == '\r' && sc.chPrev == '\n')
+            || sc.GetRelative(-2) == '\\') 
+          {  // handle '\' line continuation
             // retain last line's state
-          } else
+          } 
+          else
             cmdState = BASH_CMD_START;
         }
         styler.SetLineState(ln, cmdState);
@@ -978,25 +1069,31 @@ static void ColouriseRFWDoc(Sci_PositionU startPos, Sci_Position length, int ini
     // states BODY|TEST|ARITH persist until the end of a command segment
     // state WORD persist, but ends with 'in' or 'do' construct keywords
     int cmdStateNew = BASH_CMD_BODY;
-    if (cmdState == BASH_CMD_TEST || cmdState == BASH_CMD_ARITH || cmdState == BASH_CMD_WORD)
+    if (cmdState == BASH_CMD_TEST || 
+        cmdState == BASH_CMD_ARITH || 
+        cmdState == BASH_CMD_WORD)
       cmdStateNew = cmdState;
     int stylePrev = sc.state;
 
-    // detect rfw keywords including space
+    // detect spaced keywords
     words.append(1, sc.ch);
-    for (unsigned ki = 0; ki < rfwStructSpaced.size(); ki++)
+    for (unsigned ki = 0; ki < spacedKeyword.size(); ki++)
     {
-      if (std::equal(words.begin(), words.end(), rfwStructSpaced[ki].begin()))
+      if (std::equal(
+        words.begin(), 
+        words.end(), 
+        spacedKeyword[ki].first.begin()))
       {
-        if (words.size() == rfwStructSpaced[ki].size())
+        if (words.size() == spacedKeyword[ki].first.size())
         {
           sc.Forward();
           sc.SetState(SCE_SH_WORD);
           cmdStateNew = BASH_CMD_START;
-          if (words == "*Test Case" ||
-              words == "*Test Case*" ||
-              words == "*Test Cases" ||
-              words == "*Test Cases*") {
+
+          std::match_results<std::string::const_iterator> m;
+          std::string r("\\**Test Cases\\**");
+          if (std::regex_search(words, m, std::regex(r))) 
+          {
             testCaseSectionPos = sc.currentPos;
           }
           break;
@@ -1011,122 +1108,95 @@ static void ColouriseRFWDoc(Sci_PositionU startPos, Sci_Position length, int ini
     if (cmdStateNew != RFW_CMD_SKW_PARTIAL)
       words.clear();
 
-    if ((sc.chPrev == '|' && sc.ch == ' ') && cmdState != RFW_CMD_TESTCASE && cmdState != BASH_CMD_WORD) {
+    if ((sc.chPrev == '|' && sc.ch == ' ') && 
+         cmdState != RFW_CMD_TESTCASE && cmdState != BASH_CMD_WORD) 
+    {
       cmdState = BASH_CMD_START;
     }
 
     // Determine if the current state should terminate.
-    switch (sc.state) {
+    switch (sc.state) 
+    {
       case SCE_SH_OPERATOR:
         sc.SetState(SCE_SH_DEFAULT);
-        if (cmdState == BASH_CMD_DELIM)    // if command delimiter, start new command
+        if (cmdState == BASH_CMD_DELIM)  // if command delimiter, start new command
           cmdStateNew = BASH_CMD_START;
         else if (sc.chPrev == '\\')      // propagate command state if line continued
           cmdStateNew = cmdState;
         break;
       case SCE_SH_TESTCASE:
-        if (!setWord.Contains(sc.ch)) {
+        if (!setWord.Contains(sc.ch)) 
+        {
           cmdStateNew = BASH_CMD_START;
           sc.SetState(SCE_SH_DEFAULT);
         }
         break;
-      case SCE_SH_WORD:
-        // "." never used in RFW variable names but used in file names
-        if (!setWord.Contains(sc.ch)) {
-          char s[500];
-          char s2[10];
-          sc.GetCurrent(s, sizeof(s));
 
-          // allow keywords ending in a whitespace or command delimiter
-          s2[0] = static_cast<char>(sc.ch);
-          s2[1] = '\0';
-          bool keywordEnds = IsASpace(sc.ch) || cmdDelimiter.InList(s2);
-          // 'IN' may be construct keywords
-          if (cmdState == BASH_CMD_WORD && cmdStateNew != RFW_CMD_SKW_PARTIAL) {
-            if (strcmp(s, "IN") == 0 && keywordEnds)
-              cmdStateNew = BASH_CMD_BODY;
-            else
-              sc.ChangeState(SCE_SH_IDENTIFIER);
-            sc.SetState(SCE_SH_DEFAULT);
-            break;
-          }
-          // a 'test' keyword starts a test expression
-          if (strcmp(s, "test") == 0) {
-            if (cmdState == BASH_CMD_START && keywordEnds) {
-              cmdStateNew = BASH_CMD_TEST;
-              testExprType = 0;
-            } else if (cmdStateNew != RFW_CMD_SKW_PARTIAL)
-                sc.ChangeState(SCE_SH_IDENTIFIER);
-          }
-          // detect rfw construct keywords
-          else if (rfwStruct.InList(s))
-          {
-            if (cmdState == BASH_CMD_START && keywordEnds)
-              cmdStateNew = BASH_CMD_START;
-            else if (cmdStateNew != RFW_CMD_SKW_PARTIAL)
-              sc.ChangeState(SCE_SH_IDENTIFIER);
-          }
-          // ':FOR' needs 'IN' to be highlighted later
-          else if (rfwStruct_in.InList(s)) {
-            if (cmdState == BASH_CMD_START && keywordEnds)
-              cmdStateNew = BASH_CMD_WORD;
-            else if (cmdStateNew != RFW_CMD_SKW_PARTIAL)
-              sc.ChangeState(SCE_SH_IDENTIFIER);
-          }
-          // disambiguate option items and file test operators
-          else if (s[0] == '-') {
-            if (cmdState != BASH_CMD_TEST && cmdStateNew != RFW_CMD_SKW_PARTIAL)
-              sc.ChangeState(SCE_SH_IDENTIFIER);
-          }
-          // disambiguate keywords and identifiers
-          else if (cmdState != BASH_CMD_START
-              || !(keywords.InList(s) && keywordEnds)) {
-            if (cmdStateNew != RFW_CMD_SKW_PARTIAL)
-              sc.ChangeState(SCE_SH_IDENTIFIER);
-          }
-          if (cmdStateNew != RFW_CMD_SKW_PARTIAL)
-            sc.SetState(SCE_SH_DEFAULT);
-        }
+      case SCE_SH_WORD:
+      case SCE_SH_WORD2:
+        parseKeyword(
+          setWord, cmdDelimiter, keywordlists, sc, cmdState, cmdStateNew);
       break;
+      
       case SCE_SH_IDENTIFIER:
-        if (sc.chPrev == '\\') {  // for escaped chars
+        if (sc.chPrev == '\\') 
+        {  // for escaped chars
           sc.ForwardSetState(SCE_SH_DEFAULT);
-        } else if (!setWord.Contains(sc.ch)) {
+        } 
+        else if (!setWord.Contains(sc.ch)) 
+        {
           sc.SetState(SCE_SH_DEFAULT);
-        } else if (cmdState == BASH_CMD_ARITH && !setWordStart.Contains(sc.ch)) {
+        } 
+        else if (cmdState == BASH_CMD_ARITH && !setWordStart.Contains(sc.ch)) 
+        {
           sc.SetState(SCE_SH_DEFAULT);
         }
         break;
+
       case SCE_SH_NUMBER:
         digit = translateBashDigit(sc.ch);
-        if (numBase == BASH_BASE_DECIMAL) {
-          if (sc.ch == '#') {
+        if (numBase == BASH_BASE_DECIMAL) 
+        {
+          if (sc.ch == '#') 
+          {
             char s[10];
             sc.GetCurrent(s, sizeof(s));
             numBase = getBashNumberBase(s);
             if (numBase != BASH_BASE_ERROR)
               break;
-          } else if (IsADigit(sc.ch))
+          } 
+          else if (IsADigit(sc.ch))
             break;
-        } else if (numBase == BASH_BASE_HEX) {
+        } 
+        else if (numBase == BASH_BASE_HEX) 
+        {
           if (IsADigit(sc.ch, 16))
             break;
 #ifdef PEDANTIC_OCTAL
-        } else if (numBase == BASH_BASE_OCTAL ||
-               numBase == BASH_BASE_OCTAL_ERROR) {
+        } 
+        else if (numBase == BASH_BASE_OCTAL ||
+                 numBase == BASH_BASE_OCTAL_ERROR) 
+        {
           if (digit <= 7)
             break;
-          if (digit <= 9) {
+          if (digit <= 9) 
+          {
             numBase = BASH_BASE_OCTAL_ERROR;
             break;
           }
 #endif
-        } else if (numBase == BASH_BASE_ERROR) {
+        } 
+        else if (numBase == BASH_BASE_ERROR) 
+        {
           if (digit <= 9)
             break;
-        } else {  // DD#DDDD number style handling
-          if (digit != BASH_BASE_ERROR) {
-            if (numBase <= 36) {
+        } 
+        else 
+        {  // DD#DDDD number style handling
+          if (digit != BASH_BASE_ERROR) 
+          {
+            if (numBase <= 36) 
+            {
               // case-insensitive if base<=36
               if (digit >= 36) digit -= 26;
             }
@@ -1143,32 +1213,44 @@ static void ColouriseRFWDoc(Sci_PositionU startPos, Sci_Position length, int ini
 #ifdef PEDANTIC_OCTAL
           || numBase == BASH_BASE_OCTAL_ERROR
 #endif
-        ) {
+          ) 
+        {
           sc.ChangeState(SCE_SH_ERROR);
         }
         sc.SetState(SCE_SH_DEFAULT);
         break;
+      
       case SCE_SH_COMMENTLINE:
-        if (sc.atLineEnd && sc.chPrev != '\\') {
+        if (sc.atLineEnd && sc.chPrev != '\\') 
+        {
           sc.SetState(SCE_SH_DEFAULT);
         }
         break;
+      
       case SCE_SH_SCALAR:  // variable names
-        if (!setParam.Contains(sc.ch)) {
-          if (sc.LengthCurrent() == 1) {
+        if (!setParam.Contains(sc.ch)) 
+        {
+          if (sc.LengthCurrent() == 1) 
+          {
             // Special variable: $(, $_ etc.
             sc.ForwardSetState(SCE_SH_DEFAULT);
-          } else {
+          } 
+          else 
+          {
             sc.SetState(SCE_SH_DEFAULT);
           }
         }
         break;
+      
       case SCE_SH_STRING:  // delimited styles, can nest
       case SCE_SH_BACKTICKS:
-        if (sc.ch == '\\' && quoteStack.Up != '\\') {
+        if (sc.ch == '\\' && quoteStack.Up != '\\') 
+        {
           if (quoteStack.Style != BASH_DELIM_LITERAL)
             sc.Forward();
-        } else if (sc.ch == quoteStack.Down) {
+        } 
+        else if (sc.ch == quoteStack.Down) 
+        {
           quoteStack.Count--;
           if (quoteStack.Count == 0) {
             if (quoteStack.Depth > 0) {
@@ -1176,35 +1258,55 @@ static void ColouriseRFWDoc(Sci_PositionU startPos, Sci_Position length, int ini
             } else
               sc.ForwardSetState(SCE_SH_DEFAULT);
           }
-        } else if (sc.ch == quoteStack.Up) {
+        } 
+        else if (sc.ch == quoteStack.Up) 
+        {
           quoteStack.Count++;
-        } else {
+        } 
+        else 
+        {
           if (quoteStack.Style == BASH_DELIM_STRING ||
-            quoteStack.Style == BASH_DELIM_LSTRING
-          ) {  // do nesting for "string", $"locale-string"
-            if (sc.ch == '`') {
+              quoteStack.Style == BASH_DELIM_LSTRING) 
+          {  // do nesting for "string", $"locale-string"
+            if (sc.ch == '`') 
+            {
               quoteStack.Push(sc.ch, BASH_DELIM_BACKTICK);
-            } else if (sc.ch == '$' && sc.chNext == '(') {
+            } 
+            else if (sc.ch == '$' && sc.chNext == '(') 
+            {
               sc.Forward();
               quoteStack.Push(sc.ch, BASH_DELIM_COMMAND);
             }
-          } else if (quoteStack.Style == BASH_DELIM_COMMAND ||
-                 quoteStack.Style == BASH_DELIM_BACKTICK
-          ) {  // do nesting for $(command), `command`
-            if (sc.ch == '\'') {
+          } 
+          else if (quoteStack.Style == BASH_DELIM_COMMAND ||
+                 quoteStack.Style == BASH_DELIM_BACKTICK) 
+          {  // do nesting for $(command), `command`
+            if (sc.ch == '\'') 
+            {
               quoteStack.Push(sc.ch, BASH_DELIM_LITERAL);
-            } else if (sc.ch == '\"') {
+            } 
+            else if (sc.ch == '\"') 
+            {
               quoteStack.Push(sc.ch, BASH_DELIM_STRING);
-            } else if (sc.ch == '`') {
+            } 
+            else if (sc.ch == '`') 
+            {
               quoteStack.Push(sc.ch, BASH_DELIM_BACKTICK);
-            } else if (sc.ch == '$') {
-              if (sc.chNext == '\'') {
+            } 
+            else if (sc.ch == '$') 
+            {
+              if (sc.chNext == '\'') 
+              {
                 sc.Forward();
                 quoteStack.Push(sc.ch, BASH_DELIM_CSTRING);
-              } else if (sc.chNext == '\"') {
+              } 
+              else if (sc.chNext == '\"') 
+              {
                 sc.Forward();
                 quoteStack.Push(sc.ch, BASH_DELIM_LSTRING);
-              } else if (sc.chNext == '(') {
+              } 
+              else if (sc.chNext == '(') 
+              {
                 sc.Forward();
                 quoteStack.Push(sc.ch, BASH_DELIM_COMMAND);
               }
@@ -1212,22 +1314,32 @@ static void ColouriseRFWDoc(Sci_PositionU startPos, Sci_Position length, int ini
           }
         }
         break;
+
       case SCE_SH_PARAM: // ${parameter}
-        if (sc.ch == '\\' && quote.Up != '\\') {
+        if (sc.ch == '\\' && quote.Up != '\\') 
+        {
           sc.Forward();
-        } else if (sc.ch == quote.Down) {
+        } 
+        else if (sc.ch == quote.Down) 
+        {
           quote.Count--;
-          if (quote.Count == 0) {
+          if (quote.Count == 0) 
+          {
             sc.ForwardSetState(SCE_SH_DEFAULT);
           }
-        } else if (sc.ch == quote.Up) {
+        } 
+        else if (sc.ch == quote.Up) 
+        {
           quote.Count++;
         }
         break;
+      
       case SCE_SH_CHARACTER: // singly-quoted strings
-        if (sc.ch == quote.Down) {
+        if (sc.ch == quote.Down) 
+        {
           quote.Count--;
-          if (quote.Count == 0) {
+          if (quote.Count == 0) 
+          {
             sc.ForwardSetState(SCE_SH_DEFAULT);
           }
         }
@@ -1235,34 +1347,49 @@ static void ColouriseRFWDoc(Sci_PositionU startPos, Sci_Position length, int ini
     }
 
     // update cmdState about the current command segment
-    if (stylePrev != SCE_SH_DEFAULT && sc.state == SCE_SH_DEFAULT) {
+    if (stylePrev != SCE_SH_DEFAULT && sc.state == SCE_SH_DEFAULT) 
+    {
       cmdState = cmdStateNew;
     }
-    else if (pipes && sc.ch == '|' && sc.currentPos > testCaseSectionPos) {
+    else if (pipes && sc.ch == '|' && sc.currentPos > testCaseSectionPos) 
+    {
       cmdState = (sc.atLineStart ? RFW_CMD_TESTCASE: BASH_CMD_START);
     }
     else if (!pipes && sc.ch != '#' && !isspace(sc.ch) && sc.atLineStart && 
-      sc.currentPos > testCaseSectionPos) {
+      sc.currentPos > testCaseSectionPos) 
+    {
       cmdState = RFW_CMD_TESTCASE;
     }
 
     // Determine if a new state should be entered.
-    if (sc.state == SCE_SH_DEFAULT) {
-      if (sc.ch == '\\') {
+    if (sc.state == SCE_SH_DEFAULT) 
+    {
+      if (sc.ch == '\\') 
+      {
         // RFW can escape any non-newline as a literal
         sc.SetState(SCE_SH_IDENTIFIER);
         if (sc.chNext == '\r' || sc.chNext == '\n')
           sc.SetState(SCE_SH_OPERATOR);
-      } else if (setWordStartTSV.Contains(sc.ch)) {
-        sc.SetState(cmdState == RFW_CMD_TESTCASE ? SCE_SH_TESTCASE: SCE_SH_WORD);
-      } else if (IsADigit(sc.ch)) {
+      } 
+      else if (setWordStartTSV.Contains(sc.ch)) 
+      {
+        // TODO: or set to SCE_SH_WORD2
+        sc.SetState(
+          cmdState == RFW_CMD_TESTCASE ? SCE_SH_TESTCASE: SCE_SH_WORD);
+      } 
+      else if (IsADigit(sc.ch)) 
+      {
         sc.SetState(SCE_SH_NUMBER);
         numBase = BASH_BASE_DECIMAL;
-        if (sc.ch == '0') {  // hex,octal
-          if (sc.chNext == 'x' || sc.chNext == 'X') {
+        if (sc.ch == '0') 
+        {  // hex,octal
+          if (sc.chNext == 'x' || sc.chNext == 'X') 
+          {
             numBase = BASH_BASE_HEX;
             sc.Forward();
-          } else if (IsADigit(sc.chNext)) {
+          } 
+          else if (IsADigit(sc.chNext)) 
+          {
 #ifdef PEDANTIC_OCTAL
             numBase = BASH_BASE_OCTAL;
 #else
@@ -1270,100 +1397,148 @@ static void ColouriseRFWDoc(Sci_PositionU startPos, Sci_Position length, int ini
 #endif
           }
         }
-      } else if (sc.ch == '#') {
-        if (stylePrev != SCE_SH_WORD && stylePrev != SCE_SH_IDENTIFIER &&
-          (sc.currentPos == 0 || setMetaCharacter.Contains(sc.chPrev))) {
+      } 
+      else if (sc.ch == '#') 
+      {
+        if (stylePrev != SCE_SH_WORD && 
+            stylePrev != SCE_SH_WORD2 && 
+            stylePrev != SCE_SH_IDENTIFIER &&
+          (sc.currentPos == 0 || setMetaCharacter.Contains(sc.chPrev))) 
+        {
           sc.SetState(SCE_SH_COMMENTLINE);
-        } else {
+        } 
+        else 
+        {
           sc.SetState(SCE_SH_WORD);
         }
         // handle some zsh features within arithmetic expressions only
-        if (cmdState == BASH_CMD_ARITH) {
-          if (sc.chPrev == '[') {  // [#8] [##8] output digit setting
+        if (cmdState == BASH_CMD_ARITH) 
+        {
+          if (sc.chPrev == '[') 
+          {  // [#8] [##8] output digit setting
             sc.SetState(SCE_SH_WORD);
-            if (sc.chNext == '#') {
+            if (sc.chNext == '#') 
+            {
               sc.Forward();
             }
-          } else if (sc.Match("##^") && IsUpperCase(sc.GetRelative(3))) {  // ##^A
+          } 
+          else if (sc.Match("##^") && IsUpperCase(sc.GetRelative(3))) 
+          {  // ##^A
             sc.SetState(SCE_SH_IDENTIFIER);
             sc.Forward(3);
-          } else if (sc.chNext == '#' && !IsASpace(sc.GetRelative(2))) {  // ##a
-            sc.SetState(SCE_SH_IDENTIFIER);
+          } 
+          else if (sc.chNext == '#' && !IsASpace(sc.GetRelative(2))) 
+          {  // ##            sc.SetState(SCE_SH_IDENTIFIER);
             sc.Forward(2);
-          } else if (setWordStart.Contains(sc.chNext)) {  // #name
+          } 
+          else if (setWordStart.Contains(sc.chNext)) 
+          {  // #name
             sc.SetState(SCE_SH_IDENTIFIER);
           }
         }
-      } else if (sc.ch == '\"') {
+      } 
+      else if (sc.ch == '\"') 
+      {
         sc.SetState(SCE_SH_STRING);
         quoteStack.Start(sc.ch, BASH_DELIM_STRING);
-      } else if (sc.ch == '\'') {
+      } 
+      else if (sc.ch == '\'') 
+      {
         sc.SetState(SCE_SH_CHARACTER);
         quote.Start(sc.ch);
-      } else if (sc.ch == '`') {
+      } 
+      else if (sc.ch == '`') 
+      {
         sc.SetState(SCE_SH_BACKTICKS);
         quoteStack.Start(sc.ch, BASH_DELIM_BACKTICK);
-      } else if (sc.ch == '$' || sc.ch == '@') {
-        if (sc.Match("$((")) {
+      } 
+      else if (sc.ch == '$' || sc.ch == '@') 
+      {
+        if (sc.Match("$((")) 
+        {
           sc.SetState(SCE_SH_OPERATOR);  // handle '((' later
           continue;
         }
         sc.SetState(SCE_SH_SCALAR);
         sc.Forward();
-        if (sc.ch == '{') {
+        if (sc.ch == '{') 
+        {
           sc.ChangeState(SCE_SH_PARAM);
           quote.Start(sc.ch);
-        } else if (sc.ch == '\'') {
+        } 
+        else if (sc.ch == '\'') 
+        {
           sc.ChangeState(SCE_SH_STRING);
           quoteStack.Start(sc.ch, BASH_DELIM_CSTRING);
-        } else if (sc.ch == '"') {
+        } 
+        else if (sc.ch == '"') 
+        {
           sc.ChangeState(SCE_SH_STRING);
           quoteStack.Start(sc.ch, BASH_DELIM_LSTRING);
-        } else if (sc.ch == '(') {
+        } 
+        else if (sc.ch == '(') 
+        {
           sc.ChangeState(SCE_SH_BACKTICKS);
           quoteStack.Start(sc.ch, BASH_DELIM_COMMAND);
-        } else if (sc.ch == '`') {  // $` seen in a configure script, valid?
+        } 
+        else if (sc.ch == '`') 
+        {  // $` seen in a configure script, valid?
           sc.ChangeState(SCE_SH_BACKTICKS);
           quoteStack.Start(sc.ch, BASH_DELIM_BACKTICK);
-        } else {
+        } 
+        else 
+        {
           continue;  // scalar has no delimiter pair
         }
-      } else if (sc.ch == '-'  &&  // one-char file test operators
-             setSingleCharOp.Contains(sc.chNext) &&
-             !setWord.Contains(sc.GetRelative(2)) &&
-             IsASpace(sc.chPrev)) {
+      } 
+      else if (
+        sc.ch == '-'  &&  // one-char file test operators
+        setSingleCharOp.Contains(sc.chNext) &&
+        !setWord.Contains(sc.GetRelative(2)) &&
+        IsASpace(sc.chPrev)) 
+      {
         sc.SetState(SCE_SH_WORD);
         sc.Forward();
-      } else if (setRFWOperator.Contains(sc.ch)) {
+      } 
+      else if (setRFWOperator.Contains(sc.ch)) 
+      {
         char s[10];
         bool isCmdDelim = false;
         sc.SetState(SCE_SH_OPERATOR);
         // globs have no whitespace, do not appear in arithmetic expressions
-        if (cmdState != BASH_CMD_ARITH && sc.ch == '(' && sc.chNext != '(') {
+        if (cmdState != BASH_CMD_ARITH && sc.ch == '(' && sc.chNext != '(') 
+        {
           int i = GlobScan(sc);
-          if (i > 1) {
+          if (i > 1) 
+          {
             sc.SetState(SCE_SH_IDENTIFIER);
             sc.Forward(i);
             continue;
           }
         }
         // handle opening delimiters for test/arithmetic expressions - ((,[[,[
-        if (cmdState == BASH_CMD_START
-         || cmdState == BASH_CMD_BODY) {
-          if (sc.Match('(', '(')) {
+        if (cmdState == BASH_CMD_START || cmdState == BASH_CMD_BODY) 
+        {
+          if (sc.Match('(', '(')) 
+          {
             cmdState = BASH_CMD_ARITH;
             sc.Forward();
-          } else if (sc.Match('[', '[') && IsASpace(sc.GetRelative(2))) {
+          } 
+          else if (sc.Match('[', '[') && IsASpace(sc.GetRelative(2))) 
+          {
             cmdState = BASH_CMD_TEST;
             testExprType = 1;
             sc.Forward();
-          } else if (sc.ch == '[' && IsASpace(sc.chNext)) {
+          } 
+          else if (sc.ch == '[' && IsASpace(sc.chNext)) 
+          {
             cmdState = BASH_CMD_TEST;
             testExprType = 2;
           }
         }
         // special state -- for ((x;y;z)) in ... looping
-        if (cmdState == BASH_CMD_WORD && sc.Match('(', '(')) {
+        if (cmdState == BASH_CMD_WORD && sc.Match('(', '(')) 
+        {
           cmdState = BASH_CMD_ARITH;
           sc.Forward();
           continue;
@@ -1372,33 +1547,43 @@ static void ColouriseRFWDoc(Sci_PositionU startPos, Sci_Position length, int ini
         if (cmdState == BASH_CMD_START
          || cmdState == BASH_CMD_BODY
          || cmdState == BASH_CMD_WORD
-         || (cmdState == BASH_CMD_TEST && testExprType == 0)) {
+         || (cmdState == BASH_CMD_TEST && testExprType == 0)) 
+        {
           s[0] = static_cast<char>(sc.ch);
-          if (setRFWOperator.Contains(sc.chNext)) {
+          if (setRFWOperator.Contains(sc.chNext)) 
+          {
             s[1] = static_cast<char>(sc.chNext);
             s[2] = '\0';
             isCmdDelim = cmdDelimiter.InList(s);
             if (isCmdDelim)
               sc.Forward();
           }
-          if (!isCmdDelim) {
+          if (!isCmdDelim) 
+          {
             s[1] = '\0';
             isCmdDelim = cmdDelimiter.InList(s);
           }
-          if (isCmdDelim) {
+          if (isCmdDelim) 
+          {
             cmdState = BASH_CMD_DELIM;
             continue;
           }
         }
         // handle closing delimiters for test/arithmetic expressions - )),]],]
-        if (cmdState == BASH_CMD_ARITH && sc.Match(')', ')')) {
+        if (cmdState == BASH_CMD_ARITH && sc.Match(')', ')')) 
+        {
           cmdState = BASH_CMD_BODY;
           sc.Forward();
-        } else if (cmdState == BASH_CMD_TEST && IsASpace(sc.chPrev)) {
-          if (sc.Match(']', ']') && testExprType == 1) {
+        } 
+        else if (cmdState == BASH_CMD_TEST && IsASpace(sc.chPrev)) 
+        {
+          if (sc.Match(']', ']') && testExprType == 1) 
+          {
             sc.Forward();
             cmdState = BASH_CMD_BODY;
-          } else if (sc.ch == ']' && testExprType == 2) {
+          } 
+          else if (sc.ch == ']' && testExprType == 2) 
+          {
             cmdState = BASH_CMD_BODY;
           }
         }
@@ -1526,8 +1711,10 @@ static void FoldRFWDoc(Sci_PositionU startPos, Sci_Position length, int, WordLis
 
 static const char * const rfwWordListDesc[] =
 {
-  "Keywords",
+  "Primary Keywords",
+  "Secondary Keywords",
   0
 };
 
 LexerModule lmRFW(SCLEX_AUTOMATIC, ColouriseRFWDoc, "rfw", FoldRFWDoc, rfwWordListDesc);
+  

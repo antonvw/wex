@@ -147,7 +147,7 @@ void wex::report::listview::build_popup_menu(wex::menu& menu)
     is_make = item.get_filename().lexer().scintilla_lexer() == "makefile";
   }
 
-  listview::build_popup_menu(menu);
+  wex::listview::build_popup_menu(menu);
 
   if (GetSelectedItemCount() > 1 && exists &&
      !config(_("Comparator")).empty())

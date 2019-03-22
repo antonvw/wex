@@ -47,10 +47,8 @@ namespace wex
     /// Returns the menu command equal to name specified.  
     /// or empty command if name could not be found.
     const T find_command(const std::string& name) const {
-std::cout << "find: " << name << "\n";
       for (const auto& i : m_Commands)
       {
-std::cout << "compare with: " << i.get_command() << "\n";
         if (i.get_command() == name)
         {
           return i;

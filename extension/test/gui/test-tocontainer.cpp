@@ -2,7 +2,7 @@
 // Name:      test-to_container.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
@@ -20,10 +20,7 @@
 TEST_CASE("wex::to_container")
 {
   wxComboBox* cb = new wxComboBox(frame(), wxID_ANY);
-#ifndef __WXOSX__
-  // gives a warning about very large combobox
   wex::test::add_pane(frame(), cb);
-#endif
 
   wxArrayString a;
   a.Add("x");

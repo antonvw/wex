@@ -34,44 +34,11 @@ namespace wex
     get(const std::string& text) const;
     
     /// Returns true if blame is on.
-    bool use() const;
-
-    /// Offers a blame field.
-    class field
-    {
-    public:
-      /// Default constructor.
-      field() {;};
-        
-      /// Constructor using field value.
-      field(const std::string& value);
-
-      /// Returns true if field value is a number.
-      bool is_number() const {return m_number != std::string::npos;};
-      
-      /// Returns position inside text, or std::string::npos if not found.
-      size_t pos(const std::string text) const;
-      
-      /// Returns original value.
-      const auto& value() const {return m_value;};
-    private:
-      size_t m_number {std::string::npos};
-      std::string m_value;
-    };
+    bool use() const {return !m_blame_format.empty();};
   private:
-    const std::string get_author(const std::string& text) const;
-    const std::string get_date(const std::string& text) const;
-    const std::string get_id(const std::string& text) const;
     lexers::margin_style_t get_style(const std::string& text) const;
     
-    std::string m_date_format;
+    std::string m_date_format, m_blame_format;
     size_t m_date_print {10};
-
-    field
-      m_pos_author_begin,
-      m_pos_begin, 
-      m_pos_end,
-      m_pos_id_begin,
-      m_pos_id_end;
   };
 };

@@ -496,20 +496,6 @@ wex::lexers* wex::lexers::set(wex::lexers* lexers)
   return old;
 }
 
-bool SingleChoice(wxWindow* parent, const std::string& title, 
-  const wxArrayString& s, std::string& selection)
-{
-  wxSingleChoiceDialog dlg(parent, _("Input") + ":", title, s);
-
-  if (const auto index = s.Index(selection); 
-    index != wxNOT_FOUND) dlg.SetSelection(index);
-  if (dlg.ShowModal() == wxID_CANCEL) return false;
-
-  selection = dlg.GetStringSelection();
-  
-  return true;
-}
-  
 bool wex::lexers::show_dialog(stc* stc) const
 {
   wxArrayString s;
@@ -517,7 +503,7 @@ bool wex::lexers::show_dialog(stc* stc) const
   for (const auto& it : m_Lexers) s.Add(it.display_lexer());
 
   auto lexer = stc->get_lexer().display_lexer();
-  if (!SingleChoice(stc, _("Enter Lexer"), s, lexer)) return false;
+  if (!single_choice_dialog(stc, _("Enter Lexer"), s, lexer)) return false;
 
   lexer.empty() ? stc->get_lexer().reset(): (void)stc->get_lexer().set(lexer, true);
   
@@ -529,7 +515,7 @@ bool wex::lexers::show_theme_dialog(wxWindow* parent)
   wxArrayString s;
   for (const auto& it : m_ThemeMacros) s.Add(it.first);
 
-  if (!SingleChoice(parent, _("Enter Theme"), s, m_Theme)) return false;
+  if (!single_choice_dialog(parent, _("Enter Theme"), s, m_Theme)) return false;
 
   config("theme").set(m_Theme);
 

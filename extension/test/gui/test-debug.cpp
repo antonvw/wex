@@ -39,8 +39,8 @@ TEST_CASE("wex::debug")
   }
   
   REQUIRE( dbg.add_menu(&menu) > 0);
-  REQUIRE( dbg.add_menu(&menu, true) > 0);
-  const int item = menu.FindItem("break");
+  REQUIRE( dbg.add_menu(&menu, true) == 0);
+  const int item = menu.FindItem("run");
   REQUIRE( item != wxNOT_FOUND);
   REQUIRE( item > wex::ID_EDIT_DEBUG_FIRST );
   REQUIRE( item < wex::ID_EDIT_DEBUG_LAST);

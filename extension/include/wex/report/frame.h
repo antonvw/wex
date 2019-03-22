@@ -29,7 +29,7 @@ namespace wex::report
   public:
     /// Default constructor.
     /// Default it gives file history support to be used from the file menu.
-    /// So you should call UseFileHistory somewhere to set it up.
+    /// So you should call use_file_history_list somewhere to set it up.
     /// Default it does not use a recent project file.
     frame(
       size_t maxFiles = 9,

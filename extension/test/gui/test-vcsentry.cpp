@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-vcs_entry.cpp
+// Name:      test-vcsentry.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2019 Anton van Wezenbeek
@@ -36,7 +36,6 @@ TEST_CASE("wex::vcs_entry")
     REQUIRE( test.build_menu(0, &menu) == 0);
 
 #ifndef __WXMSW__
-#ifndef __WXOSX__
     // This should have no effect.  
     REQUIRE(!test.set_command(5));
     REQUIRE(!test.set_command(wex::ID_EDIT_VCS_LOWEST));
@@ -56,7 +55,6 @@ TEST_CASE("wex::vcs_entry")
     wex::vcs_entry* git_async = new wex::vcs_entry("git", std::string(), {wex::vcs_command("status")});
     REQUIRE( git_async->execute(std::string(), wex::lexer(), wex::process::EXEC_WAIT));
     git_async->show_output();
-#endif
 #endif
   }
   

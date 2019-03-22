@@ -1669,6 +1669,7 @@ Copyright: (c) 2019, Anton van Wezenbeek
       <def no ="param"/>
       <def no ="backticks"/>
       <def no ="testcase"/>
+      <def no ="keyword2"/>
     </def>
     
     <def name = "ruby">
@@ -3369,7 +3370,7 @@ Copyright: (c) 2019, Anton van Wezenbeek
   <lexer name="registry"/>
   <lexer name="rfw" extensions="TCS*.txt;*.robot;__init__.*" edgemode="none"> 
     <styles>
-      <style no="testcase"> fore:sky blue </style>
+      <style no="testcase"> fore:sky blue,underline </style>
     </styles>
     <properties>
       <property name="fold"> 1 </property>
@@ -3378,7 +3379,7 @@ Copyright: (c) 2019, Anton van Wezenbeek
       <property name="fold.pipes"> 1 </property>
       <property name="fold.tabs"> 1 </property>
     </properties>
-    <keywords> 
+    <keywords set-1="cpp"> 
       *Keyword *Keywords *Keyword* *Keywords* 
       *Setting *Settings *Setting* *Settings*
       *Variable *Variables *Variable* *Variables*

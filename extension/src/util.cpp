@@ -479,7 +479,8 @@ int wex::match(const std::string& reg, const std::string& text,
 {
   try 
   {
-    if (std::match_results<std::string::const_iterator> m;
+    if (
+       std::match_results<std::string::const_iterator> m;
       !std::regex_search(text, m, std::regex(reg))) 
     {
       return -1;
@@ -749,6 +750,20 @@ bool wex::shell_expansion(std::string& command)
   return true;
 }
 
+bool wex::single_choice_dialog(wxWindow* parent, const std::string& title, 
+  const wxArrayString& s, std::string& selection)
+{
+  wxSingleChoiceDialog dlg(parent, _("Input") + ":", title, s);
+
+  if (const auto index = s.Index(selection); 
+    index != wxNOT_FOUND) dlg.SetSelection(index);
+  if (dlg.ShowModal() == wxID_CANCEL) return false;
+
+  selection = dlg.GetStringSelection();
+  
+  return true;
+}
+  
 const std::string wex::skip_white_space(
   const std::string& text, 
   skip_t type,
