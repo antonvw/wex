@@ -443,7 +443,7 @@ bool wex::shell::process_char(int key)
       }
       else if (
         m_CommandEnd == eol() ||
-        m_Command.ends_with(m_CommandEnd))
+        wxString(m_Command).EndsWith(m_CommandEnd))
       {
         // We have a command.
         EmptyUndoBuffer();

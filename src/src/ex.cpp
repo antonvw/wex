@@ -277,12 +277,12 @@ wex::ex::ex(wex::stc* stc)
       }
       return true;}},
     {":syntax", [&](const std::string& command) {
-      if (command.ends_with("on"))
+      if (wxString(command).EndsWith("off"))
       {
         wex::lexers::get()->restore_theme();
         get_stc()->get_lexer().set(get_stc()->get_filename().lexer().display_lexer(), true); // allow folding
       }
-      else if (command.ends_with("off"))
+      else if (wxString(command).EndsWith("off"))
       {
         get_stc()->get_lexer().clear();
         wex::lexers::get()->clear_theme();

@@ -27,7 +27,7 @@ matrix:
       os: linux
       dist: trusty
       sudo: required
-      addons:
+      addons: &gcc8
         apt:
           packages: ["g++-8"]
           sources: *apt_sources

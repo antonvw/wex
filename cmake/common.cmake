@@ -151,7 +151,7 @@ endif ()
 if (MSVC)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
     /D_CRT_SECURE_NO_WARNINGS /DCRT_SECURE_NO_DEPRECATE \
-    /std:c++2a /Zc:__cplusplus")
+    /std:c++17 /Zc:__cplusplus")
 
   if (CMAKE_BUILD_TYPE MATCHES "Debug")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D__WXDEBUG__")
@@ -173,7 +173,7 @@ else ()
   endif ()
   
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
-    -std=c++2a -Wno-overloaded-virtual -Wno-reorder -Wno-write-strings \
+    -std=c++17 -Wno-overloaded-virtual -Wno-reorder -Wno-write-strings \
     -Wno-deprecated-declarations -Wno-unused-result")
 endif ()
 
