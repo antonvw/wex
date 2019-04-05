@@ -9,7 +9,7 @@ function(pack)
 
   set(CPACK_GENERATOR "ZIP")
   set(CPACK_PACKAGE_NAME "${PROJECT_NAME}")
-  set(CPACK_PACKAGE_VERSION "${EX_VERSION}")
+  set(CPACK_PACKAGE_VERSION "${WEX_VERSION}")
   set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-v${CPACK_PACKAGE_VERSION}")
 
   if (MSVC)
@@ -29,15 +29,15 @@ function(pack)
     install(FILES ${dlls} DESTINATION ${CONFIG_INSTALL_DIR})
   endif()
 
-  configure_file(../extension/data/wex-conf.elp.cmake conf.elp)
+  configure_file(../data/wex-conf.elp.cmake conf.elp)
 
-  install(DIRECTORY ../extension/data/ DESTINATION ${CONFIG_INSTALL_DIR} 
+  install(DIRECTORY ../data/ DESTINATION ${CONFIG_INSTALL_DIR} 
     FILES_MATCHING PATTERN "*.xml" )
   
-  install(DIRECTORY ../extension/data/ DESTINATION ${CONFIG_INSTALL_DIR} 
+  install(DIRECTORY ../data/ DESTINATION ${CONFIG_INSTALL_DIR} 
     FILES_MATCHING PATTERN "*.xsl" )
   
-  install(DIRECTORY ../extension/data/ DESTINATION ${CONFIG_INSTALL_DIR} 
+  install(DIRECTORY ../data/ DESTINATION ${CONFIG_INSTALL_DIR} 
     FILES_MATCHING PATTERN "*.txt" )
   
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/conf.elp DESTINATION ${CONFIG_INSTALL_DIR})
@@ -139,7 +139,7 @@ function(test_app)
   endif()
   
   add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME}
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/extension)
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src)
 endfunction()
           
 if (WIN32)
@@ -149,7 +149,9 @@ else ()
 endif ()
 
 if (MSVC)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D_CRT_SECURE_NO_WARNINGS /DCRT_SECURE_NO_DEPRECATE /std:c++17 /Zc:__cplusplus")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+    /D_CRT_SECURE_NO_WARNINGS /DCRT_SECURE_NO_DEPRECATE \
+    /std:c++2a /Zc:__cplusplus")
 
   if (CMAKE_BUILD_TYPE MATCHES "Debug")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D__WXDEBUG__")
@@ -157,7 +159,8 @@ if (MSVC)
 else ()
   if (CMAKE_BUILD_TYPE MATCHES "Coverage")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 --coverage")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fPIC --param ggc-min-expand=3 --param ggc-min-heapsize=5120")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fPIC \
+      --param ggc-min-expand=3 --param ggc-min-heapsize=5120")
   endif ()
   
   if (CMAKE_BUILD_TYPE MATCHES "Profile")
@@ -169,7 +172,9 @@ else ()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0")
   endif ()
   
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wno-overloaded-virtual -Wno-reorder -Wno-write-strings -Wno-deprecated-declarations -Wno-unused-result")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+    -std=c++2a -Wno-overloaded-virtual -Wno-reorder -Wno-write-strings \
+    -Wno-deprecated-declarations -Wno-unused-result")
 endif ()
 
 file(GLOB_RECURSE wexSETUP_H ${wex_BINARY_DIR}/*.h)
@@ -180,8 +185,8 @@ get_filename_component(wexSETUP_H ${wexSETUP_H} DIRECTORY)
 
 list(APPEND wxTOOLKIT_INCLUDE_DIRS 
   ${wexSETUP_H}
+  src/include 
   external/wxWidgets/include 
-  extension/include 
   external/tiny-process-library
   external/ctags/read 
   external/easyloggingpp/src 

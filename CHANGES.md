@@ -1,4 +1,5 @@
 **v19.10**
+  - c++2a
   - uses wex::test and wex::report namespace
   - listview follows theme
   - ctags file static

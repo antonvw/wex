@@ -1,8 +1,10 @@
 # This is the control file for Travis continuous integration system.
 #
-# It is used automatically for the repositories on Github if it's found in the
-# root directory of the project.
 language: cpp
+
+git:
+  depth: 1
+  submodules: true
 
 env:
   global:
@@ -11,52 +13,55 @@ env:
     # take care that recently-used.xbel file can be written
     - XDG_DATA_HOME=$PWD
 
+addons:
+  apt:
+    sources: &apt_sources
+      - ubuntu-toolchain-r-test
+      - llvm-toolchain-trusty
+      - llvm-toolchain-trusty-8
+
 matrix:
   include:
-    - os: linux
+    - env: COMPILER=g++-8
+      compiler: gcc
+      os: linux
       dist: trusty
       sudo: required
-      compiler: gcc
       addons:
         apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-8
-      env:
-        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
+          packages: ["g++-8"]
+          sources: *apt_sources
 
-    - os: osx
-      addons:
+    - env: COMPILER=clang++-8
+      compiler: clang
+      os: osx
+      osx_image: xcode10.2
+      sudo: required
+      addons: &clang8
         apt:
-          update: true
-      env:
-        - MATRIX_EVAL="CC=clang && CXX=clang++"
+          packages: ["clang-8", "valgrind"]
+          sources: *apt_sources
 
   allow_failures:
     - os: linux
     - os: osx
 
-git:
-    depth: 1
-    submodules: true
-
 before_install:
-    - eval "${MATRIX_EVAL}"
+  - eval "${MATRIX_EVAL}"
 
 install:
-    - ./ci/${TRAVIS_OS_NAME}-install.sh
+  - ./ci/${TRAVIS_OS_NAME}-install.sh
 
 before_script:
-    - ./ci/${TRAVIS_OS_NAME}-before-script.sh
+  - ./ci/${TRAVIS_OS_NAME}-before-script.sh
 
 script:
-    - mkdir build${TRAVIS_OS_NAME} && pushd build${TRAVIS_OS_NAME}
-    - cmake -DwexBUILD_TESTS=ON ..
+  - mkdir build${TRAVIS_OS_NAME} && pushd build${TRAVIS_OS_NAME}
+  - cmake -DwexBUILD_TESTS=ON ..
 #    - cmake -DCMAKE_BUILD_TYPE=Coverage -DwexBUILD_TESTS=ON ..
-    - make -j 4
+  - make -j 4
 #    - if [ "$TRAVIS_OS_NAME" != "osx" ]; then make lcov-prep; fi
-    - if [ "$TRAVIS_OS_NAME" != "osx" ]; then ctest --timeout 120 -V .. ; fi
+  - if [ "$TRAVIS_OS_NAME" != "osx" ]; then ctest --timeout 120 -V .. ; fi
         
 after_success:
 #    - if [ "$TRAVIS_OS_NAME" != "osx" ]; then make lcov; fi

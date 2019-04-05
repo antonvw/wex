@@ -28,7 +28,7 @@
 - add a test and update sample
  
 - translation is done using xgettext by invoking po-sync.sh   
-  - to translate wxExtension copy the wxex.pot file to the correct language po 
+  - to translate wex copy the wex.pot file to the correct language po 
     file, and fill in the translation.
 
   - The place where to put your po files can be found by adding -l command line switch.

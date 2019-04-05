@@ -1,4 +1,4 @@
-wxExtension contains a wxWidgets extension library, 
+wex contains a library that offers c++ ex and vi functionality, 
 and some applications that show how to use it.
 
 The [syncped](http://sourceforge.net/projects/syncped) application is 
@@ -7,7 +7,7 @@ one of these applications, being a full featured source code text editor.
 # Requirements
 
 - [cmake](http://www.cmake.org/)    
-- a `c++17` standard supporting compiler (clang-7 on osx)    
+- a `c++2a` standard supporting compiler (clang-8 on osx)    
 
 ## Building
 
@@ -17,7 +17,8 @@ mkdir build && cd build
 cmake .. && make
 ```
 
-for Visual Studio add `set CL=/Zc:__cplusplus` before cmake and do `msbuild syncped\syncped.sln /p:Configuration=Debug`,
+for Visual Studio add `set CL=/Zc:__cplusplus` before invoking cmake and do 
+  `devenv wex.sln`,
 for mingw add `-G "MinGW Makefiles"` and do `mingw32-make`   
 
 # Build process 
