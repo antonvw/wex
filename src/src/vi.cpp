@@ -1537,8 +1537,6 @@ void wex::vi::set_last_command(const std::string& command)
     it != m_LastCommands.end())
   {
     m_LastCommand = command;
-
-    log::verbose("vi last command") << command;
   }
 }
  

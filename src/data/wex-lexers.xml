@@ -3206,6 +3206,11 @@ Copyright: (c) 2019, Anton van Wezenbeek
     </keywords>
   </lexer>    
   <lexer name="literatehaskell" macro="haskell"/>
+  <lexer display="log" extensions="*.log" edgemode="none" spacevisible="invisible" name="bash">
+    <keywords> 
+      error error: warning:
+    </keywords>
+  </lexer>
   <lexer name="lot"/>
   <lexer name="lout"/>
   <lexer name="lua" extensions="*.lua">

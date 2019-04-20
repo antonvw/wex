@@ -2,7 +2,7 @@
 // Name:      defs.h
 // Purpose:   Common defs for all wex classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -40,6 +40,7 @@ namespace wex
     ID_NOTEBOOK_LISTS,
     ID_NOTEBOOK_PROJECTS,
 
+    ID_SHELL_APPEND,
     ID_SHELL_COMMAND,
     ID_SHELL_COMMAND_STOP,
 

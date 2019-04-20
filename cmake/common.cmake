@@ -97,7 +97,6 @@ macro(target_link_all)
       wex
       ${wxWidgets_LIBRARIES} wxscintilla
       ${extra_macro_args}
-      tiny-process-library
       )
   elseif (APPLE)
     target_link_libraries(
@@ -106,7 +105,6 @@ macro(target_link_all)
       wex
       ${wxWidgets_LIBRARIES} 
       ${extra_macro_args}
-      tiny-process-library
       stdc++
       c++fs
       )
@@ -117,7 +115,6 @@ macro(target_link_all)
       wex
       ${wxWidgets_LIBRARIES} 
       ${extra_macro_args}
-      tiny-process-library
       stdc++
       stdc++fs
       m
@@ -187,8 +184,8 @@ list(APPEND wxTOOLKIT_INCLUDE_DIRS
   ${wexSETUP_H}
   src/include 
   external/wxWidgets/include 
-  external/tiny-process-library
   external/ctags/read 
+  external/boost-process/include
   external/easyloggingpp/src 
   external/fsm external/pugixml/src 
   external/shunting-yard external/tclap/include)

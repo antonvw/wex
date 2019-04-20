@@ -610,16 +610,18 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
       });
   }
 
-  if (const std::string a(node->attribute("tabmode").value()); !a.empty())
+  if (const std::string a(node->attribute("spacevisible").value()); !a.empty())
   {
     m_attribs.push_back(
-      {_("Use tabs"), convert_attrib(
-        {{"use", 1},
-         {"off", 0}}, a), [&](stc* stc, int attrib) {
-            if (attrib > 0)
-            {
-              stc->SetUseTabs(true);
-            }}
+      {_("Whitespace visible"), convert_attrib(
+          {{"invisible", wxSTC_WS_INVISIBLE},
+           {"always", wxSTC_WS_VISIBLEALWAYS},
+           {"afterindent", wxSTC_WS_VISIBLEAFTERINDENT},
+           {"onlyindent", wxSTC_WS_VISIBLEONLYININDENT}}, a), [&](stc* stc, int attrib) {
+              if (attrib >= 0)
+              {
+                stc->SetViewWhiteSpace(attrib);
+              }}
       });
   }
 
@@ -629,33 +631,31 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
       {_("Tab draw mode"), convert_attrib(
           {{"arrow", wxSTC_TD_LONGARROW},
            {"strike", wxSTC_TD_STRIKEOUT}}, a), [&](stc* stc, int attrib) {
-              if (attrib > 0)
+              if (attrib >= 0)
               {
                 stc->SetTabDrawMode(attrib);
               }}
       });
   }
   
-  if (const std::string a(node->attribute("spacevisible").value()); !a.empty())
+  if (const std::string a(node->attribute("tabmode").value()); !a.empty())
   {
     m_attribs.push_back(
-      {_("Whitespace visible"), convert_attrib(
-          {{"invisible", wxSTC_WS_INVISIBLE},
-           {"always", wxSTC_WS_VISIBLEALWAYS},
-           {"afterindent", wxSTC_WS_VISIBLEAFTERINDENT},
-           {"onlyindent", wxSTC_WS_VISIBLEONLYININDENT}}, a), [&](stc* stc, int attrib) {
-              if (attrib > 0)
-              {
-                stc->SetViewWhiteSpace(attrib);
-              }}
+      {_("Use tabs"), convert_attrib(
+        {{"use", 1},
+         {"off", 0}}, a), [&](stc* stc, int attrib) {
+            if (attrib >= 0)
+            {
+              stc->SetUseTabs(true);
+            }}
       });
   }
-  
+
   if (const auto a(node->attribute("tabwidth").as_int(0)); a > 0)
   {
     m_attribs.push_back(
       {_("Tab width"), a, [&](stc* stc, int attrib) {
-        if (attrib > 0)
+        if (attrib >= 0)
         {
           stc->SetIndent(attrib);
           stc->SetTabWidth(attrib);
@@ -671,7 +671,7 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
            {"word", wxSTC_WRAP_WORD},
            {"char", wxSTC_WRAP_CHAR},
            {"whitespace", wxSTC_WRAP_WHITESPACE}}, a), [&](stc* stc, int attrib) {
-              if (attrib > 0)
+              if (attrib >= 0)
               {
                 stc->SetWrapMode(attrib);
               }}

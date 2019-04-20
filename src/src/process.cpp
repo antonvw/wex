@@ -6,14 +6,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
+#include <atomic>
+#include <queue>
+#include <thread>
 #include <vector>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wx/process.h>
-#include <wx/timer.h>
-#include <wx/txtstrm.h> // for wxTextInputStream
+#include <boost/process.hpp>
+#include <wx/valtext.h>
 #include <wex/process.h>
 #include <wex/config.h>
 #include <wex/debug.h>
@@ -22,97 +20,11 @@
 #include <wex/managedframe.h>
 #include <wex/shell.h>
 #include <wex/util.h>
-#include <process.hpp>
 
-#define GET_STREAM(SCOPE)                         \
-{                                                 \
-  if (Is##SCOPE##Available())                     \
-  {                                               \
-    wxTextInputStream tis(*Get##SCOPE##Stream()); \
-                                                  \
-    while (Is##SCOPE##Available())                \
-    {                                             \
-      const char c = tis.GetChar();               \
-                                                  \
-      if (c != 0)                                 \
-      {                                           \
-        text += c;                                \
-      }                                           \
-    }                                             \
-  }                                               \
-};                                                \
+namespace bp = boost::process;
 
 namespace wex
 {
-  // an async process
-  class process_imp : public wxProcess
-  {
-  public:
-    process_imp(process* process)
-      : wxProcess(wxPROCESS_REDIRECT) 
-      , m_process(process)
-      , m_timer(std::make_unique<wxTimer>(this)) {
-      Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {read();});};
-    virtual ~process_imp() {
-      m_timer.reset();};
-
-    bool execute(const std::string& path);
-    bool is_debug() const {return m_debug;};
-    bool kill(int sig);
-    void read(std::string* out = nullptr);
-    void write(const std::string& text, std::string* out);
-  private:
-    virtual void OnTerminate(int pid, int status) override {
-      m_timer->Stop();
-      read();
-      m_process->is_finished(pid);};
-    
-    bool m_debug {false};
-    std::string m_stdin;
-    process* m_process;
-    std::unique_ptr<wxTimer> m_timer;
-    wxCriticalSection m_critical;
-  };
-
-  bool process_run_and_collect_output(
-    const std::string& command, 
-    const std::string& cwd,
-    std::string* out,
-    std::string* err)
-  {
-    log::verbose("process exec wait", 1) << command;
-
-    out->clear();
-    err->clear();
-
-#ifndef __WXMSW__
-    TinyProcessLib::Process process(command, cwd,
-      [&](const char *bytes, size_t n) {out->append(bytes, n);},
-      [&](const char *bytes, size_t n) {err->append(bytes, n);});
-    
-    auto exit_status = process.get_exit_status();
-    
-    return exit_status != 0;
-#else
-    wxArrayString output;
-    wxArrayString errors;
-    struct wxExecuteEnv env;
-    env.cwd = cwd;
-
-    if (wxExecute(command, output, errors, wxEXEC_SYNC, &env) == -1)
-    {
-      return true;
-    }
-    else
-    {
-      // Set output by converting array strings into normal strings.
-      *out = wxJoin(output, '\n', '\n');
-      *err = wxJoin(errors, '\n', '\n');
-      return false;
-    }
-#endif
-  }
-      
   auto show_process(wex::managed_frame* frame, bool show)
   {
     if (frame != nullptr)
@@ -122,6 +34,74 @@ namespace wex
     }
 
     return false;  
+  };
+
+  class process_imp
+  {
+  public:
+    process_imp(process* process)
+      : m_process(process)
+      , m_io(std::make_shared<boost::asio::io_context>())
+      , m_queue(std::make_shared<std::queue
+          <std::pair<std::string, std::string*>>>()) {;}
+
+    // Starts the async process, collecting output
+    // into the stc shell of the parent process.
+    bool async(const std::string& path);
+    
+    // Stops the process.
+    bool stop() {
+      if (m_io->stopped()) return false;
+      log::verbose("stop") << m_process->get_exec();
+      m_io->stop();
+      return true;};
+    
+    // Writes data to the input of the process.
+    // TODO: out is not yet used.
+    bool write(const std::string& text, std::string* out) {
+      if (is_running())
+      {
+        m_queue->push({text, out});
+      }
+      return true;};
+
+    bool is_debug() const {return m_debug.load();};
+    bool is_running() const {return !m_io->stopped();};
+  private:
+    std::atomic_bool m_debug {false};
+    std::shared_ptr<boost::asio::io_context> m_io;
+    std::shared_ptr<std::queue<std::pair<std::string, std::string*>>> m_queue;
+    process* m_process;
+    bp::ipstream m_es, m_is;
+    bp::opstream m_os;
+  };
+
+  bool process_run_and_collect_output(
+    const std::string& command, 
+    const std::string& cwd,
+    std::string& output,
+    std::string& error)
+  {
+    try
+    {
+      std::future<std::string> of, ef;
+      const auto ec = bp::system(
+        bp::start_dir = cwd, command, bp::std_out > of, bp::std_err > ef);
+
+      log::verbose("process", 1) << command << "cwd:" << cwd << "ec:" << ec;
+    
+      output = of.get();
+      error = ef.get();
+    }
+    catch (std::exception& e)
+    {
+      log(e) << command << "cwd:" << cwd;
+
+      output.clear();
+      error = e.what();
+    }
+
+    return error.empty();
   }
 }
       
@@ -135,6 +115,10 @@ wex::process::process()
 
 wex::process::~process()
 {
+  if (m_process != nullptr)
+  {
+    m_process->stop();
+  }
 }
   
 wex::process::process(const process& process)
@@ -206,10 +190,6 @@ bool wex::process::execute(
 
   switch (type)
   {
-    case EXEC_WAIT:
-      error = process_run_and_collect_output(m_command, cwd, &m_stdout, &m_stderr);
-    break;
-
     case EXEC_NO_WAIT:
       // We need a shell for output.
       if (m_shell == nullptr) return false;
@@ -217,21 +197,18 @@ bool wex::process::execute(
       m_shell->enable(true);
       m_shell->set_process(this);
       m_shell->SetName(m_command);
-      m_shell->set_prompt(
-        // a unix shell itself has no prompt, so put one here
-        m_command.find("bash") == 0 ||
-        m_command.find("csh") == 0 ||
-        m_command.find("ksh") == 0 ||
-        m_command.find("tcsh") == 0 ||
-        m_command.find("sh") == 0 ? ">" : "");
       
       m_process = std::make_unique<process_imp>(this);
 
-      if (!m_process->execute(cwd))
+      if (!m_process->async(cwd))
       {
         m_process.reset();
         error = true;
       }
+    break;
+
+    case EXEC_WAIT:
+      error = !process_run_and_collect_output(m_command, cwd, m_stdout, m_stderr);
     break;
   }
   
@@ -240,34 +217,25 @@ bool wex::process::execute(
 
 bool wex::process::is_debug() const
 {
-  return m_process->is_debug();
+  return m_process != nullptr && m_process->is_debug();
 }
   
 void wex::process::is_finished(int pid)
 {
-  log::verbose("process", 1) << pid << "exit";
-  
-  m_frame->get_debug()->breakpoints().clear();
-  m_process.reset();
+  if (!m_frame->is_closing())
+  {
+    m_frame->get_debug()->breakpoints().clear();
+  }
 }
-  
+
 bool wex::process::is_running() const
 {
-  return m_process != nullptr && wxProcess::Exists(m_process->GetPid());
+  return m_process != nullptr && m_process->is_running();
 }
 
 bool wex::process::kill(kill_t type)
 {
-  bool killed = false;
-
-  if (m_process != nullptr)
-  {
-    killed = m_process->Kill(type == KILL_TERM ? wxSIGKILL: wxSIGINT);
-    m_process.reset();
-    show_process(m_frame, false);
-  }
-
-  return killed;
+  return m_process != nullptr && m_process->stop();
 }
 
 void wex::process::prepare_output(wxWindow* parent)
@@ -292,153 +260,110 @@ void wex::process::show_output(const std::string& caption) const
 
 bool wex::process::write(const std::string& text, std::string* out)
 {
-  if (!is_running()) 
-  {
-    log::status("Process is not running");
-    return false;
-  }
-  
-  m_process->write(text, out);
-  
-  if (!is_running())
-  {
-    show_process(m_frame, false);
-  }
-
-  return true;
+  return m_process != nullptr && m_process->write(text, out);
 }
 
 // Implementation.
 
-bool wex::process_imp::execute(const std::string& path)
+bool wex::process_imp::async(const std::string& path)
 {
-  struct wxExecuteEnv env;
-  env.cwd = path;
-  
-  if (wxExecute(m_process->get_command_executed(), wxEXEC_ASYNC, this, &env) <= 0) 
+  try
   {
+    bp::async_system(
+      *m_io.get(),
+      [&](boost::system::error_code error, int i) {
+        log::verbose("async", 1) << "exit";
+        m_process->is_finished(i);},
+      bp::start_dir = path,
+      m_process->get_exec(),
+      bp::std_out > m_is,
+      bp::std_in < m_os,
+      bp::std_err > m_es);
+  }
+  catch (std::exception& e)
+  {
+    log(e) << m_process->get_exec() << "path:" << path;
     return false;
   }
-  
-  m_debug = m_process->get_frame()->get_debug()->debug_entry().name()
-    == before(m_process->get_command_executed(), ' ');
 
-  log::verbose("process", 1) 
-    << GetPid() 
-    << "exec no wait:" << m_process->get_command_executed();
+  log::verbose("async", 1) << m_process->get_exec();
 
   show_process(m_process->get_frame(), true);
-  m_timer->Start(100); // milliseconds
   m_process->get_shell()->SetFocus();
-  
-  return true;
-}
 
-bool wex::process_imp::kill(int sig)
-{
-  if (const auto pid = GetPid(); wxProcess::Kill(pid, (wxSignal)sig) != wxKILL_OK)
-  {
-    return false;
-  }
-
-  return true;
-}
-
-void wex::process_imp::read(std::string* out)
-{
-  wxCriticalSectionLocker lock(m_critical);
+  m_debug.store(m_process->get_frame()->get_debug()->debug_entry().name()
+    == before(m_process->get_exec(), ' '));
   
-  std::string text;
-  GET_STREAM(Input);
-  GET_STREAM(Error);
-  
-  if (!text.empty())
-  {
-    if (out == nullptr)
+  std::thread t([
+    debug = m_debug.load() && m_process->get_frame() != nullptr,
+    process = m_process, 
+    &is = m_is] 
     {
-      m_process->get_shell()->AppendText(
-        // prevent echo of last input
-        !m_stdin.empty() && text.find(m_stdin) == 0 ?
-          text.substr(m_stdin.length()):
-          text);
-      
-      if (m_debug && m_process->get_frame() != nullptr)
+      while (is.good())
       {
-        m_process->get_frame()->get_debug()->process_stdout(text);
+        const std::string data(1, is.get());
+
+        if (!data.empty() && !process->get_frame()->is_closing())
+        {
+          wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_APPEND);
+          event.SetString(data);
+          wxPostEvent(process->get_shell(), event);
+
+          if (debug)
+          {
+            process->get_frame()->get_debug()->process_stdout(data);
+          }
+        }
       }
-    }
-    else
+    });
+  t.detach();
+
+  std::thread u([
+    debug = m_debug.load(), 
+    io = m_io, 
+    &os = m_os, 
+    process = m_process, 
+    queue = m_queue]
     {
-      *out = text;
-    }
-  }
-    
-  if (!m_stdin.empty())
-  {
-    m_stdin.clear();
-    m_process->get_shell()->prompt(std::string(), false);
-  }
-}
+      while (!io->stopped())
+      {
+        io->run_one_for(std::chrono::milliseconds(10));
 
-void handle_command(const std::string& command)
-{
-  const std::string cd = 
-#ifdef __WXMSW__
-      "chdir";
-#else
-      "cd";
-#endif        
+        if (!queue->empty())
+        {
+          const std::string text(queue->front().first);
+          queue->pop();
 
-  if (command.find(cd) == 0)
+          log::verbose("async") << "write:" << text;
+
+          os << text << std::endl;
+
+          if (debug && process->get_frame() != nullptr)
+          {
+            process->get_frame()->get_debug()->process_stdin(text);
+          }
+        }
+      }
+    });
+  u.detach();
+
+  std::thread v([process = m_process, &es = m_es] 
   {
-    wxLogNull logNo;
-    if (const auto rest (wex::skip_white_space(wex::after(command, cd.back())));
-      rest.empty() || rest == "~")
+    std::string data;
+
+    while (es.good())
     {
-#ifdef __WXMSW__
-#else        
-      wxSetWorkingDirectory(wxGetHomeDir());
-#endif        
+      data.append(std::string(1, es.get()));
     }
-    else
+
+    if (!data.empty() && !process->get_frame()->is_closing())
     {
-      wxSetWorkingDirectory(rest);
+      wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_APPEND);
+      event.SetString(data);
+      wxPostEvent(process->get_shell(), event);
     }
-  }
-}
+  });
+  v.detach();
 
-void wex::process_imp::write(const std::string& text, std::string* out)
-{
-  m_timer->Stop();
-  
-  if (m_process->get_command_executed().find("cmd") == 0 ||
-      m_process->get_command_executed().find("powershell") == 0)
-  {
-    m_process->get_shell()->DocumentEnd();
-  }
-    
-  // Write text to process and restart timer.
-  if (wxOutputStream* os = GetOutputStream(); os != nullptr)
-  {
-    handle_command(text);
-
-    if (m_debug && m_process->get_frame() != nullptr)
-    {
-      m_process->get_frame()->get_debug()->process_stdin(text);
-    }
-
-    const auto el = (text.size() == 1 && text[0] == 3 ? 
-      std::string(): std::string("\n"));
-
-    wxTextOutputStream(*os).WriteString(text + el);
-    
-    log::verbose("process") << GetPid() << "write:" << text;
-    
-    m_stdin = text;
-    wxMilliSleep(10);
-
-    read(out);
-
-    m_timer->Start();
-  }
+  return true;
 }

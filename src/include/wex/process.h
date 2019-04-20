@@ -27,8 +27,8 @@ namespace wex
     ///   and the output is available using get_stdout.
     enum exec_t
     {
-      EXEC_NO_WAIT = 0, ///< do not wait
-      EXEC_WAIT    = 1, ///< wait for process finish
+      EXEC_NO_WAIT, ///< do not wait
+      EXEC_WAIT,    ///< wait for process finish
     };
 
     /// process kill type
@@ -61,13 +61,13 @@ namespace wex
       /// command to be executed, if empty
       /// last given command is used
       const std::string& command = std::string(),
-      /// process excute type
+      /// process execute type
       exec_t type = EXEC_NO_WAIT,
       /// working dir, if empty last working dir is used
       const std::string& wd = std::string());
 
-    /// Returns command executed.
-    const auto & get_command_executed() const {return m_command;};
+    /// Returns command.
+    const auto & get_exec() const {return m_command;};
 
     /// Returns the frame.
     auto * get_frame() {return m_frame;};
@@ -84,9 +84,6 @@ namespace wex
     
     /// Is this a debug process.
     bool is_debug() const;
-    
-    /// Callback for finished pid.
-    void is_finished(int pid);
     
     /// Returns true if this process is running.
     bool is_running() const;
@@ -108,6 +105,9 @@ namespace wex
     /// but if you specify a string pointer, the stdout is 
     /// put into the out string.
     bool write(const std::string& text, std::string* out = nullptr);
+  public:
+    // Callback for finished pid.
+    void is_finished(int pid);
   private:
     std::string m_command, m_stderr, m_stdout;
     static std::string m_working_dir_key;

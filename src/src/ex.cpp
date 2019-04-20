@@ -228,7 +228,7 @@ wex::ex::ex(wex::stc* stc)
            {{"sw", "shiftwidth", "8"}, {cmdline::INT, [&](const std::any& val) {
              get_stc()->SetIndent(std::any_cast<int>(val));
              config(_("Indent")).set(std::any_cast<int>(val));}}},
-           {{"sy", "syntax (lexer or 'off')"}, {cmdline::STRING, [&](const std::any& val) {
+           {{"sy", "syntax"}, {cmdline::STRING, [&](const std::any& val) {
              if (std::any_cast<std::string>(val) != "off") 
                get_stc()->get_lexer().set(std::any_cast<std::string>(val), true); // allow folding
              else              

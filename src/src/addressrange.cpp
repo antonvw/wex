@@ -325,15 +325,8 @@ bool wex::addressrange::escape(const std::string& command)
       !marker_and_register_expansion(m_Ex, expanded) ||
       !shell_expansion(expanded)) return false;
 
-    if (m_Process == nullptr)
-    {
-      m_Process = new wex::process();
-    }
-    else
-    {
-      m_Process->kill();
-    }
-    
+    m_Process = new wex::process();
+
     return m_Process->execute(expanded, 
       process::EXEC_NO_WAIT, m_STC->get_filename().get_path());
   }

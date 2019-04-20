@@ -5,6 +5,7 @@ option(wxBUILD_INSTALL "Create install/uninstall target for wxWidgets" OFF)
 option(wxBUILD_SHARED "Build wWidgets as shared library" OFF)
 set(wxBUILD_CXX_STANDARD 17 CACHE INTERNAL "WX_CXX_STANDARD")
 
+option(wxUSE_CMDLINE_PARSER "Use cmdline parser" OFF)
 option(wxUSE_GLCANVAS "Use gl canvas" OFF)
 option(wxUSE_LIBTIFF "Use libtiff" OFF)
 option(wxUSE_PROPGRID "Use propgrid" OFF)

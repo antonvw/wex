@@ -35,7 +35,7 @@ TEST_CASE("wex::process")
   REQUIRE(!process->get_stdout().empty());
   
   REQUIRE(!process->is_running());
-  REQUIRE(!process->get_command_executed().empty());
+  REQUIRE(!process->get_exec().empty());
   REQUIRE(!process->kill());
   
   process->show_output();
@@ -44,8 +44,8 @@ TEST_CASE("wex::process")
   REQUIRE( process->execute("ls -l", wex::process::EXEC_WAIT));
   REQUIRE(!process->get_stdout().empty());
 
-  // Test working directory (should not change).
-  REQUIRE( process->execute("ls -l", wex::process::EXEC_WAIT, ".."));
+  // Test working directory.
+  REQUIRE( process->execute("ls -l", wex::process::EXEC_WAIT, "/"));
   REQUIRE(!process->get_stdout().empty());
   REQUIRE( wxGetCwd().Contains("data"));
 
@@ -60,20 +60,17 @@ TEST_CASE("wex::process")
   REQUIRE( process->is_running());
   wex::shell* shell = process->get_shell();  
   REQUIRE( shell != nullptr);
-  ::process("cd ~\rpwd\r", shell);
   REQUIRE( shell->GetText().size() > 50);
-  REQUIRE( cwd.original() != wex::path::current());
   REQUIRE( process->kill());
 
-  // Test working directory for process (should change).
-  REQUIRE( process->execute("ls -l", wex::process::EXEC_NO_WAIT, ".."));
-  REQUIRE(!wxGetCwd().Contains("data"));
+  // Test working directory.
+  REQUIRE( process->execute("ls -l", wex::process::EXEC_NO_WAIT, "/"));
   wex::path::current(cwd.original());
   REQUIRE( process->kill());
   
   // Test invalid process (the process gets a process id, and exits immediately).
   REQUIRE( process->execute("xxxx"));
-  REQUIRE( process->kill());
+  REQUIRE(!process->kill());
 #endif
   
   wex::process::prepare_output(frame()); // in fact already done

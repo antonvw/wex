@@ -13,7 +13,7 @@
 #include <numeric>
 #include <wex/shell.h>
 #include <wex/config.h>
-#include <wex/defs.h> // for ID_SHELL_COMMAND
+#include <wex/defs.h>
 #include <wex/process.h>
 #include <wex/tokenizer.h>
 #include <wex/util.h>
@@ -72,6 +72,9 @@ wex::shell::shell(
       event.Skip();
     }});
 
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    AppendText(event.GetString());}, ID_SHELL_APPEND);
+  
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     AppendText(event.GetString());}, ID_SHELL_COMMAND);
   
@@ -429,7 +432,7 @@ bool wex::shell::process_char(int key)
       }
       else if (m_Command.empty())
       {
-        if (m_Process != nullptr)
+        if (m_Process != nullptr && m_Process->is_running())
         {
           AppendText(eol());
           m_Process->write(m_Command);
@@ -464,7 +467,7 @@ bool wex::shell::process_char(int key)
             AppendText(eol() + m_Command);
             KeepCommand();
           
-            if (m_Process != nullptr)
+            if (m_Process != nullptr && m_Process->is_running())
             {
               AppendText(eol());
               m_Process->write(m_Command);
@@ -486,7 +489,7 @@ bool wex::shell::process_char(int key)
         {
           KeepCommand();
           
-          if (m_Process != nullptr)
+          if (m_Process != nullptr && m_Process->is_running())
           {
             AppendText(eol());
             m_Process->write(m_Command);

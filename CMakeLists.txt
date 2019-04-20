@@ -1,5 +1,11 @@
 project(wex)
 
+find_package(Boost 1.69.0)
+
+if(NOT Boost_FOUND)
+  message(FATAL_ERROR "boost is reqiured")
+endif()
+
 cmake_minimum_required(VERSION 3.0.0)
 
 set(user $ENV{USER} CACHE INTERNAL "keep user")

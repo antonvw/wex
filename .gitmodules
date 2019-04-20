@@ -16,6 +16,3 @@
 [submodule "external/ctags"]
 	path = external/ctags
 	url = https://github.com/universal-ctags/ctags.git
-[submodule "external/tiny-process-library"]
-	path = external/tiny-process-library
-	url = https://gitlab.com/eidheim/tiny-process-library.git

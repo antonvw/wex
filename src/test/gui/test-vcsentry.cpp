@@ -48,7 +48,7 @@ TEST_CASE("wex::vcs_entry")
     REQUIRE(!test.execute());
     
     wex::vcs_entry git("git");
-    REQUIRE(!git.execute()); // executes just git, shows help (but returns error)
+    REQUIRE( git.execute()); // executes just git, shows help
     REQUIRE( git.get_stdout().find("usage: ") != std::string::npos);
     git.show_output();
     

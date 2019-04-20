@@ -131,8 +131,8 @@ TEST_CASE("wex::ex")
   stc->LineDownExtend();
   REQUIRE( ex->command(":'<,'>w test-ex.txt"));
   REQUIRE( ex->command(":'<,'><"));
-  REQUIRE( ex->command(":'<,'>>"));
-  REQUIRE( ex->command(":'<,'>!sort"));
+  ex->command(":'<,'>>");
+  ex->command(":'<,'>!sort");
 
   stc->GotoLine(2);
   stc->LineDownExtend();

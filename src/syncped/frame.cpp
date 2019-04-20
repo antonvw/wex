@@ -297,7 +297,7 @@ frame::frame(app* app)
 
     if (m_App->data().control().command().empty())
     {
-      wxDELETE(m_Process);
+      delete m_Process;
     }
     event.Skip();
     });
@@ -317,7 +317,7 @@ frame::frame(app* app)
     info.SetDescription(description);
     info.SetCopyright(wex::get_version_info().copyright());
     info.SetWebSite("http://sourceforge.net/projects/syncped/");
-    wxAboutBox(info);}, wxID_ABOUT);
+    wxAboutBox(info, this);}, wxID_ABOUT);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     show_pane("PROCESS"); 
@@ -946,9 +946,9 @@ void frame::OnUpdateUI(wxUpdateUIEvent& event)
   switch (event.GetId())
   {
     case wxID_EXECUTE: 
-      event.Enable( !is_closing() && m_Process != nullptr &&
-		    !m_Process->get_command_executed().empty() &&
-                    !m_Process->is_running()); 
+      event.Enable(
+        !is_closing() && m_Process != nullptr &&
+		    !m_Process->get_exec().empty() && !m_Process->is_running()); 
       break;
     case wxID_STOP: event.Enable(m_Process->is_running()); break;
     case wxID_PREVIEW:
@@ -1087,9 +1087,6 @@ wex::stc* frame::open_file(
   const wex::vcs_entry& vcs,
   const wex::stc_data& data)
 {
-  wex::log::verbose("vcs") << 
-    vcs.get_command_executed() << "file" << filename;
-  
   if (vcs.get_command().is_blame())
   {
     if (auto* page = (wex::stc*)m_Editors->set_selection(filename.data().string());

@@ -1,4 +1,5 @@
 **v19.10**
+  - uses boost::process lib instead of tiny-process-library
   - uses wex::test and wex::report namespace
   - listview follows theme
   - ctags file static
