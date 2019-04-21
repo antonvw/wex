@@ -29,7 +29,7 @@ matrix:
       sudo: required
       addons: &gcc8
         apt:
-          packages: ["g++-8", "boost1.69"]
+          packages: ["g++-8", "libboost-all-dev"]
           sources: *apt_sources
 
     - env: COMPILER=clang++-8
@@ -39,7 +39,7 @@ matrix:
       sudo: required
       addons: &clang8
         apt:
-          packages: ["clang-8", "valgrind", "boost1.69"]
+          packages: ["clang-8", "valgrind", "libboost-all-dev"]
           sources: *apt_sources
 
   allow_failures:
