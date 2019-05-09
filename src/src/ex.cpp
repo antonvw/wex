@@ -88,7 +88,6 @@ namespace wex
   }
 };
 
-wex::evaluator wex::ex::m_evaluator;
 wex::vi_macros wex::ex::m_macros;
 
 wex::ex::ex(wex::stc* stc)
@@ -96,7 +95,7 @@ wex::ex::ex(wex::stc* stc)
   , m_frame(wxDynamicCast(wxTheApp->GetTopWindow(), managed_frame))
   , m_commands {
     {":ab", [&](const std::string& command) {
-      return HandleContainer<std::string, std::map<std::string, std::string>>(
+      return handle_container<std::string, std::map<std::string, std::string>>(
         "Abbreviations", command, &m_macros.get_abbreviations(),
         [=](const std::string& name, const std::string& value) {
           m_macros.set_abbreviation(name, value);return true;});}},
@@ -125,25 +124,25 @@ wex::ex::ex(wex::stc* stc)
       {
         case wex::command_arg_t::INT:
           // TODO: at this moment you cannot set KEY_CONTROL
-          return HandleContainer<int, wex::vi_macros_maptype>(
+          return handle_container<int, wex::vi_macros_maptype>(
             "Map", command, nullptr,
             [=](const std::string& name, const std::string& value) {
               m_macros.set_key_map(name, value);return true;}); 
         break;
         case wex::command_arg_t::NONE: show_dialog("Maps", 
             "[String map]\n" +
-            ReportContainer<std::string, std::map<std::string, std::string>>(m_macros.get_map()) +
+            report_container<std::string, std::map<std::string, std::string>>(m_macros.get_map()) +
             "[Key map]\n" +
-            ReportContainer<int, wex::vi_macros_maptype>(m_macros.get_keys_map()) +
+            report_container<int, wex::vi_macros_maptype>(m_macros.get_keys_map()) +
             "[Alt key map]\n" +
-            ReportContainer<int, wex::vi_macros_maptype>(m_macros.get_keys_map(vi_macros::KEY_ALT)) +
+            report_container<int, wex::vi_macros_maptype>(m_macros.get_keys_map(vi_macros::KEY_ALT)) +
             "[Control key map]\n" +
-            ReportContainer<int, wex::vi_macros_maptype>(m_macros.get_keys_map(vi_macros::KEY_CONTROL)), 
+            report_container<int, wex::vi_macros_maptype>(m_macros.get_keys_map(vi_macros::KEY_CONTROL)), 
             true);
           return true;
         break;
         case wex::command_arg_t::OTHER:
-          return HandleContainer<std::string, std::map<std::string, std::string>>(
+          return handle_container<std::string, std::map<std::string, std::string>>(
             "Map", command, nullptr,
             [=](const std::string& name, const std::string& value) {
               m_macros.set_map(name, value);return true;});
@@ -155,7 +154,7 @@ wex::ex::ex(wex::stc* stc)
     {":q!", [&](const std::string& command) {POST_CLOSE( wxEVT_CLOSE_WINDOW, false ) return true;}},
     {":q", [&](const std::string& command) {POST_CLOSE( wxEVT_CLOSE_WINDOW, true ) return true;}},
     {":reg", [&](const std::string& command) {
-      show_dialog("Registers", m_evaluator.info(this), true);
+      show_dialog("Registers", info(), true);
       return true;}},
     {":sed", [&](const std::string& command) {POST_COMMAND( ID_TOOL_REPLACE ) return true;}},
     {":set", [&](const std::string& command) {
@@ -363,16 +362,16 @@ bool wex::ex::auto_write()
   return true;
 }
 
-std::tuple<double, int> wex::ex::calculator(const std::string& text)
+int wex::ex::calculator(const std::string& text)
 {
-  const auto& [val, width, err] = m_evaluator.Eval(this, text);
+  const auto& [val, err] = evaluator().eval(this, text);
 
   if (!err.empty())
   {
-    show_dialog("Error", text + "\n" + err);
+    show_dialog("Error", err);
   }
 
-  return {val, width};
+  return val;
 }
 
 bool wex::ex::command(const std::string& cmd)
@@ -396,8 +395,8 @@ bool wex::ex::command(const std::string& cmd)
     return m_frame->show_ex_command(this, command);
   }
   else if (
-    !CommandHandle(command) &&
-    !CommandAddress(command.substr(1)))
+    !command_handle(command) &&
+    !command_address(command.substr(1)))
   {
     m_command.clear();
     return false;
@@ -409,7 +408,7 @@ bool wex::ex::command(const std::string& cmd)
   return auto_write();
 }
 
-bool wex::ex::CommandAddress(const std::string& command)
+bool wex::ex::command_address(const std::string& command)
 {
   auto rest(command);
   std::string range_str, cmd;
@@ -433,7 +432,7 @@ bool wex::ex::CommandAddress(const std::string& command)
     const std::string addrm("'[a-z]"); // addr using marker
     const std::string cmd_group1("([aikrz=]|pu)(.*)"); // 1 addr command
     const std::string cmd_group2("([cdgjmpsStvywy<>\\!&~])(.*)"); // 2 addr command
-    
+
     if (std::vector <std::string> v;
       // a % address range
       match("^%" + cmd_group2, rest, v) == 2 ||
@@ -564,7 +563,7 @@ bool wex::ex::CommandAddress(const std::string& command)
   }
 }
 
-bool wex::ex::CommandHandle(const std::string& command) const
+bool wex::ex::command_handle(const std::string& command) const
 {
   const auto& it = std::find_if(m_commands.begin(), m_commands.end(), 
     [command](auto const& e) {return e.first == command.substr(0, e.first.size());});
@@ -591,20 +590,8 @@ void wex::ex::cut(bool show_message)
   info_message(sel, wex::info_message_t::DEL);
 }
 
-const std::string wex::ex::register_insert() const
-{
-  return m_macros.get_register('.');
-}
-
-const std::string wex::ex::register_text() const
-{
-  return m_register ? 
-    m_macros.get_register(m_register):
-    m_macros.get_register('0');
-}
-  
 template <typename S, typename T> 
-bool wex::ex::HandleContainer(
+bool wex::ex::handle_container(
   const std::string& kind,
   const std::string& command,
   const T * container,
@@ -618,10 +605,26 @@ bool wex::ex::HandleContainer(
   }
   else if (container != nullptr)
   {
-    show_dialog(kind, ReportContainer<S, T>(*container), true);
+    show_dialog(kind, report_container<S, T>(*container), true);
   }
 
   return true;
+}
+
+std::string wex::ex::info()
+{
+  const lexer_props l;
+  std::string output(l.make_section("Named buffers"));
+
+  for (const auto& it : get_macros().registers())
+  {
+    output += it;
+  }
+
+  output += l.make_section("Filename buffer");
+  output += l.make_key("%", get_command().get_stc()->get_filename().fullname());
+
+  return output;
 }
 
 void wex::ex::info_message() const
@@ -782,8 +785,20 @@ void wex::ex::print(const std::string& text)
   show_dialog("Print", text);
 }
   
+const std::string wex::ex::register_insert() const
+{
+  return m_macros.get_register('.');
+}
+
+const std::string wex::ex::register_text() const
+{
+  return m_register ? 
+    m_macros.get_register(m_register):
+    m_macros.get_register('0');
+}
+  
 template <typename S, typename T>
-std::string wex::ex::ReportContainer(const T & t) const
+std::string wex::ex::report_container(const T & t) const
 {
   const wex::lexer_props l;
   std::string output;

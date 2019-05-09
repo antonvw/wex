@@ -104,7 +104,7 @@ TEST_CASE("wex::vi_macros")
 
   std::string expanded;
 
-  REQUIRE(!wex::vi_macros::mode()->expand(vi, wex::variable(), expanded));
+  REQUIRE( wex::vi_macros::mode()->expand(vi, wex::variable(), expanded));
 
 #ifdef __UNIX__
   // Test all environment macro variables.

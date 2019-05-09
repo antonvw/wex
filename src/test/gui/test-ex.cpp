@@ -250,8 +250,6 @@ TEST_CASE("wex::ex")
   SUBCASE("calculator")
   {
     stc->set_text("aaaaa\nbbbbb\nccccc\n");
-    const wxChar ds(wxNumberFormatter::GetDecimalSeparator());
-    int width = 0;
     
     REQUIRE(ex->marker_add('a', 1));
     REQUIRE(ex->marker_add('t', 1));
@@ -266,14 +264,11 @@ TEST_CASE("wex::ex")
       {"1 - 1",      {0,0}},
       {"2 / 1",      {2,0}},
       {"2 / 0",      {0,0}},
-      {"2 << 2",     {8,0}},
-      {"2 >> 1",     {1,0}},
+      {"2 < 2",      {8,0}},
+      {"2 > 1",      {1,0}},
       {"2 | 1",      {3,0}},
-      {"2 bitor 1",  {3,0}},
-      {"2 xor 1",    {3,0}},
       {"2 & 1",      {0,0}},
-      {"2 bitand 1", {0,0}},
-      {"compl(0)",   {-1,0}},
+      {"~0",         {-1,0}},
       {"4 % 3",      {1,0}},
       {".",          {1,0}},
       {"xxx",        {0,0}},
@@ -283,26 +278,12 @@ TEST_CASE("wex::ex")
       {"'t",         {2,0}},
       {"'u",         {3,0}},
       {"$",          {4,0}}};
-      
-    if (ds == '.')
-    {
-      calcs.insert(calcs.end(), {
-        {"1.0 + 1",{2,1}},
-        {"1.1 + 1.1",{2.2,1}}});
-    }
-    else
-    {
-      calcs.insert(calcs.end(), {
-        {"1,0 + 1",{2,1}},
-        {"1,1 + 1,1",{2.2,1}}});
-    }
     
     for (const auto& calc : calcs)
     {
-      if (const auto [val, width] = ex->calculator(calc.first); !std::isnan(val))
+      if (const auto val = ex->calculator(calc.first); !std::isnan(val))
       {
         REQUIRE( val == calc.second.first);
-        REQUIRE( width == calc.second.second);
       }
     }
   }

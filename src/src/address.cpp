@@ -164,8 +164,8 @@ int wex::address::get_line() const
     return 0;
   }
   
-  // Try address calculation. studio not yet: [[maybe_unused]]
-  if (const auto [sum, width] = m_Ex->calculator(m_Address); std::isnan(sum))
+  // Try address calculation.
+  if (const auto sum = m_Ex->calculator(m_Address); std::isnan(sum))
   {
     return 0;
   }

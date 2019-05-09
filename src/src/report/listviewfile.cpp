@@ -108,7 +108,7 @@ void wex::report::file::add_items(
       }
     }
   
-    log::status(_("Added")) << added << _("file(s)");
+    log::status("Added") << added << "file(s)";
   
     Bind(wxEVT_IDLE, &file::OnIdle, this);
 #ifdef __WXMSW__ 
@@ -183,7 +183,7 @@ bool wex::report::file::do_file_load(bool synced)
 
   if (synced)
   {
-    log::status(log::status_t().set(log::STAT_SYNC).set(log::STAT_FULLPATH)) << get_filename();
+    log::status() << get_filename();
   }
 
   get_frame()->set_recent_project(get_filename());

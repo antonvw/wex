@@ -112,6 +112,9 @@ namespace wex
     /// Returns the line size.
     size_t line_size() const;
     
+    /// Logs info about this class.
+    std::stringstream log() const;
+
     /// Returns a lexer comment string with text formatted.
     const std::string make_comment(
       const std::string& text,

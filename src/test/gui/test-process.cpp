@@ -36,7 +36,6 @@ TEST_CASE("wex::process")
   
   REQUIRE(!process->is_running());
   REQUIRE(!process->get_exec().empty());
-  REQUIRE(!process->kill());
   
   process->show_output();
 
@@ -53,7 +52,6 @@ TEST_CASE("wex::process")
   REQUIRE(!process->execute("xxxx", wex::process::EXEC_WAIT));
   REQUIRE(!process->get_stderr().empty());
   REQUIRE( process->get_stdout().empty());
-  REQUIRE(!process->kill());
   
   // Test not wait for process (async)
   REQUIRE( process->execute("bash"));
@@ -61,16 +59,14 @@ TEST_CASE("wex::process")
   wex::shell* shell = process->get_shell();  
   REQUIRE( shell != nullptr);
   REQUIRE( shell->GetText().size() > 50);
-  REQUIRE( process->kill());
+  REQUIRE( process->stop());
 
   // Test working directory.
-  REQUIRE( process->execute("ls -l", wex::process::EXEC_NO_WAIT, "/"));
+  REQUIRE( process->execute("ls -l", wex::process::EXEC_WAIT, "/"));
   wex::path::current(cwd.original());
-  REQUIRE( process->kill());
   
   // Test invalid process (the process gets a process id, and exits immediately).
   REQUIRE( process->execute("xxxx"));
-  REQUIRE(!process->kill());
 #endif
   
   wex::process::prepare_output(frame()); // in fact already done

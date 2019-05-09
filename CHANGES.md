@@ -1,9 +1,8 @@
 **v19.10**
+  - uses boost::spirit lib instead of eval lib
   - uses boost::process lib instead of tiny-process-library
+  - uses boost::statechart lib instead of fsm lib
   - uses wex::test and wex::report namespace
-  - listview follows theme
-  - ctags file static
-  - blame improvements
   
 **v19.04** *March 9, 2019*
   - uses wex namespace

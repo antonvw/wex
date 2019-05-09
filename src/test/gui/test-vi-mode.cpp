@@ -34,7 +34,7 @@ TEST_CASE("wex::vi_mode")
   REQUIRE( mode.transition(command));
   REQUIRE( mode.insert());
   command = "i";
-  REQUIRE(!mode.transition(command));
+  REQUIRE( mode.transition(command));
   REQUIRE( mode.insert());
   REQUIRE( mode.string() == "insert");
   REQUIRE( mode.escape());

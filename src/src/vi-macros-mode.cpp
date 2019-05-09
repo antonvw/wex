@@ -59,7 +59,7 @@ wex::vi_macros_mode::~vi_macros_mode()
 bool wex::vi_macros_mode::expand(
   ex* ex, const variable& v, std::string& expanded)
 {
-  return m_FSM->expand(ex, v, expanded);
+  return m_FSM->process_expand(ex, v, expanded);
 }
 
 bool wex::vi_macros_mode::is_playback() const
@@ -85,16 +85,14 @@ int wex::vi_macros_mode::transition(
     return 0;
   }
 
-  vi_macros_fsm::trigger_t trigger = vi_macros_fsm::trigger_t::DONE;
   wxWindow* parent = (ex != nullptr ? ex->get_stc(): wxTheApp->GetTopWindow());
 
   std::string macro(command);
+  const ex_command cmd(ex != nullptr ? ex->get_command(): ex_command());
 
   switch (macro[0])
   {
     case 'q': 
-      trigger = vi_macros_fsm::trigger_t::RECORD;
-
       macro.erase(0, 1);
 
       if (complete)
@@ -121,6 +119,8 @@ int wex::vi_macros_mode::transition(
       {
         return 0;
       }
+
+      m_FSM->process(vi_macros_fsm::evRECORD(), macro, ex, repeat);
     break;
 
     case '@': 
@@ -183,15 +183,15 @@ int wex::vi_macros_mode::transition(
         }
       }
 
-      trigger = vi_macros::is_recorded_macro(macro) ? 
-        vi_macros_fsm::trigger_t::PLAYBACK: vi_macros_fsm::trigger_t::EXPAND_VARIABLE; 
+      if (vi_macros::is_recorded_macro(macro))
+        m_FSM->process(vi_macros_fsm::evPLAYBACK(), macro, ex, repeat);
+      else
+        m_FSM->process(vi_macros_fsm::evEXPAND_VARIABLE(), macro, ex, repeat);
     break;
 
     default: return 0;
   }
 
-  const ex_command cmd(ex != nullptr ? ex->get_command(): ex_command());
-  m_FSM->execute(trigger, macro, ex, repeat);
   if (ex != nullptr) ex->m_command.restore(cmd);
 
   return command.size();

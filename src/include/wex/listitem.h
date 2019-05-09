@@ -43,6 +43,9 @@ namespace wex
     /// Returns true if this item is readonly (on the listview).
     bool is_readOnly() const {return m_IsReadOnly;};
 
+    /// Logs info about this item.
+    std::stringstream log() const;
+
     /// Sets the item text using column name.
     /// Returns false if text could not be set.
     bool set_item(const std::string& col_name, const std::string& text);

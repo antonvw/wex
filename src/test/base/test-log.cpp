@@ -36,7 +36,7 @@ TEST_CASE( "wex::log" )
   SUBCASE("status")
   {
     wex::log::status() << wex::test::get_path("test.h");
-    wex::log::status(wex::log::status_t(wex::log::STAT_SYNC)) << "hello world";
+    wex::log::status() << "hello world";
     wex::log::status("hello") << "hello world";
   }
   

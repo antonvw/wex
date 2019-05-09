@@ -96,6 +96,9 @@ namespace wex
     
     /// Returns number of macros and variables available.
     auto size() const {return m_Macros.size() + m_Variables.size();};
+        
+    /// Erases current macro from the vector and cleans it.
+    static void erase();
     
     /// Returns all macro names as a vector of strings.
     /// Does not include registers.
@@ -130,12 +133,18 @@ namespace wex
     /// Returns the mode we are in.  
     static auto mode() {return m_Mode;};
 
+    /// Saves macro.
+    static void save_macro(const std::string& macro);
+        
     /// Saves all macros (and variables) to xml document.
     /// If you specify only_if_modified, then document is only saved
     /// if it was modified (if macros have been recorded since last save).
     /// Returns true if document is saved.
     static bool save_document(bool only_if_modified = true);
 
+    /// Sets macro.
+    static void set_macro(const std::string& macro) {m_Macro = macro;};
+    
     /// Does a recorded macro or variable starts with text.
     static bool starts_with(const std::string_view& text);
   private:  
@@ -152,7 +161,6 @@ namespace wex
       const std::string& name,
       T & container);
 
-    static void save_macro(const std::string& macro);
     static void ParseNodeMacro(const pugi::xml_node& node);
     static void ParseNodeVariable(const pugi::xml_node& node);
 

@@ -3,7 +3,7 @@ project(wex)
 find_package(Boost 1.69.0)
 
 if(NOT Boost_FOUND)
-  message(FATAL_ERROR "boost is reqiured")
+  message(FATAL_ERROR "boost is required")
 endif()
 
 cmake_minimum_required(VERSION 3.0.0)
@@ -15,7 +15,6 @@ include(cmake/options.cmake)
 execute_process(
   COMMAND git apply ../wxWidgets.patch
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets)
-  
 
 configure_file(
   src/src/lexers/LexAda.cxx 

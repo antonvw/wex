@@ -32,8 +32,6 @@ for mingw add `-G "MinGW Makefiles"` and do `mingw32-make`
 
 - [doctest lib](https://github.com/onqtam/doctest)    
 - [easylogging++ lib](https://github.com/muflihun/easyloggingpp)    
-- [eval lib](https://github.com/r-lyeh/eval)    
-- [fsm lib](https://github.com/eglimi/cppfsm)    
 - [OTL database lib](http://otl.sourceforge.net/)    
 - [pugixml lib](https://github.com/zeux/pugixml)    
 - [tclap lib](http://tclap.sourceforge.net/)    

@@ -84,6 +84,15 @@ void wex::listitem::insert(long index)
   }
 }
 
+std::stringstream wex::listitem::log() const
+{
+  std::stringstream ss;
+
+  ss << "PATH: " << m_Path.data().string();
+
+  return ss;
+}
+
 bool wex::listitem::set_item(
   const std::string& col_name, const std::string& text) 
 {

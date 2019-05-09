@@ -60,9 +60,6 @@ TEST_CASE("wex::debug")
 #endif
   REQUIRE(!dbg.execute(item));
   
-  dbg.process_stdin("test");
-  dbg.process_stdout("test");
-
 /*    
   wex::stc* stc = get_stc();
   stc->set_text("#include <stdio.h>\n\nmain()\n{printf(\"hello world\");\n}\n");

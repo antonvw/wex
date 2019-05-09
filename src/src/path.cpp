@@ -2,7 +2,7 @@
 // Name:      path.cpp
 // Purpose:   Implementation of class wex::path
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/mimetype.h>
@@ -21,12 +21,13 @@ const std::string substituteTilde(const std::string& text)
   return out;
 }
 
-wex::path::path(const fs::path& p)
+wex::path::path(const fs::path& p, status_t t)
   : m_path(p)
   , m_Stat(p.string()) 
   , m_Lexer(lexers::get(false) != nullptr ? 
       lexers::get(false)->find_by_filename(p.filename().string()):
       std::string())
+  , m_status(t)
 {
   if (p.empty())
   {
@@ -49,8 +50,8 @@ wex::path::path(const char* p)
 {
 }
 
-wex::path::path(const path& r)
-  : path(r.data()) 
+wex::path::path(const path& r, status_t t)
+  : path(r.data(), t) 
 {
 }
 
@@ -78,6 +79,7 @@ wex::path& wex::path::operator=(const wex::path& r)
     m_path = r.data();
     m_Lexer = r.m_Lexer;
     m_Stat = r.m_Stat;
+    m_status = r.m_status;
   }
   
   return *this;
@@ -100,21 +102,27 @@ void wex::path::current(const std::string& path)
     }
     catch (const std::exception& e)
     {
-      log(e) << "path:" << path;
+      wex::log(e) << "path:" << path;
     }
   }
 }
 
-const std::vector<wex::path> wex::path::paths() const
+std::stringstream wex::path::log() const
 {
-  std::vector<path> v;
+  std::stringstream ss;
+  
+  ss << (m_status[STAT_FULLPATH] ? data().string(): fullname());
 
-  for (const auto& e : m_path)
+  if (stat().is_ok())
   {
-    v.emplace_back(e);
+    const std::string what = (m_status[STAT_SYNC] ? 
+      _("Synchronized"):
+      _("Modified"));
+        
+    ss << " " << what << " " << stat().get_modification_time();
   }
 
-  return v;
+  return ss;
 }
 
 wex::path& wex::path::make_absolute() 
@@ -149,22 +157,34 @@ bool wex::path::open_mime() const
   {
     return false;
   }
-  else if (const auto command(type->GetOpenCommand(data().string())); 
+  else if (const std::string command(type->GetOpenCommand(data().string())); 
     command.empty())
   {
-    log("open_mime open") << command;
+    wex::log("open_mime open") << command;
     return false;
   }
   else
   {
     if (wxExecute(command) == -1)
     {
-      log("open_mime execute") << command;
+      wex::log("open_mime execute") << command;
       return false;
     }
   }
   
   return true;
+}
+
+const std::vector<wex::path> wex::path::paths() const
+{
+  std::vector<path> v;
+
+  for (const auto& e : m_path)
+  {
+    v.emplace_back(e);
+  }
+
+  return v;
 }
 
 wex::path& wex::path::replace_filename(const std::string& filename)

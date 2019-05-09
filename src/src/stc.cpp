@@ -598,11 +598,11 @@ void wex::stc::print_preview(wxPreviewFrameModalityKind kind)
 }
 #endif
 
-void wex::stc::properties_message(log::status_t flags)
+void wex::stc::properties_message(path::status_t flags)
 {
-  log::status(flags) << get_filename();
+  log::status() << path(get_filename(), flags);
   
-  if (!flags[log::STAT_SYNC])
+  if (!flags[path::STAT_SYNC])
   {
     frame::update_statusbar(this, "PaneFileType");
     frame::update_statusbar(this, "PaneLexer");
@@ -611,7 +611,7 @@ void wex::stc::properties_message(log::status_t flags)
   
   frame::update_statusbar(this, "PaneInfo");
 
-  if (!flags[log::STAT_SYNC] && m_Frame != nullptr)
+  if (!flags[path::STAT_SYNC] && m_Frame != nullptr)
   {
     const wxString file = GetName() + 
       (GetReadOnly() ? " [" + _("Readonly") + "]": wxString());

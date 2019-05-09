@@ -55,7 +55,7 @@ wex::lexer::lexer(const pugi::xml_node* node)
 
   if (!m_is_ok)
   {
-    log("missing lexer") << *node;
+    wex::log("missing lexer") << *node;
   }
   else
   {
@@ -85,7 +85,7 @@ wex::lexer::lexer(const pugi::xml_node* node)
         if (const std::string& direct(child.text().get());
           !direct.empty() && !add_keywords(direct))
         {
-          log("keywords could not be set") << child;
+          wex::log("keywords could not be set") << child;
         }
 
         // Add all keywords that point to a keyword set.
@@ -101,17 +101,17 @@ wex::lexer::lexer(const pugi::xml_node* node)
 
             if (keywords.empty())
             {
-              log("empty keywords for") << att.value() << child;
+              wex::log("empty keywords for") << att.value() << child;
             }
 
             if (!add_keywords(keywords, setno))
             {
-              log("keywords for") << att.value() << "could not be set" << child;
+              wex::log("keywords for") << att.value() << "could not be set" << child;
             }
           }
           catch (std::exception& e)
           {
-            log(e) << "keyword:" << att.name();
+            wex::log(e) << "keyword:" << att.name();
           }
         }
       }
@@ -119,7 +119,7 @@ wex::lexer::lexer(const pugi::xml_node* node)
       {
         if (!m_Properties.empty())
         {
-          log("properties already available") << child;
+          wex::log("properties already available") << child;
         }
 
         node_properties(&child, m_Properties);
@@ -193,7 +193,7 @@ bool wex::lexer::add_keywords(const std::string& value, int setno)
         if (const auto new_setno = std::stoi(fields.get_next_token());
           new_setno <= 0 || new_setno >= wxSTC_KEYWORDSET_MAX)
         {
-          log("invalid keyword set") << new_setno;
+          wex::log("invalid keyword set") << new_setno;
           return false;
         }
         else if (new_setno != setno)
@@ -209,7 +209,7 @@ bool wex::lexer::add_keywords(const std::string& value, int setno)
       }
       catch (std::exception& e)
       {
-        log(e) << "keyword:" << keyword;
+        wex::log(e) << "keyword:" << keyword;
         return false;
       }
     }
@@ -315,7 +315,7 @@ void wex::lexer::auto_match(const std::string& lexer)
   {
     if (lexers::get()->get_macros(lexer).empty())
     {
-      log::warning("no macros provided") << lexer;
+      wex::log::warning("no macros provided") << lexer;
     }
 
     for (const auto& it : lexers::get()->get_macros(lexer))
@@ -475,6 +475,18 @@ bool wex::lexer::keyword_starts_with(const std::string& word) const
     it->find(word) == 0;
 }
 
+std::stringstream wex::lexer::log() const
+{
+  std::stringstream ss;
+  ss << 
+    "display: " << m_DisplayLexer <<
+    "extensions: " << m_Extensions <<
+    "language: " << m_Language <<
+    "lexer: " << m_ScintillaLexer;
+
+  return ss;
+}
+  
 const std::string wex::lexer::make_comment(
   const std::string& text,
   bool fill_out_with_space,
@@ -583,7 +595,7 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
     }
     catch (std::exception& e)
     {
-      log(e) << "edgecolumns:" << a;
+      wex::log(e) << "edgecolumns:" << a;
     }
   }
     

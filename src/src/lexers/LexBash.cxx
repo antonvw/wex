@@ -994,12 +994,27 @@ static void ColouriseRFWDoc(
   WordList cmdDelimiter;
   cmdDelimiter.Set("| || |& & && ; ;; ( ) { }");
 
-  const std::vector<std::pair<std::string, bool>> spacedKeyword
+  const std::vector<std::pair<std::string, bool>> special_keywords
   {
     {"IN RANGE", false}, 
+    {"*Keywords*", true}, 
+    {"* Keywords *", true}, 
+    {"** Keywords **", true}, 
+    {"*** Keywords ***", true}, 
+    {"*Settings*", true}, 
+    {"* Settings *", true}, 
+    {"** Settings **", true}, 
+    {"*** Settings ***", true}, 
     {"Suite Setup", false}, 
     {"*Test Cases*", true}, 
-    {"Test Setup", false}
+    {"* Test Cases *", true}, 
+    {"** Test Cases **", true}, 
+    {"*** Test Cases ***", true}, 
+    {"Test Setup", false},
+    {"*Variables*", true},
+    {"* Variables *", true},
+    {"** Variables **", true},
+    {"*** Variables ***", true} 
   };
 
   const CharacterSet setWordStart(CharacterSet::setAlpha, ":_[*");
@@ -1075,16 +1090,16 @@ static void ColouriseRFWDoc(
       cmdStateNew = cmdState;
     int stylePrev = sc.state;
 
-    // detect spaced keywords
+    // detect special keywords
     words.append(1, sc.ch);
-    for (unsigned ki = 0; ki < spacedKeyword.size(); ki++)
+    for (unsigned ki = 0; ki < special_keywords.size(); ki++)
     {
       if (std::equal(
         words.begin(), 
         words.end(), 
-        spacedKeyword[ki].first.begin()))
+        special_keywords[ki].first.begin()))
       {
-        if (words.size() == spacedKeyword[ki].first.size())
+        if (words.size() == special_keywords[ki].first.size())
         {
           sc.Forward();
           sc.SetState(SCE_SH_WORD);

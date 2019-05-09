@@ -98,9 +98,10 @@ constexpr int c_strcmp( char const* lhs, char const* rhs )
   get_stc()->EndUndoAction();        \
 }
 
-char ConvertKeyEvent(const wxKeyEvent& event)
+char ConvertKeyEvent(const wxKeyEvent& event, const wex::vi_mode& mode)
 {
   if (event.GetKeyCode() == WXK_BACK) return WXK_BACK;
+  if (event.GetKeyCode() == WXK_RETURN && !mode.insert()) return '_';
 
   char c = event.GetUnicodeKey();
   
@@ -115,7 +116,7 @@ char ConvertKeyEvent(const wxKeyEvent& event)
       case WXK_DELETE:   c = 'x'; break;
       case WXK_PAGEUP:   c = WXK_CONTROL_B; break;
       case WXK_PAGEDOWN: c = WXK_CONTROL_F; break;
-      case WXK_NUMPAD_ENTER: c = '\r'; break;
+      case WXK_NUMPAD_ENTER: c = '_'; break;
       default: c = event.GetKeyCode();
     }
   }
@@ -719,7 +720,7 @@ bool wex::vi::command(const std::string& command)
 
 void wex::vi::command_calc(const std::string& command)
 {
-  if (const auto [sum, width] = calculator(
+  if (const auto sum = calculator(
     command.substr(command[0] == '=' ? 1: 2)); !std::isnan(sum))
   {
     if (mode().insert())
@@ -729,13 +730,12 @@ void wex::vi::command_calc(const std::string& command)
         get_stc()->ReplaceSelection(wxEmptyString);
       }
     
-      add_text(wxString::Format("%.*f", width, sum).ToStdString());
+      add_text(std::to_string(sum));
     }
     else
     {
-      const std::string msg(wxString::Format("%.*f", width, sum));
-      set_register_yank(msg);
-      frame()->show_ex_message(msg);
+      set_register_yank(std::to_string(sum));
+      frame()->show_ex_message(std::to_string(sum));
     }
   }
 }
@@ -1206,7 +1206,7 @@ bool wex::vi::on_char(const wxKeyEvent& event)
       return true;
     }
 
-    m_command.append(ConvertKeyEvent(event));
+    m_command.append(ConvertKeyEvent(event, mode()));
     const bool result = insert_mode(m_command.command());
 
     if (result || (get_stc()->is_hexmode() && m_command.size() > 2))
@@ -1309,7 +1309,7 @@ bool wex::vi::on_key_down(const wxKeyEvent& event)
         m_InsertText.pop_back();
       }
     }
-    else if (m_command.append_exec(ConvertKeyEvent(event)))
+    else if (m_command.append_exec(ConvertKeyEvent(event, mode())))
     {
       m_command.clear();
       m_InsertCommand.clear();

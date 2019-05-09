@@ -240,7 +240,7 @@ wex::listview::listview(const listview_data& data)
            )
         {
           item.update();
-          log::status(log::status_t().set(log::STAT_SYNC).set(log::STAT_FULLPATH)) << item.get_filename();
+          log::status() << item.get_filename();
           m_ItemUpdated = true;
         }
     
@@ -293,7 +293,7 @@ wex::listview::listview(const listview_data& data)
       if (const wex::path fn(listitem(this, event.GetIndex()).get_filename());
         fn.stat().is_ok())
       {
-        log::status(log::status_t().set(log::STAT_FULLPATH)) << fn;
+        log::status() << fn;
       }
       else
       {
@@ -1151,7 +1151,7 @@ bool wex::listview::sort_column(int column_no, sort_t sort_method)
       after_sorting();
     }
 
-    log::status(_("Sorted on")) << sorted_col.GetText();
+    log::status(_("Sorted on")) << sorted_col.GetText().ToStdString();
   }
   catch (std::exception& e)
   {

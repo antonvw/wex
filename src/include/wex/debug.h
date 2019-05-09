@@ -10,6 +10,7 @@
 #include <map>
 #include <string>
 #include <tuple>
+#include <wx/event.h>
 #include <wex/debug-entry.h>
 #include <wex/marker.h>
 #include <wex/path.h>
@@ -24,7 +25,7 @@ namespace wex
 
   /// Offers a debug that allows you to use an stc component as
   /// graphical interface for a debug process (e.g. gdb).
-  class debug
+  class debug : public wxEvtHandler
   {
   public:
     /// Constructor.
@@ -63,12 +64,6 @@ namespace wex
     /// Returns process.
     auto * process() {return m_Process;};
 
-    /// Handles stdin from process.
-    void process_stdin(const std::string& text);
-    
-    /// Handles stdout from process.
-    void process_stdout(const std::string& text);
-    
     /// Shows dialog to select debug entry.
     bool show_dialog(frame* parent);
 
@@ -78,6 +73,10 @@ namespace wex
     bool clear_breakpoints(const std::string& text);
     std::tuple<bool, std::string> get_args(
       const std::string& command, stc* stc);
+    /// Handles stdin from process.
+    void process_stdin(const std::string& text);
+    /// Handles stdout from process.
+    void process_stdout(const std::string& text);
     bool set_entry(const std::string& debugger);
 
     /// Marker for a breakpoint.

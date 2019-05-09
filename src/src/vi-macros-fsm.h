@@ -2,19 +2,31 @@
 // Name:      vi-macros-fsm.h
 // Purpose:   Declaration of class wex::vi_macros_fsm
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <string>
-#include <fsm.h>
+#include <boost/statechart/state_machine.hpp>
+
+namespace sc = boost::statechart;
 
 namespace wex
 {
   class ex;
   class variable;
 
-  /// This class holds the table containing the states.
-  class vi_macros_fsm
+  // Forward the simple states.
+  struct ssACTIVE;
+  struct ssEXPANDING_TEMPLATE;
+  struct ssEXPANDING_VARIABLE;
+  struct ssIDLE;
+  struct ssPLAYINGBACK;
+  struct ssPLAYINGBACK_WHILE_RECORDING;
+  struct ssRECORDING;
+
+  /// This class offers the state machine 
+  /// and initially enters the idle mode.
+  class vi_macros_fsm : public sc::state_machine< vi_macros_fsm, ssACTIVE >
   {
   public:
     enum state_t
@@ -27,50 +39,54 @@ namespace wex
       EXPANDING_VARIABLE,
     };
 
-    enum trigger_t
-    {
-      DONE,
-      EXPAND_TEMPLATE,
-      EXPAND_VARIABLE,
-      PLAYBACK,
-      RECORD,
-    };
+    // All events.
+    struct evDONE : sc::event< evDONE > {};
+    struct evEXPAND_TEMPLATE : sc::event< evEXPAND_TEMPLATE > {};
+    struct evEXPAND_VARIABLE : sc::event< evEXPAND_VARIABLE > {};
+    struct evPLAYBACK : sc::event< evPLAYBACK > {};
+    struct evRECORD : sc::event< evRECORD > {};
 
-    /// Default constructor.
     vi_macros_fsm();
 
-    /// transitions according to trigger.
-    bool execute(
-      /// trigger
-      trigger_t trigger, 
-      /// command
-      const std::string& macro = std::string(), 
-      // ex component
-      ex* ex = nullptr, 
-      /// number of times (in case of playback)
-      int count = 1);
+    void expanding_template();
 
-    /// Expands template variable (transitions into expand and back to idle).
-    bool expand(
-      /// ex component
+    bool expanding_variable(const std::string& name, std::string* value) const;
+
+    auto get() const {return m_state;};
+
+    int get_count() const {return m_count;};
+    
+    std::string get_macro() const {return m_macro;};
+    
+    const auto & get_variable() const {return m_variable;};
+
+    bool is_playback() const {return m_state == PLAYINGBACK;};
+
+    void playback();
+    
+    /// Process general event.
+    bool process(
+      const event_base_type& ev, 
+      const std::string& macro = std::string(), 
+      ex* ex = nullptr, 
+      int count = 1);
+    
+    /// Process expand template variable.
+    bool process_expand(
       ex* ex, 
-      /// template variable
       const variable& v, 
-      /// result
       std::string& expanded);
 
-    /// Returns internal state.
-    auto get() const {return m_fsm.state();};
+    void set_error() {m_error = true;};
 
-    /// Returns true if busy playing back.
-    bool is_playback() const;
+    void start_recording();
 
-    /// Returns internal state as a string.
+    void state(state_t s) {m_state = s;};
+
     const std::string state() const {
-      return get() == IDLE ? std::string(): state(get());};
+      return get() == IDLE ? std::string(): state_string(get());};
 
-    /// Returns any state as a string.
-    static const std::string state(state_t state) {
+    static const std::string state_string(state_t state) {
       switch (state)
       {
         case IDLE: return "idle"; 
@@ -81,35 +97,15 @@ namespace wex
         case RECORDING: return "recording";
         default: return "unhandled state";
       };};
-
-    /// Returns any trigger as a string.
-    static const std::string trigger(trigger_t trigger) {
-      switch (trigger)
-      {
-        case DONE: return "done";
-        case EXPAND_TEMPLATE: return "expand_template";
-        case EXPAND_VARIABLE: return "expand_variable";
-        case PLAYBACK: return "playback";
-        case RECORD: return "record";
-        default: return "unhandled trigger";
-      };};
   private:
-    void ExpandingTemplate();
-    void ExpandingVariable();
-    bool ExpandingVariable(const std::string& name, std::string* value) const;
-    void Playback();
     void set_ask_for_input() const;
-    void StartRecording();
-    void StopRecording();
-    static void verbose(state_t, state_t, trigger_t);
 
     int m_count{1};
-    bool m_error {false}, m_playback {false};
+    bool m_error {false};
     ex* m_ex {nullptr};
     variable m_variable;
     std::string* m_expanded {nullptr};
     static inline std::string m_macro;
-
-    FSM::Fsm<state_t, IDLE, trigger_t> m_fsm;
+    state_t m_state = IDLE;
   };
 };

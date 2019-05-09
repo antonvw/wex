@@ -36,6 +36,12 @@ wex::vi_macros::vi_macros()
   }
 }
 
+void wex::vi_macros::erase()
+{
+  m_Macros.erase(m_Macro);
+  m_Macro.clear();
+}
+    
 const std::vector< std::string > wex::vi_macros::get()
 {
   std::vector< std::string > v;
@@ -269,6 +275,7 @@ void wex::vi_macros::record(const std::string& text, bool new_command)
   
   if (new_command) 
   {
+    log::verbose("recorded") << m_Macro << ":" << text;
     m_Macros[m_Macro].emplace_back(text == " " ? "l": text);
   }
   else

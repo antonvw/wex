@@ -240,7 +240,7 @@ namespace wex
       wxPreviewFrameModalityKind kind = wxPreviewFrame_AppModal);
 
     /// Shows properties on the statusbar using specified flags.
-    void properties_message(log::status_t flags = 0);
+    void properties_message(path::status_t flags = 0);
     
     /// Replaces all text.
     /// It there is a selection, it replaces in the selection, otherwise

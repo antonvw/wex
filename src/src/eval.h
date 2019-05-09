@@ -2,43 +2,35 @@
 // Name:      eval.h
 // Purpose:   Declaration of class wex::evaluator
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <tuple>
 
-struct evaluator_extra;
-
 namespace wex
 {
+  class evaluator_imp;
   class ex;
 
-  /// This class offers methods to evaluate expressions.
+  /// This class offers an (ex) expression evaluator.
   class evaluator
   {
   public:
     /// Default constructor.
-    evaluator() {;};
+    evaluator();
 
     /// Destructor.
    ~evaluator();
 
-    /// Runs a calculation.
-    /// Returns calculated value with precision width of text, and possible error.
-    std::tuple<double, int, std::string> Eval(
+    /// Returns calculated value and possible error.
+    std::tuple<int, std::string> eval(
       /// the ex component, e.g. for line number (.) if present in text
       ex* ex, 
       /// text containing the expression to be evaluated
       const std::string& text);
-
-    /// Returns the info for variables.
-    std::string info(const ex* ex);
   private:
-    void Init();
-
-    bool m_Initialized {false};
-    evaluator_extra* m_eval {nullptr};
+    evaluator_imp* m_eval;
   };
 };

@@ -22,10 +22,23 @@ namespace wex
   {
     friend class file; // it might update file_stat
   public:
+    /// Flags for path logging.
+    enum
+    {
+      STAT_SYNC     = 0, ///< shows 'synchronized' instead of 'modified'
+      STAT_FULLPATH = 1  ///< shows file 'fullpath' instead of 'fullname'
+    };
+
+    typedef std::bitset<2> status_t;
+    
     /// Default constructor taking a path.
     /// If path is empty, it saves the current path, 
     /// and when destructed restores it to current.
-    path(const std::filesystem::path& p = std::filesystem::path());
+    path(
+      /// the path
+      const std::filesystem::path& p = std::filesystem::path(),
+      /// the status, used for log
+      status_t t = 0);
 
     /// Constructor using string path.
     path(const std::string& path);
@@ -40,7 +53,7 @@ namespace wex
     path(const std::vector<std::string> & v);
 
     /// Copy constructor.
-    path(const path& r);
+    path(const path& r, status_t t = 0);
     
     /// Assignment operator.
     path& operator=(const path& r);
@@ -89,22 +102,6 @@ namespace wex
     const std::string get_path() const {
       return m_path.parent_path().string();};
 
-    /// Returns the lexer.
-    const auto & lexer() const {return m_Lexer;};
-
-    /// Returns path name component.
-    const std::string name() const {
-      return m_path.stem().string();};
-
-    /// Returns original path.
-    const auto & original() {return m_path_original;};
-
-    /// Returns path components.
-    const std::vector<path> paths() const;
-
-    /// Returns the stat.
-    const auto & stat() const {return m_Stat;};
-
     /// Returns true if this path is absolute.
     bool is_absolute() const {return m_path.is_absolute();};
     
@@ -114,19 +111,39 @@ namespace wex
     /// Returns true if this path is relative.
     bool is_relative() const {return m_path.is_relative();};
       
+    /// Returns the lexer.
+    const auto & lexer() const {return m_Lexer;};
+
+    /// Logs info about this class.
+    std::stringstream log() const;
+
     /// Make this path absolute.
     path& make_absolute();
+
+    /// Returns path name component.
+    const std::string name() const {
+      return m_path.stem().string();};
 
     /// Opens this path using registered mime type.
     /// Returns false if no mime type is found.
     bool open_mime() const;
     
+    /// Returns original path.
+    const auto & original() {return m_path_original;};
+
+    /// Returns path components.
+    const std::vector<path> paths() const;
+
     /// Replaces filename.
     path& replace_filename(const std::string& filename);
+
+    /// Returns the stat.
+    const auto & stat() const {return m_Stat;};
   private:
     std::filesystem::path m_path;
     std::string m_path_original;
     wex::lexer m_Lexer;
     file_stat m_Stat;
+    status_t m_status {0};
   };
 };

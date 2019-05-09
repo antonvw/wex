@@ -8,30 +8,26 @@
 #include <wx/log.h>
 #include <wex/log.h>
 #include <wex/config.h>
-#include <wex/item.h>
-#include <wex/listitem.h>
+#include <wex/path.h>
 #include <easylogging++.h>
 
 INITIALIZE_EASYLOGGINGPP
 
-wex::log::log(const std::string& topic, level_t level, status_t status)
+wex::log::log(const std::string& topic, level_t level)
   : m_level(level)
   , m_separator(!topic.empty())
-  , m_status(status)
   , m_topic(topic)
 {
 }
 
-wex::log::log(const std::exception& e, level_t level, status_t status)
+wex::log::log(const std::exception& e, level_t level)
   : m_level(level)
-  , m_status(status)
 {
   m_ss << "std::exception:" << S() << e.what();
 }
 
-wex::log::log(const pugi::xml_parse_result& r, level_t level, status_t status)
+wex::log::log(const pugi::xml_parse_result& r, level_t level)
   : m_level(level)
-  , m_status(status)
 {
   if (r.status != pugi::xml_parse_status::status_ok)
   {
@@ -48,13 +44,6 @@ wex::log::log(const pugi::xml_parse_result& r, level_t level, status_t status)
 
 wex::log::log(level_t level)
   : m_level(level)
-  , m_separator(false)
-{
-}
-
-wex::log::log(status_t status)
-  : m_level(STATUS)
-  , m_status(status)
   , m_separator(false)
 {
 }
@@ -148,35 +137,6 @@ wex::log& wex::log::operator<<(const pugi::xml_node& r)
   return *this;
 }
 
-wex::log& wex::log::operator<<(const item& r)
-{
-  m_ss << S() << "item:" << S() << r.log().str();
-  return *this;
-}
-
-wex::log& wex::log::operator<<(const listitem& r)
-{
-  m_ss << S() << "list item:" << S() << r.get_filename().data().string();
-  return *this;
-}
-
-wex::log& wex::log::operator<<(const path& r)
-{
-  m_ss << S() << (m_status[STAT_FULLPATH] || m_level != STATUS ?
-    r.data().string(): r.fullname());
-
-  if (r.stat().is_ok())
-  {
-    const std::string what = (m_status[STAT_SYNC] ? 
-      _("Synchronized"):
-      _("Modified"));
-        
-    m_ss << S() << what << S() << r.stat().get_modification_time();
-  }
-
-  return *this;
-}
-
 void wex::log::init(int argc, char** argv)
 {
   // Load elp configuration from file.
@@ -231,7 +191,7 @@ void wex::log::init(int argc, char** argv)
 
   START_EASYLOGGINGPP(v.size(), (const char**)&v[0]);
 
-  verbose(1) << "verbosity:" << el::Loggers::verboseLevel()
+  verbose(1) << "verbosity:" << (int)el::Loggers::verboseLevel()
     << "config:" << elp.data().string();
   
   if (error)

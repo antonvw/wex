@@ -71,7 +71,7 @@ bool wex::stc_file::do_file_load(bool synced)
     log::verbose("opened", 1) << get_filename();
   }
   
-  m_STC->properties_message(log::status_t().set(synced ? log::STAT_SYNC: 0));
+  m_STC->properties_message(path::status_t().set(synced ? path::STAT_SYNC: 0));
   m_STC->use_modification_markers(true);
   
   CheckWellFormed(m_STC, get_filename());

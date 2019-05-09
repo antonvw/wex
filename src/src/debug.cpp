@@ -70,6 +70,12 @@ wex::debug::debug(wex::managed_frame* frame, wex::process* debug)
   , m_Process(debug)
 {
   set_entry(config("debugger").get());
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    process_stdin(event.GetString());}, ID_DEBUG_STDIN);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    process_stdout(event.GetString());}, ID_DEBUG_STDOUT);
 }
   
 int wex::debug::add_menu(wex::menu* menu, bool popup) const
@@ -233,6 +239,9 @@ std::tuple<bool, std::string> wex::debug::get_args(
 
 const std::string wex::debug::print(const std::string& variable)
 {
+  // TODO: see process.cpp.
+  return std::string();
+  
   std::string content;
   
   if (!m_Process->write("print " + variable, &content))
@@ -287,7 +296,7 @@ void wex::debug::process_stdout(const std::string& text)
     match("Breakpoint ([0-9]+) at 0x[0-9a-f]+: file (.*), line ([0-9]+)", 
       text, v) == 3 || 
     match("Breakpoint ([0-9]+) at 0x[0-9a-f]+: (.*):([0-9]+)", text, v) ==3 ||
-    match("Breakpoint ([0-9]+): .* at (.*):([0-9]+)", text, v) == 3)
+    match("Breakpoint ([0-9]+): .* at ([a-zA-Z0-9\\./]*):([0-9]+)", text, v) == 3)
   {
     if (wex::path filename(m_Path.get_path(), v[1]); filename.file_exists())
     {
@@ -308,7 +317,7 @@ void wex::debug::process_stdout(const std::string& text)
   }
   else if (clear_breakpoints(text)) {}
   // parse a path and line
-  else if (match("at (.*):([0-9]+)", text, v) > 1)
+  else if (match("at ([a-zA-Z0-9\\./]*):([0-9]+)", text, v) > 1)
   {
     m_Path = path(m_Path.get_path(), v[0]);
     data.line(std::stoi(v[1]));
@@ -320,7 +329,10 @@ void wex::debug::process_stdout(const std::string& text)
   }
   else if (match("'(.*)'", text, v) == 1)
   {
-    m_Path = path(v[0]);
+    if (wex::path filename(v[0]); filename.file_exists())
+    {
+      m_Path = v[0];
+    }
   }
 
   if (data.line() > 0 && m_Path.file_exists())

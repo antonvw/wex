@@ -357,7 +357,7 @@ frame::frame(app* app)
       show_pane("FILES");}}, wxID_NEW);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_Process->kill(); 
+    m_Process->stop(); 
     show_pane("PROCESS", false);}, wxID_STOP);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {

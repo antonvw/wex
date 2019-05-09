@@ -495,7 +495,7 @@ int wex::match(const std::string& reg, const std::string& text,
   }
   catch (std::regex_error& e) 
   {
-    log(e) << reg << "code:" << e.code();
+    log(e) << reg << "code:" << (int)e.code();
     return -1;
   }
 }
@@ -580,10 +580,7 @@ int wex::open_files(
         }
       }
 
-      if (!fn.file_exists())
-      {
-        fn.make_absolute();
-      }
+      fn.make_absolute();
        
       if (frame->open_file(fn, data) != nullptr)
       {

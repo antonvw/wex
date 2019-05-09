@@ -503,6 +503,8 @@ wex::textctrl::textctrl(
         managed_frame::HIDE_BAR_FORCE_FOCUS_STC: 
         managed_frame::HIDE_BAR_FOCUS_STC);
 
+      m_ex->get_macros().record(m_Command.command());
+
       if (m_Command.type() == ex_command::type_t::FIND)
       {
         find_replace_data::get()->set_find_string(GetValue().ToStdString());

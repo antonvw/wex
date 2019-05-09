@@ -422,7 +422,8 @@ int wex::vcs::show_dialog(const window_data& arg)
         [=](wxWindow* user, const std::any& value, bool save) {
           config(m_Entry.flags_key()).set(m_Entry.get_flags());}): 
       item(),
-    m_Entry.flags_location() == vcs_entry::FLAGS_LOCATION_PREFIX ? 
+    m_Entry.flags_location() == vcs_entry::FLAGS_LOCATION_PREFIX &&
+    m_Entry.get_command().ask_flags() ?  
       item(_("Prefix flags"), std::string()): 
       item(),
     m_Entry.get_command().use_subcommand() ? 

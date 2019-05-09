@@ -2,7 +2,7 @@
 // Name:      file_history.cpp
 // Purpose:   Implementation of wex::file_history class methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <filesystem>
@@ -195,13 +195,13 @@ wxString wex::file_history_imp::GetHistoryFile(size_t index) const
   if (GetCount() > 0 && (int)index < GetMaxFiles())
   {
     bool error = false;
-    wxString file;
+    std::string file;
 
     try
     {
       file = wxFileHistory::GetHistoryFile(index);
 
-      if (!std::filesystem::is_regular_file(file.ToStdString()))
+      if (!std::filesystem::is_regular_file(file))
       {
         error = true;
       }

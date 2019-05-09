@@ -19,7 +19,6 @@
 namespace wex
 {
   class ctags;
-  class evaluator;
   class managed_frame;
   class stc;
   class stc_entry_dialog;
@@ -43,8 +42,8 @@ namespace wex
     /// Adds text (to stc or register, if register is active).
     void add_text(const std::string& text);
    
-    /// Returns calculated value with precision width of text.
-    std::tuple<double, int> calculator(const std::string& text);
+    /// Returns calculated value of text.
+    int calculator(const std::string& text);
     
     /// Executes ex: command that was entered on the command line,
     /// or present as modeline command inside a file.
@@ -144,17 +143,18 @@ namespace wex
 
     ex_command m_command;
   private:
-    bool CommandHandle(const std::string& command) const;
-    bool CommandAddress(const std::string& command);
+    bool command_handle(const std::string& command) const;
+    bool command_address(const std::string& command);
     template <typename S, typename T> 
-      bool HandleContainer(
+      bool handle_container(
         const std::string& kind,
         const std::string& command,
         const T * container,
         std::function<bool(const std::string&, const std::string&)> cb);
+    std::string info();
     void info_message(const std::string& text, info_message_t type) const;
     template <typename S, typename T>
-    std::string ReportContainer(const T & container) const;
+    std::string report_container(const T & container) const;
     void show_dialog(
       const std::string& title, const std::string& text, bool prop_lexer = false);
       
@@ -164,7 +164,6 @@ namespace wex
       std::function<bool(const std::string& command)>>> m_commands;
 
     static inline stc_entry_dialog* m_dialog = nullptr;
-    static evaluator m_evaluator;
     static vi_macros m_macros;
 
     bool 

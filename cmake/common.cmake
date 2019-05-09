@@ -185,10 +185,9 @@ list(APPEND wxTOOLKIT_INCLUDE_DIRS
   src/include 
   external/wxWidgets/include 
   external/ctags/read 
-  external/boost-process/include
   external/easyloggingpp/src 
-  external/fsm external/pugixml/src 
-  external/shunting-yard external/tclap/include)
+  external/pugixml/src 
+  external/tclap/include)
 
 foreach(arg ${wxTOOLKIT_INCLUDE_DIRS})
   include_directories(${arg})

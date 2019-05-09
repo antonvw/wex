@@ -31,13 +31,6 @@ namespace wex
       EXEC_WAIT,    ///< wait for process finish
     };
 
-    /// process kill type
-    enum kill_t
-    {
-      KILL_TERM,  /// terminate process
-      KILL_INT,   /// interrupt process
-    };
-
     /// Default constructor.
     process();
     
@@ -88,10 +81,6 @@ namespace wex
     /// Returns true if this process is running.
     bool is_running() const;
 
-    /// Kills this process.
-    /// Returns true if kill is ok.
-    bool kill(kill_t type = KILL_TERM);
-    
     /// Construct the shell component.
     static void prepare_output(wxWindow* parent);
 
@@ -100,6 +89,10 @@ namespace wex
     /// before calling this base method.
     virtual void show_output(const std::string& caption = std::string()) const;
 
+    /// Stops this process.
+    /// Returns true if stop is ok.
+    bool stop();
+    
     /// Writes text to stdin of process.
     /// Default the response stdout is collected in the shell,
     /// but if you specify a string pointer, the stdout is 

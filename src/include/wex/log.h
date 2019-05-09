@@ -15,23 +15,12 @@
 
 namespace wex
 {
-  class item;
-  class listitem;
-  class path;
-
   /// This class offers logging.
   /// You should give at least one << following one of the
   /// constructors.
   class log
   {
   public:
-    /// Flags for path logging.
-    enum
-    {
-      STAT_SYNC     = 0, ///< shows 'synchronized' instead of 'modified'
-      STAT_FULLPATH = 1  ///< shows file 'fullpath' instead of 'fullname'
-    };
-
     /// The log level.
     enum level_t
     {
@@ -43,8 +32,6 @@ namespace wex
       WARNING, ///< warning
     };
     
-    typedef std::bitset<2> status_t;
-    
     /// Initializes logging.
     /// Should be called before constructing a log object.
     static void init(int arc, char** argv);
@@ -54,21 +41,16 @@ namespace wex
 
     /// Default constructor. 
     /// This prepares a logging with default level error.
-    log(
-      const std::string& topic = std::string(), 
-      level_t level = ERROR, status_t = 0);
+    log(const std::string& topic = std::string(), level_t level = ERROR);
 
     /// Constructor for level error from a std exception.
-    log(const std::exception&, level_t = ERROR, status_t = 0);
+    log(const std::exception&, level_t = ERROR);
 
     /// Constructor for level error from a pugi parse result.
-    log(const pugi::xml_parse_result&, level_t = ERROR, status_t = 0);
+    log(const pugi::xml_parse_result&, level_t = ERROR);
 
     /// Constructor for specified log level.
     log(level_t level);
-
-    /// Constructor for specified status.
-    log(status_t status);
 
     /// Destructor, flushes stringstream to logging.
    ~log();
@@ -109,26 +91,22 @@ namespace wex
     /// Logs pugi according to level.
     log& operator<<(const pugi::xml_node&);
 
-    /// Logs item according to level.
-    log& operator<<(const item&);
+    /// Logs template class T according to level.
+    /// You need a log method inside your template class.
+    template <typename T>
+    log& operator<<(const T & t) {
+      m_ss << S() << t.log().str();
+      return *this;};
 
-    /// Logs listitem according to level.
-    log& operator<<(const listitem&);
-    
-    /// Logs path info according to level and flags.
-    log& operator<<(const path&);
-    
-    /// Builds a status logger using status.
-    static log status(status_t status = 0) {
-      return log(std::string(), STATUS, status);};
+    /// Builds a status logger.
+    static log status() {
+      return log(std::string(), STATUS);};
     
     /// Builds a status logger for an exception.
-    static log status(std::exception& e, status_t status = 0) {
-      return log(e, STATUS, status);};
+    static log status(std::exception& e) {return log(e, STATUS);};
     
     /// Builds a status logger using topic and status.
-    static log status(const std::string& topic, status_t status = 0) {
-      return log(topic, STATUS, status);};
+    static log status(const std::string& topic) {return log(topic, STATUS);};
 
     /// Builds a verbose logger.
     static log verbose(int verbosity = 9) {
@@ -161,7 +139,6 @@ namespace wex
     std::stringstream m_ss;
     bool m_separator {true};
     level_t m_level {ERROR};
-    status_t m_status {0};
     inline static int m_verbosity {9};
   };
 };

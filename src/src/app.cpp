@@ -63,7 +63,7 @@ bool wex::app::OnInit()
   config::init();
 
   log::init(argc, argv);
-  log::verbose(1) << "started:" << GetAppName() << get_version_info().get();
+  log::verbose(1) << "started:" << GetAppName().ToStdString() << get_version_info().get();
 
   const wxLanguageInfo* info = nullptr;
   
@@ -115,7 +115,7 @@ bool wex::app::OnInit()
     }
     else if (info != nullptr)
     {
-      log("missing locale files for") << m_Locale.GetName();
+      log("missing locale files for") << m_Locale.GetName().ToStdString();
     }
   }
 

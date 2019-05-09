@@ -233,7 +233,7 @@ bool wex::process::is_running() const
   return m_process != nullptr && m_process->is_running();
 }
 
-bool wex::process::kill(kill_t type)
+bool wex::process::stop()
 {
   return m_process != nullptr && m_process->stop();
 }
@@ -265,6 +265,11 @@ bool wex::process::write(const std::string& text, std::string* out)
 
 // Implementation.
 
+#define WEX_POST(ID, TEXT, PROCESS)                       \
+  wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID);  \
+  event.SetString(TEXT);                                  \
+  wxPostEvent(process->PROCESS, event);
+          
 bool wex::process_imp::async(const std::string& path)
 {
   try
@@ -272,7 +277,7 @@ bool wex::process_imp::async(const std::string& path)
     bp::async_system(
       *m_io.get(),
       [&](boost::system::error_code error, int i) {
-        log::verbose("async", 1) << "exit";
+        log::verbose("async", 1) << "exit:" << error.message();
         m_process->is_finished(i);},
       bp::start_dir = path,
       m_process->get_exec(),
@@ -299,19 +304,25 @@ bool wex::process_imp::async(const std::string& path)
     process = m_process, 
     &is = m_is] 
     {
+      std::string text;
+
       while (is.good())
       {
         const std::string data(1, is.get());
 
         if (!data.empty() && !process->get_frame()->is_closing())
         {
-          wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_APPEND);
-          event.SetString(data);
-          wxPostEvent(process->get_shell(), event);
+          WEX_POST(ID_SHELL_APPEND, data, get_shell())
 
           if (debug)
           {
-            process->get_frame()->get_debug()->process_stdout(data);
+            text += data;
+            
+            if (text.back() == '\n')
+            {
+              WEX_POST(ID_DEBUG_STDOUT, text, get_frame()->get_debug())
+              text.clear();
+            }
           }
         }
       }
@@ -340,7 +351,7 @@ bool wex::process_imp::async(const std::string& path)
 
           if (debug && process->get_frame() != nullptr)
           {
-            process->get_frame()->get_debug()->process_stdin(text);
+            WEX_POST(ID_DEBUG_STDIN, text, get_frame()->get_debug())
           }
         }
       }
@@ -358,9 +369,7 @@ bool wex::process_imp::async(const std::string& path)
 
     if (!data.empty() && !process->get_frame()->is_closing())
     {
-      wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_APPEND);
-      event.SetString(data);
-      wxPostEvent(process->get_shell(), event);
+      WEX_POST(ID_SHELL_APPEND, data, get_shell())
     }
   });
   v.detach();
