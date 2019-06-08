@@ -37,6 +37,13 @@ namespace wex
       WIN_IS_PROJECT   = 3  ///< open as project
     };
     
+    enum indicator_t
+    {
+      IND_LINE   = 0,
+      IND_ERR    = 1,
+      IND_DEBUG  = 2,
+    };
+    
     typedef std::bitset<5> menu_t;
     typedef std::bitset<4> window_t;
     
@@ -69,6 +76,12 @@ namespace wex
       window_t flags, 
       control_data::action_t action = control_data::SET);
 
+    /// Returns indicator type.
+    const auto indicator_no() const {return m_indicator_no;};
+
+    /// Sets indicator type.
+    stc_data& indicator_no(indicator_t t);
+
     /// injects data.  
     bool inject() const;
 
@@ -90,6 +103,7 @@ namespace wex
 
     control_data m_Data;
 
+    indicator_t m_indicator_no {IND_LINE};
     menu_t m_MenuFlags {menu_t().set(
       MENU_CONTEXT).set(MENU_OPEN_LINK).set(MENU_OPEN_WWW).set(MENU_VCS)};
     window_t m_WinFlags {0};

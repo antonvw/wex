@@ -4,9 +4,6 @@
 [submodule "external/pugixml"]
 	path = external/pugixml
 	url = https://github.com/zeux/pugixml.git
-[submodule "external/tclap"]
-	path = external/tclap
-	url = https://git.code.sf.net/p/tclap/code.git
 [submodule "external/easyloggingpp"]
 	path = external/easyloggingpp
 	url = https://github.com/muflihun/easyloggingpp.git

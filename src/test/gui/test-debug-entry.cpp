@@ -18,9 +18,16 @@ TEST_CASE("wex::debug_entry")
   SUBCASE("Constructor using xml")
   {
     pugi::xml_document doc;
-    REQUIRE( doc.load_string("<debug name=\"gdb\" pos-begin=\"11\" pos-end=\"20\"></debug>"));
+    REQUIRE( doc.load_string("\
+      <debug name=\"gdb\" \
+        regex-at-line=\"x.*yz\"\
+        break-set=\"b\" break-del=\"break delete\">\
+      </debug>"));
 
     wex::debug_entry entry(doc.document_element());
-    REQUIRE( entry.name() == "gdb");
+    REQUIRE( entry.break_del() == "break delete");
+    REQUIRE( entry.break_set() == "b");
+    REQUIRE( entry.regex_stdout(wex::debug_entry::regex_t::AT_LINE) == "x.*yz");
+    REQUIRE( entry.regex_stdout(wex::debug_entry::regex_t::PATH).empty());
   }
 }

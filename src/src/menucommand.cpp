@@ -2,27 +2,23 @@
 // Name:      menu_command.cpp
 // Purpose:   Implementation of wex::menu_command class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
-#include <wex/menu.h>
 #include <wex/menucommand.h>
 #include <wex/util.h>
-
-wex::menu_command::menu_command(
-  const std::string& command,
-  const std::string& type_text,
-  const std::string& submenu,
-  const std::string& subcommand,
-  const std::string& flags)
-  : m_Command(command)
-  , m_Flags(flags)
-  , m_SubMenu(!submenu.empty() ? submenu: subcommand)
-  , m_SubMenuIsCommand(!subcommand.empty())
-  , m_Type([](const std::string& text) {
+            
+wex::menu_command::menu_command(const pugi::xml_node& node)
+  : m_command(skip_white_space(node.text().get()))
+  , m_control(node.attribute("control").value())
+  , m_flags(node.attribute("flags").value())
+  , m_submenu(!node.attribute("submenu").empty() ? 
+      node.attribute("submenu").value(): node.attribute("subcommand").value())
+  , m_submenu_is_command(!node.attribute("subcommand").empty())
+  , m_type([](const pugi::xml_node& node) {
+      const std::string text(node.attribute("type").value());
       type_t id;
-    
       if (text.empty() || 
          (text.find("popup") == std::string::npos && 
           text.find("main") == std::string::npos))
@@ -36,17 +32,17 @@ wex::menu_command::menu_command(
       if (text.find("ellipses") != std::string::npos)
         id.set(ELLIPSES);
 
-      return id;} (type_text))
+      return id;} (node))
 {
 }
   
 const std::string wex::menu_command::get_command(include_t type) const
 {
-  auto command = m_Command;
+  auto command = m_command;
 
-  if (m_SubMenuIsCommand && (type[INCLUDE_SUBCOMMAND]))
+  if (m_submenu_is_command && (type[INCLUDE_SUBCOMMAND]))
   {
-    command += " " + m_SubMenu;
+    command += " " + m_submenu;
   }
 
   if (command.find("&") != std::string::npos && !type[INCLUDE_ACCELL])
@@ -60,5 +56,5 @@ const std::string wex::menu_command::get_command(include_t type) const
 
 bool wex::menu_command::use_subcommand() const
 {
-  return is_help() || (m_SubMenuIsCommand && !m_SubMenu.empty());
+  return is_help() || (m_submenu_is_command && !m_submenu.empty());
 }

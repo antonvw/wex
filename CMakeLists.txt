@@ -1,6 +1,10 @@
 project(wex)
 
-find_package(Boost 1.69.0)
+set(Boost_USE_STATIC_LIBS OFF)
+set(Boost_USE_MULTITHREADED ON)
+set(Boost_USE_STATIC_RUNTIME OFF)
+
+find_package(Boost 1.69.0 COMPONENTS program_options REQUIRED)
 
 if(NOT Boost_FOUND)
   message(FATAL_ERROR "boost is required")

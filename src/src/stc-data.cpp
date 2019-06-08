@@ -36,6 +36,7 @@ wex::stc_data& wex::stc_data::operator=(const stc_data& r)
 {
   if (this != &r)
   {
+    m_indicator_no = r.m_indicator_no;
     m_Data = r.m_Data;
     m_MenuFlags = r.m_MenuFlags;
     m_WinFlags = r.m_WinFlags;
@@ -57,6 +58,13 @@ wex::stc_data& wex::stc_data::flags(
   return *this;
 }
   
+wex::stc_data& wex::stc_data::indicator_no(indicator_t t)
+{
+  m_indicator_no = t;
+
+  return *this;
+}
+  
 bool wex::stc_data::inject() const
 {
   if (m_STC == nullptr) return false;
@@ -68,9 +76,9 @@ bool wex::stc_data::inject() const
         m_STC->GotoLine(m_Data.line() -1);
         m_STC->EnsureVisible(m_Data.line() -1);
         m_STC->EnsureCaretVisible();
-        
+        m_STC->SetIndicatorCurrent(m_indicator_no);
         m_STC->IndicatorClearRange(0, m_STC->GetTextLength() - 1);
-        m_STC->set_indicator(indicator(0), 
+        m_STC->set_indicator(indicator(m_indicator_no), 
           m_STC->PositionFromLine(m_Data.line() -1), 
           m_Data.col() > 0 ? 
             m_STC->PositionFromLine(m_Data.line() -1) + m_Data.col() - 1:

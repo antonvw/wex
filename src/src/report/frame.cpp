@@ -17,6 +17,7 @@
 #include <wex/listitem.h>
 #include <wex/log.h>
 #include <wex/stc.h>
+#include <wex/stcdlg.h>
 #include <wex/util.h>
 #include <wex/report/frame.h>
 #include <wex/report/defs.h>
@@ -280,8 +281,8 @@ bool wex::report::frame::grep(const std::string& arg, bool sed)
     get_stc()->get_find_string();
   }
 
-  if (!cmdline(
-    {{{"r", "recursive", "recursive"}, [&](bool on) {arg3.set(dir::RECURSIVE, on);}}},
+  if (std::string help; !cmdline(
+    {{{"recursive,r", "recursive"}, [&](bool on) {arg3.set(dir::RECURSIVE, on);}}},
     {},
     {{"rest", "match " + std::string(sed ? "replace": "") + " [extension] [folder]"}, 
        [&](const std::vector<std::string> & v) {
@@ -289,7 +290,7 @@ bool wex::report::frame::grep(const std::string& arg, bool sed)
        find_replace_data::get()->set_find_string(v[i++]);
        if (sed) 
        {
-         if (v.size() <= i) return false;
+         if (v.size() <= i) return;
          find_replace_data::get()->set_replace_string(v[i++]);
        }
        arg2 = (v.size() > i ? 
@@ -298,8 +299,9 @@ bool wex::report::frame::grep(const std::string& arg, bool sed)
        arg1 = (v.size() > i ? 
          config(m_TextInFolder).firstof_write(v[i++]): 
          config(m_TextInFolder).firstof());
-       return true;}}).parse(std::string(sed ? ":sed": ":grep") + " " + arg))
+       }}).parse(arg, help))
   {
+    stc_entry_dialog(help).ShowModal();
     return false;
   }
   

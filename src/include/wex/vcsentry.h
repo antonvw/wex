@@ -30,17 +30,8 @@ namespace wex
     };
     
     /// Default constructor.
-    vcs_entry(
-      /// name of the vcs
-      const std::string& name = std::string(),
-      /// which dir is used for vcs admin (like .svn, .git)
-      const std::string& admin_dir = std::string(),
-      /// commands for this vcs,
-      /// default adds empty vcs command with id 0
-      const std::vector<vcs_command> & commands = std::vector<vcs_command>{vcs_command()},
-      /// vcs flags
-      int flags_location = FLAGS_LOCATION_POSTFIX);
-    
+    vcs_entry() {;};
+
     /// Constructor using xml node.
     vcs_entry(const pugi::xml_node& node);
 
@@ -107,7 +98,7 @@ namespace wex
   private:
     // no const, as entry is set using operator+ in vcs.
     bool m_admin_dir_is_toplevel {false};
-    int m_FlagsLocation;
+    int m_FlagsLocation {FLAGS_LOCATION_POSTFIX};
     std::string m_AdminDir, m_log_flags;
     class blame m_blame;
     lexer m_Lexer;

@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 <!--
 Name:      wex-menus.xml
-Purpose:   setup of dynamic menus, like version control systems 
-           and debuggers
+Purpose:   setup of dynamic menus, like debuggers 
+           and version control systems
 Author:    Anton van Wezenbeek
 Copyright: (c) 2019 Anton van Wezenbeek
 -->
@@ -11,36 +11,55 @@ Copyright: (c) 2019 Anton van Wezenbeek
   <!--
    Each <debug> has a name attribute (name of debugger used).
    It can have a 
+   - 'break-del': command to delete breakpoint
    - 'break-set': command to set breakpoint
+   - 'extensions': filename extensions for source code files
    - 'flags': additional flags added to execute debugger
+   - 'regex-at-line'': regex to set line (1 group)
+   - 'regex-at-path-line'': regex to set path line (2 groups)
+   - 'regex-exit'': regex to determine whether program has exited (ignores group)
+   - 'regex-no-file-line': regex to set no file line (3 groups)
+   - 'regex-path'': regex to set path (1 group)
+   - 'regex-variable'': regex to set variable (1 group)
+   - 'regex-variable-m'': regex to set variable over several lines (first group)
    followed by a number of <commands>. 
-    
-   Each <command> will be a menu item, the attribute type indicates
-   how this item will be used:
-     if type is 'popup' the item is only on the popup menu, 
-     if type is 'main', the item is only on the main menu, 
-     if not given, both on popup and main menu. 
-     if type contains an extra 'separator' text, then the command
-     will be followed by a separator on the menu.
-     if type contains 'ellipses' then '...' is appended after the item.
-   Each <command> can also have a submenu or subcommand attribute, 
-   the former is shown as a submenu using the name as specified.
-   The latter is handled the same, but also used as command to execute.
+
+   Each <command> will be a menu item. It can have a
+   - 'type': indicates how this item will be used:
+      if type is 'popup' the item is only on the popup menu, 
+      if type is 'main', the item is only on the main menu, 
+      if not given, both on popup and main menu. 
+      if type contains an extra 'separator' text, then the command
+      will be followed by a separator on the menu.
+      if type contains 'ellipses' then '...' is appended after the item.
+   - 'submenu': is shown as a submenu using the name as specified
+   - 'subcommand': is handled the same, but also used as command to execute
+   - 'control': control key (character)
+
    You can set an accelerator everywhere using an & char (&amp;).
    -->
-  <debug name="gdb" break-set="br">
+  <debug 
+    name="gdb" 
+    break-set="br"
+    extensions="*.cpp;*.h"
+    regex-at-line="(?:(?:\(gdb\) )|(?:^))([0-9]+)\s"
+    regex-at-path-line="at ([a-zA-Z0-9_\./]*):([0-9]+)"
+    regex-exit="(exited normally)|(Program terminated)"
+    regex-no-file-line="Breakpoint ([0-9]+) at 0x[0-9a-f]+: file (.*), line ([0-9]+)"
+    regex-path="Reading symbols from (.*)\.\.\.done"
+    regex-variable ="\$[0-9]+ = (.*)"
+    regex-variable-m="\$[0-9]+ = \{((\n|.)*)\}[^,]">
     <commands>
       <command type="main ellipses" > file </command>
       <command type="main ellipses" > attach </command>
       <command type="main separator" > detach </command>
-      <command type="main" > run </command>
+      <command type="main" control="R"> run </command>
       <command type="main" > interrupt </command>
-      <command type="main separator" > continue </command>
-      <command type="main separator" > info sources </command>
-      <command type="main " > help </command>
-      <command type="popup" > next </command>
-      <command type="popup" > step </command>
-      <command type="popup separator" > until </command>
+      <command type="main separator" control="C"> continue </command>
+      <command type="main" > info sources </command>
+      <command type="popup" control="1"> next </command>
+      <command type="popup" control="2"> step </command>
+      <command type="popup separator" control="3"> until </command>
       <command type="popup separator" > print </command>
       <command type="popup" submenu = "break"> break </command>
       <command type="popup separator" submenu = "break"> del breakpoint </command>
@@ -49,18 +68,26 @@ Copyright: (c) 2019 Anton van Wezenbeek
     </commands>
   </debug>
 
-  <debug name="lldb" break-set="b" break-del="breakpoint delete" flags="-X">
+  <debug 
+    name="lldb" 
+    break-del="breakpoint delete" 
+    break-set="b"
+    extensions="*.cpp;*.h"
+    flags="-X"
+    regex-at-path-line="at ([a-zA-Z0-9_\./]*):([0-9]+)"
+    regex-exit="Process [0-9]+ (stopped)|(exited)"
+    regex-no-file-line="Breakpoint ([0-9]+): .* at ([a-zA-Z0-9_\./]*):([0-9]+)"
+    regex-variable="\$[0-9]+ = (.*)">
     <commands>
       <command type="main ellipses" > file </command>
       <command type="main ellipses" > attach </command>
       <command type="main separator" > detach </command>
-      <command type="main" > run </command>
+      <command type="main" control="R"> run </command>
       <command type="main" > interrupt </command>
-      <command type="main separator" > continue </command>
-      <command type="main " > help </command>
-      <command type="popup" > next </command>
-      <command type="popup" > step </command>
-      <command type="popup separator" > until </command>
+      <command type="main separator" control="C"> continue </command>
+      <command type="popup" control="1"> &amp;next </command>
+      <command type="popup" control="2"> step </command>
+      <command type="popup separator" control="3"> thread until </command>
       <command type="popup separator" > print </command>
       <command type="popup" submenu = "break"> b </command>
       <command type="popup separator" submenu = "break"> breakpoint delete</command>
@@ -84,15 +111,15 @@ Copyright: (c) 2019 Anton van Wezenbeek
    You can also configure the text margin for blame info. 
    Default blame is shown in a separate window, but when 
    supplying a blame-format it is shown on the text margin.
-   - The blame-format should contain 3 regex groups to 
-     parse the id, author and date.
-   - The date-format allows you to specify
-     the date-time info in the blame info.
-   - The date-print determines how many chars of the date-format
-     are shown in the margin.
-    
-    The log-flags are used to show vcs log info of the
-    current revision line as a tooltip.
+   It can have:
+   - 'blame-format': should contain 3 regex groups to 
+      parse the id, author and date.
+   - 'date-format': allows you to specify
+      the date-time info in the blame info.
+   - 'date-print': determines how many chars of the date-format
+      are shown in the margin.
+   - 'log-flags' are used to show vcs log info of the
+      current revision line as a tooltip.
    -->
   <vcs
     name="bazaar" 
@@ -138,6 +165,7 @@ Copyright: (c) 2019 Anton van Wezenbeek
     <commands>
       <command type="popup separator" flags="-w"> &amp;blame </command>
       <command type="main ellipses"> &amp;add </command>
+      <command type="ellipses"> &amp;checkout </command>
       <command type="ellipses"> &amp;commit </command>
       <command type="ellipses"> &amp;diff </command>
       <command type="ellipses main"> &amp;help </command>
@@ -213,5 +241,4 @@ Copyright: (c) 2019 Anton van Wezenbeek
       <command type="ellipses"> &amp;update </command>
     </commands>
   </vcs>
-
 </menus>

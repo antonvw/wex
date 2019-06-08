@@ -39,9 +39,7 @@ namespace wex
   public:
     listview_defaults() 
     : config_defaults({
-      {_("Background colour"), item::COLOURPICKERWIDGET, *wxWHITE},
       {_("Context size"), item::SPINCTRL, 10l},
-      {_("Foreground colour"), item::COLOURPICKERWIDGET, *wxBLACK},
       {_("List font"), item::FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
       {_("List tab font"), item::FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
       {_("Readonly colour"), item::COLOURPICKERWIDGET, *wxLIGHT_GREY},
@@ -774,7 +772,11 @@ bool wex::listview::insert_item(const std::vector < std::string > & item)
             return false;
           }
 
-          SetItemTextColour(index, config(_("Foreground colour")).get(*wxBLACK));
+          if (std::vector<std::string> v; match(",fore:(.*)", 
+            lexers::get()->get_default_style().value(), v) > 0)
+          {
+            SetItemTextColour(index, wxColour(v[0]));
+          }
         }
         else
         {

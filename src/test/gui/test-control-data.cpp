@@ -42,9 +42,16 @@ TEST_CASE("wex::control_data")
   SUBCASE("others")
   {
     const std::bitset<3> org(3); // 011
+
     std::bitset<3> bs;
     wex::control_data data;
     data.flags(org, bs);
     REQUIRE( bs.to_string() == "011");
+
+    data.flags(std::bitset<3> (std::string("100")), bs, wex::control_data::OR);
+    REQUIRE( bs.to_string() == "111");
+    
+    data.flags(std::bitset<3> (std::string("010")), bs, wex::control_data::INV);
+    REQUIRE( bs.to_string() == "101");
   }
 }

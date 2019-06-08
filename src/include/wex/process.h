@@ -95,9 +95,7 @@ namespace wex
     
     /// Writes text to stdin of process.
     /// Default the response stdout is collected in the shell,
-    /// but if you specify a string pointer, the stdout is 
-    /// put into the out string.
-    bool write(const std::string& text, std::string* out = nullptr);
+    bool write(const std::string& text);
   public:
     // Callback for finished pid.
     void is_finished(int pid);

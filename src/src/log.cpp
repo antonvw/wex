@@ -59,7 +59,7 @@ void wex::log::flush()
     m_topic + ":": m_topic;
   const std::string text (topic + m_ss.str());
   
-  if (!text.empty())
+  if (!text.empty() || m_level == STATUS)
   {
     switch (m_level)
     {
@@ -150,54 +150,50 @@ void wex::log::init(int argc, char** argv)
   // We need to convert argc and argv, as elp expects = sign between values.
   // The logging-flags are handled by syncped.
   bool error = false;
-  std::vector<const char*> v;
+  std::vector<std::string> v;
   const std::vector <std::pair<
     std::string, std::string>> supported {
       {"-m", "-vmodule"},
       {"-D", "--default-log-file"},
-      {"-L", "--loggingflags"},
+      {"-L", "--logging-flags"},
       {"--logfile", "--default-log-file"},
-      {"--logflags", "--loggingflags"},
+      {"--logflags", "--logging-flags"},
       {"--x", "--v"}, // for testing with verbosity
       {"--v", "--v"}};
 
   for (int i = 0; i < argc; i++)
   {
-    bool found = false;
+    bool added = false;
 
     for (const auto& s : supported)
     {
       if (strcmp(argv[i], s.first.c_str()) == 0)
       {
-        found = true;
-
         if (i + 1 < argc)
         {
 	        const std::string option(argv[i + 1]);
-  	      v.push_back(std::string(s.second + "=" + option).c_str());
-        }
-        else
-        {
-          error = true;
+  	      v.push_back(std::string(std::string(s.second) + "=" + option));
+          added = true;
+          break;
+          i++;
         }
       }
     }
 
-    if (!found)
+    if (!added)
     {
       v.push_back(argv[i]);
     }
   }
-
-  START_EASYLOGGINGPP(v.size(), (const char**)&v[0]);
-
-  verbose(1) << "verbosity:" << (int)el::Loggers::verboseLevel()
-    << "config:" << elp.data().string();
   
-  if (error)
-  {
-    log("option value missing");
-  }
+  std::vector<char*> w;
+  for (const auto& arg : v)
+      w.push_back((char*)arg.data());
+  w.push_back(nullptr);
+  
+  START_EASYLOGGINGPP(w.size() - 1, w.data());
+
+  verbose(1) << "config:" << elp.data().string();
 }
   
 const std::string wex::log::S()

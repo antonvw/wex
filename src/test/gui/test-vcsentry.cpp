@@ -11,58 +11,22 @@
 
 TEST_CASE("wex::vcs_entry")
 {
-  REQUIRE( wex::vcs_entry().get_commands().size() == 1); // the empty command
-  
-  SUBCASE("Constructor using string")
+  SUBCASE("Default constructor")
   {
-    wex::vcs_entry test("my-vcs", "./",
-      {wex::vcs_command("one", "main"), wex::vcs_command("two", "main")},
-      wex::vcs_entry::FLAGS_LOCATION_POSTFIX);
-    
-    REQUIRE( test.get_commands().size() == 2);
-    REQUIRE(!test.get_command().get_command().empty());
-    REQUIRE(!test.admin_dir_is_toplevel());
-    REQUIRE( test.admin_dir() == "./");
-    REQUIRE( test.get_branch().empty());
-    REQUIRE( test.get_flags().empty());
-    REQUIRE( test.name() == "my-vcs");
-    REQUIRE( test.get_stdout().empty());
-    
+    REQUIRE( wex::vcs_entry().get_commands().empty());
     REQUIRE( wex::vcs_entry().flags_location() == wex::vcs_entry::FLAGS_LOCATION_POSTFIX);
-    
-    test.show_output();
-    
-    wex::menu menu;
-    REQUIRE( test.build_menu(0, &menu) == 0);
-
-#ifndef __WXMSW__
-    // This should have no effect.  
-    REQUIRE(!test.set_command(5));
-    REQUIRE(!test.set_command(wex::ID_EDIT_VCS_LOWEST));
-    REQUIRE(!test.set_command(wex::ID_VCS_LOWEST));
-    
-    REQUIRE( test.get_commands().size() == 2);
-    REQUIRE( test.get_flags().empty());
-    REQUIRE( test.name() == "my-vcs");
-    REQUIRE( test.get_stdout().empty());
-    REQUIRE(!test.execute());
-    
-    wex::vcs_entry git("git");
-    REQUIRE( git.execute()); // executes just git, shows help
-    REQUIRE( git.get_stdout().find("usage: ") != std::string::npos);
-    git.show_output();
-    
-    wex::vcs_entry* git_async = new wex::vcs_entry("git", std::string(), {wex::vcs_command("status")});
-    REQUIRE( git_async->execute(std::string(), wex::lexer(), wex::process::EXEC_WAIT));
-    git_async->show_output();
-#endif
   }
   
   SUBCASE("Constructor using xml")
   {
     pugi::xml_document doc;
+
     REQUIRE( doc.load_string(
-      "<vcs name=\"git\" log-flags=\"-n 1\" blame-format=\" yyyy\">"
+      "<vcs name=\"git\" admin-dir=\"./\" log-flags=\"-n 1\" blame-format=\" yyyy\">"
+      "  <commands>"
+      "     <command> help </command>"
+      "     <command> blame </command>"
+      "  </commands>"
       "</vcs>"));
 
     wex::vcs_entry entry(doc.document_element());
@@ -70,5 +34,36 @@ TEST_CASE("wex::vcs_entry")
     REQUIRE(!entry.log( wex::test::get_path("test.h"), "x"));
     REQUIRE( entry.log( wex::test::get_path("test.h"), "1200b7b518"));
     REQUIRE( entry.get_blame().use());
+
+    REQUIRE( entry.get_commands().size() == 2);
+    REQUIRE(!entry.get_command().get_command().empty());
+    REQUIRE(!entry.admin_dir_is_toplevel());
+    REQUIRE( entry.admin_dir() == "./");
+    REQUIRE(!entry.get_branch().empty());
+    REQUIRE( entry.get_flags().empty());
+    REQUIRE(!entry.get_stdout().empty());
+    entry.show_output();
+    
+    wex::menu menu;
+    REQUIRE( entry.build_menu(0, &menu) == 2);
+
+#ifndef __WXMSW__
+    // This should have no effect.  
+    REQUIRE(!entry.set_command(5));
+    REQUIRE(!entry.set_command(wex::ID_EDIT_VCS_LOWEST));
+    REQUIRE(!entry.set_command(wex::ID_VCS_LOWEST));
+    
+    REQUIRE( entry.get_commands().size() == 2);
+    REQUIRE( entry.get_flags().empty());
+    REQUIRE(!entry.get_stdout().empty());
+    
+    REQUIRE( entry.execute()); // executes just git, shows help
+    REQUIRE( entry.get_stdout().find("usage: ") != std::string::npos);
+    entry.show_output();
+    
+    wex::vcs_entry* git_async = new wex::vcs_entry(doc.document_element());
+    REQUIRE( git_async->execute(std::string(), wex::lexer(), wex::process::EXEC_WAIT));
+    git_async->show_output();
+#endif
   }
 }

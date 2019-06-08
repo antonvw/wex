@@ -358,7 +358,7 @@ namespace wex
       m_FoldLevel {0}, m_MarginTextClick {-1},
       m_SavedPos {-1}, m_SavedSelectionStart {-1}, m_SavedSelectionEnd {-1};
     
-    bool m_AddingChars {false};
+    bool m_AddingChars {false}, m_skip {false};
 
     managed_frame* m_Frame;
     autocomplete m_auto_complete;

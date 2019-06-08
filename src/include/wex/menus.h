@@ -31,7 +31,7 @@ namespace wex
       {
         if (strcmp(child.name(), "commands") == 0)
         {
-          AddCommand(child, commands);
+          add_command(child, commands);
         }
       }
       return commands.size();};
@@ -66,14 +66,14 @@ namespace wex
 
         if (add)
         {
-          if (!it.get_submenu().empty() && prev_menu != it.get_submenu())
+          if (!it.submenu().empty() && prev_menu != it.submenu())
           {
             submenu = new wex::menu();
-            prev_menu = it.get_submenu();
+            prev_menu = it.submenu();
             menu->append_separator();
-            menu->append_submenu(submenu, it.get_submenu());
+            menu->append_submenu(submenu, it.submenu());
           }
-          else if (it.get_submenu().empty())
+          else if (it.submenu().empty())
           {
             if (prev_menu != unused)
             {
@@ -88,7 +88,7 @@ namespace wex
             base_id + i, 
             ellipsed(
               it.get_command(menu_command::INCLUDE_ACCELL),
-              std::string(),
+              it.control(),
               it.type().test(menu_command::ELLIPSES)));
 
           if (it.type().test(menu_command::SEPARATOR))
@@ -129,18 +129,13 @@ namespace wex
       return !entries.empty();};
   private:
     template <typename T>
-    static void AddCommand(const pugi::xml_node& node, T& commands)
+    static void add_command(const pugi::xml_node& node, T& commands)
     {
       for (const auto& child: node.children())
       {
         if (strcmp(child.name(), "command") == 0)
         {
-          commands.push_back(
-            {child.text().get(),
-             child.attribute("type").value(), 
-             child.attribute("submenu").value(), 
-             child.attribute("subcommand").value(),
-             child.attribute("flags").value()});
+          commands.push_back({child});
         }
       }};
   };

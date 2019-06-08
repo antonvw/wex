@@ -239,14 +239,14 @@ void wex::stc::config_get()
     lexers::get()->load_document();
   }
 
+  SetEdgeColumn(config(_("Edge column")).get(80l));
+
   if (!m_Lexer.is_ok())
   {
     SetEdgeMode(wxSTC_EDGE_NONE);
   }
   else
   {
-    SetEdgeColumn(config(_("Edge column")).get(80l));
-  
     if (const auto el = config(_("Edge line")).get(wxSTC_EDGE_NONE);
       el != wxSTC_EDGE_NONE)
     {

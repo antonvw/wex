@@ -2,23 +2,20 @@
 // Name:      cmdline.h
 // Purpose:   Declaration of wex::cmdline class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <any>
 #include <functional>
+#include <string>
 #include <utility>
 #include <vector>
-#include <wex/window-data.h>
 
 namespace wex
 {
-  class cmdline_option;
-  class cmdline_param;
-  class cmdline_parser;
-  class cmdline_switch;
+  class cmdline_imp;
 
   /// This class offers a command line parser.
   class cmdline
@@ -34,22 +31,18 @@ namespace wex
 
     /// Switches: 
     typedef std::vector<std::pair<
-      /// vector of switch flag, name, description
-      /// - if sizeof first element is greater than one,
-      ///   it is supposed to be the name, and a flag is generated,
-      ///   starting with 'A'
+      /// vector of switch name, description
+      /// - you can specify a flag after name separated by comma
       /// - after description you can also add a default true value,
       ///   otherwise false is assumed
       const std::vector<std::string>, 
       /// process callback if option is found
-      std::function<void(bool)>>> cmd_switches;
+      std::function<void(bool on)>>> cmd_switches;
 
     /// Options:
     typedef std::vector<std::pair<
-      /// vector of option flag, name, description
-      /// - if sizeof first element is greater than one,
-      ///   it is supposed to be the name, and a flag is generated
-      ///   starting with 'A'
+      /// vector of option name, description
+      /// - you can specify a flag after name separated by comma
       /// - after description you can also add a default value,
       ///   otherwise 0 is assumed
       const std::vector<std::string>, 
@@ -63,7 +56,7 @@ namespace wex
       /// pair of name and description
       const std::pair<const std::string, const std::string>, 
       /// process callback if param is present
-      std::function<bool(const std::vector<std::string> &)>> cmd_params;
+      std::function<void(std::vector<std::string> )>> cmd_params;
 
     /// Constructor, 
     cmdline(
@@ -74,41 +67,30 @@ namespace wex
       /// params
       const cmd_params & p = cmd_params(),
       /// message
-      const std::string& message = std::string(),
-      /// version, if empty use lib version
-      const std::string& version = std::string(), 
-      /// show help
-      bool helpAndVersion = true);
+      const std::string& message = std::string());
 
     /// Destructor.
    ~cmdline();
 
-    /// Returns current delimiter.
-    char delimiter() const;
+    /// Parses the command line arguments and invokes callbacks.
+    /// Returns false if error is found, or exit condition is true.
+    bool parse(
+      /// argument count
+      int ac, 
+      /// arguments
+      char* av[], 
+      /// keep changed values in config
+      bool save = false) const;
     
-    /// Sets delimiter.
-    void delimiter(char c);
-
-    /// Parses the specified command line 
-    /// (should start with app name, and if empty
-    /// the command line from wxTheApp is used).
-    /// Returns false if error is found, or exit
-    /// condition is true.
+    /// As above, for specified command line string containing all arguments.
     bool parse(
       /// command line
-      const std::string& cmdline = std::string(),
+      const std::string& cmdline,
+      /// help default goes to specified string
+      std::string& help,
       /// keep changed values in config
-      bool save = false,
-      /// delimiter
-      const char delimiter = ' ');
-
-    /// Shows current options.
-    void show_options(const window_data& data = window_data()) const;
+      bool save = false) const;
   private:
-    std::vector<cmdline_option*> m_Options; 
-    std::vector<cmdline_param*> m_Params; 
-    std::vector<cmdline_switch*> m_Switches; 
-    
-    cmdline_parser* m_Parser;
+    cmdline_imp* m_parser;
   };
 };

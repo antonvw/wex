@@ -407,7 +407,7 @@ TEST_CASE("wex")
 
   SUBCASE("wex::vcs_command_stc")
   {
-    wex::vcs_command command("status");
+    wex::vcs_command command;
     wex::vcs_command_stc(command, wex::lexer(get_stc()), get_stc());
     wex::vcs_command_stc(command, wex::lexer("cpp"), get_stc());
     wex::vcs_command_stc(command, wex::lexer(), get_stc());

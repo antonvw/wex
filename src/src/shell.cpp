@@ -76,6 +76,9 @@ wex::shell::shell(
     AppendText(event.GetString());}, ID_SHELL_APPEND);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    AppendText(event.GetString());}, ID_SHELL_APPEND_ERROR);
+  
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     AppendText(event.GetString());}, ID_SHELL_COMMAND);
   
   Bind(wxEVT_MIDDLE_UP, [=](wxMouseEvent& event) {

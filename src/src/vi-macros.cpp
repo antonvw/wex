@@ -273,9 +273,10 @@ void wex::vi_macros::record(const std::string& text, bool new_command)
     return;
   }
   
+  log::verbose("recorded") << m_Macro << ":" << text;
+
   if (new_command) 
   {
-    log::verbose("recorded") << m_Macro << ":" << text;
     m_Macros[m_Macro].emplace_back(text == " " ? "l": text);
   }
   else

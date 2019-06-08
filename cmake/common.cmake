@@ -96,6 +96,7 @@ macro(target_link_all)
       wex-rep
       wex
       ${wxWidgets_LIBRARIES} wxscintilla
+      ${Boost_LIBRARIES}
       ${extra_macro_args}
       )
   elseif (APPLE)
@@ -104,6 +105,7 @@ macro(target_link_all)
       wex-rep
       wex
       ${wxWidgets_LIBRARIES} 
+      ${Boost_LIBRARIES}
       ${extra_macro_args}
       stdc++
       c++fs
@@ -114,6 +116,7 @@ macro(target_link_all)
       wex-rep
       wex
       ${wxWidgets_LIBRARIES} 
+      ${Boost_LIBRARIES}
       ${extra_macro_args}
       stdc++
       stdc++fs
@@ -186,8 +189,7 @@ list(APPEND wxTOOLKIT_INCLUDE_DIRS
   external/wxWidgets/include 
   external/ctags/read 
   external/easyloggingpp/src 
-  external/pugixml/src 
-  external/tclap/include)
+  external/pugixml/src)
 
 foreach(arg ${wxTOOLKIT_INCLUDE_DIRS})
   include_directories(${arg})

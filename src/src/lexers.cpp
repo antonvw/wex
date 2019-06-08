@@ -326,6 +326,10 @@ void wex::lexers::ParseNodeglobal(const pugi::xml_node& node)
     {
       // Do nothing.
     }
+    else if (strcmp(child.name(), "colour") == 0)
+    {
+      wxTheColourDatabase->AddColour(child.attribute("no").value(), child.text().get());
+    }
     else if (strcmp(child.name(), "foldmargin") == 0)
     {
       ParseNodeFolding(child);

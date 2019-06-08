@@ -2,7 +2,7 @@
 // Name:      variable.h
 // Purpose:   Declaration of class wex::variable
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -24,7 +24,7 @@ namespace wex
     variable(const std::string& name = std::string())
       : m_Name(name) {;};
     
-    /// Constructor that sets members using speecified xml node.
+    /// Constructor that sets members using specified xml node.
     variable(const pugi::xml_node& node);
     
     /// Expands variable to ex component.

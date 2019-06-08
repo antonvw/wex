@@ -39,8 +39,6 @@ decorated_frame::decorated_frame(app* app)
   
   wex::process::prepare_output(this);
 
-  const bool vi_mode = wex::config(_("vi mode")).get(false);
-  
 #ifdef __WXMSW__
   const int lexer_size = 60;
 #else
@@ -52,7 +50,7 @@ decorated_frame::decorated_frame(app* app)
     {"PaneLexer", lexer_size, _("Lexer").ToStdString()},
     {"PaneTheme", lexer_size, _("Theme").ToStdString()},
     {"PaneVCS", 150},
-    {"PaneDBG", 50},
+    {"PaneDBG", 50, "Debugger"},
     {"PaneMacro", 75},
     {"PaneMode", 100}});
   
@@ -71,6 +69,8 @@ decorated_frame::decorated_frame(app* app)
     m_StatusBar->show_field("PaneLexer", false);
     m_StatusBar->show_field("PaneTheme", false);
   }
+  
+  const bool vi_mode = wex::config(_("vi mode")).get(false);
   
   m_StatusBar->show_field("PaneMacro", vi_mode);
   m_StatusBar->show_field("PaneMode", false);

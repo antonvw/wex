@@ -13,7 +13,7 @@ one of these applications, being a full featured source code text editor.
 ## Building
 
 ```
-git clone --recursive https://github.com/antonvw/wxExtension.git    
+git clone --recursive https://github.com/antonvw/wex.git    
 mkdir build && cd build   
 cmake .. && make
 ```
@@ -24,9 +24,9 @@ for mingw add `-G "MinGW Makefiles"` and do `mingw32-make`
 
 # Build process 
 
-  [![Travis](https://travis-ci.org/antonvw/wxExtension.png?branch=master)](https://travis-ci.org/antonvw/wxExtension)
-  [![Appveyor](https://ci.appveyor.com/api/projects/status/x3jm519fq1i407a6?svg=true)](https://ci.appveyor.com/project/antonvw/wxExtension)
-  [![Coveralls](https://coveralls.io/repos/antonvw/wxExtension/badge.svg?branch=master&service=github)](https://coveralls.io/github/antonvw/wxExtension?branch=master)   
+  [![Travis](https://travis-ci.org/antonvw/wex.png?branch=master)](https://travis-ci.org/antonvw/wex)
+  [![Appveyor](https://ci.appveyor.com/api/projects/status/x3jm519fq1i407a6?svg=true)](https://ci.appveyor.com/project/antonvw/wex)
+  [![Coveralls](https://coveralls.io/repos/antonvw/wex/badge.svg?branch=master&service=github)](https://coveralls.io/github/antonvw/wex?branch=master)   
 
 # Uses
 
@@ -34,6 +34,5 @@ for mingw add `-G "MinGW Makefiles"` and do `mingw32-make`
 - [easylogging++ lib](https://github.com/muflihun/easyloggingpp)    
 - [OTL database lib](http://otl.sourceforge.net/)    
 - [pugixml lib](https://github.com/zeux/pugixml)    
-- [tclap lib](http://tclap.sourceforge.net/)    
 - [universal-ctags lib](https://github.com/universal-ctags/ctags)    
 - [wxWidgets lib](https://github.com/wxWidgets/wxWidgets/)

@@ -2,49 +2,35 @@
 // Name:      test-cmdlineparser.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wx/numformatter.h>
 #include <wex/cmdline.h>
 #include "../test.h"
 
 TEST_CASE("wex::cmdline")
 {
-  int a;
-  float b;
-  bool s, t, u, v, x;
-  std::string c,p,q,r;
-  const wxChar ds(wxNumberFormatter::GetDecimalSeparator());
+  int a {0};
+  float b {0};
+  bool s {false}, t {false}, u {false}, v {false}, x {false};
+  std::string c,p,q,r,help;
   
-  const std::string str(ds == '.' ?
-    "wex::cmdline -a 10 -b 5.1 -c test -s -t -u -v --xx one two three":
-    "wex::cmdline -a 10 -b 5.1 -c test -s -t -u -v --xx one two three");
-
   wex::cmdline cmdl(
-     {{{"s", "1", "bool"}, [&](bool on){s = on;}},
-      {{"t", "2", "bool"}, [&](bool on){t = on;}},
-      {{"u", "3", "bool"}, [&](bool on){u = true;}},
-      {{"v", "4", "bool"}, [&](bool on){v = on;}},
+     {{{"s1,s", "bool"}, [&](bool on){s = on;}},
+      {{"s2,t", "bool"}, [&](bool on){t = on;}},
+      {{"s3,u", "bool"}, [&](bool on){u = true;}},
+      {{"s4,v", "bool"}, [&](bool on){v = on;}},
       {{"xx", "bool"}, [&](bool on){x = on;}}},
-     {{{"a", "5", "int"}, {wex::cmdline::INT, [&](const std::any& i) {a = std::any_cast<int>(i);}}},
-      {{"b", "6", "float"}, {wex::cmdline::FLOAT, [&](const std::any& f) {b = std::any_cast<float>(f);}}},
-      {{"c", "7", "string"}, {wex::cmdline::STRING, [&](const std::any& s) {c = std::any_cast<std::string>(s);}}}},
+     {{{"o1,a", "int"}, {wex::cmdline::INT, [&](const std::any& i) {a = std::any_cast<int>(i);}}},
+      {{"o2,b", "float"}, {wex::cmdline::FLOAT, [&](const std::any& f) {b = std::any_cast<float>(f);}}},
+      {{"o3,c", "string"}, {wex::cmdline::STRING, [&](const std::any& s) {c = std::any_cast<std::string>(s);}}}},
      {{"rest", "rest"}, [&](const std::vector<std::string> & v) {
         p = v[0];
         q = v[1];
-        r = v[2];
-        return true;}});
+        r = v[2];}});
   
-  REQUIRE( cmdl.parse(str));
-  REQUIRE( cmdl.delimiter() == ' ');
-
-  cmdl.delimiter('x');
-  REQUIRE( cmdl.delimiter() == 'x');
+  REQUIRE( cmdl.parse(
+    "-a 10 -b 5.1 -c test -s -t -u -v --xx one two three", help));
 
   REQUIRE( a == 10 );
   REQUIRE( b == 5.1f );

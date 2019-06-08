@@ -19,20 +19,9 @@ namespace wex
     /// Default constructor.
     vcs_command() {;};
 
-    /// Constructor.
-    vcs_command(
-      /// Specify command.
-      const std::string& command,
-      /// The type (main, popup, both).
-      const std::string& type = std::string(),
-      /// The submenu member is set to specified submenu if not empty,
-      /// otherwise to specified subcommand.
-      const std::string& submenu = std::string(),
-      /// The subcommand (used as submenu, but also used for executing).
-      const std::string& subcommand = std::string(),
-      /// The flags.
-      const std::string& flags = std::string())
-      : menu_command(command, type, submenu, subcommand, flags) {;};
+    /// Constructor using xml node.
+    vcs_command(const pugi::xml_node& node)
+      : menu_command(node) {;};
 
     /// Returns true if this is a add like command.
     bool is_add() const;

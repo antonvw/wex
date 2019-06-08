@@ -37,10 +37,10 @@ namespace wex
     int add_menu(menu* menu, bool popup = false) const;
     
     /// Returns brekpoints.
-    auto & breakpoints() {return m_Breakpoints;};
+    auto & breakpoints() {return m_breakpoints;};
     
     /// Returns current entry.
-    const auto & debug_entry() const {return m_Entry;};
+    const auto & debug_entry() const {return m_entry;};
     
     /// Executes the item action using the current debug process,
     /// if there is not yet a debug process, invokes frame::Process
@@ -52,17 +52,17 @@ namespace wex
     /// As above, but for a menu action item.
     bool execute(int item, stc* stc = nullptr) {
       return 
-        item < (int)m_Entry.get_commands().size() &&
-        execute(m_Entry.get_commands().at(item).get_command(), stc);};
-
-    /// Returns marker for brekpoint.
-    const auto & marker_breakpoint() const {return m_MarkerBreakpoint;};
+        item < (int)m_entry.get_commands().size() &&
+        execute(m_entry.get_commands().at(item).get_command(), stc);};
     
-    /// Prints contens of variable.
-    const std::string print(const std::string& variable);
+    /// Returns marker for brekpoint.
+    const auto & marker_breakpoint() const {return m_markerbreakpoint;};
+    
+    /// Ask debugger to print contents of variable.
+    void print(const std::string& variable);
     
     /// Returns process.
-    auto * process() {return m_Process;};
+    auto * process() {return m_process;};
 
     /// Shows dialog to select debug entry.
     bool show_dialog(frame* parent);
@@ -73,24 +73,22 @@ namespace wex
     bool clear_breakpoints(const std::string& text);
     std::tuple<bool, std::string> get_args(
       const std::string& command, stc* stc);
-    /// Handles stdin from process.
-    void process_stdin(const std::string& text);
-    /// Handles stdout from process.
-    void process_stdout(const std::string& text);
-    bool set_entry(const std::string& debugger);
+    void is_finished();
+    void set_entry(const std::string& debugger);
 
     /// Marker for a breakpoint.
-    const marker m_MarkerBreakpoint = wex::marker(2);
-    
+    const marker m_markerbreakpoint = wex::marker(2);
+
     /// The breakpoints, relating debugging breakpoint no to
     /// tuple of filename, marker identifier, and line no.
     std::map<
-      std::string, std::tuple<path, int, int>> m_Breakpoints;
+      std::string, std::tuple<path, int, int>> m_breakpoints;
 
-    static inline item_dialog* m_Dialog = nullptr;  
-    path m_Path;
-    managed_frame* m_Frame;
-    wex::debug_entry m_Entry;
-    wex::process* m_Process {nullptr};
+    static inline item_dialog* m_dialog = nullptr;  
+    path m_path, m_path_execution_point;
+    managed_frame* m_frame;
+    wex::debug_entry m_entry;
+    wex::process* m_process {nullptr};
+    std::string m_stdout;
   };
 };

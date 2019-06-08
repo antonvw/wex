@@ -281,10 +281,8 @@ TEST_CASE("wex::ex")
     
     for (const auto& calc : calcs)
     {
-      if (const auto val = ex->calculator(calc.first); !std::isnan(val))
-      {
-        REQUIRE( val == calc.second.first);
-      }
+      const auto val = ex->calculator(calc.first);
+      REQUIRE( val == calc.second.first);
     }
   }
 }

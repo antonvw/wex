@@ -165,11 +165,7 @@ int wex::address::get_line() const
   }
   
   // Try address calculation.
-  if (const auto sum = m_Ex->calculator(m_Address); std::isnan(sum))
-  {
-    return 0;
-  }
-  else if (sum < 0)
+  if (const auto sum = m_Ex->calculator(m_Address); sum < 0)
   {
     return 1;
   }

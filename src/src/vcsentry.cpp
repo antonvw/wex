@@ -14,18 +14,6 @@
 #include <wex/tokenizer.h>
 #include <wex/util.h>
 
-wex::vcs_entry::vcs_entry(
-  const std::string& name,
-  const std::string& admin_dir,
-  const std::vector<vcs_command> & commands,
-  int flags_location)
-  : process()
-  , menu_commands(name, commands)
-  , m_AdminDir(admin_dir)
-  , m_FlagsLocation(flags_location)
-{
-}
-
 wex::vcs_entry::vcs_entry(const pugi::xml_node& node)
   : process()
   , menu_commands(node)

@@ -66,7 +66,7 @@ wex::path::path(const std::vector<std::string> & v)
 
 wex::path::~path()
 {
-  if (!m_path_original.empty())
+  if (!m_path_original.empty() && m_path_original != current())
   {
     current(m_path_original);
   }
@@ -77,6 +77,7 @@ wex::path& wex::path::operator=(const wex::path& r)
   if (this != &r)
   {
     m_path = r.data();
+    m_path_original = r.m_path_original;
     m_Lexer = r.m_Lexer;
     m_Stat = r.m_Stat;
     m_status = r.m_status;
@@ -99,6 +100,7 @@ void wex::path::current(const std::string& path)
     try
     {
       fs::current_path(path);
+      log::verbose("path current") << path;
     }
     catch (const std::exception& e)
     {

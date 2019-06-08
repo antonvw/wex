@@ -42,8 +42,7 @@ namespace wex
     process_imp(process* process)
       : m_process(process)
       , m_io(std::make_shared<boost::asio::io_context>())
-      , m_queue(std::make_shared<std::queue
-          <std::pair<std::string, std::string*>>>()) {;}
+      , m_queue(std::make_shared<std::queue<std::string>>()) {;}
 
     // Starts the async process, collecting output
     // into the stc shell of the parent process.
@@ -57,11 +56,15 @@ namespace wex
       return true;};
     
     // Writes data to the input of the process.
-    // TODO: out is not yet used.
-    bool write(const std::string& text, std::string* out) {
+    bool write(const std::string& text) {
+      if (!is_debug())
+      {
+        show_process(m_process->get_frame(), true);
+      }
+    
       if (is_running())
       {
-        m_queue->push({text, out});
+        m_queue->push(text);
       }
       return true;};
 
@@ -70,7 +73,7 @@ namespace wex
   private:
     std::atomic_bool m_debug {false};
     std::shared_ptr<boost::asio::io_context> m_io;
-    std::shared_ptr<std::queue<std::pair<std::string, std::string*>>> m_queue;
+    std::shared_ptr<std::queue<std::string>> m_queue;
     process* m_process;
     bp::ipstream m_es, m_is;
     bp::opstream m_os;
@@ -197,6 +200,7 @@ bool wex::process::execute(
       m_shell->enable(true);
       m_shell->set_process(this);
       m_shell->SetName(m_command);
+      path::current(cwd);
       
       m_process = std::make_unique<process_imp>(this);
 
@@ -220,14 +224,6 @@ bool wex::process::is_debug() const
   return m_process != nullptr && m_process->is_debug();
 }
   
-void wex::process::is_finished(int pid)
-{
-  if (!m_frame->is_closing())
-  {
-    m_frame->get_debug()->breakpoints().clear();
-  }
-}
-
 bool wex::process::is_running() const
 {
   return m_process != nullptr && m_process->is_running();
@@ -258,18 +254,21 @@ void wex::process::show_output(const std::string& caption) const
   }
 }
 
-bool wex::process::write(const std::string& text, std::string* out)
+bool wex::process::write(const std::string& text)
 {
-  return m_process != nullptr && m_process->write(text, out);
+  return m_process != nullptr && m_process->write(text);
 }
 
 // Implementation.
 
-#define WEX_POST(ID, TEXT, PROCESS)                       \
-  wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID);  \
-  event.SetString(TEXT);                                  \
-  wxPostEvent(process->PROCESS, event);
-          
+#define WEX_POST(ID, TEXT, PROCESS)                         \
+  if (PROCESS != nullptr)                                   \
+  {                                                         \
+    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID);  \
+    event.SetString(TEXT);                                  \
+    wxPostEvent(PROCESS, event);                            \
+  }
+
 bool wex::process_imp::async(const std::string& path)
 {
   try
@@ -278,7 +277,10 @@ bool wex::process_imp::async(const std::string& path)
       *m_io.get(),
       [&](boost::system::error_code error, int i) {
         log::verbose("async", 1) << "exit:" << error.message();
-        m_process->is_finished(i);},
+        if (m_debug.load())
+        {
+          WEX_POST(ID_DEBUG_EXIT, "", m_process->get_frame()->get_debug())
+        }},
       bp::start_dir = path,
       m_process->get_exec(),
       bp::std_out > m_is,
@@ -293,11 +295,19 @@ bool wex::process_imp::async(const std::string& path)
 
   log::verbose("async", 1) << m_process->get_exec();
 
-  show_process(m_process->get_frame(), true);
-  m_process->get_shell()->SetFocus();
-
   m_debug.store(m_process->get_frame()->get_debug()->debug_entry().name()
     == before(m_process->get_exec(), ' '));
+  
+  if (m_debug.load())
+  {
+    m_process->get_shell()->get_lexer().set(
+      m_process->get_frame()->get_debug()->debug_entry().name());
+  }
+  else
+  {
+    m_process->get_shell()->SetFocus();
+    show_process(m_process->get_frame(), true);
+  }
   
   std::thread t([
     debug = m_debug.load() && m_process->get_frame() != nullptr,
@@ -312,7 +322,7 @@ bool wex::process_imp::async(const std::string& path)
 
         if (!data.empty() && !process->get_frame()->is_closing())
         {
-          WEX_POST(ID_SHELL_APPEND, data, get_shell())
+          WEX_POST(ID_SHELL_APPEND, data, process->get_shell())
 
           if (debug)
           {
@@ -320,7 +330,7 @@ bool wex::process_imp::async(const std::string& path)
             
             if (text.back() == '\n')
             {
-              WEX_POST(ID_DEBUG_STDOUT, text, get_frame()->get_debug())
+              WEX_POST(ID_DEBUG_STDOUT, text, process->get_frame()->get_debug())
               text.clear();
             }
           }
@@ -342,7 +352,7 @@ bool wex::process_imp::async(const std::string& path)
 
         if (!queue->empty())
         {
-          const std::string text(queue->front().first);
+          const std::string text(queue->front());
           queue->pop();
 
           log::verbose("async") << "write:" << text;
@@ -351,7 +361,7 @@ bool wex::process_imp::async(const std::string& path)
 
           if (debug && process->get_frame() != nullptr)
           {
-            WEX_POST(ID_DEBUG_STDIN, text, get_frame()->get_debug())
+            WEX_POST(ID_DEBUG_STDIN, text, process->get_frame()->get_debug())
           }
         }
       }
@@ -360,16 +370,17 @@ bool wex::process_imp::async(const std::string& path)
 
   std::thread v([process = m_process, &es = m_es] 
   {
-    std::string data;
+    std::string text;
 
     while (es.good())
     {
-      data.append(std::string(1, es.get()));
-    }
-
-    if (!data.empty() && !process->get_frame()->is_closing())
-    {
-      WEX_POST(ID_SHELL_APPEND, data, get_shell())
+      text += std::string(1, es.get());
+            
+      if (text.back() == '\n')
+      {
+        WEX_POST(ID_SHELL_APPEND_ERROR, text, process->get_shell())
+        text.clear();
+      }
     }
   });
   v.detach();

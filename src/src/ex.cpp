@@ -158,93 +158,87 @@ wex::ex::ex(wex::stc* stc)
       return true;}},
     {":sed", [&](const std::string& command) {POST_COMMAND( ID_TOOL_REPLACE ) return true;}},
     {":set", [&](const std::string& command) {
-        const bool save = command.back() != '*';
-        std::string text(command.substr(4, 
-          command.back() == '*' ? command.size() - 5: std::string::npos));
-        // Convert arguments (add -- to each group, remove all =).
-        // ts=120 ac ic sy=cpp -> --ts 120 --ac --ic --sy cpp
-        std::regex re("[0-9a-z=]+");
-        text = std::regex_replace(text, re, "--&", std::regex_constants::format_sed);
-        std::replace(text.begin(), text.end(), '=', ' ');
-        wex::cmdline cmdline(
-          // switches
-          {
-           {{"ac", "autocomplete"}, [](bool on){
-             config(_("Auto complete")).set(on);}},
-           {{"ai", "autoindent"}, [](bool on){
-             config("Auto indent").set(on ? (long)2: (long)0);}},
-           {{"aw", "autowrite"}, [&](bool on){
-             config(_("Auto write")).set(on);
-             m_auto_write = on;}},
-           {{"eb", "errorbells"}, [](bool on){
-             config(_("Error bells")).set(on);}},
-           {{"el", "edgeline"}, [&](bool on){
-             get_stc()->SetEdgeMode(
-               on ? wxSTC_EDGE_LINE: wxSTC_EDGE_NONE);
-             config(_("Edge line")).set( 
-               on ? (long)wxSTC_EDGE_LINE: (long)wxSTC_EDGE_NONE);}},
-           {{"ic", "ignorecase"}, [&](bool on){
-             if (!on) m_search_flags |= wxSTC_FIND_MATCHCASE;
-             else     m_search_flags &= ~wxSTC_FIND_MATCHCASE;
-             wex::find_replace_data::get()->set_match_case(!on);}},
-           {{"mw", "matchwords"}, [&](bool on){
-             if (on) m_search_flags |= wxSTC_FIND_WHOLEWORD;
-             else    m_search_flags &= ~wxSTC_FIND_WHOLEWORD;
-             wex::find_replace_data::get()->set_match_word(on);}},
-           {{"nu", "number"}, [&](bool on){
-             get_stc()->show_line_numbers(on);
-             config(_("Line numbers")).set(on);}},
-           {{"readonly", "readonly"}, [&](bool on){
-             get_stc()->SetReadOnly(on);}},
-           {{"showmode", "showmode"}, [&](bool on){
-             ((wex::statusbar *)m_frame->GetStatusBar())->show_field("PaneMode", on);
-             config(_("Show mode")).set(on);}},
-           {{"sm", "showmatch"}, [&](bool on){
-             config(_("Show match")).set(on);}},
-           {{"sws", "showwhitespace"}, [&](bool on){
-             get_stc()->SetViewEOL(on);
-             get_stc()->SetViewWhiteSpace(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);
-             config(_("Whitespace")).set(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);}},
-           {{"ut", "usetabs"}, [&](bool on){
-             get_stc()->SetUseTabs(on);
-             config(_("Use tabs")).set(on);}},
-           {{"wm", "wrapmargin"}, [&](bool on){
-             get_stc()->SetWrapMode(on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);
-             config(_("Wrap line")).set(on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);}},
-           {{"ws", "wrapscan", "1"}, [&](bool on){
-             config(_("Wrap scan")).set(on);}}
-          },
+      const bool modeline = command.back() == '*';
+      std::string text(command.substr(4, 
+        command.back() == '*' ? command.size() - 5: std::string::npos));
+      // Convert arguments (add -- to each group, remove all =).
+      // ts=120 ac ic sy=cpp -> --ts 120 --ac --ic --sy cpp
+      std::regex re("[0-9a-z=]+");
+      text = std::regex_replace(text, re, "--&", std::regex_constants::format_sed);
+      std::replace(text.begin(), text.end(), '=', ' ');
+      const wex::cmdline cmdline(
+        // switches
+        {{{"ac", "autocomplete"}, [](bool on){
+           config(_("Auto complete")).set(on);}},
+         {{"ai", "autoindent"}, [](bool on){
+           config("Auto indent").set(on ? (long)2: (long)0);}},
+         {{"aw", "autowrite"}, [&](bool on){
+           config(_("Auto write")).set(on);
+           m_auto_write = on;}},
+         {{"eb", "errorbells"}, [](bool on){
+           config(_("Error bells")).set(on);}},
+         {{"el", "edgeline"}, [&](bool on){
+           get_stc()->SetEdgeMode(
+             on ? wxSTC_EDGE_LINE: wxSTC_EDGE_NONE);
+           config(_("Edge line")).set( 
+             on ? (long)wxSTC_EDGE_LINE: (long)wxSTC_EDGE_NONE);}},
+         {{"ic", "ignorecase"}, [&](bool on){
+           if (!on) m_search_flags |= wxSTC_FIND_MATCHCASE;
+           else     m_search_flags &= ~wxSTC_FIND_MATCHCASE;
+           wex::find_replace_data::get()->set_match_case(!on);}},
+         {{"mw", "matchwords"}, [&](bool on){
+           if (on) m_search_flags |= wxSTC_FIND_WHOLEWORD;
+           else    m_search_flags &= ~wxSTC_FIND_WHOLEWORD;
+           wex::find_replace_data::get()->set_match_word(on);}},
+         {{"nu", "number"}, [&](bool on){
+           get_stc()->show_line_numbers(on);
+           config(_("Line numbers")).set(on);}},
+         {{"readonly", "readonly"}, [&](bool on){
+           get_stc()->SetReadOnly(on);}},
+         {{"showmode", "showmode"}, [&](bool on){
+           ((wex::statusbar *)m_frame->GetStatusBar())->show_field("PaneMode", on);
+           config(_("Show mode")).set(on);}},
+         {{"sm", "showmatch"}, [&](bool on){
+           config(_("Show match")).set(on);}},
+         {{"sws", "showwhitespace"}, [&](bool on){
+           get_stc()->SetViewEOL(on);
+           get_stc()->SetViewWhiteSpace(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);
+           config(_("Whitespace")).set(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);}},
+         {{"ut", "usetabs"}, [&](bool on){
+           get_stc()->SetUseTabs(on);
+           config(_("Use tabs")).set(on);}},
+         {{"wm", "wrapmargin"}, [&](bool on){
+           get_stc()->SetWrapMode(on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);
+           config(_("Wrap line")).set(on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);}},
+         {{"ws", "wrapscan", "1"}, [&](bool on){
+           config(_("Wrap scan")).set(on);}}
+        },
+        // options
+        {{{"dir", "dir"}, {cmdline::STRING, [&](const std::any& val) {
+           wex::path::current(std::any_cast<std::string>(val));}}},
+         {{"ec", "edgecolumn", "80"}, {cmdline::INT, [&](const std::any& val) {
+           get_stc()->SetEdgeColumn(std::any_cast<int>(val));
+           config(_("Edge column")).set(std::any_cast<int>(val));}}},
+         {{"report", "report", "5"}, {cmdline::INT, [&](const std::any& val) {
+           config("Reported lines").set(std::any_cast<int>(val));}}},
+         {{"sw", "shiftwidth", "8"}, {cmdline::INT, [&](const std::any& val) {
+           get_stc()->SetIndent(std::any_cast<int>(val));
+           config(_("Indent")).set(std::any_cast<int>(val));}}},
+         {{"sy", "syntax"}, {cmdline::STRING, [&](const std::any& val) {
+           if (std::any_cast<std::string>(val) != "off") 
+             get_stc()->get_lexer().set(std::any_cast<std::string>(val), true); // allow folding
+           else              
+             get_stc()->get_lexer().clear();}}},
+         {{"ts", "tabstop","8"}, {cmdline::INT, [&](const std::any& val) {
+           get_stc()->SetTabWidth(std::any_cast<int>(val));
+           config(_("Tab width")).set(std::any_cast<int>(val));}}}
+        }
+      );
 
-          // options
-          {
-           {{"dir", "dir"}, {cmdline::STRING, [&](const std::any& val) {
-             wex::path::current(std::any_cast<std::string>(val));}}},
-           {{"ec", "edgecolumn", "80"}, {cmdline::INT, [&](const std::any& val) {
-             get_stc()->SetEdgeColumn(std::any_cast<int>(val));
-             config(_("Edge column")).set(std::any_cast<int>(val));}}},
-           {{"report", "report", "5"}, {cmdline::INT, [&](const std::any& val) {
-             config("Reported lines").set(std::any_cast<int>(val));}}},
-           {{"sw", "shiftwidth", "8"}, {cmdline::INT, [&](const std::any& val) {
-             get_stc()->SetIndent(std::any_cast<int>(val));
-             config(_("Indent")).set(std::any_cast<int>(val));}}},
-           {{"sy", "syntax"}, {cmdline::STRING, [&](const std::any& val) {
-             if (std::any_cast<std::string>(val) != "off") 
-               get_stc()->get_lexer().set(std::any_cast<std::string>(val), true); // allow folding
-             else              
-               get_stc()->get_lexer().clear();}}},
-           {{"ts", "tabstop","8"}, {cmdline::INT, [&](const std::any& val) {
-             get_stc()->SetTabWidth(std::any_cast<int>(val));
-             config(_("Tab width")).set(std::any_cast<int>(val));}}}
-          }
-        );
-
-      if (command.find(" ") == std::string::npos)
+      if (std::string help; !cmdline.parse(
+        text.empty() ? "-h": text, help, !modeline))
       {
-        cmdline.show_options(wex::window_data().size({200, 450}));
-      }
-      else
-      {
-        cmdline.parse(command.substr(0, 4) + text, save);
+        show_dialog("Options", help);
       }
       return true;}},
     {":so", [&](const std::string& command) {
@@ -276,7 +270,7 @@ wex::ex::ex(wex::stc* stc)
       }
       return true;}},
     {":syntax", [&](const std::string& command) {
-      if (wxString(command).EndsWith("off"))
+      if (wxString(command).EndsWith("on"))
       {
         wex::lexers::get()->restore_theme();
         get_stc()->get_lexer().set(get_stc()->get_filename().lexer().display_lexer(), true); // allow folding

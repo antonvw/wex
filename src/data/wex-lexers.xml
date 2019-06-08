@@ -2079,14 +2079,14 @@ Copyright: (c) 2019, Anton van Wezenbeek
         <def style ="bracelight"> back:blue,fore:white</def>
         <def style ="char"> fore:pink </def>
         <def style ="command"> fore:steel blue </def>
-        <def style ="comment"> fore:#80a0ff,italic,back:#2D2D2D,eol </def>
-        <def style ="commentdockeyword"> fore:#80a0ff,italic,underline,back:#2D2D2D </def>
+        <def style ="comment"> fore:paleturquoise,italic,back:gray 18,eol </def>
+        <def style ="commentdockeyword"> fore:paleturquoise,italic,underline,back:gray 18 </def>
         <def style ="error"> fore:red,italic,eol </def>
         <def style ="folder"> blue </def>
         <def style ="folder-back"> light blue </def>
         <def style ="foldmarginbackground"> dim grey </def>
         <def style ="foldmarginforeground"> black </def>
-        <def style ="identifier"> fore:#DDDDDD</def>
+        <def style ="identifier"> fore:gray 86</def>
         <def style ="keyword1"> fore:yellow </def>
         <def style ="keyword2"> fore:yellow green </def>
         <def style ="keyword3"> fore:medium spring green </def>
@@ -2096,15 +2096,16 @@ Copyright: (c) 2019, Anton van Wezenbeek
         <def style ="preprocessor"> fore:grey </def>
         <def style ="processor"> fore:dark grey </def>
         <def style ="string"> fore:#ffab8f </def>
-        <def style ="styledefault"> default-font,back:#2B2B2B,fore:#EEEEEE </def>
+        <def style ="styledefault"> default-font,back:gray 18,fore:ivory 2 </def>
+        <def style ="styledefault-back"> default-font,back:gray 18,fore:gray 73,eol </def>
         <def style ="stylelinenumber"> fore:grey </def>
-        <def style ="styledefault-back"> default-font,back:#2E2E2E,fore:#BBBBBB,eol </def>
+        <def style ="styleindicatordebug"> blue </def>
         <def style ="styleindicatorfind"> red </def>
         <def style ="styletextmargin-day"> back:blue </def>
-        <def style ="styletextmargin-week"> back:#3333CC </def>
-        <def style ="styletextmargin-month"> back:#666699 </def>
-        <def style ="styletextmargin-year"> back:#454554 </def>
-        <def style ="styletextmargin"> back:#3B3B3B </def>
+        <def style ="styletextmargin-week"> back:lightsteelblue </def>
+        <def style ="styletextmargin-month"> back:gray 45 </def>
+        <def style ="styletextmargin-year"> back:gray 35 </def>
+        <def style ="styletextmargin"> back:gray 22</def>
         <def style ="tag"> fore:cadet blue </def>
         <def style ="variable"> fore:green </def>
         
@@ -2121,7 +2122,7 @@ Copyright: (c) 2019, Anton van Wezenbeek
         <def style ="bracelight"> back:yellow,fore:black</def>
         <def style ="char"> fore:pink </def>
         <def style ="command"> fore:steel blue </def>
-        <def style ="comment"> fore:forest green,italic,back:#F1F1F1,eol </def>
+        <def style ="comment"> fore:yellow,italic,back:gray 95,eol </def>
         <def style ="commentdockeyword"> fore:medium sea green,italic </def>
         <def style ="error"> fore:red,italic,eol </def>
         <def style ="folder"> blue </def>
@@ -2139,13 +2140,14 @@ Copyright: (c) 2019, Anton van Wezenbeek
         <def style ="processor"> fore:dark grey </def>
         <def style ="string"> fore:blue </def>
         <def style ="styledefault"> default-font,back:white,fore:black </def>
+        <def style ="styledefault-back"> default-font,back:gray 95,fore:green,eol </def>
         <def style ="stylelinenumber"> back:white,fore:blue </def>
-        <def style ="styledefault-back"> default-font,back:#F1F1F1,fore:green,eol </def>
-        <def style ="styletextmargin-day"> back:#444433,face:Monospace,size:8 </def>
-        <def style ="styletextmargin-week"> back:#3333CC,face:Monospace,size:8 </def>
-        <def style ="styletextmargin-month"> back:#666699,face:Monospace,size:8 </def>
-        <def style ="styletextmargin-year"> back:#DDDDDD,face:Monospace,size:8 </def>
-        <def style ="styletextmargin"> back:#EEEEEE,face:Monospace,size:8 </def>
+        <def style ="styletextmargin-day"> back:blue,face:Monospace,size:8 </def>
+        <def style ="styletextmargin-week"> back:lightsteelblue,face:Monospace,size:8 </def>
+        <def style ="styletextmargin-month"> back:lightblue,face:Monospace,size:8 </def>
+        <def style ="styletextmargin-year"> back:gray 97,face:Monospace,size:8 </def>
+        <def style ="styletextmargin"> back:white,face:Monospace,size:8 </def>
+        <def style ="styleindicatordebug"> blue </def>
         <def style ="styleindicatorfind"> red </def>
         <def style ="tag"> fore:dark slate blue </def>
         <def style ="variable"> fore:medium blue </def>
@@ -2160,8 +2162,8 @@ Copyright: (c) 2019, Anton van Wezenbeek
   </macro>
   
   <!--
-   At this moment <foldmargin>, <hex>, <indicator>, <marker>, <properties>, <style>
-   and <text> children are supported. -->
+   At this moment <foldmargin>, <hex>, <indicator>, <marker>, <properties>, <style>,
+   <text> and <colour> children are supported. -->
   <global>
     <!-- checker board colours: background colour, foreground colour -->
     <foldmargin> foldmarginbackground,foldmarginforeground </foldmargin>
@@ -2174,6 +2176,8 @@ Copyright: (c) 2019, Anton van Wezenbeek
          (if tab.timmy.whinge.level is set)
       -->
     <indicator no="1"> indic_squiggle,red </indicator>
+    <!-- this indicator is used by debug location -->
+    <indicator no="2"> indic_box,styleindicatordebug </indicator>
 
     <!-- The marker element has a 'no' attribute and its value contains the next fields:
          <marker symbol number><','><foreground colour><','><background colour> -->
@@ -2218,7 +2222,553 @@ Copyright: (c) 2019, Anton van Wezenbeek
     <text no="sh"> #!/bin/sh </text>
     <text no="errorlist"> !_TAG_FILE_ </text>
     <text no="bash"> #!.*/bin/.* </text>
-    <text no="rfw"> \&#42;Settings </text>
+    <text no="rfw"> \*+ Settings </text>
+
+    <!-- add your own colours 
+      see http://www.cloford.com/resources/colours/500col.htm
+      -->
+    <colour no="aliceblue">#F0F8FF</colour>
+    <colour no="antiquewhite 1">#FFEFDB</colour>
+    <colour no="antiquewhite 2">#EEDFCC</colour>
+    <colour no="antiquewhite 3">#CDC0B0</colour>
+    <colour no="antiquewhite 4">#8B8378</colour>
+    <colour no="antiquewhite">#FAEBD7</colour>
+    <colour no="aquamarine 2">#76EEC6</colour>
+    <colour no="aquamarine 4">#458B74</colour>
+    <colour no="aquamarine">#7FFFD4</colour>
+    <colour no="azure 2">#E0EEEE</colour>
+    <colour no="azure 3">#C1CDCD</colour>
+    <colour no="azure 4">#838B8B</colour>
+    <colour no="azure">#F0FFFF</colour>
+    <colour no="banana">#E3CF57</colour>
+    <colour no="beige">#F5F5DC</colour>
+    <colour no="bisque 2">#EED5B7</colour>
+    <colour no="bisque 3">#CDB79E</colour>
+    <colour no="bisque 4">#8B7D6B</colour>
+    <colour no="bisque">#FFE4C4</colour>
+    <colour no="blanchedalmond">#FFEBCD</colour>
+    <colour no="blue 2">#0000EE</colour>
+    <colour no="blueviolet">#8A2BE2</colour>
+    <colour no="brick">#9C661F</colour>
+    <colour no="brown 1">#FF4040</colour>
+    <colour no="brown 2">#EE3B3B</colour>
+    <colour no="brown 3">#CD3333</colour>
+    <colour no="brown 4">#8B2323</colour>
+    <colour no="brown">#A52A2A</colour>
+    <colour no="burlywood 1">#FFD39B</colour>
+    <colour no="burlywood 2">#EEC591</colour>
+    <colour no="burlywood 3">#CDAA7D</colour>
+    <colour no="burlywood 4">#8B7355</colour>
+    <colour no="burlywood">#DEB887</colour>
+    <colour no="burntsienna">#8A360F</colour>
+    <colour no="burntumber">#8A3324</colour>
+    <colour no="cadetblue 1">#98F5FF</colour>
+    <colour no="cadetblue 2">#8EE5EE</colour>
+    <colour no="cadetblue 3">#7AC5CD</colour>
+    <colour no="cadetblue 4">#53868B</colour>
+    <colour no="cadetblue">#5F9EA0</colour>
+    <colour no="cadmiumorange">#FF6103</colour>
+    <colour no="cadmiumyellow">#FF9912</colour>
+    <colour no="carrot">#ED9121</colour>
+    <colour no="chartreuse 2">#76EE00</colour>
+    <colour no="chartreuse 3">#66CD00</colour>
+    <colour no="chartreuse 4">#458B00</colour>
+    <colour no="chartreuse">#7FFF00</colour>
+    <colour no="chocolate 1">#FF7F24</colour>
+    <colour no="chocolate 2">#EE7621</colour>
+    <colour no="chocolate 3">#CD661D</colour>
+    <colour no="chocolate">#D2691E</colour>
+    <colour no="cobalt">#3D59AB</colour>
+    <colour no="cobaltgreen">#3D9140</colour>
+    <colour no="coldgrey">#808A87</colour>
+    <colour no="coral 1">#FF7256</colour>
+    <colour no="coral 2">#EE6A50</colour>
+    <colour no="coral 3">#CD5B45</colour>
+    <colour no="coral 4">#8B3E2F</colour>
+    <colour no="coral">#FF7F50</colour>
+    <colour no="cornflowerblue">#6495ED</colour>
+    <colour no="cornsilk 2">#EEE8CD</colour>
+    <colour no="cornsilk 3">#CDC8B1</colour>
+    <colour no="cornsilk 4">#8B8878</colour>
+    <colour no="cornsilk">#FFF8DC</colour>
+    <colour no="crimson">#DC143C</colour>
+    <colour no="cyan 2">#00EEEE</colour>
+    <colour no="cyan 3">#00CDCD</colour>
+    <colour no="cyan">#00FFFF</colour>
+    <colour no="darkblue">#00008B</colour>
+    <colour no="darkcyan">#008B8B</colour>
+    <colour no="darkgoldenrod 1">#FFB90F</colour>
+    <colour no="darkgoldenrod 2">#EEAD0E</colour>
+    <colour no="darkgoldenrod 3">#CD950C</colour>
+    <colour no="darkgoldenrod 4">#8B6508</colour>
+    <colour no="darkgoldenrod">#B8860B</colour>
+    <colour no="darkgray">#A9A9A9</colour>
+    <colour no="darkgreen">#006400</colour>
+    <colour no="darkkhaki">#BDB76B</colour>
+    <colour no="darkmagenta">#8B008B</colour>
+    <colour no="darkolivegreen 1">#CAFF70</colour>
+    <colour no="darkolivegreen 2">#BCEE68</colour>
+    <colour no="darkolivegreen 3">#A2CD5A</colour>
+    <colour no="darkolivegreen 4">#6E8B3D</colour>
+    <colour no="darkolivegreen">#556B2F</colour>
+    <colour no="darkorange 1">#FF7F00</colour>
+    <colour no="darkorange 2">#EE7600</colour>
+    <colour no="darkorange 3">#CD6600</colour>
+    <colour no="darkorange 4">#8B4500</colour>
+    <colour no="darkorange">#FF8C00</colour>
+    <colour no="darkorchid 1">#BF3EFF</colour>
+    <colour no="darkorchid 2">#B23AEE</colour>
+    <colour no="darkorchid 3">#9A32CD</colour>
+    <colour no="darkorchid 4">#68228B</colour>
+    <colour no="darkorchid">#9932CC</colour>
+    <colour no="darkred">#8B0000</colour>
+    <colour no="darksalmon">#E9967A</colour>
+    <colour no="darkseagreen 1">#C1FFC1</colour>
+    <colour no="darkseagreen 2">#B4EEB4</colour>
+    <colour no="darkseagreen 3">#9BCD9B</colour>
+    <colour no="darkseagreen 4">#698B69</colour>
+    <colour no="darkseagreen">#8FBC8F</colour>
+    <colour no="darkslateblue">#483D8B</colour>
+    <colour no="darkslategray 1">#97FFFF</colour>
+    <colour no="darkslategray 2">#8DEEEE</colour>
+    <colour no="darkslategray 3">#79CDCD</colour>
+    <colour no="darkslategray 4">#528B8B</colour>
+    <colour no="darkslategray">#2F4F4F</colour>
+    <colour no="darkturquoise">#00CED1</colour>
+    <colour no="darkviolet">#9400D3</colour>
+    <colour no="deeppink 2">#EE1289</colour>
+    <colour no="deeppink 3">#CD1076</colour>
+    <colour no="deeppink 4">#8B0A50</colour>
+    <colour no="deeppink">#FF1493</colour>
+    <colour no="deepskyblue 2">#00B2EE</colour>
+    <colour no="deepskyblue 3">#009ACD</colour>
+    <colour no="deepskyblue 4">#00688B</colour>
+    <colour no="deepskyblue">#00BFFF</colour>
+    <colour no="dimgray">#696969</colour>
+    <colour no="dodgerblue 2">#1C86EE</colour>
+    <colour no="dodgerblue 3">#1874CD</colour>
+    <colour no="dodgerblue 4">#104E8B</colour>
+    <colour no="dodgerblue">#1E90FF</colour>
+    <colour no="eggshell">#FCE6C9</colour>
+    <colour no="emeraldgreen">#00C957</colour>
+    <colour no="firebrick 1">#FF3030</colour>
+    <colour no="firebrick 2">#EE2C2C</colour>
+    <colour no="firebrick 3">#CD2626</colour>
+    <colour no="firebrick 4">#8B1A1A</colour>
+    <colour no="firebrick">#B22222</colour>
+    <colour no="flesh">#FF7D40</colour>
+    <colour no="floralwhite">#FFFAF0</colour>
+    <colour no="forestgreen">#228B22</colour>
+    <colour no="gainsboro">#DCDCDC</colour>
+    <colour no="ghostwhite">#F8F8FF</colour>
+    <colour no="gold 2">#EEC900</colour>
+    <colour no="gold 3">#CDAD00</colour>
+    <colour no="gold 4">#8B7500</colour>
+    <colour no="gold">#FFD700</colour>
+    <colour no="goldenrod 1">#FFC125</colour>
+    <colour no="goldenrod 2">#EEB422</colour>
+    <colour no="goldenrod 3">#CD9B1D</colour>
+    <colour no="goldenrod 4">#8B6914</colour>
+    <colour no="goldenrod">#DAA520</colour>
+    <colour no="gray 1">#030303</colour>
+    <colour no="gray 2">#050505</colour>
+    <colour no="gray 3">#080808</colour>
+    <colour no="gray 4">#0A0A0A</colour>
+    <colour no="gray 5">#0D0D0D</colour>
+    <colour no="gray 6">#0F0F0F</colour>
+    <colour no="gray 7">#121212</colour>
+    <colour no="gray 8">#141414</colour>
+    <colour no="gray 9">#171717</colour>
+    <colour no="gray 10">#1A1A1A</colour>
+    <colour no="gray 11">#1C1C1C</colour>
+    <colour no="gray 12">#1F1F1F</colour>
+    <colour no="gray 13">#212121</colour>
+    <colour no="gray 14">#242424</colour>
+    <colour no="gray 15">#262626</colour>
+    <colour no="gray 16">#292929</colour>
+    <colour no="gray 17">#2B2B2B</colour>
+    <colour no="gray 18">#2E2E2E</colour>
+    <colour no="gray 19">#303030</colour>
+    <colour no="gray 20">#333333</colour>
+    <colour no="gray 21">#363636</colour>
+    <colour no="gray 22">#383838</colour>
+    <colour no="gray 23">#3B3B3B</colour>
+    <colour no="gray 24">#3D3D3D</colour>
+    <colour no="gray 25">#404040</colour>
+    <colour no="gray 26">#424242</colour>
+    <colour no="gray 27">#454545</colour>
+    <colour no="gray 28">#474747</colour>
+    <colour no="gray 29">#4A4A4A</colour>
+    <colour no="gray 30">#4D4D4D</colour>
+    <colour no="gray 31">#4F4F4F</colour>
+    <colour no="gray 32">#525252</colour>
+    <colour no="gray 33">#545454</colour>
+    <colour no="gray 34">#575757</colour>
+    <colour no="gray 35">#595959</colour>
+    <colour no="gray 36">#5C5C5C</colour>
+    <colour no="gray 37">#5E5E5E</colour>
+    <colour no="gray 38">#616161</colour>
+    <colour no="gray 39">#636363</colour>
+    <colour no="gray 40">#666666</colour>
+    <colour no="gray 42">#6B6B6B</colour>
+    <colour no="gray 43">#6E6E6E</colour>
+    <colour no="gray 44">#707070</colour>
+    <colour no="gray 45">#737373</colour>
+    <colour no="gray 46">#757575</colour>
+    <colour no="gray 47">#787878</colour>
+    <colour no="gray 48">#7A7A7A</colour>
+    <colour no="gray 49">#7D7D7D</colour>
+    <colour no="gray 50">#7F7F7F</colour>
+    <colour no="gray 51">#828282</colour>
+    <colour no="gray 52">#858585</colour>
+    <colour no="gray 53">#878787</colour>
+    <colour no="gray 54">#8A8A8A</colour>
+    <colour no="gray 55">#8C8C8C</colour>
+    <colour no="gray 56">#8F8F8F</colour>
+    <colour no="gray 57">#919191</colour>
+    <colour no="gray 58">#949494</colour>
+    <colour no="gray 59">#969696</colour>
+    <colour no="gray 60">#999999</colour>
+    <colour no="gray 61">#9C9C9C</colour>
+    <colour no="gray 62">#9E9E9E</colour>
+    <colour no="gray 63">#A1A1A1</colour>
+    <colour no="gray 64">#A3A3A3</colour>
+    <colour no="gray 65">#A6A6A6</colour>
+    <colour no="gray 66">#A8A8A8</colour>
+    <colour no="gray 67">#ABABAB</colour>
+    <colour no="gray 68">#ADADAD</colour>
+    <colour no="gray 69">#B0B0B0</colour>
+    <colour no="gray 70">#B3B3B3</colour>
+    <colour no="gray 71">#B5B5B5</colour>
+    <colour no="gray 72">#B8B8B8</colour>
+    <colour no="gray 73">#BABABA</colour>
+    <colour no="gray 74">#BDBDBD</colour>
+    <colour no="gray 75">#BFBFBF</colour>
+    <colour no="gray 76">#C2C2C2</colour>
+    <colour no="gray 77">#C4C4C4</colour>
+    <colour no="gray 78">#C7C7C7</colour>
+    <colour no="gray 79">#C9C9C9</colour>
+    <colour no="gray 80">#CCCCCC</colour>
+    <colour no="gray 81">#CFCFCF</colour>
+    <colour no="gray 82">#D1D1D1</colour>
+    <colour no="gray 83">#D4D4D4</colour>
+    <colour no="gray 84">#D6D6D6</colour>
+    <colour no="gray 85">#D9D9D9</colour>
+    <colour no="gray 86">#DBDBDB</colour>
+    <colour no="gray 87">#DEDEDE</colour>
+    <colour no="gray 88">#E0E0E0</colour>
+    <colour no="gray 89">#E3E3E3</colour>
+    <colour no="gray 90">#E5E5E5</colour>
+    <colour no="gray 91">#E8E8E8</colour>
+    <colour no="gray 92">#EBEBEB</colour>
+    <colour no="gray 93">#EDEDED</colour>
+    <colour no="gray 94">#F0F0F0</colour>
+    <colour no="gray 95">#F2F2F2</colour>
+    <colour no="gray 97">#F7F7F7</colour>
+    <colour no="gray 98">#FAFAFA</colour>
+    <colour no="gray 99">#FCFCFC</colour>
+    <colour no="green 2">#00EE00</colour>
+    <colour no="green 3">#00CD00</colour>
+    <colour no="green 4">#008B00</colour>
+    <colour no="greenyellow">#ADFF2F</colour>
+    <colour no="honeydew 2">#E0EEE0</colour>
+    <colour no="honeydew 3">#C1CDC1</colour>
+    <colour no="honeydew 4">#838B83</colour>
+    <colour no="honeydew">#F0FFF0</colour>
+    <colour no="hotpink 1">#FF6EB4</colour>
+    <colour no="hotpink 2">#EE6AA7</colour>
+    <colour no="hotpink 3">#CD6090</colour>
+    <colour no="hotpink 4">#8B3A62</colour>
+    <colour no="hotpink">#FF69B4</colour>
+    <colour no="indian red">#B0171F</colour>
+    <colour no="indianred 1">#FF6A6A</colour>
+    <colour no="indianred 2">#EE6363</colour>
+    <colour no="indianred 3">#CD5555</colour>
+    <colour no="indianred 4">#8B3A3A</colour>
+    <colour no="indianred">#CD5C5C</colour>
+    <colour no="indigo">#4B0082</colour>
+    <colour no="ivory 2">#EEEEE0</colour>
+    <colour no="ivory 3">#CDCDC1</colour>
+    <colour no="ivory 4">#8B8B83</colour>
+    <colour no="ivory">#FFFFF0</colour>
+    <colour no="ivoryblack">#292421</colour>
+    <colour no="khaki 1">#FFF68F</colour>
+    <colour no="khaki 2">#EEE685</colour>
+    <colour no="khaki 3">#CDC673</colour>
+    <colour no="khaki 4">#8B864E</colour>
+    <colour no="khaki">#F0E68C</colour>
+    <colour no="lavender">#E6E6FA</colour>
+    <colour no="lavenderblush 2">#EEE0E5</colour>
+    <colour no="lavenderblush 3">#CDC1C5</colour>
+    <colour no="lavenderblush 4">#8B8386</colour>
+    <colour no="lavenderblush">#FFF0F5</colour>
+    <colour no="lawngreen">#7CFC00</colour>
+    <colour no="lemonchiffon 2">#EEE9BF</colour>
+    <colour no="lemonchiffon 3">#CDC9A5</colour>
+    <colour no="lemonchiffon 4">#8B8970</colour>
+    <colour no="lemonchiffon">#FFFACD</colour>
+    <colour no="lightblue 1">#BFEFFF</colour>
+    <colour no="lightblue 2">#B2DFEE</colour>
+    <colour no="lightblue 3">#9AC0CD</colour>
+    <colour no="lightblue 4">#68838B</colour>
+    <colour no="lightblue">#ADD8E6</colour>
+    <colour no="lightcoral">#F08080</colour>
+    <colour no="lightcyan 2">#D1EEEE</colour>
+    <colour no="lightcyan 3">#B4CDCD</colour>
+    <colour no="lightcyan 4">#7A8B8B</colour>
+    <colour no="lightcyan">#E0FFFF</colour>
+    <colour no="lightgoldenrod 1">#FFEC8B</colour>
+    <colour no="lightgoldenrod 2">#EEDC82</colour>
+    <colour no="lightgoldenrod 3">#CDBE70</colour>
+    <colour no="lightgoldenrod 4">#8B814C</colour>
+    <colour no="lightgoldenrodyellow">#FAFAD2</colour>
+    <colour no="lightgreen">#90EE90</colour>
+    <colour no="lightgrey">#D3D3D3</colour>
+    <colour no="lightpink 1">#FFAEB9</colour>
+    <colour no="lightpink 2">#EEA2AD</colour>
+    <colour no="lightpink 3">#CD8C95</colour>
+    <colour no="lightpink 4">#8B5F65</colour>
+    <colour no="lightpink">#FFB6C1</colour>
+    <colour no="lightsalmon 2">#EE9572</colour>
+    <colour no="lightsalmon 3">#CD8162</colour>
+    <colour no="lightsalmon 4">#8B5742</colour>
+    <colour no="lightsalmon">#FFA07A</colour>
+    <colour no="lightseagreen">#20B2AA</colour>
+    <colour no="lightskyblue 1">#B0E2FF</colour>
+    <colour no="lightskyblue 2">#A4D3EE</colour>
+    <colour no="lightskyblue 3">#8DB6CD</colour>
+    <colour no="lightskyblue 4">#607B8B</colour>
+    <colour no="lightskyblue">#87CEFA</colour>
+    <colour no="lightslateblue">#8470FF</colour>
+    <colour no="lightslategray">#778899</colour>
+    <colour no="lightsteelblue 1">#CAE1FF</colour>
+    <colour no="lightsteelblue 2">#BCD2EE</colour>
+    <colour no="lightsteelblue 3">#A2B5CD</colour>
+    <colour no="lightsteelblue 4">#6E7B8B</colour>
+    <colour no="lightsteelblue">#B0C4DE</colour>
+    <colour no="lightyellow 2">#EEEED1</colour>
+    <colour no="lightyellow 3">#CDCDB4</colour>
+    <colour no="lightyellow 4">#8B8B7A</colour>
+    <colour no="lightyellow">#FFFFE0</colour>
+    <colour no="limegreen">#32CD32</colour>
+    <colour no="linen">#FAF0E6</colour>
+    <colour no="magenta 2">#EE00EE</colour>
+    <colour no="magenta 3">#CD00CD</colour>
+    <colour no="magenta">#FF00FF</colour>
+    <colour no="manganeseblue">#03A89E</colour>
+    <colour no="maroon 1">#FF34B3</colour>
+    <colour no="maroon 2">#EE30A7</colour>
+    <colour no="maroon 3">#CD2990</colour>
+    <colour no="maroon 4">#8B1C62</colour>
+    <colour no="maroon">#800000</colour>
+    <colour no="mediumaquamarine">#66CDAA</colour>
+    <colour no="mediumblue">#0000CD</colour>
+    <colour no="mediumorchid 1">#E066FF</colour>
+    <colour no="mediumorchid 2">#D15FEE</colour>
+    <colour no="mediumorchid 3">#B452CD</colour>
+    <colour no="mediumorchid 4">#7A378B</colour>
+    <colour no="mediumorchid">#BA55D3</colour>
+    <colour no="mediumpurple 1">#AB82FF</colour>
+    <colour no="mediumpurple 2">#9F79EE</colour>
+    <colour no="mediumpurple 3">#8968CD</colour>
+    <colour no="mediumpurple 4">#5D478B</colour>
+    <colour no="mediumpurple">#9370DB</colour>
+    <colour no="mediumseagreen">#3CB371</colour>
+    <colour no="mediumslateblue">#7B68EE</colour>
+    <colour no="mediumspringgreen">#00FA9A</colour>
+    <colour no="mediumturquoise">#48D1CC</colour>
+    <colour no="mediumvioletred">#C71585</colour>
+    <colour no="melon">#E3A869</colour>
+    <colour no="midnightblue">#191970</colour>
+    <colour no="mint">#BDFCC9</colour>
+    <colour no="mintcream">#F5FFFA</colour>
+    <colour no="mistyrose 2">#EED5D2</colour>
+    <colour no="mistyrose 3">#CDB7B5</colour>
+    <colour no="mistyrose 4">#8B7D7B</colour>
+    <colour no="mistyrose">#FFE4E1</colour>
+    <colour no="moccasin">#FFE4B5</colour>
+    <colour no="navajowhite 2">#EECFA1</colour>
+    <colour no="navajowhite 3">#CDB38B</colour>
+    <colour no="navajowhite 4">#8B795E</colour>
+    <colour no="navajowhite">#FFDEAD</colour>
+    <colour no="navy">#000080</colour>
+    <colour no="oldlace">#FDF5E6</colour>
+    <colour no="olive">#808000</colour>
+    <colour no="olivedrab 1">#C0FF3E</colour>
+    <colour no="olivedrab 2">#B3EE3A</colour>
+    <colour no="olivedrab 4">#698B22</colour>
+    <colour no="olivedrab">#6B8E23</colour>
+    <colour no="orange 2">#EE9A00</colour>
+    <colour no="orange 3">#CD8500</colour>
+    <colour no="orange 4">#8B5A00</colour>
+    <colour no="orange">#FF8000</colour>
+    <colour no="orangered 2">#EE4000</colour>
+    <colour no="orangered 3">#CD3700</colour>
+    <colour no="orangered 4">#8B2500</colour>
+    <colour no="orangered">#FF4500</colour>
+    <colour no="orchid 1">#FF83FA</colour>
+    <colour no="orchid 2">#EE7AE9</colour>
+    <colour no="orchid 3">#CD69C9</colour>
+    <colour no="orchid 4">#8B4789</colour>
+    <colour no="orchid">#DA70D6</colour>
+    <colour no="palegoldenrod">#EEE8AA</colour>
+    <colour no="palegreen 1">#9AFF9A</colour>
+    <colour no="palegreen 3">#7CCD7C</colour>
+    <colour no="palegreen 4">#548B54</colour>
+    <colour no="palegreen">#98FB98</colour>
+    <colour no="paleturquoise 1">#BBFFFF</colour>
+    <colour no="paleturquoise 3">#96CDCD</colour>
+    <colour no="paleturquoise 4">#668B8B</colour>
+    <colour no="paleturquoise">#AEEEEE</colour>
+    <colour no="palevioletred 1">#FF82AB</colour>
+    <colour no="palevioletred 2">#EE799F</colour>
+    <colour no="palevioletred 3">#CD6889</colour>
+    <colour no="palevioletred 4">#8B475D</colour>
+    <colour no="palevioletred">#DB7093</colour>
+    <colour no="papayawhip">#FFEFD5</colour>
+    <colour no="peachpuff 2">#EECBAD</colour>
+    <colour no="peachpuff 3">#CDAF95</colour>
+    <colour no="peachpuff 4">#8B7765</colour>
+    <colour no="peachpuff">#FFDAB9</colour>
+    <colour no="peacock">#33A1C9</colour>
+    <colour no="peru">#CD853F</colour>
+    <colour no="pink 1">#FFB5C5</colour>
+    <colour no="pink 2">#EEA9B8</colour>
+    <colour no="pink 3">#CD919E</colour>
+    <colour no="pink 4">#8B636C</colour>
+    <colour no="pink">#FFC0CB</colour>
+    <colour no="plum 1">#FFBBFF</colour>
+    <colour no="plum 2">#EEAEEE</colour>
+    <colour no="plum 3">#CD96CD</colour>
+    <colour no="plum 4">#8B668B</colour>
+    <colour no="plum">#DDA0DD</colour>
+    <colour no="powderblue">#B0E0E6</colour>
+    <colour no="purple 1">#9B30FF</colour>
+    <colour no="purple 2">#912CEE</colour>
+    <colour no="purple 3">#7D26CD</colour>
+    <colour no="purple 4">#551A8B</colour>
+    <colour no="purple">#800080</colour>
+    <colour no="raspberry">#872657</colour>
+    <colour no="rawsienna">#C76114</colour>
+    <colour no="red 2">#EE0000</colour>
+    <colour no="red 3">#CD0000</colour>
+    <colour no="rosybrown 1">#FFC1C1</colour>
+    <colour no="rosybrown 2">#EEB4B4</colour>
+    <colour no="rosybrown 3">#CD9B9B</colour>
+    <colour no="rosybrown 4">#8B6969</colour>
+    <colour no="rosybrown">#BC8F8F</colour>
+    <colour no="royalblue 1">#4876FF</colour>
+    <colour no="royalblue 2">#436EEE</colour>
+    <colour no="royalblue 3">#3A5FCD</colour>
+    <colour no="royalblue 4">#27408B</colour>
+    <colour no="royalblue">#4169E1</colour>
+    <colour no="saddlebrown">#8B4513</colour>
+    <colour no="salmon 1">#FF8C69</colour>
+    <colour no="salmon 2">#EE8262</colour>
+    <colour no="salmon 3">#CD7054</colour>
+    <colour no="salmon 4">#8B4C39</colour>
+    <colour no="salmon">#FA8072</colour>
+    <colour no="sandybrown">#F4A460</colour>
+    <colour no="sapgreen">#308014</colour>
+    <colour no="seagreen 1">#54FF9F</colour>
+    <colour no="seagreen 2">#4EEE94</colour>
+    <colour no="seagreen 3">#43CD80</colour>
+    <colour no="seashell 2">#EEE5DE</colour>
+    <colour no="seashell 3">#CDC5BF</colour>
+    <colour no="seashell 4">#8B8682</colour>
+    <colour no="seashell">#FFF5EE</colour>
+    <colour no="sepia">#5E2612</colour>
+    <colour no="sgi beet">#8E388E</colour>
+    <colour no="sgi brightgray">#C5C1AA</colour>
+    <colour no="sgi chartreuse">#71C671</colour>
+    <colour no="sgi darkgray">#555555</colour>
+    <colour no="sgi gray 12">#1E1E1E</colour>
+    <colour no="sgi gray 16">#282828</colour>
+    <colour no="sgi gray 32">#515151</colour>
+    <colour no="sgi gray 36">#5B5B5B</colour>
+    <colour no="sgi gray 52">#848484</colour>
+    <colour no="sgi gray 56">#8E8E8E</colour>
+    <colour no="sgi gray 72">#B7B7B7</colour>
+    <colour no="sgi gray 76">#C1C1C1</colour>
+    <colour no="sgi gray 92">#EAEAEA</colour>
+    <colour no="sgi gray 96">#F4F4F4</colour>
+    <colour no="sgi lightblue">#7D9EC0</colour>
+    <colour no="sgi lightgray">#AAAAAA</colour>
+    <colour no="sgi olivedrab">#8E8E38</colour>
+    <colour no="sgi salmon">#C67171</colour>
+    <colour no="sgi slateblue">#7171C6</colour>
+    <colour no="sgi teal">#388E8E</colour>
+    <colour no="sienna 1">#FF8247</colour>
+    <colour no="sienna 2">#EE7942</colour>
+    <colour no="sienna 3">#CD6839</colour>
+    <colour no="sienna 4">#8B4726</colour>
+    <colour no="sienna">#A0522D</colour>
+    <colour no="silver">#C0C0C0</colour>
+    <colour no="skyblue 1">#87CEFF</colour>
+    <colour no="skyblue 2">#7EC0EE</colour>
+    <colour no="skyblue 3">#6CA6CD</colour>
+    <colour no="skyblue 4">#4A708B</colour>
+    <colour no="skyblue">#87CEEB</colour>
+    <colour no="slateblue 1">#836FFF</colour>
+    <colour no="slateblue 2">#7A67EE</colour>
+    <colour no="slateblue 3">#6959CD</colour>
+    <colour no="slateblue 4">#473C8B</colour>
+    <colour no="slateblue">#6A5ACD</colour>
+    <colour no="slategray 1">#C6E2FF</colour>
+    <colour no="slategray 2">#B9D3EE</colour>
+    <colour no="slategray 3">#9FB6CD</colour>
+    <colour no="slategray 4">#6C7B8B</colour>
+    <colour no="slategray">#708090</colour>
+    <colour no="snow 2">#EEE9E9</colour>
+    <colour no="snow 3">#CDC9C9</colour>
+    <colour no="snow 4">#8B8989</colour>
+    <colour no="snow">#FFFAFA</colour>
+    <colour no="springgreen 1">#00EE76</colour>
+    <colour no="springgreen 2">#00CD66</colour>
+    <colour no="springgreen 3">#008B45</colour>
+    <colour no="springgreen">#00FF7F</colour>
+    <colour no="steelblue 1">#63B8FF</colour>
+    <colour no="steelblue 2">#5CACEE</colour>
+    <colour no="steelblue 3">#4F94CD</colour>
+    <colour no="steelblue 4">#36648B</colour>
+    <colour no="steelblue">#4682B4</colour>
+    <colour no="tan 1">#FFA54F</colour>
+    <colour no="tan 2">#EE9A49</colour>
+    <colour no="tan 4">#8B5A2B</colour>
+    <colour no="tan">#D2B48C</colour>
+    <colour no="teal">#008080</colour>
+    <colour no="thistle 1">#FFE1FF</colour>
+    <colour no="thistle 2">#EED2EE</colour>
+    <colour no="thistle 3">#CDB5CD</colour>
+    <colour no="thistle 4">#8B7B8B</colour>
+    <colour no="thistle">#D8BFD8</colour>
+    <colour no="tomato 2">#EE5C42</colour>
+    <colour no="tomato 3">#CD4F39</colour>
+    <colour no="tomato 4">#8B3626</colour>
+    <colour no="tomato">#FF6347</colour>
+    <colour no="turquoise 1">#00F5FF</colour>
+    <colour no="turquoise 2">#00E5EE</colour>
+    <colour no="turquoise 3">#00C5CD</colour>
+    <colour no="turquoise 4">#00868B</colour>
+    <colour no="turquoise">#40E0D0</colour>
+    <colour no="turquoiseblue">#00C78C</colour>
+    <colour no="violet">#EE82EE</colour>
+    <colour no="violetred 1">#FF3E96</colour>
+    <colour no="violetred 2">#EE3A8C</colour>
+    <colour no="violetred 3">#CD3278</colour>
+    <colour no="violetred 4">#8B2252</colour>
+    <colour no="violetred">#D02090</colour>
+    <colour no="warmgrey">#808069</colour>
+    <colour no="wheat 1">#FFE7BA</colour>
+    <colour no="wheat 2">#EED8AE</colour>
+    <colour no="wheat 3">#CDBA96</colour>
+    <colour no="wheat 4">#8B7E66</colour>
+    <colour no="wheat">#F5DEB3</colour>
+    <colour no="white smoke">#F5F5F5</colour>
+    <colour no="yellow 2">#EEEE00</colour>
+    <colour no="yellow 3">#CDCD00</colour>
+    <colour no="yellow 4">#8B8B00</colour>
+    <colour no="yellowgreen">#9ACD32</colour>
   </global>
 
   <keyword>
@@ -2798,6 +3348,7 @@ Copyright: (c) 2019, Anton van Wezenbeek
    
   <lexer name="a68k"/>
   <lexer name="abaqus"/> 
+  <lexer name="abl"/>
   <lexer name="ada" extensions="*.a;*.adb;*.ads">
     <properties>
       <property name="fold"> 1 </property>
@@ -2963,7 +3514,7 @@ Copyright: (c) 2019, Anton van Wezenbeek
     <styles>
     <style no="header"> fore:grey </style> 
     <style no="position"> fore:steel blue </style> 
-    <style no="deleted"> fore:red </style> 
+    <style no="deleted"> fore:orange </style> 
     <style no="added"> fore:lime green </style> 
     <style no="changed"> fore:yellow </style> 
     </styles> 
@@ -2992,6 +3543,40 @@ Copyright: (c) 2019, Anton van Wezenbeek
   <lexer name="f77" macro="fortran"/>
   <lexer name="freebasic" macro="vb"/>
   <lexer name="gap"/>
+  <lexer display="gdb" name="ada"> 
+    <keywords>
+      actions add-auto-load-safe-path add-auto-load-scripts-directory add-inferior add-symbol-file 
+      add-symbol-file-from-memory advance agent-printf alias append 
+      apropos attach awatch backtrace break 
+      break-range bt call catch cd 
+      checkpoint clear clone-inferior collect commands compare-sections 
+      compile complete condition continue core-file define 
+      delete demangle detach directory disable disassemble 
+      disconnect display document dont-repeat down down-silently 
+      dprintf dump echo edit enable end 
+      eval exec-file explore explore type explore value expression 
+      file find finish flash-erase flushregs forward-search 
+      frame ftrace function generate-core-file guile guile-repl 
+      handle hbreak help if ignore ignore-errors 
+      inferior info init-if-undefined interpreter-exec interrupt jit-reader-load 
+      jit-reader-unload jump kill kill inferiors list load 
+      macro maintenance make mem monitor new-ui 
+      next nexti ni nosharedlibrary output overlay 
+      passcount path print print-object printf ptype 
+      pwd python python-interactive queue-signal quit rbreak 
+      rc record remote remove-inferiors remove-symbol-file restart 
+      restore return reverse-continue reverse-finish reverse-next reverse-nexti 
+      reverse-search reverse-step reverse-stepi rni rsi run 
+      rwatch save search section select-frame set 
+      sharedlibrary shell show si signal skip 
+      source start starti step stepi stepping 
+      stop strace symbol-file target task tbreak 
+      tcatch tdump teval tfind thbreak thread 
+      tp trace tsave tstart tstatus tstop 
+      tty tvariable undisplay unset until up 
+      up-silently watch whatis where while while-stepping ws x 
+    </keywords>
+  </lexer>
   <lexer name="gui4cli"/>
   <lexer name="haskell"/>
   <lexer name="hypertext" extensions="*.htm;*.html;*.php" preview="true">
@@ -3206,6 +3791,17 @@ Copyright: (c) 2019, Anton van Wezenbeek
     </keywords>
   </lexer>    
   <lexer name="literatehaskell" macro="haskell"/>
+  <lexer display="lldb" name="SML"> 
+    <keywords>
+      add-dsym apropos attach b breakpoint bt bugreport c call command continue
+      detach di disassemble display down env exit expression f file finish
+      frame gdb-remote gui help image j jump kdp-remote kill l language
+      list log memory n next nexti ni p parray platform plugin
+      po poarray print process q quit r rbreak register repl run
+      s script settings si sif source statistics step stepi t target
+      tbreak thread type undisplay up v var version vo watchpoint x
+    </keywords>
+  </lexer>
   <lexer display="log" extensions="*.log" edgemode="none" spacevisible="invisible" name="bash">
     <keywords> 
       error error: warning:
@@ -3363,7 +3959,6 @@ Copyright: (c) 2019, Anton van Wezenbeek
       <property name="fold.comment"> 1 </property>
     </properties>
   </lexer>
-  <lexer name="abl"/>
   <lexer name="props" extensions="*.ini;*.conf;*.desktop" edgemode="none">
     <styles>
     <style no="section"> fore:sky blue </style>
@@ -3498,7 +4093,7 @@ Copyright: (c) 2019, Anton van Wezenbeek
   <lexer name="verilog"/>
   <lexer name="vhdl"/>
   <lexer name="visualprolog"/>
-  <lexer display="xml" name="hypertext" extensions="*.xml" language = "xml" edgemode="none">
+  <lexer display="xml" name="hypertext" extensions="*.xml" language = "xml" edgemode="none" wrapline="char">
     <styles>
       <style no="xmlstart,xmlend"> fore:sky blue,bold </style>
     </styles>

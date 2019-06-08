@@ -134,6 +134,7 @@ TEST_CASE("wex::stc")
   {
     REQUIRE(stc->get_margin_text_click() == -1);
 
+    stc->show_line_numbers(false);
     REQUIRE(!stc->is_shown_line_numbers());
     stc->show_line_numbers(true);
     REQUIRE( stc->is_shown_line_numbers());

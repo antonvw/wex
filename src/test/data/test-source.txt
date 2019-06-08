@@ -22,8 +22,8 @@
 :set sy=cpp
 :set ts=10
 :set ai
-:set syntax off
-:set syntax on
+:syntax off
+:syntax on
 :ve
 :1,5y
 :10

@@ -40,7 +40,6 @@ namespace wex
         if (menus::add_commands(node, m_Commands) == 0)
         {
           log("no commands found for") << m_Name;
-          m_Commands.push_back({});
         }  
       }};
     
@@ -60,8 +59,8 @@ namespace wex
     const auto & flags_key() const {return m_FlagsKey;};
 
     /// Returns the current command.  
-    const auto & get_command() const {
-      return m_Commands.at(m_CommandIndex);};
+    const auto get_command() const {
+      return m_Commands.empty() ? T(): m_Commands.at(m_CommandIndex);};
 
     /// Returns all the commands.
     const auto & get_commands() const {return m_Commands;};

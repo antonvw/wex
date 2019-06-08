@@ -707,7 +707,7 @@ bool wex::vi::command(const std::string& command)
       set_last_command(command);
     }
         
-    if (get_macros().mode()->is_recording() && 
+    if (get_macros().mode()->is_recording() && !m_Mode.insert() &&
       command[0] != 'q' && command[0] != ':' && 
       command != "/" && command != "?")
     {
@@ -720,23 +720,21 @@ bool wex::vi::command(const std::string& command)
 
 void wex::vi::command_calc(const std::string& command)
 {
-  if (const auto sum = calculator(
-    command.substr(command[0] == '=' ? 1: 2)); !std::isnan(sum))
+  const auto sum = calculator(command.substr(command[0] == '=' ? 1: 2));
+  
+  if (mode().insert())
   {
-    if (mode().insert())
+    if (m_LastCommand.find('c') != std::string::npos)
     {
-      if (m_LastCommand.find('c') != std::string::npos)
-      {
-        get_stc()->ReplaceSelection(wxEmptyString);
-      }
-    
-      add_text(std::to_string(sum));
+      get_stc()->ReplaceSelection(wxEmptyString);
     }
-    else
-    {
-      set_register_yank(std::to_string(sum));
-      frame()->show_ex_message(std::to_string(sum));
-    }
+  
+    add_text(std::to_string(sum));
+  }
+  else
+  {
+    set_register_yank(std::to_string(sum));
+    frame()->show_ex_message(std::to_string(sum));
   }
 }
 

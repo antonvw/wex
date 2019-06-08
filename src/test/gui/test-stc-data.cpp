@@ -22,6 +22,9 @@ TEST_CASE("wex::stc_data")
     REQUIRE( wex::stc_data().control().line() == 0);
     REQUIRE( wex::stc_data().control(
       wex::control_data().col(3)).control().col() == 3);
+    REQUIRE( wex::stc_data().indicator_no() == wex::stc_data::IND_LINE);
+    REQUIRE( wex::stc_data().indicator_no(
+      wex::stc_data::IND_DEBUG).indicator_no() == wex::stc_data::IND_DEBUG);
     REQUIRE( wex::stc_data(
       wex::control_data().col(3)).control().col() == 3);
     REQUIRE( wex::stc_data(

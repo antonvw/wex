@@ -265,7 +265,7 @@ const std::string wex::ellipsed(
 {
   return text + 
     (ellipse ? "...": std::string()) + 
-    (!control.empty() ? "\t" + control: std::string());
+    (!control.empty() ? "\tCtrl+" + control: std::string());
 }
 
 const std::string wex::firstof(
@@ -477,6 +477,8 @@ bool wex::marker_and_register_expansion(ex* ex, std::string& text)
 int wex::match(const std::string& reg, const std::string& text, 
   std::vector < std::string > & v)
 {
+  if (reg.empty()) return -1;
+
   try 
   {
     if (
@@ -502,7 +504,8 @@ int wex::match(const std::string& reg, const std::string& text,
 
 bool wex::matches_one_of(const std::string& fullname, const std::string& pattern)
 {
-  if (pattern == "*") return true; // asterix matches always.
+  if (pattern == "*") return true; // asterix matches always
+  if (fullname.empty()) return false; // empty string never matches
 
   // Make a regex of pattern matching chars.
   auto re(pattern); 

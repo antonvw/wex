@@ -53,7 +53,7 @@ const auto idZoomOut = wxWindow::NewControlId();
 
 void wex::stc::BindAll()
 {
-  const int accels = 20; // take max number of entries
+  const int accels = 30; // guess max number of entries
   wxAcceleratorEntry entries[accels];
 
   int i = 0;
@@ -78,6 +78,23 @@ void wex::stc::BindAll()
   entries[i++].Set(wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE);
   entries[i++].Set(wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE);
   entries[i++].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
+  
+  int j = ID_EDIT_DEBUG_FIRST;
+
+  for (const auto& e : m_Frame->get_debug()->debug_entry().get_commands())
+  {
+    if (!e.control().empty())
+    {
+      entries[i++].Set(wxACCEL_CTRL, e.control().at(0), j);
+
+      if (i >= accels)
+      {
+        log("stc-bind") << "too many control accelerators";
+        break;
+      }
+    }
+    j++;
+  }
 
   wxAcceleratorTable accel(i, entries);
   SetAcceleratorTable(accel);
@@ -209,9 +226,8 @@ void wex::stc::BindAll()
       
   Bind(wxEVT_LEFT_DCLICK, [=](wxMouseEvent& event) {
     m_MarginTextClick = -1;
-    
-    if (std::string filename; 
-      link_open(link_t().set(LINK_OPEN).set(LINK_CHECK), &filename)) 
+
+    if (link_open(link_t().set(LINK_OPEN).set(LINK_CHECK)))
     {
       if (!link_open(link_t().set(LINK_OPEN)))
         event.Skip();
@@ -237,21 +253,23 @@ void wex::stc::BindAll()
       - wxSTC_FOLDLEVELBASE;
       
     if (
+      !m_skip &&
       m_Frame->get_debug() != nullptr &&
       m_Frame->get_debug()->process() != nullptr &&
-      m_Frame->get_debug()->process()->is_running())
+      m_Frame->get_debug()->process()->is_running() &&
+      matches_one_of(
+        get_filename().extension(), 
+        m_Frame->get_debug()->debug_entry().extensions()))
     {
-      const std::string word(get_word_at_pos(GetCurrentPos()));
+      const auto word = (!GetSelectedText().empty() ? 
+        GetSelectedText().ToStdString() : get_word_at_pos(GetCurrentPos()));
+
       if (!word.empty())
       {
-        const std::string var(m_Frame->get_debug()->print(word));
-        if (!var.empty())
-        {
-          SetToolTip(var);
-        }
+        m_Frame->get_debug()->print(word);
       }
     }
-    });
+    m_skip = false;});
   
   if (m_Data.menu().any())
   {
@@ -321,6 +339,7 @@ void wex::stc::BindAll()
   // not yet possible for wx3.0. And add wxSTC_AUTOMATICFOLD_CLICK
   // to config_dialog, and SetAutomaticFold.
   Bind(wxEVT_STC_MARGINCLICK, [=](wxStyledTextEvent& event) {
+    m_skip = false;
     if (const auto line = LineFromPosition(event.GetPosition());
       event.GetMargin() == m_MarginFoldingNumber)
     {
@@ -357,6 +376,7 @@ void wex::stc::BindAll()
         m_Frame->get_debug()->process()->is_running())
       {
         m_Frame->get_debug()->toggle_breakpoint(line, this);
+        m_skip = true;
       }
       else
       {
@@ -442,9 +462,8 @@ void wex::stc::BindAll()
     {
       sort_selection(
         this, 
-        string_sort_t().set(
-          event.GetId() == wxID_SORT_ASCENDING ? 
-            0: STRING_SORT_DESCENDING), 
+        event.GetId() == wxID_SORT_ASCENDING ? 
+          string_sort_t(): string_sort_t().set(STRING_SORT_DESCENDING),
         pos - 1);
     }}, wxID_SORT_ASCENDING, wxID_SORT_DESCENDING);
 
@@ -556,7 +575,12 @@ void wex::stc::BindAll()
     
     value = new_value;
     }, ID_EDIT_CONTROL_CHAR);
+  
 
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    AnnotationSetText(GetCurrentLine(), event.GetString());}, 
+    ID_EDIT_DEBUG_VARIABLE);
+  
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (CallTipActive()) CallTipCancel();
     
@@ -757,7 +781,10 @@ void wex::stc::build_popup_menu(menu& menu)
     menu.append(idOpenWWW, _("&Search"));
   }
   
-  if (m_Data.menu().test(stc_data::MENU_DEBUG))
+  if (m_Data.menu().test(stc_data::MENU_DEBUG) &&
+    matches_one_of(
+      get_filename().extension(), 
+      m_Frame->get_debug()->debug_entry().extensions()))
   {
     m_Frame->get_debug()->add_menu(&menu, true);
   }

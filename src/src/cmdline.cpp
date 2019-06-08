@@ -2,393 +2,265 @@
 // Name:      cmdline.cpp
 // Purpose:   Implementation of wex::cmdline class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <sstream> // for tclap!
-#include <variant>
-#include <tclap/CmdLine.h>
+#include <iostream>
+#include <boost/program_options.hpp>
 #include <wx/app.h>
+#include <wx/versioninfo.h>
 #include <wex/cmdline.h>
 #include <wex/config.h>
-#include <wex/lexer-props.h>
 #include <wex/log.h>
-#include <wex/stc.h>
-#include <wex/stcdlg.h>
 #include <wex/tokenizer.h>
+#include <wex/util.h>
 #include <wex/version.h>
+
+namespace po = boost::program_options;
+
+#define CALLBACK(TYPE, FIELD)                           \
+  v->second.FIELD(it.second.as<TYPE>());                \
+  if (save) config(it.first).set(it.second.as<TYPE>()); \
 
 namespace wex
 {
-  template<class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
-  template<class... Ts> overloaded(Ts...) -> overloaded<Ts...>;
-  
-  class cmdline_option
+  class cmdline_imp
   {
+    friend class cmdline;
   public:
-    cmdline_option(
-      TCLAP::ValueArg<float>* f, std::function<void(const std::any& any)> fu)
-      : m_val(f), m_f(fu) {;};
-
-    cmdline_option(
-      TCLAP::ValueArg<int>* i, std::function<void(const std::any& any)> fu)
-      : m_val(i), m_f(fu) {;};
-
-    cmdline_option(
-      TCLAP::ValueArg<std::string>* s, std::function<void(const std::any& any)> fu)
-      : m_val(s), m_f(fu) {;};
-
-   ~cmdline_option() {
-      std::visit(overloaded {
-        [](auto arg) {delete arg;}}, m_val);};
-
-    const std::string get_description() const {
-      return std::visit(overloaded {
-        [](auto arg) {return arg->getDescription();}}, m_val);};
-    
-    const std::string get_name() const {
-      return std::visit(overloaded {
-        [](auto arg) {return arg->getName();}}, m_val);};
-
-    const std::string get_value() const {
-      return std::visit(overloaded {
-        [](auto arg) {return 
-          arg->getValue() != -1 ? std::to_string(arg->getValue()): std::string();},
-        [](TCLAP::ValueArg<std::string>* arg) {return arg->getValue();},
-        }, m_val);};
-
-    void run(bool save) const
+    struct function_t
     {
-      std::visit(overloaded {
-        [&](auto arg) {
-          if (const auto v = arg->getValue(); v != -1) 
-          {
-            m_f(v);
-
-            if (save)
-            {
-              config(get_name()).set(v);
-            }
-          };},
-        [&](TCLAP::ValueArg<std::string>* arg) {
-          if (const auto v = arg->getValue(); !v.empty()) 
-          {
-            m_f(v);
-
-            if (save)
-            {
-              config(get_name()).set(v.c_str());
-            }
-          }},
-      }, m_val);
-    }
-  private:
-    std::function<void(const std::any& any)> m_f; 
-
-    const std::variant <
-      TCLAP::ValueArg<float>*,
-      TCLAP::ValueArg<int>*,
-      TCLAP::ValueArg<std::string>*> m_val; 
-  };
-
-  class cmdline_param
-  {
-  public:
-    cmdline_param(
-      TCLAP::UnlabeledMultiArg<std::string>* arg, 
-      std::function<bool(std::vector<std::string>)> f) 
-    : m_val({arg, f}) {;}; 
-
-   ~cmdline_param() {delete m_val.first;};
-
-    bool run() const
-    {
-      return 
-        m_val.first->getValue().empty() || m_val.second(m_val.first->getValue());
-    }
-  private:
-    const std::pair<
-      TCLAP::UnlabeledMultiArg<std::string>*, 
-      std::function<bool(std::vector<std::string>)>> m_val; 
-  };
-
-  class cmdline_parser : public TCLAP::CmdLine
-  {
-  public:
-    cmdline_parser(
-      const std::string& message,
-      char delim,
-      const std::string& version,
-      bool help)
-    : TCLAP::CmdLine(message, delim, version, help) {;};
-  };
-
-  class cmdline_switch
-  {
-  public:
-    cmdline_switch(
-      TCLAP::SwitchArg* arg, 
-      std::function<void(bool)> f)
-    : m_val({arg, f}) {;};
-
-   ~cmdline_switch() {delete m_val.first;};
-
-    const std::string get_description() const {return m_val.first->getDescription();};
-    
-    const std::string& get_name() const {return m_val.first->getName();};
-
-    bool get_value() const {return *m_val.first;};
-
-    void run(bool save) const
-    {
-      const bool def = config(get_name()).get(false);
-      
-      if (def != get_value())
+      enum tag_t
       {
-        m_val.second(get_value());
+        F_OPTION,
+        F_SWITCH,
+        F_PARAM
+      };
 
-        if (save)
+      function_t(std::function<void(const std::any&)> f, cmdline::type_t o)
+        : m_fo(f)
+        , m_type(F_OPTION)
+        , m_type_o(o) {;};
+      function_t(std::function<void(bool)> f)
+        : m_fs(f)
+        , m_type(F_SWITCH) {;};
+      function_t(std::function<void(std::vector<std::string> )> f)
+        : m_fp(f)
+        , m_type(F_PARAM) {;};
+      
+      const tag_t m_type;
+      const cmdline::type_t m_type_o = cmdline::STRING;
+      const std::function<void(const std::any&)> m_fo;
+      const std::function<void(std::vector<std::string> )> m_fp;
+      const std::function<void(bool)> m_fs;
+    };
+
+    cmdline_imp(const std::string& message)
+      : m_desc(message)
+    {
+      m_desc.add_options()
+        ("help,h", "displays usage information and exits")
+        ("version", "displays version information and exits");
+    };
+    
+    void add_function(
+      const std::string& name, 
+      const function_t& t, 
+      cmdline::type_t c = cmdline::STRING)
+    {
+      m_functions.insert({before(name, ','), t});
+    }
+    
+    bool parse(int ac, char* av[], bool save)
+    {
+      po::store(po::command_line_parser(ac, av).
+        options(m_desc).positional(m_pos_desc).run(), m_vm);
+      return parse_handle(nullptr, save);
+    }
+
+    bool parse(const std::string& s, std::string& help, bool save)
+    {
+      tokenizer tkz(s);
+      const auto v(tkz.tokenize<std::vector<std::string>>());
+      po::store(po::command_line_parser(v).
+        options(m_desc).positional(m_pos_desc).run(), m_vm);
+      return parse_handle(&help, save);
+    }
+  private:
+    bool parse_handle(std::string* help, bool save)
+    {
+      po::notify(m_vm);  
+
+      if (m_vm.count("help") || m_vm.count("version")) 
+      {
+        std::stringstream ss;
+
+        if (help == nullptr) 
         {
-          config(get_name()).set(get_value());
+          if (m_vm.count("help"))
+            std::cout << m_desc;
+          else
+            std::cout << wxTheApp->GetAppName() << " " << get_version_info().get() << "\n";
+        }
+        else 
+        {
+          if (m_vm.count("help"))
+          {
+            ss << m_desc;
+            *help = ss.str();
+          }
+          else
+          {
+            *help = get_version_info().get();
+          }
+        }
+        
+        return false;
+      }
+
+      for (const auto& it : m_vm)
+      {
+        if (!it.second.defaulted())
+        {
+          try
+          {
+            if (auto v = m_functions.find(it.first); v != m_functions.end())
+            {
+              switch (v->second.m_type)
+              {
+                case function_t::F_OPTION:
+                  switch (v->second.m_type_o)
+                  {
+                    case cmdline::FLOAT: CALLBACK(float, m_fo); break;
+                    case cmdline::INT: CALLBACK(int, m_fo); break;
+                    case cmdline::STRING: CALLBACK(std::string, m_fo); break;
+                  }
+                break;
+                case function_t::F_PARAM:
+                  v->second.m_fp(it.second.as<std::vector<std::string>>());
+                break;
+                case function_t::F_SWITCH: 
+                  // boost does not support toggle, implement it here
+                  v->second.m_fs(config(it.first).get(it.second.as<bool>()));
+                  if (save) config(it.first).set(
+                    !config(it.first).get(it.second.as<bool>()));
+                break;
+              }
+            }
+          }
+          catch (std::exception& e)
+          {
+            log(e) << "parser" << it.first;
+            return false;
+          }
         }
       }
+
+      return true;
     }
-  private:
-    const std::pair<
-      TCLAP::SwitchArg*, 
-      std::function<void(bool)>> m_val; 
+
+    std::map<std::string, function_t> m_functions; 
+    po::options_description m_desc;
+    po::positional_options_description m_pos_desc;
+    po::variables_map m_vm;
   };
 };
 
+#define ADD(TYPE, CONV)                      \
+  if (!def_specified.empty())                \
+    m_parser->m_desc.add_options()           \
+      (it->first[p_n].c_str(),               \
+       po::value<TYPE>()->implicit_value(CONV), \
+       it->first[p_d].c_str());              \
+  else                                       \
+    m_parser->m_desc.add_options()           \
+      (it->first[p_n].c_str(),               \
+       po::value<TYPE>(),                    \
+       it->first[p_d].c_str());              \
+             
 wex::cmdline::cmdline(
-  const cmd_switches & s, 
-  const cmd_options & o, 
-  const cmd_params & p,
-  const std::string& message,
-  const std::string& version,
-  bool helpAndVersion)
-  : m_Parser(new cmdline_parser(
-      message, ' ', 
-      version.empty() ? 
-        get_version_info().get(): version, 
-      helpAndVersion))
+  const cmd_switches & s, const cmd_options & o, const cmd_params & p,
+  const std::string& message)
+  : m_parser(new cmdline_imp(message))
 {
-  m_Parser->setExceptionHandling(false);
-
-  char c = 'A';
-
   try
   {
-    for (auto it = o.rbegin(); it != o.rend(); ++it)
+    const size_t p_n{0}, p_d{1}; // par name, description
+
+    for (auto it = s.begin(); it != s.end(); ++it)
     {
-      std::string flag(it->first[0]);
-      size_t p_n{1}, p_d{2}; // par name, description
-
-      if (it->first[0].size() > 1)
-      {
-        flag = std::string(1, c++);
-        p_n--;
-        p_d--;
-      }
-      
       const std::string def_specified = 
-        (it->first.size() > p_d + 1 ? it->first.back(): std::string());
-
-      switch (it->second.first)
-      {
-        case FLOAT: {
-          const float def = config(it->first[p_n]).get(
-            def_specified.empty() ? (float)-1: (float)std::stod(def_specified));
-          
-          auto* arg = new TCLAP::ValueArg<float>(
-            flag, it->first[p_n], it->first[p_d],
-            false, def, "float");
-          m_Parser->add(arg);
-          m_Options.emplace_back(new cmdline_option(arg, it->second.second));
-          }
-          break;
-
-        case INT: {
-          const int def = config(it->first[p_n]).get(
-            def_specified.empty() ? -1: std::stoi(def_specified));
-          
-          auto* arg = new TCLAP::ValueArg<int>(
-            flag, it->first[p_n], it->first[p_d],
-            false, def, "int");
-          m_Parser->add(arg);
-          m_Options.emplace_back(new cmdline_option(arg, it->second.second));
-          }
-          break;
-        
-        case STRING: {
-          const std::string def = config(it->first[p_n]).get();
-          
-          auto* arg = new TCLAP::ValueArg<std::string>(
-            flag, it->first[p_n], it->first[p_d],
-            false, def_specified, "string");
-          m_Parser->add(arg);
-          m_Options.emplace_back(new cmdline_option(arg, it->second.second));
-          }
-          break;
-        
-        default: log() << "unknown type";
-      }
-    }
-
-    for (auto it = s.rbegin(); it != s.rend(); ++it)
-    {
-      std::string flag(it->first[0]);
-      size_t p_n{1}, p_d{2}; // par name, description
-
-      if (it->first[0].size() > 1)
-      {
-        flag = std::string(1, c++);
-        p_n--;
-        p_d--;
-      }
-
-      const std::string def_specified = 
-        (it->first.size() > p_d + 1 ? it->first.back(): std::string());
+        (it->first.size() > 2 ? it->first.back(): std::string());
 
       const bool def = config(it->first[p_n]).get(
         def_specified.empty() ? false: (bool)std::stoi(def_specified));
       
-      auto* arg = new TCLAP::SwitchArg(
-        flag, it->first[p_n], it->first[p_d], def); 
-      m_Switches.emplace_back(new cmdline_switch(arg, it->second));
-      m_Parser->add(arg);
+      m_parser->m_desc.add_options()
+         (it->first[p_n].c_str(), 
+          po::bool_switch()->default_value(def), 
+          it->first[p_d].c_str());
+      m_parser->add_function(it->first[p_n], it->second);
+    }
+
+    for (auto it = o.begin(); it != o.end(); ++it)
+    {
+      const std::string def_specified = 
+        (it->first.size() > 2 ? it->first.back(): std::string());
+
+      m_parser->add_function(it->first[p_n], {it->second.second, it->second.first});
+
+      switch (it->second.first)
+      {
+        case FLOAT: ADD(float, (float)std::stod(def_specified)); break;
+        case INT: ADD(int, std::stoi(def_specified)); break;
+        case STRING: ADD(std::string, def_specified); break;
+      }
     }
 
     if (!p.first.first.empty())
     {
-      auto* arg = new TCLAP::UnlabeledMultiArg<std::string>(
-        p.first.first, p.first.second, false, std::string());
-      m_Params.emplace_back(new cmdline_param(arg, p.second));
-      m_Parser->add(arg);
+      m_parser->m_desc.add_options()
+         (p.first.first.c_str(), 
+          po::value< std::vector<std::string> >(), 
+          p.first.second.c_str());
+      m_parser->m_pos_desc.add(p.first.first.c_str(), -1);
+      m_parser->add_function(p.first.first, p.second);
     }
-  }
-  catch (TCLAP::ArgException& e)
-  {
-    log(e) << "tclap";
-  }
-  catch (TCLAP::ExitException& )
-  {
   }
   catch (std::exception& e)
   {
-    log(e) << "wex::cmdline";
+    log(e) << "cmdline";
   }
 }
 
 wex::cmdline::~cmdline()
 {
-  for (auto& it : m_Options) delete it;
-  for (auto& it : m_Params) delete it;
-  for (auto& it : m_Switches) delete it;
-
-  delete m_Parser;
+  delete m_parser;
 }
   
-char wex::cmdline::delimiter() const
+bool wex::cmdline::parse(int ac, char* av[], bool save) const
 {
-  return TCLAP::Arg::delimiter();
-}
-  
-void wex::cmdline::delimiter(char c)
-{
-  TCLAP::Arg::setDelimiter(c);
-}
-
-bool wex::cmdline::parse(
-  const std::string& cmdline, bool save, const char delim)
-{
-  delimiter(delim);
-  
   try
   {
-    if (cmdline.empty())
-    {
-      m_Parser->parse(wxTheApp->argc, wxTheApp->argv);
-    }
-    else
-    {
-      tokenizer tkz(cmdline);
-      auto v = tkz.tokenize<std::vector<std::string>>();
-      m_Parser->parse(v);
-    }
-
-    for (const auto& it : m_Switches) 
-    {
-      it->run(save);
-    }
-
-    for (const auto& it : m_Options)
-    {
-      it->run(save);
-    }
-
-    if (!m_Params.empty() && !m_Params[0]->run())
-    {
-      log() << "could not run params";
-      return false;
-    }
-    
-    return true;
-  }
-  catch (TCLAP::ArgException& e)
-  {
-    log(e) << "tclap";
-    return false;
-  }
-  catch (TCLAP::ExitException& )
-  {
-    return false;
+    return m_parser->parse(ac, av, save);
   }
   catch (std::exception& e)
   {
-    log(e) << "parse";
+    std::cout << e.what() << "\n";
     return false;
   }
 }
 
-void wex::cmdline::show_options(const window_data& data) const
+bool wex::cmdline::parse(
+  const std::string& cmdline, std::string& help, bool save) const
 {
-  static stc_entry_dialog* dlg = nullptr;
-  const lexer_props l;
-
-  if (dlg == nullptr)
+  try
   {
-    dlg = new stc_entry_dialog(
-      std::string(),
-      std::string(),
-      window_data(data).button(wxOK).title("Options"));
-
-    dlg->get_stc()->get_lexer().set(l);
+    return m_parser->parse(cmdline, help, save);
   }
-  else
+  catch (std::exception& e)
   {
-    dlg->get_stc()->clear();
+    help = e.what();
+    return false;
   }
-
-  for (const auto& it : m_Options)
-  {
-    dlg->get_stc()->InsertText(0, l.make_key(
-      it->get_name(), 
-      it->get_value(), 
-      it->get_description() != it->get_name() ? it->get_description(): std::string()));
-  }
-
-  dlg->get_stc()->InsertText(0, "\n" + l.make_section("options"));
-  
-  for (const auto& it : m_Switches)
-  {
-    dlg->get_stc()->InsertText(0, l.make_key(
-      it->get_name(), 
-      std::to_string(it->get_value()), 
-      it->get_description() != it->get_name() ? it->get_description(): std::string()));
-  }
-
-  dlg->get_stc()->InsertText(0, l.make_section("switches"));
-  dlg->get_stc()->EmptyUndoBuffer();
-  dlg->ShowModal();
 }

@@ -2,7 +2,7 @@
 // Name:      test-menu_command.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -14,17 +14,28 @@
 
 TEST_CASE("wex::menu_command")
 {
-  const wex::menu_command add("a&dd");
-  const wex::menu_command blame("blame");
-  const wex::menu_command co("checkou&t");
-  const wex::menu_command commit("commit", "main");
-  const wex::menu_command diff("diff", "popup", "submenu");
-  const wex::menu_command log("log", "main");
-  const wex::menu_command help("h&elp", "", "", "m&e");
-  const wex::menu_command update("update");
+  pugi::xml_document doc;
+  
+  doc.load_string("<command control=\"x\"> a&dd </command>");
+  const wex::menu_command add(doc.document_element());
+  doc.load_string("<command> blame </command>");
+  const wex::menu_command blame(doc.document_element());
+  doc.load_string("<command> checkou&t </command>");
+  const wex::menu_command co(doc.document_element());
+  doc.load_string("<command type=\"main\"> commit </command>");
+  const wex::menu_command commit(doc.document_element());
+  doc.load_string("<command type=\"popup\" submenu=\"submenu\"> diff </command>");
+  const wex::menu_command diff(doc.document_element());
+  doc.load_string("<command type=\"main\"> log </command>");
+  const wex::menu_command log(doc.document_element());
+  doc.load_string("<command subcommand=\"m&e\"> h&elp </command>");
+  const wex::menu_command help(doc.document_element());
+  doc.load_string("<command> update </command>");
+  const wex::menu_command update(doc.document_element());
   const wex::menu_command none;
 
   REQUIRE(add.get_command() == "add");
+  REQUIRE(add.control() == "x");
   REQUIRE(add.get_command(wex::menu_command::include_t().set(
     wex::menu_command::INCLUDE_SUBCOMMAND).set(
     wex::menu_command::INCLUDE_ACCELL)) == "a&dd");
@@ -49,9 +60,9 @@ TEST_CASE("wex::menu_command")
   REQUIRE( help.is_help());
   REQUIRE( help.use_subcommand());
 
-  REQUIRE( add.get_submenu().empty());
-  REQUIRE( diff.get_submenu() == "submenu");
-  REQUIRE( help.get_submenu() == "m&e");
+  REQUIRE( add.submenu().empty());
+  REQUIRE( diff.submenu() == "submenu");
+  REQUIRE( help.submenu() == "m&e");
 
   REQUIRE(none.type().none());
 }

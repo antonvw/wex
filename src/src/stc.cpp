@@ -329,7 +329,7 @@ void wex::stc::guess_type()
      (match(modeline, text, v) > 0 ||
       match(modeline, text2, v) > 0))
   {
-    if (!m_vi.command(":" + v[0] + "*")) // add * to indicate modelin
+    if (!m_vi.command(":" + v[0] + "*")) // add * to indicate modeline
     {
       log::status("Could not apply vi settings");
     }
@@ -387,11 +387,11 @@ bool wex::stc::link_open(link_t mode, std::string* filename)
       {
         *filename = path.fullname();
       }
-      else if (m_Frame != nullptr)
+      else if (m_Frame != nullptr && !mode[LINK_CHECK])
       {
         m_Frame->open_file(path, data);
       }
-      else
+      else if (!mode[LINK_CHECK])
       {
         open(path, data);
       }

@@ -2,7 +2,7 @@
 // Name:      test-vcs_command.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -14,13 +14,22 @@
 
 TEST_CASE("wex::vcs_command")
 {
-  const wex::vcs_command add("a&dd");
-  const wex::vcs_command blame("blame");
-  const wex::vcs_command co("checkou&t");
-  const wex::vcs_command commit("commit", "main");
-  const wex::vcs_command diff("diff", "popup", "submenu");
-  const wex::vcs_command log("log", "main");
-  const wex::vcs_command help("h&elp", "error", "", "m&e");
+  pugi::xml_document doc;
+  doc.load_string("<command> a&dd </command>");
+  const wex::vcs_command add(doc.document_element());
+  doc.load_string("<command> blame </command>");
+  const wex::vcs_command blame(doc.document_element());
+  doc.load_string("<command> checkou&t </command>");
+  const wex::vcs_command co(doc.document_element());
+  doc.load_string("<command type=\"main\"> commit </command>");
+  const wex::vcs_command commit(doc.document_element());
+  doc.load_string("<command type=\"popup\" submenu=\"submenu\"> diff </command>");
+  const wex::vcs_command diff(doc.document_element());
+  doc.load_string("<command type=\"main\"> log </command>");
+  const wex::vcs_command log(doc.document_element());
+  doc.load_string("<command subcommand=\"m&e\"> h&elp </command>");
+  const wex::vcs_command help(doc.document_element());
+  doc.load_string("<command> update </command>");  
   const wex::vcs_command none;
 
   REQUIRE(add.get_command() == "add");
@@ -39,7 +48,7 @@ TEST_CASE("wex::vcs_command")
   REQUIRE(!help.ask_flags());
   REQUIRE(help.use_subcommand());
 
-  REQUIRE(add.get_submenu().empty());
-  REQUIRE(diff.get_submenu() == "submenu");
-  REQUIRE(help.get_submenu() == "m&e");
+  REQUIRE(add.submenu().empty());
+  REQUIRE(diff.submenu() == "submenu");
+  REQUIRE(help.submenu() == "m&e");
 }

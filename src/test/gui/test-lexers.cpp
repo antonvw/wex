@@ -106,6 +106,7 @@ TEST_CASE("wex::lexers")
     REQUIRE(!wex::lexers::get()->keywords("csh").empty());
     REQUIRE( wex::lexers::get()->keywords("xxx").empty());
     REQUIRE( wex::lexers::get()->keywords(std::string()).empty());
+    REQUIRE( wxTheColourDatabase->Find("gray 2").IsOk());
 
     REQUIRE( wex::lexers::get()->load_document());
 
