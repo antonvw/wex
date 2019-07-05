@@ -164,7 +164,6 @@ Variables are expanded when playing back the macro.
 
   <!-- A control key macro for control chars outside normal range -->
   <map-control name="]">Q</map-control>
-  <map-control name="[">B</map-control>
 
   <!-- A key macro for ascii characters, including ctrl-a etc. -->
   <!-- control g -->

@@ -2,7 +2,7 @@
 // Name:      hexmode.cpp
 // Purpose:   Implementation of class wex::hexmode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <regex>
@@ -81,7 +81,7 @@ void wex::hexmode::activate()
   m_STC->SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
   m_STC->BeginUndoAction();
   
-  wxCharBuffer buffer(m_STC->GetTextRaw());
+  const auto& buffer(m_STC->GetTextRaw());
   set_text(std::string(buffer.data(), buffer.length()));
   
   lexers::get()->apply(m_STC);
@@ -120,8 +120,8 @@ void wex::hexmode::control_char_dialog(const std::string& caption)
   {
     const wxUniChar value = m_STC->GetSelectedText().GetChar(0);
     
-    if (int new_value; (new_value = GetHexNumberFromUser(_("Input") + " 00 - FF",
-      caption, value, 0, 255, m_STC)) >= 0)
+    if (const int new_value(GetHexNumberFromUser(_("Input") + " 00 - FF",
+      caption, value, 0, 255, m_STC)); new_value >= 0)
     {
       ml.Replace(new_value);
     }
@@ -130,18 +130,13 @@ void wex::hexmode::control_char_dialog(const std::string& caption)
     ml.IsHexField() &&
     m_STC->GetSelectedText().size() == 2)
   {
-    long value;
-    
-    if (!m_STC->GetSelectedText().ToLong(&value, 16))
+    if (long value; m_STC->GetSelectedText().ToLong(&value, 16))
     {
-      return;
-    }
-
-    long new_value;
-    if ((new_value = GetHexNumberFromUser(_("Input") + " 00 - FF",
-      caption, value, 0, 255, m_STC)) >= 0)
-    {
-      ml.ReplaceHex(new_value);
+      if (const auto new_value(GetHexNumberFromUser(_("Input") + " 00 - FF",
+        caption, value, 0, 255, m_STC)); new_value >= 0)
+      {
+        ml.ReplaceHex(new_value);
+      }
     }
   }
 }
@@ -174,22 +169,22 @@ const std::string wex::hexmode::get_info()
   
 bool wex::hexmode::goto_dialog()
 {
-  long val;
-  if ((val = wxGetNumberFromUser(
-    _("Input") + wxString::Format(" 0 - %d:", m_Buffer.size() - 1),
+  if (const auto val(wxGetNumberFromUser(
+    _("Input") + " 0 - " + std::to_string(m_Buffer.size() - 1) + ":",
     wxEmptyString,
     _("Enter Byte Offset"),
     m_Goto, // initial value
     0,
     m_Buffer.size() - 1,
-    m_STC)) < 0)
+    m_STC)); val < 0)
   {
     return false;
   }
-
-  m_Goto = val;
-  
-  return hexmode_line(this, val, false).Goto();
+  else
+  {
+    m_Goto = val;
+    return hexmode_line(this, val, false).Goto();
+  }
 }
 
 bool wex::hexmode::highlight_other()

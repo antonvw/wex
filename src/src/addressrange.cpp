@@ -257,8 +257,8 @@ int wex::addressrange::Confirm(
     
   const auto line = m_STC->LineFromPosition(m_STC->GetTargetStart());
   
-  msgDialog.SetExtendedMessage(wxString::Format("Line %d: %s", 
-    line + 1, m_STC->GetLineText(line).c_str()));
+  msgDialog.SetExtendedMessage("Line " + std::to_string(line + 1) + ": " + 
+    m_STC->GetLineText(line));
     
   m_STC->GotoLine(line);
   m_STC->EnsureVisible(line);
@@ -325,6 +325,7 @@ bool wex::addressrange::escape(const std::string& command)
       !marker_and_register_expansion(m_Ex, expanded) ||
       !shell_expansion(expanded)) return false;
 
+    // TODO: here is a leak, otherwise test-ex fails
     m_Process = new wex::process();
 
     return m_Process->execute(expanded, 
@@ -347,7 +348,8 @@ bool wex::addressrange::escape(const std::string& command)
 
   wex::process process;
   
-  const bool ok = process.execute(command + " " + tmp_filename, process::EXEC_WAIT);
+  const bool ok = process.execute(
+    command + " " + tmp_filename, process::EXEC_WAIT);
   
   if (remove(tmp_filename.c_str()) != 0)
   {

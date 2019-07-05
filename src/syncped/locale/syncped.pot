@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-04 19:27+0100\n"
+"POT-Creation-Date: 2019-06-27 21:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,31 +17,27 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../frame.cpp:99
-msgid "Project Files"
-msgstr ""
-
-#: ../frame.cpp:112 ../frame.cpp:137 ../frame.cpp:230
+#: ../frame.cpp:101 ../frame.cpp:124 ../frame.cpp:227
 msgid "Explorer"
 msgstr ""
 
-#: ../frame.cpp:116 ../frame.cpp:232 ../frame.cpp:619
+#: ../frame.cpp:105 ../frame.cpp:229 ../frame.cpp:649
 msgid "History"
 msgstr ""
 
-#: ../frame.cpp:124
+#: ../frame.cpp:111
 msgid "Files"
 msgstr ""
 
-#: ../frame.cpp:145
+#: ../frame.cpp:132
 msgid "Output"
 msgstr ""
 
-#: ../frame.cpp:151
+#: ../frame.cpp:138
 msgid "Process"
 msgstr ""
 
-#: ../frame.cpp:302
+#: ../frame.cpp:300
 msgid "Process is running"
 msgstr ""
 
@@ -57,186 +53,202 @@ msgid ""
 "and saved in the same directory as where the executable is."
 msgstr ""
 
-#: ../frame.cpp:359
+#: ../frame.cpp:357
 msgid "File Name"
 msgstr ""
 
-#: ../frame.cpp:359
+#: ../frame.cpp:357
 msgid "Input"
 msgstr ""
 
-#: ../frame.cpp:392
+#: ../frame.cpp:398
 msgid "List Options"
 msgstr ""
 
-#: ../frame.cpp:421
+#: ../frame.cpp:429
 msgid "project"
 msgstr ""
 
-#: ../frame.cpp:454
-msgid "Project Save As"
-msgstr ""
-
-#: ../frame.cpp:469
+#: ../frame.cpp:443
 msgid "Select Projects"
 msgstr ""
 
-#: ../frame.cpp:500
+#: ../frame.cpp:479
+msgid "Project Save As"
+msgstr ""
+
+#: ../frame.cpp:513
 msgid "Ascii Table"
 msgstr ""
 
-#: ../frame.cpp:635
+#: ../frame.cpp:661
 msgid "Projects"
 msgstr ""
 
-#: ../frame.cpp:906 ../support.cpp:43
+#: ../frame.cpp:942 ../support.cpp:73
 msgid "vi mode"
 msgstr ""
 
-#: ../frame.cpp:1469
+#: ../frame.cpp:1273
+msgid "Auto blame"
+msgstr ""
+
+#: ../frame.cpp:1521
+msgid "Include directory"
+msgstr ""
+
+#: ../frame.cpp:1546
 msgid "Split Vertically"
 msgstr ""
 
-#: ../frame.cpp:1470
+#: ../frame.cpp:1547
 msgid "Split Horizontally"
 msgstr ""
 
-#: ../frame.cpp:1472 ../frame.cpp:1481
+#: ../frame.cpp:1549 ../frame.cpp:1558
 msgid "Split"
 msgstr ""
 
-#: ../frame.cpp:1477
+#: ../frame.cpp:1554
 msgid "Rearrange Vertically"
 msgstr ""
 
-#: ../frame.cpp:1478
+#: ../frame.cpp:1555
 msgid "Rearrange Horizontally"
 msgstr ""
 
-#: ../frame.cpp:1484
+#: ../frame.cpp:1561
 msgid "Close A&ll"
 msgstr ""
 
-#: ../frame.cpp:1488
+#: ../frame.cpp:1565
 msgid "Close Others"
 msgstr ""
 
-#: ../support.cpp:53
+#: ../frame.h:64
+msgid "Project Files"
+msgstr ""
+
+#: ../support.cpp:48
 msgid "File type"
 msgstr ""
 
-#: ../support.cpp:54
+#: ../support.cpp:49
 msgid "Lines or items"
 msgstr ""
 
-#: ../support.cpp:55
+#: ../support.cpp:50
 msgid "Lexer"
 msgstr ""
 
-#: ../support.cpp:56
+#: ../support.cpp:51
 msgid "Theme"
 msgstr ""
 
-#: ../support.cpp:92
+#: ../support.cpp:90
 msgid "Save A&ll"
 msgstr ""
 
-#: ../support.cpp:122
+#: ../support.cpp:130
 msgid "Find &in Files"
 msgstr ""
 
-#: ../support.cpp:123
+#: ../support.cpp:134
 msgid "Replace in File&s"
 msgstr ""
 
-#: ../support.cpp:124
+#: ../support.cpp:138
+msgid "&Find"
+msgstr ""
+
+#: ../support.cpp:138
 msgid "&Find and Replace"
 msgstr ""
 
-#: ../support.cpp:127
+#: ../support.cpp:141
 msgid "&Control Char"
 msgstr ""
 
-#: ../support.cpp:131
+#: ../support.cpp:145
 msgid "Start Record"
 msgstr ""
 
-#: ../support.cpp:132
+#: ../support.cpp:146
 msgid "Stop Record"
 msgstr ""
 
-#: ../support.cpp:134
+#: ../support.cpp:148
 msgid "Playback"
 msgstr ""
 
-#: ../support.cpp:142
+#: ../support.cpp:156
 msgid "&Macro"
 msgstr ""
 
-#: ../support.cpp:147
+#: ../support.cpp:161
 msgid "&Files"
 msgstr ""
 
-#: ../support.cpp:148
+#: ../support.cpp:162
 msgid "&Projects"
 msgstr ""
 
-#: ../support.cpp:149
+#: ../support.cpp:163
 msgid "&Explorer"
 msgstr ""
 
-#: ../support.cpp:150
+#: ../support.cpp:164
 msgid "&History"
 msgstr ""
 
-#: ../support.cpp:151
+#: ../support.cpp:165
 msgid "&Output"
 msgstr ""
 
-#: ../support.cpp:153
+#: ../support.cpp:167
 msgid "&Ascii Table"
 msgstr ""
 
-#: ../support.cpp:156
+#: ../support.cpp:170
 msgid "&Select"
 msgstr ""
 
-#: ../support.cpp:167
+#: ../support.cpp:181
 msgid "&Open as Text"
 msgstr ""
 
-#: ../support.cpp:178
+#: ../support.cpp:192
 msgid "&Auto Sort"
 msgstr ""
 
-#: ../support.cpp:192
+#: ../support.cpp:220
 msgid "Set &VCS"
 msgstr ""
 
-#: ../support.cpp:197
+#: ../support.cpp:225
 msgid "Set &Editor Options"
 msgstr ""
 
-#: ../support.cpp:202
+#: ../support.cpp:230
 msgid "Set &List Options"
 msgstr ""
 
-#: ../support.cpp:211
+#: ../support.cpp:239
 msgid "&View"
 msgstr ""
 
-#: ../support.cpp:212
+#: ../support.cpp:240
 msgid "&Process"
 msgstr ""
 
-#: ../support.cpp:213
+#: ../support.cpp:241
 msgid "&Project"
 msgstr ""
 
-#: ../support.cpp:215
+#: ../support.cpp:243
 msgid "&Debug"
 msgstr ""
 
-#: ../support.cpp:216
+#: ../support.cpp:244
 msgid "&Options"
 msgstr ""

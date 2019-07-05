@@ -2,7 +2,7 @@
 // Name:      otl.cpp
 // Purpose:   Implementation of wex::otl class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -18,6 +18,7 @@
 #include <wex/otl.h>
 #include <wex/config.h>
 #include <wex/itemdlg.h>
+#include <wex/log.h>
 #include <wex/stcdlg.h>
 #include <wex/util.h>
 
@@ -61,6 +62,14 @@ const wex::version_info wex::otl::get_version_info()
     (version & 0xffff));
 }
 
+void wex::otl::handle_error(
+  const otl_exception& e, const otl_column_desc& desc) const
+{
+  log::verbose() <<
+    "OTL error: " << (const char *)e.msg <<
+    "skipped: (" << desc.otl_var_dbtype << "," << desc.dbsize << ")";
+}
+  
 bool wex::otl::logon(const wex::window_data& par)
 {
   const window_data data(window_data(par).
@@ -105,7 +114,9 @@ long wex::otl::query(const std::string& query)
     return 0;
   }
   
-  return otl_cursor::direct_exec(m_Connect, query.c_str());
+  const auto records(otl_cursor::direct_exec(m_Connect, query.c_str()));
+  log::verbose("query") << query << "records: " << records;
+  return records;
 }
 
 // Cannot be const because of open call.
@@ -184,10 +195,10 @@ long wex::otl::query(
           grid->SetCellValue(startrow + rows, n, s);
         }
       }
-      catch (otl_exception&)
+      catch (otl_exception& e)
       {
-        // Ignore error.
         grid->SetCellValue(startrow + rows, n, _("<Skipped>"));
+        handle_error(e, desc[n]);
       }
     }
 
@@ -201,6 +212,8 @@ long wex::otl::query(
 
   grid->EndBatch();
   grid->AutoSizeColumns(false); // not set as minimum width
+
+  log::verbose("query grid") << query << "records: " << rows;
 
   return rows;
 }
@@ -266,12 +279,9 @@ long wex::otl::query(
           line += s;
         }
       }
-      catch (otl_exception&)
+      catch (otl_exception& e)
       {
-        // Ignore error.
-        line += _("<Skipped>");
-        line += wxString::Format(" (%d, %d)",
-          desc[n].otl_var_dbtype, desc[n].dbsize);
+        handle_error(e, desc[n]);
       }
 
       if (n < desc_len - 1) line += '\t';
@@ -287,6 +297,8 @@ long wex::otl::query(
 
     rows++;
   }
+
+  log::verbose("queryi stc") << query << "records: " << rows;
 
   return rows;
 }

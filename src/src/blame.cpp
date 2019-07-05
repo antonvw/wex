@@ -46,12 +46,12 @@ std::tuple <bool, const std::string, wex::lexers::margin_style_t>
     return {true, info.empty() ? " ": info, get_style(v[2])};
   }
   
-  return {false, std::string(), lexers::MARGIN_STYLE_OTHER};
+  return {false, std::string(), lexers::margin_style_t::OTHER};
 }
 
 wex::lexers::margin_style_t wex::blame::get_style(const std::string& text) const
 {
-  lexers::margin_style_t style = lexers::MARGIN_STYLE_UNKNOWN;
+  lexers::margin_style_t style = lexers::margin_style_t::UNKNOWN;
 
   if (text.empty())
   {
@@ -72,23 +72,23 @@ wex::lexers::margin_style_t wex::blame::get_style(const std::string& text) const
 
     if (dt < seconds_in_day)
     {
-      style = lexers::MARGIN_STYLE_DAY;
+      style = lexers::margin_style_t::DAY;
     }
     else if (dt < seconds_in_week)
     {
-      style = lexers::MARGIN_STYLE_WEEK;
+      style = lexers::margin_style_t::WEEK;
     }
     else if (dt < seconds_in_month)
     {
-      style = lexers::MARGIN_STYLE_MONTH;
+      style = lexers::margin_style_t::MONTH;
     }
     else if (dt < seconds_in_year)
     {
-      style = lexers::MARGIN_STYLE_YEAR;
+      style = lexers::margin_style_t::YEAR;
     }
     else
     {
-      style = lexers::MARGIN_STYLE_OTHER;
+      style = lexers::margin_style_t::OTHER;
     }
   }
   else

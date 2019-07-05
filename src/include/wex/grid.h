@@ -43,7 +43,7 @@ namespace wex
     /// and so during drag/drop as well, and allows you to
     /// override default here (which simply calls SetCellValue).
     /// So it is on a cell basis, whereas the DropSelection is on a range basis.
-    virtual void set_grid_cell_value(
+    virtual void set_cell_value(
       const wxGridCellCoords& coords, const std::string& data);
     
     /// Other methods
@@ -85,6 +85,6 @@ namespace wex
     /// Builds the popup menu.
     virtual void build_popup_menu(menu& menu);
   private:
-    bool m_use_drag_and_drop;
+    bool m_use_drag_and_drop {true};
   };
 };

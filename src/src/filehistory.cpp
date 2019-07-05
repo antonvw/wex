@@ -45,7 +45,7 @@ wex::file_history::file_history(
     for (int i = get_max_files() - 1 ; i >=0 ; i--)
     {
       m_History->AddFileToHistory(
-        config(wxString::Format("%s/%d", key.c_str(), i).ToStdString()).get());
+        config(key + "/" + std::to_string(i)).get());
     }
   }
 }
@@ -156,7 +156,7 @@ void wex::file_history::save()
       
       for (size_t i = 0; i < size(); i++)
       {
-        config(wxString::Format("%s/%lu", m_Key, i).ToStdString()).set(
+        config(m_Key + "/" + std::to_string(i)).set(
           m_History->GetHistoryFile(i).ToStdString());
       }
     }

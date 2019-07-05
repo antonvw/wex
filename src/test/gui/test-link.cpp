@@ -35,7 +35,9 @@ void link(
   {
     CAPTURE(path);
     CAPTURE(expect);
-    REQUIRE(link.get_path(path, data).data().string().find(expect) != std::string::npos);
+    const std::string p(link.get_path(path, data).string());
+    CAPTURE(p);
+    REQUIRE(p.find(expect) != std::string::npos);
   }
   else
   {
@@ -91,11 +93,6 @@ TEST_CASE("wex::link")
     link(lnk, "who", "/usr/bin/who");
     link(lnk, "  who \n", "/usr/bin/who"); // whitespace should be skipped
     link(lnk, "./who", "/usr/bin/./who");
-    link(lnk, "<who>", "/usr/bin/who");
-    link(lnk, "\"who\"", "/usr/bin/who");
-    link(lnk, "skip <who> skip skip", "/usr/bin/who");
-    link(lnk, "skip \"who\" skip skip", "/usr/bin/who");
-    link(lnk, "skip 'who' skip skip", "/usr/bin/who");
     
     // who incorrect line and/or col.
     link(lnk, "who:", "/usr/bin/who");
@@ -117,7 +114,6 @@ TEST_CASE("wex::link")
     link(lnk, "#: who:120", "/usr/bin/who", 120);
 
     link(lnk, "gcc", "/usr/bin/gcc");
-    link(lnk, "<gcc>", "/usr/bin/gcc");
 
     link(lnk, "test-special.h:10", special, 10);
     link(lnk, "test-special.h:10:2", special, 10, 2);

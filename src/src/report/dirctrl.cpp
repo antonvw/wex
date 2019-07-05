@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/stockitem.h> // for wxGetStockLabel
-#include <wex/menu.h>
+#include <wex/lexers.h>
 #include <wex/path.h>
 #include <wex/tostring.h>
 #include <wex/util.h>
@@ -14,8 +14,6 @@
 #include <wex/report/defs.h>
 #include <wex/report/dirctrl.h>
 #include <wex/report/frame.h>
-
-#if wxUSE_DIRDLG
 
 #define GET_VECTOR_FILES \
   const auto files(wex::to_vector_path(*this).get()); \
@@ -47,6 +45,12 @@ wex::report::dirctrl::dirctrl(
   {
     ShowHidden(true);
   }
+
+  lexers::get()->apply_default_style(
+    [=](const std::string& back) {
+      GetTreeCtrl()->SetBackgroundColour(wxColour(back));},
+    [=](const std::string& fore) {
+      GetTreeCtrl()->SetForegroundColour(wxColour(fore));});
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
       vcs_execute(frame, 
@@ -156,4 +160,3 @@ void wex::report::dirctrl::expand_and_select_path(const wex::path& path)
   ExpandPath(path.data().string());
   SelectPath(path.data().string());
 }
-#endif

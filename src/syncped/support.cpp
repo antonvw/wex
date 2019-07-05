@@ -145,7 +145,7 @@ decorated_frame::decorated_frame(app* app)
   menuMacro->append(ID_EDIT_MACRO_START_RECORD, wex::ellipsed(_("Start Record")));
   menuMacro->append(ID_EDIT_MACRO_STOP_RECORD, _("Stop Record"));
   menuMacro->append_separator();
-  menuMacro->append(ID_EDIT_MACRO_PLAYBACK, wex::ellipsed(_("Playback"), "Ctrl+M"));
+  menuMacro->append(ID_EDIT_MACRO_PLAYBACK, wex::ellipsed(_("Playback")));
   
   if (wex::vi_macros::get_filename().file_exists())
   {

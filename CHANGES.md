@@ -1,7 +1,7 @@
 **v19.10**
+  - uses boost::process lib instead of tiny-process-library
   - uses boost::program_options lib instead of TCLAP lib
   - uses boost::spirit lib instead of eval lib
-  - uses boost::process lib instead of tiny-process-library
   - uses boost::statechart lib instead of fsm lib
   - uses wex::test and wex::report namespace
   

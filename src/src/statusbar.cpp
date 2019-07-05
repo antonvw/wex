@@ -166,7 +166,7 @@ wex::statusbar* wex::statusbar::setup(
   frame* frame,
   const std::vector<statusbar_pane>& panes,
   long style,
-  const wxString& name)
+  const std::string& name)
 {
   if (m_Panes.size() > 1)
   {

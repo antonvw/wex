@@ -70,6 +70,7 @@ namespace wex
     /// Toggles breakpoint on line.
     void toggle_breakpoint(int line, stc* stc);
   private:
+    bool allow_open(const path& p) const;
     bool clear_breakpoints(const std::string& text);
     std::tuple<bool, std::string> get_args(
       const std::string& command, stc* stc);

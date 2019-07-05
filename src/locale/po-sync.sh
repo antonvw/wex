@@ -11,10 +11,10 @@ function substitute
 }
 
 # file locations
-locs="../src/*.cpp ../src/report/*.cpp ../include/wx/wex/*.h ../include/wx/wex/report/*.h"
+locs="../src/*.cpp ../src/report/*.cpp ../include/wex/*.h ../include/wex/report/*.h"
 
 # create pot file
-xgettext -F -k_ -o wxex.pot --copyright-holder="A.M. van Wezenbeek" $locs
+xgettext -F -k_ -o wex.pot --copyright-holder="A.M. van Wezenbeek" $locs
 
 # merge (join) all po files (use --no-location or -F)
 for f in *.po; do

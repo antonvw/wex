@@ -19,7 +19,10 @@ TEST_CASE("wex::debug_entry")
   {
     pugi::xml_document doc;
     REQUIRE( doc.load_string("\
-      <debug name=\"gdb\" \
+      <debug \
+        name=\"gdb\" \
+        extensions=\"*.cpp;*.h\" \
+        flags=\"-XXX\"\
         regex-at-line=\"x.*yz\"\
         break-set=\"b\" break-del=\"break delete\">\
       </debug>"));
@@ -27,6 +30,8 @@ TEST_CASE("wex::debug_entry")
     wex::debug_entry entry(doc.document_element());
     REQUIRE( entry.break_del() == "break delete");
     REQUIRE( entry.break_set() == "b");
+    REQUIRE( entry.extensions() == "*.cpp;*.h");
+    REQUIRE( entry.flags() == "-XXX");
     REQUIRE( entry.regex_stdout(wex::debug_entry::regex_t::AT_LINE) == "x.*yz");
     REQUIRE( entry.regex_stdout(wex::debug_entry::regex_t::PATH).empty());
   }

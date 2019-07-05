@@ -101,7 +101,7 @@ constexpr int c_strcmp( char const* lhs, char const* rhs )
 char ConvertKeyEvent(const wxKeyEvent& event, const wex::vi_mode& mode)
 {
   if (event.GetKeyCode() == WXK_BACK) return WXK_BACK;
-  if (event.GetKeyCode() == WXK_RETURN && !mode.insert()) return '_';
+  if (event.GetKeyCode() == WXK_RETURN && !mode.insert()) return 'j';
 
   char c = event.GetUnicodeKey();
   
@@ -116,7 +116,7 @@ char ConvertKeyEvent(const wxKeyEvent& event, const wex::vi_mode& mode)
       case WXK_DELETE:   c = 'x'; break;
       case WXK_PAGEUP:   c = WXK_CONTROL_B; break;
       case WXK_PAGEDOWN: c = WXK_CONTROL_F; break;
-      case WXK_NUMPAD_ENTER: c = '_'; break;
+      case WXK_NUMPAD_ENTER: c = 'j'; break;
       default: c = event.GetKeyCode();
     }
   }
@@ -192,8 +192,11 @@ wex::vi::vi(wex::stc* arg)
           get_stc()->GetLineEndPosition(get_stc()->GetCurrentLine())) return 1; 
       MOTION(Char, Right, false, false);}},
     {"b", [&](const std::string& command){MOTION(Word, Left, false, false);}},
-    {"eE", [&](const std::string& command){MOTION(Word, RightEnd, false, false);}},
+    {"B", [&](const std::string& command){MOTION(BigWord, Left, false, false);}},
+    {"e", [&](const std::string& command){MOTION(Word, RightEnd, false, false);}},
+    {"E", [&](const std::string& command){MOTION(BigWord, RightEnd, false, false);}},
     {"w", [&](const std::string& command){MOTION(Word, Right, false, false);}},
+    {"W", [&](const std::string& command){MOTION(BigWord, Right, false, false);}},
     {"fFtT,;", [&](const std::string& command){
       if (command.empty()) return (size_t)0;
       char c; // char to find
@@ -357,7 +360,7 @@ wex::vi::vi(wex::stc* arg)
       else
       {
         get_stc()->find_next(
-          "[(\[{\\])}]",
+          "[(\\[{\\])}]",
           wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX);
       }
       return 1;}},
@@ -374,6 +377,7 @@ wex::vi::vi(wex::stc* arg)
       }}},
     {"\r_", [&](const std::string& command){
       get_stc()->Home();
+      if (command.front() == '_') m_Count--;
       MOTION(Line, Down, false, false);}},
     {"\x02", [&](const std::string& command){MOTION(Page, Up,         false, false);}},
     {"\x06", [&](const std::string& command){MOTION(Page, Down,       false, false);}},
@@ -413,6 +417,9 @@ wex::vi::vi(wex::stc* arg)
         return (size_t)2;
       }
       return (size_t)0;}},
+    {"s", [&](const std::string& command){
+      vi::command("c ");
+      return 1;}},
     {"u", [&](const std::string& command){
       if (get_stc()->CanUndo()) get_stc()->Undo();
       else 
@@ -430,6 +437,9 @@ wex::vi::vi(wex::stc* arg)
     {"J", [&](const std::string& command){
         addressrange(this, m_Count).join(); return 1;}},
     {"P", [&](const std::string& command){put(false);return 1;}},
+    {"S", [&](const std::string& command){
+      vi::command("c_");
+      return 1;}},
     // tag commands ->
     {"Q", [&](const std::string& command){
       frame()->save_current_page("ctags");
@@ -444,14 +454,17 @@ wex::vi::vi(wex::stc* arg)
         ctags()->find(get_stc()->GetSelectedText().ToStdString());
       }
       return 1;}},
-    {"S", [&](const std::string& command){
+    // ctrl-s
+    {"\x13", [&](const std::string& command){
       frame()->restore_page("ctags");
       return 1;}},
-    {"B", [&](const std::string& command){
+    // ctrl-y
+    {"\x19", [&](const std::string& command){
       frame()->save_current_page("ctags");
       ctags()->previous();
       return 1;}},
-    {"W", [&](const std::string& command){
+    // ctrl-u
+    {"\x15", [&](const std::string& command){
       frame()->save_current_page("ctags");
       ctags()->next();
       return 1;}},
@@ -667,7 +680,14 @@ bool wex::vi::command(const std::string& command)
 
   if (command.front() != ':' && command.front() != '!')
   {
-    log::verbose("vi command") << command;
+    if (!isprint(command[0]))
+    {
+      log::verbose("vi control command") << (int)command[0];
+    }
+    else
+    {
+      log::verbose("vi command") << command;
+    }
   }
 
   if (mode().visual() && command.find("'<,'>") == std::string::npos &&

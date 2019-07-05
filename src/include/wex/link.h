@@ -2,7 +2,7 @@
 // Name:      link.h
 // Purpose:   Declaration of class wex::link
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -25,9 +25,9 @@ namespace wex
     /// Afterwards line and col from data are filled in if possible.
     enum
     {
-      LINE_OPEN_URL          = -1,
-      LINE_OPEN_MIME         = -2,
-      LINE_OPEN_URL_AND_MIME = -3,
+      LINE_OPEN_URL          = -2,
+      LINE_OPEN_MIME         = -3,
+      LINE_OPEN_URL_AND_MIME = -4,
     };
 
     /// Default constructor.
@@ -48,10 +48,12 @@ namespace wex
     /// If there is no config, paths will be empty.
     void set_from_config();
   private:
-    const path FindPath(const std::string& text, const control_data& data) const;
-    bool SetLink(path& text, control_data& data) const;
+    const path find_between(const std::string& text) const;
+    const path find_filename(const std::string& text, control_data& data) const;
+    const path find_url_or_mime(
+      const std::string& text, const control_data& data) const;
     
-    std::unique_ptr<paths> m_Paths;
-    stc* m_STC;
+    std::unique_ptr<paths> m_paths;
+    stc* m_stc;
   };
 };

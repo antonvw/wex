@@ -313,6 +313,15 @@ namespace wex
     
     // These methods are not yet available in scintilla, create stubs
     // (for the vi MOTION macro).
+    void BigWordLeft();
+    void BigWordLeftExtend();
+    void BigWordLeftRectExtend();
+    void BigWordRight();
+    void BigWordRightEnd();
+    void BigWordRightEndExtend();
+    void BigWordRightEndRectExtend();
+    void BigWordRightExtend();
+    void BigWordRightRectExtend();
     void LineHome() {Home();};
     void LineHomeExtend() {HomeExtend();};
     void LineHomeRectExtend() {HomeRectExtend();};

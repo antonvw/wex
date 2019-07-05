@@ -19,7 +19,7 @@ cmake .. && make
 ```
 
 for Visual Studio add `set CL=/Zc:__cplusplus` before invoking cmake and do 
-  `devenv wex.sln`,
+  `devenv wex.sln /Build Release`,
 for mingw add `-G "MinGW Makefiles"` and do `mingw32-make`   
 
 # Build process 

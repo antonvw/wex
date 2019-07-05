@@ -868,8 +868,11 @@ bool wex::sort_selection(
 {
   const auto start_pos = stc->GetSelectionStart();
   
-  if (start_pos == -1 || 
-    pos > (size_t)stc->GetSelectionEnd() || pos == std::string::npos)
+  if (
+    start_pos == -1 || 
+    pos > (size_t)stc->GetSelectionEnd() || 
+    pos == std::string::npos || 
+    stc->GetSelectionEmpty())
   {
     return false;
   }
@@ -885,25 +888,28 @@ bool wex::sort_selection(
         stc->PositionFromLine(stc->LineFromPosition(start_pos));
       const auto end_pos_line = 
         stc->PositionFromLine(stc->LineFromPosition(stc->GetSelectionEnd()) + 1);
+      const auto nr_cols = 
+        stc->GetColumn(stc->GetSelectionEnd()) - 
+        stc->GetColumn(start_pos);
       const auto nr_lines = 
         stc->LineFromPosition(stc->GetSelectionEnd()) - 
         stc->LineFromPosition(start_pos);
-        
       const auto sel = stc->GetTextRange(start_pos_line, end_pos_line); 
+
       stc->DeleteRange(start_pos_line, end_pos_line - start_pos_line);
-      
-      const auto text(sort(
+
+      const auto& text(sort(
         sel.ToStdString(), 
         sort_t, 
         pos, 
         stc->eol(), 
         len));
-      
-      stc->InsertText(start_pos_line, text);
 
+      stc->InsertText(start_pos_line, text);
       stc->SetCurrentPos(start_pos);
-      stc->SelectNone();      
-      for (size_t j = 0; j < len; j++)
+      stc->SelectNone();
+
+      for (int j = 0; j < nr_cols; j++)
       {
         stc->CharRightRectExtend();
       }
@@ -914,7 +920,7 @@ bool wex::sort_selection(
     }
     else
     {
-      const auto text(sort(
+      const auto& text(sort(
         stc->GetSelectedText().ToStdString(), 
         sort_t, 
         pos, 

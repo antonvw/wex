@@ -39,5 +39,5 @@ TEST_CASE("wex::blame")
   REQUIRE( std::get<1> (blame.get(text)).find("A unknown user") != std::string::npos);
   REQUIRE( std::get<1> (blame.get(text)).find("2019-02-01") != std::string::npos);
   REQUIRE( std::get<1> (blame.get(text)).find("bf5d87cc") != std::string::npos);
-  REQUIRE( std::get<2> (blame.get(text)) != wex::lexers::MARGIN_STYLE_UNKNOWN );
+  REQUIRE( std::get<2> (blame.get(text)) != wex::lexers::margin_style_t::UNKNOWN );
 }

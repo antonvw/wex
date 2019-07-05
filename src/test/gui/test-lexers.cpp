@@ -114,6 +114,6 @@ TEST_CASE("wex::lexers")
     get_stc()->open(wex::test::get_path());
     wex::lexers::get()->apply_global_styles(get_stc());
     wex::lexers::get()->apply(get_stc());
-    wex::lexers::get()->apply_margin_text_style(get_stc(), 30, wex::lexers::MARGIN_STYLE_DAY);
+    wex::lexers::get()->apply_margin_text_style(get_stc(), 30, wex::lexers::margin_style_t::DAY);
   }
 }

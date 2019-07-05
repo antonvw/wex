@@ -285,6 +285,7 @@ bool wex::ctags::find(const std::string& tag)
 
   if (tag.empty())
   {
+    log::verbose("ctags find empty tag") << m_Matches.size();
     return next();
   }
 

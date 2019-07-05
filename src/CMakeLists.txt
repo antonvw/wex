@@ -38,7 +38,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Coverage")
     # combine tracefiles
     COMMAND lcov --gcov-tool gcov --add-tracefile app.base --add-tracefile app.run --output-file app.run
     # remove output that we are not interested in
-    COMMAND lcov --gcov-tool gcov --remove app.run "/usr/*" "*sample*" "*external/*" --output-file app.run
+    COMMAND lcov --gcov-tool gcov --remove app.run "*/usr/*" "*sample*" "*external/*" "*/syncped/*" "*/test/*" --output-file app.run
     # generate local files
     COMMAND genhtml --no-branch-coverage --title "${PROJECT_NAME}" app.run
     COMMENT "Running lcov" VERBATIM)    

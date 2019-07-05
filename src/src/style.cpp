@@ -71,8 +71,7 @@ void wex::style::Set(const pugi::xml_node& node, const std::string& macro)
           wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT)));
         
         value.Replace("default-font", 
-          wxString::Format("face:%s,size:%d",
-            font.GetFaceName().c_str(), font.GetPointSize()));
+          "face:" + font.GetFaceName() + ",size:" + std::to_string(font.GetPointSize()));
             
         if (const wxFontStyle style = font.GetStyle(); 
           style == wxFONTSTYLE_ITALIC || style == wxFONTSTYLE_SLANT)
@@ -126,12 +125,12 @@ void wex::style::SetNo(
       }
       else
       {
-        log::verbose("illegal style") << no;
+        log("style out of range") << single;
       }
     }
     catch (std::exception& e)
     {
-      log::verbose(e) << "style:" << single;
+      log(e) << "style:" << single;
     }
   }
 }

@@ -44,6 +44,23 @@ void wex::lexers::apply(stc* stc) const
   }
 }
   
+void wex::lexers::apply_default_style(
+  std::function<void(const std::string& )> back,
+  std::function<void(const std::string& )> fore)
+{
+  if (std::vector<std::string> v; 
+    back != nullptr && match(",back:(.*),", m_DefaultStyle.value(), v) > 0)
+  {
+    back(v[0]);
+  }
+  
+  if (std::vector<std::string> v; 
+    fore != nullptr && match(",fore:(.*)", m_DefaultStyle.value(), v) > 0)
+  {
+    fore(v[0]);
+  }
+}
+  
 // No longer const, as it updates m_DefaultColours.
 void wex::lexers::apply_global_styles(stc* stc)
 {
@@ -113,27 +130,27 @@ void wex::lexers::apply_margin_text_style(
 {
   switch (style)
   {
-    case MARGIN_STYLE_DAY:
+    case margin_style_t::DAY:
       stc->MarginSetStyle(line, m_StyleNoTextMarginDay);
       break;
     
-    case MARGIN_STYLE_MONTH:
+    case margin_style_t::MONTH:
       stc->MarginSetStyle(line, m_StyleNoTextMarginMonth);
       break;
     
-    case MARGIN_STYLE_OTHER:
+    case margin_style_t::OTHER:
       stc->MarginSetStyle(line, m_StyleNoTextMargin);
       break;
     
-    case MARGIN_STYLE_WEEK:
+    case margin_style_t::WEEK:
       stc->MarginSetStyle(line, m_StyleNoTextMarginWeek);
       break;
     
-    case MARGIN_STYLE_YEAR:
+    case margin_style_t::YEAR:
       stc->MarginSetStyle(line, m_StyleNoTextMarginYear);
       break;
     
-    case MARGIN_STYLE_UNKNOWN:
+    case margin_style_t::UNKNOWN:
       break;
   }
   

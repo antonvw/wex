@@ -63,5 +63,5 @@ make test
 make lcov  
 ```
 
-  And, if you want to upload results to coveralls.    
+- And, if you want to upload results to coveralls.    
   `make lcov-coveralls`   

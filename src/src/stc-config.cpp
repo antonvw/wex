@@ -217,6 +217,10 @@ int wex::stc::config_dialog(const window_data& par)
       window_data(data).
         title(data.id() == wxID_PREFERENCES ? wxGetStockLabel(data.id(), 0).ToStdString(): data.title()));
   }
+  else
+  {
+    m_config_dialog->reload();
+  }
 
   return (data.button() & wxAPPLY) ? 
     m_config_dialog->Show(): m_config_dialog->ShowModal();

@@ -2,7 +2,7 @@
 // Name:      shell.h
 // Purpose:   Declaration of class wex::shell
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -82,10 +82,10 @@ namespace wex
     const std::string get_history() const;
 
     /// Returns the prompt.
-    const auto& get_prompt() const {return m_Prompt;};
+    const auto& get_prompt() const {return m_prompt;};
 
     /// Returns whether shell processing is enabled.
-    bool is_enabled() const {return m_Enabled;};
+    bool is_enabled() const {return m_enabled;};
     
     /// Puts the text (if not empty) and a prompt at the end, goes to the end,
     /// and empties the undo buffer. 
@@ -103,31 +103,31 @@ namespace wex
     /// Returns false and does not set the prompt if the shell is not enabled.
     bool set_prompt(const std::string& prompt, bool do_prompt = true);
   private:
-    void Expand();
-    void KeepCommand();
+    void expand();
+    void keep_command();
     void process_char_default(int key);
+    void send_command();
     /// Set command for command specified as number or as start of command,
-    /// Returns true if found and m_Command was set.
-    bool SetCommandFromHistory(const std::string& short_command);
-    void ShowHistory();
-    void ShowCommand(int key);
+    /// Returns true if found and m_command was set.
+    bool set_command_from_history(const std::string& short_command);
+    void show_history();
+    void show_command(int key);
 
-    const std::string m_CommandEnd;
-    const bool m_Echo;
-    const int m_CommandsSaveInConfig;
+    const std::string m_command_end;
+    const bool m_echo;
+    const int m_commands_save_in_config;
 
     // We use a list, as each command appears only once,
     // and when selecting an element already present,
     // it is moved to the end of the list.
-    std::list < std::string > m_Commands;
-    std::list < std::string >::const_iterator m_CommandsIterator;
+    std::list < std::string > m_commands;
+    std::list < std::string >::const_iterator m_commands_iterator;
     std::vector < std::string > m_auto_complete_list;
 
-    std::string m_Command;
-    std::string m_Prompt;
-    int m_CommandStartPosition = 0; /// position after the prompt from where commands can be inserted
-    bool m_Enabled = true;
+    std::string m_command, m_prompt;
+    int m_command_start_pos = 0; /// position after the prompt from where commands can be inserted
+    bool m_enabled = true;
     
-    process* m_Process = nullptr;
+    process* m_process = nullptr;
   };
 };

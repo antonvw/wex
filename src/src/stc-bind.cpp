@@ -79,21 +79,24 @@ void wex::stc::BindAll()
   entries[i++].Set(wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE);
   entries[i++].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
   
-  int j = ID_EDIT_DEBUG_FIRST;
-
-  for (const auto& e : m_Frame->get_debug()->debug_entry().get_commands())
+  if (m_Data.menu().test(stc_data::MENU_DEBUG))
   {
-    if (!e.control().empty())
-    {
-      entries[i++].Set(wxACCEL_CTRL, e.control().at(0), j);
+    int j = ID_EDIT_DEBUG_FIRST;
 
-      if (i >= accels)
+    for (const auto& e : m_Frame->get_debug()->debug_entry().get_commands())
+    {
+      if (!e.control().empty())
       {
-        log("stc-bind") << "too many control accelerators";
-        break;
+        entries[i++].Set(wxACCEL_CTRL, e.control().at(0), j);
+
+        if (i >= accels)
+        {
+          log("stc-bind") << "too many control accelerators";
+          break;
+        }
       }
+      j++;
     }
-    j++;
   }
 
   wxAcceleratorTable accel(i, entries);
@@ -227,21 +230,22 @@ void wex::stc::BindAll()
   Bind(wxEVT_LEFT_DCLICK, [=](wxMouseEvent& event) {
     m_MarginTextClick = -1;
 
-    if (link_open(link_t().set(LINK_OPEN).set(LINK_CHECK)))
-    {
-      if (!link_open(link_t().set(LINK_OPEN)))
-        event.Skip();
-    }
-    else if (m_Lexer.scintilla_lexer() != "hypertext" ||
+    if (m_Lexer.scintilla_lexer() != "hypertext" ||
       GetCurLine().Contains("href")) 
     {
-      if (!link_open(link_t().set(LINK_OPEN_MIME)))
-        event.Skip();
+      if (link_open(link_t().set(LINK_OPEN_MIME)))
+      {
+        return;
+      }
     }
-    else 
+
+    if (link_open(link_t().set(LINK_OPEN)))
     {
-      event.Skip();
-    }});
+      return;
+    }
+
+    event.Skip();
+    });
   
   Bind(wxEVT_LEFT_UP, [=](wxMouseEvent& event) {
     properties_message();
@@ -264,7 +268,7 @@ void wex::stc::BindAll()
       const auto word = (!GetSelectedText().empty() ? 
         GetSelectedText().ToStdString() : get_word_at_pos(GetCurrentPos()));
 
-      if (!word.empty())
+      if (!word.empty() && isalnum(word[0]))
       {
         m_Frame->get_debug()->print(word);
       }
@@ -432,7 +436,7 @@ void wex::stc::BindAll()
     else
     {
       if (static long val; (val = wxGetNumberFromUser(
-        _("Input") + wxString::Format(" 1 - %d:", GetLineCount()),
+        _("Input") + " 1 - " + std::to_string(GetLineCount()) + ":",
         wxEmptyString,
         _("Enter Line Number"),
         m_Data.control().line(), // initial value
@@ -452,13 +456,13 @@ void wex::stc::BindAll()
     wxID_REPLACE);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    if (long pos; (pos = wxGetNumberFromUser(_("Input") + ":",
+    if (const auto pos(wxGetNumberFromUser(_("Input") + ":",
       wxEmptyString,
       _("Enter Sort Position"),
       GetCurrentPos() + 1 - PositionFromLine(GetCurrentLine()),
       1,
       GetLineEndPosition(GetCurrentLine()),
-      this)) > 0)
+      this)); pos > 0)
     {
       sort_selection(
         this, 
@@ -550,7 +554,7 @@ void wex::stc::BindAll()
     {
       if (value != new_value)
       {
-        ReplaceSelection(wxString::Format("%c", (wxUniChar)new_value));
+        ReplaceSelection(std::to_string((char)new_value));
       }
 
       SetSelection(GetCurrentPos(), GetCurrentPos() + 1);

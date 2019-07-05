@@ -96,9 +96,6 @@ namespace wex
     /// Writes text to stdin of process.
     /// Default the response stdout is collected in the shell,
     bool write(const std::string& text);
-  public:
-    // Callback for finished pid.
-    void is_finished(int pid);
   private:
     std::string m_command, m_stderr, m_stdout;
     static std::string m_working_dir_key;

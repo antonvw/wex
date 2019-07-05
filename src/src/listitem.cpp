@@ -117,11 +117,9 @@ void wex::listitem::SetReadOnly(bool readonly)
 {
   if (!readonly)
   {
-    if (std::vector<std::string> v; match(",fore:(.*)", 
-      lexers::get()->get_default_style().value(), v) > 0)
-    {
-      SetTextColour(wxColour(v[0]));
-    }
+    lexers::get()->apply_default_style(nullptr,
+      [=](const std::string& fore) {
+        SetTextColour(wxColour(fore));});
   }
   else
   {

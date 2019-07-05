@@ -29,7 +29,7 @@ namespace wex
       /// the ex component, e.g. for line number (.) if present in text
       ex* ex, 
       /// text containing the expression to be evaluated
-      const std::string& text);
+      const std::string& text) const;
   private:
     evaluator_imp* m_eval;
   };

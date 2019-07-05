@@ -18,7 +18,7 @@
 
 namespace po = boost::program_options;
 
-#define CALLBACK(TYPE, FIELD)                           \
+#define WEX_CALLBACK(TYPE, FIELD)                       \
   v->second.FIELD(it.second.as<TYPE>());                \
   if (save) config(it.first).set(it.second.as<TYPE>()); \
 
@@ -131,19 +131,24 @@ namespace wex
                 case function_t::F_OPTION:
                   switch (v->second.m_type_o)
                   {
-                    case cmdline::FLOAT: CALLBACK(float, m_fo); break;
-                    case cmdline::INT: CALLBACK(int, m_fo); break;
-                    case cmdline::STRING: CALLBACK(std::string, m_fo); break;
+                    case cmdline::FLOAT: WEX_CALLBACK(float, m_fo); break;
+                    case cmdline::INT: WEX_CALLBACK(int, m_fo); break;
+                    case cmdline::STRING: WEX_CALLBACK(std::string, m_fo); break;
                   }
                 break;
                 case function_t::F_PARAM:
                   v->second.m_fp(it.second.as<std::vector<std::string>>());
                 break;
                 case function_t::F_SWITCH: 
-                  // boost does not support toggle, implement it here
-                  v->second.m_fs(config(it.first).get(it.second.as<bool>()));
-                  if (save) config(it.first).set(
-                    !config(it.first).get(it.second.as<bool>()));
+                  v->second.m_fs(cmdline::toggle() ? 
+                    config(it.first).get(it.second.as<bool>()): 
+                    it.second.as<bool>());
+                  if (save) 
+                  {
+                    config(it.first).set(cmdline::toggle() ?
+                      !config(it.first).get(it.second.as<bool>()):
+                       it.second.as<bool>());
+                  }
                 break;
               }
             }
@@ -189,15 +194,16 @@ wex::cmdline::cmdline(
 
     for (auto it = s.begin(); it != s.end(); ++it)
     {
-      const std::string def_specified = 
-        (it->first.size() > 2 ? it->first.back(): std::string());
-
-      const bool def = config(it->first[p_n]).get(
-        def_specified.empty() ? false: (bool)std::stoi(def_specified));
+      if (m_toggle && m_first)
+      {
+        const std::string def_specified = 
+          (it->first.size() > 2 ? it->first.back(): std::string("1"));
+        config(it->first[p_n]).set((bool)std::stoi(def_specified));
+      }
       
       m_parser->m_desc.add_options()
          (it->first[p_n].c_str(), 
-          po::bool_switch()->default_value(def), 
+          po::bool_switch(),
           it->first[p_d].c_str());
       m_parser->add_function(it->first[p_n], it->second);
     }
@@ -226,6 +232,8 @@ wex::cmdline::cmdline(
       m_parser->m_pos_desc.add(p.first.first.c_str(), -1);
       m_parser->add_function(p.first.first, p.second);
     }
+    
+    m_first = false;
   }
   catch (std::exception& e)
   {

@@ -19,8 +19,6 @@ add_executable(
   
 target_link_all(${ODBC_LIBRARIES})
   
-add_subdirectory(locale)
-
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 
 pack()

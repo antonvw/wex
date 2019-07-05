@@ -2,7 +2,7 @@
 // Name:      toolbar.cpp
 // Purpose:   Implementation of wex::toolbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
@@ -133,9 +133,9 @@ void wex::toolbar::add_controls(bool realize)
 
 wxAuiToolBarItem* wex::toolbar::add_tool(
   int toolId,
-  const wxString& label,
+  const std::string& label,
   const wxBitmap& bitmap,
-  const wxString& shortHelp,
+  const std::string& shortHelp,
   wxItemKind kind)
 {
   if (const stockart art(toolId); art.get_bitmap(wxART_TOOLBAR).IsOk())
@@ -194,14 +194,14 @@ wex::find_toolbar::find_toolbar(
 
   add_tool(
     wxID_DOWN, 
-    wxEmptyString, 
+    std::string(), 
     wxArtProvider::GetBitmap(wxART_GO_DOWN, wxART_TOOLBAR),
-    _("Find next"));
+    _("Find next").ToStdString());
   add_tool(
     wxID_UP, 
-    wxEmptyString, 
+    std::string(), 
     wxArtProvider::GetBitmap(wxART_GO_UP, wxART_TOOLBAR),
-    _("Find previous"));
+    _("Find previous").ToStdString());
 
   AddControl(matchWholeWord);
   AddControl(matchCase);
@@ -263,7 +263,8 @@ void wex::options_toolbar::add_controls(bool realize)
       config(std::get<3>(it)).set(cb->GetValue());
       if (event.GetId() == ID_VIEW_PROCESS)
       {
-        frame()->show_pane("PROCESS", cb->GetValue());};}, std::get<0>(it));
+        frame()->show_pane("PROCESS", cb->GetValue());
+      };}, std::get<0>(it));
   }
 
   if (realize)
@@ -272,7 +273,7 @@ void wex::options_toolbar::add_controls(bool realize)
   }
 }
 
-bool wex::options_toolbar::update(const wxString& name, bool show)
+bool wex::options_toolbar::update(const std::string& name, bool show)
 {
   for (auto& it : m_CheckBoxes)
   {

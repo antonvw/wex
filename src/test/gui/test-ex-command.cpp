@@ -2,7 +2,7 @@
 // Name:      test-ex-command.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -51,6 +51,8 @@ TEST_CASE("wex::ex_command")
     REQUIRE( command.get_stc() == stc);
     command.restore(wex::ex_command("ww"));
     REQUIRE( command.command() == "ww");
+    command.append("ww");
+    REQUIRE( command.command() == "wwww");
     REQUIRE( command.get_stc() == stc);
   }
   

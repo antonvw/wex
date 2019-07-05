@@ -47,7 +47,7 @@ Copyright: (c) 2019 Anton van Wezenbeek
     regex-exit="(exited normally)|(Program terminated)"
     regex-no-file-line="Breakpoint ([0-9]+) at 0x[0-9a-f]+: file (.*), line ([0-9]+)"
     regex-path="Reading symbols from (.*)\.\.\.done"
-    regex-variable ="\$[0-9]+ = (.*)"
+    regex-variable="\$[0-9]+ = ([^{](.*))"
     regex-variable-m="\$[0-9]+ = \{((\n|.)*)\}[^,]">
     <commands>
       <command type="main ellipses" > file </command>
@@ -55,7 +55,7 @@ Copyright: (c) 2019 Anton van Wezenbeek
       <command type="main separator" > detach </command>
       <command type="main" control="R"> run </command>
       <command type="main" > interrupt </command>
-      <command type="main separator" control="C"> continue </command>
+      <command type="main separator" control="4"> continue </command>
       <command type="main" > info sources </command>
       <command type="popup" control="1"> next </command>
       <command type="popup" control="2"> step </command>
@@ -77,14 +77,16 @@ Copyright: (c) 2019 Anton van Wezenbeek
     regex-at-path-line="at ([a-zA-Z0-9_\./]*):([0-9]+)"
     regex-exit="Process [0-9]+ (stopped)|(exited)"
     regex-no-file-line="Breakpoint ([0-9]+): .* at ([a-zA-Z0-9_\./]*):([0-9]+)"
-    regex-variable="\$[0-9]+ = (.*)">
+    regex-path="Current executable set to '(.*)'"
+    regex-variable="\$[0-9]+ = ([^{](.*))"
+    regex-variable-m="\$[0-9]+ = (?:size=[0-9]+ )?\{((\n|.)*)\^\}">
     <commands>
       <command type="main ellipses" > file </command>
       <command type="main ellipses" > attach </command>
       <command type="main separator" > detach </command>
       <command type="main" control="R"> run </command>
       <command type="main" > interrupt </command>
-      <command type="main separator" control="C"> continue </command>
+      <command type="main separator" control="4"> continue </command>
       <command type="popup" control="1"> &amp;next </command>
       <command type="popup" control="2"> step </command>
       <command type="popup separator" control="3"> thread until </command>

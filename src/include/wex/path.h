@@ -2,7 +2,7 @@
 // Name:      path.h
 // Purpose:   Declaration of class wex::path
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -78,13 +78,15 @@ namespace wex
     static void current(const std::string& path);
 
     /// Returns the internal path.
-    /// E.g. data().string() returns fullpath.
     // (cannot be auto)
     const std::filesystem::path& data() const {return m_path;};
       
     /// Returns true if the directory with this name exists.
     bool dir_exists() const {
       return std::filesystem::is_directory(m_path);};
+    
+    /// Returns true if path is empty.
+    bool empty() const {return m_path.empty();};
 
     /// Returns path extension component (including the .).
     const std::string extension() const {
@@ -139,6 +141,9 @@ namespace wex
 
     /// Returns the stat.
     const auto & stat() const {return m_Stat;};
+
+    /// Returns the path as a string.
+    const auto string() const {return m_path.string();};
   private:
     std::filesystem::path m_path;
     std::string m_path_original;

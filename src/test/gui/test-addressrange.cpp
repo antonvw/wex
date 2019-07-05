@@ -108,7 +108,6 @@ TEST_CASE("wex::addressrange")
   REQUIRE( wex::addressrange(ex, "%").escape("uniq"));
   REQUIRE( stc->GetLineCount() == 5);
   REQUIRE( wex::addressrange(ex).escape("ls -l"));
-  REQUIRE( wex::addressrange::process() != nullptr);
   REQUIRE( wex::addressrange(ex).escape("ls `pwd`"));
   REQUIRE( wex::addressrange(ex).escape("ls \x12*"));
   REQUIRE( wex::addressrange(ex).escape("ls  `echo \x12*`"));

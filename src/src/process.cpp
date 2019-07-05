@@ -52,7 +52,10 @@ namespace wex
     bool stop() {
       if (m_io->stopped()) return false;
       log::verbose("stop") << m_process->get_exec();
-      m_io->stop();
+      // TODO: to be done.
+      //  bp::child c(m_process->get_exec());
+      //  c.terminate();
+       m_io->stop();
       return true;};
     
     // Writes data to the input of the process.
@@ -229,11 +232,6 @@ bool wex::process::is_running() const
   return m_process != nullptr && m_process->is_running();
 }
 
-bool wex::process::stop()
-{
-  return m_process != nullptr && m_process->stop();
-}
-
 void wex::process::prepare_output(wxWindow* parent)
 {
   if (m_shell == nullptr)
@@ -252,6 +250,11 @@ void wex::process::show_output(const std::string& caption) const
   {
     m_shell->AppendText(!m_stdout.empty() ? m_stdout: m_stderr);
   }
+}
+
+bool wex::process::stop()
+{
+  return m_process != nullptr && m_process->stop();
 }
 
 bool wex::process::write(const std::string& text)

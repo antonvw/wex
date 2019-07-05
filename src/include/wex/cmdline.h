@@ -33,8 +33,9 @@ namespace wex
     typedef std::vector<std::pair<
       /// vector of switch name, description
       /// - you can specify a flag after name separated by comma
-      /// - after description you can also add a default true value,
-      ///   otherwise false is assumed
+      /// - after description you can also add an implicit value,
+      ///   otherwise true is assumed
+      /// default a switch toggles, this can be overriden by calling toggle_off
       const std::vector<std::string>, 
       /// process callback if option is found
       std::function<void(bool on)>>> cmd_switches;
@@ -43,8 +44,7 @@ namespace wex
     typedef std::vector<std::pair<
       /// vector of option name, description
       /// - you can specify a flag after name separated by comma
-      /// - after description you can also add a default value,
-      ///   otherwise 0 is assumed
+      /// - after description you can also add an implicit value,
       const std::vector<std::string>, 
       /// pair of command line param type and process callback if option is found
       std::pair<
@@ -90,7 +90,14 @@ namespace wex
       std::string& help,
       /// keep changed values in config
       bool save = false) const;
+    
+    /// Return toggle mode.
+    static bool toggle() {return m_toggle;};
+
+    /// Sets toggle mode for switches.
+    cmdline& toggle(bool value) {m_toggle = value; return *this;};
   private:
     cmdline_imp* m_parser;
+    static inline bool m_first {true}, m_toggle {true};
   };
 };

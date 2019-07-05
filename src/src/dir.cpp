@@ -66,17 +66,17 @@ namespace wex
     if (fs::is_regular_file(e.path()))
     {
       if (
-        dir->type().test(wex::dir::FILES) && 
-        wex::matches_one_of(e.path().filename().string(), dir->file_spec()))
+        dir->type().test(dir::FILES) && 
+        matches_one_of(e.path().filename().string(), dir->file_spec()))
       {
         dir->on_file(e.path());
         matches++;
       }
     }
     else if (
-       dir->type().test(wex::dir::DIRS) && fs::is_directory(e.path()) &&
+       dir->type().test(dir::DIRS) && fs::is_directory(e.path()) &&
       (dir->dir_spec().empty() || 
-       wex::matches_one_of(e.path().filename().string(), dir->dir_spec())))
+       matches_one_of(e.path().filename().string(), dir->dir_spec())))
     {
       dir->on_dir(e.path());
       
@@ -86,7 +86,7 @@ namespace wex
       }
     }
 
-    return !wex::interruptable::is_cancelled();
+    return !interruptable::is_cancelled();
   }
 };
 
@@ -150,14 +150,20 @@ int wex::dir::find_files()
 #else
         fs::directory_options::skip_permission_denied), end;
 #endif
-      std::all_of(rdi, end, [&] (const fs::directory_entry& p) 
-        {return traverse(p, this, matches);});
+      if (!std::all_of(rdi, end, [&] (const fs::directory_entry& p) 
+        {return traverse(p, this, matches);}))
+      {
+        log("recursive_directory_iterator") << m_Dir;
+      }
     }
     else
     {
       fs::directory_iterator di(m_Dir.data()), end;
-      std::all_of(di, end, [&] (const fs::directory_entry& p) 
-        {return traverse(p, this, matches);});
+      if (!std::all_of(di, end, [&] (const fs::directory_entry& p) 
+        {return traverse(p, this, matches);}))
+      {
+        log("directory_iterator") << m_Dir;
+      }
     }
   }
   catch (fs::filesystem_error& e)
@@ -179,9 +185,9 @@ int wex::dir::find_files()
 wex::open_file_dir::open_file_dir(wex::frame* frame,
   const wex::path& path, 
   const std::string& filespec, 
-  wex::stc_data::window_t file_flags,
+  stc_data::window_t file_flags,
   dir::type_t type)
-  : wex::dir(path, filespec, std::string(), type)
+  : dir(path, filespec, std::string(), type)
   , m_Frame(frame)
   , m_Flags(file_flags)
 {

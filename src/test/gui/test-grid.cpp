@@ -20,7 +20,7 @@ TEST_CASE("wex::grid")
   
   REQUIRE(grid->CreateGrid(5, 5));
   
-  grid->set_grid_cell_value(wxGridCellCoords(0, 0), "test");
+  grid->set_cell_value(wxGridCellCoords(0, 0), "test");
   
   grid->GoToCell(0, 0);
   REQUIRE( grid->get_selected_cells_value().empty());

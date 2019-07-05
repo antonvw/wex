@@ -71,7 +71,7 @@ namespace wex
     DEL,
   };
 
-  command_arg_t ParseCommandWithArg(const std::string& command)
+  command_arg_t get_command_arg(const std::string& command)
   {
     if (const auto post(wex::after(command, ' ')); post == command)
     {
@@ -100,12 +100,12 @@ wex::ex::ex(wex::stc* stc)
         [=](const std::string& name, const std::string& value) {
           m_macros.set_abbreviation(name, value);return true;});}},
     {":ar", [&](const std::string& command) {
-      wxString text;
+      std::stringstream text;
       for (size_t i = 1; i < wxTheApp->argv.GetArguments().size(); i++)
       {
         text << wxTheApp->argv.GetArguments()[i] << "\n";
       }
-      if (!text.empty()) show_dialog("ar", text.ToStdString());
+      if (!text.str().empty()) show_dialog("ar", text.str());
       return true;}},
     {":chd", [&](const std::string& command) {
       if (command.find(" ") == std::string::npos) return true;
@@ -115,12 +115,22 @@ wex::ex::ex(wex::stc* stc)
       m_frame->get_debug()->execute(wex::firstof(command, " "), get_stc());
       return true;}},
     {":e", [&](const std::string& command) {POST_COMMAND( wxID_OPEN ) return true;}},
-    {":f", [&](const std::string& command) {info_message(); return true;}},
+    {":f", [&](const std::string& command) {
+      std::stringstream text;
+      text << get_stc()->get_filename().fullname() 
+           << " line " << get_stc()->GetCurrentLine() + 1 
+           << " of " << get_stc()->GetLineCount() 
+           << " --" << 100 * 
+                (get_stc()->GetCurrentLine() + 1) / get_stc()->GetLineCount() << "--%" 
+           << " level " << (get_stc()->GetFoldLevel(
+                 get_stc()->GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK)
+                 - wxSTC_FOLDLEVELBASE;
+      m_frame->show_ex_message(text.str()); return true;}},
     {":grep", [&](const std::string& command) {POST_COMMAND( ID_TOOL_REPORT_FIND ) return true;}},
     {":gt", [&](const std::string& command) {return get_stc()->link_open();}},
     {":help", [&](const std::string& command) {POST_COMMAND( wxID_HELP ) return true;}},
     {":map", [&](const std::string& command) {
-      switch (ParseCommandWithArg(command))
+      switch (get_command_arg(command))
       {
         case wex::command_arg_t::INT:
           // TODO: at this moment you cannot set KEY_CONTROL
@@ -166,21 +176,19 @@ wex::ex::ex(wex::stc* stc)
       std::regex re("[0-9a-z=]+");
       text = std::regex_replace(text, re, "--&", std::regex_constants::format_sed);
       std::replace(text.begin(), text.end(), '=', ' ');
-      const wex::cmdline cmdline(
+      wex::cmdline cmdline(
         // switches
-        {{{"ac", "autocomplete"}, [](bool on){
-           config(_("Auto complete")).set(on);}},
-         {{"ai", "autoindent"}, [](bool on){
-           config("Auto indent").set(on ? (long)2: (long)0);}},
+        {{{"ac", "autocomplete"}, [&](bool on){
+           if (!modeline) config(_("Auto complete")).set(on);}},
+         {{"ai", "autoindent"}, [&](bool on){
+           if (!modeline) config("Auto indent").set(on ? (long)2: (long)0);}},
          {{"aw", "autowrite"}, [&](bool on){
-           config(_("Auto write")).set(on);
+           if (!modeline) config(_("Auto write")).set(on);
            m_auto_write = on;}},
-         {{"eb", "errorbells"}, [](bool on){
-           config(_("Error bells")).set(on);}},
+         {{"eb", "errorbells"}, [&](bool on){
+           if (!modeline) config(_("Error bells")).set(on);}},
          {{"el", "edgeline"}, [&](bool on){
-           get_stc()->SetEdgeMode(
-             on ? wxSTC_EDGE_LINE: wxSTC_EDGE_NONE);
-           config(_("Edge line")).set( 
+           if (!modeline) config(_("Edge line")).set( 
              on ? (long)wxSTC_EDGE_LINE: (long)wxSTC_EDGE_NONE);}},
          {{"ic", "ignorecase"}, [&](bool on){
            if (!on) m_search_flags |= wxSTC_FIND_MATCHCASE;
@@ -191,25 +199,23 @@ wex::ex::ex(wex::stc* stc)
            else    m_search_flags &= ~wxSTC_FIND_WHOLEWORD;
            wex::find_replace_data::get()->set_match_word(on);}},
          {{"nu", "number"}, [&](bool on){
-           get_stc()->show_line_numbers(on);
-           config(_("Line numbers")).set(on);}},
+           if (!modeline) config(_("Line numbers")).set(on);
+           else get_stc()->show_line_numbers(on);}},
          {{"readonly", "readonly"}, [&](bool on){
            get_stc()->SetReadOnly(on);}},
          {{"showmode", "showmode"}, [&](bool on){
            ((wex::statusbar *)m_frame->GetStatusBar())->show_field("PaneMode", on);
-           config(_("Show mode")).set(on);}},
+           if (!modeline) config(_("Show mode")).set(on);}},
          {{"sm", "showmatch"}, [&](bool on){
-           config(_("Show match")).set(on);}},
+           if (!modeline) config(_("Show match")).set(on);}},
          {{"sws", "showwhitespace"}, [&](bool on){
-           get_stc()->SetViewEOL(on);
-           get_stc()->SetViewWhiteSpace(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);
-           config(_("Whitespace")).set(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);}},
+           if (!modeline) config(_("Whitespace visible")).set(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);
+           if (!modeline) config(_("End of line")).set(on);}},
          {{"ut", "usetabs"}, [&](bool on){
-           get_stc()->SetUseTabs(on);
-           config(_("Use tabs")).set(on);}},
+           if (!modeline) config(_("Use tabs")).set(on);
+           else get_stc()->SetUseTabs(on);}},
          {{"wm", "wrapmargin"}, [&](bool on){
-           get_stc()->SetWrapMode(on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);
-           config(_("Wrap line")).set(on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);}},
+           if (!modeline) config(_("Wrap line")).set(on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);}},
          {{"ws", "wrapscan", "1"}, [&](bool on){
            config(_("Wrap scan")).set(on);}}
         },
@@ -217,28 +223,41 @@ wex::ex::ex(wex::stc* stc)
         {{{"dir", "dir"}, {cmdline::STRING, [&](const std::any& val) {
            wex::path::current(std::any_cast<std::string>(val));}}},
          {{"ec", "edgecolumn", "80"}, {cmdline::INT, [&](const std::any& val) {
-           get_stc()->SetEdgeColumn(std::any_cast<int>(val));
-           config(_("Edge column")).set(std::any_cast<int>(val));}}},
+           if (!modeline) config(_("Edge column")).set(std::any_cast<int>(val));
+           else get_stc()->SetEdgeColumn(std::any_cast<int>(val));}}},
          {{"report", "report", "5"}, {cmdline::INT, [&](const std::any& val) {
            config("Reported lines").set(std::any_cast<int>(val));}}},
          {{"sw", "shiftwidth", "8"}, {cmdline::INT, [&](const std::any& val) {
-           get_stc()->SetIndent(std::any_cast<int>(val));
-           config(_("Indent")).set(std::any_cast<int>(val));}}},
+           if (!modeline) config(_("Indent")).set(std::any_cast<int>(val));
+           else get_stc()->SetIndent(std::any_cast<int>(val));}}},
          {{"sy", "syntax"}, {cmdline::STRING, [&](const std::any& val) {
            if (std::any_cast<std::string>(val) != "off") 
              get_stc()->get_lexer().set(std::any_cast<std::string>(val), true); // allow folding
            else              
              get_stc()->get_lexer().clear();}}},
-         {{"ts", "tabstop","8"}, {cmdline::INT, [&](const std::any& val) {
-           get_stc()->SetTabWidth(std::any_cast<int>(val));
-           config(_("Tab width")).set(std::any_cast<int>(val));}}}
+         {{"ts", "tabstop", "8"}, {cmdline::INT, [&](const std::any& val) {
+           if (!modeline) config(_("Tab width")).set(std::any_cast<int>(val));
+           else get_stc()->SetTabWidth(std::any_cast<int>(val));}}}
         }
       );
 
-      if (std::string help; !cmdline.parse(
+      if (std::string help; !cmdline.toggle(!modeline).parse(
         text.empty() ? "-h": text, help, !modeline))
       {
-        show_dialog("Options", help);
+        if (modeline)
+        {
+          std::cout << help << "\n";
+        }
+        else
+        {
+          show_dialog("Options", help);
+        }
+      }
+      else
+      {
+        m_frame->on_command_item_dialog(
+          wxID_PREFERENCES, 
+          wxCommandEvent(wxEVT_BUTTON, wxOK));
       }
       return true;}},
     {":so", [&](const std::string& command) {
@@ -300,7 +319,7 @@ wex::ex::ex(wex::stc* stc)
       if (wex::tokenizer tkz(command); tkz.count_tokens() >= 1)
       {
         tkz.get_next_token(); // skip :unm
-        switch (ParseCommandWithArg(command))
+        switch (get_command_arg(command))
         {
           case wex::command_arg_t::INT: m_macros.set_key_map(tkz.get_next_token(), ""); break; 
           case wex::command_arg_t::NONE: break;
@@ -619,17 +638,6 @@ std::string wex::ex::info()
   output += l.make_key("%", get_command().get_stc()->get_filename().fullname());
 
   return output;
-}
-
-void wex::ex::info_message() const
-{
-  m_frame->show_ex_message(wxString::Format("%s line %d of %d --%d%%-- level %d", 
-    get_stc()->get_filename().fullname().c_str(), 
-    get_stc()->GetCurrentLine() + 1,
-    get_stc()->GetLineCount(),
-    100 * (get_stc()->GetCurrentLine() + 1)/ get_stc()->GetLineCount(),
-    (get_stc()->GetFoldLevel(get_stc()->GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK)
-     - wxSTC_FOLDLEVELBASE).ToStdString());
 }
 
 void wex::ex::info_message(const std::string& text, wex::info_message_t type) const

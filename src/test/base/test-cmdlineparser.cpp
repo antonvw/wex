@@ -28,9 +28,13 @@ TEST_CASE("wex::cmdline")
         p = v[0];
         q = v[1];
         r = v[2];}});
-  
-  REQUIRE( cmdl.parse(
+
+  const bool res(cmdl.parse(
     "-a 10 -b 5.1 -c test -s -t -u -v --xx one two three", help));
+  
+  CAPTURE( help );
+
+  REQUIRE( res );
 
   REQUIRE( a == 10 );
   REQUIRE( b == 5.1f );

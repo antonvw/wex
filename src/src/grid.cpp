@@ -15,6 +15,7 @@
 #include <wex/defs.h>
 #include <wex/frame.h>
 #include <wex/frd.h>
+#include <wex/lexers.h>
 #include <wex/printing.h>
 #include <wex/tokenizer.h>
 #include <wex/util.h>
@@ -63,15 +64,20 @@ namespace wex
 
 wex::grid::grid(const window_data& data)
   : wxGrid(
-    data.parent(), 
-    data.id(), 
-    data.pos(), 
-    data.size(), 
-    data.style(), 
-    data.name())
+      data.parent(), 
+      data.id(), 
+      data.pos(), 
+      data.size(), 
+      data.style(), 
+      data.name())
 {
   SetDropTarget(new text_droptarget(this));
-  m_use_drag_and_drop = true;
+  
+  lexers::get()->apply_default_style(
+    [=](const std::string& back) {
+      SetDefaultCellBackgroundColour(wxColour(back));},
+    [=](const std::string& fore) {
+      SetDefaultCellTextColour(wxColour(fore));});
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     empty_selection();}, wxID_DELETE);
@@ -262,7 +268,7 @@ void wex::grid::empty_selection()
     {
       if (IsInSelection(i, j) && !IsReadOnly(i, j))
       {
-        set_grid_cell_value(wxGridCellCoords(i, j), std::string());
+        set_cell_value(wxGridCellCoords(i, j), std::string());
       }
     }
   }
@@ -528,7 +534,7 @@ void wex::grid::print_preview()
 #endif
 }
 
-void wex::grid::set_grid_cell_value(
+void wex::grid::set_cell_value(
   const wxGridCellCoords& coords, 
   const std::string& data)
 {
@@ -557,7 +563,7 @@ void wex::grid::set_cells_value(
 
       if (!IsReadOnly(start_at_row, next_col))
       {
-        set_grid_cell_value(wxGridCellCoords(start_at_row, next_col), value);
+        set_cell_value(wxGridCellCoords(start_at_row, next_col), value);
       }
 
       next_col++;

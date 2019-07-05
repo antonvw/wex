@@ -202,7 +202,7 @@ bool wex::managed_frame::allow_close(wxWindowID id, wxWindow* page)
 void wex::managed_frame::append_panes(wxMenu* menu) const
 {
 #ifdef __WXMSW__
-  menu->AppendCheckItem(ID_VIEW_MENUBAR, _("&Menubar\tCtrl+I"));
+  menu->AppendCheckItem(ID_VIEW_MENUBAR, _("&Menubar\tCtrl+M"));
 #endif
 
   menu->AppendCheckItem(ID_VIEW_STATUSBAR, _("&Statusbar"));

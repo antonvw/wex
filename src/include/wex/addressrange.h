@@ -89,10 +89,6 @@ namespace wex
     /// Prints range to print file.
     bool print(const std::string& flags = std::string()) const;
     
-    /// Acccess to the process.
-    /// Returns nullptr if escape without range was not yet invoked.
-    static wex::process* process() {return m_Process;};
-    
     /// Shifts the specified lines to the start of the line.
     bool shift_left() const {return Indent(false);};
 

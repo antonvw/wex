@@ -13,8 +13,6 @@
 #include <wex/stc.h>
 #include <wex/report/frame.h>
 
-#if wxUSE_SOCKETS
-
 #if wxUSE_TASKBARICON
 class taskbar_icon;
 #endif
@@ -31,12 +29,24 @@ public:
   frame();
  ~frame();
   bool server_not_listening() const {
-    return m_SocketServer == nullptr;}
+    return m_server == nullptr;}
 private:
-  void AppendText(
-    wex::stc* stc, 
-    const wxString& text,
-    int mode);
+  enum class answer_t
+  {
+    OFF,
+    COMMAND,
+    ECHO,
+    FILE,
+  };
+
+  enum class data_mode_t
+  {
+    MESSAGE,
+    MESSAGE_RAW,
+    READ,
+    WRITE,
+  };
+
   virtual void on_command_item_dialog(
     wxWindowID dialogid, const wxCommandEvent& event) override;
   virtual wex::stc* open_file(
@@ -44,27 +54,31 @@ private:
     const wex::stc_data& data = wex::stc_data()) override;
   virtual void statusbar_clicked(const std::string& pane) override;
 
-  void LogConnection(
+  void append_text(
+    wex::stc* stc, 
+    const std::string& text,
+    data_mode_t mode);
+  void log_connection(
     wxSocketBase* sock,
     bool accepted = true,
     bool show_clients = true);
-  bool SetupSocketServer();
-  const wxString SocketDetails(const wxSocketBase* sock) const;
-  void SocketClosed(wxSocketBase* sock, bool remove_from_clients);
-  void TimerDialog();
+  bool setup_server();
+  void socket_closed(wxSocketBase* sock, bool remove_from_clients);
+  const std::string socket_details(const wxSocketBase* sock) const;
+  void timer_dialog();
 #if wxUSE_TASKBARICON
-  void UpdateTaskBar();
+  void update_taskbar();
 #endif
-  void UpdateConnectionsPane() const;
-  void WriteDataToSocket(const wxCharBuffer& data, wxSocketBase* client);
-  void WriteDataWindowToConnections();
+  void update_connections_pane() const;
+  size_t write_data_to_socket(const std::string& data, wxSocketBase* client);
+  size_t write_data_window_to_connections();
 
-  std::list<wxSocketBase*> m_Clients;
+  std::list<wxSocketBase*> m_clients;
 
-  wex::stc* m_DataWindow, *m_LogWindow;
-  wex::shell* m_Shell;
+  wex::shell* m_shell;
+  wex::stc* m_data, *m_log;
 
-  wex::statistics < int > m_Statistics {{
+  wex::statistics < int > m_stats {{
     {"Messages Received", 0},
     {"Messages Sent", 0},
     {"Bytes Received", 0},
@@ -73,15 +87,15 @@ private:
     {"Connections Remote", 0},
     {"Connections Closed", 0}}};
 
-  wxSocketClient* m_SocketRemoteClient {nullptr};
-  wxSocketServer* m_SocketServer {nullptr};
-  wxTimer m_Timer;
+  wxSocketClient* m_client {nullptr};
+  wxSocketServer* m_server {nullptr};
+  wxTimer m_timer;
 
 #if wxUSE_TASKBARICON
-  taskbar_icon* m_TaskBarIcon;
+  taskbar_icon* m_taskbar_icon;
 #endif
 
-  int m_Answer;
+  answer_t m_answer {answer_t::OFF};
 };
 
 #if wxUSE_TASKBARICON
@@ -91,7 +105,6 @@ public:
   explicit taskbar_icon(frame* frame);
 private:
   virtual wxMenu* CreatePopupMenu() override;
-  frame* m_Frame;
+  frame* m_frame;
 };
-#endif
 #endif

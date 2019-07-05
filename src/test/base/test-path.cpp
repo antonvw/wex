@@ -2,7 +2,7 @@
 // Name:      test-path.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <chrono>
@@ -13,9 +13,10 @@ TEST_CASE( "wex::path" )
 {
   SUBCASE( "Constructor" ) 
   {
+    REQUIRE( wex::path().empty());
     REQUIRE( wex::path().data().empty());
-    REQUIRE( wex::path("xxx").data().string() == "xxx");
-    REQUIRE( wex::path(wex::path("yyy")).data().string() == "yyy");
+    REQUIRE( wex::path("xxx").string() == "xxx");
+    REQUIRE( wex::path(wex::path("yyy")).string() == "yyy");
     wex::path fn = wex::test::get_path("test.h");
     REQUIRE( fn.lexer().scintilla_lexer() == "cpp");
     REQUIRE( wex::path(fn).fullname() == "test.h");
@@ -37,13 +38,14 @@ TEST_CASE( "wex::path" )
     REQUIRE( path.fullname() == "test.h");
     REQUIRE(!path.data().empty());
     REQUIRE( path.lexer().scintilla_lexer() == "cpp");
+    REQUIRE( path.log().str().find("test.h") != std::string::npos);
     REQUIRE( path.name() == "test");
     REQUIRE(!path.get_path().empty());
     REQUIRE(!path.paths().empty());
     REQUIRE( path.stat().is_ok());
     REQUIRE(!path.is_readonly());
 
-    REQUIRE( path.append("error").data().string().find("error") != std::string::npos);
+    REQUIRE( path.append("error").string().find("error") != std::string::npos);
 
     path.replace_filename("xxx");
 
@@ -51,7 +53,7 @@ TEST_CASE( "wex::path" )
     REQUIRE(!wex::path("XXXXX").open_mime());
 
     REQUIRE( wex::path("XXXXX").make_absolute().fullname() == "XXXXX");
-    REQUIRE( wex::path("XXXXX").make_absolute().data().string() != "XXXXX");
+    REQUIRE( wex::path("XXXXX").make_absolute().string() != "XXXXX");
   }
 
   SUBCASE( "Timing" ) 

@@ -375,13 +375,13 @@ wex::listview::listview(const listview_data& data)
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (!IsShown() || GetItemCount() == 0) return false;
-    if (long val; (val = wxGetNumberFromUser(
-      _("Input") + wxString::Format(" (1 - %d):", GetItemCount()),
+    if (const auto val(wxGetNumberFromUser(
+      _("Input") + " (1 - " + std::to_string(GetItemCount()) + "):",
       wxEmptyString,
       _("Enter Item Number"),
       (GetFirstSelected() == -1 ? 1: GetFirstSelected() + 1),
       1,
-      GetItemCount())) > 0)
+      GetItemCount())); val > 0)
     {
       listview_data(control_data().line(val), this).inject();
     }
@@ -556,12 +556,10 @@ void wex::listview::config_get()
 {
   listview_defaults use;
   
-  if (std::vector<std::string> v; match(",back:(.*),", 
-    lexers::get()->get_default_style().value(), v) > 0)
-  {
-    SetBackgroundColour(wxColour(v[0]));
-  }
-
+  lexers::get()->apply_default_style(
+    [=](const std::string& back) {
+      SetBackgroundColour(wxColour(back));});
+  
   SetFont(config(_("List font")).get(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
   SetSingleStyle(wxLC_HRULES, (config(_("Rulers")).get(0) & wxLC_HRULES) > 0);
   SetSingleStyle(wxLC_VRULES, (config(_("Rulers")).get(0) & wxLC_VRULES) > 0);

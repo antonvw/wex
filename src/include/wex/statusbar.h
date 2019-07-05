@@ -133,7 +133,7 @@ namespace wex
       frame* frame,
       const std::vector<statusbar_pane>& panes,
       long style = wxST_SIZEGRIP,
-      const wxString& name = "statusBar");
+      const std::string& name = "statusBar");
 
     /// Shows or hides the field.
     /// Returns true if field visibility actually changed.

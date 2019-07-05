@@ -20,7 +20,6 @@ namespace wex
 class app: public wex::app
 {
 private:
-  app() {}
   virtual bool OnInit() override;
 };
 

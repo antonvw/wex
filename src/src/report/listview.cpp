@@ -38,7 +38,7 @@ wex::report::listview::listview(const listview_data& data)
   entries[1].Set(wxACCEL_CTRL, WXK_INSERT, wxID_COPY);
   entries[2].Set(wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE);
   entries[3].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
-  entries[4].Set(wxACCEL_CTRL, 'M', ID_LIST_COMPARE);
+  entries[4].Set(wxACCEL_CTRL, 'O', ID_LIST_COMPARE);
 
   wxAcceleratorTable accel(WXSIZEOF(entries), entries);
   SetAcceleratorTable(accel);
@@ -153,7 +153,7 @@ void wex::report::listview::build_popup_menu(wex::menu& menu)
      !config(_("Comparator")).empty())
   {
     menu.append_separator();
-    menu.append(ID_LIST_COMPARE, _("C&ompare") + "\tCtrl+M");
+    menu.append(ID_LIST_COMPARE, _("C&ompare") + "\tCtrl+O");
   }
 
   if (GetSelectedItemCount() == 1)

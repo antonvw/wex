@@ -920,8 +920,8 @@ bool wex::item::set_value(const std::any& value) const
       case SPINCTRLDOUBLE: ((wxSpinCtrlDouble* )m_Window)->SetValue(std::any_cast<double>(value)); break;
       case STC: ((wxStyledTextCtrl* )m_Window)->SetValue(std::any_cast<std::string>(value)); break;
       case TEXTCTRL: ((wxTextCtrl* )m_Window)->SetValue(std::any_cast<std::string>(value)); break;
-      case TEXTCTRL_FLOAT: ((wxTextCtrl* )m_Window)->SetValue(wxString::Format("%lf", std::any_cast<double>(value))); break;
-      case TEXTCTRL_INT: ((wxTextCtrl* )m_Window)->SetValue(wxString::Format("%ld", std::any_cast<long>(value))); break;
+      case TEXTCTRL_FLOAT: ((wxTextCtrl* )m_Window)->SetValue(std::to_string(std::any_cast<double>(value))); break;
+      case TEXTCTRL_INT: ((wxTextCtrl* )m_Window)->SetValue(std::to_string(std::any_cast<long>(value))); break;
       case TOGGLEBUTTON: ((wxToggleButton* )m_Window)->SetValue(std::any_cast<bool>(value)); break;
 
       case CHECKLISTBOX_BIT:

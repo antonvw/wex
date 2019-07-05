@@ -233,7 +233,7 @@ wex::evaluator::~evaluator()
 }
 
 std::tuple<int, std::string> wex::evaluator::eval(
-  wex::ex* ex, const std::string& text)
+  wex::ex* ex, const std::string& text) const
 {
   return m_eval->eval(ex, text);
 }

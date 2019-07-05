@@ -372,13 +372,13 @@ bool wex::frame::update_statusbar(stc* stc, const std::string& pane)
     return false;
   }
   
-  std::string text;
+  std::stringstream text;
 
   if (pane == "PaneInfo")
   {
     if (stc->GetCurrentPos() == 0)
     {
-      text = std::to_string(stc->GetLineCount());
+      text << stc->GetLineCount();
     }
     else
     {
@@ -390,23 +390,22 @@ bool wex::frame::update_statusbar(stc* stc, const std::string& pane)
 
       if (const int len  = end - start; len == 0) 
       {
-        text = wxString::Format("%d,%d", line, pos);
+        text << line << "," << pos;
       }
       else
       {
         if (stc->SelectionIsRectangle())
         {
-          text = wxString::Format("%d,%d,%d", 
-            line, pos, (int)stc->GetSelectedText().length());
+          text << line << "," << pos << "," << stc->GetSelectedText().length();
         }
         else
         {
           if (const auto number_of_lines = 
             get_number_of_lines(stc->get_selected_text());
               number_of_lines <= 1) 
-            text = wxString::Format("%d,%d,%d", line, pos, len);
+            text << line << "," << pos << "," << len;
           else
-            text = wxString::Format("%d,%d,%d", line, number_of_lines, len);
+            text << line << "," << number_of_lines << "," << len;
         }
       }
     }
@@ -415,27 +414,27 @@ bool wex::frame::update_statusbar(stc* stc, const std::string& pane)
   {
     if (!lexers::get()->theme().empty())
     {
-      text = stc->get_lexer().display_lexer();
+      text << stc->get_lexer().display_lexer();
     }
   }
   else if (pane == "PaneFileType")
   {
     switch (stc->GetEOLMode())
     {
-    case wxSTC_EOL_CRLF: text = "DOS"; break;
-    case wxSTC_EOL_CR: text = "MAC"; break;
-    case wxSTC_EOL_LF: text = "UNIX"; break;
-    default: text = "UNKNOWN";
+    case wxSTC_EOL_CRLF: text << "DOS"; break;
+    case wxSTC_EOL_CR: text << "MAC"; break;
+    case wxSTC_EOL_LF: text << "UNIX"; break;
+    default: text << "UNKNOWN";
     }
   }
   else if (pane == "PaneMode")
   {
-    text = stc->get_vi().mode().string();
+    text << stc->get_vi().mode().string();
   }
   else
   {
     return false;
   }
 
-  return statustext(text, pane);
+  return statustext(text.str(), pane);
 }

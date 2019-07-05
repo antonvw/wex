@@ -115,6 +115,69 @@ wex::stc::stc(const path& p, const stc_data& data)
   }
 }
 
+#define BIGWORD(DIRECTION)                   \
+  int c = GetCharAt(GetCurrentPos());        \
+  int offset = strncmp((#DIRECTION), "Left", 4) == 0 ? -1: 0; \
+  while (isspace(c) &&                       \
+    GetCurrentPos() > 0 &&                   \
+    GetCurrentPos() < GetTextLength())       \
+  {                                          \
+    Char##DIRECTION();                       \
+    c = GetCharAt(GetCurrentPos() + offset); \
+  }                                          \
+  while (!isspace(c) &&                      \
+    GetCurrentPos() > 0 &&                   \
+    GetCurrentPos() < GetTextLength())       \
+  {                                          \
+    Char##DIRECTION();                       \
+    c = GetCharAt(GetCurrentPos() + offset); \
+  }
+
+void wex::stc::BigWordLeft()
+{
+  BIGWORD( Left );
+}
+  
+void wex::stc::BigWordLeftExtend()
+{
+  BIGWORD( LeftExtend );
+}
+  
+void wex::stc::BigWordLeftRectExtend()
+{
+  BIGWORD( LeftRectExtend );
+}
+  
+void wex::stc::BigWordRight()
+{
+  BIGWORD( Right );
+}
+  
+void wex::stc::BigWordRightEnd()
+{
+  BIGWORD( Right );
+}
+  
+void wex::stc::BigWordRightEndExtend()
+{
+  BIGWORD( RightExtend );
+}
+  
+void wex::stc::BigWordRightEndRectExtend()
+{
+  BIGWORD( RightRectExtend );
+}
+
+void wex::stc::BigWordRightExtend()
+{
+  BIGWORD( RightExtend );
+}
+
+void wex::stc::BigWordRightRectExtend()
+{
+  BIGWORD( RightRectExtend );
+}
+
 bool wex::stc::CanCut() const
 {
   return wxStyledTextCtrl::CanCut() && !GetReadOnly() && !is_hexmode();
@@ -749,6 +812,8 @@ void wex::stc::reset_margins(margin_t type)
 
 void wex::stc::SelectNone()
 {
+  //wxTextEntryBase::SelectNone();
+
   if (SelectionIsRectangle())
   {
     // SetSelection does not work.

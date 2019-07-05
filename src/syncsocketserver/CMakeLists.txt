@@ -15,8 +15,6 @@ add_executable(
 
 target_link_all()
 
-add_subdirectory(locale)
-
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 
 pack()

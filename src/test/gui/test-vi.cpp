@@ -390,6 +390,13 @@ TEST_CASE("wex::vi")
   // Test other commands (ZZ not tested).
   for (auto& other_command : vi->other_commands())
   {
+    if (other_command.first == "ZZ") continue;
+ 
+    if (vi->mode().insert())
+    {
+      vi->mode().escape();
+    }
+
     stc->set_text("first second\nthird\nfourth\n");
 
     if (!isalpha(other_command.first.front()) && 
@@ -424,7 +431,9 @@ TEST_CASE("wex::vi")
       if (oc != "z")
         REQUIRE( vi->command(oc));
       else if (oc != "qa")
+      {
         REQUIRE(!vi->command(oc));
+      }
     }
   }
 
@@ -623,7 +632,7 @@ TEST_CASE("wex::vi")
   REQUIRE( vi->command("Q"));
   stc->set_text("wex::test_app");
   REQUIRE( vi->command("Q"));
-  REQUIRE( vi->command("S"));
+  REQUIRE( vi->command("\x13"));
 
   vi->append_insert_command("xyz");
 }

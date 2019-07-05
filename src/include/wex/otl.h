@@ -2,7 +2,7 @@
 // Name:      otl.h
 // Purpose:   Declaration of wex::otl class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -52,7 +52,6 @@ namespace wex
 
     /// Logons to the datasource (shows a connection dialog if parent 
     /// is not nullptr).
-    /// max_items specifies max number of datasources in the combobox and config.
     /// Returns false if dialog cancelled or logon fails.
     bool logon(const window_data& data = window_data());
 
@@ -75,6 +74,8 @@ namespace wex
       bool& stopped,
       int buffer_size = 1024);
   private:
+    void handle_error(const otl_exception& e, const otl_column_desc& desc) const;
+    
     otl_connect m_Connect;
   };
 };

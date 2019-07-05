@@ -99,7 +99,8 @@ bool app::OnInit()
         m_Scriptout.open(std::any_cast<std::string>(s), std::ios_base::out);}}},
       {{"append,W", "script out append"}, {wex::cmdline::STRING, [&](const std::any& s) {
         m_Scriptout.open(std::any_cast<std::string>(s), std::ios_base::app);}}}},
-     {{"files", "input file[:line number][:column number]"}, [&](const std::vector<std::string> & v) {
+     {{"files", "input file[:line number][:column number]\n"
+        "or executable file if -d was specified"}, [&](const std::vector<std::string> & v) {
         for (const auto & f : v) m_Files.emplace_back(f);}}).parse(wxTheApp->argc, wxTheApp->argv) || exit)
   {
     return false;

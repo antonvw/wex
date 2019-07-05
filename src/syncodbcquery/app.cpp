@@ -11,8 +11,10 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <easylogging++.h>
 #include <wx/aboutdlg.h>
 #include <wx/stockitem.h>
+#include <wex/cmdline.h>
 #include <wex/config.h>
 #include <wex/filedlg.h>
 #include <wex/grid.h>
@@ -30,20 +32,26 @@
 #include "app.xpm"
 #endif
 
-const auto idDatabaseClose = wxWindow::NewControlId();
-const auto idDatabaseOpen = wxWindow::NewControlId();
-const auto idRecentfileMenu = wxWindow::NewControlId();
-const auto idViewQuery = wxWindow::NewControlId();
-const auto idViewResults = wxWindow::NewControlId();
-const auto idViewStatistics = wxWindow::NewControlId();
-
 wxIMPLEMENT_APP(app);
 
 bool app::OnInit()
 {
   SetAppName("syncodbcquery");
 
-  if (!wex::app::OnInit())
+  if (
+    !wex::app::OnInit() ||
+    !wex::cmdline(
+     {{{"verbose,v", "activates maximum verbosity"}, [&](bool on) {}}},
+     {{{"datasource,d", "odbc datasource"}, {wex::cmdline::STRING, [&](const std::any& a) {
+        wex::config(_("Datasource")).set(std::any_cast<std::string>(a));}}},
+      {{"logfile,D", "sets log file"}, {wex::cmdline::STRING, [&](const std::any& s) {}}},
+      {{"password,p", "password for user"}, {wex::cmdline::STRING, [&](const std::any& a) {
+        wex::config(_("Password")).set(std::any_cast<std::string>(a));}}},
+      {{"user,u", "user to login"}, {wex::cmdline::STRING, [&](const std::any& a) {
+        wex::config(_("User")).set(std::any_cast<std::string>(a));}}},
+      {{"v,V", "activates verbosity upto verbose level (valid range: 0-9)", "1"}, 
+          {wex::cmdline::INT, [&](const std::any& a) {el::Loggers::setVerboseLevel(std::any_cast<int>(a));}}}
+     }).parse(wxTheApp->argc, wxTheApp->argv))
   {
     return false;
   }
@@ -60,6 +68,13 @@ frame::frame()
   , m_Results(new wex::grid())
   , m_Shell(new wex::shell(wex::stc_data(), "", ";"))
 {
+  const auto idDatabaseClose = wxWindow::NewControlId();
+  const auto idDatabaseOpen = wxWindow::NewControlId();
+  const auto idRecentfileMenu = wxWindow::NewControlId();
+  const auto idViewQuery = wxWindow::NewControlId();
+  const auto idViewResults = wxWindow::NewControlId();
+  const auto idViewStatistics = wxWindow::NewControlId();
+
   SetIcon(wxICON(app));
 
   wex::menu* menuFile = new wex::menu;
@@ -124,7 +139,7 @@ frame::frame()
 
   get_toolbar()->add_controls(false); // no realize yet
   get_toolbar()->add_tool(wxID_EXECUTE, 
-    wxEmptyString,
+    std::string(),
     wxArtProvider::GetBitmap(
       wxART_GO_FORWARD, wxART_TOOLBAR, get_toolbar()->GetToolBitmapSize()),
     wxGetStockLabel(wxID_EXECUTE, wxSTOCK_NOFLAGS));
@@ -176,7 +191,7 @@ frame::frame()
     info.SetDescription(_("This program offers a general ODBC query."));
     info.SetVersion(wex::get_version_info().get());
     info.SetCopyright(wex::get_version_info().copyright());
-    info.AddDeveloper(wex::otl::get_version_info().get());
+    info.AddDeveloper("otl:" + wex::otl::get_version_info().get());
     wxAboutBox(info);
     }, wxID_ABOUT);
 

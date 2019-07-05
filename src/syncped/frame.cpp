@@ -191,11 +191,25 @@ frame::frame(app* app)
   else
   {
     manager().GetPane("PROJECTS").Hide();
-
-    wex::open_files(this, 
-      m_App->get_files(), 
-      m_App->data(), 
-      wex::dir::type_t().set(wex::dir::FILES));
+    
+    if (m_App->get_files().size() == 1 && m_App->get_debug())
+    {
+      get_debug()->execute("file " + 
+        m_App->get_files().front().data().string());
+      
+      if (const int count = wex::config("OpenFiles").get(0); count > 0)
+      {
+        wex::open_files(this, file_history().get_history_files(count), 
+          m_App->data());
+      }
+    }
+    else
+    {
+      wex::open_files(this, 
+        m_App->get_files(), 
+        m_App->data(), 
+        wex::dir::type_t().set(wex::dir::FILES));
+    }
   }
   
   statustext(wex::lexers::get()->theme(), "PaneTheme");
@@ -1315,6 +1329,7 @@ void frame::print_ex(wex::ex* ex, const std::string& text)
   
 wex::process* frame::get_process(const std::string& command)
 {
+  if (!m_App->get_debug()) return nullptr;
   m_Process->execute(command, wex::process::EXEC_NO_WAIT);
   return m_Process;
 }

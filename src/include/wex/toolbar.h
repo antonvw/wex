@@ -2,7 +2,7 @@
 // Name:      toolbar.h
 // Purpose:   Declaration of wex::toolbar classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018
+// Copyright: (c) 2019
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -27,9 +27,9 @@ namespace wex
     /// Adds automatic naming (for stock menu id's) and 
     /// art id for toolbar normal items.
     wxAuiToolBarItem* add_tool(int toolId,
-      const wxString& label = wxEmptyString,
+      const std::string& label = std::string(),
       const wxBitmap& bitmap = wxNullBitmap,
-      const wxString& shortHelp = wxEmptyString,
+      const std::string& shortHelp = std::string(),
       wxItemKind kind = wxITEM_NORMAL);
 
     /// Adds the standard controls.
@@ -69,7 +69,7 @@ namespace wex
     
     /// Updates checkbox state.
     /// Returns true if checkbox was found.
-    bool update(const wxString& name, bool show);
+    bool update(const std::string& name, bool show);
   private:
     std::vector<wxCheckBox*> m_CheckBoxes;
   };

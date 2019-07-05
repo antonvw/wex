@@ -36,9 +36,8 @@ wex::file_dialog::file_dialog(
       m_File->get_filename().stat().is_ok())
   {
     std::string wildcards = 
-      _("All Files") + wxString::Format(" (%s)|%s",
-        wxFileSelectorDefaultWildcardStr,
-        wxFileSelectorDefaultWildcardStr);
+      _("All Files") + " (" + wxFileSelectorDefaultWildcardStr + ") |" +  
+        wxFileSelectorDefaultWildcardStr;
 
     for (const auto& it : lexers::get()->get_lexers())
     {

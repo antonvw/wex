@@ -72,9 +72,6 @@ namespace wex
     /// Returns stc component.
     auto * get_stc() const {return m_command.get_stc();};
 
-    /// Writes info message.
-    void info_message() const;
-    
     /// Returns whether ex is active.
     auto is_active() const {return m_is_active;};
     
