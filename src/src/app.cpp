@@ -53,6 +53,8 @@ int wex::app::OnExit()
   addressrange::on_exit();
   ctags::close();
   stc::on_exit();
+  config::on_exit();
+
   log::verbose(1) << "exit";
 
   return wxApp::OnExit(); // this destroys the config

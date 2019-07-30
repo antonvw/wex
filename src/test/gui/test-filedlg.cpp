@@ -2,7 +2,7 @@
 // Name:      test-filedlg.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -16,8 +16,18 @@
 
 TEST_CASE("wex::file_dialog")
 {
-  wex::file file;
-  wex::file_dialog dlg(&file);
+  SUBCASE("Default constructor")
+  {
+    wex::file_dialog dlg;
+    REQUIRE( dlg.show_modal_if_changed(false) == wxID_CANCEL);
+    REQUIRE(!dlg.hexmode());
+  }
   
-  REQUIRE(dlg.show_modal_if_changed(false) == wxID_OK);
+  SUBCASE("Other constructor")
+  {
+    wex::file file;
+    wex::file_dialog dlg(&file);
+    REQUIRE( dlg.show_modal_if_changed(false) == wxID_OK);
+    REQUIRE(!dlg.hexmode());
+  }
 }

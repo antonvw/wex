@@ -100,7 +100,7 @@ wex::stc::stc(const path& p, const stc_data& data)
   // we have our own popup
   UsePopUp(wxSTC_POPUP_NEVER);
 
-  BindAll();
+  bind_all();
 
   config_get();
 
@@ -230,7 +230,7 @@ void wex::stc::Cut()
   }
 }
   
-bool wex::stc::FileReadOnlyAttributeChanged()
+bool wex::stc::file_readonly_attribute_changed()
 {
   SetReadOnly(get_filename().is_readonly()); // does not return anything
   log::status(_("Readonly attribute changed"));
@@ -238,7 +238,7 @@ bool wex::stc::FileReadOnlyAttributeChanged()
   return true;
 }
 
-void wex::stc::fold(bool foldall)
+void wex::stc::fold(bool all)
 {
   if (
      GetProperty("fold") == "1" &&
@@ -251,10 +251,10 @@ void wex::stc::fold(bool foldall)
       wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
         
     if (
-      foldall || 
+      all || 
       GetLineCount() > config(_("Auto fold")).get(0))
     {
-      FoldAll();
+      fold_all();
     }
   }
   else
@@ -263,7 +263,7 @@ void wex::stc::fold(bool foldall)
   }
 }
   
-void wex::stc::FoldAll()
+void wex::stc::fold_all()
 {
   if (GetProperty("fold") != "1") return;
 
@@ -343,14 +343,10 @@ const std::string wex::stc::get_find_string()
 
 const std::string wex::stc::get_selected_text()
 {
-  // This also supports rectangular text.
-  if (GetSelectedText().empty())
-  {
-    return std::string();
-  }
-
   const wxCharBuffer b(GetSelectedTextRaw());
-  return std::string(b.data(), b.length() - 1);
+  return b.length() == 0 ? 
+    std::string():
+    std::string(b.data(), b.length() - 1);
 }
 
 const std::string wex::stc::get_word_at_pos(int pos) const
@@ -428,7 +424,7 @@ bool wex::stc::link_open(link_t mode, std::string* filename)
     const path path(m_Link.get_path(text, 
       control_data().line(link::LINE_OPEN_URL_AND_MIME)));
     
-    if (!path.data().string().empty()) 
+    if (!path.string().empty()) 
     {
       if (!mode[LINK_CHECK]) 
       {
@@ -444,7 +440,7 @@ bool wex::stc::link_open(link_t mode, std::string* filename)
     control_data data;
     
     if (const wex::path path(m_Link.get_path(text, data));
-      !path.data().string().empty()) 
+      !path.string().empty()) 
     {
       if (filename != nullptr)
       {
@@ -478,7 +474,7 @@ bool wex::stc::marker_delete_all_change()
   return true;
 }
   
-void wex::stc::MarkModified(const wxStyledTextEvent& event)
+void wex::stc::mark_modified(const wxStyledTextEvent& event)
 {
   if (!lexers::get()->marker_is_loaded(m_MarkerChange))
   {
@@ -543,7 +539,7 @@ void wex::stc::on_init()
   }
 }
   
-void wex::stc::OnIdle(wxIdleEvent& event)
+void wex::stc::on_idle(wxIdleEvent& event)
 {
   event.Skip();
   
@@ -554,13 +550,13 @@ void wex::stc::OnIdle(wxIdleEvent& event)
     !m_Data.flags().test(stc_data::WIN_READ_ONLY) &&
     get_filename().stat().is_readonly() != GetReadOnly())
   {
-    FileReadOnlyAttributeChanged();
+    file_readonly_attribute_changed();
   }
 }
 
-void wex::stc::OnStyledText(wxStyledTextEvent& event)
+void wex::stc::on_styled_text(wxStyledTextEvent& event)
 {
-  MarkModified(event); 
+  mark_modified(event); 
   event.Skip();
 }
 
@@ -571,7 +567,7 @@ bool wex::stc::open(const path& filename, const stc_data& data)
     return false;
   }
 
-  m_Data = stc_data(data).window(window_data().name(filename.data().string()));
+  m_Data = stc_data(data).window(window_data().name(filename.string()));
   m_Data.inject();
 
   if (m_Frame != nullptr)
@@ -812,19 +808,8 @@ void wex::stc::reset_margins(margin_t type)
 
 void wex::stc::SelectNone()
 {
-  //wxTextEntryBase::SelectNone();
-
-  if (SelectionIsRectangle())
-  {
-    // SetSelection does not work.
-    CharRight();
-    CharLeft();
-  }
-  else
-  {
-    // The base styledtextctrl version uses scintilla, sets caret at 0.
-    SetSelection(GetCurrentPos(), GetCurrentPos());
-  }
+  // The base styledtextctrl version uses scintilla, sets caret at 0.
+  wxTextEntryBase::SelectNone();
 }
 
 bool wex::stc::set_indicator(const indicator& indicator, int start, int end)
@@ -867,13 +852,7 @@ void wex::stc::set_text(const std::string& value)
   EmptyUndoBuffer();
 }
 
-void wex::stc::show_line_numbers(bool show)
-{
-  SetMarginWidth(m_MarginLineNumber, 
-    show ? config(_("Line number")).get(0): 0);
-}
-
-bool wex::stc::show_vcs(const vcs_entry* vcs)
+bool wex::stc::show_blame(const vcs_entry* vcs)
 {
   if (!vcs->get_blame().use())
   {
@@ -886,41 +865,50 @@ bool wex::stc::show_vcs(const vcs_entry* vcs)
     return false;
   }
 
-  int line = 0;
   std::string prev ("!@#$%");
-  
+  bool first = true;
+  int line = 0;
+
   for (tokenizer tkz(vcs->get_stdout(), "\r\n"); tkz.has_more_tokens(); )
   {
-    if (const auto [r, bl, t] = vcs->get_blame().get(tkz.get_next_token());
-      bl != prev)
+    if (const auto [r, bl, t, l] = vcs->get_blame().get(tkz.get_next_token());
+      bl != prev && r)
     {
-      if (line == 0)
+      if (first)
       {
         SetMarginWidth(
           m_MarginTextNumber, 
           bl.size() * 
            (StyleGetFont(m_MarginTextNumber).GetPixelSize().GetWidth() + 1));
+        first = false;
       }
       
-      lexers::get()->apply_margin_text_style(this, line, t, bl);
+      lexers::get()->apply_margin_text_style(this, l >= 0 ? l: line, t, bl);
       prev = bl;
     }
     else
     {
-      lexers::get()->apply_margin_text_style(this, line, t);
+      lexers::get()->apply_margin_text_style(this, l >= 0 ? l: line, 
+        r ? t: lexers::margin_style_t::OTHER);
     }
- 
+    
     line++;
   }
 
   return true;
 }
 
+void wex::stc::show_line_numbers(bool show)
+{
+  SetMarginWidth(m_MarginLineNumber, 
+    show ? config(_("Line number")).get(0): 0);
+}
+
 void wex::stc::sync(bool start)
 {
   start ?
-    Bind(wxEVT_IDLE, &stc::OnIdle, this):
-    (void)Unbind(wxEVT_IDLE, &stc::OnIdle, this);
+    Bind(wxEVT_IDLE, &stc::on_idle, this):
+    (void)Unbind(wxEVT_IDLE, &stc::on_idle, this);
 }
 
 void wex::stc::Undo()
@@ -932,8 +920,8 @@ void wex::stc::Undo()
 void wex::stc::use_modification_markers(bool use)
 {
   use ?
-    Bind(wxEVT_STC_MODIFIED, &stc::OnStyledText, this):
-    (void)Unbind(wxEVT_STC_MODIFIED, &stc::OnStyledText, this);
+    Bind(wxEVT_STC_MODIFIED, &stc::on_styled_text, this):
+    (void)Unbind(wxEVT_STC_MODIFIED, &stc::on_styled_text, this);
 }
 
 void wex::stc::WordLeftRectExtend() 

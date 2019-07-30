@@ -2,7 +2,7 @@
 // Name:      to_container.h
 // Purpose:   Declaration of wex::to_container class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -101,7 +101,10 @@ namespace wex
     void FromArrayString(const wxArrayString& in) {
       for (const auto& it : in)
       {
-        m_Container.emplace_back(it);
+        if (!it.empty())
+        {
+          m_Container.emplace_back(it);
+        }
       }}
     
     T m_Container;

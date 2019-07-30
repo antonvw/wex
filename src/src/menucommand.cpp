@@ -16,6 +16,7 @@ wex::menu_command::menu_command(const pugi::xml_node& node)
   , m_submenu(!node.attribute("submenu").empty() ? 
       node.attribute("submenu").value(): node.attribute("subcommand").value())
   , m_submenu_is_command(!node.attribute("subcommand").empty())
+  , m_text(node.attribute("menu").value())
   , m_type([](const pugi::xml_node& node) {
       const std::string text(node.attribute("type").value());
       type_t id;
@@ -31,6 +32,8 @@ wex::menu_command::menu_command(const pugi::xml_node& node)
         id.set(SEPARATOR);
       if (text.find("ellipses") != std::string::npos)
         id.set(ELLIPSES);
+      if (text.find("is-selected") != std::string::npos)
+        id.set(IS_SELECTED);
 
       return id;} (node))
 {

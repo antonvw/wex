@@ -11,9 +11,10 @@
 
 namespace wex
 {
-  void build(const std::string& key, std::string& text, const std::string& append)
+  void build(
+    const std::string& key, std::string& text, const std::string& append)
   {
-    if (config(key).get(true))
+    if (key.empty() || config(key).get(true))
     {
       if (!text.empty()) 
       {
@@ -32,21 +33,33 @@ wex::blame::blame(const pugi::xml_node& node)
 {
 }
   
-std::tuple <bool, const std::string, wex::lexers::margin_style_t> 
+std::tuple <bool, const std::string, wex::lexers::margin_style_t, int> 
   wex::blame::get(const std::string& text) const
 {
-  if (std::vector<std::string> v; match(m_blame_format, text, v) == 3)
+  try
   {
-    std::string info;
-  
-    build("blame_get_id", info, v[0]);
-    build("blame_get_author", info, v[1]);
-    build("blame_get_date", info, v[2].substr(0, m_date_print));
+    if (std::vector<std::string> v; match(m_blame_format, text, v) >= 3)
+    {
+      std::string info;
+    
+      build("blame_get_id", info, v[0]);
+      build("blame_get_author", info, v[1]);
+      build("blame_get_date", info, v[2].substr(0, m_date_print));
+      const auto line(v.size() == 4 ? std::stoi(v[3]) - 1: - 1);
 
-    return {true, info.empty() ? " ": info, get_style(v[2])};
+      return {
+        true, 
+        info.empty() ? " ": info, 
+        get_style(v[2]), 
+        line};
+    }
+  }
+  catch (std::exception& e)
+  {
+    log(e) << "blame:" << text;
   }
   
-  return {false, std::string(), lexers::margin_style_t::OTHER};
+  return {false, std::string(), lexers::margin_style_t::OTHER, 0};
 }
 
 wex::lexers::margin_style_t wex::blame::get_style(const std::string& text) const

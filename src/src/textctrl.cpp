@@ -23,7 +23,7 @@ wex::textctrl_input::textctrl_input(ex_command::type_t type)
         case ex_command::type_t::REPLACE: return find_replace_data::text_replace_with();
         default: return std::string("exother");
       }}(type))
-  , m_Values(config(m_Name).get_list())
+  , m_Values(config(m_Name).get(std::list<std::string>{}))
   , m_Iterator(m_Values.cbegin())
 {
   log::verbose("TCI") << m_Name << "size:" << m_Values.size();

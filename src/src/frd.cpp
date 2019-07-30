@@ -33,8 +33,8 @@ wex::find_replace_data::find_replace_data()
 
   // Start with this one, as it is used by set_find_string.
   set_use_regex(config(m_text_regex).get(m_use_regex));
-  set_find_strings(config(m_text_find).get_list());
-  set_replace_strings(config(m_text_replace_with).get_list());
+  set_find_strings(config(m_text_find).get(std::list<std::string>{}));
+  set_replace_strings(config(m_text_replace_with).get(std::list<std::string>{}));
 }
 
 wex::find_replace_data::~find_replace_data()

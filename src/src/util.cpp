@@ -175,7 +175,7 @@ const std::string wex::before(
 
 bool wex::browser_search(const std::string& text)
 {
-  if (const auto search_engine(config(_("Search engine")).firstof());
+  if (const auto search_engine(config(_("Search engine")).get_firstof());
     search_engine.empty())
   {
     return false;
@@ -240,13 +240,20 @@ bool wex::comparefile(const path& file1, const path& file2)
 {
   if (config(_("Comparator")).empty())
   {
+    log("comparefile") << "empty comparator";
+    return false;
+  }
+  
+  if (file1.empty() || file2.empty())
+  {
+    log("comparefile") << "empty arg";
     return false;
   }
 
   const auto arguments =
      (file1.stat().st_mtime < file2.stat().st_mtime) ?
-       "\"" + file1.data().string() + "\" \"" + file2.data().string() + "\"":
-       "\"" + file2.data().string() + "\" \"" + file1.data().string() + "\"";
+       "\"" + file1.string() + "\" \"" + file2.string() + "\"":
+       "\"" + file2.string() + "\" \"" + file1.string() + "\"";
 
   if (!process().execute(
     config(_("Comparator")).get() + " " + arguments, 
@@ -331,11 +338,6 @@ const std::string wex::get_find_result(const std::string& find_text,
     return
       quoted(skip_white_space(find_text)) + " " + _("not found").ToStdString();
   }
-}
-
-const char wex::get_field_separator()
-{
-  return '\x0B';
 }
 
 int wex::get_iconid(const path& filename)
@@ -432,7 +434,7 @@ long wex::make(const path& makefile)
   return process->execute(
     config("Make").get("make") + " " +
       config("MakeSwitch").get("-f") + " " +
-      makefile.data().string(),
+      makefile.string(),
     process::EXEC_NO_WAIT,
     makefile.get_path());
 }
@@ -562,22 +564,22 @@ int wex::open_files(
   for (const auto& it : files)
   {
     if (
-      it.data().string().find("*") != std::string::npos || 
-      it.data().string().find("?") != std::string::npos)
+      it.string().find("*") != std::string::npos || 
+      it.string().find("?") != std::string::npos)
     {
       count += open_file_dir(frame, 
         path::current(),
-        it.data().string(), stc_data.flags(), type).find_files();
+        it.string(), stc_data.flags(), type).find_files();
     }
     else
     {
       path fn(it);
       wex::stc_data data(stc_data);
 
-      if (!it.file_exists() && it.data().string().find(":") != std::string::npos)
+      if (!it.file_exists() && it.string().find(":") != std::string::npos)
       {
-        if (const path& val(link().get_path(it.data().string(), data.control()));
-          !val.data().empty())
+        if (const path& val(link().get_path(it.string(), data.control()));
+          !val.empty())
         {
           fn = val;
         }
@@ -604,6 +606,7 @@ void wex::open_files_dialog(frame* frame,
 {
   wxArrayString paths;
   const std::string caption(_("Select Files"));
+  bool hexmode = false;
       
   if (auto* stc = frame->get_stc(); stc != nullptr)
   {
@@ -622,27 +625,30 @@ void wex::open_files_dialog(frame* frame,
     }
       
     dlg.GetPaths(paths);
+    hexmode = dlg.hexmode();
   }
   else
   {
-    wxFileDialog dlg(frame,
-      caption,
-      wxEmptyString,
-      wxEmptyString,
-      wildcards,
-      style);
+    file_dialog dlg(
+      window_data().style(style).title(caption), wildcards);
 
     if (dlg.ShowModal() == wxID_CANCEL) return;
 
     dlg.GetPaths(paths);
+    hexmode = dlg.hexmode();
   }
 
-  open_files(frame, to_vector_path(paths).get(), data, type);
+  open_files(frame, 
+    to_vector_path(paths).get(), 
+    hexmode ? 
+      stc_data(data).flags(stc_data::window_t().set(stc_data::WIN_HEX), control_data::OR):
+      data, 
+    type);
 }
 
 const std::string wex::print_caption(const path& filename)
 {
-  return filename.data().string();
+  return filename.string();
 }
 
 const std::string wex::print_footer()
@@ -656,7 +662,7 @@ const std::string wex::print_header(const path& filename)
   {
     return
       get_endoftext(
-        filename.data().string() + " " +
+        filename.string() + " " +
         wxDateTime(filename.stat().st_mtime).Format().ToStdString(), 
         filename.lexer().line_size());
   }
@@ -720,7 +726,7 @@ const std::string GetLines(std::vector<std::string> & lines,
 {
   std::string text;
   
-  for (auto it : lines)
+  for (auto& it : lines)
   {
     text += it.replace(pos, len, *ii);
     ++ii;
@@ -884,30 +890,39 @@ bool wex::sort_selection(
   {
     if (stc->SelectionIsRectangle())
     {
-      const auto start_pos_line = 
-        stc->PositionFromLine(stc->LineFromPosition(start_pos));
-      const auto end_pos_line = 
-        stc->PositionFromLine(stc->LineFromPosition(stc->GetSelectionEnd()) + 1);
+      std::string selection;
+
+      for (int i = 0; i < stc->GetSelections(); i++)
+      {
+        auto start = stc->GetSelectionNStart(i);
+        auto end = stc->GetSelectionNEnd(i);
+        selection += stc->GetTextRange(start, end) + "\n";
+      }
+
       const auto nr_cols = 
         stc->GetColumn(stc->GetSelectionEnd()) - 
         stc->GetColumn(start_pos);
       const auto nr_lines = 
         stc->LineFromPosition(stc->GetSelectionEnd()) - 
         stc->LineFromPosition(start_pos);
-      const auto sel = stc->GetTextRange(start_pos_line, end_pos_line); 
-
-      stc->DeleteRange(start_pos_line, end_pos_line - start_pos_line);
 
       const auto& text(sort(
-        sel.ToStdString(), 
+        selection, 
         sort_t, 
-        pos, 
-        stc->eol(), 
-        len));
+        0, 
+        "\n"));
+      
+      tokenizer tkz(text, "\n");
 
-      stc->InsertText(start_pos_line, text);
-      stc->SetCurrentPos(start_pos);
+      for (int i = 0; i < stc->GetSelections(); i++)
+      {
+        auto start = stc->GetSelectionNStart(i);
+        auto end = stc->GetSelectionNEnd(i);
+        stc->Replace(start, end, tkz.get_next_token());
+      }
+
       stc->SelectNone();
+      stc->SetCurrentPos(start_pos);
 
       for (int j = 0; j < nr_cols; j++)
       {

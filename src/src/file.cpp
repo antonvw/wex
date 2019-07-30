@@ -2,7 +2,7 @@
 // Name:      file.cpp
 // Purpose:   Implementation of class wex::file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <fstream>
@@ -21,7 +21,7 @@ namespace wex
       const path& filename,
       std::ios_base::openmode mode = std::ios_base::in) 
       : m_path(filename)
-      , m_stat(m_path.data().string()) 
+      , m_stat(m_path.string()) 
       , m_fs(m_path.data(), mode) {;};
     
     virtual ~file_imp() {;};
@@ -30,7 +30,7 @@ namespace wex
       close();
 
       m_path = p;
-      m_stat.sync(m_path.data().string());
+      m_stat.sync(m_path.string());
       m_fs = std::fstream(m_path.data());};
 
     bool close() {
@@ -233,7 +233,7 @@ bool wex::file::file_save(const path& p)
 {
   bool save_as = false;
 
-  if (!p.data().empty())
+  if (!p.empty())
   {
     assign(p);
     save_as = true;

@@ -152,7 +152,7 @@ const wex::path wex::link::find_url_or_mime(
       const auto match(v[0]);
       const std::string delimiters("\")]");
       
-      for (const auto c : delimiters)
+      for (const auto& c : delimiters)
       {
         if (const auto pos = match.find(c); pos != std::string::npos)
         {

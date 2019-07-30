@@ -238,7 +238,7 @@ bool wex::lexers::load_document()
   
   pugi::xml_document doc;
 
-  if (const auto result = doc.load_file(m_Path.data().string().c_str(), 
+  if (const auto result = doc.load_file(m_Path.string().c_str(), 
     pugi::parse_default | pugi::parse_trim_pcdata);
     !result)
   {
@@ -276,17 +276,23 @@ bool wex::lexers::load_document()
     }
   }
 
-  const std::string extensions(std::accumulate(
-    m_Lexers.begin(), m_Lexers.end(), std::string(wxFileSelectorDefaultWildcardStr), 
-    [&](const std::string& a, const wex::lexer& b) {
-      if (!b.extensions().empty())
-        return a.empty() ? b.extensions() : a + get_field_separator() + b.extensions();
-      else return a;}));
+  std::list <std::string> l{std::string(wxFileSelectorDefaultWildcardStr)};
+
+  for (const auto& it : m_Lexers)
+  {
+    if (!it.extensions().empty())
+    {
+      l.push_back(it.extensions());
+    }
+  }
   
   config conf(config::DATA_NO_STORE);
-  if (!conf.item(_("Add what")).exists()) conf.set(extensions);
-  if (!conf.item(_("In files")).exists()) conf.set(extensions);
-  if (!conf.item(_("In folder")).exists()) conf.set(wxGetHomeDir().ToStdString());
+  if (!conf.item(_("Add what")).exists()) 
+    conf.set(l);
+  if (!conf.item(_("In files")).exists()) 
+    conf.set(l);
+  if (!conf.item(_("In folder")).exists()) 
+    conf.set(std::list<std::string>{wxGetHomeDir().ToStdString()});
   
   // Do some checking.
   if (!m_Lexers.empty() && !m_Theme.empty())

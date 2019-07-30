@@ -47,9 +47,7 @@ namespace wex
       /// menu id to be added to the vcs commands
       int base_id, 
       /// menu to be built
-      menu* menu, 
-      /// default assumes this is a popup menu
-      bool is_popup = true) const;
+      menu* menu) const;
 
     /// Executes the current vcs command (from SetCommand), or
     /// the first command if SetCommand was not yet invoked.

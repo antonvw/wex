@@ -18,9 +18,9 @@
 
 namespace po = boost::program_options;
 
-#define WEX_CALLBACK(TYPE, FIELD)                       \
-  v->second.FIELD(it.second.as<TYPE>());                \
-  if (save) config(it.first).set(it.second.as<TYPE>()); \
+#define WEX_CALLBACK(TYPE, FIELD)                                    \
+  v->second.FIELD(it.second.as<TYPE>());                             \
+  if (save) config(before(it.first, ',')).set(it.second.as<TYPE>()); \
 
 namespace wex
 {
@@ -145,7 +145,7 @@ namespace wex
                     it.second.as<bool>());
                   if (save) 
                   {
-                    config(it.first).set(cmdline::toggle() ?
+                    config(before(it.first, ',')).set(cmdline::toggle() ?
                       !config(it.first).get(it.second.as<bool>()):
                        it.second.as<bool>());
                   }
@@ -198,7 +198,7 @@ wex::cmdline::cmdline(
       {
         const std::string def_specified = 
           (it->first.size() > 2 ? it->first.back(): std::string("1"));
-        config(it->first[p_n]).set((bool)std::stoi(def_specified));
+        config(before(it->first[p_n], ',')).set((bool)std::stoi(def_specified));
       }
       
       m_parser->m_desc.add_options()

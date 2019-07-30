@@ -146,9 +146,9 @@ namespace wex
     /// Enables or disables folding depending on fold property.
     void fold(
       /// if document contains more than 'Auto fold' lines,
-      /// or if foldall (and fold propertry is on) is specified, 
+      /// or if fold_all (and fold propertry is on) is specified, 
       /// always all lines are folded.
-      bool foldall = false);
+      bool fold_all = false);
 
     /// Returns associated data.
     const auto& data() const {return m_Data;};
@@ -296,12 +296,12 @@ namespace wex
     bool is_shown_line_numbers() const {return
       GetMarginWidth(m_MarginLineNumber) > 0;};
 
+    /// Shows blame info for vcs in the text margin.
+    /// Returns true if info was added.
+    bool show_blame(const vcs_entry* vcs);
+
     /// Shows or hides line numbers.
     void show_line_numbers(bool show);
-
-    /// Shows vcs info in text margin.
-    /// Returns true if info was added.
-    bool show_vcs(const vcs_entry* vcs);
     
     /// Starts or stops syncing.
     /// Default syncing is started during construction.
@@ -344,18 +344,18 @@ namespace wex
 
     typedef std::bitset<3> link_t;
     
-    void BindAll();
+    void bind_all();
     void build_popup_menu(menu& menu);
-    void CheckBrace();
-    bool CheckBrace(int pos);
-    bool FileReadOnlyAttributeChanged(); // sets changed read-only attribute
-    void FoldAll();
+    void check_brace();
+    bool check_brace(int pos);
+    bool file_readonly_attribute_changed(); // sets changed read-only attribute
+    void fold_all();
     bool link_open(
       link_t mode, 
       std::string* filename = nullptr); // name of found file
-    void MarkModified(const wxStyledTextEvent& event);
-    void OnIdle(wxIdleEvent& event);
-    void OnStyledText(wxStyledTextEvent& event);
+    void mark_modified(const wxStyledTextEvent& event);
+    void on_idle(wxIdleEvent& event);
+    void on_styled_text(wxStyledTextEvent& event);
 
     const int 
       m_MarginDividerNumber {1}, m_MarginFoldingNumber {2},

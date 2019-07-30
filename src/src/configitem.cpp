@@ -28,24 +28,33 @@
     set_value((TYPE)config(m_Label).get(DEFAULT));         \
 }                                                          \
 
-bool Update(wex::find_replace_data* frd, wxCheckListBox* clb, int item, bool save, bool value)
+bool Update(
+  wex::find_replace_data* frd, 
+  wxCheckListBox* clb, 
+  int item, 
+  bool save, 
+  bool value)
 {
   if (const wxString field(clb->GetString(item));
     field == frd->text_match_word())
   {
-    !save ? clb->Check(item, frd->match_word()): frd->set_match_word(value);
+    !save ? clb->Check(
+       item, frd->match_word()): frd->set_match_word(value);
   }
   else if (field == frd->text_match_case())
   {
-    !save ? clb->Check(item, frd->match_case()): frd->set_match_case(value);
+    !save ? clb->Check(
+       item, frd->match_case()): frd->set_match_case(value);
   }
   else if (field == frd->text_regex())
   {
-    !save ? clb->Check(item, frd->use_regex()): frd->set_use_regex(value);
+    !save ? clb->Check(
+       item, frd->use_regex()): frd->set_use_regex(value);
   }
   else if (field == frd->text_search_down())
   {
-    !save ? clb->Check(item, frd->search_down()): frd->set_search_down(value);
+    !save ? clb->Check(
+       item, frd->search_down()): frd->set_search_down(value);
   }
   else
   {
@@ -64,19 +73,47 @@ bool wex::item::to_config(bool save) const
   
   switch (type())
   {
-    case CHECKBOX:           PERSISTENT(bool, false); break;
-    case CHECKLISTBOX_BIT:   PERSISTENT(long, 0); break;
-    case COLOURPICKERWIDGET: PERSISTENT(wxColour, *wxWHITE); break;
-    case DIRPICKERCTRL:      PERSISTENT(std::string, m_Label); break;
-    case TEXTCTRL_FLOAT:     PERSISTENT(double, 0); break;
-    case FONTPICKERCTRL:     PERSISTENT(wxFont, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)); break;
-    case TEXTCTRL_INT:       PERSISTENT(long, 0); break;
-    case SLIDER:             PERSISTENT(int, ((wxSlider* )window())->GetMin()); break;
-    case SPINCTRL:           PERSISTENT(int, ((wxSpinCtrl* )window())->GetMin()); break;
-    case SPINCTRLDOUBLE:     PERSISTENT(double, ((wxSpinCtrlDouble* )window())->GetMin()); break;
-    case STC:                PERSISTENT(std::string, std::string()); break;
-    case TEXTCTRL:           PERSISTENT(std::string, std::string()); break;
-    case TOGGLEBUTTON:       PERSISTENT(bool, false); break;
+    case CHECKBOX:           
+      PERSISTENT(bool, false); 
+      break;
+    case CHECKLISTBOX_BIT:   
+      PERSISTENT(long, 0); 
+      break;
+    case COLOURPICKERWIDGET: 
+      PERSISTENT(wxColour, *wxWHITE); 
+      break;
+    case DIRPICKERCTRL:      
+      PERSISTENT(std::string, m_Label); 
+      break;
+    case TEXTCTRL_FLOAT:     
+      PERSISTENT(double, 0); 
+      break;
+    case FONTPICKERCTRL:     
+      PERSISTENT(
+        wxFont, 
+        wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)); 
+      break;
+    case TEXTCTRL_INT:       
+      PERSISTENT(long, 0); 
+      break;
+    case SLIDER:             
+      PERSISTENT(int, ((wxSlider* )window())->GetMin()); 
+      break;
+    case SPINCTRL:           
+      PERSISTENT(int, ((wxSpinCtrl* )window())->GetMin()); 
+      break;
+    case SPINCTRLDOUBLE:     
+      PERSISTENT(double, ((wxSpinCtrlDouble* )window())->GetMin()); 
+      break;
+    case STC:                
+      PERSISTENT(std::string, std::string()); 
+      break;
+    case TEXTCTRL:           
+      PERSISTENT(std::string, std::string()); 
+      break;
+    case TOGGLEBUTTON:       
+      PERSISTENT(bool, false); 
+      break;
 
     case CHECKLISTBOX_BOOL:
       if (auto* clb = (wxCheckListBox*)window();
@@ -116,7 +153,7 @@ bool wex::item::to_config(bool save) const
       }
       else
       {
-        combobox_from_list(cb, config(m_Label).get_list());
+        combobox_from_list(cb, config(m_Label).get(std::list<std::string>{}));
       }
       break;
 
@@ -195,12 +232,9 @@ bool wex::item::to_config(bool save) const
 
 wex::config_defaults::config_defaults(const std::vector<default_t> & items)
 {
-  config cfg(config::DATA_NO_STORE);
-  
-  if (!cfg.item(std::get<0>(items.front())).exists())
+  if (config cfg(config::DATA_NO_STORE);
+    !cfg.item(std::get<0>(items.front())).exists())
   {
-    config::set_record_defaults(true);
-    
     for (const auto& it : items)
     {
       try
@@ -214,7 +248,7 @@ wex::config_defaults::config_defaults(const std::vector<default_t> & items)
             cfg.item(std::get<0>(it)).set(std::any_cast<wxColour>(std::get<2>(it)));
             break;
           case item::COMBOBOX:
-            cfg.item(std::get<0>(it)).set(std::any_cast<std::string>(std::get<2>(it)));
+            cfg.item(std::get<0>(it)).set(std::any_cast<std::list<std::string>>(std::get<2>(it)));
             break;
           case item::FONTPICKERCTRL:
             cfg.item(std::get<0>(it)).set(std::any_cast<wxFont>(std::get<2>(it)));
@@ -241,9 +275,4 @@ wex::config_defaults::config_defaults(const std::vector<default_t> & items)
       }
     }
   }
-}
-
-wex::config_defaults::~config_defaults()
-{
-  config::set_record_defaults(false);
 }

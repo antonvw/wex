@@ -80,7 +80,7 @@ bool sample_dir::on_file(const wex::path& file)
   m_Grid->AppendRows(1);
   const auto no = m_Grid->GetNumberRows() - 1;
   m_Grid->SetCellValue(no, 0, wxString::Format("cell%d", no));
-  m_Grid->SetCellValue(no, 1, file.data().string());
+  m_Grid->SetCellValue(no, 1, file.string());
 
   // Let's make these cells readonly and colour them, so we can test
   // things like cutting and dropping is forbidden.

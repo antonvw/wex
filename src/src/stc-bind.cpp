@@ -1,13 +1,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      stc-bind.cpp
-// Purpose:   Implementation of class wex::stc method BindAll
+// Purpose:   Implementation of class wex::stc method bind_all
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
 #include <wx/fdrepdlg.h> // for wxFindDialogEvent
-#include <wx/log.h>
 #include <wx/msgdlg.h>
 #include <wx/numdlg.h>
 #include <wex/stc.h>
@@ -31,7 +30,7 @@ const auto idEdgeSet = wxWindow::NewControlId();
 const auto idEolDos = wxWindow::NewControlId(3);
 const auto idEolUnix = idEolDos + 1;
 const auto idEolMac = idEolDos + 2;
-const auto idFoldAll = wxWindow::NewControlId();
+const auto idfold_all = wxWindow::NewControlId();
 const auto idHex = wxWindow::NewControlId();
 const auto idHexDecCalltip = wxWindow::NewControlId();
 const auto idLowercase = wxWindow::NewControlId();
@@ -46,12 +45,12 @@ const auto idopen_mime = wxWindow::NewControlId();
 const auto idOpenWWW = wxWindow::NewControlId();
 const auto idShowProperties = wxWindow::NewControlId();
 const auto idToggleFold = wxWindow::NewControlId();
-const auto idUnfoldAll = wxWindow::NewControlId();
+const auto idUnfold_all = wxWindow::NewControlId();
 const auto idUppercase = wxWindow::NewControlId();
 const auto idZoomIn = wxWindow::NewControlId();
 const auto idZoomOut = wxWindow::NewControlId();
 
-void wex::stc::BindAll()
+void wex::stc::bind_all()
 {
   const int accels = 30; // guess max number of entries
   wxAcceleratorEntry entries[accels];
@@ -71,8 +70,8 @@ void wex::stc::BindAll()
   entries[i++].Set(wxACCEL_NORMAL, WXK_F4, ID_EDIT_FIND_PREVIOUS);
   entries[i++].Set(wxACCEL_NORMAL, WXK_F7, wxID_SORT_ASCENDING);
   entries[i++].Set(wxACCEL_NORMAL, WXK_F8, wxID_SORT_DESCENDING);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_F9, idFoldAll);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_F10, idUnfoldAll);
+  entries[i++].Set(wxACCEL_NORMAL, WXK_F9, idfold_all);
+  entries[i++].Set(wxACCEL_NORMAL, WXK_F10, idUnfold_all);
   entries[i++].Set(wxACCEL_NORMAL, WXK_F11, idUppercase);
   entries[i++].Set(wxACCEL_NORMAL, WXK_F12, idLowercase);
   entries[i++].Set(wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE);
@@ -222,7 +221,7 @@ void wex::stc::BindAll()
 
   Bind(wxEVT_KEY_UP, [=](wxKeyEvent& event) {
     event.Skip();
-    CheckBrace();
+    check_brace();
     m_FoldLevel = 
       (GetFoldLevel(GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK) 
       - wxSTC_FOLDLEVELBASE;});
@@ -250,7 +249,7 @@ void wex::stc::BindAll()
   Bind(wxEVT_LEFT_UP, [=](wxMouseEvent& event) {
     properties_message();
     event.Skip();
-    CheckBrace();
+    check_brace();
     m_AddingChars = false;
     m_FoldLevel = 
       (GetFoldLevel(GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK) 
@@ -280,7 +279,7 @@ void wex::stc::BindAll()
     Bind(wxEVT_RIGHT_UP, [=](wxMouseEvent& event) {
       try
       {
-        menu::menu_t style = 0; // otherwise CAN_PASTE already on
+        menu::menu_t style(menu::menu_t().set(menu::IS_POPUP));
 
         if ( GetReadOnly() || is_hexmode()) style.set(menu::IS_READ_ONLY);
         if (!GetSelectedText().empty())  style.set(menu::IS_SELECTED);
@@ -362,7 +361,7 @@ void wex::stc::BindAll()
         wex::vcs vcs {{get_filename()}};
 
         if (std::string margin(MarginGetText(line));
-          vcs.entry().log(get_filename(), get_word(margin)))
+          !margin.empty() && vcs.entry().log(get_filename(), get_word(margin)))
         {
           AnnotationSetText(line, vcs.entry().get_stdout());
         }
@@ -456,7 +455,14 @@ void wex::stc::BindAll()
     wxID_REPLACE);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    if (const auto pos(wxGetNumberFromUser(_("Input") + ":",
+    if (SelectionIsRectangle())
+    {
+      sort_selection(
+        this, 
+        event.GetId() == wxID_SORT_ASCENDING ? 
+          string_sort_t(): string_sort_t().set(STRING_SORT_DESCENDING));
+    }
+    else if (const auto pos(wxGetNumberFromUser(_("Input") + ":",
       wxEmptyString,
       _("Enter Sort Position"),
       GetCurrentPos() + 1 - PositionFromLine(GetCurrentLine()),
@@ -657,9 +663,9 @@ void wex::stc::BindAll()
     MultiEdgeAddLine(GetColumn(GetCurrentPos()), GetEdgeColour());}, idEdgeSet);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {LowerCase();}, idLowercase);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {UpperCase();}, idUppercase);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {FoldAll();}, idFoldAll);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {fold_all();}, idfold_all);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    for (int i = 0; i < GetLineCount(); i++) EnsureVisible(i);}, idUnfoldAll);
+    for (int i = 0; i < GetLineCount(); i++) EnsureVisible(i);}, idUnfold_all);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     m_Data.flags(stc_data::window_t().set(stc_data::WIN_HEX), control_data::XOR).inject();}, idHex);
@@ -794,7 +800,7 @@ void wex::stc::build_popup_menu(menu& menu)
   }
   
   if (m_Data.menu().test(stc_data::MENU_VCS) &&
-      get_filename().file_exists() && sel.empty() &&
+      get_filename().file_exists() &&
       vcs::dir_exists(get_filename()))
   {
     menu.append_separator();
@@ -854,12 +860,12 @@ void wex::stc::build_popup_menu(menu& menu)
   {
     menu.append_separator();
     menu.append(idToggleFold, _("&Toggle Fold\tCtrl+T"));
-    menu.append(idFoldAll, _("&Fold All Lines\tF9"));
-    menu.append(idUnfoldAll, _("&Unfold All Lines\tF10"));
+    menu.append(idfold_all, _("&Fold All Lines\tF9"));
+    menu.append(idUnfold_all, _("&Unfold All Lines\tF10"));
   }
 }
 
-void wex::stc::CheckBrace()
+void wex::stc::check_brace()
 {
   if (!config(_("Show match")).get(1))
   {
@@ -870,13 +876,13 @@ void wex::stc::CheckBrace()
   {
     m_hexmode.highlight_other();
   }
-  else if (!CheckBrace(GetCurrentPos()))
+  else if (!check_brace(GetCurrentPos()))
   {
-    CheckBrace(GetCurrentPos() - 1);
+    check_brace(GetCurrentPos() - 1);
   }
 }
 
-bool wex::stc::CheckBrace(int pos)
+bool wex::stc::check_brace(int pos)
 {
   if (const auto brace_match = BraceMatch(pos); brace_match != wxSTC_INVALID_POSITION)
   {

@@ -174,17 +174,14 @@ bool wex::menu::append_vcs(const path& filename, bool show_modal)
     if (vcs.set_entry_from_base(
       show_modal ? wxTheApp->GetTopWindow(): nullptr))
     {
-      return vcs.entry().build_menu(
-        ID_VCS_LOWEST + 1, 
-        this, 
-        false) > 0; // no popup
+      return vcs.entry().build_menu(ID_VCS_LOWEST + 1, this) > 0;
     }
   }
   else
   {
-    auto* vcsmenu = new wex::menu;
+    auto* vcsmenu = new wex::menu(m_Style);
 
-    if (const wex::vcs vcs({filename.data().string()});
+    if (const wex::vcs vcs({filename.string()});
       vcs.entry().build_menu(ID_EDIT_VCS_LOWEST + 1, vcsmenu))
     { 
       append_submenu(vcsmenu, vcs.entry().name());

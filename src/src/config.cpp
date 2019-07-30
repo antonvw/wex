@@ -2,24 +2,59 @@
 // Name:      config.cpp
 // Purpose:   Implementation of class wex::config
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
+#include <fstream>
+#include <iomanip> 
 #include <numeric>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
+#include <nlohmann/json.hpp>
+
 #include <wx/app.h>
 #include <wx/colour.h>
-#include <wx/fileconf.h> 
-#include <wx/config.h>
 #include <wx/font.h>
 #include <wx/stdpaths.h>
 #include <wex/config.h>
-#include <wex/tokenizer.h>
-#include <wex/util.h>
+#include <wex/path.h>
+
+using json = nlohmann::json;
+
+namespace wex
+{
+  class config_imp
+  {
+  public:
+    explicit config_imp(const std::string& dir)
+      : m_path(
+          dir, 
+          wxTheApp->GetAppName().Lower().ToStdString() + ".json")
+      , m_json({})
+    {
+      if (std::ifstream fs(m_path.data());
+        fs.is_open())
+      {
+        fs >> m_json;
+      }
+    }
+    
+   ~config_imp() 
+    {
+      if (std::ofstream fs(m_path.data());
+        fs.is_open())
+      {
+        fs << std::setw(2);
+        fs << m_json;
+      }
+    };
+
+    const json& get_json() const {return m_json;};
+    json& get_json() {return m_json;};
+  private:
+    json m_json;
+    const path m_path;
+  };
+};
 
 wex::config::config(type_t type)
   : m_type(type)
@@ -51,178 +86,109 @@ bool wex::config::empty() const
   
 void wex::config::erase()
 {
-  wxConfigBase::Get()->DeleteEntry(m_item);
-  wxConfigBase::Get()->DeleteGroup(m_item);
+  if (!m_item.empty())
+  {
+    m_store->get_json().erase(m_item);
+  }
 }
   
 bool wex::config::exists() const
 {
-  return wxConfigBase::Get()->Exists(m_item);
+  return !m_item.empty() ? m_store->get_json().contains(m_item): false;
 }
   
-const std::string wex::config::firstof() const
-{
-  return 
-    wxConfigBase::Get()->Read(m_item).BeforeFirst(
-      get_field_separator()).ToStdString();
-}
-
-const std::string wex::config::firstof_write(const std::string& value) const
-{
-  std::vector<std::string> v{value};
-
-  for (tokenizer tkz(wxConfigBase::Get()->Read(m_item).ToStdString(), 
-    std::string(1, get_field_separator())); tkz.has_more_tokens(); )
-  {
-    if (const std::string val = tkz.get_next_token(); val != value)
-    {
-      v.emplace_back(val);
-    }
-  }
-
-  wxConfigBase::Get()->Write(m_item, 
-    std::accumulate(v.begin(), v.end(), wxString{}, 
-    [&](const wxString& a, const wxString& b) {
-      return a + b + get_field_separator();}));
-  
-  return value;
-}
-  
-const std::string wex::config::get(const std::string& def) const
-{
-  return wxConfigBase::Get()->Read(m_item, def).ToStdString();
-}
-
 const std::string wex::config::get(const char* def) const
 {
   return get(std::string(def));
 }
   
-bool wex::config::get(bool def) const
+#define READ \
+  return m_store->get_json().value(m_item, def);
+  
+const std::string wex::config::get(const std::string& def) const {READ;}
+bool wex::config::get(bool def) const {READ;}
+long wex::config::get(long def) const {READ;}
+int wex::config::get(int def) const {READ;}
+float wex::config::get(float def) const {READ;}
+double wex::config::get(double def) const {READ;}
+const std::list < std::string > wex::config::get(
+  const std::list<std::string>& def) const {READ;}
+const std::vector < int > wex::config::get(
+  const std::vector < int > & def) const {READ;};
+const std::vector < std::tuple < std::string, int, int > > wex::config::get(
+  const std::vector < std::tuple < std::string, int, int > > & def) const {READ;};
+
+wxColour wex::config::get(const wxColour& def) const 
 {
-  return wxConfigBase::Get()->ReadBool(m_item, def);
+  wxColour col;
+  wxFromString(get(wxToString(def).ToStdString()), &col);
+  return col;
 }
 
-long wex::config::get(long def) const
+wxFont wex::config::get(const wxFont& def) const 
 {
-  return wxConfigBase::Get()->ReadLong(m_item, def);
+  wxFont wx;
+  wxFromString(get(wxToString(def).ToStdString()), &wx);
+  return wx;
 }
 
-int wex::config::get(int def) const
+const std::string wex::config::get_firstof() const
 {
-  return wxConfigBase::Get()->ReadLong(m_item, def);
-}
-
-float wex::config::get(float def) const
-{
-  return wxConfigBase::Get()->ReadDouble(m_item, def);
-}
-
-double wex::config::get(double def) const
-{
-  return wxConfigBase::Get()->ReadDouble(m_item, def);
-}
-
-wxColour wex::config::get(const wxColour& def) const
-{
-  return wxConfigBase::Get()->ReadObject(m_item, def);
-}
-    
-wxFont wex::config::get(const wxFont& def) const
-{
-  return wxConfigBase::Get()->ReadObject(m_item, def);
-}
-    
-const std::list < std::string > wex::config::get_list() const
-{
-  return tokenizer(
-    get(std::string()), 
-    std::string(1, get_field_separator())).tokenize<
-      std::list < std::string >>();
+  const auto& l (get(std::list<std::string>{}));
+  return l.empty() ? std::string(): l.front();
 }
 
 void wex::config::init()
 {
-  wxConfigBase::Set(new wxFileConfig(
-    wxEmptyString, 
-    wxEmptyString,
-    wxFileName(dir(), wxTheApp->GetAppName().Lower() + 
-#ifdef __WXMSW__
-    ".ini"
-#else
-    ".conf"
-#endif
-      ).GetFullPath(), wxEmptyString, wxCONFIG_USE_LOCAL_FILE));
+  m_store = new config_imp(dir());
 }
 
-void wex::config::set(const std::string& def)
+void wex::config::on_exit()
 {
-  wxConfigBase::Get()->Write(m_item, def.c_str());
+  delete m_store;
 }
 
-void wex::config::set(const char* def)
-{
-  wxConfigBase::Get()->Write(m_item, def);
-}
-
-void wex::config::set(bool def)
-{
-  wxConfigBase::Get()->Write(m_item, def);
-}
-
-void wex::config::set(long def)
-{
-  wxConfigBase::Get()->Write(m_item, def);
-}
-
-void wex::config::set(int def)
-{
-  wxConfigBase::Get()->Write(m_item, def);
-}
-
-void wex::config::set(float def)
-{
-  wxConfigBase::Get()->Write(m_item, def);
-}
-
-void wex::config::set(double def)
-{
-  wxConfigBase::Get()->Write(m_item, def);
-}
-
-void wex::config::set(const wxColour& def)
-{
-  wxConfigBase::Get()->Write(m_item, def);
-}
-  
-void wex::config::set(const wxFont& def)
-{
-  wxConfigBase::Get()->Write(m_item, def);
-}
-  
-void wex::config::set(const std::list < std::string > & l)
-{
-  if (l.empty()) return;
-
-  std::string text;
-  const int commandsSaveInConfig = 75;
-  int items = 0;
-
-  for (const auto& it : l)
-  {
-    if (items++ > commandsSaveInConfig) break;
-    text += it + get_field_separator();
+#define WRITE                           \
+  if (!m_item.empty())                  \
+  {                                     \
+    m_store->get_json()[m_item] = v;  \
   }
   
-  set(text);
+void wex::config::set(const std::string& v) {WRITE;}
+void wex::config::set(const char* v) {WRITE;}
+void wex::config::set(bool v) {WRITE;}
+void wex::config::set(long v) {WRITE;}
+void wex::config::set(int v) {WRITE;}
+void wex::config::set(float v) {WRITE;}
+void wex::config::set(double v) {WRITE;}
+void wex::config::set(const std::list < std::string > & v) {WRITE;}
+void wex::config::set(const std::vector < int > & v) {WRITE;}
+void wex::config::set(
+  const std::vector < std::tuple < std::string, int, int > > & v) {WRITE;}
+
+void wex::config::set(const wxColour& v) 
+{
+  m_store->get_json()[m_item] = wxToString(v).ToStdString();
 }
 
-void wex::config::set_record_defaults(bool val)
+void wex::config::set(const wxFont& v) 
 {
-  wxConfigBase::Get()->SetRecordDefaults(val);
+  m_store->get_json()[m_item] = wxToString(v).ToStdString();
 }
-
-wxConfigBase* wex::config::wx_config()
+  
+const std::string wex::config::set_firstof(const std::string& v, size_t max)
 {
-  return wxConfigBase::Get();
+  auto l (get(std::list<std::string>{}));
+    
+  l.remove(v);
+  l.push_front(v);
+
+  if (l.size() > max)
+  {
+    l.remove(l.back());
+  }
+
+  set(l);
+  
+  return v;
 }

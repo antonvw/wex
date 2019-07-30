@@ -51,7 +51,7 @@ wex::stockart::stockart(wxWindowID id)
   }
 }
 
-void wex::stockart::add(int id, const wxArtID art)
+void wex::stockart::add(int id, const wxArtID& art)
 {    
   m_ArtIDs.insert({(wxWindowID)id, art});
 }

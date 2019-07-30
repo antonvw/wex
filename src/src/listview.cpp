@@ -352,7 +352,7 @@ wex::listview::listview(const listview_data& data)
     if (GetSelectedItemCount() > 0)
     {
       defaultPath = listitem(
-        this, GetFirstSelected()).get_filename().data().string();
+        this, GetFirstSelected()).get_filename().string();
     }
     wxDirDialog dir_dlg(
       this,
@@ -388,7 +388,7 @@ wex::listview::listview(const listview_data& data)
     return true;}, wxID_JUMP_TO);
 
   Bind(wxEVT_RIGHT_DOWN, [=](wxMouseEvent& event) {
-    menu::menu_t style = 0; // otherwise CAN_PASTE already on
+    menu::menu_t style(menu::menu_t().set(menu::IS_POPUP));
     if (GetSelectedItemCount() > 0) style.set(menu::IS_SELECTED);
     if (GetItemCount() == 0) style.set(menu::IS_EMPTY);
     if (m_Data.type() != listview_data::FIND) style.set(menu::CAN_PASTE);
@@ -948,7 +948,7 @@ const std::string wex::listview::item_to_text(long item_number) const
     case listview_data::HISTORY: {
       const listitem item(const_cast< listview * >(this), item_number);
       text = (item.get_filename().stat().is_ok() ? 
-        item.get_filename().data().string(): 
+        item.get_filename().string(): 
         item.get_filename().fullname());
 
       if (item.get_filename().dir_exists() && !item.get_filename().file_exists())

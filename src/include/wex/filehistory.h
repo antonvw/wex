@@ -2,7 +2,7 @@
 // Name:      file_history.h
 // Purpose:   Include file for wex::file_history class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -20,6 +20,7 @@ namespace wex
   {
   public:
     /// Default constructor.
+    /// Fills the file history with items available from the connfig.
     file_history(
       /// number of files to use
       size_t maxFiles = 9, 
@@ -69,7 +70,6 @@ namespace wex
     /// and sets the file history to use it.
     void use_menu(wxWindowID id, wxMenu* menu);
   private:
-    file_history_imp* m_History;
-    const std::string m_Key;
+    file_history_imp* m_history;
   };
 };

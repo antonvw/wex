@@ -175,7 +175,7 @@ frame::frame(app* app)
       
     if (m_Projects != nullptr)
     {
-      if (!get_project_history().get_history_file().data().empty())
+      if (!get_project_history().get_history_file().empty())
       {
         open_file(
           wex::path(get_project_history().get_history_file()),
@@ -195,7 +195,7 @@ frame::frame(app* app)
     if (m_App->get_files().size() == 1 && m_App->get_debug())
     {
       get_debug()->execute("file " + 
-        m_App->get_files().front().data().string());
+        m_App->get_files().front().string());
       
       if (const int count = wex::config("OpenFiles").get(0); count > 0)
       {
@@ -421,27 +421,27 @@ frame::frame(app* app)
     if (auto* project = get_project();
       project != nullptr && m_Projects != nullptr)
     {
-      m_Projects->delete_page(project->get_filename().data().string());
+      m_Projects->delete_page(project->get_filename().string());
     };}, ID_PROJECT_CLOSE);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (m_Projects == nullptr) AddPaneProjects();
     const std::string text = wxString::Format("%s%d", _("project"), m_NewProjectNo++).ToStdString();
     const wex::path fn(
-       (!get_project_history().get_history_file().data().empty() ? 
+       (!get_project_history().get_history_file().empty() ? 
            get_project_history().get_history_file().get_path(): wex::config().dir()),
       text + ".prj");
-    wxWindow* page = new wex::report::file(fn.data().string(), wex::window_data().parent(m_Projects));
-    ((wex::report::file*)page)->file_new(fn.data().string());
+    wxWindow* page = new wex::report::file(fn.string(), wex::window_data().parent(m_Projects));
+    ((wex::report::file*)page)->file_new(fn.string());
     // This file does yet exist, so do not give it a bitmap.
-    m_Projects->add_page(page, fn.data().string(), text, true);
-    set_recent_project(fn.data().string());
+    m_Projects->add_page(page, fn.string(), text, true);
+    set_recent_project(fn.string());
     show_pane("PROJECTS");}, ID_PROJECT_NEW);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxFileDialog dlg(this,
       _("Select Projects"),
-       (!get_project_history().get_history_file().data().empty() ? 
+       (!get_project_history().get_history_file().empty() ? 
            get_project_history().get_history_file().get_path(): wex::config().dir()),
       wxEmptyString,
       m_ProjectWildcard,
@@ -483,7 +483,7 @@ frame::frame(app* app)
         project->file_save(dlg.GetPath().ToStdString());
         m_Projects->set_page_text(
           m_Projects->key_by_page(project),
-          project->get_filename().data().string(),
+          project->get_filename().string(),
           project->get_filename().name());
       }
     };}, ID_PROJECT_SAVEAS);
@@ -720,7 +720,7 @@ wex::report::file* frame::get_project()
 
 bool frame::is_open(const wex::path& filename)
 {
-  return m_Editors->page_index_by_key(filename.data().string()) != wxNOT_FOUND;
+  return m_Editors->page_index_by_key(filename.string()) != wxNOT_FOUND;
 }
 
 void frame::OnCommand(wxCommandEvent& event)
@@ -843,7 +843,7 @@ void frame::OnCommand(wxCommandEvent& event)
 
       m_Editors->set_page_text(
         m_Editors->key_by_page(editor),
-        editor->get_filename().data().string(),
+        editor->get_filename().string(),
         editor->get_filename().fullname(),
         bitmap);
           
@@ -905,12 +905,12 @@ void frame::OnCommand(wxCommandEvent& event)
       if (event.GetId() == ID_SPLIT_HORIZONTALLY)
       {
         m_Editors->split(key, wxBOTTOM);
-        m_Editors->set_selection(editor->get_filename().data().string());
+        m_Editors->set_selection(editor->get_filename().string());
       }
       else if (event.GetId() == ID_SPLIT_VERTICALLY)
       {
         m_Editors->split(key, wxRIGHT);
-        m_Editors->set_selection(editor->get_filename().data().string());
+        m_Editors->set_selection(editor->get_filename().string());
       }
     }
     break;
@@ -992,17 +992,17 @@ void frame::OnUpdateUI(wxUpdateUIEvent& event)
       break;
     case ID_PROJECT_OPENTEXT:
       event.Enable(
-        get_project() != nullptr && !get_project()->get_filename().data().empty());
+        get_project() != nullptr && !get_project()->get_filename().empty());
       break;
     case wex::ID_PROJECT_SAVE:
       event.Enable(get_project() != nullptr && get_project()->get_contents_changed());
       break;
 
     case ID_RECENT_FILE_MENU:
-      event.Enable(!file_history().get_history_file().data().empty());
+      event.Enable(!file_history().get_history_file().empty());
       break;
     case ID_RECENT_PROJECT_MENU:
-      event.Enable(!get_project_history().get_history_file().data().empty());
+      event.Enable(!get_project_history().get_history_file().empty());
       break;
 
     case ID_SORT_SYNC:
@@ -1051,7 +1051,7 @@ void frame::OnUpdateUI(wxUpdateUIEvent& event)
 
         case wxID_SAVE:
           event.Enable(
-            !editor->get_filename().data().empty() &&
+            !editor->get_filename().empty() &&
              editor->GetModify());
           break;
         case wxID_REDO:
@@ -1103,16 +1103,16 @@ wex::stc* frame::open_file(
 {
   if (vcs.get_command().is_blame())
   {
-    if (auto* page = (wex::stc*)m_Editors->set_selection(filename.data().string());
+    if (auto* page = (wex::stc*)m_Editors->set_selection(filename.string());
       page != nullptr)
     {
-      if (page->show_vcs(&vcs)) return page;
+      if (page->show_blame(&vcs)) return page;
     }
   }
 
   const std::string unique = 
     vcs.get_command().get_command() + " " + vcs.get_flags();
-  const std::string key = filename.data().string() + " " + unique;
+  const std::string key = filename.string() + " " + unique;
 
   auto* page = (wex::stc*)m_Editors->set_selection(key);
   
@@ -1127,7 +1127,7 @@ wex::stc* frame::open_file(
     wex::vcs_command_stc(
       vcs.get_command(), filename.lexer(), page);
       
-    if (const int index = m_Editors->page_index_by_key(filename.data().string());
+    if (const int index = m_Editors->page_index_by_key(filename.string());
       index != -1)
     {
       // Place new page before the one used for vcs.
@@ -1148,16 +1148,16 @@ wex::stc* frame::open_file(
   const std::string& text,
   const wex::stc_data& data)
 {
-  auto* page = (wex::stc*)m_Editors->set_selection(filename.data().string());
+  auto* page = (wex::stc*)m_Editors->set_selection(filename.string());
 
   if (page == nullptr)
   {
     page = new wex::stc(text, 
       wex::stc_data(data).window(wex::window_data().
         parent(m_Editors).
-        name(filename.data().string())));
+        name(filename.string())));
     page->get_lexer().set(filename.lexer());
-    m_Editors->add_page(page, filename.data().string(), filename.fullname(), true);
+    m_Editors->add_page(page, filename.string(), filename.fullname(), true);
   }
   else
   {
@@ -1180,17 +1180,17 @@ wex::stc* frame::open_file(const wex::path& filename, const wex::stc_data& data)
     
   assert(notebook != nullptr);
   
-  wxWindow* page = notebook->set_selection(filename.data().string());
+  wxWindow* page = notebook->set_selection(filename.string());
 
   if (data.flags().test(wex::stc_data::WIN_IS_PROJECT))
   {
     if (page == nullptr)
     {
-      auto* project = new wex::report::file(filename.data().string(), wex::window_data().parent(m_Projects));
+      auto* project = new wex::report::file(filename.string(), wex::window_data().parent(m_Projects));
 
       notebook->add_page(
         project,
-        filename.data().string(),
+        filename.string(),
         filename.name(),
         true,
         wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
@@ -1225,12 +1225,15 @@ wex::stc* frame::open_file(const wex::path& filename, const wex::stc_data& data)
     {
       wex::stc_data::menu_t mf(m_App->data().menu());
       wex::stc_data::window_t wf(m_App->data().flags());
+    
       if (wex::config("is_hexmode").get(false)) wf.set(wex::stc_data::WIN_HEX);
       if (m_App->get_debug()) mf.set(wex::stc_data::MENU_DEBUG);
       
       editor = new wex::stc(filename, 
         wex::stc_data(data).
-          window(wex::window_data().parent(m_Editors)).flags(wf).menu(mf));
+          window(wex::window_data().
+            parent(m_Editors)).flags(wf, wex::control_data::OR).
+          menu(mf));
       
       if (m_App->get_debug())
       {
@@ -1244,7 +1247,7 @@ wex::stc* frame::open_file(const wex::path& filename, const wex::stc_data& data)
         }
       }
 
-      const std::string key(filename.data().string());
+      const std::string key(filename.string());
 
       notebook->add_page(
         editor,
@@ -1273,9 +1276,9 @@ wex::stc* frame::open_file(const wex::path& filename, const wex::stc_data& data)
       if (wex::config(_("Auto blame")).get(false))
       {
         if (wex::vcs vcs {{filename}};
-          vcs.execute("blame " + filename.data().string()))
+          vcs.execute("blame " + filename.string()))
         {
-          editor->show_vcs(&vcs.entry());
+          editor->show_blame(&vcs.entry());
         }
       }
     
@@ -1464,7 +1467,7 @@ void frame::statusbar_clicked_right(const std::string& pane)
     if (auto* stc = get_stc(); stc != nullptr)
     {
       match = (pane == "PaneVCS" ?
-        wex::vcs({stc->get_filename().data().string()}).entry().name():
+        wex::vcs({stc->get_filename().string()}).entry().name():
         wex::debug(this).debug_entry().name());
     }
 
@@ -1540,7 +1543,7 @@ editors::editors(const wex::window_data& data)
     });
 
   Bind(wxEVT_AUINOTEBOOK_TAB_RIGHT_UP, [=](wxAuiNotebookEvent& event) {
-    wex::menu menu;
+    wex::menu menu(wex::menu::menu_t().set(wex::menu::IS_POPUP));
     
     auto* split = new wex::menu;
     split->append(ID_SPLIT_VERTICALLY, _("Split Vertically"));

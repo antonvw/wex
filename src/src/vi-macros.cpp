@@ -142,7 +142,7 @@ bool wex::vi_macros::load_document()
     return false;
   }
 
-  if (const auto result = m_doc.load_file(get_filename().data().string().c_str(),
+  if (const auto result = m_doc.load_file(get_filename().string().c_str(),
     pugi::parse_default | pugi::parse_comments);
     !result)
   {
@@ -298,7 +298,7 @@ bool wex::vi_macros::save_document(bool only_if_modified)
     return false;
   }
   
-  const bool ok = m_doc.save_file(get_filename().data().string().c_str());
+  const bool ok = m_doc.save_file(get_filename().string().c_str());
   
   if (ok)
   {

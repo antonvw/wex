@@ -68,12 +68,12 @@ wex::report::listview::listview(const listview_data& data)
             if (first)
             {
               first = false;
-              file1 = filename->data().string();
+              file1 = filename->string();
             }
             else
             {
               first = true;
-              file2 = filename->data().string();
+              file2 = filename->string();
             }
             if (first) comparefile(path(file1), path(file2));
           }
@@ -110,7 +110,7 @@ wex::report::listview::listview(const listview_data& data)
       else
       {
         tool_dir dir(tool, 
-          item.get_filename().data().string(), 
+          item.get_filename().string(), 
           item.file_spec());
         dir.find_files();
         stats += dir.get_statistics().get_elements();
@@ -172,11 +172,11 @@ void wex::report::listview::build_popup_menu(wex::menu& menu)
         list != nullptr && list->GetSelectedItemCount() == 1)
       {
         listitem thislist(this, GetFirstSelected());
-        const wxString current_file = thislist.get_filename().data().string();
+        const wxString current_file = thislist.get_filename().string();
 
         listitem otherlist(list, list->GetFirstSelected());
 
-        if (const std::string with_file = otherlist.get_filename().data().string(); 
+        if (const std::string with_file = otherlist.get_filename().string(); 
           current_file != with_file &&
             !config(_("Comparator")).empty())
         {

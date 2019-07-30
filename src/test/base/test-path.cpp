@@ -14,7 +14,6 @@ TEST_CASE( "wex::path" )
   SUBCASE( "Constructor" ) 
   {
     REQUIRE( wex::path().empty());
-    REQUIRE( wex::path().data().empty());
     REQUIRE( wex::path("xxx").string() == "xxx");
     REQUIRE( wex::path(wex::path("yyy")).string() == "yyy");
     wex::path fn = wex::test::get_path("test.h");
@@ -36,7 +35,7 @@ TEST_CASE( "wex::path" )
     REQUIRE( path.file_exists());
     REQUIRE( path.extension() == ".h");
     REQUIRE( path.fullname() == "test.h");
-    REQUIRE(!path.data().empty());
+    REQUIRE(!path.empty());
     REQUIRE( path.lexer().scintilla_lexer() == "cpp");
     REQUIRE( path.log().str().find("test.h") != std::string::npos);
     REQUIRE( path.name() == "test");

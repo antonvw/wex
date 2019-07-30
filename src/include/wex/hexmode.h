@@ -2,7 +2,7 @@
 // Name:      hexmode.h
 // Purpose:   Declaration of class wex::hexmode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -91,7 +91,7 @@ namespace wex
 
     /// Sets hex mode.  
     /// Returns true if mode is changed.
-    bool set(bool on);
+    bool set(bool on, bool use_modification_markers = true);
 
     /// Sets caret pos on stc, depending on event and 
     /// where we are.

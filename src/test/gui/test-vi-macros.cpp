@@ -2,7 +2,7 @@
 // Name:      test-vi-macros.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -25,7 +25,7 @@ TEST_CASE("wex::vi_macros")
 
   wex::vi_macros macros;
   
-  REQUIRE(!macros.get_filename().data().empty());
+  REQUIRE(!macros.get_filename().empty());
   REQUIRE( wex::vi_macros::load_document());
   REQUIRE( macros.size() > 0);
   REQUIRE(!macros.get_abbreviations().empty());

@@ -88,16 +88,26 @@ namespace wex
     std::string& output,
     std::string& error)
   {
+    int ec = 0;
+
     try
     {
       std::future<std::string> of, ef;
-      const auto ec = bp::system(
+      ec = bp::system(
         bp::start_dir = cwd, command, bp::std_out > of, bp::std_err > ef);
 
-      log::verbose("process", 1) << command << "cwd:" << cwd << "ec:" << ec;
-    
       output = of.get();
       error = ef.get();
+
+      if (ec != 0)
+      {
+        const std::string text(!error.empty() ? ":" + error: std::string());
+        log("process") << command << "cwd:" << cwd << "ec:" << ec << text;
+      }
+      else
+      {
+        log::verbose("process", 1) << command << "cwd:" << cwd;
+      }
     }
     catch (std::exception& e)
     {
@@ -107,14 +117,14 @@ namespace wex
       error = e.what();
     }
 
-    return error.empty();
+    return error.empty() && !ec;
   }
 }
       
 std::string wex::process::m_working_dir_key = _("Process folder");
 
 wex::process::process() 
-  : m_command(config(_("Process")).firstof())
+  : m_command(config(_("Process")).get_firstof())
   , m_frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
 {
 }
@@ -176,7 +186,7 @@ bool wex::process::execute(
     
   if (command.empty())
   {
-    if (config(_("Process")).firstof().empty())
+    if (config(_("Process")).get_firstof().empty())
     {
       if (config_dialog() == wxID_CANCEL)
       {
@@ -184,12 +194,34 @@ bool wex::process::execute(
       }
     }
     
-    m_command = config(_("Process")).firstof();
-    cwd = config(m_working_dir_key).firstof();
+    m_command = config(_("Process")).get_firstof();
+    cwd = config(m_working_dir_key).get_firstof();
   }
   else
   {
     m_command = command;
+
+    if (auto* stc = m_frame->get_stc(); stc != nullptr)
+    {
+      if (command.find("%LINES") != std::string::npos)
+      {
+        if (const std::string sel(stc->GetSelectedText());
+          !sel.empty())
+        {
+          replace_all(m_command, "%LINES", 
+            std::to_string(
+              stc->LineFromPosition(stc->GetSelectionStart()) + 1) + "," +
+            std::to_string(
+              stc->LineFromPosition(stc->GetSelectionEnd()) + 1));
+        }
+        else
+        {
+          replace_all(m_command, "%LINES", 
+            std::to_string(stc->GetCurrentLine() + 1) + "," +
+            std::to_string(stc->GetCurrentLine() + 1));
+        }
+      }
+    }
   }
   
   bool error = false;
@@ -317,26 +349,43 @@ bool wex::process_imp::async(const std::string& path)
     process = m_process, 
     &is = m_is] 
     {
-      std::string text;
+      std::string text, line;
+      line.reserve(1000000);
+      text.reserve(1000000);
+      int linesize = 0;
+      bool error = false;
 
-      while (is.good())
+      while (is.good() && !error)
       {
-        const std::string data(1, is.get());
-
-        if (!data.empty() && !process->get_frame()->is_closing())
+        text.push_back(is.get());
+        linesize++;
+        
+        if (linesize > 10000)
         {
-          WEX_POST(ID_SHELL_APPEND, data, process->get_shell())
+          error = true;
+          WEX_POST(ID_SHELL_APPEND, "\n*** LINE LIMIT ***\n", process->get_shell())
+        }
+        else if (isspace(text.back()) && !process->get_frame()->is_closing())
+        {
+          WEX_POST(ID_SHELL_APPEND, text, process->get_shell())
 
+          if (text.back() == '\n')
+          {
+            linesize = 0;
+          }
+          
           if (debug)
           {
-            text += data;
-            
-            if (text.back() == '\n')
+            line.append(text);
+
+            if (line.back() == '\n')
             {
-              WEX_POST(ID_DEBUG_STDOUT, text, process->get_frame()->get_debug())
-              text.clear();
+              WEX_POST(ID_DEBUG_STDOUT, line, process->get_frame()->get_debug())
+              line.clear();
             }
           }
+
+          text.clear();
         }
       }
     });
@@ -377,7 +426,7 @@ bool wex::process_imp::async(const std::string& path)
 
     while (es.good())
     {
-      text += std::string(1, es.get());
+      text.push_back(es.get());
             
       if (text.back() == '\n')
       {

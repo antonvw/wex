@@ -11,6 +11,7 @@
 #include <wx/wx.h>
 #endif
 #include <wex/util.h>
+#include <wex/config.h>
 #include <wex/ex.h>
 #include <wex/lexers.h>
 #include <wex/managedframe.h>
@@ -108,14 +109,14 @@ TEST_CASE("wex")
   
   SUBCASE("wex::combobox_as")
   {
-    wxComboBox* cb = new wxComboBox(frame(), wxID_ANY);
+    auto* cb = new wxComboBox(frame(), wxID_ANY);
     wex::test::add_pane(frame(), cb);
     wex::combobox_as<const std::list < std::string >>(cb, l);
   }
   
   SUBCASE("wex::combobox_from_list")
   {
-    wxComboBox* cb = new wxComboBox(frame(), wxID_ANY);
+    auto* cb = new wxComboBox(frame(), wxID_ANY);
     wex::test::add_pane(frame(), cb);
 
     wex::combobox_from_list(cb, l);
@@ -124,6 +125,10 @@ TEST_CASE("wex")
   
   SUBCASE("wex::comparefile")
   {
+    wex::config(_("Comparator")).set("diff");
+
+    REQUIRE( wex::comparefile(
+      wex::test::get_path("test.h"), wex::test::get_path("test.h")));
   }
   
   SUBCASE("wex::ellipsed")
@@ -150,11 +155,6 @@ TEST_CASE("wex")
     REQUIRE( wex::get_endoftext("testtest", 3).size() == 3);
   }
   
-  SUBCASE("wex::get_field_separator")
-  {
-    REQUIRE((wex::get_field_separator() != 'a'));
-  }
-
   SUBCASE("wex::get_find_result")
   {
     REQUIRE( wex::get_find_result("test", true, true).find("test") != std::string::npos);
@@ -350,6 +350,17 @@ TEST_CASE("wex")
     REQUIRE( command == "illegal process `xyz`");
   }
 #endif
+
+  SUBCASE("wex::skip_white_space")
+  {
+    REQUIRE( wex::skip_white_space("\n\tt \n    es   t\n", wex::skip_t().set()) == "t es t");
+    REQUIRE( wex::skip_white_space("\n\tt \n    es   t\n", 
+      wex::skip_t().set(wex::SKIP_LEFT)) == "t \n    es   t\n");
+    REQUIRE( wex::skip_white_space("\n\tt \n    es   t\n", 
+      wex::skip_t().set(wex::SKIP_RIGHT)) == "\n\tt \n    es   t");
+    REQUIRE( wex::skip_white_space("\n\tt \n    es   t\n", 
+      wex::skip_t().set(wex::SKIP_LEFT).set(wex::SKIP_RIGHT)) ==  "t \n    es   t");
+  }
   
   SUBCASE("wex::sort")
   {
@@ -371,32 +382,24 @@ TEST_CASE("wex")
     REQUIRE( wex::sort_selection(get_stc()));
     REQUIRE( wex::sort_selection(get_stc(), 0, 3, 10));
     REQUIRE(!wex::sort_selection(get_stc(), 0, 20, 10));
+  }
+
+  SUBCASE("wex::sort_selection_rect")
+  {
+    // make a rectangular selection, invoke sort, and check result
     get_stc()->SelectNone();
     get_stc()->set_text(rect);
-    // force rectangular selection.
-    (void)get_stc()->get_vi().command("3 ");
-    (void)get_stc()->get_vi().command("K");
-    (void)get_stc()->get_vi().command("4j");
-    (void)get_stc()->get_vi().command("5l");
+    get_stc()->get_vi().command("3 ");
+    get_stc()->get_vi().command("K");
+    get_stc()->get_vi().command("4j");
+    get_stc()->get_vi().command("5l");
+
     REQUIRE( wex::sort_selection(get_stc(), 0, 3, 5));
-#ifdef FIX
     REQUIRE( wex::skip_white_space(get_stc()->GetText().ToStdString()) == 
       wex::skip_white_space(sorted));
-#endif
     REQUIRE( wex::sort_selection(get_stc(), 
       wex::string_sort_t().set(wex::STRING_SORT_DESCENDING), 3, 5));
     REQUIRE( get_stc()->GetText() != sorted);
-  }
-  
-  SUBCASE("wex::skip_white_space")
-  {
-    REQUIRE( wex::skip_white_space("\n\tt \n    es   t\n", wex::skip_t().set()) == "t es t");
-    REQUIRE( wex::skip_white_space("\n\tt \n    es   t\n", 
-      wex::skip_t().set(wex::SKIP_LEFT)) == "t \n    es   t\n");
-    REQUIRE( wex::skip_white_space("\n\tt \n    es   t\n", 
-      wex::skip_t().set(wex::SKIP_RIGHT)) == "\n\tt \n    es   t");
-    REQUIRE( wex::skip_white_space("\n\tt \n    es   t\n", 
-      wex::skip_t().set(wex::SKIP_LEFT).set(wex::SKIP_RIGHT)) ==  "t \n    es   t");
   }
   
   SUBCASE("wex::translate")

@@ -128,13 +128,13 @@ bool wex::vcs::dir_exists(const path& filename)
 
 bool wex::vcs::execute()
 {
-  if (get_file().data().empty())
+  if (get_file().empty())
   {
     return m_Entry.execute(
-      m_Entry.get_command().is_add() ? config(_("data")).firstof(): std::string(), 
+      m_Entry.get_command().is_add() ? config(_("data")).get_firstof(): std::string(), 
       lexer(), 
       process::EXEC_WAIT,
-      config(_("Base folder")).firstof());
+      config(_("Base folder")).get_firstof());
   }
   else
   {
@@ -146,7 +146,7 @@ bool wex::vcs::execute()
     {
       for (const auto& it : m_Files)
       {
-        args += "\"" + it.data().string() + "\" ";
+        args += "\"" + it.string() + "\" ";
       }
     }
     else if (m_Entry.name() == "git")
@@ -155,16 +155,16 @@ bool wex::vcs::execute()
       
       if (!filename.fullname().empty())
       {
-        args = filename.data().string();
+        args = "./" + filename.fullname();
       }
     }
     else
     {
-      args = "\"" + filename.data().string() + "\"";
+      args = "\"" + filename.string() + "\"";
     }
     
     return m_Entry.execute(args, 
-      filename.lexer(), process::EXEC_WAIT, wd.data().string());
+      filename.lexer(), process::EXEC_WAIT, wd.string());
   }
 }
 
@@ -183,7 +183,7 @@ const wex::vcs_entry wex::vcs::FindEntry(const path& filename)
   if (const int vcs = config("VCS").get(VCS_AUTO);
     vcs == VCS_AUTO)
   {
-    if (!filename.data().empty())
+    if (!filename.empty())
     {
       for (const auto& it : m_Entries)
       {
@@ -218,7 +218,7 @@ const std::string wex::vcs::get_branch() const
 
 const wex::path wex::vcs::get_file() const
 {
-  return m_Files.empty() ? config(_("Base folder")).firstof(): m_Files[0];
+  return m_Files.empty() ? config(_("Base folder")).get_firstof(): m_Files[0];
 }
 
 const std::string wex::vcs::name() const
@@ -257,7 +257,7 @@ const std::string wex::vcs::GetRelativeFile(
     relative_file.append(*it++);
   }
 
-  return relative_file.data().string();
+  return relative_file.string();
 }
 
 const wex::path wex::vcs::GetTopLevelDir(
@@ -282,14 +282,14 @@ const wex::path wex::vcs::GetTopLevelDir(
 bool wex::vcs::IsAdminDir(const std::string& admin_dir, const path& fn)
 {
   return 
-    !admin_dir.empty() && !fn.data().empty() &&
+    !admin_dir.empty() && !fn.empty() &&
      path(fn.get_path()).append(admin_dir).dir_exists();
 }
 
 bool wex::vcs::IsAdminDirTopLevel(
   const std::string& admin_dir, const path& fn)
 {
-  return !GetTopLevelDir(admin_dir, fn).data().empty();
+  return !GetTopLevelDir(admin_dir, fn).empty();
 }
 
 bool wex::vcs::load_document()
@@ -349,7 +349,7 @@ bool wex::vcs::set_entry_from_base(wxWindow* parent)
     // See also vcs_entry, same item is used there.
     const std::vector<item> v{{
       _("Base folder"), item::COMBOBOX_DIR, std::any(), control_data().is_required(true)}};
-    config(_("Base folder")).firstof().empty()) 
+    config(_("Base folder")).get_firstof().empty()) 
   {
     if (
       parent != nullptr && 
@@ -360,11 +360,11 @@ bool wex::vcs::set_entry_from_base(wxWindow* parent)
       return false;
     }
     
-    m_Entry = FindEntry(config(_("Base folder")).firstof());
+    m_Entry = FindEntry(config(_("Base folder")).get_firstof());
   }
   else
   {
-    m_Entry = FindEntry(config(_("Base folder")).firstof());
+    m_Entry = FindEntry(config(_("Base folder")).get_firstof());
   
     if (m_Entry.name().empty())
     {
@@ -377,7 +377,7 @@ bool wex::vcs::set_entry_from_base(wxWindow* parent)
         return false;
       }
       
-      m_Entry = FindEntry(config(_("Base folder")).firstof());
+      m_Entry = FindEntry(config(_("Base folder")).get_firstof());
     }
   }
   

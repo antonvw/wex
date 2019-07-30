@@ -12,17 +12,21 @@
 
 namespace wex
 {
-  /// Offers a blame class for some vcs.
+  /// Offers a blame class for some vcs. The vcs used is configured
+  /// using the xml_node constructor (see wex-menus.xml),
+  /// the kind of info returned by get is configurable using
+  /// blame_get_author, blame_get_id, blame_get_date.
   class blame 
   {
   public:
     /// Default constructor.
     blame() {;};
-      
+
     /// Constructor using xml node.
     blame(const pugi::xml_node& node);
 
-    /// Returns a tuple with result, blame info and style type for blame text.
+    /// Returns a tuple with result, blame info, style type 
+    /// and line number for blame text.
     std::tuple <
       /// whether building the info passed
       bool, 
@@ -30,7 +34,9 @@ namespace wex
       /// settings in the config.
       const std::string,
       /// style for blame margin based on commit date
-      lexers::margin_style_t>                
+      lexers::margin_style_t,
+      /// line number (starting with line 0)
+      int>                
     get(const std::string& text) const;
     
     /// Returns true if blame is on.
@@ -38,7 +44,7 @@ namespace wex
   private:
     lexers::margin_style_t get_style(const std::string& text) const;
     
-    std::string m_date_format, m_blame_format;
+    std::string m_blame_format, m_date_format;
     size_t m_date_print {10};
   };
 };

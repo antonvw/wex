@@ -77,14 +77,22 @@ namespace wex
     {
       return command_arg_t::NONE;
     }
-    else if (atoi(post.c_str()) > 0)
-    {
-      return command_arg_t::INT;
-    }
     else
     {
-      return command_arg_t::OTHER;
+      try
+      {
+        if (std::stoi(post) > 0)
+        {
+          return command_arg_t::INT;
+        }
+      }
+      catch (std::exception& e)
+      {
+        return command_arg_t::OTHER;
+      }
     }
+    
+    return command_arg_t::OTHER;
   }
 };
 
@@ -139,7 +147,9 @@ wex::ex::ex(wex::stc* stc)
             [=](const std::string& name, const std::string& value) {
               m_macros.set_key_map(name, value);return true;}); 
         break;
-        case wex::command_arg_t::NONE: show_dialog("Maps", 
+        
+        case wex::command_arg_t::NONE: 
+          show_dialog("Maps", 
             "[String map]\n" +
             report_container<std::string, std::map<std::string, std::string>>(m_macros.get_map()) +
             "[Key map]\n" +
@@ -151,6 +161,7 @@ wex::ex::ex(wex::stc* stc)
             true);
           return true;
         break;
+        
         case wex::command_arg_t::OTHER:
           return handle_container<std::string, std::map<std::string, std::string>>(
             "Map", command, nullptr,

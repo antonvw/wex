@@ -45,9 +45,7 @@ namespace wex
       /// base id for command
       int base_id, 
       /// menu to build
-      menu* menu, 
-      /// is menu used as popup or main menu
-      bool is_popup) {
+      menu* menu) {
       wex::menu* submenu = nullptr;
       const std::string unused = "XXXXX";  
       std::string prev_menu = unused;
@@ -60,9 +58,17 @@ namespace wex
             it.type().test(menu_command::IS_MAIN))
           add = true;
         else if (it.type().test(menu_command::IS_POPUP))
-          add = is_popup;
+          add = menu->style().test(menu::IS_POPUP);
         else if (it.type().test(menu_command::IS_MAIN))
-          add = !is_popup;
+          add = !menu->style().test(menu::IS_POPUP);
+        
+        if ((menu->style().test(menu::IS_SELECTED) &&
+             !it.type().test(menu_command::IS_SELECTED)) || 
+            (!menu->style().test(menu::IS_SELECTED) &&
+              it.type().test(menu_command::IS_SELECTED)))
+        {
+          add = false;
+        }
 
         if (add)
         {
@@ -87,7 +93,9 @@ namespace wex
           usemenu->append(
             base_id + i, 
             ellipsed(
-              it.get_command(menu_command::INCLUDE_ACCELL),
+              it.text().empty() ? 
+                it.get_command(menu_command::INCLUDE_ACCELL):
+                it.text(),
               it.control(),
               it.type().test(menu_command::ELLIPSES)));
 
@@ -113,7 +121,7 @@ namespace wex
       pugi::xml_document doc;
       if (!get_filename().file_exists() ||
           !doc.load_file(
-             get_filename().data().string().c_str(),
+             get_filename().string().c_str(),
              pugi::parse_default | pugi::parse_trim_pcdata))
       {
         return false;
@@ -137,6 +145,7 @@ namespace wex
         {
           commands.push_back({child});
         }
-      }};
+      }
+    };
   };
 };

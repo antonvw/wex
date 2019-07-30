@@ -109,11 +109,21 @@ void wex::path::current(const std::string& path)
   }
 }
 
+bool wex::path::dir_exists() const 
+{
+  return std::filesystem::is_directory(m_path);
+}
+      
+bool wex::path::file_exists() const 
+{
+  return fullname().size() < 255 && std::filesystem::is_regular_file(m_path);
+}
+      
 std::stringstream wex::path::log() const
 {
   std::stringstream ss;
   
-  ss << (m_status[STAT_FULLPATH] ? data().string(): fullname());
+  ss << (m_status[STAT_FULLPATH] ? string(): fullname());
 
   if (stat().is_ok())
   {
@@ -142,7 +152,7 @@ wex::path& wex::path::make_absolute()
 
 bool wex::path::open_mime() const
 {
-  if (const auto & ex = extension(); ex.empty())
+  if (extension().empty())
   {
     if (wxURL(m_path.string()).IsOk() || 
         m_path.string().substr(0, 4) == "http")
@@ -154,19 +164,21 @@ bool wex::path::open_mime() const
       return false;
     }
   }
-  else if (auto* type = wxTheMimeTypesManager->GetFileTypeFromExtension(ex);
+  else if (auto* type(
+    wxTheMimeTypesManager->GetFileTypeFromExtension(extension()));
     type == nullptr)
   {
     return false;
   }
-  else if (const std::string command(type->GetOpenCommand(data().string())); 
+  else if (const std::string command(type->GetOpenCommand(string())); 
     command.empty())
   {
-    wex::log("open_mime open") << command;
     return false;
   }
   else
   {
+    // TODO: process, boost::process::system, std::system 
+    //  all do not work
     if (wxExecute(command) == -1)
     {
       wex::log("open_mime execute") << command;

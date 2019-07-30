@@ -10,7 +10,6 @@
 #include <wx/wx.h>
 #endif
 #include <wx/fdrepdlg.h> // for wxFindDialogDialog and Event
-#include <wx/persist/toplevel.h>
 #include <wex/frame.h>
 #include <wex/config.h>
 #include <wex/defs.h>
@@ -111,6 +110,20 @@ wex::frame::frame(const window_data& data)
 #if wxUSE_DRAG_AND_DROP
   SetDropTarget(new file_droptarget(this));
 #endif
+  
+  const std::string win_frame("WindowFrame"), win_max("WindowMaximized");
+  
+  const auto& v(config(win_frame).get(std::vector<int> {
+    data.size().GetWidth(), data.size().GetHeight(), 
+    data.pos().x, data.pos().y}));
+  
+  SetSize(v[0], v[1]);
+  SetPosition(wxPoint(v[2], v[3]));
+    
+  if (config(win_max).get(false))
+  {
+    Maximize();
+  }
 
   wxAcceleratorEntry entries[4];
   entries[0].Set(wxACCEL_NORMAL, WXK_F5, wxID_FIND);
@@ -121,8 +134,6 @@ wex::frame::frame(const window_data& data)
   wxAcceleratorTable accel(WXSIZEOF(entries), entries);
   SetAcceleratorTable(accel);
 
-  wxPersistentRegisterAndRestore(this);
-  
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   printing::get()->get_html_printer()->SetParentWindow(this);
 #endif
@@ -204,8 +215,20 @@ wex::frame::frame(const window_data& data)
     ID_VIEW_MENUBAR);
   
   Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
+    if (IsMaximized())
+    {
+      config(win_max).set(true);
+    }
+    else
+    {
+      config(win_max).set(false);
+      config(win_frame).set(std::vector<int> {
+        GetSize().GetWidth(), GetSize().GetHeight(), 
+        GetPosition().x, GetPosition().y});
+    }
+
     m_is_closing = true;
-	event.Skip(); });
+    event.Skip(); });
 }
 
 wex::frame::~frame()

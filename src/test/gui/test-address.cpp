@@ -106,7 +106,7 @@ TEST_CASE("wex::address")
   
   // Test Read.
   REQUIRE(!address3.read("XXXXX"));
-  REQUIRE( address3.read(wex::test::get_path("test.bin").data().string()));
+  REQUIRE( address3.read(wex::test::get_path("test.bin").string()));
 #ifdef __UNIX__
   REQUIRE( address3.read("!ls"));
 #endif

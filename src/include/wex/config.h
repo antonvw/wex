@@ -2,20 +2,22 @@
 // Name:      config.h
 // Purpose:   Declaration of class wex::config
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <list>
 #include <string>
+#include <vector>
 
 class wxColour;
-class wxConfigBase;
 class wxFont;
 
 namespace wex
 {
+  class config_imp;
+
   /// Offers a configuration.
   class config
   {
@@ -27,15 +29,26 @@ namespace wex
       DATA_NO_STORE,        ///< never store (so use defaults)
     };
     
+    /// static interface
+    
+    /// Returns the config dir for user data files.
+    static const std::string dir();
+    
+    /// Initializes global class.
+    /// This should be done before first use of config.
+    static void init();
+
+    /// Stores config, and frees objects.
+    static void on_exit();
+    
+    /// other methods
+
     /// Default constructor.
     config(type_t type = DATA_STORE_WRITE);
     
     /// Constructor for item (key).
     config(const std::string& item);
 
-    /// Returns the config dir for user data files.
-    static const std::string dir();
-    
     /// Returns true if the (string) item is empty.
     bool empty() const;
 
@@ -44,17 +57,6 @@ namespace wex
 
     /// Returns true if the item exists.
     bool exists() const;
-
-    /// Returns first of a list of values from item.
-    const std::string firstof() const;
-
-    /// Sets first of a list of values in config key.
-    /// And returns the value.
-    const std::string firstof_write(const std::string& value) const;
-    
-    /// Initializes global class.
-    /// This should be done before first use of config.
-    static void init();
 
     // Getter methods.
 
@@ -85,9 +87,20 @@ namespace wex
     /// Returns font config value for item.
     wxFont get(const wxFont& def) const;
     
-    /// Loads entries into a list with strings.
-    const std::list < std::string > get_list() const;
-    
+    /// Returns a list with strings for item.
+    const std::list < std::string > get(
+      const std::list < std::string> & def) const;
+
+    /// Returns a vector with ints for item.
+    const std::vector < int > get(const std::vector < int > & def) const;
+
+    /// Returns a vector with tuples for item.
+    const std::vector < std::tuple < std::string, int, int > > get(
+      const std::vector < std::tuple < std::string, int, int > > & def) const;
+
+    /// Returns first of a list of strings from item.
+    const std::string get_firstof() const;
+
     /// Item access.
 
     /// Returns the item.
@@ -98,43 +111,50 @@ namespace wex
     
     // Setter methods.
 
-    /// Sets config item from a string.
-    void set(const std::string& def = std::string());
+    /// Sets value from a string.
+    void set(const std::string& v = std::string());
 
-    /// Sets config item from a char array.
-    void set(const char* def);
+    /// Sets value from a char array.
+    void set(const char* v);
 
-    /// Sets config item from a bool.
-    void set(bool def);
+    /// Sets value from a bool.
+    void set(bool v);
 
-    /// Sets config item from a long.
-    void set(long def);
+    /// Sets value from a long.
+    void set(long v);
     
-    /// Sets config item from a int.
-    void set(int def);
+    /// Sets value from a int.
+    void set(int v);
     
-    /// Sets config item from a float.
-    void set(float def);
+    /// Sets value from a float.
+    void set(float v);
     
-    /// Sets config item from a double.
-    void set(double def);
+    /// Sets value from a double.
+    void set(double v);
     
-    /// Sets config item from a colour.
-    void set(const wxColour& def);
+    /// Sets value from a colour.
+    void set(const wxColour& v);
     
-    /// Sets config item from a font.
-    void set(const wxFont& def);
+    /// Sets value from a font.
+    void set(const wxFont& v);
     
-    /// Sets config item from a list with strings.
-    void set(const std::list < std::string > & l);
-    
-    /// Records defaults.
-    static void set_record_defaults(bool val);
-    
-    /// Returns wx config.
-    static wxConfigBase* wx_config();
+    /// Sets value from a list with strings.
+    void set(const std::list < std::string > & v);
+
+    /// Sets value from a vector with int.
+    void set(const std::vector < int > & v);
+
+    /// Sets value from a vector with tuples.
+    void set(const std::vector < std::tuple < std::string, int, int > > & v);
+
+    /// Sets first of a list of strings in config key,
+    /// deletes it if present at other places.
+    /// If the list size would be greater than max, the last element is deleted.
+    /// And returns the value.
+    const std::string set_firstof(const std::string& v, size_t max = 75);
   private:
     std::string m_item;
-    type_t m_type {DATA_STORE_WRITE};
+    const type_t m_type {DATA_STORE_WRITE};
+    inline static config_imp* m_store = nullptr;
   };
 };

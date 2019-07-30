@@ -23,7 +23,7 @@ void CheckWellFormed(wex::stc* stc, const wex::path& fn)
   if (fn.lexer().language() == "xml")
   {
     if (const pugi::xml_parse_result result = 
-      pugi::xml_document().load_file(fn.data().string().c_str());
+      pugi::xml_document().load_file(fn.string().c_str());
       !result)
     {
       wex::xml_error(fn, &result, stc);
@@ -39,9 +39,11 @@ wex::stc_file::stc_file(stc* stc, const std::string& filename)
 
 bool wex::stc_file::do_file_load(bool synced)
 {
+  file_dialog dlg(this);
+   
   if (
-   get_contents_changed() &&
-   file_dialog(this).show_modal_if_changed() == wxID_CANCEL)
+    get_contents_changed() &&
+    dlg.show_modal_if_changed() == wxID_CANCEL)
   {
     return false;
   }
@@ -57,7 +59,8 @@ bool wex::stc_file::do_file_load(bool synced)
   read_from_file(
     synced &&
     isLog &&
-    m_STC->GetTextLength() > 1024);
+    m_STC->GetTextLength() > 1024,
+    dlg.hexmode() | m_STC->data().flags().test(stc_data::WIN_HEX));
 
   if (!synced)
   {
@@ -81,7 +84,7 @@ bool wex::stc_file::do_file_load(bool synced)
 
 void wex::stc_file::do_file_new()
 {
-  m_STC->SetName(get_filename().data().string());
+  m_STC->SetName(get_filename().string());
   m_STC->properties_message();
   m_STC->clear();
   m_STC->get_lexer().set(get_filename().lexer(), true); // allow fold
@@ -103,7 +106,7 @@ void wex::stc_file::do_file_save(bool save_as)
   {
     m_STC->SetReadOnly(get_filename().is_readonly());
     m_STC->get_lexer().set(get_filename().lexer());
-    m_STC->SetName(get_filename().data().string());
+    m_STC->SetName(get_filename().string());
   }
   
   m_STC->marker_delete_all_change();
@@ -119,7 +122,7 @@ bool wex::stc_file::get_contents_changed() const
   return m_STC->GetModify();
 }
 
-void wex::stc_file::read_from_file(bool get_only_new_data)
+void wex::stc_file::read_from_file(bool get_only_new_data, bool hexmode)
 {
   const bool pos_at_end = (m_STC->GetCurrentPos() >= m_STC->GetTextLength() - 1);
 
@@ -140,9 +143,8 @@ void wex::stc_file::read_from_file(bool get_only_new_data)
 
   m_PreviousLength = m_STC->get_filename().stat().st_size;
 
-  const auto buffer = read(offset);
-
-  if (!m_STC->get_hexmode().is_active())
+  if (const auto buffer = read(offset);
+    !m_STC->get_hexmode().is_active() && !hexmode)
   {
     m_STC->Allocate(buffer->size());
     
@@ -152,8 +154,12 @@ void wex::stc_file::read_from_file(bool get_only_new_data)
   }
   else
   {
-    m_STC->get_hexmode().append_text(
-      std::string(buffer->data(), buffer->size()));
+    if (!m_STC->get_hexmode().is_active())
+    {
+      m_STC->get_hexmode().set(true, false);
+    }
+    
+    m_STC->get_hexmode().append_text(*buffer);
   }
 
   if (get_only_new_data)

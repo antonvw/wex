@@ -2,7 +2,7 @@
 // Name:      menu.h
 // Purpose:   Declaration of wex::menu class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -21,17 +21,18 @@ namespace wex
     /// The menu flags.
     enum
     {
-      IS_READ_ONLY = 0, ///< readonly control
-      IS_SELECTED  = 1, ///< text is selected somewhere on the control
-      IS_EMPTY     = 2, ///< control is empty
+      IS_EMPTY = 0,  ///< control is empty
+      IS_POPUP,      ///< menu should appear as popup, instead of main menu
+      IS_READ_ONLY,  ///< readonly control
+      IS_SELECTED,   ///< text is selected somewhere on the control
 
-      ALLOW_CLEAR  = 3, ///< add clear item in menu
-      CAN_PASTE    = 4, ///< add paste item in menu
+      ALLOW_CLEAR,   ///< add clear item in menu
+      CAN_PASTE,     ///< add paste item in menu
 
       DEFAULT      = CAN_PASTE  ///< default
     };
-    
-    typedef std::bitset<5> menu_t;
+
+    typedef std::bitset<6> menu_t;
 
     /// Default constructor.
     menu(menu_t style = menu_t().set(DEFAULT));

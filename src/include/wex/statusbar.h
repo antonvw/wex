@@ -2,7 +2,7 @@
 // Name:      statusbar.h
 // Purpose:   Declaration of wex::statusbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -24,11 +24,11 @@ namespace wex
     /// This constructs the PaneText pane.
     statusbar_pane(
       /// width of the pane (default, might be overridden in the config)
-      int width = -3,
+      int width = -5,
       /// style (default, might be overridden in the config)
       int style = wxSB_NORMAL)
       : wxStatusBarPane(style, width) 
-      , m_Name("PaneText") {};
+      , m_name("PaneText") {};
     
     /// Constructor.
     statusbar_pane(
@@ -56,30 +56,30 @@ namespace wex
       /// - wxSB_SUNKEN (3)
       int style = wxSB_NORMAL)
       : wxStatusBarPane(style, width)
-      , m_HelpText(helptext.empty() ? name.substr(name.find('e') + 1): helptext)
-      , m_Name(name) {};
+      , m_help(helptext.empty() ? name.substr(name.find('e') + 1): helptext)
+      , m_name(name) {};
       
     /// Returns hidden text.
-    const auto& get_hidden_text() const {return m_HiddenText;};
+    const auto& get_hidden_text() const {return m_hidden;};
     
     /// Returns statusbar pane name.
-    const auto& get_name() const {return m_Name;};
+    const auto& get_name() const {return m_name;};
     
     /// Returns statusbar pane help text.
-    const auto& help_text() const {return m_HelpText;};
+    const auto& help_text() const {return m_help;};
     
     /// Returns whether this pane is shown.
-    bool is_shown() const {return m_IsShown;};
+    bool is_shown() const {return m_is_shown;};
     
     /// Sets hidden text.
-    void set_hidden_text(const std::string& text) {m_HiddenText = text;};
+    void set_hidden_text(const std::string& text) {m_hidden = text;};
     
     /// Sets whether this pane is shown.
     /// Resets the hidden text if show is true.
     void show(bool show);
   private:
-    std::string m_HelpText, m_HiddenText, m_Name; // no const
-    bool m_IsShown {true};
+    std::string m_help, m_hidden, m_name; // no const
+    bool m_is_shown {true};
   };
 
   class frame;
@@ -141,12 +141,12 @@ namespace wex
   protected:
     /// React on some mouse events line button down, double click and
     /// moving over.
-    void OnMouse(wxMouseEvent& event);
+    void on_mouse(wxMouseEvent& event);
   private:
-    std::tuple <bool, int, int> GetFieldNo(const std::string& field) const;
-    void Handle(wxMouseEvent& event, const statusbar_pane& statusbar_pane);
+    std::tuple <bool, int, int> field_info(const std::string& field) const;
+    void handle(wxMouseEvent& event, const statusbar_pane& statusbar_pane);
     
-    frame* m_Frame;
-    static std::vector<statusbar_pane> m_Panes;
+    frame* m_frame;
+    static std::vector<statusbar_pane> m_panes;
   };
 };

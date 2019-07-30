@@ -80,7 +80,7 @@ TEST_CASE("wex::lexers")
     
   SUBCASE("Rest")
   {
-    REQUIRE(!wex::lexers::get()->get_filename().data().empty());
+    REQUIRE(!wex::lexers::get()->get_filename().empty());
 
     REQUIRE(!wex::lexers::get()->get_macros("global").empty());
     REQUIRE(!wex::lexers::get()->get_macros("cpp").empty());

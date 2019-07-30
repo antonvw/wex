@@ -241,7 +241,7 @@ void wex::managed_frame::on_menu_history(
   size_t index, 
   stc_data::window_t flags)
 {
-  if (const path file(history.get_history_file(index)); !file.data().empty())
+  if (const path file(history.get_history_file(index)); !file.empty())
   {
     open_file(file, stc_data().flags(flags));
   }

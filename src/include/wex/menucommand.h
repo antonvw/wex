@@ -26,17 +26,19 @@ namespace wex
       INCLUDE_ACCELL     = 1, ///< includes accelerator
     };
 
+    typedef std::bitset<2> include_t;
+
     /// The command type flags as read from xml file.  
     enum
     {
-      IS_POPUP  = 0, ///< command in popup menu 
-      IS_MAIN   = 1, ///< command in main menu 
-      SEPARATOR = 2, ///< command is followed by a separator
-      ELLIPSES  = 3, ///< command is followed by an ellipses
+      IS_POPUP  = 0,    ///< command in popup menu 
+      IS_MAIN,          ///< command in main menu 
+      IS_SELECTED,      ///< command only shown if text selected
+      SEPARATOR,        ///< command is followed by a separator
+      ELLIPSES,         ///< command is followed by an ellipses
     };
 
-    typedef std::bitset<2> include_t;
-    typedef std::bitset<4> type_t;
+    typedef std::bitset<5> type_t;
     
     /// Default constructor.
     menu_command() {;};
@@ -69,10 +71,18 @@ namespace wex
     /// Returns the type.
     auto & type() const {return m_type;};
     
+    /// Returns the menu text.
+    const auto& text() const {return m_text;};
+
     /// Returns true if a subcommand can be used for this command.
     bool use_subcommand() const;
   private:
-    std::string m_control, m_command, m_flags, m_submenu;
+    std::string 
+      m_command, 
+      m_control, 
+      m_flags, 
+      m_submenu,
+      m_text;
 
     bool m_submenu_is_command {false};
     type_t m_type {0};

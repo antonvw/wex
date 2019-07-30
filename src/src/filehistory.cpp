@@ -26,41 +26,56 @@ namespace wex
   public:
     file_history_imp(
       size_t maxFiles = 9, 
-      wxWindowID idBase = wxID_FILE1)
-      : wxFileHistory(maxFiles, idBase) {;};
-
+      wxWindowID idBase = wxID_FILE1,
+      const std::string& key = "xxxxx")
+      : wxFileHistory(maxFiles, idBase)
+      , m_key(key.empty() ? "RecentFiles": key)
+      , m_history(config(m_key).get(std::list < std::string >{})) 
+      {
+        // The order should be inverted, as the last one added is the most recent used.
+        for (
+          auto it = m_history.rbegin(); it != m_history.rend(); ++it)
+        {
+          AddFileToHistory(*it);
+        }
+      }
+    
     virtual void AddFileToHistory(const wxString& file) override;
     virtual wxString GetHistoryFile(size_t index = 0) const override;
+
+    void add(const path& p)
+    {
+      if (p.file_exists())
+      {
+        m_history.remove(p.string());
+        m_history.push_front(p.string());
+        AddFileToHistory(p.string());
+      }
+    }
+
+    const auto& history() const {return m_key;};
+
+    void save() {config(m_key).set(m_history);};
+  private:
+    const std::string m_key;
+    std::list < std::string> m_history;
   };
 };
 
 wex::file_history::file_history(
   size_t maxFiles, wxWindowID idBase, const std::string& key)
-  : m_History(new file_history_imp(maxFiles, idBase))
-  , m_Key(key)
+  : m_history(new file_history_imp(maxFiles, idBase, key))
 {
-  // The order should be inverted, as the last one added is the most recent used.
-  if (!key.empty())
-  {
-    for (int i = get_max_files() - 1 ; i >=0 ; i--)
-    {
-      m_History->AddFileToHistory(
-        config(key + "/" + std::to_string(i)).get());
-    }
-  }
 }
 
 wex::file_history::~file_history()
 {
-  delete m_History;
+  delete m_history;
 }
   
 void wex::file_history::add(const path& p)
 {
-  if (p.file_exists())
-  {
-    m_History->AddFileToHistory(p.data().string());
-  }
+  m_history->add(p);
 }
 
 void wex::file_history::clear()
@@ -69,29 +84,24 @@ void wex::file_history::clear()
   {
     for (int i = size() - 1; i >= 0; i--)
     {
-      m_History->RemoveFileFromHistory(i);
+      m_history->RemoveFileFromHistory(i);
     }
   }
 }
 
 wxWindowID wex::file_history::get_base_id() const
 {
-  return m_History->GetBaseId();
-}
-  
-size_t wex::file_history::size() const
-{
-  return m_History->GetCount();
+  return m_history->GetBaseId();
 }
   
 int wex::file_history::get_max_files() const
 {
-  return m_History->GetMaxFiles();
+  return m_history->GetMaxFiles();
 }
 
 wex::path wex::file_history::get_history_file(size_t index) const
 {
-  return path(m_History->GetHistoryFile(index).ToStdString());
+  return path(m_history->GetHistoryFile(index).ToStdString());
 }
     
 std::vector<wex::path> wex::file_history::get_history_files(size_t count) const
@@ -144,40 +154,21 @@ void wex::file_history::popup_menu(wxWindow* win,
 
 void wex::file_history::save()
 {
-  if (m_Key.empty())
-  {
-    m_History->Save(*config::wx_config());
-  }
-  else
-  {
-    if (size() > 0)
-    {
-      config(m_Key).erase();
-      
-      for (size_t i = 0; i < size(); i++)
-      {
-        config(m_Key + "/" + std::to_string(i)).set(
-          m_History->GetHistoryFile(i).ToStdString());
-      }
-    }
-  }
+  m_history->save();
+}
+
+size_t wex::file_history::size() const
+{
+  return m_history->GetCount();
 }
   
 void wex::file_history::use_menu(wxWindowID id, wxMenu* menu)
 {
   wxMenu* submenu = new wxMenu;
   menu->Append(id, _("Open &Recent"), submenu);
-  m_History->UseMenu(submenu);
 
-  if (m_Key.empty())
-  {
-    // We can load file history now.
-    m_History->Load(*config::wx_config());
-  }
-  else
-  {
-    m_History->AddFilesToMenu();
-  }
+  m_history->UseMenu(submenu);
+  m_history->AddFilesToMenu();
 }
 
 // Implementation
@@ -217,6 +208,7 @@ wxString wex::file_history_imp::GetHistoryFile(size_t index) const
 
     if (error)
     {
+      const_cast< file_history_imp * >( this )->m_history.remove(file);
       const_cast< file_history_imp * >( this )->RemoveFileFromHistory(index);
       log::status(_("Removed not existing file")) << file << "from history";
     }

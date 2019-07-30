@@ -29,6 +29,9 @@ wex::shell::shell(
       flags(stc_data::window_t().set(stc_data::WIN_NO_INDICATOR), control_data::OR))
   , m_command_end(command_end == std::string() ? eol(): command_end)
   , m_echo(echo)
+  , m_commands(config("Shell").get(std::list< std::string> {}))
+    // Take care that m_commands_iterator is valid.
+  , m_commands_iterator(m_commands.end())
   , m_commands_save_in_config(commands_save_in_config)
   , m_prompt(prompt)
 {
@@ -41,21 +44,6 @@ wex::shell::shell(
   // Start with a prompt.
   shell::prompt(std::string(), false);
 
-  if (m_commands_save_in_config > 0)
-  {
-    // Get all previous commands.
-    for (tokenizer tkz(
-      config("Shell").get(),
-      std::string(1, AutoCompGetSeparator()));
-      tkz.has_more_tokens(); )
-    {
-      m_commands.push_front(tkz.get_next_token());
-    }
-  }
-
-  // Take care that m_commands_iterator is valid.
-  m_commands_iterator = m_commands.end();
-  
   enable(true);
   
   auto_complete().use(false); // we have our own autocomplete
@@ -268,19 +256,7 @@ wex::shell::~shell()
 {
   if (m_commands_save_in_config > 0)
   {
-    std::string values;
-    int items = 0;
-
-    for (
-      auto it = m_commands.rbegin(); 
-      it != m_commands.rend() && items < m_commands_save_in_config;
-      ++it)
-    {
-      values += *it + (char)AutoCompGetSeparator();
-      items++;
-    }
-
-    config("Shell").set(values);
+    config("Shell").set(m_commands);
   }
 }
 
@@ -576,8 +552,9 @@ void wex::shell::send_command()
 
 bool wex::shell::set_command_from_history(const std::string& short_command)
 {
-  if (const auto no_asked_for = atoi(short_command.c_str()); no_asked_for > 0)
+  try
   {
+    const auto no_asked_for = std::stoi(short_command);
     int no = 1;
 
     for (const auto& it : m_commands)
@@ -591,7 +568,7 @@ bool wex::shell::set_command_from_history(const std::string& short_command)
       no++;
     }
   }
-  else
+  catch (std::exception& e)
   {
     std::string short_command_check;
 

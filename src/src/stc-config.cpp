@@ -44,7 +44,7 @@ namespace wex
       {_("Line number"), item::TEXTCTRL_INT, 60l},
       {_("Print flags"), item::TEXTCTRL_INT, (long)wxSTC_PRINT_BLACKONWHITE},
       {_("Scroll bars"), item::CHECKBOX, true},
-      {_("Search engine"), item::COMBOBOX, std::string("https://duckduckgo.com")},
+      {_("Search engine"), item::COMBOBOX, std::list<std::string>{"https://duckduckgo.com"}},
       {_("Show mode"), item::CHECKBOX, true},
       {_("Tab draw mode"), item::TEXTCTRL_INT, (long)wxSTC_TD_LONGARROW},
       {_("Tab font"), item::FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},

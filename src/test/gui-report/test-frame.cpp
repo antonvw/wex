@@ -23,7 +23,7 @@ TEST_CASE("wex::report::frame")
   
   REQUIRE(!frame()->open_file(wex::test::get_path("test.h"))); // as we have no focused stc
   REQUIRE( frame()->file_history().
-    get_history_file().data().string().find("../test.h") == std::string::npos);
+    get_history_file().string().find("../test.h") == std::string::npos);
 
   REQUIRE(!frame()->open_file(
     wex::path(get_project()),
@@ -37,14 +37,14 @@ TEST_CASE("wex::report::frame")
   REQUIRE(!frame()->find_in_files({}, wex::ID_TOOL_REPORT_FIND, false));
 
   REQUIRE(!frame()->find_in_files(
-    {wex::test::get_path("test.h").data().string()}, wex::ID_TOOL_REPORT_FIND, false));
+    {wex::test::get_path("test.h").string()}, wex::ID_TOOL_REPORT_FIND, false));
 
   // frame()->find_in_files_dialog(ID_TOOL_REPORT_FIND);
   REQUIRE(!frame()->find_in_files_title(wex::ID_TOOL_REPORT_FIND).empty());
   
   // It does not open, next should fail.
   REQUIRE( frame()->get_project_history().
-    get_history_file().data().string().find(get_project()) == std::string::npos);
+    get_history_file().string().find(get_project()) == std::string::npos);
   
   REQUIRE( frame()->get_project() == nullptr);
 
@@ -59,7 +59,7 @@ TEST_CASE("wex::report::frame")
 #endif
   
   frame()->set_recent_project("xxx.prj");
-  REQUIRE( frame()->get_project_history().get_history_file().data().empty());
+  REQUIRE( frame()->get_project_history().get_history_file().empty());
 
   frame()->set_recent_file(wex::test::get_path("test.h"));
 

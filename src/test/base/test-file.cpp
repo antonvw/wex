@@ -27,10 +27,10 @@ TEST_CASE( "wex::file" )
     REQUIRE( file.file_save("test-save"));
     REQUIRE( file.get_filename().stat().is_ok());
     // The fullpath should be normalized, test it.
-    REQUIRE( file.get_filename().data().string() != "./test.h");
+    REQUIRE( file.get_filename().string() != "./test.h");
     REQUIRE(!file.get_filename().stat().is_readonly());
     REQUIRE( file.file_load(wex::test::get_path("test.bin")));
-    REQUIRE( file.open(wex::test::get_path("test.bin").data().string()));
+    REQUIRE( file.open(wex::test::get_path("test.bin").string()));
     REQUIRE( file.is_opened());
 
     const std::string* buffer = file.read();

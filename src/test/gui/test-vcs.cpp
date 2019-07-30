@@ -25,8 +25,8 @@ TEST_CASE("wex::vcs")
   file.make_absolute();
   
   // In wex::app the vcs is Read, so current vcs is known,
-  // using this constructor results in command id 1, being add.
-  wex::vcs vcs(std::vector< wex::path >{file.data().string()}, 1);
+  // using this constructor results in command id 2, being add.
+  wex::vcs vcs(std::vector< wex::path >{file.string()}, 2);
   
   vcs.config_dialog(wex::window_data().button(wxAPPLY | wxCANCEL));
   
@@ -47,21 +47,21 @@ TEST_CASE("wex::vcs")
 
   // entry  
   REQUIRE( vcs.entry().build_menu(100, new wex::menu("test")) > 0);
-  REQUIRE( vcs.entry().get_stdout().empty());
-  REQUIRE( vcs.entry().get_command().get_command() == "add");
+  REQUIRE(!vcs.entry().get_stdout().empty());
+  REQUIRE( vcs.entry().get_command().get_command() == "blame");
   
   // get_branch
   REQUIRE(!vcs.get_branch().empty());
 
   // name
   REQUIRE( vcs.name() == "Auto");
-  REQUIRE(!vcs.entry().get_command().is_open());
+  REQUIRE( vcs.entry().get_command().is_open());
 
   // load_document
   REQUIRE( wex::vcs::load_document());
   
   // set_entry_from_base
-  wex::config(_("Base folder")).set(wxGetCwd().ToStdString());
+  wex::config(_("Base folder")).set(std::list<std::string>{wxGetCwd().ToStdString()});
   REQUIRE( vcs.set_entry_from_base());
   
   // Use

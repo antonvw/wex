@@ -150,7 +150,7 @@ bool wex::report::file::do_file_load(bool synced)
 {
   pugi::xml_document doc;
   const pugi::xml_parse_result result = doc.load_file(
-    get_filename().data().string().c_str(),
+    get_filename().string().c_str(),
     pugi::parse_default | pugi::parse_comments);
 
   if (!result)
@@ -225,7 +225,7 @@ void wex::report::file::do_file_save(bool save_as)
     const wex::path fn = listitem(this, i).get_filename();
     
     pugi::xml_node node = root.append_child(fn.file_exists() ? "file": "folder");
-    node.text().set(fn.data().string().c_str());
+    node.text().set(fn.string().c_str());
 
     if (fn.dir_exists())
     {
@@ -234,7 +234,7 @@ void wex::report::file::do_file_save(bool save_as)
     }
   }
   
-  if (doc.save_file(get_filename().data().string().c_str()))
+  if (doc.save_file(get_filename().string().c_str()))
   {
     log::verbose("saved", 1) << get_filename();
   }

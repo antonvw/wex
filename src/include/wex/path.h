@@ -82,8 +82,7 @@ namespace wex
     const std::filesystem::path& data() const {return m_path;};
       
     /// Returns true if the directory with this name exists.
-    bool dir_exists() const {
-      return std::filesystem::is_directory(m_path);};
+    bool dir_exists() const;
     
     /// Returns true if path is empty.
     bool empty() const {return m_path.empty();};
@@ -93,8 +92,7 @@ namespace wex
       return m_path.extension().string();};
 
     /// Returns true if the file with this name exists.
-    bool file_exists() const {
-      return std::filesystem::is_regular_file(m_path);};
+    bool file_exists() const;
 
     /// Returns path fullname (including extension) component.
     const std::string fullname() const {

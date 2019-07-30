@@ -344,7 +344,7 @@ frame::frame()
     // If we have a query, you can hide it, but still run it.
     event.Enable(m_Query->GetLength() > 0 && m_otl.is_connected());}, wxID_EXECUTE);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    event.Enable(!file_history().get_history_file().data().empty());}, idRecentfileMenu);
+    event.Enable(!file_history().get_history_file().empty());}, idRecentfileMenu);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Check(manager().GetPane("QUERY").IsShown());}, idViewQuery);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {

@@ -244,7 +244,7 @@ frame::frame()
 #endif
   }
 
-  if (!file_history().get_history_file().data().empty() && manager().GetPane("DATA").IsShown())
+  if (!file_history().get_history_file().empty() && manager().GetPane("DATA").IsShown())
   {
     open_file(file_history().get_history_file());
   }
@@ -410,16 +410,9 @@ frame::frame()
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     assert(m_client == nullptr);
     
-    // Create the address - defaults to localhost and port as specified
-    if (!wex::config("Remote Hostname").exists())
-    {
-      wex::config::set_record_defaults(true);
-    }
-
     wxIPV4address addr;
     addr.Hostname(wex::config("Remote Hostname").get("localhost"));
     addr.Service(wex::config("Remote Port").get(3000));
-    wex::config::set_record_defaults(false);
 
     m_client = new wxSocketClient();
     m_client->SetEventHandler(*this, id_socket_remoteclient);
@@ -675,7 +668,7 @@ frame::frame()
     event.Enable(wex::config("Log Data").get(true));
     event.Check(wex::config("Count Only").get(true));}, id_client_log_data_count_only);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    event.Enable(!file_history().get_history_file().data().empty());}, id_recent_file_menu);
+    event.Enable(!file_history().get_history_file().empty());}, id_recent_file_menu);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Enable(m_timer.IsRunning());}, id_timer_stop);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
@@ -802,15 +795,9 @@ bool frame::setup_server()
   assert(m_server == nullptr);
   
   // Create the address - defaults to localhost and port as specified
-  if (!wex::config("Hostname").exists())
-  {
-    wex::config::set_record_defaults(true);
-  }
-
   wxIPV4address addr;
   addr.Hostname(wex::config("Hostname").get("localhost"));
   addr.Service(wex::config("Port").get( 3000));
-  wex::config::set_record_defaults(false);
 
   if (wxSocketServer* server = new wxSocketServer(addr); !server->Ok())
   {

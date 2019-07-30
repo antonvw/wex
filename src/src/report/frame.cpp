@@ -30,7 +30,7 @@ wex::report::frame::frame(
   size_t maxProjects,
   const window_data& data)
   : managed_frame(maxFiles, data)
-  , m_ProjectHistory(maxProjects, ID_RECENT_PROJECT_LOWEST, "RecentProject")
+  , m_ProjectHistory(maxProjects, ID_RECENT_PROJECT_LOWEST, "RecentProjects")
   , m_Info({
       find_replace_data::get()->text_match_word(),
       find_replace_data::get()->text_match_case(),
@@ -161,8 +161,8 @@ void wex::report::frame::find_in_files(wxWindowID dialogid)
 
     if (tool_dir dir(
       tool,
-      config(m_TextInFolder).firstof(),
-      config(m_TextInFiles).firstof(),
+      config(m_TextInFolder).get_firstof(),
+      config(m_TextInFiles).get_firstof(),
       type);
 
       dir.find_files() >= 0)
@@ -222,7 +222,7 @@ bool wex::report::frame::find_in_files(
         tool_dir dir(
           tool, 
           it, 
-          config(m_TextInFiles).firstof());
+          config(m_TextInFiles).get_firstof());
           
         dir.find_files();
         stats += dir.get_statistics().get_elements();
@@ -272,8 +272,8 @@ const std::string wex::report::frame::find_in_files_title(int id) const
 
 bool wex::report::frame::grep(const std::string& arg, bool sed)
 {
-  static std::string arg1 = config(m_TextInFolder).firstof();
-  static std::string arg2 = config(m_TextInFiles).firstof();
+  static std::string arg1 = config(m_TextInFolder).get_firstof();
+  static std::string arg2 = config(m_TextInFiles).get_firstof();
   static dir::type_t arg3 = dir::FILES;
 
   if (get_stc() != nullptr)
@@ -294,11 +294,11 @@ bool wex::report::frame::grep(const std::string& arg, bool sed)
          find_replace_data::get()->set_replace_string(v[i++]);
        }
        arg2 = (v.size() > i ? 
-         config(m_TextInFiles).firstof_write(v[i++]): 
-         config(m_TextInFiles).firstof());
+         config(m_TextInFiles).set_firstof(v[i++]): 
+         config(m_TextInFiles).get_firstof());
        arg1 = (v.size() > i ? 
-         config(m_TextInFolder).firstof_write(v[i++]): 
-         config(m_TextInFolder).firstof());
+         config(m_TextInFolder).set_firstof(v[i++]): 
+         config(m_TextInFolder).get_firstof());
        }}).parse(arg, help))
   {
     stc_entry_dialog(help).ShowModal();
@@ -373,8 +373,8 @@ void wex::report::frame::on_command_item_dialog(
               flags.set(dir::DIRS);
 
             get_project()->add_items(
-              config(get_project()->text_infolder()).firstof(),
-              config(get_project()->text_addwhat()).firstof(),
+              config(get_project()->text_infolder()).get_firstof(),
+              config(get_project()->text_addwhat()).get_firstof(),
               flags);
           }
           break;

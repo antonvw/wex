@@ -144,7 +144,7 @@ void wex::log::init(int argc, char** argv)
 
   if (elp.file_exists())
   {
-    el::Loggers::reconfigureAllLoggers(el::Configurations(elp.data().string()));
+    el::Loggers::reconfigureAllLoggers(el::Configurations(elp.string()));
   }
 
   // We need to convert argc and argv, as elp expects = sign between values.
@@ -158,7 +158,7 @@ void wex::log::init(int argc, char** argv)
       {"-L", "--logging-flags"},
       {"--logfile", "--default-log-file"},
       {"--logflags", "--logging-flags"},
-      {"--x", "--v"}, // for testing with verbosity
+      {"--x", "--v"}, // for testing with verbosity: --v=9
       {"--v", "--v"}};
 
   for (int i = 0; i < argc; i++)
@@ -188,12 +188,14 @@ void wex::log::init(int argc, char** argv)
   
   std::vector<char*> w;
   for (const auto& arg : v)
-      w.push_back((char*)arg.data());
+  {
+    w.push_back((char*)arg.data());
+  }
   w.push_back(nullptr);
   
   START_EASYLOGGINGPP(w.size() - 1, w.data());
 
-  verbose(1) << "config:" << elp.data().string();
+  verbose(1) << "config:" << elp.string();
 }
   
 const std::string wex::log::S()

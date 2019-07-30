@@ -28,9 +28,9 @@ wex::vcs_entry::vcs_entry(const pugi::xml_node& node)
 {
 }
 
-int wex::vcs_entry::build_menu(int base_id, menu* menu, bool is_popup) const
+int wex::vcs_entry::build_menu(int base_id, menu* menu) const
 {
-  return menus::build_menu(get_commands(), base_id, menu, is_popup);
+  return menus::build_menu(get_commands(), base_id, menu);
 }
 
 bool wex::vcs_entry::execute(
@@ -90,7 +90,7 @@ bool wex::vcs_entry::execute(
   if (get_command().is_commit())
   {
     comment = 
-      "-m \"" + config(_("Revision comment")).firstof() + "\" ";
+      "-m \"" + config(_("Revision comment")).get_firstof() + "\" ";
   }
 
   std::string my_args(args);

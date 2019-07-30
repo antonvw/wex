@@ -248,7 +248,7 @@ wex::vi::vi(wex::stc* arg)
       return command.size();}},
     {"nN", [&](const std::string& command){REPEAT(
       if (const std::string find(get_stc()->get_margin_text_click() > 0 ?
-        config("exmargin").get_list().front():
+        config("exmargin").get(std::list<std::string>{}).front():
         find_replace_data::get()->get_find_string());
         !get_stc()->find_next(
         find,
@@ -664,11 +664,14 @@ void wex::vi::add_text(const std::string& text)
 void wex::vi::append_insert_command(const std::string& s)
 {
   m_InsertCommand.append(s);
+  log::verbose("insert command") << m_InsertCommand;
 }
 
 void wex::vi::append_insert_text(const std::string& s)
 {
   m_InsertText.append(s);
+  set_register_insert(m_InsertText);
+  log::verbose("insert text") << m_InsertText;
 }
   
 bool wex::vi::command(const std::string& command)
@@ -711,7 +714,6 @@ bool wex::vi::command(const std::string& command)
   {
     m_Mode.escape();
     m_command.clear();
-    m_InsertCommand.clear();
     return auto_write();
   }
 
@@ -780,8 +782,8 @@ void wex::vi::command_reg(const char reg)
       }
       else
       {
-        frame()->show_ex_message(get_stc()->get_filename().data().string());
-        clipboard_add(get_stc()->get_filename().data().string());
+        frame()->show_ex_message(get_stc()->get_filename().string());
+        clipboard_add(get_stc()->get_filename().string());
       }
       break;
     default:
@@ -793,7 +795,7 @@ void wex::vi::command_reg(const char reg)
           
           if (reg == '.')
           {
-            m_InsertText += register_insert();
+            append_insert_text(register_insert());
           }
         }
         else
@@ -853,7 +855,7 @@ bool wex::vi::insert_mode(const std::string& command)
   // add control chars
   else if (command.size() == 2 && command[1] == 0)
   {
-    m_InsertText += std::string(1, command[0]);
+    append_insert_text(std::string(1, command[0]));
     add_text(std::string(1, command[0]));
     return true;
   }
@@ -910,7 +912,7 @@ bool wex::vi::insert_mode(const std::string& command)
       break;
       
     case WXK_CONTROL_R:
-      m_InsertText += command;
+      append_insert_text(command);
       break;
         
     case WXK_DELETE: 
@@ -971,7 +973,7 @@ bool wex::vi::insert_mode(const std::string& command)
         
         if (command.back() != '.')
         {
-          m_InsertText += command;
+          append_insert_text(command);
         }
         else
         {
@@ -991,7 +993,7 @@ bool wex::vi::insert_mode(const std::string& command)
             
           if (!get_stc()->AutoCompActive())
           {
-            m_InsertText += get_stc()->eol();
+            append_insert_text(get_stc()->eol());
           }
         }
         else
@@ -1003,7 +1005,7 @@ bool wex::vi::insert_mode(const std::string& command)
           
           if (!m_Dot)
           {
-            m_InsertText += command;
+            append_insert_text(command);
           }
         }
       }
@@ -1330,7 +1332,12 @@ bool wex::vi::on_key_down(const wxKeyEvent& event)
     else if (m_command.append_exec(ConvertKeyEvent(event, mode())))
     {
       m_command.clear();
-      m_InsertCommand.clear();
+
+      if (!m_Mode.insert())
+      {
+        m_InsertCommand.clear();
+      }
+
       return false;
     }
     
@@ -1401,7 +1408,6 @@ bool wex::vi::other_command(std::string& command)
   { 
     if (const auto parsed = it->second(command); parsed > 0)
     {
-      append_insert_command(command.substr(0, parsed));
       command = command.substr(parsed);
       return true;
     }
@@ -1555,6 +1561,7 @@ void wex::vi::set_last_command(const std::string& command)
     it != m_LastCommands.end())
   {
     m_LastCommand = command;
+    log::verbose("last command") << m_LastCommand;
   }
 }
  

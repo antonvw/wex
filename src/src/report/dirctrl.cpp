@@ -102,7 +102,7 @@ wex::report::dirctrl::dirctrl(
       }
       else
       {
-        CollapsePath(files[0].data().string());
+        CollapsePath(files[0].string());
       }
     }
     else
@@ -114,7 +114,7 @@ wex::report::dirctrl::dirctrl(
     GET_VECTOR_FILES
     const wex::path filename(files[0]);
   
-    wex::menu menu;
+    wex::menu menu(menu::menu_t().set(menu::IS_POPUP));
     
     if (filename.file_exists())
     {
@@ -157,6 +157,6 @@ wex::report::dirctrl::dirctrl(
 
 void wex::report::dirctrl::expand_and_select_path(const wex::path& path)
 {
-  ExpandPath(path.data().string());
-  SelectPath(path.data().string());
+  ExpandPath(path.string());
+  SelectPath(path.string());
 }

@@ -1,68 +1,95 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-menu_command.cpp
+// Name:      test-menucommand.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wex/menucommand.h>
 #include "test.h"
 
 TEST_CASE("wex::menu_command")
 {
   pugi::xml_document doc;
+
+  SUBCASE("Default constructor")
+  {
+    const wex::menu_command none;
+    REQUIRE(none.type().none());
+  }
+
+  SUBCASE("control")
+  {
+    doc.load_string("<command control=\"x\"> a&dd </command>");
+    const wex::menu_command cmd(doc.document_element());
+    REQUIRE( cmd.get_command() == "add");
+    REQUIRE( cmd.control() == "x");
+    REQUIRE( cmd.get_command(wex::menu_command::include_t().set(
+      wex::menu_command::INCLUDE_SUBCOMMAND).set(
+      wex::menu_command::INCLUDE_ACCELL)) == "a&dd");
+    REQUIRE( cmd.type().test(wex::menu_command::IS_MAIN));
+    REQUIRE( cmd.type().test(wex::menu_command::IS_POPUP));
+    REQUIRE( cmd.submenu().empty());
+  }
+
+  SUBCASE("ellipses")
+  {
+    doc.load_string("<command type=\"ellipses\"> ask </command>");
+    const wex::menu_command cmd(doc.document_element());
+    REQUIRE( cmd.type().test(wex::menu_command::ELLIPSES));
+  }
   
-  doc.load_string("<command control=\"x\"> a&dd </command>");
-  const wex::menu_command add(doc.document_element());
-  doc.load_string("<command> blame </command>");
-  const wex::menu_command blame(doc.document_element());
-  doc.load_string("<command> checkou&t </command>");
-  const wex::menu_command co(doc.document_element());
-  doc.load_string("<command type=\"main\"> commit </command>");
-  const wex::menu_command commit(doc.document_element());
-  doc.load_string("<command type=\"popup\" submenu=\"submenu\"> diff </command>");
-  const wex::menu_command diff(doc.document_element());
-  doc.load_string("<command type=\"main\"> log </command>");
-  const wex::menu_command log(doc.document_element());
-  doc.load_string("<command subcommand=\"m&e\"> h&elp </command>");
-  const wex::menu_command help(doc.document_element());
-  doc.load_string("<command> update </command>");
-  const wex::menu_command update(doc.document_element());
-  const wex::menu_command none;
-
-  REQUIRE(add.get_command() == "add");
-  REQUIRE(add.control() == "x");
-  REQUIRE(add.get_command(wex::menu_command::include_t().set(
-    wex::menu_command::INCLUDE_SUBCOMMAND).set(
-    wex::menu_command::INCLUDE_ACCELL)) == "a&dd");
+  SUBCASE("flags")
+  {
+    doc.load_string("<command flags=\"hello\"> world </command>");
+    const wex::menu_command cmd(doc.document_element());
+    REQUIRE( cmd.flags() == "hello");
+  }
   
-  REQUIRE(help.get_command() == "help me");
-  REQUIRE(help.get_command(wex::menu_command::include_t().set(
-    wex::menu_command::INCLUDE_SUBCOMMAND).set(
-    wex::menu_command::INCLUDE_ACCELL)) == "h&elp m&e");
-  REQUIRE(help.get_command(wex::menu_command::include_t().set(
-    wex::menu_command::INCLUDE_ACCELL)) == "h&elp");
-  
-  REQUIRE( add.type().test(wex::menu_command::IS_MAIN));
-  REQUIRE( add.type().test(wex::menu_command::IS_POPUP));
-  REQUIRE( blame.type().test(wex::menu_command::IS_MAIN));
-  REQUIRE( blame.type().test(wex::menu_command::IS_POPUP));
-  REQUIRE( commit.type().test(wex::menu_command::IS_MAIN));
-  REQUIRE( diff.type().test(wex::menu_command::IS_POPUP));
-  REQUIRE( help.type().test(wex::menu_command::IS_MAIN));
-  REQUIRE( help.type().test(wex::menu_command::IS_POPUP));
+  SUBCASE("menu")
+  {
+    doc.load_string("<command menu=\"blame line\"> blame </command>");
+    const wex::menu_command cmd(doc.document_element());
+    REQUIRE( cmd.type().test(wex::menu_command::IS_MAIN));
+    REQUIRE( cmd.type().test(wex::menu_command::IS_POPUP));
+    REQUIRE( cmd.text() == "blame line");
+    REQUIRE( cmd.get_command() == "blame");
+  }
 
-  REQUIRE(!help.ask_flags());
-  REQUIRE( help.is_help());
-  REQUIRE( help.use_subcommand());
+  SUBCASE("subcommand")
+  {
+    doc.load_string("<command subcommand=\"m&e\"> h&elp </command>");
+    const wex::menu_command cmd(doc.document_element());
+    REQUIRE(cmd.get_command() == "help me");
+    REQUIRE(cmd.get_command(wex::menu_command::include_t().set(
+      wex::menu_command::INCLUDE_SUBCOMMAND).set(
+      wex::menu_command::INCLUDE_ACCELL)) == "h&elp m&e");
+    REQUIRE(cmd.get_command(wex::menu_command::include_t().set(
+      wex::menu_command::INCLUDE_ACCELL)) == "h&elp");
+    REQUIRE( cmd.type().test(wex::menu_command::IS_MAIN));
+    REQUIRE( cmd.type().test(wex::menu_command::IS_POPUP));
+    REQUIRE(!cmd.ask_flags());
+    REQUIRE( cmd.is_help());
+    REQUIRE( cmd.use_subcommand());
+    REQUIRE( cmd.submenu() == "m&e");
+  }
 
-  REQUIRE( add.submenu().empty());
-  REQUIRE( diff.submenu() == "submenu");
-  REQUIRE( help.submenu() == "m&e");
+  SUBCASE("type")
+  {
+    doc.load_string("<command type=\"main is-selected\"> commit </command>");
+    const wex::menu_command cmd(doc.document_element());
+    REQUIRE( cmd.type().test(wex::menu_command::IS_MAIN));
+    REQUIRE(!cmd.type().test(wex::menu_command::IS_POPUP));
+    REQUIRE( cmd.type().test(wex::menu_command::IS_SELECTED));
+  }
 
-  REQUIRE(none.type().none());
+  SUBCASE("type and submenu")
+  {
+    doc.load_string("<command type=\"popup\" submenu=\"submenu\"> diff </command>");
+    const wex::menu_command cmd(doc.document_element());
+    REQUIRE(!cmd.type().test(wex::menu_command::IS_MAIN));
+    REQUIRE( cmd.type().test(wex::menu_command::IS_POPUP));
+    REQUIRE(!cmd.type().test(wex::menu_command::IS_SELECTED));
+    REQUIRE( cmd.submenu() == "submenu");
+  }
 }

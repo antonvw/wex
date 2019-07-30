@@ -2,7 +2,7 @@
 // Name:      test-menus.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -22,12 +22,12 @@ TEST_CASE("wex::menus")
   REQUIRE( doc.load_string("<menus name = \"fold.comment\">2</menus>"));
 
   wex::menu* menu = new wex::menu;
-  REQUIRE(!wex::menus::build_menu(menucommands.get_commands(), 500, menu, false));
+  REQUIRE(!wex::menus::build_menu(menucommands.get_commands(), 500, menu));
 
   std::vector < wex::menu_command > commands;
   REQUIRE(!wex::menus::add_commands(doc, commands));
   
-  REQUIRE(!wex::menus::get_filename().data().empty());
+  REQUIRE(!wex::menus::get_filename().empty());
 
   std::vector < wex::menu_commands <wex::menu_command > > entries;
   REQUIRE( wex::menus::load("debug", entries));

@@ -42,7 +42,7 @@ void link(
   else
   {
     CAPTURE(path);
-    REQUIRE(link.get_path(path, data).data().empty());
+    REQUIRE(link.get_path(path, data).empty());
   }
   
   REQUIRE(data.line() == expect_line_no);
@@ -128,11 +128,11 @@ TEST_CASE("wex::link")
     wex::control_data data;
     data.line(wex::link::LINE_OPEN_URL);
     REQUIRE( lnk.get_path("www.wxwidgets.org", data).data() == "www.wxwidgets.org" );
-    REQUIRE( lnk.get_path("xxx.wxwidgets.org", data).data().empty());
-    REQUIRE( lnk.get_path("test.cpp", data).data().empty());
-    REQUIRE( lnk.get_path("<test.cpp>", data).data().empty());
-    REQUIRE( lnk.get_path("gcc>", data).data().empty());
-    REQUIRE( lnk.get_path("<gcc>", data).data().empty());
+    REQUIRE( lnk.get_path("xxx.wxwidgets.org", data).empty());
+    REQUIRE( lnk.get_path("test.cpp", data).empty());
+    REQUIRE( lnk.get_path("<test.cpp>", data).empty());
+    REQUIRE( lnk.get_path("gcc>", data).empty());
+    REQUIRE( lnk.get_path("<gcc>", data).empty());
     REQUIRE( lnk.get_path("some text www.wxwidgets.org", data).data() == "www.wxwidgets.org" );
     REQUIRE( lnk.get_path("some text https://github.com/wxWidgets", data).data() == 
       "https://github.com/wxWidgets" );
@@ -140,7 +140,7 @@ TEST_CASE("wex::link")
       "https://github.com/wxWidgets" );
     REQUIRE( lnk.get_path("some text [https://github.com/wxWidgets]", data).data() == 
       "https://github.com/wxWidgets" );
-    REQUIRE( lnk.get_path("httpd = new httpd", data).data().empty());
+    REQUIRE( lnk.get_path("httpd = new httpd", data).empty());
 
     // MIME file
     data.line(wex::link::LINE_OPEN_URL_AND_MIME);
@@ -149,7 +149,7 @@ TEST_CASE("wex::link")
     REQUIRE( lnk.get_path("xxx.wxwidgets.org", data) == "test.html" );
     REQUIRE( lnk.get_path("xx", data).data() == "test.html" );
     data.line(-99);
-    REQUIRE( lnk.get_path("xx", data).data().empty());
+    REQUIRE( lnk.get_path("xx", data).empty());
   }
 }
 #endif

@@ -2,7 +2,7 @@
 // Name:      test-managed_frame.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -55,7 +55,7 @@ TEST_CASE("wex::managed_frame")
   frame()->set_recent_file(wex::test::get_path("test.h"));
   frame()->set_recent_file("testing");
   
-  REQUIRE( frame()->file_history().get_history_file().data().string().find("test.h") != std::string::npos);
+  REQUIRE( frame()->file_history().get_history_file().string().find("test.h") != std::string::npos);
   REQUIRE( frame()->file_history().size() > 0);
   REQUIRE(!frame()->file_history().get_history_files(5).empty());
   

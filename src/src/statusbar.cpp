@@ -16,33 +16,28 @@
 
 const int FIELD_NOT_SHOWN = -1;
 
-std::string config_name(wex::statusbar* sb, const std::string& item, int f)
-{
-  return "SB" + sb->get_field(f).get_name() + item;
-}
-
 void wex::statusbar_pane::show(bool show)
 {
-  m_IsShown = show;
+  m_is_shown = show;
   
   if (show) 
   {
-    m_HiddenText.clear();
+    m_hidden.clear();
   }
   else
   {
-    m_HiddenText = GetText();
+    m_hidden = GetText();
   }
 }
 
-std::vector<wex::statusbar_pane> wex::statusbar::m_Panes = {{}};
+std::vector<wex::statusbar_pane> wex::statusbar::m_panes = {{}};
 
 wex::statusbar::statusbar(frame* parent, const window_data& data)
   : wxStatusBar(parent, 
       data.id(), 
       data.style(), 
       data.name())
-  , m_Frame(parent)
+  , m_frame(parent)
 {
   // The statusbar is not managed by Aui, so show/hide it explicitly.    
   Show(config("ShowStatusBar").get(true));
@@ -51,17 +46,6 @@ wex::statusbar::statusbar(frame* parent, const window_data& data)
 wex::statusbar::~statusbar()
 { 
   config("ShowStatusBar").set(IsShown());
-
-  for (int i = 0; i < GetFieldsCount(); i++)
-  {
-    config(config_name(this, "Style", i)).set(get_field(i).GetStyle());
-    config(config_name(this, "Width", i)).set(get_field(i).GetWidth());
-  }
-}
-
-const wex::statusbar_pane& wex::statusbar::get_field(int n) const
-{
-  return m_Panes[n];
 }
 
 // Returns a tuple with first field true if the specified field exists.
@@ -69,13 +53,13 @@ const wex::statusbar_pane& wex::statusbar::get_field(int n) const
 // to be used as index in wxwidgets panes.
 // The third field the pane_no as index in the panes vector.
 std::tuple <bool, int, int> 
-  wex::statusbar::GetFieldNo(const std::string& field) const
+  wex::statusbar::field_info(const std::string& field) const
 {
   const std::string use_field = field.empty() ? "PaneText": field;
   int pane_no = 0;
   int shown_pane_no = 0;
   
-  for (const auto& it : m_Panes)
+  for (const auto& it : m_panes)
   {
     if (it.is_shown())
     {
@@ -100,24 +84,29 @@ std::tuple <bool, int, int>
   return {false, 0, 0};
 }
   
+const wex::statusbar_pane& wex::statusbar::get_field(int n) const
+{
+  return m_panes[n];
+}
+
 const std::string wex::statusbar::get_statustext(const std::string& field) const
 {
-  const auto& [res, shown_pane_no, pane_no] = GetFieldNo(field);
+  const auto& [res, shown_pane_no, pane_no] = field_info(field);
   return !res || shown_pane_no == FIELD_NOT_SHOWN ?
     // Do not show error, as you might explicitly want to ignore messages.
     std::string(): 
     GetStatusText(shown_pane_no).ToStdString();
 }
 
-void wex::statusbar::Handle(wxMouseEvent& event, const statusbar_pane& pane)
+void wex::statusbar::handle(wxMouseEvent& event, const statusbar_pane& pane)
 {
   if (event.LeftUp())
   {
-    m_Frame->statusbar_clicked(pane.get_name());
+    m_frame->statusbar_clicked(pane.get_name());
   }
   else if (event.RightUp())
   {
-    m_Frame->statusbar_clicked_right(pane.get_name());
+    m_frame->statusbar_clicked_right(pane.get_name());
   }
   // Show tooltip if tooltip is available, and not yet presented.
   else if (event.Moving())
@@ -138,13 +127,13 @@ void wex::statusbar::Handle(wxMouseEvent& event, const statusbar_pane& pane)
   }
 }
 
-void wex::statusbar::OnMouse(wxMouseEvent& event)
+void wex::statusbar::on_mouse(wxMouseEvent& event)
 {
   event.Skip();
 
   int fieldno = 0;
   
-  for (const auto& it : m_Panes)
+  for (const auto& it : m_panes)
   {
     if (it.is_shown())
     {
@@ -152,7 +141,7 @@ void wex::statusbar::OnMouse(wxMouseEvent& event)
       {
         if (rect.Contains(event.GetPosition()))
         {
-          Handle(event, it);
+          handle(event, it);
           return;
         }
       }
@@ -168,39 +157,51 @@ wex::statusbar* wex::statusbar::setup(
   long style,
   const std::string& name)
 {
-  if (m_Panes.size() > 1)
+  if (m_panes.size() > 1)
   {
-    m_Panes.clear();
+    m_panes.clear();
   }
 
-  m_Panes.insert(std::end(m_Panes), std::begin(panes), std::end(panes));
+  m_panes.insert(std::end(m_panes), std::begin(panes), std::end(panes));
 
   statusbar* sb = (frame->GetStatusBar() == nullptr ?
     (statusbar *)frame->CreateStatusBar(
-        m_Panes.size(), style, ID_UPDATE_STATUS_BAR, name):
+        m_panes.size(), style, ID_UPDATE_STATUS_BAR, name):
     (statusbar *)frame->GetStatusBar());
 
-  int* styles = new int[m_Panes.size()];
-  int* widths = new int[m_Panes.size()];
-
-  for (int i = 0; i < (int)m_Panes.size(); i++)
+  std::vector <std::tuple<std::string, int, int>> sb_def;
+  
+  for (const auto& it : m_panes)
   {
-    styles[i] = config(config_name(sb, "Style", i)).get(m_Panes[i].GetStyle());
-    widths[i] = config(config_name(sb, "Width", i)).get(m_Panes[i].GetWidth());
-
-    m_Panes[i].SetStyle(styles[i]);
-    m_Panes[i].SetWidth(widths[i]);
+    sb_def.push_back({it.get_name(), it.GetStyle(), it.GetWidth()});
   }
   
-  sb->SetFieldsCount(m_Panes.size(), widths);
-  sb->SetStatusStyles(m_Panes.size(), styles);
+  const auto sb_config(config("Statusbar").get(sb_def));
+  config("Statusbar").set(sb_config);
+
+  int* styles = new int[sb_config.size()];
+  int* widths = new int[sb_config.size()];
+
+  int i = 0;
+  for (const auto& it: sb_config)
+  {
+    styles[i] = std::get<1>(it);
+    widths[i] = std::get<2>(it);
+
+    m_panes[i].SetStyle(styles[i]);
+    m_panes[i].SetWidth(widths[i]);
+    i++;
+  }
+  
+  sb->SetFieldsCount(m_panes.size(), widths);
+  sb->SetStatusStyles(m_panes.size(), styles);
 
   delete[] styles;
   delete[] widths;
 
-  sb->Bind(wxEVT_LEFT_UP, &statusbar::OnMouse, sb);
-  sb->Bind(wxEVT_RIGHT_UP, &statusbar::OnMouse, sb);
-  sb->Bind(wxEVT_MOTION, &statusbar::OnMouse, sb);
+  sb->Bind(wxEVT_LEFT_UP, &statusbar::on_mouse, sb);
+  sb->Bind(wxEVT_RIGHT_UP, &statusbar::on_mouse, sb);
+  sb->Bind(wxEVT_MOTION, &statusbar::on_mouse, sb);
 
   return sb;
 }
@@ -208,19 +209,19 @@ wex::statusbar* wex::statusbar::setup(
 bool wex::statusbar::set_statustext(
   const std::string& text, const std::string& field)
 {
-  if (const auto& [res, shown_pane_no, pane_no] = GetFieldNo(field); !res)
+  if (const auto& [res, shown_pane_no, pane_no] = field_info(field); !res)
   {
     // Do not show error, as you might explicitly want to ignore messages.
     return false;
   }
   else if (shown_pane_no == FIELD_NOT_SHOWN)
   {
-    m_Panes[pane_no].set_hidden_text(text);
+    m_panes[pane_no].set_hidden_text(text);
     return false;
   }
   else
   {
-    m_Panes[pane_no].SetText(text);
+    m_panes[pane_no].SetText(text);
     
     // wxStatusBar checks whether new text differs from current,
     // and does nothing if the same to avoid flicker.
@@ -231,15 +232,15 @@ bool wex::statusbar::set_statustext(
 
 bool wex::statusbar::show_field(const std::string& field, bool show)
 {
-  assert(!m_Panes.empty());
+  assert(!m_panes.empty());
   
-  auto* widths = new int[m_Panes.size()];
-  auto* styles = new int[m_Panes.size()];
+  auto* widths = new int[m_panes.size()];
+  auto* styles = new int[m_panes.size()];
   int panes_shown = 0;
   std::vector<std::string> changes;
   bool changed = false;
 
-  for (auto& it : m_Panes)
+  for (auto& it : m_panes)
   {
     if (it.get_name() == field)
     {

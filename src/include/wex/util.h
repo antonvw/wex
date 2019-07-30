@@ -157,9 +157,6 @@ namespace wex
     const std::string& text,
     size_t max_chars = 15);
 
-  /// Returns field separator.
-  const char get_field_separator();
-
   /// Returns a search result, that might be shown in the statusbar.
   const std::string get_find_result(
     const std::string& find_text, 

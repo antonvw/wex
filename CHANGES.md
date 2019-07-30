@@ -3,6 +3,7 @@
   - uses boost::program_options lib instead of TCLAP lib
   - uses boost::spirit lib instead of eval lib
   - uses boost::statechart lib instead of fsm lib
+  - uses nlohmann/json
   - uses wex::test and wex::report namespace
   
 **v19.04** *March 9, 2019*

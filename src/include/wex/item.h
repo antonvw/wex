@@ -489,11 +489,7 @@ namespace wex
     typedef std::tuple<std::string, item::type_t, std::any> default_t;
 
   public:
-    /// Constructor, records default values,
-    /// if not yet in the config.
+    /// Constructor, sets default values if not yet in the config.
     config_defaults(const std::vector<default_t> & items);
-    
-    /// Destructor, stops recording.
-   ~config_defaults();
   };
 };

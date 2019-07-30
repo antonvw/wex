@@ -2,7 +2,7 @@
 // Name:      art.h
 // Purpose:   Declaration of wex::stockart class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -25,7 +25,7 @@ namespace wex
       const wxArtClient& client = wxART_OTHER, 
       const wxSize& bitmap_size = wxDefaultSize) const;
   private:
-    void add(int id, const wxArtID art);
+    void add(int id, const wxArtID& art);
     
     static std::map<wxWindowID, wxArtID> m_ArtIDs;
     const wxWindowID m_Id;

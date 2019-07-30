@@ -11,7 +11,6 @@
 #include <wx/app.h>
 #include <wx/artprov.h>
 #include <wx/choicdlg.h>
-#include <wx/log.h>
 #include <wex/ctags.h>
 #include <wex/config.h>
 #include <wex/ex.h>
@@ -52,7 +51,7 @@ namespace wex
     // config settings.
     const std::string name() const {return 
       config(_("vi tag fullpath")).get(false) ?
-        m_Path.data().string(): m_Path.fullname();};
+        m_Path.string(): m_Path.fullname();};
 
     // Opens file in specified frame.
     auto open_file(frame* frame) const
@@ -249,8 +248,6 @@ void wex::ctags::autocomplete_prepare()
 {
   m_Ex->get_stc()->AutoCompSetIgnoreCase(false);
   m_Ex->get_stc()->AutoCompSetAutoHide(false);
-
-  wxLogNull logNo;
 
   m_Ex->get_stc()->RegisterImage(
     IMAGE_PUBLIC, wxArtProvider::GetBitmap(wxART_PLUS));

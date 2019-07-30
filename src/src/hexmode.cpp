@@ -97,11 +97,11 @@ void wex::hexmode::append_text(const std::string& buffer)
   std::string text;
 
   text.reserve(
-    // offset:
-    (1 + 1) * buffer.size() / m_BytesPerLine + 
-    // hex field:
+    // number of lines
+    m_STC->eol().size() * (buffer.size() / m_BytesPerLine) + 
+    // hex field
     m_EachHexField * buffer.size() + 
-    // ascii field:
+    // ascii field
     buffer.size());
 
   for (size_t offset = 0; offset < buffer.size(); offset += m_BytesPerLine)
@@ -282,7 +282,7 @@ bool wex::hexmode::replace_target(const std::string& replacement, bool settext)
   return true;
 }
   
-bool wex::hexmode::set(bool on)
+bool wex::hexmode::set(bool on, bool use_modification_markers)
 {
   if (m_Active == on) return false;
 
@@ -297,8 +297,8 @@ bool wex::hexmode::set(bool on)
     m_STC->EmptyUndoBuffer();
     m_STC->SetSavePoint();
   }
-    
-  m_STC->use_modification_markers(true);
+
+  m_STC->use_modification_markers(use_modification_markers);
   
   return true;
 }

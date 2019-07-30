@@ -267,7 +267,7 @@ bool wex::variable::ExpandBuiltIn(ex* ex, std::string& expanded) const
     }
     else if (m_Name == "Fullpath")
     {
-      expanded = ex->get_stc()->get_filename().data().string();
+      expanded = ex->get_stc()->get_filename().string();
     }
     else if (m_Name == "Nl")
     {

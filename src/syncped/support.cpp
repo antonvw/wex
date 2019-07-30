@@ -49,9 +49,9 @@ decorated_frame::decorated_frame(app* app)
     {"PaneInfo", 100, _("Lines or items").ToStdString()},
     {"PaneLexer", lexer_size, _("Lexer").ToStdString()},
     {"PaneTheme", lexer_size, _("Theme").ToStdString()},
-    {"PaneVCS", 150},
+    {"PaneVCS", -1},
     {"PaneDBG", 50, "Debugger"},
-    {"PaneMacro", 75},
+    {"PaneMacro", -1},
     {"PaneMode", 100}});
   
   if (wex::vcs vcs; vcs.use() && wex::vcs::size() > 0)

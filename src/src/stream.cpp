@@ -100,7 +100,7 @@ bool wex::stream::process(std::string& text, size_t line_no)
     {
       if (wxMessageBox(
         "More than " + std::to_string(m_Threshold) + " matches in: " + 
-          m_Path.data().string() + "?",
+          m_Path.string() + "?",
         _("Continue"),
         wxYES_NO | wxICON_QUESTION) == wxNO)
       {

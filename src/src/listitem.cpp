@@ -59,11 +59,11 @@ void wex::listitem::insert(long index)
     col = m_ListView->find_column(_("File Name"));
     assert(col >= 0);
     filename = (m_Path.file_exists() || m_Path.dir_exists() ? 
-      m_Path.fullname(): m_Path.data().string());
+      m_Path.fullname(): m_Path.string());
   }
   else
   {
-    filename = m_Path.data().string();
+    filename = m_Path.string();
   }
 
   if (col == 0)
@@ -88,7 +88,7 @@ std::stringstream wex::listitem::log() const
 {
   std::stringstream ss;
 
-  ss << "PATH: " << m_Path.data().string();
+  ss << "PATH: " << m_Path.string();
 
   return ss;
 }

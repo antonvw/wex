@@ -146,7 +146,7 @@ wex::debug::debug(wex::managed_frame* frame, wex::process* debug)
       {
         m_path = path(m_path.get_path(), v[0]);
         m_path_execution_point = m_path;
-        log::verbose("debug path and exec") << m_path.data().string();
+        log::verbose("debug path and exec") << m_path.string();
       }
       data.indicator_no(stc_data::IND_DEBUG);
       data.control().line(std::stoi(v.back()));
@@ -210,8 +210,13 @@ int wex::debug::add_menu(wex::menu* menu, bool popup) const
   wex::menu* sub = (popup ? new wex::menu: nullptr);
   wex::menu* use = (popup ? sub: menu);
   
+  if (popup)
+  {
+    use->style().set(menu::IS_POPUP);
+  }
+  
   const auto ret = wex::menus::build_menu(
-    m_entry.get_commands(), ID_EDIT_DEBUG_FIRST, use, popup);
+    m_entry.get_commands(), ID_EDIT_DEBUG_FIRST, use);
   
   if (ret > 0 && popup)
   {
@@ -322,7 +327,7 @@ std::tuple<bool, std::string> wex::debug::get_args(
   else if ((match("^(b|break)", command, v) == 1) && stc != nullptr)
   {
     args += " " +
-      stc->get_filename().data().string() + ":" + 
+      stc->get_filename().string() + ":" + 
       std::to_string(stc->GetCurrentLine() + 1); 
   }
   else if ((match("^(d|del|delete) (br|breakpoint)", command, v) > 0) && 
@@ -445,7 +450,7 @@ void wex::debug::toggle_breakpoint(int line, stc* stc)
   {
     if (
       line == std::get<2>(it.second) &&
-      std::get<0>(it.second) == stc->get_filename().data().string())
+      std::get<0>(it.second) == stc->get_filename().string())
     {
       m_process->write(m_entry.break_del() + " " + it.first);
       stc->MarkerDeleteHandle(std::get<1>(it.second));
@@ -456,5 +461,5 @@ void wex::debug::toggle_breakpoint(int line, stc* stc)
 
   m_path = stc->get_filename();
   m_process->write(m_entry.break_set() + " " +
-    stc->get_filename().data().string() + ":" + std::to_string(line + 1));
+    stc->get_filename().string() + ":" + std::to_string(line + 1));
 }
