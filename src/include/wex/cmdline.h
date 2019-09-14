@@ -21,8 +21,8 @@ namespace wex
   class cmdline
   {
   public:
-    /// Types for command line.
-    enum type_t
+    /// Types for command line options.
+    enum option_t
     {
       FLOAT,
       INT,
@@ -38,7 +38,7 @@ namespace wex
       /// default a switch toggles, this can be overriden by calling toggle_off
       const std::vector<std::string>, 
       /// process callback if option is found
-      std::function<void(bool on)>>> cmd_switches;
+      std::function<void(bool on)>>> cmd_switches_t;
 
     /// Options:
     typedef std::vector<std::pair<
@@ -48,24 +48,24 @@ namespace wex
       const std::vector<std::string>, 
       /// pair of command line param type and process callback if option is found
       std::pair<
-        type_t, 
-        std::function<void(const std::any& any)>>>> cmd_options;
+        option_t, 
+        std::function<void(const std::any& any)>>>> cmd_options_t;
 
     /// Params (currently only string value supported): 
     typedef std::pair<
       /// pair of name and description
       const std::pair<const std::string, const std::string>, 
       /// process callback if param is present
-      std::function<void(std::vector<std::string> )>> cmd_params;
+      std::function<void(std::vector<std::string> )>> cmd_params_t;
 
     /// Constructor, 
     cmdline(
       /// switches
-      const cmd_switches & s, 
+      const cmd_switches_t & s, 
       /// options
-      const cmd_options & o, 
+      const cmd_options_t & o, 
       /// params
-      const cmd_params & p = cmd_params(),
+      const cmd_params_t & p = cmd_params_t(),
       /// message
       const std::string& message = std::string());
 

@@ -41,6 +41,7 @@ private:
     const std::string& text, 
     const wex::stc_data& stc_data = wex::stc_data()) override;
   virtual void print_ex(wex::ex* ex, const std::string& text) override;
+  virtual void record(const std::string& command) override;
   virtual wex::stc* restore_page(const std::string& key) override;
   virtual bool save_current_page(const std::string& key) override;
   virtual void statusbar_clicked(const std::string& pane) override;

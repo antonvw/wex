@@ -481,6 +481,54 @@ void wex::stc::bind_all()
     m_Frame->get_debug()->execute(event.GetId() - ID_EDIT_DEBUG_FIRST, this);}, 
     ID_EDIT_DEBUG_FIRST, ID_EDIT_DEBUG_LAST);
 
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) 
+  {
+    switch (event.GetInt())
+    {
+      case stc_file::FILE_LOAD:
+        if (get_lexer().scintilla_lexer().empty() && 
+          GetLength() < config("max-lines-lexer").get(10000000))
+        {
+          get_lexer().set(get_filename().lexer(), true);
+        }
+        
+        guess_type();
+        log::status(_("Opened")) << get_filename();
+        log::verbose("opened", 1) << get_filename();
+        [[fallthrough]];
+      case stc_file::FILE_LOAD_SYNC:
+        EmptyUndoBuffer();
+        use_modification_markers(true);
+
+        if (!m_Data.inject())
+        {
+          properties_message();
+        }
+        break;
+
+      case stc_file::FILE_SAVE_AS:
+        get_lexer().set(get_filename().lexer());
+        SetName(get_filename().string());
+        [[fallthrough]];
+      case stc_file::FILE_SAVE:
+        SetReadOnly(get_filename().is_readonly());
+        marker_delete_all_change();
+        log::status(_("Saved")) << get_filename();
+        log::verbose("saved", 1) << get_filename();
+        break;
+    }
+
+    if (get_filename().lexer().language() == "xml")
+    {
+      if (const pugi::xml_parse_result result = 
+        pugi::xml_document().load_file(get_filename().string().c_str());
+        !result)
+      {
+        xml_error(get_filename(), &result, this);
+      }
+    }
+  }, ID_EDIT_FILE_ACTION);
+
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     browser_search(GetSelectedText().ToStdString());}, idOpenWWW);
 

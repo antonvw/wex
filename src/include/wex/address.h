@@ -2,10 +2,12 @@
 // Name:      address.h
 // Purpose:   Declaration of class wex::address
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
+
+#include <string>
 
 namespace wex
 {
@@ -28,10 +30,10 @@ namespace wex
       /// - $ : last line
       /// - . : current line 
       /// - or a combination of these, using + or -
-      /// - or empty, call SetLine afterwards
+      /// - or empty, call set_line afterwards
       const std::string& address = std::string())
-      : m_Address(address)
-      , m_Ex(ex) {;};
+      : m_address(address)
+      , m_ex(ex) {;};
     
     /// Prints this address, with context.
     bool adjust_window(const std::string& text) const;
@@ -43,9 +45,9 @@ namespace wex
     bool flags_supported(const std::string& flags) const;
     
     /// Returns address as specified during construction.
-    const auto & get() const {return m_Address;};
+    const auto & get() const {return m_address;};
     
-    /// If the line number was set using SetLine, it
+    /// If the line number was set using set_line, it
     /// returns this line number, otherwise
     /// converts the address to a line number.
     /// This is the vi line number,
@@ -73,11 +75,10 @@ namespace wex
     bool write_line_number() const;
   private:
     /// Sets (vi) line number.
-    void SetLine(int line);
+    void set_line(int line);
     
-    ex* m_Ex;
-    int m_Line = 0;
-    
-    std::string m_Address; // set by address range
+    ex* m_ex;
+    int m_line = 0;
+    std::string m_address; // set by address range
   };
 };

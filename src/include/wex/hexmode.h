@@ -105,7 +105,7 @@ namespace wex
     void undo();
   private:
     void activate();
-    void Deactivate();
+    void deactivate();
     
     const size_t m_BytesPerLine, m_EachHexField;
 

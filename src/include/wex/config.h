@@ -22,6 +22,7 @@ namespace wex
   class config
   {
   public:
+    /// Type of storage.
     enum type_t
     {
       DATA_STORE_WRITE,     ///< create store if not present

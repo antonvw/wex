@@ -90,10 +90,10 @@ namespace wex
     bool print(const std::string& flags = std::string()) const;
     
     /// Shifts the specified lines to the start of the line.
-    bool shift_left() const {return Indent(false);};
+    bool shift_left() const {return indent(false);};
 
     /// Shifts the specified lines away from the start of the line.
-    bool shift_right() const {return Indent(true);};
+    bool shift_right() const {return indent(true);};
 
     /// Sorts range, with optional parameters:
     /// -u to sort unique lines
@@ -130,33 +130,33 @@ namespace wex
     /// Yanks range to register, default to yank register.
     bool yank(const char name = '0') const;
   private:  
-    const std::string BuildReplacement(const std::string& text) const;
-    int Confirm(const std::string& pattern, const std::string& replacement);
+    const std::string build_replacement(const std::string& text) const;
+    int confirm(const std::string& pattern, const std::string& replacement);
     /// Indents range.
-    bool Indent(bool forward = true) const;
-    bool Parse(const std::string& command, 
+    bool indent(bool forward = true) const;
+    bool parse(const std::string& command, 
       std::string& pattern, std::string& replacement, std::string& options) const;
-    void Set(const std::string& begin, const std::string& end) {
-      m_Begin.m_Address = begin;
-      const int begin_line = m_Begin.get_line();
-      if (begin_line > 0) m_Begin.SetLine(begin_line);
-      m_End.m_Address = end;
-      const int end_line = m_End.get_line();
-      if (end_line > 0) m_End.SetLine(end_line);};
-    void Set(int begin, int end) {
-      m_Begin.SetLine(begin);
-      m_End.SetLine(end);};
-    void Set(address& begin, address& end, int lines);
-    bool SetSelection() const;
+    void set(const std::string& begin, const std::string& end) {
+      m_begin.m_address = begin;
+      const int begin_line = m_begin.get_line();
+      if (begin_line > 0) m_begin.set_line(begin_line);
+      m_end.m_address = end;
+      const int end_line = m_end.get_line();
+      if (end_line > 0) m_end.set_line(end_line);};
+    void set(int begin, int end) {
+      m_begin.set_line(begin);
+      m_end.set_line(end);};
+    void set(address& begin, address& end, int lines);
+    bool set_selection() const;
 
-    static inline std::string m_Pattern;
-    static inline std::string m_Replacement;
-    static inline wex::process* m_Process {nullptr};
+    static inline std::string m_pattern;
+    static inline std::string m_replacement;
+    static inline wex::process* m_process {nullptr};
     
-    const indicator m_FindIndicator {indicator(0)};
+    const indicator m_find_indicator {indicator(0)};
 
-    address m_Begin, m_End;
-    ex* m_Ex;
-    stc* m_STC;
+    address m_begin, m_end;
+    ex* m_ex;
+    stc* m_stc;
   };
 };

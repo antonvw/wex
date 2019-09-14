@@ -568,7 +568,7 @@ bool wex::shell::set_command_from_history(const std::string& short_command)
       no++;
     }
   }
-  catch (std::exception& e)
+  catch (std::exception&)
   {
     std::string short_command_check;
 

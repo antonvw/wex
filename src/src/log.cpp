@@ -89,6 +89,12 @@ wex::log& wex::log::operator<<(char r)
   return *this;
 }
 
+wex::log& wex::log::operator<<(bool r)
+{
+  m_ss << S() << r;
+  return *this;
+}
+
 wex::log& wex::log::operator<<(int r)
 {
   m_ss << S() << r;
@@ -174,8 +180,8 @@ void wex::log::init(int argc, char** argv)
 	        const std::string option(argv[i + 1]);
   	      v.push_back(std::string(std::string(s.second) + "=" + option));
           added = true;
-          break;
           i++;
+          break;
         }
       }
     }

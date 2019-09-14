@@ -63,8 +63,8 @@ bool wex::variable::CheckLink(std::string& value) const
   if (std::vector <std::string> v;
     match("@([a-zA-Z].+)@", m_Value, v) > 0)
   {
-    if (const auto& it = vi_macros::get_variables().find(v[0]);
-      it != vi_macros::get_variables().end())
+    if (const auto& it = vi_macros::get_variables()->find(v[0]);
+      it != vi_macros::get_variables()->end())
     {
       if (!it->second.expand(value))
       {

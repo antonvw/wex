@@ -58,6 +58,9 @@ namespace wex
     /// Returns topic and current logging.
     const std::string get() const;
 
+    /// Logs bool according to level.
+    log& operator<<(bool);
+
     /// Logs int according to level.
     log& operator<<(int);
 

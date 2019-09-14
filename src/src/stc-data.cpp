@@ -40,6 +40,7 @@ wex::stc_data& wex::stc_data::operator=(const stc_data& r)
     m_Data = r.m_Data;
     m_MenuFlags = r.m_MenuFlags;
     m_WinFlags = r.m_WinFlags;
+    m_event_data = r.m_event_data;
 
     if (m_STC != nullptr && r.m_STC != nullptr)
     {
@@ -147,9 +148,27 @@ bool wex::stc_data::inject() const
     injected = true;
   }
   
+  if (m_event_data.synced())
+  {
+    injected = true;
+
+    if (m_event_data.pos_at_end())
+    {
+      m_STC->DocumentEnd();
+    }
+  }
+
+  if (m_event_data.pos_start() != m_event_data.pos_end())
+  {
+    m_STC->SetSelection(m_event_data.pos_start(), m_event_data.pos_end());
+    injected = true;
+  }
+
   if (injected)
   {
-    m_STC->properties_message();
+    m_STC->properties_message(m_event_data.synced() ?
+      path::status_t().set(path::STAT_SYNC): path::status_t());
+    m_STC->SetFocus();
   }
   
   return injected;
@@ -161,4 +180,32 @@ wex::stc_data& wex::stc_data::menu(
   m_Data.flags<flags.size()>(flags, m_MenuFlags, action);
 
   return *this;
+}
+
+void wex::stc_data::event_data::set(stc* s, bool synced)
+{
+  if (s == nullptr)
+  {
+    return;
+  }
+  
+  m_pos_at_end = (s->GetCurrentPos() >= s->GetTextLength() - 1);
+  
+  if (!s->GetSelectedText().empty())
+  {
+    s->GetSelection(&m_pos_start, &m_pos_end);
+  }
+  else
+  {
+    m_pos_start = -1;
+    m_pos_end = -1;
+  }
+
+  // Synchronizing by appending only new data only works for log files.
+  // Other kind of files might get new data anywhere inside the file,
+  // we cannot sync that by keeping pos.
+  // Also only do it for reasonably large files.
+  const bool is_log = (s->get_filename().extension().find(".log") == 0);
+  m_synced = synced;
+  m_synced_log = synced && is_log && s->GetTextLength() > 1024;
 }

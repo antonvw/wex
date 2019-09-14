@@ -115,6 +115,18 @@ wex::stc::stc(const path& p, const stc_data& data)
   }
 }
 
+void wex::stc::add_text(const std::string& text)
+{
+  Allocate(GetTextLength() + text.size());
+  AddTextRaw(text.data(), text.size());
+}
+
+void wex::stc::append_text(const std::string& text)
+{
+  Allocate(GetTextLength() + text.size());
+  AppendTextRaw(text.data(), text.size());
+}
+    
 #define BIGWORD(DIRECTION)                   \
   int c = GetCharAt(GetCurrentPos());        \
   int offset = strncmp((#DIRECTION), "Left", 4) == 0 ? -1: 0; \
@@ -176,6 +188,16 @@ void wex::stc::BigWordRightExtend()
 void wex::stc::BigWordRightRectExtend()
 {
   BIGWORD( RightRectExtend );
+}
+
+void wex::stc::PageScrollDown()
+{
+  LineScroll(0, 10);
+}
+
+void wex::stc::PageScrollUp()
+{
+  LineScroll(0, -10);
 }
 
 bool wex::stc::CanCut() const
@@ -560,19 +582,25 @@ void wex::stc::on_styled_text(wxStyledTextEvent& event)
   event.Skip();
 }
 
-bool wex::stc::open(const path& filename, const stc_data& data)
+bool wex::stc::open(const path& p, const stc_data& data)
 {
-  if (get_filename() != filename && !m_File.file_load(filename))
-  {
-    return false;
-  }
+  m_Data = stc_data(data).window(window_data().name(p.string()));
 
-  m_Data = stc_data(data).window(window_data().name(filename.string()));
-  m_Data.inject();
+  if (get_filename() != p)
+  {
+    if (!m_File.file_load(p))
+    {
+      return false;
+    }
+  }
+  else
+  {
+    m_Data.inject();
+  }
 
   if (m_Frame != nullptr)
   {
-    m_Frame->set_recent_file(filename);
+    m_Frame->set_recent_file(p.string());
   }
 
   return true;
@@ -844,7 +872,7 @@ void wex::stc::set_text(const std::string& value)
 {
   clear();
 
-  AddTextRaw((const char *)value.c_str(), value.length());
+  add_text(value);
 
   DocumentStart();
 

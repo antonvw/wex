@@ -34,7 +34,7 @@ TEST_CASE("wex::stc")
     REQUIRE( stc->GetText() == "hello stc");
   }
   
-  SUBCASE("Find and Replace")
+  SUBCASE("find")
   {
     stc->set_text("hello stc and more text");
     REQUIRE( stc->find_next(std::string("hello")));
@@ -89,7 +89,7 @@ TEST_CASE("wex::stc")
     REQUIRE( stc->find_next(std::string("more text")));
   }
 
-  SUBCASE("Lexer")
+  SUBCASE("lexer")
   {
     stc->set_text("new text");
     REQUIRE(stc->get_lexer().set("cpp"));
@@ -104,18 +104,18 @@ TEST_CASE("wex::stc")
     REQUIRE( stc->get_lexer().set(lexer));
   }
 
-  SUBCASE("Open")
+  SUBCASE("binary")
   {
     // do the same test as with wex::file in base for a binary file
     REQUIRE(stc->open(wex::test::get_path("test.bin")));
     REQUIRE(stc->data().flags() == 0);
-    const wxCharBuffer& buffer = stc->GetTextRaw();
+    const auto& buffer = stc->GetTextRaw();
     REQUIRE(buffer.length() == 40);
   }
   
-  SUBCASE("AddText and AppendText and ContentsChanged")
+  SUBCASE("contents_changed")
   {
-    stc->AddText("added text");
+    stc->SetText("added text");
     REQUIRE( stc->GetText().Contains("added text"));
     REQUIRE( stc->get_file().get_contents_changed());
     stc->get_file().reset_contents_changed();
@@ -125,12 +125,12 @@ TEST_CASE("wex::stc")
     REQUIRE( stc->GetText() != "hello stc");
   }
   
-  SUBCASE("Marker")
+  SUBCASE("marker")
   {
     REQUIRE(stc->marker_delete_all_change());
   }
 
-  SUBCASE("Margin")
+  SUBCASE("margin")
   {
     REQUIRE(stc->get_margin_text_click() == -1);
 
@@ -142,7 +142,7 @@ TEST_CASE("wex::stc")
     REQUIRE(!stc->is_shown_line_numbers());
   }
 
-  SUBCASE("Coverage")
+  SUBCASE("coverage")
   {
     stc->get_lexer().set("cpp");
     stc->Clear();
@@ -183,12 +183,12 @@ TEST_CASE("wex::stc")
     stc->WordRightEndRectExtend();
   }
 
-  SUBCASE("EOL")
+  SUBCASE("eol")
   {
     REQUIRE(!stc->eol().empty());
   }
     
-  SUBCASE("position_restore and Save")
+  SUBCASE("position")
   {
     REQUIRE(!stc->position_restore());
     stc->position_save();
@@ -215,17 +215,15 @@ TEST_CASE("wex::stc")
     REQUIRE( stc->get_lexer().set("cpp"));
     stc->set_text("\nif ()\n{\n");
     stc->DocumentEnd();
-#if wxCHECK_VERSION(3,1,0)
     //  REQUIRE( stc->auto_indentation('\n'));
-#endif
   }
   
-  SUBCASE("Link")
+  SUBCASE("link")
   {
     REQUIRE(!stc->link_open());
   }
 
-  SUBCASE("Hex")
+  SUBCASE("hex")
   {
     stc->get_hexmode().set(true);
     REQUIRE(stc->is_hexmode());
@@ -233,23 +231,22 @@ TEST_CASE("wex::stc")
     stc->get_hexmode().set(false);
   }
 
-  SUBCASE("Load file")
+  SUBCASE("open")
   {
     wex::stc stc(wex::test::get_path("test.h"));
     REQUIRE( stc.get_filename().string().find("test.h") != std::string::npos);
     REQUIRE( stc.open(wex::test::get_path("test.h")));
     REQUIRE(!stc.open("XXX"));
-    stc.properties_message();
   }
 
-  SUBCASE("xml complete")
+  SUBCASE("complete")
   {
     REQUIRE( stc->get_lexer().set("xml"));
     stc->get_vi().command("i<xxxx>");
     stc->get_vi().command("\x1b");
   }
 
-  SUBCASE("Popup")
+  SUBCASE("popup")
   {
     REQUIRE( stc->get_lexer().set("cpp"));
   }

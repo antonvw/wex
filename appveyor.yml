@@ -8,7 +8,6 @@ clone_depth: 5
 
 configuration: 
   - Release
-  - Debug
 
 install:
   - git config http.postBuffer 1048576000

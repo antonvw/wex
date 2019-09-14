@@ -28,7 +28,7 @@ TEST_CASE("wex::vi_macros")
   REQUIRE(!macros.get_filename().empty());
   REQUIRE( wex::vi_macros::load_document());
   REQUIRE( macros.size() > 0);
-  REQUIRE(!macros.get_abbreviations().empty());
+  REQUIRE(!macros.get_abbreviations()->empty());
   
   REQUIRE(!macros.is_modified());
   REQUIRE(!macros.mode()->is_recording());
@@ -60,7 +60,7 @@ TEST_CASE("wex::vi_macros")
   REQUIRE( macros.get("a").front() == "a");
   REQUIRE(!macros.is_recorded("b"));
 
-  REQUIRE(!macros.get_keys_map().empty());
+  REQUIRE(!macros.get_keys_map()->empty());
   macros.set_key_map("4", "www");
   
   stc->set_text("");
@@ -144,15 +144,15 @@ TEST_CASE("wex::vi_macros")
   {
     macros.set_abbreviation(abbrev.first, abbrev.second);
     
-    const auto& it = macros.get_abbreviations().find(abbrev.first);
+    const auto& it = macros.get_abbreviations()->find(abbrev.first);
             
-    if (it != macros.get_abbreviations().end())
+    if (it != macros.get_abbreviations()->end())
     {
       REQUIRE( abbrev.second == it->second);
     }
   }
   
-  REQUIRE( macros.get_abbreviations().size() == get_abbreviations().size() + 1);
+  REQUIRE( macros.get_abbreviations()->size() == get_abbreviations().size() + 1);
   REQUIRE( macros.is_modified());
   REQUIRE( wex::vi_macros::save_document());
 }

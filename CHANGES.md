@@ -1,4 +1,4 @@
-**v19.10**
+**v19.10** *September 14, 2019*
   - uses boost::process lib instead of tiny-process-library
   - uses boost::program_options lib instead of TCLAP lib
   - uses boost::spirit lib instead of eval lib

@@ -18,10 +18,7 @@ namespace wex
   // Forward the simple states.
   struct ssACTIVE;
   struct ssEXPANDING_TEMPLATE;
-  struct ssEXPANDING_VARIABLE;
   struct ssIDLE;
-  struct ssPLAYINGBACK;
-  struct ssPLAYINGBACK_WHILE_RECORDING;
   struct ssRECORDING;
 
   /// This class offers the state machine 
@@ -32,52 +29,38 @@ namespace wex
     enum state_t
     {
       IDLE,
-      PLAYINGBACK,
-      PLAYINGBACK_WHILE_RECORDING,
       RECORDING,
       EXPANDING_TEMPLATE,
-      EXPANDING_VARIABLE,
     };
 
     // All events.
     struct evDONE : sc::event< evDONE > {};
     struct evEXPAND_TEMPLATE : sc::event< evEXPAND_TEMPLATE > {};
-    struct evEXPAND_VARIABLE : sc::event< evEXPAND_VARIABLE > {};
-    struct evPLAYBACK : sc::event< evPLAYBACK > {};
     struct evRECORD : sc::event< evRECORD > {};
 
     vi_macros_fsm();
 
+    void expand_variable(const std::string& name, ex* ex);
     void expanding_template();
-
     bool expanding_variable(const std::string& name, std::string* value) const;
 
     auto get() const {return m_state;};
-
-    int get_count() const {return m_count;};
-    
     std::string get_macro() const {return m_macro;};
-    
     const auto & get_variable() const {return m_variable;};
+    bool is_playback() const {return m_playback;};
 
-    bool is_playback() const {return m_state == PLAYINGBACK;};
-
-    void playback();
+    void playback(const std::string& name, ex* ex, int repeat);
     
-    /// Process general event.
-    bool process(
-      const event_base_type& ev, 
-      const std::string& macro = std::string(), 
-      ex* ex = nullptr, 
-      int count = 1);
-    
-    /// Process expand template variable.
     bool process_expand(
       ex* ex, 
       const variable& v, 
       std::string& expanded);
 
-    void set_error() {m_error = true;};
+    bool record(
+      const std::string& macro = std::string(), 
+      ex* ex = nullptr);
+    
+    static void set_macro(const std::string& m) {m_macro = m;};
 
     void start_recording();
 
@@ -91,17 +74,13 @@ namespace wex
       {
         case IDLE: return "idle"; 
         case EXPANDING_TEMPLATE: return "template";
-        case EXPANDING_VARIABLE: return "variable";
-        case PLAYINGBACK: return "playback";
-        case PLAYINGBACK_WHILE_RECORDING: return "recording playback";
         case RECORDING: return "recording";
         default: return "unhandled state";
       };};
   private:
     void set_ask_for_input() const;
 
-    int m_count{1};
-    bool m_error {false};
+    bool m_error {false}, m_playback {false};
     ex* m_ex {nullptr};
     variable m_variable;
     std::string* m_expanded {nullptr};

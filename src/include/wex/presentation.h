@@ -47,10 +47,10 @@ namespace wex
     void apply(stc* stc) const;
 
     /// Returns background colour.
-    const auto & background_colour() const {return m_BackgroundColour;};
+    const auto & background_colour() const {return m_background_colour;};
     
     /// Returns foreground colour.
-    const auto & foreground_colour() const {return m_ForegroundColour;};
+    const auto & foreground_colour() const {return m_foreground_colour;};
     
     /// Returns true if this presentation is valid.
     bool is_ok() const;
@@ -59,17 +59,17 @@ namespace wex
     const std::string name() const;
   
     /// Returns the no.
-    int number() const {return m_No;};
+    int number() const {return m_no;};
 
     /// Returns the style.
-    int style() const {return m_Style;};
+    int style() const {return m_style;};
     
     /// Returns underlined.
-    bool underlined() const {return m_Under;};
+    bool underlined() const {return m_under;};
   private:
-    std::string m_BackgroundColour, m_ForegroundColour;
-    int m_No = -1, m_Style = -1;
-    bool m_Under = false;
-    presentation_t m_type;
+    std::string m_background_colour, m_foreground_colour;
+    int m_no {-1}, m_style {-1};
+    bool m_under {false};
+    const presentation_t m_type;
   };
 };

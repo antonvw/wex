@@ -5,10 +5,6 @@
 // Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wex/stc-data.h>
 #include <wex/stc.h>
 #include "test.h"
@@ -17,24 +13,36 @@ TEST_CASE("wex::stc_data")
 {
   wex::stc* stc = get_stc();
 
-  SUBCASE("Constructor")
+  SUBCASE("Default constructor")
   {
     REQUIRE( wex::stc_data().control().line() == 0);
+    REQUIRE(!wex::stc_data().event(true).event().pos_at_end());
+    REQUIRE(!wex::stc_data().event(true).event().synced());
+    REQUIRE(!wex::stc_data().event(true).event().synced_log());
     REQUIRE( wex::stc_data().control(
       wex::control_data().col(3)).control().col() == 3);
     REQUIRE( wex::stc_data().indicator_no() == wex::stc_data::IND_LINE);
     REQUIRE( wex::stc_data().indicator_no(
       wex::stc_data::IND_DEBUG).indicator_no() == wex::stc_data::IND_DEBUG);
-    REQUIRE( wex::stc_data(
-      wex::control_data().col(3)).control().col() == 3);
-    REQUIRE( wex::stc_data(
-      wex::window_data().name("XX")).window().name() == "XX");
     REQUIRE( wex::stc_data().flags(
       wex::stc_data::WIN_READ_ONLY).flags() == wex::stc_data::WIN_READ_ONLY);
     REQUIRE( wex::stc_data().flags(
       wex::stc_data::WIN_READ_ONLY).flags(wex::stc_data::WIN_HEX, wex::control_data::OR).
       flags() != wex::stc_data::WIN_READ_ONLY);
     REQUIRE( wex::stc_data().menu().test(wex::stc_data::MENU_VCS));
+  }
+  
+  SUBCASE("Constructor from other data")
+  {
+    REQUIRE( wex::stc_data(
+      wex::control_data().col(3)).control().col() == 3);
+    REQUIRE( wex::stc_data(
+      wex::window_data().name("XX")).window().name() == "XX");
+  }
+  
+  SUBCASE("Constructor from stc")
+  {
+    REQUIRE( wex::stc_data(stc).event(true).event().pos_at_end());
   }
   
   SUBCASE("inject")

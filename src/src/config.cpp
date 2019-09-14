@@ -43,8 +43,7 @@ namespace wex
       if (std::ofstream fs(m_path.data());
         fs.is_open())
       {
-        fs << std::setw(2);
-        fs << m_json;
+        fs << std::setw(2) << m_json << std::endl;
       }
     };
 

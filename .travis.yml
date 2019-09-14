@@ -21,7 +21,7 @@ matrix:
           packages: ['g++-8', 'libboost-all-dev']
       env: _CC=gcc-8 _CXX=g++-8
       os: linux
-      dist: xenial
+      dist: bionic
       sudo: required
       services: xvfb
 
@@ -31,7 +31,7 @@ matrix:
           packages: ['clang-8', 'valgrind', 'libboost-all-dev']
       env: _CC=clang-8 _CXX=clang++-8
       os: osx
-      osx_image: xcode10.2
+      osx_image: xcode11
       sudo: required
 
   allow_failures:

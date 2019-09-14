@@ -53,11 +53,13 @@ int wex::app::OnExit()
   addressrange::on_exit();
   ctags::close();
   stc::on_exit();
+  vi_macros::on_exit();
+
   config::on_exit();
 
   log::verbose(1) << "exit";
 
-  return wxApp::OnExit(); // this destroys the config
+  return wxApp::OnExit();
 }
 
 bool wex::app::OnInit()
@@ -126,7 +128,8 @@ bool wex::app::OnInit()
 
   stc::on_init();
   vcs::load_document();
-  vi_macros().load_document();
+  vi_macros::on_init();
+  vi_macros::load_document();
 
   return true; // wxApp::OnInit(); // we have our own cmd line processing
 }

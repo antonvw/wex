@@ -2,7 +2,7 @@
 // Name:      hexmodeline.h
 // Purpose:   Declaration of class hexmode_line
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -30,27 +30,25 @@ namespace wex
       int pos_or_offset, 
       bool is_position = true);
 
-    bool Delete(int count, bool settext = true);
+    bool erase(int count, bool settext = true);
 
     const std::string info() const;
 
-    bool Goto() const;
+    bool insert(const std::string& text);
 
-    bool Insert(const std::string& text);
-
-    bool IsAsciiField() const {
+    bool is_ascii_field() const {
       return m_ColumnNo >= m_StartAsciiField && 
-             m_ColumnNo < m_StartAsciiField + m_Hex->m_BytesPerLine;};
+             m_ColumnNo < m_StartAsciiField + (int)m_Hex->m_BytesPerLine;};
 
-    bool IsHexField() const {
+    bool is_hex_field() const {
       return m_ColumnNo >= 0 && m_ColumnNo < m_StartAsciiField;};
 
-    bool IsReadOnly() const {
-      if (IsAsciiField())
+    bool is_readonly() const {
+      if (is_ascii_field())
       {
         return false;
       }
-      else if (IsHexField())
+      else if (is_hex_field())
       {
         if (m_Line[m_ColumnNo] != ' ')
         {
@@ -59,39 +57,38 @@ namespace wex
       }
       return true;};
 
-    int OtherField() const {
-      if (IsAsciiField())
+    int other_field() const {
+      if (is_ascii_field())
       {
-        return GetHexField();
+        return get_hex_field();
       }
-      else if (IsHexField())
+      else if (is_hex_field())
       {
-        return GetAsciiField();
+        return get_ascii_field();
       }
       else
       {
         return wxSTC_INVALID_POSITION;
       }};
     
-    bool Replace(char c);
+    bool replace(char c);
+    void replace(const std::string& hex, bool settext);
+    void replace_hex(int value);
 
-    void Replace(const std::string& hex, bool settext);
-
-    void ReplaceHex(int value);
-
-    void SetPos(const wxKeyEvent& event);
+    bool set_pos() const;
+    void set_pos(const wxKeyEvent& event) const;
   private:
-    int Convert(int offset) const {
+    int buffer_index() const;
+    int convert(int offset) const {
       return (m_LineNo << 4) + offset;};
-    int GetAsciiField() const {
+    int get_ascii_field() const {
       if (m_Line[m_ColumnNo] != ' ')
       {
         const int offset = m_ColumnNo / m_Hex->m_EachHexField;
         return m_StartAsciiField + offset;
       }
       return wxSTC_INVALID_POSITION;};
-    int buffer_index() const;
-    int GetHexField() const {
+    int get_hex_field() const {
       const int offset = m_ColumnNo - m_StartAsciiField;
       return m_Hex->m_EachHexField * offset;};
     

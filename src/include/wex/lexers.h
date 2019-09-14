@@ -41,6 +41,20 @@ namespace wex
       OTHER
     };
     
+    /// static interface
+    
+    /// Returns the lexers object.
+    /// If this is the first invocation, and createOnDemand is true,
+    /// it also invokes load_document.
+    static lexers* get(bool createOnDemand = true);
+
+    /// Sets the object as the current one, returns the pointer 
+    /// to the previous current object 
+    /// (both the parameter and returned value may be nullptr). 
+    static lexers* set(lexers* lexers);
+    
+    /// other methods
+    
     /// Applies containers (except global styles) to specified component.
     void apply(stc* stc) const;
     
@@ -74,10 +88,10 @@ namespace wex
 
     /// Clears the theme.
     void clear_theme() {
-      if (!m_Theme.empty()) 
+      if (!m_theme.empty()) 
       {
-        m_ThemePrevious = m_Theme; 
-        m_Theme.clear();
+        m_theme_previous = m_theme; 
+        m_theme.clear();
       }};
     
     /// Finds a lexer specified by a filename (fullname).
@@ -89,60 +103,50 @@ namespace wex
     /// Finds a lexer if text starts with some special tokens.
     const lexer find_by_text(const std::string& text) const;
 
-    /// Returns the lexers object.
-    /// If this is the first invocation, and createOnDemand is true,
-    /// it also invokes load_document.
-    static lexers* get(bool createOnDemand = true);
-
     /// Returns the default style.
-    const style& get_default_style() const {return m_DefaultStyle;};
+    const style& get_default_style() const {return m_default_style;};
     
     /// Returns the filename.
-    const auto & get_filename() const {return m_Path;};
+    const auto & get_filename() const {return m_path;};
     
     /// Returns indicator from loaded indicators,
     /// based on the no of specified indicator.
     const indicator get_indicator(const indicator& indicator) const;
 
     /// Returns the lexers.
-    const auto & get_lexers() const {return m_Lexers;};
+    const auto & get_lexers() const {return m_lexers;};
 
     /// Returns the macros for specified lexer.
-    const auto & get_macros(const std::string& lexer) {return m_Macros[lexer];};
+    const auto & get_macros(const std::string& lexer) {return m_macros[lexer];};
 
     /// Returns marker from loaded markers,
     /// based on the no of specified marker.
     const marker get_marker(const marker& marker) const;
     
     /// Returns number of themes (should at least contain empty theme).
-    auto get_themes_size() const {return m_ThemeMacros.size();};
+    auto get_themes_size() const {return m_theme_macros.size();};
     
     /// Returns true if specified indicator is available.
     bool indicator_is_loaded(const indicator& indic) const {
-      return m_Indicators.find(indic) != m_Indicators.end();};
+      return m_indicators.find(indic) != m_indicators.end();};
 
     /// Returns the keywords for the specified named set of keywords.
     /// Returns empty string if set does not exist.
     const std::string keywords(const std::string& set) const;
 
-    /// Loads all lexers (first clears them) from document.
+    /// Loads all lexers from document.
     /// Returns true if the document is loaded.
     bool load_document();
 
     /// Returns true if specified marker is available.
     bool marker_is_loaded(const marker& marker) const {
-      return m_Markers.find(marker) != m_Markers.end();};
+      return m_markers.find(marker) != m_markers.end();};
 
     /// Returns global properties.
-    const auto & properties() const {return m_globalProperties;};
+    const auto & properties() const {return m_global_properties;};
 
     /// Restores the theme from previous theme.
-    void restore_theme() {m_Theme = m_ThemePrevious;};
-    
-    /// Sets the object as the current one, returns the pointer 
-    /// to the previous current object 
-    /// (both the parameter and returned value may be nullptr). 
-    static lexers* set(lexers* lexers);
+    void restore_theme() {m_theme = m_theme_previous;};
     
     /// Shows a dialog with all lexers, allowing you to choose one.
     /// Returns true and sets the lexer on the stc component if you selected one.
@@ -153,50 +157,52 @@ namespace wex
     bool show_theme_dialog(wxWindow* parent);
 
     /// Returns the current theme.
-    const auto & theme() const {return m_Theme;};
+    const auto & theme() const {return m_theme;};
     
     /// Returns the theme macros for the current theme.
-    const auto & theme_macros() {return m_ThemeMacros[m_Theme];};
+    const auto & theme_macros() {return m_theme_macros[m_theme];};
   private:
     lexers(const path& filename);
 
-    void ParseNodeFolding(const pugi::xml_node& node);
-    void ParseNodeglobal(const pugi::xml_node& node);
-    void ParseNodeKeyword(const pugi::xml_node& node);
-    void ParseNodeMacro(const pugi::xml_node& node);
-    void ParseNodeTheme(const pugi::xml_node& node);
-    void ParseNodeThemes(const pugi::xml_node& node);
+    void parse_node_folding(const pugi::xml_node& node);
+    void parse_node_global(const pugi::xml_node& node);
+    void parse_node_keyword(const pugi::xml_node& node);
+    void parse_node_macro(const pugi::xml_node& node);
+    void parse_node_theme(const pugi::xml_node& node);
+    void parse_node_themes(const pugi::xml_node& node);
 
-    std::map<std::string, std::string> m_DefaultColours, m_Keywords;
+    std::map<std::string, std::string> m_default_colours, m_keywords;
 
     std::map<std::string, std::map<std::string, std::string> > 
-      m_Macros, m_ThemeColours, m_ThemeMacros;
+      m_macros, m_theme_colours, m_theme_macros;
 
-    std::set<indicator> m_Indicators;
-    std::set<marker> m_Markers;
+    std::set<indicator> m_indicators;
+    std::set<marker> m_markers;
 
-    std::vector<property> m_globalProperties;
-    std::vector<lexer> m_Lexers;
-    std::vector<style> m_Styles, m_StylesHex;
-    std::vector<std::pair<std::string, std::string>> m_Texts;
+    std::vector<property> m_global_properties;
+    std::vector<lexer> m_lexers;
+    std::vector<style> m_styles, m_styles_hex;
+    std::vector<std::pair<std::string, std::string>> m_texts;
 
-    style m_DefaultStyle;
+    style m_default_style;
 
-    const path m_Path;
+    const path m_path;
     
     std::string 
-      m_FoldingBackgroundColour, 
-      m_FoldingForegroundColour,
-      m_Theme,
-      m_ThemePrevious;
+      m_folding_background_colour, 
+      m_folding_foreground_colour,
+      m_theme,
+      m_theme_previous;
     
     int 
-      m_StyleNoTextMargin {-1}, 
-      m_StyleNoTextMarginDay {-1}, 
-      m_StyleNoTextMarginWeek {-1},
-      m_StyleNoTextMarginMonth {-1},
-      m_StyleNoTextMarginYear {-1};
+      m_style_no_text_margin {-1}, 
+      m_style_no_text_margin_day {-1}, 
+      m_style_no_text_margin_week {-1},
+      m_style_no_text_margin_month {-1},
+      m_style_no_text_margin_year {-1};
+    
+    bool m_is_loaded {false};
 
-    static inline lexers* m_Self = nullptr;
+    static inline lexers* m_self = nullptr;
   };
 };

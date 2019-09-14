@@ -86,7 +86,7 @@ bool app::OnInit()
         wex::log::set_flags(std::any_cast<int>(s));}}},
       {{"vmodule,m", "activates verbosity for files starting with main to level"}, {wex::cmdline::STRING, [&](const std::any& s) {}}},
       {{"scriptin,s", "script in"}, {wex::cmdline::STRING, [&](const std::any& s) {
-        m_Scriptin.open(std::any_cast<std::string>(s));}}},
+        m_Scriptin = std::any_cast<std::string>(s);}}},
       {{"source,S", "source file"}, {wex::cmdline::STRING, [&](const std::any& s) {
         m_Data.control(wex::control_data().command(":so " + std::any_cast<std::string>(s)));}}},
       {{"tag,t", "start at tag"}, {wex::cmdline::STRING, [&](const std::any& s) {
@@ -96,12 +96,12 @@ bool app::OnInit()
       {{"v,V", "activates verbosity upto verbose level (valid range: 0-9)", "1"}, {wex::cmdline::INT, [&](const std::any& a) {
         el::Loggers::setVerboseLevel(std::any_cast<int>(a));}}},
       {{"scriptout,w", "script out write"}, {wex::cmdline::STRING, [&](const std::any& s) {
-        m_Scriptout.open(std::any_cast<std::string>(s), std::ios_base::out);}}},
-      {{"append,W", "script out append"}, {wex::cmdline::STRING, [&](const std::any& s) {
-        m_Scriptout.open(std::any_cast<std::string>(s), std::ios_base::app);}}}},
+        m_Scriptout = std::any_cast<std::string>(s);}}}},
+      //{{"append,W", "script out append"}, {wex::cmdline::STRING, [&](const std::any& s) {
+      //  m_Scriptout.open(std::any_cast<std::string>(s), std::ios_base::out | std::ios_base::app);}}}},
      {{"files", "input file[:line number][:column number]\n"
         "or executable file if -d was specified"}, [&](const std::vector<std::string> & v) {
-        for (const auto & f : v) m_Files.emplace_back(f);}}).parse(wxTheApp->argc, wxTheApp->argv) || exit)
+        for (const auto & f : v) m_Files.emplace_back(f);}}).parse(argc, argv) || exit)
   {
     return false;
   }

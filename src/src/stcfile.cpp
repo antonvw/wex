@@ -5,35 +5,49 @@
 // Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <thread>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <pugixml.hpp>
 #include <wex/stcfile.h>
+#include <wex/defs.h>
 #include <wex/filedlg.h>
 #include <wex/lexers.h>
-#include <wex/log.h>
-#include <wex/path.h>
 #include <wex/stc.h>
-#include <wex/util.h> // for STAT_ etc.
 
-void CheckWellFormed(wex::stc* stc, const wex::path& fn)
+//#define USE_THREAD 1
+
+#define FILE_POST(ACTION)                                                 \
+  wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_EDIT_FILE_ACTION); \
+  event.SetInt(ACTION);                                                   \
+  wxPostEvent(m_stc, event);
+  
+namespace wex
 {
-  if (fn.lexer().language() == "xml")
+#ifdef USE_THREAD
+  // from wxWidgets/src/stc/scintilla/include/ILexer.h
+  class ILoader 
   {
-    if (const pugi::xml_parse_result result = 
-      pugi::xml_document().load_file(fn.string().c_str());
-      !result)
-    {
-      wex::xml_error(fn, &result, stc);
-    }
-  }
+  public:
+    virtual int Release() = 0;
+    virtual int AddData(char *data, int length) = 0;
+    virtual void * ConvertToDocument() = 0;
+  };
+  
+  class loader : public ILoader 
+  {
+  public:
+    int Release() override {return 0;};
+    int AddData(char *data, int length) override {return 0;};
+    void * ConvertToDocument() override {return nullptr;};
+  };
+#endif
 }
 
 wex::stc_file::stc_file(stc* stc, const std::string& filename)
   : file(filename)
-  , m_STC(stc)
+  , m_stc(stc)
 {
 }
 
@@ -48,142 +62,113 @@ bool wex::stc_file::do_file_load(bool synced)
     return false;
   }
 
-  // Synchronizing by appending only new data only works for log files.
-  // Other kind of files might get new data anywhere inside the file,
-  // we cannot sync that by keeping pos. 
-  // Also only do it for reasonably large files.
-  const bool isLog = (get_filename().extension().find(".log") == 0);
-  
-  m_STC->use_modification_markers(false);
+  m_stc->use_modification_markers(false);
+  m_stc->keep_event_data(synced);
 
-  read_from_file(
-    synced &&
-    isLog &&
-    m_STC->GetTextLength() > 1024,
-    dlg.hexmode() | m_STC->data().flags().test(stc_data::WIN_HEX));
+  const bool hexmode = 
+    dlg.hexmode() || 
+    m_stc->data().flags().test(stc_data::WIN_HEX);
 
-  if (!synced)
+  const std::streampos offset = 
+    m_previous_size < 
+      m_stc->get_filename().stat().st_size && 
+      m_stc->data().event().synced_log() ?
+    m_previous_size: std::streampos(0);
+
+  if (offset == std::streampos(0))
   {
-    // read_from_file might already have set the lexer using a modeline.
-    if (m_STC->get_lexer().scintilla_lexer().empty())
+    m_stc->clear();
+  }
+
+  m_previous_size = m_stc->get_filename().stat().st_size;
+
+#ifdef USE_THREAD
+  std::thread t([&] {
+#endif
+    if (const auto buffer(read(offset)); buffer != nullptr)
     {
-      m_STC->get_lexer().set(get_filename().lexer(), true);
+      if (!m_stc->get_hexmode().is_active() && !hexmode)
+      {
+#ifdef USE_THREAD
+        loader* load = (loader*)m_stc->CreateLoader(buffer->size());
+#endif
+        m_stc->append_text(*buffer);
+        m_stc->DocumentStart();
+      }
+      else
+      {
+        if (!m_stc->get_hexmode().is_active())
+        {
+          m_stc->get_hexmode().set(true, false);
+        }
+        
+        m_stc->get_hexmode().append_text(*buffer);
+      }
+    }
+    else
+    {
+      m_stc->SetText("READ ERROR");
     }
 
-    log::status(_("Opened")) << get_filename();
-    log::verbose("opened", 1) << get_filename();
-  }
-  
-  m_STC->properties_message(path::status_t().set(synced ? path::STAT_SYNC: 0));
-  m_STC->use_modification_markers(true);
-  
-  CheckWellFormed(m_STC, get_filename());
-  
+    const int action = m_stc->data().event().synced() ? FILE_LOAD_SYNC: FILE_LOAD;
+    FILE_POST(action);
+#ifdef USE_THREAD
+    });
+  t.detach();
+#endif
+
   return true;
 }
 
 void wex::stc_file::do_file_new()
 {
-  m_STC->SetName(get_filename().string());
-  m_STC->properties_message();
-  m_STC->clear();
-  m_STC->get_lexer().set(get_filename().lexer(), true); // allow fold
+  m_stc->SetName(get_filename().string());
+  m_stc->properties_message();
+  m_stc->clear();
+  m_stc->get_lexer().set(get_filename().lexer(), true); // allow fold
 }
 
 void wex::stc_file::do_file_save(bool save_as)
 {
-  if (m_STC->get_hexmode().is_active())
+  m_stc->SetReadOnly(true); // prevent changes during saving
+
+  if (m_stc->get_hexmode().is_active())
   {
-    write(m_STC->get_hexmode().buffer());
+#ifdef USE_THREAD
+    std::thread t([&] {
+#endif        
+      if (write(m_stc->get_hexmode().buffer()))
+      {
+        FILE_POST(save_as ? FILE_SAVE_AS: FILE_SAVE);
+      }
+#ifdef USE_THREAD
+    });
+    t.detach();
+#endif    
   }
   else
   {
-    const auto& buffer(m_STC->GetTextRaw());
-    write(buffer.data(), buffer.length());
+#ifdef USE_THREAD
+    std::thread t([&] {
+#endif        
+      if (const auto& buffer(m_stc->GetTextRaw());
+        write(buffer.data(), buffer.length()))
+      {
+        FILE_POST(save_as ? FILE_SAVE_AS: FILE_SAVE);
+      }
+#ifdef USE_THREAD
+    });
+    t.detach();
+#endif    
   }
-  
-  if (save_as)
-  {
-    m_STC->SetReadOnly(get_filename().is_readonly());
-    m_STC->get_lexer().set(get_filename().lexer());
-    m_STC->SetName(get_filename().string());
-  }
-  
-  m_STC->marker_delete_all_change();
-  
-  log::status(_("Saved")) << get_filename();
-  log::verbose("saved", 1) << get_filename();
-  
-  CheckWellFormed(m_STC, get_filename());
 }
 
-bool wex::stc_file::get_contents_changed() const 
+bool wex::stc_file::get_contents_changed() const
 {
-  return m_STC->GetModify();
-}
-
-void wex::stc_file::read_from_file(bool get_only_new_data, bool hexmode)
-{
-  const bool pos_at_end = (m_STC->GetCurrentPos() >= m_STC->GetTextLength() - 1);
-
-  int startPos, endPos;
-  m_STC->GetSelection(&startPos, &endPos);
-
-  std::streampos offset = 0;
-
-  if (m_PreviousLength < m_STC->get_filename().stat().st_size && get_only_new_data)
-  {
-    offset = m_PreviousLength;
-  }
-
-  if (offset == std::streampos(0))
-  {
-    m_STC->clear();
-  }
-
-  m_PreviousLength = m_STC->get_filename().stat().st_size;
-
-  if (const auto buffer = read(offset);
-    !m_STC->get_hexmode().is_active() && !hexmode)
-  {
-    m_STC->Allocate(buffer->size());
-    
-    get_only_new_data ? 
-      m_STC->AppendTextRaw((const char *)buffer->data(), buffer->size()):
-      m_STC->AddTextRaw((const char *)buffer->data(), buffer->size());
-  }
-  else
-  {
-    if (!m_STC->get_hexmode().is_active())
-    {
-      m_STC->get_hexmode().set(true, false);
-    }
-    
-    m_STC->get_hexmode().append_text(*buffer);
-  }
-
-  if (get_only_new_data)
-  {
-    if (pos_at_end)
-    {
-      m_STC->DocumentEnd();
-    }
-  }
-  else
-  {
-    m_STC->guess_type();
-    m_STC->DocumentStart();
-  }
-
-  if (startPos != endPos)
-  {
-    m_STC->SetSelection(startPos, endPos);
-  }
-  
-  m_STC->EmptyUndoBuffer();
+  return m_stc->GetModify();
 }
 
 void wex::stc_file::reset_contents_changed()
 {
-  m_STC->SetSavePoint();
+  m_stc->SetSavePoint();
 }

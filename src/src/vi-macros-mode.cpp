@@ -119,8 +119,7 @@ int wex::vi_macros_mode::transition(
       {
         return 0;
       }
-
-      m_FSM->process(vi_macros_fsm::evRECORD(), macro, ex, repeat);
+      m_FSM->record(macro, ex);
     break;
 
     case '@': 
@@ -184,9 +183,9 @@ int wex::vi_macros_mode::transition(
       }
 
       if (vi_macros::is_recorded_macro(macro))
-        m_FSM->process(vi_macros_fsm::evPLAYBACK(), macro, ex, repeat);
-      else
-        m_FSM->process(vi_macros_fsm::evEXPAND_VARIABLE(), macro, ex, repeat);
+        m_FSM->playback(macro, ex, repeat);
+      else 
+        m_FSM->expand_variable(macro, ex);
     break;
 
     default: return 0;

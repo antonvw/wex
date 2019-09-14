@@ -97,7 +97,7 @@ std::vector<std::string> get_builtin_variables()
 {
   std::vector<std::string> v;
 
-  for (const auto i : wex::vi_macros::get_variables())
+  for (const auto i : *wex::vi_macros::get_variables())
   {
     if (i.second.is_builtin())
     {

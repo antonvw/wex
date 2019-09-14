@@ -90,6 +90,10 @@ namespace wex
       /// the text to be printed
       const std::string& text);
 
+    /// Allows you to perform action for a (vi) command. 
+    /// This method is invoked after command is executed.
+    virtual void record(const std::string& command) {;};
+
     /// Restores a previous saved current page.
     /// Returns restored page (default returns nullptr).
     virtual stc* restore_page(const std::string& key) {return nullptr;};

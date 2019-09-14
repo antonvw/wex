@@ -15,7 +15,7 @@ TEST_CASE( "wex::file" )
   {
     REQUIRE(!wex::file("XXXXX").is_opened());
     
-    wex::file file(wex::test::get_path("test.h"));
+    wex::file file(wex::test::get_path("test.h"), std::ios_base::in | std::ios_base::out);
   
     REQUIRE(!file.check_sync());
     REQUIRE(!file.get_contents_changed());
@@ -24,8 +24,8 @@ TEST_CASE( "wex::file" )
     file.reset_contents_changed();
 
     REQUIRE(!file.file_save());
-    REQUIRE( file.file_save("test-save"));
-    REQUIRE( file.get_filename().stat().is_ok());
+    REQUIRE(!file.file_save("test-save"));
+    REQUIRE(!file.get_filename().stat().is_ok());
     // The fullpath should be normalized, test it.
     REQUIRE( file.get_filename().string() != "./test.h");
     REQUIRE(!file.get_filename().stat().is_readonly());
@@ -51,7 +51,7 @@ TEST_CASE( "wex::file" )
   SUBCASE( "remove")
   {
     REQUIRE( remove("test-create") == 0);
-    REQUIRE( remove("test-save") == 0);
+    REQUIRE( remove("test-save") != 0);
     REQUIRE( remove("test-xxx") == 0);
   }
 

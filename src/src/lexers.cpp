@@ -22,25 +22,25 @@
 
 // Constructor for lexers from specified filename.
 // This must be an existing xml file containing all lexers.
-// It does not do load_document, however if you use the global Get,
+// It does not do load_document, however if you use the static get,
 // it both constructs and loads the lexers.
 wex::lexers::lexers(const path& filename)
-  : m_Path(filename)
-  , m_Theme(config("theme").get())
+  : m_path(filename)
+  , m_theme(config("theme").get())
 {
 }
 
 void wex::lexers::apply(stc* stc) const
 {
-  m_DefaultStyle.apply(stc);
+  m_default_style.apply(stc);
 
-  for (const auto& i : m_Indicators) i.apply(stc);
-  for (const auto& p : m_globalProperties) p.apply(stc);
-  for (const auto& m : m_Markers) m.apply(stc);
+  for (const auto& i : m_indicators) i.apply(stc);
+  for (const auto& p : m_global_properties) p.apply(stc);
+  for (const auto& m : m_markers) m.apply(stc);
   
   if (stc->get_hexmode().is_active())
   {
-    for (const auto& s : m_StylesHex) s.apply(stc);
+    for (const auto& s : m_styles_hex) s.apply(stc);
   }
 }
   
@@ -49,37 +49,37 @@ void wex::lexers::apply_default_style(
   std::function<void(const std::string& )> fore)
 {
   if (std::vector<std::string> v; 
-    back != nullptr && match(",back:(.*),", m_DefaultStyle.value(), v) > 0)
+    back != nullptr && match(",back:(.*),", m_default_style.value(), v) > 0)
   {
     back(v[0]);
   }
   
   if (std::vector<std::string> v; 
-    fore != nullptr && match(",fore:(.*)", m_DefaultStyle.value(), v) > 0)
+    fore != nullptr && match(",fore:(.*)", m_default_style.value(), v) > 0)
   {
     fore(v[0]);
   }
 }
   
-// No longer const, as it updates m_DefaultColours.
+// No longer const, as it updates m_default_colours.
 void wex::lexers::apply_global_styles(stc* stc)
 {
-  if (m_DefaultColours.empty())
+  if (m_default_colours.empty())
   {
-    m_DefaultColours["caretforeground"] = stc->GetCaretForeground().GetAsString();
-    m_DefaultColours["caretlinebackground"] = stc->GetCaretLineBackground().GetAsString();
-    m_DefaultColours["edge"] = stc->GetEdgeColour().GetAsString();
+    m_default_colours["caretforeground"] = stc->GetCaretForeground().GetAsString();
+    m_default_colours["caretlinebackground"] = stc->GetCaretLineBackground().GetAsString();
+    m_default_colours["edge"] = stc->GetEdgeColour().GetAsString();
   }
     
-  m_DefaultStyle.apply(stc);
+  m_default_style.apply(stc);
 
   stc->StyleClearAll();
 
-  for (const auto& s : m_Styles) s.apply(stc);
+  for (const auto& s : m_styles) s.apply(stc);
 
-  if (!m_FoldingBackgroundColour.empty())
+  if (!m_folding_background_colour.empty())
   {
-    stc->SetFoldMarginHiColour(true, m_FoldingBackgroundColour.c_str());
+    stc->SetFoldMarginHiColour(true, m_folding_background_colour.c_str());
   }
   else
   {
@@ -87,17 +87,17 @@ void wex::lexers::apply_global_styles(stc* stc)
     stc->SetFoldMarginHiColour(true, wxColour(0xc0, 0xc0, 0xc0));
   }
 
-  if (!m_FoldingForegroundColour.empty())
+  if (!m_folding_foreground_colour.empty())
   {
-    stc->SetFoldMarginColour(true, m_FoldingForegroundColour.c_str());
+    stc->SetFoldMarginColour(true, m_folding_foreground_colour.c_str());
   }
   else
   {
     stc->SetFoldMarginColour(true, wxColour(0xff, 0, 0));
   }
 
-  if (const auto& colour_it = m_ThemeColours.find(m_Theme);
-    colour_it != m_ThemeColours.end())
+  if (const auto& colour_it = m_theme_colours.find(m_theme);
+    colour_it != m_theme_colours.end())
   {
     for (const auto& it : colour_it->second)
     {
@@ -131,23 +131,23 @@ void wex::lexers::apply_margin_text_style(
   switch (style)
   {
     case margin_style_t::DAY:
-      stc->MarginSetStyle(line, m_StyleNoTextMarginDay);
+      stc->MarginSetStyle(line, m_style_no_text_margin_day);
       break;
     
     case margin_style_t::MONTH:
-      stc->MarginSetStyle(line, m_StyleNoTextMarginMonth);
+      stc->MarginSetStyle(line, m_style_no_text_margin_month);
       break;
     
     case margin_style_t::OTHER:
-      stc->MarginSetStyle(line, m_StyleNoTextMargin);
+      stc->MarginSetStyle(line, m_style_no_text_margin);
       break;
     
     case margin_style_t::WEEK:
-      stc->MarginSetStyle(line, m_StyleNoTextMarginWeek);
+      stc->MarginSetStyle(line, m_style_no_text_margin_week);
       break;
     
     case margin_style_t::YEAR:
-      stc->MarginSetStyle(line, m_StyleNoTextMarginYear);
+      stc->MarginSetStyle(line, m_style_no_text_margin_year);
       break;
     
     case margin_style_t::UNKNOWN:
@@ -162,17 +162,17 @@ void wex::lexers::apply_margin_text_style(
 
 const wex::lexer wex::lexers::find_by_filename(const std::string& fullname) const
 {
-  const auto& it = std::find_if(m_Lexers.begin(), m_Lexers.end(), 
+  const auto& it = std::find_if(m_lexers.begin(), m_lexers.end(), 
     [fullname](auto const& e) {return !e.extensions().empty() && 
        matches_one_of(fullname, e.extensions());});
-  return it != m_Lexers.end() ? *it: lexer();
+  return it != m_lexers.end() ? *it: lexer();
 }
 
 const wex::lexer wex::lexers::find_by_name(const std::string& name) const
 {
-  const auto& it = std::find_if(m_Lexers.begin(), m_Lexers.end(), 
+  const auto& it = std::find_if(m_lexers.begin(), m_lexers.end(), 
     [name](auto const& e) {return e.display_lexer() == name;});
-  return it != m_Lexers.end() ? *it: lexer();
+  return it != m_lexers.end() ? *it: lexer();
 }
 
 const wex::lexer wex::lexers::find_by_text(const std::string& text) const
@@ -187,7 +187,7 @@ const wex::lexer wex::lexers::find_by_text(const std::string& text) const
     const std::string filtered(std::regex_replace(text, 
       std::regex("[ \t\n\v\f\r]+$"), "", std::regex_constants::format_sed));
 
-    for (const auto& t : m_Texts) 
+    for (const auto& t : m_texts) 
     {
       if (std::regex_search(filtered, std::regex(t.second)))
         return find_by_name(t.first);
@@ -203,82 +203,85 @@ const wex::lexer wex::lexers::find_by_text(const std::string& text) const
 
 wex::lexers* wex::lexers::get(bool createOnDemand)
 {
-  if (m_Self == nullptr && createOnDemand)
+  if (m_self == nullptr && createOnDemand)
   {
-    m_Self = new lexers(path(config().dir(), "wex-lexers.xml"));
-    m_Self->load_document();
+    m_self = new lexers(path(config().dir(), "wex-lexers.xml"));
+    m_self->load_document();
   }
 
-  return m_Self;
+  return m_self;
 }
 
 const wex::indicator wex::lexers::get_indicator(const indicator& indicator) const
 {
-  const auto& it = m_Indicators.find(indicator);
-  return (it != m_Indicators.end() ? *it: wex::indicator());
+  const auto& it = m_indicators.find(indicator);
+  return (it != m_indicators.end() ? *it: wex::indicator());
 }
 
 const std::string wex::lexers::keywords(const std::string& set) const
 {
-  const auto& it = m_Keywords.find(set);
-  return (it != m_Keywords.end() ? it->second: std::string());
+  const auto& it = m_keywords.find(set);
+  return (it != m_keywords.end() ? it->second: std::string());
 }
 
 const wex::marker wex::lexers::get_marker(const marker& marker) const
 {
-  const auto& it = m_Markers.find(marker);
-  return (it != m_Markers.end() ? *it: wex::marker());
+  const auto& it = m_markers.find(marker);
+  return (it != m_markers.end() ? *it: wex::marker());
 }
   
 bool wex::lexers::load_document()
 {
   // This test is to prevent showing an error if the lexers file does not exist,
   // as this is not required.
-  if (!m_Path.file_exists()) return false;
+  if (!m_path.file_exists()) return false;
   
   pugi::xml_document doc;
 
-  if (const auto result = doc.load_file(m_Path.string().c_str(), 
+  if (const auto result = doc.load_file(m_path.string().c_str(), 
     pugi::parse_default | pugi::parse_trim_pcdata);
     !result)
   {
-    xml_error(m_Path, &result);
+    xml_error(m_path, &result);
     return false;
   }
+
+  if (m_is_loaded)
+  {
+    m_default_style = style();
+    m_folding_background_colour.clear();
+    m_folding_foreground_colour.clear();
+    m_global_properties.clear();
+    m_indicators.clear();
+    m_keywords.clear();
+    m_lexers.clear();
+    m_macros.clear();
+    m_markers.clear();
+    m_styles.clear();
+    m_styles_hex.clear();
+    m_texts.clear();
+    m_theme_colours.clear();
+    m_theme_macros.clear();
+  }
   
-  m_DefaultStyle = style();
-  m_FoldingBackgroundColour.clear();
-  m_FoldingForegroundColour.clear();
-  m_globalProperties.clear();
-  m_Indicators.clear();
-  m_Keywords.clear();
-  m_Lexers.clear();
-  m_Macros.clear();
-  m_Markers.clear();
-  m_Styles.clear();
-  m_StylesHex.clear();
-  m_Texts.clear();
-  m_ThemeColours.clear();
-  m_ThemeMacros.clear();
-  
-  m_ThemeColours[std::string()] = m_DefaultColours;
-  m_ThemeMacros[std::string()] = std::map<std::string, std::string>{};  
+  m_theme_colours[std::string()] = m_default_colours;
+  m_theme_macros[std::string()] = std::map<std::string, std::string>{};  
   
   for (const auto& node: doc.document_element().children())
   {
-         if (strcmp(node.name(), "macro") == 0) ParseNodeMacro(node);
-    else if (strcmp(node.name(), "global") == 0) ParseNodeglobal(node);
-    else if (strcmp(node.name(), "keyword")== 0) ParseNodeKeyword(node);
+         if (strcmp(node.name(), "macro") == 0) parse_node_macro(node);
+    else if (strcmp(node.name(), "global") == 0) parse_node_global(node);
+    else if (strcmp(node.name(), "keyword")== 0) parse_node_keyword(node);
     else if (strcmp(node.name(), "lexer") ==  0) 
     {
       if (const wex::lexer lexer(&node); lexer.is_ok()) 
-        m_Lexers.emplace_back(lexer);
+        m_lexers.emplace_back(lexer);
     }
   }
 
   std::list <std::string> l{std::string(wxFileSelectorDefaultWildcardStr)};
 
-  for (const auto& it : m_Lexers)
+  for (const auto& it : m_lexers)
   {
     if (!it.extensions().empty())
     {
@@ -295,19 +298,19 @@ bool wex::lexers::load_document()
     conf.set(std::list<std::string>{wxGetHomeDir().ToStdString()});
   
   // Do some checking.
-  if (!m_Lexers.empty() && !m_Theme.empty())
+  if (!m_lexers.empty() && !m_theme.empty())
   {
-    if (!m_DefaultStyle.is_ok()) log() << "default style not ok";
-    if (!m_DefaultStyle.contains_default_style()) log() << "default style does not contain default style";
+    if (!m_default_style.is_ok()) log() << "default style not ok";
+    if (!m_default_style.contains_default_style()) log() << "default style does not contain default style";
   }  
 
-  if (m_ThemeMacros.empty())
+  if (m_theme_macros.empty())
   {
     log() << "themes are missing";
   }
   else 
   {
-    for (const auto& it : m_ThemeMacros)
+    for (const auto& it : m_theme_macros)
     {
       if (!it.first.empty() && it.second.empty())
       {
@@ -317,35 +320,37 @@ bool wex::lexers::load_document()
   }
 
   log::verbose("lexers info") << 
-    "default colors:" << m_DefaultColours.size() <<
-    "global properties:" << m_globalProperties.size() <<
-    "indicators:" << m_Indicators.size() <<
-    "keywords:" << m_Keywords.size() <<
-    "lexers:" << m_Lexers.size() <<
-    "macros:" << m_Macros.size() <<
-    "markers:" << m_Markers.size() <<
-    "styles:" << m_Styles.size() <<
-    "styles hex:" << m_StylesHex.size() <<
-    "texts:" << m_Texts.size() <<
-    "theme colours:" << m_ThemeColours.size() <<
-    "theme macros:" << m_ThemeMacros.size();
+    "default colors:" << m_default_colours.size() <<
+    "global properties:" << m_global_properties.size() <<
+    "indicators:" << m_indicators.size() <<
+    "keywords:" << m_keywords.size() <<
+    "lexers:" << m_lexers.size() <<
+    "macros:" << m_macros.size() <<
+    "markers:" << m_markers.size() <<
+    "styles:" << m_styles.size() <<
+    "styles hex:" << m_styles_hex.size() <<
+    "texts:" << m_texts.size() <<
+    "theme colours:" << m_theme_colours.size() <<
+    "theme macros:" << m_theme_macros.size();
+  
+  m_is_loaded = true;
   
   return true;
 }
 
-void wex::lexers::ParseNodeFolding(const pugi::xml_node& node)
+void wex::lexers::parse_node_folding(const pugi::xml_node& node)
 {
   tokenizer fields(node.text().get(), ",");
 
-  m_FoldingBackgroundColour = apply_macro(fields.get_next_token());
-  m_FoldingForegroundColour = apply_macro(fields.get_next_token());
+  m_folding_background_colour = apply_macro(fields.get_next_token());
+  m_folding_foreground_colour = apply_macro(fields.get_next_token());
 }
 
-void wex::lexers::ParseNodeglobal(const pugi::xml_node& node)
+void wex::lexers::parse_node_global(const pugi::xml_node& node)
 {
   for (const auto& child: node.children())
   {
-    if (m_Theme.empty())
+    if (m_theme.empty())
     {
       // Do nothing.
     }
@@ -355,82 +360,82 @@ void wex::lexers::ParseNodeglobal(const pugi::xml_node& node)
     }
     else if (strcmp(child.name(), "foldmargin") == 0)
     {
-      ParseNodeFolding(child);
+      parse_node_folding(child);
     }
     else if (strcmp(child.name(), "hex") == 0)
     {
-      m_StylesHex.emplace_back(child, "global");
+      m_styles_hex.emplace_back(child, "global");
     }
     else if (strcmp(child.name(), "indicator") == 0)
     {
       if (const wex::indicator indicator(child); indicator.is_ok())
       {
-        m_Indicators.insert(indicator);
+        m_indicators.insert(indicator);
       }
     }
     else if (strcmp(child.name(), "marker") == 0)
     {
-      if (const wex::marker marker(child); marker.is_ok()) m_Markers.insert(marker);
+      if (const wex::marker marker(child); marker.is_ok()) m_markers.insert(marker);
     }
     else if (strcmp(child.name(), "properties") == 0)
     {
-      node_properties(&child, m_globalProperties);
+      node_properties(&child, m_global_properties);
     }
     else if (strcmp(child.name(), "style") == 0)
     {
       if (const wex::style style(child, "global"); style.contains_default_style())
       {
-        if (m_DefaultStyle.is_ok())
+        if (m_default_style.is_ok())
         {
           log("duplicate default style") << child.name() << child;
         }
         else
         {
-          m_DefaultStyle = style;
+          m_default_style = style;
         }
       }
       else
       {
         if (style.define() == "style_textmargin")
         {
-          m_StyleNoTextMargin = std::stoi(style.number());
+          m_style_no_text_margin = std::stoi(style.number());
         }
         else if (style.define() == "style_textmargin_day")
         {
-          m_StyleNoTextMarginDay = std::stoi(style.number());
+          m_style_no_text_margin_day = std::stoi(style.number());
         }
         else if (style.define() == "style_textmargin_week")
         {
-          m_StyleNoTextMarginWeek = std::stoi(style.number());
+          m_style_no_text_margin_week = std::stoi(style.number());
         }
         else if (style.define() == "style_textmargin_month")
         {
-          m_StyleNoTextMarginMonth = std::stoi(style.number());
+          m_style_no_text_margin_month = std::stoi(style.number());
         }
         else if (style.define() == "style_textmargin_year")
         {
-          m_StyleNoTextMarginYear = std::stoi(style.number());
+          m_style_no_text_margin_year = std::stoi(style.number());
         }
 
-        m_Styles.emplace_back(style);
+        m_styles.emplace_back(style);
       }
     }
     else if (strcmp(child.name(), "text") == 0)
     {
-      m_Texts.push_back({child.attribute("no").value(), child.text().get()});
+      m_texts.push_back({child.attribute("no").value(), child.text().get()});
     }
   }
 }
 
-void wex::lexers::ParseNodeKeyword(const pugi::xml_node& node)
+void wex::lexers::parse_node_keyword(const pugi::xml_node& node)
 {
   for (const auto& child: node.children())
   {
-    m_Keywords[child.attribute("name").value()] = child.text().get();
+    m_keywords[child.attribute("name").value()] = child.text().get();
   }
 }
 
-void wex::lexers::ParseNodeMacro(const pugi::xml_node& node)
+void wex::lexers::parse_node_macro(const pugi::xml_node& node)
 {
   for (const auto& child: node.children())
   {
@@ -471,20 +476,20 @@ void wex::lexers::ParseNodeMacro(const pugi::xml_node& node)
         }
       }
       
-      m_Macros[name] = macro_map;      
+      m_macros[name] = macro_map;      
     }
     else if (strcmp(child.name(), "themes") == 0)
     {
-      ParseNodeThemes(child);
+      parse_node_themes(child);
     }
   }
 }
 
-void wex::lexers::ParseNodeTheme(const pugi::xml_node& node)
+void wex::lexers::parse_node_theme(const pugi::xml_node& node)
 {
-  if (m_Theme.empty() && !config().item("theme").exists())
+  if (m_theme.empty() && !config().item("theme").exists())
   {
-    m_Theme = std::string(node.attribute("name").value());
+    m_theme = std::string(node.attribute("name").value());
   }
   
   std::map<std::string, std::string> tmpColours, tmpMacros;
@@ -512,19 +517,19 @@ void wex::lexers::ParseNodeTheme(const pugi::xml_node& node)
     }
   }
   
-  m_ThemeColours[node.attribute("name").value()] = tmpColours;
-  m_ThemeMacros[node.attribute("name").value()] = tmpMacros;
+  m_theme_colours[node.attribute("name").value()] = tmpColours;
+  m_theme_macros[node.attribute("name").value()] = tmpMacros;
 }
 
-void wex::lexers::ParseNodeThemes(const pugi::xml_node& node)
+void wex::lexers::parse_node_themes(const pugi::xml_node& node)
 {
-  for (const auto& child: node.children()) ParseNodeTheme(child);
+  for (const auto& child: node.children()) parse_node_theme(child);
 }
       
 wex::lexers* wex::lexers::set(wex::lexers* lexers)
 {
-  wex::lexers* old = m_Self;
-  m_Self = lexers;
+  wex::lexers* old = m_self;
+  m_self = lexers;
   return old;
 }
 
@@ -532,7 +537,7 @@ bool wex::lexers::show_dialog(stc* stc) const
 {
   wxArrayString s;
   s.Add(std::string());
-  for (const auto& it : m_Lexers) s.Add(it.display_lexer());
+  for (const auto& it : m_lexers) s.Add(it.display_lexer());
 
   auto lexer = stc->get_lexer().display_lexer();
   if (!single_choice_dialog(stc, _("Enter Lexer"), s, lexer)) return false;
@@ -545,11 +550,11 @@ bool wex::lexers::show_dialog(stc* stc) const
 bool wex::lexers::show_theme_dialog(wxWindow* parent)
 { 
   wxArrayString s;
-  for (const auto& it : m_ThemeMacros) s.Add(it.first);
+  for (const auto& it : m_theme_macros) s.Add(it.first);
 
-  if (!single_choice_dialog(parent, _("Enter Theme"), s, m_Theme)) return false;
+  if (!single_choice_dialog(parent, _("Enter Theme"), s, m_theme)) return false;
 
-  config("theme").set(m_Theme);
+  config("theme").set(m_theme);
 
   return load_document();
 }

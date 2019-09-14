@@ -103,7 +103,6 @@ const wex::path wex::link::find_filename(
 
   // file[:line[:column]]
   if (std::vector <std::string> v;
-    text.find("//") == std::string::npos &&
     match("^([0-9A-Za-z _/.-]+):([0-9]*):?([0-9]*)", link, v) > 0)
   {
     link = v[0];

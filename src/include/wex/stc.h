@@ -94,7 +94,31 @@ namespace wex
     /// Return true if char was processed.
     virtual bool process_char(int c) {return false;};
     
+    /// Static interface
+
+    /// Shows a dialog with options, returns dialog return code.
+    /// If used modeless, it uses the dialog id as specified,
+    /// so you can use that id in frame::on_command_item_dialog.
+    static int config_dialog(const window_data& data = window_data());
+
+    /// Returns the config dialog.
+    static item_dialog* get_config_dialog() {return m_config_dialog;};
+    
+    /// Saves static data in cofig.
+    /// Invoked once during app::on_exit.
+    static void on_exit();
+    
+    /// Reads static data from config (e.g. zooming).
+    /// Invoked once during app::OnInit.
+    static void on_init();
+    
     /// Other methods.
+
+    /// Adds text.
+    void add_text(const std::string& text);
+
+    /// Appends text (to end).
+    void append_text(const std::string& text);
 
     /// Returns autocomplete.
     auto & auto_complete() {return m_auto_complete;};
@@ -108,13 +132,11 @@ namespace wex
     // (Clear is used by scintilla to clear the selection).
     void clear(bool set_savepoint = true);
 
-    /// Shows a dialog with options, returns dialog return code.
-    /// If used modeless, it uses the dialog id as specified,
-    /// so you can use that id in frame::on_command_item_dialog.
-    static int config_dialog(const window_data& data = window_data());
-
     /// Sets the configurable parameters to values currently in config.
     void config_get();
+
+    /// Returns associated data.
+    const auto& data() const {return m_Data;};
 
     /// Returns EOL string.
     /// If you only want to insert a newline, use NewLine()
@@ -150,12 +172,6 @@ namespace wex
       /// always all lines are folded.
       bool fold_all = false);
 
-    /// Returns associated data.
-    const auto& data() const {return m_Data;};
-
-    /// Returns the config dialog.
-    static item_dialog* get_config_dialog() {return m_config_dialog;};
-    
     /// Returns the file.
     auto & get_file() {return m_File;};
 
@@ -202,24 +218,19 @@ namespace wex
     /// Guesses the file type using a small sample size from this document, 
     /// and sets EOL mode and updates statusbar if it found eols.
     void guess_type();
-    
+
     /// Returns true if we are in hex mode.
     bool is_hexmode() const {return m_hexmode.is_active();};
 
+    /// Keeps event data.
+    void keep_event_data(bool synced) {m_Data.event(synced);};
+    
     /// If selected text is a link, opens the link.
     bool link_open();
 
     /// Deletes all change markers.
     /// Returns false if marker change is not loaded.
     bool marker_delete_all_change();
-    
-    /// Saves static data in cofig.
-    /// Invoked once during app::on_exit.
-    static void on_exit();
-    
-    /// Reads static data from config (e.g. zooming).
-    /// Invoked once during app::OnInit.
-    static void on_init();
     
     /// Opens the file, reads the content into the window, 
     /// then closes the file and sets the lexer.
@@ -329,6 +340,12 @@ namespace wex
     void LineScrollDownRectExtend() {;};
     void LineScrollUpExtend() {;};
     void LineScrollUpRectExtend() {;};
+    void PageScrollDown();
+    void PageScrollDownExtend() {;};
+    void PageScrollDownRectExtend() {;};
+    void PageScrollUp();
+    void PageScrollUpExtend() {;};
+    void PageScrollUpRectExtend() {;};
     void ParaUpRectExtend() {;};
     void ParaDownRectExtend() {;};
     void WordLeftRectExtend();

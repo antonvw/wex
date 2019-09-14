@@ -28,11 +28,10 @@ private:
   
   virtual bool OnInit() override;
 
-  std::string m_Tag; 
+  std::string m_Tag, m_Scriptin, m_Scriptout; 
   std::vector< wex::path > m_Files;
   
   bool m_Debug {false};
   int m_Split;
   wex::stc_data m_Data;
-  wex::file m_Scriptin, m_Scriptout;
 };

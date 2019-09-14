@@ -147,12 +147,13 @@ namespace wex
         const std::string& command,
         const T * container,
         std::function<bool(const std::string&, const std::string&)> cb);
-    std::string info();
     void info_message(const std::string& text, info_message_t type) const;
     template <typename S, typename T>
-    std::string report_container(const T & container) const;
+    std::string report_container(const T * container) const;
     void show_dialog(
-      const std::string& title, const std::string& text, bool prop_lexer = false);
+      const std::string& title, 
+      const std::string& text, 
+      bool prop_lexer = false);
       
     const marker m_MarkerSymbol = marker(0);
     const std::vector<std::pair<

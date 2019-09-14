@@ -51,7 +51,7 @@ bool app::OnInit()
         wex::config(_("User")).set(std::any_cast<std::string>(a));}}},
       {{"v,V", "activates verbosity upto verbose level (valid range: 0-9)", "1"}, 
           {wex::cmdline::INT, [&](const std::any& a) {el::Loggers::setVerboseLevel(std::any_cast<int>(a));}}}
-     }).parse(wxTheApp->argc, wxTheApp->argv))
+     }).parse(argc, argv))
   {
     return false;
   }

@@ -2,7 +2,7 @@
 // Name:      file.h
 // Purpose:   Declaration of class wex::file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -22,22 +22,19 @@ namespace wex
   {
   public:
     /// Default constructor.
-    /// The open_file parameter specifies the behaviour of file_load and
-    /// file_save, if true, the file is opened before calling do_file_load
-    /// and do_file_save, if false the file is not opened.
-    file(bool open_file = true);
+    file();
 
-    /// Constructor taking a path, and opens the file.
-    file(
-      const path& p,
-      std::ios_base::openmode mode = std::ios_base::in,
-      bool open_file = true);
+    /// Constructor taking a path.
+    file(const path& p);
+
+    /// Constructor taking a path, opens the file.
+    file(const path& p, std::ios_base::openmode mode);
     
-    /// Constructor taking a filename, and opens the file.
-    file(
-      const std::string& filename,
-      std::ios_base::openmode mode = std::ios_base::in,
-      bool open_file = true);
+    /// Constructor taking a filename.
+    file(const char* filename);
+
+    /// Constructor taking a filename, opens the file.
+    file(const char* filename, std::ios_base::openmode mode);
     
     /// Copy constructor.
     file(const file& rhs);
@@ -71,8 +68,7 @@ namespace wex
     bool is_opened() const;
 
     /// Opens current path.
-    bool open(
-      std::ios_base::openmode mode = std::ios_base::in);
+    bool open(std::ios_base::openmode mode = std::ios_base::in);
 
     /// Opens specified path.
     bool open(
@@ -110,8 +106,7 @@ namespace wex
     void assign(const path& p);
     bool file_load(bool synced);
     
-    bool m_IsLoaded {false}, m_open_file;
-    
-    std::unique_ptr<file_imp> m_File;
+    bool m_is_loaded {false};
+    std::unique_ptr<file_imp> m_file;
   };
 };

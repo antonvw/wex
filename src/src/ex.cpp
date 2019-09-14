@@ -86,7 +86,7 @@ namespace wex
           return command_arg_t::INT;
         }
       }
-      catch (std::exception& e)
+      catch (std::exception&)
       {
         return command_arg_t::OTHER;
       }
@@ -103,8 +103,8 @@ wex::ex::ex(wex::stc* stc)
   , m_frame(wxDynamicCast(wxTheApp->GetTopWindow(), managed_frame))
   , m_commands {
     {":ab", [&](const std::string& command) {
-      return handle_container<std::string, std::map<std::string, std::string>>(
-        "Abbreviations", command, &m_macros.get_abbreviations(),
+      return handle_container<std::string, vi_macros::strings_map_t>(
+        "Abbreviations", command, m_macros.get_abbreviations(),
         [=](const std::string& name, const std::string& value) {
           m_macros.set_abbreviation(name, value);return true;});}},
     {":ar", [&](const std::string& command) {
@@ -142,7 +142,7 @@ wex::ex::ex(wex::stc* stc)
       {
         case wex::command_arg_t::INT:
           // TODO: at this moment you cannot set KEY_CONTROL
-          return handle_container<int, wex::vi_macros_maptype>(
+          return handle_container<int, wex::vi_macros::keys_map_t>(
             "Map", command, nullptr,
             [=](const std::string& name, const std::string& value) {
               m_macros.set_key_map(name, value);return true;}); 
@@ -151,19 +151,19 @@ wex::ex::ex(wex::stc* stc)
         case wex::command_arg_t::NONE: 
           show_dialog("Maps", 
             "[String map]\n" +
-            report_container<std::string, std::map<std::string, std::string>>(m_macros.get_map()) +
+            report_container<std::string, vi_macros::strings_map_t>(m_macros.get_map()) +
             "[Key map]\n" +
-            report_container<int, wex::vi_macros_maptype>(m_macros.get_keys_map()) +
+            report_container<int, wex::vi_macros::keys_map_t>(m_macros.get_keys_map()) +
             "[Alt key map]\n" +
-            report_container<int, wex::vi_macros_maptype>(m_macros.get_keys_map(vi_macros::KEY_ALT)) +
+            report_container<int, wex::vi_macros::keys_map_t>(m_macros.get_keys_map(vi_macros::KEY_ALT)) +
             "[Control key map]\n" +
-            report_container<int, wex::vi_macros_maptype>(m_macros.get_keys_map(vi_macros::KEY_CONTROL)), 
+            report_container<int, wex::vi_macros::keys_map_t>(m_macros.get_keys_map(vi_macros::KEY_CONTROL)), 
             true);
           return true;
         break;
         
         case wex::command_arg_t::OTHER:
-          return handle_container<std::string, std::map<std::string, std::string>>(
+          return handle_container<std::string, vi_macros::strings_map_t>(
             "Map", command, nullptr,
             [=](const std::string& name, const std::string& value) {
               m_macros.set_map(name, value);return true;});
@@ -175,7 +175,15 @@ wex::ex::ex(wex::stc* stc)
     {":q!", [&](const std::string& command) {POST_CLOSE( wxEVT_CLOSE_WINDOW, false ) return true;}},
     {":q", [&](const std::string& command) {POST_CLOSE( wxEVT_CLOSE_WINDOW, true ) return true;}},
     {":reg", [&](const std::string& command) {
-      show_dialog("Registers", info(), true);
+      const lexer_props l;
+      std::string output(l.make_section("Named buffers"));
+      for (const auto& it : get_macros().registers())
+      {
+        output += it;
+      }
+      output += l.make_section("Filename buffer");
+      output += l.make_key("%", get_command().get_stc()->get_filename().fullname());
+      show_dialog("Registers", output, true);
       return true;}},
     {":sed", [&](const std::string& command) {POST_COMMAND( ID_TOOL_REPLACE ) return true;}},
     {":set", [&](const std::string& command) {
@@ -200,7 +208,8 @@ wex::ex::ex(wex::stc* stc)
            if (!modeline) config(_("Error bells")).set(on);}},
          {{"el", "edgeline"}, [&](bool on){
            if (!modeline) config(_("Edge line")).set( 
-             on ? (long)wxSTC_EDGE_LINE: (long)wxSTC_EDGE_NONE);}},
+             on ? (long)wxSTC_EDGE_LINE: (long)wxSTC_EDGE_NONE);
+           else get_stc()->SetEdgeMode(wxSTC_EDGE_LINE);}},
          {{"ic", "ignorecase"}, [&](bool on){
            if (!on) m_search_flags |= wxSTC_FIND_MATCHCASE;
            else     m_search_flags &= ~wxSTC_FIND_MATCHCASE;
@@ -220,13 +229,22 @@ wex::ex::ex(wex::stc* stc)
          {{"sm", "showmatch"}, [&](bool on){
            if (!modeline) config(_("Show match")).set(on);}},
          {{"sws", "showwhitespace"}, [&](bool on){
-           if (!modeline) config(_("Whitespace visible")).set(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);
-           if (!modeline) config(_("End of line")).set(on);}},
+           if (!modeline) 
+           {
+             config(_("Whitespace visible")).set(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);
+             config(_("End of line")).set(on);
+           }
+           else
+           {
+             get_stc()->SetViewWhiteSpace(wxSTC_WS_VISIBLEALWAYS);
+             get_stc()->SetViewEOL(true);
+           }}},
          {{"ut", "usetabs"}, [&](bool on){
            if (!modeline) config(_("Use tabs")).set(on);
            else get_stc()->SetUseTabs(on);}},
          {{"wm", "wrapmargin"}, [&](bool on){
-           if (!modeline) config(_("Wrap line")).set(on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);}},
+           if (!modeline) config(_("Wrap line")).set(on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);
+           else get_stc()->SetWrapMode(wxSTC_WRAP_CHAR);}},
          {{"ws", "wrapscan", "1"}, [&](bool on){
            config(_("Wrap scan")).set(on);}}
         },
@@ -264,12 +282,13 @@ wex::ex::ex(wex::stc* stc)
           show_dialog("Options", help);
         }
       }
-      else
+      else if (!modeline)
       {
         m_frame->on_command_item_dialog(
           wxID_PREFERENCES, 
           wxCommandEvent(wxEVT_BUTTON, wxOK));
       }
+      log::verbose(":set") << text;
       return true;}},
     {":so", [&](const std::string& command) {
       if (command.find(" ") == std::string::npos) return false;
@@ -345,11 +364,11 @@ wex::ex::ex(wex::stc* stc)
       POST_COMMAND( wxID_SAVE )
       POST_CLOSE( wxEVT_CLOSE_WINDOW, true )
       return true;}}},
-  m_ctags(new wex::ctags(this))
+  m_ctags(new wex::ctags(this)),
+  m_auto_write(config(_("Auto write")).get(false))
 {
   assert(m_frame != nullptr);
   reset_search_flags();
-  m_auto_write = config(_("Auto write")).get(false);
 }
 
 wex::ex::~ex()
@@ -365,7 +384,7 @@ void wex::ex::add_text(const std::string& text)
   }
   else
   {
-    get_stc()->AddTextRaw((const char *)text.c_str(), text.length());
+    get_stc()->add_text(text);
   }
 
   info_message(text, wex::info_message_t::ADD);
@@ -406,9 +425,9 @@ bool wex::ex::command(const std::string& cmd)
 
   log::verbose("ex command") << cmd;
 
-  const auto& it = m_macros.get_map().find(command);
-  command = (it != m_macros.get_map().end() ? it->second: command);
-
+  const auto& it = m_macros.get_map()->find(command);
+  command = (it != m_macros.get_map()->end() ? it->second: command);
+  
   if (m_frame->exec_ex_command(m_command.command(cmd)))
   {
     m_command.clear();
@@ -425,8 +444,12 @@ bool wex::ex::command(const std::string& cmd)
     m_command.clear();
     return false;
   }
+  else
+  {
+    frame()->record(command);
+    m_macros.record(command);
+  }
 
-  m_macros.record(command);
   m_command.clear();
 
   return auto_write();
@@ -590,7 +613,8 @@ bool wex::ex::command_address(const std::string& command)
 bool wex::ex::command_handle(const std::string& command) const
 {
   const auto& it = std::find_if(m_commands.begin(), m_commands.end(), 
-    [command](auto const& e) {return e.first == command.substr(0, e.first.size());});
+    [command](auto const& e) {
+      return e.first == command.substr(0, e.first.size());});
   
   return it != m_commands.end() && it->second(command);
 }
@@ -629,29 +653,15 @@ bool wex::ex::handle_container(
   }
   else if (container != nullptr)
   {
-    show_dialog(kind, report_container<S, T>(*container), true);
+    show_dialog(kind, report_container<S, T>(container), true);
   }
 
   return true;
 }
 
-std::string wex::ex::info()
-{
-  const lexer_props l;
-  std::string output(l.make_section("Named buffers"));
-
-  for (const auto& it : get_macros().registers())
-  {
-    output += it;
-  }
-
-  output += l.make_section("Filename buffer");
-  output += l.make_key("%", get_command().get_stc()->get_filename().fullname());
-
-  return output;
-}
-
-void wex::ex::info_message(const std::string& text, wex::info_message_t type) const
+void wex::ex::info_message(
+  const std::string& text, 
+  wex::info_message_t type) const
 {
   if (const auto lines = get_number_of_lines(text);
     lines >= config("Reported lines").get(5))
@@ -677,7 +687,8 @@ bool wex::ex::marker_add(char marker, int line)
 
   if (!lm.is_ok())
   {
-    wex::log("could not find marker symbol") << m_MarkerSymbol.number() << " in lexers";
+    wex::log("could not find marker symbol") 
+      << m_MarkerSymbol.number() << " in lexers";
     return false;
   }
   
@@ -688,7 +699,8 @@ bool wex::ex::marker_add(char marker, int line)
 
   if (lm.symbol() == wxSTC_MARK_CHARACTER)
   {
-    if (const auto& it = m_marker_numbers.find(marker); it == m_marker_numbers.end())
+    if (const auto& it = m_marker_numbers.find(marker); 
+      it == m_marker_numbers.end())
     {
       // We have symbol:
       // 0: non-char ex marker
@@ -729,7 +741,8 @@ bool wex::ex::marker_add(char marker, int line)
 
 bool wex::ex::marker_delete(char marker)
 {
-  if (const auto& it = m_marker_identifiers.find(marker); it != m_marker_identifiers.end())
+  if (const auto& it = m_marker_identifiers.find(marker); 
+    it != m_marker_identifiers.end())
   {
     get_stc()->MarkerDeleteHandle(it->second);
     m_marker_identifiers.erase(it);
@@ -768,9 +781,11 @@ int wex::ex::marker_line(char marker) const
   }
   else
   {
-    if (const auto& it = m_marker_identifiers.find(marker); it != m_marker_identifiers.end())
+    if (const auto& it = m_marker_identifiers.find(marker); 
+      it != m_marker_identifiers.end())
     {
-      if (const auto line = get_stc()->MarkerLineFromHandle(it->second); line == -1)
+      if (const auto line = get_stc()->MarkerLineFromHandle(it->second); 
+        line == -1)
       {
         log::status("Handle for marker") << marker << "invalid";
       }
@@ -811,12 +826,12 @@ const std::string wex::ex::register_text() const
 }
   
 template <typename S, typename T>
-std::string wex::ex::report_container(const T & t) const
+std::string wex::ex::report_container(const T * t) const
 {
   const wex::lexer_props l;
   std::string output;
 
-  for (const auto& it : t)
+  for (const auto& it : *t)
   {
     output += l.make_key(type_to_value<S>(it.first).get_string(), it.second);
   }

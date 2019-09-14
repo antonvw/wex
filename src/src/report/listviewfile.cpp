@@ -24,7 +24,6 @@
 wex::report::file::file(
   const std::string& file, const listview_data& data)
   : report::listview(listview_data(data).type(listview_data::FILE))
-  , wex::file(false) // do not open files in file_load and Save
   , m_add_itemsDialog(new item_dialog({
         {m_TextAddWhat,item::COMBOBOX, std::any(), 
            control_data().is_required(true)},

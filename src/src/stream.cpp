@@ -2,7 +2,7 @@
 // Name:      stream.cpp
 // Purpose:   Implementation of wex::stream class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -24,10 +24,10 @@
 #include <wex/util.h>
 
 wex::stream::stream(const path& filename, const tool& tool)
-  : m_Path(filename)
-  , m_Tool(tool)
+  : m_path(filename)
+  , m_tool(tool)
   , m_frd(find_replace_data::get())
-  , m_Threshold(config(_("Max replacements")).get(-1))
+  , m_threshold(config(_("Max replacements")).get(-1))
 {
 }
 
@@ -42,15 +42,15 @@ bool wex::stream::process(std::string& text, size_t line_no)
     pos = m_frd->regex_search(text);
     match = (pos >= 0);
 
-    if (match && (m_Tool.id() == ID_TOOL_REPLACE))
+    if (match && (m_tool.id() == ID_TOOL_REPLACE))
     {
       count = m_frd->regex_replace(text);
-      if (!m_Modified) m_Modified = (count > 0);
+      if (!m_modified) m_modified = (count > 0);
     }
   }
   else
   {
-    if (m_Tool.id() == ID_TOOL_REPORT_FIND)
+    if (m_tool.id() == ID_TOOL_REPORT_FIND)
     {
       if (const auto it = (!m_frd->match_case() ?
         std::search(text.begin(), text.end(), m_find_string.begin(), m_find_string.end(),
@@ -68,8 +68,8 @@ bool wex::stream::process(std::string& text, size_t line_no)
         pos = it - text.begin();
 
         if (m_frd->match_word() && 
-            ((it != text.begin() && IsWordCharacter(*std::prev(it))) ||
-              IsWordCharacter(*std::next(it, m_find_string.length()))))
+            ((it != text.begin() && is_word_character(*std::prev(it))) ||
+              is_word_character(*std::next(it, m_find_string.length()))))
         {
           match = false;
         }
@@ -84,23 +84,23 @@ bool wex::stream::process(std::string& text, size_t line_no)
         &pos);
 
       match = (count > 0);
-      if (!m_Modified) m_Modified = match;
+      if (!m_modified) m_modified = match;
     }
   }
 
   if (match)
   {
-    if (m_Tool.id() == ID_TOOL_REPORT_FIND)
+    if (m_tool.id() == ID_TOOL_REPORT_FIND)
     {
       process_match(text, line_no, pos);
     }
     
     if (const auto ac = inc_actions_completed(count);
-      !m_Asked && m_Threshold != -1 && (ac - m_Prev > m_Threshold))
+      !m_asked && m_threshold != -1 && (ac - m_prev > m_threshold))
     {
       if (wxMessageBox(
-        "More than " + std::to_string(m_Threshold) + " matches in: " + 
-          m_Path.string() + "?",
+        "More than " + std::to_string(m_threshold) + " matches in: " + 
+          m_path.string() + "?",
         _("Continue"),
         wxYES_NO | wxICON_QUESTION) == wxNO)
       {
@@ -108,7 +108,7 @@ bool wex::stream::process(std::string& text, size_t line_no)
       }
       else
       {
-        m_Asked = true;
+        m_asked = true;
       }
     }
   }
@@ -120,14 +120,14 @@ bool wex::stream::process_begin()
 {
   if (
      m_frd->get_find_string().empty() ||
-    !m_Tool.is_find_type() || 
-    (m_Tool.id() == ID_TOOL_REPLACE && m_Path.stat().is_readonly()))
+    !m_tool.is_find_type() || 
+    (m_tool.id() == ID_TOOL_REPLACE && m_path.stat().is_readonly()))
   {
     return false;
   }
 
-  m_Prev = m_Stats.get(_("Actions Completed").ToStdString());
-  m_Write = (m_Tool.id() == ID_TOOL_REPLACE);
+  m_prev = m_stats.get(_("Actions Completed").ToStdString());
+  m_write = (m_tool.id() == ID_TOOL_REPLACE);
   
   if (!m_frd->use_regex())
   {
@@ -144,38 +144,38 @@ bool wex::stream::process_begin()
   
 bool wex::stream::run_tool()
 {
-  if (std::fstream fs(m_Path.data(), std::ios_base::in);
+  if (std::fstream fs(m_path.data(), std::ios_base::in);
     !fs.is_open() || !process_begin())
   {
     return false;
   }
   else
   {
-    m_Stats.m_Elements.set(_("Files").ToStdString(), 1);
+    m_stats.m_Elements.set(_("Files").ToStdString(), 1);
     
     int line_no = 0;
     std::string s;
     
-    log::verbose("run_tool") << m_Path;
+    log::verbose("run_tool") << m_path;
   
     for (std::string line; std::getline(fs, line); )
     {
       if (!process(line, line_no++)) return false;
-      if (m_Write)
+      if (m_write)
       {
         s += line + "\n";
       }
     }
     
-    if (m_Write && s.empty())
+    if (m_write && s.empty())
     {
-      log("stream processing error") << m_Path;
+      log("stream processing error") << m_path;
       return false;
     }
-    else if (m_Modified && m_Write)
+    else if (m_modified && m_write)
     {
       fs.close();
-      fs.open(m_Path.data(), std::ios_base::out);
+      fs.open(m_path.data(), std::ios_base::out);
       if (!fs.is_open()) return false;
       fs.write(s.c_str(), s.size());
     }
@@ -187,5 +187,5 @@ bool wex::stream::run_tool()
 
 void wex::stream::reset()
 {
-  m_Asked = false;
+  m_asked = false;
 }

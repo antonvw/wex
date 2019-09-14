@@ -37,7 +37,7 @@ namespace wex
         F_PARAM
       };
 
-      function_t(std::function<void(const std::any&)> f, cmdline::type_t o)
+      function_t(std::function<void(const std::any&)> f, cmdline::option_t o)
         : m_fo(f)
         , m_type(F_OPTION)
         , m_type_o(o) {;};
@@ -49,7 +49,7 @@ namespace wex
         , m_type(F_PARAM) {;};
       
       const tag_t m_type;
-      const cmdline::type_t m_type_o = cmdline::STRING;
+      const cmdline::option_t m_type_o = cmdline::STRING;
       const std::function<void(const std::any&)> m_fo;
       const std::function<void(std::vector<std::string> )> m_fp;
       const std::function<void(bool)> m_fs;
@@ -66,7 +66,7 @@ namespace wex
     void add_function(
       const std::string& name, 
       const function_t& t, 
-      cmdline::type_t c = cmdline::STRING)
+      cmdline::option_t c = cmdline::STRING)
     {
       m_functions.insert({before(name, ','), t});
     }
@@ -184,7 +184,7 @@ namespace wex
        it->first[p_d].c_str());              \
              
 wex::cmdline::cmdline(
-  const cmd_switches & s, const cmd_options & o, const cmd_params & p,
+  const cmd_switches_t & s, const cmd_options_t & o, const cmd_params_t & p,
   const std::string& message)
   : m_parser(new cmdline_imp(message))
 {

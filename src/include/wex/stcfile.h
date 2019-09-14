@@ -17,8 +17,17 @@ namespace wex
   class stc_file: public file
   {
   public:
+    /// After loading / saving an event is sent to stc to update gui,
+    /// this is the event number.
+    enum
+    {
+      FILE_LOAD,
+      FILE_LOAD_SYNC,
+      FILE_SAVE,
+      FILE_SAVE_AS,
+    };
+
     /// Constructor.
-    /// Does not open the file.
     stc_file(
       /// the stc component
       stc* stc,
@@ -31,9 +40,8 @@ namespace wex
     virtual bool do_file_load(bool synced = false) override;
     virtual void do_file_new() override;
     virtual void do_file_save(bool save_as = false) override;
-    void read_from_file(bool get_only_new_data, bool hexmode);
 
-    stc* m_STC;
-    std::streampos m_PreviousLength {0};
+    stc* m_stc;
+    std::streampos m_previous_size {0};
   };
 };

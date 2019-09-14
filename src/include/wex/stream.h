@@ -2,7 +2,7 @@
 // Name:      stream.h
 // Purpose:   Declaration of wex::stream class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -28,13 +28,13 @@ namespace wex
     virtual ~stream() {;};
 
     /// Returns the filename.
-    const auto & get_filename() const {return m_Path;};
+    const auto & get_filename() const {return m_path;};
 
     /// Returns the statistics.
-    const auto & get_statistics() const {return m_Stats;}
+    const auto & get_statistics() const {return m_stats;}
 
     /// Returns the tool.
-    const auto & get_tool() const {return m_Tool;};
+    const auto & get_tool() const {return m_tool;};
     
     /// Runs the tool.
     bool run_tool();
@@ -69,23 +69,23 @@ namespace wex
   protected:
     /// Increments the actions completed.
     auto inc_actions_completed(int inc_value = 1) {return
-      m_Stats.m_Elements.inc(_("Actions Completed").ToStdString(), inc_value);};
+      m_stats.m_Elements.inc(_("Actions Completed").ToStdString(), inc_value);};
       
     /// Increments statistics keyword.
     auto inc_statistics(const std::string& keyword) {return
-      m_Stats.m_Elements.inc(keyword);};
+      m_stats.m_Elements.inc(keyword);};
   private:
-    bool IsWordCharacter(int c) const {return isalnum(c) || c == '_';};
+    bool is_word_character(int c) const {return isalnum(c) || c == '_';};
 
-    const path m_Path;
-    const tool m_Tool;
-    const int m_Threshold;
+    const path m_path;
+    const tool m_tool;
+    const int m_threshold;
 
-    stream_statistics m_Stats;
-    int m_Prev;
-    bool m_Modified = false, m_Write = false;
+    stream_statistics m_stats;
+    int m_prev;
+    bool m_modified {false}, m_write {false};
     find_replace_data* m_frd;
     std::string m_find_string;
-    static inline bool m_Asked = false;
+    static inline bool m_asked {false};
   };
 };

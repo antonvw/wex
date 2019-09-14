@@ -48,24 +48,24 @@ namespace wex
     bool set_ex(wex::ex* ex, const std::string& command);
   private:
     textctrl_input& TCI() {
-      switch (m_Command.type())
+      switch (m_command.type())
       {
-        case ex_command::type_t::CALC: return m_Calcs;
-        case ex_command::type_t::EXEC: return m_Execs;
-        case ex_command::type_t::FIND_MARGIN: return m_FindMargins;
-        default: return m_Commands;
+        case ex_command::type_t::CALC: return m_calcs;
+        case ex_command::type_t::EXEC: return m_execs;
+        case ex_command::type_t::FIND_MARGIN: return m_find_margins;
+        default: return m_commands;
       }};
 
     wex::ex* m_ex {nullptr};
-    ex_command m_Command;
-    managed_frame* m_Frame;
-    wxStaticText* m_Prefix;
-    bool m_ControlR {false}, m_ModeVisual {false}, m_UserInput {false};
+    ex_command m_command;
+    managed_frame* m_frame;
+    wxStaticText* m_prefix;
+    bool m_control_r {false}, m_mode_visual {false}, m_user_input {false};
     textctrl_input 
-      m_Calcs {ex_command::type_t::CALC},
-      m_Commands {ex_command::type_t::COMMAND},
-      m_Execs {ex_command::type_t::EXEC},
-      m_FindMargins {ex_command::type_t::FIND_MARGIN};
+      m_calcs {ex_command::type_t::CALC},
+      m_commands {ex_command::type_t::COMMAND},
+      m_execs {ex_command::type_t::EXEC},
+      m_find_margins {ex_command::type_t::FIND_MARGIN};
   };
 };
 
@@ -356,8 +356,8 @@ wex::textctrl::textctrl(
       data.pos(), 
       data.size(), 
       data.style() | wxTE_PROCESS_ENTER)
-  , m_Frame(frame)
-  , m_Prefix(prefix)
+  , m_frame(frame)
+  , m_prefix(prefix)
 {
   SetFont(config(_("Text font")).get(
     wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
@@ -367,18 +367,18 @@ wex::textctrl::textctrl(
     {
       if (event.GetKeyCode() == WXK_BACK)
       {
-        if (!m_Command.empty()) m_Command.pop_back();
+        if (!m_command.empty()) m_command.pop_back();
       }
       else if (event.GetKeyCode() != WXK_TAB)
       {
-        m_Command.append(event.GetUnicodeKey());
+        m_command.append(event.GetUnicodeKey());
       }
     }
         
     switch (event.GetKeyCode())
     {
       case WXK_CONTROL_R: 
-        m_ControlR = true; 
+        m_control_r = true; 
         break;
 
       case WXK_TAB: {
@@ -388,10 +388,10 @@ wex::textctrl::textctrl(
         }
 
         // studio not yet: [[maybe_unused]]
-        if (const auto& [r, e, v] = autocomplete_filename(m_Command.command());
+        if (const auto& [r, e, v] = autocomplete_filename(m_command.command());
           r)
         {
-          m_Command.append(e);
+          m_command.append(e);
           AppendText(e);
         }}
         break;
@@ -400,7 +400,7 @@ wex::textctrl::textctrl(
         bool skip = true;
         if (event.GetKeyCode() != WXK_RETURN)
         {
-          if (event.GetUnicodeKey() != (wxChar)WXK_NONE && m_ControlR)
+          if (event.GetUnicodeKey() != (wxChar)WXK_NONE && m_control_r)
           {
             skip = false;
             const char c = event.GetUnicodeKey();
@@ -418,9 +418,9 @@ wex::textctrl::textctrl(
               wxPostEvent(this, event);
             }
           }
-          m_UserInput = true;
+          m_user_input = true;
         }
-        m_ControlR = false;
+        m_control_r = false;
         if (skip)
         {
           event.Skip();
@@ -441,7 +441,7 @@ wex::textctrl::textctrl(
         {
           event.Skip();
         }
-        else if (m_Command.type() == ex_command::type_t::FIND)
+        else if (m_command.type() == ex_command::type_t::FIND)
         {
           find_replace_data::get()->m_FindStrings.set(event.GetKeyCode(), this); 
         }
@@ -456,9 +456,9 @@ wex::textctrl::textctrl(
         {
           m_ex->get_stc()->position_restore();
         }
-        m_Frame->hide_ex_bar(managed_frame::HIDE_BAR_FORCE_FOCUS_STC);
-        m_ControlR = false;
-        m_UserInput = false;
+        m_frame->hide_ex_bar(managed_frame::HIDE_BAR_FORCE_FOCUS_STC);
+        m_control_r = false;
+        m_user_input = false;
         break;
 
       default: 
@@ -478,34 +478,32 @@ wex::textctrl::textctrl(
 
   Bind(wxEVT_TEXT, [=](wxCommandEvent& event) {
     event.Skip();
-    if (m_UserInput && m_ex != nullptr && m_Command.type() == ex_command::type_t::FIND)
+    if (m_user_input && m_ex != nullptr && m_command.type() == ex_command::type_t::FIND)
     {
       m_ex->get_stc()->position_restore();
       m_ex->get_stc()->find_next(
         GetValue().ToStdString(),
         m_ex->search_flags(),
-        m_Prefix->GetLabel() == "/");
+        m_prefix->GetLabel() == "/");
     }});
 
   Bind(wxEVT_TEXT_ENTER, [=](wxCommandEvent& event) {
     if (m_ex == nullptr || GetValue().empty())
     {
-      m_Frame->hide_ex_bar(managed_frame::HIDE_BAR_FORCE_FOCUS_STC);
+      m_frame->hide_ex_bar(managed_frame::HIDE_BAR_FORCE_FOCUS_STC);
       return;
     }
 
-    m_Command.command(m_Prefix->GetLabel().ToStdString() + GetValue().ToStdString());
-    m_Command.is_handled(m_UserInput && m_Command.type() == ex_command::type_t::FIND);
+    m_command.command(m_prefix->GetLabel().ToStdString() + GetValue().ToStdString());
+    m_command.is_handled(m_user_input && m_command.type() == ex_command::type_t::FIND);
 
-    if (m_Command.exec())
+    if (m_command.exec())
     {
-      int focus = (m_Command.type() == ex_command::type_t::FIND ? 
+      int focus = (m_command.type() == ex_command::type_t::FIND ? 
         managed_frame::HIDE_BAR_FORCE_FOCUS_STC: 
         managed_frame::HIDE_BAR_FOCUS_STC);
 
-      m_ex->get_macros().record(m_Command.command());
-
-      if (m_Command.type() == ex_command::type_t::FIND)
+      if (m_command.type() == ex_command::type_t::FIND)
       {
         find_replace_data::get()->set_find_string(GetValue().ToStdString());
       }
@@ -513,7 +511,7 @@ wex::textctrl::textctrl(
       {
         TCI().set(this); 
 
-        if (m_Command.type() == ex_command::type_t::COMMAND)
+        if (m_command.type() == ex_command::type_t::COMMAND)
         {
           if (
             GetValue() == "gt" || 
@@ -530,7 +528,7 @@ wex::textctrl::textctrl(
         }
       }
 
-      m_Frame->hide_ex_bar(focus);
+      m_frame->hide_ex_bar(focus);
     }});
 }
 
@@ -539,14 +537,14 @@ bool wex::textctrl::set_ex(wex::ex* ex, const std::string& command)
   if (command.empty()) return false;
 
   m_ex = ex;
-  m_UserInput = false;
+  m_user_input = false;
   const std::string range(command.substr(1));
-  m_ModeVisual = !range.empty();
-  m_Prefix->SetLabel(command.substr(0, 1));
-  m_Command = ex_command(ex->get_command()).command(command);
-  m_ControlR = false;
+  m_mode_visual = !range.empty();
+  m_prefix->SetLabel(command.substr(0, 1));
+  m_command = ex_command(ex->get_command()).command(command);
+  m_control_r = false;
 
-  switch (m_Command.type())
+  switch (m_command.type())
   {
     case ex_command::type_t::CALC: 
     case ex_command::type_t::EXEC: 
@@ -563,7 +561,7 @@ bool wex::textctrl::set_ex(wex::ex* ex, const std::string& command)
       }
       else if (!TCI().get().empty())
       {
-        SetValue(m_ModeVisual && TCI().get().find(range) != 0 ? 
+        SetValue(m_mode_visual && TCI().get().find(range) != 0 ? 
           range + TCI().get(): TCI().get()); 
         SelectAll();
       }
@@ -575,7 +573,7 @@ bool wex::textctrl::set_ex(wex::ex* ex, const std::string& command)
       break;
 
     case ex_command::type_t::FIND: 
-      SetValue(!m_ModeVisual ? ex->get_stc()->get_find_string(): std::string()); 
+      SetValue(!m_mode_visual ? ex->get_stc()->get_find_string(): std::string()); 
       SelectAll();
       break;
 

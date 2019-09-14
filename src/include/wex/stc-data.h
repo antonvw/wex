@@ -47,6 +47,31 @@ namespace wex
     typedef std::bitset<5> menu_t;
     typedef std::bitset<4> window_t;
     
+    /// Support class for client data stored at the event.
+    class event_data
+    {
+    public:
+      /// Default constructor.
+      event_data() {;};
+
+      /// Access.
+      bool pos_at_end() const {return m_pos_at_end;};
+      auto pos_end() const {return m_pos_end;};
+      auto pos_start() const {return m_pos_start;};
+      bool synced() const {return m_synced;};
+      bool synced_log() const {return m_synced_log;};
+
+      /// Fill the members.
+      void set(stc* s, bool synced);
+    private:
+      bool 
+        m_pos_at_end {false}, 
+        m_synced {false},
+        m_synced_log {false};
+
+      int m_pos_start {-1}, m_pos_end {-1};
+    };
+    
     /// Default constructor.
     stc_data(stc* stc = nullptr);
 
@@ -67,6 +92,12 @@ namespace wex
 
     /// Sets control data.
     stc_data& control(control_data& data) {m_Data = data; return *this;};
+    
+    /// Returns event data.
+    const auto& event() const {return m_event_data;};
+    
+    /// Sets event data.
+    stc_data& event(bool synced) {m_event_data.set(m_STC, synced); return *this;};
 
     /// Returns window flags.
     const auto& flags() const {return m_WinFlags;};
@@ -102,10 +133,10 @@ namespace wex
     stc* m_STC {nullptr};
 
     control_data m_Data;
-
     indicator_t m_indicator_no {IND_LINE};
     menu_t m_MenuFlags {menu_t().set(
       MENU_CONTEXT).set(MENU_OPEN_LINK).set(MENU_OPEN_WWW).set(MENU_VCS)};
     window_t m_WinFlags {0};
+    event_data m_event_data;
   };
 };

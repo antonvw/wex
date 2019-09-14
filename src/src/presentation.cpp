@@ -24,27 +24,27 @@ wex::presentation::presentation(
 
     tokenizer fields(node.text().get(), ",");
 
-    m_No = std::stoi(single);
-    m_Style = std::stoi(lexers::get()->apply_macro(fields.get_next_token()));
+    m_no = std::stoi(single);
+    m_style = std::stoi(lexers::get()->apply_macro(fields.get_next_token()));
 
     if (fields.has_more_tokens())
     {
-      m_ForegroundColour = lexers::get()->apply_macro(fields.get_next_token());
+      m_foreground_colour = lexers::get()->apply_macro(fields.get_next_token());
 
       if (m_type == INDICATOR && fields.has_more_tokens())
       {
-        m_Under = (fields.get_next_token() == "true");
+        m_under = (fields.get_next_token() == "true");
       }
       
       if (m_type == MARKER && fields.has_more_tokens())
       {
-        m_BackgroundColour = lexers::get()->apply_macro(fields.get_next_token());
+        m_background_colour = lexers::get()->apply_macro(fields.get_next_token());
       }
     }
 
     if (!is_ok())
     {
-      log("illegal " + name() + " number:") << m_No << node;
+      log("illegal " + name() + " number:") << m_no << node;
     }
   }
   catch (std::exception& e)
@@ -55,21 +55,21 @@ wex::presentation::presentation(
 
 wex::presentation::presentation(presentation_t type, int no, int style)
   : m_type(type)
-  , m_No(no)
-  , m_Style(style)
+  , m_no(no)
+  , m_style(style)
 {
 }
 
 bool wex::presentation::operator<(const wex::presentation& i) const
 {
-  return m_No < i.m_No;
+  return m_no < i.m_no;
 }
 
 bool wex::presentation::operator==(const wex::presentation& i) const
 {
-  return m_Style == -1 ?
-    m_No == i.m_No:
-    m_No == i.m_No && m_Style == i.m_Style;
+  return m_style == -1 ?
+    m_no == i.m_no:
+    m_no == i.m_no && m_style == i.m_style;
 }
 
 void wex::presentation::apply(stc* stc) const
@@ -79,21 +79,21 @@ void wex::presentation::apply(stc* stc) const
     switch (m_type)
     {
       case INDICATOR:
-        stc->IndicatorSetStyle(m_No, m_Style);
+        stc->IndicatorSetStyle(m_no, m_style);
 
-        if (!m_ForegroundColour.empty())
+        if (!m_foreground_colour.empty())
         {
-          stc->IndicatorSetForeground(m_No, wxString(m_ForegroundColour));
+          stc->IndicatorSetForeground(m_no, wxString(m_foreground_colour));
         }
 
-        stc->IndicatorSetUnder(m_No, m_Under);
+        stc->IndicatorSetUnder(m_no, m_under);
       break;
       
       case MARKER:
-        stc->MarkerDefine(m_No, 
-          m_Style, 
-          wxString(m_ForegroundColour), 
-          wxString(m_BackgroundColour));
+        stc->MarkerDefine(m_no, 
+          m_style, 
+          wxString(m_foreground_colour), 
+          wxString(m_background_colour));
       break;
     }
   }
@@ -105,15 +105,15 @@ bool wex::presentation::is_ok() const
   {
     case INDICATOR:
       return 
-        m_No >= 0 && m_No <= wxSTC_INDIC_MAX &&
-        m_Style >= 0 && m_Style <= wxSTC_INDIC_ROUNDBOX;
+        m_no >= 0 && m_no <= wxSTC_INDIC_MAX &&
+        m_style >= 0 && m_style <= wxSTC_INDIC_ROUNDBOX;
     break;
   
     case MARKER:
       return 
-        m_No >= 0 && m_No <= wxSTC_MARKER_MAX &&
-        ((m_Style >= 0 && m_Style <= wxSTC_MARKER_MAX) || 
-         (m_Style >= wxSTC_MARK_CHARACTER && m_Style <= wxSTC_MARK_CHARACTER + 255));
+        m_no >= 0 && m_no <= wxSTC_MARKER_MAX &&
+        ((m_style >= 0 && m_style <= wxSTC_MARKER_MAX) || 
+         (m_style >= wxSTC_MARK_CHARACTER && m_style <= wxSTC_MARK_CHARACTER + 255));
     break;
   }
   

@@ -221,7 +221,7 @@ frame::frame(app* app)
   {
     m_Editors->GetPage(m_Editors->GetPageCount() - 1)->SetFocus();
   }
-
+  
   get_toolbar()->add_controls(false); // no realize yet
   get_toolbar()->AddControl(m_CheckBoxDirCtrl);
   m_CheckBoxDirCtrl->SetToolTip(_("Explorer"));
@@ -665,11 +665,6 @@ bool frame::exec_ex_command(wex::ex_command& command)
 {
   if (command.command() == ":") return false;
 
-  if (m_App->get_scriptout().is_opened())
-  {
-    m_App->get_scriptout().write(command.command() + "\n");
-  }
-
   bool handled = false;
 
   if (m_Editors->GetPageCount() > 0)
@@ -697,6 +692,13 @@ bool frame::exec_ex_command(wex::ex_command& command)
   }
 
   return handled;
+}
+
+wex::process* frame::get_process(const std::string& command)
+{
+  if (!m_App->get_debug()) return nullptr;
+  m_Process->execute(command, wex::process::EXEC_NO_WAIT);
+  return m_Process;
 }
 
 wex::report::file* frame::get_project()
@@ -1282,16 +1284,21 @@ wex::stc* frame::open_file(const wex::path& filename, const wex::stc_data& data)
         }
       }
     
-      if (m_App->get_scriptin().is_opened())
+      if (!m_App->get_scriptin().empty())
       {
-        const auto buffer(m_App->get_scriptin().read());
-        wex::tokenizer tkz(std::string((const char *)buffer->data(), buffer->length()), "\r\n");
-        while (tkz.has_more_tokens())
+        wex::file script(m_App->get_scriptin());
+
+        if (const auto buffer(script.read()); buffer != nullptr)
         {
-          if (!editor->get_vi().command(tkz.get_next_token()))
+          wex::tokenizer tkz(*buffer, "\n");
+
+          while (tkz.has_more_tokens())
           {
-            wex::log::status("Aborted at") << tkz.get_token();
-            return editor;
+            if (!editor->get_vi().command(tkz.get_next_token()))
+            {
+              wex::log::status("Aborted at") << tkz.get_token();
+              return editor;
+            }
           }
         }
       }
@@ -1330,11 +1337,14 @@ void frame::print_ex(wex::ex* ex, const std::string& text)
   page->get_lexer().set(ex->get_stc()->get_lexer());
 }
   
-wex::process* frame::get_process(const std::string& command)
+void frame::record(const std::string& command)
 {
-  if (!m_App->get_debug()) return nullptr;
-  m_Process->execute(command, wex::process::EXEC_NO_WAIT);
-  return m_Process;
+  if (!m_App->get_scriptout().empty())
+  {
+    wex::file scriptout(
+      m_App->get_scriptout(), std::ios_base::out | std::ios_base::app);
+    scriptout.write(command + "\n");
+  }
 }
 
 wex::stc* frame::restore_page(const std::string& key)

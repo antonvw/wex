@@ -2,7 +2,7 @@
 // Name:      hexmodeline.cpp
 // Purpose:   Implementation of class hexmode_line
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -37,7 +37,7 @@ wex::hexmode_line::hexmode_line(hexmode* hex,
     m_ColumnNo = m_Hex->get_stc()->GetColumn(pos);
     m_LineNo = m_Hex->get_stc()->LineFromPosition(pos);
 
-    if (m_ColumnNo >= m_StartAsciiField + m_Hex->m_BytesPerLine)
+    if (m_ColumnNo >= m_StartAsciiField + (int)m_Hex->m_BytesPerLine)
     {
       m_ColumnNo = m_StartAsciiField;
       m_LineNo++;
@@ -55,11 +55,32 @@ wex::hexmode_line::hexmode_line(hexmode* hex,
   }
 }
 
-bool wex::hexmode_line::Delete(int count, bool settext)
+int wex::hexmode_line::buffer_index() const
+{
+  if (m_ColumnNo >= m_StartAsciiField + (int)m_Hex->m_BytesPerLine)
+  {
+    return wxSTC_INVALID_POSITION;
+  }
+  else if (m_ColumnNo >= m_StartAsciiField)
+  {
+    return convert(m_ColumnNo - m_StartAsciiField);
+  }
+  else if (m_ColumnNo >= 0)
+  {
+    if (m_Line[m_ColumnNo] != ' ')
+    {
+      return convert(m_ColumnNo / m_Hex->m_EachHexField);
+    }
+  }
+
+  return wxSTC_INVALID_POSITION;
+}
+  
+bool wex::hexmode_line::erase(int count, bool settext)
 {
   const int index = buffer_index();
   
-  if (IsReadOnly() || 
+  if (is_readonly() || 
     index == wxSTC_INVALID_POSITION || 
     (size_t)index >= m_Hex->m_Buffer.length()) return false;
 
@@ -73,30 +94,9 @@ bool wex::hexmode_line::Delete(int count, bool settext)
   return true;
 }
 
-int wex::hexmode_line::buffer_index() const
-{
-  if (m_ColumnNo >= m_StartAsciiField + m_Hex->m_BytesPerLine)
-  {
-    return wxSTC_INVALID_POSITION;
-  }
-  else if (m_ColumnNo >= m_StartAsciiField)
-  {
-    return Convert(m_ColumnNo - m_StartAsciiField);
-  }
-  else if (m_ColumnNo >= 0)
-  {
-    if (m_Line[m_ColumnNo] != ' ')
-    {
-      return Convert(m_ColumnNo / m_Hex->m_EachHexField);
-    }
-  }
-
-  return wxSTC_INVALID_POSITION;
-}
-  
 const std::string wex::hexmode_line::info() const
 {
-  if (IsHexField())
+  if (is_hex_field())
   {
     const std::string word = m_Hex->get_stc()->get_word_at_pos(m_Hex->get_stc()->GetCurrentPos());
     
@@ -106,7 +106,7 @@ const std::string wex::hexmode_line::info() const
         std::to_string(buffer_index()) + std::string(" ") + std::to_string(std::stol(word, 0, 16));
     }
   }
-  else if (IsAsciiField())
+  else if (is_ascii_field())
   {
     return std::string("index: ") + std::to_string(buffer_index());
   }
@@ -114,23 +114,11 @@ const std::string wex::hexmode_line::info() const
   return std::string();
 }
 
-bool wex::hexmode_line::Goto() const
-{
-  if (m_LineNo < 0 || m_ColumnNo < 0) return false;
-  
-  m_Hex->get_stc()->SetFocus(); 
-  m_Hex->get_stc()->SetCurrentPos(
-    m_Hex->get_stc()->PositionFromLine(m_LineNo) + m_StartAsciiField + m_ColumnNo);
-  m_Hex->get_stc()->SelectNone();
-  
-  return true;
-}
-
-bool wex::hexmode_line::Insert(const std::string& text)
+bool wex::hexmode_line::insert(const std::string& text)
 {
   const int index = buffer_index();
   
-  if (IsReadOnly() || index == wxSTC_INVALID_POSITION) return false;
+  if (is_readonly() || index == wxSTC_INVALID_POSITION) return false;
   
   if (m_ColumnNo >= m_StartAsciiField)
   {
@@ -164,18 +152,18 @@ bool wex::hexmode_line::Insert(const std::string& text)
   return true;
 }
   
-bool wex::hexmode_line::Replace(char c)
+bool wex::hexmode_line::replace(char c)
 {
   const int index = buffer_index();
   
-  if (IsReadOnly() || index == wxSTC_INVALID_POSITION) return false;
+  if (is_readonly() || index == wxSTC_INVALID_POSITION) return false;
   
   const int pos = m_Hex->get_stc()->PositionFromLine(m_LineNo);
   
   // Because m_Buffer is changed, begin and end undo action
   // cannot be used, as these do not operate on the hex buffer.
   
-  if (IsAsciiField())
+  if (is_ascii_field())
   {
     // replace ascii field with value
     m_Hex->get_stc()->wxStyledTextCtrl::Replace(
@@ -186,9 +174,9 @@ bool wex::hexmode_line::Replace(char c)
     sprintf(buffer, "%02X", c);
     
     m_Hex->get_stc()->wxStyledTextCtrl::Replace(
-      pos + OtherField(), pos + OtherField() + 2, buffer);
+      pos + other_field(), pos + other_field() + 2, buffer);
   }
-  else if (IsHexField())
+  else if (is_hex_field())
   {
     // hex text should be entered.
     if (!isxdigit(c)) return false;
@@ -214,7 +202,7 @@ bool wex::hexmode_line::Replace(char c)
     const int code = std::stoi(hex, nullptr, 16);
     
     m_Hex->get_stc()->wxStyledTextCtrl::Replace(
-      pos + OtherField(), pos + OtherField() + 1, wex::printable(code, m_Hex->get_stc()));
+      pos + other_field(), pos + other_field() + 1, wex::printable(code, m_Hex->get_stc()));
       
     c = code;
   }
@@ -228,11 +216,11 @@ bool wex::hexmode_line::Replace(char c)
   return true;
 }
 
-void wex::hexmode_line::Replace(const std::string& hex, bool settext)
+void wex::hexmode_line::replace(const std::string& hex, bool settext)
 {
   const int index = buffer_index();
   
-  if (IsReadOnly() || index == wxSTC_INVALID_POSITION) return;
+  if (is_readonly() || index == wxSTC_INVALID_POSITION) return;
   
   m_Hex->m_Buffer[index] = std::stoi(hex, nullptr, 16);
 
@@ -242,11 +230,11 @@ void wex::hexmode_line::Replace(const std::string& hex, bool settext)
   }
 }
   
-void wex::hexmode_line::ReplaceHex(int value)
+void wex::hexmode_line::replace_hex(int value)
 {
   const int index = buffer_index();
   
-  if (IsReadOnly() || index == wxSTC_INVALID_POSITION) return;
+  if (is_readonly() || index == wxSTC_INVALID_POSITION) return;
   
   const int pos = m_Hex->get_stc()->PositionFromLine(m_LineNo);
   
@@ -259,18 +247,30 @@ void wex::hexmode_line::ReplaceHex(int value)
         
   // replace ascii field with code
   m_Hex->get_stc()->wxStyledTextCtrl::Replace(
-    pos + OtherField(), pos + OtherField() + 1, printable(value, m_Hex->get_stc()));
+    pos + other_field(), pos + other_field() + 1, printable(value, m_Hex->get_stc()));
       
   m_Hex->m_Buffer[index] = value;
 }
 
-void wex::hexmode_line::SetPos(const wxKeyEvent& event)
+bool wex::hexmode_line::set_pos() const
+{
+  if (m_LineNo < 0 || m_ColumnNo < 0) return false;
+  
+  m_Hex->get_stc()->SetFocus(); 
+  m_Hex->get_stc()->SetCurrentPos(
+    m_Hex->get_stc()->PositionFromLine(m_LineNo) + m_StartAsciiField + m_ColumnNo);
+  m_Hex->get_stc()->SelectNone();
+  
+  return true;
+}
+
+void wex::hexmode_line::set_pos(const wxKeyEvent& event) const
 {
   const int start = m_Hex->get_stc()->PositionFromLine(m_LineNo);
   const bool right = (event.GetKeyCode() == WXK_RIGHT);
   const int pos = m_Hex->get_stc()->GetCurrentPos();
   
-  if (IsHexField())
+  if (is_hex_field())
   {
     right ? 
       m_Hex->get_stc()->SetCurrentPos(pos + 3):
@@ -297,7 +297,7 @@ void wex::hexmode_line::SetPos(const wxKeyEvent& event)
       m_Hex->get_stc()->SetCurrentPos(pos + 1):
       m_Hex->get_stc()->SetCurrentPos(pos - 1);
       
-    if (m_Hex->get_stc()->GetCurrentPos() >= start + m_StartAsciiField + m_Hex->m_BytesPerLine)
+    if (m_Hex->get_stc()->GetCurrentPos() >= start + m_StartAsciiField + (int)m_Hex->m_BytesPerLine)
     {
       m_Hex->get_stc()->SetCurrentPos(
         m_Hex->get_stc()->PositionFromLine(m_LineNo + 1) + m_StartAsciiField);
