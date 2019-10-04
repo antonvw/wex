@@ -17,9 +17,9 @@
 const wex::version_info wex::get_version_info() 
 {
   return version_info("wex", 
-    19, 10, 0, 
+    20, 4, 0, 
     "wex Library (a library that offers windows ex and vi components)",
-    "(c) 1998-2019, Anton van Wezenbeek." + std::string(_("All rights reserved.")));
+    "(c) 1998-2020, Anton van Wezenbeek." + std::string(_("All rights reserved.")));
 }
 
 wex::version_info::version_info(const std::string& name,

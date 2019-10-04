@@ -326,7 +326,7 @@ const std::string wex::get_find_result(const std::string& find_text,
     const auto where = (find_next) ? _("bottom").ToStdString(): _("top").ToStdString();
     return
       _("Searching for").ToStdString() + " " + 
-      quoted(skip_white_space(find_text)) + " " +
+      quoted(trim(find_text)) + " " +
       _("hit").ToStdString() + " " + where;
   }
   else
@@ -336,7 +336,7 @@ const std::string wex::get_find_result(const std::string& find_text,
       wxBell();
     }
     return
-      quoted(skip_white_space(find_text)) + " " + _("not found").ToStdString();
+      quoted(trim(find_text)) + " " + _("not found").ToStdString();
   }
 }
 
@@ -355,7 +355,7 @@ int wex::get_number_of_lines(const std::string& text, bool trim)
     return 0;
   }
   
-  const auto trimmed = (trim ? skip_white_space(text): text);
+  const auto trimmed = (trim ? wex::trim(text): text);
   
   if (const int c = std::count(trimmed.begin(), trimmed.end(), '\n') + 1; c != 1)
   {
@@ -409,7 +409,7 @@ const std::string wex::get_word(std::string& text,
   tokenizer tkz(text, field_separators);
   if (tkz.has_more_tokens()) token = tkz.get_next_token();
   text = tkz.get_string();
-  text = skip_white_space(text, skip_t().set(SKIP_LEFT));
+  text = trim(text, skip_t().set(TRIM_LEFT));
   return token;
 }
 
@@ -443,7 +443,8 @@ bool wex::marker_and_register_expansion(ex* ex, std::string& text)
 {
   if (ex == nullptr) return false;
 
-  for (tokenizer tkz(text, "'" + std::string(1, WXK_CONTROL_R), false); tkz.has_more_tokens(); )
+  for (tokenizer tkz(text, "'" + std::string(1, WXK_CONTROL_R), false); 
+    tkz.has_more_tokens(); )
   {
     tkz.get_next_token();
     
@@ -466,9 +467,16 @@ bool wex::marker_and_register_expansion(ex* ex, std::string& text)
       // Replace register.
       else
       {
-        replace_all(text,
-          tkz.last_delimiter() + std::string(1, name), 
-          name == '%' ? ex->get_stc()->get_filename().fullname(): ex->get_macros().get_register(name));
+        if (
+          const std::string reg(ex->get_macros().get_register(name));
+          !reg.empty())
+        {
+          replace_all(text,
+            tkz.last_delimiter() + std::string(1, name), 
+            name == '%' ? 
+              ex->get_stc()->get_filename().fullname(): 
+              reg);
+        }
       }
     }
   }
@@ -606,7 +614,7 @@ void wex::open_files_dialog(frame* frame,
 {
   wxArrayString paths;
   const std::string caption(_("Select Files"));
-  bool hexmode = false;
+  bool hexmode;
       
   if (auto* stc = frame->get_stc(); stc != nullptr)
   {
@@ -721,7 +729,7 @@ const std::string GetColumn(InputIterator first, InputIterator last)
 }
     
 template <typename InputIterator>
-const std::string GetLines(std::vector<std::string> & lines,
+const std::string get_lines(std::vector<std::string> & lines,
   size_t pos, size_t len, InputIterator ii)
 {
   std::string text;
@@ -770,26 +778,26 @@ bool wex::single_choice_dialog(wxWindow* parent, const std::string& title,
   return true;
 }
   
-const std::string wex::skip_white_space(
+const std::string wex::trim(
   const std::string& text, 
   skip_t type,
   const std::string& replace_with)
 {
   auto output(text);
   
-  if (type[SKIP_MID])
+  if (type[TRIM_MID])
   {
     output = std::regex_replace(output, 
       std::regex("[ \t\n\v\f\r]+"), replace_with, std::regex_constants::format_sed);
   }
   
-  if (type[SKIP_LEFT])
+  if (type[TRIM_LEFT])
   {
     output = std::regex_replace(output, 
       std::regex("^[ \t\n\v\f\r]+"), "", std::regex_constants::format_sed);
   }
 
-  if (type[SKIP_RIGHT])
+  if (type[TRIM_RIGHT])
   {
     output = std::regex_replace(output, 
       std::regex("[ \t\n\v\f\r]+$"), "", std::regex_constants::format_sed);
@@ -859,8 +867,8 @@ const std::string wex::sort(
   else
   {
     text = (sort_t[STRING_SORT_DESCENDING] ? 
-      GetLines(lines, pos, len, ms.rbegin()):
-      GetLines(lines, pos, len, ms.begin()));
+      get_lines(lines, pos, len, ms.rbegin()):
+      get_lines(lines, pos, len, ms.begin()));
   }
   
   return text;

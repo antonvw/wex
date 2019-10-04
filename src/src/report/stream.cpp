@@ -87,31 +87,31 @@ wex::report::stream::comment_t wex::report::stream::CheckForComment(
       m_SyntaxType = SYNTAX_TWO;
   }
 
-  comment_t comment_t = COMMENT_NONE;
+  comment_t comment;
 
   switch (comment_t1)
   {
-    case COMMENT_NONE:  comment_t = comment_t2; break;
-    case COMMENT_BEGIN: comment_t = COMMENT_BEGIN; break;
-    case COMMENT_END:   comment_t = COMMENT_END; break;
-    case COMMENT_BOTH:  comment_t = COMMENT_BOTH; break;
+    case COMMENT_NONE:  comment = comment_t2; break;
+    case COMMENT_BEGIN: comment = COMMENT_BEGIN; break;
+    case COMMENT_END:   comment = COMMENT_END; break;
+    case COMMENT_BOTH:  comment = COMMENT_BOTH; break;
     case COMMENT_INCOMPLETE:
-      comment_t = (comment_t2 == COMMENT_NONE) ? COMMENT_INCOMPLETE: comment_t2;
+      comment = (comment_t2 == COMMENT_NONE) ? COMMENT_INCOMPLETE: comment_t2;
       break;
     default: assert(0);
   }
 
-  if (comment_t == COMMENT_END)
+  if (comment == COMMENT_END)
   {
     // E.g. we have a correct /* */ comment, with */ at the end of the line.
     // Then the end of line itself should not generate a COMMENT_END.
-    if (m_SyntaxType == SYNTAX_NONE) comment_t = COMMENT_NONE;
+    if (m_SyntaxType == SYNTAX_NONE) comment = COMMENT_NONE;
     // Keep the syntax type.
     m_LastSyntaxType = m_SyntaxType;
     m_SyntaxType = SYNTAX_NONE;
   }
 
-  return comment_t;
+  return comment;
 }
 
 void wex::report::stream::CommentStatementEnd()

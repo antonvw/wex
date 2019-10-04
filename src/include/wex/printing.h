@@ -2,7 +2,7 @@
 // Name:      printing.h
 // Purpose:   Include file for wex::printing class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -53,11 +53,11 @@ namespace wex
     printout(wxStyledTextCtrl* owner);
 
     /// Methods overridden from base class.
-    virtual void GetPageInfo(int* minPage, int* maxPage, int* pageFrom, int* pageTo) override;
-    virtual bool HasPage(int pageNum) override {
+    void GetPageInfo(int* minPage, int* maxPage, int* pageFrom, int* pageTo) override;
+    bool HasPage(int pageNum) override {
       return (pageNum >= 1 && pageNum <= (int)m_PageBreaks.size());};
-    virtual void OnPreparePrinting() override;
-    virtual bool OnPrintPage(int pageNum) override;
+    void OnPreparePrinting() override;
+    bool OnPrintPage(int pageNum) override;
   private:
     void CountPages();
     void SetScale();

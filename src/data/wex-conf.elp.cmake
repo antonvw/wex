@@ -5,5 +5,5 @@
    TO_FILE              =  true
    TO_STANDARD_OUTPUT   =  true
    PERFORMANCE_TRACKING =  true
-   MAX_LOG_FILE_SIZE    =  2097152 ## 2MB - Comment starts with two hashes (##)
+   MAX_LOG_FILE_SIZE    =  2097152 ## 2MB
    LOG_FLUSH_THRESHOLD  =  1

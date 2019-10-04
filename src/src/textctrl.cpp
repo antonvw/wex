@@ -5,14 +5,15 @@
 // Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wx/textctrl.h>
 #include <wex/textctrl.h>
 #include <wex/config.h>
 #include <wex/frd.h>
 #include <wex/log.h>
 
 wex::textctrl_input::textctrl_input(ex_command::type_t type) 
-  : m_Type(type)
-  , m_Name([](ex_command::type_t type) {
+  : m_type(type)
+  , m_name([](ex_command::type_t type) {
       switch (type)
       {
         case ex_command::type_t::CALC: return std::string("excalc");
@@ -23,68 +24,66 @@ wex::textctrl_input::textctrl_input(ex_command::type_t type)
         case ex_command::type_t::REPLACE: return find_replace_data::text_replace_with();
         default: return std::string("exother");
       }}(type))
-  , m_Values(config(m_Name).get(std::list<std::string>{}))
-  , m_Iterator(m_Values.cbegin())
+  , m_values(config(m_name).get(std::list<std::string>{}))
+  , m_iterator(m_values.cbegin())
 {
-  log::verbose("TCI") << m_Name << "size:" << m_Values.size();
+  log::verbose("TCI") << m_name << "size:" << m_values.size();
 }
 
 wex::textctrl_input::~textctrl_input() 
 {
-  wex::config(m_Name).set(m_Values);
+  wex::config(m_name).set(m_values);
 }
 
 const std::string wex::textctrl_input::get() const 
 {
   try
   {
-    return m_Iterator != m_Values.end() ? *m_Iterator: std::string();
+    return m_iterator != m_values.end() ? *m_iterator: std::string();
   }
   catch (std::exception& e)
   {
-    log(e) << "TCI:" << m_Name;
+    log(e) << "TCI:" << m_name;
     return std::string();
   }
 }
   
-bool wex::textctrl_input::set(const std::string& value)
+void wex::textctrl_input::set(const std::string& value)
 {
-  if (value.empty()) return false;
+  assert(!value.empty());
 
-  m_Values.remove(value);
-  m_Values.push_front(value);
-  m_Iterator = m_Values.cbegin();
-  config(m_Name).set(m_Values);
-  
-  return true;
+  m_values.remove(value);
+  m_values.push_front(value);
+  m_iterator = m_values.cbegin();
+  config(m_name).set(m_values);
 }
 
 bool wex::textctrl_input::set(int key, wxTextCtrl* tc) 
 {
-  if (m_Values.empty()) return false;
+  if (m_values.empty()) return false;
   
   const int page = 10;
   
   switch (key)
   {
-    case WXK_DOWN: if (m_Iterator != m_Values.cbegin()) m_Iterator--; break;
-    case WXK_END: m_Iterator = m_Values.cend(); m_Iterator--; break;
-    case WXK_HOME: m_Iterator = m_Values.cbegin(); break;
-    case WXK_UP: if (m_Iterator != m_Values.cend()) m_Iterator++; break;
+    case WXK_DOWN: if (m_iterator != m_values.cbegin()) m_iterator--; break;
+    case WXK_END: m_iterator = m_values.cend(); m_iterator--; break;
+    case WXK_HOME: m_iterator = m_values.cbegin(); break;
+    case WXK_UP: if (m_iterator != m_values.cend()) m_iterator++; break;
     
     case WXK_PAGEDOWN: 
-      if (std::distance(m_Values.cbegin(), m_Iterator) > page)
-        std::advance(m_Iterator, -page); 
+      if (std::distance(m_values.cbegin(), m_iterator) > page)
+        std::advance(m_iterator, -page); 
       else
-        m_Iterator = m_Values.cbegin();
+        m_iterator = m_values.cbegin();
       break;
     case WXK_PAGEUP: 
-      if (std::distance(m_Iterator, m_Values.cend()) > page)
-        std::advance(m_Iterator, page); 
+      if (std::distance(m_iterator, m_values.cend()) > page)
+        std::advance(m_iterator, page); 
       else
       {
-        m_Iterator = m_Values.cend();
-        m_Iterator--;
+        m_iterator = m_values.cend();
+        m_iterator--;
       }
       break;
     
@@ -100,9 +99,17 @@ bool wex::textctrl_input::set(int key, wxTextCtrl* tc)
   return true;
 }
 
+void wex::textctrl_input::set(const wxTextCtrl* tc) 
+{
+  if (const auto v(tc->GetValue().ToStdString()); !v.empty())
+  {
+    set(v);
+  }
+}
+  
 void wex::textctrl_input::set(const std::list < std::string > & values)
 {
-  m_Values.assign(values.cbegin(), values.cend());
-  m_Iterator = m_Values.cbegin();
-  config(m_Name).set(values);
+  m_values.assign(values.cbegin(), values.cend());
+  m_iterator = m_values.cbegin();
+  config(m_name).set(values);
 }

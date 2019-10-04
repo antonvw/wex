@@ -2,7 +2,7 @@
 // Name:      autocomplete.h
 // Purpose:   Declaration of class wex::autocomplete
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -40,21 +40,21 @@ namespace wex
     bool use() const;
     
     /// Sets autocomplete on or off.
-    void use(bool on) {m_Use = on;};
+    void use(bool on) {m_use = on;};
   private:
     void clear();
-    bool ShowCTags(bool show) const;
-    bool ShowInserts(bool show) const;
-    bool ShowKeywords(bool show) const;
+    bool show_ctags(bool show) const;
+    bool show_inserts(bool show) const;
+    bool show_keywords(bool show) const;
 
-    const size_t m_MinSize;
+    const size_t m_min_size;
 
-    bool m_Use {true};
+    bool m_use {true};
 
-    std::string m_Text;
-    std::set< std:: string > m_Inserts;
+    std::string m_text;
+    std::set< std:: string > m_inserts;
 
-    ctags_entry m_Filter;
-    stc* m_STC;
+    ctags_entry m_filter;
+    stc* m_stc;
   };
 };

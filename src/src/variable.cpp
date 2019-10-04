@@ -18,38 +18,56 @@
 #include <wex/vi-macros.h>
 #include <wex/vi-macros-mode.h>
 
-wex::stc_entry_dialog* wex::variable::m_Dialog = nullptr;
+// Several types of variables are supported.
+// See xml file.
+enum class wex::variable::input_t
+{
+  BUILTIN,     // a builtin variable like "Created"
+  ENVIRONMENT, // an environment variable like ENV
+  INPUT,       // input from user
+  INPUT_ONCE,  // input once from user, save value in xml file
+  INPUT_SAVE,  // input from user, save value in xml file
+  READ,        // read value from macros xml file
+  TEMPLATE     // read value from a template file
+};
+
+wex::variable::variable(const std::string& name)
+  : m_name(name)
+  , m_type(input_t::INPUT_SAVE)
+{
+}
 
 wex::variable::variable(const pugi::xml_node& node)
-  : m_Name(node.attribute("name").value())
-  , m_Value(node.text().get())
-  , m_Prefix(node.attribute("prefix").value())
+  : m_name(node.attribute("name").value())
+  , m_type(input_t::INPUT_SAVE)
+  , m_value(node.text().get())
+  , m_prefix(node.attribute("prefix").value())
 {
   if (const std::string type = node.attribute("type").value(); !type.empty())
   {
     if (type == "BUILTIN")
     {
-      m_Type = VARIABLE_BUILTIN;
+      m_type = input_t::BUILTIN;
     }
     else if (type == "ENVIRONMENT")
     {
-      m_Type = VARIABLE_ENVIRONMENT;
+      m_type = input_t::ENVIRONMENT;
     }
     else if (type == "INPUT")
     {
-      m_Type = VARIABLE_INPUT;
+      m_type = input_t::INPUT;
     }
     else if (type == "INPUT-SAVE")
     {
-      m_Type = VARIABLE_INPUT_SAVE;
+      m_type = input_t::INPUT_SAVE;
     }
     else if (type == "INPUT-ONCE")
     {
-      m_Type = VARIABLE_INPUT_ONCE;
+      m_type = input_t::INPUT_ONCE;
     }
     else if (type == "TEMPLATE")
     {
-      m_Type = VARIABLE_TEMPLATE;
+      m_type = input_t::TEMPLATE;
     }
     else
     {
@@ -58,10 +76,10 @@ wex::variable::variable(const pugi::xml_node& node)
   }
 }
 
-bool wex::variable::CheckLink(std::string& value) const
+bool wex::variable::check_link(std::string& value) const
 {
   if (std::vector <std::string> v;
-    match("@([a-zA-Z].+)@", m_Value, v) > 0)
+    match("@([a-zA-Z].+)@", m_value, v) > 0)
   {
     if (const auto& it = vi_macros::get_variables()->find(v[0]);
       it != vi_macros::get_variables()->end())
@@ -70,21 +88,21 @@ bool wex::variable::CheckLink(std::string& value) const
       {
         if (!is_input())
         {
-          log() << "variable:" << m_Name << "(" << v[0] << ") could not be expanded";
+          log() << "variable:" << m_name << "(" << v[0] << ") could not be expanded";
         }
       }
       else
       {
         if (!value.empty())
         {
-          log::verbose("variable") << m_Name << "(" << v[0] << ") expanded:" << value;
+          log::verbose("variable") << m_name << "(" << v[0] << ") expanded:" << value;
           return true;
         }
       }
     }
     else
     {
-      log() << "variable:" << m_Name << "(" << v[0] << ") is not found";
+      log() << "variable:" << m_name << "(" << v[0] << ") is not found";
     }
   }
   
@@ -95,9 +113,9 @@ bool wex::variable::expand(ex* ex)
 {
   std::string value;
 
-  if (CheckLink(value))
+  if (check_link(value))
   {
-    m_Value = value;
+    m_value = value;
     value.clear();
   }
 
@@ -107,7 +125,7 @@ bool wex::variable::expand(ex* ex)
     // Now only show log status if this is no input variable,
     // as it was cancelled in that case.    
     {
-      log::status(_("Could not expand variable")) << m_Name;
+      log::status(_("Could not expand variable")) << m_name;
     }
 
     return false;
@@ -123,29 +141,29 @@ bool wex::variable::expand(ex* ex)
       return false;
     }
 
-    if (!m_Prefix.empty())
+    if (!m_prefix.empty())
     {
       commented = ex->get_stc()->get_lexer().make_comment(
-        m_Prefix == "WRAP" ? std::string(): m_Prefix, value);
+        m_prefix == "WRAP" ? std::string(): m_prefix, value);
     }
 
-    ex->add_text(commented);
+    ex->get_stc()->add_text(commented);
   }
   
-  if (m_Type == VARIABLE_INPUT_SAVE || m_Type == VARIABLE_INPUT_ONCE)
+  if (m_type == input_t::INPUT_SAVE || m_type == input_t::INPUT_ONCE)
   {
-    m_Value = value;
+    m_value = value;
 
-    log::verbose("variable") << m_Name << "expanded and saved:" << m_Value;
+    log::verbose("variable") << m_name << "expanded and saved:" << m_value;
   }
   else 
   {
-    log::verbose("variable") << m_Name << "expanded to:" << value;
+    log::verbose("variable") << m_name << "expanded to:" << value;
   }
 
-  if (m_Type == VARIABLE_INPUT_ONCE && !m_Value.empty())
+  if (m_type == input_t::INPUT_ONCE && !m_value.empty())
   {
-    m_AskForInput = false;
+    m_ask_for_input = false;
   }
 
   return true;
@@ -153,19 +171,19 @@ bool wex::variable::expand(ex* ex)
 
 bool wex::variable::expand(std::string& value, ex* ex) const
 {
-  CheckLink(value);
+  check_link(value);
 
-  switch (m_Type)
+  switch (m_type)
   {
-    case VARIABLE_BUILTIN:
-      if (!ExpandBuiltIn(ex, value))
+    case input_t::BUILTIN:
+      if (!expand_builtin(ex, value))
       {
         return false;
       }
       break;
       
-    case VARIABLE_ENVIRONMENT:
-      if (wxString val; !wxGetEnv(m_Name, &val))
+    case input_t::ENVIRONMENT:
+      if (wxString val; !wxGetEnv(m_name, &val))
       {
         return false;
       }
@@ -175,61 +193,63 @@ bool wex::variable::expand(std::string& value, ex* ex) const
       }
       break;
       
-    case VARIABLE_INPUT:
-    case VARIABLE_INPUT_ONCE:
-    case VARIABLE_INPUT_SAVE:
-      if (!ExpandInput(value))
+    case input_t::INPUT:
+    case input_t::INPUT_ONCE:
+    case input_t::INPUT_SAVE:
+      if (!expand_input(value))
       {
         return false;
       }
       break;
       
-    case VARIABLE_READ:
-      if (m_Value.empty())
+    case input_t::READ:
+      if (m_value.empty())
       {
         return false;
       }
-      value = m_Value;
+      value = m_value;
       break;
       
-    case VARIABLE_TEMPLATE:
+    case input_t::TEMPLATE:
       if (!vi_macros::mode()->expand(ex, *this, value))
       {
         return false;
       }
       break;
       
-    default: assert(0); break;
+    default: 
+      assert(0); 
+      break;
   }
   
   return true;
 }
 
-bool wex::variable::ExpandBuiltIn(ex* ex, std::string& expanded) const
+bool wex::variable::expand_builtin(ex* ex, std::string& expanded) const
 {
-  if (m_Name == "Date")
+  if (m_name == "Date")
   {
     expanded = wxDateTime::Now().FormatISODate();
   }
-  else if (m_Name == "Datetime")
+  else if (m_name == "Datetime")
   {
     expanded = wxDateTime::Now().FormatISOCombined(' ');
   }
-  else if (m_Name == "Time")
+  else if (m_name == "Time")
   {
     expanded = wxDateTime::Now().FormatISOTime();
   }
-  else if (m_Name == "Year")
+  else if (m_name == "Year")
   {
     expanded = wxDateTime::Now().Format("%Y");
   }
   else if (ex != nullptr)
   {
-    if (m_Name == "Cb")
+    if (m_name == "Cb")
     {
       expanded = ex->get_stc()->get_lexer().comment_begin();
     }
-    else if (m_Name == "Cc")
+    else if (m_name == "Cc")
     {
       const int line = ex->get_stc()->GetCurrentLine();
       const int startPos = ex->get_stc()->PositionFromLine(line);
@@ -237,15 +257,15 @@ bool wex::variable::ExpandBuiltIn(ex* ex, std::string& expanded) const
       expanded = ex->get_stc()->get_lexer().comment_complete(
         ex->get_stc()->GetTextRange(startPos, endPos).ToStdString());
     }
-    else if (m_Name == "Ce")
+    else if (m_name == "Ce")
     {
       expanded = ex->get_stc()->get_lexer().comment_end();
     }
-    else if (m_Name == "Cl")
+    else if (m_name == "Cl")
     {
       expanded = ex->get_stc()->get_lexer().make_comment(std::string(), false);
     }
-    else if (m_Name == "Created")
+    else if (m_name == "Created")
     {
       if (path file(ex->get_stc()->get_filename());
         ex->get_stc()->get_filename().stat().is_ok())
@@ -257,23 +277,23 @@ bool wex::variable::ExpandBuiltIn(ex* ex, std::string& expanded) const
         expanded = wxDateTime::Now().FormatISODate();
       }
     }
-    else if (m_Name == "Filename")
+    else if (m_name == "Filename")
     {
       expanded = ex->get_stc()->get_filename().name();
     }
-    else if (m_Name == "Fullname")
+    else if (m_name == "Fullname")
     {
       expanded = ex->get_stc()->get_filename().fullname();
     }
-    else if (m_Name == "Fullpath")
+    else if (m_name == "Fullpath")
     {
       expanded = ex->get_stc()->get_filename().string();
     }
-    else if (m_Name == "Nl")
+    else if (m_name == "Nl")
     {
       expanded = ex->get_stc()->eol();
     }
-    else if (m_Name == "Path")
+    else if (m_name == "Path")
     {
       expanded = ex->get_stc()->get_filename().get_path();
     }
@@ -286,26 +306,26 @@ bool wex::variable::ExpandBuiltIn(ex* ex, std::string& expanded) const
   return true;
 }
 
-bool wex::variable::ExpandInput(std::string& expanded)  const
+bool wex::variable::expand_input(std::string& expanded)  const
 {
-  if (m_AskForInput)
+  if (m_ask_for_input)
   {
-    const auto use(!expanded.empty() ? expanded: m_Value);
+    const auto use(!expanded.empty() ? expanded: m_value);
 
-    if (m_Dialog == nullptr)
+    if (m_dialog == nullptr)
     {
-      m_Dialog = new stc_entry_dialog(
+      m_dialog = new stc_entry_dialog(
         use,
         std::string(),
-        window_data().title(m_Name + ":"));
+        window_data().title(m_name + ":"));
         
-      m_Dialog->get_stc()->get_vi().use(false);
-      m_Dialog->get_stc()->SetWrapMode(wxSTC_WRAP_WORD);
+      m_dialog->get_stc()->get_vi().use(false);
+      m_dialog->get_stc()->SetWrapMode(wxSTC_WRAP_WORD);
     }
 
-    m_Dialog->SetTitle(m_Name);
-    m_Dialog->get_stc()->set_text(use);
-    m_Dialog->get_stc()->SetFocus();
+    m_dialog->SetTitle(m_name);
+    m_dialog->get_stc()->set_text(use);
+    m_dialog->get_stc()->SetFocus();
     
     bool ended = false;
     
@@ -315,7 +335,7 @@ bool wex::variable::ExpandInput(std::string& expanded)  const
       wxEndBusyCursor();
     }
     
-    const int result = m_Dialog->ShowModal();
+    const int result = m_dialog->ShowModal();
     
     if (ended)
     {
@@ -327,7 +347,7 @@ bool wex::variable::ExpandInput(std::string& expanded)  const
       return false;
     }
       
-    const std::string value(m_Dialog->get_stc()->GetText());
+    const std::string value(m_dialog->get_stc()->GetText());
     
     if (value.empty())
     {
@@ -338,52 +358,70 @@ bool wex::variable::ExpandInput(std::string& expanded)  const
   }
   else
   {
-    expanded = m_Value;
+    expanded = m_value;
   }
   
   return true;
 }
 
+bool wex::variable::is_builtin() const 
+{
+  return m_type == input_t::BUILTIN;
+}
+
+bool wex::variable::is_input() const 
+{
+  return 
+    m_type == input_t::INPUT || 
+    m_type == input_t::INPUT_ONCE ||
+    m_type == input_t::INPUT_SAVE;
+}
+
+bool wex::variable::is_template() const 
+{
+  return m_type == input_t::TEMPLATE;
+}
+
 void wex::variable::save(pugi::xml_node& node, const std::string* value)
 {
-  assert(!m_Name.empty());
+  assert(!m_name.empty());
 
   if (!node.attribute("name"))
   {
-    node.append_attribute("name") = m_Name.c_str();
+    node.append_attribute("name") = m_name.c_str();
   }
 
   if (!node.attribute("type"))
   {
     pugi::xml_attribute type = node.append_attribute("type");
     
-    switch (m_Type)
+    switch (m_type)
     {
-      case VARIABLE_BUILTIN: type.set_value("BUILTIN"); break;
-      case VARIABLE_ENVIRONMENT: type.set_value("ENVIRONMENT"); break;
-      case VARIABLE_INPUT: type.set_value("INPUT"); break;
-      case VARIABLE_INPUT_ONCE: type.set_value("INPUT-ONCE"); break;
-      case VARIABLE_INPUT_SAVE: type.set_value("INPUT-SAVE"); break;
-      case VARIABLE_READ: break;
-      case VARIABLE_TEMPLATE: type.set_value("TEMPLATE"); break;
+      case input_t::BUILTIN: type.set_value("BUILTIN"); break;
+      case input_t::ENVIRONMENT: type.set_value("ENVIRONMENT"); break;
+      case input_t::INPUT: type.set_value("INPUT"); break;
+      case input_t::INPUT_ONCE: type.set_value("INPUT-ONCE"); break;
+      case input_t::INPUT_SAVE: type.set_value("INPUT-SAVE"); break;
+      case input_t::READ: break;
+      case input_t::TEMPLATE: type.set_value("TEMPLATE"); break;
 
       default: assert(0); break;
     }
   }
   
-  if (!m_Prefix.empty() && !node.attribute("prefix"))
+  if (!m_prefix.empty() && !node.attribute("prefix"))
   {
-    node.append_attribute("prefix") = m_Prefix.c_str();
+    node.append_attribute("prefix") = m_prefix.c_str();
   }
 
   if (value != nullptr)
   {
-    m_Value = *value;
+    m_value = *value;
   }
     
-  if (!m_Value.empty() && m_Type != VARIABLE_INPUT)
+  if (!m_value.empty() && m_type != input_t::INPUT)
   {
-    node.text().set(m_Value.c_str());
+    node.text().set(m_value.c_str());
   }
 } 
 
@@ -391,10 +429,10 @@ void wex::variable::set_ask_for_input(bool value)
 {
   if (!value)
   {
-    m_AskForInput = value;
+    m_ask_for_input = value;
   }
-  else if (is_input() && m_Type != VARIABLE_INPUT_ONCE)
+  else if (is_input() && m_type != input_t::INPUT_ONCE)
   {
-    m_AskForInput = value;
+    m_ask_for_input = value;
   }
 }

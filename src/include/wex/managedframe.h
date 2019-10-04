@@ -78,11 +78,6 @@ namespace wex
     /// Default sets the focus to page and adds page as recently used.
     virtual void on_notebook(wxWindowID id, wxWindow* page);
 
-    /// Interface from frame.
-    virtual stc* open_file(
-      const path& filename,
-      const stc_data& data = stc_data()) override;
-
     /// Prints text in ex dialog.
     virtual void print_ex(
       /// the ex for the dialog
@@ -101,9 +96,6 @@ namespace wex
     /// Saves the current page, to restore later on.
     virtual bool save_current_page(const std::string& key) {return false;};
     
-    /// Allows derived class to update file history.
-    virtual void set_recent_file(const path& path) override;
-    
     /// Called after you checked the Sync checkbox on the options toolbar.
     /// Default syncs current stc.
     virtual void sync_all();
@@ -111,33 +103,43 @@ namespace wex
     /// Called after all pages from the notebooks are deleted.
     /// Default resets the find focus.
     virtual void sync_close_all(wxWindowID id);
+    
+    /// overriden methods
 
+    /// Allows derived class to update file history.
+    /// Interface from frame.
+    stc* open_file(
+      const path& filename,
+      const stc_data& data = stc_data()) override;
+
+    void set_recent_file(const path& path) override;
+    
     /// Other methods
     
     /// Appends the toggle panes to the specified menu.
     void append_panes(wxMenu* menu) const;
     
     /// Returns file history.
-    auto& file_history() {return m_FileHistory;};
+    auto& file_history() {return m_file_history;};
     
     /// Debugging interface.
-    auto* get_debug() {return m_Debug;};
+    auto* get_debug() {return m_debug;};
 
     /// Returns the find toolbar.
-    auto* get_find_toolbar() {return m_FindBar;};
+    auto* get_find_toolbar() {return m_findbar;};
     
     /// Returns the options toolbar.
-    auto* get_options_toolbar() {return m_OptionsBar;};
+    auto* get_options_toolbar() {return m_optionsbar;};
     
     /// Returns the toolbar.
-    auto* get_toolbar() {return m_ToolBar;};
+    auto* get_toolbar() {return m_toolbar;};
     
     /// Hides the ex bar.
     /// Default it sets focus back to stc component associated with current ex.
     void hide_ex_bar(int hide = HIDE_BAR_FOCUS_STC);
 
     /// Returns the manager.
-    auto& manager() {return m_Manager;};
+    auto& manager() {return m_manager;};
 
     /// Returns a command line ex command.
     /// Shows the ex bar, sets the label and sets focus to it, allowing
@@ -160,7 +162,7 @@ namespace wex
     /// Returns false if pane is not managed.
     bool toggle_pane(
       const std::string& pane) {
-        return show_pane(pane, !m_Manager.GetPane(pane).IsShown());};
+        return show_pane(pane, !m_manager.GetPane(pane).IsShown());};
   protected:
     void on_menu_history(
       const class file_history& history, 
@@ -171,17 +173,17 @@ namespace wex
       wxWindow* window, 
       const std::string& name, 
       const std::string& caption = std::string());
-    wxPanel* CreateExPanel();
+    wxPanel* create_ex_panel();
     
     const std::vector<std::pair<std::pair<std::string, std::string>, int>> 
-      m_ToggledPanes;
+      m_toggled_panes;
     
-    wxAuiManager m_Manager;
-    debug* m_Debug = nullptr;
-    class file_history m_FileHistory;
-    find_toolbar* m_FindBar;
-    options_toolbar* m_OptionsBar;
-    textctrl* m_TextCtrl;
-    toolbar* m_ToolBar;
+    wxAuiManager m_manager;
+    debug* m_debug {nullptr};
+    class file_history m_file_history;
+    find_toolbar* m_findbar;
+    options_toolbar* m_optionsbar;
+    textctrl* m_textctrl;
+    toolbar* m_toolbar;
   };
 };

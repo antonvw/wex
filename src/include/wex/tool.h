@@ -2,7 +2,7 @@
 // Name:      tool.h
 // Purpose:   Declaration of wex::tool classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -23,22 +23,22 @@ namespace wex
       const std::string& info = std::string(),
       const std::string& text = std::string(),
       const std::string& helptext = std::string())
-      : m_Info(info)
-      , m_HelpText(helptext)
-      , m_Text(text){};
+      : m_info(info)
+      , m_help_text(helptext)
+      , m_text(text){};
 
     /// Returns the helptext.
-    const auto & help_text() const {return m_HelpText;};
+    const auto & help_text() const {return m_help_text;};
 
     /// Returns the info.
-    const auto & info() const {return m_Info;};
+    const auto & info() const {return m_info;};
 
     /// Returns the text.
-    const auto & text() const {return m_Text;};
+    const auto & text() const {return m_text;};
   private:
-    std::string m_HelpText;
-    std::string m_Info;
-    std::string m_Text;
+    std::string m_help_text;
+    std::string m_info;
+    std::string m_text;
   };
 
   template <class T> class statistics;
@@ -54,18 +54,18 @@ namespace wex
     /// Adds your own info to the tool.
     /// If you use a %d in the info string, it is replaced by get_statistics
     /// with the Actions Completed element.
-    void add_info(
+    static void add_info(
       int tool_id,
       const std::string& info,
       const std::string& text = std::string(),
       const std::string& helptext = std::string()) {
-      m_ToolInfo[tool_id] = tool_info(info, text, helptext);};
-
-    /// Returns the tool id.
-    int id() const {return m_Id;};
+      m_tool_info[tool_id] = tool_info(info, text, helptext);};
 
     /// Returns all the tool info.
-    const auto & get_tool_info() const {return m_ToolInfo;};
+    const auto & get_tool_info() const {return m_tool_info;};
+
+    /// Returns the tool id.
+    int id() const {return m_id;};
 
     /// Returns info about current tool.
     const std::string info() const;
@@ -75,13 +75,13 @@ namespace wex
     
     /// Is this tool a find type.
     bool is_find_type() const {
-      return m_Id == ID_TOOL_REPORT_FIND || m_Id == ID_TOOL_REPLACE;}
+      return m_id == ID_TOOL_REPORT_FIND || m_id == ID_TOOL_REPLACE;}
 
     /// Is this tool a report type.
     bool is_report_type() const {
-      return m_Id > ID_TOOL_REPORT_FIRST && m_Id < ID_TOOL_REPORT_LAST;}
+      return m_id > ID_TOOL_REPORT_FIRST && m_id < ID_TOOL_REPORT_LAST;}
   private:
-    const int m_Id;
-    static std::map < int, tool_info > m_ToolInfo;
+    const int m_id;
+    static std::map < int, tool_info > m_tool_info;
   };
 };

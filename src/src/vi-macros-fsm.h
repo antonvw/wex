@@ -17,7 +17,6 @@ namespace wex
 
   // Forward the simple states.
   struct ssACTIVE;
-  struct ssEXPANDING_TEMPLATE;
   struct ssIDLE;
   struct ssRECORDING;
 
@@ -30,61 +29,55 @@ namespace wex
     {
       IDLE,
       RECORDING,
-      EXPANDING_TEMPLATE,
     };
 
     // All events.
     struct evDONE : sc::event< evDONE > {};
-    struct evEXPAND_TEMPLATE : sc::event< evEXPAND_TEMPLATE > {};
     struct evRECORD : sc::event< evRECORD > {};
 
+    /// Default constructor.
     vi_macros_fsm();
 
-    void expand_variable(const std::string& name, ex* ex);
-    void expanding_template();
-    bool expanding_variable(const std::string& name, std::string* value) const;
+    /// Expands a variable template into a string.
+    /// The ex component is used for info.
+    bool expand_template(
+      const variable& v, 
+      ex* ex, 
+      std::string& expanded) const;
 
+    /// Expands a variable into a ex component.
+    bool expand_variable(const std::string& v, ex* ex) const;
+
+    /// Returns the internal state.
     auto get() const {return m_state;};
-    std::string get_macro() const {return m_macro;};
-    const auto & get_variable() const {return m_variable;};
+
+    /// Are we playng back?
     bool is_playback() const {return m_playback;};
 
-    void playback(const std::string& name, ex* ex, int repeat);
+    /// Plays back macro to ex.
+    void playback(const std::string& macro, ex* ex, int repeat);
     
-    bool process_expand(
-      ex* ex, 
-      const variable& v, 
-      std::string& expanded);
+    /// Starts or stops recording a macro.
+    void record(const std::string& macro, ex* ex = nullptr);
 
-    bool record(
-      const std::string& macro = std::string(), 
-      ex* ex = nullptr);
-    
-    static void set_macro(const std::string& m) {m_macro = m;};
+    /// Sets internal state.
+    void state(state_t s);
 
-    void start_recording();
-
-    void state(state_t s) {m_state = s;};
-
-    const std::string state() const {
-      return get() == IDLE ? std::string(): state_string(get());};
-
-    static const std::string state_string(state_t state) {
-      switch (state)
+    /// Returns state string.
+    const std::string str() const {
+      switch (m_state)
       {
-        case IDLE: return "idle"; 
-        case EXPANDING_TEMPLATE: return "template";
+        case IDLE: return std::string(); 
         case RECORDING: return "recording";
         default: return "unhandled state";
       };};
   private:
+    bool expanding_variable(
+      ex* ex, const std::string& name, std::string* value) const;
     void set_ask_for_input() const;
 
-    bool m_error {false}, m_playback {false};
-    ex* m_ex {nullptr};
-    variable m_variable;
-    std::string* m_expanded {nullptr};
-    static inline std::string m_macro;
-    state_t m_state = IDLE;
+    bool m_playback {false};
+    std::string m_macro;
+    state_t m_state {IDLE};
   };
 };

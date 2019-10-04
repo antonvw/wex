@@ -307,13 +307,6 @@ namespace wex
   /// Returns false if process could not be executed.
   bool shell_expansion(std::string& command);
 
-  enum
-  {
-    SKIP_LEFT  = 0, ///< skip space at left
-    SKIP_MID   = 1, ///< skip space at mid
-    SKIP_RIGHT = 2, ///< skip space at right
-  };
-    
   /// Presents a dialog to choose one string out of an array.
   bool single_choice_dialog(
     wxWindow* parent, 
@@ -321,17 +314,6 @@ namespace wex
     const wxArrayString& s, 
     std::string& selection);
   
-  typedef std::bitset<3> skip_t;
-  
-  /// Returns a string without all white space in specified input.
-  const std::string skip_white_space(
-    /// text with white space to be skipped
-    const std::string& text,
-    /// kind of skip
-    skip_t type_t = skip_t().set(SKIP_LEFT).set(SKIP_RIGHT),
-    /// replace with (only for SKIP_MID)
-    const std::string& replace_with = " ");
-
   enum
   {
     STRING_SORT_DESCENDING = 0, ///< sort descending order
@@ -368,6 +350,24 @@ namespace wex
 
   /// This takes care of the translation.
   const std::string translate(const std::string& text, int pageNum, int numPages);
+
+  enum
+  {
+    TRIM_LEFT  = 0, ///< skip space at left
+    TRIM_MID   = 1, ///< skip space at mid
+    TRIM_RIGHT = 2, ///< skip space at right
+  };
+    
+  typedef std::bitset<3> skip_t;
+  
+  /// Returns a string without all white space in specified input.
+  const std::string trim(
+    /// text with white space to be skipped
+    const std::string& text,
+    /// kind of skip
+    skip_t type_t = skip_t().set(TRIM_LEFT).set(TRIM_RIGHT),
+    /// replace with (only for TRIM_MID)
+    const std::string& replace_with = " ");
 
   /// Use specified VCS command to set lexer on STC document.
   void vcs_command_stc(

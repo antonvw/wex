@@ -234,7 +234,7 @@ bool wex::address::read(const std::string& arg) const
   {
     path::current(m_ex->get_stc()->get_filename().get_path());
     
-    if (file file(arg, std::ios_base::in); !file.is_opened())
+    if (file file(arg, std::ios_base::in); !file.is_open())
     {
       log::status(_("File")) << file.get_filename() << "open error";
       return false;

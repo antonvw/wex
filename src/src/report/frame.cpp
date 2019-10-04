@@ -37,19 +37,19 @@ wex::report::frame::frame(
       find_replace_data::get()->text_regex()})
 {
   // Take care of default value.
-  if (!config(m_TextRecursive).exists())
+  if (!config(m_textRecursive).exists())
   {
-    config(m_TextRecursive).set(true); 
+    config(m_textRecursive).set(true); 
   }
 
   std::set<std::string> t(m_Info);
-  t.insert(m_TextRecursive);
+  t.insert(m_textRecursive);
   
   const std::vector<item> f {
     {find_replace_data::get()->text_find(), 
        item::COMBOBOX, std::any(), control_data().is_required(true)},
-    {m_TextInFiles, item::COMBOBOX, std::any(), control_data().is_required(true)},
-    {m_TextInFolder, item::COMBOBOX_DIR, std::any(), control_data().is_required(true)},
+    {m_textInFiles, item::COMBOBOX, std::any(), control_data().is_required(true)},
+    {m_textInFolder, item::COMBOBOX_DIR, std::any(), control_data().is_required(true)},
     {t}};
   
   m_FiFDialog = new item_dialog(
@@ -69,14 +69,14 @@ wex::report::frame::frame(
       // Match whole word does not work with replace.
       {{find_replace_data::get()->text_match_case(),
         find_replace_data::get()->text_regex(),
-        m_TextRecursive}}},
+        m_textRecursive}}},
     window_data().
       button(wxAPPLY | wxCANCEL).
       id(ID_REPLACE_IN_FILES).
       title(_("Replace In Files").ToStdString()).
       style(wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxSTAY_ON_TOP));
 
-  Bind(wxEVT_IDLE, &frame::OnIdle, this);
+  Bind(wxEVT_IDLE, &frame::on_idle, this);
   
   Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
     m_ProjectHistory.save();
@@ -153,16 +153,16 @@ void wex::report::frame::find_in_files(wxWindowID dialogid)
 #endif
     log::status(find_replace_string(replace));
       
-    Unbind(wxEVT_IDLE, &frame::OnIdle, this);
+    Unbind(wxEVT_IDLE, &frame::on_idle, this);
       
     dir::type_t type;
     type.set(dir::FILES);
-    if (config(m_TextRecursive).get(true)) type.set(dir::RECURSIVE);
+    if (config(m_textRecursive).get(true)) type.set(dir::RECURSIVE);
 
     if (tool_dir dir(
       tool,
-      config(m_TextInFolder).get_firstof(),
-      config(m_TextInFiles).get_firstof(),
+      config(m_textInFolder).get_firstof(),
+      config(m_textInFiles).get_firstof(),
       type);
 
       dir.find_files() >= 0)
@@ -170,7 +170,7 @@ void wex::report::frame::find_in_files(wxWindowID dialogid)
       log::status(tool.info(&dir.get_statistics().get_elements()));
     }
     
-    Bind(wxEVT_IDLE, &frame::OnIdle, this);
+    Bind(wxEVT_IDLE, &frame::on_idle, this);
 
 #ifdef __WXMSW__
     });
@@ -222,7 +222,7 @@ bool wex::report::frame::find_in_files(
         tool_dir dir(
           tool, 
           it, 
-          config(m_TextInFiles).get_firstof());
+          config(m_textInFiles).get_firstof());
           
         dir.find_files();
         stats += dir.get_statistics().get_elements();
@@ -250,7 +250,7 @@ int wex::report::frame::find_in_files_dialog(
 
   if (item_dialog({
       {find_replace_data::get()->text_find(), item::COMBOBOX, std::any(), control_data().is_required(true)}, 
-      (add_in_files ? item(m_TextInFiles, item::COMBOBOX, std::any(), control_data().is_required(true)) : item()),
+      (add_in_files ? item(m_textInFiles, item::COMBOBOX, std::any(), control_data().is_required(true)) : item()),
       (id == ID_TOOL_REPLACE ? item(find_replace_data::get()->text_replace_with(), item::COMBOBOX): item()),
       item(m_Info)},
     window_data().title(find_in_files_title(id))).ShowModal() == wxID_CANCEL)
@@ -272,8 +272,8 @@ const std::string wex::report::frame::find_in_files_title(int id) const
 
 bool wex::report::frame::grep(const std::string& arg, bool sed)
 {
-  static std::string arg1 = config(m_TextInFolder).get_firstof();
-  static std::string arg2 = config(m_TextInFiles).get_firstof();
+  static std::string arg1 = config(m_textInFolder).get_firstof();
+  static std::string arg2 = config(m_textInFiles).get_firstof();
   static dir::type_t arg3 = dir::FILES;
 
   if (get_stc() != nullptr)
@@ -294,12 +294,12 @@ bool wex::report::frame::grep(const std::string& arg, bool sed)
          find_replace_data::get()->set_replace_string(v[i++]);
        }
        arg2 = (v.size() > i ? 
-         config(m_TextInFiles).set_firstof(v[i++]): 
-         config(m_TextInFiles).get_firstof());
+         config(m_textInFiles).set_firstof(v[i++]): 
+         config(m_textInFiles).get_firstof());
        arg1 = (v.size() > i ? 
-         config(m_TextInFolder).set_firstof(v[i++]): 
-         config(m_TextInFolder).get_firstof());
-       }}).parse(arg, help))
+         config(m_textInFolder).set_firstof(v[i++]): 
+         config(m_textInFolder).get_firstof());
+       }}, false).parse(arg, help))
   {
     stc_entry_dialog(help).ShowModal();
     return false;
@@ -327,13 +327,13 @@ bool wex::report::frame::grep(const std::string& arg, bool sed)
       path::current(stc->get_filename().get_path());
     find_replace_data::get()->set_use_regex(true);
     log::status(find_replace_string(false));
-    Unbind(wxEVT_IDLE, &frame::OnIdle, this);
+    Unbind(wxEVT_IDLE, &frame::on_idle, this);
 
     tool_dir dir(tool, arg1, arg2, arg3);
     dir.find_files();
 
     log::status(tool.info(&dir.get_statistics().get_elements()));
-    Bind(wxEVT_IDLE, &frame::OnIdle, this);
+    Bind(wxEVT_IDLE, &frame::on_idle, this);
   
 #ifdef __WXMSW__
     });
@@ -392,7 +392,7 @@ void wex::report::frame::on_command_item_dialog(
   }
 }
 
-void wex::report::frame::OnIdle(wxIdleEvent& event)
+void wex::report::frame::on_idle(wxIdleEvent& event)
 {
   event.Skip();
 

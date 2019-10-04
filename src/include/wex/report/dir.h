@@ -29,7 +29,7 @@ namespace wex
     /// Returns the statistics.
     auto & get_statistics() {return m_Statistics;};
   protected:  
-    virtual bool on_file(const path& file) override;
+    bool on_file(const path& file) override;
   private:    
     stream_statistics m_Statistics;
     const tool m_Tool;
@@ -49,8 +49,8 @@ namespace wex::report
       const std::string& filespec = std::string(),
       dir::type_t flags = dir::type_t().set());
   protected:
-    virtual bool on_dir(const path& dir) override;
-    virtual bool on_file(const path& file) override;
+    bool on_dir(const path& dir) override;
+    bool on_file(const path& file) override;
   private:
     wex::listview* m_ListView;
   };

@@ -66,9 +66,12 @@ namespace wex
 
   enum class info_message_t
   {
+    MSG_NONE,
     ADD,
     COPY,
     DEL,
+    MOVE,
+    YANK,
   };
 
   command_arg_t get_command_arg(const std::string& command)
@@ -249,14 +252,14 @@ wex::ex::ex(wex::stc* stc)
            config(_("Wrap scan")).set(on);}}
         },
         // options
-        {{{"dir", "dir"}, {cmdline::STRING, [&](const std::any& val) {
+        {{{"dir", "dir", wex::path::current()}, {cmdline::STRING, [&](const std::any& val) {
            wex::path::current(std::any_cast<std::string>(val));}}},
-         {{"ec", "edgecolumn", "80"}, {cmdline::INT, [&](const std::any& val) {
+         {{"ec", "edgecolumn", std::to_string(get_stc()->GetEdgeColumn())}, {cmdline::INT, [&](const std::any& val) {
            if (!modeline) config(_("Edge column")).set(std::any_cast<int>(val));
            else get_stc()->SetEdgeColumn(std::any_cast<int>(val));}}},
-         {{"report", "report", "5"}, {cmdline::INT, [&](const std::any& val) {
+         {{"report", "report", std::to_string(config("Reported lines").get(5))}, {cmdline::INT, [&](const std::any& val) {
            config("Reported lines").set(std::any_cast<int>(val));}}},
-         {{"sw", "shiftwidth", "8"}, {cmdline::INT, [&](const std::any& val) {
+         {{"sw", "shiftwidth", std::to_string(get_stc()->GetIndent())}, {cmdline::INT, [&](const std::any& val) {
            if (!modeline) config(_("Indent")).set(std::any_cast<int>(val));
            else get_stc()->SetIndent(std::any_cast<int>(val));}}},
          {{"sy", "syntax"}, {cmdline::STRING, [&](const std::any& val) {
@@ -264,10 +267,13 @@ wex::ex::ex(wex::stc* stc)
              get_stc()->get_lexer().set(std::any_cast<std::string>(val), true); // allow folding
            else              
              get_stc()->get_lexer().clear();}}},
-         {{"ts", "tabstop", "8"}, {cmdline::INT, [&](const std::any& val) {
+         {{"ts", "tabstop", std::to_string(get_stc()->GetTabWidth())}, {cmdline::INT, [&](const std::any& val) {
            if (!modeline) config(_("Tab width")).set(std::any_cast<int>(val));
            else get_stc()->SetTabWidth(std::any_cast<int>(val));}}}
-        }
+        },
+        {},
+        // no standard options
+        false
       );
 
       if (std::string help; !cmdline.toggle(!modeline).parse(
@@ -363,9 +369,9 @@ wex::ex::ex(wex::stc* stc)
       if (command != ":x") return false;
       POST_COMMAND( wxID_SAVE )
       POST_CLOSE( wxEVT_CLOSE_WINDOW, true )
-      return true;}}},
-  m_ctags(new wex::ctags(this)),
-  m_auto_write(config(_("Auto write")).get(false))
+      return true;}}}
+  , m_ctags(new wex::ctags(this))
+  , m_auto_write(config(_("Auto write")).get(false))
 {
   assert(m_frame != nullptr);
   reset_search_flags();
@@ -374,20 +380,6 @@ wex::ex::ex(wex::stc* stc)
 wex::ex::~ex()
 {
   delete m_ctags;
-}
-
-void wex::ex::add_text(const std::string& text)
-{
-  if (m_register)
-  {
-    m_macros.set_register(m_register, text);
-  }
-  else
-  {
-    get_stc()->add_text(text);
-  }
-
-  info_message(text, wex::info_message_t::ADD);
 }
 
 bool wex::ex::auto_write()
@@ -428,7 +420,7 @@ bool wex::ex::command(const std::string& cmd)
   const auto& it = m_macros.get_map()->find(command);
   command = (it != m_macros.get_map()->end() ? it->second: command);
   
-  if (m_frame->exec_ex_command(m_command.command(cmd)))
+  if (m_frame->exec_ex_command(m_command.set(command)))
   {
     m_command.clear();
     return auto_write();
@@ -474,6 +466,8 @@ bool wex::ex::command_address(const std::string& command)
   }
   else
   { 
+    marker_and_register_expansion(this, rest);
+    
     const std::string addr("[0-9\\.\\$\\+\\-]+"); // addr (normal)
     const std::string addrs("[\\?/].*?[\\?/]"); // addr search, non-greedy!
     const std::string addrm("'[a-z]"); // addr using marker
@@ -509,7 +503,7 @@ bool wex::ex::command_address(const std::string& command)
           addr1 = true;
           range_str = v[0];
           cmd = v[1];
-          rest = skip_white_space(v[2], skip_t().set(SKIP_LEFT));
+          rest = trim(v[2], skip_t().set(TRIM_LEFT));
           break;
         case 4:
           range_str = v[0] + v[1];
@@ -517,11 +511,6 @@ bool wex::ex::command_address(const std::string& command)
           rest = v[3];
           break;
         default: assert(0); break;
-      }
-
-      if (!marker_and_register_expansion(this, range_str))
-      {
-        return false;
       }
     }
     else 
@@ -536,6 +525,9 @@ bool wex::ex::command_address(const std::string& command)
       range_str = (cmd == "g" || cmd == 'v' || cmd == 'w' ? "%": ".");
     }
   }
+  
+  bool r;
+  info_message_t im(info_message_t::MSG_NONE);
   
   if (addr1)
   {
@@ -569,11 +561,11 @@ bool wex::ex::command_address(const std::string& command)
     {
     case 0: return false;
     case 'c': return range.change(rest);
-    case 'd': return range.erase();
+    case 'd': r = range.erase(); im = info_message_t::DEL; break;
     case 'v':
     case 'g': return range.global(rest, cmd[0] == 'v');
     case 'j': return range.join();
-    case 'm': return range.move(address(this, rest));
+    case 'm': r = range.move(address(this, rest)); im = info_message_t::MOVE; break;
     case 'p': 
       if (get_stc()->GetName() != "Print")
       {
@@ -587,7 +579,7 @@ bool wex::ex::command_address(const std::string& command)
     case '&':
     case '~': return range.substitute(rest, cmd[0]);
     case 'S': return range.sort(rest);
-    case 't': return range.copy(address(this, rest));
+    case 't': r = range.copy(address(this, rest)); im = info_message_t::COPY; break;
     case 'w': 
       if (!rest.empty())
       {
@@ -598,8 +590,7 @@ bool wex::ex::command_address(const std::string& command)
         POST_COMMAND( wxID_SAVE )
         return true;
       }
-      break;
-    case 'y': return range.yank(rest.empty() ? '0': (char)rest[0]);
+    case 'y': r = range.yank(rest.empty() ? '0': (char)rest[0]); im = info_message_t::YANK; break;
     case '>': return range.shift_right();
     case '<': return range.shift_left();
     case '!': return range.escape(rest);
@@ -608,6 +599,13 @@ bool wex::ex::command_address(const std::string& command)
       return false;
     }
   }
+  
+  if (r && im != info_message_t::MSG_NONE)
+  {
+    info_message(register_text(), im);
+  }
+  
+  return r;
 }
 
 bool wex::ex::command_handle(const std::string& command) const
@@ -625,11 +623,11 @@ void wex::ex::copy(const wex::ex* ex)
   m_copy = true; // no char numbers for a copy
 }
 
-void wex::ex::cut(bool show_message)
+void wex::ex::cut()
 {
-  const auto sel(get_stc()->get_selected_text());
+  const auto& sel(get_stc()->get_selected_text());
   
-  yank('0', false);
+  yank('0');
 
   get_stc()->ReplaceSelection(wxEmptyString);
   
@@ -664,15 +662,18 @@ void wex::ex::info_message(
   wex::info_message_t type) const
 {
   if (const auto lines = get_number_of_lines(text);
-    lines >= config("Reported lines").get(5))
+    lines > config("Reported lines").get(5))
   {
     wxString msg;
 
     switch (type)
     {
       case wex::info_message_t::ADD: msg = _("%d lines added"); break;
-      case wex::info_message_t::COPY: msg = _("%d lines yanked"); break;
+      case wex::info_message_t::COPY: msg = _("%d lines copied"); break;
       case wex::info_message_t::DEL: msg = _("%d fewer lines"); break;
+      case wex::info_message_t::MOVE: msg = _("%d lines moved"); break;
+      case wex::info_message_t::YANK: msg = _("%d lines yanked"); break;
+      default: return;
     }
 
     m_frame->show_ex_message(wxString::Format(msg, lines - 1).ToStdString());
@@ -712,8 +713,8 @@ bool wex::ex::marker_add(char marker, int line)
 
       get_stc()->MarkerDefine(marker_number, 
         wxSTC_MARK_CHARACTER + marker, 
-        wxString(lm.foreground_colour()), 
-        wxString(lm.background_colour()));
+        wxColour(lm.foreground_colour()), 
+        wxColour(lm.background_colour()));
 
       id = get_stc()->MarkerAdd(lin, marker_number);
       m_marker_numbers[marker] = marker_number;
@@ -893,7 +894,10 @@ void wex::ex::show_dialog(
     m_dialog = new stc_entry_dialog(
       text,
       std::string(),
-      window_data().button(wxOK).title(title));
+      window_data().
+        button(wxOK).
+        title(title).
+        size({450, 450}));
   }
   else
   {
@@ -922,9 +926,9 @@ void wex::ex::show_dialog(
   m_dialog->Show();
 }
 
-bool wex::ex::yank(const char name, bool show_message) const
+bool wex::ex::yank(char name) const
 {
-  const auto range(get_stc()->get_selected_text());
+  const auto& range(get_stc()->get_selected_text());
   
   if (range.empty())
   {
@@ -943,7 +947,7 @@ bool wex::ex::yank(const char name, bool show_message) const
     set_register_yank(range);
   }
 
-  info_message(range, wex::info_message_t::COPY);
+  info_message(range, wex::info_message_t::YANK);
   
   return true;
 }

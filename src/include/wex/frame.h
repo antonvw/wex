@@ -40,7 +40,7 @@ namespace wex
     virtual ~frame();
 
     /// Override from base class.
-    virtual void SetMenuBar(wxMenuBar* bar) override;
+    void SetMenuBar(wxMenuBar* bar) override;
     
     /// Virtual interface
     
@@ -97,7 +97,7 @@ namespace wex
     /// Other methods
 
     /// Sets the find focus to specified window.
-    void set_find_focus(wxWindow* focus) {m_FindFocus = focus;};
+    void set_find_focus(wxWindow* focus) {m_find_focus = focus;};
     
     /// Sets up the status bar if you want to use statustext.
     statusbar* setup_statusbar(
@@ -105,6 +105,8 @@ namespace wex
       long style = wxST_SIZEGRIP,
       const wxString& name = "statusBar") {
       return statusbar::setup(this, panes, style, name);};
+    
+    /// Static interface.
 
     /// Returns text on specified pane.
     /// Don't forget to call setup_statusbar first.
@@ -124,16 +126,16 @@ namespace wex
     static bool update_statusbar(stc* stc, const std::string& pane);
   protected:
     // Interface from wxFrame.
-    virtual wxStatusBar* OnCreateStatusBar(int number,
+    wxStatusBar* OnCreateStatusBar(int number,
       long style, wxWindowID id, const wxString& name) override;
 
-    static inline statusbar* m_StatusBar = nullptr;
+    static inline statusbar* m_statusbar = nullptr;
   private:
     static inline bool m_is_closing = false;
     
-    bool m_IsCommand {false};
-    wxWindow* m_FindFocus {nullptr};
-    wxFindReplaceDialog* m_FindReplaceDialog {nullptr};
-    wxMenuBar* m_MenuBar {nullptr};
+    bool m_is_command {false};
+    wxWindow* m_find_focus {nullptr};
+    wxFindReplaceDialog* m_find_replace_dialog {nullptr};
+    wxMenuBar* m_menubar {nullptr};
   };
 };

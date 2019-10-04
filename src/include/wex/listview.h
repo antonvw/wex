@@ -117,7 +117,7 @@ namespace wex
     bool find_next(const std::string& text, bool find_next = true);
 
     /// Returns associated data.
-    const auto& data() const {return m_Data;};
+    const auto& data() const {return m_data;};
 
     /// Returns the item text using item number and column name.
     /// If you do not specify a column, the item label is returned
@@ -143,7 +143,7 @@ namespace wex
     /// Sets the item image, using the image list.
     /// If the listview does not already contain the image, it is added.
     bool set_item_image(long item_number, const wxArtID& artid) {
-      return (m_Data.image() == listview_data::IMAGE_ART ?
+      return (m_data.image() == listview_data::IMAGE_ART ?
         SetItemImage(item_number, GetArtID(artid)): false);};
 
     /// Sorts on a column specified by column name.
@@ -194,14 +194,14 @@ namespace wex
 
     /// Sets the item file icon image.
     bool set_item_image(long item_number, int iconid) {
-      return (m_Data.image() == listview_data::IMAGE_FILE_ICON ?
+      return (m_data.image() == listview_data::IMAGE_FILE_ICON ?
         SetItemImage(item_number, iconid): false);};
 
     const wxUniChar m_FieldSeparator = '\t';
     const int m_ImageHeight;
     const int m_ImageWidth;
 
-    listview_data m_Data;
+    listview_data m_data;
 
     bool m_ItemUpdated = false;
     long m_ItemNumber = 0;
@@ -210,7 +210,7 @@ namespace wex
     int m_ToBeSortedColumnNo = -1;
     
     std::map<wxArtID, unsigned int> m_ArtIDs;
-    std::vector<column> m_Columns;
+    std::vector<column> m_columns;
     
     static item_dialog* m_config_dialog;
   };

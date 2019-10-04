@@ -73,11 +73,11 @@ const wex::path wex::link::find_between(const std::string& text) const
     if (pos1 != std::string::npos && pos2 != std::string::npos && pos2 > pos1)
     {
       // Okay, get everything inbetween, and make sure we skip white space.
-      return skip_white_space(text.substr(pos1 + 1, pos2 - pos1 - 1));
+      return trim(text.substr(pos1 + 1, pos2 - pos1 - 1));
     }
   }
 
-  return skip_white_space(text);
+  return trim(text);
 }
 
 const wex::path wex::link::find_filename(
@@ -118,7 +118,7 @@ const wex::path wex::link::find_filename(
       }
     }
       
-    path p(skip_white_space(prefix + link));
+    path p(trim(prefix + link));
     
     if (const path q(before(p.string(), ':')); q.file_exists())
     {
@@ -197,7 +197,7 @@ const wex::path wex::link::get_path(
   const wex::path between(find_between(text));
   
   wex::path link(
-    between.is_relative() ? between.string(): skip_white_space(text));
+    between.is_relative() ? between.string(): trim(text));
 
   // if between text now starts with file:line:no
   if (const path p(find_filename(link.string(), data)); !p.empty())
@@ -224,7 +224,7 @@ const wex::path wex::link::get_path(
 
   // if last word is a file
   const auto pos = between.string().find_last_of(' ');
-  wex::path word = skip_white_space((
+  wex::path word = trim((
     pos != std::string::npos ? between.string().substr(pos): std::string()));
 
   if (!word.empty())

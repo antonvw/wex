@@ -31,7 +31,7 @@ namespace wex
     
     /// Executes vi command.
     /// Returns true if the command was executed.
-    virtual bool command(const std::string& command) override;
+    bool command(const std::string& command) override;
     
     /// Returns inserted text.
     const auto & inserted_text() const {return m_insert_text;};
@@ -76,17 +76,10 @@ namespace wex
         > 
       > commands_t;
 
-    enum motion_t
-    {
-      MOTION_CHANGE,
-      MOTION_DELETE,
-      MOTION_NAVIGATE,
-      MOTION_YANK,
-    };
+    enum class motion_t;
 
-    void add_text(const std::string& text);
     void command_calc(const std::string& reg);
-    void command_reg(const char reg);
+    void command_reg(char reg);
     char convert_key_event(const wxKeyEvent& event) const;
     bool delete_range(int start, int end);
     void filter_count(std::string& command);
@@ -101,11 +94,23 @@ namespace wex
     static inline std::string m_last_command;
     static inline std::string m_last_find_char_command;
 
-    bool m_dot{false}, m_search_forward{true};
+    bool 
+      m_count_present {false},
+      m_dot {false}, 
+      m_search_forward {true};
+    
     int m_count{1};
-    std::string m_insert_command, m_insert_text;
+    
+    std::string 
+      m_insert_command, 
+      m_insert_text;
+    
     vi_mode m_mode;
-    const commands_t m_motion_commands, m_other_commands;
+    
+    const commands_t 
+      m_motion_commands, 
+      m_other_commands;
+
     const std::vector<std::string> m_last_commands;
   };
 };

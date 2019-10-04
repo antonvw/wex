@@ -21,13 +21,13 @@ wex::listview_data::listview_data(listview* lv, const listview_data& r)
 }
   
 wex::listview_data::listview_data(control_data& data, listview* lv)
-  : m_Data(data)
+  : m_data(data)
   , m_ListView(lv)
 {
 }
 
 wex::listview_data::listview_data(window_data& data, listview* lv)
-  : m_Data(control_data().window(data))
+  : m_data(control_data().window(data))
   , m_ListView(lv)
 {
 }
@@ -36,11 +36,11 @@ wex::listview_data& wex::listview_data::operator=(const listview_data& r)
 {
   if (this != &r)
   {
-    m_Data = r.m_Data;
+    m_data = r.m_data;
     m_ImageType = r.m_ImageType;
     m_Initialized = r.m_Initialized;
-    m_Lexer = r.m_Lexer;
-    m_MenuFlags = r.m_MenuFlags;
+    m_lexer = r.m_lexer;
+    m_menu_flags = r.m_menu_flags;
     m_Type = r.m_Type;
 
     if (m_ListView != nullptr && r.m_ListView != nullptr)
@@ -65,7 +65,7 @@ void wex::listview_data::add_columns()
         {_("Line No").ToStdString()}});
     break;
     case KEYWORD:
-      for (const auto& it : m_Lexer->keywords())
+      for (const auto& it : m_lexer->keywords())
       {
         m_ListView->append_columns({{column(it)}});
       }
@@ -93,7 +93,7 @@ bool wex::listview_data::inject()
    bool injected = 
      m_ListView != nullptr && 
      m_ListView->GetItemCount() > 0 && 
-     m_Data.inject(
+     m_data.inject(
     [&]() {
       const int initial_value = (
         m_ListView->GetFirstSelected() == -1 ? 1: m_ListView->GetFirstSelected() + 1);
@@ -102,12 +102,12 @@ bool wex::listview_data::inject()
       {
         m_ListView->Select(initial_value - 1, false);
       }
-      m_ListView->Select(m_Data.line() - 1);
-      m_ListView->EnsureVisible(m_Data.line() - 1);
+      m_ListView->Select(m_data.line() - 1);
+      m_ListView->EnsureVisible(m_data.line() - 1);
       return true;},
     [&]() {return false;},
     [&]() {
-      return m_ListView->find_next(m_Data.find());},
+      return m_ListView->find_next(m_data.find());},
     [&]() {return false;});
 
   if (!m_Initialized)
@@ -124,9 +124,9 @@ bool wex::listview_data::inject()
         break;
       
       case KEYWORD:
-        if (m_Lexer != nullptr)
+        if (m_lexer != nullptr)
         {
-          name += " " + m_Lexer->display_lexer();
+          name += " " + m_lexer->display_lexer();
         }
         // fall through
       default:
@@ -136,7 +136,7 @@ bool wex::listview_data::inject()
     }
 
     m_ListView->SetName(name);
-    m_Data.window(window_data().name(name));
+    m_data.window(window_data().name(name));
   }
 
   return injected;
@@ -144,14 +144,14 @@ bool wex::listview_data::inject()
   
 wex::listview_data& wex::listview_data::lexer(const wex::lexer* lexer)
 {
-  m_Lexer = lexer;
+  m_lexer = lexer;
   return *this;
 }
 
 wex::listview_data& wex::listview_data::menu(
   menu_t flags, control_data::action_t action)
 {
-  m_Data.flags<flags.size()>(flags, m_MenuFlags, action);
+  m_data.flags<flags.size()>(flags, m_menu_flags, action);
   return *this;
 }
   

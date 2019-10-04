@@ -93,9 +93,9 @@ sample_frame::sample_frame()
   : wex::managed_frame(4)
   , m_Process(new wex::process())
   , m_Notebook(new wex::notebook())
-  , m_STC(new wex::stc())
+  , m_stc(new wex::stc())
   , m_Shell(new wex::shell(wex::stc_data(), ">", "\n"))
-  , m_STCLexers(new wex::stc(wex::lexers::get()->get_filename()))
+  , m_stcLexers(new wex::stc(wex::lexers::get()->get_filename()))
 {
   wex::process::prepare_output(this);
   
@@ -169,7 +169,7 @@ sample_frame::sample_frame()
 
   manager().AddPane(m_Notebook, 
     wxAuiPaneInfo().CenterPane().MinSize(wxSize(250, 250)));
-  manager().AddPane(m_STC, 
+  manager().AddPane(m_stc, 
     wxAuiPaneInfo().Bottom().Caption("STC"));
   manager().AddPane(m_Shell, 
     wxAuiPaneInfo().Bottom().Caption("Shell").MinSize(wxSize(250, 250)));
@@ -181,7 +181,7 @@ sample_frame::sample_frame()
 
   manager().Update();
 
-  m_Notebook->add_page(m_STCLexers, wex::lexers::get()->get_filename().fullname());
+  m_Notebook->add_page(m_stcLexers, wex::lexers::get()->get_filename().fullname());
   m_Notebook->add_page(m_ListView, "wex::listview");
 
   m_Notebook->add_page(m_Grid, "wex::grid");
@@ -359,30 +359,30 @@ void sample_frame::OnCommand(wxCommandEvent& event)
   switch (event.GetId())
   {
     case wxID_NEW:
-      m_STC->get_file().file_new(wex::path());
+      m_stc->get_file().file_new(wex::path());
       break;
     case wxID_OPEN:
       {
-      wex::file_dialog dlg(&m_STC->get_file());
+      wex::file_dialog dlg(&m_stc->get_file());
       if (dlg.show_modal_if_changed(true) == wxID_CANCEL) return;
       const auto start = std::chrono::system_clock::now();
-      m_STC->open(dlg.GetPath().ToStdString(), 
+      m_stc->open(dlg.GetPath().ToStdString(), 
         wex::stc_data().flags((wex::stc_data::window_t)m_FlagsSTC));
       const auto milli = std::chrono::duration_cast
         <std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
       wex::log::status("Open") 
-         << milli.count() << "milliseconds" << m_STC->GetTextLength() << "bytes";
+         << milli.count() << "milliseconds" << m_stc->GetTextLength() << "bytes";
       }
       break;
     case wxID_SAVE:
-      m_STC->get_file().file_save();
+      m_stc->get_file().file_save();
   
-      if (m_STC->get_filename().data() == wex::lexers::get()->get_filename().data())
+      if (m_stc->get_filename().data() == wex::lexers::get()->get_filename().data())
       {
         wex::lexers::get()->load_document();
         wex::log::verbose("File contains") << wex::lexers::get()->get_lexers().size() << "lexers";
           // As the lexer might have changed, update status bar field as well.
-        update_statusbar(m_STC, "PaneLexer");
+        update_statusbar(m_stc, "PaneLexer");
       }
       break;
   
@@ -414,8 +414,8 @@ void sample_frame::OnCommand(wxCommandEvent& event)
         m_Notebook->add_page(
           stc,
           "stc" + std::to_string(stc->GetId()),
-          m_STC->get_filename().fullname());
-        stc->SetDocPointer(m_STC->GetDocPointer());
+          m_stc->get_filename().fullname());
+        stc->SetDocPointer(m_stc->GetDocPointer());
       }
       break;
       
@@ -433,8 +433,8 @@ void sample_frame::on_command_item_dialog(
   {
     if (event.GetId() != wxID_CANCEL)
     {
-      m_STC->config_get();
-      m_STCLexers->config_get();
+      m_stc->config_get();
+      m_stcLexers->config_get();
     }
   }
   else if (event.GetId() >= 1000 && event.GetId() < 1050)

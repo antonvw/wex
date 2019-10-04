@@ -47,34 +47,34 @@ bool show_dialog(wxWindow* parent, std::string& macro)
 }
 
 wex::vi_macros_mode::vi_macros_mode()
-  : m_FSM(new vi_macros_fsm())
+  : m_fsm(new vi_macros_fsm())
 {
 }
 
 wex::vi_macros_mode::~vi_macros_mode()
 {
-  delete m_FSM;
+  delete m_fsm;
 }
 
 bool wex::vi_macros_mode::expand(
   ex* ex, const variable& v, std::string& expanded)
 {
-  return m_FSM->process_expand(ex, v, expanded);
+  return m_fsm->expand_template(v, ex, expanded);
 }
 
 bool wex::vi_macros_mode::is_playback() const
 {
-  return m_FSM->is_playback();
+  return m_fsm->is_playback();
 }
 
 bool wex::vi_macros_mode::is_recording() const 
 {
-  return m_FSM->get() == vi_macros_fsm::state_t::RECORDING;
+  return m_fsm->get() == vi_macros_fsm::state_t::RECORDING;
 }
 
-const std::string wex::vi_macros_mode::string() const
+const std::string wex::vi_macros_mode::str() const
 {
-  return m_FSM->state();
+  return m_fsm->str();
 }
 
 int wex::vi_macros_mode::transition(
@@ -115,11 +115,11 @@ int wex::vi_macros_mode::transition(
           macro = dlg.GetValue();
         }
       }
-      else if (m_FSM->get() == vi_macros_fsm::state_t::IDLE && macro.empty())
+      else if (m_fsm->get() == vi_macros_fsm::state_t::IDLE && macro.empty())
       {
         return 0;
       }
-      m_FSM->record(macro, ex);
+      m_fsm->record(macro, ex);
     break;
 
     case '@': 
@@ -183,9 +183,9 @@ int wex::vi_macros_mode::transition(
       }
 
       if (vi_macros::is_recorded_macro(macro))
-        m_FSM->playback(macro, ex, repeat);
+        m_fsm->playback(macro, ex, repeat);
       else 
-        m_FSM->expand_variable(macro, ex);
+        m_fsm->expand_variable(macro, ex);
     break;
 
     default: return 0;

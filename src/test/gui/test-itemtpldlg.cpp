@@ -61,13 +61,9 @@ TEST_CASE("wex::item_template_dialog")
     REQUIRE(!dlg->get_item_value("xxx").has_value());
     REQUIRE( std::any_cast<std::string>(dlg->get_item("xxx").label()).empty());
     REQUIRE(!dlg->get_item_value("yyy").has_value());
-    
-    // asserts in 3.0
-#if wxCHECK_VERSION(3,1,0)
     REQUIRE( dlg->set_item_value("fruit", std::string("strawberry")));
     REQUIRE(!dlg->set_item_value("xxx", "blueberry"));
     REQUIRE( std::any_cast<std::string>(dlg->get_item_value("fruit")) == "strawberry");
-#endif
     
     dlg->force_checkbox_checked();
   }

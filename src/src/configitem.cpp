@@ -23,9 +23,9 @@
 #define PERSISTENT(TYPE, DEFAULT)                          \
 {                                                          \
   if (save)                                                \
-    config(m_Label).set(std::any_cast<TYPE>(get_value())); \
+    config(m_label).set(std::any_cast<TYPE>(get_value())); \
   else                                                     \
-    set_value((TYPE)config(m_Label).get(DEFAULT));         \
+    set_value((TYPE)config(m_label).get(DEFAULT));         \
 }                                                          \
 
 bool Update(
@@ -83,7 +83,7 @@ bool wex::item::to_config(bool save) const
       PERSISTENT(wxColour, *wxWHITE); 
       break;
     case DIRPICKERCTRL:      
-      PERSISTENT(std::string, m_Label); 
+      PERSISTENT(std::string, m_label); 
       break;
     case TEXTCTRL_FLOAT:     
       PERSISTENT(double, 0); 
@@ -137,52 +137,52 @@ bool wex::item::to_config(bool save) const
     case COMBOBOX_FILE:
       if (auto* cb = (wxComboBox*)window(); save)
       {
-        if (const auto l = to_list_string(cb, m_MaxItems).get();
-          m_Label == find_replace_data::get()->text_find())
+        if (const auto l = to_list_string(cb, m_max_items).get();
+          m_label == find_replace_data::get()->text_find())
         {
           find_replace_data::get()->set_find_strings(l);
         }
-        else if (m_Label == find_replace_data::get()->text_replace_with())
+        else if (m_label == find_replace_data::get()->text_replace_with())
         {
           find_replace_data::get()->set_replace_strings(l);
         }
         else
         {
-          config(m_Label).set(l);
+          config(m_label).set(l);
         }
       }
       else
       {
-        combobox_from_list(cb, config(m_Label).get(std::list<std::string>{}));
+        combobox_from_list(cb, config(m_label).get(std::list<std::string>{}));
       }
       break;
 
     case FILEPICKERCTRL:
       if (save)
       {
-        config(m_Label).set(std::any_cast<std::string>(get_value()));
+        config(m_label).set(std::any_cast<std::string>(get_value()));
       }
       else
       {
         std::string initial;
 
 #ifdef __WXGTK__
-        initial = "/usr/bin/" + m_Label;
+        initial = "/usr/bin/" + m_label;
 
         if (!std::filesystem::is_regular_file(initial))
         {
           initial.clear();
         }
 #endif
-        set_value(config(m_Label).get(initial));
+        set_value(config(m_label).get(initial));
       }
       break;
 
     case LISTVIEW:
       if (save)
-        config(m_Label).set(std::any_cast<std::string>(get_value()));
+        config(m_label).set(std::any_cast<std::string>(get_value()));
       else
-        set_value(config(m_Label).get());
+        set_value(config(m_label).get());
       break;
 
     case RADIOBOX:
@@ -192,7 +192,7 @@ bool wex::item::to_config(bool save) const
         {
           if (b.second == rb->GetStringSelection())
           {
-            config(m_Label).set(b.first);
+            config(m_label).set(b.first);
           }
         }
       }
@@ -200,7 +200,7 @@ bool wex::item::to_config(bool save) const
       {
         const item::choices_t & choices(std::any_cast<item::choices_t>(initial()));
         
-        if (const auto c = choices.find(config(m_Label).get((int)0));
+        if (const auto c = choices.find(config(m_label).get((int)0));
           c != choices.end())
         {
           rb->SetStringSelection(c->second);
@@ -224,7 +224,7 @@ bool wex::item::to_config(bool save) const
 
   if (m_apply != nullptr)
   {
-    (m_apply)(m_Window, get_value(), save);
+    (m_apply)(m_window, get_value(), save);
   }
 
   return true;

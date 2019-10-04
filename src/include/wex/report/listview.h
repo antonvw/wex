@@ -23,15 +23,15 @@ namespace wex::report
     listview(const listview_data& data = listview_data());
       
     /// Destroys the window safely.
-    virtual bool Destroy() override;
+    bool Destroy() override;
 
     /// Returns list type from tool id.
     static listview_data::type_t type_tool(const tool& tool);
   protected:
-    virtual void build_popup_menu(menu& menu) override;
+    void build_popup_menu(menu& menu) override;
     frame* get_frame() {return m_Frame;};
   private:
-    const listview_data::menu_t m_MenuFlags;
+    const listview_data::menu_t m_menu_flags;
     class frame* m_Frame;
   };
 };

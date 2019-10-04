@@ -2,7 +2,7 @@
 // Name:      tokenizer.h
 // Purpose:   Declaration of wex::tokenizer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -46,7 +46,7 @@ namespace wex
     bool has_more_tokens() const;
 
     /// Get the delimiter which terminated the token last retrieved.
-    auto last_delimiter() const {return m_LastDelimiter;};
+    auto last_delimiter() const {return m_last_delimiter;};
     
     /// tokenizes the complete string into a templatized class 
     /// (e.g. vector<std::string>).
@@ -54,7 +54,7 @@ namespace wex
     /// Returns the filled in container.
     template <typename T> T tokenize() {
       T tokens;
-      m_TokenEndPos = 0;
+      m_token_end_pos = 0;
       while (has_more_tokens()) 
       {
         tokens.emplace_back(get_next_token());
@@ -66,18 +66,24 @@ namespace wex
     /// Returns the filled in vector.
     auto tokenize() {
       std::vector <size_t> tokens;
-      m_TokenEndPos = 0;
+      m_token_end_pos = 0;
       while (has_more_tokens()) 
       {
         tokens.emplace_back(std::stoi(get_next_token()));
       }
       return tokens;};
   private:
-    const std::string m_Delimiters;
-    const std::string m_Text;
-    const bool m_SkipEmptyTokens;
+    const std::string 
+      m_delimiters,
+      m_text;
 
-    char m_LastDelimiter {0};
-    size_t m_StartPos {0}, m_TokenEndPos {0}, m_TokenStartPos {0};
+    const bool m_skip_empty_tokens;
+
+    char m_last_delimiter {0};
+
+    size_t 
+      m_start_pos {0}, 
+      m_token_end_pos {0}, 
+      m_token_start_pos {0};
   };
 };

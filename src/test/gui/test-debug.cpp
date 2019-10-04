@@ -2,7 +2,7 @@
 // Name:      test-debug.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -17,6 +17,8 @@
 #include <wex/stc.h>
 #include "test.h"
 
+TEST_SUITE_BEGIN("wex::debug");
+
 TEST_CASE("wex::debug")
 {
   // obtain a menu item id
@@ -29,7 +31,6 @@ TEST_CASE("wex::debug")
   REQUIRE( dbg.breakpoints().empty());
   REQUIRE( dbg.marker_breakpoint().number() > 0);
 
-  
   wex::stc* stc = get_stc();
   
   if (stc != nullptr)
@@ -59,21 +60,34 @@ TEST_CASE("wex::debug")
   REQUIRE( dbg.execute(item - wex::ID_EDIT_DEBUG_FIRST));
 #endif
   REQUIRE(!dbg.execute(item));
-  
-/*    
-  wex::stc* stc = get_stc();
-  stc->set_text("#include <stdio.h>\n\nmain()\n{printf(\"hello world\");\n}\n");
+
+  stc->set_text("#include <stdio.h>\n\nint main()\n{printf(\"hello world\");\n}\n");
   stc->get_file().file_save("example.cc");
   system("cc -g example.cc");
   
   wex::process process;
   REQUIRE( !dbg.execute(item));
   
+#ifndef __WXOSX__
   process.execute("gdb a.out");
+#else
+  process.execute("lldb a.out");
+#endif
+  
+  process.stop();
   
   REQUIRE(!dbg.execute(item));
   stc->GotoLine(1);
-  REQUIRE( dbg.execute(item, stc));
-  REQUIRE( stc->MarkerGet(1) > 0);
-  */
+// TODO: fix
+//  REQUIRE( dbg.execute(item, stc));
+//  REQUIRE( stc->MarkerGet(1) > 0);
+
+  SUBCASE( "remove")
+  {
+    REQUIRE( remove("a.out") == 0);
+    system("rm -rf a.out.dSYM");
+    REQUIRE( remove("example.cc") == 0);
+  }
 }
+
+TEST_SUITE_END();

@@ -25,28 +25,28 @@ namespace wex
     menu_commands(
       const std::string& name = std::string(),
       const std::vector < T > & commands = {}) 
-      : m_Name(name)
-      , m_Commands(commands) {;};
+      : m_name(name)
+      , m_commands(commands) {;};
     
     /// Constructor using xml node.
     menu_commands(const pugi::xml_node& node) 
-      : m_Name(node.attribute("name").value()) {
-      if (m_Name.empty())
+      : m_name(node.attribute("name").value()) {
+      if (m_name.empty())
       {
         log("no name") << node;
       }
       else
       {
-        if (menus::add_commands(node, m_Commands) == 0)
+        if (menus::add_commands(node, m_commands) == 0)
         {
-          log("no commands found for") << m_Name;
+          log("no commands found for") << m_name;
         }  
       }};
     
     /// Returns the menu command equal to name specified.  
     /// or empty command if name could not be found.
     const T find_command(const std::string& name) const {
-      for (const auto& i : m_Commands)
+      for (const auto& i : m_commands)
       {
         if (i.get_command() == name)
         {
@@ -60,31 +60,31 @@ namespace wex
 
     /// Returns the current command.  
     const auto get_command() const {
-      return m_Commands.empty() ? T(): m_Commands.at(m_CommandIndex);};
+      return m_commands.empty() ? T(): m_commands.at(m_commandIndex);};
 
     /// Returns all the commands.
-    const auto & get_commands() const {return m_Commands;};
+    const auto & get_commands() const {return m_commands;};
 
     /// Returns the name for this group of commands.
-    const auto & name() const {return m_Name;};
+    const auto & name() const {return m_name;};
 
     /// Sets the current command.
     /// Returns true if command was set.
     bool set_command(
       /// a command no from commands
       int command_no) {
-      if (command_no < 0 || command_no >= (int)m_Commands.size())
+      if (command_no < 0 || command_no >= (int)m_commands.size())
       {
         return false;
       }
-      m_CommandIndex = command_no;
-      m_FlagsKey = "menuflags/" + m_Name + std::to_string(m_CommandIndex);
+      m_commandIndex = command_no;
+      m_FlagsKey = "menuflags/" + m_name + std::to_string(m_commandIndex);
       return true;};
   private:
-    int m_CommandIndex = 0;
+    int m_commandIndex = 0;
 
     std::string m_FlagsKey;
-    std::string m_Name;
-    std::vector < T > m_Commands;
+    std::string m_name;
+    std::vector < T > m_commands;
   };
 };

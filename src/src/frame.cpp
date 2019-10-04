@@ -25,9 +25,9 @@
 #include <wex/vcsentry.h>
 
 #define wxCAST_TO(classname)                                 \
-  if (m_FindFocus != nullptr && m_FindFocus->IsShown())      \
+  if (m_find_focus != nullptr && m_find_focus->IsShown())      \
   {                                                          \
-    if (classname* win = dynamic_cast<classname*>(m_FindFocus); \
+    if (classname* win = dynamic_cast<classname*>(m_find_focus); \
       win != nullptr)                                        \
     {                                                        \
       return win;                                            \
@@ -40,9 +40,9 @@
   
 #define FIND_REPLACE( text, dlg)                             \
 {                                                            \
-  if (m_FindReplaceDialog != nullptr)                        \
+  if (m_find_replace_dialog != nullptr)                        \
   {                                                          \
-    m_FindReplaceDialog->Destroy();                          \
+    m_find_replace_dialog->Destroy();                          \
   }                                                          \
                                                              \
   auto* win = wxWindow::FindFocus();                         \
@@ -50,21 +50,21 @@
   if (auto* cl = dynamic_cast<wex::stc*>(win);               \
     cl != nullptr)                                           \
   {                                                          \
-    m_FindFocus = cl;                                        \
+    m_find_focus = cl;                                        \
   }                                                          \
   else                                                       \
   {                                                          \
     if (auto* cl = dynamic_cast<wex::listview*>(win);        \
       cl != nullptr)                                         \
     {                                                        \
-      m_FindFocus = cl;                                      \
+      m_find_focus = cl;                                      \
     }                                                        \
     else                                                     \
     {                                                        \
       if (auto* grid = dynamic_cast<wex::grid*>(win);        \
         grid != nullptr)                                     \
       {                                                      \
-        m_FindFocus = grid;                                  \
+        m_find_focus = grid;                                  \
       }                                                      \
     }                                                        \
   }                                                          \
@@ -74,9 +74,9 @@
     stc->get_find_string();                                  \
   }                                                          \
                                                              \
-  m_FindReplaceDialog = new wxFindReplaceDialog(             \
+  m_find_replace_dialog = new wxFindReplaceDialog(             \
     this, wex::find_replace_data::get()->data(), text, dlg); \
-  m_FindReplaceDialog->Show();                               \
+  m_find_replace_dialog->Show();                               \
 };                                                           \
   
 namespace wex
@@ -100,7 +100,8 @@ wex::frame::frame(const window_data& data)
   : wxFrame(
       data.parent(), 
       data.id(), 
-      data.title().empty() ? std::string(wxTheApp->GetAppDisplayName()): data.title(), 
+      data.title().empty() ? 
+        std::string(wxTheApp->GetAppDisplayName()): data.title(), 
       data.pos(), 
       data.size(), 
       data.style() == DATA_NUMBER_NOT_SET ? 
@@ -139,20 +140,20 @@ wex::frame::frame(const window_data& data)
 #endif
 
   Bind(wxEVT_FIND, [=](wxFindDialogEvent& event) {
-    if (m_FindFocus != nullptr) wxPostEvent(m_FindFocus, event);});
+    if (m_find_focus != nullptr) wxPostEvent(m_find_focus, event);});
   Bind(wxEVT_FIND_NEXT, [=](wxFindDialogEvent& event) {
-    if (m_FindFocus != nullptr) wxPostEvent(m_FindFocus, event);});
+    if (m_find_focus != nullptr) wxPostEvent(m_find_focus, event);});
   Bind(wxEVT_FIND_REPLACE, [=](wxFindDialogEvent& event) {
-    if (m_FindFocus != nullptr) wxPostEvent(m_FindFocus, event);});
+    if (m_find_focus != nullptr) wxPostEvent(m_find_focus, event);});
   Bind(wxEVT_FIND_REPLACE_ALL, [=](wxFindDialogEvent& event) {
-  if (m_FindFocus != nullptr) wxPostEvent(m_FindFocus, event);});
+  if (m_find_focus != nullptr) wxPostEvent(m_find_focus, event);});
 
   Bind(wxEVT_FIND_CLOSE, [=](wxFindDialogEvent& event) {
-    assert(m_FindReplaceDialog != nullptr);
+    assert(m_find_replace_dialog != nullptr);
     // Hiding instead of destroying, does not 
     // show the dialog next time.
-    m_FindReplaceDialog->Destroy();
-    m_FindReplaceDialog = nullptr;});
+    m_find_replace_dialog->Destroy();
+    m_find_replace_dialog = nullptr;});
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (GetStatusBar() != nullptr)
@@ -176,7 +177,7 @@ wex::frame::frame(const window_data& data)
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     FIND_REPLACE( _("Replace") , wxFR_REPLACEDIALOG );}, wxID_REPLACE);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_IsCommand = true;
+    m_is_command = true;
     if (!event.GetString().empty())
     {
       std::string text(event.GetString());
@@ -203,7 +204,7 @@ wex::frame::frame(const window_data& data)
     }}, wxID_OPEN);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    SetMenuBar(GetMenuBar() != nullptr ? nullptr: m_MenuBar);}, ID_VIEW_MENUBAR);
+    SetMenuBar(GetMenuBar() != nullptr ? nullptr: m_menubar);}, ID_VIEW_MENUBAR);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     SetWindowStyleFlag(!(GetWindowStyleFlag() & wxCAPTION) ? 
       wxDEFAULT_FRAME_STYLE:
@@ -233,9 +234,9 @@ wex::frame::frame(const window_data& data)
 
 wex::frame::~frame()
 {
-  if (m_FindReplaceDialog != nullptr)
+  if (m_find_replace_dialog != nullptr)
   {
-    m_FindReplaceDialog->Destroy();
+    m_find_replace_dialog->Destroy();
   }
   
   config("ShowMenuBar").set(
@@ -254,7 +255,7 @@ wex::listview* wex::frame::get_listview()
 
 std::string wex::frame::get_statustext(const std::string& pane)
 {
-  return (m_StatusBar == nullptr ? std::string(): m_StatusBar->get_statustext(pane));
+  return (m_statusbar == nullptr ? std::string(): m_statusbar->get_statustext(pane));
 }
 
 wex::stc* wex::frame::get_stc()
@@ -278,10 +279,10 @@ wxStatusBar* wex::frame::OnCreateStatusBar(
   wxWindowID id,
   const wxString& name)
 {
-  m_StatusBar = new wex::statusbar(this, 
+  m_statusbar = new wex::statusbar(this, 
     wex::window_data().id(id).style(style).name(name.ToStdString()));
-  m_StatusBar->SetFieldsCount(number);
-  return m_StatusBar;
+  m_statusbar->SetFieldsCount(number);
+  return m_statusbar;
 }
 
 wex::stc* wex::frame::open_file(
@@ -330,11 +331,11 @@ void wex::frame::SetMenuBar(wxMenuBar* bar)
 {
   if (bar != nullptr)
   {
-    m_MenuBar = bar;
+    m_menubar = bar;
   }
   
   wxFrame::SetMenuBar(
-   !m_IsCommand && !config("ShowMenuBar").get(true) ? 
+   !m_is_command && !config("ShowMenuBar").get(true) ? 
       nullptr: bar);
 }
 
@@ -368,9 +369,9 @@ void wex::frame::statusbar_clicked(const std::string& pane)
 
 bool wex::frame::statustext(const std::string& text, const std::string& pane)
 {
-  return (m_is_closing || m_StatusBar == nullptr ? 
+  return (m_is_closing || m_statusbar == nullptr ? 
     false: 
-    m_StatusBar->set_statustext(text, pane));
+    m_statusbar->set_statustext(text, pane));
 }
 
 bool wex::frame::update_statusbar(const wxListView* lv)
@@ -452,7 +453,7 @@ bool wex::frame::update_statusbar(stc* stc, const std::string& pane)
   }
   else if (pane == "PaneMode")
   {
-    text << stc->get_vi().mode().string();
+    text << stc->get_vi().mode().str();
   }
   else
   {

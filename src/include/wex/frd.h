@@ -35,7 +35,7 @@ namespace wex
     const std::string get_find_string() const;
 
     /// Returns the find strings.
-    const auto & get_find_strings() const {return m_FindStrings.values();};
+    const auto & get_find_strings() const {return m_findStrings.values();};
     
     /// Returns the replace string.
     const std::string get_replace_string() const;
@@ -133,7 +133,7 @@ namespace wex
      
     wxFindReplaceData* m_frd {nullptr};
     bool m_use_regex {false};
-    textctrl_input m_FindStrings, m_ReplaceStrings;
+    textctrl_input m_findStrings, m_ReplaceStrings;
     std::regex m_regex;
   };
 };

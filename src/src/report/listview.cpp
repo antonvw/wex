@@ -26,7 +26,7 @@
 wex::report::listview::listview(const listview_data& data)
   : wex::listview(data)
   , m_Frame(dynamic_cast<report::frame*>(wxTheApp->GetTopWindow()))
-  , m_MenuFlags(data.menu())
+  , m_menu_flags(data.menu())
 {
   if (data.type() == listview_data::HISTORY)
   {
@@ -203,7 +203,7 @@ void wex::report::listview::build_popup_menu(wex::menu& menu)
     // Finding in the listview_data::FIND would result in recursive calls, do not add it.
     if (exists &&
         data().type() != listview_data::FIND && 
-        m_MenuFlags.test(listview_data::MENU_REPORT_FIND))
+        m_menu_flags.test(listview_data::MENU_REPORT_FIND))
     {
       menu.append_separator();
       menu.append(ID_TOOL_REPORT_FIND, 
@@ -218,7 +218,7 @@ void wex::report::listview::build_popup_menu(wex::menu& menu)
   }
 
   if (GetSelectedItemCount() > 0 && exists && 
-      m_MenuFlags.test(listview_data::MENU_TOOL) && 
+      m_menu_flags.test(listview_data::MENU_TOOL) && 
      !lexers::get()->get_lexers().empty())
   {
     menu.append_separator();

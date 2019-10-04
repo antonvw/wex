@@ -32,10 +32,10 @@ namespace wex
       /// Virtual interface
 
       /// Prepare environment.
-      virtual bool OnInit() override;
+      bool OnInit() override;
 
       /// Start event loop and start testing.
-      virtual int OnRun() override;
+      int OnRun() override;
 
       /// Other methods
     

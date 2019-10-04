@@ -16,6 +16,8 @@
 #include <wex/menu.h>
 #include "test.h"
 
+TEST_SUITE_BEGIN("wex::vcs");
+
 TEST_CASE("wex::vcs")
 {
   // size
@@ -68,3 +70,5 @@ TEST_CASE("wex::vcs")
   REQUIRE( vcs.use());
 #endif
 }
+
+TEST_SUITE_END();

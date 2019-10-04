@@ -104,14 +104,14 @@ bool wex::stc::auto_indentation(int c)
 
   SetLineIndentation(currentLine, indent);
     
-  if (level < m_FoldLevel && m_AddingChars)
+  if (level < m_fold_level && m_adding_chars)
   {
     SetLineIndentation(currentLine - 1, indent);
   }
   
   EndUndoAction();
 
-  m_FoldLevel = level;
+  m_fold_level = level;
     
   GotoPos(GetLineIndentPosition(currentLine));
 
@@ -233,9 +233,9 @@ void wex::stc::config_get()
   const wxFont font(config(_("Default font")).get( 
     wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT)));
 
-  if (m_DefaultFont != font)
+  if (m_default_font != font)
   {
-    m_DefaultFont = font;
+    m_default_font = font;
     
     StyleResetDefault();
     
@@ -245,7 +245,7 @@ void wex::stc::config_get()
 
   SetEdgeColumn(config(_("Edge column")).get(80l));
 
-  if (!m_Lexer.is_ok())
+  if (!m_lexer.is_ok())
   {
     SetEdgeMode(wxSTC_EDGE_NONE);
   }
@@ -268,7 +268,7 @@ void wex::stc::config_get()
   SetFoldFlags(config( _("Fold flags")).get(0));
   SetIndent(config(_("Indent")).get(0));
   SetIndentationGuides( config(_("Indentation guide")).get(false));
-  SetMarginWidth(m_MarginDividerNumber, config(_("Divider")).get(0));
+  SetMarginWidth(m_margin_divider_number, config(_("Divider")).get(0));
   SetPrintColourMode(config(_("Print flags")).get(0));
   SetTabDrawMode(config(_("Tab draw mode")).get(wxSTC_TD_LONGARROW));
   SetTabWidth(config(_("Tab width")).get(0));
@@ -284,7 +284,7 @@ void wex::stc::config_get()
 
   show_line_numbers(config(_("Line numbers")).get(false));
 
-  m_Link.set_from_config();
+  m_link.set_from_config();
 
-  m_Lexer.apply(); // at end, to prioritize local xml config
+  m_lexer.apply(); // at end, to prioritize local xml config
 }

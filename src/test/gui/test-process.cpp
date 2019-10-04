@@ -14,6 +14,8 @@
 #include <wex/shell.h>
 #include "test.h"
 
+TEST_SUITE_BEGIN("wex::debug");
+
 TEST_CASE("wex::process")
 {
   // Test commands entered in shell.
@@ -71,3 +73,5 @@ TEST_CASE("wex::process")
   
   wex::process::prepare_output(frame()); // in fact already done
 }
+
+TEST_SUITE_END();

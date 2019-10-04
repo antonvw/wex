@@ -39,7 +39,7 @@ namespace wex
     /// Builds menu from vector of menu commands.
     /// Returns number of items added to menu.
     template <typename T>
-    static int build_menu(
+    static size_t build_menu(
       /// the commands
       const T& commands, 
       /// base id for command
@@ -111,7 +111,7 @@ namespace wex
     
     /// Returns the xml filename.
     static const path get_filename() {
-      return path(config().dir(), "wex-menus.xml");};
+      return path(config::dir(), "wex-menus.xml");};
     
     /// Loads entries from xml document.
     /// Returns false if document could not be loaded, or

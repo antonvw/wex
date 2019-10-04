@@ -8,7 +8,6 @@
 #include <iostream>
 #include <boost/program_options.hpp>
 #include <wx/app.h>
-#include <wx/versioninfo.h>
 #include <wex/cmdline.h>
 #include <wex/config.h>
 #include <wex/log.h>
@@ -55,12 +54,29 @@ namespace wex
       const std::function<void(bool)> m_fs;
     };
 
-    cmdline_imp(const std::string& message)
-      : m_desc(message)
+    cmdline_imp(bool add_standard_options)
+      : m_desc()
     {
       m_desc.add_options()
-        ("help,h", "displays usage information and exits")
-        ("version", "displays version information and exits");
+        ("help,h", "displays usage information and exits");
+      
+      if (add_standard_options)
+      {
+        m_desc.add_options()
+          ("version", "displays version information and exits")
+          ("level,V", po::value<int>()->default_value(1), "activates verbosity upto verbose level (valid range: 1-9)")
+          ("verbose,v", "activates maximum verbosity")
+          ("logfile,D", po::value<std::string>(), "sets log file");
+/*
+        {{"logflags,L", "sets log flags\n"
+          "16 (ImmediateFlush): \tFlushes log with every log-entry (performance sensative).\n"
+          "32 (StrictLogFileSizeCheck): \tMakes sure log file size is checked with every log.\n"
+          "64 (ColoredTerminalOutput): \tTerminal output will be colorful if supported by terminal."
+          }, {wex::cmdline::INT, [&](const std::any& s) {              
+          wex::log::set_flags(std::any_cast<int>(s));}}},
+        {{"vmodule,m", "activates verbosity for files starting with main to level"}, {wex::cmdline::STRING, [&](const std::any& s) {}}},
+*/
+      }
     };
     
     void add_function(
@@ -116,6 +132,14 @@ namespace wex
         }
         
         return false;
+      }
+      else if (m_vm.count("level"))
+      {
+        if (const int level = m_vm["level"].as<int>(); level < 1 || level > 9)
+        {
+          std::cout << "unsupported level\n";
+          return false;
+        }
       }
 
       for (const auto& it : m_vm)
@@ -185,8 +209,8 @@ namespace wex
              
 wex::cmdline::cmdline(
   const cmd_switches_t & s, const cmd_options_t & o, const cmd_params_t & p,
-  const std::string& message)
-  : m_parser(new cmdline_imp(message))
+  bool add_standard_options)
+  : m_parser(new cmdline_imp(add_standard_options))
 {
   try
   {

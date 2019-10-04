@@ -16,7 +16,7 @@ class report_sample_app: public wex::app
 public:
   report_sample_app() {}
 private:
-  virtual bool OnInit() override;
+  bool OnInit() override;
 };
 
 /// Use wex::framewithhistory.
@@ -29,13 +29,13 @@ protected:
   // Interface from wex::framewithhistory.
   virtual wex::listview* activate(
     wex::listview_data::type_t type, const wex::lexer* lexer = nullptr) override;
-  virtual bool allow_close(wxWindowID id, wxWindow* page) override;
-  virtual wex::listview* get_listview() override;
-  virtual wex::stc* get_stc() override;
+  bool allow_close(wxWindowID id, wxWindow* page) override;
+  wex::listview* get_listview() override;
+  wex::stc* get_stc() override;
   virtual wex::stc* open_file(
     const wex::path& file,
     const wex::stc_data& stc_data = wex::stc_data()) override;
 private:
   wex::notebook* m_NotebookWithLists; ///< all listviews
-  wex::stc* m_STC;
+  wex::stc* m_stc;
 };

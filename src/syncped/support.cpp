@@ -33,7 +33,7 @@ decorated_frame::decorated_frame(app* app)
       25,  // maxFiles
       4,   // maxProjects
       wex::window_data().name("mainFrame").style(wxDEFAULT_FRAME_STYLE))
-  , m_App(app)
+  , m_app(app)
 {
   SetIcon(wxICON(app));
   
@@ -61,19 +61,19 @@ decorated_frame::decorated_frame(app* app)
   }
   else
   {
-    m_StatusBar->show_field("PaneVCS", false);
+    m_statusbar->show_field("PaneVCS", false);
   }
   
   if (wex::lexers::get()->get_lexers().empty())
   {
-    m_StatusBar->show_field("PaneLexer", false);
-    m_StatusBar->show_field("PaneTheme", false);
+    m_statusbar->show_field("PaneLexer", false);
+    m_statusbar->show_field("PaneTheme", false);
   }
   
   const bool vi_mode = wex::config(_("vi mode")).get(false);
   
-  m_StatusBar->show_field("PaneMacro", vi_mode);
-  m_StatusBar->show_field("PaneMode", false);
+  m_statusbar->show_field("PaneMacro", vi_mode);
+  m_statusbar->show_field("PaneMode", false);
 
   auto *menuFile = new wex::menu();
   menuFile->append(wxID_NEW,
@@ -112,7 +112,7 @@ decorated_frame::decorated_frame(app* app)
     // No accelerators for vi mode, Ctrl F is page down.
     menuFind->append(wxID_FIND, wxGetStockLabel(wxID_FIND, wxSTOCK_NOFLAGS));
 
-    if (m_App->data().flags().test(wex::stc_data::WIN_READ_ONLY))
+    if (m_app->data().flags().test(wex::stc_data::WIN_READ_ONLY))
     {
       menuFind->append(wxID_REPLACE, wxGetStockLabel(wxID_REPLACE, wxSTOCK_NOFLAGS));
     }
@@ -121,7 +121,7 @@ decorated_frame::decorated_frame(app* app)
   {
     menuFind->append(wxID_FIND);
 
-    if (!m_App->data().flags().test(wex::stc_data::WIN_READ_ONLY))
+    if (!m_app->data().flags().test(wex::stc_data::WIN_READ_ONLY))
     {
       menuFind->append(wxID_REPLACE);
     }
@@ -129,12 +129,12 @@ decorated_frame::decorated_frame(app* app)
   
   menuFind->append(wex::ID_TOOL_REPORT_FIND, wex::ellipsed(_("Find &in Files")));
 
-  if (!m_App->data().flags().test(wex::stc_data::WIN_READ_ONLY))
+  if (!m_app->data().flags().test(wex::stc_data::WIN_READ_ONLY))
   {
     menuFind->append(wex::ID_TOOL_REPLACE, wex::ellipsed(_("Replace in File&s")));
   }
 
-  menuEdit->append_submenu(menuFind, !m_App->data().flags().test(wex::stc_data::WIN_READ_ONLY) ?
+  menuEdit->append_submenu(menuFind, !m_app->data().flags().test(wex::stc_data::WIN_READ_ONLY) ?
     _("&Find and Replace"): _("&Find"));
   menuEdit->append_separator();
   menuEdit->append(
@@ -193,7 +193,7 @@ decorated_frame::decorated_frame(app* app)
   
   wex::menu* menuDebug = nullptr;
 
-  if (m_App->get_debug())
+  if (m_app->get_debug())
   {
     menuDebug = new wex::menu();
 
@@ -210,7 +210,7 @@ decorated_frame::decorated_frame(app* app)
   }
   else
   {
-    m_StatusBar->show_field("PaneDBG", false);
+    m_statusbar->show_field("PaneDBG", false);
   }
 
   auto* menuOptions = new wex::menu();

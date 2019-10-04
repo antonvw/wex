@@ -13,13 +13,13 @@ TEST_CASE( "wex::file" )
 {
   SUBCASE( "basic" ) 
   {
-    REQUIRE(!wex::file("XXXXX").is_opened());
+    REQUIRE(!wex::file("XXXXX").is_open());
     
     wex::file file(wex::test::get_path("test.h"), std::ios_base::in | std::ios_base::out);
   
     REQUIRE(!file.check_sync());
     REQUIRE(!file.get_contents_changed());
-    REQUIRE( file.is_opened());
+    REQUIRE( file.is_open());
     
     file.reset_contents_changed();
 
@@ -31,19 +31,19 @@ TEST_CASE( "wex::file" )
     REQUIRE(!file.get_filename().stat().is_readonly());
     REQUIRE( file.file_load(wex::test::get_path("test.bin")));
     REQUIRE( file.open(wex::test::get_path("test.bin").string()));
-    REQUIRE( file.is_opened());
+    REQUIRE( file.is_open());
 
     const std::string* buffer = file.read();
     REQUIRE(buffer->length() == 40);
     
     REQUIRE( file.file_new("test-xxx"));
     REQUIRE( file.open(std::ios_base::out));
-    REQUIRE( file.is_opened());
+    REQUIRE( file.is_open());
     REQUIRE( file.write(std::string("OK")));
     REQUIRE( file.write(*buffer));
 
     wex::file create(std::string("test-create"), std::ios_base::out);
-    REQUIRE( create.is_opened());
+    REQUIRE( create.is_open());
     REQUIRE( create.write(std::string("OK")));
   }
 

@@ -39,7 +39,7 @@ namespace wex
       const std::string& wildcard = wxFileSelectorDefaultWildcardStr);
 
     /// Virtual interface.
-    virtual int ShowModal() override;
+    int ShowModal() override;
     
     /// Other methods.
 

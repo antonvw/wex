@@ -116,7 +116,7 @@ namespace wex
       type_t type = dir::type_t().set());
 
     /// Opens each found file.
-    virtual bool on_file(const path& file) override;
+    bool on_file(const path& file) override;
   private:
     frame* m_Frame;
     stc_data::window_t m_Flags;

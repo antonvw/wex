@@ -22,7 +22,7 @@ namespace wex
     window_data();
 
     /// Returns button flags.
-    const auto& button() const {return m_Button;};
+    const auto& button() const {return m_button;};
 
     /// Sets buttons flags.
     /// This is a bit list of the following flags:
@@ -39,31 +39,31 @@ namespace wex
     window_data& button(long button);
 
     /// Returns window id.
-    const auto& id() const {return m_Id;};
+    const auto& id() const {return m_id;};
     
     /// Sets window id.
     window_data& id(wxWindowID id);
 
     /// Returns name.  
-    const auto& name() const {return m_Name;};
+    const auto& name() const {return m_name;};
 
     /// Sets window name.
     window_data& name(const std::string& name);
 
     /// Returns parent.
-    auto parent() const {return m_Parent;};
+    auto parent() const {return m_parent;};
     
     /// Sets parent.
     window_data& parent(wxWindow* parent);
 
     /// Returns window pos.
-    const auto& pos() const {return m_Pos;};
+    const auto& pos() const {return m_pos;};
     
     /// Sets window pos.
     window_data& pos(const wxPoint& point);
 
     /// Returns window size.
-    const auto& size() const {return m_Size;};
+    const auto& size() const {return m_size;};
     
     /// Sets window size.
     window_data& size(const wxSize& size);
@@ -77,16 +77,22 @@ namespace wex
     window_data& style(long style);
 
     /// Returns window title.
-    const auto& title() const {return m_Title;};
+    const auto& title() const {return m_title;};
 
     /// Sets window title.
     window_data& title(const std::string& title);
   private:  
-    wxWindowID m_Id = wxID_ANY;
-    wxPoint m_Pos = wxDefaultPosition;
-    wxSize m_Size = wxDefaultSize;
-    wxWindow* m_Parent = nullptr;
-    std::string m_Name, m_Title;
-    long m_Button = wxOK | wxCANCEL, m_Style = DATA_NUMBER_NOT_SET;
+    wxWindowID m_id {wxID_ANY};
+    wxPoint m_pos {wxDefaultPosition};
+    wxSize m_size {wxDefaultSize};
+    wxWindow* m_parent {nullptr};
+
+    std::string 
+      m_name, 
+      m_title;
+
+    long 
+      m_button {wxOK | wxCANCEL}, 
+      m_Style {DATA_NUMBER_NOT_SET};
   };
 };

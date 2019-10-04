@@ -20,7 +20,7 @@ std::string wex::find_replace_data::m_text_replace_with = _("Replace with").ToSt
 std::string wex::find_replace_data::m_text_search_down = _("Search down").ToStdString();
 
 wex::find_replace_data::find_replace_data()
-  : m_FindStrings(ex_command::type_t::FIND)
+  : m_findStrings(ex_command::type_t::FIND)
   , m_ReplaceStrings(ex_command::type_t::REPLACE)
   , m_frd(new wxFindReplaceData)
 {
@@ -93,7 +93,9 @@ int wex::find_replace_data::regex_replace(std::string& text) const
     text, 
     m_regex, 
     get_replace_string(),
-    std::regex_constants::format_default);
+    // Otherwise \2 \1 in replacement does not work,
+    // though that actually is ECMAScript??
+    std::regex_constants::format_sed);
 
   return result;
 }
@@ -123,7 +125,7 @@ wex::find_replace_data* wex::find_replace_data::set(find_replace_data* frd)
 
 void wex::find_replace_data::set_find_string(const std::string& value)
 {
-  if (!m_FindStrings.set(value)) return;
+  m_findStrings.set(value);
   m_frd->SetFindString(value);
   set_use_regex(m_use_regex);
 }
@@ -131,8 +133,8 @@ void wex::find_replace_data::set_find_string(const std::string& value)
 void wex::find_replace_data::set_find_strings(
   const std::list < std::string > & values)
 {
-  m_FindStrings.set(values);
-  m_frd->SetFindString(m_FindStrings.get());
+  m_findStrings.set(values);
+  m_frd->SetFindString(m_findStrings.get());
   set_use_regex(m_use_regex);
 }
 

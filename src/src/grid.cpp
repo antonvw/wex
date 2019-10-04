@@ -28,7 +28,7 @@ namespace wex
   public:
     explicit text_droptarget(grid* grid);
   private:
-    virtual bool OnDropText(wxCoord x, wxCoord y, const wxString& data) override;
+    bool OnDropText(wxCoord x, wxCoord y, const wxString& data) override;
     grid* m_Grid;
   };
 

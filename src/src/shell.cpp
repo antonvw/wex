@@ -366,7 +366,7 @@ void wex::shell::keep_command()
   // Prevent large commands, in case command end is not eol.
   if (m_command_end != eol())
   {
-    m_command = skip_white_space(m_command);
+    m_command = trim(m_command);
   }
   
   m_commands.emplace_back(m_command);

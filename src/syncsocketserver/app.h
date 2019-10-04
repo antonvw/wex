@@ -20,7 +20,7 @@ class taskbar_icon;
 class app : public wex::app
 {
 private:
-  virtual bool OnInit() override;
+  bool OnInit() override;
 };
 
 class frame : public wex::report::frame
@@ -52,7 +52,7 @@ private:
   virtual wex::stc* open_file(
     const wex::path& filename, 
     const wex::stc_data& data = wex::stc_data()) override;
-  virtual void statusbar_clicked(const std::string& pane) override;
+  void statusbar_clicked(const std::string& pane) override;
 
   void append_text(
     wex::stc* stc, 
@@ -104,7 +104,7 @@ class taskbar_icon: public wxTaskBarIcon
 public:
   explicit taskbar_icon(frame* frame);
 private:
-  virtual wxMenu* CreatePopupMenu() override;
+  wxMenu* CreatePopupMenu() override;
   frame* m_frame;
 };
 #endif

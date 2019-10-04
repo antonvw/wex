@@ -13,8 +13,8 @@
 #include <wex/util.h>
 
 wex::autocomplete::autocomplete(wex::stc* stc)
-  : m_STC(stc)
-  , m_MinSize(3)
+  : m_stc(stc)
+  , m_min_size(3)
 {
 }
 
@@ -27,7 +27,7 @@ bool wex::autocomplete::activate(const std::string& text)
 
   wex::ctags_entry current;
 
-  m_STC->get_vi().ctags()->find(text, current, m_Filter);
+  m_stc->get_vi().ctags()->find(text, current, m_filter);
 
   log::verbose("autocomplete") << text;
   
@@ -36,53 +36,52 @@ bool wex::autocomplete::activate(const std::string& text)
     log::verbose("autocomplete current") << current.get();
   }
 
-  if (m_Filter.is_active())
+  if (m_filter.is_active())
   {
-    log::verbose("autocomplete filter") << m_Filter.get();
+    log::verbose("autocomplete filter") << m_filter.get();
   }
 
-  if (m_STC->get_vi().is_active())
+  if (m_stc->get_vi().is_active())
   {
-    m_STC->get_vi().append_insert_text(text.substr(m_Text.size()));
+    m_stc->get_vi().append_insert_text(text.substr(m_text.size()));
   }
 
-  m_Text.clear();
+  m_text.clear();
 
   return true;
 }
 
 bool wex::autocomplete::apply(char c)
 {
-  if (!use() || m_STC->SelectionIsRectangle())
+  if (!use() || m_stc->SelectionIsRectangle())
   {
     return false;
   }
 
-  bool show_ctags = true;
-  bool show_inserts = true;
-  bool show_keywords = true;
+  bool shw_inserts = true;
+  bool shw_keywords = true;
   
   if (c == '.' || 
-     (c == '>' && m_STC->GetCharAt(m_STC->GetCurrentPos() - 1) == '-'))
+     (c == '>' && m_stc->GetCharAt(m_stc->GetCurrentPos() - 1) == '-'))
   {
     clear();
-    show_inserts = false;
-    show_keywords = false;
+    shw_inserts = false;
+    shw_keywords = false;
   }
   else if (c == WXK_BACK)
   {
-    if (m_Text.empty())
+    if (m_text.empty())
     {
       return false;
     }
 
-    m_Text.pop_back();
+    m_text.pop_back();
   }
   else if (isspace(c))
   {
-    if (m_Text.size() > m_MinSize)
+    if (m_text.size() > m_min_size)
     {
-      m_Inserts.emplace(m_Text);
+      m_inserts.emplace(m_text);
     }
 
     clear();
@@ -95,30 +94,30 @@ bool wex::autocomplete::apply(char c)
   else
   {
     if (is_codeword_separator(
-      m_STC->GetCharAt(m_STC->GetCurrentPos() - 1)))
+      m_stc->GetCharAt(m_stc->GetCurrentPos() - 1)))
     {
-      m_Text = c;
+      m_text = c;
     }
     else
     {
-      m_Text += c;
+      m_text += c;
     }
   }
     
-  if (const auto wsp = m_STC->WordStartPosition(m_STC->GetCurrentPos(), true);
-      (m_STC->GetCharAt(wsp -1) == '.') ||
-      (m_STC->GetCharAt(wsp -1) == '>' && m_STC->GetCharAt(wsp - 2) == '-'))
+  if (const auto wsp = m_stc->WordStartPosition(m_stc->GetCurrentPos(), true);
+      (m_stc->GetCharAt(wsp -1) == '.') ||
+      (m_stc->GetCharAt(wsp -1) == '>' && m_stc->GetCharAt(wsp - 2) == '-'))
   {
-    show_inserts = false;
-    show_keywords = false;
+    shw_inserts = false;
+    shw_keywords = false;
   }
 
   if (
-    !ShowCTags(show_ctags) &&
-    !ShowInserts(show_inserts) &&
-    !ShowKeywords(show_keywords))
+    !show_ctags(true) &&
+    !show_inserts(shw_inserts) &&
+    !show_keywords(shw_keywords))
   {
-    m_STC->AutoCompCancel();
+    m_stc->AutoCompCancel();
   }
 
   return true;
@@ -126,46 +125,46 @@ bool wex::autocomplete::apply(char c)
 
 void wex::autocomplete::clear()
 {
-  m_Text.clear();
-  m_STC->AutoCompCancel();
+  m_text.clear();
+  m_stc->AutoCompCancel();
 }
 
 void wex::autocomplete::reset()
 {
-  m_Filter.clear();
+  m_filter.clear();
 }
 
-bool wex::autocomplete::ShowCTags(bool show) const
+bool wex::autocomplete::show_ctags(bool show) const
 {
   if (!show) 
   {
     return false;
   }
 
-  if (const auto comp(m_STC->get_vi().ctags()->autocomplete(
-    m_Text, m_Filter));
+  if (const auto comp(m_stc->get_vi().ctags()->autocomplete(
+    m_text, m_filter));
     comp.empty())
   {
     return false;
   }
   else 
   {
-    m_STC->AutoCompSetSeparator(m_STC->get_vi().ctags()->separator());
-    m_STC->AutoCompShow(m_Text.length() - 1, comp);
-    m_STC->AutoCompSetSeparator(' ');
+    m_stc->AutoCompSetSeparator(m_stc->get_vi().ctags()->separator());
+    m_stc->AutoCompShow(m_text.length() - 1, comp);
+    m_stc->AutoCompSetSeparator(' ');
     return true;
   }
 }
 
-bool wex::autocomplete::ShowInserts(bool show) const
+bool wex::autocomplete::show_inserts(bool show) const
 {
-  if (show && !m_Text.empty() && !m_Inserts.empty())
+  if (show && !m_text.empty() && !m_inserts.empty())
   {
     if (const auto comp(get_string_set(
-      m_Inserts, m_MinSize, m_Text));
+      m_inserts, m_min_size, m_text));
       !comp.empty())
     {
-      m_STC->AutoCompShow(m_Text.length() - 1, comp);
+      m_stc->AutoCompShow(m_text.length() - 1, comp);
       log::verbose("autocomplete::show_insert chars") << comp.size();
       return true;
     }
@@ -174,15 +173,15 @@ bool wex::autocomplete::ShowInserts(bool show) const
   return false;
 }
 
-bool wex::autocomplete::ShowKeywords(bool show) const
+bool wex::autocomplete::show_keywords(bool show) const
 {
-  if (show && !m_Text.empty() && m_STC->get_lexer().keyword_starts_with(m_Text))
+  if (show && !m_text.empty() && m_stc->get_lexer().keyword_starts_with(m_text))
   {
     if (const auto comp(
-      m_STC->get_lexer().keywords_string(-1, m_MinSize, m_Text));
+      m_stc->get_lexer().keywords_string(-1, m_min_size, m_text));
       !comp.empty())
     {
-      m_STC->AutoCompShow(m_Text.length() - 1, comp);
+      m_stc->AutoCompShow(m_text.length() - 1, comp);
       log::verbose("autocomplete::show_keywords chars") << comp.size();
       return true;
     }
@@ -193,5 +192,5 @@ bool wex::autocomplete::ShowKeywords(bool show) const
 
 bool wex::autocomplete::use() const
 {
-  return m_Use && config(_("Auto complete")).get(false);
+  return m_use && config(_("Auto complete")).get(false);
 }

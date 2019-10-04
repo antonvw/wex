@@ -30,6 +30,8 @@ void change_mode(
   REQUIRE( vi->mode().get() == mode);
 }
 
+TEST_SUITE_BEGIN("wex::vi");
+
 TEST_CASE("wex::vi")
 {
   wex::stc* stc = get_stc();
@@ -97,7 +99,7 @@ TEST_CASE("wex::vi")
     for (const auto& go : std::vector<std::pair<std::string, int>> {
       {"gg",0},
       {"G",11},
-      {"1G",11},
+      {"1G",0},
       {"10G",9},
       {"10000G",11},
       {":$",11},
@@ -111,7 +113,9 @@ TEST_CASE("wex::vi")
       {"?d",1},
       {"?a",0},
       {"n",0},
-      {"N",0}}) {
+      {"N",0}}) 
+    {
+      CAPTURE( go.first);
 
       if (go.first.back() != 'd')
         REQUIRE( vi->command(go.first));
@@ -555,7 +559,7 @@ TEST_CASE("wex::vi")
     event.m_uniChar = 'i';
     REQUIRE(!vi->on_char(event));
     REQUIRE( vi->mode().insert());
-    REQUIRE( vi->mode().string() == "insert");
+    REQUIRE( vi->mode().str() == "insert");
     // Second i (and more) all handled by vi.
     for (int i = 0; i < 10; i++) REQUIRE(!vi->on_char(event));
 
@@ -693,3 +697,5 @@ TEST_CASE("wex::vi")
     }
   }
 }
+
+TEST_SUITE_END();

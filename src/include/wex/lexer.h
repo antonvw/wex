@@ -65,22 +65,22 @@ namespace wex
     const std::string comment_complete(const std::string& comment) const;
       
     /// Returns the comment begin.
-    const auto & comment_begin() const {return m_CommentBegin;};
+    const auto & comment_begin() const {return m_comment_begin;};
 
     /// Returns the comment begin 2.
-    const auto & comment_begin2() const {return m_CommentBegin2;};
+    const auto & comment_begin2() const {return m_comment_begin2;};
 
     /// Returns the comment end.
-    const auto & comment_end() const {return m_CommentEnd;};
+    const auto & comment_end() const {return m_command_end;};
 
     /// Returns the comment end 2.
-    const auto & comment_end2() const {return m_CommentEnd2;};
+    const auto & comment_end2() const {return m_command_end2;};
 
     /// Returns the display lexer (as shown in dialog).
-    const auto & display_lexer() const {return m_DisplayLexer;};
+    const auto & display_lexer() const {return m_display_lexer;};
 
     /// Returns the extensions.
-    const auto & extensions() const {return m_Extensions;};
+    const auto & extensions() const {return m_extensions;};
 
     /// Is this word a keyword (allways all keywords), case sensitive.
     bool is_keyword(const std::string& word) const;
@@ -93,7 +93,7 @@ namespace wex
     bool keyword_starts_with(const std::string& word) const;
 
     /// Returns the keywords.
-    const auto & keywords() const {return m_Keywords;};
+    const auto & keywords() const {return m_keywords;};
 
     /// Returns the keywords as one large string, 
     const std::string keywords_string(
@@ -107,7 +107,7 @@ namespace wex
       const std::string& prefix = std::string()) const;
 
     /// Returns the language.
-    const auto & language() const {return m_Language;};
+    const auto & language() const {return m_language;};
     
     /// Returns the line size.
     size_t line_size() const;
@@ -137,10 +137,10 @@ namespace wex
     bool previewable() const {return m_previewable;};
 
     /// Returns the properties.
-    const auto & properties() const {return m_Properties;};
+    const auto & properties() const {return m_properties;};
     
     /// Returns the scintilla lexer.
-    const auto & scintilla_lexer() const {return m_ScintillaLexer;};
+    const auto & scintilla_lexer() const {return m_scintilla_lexer;};
 
     /// Sets lexer to specified lexer (finds by name from lexers),
     /// Shows error message when lexer could not be set.
@@ -154,13 +154,13 @@ namespace wex
     void set_property(const std::string& name, const std::string& value);
 
     /// Returns the styles.
-    const auto & styles() const {return m_Styles;};
+    const auto & styles() const {return m_styles;};
     
     /// Returns number of chars that fit on a line, skipping comment chars.
     size_t usable_chars_per_line() const;
   private:
     void auto_match(const std::string& lexer);
-    const std::string GetFormattedText(
+    const std::string formatted_text(
       const std::string& lines,
       const std::string& header,
       bool fill_out_with_space,
@@ -173,21 +173,21 @@ namespace wex
     // however this might be different, as with c#.
     // In that case the scintilla lexer is cpp, whereas the display lexer is c#.  
     std::string 
-      m_CommentBegin, 
-      m_CommentBegin2, 
-      m_CommentEnd, 
-      m_CommentEnd2, 
-      m_DisplayLexer, 
-      m_Extensions, 
-      m_Language, 
-      m_ScintillaLexer;
+      m_comment_begin, 
+      m_comment_begin2, 
+      m_command_end, 
+      m_command_end2, 
+      m_display_lexer, 
+      m_extensions, 
+      m_language, 
+      m_scintilla_lexer;
 
     // each keyword set in a separate keyword set
-    std::map< int, std::set<std::string> > m_KeywordsSet;
-    std::set<std::string> m_Keywords;
-    std::vector<size_t> m_EdgeColumns; // last one is used for line size
-    std::vector<property> m_Properties;
-    std::vector<style> m_Styles;
+    std::map< int, std::set<std::string> > m_keywords_set;
+    std::set<std::string> m_keywords;
+    std::vector<size_t> m_edge_columns; // last one is used for line size
+    std::vector<property> m_properties;
+    std::vector<style> m_styles;
     std::vector<std::tuple<
       std::string, 
       int, 
@@ -195,6 +195,6 @@ namespace wex
     
     bool m_is_ok {false}, m_previewable {false};
     
-    stc* m_STC {nullptr};
+    stc* m_stc {nullptr};
   };
 };

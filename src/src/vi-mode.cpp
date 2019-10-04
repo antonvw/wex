@@ -71,7 +71,7 @@ namespace wex
         case vi_mode::state_t::VISUAL:      return "visual";
         case vi_mode::state_t::VISUAL_LINE: return "visual line";
         case vi_mode::state_t::VISUAL_RECT: return "visual rect";
-        default: return vi_macros::mode()->string();
+        default: return vi_macros::mode()->str();
       }};
   private:
     std::string m_command;
@@ -195,8 +195,8 @@ wex::vi_mode::vi_mode(vi* vi,
   std::function<void(const std::string&)> insert, 
   std::function<void()> normal)
   : m_vi(vi)
-  , m_FSM(std::make_unique<vi_fsm>(vi->get_stc(), insert, normal))
-  , m_InsertCommands {
+  , m_fsm(std::make_unique<vi_fsm>(vi->get_stc(), insert, normal))
+  , m_insert_commands {
     {'a', [&](){NAVIGATE(Char, Right);}},
     {'c', [&](){;}},
     {'i', [&](){;}},
@@ -214,23 +214,36 @@ wex::vi_mode::vi_mode(vi* vi,
       NAVIGATE(Line, Up);}},
     {'R', [&](){m_vi->get_stc()->SetOvertype(true);}}}
 {
-  m_FSM->initiate();
+  m_fsm->initiate();
 }
 
 wex::vi_mode::~vi_mode()
 {
 }
 
+bool wex::vi_mode::escape() 
+{
+  std::string command("\x1b");
+  return transition(command);
+}
+    
 wex::vi_mode::state_t wex::vi_mode::get() const
 {
-  return m_FSM->state();
+  return m_fsm->state();
 }
 
-const std::string wex::vi_mode::string() const
+const std::string wex::vi_mode::str() const
 {
-  return m_FSM->state_string();
+  return m_fsm->state_string();
 }
   
+bool wex::vi_mode::insert() const 
+{
+  return 
+    get() == INSERT || 
+    get() == INSERT_RECT;
+}
+      
 bool wex::vi_mode::transition(std::string& command)
 {
   if (command.empty())
@@ -252,18 +265,18 @@ bool wex::vi_mode::transition(std::string& command)
     }
   }
 
-  if (std::find_if(m_InsertCommands.begin(), m_InsertCommands.end(), 
+  if (std::find_if(m_insert_commands.begin(), m_insert_commands.end(), 
     [command](auto const& e) {return e.first == command[0];}) 
-    != m_InsertCommands.end())
+    != m_insert_commands.end())
   {
-    m_FSM->process(command, evINSERT());
+    m_fsm->process(command, evINSERT());
   }
   else switch (command[0])
   {
-    case 'K': m_FSM->process(command, evVISUAL_RECT()); break;
-    case 'v': m_FSM->process(command, evVISUAL()); break;
-    case 'V': m_FSM->process(command, evVISUAL_LINE()); break;
-    case 27:  m_FSM->process(command, evESCAPE()); break;
+    case 'K': m_fsm->process(command, evVISUAL_RECT()); break;
+    case 'v': m_fsm->process(command, evVISUAL()); break;
+    case 'V': m_fsm->process(command, evVISUAL_LINE()); break;
+    case 27:  m_fsm->process(command, evESCAPE()); break;
     default: return false;
   }
 
@@ -272,9 +285,9 @@ bool wex::vi_mode::transition(std::string& command)
     case INSERT:
       if (!m_vi->get_stc()->is_hexmode())
       {
-        if (const auto& it = std::find_if(m_InsertCommands.begin(), m_InsertCommands.end(), 
+        if (const auto& it = std::find_if(m_insert_commands.begin(), m_insert_commands.end(), 
           [command](auto const& e) {return e.first == command[0];});
-          it != m_InsertCommands.end() && it->second != nullptr)
+          it != m_insert_commands.end() && it->second != nullptr)
           {
             it->second();
             m_vi->append_insert_command(command.substr(0, 1));
@@ -310,9 +323,17 @@ bool wex::vi_mode::transition(std::string& command)
     (!normal() || vi_macros::mode()->is_recording()) && 
        config(_("Show mode")).get(false));
 
-  frame::statustext(string(), "PaneMode");
+  frame::statustext(str(), "PaneMode");
 
   command.erase(0, 1);
 
   return true;
+}
+
+bool wex::vi_mode::visual() const 
+{
+  return 
+   get() == VISUAL || 
+   get() == VISUAL_LINE || 
+   get() == VISUAL_RECT;
 }

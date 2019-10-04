@@ -10,7 +10,6 @@
 #include <map>
 #include <string>
 #include <tuple>
-#include <wx/event.h>
 #include <wex/debug-entry.h>
 #include <wex/marker.h>
 #include <wex/path.h>

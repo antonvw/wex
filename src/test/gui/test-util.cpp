@@ -319,7 +319,7 @@ TEST_CASE("wex")
   {
     REQUIRE( wex::quoted("test") == "'test'");
     REQUIRE( wex::quoted("%d") == "'%d'");
-    REQUIRE( wex::quoted(wex::skip_white_space(" %d ")) == "'%d'");
+    REQUIRE( wex::quoted(wex::trim(" %d ")) == "'%d'");
   }
   
   SUBCASE("wex::replace_all")
@@ -351,15 +351,15 @@ TEST_CASE("wex")
   }
 #endif
 
-  SUBCASE("wex::skip_white_space")
+  SUBCASE("wex::trim")
   {
-    REQUIRE( wex::skip_white_space("\n\tt \n    es   t\n", wex::skip_t().set()) == "t es t");
-    REQUIRE( wex::skip_white_space("\n\tt \n    es   t\n", 
-      wex::skip_t().set(wex::SKIP_LEFT)) == "t \n    es   t\n");
-    REQUIRE( wex::skip_white_space("\n\tt \n    es   t\n", 
-      wex::skip_t().set(wex::SKIP_RIGHT)) == "\n\tt \n    es   t");
-    REQUIRE( wex::skip_white_space("\n\tt \n    es   t\n", 
-      wex::skip_t().set(wex::SKIP_LEFT).set(wex::SKIP_RIGHT)) ==  "t \n    es   t");
+    REQUIRE( wex::trim("\n\tt \n    es   t\n", wex::skip_t().set()) == "t es t");
+    REQUIRE( wex::trim("\n\tt \n    es   t\n", 
+      wex::skip_t().set(wex::TRIM_LEFT)) == "t \n    es   t\n");
+    REQUIRE( wex::trim("\n\tt \n    es   t\n", 
+      wex::skip_t().set(wex::TRIM_RIGHT)) == "\n\tt \n    es   t");
+    REQUIRE( wex::trim("\n\tt \n    es   t\n", 
+      wex::skip_t().set(wex::TRIM_LEFT).set(wex::TRIM_RIGHT)) ==  "t \n    es   t");
   }
   
   SUBCASE("wex::sort")
@@ -395,8 +395,8 @@ TEST_CASE("wex")
     get_stc()->get_vi().command("5l");
 
     REQUIRE( wex::sort_selection(get_stc(), 0, 3, 5));
-    REQUIRE( wex::skip_white_space(get_stc()->GetText().ToStdString()) == 
-      wex::skip_white_space(sorted));
+    REQUIRE( wex::trim(get_stc()->GetText().ToStdString()) == 
+      wex::trim(sorted));
     REQUIRE( wex::sort_selection(get_stc(), 
       wex::string_sort_t().set(wex::STRING_SORT_DESCENDING), 3, 5));
     REQUIRE( get_stc()->GetText() != sorted);

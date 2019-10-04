@@ -184,7 +184,7 @@ void wex::file::assign(const path& p)
 bool wex::file::check_sync()
 {
   if (config con(config::DATA_NO_STORE);
-      is_opened() ||
+      is_open() ||
       !m_file->path().stat().is_ok() ||
       !con.item("AllowSync").get(true))
   {
@@ -296,7 +296,7 @@ const wex::path& wex::file::get_filename() const
   return m_file->path();
 }
 
-bool wex::file::is_opened() const 
+bool wex::file::is_open() const 
 {
   return m_file->stream().is_open();
 }

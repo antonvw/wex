@@ -17,7 +17,7 @@ wex::stc_entry_dialog::stc_entry_dialog(
   const std::string& prompt,
   const window_data& data)
   : dialog(data)
-  , m_STC(new wex::stc(text, stc_data().window(window_data().parent(this))))
+  , m_stc(new wex::stc(text, stc_data().window(window_data().parent(this))))
 {
   if (!prompt.empty())
   {
@@ -26,13 +26,13 @@ wex::stc_entry_dialog::stc_entry_dialog(
       wxSizerFlags().DoubleBorder(wxBOTTOM));
   }
 
-  m_STC->SetEdgeMode(wxSTC_EDGE_NONE);
-  m_STC->SetName(data.title());
-  m_STC->reset_margins();
-  m_STC->SetViewEOL(false);
-  m_STC->SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
+  m_stc->SetEdgeMode(wxSTC_EDGE_NONE);
+  m_stc->SetName(data.title());
+  m_stc->reset_margins();
+  m_stc->SetViewEOL(false);
+  m_stc->SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
 
-  add_user_sizer(m_STC);
+  add_user_sizer(m_stc);
 
   layout_sizers();
 }

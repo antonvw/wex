@@ -25,19 +25,19 @@ wex::report::file::file(
   const std::string& file, const listview_data& data)
   : report::listview(listview_data(data).type(listview_data::FILE))
   , m_add_itemsDialog(new item_dialog({
-        {m_TextAddWhat,item::COMBOBOX, std::any(), 
+        {m_textAddWhat,item::COMBOBOX, std::any(), 
            control_data().is_required(true)},
-        {m_TextInFolder,item::COMBOBOX_DIR, std::any(), 
+        {m_textInFolder,item::COMBOBOX_DIR, std::any(), 
            control_data().is_required(true)},
         {std::set<std::string> {
-          m_TextAddFiles, m_TextAddFolders, m_TextAddRecursive}}},
+          m_textAddFiles, m_textAddFolders, m_textAddRecursive}}},
       window_data().
         title(_("Add Items").ToStdString()).
         button(wxAPPLY | wxCANCEL).id(wxID_ADD)))
 {
   file_load(file);
   
-  Bind(wxEVT_IDLE, &report::file::OnIdle, this);
+  Bind(wxEVT_IDLE, &report::file::on_idle, this);
   
   Bind(wxEVT_LEFT_DOWN, [=](wxMouseEvent& event) {
     event.Skip();
@@ -58,7 +58,7 @@ wex::report::file::file(
     m_add_itemsDialog->force_checkbox_checked(_("Add"));
     if (GetSelectedItemCount() > 0)
     {
-      wex::item item(m_add_itemsDialog->get_item(m_TextInFolder));
+      wex::item item(m_add_itemsDialog->get_item(m_textInFolder));
       wxComboBox* cb = (wxComboBox* )item.window();
       cb->SetValue(listitem(
         this, GetFirstSelected()).get_filename().get_path());
@@ -82,10 +82,9 @@ wex::report::file::~file()
 void wex::report::file::add_items(
   const std::string& folder,
   const std::string& files,
-  dir::type_t flags,
-  bool detached)
+  dir::type_t flags)
 {
-  Unbind(wxEVT_IDLE, &file::OnIdle, this);
+  Unbind(wxEVT_IDLE, &file::on_idle, this);
   
 #ifdef __WXMSW__ 
   std::thread t([=] {
@@ -109,13 +108,10 @@ void wex::report::file::add_items(
   
     log::status("Added") << added << "file(s)";
   
-    Bind(wxEVT_IDLE, &file::OnIdle, this);
+    Bind(wxEVT_IDLE, &file::on_idle, this);
 #ifdef __WXMSW__ 
     });
-  if (detached)  
-    t.detach();
-  else
-    t.join();
+  t.detach();
 #endif
 }
 
@@ -265,7 +261,7 @@ bool wex::report::file::item_from_text(const std::string& text)
   return result;
 }
 
-void wex::report::file::OnIdle(wxIdleEvent& event)
+void wex::report::file::on_idle(wxIdleEvent& event)
 {
   event.Skip();
   

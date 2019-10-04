@@ -34,12 +34,12 @@ namespace wex
       /// the filename to be assigned if not empty
       const std::string& filename = std::string());
     
-    virtual bool get_contents_changed() const override;
-    virtual void reset_contents_changed() override;
+    bool get_contents_changed() const override;
+    void reset_contents_changed() override;
   private:
-    virtual bool do_file_load(bool synced = false) override;
-    virtual void do_file_new() override;
-    virtual void do_file_save(bool save_as = false) override;
+    bool do_file_load(bool synced = false) override;
+    void do_file_new() override;
+    void do_file_save(bool save_as = false) override;
 
     stc* m_stc;
     std::streampos m_previous_size {0};

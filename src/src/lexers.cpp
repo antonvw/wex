@@ -205,7 +205,7 @@ wex::lexers* wex::lexers::get(bool createOnDemand)
 {
   if (m_self == nullptr && createOnDemand)
   {
-    m_self = new lexers(path(config().dir(), "wex-lexers.xml"));
+    m_self = new lexers(path(config::dir(), "wex-lexers.xml"));
     m_self->load_document();
   }
 

@@ -8,14 +8,16 @@
 #include <wex/debug-entry.h>
 #include "test.h"
 
+TEST_SUITE_BEGIN("wex::debug");
+
 TEST_CASE("wex::debug_entry")
 {
-  SUBCASE("Default constructor")
+  SUBCASE("default constructor")
   {
     REQUIRE( wex::debug_entry().get_commands().empty());
   }
   
-  SUBCASE("Constructor using xml")
+  SUBCASE("constructor using xml")
   {
     pugi::xml_document doc;
     REQUIRE( doc.load_string("\
@@ -36,3 +38,5 @@ TEST_CASE("wex::debug_entry")
     REQUIRE( entry.regex_stdout(wex::debug_entry::regex_t::PATH).empty());
   }
 }
+
+TEST_SUITE_END();

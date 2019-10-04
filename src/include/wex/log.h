@@ -142,6 +142,6 @@ namespace wex
     std::stringstream m_ss;
     bool m_separator {true};
     level_t m_level {ERROR};
-    inline static int m_verbosity {9};
+    inline static int m_verbosity {1};
   };
 };

@@ -49,7 +49,7 @@ namespace wex
    ~process_dir() {
       m_ListView->sort_column("Name", SORT_ASCENDING);};
   private:
-    virtual bool on_dir(const path& p) override {
+    bool on_dir(const path& p) override {
       if (!std::filesystem::is_symlink(p.data())) 
       {
         std::ifstream ifs(wex::path(p.data(), "comm").data());

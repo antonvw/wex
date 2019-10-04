@@ -23,7 +23,7 @@ public:
   /// Constructor.
   sample_app() {}
 private:
-  virtual bool OnInit() override;
+  bool OnInit() override;
 };
 
 /// Use wex::dir.
@@ -36,7 +36,7 @@ public:
     const std::string& findfiles, 
     wex::grid* grid);
 private:
-  virtual bool on_file(const wex::path& file) override;
+  bool on_file(const wex::path& file) override;
   wex::grid* m_Grid;
 };
 
@@ -46,7 +46,7 @@ class sample_frame: public wex::managed_frame
 public:
   /// Constructor.
   sample_frame();
-  virtual wex::listview* get_listview() override {return m_ListView;};
+  wex::listview* get_listview() override {return m_ListView;};
   virtual void on_command_item_dialog(
     wxWindowID id, 
     const wxCommandEvent& event) override;
@@ -57,8 +57,8 @@ private:
   wex::listview* m_ListView;
   wex::notebook* m_Notebook;
   wex::process* m_Process;
-  wex::stc* m_STC;
-  wex::stc* m_STCLexers;
+  wex::stc* m_stc;
+  wex::stc* m_stcLexers;
   wex::shell* m_Shell;
 
   long m_FlagsSTC = 0;

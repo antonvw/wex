@@ -36,14 +36,14 @@ namespace wex
     vcs_entry(const pugi::xml_node& node);
 
     /// Returns the administrative directory.
-    const auto& admin_dir() const {return m_AdminDir;};
+    const auto& admin_dir() const {return m_admin_dir;};
 
     /// Returns true if admin dir is only at top level.
     bool admin_dir_is_toplevel() const {return m_admin_dir_is_toplevel;};
 
     /// Builds a menu from all vcs commands.
     /// Returns (total) number of items in menu.
-    int build_menu(
+    size_t build_menu(
       /// menu id to be added to the vcs commands
       int base_id, 
       /// menu to be built
@@ -73,7 +73,7 @@ namespace wex
       const std::string& wd);
 
     /// Returns flags location.
-    auto flags_location() const {return m_FlagsLocation;};
+    auto flags_location() const {return m_flags_location;};
 
     /// Returns blame info.
     const blame& get_blame() const {return m_blame;};
@@ -92,13 +92,13 @@ namespace wex
       /// id to be retrieved
       const std::string& id);
 
-    virtual void show_output(const std::string& caption = std::string()) const override;
+    void show_output(const std::string& caption = std::string()) const override;
   private:
     // no const, as entry is set using operator+ in vcs.
     bool m_admin_dir_is_toplevel {false};
-    int m_FlagsLocation {FLAGS_LOCATION_POSTFIX};
-    std::string m_AdminDir, m_log_flags;
+    int m_flags_location {FLAGS_LOCATION_POSTFIX};
+    std::string m_admin_dir, m_log_flags;
     class blame m_blame;
-    lexer m_Lexer;
+    lexer m_lexer;
   };
 };

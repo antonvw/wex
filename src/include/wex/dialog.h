@@ -2,7 +2,7 @@
 // Name:      dialog.h
 // Purpose:   Declaration of wex::dialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -22,7 +22,7 @@ namespace wex
     dialog(const window_data& data = window_data());
 
     /// Returns the window data.
-    const auto& data() const {return m_Data;};
+    const auto& data() const {return m_data;};
   protected:
     /// Adds to the user sizer using the sizer flags.
     wxSizerItem* add_user_sizer(
@@ -40,9 +40,9 @@ namespace wex
     /// and a sepator line will be added as specified.
     void layout_sizers(bool add_separator_line = true);
   private:
-    const window_data m_Data;
+    const window_data m_data;
     
-    wxFlexGridSizer* m_TopSizer;
-    wxFlexGridSizer* m_UserSizer;
+    wxFlexGridSizer* m_top_sizer;
+    wxFlexGridSizer* m_user_sizer;
   };
 };

@@ -12,14 +12,14 @@ TEST_CASE("wex::cmdline")
 {
   int a {0};
   float b {0};
-  bool s {false}, t {false}, u {false}, v {false}, x {false};
+  bool s {false}, t {false}, u {false}, w {false}, x {false};
   std::string c,p,q,r,help;
   
   wex::cmdline cmdl(
      {{{"s1,s", "bool"}, [&](bool on){s = on;}},
       {{"s2,t", "bool"}, [&](bool on){t = on;}},
       {{"s3,u", "bool"}, [&](bool on){u = true;}},
-      {{"s4,v", "bool"}, [&](bool on){v = on;}},
+      {{"s4,w", "bool"}, [&](bool on){w = on;}},
       {{"xx", "bool"}, [&](bool on){x = on;}}},
      {{{"o1,a", "int"}, {wex::cmdline::INT, [&](const std::any& i) {a = std::any_cast<int>(i);}}},
       {{"o2,b", "float"}, {wex::cmdline::FLOAT, [&](const std::any& f) {b = std::any_cast<float>(f);}}},
@@ -30,7 +30,7 @@ TEST_CASE("wex::cmdline")
         r = v[2];}});
 
   const bool res(cmdl.parse(
-    "-a 10 -b 5.1 -c test -s -t -u -v --xx one two three", help));
+    "-a 10 -b 5.1 -c test -s -t -u -w --xx one two three", help));
   
   CAPTURE( help );
 
@@ -42,7 +42,7 @@ TEST_CASE("wex::cmdline")
   REQUIRE( s );
   REQUIRE( t );
   REQUIRE( u );
-  REQUIRE( v );
+  REQUIRE( w );
   REQUIRE( x );
   REQUIRE( p == "one" );
   REQUIRE( q == "two" );

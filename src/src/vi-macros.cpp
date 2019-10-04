@@ -74,7 +74,7 @@ const std::vector< std::string > wex::vi_macros::get(const std::string& macro)
 
 const wex::path wex::vi_macros::get_filename()
 {
-  return path(config().dir(), "wex-macros.xml");
+  return path(config::dir(), "wex-macros.xml");
 }
 
 const wex::vi_macros::keys_map_t* wex::vi_macros::get_keys_map(key_t type)
@@ -87,7 +87,7 @@ const wex::vi_macros::keys_map_t* wex::vi_macros::get_keys_map(key_t type)
  }
 }
 
-const std::string wex::vi_macros::get_register(const char name) const
+const std::string wex::vi_macros::get_register(char name) const
 {
   switch (name)
   {
@@ -303,12 +303,12 @@ const std::vector< std::string > wex::vi_macros::registers() const
   {
     if (it.first.size() == 1)
     {
-      r.emplace_back(l.make_key(it.first, skip_white_space(
+      r.emplace_back(l.make_key(it.first, trim(
         std::accumulate(it.second.begin(), it.second.end(), std::string()))));
     }
   }
    
-  if (const std::string clipboard(skip_white_space(clipboard_get())); !clipboard.empty())
+  if (const std::string clipboard(trim(clipboard_get())); !clipboard.empty())
   {
     r.emplace_back(l.make_key("*", clipboard));
   }
@@ -422,7 +422,7 @@ void wex::vi_macros::set_map(
   set<std::string, strings_map_t>(m_map, "map", name, value);
 }
 
-bool wex::vi_macros::set_register(const char name, const std::string& value)
+bool wex::vi_macros::set_register(char name, const std::string& value)
 {
   if (!isalnum(name) && !isdigit(name) && 
        name != '%' && name != '_' && name != '*' && name != '.')

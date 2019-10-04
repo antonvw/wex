@@ -15,6 +15,8 @@
 #include <wex/vi.h>
 #include "test.h"
 
+TEST_SUITE_BEGIN("wex::vi");
+
 TEST_CASE("wex::vi_mode")
 {
   wex::vi_mode mode(&get_stc()->get_vi());
@@ -27,7 +29,7 @@ TEST_CASE("wex::vi_mode")
   REQUIRE(!mode.transition(command));
   command = "y";
   REQUIRE(!mode.transition(command));
-  REQUIRE( mode.string().empty());
+  REQUIRE( mode.str().empty());
   
   // insert
   command = "i";
@@ -36,9 +38,11 @@ TEST_CASE("wex::vi_mode")
   command = "i";
   REQUIRE( mode.transition(command));
   REQUIRE( mode.insert());
-  REQUIRE( mode.string() == "insert");
+  REQUIRE( mode.get() == wex::vi_mode::state_t::INSERT);
+  REQUIRE( mode.str() == "insert");
   REQUIRE( mode.escape());
   REQUIRE( mode.normal());
+  REQUIRE( mode.get() == wex::vi_mode::state_t::NORMAL);
 
   command = "cc";
   REQUIRE( mode.transition(command));
@@ -67,3 +71,5 @@ TEST_CASE("wex::vi_mode")
     REQUIRE( mode.normal());
   }
 }
+
+TEST_SUITE_END();

@@ -6,10 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <tuple>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wex/variable.h>
 #include <wex/managedframe.h>
 #include <wex/stc.h>
@@ -19,7 +15,7 @@ TEST_CASE("wex::variable")
 {
   wex::ex* ex = new wex::ex(get_stc());
 
-  SUBCASE("Default constructor")
+  SUBCASE("constructor")
   {
     std::string value;
     REQUIRE( wex::variable("test").get_name() == "test");

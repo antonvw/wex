@@ -2,7 +2,7 @@
 // Name:      app.h
 // Purpose:   Declaration of class 'app'
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -12,26 +12,26 @@
 class app : public wex::app
 {
 public:
-  auto& data() {return m_Data;};
-  auto  get_debug() const {return m_Debug;};
-  auto& get_files() const {return m_Files;};
-  auto& get_scriptin() {return m_Scriptin;};
-  auto& get_scriptout() {return m_Scriptout;};
-  auto  get_split() const {return m_Split;};
-  auto& get_tag() const {return m_Tag;};
+  auto& data() {return m_data;};
+  auto  get_debug() const {return m_debug;};
+  auto& get_files() const {return m_files;};
+  auto& get_scriptin() {return m_scriptin;};
+  auto& get_scriptout() {return m_scriptout;};
+  auto  get_split() const {return m_split;};
+  auto& get_tag() const {return m_tag;};
   
   void reset();
 private:
 #ifdef __WXOSX__  
-  virtual void MacOpenFiles(const wxArrayString& fileNames) override;
+  void MacOpenFiles(const wxArrayString& fileNames) override;
 #endif
   
-  virtual bool OnInit() override;
+  bool OnInit() override;
 
-  std::string m_Tag, m_Scriptin, m_Scriptout; 
-  std::vector< wex::path > m_Files;
+  std::string m_tag, m_scriptin, m_scriptout; 
+  std::vector< wex::path > m_files;
   
-  bool m_Debug {false};
-  int m_Split;
-  wex::stc_data m_Data;
+  bool m_debug {false};
+  int m_split;
+  wex::stc_data m_data;
 };

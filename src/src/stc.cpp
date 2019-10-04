@@ -32,7 +32,7 @@ wex::stc::stc(const std::string& text, const stc_data& data)
     guess_type();
   }
   
-  m_Data.inject();
+  m_data.inject();
 }
 
 wex::stc::stc(const path& p, const stc_data& data)
@@ -43,20 +43,20 @@ wex::stc::stc(const path& p, const stc_data& data)
       data.window().size(), 
       data.window().style(), 
       data.window().name())
-  , m_Data(this, data)
+  , m_data(this, data)
   , m_auto_complete(this)
   , m_vi(this)
-  , m_File(this, data.window().name())
-  , m_Link(this)
+  , m_file(this, data.window().name())
+  , m_link(this)
   , m_hexmode(hexmode(this))
-  , m_Frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
-  , m_Lexer(this)
+  , m_frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
+  , m_lexer(this)
 {
   if (config("AllowSync").get(true)) sync();
   
   if (!lexers::get()->get_lexers().empty())
   {
-    m_DefaultFont = config(_("Default font")).get(
+    m_default_font = config(_("Default font")).get(
       wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT));
   }
   
@@ -74,27 +74,27 @@ wex::stc::stc(const path& p, const stc_data& data)
   SetBackSpaceUnIndents(true);
   SetMouseDwellTime(1000);
 
-  SetMarginType(m_MarginLineNumber, wxSTC_MARGIN_NUMBER);
-  SetMarginType(m_MarginDividerNumber, wxSTC_MARGIN_SYMBOL);
-  SetMarginType(m_MarginFoldingNumber, wxSTC_MARGIN_SYMBOL);
-  SetMarginType(m_MarginTextNumber, wxSTC_MARGIN_TEXT);
+  SetMarginType(m_margin_line_number, wxSTC_MARGIN_NUMBER);
+  SetMarginType(m_margin_divider_number, wxSTC_MARGIN_SYMBOL);
+  SetMarginType(m_margin_folding_number, wxSTC_MARGIN_SYMBOL);
+  SetMarginType(m_margin_text_number, wxSTC_MARGIN_TEXT);
 
-  SetMarginMask(m_MarginFoldingNumber, wxSTC_MASK_FOLDERS);
+  SetMarginMask(m_margin_folding_number, wxSTC_MASK_FOLDERS);
 
-  SetMarginSensitive(m_MarginDividerNumber, true);
-  SetMarginSensitive(m_MarginFoldingNumber, true);
-  SetMarginSensitive(m_MarginTextNumber, true);
+  SetMarginSensitive(m_margin_divider_number, true);
+  SetMarginSensitive(m_margin_folding_number, true);
+  SetMarginSensitive(m_margin_text_number, true);
 
   SetMultiPaste(wxSTC_MULTIPASTE_EACH);
   SetMultipleSelection(true);
   
-  if (m_Zoom == -1)
+  if (m_zoom == -1)
   {
-    m_Zoom = GetZoom();
+    m_zoom = GetZoom();
   }
   else
   {
-    SetZoom(m_Zoom);
+    SetZoom(m_zoom);
   }
 
   // we have our own popup
@@ -110,15 +110,24 @@ wex::stc::stc(const path& p, const stc_data& data)
   }
   else
   {
-    m_Lexer.set(p.lexer(), true);
-    m_File.file_new(p);
+    m_lexer.set(p.lexer(), true);
+    m_file.file_new(p);
   }
 }
 
 void wex::stc::add_text(const std::string& text)
 {
-  Allocate(GetTextLength() + text.size());
-  AddTextRaw(text.data(), text.size());
+  if (!GetOvertype())
+  {
+    Allocate(GetTextLength() + text.size());
+    AddTextRaw(text.data(), text.size());
+  }
+  else
+  {
+    SetTargetStart(GetCurrentPos());
+    SetTargetEnd(GetCurrentPos() + text.size());
+    ReplaceTarget(text);
+  }
 }
 
 void wex::stc::append_text(const std::string& text)
@@ -264,10 +273,10 @@ void wex::stc::fold(bool all)
 {
   if (
      GetProperty("fold") == "1" &&
-     m_Lexer.is_ok() &&
-    !m_Lexer.scintilla_lexer().empty())
+     m_lexer.is_ok() &&
+    !m_lexer.scintilla_lexer().empty())
   {
-    SetMarginWidth(m_MarginFoldingNumber, config(_("Folding")).get(0));
+    SetMarginWidth(m_margin_folding_number, config(_("Folding")).get(0));
     SetFoldFlags(config(_("Fold flags")).get(
       wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | 
       wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
@@ -281,7 +290,7 @@ void wex::stc::fold(bool all)
   }
   else
   {
-    SetMarginWidth(m_MarginFoldingNumber, 0);
+    SetMarginWidth(m_margin_folding_number, 0);
   }
 }
   
@@ -290,7 +299,7 @@ void wex::stc::fold_all()
   if (GetProperty("fold") != "1") return;
 
   const auto current_line = GetCurrentLine();
-  const bool xml = (m_Lexer.language() == "xml");
+  const bool xml = (m_lexer.language() == "xml");
 
   int line = 0;
   while (line < GetLineCount())
@@ -443,7 +452,7 @@ bool wex::stc::link_open(link_t mode, std::string* filename)
 
   if (mode[LINK_OPEN_MIME])
   {
-    const path path(m_Link.get_path(text, 
+    const path path(m_link.get_path(text, 
       control_data().line(link::LINE_OPEN_URL_AND_MIME)));
     
     if (!path.string().empty()) 
@@ -461,16 +470,16 @@ bool wex::stc::link_open(link_t mode, std::string* filename)
   {
     control_data data;
     
-    if (const wex::path path(m_Link.get_path(text, data));
+    if (const wex::path path(m_link.get_path(text, data));
       !path.string().empty()) 
     {
       if (filename != nullptr)
       {
         *filename = path.fullname();
       }
-      else if (m_Frame != nullptr && !mode[LINK_CHECK])
+      else if (m_frame != nullptr && !mode[LINK_CHECK])
       {
-        m_Frame->open_file(path, data);
+        m_frame->open_file(path, data);
       }
       else if (!mode[LINK_CHECK])
       {
@@ -486,19 +495,19 @@ bool wex::stc::link_open(link_t mode, std::string* filename)
 
 bool wex::stc::marker_delete_all_change()
 {
-  if (!lexers::get()->marker_is_loaded(m_MarkerChange))
+  if (!lexers::get()->marker_is_loaded(m_marker_change))
   {
     return false;
   }
   
-  MarkerDeleteAll(m_MarkerChange.number());
+  MarkerDeleteAll(m_marker_change.number());
   
   return true;
 }
   
 void wex::stc::mark_modified(const wxStyledTextEvent& event)
 {
-  if (!lexers::get()->marker_is_loaded(m_MarkerChange))
+  if (!lexers::get()->marker_is_loaded(m_marker_change))
   {
     return;
   }
@@ -510,13 +519,13 @@ void wex::stc::mark_modified(const wxStyledTextEvent& event)
   {
     if (event.GetLinesAdded() == 0)
     {
-      MarkerDelete(line, m_MarkerChange.number());
+      MarkerDelete(line, m_marker_change.number());
     }
     else
     {
       for (int i = 0; i < abs(event.GetLinesAdded()); i++)
       {
-        MarkerDelete(line + 1, m_MarkerChange.number());
+        MarkerDelete(line + 1, m_marker_change.number());
       }
     }
       
@@ -531,13 +540,13 @@ void wex::stc::mark_modified(const wxStyledTextEvent& event)
   {
     if (event.GetLinesAdded() <= 0)
     {
-      MarkerAdd(line, m_MarkerChange.number());
+      MarkerAdd(line, m_marker_change.number());
     }
     else
     {
       for (int i = 0; i < event.GetLinesAdded(); i++)
       {
-        MarkerAdd(line + i, m_MarkerChange.number());
+        MarkerAdd(line + i, m_marker_change.number());
       }
     }
   }
@@ -549,7 +558,7 @@ void wex::stc::on_exit()
 {
   if (config(_("Keep zoom")).get(false))
   {
-    config("zoom").set(m_Zoom);
+    config("zoom").set(m_zoom);
   }
 }
   
@@ -557,7 +566,7 @@ void wex::stc::on_init()
 {
   if (config(_("Keep zoom")).get(false))
   {
-    m_Zoom = config("zoom").get(-1);
+    m_zoom = config("zoom").get(-1);
   }
 }
   
@@ -566,10 +575,10 @@ void wex::stc::on_idle(wxIdleEvent& event)
   event.Skip();
   
   if (
-    m_File.check_sync() &&
+    m_file.check_sync() &&
     // the readonly flags bit of course can differ from file actual readonly mode,
     // therefore add this check
-    !m_Data.flags().test(stc_data::WIN_READ_ONLY) &&
+    !m_data.flags().test(stc_data::WIN_READ_ONLY) &&
     get_filename().stat().is_readonly() != GetReadOnly())
   {
     file_readonly_attribute_changed();
@@ -584,23 +593,23 @@ void wex::stc::on_styled_text(wxStyledTextEvent& event)
 
 bool wex::stc::open(const path& p, const stc_data& data)
 {
-  m_Data = stc_data(data).window(window_data().name(p.string()));
+  m_data = stc_data(data).window(window_data().name(p.string()));
 
   if (get_filename() != p)
   {
-    if (!m_File.file_load(p))
+    if (!m_file.file_load(p))
     {
       return false;
     }
   }
   else
   {
-    m_Data.inject();
+    m_data.inject();
   }
 
-  if (m_Frame != nullptr)
+  if (m_frame != nullptr)
   {
-    m_Frame->set_recent_file(p.string());
+    m_frame->set_recent_file(p.string());
   }
 
   return true;
@@ -618,17 +627,17 @@ bool wex::stc::position_restore()
 {
   if (m_vi.mode().visual())
   {
-    SetCurrentPos(m_SavedPos);
+    SetCurrentPos(m_saved_pos);
   }
-  else if (m_SavedSelectionStart != -1 && m_SavedSelectionEnd != -1)
+  else if (m_saved_selection_start != -1 && m_saved_selection_end != -1)
   {
-    SetSelection(m_SavedSelectionStart, m_SavedSelectionEnd);
-    SetCurrentPos(m_SavedSelectionStart);
+    SetSelection(m_saved_selection_start, m_saved_selection_end);
+    SetCurrentPos(m_saved_selection_start);
   }
-  else if (m_SavedPos != -1)
+  else if (m_saved_pos != -1)
   {
-    SetSelection(m_SavedPos, m_SavedPos);
-    SetCurrentPos(m_SavedPos);
+    SetSelection(m_saved_pos, m_saved_pos);
+    SetCurrentPos(m_saved_pos);
   }
   else
   {
@@ -642,12 +651,12 @@ bool wex::stc::position_restore()
   
 void wex::stc::position_save()
 {
-  m_SavedPos = GetCurrentPos();
+  m_saved_pos = GetCurrentPos();
 
   if (!m_vi.mode().visual())
   {
-    m_SavedSelectionStart = GetSelectionStart();  
-    m_SavedSelectionEnd = GetSelectionEnd();
+    m_saved_selection_start = GetSelectionStart();  
+    m_saved_selection_end = GetSelectionEnd();
   }
 }
 
@@ -698,12 +707,12 @@ void wex::stc::properties_message(path::status_t flags)
   
   frame::update_statusbar(this, "PaneInfo");
 
-  if (!flags[path::STAT_SYNC] && m_Frame != nullptr)
+  if (!flags[path::STAT_SYNC] && m_frame != nullptr)
   {
     const wxString file = GetName() + 
       (GetReadOnly() ? " [" + _("Readonly") + "]": wxString());
     
-    m_Frame->SetTitle(!file.empty() ? file: wxTheApp->GetAppName());
+    m_frame->SetTitle(!file.empty() ? file: wxTheApp->GetAppName());
   }
 }
 
@@ -828,10 +837,10 @@ bool wex::stc::replace_next(
  
 void wex::stc::reset_margins(margin_t type)
 {
-  if (type[MARGIN_FOLDING]) SetMarginWidth(m_MarginFoldingNumber, 0);
-  if (type[MARGIN_DIVIDER]) SetMarginWidth(m_MarginDividerNumber, 0);
-  if (type[MARGIN_LINENUMBER]) SetMarginWidth(m_MarginLineNumber, 0);
-  if (type[MARGIN_TEXT]) SetMarginWidth(m_MarginTextNumber, 0);
+  if (type[MARGIN_FOLDING]) SetMarginWidth(m_margin_folding_number, 0);
+  if (type[MARGIN_DIVIDER]) SetMarginWidth(m_margin_divider_number, 0);
+  if (type[MARGIN_LINENUMBER]) SetMarginWidth(m_margin_line_number, 0);
+  if (type[MARGIN_TEXT]) SetMarginWidth(m_margin_text_number, 0);
 }
 
 void wex::stc::SelectNone()
@@ -905,9 +914,9 @@ bool wex::stc::show_blame(const vcs_entry* vcs)
       if (first)
       {
         SetMarginWidth(
-          m_MarginTextNumber, 
+          m_margin_text_number, 
           bl.size() * 
-           (StyleGetFont(m_MarginTextNumber).GetPixelSize().GetWidth() + 1));
+           (StyleGetFont(m_margin_text_number).GetPixelSize().GetWidth() + 1));
         first = false;
       }
       
@@ -928,7 +937,7 @@ bool wex::stc::show_blame(const vcs_entry* vcs)
 
 void wex::stc::show_line_numbers(bool show)
 {
-  SetMarginWidth(m_MarginLineNumber, 
+  SetMarginWidth(m_margin_line_number, 
     show ? config(_("Line number")).get(0): 0);
 }
 

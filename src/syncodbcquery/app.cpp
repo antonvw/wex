@@ -11,7 +11,6 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <easylogging++.h>
 #include <wx/aboutdlg.h>
 #include <wx/stockitem.h>
 #include <wex/cmdline.h>
@@ -41,16 +40,13 @@ bool app::OnInit()
   if (
     !wex::app::OnInit() ||
     !wex::cmdline(
-     {{{"verbose,v", "activates maximum verbosity"}, [&](bool on) {}}},
+     {},
      {{{"datasource,d", "odbc datasource"}, {wex::cmdline::STRING, [&](const std::any& a) {
         wex::config(_("Datasource")).set(std::any_cast<std::string>(a));}}},
-      {{"logfile,D", "sets log file"}, {wex::cmdline::STRING, [&](const std::any& s) {}}},
       {{"password,p", "password for user"}, {wex::cmdline::STRING, [&](const std::any& a) {
         wex::config(_("Password")).set(std::any_cast<std::string>(a));}}},
       {{"user,u", "user to login"}, {wex::cmdline::STRING, [&](const std::any& a) {
-        wex::config(_("User")).set(std::any_cast<std::string>(a));}}},
-      {{"v,V", "activates verbosity upto verbose level (valid range: 0-9)", "1"}, 
-          {wex::cmdline::INT, [&](const std::any& a) {el::Loggers::setVerboseLevel(std::any_cast<int>(a));}}}
+        wex::config(_("User")).set(std::any_cast<std::string>(a));}}}
      }).parse(argc, argv))
   {
     return false;
@@ -134,7 +130,7 @@ frame::frame()
 
   if (wex::lexers::get()->get_themes_size() <= 1)
   {
-    m_StatusBar->show_field("PaneTheme", false);
+    m_statusbar->show_field("PaneTheme", false);
   }
 
   get_toolbar()->add_controls(false); // no realize yet
@@ -445,7 +441,7 @@ void frame::statusbar_clicked(const std::string& pane)
       m_Query->get_lexer().set(m_Query->get_lexer().display_lexer());
       m_Shell->get_lexer().set(m_Shell->get_lexer().display_lexer());
 
-      m_StatusBar->show_field(
+      m_statusbar->show_field(
         "PaneLexer", 
         !wex::lexers::get()->theme().empty());
         

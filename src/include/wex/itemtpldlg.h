@@ -14,6 +14,7 @@
 #include <wx/combobox.h>
 #include <wx/filepicker.h>
 #include <wx/tglbtn.h> // for wxEVT_TOGGLEBUTTON
+#include <wx/textctrl.h>
 #include <wex/dialog.h>
 #include <wex/frame.h>
 #include <wex/item.h> 

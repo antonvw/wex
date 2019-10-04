@@ -1,9 +1,14 @@
+**v20.04**
+  - scintilla is compiled to use std::regex (ECMAScript)
+  - usage of test suites
+
 **v19.10** *September 14, 2019*
-  - uses boost::process lib instead of tiny-process-library
-  - uses boost::program_options lib instead of TCLAP lib
-  - uses boost::spirit lib instead of eval lib
-  - uses boost::statechart lib instead of fsm lib
-  - uses nlohmann/json
+  - uses boost 1.69
+    - boost::process lib instead of tiny-process-library
+    - boost::program_options lib instead of TCLAP lib
+    - boost::spirit lib instead of eval lib
+    - boost::statechart lib instead of FSM lib
+  - uses nlohmann/json instead of wxConfig
   - uses wex::test and wex::report namespace
   
 **v19.04** *March 9, 2019*
@@ -18,17 +23,18 @@
 
 **v18.04** *April 8, 2018*
   - easylogging++ lib
-  - fsm lib
+  - FSM lib
 
 **v17.10** *September 30, 2017* 
   - c++1z, using std::experimental::filesystem
+  - Microsoft Visual Studio 2017
 
 **v17.04** *April 8, 2017*
   - git submodules
   - ctags lib
   - doctest lib instead of catch lib
   - pugixml lib
-  - tclap lib
+  - TCLAP lib
 
 **v16.10** *September 30, 2016*
   - eval lib
@@ -118,7 +124,6 @@
 **v3.5** *March 22, 2002*
 
 **v3.4** *February 21, 2002*
-  - OnIdle improved
 
 **v3.3** *November 30, 2001*
 

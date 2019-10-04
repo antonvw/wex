@@ -40,10 +40,10 @@ namespace wex
     static bool dir_exists(const path& filename);
 
     /// Returns the current vcs entry.
-    auto& entry() {return m_Entry;};
+    auto& entry() {return m_entry;};
     
     /// Returns the current vcs entry.
-    const auto& entry() const {return m_Entry;};
+    const auto& entry() const {return m_entry;};
     
     /// Executes the current vcs command for the current
     /// vcs entry, and collects the output.
@@ -85,34 +85,34 @@ namespace wex
     int show_dialog(const window_data& data = window_data());
 
     /// Returns the number of vcs entries.
-    static auto size() {return m_Entries.size();};
+    static auto size() {return m_entries.size();};
 
     /// Returns true if vcs usage is set in the config.
     bool use() const;
   private:
-    static const vcs_entry FindEntry(const std::string& filename);
-    static const vcs_entry FindEntry(const path& filename);
-    static const path GetTopLevelDir(
+    static const vcs_entry find_entry(const std::string& filename);
+    static const vcs_entry find_entry(const path& filename);
+    static const path get_toplevel_dir(
       const std::string& admin_dir, 
       const path& file);
-    static bool IsAdminDir(
+    static bool is_admin_dir(
       const std::string& admin_dir, 
       const path& fn);
-    static bool IsAdminDirTopLevel(
+    static bool is_admin_dir_top_level(
       const std::string& admin_dir, 
       const path& fn);
 
     const path get_file() const;
-    const std::string GetRelativeFile(
+    const std::string get_relative_file(
       const std::string& admin_dir, 
       const path& file) const;
 
-    vcs_entry m_Entry;
+    vcs_entry m_entry;
 
-    std::vector< path > m_Files;
-    std::string m_Title;
+    std::vector< path > m_files;
+    std::string m_title;
 
-    static std::vector<vcs_entry> m_Entries;
-    static inline item_dialog* m_ItemDialog = nullptr;
+    static std::vector<vcs_entry> m_entries;
+    static inline item_dialog* m_item_dialog = nullptr;
   };
 };

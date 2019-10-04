@@ -2,7 +2,7 @@
 // Name:      tool.cpp
 // Purpose:   Implementation of wex::tool class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -12,12 +12,12 @@
 #include <wex/tool.h>
 #include <wex/statistics.h>
 
-std::map < int, wex::tool_info > wex::tool::m_ToolInfo;
+std::map < int, wex::tool_info > wex::tool::m_tool_info;
 
 wex::tool::tool(int type)
-  : m_Id(type)
+  : m_id(type)
 {
-  if (m_ToolInfo.empty())
+  if (m_tool_info.empty())
   {
     add_info(ID_TOOL_REPORT_FIND, _("Found %d matches in").ToStdString());
     add_info(ID_TOOL_REPLACE, _("Replaced %d matches in").ToStdString());
@@ -28,7 +28,7 @@ wex::tool::tool(int type)
 
 const std::string wex::tool::info() const
 {
-  if (const auto& it = m_ToolInfo.find(m_Id); it != m_ToolInfo.end())
+  if (const auto& it = m_tool_info.find(m_id); it != m_tool_info.end())
     return it->second.info();
   else 
     return std::string();

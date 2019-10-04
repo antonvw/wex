@@ -12,6 +12,8 @@
 #include <wex/vcscommand.h>
 #include "test.h"
 
+TEST_SUITE_BEGIN("wex::vcs");
+
 TEST_CASE("wex::vcs_command")
 {
   pugi::xml_document doc;
@@ -52,3 +54,5 @@ TEST_CASE("wex::vcs_command")
   REQUIRE(diff.submenu() == "submenu");
   REQUIRE(help.submenu() == "m&e");
 }
+
+TEST_SUITE_END();

@@ -2,7 +2,7 @@
 // Name:      vi-mode.h
 // Purpose:   Declaration of class wex::vi_mode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -45,26 +45,22 @@ namespace wex
    ~vi_mode();
 
     /// escapes current mode.
-    bool escape() {
-      std::string command("\x1b");
-      return transition(command);};
+    bool escape();
 
     /// Returns the state we are in.
     state_t get() const;
     
     /// Returns true if in insert mode.
-    bool insert() const {return 
-      get() == INSERT || 
-      get() == INSERT_RECT;};
+    bool insert() const;
     
     /// Returns insert commands.
-    const auto & insert_commands() const {return m_InsertCommands;};
+    const auto & insert_commands() const {return m_insert_commands;};
 
     /// Returns true if in normal mode.
     bool normal() const {return get() == NORMAL;};
 
     /// Returns mode as a string.
-    const std::string string() const;
+    const std::string str() const;
     
     /// transitions to other mode depending on command.
     /// Returns true if command represents a mode change, otherwise false.
@@ -73,13 +69,10 @@ namespace wex
     bool transition(std::string& command);
 
     /// Returns true if in visual mode.
-    bool visual() const {return 
-      get() == VISUAL || 
-      get() == VISUAL_LINE || 
-      get() == VISUAL_RECT;};
+    bool visual() const;
   private:  
     vi* m_vi;
-    std::unique_ptr<vi_fsm> m_FSM;
-    const std::vector<std::pair<int, std::function<void()>>> m_InsertCommands;
+    std::unique_ptr<vi_fsm> m_fsm;
+    const std::vector<std::pair<int, std::function<void()>>> m_insert_commands;
   };
 };

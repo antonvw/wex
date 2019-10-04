@@ -116,12 +116,12 @@ namespace wex
     /// Constructor for a SPACER item.
     /// The size is the size for the spacer used.
     item(int size) : item(SPACER) {
-      m_Data.window(window_data().style(size));};
+      m_data.window(window_data().style(size));};
 
     /// Constuctor for a STATICLINE item.
     /// The orientation is wxHORIZONTAL or wxVERTICAL.
     item(wxOrientation orientation) : item(STATICLINE) {
-      m_Data.window(window_data().style(orientation));};
+      m_data.window(window_data().style(orientation));};
       
     /// Constructor for several items.
     item(
@@ -148,7 +148,7 @@ namespace wex
         (type != STATICTEXT && 
          type != HYPERLINKCTRL ? label_t: LABEL_NONE))
         {m_apply = apply;
-         m_Data = data;};
+         m_data = data;};
 
     /// Constructor for spin items.
     item(
@@ -170,7 +170,7 @@ namespace wex
       user_apply_t apply = nullptr)
       : item(type, label, value, LABEL_LEFT, 1, min, max)
         {m_apply = apply;
-         m_Data = data;};
+         m_data = data;};
 
     /// Constructor for a SPINCTRLDOUBLE item.
     item(
@@ -190,7 +190,7 @@ namespace wex
       user_apply_t apply = nullptr)
       : item(SPINCTRLDOUBLE, label, value, LABEL_LEFT, 1, min, max, inc)
         {m_apply = apply;
-         m_Data = data;};
+         m_data = data;};
 
     /// Constructor for a CHECKLISTBOX_BOOL item. 
     /// This checklistbox can be used to get/set several boolean values.
@@ -203,7 +203,7 @@ namespace wex
       user_apply_t apply = nullptr)
       : item(CHECKLISTBOX_BOOL, "checklistbox_bool", choices, LABEL_NONE, 1, 0, 1, 1) 
         {m_apply = apply;
-         m_Data = data;};
+         m_data = data;};
 
     /// Constuctor for a NOTEBOOK item, being a vector
     /// of a pair of pages with a vector of items.
@@ -249,7 +249,7 @@ namespace wex
       /// image list to be used (required for a tool book)
       wxImageList* imageList = nullptr)
       : item(type, label, v, label_t, cols, 0, 1, 1, nullptr, nullptr, nullptr, imageList) {
-          m_Data= data;};
+          m_data= data;};
     
     /// Constructor for a RADIOBOX, or a CHECKLISTBOX_BIT item. 
     /// This checklistbox (not mutually exclusive choices)
@@ -273,7 +273,7 @@ namespace wex
       : item(use_radiobox ? RADIOBOX: CHECKLISTBOX_BIT, label, choices,
         LABEL_NONE, majorDimension, 0, 1, 1) {
           m_apply = apply;
-          m_Data = data;};
+          m_data = data;};
 
     /// Constructor for a USER item.
     item(
@@ -307,7 +307,7 @@ namespace wex
       user_apply_t apply = nullptr)
       : item(LISTVIEW, label, value, label_t) {
           m_apply = apply;
-          m_ListViewData = data;};
+          m_listview_data = data;};
 
     /// Constuctor several items.
     item(
@@ -342,36 +342,36 @@ namespace wex
           type == COMMANDLINKBUTTON ||
           type == TOGGLEBUTTON ? LABEL_NONE: label_t) {
           m_apply = apply;
-          m_Data = data;};
+          m_data = data;};
     
     /// If apply callback has been provided calls apply.
     /// Otherwise return false.
     bool apply(bool save = true) const {
       if (m_apply != nullptr) 
       {
-        (m_apply)(m_Window, get_value(), save);
+        (m_apply)(m_window, get_value(), save);
         return true;
       }
       return false;};
 
     /// Returns the number of columns for the current page.
-    auto columns() const {return m_MajorDimension;};
+    auto columns() const {return m_major_dimension;};
 
     /// Returns control data.
-    const auto& data() const {return m_Data;};
+    const auto& data() const {return m_data;};
 
     /// Returns actual value, or empty object if this item
     /// has no (or not yet) associated window, or conversion is not implemented.
     const std::any get_value() const;
 
     /// Returns the initial value.
-    const auto& initial() const {return m_Initial;};
+    const auto& initial() const {return m_initial;};
     
     /// Is this item allowed to be expanded on a row.
     auto is_row_growable() const {return m_is_row_growable;};
 
     /// Returns the label.
-    const auto& label() const {return m_Label;};
+    const auto& label() const {return m_label;};
 
     /// layouts this item (creates the window) on the specified sizer.
     /// It returns the flex grid sizer that was used for creating the item sizer.
@@ -392,14 +392,14 @@ namespace wex
     std::stringstream log() const;
 
     /// Returns the page.
-    const auto& page() const {return m_Page;};
+    const auto& page() const {return m_page;};
 
     /// Sets dialog to parent, to allow subitems to be added
     /// to the template dialog.
     void set_dialog(item_template_dialog<item>* dlg);
       
     /// Sets image list.
-    void set_imagelist(wxImageList* il) {m_ImageList = il;};
+    void set_imagelist(wxImageList* il) {m_image_list = il;};
     
     /// Sets this item to be growable.
     /// Default whether the item row is growable is determined
@@ -416,14 +416,14 @@ namespace wex
     bool to_config(bool save) const;
     
     /// Returns the type.
-    auto type() const {return m_Type;};
+    auto type() const {return m_type;};
     
     /// Use config for getting and retrieving values.
     /// Default the config is used.
     static void use_config(bool use) {m_use_config = use;};
     
     /// Returns the window (first call layout, to create it, otherwise it is nullptr).
-    auto* window() const {return m_Window;};
+    auto* window() const {return m_window;};
   protected:
     /// Delegate constructor.
     item(
@@ -453,26 +453,26 @@ namespace wex
       /// the imagelist
       wxImageList* imageList = nullptr);
   private:
-    wxFlexGridSizer* Add(wxSizer* sizer, wxFlexGridSizer* current) const;
-    wxFlexGridSizer* AddBrowseButton(wxSizer* sizer);
+    wxFlexGridSizer* add(wxSizer* sizer, wxFlexGridSizer* current) const;
+    wxFlexGridSizer* add_browse_button(wxSizer* sizer);
     void add_items(std::pair<std::string, std::vector<item>> & items, bool readonly);
-    wxFlexGridSizer* AddStaticText(wxSizer* sizer) const;
-    bool CreateWindow(wxWindow* parent, bool readonly);
+    wxFlexGridSizer* add_static_text(wxSizer* sizer) const;
+    bool create_window(wxWindow* parent, bool readonly);
     std::stringstream Log(const std::string& name, const std::any& any) const;
 
     bool m_is_row_growable = false;
-    int m_MajorDimension, m_MaxItems = 25;
+    int m_major_dimension, m_max_items {25};
     
-    type_t m_Type;
-    label_t m_LabelType;
-    std::any m_Initial, m_Min, m_Max, m_Inc;
-    std::string m_Label, m_Page;
-    wxSizerFlags m_SizerFlags;
-    wxWindow* m_Window;
-    wxImageList* m_ImageList;
-    item_template_dialog<item>* m_Dialog = nullptr;
-    control_data m_Data;
-    listview_data m_ListViewData;
+    type_t m_type;
+    label_t m_label_type;
+    std::any m_initial, m_min, m_max, m_inc;
+    std::string m_label, m_page;
+    wxSizerFlags m_sizer_flags;
+    wxWindow* m_window;
+    wxImageList* m_image_list;
+    item_template_dialog<item>* m_dialog {nullptr};
+    control_data m_data;
+    listview_data m_listview_data;
 
     user_apply_t m_apply;
     user_window_create_t m_user_window_create_t;

@@ -64,8 +64,8 @@ namespace wex
     /// Returns the path.
     const path& get_filename() const;
     
-    /// Returns true if file is opened.
-    bool is_opened() const;
+    /// Returns true if file is open.
+    bool is_open() const;
 
     /// Opens current path.
     bool open(std::ios_base::openmode mode = std::ios_base::in);

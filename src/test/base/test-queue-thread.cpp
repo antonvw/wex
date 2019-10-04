@@ -19,7 +19,7 @@ namespace wex
 
     const std::vector<std::string> &events() const { return m_events; };
   private:
-    virtual void process(std::unique_ptr<std::string> &input) override {
+    void process(std::unique_ptr<std::string> &input) override {
       std::unique_ptr<std::string> event(input.release());
       m_events.emplace_back(*event.get());};
 

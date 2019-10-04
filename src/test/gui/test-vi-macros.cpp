@@ -17,6 +17,8 @@
 
 #define ESC "\x1b"
 
+TEST_SUITE_BEGIN("wex::vi");
+
 TEST_CASE("wex::vi_macros")
 {
   wex::stc* stc = new wex::stc(std::string("hello"));
@@ -104,7 +106,8 @@ TEST_CASE("wex::vi_macros")
 
   std::string expanded;
 
-  REQUIRE( wex::vi_macros::mode()->expand(vi, wex::variable(), expanded));
+  REQUIRE(!wex::vi_macros::mode()->expand(vi, wex::variable(), expanded));
+  REQUIRE(!wex::vi_macros::mode()->expand(vi, wex::variable("x"), expanded));
 
 #ifdef __UNIX__
   // Test all environment macro variables.
@@ -156,3 +159,5 @@ TEST_CASE("wex::vi_macros")
   REQUIRE( macros.is_modified());
   REQUIRE( wex::vi_macros::save_document());
 }
+
+TEST_SUITE_END();

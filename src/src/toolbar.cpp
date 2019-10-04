@@ -307,7 +307,7 @@ wex::find_textctrl::find_textctrl(
   SetAcceleratorTable(accel);
   
   Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
-    if (!find_replace_data::get()->m_FindStrings.set(event.GetKeyCode(), this))
+    if (!find_replace_data::get()->m_findStrings.set(event.GetKeyCode(), this))
     {
       event.Skip();
     }});

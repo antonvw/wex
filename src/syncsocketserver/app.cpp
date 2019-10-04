@@ -14,7 +14,6 @@
 #endif
 #include <wx/aboutdlg.h>
 #include <wx/numdlg.h>
-#include <easylogging++.h>
 #include <wex/cmdline.h>
 #include <wex/config.h>
 #include <wex/filedlg.h>
@@ -53,17 +52,13 @@ bool app::OnInit()
   if (
     !wex::app::OnInit() ||
     !wex::cmdline(
-     {{{"verbose,v", "activates maximum verbosity"}, [&](bool on) {}}},
-     {{{"logfile,D", "sets log file"}, {wex::cmdline::STRING, [&](const std::any& s) {}}},
-      {{"v,V", "activates verbosity upto verbose level (valid range: 0-9)", "1"}, {wex::cmdline::INT, [&](const std::any& a) {
-        el::Loggers::setVerboseLevel(std::any_cast<int>(a));}}},
+     {},
+     {{{"logfile,D", "sets log file"}, {wex::cmdline::STRING, [&](const std::any& s) {}}}
       }).parse(argc, argv))
   {
     return false;
   }
 
-  wex::log::verbose(1) << "verbosity:" << (int)el::Loggers::verboseLevel();
-  
   new frame;
 
   return true;
@@ -122,7 +117,7 @@ frame::frame()
 
   if (wex::lexers::get()->get_themes_size() <= 1)
   {
-    m_StatusBar->show_field("PaneTheme", false);
+    m_statusbar->show_field("PaneTheme", false);
   }
 
   m_log->reset_margins();
@@ -891,7 +886,7 @@ void frame::statusbar_clicked(const std::string& pane)
       m_log->get_lexer().set(m_log->get_lexer().display_lexer());
       m_shell->get_lexer().set(m_shell->get_lexer().display_lexer());
 
-      m_StatusBar->show_field(
+      m_statusbar->show_field(
         "PaneLexer", 
         !wex::lexers::get()->theme().empty());
         

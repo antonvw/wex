@@ -24,7 +24,7 @@ const std::string substituteTilde(const std::string& text)
 wex::path::path(const fs::path& p, status_t t)
   : m_path(p)
   , m_Stat(p.string()) 
-  , m_Lexer(lexers::get(false) != nullptr ? 
+  , m_lexer(lexers::get(false) != nullptr ? 
       lexers::get(false)->find_by_filename(p.filename().string()):
       std::string())
   , m_status(t)
@@ -78,7 +78,7 @@ wex::path& wex::path::operator=(const wex::path& r)
   {
     m_path = r.data();
     m_path_original = r.m_path_original;
-    m_Lexer = r.m_Lexer;
+    m_lexer = r.m_lexer;
     m_Stat = r.m_Stat;
     m_status = r.m_status;
   }

@@ -27,7 +27,7 @@ namespace wex
       managed_frame()
       : wex::managed_frame()
       , m_Process(new process()) {;};
-      virtual process* get_process(const std::string& command) override {
+      process* get_process(const std::string& command) override {
         m_Process->execute(command);
         return m_Process;};
     private:
@@ -37,13 +37,13 @@ namespace wex
     class gui_app : public app
     {
     public: 
-      virtual int OnExit() override
+      int OnExit() override
       {
         remove("test-ex.txt");
         return test::app::OnExit();
       }
       
-      virtual bool OnInit() override
+      bool OnInit() override
       {
         if (!test::app::OnInit())
         {
@@ -62,13 +62,13 @@ namespace wex
           {"PaneMode"},
           {"PaneFileType"},
           {"LastPane"}});
-        m_STC = new stc();
+        m_stc = new stc();
 
         m_Frame->Show();
 
         process::prepare_output(m_Frame); // before adding pane
         
-        add_pane(m_Frame, m_STC);
+        add_pane(m_Frame, m_stc);
         add_pane(m_Frame, process::get_shell());
         
         return true;
@@ -76,11 +76,11 @@ namespace wex
       
       static auto* frame() {return m_Frame;};
       static auto* get_statusbar() {return m_StatusBar;};
-      static auto* get_stc() {return m_STC;};
+      static auto* get_stc() {return m_stc;};
     private:
       inline static managed_frame* m_Frame = nullptr;
       inline static statusbar* m_StatusBar = nullptr;
-      inline static stc* m_STC = nullptr;
+      inline static stc* m_stc = nullptr;
     }; 
   };
 };

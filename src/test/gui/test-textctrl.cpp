@@ -2,7 +2,7 @@
 // Name:      test-textctrl.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -23,8 +23,7 @@ TEST_CASE("wex::textctrl")
   REQUIRE(!wex::textctrl_input(wex::ex_command::type_t::NONE).set(WXK_UP, tc));
   
   wex::textctrl_input tip(wex::ex_command::type_t::FIND);
-  REQUIRE( tip.set("one"));
-  REQUIRE(!tip.set(std::string()));
+  tip.set("one");
   REQUIRE( tip.get() == "one");
   REQUIRE( tip.values().front() == "one");
   
@@ -33,7 +32,7 @@ TEST_CASE("wex::textctrl")
   REQUIRE( tip.values().size() == 3);
   
   tc->SetValue("hello");
-  REQUIRE( tip.set(tc));
+  tip.set(tc);
   REQUIRE( tip.get() == "hello");
   REQUIRE( tip.values().size() == 4);
   

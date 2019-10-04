@@ -13,6 +13,8 @@
 #include <wex/variable.h>
 #include "test.h"
 
+TEST_SUITE_BEGIN("wex::vi");
+
 TEST_CASE("wex::vi_macros_mode")
 {
   std::string expanded;
@@ -22,5 +24,7 @@ TEST_CASE("wex::vi_macros_mode")
   REQUIRE(!mode.is_recording());
   REQUIRE(!mode.expand(nullptr, wex::variable("test"), expanded));
   REQUIRE( mode.transition("x") == 0);
-  REQUIRE( mode.string().empty());
+  REQUIRE( mode.str().empty());
 }
+
+TEST_SUITE_END();

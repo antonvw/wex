@@ -5,6 +5,7 @@
 // Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iomanip>
 #include <wx/log.h>
 #include <wex/log.h>
 #include <wex/config.h>
@@ -54,11 +55,11 @@ wex::log::~log()
 }
 
 void wex::log::flush()
-{  
-  const std::string topic = !m_topic.empty() && !m_ss.str().empty() ? 
+{
+  const std::string topic = !m_topic.empty() && !m_ss.str().empty() ?
     m_topic + ":": m_topic;
   const std::string text (topic + m_ss.str());
-  
+
   if (!text.empty() || m_level == STATUS)
   {
     switch (m_level)
@@ -127,7 +128,26 @@ wex::log& wex::log::operator<<(const wxChar* r)
 
 wex::log& wex::log::operator<<(const std::string& r)
 {
-  m_ss << S() << r;
+  m_ss << S();
+
+  for (const auto& c : r)
+  {
+    if (isprint(c))
+    {
+      m_ss << c;
+    }
+    else
+    {
+      const char f(m_ss.fill());
+      const auto w(m_ss.width());
+
+      m_ss << "\\x" << std::setfill('0') << std::setw(2) << std::hex << (int)c;
+
+      std::setfill(f);
+      std::setw(w);
+    }
+  }
+  
   return *this;
 }
 
@@ -146,7 +166,7 @@ wex::log& wex::log::operator<<(const pugi::xml_node& r)
 void wex::log::init(int argc, char** argv)
 {
   // Load elp configuration from file.
-  const path elp(config().dir(), "conf.elp");
+  const path elp(config::dir(), "conf.elp");
 
   if (elp.file_exists())
   {
@@ -162,10 +182,11 @@ void wex::log::init(int argc, char** argv)
       {"-m", "-vmodule"},
       {"-D", "--default-log-file"},
       {"-L", "--logging-flags"},
+      {"-V", "--v"},
+      {"--level", "--v"},
       {"--logfile", "--default-log-file"},
       {"--logflags", "--logging-flags"},
-      {"--x", "--v"}, // for testing with verbosity: --v=9
-      {"--v", "--v"}};
+      {"--x", "--v"}}; // for testing with verbosity: --v=9
 
   for (int i = 0; i < argc; i++)
   {
@@ -177,8 +198,8 @@ void wex::log::init(int argc, char** argv)
       {
         if (i + 1 < argc)
         {
-	        const std::string option(argv[i + 1]);
-  	      v.push_back(std::string(std::string(s.second) + "=" + option));
+          const std::string option(argv[i + 1]);
+          v.push_back(std::string(std::string(s.second) + "=" + option));
           added = true;
           i++;
           break;
@@ -201,7 +222,10 @@ void wex::log::init(int argc, char** argv)
   
   START_EASYLOGGINGPP(w.size() - 1, w.data());
 
-  verbose(1) << "config:" << elp.string();
+  m_verbosity = el::Loggers::verboseLevel();
+
+  verbose(2) << "verbosity:" << (int)el::Loggers::verboseLevel();
+  verbose(9) << "config:" << elp.string();
 }
   
 const std::string wex::log::S()

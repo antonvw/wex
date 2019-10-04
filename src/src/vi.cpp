@@ -114,6 +114,17 @@ constexpr int c_strcmp( char const* lhs, char const* rhs )
   get_stc()->EndUndoAction();        \
 }
 
+namespace wex
+{
+  enum class vi::motion_t
+  {
+    MOTION_CHANGE,
+    MOTION_DELETE,
+    MOTION_NAVIGATE,
+    MOTION_YANK,
+  };
+};
+    
 wex::vi::vi(wex::stc* arg)
   : ex(arg)
   , m_mode(this, 
@@ -198,7 +209,8 @@ wex::vi::vi(wex::stc* arg)
           0,
           islower(d) > 0))
         {
-          return m_command.clear();
+          m_command.clear();
+          return (size_t)0;
         });
       if (command[0] != ',' && command[0] != ';')
       {
@@ -214,15 +226,16 @@ wex::vi::vi(wex::stc* arg)
         config("exmargin").get(std::list<std::string>{}).front():
         find_replace_data::get()->get_find_string());
         !get_stc()->find_next(
-        find,
-        search_flags(), 
-        command == "n" ? m_search_forward: !m_search_forward))
+          find,
+          search_flags(),
+          command == "n" == m_search_forward))
       {
-        return m_command.clear();
+        m_command.clear();
+        return (size_t)0;
       });
       return (size_t)1;}},
     {"G", [&](const std::string& command){
-      if (m_count == 1)
+      if (m_count == 1 && !m_count_present)
       {
         m_mode.visual() ?
           get_stc()->DocumentEndExtend():
@@ -292,12 +305,14 @@ wex::vi::vi(wex::stc* arg)
     {"0", [&](const std::string& command){MOTION(Line, Home, false, false);}},
     {"^", [&](const std::string& command){MOTION(VC, Home, false, false);}},
     {"[]", [&](const std::string& command){
+      // related to regex ECMAScript
       REPEAT(
-        if (!get_stc()->find_next("{", search_flags(), command == "]"))
+        if (!get_stc()->find_next("\\{", search_flags(), command == "]"))
         {
-          return m_command.clear();
+          m_command.clear();
+          return 0;
         })
-      return (size_t)1;}},
+      return 1;}},
     {"({", [&](const std::string& command){MOTION(Para, Up,   false, false);}},
     {")}", [&](const std::string& command){MOTION(Para, Down, false, false);}},
     {"+", [&](const std::string& command){MOTION(Line, Down, true,  true); }},
@@ -374,7 +389,8 @@ wex::vi::vi(wex::stc* arg)
         {
           if (!get_stc()->get_hexmode().replace(command.back()))
           {
-            return m_command.clear();
+            m_command.clear();
+            return 0;
           }
         }
         else
@@ -383,9 +399,9 @@ wex::vi::vi(wex::stc* arg)
           get_stc()->SetTargetEnd(get_stc()->GetCurrentPos() + m_count);
           get_stc()->ReplaceTarget(std::string(m_count, command.back()));
         }
-        return (size_t)2;
+        return 2;
       }
-      return (size_t)0;}},
+      return 0;}},
     {"s", [&](const std::string& command){
       vi::command("c ");
       return 1;}},
@@ -549,8 +565,10 @@ wex::vi::vi(wex::stc* arg)
       }
       return 1;}},
     {"*#U", [&](const std::string& command){
-      const auto start = get_stc()->WordStartPosition(get_stc()->GetCurrentPos(), true);
-      const auto end = get_stc()->WordEndPosition(get_stc()->GetCurrentPos(), true);
+      const auto start = 
+        get_stc()->WordStartPosition(get_stc()->GetCurrentPos(), true);
+      const auto end = 
+        get_stc()->WordEndPosition(get_stc()->GetCurrentPos(), true);
       const std::string word(get_stc()->GetSelectedText().empty() ?
         get_stc()->GetTextRange(start, end).ToStdString():
         get_stc()->GetSelectedText().ToStdString());
@@ -562,7 +580,8 @@ wex::vi::vi(wex::stc* arg)
         }
         else
         {
-          find_replace_data::get()->set_find_string("\\<"+ word + "\\>");
+          // related to regex ECMAScript
+          find_replace_data::get()->set_find_string("\\b"+ word + "\\b");
           get_stc()->find_next(
             find_replace_data::get()->get_find_string(), 
             search_flags(), 
@@ -574,9 +593,10 @@ wex::vi::vi(wex::stc* arg)
       // just ignore tab, except on first col, then it indents
       if (get_stc()->GetColumn(get_stc()->GetCurrentPos()) == 0)
       {
-        return m_command.clear();
+        m_command.clear();
+        return 0;
       }
-      return (size_t)1;}},
+      return 1;}},
     {control_J + control_L, [&](const std::string& command){REPEAT_WITH_UNDO(
       if (get_stc()->is_hexmode()) return 1;
       try 
@@ -617,20 +637,6 @@ wex::vi::vi(wex::stc* arg)
         get_stc()->GetCurrentPos() + m_count);
       return 1;}}}
 {
-}
-
-void wex::vi::add_text(const std::string& text)
-{
-  if (!get_stc()->GetOvertype())
-  {
-    get_stc()->add_text(text);
-  }
-  else
-  {
-    get_stc()->SetTargetStart(get_stc()->GetCurrentPos());
-    get_stc()->SetTargetEnd(get_stc()->GetCurrentPos() + text.size());
-    get_stc()->ReplaceTarget(text);
-  }
 }
 
 void wex::vi::append_insert_command(const std::string& s)
@@ -725,7 +731,7 @@ void wex::vi::command_calc(const std::string& command)
       get_stc()->ReplaceSelection(wxEmptyString);
     }
   
-    add_text(std::to_string(sum));
+    get_stc()->add_text(std::to_string(sum));
   }
   else
   {
@@ -734,7 +740,7 @@ void wex::vi::command_calc(const std::string& command)
   }
 }
 
-void wex::vi::command_reg(const char reg)
+void wex::vi::command_reg(char reg)
 {
   switch (reg)
   {
@@ -752,7 +758,7 @@ void wex::vi::command_reg(const char reg)
     case '%':
       if (mode().insert())
       {
-        add_text(get_stc()->get_filename().fullname());
+        get_stc()->add_text(get_stc()->get_filename().fullname());
       }
       else
       {
@@ -765,7 +771,7 @@ void wex::vi::command_reg(const char reg)
       {
         if (mode().insert())
         {   
-          add_text(get_macros().get_register(reg));
+          get_stc()->add_text(get_macros().get_register(reg));
           
           if (reg == '.')
           {
@@ -851,6 +857,7 @@ void wex::vi::filter_count(std::string& command)
   if (const auto matches = match("^([1-9][0-9]*)(.*)", command, v);
     matches == 2)
   {
+    m_count_present = true;
     const auto count = std::stoi(v[0]);
     m_count *= count;
     append_insert_command(v[0]);
@@ -884,7 +891,7 @@ bool wex::vi::insert_mode(const std::string& command)
   else if (command.size() == 2 && command[1] == 0)
   {
     append_insert_text(std::string(1, command[0]));
-    add_text(std::string(1, command[0]));
+    get_stc()->add_text(std::string(1, command[0]));
     return true;
   }
 
@@ -919,7 +926,7 @@ bool wex::vi::insert_mode(const std::string& command)
       const auto token = tkz.get_next_token();
       const auto rest(tkz.get_string());
       
-      if (regafter("\x12", "\x12" + rest.substr(0, 1)))
+      if (regafter(control_R, control_R + rest.substr(0, 1)))
       {
         insert_mode(token);
         command_reg(rest[0]);
@@ -973,7 +980,7 @@ bool wex::vi::insert_mode(const std::string& command)
         {
           if (!get_stc()->GetOvertype())
           {
-            REPEAT(add_text(rest));
+            REPEAT(get_stc()->add_text(rest));
           }
           else
           {
@@ -1109,7 +1116,7 @@ void wex::vi::insert_mode_normal(const std::string& text)
   }
   else
   {
-    add_text(text);
+    get_stc()->add_text(text);
   }
 }
 
@@ -1124,11 +1131,11 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
   
   if (!get_stc()->get_selected_text().empty()) 
   {
-    if (type == MOTION_YANK)
+    if (type == motion_t::MOTION_YANK)
     {
       return addressrange(this, m_count).yank();
     }
-    else if (type == MOTION_DELETE)
+    else if (type == motion_t::MOTION_DELETE)
     {
       return addressrange(this, m_count).erase();
     }
@@ -1154,15 +1161,14 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
   
   switch (type)
   {
-    case MOTION_CHANGE:
+    case motion_t::MOTION_CHANGE:
       if (!get_stc()->get_selected_text().empty())
       {
         get_stc()->SetCurrentPos(get_stc()->GetSelectionStart());
         start = get_stc()->GetCurrentPos();
       }
     
-      if (!m_command.is_handled() && 
-        (parsed = it->second(command)) == 0) 
+      if ((parsed = it->second(command)) == 0) 
       {
         m_mode.escape();
         return false;
@@ -1171,33 +1177,30 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
       delete_range(start, get_stc()->GetCurrentPos());
       break;
     
-    case MOTION_DELETE:
+    case motion_t::MOTION_DELETE:
       if (get_stc()->GetReadOnly())
       {
         command.clear();
         return true;
       }
     
-      if (!m_command.is_handled() && 
-          (parsed = it->second(command)) == 0) return false;
+      if ((parsed = it->second(command)) == 0) return false;
 
       delete_range(start, get_stc()->GetCurrentPos());
       break;
     
-    case MOTION_NAVIGATE: 
-      if (!m_command.is_handled() && 
-          (parsed = it->second(command)) == 0) return false; 
+    case motion_t::MOTION_NAVIGATE: 
+      if ((parsed = it->second(command)) == 0) return false; 
       break;
     
-    case MOTION_YANK:
+    case motion_t::MOTION_YANK:
       if (!mode().visual())
       {
         std::string visual("v");
         m_mode.transition(visual);
       }
     
-      if (!m_command.is_handled() && 
-          (parsed = it->second(command)) == 0) return false;
+      if ((parsed = it->second(command)) == 0) return false;
     
       if (auto end = get_stc()->GetCurrentPos(); end - start > 0)
       {
@@ -1239,9 +1242,10 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
     append_insert_command(command.substr(0, parsed));
   }
 
-  command = (m_command.is_handled() ? std::string(): command.substr(parsed));
+  command = command.substr(parsed);
 
   m_count = 1; // restart with a new count
+  m_count_present = false;
 
   return true;
 }
@@ -1476,7 +1480,7 @@ bool wex::vi::parse_command(std::string& command)
     filter_count(command);
   }
 
-  motion_t motion = MOTION_NAVIGATE;
+  motion_t motion = motion_t::MOTION_NAVIGATE;
   bool check_other = true;
 
   switch (command.size())
@@ -1503,17 +1507,17 @@ bool wex::vi::parse_command(std::string& command)
       switch (command[0])
       {
         case 'c': 
-          motion = MOTION_CHANGE; 
+          motion = motion_t::MOTION_CHANGE; 
           m_mode.transition(command);
           break;
 
         case 'd': 
-          motion = MOTION_DELETE; 
+          motion = motion_t::MOTION_DELETE; 
           command.erase(0, 1);
           break;
 
         case 'y': 
-          motion = MOTION_YANK; 
+          motion = motion_t::MOTION_YANK; 
           command.erase(0, 1);
           break;
 
@@ -1568,7 +1572,7 @@ bool wex::vi::put(bool after)
     get_stc()->Home();
   }
   
-  add_text(register_text());
+  get_stc()->add_text(register_text());
 
   if (yanked_lines && after)
   {

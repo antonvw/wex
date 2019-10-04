@@ -114,7 +114,7 @@ namespace wex
     const auto * get_map() const {return m_map;};
     
     /// Returns content of register.
-    const std::string get_register(const char name) const;
+    const std::string get_register(char name) const;
 
     /// Have macros been recorded (or variables 
     /// expanded) without calling save_document.
@@ -154,7 +154,7 @@ namespace wex
     /// Sets register (overwrites existing register).
     /// The name should be a one letter register.
     /// Returns false if name is not appropriate.
-    bool set_register(const char name, const std::string& value);
+    bool set_register(char name, const std::string& value);
     
     /// Returns number of macros and variables available.
     auto size() const {return m_macros->size() + m_variables->size();};

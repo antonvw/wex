@@ -112,8 +112,7 @@ bool wex::notebook::delete_page(const std::string& key)
     auto* page = m_Keys[key];
     m_Keys.erase(key);
     m_Windows.erase(page);
-    page = nullptr;
-    
+
     if (m_Frame != nullptr && m_Keys.empty())
     {
       m_Frame->sync_close_all(GetId());

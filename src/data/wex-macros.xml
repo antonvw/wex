@@ -103,7 +103,7 @@ Variables are expanded when playing back the macro.
   <!-- A macro to test coverage: run in a .h file,
        it finds corresponding method in a test.cpp file -->
   <macro name="Coverage">
-    <command>/ +[a-z_]+(</command>
+    <command>/ +[a-z_]+\(</command>
     <command>bb</command>
     <command>*</command>
     <command>:prev</command>

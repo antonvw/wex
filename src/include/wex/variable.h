@@ -21,8 +21,7 @@ namespace wex
   {
   public:
     /// Default constructor.
-    variable(const std::string& name = std::string())
-      : m_Name(name) {;};
+    variable(const std::string& name = std::string());
     
     /// Constructor that sets members using specified xml node.
     variable(const pugi::xml_node& node);
@@ -37,22 +36,19 @@ namespace wex
     bool expand(std::string& value, ex* ex = nullptr) const;
     
     /// Returns variable name.
-    const auto& get_name() const {return m_Name;};
+    const auto& get_name() const {return m_name;};
     
     /// Returns variable value.
-    const auto& get_value() const {return m_Value;};
+    const auto& get_value() const {return m_value;};
     
     /// Returns true if this variable is a built in.
-    bool is_builtin() const {return m_Type == VARIABLE_BUILTIN;};
+    bool is_builtin() const;
 
     /// Returns true if this is an input template.  
-    bool is_input() const {return 
-      m_Type == VARIABLE_INPUT || 
-      m_Type == VARIABLE_INPUT_ONCE ||
-      m_Type == VARIABLE_INPUT_SAVE;};
+    bool is_input() const;
 
     /// Returns true if this variable is a template.
-    bool is_template() const {return m_Type == VARIABLE_TEMPLATE;};
+    bool is_template() const;
     
     /// Save in xml node.
     void save(pugi::xml_node& node, const std::string* value = nullptr);
@@ -60,32 +56,20 @@ namespace wex
     /// Sets the ask for input member, if appropriate for type.
     void set_ask_for_input(bool value = true);
   private:  
-    // Several types of variables are supported.
-    // See xml file.
-    enum
-    {
-      VARIABLE_BUILTIN,     // a builtin variable like "Created"
-      VARIABLE_ENVIRONMENT, // an environment variable like ENV
-      VARIABLE_INPUT,       // input from user
-      VARIABLE_INPUT_ONCE,  // input once from user, save value in xml file
-      VARIABLE_INPUT_SAVE,  // input from user, save value in xml file
-      VARIABLE_READ,        // read value from macros xml file
-      VARIABLE_TEMPLATE     // read value from a template file
-    };
+    enum class input_t;
 
-    bool CheckLink(std::string& value) const;
-    bool ExpandBuiltIn(ex* ex, std::string& expanded) const;
-    bool ExpandInput(std::string& expanded) const;
+    bool check_link(std::string& value) const;
+    bool expand_builtin(ex* ex, std::string& expanded) const;
+    bool expand_input(std::string& expanded) const;
     
-    bool m_AskForInput{true};
+    bool m_ask_for_input{true};
       
     // no const members because of assignment in vi_macros_fsm
-    int m_Type{VARIABLE_INPUT_SAVE};
-    std::string m_Name;
-    std::string m_Prefix;
-    std::string m_Value;
+    input_t m_type;
+
+    std::string m_name, m_prefix, m_value;
     
     // The dialog used.
-    static stc_entry_dialog* m_Dialog;
+    static inline stc_entry_dialog* m_dialog {nullptr};
   };
 };

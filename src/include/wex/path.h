@@ -112,7 +112,7 @@ namespace wex
     bool is_relative() const {return m_path.is_relative();};
       
     /// Returns the lexer.
-    const auto & lexer() const {return m_Lexer;};
+    const auto & lexer() const {return m_lexer;};
 
     /// Logs info about this class.
     std::stringstream log() const;
@@ -145,7 +145,7 @@ namespace wex
   private:
     std::filesystem::path m_path;
     std::string m_path_original;
-    wex::lexer m_Lexer;
+    wex::lexer m_lexer;
     file_stat m_Stat;
     status_t m_status {0};
   };

@@ -14,7 +14,7 @@
 std::map<wxWindowID, wxArtID> wex::stockart::m_ArtIDs;
 
 wex::stockart::stockart(wxWindowID id)
-  : m_Id(id)
+  : m_id(id)
 {
   if (m_ArtIDs.empty())
   {
@@ -24,9 +24,7 @@ wex::stockart::stockart(wxWindowID id)
     add(wxID_CUT, wxART_CUT);
     add(wxID_DELETE, wxART_DELETE);
     add(wxID_DOWN, wxART_GO_DOWN);
-#if wxCHECK_VERSION(3,1,0)
     add(wxID_EDIT, wxART_EDIT);
-#endif
     add(wxID_EXECUTE, wxART_EXECUTABLE_FILE);
     add(wxID_EXIT, wxART_QUIT);
     add(wxID_FIND, wxART_FIND);
@@ -60,10 +58,10 @@ const wxBitmap wex::stockart::get_bitmap(
   const wxArtClient& client,
   const wxSize& bitmap_size) const
 {
-  if (wxIsStockID(m_Id))
+  if (wxIsStockID(m_id))
   {
     // Check if there is art for this id.
-    const auto& art_it = m_ArtIDs.find(m_Id);
+    const auto& art_it = m_ArtIDs.find(m_id);
 
     if (art_it != m_ArtIDs.end())
     {

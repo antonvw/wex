@@ -60,31 +60,31 @@ namespace wex
     /// Virtual override methods.
     
     /// Will a cut succeed? 
-    virtual bool CanCut() const override;
+    bool CanCut() const override;
 
     /// Will a paste succeed? 
-    virtual bool CanPaste() const override;
+    bool CanPaste() const override;
     
     /// Clear the selection.
-    virtual void Clear() override;
+    void Clear() override;
 
     /// Copies text to clipboard.
-    virtual void Copy() override;
+    void Copy() override;
 
     /// Cuts text to clipboard.
-    virtual void Cut() override;
+    void Cut() override;
 
     /// Paste text from clipboard.
-    virtual void Paste() override;
+    void Paste() override;
 
     /// Deselects selected text in the control.
     // Reimplemented, since scintilla version sets 
     // empty sel at 0, and sets caret on pos 0.
-    virtual void SelectNone() override;
+    void SelectNone() override;
     
     /// If there is an undo facility and the last operation can be undone, 
     /// undoes the last operation. 
-    virtual void Undo() override;
+    void Undo() override;
     
     /// Virtual interface
 
@@ -136,7 +136,7 @@ namespace wex
     void config_get();
 
     /// Returns associated data.
-    const auto& data() const {return m_Data;};
+    const auto& data() const {return m_data;};
 
     /// Returns EOL string.
     /// If you only want to insert a newline, use NewLine()
@@ -173,10 +173,10 @@ namespace wex
       bool fold_all = false);
 
     /// Returns the file.
-    auto & get_file() {return m_File;};
+    auto & get_file() {return m_file;};
 
     /// Returns the filename, as used by the file.
-    const auto & get_filename() const {return m_File.get_filename();};
+    const auto & get_filename() const {return m_file.get_filename();};
 
     /// Returns find string, from selected text or from config.
     /// The search flags are taken from frd.
@@ -190,14 +190,14 @@ namespace wex
     auto & get_hexmode() {return m_hexmode;};
     
     /// Returns the lexer.
-    const auto & get_lexer() const {return m_Lexer;};
+    const auto & get_lexer() const {return m_lexer;};
 
     /// Returns the lexer.
-    auto & get_lexer() {return m_Lexer;};
+    auto & get_lexer() {return m_lexer;};
 
     /// Returns line on which text margin was clicked,
     /// or -1 if not.
-    auto get_margin_text_click() const {return m_MarginTextClick;};
+    auto get_margin_text_click() const {return m_margin_text_click;};
 
     /// Returns selected text as a string.
     const std::string get_selected_text();
@@ -223,7 +223,7 @@ namespace wex
     bool is_hexmode() const {return m_hexmode.is_active();};
 
     /// Keeps event data.
-    void keep_event_data(bool synced) {m_Data.event(synced);};
+    void keep_event_data(bool synced) {m_data.event(synced);};
     
     /// If selected text is a link, opens the link.
     bool link_open();
@@ -305,7 +305,7 @@ namespace wex
 
     /// Returns true if line numbers are shown. 
     bool is_shown_line_numbers() const {return
-      GetMarginWidth(m_MarginLineNumber) > 0;};
+      GetMarginWidth(m_margin_line_number) > 0;};
 
     /// Shows blame info for vcs in the text margin.
     /// Returns true if info was added.
@@ -358,7 +358,7 @@ namespace wex
       LINK_OPEN      = 1,
       LINK_OPEN_MIME = 2,
     };
-
+    
     typedef std::bitset<3> link_t;
     
     void bind_all();
@@ -375,34 +375,42 @@ namespace wex
     void on_styled_text(wxStyledTextEvent& event);
 
     const int 
-      m_MarginDividerNumber {1}, m_MarginFoldingNumber {2},
-      m_MarginLineNumber {0}, m_MarginTextNumber {3};
+      m_margin_divider_number {1}, 
+      m_margin_folding_number {2},
+      m_margin_line_number {0}, 
+      m_margin_text_number {3};
 
-    const marker m_MarkerChange = marker(1);
+    const marker m_marker_change = marker(1);
 
     int 
-      m_FoldLevel {0}, m_MarginTextClick {-1},
-      m_SavedPos {-1}, m_SavedSelectionStart {-1}, m_SavedSelectionEnd {-1};
+      m_fold_level {0}, 
+      m_margin_text_click {-1},
+      m_saved_pos {-1}, 
+      m_saved_selection_start {-1}, 
+      m_saved_selection_end {-1};
     
-    bool m_AddingChars {false}, m_skip {false};
+    bool 
+      m_adding_chars {false}, 
+      m_skip {false};
 
-    managed_frame* m_Frame;
+    managed_frame* m_frame;
+
     autocomplete m_auto_complete;
     hexmode m_hexmode;
-    stc_file m_File;
     // We use a separate lexer here as well
     // (though stc_file offers one), as you can manually override
     // the lexer.
-    lexer m_Lexer;
-    stc_data m_Data;
-    link m_Link;
+    lexer m_lexer;
+    link m_link;
+    stc_data m_data;
+    stc_file m_file;
     vi m_vi;
     
-    wxFont m_DefaultFont;
+    wxFont m_default_font;
 
     // All objects share the following:
     static inline item_dialog* m_config_dialog = nullptr;
-    static inline stc_entry_dialog* m_EntryDialog = nullptr;
-    static inline int m_Zoom = -1;
+    static inline stc_entry_dialog* m_entry_dialog = nullptr;
+    static inline int m_zoom = -1;
   };
 };

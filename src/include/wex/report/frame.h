@@ -48,12 +48,14 @@ namespace wex::report
     /// your implementation should return that one.
     /// Default it returns nullptr.
     virtual file* get_project() {return nullptr;};
+    
+    /// Overriden methods.
 
-    virtual void on_command_item_dialog(
+    void on_command_item_dialog(
       wxWindowID dialogid,
       const wxCommandEvent& event) override;
     
-    virtual void set_recent_file(const path& path) override;
+    void set_recent_file(const path& path) override;
 
     /// Other methods
     
@@ -115,16 +117,16 @@ namespace wex::report
     listview* file_history_list() {return m_FileHistoryList;};
   private:
     void find_in_files(wxWindowID dialogid);
-    void OnIdle(wxIdleEvent& event);
+    void on_idle(wxIdleEvent& event);
 
     item_dialog* m_FiFDialog {nullptr};
     item_dialog* m_RiFDialog {nullptr};
     listview* m_FileHistoryList {nullptr};
     class file_history m_ProjectHistory;
 
-    const std::string m_TextInFiles {_("In files")};
-    const std::string m_TextInFolder  {_("In folder")};
-    const std::string m_TextRecursive {_("Recursive")};
+    const std::string m_textInFiles {_("In files")};
+    const std::string m_textInFolder  {_("In folder")};
+    const std::string m_textRecursive {_("Recursive")};
 
     // This set determines what fields are placed on the Find Files dialogs
     // as a list of checkboxes.

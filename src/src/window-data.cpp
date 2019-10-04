@@ -2,7 +2,7 @@
 // Name:      window-data.cpp
 // Purpose:   Implementation of wex::window_data
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/app.h>
@@ -11,45 +11,45 @@
 
 wex::window_data::window_data()
 {
-  if (m_Parent == nullptr && wxTheApp != nullptr)
+  if (m_parent == nullptr && wxTheApp != nullptr)
   {
-    m_Parent = dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
+    m_parent = dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
   }
 }
 
 wex::window_data& wex::window_data::button(long button)
 {
-  m_Button = button;
+  m_button = button;
   return *this;
 }
 
 wex::window_data& wex::window_data::id(wxWindowID id) 
 {
-  m_Id = id;
+  m_id = id;
   return *this;
 }
   
 wex::window_data& wex::window_data::name(const std::string& name) 
 {
-  m_Name = name;
+  m_name = name;
   return *this;
 }
   
 wex::window_data& wex::window_data::parent(wxWindow* parent)
 {
-  m_Parent = parent;
+  m_parent = parent;
   return *this;
 }
 
 wex::window_data& wex::window_data::pos(const wxPoint& point)
 {
-  m_Pos = point;
+  m_pos = point;
   return *this;
 }
   
 wex::window_data& wex::window_data::size(const wxSize& size)
 {
-  m_Size = size;
+  m_size = size;
   return *this;
 }
   
@@ -61,6 +61,6 @@ wex::window_data& wex::window_data::style(long style)
 
 wex::window_data& wex::window_data::title(const std::string& title) 
 {
-  m_Title = title;
+  m_title = title;
   return *this;
 }

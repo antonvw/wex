@@ -2,7 +2,7 @@
 // Name:      control-data.h
 // Purpose:   Declaration of wex::control_data
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -33,21 +33,21 @@ namespace wex
     };
 
     /// Returns column.
-    const auto& col() const {return m_Col;};
+    const auto& col() const {return m_col;};
     
     /// Sets column.
     /// Goes to column if col_number > 0
     control_data& col(int col);
     
     /// Returns command.
-    const auto& command() const {return m_Command;};
+    const auto& command() const {return m_command;};
     
     /// Sets command.
     /// This is a vi command to execute.
     control_data& command(const std::string& command);
 
     /// Returns find.
-    const auto& find() const {return m_Find;};
+    const auto& find() const {return m_find;};
     
     /// Sets find.
     /// If not empty selects the text on that line (if line was specified)
@@ -103,7 +103,7 @@ namespace wex
     control_data& is_required(bool required) {m_is_required = required; return *this;};
 
     /// Returns line number.
-    const auto line() const {return m_Line;};
+    const auto line() const {return m_line;};
     
     /// Sets line number.
     /// Goes to the line if > 0, if -1 goes to end of file
@@ -113,29 +113,29 @@ namespace wex
     void reset();
     
     /// Returns validator.
-    const auto validator() const {return m_Validator;};
+    const auto validator() const {return m_validator;};
 
     /// Sets validator.
     control_data& validator(wxValidator* validator);
 
     /// Returns window data.
-    const auto& window() const {return m_Data;};
+    const auto& window() const {return m_data;};
 
     /// Sets window data.
-    control_data& window(window_data& data) {m_Data = data; return *this;};
+    control_data& window(window_data& data) {m_data = data; return *this;};
   private:  
-    window_data m_Data;
+    window_data m_data;
 
     bool m_is_required {false};
     
     int 
-      m_Col {DATA_NUMBER_NOT_SET}, 
+      m_col {DATA_NUMBER_NOT_SET}, 
       m_find_flags {DATA_NUMBER_NOT_SET}, 
-      m_Line {DATA_NUMBER_NOT_SET};
+      m_line {DATA_NUMBER_NOT_SET};
     
-    std::string m_Find {std::string()};
+    std::string m_find {std::string()};
     
-    ex_command m_Command {std::string()};
-    wxValidator* m_Validator {nullptr};
+    ex_command m_command;
+    wxValidator* m_validator {nullptr};
   };
 };

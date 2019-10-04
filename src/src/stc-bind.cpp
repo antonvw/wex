@@ -78,11 +78,11 @@ void wex::stc::bind_all()
   entries[i++].Set(wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE);
   entries[i++].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
   
-  if (m_Data.menu().test(stc_data::MENU_DEBUG))
+  if (m_data.menu().test(stc_data::MENU_DEBUG))
   {
     int j = ID_EDIT_DEBUG_FIRST;
 
-    for (const auto& e : m_Frame->get_debug()->debug_entry().get_commands())
+    for (const auto& e : m_frame->get_debug()->debug_entry().get_commands())
     {
       if (!e.control().empty())
       {
@@ -106,21 +106,21 @@ void wex::stc::bind_all()
     {
       if (isalnum(event.GetUnicodeKey()))
       {
-        m_AddingChars = true;
+        m_adding_chars = true;
       }
     }
     else if (m_vi.mode().insert())
     {
       if (isalnum(event.GetUnicodeKey()))
       {
-        m_AddingChars = true;
+        m_adding_chars = true;
       }
 
       m_auto_complete.apply(event.GetUnicodeKey());
     }
     else
     {
-      m_AddingChars = false;
+      m_adding_chars = false;
     }
 
     if (m_vi.on_char(event))
@@ -151,7 +151,7 @@ void wex::stc::bind_all()
     }
     if (
       event.GetUnicodeKey() == '>' && 
-      m_Lexer.scintilla_lexer() == "hypertext")
+      m_lexer.scintilla_lexer() == "hypertext")
      {
        if (const auto match_pos = FindText(
              GetCurrentPos() - 1,
@@ -162,7 +162,7 @@ void wex::stc::bind_all()
          if (const auto match(get_word_at_pos(match_pos + 1));
             match.find("/") != 0 &&
             GetCharAt(GetCurrentPos() - 2) != '/' &&
-           (m_Lexer.language() == "xml" || m_Lexer.is_keyword(match)) &&
+           (m_lexer.language() == "xml" || m_lexer.is_keyword(match)) &&
            !SelectionIsRectangle())
          {
            if (const std::string add("</" + match + ">"); m_vi.is_active())
@@ -222,14 +222,14 @@ void wex::stc::bind_all()
   Bind(wxEVT_KEY_UP, [=](wxKeyEvent& event) {
     event.Skip();
     check_brace();
-    m_FoldLevel = 
+    m_fold_level = 
       (GetFoldLevel(GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK) 
       - wxSTC_FOLDLEVELBASE;});
       
   Bind(wxEVT_LEFT_DCLICK, [=](wxMouseEvent& event) {
-    m_MarginTextClick = -1;
+    m_margin_text_click = -1;
 
-    if (m_Lexer.scintilla_lexer() != "hypertext" ||
+    if (m_lexer.scintilla_lexer() != "hypertext" ||
       GetCurLine().Contains("href")) 
     {
       if (link_open(link_t().set(LINK_OPEN_MIME)))
@@ -250,31 +250,31 @@ void wex::stc::bind_all()
     properties_message();
     event.Skip();
     check_brace();
-    m_AddingChars = false;
-    m_FoldLevel = 
+    m_adding_chars = false;
+    m_fold_level = 
       (GetFoldLevel(GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK) 
       - wxSTC_FOLDLEVELBASE;
       
     if (
       !m_skip &&
-      m_Frame->get_debug() != nullptr &&
-      m_Frame->get_debug()->process() != nullptr &&
-      m_Frame->get_debug()->process()->is_running() &&
+      m_frame->get_debug() != nullptr &&
+      m_frame->get_debug()->process() != nullptr &&
+      m_frame->get_debug()->process()->is_running() &&
       matches_one_of(
         get_filename().extension(), 
-        m_Frame->get_debug()->debug_entry().extensions()))
+        m_frame->get_debug()->debug_entry().extensions()))
     {
       const auto word = (!GetSelectedText().empty() ? 
         GetSelectedText().ToStdString() : get_word_at_pos(GetCurrentPos()));
 
       if (!word.empty() && isalnum(word[0]))
       {
-        m_Frame->get_debug()->print(word);
+        m_frame->get_debug()->print(word);
       }
     }
     m_skip = false;});
   
-  if (m_Data.menu().any())
+  if (m_data.menu().any())
   {
     Bind(wxEVT_RIGHT_UP, [=](wxMouseEvent& event) {
       try
@@ -306,7 +306,7 @@ void wex::stc::bind_all()
   }
   
   Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
-    m_Frame->set_find_focus(this);
+    m_frame->set_find_focus(this);
     event.Skip();});
 
   Bind(wxEVT_STC_AUTOCOMP_COMPLETED, [=](wxStyledTextEvent& event) {
@@ -344,17 +344,17 @@ void wex::stc::bind_all()
   Bind(wxEVT_STC_MARGINCLICK, [=](wxStyledTextEvent& event) {
     m_skip = false;
     if (const auto line = LineFromPosition(event.GetPosition());
-      event.GetMargin() == m_MarginFoldingNumber)
+      event.GetMargin() == m_margin_folding_number)
     {
       if (const auto level = GetFoldLevel(line); (level & wxSTC_FOLDLEVELHEADERFLAG) > 0)
       {
         ToggleFold(line);
       }
-      m_MarginTextClick = -1;
+      m_margin_text_click = -1;
     }
-    else if (event.GetMargin() == m_MarginTextNumber)
+    else if (event.GetMargin() == m_margin_text_number)
     {
-      m_MarginTextClick = line;
+      m_margin_text_click = line;
         
       if (config("blame_get_id").get(false))
       {
@@ -371,14 +371,14 @@ void wex::stc::bind_all()
         }
       }
     }
-    else if (event.GetMargin() == m_MarginDividerNumber)
+    else if (event.GetMargin() == m_margin_divider_number)
     {
       if (
-        m_Frame->get_debug() != nullptr &&
-        m_Frame->get_debug()->process() != nullptr &&
-        m_Frame->get_debug()->process()->is_running())
+        m_frame->get_debug() != nullptr &&
+        m_frame->get_debug()->process() != nullptr &&
+        m_frame->get_debug()->process()->is_running())
       {
-        m_Frame->get_debug()->toggle_breakpoint(line, this);
+        m_frame->get_debug()->toggle_breakpoint(line, this);
         m_skip = true;
       }
       else
@@ -392,7 +392,7 @@ void wex::stc::bind_all()
     }});
 
   Bind(wxEVT_STC_MARGIN_RIGHT_CLICK, [=](wxStyledTextEvent& event) {
-    if (event.GetMargin() == m_MarginTextNumber)
+    if (event.GetMargin() == m_margin_text_number)
     {
       auto* menu = new wxMenu();
 
@@ -438,12 +438,12 @@ void wex::stc::bind_all()
         _("Input") + " 1 - " + std::to_string(GetLineCount()) + ":",
         wxEmptyString,
         _("Enter Line Number"),
-        m_Data.control().line(), // initial value
+        m_data.control().line(), // initial value
         1,
         GetLineCount(),
         this)) > 0)
       {
-        m_Data.control().line(val);
+        m_data.control().line(val);
         stc_data(control_data().line(val), this).inject();
       }
     }
@@ -478,7 +478,7 @@ void wex::stc::bind_all()
     }}, wxID_SORT_ASCENDING, wxID_SORT_DESCENDING);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_Frame->get_debug()->execute(event.GetId() - ID_EDIT_DEBUG_FIRST, this);}, 
+    m_frame->get_debug()->execute(event.GetId() - ID_EDIT_DEBUG_FIRST, this);}, 
     ID_EDIT_DEBUG_FIRST, ID_EDIT_DEBUG_LAST);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) 
@@ -500,7 +500,7 @@ void wex::stc::bind_all()
         EmptyUndoBuffer();
         use_modification_markers(true);
 
-        if (!m_Data.inject())
+        if (!m_data.inject())
         {
           properties_message();
         }
@@ -548,7 +548,7 @@ void wex::stc::bind_all()
       properties += l.make_key(it.name(), GetProperty(it.name()));
     }
 
-    for (const auto& it : m_Lexer.properties())
+    for (const auto& it : m_lexer.properties())
     {
       properties += l.make_key(it.name(), GetProperty(it.name()));
     }
@@ -565,22 +565,22 @@ void wex::stc::bind_all()
       }
     }
 
-    if (m_EntryDialog == nullptr)
+    if (m_entry_dialog == nullptr)
     {
-      m_EntryDialog = new stc_entry_dialog(
+      m_entry_dialog = new stc_entry_dialog(
         properties, 
         std::string(), 
         window_data().
           size({300, 450}).
           button(wxOK).
           title(_("Properties").ToStdString()));
-      m_EntryDialog->get_stc()->get_lexer().set(l);
+      m_entry_dialog->get_stc()->get_lexer().set(l);
     }
     else
     {
-      m_EntryDialog->get_stc()->set_text(properties);
+      m_entry_dialog->get_stc()->set_text(properties);
     }
-    m_EntryDialog->Show();}, idShowProperties);
+    m_entry_dialog->Show();}, idShowProperties);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (GetSelectedText().length() > 2) return;
@@ -716,7 +716,7 @@ void wex::stc::bind_all()
     for (int i = 0; i < GetLineCount(); i++) EnsureVisible(i);}, idUnfold_all);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_Data.flags(stc_data::window_t().set(stc_data::WIN_HEX), control_data::XOR).inject();}, idHex);
+    m_data.flags(stc_data::window_t().set(stc_data::WIN_HEX), control_data::XOR).inject();}, idHex);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     config("blame_get_author").set(!config("blame_get_author").get(true));},
@@ -728,8 +728,8 @@ void wex::stc::bind_all()
     config("blame_get_id").set(!config("blame_get_id").get(true));},
     idMarginTextId);
   
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SetZoom(++m_Zoom);}, idZoomIn);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SetZoom(--m_Zoom);}, idZoomOut);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SetZoom(++m_zoom);}, idZoomIn);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SetZoom(--m_zoom);}, idZoomOut);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     frd->set_search_down(true);
@@ -749,7 +749,7 @@ void wex::stc::bind_all()
     ToggleFold(line_to_fold);}, idToggleFold);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    vcs_execute(m_Frame, event.GetId() - ID_EDIT_VCS_LOWEST - 1, 
+    vcs_execute(m_frame, event.GetId() - ID_EDIT_VCS_LOWEST - 1, 
       std::vector< path >{get_filename().data()});},
       ID_EDIT_VCS_LOWEST, ID_EDIT_VCS_HIGHEST);
       
@@ -778,7 +778,7 @@ void wex::stc::bind_all()
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     reset_margins(margin_t().set(stc::MARGIN_TEXT));
-    m_MarginTextClick = -1;}, 
+    m_margin_text_click = -1;}, 
     idMarginTextHide);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -810,7 +810,7 @@ void wex::stc::build_popup_menu(menu& menu)
     menu.append(idShowProperties, _("Properties"));
   }
     
-  if (m_Data.menu().test(stc_data::MENU_OPEN_LINK))
+  if (m_data.menu().test(stc_data::MENU_OPEN_LINK))
   {
     if (sel.empty() && link_open(link_t().set(
       LINK_OPEN_MIME).set(LINK_CHECK)))
@@ -833,21 +833,21 @@ void wex::stc::build_popup_menu(menu& menu)
     menu.append(idEdgeClear, _("Edge Column Reset"));
   }
 
-  if (m_Data.menu().test(stc_data::MENU_OPEN_WWW) && !sel.empty())
+  if (m_data.menu().test(stc_data::MENU_OPEN_WWW) && !sel.empty())
   {
     menu.append_separator();
     menu.append(idOpenWWW, _("&Search"));
   }
   
-  if (m_Data.menu().test(stc_data::MENU_DEBUG) &&
+  if (m_data.menu().test(stc_data::MENU_DEBUG) &&
     matches_one_of(
       get_filename().extension(), 
-      m_Frame->get_debug()->debug_entry().extensions()))
+      m_frame->get_debug()->debug_entry().extensions()))
   {
-    m_Frame->get_debug()->add_menu(&menu, true);
+    m_frame->get_debug()->add_menu(&menu, true);
   }
   
-  if (m_Data.menu().test(stc_data::MENU_VCS) &&
+  if (m_data.menu().test(stc_data::MENU_VCS) &&
       get_filename().file_exists() &&
       vcs::dir_exists(get_filename()))
   {
@@ -903,8 +903,8 @@ void wex::stc::build_popup_menu(menu& menu)
   if (
      sel.empty() && 
      GetProperty("fold") == "1" &&
-     m_Lexer.is_ok() &&
-    !m_Lexer.scintilla_lexer().empty())
+     m_lexer.is_ok() &&
+    !m_lexer.scintilla_lexer().empty())
   {
     menu.append_separator();
     menu.append(idToggleFold, _("&Toggle Fold\tCtrl+T"));

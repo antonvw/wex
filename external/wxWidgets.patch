@@ -1,5 +1,25 @@
+diff --git a/build/cmake/lib/stc/CMakeLists.txt b/build/cmake/lib/stc/CMakeLists.txt
+index f96687d2d8..12ef655f54 100644
+--- a/build/cmake/lib/stc/CMakeLists.txt
++++ b/build/cmake/lib/stc/CMakeLists.txt
+@@ -165,7 +165,6 @@ target_include_directories(wxscintilla PRIVATE
+     ${wxSOURCE_DIR}/src/stc/scintilla/src
+     )
+ target_compile_definitions(wxscintilla PUBLIC
+-    NO_CXX11_REGEX
+     __WX__
+     SCI_LEXER
+     LINK_LEXERS
+@@ -189,7 +188,6 @@ wx_lib_include_directories(stc PRIVATE
+     ${wxSOURCE_DIR}/src/stc/scintilla/src
+     )
+ wx_lib_compile_definitions(stc PRIVATE
+-    NO_CXX11_REGEX
+     __WX__
+     SCI_LEXER
+     LINK_LEXERS
 diff --git a/build/cmake/setup.cmake b/build/cmake/setup.cmake
-index 5656b9dc30..0cbef707fb 100644
+index a102731af9..c4cb2e0565 100644
 --- a/build/cmake/setup.cmake
 +++ b/build/cmake/setup.cmake
 @@ -152,7 +152,7 @@ if(wxUSE_STL)

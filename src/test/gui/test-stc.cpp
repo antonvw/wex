@@ -28,10 +28,14 @@ TEST_CASE("wex::stc")
     wex::stc::config_dialog(wex::window_data().button(wxCANCEL | wxAPPLY));
   }
   
-  SUBCASE("set_text")
+  SUBCASE("text")
   {
     stc->set_text("hello stc");
     REQUIRE( stc->GetText() == "hello stc");
+
+    // add_text
+    stc->add_text(" added");
+    REQUIRE( stc->GetText().Contains("added"));
   }
   
   SUBCASE("find")

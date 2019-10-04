@@ -78,11 +78,12 @@ namespace wex::report
     void CommentStatementStart();
     std::string Context(const std::string& line, int pos) const;
     
-    // Implement interface from stream.
-    virtual bool process(std::string& line, size_t line_no) override;
-    virtual bool process_begin() override;
-    virtual void process_end() override;
-    virtual void process_match(const std::string& line, size_t line_no, int pos) override;
+    // Overriden methods from stream.
+
+    bool process(std::string& line, size_t line_no) override;
+    bool process_begin() override;
+    void process_end() override;
+    void process_match(const std::string& line, size_t line_no, int pos) override;
     
     static wex::listview* m_Report;
     static report::frame* m_Frame;

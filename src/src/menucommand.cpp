@@ -10,7 +10,7 @@
 #include <wex/util.h>
             
 wex::menu_command::menu_command(const pugi::xml_node& node)
-  : m_command(skip_white_space(node.text().get()))
+  : m_command(trim(node.text().get()))
   , m_control(node.attribute("control").value())
   , m_flags(node.attribute("flags").value())
   , m_submenu(!node.attribute("submenu").empty() ? 

@@ -38,9 +38,6 @@ namespace wex
     /// Destructor.
     virtual ~ex();
     
-    /// Adds text (to stc or register, if register is active).
-    void add_text(const std::string& text);
-   
     /// Returns calculated value of text.
     int calculator(const std::string& text);
     
@@ -57,7 +54,7 @@ namespace wex
     
     /// Cuts selected text to yank register,
     /// and updates delete registers.
-    void cut(bool show_message = true);
+    void cut();
 
     /// Returns the frame.
     auto* frame() {return m_frame;};
@@ -98,7 +95,7 @@ namespace wex
     void print(const std::string& text);
 
     /// Returns current register name.
-    const auto register_name() const {return m_register;};
+    auto register_name() const {return m_register;};
     
     /// Returns text to be inserted.
     const std::string register_insert() const;
@@ -126,7 +123,7 @@ namespace wex
     
     /// Yanks selected text to yank register, default to yank register.
     /// Returns false if no text was selected.
-    bool yank(const char name = '0', bool show_message = true) const;
+    bool yank(char name = '0') const;
   protected:
     /// If autowrite is on and document is modified,
     /// save the document.
@@ -135,7 +132,7 @@ namespace wex
     /// Sets register name.
     /// Setting register 0 results in
     /// disabling current register.
-    void set_register(const char name) {m_register = name;};
+    void set_register(char name) {m_register = name;};
 
     ex_command m_command;
   private:

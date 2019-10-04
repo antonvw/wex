@@ -43,7 +43,7 @@ namespace wex
     bool is_recording() const;
 
     /// Returns the mode as a string.
-    const std::string string() const;
+    const std::string str() const;
 
     /// transitions between modes.
     /// If command starts with:
@@ -61,6 +61,6 @@ namespace wex
       /// number of times this maco should be executed, in case of playback
       int repeat = 1);
   private:
-    vi_macros_fsm* m_FSM;
+    vi_macros_fsm* m_fsm;
   };
 };

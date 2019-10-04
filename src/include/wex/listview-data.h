@@ -63,10 +63,10 @@ namespace wex
     listview_data& operator=(const listview_data& r);
 
     /// Returns control data.
-    const auto& control() const {return m_Data;};
+    const auto& control() const {return m_data;};
 
     /// Sets control data.
-    listview_data& control(control_data& data) {m_Data = data; return *this;};
+    listview_data& control(control_data& data) {m_data = data; return *this;};
     
     /// Returns image type.
     const auto& image() const {return m_ImageType;};
@@ -78,13 +78,13 @@ namespace wex
     bool inject();
 
     /// Returns lexer.
-    const auto& lexer() const {return m_Lexer;};
+    const auto& lexer() const {return m_lexer;};
 
     /// Sets lexer.
     listview_data& lexer(const wex::lexer* lexer);
 
     /// Returns menu flags.
-    const auto& menu() const {return m_MenuFlags;};
+    const auto& menu() const {return m_menu_flags;};
 
     /// Sets menu flags.
     listview_data& menu(
@@ -101,19 +101,19 @@ namespace wex
     const std::string type_description() const;
 
     /// Returns window data.
-    const auto& window() const {return m_Data.window();};
+    const auto& window() const {return m_data.window();};
 
     /// Sets window data.
     listview_data& window(window_data& data) {
-      m_Data.window(data); return *this;};
+      m_data.window(data); return *this;};
   private:  
     void add_columns();
 
-    control_data m_Data;
+    control_data m_data;
 
-    menu_t m_MenuFlags = menu_t().set();
+    menu_t m_menu_flags = menu_t().set();
 
-    const wex::lexer* m_Lexer = nullptr;
+    const wex::lexer* m_lexer = nullptr;
     listview* m_ListView = nullptr;
 
     image_t m_ImageType = IMAGE_ART;

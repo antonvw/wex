@@ -9,15 +9,17 @@
 #include <wex/defs.h>
 #include "test.h"
 
+TEST_SUITE_BEGIN("wex::vcs");
+
 TEST_CASE("wex::vcs_entry")
 {
-  SUBCASE("Default constructor")
+  SUBCASE("default constructor")
   {
     REQUIRE( wex::vcs_entry().get_commands().empty());
     REQUIRE( wex::vcs_entry().flags_location() == wex::vcs_entry::FLAGS_LOCATION_POSTFIX);
   }
   
-  SUBCASE("Constructor using xml")
+  SUBCASE("constructor using xml")
   {
     pugi::xml_document doc;
 
@@ -67,3 +69,5 @@ TEST_CASE("wex::vcs_entry")
 #endif
   }
 }
+
+TEST_SUITE_END();

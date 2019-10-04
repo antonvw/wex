@@ -65,75 +65,75 @@ const std::string MakeLine(wex::stc* stc, const std::string& buffer,
 
 // If bytesPerLine is changed, update Convert.
 wex::hexmode::hexmode(wex::stc* stc, size_t bytesPerLine)
-  : m_STC(stc)
-  , m_BytesPerLine(bytesPerLine)
-  , m_EachHexField(3)
+  : m_stc(stc)
+  , m_bytes_per_line(bytesPerLine)
+  , m_each_hex_field(3)
 {
 }
   
 void wex::hexmode::activate()
 {
-  m_Active = true;
+  m_active = true;
 
-  m_STC->SetControlCharSymbol('.');
-  m_STC->SetEdgeMode(wxSTC_EDGE_NONE);
-  m_STC->SetViewEOL(false);
-  m_STC->SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
-  m_STC->BeginUndoAction();
+  m_stc->SetControlCharSymbol('.');
+  m_stc->SetEdgeMode(wxSTC_EDGE_NONE);
+  m_stc->SetViewEOL(false);
+  m_stc->SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
+  m_stc->BeginUndoAction();
   
-  const auto& buffer(m_STC->GetTextRaw());
+  const auto& buffer(m_stc->GetTextRaw());
   set_text(std::string(buffer.data(), buffer.length()));
   
-  lexers::get()->apply(m_STC);
+  lexers::get()->apply(m_stc);
 }
 
 void wex::hexmode::append_text(const std::string& buffer)
 {
-  if (!m_Active) return;
+  if (!m_active) return;
 
-  m_Buffer += buffer;
-  m_BufferOriginal = m_Buffer;
+  m_buffer += buffer;
+  m_buffer_original = m_buffer;
 
   std::string text;
 
   text.reserve(
     // number of lines
-    m_STC->eol().size() * (buffer.size() / m_BytesPerLine) + 
+    m_stc->eol().size() * (buffer.size() / m_bytes_per_line) + 
     // hex field
-    m_EachHexField * buffer.size() + 
+    m_each_hex_field * buffer.size() + 
     // ascii field
     buffer.size());
 
-  for (size_t offset = 0; offset < buffer.size(); offset += m_BytesPerLine)
+  for (size_t offset = 0; offset < buffer.size(); offset += m_bytes_per_line)
   {
-    text += MakeLine(m_STC, buffer, offset, m_BytesPerLine, m_EachHexField);
+    text += MakeLine(m_stc, buffer, offset, m_bytes_per_line, m_each_hex_field);
   }
 
-  m_STC->append_text(text);
+  m_stc->append_text(text);
 }
 
 void wex::hexmode::control_char_dialog(const std::string& caption)
 {
-  if (hexmode_line ml(this, m_STC->GetSelectionStart());
+  if (hexmode_line ml(this, m_stc->GetSelectionStart());
     ml.is_ascii_field() &&
-    m_STC->GetSelectedText().size() == 1)
+    m_stc->GetSelectedText().size() == 1)
   {
-    const wxUniChar value = m_STC->GetSelectedText().GetChar(0);
+    const wxUniChar value = m_stc->GetSelectedText().GetChar(0);
     
     if (const int new_value(GetHexNumberFromUser(_("Input") + " 00 - FF",
-      caption, value, 0, 255, m_STC)); new_value >= 0)
+      caption, value, 0, 255, m_stc)); new_value >= 0)
     {
       ml.replace(new_value);
     }
   }
   else if (
     ml.is_hex_field() &&
-    m_STC->GetSelectedText().size() == 2)
+    m_stc->GetSelectedText().size() == 2)
   {
-    if (long value; m_STC->GetSelectedText().ToLong(&value, 16))
+    if (long value; m_stc->GetSelectedText().ToLong(&value, 16))
     {
       if (const auto new_value(GetHexNumberFromUser(_("Input") + " 00 - FF",
-        caption, value, 0, 255, m_STC)); new_value >= 0)
+        caption, value, 0, 255, m_stc)); new_value >= 0)
       {
         ml.replace_hex(new_value);
       }
@@ -143,16 +143,16 @@ void wex::hexmode::control_char_dialog(const std::string& caption)
     
 void wex::hexmode::deactivate() 
 {
-  m_Active = false;
+  m_active = false;
 
-  m_STC->EndUndoAction();
-  m_STC->SetControlCharSymbol(0);
-  m_STC->SetEdgeMode(config(_("Edge line")).get(wxSTC_EDGE_NONE));
-  m_STC->SetViewEOL(config(_("End of line")).get(false));
-  m_STC->SetViewWhiteSpace(config(_("Whitespace visible")).get(wxSTC_WS_INVISIBLE));
-  m_STC->clear(false);
-  m_STC->append_text(m_Buffer);
-  m_STC->BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);
+  m_stc->EndUndoAction();
+  m_stc->SetControlCharSymbol(0);
+  m_stc->SetEdgeMode(config(_("Edge line")).get(wxSTC_EDGE_NONE));
+  m_stc->SetViewEOL(config(_("End of line")).get(false));
+  m_stc->SetViewWhiteSpace(config(_("Whitespace visible")).get(wxSTC_WS_INVISIBLE));
+  m_stc->clear(false);
+  m_stc->append_text(m_buffer);
+  m_stc->BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);
 }
 
 bool wex::hexmode::erase(int count, int pos) 
@@ -170,30 +170,30 @@ const std::string wex::hexmode::get_info()
 bool wex::hexmode::goto_dialog()
 {
   if (const auto val(wxGetNumberFromUser(
-    _("Input") + " 0 - " + std::to_string(m_Buffer.size() - 1) + ":",
+    _("Input") + " 0 - " + std::to_string(m_buffer.size() - 1) + ":",
     wxEmptyString,
     _("Enter Byte Offset"),
-    m_Goto, // initial value
+    m_goto, // initial value
     0,
-    m_Buffer.size() - 1,
-    m_STC)); val < 0)
+    m_buffer.size() - 1,
+    m_stc)); val < 0)
   {
     return false;
   }
   else
   {
-    m_Goto = val;
+    m_goto = val;
     return hexmode_line(this, val, false).set_pos();
   }
 }
 
 bool wex::hexmode::highlight_other()
 {
-  if (const auto pos = m_STC->GetCurrentPos(); highlight_other(pos))
+  if (const auto pos = m_stc->GetCurrentPos(); highlight_other(pos))
   {
     return true;
   }
-  else if (m_STC->PositionFromLine(pos) != pos)
+  else if (m_stc->PositionFromLine(pos) != pos)
   {
     return highlight_other(pos - 1);
   }
@@ -206,13 +206,13 @@ bool wex::hexmode::highlight_other(int pos)
   if (const auto brace_match = hexmode_line(this, pos).other_field();
     brace_match != wxSTC_INVALID_POSITION)
   {
-    m_STC->BraceHighlight(pos, 
-      m_STC->PositionFromLine(m_STC->LineFromPosition(pos)) + brace_match);
+    m_stc->BraceHighlight(pos, 
+      m_stc->PositionFromLine(m_stc->LineFromPosition(pos)) + brace_match);
     return true;
   }
   else
   {
-    m_STC->BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);
+    m_stc->BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);
     return false;
   }
 }
@@ -233,9 +233,9 @@ bool wex::hexmode::replace(char c, int pos)
   
 bool wex::hexmode::replace_target(const std::string& replacement, bool settext)
 {
-  if (m_STC->GetTargetStart() == wxSTC_INVALID_POSITION || 
-      m_STC->GetTargetEnd() == wxSTC_INVALID_POSITION || 
-      m_STC->GetTargetEnd() <= m_STC->GetTargetStart() ||
+  if (m_stc->GetTargetStart() == wxSTC_INVALID_POSITION || 
+      m_stc->GetTargetEnd() == wxSTC_INVALID_POSITION || 
+      m_stc->GetTargetEnd() <= m_stc->GetTargetStart() ||
       (replacement.size() % 2) > 0 ||
        !std::regex_match(replacement, std::regex("[0-9A-F]*")))
   {
@@ -250,15 +250,15 @@ bool wex::hexmode::replace_target(const std::string& replacement, bool settext)
   //     30 39 39 33 34 35 (replace)
   // RT: 31 32 -> 39 39 39
   //     30 39 39 39 33 34 35 (insert)
-  auto start = m_STC->GetTargetStart(); 
+  auto start = m_stc->GetTargetStart(); 
 
   for (
     int i = 0;
     i < (int)replacement.size(); 
-    i = i + 2, start = start + m_EachHexField)
+    i = i + 2, start = start + m_each_hex_field)
   {
     // replace
-    if (start <= m_STC->GetTargetEnd())
+    if (start <= m_stc->GetTargetEnd())
     {
       hexmode_line(this, start).replace(
         {replacement[i], replacement[i + 1]}, settext);
@@ -271,34 +271,34 @@ bool wex::hexmode::replace_target(const std::string& replacement, bool settext)
   }
   
   // delete
-  if (start < m_STC->GetTargetEnd())
+  if (start < m_stc->GetTargetEnd())
   {
     hexmode_line(this, start).erase(
-      (m_STC->GetTargetEnd() - start) /  m_EachHexField, settext);
+      (m_stc->GetTargetEnd() - start) /  m_each_hex_field, settext);
   }
 
-  m_STC->SetTargetEnd(m_STC->GetTargetStart() + replacement.size() * m_EachHexField);
+  m_stc->SetTargetEnd(m_stc->GetTargetStart() + replacement.size() * m_each_hex_field);
   
   return true;
 }
   
 bool wex::hexmode::set(bool on, bool use_modification_markers)
 {
-  if (m_Active == on) return false;
+  if (m_active == on) return false;
 
-  m_STC->use_modification_markers(false);
+  m_stc->use_modification_markers(false);
   
-  const bool modified = (m_STC->GetModify());
+  const bool modified = (m_stc->GetModify());
   
   on ? activate(): deactivate();
   
   if (!modified)
   {
-    m_STC->EmptyUndoBuffer();
-    m_STC->SetSavePoint();
+    m_stc->EmptyUndoBuffer();
+    m_stc->SetSavePoint();
   }
 
-  m_STC->use_modification_markers(use_modification_markers);
+  m_stc->use_modification_markers(use_modification_markers);
   
   return true;
 }
@@ -310,33 +310,33 @@ void wex::hexmode::set_pos(const wxKeyEvent& event)
       
 void wex::hexmode::set_text(const std::string text)
 {
-  if (!m_Active) return;
+  if (!m_active) return;
 
-  m_Buffer.clear();
-  m_BufferOriginal.clear();
+  m_buffer.clear();
+  m_buffer_original.clear();
 
-  m_STC->SelectNone();
-  m_STC->position_save();
-  m_STC->clear(false);
+  m_stc->SelectNone();
+  m_stc->position_save();
+  m_stc->clear(false);
   
   append_text(text);
 
-  m_STC->position_restore();
+  m_stc->position_restore();
 }
   
 void wex::hexmode::undo()
 {
-  if (m_Active)
+  if (m_active)
   {
-    m_Buffer = m_BufferOriginal;
+    m_buffer = m_buffer_original;
   }
   
   // For hex mode the first min_size bytes should be hex fields (or space).
-  const int min_size = m_BytesPerLine * m_EachHexField;
+  const int min_size = m_bytes_per_line * m_each_hex_field;
 
-  m_Active = (
-    m_STC->GetTextLength() > min_size && 
+  m_active = (
+    m_stc->GetTextLength() > min_size && 
     std::regex_match(
-      m_STC->GetTextRange(0, min_size).ToStdString(), 
+      m_stc->GetTextRange(0, min_size).ToStdString(), 
       std::regex("([0-9A-F][0-9A-F] )+ *")));
 }

@@ -10,25 +10,25 @@
 #include <wex/stc.h>
 
 wex::stc_data::stc_data(stc* stc)
-  : m_STC(stc)
+  : m_stc(stc)
 {
 }
   
 wex::stc_data::stc_data(stc* stc, const stc_data& r)
-  : m_STC(stc)
+  : m_stc(stc)
 {
   *this = r;
 }
 
 wex::stc_data::stc_data(control_data& data, stc* stc)
-  : m_Data(data)
-  , m_STC(stc)
+  : m_data(data)
+  , m_stc(stc)
 {
 }
 
 wex::stc_data::stc_data(window_data& data, stc* stc)
-  : m_Data(control_data().window(data))
-  , m_STC(stc)
+  : m_data(control_data().window(data))
+  , m_stc(stc)
 {
 }
 
@@ -37,14 +37,14 @@ wex::stc_data& wex::stc_data::operator=(const stc_data& r)
   if (this != &r)
   {
     m_indicator_no = r.m_indicator_no;
-    m_Data = r.m_Data;
-    m_MenuFlags = r.m_MenuFlags;
-    m_WinFlags = r.m_WinFlags;
+    m_data = r.m_data;
+    m_menu_flags = r.m_menu_flags;
+    m_win_flags = r.m_win_flags;
     m_event_data = r.m_event_data;
 
-    if (m_STC != nullptr && r.m_STC != nullptr)
+    if (m_stc != nullptr && r.m_stc != nullptr)
     {
-      m_STC = r.m_STC;
+      m_stc = r.m_stc;
     }
   }
   
@@ -54,7 +54,7 @@ wex::stc_data& wex::stc_data::operator=(const stc_data& r)
 wex::stc_data& wex::stc_data::flags(
   window_t flags, control_data::action_t action)
 {
-  m_Data.flags<flags.size()>(flags, m_WinFlags, action);
+  m_data.flags<flags.size()>(flags, m_win_flags, action);
 
   return *this;
 }
@@ -68,82 +68,92 @@ wex::stc_data& wex::stc_data::indicator_no(indicator_t t)
   
 bool wex::stc_data::inject() const
 {
-  if (m_STC == nullptr) return false;
+  if (m_stc == nullptr) return false;
   
-  bool injected = m_Data.inject(
+  bool injected = m_data.inject(
     [&]() {
-      if (m_Data.line() > 0)
+      // line
+      if (m_data.line() > 0)
       {
-        m_STC->GotoLine(m_Data.line() -1);
-        m_STC->EnsureVisible(m_Data.line() -1);
-        m_STC->EnsureCaretVisible();
-        m_STC->SetIndicatorCurrent(m_indicator_no);
-        m_STC->IndicatorClearRange(0, m_STC->GetTextLength() - 1);
-        m_STC->set_indicator(indicator(m_indicator_no), 
-          m_STC->PositionFromLine(m_Data.line() -1), 
-          m_Data.col() > 0 ? 
-            m_STC->PositionFromLine(m_Data.line() -1) + m_Data.col() - 1:
-            m_STC->GetLineEndPosition(m_Data.line() -1));
+        const auto line = (m_data.line() - 1 >= m_stc->GetLineCount() ?
+          m_stc->GetLineCount() - 1: 
+          m_data.line() - 1);
+
+        m_stc->GotoLine(line);
+        m_stc->EnsureVisible(line);
+        m_stc->EnsureCaretVisible();
+        m_stc->SetIndicatorCurrent(m_indicator_no);
+        m_stc->IndicatorClearRange(0, m_stc->GetTextLength() - 1);
+
+        m_stc->set_indicator(indicator(
+          m_indicator_no),
+          m_stc->PositionFromLine(line), 
+          m_data.col() > 0 ? 
+            m_stc->PositionFromLine(line) + m_data.col() - 1:
+            m_stc->GetLineEndPosition(line));
       }
-      else if (m_Data.line() == DATA_NUMBER_NOT_SET)
+      else if (m_data.line() == DATA_NUMBER_NOT_SET)
       {
         return false;
       }
       else
       {
-        m_STC->DocumentEnd();
+        m_stc->DocumentEnd();
       }
       return true;},
     [&]() {
-      const int max = (m_Data.line() > 0) ? 
-        m_STC->GetLineEndPosition(m_Data.line() - 1): 0;
-      const int asked = m_STC->GetCurrentPos() + m_Data.col() - 1;
+      // col
+      const int max = (m_data.line() > 0) ? 
+        m_stc->GetLineEndPosition(m_data.line() - 1): 0;
+      const int asked = m_stc->GetCurrentPos() + m_data.col() - 1;
           
-      m_STC->SetCurrentPos(asked < max ? asked: max);
+      m_stc->SetCurrentPos(asked < max ? asked: max);
           
       // Reset selection, seems necessary.
-      m_STC->SelectNone();
+      m_stc->SelectNone();
       return true;},
     [&]() {
-      if (m_Data.line() > 0)
+      // find
+      if (m_data.line() > 0)
       {
-        const int start_pos = m_STC->PositionFromLine(m_Data.line() -1);
-        const int end_pos = m_STC->GetLineEndPosition(m_Data.line() -1);
+        const int start_pos = m_stc->PositionFromLine(m_data.line() -1);
+        const int end_pos = m_stc->GetLineEndPosition(m_data.line() -1);
 
-        m_STC->set_search_flags(-1);
-        m_STC->SetTargetStart(start_pos);
-        m_STC->SetTargetEnd(end_pos);
+        m_stc->set_search_flags(-1);
+        m_stc->SetTargetStart(start_pos);
+        m_stc->SetTargetEnd(end_pos);
 
-        if (m_STC->SearchInTarget(m_Data.find()) != -1)
+        if (m_stc->SearchInTarget(m_data.find()) != -1)
         {
-          m_STC->SetSelection(m_STC->GetTargetStart(), m_STC->GetTargetEnd());
+          m_stc->SetSelection(m_stc->GetTargetStart(), m_stc->GetTargetEnd());
         }
       }
-      else if (m_Data.line() == DATA_NUMBER_NOT_SET)
+      else if (m_data.line() == DATA_NUMBER_NOT_SET)
       {
-        m_STC->find_next(m_Data.find(), m_Data.find_flags());
+        m_stc->find_next(m_data.find(), m_data.find_flags());
       }
       else
       {
-        m_STC->find_next(m_Data.find(), m_Data.find_flags(), false);
+        m_stc->find_next(m_data.find(), m_data.find_flags(), false);
       }
       return true;},
     [&]() {
-      return m_STC->get_vi().command(m_Data.command().command());});
+      // command
+      return m_stc->get_vi().command(m_data.command().command());});
 
-  if (!m_Data.window().name().empty())
+  if (!m_data.window().name().empty())
   {
-    m_STC->SetName(m_Data.window().name());
+    m_stc->SetName(m_data.window().name());
   }
   
-  if ( m_WinFlags[WIN_READ_ONLY] ||
-      (m_STC->get_filename().file_exists() && m_STC->get_filename().is_readonly()))
+  if ( m_win_flags[WIN_READ_ONLY] ||
+      (m_stc->get_filename().file_exists() && m_stc->get_filename().is_readonly()))
   {
-    m_STC->SetReadOnly(true);
+    m_stc->SetReadOnly(true);
     injected = true;
   }
 
-  if (m_STC->get_hexmode().set(m_WinFlags[WIN_HEX]))
+  if (m_stc->get_hexmode().set(m_win_flags[WIN_HEX]))
   {
     injected = true;
   }
@@ -154,21 +164,25 @@ bool wex::stc_data::inject() const
 
     if (m_event_data.pos_at_end())
     {
-      m_STC->DocumentEnd();
+      m_stc->DocumentEnd();
     }
   }
 
   if (m_event_data.pos_start() != m_event_data.pos_end())
   {
-    m_STC->SetSelection(m_event_data.pos_start(), m_event_data.pos_end());
+    m_stc->SetSelection(m_event_data.pos_start(), m_event_data.pos_end());
     injected = true;
   }
 
   if (injected)
   {
-    m_STC->properties_message(m_event_data.synced() ?
+    m_stc->properties_message(m_event_data.synced() ?
       path::status_t().set(path::STAT_SYNC): path::status_t());
-    m_STC->SetFocus();
+    
+    if (!m_event_data.synced())
+    {
+      m_stc->SetFocus();
+    }
   }
   
   return injected;
@@ -177,7 +191,7 @@ bool wex::stc_data::inject() const
 wex::stc_data& wex::stc_data::menu(
   menu_t flags, control_data::action_t action)
 {
-  m_Data.flags<flags.size()>(flags, m_MenuFlags, action);
+  m_data.flags<flags.size()>(flags, m_menu_flags, action);
 
   return *this;
 }

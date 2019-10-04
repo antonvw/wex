@@ -55,17 +55,17 @@ namespace wex
     /// Appends text, and updates the command start position.
     /// Only if the cursor was at the end, the cursos is 
     /// repositioned at the end after appending the text, 
-    virtual void AppendText(const wxString& text) override;
+    void AppendText(const wxString& text) override;
    
     // Paste the contents of the clipboard into the document replacing the selection.
-    virtual void Paste() override;
+    void Paste() override;
     
     /// Undo one action in the undo history.  
-    virtual void Undo() override;
+    void Undo() override;
     
     /// Processes specified char.
     /// Returns true if char was processed.
-    virtual bool process_char(int c) override;
+    bool process_char(int c) override;
     
     /// Other methods
     

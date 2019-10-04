@@ -2,20 +2,24 @@
 // Name:      control-data.cpp
 // Purpose:   Implementation of wex::control_data
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/control-data.h>
 
 wex::control_data& wex::control_data::col(int col)
 {
-  m_Col = col;
+  m_col = col;
   return *this;
 }
   
 wex::control_data& wex::control_data::command(const std::string& command)
 {
-  m_Command = command;
+  if (!command.empty())
+  {
+    m_command.set(command);
+  }
+
   return *this;
 }
   
@@ -23,7 +27,7 @@ wex::control_data& wex::control_data::find(
   const std::string& text,
   int flags) 
 {
-  m_Find = text;
+  m_find = text;
   m_find_flags = flags;
   
   return *this;
@@ -37,7 +41,7 @@ bool wex::control_data::inject(
 {
   bool injected = false;
   
-  if (m_Line != DATA_NUMBER_NOT_SET && line != nullptr)
+  if (m_line != DATA_NUMBER_NOT_SET && line != nullptr)
   {
     if (line())
     {
@@ -45,7 +49,7 @@ bool wex::control_data::inject(
     }
   }
   
-  if (m_Col != DATA_NUMBER_NOT_SET && col != nullptr)
+  if (m_col != DATA_NUMBER_NOT_SET && col != nullptr)
   {
     if (col())
     {
@@ -53,7 +57,7 @@ bool wex::control_data::inject(
     }
   }
   
-  if (!m_Find.empty() && find != nullptr)
+  if (!m_find.empty() && find != nullptr)
   {
     if (find())
     {
@@ -61,7 +65,7 @@ bool wex::control_data::inject(
     }
   }
 
-  if (!m_Command.empty() && command != nullptr)
+  if (!m_command.empty() && command != nullptr)
   {
     if (command())
     {
@@ -72,26 +76,28 @@ bool wex::control_data::inject(
   return injected;
 }
 
-wex::control_data& wex::control_data::line(int line, std::function<int(int)> valid)
+wex::control_data& wex::control_data::line(
+  int line, 
+  std::function<int(int)> valid)
 {
-  m_Line = (valid != nullptr ? valid(line): line);
+  m_line = (valid != nullptr ? valid(line): line);
 
   return *this;
 }
 
 void wex::control_data::reset()
 {
-  m_Col = DATA_NUMBER_NOT_SET;
-  m_Command.clear();
-  m_Find.clear();
-  m_Line = DATA_NUMBER_NOT_SET;
+  m_col = DATA_NUMBER_NOT_SET;
+  m_command.clear();
+  m_find.clear();
+  m_line = DATA_NUMBER_NOT_SET;
   m_is_required = false;
-  m_Validator = nullptr;
+  m_validator = nullptr;
 }
 
 wex::control_data& wex::control_data::validator(wxValidator* validator)
 {
-  m_Validator = validator;
+  m_validator = validator;
 
   return *this;
 }

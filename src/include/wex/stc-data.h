@@ -88,19 +88,19 @@ namespace wex
     stc_data& operator=(const stc_data& r);
     
     /// Returns control data.
-    auto& control() {return m_Data;};
+    auto& control() {return m_data;};
 
     /// Sets control data.
-    stc_data& control(control_data& data) {m_Data = data; return *this;};
+    stc_data& control(control_data& data) {m_data = data; return *this;};
     
     /// Returns event data.
     const auto& event() const {return m_event_data;};
     
     /// Sets event data.
-    stc_data& event(bool synced) {m_event_data.set(m_STC, synced); return *this;};
+    stc_data& event(bool synced) {m_event_data.set(m_stc, synced); return *this;};
 
     /// Returns window flags.
-    const auto& flags() const {return m_WinFlags;};
+    const auto& flags() const {return m_win_flags;};
     
     /// Set window flags.
     stc_data& flags(
@@ -117,7 +117,7 @@ namespace wex
     bool inject() const;
 
     /// Returns menu flags.
-    const auto& menu() const {return m_MenuFlags;};
+    const auto& menu() const {return m_menu_flags;};
 
     /// Sets menu flags.
     stc_data& menu(
@@ -125,18 +125,18 @@ namespace wex
       control_data::action_t action = control_data::SET);
 
     /// Returns window data.
-    const auto& window() const {return m_Data.window();};
+    const auto& window() const {return m_data.window();};
 
     /// Sets window data.
-    stc_data& window(window_data& data) {m_Data.window(data); return *this;};
+    stc_data& window(window_data& data) {m_data.window(data); return *this;};
   private:  
-    stc* m_STC {nullptr};
+    stc* m_stc {nullptr};
 
-    control_data m_Data;
+    control_data m_data;
     indicator_t m_indicator_no {IND_LINE};
-    menu_t m_MenuFlags {menu_t().set(
+    menu_t m_menu_flags {menu_t().set(
       MENU_CONTEXT).set(MENU_OPEN_LINK).set(MENU_OPEN_WWW).set(MENU_VCS)};
-    window_t m_WinFlags {0};
+    window_t m_win_flags {0};
     event_data m_event_data;
   };
 };

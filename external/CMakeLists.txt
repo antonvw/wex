@@ -1,5 +1,5 @@
-project(wexExternalLibrary)
+project(wex-external-lib)
 
-add_definitions(-DSCI_LEXER)
+add_definitions(-DELPP_NO_DEFAULT_LOG_FILE)
 
 add_subdirectory(wxWidgets)

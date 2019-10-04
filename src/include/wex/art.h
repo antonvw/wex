@@ -25,9 +25,9 @@ namespace wex
       const wxArtClient& client = wxART_OTHER, 
       const wxSize& bitmap_size = wxDefaultSize) const;
   private:
-    void add(int id, const wxArtID& art);
+    static void add(int id, const wxArtID& art);
     
     static std::map<wxWindowID, wxArtID> m_ArtIDs;
-    const wxWindowID m_Id;
+    const wxWindowID m_id;
   };
 };

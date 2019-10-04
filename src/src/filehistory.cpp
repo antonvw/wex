@@ -40,8 +40,8 @@ namespace wex
         }
       }
     
-    virtual void AddFileToHistory(const wxString& file) override;
-    virtual wxString GetHistoryFile(size_t index = 0) const override;
+    void AddFileToHistory(const wxString& file) override;
+    wxString GetHistoryFile(size_t index = 0) const override;
 
     void add(const path& p)
     {

@@ -38,7 +38,7 @@ namespace wex
   public:
     // Constructor.
     ctags_info(const tagEntry& entry)
-      : m_LineNumber(entry.address.lineNumber)
+      : m_lineNumber(entry.address.lineNumber)
       , m_Path(entry.file)
       , m_Pattern(entry.address.pattern != nullptr ? 
         // prepend colon to force ex command
@@ -57,11 +57,11 @@ namespace wex
     auto open_file(frame* frame) const
     {
       return frame->open_file(m_Path, 
-        control_data().line(m_LineNumber).command(m_Pattern));
+        control_data().line(m_lineNumber).command(m_Pattern));
     }
   private:
     const path m_Path;
-    const int m_LineNumber;
+    const int m_lineNumber;
     std::string m_Pattern;
   };
 
@@ -420,7 +420,7 @@ void wex::ctags::open(const std::string& filename)
   else
   {
     for (const auto & it : std::vector < std::string > {
-      "./", config().dir() + "/"})
+      "./", config::dir() + "/"})
     {
       if (do_open(it + filename))
       {

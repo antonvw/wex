@@ -24,9 +24,9 @@ namespace wex
     /// Types for command line options.
     enum option_t
     {
-      FLOAT,
-      INT,
-      STRING,
+      FLOAT,  ///< option is a float value
+      INT,    ///< option is a int value
+      STRING, ///< option is a string value
     };
 
     /// Switches: 
@@ -35,7 +35,7 @@ namespace wex
       /// - you can specify a flag after name separated by comma
       /// - after description you can also add an implicit value,
       ///   otherwise true is assumed
-      /// default a switch toggles, this can be overriden by calling toggle_off
+      /// default a switch toggles, this can be overriden by calling toggle
       const std::vector<std::string>, 
       /// process callback if option is found
       std::function<void(bool on)>>> cmd_switches_t;
@@ -66,8 +66,8 @@ namespace wex
       const cmd_options_t & o, 
       /// params
       const cmd_params_t & p = cmd_params_t(),
-      /// message
-      const std::string& message = std::string());
+      /// add standard options
+      bool add_standard_options = true);
 
     /// Destructor.
    ~cmdline();

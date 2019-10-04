@@ -29,10 +29,10 @@ namespace wex
 
     const auto & get() const {return m_Container;};
   private:
-    virtual bool on_dir(const path& p) override {
+    bool on_dir(const path& p) override {
       m_Container.emplace_back(p);
       return true;};
-    virtual bool on_file(const path& p) override {
+    bool on_file(const path& p) override {
       m_Container.emplace_back(p);
       return true;};
 
@@ -51,10 +51,10 @@ namespace wex
 
     const auto & get() const {return m_Container;};
   private:
-    virtual bool on_dir(const path& p) override {
+    bool on_dir(const path& p) override {
       m_Container.emplace_back(p.fullname());
       return true;};
-    virtual bool on_file(const path& p) override {
+    bool on_file(const path& p) override {
       m_Container.emplace_back(p.fullname());
       return true;};
 

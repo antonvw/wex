@@ -17,10 +17,10 @@
 wex::vcs_entry::vcs_entry(const pugi::xml_node& node)
   : process()
   , menu_commands(node)
-  , m_AdminDir(node.attribute("admin-dir").value())
+  , m_admin_dir(node.attribute("admin-dir").value())
   , m_admin_dir_is_toplevel(
       strcmp(node.attribute("toplevel").value(), "true") == 0)
-  , m_FlagsLocation(
+  , m_flags_location(
       (strcmp(node.attribute("flags-location").value(), "prefix") == 0 ?
          FLAGS_LOCATION_PREFIX: FLAGS_LOCATION_POSTFIX))
   , m_blame(node)
@@ -28,7 +28,7 @@ wex::vcs_entry::vcs_entry(const pugi::xml_node& node)
 {
 }
 
-int wex::vcs_entry::build_menu(int base_id, menu* menu) const
+size_t wex::vcs_entry::build_menu(int base_id, menu* menu) const
 {
   return menus::build_menu(get_commands(), base_id, menu);
 }
@@ -39,11 +39,11 @@ bool wex::vcs_entry::execute(
   exec_t type,
   const std::string& wd)
 {
-  m_Lexer = lexer;
+  m_lexer = lexer;
   
   std::string prefix;
   
-  if (m_FlagsLocation == FLAGS_LOCATION_PREFIX)
+  if (m_flags_location == FLAGS_LOCATION_PREFIX)
   {
     prefix = config(_("Prefix flags")).get();
     
@@ -138,7 +138,7 @@ const std::string wex::vcs_entry::get_branch() const
       {
         if (const auto token(tkz.get_next_token()); token.find('*') == 0)
         {
-          return skip_white_space(token.substr(1));
+          return trim(token.substr(1));
         }
       }
     }
@@ -160,7 +160,7 @@ bool wex::vcs_entry::log(const path& p, const std::string& id)
     return false;
   }
   
-  const std::string command = m_FlagsLocation == FLAGS_LOCATION_PREFIX ?
+  const std::string command = m_flags_location == FLAGS_LOCATION_PREFIX ?
     config(name()).get(name()) + " log " + m_log_flags + " " + id:
     config(name()).get(name()) + " log " + id + " " + m_log_flags;
 
@@ -182,7 +182,7 @@ void wex::vcs_entry::show_output(const std::string& caption) const
     {
       vcs_command_stc(
         get_command(), 
-        m_Lexer, 
+        m_lexer, 
         get_shell());
     }
   }

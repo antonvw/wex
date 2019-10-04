@@ -11,13 +11,11 @@
 #endif
 #include <wex/addressrange.h>
 #include <wex/ex.h>
-#include <wex/frd.h>
 #include <wex/managedframe.h>
 #include <wex/process.h>
 #include <wex/stc.h>
 #include <wex/tokenizer.h>
 #include <wex/util.h>
-#include <wex/vi-macros.h>
 
 namespace wex
 {
@@ -41,7 +39,7 @@ namespace wex
             m_Changes++;
           }
           
-          m_Commands.emplace_back(cmd);
+          m_commands.emplace_back(cmd);
         }
       }}
     
@@ -53,7 +51,7 @@ namespace wex
     
     auto changes() const {return m_Changes;};
     
-    bool commands() const {return !m_Commands.empty();};
+    bool commands() const {return !m_commands.empty();};
     
     bool for_each(int line) const
     {
@@ -64,7 +62,7 @@ namespace wex
       }
       else
       {
-        for (const auto& it : m_Commands)
+        for (const auto& it : m_commands)
         {
           if (!m_ex->command(":" + std::to_string(line + 1) + it))
           {
@@ -116,7 +114,7 @@ namespace wex
     }        
   private:
     const indicator m_find_indicator;
-    std::vector<std::string> m_Commands;
+    std::vector<std::string> m_commands;
     int m_Changes {0};
     ex* m_ex;
   };
@@ -243,7 +241,7 @@ bool wex::addressrange::change(const std::string& text) const
     return false;
   }
   
-  m_ex->add_text(text);
+  m_ex->get_stc()->add_text(text);
   
   return true;
 }
@@ -285,30 +283,22 @@ bool wex::addressrange::copy(const wex::address& destination) const
   if (yank())
   {
     m_stc->GotoLine(dest_line - 1);
-    m_ex->add_text(m_ex->register_text());
+    m_ex->get_stc()->add_text(m_ex->register_text());
   }
 
   m_stc->EndUndoAction();
-  
-  const auto lines = get_number_of_lines(m_ex->register_text());
-
-  if (lines >= 2)
-  {
-    m_ex->frame()->show_ex_message(
-      wxString::Format(_("%d lines copied"), lines - 1).ToStdString());
-  }
 
   return true;
 }
   
-bool wex::addressrange::erase(bool show_message) const
+bool wex::addressrange::erase() const
 {
   if (m_stc->GetReadOnly() || m_stc->is_hexmode() || !set_selection())
   {
     return false;
   }
 
-  m_ex->cut(show_message);
+  m_ex->cut();
   
   m_begin.marker_delete();
   m_end.marker_delete();
@@ -363,7 +353,7 @@ bool wex::addressrange::escape(const std::string& command)
     {      
       m_stc->BeginUndoAction();
 
-      if (erase(false))
+      if (erase())
       {
         m_stc->AddText(process.get_stdout());
       }
@@ -539,22 +529,14 @@ bool wex::addressrange::move(const address& destination) const
 
   m_stc->BeginUndoAction();
 
-  if (erase(false))
+  if (erase())
   {
     m_stc->GotoLine(dest_line - 1);
-    m_ex->add_text(m_ex->register_text());
+    m_ex->get_stc()->add_text(m_ex->register_text());
   }
 
   m_stc->EndUndoAction();
   
-  const auto lines = get_number_of_lines(m_ex->register_text());
-
-  if (lines >= 2)
-  {
-    m_ex->frame()->show_ex_message(
-      wxString::Format(_("%d lines moved"), lines - 1).ToStdString());
-  }
-
   return true;
 }
 
@@ -708,7 +690,7 @@ bool wex::addressrange::sort(const std::string& parameters) const
   return sort_selection(m_stc, sort_t, pos, len);
 }
   
-bool wex::addressrange::substitute(const std::string& text, const char cmd)
+bool wex::addressrange::substitute(const std::string& text, char cmd)
 {
   if (m_stc->GetReadOnly() || !is_ok())
   {
@@ -865,9 +847,9 @@ bool wex::addressrange::write(const std::string& text) const
     return false;
   }
   
-  auto filename(skip_white_space(text.find(">>") != std::string::npos ? 
+  auto filename(trim(text.find(">>") != std::string::npos ? 
     wex::after(text, '>', false): text, 
-    skip_t().set(SKIP_LEFT)));
+    skip_t().set(TRIM_LEFT)));
 
 #ifdef __UNIX__
   if (filename.find("~") != std::string::npos)
@@ -880,7 +862,7 @@ bool wex::addressrange::write(const std::string& text) const
     std::ios_base::app: std::ios::out).write(m_stc->get_selected_text());
 }
 
-bool wex::addressrange::yank(const char name) const
+bool wex::addressrange::yank(char name) const
 {
   return set_selection() && m_ex->yank(name);
 }

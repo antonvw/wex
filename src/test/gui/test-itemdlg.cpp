@@ -16,7 +16,6 @@
 
 TEST_CASE("wex::item_dialog")
 {
-#if wxCHECK_VERSION(3,1,0)
   wex::item::use_config(false);
   
   // Test dialog without pages.
@@ -52,5 +51,4 @@ TEST_CASE("wex::item_dialog")
   // Test dialog with empty items.
   wex::item_dialog* dlg3 = new wex::item_dialog({{}, {}, {}}, wex::window_data());
   dlg3->Show();
-#endif
 }

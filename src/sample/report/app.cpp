@@ -75,7 +75,7 @@ report_sample_frame::report_sample_frame() : wex::history_frame()
   m_NotebookWithLists = new wex::notebook(
     wex::window_data().style(wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_WINDOWLIST_BUTTON));
 
-  m_STC = new wex::stc();
+  m_stc = new wex::stc();
 
   const wex::lexer lexer = wex::lexers::get()->find_by_name("cpp");
 
@@ -92,7 +92,7 @@ report_sample_frame::report_sample_frame() : wex::history_frame()
   }
 
   manager().AddPane(
-    m_STC, 
+    m_stc, 
     wxAuiPaneInfo().CenterPane().CloseButton(false).MaximizeButton(true));
 
   manager().AddPane(
@@ -133,12 +133,12 @@ report_sample_frame::report_sample_frame() : wex::history_frame()
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {;}, wxID_HELP);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_STC->get_file().file_new(wex::path());}, wxID_NEW);
+    m_stc->get_file().file_new(wex::path());}, wxID_NEW);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    if (m_STC->HasCapture())
+    if (m_stc->HasCapture())
     {
-      m_STC->print_preview();
+      m_stc->print_preview();
     }
     else
     {
@@ -229,14 +229,14 @@ wex::listview* report_sample_frame::get_listview()
 
 wex::stc* report_sample_frame::get_stc()
 {
-  return m_STC;
+  return m_stc;
 }
   
 wex::stc* report_sample_frame::open_file(
   const wex::path& file, const wex::stc_data& data)
 {
-  m_STC->get_lexer().reset();
-  m_STC->open(file, wex::stc_data(data).flags(0));
+  m_stc->get_lexer().reset();
+  m_stc->open(file, wex::stc_data(data).flags(0));
   
-  return m_STC;
+  return m_stc;
 }

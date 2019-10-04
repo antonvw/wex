@@ -9,15 +9,17 @@
 #include <wex/config.h>
 #include "test.h"
 
+TEST_SUITE_BEGIN("wex::vcs");
+
 TEST_CASE("wex::blame")
 {
-  SUBCASE("Default constructor and get")
+  SUBCASE("default constructor and get")
   {
     REQUIRE(!wex::blame().use());
     REQUIRE(!std::get<0> (wex::blame().get("")));
   }
 
-  SUBCASE("Constructor xml node and get")
+  SUBCASE("constructor xml node and get")
   {
     pugi::xml_document doc;
 
@@ -52,3 +54,5 @@ TEST_CASE("wex::blame")
     REQUIRE( std::get<1> (blame.get(text)).find("A unknown user") == std::string::npos);
   }
 }
+
+TEST_SUITE_END();

@@ -45,8 +45,7 @@ TEST_CASE("wex::report::file")
   listView->add_items(
     "./",
     "*.h", 
-    wex::dir::type_t().set(wex::dir::FILES), 
-    false); // join the thread
+    wex::dir::type_t().set(wex::dir::FILES));
 #endif
 
 #ifndef __WXMSW__

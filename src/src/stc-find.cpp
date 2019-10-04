@@ -64,7 +64,7 @@ bool wex::stc::find_next(
     }
   }
 
-  if (m_MarginTextClick >= 0)
+  if (m_margin_text_click >= 0)
   {
     bool found = false;
     static int line;

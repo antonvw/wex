@@ -10,7 +10,7 @@
 
 TEST_CASE( "wex::dir" ) 
 {
-  SUBCASE( "Not recursive" ) 
+  SUBCASE( "not recursive" ) 
   {
     wex::dir dir(wex::test::get_path(), 
       "*.h", std::string(), wex::dir::type_t().set(wex::dir::FILES));
@@ -21,7 +21,7 @@ TEST_CASE( "wex::dir" )
     REQUIRE(dir.find_files() == 2);
   }
   
-  SUBCASE( "Recursive" ) 
+  SUBCASE( "recursive" ) 
   {
     wex::dir dir("../../", "*.h");
     REQUIRE(dir.get_path().dir_exists());
@@ -29,7 +29,7 @@ TEST_CASE( "wex::dir" )
     REQUIRE(dir.find_files() > 50);
   }
 
-  SUBCASE( "Match folders" ) 
+  SUBCASE( "match folders" ) 
   {
     wex::log::verbose() << wex::path::current();
     wex::dir dir("../../", std::string(), "data", 
@@ -40,7 +40,7 @@ TEST_CASE( "wex::dir" )
     REQUIRE(dir.find_files() == 1);
   }
 
-  SUBCASE( "Invalid" ) 
+  SUBCASE( "invalid" ) 
   {
     wex::dir dir(
       "xxxx", "*.h", std::string(), wex::dir::type_t().set(wex::dir::FILES));
@@ -52,7 +52,9 @@ TEST_CASE( "wex::dir" )
     REQUIRE(wex::get_all_files(
       std::string("./"), "*.txt", std::string(),
       wex::dir::type_t().set(wex::dir::FILES)).size() == 4);
-    REQUIRE(wex::get_all_files(wex::path("./"), "*.txt", std::string(),
+
+    REQUIRE(wex::get_all_files(
+      wex::path("./"), "*.txt", std::string(),
       wex::dir::type_t().set(wex::dir::DIRS)).empty());
   }
 }

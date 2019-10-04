@@ -1,4 +1,4 @@
-version: 19.10.0.{build}
+version: 20.04.0.{build}
 
 image: Visual Studio 2017
 
@@ -28,4 +28,4 @@ build_script:
 test: OFF
 
 artifacts:
-  - path: 'build\syncped-v19.10.0.zip'
+  - path: 'build\syncped-v20.04.0.zip'

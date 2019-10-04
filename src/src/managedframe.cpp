@@ -25,7 +25,7 @@
 #include <wex/vi-macros.h>
 #include <wex/vi-macros-mode.h>
 
-const int ID_REGISTER = wxWindow::NewControlId();
+const auto ID_REGISTER = wxWindow::NewControlId();
 
 namespace wex
 {
@@ -40,6 +40,12 @@ namespace wex
       wxStaticText* prefix,
       const window_data& data);
       
+    // Virtual interface.
+    void AppendText(const wxString& text) override;
+    void ChangeValue(const wxString& value) override;
+    void Clear() override;
+    void SetValue(const wxString& value) override;
+    
     // Returns ex component.
     auto* ex() {return m_ex;};
       
@@ -56,11 +62,18 @@ namespace wex
         default: return m_commands;
       }};
 
-    wex::ex* m_ex {nullptr};
     ex_command m_command;
+
+    wex::ex* m_ex {nullptr};
     managed_frame* m_frame;
     wxStaticText* m_prefix;
-    bool m_control_r {false}, m_mode_visual {false}, m_user_input {false};
+
+    bool 
+      m_control_r {false}, 
+      m_control_r_present {false},
+      m_mode_visual {false}, 
+      m_user_input {false};
+
     textctrl_input 
       m_calcs {ex_command::type_t::CALC},
       m_commands {ex_command::type_t::COMMAND},
@@ -71,46 +84,46 @@ namespace wex
 
 wex::managed_frame::managed_frame(size_t maxFiles, const window_data& data)
   : frame(data)
-  , m_Debug(new debug(this))
-  , m_FileHistory(maxFiles, wxID_FILE1)
-  , m_FindBar(new find_toolbar(this))
-  , m_OptionsBar(new options_toolbar(this))
-  , m_ToolBar(new toolbar(this))
-  , m_ToggledPanes({
+  , m_debug(new debug(this))
+  , m_file_history(maxFiles, wxID_FILE1)
+  , m_findbar(new find_toolbar(this))
+  , m_optionsbar(new options_toolbar(this))
+  , m_toolbar(new toolbar(this))
+  , m_toggled_panes({
     {{"FINDBAR", _("&Findbar").ToStdString()}, ID_VIEW_LOWEST + 1},
     {{"OPTIONSBAR", _("&Optionsbar").ToStdString()}, ID_VIEW_LOWEST + 2},
     {{"TOOLBAR", _("&Toolbar").ToStdString()}, ID_VIEW_LOWEST + 3},
     {{"PROCESS", _("&Process").ToStdString()}, ID_VIEW_LOWEST + 4}})
 {
-  m_Manager.SetManagedWindow(this);
-  add_toolbar_pane(m_ToolBar, "TOOLBAR", _("Toolbar"));
-  add_toolbar_pane(m_FindBar,  "FINDBAR", _("Findbar"));
-  add_toolbar_pane(m_OptionsBar, "OPTIONSBAR", _("Optionsbar"));
-  add_toolbar_pane(CreateExPanel(), "VIBAR");
-  m_Manager.Update();
+  m_manager.SetManagedWindow(this);
+  add_toolbar_pane(m_toolbar, "TOOLBAR", _("Toolbar"));
+  add_toolbar_pane(m_findbar,  "FINDBAR", _("Findbar"));
+  add_toolbar_pane(m_optionsbar, "OPTIONSBAR", _("Optionsbar"));
+  add_toolbar_pane(create_ex_panel(), "VIBAR");
+  m_manager.Update();
   
   Bind(wxEVT_AUI_PANE_CLOSE, [=](wxAuiManagerEvent& event) {
     wxAuiPaneInfo* info = event.GetPane();
     info->BestSize(info->window->GetSize()).Fixed().Resizable();
-    m_Manager.Update();
+    m_manager.Update();
     // If this pane is a toolbar pane, it might have a checkbox,
     // update that as well.
-    m_OptionsBar->update(info->name, false);
+    m_optionsbar->update(info->name, false);
     });
   
   Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
-    m_FileHistory.save();
+    m_file_history.save();
     event.Skip();});
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    on_menu_history(m_FileHistory, event.GetId() - m_FileHistory.get_base_id());},
-    m_FileHistory.get_base_id(), 
-    m_FileHistory.get_base_id() + m_FileHistory.get_max_files());
+    on_menu_history(m_file_history, event.GetId() - m_file_history.get_base_id());},
+    m_file_history.get_base_id(), 
+    m_file_history.get_base_id() + m_file_history.get_max_files());
 
-  for (const auto& it : m_ToggledPanes)
+  for (const auto& it : m_toggled_panes)
   {
     Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-      event.Check(m_Manager.GetPane(it.first.first).IsShown());}, it.second);
+      event.Check(m_manager.GetPane(it.first.first).IsShown());}, it.second);
     Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
       toggle_pane(it.first.first);}, it.second);
   }
@@ -127,7 +140,7 @@ wex::managed_frame::managed_frame(size_t maxFiles, const window_data& data)
         button(wxAPPLY | wxOK | wxCANCEL));}, wxID_PREFERENCES);
       
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_FileHistory.clear();}, ID_CLEAR_FILES);
+    m_file_history.clear();}, ID_CLEAR_FILES);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (auto* stc = get_stc(); stc != nullptr)
@@ -144,9 +157,9 @@ wex::managed_frame::managed_frame(size_t maxFiles, const window_data& data)
 
 wex::managed_frame::~managed_frame()
 {
-  delete m_Debug;
+  delete m_debug;
   
-  m_Manager.UnInit();
+  m_manager.UnInit();
 }
 
 bool wex::managed_frame::add_toolbar_pane(
@@ -189,7 +202,7 @@ bool wex::managed_frame::add_toolbar_pane(
       .CaptionVisible(false);
   }
   
-  return m_Manager.AddPane(window, pane);
+  return m_manager.AddPane(window, pane);
 }
 
 bool wex::managed_frame::allow_close(wxWindowID id, wxWindow* page)
@@ -207,7 +220,7 @@ void wex::managed_frame::append_panes(wxMenu* menu) const
 
   menu->AppendCheckItem(ID_VIEW_STATUSBAR, _("&Statusbar"));
 
-  for (const auto& it : m_ToggledPanes)
+  for (const auto& it : m_toggled_panes)
   {
     if (it.first.first == "PROCESS" && process::get_shell() == nullptr)
     {
@@ -218,18 +231,18 @@ void wex::managed_frame::append_panes(wxMenu* menu) const
   }
 }
   
-wxPanel* wex::managed_frame::CreateExPanel()
+wxPanel* wex::managed_frame::create_ex_panel()
 {
   // An ex panel starts with small static text for : or /, then
   // comes the ex ctrl for getting user input.
   wxPanel* panel = new wxPanel(this);
   wxStaticText* text = new wxStaticText(panel, wxID_ANY, " ");
-  m_TextCtrl = new textctrl(this, text, window_data().parent(panel));
+  m_textctrl = new textctrl(this, text, window_data().parent(panel));
   
   wxFlexGridSizer* sizer = new wxFlexGridSizer(2);
   sizer->AddGrowableCol(1);
   sizer->Add(text, wxSizerFlags().Center());
-  sizer->Add(m_TextCtrl, wxSizerFlags().Expand());
+  sizer->Add(m_textctrl, wxSizerFlags().Expand());
   
   panel->SetSizerAndFit(sizer);
 
@@ -249,12 +262,12 @@ void wex::managed_frame::on_menu_history(
 
 bool wex::managed_frame::show_ex_command(ex* ex, const std::string& command)
 {
-  return show_pane("VIBAR") && m_TextCtrl->set_ex(ex, command);
+  return show_pane("VIBAR") && m_textctrl->set_ex(ex, command);
 }
 
 void wex::managed_frame::hide_ex_bar(int hide)
 {
-  if (m_Manager.GetPane("VIBAR").IsShown())
+  if (m_manager.GetPane("VIBAR").IsShown())
   {
     if (hide == HIDE_BAR_FORCE || hide == HIDE_BAR_FORCE_FOCUS_STC ||
         (GetStatusBar() != nullptr && GetStatusBar()->IsShown()))
@@ -263,10 +276,10 @@ void wex::managed_frame::hide_ex_bar(int hide)
     }
     
     if ((hide == HIDE_BAR_FOCUS_STC || hide == HIDE_BAR_FORCE_FOCUS_STC) && 
-         m_TextCtrl != nullptr && 
-         m_TextCtrl->ex() != nullptr)
+         m_textctrl != nullptr && 
+         m_textctrl->ex() != nullptr)
     {
-      m_TextCtrl->ex()->get_stc()->SetFocus();
+      m_textctrl->ex()->get_stc()->SetFocus();
     }
   }
 }
@@ -299,7 +312,7 @@ void wex::managed_frame::print_ex(ex* ex, const std::string& text)
 
 void wex::managed_frame::set_recent_file(const path& path) 
 {
-  m_FileHistory.add(path);
+  m_file_history.add(path);
 }
 
 void wex::managed_frame::show_ex_message(const std::string& text)
@@ -311,21 +324,21 @@ void wex::managed_frame::show_ex_message(const std::string& text)
   }
   else
   {
-    m_TextCtrl->SetValue(text);
+    m_textctrl->SetValue(text);
   }
 }
 
 bool wex::managed_frame::show_pane(const std::string& pane, bool show)
 {
-  if (wxAuiPaneInfo& info = m_Manager.GetPane(pane); !info.IsOk())
+  if (wxAuiPaneInfo& info = m_manager.GetPane(pane); !info.IsOk())
   {
     return false;
   }
   else 
   {
     show ? info.Show(): info.Hide();
-    m_Manager.Update();
-    m_OptionsBar->update(pane, show);
+    m_manager.Update();
+    m_optionsbar->update(pane, show);
     return true;
   }
 }
@@ -363,24 +376,15 @@ wex::textctrl::textctrl(
     wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
 
   Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
-    if (event.GetUnicodeKey() != WXK_NONE)
+    if (event.GetUnicodeKey() != WXK_NONE &&
+        event.GetKeyCode() != WXK_TAB && 
+        event.GetKeyCode() != WXK_RETURN)
     {
-      if (event.GetKeyCode() == WXK_BACK)
-      {
-        if (!m_command.empty()) m_command.pop_back();
-      }
-      else if (event.GetKeyCode() != WXK_TAB)
-      {
-        m_command.append(event.GetUnicodeKey());
-      }
+      m_command.append(event.GetUnicodeKey());
     }
         
     switch (event.GetKeyCode())
     {
-      case WXK_CONTROL_R: 
-        m_control_r = true; 
-        break;
-
       case WXK_TAB: {
         if (m_ex != nullptr && m_ex->get_stc()->get_filename().file_exists())
         {
@@ -391,13 +395,13 @@ wex::textctrl::textctrl(
         if (const auto& [r, e, v] = autocomplete_filename(m_command.command());
           r)
         {
-          m_command.append(e);
           AppendText(e);
         }}
         break;
 
       default: {
         bool skip = true;
+
         if (event.GetKeyCode() != WXK_RETURN)
         {
           if (event.GetUnicodeKey() != (wxChar)WXK_NONE && m_control_r)
@@ -405,22 +409,30 @@ wex::textctrl::textctrl(
             skip = false;
             const char c = event.GetUnicodeKey();
             wxCommandEvent event(wxEVT_MENU, ID_REGISTER);
+
             if (c == '%')
             {
-              if (m_ex != nullptr) event.SetString(m_ex->get_stc()->get_filename().fullname());
+              if (m_ex != nullptr) 
+              {
+                event.SetString(m_ex->get_stc()->get_filename().fullname());
+              }
             }
             else 
             {
               event.SetString(ex::get_macros().get_register(c));
             }
+
             if (!event.GetString().empty())
             {
               wxPostEvent(this, event);
             }
           }
+
           m_user_input = true;
         }
+
         m_control_r = false;
+
         if (skip)
         {
           event.Skip();
@@ -428,8 +440,28 @@ wex::textctrl::textctrl(
       }}});
 
   Bind(wxEVT_KEY_DOWN, [=](wxKeyEvent& event) {
+    if (event.GetKeyCode() != WXK_RETURN && !GetStringSelection().empty())
+    {
+      // TODO: only clear selection
+      m_command.set(m_prefix->GetLabel());
+    }
+
     switch (event.GetKeyCode())
     {
+      case 'r': 
+      case 'R':
+        if (event.ControlDown())
+        {
+          m_command.append(WXK_CONTROL_R);
+          m_control_r = true; 
+          m_control_r_present = true; 
+        }
+        else
+        {
+          event.Skip();
+        }
+        break;
+
       case WXK_DOWN:
       case WXK_END:
       case WXK_HOME:
@@ -443,7 +475,7 @@ wex::textctrl::textctrl(
         }
         else if (m_command.type() == ex_command::type_t::FIND)
         {
-          find_replace_data::get()->m_FindStrings.set(event.GetKeyCode(), this); 
+          find_replace_data::get()->m_findStrings.set(event.GetKeyCode(), this); 
         }
         else
         {
@@ -451,6 +483,14 @@ wex::textctrl::textctrl(
         }
         break;
         
+      case WXK_BACK:
+        if (!m_command.empty()) 
+        {
+          m_command.pop_back();
+        }
+        event.Skip();
+        break;
+
       case WXK_ESCAPE:
         if (m_ex != nullptr)
         {
@@ -493,11 +533,14 @@ wex::textctrl::textctrl(
       m_frame->hide_ex_bar(managed_frame::HIDE_BAR_FORCE_FOCUS_STC);
       return;
     }
+      
+    if (!m_control_r_present)
+    {
+      m_command.set(m_prefix->GetLabel() + GetValue());
+    }
 
-    m_command.command(m_prefix->GetLabel().ToStdString() + GetValue().ToStdString());
-    m_command.is_handled(m_user_input && m_command.type() == ex_command::type_t::FIND);
-
-    if (m_command.exec())
+    if ((m_user_input && m_command.type() == ex_command::type_t::FIND)
+      || m_command.exec())
     {
       int focus = (m_command.type() == ex_command::type_t::FIND ? 
         managed_frame::HIDE_BAR_FORCE_FOCUS_STC: 
@@ -539,10 +582,11 @@ bool wex::textctrl::set_ex(wex::ex* ex, const std::string& command)
   m_ex = ex;
   m_user_input = false;
   const std::string range(command.substr(1));
+  m_command = ex_command(ex->get_command()).set(command);
   m_mode_visual = !range.empty();
   m_prefix->SetLabel(command.substr(0, 1));
-  m_command = ex_command(ex->get_command()).command(command);
   m_control_r = false;
+  m_control_r_present = false;
 
   switch (m_command.type())
   {
@@ -585,4 +629,28 @@ bool wex::textctrl::set_ex(wex::ex* ex, const std::string& command)
   SetFocus();
 
   return true;
+}
+
+void wex::textctrl::AppendText(const wxString& text)
+{
+  m_command.append(text);
+  wxTextCtrl::AppendText(text);
+}
+
+void wex::textctrl::ChangeValue(const wxString& value)
+{
+  m_command.set(m_prefix->GetLabel() + value);
+  wxTextCtrl::ChangeValue(value);
+}
+
+void wex::textctrl::Clear()
+{
+  m_command.set(m_prefix->GetLabel());
+  wxTextCtrl::Clear();
+}
+  
+void wex::textctrl::SetValue(const wxString& value)
+{
+  m_command.set(m_prefix->GetLabel() + value);
+  wxTextCtrl::SetValue(value);
 }

@@ -52,7 +52,7 @@ namespace wex
     bool copy(const address& destination) const;
     
     /// Deletes range.
-    bool erase(bool show_message = true) const;
+    bool erase() const;
     
     /// Filters range with command.
     /// The address range is used as input for the command,
@@ -122,13 +122,13 @@ namespace wex
       /// - s : default, normal substitute
       /// - & : repeat last substitute (text contains options)
       /// - ~ : repeat last substitute with pattern from find replace data (text contains options)
-      const char cmd = 's');
+      char cmd = 's');
       
     /// Writes range to filename.
     bool write(const std::string& filename) const;
     
     /// Yanks range to register, default to yank register.
-    bool yank(const char name = '0') const;
+    bool yank(char name = '0') const;
   private:  
     const std::string build_replacement(const std::string& text) const;
     int confirm(const std::string& pattern, const std::string& replacement);
