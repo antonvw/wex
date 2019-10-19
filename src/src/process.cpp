@@ -10,6 +10,9 @@
 #include <queue>
 #include <thread>
 #include <vector>
+#if BOOST_VERSION / 100 % 1000 <= 65
+  #include <boost/asio.hpp>
+#endif
 #include <boost/process.hpp>
 #include <wx/valtext.h>
 #include <wex/process.h>
@@ -41,7 +44,11 @@ namespace wex
   public:
     process_imp(process* process)
       : m_process(process)
+#if BOOST_VERSION / 100 % 1000 <= 65
+      , m_io(std::make_shared<boost::asio::io_service>())
+#else    
       , m_io(std::make_shared<boost::asio::io_context>())
+#endif    
       , m_queue(std::make_shared<std::queue<std::string>>()) {;}
 
     // Starts the async process, collecting output
@@ -52,10 +59,18 @@ namespace wex
     bool stop() {
       if (m_io->stopped()) return false;
       log::verbose("stop") << m_process->get_exec();
-      // TODO: to be done.
-      //  bp::child c(m_process->get_exec());
-      //  c.terminate();
-       m_io->stop();
+      try
+      {
+        if (m_group.valid())
+        {
+          m_group.terminate();
+        }
+        m_io->stop();
+      }
+      catch (std::exception& e)
+      {
+        log(e) << "stop" << m_process->get_exec();
+      }
       return true;};
     
     // Writes data to the input of the process.
@@ -75,39 +90,47 @@ namespace wex
     bool is_running() const {return !m_io->stopped();};
   private:
     std::atomic_bool m_debug {false};
+#if BOOST_VERSION / 100 % 1000 <= 65
+    std::shared_ptr<boost::asio::io_service> m_io;
+#else
     std::shared_ptr<boost::asio::io_context> m_io;
+#endif
     std::shared_ptr<std::queue<std::string>> m_queue;
     process* m_process;
     bp::ipstream m_es, m_is;
     bp::opstream m_os;
+    bp::group m_group;
   };
 
-  bool process_run_and_collect_output(
+  int process_run_and_collect_output(
     const std::string& command, 
     const std::string& cwd,
     std::string& output,
     std::string& error)
   {
-    int ec = 0;
-
     try
     {
       std::future<std::string> of, ef;
-      ec = bp::system(
-        bp::start_dir = cwd, command, bp::std_out > of, bp::std_err > ef);
+      const int ec = bp::system(
+        bp::start_dir = cwd, 
+        command, 
+        bp::std_out > of, 
+        bp::std_err > ef);
 
-      output = of.get();
-      error = ef.get();
+      if (of.valid()) output = of.get();
+      if (ef.valid()) error = ef.get();
 
-      if (ec != 0)
+      if (!ec)
+      {
+        log::verbose("process", 1) << command << "cwd:" << cwd;
+      }
+      else
       {
         const std::string text(!error.empty() ? ":" + error: std::string());
         log("process") << command << "cwd:" << cwd << "ec:" << ec << text;
       }
-      else
-      {
-        log::verbose("process", 1) << command << "cwd:" << cwd;
-      }
+      
+      return ec;
     }
     catch (std::exception& e)
     {
@@ -115,9 +138,8 @@ namespace wex
 
       output.clear();
       error = e.what();
+      return 1;
     }
-
-    return error.empty() && !ec;
   }
 }
       
@@ -247,7 +269,8 @@ bool wex::process::execute(
     break;
 
     case EXEC_WAIT:
-      error = !process_run_and_collect_output(m_command, cwd, m_stdout, m_stderr);
+      error = (process_run_and_collect_output(
+        m_command, cwd, m_stdout, m_stderr) != 0);
     break;
   }
   
@@ -320,7 +343,8 @@ bool wex::process_imp::async(const std::string& path)
       m_process->get_exec(),
       bp::std_out > m_is,
       bp::std_in < m_os,
-      bp::std_err > m_es);
+      bp::std_err > m_es,
+      m_group);
   }
   catch (std::exception& e)
   {
@@ -398,15 +422,19 @@ bool wex::process_imp::async(const std::string& path)
     process = m_process, 
     queue = m_queue]
     {
-      while (!io->stopped())
+      while (os.good() && !io->stopped())
       {
+#if BOOST_VERSION / 100 % 1000 > 65
         io->run_one_for(std::chrono::milliseconds(10));
+#else        
+        io->run_one();
+#endif        
 
         if (!queue->empty())
         {
           const std::string text(queue->front());
           queue->pop();
-
+          
           log::verbose("async") << "write:" << text;
 
           os << text << std::endl;

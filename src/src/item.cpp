@@ -46,6 +46,55 @@
 #include <wex/tocontainer.h>
 #include <wex/util.h>
 
+namespace wex
+{
+  std::string str(const std::string& name, const std::any& any)
+  {
+    std::stringstream s;
+
+    s << name << "{internal type: " << any.type().name() << ", value: ";
+
+    if (any.has_value())
+    {
+      try
+      {
+        if (any.type() == typeid(int)) 
+        {
+          s << std::any_cast<int>(any);
+        }
+        else if (any.type() == typeid(long)) 
+        {
+          s << std::any_cast<long>(any);
+        }
+        else if (any.type() == typeid(double)) 
+        {
+          s << std::any_cast<double>(any);
+        }
+        else if (any.type() == typeid(std::string)) 
+        {
+          s << std::any_cast<std::string>(any);
+        }
+        else
+        {
+          s << "<no cast available>";
+        }
+      }
+      catch (std::bad_cast& e)
+      {
+        s << "<log bad cast: " << e.what() << ">";
+      }
+    }
+    else
+    {
+      s << "<no value>";
+    }
+
+    s << "} ";
+
+    return s.str();
+  }
+}
+
 wex::item::item(type_t type, 
   const std::string& label, 
   const std::any& value, 
@@ -837,60 +886,15 @@ std::stringstream wex::item::log() const
 {
   std::stringstream ss;
 
-  ss << "LABEL: " << m_label << " " << "TYPE: " << m_type << " "
-     << Log("VALUE: ", get_value()).str()
-     << Log("INITIAL: ", m_initial).str()
-     << Log("MIN: ", m_min).str()
-     << Log("MAX: ", m_max).str()
-     << Log("INC: ", m_inc).str();
+  ss << "LABEL: " << m_label << " " 
+     << "TYPE: " << m_type << " "
+     << str("VALUE: ", get_value())
+     << str("INITIAL: ", m_initial)
+     << str("MIN: ", m_min)
+     << str("MAX: ", m_max)
+     << str("INC: ", m_inc);
 
   return ss;
-}
-
-std::stringstream wex::item::Log(const std::string& name, const std::any& any) const
-{
-  std::stringstream s;
-
-  s << name << "{internal type: " << any.type().name() << ", value: ";
-
-  if (any.has_value())
-  {
-    try
-    {
-      if (any.type() == typeid(int)) 
-      {
-        s << std::any_cast<int>(any);
-      }
-      else if (any.type() == typeid(long)) 
-      {
-        s << std::any_cast<long>(any);
-      }
-      else if (any.type() == typeid(double)) 
-      {
-        s << std::any_cast<double>(any);
-      }
-      else if (any.type() == typeid(std::string)) 
-      {
-        s << std::any_cast<std::string>(any);
-      }
-      else
-      {
-        s << "<no cast available>";
-      }
-    }
-    catch (std::bad_cast& e)
-    {
-      s << "<log bad cast: " << e.what() << ">";
-    }
-  }
-  else
-  {
-    s << "<no value>";
-  }
-
-  s << "} ";
-
-  return s;
 }
 
 void wex::item::set_dialog(item_template_dialog<item>* dlg)

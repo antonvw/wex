@@ -110,8 +110,8 @@ namespace wex
     /// Set command for command specified as number or as start of command,
     /// Returns true if found and m_command was set.
     bool set_command_from_history(const std::string& short_command);
-    void show_history();
     void show_command(int key);
+    void show_history();
 
     const std::string m_command_end;
     const bool m_echo;
@@ -124,7 +124,10 @@ namespace wex
     std::list < std::string >::const_iterator m_commands_iterator;
     std::vector < std::string > m_auto_complete_list;
 
-    std::string m_command, m_prompt;
+    std::string 
+      m_command, 
+      m_prompt;
+
     int m_command_start_pos = 0; /// position after the prompt from where commands can be inserted
     bool m_enabled = true;
     

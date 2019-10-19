@@ -250,8 +250,6 @@ void wex::vi_macros_fsm::playback(const std::string& macro, ex* ex, int repeat)
     return;
   }
   
-  wxBusyCursor wait;
-
   ex->get_stc()->BeginUndoAction();
   set_ask_for_input();
   m_playback = true;

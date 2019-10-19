@@ -2,7 +2,7 @@
 // Name:      ctags.h
 // Purpose:   Declaration of class wex::ctags
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -24,18 +24,7 @@ namespace wex
   class ctags
   {
   public:  
-    /// Constructor.
-    /// Uses ex component for presenting ctags results.
-    ctags(ex* ex, bool open = true);
-
-    /// Tries to autocomplete text using the tags file.
-    /// Returns a string with matches separated by the 
-    /// separator character, or empty string if no match is found.
-    const std::string autocomplete(
-      /// text to be completed
-      const std::string& text,
-      /// filter on ctags extension entry, default no filter
-      const ctags_entry& filter = ctags_entry());
+    /// Static interface.
 
     /// Closes ctags file.
     static void close();
@@ -60,32 +49,47 @@ namespace wex
       /// tag filter to be filled
       ctags_entry& filter);
 
+    /// Jumps to next match from a previous find.
+    static bool next();
+
     /// Opens ctags file.
-    /// The ctags file is obtained from the STCData associated with ex STC.
     /// Default uses standard ctags file, but you can choose your own name.
     /// This file is searched for in the current dir, and if not found in the 
     /// config dir.
     /// You can also specify an absolute filename.
     static void open(const std::string& filename = DEFAULT_TAGFILE);
     
-    /// Jumps to next match from a previous find.
-    static bool next();
-
     /// Jumps to previous match from a previous find.
     static bool previous();
+    
+    /// Other methods.
+
+    /// Constructor.
+    /// Uses ex component for presenting ctags results,
+    /// and opens default tag file, if tag file is not yet opened.
+    ctags(ex* ex, bool open = true);
+    
+    /// Tries to autocomplete text using the tags file.
+    /// Returns a string with matches separated by the 
+    /// separator character, or empty string if no match is found.
+    const std::string autocomplete(
+      /// text to be completed
+      const std::string& text,
+      /// filter on ctags extension entry, default no filter
+      const ctags_entry& filter = ctags_entry());
 
     /// Autocomplete separator.
-    auto separator() const {return m_Separator;};
+    auto separator() const {return m_separator;};
   private:
     void autocomplete_prepare();
     static bool do_open(const std::string& path);
 
-    ex* m_Ex {nullptr};
-    const int m_Separator {3};
-    bool m_Prepare {false};
+    ex* m_ex {nullptr};
+    const int m_separator {3};
+    bool m_prepare {false};
     
-    static inline tagFile* m_File = nullptr;
-    static std::map< std::string, ctags_info > m_Matches;
-    static std::map< std::string, ctags_info >::iterator m_Iterator;
+    static inline tagFile* m_file = nullptr;
+    static std::map< std::string, ctags_info > m_matches;
+    static std::map< std::string, ctags_info >::iterator m_iterator;
   };
 };

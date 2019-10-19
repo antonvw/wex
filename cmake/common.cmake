@@ -10,22 +10,22 @@ function(pack)
   set(CPACK_GENERATOR "ZIP")
   set(CPACK_PACKAGE_NAME "${PROJECT_NAME}")
   set(CPACK_PACKAGE_VERSION "${WEX_VERSION}")
-  set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-v${CPACK_PACKAGE_VERSION}")
+  
+  # See appveyor.yml.
+  if (DEFINED ENV{YEAR})
+    set(extra $ENV{YEAR})
+    string(CONCAT extra "vs-" ${extra})
+  endif()
+  
+  set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-v${CPACK_PACKAGE_VERSION}${extra}")
 
   if (MSVC)
-    if (MSVC15)
-      set(msvc "14") # use v141 MSVC toolset
-    elseif (MSVC14)
-      set(msvc "14")
-    elseif (MSVC12)
-      set(msvc "12")
-    elseif (MSVC11)
-      set(msvc "11")
-    elseif (MSVC10)
-      set(msvc "10")
-    endif()
+    string(SUBSTRING ${MSVC_TOOLSET_VERSION} 0 2 VC_MAJOR)
+    string(SUBSTRING ${MSVC_TOOLSET_VERSION} 2 1 VC_MINOR)
+    string(CONCAT msvc ${VC_MAJOR} ".0")
+    string(CONCAT msvc2 ${VC_MAJOR} "0")
 
-    file(GLOB dlls "C:/Program Files (x86)/Microsoft Visual Studio ${msvc}.0/VC/redist/x86/Microsoft.VC${msvc}0.CRT/*.dll")
+    file(GLOB dlls "C:/Program Files (x86)/Microsoft Visual Studio ${msvc}/VC/redist/x86/Microsoft.VC${msvc2}.CRT/*.dll")
     install(FILES ${dlls} DESTINATION ${CONFIG_INSTALL_DIR})
   endif()
 
@@ -177,7 +177,7 @@ else ()
     -Wno-deprecated-declarations -Wno-unused-result")
 endif ()
 
-file(GLOB_RECURSE wexSETUP_H ${wex_BINARY_DIR}/*.h)
+file(GLOB_RECURSE wexSETUP_H ${wex_BINARY_DIR}/*setup.h)
 # use only first element from list
 list(GET wexSETUP_H 0 wexSETUP_H) 
 get_filename_component(wexSETUP_H ${wexSETUP_H} DIRECTORY)

@@ -165,7 +165,8 @@ namespace wex
       /// - SLIDER
       type_t type = SPINCTRL,
       /// control data
-      const control_data& data = control_data().window(window_data().style(wxSL_HORIZONTAL)),
+      const control_data& data = 
+        control_data().window(window_data().style(wxSL_HORIZONTAL)),
       /// callback to apply
       user_apply_t apply = nullptr)
       : item(type, label, value, LABEL_LEFT, 1, min, max)
@@ -185,7 +186,8 @@ namespace wex
       /// inc value
       double inc = 1,
       /// control data
-      const control_data& data = control_data().window(window_data().style(wxSL_HORIZONTAL)),
+      const control_data& data = 
+        control_data().window(window_data().style(wxSL_HORIZONTAL)),
       /// callback to apply
       user_apply_t apply = nullptr)
       : item(SPINCTRLDOUBLE, label, value, LABEL_LEFT, 1, min, max, inc)
@@ -201,7 +203,8 @@ namespace wex
       const control_data& data = control_data(),
       /// callback to apply
       user_apply_t apply = nullptr)
-      : item(CHECKLISTBOX_BOOL, "checklistbox_bool", choices, LABEL_NONE, 1, 0, 1, 1) 
+      : item(CHECKLISTBOX_BOOL, 
+         "checklistbox_bool", choices, LABEL_NONE, 1, 0, 1, 1) 
         {m_apply = apply;
          m_data = data;};
 
@@ -248,7 +251,9 @@ namespace wex
       label_t label_t = LABEL_NONE,
       /// image list to be used (required for a tool book)
       wxImageList* imageList = nullptr)
-      : item(type, label, v, label_t, cols, 0, 1, 1, nullptr, nullptr, nullptr, imageList) {
+      : item(type, 
+          label, 
+          v, label_t, cols, 0, 1, 1, nullptr, nullptr, nullptr, imageList) {
           m_data= data;};
     
     /// Constructor for a RADIOBOX, or a CHECKLISTBOX_BIT item. 
@@ -267,7 +272,8 @@ namespace wex
       /// major dimension for the radiobox
       int majorDimension = 1,
       /// control data
-      const control_data& data = control_data().window(window_data().style(wxRA_SPECIFY_COLS)),
+      const control_data& data = 
+        control_data().window(window_data().style(wxRA_SPECIFY_COLS)),
       /// callback to apply
       user_apply_t apply = nullptr)
       : item(use_radiobox ? RADIOBOX: CHECKLISTBOX_BIT, label, choices,
@@ -290,7 +296,9 @@ namespace wex
       label_t label_t = LABEL_LEFT,
       /// callback to apply
       user_apply_t apply = nullptr)
-      : item(USER, label, std::string(), label_t, 1, 0, 1, 1, window, create, config) {
+      : item(USER, 
+          label, 
+          std::string(), label_t, 1, 0, 1, 1, window, create, config) {
           m_apply = apply;};
 
     /// Constuctor a LISTVIEW item.
@@ -458,18 +466,26 @@ namespace wex
     void add_items(std::pair<std::string, std::vector<item>> & items, bool readonly);
     wxFlexGridSizer* add_static_text(wxSizer* sizer) const;
     bool create_window(wxWindow* parent, bool readonly);
-    std::stringstream Log(const std::string& name, const std::any& any) const;
 
     bool m_is_row_growable = false;
-    int m_major_dimension, m_max_items {25};
+
+    int 
+      m_major_dimension, 
+      m_max_items {25};
     
     type_t m_type;
     label_t m_label_type;
-    std::any m_initial, m_min, m_max, m_inc;
-    std::string m_label, m_page;
-    wxSizerFlags m_sizer_flags;
-    wxWindow* m_window;
-    wxImageList* m_image_list;
+    
+    std::any 
+      m_initial, 
+      m_min, 
+      m_max, 
+      m_inc;
+    
+    std::string 
+      m_label, 
+      m_page;
+    
     item_template_dialog<item>* m_dialog {nullptr};
     control_data m_data;
     listview_data m_listview_data;
@@ -478,6 +494,10 @@ namespace wex
     user_window_create_t m_user_window_create_t;
     user_window_to_config_t m_user_window_to_config_t;
     
+    wxImageList* m_image_list;
+    wxSizerFlags m_sizer_flags;
+    wxWindow* m_window;
+
     static inline bool m_use_config = true;
   };
 

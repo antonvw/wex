@@ -101,7 +101,7 @@ TEST_CASE("wex::addressrange")
     REQUIRE( stc->GetLineCount() == 10);
   }
   
-  SUBCASE("erae")
+  SUBCASE("erase")
   {
     REQUIRE( wex::addressrange(ex, "1,3").erase());
     REQUIRE( wex::addressrange(ex, "1,3").erase());
@@ -264,7 +264,7 @@ TEST_CASE("wex::addressrange")
     stc->GotoLine(0);
     REQUIRE( wex::addressrange(ex, 2).yank());
     stc->SelectNone();
-    stc->AddText(stc->get_vi().get_macros().get_register('0'));
+    stc->add_text(stc->get_vi().get_macros().get_register('0'));
     REQUIRE( stc->GetLineCount() == 10);
     REQUIRE( wex::addressrange(ex, -2).erase());
     stc->GotoLine(0);

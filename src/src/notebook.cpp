@@ -2,7 +2,7 @@
 // Name:      notebook.cpp
 // Purpose:   Implementation of class wex::notebook
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -21,7 +21,7 @@ wex::notebook::notebook(const window_data& data)
       data.style() == DATA_NUMBER_NOT_SET ?
         wxAUI_NB_DEFAULT_STYLE:
         data.style())
-  , m_Frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
+  , m_frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
 {
   // Here you could use another art provider.
   // SetArtProvider(new wxAuiSimpleTabArt); 
@@ -41,30 +41,30 @@ wex::notebook::notebook(const window_data& data)
   
   Bind(wxEVT_AUINOTEBOOK_PAGE_CHANGED, [=](wxAuiNotebookEvent& event) {
     event.Skip(); // call base
-    if (m_Frame != nullptr)
+    if (m_frame != nullptr)
     {
-      m_Frame->on_notebook(GetId(), GetPage(event.GetSelection()));
+      m_frame->on_notebook(GetId(), GetPage(event.GetSelection()));
     }});
   
   Bind(wxEVT_AUINOTEBOOK_PAGE_CLOSE, [=](wxAuiNotebookEvent& event) {
     if (const auto sel = event.GetSelection(); sel != wxNOT_FOUND)
     {
-      if (m_Frame != nullptr && !m_Frame->allow_close(GetId(), GetPage(sel)))
+      if (m_frame != nullptr && !m_frame->allow_close(GetId(), GetPage(sel)))
       {
         event.Veto();
       }
       else
       {
         auto* page = GetPage(sel);
-        const auto key = m_Windows[page];
-        m_Windows.erase(page);
-        m_Keys.erase(key);
+        const auto key = m_windows[page];
+        m_windows.erase(page);
+        m_keys.erase(key);
         event.Skip(); // call base
         
-        if (m_Frame != nullptr)
+        if (m_frame != nullptr)
         {
-          if (m_Keys.empty()) m_Frame->sync_close_all(GetId());
-          m_Frame->hide_ex_bar();
+          if (m_keys.empty()) m_frame->sync_close_all(GetId());
+          m_frame->hide_ex_bar();
         }
       }
     }});
@@ -82,8 +82,8 @@ wxWindow* wex::notebook::add_page(
     return nullptr;
   }
   
-  m_Keys[key] = page;
-  m_Windows[page] = key;
+  m_keys[key] = page;
+  m_windows[page] = key;
 
   return page;
 }
@@ -95,9 +95,9 @@ const std::string wex::notebook::change_selection(const std::string& key)
   if (const auto index = page_index_by_key(key); 
     index != wxNOT_FOUND && ((previous = wxAuiNotebook::ChangeSelection(index))) >= 0)
   {
-    auto* page = m_Keys[key];
-    m_Keys[key] = page;
-    m_Windows[page] = key;
+    auto* page = m_keys[key];
+    m_keys[key] = page;
+    m_windows[page] = key;
     return key_by_page(GetPage(previous));
   }
   
@@ -109,13 +109,13 @@ bool wex::notebook::delete_page(const std::string& key)
   if (const auto index = page_index_by_key(key);
     index != wxNOT_FOUND && DeletePage(index))
   {
-    auto* page = m_Keys[key];
-    m_Keys.erase(key);
-    m_Windows.erase(page);
+    auto* page = m_keys[key];
+    m_keys.erase(key);
+    m_windows.erase(page);
 
-    if (m_Frame != nullptr && m_Keys.empty())
+    if (m_frame != nullptr && m_keys.empty())
     {
-      m_Frame->sync_close_all(GetId());
+      m_frame->sync_close_all(GetId());
     }
 
     return true;
@@ -145,8 +145,8 @@ wxWindow* wex::notebook::insert_page(
     return nullptr;
   }
 
-  m_Keys[key] = page;
-  m_Windows[page] = key;
+  m_keys[key] = page;
+  m_windows[page] = key;
 
   return page;
 }
@@ -172,10 +172,10 @@ bool wex::notebook::set_page_text(
   }
   else 
   {
-    auto* page = m_Keys[key];
-    m_Keys.erase(key);
-    m_Keys[new_key] = page;
-    m_Windows[page] = new_key;
+    auto* page = m_keys[key];
+    m_keys.erase(key);
+    m_keys[new_key] = page;
+    m_windows[page] = new_key;
     
     if (bitmap.IsOk())
     {

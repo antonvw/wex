@@ -30,29 +30,29 @@ wex::report::frame::frame(
   size_t maxProjects,
   const window_data& data)
   : managed_frame(maxFiles, data)
-  , m_ProjectHistory(maxProjects, ID_RECENT_PROJECT_LOWEST, "RecentProjects")
-  , m_Info({
+  , m_project_history(maxProjects, ID_RECENT_PROJECT_LOWEST, "RecentProjects")
+  , m_info({
       find_replace_data::get()->text_match_word(),
       find_replace_data::get()->text_match_case(),
       find_replace_data::get()->text_regex()})
 {
   // Take care of default value.
-  if (!config(m_textRecursive).exists())
+  if (!config(m_text_recursive).exists())
   {
-    config(m_textRecursive).set(true); 
+    config(m_text_recursive).set(true); 
   }
 
-  std::set<std::string> t(m_Info);
-  t.insert(m_textRecursive);
+  std::set<std::string> t(m_info);
+  t.insert(m_text_recursive);
   
   const std::vector<item> f {
     {find_replace_data::get()->text_find(), 
        item::COMBOBOX, std::any(), control_data().is_required(true)},
-    {m_textInFiles, item::COMBOBOX, std::any(), control_data().is_required(true)},
-    {m_textInFolder, item::COMBOBOX_DIR, std::any(), control_data().is_required(true)},
+    {m_text_in_files, item::COMBOBOX, std::any(), control_data().is_required(true)},
+    {m_text_in_folder, item::COMBOBOX_DIR, std::any(), control_data().is_required(true)},
     {t}};
   
-  m_FiFDialog = new item_dialog(
+  m_fif_dialog = new item_dialog(
     f,
     window_data().
       button(wxAPPLY | wxCANCEL).
@@ -60,7 +60,7 @@ wex::report::frame::frame(
       title(_("Find In Files").ToStdString()).
       style(wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxSTAY_ON_TOP));
     
-  m_RiFDialog = new item_dialog({
+  m_rif_dialog = new item_dialog({
       f.at(0),
       {find_replace_data::get()->text_replace_with(), item::COMBOBOX},
       f.at(1),
@@ -69,7 +69,7 @@ wex::report::frame::frame(
       // Match whole word does not work with replace.
       {{find_replace_data::get()->text_match_case(),
         find_replace_data::get()->text_regex(),
-        m_textRecursive}}},
+        m_text_recursive}}},
     window_data().
       button(wxAPPLY | wxCANCEL).
       id(ID_REPLACE_IN_FILES).
@@ -79,11 +79,11 @@ wex::report::frame::frame(
   Bind(wxEVT_IDLE, &frame::on_idle, this);
   
   Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
-    m_ProjectHistory.save();
+    m_project_history.save();
     event.Skip();});
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_ProjectHistory.clear();}, ID_CLEAR_PROJECTS);
+    m_project_history.clear();}, ID_CLEAR_PROJECTS);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (auto* project = get_project(); project != nullptr)
@@ -96,13 +96,13 @@ wex::report::frame::frame(
     {
       grep(event.GetString().ToStdString());
     }
-    else if (m_FiFDialog != nullptr)
+    else if (m_fif_dialog != nullptr)
     {
       if (get_stc() != nullptr && !get_stc()->get_find_string().empty())
       {
-        m_FiFDialog->reload(); 
+        m_fif_dialog->reload(); 
       }
-      m_FiFDialog->Show(); 
+      m_fif_dialog->Show(); 
     }}, ID_TOOL_REPORT_FIND);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -110,20 +110,20 @@ wex::report::frame::frame(
     {
       sed(event.GetString().ToStdString());
     }
-    else if (m_RiFDialog != nullptr)
+    else if (m_rif_dialog != nullptr)
     {
       if (get_stc() != nullptr && !get_stc()->get_find_string().empty())
       {
-        m_RiFDialog->reload(); 
+        m_rif_dialog->reload(); 
       }
-      m_RiFDialog->Show();
+      m_rif_dialog->Show();
     }}, ID_TOOL_REPLACE);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    on_menu_history(m_ProjectHistory, 
-      event.GetId() - m_ProjectHistory.get_base_id(), 
+    on_menu_history(m_project_history, 
+      event.GetId() - m_project_history.get_base_id(), 
       wex::stc_data::window_t().set(stc_data::WIN_IS_PROJECT));},
-    m_ProjectHistory.get_base_id(), m_ProjectHistory.get_base_id() + m_ProjectHistory.get_max_files());
+    m_project_history.get_base_id(), m_project_history.get_base_id() + m_project_history.get_max_files());
 }
 
 const std::string find_replace_string(bool replace)
@@ -157,12 +157,12 @@ void wex::report::frame::find_in_files(wxWindowID dialogid)
       
     dir::type_t type;
     type.set(dir::FILES);
-    if (config(m_textRecursive).get(true)) type.set(dir::RECURSIVE);
+    if (config(m_text_recursive).get(true)) type.set(dir::RECURSIVE);
 
     if (tool_dir dir(
       tool,
-      config(m_textInFolder).get_firstof(),
-      config(m_textInFiles).get_firstof(),
+      config(m_text_in_folder).get_firstof(),
+      config(m_text_in_files).get_firstof(),
       type);
 
       dir.find_files() >= 0)
@@ -222,7 +222,7 @@ bool wex::report::frame::find_in_files(
         tool_dir dir(
           tool, 
           it, 
-          config(m_textInFiles).get_firstof());
+          config(m_text_in_files).get_firstof());
           
         dir.find_files();
         stats += dir.get_statistics().get_elements();
@@ -250,9 +250,9 @@ int wex::report::frame::find_in_files_dialog(
 
   if (item_dialog({
       {find_replace_data::get()->text_find(), item::COMBOBOX, std::any(), control_data().is_required(true)}, 
-      (add_in_files ? item(m_textInFiles, item::COMBOBOX, std::any(), control_data().is_required(true)) : item()),
+      (add_in_files ? item(m_text_in_files, item::COMBOBOX, std::any(), control_data().is_required(true)) : item()),
       (id == ID_TOOL_REPLACE ? item(find_replace_data::get()->text_replace_with(), item::COMBOBOX): item()),
-      item(m_Info)},
+      item(m_info)},
     window_data().title(find_in_files_title(id))).ShowModal() == wxID_CANCEL)
   {
     return wxID_CANCEL;
@@ -272,8 +272,8 @@ const std::string wex::report::frame::find_in_files_title(int id) const
 
 bool wex::report::frame::grep(const std::string& arg, bool sed)
 {
-  static std::string arg1 = config(m_textInFolder).get_firstof();
-  static std::string arg2 = config(m_textInFiles).get_firstof();
+  static std::string arg1 = config(m_text_in_folder).get_firstof();
+  static std::string arg2 = config(m_text_in_files).get_firstof();
   static dir::type_t arg3 = dir::FILES;
 
   if (get_stc() != nullptr)
@@ -294,11 +294,11 @@ bool wex::report::frame::grep(const std::string& arg, bool sed)
          find_replace_data::get()->set_replace_string(v[i++]);
        }
        arg2 = (v.size() > i ? 
-         config(m_textInFiles).set_firstof(v[i++]): 
-         config(m_textInFiles).get_firstof());
+         config(m_text_in_files).set_firstof(v[i++]): 
+         config(m_text_in_files).get_firstof());
        arg1 = (v.size() > i ? 
-         config(m_textInFolder).set_firstof(v[i++]): 
-         config(m_textInFolder).get_firstof());
+         config(m_text_in_folder).set_firstof(v[i++]): 
+         config(m_text_in_folder).get_firstof());
        }}, false).parse(arg, help))
   {
     stc_entry_dialog(help).ShowModal();
@@ -433,15 +433,15 @@ void wex::report::frame::set_recent_file(const wex::path& path)
 {
   managed_frame::set_recent_file(path);
   
-  if (m_FileHistoryList != nullptr && path.file_exists())
+  if (m_file_history_listview != nullptr && path.file_exists())
   {
-    listitem(m_FileHistoryList, path).insert(0);
+    listitem(m_file_history_listview, path).insert(0);
 
-    if (m_FileHistoryList->GetItemCount() > 1)
+    if (m_file_history_listview->GetItemCount() > 1)
     {
-      for (auto i = m_FileHistoryList->GetItemCount() - 1; i >= 1 ; i--)
+      for (auto i = m_file_history_listview->GetItemCount() - 1; i >= 1 ; i--)
       {
-        if (listitem item(m_FileHistoryList, i); item.get_filename() == path)
+        if (listitem item(m_file_history_listview, i); item.get_filename() == path)
         {
           item.erase();
         }
@@ -454,13 +454,13 @@ void wex::report::frame::use_file_history_list(wex::listview* list)
 {
   assert(list->data().type() == listview_data::HISTORY);
   
-  m_FileHistoryList = list;
-  m_FileHistoryList->Hide();
+  m_file_history_listview = list;
+  m_file_history_listview->Hide();
 
   // Add all (existing) items from FileHistory.
   for (size_t i = 0; i < file_history().size(); i++)
   {
-    if (listitem item(m_FileHistoryList, 
+    if (listitem item(m_file_history_listview, 
       file_history().get_history_file(i));
       item.get_filename().stat().is_ok())
     {

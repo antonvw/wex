@@ -22,20 +22,20 @@ namespace wex
       frame()
         : report::frame() {
           lexer lexer("cpp");
-          m_Report = new listview(listview_data().
+          m_report = new listview(listview_data().
             type(listview_data::KEYWORD).lexer(&lexer));
-          wex::test::add_pane(this, m_Report);};
+          wex::test::add_pane(this, m_report);};
 
       virtual listview* activate(
         listview_data::type_t listview_type, const lexer* lexer) override {
         // only for coverage
         report::frame::activate(listview_type, lexer);
-        return m_Report;};
+        return m_report;};
 
       void more_coverage() {
         file_history_list();};
     private:
-      listview* m_Report;
+      listview* m_report;
     };
 
     class gui_app : public app
@@ -48,16 +48,16 @@ namespace wex
           return false;
         }
       
-        m_Frame = new test::frame();
-        m_Frame->more_coverage();
-        m_Frame->Show();
+        m_frame = new test::frame();
+        m_frame->more_coverage();
+        m_frame->Show();
         
         return true;
       }
       
-      static auto* frame() {return m_Frame;};
+      static auto* frame() {return m_frame;};
     private:
-      inline static test::frame* m_Frame = nullptr;
+      inline static test::frame* m_frame = nullptr;
     }; 
   };
 };

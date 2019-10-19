@@ -29,12 +29,12 @@ namespace wex
     explicit text_droptarget(grid* grid);
   private:
     bool OnDropText(wxCoord x, wxCoord y, const wxString& data) override;
-    grid* m_Grid;
+    grid* m_grid;
   };
 
   text_droptarget::text_droptarget(grid* grid)
     : wxTextDropTarget()
-    , m_Grid(grid)
+    , m_grid(grid)
   {
   }
 
@@ -43,8 +43,8 @@ namespace wex
     wxCoord y, 
     const wxString& data)
   {
-    const auto row = m_Grid->YToRow(y - m_Grid->GetColLabelSize());
-    const auto col = m_Grid->XToCol(x - m_Grid->GetRowLabelSize());
+    const auto row = m_grid->YToRow(y - m_grid->GetColLabelSize());
+    const auto col = m_grid->XToCol(x - m_grid->GetRowLabelSize());
 
     if (row == wxNOT_FOUND || col == wxNOT_FOUND)
     {
@@ -53,12 +53,12 @@ namespace wex
 
     const wxGridCellCoords coord(row, col);
 
-    if (!m_Grid->is_allowed_drop_selection(coord, data))
+    if (!m_grid->is_allowed_drop_selection(coord, data))
     {
       return false;
     }
 
-    return m_Grid->drop_selection(coord, data);
+    return m_grid->drop_selection(coord, data);
   }
 };
 

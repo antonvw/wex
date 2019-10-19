@@ -98,6 +98,10 @@ void wex::test::app::set_context(doctest::Context* context)
   
 int wex::test::main(int argc, char* argv[], wex::test::app* app)
 {
+#ifndef __WXMSW__
+  signal(SIGPIPE, SIG_IGN);
+#endif
+
   try
   {
     wxApp::SetInstance(app);

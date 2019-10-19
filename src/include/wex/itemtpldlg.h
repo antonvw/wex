@@ -46,17 +46,17 @@ namespace wex
       int cols = 1)
     : dialog(data)
     , m_force_checkbox_checked(false)
-    , m_Items(v) {
+    , m_items(v) {
       layout(rows, cols);
-      Bind(wxEVT_BUTTON, &item_template_dialog::OnCommand, this, wxID_APPLY);
-      Bind(wxEVT_BUTTON, &item_template_dialog::OnCommand, this, wxID_CANCEL);
-      Bind(wxEVT_BUTTON, &item_template_dialog::OnCommand, this, wxID_CLOSE);
-      Bind(wxEVT_BUTTON, &item_template_dialog::OnCommand, this, wxID_OK);
-      Bind(wxEVT_UPDATE_UI, &item_template_dialog::OnUpdateUI, this, wxID_APPLY);
-      Bind(wxEVT_UPDATE_UI, &item_template_dialog::OnUpdateUI, this, wxID_OK);};
+      Bind(wxEVT_BUTTON, &item_template_dialog::on_command, this, wxID_APPLY);
+      Bind(wxEVT_BUTTON, &item_template_dialog::on_command, this, wxID_CANCEL);
+      Bind(wxEVT_BUTTON, &item_template_dialog::on_command, this, wxID_CLOSE);
+      Bind(wxEVT_BUTTON, &item_template_dialog::on_command, this, wxID_OK);
+      Bind(wxEVT_UPDATE_UI, &item_template_dialog::on_update_ui, this, wxID_APPLY);
+      Bind(wxEVT_UPDATE_UI, &item_template_dialog::on_update_ui, this, wxID_OK);};
     
     /// Adds an item to the temp vector.
-    void add(const T & item) {m_ItemsTemp.emplace_back(item);};
+    void add(const T & item) {m_items_tmp.emplace_back(item);};
 
     /// If this item is related to a button, bind to event handler.
     /// Returns true if bind was done.
@@ -67,7 +67,7 @@ namespace wex
         case item::BUTTON:
         case item::COMMANDLINKBUTTON:
           Bind(wxEVT_BUTTON, [=](wxCommandEvent& event) {
-            if (!item.apply()) Click(event);}, item.window()->GetId());
+            if (!item.apply()) click(event);}, item.window()->GetId());
           break;
         case item::COMBOBOX_DIR:
           Bind(wxEVT_BUTTON, [=](wxCommandEvent& event) {
@@ -104,7 +104,7 @@ namespace wex
           break;
         case item::TOGGLEBUTTON:
           Bind(wxEVT_TOGGLEBUTTON, [=](wxCommandEvent& event) {
-            if (!item.apply()) Click(event);}, item.window()->GetId());
+            if (!item.apply()) click(event);}, item.window()->GetId());
           break;
         default: return false;
       }
@@ -119,13 +119,13 @@ namespace wex
       /// specify on which page
       const wxString& page = wxEmptyString) {
       m_force_checkbox_checked = true;
-      m_Contains = contains;
-      m_Page = page;};
+      m_contains = contains;
+      m_page = page;};
     
     /// Returns the (first) item that has specified label,
     /// or empty item if item does not exist.
     const T get_item(const std::string& label) const {
-      for (const auto& item : m_Items)
+      for (const auto& item : m_items)
       {
         if (item.label() == label)
         {
@@ -135,7 +135,7 @@ namespace wex
       return T();};
 
     /// Returns all items.
-    const auto & get_items() const {return m_Items;};
+    const auto & get_items() const {return m_items;};
 
     /// Returns the item actual value for specified label, or 
     /// empty object if item does not exist.
@@ -144,7 +144,7 @@ namespace wex
    
     /// Sets the item actual value for specified label.
     bool set_item_value(const std::string& label, const std::any& value) const {
-      for (auto& item : m_Items)
+      for (auto& item : m_items)
       {
         if (item.label() == label)
         {
@@ -153,18 +153,70 @@ namespace wex
       };
       return false;};
   private:
-    void OnCommand(wxCommandEvent& event) {
+    void click(const wxCommandEvent& event) const {
+      if (frame* frame = wxDynamicCast(wxTheApp->GetTopWindow(), wex::frame);
+        frame != nullptr)
+      {
+        frame->on_command_item_dialog(GetId(), event);
+      }};
+    
+    void layout(int rows, int cols) {
+      wxFlexGridSizer* previous_item_sizer = nullptr;
+      wxFlexGridSizer* sizer = (rows > 0 ? 
+        new wxFlexGridSizer(rows, cols, 0, 0): 
+        new wxFlexGridSizer(cols));
+
+      for (int i = 0; i < cols; i++)
+      {
+        sizer->AddGrowableCol(i);
+      }
+      int previous_type = -1;
+      for (auto& item : m_items)
+      {
+        if (item.type() == item::EMPTY) continue; //skip
+
+        item.set_dialog(this);
+        
+        // If this item has same type as previous type use previous sizer,
+        // otherwise use no sizer (layout will create a new one).
+        wxFlexGridSizer* current_item_sizer = (item.type() == previous_type && cols == 1 ? 
+          previous_item_sizer: 
+          nullptr);
+
+        // layout the item.
+        previous_item_sizer = item.layout(
+          this, 
+          sizer, 
+          data().button() == wxCANCEL,
+          current_item_sizer);
+        previous_type = item.type();
+        
+        if (sizer->GetEffectiveRowsCount() >= 1 &&
+           !sizer->IsRowGrowable(sizer->GetEffectiveRowsCount() - 1) &&
+            item.is_row_growable())
+        {
+          sizer->AddGrowableRow(sizer->GetEffectiveRowsCount() - 1);
+        }
+        bind_button(item);
+      }
+      add_user_sizer(sizer);
+      layout_sizers();
+      m_items.insert(m_items.end(), m_items_tmp.begin(), m_items_tmp.end());
+      m_items_tmp.clear();
+      };
+
+    void on_command(wxCommandEvent& event) {
       if (  event.GetId() == wxID_APPLY ||
           ((event.GetId() == wxID_OK ||
             event.GetId() == wxID_CANCEL) && !IsModal()))
       {
-        Click(event);
+        click(event);
       }
       event.Skip();};
     
-    void OnUpdateUI(wxUpdateUIEvent& event) {
+    void on_update_ui(wxUpdateUIEvent& event) {
       bool one_checkbox_checked = false;
-      for (const auto& item : m_Items)
+      for (const auto& item : m_items)
       {
         switch (item.type())
         {
@@ -172,9 +224,9 @@ namespace wex
           if (m_force_checkbox_checked)
           {
             if (auto* cb = (wxCheckBox*)item.window(); 
-              wxString(item.label()).Lower().Contains(m_Contains.Lower()) && 
+              wxString(item.label()).Lower().Contains(m_contains.Lower()) && 
                 cb->IsChecked() &&
-                item.page() == m_Page)
+                item.page() == m_page)
             {
               one_checkbox_checked = true;
             }
@@ -190,9 +242,9 @@ namespace wex
               i < clb->GetCount();
               i++)
             {
-              if (clb->GetString(i).Lower().Contains(m_Contains.Lower()) && 
+              if (clb->GetString(i).Lower().Contains(m_contains.Lower()) && 
                   clb->IsChecked(i) &&
-                  item.page() == m_Page)
+                  item.page() == m_page)
               {
                 one_checkbox_checked = true;
               }
@@ -254,62 +306,13 @@ namespace wex
       }
       event.Enable(m_force_checkbox_checked ? one_checkbox_checked: true);};
 
-    void Click(const wxCommandEvent& event) const {
-      if (frame* frame = wxDynamicCast(wxTheApp->GetTopWindow(), wex::frame);
-        frame != nullptr)
-      {
-        frame->on_command_item_dialog(GetId(), event);
-      }};
-    
-    void layout(int rows, int cols) {
-      wxFlexGridSizer* previous_item_sizer = nullptr;
-      wxFlexGridSizer* sizer = (rows > 0 ? 
-        new wxFlexGridSizer(rows, cols, 0, 0): 
-        new wxFlexGridSizer(cols));
+    std::vector< T > m_items;
+    std::vector< T > m_items_tmp;
 
-      for (int i = 0; i < cols; i++)
-      {
-        sizer->AddGrowableCol(i);
-      }
-      int previous_type = -1;
-      for (auto& item : m_Items)
-      {
-        if (item.type() == item::EMPTY) continue; //skip
-
-        item.set_dialog(this);
-        
-        // If this item has same type as previous type use previous sizer,
-        // otherwise use no sizer (layout will create a new one).
-        wxFlexGridSizer* current_item_sizer = (item.type() == previous_type && cols == 1 ? 
-          previous_item_sizer: 
-          nullptr);
-
-        // layout the item.
-        previous_item_sizer = item.layout(
-          this, 
-          sizer, 
-          data().button() == wxCANCEL,
-          current_item_sizer);
-        previous_type = item.type();
-        
-        if (sizer->GetEffectiveRowsCount() >= 1 &&
-           !sizer->IsRowGrowable(sizer->GetEffectiveRowsCount() - 1) &&
-            item.is_row_growable())
-        {
-          sizer->AddGrowableRow(sizer->GetEffectiveRowsCount() - 1);
-        }
-        bind_button(item);
-      }
-      add_user_sizer(sizer);
-      layout_sizers();
-      m_Items.insert(m_Items.end(), m_ItemsTemp.begin(), m_ItemsTemp.end());
-      m_ItemsTemp.clear();
-      };
-
-    std::vector< T > m_Items;
-    std::vector< T > m_ItemsTemp;
     bool m_force_checkbox_checked;
-    wxString m_Contains;
-    wxString m_Page;
+    
+    wxString 
+      m_contains,
+      m_page;
   };
 };

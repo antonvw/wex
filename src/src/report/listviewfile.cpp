@@ -24,13 +24,13 @@
 wex::report::file::file(
   const std::string& file, const listview_data& data)
   : report::listview(listview_data(data).type(listview_data::FILE))
-  , m_add_itemsDialog(new item_dialog({
-        {m_textAddWhat,item::COMBOBOX, std::any(), 
+  , m_add_items_dialog(new item_dialog({
+        {m_text_add_what,item::COMBOBOX, std::any(), 
            control_data().is_required(true)},
-        {m_textInFolder,item::COMBOBOX_DIR, std::any(), 
+        {m_text_in_folder,item::COMBOBOX_DIR, std::any(), 
            control_data().is_required(true)},
         {std::set<std::string> {
-          m_textAddFiles, m_textAddFolders, m_textAddRecursive}}},
+          m_text_add_files, m_text_add_folders, m_text_add_recursive}}},
       window_data().
         title(_("Add Items").ToStdString()).
         button(wxAPPLY | wxCANCEL).id(wxID_ADD)))
@@ -55,28 +55,28 @@ wex::report::file::file(
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     // Force at least one of the checkboxes to be checked.
-    m_add_itemsDialog->force_checkbox_checked(_("Add"));
+    m_add_items_dialog->force_checkbox_checked(_("Add"));
     if (GetSelectedItemCount() > 0)
     {
-      wex::item item(m_add_itemsDialog->get_item(m_textInFolder));
+      wex::item item(m_add_items_dialog->get_item(m_text_in_folder));
       wxComboBox* cb = (wxComboBox* )item.window();
       cb->SetValue(listitem(
         this, GetFirstSelected()).get_filename().get_path());
     }
-    m_add_itemsDialog->Show();}, wxID_ADD);
+    m_add_items_dialog->Show();}, wxID_ADD);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     event.Skip();
     if (!get_filename().file_exists() || !get_filename().is_readonly())
     {
-      m_ContentsChanged = true;
+      m_contents_changed = true;
       frame::update_statusbar(this);
     }}, wxID_EDIT, wxID_REPLACE_ALL);
 }
 
 wex::report::file::~file()
 {
-  m_add_itemsDialog->Destroy();
+  m_add_items_dialog->Destroy();
 }
 
 void wex::report::file::add_items(
@@ -98,7 +98,7 @@ void wex::report::file::add_items(
     
     if (added > 0)
     {
-      m_ContentsChanged = true;
+      m_contents_changed = true;
   
       if (config("List/SortSync").get(true))
       {
@@ -120,7 +120,7 @@ void wex::report::file::after_sorting()
   // Only if we are not sort syncing set contents changed.
   if (!config("List/SortSync").get(true))
   {
-    m_ContentsChanged = true;
+    m_contents_changed = true;
   }
 }
 
@@ -245,7 +245,7 @@ bool wex::report::file::item_from_text(const std::string& text)
   
   if (listview::item_from_text(text))
   {
-    m_ContentsChanged = true;
+    m_contents_changed = true;
     result = true;
     
     if (config("List/SortSync").get(true))

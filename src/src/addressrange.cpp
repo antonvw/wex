@@ -355,7 +355,7 @@ bool wex::addressrange::escape(const std::string& command)
 
       if (erase())
       {
-        m_stc->AddText(process.get_stdout());
+        m_stc->add_text(process.get_stdout());
       }
       
       m_stc->EndUndoAction();
@@ -857,9 +857,11 @@ bool wex::addressrange::write(const std::string& text) const
     filename.replace(filename.find("~"), 1, wxGetHomeDir().ToStdString());
   }
 #endif
-
-  return wex::file(filename, text.find(">>") != std::string::npos ? 
-    std::ios_base::app: std::ios::out).write(m_stc->get_selected_text());
+  
+  return wex::file(
+    filename, text.find(">>") != std::string::npos ? 
+      std::ios::out | std::ios_base::app: std::ios::out).write(
+        m_stc->get_selected_text());
 }
 
 bool wex::addressrange::yank(char name) const

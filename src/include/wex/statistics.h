@@ -2,7 +2,7 @@
 // Name:      statistics.h
 // Purpose:   Include file for statistics classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -26,9 +26,9 @@ namespace wex
       statistics <T> * statistics,
       const window_data& data = window_data().style(wxWANTS_CHARS))
       : grid(data)
-      , m_Statistics(statistics)
+      , m_statistics(statistics)
     {
-      Bind(wxEVT_MENU, [=](wxCommandEvent& event) {m_Statistics->clear();}, wxID_CLEAR);
+      Bind(wxEVT_MENU, [=](wxCommandEvent& event) {m_statistics->clear();}, wxID_CLEAR);
     }
   protected:
     void build_popup_menu(menu& menu) override {
@@ -37,7 +37,7 @@ namespace wex
       if (IsSelection()) menu.style().set(menu::IS_SELECTED);
       grid::build_popup_menu(menu);};
   private:
-    statistics <T> * m_Statistics;
+    statistics <T> * m_statistics;
   };
 
   /// Offers base statistics. All statistics involve a key value pair,
@@ -57,7 +57,7 @@ namespace wex
 
     /// Adds other statistics.
     statistics& operator+=(const statistics& s) {
-      for (const auto& it : s.m_Items)
+      for (const auto& it : s.m_items)
       {
         inc(it.first, it.second);
       }
@@ -66,15 +66,15 @@ namespace wex
     /// Clears the items. If you have shown the statistics
     /// the window is updated as well.
     void clear() {
-      m_Items.clear();
-      m_Rows.clear();
+      m_items.clear();
+      m_rows.clear();
 
-      if (m_Grid != nullptr)
+      if (m_grid != nullptr)
       {
-        m_Grid->ClearGrid();
-        if (m_Grid->GetNumberRows() > 0)
+        m_grid->ClearGrid();
+        if (m_grid->GetNumberRows() > 0)
         {
-          m_Grid->DeleteRows(0, m_Grid->GetNumberRows());
+          m_grid->DeleteRows(0, m_grid->GetNumberRows());
         }
       }
     };
@@ -87,7 +87,7 @@ namespace wex
     /// with comma's separating items, and a : separating key and value.
     const std::string get() const {
       std::string text;
-      for (const auto& it : m_Items)
+      for (const auto& it : m_items)
       {
         if (!text.empty())
         {
@@ -100,11 +100,11 @@ namespace wex
 
     /// Returns value for specified key.
     const T get(const std::string& key) const {
-      const auto it = m_Items.find(key);
-      return it != m_Items.end() ? it->second: T();};
+      const auto it = m_items.find(key);
+      return it != m_items.end() ? it->second: T();};
 
     /// Returns the items.
-    const auto & get_items() const {return m_Items;};
+    const auto & get_items() const {return m_items;};
 
     /// Increments key with value.
     const T inc(const std::string& key, T inc_value = 1) {
@@ -113,29 +113,29 @@ namespace wex
     /// Sets key to value. If you have shown the statistics
     /// the window is updated as well.
     const T set(const std::string& key, T value) {
-      m_Items[key] = value;
-      if (m_Grid != nullptr)
+      m_items[key] = value;
+      if (m_grid != nullptr)
       {
-        const auto& it = m_Rows.find(key);
+        const auto& it = m_rows.find(key);
 
-        if (it != m_Rows.end())
+        if (it != m_rows.end())
         {
-          m_Grid->SetCellValue(it->second, 1, std::to_string(value));
+          m_grid->SetCellValue(it->second, 1, std::to_string(value));
         }
         else
         {
-          m_Grid->AppendRows(1);
+          m_grid->AppendRows(1);
 
-          const auto row = m_Grid->GetNumberRows() - 1;
-          m_Rows.insert({key, row});
+          const auto row = m_grid->GetNumberRows() - 1;
+          m_rows.insert({key, row});
 
-          m_Grid->SetCellValue(row, 0, key);
-          m_Grid->SetCellValue(row, 1, std::to_string(value));
+          m_grid->SetCellValue(row, 0, key);
+          m_grid->SetCellValue(row, 1, std::to_string(value));
 
-          m_Grid->AutoSizeColumn(0);
+          m_grid->AutoSizeColumn(0);
         }
 
-        m_Grid->ForceRefresh();
+        m_grid->ForceRefresh();
       }
       return value;};
 
@@ -153,52 +153,52 @@ namespace wex
       /// the id of the grid component
       wxWindowID id = wxID_ANY)
       {
-      if (m_Grid == nullptr)
+      if (m_grid == nullptr)
       {
-        m_Grid = new grid_statistics<T>(this,
+        m_grid = new grid_statistics<T>(this,
           window_data().style(wxWANTS_CHARS).id(id));
-        m_Grid->CreateGrid(0, 0);
-        m_Grid->AppendCols(2);
-        m_Grid->EnableEditing(false);
+        m_grid->CreateGrid(0, 0);
+        m_grid->AppendCols(2);
+        m_grid->EnableEditing(false);
 
 #if wxUSE_DRAG_AND_DROP
-        m_Grid->use_drag_and_drop(false);
+        m_grid->use_drag_and_drop(false);
 #endif
 
         if (hide_row_labels)
         {
-          m_Grid->HideRowLabels();
+          m_grid->HideRowLabels();
         }
-        m_Grid->SetColLabelValue(0, _("Item"));
-        m_Grid->SetColLabelValue(1, _("Value"));
+        m_grid->SetColLabelValue(0, _("Item"));
+        m_grid->SetColLabelValue(1, _("Value"));
 
         // Values are numbers.
-        m_Grid->SetColFormatNumber(1);
+        m_grid->SetColFormatNumber(1);
 
         if (hide_col_labels)
         {
-          m_Grid->HideColLabels();
+          m_grid->HideColLabels();
         }
 
-        for (const auto& it : m_Items)
+        for (const auto& it : m_items)
         {
-          m_Grid->AppendRows(1);
-          const auto row = m_Grid->GetNumberRows() - 1;
-          m_Grid->SetCellValue(row, 0, it.first);
-          m_Grid->SetCellValue(row, 1, std::to_string(it.second));
-          m_Rows[it.first] = row;
+          m_grid->AppendRows(1);
+          const auto row = m_grid->GetNumberRows() - 1;
+          m_grid->SetCellValue(row, 0, it.first);
+          m_grid->SetCellValue(row, 1, std::to_string(it.second));
+          m_rows[it.first] = row;
         }
 
-        m_Grid->AutoSizeColumn(0);
+        m_grid->AutoSizeColumn(0);
       }
-      m_Grid->Show();
-      return m_Grid;}
+      m_grid->Show();
+      return m_grid;}
 
     /// Access to the grid, returns nullptr if the grid has not been shown yet.
-    const grid* get_grid() const {return m_Grid;}
+    const grid* get_grid() const {return m_grid;}
   private:
-    std::map<std::string, T> m_Items;
-    std::map<std::string, int> m_Rows;
-    grid_statistics<T>* m_Grid {nullptr};
+    std::map<std::string, T> m_items;
+    std::map<std::string, int> m_rows;
+    grid_statistics<T>* m_grid {nullptr};
   };
 };

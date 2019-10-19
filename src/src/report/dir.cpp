@@ -15,17 +15,17 @@ wex::tool_dir::tool_dir(
   const std::string& filespec, 
   dir::type_t flags)
   : dir(fullpath, filespec, std::string(), flags)
-  , m_Statistics()
-  , m_Tool(tool)
+  , m_statistics()
+  , m_tool(tool)
 {
 }
 
 bool wex::tool_dir::on_file(const path& file)
 {
-  report::stream report(file, m_Tool);
+  report::stream report(file, m_tool);
 
   bool ret = report.run_tool();
-  m_Statistics += report.get_statistics();
+  m_statistics += report.get_statistics();
 
   if (!ret)
   {
@@ -42,18 +42,18 @@ wex::report::dir::dir(
   const std::string& filespec, 
   dir::type_t flags)
   : wex::dir(fullpath, filespec, std::string(), flags)
-  , m_ListView(listview)
+  , m_listview(listview)
 {
 }
 
 bool wex::report::dir::on_dir(const path& dir)
 {
-  listitem(m_ListView, dir, file_spec()).insert();
+  listitem(m_listview, dir, file_spec()).insert();
   return true;
 }
 
 bool wex::report::dir::on_file(const path& file)
 {
-  listitem(m_ListView, file, file_spec()).insert();
+  listitem(m_listview, file, file_spec()).insert();
   return true;
 }

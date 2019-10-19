@@ -8,7 +8,7 @@
 #include <wex/debug-entry.h>
 #include "test.h"
 
-TEST_SUITE_BEGIN("wex::debug");
+TEST_SUITE_BEGIN("wex::process");
 
 TEST_CASE("wex::debug_entry")
 {

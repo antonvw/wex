@@ -2,7 +2,7 @@
 // Name:      stat.h
 // Purpose:   Declaration of wex::file_stat class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -40,10 +40,10 @@ namespace wex
 
     /// Sets the fullpath member, then syncs.
     bool sync(const std::string& fullpath) {
-      m_FullPath = fullpath;
+      m_fullpath = fullpath;
       return sync();}
   private:
-    std::string m_FullPath;
+    std::string m_fullpath;
     bool m_is_ok;
   };
 };

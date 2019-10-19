@@ -83,7 +83,7 @@ namespace wex::report
     const std::string find_in_files_title(int id) const;
     
     /// Returns project history.
-    auto& get_project_history() {return m_ProjectHistory;};
+    auto& get_project_history() {return m_project_history;};
     
     /// greps for text.
     /// The base directory is the directory for the current stc
@@ -105,7 +105,7 @@ namespace wex::report
       
     /// Updates project history.
     void set_recent_project(const path& path) {
-      m_ProjectHistory.add(path);};
+      m_project_history.add(path);};
 
     /// Uses specified history list, and adds all elements from file history
     /// to the list.
@@ -114,22 +114,25 @@ namespace wex::report
     /// Access to file history list, 
     /// if you use this as a page in a notebook,
     /// you might want prevent closing it.
-    listview* file_history_list() {return m_FileHistoryList;};
+    listview* file_history_list() {return m_file_history_listview;};
   private:
     void find_in_files(wxWindowID dialogid);
     void on_idle(wxIdleEvent& event);
 
-    item_dialog* m_FiFDialog {nullptr};
-    item_dialog* m_RiFDialog {nullptr};
-    listview* m_FileHistoryList {nullptr};
-    class file_history m_ProjectHistory;
+    item_dialog 
+      *m_fif_dialog {nullptr},
+      *m_rif_dialog {nullptr};
+    
+    listview* m_file_history_listview {nullptr};
+    class file_history m_project_history;
 
-    const std::string m_textInFiles {_("In files")};
-    const std::string m_textInFolder  {_("In folder")};
-    const std::string m_textRecursive {_("Recursive")};
+    const std::string 
+      m_text_in_files {_("In files")},
+      m_text_in_folder  {_("In folder")},
+      m_text_recursive {_("Recursive")};
 
     // This set determines what fields are placed on the Find Files dialogs
     // as a list of checkboxes.
-    const std::set < std::string > m_Info;
+    const std::set < std::string > m_info;
   };
 };

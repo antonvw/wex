@@ -55,28 +55,28 @@ namespace wex::report
       SYNTAX_TWO       ///< syntax according to comment begin2 and end2
     };
 
-    comment_t CheckCommentSyntax(
+    comment_t check_comment_syntax(
       const std::string& syntax_begin,
       const std::string& syntax_end,
       const std::string& text) const;
 
     /// Returns the actual begin of comment, depending on the syntax type.
-    const std::string CommentBegin() const {
-      return (m_SyntaxType == SYNTAX_NONE || m_SyntaxType == SYNTAX_ONE) ?
+    const std::string comment_begin() const {
+      return (m_syntax_type == SYNTAX_NONE || m_syntax_type == SYNTAX_ONE) ?
         get_filename().lexer().comment_begin() :
         get_filename().lexer().comment_begin2();};
 
     /// Returns the last end of comment detected, depending on the last syntax type.
-    const std::string CommentEnd() const {
-      return (m_LastSyntaxType == SYNTAX_NONE || m_LastSyntaxType == SYNTAX_ONE) ?
+    const std::string comment_end() const {
+      return (m_last_syntax_type == SYNTAX_NONE || m_last_syntax_type == SYNTAX_ONE) ?
         get_filename().lexer().comment_end() :
         get_filename().lexer().comment_end2();};
 
     /// Check whether specified text result in a comment.
-    comment_t CheckForComment(const std::string& text);
-    void CommentStatementEnd();
-    void CommentStatementStart();
-    std::string Context(const std::string& line, int pos) const;
+    comment_t check_for_comment(const std::string& text);
+    void comment_statement_end();
+    void comment_statement_start();
+    std::string context(const std::string& line, int pos) const;
     
     // Overriden methods from stream.
 
@@ -85,15 +85,15 @@ namespace wex::report
     void process_end() override;
     void process_match(const std::string& line, size_t line_no, int pos) override;
     
-    static wex::listview* m_Report;
-    static report::frame* m_Frame;
+    static wex::listview* m_report;
+    static report::frame* m_frame;
 
-    bool m_IsCommentStatement = false;
-    bool m_IsString = false;
+    bool m_is_comment_statement = false;
+    bool m_is_string = false;
 
-    int m_ContextSize;
+    int m_context_size;
     
-    syntax_t m_LastSyntaxType = SYNTAX_NONE;
-    syntax_t m_SyntaxType = SYNTAX_NONE;
+    syntax_t m_last_syntax_type = SYNTAX_NONE;
+    syntax_t m_syntax_type = SYNTAX_NONE;
   };
 };

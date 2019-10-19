@@ -374,7 +374,7 @@ const std::string wex::stc::get_find_string()
 
 const std::string wex::stc::get_selected_text()
 {
-  const wxCharBuffer b(GetSelectedTextRaw());
+  const wxCharBuffer& b(GetSelectedTextRaw());
   return b.length() == 0 ? 
     std::string():
     std::string(b.data(), b.length() - 1);

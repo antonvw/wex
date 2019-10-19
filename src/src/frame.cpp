@@ -25,7 +25,7 @@
 #include <wex/vcsentry.h>
 
 #define wxCAST_TO(classname)                                 \
-  if (m_find_focus != nullptr && m_find_focus->IsShown())      \
+  if (m_find_focus != nullptr && m_find_focus->IsShown())    \
   {                                                          \
     if (classname* win = dynamic_cast<classname*>(m_find_focus); \
       win != nullptr)                                        \
@@ -40,9 +40,9 @@
   
 #define FIND_REPLACE( text, dlg)                             \
 {                                                            \
-  if (m_find_replace_dialog != nullptr)                        \
+  if (m_find_replace_dialog != nullptr)                      \
   {                                                          \
-    m_find_replace_dialog->Destroy();                          \
+    m_find_replace_dialog->Destroy();                        \
   }                                                          \
                                                              \
   auto* win = wxWindow::FindFocus();                         \
@@ -50,21 +50,21 @@
   if (auto* cl = dynamic_cast<wex::stc*>(win);               \
     cl != nullptr)                                           \
   {                                                          \
-    m_find_focus = cl;                                        \
+    m_find_focus = cl;                                       \
   }                                                          \
   else                                                       \
   {                                                          \
     if (auto* cl = dynamic_cast<wex::listview*>(win);        \
       cl != nullptr)                                         \
     {                                                        \
-      m_find_focus = cl;                                      \
+      m_find_focus = cl;                                     \
     }                                                        \
     else                                                     \
     {                                                        \
       if (auto* grid = dynamic_cast<wex::grid*>(win);        \
         grid != nullptr)                                     \
       {                                                      \
-        m_find_focus = grid;                                  \
+        m_find_focus = grid;                                 \
       }                                                      \
     }                                                        \
   }                                                          \
@@ -74,9 +74,9 @@
     stc->get_find_string();                                  \
   }                                                          \
                                                              \
-  m_find_replace_dialog = new wxFindReplaceDialog(             \
+  m_find_replace_dialog = new wxFindReplaceDialog(           \
     this, wex::find_replace_data::get()->data(), text, dlg); \
-  m_find_replace_dialog->Show();                               \
+  m_find_replace_dialog->Show();                             \
 };                                                           \
   
 namespace wex
@@ -85,15 +85,23 @@ namespace wex
   {
   public:
     explicit file_droptarget(frame* frame) 
-      : m_Frame(frame){;};
+      : m_frame(frame){;};
 
-    virtual bool OnDropFiles(wxCoord x, wxCoord y, 
+    bool OnDropFiles(wxCoord x, wxCoord y, 
       const wxArrayString& filenames) override {
-        open_files(m_Frame, to_vector_path(filenames).get());
+        open_files(m_frame, to_vector_path(filenames).get());
         return true;}
   private:
-    frame* m_Frame;
+    frame* m_frame;
   };
+  
+  const std::string 
+    win_frame = "WindowFrame", 
+    win_max = "WindowMaximized";
+  
+  std::vector<int> win_data;
+  
+  bool win_shown = false;
 };
 
 wex::frame::frame(const window_data& data)
@@ -112,20 +120,12 @@ wex::frame::frame(const window_data& data)
   SetDropTarget(new file_droptarget(this));
 #endif
   
-  const std::string win_frame("WindowFrame"), win_max("WindowMaximized");
+  win_data = config(win_frame).get(std::vector<int> {
+    data.size().GetWidth(), 
+    data.size().GetHeight(), 
+    data.pos().x, 
+    data.pos().y});
   
-  const auto& v(config(win_frame).get(std::vector<int> {
-    data.size().GetWidth(), data.size().GetHeight(), 
-    data.pos().x, data.pos().y}));
-  
-  SetSize(v[0], v[1]);
-  SetPosition(wxPoint(v[2], v[3]));
-    
-  if (config(win_max).get(false))
-  {
-    Maximize();
-  }
-
   wxAcceleratorEntry entries[4];
   entries[0].Set(wxACCEL_NORMAL, WXK_F5, wxID_FIND);
   entries[1].Set(wxACCEL_NORMAL, WXK_F6, wxID_REPLACE);
@@ -224,8 +224,10 @@ wex::frame::frame(const window_data& data)
     {
       config(win_max).set(false);
       config(win_frame).set(std::vector<int> {
-        GetSize().GetWidth(), GetSize().GetHeight(), 
-        GetPosition().x, GetPosition().y});
+        GetSize().GetWidth(), 
+        GetSize().GetHeight(), 
+        GetPosition().x, 
+        GetPosition().y});
     }
 
     m_is_closing = true;
@@ -339,6 +341,24 @@ void wex::frame::SetMenuBar(wxMenuBar* bar)
       nullptr: bar);
 }
 
+bool wex::frame::Show(bool show)
+{
+  if (show && !win_shown)
+  {
+    SetSize(win_data[0], win_data[1]);
+    SetPosition(wxPoint(win_data[2], win_data[3]));
+      
+    if (config(win_max).get(false))
+    {
+      Maximize();
+    }
+    
+    win_shown = true;
+  }
+
+  return wxFrame::Show(show);
+}
+  
 void wex::frame::statusbar_clicked(const std::string& pane)
 {
   if (auto* stc = get_stc(); pane == "PaneInfo")

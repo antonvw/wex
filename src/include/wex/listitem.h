@@ -25,23 +25,23 @@ namespace wex
       const std::string& filespec = std::string());
       
     // Deletes this item from the listview.
-    void erase() {m_ListView->DeleteItem(GetId());};
+    void erase() {m_listview->DeleteItem(GetId());};
 
     /// Returns the file spec.
-    const auto file_spec() const {return m_FileSpec;};
+    const auto file_spec() const {return m_file_spec;};
     
     /// Returns the filename.
-    const auto & get_filename() const {return m_Path;};
+    const auto & get_filename() const {return m_path;};
 
     /// Returns the listview.
-    auto* get_listview() const {return m_ListView;};
+    auto* get_listview() const {return m_listview;};
     
     /// Inserts the item at index (if -1 at the end of the listview),
     /// and sets all attributes.
     void insert(long index = -1);
 
     /// Returns true if this item is readonly (on the listview).
-    bool is_readOnly() const {return m_IsReadOnly;};
+    bool is_readonly() const {return m_is_readonly;};
 
     /// Logs info about this item.
     std::stringstream log() const;
@@ -53,14 +53,14 @@ namespace wex
     /// Updates all attributes.
     void update();
   private:
-    void SetReadOnly(bool readonly);
+    void set_readonly(bool readonly);
 
     // Cannot be a wxListCtrl, as find_column is used from listview,
     // and cannot be const, as it calls insert_item on the list.
-    listview* m_ListView;
+    listview* m_listview;
 
-    const path m_Path;
-    const std::string m_FileSpec;
-    bool m_IsReadOnly;
+    const path m_path;
+    const std::string m_file_spec;
+    bool m_is_readonly;
   };
 };

@@ -594,7 +594,7 @@ int wex::open_files(
       }
 
       fn.make_absolute();
-       
+      
       if (frame->open_file(fn, data) != nullptr)
       {
         count++;
@@ -778,34 +778,6 @@ bool wex::single_choice_dialog(wxWindow* parent, const std::string& title,
   return true;
 }
   
-const std::string wex::trim(
-  const std::string& text, 
-  skip_t type,
-  const std::string& replace_with)
-{
-  auto output(text);
-  
-  if (type[TRIM_MID])
-  {
-    output = std::regex_replace(output, 
-      std::regex("[ \t\n\v\f\r]+"), replace_with, std::regex_constants::format_sed);
-  }
-  
-  if (type[TRIM_LEFT])
-  {
-    output = std::regex_replace(output, 
-      std::regex("^[ \t\n\v\f\r]+"), "", std::regex_constants::format_sed);
-  }
-
-  if (type[TRIM_RIGHT])
-  {
-    output = std::regex_replace(output, 
-      std::regex("[ \t\n\v\f\r]+$"), "", std::regex_constants::format_sed);
-  }
-  
-  return output;
-}
-
 const std::string wex::sort(
   const std::string& input, 
   string_sort_t sort_t, 
@@ -813,8 +785,6 @@ const std::string wex::sort(
   const std::string& eol, 
   size_t len)
 {
-  wxBusyCursor wait;
-
   // Empty lines are not kept after sorting, as they are used as separator.
   std::map<std::string, std::string> m;
   std::multimap<std::string, std::string> mm;
@@ -880,24 +850,21 @@ bool wex::sort_selection(
   size_t pos, 
   size_t len)
 {
-  const auto start_pos = stc->GetSelectionStart();
-  
-  if (
-    start_pos == -1 || 
-    pos > (size_t)stc->GetSelectionEnd() || 
-    pos == std::string::npos || 
-    stc->GetSelectionEmpty())
-  {
-    return false;
-  }
-  
   bool error = false;
-  stc->BeginUndoAction();
   
   try
   {
     if (stc->SelectionIsRectangle())
     {
+      const auto start_pos = stc->GetSelectionNStart(0);
+      
+      if (start_pos == -1)
+      {
+        log("sort_selection rectangle") << start_pos;
+        return false;
+      }
+  
+      stc->BeginUndoAction();
       std::string selection;
 
       for (int i = 0; i < stc->GetSelections(); i++)
@@ -943,13 +910,26 @@ bool wex::sort_selection(
     }
     else
     {
-      const auto& text(sort(
-        stc->GetSelectedText().ToStdString(), 
+      const auto start_pos = stc->GetSelectionStart();
+      
+      if (
+        start_pos == -1 || 
+        pos > (size_t)stc->GetSelectionEnd() || 
+        pos == std::string::npos || 
+        stc->GetSelectionEmpty())
+      {
+        log("sort_selection") << start_pos << pos << stc->GetSelectionEnd();
+        return false;
+      }
+
+      const auto text(sort(
+        stc->get_selected_text(),
         sort_t, 
         pos, 
         stc->eol(), 
         len));
       
+      stc->BeginUndoAction();
       stc->ReplaceSelection(text);
       stc->SetSelection(start_pos, start_pos + text.size());
     }
@@ -997,6 +977,34 @@ void wex::vcs_command_stc(const vcs_command& command,
   {
     stc->get_lexer().clear();
   }
+}
+
+const std::string wex::trim(
+  const std::string& text, 
+  skip_t type,
+  const std::string& replace_with)
+{
+  auto output(text);
+  
+  if (type[TRIM_MID])
+  {
+    output = std::regex_replace(output, 
+      std::regex("[ \t\n\v\f\r]+"), replace_with, std::regex_constants::format_sed);
+  }
+  
+  if (type[TRIM_LEFT])
+  {
+    output = std::regex_replace(output, 
+      std::regex("^[ \t\n\v\f\r]+"), "", std::regex_constants::format_sed);
+  }
+
+  if (type[TRIM_RIGHT])
+  {
+    output = std::regex_replace(output, 
+      std::regex("[ \t\n\v\f\r]+$"), "", std::regex_constants::format_sed);
+  }
+  
+  return output;
 }
 
 void wex::vcs_execute(frame* frame, int id, const std::vector< path > & files)

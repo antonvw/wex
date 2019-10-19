@@ -28,9 +28,9 @@ namespace wex::report
 
     /// Virtual interface
     void after_sorting() override;
-    bool get_contents_changed() const override {return m_ContentsChanged;};
+    bool get_contents_changed() const override {return m_contents_changed;};
     bool item_from_text(const std::string& text) override;
-    void reset_contents_changed() override {m_ContentsChanged = false;};
+    void reset_contents_changed() override {m_contents_changed = false;};
 
     /// Other methods
     
@@ -44,11 +44,11 @@ namespace wex::report
     file& get_file() {return *this;};
 
     // Access to members.
-    const auto& text_addfiles() const {return m_textAddFiles;};
-    const auto& text_addfolders() const {return m_textAddFolders;};
-    const auto& text_addrecursive() const {return m_textAddRecursive;};
-    const auto& text_addwhat() const {return m_textAddWhat;};
-    const auto& text_infolder() const {return m_textInFolder;};
+    const auto& text_addfiles() const {return m_text_add_files;};
+    const auto& text_addfolders() const {return m_text_add_folders;};
+    const auto& text_addrecursive() const {return m_text_add_recursive;};
+    const auto& text_addwhat() const {return m_text_add_what;};
+    const auto& text_infolder() const {return m_text_in_folder;};
   private:
     void build_popup_menu(menu& menu) override;
     bool do_file_load(bool synced = false) override;
@@ -56,15 +56,15 @@ namespace wex::report
     void do_file_save(bool save_as = false) override;
     void on_idle(wxIdleEvent& event);
 
-    bool m_ContentsChanged = false;
+    bool m_contents_changed = false;
     
     const std::string 
-      m_textAddFiles = _("Add files"),
-      m_textAddFolders = _("Add folders"),
-      m_textAddRecursive = _("Recursive"),
-      m_textAddWhat = _("Add what"),
-      m_textInFolder = _("In folder");
+      m_text_add_files = _("Add files"),
+      m_text_add_folders = _("Add folders"),
+      m_text_add_recursive = _("Recursive"),
+      m_text_add_what = _("Add what"),
+      m_text_in_folder = _("In folder");
     
-    item_dialog* m_add_itemsDialog;
+    item_dialog* m_add_items_dialog;
   };
 };

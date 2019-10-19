@@ -82,11 +82,11 @@ namespace wex
       bool show_modal = true);
 
     /// Returns the style.
-    auto & style() const {return m_Style;};
+    auto & style() const {return m_style;};
 
     /// Sets the style.
-    auto & style() {return m_Style;};
+    auto & style() {return m_style;};
   private:
-    menu_t m_Style;
+    menu_t m_style;
   };
 };

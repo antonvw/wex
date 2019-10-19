@@ -2,13 +2,9 @@
 // Name:      test-ctags.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wex/ctags.h>
 #include <wex/managedframe.h>
 #include <wex/stc.h>
@@ -23,8 +19,8 @@ TEST_CASE("wex::ctags")
     wex::ex* ex = &get_stc()->get_vi();
 
     // default find
-    REQUIRE( wex::ctags(ex).find("test_app") );
-    REQUIRE(!wex::ctags(ex).find("xest_app") );
+    REQUIRE( wex::ctags::find("test_app") );
+    REQUIRE(!wex::ctags::find("xest_app") );
 
     // default auto_complete
     REQUIRE( wex::ctags(ex).autocomplete("test_").find("test_app") == 0);
@@ -32,7 +28,7 @@ TEST_CASE("wex::ctags")
     // setup a filter using find
     wex::ctags_entry current;
     wex::ctags_entry filter;
-    REQUIRE( wex::ctags(ex).find("test_app", current, filter));
+    REQUIRE( wex::ctags::find("test_app", current, filter));
     REQUIRE( filter.class_name() == "test_app" );
     REQUIRE( filter.kind() == "f" );
     REQUIRE( current.kind() == "c" );
@@ -51,7 +47,7 @@ TEST_CASE("wex::ctags")
     wex::test::add_pane(frame(), stc);
     wex::ex* ex = &stc->get_vi();
 
-    REQUIRE(!wex::ctags(ex, false).find("test_app") );
+    REQUIRE(!wex::ctags::find("test_app") );
   }
   
   SUBCASE("tags own file")
@@ -62,12 +58,12 @@ TEST_CASE("wex::ctags")
     wex::test::add_pane(frame(), stc);
     wex::ex* ex = &stc->get_vi();
 
-    REQUIRE(!wex::ctags(ex).find("") );
-    REQUIRE(!wex::ctags(ex).next() );
-    REQUIRE(!wex::ctags(ex).previous() );
-    REQUIRE(!wex::ctags(ex).find("xxxx") );
-    REQUIRE( wex::ctags(ex).find("test_app") );
-    REQUIRE(!wex::ctags(ex).next() );
+    REQUIRE(!wex::ctags::find("") );
+    REQUIRE(!wex::ctags::next() );
+    REQUIRE(!wex::ctags::previous() );
+    REQUIRE(!wex::ctags::find("xxxx") );
+    REQUIRE( wex::ctags::find("test_app") );
+    REQUIRE(!wex::ctags::next() );
     REQUIRE( wex::ctags(ex).separator() != ' ');
   }
 }

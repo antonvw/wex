@@ -37,17 +37,17 @@ namespace wex
   public:
     process_dir(listview* lv, bool init)
       : dir("/proc", "[0-9]+", std::string(), type_t().set(dir::DIRS))
-      , m_ListView(lv) {
+      , m_listview(lv) {
       if (init)
       {
-        m_ListView->append_columns({{"Name", column::STRING, 200}, {"Pid"}});
+        m_listview->append_columns({{"Name", column::STRING, 200}, {"Pid"}});
       }
       else
       {
-        m_ListView->clear();
+        m_listview->clear();
       }};
    ~process_dir() {
-      m_ListView->sort_column("Name", SORT_ASCENDING);};
+      m_listview->sort_column("Name", SORT_ASCENDING);};
   private:
     bool on_dir(const path& p) override {
       if (!std::filesystem::is_symlink(p.data())) 
@@ -55,12 +55,12 @@ namespace wex
         std::ifstream ifs(wex::path(p.data(), "comm").data());
         if (std::string line; ifs.is_open() && std::getline(ifs, line))
         {
-          m_ListView->insert_item({line, p.name()});
+          m_listview->insert_item({line, p.name()});
         }
       }
       return true;};
 
-    listview* m_ListView;
+    listview* m_listview;
   };
 };
 #endif
@@ -282,6 +282,14 @@ bool wex::debug::execute(const std::string& action, wex::stc* stc)
   }
 }
 
+bool wex::debug::execute(int item, stc* stc)
+{
+  return 
+    item >= 0 &&
+    item < (int)m_entry.get_commands().size() &&
+    execute(m_entry.get_commands().at(item).get_command(), stc);
+};
+        
 std::tuple<bool, std::string> wex::debug::get_args(
   const std::string& command, stc* stc)
 {

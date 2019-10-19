@@ -24,19 +24,19 @@ namespace wex
       int rows = 0,
       int cols = 1)
     : item_template_dialog(v, data, rows, cols) {
-      Bind(wxEVT_BUTTON, &item_dialog::OnCommand, this, wxID_APPLY);
-      Bind(wxEVT_BUTTON, &item_dialog::OnCommand, this, wxID_CANCEL);
-      Bind(wxEVT_BUTTON, &item_dialog::OnCommand, this, wxID_CLOSE);
-      Bind(wxEVT_BUTTON, &item_dialog::OnCommand, this, wxID_OK);};
+      Bind(wxEVT_BUTTON, &item_dialog::on_command, this, wxID_APPLY);
+      Bind(wxEVT_BUTTON, &item_dialog::on_command, this, wxID_CANCEL);
+      Bind(wxEVT_BUTTON, &item_dialog::on_command, this, wxID_CLOSE);
+      Bind(wxEVT_BUTTON, &item_dialog::on_command, this, wxID_OK);};
 
-    /// reloads dialog from config.
+    /// Reloads dialog from config.
     void reload(bool save = false) const {
       for (const auto& it : get_items())
       {
         it.to_config(save);
       }};
   private:
-    void OnCommand(wxCommandEvent& event) {
+    void on_command(wxCommandEvent& event) {
       reload(event.GetId() != wxID_CANCEL);
       event.Skip();};
   };

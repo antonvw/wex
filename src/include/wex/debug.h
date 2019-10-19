@@ -42,24 +42,21 @@ namespace wex
     const auto & debug_entry() const {return m_entry;};
     
     /// Executes the item action using the current debug process,
-    /// if there is not yet a debug process, invokes frame::Process
+    /// if there is not yet a debug process, invokes frame::process
     /// to allow derived classed to provide one,
     /// and optionally use an stc component for extra input / output.
     /// Returns false if cancelled, or no debug process available.
     bool execute(const std::string& action, stc* stc = nullptr);
-    
+
     /// As above, but for a menu action item.
-    bool execute(int item, stc* stc = nullptr) {
-      return 
-        item < (int)m_entry.get_commands().size() &&
-        execute(m_entry.get_commands().at(item).get_command(), stc);};
-    
+    bool execute(int id, stc* stc = nullptr);
+
     /// Returns marker for brekpoint.
     const auto & marker_breakpoint() const {return m_markerbreakpoint;};
-    
+
     /// Ask debugger to print contents of variable.
     void print(const std::string& variable);
-    
+
     /// Returns process.
     auto * process() {return m_process;};
 

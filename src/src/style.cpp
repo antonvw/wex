@@ -22,36 +22,36 @@ void wex::style::apply(wxStyledTextCtrl* stc) const
   // Currently the default style is constructed using
   // default constructor.
   // If this is the only style, reset STC.
-  if (m_No.empty())
+  if (m_no.empty())
   {
     stc->StyleResetDefault();
   }
   else
   {
-    for (const auto& it : m_No)
+    for (const auto& it : m_no)
     {
-      stc->StyleSetSpec(it, m_Value);
+      stc->StyleSetSpec(it, m_value);
     }
   }
 }
 
 bool wex::style::contains_default_style() const
 {
-  return (m_No.find(wxSTC_STYLE_DEFAULT) != m_No.end());
+  return (m_no.find(wxSTC_STYLE_DEFAULT) != m_no.end());
 }
 
 const std::string wex::style::number() const
 {
-  return std::accumulate(m_No.begin(), m_No.end(), std::string{}, 
+  return std::accumulate(m_no.begin(), m_no.end(), std::string{}, 
     [](const std::string& a, int b) {return a + std::to_string(b) + ' ';});
 }
 
-void wex::style::Set(const pugi::xml_node& node, const std::string& macro)
+void wex::style::set(const pugi::xml_node& node, const std::string& macro)
 {
-  m_Define = node.attribute("no").value();
+  m_define = node.attribute("no").value();
 
-  SetNo(
-    lexers::get()->apply_macro(m_Define, macro), macro, node);
+  set_no(
+    lexers::get()->apply_macro(m_define, macro), macro, node);
 
   // The style is parsed using the themed macros, and
   // you can specify several styles separated by a + sign.
@@ -90,26 +90,26 @@ void wex::style::Set(const pugi::xml_node& node, const std::string& macro)
         }
       }
 
-      m_Value = (m_Value.empty() ? value: m_Value + "," + value);
+      m_value = (m_value.empty() ? value: m_value + "," + value);
     }
     else
     {
-      m_Value = (m_Value.empty() ? single: m_Value + "," + single);
+      m_value = (m_value.empty() ? single: m_value + "," + single);
     }
   }
 
-  if (m_Value.empty())
+  if (m_value.empty())
   {
     log("empty style") << number() << node;
   }
 }
 
-void wex::style::SetNo(
+void wex::style::set_no(
   const std::string& no, 
   const std::string& macro, 
   const pugi::xml_node& node)
 {
-  m_No.clear();
+  m_no.clear();
 
   // Collect each single no in the vector.
   for (tokenizer tkz(no, ","); tkz.has_more_tokens(); )
@@ -121,7 +121,7 @@ void wex::style::SetNo(
       if (const auto style_no = std::stoi(single);
         style_no >= 0 && style_no <= wxSTC_STYLE_MAX)
       {
-        m_No.insert(style_no);
+        m_no.insert(style_no);
       }
       else
       {

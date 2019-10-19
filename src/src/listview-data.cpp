@@ -10,25 +10,25 @@
 #include <wex/listview.h>
 
 wex::listview_data::listview_data(listview* lv)
-  : m_ListView(lv)
+  : m_listview(lv)
 {
 }
   
 wex::listview_data::listview_data(listview* lv, const listview_data& r)
-  : m_ListView(lv)
+  : m_listview(lv)
 {
   *this = r;
 }
   
 wex::listview_data::listview_data(control_data& data, listview* lv)
   : m_data(data)
-  , m_ListView(lv)
+  , m_listview(lv)
 {
 }
 
 wex::listview_data::listview_data(window_data& data, listview* lv)
   : m_data(control_data().window(data))
-  , m_ListView(lv)
+  , m_listview(lv)
 {
 }
 
@@ -43,9 +43,9 @@ wex::listview_data& wex::listview_data::operator=(const listview_data& r)
     m_menu_flags = r.m_menu_flags;
     m_Type = r.m_Type;
 
-    if (m_ListView != nullptr && r.m_ListView != nullptr)
+    if (m_listview != nullptr && r.m_listview != nullptr)
     {
-      m_ListView = r.m_ListView;
+      m_listview = r.m_listview;
     }
   }
   
@@ -54,12 +54,12 @@ wex::listview_data& wex::listview_data::operator=(const listview_data& r)
   
 void wex::listview_data::add_columns()
 {
-  m_ListView->append_columns({{_("File Name").ToStdString(), column::STRING}});
+  m_listview->append_columns({{_("File Name").ToStdString(), column::STRING}});
 
   switch (m_Type)
   {
     case FIND:
-      m_ListView->append_columns({
+      m_listview->append_columns({
         {_("Line").ToStdString(), column::STRING, 250},
         {_("Match").ToStdString(), column::STRING},
         {_("Line No").ToStdString()}});
@@ -67,15 +67,15 @@ void wex::listview_data::add_columns()
     case KEYWORD:
       for (const auto& it : m_lexer->keywords())
       {
-        m_ListView->append_columns({{column(it)}});
+        m_listview->append_columns({{column(it)}});
       }
 
-      m_ListView->append_columns({{_("Keywords").ToStdString()}});
+      m_listview->append_columns({{_("Keywords").ToStdString()}});
     break;
     default: break; // to prevent warnings
   }
 
-  m_ListView->append_columns({
+  m_listview->append_columns({
     {_("Modified").ToStdString(), column::DATE},
     {_("In Folder").ToStdString(), column::STRING, 175},
     {_("Type").ToStdString(), column::STRING},
@@ -91,23 +91,23 @@ wex::listview_data& wex::listview_data::image(image_t type)
 bool wex::listview_data::inject()
 {
    bool injected = 
-     m_ListView != nullptr && 
-     m_ListView->GetItemCount() > 0 && 
+     m_listview != nullptr && 
+     m_listview->GetItemCount() > 0 && 
      m_data.inject(
     [&]() {
       const int initial_value = (
-        m_ListView->GetFirstSelected() == -1 ? 1: m_ListView->GetFirstSelected() + 1);
+        m_listview->GetFirstSelected() == -1 ? 1: m_listview->GetFirstSelected() + 1);
 
       if (initial_value >= 1)
       {
-        m_ListView->Select(initial_value - 1, false);
+        m_listview->Select(initial_value - 1, false);
       }
-      m_ListView->Select(m_data.line() - 1);
-      m_ListView->EnsureVisible(m_data.line() - 1);
+      m_listview->Select(m_data.line() - 1);
+      m_listview->EnsureVisible(m_data.line() - 1);
       return true;},
     [&]() {return false;},
     [&]() {
-      return m_ListView->find_next(m_data.find());},
+      return m_listview->find_next(m_data.find());},
     [&]() {return false;});
 
   if (!m_Initialized)
@@ -120,7 +120,7 @@ bool wex::listview_data::inject()
     {
       case FOLDER:
       case NONE:
-        m_ListView->SetSingleStyle(wxLC_LIST);
+        m_listview->SetSingleStyle(wxLC_LIST);
         break;
       
       case KEYWORD:
@@ -130,12 +130,12 @@ bool wex::listview_data::inject()
         }
         // fall through
       default:
-        m_ListView->SetSingleStyle(wxLC_REPORT);
+        m_listview->SetSingleStyle(wxLC_REPORT);
         add_columns();
         break;
     }
 
-    m_ListView->SetName(name);
+    m_listview->SetName(name);
     m_data.window(window_data().name(name));
   }
 

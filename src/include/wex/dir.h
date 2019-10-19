@@ -46,10 +46,10 @@ namespace wex
       type_t flags = type_t().set()); 
 
     /// Returns the dir spec.
-    const auto & dir_spec() const {return m_DirSpec;};
+    const auto & dir_spec() const {return m_dir_spec;};
 
     /// Returns the file spec.
-    const auto & file_spec() const {return m_FileSpec;};
+    const auto & file_spec() const {return m_file_spec;};
 
     /// Finds matching files.
     /// This results in recursive calls for on_dir and on_file.
@@ -57,10 +57,10 @@ namespace wex
     int find_files();
 
     /// Returns the path.
-    const auto & get_path() const {return m_Dir;};
+    const auto & get_path() const {return m_dir;};
 
     /// Returns the flags.
-    auto type() const {return m_Flags;};
+    auto type() const {return m_flags;};
    
     /// Do something with the dir.
     /// Not made pure virtual, to allow this 
@@ -72,9 +72,9 @@ namespace wex
     /// class to be tested by calling find_files.
     virtual bool on_file(const path& ) {return true;};
   private:
-    const path m_Dir;
-    const std::string m_DirSpec, m_FileSpec;
-    const type_t m_Flags;
+    const path m_dir;
+    const std::string m_dir_spec, m_file_spec;
+    const type_t m_flags;
   };
 
   /// Returns all matching files into a vector of paths.
@@ -118,7 +118,7 @@ namespace wex
     /// Opens each found file.
     bool on_file(const path& file) override;
   private:
-    frame* m_Frame;
-    stc_data::window_t m_Flags;
+    frame* m_frame;
+    stc_data::window_t m_flags;
   };
 };

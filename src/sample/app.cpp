@@ -49,9 +49,9 @@ enum
   ID_STC_SPLIT,
 };
 
-wxIMPLEMENT_APP(sample_app);
+wxIMPLEMENT_APP(app);
 
-bool sample_app::OnInit()
+bool app::OnInit()
 {
   SetAppName("wex-sample");
 
@@ -60,42 +60,46 @@ bool sample_app::OnInit()
     return false;
   }
 
-  sample_frame *frame = new sample_frame();
-  frame->Show(true);
+  frame* f = new frame();
+  f->Show(true);
   
-  wex::log::status("Locale") << get_locale().GetLocale() << "dir" << get_catalog_dir();
+  wex::log::status("Locale") 
+    << get_locale().GetLocale().ToStdString()
+    << "dir" << get_catalog_dir();
 
   return true;
 }
 
-sample_dir::sample_dir(
+dir::dir(
   const std::string& fullpath, const std::string& findfiles, wex::grid* grid)
   : wex::dir(fullpath, findfiles)
-  , m_Grid(grid)
+  , m_grid(grid)
 {
 }
 
-bool sample_dir::on_file(const wex::path& file)
+bool dir::on_file(const wex::path& file)
 {
-  m_Grid->AppendRows(1);
-  const auto no = m_Grid->GetNumberRows() - 1;
-  m_Grid->SetCellValue(no, 0, wxString::Format("cell%d", no));
-  m_Grid->SetCellValue(no, 1, file.string());
+  m_grid->AppendRows(1);
+  const auto no = m_grid->GetNumberRows() - 1;
+  m_grid->SetCellValue(no, 0, wxString::Format("cell%d", no));
+  m_grid->SetCellValue(no, 1, file.string());
 
   // Let's make these cells readonly and colour them, so we can test
   // things like cutting and dropping is forbidden.
-  m_Grid->SetReadOnly(no, 1);
-  m_Grid->SetCellBackgroundColour(no, 1, *wxLIGHT_GREY);
+  m_grid->SetReadOnly(no, 1);
+  m_grid->SetCellBackgroundColour(no, 1, *wxLIGHT_GREY);
   return true;
 }
 
-sample_frame::sample_frame()
+frame::frame()
   : wex::managed_frame(4)
-  , m_Process(new wex::process())
-  , m_Notebook(new wex::notebook())
+  , m_notebook(new wex::notebook())
+  , m_process(new wex::process())
   , m_stc(new wex::stc())
-  , m_Shell(new wex::shell(wex::stc_data(), ">", "\n"))
-  , m_stcLexers(new wex::stc(wex::lexers::get()->get_filename()))
+  , m_shell(new wex::shell(wex::stc_data(), ">"))
+  , m_stc_lexers(new wex::stc(wex::lexers::get()->get_filename()))
+  , m_grid(new wex::grid(wex::window_data().parent(m_notebook)))
+  , m_listview(new wex::listview(wex::window_data().parent(m_notebook)))
 {
   wex::process::prepare_output(this);
   
@@ -164,16 +168,13 @@ sample_frame::sample_frame()
   menubar->Append(menuHelp, "&Help");
   SetMenuBar(menubar);
 
-  m_Grid = new wex::grid(wex::window_data().parent(m_Notebook));
-  m_ListView = new wex::listview(wex::window_data().parent(m_Notebook));
-
-  manager().AddPane(m_Notebook, 
+  manager().AddPane(m_notebook, 
     wxAuiPaneInfo().CenterPane().MinSize(wxSize(250, 250)));
   manager().AddPane(m_stc, 
     wxAuiPaneInfo().Bottom().Caption("STC"));
-  manager().AddPane(m_Shell, 
+  manager().AddPane(m_shell, 
     wxAuiPaneInfo().Bottom().Caption("Shell").MinSize(wxSize(250, 250)));
-  manager().AddPane(m_Process->get_shell(), wxAuiPaneInfo()
+  manager().AddPane(m_process->get_shell(), wxAuiPaneInfo()
     .Bottom()
     .Name("PROCESS")
     .MinSize(250, 100)
@@ -181,17 +182,17 @@ sample_frame::sample_frame()
 
   manager().Update();
 
-  m_Notebook->add_page(m_stcLexers, wex::lexers::get()->get_filename().fullname());
-  m_Notebook->add_page(m_ListView, "wex::listview");
+  m_notebook->add_page(m_stc_lexers, wex::lexers::get()->get_filename().fullname());
+  m_notebook->add_page(m_listview, "wex::listview");
 
-  m_Notebook->add_page(m_Grid, "wex::grid");
-  m_Grid->CreateGrid(0, 0);
-  m_Grid->AppendCols(2);
-  sample_dir dir(wex::path::current(), "*.*", m_Grid);
+  m_notebook->add_page(m_grid, "wex::grid");
+  m_grid->CreateGrid(0, 0);
+  m_grid->AppendCols(2);
+  dir dir(wex::path::current(), "*.*", m_grid);
   dir.find_files();
-  m_Grid->AutoSizeColumns();
+  m_grid->AutoSizeColumns();
 
-  m_ListView->append_columns({
+  m_listview->append_columns({
     {"String", wex::column::STRING},
     {"Number", wex::column::INT},
     {"Float", wex::column::FLOAT},
@@ -201,21 +202,21 @@ sample_frame::sample_frame()
 
   for (auto i = 0; i < items; i++)
   {
-    m_ListView->insert_item({
+    m_listview->insert_item({
       "item " + std::to_string(i),
       std::to_string(i),
       std::to_string((float)i / 2.0),
       wxDateTime::Now().Format("%c").ToStdString()});
 
     // Set some images.
-    if      (i == 0) m_ListView->set_item_image(i, wxART_CDROM);
-    else if (i == 1) m_ListView->set_item_image(i, wxART_REMOVABLE);
-    else if (i == 2) m_ListView->set_item_image(i, wxART_FOLDER);
-    else if (i == 3) m_ListView->set_item_image(i, wxART_FOLDER_OPEN);
-    else if (i == 4) m_ListView->set_item_image(i, wxART_GO_DIR_UP);
-    else if (i == 5) m_ListView->set_item_image(i, wxART_EXECUTABLE_FILE);
-    else if (i == 6) m_ListView->set_item_image(i, wxART_NORMAL_FILE);
-    else             m_ListView->set_item_image(i, wxART_TICK_MARK);
+    if      (i == 0) m_listview->set_item_image(i, wxART_CDROM);
+    else if (i == 1) m_listview->set_item_image(i, wxART_REMOVABLE);
+    else if (i == 2) m_listview->set_item_image(i, wxART_FOLDER);
+    else if (i == 3) m_listview->set_item_image(i, wxART_FOLDER_OPEN);
+    else if (i == 4) m_listview->set_item_image(i, wxART_GO_DIR_UP);
+    else if (i == 5) m_listview->set_item_image(i, wxART_EXECUTABLE_FILE);
+    else if (i == 6) m_listview->set_item_image(i, wxART_NORMAL_FILE);
+    else             m_listview->set_item_image(i, wxART_TICK_MARK);
   }
 
   setup_statusbar({
@@ -226,14 +227,14 @@ sample_frame::sample_frame()
   get_toolbar()->add_controls();
   get_options_toolbar()->add_controls();
   
-  // The OnCommand keeps statistics.
-  Bind(wxEVT_MENU, &sample_frame::OnCommand, this, wxID_COPY);
-  Bind(wxEVT_MENU, &sample_frame::OnCommand, this, wxID_CUT);
-  Bind(wxEVT_MENU, &sample_frame::OnCommand, this, wxID_EXECUTE);
-  Bind(wxEVT_MENU, &sample_frame::OnCommand, this, wxID_JUMP_TO);
-  Bind(wxEVT_MENU, &sample_frame::OnCommand, this, wxID_PASTE);
-  Bind(wxEVT_MENU, &sample_frame::OnCommand, this, wxID_OPEN, wxID_SAVEAS);
-  Bind(wxEVT_MENU, &sample_frame::OnCommand, this, wxID_UNDO, wxID_REDO);
+  // The on_command keeps statistics.
+  Bind(wxEVT_MENU, &frame::on_command, this, wxID_COPY);
+  Bind(wxEVT_MENU, &frame::on_command, this, wxID_CUT);
+  Bind(wxEVT_MENU, &frame::on_command, this, wxID_EXECUTE);
+  Bind(wxEVT_MENU, &frame::on_command, this, wxID_JUMP_TO);
+  Bind(wxEVT_MENU, &frame::on_command, this, wxID_PASTE);
+  Bind(wxEVT_MENU, &frame::on_command, this, wxID_OPEN, wxID_SAVEAS);
+  Bind(wxEVT_MENU, &frame::on_command, this, wxID_UNDO, wxID_REDO);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxAboutDialogInfo info;
@@ -244,9 +245,9 @@ sample_frame::sample_frame()
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     Close(true);}, wxID_EXIT);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_ListView->print();}, wxID_PRINT);
+    m_listview->print();}, wxID_PRINT);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_ListView->print_preview();}, wxID_PREVIEW);
+    m_listview->print_preview();}, wxID_PREVIEW);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wex::printing::get()->get_html_printer()->PageSetup();}, wxID_PRINT_SETUP);
     
@@ -276,13 +277,14 @@ sample_frame::sample_frame()
     wex::item_dialog(test_config_items(0, 1), 
       wex::window_data().
         button(wxCANCEL).
-        title("Config Dialog Readonly"), 0, 4).ShowModal();}, ID_DLG_CONFIG_ITEM_READONLY);
+        title("Config Dialog Readonly"), 0, 4).ShowModal();}, 
+    ID_DLG_CONFIG_ITEM_READONLY);
       
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wex::item_dialog(test_items()).ShowModal();}, ID_DLG_ITEM);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_ListView->config_dialog();}, ID_DLG_LISTVIEW);
+    m_listview->config_dialog();}, ID_DLG_LISTVIEW);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wex::stc::config_dialog(
@@ -304,8 +306,10 @@ sample_frame::sample_frame()
     wex::vcs().config_dialog();}, ID_DLG_VCS);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_Shell->prompt(
-      "\nHello '" + event.GetString().ToStdString() + "' from the shell");}, wex::ID_SHELL_COMMAND);
+    m_shell->prompt(
+      "\nHello '" + event.GetString().ToStdString() + 
+      "' from the shell");}, 
+    wex::ID_SHELL_COMMAND);
       
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxFileDialog dlg(this, _("Open File"), "", "",
@@ -315,26 +319,26 @@ sample_frame::sample_frame()
     wex::stc_entry_dialog(vcs.name()).ShowModal();}, ID_SHOW_VCS);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    if (m_Notebook->set_selection("Statistics") == nullptr)
+    if (m_notebook->set_selection("Statistics") == nullptr)
     {
-      m_Notebook->add_page(m_Statistics.show(m_Notebook), "Statistics");
+      m_notebook->add_page(m_statistics.show(m_notebook), "Statistics");
     }}, ID_STATISTICS_SHOW);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     const long value = wxGetNumberFromUser("Input:",
       wxEmptyString, "STC Open Flag",
-      m_FlagsSTC,
+      m_flags_stc,
       0,
       0xFFFF);
     if (value != -1)
     {
-      m_FlagsSTC = value;
+      m_flags_stc = value;
     }}, ID_STC_FLAGS);
       
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_Process->execute();}, wxID_EXECUTE);
+    m_process->execute();}, wxID_EXECUTE);
   
-  Bind(wxEVT_MENU, &sample_frame::OnCommand, this, ID_STC_SPLIT);
+  Bind(wxEVT_MENU, &frame::on_command, this, ID_STC_SPLIT);
   
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Enable(
@@ -347,14 +351,13 @@ sample_frame::sample_frame()
       (get_stc() != nullptr && get_stc()->GetLength() > 0));}, wxID_PREVIEW);
 }
 
-void sample_frame::OnCommand(wxCommandEvent& event)
+void frame::on_command(wxCommandEvent& event)
 {
-  m_Statistics.inc(std::to_string(event.GetId()));
+  m_statistics.inc(std::to_string(event.GetId()));
 
   auto* editor = get_stc();
   auto* grid = get_grid();
   auto* listview = get_listview();
-
 
   switch (event.GetId())
   {
@@ -367,7 +370,7 @@ void sample_frame::OnCommand(wxCommandEvent& event)
       if (dlg.show_modal_if_changed(true) == wxID_CANCEL) return;
       const auto start = std::chrono::system_clock::now();
       m_stc->open(dlg.GetPath().ToStdString(), 
-        wex::stc_data().flags((wex::stc_data::window_t)m_FlagsSTC));
+        wex::stc_data().flags((wex::stc_data::window_t)m_flags_stc));
       const auto milli = std::chrono::duration_cast
         <std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
       wex::log::status("Open") 
@@ -380,8 +383,9 @@ void sample_frame::OnCommand(wxCommandEvent& event)
       if (m_stc->get_filename().data() == wex::lexers::get()->get_filename().data())
       {
         wex::lexers::get()->load_document();
-        wex::log::verbose("File contains") << wex::lexers::get()->get_lexers().size() << "lexers";
-          // As the lexer might have changed, update status bar field as well.
+        wex::log::verbose("File contains") << 
+          wex::lexers::get()->get_lexers().size() << "lexers";
+        // As the lexer might have changed, update status bar field as well.
         update_statusbar(m_stc, "PaneLexer");
       }
       break;
@@ -410,8 +414,8 @@ void sample_frame::OnCommand(wxCommandEvent& event)
       if (editor != nullptr)
       {
         wex::stc* stc = new wex::stc(editor->get_filename(), 
-          wex::stc_data().window(wex::window_data().parent(m_Notebook)));
-        m_Notebook->add_page(
+          wex::stc_data().window(wex::window_data().parent(m_notebook)));
+        m_notebook->add_page(
           stc,
           "stc" + std::to_string(stc->GetId()),
           m_stc->get_filename().fullname());
@@ -425,7 +429,7 @@ void sample_frame::OnCommand(wxCommandEvent& event)
     }
 }
 
-void sample_frame::on_command_item_dialog(
+void frame::on_command_item_dialog(
   wxWindowID dialogid,
   const wxCommandEvent& event)
 {
@@ -434,7 +438,7 @@ void sample_frame::on_command_item_dialog(
     if (event.GetId() != wxID_CANCEL)
     {
       m_stc->config_get();
-      m_stcLexers->config_get();
+      m_stc_lexers->config_get();
     }
   }
   else if (event.GetId() >= 1000 && event.GetId() < 1050)

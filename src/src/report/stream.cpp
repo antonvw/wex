@@ -15,8 +15,8 @@
 #include <wex/report/frame.h>
 #include <wex/report/listview.h>
 
-wex::listview* wex::report::stream::m_Report = nullptr;
-wex::report::frame* wex::report::stream::m_Frame = nullptr;
+wex::listview* wex::report::stream::m_report = nullptr;
+wex::report::frame* wex::report::stream::m_frame = nullptr;
 
 wex::report::stream::stream(
   const path& filename,
@@ -25,7 +25,7 @@ wex::report::stream::stream(
 {
 }
 
-wex::report::stream::comment_t wex::report::stream::CheckCommentSyntax(
+wex::report::stream::comment_t wex::report::stream::check_comment_syntax(
   const std::string& syntax_begin,
   const std::string& syntax_end,
   const std::string& text) const
@@ -57,34 +57,34 @@ wex::report::stream::comment_t wex::report::stream::CheckCommentSyntax(
   return COMMENT_NONE;
 }
 
-wex::report::stream::comment_t wex::report::stream::CheckForComment(
+wex::report::stream::comment_t wex::report::stream::check_for_comment(
   const std::string& text)
 {
   if (get_filename().lexer().comment_begin2().empty())
   {
-    return CheckCommentSyntax(
+    return check_comment_syntax(
       get_filename().lexer().comment_begin(),
       get_filename().lexer().comment_end(), text);
   }
 
   comment_t comment_t1 = COMMENT_NONE;
 
-  if (m_SyntaxType == SYNTAX_NONE || m_SyntaxType == SYNTAX_ONE)
+  if (m_syntax_type == SYNTAX_NONE || m_syntax_type == SYNTAX_ONE)
   {
-    if ((comment_t1 = CheckCommentSyntax(
+    if ((comment_t1 = check_comment_syntax(
       get_filename().lexer().comment_begin(),
       get_filename().lexer().comment_end(), text)) == COMMENT_BEGIN)
-      m_SyntaxType = SYNTAX_ONE;
+      m_syntax_type = SYNTAX_ONE;
   }
 
   comment_t comment_t2 = COMMENT_NONE;
 
-  if (m_SyntaxType == SYNTAX_NONE || m_SyntaxType == SYNTAX_TWO)
+  if (m_syntax_type == SYNTAX_NONE || m_syntax_type == SYNTAX_TWO)
   {
-    if ((comment_t2 = CheckCommentSyntax(
+    if ((comment_t2 = check_comment_syntax(
       get_filename().lexer().comment_begin2(),
       get_filename().lexer().comment_end2(), text)) == COMMENT_BEGIN)
-      m_SyntaxType = SYNTAX_TWO;
+      m_syntax_type = SYNTAX_TWO;
   }
 
   comment_t comment;
@@ -105,33 +105,33 @@ wex::report::stream::comment_t wex::report::stream::CheckForComment(
   {
     // E.g. we have a correct /* */ comment, with */ at the end of the line.
     // Then the end of line itself should not generate a COMMENT_END.
-    if (m_SyntaxType == SYNTAX_NONE) comment = COMMENT_NONE;
+    if (m_syntax_type == SYNTAX_NONE) comment = COMMENT_NONE;
     // Keep the syntax type.
-    m_LastSyntaxType = m_SyntaxType;
-    m_SyntaxType = SYNTAX_NONE;
+    m_last_syntax_type = m_syntax_type;
+    m_syntax_type = SYNTAX_NONE;
   }
 
   return comment;
 }
 
-void wex::report::stream::CommentStatementEnd()
+void wex::report::stream::comment_statement_end()
 {
-  m_IsCommentStatement = false;
+  m_is_comment_statement = false;
 }
 
-void wex::report::stream::CommentStatementStart()
+void wex::report::stream::comment_statement_start()
 {
-  m_IsCommentStatement = true;
+  m_is_comment_statement = true;
 }
 
-std::string wex::report::stream::Context(
+std::string wex::report::stream::context(
   const std::string& line, int pos) const
 {
-  if (pos == -1 || m_ContextSize <= 0) return line;
+  if (pos == -1 || m_context_size <= 0) return line;
 
   return 
-    (m_ContextSize > pos ? std::string(m_ContextSize - pos, ' '): std::string()) +
-    line.substr(m_ContextSize < pos ? pos - m_ContextSize: 0); 
+    (m_context_size > pos ? std::string(m_context_size - pos, ' '): std::string()) +
+    line.substr(m_context_size < pos ? pos - m_context_size: 0); 
 }
 
 bool wex::report::stream::process(std::string& line, size_t line_no)
@@ -146,16 +146,16 @@ bool wex::report::stream::process(std::string& line, size_t line_no)
 
   for (size_t i = 0; i < line.length(); i++) // no auto
   {
-    if (m_IsCommentStatement)
+    if (m_is_comment_statement)
     {
     }
     else if (line[i] == '"')
     {
-      m_IsString = !m_IsString;
+      m_is_string = !m_is_string;
     }
 
     // Comments and codewords only appear outside strings.
-    if (!m_IsString)
+    if (!m_is_string)
     {
       if (line.length() == 0) continue;
 
@@ -174,22 +174,22 @@ bool wex::report::stream::process(std::string& line, size_t line_no)
       const auto check_size = (i > max_check_size ? max_check_size: i + 1);
       const auto text = line.substr(i + 1 - check_size, check_size);
 
-      switch (CheckForComment(text))
+      switch (check_for_comment(text))
       {
       case COMMENT_BEGIN:
-        if (!m_IsCommentStatement) CommentStatementStart();
+        if (!m_is_comment_statement) comment_statement_start();
         break;
 
       case COMMENT_END:
-        CommentStatementEnd();
+        comment_statement_end();
         break;
 
       case COMMENT_BOTH:
-        !m_IsCommentStatement ? CommentStatementStart(): CommentStatementEnd();
+        !m_is_comment_statement ? comment_statement_start(): comment_statement_end();
         break;
 
       case COMMENT_NONE:
-        if (!isspace(line[i]) && !m_IsCommentStatement)
+        if (!isspace(line[i]) && !m_is_comment_statement)
         {
           if (!is_codeword_separator(line[i]))
           {
@@ -228,9 +228,9 @@ bool wex::report::stream::process(std::string& line, size_t line_no)
     }
   }
 
-  if (CheckForComment(std::string()) == COMMENT_END)
+  if (check_for_comment(std::string()) == COMMENT_END)
   {
-    CommentStatementEnd();
+    comment_statement_end();
   }
 
   return true;
@@ -238,7 +238,7 @@ bool wex::report::stream::process(std::string& line, size_t line_no)
 
 bool wex::report::stream::process_begin()
 {
-  m_ContextSize = config(_("Context size")).get(10);
+  m_context_size = config(_("context size")).get(10);
 
   if (get_tool().id() != ID_TOOL_REPORT_KEYWORD)
   {
@@ -247,8 +247,8 @@ bool wex::report::stream::process_begin()
   else
   {
     if (
-      m_Frame == nullptr ||
-     (m_Report = m_Frame->activate(
+      m_frame == nullptr ||
+     (m_report = m_frame->activate(
         listview::type_tool(get_tool()),
         &get_filename().lexer())) == nullptr)
     {
@@ -268,7 +268,7 @@ void wex::report::stream::process_end()
       inc_actions_completed();
     }
 
-    listitem item(m_Report, get_filename());
+    listitem item(m_report, get_filename());
     item.insert();
 
     int total = 0;
@@ -280,7 +280,7 @@ void wex::report::stream::process_end()
       
       if (const auto& it = stat.get_items().find(setit); it != stat.get_items().end())
       {
-        m_Report->SetItem(
+        m_report->SetItem(
           item.GetId(), 
           col, 
           std::to_string(it->second));
@@ -291,7 +291,7 @@ void wex::report::stream::process_end()
       col++;
     }
     
-    m_Report->SetItem(
+    m_report->SetItem(
       item.GetId(),
       col,
       std::to_string(total));
@@ -301,13 +301,13 @@ void wex::report::stream::process_end()
 void wex::report::stream::process_match(
   const std::string& line, size_t line_no, int pos)
 {
-  assert(m_Report != nullptr);
+  assert(m_report != nullptr);
 
-  listitem item(m_Report, get_filename());
+  listitem item(m_report, get_filename());
   item.insert();
 
   item.set_item(_("Line No").ToStdString(), std::to_string(line_no + 1));
-  item.set_item(_("Line").ToStdString(), Context(line, pos));
+  item.set_item(_("Line").ToStdString(), context(line, pos));
   item.set_item(_("Match").ToStdString(), find_replace_data::get()->get_find_string());
 }
 
@@ -321,7 +321,7 @@ bool wex::report::stream::setup_tool(
     return true;
   }
   
-  m_Frame = frame;
+  m_frame = frame;
 
   reset();
 
@@ -329,8 +329,8 @@ bool wex::report::stream::setup_tool(
   {
     if (tool.is_report_type() && tool.id() != ID_TOOL_REPORT_KEYWORD)
     {
-      if ((m_Report = 
-        m_Frame->activate(listview::type_tool(tool))) == nullptr)
+      if ((m_report = 
+        m_frame->activate(listview::type_tool(tool))) == nullptr)
       {
         log::verbose("activate failed");
         return false;
@@ -339,10 +339,10 @@ bool wex::report::stream::setup_tool(
   }
   else
   {
-    m_Report = report;
+    m_report = report;
   } 
 
-  if (m_Report != nullptr && m_Report->data().type() != listview_data::FIND)
+  if (m_report != nullptr && m_report->data().type() != listview_data::FIND)
   {
     log::verbose("report list type is not listview_data::FIND");
     return false;

@@ -1,6 +1,7 @@
 **v20.04**
   - scintilla is compiled to use std::regex (ECMAScript)
   - usage of test suites
+  - Microsoft Visual Studio 2019 supported
 
 **v19.10** *September 14, 2019*
   - uses boost 1.69

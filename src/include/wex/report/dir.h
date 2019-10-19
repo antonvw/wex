@@ -27,12 +27,12 @@ namespace wex
       dir::type_t flags = dir::type_t().set());
       
     /// Returns the statistics.
-    auto & get_statistics() {return m_Statistics;};
+    auto & get_statistics() {return m_statistics;};
   protected:  
     bool on_file(const path& file) override;
   private:    
-    stream_statistics m_Statistics;
-    const tool m_Tool;
+    stream_statistics m_statistics;
+    const tool m_tool;
   };
 };
 
@@ -52,6 +52,6 @@ namespace wex::report
     bool on_dir(const path& dir) override;
     bool on_file(const path& file) override;
   private:
-    wex::listview* m_ListView;
+    wex::listview* m_listview;
   };
 };

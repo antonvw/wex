@@ -34,7 +34,7 @@ TEST_CASE("wex::vcs_entry")
     wex::vcs_entry entry(doc.document_element());
     REQUIRE( entry.name() == "git");
     REQUIRE(!entry.log( wex::test::get_path("test.h"), "x"));
-    REQUIRE( entry.log( wex::test::get_path("test.h"), "1200b7b518"));
+    REQUIRE( entry.log( wex::test::get_path("test.h"), "-1"));
     REQUIRE( entry.get_blame().use());
 
     REQUIRE( entry.get_commands().size() == 2);

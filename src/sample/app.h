@@ -2,7 +2,7 @@
 // Name:      app.h
 // Purpose:   Declaration of wex sample classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018
+// Copyright: (c) 2019
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/app.h>
@@ -17,50 +17,45 @@
 #include <wex/stc.h>
 
 /// Derive your application from wex::app.
-class sample_app: public wex::app
+class app: public wex::app
 {
 public:
-  /// Constructor.
-  sample_app() {}
+  app() {}
 private:
   bool OnInit() override;
 };
 
-/// Use wex::dir.
-class sample_dir: public wex::dir
+class dir: public wex::dir
 {
 public:
-  /// Constructor.
-  sample_dir(
+  dir(
     const std::string& fullpath, 
     const std::string& findfiles, 
     wex::grid* grid);
 private:
   bool on_file(const wex::path& file) override;
-  wex::grid* m_Grid;
+  wex::grid* m_grid;
 };
 
-/// Use wex::managedframe.
-class sample_frame: public wex::managed_frame
+class frame: public wex::managed_frame
 {
 public:
-  /// Constructor.
-  sample_frame();
-  wex::listview* get_listview() override {return m_ListView;};
-  virtual void on_command_item_dialog(
+  frame();
+  wex::listview* get_listview() override {return m_listview;};
+  void on_command_item_dialog(
     wxWindowID id, 
     const wxCommandEvent& event) override;
 protected:
-  void OnCommand(wxCommandEvent& event);
+  void on_command(wxCommandEvent& event);
 private:
-  wex::grid* m_Grid;
-  wex::listview* m_ListView;
-  wex::notebook* m_Notebook;
-  wex::process* m_Process;
+  wex::notebook* m_notebook;
+  wex::grid* m_grid;
+  wex::listview* m_listview;
+  wex::process* m_process;
   wex::stc* m_stc;
-  wex::stc* m_stcLexers;
-  wex::shell* m_Shell;
+  wex::stc* m_stc_lexers;
+  wex::shell* m_shell;
 
-  long m_FlagsSTC = 0;
-  wex::statistics <int> m_Statistics;
+  long m_flags_stc = 0;
+  wex::statistics <int> m_statistics;
 };

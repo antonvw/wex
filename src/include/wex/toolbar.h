@@ -37,9 +37,9 @@ namespace wex
     void add_controls(bool realize = true);
     
     /// Returns the frame.
-    managed_frame* frame() {return m_Frame;};
+    managed_frame* frame() {return m_frame;};
   private:
-    managed_frame* m_Frame;
+    managed_frame* m_frame;
   };
 
   /// Offers a find toolbar, containing a find ctrl, up and down arrows

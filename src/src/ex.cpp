@@ -342,7 +342,7 @@ wex::ex::ex(wex::stc* stc)
       m_frame->statustext(wex::lexers::get()->theme(), "PaneTheme");
       return true;}},
     {":ta", [&](const std::string& command) {
-      m_ctags->find(wex::firstof(command, " "));
+      ctags::find(wex::firstof(command, " "));
       return true;}},
     {":una", [&](const std::string& command) {
       if (wex::tokenizer tkz(command); tkz.count_tokens() >= 1)

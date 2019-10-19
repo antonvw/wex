@@ -40,8 +40,8 @@ private:
 
   wex::grid* m_Results;
   wex::otl m_otl;
-  wex::shell* m_Shell;
-  wex::statistics <int> m_Statistics;
+  wex::shell* m_shell;
+  wex::statistics <int> m_statistics;
   wex::stc* m_Query;
   
   bool m_Running {false}, m_Stopped {false};

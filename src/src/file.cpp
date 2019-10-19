@@ -85,7 +85,7 @@ namespace wex
 #endif
       if (m_fs.bad())
       {
-        log_stream_info("read");
+        log_stream_info("read", m_buffer->size());
         return nullptr;
       }
 
@@ -109,12 +109,11 @@ namespace wex
 
       if (!m_fs.good())
       {
-        log_stream_info("write");
+        log_stream_info("write", n);
       }
       return m_fs.good();};
   private:
-    void log_stream_info(const std::string& info) {
-      size_t s (m_buffer != nullptr ? m_buffer->size(): 0);
+    void log_stream_info(const std::string& info, size_t s) {
       log(info) 
         << "eofbit" << m_fs.eof()
         << "fail" << m_fs.fail()

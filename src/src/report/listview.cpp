@@ -25,12 +25,12 @@
 
 wex::report::listview::listview(const listview_data& data)
   : wex::listview(data)
-  , m_Frame(dynamic_cast<report::frame*>(wxTheApp->GetTopWindow()))
+  , m_frame(dynamic_cast<report::frame*>(wxTheApp->GetTopWindow()))
   , m_menu_flags(data.menu())
 {
   if (data.type() == listview_data::HISTORY)
   {
-    m_Frame->use_file_history_list(this);
+    m_frame->use_file_history_list(this);
   }
 
   wxAcceleratorEntry entries[5];
@@ -58,7 +58,7 @@ wex::report::listview::listview(const listview_data& data)
         {
           if (GetSelectedItemCount() == 1)
           {
-            list = m_Frame->activate(listview_data::FILE);
+            list = m_frame->activate(listview_data::FILE);
             if (list == nullptr) return;
             const int main_selected = list->GetFirstSelected();
             comparefile(listitem(list, main_selected).get_filename(), *filename);
@@ -88,8 +88,8 @@ wex::report::listview::listview(const listview_data& data)
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     const wex::tool& tool(event.GetId());
     if (tool.id() == ID_TOOL_REPORT_KEYWORD && data.type() == listview_data::KEYWORD) return;
-    if (tool.is_find_type() && m_Frame->find_in_files_dialog(tool.id()) == wxID_CANCEL) return;
-    if (!report::stream::setup_tool(tool, m_Frame)) return;
+    if (tool.is_find_type() && m_frame->find_in_files_dialog(tool.id()) == wxID_CANCEL) return;
+    if (!report::stream::setup_tool(tool, m_frame)) return;
 
 #ifdef __WXMSW__    
     std::thread t([=] {
@@ -129,7 +129,7 @@ wex::report::listview::listview(const listview_data& data)
     {
       files.emplace_back(listitem(this, i).get_filename().data());
     }
-    vcs_execute(m_Frame, event.GetId() - ID_EDIT_VCS_LOWEST - 1, files);
+    vcs_execute(m_frame, event.GetId() - ID_EDIT_VCS_LOWEST - 1, files);
     }, ID_EDIT_VCS_LOWEST, ID_EDIT_VCS_HIGHEST);
 }
 
@@ -168,7 +168,7 @@ void wex::report::listview::build_popup_menu(wex::menu& menu)
         !wex::vcs().use() &&
          exists && !is_folder)
     {
-      if (auto* list = m_Frame->activate(listview_data::FILE);
+      if (auto* list = m_frame->activate(listview_data::FILE);
         list != nullptr && list->GetSelectedItemCount() == 1)
       {
         listitem thislist(this, GetFirstSelected());
@@ -207,12 +207,12 @@ void wex::report::listview::build_popup_menu(wex::menu& menu)
     {
       menu.append_separator();
       menu.append(ID_TOOL_REPORT_FIND, 
-        ellipsed(m_Frame->find_in_files_title(ID_TOOL_REPORT_FIND)));
+        ellipsed(m_frame->find_in_files_title(ID_TOOL_REPORT_FIND)));
 
       if (!read_only)
       {
         menu.append(ID_TOOL_REPLACE, 
-          ellipsed(m_Frame->find_in_files_title(ID_TOOL_REPLACE)));
+          ellipsed(m_frame->find_in_files_title(ID_TOOL_REPLACE)));
       }
     }
   }

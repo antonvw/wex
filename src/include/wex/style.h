@@ -2,7 +2,7 @@
 // Name:      style.h
 // Purpose:   Declaration of wex::style class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -27,15 +27,15 @@ namespace wex
     
     /// Constructor using xml node (sets no from the no attribute).
     style(const pugi::xml_node& node, const std::string& macro) {
-      Set(node, macro);};
+      set(node, macro);};
 
     /// Constructor using no and value.
     style(
       const std::string& no, 
       const std::string& value,
       const std::string& macro = "global")
-      : m_Value(value) {
-      SetNo(no, macro);};
+      : m_value(value) {
+      set_no(no, macro);};
 
     /// Applies this style to stc component.
     /// If no style is present, STC StyleResetDefault is invoked.
@@ -45,23 +45,26 @@ namespace wex
     bool contains_default_style() const;
     
     /// Returns the original define.
-    const auto & define() const {return m_Define;};
+    const auto & define() const {return m_define;};
 
     /// Returns true if this style is valid.
     bool is_ok() const {
-      return !m_No.empty() && !m_Value.empty();};
+      return !m_no.empty() && !m_value.empty();};
 
     /// Returns the numbers ('s).
     const std::string number() const;
     
     /// Returns the value.
-    const auto & value() const {return m_Value;};
+    const auto & value() const {return m_value;};
   private:
-    void Set(const pugi::xml_node& node, const std::string& macro);
-    void SetNo(const std::string& no, const std::string& macro, 
+    void set(const pugi::xml_node& node, const std::string& macro);
+    void set_no(const std::string& no, const std::string& macro, 
       const pugi::xml_node& node = pugi::xml_node());
 
-    std::set <int> m_No;
-    std::string m_Define, m_Value; 
+    std::set <int> m_no;
+
+    std::string 
+      m_define, 
+      m_value; 
   };
 };

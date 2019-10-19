@@ -18,14 +18,15 @@ mkdir build && cd build
 cmake .. && make
 ```
 
-for Visual Studio add `set CL=/Zc:__cplusplus` before invoking cmake and do 
+For Visual Studio add `set CL=/Zc:__cplusplus` before invoking cmake and do 
   `devenv wex.sln /Build Release`,
-for mingw add `-G "MinGW Makefiles"` and do `mingw32-make`   
+for mingw add `-G "MinGW Makefiles"` and do `mingw32-make`, for osx do 
+`brew install llvm@8` and `. ci/use-clang.sh` before invoking cmake.
 
 # Build process 
 
   [![Travis](https://travis-ci.org/antonvw/wex.png?branch=master)](https://travis-ci.org/antonvw/wex)
-  [![Appveyor](https://ci.appveyor.com/api/projects/status/x3jm519fq1i407a6?svg=true)](https://ci.appveyor.com/project/antonvw/wex)
+  [![Appveyor](https://ci.appveyor.com/api/projects/status/a346d8537whyrjev?svg=true)](https://ci.appveyor.com/project/antonvw/wex)
   [![Coveralls](https://coveralls.io/repos/antonvw/wex/badge.svg?branch=master&service=github)](https://coveralls.io/github/antonvw/wex?branch=master)   
 
 # Uses

@@ -27,7 +27,7 @@ namespace wex
     /// Returns calculated value and possible error.
     std::tuple<int, std::string> eval(
       /// the ex component, e.g. for line number (.) if present in text
-      ex* ex, 
+      const ex* ex, 
       /// text containing the expression to be evaluated
       const std::string& text) const;
   private:

@@ -42,7 +42,7 @@ namespace wex
     /// Finds current value in control.
     void Find(bool find_next = true, bool restore_position = false);
   private:
-    frame* m_Frame;
+    frame* m_frame;
   };
 };
 
@@ -96,7 +96,7 @@ wex::toolbar::toolbar(managed_frame* frame, const window_data& data)
       data.pos(), 
       data.size(), 
       data.style() | wxAUI_TB_HORZ_TEXT | wxAUI_TB_PLAIN_BACKGROUND)
-  , m_Frame(frame)
+  , m_frame(frame)
 {
 }
 
@@ -125,7 +125,7 @@ void wex::toolbar::add_controls(bool realize)
   
   Bind(wxEVT_AUITOOLBAR_TOOL_DROPDOWN, [=](wxAuiToolBarEvent& event) {
     if (!PrepDropDown(this, event)) return;
-    m_Frame->file_history().popup_menu(this, ID_CLEAR_FILES, GetPoint(this, event));
+    m_frame->file_history().popup_menu(this, ID_CLEAR_FILES, GetPoint(this, event));
     SetToolSticky(event.GetId(), false);}, wxID_OPEN);
       
   if (realize) Realize();
@@ -298,7 +298,7 @@ wex::find_textctrl::find_textctrl(
       data.pos(), 
       data.size(), 
       data.style() | wxTE_PROCESS_ENTER)
-  , m_Frame(frame)
+  , m_frame(frame)
 {
   const int accels = 1;
   wxAcceleratorEntry entries[accels];
@@ -313,7 +313,7 @@ wex::find_textctrl::find_textctrl(
     }});
   
   Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
-    if (auto* stc = m_Frame->get_stc(); stc != nullptr)
+    if (auto* stc = m_frame->get_stc(); stc != nullptr)
     {
       stc->position_save();
     }
@@ -336,7 +336,7 @@ void wex::find_textctrl::Find(bool find_next, bool restore_position)
 {
   // We cannot use events here, as OnFindDialog in stc uses frd data,
   // whereas we need the GetValue here.
-  if (auto* stc = m_Frame->get_stc(); stc != nullptr)
+  if (auto* stc = m_frame->get_stc(); stc != nullptr)
   {
     if (restore_position)
     {
@@ -348,11 +348,11 @@ void wex::find_textctrl::Find(bool find_next, bool restore_position)
       -1,
       find_next);
   }
-  else if (auto* grid = m_Frame->get_grid(); grid != nullptr)
+  else if (auto* grid = m_frame->get_grid(); grid != nullptr)
   {
     grid->find_next(GetValue(), find_next);
   }
-  else if (auto* lv = m_Frame->get_listview(); lv != nullptr)
+  else if (auto* lv = m_frame->get_listview(); lv != nullptr)
   {
     lv->find_next(GetValue().ToStdString(), find_next);
   }

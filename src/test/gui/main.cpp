@@ -26,12 +26,12 @@ namespace wex
     public:
       managed_frame()
       : wex::managed_frame()
-      , m_Process(new process()) {;};
+      , m_process(new process()) {;};
       process* get_process(const std::string& command) override {
-        m_Process->execute(command);
-        return m_Process;};
+        m_process->execute(command);
+        return m_process;};
     private:
-      process* m_Process;
+      process* m_process;
     };
 
     class gui_app : public app
@@ -50,8 +50,8 @@ namespace wex
           return false;
         }
       
-        m_Frame = new managed_frame();
-        m_StatusBar = m_Frame->setup_statusbar({
+        m_frame = new managed_frame();
+        m_StatusBar = m_frame->setup_statusbar({
           {"Pane0"}, // the order of panes is tested
           {"Pane1"},
           {"Pane2"},
@@ -64,21 +64,21 @@ namespace wex
           {"LastPane"}});
         m_stc = new stc();
 
-        m_Frame->Show();
+        m_frame->Show();
 
-        process::prepare_output(m_Frame); // before adding pane
+        process::prepare_output(m_frame); // before adding pane
         
-        add_pane(m_Frame, m_stc);
-        add_pane(m_Frame, process::get_shell());
+        add_pane(m_frame, m_stc);
+        add_pane(m_frame, process::get_shell());
         
         return true;
       }
       
-      static auto* frame() {return m_Frame;};
+      static auto* frame() {return m_frame;};
       static auto* get_statusbar() {return m_StatusBar;};
       static auto* get_stc() {return m_stc;};
     private:
-      inline static managed_frame* m_Frame = nullptr;
+      inline static managed_frame* m_frame = nullptr;
       inline static statusbar* m_StatusBar = nullptr;
       inline static stc* m_stc = nullptr;
     }; 

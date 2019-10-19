@@ -114,7 +114,7 @@ namespace wex
     menu_t m_menu_flags = menu_t().set();
 
     const wex::lexer* m_lexer = nullptr;
-    listview* m_ListView = nullptr;
+    listview* m_listview = nullptr;
 
     image_t m_ImageType = IMAGE_ART;
     type_t m_Type = NONE;

@@ -59,7 +59,6 @@ wex::report::dirctrl::dirctrl(
     ID_EDIT_VCS_HIGHEST - 1);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wxBusyCursor wait;
     std::string clipboard;
     const auto v (to_vector_string(*this).get());
     for (const auto& it : v)

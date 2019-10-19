@@ -19,8 +19,8 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-8', 'libboost-all-dev']
-      env: _CC=gcc-8 _CXX=g++-8
       os: linux
+      env: CC=gcc-8 CXX=g++-8
       dist: bionic
       sudo: required
       services: xvfb
@@ -29,34 +29,30 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-8']
           packages: ['clang-8', 'valgrind', 'libboost-all-dev']
-      env: _CC=clang-8 _CXX=clang++-8
       os: osx
-      osx_image: xcode11
+      osx_image: xcode11.2
       sudo: required
-
-  allow_failures:
-    - os: linux
-    - os: osx
 
 before_install:
   - eval "${MATRIX_EVAL}"
 
 install:
-  - ./ci/${TRAVIS_OS_NAME}-install.sh
+  - ./ci/$TRAVIS_OS_NAME-install.sh
 
 before_script:
-  - ./ci/${TRAVIS_OS_NAME}-before-script.sh
+  - ./ci/$TRAVIS_OS_NAME-before-script.sh
+  - if [ $TRAVIS_OS_NAME = osx ]; then . ./ci/use-clang.sh; fi
 
 script:
-  - mkdir build${TRAVIS_OS_NAME} && pushd build${TRAVIS_OS_NAME}
-  - export CC="$_CC"
-  - export CXX="$_CXX"
-  - cmake -DCMAKE_CXX_COMPILER=${CXX} -DwexBUILD_TESTS=ON ..
-#    - cmake -DCMAKE_BUILD_TYPE=Coverage -DwexBUILD_TESTS=ON ..
+  - mkdir build && pushd build
+  - cmake -DCMAKE_CXX_COMPILER=${CXX} -DCMAKE_BUILD_TYPE=Coverage -DwexBUILD_TESTS=ON ..
   - make -j 4
-#    - if [ "$TRAVIS_OS_NAME" != "osx" ]; then make lcov-prep; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ]; then ctest --timeout 120 -V .. ; fi
+  - if [ $TRAVIS_OS_NAME != osx ]; then make lcov-prep; fi
+  # ctest --timeout 120 -V ..
+  - src/test/base/wex-test-base
+  - src/test/gui/wex-test-gui --tse=wex::process
+  - src/test/gui-report/wex-test-gui-report
         
 after_success:
-#    - if [ "$TRAVIS_OS_NAME" != "osx" ]; then make lcov; fi
-#    - if [ "$TRAVIS_OS_NAME" != "osx" ]; then make lcov-coveralls; fi
+  - if [ $TRAVIS_OS_NAME != osx ]; then make lcov; fi
+  - if [ $TRAVIS_OS_NAME != osx ]; then make lcov-coveralls; fi

@@ -17,13 +17,13 @@
 #include <wex/vcs.h>
 
 wex::menu::menu(menu_t style)
-  : m_Style(style)
+  : m_style(style)
 {
 }
 
 wex::menu::menu(const std::string& title, menu_t style)
   : wxMenu(title)
-  , m_Style(style)
+  , m_style(style)
 {
 }
   
@@ -58,46 +58,46 @@ wxMenuItem* wex::menu::append(
 
 void wex::menu::append_edit(bool add_invert)
 {
-  if (!m_Style[IS_READ_ONLY] && m_Style[IS_SELECTED])
+  if (!m_style[IS_READ_ONLY] && m_style[IS_SELECTED])
   {
     append(wxID_CUT);
   }
 
-  if (m_Style[IS_SELECTED])
+  if (m_style[IS_SELECTED])
   {
     append(wxID_COPY);
   }
 
-  if (!m_Style[IS_READ_ONLY] && m_Style[CAN_PASTE])
+  if (!m_style[IS_READ_ONLY] && m_style[CAN_PASTE])
   {
     append(wxID_PASTE);
   }
 
-  if (!m_Style[IS_SELECTED] && !m_Style[IS_EMPTY])
+  if (!m_style[IS_SELECTED] && !m_style[IS_EMPTY])
   {
     append(wxID_SELECTALL);
   }
   else
   {
-    if (add_invert && !m_Style[IS_EMPTY])
+    if (add_invert && !m_style[IS_EMPTY])
     {
       append(ID_EDIT_SELECT_NONE, _("&Deselect All"));
     }
   }
 
-  if (m_Style[ALLOW_CLEAR])
+  if (m_style[ALLOW_CLEAR])
   {
     append(wxID_CLEAR);
   }
 
-  if (add_invert && !m_Style[IS_EMPTY])
+  if (add_invert && !m_style[IS_EMPTY])
   {
     append(ID_EDIT_SELECT_INVERT, _("&Invert"));
   }
 
-  if (!m_Style[IS_READ_ONLY] &&
-       m_Style[IS_SELECTED] &&
-      !m_Style[IS_EMPTY])
+  if (!m_style[IS_READ_ONLY] &&
+       m_style[IS_SELECTED] &&
+      !m_style[IS_EMPTY])
   {
     append(wxID_DELETE);
   }
@@ -147,7 +147,7 @@ bool wex::menu::append_tools(int itemid)
     return false;
   }
 
-  auto* menuTool = new wex::menu(m_Style);
+  auto* menuTool = new wex::menu(m_style);
 
   for (const auto& it : tool().get_tool_info())
   {
@@ -179,7 +179,7 @@ bool wex::menu::append_vcs(const path& filename, bool show_modal)
   }
   else
   {
-    auto* vcsmenu = new wex::menu(m_Style);
+    auto* vcsmenu = new wex::menu(m_style);
 
     if (const wex::vcs vcs({filename.string()});
       vcs.entry().build_menu(ID_EDIT_VCS_LOWEST + 1, vcsmenu))

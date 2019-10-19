@@ -55,7 +55,7 @@ wex::window_data& wex::window_data::size(const wxSize& size)
   
 wex::window_data& wex::window_data::style(long style) 
 {
-  m_Style = style;
+  m_style = style;
   return *this;
 }
 

@@ -114,6 +114,11 @@ wex::log& wex::log::operator<<(long r)
   return *this;
 }
 
+wex::log& wex::log::operator<<(long long r)
+{
+  m_ss << S() << r;
+  return *this;
+}
 wex::log& wex::log::operator<<(const char* r)
 {
   m_ss << S() << r;
@@ -141,10 +146,9 @@ wex::log& wex::log::operator<<(const std::string& r)
       const char f(m_ss.fill());
       const auto w(m_ss.width());
 
-      m_ss << "\\x" << std::setfill('0') << std::setw(2) << std::hex << (int)c;
-
-      std::setfill(f);
-      std::setw(w);
+      m_ss << 
+        "\\x" << std::setfill('0') << std::setw(2) << std::hex << (int)c <<
+        std::setfill(f) << std::setw(w);
     }
   }
   

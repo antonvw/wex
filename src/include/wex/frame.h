@@ -40,8 +40,13 @@ namespace wex
     virtual ~frame();
 
     /// Override from base class.
+
+    /// Sets menubar.
     void SetMenuBar(wxMenuBar* bar) override;
-    
+
+    /// Shows or hides window.
+    bool Show(bool show = true) override;
+
     /// Virtual interface
     
     /// Returns a grid.

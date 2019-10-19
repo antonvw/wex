@@ -56,11 +56,11 @@ namespace wex
       return T();};
     
     /// Returns the flags key.
-    const auto & flags_key() const {return m_FlagsKey;};
+    const auto & flags_key() const {return m_flags_key;};
 
     /// Returns the current command.  
     const auto get_command() const {
-      return m_commands.empty() ? T(): m_commands.at(m_commandIndex);};
+      return m_commands.empty() ? T(): m_commands.at(m_command_index);};
 
     /// Returns all the commands.
     const auto & get_commands() const {return m_commands;};
@@ -77,14 +77,16 @@ namespace wex
       {
         return false;
       }
-      m_commandIndex = command_no;
-      m_FlagsKey = "menuflags/" + m_name + std::to_string(m_commandIndex);
+      m_command_index = command_no;
+      m_flags_key = "menuflags/" + m_name + std::to_string(m_command_index);
       return true;};
   private:
-    int m_commandIndex = 0;
+    int m_command_index {0};
 
-    std::string m_FlagsKey;
-    std::string m_name;
+    std::string 
+      m_flags_key,
+      m_name;
+
     std::vector < T > m_commands;
   };
 };

@@ -69,7 +69,7 @@ namespace wex
     window_data& size(const wxSize& size);
 
     /// Returns window style.
-    const auto& style() const {return m_Style;};
+    const auto& style() const {return m_style;};
 
     /// Sets window style.
     /// The style bits available depend on the context.
@@ -93,6 +93,6 @@ namespace wex
 
     long 
       m_button {wxOK | wxCANCEL}, 
-      m_Style {DATA_NUMBER_NOT_SET};
+      m_style {DATA_NUMBER_NOT_SET};
   };
 };

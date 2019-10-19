@@ -434,12 +434,12 @@ wex::vi::vi(wex::stc* arg)
       if (get_stc()->GetSelectedText().empty())
       {
         get_stc()->GetColumn(get_stc()->GetCurrentPos()) == 0 ?
-          ctags()->find(std::string()):
-          ctags()->find(get_stc()->get_word_at_pos(get_stc()->GetCurrentPos()));
+          ctags::find(std::string()):
+          ctags::find(get_stc()->get_word_at_pos(get_stc()->GetCurrentPos()));
       }
       else
       {
-        ctags()->find(get_stc()->GetSelectedText().ToStdString());
+        ctags::find(get_stc()->GetSelectedText().ToStdString());
       }
       return 1;}},
     {control_W, [&](const std::string& command){
@@ -447,11 +447,11 @@ wex::vi::vi(wex::stc* arg)
       return 1;}},
     {control_T, [&](const std::string& command){
       frame()->save_current_page("ctags");
-      ctags()->previous();
+      ctags::previous();
       return 1;}},
     {control_V, [&](const std::string& command){
       frame()->save_current_page("ctags");
-      ctags()->next();
+      ctags::next();
       return 1;}},
     // <- tag commands
     {"X", [&](const std::string& command){
@@ -1104,12 +1104,12 @@ void wex::vi::insert_mode_normal(const std::string& text)
           }
         }
         
-        get_stc()->AddText(token);
+        get_stc()->add_text(token);
       }
   
       if (tkz.last_delimiter() != 0)
       {
-        get_stc()->AddText(tkz.last_delimiter());
+        get_stc()->add_text(std::string(1, tkz.last_delimiter()));
         get_stc()->auto_indentation(tkz.last_delimiter());
       }
     }

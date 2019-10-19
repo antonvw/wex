@@ -520,13 +520,13 @@ frame::frame(app* app)
       {
         switch (i)
         {
-          case  9: m_ascii_table->AddText(wxString::Format("%3d\tTAB", i)); break;
-          case 10: m_ascii_table->AddText(wxString::Format("%3d\tLF", i)); break;
-          case 13: m_ascii_table->AddText(wxString::Format("%3d\tCR", i)); break;
+          case  9: m_ascii_table->add_text(wxString::Format("%3d\tTAB", i)); break;
+          case 10: m_ascii_table->add_text(wxString::Format("%3d\tLF", i)); break;
+          case 13: m_ascii_table->add_text(wxString::Format("%3d\tCR", i)); break;
           default:
-            m_ascii_table->AddText(wxString::Format("%3d\t%c", i, (wxUniChar)i));
+            m_ascii_table->add_text(wxString::Format("%3d\t%c", i, (wxUniChar)i));
         }
-        m_ascii_table->AddText((i % 5 == 0) ? m_ascii_table->eol(): "\t");
+        m_ascii_table->add_text((i % 5 == 0) ? m_ascii_table->eol(): "\t");
       }
       m_ascii_table->EmptyUndoBuffer();
       m_ascii_table->SetSavePoint();

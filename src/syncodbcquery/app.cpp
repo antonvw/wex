@@ -62,7 +62,7 @@ frame::frame()
   : wex::report::frame()
   , m_Query(new wex::stc())
   , m_Results(new wex::grid())
-  , m_Shell(new wex::shell(wex::stc_data(), "", ";"))
+  , m_shell(new wex::shell(wex::stc_data(), "", ";"))
 {
   const auto idDatabaseClose = wxWindow::NewControlId();
   const auto idDatabaseOpen = wxWindow::NewControlId();
@@ -122,7 +122,7 @@ frame::frame()
   m_Results->CreateGrid(0, 0);
   m_Results->EnableEditing(false); // this is a read-only grid
 
-  m_Shell->SetFocus();
+  m_shell->SetFocus();
 
   setup_statusbar({
     {"PaneInfo", 100, _("Lines").ToStdString()},
@@ -141,7 +141,7 @@ frame::frame()
     wxGetStockLabel(wxID_EXECUTE, wxSTOCK_NOFLAGS));
   get_toolbar()->Realize();
 
-  manager().AddPane(m_Shell,
+  manager().AddPane(m_shell,
     wxAuiPaneInfo().
       Name("CONSOLE").
       CenterPane());
@@ -161,7 +161,7 @@ frame::frame()
       CloseButton(true).
       MaximizeButton(true));
 
-  manager().AddPane(m_Statistics.show(this),
+  manager().AddPane(m_statistics.show(this),
     wxAuiPaneInfo().Left().
       Hide().
       MaximizeButton(true).
@@ -219,8 +219,8 @@ frame::frame()
         }
         catch (otl_exception& p)
         {
-          m_Statistics.inc("Number of query errors");
-          m_Shell->AppendText(
+          m_statistics.inc("Number of query errors");
+          m_shell->AppendText(
             "\nerror: " +  wex::quoted(std::string((const char*)p.msg)) + 
             " in: " + wex::quoted(query));
         }
@@ -229,7 +229,7 @@ frame::frame()
     const auto end = std::chrono::system_clock::now();
     const auto elapsed = end - start;
     const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
-    m_Shell->prompt(wxString::Format(_("\n%d queries (%.3f seconds)"),
+    m_shell->prompt(wxString::Format(_("\n%d queries (%.3f seconds)"),
       no_queries,
       (float)milli.count() / (float)1000).ToStdString());
     m_Running = false;}, wxID_EXECUTE);
@@ -274,13 +274,13 @@ frame::frame()
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (m_otl.logoff())
     {
-      m_Shell->set_prompt(">");
+      m_shell->set_prompt(">");
     }}, idDatabaseClose);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (m_otl.logon())
     {
-      m_Shell->set_prompt(m_otl.datasource() + ">");
+      m_shell->set_prompt(m_otl.datasource() + ">");
     }}, idDatabaseOpen);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -306,18 +306,18 @@ frame::frame()
           m_Results->EndBatch();
         }
 
-        m_Shell->AppendText("\nerror: " + wex::quoted(std::string((const char*)p.msg)));
+        m_shell->AppendText("\nerror: " + wex::quoted(std::string((const char*)p.msg)));
       }
     }
     else
     {
-      m_Shell->AppendText("\nnot connected");
+      m_shell->AppendText("\nnot connected");
     }
-    m_Shell->prompt();}, wex::ID_SHELL_COMMAND);
+    m_shell->prompt();}, wex::ID_SHELL_COMMAND);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     m_Stopped = true;
-    m_Shell->prompt("cancelled");}, wex::ID_SHELL_COMMAND_STOP);
+    m_shell->prompt("cancelled");}, wex::ID_SHELL_COMMAND_STOP);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     toggle_pane("QUERY");}, idViewQuery);
@@ -351,11 +351,11 @@ frame::frame()
   // Do automatic connect.
   if (!m_otl.datasource().empty() && m_otl.logon(wex::window_data().button(0)))
   {
-    m_Shell->set_prompt(m_otl.datasource() + ">");
+    m_shell->set_prompt(m_otl.datasource() + ">");
   }
   else
   {
-    m_Shell->set_prompt(">");
+    m_shell->set_prompt(">");
   }
 }
 
@@ -366,7 +366,7 @@ void frame::on_command_item_dialog(
   if (dialogid == wxID_PREFERENCES)
   {
     m_Query->config_get();
-    m_Shell->config_get();
+    m_shell->config_get();
   }
   else
   {
@@ -405,7 +405,7 @@ void frame::RunQuery(const std::string& query, bool empty_results)
   {
     rpc = m_Results->IsShown() ? 
       m_otl.query(query, m_Results, m_Stopped, empty_results):
-      m_otl.query(query, m_Shell, m_Stopped);
+      m_otl.query(query, m_shell, m_Stopped);
     const auto end = std::chrono::system_clock::now();
     const auto elapsed = end - start;
     milli = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
@@ -418,18 +418,18 @@ void frame::RunQuery(const std::string& query, bool empty_results)
     milli = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
   }
 
-  m_Shell->AppendText(wxString::Format(_("\n%ld rows processed (%.3f seconds)"),
+  m_shell->AppendText(wxString::Format(_("\n%ld rows processed (%.3f seconds)"),
     rpc,
     (float)milli.count() / (float)1000));
 
-  m_Statistics.set("Rows processed", rpc);
-  m_Statistics.set("Query runtime", milli.count());
+  m_statistics.set("Rows processed", rpc);
+  m_statistics.set("Query runtime", milli.count());
 
-  m_Statistics.inc("Total number of queries run");
-  m_Statistics.inc("Total query runtime", milli.count());
-  m_Statistics.inc("Total rows processed", rpc);
+  m_statistics.inc("Total number of queries run");
+  m_statistics.inc("Total query runtime", milli.count());
+  m_statistics.inc("Total rows processed", rpc);
 
-  m_Shell->DocumentEnd();
+  m_shell->DocumentEnd();
 }
 
 void frame::statusbar_clicked(const std::string& pane)
@@ -439,7 +439,7 @@ void frame::statusbar_clicked(const std::string& pane)
     if (wex::lexers::get()->show_theme_dialog(this))
     {
       m_Query->get_lexer().set(m_Query->get_lexer().display_lexer());
-      m_Shell->get_lexer().set(m_Shell->get_lexer().display_lexer());
+      m_shell->get_lexer().set(m_shell->get_lexer().display_lexer());
 
       m_statusbar->show_field(
         "PaneLexer", 

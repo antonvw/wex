@@ -2,7 +2,7 @@
 // Name:      stat.cpp
 // Purpose:   Implementation of wex::file_stat class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifdef _MSC_VER
@@ -36,22 +36,22 @@ bool wex::file_stat::is_readonly() const
 #ifdef _MSC_VER
   return (m_is_ok && ((st_mode & wxS_IWUSR) == 0));
 #else
-  return (m_is_ok && access(m_FullPath.c_str(), W_OK) == -1);
+  return (m_is_ok && access(m_fullpath.c_str(), W_OK) == -1);
 #endif
 }
 
 bool wex::file_stat::sync() 
 {
-  if (m_FullPath.empty())
+  if (m_fullpath.empty())
   {
     m_is_ok = false;
   }
   else
   {
 #ifdef _MSC_VER
-    m_is_ok = (stat(m_FullPath.c_str(), this) != -1);
+    m_is_ok = (stat(m_fullpath.c_str(), this) != -1);
 #else
-    m_is_ok = (::stat(m_FullPath.c_str(), this) != -1);
+    m_is_ok = (::stat(m_fullpath.c_str(), this) != -1);
 #endif
   }
 

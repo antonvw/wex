@@ -2,7 +2,7 @@
 // Name:      notebook.h
 // Purpose:   Declaration of class wex::notebook
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -54,7 +54,8 @@ namespace wex
     /// Cannot be const as it can call delete_page.
     template <class T> 
     bool for_each(int id) {
-      wxWindowUpdateLocker locker(m_Frame != nullptr ? (wxWindow*)m_Frame: (wxWindow*)this);
+      wxWindowUpdateLocker locker(
+        m_frame != nullptr ? (wxWindow*)m_frame: (wxWindow*)this);
       
       // The page should be an int (no), otherwise page >= 0 never fails!
       for (int page = GetPageCount() - 1; page >= 0; page--)
@@ -72,9 +73,9 @@ namespace wex
             {
               return false;
             }
-            const std::string key = m_Windows[GetPage(page)];
-            m_Windows.erase(GetPage(page));
-            m_Keys.erase(key);
+            const std::string key = m_windows[GetPage(page)];
+            m_windows.erase(GetPage(page));
+            m_keys.erase(key);
             wxAuiNotebook::DeletePage(page);
           }
           break;
@@ -92,11 +93,13 @@ namespace wex
         case ID_ALL_STC_SET_LEXER: 
           // At this moment same as themed change,
           // as we want default colour updates as well.
-          ((stc*)GetPage(page))->get_lexer().set(((stc*)GetPage(page))->get_lexer().display_lexer());
+          ((stc*)GetPage(page))->get_lexer().set(
+            ((stc*)GetPage(page))->get_lexer().display_lexer());
           break;
 
         case ID_ALL_STC_SET_LEXER_THEME: 
-          ((stc*)GetPage(page))->get_lexer().set(((stc*)GetPage(page))->get_lexer().display_lexer());
+          ((stc*)GetPage(page))->get_lexer().set(
+            ((stc*)GetPage(page))->get_lexer().display_lexer());
           break;
 
         case ID_ALL_STC_SYNC: 
@@ -108,9 +111,9 @@ namespace wex
           break;
         }
       }
-      if (m_Frame != nullptr && m_Keys.empty())
+      if (m_frame != nullptr && m_keys.empty())
       {
-        m_Frame->sync_close_all(GetId());
+        m_frame->sync_close_all(GetId());
       }
       return true;};
     
@@ -118,14 +121,14 @@ namespace wex
     /// If the page does not exist or is nullptr an empty string is returned.
     const std::string key_by_page(wxWindow* page) const {
       if (page == nullptr) return std::string();
-      const auto& it = m_Windows.find(page);
-      return (it != m_Windows.end() ? it->second: std::string());};
+      const auto& it = m_windows.find(page);
+      return (it != m_windows.end() ? it->second: std::string());};
     
     /// Returns the page specified by the given key.
     /// If the key does not exist nullptr is returned.
     wxWindow* page_by_key(const std::string& key) const {
-      const auto& it = m_Keys.find(key);
-      return (it != m_Keys.end() ? it->second: nullptr);};
+      const auto& it = m_keys.find(key);
+      return (it != m_keys.end() ? it->second: nullptr);};
     
     /// Returns the page index specified by the given key.
     /// If the key does not exist wxNOT_FOUND is returned.
@@ -179,9 +182,9 @@ namespace wex
       /// - wxRIGHT
       int direction);
   private:
-    managed_frame* m_Frame;
+    managed_frame* m_frame;
     // In bookctrl.h: m_pages
-    std::map<std::string, wxWindow*> m_Keys;
-    std::map<wxWindow*, std::string> m_Windows;
+    std::map<std::string, wxWindow*> m_keys;
+    std::map<wxWindow*, std::string> m_windows;
   };
 };

@@ -47,6 +47,13 @@ TEST_CASE( "wex::file" )
     REQUIRE( create.write(std::string("OK")));
   }
 
+  SUBCASE( "append" ) 
+  {
+    wex::file f(std::string("test-create"), std::ios_base::out | std::ios_base::app);
+    REQUIRE( f.is_open());
+    REQUIRE( f.write("extra text"));
+  }
+  
   // file should be closed before remove (at least for windows)
   SUBCASE( "remove")
   {

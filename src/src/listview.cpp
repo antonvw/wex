@@ -39,7 +39,7 @@ namespace wex
   public:
     listview_defaults() 
     : config_defaults({
-      {_("Context size"), item::SPINCTRL, 10l},
+      {_("context size"), item::SPINCTRL, 10l},
       {_("List font"), item::FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
       {_("List tab font"), item::FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
       {_("Readonly colour"), item::COLOURPICKERWIDGET, *wxLIGHT_GREY},
@@ -51,17 +51,17 @@ namespace wex
   class droptarget : public wxFileDropTarget
   {
   public:
-    explicit droptarget(listview* lv) {m_ListView = lv;}
+    explicit droptarget(listview* lv) {m_listview = lv;}
     virtual bool OnDropFiles(wxCoord x, wxCoord y, 
       const wxArrayString& filenames) override
     {
       // Only drop text if nothing is selected,
       // so dropping on your own selection is impossible.
-      if (m_ListView->GetSelectedItemCount() == 0)
+      if (m_listview->GetSelectedItemCount() == 0)
       {
         for (size_t i = 0; i < filenames.GetCount(); i++)
         {
-          m_ListView->item_from_text(filenames[i]);
+          m_listview->item_from_text(filenames[i]);
         }
       
         return true;
@@ -72,7 +72,7 @@ namespace wex
       }
     };
   private:
-    listview* m_ListView;
+    listview* m_listview;
   };
 #endif
 
@@ -234,7 +234,7 @@ wex::listview::listview(const listview_data& data)
             item.get_filename().file_exists() &&
             (item.get_filename().stat().get_modification_time() != 
              get_item_text(m_ItemNumber, _("Modified")) ||
-             item.get_filename().stat().is_readonly() != item.is_readOnly())
+             item.get_filename().stat().is_readonly() != item.is_readonly())
            )
         {
           item.update();
@@ -537,7 +537,7 @@ int wex::listview::config_dialog(const window_data& par)
            {SORT_ASCENDING, _("Sort ascending")},
            {SORT_DESCENDING, _("Sort descending")},
            {SORT_TOGGLE, _("Sort toggle")}}},
-         {_("Context size"), 0, 80},
+         {_("context size"), 0, 80},
          {_("Rulers"),  {
            {wxLC_HRULES, _("Horizontal rulers")},
            {wxLC_VRULES, _("Vertical rulers")}}, false}}},

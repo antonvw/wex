@@ -25,9 +25,9 @@
 #include "app.xpm"
 #endif
 
-wxIMPLEMENT_APP(report_sample_app);
+wxIMPLEMENT_APP(app);
 
-bool report_sample_app::OnInit()
+bool app::OnInit()
 {
   SetAppName("wex-sample-rep");
 
@@ -36,13 +36,18 @@ bool report_sample_app::OnInit()
     return false;
   }
 
-  report_sample_frame *frame = new report_sample_frame();
-  frame->Show(true);
+  frame* f = new frame();
+  f->Show(true);
 
   return true;
 }
 
-report_sample_frame::report_sample_frame() : wex::history_frame()
+frame::frame() 
+  : wex::report::frame()
+  , m_notebookWithLists(new wex::notebook(
+      wex::window_data().style(
+        wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_WINDOWLIST_BUTTON)))
+  , m_stc(new wex::stc())
 {
   SetIcon(wxICON(app));
 
@@ -72,11 +77,6 @@ report_sample_frame::report_sample_frame() : wex::history_frame()
     {"PaneInfo", 100},
     {"PaneLexer", 60}});
 
-  m_NotebookWithLists = new wex::notebook(
-    wex::window_data().style(wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_WINDOWLIST_BUTTON));
-
-  m_stc = new wex::stc();
-
   const wex::lexer lexer = wex::lexers::get()->find_by_name("cpp");
 
   for (int i = wex::listview_data::FOLDER; i <= wex::listview_data::FILE; i++)
@@ -84,7 +84,7 @@ report_sample_frame::report_sample_frame() : wex::history_frame()
     auto* vw = new wex::report::listview(
       wex::listview_data().type((wex::listview_data::type_t)i).lexer(&lexer));
 
-    m_NotebookWithLists->add_page(
+    m_notebookWithLists->add_page(
       vw, 
       vw->data().type_description(), 
       vw->data().type_description(), 
@@ -96,17 +96,17 @@ report_sample_frame::report_sample_frame() : wex::history_frame()
     wxAuiPaneInfo().CenterPane().CloseButton(false).MaximizeButton(true));
 
   manager().AddPane(
-    m_NotebookWithLists, 
+    m_notebookWithLists, 
     wxAuiPaneInfo().CloseButton(false).Bottom().MinSize(wxSize(250, 250)));
 
   manager().AddPane(
-    new wex::dirctrl(this),
+    new wex::report::dirctrl(this),
     wxAuiPaneInfo().Caption("DirCtrl").Left().MinSize(wxSize(250, 250)));
 
   manager().Update();
 
   wex::report::dir dir(
-    (wex::listview*)m_NotebookWithLists->page_by_key(
+    (wex::listview*)m_notebookWithLists->page_by_key(
       wex::listview_data().type(wex::listview_data::FILE).type_description()),
     wex::path::current(),
     "*.cpp;*.h");
@@ -114,7 +114,7 @@ report_sample_frame::report_sample_frame() : wex::history_frame()
   dir.find_files();
 
   wex::listitem item(
-    (wex::listview*)m_NotebookWithLists->page_by_key(
+    (wex::listview*)m_notebookWithLists->page_by_key(
       wex::listview_data().type(wex::listview_data::FILE).type_description()),
     wex::path("NOT EXISTING ITEM"));
 
@@ -170,16 +170,17 @@ report_sample_frame::report_sample_frame() : wex::history_frame()
     wex::printing::get()->get_html_printer()->PageSetup();}, wxID_PRINT_SETUP);
 }
 
-wex::listview* report_sample_frame::activate(
+wex::report::listview* frame::activate(
   wex::listview_data::type_t type, 
   const wex::lexer* lexer)
 {
   for (
     size_t i = 0;
-    i < m_NotebookWithLists->GetPageCount();
+    i < m_notebookWithLists->GetPageCount();
     i++)
   {
-    wex::listview* vw = (wex::listview*)m_NotebookWithLists->GetPage(i);
+    wex::report::listview* vw = (wex::report::listview*)
+      m_notebookWithLists->GetPage(i);
 
     if (vw->data().type() == type)
     {
@@ -191,7 +192,8 @@ wex::listview* report_sample_frame::activate(
           {
             if (!lexer->display_lexer().empty())
             {
-              wex::log::verbose(lexer->display_lexer()) << ", only cpp for the sample";
+              wex::log::verbose(lexer->display_lexer()) << 
+                ", only cpp for the sample";
             }
               
             return nullptr;
@@ -206,7 +208,7 @@ wex::listview* report_sample_frame::activate(
   return nullptr;
 }
 
-bool report_sample_frame::allow_close(wxWindowID id, wxWindow* page)
+bool frame::allow_close(wxWindowID id, wxWindow* page)
 {
   if (page == file_history_list())
   {
@@ -216,26 +218,26 @@ bool report_sample_frame::allow_close(wxWindowID id, wxWindow* page)
   }  
   else
   {
-    return wex::history_frame::allow_close(id, page);
+    return wex::report::frame::allow_close(id, page);
   }
 }
 
-wex::listview* report_sample_frame::get_listview()
+wex::listview* frame::get_listview()
 {
-  return (wex::listview*)m_NotebookWithLists->GetPage(
-    m_NotebookWithLists->GetSelection());
+  return (wex::listview*)m_notebookWithLists->GetPage(
+    m_notebookWithLists->GetSelection());
 }
 
 
-wex::stc* report_sample_frame::get_stc()
+wex::stc* frame::get_stc()
 {
   return m_stc;
 }
   
-wex::stc* report_sample_frame::open_file(
+wex::stc* frame::open_file(
   const wex::path& file, const wex::stc_data& data)
 {
-  m_stc->get_lexer().reset();
+  m_stc->get_lexer().clear();
   m_stc->open(file, wex::stc_data(data).flags(0));
   
   return m_stc;
