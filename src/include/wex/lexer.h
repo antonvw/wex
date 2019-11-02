@@ -193,7 +193,9 @@ namespace wex
       int, 
       std::function<void(stc* stc, int attrib)>>> m_attribs;
     
-    bool m_is_ok {false}, m_previewable {false};
+    bool 
+      m_is_ok {false}, 
+      m_previewable {false};
     
     stc* m_stc {nullptr};
   };

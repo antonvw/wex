@@ -101,7 +101,15 @@ int wex::file_history::get_max_files() const
 
 wex::path wex::file_history::get_history_file(size_t index) const
 {
-  return path(m_history->GetHistoryFile(index).ToStdString());
+  try
+  {
+    return path(m_history->GetHistoryFile(index).ToStdString());
+  }
+  catch (const std::exception& e)
+  {
+    wex::log(e) << "get_history_file:" << index;
+    return path();
+  }
 }
     
 std::vector<wex::path> wex::file_history::get_history_files(size_t count) const

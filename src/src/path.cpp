@@ -17,13 +17,13 @@ namespace fs = std::filesystem;
 const std::string substituteTilde(const std::string& text)
 {
   auto out(text);
-  wex::replace_all(out, "~", wxGetHomeDir().ToStdString());
+  wex::replace_all(out, "~", wxGetHomeDir());
   return out;
 }
 
 wex::path::path(const fs::path& p, status_t t)
   : m_path(p)
-  , m_Stat(p.string()) 
+  , m_stat(p.string()) 
   , m_lexer(lexers::get(false) != nullptr ? 
       lexers::get(false)->find_by_filename(p.filename().string()):
       std::string())
@@ -79,7 +79,7 @@ wex::path& wex::path::operator=(const wex::path& r)
     m_path = r.data();
     m_path_original = r.m_path_original;
     m_lexer = r.m_lexer;
-    m_Stat = r.m_Stat;
+    m_stat = r.m_stat;
     m_status = r.m_status;
   }
   
@@ -109,14 +109,27 @@ void wex::path::current(const std::string& path)
   }
 }
 
+std::string wex::path::current() 
+{
+  try
+  {
+    return fs::current_path().string();
+  }
+  catch (const std::exception& e)
+  {
+    wex::log(e) << "current";
+    return std::string();
+  }
+}
+
 bool wex::path::dir_exists() const 
 {
-  return std::filesystem::is_directory(m_path);
+  return fs::is_directory(m_path);
 }
       
 bool wex::path::file_exists() const 
 {
-  return fullname().size() < 255 && std::filesystem::is_regular_file(m_path);
+  return fullname().size() < 255 && fs::is_regular_file(m_path);
 }
       
 std::stringstream wex::path::log() const
@@ -140,7 +153,7 @@ std::stringstream wex::path::log() const
 wex::path& wex::path::make_absolute() 
 {
   m_path = fs::absolute(m_path);
-  m_Stat.sync();
+  m_stat.sync();
 
   if (!fs::is_directory(m_path.parent_path())) 
   {

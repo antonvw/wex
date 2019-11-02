@@ -15,10 +15,6 @@
 #include <wex/util.h>
 #include <wex/vi-macros-mode.h>
 
-wex::vi_macros::vi_macros()
-{ 
-}
-
 bool wex::vi_macros::erase()
 {
   if (m_macros->erase(m_macro) == 0)

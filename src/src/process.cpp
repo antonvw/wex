@@ -181,7 +181,7 @@ int wex::process::config_dialog(const window_data& par)
   wxTextValidator validator(wxFILTER_EXCLUDE_CHAR_LIST);
   validator.SetCharExcludes("?%*\"");
   const window_data data(
-    window_data(par).title(_("Select Process").ToStdString()));
+    window_data(par).title(_("Select Process")));
   const std::vector<item> v {
     {_("Process"), item::COMBOBOX, std::any(), 
       control_data().validator(&validator).is_required(true)},

@@ -38,7 +38,7 @@ namespace wex
       set_no(no, macro);};
 
     /// Applies this style to stc component.
-    /// If no style is present, STC StyleResetDefault is invoked.
+    /// If no style is present, stc StyleResetDefault is invoked.
     void apply(wxStyledTextCtrl* stc) const;
 
     /// Is the default style part of these styles.

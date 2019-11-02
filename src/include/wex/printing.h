@@ -20,29 +20,33 @@ namespace wex
   class printing
   {
   public:
+    /// Static interface.
+
     /// Returns the printing object.
     static printing* get(bool createOnDemand = true);
-
-#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-    /// Returns the html printer.
-    auto* get_html_printer() {return m_HtmlPrinter.get();};
-#endif
-
-    /// Returns the printer.
-    auto* get_printer() {return m_Printer.get();};
 
     /// Sets the object as the current one, returns the pointer 
     /// to the previous current object (both the parameter and returned value may be nullptr). 
     static printing* set(printing* printing);
+    
+    /// Other methods.
+
+#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
+    /// Returns the html printer.
+    auto* get_html_printer() {return m_html_printer.get();};
+#endif
+
+    /// Returns the printer.
+    auto* get_printer() {return m_printer.get();};
   private:
     printing();
 
-    std::unique_ptr<wxPrinter> m_Printer;
+    std::unique_ptr<wxPrinter> m_printer;
 #if wxUSE_HTML
-    std::unique_ptr<wxHtmlEasyPrinting> m_HtmlPrinter;
+    std::unique_ptr<wxHtmlEasyPrinting> m_html_printer;
 #endif
 
-    static printing* m_Self;
+    static printing* m_self;
   };
 
   // Offers a print out to be used by wxStyledTextCtrl.
@@ -55,14 +59,18 @@ namespace wex
     /// Methods overridden from base class.
     void GetPageInfo(int* minPage, int* maxPage, int* pageFrom, int* pageTo) override;
     bool HasPage(int pageNum) override {
-      return (pageNum >= 1 && pageNum <= (int)m_PageBreaks.size());};
+      return (pageNum >= 1 && pageNum <= (int)m_page_breaks.size());};
     void OnPreparePrinting() override;
     bool OnPrintPage(int pageNum) override;
   private:
-    void CountPages();
-    void SetScale();
-    wxRect m_PageRect, m_PrintRect;
-    std::vector<int> m_PageBreaks;
-    wxStyledTextCtrl* m_Owner;
+    void count_pages();
+    void set_scale();
+    
+    wxRect 
+      m_page_rect, 
+      m_print_rect;
+    
+    std::vector<int> m_page_breaks;
+    wxStyledTextCtrl* m_owner;
   };
 };

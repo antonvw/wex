@@ -33,23 +33,30 @@ namespace wex
       {_("Auto fold"), item::TEXTCTRL_INT, 1500l},
       {_("Auto indent"), item::TEXTCTRL_INT, (long)INDENT_ALL},
       {_("Caret line"), item::CHECKBOX, true},
-      {_("Default font"), item::FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)},
+      {_("Default font"), item::FONTPICKERCTRL, 
+        wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)},
       {_("Divider"), item::TEXTCTRL_INT, 16l},
       {_("Edge column"), item::TEXTCTRL_INT, 80l},
       {_("Edge line"), item::TEXTCTRL_INT, (long)wxSTC_EDGE_NONE},
-      {_("Fold flags"), item::TEXTCTRL_INT, (long)wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED},
+      {_("Fold flags"), item::TEXTCTRL_INT, 
+        (long)
+          wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | 
+          wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED},
       {_("Folding"), item::TEXTCTRL_INT, 16l},
       {_("Indent"), item::TEXTCTRL_INT, 2l},
       {_("Keep zoom"), item::CHECKBOX, true},
       {_("Line number"), item::TEXTCTRL_INT, 60l},
       {_("Print flags"), item::TEXTCTRL_INT, (long)wxSTC_PRINT_BLACKONWHITE},
       {_("Scroll bars"), item::CHECKBOX, true},
-      {_("Search engine"), item::COMBOBOX, std::list<std::string>{"https://duckduckgo.com"}},
+      {_("Search engine"), item::COMBOBOX, 
+        std::list<std::string>{"https://duckduckgo.com"}},
       {_("Show mode"), item::CHECKBOX, true},
       {_("Tab draw mode"), item::TEXTCTRL_INT, (long)wxSTC_TD_LONGARROW},
-      {_("Tab font"), item::FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
+      {_("Tab font"), item::FONTPICKERCTRL, 
+        wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
       {_("Tab width"), item::TEXTCTRL_INT, 2l},
-      {_("Text font"), item::FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
+      {_("Text font"), item::FONTPICKERCTRL, 
+        wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
       {_("vi mode"), item::CHECKBOX, true},
       {_("vi tag fullpath"), item::CHECKBOX, false}}) {;};
   };
@@ -212,10 +219,13 @@ int wex::stc::config_dialog(const window_data& par)
            {wxSTC_PRINT_INVERTLIGHT, _("Invert on white")},
            {wxSTC_PRINT_BLACKONWHITE, _("Black on white")},
            {wxSTC_PRINT_COLOURONWHITE, _("Colour on white")},
-           {wxSTC_PRINT_COLOURONWHITEDEFAULTBG, _("Colour on white normal")}}, true, 1}}}
+           {wxSTC_PRINT_COLOURONWHITEDEFAULTBG, 
+              _("Colour on white normal")}}, true, 1}}}
       }}},
       window_data(data).
-        title(data.id() == wxID_PREFERENCES ? wxGetStockLabel(data.id(), 0).ToStdString(): data.title()));
+        title(data.id() == wxID_PREFERENCES ? 
+          wxGetStockLabel(data.id(), 0).ToStdString(): 
+          data.title()));
   }
   else
   {

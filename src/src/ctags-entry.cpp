@@ -22,21 +22,12 @@ wex::ctags_entry& wex::ctags_entry::class_name(const std::string& v)
 
 void wex::ctags_entry::clear()
 {
-  log::verbose("filter") << get() << " cleared";
+  log::verbose("filter") << log() << " cleared";
 
   m_access.clear();
   m_class.clear();
   m_kind.clear();
   m_signature.clear();
-}
-
-const std::string wex::ctags_entry::get() const
-{
-  return 
-    (!m_access.empty() ? "access: " + m_access + " ": std::string()) + 
-    (!m_class.empty() ? "class: " + m_class + " ": std::string()) +
-    (!m_kind.empty() ? "kind: " + m_kind + " ": std::string()) +
-    (!m_signature.empty() ? "signature: " + m_signature + " ": std::string());
 }
 
 bool wex::ctags_entry::is_active() const
@@ -50,6 +41,19 @@ wex::ctags_entry& wex::ctags_entry::kind(const std::string& v)
 {
   m_kind = v;
   return *this;
+}
+
+const std::stringstream wex::ctags_entry::log() const
+{
+  std::stringstream ss;
+
+  ss << 
+    (!m_access.empty() ? "access: " + m_access + " ": std::string()) << 
+    (!m_class.empty() ? "class: " + m_class + " ": std::string()) <<
+    (!m_kind.empty() ? "kind: " + m_kind + " ": std::string()) <<
+    (!m_signature.empty() ? "signature: " + m_signature + " ": std::string());
+  
+  return ss;
 }
 
 wex::ctags_entry& wex::ctags_entry::signature(const std::string& v)

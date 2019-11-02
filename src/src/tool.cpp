@@ -5,26 +5,16 @@
 // Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wex/tool.h>
 #include <wex/statistics.h>
+#include <wex/util.h>
 
-std::map < int, wex::tool_info > wex::tool::m_tool_info;
-
-wex::tool::tool(int type)
-  : m_id(type)
-{
-  if (m_tool_info.empty())
-  {
-    add_info(ID_TOOL_REPORT_FIND, _("Found %d matches in").ToStdString());
-    add_info(ID_TOOL_REPLACE, _("Replaced %d matches in").ToStdString());
-    add_info(ID_TOOL_REPORT_KEYWORD, 
-      _("Reported %d keywords in").ToStdString(), _("Report &Keyword").ToStdString());
-  }
-}
+std::map < int, wex::tool_info > wex::tool::m_tool_info {
+  {ID_TOOL_REPORT_FIND, {_("Found %d matches in")}},
+  {ID_TOOL_REPLACE, {_("Replaced %d matches in")}},
+  {ID_TOOL_REPORT_KEYWORD, 
+     {_("Reported %d keywords in"), 
+      _("Report &Keyword")}}};
 
 const std::string wex::tool::info() const
 {
@@ -36,14 +26,14 @@ const std::string wex::tool::info() const
 
 const std::string wex::tool::info(const wex::statistics<int>* stat) const
 {
-  wxString logtext(info());
+  std::string logtext(info());
 
-  if (logtext.Contains("%d"))
-  {
-    logtext = logtext.Format(logtext, stat->get(_("Actions Completed").ToStdString()));
-  }
+  replace_all(logtext, "%d", std::to_string(stat->get(_("Actions Completed"))));
 
-  logtext << " " << stat->get(_("Files").ToStdString()) << " " << _("file(s)");
+  logtext.append(" ");
+  logtext.append(std::to_string(stat->get(_("Files"))));
+  logtext.append(" ");
+  logtext.append(_("file(s)"));
 
-  return logtext.ToStdString();
+  return logtext;
 }

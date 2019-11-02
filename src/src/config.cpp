@@ -28,7 +28,7 @@ namespace wex
     explicit config_imp(const std::string& dir)
       : m_path(
           dir, 
-          wxTheApp->GetAppName().Lower().ToStdString() + ".json")
+          wxTheApp->GetAppName().Lower() + ".json")
       , m_json({})
     {
       if (std::ifstream fs(m_path.data());
@@ -72,9 +72,9 @@ const std::string wex::config::dir()
     GetExecutablePath()).ToStdString();
 #else
   return path({
-    wxGetHomeDir().ToStdString(), 
+    wxGetHomeDir(), 
     ".config", 
-    wxTheApp->GetAppName().Lower().ToStdString()}).data().string();
+    wxTheApp->GetAppName().Lower()}).data().string();
 #endif
 }
 

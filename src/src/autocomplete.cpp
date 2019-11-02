@@ -33,12 +33,12 @@ bool wex::autocomplete::activate(const std::string& text)
   
   if (current.is_active())
   {
-    log::verbose("autocomplete current") << current.get();
+    log::verbose("autocomplete current") << current;
   }
 
   if (m_filter.is_active())
   {
-    log::verbose("autocomplete filter") << m_filter.get();
+    log::verbose("autocomplete filter") << m_filter;
   }
 
   if (m_stc->get_vi().is_active())

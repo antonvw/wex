@@ -51,9 +51,6 @@ namespace wex
     class event_data
     {
     public:
-      /// Default constructor.
-      event_data() {;};
-
       /// Access.
       bool pos_at_end() const {return m_pos_at_end;};
       auto pos_end() const {return m_pos_end;};
@@ -69,7 +66,9 @@ namespace wex
         m_synced {false},
         m_synced_log {false};
 
-      int m_pos_start {-1}, m_pos_end {-1};
+      int 
+        m_pos_start {-1}, 
+        m_pos_end {-1};
     };
     
     /// Default constructor.

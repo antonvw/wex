@@ -69,11 +69,11 @@ namespace wex
   protected:
     /// Increments the actions completed.
     auto inc_actions_completed(int inc_value = 1) {return
-      m_stats.m_Elements.inc(_("Actions Completed").ToStdString(), inc_value);};
+      m_stats.m_elements.inc(_("Actions Completed").ToStdString(), inc_value);};
       
     /// Increments statistics keyword.
     auto inc_statistics(const std::string& keyword) {return
-      m_stats.m_Elements.inc(keyword);};
+      m_stats.m_elements.inc(keyword);};
   private:
     bool is_word_character(int c) const {return isalnum(c) || c == '_';};
 
@@ -83,7 +83,11 @@ namespace wex
 
     stream_statistics m_stats;
     int m_prev;
-    bool m_modified {false}, m_write {false};
+
+    bool 
+      m_modified {false}, 
+      m_write {false};
+
     find_replace_data* m_frd;
     std::string m_find_string;
     static inline bool m_asked {false};

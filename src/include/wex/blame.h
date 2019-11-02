@@ -44,7 +44,10 @@ namespace wex
   private:
     lexers::margin_style_t get_style(const std::string& text) const;
     
-    std::string m_blame_format, m_date_format;
+    std::string 
+      m_blame_format, 
+      m_date_format;
+
     size_t m_date_print {10};
   };
 };

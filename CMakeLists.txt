@@ -1,5 +1,7 @@
 project(wex)
 
+cmake_minimum_required(VERSION 3.6.3)
+
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
@@ -10,10 +12,6 @@ find_package(Boost 1.65.0 COMPONENTS
 if(NOT Boost_FOUND)
   message(FATAL_ERROR "boost is required")
 endif()
-
-message("BOOST libs: " ${Boost_LIBRARIES})
-
-cmake_minimum_required(VERSION 3.6.3)
 
 # See common.cmake and options.cmake, currently next is not done
 # to support older cmake versions that do not known 17.

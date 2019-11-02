@@ -11,17 +11,9 @@
 #include <wex/ex-command.h>
 #include <wex/util.h>
 
-wex::find_replace_data* wex::find_replace_data::m_Self = nullptr;
-std::string wex::find_replace_data::m_text_find = _("Find what").ToStdString();
-std::string wex::find_replace_data::m_text_match_case = _("Match case").ToStdString();
-std::string wex::find_replace_data::m_text_match_word = _("Match whole word").ToStdString();
-std::string wex::find_replace_data::m_text_regex = _("Regular expression").ToStdString();
-std::string wex::find_replace_data::m_text_replace_with = _("Replace with").ToStdString();
-std::string wex::find_replace_data::m_text_search_down = _("Search down").ToStdString();
-
 wex::find_replace_data::find_replace_data()
-  : m_findStrings(ex_command::type_t::FIND)
-  , m_ReplaceStrings(ex_command::type_t::REPLACE)
+  : m_find_strings(ex_command::type_t::FIND)
+  , m_replace_strings(ex_command::type_t::REPLACE)
   , m_frd(new wxFindReplaceData)
 {
   int flags = 0;
@@ -54,22 +46,22 @@ wxFindReplaceData* wex::find_replace_data::data()
 
 wex::find_replace_data* wex::find_replace_data::get(bool createOnDemand)
 {
-  if (m_Self == nullptr && createOnDemand)
+  if (m_self == nullptr && createOnDemand)
   {
-    m_Self = new find_replace_data();
+    m_self = new find_replace_data();
   }
 
-  return m_Self;
+  return m_self;
 }
 
 const std::string wex::find_replace_data::get_find_string() const
 {
-  return m_frd->GetFindString().ToStdString();
+  return m_frd->GetFindString();
 }
 
 const std::string wex::find_replace_data::get_replace_string() const 
 {
-  return m_frd->GetReplaceString().ToStdString();
+  return m_frd->GetReplaceString();
 }
 
 bool wex::find_replace_data::match_case() const 
@@ -118,14 +110,14 @@ bool wex::find_replace_data::search_down() const
 
 wex::find_replace_data* wex::find_replace_data::set(find_replace_data* frd)
 {
-  find_replace_data* old = m_Self;
-  m_Self = frd;
+  find_replace_data* old = m_self;
+  m_self = frd;
   return old;
 }
 
 void wex::find_replace_data::set_find_string(const std::string& value)
 {
-  m_findStrings.set(value);
+  m_find_strings.set(value);
   m_frd->SetFindString(value);
   set_use_regex(m_use_regex);
 }
@@ -133,8 +125,8 @@ void wex::find_replace_data::set_find_string(const std::string& value)
 void wex::find_replace_data::set_find_strings(
   const std::list < std::string > & values)
 {
-  m_findStrings.set(values);
-  m_frd->SetFindString(m_findStrings.get());
+  m_find_strings.set(values);
+  m_frd->SetFindString(m_find_strings.get());
   set_use_regex(m_use_regex);
 }
 
@@ -167,15 +159,15 @@ void wex::find_replace_data::set_match_word(bool value)
 void wex::find_replace_data::set_replace_string(const std::string& value)
 {
   // value is allowed to be empty
-  m_ReplaceStrings.set(value);
+  m_replace_strings.set(value);
   m_frd->SetReplaceString(value);
 }
 
 void wex::find_replace_data::set_replace_strings(
   const std::list < std::string > & value)
 {
-  m_ReplaceStrings.set(value);
-  m_frd->SetReplaceString(m_ReplaceStrings.get());
+  m_replace_strings.set(value);
+  m_frd->SetReplaceString(m_replace_strings.get());
 }
 
 void wex::find_replace_data::set_search_down(bool value)

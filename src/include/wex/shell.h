@@ -71,7 +71,7 @@ namespace wex
     
     /// Enable/disable shell processing.
     /// Default (and after constructed) shell processing is enabled.
-    /// When disabled, shell is a normal STC.
+    /// When disabled, shell is a normal stc.
     void enable(bool enable = true);
     
     /// Returns last entered command.

@@ -326,7 +326,7 @@ bool wex::ctags::find(const std::string& tag)
     
     for (const auto& sel : dialog.GetSelections())
     {
-      m_iterator = m_matches.find(as[sel].ToStdString());
+      m_iterator = m_matches.find(as[sel]);
       m_iterator->second.open_file(get_frame());
     }
   }

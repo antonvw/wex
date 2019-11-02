@@ -73,7 +73,11 @@ namespace wex
     virtual bool on_file(const path& ) {return true;};
   private:
     const path m_dir;
-    const std::string m_dir_spec, m_file_spec;
+
+    const std::string 
+      m_dir_spec, 
+      m_file_spec;
+
     const type_t m_flags;
   };
 

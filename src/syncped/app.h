@@ -28,7 +28,11 @@ private:
   
   bool OnInit() override;
 
-  std::string m_tag, m_scriptin, m_scriptout; 
+  std::string 
+    m_scriptin, 
+    m_scriptout,
+    m_tag;
+
   std::vector< wex::path > m_files;
   
   bool m_debug {false};

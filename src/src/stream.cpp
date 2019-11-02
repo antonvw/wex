@@ -151,7 +151,7 @@ bool wex::stream::run_tool()
   }
   else
   {
-    m_stats.m_Elements.set(_("Files").ToStdString(), 1);
+    m_stats.m_elements.set(_("Files").ToStdString(), 1);
     
     int line_no = 0;
     std::string s;

@@ -386,22 +386,23 @@ TEST_CASE("wex")
 
   SUBCASE("sort_selection_rect")
   {
+    wex::stc* stc = new wex::stc(rect);
+    wex::test::add_pane(frame(), stc);
+
     // make a rectangular selection, invoke sort, and check result
-    get_stc()->SelectNone();
-    get_stc()->set_text(rect);
+    REQUIRE( stc->get_vi().mode().normal());
+    REQUIRE( stc->get_vi().command("3 "));
+    REQUIRE( stc->get_vi().command("K"));
+    REQUIRE( stc->get_vi().mode().visual());
+    REQUIRE( stc->get_vi().command("4j"));
+    REQUIRE( stc->get_vi().command("5l"));
+    REQUIRE( stc->get_vi().mode().visual());
 
-    REQUIRE( get_stc()->get_vi().mode().normal());
-    REQUIRE( get_stc()->get_vi().command("3 "));
-    REQUIRE( get_stc()->get_vi().command("K"));
-    REQUIRE( get_stc()->get_vi().mode().visual());
-    REQUIRE( get_stc()->get_vi().command("4j"));
-    REQUIRE( get_stc()->get_vi().command("5l"));
-
-    REQUIRE( wex::sort_selection(get_stc(), 0, 3, 5));
-    REQUIRE( wex::trim(get_stc()->GetText()) == wex::trim(sorted));
-    REQUIRE( wex::sort_selection(get_stc(), 
+    REQUIRE( wex::sort_selection(stc, 0, 3, 5));
+    REQUIRE( wex::trim(stc->GetText()) == wex::trim(sorted));
+    REQUIRE( wex::sort_selection(stc, 
       wex::string_sort_t().set(wex::STRING_SORT_DESCENDING), 3, 5));
-    REQUIRE( get_stc()->GetText() != sorted);
+    REQUIRE( stc->GetText() != sorted);
   }
   
   SUBCASE("translate")

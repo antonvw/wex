@@ -97,9 +97,14 @@ namespace wex
     /// Default the response stdout is collected in the shell,
     bool write(const std::string& text);
   private:
-    std::string m_command, m_stderr, m_stdout;
+    std::string 
+      m_command, 
+      m_stderr, 
+      m_stdout;
+
     static std::string m_working_dir_key;
     static inline shell* m_shell = nullptr;
+
     std::unique_ptr<process_imp> m_process;
     managed_frame* m_frame;
   };

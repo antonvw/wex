@@ -160,10 +160,7 @@ namespace wex
         m_grid->CreateGrid(0, 0);
         m_grid->AppendCols(2);
         m_grid->EnableEditing(false);
-
-#if wxUSE_DRAG_AND_DROP
         m_grid->use_drag_and_drop(false);
-#endif
 
         if (hide_row_labels)
         {

@@ -44,11 +44,17 @@ TEST_CASE("wex::vi")
     vi->command("=5+5");
     vi->command("");
     REQUIRE( stc->GetText().Contains("10"));
+
     change_mode( vi, ESC, wex::vi_mode::state_t::NORMAL);
     vi->command("=5+5");
-    REQUIRE( wxString(stc->get_vi().get_macros().get_register('0')).Contains("10"));
+    REQUIRE( 
+      stc->get_vi().get_macros().get_register('0').find("10") != 
+      std::string::npos);
+
     vi->command("=5+5+5");
-    REQUIRE( wxString(stc->get_vi().get_macros().get_register('0')).Contains("15"));
+    REQUIRE( 
+      stc->get_vi().get_macros().get_register('0').find("15") !=
+      std::string::npos);
   }
 
   SUBCASE("change")
@@ -202,6 +208,7 @@ TEST_CASE("wex::vi")
     change_mode( vi, "iyyyyy", wex::vi_mode::state_t::INSERT);
     REQUIRE( stc->GetText().Contains("yyyyy"));
     REQUIRE(!stc->GetText().Contains("iyyyyy"));
+  
     change_mode( vi, ESC, wex::vi_mode::state_t::NORMAL);
     const std::string lastcmd = std::string("iyyyyy") + ESC;
     REQUIRE( vi->last_command() == lastcmd);
@@ -214,6 +221,7 @@ TEST_CASE("wex::vi")
     REQUIRE( vi->command("100izz"));
     REQUIRE( vi->mode().insert());
     REQUIRE(!stc->GetText().Contains("izz"));
+
     change_mode( vi, ESC, wex::vi_mode::state_t::NORMAL);
     REQUIRE( stc->GetText().Contains(std::string(100, 'z')));
 
@@ -221,6 +229,7 @@ TEST_CASE("wex::vi")
     change_mode( vi, "i\n\n\n\n", wex::vi_mode::state_t::INSERT);
     REQUIRE( stc->GetText().Contains("\n"));
     REQUIRE(!stc->GetText().Contains("i"));
+
     change_mode( vi, ESC, wex::vi_mode::state_t::NORMAL);
     REQUIRE( vi->inserted_text() == "\n\n\n\n");
     
@@ -231,11 +240,14 @@ TEST_CASE("wex::vi")
     REQUIRE( vi->mode().insert());
     REQUIRE( vi->inserted_text().empty());
     REQUIRE( vi->mode().insert());
+    
     event.m_uniChar = WXK_RETURN;
     REQUIRE( vi->on_key_down(event));
     REQUIRE(!vi->on_char(event));
+    
     change_mode( vi, ESC, wex::vi_mode::state_t::NORMAL);
-    REQUIRE( wxString(vi->inserted_text()).Contains(vi->get_stc()->eol()));
+    REQUIRE( vi->inserted_text().find(vi->get_stc()->eol()) != 
+      std::string::npos);
   }
     
   SUBCASE("maps")
@@ -411,7 +423,9 @@ TEST_CASE("wex::vi")
     vi->command("h");
     vi->command("yy");
     REQUIRE( 
-      wxString(stc->get_vi().get_macros().get_register('0')).Contains("the chances of anything"));
+      stc->get_vi().get_macros().get_register('0').find("the chances of anything")
+      != std::string::npos);
+
     vi->command("p");
     vi->command("P");
     REQUIRE( stc->GetText().Contains(

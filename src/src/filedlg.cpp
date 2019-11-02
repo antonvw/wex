@@ -25,14 +25,14 @@ private:
   wxCheckBox *m_cb;
 };
 
-const auto id_check_box = wxWindow::NewControlId(); 
+const auto id_checkbox = wxWindow::NewControlId(); 
 
 extra_panel::extra_panel(wxWindow *parent)
   : wxPanel(parent)
-  , m_cb(new wxCheckBox(this, id_check_box, "Hex"))
+  , m_cb(new wxCheckBox(this, id_checkbox, "Hex"))
 {
   Bind(wxEVT_CHECKBOX, [&](wxCommandEvent& event) {
-    m_checked = !m_checked;}, id_check_box);
+    m_checked = !m_checked;}, id_checkbox);
 
   auto *sizerTop = new wxBoxSizer(wxHORIZONTAL);
   sizerTop->Add(new wxStaticText(this, wxID_ANY, "Mode:"),
@@ -97,7 +97,8 @@ wex::file_dialog::file_dialog(
           it.display_lexer() +
           " (" + it.extensions() + ") |" +
           it.extensions();
-        wildcards = (matches_one_of(file->get_filename().fullname(), it.extensions()) ?
+        wildcards = (matches_one_of(
+          file->get_filename().fullname(), it.extensions()) ?
           wildcard + "|" + wildcards: wildcards + "|" + wildcard);
       }
     }

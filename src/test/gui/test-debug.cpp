@@ -17,7 +17,8 @@ TEST_SUITE_BEGIN("wex::process");
 
 TEST_CASE("wex::debug")
 {
-  wex::debug dbg(frame());
+  wex::process process;
+  wex::debug dbg(frame(), &process);
   wex::menu menu;
   wex::stc* stc = get_stc();
   
@@ -29,15 +30,15 @@ TEST_CASE("wex::debug")
   
   SUBCASE("constructor")
   {
-    REQUIRE( dbg.process() == nullptr);
+    REQUIRE( wex::debug(frame()).process() == nullptr);
+    REQUIRE( dbg.process() != nullptr);
     REQUIRE( dbg.breakpoints().empty());
-    REQUIRE( dbg.marker_breakpoint().number() > 0);
   }
   
   SUBCASE("menu")
   {
     REQUIRE( dbg.add_menu(&menu) > 0);
-    REQUIRE( dbg.add_menu(&menu, true) == 0);
+    REQUIRE( dbg.add_menu(&menu, true) > 0);
     const int item = menu.FindItem("run");
 
     REQUIRE( item > wex::ID_EDIT_DEBUG_FIRST );
@@ -50,6 +51,8 @@ TEST_CASE("wex::debug")
 #ifndef __WXGTK__    
     REQUIRE(!dbg.execute(item));
 #endif
+
+    process.stop();
   }
   
   SUBCASE("execute")
@@ -63,27 +66,42 @@ TEST_CASE("wex::debug")
 #ifndef __WXMSW__
     REQUIRE( dbg.process() != nullptr);
 #endif
+
+    process.stop();
   }
   
-  SUBCASE("gdb")
+  SUBCASE("run")
   {
-    stc->set_text("#include <stdio.h>\n\nint main()\n{printf(\"hello world\");\n}\n");
+    stc->set_text(
+      "#include <stdio.h>\n\n"
+      "int main()\n"
+      "{\n"
+      "  printf(\"hello world\");\n"
+      "}\n");
+
     stc->get_file().file_save("example.cc");
     system("cc -g example.cc");
     
-    wex::process process;
     const int item = menu.FindItem("run");
 #ifndef __WXGTK__    
     REQUIRE(!dbg.execute(item));
 #endif
   
 #ifndef __WXOSX__
-    process.execute("gdb a.out");
+    dbg.execute("gdb a.out");
 #else
-    process.execute("lldb a.out");
+    dbg.execute("lldb a.out");
 #endif
+    
+    REQUIRE(!dbg.debug_entry().name().empty());
+
+    REQUIRE( dbg.print("i"));
+    REQUIRE( dbg.toggle_breakpoint(1, stc));
+    REQUIRE(!dbg.apply_breakpoints(stc));
   
     process.stop();
+    
+    wxMilliSleep(10);
       
 #ifndef __WXGTK__    
     REQUIRE(!dbg.execute(item));

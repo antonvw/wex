@@ -42,10 +42,10 @@ class editors : public wex::notebook
 public:
   editors(const wex::window_data& data); 
 
-  bool is_split() const {return m_Split;};
-  void reset() {m_Split = false;};
+  bool is_split() const {return m_split;};
+  void reset() {m_split = false;};
 private:
-  bool m_Split {false};
+  bool m_split {false};
 };
 
 BEGIN_EVENT_TABLE(frame, decorated_frame)
@@ -90,18 +90,13 @@ END_EVENT_TABLE()
 frame::frame(app* app)
   : decorated_frame(app)
   , m_process(new wex::process())
-  , m_editors(new editors(wex::window_data().id(wex::ID_NOTEBOOK_EDITORS).style(m_pane_flag)))
+  , m_editors(new editors(
+      wex::window_data().id(wex::ID_NOTEBOOK_EDITORS).style(m_pane_flag)))
+  , m_projects(new wex::notebook(
+      wex::window_data().id(wex::ID_NOTEBOOK_PROJECTS).style(m_pane_flag)))
   , m_lists(new wex::notebook(
       wex::window_data().id(wex::ID_NOTEBOOK_LISTS).style(m_pane_flag)))
-  , m_dir_ctrl(new wex::report::dirctrl(this))
-  , m_checkbox_dir_ctrl(new wxCheckBox(
-      get_toolbar(),
-      ID_VIEW_DIRCTRL,
-      _("Explorer")))
-  , m_checkbox_history(new wxCheckBox(
-      get_toolbar(),
-      ID_VIEW_HISTORY,
-      _("History")))
+  , m_dirctrl(new wex::report::dirctrl(this))
 {
   manager().AddPane(m_editors, wxAuiPaneInfo()
     .CenterPane()
@@ -109,12 +104,7 @@ frame::frame(app* app)
     .Name("FILES")
     .Caption(_("Files")));
 
-  if (wex::config("ShowProjects").get(false))
-  {
-    add_pane_projects();
-  }
-  
-  manager().AddPane(m_dir_ctrl, wxAuiPaneInfo()
+  manager().AddPane(m_dirctrl, wxAuiPaneInfo()
     .Left()
     .MaximizeButton(true)
     .CloseButton(false)
@@ -135,7 +125,14 @@ frame::frame(app* app)
     .Name("PROCESS")
     .MinSize(250, 100)
     .Caption(_("Process")));
-        
+
+  manager().AddPane(m_projects, wxAuiPaneInfo()
+    .Left()
+    .MaximizeButton(true)
+    .Name("PROJECTS")
+    .MinSize(150, 150)
+    .Caption(_("Projects")));
+
   if (const std::string perspective(wex::config("Perspective").get()); 
     perspective.empty())
   {
@@ -172,19 +169,17 @@ frame::frame(app* app)
         m_app->data());
     }
       
-    if (m_projects != nullptr)
+    if (wex::config("ShowProjects").get(false) && 
+      !get_project_history().get_history_file().empty())
     {
-      if (!get_project_history().get_history_file().empty())
-      {
-        open_file(
-          wex::path(get_project_history().get_history_file()),
-          wex::stc_data().flags(
-            wex::stc_data::window_t().set(wex::stc_data::WIN_IS_PROJECT)));
-      }
-      else
-      {
-        manager().GetPane("PROJECTS").Hide();
-      }
+      open_file(
+        wex::path(get_project_history().get_history_file()),
+        wex::stc_data().flags(
+          wex::stc_data::window_t().set(wex::stc_data::WIN_IS_PROJECT)));
+    }
+    else
+    {
+      manager().GetPane("PROJECTS").Hide();
     }
   }
   else
@@ -221,53 +216,54 @@ frame::frame(app* app)
     m_editors->GetPage(m_editors->GetPageCount() - 1)->SetFocus();
   }
   
-  get_toolbar()->add_controls(false); // no realize yet
-  get_toolbar()->AddControl(m_checkbox_dir_ctrl);
-  m_checkbox_dir_ctrl->SetToolTip(_("Explorer"));
-  get_toolbar()->AddControl(m_checkbox_history);
-  m_checkbox_history->SetToolTip(_("History"));
-  get_toolbar()->Realize();
+  get_toolbar()->add_standard(false); // no realize yet
+  get_toolbar()->add_checkboxes(
+    {{ID_VIEW_DIRCTRL, 
+      _("Explorer"), "", "", _("Explorer"), 
+      manager().GetPane("DIRCTRL").IsShown(),
+      [&](wxCheckBox* cb) {
+        toggle_pane("DIRCTRL"); 
+        cb->SetValue(manager().GetPane("DIRCTRL").IsShown());
+        get_toolbar()->Realize();
+        if (manager().GetPane("DIRCTRL").IsShown() &&
+            manager().GetPane("FILES").IsShown())
+        {
+          if (auto* editor = get_stc(); editor != nullptr)
+          {
+            m_dirctrl->expand_and_select_path(editor->get_filename());
+          }
+        }
+      }},
+     {ID_VIEW_HISTORY, 
+      _("History"), "", "", _("History"), 
+      wex::config("ShowHistory").get(false),
+      [&](wxCheckBox* cb) {
+        if (m_history == nullptr)
+        {
+          add_pane_history();
+          manager().Update();
+        }
+        else
+        {
+          toggle_pane("HISTORY");
+        }
+        cb->SetValue(manager().GetPane("HISTORY").IsShown());
+        get_toolbar()->Realize();
+        update_statusbar(m_history);
+      }}}); // realize
   
-  get_options_toolbar()->add_controls();
+  get_find_toolbar()->add_find();
+
+  get_options_toolbar()->add_checkboxes_standard();
   
-  m_checkbox_dir_ctrl->SetValue(manager().GetPane("DIRCTRL").IsShown());
-  m_checkbox_history->SetValue(
-    wex::config("ShowHistory").get(false));
-    
   Bind(wxEVT_AUINOTEBOOK_BG_DCLICK, [=](wxAuiNotebookEvent& event) {
-    file_history().popup_menu(this, wex::ID_CLEAR_FILES);}, wex::ID_NOTEBOOK_EDITORS);
+    file_history().popup_menu(this, wex::ID_CLEAR_FILES);}, 
+    wex::ID_NOTEBOOK_EDITORS);
     
   Bind(wxEVT_AUINOTEBOOK_BG_DCLICK, [=] (wxAuiNotebookEvent& event) {
-    get_project_history().popup_menu(this, wex::ID_CLEAR_PROJECTS);}, wex::ID_NOTEBOOK_PROJECTS);
+    get_project_history().popup_menu(this, wex::ID_CLEAR_PROJECTS);}, 
+    wex::ID_NOTEBOOK_PROJECTS);
     
-  Bind(wxEVT_CHECKBOX, [=] (wxCommandEvent& event) {
-    toggle_pane("DIRCTRL"); 
-    m_checkbox_dir_ctrl->SetValue(manager().GetPane("DIRCTRL").IsShown());
-    get_toolbar()->Realize();
-    if (manager().GetPane("DIRCTRL").IsShown() &&
-        manager().GetPane("FILES").IsShown())
-    {
-      if (auto* editor = get_stc(); editor != nullptr)
-      {
-        m_dir_ctrl->expand_and_select_path(editor->get_filename());
-      }
-    }}, ID_VIEW_DIRCTRL);
-
-  Bind(wxEVT_CHECKBOX, [=] (wxCommandEvent& event) {
-    if (m_history == nullptr)
-    {
-      add_pane_history();
-      manager().Update();
-    }
-    else
-    {
-      toggle_pane("HISTORY");
-    }
-    m_checkbox_history->SetValue(manager().GetPane("HISTORY").IsShown());
-    get_toolbar()->Realize();
-    update_statusbar(m_history);
-    }, ID_VIEW_HISTORY);
-  
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     get_debug()->execute(event.GetId() - wex::ID_EDIT_DEBUG_FIRST);}, 
     wex::ID_EDIT_DEBUG_FIRST, wex::ID_EDIT_DEBUG_LAST);
@@ -283,15 +279,14 @@ frame::frame(app* app)
       }
     }
 
-    const bool project_open (m_projects != nullptr && m_projects->IsShown());
+    const bool project_open (m_projects->IsShown());
 
     if (event.CanVeto())
     {
       if (
          m_process->is_running() ||
         !m_editors->for_each<wex::stc>(wex::ID_ALL_CLOSE) || 
-        (m_projects != nullptr &&
-        !m_projects->for_each<wex::report::file>(wex::ID_ALL_CLOSE)))
+        !m_projects->for_each<wex::report::file>(wex::ID_ALL_CLOSE))
       {
         event.Veto();
         if (m_process->is_running())
@@ -301,11 +296,13 @@ frame::frame(app* app)
         return;
       }
     }
+
     wex::vi_macros::save_document();
 
     wex::config("Perspective").set(manager().SavePerspective().ToStdString());
     wex::config("OpenFiles").set(count);
-    wex::config("ShowHistory").set(m_history != nullptr && m_history->IsShown());
+    wex::config("ShowHistory").set(
+      m_history != nullptr && m_history->IsShown());
     wex::config("ShowProjects").set(project_open);
 
     if (m_app->data().control().command().empty())
@@ -352,7 +349,7 @@ frame::frame(app* app)
     // In hex mode we cannot edit the file.
     if (wex::config("is_hexmode").get(false)) return;
 
-    static std::string name = event.GetString().ToStdString();
+    static std::string name = event.GetString();
     wxTextEntryDialog dlg(this, _("Input") + ":", _("File Name"), name);
     wxTextValidator validator(wxFILTER_EXCLUDE_CHAR_LIST);
     validator.SetCharExcludes("/\\?%*:|\"<>");
@@ -418,24 +415,28 @@ frame::frame(app* app)
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (auto* project = get_project();
-      project != nullptr && m_projects != nullptr)
+      project != nullptr)
     {
       m_projects->delete_page(project->get_filename().string());
     };}, ID_PROJECT_CLOSE);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    if (m_projects == nullptr) add_pane_projects();
-    const std::string text = wxString::Format("%s%d", _("project"), m_new_project_number++).ToStdString();
+    const std::string text =
+      wxString::Format("%s%d", _("project"), m_project_id++).ToStdString();
     const wex::path fn(
        (!get_project_history().get_history_file().empty() ? 
            get_project_history().get_history_file().get_path(): wex::config::dir()),
       text + ".prj");
-    wxWindow* page = new wex::report::file(fn.string(), wex::window_data().parent(m_projects));
+    wxWindow* page = new wex::report::file(
+      fn.string(), 
+      wex::window_data().parent(m_projects));
+      
     ((wex::report::file*)page)->file_new(fn.string());
     // This file does yet exist, so do not give it a bitmap.
     m_projects->add_page(page, fn.string(), text, true);
     set_recent_project(fn.string());
-    show_pane("PROJECTS");}, ID_PROJECT_NEW);
+    show_pane("PROJECTS");}, 
+    ID_PROJECT_NEW);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxFileDialog dlg(this,
@@ -608,7 +609,9 @@ frame::frame(app* app)
   m_app->reset();
 }    
 
-wex::report::listview* frame::activate(wex::listview_data::type_t type, const wex::lexer* lexer)
+wex::report::listview* frame::activate(
+  wex::listview_data::type_t type, 
+  const wex::lexer* lexer)
 {
   if (type == wex::listview_data::FILE)
   {
@@ -624,9 +627,10 @@ wex::report::listview* frame::activate(wex::listview_data::type_t type, const we
 
     if (list == nullptr && type != wex::listview_data::FILE)
     {
-      list = new wex::report::listview(wex::listview_data(wex::window_data().parent(m_lists)).
-        type(type).
-        lexer(lexer));
+      list = new wex::report::listview(
+        wex::listview_data(wex::window_data().parent(m_lists)).
+          type(type).
+          lexer(lexer));
 
       m_lists->add_page(list, name, name, true);
     }
@@ -637,7 +641,8 @@ wex::report::listview* frame::activate(wex::listview_data::type_t type, const we
 
 void frame::add_pane_history()
 {
-  m_history = new wex::report::listview(wex::listview_data().type(wex::listview_data::HISTORY));
+  m_history = new wex::report::listview(
+    wex::listview_data().type(wex::listview_data::HISTORY));
         
   manager().AddPane(m_history, wxAuiPaneInfo()
     .Left()
@@ -646,18 +651,6 @@ void frame::add_pane_history()
     .CloseButton(false)
     .MinSize(150, 150)
     .Caption(_("History")));
-}
-
-void frame::add_pane_projects()
-{
-  m_projects = new wex::notebook(wex::window_data().id(wex::ID_NOTEBOOK_PROJECTS).style(m_pane_flag));
-    
-  manager().AddPane(m_projects, wxAuiPaneInfo()
-    .Left()
-    .MaximizeButton(true)
-    .Name("PROJECTS")
-    .MinSize(150, 150)
-    .Caption(_("Projects")));
 }
 
 bool frame::exec_ex_command(wex::ex_command& command)
@@ -839,7 +832,8 @@ void frame::on_command(wxCommandEvent& event)
       }
       
       const wxBitmap bitmap = (editor->get_filename().stat().is_ok() ? 
-        wxTheFileIconsTable->GetSmallImageList()->GetBitmap(wex::get_iconid(editor->get_filename())) : 
+        wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
+          wex::get_iconid(editor->get_filename())) : 
         wxNullBitmap);
 
       m_editors->set_page_text(
@@ -856,11 +850,15 @@ void frame::on_command(wxCommandEvent& event)
 
   case ID_EDIT_MACRO_PLAYBACK: 
     if (editor != nullptr) 
-      editor->get_vi().get_macros().mode()->transition("@", &editor->get_vi(), true); break;
+      editor->get_vi().get_macros().mode()->transition(
+        "@", &editor->get_vi(), true); 
+    break;
   case ID_EDIT_MACRO_START_RECORD: 
   case ID_EDIT_MACRO_STOP_RECORD: 
     if (editor != nullptr) 
-      editor->get_vi().get_macros().mode()->transition("q", &editor->get_vi(), true); break;
+      editor->get_vi().get_macros().mode()->transition(
+        "q", &editor->get_vi(), true); 
+    break;
   
   case ID_SPLIT:
   case ID_SPLIT_HORIZONTALLY:
@@ -890,7 +888,7 @@ void frame::on_command(wxCommandEvent& event)
       }
       
       // key should be unique
-      const std::string key("split" + std::to_string(m_splitid++));
+      const std::string key("split" + std::to_string(m_split_id++));
       
       // Place new page before page for editor.
       m_editors->insert_page(
@@ -1170,12 +1168,6 @@ wex::stc* frame::open_file(
   
 wex::stc* frame::open_file(const wex::path& filename, const wex::stc_data& data)
 {
-  if (data.flags().test(wex::stc_data::WIN_IS_PROJECT) && m_projects == nullptr)
-  {
-    add_pane_projects();
-    manager().Update();
-  }
-  
   wex::notebook* notebook = (data.flags().test(wex::stc_data::WIN_IS_PROJECT)
     ? m_projects : m_editors);
     
@@ -1187,7 +1179,8 @@ wex::stc* frame::open_file(const wex::path& filename, const wex::stc_data& data)
   {
     if (page == nullptr)
     {
-      auto* project = new wex::report::file(filename.string(), wex::window_data().parent(m_projects));
+      auto* project = new wex::report::file(
+        filename.string(), wex::window_data().parent(m_projects));
 
       notebook->add_page(
         project,
@@ -1238,14 +1231,7 @@ wex::stc* frame::open_file(const wex::path& filename, const wex::stc_data& data)
       
       if (m_app->get_debug())
       {
-        for (const auto& it: get_debug()->breakpoints())
-        {
-          if (std::get<0>(it.second) == filename)
-          {
-            editor->MarkerAdd(std::get<2>(it.second), 
-              get_debug()->marker_breakpoint().number());
-          }
-        }
+        get_debug()->apply_breakpoints(editor);
       }
 
       const std::string key(filename.string());
@@ -1265,7 +1251,7 @@ wex::stc* frame::open_file(const wex::path& filename, const wex::stc_data& data)
       
       if (manager().GetPane("DIRCTRL").IsShown())
       {
-        m_dir_ctrl->expand_and_select_path(key);
+        m_dirctrl->expand_and_select_path(key);
       }
       
       // Do not show an edge for project files opened as text.
@@ -1282,24 +1268,10 @@ wex::stc* frame::open_file(const wex::path& filename, const wex::stc_data& data)
           editor->show_blame(&vcs.entry());
         }
       }
-    
-      if (!m_app->get_scriptin().empty())
+
+      if (!m_app->get_scriptin().empty())		
       {
-        wex::file script(m_app->get_scriptin());
-
-        if (const auto buffer(script.read()); buffer != nullptr)
-        {
-          wex::tokenizer tkz(*buffer, "\n");
-
-          while (tkz.has_more_tokens())
-          {
-            if (!editor->get_vi().command(tkz.get_next_token()))
-            {
-              wex::log::status("Aborted at") << tkz.get_token();
-              return editor;
-            }
-          }
-        }
+        editor->get_vi().command(":so " + m_app->get_scriptin());
       }
     }
     else
@@ -1375,7 +1347,8 @@ void frame::statusbar_clicked(const std::string& pane)
   else if (pane == "PaneMacro")
   {
     if (auto* editor = get_stc(); editor != nullptr) 
-      editor->get_vi().get_macros().mode()->transition("@", &editor->get_vi(), true);
+      editor->get_vi().get_macros().mode()->transition(
+        "@", &editor->get_vi(), true);
   }
   else if (pane == "PaneTheme")
   {
@@ -1465,7 +1438,8 @@ void frame::statusbar_clicked_right(const std::string& pane)
     if (wex::vi_macros::get_filename().file_exists())
     {
       open_file(wex::vi_macros::get_filename(),
-        wex::control_data().find(!get_statustext(pane).empty() ? " name=\"" + get_statustext(pane) + "\"":
+        wex::control_data().find(!get_statustext(pane).empty() ? 
+          " name=\"" + get_statustext(pane) + "\"":
           std::string()));
     }
   }
@@ -1524,8 +1498,11 @@ void frame::update_listviews()
 {
   m_lists->for_each<wex::report::file>(wex::ID_ALL_CONFIG_GET);
 
-  if (m_projects != nullptr) m_projects->for_each<wex::report::file>(wex::ID_ALL_CONFIG_GET);
-  if (m_history != nullptr) m_history->config_get();
+  if (m_projects != nullptr) 
+    m_projects->for_each<wex::report::file>(wex::ID_ALL_CONFIG_GET);
+
+  if (m_history != nullptr)
+    m_history->config_get();
 
   if (wex::item_dialog* dlg = wex::stc::get_config_dialog();
     dlg != nullptr)
@@ -1548,7 +1525,7 @@ editors::editors(const wex::window_data& data)
 
   Bind(wxEVT_AUINOTEBOOK_END_DRAG, [=](wxAuiNotebookEvent& event) {
     event.Skip();
-    m_Split = true;
+    m_split = true;
     });
 
   Bind(wxEVT_AUINOTEBOOK_TAB_RIGHT_UP, [=](wxAuiNotebookEvent& event) {

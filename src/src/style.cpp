@@ -16,12 +16,13 @@
 #include <wex/lexers.h>
 #include <wex/log.h>
 #include <wex/tokenizer.h>
+#include <wex/util.h>
 
 void wex::style::apply(wxStyledTextCtrl* stc) const
 {
   // Currently the default style is constructed using
   // default constructor.
-  // If this is the only style, reset STC.
+  // If this is the only style, reset stc.
   if (m_no.empty())
   {
     stc->StyleResetDefault();
@@ -63,15 +64,18 @@ void wex::style::set(const pugi::xml_node& node, const std::string& macro)
     if (const auto& it = lexers::get()->theme_macros().find(single);
       it != lexers::get()->theme_macros().end())
     {
-      wxString value = it->second;
+      std::string value(it->second);
 
-      if (value.Contains("default-font"))
+      if (value.find("default-font") != std::string::npos)
       {
         const wxFont font(config(_("Default font")).get(
           wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT)));
         
-        value.Replace("default-font", 
-          "face:" + font.GetFaceName() + ",size:" + std::to_string(font.GetPointSize()));
+        replace_all(
+          value, 
+          "default-font", 
+          "face:" + font.GetFaceName() + 
+            ",size:" + std::to_string(font.GetPointSize()));
             
         if (const wxFontStyle style = font.GetStyle(); 
           style == wxFONTSTYLE_ITALIC || style == wxFONTSTYLE_SLANT)

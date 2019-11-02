@@ -23,9 +23,7 @@ namespace wex
   class debug;
   class ex;
   class ex_command;
-  class find_toolbar;
   class textctrl;
-  class options_toolbar;
   class toolbar;
 
   /// Offers an aui managed frame with a notebook multiple document interface,
@@ -178,12 +176,15 @@ namespace wex
     const std::vector<std::pair<std::pair<std::string, std::string>, int>> 
       m_toggled_panes;
     
-    wxAuiManager m_manager;
     debug* m_debug {nullptr};
+
+    toolbar
+      *m_findbar,
+      *m_optionsbar,
+      *m_toolbar;
+
+    wxAuiManager m_manager;
     class file_history m_file_history;
-    find_toolbar* m_findbar;
-    options_toolbar* m_optionsbar;
     textctrl* m_textctrl;
-    toolbar* m_toolbar;
   };
 };

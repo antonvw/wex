@@ -2,7 +2,7 @@
 // Name:      listview-data.h
 // Purpose:   Declaration of wex::listview_data
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -69,7 +69,7 @@ namespace wex
     listview_data& control(control_data& data) {m_data = data; return *this;};
     
     /// Returns image type.
-    const auto& image() const {return m_ImageType;};
+    const auto& image() const {return m_image_type;};
 
     /// Sets image type.
     listview_data& image(image_t type);
@@ -92,7 +92,7 @@ namespace wex
       control_data::action_t action = control_data::SET);
 
     /// Returns type.
-    const auto& type() const {return m_Type;};
+    const auto& type() const {return m_type;};
     
     /// Sets type.
     listview_data& type(type_t type);
@@ -116,9 +116,9 @@ namespace wex
     const wex::lexer* m_lexer = nullptr;
     listview* m_listview = nullptr;
 
-    image_t m_ImageType = IMAGE_ART;
-    type_t m_Type = NONE;
+    image_t m_image_type = IMAGE_ART;
+    type_t m_type = NONE;
 
-    bool m_Initialized = false;
+    bool m_initialized = false;
   };
 };

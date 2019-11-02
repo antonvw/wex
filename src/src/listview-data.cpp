@@ -37,11 +37,11 @@ wex::listview_data& wex::listview_data::operator=(const listview_data& r)
   if (this != &r)
   {
     m_data = r.m_data;
-    m_ImageType = r.m_ImageType;
-    m_Initialized = r.m_Initialized;
+    m_image_type = r.m_image_type;
+    m_initialized = r.m_initialized;
     m_lexer = r.m_lexer;
     m_menu_flags = r.m_menu_flags;
-    m_Type = r.m_Type;
+    m_type = r.m_type;
 
     if (m_listview != nullptr && r.m_listview != nullptr)
     {
@@ -54,15 +54,15 @@ wex::listview_data& wex::listview_data::operator=(const listview_data& r)
   
 void wex::listview_data::add_columns()
 {
-  m_listview->append_columns({{_("File Name").ToStdString(), column::STRING}});
+  m_listview->append_columns({{_("File Name"), column::STRING}});
 
-  switch (m_Type)
+  switch (m_type)
   {
     case FIND:
       m_listview->append_columns({
-        {_("Line").ToStdString(), column::STRING, 250},
-        {_("Match").ToStdString(), column::STRING},
-        {_("Line No").ToStdString()}});
+        {_("Line"), column::STRING, 250},
+        {_("Match"), column::STRING},
+        {_("Line No")}});
     break;
     case KEYWORD:
       for (const auto& it : m_lexer->keywords())
@@ -70,21 +70,21 @@ void wex::listview_data::add_columns()
         m_listview->append_columns({{column(it)}});
       }
 
-      m_listview->append_columns({{_("Keywords").ToStdString()}});
+      m_listview->append_columns({{_("Keywords")}});
     break;
     default: break; // to prevent warnings
   }
 
   m_listview->append_columns({
-    {_("Modified").ToStdString(), column::DATE},
-    {_("In Folder").ToStdString(), column::STRING, 175},
-    {_("Type").ToStdString(), column::STRING},
-    {_("Size").ToStdString()}});
+    {_("Modified"), column::DATE},
+    {_("In Folder"), column::STRING, 175},
+    {_("Type"), column::STRING},
+    {_("Size")}});
 }
 
 wex::listview_data& wex::listview_data::image(image_t type)
 {
-  m_ImageType = type;
+  m_image_type = type;
   return *this;
 }
 
@@ -110,13 +110,13 @@ bool wex::listview_data::inject()
       return m_listview->find_next(m_data.find());},
     [&]() {return false;});
 
-  if (!m_Initialized)
+  if (!m_initialized)
   {
     injected = true;
-    m_Initialized = true;
+    m_initialized = true;
     auto name = type_description();
 
-    switch (m_Type)
+    switch (m_type)
     {
       case FOLDER:
       case NONE:
@@ -157,15 +157,15 @@ wex::listview_data& wex::listview_data::menu(
   
 wex::listview_data& wex::listview_data::type(type_t type)
 {
-  m_Type = type;
+  m_type = type;
   return *this;
 }
 
 const std::string wex::listview_data::type_description() const
 {
-  wxString value;
+  std::string value;
 
-  switch (m_Type)
+  switch (m_type)
   {
     case FOLDER: value = _("Folder"); break;
     case FIND: value = _("Find Results"); break;
@@ -176,5 +176,5 @@ const std::string wex::listview_data::type_description() const
     default: assert(0);
   }
 
-  return value.ToStdString();
+  return value;
 }

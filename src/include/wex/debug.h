@@ -35,8 +35,13 @@ namespace wex
     /// Returns number of items added to menu.
     int add_menu(menu* menu, bool popup = false) const;
     
-    /// Returns brekpoints.
-    auto & breakpoints() {return m_breakpoints;};
+    /// Applies current breakpoints markers to stc component
+    /// if applicable.
+    /// Returns false if no markers were added.
+    bool apply_breakpoints(stc* stc) const;
+
+    /// Returns breakpoints.
+    auto & breakpoints() const {return m_breakpoints;};
     
     /// Returns current entry.
     const auto & debug_entry() const {return m_entry;};
@@ -51,11 +56,9 @@ namespace wex
     /// As above, but for a menu action item.
     bool execute(int id, stc* stc = nullptr);
 
-    /// Returns marker for brekpoint.
-    const auto & marker_breakpoint() const {return m_markerbreakpoint;};
-
     /// Ask debugger to print contents of variable.
-    void print(const std::string& variable);
+    /// Returns false if no debug process is available.
+    bool print(const std::string& variable) const;
 
     /// Returns process.
     auto * process() {return m_process;};
@@ -64,17 +67,22 @@ namespace wex
     bool show_dialog(frame* parent);
 
     /// Toggles breakpoint on line.
-    void toggle_breakpoint(int line, stc* stc);
+    /// Returns false if no debug process is available.
+    bool toggle_breakpoint(int line, stc* stc);
   private:
     bool allow_open(const path& p) const;
+
     bool clear_breakpoints(const std::string& text);
+
     std::tuple<bool, std::string> get_args(
-      const std::string& command, stc* stc);
+      const std::string& command, 
+      stc* stc);
+
     void is_finished();
+
     void set_entry(const std::string& debugger);
 
-    /// Marker for a breakpoint.
-    const marker m_markerbreakpoint = wex::marker(2);
+    const marker m_marker_breakpoint = wex::marker(2);
 
     /// The breakpoints, relating debugging breakpoint no to
     /// tuple of filename, marker identifier, and line no.
@@ -82,7 +90,11 @@ namespace wex
       std::string, std::tuple<path, int, int>> m_breakpoints;
 
     static inline item_dialog* m_dialog = nullptr;  
-    path m_path, m_path_execution_point;
+
+    path 
+      m_path, 
+      m_path_execution_point;
+
     managed_frame* m_frame;
     wex::debug_entry m_entry;
     wex::process* m_process {nullptr};

@@ -44,7 +44,7 @@ namespace wex
     static const version_info get_version_info();
 
     /// Returns true if we are connected.
-    bool is_connected() const {return m_Connect.connected > 0;};
+    bool is_connected() const {return m_connect.connected > 0;};
 
     /// Logs off.
     /// Returns true if you were connected.
@@ -76,7 +76,7 @@ namespace wex
   private:
     void handle_error(const otl_exception& e, const otl_column_desc& desc) const;
     
-    otl_connect m_Connect;
+    otl_connect m_connect;
   };
 };
 #endif

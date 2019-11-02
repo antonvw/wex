@@ -59,7 +59,7 @@ TEST_CASE("wex::link")
     link(wex::link(), "xxxxx");
   }
   
-  SUBCASE("Constructor with STC")
+  SUBCASE("Constructor with stc")
   {
     wex::link lnk(stc);  
     wex::config(_("Include directory")).set("/usr/bin");

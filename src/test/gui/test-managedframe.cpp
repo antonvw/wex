@@ -67,10 +67,11 @@ TEST_CASE("wex::managed_frame")
   frame()->sync_all();
   frame()->sync_close_all(0);
   
-  REQUIRE( frame()->get_toolbar() != nullptr);
+  REQUIRE( frame()->get_find_toolbar() != nullptr);
   REQUIRE( frame()->get_options_toolbar() != nullptr);
+  REQUIRE( frame()->get_toolbar() != nullptr);
   
-  frame()->get_toolbar()->add_controls();
+  frame()->get_toolbar()->add_standard();
   REQUIRE( frame()->toggle_pane("FINDBAR"));
   REQUIRE( frame()->manager().GetPane("FINDBAR").IsShown());
   REQUIRE( frame()->toggle_pane("OPTIONSBAR"));

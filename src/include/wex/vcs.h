@@ -21,6 +21,20 @@ namespace wex
   class vcs
   {
   public:
+    /// Static interface.
+
+    /// Returns true if specified filename (a path) is a vcs directory.
+    static bool dir_exists(const path& filename);
+
+    /// Loads all entries (first clears them) from vcs document.
+    /// Returns true if document is loaded.
+    static bool load_document();
+
+    /// Returns the number of vcs entries.
+    static auto size() {return m_entries.size();};
+    
+    /// Other methods.
+
     /// Default constructor.
     vcs(
       /// Specify several files for which you want vcs action.
@@ -35,9 +49,6 @@ namespace wex
     /// and to set the path for each vcs entry.
     /// Returns dialog return code.
     int config_dialog(const window_data& data = window_data()) const;
-
-    /// Returns true if specified filename (a path) is a vcs directory.
-    static bool dir_exists(const path& filename);
 
     /// Returns the current vcs entry.
     auto& entry() {return m_entry;};
@@ -58,10 +69,6 @@ namespace wex
     /// if vcs is not used.
     const std::string get_branch() const;
     
-    /// Loads all entries (first clears them) from vcs document.
-    /// Returns true if document is loaded.
-    static bool load_document();
-
     /// Returns name for current vcs entry, or empty string
     /// if vcs is not used.
     const std::string name() const;
@@ -83,9 +90,6 @@ namespace wex
 
     /// Shows dialog for the current vcs entry.
     int show_dialog(const window_data& data = window_data());
-
-    /// Returns the number of vcs entries.
-    static auto size() {return m_entries.size();};
 
     /// Returns true if vcs usage is set in the config.
     bool use() const;
@@ -112,7 +116,7 @@ namespace wex
     std::vector< path > m_files;
     std::string m_title;
 
-    static std::vector<vcs_entry> m_entries;
+    static inline std::vector<vcs_entry> m_entries;
     static inline item_dialog* m_item_dialog = nullptr;
   };
 };

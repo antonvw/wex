@@ -28,21 +28,25 @@ class frame: public wex::report::frame
 public:
   frame();
 private:
-  virtual void on_command_item_dialog(
+  void on_command_item_dialog(
     wxWindowID dialogid, 
     const wxCommandEvent& event) override;
-  virtual wex::stc* open_file(
+
+  wex::stc* open_file(
     const wex::path& filename, 
     const wex::stc_data& data = wex::stc_data()) override;
+
   void statusbar_clicked(const std::string& pane) override;
 
-  void RunQuery(const std::string& query, bool empty_results = false);
+  void run_query(const std::string& query, bool empty_results = false);
 
-  wex::grid* m_Results;
+  wex::grid* m_results;
   wex::otl m_otl;
   wex::shell* m_shell;
   wex::statistics <int> m_statistics;
-  wex::stc* m_Query;
+  wex::stc* m_query;
   
-  bool m_Running {false}, m_Stopped {false};
+  bool 
+    m_running {false}, 
+    m_stopped {false};
 };

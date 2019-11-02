@@ -39,7 +39,7 @@ TEST_CASE("wex::lexer")
     REQUIRE(!wex::lexer().set("xxx"));
   }
   
-  SUBCASE("Constructor using STC")
+  SUBCASE("Constructor using stc")
   {
     wex::lexer lexer(get_stc());
     REQUIRE(!lexer.is_ok());

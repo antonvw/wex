@@ -218,18 +218,18 @@ const wex::indicator wex::lexers::get_indicator(const indicator& indicator) cons
   return (it != m_indicators.end() ? *it: wex::indicator());
 }
 
-const std::string wex::lexers::keywords(const std::string& set) const
-{
-  const auto& it = m_keywords.find(set);
-  return (it != m_keywords.end() ? it->second: std::string());
-}
-
 const wex::marker wex::lexers::get_marker(const marker& marker) const
 {
   const auto& it = m_markers.find(marker);
   return (it != m_markers.end() ? *it: wex::marker());
 }
   
+const std::string wex::lexers::keywords(const std::string& set) const
+{
+  const auto& it = m_keywords.find(set);
+  return (it != m_keywords.end() ? it->second: std::string());
+}
+
 bool wex::lexers::load_document()
 {
   // This test is to prevent showing an error if the lexers file does not exist,

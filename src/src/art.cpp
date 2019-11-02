@@ -11,12 +11,12 @@
 #endif
 #include <wex/art.h>
 
-std::map<wxWindowID, wxArtID> wex::stockart::m_ArtIDs;
+std::map<wxWindowID, wxArtID> wex::stockart::m_art_ids;
 
 wex::stockart::stockart(wxWindowID id)
   : m_id(id)
 {
-  if (m_ArtIDs.empty())
+  if (m_art_ids.empty())
   {
     add(wxID_BACKWARD, wxART_GO_BACK);
     add(wxID_CLOSE, wxART_CLOSE);
@@ -51,7 +51,7 @@ wex::stockart::stockart(wxWindowID id)
 
 void wex::stockart::add(int id, const wxArtID& art)
 {    
-  m_ArtIDs.insert({(wxWindowID)id, art});
+  m_art_ids.insert({(wxWindowID)id, art});
 }
 
 const wxBitmap wex::stockart::get_bitmap(
@@ -61,9 +61,9 @@ const wxBitmap wex::stockart::get_bitmap(
   if (wxIsStockID(m_id))
   {
     // Check if there is art for this id.
-    const auto& art_it = m_ArtIDs.find(m_id);
+    const auto& art_it = m_art_ids.find(m_id);
 
-    if (art_it != m_ArtIDs.end())
+    if (art_it != m_art_ids.end())
     {
       return wxArtProvider::GetBitmap(
         art_it->second, 

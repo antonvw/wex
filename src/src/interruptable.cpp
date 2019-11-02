@@ -11,36 +11,36 @@
 #endif
 #include <wex/interruptable.h>
 
-bool wex::interruptable::m_Cancelled = false;
-bool wex::interruptable::m_Running = false;
+bool wex::interruptable::m_cancelled = false;
+bool wex::interruptable::m_running = false;
 
 bool wex::interruptable::cancel()
 {
-  if (!m_Running)
+  if (!m_running)
   {
     return false;  
   }
   
-  m_Cancelled = true;
-  m_Running = false;
+  m_cancelled = true;
+  m_running = false;
   
   return true;
 }
 
 bool wex::interruptable::start()
 {
-  if (m_Running)
+  if (m_running)
   {
     return false;
   }
 
-  m_Cancelled = false;
-  m_Running = true;
+  m_cancelled = false;
+  m_running = true;
 
   return true;
 }
 
 void wex::interruptable::stop()
 {
-  m_Running = false;
+  m_running = false;
 }

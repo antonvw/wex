@@ -2,7 +2,7 @@
 // Name:      test-ctags-entry`.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -31,9 +31,9 @@ TEST_CASE("wex::ctags_entry")
   filter.signature("zz");
   REQUIRE( filter.signature() == "zz" );
 
-  REQUIRE(!filter.get().empty() );
+  REQUIRE(!filter.log().str().empty() );
 
   filter.clear();
   REQUIRE(!filter.is_active() );
-  REQUIRE( filter.get().empty() );
+  REQUIRE( filter.log().str().empty() );
 }

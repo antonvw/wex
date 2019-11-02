@@ -369,7 +369,7 @@ namespace wex
     /// replace with (only for TRIM_MID)
     const std::string& replace_with = " ");
 
-  /// Use specified VCS command to set lexer on STC document.
+  /// Use specified vcs command to set lexer on stc document.
   void vcs_command_stc(
     /// VCS command, used to check for diff or open command
     const vcs_command& command, 

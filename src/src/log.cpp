@@ -131,13 +131,19 @@ wex::log& wex::log::operator<<(const wxChar* r)
   return *this;
 }
 
+wex::log& wex::log::operator<<(const wxString& r)
+{
+  m_ss << S() << r.ToStdString();
+  return *this;
+}
+
 wex::log& wex::log::operator<<(const std::string& r)
 {
   m_ss << S();
 
   for (const auto& c : r)
   {
-    if (isprint(c))
+    if (isprint(c) || isspace(c))
     {
       m_ss << c;
     }

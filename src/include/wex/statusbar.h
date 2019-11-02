@@ -78,7 +78,11 @@ namespace wex
     /// Resets the hidden text if show is true.
     void show(bool show);
   private:
-    std::string m_help, m_hidden, m_name; // no const
+    std::string 
+      m_help, 
+      m_hidden, 
+      m_name; // no const
+
     bool m_is_shown {true};
   };
 

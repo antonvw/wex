@@ -58,12 +58,12 @@ namespace wex
       /// process callback if param is present
       std::function<void(std::vector<std::string> )>> cmd_params_t;
 
-    /// Constructor, 
+    /// Default constructor, adds standard options.
     cmdline(
       /// switches
-      const cmd_switches_t & s, 
+      const cmd_switches_t & s = cmd_switches_t(), 
       /// options
-      const cmd_options_t & o, 
+      const cmd_options_t & o = cmd_options_t(), 
       /// params
       const cmd_params_t & p = cmd_params_t(),
       /// add standard options
@@ -98,6 +98,9 @@ namespace wex
     cmdline& toggle(bool value) {m_toggle = value; return *this;};
   private:
     cmdline_imp* m_parser;
-    static inline bool m_first {true}, m_toggle {true};
+
+    static inline bool 
+      m_first {true}, 
+      m_toggle {true};
   };
 };

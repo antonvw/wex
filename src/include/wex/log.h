@@ -11,6 +11,7 @@
 #include <sstream>
 #include <pugixml.hpp>
 #include <wx/chartype.h>
+#include <wx/string.h>
 #undef ERROR
 
 namespace wex
@@ -127,6 +128,9 @@ namespace wex
 
     /// Logs wxChar* according to level.
     log& operator<<(const wxChar*);
+
+    /// Logs wxString according to level.
+    log& operator<<(const wxString&);
 
     /// Logs a bitset according to level.
     template<std::size_t N>

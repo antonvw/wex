@@ -16,6 +16,7 @@
 #include <wex/stc.h>
 #include <wex/tokenizer.h>
 #include <wex/util.h>
+#include <wex/vi-macros.h>
 
 namespace wex
 {
@@ -36,7 +37,7 @@ namespace wex
         {
           if (cmd[0] == 'd' || cmd[0] == 'm')
           {
-            m_Changes++;
+            m_changes++;
           }
           
           m_commands.emplace_back(cmd);
@@ -49,7 +50,7 @@ namespace wex
       m_ex->marker_delete('%');
     }
     
-    auto changes() const {return m_Changes;};
+    auto changes() const {return m_changes;};
     
     bool commands() const {return !m_commands.empty();};
     
@@ -57,8 +58,10 @@ namespace wex
     {
       if (!commands())
       {
-        m_ex->get_stc()->set_indicator(m_find_indicator, 
-          m_ex->get_stc()->GetTargetStart(), m_ex->get_stc()->GetTargetEnd());
+        m_ex->get_stc()->set_indicator(
+          m_find_indicator, 
+          m_ex->get_stc()->GetTargetStart(), 
+          m_ex->get_stc()->GetTargetEnd());
       }
       else
       {
@@ -66,7 +69,8 @@ namespace wex
         {
           if (!m_ex->command(":" + std::to_string(line + 1) + it))
           {
-            m_ex->frame()->show_ex_message(m_ex->get_command().command() + " failed");
+            m_ex->frame()->show_ex_message(
+              m_ex->get_command().command() + " failed");
             return false;
           }
         }
@@ -79,7 +83,9 @@ namespace wex
     {
       if (start < end)
       {
-        for (int i = start;  i < end && i < m_ex->get_stc()->GetLineCount() - 1; )
+        for (
+          int i = start;  
+          i < end && i < m_ex->get_stc()->GetLineCount() - 1; )
         {
           if (commands())
           {
@@ -93,13 +99,13 @@ namespace wex
               m_ex->get_stc()->GetLineEndPosition(i));
           }
           
-          if (m_Changes == 0) 
+          if (m_changes == 0) 
           {
             i++;
           }
           else 
           {
-            end -= m_Changes;
+            end -= m_changes;
           }
           
           hits++;
@@ -115,7 +121,7 @@ namespace wex
   private:
     const indicator m_find_indicator;
     std::vector<std::string> m_commands;
-    int m_Changes {0};
+    int m_changes {0};
     ex* m_ex;
   };
 };
@@ -171,10 +177,11 @@ const std::string wex::addressrange::build_replacement(
     return text;
   }
 
-  std::string target(m_stc->GetTextRange(
-    m_stc->GetTargetStart(), m_stc->GetTargetEnd()));
-    
-  std::string replacement;
+  std::string 
+    target(m_stc->GetTextRange(
+      m_stc->GetTargetStart(), m_stc->GetTargetEnd())),
+    replacement;
+  
   bool backslash = false;
 
   for (const auto c : text)
@@ -247,7 +254,7 @@ bool wex::addressrange::change(const std::string& text) const
 }
   
 int wex::addressrange::confirm(
-  const std::string& pattern, const std::string& replacement)
+  const std::string& pattern, const std::string& replacement) const
 {
   wxMessageDialog msgDialog(m_stc, 
     _("Replace") + " " + pattern + " " + _("with") + " " + replacement, 
@@ -371,6 +378,33 @@ bool wex::addressrange::escape(const std::string& command)
   return false;
 }
 
+bool wex::addressrange::execute(const std::string& reg) const
+{
+  if (!is_ok() || !vi_macros::is_recorded_macro(reg))
+  {
+    return false;
+  }
+  
+  bool error = false;
+  
+  m_stc->BeginUndoAction();
+
+  for (
+    auto i = m_begin.get_line() - 1; 
+    i < m_end.get_line() && !error; 
+    i++)
+  {
+    if (!m_ex->command("@" + reg))
+    {
+      error = true;
+    }
+  }
+
+  m_stc->EndUndoAction();
+  
+  return !error;
+}
+  
 bool wex::addressrange::global(const std::string& text, bool inverse) const
 {
   m_stc->IndicatorClearRange(0, m_stc->GetTextLength() - 1);
@@ -452,7 +486,8 @@ bool wex::addressrange::global(const std::string& text, bool inverse) const
       return false;
     }
     
-    m_stc->SetTargetStart(g.changes() > 0 ? m_stc->PositionFromLine(match): m_stc->GetTargetEnd());
+    m_stc->SetTargetStart(
+      g.changes() > 0 ? m_stc->PositionFromLine(match): m_stc->GetTargetEnd());
     m_stc->SetTargetEnd(m_stc->GetLineEndPosition(m_ex->marker_line('%')));
   
     if (m_stc->GetTargetStart() >= m_stc->GetTargetEnd())
@@ -463,17 +498,20 @@ bool wex::addressrange::global(const std::string& text, bool inverse) const
   
   if (inverse)
   {
-    if (auto match = m_stc->GetLineCount(); !g.for_each(start, match, hits)) return false;
+    if (auto match = m_stc->GetLineCount(); !g.for_each(start, match, hits)) 
+    {
+      return false;
+    }
   }
   
   if (hits > 0)
   {
     if (g.commands())
       m_ex->frame()->show_ex_message(
-        wxString::Format(_("Executed: %d commands"), hits).ToStdString());
+        wxString::Format(_("Executed: %d commands"), hits));
     else
       m_ex->frame()->show_ex_message(
-        wxString::Format(_("Found: %d matches"), hits).ToStdString());
+        wxString::Format(_("Found: %d matches"), hits));
   }
   
   return true;
@@ -547,7 +585,9 @@ void wex::addressrange::on_exit()
   
 bool wex::addressrange::parse(
   const std::string& command_org, 
-  std::string& pattern, std::string& replacement, std::string& options) const
+  std::string& pattern, 
+  std::string& replacement, 
+  std::string& options) const
 {
   // If there are escaped / chars in the text,
   // temporarily replace them to an unused char, so
@@ -648,8 +688,10 @@ bool wex::addressrange::sort(const std::string& parameters) const
   }
   
   string_sort_t sort_t = 0;
-  size_t pos = 0;
-  size_t len = std::string::npos;
+  
+  size_t 
+    pos = 0,
+    len = std::string::npos;
 
   if (m_stc->SelectionIsRectangle())
   {
@@ -697,9 +739,10 @@ bool wex::addressrange::substitute(const std::string& text, char cmd)
     return false;
   }
   
-  std::string pattern;
-  std::string repl;
-  std::string options;
+  std::string 
+    pattern,
+    repl,
+    options;
   
   switch (cmd)
   {
@@ -709,16 +752,19 @@ bool wex::addressrange::substitute(const std::string& text, char cmd)
         return false;
       }
       break;
+
     case '&':
       repl = m_replacement;
       pattern = m_pattern;
       options = text;
       break;
+
     case '~':
       repl = m_replacement;
       pattern = m_pattern;
       options = text;
       break;
+
     default:
       return false;
   }
@@ -832,8 +878,11 @@ bool wex::addressrange::substitute(const std::string& text, char cmd)
   m_ex->marker_delete('#');
   m_ex->marker_delete('$');
   
-  m_ex->frame()->show_ex_message(wxString::Format(
-    _("Replaced: %d occurrences of: %s"), nr_replacements, pattern.c_str()).ToStdString());
+  m_ex->frame()->show_ex_message(
+    wxString::Format(
+      _("Replaced: %d occurrences of: %s"), 
+      nr_replacements, 
+      pattern.c_str()));
 
   m_stc->IndicatorClearRange(0, m_stc->GetTextLength() - 1);
   
@@ -854,7 +903,7 @@ bool wex::addressrange::write(const std::string& text) const
 #ifdef __UNIX__
   if (filename.find("~") != std::string::npos)
   {
-    filename.replace(filename.find("~"), 1, wxGetHomeDir().ToStdString());
+    filename.replace(filename.find("~"), 1, wxGetHomeDir());
   }
 #endif
   

@@ -67,8 +67,8 @@ namespace wex
     /// Returns true if command text is empty.
     auto empty() const {return m_text.empty();};
 
-    /// Executes the command on the STC component if available.
-    bool exec();
+    /// Executes the command on the stc component if available.
+    bool exec() const;
 
     /// Returns front of command text.
     auto front() const {return m_text.front();};
@@ -98,6 +98,9 @@ namespace wex
     type_t type() const;
   private:
     std::string m_text;
-    wex::stc *m_stc {nullptr}, *m_stc_original {nullptr};
+
+    wex::stc 
+      *m_stc {nullptr}, 
+      *m_stc_original {nullptr};
   };
 };

@@ -190,11 +190,11 @@ bool wex::file::check_sync()
     return false;
   }
 
-  if (m_file->path().m_Stat.sync())
+  if (m_file->path().m_stat.sync())
   {
     bool sync_needed = false;
     
-    if (m_file->path().m_Stat.st_mtime != m_file->stat().st_mtime)
+    if (m_file->path().m_stat.st_mtime != m_file->stat().st_mtime)
     {
       // Do not check return value,
       // we sync anyhow, to force nex time no sync.
@@ -203,7 +203,7 @@ bool wex::file::check_sync()
       sync_needed = true;
     }
     
-    if (m_file->path().m_Stat.is_readonly() != m_file->stat().is_readonly())
+    if (m_file->path().m_stat.is_readonly() != m_file->stat().is_readonly())
     {
       sync_needed = true;
     }
@@ -286,7 +286,7 @@ bool wex::file::file_save(const path& p)
   reset_contents_changed();
   
   return 
-    m_file->path().m_Stat.sync() &&
+    m_file->path().m_stat.sync() &&
     m_file->stat().sync();
 }
 

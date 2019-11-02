@@ -158,7 +158,7 @@ wex::lexer& wex::lexer::operator=(const wex::lexer& l)
 
     m_attribs = l.m_attribs;
     
-    if (m_stc != nullptr && l.m_stc != nullptr)
+    if (m_stc == nullptr && l.m_stc != nullptr)
     {
       m_stc = l.m_stc;
     }
@@ -707,7 +707,7 @@ bool wex::lexer::set(const std::string& lexer, bool fold)
 bool wex::lexer::set(const lexer& lexer, bool fold)
 {
   (*this) = (lexer.m_scintilla_lexer.empty() && m_stc != nullptr ?
-     lexers::get()->find_by_text(m_stc->GetLine(0).ToStdString()): lexer);
+     lexers::get()->find_by_text(m_stc->GetLine(0)): lexer);
 
   if (m_stc == nullptr) return m_is_ok;
 

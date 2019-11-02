@@ -60,8 +60,8 @@ bool app::OnInit()
 
 frame::frame()
   : wex::report::frame()
-  , m_Query(new wex::stc())
-  , m_Results(new wex::grid())
+  , m_query(new wex::stc())
+  , m_results(new wex::grid())
   , m_shell(new wex::shell(wex::stc_data(), "", ";"))
 {
   const auto idDatabaseClose = wxWindow::NewControlId();
@@ -119,8 +119,8 @@ frame::frame()
   menubar->Append(menuHelp, wxGetStockLabel(wxID_HELP));
   SetMenuBar(menubar);
 
-  m_Results->CreateGrid(0, 0);
-  m_Results->EnableEditing(false); // this is a read-only grid
+  m_results->CreateGrid(0, 0);
+  m_results->EnableEditing(false); // this is a read-only grid
 
   m_shell->SetFocus();
 
@@ -133,7 +133,7 @@ frame::frame()
     m_statusbar->show_field("PaneTheme", false);
   }
 
-  get_toolbar()->add_controls(false); // no realize yet
+  get_toolbar()->add_standard(false); // no realize yet
   get_toolbar()->add_tool(wxID_EXECUTE, 
     std::string(),
     wxArtProvider::GetBitmap(
@@ -146,7 +146,7 @@ frame::frame()
       Name("CONSOLE").
       CenterPane());
 
-  manager().AddPane(m_Results,
+  manager().AddPane(m_results,
     wxAuiPaneInfo().
       Name("RESULTS").
       Caption(_("Results")).
@@ -154,7 +154,7 @@ frame::frame()
       Bottom().
       MaximizeButton(true));
 
-  manager().AddPane(m_Query,
+  manager().AddPane(m_query,
     wxAuiPaneInfo().
       Name("QUERY").
       Caption(_("Query")).
@@ -175,7 +175,7 @@ frame::frame()
   
   Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
     if (wex::file_dialog(
-      &m_Query->get_file()).show_modal_if_changed()  != wxID_CANCEL)
+      &m_query->get_file()).show_modal_if_changed()  != wxID_CANCEL)
     {
       wex::config("Perspective").set(manager().SavePerspective().ToStdString());
       event.Skip();
@@ -192,29 +192,29 @@ frame::frame()
     }, wxID_ABOUT);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_Stopped = false;
-    if (m_Query->GetText().empty()) return;
-    if (m_Results->IsShown())
+    m_stopped = false;
+    if (m_query->GetText().empty()) return;
+    if (m_results->IsShown())
     {
-      m_Results->ClearGrid();
+      m_results->ClearGrid();
     }
     // Skip sql comments.
     std::regex re("--.*$");
-    std::string output = std::regex_replace(m_Query->GetText().ToStdString(), re, "", std::regex_constants::format_sed);
+    std::string output = std::regex_replace(m_query->GetText().ToStdString(), re, "", std::regex_constants::format_sed);
     // Queries are seperated by ; character.
     wex::tokenizer tkz(output, ";");
     int no_queries = 0;
-    m_Running = true;
+    m_running = true;
     const auto start = std::chrono::system_clock::now();
     // Run all queries.
-    while (tkz.has_more_tokens() && !m_Stopped)
+    while (tkz.has_more_tokens() && !m_stopped)
     {
       std::string query = tkz.get_next_token();
       if (!query.empty())
       {
         try
         {
-          RunQuery(query, no_queries == 0);
+          run_query(query, no_queries == 0);
           no_queries++;
         }
         catch (otl_exception& p)
@@ -232,14 +232,14 @@ frame::frame()
     m_shell->prompt(wxString::Format(_("\n%d queries (%.3f seconds)"),
       no_queries,
       (float)milli.count() / (float)1000).ToStdString());
-    m_Running = false;}, wxID_EXECUTE);
+    m_running = false;}, wxID_EXECUTE);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     Close(true);}, wxID_EXIT);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_Query->get_file().file_new(wex::path());
-    m_Query->SetFocus();
+    m_query->get_file().file_new(wex::path());
+    m_query->SetFocus();
     show_pane("QUERY");}, wxID_NEW);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -253,23 +253,23 @@ frame::frame()
       true);}, wxID_OPEN);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_Query->get_file().file_save();}, wxID_SAVE);
+    m_query->get_file().file_save();}, wxID_SAVE);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wex::file_dialog dlg(
-      &m_Query->get_file(), 
+      &m_query->get_file(), 
       wex::window_data().
         style(wxFD_SAVE).
         parent(this).
         title(wxGetStockLabel(wxID_SAVEAS).ToStdString()));
     if (dlg.ShowModal() == wxID_OK)
     {
-       m_Query->get_file().file_save(dlg.GetPath().ToStdString());
+       m_query->get_file().file_save(dlg.GetPath().ToStdString());
     }}, wxID_SAVEAS);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_Running = false;
-    m_Stopped = true;}, wxID_STOP);
+    m_running = false;
+    m_stopped = true;}, wxID_STOP);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (m_otl.logoff())
@@ -295,15 +295,15 @@ frame::frame()
             0,
             input.length() - 1);
 
-          m_Stopped = false;
-          RunQuery(query, true);
+          m_stopped = false;
+          run_query(query, true);
         }
       }
       catch (otl_exception& p)
       {
-        if (m_Results->IsShown())
+        if (m_results->IsShown())
         {
-          m_Results->EndBatch();
+          m_results->EndBatch();
         }
 
         m_shell->AppendText("\nerror: " + wex::quoted(std::string((const char*)p.msg)));
@@ -316,7 +316,7 @@ frame::frame()
     m_shell->prompt();}, wex::ID_SHELL_COMMAND);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_Stopped = true;
+    m_stopped = true;
     m_shell->prompt("cancelled");}, wex::ID_SHELL_COMMAND_STOP);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -327,18 +327,18 @@ frame::frame()
     toggle_pane("STATISTICS");}, idViewStatistics);
   
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    event.Enable(m_Query->GetModify());}, wxID_SAVE);
+    event.Enable(m_query->GetModify());}, wxID_SAVE);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    event.Enable(m_Query->GetLength() > 0);}, wxID_SAVEAS);
+    event.Enable(m_query->GetLength() > 0);}, wxID_SAVEAS);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    event.Enable(m_Running);}, wxID_STOP);
+    event.Enable(m_running);}, wxID_STOP);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Enable(m_otl.is_connected());}, idDatabaseClose);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Enable(!m_otl.is_connected());}, idDatabaseOpen);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     // If we have a query, you can hide it, but still run it.
-    event.Enable(m_Query->GetLength() > 0 && m_otl.is_connected());}, wxID_EXECUTE);
+    event.Enable(m_query->GetLength() > 0 && m_otl.is_connected());}, wxID_EXECUTE);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Enable(!file_history().get_history_file().empty());}, idRecentfileMenu);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
@@ -365,7 +365,7 @@ void frame::on_command_item_dialog(
 {
   if (dialogid == wxID_PREFERENCES)
   {
-    m_Query->config_get();
+    m_query->config_get();
     m_shell->config_get();
   }
   else
@@ -376,15 +376,15 @@ void frame::on_command_item_dialog(
 
 wex::stc* frame::open_file(const wex::path& filename, const wex::stc_data& data)
 {
-  if (m_Query->open(filename, data))
+  if (m_query->open(filename, data))
   {
     show_pane("QUERY");
   }
   
-  return m_Query;
+  return m_query;
 }
 
-void frame::RunQuery(const std::string& query, bool empty_results)
+void frame::run_query(const std::string& query, bool empty_results)
 {
   std::string query_lower = query;
   for (auto & c : query_lower) c = ::tolower(c);
@@ -403,9 +403,9 @@ void frame::RunQuery(const std::string& query, bool empty_results)
       query_lower.find("explain") == 0 ||
       query_lower.find("$sql" == 0))
   {
-    rpc = m_Results->IsShown() ? 
-      m_otl.query(query, m_Results, m_Stopped, empty_results):
-      m_otl.query(query, m_shell, m_Stopped);
+    rpc = m_results->IsShown() ? 
+      m_otl.query(query, m_results, m_stopped, empty_results):
+      m_otl.query(query, m_shell, m_stopped);
     const auto end = std::chrono::system_clock::now();
     const auto elapsed = end - start;
     milli = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
@@ -438,7 +438,7 @@ void frame::statusbar_clicked(const std::string& pane)
   {
     if (wex::lexers::get()->show_theme_dialog(this))
     {
-      m_Query->get_lexer().set(m_Query->get_lexer().display_lexer());
+      m_query->get_lexer().set(m_query->get_lexer().display_lexer());
       m_shell->get_lexer().set(m_shell->get_lexer().display_lexer());
 
       m_statusbar->show_field(

@@ -1,19 +1,20 @@
 **v20.04**
   - scintilla is compiled to use std::regex (ECMAScript)
+  - The Open Group Base Specifications Issue 7, 2018 edition
+  - Microsoft Visual Studio 2019
   - usage of test suites
-  - Microsoft Visual Studio 2019 supported
 
 **v19.10** *September 14, 2019*
-  - uses boost 1.69
+  - uses boost 1.65
     - boost::process lib instead of tiny-process-library
     - boost::program_options lib instead of TCLAP lib
     - boost::spirit lib instead of eval lib
     - boost::statechart lib instead of FSM lib
   - uses nlohmann/json instead of wxConfig
-  - uses wex::test and wex::report namespace
+  - added wex::test and wex::report namespace
   
 **v19.04** *March 9, 2019*
-  - uses wex namespace
+  - added wex namespace
   - uses std::filesystem instead of std::experimental::filesystem
   - tiny-process-library lib
 
@@ -47,6 +48,7 @@
   - catch lib instead of cppunit lib
   - cmake build system
   - Microsoft Visual Studio 2015
+  - The Open Group Base Specifications Issue 7, 2013 edition
 
 **v3.0.2** *October 10, 2014*
   - c++11

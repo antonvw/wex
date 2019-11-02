@@ -57,7 +57,7 @@ wex::report::frame::frame(
     window_data().
       button(wxAPPLY | wxCANCEL).
       id(ID_FIND_IN_FILES).
-      title(_("Find In Files").ToStdString()).
+      title(_("Find In Files")).
       style(wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxSTAY_ON_TOP));
     
   m_rif_dialog = new item_dialog({
@@ -73,7 +73,7 @@ wex::report::frame::frame(
     window_data().
       button(wxAPPLY | wxCANCEL).
       id(ID_REPLACE_IN_FILES).
-      title(_("Replace In Files").ToStdString()).
+      title(_("Replace In Files")).
       style(wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxSTAY_ON_TOP));
 
   Bind(wxEVT_IDLE, &frame::on_idle, this);
@@ -94,7 +94,7 @@ wex::report::frame::frame(
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (!event.GetString().empty())
     {
-      grep(event.GetString().ToStdString());
+      grep(event.GetString());
     }
     else if (m_fif_dialog != nullptr)
     {
@@ -108,7 +108,7 @@ wex::report::frame::frame(
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (!event.GetString().empty())
     {
-      sed(event.GetString().ToStdString());
+      sed(event.GetString());
     }
     else if (m_rif_dialog != nullptr)
     {
@@ -266,8 +266,8 @@ int wex::report::frame::find_in_files_dialog(
 const std::string wex::report::frame::find_in_files_title(int id) const
 {
   return (id == ID_TOOL_REPLACE ?
-    _("Replace In Selection").ToStdString():
-    _("Find In Selection").ToStdString());
+    _("Replace In Selection"):
+    _("Find In Selection"));
 }
 
 bool wex::report::frame::grep(const std::string& arg, bool sed)

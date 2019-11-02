@@ -94,11 +94,11 @@ namespace wex
     /// Prints text in the dialog.
     void print(const std::string& text);
 
-    /// Returns current register name.
-    auto register_name() const {return m_register;};
-    
     /// Returns text to be inserted.
     const std::string register_insert() const;
+    
+    /// Returns current register name.
+    auto register_name() const {return m_register;};
     
     /// Returns text from current register (or yank register if no register active).
     const std::string register_text() const;
@@ -136,23 +136,28 @@ namespace wex
 
     ex_command m_command;
   private:
-    bool command_handle(const std::string& command) const;
     bool command_address(const std::string& command);
+
+    bool command_handle(const std::string& command) const;
+
     template <typename S, typename T> 
-      bool handle_container(
-        const std::string& kind,
-        const std::string& command,
-        const T * container,
-        std::function<bool(const std::string&, const std::string&)> cb);
+    bool handle_container(
+      const std::string& kind,
+      const std::string& command,
+      const T * container,
+      std::function<bool(const std::string&, const std::string&)> cb);
+
     void info_message(const std::string& text, info_message_t type) const;
+
     template <typename S, typename T>
     std::string report_container(const T * container) const;
+
     void show_dialog(
       const std::string& title, 
       const std::string& text, 
       bool prop_lexer = false);
       
-    const marker m_MarkerSymbol = marker(0);
+    const marker m_marker_symbol = marker(0);
     const std::vector<std::pair<
       const std::string, 
       std::function<bool(const std::string& command)>>> m_commands;
@@ -162,8 +167,8 @@ namespace wex
 
     bool 
       m_auto_write {false},
-      m_is_active {true}, // are we actively using ex mode?
-      m_copy {false};    // this is a copy, result of split
+      m_copy {false},       // this is a copy, result of split
+      m_is_active {true};   // are we actively using ex mode?
     
     int m_search_flags;
     

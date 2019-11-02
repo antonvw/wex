@@ -159,7 +159,11 @@ namespace wex
     std::atomic_bool m_running {false};
     std::chrono::milliseconds m_timeout;
     std::condition_variable m_queue_condition;
-    std::mutex m_queue_mutex, m_thread_mutex;
+
+    std::mutex 
+      m_queue_mutex, 
+      m_thread_mutex;
+
     std::queue<std::unique_ptr<E>> m_event_queue;
     std::vector<std::thread> m_threads;
   };

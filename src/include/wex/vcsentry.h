@@ -97,7 +97,11 @@ namespace wex
     // no const, as entry is set using operator+ in vcs.
     bool m_admin_dir_is_toplevel {false};
     int m_flags_location {FLAGS_LOCATION_POSTFIX};
-    std::string m_admin_dir, m_log_flags;
+
+    std::string 
+      m_admin_dir, 
+      m_log_flags;
+  
     class blame m_blame;
     lexer m_lexer;
   };

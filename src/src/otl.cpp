@@ -46,7 +46,7 @@ bool wex::otl::logoff()
     return false;
   }
   
-  m_Connect.logoff();
+  m_connect.logoff();
   
   return true;
 }
@@ -73,7 +73,7 @@ void wex::otl::handle_error(
 bool wex::otl::logon(const wex::window_data& par)
 {
   const window_data data(window_data(par).
-    title(_("Open ODBC Connection").ToStdString()));
+    title(_("Open ODBC Connection")));
     
   if (data.button() != 0)
   {
@@ -94,7 +94,7 @@ bool wex::otl::logon(const wex::window_data& par)
       config(_("Password")).get() + "@" +
       datasource();
 
-    m_Connect.rlogon(connect.c_str(),
+    m_connect.rlogon(connect.c_str(),
       1); // autocommit-flag
   }
   catch (otl_exception& p)
@@ -114,7 +114,7 @@ long wex::otl::query(const std::string& query)
     return 0;
   }
   
-  const auto records(otl_cursor::direct_exec(m_Connect, query.c_str()));
+  const auto records(otl_cursor::direct_exec(m_connect, query.c_str()));
   log::verbose("query") << query << "records: " << records;
   return records;
 }
@@ -139,7 +139,7 @@ long wex::otl::query(
   i.open(
     buffer_size,
     query.c_str(),
-    m_Connect,
+    m_connect,
     otl_implicit_select);
 
   long rows = 0;
@@ -237,7 +237,7 @@ long wex::otl::query(
   i.open(
     buffer_size,
     query.c_str(),
-    m_Connect,
+    m_connect,
     otl_implicit_select);
 
   stc->NewLine();

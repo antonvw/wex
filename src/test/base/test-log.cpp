@@ -22,6 +22,7 @@ TEST_CASE( "wex::log" )
     ss << "the great white";
 
     wex::log(wex::log::DEBUG) << "level debug";
+
     wex::log("shark") << ss << "is white";
 
     wex::log log("shark", wex::log::DEBUG);

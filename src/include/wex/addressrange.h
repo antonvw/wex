@@ -24,6 +24,13 @@ namespace wex
   class addressrange
   {
   public:
+    /// Static interface.
+    
+    /// Cleans up (process).
+    static void on_exit();
+    
+    /// Other methods.
+    
     /// Constructor for a range from current position 
     /// extending with number of lines.
     addressrange(
@@ -50,7 +57,7 @@ namespace wex
     
     /// Copies range to destination.
     bool copy(const address& destination) const;
-    
+
     /// Deletes range.
     bool erase() const;
     
@@ -65,6 +72,9 @@ namespace wex
     /// If you did not specify an address range,
     /// the command is run as an asynchronous process.
     bool escape(const std::string& command);
+
+    /// Executes register on this range.
+    bool execute(const std::string& reg) const;
 
     /// Performs the global command on this range.
     bool global(
@@ -82,9 +92,6 @@ namespace wex
     
     /// moves range to destination.
     bool move(const address& destination) const;
-    
-    /// Cleans up (process).
-    static void on_exit();
     
     /// Prints range to print file.
     bool print(const std::string& flags = std::string()) const;
@@ -121,7 +128,8 @@ namespace wex
       /// cmd is one of s, & or ~
       /// - s : default, normal substitute
       /// - & : repeat last substitute (text contains options)
-      /// - ~ : repeat last substitute with pattern from find replace data (text contains options)
+      /// - ~ : repeat last substitute with pattern from find replace data 
+      ///      (text contains options)
       char cmd = 's');
       
     /// Writes range to filename.
@@ -131,31 +139,49 @@ namespace wex
     bool yank(char name = '0') const;
   private:  
     const std::string build_replacement(const std::string& text) const;
-    int confirm(const std::string& pattern, const std::string& replacement);
-    /// Indents range.
+    
+    int confirm(
+      const std::string& pattern, 
+      const std::string& replacement) const;
+
     bool indent(bool forward = true) const;
-    bool parse(const std::string& command, 
-      std::string& pattern, std::string& replacement, std::string& options) const;
-    void set(const std::string& begin, const std::string& end) {
+
+    bool parse(
+      const std::string& command, 
+      std::string& pattern, 
+      std::string& replacement, 
+      std::string& options) const;
+    
+    void set(
+      const std::string& begin, 
+      const std::string& end) {
       m_begin.m_address = begin;
       const int begin_line = m_begin.get_line();
       if (begin_line > 0) m_begin.set_line(begin_line);
       m_end.m_address = end;
       const int end_line = m_end.get_line();
       if (end_line > 0) m_end.set_line(end_line);};
+    
     void set(int begin, int end) {
       m_begin.set_line(begin);
       m_end.set_line(end);};
+    
     void set(address& begin, address& end, int lines);
+  
     bool set_selection() const;
 
-    static inline std::string m_pattern;
-    static inline std::string m_replacement;
+    static inline std::string 
+      m_pattern,
+      m_replacement;
+
     static inline wex::process* m_process {nullptr};
     
     const indicator m_find_indicator {indicator(0)};
 
-    address m_begin, m_end;
+    address 
+      m_begin, 
+      m_end;
+
     ex* m_ex;
     stc* m_stc;
   };

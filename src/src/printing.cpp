@@ -14,77 +14,77 @@
 #include <wex/path.h>
 #include <wex/util.h>
 
-wex::printing* wex::printing::m_Self = nullptr;
+wex::printing* wex::printing::m_self = nullptr;
 
 wex::printing::printing()
 #if wxUSE_PRINTING_ARCHITECTURE
-  : m_Printer(std::make_unique<wxPrinter>())
+  : m_printer(std::make_unique<wxPrinter>())
 #if wxUSE_HTML
-  , m_HtmlPrinter(std::make_unique<wxHtmlEasyPrinting>())
+  , m_html_printer(std::make_unique<wxHtmlEasyPrinting>())
 #endif
 #endif
 {
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  m_HtmlPrinter->SetFonts(wxEmptyString, wxEmptyString); // use defaults
-  m_HtmlPrinter->GetPageSetupData()->SetMarginBottomRight(wxPoint(15, 5));
-  m_HtmlPrinter->GetPageSetupData()->SetMarginTopLeft(wxPoint(15, 5));
+  m_html_printer->SetFonts(wxEmptyString, wxEmptyString); // use defaults
+  m_html_printer->GetPageSetupData()->SetMarginBottomRight(wxPoint(15, 5));
+  m_html_printer->GetPageSetupData()->SetMarginTopLeft(wxPoint(15, 5));
 
-  m_HtmlPrinter->SetHeader(print_header(path()));
-  m_HtmlPrinter->SetFooter(print_footer());
+  m_html_printer->SetHeader(print_header(path()));
+  m_html_printer->SetFooter(print_footer());
 #endif
 }
 
 wex::printing* wex::printing::get(bool createOnDemand)
 {
-  if (m_Self == nullptr && createOnDemand)
+  if (m_self == nullptr && createOnDemand)
   {
-    m_Self = new printing();
+    m_self = new printing();
   }
 
-  return m_Self;
+  return m_self;
 }
 
 wex::printing* wex::printing::set(printing* printing)
 {
-  wex::printing* old = m_Self;
-  m_Self = printing;
+  wex::printing* old = m_self;
+  m_self = printing;
   return old;
 }
 
 #if wxUSE_PRINTING_ARCHITECTURE
 wex::printout::printout(wxStyledTextCtrl* owner)
   : wxPrintout(print_caption(owner->GetName().ToStdString()))
-  , m_PageRect()
-  , m_PrintRect()
-  , m_PageBreaks()
-  , m_Owner(owner)
+  , m_page_rect()
+  , m_print_rect()
+  , m_page_breaks()
+  , m_owner(owner)
 {
 }
 
-void wex::printout::CountPages()
+void wex::printout::count_pages()
 {
   if (GetDC() == nullptr) return;
 
   wxBusyCursor wait;
 
-  m_PageBreaks.clear();
-  m_PageBreaks.emplace_back(0); // a page break at pos 0
+  m_page_breaks.clear();
+  m_page_breaks.emplace_back(0); // a page break at pos 0
   int pos = 0;
 
-  while (pos < m_Owner->GetLength())
+  while (pos < m_owner->GetLength())
   {
-    SetScale();
+    set_scale();
 
-    pos = m_Owner->FormatRange(
+    pos = m_owner->FormatRange(
       false,
       pos,
-      m_Owner->GetLength(),
+      m_owner->GetLength(),
       GetDC(),
       GetDC(),
-      m_PrintRect,
-      m_PageRect);
+      m_print_rect,
+      m_page_rect);
 
-    m_PageBreaks.emplace_back(pos);
+    m_page_breaks.emplace_back(pos);
   }
 }
 
@@ -92,9 +92,9 @@ void wex::printout::GetPageInfo(
   int* minPage, int* maxPage, int* pageFrom, int* pageTo)
 {
   *minPage = 1;
-  *maxPage = m_PageBreaks.size() - 1;
+  *maxPage = m_page_breaks.size() - 1;
   *pageFrom = 1;
-  *pageTo = m_PageBreaks.size() - 1;
+  *pageTo = m_page_breaks.size() - 1;
 }
 
 void wex::printout::OnPreparePrinting()
@@ -115,42 +115,42 @@ void wex::printout::OnPreparePrinting()
   page.x = (int)(page.x * ppiScr.x / factor);
   page.y = (int)(page.y * ppiScr.y / factor);
 
-  m_PageRect = wxRect(0, 0, page.x, page.y);
+  m_page_rect = wxRect(0, 0, page.x, page.y);
 
   int left = (int)(dlg_data->GetMarginTopLeft().x * ppiScr.x / factor);
   int top = (int)(dlg_data->GetMarginTopLeft().y * ppiScr.y / factor);
   int right = (int)(dlg_data->GetMarginBottomRight().x * ppiScr.x / factor);
   int bottom = (int)(dlg_data->GetMarginBottomRight().y * ppiScr.y / factor);
 
-  m_PrintRect = wxRect(
+  m_print_rect = wxRect(
     left,
     top,
     page.x - (left + right),
     page.y - (top + bottom));
 
-  CountPages();
+  count_pages();
 }
 
 bool wex::printout::OnPrintPage(int pageNum)
 {
   if (GetDC() == nullptr) return false;
 
-  if (pageNum > (int)m_PageBreaks.size())
+  if (pageNum > (int)m_page_breaks.size())
   {
     assert(0);
     return false;
   }
 
-  SetScale();
+  set_scale();
 
-  m_Owner->FormatRange(
+  m_owner->FormatRange(
     true,
-    m_PageBreaks[pageNum - 1],
-    m_Owner->GetTextLength(),
+    m_page_breaks[pageNum - 1],
+    m_owner->GetTextLength(),
     GetDC(),
     GetDC(),
-    m_PrintRect,
-    m_PageRect);
+    m_print_rect,
+    m_page_rect);
 
   wxFont font = *wxNORMAL_FONT;
   font.SetWeight(wxFONTWEIGHT_BOLD);
@@ -160,22 +160,22 @@ bool wex::printout::OnPrintPage(int pageNum)
   GetDC()->SetPen(*wxBLACK_PEN);
 
   // Print a header.
-  const std::string header = print_header(m_Owner->GetName().ToStdString());
+  const std::string header = print_header(m_owner->GetName().ToStdString());
   if (!header.empty())
   {
     const int text_from_top = 23;
     const int line_from_top = 8;
     
     GetDC()->DrawText(
-      translate(header, pageNum, m_PageBreaks.size() - 1),
-      m_PrintRect.GetTopLeft().x,
-      m_PrintRect.GetTopLeft().y - text_from_top);
+      translate(header, pageNum, m_page_breaks.size() - 1),
+      m_print_rect.GetTopLeft().x,
+      m_print_rect.GetTopLeft().y - text_from_top);
 
     GetDC()->DrawLine(
-      m_PrintRect.GetTopLeft().x,
-      m_PrintRect.GetTopLeft().y - line_from_top,
-      m_PrintRect.GetBottomRight().x,
-      m_PrintRect.GetTopLeft().y - line_from_top);
+      m_print_rect.GetTopLeft().x,
+      m_print_rect.GetTopLeft().y - line_from_top,
+      m_print_rect.GetBottomRight().x,
+      m_print_rect.GetTopLeft().y - line_from_top);
   }
 
   // Print a footer
@@ -183,21 +183,21 @@ bool wex::printout::OnPrintPage(int pageNum)
   if (!footer.empty())
   {
     GetDC()->DrawText(
-      translate(footer, pageNum, m_PageBreaks.size() - 1),
-      m_PrintRect.GetBottomRight().x / 2,
-      m_PrintRect.GetBottomRight().y);
+      translate(footer, pageNum, m_page_breaks.size() - 1),
+      m_print_rect.GetBottomRight().x / 2,
+      m_print_rect.GetBottomRight().y);
 
     GetDC()->DrawLine(
-      m_PrintRect.GetTopLeft().x,
-      m_PrintRect.GetBottomRight().y,
-      m_PrintRect.GetBottomRight().x,
-      m_PrintRect.GetBottomRight().y);
+      m_print_rect.GetTopLeft().x,
+      m_print_rect.GetBottomRight().y,
+      m_print_rect.GetBottomRight().x,
+      m_print_rect.GetBottomRight().y);
   }
 
   return true;
 }
 
-void wex::printout::SetScale()
+void wex::printout::set_scale()
 {
   if (GetDC() == nullptr) return;
 

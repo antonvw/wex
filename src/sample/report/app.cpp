@@ -51,26 +51,26 @@ frame::frame()
 {
   SetIcon(wxICON(app));
 
-  wex::menu *menuFile = new wex::menu;
+  auto* menuFile = new wex::menu;
   menuFile->append(wxID_OPEN);
   menuFile->append_separator();
   menuFile->append_print();
   menuFile->append_separator();
   menuFile->append(wxID_EXIT);
 
-  wex::menu *menuView = new wex::menu;
+  auto* menuView = new wex::menu;
   append_panes(menuView);
 
-  wex::menu* menuHelp = new wex::menu;
+  auto* menuHelp = new wex::menu;
   menuHelp->append(wxID_ABOUT);
 
-  wxMenuBar *menubar = new wxMenuBar;
+  auto* menubar = new wxMenuBar;
   menubar->Append(menuFile, "&File");
   menubar->Append(menuView, "&View");
   menubar->Append(menuHelp, "&Help");
   SetMenuBar(menubar);
 
-  get_toolbar()->add_controls();
+  get_toolbar()->add_standard();
   
   setup_statusbar({
     {"PaneFileType", 50},

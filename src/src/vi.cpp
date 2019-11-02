@@ -358,14 +358,14 @@ wex::vi::vi(wex::stc* arg)
       get_stc()->Home();
       if (command.front() == '_') m_count--;
       MOTION(Line, Down, false, false);}},
-    {control_B, [&](const std::string& command){MOTION(Page, Up,         false, false);}},
-    {control_D, [&](const std::string& command){MOTION(Page, ScrollDown, false, false);}},
-    {control_E, [&](const std::string& command){MOTION(Line, ScrollDown, false, false);}},
-    {control_F, [&](const std::string& command){MOTION(Page, Down,       false, false);}},
-    {control_M, [&](const std::string& command){MOTION(Line, Down,       false, false);}},
-    {control_P, [&](const std::string& command){MOTION(Line, Up,         false, false);}},
-    {control_U, [&](const std::string& command){MOTION(Page, ScrollUp,   false, false);}},
-    {control_Y, [&](const std::string& command){MOTION(Line, ScrollUp,   false, false);}}}
+    {control_B, [&](const std::string&){MOTION(Page, Up,         false, false);}},
+    {control_D, [&](const std::string&){MOTION(Page, ScrollDown, false, false);}},
+    {control_E, [&](const std::string&){MOTION(Line, ScrollDown, false, false);}},
+    {control_F, [&](const std::string&){MOTION(Page, Down,       false, false);}},
+    {control_M, [&](const std::string&){MOTION(Line, Down,       false, false);}},
+    {control_P, [&](const std::string&){MOTION(Line, Up,         false, false);}},
+    {control_U, [&](const std::string&){MOTION(Page, ScrollUp,   false, false);}},
+    {control_Y, [&](const std::string&){MOTION(Line, ScrollUp,   false, false);}}}
   , m_other_commands {
     {"m", [&](const std::string& command){
       if (one_letter_after("m", command))
@@ -519,13 +519,7 @@ wex::vi::vi(wex::stc* arg)
         return 1;
       }
       m_dot = true;
-      const auto count = m_count;
-      get_stc()->BeginUndoAction();
-      for (int i = 0; i < count; i++)
-      {
-        vi::command(m_last_command);
-      }
-      get_stc()->EndUndoAction();
+      REPEAT_WITH_UNDO(vi::command(m_last_command));
       m_dot = false;
       return 1;}},
     {"~", [&](const std::string& command){
@@ -1383,7 +1377,8 @@ bool wex::vi::on_key_down(const wxKeyEvent& event)
   }
   else if ((event.GetModifiers() & wxMOD_CONTROL) && event.GetKeyCode() != WXK_NONE)
   {
-    if (const auto& it = get_macros().get_keys_map(vi_macros::key_t::KEY_CONTROL)->find(event.GetKeyCode());
+    if (const auto& it = get_macros().get_keys_map(
+          vi_macros::key_t::KEY_CONTROL)->find(event.GetKeyCode());
       it != get_macros().get_keys_map(vi_macros::key_t::KEY_CONTROL)->end()) 
     {
       command(it->second);
@@ -1399,7 +1394,8 @@ bool wex::vi::on_key_down(const wxKeyEvent& event)
       command("\x1b");
     }
 
-    if (const auto& it = get_macros().get_keys_map(vi_macros::key_t::KEY_ALT)->find(event.GetKeyCode());
+    if (const auto& it = get_macros().get_keys_map(
+          vi_macros::key_t::KEY_ALT)->find(event.GetKeyCode());
       it != get_macros().get_keys_map(vi_macros::key_t::KEY_ALT)->end()) 
     {
       command(it->second);

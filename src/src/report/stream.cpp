@@ -306,9 +306,9 @@ void wex::report::stream::process_match(
   listitem item(m_report, get_filename());
   item.insert();
 
-  item.set_item(_("Line No").ToStdString(), std::to_string(line_no + 1));
-  item.set_item(_("Line").ToStdString(), context(line, pos));
-  item.set_item(_("Match").ToStdString(), find_replace_data::get()->get_find_string());
+  item.set_item(_("Line No"), std::to_string(line_no + 1));
+  item.set_item(_("Line"), context(line, pos));
+  item.set_item(_("Match"), find_replace_data::get()->get_find_string());
 }
 
 bool wex::report::stream::setup_tool(

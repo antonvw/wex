@@ -32,7 +32,7 @@ wex::report::file::file(
         {std::set<std::string> {
           m_text_add_files, m_text_add_folders, m_text_add_recursive}}},
       window_data().
-        title(_("Add Items").ToStdString()).
+        title(_("Add Items")).
         button(wxAPPLY | wxCANCEL).id(wxID_ADD)))
 {
   file_load(file);
@@ -225,7 +225,7 @@ void wex::report::file::do_file_save(bool save_as)
     if (fn.dir_exists())
     {
       node.append_attribute("extensions") = 
-        get_item_text(i, _("Type").ToStdString()).c_str();
+        get_item_text(i, _("Type")).c_str();
     }
   }
   

@@ -5,10 +5,6 @@
 // Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wex/addressrange.h>
 #include <wex/managedframe.h>
 #include <wex/stc.h>
@@ -131,6 +127,12 @@ TEST_CASE("wex::addressrange")
     REQUIRE( wex::addressrange(ex).escape("ls \x12*"));
     REQUIRE( wex::addressrange(ex).escape("ls  `echo \x12*`"));
 #endif
+  }
+  
+  SUBCASE("execute")
+  {
+    stc->set_text(contents);
+    REQUIRE(!wex::addressrange(ex).execute("Z"));
   }
   
 #ifdef __UNIX__

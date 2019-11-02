@@ -2,7 +2,7 @@
 // Name:      stream-statistics.h
 // Purpose:   Declaration of wex::stream_statistics class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -21,21 +21,21 @@ namespace wex
   public:
     /// Adds other statistics.
     stream_statistics& operator+=(const stream_statistics& s) {
-      m_Elements += s.m_Elements;
+      m_elements += s.m_elements;
       return *this;}
 
     /// Returns all items as a string. All items are returned as a string,
     /// with newlines separating items.
-    const std::string get() const {return m_Elements.get();};
+    const std::string get() const {return m_elements.get();};
 
     /// Returns the key, if not present 0 is returned.
     int get(const std::string& key) const {
-      const auto it = m_Elements.get_items().find(key);
-      return (it != m_Elements.get_items().end() ? it->second: 0);};
+      const auto it = m_elements.get_items().find(key);
+      return (it != m_elements.get_items().end() ? it->second: 0);};
 
     /// Returns the elements.
-    const auto & get_elements() const {return m_Elements;};
+    const auto & get_elements() const {return m_elements;};
   private:
-    statistics<int> m_Elements;
+    statistics<int> m_elements;
   };
 };

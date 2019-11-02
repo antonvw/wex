@@ -14,6 +14,7 @@
 #endif
 #include <wx/aboutdlg.h>
 #include <wx/numdlg.h>
+#include <wex/cmdline.h>
 #include <wex/defs.h>
 #include <wex/filedlg.h>
 #include <wex/itemdlg.h>
@@ -55,7 +56,8 @@ bool app::OnInit()
 {
   SetAppName("wex-sample");
 
-  if (!wex::app::OnInit())
+  if (!wex::app::OnInit() ||
+      !wex::cmdline().parse(argc, argv))
   {
     return false;
   }
@@ -224,8 +226,8 @@ frame::frame()
     {"PaneInfo", 100, "Lines or items"},
     {"PaneLexer", 60}});
 
-  get_toolbar()->add_controls();
-  get_options_toolbar()->add_controls();
+  get_toolbar()->add_standard();
+  get_options_toolbar()->add_checkboxes_standard();
   
   // The on_command keeps statistics.
   Bind(wxEVT_MENU, &frame::on_command, this, wxID_COPY);

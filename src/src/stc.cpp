@@ -102,14 +102,16 @@ wex::stc::stc(const path& p, const stc_data& data)
 
   bind_all();
 
-  config_get();
-
   if (p.stat().is_ok())
-  {
+  { 
+    // not really necessary, as this is done after FILE_LOAD,
+    // but this eliminates flicker
+    config_get();
     open(p, data);
   }
   else
   {
+    config_get();
     m_lexer.set(p.lexer(), true);
     m_file.file_new(p);
   }
@@ -390,25 +392,34 @@ const std::string wex::stc::get_word_at_pos(int pos) const
   if (word_start == word_end && word_start < GetTextLength())
   {
     const std::string word = 
-      const_cast< stc * >( this )->GetTextRange(word_start, word_start + 1).ToStdString();
+      const_cast< stc * >( this )->GetTextRange(
+        word_start, 
+        word_start + 1).ToStdString();
 
     return !isspace(word[0]) ? word: std::string();
   }
   else
   {
-    return const_cast< stc * >( this )->GetTextRange(word_start, word_end).ToStdString();
+    return const_cast< stc * >( this )->GetTextRange(
+      word_start, 
+      word_end).ToStdString();
   }
 }
 
 void wex::stc::guess_type()
 {
   // Get a small sample from this document to detect the file mode.
-  const auto length = (!is_hexmode() ? GetTextLength(): m_hexmode.buffer().size());
-  const auto sample_size = (length > 255 ? 255: length);
-  const std::string text((!is_hexmode() ? GetTextRange(0, sample_size).ToStdString(): 
-    m_hexmode.buffer().substr(0, sample_size)));
-  const std::string text2((!is_hexmode() ? GetTextRange(length - sample_size, length).ToStdString(): 
-    m_hexmode.buffer().substr(length - sample_size, sample_size)));
+  const auto length(
+    (!is_hexmode() ? GetTextLength(): m_hexmode.buffer().size()));
+  const auto sample_size ((length > 255 ? 255: length));
+  const std::string text(
+    (!is_hexmode() ? 
+        GetTextRange(0, sample_size).ToStdString(): 
+        m_hexmode.buffer().substr(0, sample_size)));
+  const std::string text2(
+    (!is_hexmode() ? 
+        GetTextRange(length - sample_size, length).ToStdString(): 
+        m_hexmode.buffer().substr(length - sample_size, sample_size)));
 
   std::vector<std::string> v;  
   
@@ -722,7 +733,8 @@ int wex::stc::replace_all(
 {
   int selection_from_end = 0;
 
-  if (SelectionIsRectangle() || get_number_of_lines(GetSelectedText().ToStdString()) > 1)
+  if (SelectionIsRectangle() || 
+      get_number_of_lines(GetSelectedText().ToStdString()) > 1)
   {
     TargetFromSelection();
     selection_from_end = GetLength() - GetTargetEnd();

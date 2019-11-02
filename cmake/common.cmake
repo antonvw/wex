@@ -11,21 +11,22 @@ function(pack)
   set(CPACK_PACKAGE_NAME "${PROJECT_NAME}")
   set(CPACK_PACKAGE_VERSION "${WEX_VERSION}")
   
-  # See appveyor.yml.
-  if (DEFINED ENV{YEAR})
-    set(extra $ENV{YEAR})
-    string(CONCAT extra "vs-" ${extra})
-  endif()
-  
-  set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-v${CPACK_PACKAGE_VERSION}${extra}")
+  # See appveyor.yml (artifact).
+  set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-v${CPACK_PACKAGE_VERSION}")
 
   if (MSVC)
-    string(SUBSTRING ${MSVC_TOOLSET_VERSION} 0 2 VC_MAJOR)
-    string(SUBSTRING ${MSVC_TOOLSET_VERSION} 2 1 VC_MINOR)
-    string(CONCAT msvc ${VC_MAJOR} ".0")
-    string(CONCAT msvc2 ${VC_MAJOR} "0")
+    if (${MSVC_TOOLSET_VERSION} LESS 142)
+      # Visual studio 2017:
+      # c:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\redist\x86\Microsoft.VC140.CRT
+      file(GLOB_RECURSE dlls 
+        "C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/redist/x86/*.dll")
+    else()
+      # Visual studio 2019:
+      # C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Redist\MSVC\14.23.27820\x86\Microsoft.VC142.CRT
+      file(GLOB_RECURSE dlls 
+        "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Redist/MSVC/14*/x86/*.dll")
+    endif()
 
-    file(GLOB dlls "C:/Program Files (x86)/Microsoft Visual Studio ${msvc}/VC/redist/x86/Microsoft.VC${msvc2}.CRT/*.dll")
     install(FILES ${dlls} DESTINATION ${CONFIG_INSTALL_DIR})
   endif()
 

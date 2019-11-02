@@ -104,9 +104,6 @@ namespace wex
 
     /// other methods
 
-    /// Default constructor.
-    vi_macros();
-    
     /// Returns keys map.
     const keys_map_t* get_keys_map(key_t type = KEY_NORMAL);
     
@@ -175,7 +172,10 @@ namespace wex
     static void parse_node_macro(const pugi::xml_node& node);
     static void parse_node_variable(const pugi::xml_node& node);
 
-    static inline bool m_is_loaded {false}, m_is_modified {false};
+    static inline bool 
+      m_is_loaded {false}, 
+      m_is_modified {false};
+
     static inline std::string m_macro;
     
     static inline pugi::xml_document

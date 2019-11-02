@@ -29,8 +29,6 @@ namespace wex
   };
 };
 
-std::vector<wex::vcs_entry> wex::vcs::m_entries;
-
 wex::vcs::vcs(const std::vector< path > & files, int command_no)
   : m_files(files)
   , m_title("VCS")
@@ -131,7 +129,9 @@ bool wex::vcs::execute()
   if (get_file().empty())
   {
     return m_entry.execute(
-      m_entry.get_command().is_add() ? config(_("data")).get_firstof(): std::string(), 
+      m_entry.get_command().is_add() ? 
+        config(_("data")).get_firstof(): 
+        std::string(), 
       lexer(), 
       process::EXEC_WAIT,
       config(_("Base folder")).get_firstof());
@@ -348,7 +348,11 @@ bool wex::vcs::set_entry_from_base(wxWindow* parent)
   if (
     // See also vcs_entry, same item is used there.
     const std::vector<item> v{{
-      _("Base folder"), item::COMBOBOX_DIR, std::any(), control_data().is_required(true)}};
+      _("Base folder"), 
+      item::COMBOBOX_DIR, 
+      std::any(), 
+      control_data().is_required(true)}};
+
     config(_("Base folder")).get_firstof().empty()) 
   {
     if (
@@ -409,16 +413,27 @@ int wex::vcs::show_dialog(const window_data& arg)
 
   const std::vector <item> v({
     m_entry.get_command().is_commit() ? 
-      item(_("Revision comment"), item::COMBOBOX, std::any(), control_data().is_required(true)): 
+      item(_("Revision comment"), 
+        item::COMBOBOX, 
+        std::any(), 
+        control_data().is_required(true)): 
       item(),
     add_folder && !m_entry.get_command().is_help() ? 
-      item(_("Base folder"), item::COMBOBOX_DIR, std::any(), control_data().is_required(true)): 
+      item(_("Base folder"), 
+        item::COMBOBOX_DIR, 
+        std::any(), 
+        control_data().is_required(true)): 
       item(),
-    add_folder && !m_entry.get_command().is_help() && m_entry.get_command().is_add() ? item(
+    add_folder && 
+   !m_entry.get_command().is_help() && 
+    m_entry.get_command().is_add() ? item(
       _("Path"), item::COMBOBOX, std::any(), control_data().is_required(true)): 
       item(), 
     m_entry.get_command().ask_flags() ?  
-      item(_("Flags"), std::string(), item::TEXTCTRL, control_data(), item::LABEL_LEFT, 
+      item(_("Flags"), 
+        std::string(), 
+        item::TEXTCTRL, 
+        control_data(), item::LABEL_LEFT, 
         [=](wxWindow* user, const std::any& value, bool save) {
           config(m_entry.flags_key()).set(m_entry.get_flags());}): 
       item(),
@@ -447,7 +462,9 @@ int wex::vcs::show_dialog(const window_data& arg)
 
   m_item_dialog = new item_dialog(v, data);
 
-  return (data.button() & wxAPPLY) ? m_item_dialog->Show(): m_item_dialog->ShowModal();
+  return (data.button() & wxAPPLY) ? 
+    m_item_dialog->Show(): 
+    m_item_dialog->ShowModal();
 }
   
 bool wex::vcs::use() const

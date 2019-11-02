@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Declaration of wex::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -33,6 +33,25 @@ namespace wex
   class frame : public wxFrame
   {
   public:
+    /// Static interface.
+
+    /// Returns text on specified pane.
+    /// Don't forget to call setup_statusbar first.
+    static std::string get_statustext(const std::string& pane);
+    
+    /// Are we closing?
+    static bool is_closing() {return m_is_closing;};
+
+    /// Sets text on specified pane.
+    /// Don't forget to call setup_statusbar first.
+    static bool statustext(const std::string& text, const std::string& pane);
+    
+    /// Updates statusbar pane items pane with values from specified listview.
+    static bool update_statusbar(const wxListView* lv);
+    
+    /// Updates the specified statusbar pane with values from specified stc.
+    static bool update_statusbar(stc* stc, const std::string& pane);
+
     /// Default constructor,
     frame(const window_data& data = window_data());
 
@@ -108,27 +127,8 @@ namespace wex
     statusbar* setup_statusbar(
       const std::vector<statusbar_pane>& panes,
       long style = wxST_SIZEGRIP,
-      const wxString& name = "statusBar") {
+      const std::string& name = "statusBar") {
       return statusbar::setup(this, panes, style, name);};
-    
-    /// Static interface.
-
-    /// Returns text on specified pane.
-    /// Don't forget to call setup_statusbar first.
-    static std::string get_statustext(const std::string& pane);
-    
-    /// Are we closing?
-    static bool is_closing() {return m_is_closing;};
-
-    /// Sets text on specified pane.
-    /// Don't forget to call setup_statusbar first.
-    static bool statustext(const std::string& text, const std::string& pane);
-    
-    /// Updates statusbar pane items pane with values from specified listview.
-    static bool update_statusbar(const wxListView* lv);
-    
-    /// Updates the specified statusbar pane with values from specified stc.
-    static bool update_statusbar(stc* stc, const std::string& pane);
   protected:
     // Interface from wxFrame.
     wxStatusBar* OnCreateStatusBar(int number,

@@ -67,8 +67,14 @@ namespace wex
     /// Returns underlined.
     bool underlined() const {return m_under;};
   private:
-    std::string m_background_colour, m_foreground_colour;
-    int m_no {-1}, m_style {-1};
+    std::string 
+      m_background_colour, 
+      m_foreground_colour;
+
+    int 
+      m_no {-1}, 
+      m_style {-1};
+
     bool m_under {false};
     const presentation_t m_type;
   };

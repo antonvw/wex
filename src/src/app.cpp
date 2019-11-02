@@ -67,7 +67,7 @@ bool wex::app::OnInit()
   config::init();
 
   log::init(argc, argv);
-  log::verbose(1) << "started:" << GetAppName().ToStdString() << get_version_info().get();
+  log::verbose(1) << "started:" << GetAppName() << get_version_info().get();
 
   const wxLanguageInfo* info = nullptr;
   
@@ -84,7 +84,7 @@ bool wex::app::OnInit()
   // Do not load wxstd, we load all files ourselves,
   // and do not want messages about loading non existing wxstd files.
   if (const auto lang = (info != nullptr ? info->Language: wxLANGUAGE_DEFAULT);
-    !m_Locale.Init(lang, wxLOCALE_DONT_LOAD_DEFAULT))
+    !m_locale.Init(lang, wxLOCALE_DONT_LOAD_DEFAULT))
   {
     log::verbose("could not init locale for") << 
       (!wxLocale::GetLanguageName(lang).empty() ?
@@ -93,24 +93,24 @@ bool wex::app::OnInit()
   }
   else
   {
-    // If there are catalogs in the catalog_dir, then add them to the m_Locale.
+    // If there are catalogs in the catalog_dir, then add them to the m_locale.
     // README: We use the canonical name, also for windows, not sure whether that is
     // the best.
-    m_CatalogDir = wxStandardPaths::Get().GetLocalizedResourcesDir(
-      m_Locale.GetCanonicalName()
+    m_catalog_dir = wxStandardPaths::Get().GetLocalizedResourcesDir(
+      m_locale.GetCanonicalName()
 #ifndef __WXMSW__
       , wxStandardPaths::ResourceCat_Messages
 #endif
-      ).ToStdString();
+      );
 
-    if (fs::is_directory(m_CatalogDir))
+    if (fs::is_directory(m_catalog_dir))
     {
-      for (const auto& p: fs::recursive_directory_iterator(m_CatalogDir))
+      for (const auto& p: fs::recursive_directory_iterator(m_catalog_dir))
       {
         if (fs::is_regular_file(p.path()) && 
           matches_one_of(p.path().filename().string(), "*.mo"))
         {
-          if (!m_Locale.AddCatalog(p.path().stem().string()))
+          if (!m_locale.AddCatalog(p.path().stem().string()))
           {
             log() << "could not add catalog:" << p.path().stem().string();
           }
@@ -119,7 +119,7 @@ bool wex::app::OnInit()
     }
     else if (info != nullptr)
     {
-      log("missing locale files for") << m_Locale.GetName().ToStdString();
+      log("missing locale files for") << m_locale.GetName();
     }
   }
 

@@ -234,9 +234,7 @@ wex::shell::shell(
     {
       event.Skip();
     }
-#if wxUSE_DRAG_AND_DROP
     event.SetDragResult(wxDragNone);
-#endif    
     event.Skip();});
   
   Bind(wxEVT_STC_START_DRAG,  [=](wxStyledTextEvent& event) {
@@ -246,9 +244,7 @@ wex::shell::shell(
     }
     // Currently no drag/drop, though we might be able to
     // drag/drop copy to command line.
-#if wxUSE_DRAG_AND_DROP
     event.SetDragAllowMove(false);
-#endif    
     event.Skip();});
 }
 
@@ -283,7 +279,7 @@ void wex::shell::enable(bool enabled)
   
   if (!m_enabled)
   {
-    // A disabled shell follows STC vi mode.
+    // A disabled shell follows vi mode.
     get_vi().use(config(_("vi mode")).get(true));
   }
   else

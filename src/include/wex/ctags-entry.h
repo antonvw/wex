@@ -2,7 +2,7 @@
 // Name:      ctags-entry.h
 // Purpose:   Declaration of class wex::ctags_entry
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -15,9 +15,6 @@ namespace wex
   class ctags_entry
   {
   public:
-    /// Default constructor.
-    ctags_entry() {;};
-
     /// Returns access member.
     const auto & access() const {return m_access;};
 
@@ -32,9 +29,6 @@ namespace wex
 
     /// Clear the member.
     void clear();
-
-    /// Returns member as a string.
-    const std::string get() const;
 
     /// Returns true if one of the members is filled.
     bool is_active() const;
@@ -58,12 +52,19 @@ namespace wex
     /// - v	variable
     ctags_entry& kind(const std::string& v);
 
+    /// Logs info about this entry.
+    const std::stringstream log() const;
+
     /// Returns signature member.
     const auto & signature() const {return m_signature;};
 
     /// Sets signature member.
     ctags_entry& signature(const std::string& v);
   private:
-    std::string m_access, m_class, m_kind, m_signature;
+    std::string 
+      m_access, 
+      m_class, 
+      m_kind, 
+      m_signature;
   };
 };

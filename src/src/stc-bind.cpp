@@ -316,7 +316,6 @@ void wex::stc::bind_all()
     event.Skip();
     auto_indentation(event.GetKey());});
     
-#if wxUSE_DRAG_AND_DROP
   Bind(wxEVT_STC_DO_DROP, [=](wxStyledTextEvent& event) {
     if (is_hexmode() || GetReadOnly())
     {
@@ -330,8 +329,7 @@ void wex::stc::bind_all()
       event.SetDragAllowMove(false);
     }
     event.Skip();});
-#endif    
-    
+
   Bind(wxEVT_STC_DWELLEND, [=](wxStyledTextEvent& event) {
     if (CallTipActive())
     {
@@ -490,6 +488,7 @@ void wex::stc::bind_all()
           GetLength() < config("max-lines-lexer").get(10000000))
         {
           get_lexer().set(get_filename().lexer(), true);
+          config_get();
         }
         
         guess_type();
@@ -573,7 +572,7 @@ void wex::stc::bind_all()
         window_data().
           size({300, 450}).
           button(wxOK).
-          title(_("Properties").ToStdString()));
+          title(_("Properties")));
       m_entry_dialog->get_stc()->get_lexer().set(l);
     }
     else
@@ -585,7 +584,7 @@ void wex::stc::bind_all()
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (GetSelectedText().length() > 2) return;
     const wxString& caption = _("Enter Control Character");
-    if (is_hexmode()) return m_hexmode.control_char_dialog(caption.ToStdString());
+    if (is_hexmode()) return m_hexmode.control_char_dialog(caption);
     if (GetReadOnly())
     {
       if (GetSelectedText().length() == 1)
@@ -829,8 +828,8 @@ void wex::stc::build_popup_menu(menu& menu)
   if (GetEdgeMode() == wxSTC_EDGE_MULTILINE)
   {
     menu.append_separator();
-    menu.append(idEdgeSet, _("Edge Column"));
-    menu.append(idEdgeClear, _("Edge Column Reset"));
+    menu.append(idEdgeSet, _("Edge get_column"));
+    menu.append(idEdgeClear, _("Edge get_column Reset"));
   }
 
   if (m_data.menu().test(stc_data::MENU_OPEN_WWW) && !sel.empty())

@@ -79,9 +79,10 @@ namespace wex
               wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
             if (dlg.ShowModal() == wxID_OK)
             {
-              const wxString value = dlg.GetPath();
+              const auto value = dlg.GetPath();
               const int item = browse->FindString(value);
-              browse->SetSelection(item == wxNOT_FOUND ? browse->Append(value): item);
+              browse->SetSelection(item == wxNOT_FOUND ? 
+                browse->Append(value): item);
             }}, item.window()->GetId());
           break;
         case item::COMBOBOX_FILE:
@@ -97,9 +98,10 @@ namespace wex
               wxFD_DEFAULT_STYLE | wxFD_FILE_MUST_EXIST);
             if (dlg.ShowModal() == wxID_OK)
             {
-              const wxString value = dlg.GetPath();
+              const auto value = dlg.GetPath();
               const int item = browse->FindString(value);
-              browse->SetSelection(item == wxNOT_FOUND ? browse->Append(value): item);
+              browse->SetSelection(item == wxNOT_FOUND ? 
+                browse->Append(value): item);
             }}, item.window()->GetId());
           break;
         case item::TOGGLEBUTTON:
@@ -115,9 +117,9 @@ namespace wex
     /// to be enabled.
     void force_checkbox_checked(
       /// specify the (part of) the name of the checkbox
-      const wxString& contains = wxEmptyString,
+      const std::string& contains = std::string(),
       /// specify on which page
-      const wxString& page = wxEmptyString) {
+      const std::string& page = std::string()) {
       m_force_checkbox_checked = true;
       m_contains = contains;
       m_page = page;};
@@ -179,9 +181,10 @@ namespace wex
         
         // If this item has same type as previous type use previous sizer,
         // otherwise use no sizer (layout will create a new one).
-        wxFlexGridSizer* current_item_sizer = (item.type() == previous_type && cols == 1 ? 
-          previous_item_sizer: 
-          nullptr);
+        wxFlexGridSizer* current_item_sizer = 
+          (item.type() == previous_type && cols == 1 ? 
+            previous_item_sizer: 
+            nullptr);
 
         // layout the item.
         previous_item_sizer = item.layout(
@@ -255,7 +258,8 @@ namespace wex
         case item::COMBOBOX:
         case item::COMBOBOX_DIR:
         case item::COMBOBOX_FILE:
-          if (wxComboBox* cb = (wxComboBox*)item.window(); item.data().is_required())
+          if (auto* cb = (wxComboBox*)item.window(); 
+            item.data().is_required())
           {
             if (cb->GetValue().empty())
             {
@@ -267,7 +271,8 @@ namespace wex
 
         case item::TEXTCTRL_INT:
         case item::TEXTCTRL:
-          if (wxTextCtrl* tc = (wxTextCtrl*)item.window(); item.data().is_required())
+          if (auto* tc = (wxTextCtrl*)item.window(); 
+            item.data().is_required())
           {
             if (tc->GetValue().empty())
             {
@@ -278,7 +283,7 @@ namespace wex
           break;
 
         case item::DIRPICKERCTRL:
-          if (wxDirPickerCtrl* pc = (wxDirPickerCtrl*)item.window(); 
+          if (auto* pc = (wxDirPickerCtrl*)item.window(); 
             item.data().is_required())
           {
             if (pc->GetPath().empty())
@@ -290,7 +295,7 @@ namespace wex
           break;
 
         case item::FILEPICKERCTRL:
-          if (wxFilePickerCtrl* pc = (wxFilePickerCtrl*)item.window(); 
+          if (auto* pc = (wxFilePickerCtrl*)item.window(); 
             item.data().is_required())
           {
             if (pc->GetPath().empty())
@@ -306,8 +311,9 @@ namespace wex
       }
       event.Enable(m_force_checkbox_checked ? one_checkbox_checked: true);};
 
-    std::vector< T > m_items;
-    std::vector< T > m_items_tmp;
+    std::vector< T > 
+      m_items,
+      m_items_tmp;
 
     bool m_force_checkbox_checked;
     

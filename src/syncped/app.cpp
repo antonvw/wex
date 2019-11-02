@@ -37,18 +37,27 @@ bool app::OnInit()
   if (bool exit = false;
     !wex::app::OnInit() ||
     !wex::cmdline(
-     {{{"debug,d", "use debug mode"}, [&](bool on) {m_debug = on;}},
-      {{"hex,H", "hex mode"}, [&](bool on) {
+     {{{"debug,d", "use debug mode"}, 
+        [&](bool on) {m_debug = on;}},
+
+      {{"hex,H", "hex mode"}, 
+        [&](bool on) {
         if (!on) return;
-        m_data.flags(wex::stc_data::window_t().set(wex::stc_data::WIN_HEX), wex::control_data::OR);}},
-      {{"info,i", "show version"}, [&](bool on) {
+        m_data.flags(
+          wex::stc_data::window_t().set(wex::stc_data::WIN_HEX), 
+          wex::control_data::OR);}},
+
+      {{"info,i", "show version"}, 
+        [&](bool on) {
         if (!on) return;
         std::cout << 
           "syncped-" << wex::get_version_info().get() << " using\n" << 
             wex::get_version_info().description() << " and:\n" << 
             wxGetLibraryVersionInfo().GetDescription().c_str();
         exit = true;}},
-      {{ "locale,l", "show locale"}, [&](bool on) {
+
+      {{ "locale,l", "show locale"}, 
+        [&](bool on) {
         if (!on) return;
         std::cout << 
           "Catalog dir: " << get_catalog_dir() <<
@@ -57,39 +66,65 @@ bool app::OnInit()
           "\nLanguage: " << get_locale().GetLanguage() <<
           "\nLocale: " << get_locale().GetLocale().c_str() <<
           "\nIsOk: " << get_locale().IsOk();
-          if (const auto *info = wxLocale::GetLanguageInfo(get_locale().GetLanguage());
+          if (const auto *info = 
+              wxLocale::GetLanguageInfo(get_locale().GetLanguage());
             info == nullptr)
           {
             std::cout << "\nNo info\n";
           }
           else
           {
-            std::cout << "\nIs available: " << get_locale().IsAvailable(get_locale().GetLanguage()) << "\n";
+            std::cout << "\nIs available: " << 
+              get_locale().IsAvailable(get_locale().GetLanguage()) << "\n";
           }
         exit = true;}},
-      {{"splithor,o", "split tabs horizontally"}, [&](bool on) {
+
+      {{"splithor,o", "split tabs horizontally"}, 
+        [&](bool on) {
         if (on) m_split = wxBOTTOM;}},
-      {{"splitver,O", "split tabs vertically"}, [&](bool on) {
+
+      {{"splitver,O", "split tabs vertically"}, 
+        [&](bool on) {
         if (on) m_split = wxRIGHT;}},
-      {{"readonly,R", "readonly mode"}, [&](bool on) {
-        if (on) m_data.flags(wex::stc_data::window_t().set(wex::stc_data::WIN_READ_ONLY), wex::control_data::OR);}}},
-     {{{"command,c", "vi command"}, {wex::cmdline::STRING, [&](const std::any& s) {
-        m_data.control(wex::control_data().command(std::any_cast<std::string>(s)));}}},
-      {{"scriptin,s", "script in"}, {wex::cmdline::STRING, [&](const std::any& s) {
-        m_scriptin = std::any_cast<std::string>(s);}}},
-      {{"source,S", "source file"}, {wex::cmdline::STRING, [&](const std::any& s) {
-        m_data.control(wex::control_data().command(":so " + std::any_cast<std::string>(s)));}}},
-      {{"tag,t", "start at tag"}, {wex::cmdline::STRING, [&](const std::any& s) {
+
+      {{"readonly,R", "readonly mode"}, 
+        [&](bool on) {
+        if (on) m_data.flags(
+          wex::stc_data::window_t().set(wex::stc_data::WIN_READ_ONLY), 
+          wex::control_data::OR);}}},
+
+     {{{"command,c", "vi command"}, 
+       {wex::cmdline::STRING, [&](const std::any& s) {
+        m_data.control(
+          wex::control_data().command(std::any_cast<std::string>(s)));}}},
+
+      {{"source,S", "source file"}, 
+       {wex::cmdline::STRING, [&](const std::any& s) {
+        m_data.control(
+          wex::control_data().command(":so " + std::any_cast<std::string>(s)));}}},
+
+      {{"tag,t", "start at tag"}, 
+       {wex::cmdline::STRING, [&](const std::any& s) {
         m_tag = std::any_cast<std::string>(s);}}},
-      {{"tagfile,u", "use tagfile"}, {wex::cmdline::STRING, [&](const std::any& s) {
+
+      {{"tagfile,u", "use tagfile"}, 
+       {wex::cmdline::STRING, [&](const std::any& s) {
         wex::ctags::open(std::any_cast<std::string>(s));}}},
-      {{"scriptout,w", "script out"}, {wex::cmdline::STRING, [&](const std::any& s) {
+      
+      {{"scriptin,s", "script in"}, 
+       {wex::cmdline::STRING, [&](const std::any& s) {
+         m_scriptin = std::any_cast<std::string>(s);}}},
+              
+      {{"scriptout,w", "script out append"}, 
+       {wex::cmdline::STRING, [&](const std::any& s) {
         m_scriptout = std::any_cast<std::string>(s);}}}},
-      //{{"append,W", "script out append"}, {wex::cmdline::STRING, [&](const std::any& s) {
-      //  m_scriptout.open(std::any_cast<std::string>(s), std::ios_base::out | std::ios_base::app);}}}},
-     {{"files", "input file[:line number][:column number]\n"
-        "or executable file if -d was specified"}, [&](const std::vector<std::string> & v) {
-        for (const auto & f : v) m_files.emplace_back(f);}}).parse(argc, argv) || exit)
+
+     {{"files", 
+       "input file[:line number][:column number]\n"
+        "or executable file if -d was specified"}, 
+      [&](const std::vector<std::string> & v) {
+        for (const auto & f : v) 
+          m_files.emplace_back(f);}}).parse(argc, argv) || exit)
   {
     return false;
   }

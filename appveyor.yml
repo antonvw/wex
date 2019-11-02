@@ -36,5 +36,5 @@ build_script:
 test: OFF
 
 artifacts:
-  # See common.cmake.
-  - path: 'build\syncped-v20.4.0vs-%YEAR%.zip'
+  # In common.cmake the artifact is generated.
+  - path: 'build\syncped-v20.4.0.zip'

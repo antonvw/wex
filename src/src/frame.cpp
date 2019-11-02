@@ -116,9 +116,7 @@ wex::frame::frame(const window_data& data)
         wxDEFAULT_FRAME_STYLE: data.style(), 
       data.name().empty() ? "frame": data.name())
 {
-#if wxUSE_DRAG_AND_DROP
   SetDropTarget(new file_droptarget(this));
-#endif
   
   win_data = config(win_frame).get(std::vector<int> {
     data.size().GetWidth(), 
@@ -282,7 +280,7 @@ wxStatusBar* wex::frame::OnCreateStatusBar(
   const wxString& name)
 {
   m_statusbar = new wex::statusbar(this, 
-    wex::window_data().id(id).style(style).name(name.ToStdString()));
+    wex::window_data().id(id).style(style).name(name));
   m_statusbar->SetFieldsCount(number);
   return m_statusbar;
 }

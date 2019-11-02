@@ -860,19 +860,27 @@ bool wex::sort_selection(
       
       if (start_pos == -1)
       {
-        log("sort_selection rectangle") << start_pos;
+        log("sort_selection rectangle start_pos") << start_pos;
         return false;
       }
   
-      stc->BeginUndoAction();
       std::string selection;
 
       for (int i = 0; i < stc->GetSelections(); i++)
       {
         auto start = stc->GetSelectionNStart(i);
         auto end = stc->GetSelectionNEnd(i);
+
+        if (start == end)
+        {
+          log("sort_selection rectangle start equals end") << start;
+          return false;
+        }
+        
         selection += stc->GetTextRange(start, end) + "\n";
       }
+
+      stc->BeginUndoAction();
 
       const auto nr_cols = 
         stc->GetColumn(stc->GetSelectionEnd()) - 

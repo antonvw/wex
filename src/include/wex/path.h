@@ -31,6 +31,16 @@ namespace wex
 
     typedef std::bitset<2> status_t;
     
+    /// Static interface.
+    
+    /// Returns current path.
+    static std::string current();
+
+    /// Sets current path.
+    static void current(const std::string& path);
+    
+    /// Others.
+
     /// Default constructor taking a path.
     /// If path is empty, it saves the current path, 
     /// and when destructed restores it to current.
@@ -70,13 +80,6 @@ namespace wex
     /// Appends path.
     path& append(const path& path);
 
-    /// Returns current path.
-    static std::string current() {
-      return std::filesystem::current_path().string();};
-
-    /// Sets current path.
-    static void current(const std::string& path);
-
     /// Returns the internal path.
     // (cannot be auto)
     const std::filesystem::path& data() const {return m_path;};
@@ -106,7 +109,7 @@ namespace wex
     bool is_absolute() const {return m_path.is_absolute();};
     
     /// Returns true if this path (stat) is readonly.
-    bool is_readonly() const {return m_Stat.is_readonly();};
+    bool is_readonly() const {return m_stat.is_readonly();};
 
     /// Returns true if this path is relative.
     bool is_relative() const {return m_path.is_relative();};
@@ -138,7 +141,7 @@ namespace wex
     path& replace_filename(const std::string& filename);
 
     /// Returns the stat.
-    const auto & stat() const {return m_Stat;};
+    const auto & stat() const {return m_stat;};
 
     /// Returns the path as a string.
     const auto string() const {return m_path.string();};
@@ -146,7 +149,7 @@ namespace wex
     std::filesystem::path m_path;
     std::string m_path_original;
     wex::lexer m_lexer;
-    file_stat m_Stat;
+    file_stat m_stat;
     status_t m_status {0};
   };
 };

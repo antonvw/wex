@@ -54,6 +54,8 @@ namespace wex
     /// Returns the value of this property.
     const auto & value() const {return m_value;};
   private:
-    std::string m_name, m_value;
+    std::string 
+      m_name, 
+      m_value;
   };
 };

@@ -47,36 +47,49 @@ private:
     WRITE,
   };
 
-  virtual void on_command_item_dialog(
+  void on_command_item_dialog(
     wxWindowID dialogid, const wxCommandEvent& event) override;
-  virtual wex::stc* open_file(
+
+  wex::stc* open_file(
     const wex::path& filename, 
     const wex::stc_data& data = wex::stc_data()) override;
+
   void statusbar_clicked(const std::string& pane) override;
 
   void append_text(
     wex::stc* stc, 
     const std::string& text,
     data_mode_t mode);
+
   void log_connection(
     wxSocketBase* sock,
     bool accepted = true,
     bool show_clients = true);
+
   bool setup_server();
+
   void socket_closed(wxSocketBase* sock, bool remove_from_clients);
+
   const std::string socket_details(const wxSocketBase* sock) const;
+
   void timer_dialog();
+
 #if wxUSE_TASKBARICON
   void update_taskbar();
 #endif
+
   void update_connections_pane() const;
+
   size_t write_data_to_socket(const std::string& data, wxSocketBase* client);
+
   size_t write_data_window_to_connections();
 
   std::list<wxSocketBase*> m_clients;
 
   wex::shell* m_shell;
-  wex::stc* m_data, *m_log;
+  wex::stc
+    *m_data, 
+    *m_log;
 
   wex::statistics < int > m_stats {{
     {"Messages Received", 0},

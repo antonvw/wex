@@ -135,7 +135,7 @@ wex::report::listview::listview(const listview_data& data)
 
 void wex::report::listview::build_popup_menu(wex::menu& menu)
 {
-  bool exists = true, is_folder = false, is_make = false, read_only = false;
+  bool exists = true, is_folder = false, is_make = false, readonly = false;
 
   if (GetSelectedItemCount() >= 1)
   {
@@ -143,7 +143,7 @@ void wex::report::listview::build_popup_menu(wex::menu& menu)
 
     exists = item.get_filename().stat().is_ok();
     is_folder = item.get_filename().dir_exists();
-    read_only = item.get_filename().stat().is_readonly();
+    readonly = item.get_filename().stat().is_readonly();
     is_make = item.get_filename().lexer().scintilla_lexer() == "makefile";
   }
 
@@ -209,7 +209,7 @@ void wex::report::listview::build_popup_menu(wex::menu& menu)
       menu.append(ID_TOOL_REPORT_FIND, 
         ellipsed(m_frame->find_in_files_title(ID_TOOL_REPORT_FIND)));
 
-      if (!read_only)
+      if (!readonly)
       {
         menu.append(ID_TOOL_REPLACE, 
           ellipsed(m_frame->find_in_files_title(ID_TOOL_REPLACE)));

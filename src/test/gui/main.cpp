@@ -51,7 +51,7 @@ namespace wex
         }
       
         m_frame = new managed_frame();
-        m_StatusBar = m_frame->setup_statusbar({
+        m_statusbar = m_frame->setup_statusbar({
           {"Pane0"}, // the order of panes is tested
           {"Pane1"},
           {"Pane2"},
@@ -75,11 +75,11 @@ namespace wex
       }
       
       static auto* frame() {return m_frame;};
-      static auto* get_statusbar() {return m_StatusBar;};
+      static auto* get_statusbar() {return m_statusbar;};
       static auto* get_stc() {return m_stc;};
     private:
       inline static managed_frame* m_frame = nullptr;
-      inline static statusbar* m_StatusBar = nullptr;
+      inline static statusbar* m_statusbar = nullptr;
       inline static stc* m_stc = nullptr;
     }; 
   };

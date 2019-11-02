@@ -2,7 +2,7 @@
 // Name:      test.h
 // Purpose:   Declaration of classes for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -33,7 +33,7 @@ wex::managed_frame* frame();
 /// Returns the statusbar.
 wex::statusbar* get_statusbar();
 
-/// Returns an STC.
+/// Returns an stc.
 wex::stc* get_stc();
 
 /// Processes string on shell.

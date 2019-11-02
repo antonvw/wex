@@ -37,11 +37,11 @@ namespace wex
     bool insert(const std::string& text);
 
     bool is_ascii_field() const {
-      return m_columnNo >= m_StartAsciiField && 
-             m_columnNo < m_StartAsciiField + (int)m_Hex->m_bytes_per_line;};
+      return m_column_no >= m_start_ascii_field && 
+             m_column_no < m_start_ascii_field + (int)m_hex->m_bytes_per_line;};
 
     bool is_hex_field() const {
-      return m_columnNo >= 0 && m_columnNo < m_StartAsciiField;};
+      return m_column_no >= 0 && m_column_no < m_start_ascii_field;};
 
     bool is_readonly() const {
       if (is_ascii_field())
@@ -50,7 +50,7 @@ namespace wex
       }
       else if (is_hex_field())
       {
-        if (m_line[m_columnNo] != ' ')
+        if (m_line[m_column_no] != ' ')
         {
           return false;
         }
@@ -80,26 +80,29 @@ namespace wex
   private:
     int buffer_index() const;
     int convert(int offset) const {
-      return (m_lineNo << 4) + offset;};
+      return (m_line_no << 4) + offset;};
     int get_ascii_field() const {
-      if (m_line[m_columnNo] != ' ')
+      if (m_line[m_column_no] != ' ')
       {
-        const int offset = m_columnNo / m_Hex->m_each_hex_field;
-        return m_StartAsciiField + offset;
+        const int offset = m_column_no / m_hex->m_each_hex_field;
+        return m_start_ascii_field + offset;
       }
       return wxSTC_INVALID_POSITION;};
+
     int get_hex_field() const {
-      const int offset = m_columnNo - m_StartAsciiField;
-      return m_Hex->m_each_hex_field * offset;};
+      const int offset = m_column_no - m_start_ascii_field;
+      return m_hex->m_each_hex_field * offset;};
     
-    const int m_StartAsciiField;
+    const int m_start_ascii_field;
 
     std::string m_line;
-    int m_columnNo, m_lineNo;
     
-    hexmode* m_Hex;
+    int 
+      m_column_no, 
+      m_line_no;
+    
+    hexmode* m_hex;
   };
 
   char printable(unsigned int c, stc* stc);
 };
-

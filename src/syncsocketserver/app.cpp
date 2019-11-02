@@ -41,6 +41,15 @@
   #undef wxUSE_TASKBARICON
 #endif
 
+class defaults : public wex::config_defaults
+{
+public:
+  defaults() 
+  : wex::config_defaults({
+    {"Port", wex::item::TEXTCTRL_INT, (long)3000},
+    {"Remote Port", wex::item::TEXTCTRL_INT, (long)3000}}) {;};
+};
+
 const auto id_socket_server = wxWindow::NewControlId();
 
 wxIMPLEMENT_APP(app);
@@ -51,10 +60,7 @@ bool app::OnInit()
 
   if (
     !wex::app::OnInit() ||
-    !wex::cmdline(
-     {},
-     {{{"logfile,D", "sets log file"}, {wex::cmdline::STRING, [&](const std::any& s) {}}}
-      }).parse(argc, argv))
+    !wex::cmdline().parse(argc, argv))
   {
     return false;
   }
@@ -73,30 +79,30 @@ frame::frame()
         wex::stc_data::window_t().set(wex::stc_data::WIN_NO_INDICATOR))))
   , m_shell(new wex::shell)
 {
-  const auto id_clear_log = wxWindow::NewControlId();
-  const auto id_clear_statistics = wxWindow::NewControlId();
-  const auto id_client_buffer_size  = wxWindow::NewControlId();
-  const auto id_client_answer_command = wxWindow::NewControlId();
-  const auto id_client_answer_echo = wxWindow::NewControlId();
-  const auto id_client_answer_file = wxWindow::NewControlId();
-  const auto id_client_answer_off = wxWindow::NewControlId();
-  const auto id_client_log_data = wxWindow::NewControlId();
-  const auto id_client_log_data_count_only = wxWindow::NewControlId();
-  const auto id_hide = wxWindow::NewControlId();
-  const auto id_recent_file_menu = wxWindow::NewControlId();
-  const auto id_server_config = wxWindow::NewControlId();
-  const auto id_remote_server_connect = wxWindow::NewControlId();
-  const auto id_remote_server_disconnect = wxWindow::NewControlId();
-  const auto id_remote_server_config = wxWindow::NewControlId();
-  const auto id_socket_remoteclient = wxWindow::NewControlId();
-  const auto id_socket_client = wxWindow::NewControlId();
-  const auto id_timer_stop = wxWindow::NewControlId();
-  const auto id_timer_start = wxWindow::NewControlId();
-  const auto id_view_data = wxWindow::NewControlId();
-  const auto id_view_log = wxWindow::NewControlId();
-  const auto id_view_shell  = wxWindow::NewControlId();
-  const auto id_view_statistics = wxWindow::NewControlId();
-  const auto id_write_data = wxWindow::NewControlId();
+  const auto id_clear_log = NewControlId();
+  const auto id_clear_statistics = NewControlId();
+  const auto id_client_buffer_size  = NewControlId();
+  const auto id_client_answer_command = NewControlId();
+  const auto id_client_answer_echo = NewControlId();
+  const auto id_client_answer_file = NewControlId();
+  const auto id_client_answer_off = NewControlId();
+  const auto id_client_log_data = NewControlId();
+  const auto id_client_log_data_count_only = NewControlId();
+  const auto id_hide = NewControlId();
+  const auto id_recent_file_menu = NewControlId();
+  const auto id_server_config = NewControlId();
+  const auto id_remote_server_connect = NewControlId();
+  const auto id_remote_server_disconnect = NewControlId();
+  const auto id_remote_server_config = NewControlId();
+  const auto id_socket_remoteclient = NewControlId();
+  const auto id_socket_client = NewControlId();
+  const auto id_timer_stop = NewControlId();
+  const auto id_timer_start = NewControlId();
+  const auto id_view_data = NewControlId();
+  const auto id_view_log = NewControlId();
+  const auto id_view_shell  = NewControlId();
+  const auto id_view_statistics = NewControlId();
+  const auto id_write_data = NewControlId();
 
   SetIcon(wxICON(app));
 
@@ -106,7 +112,7 @@ frame::frame()
 
   Show(); // otherwise statusbar is not placed correctly
 
-  // Statusbar setup before STC construction.
+  // Statusbar setup before stc construction.
   setup_statusbar({
     {"PaneConnections", 75, "Number of local, remote connections"},
     {"PaneTimer", 75, "Repeat timer"},
@@ -203,7 +209,7 @@ frame::frame()
   auto* menuHelp = new wex::menu();
   menuHelp->append(wxID_ABOUT);
 
-  wxMenuBar* menuBar = new wxMenuBar();
+  auto* menuBar = new wxMenuBar();
   menuBar->Append(menuFile, wxGetStockLabel(wxID_FILE));
   menuBar->Append(menuView, "&View");
   menuBar->Append(menuServer, "&Server");
@@ -250,7 +256,7 @@ frame::frame()
     m_shell->DocumentEnd();
   }
 
-  get_toolbar()->add_controls(false); // no realize yet
+  get_toolbar()->add_standard(false); // no realize yet
   get_toolbar()->add_tool(
     id_write_data,
     std::string(),
@@ -265,7 +271,8 @@ frame::frame()
     "Clear log");
   get_toolbar()->Realize();
     
-  get_options_toolbar()->add_controls();
+  get_find_toolbar()->add_find();
+  get_options_toolbar()->add_checkboxes_standard();
   
   manager().Update();
   
@@ -377,6 +384,7 @@ frame::frame()
     Close(false);}, id_hide);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    defaults use;
     // Configuring only possible if no client is active,
     // otherwise just show settings readonly mode.
     wex::item_dialog({
@@ -417,13 +425,14 @@ frame::frame()
     }, id_remote_server_connect);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    defaults use;
     // Configuring only possible if server is stopped,
     // otherwise just show settings readonly mode.
-    wex::item_dialog({
-        {"Hostname", std::string(), wex::item::TEXTCTRL, wex::control_data().is_required(true)},
-        // Well known ports are in the range from 0 to 1023.
-        // Just allow here for most flexibility.
-        {"Port", 1, 65536}},
+    wex::item_dialog(
+      {{"Hostname", std::string(), wex::item::TEXTCTRL, wex::control_data().is_required(true)},
+       // Well known ports are in the range from 0 to 1023.
+       // Just allow here for most flexibility.
+       {"Port", 1, 65536}},
       wex::window_data().
         title("Server Config").
         button(m_server == nullptr ? wxOK | wxCANCEL: wxCANCEL)).ShowModal();
@@ -557,6 +566,7 @@ frame::frame()
               
             case answer_t::ECHO: write_data_to_socket(text, sock); 
               break;
+
             case answer_t::FILE: 
               if (const auto& b(m_data->GetTextRaw()); b.length() > 0)
               {
@@ -564,6 +574,7 @@ frame::frame()
                 write_data_to_socket(data, sock); 
               }
               break;
+
             default:
               break;
           }
@@ -1046,7 +1057,7 @@ taskbar_icon::taskbar_icon(frame* frame)
     m_frame->Close(true);}, wxID_EXIT);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_frame->Show();}, ID_OPEN);
+    m_frame->Show();}, id_open);
 
   Bind(wxEVT_TASKBAR_LEFT_DCLICK, [=](wxTaskBarIconEvent&) {
     m_frame->Show();});
@@ -1057,8 +1068,8 @@ taskbar_icon::taskbar_icon(frame* frame)
 
 wxMenu *taskbar_icon::CreatePopupMenu()
 {
-  wex::menu* menu = new wex::menu;
-  menu->Append(ID_OPEN, "Open");
+  auto* menu = new wex::menu;
+  menu->Append(id_open, "Open");
   menu->append_separator();
   menu->Append(wxID_EXIT);
 

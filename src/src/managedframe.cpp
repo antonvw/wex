@@ -86,20 +86,22 @@ wex::managed_frame::managed_frame(size_t maxFiles, const window_data& data)
   : frame(data)
   , m_debug(new debug(this))
   , m_file_history(maxFiles, wxID_FILE1)
-  , m_findbar(new find_toolbar(this))
-  , m_optionsbar(new options_toolbar(this))
+  , m_findbar(new toolbar(this))
+  , m_optionsbar(new toolbar(this))
   , m_toolbar(new toolbar(this))
   , m_toggled_panes({
-    {{"FINDBAR", _("&Findbar").ToStdString()}, ID_VIEW_LOWEST + 1},
-    {{"OPTIONSBAR", _("&Optionsbar").ToStdString()}, ID_VIEW_LOWEST + 2},
-    {{"TOOLBAR", _("&Toolbar").ToStdString()}, ID_VIEW_LOWEST + 3},
-    {{"PROCESS", _("&Process").ToStdString()}, ID_VIEW_LOWEST + 4}})
+    {{"FINDBAR", _("&Findbar")}, ID_VIEW_LOWEST + 1},
+    {{"OPTIONSBAR", _("&Optionsbar")}, ID_VIEW_LOWEST + 2},
+    {{"TOOLBAR", _("&Toolbar")}, ID_VIEW_LOWEST + 3},
+    {{"PROCESS", _("&Process")}, ID_VIEW_LOWEST + 4}})
 {
   m_manager.SetManagedWindow(this);
+
   add_toolbar_pane(m_toolbar, "TOOLBAR", _("Toolbar"));
   add_toolbar_pane(m_findbar,  "FINDBAR", _("Findbar"));
   add_toolbar_pane(m_optionsbar, "OPTIONSBAR", _("Optionsbar"));
   add_toolbar_pane(create_ex_panel(), "VIBAR");
+
   m_manager.Update();
   
   Bind(wxEVT_AUI_PANE_CLOSE, [=](wxAuiManagerEvent& event) {
@@ -108,7 +110,7 @@ wex::managed_frame::managed_frame(size_t maxFiles, const window_data& data)
     m_manager.Update();
     // If this pane is a toolbar pane, it might have a checkbox,
     // update that as well.
-    m_optionsbar->update(info->name, false);
+    m_optionsbar->set_checkbox(info->name, false);
     });
   
   Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
@@ -136,7 +138,7 @@ wex::managed_frame::managed_frame(size_t maxFiles, const window_data& data)
       window_data().
         id(wxID_PREFERENCES).
         parent(this).
-        title(_("Editor Options").ToStdString()).
+        title(_("Editor Options")).
         button(wxAPPLY | wxOK | wxCANCEL));}, wxID_PREFERENCES);
       
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -234,12 +236,12 @@ void wex::managed_frame::append_panes(wxMenu* menu) const
 wxPanel* wex::managed_frame::create_ex_panel()
 {
   // An ex panel starts with small static text for : or /, then
-  // comes the ex ctrl for getting user input.
-  wxPanel* panel = new wxPanel(this);
-  wxStaticText* text = new wxStaticText(panel, wxID_ANY, " ");
+  // comes the ex textctrl for getting user input.
+  auto* panel = new wxPanel(this);
+  auto* text = new wxStaticText(panel, wxID_ANY, " ");
   m_textctrl = new textctrl(this, text, window_data().parent(panel));
   
-  wxFlexGridSizer* sizer = new wxFlexGridSizer(2);
+  auto* sizer = new wxFlexGridSizer(2);
   sizer->AddGrowableCol(1);
   sizer->Add(text, wxSizerFlags().Center());
   sizer->Add(m_textctrl, wxSizerFlags().Expand());
@@ -338,7 +340,8 @@ bool wex::managed_frame::show_pane(const std::string& pane, bool show)
   {
     show ? info.Show(): info.Hide();
     m_manager.Update();
-    m_optionsbar->update(pane, show);
+    // ignore result, e.g. VIBAR
+    m_optionsbar->set_checkbox(pane, show);
     return true;
   }
 }
@@ -475,7 +478,7 @@ wex::textctrl::textctrl(
         }
         else if (m_command.type() == ex_command::type_t::FIND)
         {
-          find_replace_data::get()->m_findStrings.set(event.GetKeyCode(), this); 
+          find_replace_data::get()->m_find_strings.set(event.GetKeyCode(), this); 
         }
         else
         {
@@ -522,7 +525,7 @@ wex::textctrl::textctrl(
     {
       m_ex->get_stc()->position_restore();
       m_ex->get_stc()->find_next(
-        GetValue().ToStdString(),
+        GetValue(),
         m_ex->search_flags(),
         m_prefix->GetLabel() == "/");
     }});
@@ -548,7 +551,7 @@ wex::textctrl::textctrl(
 
       if (m_command.type() == ex_command::type_t::FIND)
       {
-        find_replace_data::get()->set_find_string(GetValue().ToStdString());
+        find_replace_data::get()->set_find_string(GetValue());
       }
       else
       {

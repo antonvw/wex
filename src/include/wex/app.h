@@ -39,12 +39,12 @@ namespace wex
     /// Other methods
     
     /// Returns the catalog dir.
-    const auto & get_catalog_dir() const {return m_CatalogDir;};
+    const auto & get_catalog_dir() const {return m_catalog_dir;};
     
     /// Returns the locale.
-    const auto & get_locale() const {return m_Locale;};
+    const auto & get_locale() const {return m_locale;};
   private:
-    std::string m_CatalogDir;
-    wxLocale m_Locale;
+    std::string m_catalog_dir;
+    wxLocale m_locale;
   };
 };

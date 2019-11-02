@@ -121,25 +121,30 @@ wex::ex::ex(wex::stc* stc)
     {":chd", [&](const std::string& command) {
       if (command.find(" ") == std::string::npos) return true;
       wex::path::current(wex::firstof(command, " ")); return true;}},
-    {":close", [&](const std::string& command) {POST_COMMAND( wxID_CLOSE ) return true;}},
+    {":close", [&](const std::string& command) 
+      {POST_COMMAND( wxID_CLOSE ) return true;}},
     {":de", [&](const std::string& command) {
       m_frame->get_debug()->execute(wex::firstof(command, " "), get_stc());
       return true;}},
-    {":e", [&](const std::string& command) {POST_COMMAND( wxID_OPEN ) return true;}},
+    {":e", [&](const std::string& command) 
+      {POST_COMMAND( wxID_OPEN ) return true;}},
     {":f", [&](const std::string& command) {
       std::stringstream text;
       text << get_stc()->get_filename().fullname() 
            << " line " << get_stc()->GetCurrentLine() + 1 
            << " of " << get_stc()->GetLineCount() 
            << " --" << 100 * 
-                (get_stc()->GetCurrentLine() + 1) / get_stc()->GetLineCount() << "--%" 
+              (get_stc()->GetCurrentLine() + 1) / 
+               get_stc()->GetLineCount() << "--%" 
            << " level " << (get_stc()->GetFoldLevel(
-                 get_stc()->GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK)
-                 - wxSTC_FOLDLEVELBASE;
+               get_stc()->GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK)
+               - wxSTC_FOLDLEVELBASE;
       m_frame->show_ex_message(text.str()); return true;}},
-    {":grep", [&](const std::string& command) {POST_COMMAND( ID_TOOL_REPORT_FIND ) return true;}},
+    {":grep", [&](const std::string& command) 
+      {POST_COMMAND( ID_TOOL_REPORT_FIND ) return true;}},
     {":gt", [&](const std::string& command) {return get_stc()->link_open();}},
-    {":help", [&](const std::string& command) {POST_COMMAND( wxID_HELP ) return true;}},
+    {":help", [&](const std::string& command) 
+      {POST_COMMAND( wxID_HELP ) return true;}},
     {":map", [&](const std::string& command) {
       switch (get_command_arg(command))
       {
@@ -154,13 +159,17 @@ wex::ex::ex(wex::stc* stc)
         case wex::command_arg_t::NONE: 
           show_dialog("Maps", 
             "[String map]\n" +
-            report_container<std::string, vi_macros::strings_map_t>(m_macros.get_map()) +
+            report_container<std::string, vi_macros::strings_map_t>(
+              m_macros.get_map()) +
             "[Key map]\n" +
-            report_container<int, wex::vi_macros::keys_map_t>(m_macros.get_keys_map()) +
+            report_container<int, wex::vi_macros::keys_map_t>(
+              m_macros.get_keys_map()) +
             "[Alt key map]\n" +
-            report_container<int, wex::vi_macros::keys_map_t>(m_macros.get_keys_map(vi_macros::KEY_ALT)) +
+            report_container<int, wex::vi_macros::keys_map_t>(
+              m_macros.get_keys_map(vi_macros::KEY_ALT)) +
             "[Control key map]\n" +
-            report_container<int, wex::vi_macros::keys_map_t>(m_macros.get_keys_map(vi_macros::KEY_CONTROL)), 
+            report_container<int, wex::vi_macros::keys_map_t>(
+              m_macros.get_keys_map(vi_macros::KEY_CONTROL)), 
             true);
           return true;
         break;
@@ -172,11 +181,16 @@ wex::ex::ex(wex::stc* stc)
               m_macros.set_map(name, value);return true;});
       }
       return false;}},
-    {":new", [&](const std::string& command) {POST_COMMAND( wxID_NEW ) return true;}},
-    {":print", [&](const std::string& command) {get_stc()->print(command.find(" ") == std::string::npos); return true;}},
-    {":pwd", [&](const std::string& command) {wex::log::status(wex::path::current()); return true;}},
-    {":q!", [&](const std::string& command) {POST_CLOSE( wxEVT_CLOSE_WINDOW, false ) return true;}},
-    {":q", [&](const std::string& command) {POST_CLOSE( wxEVT_CLOSE_WINDOW, true ) return true;}},
+    {":new", [&](const std::string& command) 
+      {POST_COMMAND( wxID_NEW ) return true;}},
+    {":print", [&](const std::string& command) 
+      {get_stc()->print(command.find(" ") == std::string::npos); return true;}},
+    {":pwd", [&](const std::string& command) 
+      {wex::log::status(wex::path::current()); return true;}},
+    {":q!", [&](const std::string& command) 
+     {POST_CLOSE( wxEVT_CLOSE_WINDOW, false ) return true;}},
+    {":q", [&](const std::string& command) 
+      {POST_CLOSE( wxEVT_CLOSE_WINDOW, true ) return true;}},
     {":reg", [&](const std::string& command) {
       const lexer_props l;
       std::string output(l.make_section("Named buffers"));
@@ -188,7 +202,8 @@ wex::ex::ex(wex::stc* stc)
       output += l.make_key("%", get_command().get_stc()->get_filename().fullname());
       show_dialog("Registers", output, true);
       return true;}},
-    {":sed", [&](const std::string& command) {POST_COMMAND( ID_TOOL_REPLACE ) return true;}},
+    {":sed", [&](const std::string& command) 
+      {POST_COMMAND( ID_TOOL_REPLACE ) return true;}},
     {":set", [&](const std::string& command) {
       const bool modeline = command.back() == '*';
       std::string text(command.substr(4, 
@@ -234,7 +249,8 @@ wex::ex::ex(wex::stc* stc)
          {{"sws", "showwhitespace"}, [&](bool on){
            if (!modeline) 
            {
-             config(_("Whitespace visible")).set(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);
+             config(_("Whitespace visible")).set(
+               on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);
              config(_("End of line")).set(on);
            }
            else
@@ -246,28 +262,36 @@ wex::ex::ex(wex::stc* stc)
            if (!modeline) config(_("Use tabs")).set(on);
            else get_stc()->SetUseTabs(on);}},
          {{"wm", "wrapmargin"}, [&](bool on){
-           if (!modeline) config(_("Wrap line")).set(on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);
+           if (!modeline) config(_("Wrap line")).set(
+             on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);
            else get_stc()->SetWrapMode(wxSTC_WRAP_CHAR);}},
          {{"ws", "wrapscan", "1"}, [&](bool on){
            config(_("Wrap scan")).set(on);}}
         },
         // options
-        {{{"dir", "dir", wex::path::current()}, {cmdline::STRING, [&](const std::any& val) {
+        {{{"dir", "dir", wex::path::current()}, 
+            {cmdline::STRING, [&](const std::any& val) {
            wex::path::current(std::any_cast<std::string>(val));}}},
-         {{"ec", "edgecolumn", std::to_string(get_stc()->GetEdgeColumn())}, {cmdline::INT, [&](const std::any& val) {
+         {{"ec", "edgecolumn", std::to_string(get_stc()->GetEdgeColumn())}, 
+            {cmdline::INT, [&](const std::any& val) {
            if (!modeline) config(_("Edge column")).set(std::any_cast<int>(val));
            else get_stc()->SetEdgeColumn(std::any_cast<int>(val));}}},
-         {{"report", "report", std::to_string(config("Reported lines").get(5))}, {cmdline::INT, [&](const std::any& val) {
+         {{"report", "report", std::to_string(config("Reported lines").get(5))}, 
+            {cmdline::INT, [&](const std::any& val) {
            config("Reported lines").set(std::any_cast<int>(val));}}},
-         {{"sw", "shiftwidth", std::to_string(get_stc()->GetIndent())}, {cmdline::INT, [&](const std::any& val) {
+         {{"sw", "shiftwidth", std::to_string(get_stc()->GetIndent())}, 
+            {cmdline::INT, [&](const std::any& val) {
            if (!modeline) config(_("Indent")).set(std::any_cast<int>(val));
            else get_stc()->SetIndent(std::any_cast<int>(val));}}},
          {{"sy", "syntax"}, {cmdline::STRING, [&](const std::any& val) {
            if (std::any_cast<std::string>(val) != "off") 
-             get_stc()->get_lexer().set(std::any_cast<std::string>(val), true); // allow folding
+             get_stc()->get_lexer().set(
+               std::any_cast<std::string>(val), 
+               true); // allow folding
            else              
              get_stc()->get_lexer().clear();}}},
-         {{"ts", "tabstop", std::to_string(get_stc()->GetTabWidth())}, {cmdline::INT, [&](const std::any& val) {
+         {{"ts", "tabstop", std::to_string(get_stc()->GetTabWidth())}, 
+            {cmdline::INT, [&](const std::any& val) {
            if (!modeline) config(_("Tab width")).set(std::any_cast<int>(val));
            else get_stc()->SetTabWidth(std::any_cast<int>(val));}}}
         },
@@ -296,39 +320,46 @@ wex::ex::ex(wex::stc* stc)
       }
       log::verbose(":set") << text;
       return true;}},
-    {":so", [&](const std::string& command) {
-      if (command.find(" ") == std::string::npos) return false;
-      wex::path path(wex::firstof(command, " "));
+    {":so", [&](const std::string& cmd) {
+      if (cmd.find(" ") == std::string::npos) return false;
+      wex::path path(wex::firstof(cmd, " "));
       if (path.is_relative())
       {
         path.make_absolute();
       }
-      std::ifstream ifs(path.data());
-      if (!ifs.is_open()) return false;
-      int i = 0;
-      for (std::string line; std::getline(ifs, line); )
+      if (!path.file_exists()) return false;
+      wex::file script(path.data());
+      if (const auto buffer(script.read()); buffer != nullptr)
       {
-        if (!line.empty())
+        wex::tokenizer tkz(*buffer, "\r\n");
+        int i = 0;
+        while (tkz.has_more_tokens())
         {
-          if (line == command)
+          const std::string line(tkz.get_next_token());
+          if (!line.empty())
           {
-            log::verbose("recursive line") << i + 1;
-            return false;
+            if (line == cmd)
+            {
+              log("recursive line") << i + 1 << line;
+              return false;
+            }
+            else if (!command(line))
+            {
+              log("command failed line") << i + 1 << line;
+              return false;
+            }
           }
-          else if (!ex::command(line))
-          {
-            log::verbose("command error line") << i + 1;
-            return false;
-          }
+          i++;
         }
-        i++;
       }
       return true;}},
     {":syntax", [&](const std::string& command) {
       if (wxString(command).EndsWith("on"))
       {
         wex::lexers::get()->restore_theme();
-        get_stc()->get_lexer().set(get_stc()->get_filename().lexer().display_lexer(), true); // allow folding
+        get_stc()->get_lexer().set(
+          get_stc()->get_filename().lexer().display_lexer(), 
+          true); // allow folding
       }
       else if (wxString(command).EndsWith("off"))
       {
@@ -357,9 +388,11 @@ wex::ex::ex(wex::stc* stc)
         tkz.get_next_token(); // skip :unm
         switch (get_command_arg(command))
         {
-          case wex::command_arg_t::INT: m_macros.set_key_map(tkz.get_next_token(), ""); break; 
+          case wex::command_arg_t::INT: m_macros.set_key_map(
+            tkz.get_next_token(), ""); break; 
           case wex::command_arg_t::NONE: break;
-          case wex::command_arg_t::OTHER: m_macros.set_map(tkz.get_next_token(), ""); break;
+          case wex::command_arg_t::OTHER: m_macros.set_map(
+            tkz.get_next_token(), ""); break;
         }
       }
       return true;}},
@@ -451,7 +484,7 @@ bool wex::ex::command_address(const std::string& command)
 {
   auto rest(command);
   std::string range_str, cmd;
-  bool addr1 = false; // single address
+  bool is_1addr = false; // single address
 
   if (rest.compare(0, 5, "'<,'>") == 0)
   {
@@ -468,29 +501,48 @@ bool wex::ex::command_address(const std::string& command)
   { 
     marker_and_register_expansion(this, rest);
     
-    const std::string addr("[0-9\\.\\$\\+\\-]+"); // addr (normal)
-    const std::string addrs("[\\?/].*?[\\?/]"); // addr search, non-greedy!
-    const std::string addrm("'[a-z]"); // addr using marker
-    const std::string cmd_group1("([aikrz=]|pu)(.*)"); // 1 addr command
-    const std::string cmd_group2("([cdgjmpsStvywy<>\\!&~])(.*)"); // 2 addr command
+    // Addressing in ex.
+    const std::string addr(
+      // (1) . (2) $ (3) decimal number, + or - (7)
+      "[\\.\\$0-9\\+\\-]+|"
+      // (4) marker
+      "'[a-z]|"
+      // (5) (6) regex find, non-greedy!
+      "[\\?/].*?[\\?/]");
+
+    // Command Descriptions in ex.
+    // 1addr commands
+    const std::string cmds_1addr(
+      "(append|"
+       "insert|"
+       "mark|ma|"
+       "pu|"
+       "read|"
+       "[aikrz=])(.*)");
+
+    // 2addr commands
+    const std::string cmds_2addr(
+      "(change|"
+       "copy|co|"
+       "delete|"
+       "global|"
+       "join|"
+       "list|"
+       "move|"
+       "number|nu|"
+       "print|"
+       "substitute|"
+       "write|"
+       "yank|ya|"
+       "[cdgjlmpsStvwy<>\\!&~@#])(.*)");
 
     if (std::vector <std::string> v;
-      // a % address range
-      match("^%" + cmd_group2, rest, v) == 2 ||
-      // addr2 search
-      match("^(" + addrs + ")(," + addrs + ")" + cmd_group2, rest, v) == 4 ||
-      // addr1 search
-      match("^(" + addrs + ")" + cmd_group1, rest, v) == 3 ||
-      // addr2 markers
-      match("^(" + addrm + ")(," + addrm + ")" + cmd_group2, rest, v) == 4 ||
-      match("^(" + addr  + ")(," + addrm + ")" + cmd_group2, rest, v) == 4 ||
-      match("^(" + addrm + ")(," +  addr + ")" + cmd_group2, rest, v) == 4 ||
-      // addr1 marker
-      match("^(" + addrm + ")" + cmd_group1, rest, v) == 3 ||
-      // addr1
-      match("^(" + addr + ")?" + cmd_group1, rest, v) == 3 ||
-      // addr2
-      match("^(" + addr + ")?(," + addr + ")?" + cmd_group2, rest, v) == 4)
+      // 2addr % range
+      match("^%" + cmds_2addr, rest, v) == 2 ||
+      // 1addr (or none)
+      match("^(" + addr + ")?" + cmds_1addr, rest, v) == 3 ||
+      // 2addr
+      match("^(" + addr + ")?(," + addr + ")?" + cmds_2addr, rest, v) == 4)
     {
       switch (v.size())
       {
@@ -499,24 +551,45 @@ bool wex::ex::command_address(const std::string& command)
           cmd = v[0];
           rest = v[1];
           break;
+
         case 3:
-          addr1 = true;
+          is_1addr = true;
           range_str = v[0];
-          cmd = v[1];
+          cmd = (v[1] == "mark" ? "k": v[1]);
           rest = trim(v[2], skip_t().set(TRIM_LEFT));
           break;
+
         case 4:
           range_str = v[0] + v[1];
-          cmd = v[2];
+
+          if (v[2].substr(0, 2) == "co")
+          {
+            cmd = "t";
+          }
+          else if (v[2].substr(0, 2) == "nu")
+          {
+            cmd = "#";
+          }
+          else
+          {
+            cmd = v[2];
+          }
+
           rest = v[3];
           break;
-        default: assert(0); break;
+
+        default: 
+          assert(0); 
+          break;
       }
     }
     else 
     {
       const auto line(address(this, rest).get_line());
-      if (line > 0) stc_data(get_stc()).control(control_data().line(line)).inject();
+
+      if (line > 0) stc_data(get_stc()).control(
+        control_data().line(line)).inject();
+
       return line > 0;
     }
     
@@ -529,14 +602,22 @@ bool wex::ex::command_address(const std::string& command)
   bool r;
   info_message_t im(info_message_t::MSG_NONE);
   
-  if (addr1)
+  if (is_1addr)
   {
     switch (const address addr(this, range_str); (int)cmd[0])
     {
-    case 0: return false;
-    case 'a': return addr.append(rest);
-    case 'i': return addr.insert(rest);
-    case 'k': return !rest.empty() ? addr.marker_add(rest[0]): false;
+    case 0: 
+      return false;
+
+    case 'a': 
+      return addr.append(rest);
+
+    case 'i': 
+      return addr.insert(rest);
+  
+    case 'k': 
+      return !rest.empty() ? addr.marker_add(rest[0]): false;
+  
     case 'p': 
       if (cmd == "pu")
       { 
@@ -546,10 +627,16 @@ bool wex::ex::command_address(const std::string& command)
       {
         return false;
       }
-      break;
-    case 'r': return addr.read(rest);
-    case 'z': return addr.adjust_window(rest);
-    case '=': return addr.write_line_number();
+
+    case 'r': 
+      return addr.read(rest);
+
+    case 'z': 
+      return addr.adjust_window(rest);
+
+    case '=': 
+      return addr.write_line_number();
+
     default:
       log::status("Unknown address command") << cmd;
       return false;
@@ -559,27 +646,44 @@ bool wex::ex::command_address(const std::string& command)
   {
     switch (addressrange range(this, range_str); (int)cmd[0])
     {
-    case 0: return false;
-    case 'c': return range.change(rest);
-    case 'd': r = range.erase(); im = info_message_t::DEL; break;
+    case 0: 
+      return false;
+
+    case 'c': 
+      return range.change(rest);
+
+    case 'd': r = range.erase(); 
+      im = info_message_t::DEL; 
+      break;
+
     case 'v':
-    case 'g': return range.global(rest, cmd[0] == 'v');
-    case 'j': return range.join();
-    case 'm': r = range.move(address(this, rest)); im = info_message_t::MOVE; break;
+    case 'g': 
+      return range.global(rest, cmd[0] == 'v');
+
+    case 'j': 
+      return range.join();
+
+    case 'm': r = range.move(address(this, rest)); 
+      im = info_message_t::MOVE; 
+      break;
+
+    case 'l': 
     case 'p': 
-      if (get_stc()->GetName() != "Print")
-      {
-        return range.print(rest);
-      }
-      else
-      {
-        return false;
-      }
+      return (get_stc()->GetName() != "Print" ?
+        range.print(rest): false);
+
     case 's':
     case '&':
-    case '~': return range.substitute(rest, cmd[0]);
-    case 'S': return range.sort(rest);
-    case 't': r = range.copy(address(this, rest)); im = info_message_t::COPY; break;
+    case '~': 
+      return range.substitute(rest, cmd[0]);
+
+    case 'S': 
+      return range.sort(rest);
+
+    case 't': r = range.copy(address(this, rest)); 
+      im = info_message_t::COPY; 
+      break;
+
     case 'w': 
       if (!rest.empty())
       {
@@ -590,10 +694,30 @@ bool wex::ex::command_address(const std::string& command)
         POST_COMMAND( wxID_SAVE )
         return true;
       }
-    case 'y': r = range.yank(rest.empty() ? '0': (char)rest[0]); im = info_message_t::YANK; break;
-    case '>': return range.shift_right();
-    case '<': return range.shift_left();
-    case '!': return range.escape(rest);
+  
+    case 'y': 
+      r = range.yank(rest.empty() ? 
+        '0': 
+        (char)rest[0]); 
+      im = info_message_t::YANK; 
+      break;
+  
+    case '>': 
+      return range.shift_right();
+
+    case '<': 
+      return range.shift_left();
+
+    case '!': 
+      return range.escape(rest);
+
+    case '@': 
+      return range.execute(rest);
+
+    case '#':
+      return (get_stc()->GetName() != "Print" ?
+        range.print("#" + rest): false);
+
     default:
       log::status("Unknown range command") << cmd;
       return false;
@@ -676,7 +800,7 @@ void wex::ex::info_message(
       default: return;
     }
 
-    m_frame->show_ex_message(wxString::Format(msg, lines - 1).ToStdString());
+    m_frame->show_ex_message(wxString::Format(msg, lines - 1));
   }
 }
 
@@ -684,12 +808,12 @@ bool wex::ex::marker_add(char marker, int line)
 {
   if (m_copy) return false;
 
-  const wex::marker lm(wex::lexers::get()->get_marker(m_MarkerSymbol));
+  const wex::marker lm(wex::lexers::get()->get_marker(m_marker_symbol));
 
   if (!lm.is_ok())
   {
     wex::log("could not find marker symbol") 
-      << m_MarkerSymbol.number() << " in lexers";
+      << m_marker_symbol.number() << " in lexers";
     return false;
   }
   
@@ -726,7 +850,7 @@ bool wex::ex::marker_add(char marker, int line)
   }
   else
   {
-    id = get_stc()->MarkerAdd(lin, m_MarkerSymbol.number());
+    id = get_stc()->MarkerAdd(lin, m_marker_symbol.number());
   }
     
   if (id == -1)

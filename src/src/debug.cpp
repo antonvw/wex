@@ -120,7 +120,7 @@ wex::debug::debug(wex::managed_frame* frame, wex::process* debug)
         if (auto* stc = m_frame->open_file(filename); stc != nullptr)
         {
           const auto line = std::stoi(v[2]) - 1;
-          const auto id = stc->MarkerAdd(line, m_markerbreakpoint.number());
+          const auto id = stc->MarkerAdd(line, m_marker_breakpoint.number());
           m_breakpoints[v[0]] = std::make_tuple(filename, id, line);
           return;
         }
@@ -134,6 +134,20 @@ wex::debug::debug(wex::managed_frame* frame, wex::process* debug)
       if (path(v[0]).is_absolute())
       {
         log::verbose("debug path") << v[0];
+          
+        if (m_path.string() == v[0] && m_process != nullptr)
+        {
+          // Debug same exe as before, so
+          // reapply all breakpoints.
+          for (auto& it: m_breakpoints)
+          {
+            m_process->write(
+              m_entry.break_set() + " " +
+              std::get<0>(it.second).string() + ":" + 
+              std::to_string(std::get<2>(it.second) + 1));
+          }
+        }
+          
         m_path = path(v[0]);
       }
       m_stdout.clear();
@@ -234,6 +248,24 @@ bool wex::debug::allow_open(const path& p) const
       p.extension(), debug_entry().extensions());
 }
 
+bool wex::debug::apply_breakpoints(stc* stc) const
+{
+  bool found = false;
+  
+  for (const auto& it: m_breakpoints)
+  {
+    if (std::get<0>(it.second) == stc->get_filename())
+    {
+      stc->MarkerAdd(
+        std::get<2>(it.second), 
+        m_marker_breakpoint.number());
+      found = true;
+    }
+  }
+  
+  return found;
+}
+
 bool wex::debug::clear_breakpoints(const std::string& text)
 {
   if (std::vector<std::string> v;
@@ -244,7 +276,7 @@ bool wex::debug::clear_breakpoints(const std::string& text)
       if (m_frame->is_open(std::get<0>(it.second)))
       {
         auto* stc = m_frame->open_file(std::get<0>(it.second));
-        stc->MarkerDeleteAll(m_markerbreakpoint.number());
+        stc->MarkerDeleteAll(m_marker_breakpoint.number());
       }
     }
 
@@ -264,9 +296,9 @@ bool wex::debug::execute(const std::string& action, wex::stc* stc)
              std::string(1, ' ') + m_entry.flags(): std::string()));
 
   if (const auto & [r, args] = get_args(action, stc);
-    (!r ||
+     !r ||
      (m_process == nullptr &&
-     (m_process = m_frame->get_process(exe)) == nullptr)))
+     (m_process = m_frame->get_process(exe)) == nullptr))
   {
      return false;
   }
@@ -390,9 +422,14 @@ void wex::debug::is_finished()
   }
 }
 
-void wex::debug::print(const std::string& variable)
+bool wex::debug::print(const std::string& variable) const
 {
-  m_process->write("print " + variable);
+  if (m_process == nullptr)
+  {
+    return false;
+  }
+  
+  return m_process->write("print " + variable);
 }
 
 void wex::debug::set_entry(const std::string& debugger)
@@ -452,22 +489,27 @@ bool wex::debug::show_dialog(frame* parent)
   return true;
 }
 
-void wex::debug::toggle_breakpoint(int line, stc* stc)
+bool wex::debug::toggle_breakpoint(int line, stc* stc)
 {
+  if (m_process == nullptr)
+  {
+    return false;
+  }
+
   for (auto& it: m_breakpoints)
   {
     if (
       line == std::get<2>(it.second) &&
       std::get<0>(it.second) == stc->get_filename().string())
     {
-      m_process->write(m_entry.break_del() + " " + it.first);
       stc->MarkerDeleteHandle(std::get<1>(it.second));
       m_breakpoints.erase(it.first);
-      return;
+      return m_process->write(m_entry.break_del() + " " + it.first);
     }
   }
 
   m_path = stc->get_filename();
-  m_process->write(m_entry.break_set() + " " +
+
+  return m_process->write(m_entry.break_set() + " " +
     stc->get_filename().string() + ":" + std::to_string(line + 1));
 }

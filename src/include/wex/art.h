@@ -27,7 +27,7 @@ namespace wex
   private:
     static void add(int id, const wxArtID& art);
     
-    static std::map<wxWindowID, wxArtID> m_ArtIDs;
+    static std::map<wxWindowID, wxArtID> m_art_ids;
     const wxWindowID m_id;
   };
 };

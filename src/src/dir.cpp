@@ -27,16 +27,16 @@ namespace wex
       dir::type_t flags) 
     : dir(path, filespec, dirspec, flags) {;};
 
-    const auto & get() const {return m_Container;};
+    const auto & get() const {return m_container;};
   private:
     bool on_dir(const path& p) override {
-      m_Container.emplace_back(p);
+      m_container.emplace_back(p);
       return true;};
     bool on_file(const path& p) override {
-      m_Container.emplace_back(p);
+      m_container.emplace_back(p);
       return true;};
 
-    std::vector <T> m_Container;
+    std::vector <T> m_container;
   };
 
   class string_dir : public dir
@@ -49,16 +49,16 @@ namespace wex
       dir::type_t flags) 
     : dir(path, filespec, dirspec, flags) {;};
 
-    const auto & get() const {return m_Container;};
+    const auto & get() const {return m_container;};
   private:
     bool on_dir(const path& p) override {
-      m_Container.emplace_back(p.fullname());
+      m_container.emplace_back(p.fullname());
       return true;};
     bool on_file(const path& p) override {
-      m_Container.emplace_back(p.fullname());
+      m_container.emplace_back(p.fullname());
       return true;};
 
-    std::vector <std::string> m_Container;
+    std::vector <std::string> m_container;
   };
 
   bool traverse(const fs::directory_entry& e, wex::dir* dir, int& matches)

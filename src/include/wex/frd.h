@@ -2,7 +2,7 @@
 // Name:      frd.h
 // Purpose:   Declaration of wex::find_replace_data class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,6 +10,7 @@
 #include <list>
 #include <regex>
 #include <string>
+#include <wx/translation.h>
 #include <wex/textctrl.h>
 
 class wxFindReplaceData;
@@ -27,21 +28,48 @@ namespace wex
    
     /// Access to data.
     wxFindReplaceData* data();
+    
+    /// Static interface.
 
     /// Returns the find replace data.
     static find_replace_data* get(bool createOnDemand = true);
 
+    /// Sets the object as the current one, returns the pointer 
+    /// to the previous current object 
+    /// (both the parameter and returned value may be nullptr). 
+    static find_replace_data* set(find_replace_data* frd);
+
+    /// Returns text.
+    static const auto & text_find() {return m_text_find;};
+
+    /// Returns text.
+    static const auto & text_match_case() {return m_text_match_case;};
+
+    /// Returns text.
+    static const auto & text_match_word() {return m_text_match_word;};
+
+    /// Returns text.
+    static const auto & text_regex() {return m_text_regex;};
+
+    /// Returns text.
+    static const auto & text_replace_with() {return m_text_replace_with;};
+
+    /// Returns text.
+    static const auto & text_search_down() {return m_text_search_down;};
+    
+    /// Other methods.
+    
     /// Returns the find string.
     const std::string get_find_string() const;
 
     /// Returns the find strings.
-    const auto & get_find_strings() const {return m_findStrings.values();};
+    const auto & get_find_strings() const {return m_find_strings.values();};
     
     /// Returns the replace string.
     const std::string get_replace_string() const;
 
     /// Returns the replace strings.
-    const auto & get_replace_strings() const {return m_ReplaceStrings.values();};
+    const auto & get_replace_strings() const {return m_replace_strings.values();};
 
     /// Returns true if the flags have match case set.
     bool match_case() const;
@@ -61,11 +89,6 @@ namespace wex
     
     /// Returns true if the flags have search down set.
     bool search_down() const;
-
-    /// Sets the object as the current one, returns the pointer 
-    /// to the previous current object 
-    /// (both the parameter and returned value may be nullptr). 
-    static find_replace_data* set(find_replace_data* frd);
 
     /// Sets the find string.
     /// If use_regex also sets the regular expression.
@@ -103,37 +126,29 @@ namespace wex
     /// the use member is not set.
     void set_use_regex(bool value);
 
-    /// Returns text.
-    static const auto & text_find() {return m_text_find;};
-
-    /// Returns text.
-    static const auto & text_match_case() {return m_text_match_case;};
-
-    /// Returns text.
-    static const auto & text_match_word() {return m_text_match_word;};
-
-    /// Returns text.
-    static const auto & text_regex() {return m_text_regex;};
-
-    /// Returns text.
-    static const auto & text_replace_with() {return m_text_replace_with;};
-
-    /// Returns text.
-    static const auto & text_search_down() {return m_text_search_down;};
-    
     /// Returns true if find text is used as a regular expression.
     bool use_regex() const {return m_use_regex;};
   private:
     find_replace_data();
     
-    static find_replace_data* m_Self;
-    static std::string 
-      m_text_find, m_text_match_case, m_text_match_word,
-      m_text_regex, m_text_replace_with, m_text_search_down;
-     
+    static inline find_replace_data* m_self = nullptr;
+
+    static inline std::string 
+      m_text_find = _("Find what"),
+      m_text_match_case = _("Match case"),
+      m_text_match_word = _("Match whole word"),
+      m_text_regex = _("Regular expression"),
+      m_text_replace_with = _("Replace with"),
+      m_text_search_down = _("Search down");
+
     wxFindReplaceData* m_frd {nullptr};
+
     bool m_use_regex {false};
-    textctrl_input m_findStrings, m_ReplaceStrings;
+
+    textctrl_input 
+      m_find_strings, 
+      m_replace_strings;
+
     std::regex m_regex;
   };
 };

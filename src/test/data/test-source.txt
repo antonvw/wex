@@ -1,4 +1,5 @@
 :%yz
+:%yankz
 :ab
 :chd ./
 :grep test
@@ -39,6 +40,8 @@
 :/[[:alpha:]]/=
 :.kz
 :.p
+:.l
+:.#
 :.p#
 :.pu
 :.puz
@@ -57,6 +60,10 @@
 :.c replaced
 :1
 :.t $
+:1
+:.co$
+:1
+:.copy$
 :.>
 :.<
 :i inserted
@@ -69,6 +76,7 @@
 :g/xx/p|p|p
 :g/xx/p#
 :g//
+:global//
 :v/is/p
 :v/is/p|p|p
 :v/is/p#
@@ -77,6 +85,8 @@
 :1,2g/is/p
 :1
 :.m$
+:1
+:.move$
 :1
 :.t$
 :%s/x/y
@@ -103,9 +113,9 @@
 :1,$~
 :1,$~g
 :1,$s/s/w/
-:1,$s/^/BEGIN-OF-LINE
+:1,$substitute/^/BEGIN-OF-LINE
 :w test-ex.txt
-:1,2w test-ex.txt
+:1,2write test-ex.txt
 :1,2w >> test-ex.txt
 :1,2w >> test-ex.txt
 :r test-ex.txt

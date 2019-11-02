@@ -171,17 +171,24 @@ namespace wex
     void parse_node_theme(const pugi::xml_node& node);
     void parse_node_themes(const pugi::xml_node& node);
 
-    std::map<std::string, std::string> m_default_colours, m_keywords;
+    std::map<std::string, std::string> 
+      m_default_colours, 
+      m_keywords;
 
     std::map<std::string, std::map<std::string, std::string> > 
-      m_macros, m_theme_colours, m_theme_macros;
+      m_macros, 
+      m_theme_colours, 
+      m_theme_macros;
 
     std::set<indicator> m_indicators;
     std::set<marker> m_markers;
 
     std::vector<property> m_global_properties;
     std::vector<lexer> m_lexers;
-    std::vector<style> m_styles, m_styles_hex;
+    std::vector<style> 
+      m_styles, 
+      m_styles_hex;
+
     std::vector<std::pair<std::string, std::string>> m_texts;
 
     style m_default_style;

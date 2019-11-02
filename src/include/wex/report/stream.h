@@ -88,12 +88,14 @@ namespace wex::report
     static wex::listview* m_report;
     static report::frame* m_frame;
 
-    bool m_is_comment_statement = false;
-    bool m_is_string = false;
+    bool 
+      m_is_comment_statement {false},
+      m_is_string {false};
 
     int m_context_size;
     
-    syntax_t m_last_syntax_type = SYNTAX_NONE;
-    syntax_t m_syntax_type = SYNTAX_NONE;
+    syntax_t 
+      m_last_syntax_type {SYNTAX_NONE},
+      m_syntax_type {SYNTAX_NONE};
   };
 };

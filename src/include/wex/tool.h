@@ -18,7 +18,7 @@ namespace wex
   class tool_info
   {
   public:
-    /// Default constructor.
+    /// Dedualt constructor.
     tool_info(
       const std::string& info = std::string(),
       const std::string& text = std::string(),
@@ -36,9 +36,10 @@ namespace wex
     /// Returns the text.
     const auto & text() const {return m_text;};
   private:
-    std::string m_help_text;
-    std::string m_info;
-    std::string m_text;
+    std::string 
+      m_help_text,
+      m_info,
+      m_text;
   };
 
   template <class T> class statistics;
@@ -49,7 +50,8 @@ namespace wex
   {
   public:
     /// Default constructor, specify the toolid to use.
-    tool(int id = -1);
+    tool(int id = -1)
+       : m_id(id) {;};
 
     /// Adds your own info to the tool.
     /// If you use a %d in the info string, it is replaced by get_statistics
@@ -65,7 +67,7 @@ namespace wex
     const auto & get_tool_info() const {return m_tool_info;};
 
     /// Returns the tool id.
-    int id() const {return m_id;};
+    auto id() const {return m_id;};
 
     /// Returns info about current tool.
     const std::string info() const;
