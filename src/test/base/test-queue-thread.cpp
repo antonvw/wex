@@ -15,7 +15,6 @@ namespace wex
   {
   public:
     event_handler() {};
-    virtual ~event_handler() {};
 
     const std::vector<std::string> &events() const { return m_events; };
   private:

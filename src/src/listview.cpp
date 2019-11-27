@@ -1109,6 +1109,17 @@ bool wex::listview::set_item(
   }
 }
 
+bool wex::listview::set_item_image(long item_number, const wxArtID& artid) 
+{
+  if (item_number < 0 || item_number >= GetItemCount())
+  {
+    return false;
+  }
+  
+  return (m_data.image() == listview_data::IMAGE_ART ?
+    SetItemImage(item_number, get_art_id(artid)): false);
+}
+        
 bool wex::listview::sort_column(int column_no, sort_t sort_method)
 {
   if (column_no == -1 || column_no >= (int)m_columns.size())

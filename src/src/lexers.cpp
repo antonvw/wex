@@ -289,7 +289,7 @@ bool wex::lexers::load_document()
     }
   }
   
-  config conf(config::DATA_NO_STORE);
+  config conf;
   if (!conf.item(_("Add what")).exists()) 
     conf.set(l);
   if (!conf.item(_("In files")).exists()) 

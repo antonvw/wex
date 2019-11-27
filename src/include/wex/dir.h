@@ -44,6 +44,23 @@ namespace wex
       const std::string& dirspec = std::string(),
       /// finds all
       type_t flags = type_t().set()); 
+    
+    /// Destructor.
+    virtual ~dir() {;};
+    
+    /// Virtual interface.
+
+    /// Do something with the dir.
+    /// Not made pure virtual, to allow this 
+    /// class to be tested by calling find_files.
+    virtual bool on_dir(const path& ) {return true;};
+
+    /// Do something with the file.
+    /// Not made pure virtual, to allow this 
+    /// class to be tested by calling find_files.
+    virtual bool on_file(const path& ) {return true;};
+    
+    /// Other methods.
 
     /// Returns the dir spec.
     const auto & dir_spec() const {return m_dir_spec;};
@@ -61,16 +78,6 @@ namespace wex
 
     /// Returns the flags.
     auto type() const {return m_flags;};
-   
-    /// Do something with the dir.
-    /// Not made pure virtual, to allow this 
-    /// class to be tested by calling find_files.
-    virtual bool on_dir(const path& ) {return true;};
-
-    /// Do something with the file.
-    /// Not made pure virtual, to allow this 
-    /// class to be tested by calling find_files.
-    virtual bool on_file(const path& ) {return true;};
   private:
     const path m_dir;
 
@@ -118,7 +125,7 @@ namespace wex
       const std::string& filespec,
       stc_data::window_t file_flags = 0,
       type_t type = dir::type_t().set());
-
+  protected:
     /// Opens each found file.
     bool on_file(const path& file) override;
   private:

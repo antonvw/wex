@@ -19,7 +19,7 @@
 
 TEST_CASE("wex::to_container")
 {
-  wxComboBox* cb = new wxComboBox(frame(), wxID_ANY);
+  auto* cb = new wxComboBox(frame(), wxID_ANY);
   wex::test::add_pane(frame(), cb);
 
   wxArrayString a;

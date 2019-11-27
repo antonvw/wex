@@ -2,7 +2,7 @@
 // Name:      test-item.h
 // Purpose:   Declaration and implementation of test_items
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -21,9 +21,9 @@ const auto test_notebook_item(
       {"string2"},
       {"string3"}}},
     {"more-strings", 
-     {{"string1", "nice"},
-      {"string2"},
-      {"string3"}}},
+     {{"string4", "nice"},
+      {"string5"},
+      {"string6"}}},
     {"checkboxes", 
      {{"checkbox1", wex::item::CHECKBOX},
       {"checkbox2", wex::item::CHECKBOX},

@@ -14,10 +14,10 @@
 #include <wex/config.h>
 #include <wex/ex.h>
 #include <wex/lexers.h>
+#include <wex/macros.h>
 #include <wex/managedframe.h>
 #include <wex/stc.h>
 #include <wex/vcscommand.h>
-#include <wex/vi-macros.h>
 #include "test.h"
 
 TEST_CASE("wex")
@@ -57,7 +57,7 @@ TEST_CASE("wex")
       
   SUBCASE("autocomplete_text")
   {
-    REQUIRE( wex::vi_macros::load_document());
+    REQUIRE( wex::ex::get_macros().load_document());
     std::string s;
     REQUIRE(!wex::autocomplete_text("xxxx", get_stc()->get_vi().get_macros().get(), s));
     REQUIRE(!wex::autocomplete_text("Date", // not unique!
@@ -270,14 +270,19 @@ TEST_CASE("wex")
   
   SUBCASE("open_files")
   {
+    wex::path::current(wex::test::get_path().string());
+
     get_stc()->SetFocus();
     get_stc()->DiscardEdits();
 
     REQUIRE( wex::open_files(
       frame(), std::vector<wex::path>()) == 0);
     REQUIRE( wex::open_files(
-      frame(), std::vector<wex::path> {
-      wex::test::get_path("test.h").data(), "test.cpp", "*xxxxxx*.cpp"}) == 2);
+      frame(), 
+      std::vector<wex::path> {
+        wex::test::get_path("test.h").data(), 
+        "test.cpp", 
+        "*xxxxxx*.cpp"}) == 2);
     REQUIRE( wex::open_files(
       frame(), 
       std::vector<wex::path> {wex::test::get_path("test.h").data()}) == 1);
@@ -309,7 +314,7 @@ TEST_CASE("wex")
   SUBCASE("marker_and_register_expansion")
   {
     get_stc()->set_text("this is some text");
-    wex::ex* ex = new wex::ex(get_stc());
+    auto* ex = new wex::ex(get_stc());
     std::string command("xxx");
     REQUIRE(!wex::marker_and_register_expansion(nullptr, command));
     REQUIRE( wex::marker_and_register_expansion(ex, command));
@@ -386,23 +391,23 @@ TEST_CASE("wex")
 
   SUBCASE("sort_selection_rect")
   {
-    wex::stc* stc = new wex::stc(rect);
-    wex::test::add_pane(frame(), stc);
+    get_stc()->SelectNone();
+    get_stc()->set_text(rect);
 
     // make a rectangular selection, invoke sort, and check result
-    REQUIRE( stc->get_vi().mode().normal());
-    REQUIRE( stc->get_vi().command("3 "));
-    REQUIRE( stc->get_vi().command("K"));
-    REQUIRE( stc->get_vi().mode().visual());
-    REQUIRE( stc->get_vi().command("4j"));
-    REQUIRE( stc->get_vi().command("5l"));
-    REQUIRE( stc->get_vi().mode().visual());
+    REQUIRE( get_stc()->get_vi().mode().normal());
+    REQUIRE( get_stc()->get_vi().command("3 "));
+    REQUIRE( get_stc()->get_vi().command("K"));
+    REQUIRE( get_stc()->get_vi().mode().visual());
+    REQUIRE( get_stc()->get_vi().command("4j"));
+    REQUIRE( get_stc()->get_vi().command("5l"));
+    REQUIRE( get_stc()->get_vi().mode().visual());
 
-    REQUIRE( wex::sort_selection(stc, 0, 3, 5));
-    REQUIRE( wex::trim(stc->GetText()) == wex::trim(sorted));
-    REQUIRE( wex::sort_selection(stc, 
+    REQUIRE( wex::sort_selection(get_stc(), 0, 3, 5));
+    REQUIRE( wex::trim(get_stc()->GetText()) == wex::trim(sorted));
+    REQUIRE( wex::sort_selection(get_stc(), 
       wex::string_sort_t().set(wex::STRING_SORT_DESCENDING), 3, 5));
-    REQUIRE( stc->GetText() != sorted);
+    REQUIRE( get_stc()->GetText() != sorted);
   }
   
   SUBCASE("translate")

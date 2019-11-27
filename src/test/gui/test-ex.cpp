@@ -12,11 +12,11 @@
 #endif
 #include <wex/ex.h>
 #include <wex/frd.h>
+#include <wex/macro-mode.h>
+#include <wex/macros.h>
 #include <wex/managedframe.h>
 #include <wex/path.h>
 #include <wex/stc.h>
-#include <wex/vi-macros.h>
-#include <wex/vi-macros-mode.h>
 #include "test.h"
 
 TEST_SUITE_BEGIN("wex::ex");
@@ -28,7 +28,7 @@ TEST_CASE("wex::ex")
     SUBCASE("text")
     {
       const std::string modeline("set ts=120 ec=40 sy=sql sw=4 nu el");
-      wex::stc* stc = new wex::stc(std::string("-- vi: " + modeline));
+      auto* stc = new wex::stc(std::string("-- vi: " + modeline));
       wex::test::add_pane(frame(), stc);
 
       REQUIRE(stc->get_vi().is_active());
@@ -40,7 +40,7 @@ TEST_CASE("wex::ex")
 
     SUBCASE("head")
     {
-      wex::stc* stc = new wex::stc(wex::path("test-modeline.txt"));
+      auto* stc = new wex::stc(wex::path("test-modeline.txt"));
       wxSafeYield();
       wex::test::add_pane(frame(), stc);
       REQUIRE(stc->get_lexer().scintilla_lexer() == "sql");
@@ -48,7 +48,7 @@ TEST_CASE("wex::ex")
     
     SUBCASE("tail")
     {
-      wex::stc* stc = new wex::stc(wex::path("test-modeline2.txt"));
+      auto* stc = new wex::stc(wex::path("test-modeline2.txt"));
       wxSafeYield();
       wex::test::add_pane(frame(), stc);
       REQUIRE(stc->get_lexer().scintilla_lexer() == "sql");
@@ -63,7 +63,7 @@ TEST_CASE("wex::ex")
   SUBCASE("general")
   {
     REQUIRE( ex->frame() == frame());
-    REQUIRE(!ex->get_macros().mode()->is_recording());
+    REQUIRE(!ex->get_macros().mode().is_recording());
   }
 
   SUBCASE("is_active")
@@ -134,12 +134,12 @@ TEST_CASE("wex::ex")
   {
     stc->set_text("xx\n");
     REQUIRE( ex->command(":ab t TTTT"));
-    const auto& it1 = ex->get_macros().get_abbreviations()->find("t");
-    REQUIRE (it1 != ex->get_macros().get_abbreviations()->end());
+    const auto& it1 = ex->get_macros().get_abbreviations().find("t");
+    REQUIRE (it1 != ex->get_macros().get_abbreviations().end());
     REQUIRE( it1->second == "TTTT");
     REQUIRE( ex->command(":una t"));
-    const auto& it2 = ex->get_macros().get_abbreviations()->find("t");
-    REQUIRE (it2 == ex->get_macros().get_abbreviations()->end());
+    const auto& it2 = ex->get_macros().get_abbreviations().find("t");
+    REQUIRE (it2 == ex->get_macros().get_abbreviations().end());
   }
   
   SUBCASE("range")
@@ -262,9 +262,8 @@ TEST_CASE("wex::ex")
     }
   }
   
-  SUBCASE("goto")
+  SUBCASE("registers")
   {
-    // Test registers.  
     ex->set_registers_delete("x");
     ex->set_register_yank("test");
     REQUIRE( ex->get_macros().get_register('0') == "test");

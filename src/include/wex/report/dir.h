@@ -27,7 +27,7 @@ namespace wex
       dir::type_t flags = dir::type_t().set());
       
     /// Returns the statistics.
-    auto & get_statistics() {return m_statistics;};
+    auto & get_statistics() const {return m_statistics;};
   protected:  
     bool on_file(const path& file) override;
   private:    

@@ -25,6 +25,7 @@
 #include <wex/lexer-props.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
+#include <wex/macros.h>
 #include <wex/managedframe.h>
 #include <wex/stc.h>
 #include <wex/stcdlg.h>
@@ -32,7 +33,6 @@
 #include <wex/type-to-value.h>
 #include <wex/util.h>
 #include <wex/version.h>
-#include <wex/vi-macros.h>
 #include "eval.h"
 
 #define POST_CLOSE( ID, VETO )                              \
@@ -99,15 +99,15 @@ namespace wex
   }
 };
 
-wex::vi_macros wex::ex::m_macros;
+wex::macros wex::ex::m_macros;
 
 wex::ex::ex(wex::stc* stc)
   : m_command(ex_command(stc))
   , m_frame(wxDynamicCast(wxTheApp->GetTopWindow(), managed_frame))
   , m_commands {
     {":ab", [&](const std::string& command) {
-      return handle_container<std::string, vi_macros::strings_map_t>(
-        "Abbreviations", command, m_macros.get_abbreviations(),
+      return handle_container<std::string, macros::strings_map_t>(
+        "Abbreviations", command, &m_macros.get_abbreviations(),
         [=](const std::string& name, const std::string& value) {
           m_macros.set_abbreviation(name, value);return true;});}},
     {":ar", [&](const std::string& command) {
@@ -150,7 +150,7 @@ wex::ex::ex(wex::stc* stc)
       {
         case wex::command_arg_t::INT:
           // TODO: at this moment you cannot set KEY_CONTROL
-          return handle_container<int, wex::vi_macros::keys_map_t>(
+          return handle_container<int, wex::macros::keys_map_t>(
             "Map", command, nullptr,
             [=](const std::string& name, const std::string& value) {
               m_macros.set_key_map(name, value);return true;}); 
@@ -159,23 +159,23 @@ wex::ex::ex(wex::stc* stc)
         case wex::command_arg_t::NONE: 
           show_dialog("Maps", 
             "[String map]\n" +
-            report_container<std::string, vi_macros::strings_map_t>(
+            report_container<std::string, macros::strings_map_t>(
               m_macros.get_map()) +
             "[Key map]\n" +
-            report_container<int, wex::vi_macros::keys_map_t>(
+            report_container<int, wex::macros::keys_map_t>(
               m_macros.get_keys_map()) +
             "[Alt key map]\n" +
-            report_container<int, wex::vi_macros::keys_map_t>(
-              m_macros.get_keys_map(vi_macros::KEY_ALT)) +
+            report_container<int, wex::macros::keys_map_t>(
+              m_macros.get_keys_map(macros::KEY_ALT)) +
             "[Control key map]\n" +
-            report_container<int, wex::vi_macros::keys_map_t>(
-              m_macros.get_keys_map(vi_macros::KEY_CONTROL)), 
-            true);
+            report_container<int, wex::macros::keys_map_t>(
+              m_macros.get_keys_map(macros::KEY_CONTROL)), 
+            lexer_props().scintilla_lexer());
           return true;
         break;
         
         case wex::command_arg_t::OTHER:
-          return handle_container<std::string, vi_macros::strings_map_t>(
+          return handle_container<std::string, macros::strings_map_t>(
             "Map", command, nullptr,
             [=](const std::string& name, const std::string& value) {
               m_macros.set_map(name, value);return true;});
@@ -194,13 +194,13 @@ wex::ex::ex(wex::stc* stc)
     {":reg", [&](const std::string& command) {
       const lexer_props l;
       std::string output(l.make_section("Named buffers"));
-      for (const auto& it : get_macros().registers())
+      for (const auto& it : m_macros.get_registers())
       {
         output += it;
       }
       output += l.make_section("Filename buffer");
       output += l.make_key("%", get_command().get_stc()->get_filename().fullname());
-      show_dialog("Registers", output, true);
+      show_dialog("Registers", output, l.scintilla_lexer());
       return true;}},
     {":sed", [&](const std::string& command) 
       {POST_COMMAND( ID_TOOL_REPLACE ) return true;}},
@@ -297,7 +297,9 @@ wex::ex::ex(wex::stc* stc)
         },
         {},
         // no standard options
-        false
+        false,
+        // prefix
+        "ex"
       );
 
       if (std::string help; !cmdline.toggle(!modeline).parse(
@@ -309,7 +311,7 @@ wex::ex::ex(wex::stc* stc)
         }
         else
         {
-          show_dialog("Options", help);
+          show_dialog("Options", help, "markdown");
         }
       }
       else if (!modeline)
@@ -396,8 +398,11 @@ wex::ex::ex(wex::stc* stc)
         }
       }
       return true;}},
-    {":ve", [&](const std::string& command) {show_dialog("Version", 
-      wex::get_version_info().get()); return true;}},
+    {":ve", [&](const std::string& command) {
+      show_dialog(
+        "Version", 
+        wex::get_version_info().get()); 
+      return true;}},
     {":x", [&](const std::string& command) {
       if (command != ":x") return false;
       POST_COMMAND( wxID_SAVE )
@@ -450,8 +455,8 @@ bool wex::ex::command(const std::string& cmd)
 
   log::verbose("ex command") << cmd;
 
-  const auto& it = m_macros.get_map()->find(command);
-  command = (it != m_macros.get_map()->end() ? it->second: command);
+  const auto& it = m_macros.get_map().find(command);
+  command = (it != m_macros.get_map().end() ? it->second: command);
   
   if (m_frame->exec_ex_command(m_command.set(command)))
   {
@@ -775,7 +780,10 @@ bool wex::ex::handle_container(
   }
   else if (container != nullptr)
   {
-    show_dialog(kind, report_container<S, T>(container), true);
+    show_dialog(
+      kind, 
+      report_container<S, T>(*container), 
+      lexer_props().scintilla_lexer());
   }
 
   return true;
@@ -951,12 +959,12 @@ const std::string wex::ex::register_text() const
 }
   
 template <typename S, typename T>
-std::string wex::ex::report_container(const T * t) const
+std::string wex::ex::report_container(const T & t) const
 {
   const wex::lexer_props l;
   std::string output;
 
-  for (const auto& it : *t)
+  for (const auto& it : t)
   {
     output += l.make_key(type_to_value<S>(it.first).get_string(), it.second);
   }
@@ -1011,7 +1019,7 @@ void wex::ex::set_register_yank(const std::string& value) const
 }
 
 void wex::ex::show_dialog(
-  const std::string& title, const std::string& text, bool prop_lexer)
+  const std::string& title, const std::string& text, const std::string& lexer)
 {
   if (m_dialog == nullptr)
   {
@@ -1046,7 +1054,7 @@ void wex::ex::show_dialog(
   }
   
   m_dialog->get_stc()->get_lexer().set(
-    prop_lexer ? lexer_props(): get_stc()->get_lexer());
+    !lexer.empty() ? wex::lexer(lexer): get_stc()->get_lexer());
   m_dialog->Show();
 }
 

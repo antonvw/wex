@@ -5,11 +5,6 @@
 // Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-
 #include "test.h"
 
 namespace wex
@@ -26,7 +21,7 @@ namespace wex
             type(listview_data::KEYWORD).lexer(&lexer));
           wex::test::add_pane(this, m_report);};
 
-      virtual listview* activate(
+      listview* activate(
         listview_data::type_t listview_type, const lexer* lexer) override {
         // only for coverage
         report::frame::activate(listview_type, lexer);

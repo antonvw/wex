@@ -12,7 +12,7 @@
 
 TEST_CASE("wex::listitem")
 {
-  wex::listview* lv = new wex::listview(
+  auto* lv = new wex::listview(
     wex::listview_data().type(wex::listview_data::FILE));
   wex::test::add_pane(frame(), lv);
   

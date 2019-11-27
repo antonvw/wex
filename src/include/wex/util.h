@@ -192,10 +192,7 @@ namespace wex
       const std::string& format = file_stat::MOD_TIME_FORMAT);
 
   /// Returns a word from a string.
-  const std::string get_word(
-    std::string& text,
-    bool use_other_field_separators = false,
-    bool use_path_separator = false);
+  const std::string get_word(std::string& text);
 
   /// Returns true if char is a brace open or close character.
   bool is_brace(int c);

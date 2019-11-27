@@ -299,7 +299,9 @@ bool wex::report::frame::grep(const std::string& arg, bool sed)
        arg1 = (v.size() > i ? 
          config(m_text_in_folder).set_firstof(v[i++]): 
          config(m_text_in_folder).get_firstof());
-       }}, false).parse(arg, help))
+       }}, 
+     false,
+     "grep").parse(arg, help))
   {
     stc_entry_dialog(help).ShowModal();
     return false;

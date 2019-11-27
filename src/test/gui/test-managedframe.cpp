@@ -23,7 +23,7 @@ TEST_CASE("wex::managed_frame")
   
   get_stc()->SetFocus();
   get_stc()->Show();
-  wex::vi* vi = &get_stc()->get_vi();
+  auto* vi = &get_stc()->get_vi();
   
   wex::ex_command command(":n");
   REQUIRE(!frame()->exec_ex_command(command));
@@ -47,7 +47,7 @@ TEST_CASE("wex::managed_frame")
   
   frame()->file_history().clear();
   
-  wxMenu* menu = new wxMenu();
+  auto* menu = new wxMenu();
   frame()->file_history().use_menu(1000, menu);
   frame()->set_find_focus(frame()->get_stc());
   frame()->open_file(wex::test::get_path("test.h"));
@@ -96,7 +96,7 @@ TEST_CASE("wex::managed_frame")
     wex::ID_CLEAR_FILES, wex::ID_CLEAR_FINDS,
     wex::ID_VIEW_LOWEST + 1, wex::ID_VIEW_LOWEST + 2, wex::ID_VIEW_LOWEST + 3, wex::ID_VIEW_LOWEST + 4}) 
   {
-    wxCommandEvent* event = new wxCommandEvent(wxEVT_MENU, id);
+    auto* event = new wxCommandEvent(wxEVT_MENU, id);
     wxQueueEvent(frame(), event);
   }
 #endif

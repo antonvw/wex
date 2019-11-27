@@ -19,10 +19,10 @@ index f96687d2d8..12ef655f54 100644
      SCI_LEXER
      LINK_LEXERS
 diff --git a/build/cmake/setup.cmake b/build/cmake/setup.cmake
-index a102731af9..c4cb2e0565 100644
+index 35ba62b64b..8f02be356c 100644
 --- a/build/cmake/setup.cmake
 +++ b/build/cmake/setup.cmake
-@@ -152,7 +152,7 @@ if(wxUSE_STL)
+@@ -158,7 +158,7 @@ if(wxUSE_STL)
          string functional algorithm vector list
          )
      if(NOT wxTEST_STL)

@@ -17,13 +17,13 @@
 #include <wex/defs.h>
 #include <wex/ex.h>
 #include <wex/frd.h>
+#include <wex/macro-mode.h>
+#include <wex/macros.h>
 #include <wex/process.h>
 #include <wex/shell.h>
 #include <wex/stc.h>
 #include <wex/toolbar.h>
 #include <wex/util.h>
-#include <wex/vi-macros.h>
-#include <wex/vi-macros-mode.h>
 
 const auto ID_REGISTER = wxWindow::NewControlId();
 
@@ -394,8 +394,8 @@ wex::textctrl::textctrl(
           path::current(m_ex->get_stc()->get_filename().get_path());
         }
 
-        // studio not yet: [[maybe_unused]]
-        if (const auto& [r, e, v] = autocomplete_filename(m_command.command());
+        if ([[maybe_unused]] const auto& [r, e, v] = 
+            autocomplete_filename(m_command.command());
           r)
         {
           AppendText(e);
@@ -542,6 +542,13 @@ wex::textctrl::textctrl(
       m_command.set(m_prefix->GetLabel() + GetValue());
     }
 
+    if (m_user_input && 
+      m_command.type() == ex_command::type_t::FIND && m_ex != nullptr)
+    {
+      m_frame->record(m_prefix->GetLabel() + GetValue());
+      m_ex->get_macros().record(m_prefix->GetLabel() + GetValue());
+    }
+        
     if ((m_user_input && m_command.type() == ex_command::type_t::FIND)
       || m_command.exec())
     {

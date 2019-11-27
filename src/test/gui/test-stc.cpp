@@ -19,7 +19,7 @@
 
 TEST_CASE("wex::stc")
 {
-  wex::stc* stc = get_stc();
+  auto* stc = get_stc();
   stc->get_vi().command("\x1b");
   wex::config(_("Wrap scan")).set(true);
   
@@ -33,7 +33,6 @@ TEST_CASE("wex::stc")
     stc->set_text("hello stc");
     REQUIRE( stc->GetText() == "hello stc");
 
-    // add_text
     stc->add_text(" added");
     REQUIRE( stc->GetText().Contains("added"));
   }
@@ -158,7 +157,6 @@ TEST_CASE("wex::stc")
     // FoldAll
     wex::config(_("Auto fold")).set(3);
     stc->fold(true); 
-    stc->guess_type();
     stc->Paste();
     //  stc->Print();
     stc->print_preview();
@@ -243,7 +241,7 @@ TEST_CASE("wex::stc")
     REQUIRE(!stc.open("XXX"));
   }
 
-  SUBCASE("complete")
+  SUBCASE("omplete")
   {
     REQUIRE( stc->get_lexer().set("xml"));
     stc->get_vi().command("i<xxxx>");

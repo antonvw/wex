@@ -12,6 +12,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <wex/config.h>
 
 namespace wex
 {
@@ -67,7 +68,9 @@ namespace wex
       /// params
       const cmd_params_t & p = cmd_params_t(),
       /// add standard options
-      bool add_standard_options = true);
+      bool add_standard_options = true,
+      /// option prefix for all options
+      const std::string& prefix = std::string());
 
     /// Destructor.
    ~cmdline();
@@ -97,6 +100,7 @@ namespace wex
     /// Sets toggle mode for switches.
     cmdline& toggle(bool value) {m_toggle = value; return *this;};
   private:
+    config m_cfg;
     cmdline_imp* m_parser;
 
     static inline bool 

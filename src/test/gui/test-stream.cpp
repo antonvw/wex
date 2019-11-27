@@ -2,15 +2,10 @@
 // Name:      test-stream.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <chrono>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wx/buffer.h>
 #include <wex/stream.h>
 #include <wex/frd.h>
 #include "test.h"
@@ -32,7 +27,7 @@ TEST_CASE("wex::stream_statistics")
 
 TEST_CASE("wex::stream")
 {
-  SUBCASE("Test find")
+  SUBCASE("find")
   {
     wex::stream s(wex::test::get_path("test.h"), wex::ID_TOOL_REPORT_FIND);
     
@@ -46,14 +41,15 @@ TEST_CASE("wex::stream")
     
     const auto start = std::chrono::system_clock::now();
     REQUIRE( s.run_tool());
-    const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
+    const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(
+      std::chrono::system_clock::now() - start);
     
     REQUIRE(milli.count() < 100);
     REQUIRE(!s.get_statistics().get_elements().get_items().empty());
     REQUIRE( s.get_statistics().get("Actions Completed") == 193);
   }
   
-  SUBCASE("Test replace")
+  SUBCASE("replace")
   {
     wex::stream s(wex::test::get_path("test.h"), wex::ID_TOOL_REPLACE);
     
@@ -61,7 +57,8 @@ TEST_CASE("wex::stream")
     
     const auto start = std::chrono::system_clock::now();
     REQUIRE( s.run_tool());
-    const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
+    const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(
+      std::chrono::system_clock::now() - start);
     
     REQUIRE(milli.count() < 100);
     REQUIRE(!s.get_statistics().get_elements().get_items().empty());

@@ -14,7 +14,7 @@ namespace wex
   void build(
     const std::string& key, std::string& text, const std::string& append)
   {
-    if (key.empty() || config(key).get(true))
+    if (key.empty() || config("blame." + key).get(true))
     {
       if (!text.empty()) 
       {
@@ -42,9 +42,9 @@ std::tuple <bool, const std::string, wex::lexers::margin_style_t, int>
     {
       std::string info;
     
-      build("blame_get_id", info, v[0]);
-      build("blame_get_author", info, v[1]);
-      build("blame_get_date", info, v[2].substr(0, m_date_print));
+      build("id", info, v[0]);
+      build("author", info, v[1]);
+      build("date", info, v[2].substr(0, m_date_print));
       const auto line(v.size() == 4 ? std::stoi(v[3]) - 1: - 1);
 
       return {

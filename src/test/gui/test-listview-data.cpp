@@ -27,7 +27,7 @@ TEST_CASE("wex::listview_data")
   
   SUBCASE("inject")
   {
-    wex::listview* lv = new wex::listview();
+    auto* lv = new wex::listview();
     wex::test::add_pane(frame(), lv);
     REQUIRE( wex::listview_data(lv).inject());
     REQUIRE( wex::listview_data(lv, wex::control_data().line(2)).inject());

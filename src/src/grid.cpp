@@ -197,7 +197,7 @@ wex::grid::grid(const window_data& data)
 
 const std::string wex::grid::build_page()
 {
-  wxString text;
+  std::stringstream text;
 
   text << "<TABLE ";
 
@@ -235,7 +235,7 @@ const std::string wex::grid::build_page()
   // check in your browser (there indeed rules are okay).
   // clipboard_add(text);
 
-  return text;
+  return text.str();
 }
 
 void wex::grid::build_popup_menu(wex::menu& menu)
@@ -401,6 +401,35 @@ bool wex::grid::find_next(const std::string& text, bool forward)
   }
 }
 
+const std::string wex::grid::get_cells_value() const
+{
+  std::stringstream text;
+  
+  for (int i = 0; i < GetNumberRows(); i++)
+  {
+    bool value_added = false;
+
+    for (int j = 0; j < GetNumberCols(); j++)
+    {
+      if (value_added)
+      {
+        text << "\t";
+      }
+
+      text << GetCellValue(i, j);
+
+      value_added = true;
+    }
+
+    if (value_added)
+    {
+      text << "\n";
+    }
+  }
+
+  return text.str();
+}
+  
 const std::string wex::grid::get_find_string() const
 {
   if (IsSelection())
@@ -435,7 +464,7 @@ const std::string wex::grid::get_selected_cells_value() const
 {
   // This does not work, only filled in for singly selected cells.
   // wxGridCellCoordsArray cells = GetSelectedCells();
-  wxString text;
+  std::stringstream text;
 
   for (int i = 0; i < GetNumberRows(); i++)
   {
@@ -462,7 +491,7 @@ const std::string wex::grid::get_selected_cells_value() const
     }
   }
 
-  return text;
+  return text.str();
 }
 
 bool wex::grid::is_allowed_drag_selection()
@@ -475,7 +504,7 @@ bool wex::grid::is_allowed_drop_selection(
 {
   tokenizer tkz(data, "\n");
 
-  int start_at_row = drop_coords.GetRow();
+  auto start_at_row = drop_coords.GetRow();
 
   while (tkz.has_more_tokens())
   {

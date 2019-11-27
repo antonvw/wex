@@ -2,10 +2,12 @@
 // Name:      version.h
 // Purpose:   Declaration of class wex::version_info
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
+
+#include <string>
 
 class wxVersionInfo;
 

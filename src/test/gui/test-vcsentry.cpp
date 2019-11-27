@@ -63,9 +63,11 @@ TEST_CASE("wex::vcs_entry")
     REQUIRE( entry.get_stdout().find("usage: ") != std::string::npos);
     entry.show_output();
     
-    wex::vcs_entry* git_async = new wex::vcs_entry(doc.document_element());
-    REQUIRE( git_async->execute(std::string(), wex::lexer(), wex::process::EXEC_WAIT));
-    git_async->show_output();
+    auto* other = new wex::vcs_entry(doc.document_element());
+    REQUIRE( other->execute(
+      std::string(), 
+      wex::lexer(), wex::process::EXEC_WAIT));
+    other->show_output();
 #endif
   }
 }

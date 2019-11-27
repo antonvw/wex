@@ -55,7 +55,7 @@
 :.z=5#
 :.z.5
 :.z^5
-:ab xx xyz
+:ab XX xyz
 :a test
 :.c replaced
 :1

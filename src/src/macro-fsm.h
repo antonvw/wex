@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      vi-macros-fsm.h
-// Purpose:   Declaration of class wex::vi_macros_fsm
+// Name:      macro-fsm.h
+// Purpose:   Declaration of class wex::macro_fsm
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,6 +14,7 @@ namespace wex
 {
   class ex;
   class variable;
+  class macro_mode;
 
   // Forward the simple states.
   struct ssACTIVE;
@@ -22,7 +23,7 @@ namespace wex
 
   /// This class offers the state machine 
   /// and initially enters the idle mode.
-  class vi_macros_fsm : public sc::state_machine< vi_macros_fsm, ssACTIVE >
+  class macro_fsm : public sc::state_machine< macro_fsm, ssACTIVE >
   {
   public:
     enum state_t
@@ -32,24 +33,26 @@ namespace wex
     };
 
     // All events.
-    struct evDONE : sc::event< evDONE > {};
     struct evRECORD : sc::event< evRECORD > {};
 
-    /// Default constructor.
-    vi_macros_fsm();
+    /// Constructor.
+    macro_fsm(macro_mode* mode);
 
     /// Expands a variable template into a string.
     /// The ex component is used for info.
     bool expand_template(
       const variable& v, 
       ex* ex, 
-      std::string& expanded) const;
+      std::string& expanded);
 
     /// Expands a variable into a ex component.
     bool expand_variable(const std::string& v, ex* ex) const;
 
     /// Returns the internal state.
     auto get() const {return m_state;};
+
+    /// Returns the macro.
+    auto & get_macro() const {return m_macro;};
 
     /// Are we playng back?
     bool is_playback() const {return m_playback;};
@@ -59,6 +62,9 @@ namespace wex
     
     /// Starts or stops recording a macro.
     void record(const std::string& macro, ex* ex = nullptr);
+
+    /// Callback after recording.
+    void recorded();
 
     /// Sets internal state.
     void state(state_t s);
@@ -79,5 +85,6 @@ namespace wex
     bool m_playback {false};
     std::string m_macro;
     state_t m_state {IDLE};
+    macro_mode* m_mode;
   };
 };

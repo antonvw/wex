@@ -7,10 +7,6 @@
 
 #include <list>
 #include <vector>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wex/tokenizer.h>
 #include "../test.h"
 

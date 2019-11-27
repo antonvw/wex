@@ -5,10 +5,6 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wex/printing.h>
 #include <wex/managedframe.h>
 #include <wex/stc.h>
@@ -24,7 +20,7 @@ TEST_CASE("wex::printing")
   REQUIRE(wex::printing::get(false) == nullptr);
   REQUIRE(wex::printing::get(true) != nullptr);
   
-  wex::printout* printout = new wex::printout(get_stc());
+  auto* printout = new wex::printout(get_stc());
   
   printout->OnPreparePrinting();
   int min, max, from, to;

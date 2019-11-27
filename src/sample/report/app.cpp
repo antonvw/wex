@@ -36,7 +36,7 @@ bool app::OnInit()
     return false;
   }
 
-  frame* f = new frame();
+  auto* f = new frame();
   f->Show(true);
 
   return true;
@@ -44,7 +44,7 @@ bool app::OnInit()
 
 frame::frame() 
   : wex::report::frame()
-  , m_notebookWithLists(new wex::notebook(
+  , m_notebook(new wex::notebook(
       wex::window_data().style(
         wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_WINDOWLIST_BUTTON)))
   , m_stc(new wex::stc())
@@ -84,7 +84,7 @@ frame::frame()
     auto* vw = new wex::report::listview(
       wex::listview_data().type((wex::listview_data::type_t)i).lexer(&lexer));
 
-    m_notebookWithLists->add_page(
+    m_notebook->add_page(
       vw, 
       vw->data().type_description(), 
       vw->data().type_description(), 
@@ -96,7 +96,7 @@ frame::frame()
     wxAuiPaneInfo().CenterPane().CloseButton(false).MaximizeButton(true));
 
   manager().AddPane(
-    m_notebookWithLists, 
+    m_notebook, 
     wxAuiPaneInfo().CloseButton(false).Bottom().MinSize(wxSize(250, 250)));
 
   manager().AddPane(
@@ -106,7 +106,7 @@ frame::frame()
   manager().Update();
 
   wex::report::dir dir(
-    (wex::listview*)m_notebookWithLists->page_by_key(
+    (wex::listview*)m_notebook->page_by_key(
       wex::listview_data().type(wex::listview_data::FILE).type_description()),
     wex::path::current(),
     "*.cpp;*.h");
@@ -114,7 +114,7 @@ frame::frame()
   dir.find_files();
 
   wex::listitem item(
-    (wex::listview*)m_notebookWithLists->page_by_key(
+    (wex::listview*)m_notebook->page_by_key(
       wex::listview_data().type(wex::listview_data::FILE).type_description()),
     wex::path("NOT EXISTING ITEM"));
 
@@ -176,11 +176,11 @@ wex::report::listview* frame::activate(
 {
   for (
     size_t i = 0;
-    i < m_notebookWithLists->GetPageCount();
+    i < m_notebook->GetPageCount();
     i++)
   {
     wex::report::listview* vw = (wex::report::listview*)
-      m_notebookWithLists->GetPage(i);
+      m_notebook->GetPage(i);
 
     if (vw->data().type() == type)
     {
@@ -224,8 +224,8 @@ bool frame::allow_close(wxWindowID id, wxWindow* page)
 
 wex::listview* frame::get_listview()
 {
-  return (wex::listview*)m_notebookWithLists->GetPage(
-    m_notebookWithLists->GetSelection());
+  return (wex::listview*)m_notebook->GetPage(
+    m_notebook->GetSelection());
 }
 
 

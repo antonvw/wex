@@ -58,7 +58,7 @@ namespace wex
     
     /// Executes the current vcs command for the current
     /// vcs entry, and collects the output.
-    /// Returns return code from vcs entry Execute.
+    /// Returns return code from vcs entry execute.
     bool execute();
     
     /// Executes the specified command (git, svn subcommand).
@@ -73,7 +73,7 @@ namespace wex
     /// if vcs is not used.
     const std::string name() const;
     
-    /// Combines show_dialog, Execute and vcs entry show_output in one method. 
+    /// Combines show_dialog, execute and vcs entry show_output in one method. 
     /// - Returns wxID_CANCEL if dialog was cancelled, or an execute error occurred.
     /// - Returns wxID_OK if okay (use vcs entry error
     ///   to check whether the output contains errors or normal info).

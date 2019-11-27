@@ -21,7 +21,7 @@ TEST_CASE("wex::menus")
   pugi::xml_document doc;
   REQUIRE( doc.load_string("<menus name = \"fold.comment\">2</menus>"));
 
-  wex::menu* menu = new wex::menu;
+  auto* menu = new wex::menu;
   REQUIRE(!wex::menus::build_menu(menucommands.get_commands(), 500, menu));
 
   std::vector < wex::menu_command > commands;

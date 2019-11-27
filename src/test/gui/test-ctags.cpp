@@ -41,7 +41,7 @@ TEST_CASE("wex::ctags")
 
   SUBCASE("tags non-existing file")
   {
-    wex::stc* stc = new wex::stc(std::string("test"), data);
+    auto* stc = new wex::stc(std::string("test"), data);
     wex::ctags::close();
     wex::ctags::open("xxx");
     wex::test::add_pane(frame(), stc);
@@ -52,7 +52,7 @@ TEST_CASE("wex::ctags")
   
   SUBCASE("tags own file")
   {
-    wex::stc* stc = new wex::stc(std::string("test"), data);
+    auto* stc = new wex::stc(std::string("test"), data);
     wex::ctags::close();
     wex::ctags::open("test-ctags");
     wex::test::add_pane(frame(), stc);

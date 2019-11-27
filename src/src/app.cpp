@@ -20,12 +20,12 @@
 #include <wex/frd.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
+#include <wex/macros.h>
 #include <wex/printing.h>
 #include <wex/stc.h>
 #include <wex/util.h>
 #include <wex/vcs.h>
 #include <wex/version.h>
-#include <wex/vi-macros.h>
 
 #define NO_ASSERT 1
 
@@ -53,7 +53,6 @@ int wex::app::OnExit()
   addressrange::on_exit();
   ctags::close();
   stc::on_exit();
-  vi_macros::on_exit();
 
   config::on_exit();
 
@@ -64,10 +63,10 @@ int wex::app::OnExit()
 
 bool wex::app::OnInit()
 {
-  config::init();
-
   log::init(argc, argv);
   log::verbose(1) << "started:" << GetAppName() << get_version_info().get();
+
+  config::on_init();
 
   const wxLanguageInfo* info = nullptr;
   
@@ -128,8 +127,7 @@ bool wex::app::OnInit()
 
   stc::on_init();
   vcs::load_document();
-  vi_macros::on_init();
-  vi_macros::load_document();
+  ex::get_macros().load_document();
 
   return true; // wxApp::OnInit(); // we have our own cmd line processing
 }

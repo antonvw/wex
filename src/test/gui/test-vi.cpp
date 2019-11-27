@@ -13,9 +13,9 @@
 #include <wex/vi.h>
 #include <wex/config.h>
 #include <wex/frd.h>
+#include <wex/macro-mode.h>
+#include <wex/macros.h>
 #include <wex/managedframe.h>
-#include <wex/vi-macros.h>
-#include <wex/vi-macros-mode.h>
 #include <wex/stc.h>
 #include "test.h"
 
@@ -34,8 +34,8 @@ TEST_SUITE_BEGIN("wex::vi");
 
 TEST_CASE("wex::vi")
 {
-  wex::stc* stc = get_stc();
-  wex::vi* vi = &stc->get_vi();
+  auto* stc = get_stc();
+  auto* vi = &stc->get_vi();
 
   SUBCASE("calc")
   {
@@ -48,12 +48,12 @@ TEST_CASE("wex::vi")
     change_mode( vi, ESC, wex::vi_mode::state_t::NORMAL);
     vi->command("=5+5");
     REQUIRE( 
-      stc->get_vi().get_macros().get_register('0').find("10") != 
+      wex::ex::get_macros().get_register('0').find("10") != 
       std::string::npos);
 
     vi->command("=5+5+5");
     REQUIRE( 
-      stc->get_vi().get_macros().get_register('0').find("15") !=
+      wex::ex::get_macros().get_register('0').find("15") !=
       std::string::npos);
   }
 
@@ -146,7 +146,6 @@ TEST_CASE("wex::vi")
 
   SUBCASE("insert")
   {
-    // Test insert command.
     stc->set_text("aaaaa");
     REQUIRE( vi->mode().normal());
     REQUIRE( vi->command("i"));
@@ -162,7 +161,7 @@ TEST_CASE("wex::vi")
       REQUIRE( vi->command("."));
     REQUIRE( stc->GetText().Contains("xxxxxxxxxxxxxxxxxxxxxxxxxxx"));
     
-    // Test insert commands.
+    // insert commands
     std::vector<std::string> commands;
     for (auto& it1 : vi->mode().insert_commands())
     {
@@ -175,7 +174,7 @@ TEST_CASE("wex::vi")
       }
     }
 
-    // Test insert commands and delete commands on readonly document.
+    // insert commands and delete commands on readonly document
     commands.insert(commands.end(), {"dd", "d0", "d$", "dw", "de"});
     stc->SetReadOnly(true);
     stc->EmptyUndoBuffer();
@@ -187,7 +186,7 @@ TEST_CASE("wex::vi")
       REQUIRE(!stc->GetModify());
     }
 
-    // Test insert on hexmode document.
+    // insert on hexmode document
     stc->SetReadOnly(false);
     stc->get_hexmode().set(true);
     REQUIRE( stc->is_hexmode());
@@ -202,7 +201,7 @@ TEST_CASE("wex::vi")
     REQUIRE(!stc->GetModify());
     stc->SetReadOnly(false);
 
-    // Test insert command.  
+    // insert command (again)
     change_mode( vi, "i", wex::vi_mode::state_t::INSERT);
     change_mode( vi, ESC, wex::vi_mode::state_t::NORMAL);
     change_mode( vi, "iyyyyy", wex::vi_mode::state_t::INSERT);
@@ -262,7 +261,7 @@ TEST_CASE("wex::vi")
   SUBCASE("macro")
   {
     // First load macros.
-    REQUIRE( wex::vi_macros::load_document());
+    REQUIRE( wex::ex::get_macros().load_document());
     for (const auto& macro : std::vector< std::vector< std::string> > {
       {"10w"},
       {"dw"},
@@ -274,7 +273,7 @@ TEST_CASE("wex::vi")
       stc->set_text("this text contains xx");
       
       REQUIRE( vi->command("qt"));
-      REQUIRE( vi->get_macros().mode()->is_recording());
+      REQUIRE( wex::ex::get_macros().mode().is_recording());
       
       std::string all;
       
@@ -285,7 +284,7 @@ TEST_CASE("wex::vi")
       }
 
       REQUIRE( vi->command("q"));
-      REQUIRE( stc->get_vi().get_macros().get_register('t') == all);
+      REQUIRE( wex::ex::get_macros().get_register('t') == all);
     }
 
     REQUIRE( vi->command("@t"));
@@ -296,7 +295,7 @@ TEST_CASE("wex::vi")
 
   SUBCASE("modeline")
   {
-    wex::stc* stc = new wex::stc(
+    auto* stc = new wex::stc(
       std::string("// 	vim: set ts=120 "
                   "// this is a modeline"));
     wex::test::add_pane(frame(), stc);
@@ -387,20 +386,20 @@ TEST_CASE("wex::vi")
     stc->set_text("abc\nuvw\nxyz\n");
 
     // Test recording.
-    REQUIRE(!vi->get_macros().mode()->is_recording());
+    REQUIRE(!wex::ex::get_macros().mode().is_recording());
     vi->command("");
     REQUIRE( vi->command("qa"));
-    REQUIRE( vi->get_macros().mode()->is_recording());
+    REQUIRE( wex::ex::get_macros().mode().is_recording());
     REQUIRE( vi->command("/abc"));
     REQUIRE( vi->command("q"));
-    REQUIRE(!vi->get_macros().mode()->is_recording());
+    REQUIRE(!wex::ex::get_macros().mode().is_recording());
     REQUIRE( vi->command("@a"));
     REQUIRE( vi->command(" "));
     REQUIRE( vi->command("qb"));
-    REQUIRE( vi->get_macros().mode()->is_recording());
+    REQUIRE( wex::ex::get_macros().mode().is_recording());
     REQUIRE( vi->command("?abc"));
     REQUIRE( vi->command("q"));
-    REQUIRE(!vi->get_macros().mode()->is_recording());
+    REQUIRE(!wex::ex::get_macros().mode().is_recording());
     REQUIRE( vi->command("@b"));
     REQUIRE( vi->command(" "));
   }
@@ -423,7 +422,7 @@ TEST_CASE("wex::vi")
     vi->command("h");
     vi->command("yy");
     REQUIRE( 
-      stc->get_vi().get_macros().get_register('0').find("the chances of anything")
+      wex::ex::get_macros().get_register('0').find("the chances of anything")
       != std::string::npos);
 
     vi->command("p");
@@ -705,7 +704,7 @@ TEST_CASE("wex::vi")
       }
     }
 
-    if (vi->get_macros().mode()->is_recording())
+    if (wex::ex::get_macros().mode().is_recording())
     {
       vi->command("q");
     }

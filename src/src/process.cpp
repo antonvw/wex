@@ -127,7 +127,7 @@ namespace wex
       else
       {
         const std::string text(!error.empty() ? ":" + error: std::string());
-        log("process") << command << "cwd:" << cwd << "ec:" << ec << text;
+        log("bp::system") << command << "cwd:" << cwd << "ec:" << ec << text;
       }
       
       return ec;
@@ -352,7 +352,7 @@ bool wex::process_imp::async(const std::string& path)
     return false;
   }
 
-  log::verbose("async", 1) << m_process->get_exec();
+  log::verbose("bp::async_system", 1) << m_process->get_exec();
 
   m_debug.store(m_process->get_frame()->get_debug()->debug_entry().name()
     == before(m_process->get_exec(), ' '));

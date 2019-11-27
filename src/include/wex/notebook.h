@@ -54,6 +54,8 @@ namespace wex
     /// Cannot be const as it can call delete_page.
     template <class T> 
     bool for_each(int id) {
+      m_frame->set_find_focus(nullptr);
+
       wxWindowUpdateLocker locker(
         m_frame != nullptr ? (wxWindow*)m_frame: (wxWindow*)this);
       
@@ -61,6 +63,7 @@ namespace wex
       for (int page = GetPageCount() - 1; page >= 0; page--)
       {
         T* win = (T*)GetPage(page);
+
         switch (id)
         {
         case ID_ALL_CLOSE:
@@ -73,14 +76,20 @@ namespace wex
             {
               return false;
             }
-            const std::string key = m_windows[GetPage(page)];
-            m_windows.erase(GetPage(page));
+            const std::string key = m_windows[win];
+            m_windows.erase(win);
             m_keys.erase(key);
-            wxAuiNotebook::DeletePage(page);
+
+            if (!wxAuiNotebook::DeletePage(page))
+            {
+              return false;
+            }
           }
           break;
 
-        case ID_ALL_CONFIG_GET: win->config_get(); break;
+        case ID_ALL_CONFIG_GET: 
+          win->config_get(); 
+          break;
           
         case ID_ALL_SAVE:
           if (win->get_file().get_contents_changed())
@@ -93,17 +102,17 @@ namespace wex
         case ID_ALL_STC_SET_LEXER: 
           // At this moment same as themed change,
           // as we want default colour updates as well.
-          ((stc*)GetPage(page))->get_lexer().set(
-            ((stc*)GetPage(page))->get_lexer().display_lexer());
+          ((stc*)win)->get_lexer().set(
+            ((stc*)win)->get_lexer().display_lexer());
           break;
 
         case ID_ALL_STC_SET_LEXER_THEME: 
-          ((stc*)GetPage(page))->get_lexer().set(
-            ((stc*)GetPage(page))->get_lexer().display_lexer());
+          ((stc*)win)->get_lexer().set(
+            ((stc*)win)->get_lexer().display_lexer());
           break;
 
         case ID_ALL_STC_SYNC: 
-          ((stc*)GetPage(page))->sync(config("AllowSync").get(true)); 
+          ((stc*)win)->sync(config("AllowSync").get(true)); 
           break;
           
         default: 
@@ -111,6 +120,7 @@ namespace wex
           break;
         }
       }
+
       if (m_frame != nullptr && m_keys.empty())
       {
         m_frame->sync_close_all(GetId());

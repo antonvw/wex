@@ -64,7 +64,7 @@ namespace wex
     
     bool m_ask_for_input{true};
       
-    // no const members because of assignment in vi_macros_fsm
+    // no const members because of assignment in macro_fsm
     input_t m_type;
 
     std::string 

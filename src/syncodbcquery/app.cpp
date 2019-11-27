@@ -52,7 +52,7 @@ bool app::OnInit()
     return false;
   }
 
-  frame* f = new frame();
+  auto* f = new frame();
   f->Show(true);
 
   return true;
@@ -73,7 +73,7 @@ frame::frame()
 
   SetIcon(wxICON(app));
 
-  wex::menu* menuFile = new wex::menu;
+  auto* menuFile = new wex::menu;
   menuFile->append(wxID_NEW);
   menuFile->append(wxID_OPEN);
   file_history().use_menu(idRecentfileMenu, menuFile);
@@ -83,32 +83,32 @@ frame::frame()
   menuFile->append_separator();
   menuFile->append(wxID_EXIT);
 
-  wex::menu* menuDatabase = new wex::menu;
+  auto* menuDatabase = new wex::menu;
   menuDatabase->append(idDatabaseOpen, wex::ellipsed(_("&Open")));
   menuDatabase->append(idDatabaseClose, _("&Close"));
 
-  wex::menu* menuQuery = new wex::menu;
+  auto* menuQuery = new wex::menu;
   menuQuery->append(wxID_EXECUTE);
   menuQuery->append(wxID_STOP);
 
 #ifndef __WXOSX__
-  wxMenu* menuOptions = new wxMenu();
+  auto* menuOptions = new wxMenu();
   menuOptions->Append(wxID_PREFERENCES);
 #else
   menuQuery->append(wxID_PREFERENCES); // is moved!
 #endif
 
-  wex::menu* menuView = new wex::menu();
+  auto* menuView = new wex::menu();
   append_panes(menuView);
   menuView->append_separator();
   menuView->AppendCheckItem(idViewQuery, _("Query"));
   menuView->AppendCheckItem(idViewResults, _("Results"));
   menuView->AppendCheckItem(idViewStatistics, _("Statistics"));
 
-  wxMenu* menuHelp = new wxMenu();
+  auto* menuHelp = new wxMenu();
   menuHelp->Append(wxID_ABOUT);
 
-  wxMenuBar *menubar = new wxMenuBar;
+  auto *menubar = new wxMenuBar;
   menubar->Append(menuFile, wxGetStockLabel(wxID_FILE));
   menubar->Append(menuView, _("&View"));
   menubar->Append(menuDatabase, _("&Connection"));

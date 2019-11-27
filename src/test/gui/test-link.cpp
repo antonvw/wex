@@ -52,7 +52,7 @@ void link(
 #ifdef __UNIX__
 TEST_CASE("wex::link")
 {
-  wex::stc* stc = get_stc();
+  auto* stc = get_stc();
   
   SUBCASE("Default constructor")
   {

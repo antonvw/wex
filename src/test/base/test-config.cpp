@@ -13,7 +13,9 @@ TEST_CASE("wex::config")
   SUBCASE("default constructor")
   {
     REQUIRE( wex::config().get("x") == "x");
-    wex::config().set("y");
+    REQUIRE(!wex::config().is_child());
+    REQUIRE(!wex::config().child_start());
+    REQUIRE(!wex::config().child_end());
   }
   
   SUBCASE("dir")
@@ -25,6 +27,8 @@ TEST_CASE("wex::config")
 #endif
   }
   
+  const wex::config::statusbar_t sb {{"one", 1 , 2}, {"two", 3, 4}};
+
   SUBCASE("getters")
   {
     REQUIRE( wex::config("x").get(4) == 4);
@@ -37,6 +41,14 @@ TEST_CASE("wex::config")
     REQUIRE( wex::config("l").get_firstof().empty());
     REQUIRE( wex::config("l").empty());
     REQUIRE(!wex::config("m").get(std::list<std::string>{"one"}).empty());
+    
+    REQUIRE( std::get<0>(wex::config("sb").get(sb)[0]) == "one");
+    REQUIRE( std::get<1>(wex::config("sb").get(sb)[0]) == 1);
+    REQUIRE( std::get<2>(wex::config("sb").get(sb)[0]) == 2);
+    REQUIRE( std::get<0>(wex::config("sb").get(sb)[1]) == "two");
+    REQUIRE( std::get<1>(wex::config("sb").get(sb)[1]) == 3);
+    REQUIRE( std::get<2>(wex::config("sb").get(sb)[1]) == 4);
+    REQUIRE( wex::config("sbg").get(wex::config::statusbar_t{}).empty());
   }
   
   SUBCASE("setters")
@@ -61,5 +73,64 @@ TEST_CASE("wex::config")
     
     wex::config("y").erase();
     REQUIRE(!wex::config("y").exists());
+    
+    wex::config::statusbar_t sbs {{"three", 1 , 2}, {"four", 3, 4}};
+    std::get<0>(wex::config("sbs").get(sb)[0]);
+    wex::config("sbs").set(sbs);
+    REQUIRE( std::get<0>(wex::config("sbs").get(sb)[0]) == "three");
+  }
+  
+  SUBCASE("constructor child")
+  {
+    wex::config c("parent", "child-x");
+    REQUIRE( c.is_child());
+
+    c.item("child-x").set("x");
+    REQUIRE( c.item("child-x").get("y") == "x");
+
+    wex::config("parent", "child-y").set("y");
+    REQUIRE( wex::config("parent.child-y").get("z") == "y");
+  }
+
+  SUBCASE("child")
+  {
+    wex::config c("child");
+
+    REQUIRE(!c.child_end());
+    REQUIRE( c.child_start());
+    REQUIRE(!c.child_start());
+
+    c.item("child-x").set(1);
+    c.item("child-y").set(2);
+    c.item("child-z").set(3);
+
+    REQUIRE(!c.item("child").exists());
+    REQUIRE( c.item("child-x").get(99) == 1);
+    REQUIRE( c.item("child-y").get(99) == 2);
+    REQUIRE( c.item("child-z").get(99) == 3);
+
+    REQUIRE( c.child_end());
+    REQUIRE(!c.child_end());
+
+    REQUIRE( c.item("child").exists());
+    REQUIRE( c.item("child.child-x").get(99) == 1);
+    REQUIRE( c.item("child.child-y").get(99) == 2);
+    REQUIRE( c.item("child.child-z").get(99) == 3);
+  }
+  
+  SUBCASE("toggle")
+  {
+    wex::config c("toggle");
+    c.set(true);
+    REQUIRE( c.get(true));
+    
+    c.toggle();
+    REQUIRE(!c.get(true));
+    
+    c.toggle();
+    REQUIRE( c.get(true));
+
+    REQUIRE(!c.toggle());
+    REQUIRE( c.toggle());
   }
 }

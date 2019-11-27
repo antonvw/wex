@@ -12,11 +12,11 @@
 #include <wex/variable.h>
 #include <wex/ex.h>
 #include <wex/log.h>
+#include <wex/macros.h>
+#include <wex/macro-mode.h>
 #include <wex/stc.h>
 #include <wex/stcdlg.h>
 #include <wex/util.h>
-#include <wex/vi-macros.h>
-#include <wex/vi-macros-mode.h>
 
 // Several types of variables are supported.
 // See xml file.
@@ -81,8 +81,8 @@ bool wex::variable::check_link(std::string& value) const
   if (std::vector <std::string> v;
     match("@([a-zA-Z].+)@", m_value, v) > 0)
   {
-    if (const auto& it = vi_macros::get_variables()->find(v[0]);
-      it != vi_macros::get_variables()->end())
+    if (const auto& it = ex::get_macros().get_variables().find(v[0]);
+      it != ex::get_macros().get_variables().end())
     {
       if (!it->second.expand(value))
       {
@@ -211,7 +211,7 @@ bool wex::variable::expand(std::string& value, ex* ex) const
       break;
       
     case input_t::TEMPLATE:
-      if (!vi_macros::mode()->expand(ex, *this, value))
+      if (!ex::get_macros().mode().expand(ex, *this, value))
       {
         return false;
       }

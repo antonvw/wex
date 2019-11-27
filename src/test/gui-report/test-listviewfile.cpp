@@ -11,7 +11,7 @@
 
 TEST_CASE("wex::report::file")
 {
-  wex::report::file* listView = new wex::report::file(get_project());
+  auto* listView = new wex::report::file(get_project());
   wex::test::add_pane(frame(), listView);
 
   REQUIRE(listView->get_file().get_filename().fullname() == get_project());
@@ -52,7 +52,7 @@ TEST_CASE("wex::report::file")
   for (auto id : std::vector<int> {
     wxID_ADD, wxID_EDIT, wxID_REPLACE_ALL}) 
   {
-    wxCommandEvent* event = new wxCommandEvent(wxEVT_MENU, id);
+    auto* event = new wxCommandEvent(wxEVT_MENU, id);
     wxQueueEvent(listView, event);
   }
 #endif

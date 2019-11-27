@@ -13,7 +13,7 @@ TEST_SUITE_BEGIN("wex::ex");
 
 TEST_CASE("wex::ex_command")
 {
-  wex::stc* stc = get_stc();
+  auto* stc = get_stc();
   stc->set_text("more text\notherline\nother line");
 
   SUBCASE("constructor stc")

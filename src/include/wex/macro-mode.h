@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      vi-macros-mode.h
-// Purpose:   Implementation of class wex::vi_macros_mode
+// Name:      macro-mode.h
+// Purpose:   Implementation of class wex::macro_mode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -12,18 +12,23 @@
 namespace wex
 {
   class ex;
+  class macro_fsm;
+  class macros;
   class variable;
-  class vi_macros_fsm;
 
-  /// Offers the vi macros mode, like playing back or recording.
-  class vi_macros_mode
+  /// Offers the macro mode, like playing back or recording,
+  /// and the current macro that is recorded or was played back.
+  class macro_mode
   {
   public:
-    /// Default constructor.
-    vi_macros_mode();
+    /// Constructor.
+    /// The macros specified is the collection of macros
+    /// used for replay or record.
+    /// This collection might be changed depending on the mode.
+    macro_mode(macros* macros);
 
     /// Destructor.
-   ~vi_macros_mode();
+   ~macro_mode();
 
     /// Expands template variable.
     /// Returns true if the template file name exists,
@@ -34,8 +39,14 @@ namespace wex
       /// variable (containing template file name)
       const variable& variable, 
       /// value to receive contents
-      std::string& expanded);
+      std::string& expanded) const;
 
+    /// Returns current macro.
+    const std::string get_macro() const;
+
+    /// Returns the macros collection.
+    auto * get_macros() {return m_macros;};
+    
     /// Are we playing back?
     bool is_playback() const;
 
@@ -61,6 +72,7 @@ namespace wex
       /// number of times this maco should be executed, in case of playback
       int repeat = 1);
   private:
-    vi_macros_fsm* m_fsm;
+    macro_fsm* m_fsm;
+    macros* m_macros;
   };
 };

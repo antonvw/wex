@@ -17,12 +17,12 @@
 #include <wex/frd.h>
 #include <wex/hexmode.h>
 #include <wex/lexers.h>
+#include <wex/macro-mode.h>
+#include <wex/macros.h>
 #include <wex/managedframe.h>
 #include <wex/stc.h>
 #include <wex/tokenizer.h>
 #include <wex/util.h>
-#include <wex/vi-macros.h>
-#include <wex/vi-macros-mode.h>
 
 const std::string control_B {"\x02"};
 const std::string control_D {"\x04"};
@@ -139,12 +139,11 @@ wex::vi::vi(wex::stc* arg)
      [=]() {
         if (!m_dot)
         {
-          const std::string ESC("\x1b");
-          const std::string lc(m_insert_command + register_insert());
-          set_last_command(lc + ESC);
-          get_macros().record(lc);
-          get_macros().record(ESC);
-          frame()->record(lc + ESC);
+          const std::string c(
+            m_insert_command + register_insert() + "\x1b");
+          set_last_command(c);
+          get_macros().record(c);
+          frame()->record(c);
         }
         m_command.clear();
         m_insert_command.clear();
@@ -378,9 +377,9 @@ wex::vi::vi(wex::stc* arg)
       REPEAT(put(true));
       return 1;}},
     {"q", [&](const std::string& command){
-      return get_macros().mode()->transition(command, this, false, m_count);}},
+      return get_macros().mode().transition(command, this, false, m_count);}},
     {"@", [&](const std::string& command){
-      return get_macros().mode()->transition(command, this, false, m_count);}},
+      return get_macros().mode().transition(command, this, false, m_count);}},
     {"r", [&](const std::string& command){
       if (command.size() > 1 &&
         !get_stc()->GetReadOnly())
@@ -851,11 +850,19 @@ void wex::vi::filter_count(std::string& command)
   if (const auto matches = match("^([1-9][0-9]*)(.*)", command, v);
     matches == 2)
   {
-    m_count_present = true;
-    const auto count = std::stoi(v[0]);
-    m_count *= count;
-    append_insert_command(v[0]);
-    command = v[1];
+    try
+    {
+      m_count_present = true;
+      const auto count = std::stoi(v[0]);
+      m_count *= count;
+      append_insert_command(v[0]);
+      command = v[1];
+    }
+    catch (std::exception& e)
+    {
+      m_count_present = true;
+      log(e) << command;
+    }
   }
 }
 
@@ -1064,9 +1071,9 @@ void wex::vi::insert_mode_normal(const std::string& text)
           {
             const auto last(m_insert_text.find_last_of(" ;\t"));
             
-            if (const auto& it = get_macros().get_abbreviations()->find(
+            if (const auto& it = get_macros().get_abbreviations().find(
               m_insert_text.substr(last + 1));
-              it != get_macros().get_abbreviations()->end())
+              it != get_macros().get_abbreviations().end())
             {
               m_insert_text.replace(last + 1, it->first.size(), it->second);
               
@@ -1090,8 +1097,8 @@ void wex::vi::insert_mode_normal(const std::string& text)
             const auto last(token.find_last_of(" ;\t", token.size() - 2));
             const auto word(token.substr(last + 1, token.size() - 2 - last));
             
-            if (const auto& it = get_macros().get_abbreviations()->find(word);
-              it != get_macros().get_abbreviations()->end())
+            if (const auto& it = get_macros().get_abbreviations().find(word);
+              it != get_macros().get_abbreviations().end())
             {
               token.replace(last + 1, it->first.size(), it->second);
             }
@@ -1332,7 +1339,7 @@ bool wex::vi::on_key_down(const wxKeyEvent& event)
     {
       m_command.clear();
       m_insert_command.clear();
-      frame()->statustext(get_macros().get_macro(), "PaneMacro");
+      frame()->statustext(get_macros().mode().get_macro(), "PaneMacro");
     }
 
     return true;
@@ -1378,8 +1385,8 @@ bool wex::vi::on_key_down(const wxKeyEvent& event)
   else if ((event.GetModifiers() & wxMOD_CONTROL) && event.GetKeyCode() != WXK_NONE)
   {
     if (const auto& it = get_macros().get_keys_map(
-          vi_macros::key_t::KEY_CONTROL)->find(event.GetKeyCode());
-      it != get_macros().get_keys_map(vi_macros::key_t::KEY_CONTROL)->end()) 
+          macros::key_t::KEY_CONTROL).find(event.GetKeyCode());
+      it != get_macros().get_keys_map(macros::key_t::KEY_CONTROL).end()) 
     {
       command(it->second);
       return false;
@@ -1395,8 +1402,8 @@ bool wex::vi::on_key_down(const wxKeyEvent& event)
     }
 
     if (const auto& it = get_macros().get_keys_map(
-          vi_macros::key_t::KEY_ALT)->find(event.GetKeyCode());
-      it != get_macros().get_keys_map(vi_macros::key_t::KEY_ALT)->end()) 
+          macros::key_t::KEY_ALT).find(event.GetKeyCode());
+      it != get_macros().get_keys_map(macros::key_t::KEY_ALT).end()) 
     {
       command(it->second);
       return false;
@@ -1452,8 +1459,8 @@ bool wex::vi::other_command(std::string& command)
 
 bool wex::vi::parse_command(std::string& command)
 {
-  if (const auto& it = get_macros().get_keys_map()->find(command.front());
-    it != get_macros().get_keys_map()->end()) 
+  if (const auto& it = get_macros().get_keys_map().find(command.front());
+    it != get_macros().get_keys_map().end()) 
   {
     command = it->second;
   }

@@ -11,9 +11,9 @@
 #endif
 
 #include <wex/managedframe.h>
+#include <wex/macros.h>
 #include <wex/process.h>
 #include <wex/shell.h>
-#include <wex/vi-macros.h>
 
 #include "test.h"
 
@@ -88,7 +88,7 @@ namespace wex
 std::vector<std::pair<std::string, std::string>> get_abbreviations()
 {
   return std::vector<std::pair<std::string, std::string>> {
-    {"XX","GREAT"},
+    {"XX","GREAT"}, // see also test-source.txt
     {"YY","WHITE"},
     {"ZZ","SHARK"}};
 }
@@ -97,7 +97,7 @@ std::vector<std::string> get_builtin_variables()
 {
   std::vector<std::string> v;
 
-  for (const auto i : *wex::vi_macros::get_variables())
+  for (const auto i : wex::ex::get_macros().get_variables())
   {
     if (i.second.is_builtin())
     {

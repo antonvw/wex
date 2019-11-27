@@ -9,6 +9,7 @@
 
 #include <list>
 #include <string>
+#include <tuple>
 #include <vector>
 
 class wxColour;
@@ -18,48 +19,83 @@ namespace wex
 {
   class config_imp;
 
-  /// Offers a configuration.
+  /// Offers a configuration using key value pairs with defaults.
   class config
   {
   public:
-    /// Type of storage.
-    enum type_t
-    {
-      DATA_STORE_WRITE,     ///< create store if not present
-      DATA_STORE_OVERWRITE, ///< always create new store
-      DATA_NO_STORE,        ///< never store (so use defaults)
-    };
-    
+    /// Type to hold statusbar panes setup,
+    /// as a vector of tuples for pane name, style, width.
+    typedef std::vector < std::tuple < std::string, int, int > > 
+      statusbar_t;
+
     /// static interface
     
     /// Returns the config dir for user data files.
     static const std::string dir();
     
-    /// Initializes global class.
-    /// This should be done before first use of config.
-    static void init();
-
     /// Stores config, and frees objects.
     static void on_exit();
     
+    /// Initializes global class.
+    /// This should be done before first use of config.
+    static void on_init();
+    
+    /// Returns number of top level entries.
+    static size_t size();
+
     /// other methods
 
     /// Default constructor.
-    config(type_t type = DATA_STORE_WRITE);
+    /// Optionally provide the item (key).
+    /// If you are using children, you can retrieve the value
+    /// using parent dot child expression:
+    /// @code
+    /// wex::config c("x");
+    /// c.child_start();
+    /// c.item("u").set(1);
+    /// c.item("v").set(2);
+    /// c.item("w").set(3);
+    /// c.child_end();
+    /// const auto i(c.get("x.u", 9));
+    /// @endcode
+    /// i will be 1.
+    config(const std::string& item = std::string());
+
+    /// Constructor for a child item (calling child_start not necessary).
+    /// @code
+    /// wex::config c("y", "u");
+    /// c.item("u").set(1);
+    /// c.item("v").set(2);
+    /// c.item("w").set(3);
+    /// const auto i(c.get("y.u", 9));
+    /// @endcode
+    config(const std::string& parent, const std::string& child);
+
+    /// Destructor, calls child_end.
+   ~config();
     
-    /// Constructor for item (key).
-    config(const std::string& item);
+    /// Ends setting child values for this item, 
+    /// deletes a possible local store for a child item.
+    /// Returns false if not yet started.
+    bool child_end();
+
+    /// Starts setting child values for this item.
+    /// Returns false if already started.
+    bool child_start();
+
+    /// Returns number of children for this item.
+    size_t children() const;
 
     /// Returns true if the (string) item is empty.
     bool empty() const;
 
     /// Deletes the item.
-    void erase();
+    void erase() const;
 
     /// Returns true if the item exists.
     bool exists() const;
 
-    // Getter methods.
+    /// Getter methods.
 
     /// Returns text config value for item.
     const std::string get(const std::string& def = std::string()) const;
@@ -95,14 +131,16 @@ namespace wex
     /// Returns a vector with ints for item.
     const std::vector < int > get(const std::vector < int > & def) const;
 
-    /// Returns a vector with tuples for item.
-    const std::vector < std::tuple < std::string, int, int > > get(
-      const std::vector < std::tuple < std::string, int, int > > & def) const;
+    /// Returns a statusbar_t for item.
+    const statusbar_t get(const statusbar_t & def) const;
 
     /// Returns first of a list of strings from item.
     const std::string get_firstof() const;
 
-    /// Item access.
+    /// Returns true if this item is a child.
+    bool is_child() const;
+
+    /// Item access / nested values.
 
     /// Returns the item.
     auto & item() const {return m_item;};
@@ -145,17 +183,22 @@ namespace wex
     /// Sets value from a vector with int.
     void set(const std::vector < int > & v);
 
-    /// Sets value from a vector with tuples.
-    void set(const std::vector < std::tuple < std::string, int, int > > & v);
+    /// Sets value from a statusbar_t.
+    void set(const statusbar_t & r);
 
     /// Sets first of a list of strings in config key,
     /// deletes it if present at other places.
     /// If the list size would be greater than max, the last element is deleted.
     /// And returns the value.
     const std::string set_firstof(const std::string& v, size_t max = 75);
+    
+    /// If this item is a bool, toggles value and returns new value.
+    bool toggle(bool def = false);
   private:
+    config_imp* get_store() const;
+
     std::string m_item;
-    const type_t m_type {DATA_STORE_WRITE};
+    config_imp* m_local {nullptr};
     inline static config_imp* m_store = nullptr;
   };
 };

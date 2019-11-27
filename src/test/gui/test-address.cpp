@@ -5,25 +5,21 @@
 // Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wex/address.h>
+#include <wex/macros.h>
 #include <wex/managedframe.h>
 #include <wex/stc.h>
-#include <wex/vi-macros.h>
 #include "test.h"
 
 TEST_SUITE_BEGIN("wex::ex");
 
 TEST_CASE("wex::address")
 {
-  wex::stc* stc = get_stc();
+  auto* stc = get_stc();
   stc->set_text("hello0\nhello1\nhello2\nhello3\nhello4\nhello5");
   
   const int lines = stc->GetLineCount();
-  wex::ex* ex = new wex::ex(stc);
+  auto* ex = new wex::ex(stc);
   wex::stc_data(stc).control(wex::control_data().line(1)).inject();
   ex->marker_add('a');
   wex::stc_data(stc).control(wex::control_data().line(2)).inject();

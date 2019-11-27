@@ -13,7 +13,7 @@
 
 TEST_CASE("wex::variable")
 {
-  wex::ex* ex = new wex::ex(get_stc());
+  auto* ex = new wex::ex(get_stc());
 
   SUBCASE("constructor")
   {

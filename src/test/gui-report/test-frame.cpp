@@ -12,11 +12,11 @@
 
 TEST_CASE("wex::report::frame")
 {
-  wex::listview* list = new wex::listview(wex::listview_data().type(wex::listview_data::HISTORY));
+  auto* list = new wex::listview(wex::listview_data().type(wex::listview_data::HISTORY));
 
   wex::test::add_pane(frame(), list);
 
-  wxMenu* menu = new wxMenu();
+  auto* menu = new wxMenu();
   frame()->use_file_history_list(list);
   frame()->get_project_history().use_menu(1000, menu);
   list->Show();
@@ -66,7 +66,7 @@ TEST_CASE("wex::report::frame")
   for (auto id : std::vector<int> {
     wex::ID_CLEAR_PROJECTS, wex::ID_PROJECT_SAVE, wex::ID_TOOL_REPORT_FIND, wex::ID_TOOL_REPLACE}) 
   {
-    wxCommandEvent* event = new wxCommandEvent(wxEVT_MENU, id);
+    auto* event = new wxCommandEvent(wxEVT_MENU, id);
     wxQueueEvent(frame(), event);
   }
 }

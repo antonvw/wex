@@ -11,12 +11,12 @@
 #endif
 #include <wex/addressrange.h>
 #include <wex/ex.h>
+#include <wex/macros.h>
 #include <wex/managedframe.h>
 #include <wex/process.h>
 #include <wex/stc.h>
 #include <wex/tokenizer.h>
 #include <wex/util.h>
-#include <wex/vi-macros.h>
 
 namespace wex
 {
@@ -380,7 +380,7 @@ bool wex::addressrange::escape(const std::string& command)
 
 bool wex::addressrange::execute(const std::string& reg) const
 {
-  if (!is_ok() || !vi_macros::is_recorded_macro(reg))
+  if (!is_ok() || !ex::get_macros().is_recorded_macro(reg))
   {
     return false;
   }
@@ -508,10 +508,10 @@ bool wex::addressrange::global(const std::string& text, bool inverse) const
   {
     if (g.commands())
       m_ex->frame()->show_ex_message(
-        wxString::Format(_("Executed: %d commands"), hits));
+        "executed: " + std::to_string(hits) + " commands");
     else
       m_ex->frame()->show_ex_message(
-        wxString::Format(_("Found: %d matches"), hits));
+        "found: " + std::to_string(hits) + " matches");
   }
   
   return true;
@@ -879,10 +879,8 @@ bool wex::addressrange::substitute(const std::string& text, char cmd)
   m_ex->marker_delete('$');
   
   m_ex->frame()->show_ex_message(
-    wxString::Format(
-      _("Replaced: %d occurrences of: %s"), 
-      nr_replacements, 
-      pattern.c_str()));
+    "Replaced: " + std::to_string(nr_replacements) + 
+    " occurrences of: " + pattern);
 
   m_stc->IndicatorClearRange(0, m_stc->GetTextLength() - 1);
   

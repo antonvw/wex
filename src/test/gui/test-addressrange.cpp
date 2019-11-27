@@ -6,9 +6,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/addressrange.h>
+#include <wex/macros.h>
 #include <wex/managedframe.h>
 #include <wex/stc.h>
-#include <wex/vi-macros.h>
 #include "test.h"
 
 TEST_SUITE_BEGIN("wex::ex");
@@ -17,7 +17,7 @@ TEST_CASE("wex::addressrange")
 {
   const std::string contents("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
 
-  wex::stc* stc = get_stc();
+  auto* stc = get_stc();
 
   stc->set_text("hello\nhello1\nhello2");
   wex::ex* ex = &stc->get_vi();
@@ -79,8 +79,6 @@ TEST_CASE("wex::addressrange")
     REQUIRE(!wex::addressrange(ex, "x,3").is_ok());
     stc->SelectNone();
   }
-  
-  // Test implementation.  
   
   SUBCASE("change")
   {

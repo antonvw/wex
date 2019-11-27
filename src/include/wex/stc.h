@@ -215,10 +215,6 @@ namespace wex
     /// Returns word at position.
     const std::string get_word_at_pos(int pos) const;
 
-    /// Guesses the file type using a small sample size from this document, 
-    /// and sets EOL mode and updates statusbar if it found eols.
-    void guess_type();
-
     /// Returns true if we are in hex mode.
     bool is_hexmode() const {return m_hexmode.is_active();};
 
@@ -367,6 +363,9 @@ namespace wex
     bool check_brace(int pos);
     bool file_readonly_attribute_changed(); // sets changed read-only attribute
     void fold_all();
+    /// Guesses the file type using a small sample size from this document, 
+    /// and sets EOL mode and updates statusbar if it found eols.
+    void guess_type_and_modeline();
     bool link_open(
       link_t mode, 
       std::string* filename = nullptr); // name of found file

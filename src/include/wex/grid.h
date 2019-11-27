@@ -57,10 +57,13 @@ namespace wex
     /// Finds next.
     bool find_next(const std::string& text, bool forward = true);
 
+    /// Get text from all cells.
+    const std::string get_cells_value() const;
+
     /// Updates find replace text.
     const std::string get_find_string() const;
 
-    /// Get text from selected cells,
+    /// Get text from selected cells.
     const std::string get_selected_cells_value() const;
 
     /// Paste starting at current grid cursor.
@@ -79,11 +82,15 @@ namespace wex
     /// Default it is used.
     void use_drag_and_drop(bool use);
   protected:
-    /// Builds the page used for printing.
-    const std::string build_page();
-
+    /// Virtual Interface.
+    
     /// Builds the popup menu.
     virtual void build_popup_menu(menu& menu);
+    
+    /// Other methods.
+    
+    /// Builds the page used for printing.
+    const std::string build_page();
   private:
     bool m_use_drag_and_drop {true};
   };

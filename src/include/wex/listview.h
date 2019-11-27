@@ -65,7 +65,7 @@ namespace wex
     /// Returns the column type.
     auto type() const {return m_type;}
   private:
-    type_t m_type = INVALID;
+    const type_t m_type = INVALID;
     bool m_is_sorted_ascending = false;
   };
 
@@ -145,9 +145,8 @@ namespace wex
 
     /// Sets the item image, using the image list.
     /// If the listview does not already contain the image, it is added.
-    bool set_item_image(long item_number, const wxArtID& artid) {
-      return (m_data.image() == listview_data::IMAGE_ART ?
-        SetItemImage(item_number, get_art_id(artid)): false);};
+    /// Returns false if an error occurred.
+    bool set_item_image(long item_number, const wxArtID& artid);
 
     /// Sorts on a column specified by column name.
     /// Returns true if column was sorted.
@@ -173,12 +172,15 @@ namespace wex
     /// Returns current sorted column no.
     int sorted_column_no() const {return m_sorted_column_no;};
   protected:
-    // Interface.
+    /// Virtual interface
+    
     /// Invoked after sorting, allows you to do something extra.
     virtual void after_sorting() {;};
 
     /// Builds the popup menu.
     virtual void build_popup_menu(menu& menu);
+    
+    /// Other methods.
 
     /// Returns the field separator.
     const auto& field_separator() const {return m_field_separator;};

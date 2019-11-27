@@ -20,50 +20,59 @@
 #include <wex/stc.h>
 #include "hexmodeline.h"
 
-int GetHexNumberFromUser(
-  const wxString& message, const std::string& caption,
-  int value, int min, int max,
-  wxWindow *parent)
+namespace wex
 {
-  wex::item::use_config(false);
-  wex::item_dialog dlg({{message, min, max, value}}, 
-    wex::window_data().title(caption).parent(parent));
-  wex::item::use_config(true);
-  
-  ((wxSpinCtrl* )dlg.get_item(message).window())->SetBase(16);
-  
-  return dlg.ShowModal() == wxID_CANCEL ? 
-    -1: std::any_cast<int>(dlg.get_item_value(message));
-}
-
-const std::string MakeLine(wex::stc* stc, const std::string& buffer, 
-  size_t offset, size_t bytesPerLine, size_t eachHexField)
-{
-  std::string field_hex, field_ascii;
-  
-  auto count = buffer.size() - offset;
-  count = (bytesPerLine < count ? bytesPerLine : count);
-
-  for (size_t byte = 0; byte < count; byte++)
+  int get_hex_number(
+    const std::string& message, 
+    const std::string& caption,
+    int value, 
+    int min, 
+    int max,
+    wxWindow *parent)
   {
-    const unsigned char c = buffer[offset + byte];
-
-    char buff[4];
-    sprintf(buff, "%02X ", c);
-    field_hex += buff;
-    field_ascii += wex::printable(c, stc);
+    item::use_config(false);
+    item_dialog dlg({{message, min, max, value}}, 
+      window_data().title(caption).parent(parent));
+    item::use_config(true);
+    
+    ((wxSpinCtrl* )dlg.get_item(message).window())->SetBase(16);
+    
+    return dlg.ShowModal() == wxID_CANCEL ? 
+      -1: std::any_cast<int>(dlg.get_item_value(message));
   }
 
-  const auto field_spaces = std::string(
-    (bytesPerLine - count)* eachHexField,
-    ' ');
-      
-  return field_hex + field_spaces + field_ascii +
-    (buffer.size() - offset > bytesPerLine ?
-       stc->eol(): std::string());
+  const std::string make_line(
+    stc* stc, 
+    const std::string& buffer, 
+    size_t offset,
+    size_t bytesPerLine, 
+    size_t eachHexField)
+  {
+    std::string field_hex, field_ascii;
+    
+    auto count = buffer.size() - offset;
+    count = (bytesPerLine < count ? bytesPerLine : count);
+
+    for (size_t byte = 0; byte < count; byte++)
+    {
+      const unsigned char c = buffer[offset + byte];
+
+      char buff[4];
+      sprintf(buff, "%02X ", c);
+      field_hex += buff;
+      field_ascii += printable(c, stc);
+    }
+
+    const auto field_spaces = std::string(
+      (bytesPerLine - count)* eachHexField,
+      ' ');
+        
+    return field_hex + field_spaces + field_ascii +
+      (buffer.size() - offset > bytesPerLine ?
+         stc->eol(): std::string());
+  }
 }
 
-// If bytesPerLine is changed, update Convert.
 wex::hexmode::hexmode(wex::stc* stc, size_t bytesPerLine)
   : m_stc(stc)
   , m_bytes_per_line(bytesPerLine)
@@ -106,7 +115,7 @@ void wex::hexmode::append_text(const std::string& buffer)
 
   for (size_t offset = 0; offset < buffer.size(); offset += m_bytes_per_line)
   {
-    text += MakeLine(m_stc, buffer, offset, m_bytes_per_line, m_each_hex_field);
+    text += make_line(m_stc, buffer, offset, m_bytes_per_line, m_each_hex_field);
   }
 
   m_stc->append_text(text);
@@ -120,7 +129,7 @@ void wex::hexmode::control_char_dialog(const std::string& caption)
   {
     const wxUniChar value = m_stc->GetSelectedText().GetChar(0);
     
-    if (const int new_value(GetHexNumberFromUser(_("Input") + " 00 - FF",
+    if (const int new_value(get_hex_number(_("Input") + " 00 - FF",
       caption, value, 0, 255, m_stc)); new_value >= 0)
     {
       ml.replace(new_value);
@@ -132,7 +141,7 @@ void wex::hexmode::control_char_dialog(const std::string& caption)
   {
     if (long value; m_stc->GetSelectedText().ToLong(&value, 16))
     {
-      if (const auto new_value(GetHexNumberFromUser(_("Input") + " 00 - FF",
+      if (const auto new_value(get_hex_number(_("Input") + " 00 - FF",
         caption, value, 0, 255, m_stc)); new_value >= 0)
       {
         ml.replace_hex(new_value);

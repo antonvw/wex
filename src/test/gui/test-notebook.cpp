@@ -17,14 +17,14 @@
 
 TEST_CASE("wex::notebook")
 {
-  wex::notebook* notebook = new wex::notebook();
+  auto* notebook = new wex::notebook();
   wex::test::add_pane(frame(), notebook);
   
-  wxWindow* page1 = new wxWindow(frame(), wxID_ANY);
-  wxWindow* page2 = new wxWindow(frame(), wxID_ANY);
-  wxWindow* page3 = new wxWindow(frame(), wxID_ANY);
-  wxWindow* page4 = new wxWindow(frame(), wxID_ANY);
-  wxWindow* page5 = new wxWindow(frame(), wxID_ANY);
+  auto* page1 = new wxWindow(frame(), wxID_ANY);
+  auto* page2 = new wxWindow(frame(), wxID_ANY);
+  auto* page3 = new wxWindow(frame(), wxID_ANY);
+  auto* page4 = new wxWindow(frame(), wxID_ANY);
+  auto* page5 = new wxWindow(frame(), wxID_ANY);
 
   REQUIRE(notebook->add_page(page1, "key1") != nullptr);
   REQUIRE(notebook->add_page(page2, "key2") != nullptr);
@@ -85,9 +85,9 @@ TEST_CASE("wex::notebook")
   {
     REQUIRE(notebook->DeleteAllPages());
 
-    wex::stc* stc_x = new wex::stc(std::string("hello stc"));
-    wex::stc* stc_y = new wex::stc(std::string("hello stc"));
-    wex::stc* stc_z = new wex::stc(std::string("hello stc"));
+    auto* stc_x = new wex::stc(std::string("hello stc"));
+    auto* stc_y = new wex::stc(std::string("hello stc"));
+    auto* stc_z = new wex::stc(std::string("hello stc"));
     
     REQUIRE(notebook->add_page(stc_x, "key1") != nullptr);
     REQUIRE(notebook->add_page(stc_y, "key2") != nullptr);
@@ -114,11 +114,11 @@ TEST_CASE("wex::notebook")
   {
     REQUIRE(notebook->DeleteAllPages());
 
-    wxWindow* pagev = new wxWindow(frame(), wxID_ANY);
+    auto* pagev = new wxWindow(frame(), wxID_ANY);
     REQUIRE( notebook->add_page(pagev, "keyv") != nullptr);
     // split having only one page
     REQUIRE( notebook->split("keyv", wxRIGHT));
-    wxWindow* pagew = new wxWindow(frame(), wxID_ANY);
+    auto* pagew = new wxWindow(frame(), wxID_ANY);
     REQUIRE( notebook->add_page(pagew, "keyw") != nullptr);
     // split using incorrect key
     REQUIRE(!notebook->split("err", wxRIGHT));

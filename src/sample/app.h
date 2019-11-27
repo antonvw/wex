@@ -41,20 +41,23 @@ class frame: public wex::managed_frame
 {
 public:
   frame();
+private:  
   wex::listview* get_listview() override {return m_listview;};
   void on_command_item_dialog(
     wxWindowID id, 
     const wxCommandEvent& event) override;
-protected:
+
   void on_command(wxCommandEvent& event);
-private:
+
   wex::notebook* m_notebook;
   wex::grid* m_grid;
   wex::listview* m_listview;
   wex::process* m_process;
-  wex::stc* m_stc;
-  wex::stc* m_stc_lexers;
   wex::shell* m_shell;
+
+  wex::stc
+    *m_stc,
+    *m_stc_lexers;
 
   long m_flags_stc = 0;
   wex::statistics <int> m_statistics;

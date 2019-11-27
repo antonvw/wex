@@ -75,7 +75,7 @@ bool wex::test::app::OnInit()
 
 int wex::test::app::OnRun()
 {
-  wxTimer* timer = new wxTimer(this);
+  auto* timer = new wxTimer(this);
   timer->StartOnce(1000);
 
   Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {

@@ -229,8 +229,7 @@ void wex::stc::bind_all()
   Bind(wxEVT_LEFT_DCLICK, [=](wxMouseEvent& event) {
     m_margin_text_click = -1;
 
-    if (m_lexer.scintilla_lexer() != "hypertext" ||
-      GetCurLine().Contains("href")) 
+    if (GetCurLine().Contains("href")) 
     {
       if (link_open(link_t().set(LINK_OPEN_MIME)))
       {
@@ -401,11 +400,11 @@ void wex::stc::bind_all()
       auto* date = menu->AppendCheckItem(idMarginTextDate, "&Show Date");
       auto* id = menu->AppendCheckItem(idMarginTextId, "&Show Id");
 
-      if (config("blame_get_author").get(true))
+      if (config("blame.author").get(true))
         author->Check();
-      if (config("blame_get_date").get(true))
+      if (config("blame.date").get(true))
         date->Check();
-      if (config("blame_get_id").get(false))
+      if (config("blame.id").get(false))
         id->Check();
 
       PopupMenu(menu);
@@ -491,7 +490,7 @@ void wex::stc::bind_all()
           config_get();
         }
         
-        guess_type();
+        guess_type_and_modeline();
         log::status(_("Opened")) << get_filename();
         log::verbose("opened", 1) << get_filename();
         [[fallthrough]];
@@ -718,13 +717,13 @@ void wex::stc::bind_all()
     m_data.flags(stc_data::window_t().set(stc_data::WIN_HEX), control_data::XOR).inject();}, idHex);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    config("blame_get_author").set(!config("blame_get_author").get(true));},
+    config("blame", "author").set(!config("blame.author").get(true));},
     idMarginTextAuthor);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    config("blame_get_date").set(!config("blame_get_date").get(true));},
+    config("blame", "date").set(!config("blame.date").get(true));},
     idMarginTextDate);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    config("blame_get_id").set(!config("blame_get_id").get(true));},
+    config("blame", "id").set(!config("blame.id").get(true));},
     idMarginTextId);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SetZoom(++m_zoom);}, idZoomIn);

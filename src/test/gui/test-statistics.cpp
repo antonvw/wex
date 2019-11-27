@@ -15,8 +15,8 @@
 
 TEST_CASE("wex::statistics")
 {
-  wex::statistics<int>* statistics1 = new wex::statistics<int>;
-  wex::statistics<int>* statistics2 = new wex::statistics<int>;
+  auto* statistics1 = new wex::statistics<int>;
+  auto* statistics2 = new wex::statistics<int>;
   
   REQUIRE(statistics1->get().empty());
   REQUIRE(statistics1->get_items().empty());

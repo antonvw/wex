@@ -8,6 +8,7 @@
 #include <chrono>
 #include <numeric>
 #include <functional>
+#include <iomanip> 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -62,7 +63,7 @@ bool app::OnInit()
     return false;
   }
 
-  frame* f = new frame();
+  auto* f = new frame();
   f->Show(true);
   
   wex::log::status("Locale") 
@@ -95,13 +96,13 @@ bool dir::on_file(const wex::path& file)
 
 frame::frame()
   : wex::managed_frame(4)
-  , m_notebook(new wex::notebook())
-  , m_process(new wex::process())
-  , m_stc(new wex::stc())
-  , m_shell(new wex::shell(wex::stc_data(), ">"))
-  , m_stc_lexers(new wex::stc(wex::lexers::get()->get_filename()))
+  , m_notebook(new wex::notebook()) // first!
   , m_grid(new wex::grid(wex::window_data().parent(m_notebook)))
   , m_listview(new wex::listview(wex::window_data().parent(m_notebook)))
+  , m_process(new wex::process())
+  , m_shell(new wex::shell(wex::stc_data(), ">"))
+  , m_stc(new wex::stc())
+  , m_stc_lexers(new wex::stc(wex::lexers::get()->get_filename()))
 {
   wex::process::prepare_output(this);
   
@@ -129,7 +130,7 @@ frame::frame()
   menuEdit->append_separator();
   menuEdit->append(wxID_JUMP_TO);
   menuEdit->append_separator();
-  wex::menu* menuFind = new wex::menu();
+  auto* menuFind = new wex::menu();
   menuFind->append(wxID_FIND);
   menuFind->append(wxID_REPLACE);
   menuEdit->append_submenu(menuFind, _("&Find And Replace"));
@@ -204,11 +205,15 @@ frame::frame()
 
   for (auto i = 0; i < items; i++)
   {
+    std::time_t tm = std::time(nullptr);
+    std::stringstream ss;
+    ss << std::put_time(std::localtime(&tm), "%c");
+
     m_listview->insert_item({
       "item " + std::to_string(i),
       std::to_string(i),
       std::to_string((float)i / 2.0),
-      wxDateTime::Now().Format("%c").ToStdString()});
+      ss.str()});
 
     // Set some images.
     if      (i == 0) m_listview->set_item_image(i, wxART_CDROM);
@@ -263,7 +268,7 @@ frame::frame()
     }}, ID_DLG_CONFIG_ITEM_COL);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wex::item_dialog* dlg = new wex::item_dialog(test_config_items(0, 1), 
+    auto* dlg = new wex::item_dialog(test_config_items(0, 1), 
       wex::window_data().
         title("Config Dialog").
         button(wxAPPLY | wxCANCEL).
@@ -415,7 +420,7 @@ void frame::on_command(wxCommandEvent& event)
     case ID_STC_SPLIT:
       if (editor != nullptr)
       {
-        wex::stc* stc = new wex::stc(editor->get_filename(), 
+        auto* stc = new wex::stc(editor->get_filename(), 
           wex::stc_data().window(wex::window_data().parent(m_notebook)));
         m_notebook->add_page(
           stc,

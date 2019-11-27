@@ -29,7 +29,7 @@ wex::stc::stc(const std::string& text, const stc_data& data)
   if (!text.empty())
   {
     is_hexmode() ? m_hexmode.append_text(text): set_text(text);
-    guess_type();
+    guess_type_and_modeline();
   }
   
   m_data.inject();
@@ -406,17 +406,17 @@ const std::string wex::stc::get_word_at_pos(int pos) const
   }
 }
 
-void wex::stc::guess_type()
+void wex::stc::guess_type_and_modeline()
 {
   // Get a small sample from this document to detect the file mode.
   const auto length(
     (!is_hexmode() ? GetTextLength(): m_hexmode.buffer().size()));
   const auto sample_size ((length > 255 ? 255: length));
-  const std::string text(
+  const auto head(
     (!is_hexmode() ? 
         GetTextRange(0, sample_size).ToStdString(): 
         m_hexmode.buffer().substr(0, sample_size)));
-  const std::string text2(
+  const auto tail(
     (!is_hexmode() ? 
         GetTextRange(length - sample_size, length).ToStdString(): 
         m_hexmode.buffer().substr(length - sample_size, sample_size)));
@@ -427,8 +427,8 @@ void wex::stc::guess_type()
   if (
     const std::string modeline("\\s+vim?:\\s*(set [a-z0-9:= ]+)");
     m_vi.is_active() && 
-     (match(modeline, text, v) > 0 ||
-      match(modeline, text2, v) > 0))
+     (match(modeline, head, v) > 0 ||
+      match(modeline, tail, v) > 0))
   {
     if (!m_vi.command(":" + v[0] + "*")) // add * to indicate modeline
     {
@@ -436,9 +436,9 @@ void wex::stc::guess_type()
     }
   }
 
-  if      (text.find("\r\n") != std::string::npos) SetEOLMode(wxSTC_EOL_CRLF);
-  else if (text.find("\n") != std::string::npos)   SetEOLMode(wxSTC_EOL_LF);
-  else if (text.find("\r") != std::string::npos)   SetEOLMode(wxSTC_EOL_CR);
+  if      (head.find("\r\n") != std::string::npos) SetEOLMode(wxSTC_EOL_CRLF);
+  else if (head.find("\n") != std::string::npos)   SetEOLMode(wxSTC_EOL_LF);
+  else if (head.find("\r") != std::string::npos)   SetEOLMode(wxSTC_EOL_CR);
   else return; // do nothing
 
   frame::update_statusbar(this, "PaneFileType");
@@ -674,7 +674,7 @@ void wex::stc::position_save()
 #if wxUSE_PRINTING_ARCHITECTURE
 void wex::stc::print(bool prompt)
 {
-  wxPrintData* data = printing::get()->get_html_printer()->GetPrintData();
+  auto* data = printing::get()->get_html_printer()->GetPrintData();
   printing::get()->get_printer()->GetPrintDialogData().SetPrintData(*data);
   printing::get()->get_printer()->Print(this, new printout(this), prompt);
 }

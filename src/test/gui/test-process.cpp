@@ -19,7 +19,7 @@ TEST_SUITE_BEGIN("wex::process");
 TEST_CASE("wex::process")
 {
   wex::path cwd;
-  wex::process* process = new wex::process;
+  auto* process = new wex::process;
   process->get_shell()->SetText(std::string());
 
   SUBCASE("constructor")

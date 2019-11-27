@@ -23,7 +23,7 @@ class frame: public wex::report::frame
 {
 public:
   frame();
-protected:
+private:
   wex::report::listview* activate(
     wex::listview_data::type_t type, 
     const wex::lexer* lexer = nullptr) override;
@@ -33,7 +33,7 @@ protected:
   wex::stc* open_file(
     const wex::path& file,
     const wex::stc_data& stc_data = wex::stc_data()) override;
-private:
-  wex::notebook* m_notebookWithLists; ///< all listviews
+
+  wex::notebook* m_notebook;
   wex::stc* m_stc;
 };

@@ -2,14 +2,10 @@
 // Name:      test-itemtpldlg.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wex/itemtpldlg.h>
 #include <wex/item.h>
 #include <wex/report/defs.h>
@@ -34,9 +30,10 @@ TEST_CASE("wex::item_template_dialog")
 {
   wex::item::use_config(false);
 
-  SUBCASE("Basic")
+  SUBCASE("basic")
   {
-    wex::item_template_dialog<wex::testitem>* dlg = new wex::item_template_dialog<wex::testitem>(
+    wex::item_template_dialog<wex::testitem>* dlg = 
+      new wex::item_template_dialog<wex::testitem>(
       std::vector <wex::testitem> {
         {"fruit", "apple"},
         {"button", wex::item::BUTTON},
@@ -68,9 +65,10 @@ TEST_CASE("wex::item_template_dialog")
     dlg->force_checkbox_checked();
   }
 
-  SUBCASE("Test dialog with checkbox item")
+  SUBCASE("dialog_checkbox")
   {
-    wex::item_template_dialog<wex::testitem>* dlg = new wex::item_template_dialog<wex::testitem>(
+    wex::item_template_dialog<wex::testitem>* dlg = 
+      new wex::item_template_dialog<wex::testitem>(
       std::vector <wex::testitem> {{"checkbox", wex::item::CHECKBOX}},
       wex::window_data().title("checkbox items"));
 
@@ -78,9 +76,10 @@ TEST_CASE("wex::item_template_dialog")
     dlg->Show();
   }
 
-  SUBCASE("Test dialog without buttons")
+  SUBCASE("dialog_no_buttons")
   {
-    wex::item_template_dialog<wex::testitem>* dlg = new wex::item_template_dialog<wex::testitem>(
+    wex::item_template_dialog<wex::testitem>* dlg = 
+      new wex::item_template_dialog<wex::testitem>(
       std::vector <wex::testitem> {
         {"string1"},
         {"string2"}},
@@ -88,17 +87,19 @@ TEST_CASE("wex::item_template_dialog")
     dlg->Show();
   }
 
-  SUBCASE("Test dialog without items")
+  SUBCASE("dialog_no_items")
   {
-    wex::item_template_dialog<wex::testitem>* dlg = new wex::item_template_dialog<wex::testitem>(
+    wex::item_template_dialog<wex::testitem>* dlg = 
+      new wex::item_template_dialog<wex::testitem>(
       std::vector <wex::testitem>(),
       wex::window_data().title("no items"));
     dlg->Show();
   }
   
-  SUBCASE("Test dialog with empty items")
+  SUBCASE("dialog_empty_items")
   {
-    wex::item_template_dialog<wex::testitem>* dlg = new wex::item_template_dialog<wex::testitem>(
+    wex::item_template_dialog<wex::testitem>* dlg = 
+      new wex::item_template_dialog<wex::testitem>(
       std::vector <wex::testitem> {{}, {}, {}},
       wex::window_data().title("empty items"));
     dlg->Show();

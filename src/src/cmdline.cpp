@@ -19,7 +19,7 @@ namespace po = boost::program_options;
 
 #define WEX_CALLBACK(TYPE, FIELD)                                    \
   v->second.FIELD(it.second.as<TYPE>());                             \
-  if (save) config(before(it.first, ',')).set(it.second.as<TYPE>()); \
+  if (save) m_cfg.item(before(it.first, ',')).set(it.second.as<TYPE>()); \
 
 namespace wex
 {
@@ -54,8 +54,9 @@ namespace wex
       const std::function<void(bool)> m_fs;
     };
 
-    cmdline_imp(bool add_standard_options)
+    cmdline_imp(bool add_standard_options, config& cfg)
       : m_desc()
+      , m_cfg(cfg)
     {
       m_desc.add_options()
         ("help,h", "displays usage information and exits");
@@ -64,25 +65,16 @@ namespace wex
       {
         m_desc.add_options()
           ("version", "displays version information and exits")
-          ("level,V", po::value<int>()->default_value(1), "activates verbosity upto verbose level (valid range: 1-9)")
+          ("level,V", po::value<int>()->default_value(1), "activates "
+              "verbosity upto verbose level (valid range: 1-9)")
           ("verbose,v", "activates maximum verbosity")
           ("logfile,D", po::value<std::string>(), "sets log file");
-/*
-        {{"logflags,L", "sets log flags\n"
-          "16 (ImmediateFlush): \tFlushes log with every log-entry (performance sensative).\n"
-          "32 (StrictLogFileSizeCheck): \tMakes sure log file size is checked with every log.\n"
-          "64 (ColoredTerminalOutput): \tTerminal output will be colorful if supported by terminal."
-          }, {wex::cmdline::INT, [&](const std::any& s) {              
-          wex::log::set_flags(std::any_cast<int>(s));}}},
-        {{"vmodule,m", "activates verbosity for files starting with main to level"}, {wex::cmdline::STRING, [&](const std::any& s) {}}},
-*/
       }
     };
     
     void add_function(
       const std::string& name, 
-      const function_t& t, 
-      cmdline::option_t c = cmdline::STRING)
+      const function_t& t)
     {
       m_functions.insert({before(name, ','), t});
     }
@@ -116,7 +108,9 @@ namespace wex
           if (m_vm.count("help"))
             std::cout << m_desc;
           else
-            std::cout << wxTheApp->GetAppName() << " " << get_version_info().get() << "\n";
+            std::cout 
+              << wxTheApp->GetAppName() 
+              << " " << get_version_info().get() << "\n";
         }
         else 
         {
@@ -155,25 +149,36 @@ namespace wex
                 case function_t::F_OPTION:
                   switch (v->second.m_type_o)
                   {
-                    case cmdline::FLOAT: WEX_CALLBACK(float, m_fo); break;
-                    case cmdline::INT: WEX_CALLBACK(int, m_fo); break;
-                    case cmdline::STRING: WEX_CALLBACK(std::string, m_fo); break;
+                    case cmdline::FLOAT: WEX_CALLBACK(float, m_fo); 
+                      break;
+
+                    case cmdline::INT: WEX_CALLBACK(int, m_fo); 
+                      break;
+
+                    case cmdline::STRING: WEX_CALLBACK(std::string, m_fo); 
+                      break;
                   }
-                break;
+                  break;
+
                 case function_t::F_PARAM:
                   v->second.m_fp(it.second.as<std::vector<std::string>>());
-                break;
+                  break;
+
                 case function_t::F_SWITCH: 
-                  v->second.m_fs(cmdline::toggle() ? 
-                    config(it.first).get(it.second.as<bool>()): 
-                    it.second.as<bool>());
-                  if (save) 
+                  bool val (it.second.as<bool>());
+
+                  if (cmdline::toggle() && save)
                   {
-                    config(before(it.first, ',')).set(cmdline::toggle() ?
-                      !config(it.first).get(it.second.as<bool>()):
-                       it.second.as<bool>());
+                    val = m_cfg.item(before(it.first, ',')).toggle(val);
                   }
-                break;
+                  
+                  v->second.m_fs(val);
+
+                  if (!cmdline::toggle() && save) 
+                  {
+                    m_cfg.item(before(it.first, ',')).set(val);
+                  }
+                  break;
               }
             }
           }
@@ -192,6 +197,7 @@ namespace wex
     po::options_description m_desc;
     po::positional_options_description m_pos_desc;
     po::variables_map m_vm;
+    config& m_cfg;
   };
 };
 
@@ -208,10 +214,19 @@ namespace wex
        it->first[p_d].c_str());              \
              
 wex::cmdline::cmdline(
-  const cmd_switches_t & s, const cmd_options_t & o, const cmd_params_t & p,
-  bool add_standard_options)
-  : m_parser(new cmdline_imp(add_standard_options))
+  const cmd_switches_t & s, 
+  const cmd_options_t & o, 
+  const cmd_params_t & p,
+  bool add_standard_options,
+  const std::string& prefix)
+  : m_cfg(prefix)
+  , m_parser(new cmdline_imp(add_standard_options, m_cfg))
 {
+  if (!prefix.empty())
+  {
+    m_cfg.child_start();
+  }
+
   try
   {
     const size_t p_n{0}, p_d{1}; // par name, description
@@ -222,7 +237,9 @@ wex::cmdline::cmdline(
       {
         const std::string def_specified = 
           (it->first.size() > 2 ? it->first.back(): std::string("1"));
-        config(before(it->first[p_n], ',')).set((bool)std::stoi(def_specified));
+
+        m_cfg.item(before(it->first[p_n], ',')).
+          set((bool)std::stoi(def_specified));
       }
       
       m_parser->m_desc.add_options()
@@ -237,7 +254,8 @@ wex::cmdline::cmdline(
       const std::string def_specified = 
         (it->first.size() > 2 ? it->first.back(): std::string());
 
-      m_parser->add_function(it->first[p_n], {it->second.second, it->second.first});
+      m_parser->add_function(
+        it->first[p_n], {it->second.second, it->second.first});
 
       switch (it->second.first)
       {

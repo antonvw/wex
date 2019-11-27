@@ -34,8 +34,8 @@ TEST_CASE("wex::frame")
   frame()->set_find_focus(nullptr);
   frame()->set_find_focus(frame());
   
-  wxMenuBar* bar = new wxMenuBar();
-  wex::menu* menu = new wex::menu();
+  auto* bar = new wxMenuBar();
+  auto* menu = new wex::menu();
   menu->append_edit();
   bar->Append(menu, "Edit");
   frame()->SetMenuBar(bar);
@@ -60,7 +60,7 @@ TEST_CASE("wex::frame")
   REQUIRE(!frame()->update_statusbar(frame()->get_stc(), "Pane1"));
   REQUIRE(!frame()->update_statusbar(frame()->get_stc(), "Pane2"));
   
-  wex::stc* stc = new wex::stc();
+  auto* stc = new wex::stc();
   wex::test::add_pane(frame(), stc);
   stc->SetFocus();
   
@@ -83,7 +83,7 @@ TEST_CASE("wex::frame")
     wxID_FIND, wxID_REPLACE, 
     wex::ID_VIEW_MENUBAR, wex::ID_VIEW_STATUSBAR, wex::ID_VIEW_TITLEBAR}) 
   {
-    wxCommandEvent* event = new wxCommandEvent(wxEVT_MENU, id);
+    auto* event = new wxCommandEvent(wxEVT_MENU, id);
     wxQueueEvent(frame(), event);
     wxQueueEvent(frame(), event);
   }

@@ -37,9 +37,17 @@ TEST_CASE("wex::blame")
     const std::string text(""
       "bf5d87cc src/http_travel.cpp (A unknown user 2019-02-01 12:20:06 +0100 15) const std::string& http_travel:get_country()");
     
-    wex::config("blame_get_author").set(true);
-    wex::config("blame_get_date").set(true);
-    wex::config("blame_get_id").set(true);
+    wex::config("blame", "author").set(true);
+    REQUIRE( wex::config("blame.author").get(false));
+
+    wex::config("blame", "date").set(true);
+    REQUIRE( wex::config("blame.author").get(false));
+    REQUIRE( wex::config("blame.date").get(false));
+
+    wex::config("blame", "id").set(true);
+    REQUIRE( wex::config("blame.author").get(false));
+    REQUIRE( wex::config("blame.date").get(false));
+    REQUIRE( wex::config("blame.id").get(false));
     
     REQUIRE(!std::get<0> (blame.get("")));
     REQUIRE(!std::get<0> (blame.get(std::string())));
@@ -50,7 +58,7 @@ TEST_CASE("wex::blame")
     REQUIRE( std::get<2> (blame.get(text)) != wex::lexers::margin_style_t::UNKNOWN );
     REQUIRE( std::get<3> (blame.get(text)) == 14);
     
-    wex::config("blame_get_author").set(false);
+    wex::config("blame", "author").set(false);
     REQUIRE( std::get<1> (blame.get(text)).find("A unknown user") == std::string::npos);
   }
 }

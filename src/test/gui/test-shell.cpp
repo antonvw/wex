@@ -15,7 +15,7 @@
 
 TEST_CASE("wex::shell")
 {
-  wex::shell* shell = new wex::shell();
+  auto* shell = new wex::shell();
   wex::test::add_pane(frame(), shell);
   
   REQUIRE(shell->is_enabled());

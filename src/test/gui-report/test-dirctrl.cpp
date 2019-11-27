@@ -19,14 +19,14 @@ void Test(wex::report::dirctrl* ctrl)
     wex::ID_TREE_RUN_MAKE,
     wex::ID_TOOL_REPORT_FIND})
   {
-    wxCommandEvent* event = new wxCommandEvent(wxEVT_MENU, id);
+    auto* event = new wxCommandEvent(wxEVT_MENU, id);
     wxQueueEvent(ctrl, event);
   }
 }
 
 TEST_CASE("wex::report::dirctrl")
 {
-  wex::report::dirctrl* ctrl = new wex::report::dirctrl(frame());
+  auto* ctrl = new wex::report::dirctrl(frame());
   wex::test::add_pane(frame(), ctrl);
 
   SUBCASE("Select directory")

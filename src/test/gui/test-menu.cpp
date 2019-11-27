@@ -16,7 +16,7 @@
 
 TEST_CASE("wex::menu")
 {
-  wex::menu* menu = new wex::menu;
+  auto* menu = new wex::menu;
   
   // append_separator
   menu->append_separator();
@@ -56,7 +56,7 @@ TEST_CASE("wex::menu")
   menu->style().set(wex::menu::IS_READ_ONLY);
   REQUIRE(menu->style().test(wex::menu::IS_READ_ONLY));
 
-  wxMenuBar *menubar = new wxMenuBar;
+  auto *menubar = new wxMenuBar;
   menubar->Append(menu, "&Menu");
   frame()->SetMenuBar(menubar);
   frame()->Update();

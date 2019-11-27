@@ -15,11 +15,11 @@
 #include <wex/filedlg.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
+#include <wex/macros.h>
 #include <wex/menu.h>
 #include <wex/stc.h>
 #include <wex/util.h>
 #include <wex/vcs.h>
-#include <wex/vi-macros.h>
 #include <wex/report/listviewfile.h>
 #ifndef __WXMSW__
 #include "app.xpm"
@@ -147,7 +147,7 @@ decorated_frame::decorated_frame(app* app)
   menuMacro->append_separator();
   menuMacro->append(ID_EDIT_MACRO_PLAYBACK, wex::ellipsed(_("Playback")));
   
-  if (wex::vi_macros::get_filename().file_exists())
+  if (wex::ex::get_macros().get_filename().file_exists())
   {
     menuMacro->append_separator();
     menuMacro->append(ID_EDIT_MACRO, wxGetStockLabel(wxID_EDIT));

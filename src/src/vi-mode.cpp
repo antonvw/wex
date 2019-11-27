@@ -14,11 +14,11 @@
 #include <wex/vi-mode.h>
 #include <wex/config.h>
 #include <wex/log.h>
+#include <wex/macro-mode.h>
+#include <wex/macros.h>
 #include <wex/managedframe.h>
 #include <wex/stc.h>
 #include <wex/vi.h>
-#include <wex/vi-macros.h>
-#include <wex/vi-macros-mode.h>
 
 namespace mpl = boost::mpl;
 namespace sc = boost::statechart;
@@ -71,7 +71,7 @@ namespace wex
         case vi_mode::state_t::VISUAL:      return "visual";
         case vi_mode::state_t::VISUAL_LINE: return "visual line";
         case vi_mode::state_t::VISUAL_RECT: return "visual rect";
-        default: return vi_macros::mode()->str();
+        default: return ex::get_macros().mode().str();
       }};
   private:
     std::string m_command;
@@ -320,7 +320,7 @@ bool wex::vi_mode::transition(std::string& command)
 
   ((statusbar *)m_vi->frame()->GetStatusBar())->show_field(
     "PaneMode", 
-    (!normal() || vi_macros::mode()->is_recording()) && 
+    (!normal() || ex::get_macros().mode().is_recording()) && 
        config(_("Show mode")).get(false));
 
   frame::statustext(str(), "PaneMode");

@@ -2096,7 +2096,7 @@ Copyright: (c) 2019, Anton van Wezenbeek
         <def style ="preprocessor"> fore:grey </def>
         <def style ="processor"> fore:dark grey </def>
         <def style ="string"> fore:#ffab8f </def>
-        <def style ="styledefault"> default-font,back:gray 18,fore:ivory 2 </def>
+        <def style ="styledefault"> default-font,back:gray 18,fore:ivory 3 </def>
         <def style ="styledefault-back"> default-font,back:gray 18,fore:gray 73,eol </def>
         <def style ="stylelinenumber"> fore:grey </def>
         <def style ="styleindicatordebug"> blue </def>
@@ -3510,7 +3510,7 @@ Copyright: (c) 2019, Anton van Wezenbeek
     <keywords set-0="css1" set-2="css2" set-3="css3"/>
   </lexer>
   <lexer name="d"/> 
-  <lexer name="diff" extensions="*.diff" edgemode="none">
+  <lexer name="diff" extensions="*.diff;*.patch" edgemode="none">
     <styles>
     <style no="header"> fore:grey </style> 
     <style no="position"> fore:steel blue </style> 

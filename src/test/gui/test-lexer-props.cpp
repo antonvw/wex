@@ -6,10 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <regex>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wex/lexer-props.h>
 #include "test.h"
 

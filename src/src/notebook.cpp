@@ -23,20 +23,28 @@ wex::notebook::notebook(const window_data& data)
         data.style())
   , m_frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
 {
-  // Here you could use another art provider.
-  // SetArtProvider(new wxAuiSimpleTabArt); 
+  SetArtProvider(new wxAuiSimpleTabArt); 
 
   switch (data.id())
   {
     case ID_NOTEBOOK_EDITORS:
       SetFont(config(_("Tab font")).get(
-        wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT))); break;
+        wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT))); 
+      break;
+
     case ID_NOTEBOOK_LISTS:
       SetFont(config(_("List tab font")).get(
-        wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT))); break;
+        wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT))); 
+      break;
+
     case ID_NOTEBOOK_PROJECTS:
       SetFont(config(_("Project tab font")).get(
-        wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT))); break;
+        wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT))); 
+      break;
+    
+    default:
+      // other notebooks no default font
+      ;
   }
   
   Bind(wxEVT_AUINOTEBOOK_PAGE_CHANGED, [=](wxAuiNotebookEvent& event) {

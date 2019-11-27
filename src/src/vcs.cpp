@@ -101,7 +101,7 @@ int wex::vcs::config_dialog(const window_data& par) const
   if (const window_data data(window_data(par).
     title(_("Set VCS").ToStdString())); data.button() & wxAPPLY)
   {
-    item_dialog* dlg = new item_dialog(v, data);
+    auto* dlg = new item_dialog(v, data);
     return dlg->Show();
   }
   else

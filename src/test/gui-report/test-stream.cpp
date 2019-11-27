@@ -13,7 +13,7 @@ TEST_CASE("wex::report::stream")
 {
   wex::tool tool(wex::ID_TOOL_REPORT_FIND);
 
-  wex::listview* report = new wex::listview(wex::listview_data().type(wex::listview_data::FIND));
+  auto* report = new wex::listview(wex::listview_data().type(wex::listview_data::FIND));
     
   wex::test::add_pane(frame(), report);
 

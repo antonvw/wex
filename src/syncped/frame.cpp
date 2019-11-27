@@ -17,6 +17,8 @@
 #include <wex/filedlg.h>
 #include <wex/itemdlg.h>
 #include <wex/lexers.h>
+#include <wex/macros.h>
+#include <wex/macro-mode.h>
 #include <wex/menu.h>
 #include <wex/menus.h>
 #include <wex/printing.h>
@@ -28,8 +30,6 @@
 #include <wex/util.h>
 #include <wex/vcs.h>
 #include <wex/version.h>
-#include <wex/vi-macros.h>
-#include <wex/vi-macros-mode.h>
 #include <wex/report/listviewfile.h>
 #include "frame.h"
 #include "app.h"
@@ -154,9 +154,9 @@ frame::frame(app* app)
 
   // Regardless of the perspective initially hide the next panels.
   manager().GetPane("OUTPUT").Hide();
-  
+
   hide_ex_bar();
-  
+
   if (!m_app->get_tag().empty())
   {
     wex::ctags::find(m_app->get_tag());
@@ -168,7 +168,15 @@ frame::frame(app* app)
       wex::open_files(this, file_history().get_history_files(count), 
         m_app->data());
     }
-      
+    else
+    {
+      auto* page = new wex::stc(std::string(),
+        wex::stc_data(m_app->data()).window(wex::window_data().
+          parent(m_editors)));
+      page->get_file().file_new("no name");
+      m_editors->add_page(page, "no name", std::string(), true);
+    }
+
     if (wex::config("ShowProjects").get(false) && 
       !get_project_history().get_history_file().empty())
     {
@@ -297,7 +305,7 @@ frame::frame(app* app)
       }
     }
 
-    wex::vi_macros::save_document();
+    wex::ex::get_macros().save_document();
 
     wex::config("Perspective").set(manager().SavePerspective().ToStdString());
     wex::config("OpenFiles").set(count);
@@ -375,7 +383,7 @@ frame::frame(app* app)
     wex::ID_ALL_CLOSE, wex::ID_ALL_SAVE);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    open_file(wex::vi_macros::get_filename());}, ID_EDIT_MACRO);
+    open_file(wex::ex::get_macros().get_filename());}, ID_EDIT_MACRO);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (get_stc() != nullptr)
@@ -676,7 +684,7 @@ bool frame::exec_ex_command(wex::ex_command& command)
       handled = true;
     }
 
-    if (handled && wex::ex::get_macros().mode()->is_playback())
+    if (handled && wex::ex::get_macros().mode().is_playback())
     {
       command.set(((wex::stc *)m_editors->GetPage(
         m_editors->GetSelection()))->get_vi().get_command());
@@ -795,9 +803,9 @@ void frame::on_command(wxCommandEvent& event)
       {
         wex::vcs::load_document();
       }
-      else if (editor->get_filename() == wex::vi_macros::get_filename())
+      else if (editor->get_filename() == wex::ex::get_macros().get_filename())
       {
-        wex::vi_macros::load_document();
+        wex::ex::get_macros().load_document();
       }
     }
     break;
@@ -850,13 +858,13 @@ void frame::on_command(wxCommandEvent& event)
 
   case ID_EDIT_MACRO_PLAYBACK: 
     if (editor != nullptr) 
-      editor->get_vi().get_macros().mode()->transition(
+      editor->get_vi().get_macros().mode().transition(
         "@", &editor->get_vi(), true); 
     break;
   case ID_EDIT_MACRO_START_RECORD: 
   case ID_EDIT_MACRO_STOP_RECORD: 
     if (editor != nullptr) 
-      editor->get_vi().get_macros().mode()->transition(
+      editor->get_vi().get_macros().mode().transition(
         "q", &editor->get_vi(), true); 
     break;
   
@@ -1026,8 +1034,8 @@ void frame::on_update_ui(wxUpdateUIEvent& event)
         case ID_EDIT_MACRO:
           event.Enable(
              editor->get_vi().is_active() &&
-            !editor->get_vi().get_macros().mode()->is_recording() &&
-             wex::vi_macros::get_filename().file_exists());
+            !editor->get_vi().get_macros().mode().is_recording() &&
+             wex::ex::get_macros().get_filename().file_exists());
           break;
         case ID_EDIT_MACRO_MENU:
           event.Enable(
@@ -1037,15 +1045,15 @@ void frame::on_update_ui(wxUpdateUIEvent& event)
           event.Enable(
              editor->get_vi().is_active() &&
              editor->get_vi().get_macros().size() > 0 &&
-            !editor->get_vi().get_macros().mode()->is_recording());
+            !editor->get_vi().get_macros().mode().is_recording());
           break;
         case ID_EDIT_MACRO_START_RECORD:
           event.Enable(
              editor->get_vi().is_active() && 
-            !editor->get_vi().get_macros().mode()->is_recording());
+            !editor->get_vi().get_macros().mode().is_recording());
           break;
         case ID_EDIT_MACRO_STOP_RECORD:
-          event.Enable(editor->get_vi().get_macros().mode()->is_recording());
+          event.Enable(editor->get_vi().get_macros().mode().is_recording());
           break;
 
         case wxID_SAVE:
@@ -1208,9 +1216,9 @@ wex::stc* frame::open_file(const wex::path& filename, const wex::stc_data& data)
       show_pane("FILES");
     }
 
-    if (filename == wex::vi_macros::get_filename())
+    if (filename == wex::ex::get_macros().get_filename())
     {
-      wex::vi_macros::save_document();
+      wex::ex::get_macros().save_document();
     }
     
     auto* editor = (wex::stc*)page;
@@ -1347,7 +1355,7 @@ void frame::statusbar_clicked(const std::string& pane)
   else if (pane == "PaneMacro")
   {
     if (auto* editor = get_stc(); editor != nullptr) 
-      editor->get_vi().get_macros().mode()->transition(
+      editor->get_vi().get_macros().mode().transition(
         "@", &editor->get_vi(), true);
   }
   else if (pane == "PaneTheme")
@@ -1390,7 +1398,7 @@ void frame::statusbar_clicked_right(const std::string& pane)
   {
     if (auto* stc = get_stc(); stc != nullptr)
     {
-      wxMenu* menu = new wxMenu();
+      auto* menu = new wxMenu();
       menu->Append(idEditPaneInfoToggle, 
         stc->is_shown_line_numbers() ? "&Hide": "&Show");
       PopupMenu(menu);
@@ -1435,9 +1443,9 @@ void frame::statusbar_clicked_right(const std::string& pane)
   }
   else if (pane == "PaneMacro")
   {
-    if (wex::vi_macros::get_filename().file_exists())
+    if (wex::ex::get_macros().get_filename().file_exists())
     {
-      open_file(wex::vi_macros::get_filename(),
+      open_file(wex::ex::get_macros().get_filename(),
         wex::control_data().find(!get_statustext(pane).empty() ? 
           " name=\"" + get_statustext(pane) + "\"":
           std::string()));

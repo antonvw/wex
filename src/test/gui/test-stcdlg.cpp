@@ -5,17 +5,13 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wex/stcdlg.h>
 #include <wex/stc.h>
 #include "test.h"
 
 TEST_CASE("wex::stc_entry_dialog")
 {
-  wex::stc_entry_dialog* dlg1 = new wex::stc_entry_dialog("hello1", "testing1");
+  auto* dlg1 = new wex::stc_entry_dialog("hello1", "testing1");
   
   REQUIRE( dlg1->get_stc()->GetText() == "hello1");
   REQUIRE(!dlg1->get_stc()->get_lexer().set("xxx"));

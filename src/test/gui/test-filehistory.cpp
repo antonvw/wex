@@ -5,10 +5,6 @@
 // Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wex/file.h>
 #include <wex/filehistory.h>
 #include <wex/managedframe.h>
@@ -23,7 +19,7 @@ TEST_CASE("wex::file_history")
     history.clear();
     REQUIRE( history.size() == 0);
     
-    wex::menu* menu = new wex::menu();
+    auto* menu = new wex::menu();
     menu->Append(1, "x");
     menu->Append(2, "y");
 

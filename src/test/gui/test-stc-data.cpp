@@ -11,7 +11,7 @@
 
 TEST_CASE("wex::stc_data")
 {
-  wex::stc* stc = get_stc();
+  auto* stc = get_stc();
 
   SUBCASE("Default constructor")
   {

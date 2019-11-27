@@ -18,7 +18,7 @@ mkdir build && cd build
 cmake .. && make
 ```
 
-For Visual Studio add `set CL=/Zc:__cplusplus` before invoking cmake and do 
+For Visual Studio 2019 do 
   `devenv wex.sln /Build Release`,
 for mingw add `-G "MinGW Makefiles"` and do `mingw32-make`, for osx do 
 `brew install llvm@8` and `. ci/use-clang.sh` before invoking cmake.

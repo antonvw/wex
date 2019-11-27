@@ -36,7 +36,7 @@ TEST_CASE("wex::report::listview")
     wex::ID_LIST_COMPARE, 
     wex::ID_LIST_RUN_MAKE}) 
   {
-    wxCommandEvent* event = new wxCommandEvent(wxEVT_MENU, id);
+    auto* event = new wxCommandEvent(wxEVT_MENU, id);
     wxQueueEvent(listView, event);
   }
 #endif

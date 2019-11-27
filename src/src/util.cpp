@@ -28,6 +28,7 @@
 #include <wex/lexer.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
+#include <wex/macros.h>
 #include <wex/managedframe.h>
 #include <wex/path.h>
 #include <wex/process.h>
@@ -35,7 +36,6 @@
 #include <wex/tokenizer.h>
 #include <wex/tostring.h>
 #include <wex/vcs.h>
-#include <wex/vi-macros.h>
 
 const std::string wex::after(
   const std::string& text, char c, bool first)
@@ -63,7 +63,7 @@ const std::string wex::align_text(
 
   while (!in.empty())
   {
-    if (const auto word = get_word(in, false, false);
+    if (const auto word = get_word(in);
       line.size() + 1 + word.size() > line_length)
     {
       out += lexer.make_single_line_comment(line, fill_out_with_space, fill_out) + "\n";
@@ -389,6 +389,7 @@ std::tuple <bool, time_t> wex::get_time(
   
   if (ss.fail())
   {
+    wex::log("get_time") << ss << "format:" << format;
     return {false, 0};
   }
   
@@ -398,18 +399,15 @@ std::tuple <bool, time_t> wex::get_time(
   return {true, t};
 }
 
-const std::string wex::get_word(std::string& text,
-  bool use_other_field_separators,
-  bool use_path_separator)
+const std::string wex::get_word(std::string& text)
 {
   std::string field_separators = " \t";
-  if (use_other_field_separators) field_separators += ":";
-  if (use_path_separator) field_separators = wxFILE_SEP_PATH;
   std::string token;
   tokenizer tkz(text, field_separators);
   if (tkz.has_more_tokens()) token = tkz.get_next_token();
   text = tkz.get_string();
   text = trim(text, skip_t().set(TRIM_LEFT));
+
   return token;
 }
 
@@ -429,7 +427,7 @@ bool wex::is_codeword_separator(int c)
 
 long wex::make(const path& makefile)
 {
-  wex::process* process = new wex::process;
+  auto* process = new wex::process;
 
   return process->execute(
     config("Make").get("make") + " " +
@@ -593,12 +591,9 @@ int wex::open_files(
         }
       }
 
+      count++;
       fn.make_absolute();
-      
-      if (frame->open_file(fn, data) != nullptr)
-      {
-        count++;
-      }
+      frame->open_file(fn, data);
     }
   }
   

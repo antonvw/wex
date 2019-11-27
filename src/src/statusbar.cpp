@@ -169,7 +169,7 @@ wex::statusbar* wex::statusbar::setup(
         m_panes.size(), style, ID_UPDATE_STATUS_BAR, name):
     (statusbar *)frame->GetStatusBar());
 
-  std::vector <std::tuple<std::string, int, int>> sb_def;
+  config::statusbar_t sb_def;
   
   for (const auto& it : m_panes)
   {
@@ -179,8 +179,8 @@ wex::statusbar* wex::statusbar::setup(
   const auto sb_config(config("Statusbar").get(sb_def));
   config("Statusbar").set(sb_config);
 
-  int* styles = new int[sb_config.size()];
-  int* widths = new int[sb_config.size()];
+  auto* styles = new int[sb_config.size()];
+  auto* widths = new int[sb_config.size()];
 
   int i = 0;
   for (const auto& it: sb_config)

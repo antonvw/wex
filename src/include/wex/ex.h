@@ -18,18 +18,18 @@
 namespace wex
 {
   class ctags;
+  class macros;
+  class macro_mode;
   class managed_frame;
   class stc;
   class stc_entry_dialog;
-  class vi_macros;
-  class vi_macros_mode;
 
   enum class info_message_t;
 
   /// Offers a class that adds ex editor to wex::stc.
   class ex
   {
-    friend class vi_macros_mode;
+    friend class macro_mode;
   public:
     /// Constructor. 
     /// Sets ex mode.
@@ -150,12 +150,12 @@ namespace wex
     void info_message(const std::string& text, info_message_t type) const;
 
     template <typename S, typename T>
-    std::string report_container(const T * container) const;
+    std::string report_container(const T & container) const;
 
     void show_dialog(
       const std::string& title, 
       const std::string& text, 
-      bool prop_lexer = false);
+      const std::string& lexer = std::string());
       
     const marker m_marker_symbol = marker(0);
     const std::vector<std::pair<
@@ -163,7 +163,7 @@ namespace wex
       std::function<bool(const std::string& command)>>> m_commands;
 
     static inline stc_entry_dialog* m_dialog = nullptr;
-    static vi_macros m_macros;
+    static macros m_macros;
 
     bool 
       m_auto_write {false},

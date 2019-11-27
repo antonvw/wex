@@ -20,7 +20,7 @@ TEST_CASE("wex::debug")
   wex::process process;
   wex::debug dbg(frame(), &process);
   wex::menu menu;
-  wex::stc* stc = get_stc();
+  auto* stc = get_stc();
   
   if (stc != nullptr)
   {

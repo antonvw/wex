@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      vi-macros-fsm.cpp
-// Purpose:   Implementation of class wex::vi_macros_fsm
+// Name:      macro-fsm.cpp
+// Purpose:   Implementation of class wex::macro_fsm
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,67 +14,55 @@
 #include <wex/ex.h>
 #include <wex/config.h>
 #include <wex/log.h>
+#include <wex/macros.h>
+#include <wex/macro-mode.h>
 #include <wex/managedframe.h>
 #include <wex/stc.h>
 #include <wex/util.h>
 #include <wex/variable.h>
-#include <wex/vi-macros.h>
-#include "vi-macros-fsm.h"
+#include "macro-fsm.h"
 
 namespace mpl = boost::mpl;
 
 namespace wex
 {
-  struct ssACTIVE : sc::simple_state < ssACTIVE, vi_macros_fsm, ssIDLE > {;};
+  struct ssACTIVE : sc::simple_state < ssACTIVE, macro_fsm, ssIDLE > {;};
 
   struct ssIDLE : sc::state< ssIDLE, ssACTIVE >
   {
-    typedef sc::transition< vi_macros_fsm::evRECORD, ssRECORDING > reactions;
+    typedef sc::transition< macro_fsm::evRECORD, ssRECORDING > reactions;
 
     ssIDLE(my_context ctx) : my_base ( ctx )
     {
-      context< vi_macros_fsm >().state(vi_macros_fsm::IDLE);
+      context< macro_fsm >().state(macro_fsm::IDLE);
     }
   };
 
   struct ssRECORDING : sc::state < ssRECORDING, ssACTIVE > 
   {
-    typedef sc::custom_reaction< vi_macros_fsm::evRECORD > reactions;
+    typedef sc::custom_reaction< macro_fsm::evRECORD > reactions;
 
     ssRECORDING(my_context ctx) : my_base ( ctx )
     {
-      log::verbose("vi macro") << "recording" << vi_macros::get_macro();
-      log::status(_("Macro recording"));
-      
-      context< vi_macros_fsm >().state(vi_macros_fsm::RECORDING);
+      context< macro_fsm >().state(macro_fsm::RECORDING);
     };
 
-    sc::result react( const vi_macros_fsm::evRECORD &) 
+    sc::result react( const macro_fsm::evRECORD &) 
     {
-      if (!vi_macros::get(vi_macros::get_macro()).empty())
-      {
-        vi_macros::save_macro(vi_macros::get_macro());
-        log::status("Macro") << vi_macros::get_macro() << "is recorded";
-      }
-      else
-      {
-        log::verbose("Macro") << vi_macros::get_macro() << "not recorded";
-        vi_macros::erase();
-        log::status(std::string());
-      }
-
+      context< macro_fsm >().recorded();
       return transit< ssIDLE >();
     };
   };
 }
 
-wex::vi_macros_fsm::vi_macros_fsm()
+wex::macro_fsm::macro_fsm(macro_mode* mode)
+  : m_mode(mode)
 {
   initiate();
 }
 
-bool wex::vi_macros_fsm::expand_template(
-  const variable& var, ex* ex, std::string& expanded) const
+bool wex::macro_fsm::expand_template(
+  const variable& var, ex* ex, std::string& expanded)
 {
   if (
     ex == nullptr ||
@@ -152,41 +140,32 @@ bool wex::vi_macros_fsm::expand_template(
   // Set back to normal value.  
   set_ask_for_input();
     
-  vi_macros::m_macro = var.get_name();
-  frame::statustext(vi_macros::m_macro, "PaneMacro");
+  m_macro = var.get_name();
+  frame::statustext(m_macro, "PaneMacro");
     
   log::status(_("Macro expanded"));
 
   return !error;
 }
 
-bool wex::vi_macros_fsm::expand_variable(const std::string& name, ex* ex) const
+bool wex::macro_fsm::expand_variable(
+  const std::string& name, ex* ex) const
 {
-  if (!expanding_variable(ex, name, nullptr))
-  {
-    return false;
-  }
-
-  if (m_state != RECORDING)
-  {
-    vi_macros::set_macro(name);
-  }
-  
-  return true;
+  return expanding_variable(ex, name, nullptr);
 }
 
-bool wex::vi_macros_fsm::expanding_variable(
+bool wex::macro_fsm::expanding_variable(
   ex* ex, const std::string& name, std::string* value) const
 {
   pugi::xml_node node;
   variable* var;
     
-  if (const auto& it = vi_macros::m_variables->find(name);
-    it == vi_macros::m_variables->end())
+  if (auto it = m_mode->get_macros()->m_variables.find(name);
+    it == m_mode->get_macros()->m_variables.end())
   {
-    const auto& itn = vi_macros::m_variables->insert({name, variable(name)});
+    const auto& itn = m_mode->get_macros()->m_variables.insert({name, variable(name)});
     var = &itn.first->second;
-    node = vi_macros::m_doc->document_element().append_child("variable");
+    node = m_mode->get_macros()->m_doc.document_element().append_child("variable");
   }
   else
   {
@@ -194,10 +173,10 @@ bool wex::vi_macros_fsm::expanding_variable(
 
     try
     {
-      // node = vi_macros::m_doc.document_element().child(name.c_str());
+      // node = m_mode->get_macros()->m_doc.document_element().child(name.c_str());
       const std::string query("//variable[@name='" + name + "']");
 
-      if (auto xp = vi_macros::m_doc->document_element().select_node(query.c_str());
+      if (auto xp = m_mode->get_macros()->m_doc.document_element().select_node(query.c_str());
         xp && xp.node())
       {
         node = xp.node();
@@ -228,14 +207,14 @@ bool wex::vi_macros_fsm::expanding_variable(
   }
 
   var->set_ask_for_input(false);
-  vi_macros::m_is_modified = true;
+  m_mode->get_macros()->m_is_modified = true;
   var->save(node, value);
   log::status(_("Variable expanded"));
 
   return true;
 }
 
-void wex::vi_macros_fsm::playback(const std::string& macro, ex* ex, int repeat)
+void wex::macro_fsm::playback(const std::string& macro, ex* ex, int repeat)
 {
   assert(ex != nullptr);
 
@@ -244,7 +223,7 @@ void wex::vi_macros_fsm::playback(const std::string& macro, ex* ex, int repeat)
     return;
   }
   
-  if (m_playback && macro == vi_macros::m_macro)
+  if ((m_playback || m_state == RECORDING) && macro == m_macro)
   {
     log("recursive playback") << macro;
     return;
@@ -255,11 +234,16 @@ void wex::vi_macros_fsm::playback(const std::string& macro, ex* ex, int repeat)
   m_playback = true;
   bool error = false;
   
-  const auto& macro_commands((*vi_macros::m_macros)[macro]);
+  if (m_state == IDLE)
+  {
+    m_macro = macro;
+  }
+  
+  const auto& commands(m_mode->get_macros()->get_macro_commands(macro));
 
   for (int i = 0; i < repeat && !error; i++)
   {
-    for (const auto& it : macro_commands)
+    for (const auto& it : commands)
     { 
       if (!ex->command(it))
       {
@@ -274,24 +258,23 @@ void wex::vi_macros_fsm::playback(const std::string& macro, ex* ex, int repeat)
 
   if (!error)
   {
-    if (m_state != RECORDING)
-    {
-      vi_macros::m_macro = macro;
-    }
-
     log::status(_("Macro played back"));
   }
   
   m_playback = false;
 }
 
-void wex::vi_macros_fsm::record(const std::string& macro, ex* ex)
+void wex::macro_fsm::record(const std::string& macro, ex* ex)
 {
-  m_macro = macro;
+  // an empty macro is used to stop recording
+  if (!macro.empty())
+  {
+    m_macro = macro;
+  }
 
-  process_event(vi_macros_fsm::evRECORD());
+  process_event(macro_fsm::evRECORD());
 
-  frame::statustext(vi_macros::m_macro, "PaneMacro");
+  frame::statustext(m_macro, "PaneMacro");
   frame::statustext(str(), "PaneMode");
 
   if (ex != nullptr)
@@ -302,42 +285,62 @@ void wex::vi_macros_fsm::record(const std::string& macro, ex* ex)
   }
 }
 
-void wex::vi_macros_fsm::set_ask_for_input() const
+void wex::macro_fsm::recorded()
 {
-  for (auto& it : *vi_macros::m_variables)
+  if (m_macro.empty())
+  {
+    log("empty macro recorded");
+  }
+  else if (!m_mode->get_macros()->get(m_macro).empty())
+  {
+    m_mode->get_macros()->save_macro(m_macro);
+    log::status("Macro") << m_macro << "is recorded";
+  }
+  else
+  {
+    log::verbose("Macro") << m_macro << "not recorded";
+    m_mode->get_macros()->erase();
+    m_macro.clear();
+    log::status(std::string());
+  }
+}
+  
+void wex::macro_fsm::set_ask_for_input() const
+{
+  for (auto& it : m_mode->get_macros()->m_variables)
   {
     it.second.set_ask_for_input();
   }
 }
 
-void wex::vi_macros_fsm::state(state_t s)
+void wex::macro_fsm::state(state_t s)
 {
   m_state = s;
   
   if (s == RECORDING)
   {
-    vi_macros::m_is_modified = true;
-    vi_macros::m_macro = m_macro;
-    
+    log::verbose("vi macro") << "recording" << m_macro;
+    log::status(_("Macro recording"));
+      
     if (m_macro.size() == 1)
     {
-      // We only use lower case macro's, to be able to
-      // append to them using.
-      std::transform(
-        vi_macros::m_macro.begin(), 
-        vi_macros::m_macro.end(), 
-        vi_macros::m_macro.begin(), ::tolower);
-    
       // Clear macro if it is lower case
       // (otherwise append to the macro).
       if (islower(m_macro[0]))
       {
-        (*vi_macros::m_macros)[vi_macros::m_macro].clear();
+        m_mode->get_macros()->m_macros[m_macro].clear();
       }
+
+      // We only use lower case macro's, to be able to
+      // append to them using.
+      std::transform(
+        m_macro.begin(), 
+        m_macro.end(), 
+        m_macro.begin(), ::tolower);
     }
     else
     {
-      (*vi_macros::m_macros)[vi_macros::m_macro].clear();
+      m_mode->get_macros()->m_macros[m_macro].clear();
     }
   }
 }

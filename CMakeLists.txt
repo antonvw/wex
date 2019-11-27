@@ -25,10 +25,6 @@ execute_process(
   COMMAND git apply ../wxWidgets.patch
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets)
 
-execute_process(
-  COMMAND git apply ../json.patch
-  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/external/json)
-
 configure_file(
   src/src/lexers/LexAda.cxx 
   ${CMAKE_SOURCE_DIR}/external/wxWidgets/src/stc/scintilla/lexers COPYONLY)

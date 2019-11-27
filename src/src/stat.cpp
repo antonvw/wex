@@ -17,7 +17,7 @@
 #include <unistd.h>
 #endif
 
-// See also GetTime in listview.cpp
+// See also get_time in listview.cpp
 const std::string wex::file_stat::get_modification_time(
   const std::string& format) const 
 {

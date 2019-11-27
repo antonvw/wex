@@ -36,8 +36,8 @@ TEST_CASE("wex::tool_dir")
 
 TEST_CASE("wex::report::dir")
 {
-  wex::report::file* file = new wex::report::file(get_project());
+  auto* file = new wex::report::file(get_project());
   wex::test::add_pane(frame(), file);
-  wex::report::dir* dir = new wex::report::dir(file, wex::test::get_path());  
+  auto* dir = new wex::report::dir(file, wex::test::get_path());  
   REQUIRE(dir->find_files() == 0);
 }

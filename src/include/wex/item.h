@@ -30,7 +30,8 @@ namespace wex
   /// Container class for using with item_dialog.
   /// The next items can be set using specified control data:
   /// - id: as used by the window, see frame::on_command_item_dialog, 
-  /// - is_required: ensures that the control must have a value otherwise OK, APPLY is not enabled,
+  /// - is_required: ensures that the control must have a value otherwise OK, 
+  ///   APPLY is not enabled,
   /// - style: the default value is translated to correct default
   /// 
   /// For corresponding window (such as wxFLP_DEFAULT_STYLE for FILEPICKERCTRL)
@@ -54,6 +55,7 @@ namespace wex
       EMPTY,              ///< an empty item
       FILEPICKERCTRL,     ///< a wxFilePickerCtrl item
       FONTPICKERCTRL,     ///< a wxFontPickerCtrl item
+      GRID,               ///< a wex::grid item
       HYPERLINKCTRL,      ///< a wxHyperlinkCtrl item
       LISTVIEW,           ///< a wex::listview item
       NOTEBOOK,           ///< a wxNotebook item
@@ -71,7 +73,7 @@ namespace wex
       SPINCTRLDOUBLE,     ///< a wxSpinCtrlDouble item
       STATICLINE,         ///< a wxStaticLine item
       STATICTEXT,         ///< a wxStaticText item
-      STC,                ///< a wex::stc ctrl item  
+      STC,                ///< a wex::stc item  
       TEXTCTRL,           ///< a wxTextCtrl item
       TEXTCTRL_FLOAT,     ///< a wxTextCtrl item that only accepts a float (double)
       TEXTCTRL_INT,       ///< a wxTextCtrl item that only accepts an integer (long)
@@ -90,7 +92,7 @@ namespace wex
     /// Choices for radioboxes.
     typedef std::map<long, const std::string> choices_t;
       
-    /// This is vector of a pair of pages with a vector of items.
+    /// This is a vector of a pair of pages with a vector of items.
     typedef std::vector<std::pair<std::string, std::vector<item>>> 
       items_notebook_t;
     
@@ -110,7 +112,11 @@ namespace wex
     typedef std::function<bool(wxWindow* user, bool save)> 
       user_window_to_config_t;
 
-    /// Default constructor for a EMPTY item.
+    /// Use config for getting and retrieving values.
+    /// Default the config is used.
+    static void use_config(bool use) {m_use_config = use;};
+    
+    /// Default constructor for an EMPTY item.
     item() : item(EMPTY, std::string()) {;};
 
     /// Constructor for a SPACER item.
@@ -129,9 +135,11 @@ namespace wex
       /// might also contain the note after a tab for a command link button
       /// if the window supports it you can use a markup label
       const std::string& label,
-      /// initial value, also used as default for a hyperlink ctrl, or as lexer for STC
+      /// initial value, also used as default for a hyperlink ctrl, 
+      /// or as lexer for STC
       const std::string& value = std::string(),
       /// type of this item:
+      /// - GRID
       /// - HYPERLINKCTRL
       /// - STATICTEXT
       /// - STC
@@ -150,7 +158,7 @@ namespace wex
         {m_apply = apply;
          m_data = data;};
 
-    /// Constructor for spin items.
+    /// Constructor for a SPINCTRL or a SLIDER item.
     item(
       /// label for this item
       const std::string& label,
@@ -426,11 +434,8 @@ namespace wex
     /// Returns the type.
     auto type() const {return m_type;};
     
-    /// Use config for getting and retrieving values.
-    /// Default the config is used.
-    static void use_config(bool use) {m_use_config = use;};
-    
-    /// Returns the window (first call layout, to create it, otherwise it is nullptr).
+    /// Returns the window (first call layout, to create it, 
+    /// otherwise it is nullptr).
     auto* window() const {return m_window;};
   protected:
     /// Delegate constructor.
@@ -462,8 +467,11 @@ namespace wex
       wxImageList* imageList = nullptr);
   private:
     wxFlexGridSizer* add(wxSizer* sizer, wxFlexGridSizer* current) const;
-    wxFlexGridSizer* add_browse_button(wxSizer* sizer);
-    void add_items(std::pair<std::string, std::vector<item>> & items, bool readonly);
+    wxFlexGridSizer* add_browse_button(wxSizer* sizer) const;
+    void add_items(
+      std::pair<std::string, 
+      std::vector<item>> & items, 
+      bool readonly);
     wxFlexGridSizer* add_static_text(wxSizer* sizer) const;
     bool create_window(wxWindow* parent, bool readonly);
 

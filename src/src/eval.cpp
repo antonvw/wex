@@ -17,9 +17,9 @@
 #include <wex/ex.h>
 #include <wex/lexer-props.h>
 #include <wex/log.h>
+#include <wex/macros.h>
 #include <wex/stc.h>
 #include <wex/util.h>
-#include <wex/vi-macros.h>
 #include "eval.h"
 
 namespace x3 = boost::spirit::x3;

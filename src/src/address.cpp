@@ -9,11 +9,11 @@
 #include <wex/address.h>
 #include <wex/ex.h>
 #include <wex/log.h>
+#include <wex/macros.h>
 #include <wex/managedframe.h>
 #include <wex/process.h>
 #include <wex/stc.h>
 #include <wex/util.h>
-#include <wex/vi-macros.h>
 
 #define SEPARATE                                          \
   if (separator)                                          \

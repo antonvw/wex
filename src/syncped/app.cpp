@@ -124,12 +124,14 @@ bool app::OnInit()
         "or executable file if -d was specified"}, 
       [&](const std::vector<std::string> & v) {
         for (const auto & f : v) 
-          m_files.emplace_back(f);}}).parse(argc, argv) || exit)
+          m_files.emplace_back(f);}},
+     true,
+     "commandline").parse(argc, argv) || exit)
   {
     return false;
   }
 
-  frame* f = new frame(this);
+  auto* f = new frame(this);
   
   if (!f->is_closing())
   {

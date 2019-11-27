@@ -6,10 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <numeric>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wex/style.h>
 #include <wex/managedframe.h>
 #include <wex/stc.h>
