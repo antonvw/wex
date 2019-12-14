@@ -134,12 +134,12 @@ namespace wex
     static inline find_replace_data* m_self = nullptr;
 
     static inline std::string 
-      m_text_find = _("Find what"),
-      m_text_match_case = _("Match case"),
-      m_text_match_word = _("Match whole word"),
-      m_text_regex = _("Regular expression"),
-      m_text_replace_with = _("Replace with"),
-      m_text_search_down = _("Search down");
+      m_text_find = _("fif.Find what"),
+      m_text_match_case = _("fif.Match case"),
+      m_text_match_word = _("fif.Match whole word"),
+      m_text_regex = _("fif.Regular expression"),
+      m_text_replace_with = _("fif.Replace with"),
+      m_text_search_down = _("fif.Search down");
 
     wxFindReplaceData* m_frd {nullptr};
 

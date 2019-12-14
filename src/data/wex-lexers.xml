@@ -2102,7 +2102,7 @@ Copyright: (c) 2019, Anton van Wezenbeek
         <def style ="styleindicatordebug"> blue </def>
         <def style ="styleindicatorfind"> red </def>
         <def style ="styletextmargin-day"> back:blue </def>
-        <def style ="styletextmargin-week"> back:lightsteelblue </def>
+        <def style ="styletextmargin-week"> back:lightsteelblue 3 </def>
         <def style ="styletextmargin-month"> back:gray 45 </def>
         <def style ="styletextmargin-year"> back:gray 35 </def>
         <def style ="styletextmargin"> back:gray 22</def>

@@ -14,6 +14,8 @@
 #include <wex/managedframe.h>
 #include "test.h"
 
+TEST_SUITE_BEGIN("wex::item");
+
 void check_item_values(wex::item_dialog* dlg, bool default_is_set)
 {
   if (default_is_set)
@@ -147,3 +149,5 @@ TEST_CASE("wex::item_dialog")
     }
   }
 }
+
+TEST_SUITE_END();

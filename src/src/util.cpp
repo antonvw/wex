@@ -175,7 +175,7 @@ const std::string wex::before(
 
 bool wex::browser_search(const std::string& text)
 {
-  if (const auto search_engine(config(_("Search engine")).get_firstof());
+  if (const auto search_engine(config(_("stc.Search engine")).get_firstof());
     search_engine.empty())
   {
     return false;
@@ -591,8 +591,8 @@ int wex::open_files(
         }
       }
 
-      count++;
       fn.make_absolute();
+      count++;
       frame->open_file(fn, data);
     }
   }

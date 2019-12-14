@@ -111,6 +111,7 @@ wex::item::item(type_t type,
   : m_type(type)
   , m_label_type(label_t)
   , m_label(label)
+  , m_label_window(after(label, '.', false))
   , m_initial(value)
   , m_min(min)
   , m_max(max)
@@ -298,13 +299,13 @@ void wex::item::add_items(
         
 wxFlexGridSizer* wex::item::add_static_text(wxSizer* sizer) const
 {
-  assert(!m_label.empty());
+  assert(!m_label_window.empty());
   assert(m_window != nullptr);
 
   sizer->Add(
     new wxStaticText(m_window->GetParent(), 
       wxID_ANY, 
-      m_label + ":"), 
+      m_label_window + ":"), 
       wxSizerFlags().Right().Border().Align(wxALIGN_LEFT));
   
   return nullptr;
@@ -333,13 +334,13 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
         m_data.window().pos(), 
         m_data.window().size(), 
         m_data.window().style());
-      ((wxButton *)m_window)->SetLabelMarkup(m_label);
+      ((wxButton *)m_window)->SetLabelMarkup(m_label_window);
       break;
 
     case CHECKBOX:
       m_window = new wxCheckBox(parent, 
         m_data.window().id(), 
-        m_label, 
+        m_label_window, 
         m_data.window().pos(), 
         m_data.window().size(), 
         m_data.window().style());
@@ -347,41 +348,72 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
 
     case CHECKLISTBOX_BIT:
       {
-      wxArrayString arraychoices;
+      wxArrayString as;
 
-      for (const auto& it : std::any_cast<item::choices_t>(m_initial))
+      for (const auto& it : std::any_cast<choices_t>(m_initial))
       {
-        arraychoices.Add(it.second);
+        as.Add(after(before(it.second, ','), '.', false));
       }
 
-      m_window = new wxCheckListBox(parent,
+      auto* clb = new wxCheckListBox(parent,
         m_data.window().id(), 
         m_data.window().pos(), 
         m_data.window().size(), 
-        arraychoices, 
+        as, 
         m_data.window().style());
+
+      size_t item = 0;
+
+      for (const auto& it : std::any_cast<choices_t>(m_initial))
+      {
+        if (after(it.second, ',') == "1")
+        {
+          clb->Check(item);
+        }
+        
+        item++;
+      }
+      m_window = clb;
       }
       break;
 
     case CHECKLISTBOX_BOOL:
       {
-      wxArrayString arraychoices;
-      const std::set<std::string> & choices(std::any_cast<std::set<std::string>>(m_initial));
-      arraychoices.resize(choices.size()); // required!
-      std::copy (choices.begin(), choices.end(), arraychoices.begin());
-      m_window = new wxCheckListBox(parent,
+      wxArrayString as;
+
+      for (const auto& c : std::any_cast<choices_bool_t>(m_initial))
+      {
+        as.Add(after(before(c, ','), '.', false));
+      }
+
+      auto* clb = new wxCheckListBox(parent,
         m_data.window().id(), 
         m_data.window().pos(), 
         m_data.window().size(), 
-        arraychoices, 
+        as, 
         m_data.window().style());
+      
+      size_t item = 0;
+
+      for (const auto& c : std::any_cast<choices_bool_t>(m_initial))
+      {
+        if (after(c, ',') == "1")
+        {
+          clb->Check(item);
+        }
+        
+        item++;
+      }
+      m_window = clb;
       }
       break;
 
     case COLOURPICKERWIDGET:
       m_window = new wxColourPickerWidget(parent, 
         m_data.window().id(), 
-        *wxBLACK, 
+        m_initial.has_value() ? 
+          std::any_cast<wxColour>(m_initial):
+          *wxBLACK,
         m_data.window().pos(), 
         m_data.window().size(), 
         m_data.window().style() == DATA_NUMBER_NOT_SET ? 
@@ -392,22 +424,35 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
     case COMBOBOX:
     case COMBOBOX_DIR:
     case COMBOBOX_FILE:
+      {
+      wxArrayString as;
+
+      if (m_initial.has_value())
+      {
+        for (const auto& it : std::any_cast<std::list<std::string>>(m_initial))
+        {
+          as.Add(it);
+        } 
+      }
+
       m_window = new wxComboBox(parent, 
         m_data.window().id(), 
         wxEmptyString,
         m_data.window().pos(), 
         m_data.window().size(),
-        !m_initial.has_value() ? wxArrayString(): std::any_cast<wxArrayString>(m_initial),
+        as,
         m_data.window().style());
+
       if (m_data.validator() != nullptr)
         m_window->SetValidator(*m_data.validator());
+      }
       break;
 
     case COMMANDLINKBUTTON:
       m_window = new wxCommandLinkButton(parent, 
         m_data.window().id(), 
-        before(m_label, '\t'), 
-        after(m_label, '\t'),
+        before(m_label_window, '\t'), 
+        after(m_label_window, '\t'),
         m_data.window().pos(), 
         m_data.window().size(), 
         m_data.window().style());
@@ -417,7 +462,9 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
       {
       auto* pc = new wxDirPickerCtrl(parent, 
         m_data.window().id(), 
-        !m_initial.has_value() ? std::string(): std::any_cast<std::string>(m_initial),
+        !m_initial.has_value() ? 
+          std::string(): 
+          std::any_cast<std::string>(m_initial),
         wxDirSelectorPromptStr, 
         m_data.window().pos(), 
         m_data.window().size(), 
@@ -444,7 +491,9 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
 
       auto* pc = new wxFilePickerCtrl(parent, 
         m_data.window().id(), 
-        !m_initial.has_value() ? std::string(): std::any_cast<std::string>(m_initial),
+        !m_initial.has_value() ? 
+          std::string(): 
+          std::any_cast<std::string>(m_initial),
         wxFileSelectorPromptStr, 
         wc,
         m_data.window().pos(), 
@@ -497,7 +546,7 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
     case HYPERLINKCTRL:
       m_window = new wxHyperlinkCtrl(parent, 
         m_data.window().id(), 
-        m_label,
+        m_label_window,
         std::any_cast<std::string>(m_initial), 
         m_data.window().pos(), 
         m_data.window().size(), 
@@ -589,21 +638,34 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
 
     case RADIOBOX:
       {
-      wxArrayString arraychoices;
+      wxArrayString as;
 
-      for (const auto& it : std::any_cast<item::choices_t>(m_initial))
+      for (const auto& it : std::any_cast<choices_t>(m_initial))
       {
-        arraychoices.Add(it.second);
+        as.Add(before(it.second, ','));
       } 
 
-      m_window = new wxRadioBox(parent, 
+      auto* rb = new wxRadioBox(parent, 
         m_data.window().id(), 
-        m_label, 
+        m_label_window, 
         m_data.window().pos(), 
         m_data.window().size(), 
-        arraychoices, 
+        as, 
         m_major_dimension, 
         m_data.window().style());
+
+      size_t item = 0;
+
+      for (const auto& c : std::any_cast<choices_t>(m_initial))
+      {
+        if (after(c.second, ',') == "1")
+        {
+          rb->SetSelection(item);
+        }
+        
+        item++;
+      }
+      m_window = rb;
       }
       break;
 
@@ -627,7 +689,9 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
         wxSP_ARROW_KEYS | (readonly ? wxTE_READONLY: 0),
         std::any_cast<int>(m_min), 
         std::any_cast<int>(m_max), 
-        !m_initial.has_value() ? std::any_cast<int>(m_min): std::any_cast<int>(m_initial));
+        !m_initial.has_value() ? 
+          std::any_cast<int>(m_min): 
+          std::any_cast<int>(m_initial));
       break;
 
     case SPINCTRLDOUBLE:
@@ -639,7 +703,9 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
         wxSP_ARROW_KEYS | (readonly ? wxTE_READONLY: 0),
         std::any_cast<double>(m_min), 
         std::any_cast<double>(m_max), 
-        !m_initial.has_value() ? std::any_cast<double>(m_min): std::any_cast<double>(m_initial), 
+        !m_initial.has_value() ? 
+          std::any_cast<double>(m_min): 
+          std::any_cast<double>(m_initial), 
         std::any_cast<double>(m_inc));
       break;
 
@@ -658,7 +724,7 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
         m_data.window().pos(),
         m_data.window().size(),
         m_data.window().style());
-      ((wxStaticText* )m_window)->SetLabelMarkup(m_label);
+      ((wxStaticText* )m_window)->SetLabelMarkup(m_label_window);
       break;
 
     case STC:
@@ -689,6 +755,7 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
         m_data.window().pos(),
         m_data.window().size(),
         m_data.window().style() | (readonly ? wxTE_READONLY: 0));
+
       if (m_data.validator() != nullptr)
         m_window->SetValidator(*m_data.validator());
       break;
@@ -701,6 +768,7 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
         m_data.window().pos(), 
         m_data.window().size(), 
         m_data.window().style() | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT);
+
       if (m_data.validator() == nullptr)
 #ifdef __WXMSW__
         // TODO: using wxFloatingPointValidator and wxIntegerValidator
@@ -721,6 +789,7 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
         m_data.window().pos(), 
         m_data.window().size(), 
         m_data.window().style() | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT);
+
       if (m_data.validator() == nullptr)
 #ifdef __WXMSW__
         ;
@@ -734,7 +803,7 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
     case TOGGLEBUTTON:
       m_window = new wxToggleButton(parent, 
         m_data.window().id(), 
-        m_label,
+        m_label_window,
         m_data.window().pos(), 
         m_data.window().size(), 
         m_data.window().style());
@@ -761,7 +830,7 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
     }
   }
   
-  if (m_type != EMPTY && m_type != SPACER)
+  if (!empty() && m_type != SPACER)
   {
     assert(m_window != nullptr);
   }
@@ -771,9 +840,41 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
 
 const std::any wex::item::get_value() const
 {
-  if (m_window == nullptr) return std::any();
+  if (m_window == nullptr) 
+  {
+    switch (m_type)
+    {
+      case CHECKBOX:
+        return false;
+        break;
+      
+      case CHECKLISTBOX_BIT:
+      case RADIOBOX: {
+        long value = 0;
+        int item = 0;
+        for (const auto& b : std::any_cast<choices_t>(m_initial))
+        {
+          if (b.second.find(",") != std::string::npos)
+          {
+            value |= b.first;
+          }
+          item++;
+        }
+        return std::any(value);
+        }
+        break;
+        
+      default:
+        return m_initial;
+    }
+  }
   
   std::any any;
+  
+  if (is_notebook())
+  {
+    return any;
+  }
 
   try
   {  
@@ -788,12 +889,13 @@ const std::any wex::item::get_value() const
         long value = 0;
         int item = 0;
 
-        for (const auto& b : std::any_cast<item::choices_t>(m_initial))
+        for (const auto& b : std::any_cast<choices_t>(m_initial))
         {
           if (clb->IsChecked(item))
           {
             value |= b.first;
           }
+
           item++;
         }
 
@@ -835,6 +937,12 @@ const std::any wex::item::get_value() const
         any = ((wex::listview* )m_window)->item_to_text(-1); 
         break;
       
+      case CHECKLISTBOX_BOOL: 
+      case RADIOBOX: 
+      case USER: 
+        // Not yet implemented
+        break;
+
       case SLIDER: 
         any = ((wxSlider* )m_window)->GetValue(); 
         break;
@@ -847,6 +955,10 @@ const std::any wex::item::get_value() const
         any = ((wxSpinCtrlDouble* )m_window)->GetValue(); 
         break;
       
+      case STATICLINE: 
+      case STATICTEXT: 
+        break;
+
       case STC: 
         any = ((wxStyledTextCtrl* )m_window)->GetValue().ToStdString(); 
         break;
@@ -884,7 +996,8 @@ const std::any wex::item::get_value() const
         any = ((wxToggleButton* )m_window)->GetValue(); 
         break;
       
-      default: ; // prevent warning
+      default:
+        assert(0);
     }
   }
   catch (std::bad_cast& e)
@@ -893,6 +1006,11 @@ const std::any wex::item::get_value() const
   }
 
   return any;
+}
+  
+bool wex::item::is_notebook() const
+{
+  return m_type >= NOTEBOOK && m_type <= NOTEBOOK_WEX;
 }
   
 wxFlexGridSizer* wex::item::layout(
@@ -926,7 +1044,7 @@ wxFlexGridSizer* wex::item::layout(
         return fgz;
       
       default: 
-        if (m_type >= NOTEBOOK && m_type <= NOTEBOOK_WEX)
+        if (is_notebook())
         {
           if (!m_initial.has_value())
           {
@@ -935,7 +1053,7 @@ wxFlexGridSizer* wex::item::layout(
           }
           
           auto* bookctrl = (wxBookCtrlBase*)m_window;
-          bookctrl->SetName("book-" + m_label);
+          bookctrl->SetName("book-" + m_label_window);
           
           return_sizer = add(sizer, fgz);
           
@@ -959,7 +1077,7 @@ wxFlexGridSizer* wex::item::layout(
           return_sizer = add(sizer, fgz);
         }
     }
-    
+
     to_config(false);
 
     return return_sizer;
@@ -1012,7 +1130,7 @@ bool wex::item::set_value(const std::any& value) const
         auto* clb = (wxCheckListBox*)m_window;
         int item = 0;
 
-        for (const auto& b : std::any_cast<item::choices_t>(m_initial))
+        for (const auto& b : std::any_cast<choices_t>(m_initial))
         {
           clb->Check(item, (std::any_cast<long>(value) & b.first) > 0);
           item++;

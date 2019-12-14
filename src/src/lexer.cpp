@@ -310,7 +310,7 @@ int wex::lexer::attrib(const std::string& name) const
   
 void wex::lexer::auto_match(const std::string& lexer)
 {
-  if (const auto& l(lexers::get()->find_by_name(lexer));
+  if (const auto& l(lexers::get()->find(lexer));
     l.m_scintilla_lexer.empty())
   {
     if (lexers::get()->get_macros(lexer).empty())
@@ -436,6 +436,11 @@ const std::string wex::lexer::formatted_text(
   return out;
 }
 
+bool wex::lexer::is_keyword(const std::string& word) const
+{
+  return m_keywords.find(word) != m_keywords.end();
+}
+
 const std::string wex::lexer::keywords_string(
   int keyword_set, size_t min_size, const std::string& prefix) const
 {
@@ -459,12 +464,7 @@ size_t wex::lexer::line_size() const
 {
   return !m_edge_columns.empty() ?
     m_edge_columns.back():
-    (size_t)config(_("Edge column")).get(80l);
-}
-
-bool wex::lexer::is_keyword(const std::string& word) const
-{
-  return m_keywords.find(word) != m_keywords.end();
+    (size_t)config(_("stc.Edge column")).get(80l);
 }
 
 bool wex::lexer::keyword_starts_with(const std::string& word) const
@@ -696,7 +696,7 @@ bool wex::lexer::set(const std::string& lexer, bool fold)
   if (
     !lexer.empty() &&
     !lexers::get()->get_lexers().empty() &&
-    !set(lexers::get()->find_by_name(lexer), fold))
+    !set(lexers::get()->find(lexer), fold))
   {
     log::verbose("lexer is not known") << lexer;
   }

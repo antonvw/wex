@@ -91,7 +91,7 @@ Copyright: (c) 2019 Anton van Wezenbeek
       <command type="main" control="R"> run </command>
       <command type="main" > interrupt </command>
       <command type="main separator" control="4"> continue </command>
-      <command type="popup" control="1"> &amp;next </command>
+      <command type="popup" control="1"> next </command>
       <command type="popup" control="2"> step </command>
       <command type="popup separator" control="3"> thread until </command>
       <command type="popup separator" > print </command>

@@ -30,6 +30,26 @@ bool wex::macros::erase()
   return true;
 }
     
+const std::vector< std::string > wex::macros::find(
+  const std::string& macro) const
+{
+  if (const auto& it = m_macros.find(macro); it != m_macros.end())
+  {
+    return it->second;
+  }
+  else
+  {
+    if (const auto& it = m_variables.find(macro); it != m_variables.end())
+    {
+      return {it->second.get_value()};
+    }
+    else 
+    {
+      return {};
+    }
+  }
+}
+
 const std::vector< std::string > wex::macros::get() const
 {
   std::vector< std::string > v;
@@ -50,26 +70,6 @@ const std::vector< std::string > wex::macros::get() const
   std::sort(v.begin(), v.end());
   
   return v;
-}
-
-const std::vector< std::string > wex::macros::get(
-  const std::string& macro) const
-{
-  if (const auto& it = m_macros.find(macro); it != m_macros.end())
-  {
-    return it->second;
-  }
-  else
-  {
-    if (const auto& it = m_variables.find(macro); it != m_variables.end())
-    {
-      return {it->second.get_value()};
-    }
-    else 
-    {
-      return {};
-    }
-  }
 }
 
 const wex::path wex::macros::get_filename() const
@@ -134,7 +134,7 @@ const std::vector< std::string > wex::macros::get_registers() const
 
 bool wex::macros::is_recorded(const std::string& macro) const
 {
-  return !get(macro).empty();
+  return !find(macro).empty();
 }
 
 bool wex::macros::is_recorded_macro(const std::string& macro) const

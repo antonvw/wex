@@ -460,7 +460,7 @@ bool wex::addressrange::global(const std::string& text, bool inverse) const
   m_stc->SetTargetStart(m_stc->PositionFromLine(m_begin.get_line() - 1));
   m_stc->SetTargetEnd(m_stc->GetLineEndPosition(m_ex->marker_line('%')));
   
-  const bool infinite = (g.changes() > 0 && rest != "$" && rest != "1");
+  const bool infinite = (g.changes() > 0 && rest != "$" && rest != "1" && rest != "d");
   int hits = 0;
   int start = 0;
   

@@ -194,8 +194,6 @@ namespace wex
     unsigned int get_art_id(const wxArtID& artid);
     column get_column(const std::string& name) const;
     void item_activated(long item_number);
-
-    /// Sets the item file icon image.
     bool set_item_image(long item_number, int iconid) {
       return (m_data.image() == listview_data::IMAGE_FILE_ICON ?
         SetItemImage(item_number, iconid): false);};
@@ -218,6 +216,6 @@ namespace wex
     std::map<wxArtID, unsigned int> m_art_ids;
     std::vector<column> m_columns;
     
-    static item_dialog* m_config_dialog;
+    static inline item_dialog* m_config_dialog = nullptr;
   };
 };

@@ -40,12 +40,12 @@ wex::statusbar::statusbar(frame* parent, const window_data& data)
   , m_frame(parent)
 {
   // The statusbar is not managed by Aui, so show/hide it explicitly.    
-  Show(config("ShowStatusBar").get(true));
+  Show(config("show.StatusBar").get(true));
 }
 
 wex::statusbar::~statusbar()
 { 
-  config("ShowStatusBar").set(IsShown());
+  config("show.StatusBar").set(IsShown());
 }
 
 // Returns a tuple with first field true if the specified field exists.

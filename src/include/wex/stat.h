@@ -21,8 +21,8 @@ namespace wex
     static inline const std::string MOD_TIME_FORMAT = "%c";
 
     /// Default constructor. Calls sync.
-    file_stat(const std::string& fullpath = std::string()) {
-      sync(fullpath);};
+    file_stat(const std::string& path = std::string()) {
+      sync(path);};
 
     /// Returns the modification time.
     const std::string get_modification_time(
@@ -34,13 +34,16 @@ namespace wex
 
     /// Returns true if this stat is readonly.
     bool is_readonly() const;
+    
+    /// Returns path.
+    const auto& path() const {return m_fullpath;};
 
     /// Sets (syncs) this stat, returns result and keeps it in is_ok.
     bool sync();
 
-    /// Sets the fullpath member, then syncs.
-    bool sync(const std::string& fullpath) {
-      m_fullpath = fullpath;
+    /// Sets the path member, then syncs.
+    bool sync(const std::string& path) {
+      m_fullpath = path;
       return sync();}
   private:
     std::string m_fullpath;

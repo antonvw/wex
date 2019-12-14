@@ -17,6 +17,7 @@
 #include <wx/stdpaths.h>
 #include <wex/config.h>
 #include <wex/path.h>
+#include <wex/tokenizer.h>
 #include <wex/util.h>
 
 using json = nlohmann::json;
@@ -26,110 +27,170 @@ namespace wex
   class config_imp
   {
   public:
-    /// Constructor, provide directory for json file.
-    explicit config_imp(const std::string& dir)
-      : m_json({})
-      , m_path(
-          dir, 
-          wxTheApp->GetAppName().Lower() + ".json")
+    /// Static iinterface.
+
+    /// Sets config file to use. If not called,
+    /// the default is used.
+    static void set_file(const std::string& file)
     {
-      if (std::ifstream fs(m_path.data());
-        fs.is_open())
+      m_file = file;
+    }
+    
+    /// Other methods.
+    
+    /// Default constructor.
+    config_imp() : m_json({}) {;};
+    
+    /// Copy constructor with a possible child item.
+    config_imp(
+      const config_imp* c, 
+      const std::string& item = std::string())
+      : m_json(c == nullptr ? json({}): c->m_json)
+      , m_item(item) 
+    {
+      if (!item.empty())
       {
-        fs >> m_json;
+        if (const auto& it = m_json.find(item); it != m_json.end())
+        {
+          m_json = *it;
+        }
+        else
+        {
+          m_json.clear();
+        }
       }
     }
     
-    /// Copy constructor with filter.
-    config_imp(const config_imp& c, const std::string& filter)
-      : m_json(c.m_json)
-      , m_key(filter)
+    /// Returns true if this item is present.
+    bool exists(const std::string& item) 
     {
-      log::verbose("json size") << m_json.size() << "filter" << filter;
-
-      const auto& it = m_json.find(filter);
-      
-      if (it != m_json.end())
+      if (item.find('.') == std::string::npos)
       {
-        m_json = *it;
-        log::verbose("json set") << m_json.dump();
+        return m_json.contains(item);
       }
       else
       {
-        m_json.clear();
-        log::verbose("json cleared") << filter;
+        json& access (accessor(before(item, '.', false)));
+        return !access.is_null() && access.contains(after(item, '.', false));
       }
     }
     
-    /// Destructor.
-   ~config_imp() 
-    {
-      // store only if this is not a child
-      if (m_key.empty())
-      {
-        if (std::ofstream fs(m_path.data());
-          fs.is_open())
-        {
-          fs << std::setw(2) << m_json << std::endl;
-        }
-      }
-    };
+    /// Returns item.
+    auto & get_item() const {return m_item;};
 
     /// Returns json.
     const json& get_json() const {return m_json;};
     json& get_json() {return m_json;};
 
-    /// Returns key.
-    auto & get_key() {return m_key;};
+    /// Reads json file.
+    void read()
+    {
+      if (m_file.empty())
+      {
+        m_file = path(
+          config::dir(), 
+          wxTheApp->GetAppName().Lower() + ".json").string();
+      }
 
+      if (std::ifstream fs(m_file); fs.is_open())
+      {
+        fs >> m_json;
+      }
+      else
+      {
+        log::verbose("could not read") << m_file;
+      }
+    }
+
+    /// Saves json file.
+    void save() const
+    {
+      if (std::ofstream fs(m_file); fs.is_open())
+      {
+        fs << std::setw(2) << m_json << std::endl;
+      }
+      else
+      {
+        log("could not save") << m_file;
+      }
+    }
+    
     /// Sets value for item.
     template <typename T>
     void set(const std::string& item, const T& v)
     {
-      if (!item.empty())
+      if (item.find('.') == std::string::npos)
       {
         m_json[item] = v;
+      }
+      else
+      {
+        accessor(before(item, '.', false))[after(item, '.', false)] = v;
       }
     }
     
     /// Returns value for item.
     template <typename T>
-    const T value(const std::string& item, const T& def) const
+    const T value(const std::string& item, const T& def)
     {
-      if (item.find(".") != std::string::npos)
-      {
-        const auto& it = m_json.find(before(item, '.'));
-
-        if (it != m_json.end())
-        {
-          json child = *it;
-          return child.value(after(item, '.'), def);
-        }
-        else
-        {
-          return def;
-        }
-      }
-      else
+      if (item.find('.') == std::string::npos)
       {
         return m_json.value(item, def);
       }
+      else
+      {
+        auto& a(accessor(before(item, '.', false)));
+        return !a.is_null() ?
+          a.value(after(item, '.', false), def):
+          def;
+      }
     }
   private:
+    json& accessor(const std::string& item)
+    {
+      const auto& v(
+        tokenizer(item, ".").tokenize<std::vector<std::string>>());
+
+      switch (v.size())
+      {
+        case 0:
+          return m_json;
+
+        case 1:
+          return m_json[v[0]];
+
+        case 2:
+          return m_json[v[0]][v[1]];
+
+        case 3:
+          return m_json[v[0]][v[1]][v[2]];
+
+        case 4:
+          return m_json[v[0]][v[1]][v[2]][v[3]];
+
+        case 5:
+          return m_json[v[0]][v[1]][v[2]][v[3]][v[4]];
+
+        default:
+          log("too deeply nested") << v.size() << "hierarchy for:" << item;
+          return m_json;
+      }
+    }
+
     json m_json;
-    const std::string m_key;
-    const path m_path;
+    static inline std::string m_file;
+    const std::string m_item;
   };
 };
 
 wex::config::config(const std::string& item)
-  : m_item(item)
 {
+  config::item(item);
 }
-  
+
 wex::config::config(const std::string& parent, const std::string& child)
   : m_item(child)
-  , m_local(new config_imp(*m_store, parent))
+  , m_local(new config_imp(m_store, parent))
 {
 }
   
@@ -138,22 +199,31 @@ wex::config::~config()
   child_end();
 }
 
+bool wex::config::change_file(const std::string& file)
+{
+  if (!child_end())
+  {
+    return false;
+  }
+  
+  m_store->save();
+  
+  config_imp::set_file(file);
+  
+  m_store->read();
+  
+  return true;
+}
+
 bool wex::config::child_end()
 {
-  if (m_local == nullptr)
+  if (m_local == nullptr || m_store == nullptr)
   {
     return false;
   }
 
   // copy local store to shared store to add / set item
-  m_store->get_json()[m_local->get_key()] = m_local->get_json();
-  
-  log::verbose("config child end") 
-    << "key:" << m_local->get_key() 
-    << "item:" << m_item
-    << "children:" << children()
-    << "size:" << size()
-    << m_local->get_json().dump();
+  m_store->get_json()[m_local->get_item()] = m_local->get_json();
   
   // cleanup local store
   delete m_local;
@@ -169,14 +239,14 @@ bool wex::config::child_start()
     return false;
   }
   
-  m_local = new config_imp(*m_store, m_item);
+  m_local = new config_imp(m_store, m_item);
   
   return true;
 }
   
 size_t wex::config::children() const
 {
-  return m_local->get_json().size();
+  return m_local == nullptr ? 0: m_local->get_json().size();
 }
   
 const std::string wex::config::dir()
@@ -207,7 +277,7 @@ void wex::config::erase() const
   
 bool wex::config::exists() const
 {
-  return !m_item.empty() ? get_store()->get_json().contains(m_item): false;
+  return !m_item.empty() ? get_store()->exists(m_item): false;
 }
   
 const std::string wex::config::get(const char* def) const
@@ -298,14 +368,23 @@ bool wex::config::is_child() const
   return m_local != nullptr;
 }
   
+wex::config& wex::config::item(const std::string& item) 
+{
+  m_item = item; 
+
+  return *this;
+}
+
 void wex::config::on_exit()
 {
+  m_store->save();
   delete m_store;
 }
 
 void wex::config::on_init()
 {
-  m_store = new config_imp(dir());
+  m_store = new config_imp();
+  m_store->read();
   
   log::verbose("config") << "size:" << size();
 }
@@ -368,6 +447,11 @@ void wex::config::set(const wxColour& v)
 void wex::config::set(const wxFont& v) 
 {
   get_store()->set(m_item, wxToString(v).ToStdString());
+}
+  
+void wex::config::set_file(const std::string& file)
+{
+  config_imp::set_file(file);
 }
   
 const std::string wex::config::set_firstof(const std::string& v, size_t max)

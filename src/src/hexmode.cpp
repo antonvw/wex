@@ -35,7 +35,7 @@ namespace wex
       window_data().title(caption).parent(parent));
     item::use_config(true);
     
-    ((wxSpinCtrl* )dlg.get_item(message).window())->SetBase(16);
+    ((wxSpinCtrl* )dlg.find(message).window())->SetBase(16);
     
     return dlg.ShowModal() == wxID_CANCEL ? 
       -1: std::any_cast<int>(dlg.get_item_value(message));

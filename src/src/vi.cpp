@@ -220,18 +220,20 @@ wex::vi::vi(wex::stc* arg)
         get_stc()->CharLeft();
       }
       return command.size();}},
-    {"nN", [&](const std::string& command){REPEAT(
-      if (const std::string find(get_stc()->get_margin_text_click() > 0 ?
-        config("exmargin").get(std::list<std::string>{}).front():
-        find_replace_data::get()->get_find_string());
-        !get_stc()->find_next(
-          find,
-          search_flags(),
-          command == "n" == m_search_forward))
-      {
-        m_command.clear();
-        return (size_t)0;
-      });
+    {"nN", [&](const std::string& command){
+      REPEAT(
+        if (
+          const std::string find(get_stc()->get_margin_text_click() > 0 ?
+            config("ex-cmd.margin").get(std::list<std::string>{}).front():
+            find_replace_data::get()->get_find_string());
+          !get_stc()->find_next(
+            find,
+            search_flags(),
+            command == "n" == m_search_forward))
+        {
+          m_command.clear();
+          return (size_t)0;
+        });
       return (size_t)1;}},
     {"G", [&](const std::string& command){
       if (m_count == 1 && !m_count_present)
@@ -682,7 +684,9 @@ bool wex::vi::command(const std::string& command)
   {
     return insert_mode(command);
   }
-  else if (!m_dot && command.back() == WXK_ESCAPE)
+  else if (!m_dot && command.size() > 2 && 
+    command.back() == WXK_ESCAPE &&
+    command[command.size() - 2] == WXK_ESCAPE)
   {
     m_mode.escape();
     m_command.clear();

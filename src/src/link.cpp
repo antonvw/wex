@@ -20,7 +20,7 @@ namespace wex
   {
   public:
     paths() : m_paths(tokenizer(
-      config(_("Include directory")).get(), "\r\n").
+      config(_("stc.Include directory")).get(), "\r\n").
         tokenize<std::vector<std::string>>()) {;};
 
     path find_path(const std::string& path) const {

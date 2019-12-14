@@ -14,6 +14,7 @@
 #include <wex/config.h>
 #include <wex/frd.h>
 #include <wex/indicator.h>
+#include <wex/item-vector.h>
 #include <wex/lexers.h>
 #include <wex/managedframe.h>
 #include <wex/path.h>
@@ -56,7 +57,7 @@ wex::stc::stc(const path& p, const stc_data& data)
   
   if (!lexers::get()->get_lexers().empty())
   {
-    m_default_font = config(_("Default font")).get(
+    m_default_font = config(_("stc.Default font")).get(
       wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT));
   }
   
@@ -278,14 +279,14 @@ void wex::stc::fold(bool all)
      m_lexer.is_ok() &&
     !m_lexer.scintilla_lexer().empty())
   {
-    SetMarginWidth(m_margin_folding_number, config(_("Folding")).get(0));
-    SetFoldFlags(config(_("Fold flags")).get(
+    SetMarginWidth(m_margin_folding_number, config(_("stc.margin.Folding")).get(0));
+    SetFoldFlags(config(_("stc.Fold flags")).get(
       wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | 
       wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
         
     if (
       all || 
-      GetLineCount() > config(_("Auto fold")).get(0))
+      GetLineCount() > config(_("stc.Auto fold")).get(0))
     {
       fold_all();
     }
@@ -565,22 +566,6 @@ void wex::stc::mark_modified(const wxStyledTextEvent& event)
   use_modification_markers(true);
 }
 
-void wex::stc::on_exit()
-{
-  if (config(_("Keep zoom")).get(false))
-  {
-    config("zoom").set(m_zoom);
-  }
-}
-  
-void wex::stc::on_init()
-{
-  if (config(_("Keep zoom")).get(false))
-  {
-    m_zoom = config("zoom").get(-1);
-  }
-}
-  
 void wex::stc::on_idle(wxIdleEvent& event)
 {
   event.Skip();
@@ -949,8 +934,10 @@ bool wex::stc::show_blame(const vcs_entry* vcs)
 
 void wex::stc::show_line_numbers(bool show)
 {
+  const item_vector& iv(m_config_items);
+
   SetMarginWidth(m_margin_line_number, 
-    show ? config(_("Line number")).get(0): 0);
+    show ? iv.find<int>(_("stc.margin.Line number")): 0);
 }
 
 void wex::stc::sync(bool start)

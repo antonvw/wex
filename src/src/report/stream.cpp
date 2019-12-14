@@ -238,7 +238,7 @@ bool wex::report::stream::process(std::string& line, size_t line_no)
 
 bool wex::report::stream::process_begin()
 {
-  m_context_size = config(_("context size")).get(10);
+  m_context_size = config(_("list.context size")).get(10);
 
   if (get_tool().id() != ID_TOOL_REPORT_KEYWORD)
   {

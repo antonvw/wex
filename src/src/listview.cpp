@@ -22,6 +22,7 @@
 #include <wex/frd.h>
 #include <wex/interruptable.h>
 #include <wex/item.h>
+#include <wex/item-vector.h>
 #include <wex/itemdlg.h>
 #include <wex/lexer.h>
 #include <wex/lexers.h>
@@ -34,27 +35,12 @@
 
 namespace wex
 {
-  class listview_defaults : public config_defaults
-  {
-  public:
-    listview_defaults() 
-    : config_defaults({
-      {_("context size"), item::SPINCTRL, 10l},
-      {_("List font"), 
-        item::FONTPICKERCTRL, 
-        wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
-      {_("List tab font"), 
-        item::FONTPICKERCTRL, 
-        wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
-      {_("Readonly colour"), item::COLOURPICKERWIDGET, *wxLIGHT_GREY},
-      {_("Header"), item::CHECKBOX, true}}) {;};
-  };
-  
   // file_droptarget is already used by wex::frame.
   class droptarget : public wxFileDropTarget
   {
   public:
-    explicit droptarget(listview* lv) {m_listview = lv;}
+    explicit droptarget(listview* lv)
+      : m_listview(lv) {;}
     bool OnDropFiles(wxCoord x, wxCoord y, 
       const wxArrayString& filenames) override
     {
@@ -96,6 +82,34 @@ namespace wex
 
     return output;
   };
+
+  const std::vector < item > config_items() 
+  {
+    return std::vector < item > ({{"notebook", {
+      {_("General"),
+        {{_("list.Header"), item::CHECKBOX, std::any(true)},
+         {_("list.Single selection"), item::CHECKBOX},
+         {_("list.Comparator"), item::FILEPICKERCTRL},
+         {_("list.Sort method"), {
+           {SORT_ASCENDING, _("Sort ascending")},
+           {SORT_DESCENDING, _("Sort descending")},
+           {SORT_TOGGLE, _("Sort toggle")}}},
+         {_("list.context size"), 0, 80, 10},
+         {_("list.Rulers"),  {
+           {wxLC_HRULES, _("Horizontal rulers")},
+           {wxLC_VRULES, _("Vertical rulers")}}, false}}},
+      {_("Font"),
+        {{_("list.font"), 
+          item::FONTPICKERCTRL, 
+          wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
+         {_("list.tab font"), 
+          item::FONTPICKERCTRL, 
+          wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)}}},
+      {_("Colour"),
+        {{_("list.Readonly colour"), 
+          item::COLOURPICKERWIDGET, 
+          *wxLIGHT_GREY}}}}}});
+    }
 };
 
 wex::column::column()
@@ -156,8 +170,6 @@ void wex::column::set_is_sorted_ascending(sort_t type)
 
 // wxWindow::NewControlId() is negative...
 const wxWindowID ID_COL_FIRST = 1000;
-
-wex::item_dialog* wex::listview::m_config_dialog = nullptr;
 
 wex::listview::listview(const listview_data& data)
   : wxListView(
@@ -260,7 +272,7 @@ wex::listview::listview(const listview_data& data)
           if (m_data.type() == listview_data::FILE)
           {
             if (
-              config("List/SortSync").get(true) &&
+              config("list.SortSync").get(true) &&
               sorted_column_no() == find_column(_("Modified")))
             {
               sort_column(_("Modified"), SORT_KEEP);
@@ -308,7 +320,7 @@ wex::listview::listview(const listview_data& data)
   Bind(wxEVT_LIST_COL_CLICK, [=](wxListEvent& event) {
     sort_column(
       event.GetColumn(),
-      (sort_t)config(_("Sort method")).get(SORT_TOGGLE));});
+      (sort_t)config(_("list.Sort method")).get(SORT_TOGGLE));});
 
   Bind(wxEVT_LIST_COL_RIGHT_CLICK, [=](wxListEvent& event) {
     m_to_be_sorted_column_no = event.GetColumn();
@@ -528,26 +540,7 @@ int wex::listview::config_dialog(const window_data& par)
 
   if (m_config_dialog == nullptr)
   {
-    listview_defaults use;
-
-    m_config_dialog = new item_dialog({{"notebook", {
-      {_("General"),
-        {{_("Header"), item::CHECKBOX},
-         {_("Single selection"), item::CHECKBOX},
-         {_("Comparator"), item::FILEPICKERCTRL},
-         {_("Sort method"), {
-           {SORT_ASCENDING, _("Sort ascending")},
-           {SORT_DESCENDING, _("Sort descending")},
-           {SORT_TOGGLE, _("Sort toggle")}}},
-         {_("context size"), 0, 80},
-         {_("Rulers"),  {
-           {wxLC_HRULES, _("Horizontal rulers")},
-           {wxLC_VRULES, _("Vertical rulers")}}, false}}},
-      {_("Font"),
-        {{_("List font"), item::FONTPICKERCTRL},
-         {_("List tab font"), item::FONTPICKERCTRL}}},
-      {_("Colour"),
-        {{_("Readonly colour"), item::COLOURPICKERWIDGET}}}}}}, data);
+    m_config_dialog = new item_dialog(config_items(), data);
   }
 
   return (data.button() & wxAPPLY) ?
@@ -556,17 +549,18 @@ int wex::listview::config_dialog(const window_data& par)
           
 void wex::listview::config_get()
 {
-  listview_defaults use;
-  
+  const auto& ci (config_items());
+  const item_vector& iv(&ci);
+
   lexers::get()->apply_default_style(
     [=](const std::string& back) {
       SetBackgroundColour(wxColour(back));});
   
-  SetFont(config(_("List font")).get(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
-  SetSingleStyle(wxLC_HRULES, (config(_("Rulers")).get(0) & wxLC_HRULES) > 0);
-  SetSingleStyle(wxLC_VRULES, (config(_("Rulers")).get(0) & wxLC_VRULES) > 0);
-  SetSingleStyle(wxLC_NO_HEADER, !config(_("Header")).get(false));
-  SetSingleStyle(wxLC_SINGLE_SEL, config(_("Single selection")).get(false));
+  SetFont(iv.find<wxFont>(_("list.font")));
+  SetSingleStyle(wxLC_HRULES, (iv.find<long>(_("list.Rulers")) & wxLC_HRULES) > 0);
+  SetSingleStyle(wxLC_VRULES, (iv.find<long>(_("list.Rulers")) & wxLC_VRULES) > 0);
+  SetSingleStyle(wxLC_NO_HEADER, !iv.find<bool>(_("list.Header")));
+  SetSingleStyle(wxLC_SINGLE_SEL, iv.find<bool>(_("list.Single selection")));
   
   items_update();
 }

@@ -72,7 +72,7 @@ wex::debug::debug(wex::managed_frame* frame, wex::process* debug)
   : m_frame(frame)
   , m_process(debug)
 {
-  set_entry(config("debugger").get());
+  set_entry(config("debug.debugger").get());
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     is_finished();}, ID_DEBUG_EXIT);
@@ -338,7 +338,7 @@ std::tuple<bool, std::string> wex::debug::get_args(
       init = true;
       m_dialog = new item_dialog({
 #ifdef __WXGTK__
-      {"processes", listview_data(), std::any(), item::LABEL_NONE,
+      {"debug.processes", listview_data(), std::any(), item::LABEL_NONE,
         [&](wxWindow* user, const std::any& value, bool save) {
         lv = ((wex::listview *)user);
         if (save && lv->GetFirstSelected() != -1)
@@ -390,11 +390,11 @@ std::tuple<bool, std::string> wex::debug::get_args(
   else if (command == "file")
   {
     return {item_dialog(
-      {{"File", item::COMBOBOX_FILE, std::any(), control_data().is_required(true),
+      {{"debug.File", item::COMBOBOX_FILE, std::any(), control_data().is_required(true),
           item::LABEL_LEFT,
           [&](wxWindow* user, const std::any& value, bool save) {
              if (save) args += " " + std::any_cast<wxArrayString>(value)[0];}},
-       {m_entry.name(), item::FILEPICKERCTRL}},
+       {"debug." + m_entry.name(), item::FILEPICKERCTRL}},
       window_data().title("Debug").parent(m_frame)).ShowModal() != wxID_CANCEL, args};
   }
   else if ((match("^(p|print)", command, v) == 1) && stc != nullptr)
@@ -482,7 +482,7 @@ bool wex::debug::show_dialog(frame* parent)
   if (!single_choice_dialog(
     parent, _("Enter Debugger"), s, debugger)) return false;
   
-  config("debugger").set(debugger);
+  config("debug.debugger").set(debugger);
   
   set_entry(debugger);
   

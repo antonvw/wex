@@ -45,7 +45,7 @@ namespace wex
     
     /// Returns the menu command equal to name specified.  
     /// or empty command if name could not be found.
-    const T find_command(const std::string& name) const {
+    const T find(const std::string& name) const {
       for (const auto& i : m_commands)
       {
         if (i.get_command() == name)
@@ -78,7 +78,7 @@ namespace wex
         return false;
       }
       m_command_index = command_no;
-      m_flags_key = "menuflags/" + m_name + std::to_string(m_command_index);
+      m_flags_key = "menu.flags/" + m_name + std::to_string(m_command_index);
       return true;};
   private:
     int m_command_index {0};

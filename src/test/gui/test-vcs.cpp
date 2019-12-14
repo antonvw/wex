@@ -55,7 +55,7 @@ TEST_CASE("wex::vcs")
     REQUIRE( vcs.name() == "Auto");
     REQUIRE(!vcs.entry().get_command().is_open());
 
-    wex::config(_("Base folder")).set(
+    wex::config(_("vcs.Base folder")).set(
       std::list<std::string>{wxGetCwd().ToStdString()});
 
     REQUIRE( vcs.set_entry_from_base());

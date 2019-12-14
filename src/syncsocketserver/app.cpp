@@ -41,15 +41,6 @@
   #undef wxUSE_TASKBARICON
 #endif
 
-class defaults : public wex::config_defaults
-{
-public:
-  defaults() 
-  : wex::config_defaults({
-    {"Port", wex::item::TEXTCTRL_INT, (long)3000},
-    {"Remote Port", wex::item::TEXTCTRL_INT, (long)3000}}) {;};
-};
-
 const auto id_socket_server = wxWindow::NewControlId();
 
 wxIMPLEMENT_APP(app);
@@ -391,7 +382,7 @@ frame::frame()
         {"Remote Hostname", wex::item::COMBOBOX, std::any(), wex::control_data().is_required(true)},
         // Well known ports are in the range from 0 to 1023.
         // Just allow here for most flexibility.
-        {"Remote Port", 1, 65536}},
+        {"Remote Port", 1, 65536, 3000}},
       wex::window_data().
         title("Remote Server Config").
         button(m_client == nullptr ? wxOK | wxCANCEL: wxCANCEL)).ShowModal();
@@ -432,7 +423,7 @@ frame::frame()
       {{"Hostname", std::string(), wex::item::TEXTCTRL, wex::control_data().is_required(true)},
        // Well known ports are in the range from 0 to 1023.
        // Just allow here for most flexibility.
-       {"Port", 1, 65536}},
+       {"Port", 1, 65536, 3000}},
       wex::window_data().
         title("Server Config").
         button(m_server == nullptr ? wxOK | wxCANCEL: wxCANCEL)).ShowModal();

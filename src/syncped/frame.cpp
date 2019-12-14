@@ -147,7 +147,7 @@ frame::frame(app* app)
     manager().LoadPerspective(perspective);
   }
   
-  if (wex::config("ShowHistory").get(false))
+  if (wex::config("show.History").get(false))
   {
     add_pane_history();
   }
@@ -163,7 +163,7 @@ frame::frame(app* app)
   }
   else if (m_app->get_files().empty())
   {
-    if (const int count = wex::config("OpenFiles").get(0); count > 0)
+    if (const int count = wex::config("recent.OpenFiles").get(0); count > 0)
     {
       wex::open_files(this, file_history().get_history_files(count), 
         m_app->data());
@@ -177,7 +177,7 @@ frame::frame(app* app)
       m_editors->add_page(page, "no name", std::string(), true);
     }
 
-    if (wex::config("ShowProjects").get(false) && 
+    if (wex::config("show.Projects").get(false) && 
       !get_project_history().get_history_file().empty())
     {
       open_file(
@@ -199,7 +199,7 @@ frame::frame(app* app)
       get_debug()->execute("file " + 
         m_app->get_files().front().string());
       
-      if (const int count = wex::config("OpenFiles").get(0); count > 0)
+      if (const int count = wex::config("recent.OpenFiles").get(0); count > 0)
       {
         wex::open_files(this, file_history().get_history_files(count), 
           m_app->data());
@@ -244,7 +244,7 @@ frame::frame(app* app)
       }},
      {ID_VIEW_HISTORY, 
       _("History"), "", "", _("History"), 
-      wex::config("ShowHistory").get(false),
+      wex::config("show.History").get(false),
       [&](wxCheckBox* cb) {
         if (m_history == nullptr)
         {
@@ -308,10 +308,10 @@ frame::frame(app* app)
     wex::ex::get_macros().save_document();
 
     wex::config("Perspective").set(manager().SavePerspective().ToStdString());
-    wex::config("OpenFiles").set(count);
-    wex::config("ShowHistory").set(
+    wex::config("recent.OpenFiles").set(count);
+    wex::config("show.History").set(
       m_history != nullptr && m_history->IsShown());
-    wex::config("ShowProjects").set(project_open);
+    wex::config("show.Projects").set(project_open);
 
     if (m_app->data().control().command().empty())
     {
@@ -503,8 +503,8 @@ frame::frame(app* app)
     m_editors->rearrange(wxLEFT);}, ID_REARRANGE_VERTICALLY);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wex::config("List/SortSync").set(
-      !wex::config("List/SortSync").get(true));}, ID_SORT_SYNC);
+    wex::config("list.SortSync").set(
+      !wex::config("list.SortSync").get(true));}, ID_SORT_SYNC);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wex::vcs(std::vector< wex::path >(), event.GetId() - wex::ID_VCS_LOWEST - 1).request();},
@@ -946,7 +946,7 @@ void frame::on_command_item_dialog(
         
         m_statusbar->show_field(
           "PaneMacro", 
-          wex::config(_("vi mode")).get(true));
+          wex::config(_("stc.vi mode")).get(true));
       }
       break;
 
@@ -1013,7 +1013,7 @@ void frame::on_update_ui(wxUpdateUIEvent& event)
       break;
 
     case ID_SORT_SYNC:
-      event.Check(wex::config("List/SortSync").get(true));
+      event.Check(wex::config("list.SortSync").get(true));
       break;
 
     default:
@@ -1242,7 +1242,7 @@ wex::stc* frame::open_file(const wex::path& filename, const wex::stc_data& data)
         get_debug()->apply_breakpoints(editor);
       }
 
-      const std::string key(filename.string());
+      const std::string key(filename.stat().path());
 
       notebook->add_page(
         editor,
@@ -1268,7 +1268,7 @@ wex::stc* frame::open_file(const wex::path& filename, const wex::stc_data& data)
         editor->SetEdgeMode(wxSTC_EDGE_NONE);
       }
 
-      if (wex::config(_("Auto blame")).get(false))
+      if (wex::config(_("stc.Auto blame")).get(false))
       {
         if (wex::vcs vcs {{filename}};
           vcs.execute("blame " + filename.string()))
@@ -1515,7 +1515,7 @@ void frame::update_listviews()
   if (wex::item_dialog* dlg = wex::stc::get_config_dialog();
     dlg != nullptr)
   {
-    const wex::item item (dlg->get_item(_("Include directory")));
+    const wex::item item (dlg->find(_("stc.Include directory")));
     
     if (wex::listview* lv = (wex::listview*)item.window(); lv != nullptr)
     {

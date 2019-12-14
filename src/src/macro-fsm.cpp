@@ -281,7 +281,7 @@ void wex::macro_fsm::record(const std::string& macro, ex* ex)
   {
     ((statusbar *)ex->frame()->GetStatusBar())->show_field(
       "PaneMode", 
-      m_state != IDLE && config(_("Show mode")).get(false));
+      m_state != IDLE && config(_("Show mode")).get(true));
   }
 }
 
@@ -291,7 +291,7 @@ void wex::macro_fsm::recorded()
   {
     log("empty macro recorded");
   }
-  else if (!m_mode->get_macros()->get(m_macro).empty())
+  else if (!m_mode->get_macros()->find(m_macro).empty())
   {
     m_mode->get_macros()->save_macro(m_macro);
     log::status("Macro") << m_macro << "is recorded";

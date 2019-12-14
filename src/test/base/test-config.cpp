@@ -118,6 +118,25 @@ TEST_CASE("wex::config")
     REQUIRE( c.item("child.child-z").get(99) == 3);
   }
   
+  SUBCASE("dotted-item")
+  {
+    wex::config("sc.z").set(8);
+    REQUIRE(!wex::config("sc.z").is_child());
+    REQUIRE( wex::config("sc.z").get(9) == 8);
+  }
+  
+  SUBCASE("hierarchy")
+  {
+    wex::config("world.asia.china.cities").set("bejing");
+    wex::config("world.europe.netherlands.cities").set("amsterdam");
+    wex::config("world.europe.netherlands.rivers").set("rijn");
+    REQUIRE(!wex::config("world.europe.netherlands.rivers").is_child());
+    REQUIRE( wex::config("world.europe.netherlands.rivers").exists());
+    REQUIRE( wex::config("world.europe.netherlands").exists());
+    REQUIRE(!wex::config("world.europe.netherlands.mountains").exists());
+    REQUIRE( wex::config("world.europe.netherlands.rivers").get() == "rijn");
+  }
+
   SUBCASE("toggle")
   {
     wex::config c("toggle");

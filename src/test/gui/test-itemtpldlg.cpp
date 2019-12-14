@@ -26,6 +26,8 @@ namespace wex
   };
 };
 
+TEST_SUITE_BEGIN("wex::item");
+
 TEST_CASE("wex::item_template_dialog")
 {
   wex::item::use_config(false);
@@ -49,15 +51,14 @@ TEST_CASE("wex::item_template_dialog")
     REQUIRE(!dlg->bind_button({"test", wex::item::BUTTON})); // not yet laid out0
     REQUIRE(!dlg->bind_button({"test", wex::item::COMBOBOX_DIR})); // same
 
-    REQUIRE( dlg->bind_button(dlg->get_item("button")));
+    REQUIRE( dlg->bind_button(dlg->find("button")));
     
     dlg->Show();
     
-    REQUIRE( std::any_cast<std::string>(dlg->get_item("fruit").label()) == "fruit");
+    REQUIRE( std::any_cast<std::string>(dlg->find("fruit").label()) == "fruit");
     REQUIRE( std::any_cast<std::string>(dlg->get_item_value("fruit")) == "apple");
-    REQUIRE(!dlg->get_item_value("xxx").has_value());
-    REQUIRE( std::any_cast<std::string>(dlg->get_item("xxx").label()).empty());
-    REQUIRE(!dlg->get_item_value("yyy").has_value());
+    REQUIRE( std::any_cast<std::string>(dlg->get_item_value("xxx")).empty());
+    REQUIRE( std::any_cast<std::string>(dlg->find("xxx").label()).empty());
     REQUIRE( dlg->set_item_value("fruit", std::string("strawberry")));
     REQUIRE(!dlg->set_item_value("xxx", "blueberry"));
     REQUIRE( std::any_cast<std::string>(dlg->get_item_value("fruit")) == "strawberry");
@@ -105,3 +106,5 @@ TEST_CASE("wex::item_template_dialog")
     dlg->Show();
   }
 }
+
+TEST_SUITE_END();

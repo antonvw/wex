@@ -18,6 +18,7 @@
 #include <wx/slider.h>
 #include <wex/control-data.h>
 #include <wex/listview-data.h>
+#include <wex/log.h>
 
 class wxFlexGridSizer;
 class wxWindow;
@@ -28,7 +29,7 @@ namespace wex
 
   /*! \file */
   /// Container class for using with item_dialog.
-  /// The next items can be set using specified control data:
+  /// The next items can be set using specified control_data:
   /// - id: as used by the window, see frame::on_command_item_dialog, 
   /// - is_required: ensures that the control must have a value otherwise OK, 
   ///   APPLY is not enabled,
@@ -42,68 +43,161 @@ namespace wex
     /// The item types supported.
     enum type_t
     {
-      BUTTON,             ///< a wxButton item
-      CHECKBOX,           ///< a wxCheckBox item
-      CHECKLISTBOX_BIT,   ///< a wxCheckListBox item to set individual bits in a long
-      CHECKLISTBOX_BOOL,  ///< a wxCheckListBox item using boolean choices
-      COLOURPICKERWIDGET, ///< a wxColourPickerWidget item
-      COMBOBOX,           ///< a wxComboBox item
-      COMBOBOX_DIR,       ///< a wxComboBox item with a browse button for a directory
-      COMBOBOX_FILE,      ///< a wxComboBox item with a browse button for a file
-      COMMANDLINKBUTTON,  ///< a wxCommandLinkButton button
-      DIRPICKERCTRL,      ///< a wxDirPickerCtrl item
-      EMPTY,              ///< an empty item
-      FILEPICKERCTRL,     ///< a wxFilePickerCtrl item
-      FONTPICKERCTRL,     ///< a wxFontPickerCtrl item
-      GRID,               ///< a wex::grid item
-      HYPERLINKCTRL,      ///< a wxHyperlinkCtrl item
-      LISTVIEW,           ///< a wex::listview item
-      NOTEBOOK,           ///< a wxNotebook item
-      NOTEBOOK_AUI,       ///< a wxAuiNotebook item
-      NOTEBOOK_CHOICE,    ///< a wxChoicebook item
-      NOTEBOOK_LIST,      ///< a wxListbook item
-      NOTEBOOK_SIMPLE,    ///< a wxSimpleNotebook item
-      NOTEBOOK_TOOL,      ///< a wxToolbook item
-      NOTEBOOK_TREE,      ///< a wxTreebook item
-      NOTEBOOK_WEX,       ///< a wex::notebook  item
-      RADIOBOX,           ///< a wxRadioBox item
-      SLIDER,             ///< a wxSlider item
-      SPACER,             ///< a spacer item
-      SPINCTRL,           ///< a wxSpinCtrl item
-      SPINCTRLDOUBLE,     ///< a wxSpinCtrlDouble item
-      STATICLINE,         ///< a wxStaticLine item
-      STATICTEXT,         ///< a wxStaticText item
-      STC,                ///< a wex::stc item  
-      TEXTCTRL,           ///< a wxTextCtrl item
-      TEXTCTRL_FLOAT,     ///< a wxTextCtrl item that only accepts a float (double)
-      TEXTCTRL_INT,       ///< a wxTextCtrl item that only accepts an integer (long)
-      TOGGLEBUTTON,       ///< a wxToggleButton item
-      USER,               ///< provide your own window
+      /// wxButton item
+      BUTTON,             
+
+      /// wxCheckBox item
+      CHECKBOX,           
+
+      /// wxCheckListBox item to set individual bits in a long
+      CHECKLISTBOX_BIT,   
+
+      /// wxCheckListBox item using boolean choices
+      CHECKLISTBOX_BOOL,  
+      
+      /// wxColourPickerWidget item
+      COLOURPICKERWIDGET, 
+
+      /// wxComboBox item
+      COMBOBOX,           
+
+      /// wxComboBox item with a browse button for a directory
+      COMBOBOX_DIR,       
+
+      /// wxComboBox item with a browse button for a file
+      COMBOBOX_FILE,      
+
+      /// wxCommandLinkButton button
+      COMMANDLINKBUTTON,  
+
+      /// wxDirPickerCtrl item
+      DIRPICKERCTRL,      
+
+      /// empty item
+      EMPTY,              
+
+      /// wxFilePickerCtrl item
+      FILEPICKERCTRL,     
+
+      /// wxFontPickerCtrl item
+      FONTPICKERCTRL,     
+
+      /// wex::grid item
+      GRID,               
+
+      /// wxHyperlinkCtrl item
+      HYPERLINKCTRL,      
+
+      /// wex::listview item
+      LISTVIEW,           
+
+      /// wxNotebook item
+      NOTEBOOK,           
+
+      /// wxAuiNotebook item
+      NOTEBOOK_AUI,       
+
+      /// wxChoicebook item
+      NOTEBOOK_CHOICE,    
+
+      /// wxListbook item
+      NOTEBOOK_LIST,      
+
+      /// wxSimpleNotebook item
+      NOTEBOOK_SIMPLE,    
+
+      /// wxToolbook item
+      NOTEBOOK_TOOL,      
+
+      /// wxTreebook item
+      NOTEBOOK_TREE,      
+
+      /// wex::notebook item
+      NOTEBOOK_WEX,       
+
+      /// wxRadioBox item
+      RADIOBOX,           
+
+      /// wxSlider item
+      SLIDER,             
+
+      /// spacer item
+      SPACER,             
+
+      /// wxSpinCtrl item
+      SPINCTRL,           
+
+      /// wxSpinCtrlDouble item
+      SPINCTRLDOUBLE,     
+
+      /// wxStaticLine item
+      STATICLINE,         
+
+      /// wxStaticText item
+      STATICTEXT,         
+
+      /// wex::stc item  
+      STC,                
+
+      /// wxTextCtrl item
+      TEXTCTRL,           
+
+      /// wxTextCtrl item that only accepts a float (double)
+      TEXTCTRL_FLOAT,     
+
+      /// wxTextCtrl item that only accepts an integer (long)
+      TEXTCTRL_INT,       
+
+      /// wxToggleButton item
+      TOGGLEBUTTON,       
+
+      /// provide your own window
+      USER,               
     };
 
     /// Label types supported.
     enum label_t
     {
-      LABEL_NONE,              ///< no label
-      LABEL_LEFT,              ///< label left from window
-      LABEL_ABOVE,             ///< label above window
+      LABEL_NONE,   ///< no label
+      LABEL_LEFT,   ///< label left from window
+      LABEL_ABOVE,  ///< label above window
     };
 
     /// Choices for radioboxes.
-    typedef std::map<long, const std::string> choices_t;
-      
+    typedef std::map<
+      /// value
+      long, 
+      /// name, default the value is not set,
+      /// but can be set by adding , '1' to the name
+      const std::string> 
+      choices_t;
+    
+    /// Choices for listboxes with toggle options.
+    typedef std::set<
+      std::string> 
+      choices_bool_t;
+    
     /// This is a vector of a pair of pages with a vector of items.
-    typedef std::vector<std::pair<std::string, std::vector<item>>> 
+    typedef std::vector<
+      std::pair<
+        std::string, 
+        std::vector<item>>> 
       items_notebook_t;
     
     /// A function that you can provide to e.g. specify what 
     /// to do when clicking on a button item.
-    typedef std::function<void(wxWindow* user, const std::any& value, bool save)> 
+    typedef std::function<
+      void(wxWindow* user, 
+      const std::any& value, 
+      bool save)> 
       user_apply_t;
     
     /// A function that you can provide to specify what needs to
     /// be done for creating a user item.
-    typedef std::function<void(wxWindow* user, wxWindow* parent, bool readonly)> 
+    typedef std::function<void(
+      wxWindow* user, 
+      wxWindow* parent, 
+      bool readonly)> 
       user_window_create_t;
     
     /// A function that you can provide to specify what needs to
@@ -114,6 +208,7 @@ namespace wex
 
     /// Use config for getting and retrieving values.
     /// Default the config is used.
+    /// The label is used as entry in the config.
     static void use_config(bool use) {m_use_config = use;};
     
     /// Default constructor for an EMPTY item.
@@ -134,6 +229,8 @@ namespace wex
       /// label for the window as on the dialog,
       /// might also contain the note after a tab for a command link button
       /// if the window supports it you can use a markup label
+      /// you can use a parent child config item by using a
+      /// dot in the label, the prefix is not shown on the window
       const std::string& label,
       /// initial value, also used as default for a hyperlink ctrl, 
       /// or as lexer for STC
@@ -206,7 +303,9 @@ namespace wex
     /// This checklistbox can be used to get/set several boolean values.
     item(
       /// the set with names of boolean items
-      const std::set<std::string> & choices,
+      /// the default value is false, but can be changed by adding a
+      /// ',1' postfix to the name
+      const choices_bool_t & choices,
       /// control data
       const control_data& data = control_data(),
       /// callback to apply
@@ -278,14 +377,14 @@ namespace wex
       /// indicates whether to use a radiobox or a checklistbox.
       bool use_radiobox = true,
       /// major dimension for the radiobox
-      int majorDimension = 1,
+      int major_dimension = 1,
       /// control data
       const control_data& data = 
         control_data().window(window_data().style(wxRA_SPECIFY_COLS)),
       /// callback to apply
       user_apply_t apply = nullptr)
       : item(use_radiobox ? RADIOBOX: CHECKLISTBOX_BIT, label, choices,
-        LABEL_NONE, majorDimension, 0, 1, 1) {
+        LABEL_NONE, major_dimension, 0, 1, 1) {
           m_apply = apply;
           m_data = data;};
 
@@ -375,6 +474,9 @@ namespace wex
 
     /// Returns control data.
     const auto& data() const {return m_data;};
+    
+    /// Returns true if this item is empty.
+    bool empty() const {return m_type == EMPTY;};
 
     /// Returns actual value, or empty object if this item
     /// has no (or not yet) associated window, or conversion is not implemented.
@@ -383,6 +485,9 @@ namespace wex
     /// Returns the initial value.
     const auto& initial() const {return m_initial;};
     
+    /// Returns true if this item is a notebook.
+    bool is_notebook() const;
+
     /// Is this item allowed to be expanded on a row.
     auto is_row_growable() const {return m_is_row_growable;};
 
@@ -492,6 +597,7 @@ namespace wex
     
     std::string 
       m_label, 
+      m_label_window,
       m_page;
     
     item_template_dialog<item>* m_dialog {nullptr};
@@ -507,17 +613,5 @@ namespace wex
     wxWindow* m_window;
 
     static inline bool m_use_config = true;
-  };
-
-  /// Support class for keeping defaults in the config.
-  class config_defaults
-  {
-  private:
-    /// A default with name, item type, and default value.
-    typedef std::tuple<std::string, item::type_t, std::any> default_t;
-
-  public:
-    /// Constructor, sets default values if not yet in the config.
-    config_defaults(const std::vector<default_t> & items);
   };
 };

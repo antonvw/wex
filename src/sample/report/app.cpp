@@ -77,7 +77,7 @@ frame::frame()
     {"PaneInfo", 100},
     {"PaneLexer", 60}});
 
-  const wex::lexer lexer = wex::lexers::get()->find_by_name("cpp");
+  const wex::lexer lexer = wex::lexers::get()->find("cpp");
 
   for (int i = wex::listview_data::FOLDER; i <= wex::listview_data::FILE; i++)
   {

@@ -70,7 +70,7 @@ TEST_CASE("wex::macros")
     REQUIRE(!macros.starts_with("xx"));
     REQUIRE( macros.is_recorded_macro("a"));
     REQUIRE( macros.mode().get_macro() == "a");
-    REQUIRE( macros.get("a").front() == "a");
+    REQUIRE( macros.find("a").front() == "a");
     REQUIRE(!macros.is_recorded_macro("d"));
     
     stc->set_text("");
@@ -157,7 +157,7 @@ TEST_CASE("wex::macros")
     REQUIRE(!macros.get_register('a').empty());
     REQUIRE(!macros.get_registers().empty());
     REQUIRE( macros.set_register('z', "hello z"));
-    REQUIRE(!macros.get("z").empty());
+    REQUIRE(!macros.find("z").empty());
     REQUIRE( macros.get_register('z') == "hello z");
     REQUIRE( macros.set_register('Z', " and more"));
     REQUIRE( macros.get_register('Z').empty());

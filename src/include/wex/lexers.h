@@ -94,11 +94,11 @@ namespace wex
         m_theme.clear();
       }};
     
+    /// Finds a lexer specified by the (display scintilla) name.
+    const lexer find(const std::string& name) const;
+
     /// Finds a lexer specified by a filename (fullname).
     const lexer find_by_filename(const std::string& fullname) const;
-
-    /// Finds a lexer specified by the (display scintilla) name.
-    const lexer find_by_name(const std::string& name) const;
 
     /// Finds a lexer if text starts with some special tokens.
     const lexer find_by_text(const std::string& text) const;

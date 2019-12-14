@@ -31,7 +31,7 @@ bool wex::stc::find_next(
 
   static bool recursive = false;
   static int start_pos, end_pos;
-  const bool wrapscan(config(_("Wrap scan")).get(true));
+  const bool wrapscan(config(_("stc.Wrap scan")).get(true));
 
   if (forward || (find_flags == -1 && find_replace_data::get()->search_down()))
   {

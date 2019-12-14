@@ -91,11 +91,11 @@ int wex::vcs::config_dialog(const window_data& par) const
   }
 
   // use a radiobox 
-  std::vector<item> v{{"VCS", choices, true, cols}};
+  std::vector<item> v{{"vcs.VCS", choices, true, cols}};
 
   for (const auto& it : m_entries)
   {
-    v.push_back({it.name(), item::FILEPICKERCTRL});
+    v.push_back({"vcs." + it.name(), item::FILEPICKERCTRL});
   }
 
   if (const window_data data(window_data(par).
@@ -130,11 +130,11 @@ bool wex::vcs::execute()
   {
     return m_entry.execute(
       m_entry.get_command().is_add() ? 
-        config(_("data")).get_firstof(): 
+        config(_("vcs.data")).get_firstof(): 
         std::string(), 
       lexer(), 
       process::EXEC_WAIT,
-      config(_("Base folder")).get_firstof());
+      config(_("vcs.Base folder")).get_firstof());
   }
   else
   {
@@ -155,7 +155,7 @@ bool wex::vcs::execute()
       
       if (!filename.fullname().empty())
       {
-        args = "./" + filename.fullname();
+        args = "\"" + filename.fullname() + "\"";
       }
     }
     else
@@ -180,7 +180,7 @@ const wex::vcs_entry wex::vcs::find_entry(const std::string& filename)
 
 const wex::vcs_entry wex::vcs::find_entry(const path& filename)
 {
-  if (const int vcs = config("VCS").get(VCS_AUTO);
+  if (const int vcs = config("vcs.VCS").get(VCS_AUTO);
     vcs == VCS_AUTO)
   {
     if (!filename.empty())
@@ -211,19 +211,19 @@ const wex::vcs_entry wex::vcs::find_entry(const path& filename)
 
 const std::string wex::vcs::get_branch() const
 {
-  return config("VCS").get(VCS_AUTO) == VCS_NONE ?
+  return config("vcs.VCS").get(VCS_AUTO) == VCS_NONE ?
     std::string(): 
     m_entry.get_branch();
 }
 
 const wex::path wex::vcs::get_file() const
 {
-  return m_files.empty() ? config(_("Base folder")).get_firstof(): m_files[0];
+  return m_files.empty() ? config(_("vcs.Base folder")).get_firstof(): m_files[0];
 }
 
 const std::string wex::vcs::name() const
 {
-  switch (config("VCS").get(VCS_AUTO))
+  switch (config("vcs.VCS").get(VCS_AUTO))
   {
     case VCS_NONE: return std::string();
     case VCS_AUTO: return "Auto";
@@ -303,7 +303,7 @@ bool wex::vcs::load_document()
   if (old_entries == 0)
   {
     // Add default VCS.
-    if (config c("VCS"); !c.exists())
+    if (config c("vcs.VCS"); !c.exists())
     {
       c.set(VCS_AUTO);
     }
@@ -313,7 +313,7 @@ bool wex::vcs::load_document()
     // If current number of entries differs from old one,
     // we added or removed an entry. That might give problems
     // with the vcs id stored in the config, so reset it. 
-    config("VCS").set(VCS_AUTO);
+    config("vcs.VCS").set(VCS_AUTO);
   }
   
   return true;
@@ -348,12 +348,12 @@ bool wex::vcs::set_entry_from_base(wxWindow* parent)
   if (
     // See also vcs_entry, same item is used there.
     const std::vector<item> v{{
-      _("Base folder"), 
+      _("vcs.Base folder"), 
       item::COMBOBOX_DIR, 
       std::any(), 
       control_data().is_required(true)}};
 
-    config(_("Base folder")).get_firstof().empty()) 
+    config(_("vcs.Base folder")).get_firstof().empty()) 
   {
     if (
       parent != nullptr && 
@@ -364,11 +364,11 @@ bool wex::vcs::set_entry_from_base(wxWindow* parent)
       return false;
     }
     
-    m_entry = find_entry(config(_("Base folder")).get_firstof());
+    m_entry = find_entry(config(_("vcs.Base folder")).get_firstof());
   }
   else
   {
-    m_entry = find_entry(config(_("Base folder")).get_firstof());
+    m_entry = find_entry(config(_("vcs.Base folder")).get_firstof());
   
     if (m_entry.name().empty())
     {
@@ -381,7 +381,7 @@ bool wex::vcs::set_entry_from_base(wxWindow* parent)
         return false;
       }
       
-      m_entry = find_entry(config(_("Base folder")).get_firstof());
+      m_entry = find_entry(config(_("vcs.Base folder")).get_firstof());
     }
   }
   
@@ -400,7 +400,7 @@ int wex::vcs::show_dialog(const window_data& arg)
 
   if (m_entry.get_command().ask_flags())
   {
-    config(_("Flags")).set(config(m_entry.flags_key()).get());
+    config(_("vcs.Flags")).set(config(m_entry.flags_key()).get());
   }
 
   if (m_item_dialog != nullptr)
@@ -413,13 +413,13 @@ int wex::vcs::show_dialog(const window_data& arg)
 
   const std::vector <item> v({
     m_entry.get_command().is_commit() ? 
-      item(_("Revision comment"), 
+      item(_("vcs.Revision comment"), 
         item::COMBOBOX, 
         std::any(), 
         control_data().is_required(true)): 
       item(),
     add_folder && !m_entry.get_command().is_help() ? 
-      item(_("Base folder"), 
+      item(_("vcs.Base folder"), 
         item::COMBOBOX_DIR, 
         std::any(), 
         control_data().is_required(true)): 
@@ -427,10 +427,10 @@ int wex::vcs::show_dialog(const window_data& arg)
     add_folder && 
    !m_entry.get_command().is_help() && 
     m_entry.get_command().is_add() ? item(
-      _("Path"), item::COMBOBOX, std::any(), control_data().is_required(true)): 
+      _("vcs.Path"), item::COMBOBOX, std::any(), control_data().is_required(true)): 
       item(), 
     m_entry.get_command().ask_flags() ?  
-      item(_("Flags"), 
+      item(_("vcs.Flags"), 
         std::string(), 
         item::TEXTCTRL, 
         control_data(), item::LABEL_LEFT, 
@@ -439,10 +439,10 @@ int wex::vcs::show_dialog(const window_data& arg)
       item(),
     m_entry.flags_location() == vcs_entry::FLAGS_LOCATION_PREFIX &&
     m_entry.get_command().ask_flags() ?  
-      item(_("Prefix flags"), std::string()): 
+      item(_("vcs.Prefix flags"), std::string()): 
       item(),
     m_entry.get_command().use_subcommand() ? 
-      item(_("Subcommand"), std::string()): 
+      item(_("vcs.Subcommand"), std::string()): 
       item()});
 
   bool all_empty = true;
@@ -469,5 +469,5 @@ int wex::vcs::show_dialog(const window_data& arg)
   
 bool wex::vcs::use() const
 {
-  return config("VCS").get(VCS_AUTO) != VCS_NONE;
+  return config("vcs.VCS").get(VCS_AUTO) != VCS_NONE;
 }

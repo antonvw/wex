@@ -96,8 +96,8 @@ namespace wex
   };
   
   const std::string 
-    win_frame = "WindowFrame", 
-    win_max = "WindowMaximized";
+    win_frame = "window.frame", 
+    win_max = "window.maximized";
   
   std::vector<int> win_data;
   
@@ -176,9 +176,12 @@ wex::frame::frame(const window_data& data)
     FIND_REPLACE( _("Replace") , wxFR_REPLACEDIALOG );}, wxID_REPLACE);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     m_is_command = true;
+
+    // :e [+command] [file]
     if (!event.GetString().empty())
     {
       std::string text(event.GetString());
+
       if (auto* stc = get_stc(); stc != nullptr)
       {
         wex::path::current(stc->get_filename().get_path());
@@ -210,7 +213,9 @@ wex::frame::frame(const window_data& data)
     Refresh();}, ID_VIEW_TITLEBAR);
 
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    (GetMenuBar() != nullptr ? event.Check(GetMenuBar()->IsShown()): event.Check(false));},
+    (GetMenuBar() != nullptr ? 
+       event.Check(GetMenuBar()->IsShown()): 
+       event.Check(false));},
     ID_VIEW_MENUBAR);
   
   Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
@@ -239,7 +244,7 @@ wex::frame::~frame()
     m_find_replace_dialog->Destroy();
   }
   
-  config("ShowMenuBar").set(
+  config("show.MenuBar").set(
     GetMenuBar() != nullptr && GetMenuBar()->IsShown());
 }
 
@@ -255,7 +260,9 @@ wex::listview* wex::frame::get_listview()
 
 std::string wex::frame::get_statustext(const std::string& pane)
 {
-  return (m_statusbar == nullptr ? std::string(): m_statusbar->get_statustext(pane));
+  return (m_statusbar == nullptr ? 
+    std::string(): 
+    m_statusbar->get_statustext(pane));
 }
 
 wex::stc* wex::frame::get_stc()
@@ -335,7 +342,7 @@ void wex::frame::SetMenuBar(wxMenuBar* bar)
   }
   
   wxFrame::SetMenuBar(
-   !m_is_command && !config("ShowMenuBar").get(true) ? 
+   !m_is_command && !config("show.MenuBar").get(true) ? 
       nullptr: bar);
 }
 
@@ -397,8 +404,9 @@ bool wex::frame::update_statusbar(const wxListView* lv)
   if (!m_is_closing && lv->IsShown())
   {
     const auto text = std::to_string(lv->GetItemCount()) + 
-      (lv->GetSelectedItemCount() > 0 ? "," + std::to_string(lv->GetSelectedItemCount()):
-       std::string());
+      (lv->GetSelectedItemCount() > 0 ? 
+         "," + std::to_string(lv->GetSelectedItemCount()):
+         std::string());
       
     return statustext(text, "PaneInfo");
   }

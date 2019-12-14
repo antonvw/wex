@@ -112,6 +112,18 @@ namespace wex
       }
       return true;};
 
+    /// Returns the (first) item that has specified label,
+    /// or empty item if item does not exist.
+    const T find(const std::string& label) const {
+      for (const auto& item : m_items)
+      {
+        if (item.label() == label)
+        {
+          return item;
+        }
+      };
+      return T();};
+
     /// If you specified some checkboxes, calling this method
     /// requires that one of them should be checked for the OK button
     /// to be enabled.
@@ -124,25 +136,13 @@ namespace wex
       m_contains = contains;
       m_page = page;};
     
-    /// Returns the (first) item that has specified label,
-    /// or empty item if item does not exist.
-    const T get_item(const std::string& label) const {
-      for (const auto& item : m_items)
-      {
-        if (item.label() == label)
-        {
-          return item;
-        }
-      };
-      return T();};
-
     /// Returns all items.
     const auto & get_items() const {return m_items;};
 
     /// Returns the item actual value for specified label, or 
     /// empty object if item does not exist.
     const auto get_item_value(const std::string& label) const {
-      return get_item(label).get_value();};
+      return find(label).get_value();};
    
     /// Sets the item actual value for specified label.
     bool set_item_value(const std::string& label, const std::any& value) const {
@@ -175,7 +175,7 @@ namespace wex
       int previous_type = -1;
       for (auto& item : m_items)
       {
-        if (item.type() == item::EMPTY) continue; //skip
+        if (item.empty()) continue;
 
         item.set_dialog(this);
         
@@ -269,8 +269,9 @@ namespace wex
           }
           break;
 
-        case item::TEXTCTRL_INT:
         case item::TEXTCTRL:
+        case item::TEXTCTRL_FLOAT:
+        case item::TEXTCTRL_INT:
           if (auto* tc = (wxTextCtrl*)item.window(); 
             item.data().is_required())
           {

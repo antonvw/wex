@@ -70,7 +70,7 @@ decorated_frame::decorated_frame(app* app)
     m_statusbar->show_field("PaneTheme", false);
   }
   
-  const bool vi_mode = wex::config(_("vi mode")).get(false);
+  const bool vi_mode = wex::config(_("stc.vi mode")).get(false);
   
   m_statusbar->show_field("PaneMacro", vi_mode);
   m_statusbar->show_field("PaneMode", false);

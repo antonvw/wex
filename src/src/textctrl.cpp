@@ -16,13 +16,25 @@ wex::textctrl_input::textctrl_input(ex_command::type_t type)
   , m_name([](ex_command::type_t type) {
       switch (type)
       {
-        case ex_command::type_t::CALC: return std::string("excalc");
-        case ex_command::type_t::COMMAND: return std::string("excommand");
-        case ex_command::type_t::EXEC: return std::string("exexec");
-        case ex_command::type_t::FIND: return find_replace_data::text_find();
-        case ex_command::type_t::FIND_MARGIN: return std::string("exmargin");
-        case ex_command::type_t::REPLACE: return find_replace_data::text_replace_with();
-        default: return std::string("exother");
+        case ex_command::type_t::CALC: 
+          return std::string("ex-cmd.calc");
+
+        case ex_command::type_t::COMMAND: 
+          return std::string("ex-cmd.command");
+
+        case ex_command::type_t::EXEC: 
+          return std::string("ex-cmd.exec");
+
+        case ex_command::type_t::FIND: 
+          return find_replace_data::text_find();
+
+        case ex_command::type_t::FIND_MARGIN: 
+          return std::string("ex-cmd.margin");
+
+        case ex_command::type_t::REPLACE: 
+          return find_replace_data::text_replace_with();
+
+        default: return std::string("ex-cmd.other");
       }}(type))
   , m_values(config(m_name).get(std::list<std::string>{}))
   , m_iterator(m_values.cbegin())

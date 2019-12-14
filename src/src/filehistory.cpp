@@ -29,7 +29,7 @@ namespace wex
       wxWindowID idBase = wxID_FILE1,
       const std::string& key = "xxxxx")
       : wxFileHistory(maxFiles, idBase)
-      , m_key(key.empty() ? "RecentFiles": key)
+      , m_key(key.empty() ? "recent.Files": key)
       , m_history(config(m_key).get(std::list < std::string >{})) 
       {
         // The order should be inverted, as the last one added is the most recent used.

@@ -1,3 +1,4 @@
+////////////////////////////////////////////////////////////////////////////////
 // Name:      macros.h
 // Purpose:   Declaration of class wex::macros
 // Author:    Anton van Wezenbeek
@@ -47,12 +48,14 @@ namespace wex
     /// Returns true if macro was erased.
     bool erase();
     
+    /// Finds macro in macros or variables,
+    /// and returns contents as a vector of strings,
+    /// or empty vector if not found.
+    const std::vector< std::string > find(const std::string& name) const;
+    
     /// Returns all macro names as a vector of strings.
     /// Does not include registers.
     const std::vector< std::string > get() const;
-    
-    /// Returns contents of macro as a vector of strings.
-    const std::vector< std::string > get(const std::string& name) const;
     
     /// Returns abbreviations.
     const auto& get_abbreviations() const {return m_abbreviations;};

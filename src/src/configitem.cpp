@@ -11,6 +11,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/checklst.h>
+#include <wx/clrpicker.h>
 #include <wx/spinctrl.h>
 #include <wx/window.h>
 #include <wex/config.h>
@@ -66,46 +67,50 @@ bool update(
 
 bool wex::item::to_config(bool save) const
 {
-  if (!m_use_config)
+  if (!m_use_config || m_window == nullptr)
   {
     return false;
   }
-  
+
   switch (type())
   {
     case CHECKBOX:           
-      PERSISTENT(bool, false); 
+      PERSISTENT(bool, ((wxCheckBox* )m_window)->GetValue());
       break;
 
     case CHECKLISTBOX_BIT:   
-      PERSISTENT(long, 0); 
+      PERSISTENT(long, std::any_cast<long>(get_value()));
       break;
     
     case CHECKLISTBOX_BOOL:
-      if (auto* clb = (wxCheckListBox*)window();
+      if (auto* clb = (wxCheckListBox*)m_window;
         clb != nullptr)
       {
-        for (size_t i = 0; i < clb->GetCount(); i++)
+        size_t i = 0;
+      
+        for (const auto& c : std::any_cast<choices_bool_t>(m_initial))
         {
           if (!update(find_replace_data::get(), clb, i, save, clb->IsChecked(i)))
           {
             if (save)
-              config(clb->GetString(i)).set(clb->IsChecked(i));
+              config(before(c, ',')).set(clb->IsChecked(i));
             else
-              clb->Check(i, config(clb->GetString(i)).get(false));
+              clb->Check(i, config(before(c, ',')).get(clb->IsChecked(i)));
           }
+
+          i++;
         }
       }
       break;
 
     case COLOURPICKERWIDGET: 
-      PERSISTENT(wxColour, *wxWHITE); 
+      PERSISTENT(wxColour, ((wxColourPickerWidget* )m_window)->GetColour()); 
       break;
     
     case COMBOBOX:
     case COMBOBOX_DIR:
     case COMBOBOX_FILE:
-      if (auto* cb = (wxComboBox*)window(); save)
+      if (auto* cb = (wxComboBox*)m_window; save)
       {
         if (const auto l = to_list_string(cb, m_max_items).get();
           m_label == find_replace_data::get()->text_find())
@@ -123,7 +128,10 @@ bool wex::item::to_config(bool save) const
       }
       else
       {
-        combobox_from_list(cb, config(m_label).get(std::list<std::string>{}));
+        combobox_from_list(cb, config(m_label).get(
+          !m_initial.has_value() ? 
+            std::list<std::string>{}:
+            std::any_cast<std::list<std::string>>(m_initial)));
       }
       break;
 
@@ -167,11 +175,11 @@ bool wex::item::to_config(bool save) const
       break;
 
     case RADIOBOX:
-      if (auto* rb = (wxRadioBox*)window(); save)
+      if (auto* rb = (wxRadioBox*)m_window; save)
       {
-        for (const auto& b : std::any_cast<item::choices_t>(initial()))
+        for (const auto& b : std::any_cast<choices_t>(initial()))
         {
-          if (b.second == rb->GetStringSelection())
+          if (before(b.second, ',') == rb->GetStringSelection())
           {
             config(m_label).set(b.first);
           }
@@ -179,63 +187,38 @@ bool wex::item::to_config(bool save) const
       }
       else
       {
-        const auto& choices(std::any_cast<item::choices_t>(initial()));
+        const auto& choices(std::any_cast<choices_t>(initial()));
         
-        if (const auto c = choices.find(config(m_label).get((int)0));
+        if (const auto c = choices.find(config(m_label).get(rb->GetSelection()));
           c != choices.end())
         {
-          rb->SetStringSelection(c->second);
+          rb->SetStringSelection(before(c->second, ','));
         }
       }
       break;
 
     case SLIDER:             
-      PERSISTENT(int, ((wxSlider* )window())->GetMin()); 
+      PERSISTENT(int, ((wxSlider* )m_window)->GetValue()); 
       break;
     
     case SPINCTRL:           
-      PERSISTENT(int, ((wxSpinCtrl* )window())->GetMin()); 
+      PERSISTENT(int, ((wxSpinCtrl* )m_window)->GetValue()); 
       break;
     
     case SPINCTRLDOUBLE:     
-      PERSISTENT(double, ((wxSpinCtrlDouble* )window())->GetMin()); 
-      break;
-    
-    case STC:                
-      PERSISTENT(std::string, std::string()); 
-      break;
-    
-    case TEXTCTRL_FLOAT:
-      if (m_initial.has_value())
-      {
-        PERSISTENT(double, std::stod(std::any_cast<std::string>(m_initial))); 
-      }
-      else
-      {
-        PERSISTENT(double, 0.0);
-      }
-      break;
-    
-    case TEXTCTRL_INT:       
-      if (m_initial.has_value())
-      {
-        PERSISTENT(long, std::stol(std::any_cast<std::string>(m_initial))); 
-      }
-      else
-      {
-        PERSISTENT(long, 0l);
-      }
+      PERSISTENT(double, ((wxSpinCtrlDouble* )m_window)->GetValue()); 
       break;
     
     case TEXTCTRL:           
-      if (m_initial.has_value())
-      {
-        PERSISTENT(std::string, std::any_cast<std::string>(m_initial));
-      }
-      else
-      {
-        PERSISTENT(std::string, std::string());
-      }
+      PERSISTENT(std::string, std::any_cast<std::string>(get_value()));
+      break;
+    
+    case TEXTCTRL_FLOAT:
+      PERSISTENT(double, std::any_cast<double>(get_value()));
+      break;
+    
+    case TEXTCTRL_INT:       
+      PERSISTENT(long, std::any_cast<long>(get_value()));
       break;
     
     case TOGGLEBUTTON:       
@@ -244,14 +227,14 @@ bool wex::item::to_config(bool save) const
 
     case USER:
       if (m_user_window_to_config_t != nullptr &&
-        !(m_user_window_to_config_t)(window(), save))
+        !(m_user_window_to_config_t)(m_window, save))
       { 
         return false;
       }
       break;
       
     default:
-      // the other types have no persistent info
+      // the other types (including STC) have no persistent info
       return false;
       break;
   }
@@ -262,51 +245,4 @@ bool wex::item::to_config(bool save) const
   }
 
   return true;
-}
-
-wex::config_defaults::config_defaults(const std::vector<default_t> & items)
-{
-  if (config cfg;
-    !cfg.item(std::get<0>(items.front())).exists())
-  {
-    for (const auto& it : items)
-    {
-      try
-      {
-        switch (std::get<1>(it))
-        {
-          case item::CHECKBOX:
-            cfg.item(std::get<0>(it)).set(std::any_cast<bool>(std::get<2>(it)));
-            break;
-          case item::COLOURPICKERWIDGET:
-            cfg.item(std::get<0>(it)).set(std::any_cast<wxColour>(std::get<2>(it)));
-            break;
-          case item::COMBOBOX:
-            cfg.item(std::get<0>(it)).set(std::any_cast<std::list<std::string>>(std::get<2>(it)));
-            break;
-          case item::FONTPICKERCTRL:
-            cfg.item(std::get<0>(it)).set(std::any_cast<wxFont>(std::get<2>(it)));
-            break;
-          case item::SPINCTRL:
-            cfg.item(std::get<0>(it)).set(std::any_cast<long>(std::get<2>(it)));
-            break;
-          case item::TEXTCTRL:
-            cfg.item(std::get<0>(it)).set(std::any_cast<std::string>(std::get<2>(it)));
-            break;
-          case item::TEXTCTRL_FLOAT:
-            cfg.item(std::get<0>(it)).set(std::any_cast<double>(std::get<2>(it)));
-            break;
-          case item::TEXTCTRL_INT:
-            cfg.item(std::get<0>(it)).set(std::any_cast<long>(std::get<2>(it)));
-            break;
-          default:
-            log("unsupported default type for") << std::get<0>(it);
-        }
-      }
-      catch (std::bad_cast& e)
-      {
-        log(e) << std::get<0>(it);
-      }
-    }
-  }
 }

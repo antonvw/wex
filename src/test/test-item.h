@@ -40,11 +40,6 @@ const auto test_notebook_item(
 /// Returns a vector with some items.
 const auto test_items()
 {
-  wxArrayString as;
-  as.push_back("test1");
-  as.push_back("test2");
-  as.push_back("test3");
-
   return std::vector<wex::item> {
     {},
     {20},
@@ -57,5 +52,6 @@ const auto test_items()
     {test_notebook_item()},
     {"button1", wex::item::BUTTON},
     {"button2", wex::item::BUTTON},
-    {"combobox", wex::item::COMBOBOX, as}};
+    {"combobox", wex::item::COMBOBOX, std::list<std::string>
+      {"test1", "test2", "test3"}}};
 }

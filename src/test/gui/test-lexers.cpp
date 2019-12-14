@@ -51,10 +51,10 @@ TEST_CASE("wex::lexers")
     REQUIRE( wex::lexers::get()->find_by_filename(
       wex::test::get_path("test.h").fullname()).scintilla_lexer() == "cpp");
       
-    REQUIRE( wex::lexers::get()->find_by_name(
+    REQUIRE( wex::lexers::get()->find(
       "xxx").scintilla_lexer().empty());
       
-    REQUIRE( wex::lexers::get()->find_by_name(
+    REQUIRE( wex::lexers::get()->find(
       "cpp").scintilla_lexer() == "cpp");
     
     for (const auto& findby : std::vector<std::pair<

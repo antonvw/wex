@@ -21,7 +21,7 @@ TEST_CASE("wex::stc")
 {
   auto* stc = get_stc();
   stc->get_vi().command("\x1b");
-  wex::config(_("Wrap scan")).set(true);
+  wex::config(_("stc.Wrap scan")).set(true);
   
   SUBCASE("config_dialog")
   {
@@ -155,7 +155,7 @@ TEST_CASE("wex::stc")
     //  stc->filetype_menu();
     stc->fold();
     // FoldAll
-    wex::config(_("Auto fold")).set(3);
+    wex::config(_("stc.Auto fold")).set(3);
     stc->fold(true); 
     stc->Paste();
     //  stc->Print();
@@ -200,8 +200,8 @@ TEST_CASE("wex::stc")
   SUBCASE("auto_indentation")
   {
     // first test auto indentation on next line
-    wex::config(_("Auto indent")).set(3);
-    REQUIRE( wex::config(_("Auto indent")).get(3) == 3);
+    wex::config(_("stc.Auto indent")).set(3);
+    REQUIRE( wex::config(_("stc.Auto indent")).get(3) == 3);
     stc->set_text("  \n  line with indentation");
     stc->DocumentEnd();
     REQUIRE(!stc->auto_indentation('x'));

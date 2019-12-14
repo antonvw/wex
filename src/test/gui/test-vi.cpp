@@ -645,7 +645,7 @@ TEST_CASE("wex::vi")
     }
     
     vi->reset_search_flags();
-    wex::config(_("Wrap scan")).set(true);
+    wex::config(_("stc.Wrap scan")).set(true);
 
     // Test fold.
     for (auto& fold: std::vector<std::string> {"zo", "zc", "zE", "zf"})

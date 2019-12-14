@@ -127,9 +127,9 @@ namespace wex::report
     class file_history m_project_history;
 
     const std::string 
-      m_text_in_files {_("In files")},
-      m_text_in_folder  {_("In folder")},
-      m_text_recursive {_("Recursive")};
+      m_text_in_files {_("fif.In files")},
+      m_text_in_folder  {_("fif.In folder")},
+      m_text_recursive {_("fif.Recursive")};
 
     // This set determines what fields are placed on the Find Files dialogs
     // as a list of checkboxes.

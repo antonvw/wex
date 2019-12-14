@@ -45,7 +45,7 @@ TEST_CASE("wex::menu")
 
   // append_vcs  
   menu->append_vcs(wex::path(), false);
-  wex::config(_("Base folder")).set(std::list<std::string>{wxGetCwd().ToStdString()});
+  wex::config(_("vcs.Base folder")).set(std::list<std::string>{wxGetCwd().ToStdString()});
   REQUIRE( menu->append_vcs(wex::path(), false));
   REQUIRE( menu->append_vcs(wex::path::current(), false));
 

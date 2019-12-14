@@ -30,7 +30,7 @@ wex::report::frame::frame(
   size_t maxProjects,
   const window_data& data)
   : managed_frame(maxFiles, data)
-  , m_project_history(maxProjects, ID_RECENT_PROJECT_LOWEST, "RecentProjects")
+  , m_project_history(maxProjects, ID_RECENT_PROJECT_LOWEST, "recent.Projects")
   , m_info({
       find_replace_data::get()->text_match_word(),
       find_replace_data::get()->text_match_case(),
@@ -65,7 +65,7 @@ wex::report::frame::frame(
       {find_replace_data::get()->text_replace_with(), item::COMBOBOX},
       f.at(1),
       f.at(2),
-      {_("Max replacements"), -1, INT_MAX},
+      {_("fif.Max replacements"), -1, INT_MAX},
       // Match whole word does not work with replace.
       {{find_replace_data::get()->text_match_case(),
         find_replace_data::get()->text_regex(),

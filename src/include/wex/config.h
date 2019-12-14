@@ -40,6 +40,10 @@ namespace wex
     /// This should be done before first use of config.
     static void on_init();
     
+    /// Sets the config file to use.
+    /// If you do no use this, the default config file is used.
+    static void set_file(const std::string& file);
+    
     /// Returns number of top level entries.
     static size_t size();
 
@@ -47,6 +51,12 @@ namespace wex
 
     /// Default constructor.
     /// Optionally provide the item (key).
+    /// You can also create a hierarchy using the parent dot child expression:
+    /// @code
+    /// wex::config("x.y.z").set(8);
+    /// const auto j(config("x.y.z").get(9));
+    /// @endcode
+    /// i will be 8.
     /// If you are using children, you can retrieve the value
     /// using parent dot child expression:
     /// @code
@@ -61,7 +71,7 @@ namespace wex
     /// i will be 1.
     config(const std::string& item = std::string());
 
-    /// Constructor for a child item (calling child_start not necessary).
+    /// Constructor for one child item (calling child_start not necessary).
     /// @code
     /// wex::config c("y", "u");
     /// c.item("u").set(1);
@@ -73,6 +83,10 @@ namespace wex
 
     /// Destructor, calls child_end.
    ~config();
+    
+    /// Saves changes to current config file, and sets
+    /// and uses new file as config file.
+    bool change_file(const std::string& file);
     
     /// Ends setting child values for this item, 
     /// deletes a possible local store for a child item.
@@ -146,7 +160,7 @@ namespace wex
     auto & item() const {return m_item;};
     
     /// Sets the item, and returns config.
-    config& item(const std::string& item) {m_item = item; return *this;};
+    config& item(const std::string& item);
     
     // Setter methods.
 

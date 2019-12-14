@@ -45,7 +45,7 @@ bool wex::vcs_entry::execute(
   
   if (m_flags_location == FLAGS_LOCATION_PREFIX)
   {
-    prefix = config(_("Prefix flags")).get();
+    prefix = config(_("vcs.Prefix flags")).get();
     
     if (!prefix.empty())
     {
@@ -57,7 +57,7 @@ bool wex::vcs_entry::execute(
   
   if (get_command().use_subcommand())
   {
-    subcommand = config(_("Subcommand")).get();
+    subcommand = config(_("vcs.Subcommand")).get();
 
     if (!subcommand.empty())
     {
@@ -90,7 +90,7 @@ bool wex::vcs_entry::execute(
   if (get_command().is_commit())
   {
     comment = 
-      "-m \"" + config(_("Revision comment")).get_firstof() + "\" ";
+      "-m \"" + config(_("vcs.Revision comment")).get_firstof() + "\" ";
   }
 
   std::string my_args(args);
@@ -102,7 +102,7 @@ bool wex::vcs_entry::execute(
   }
 
   return process::execute(
-    config(name()).get(name()) + " " + 
+    config("vcs." + name()).get(name()) + " " + 
       prefix +
       get_command().get_command() + " " + 
       subcommand + flags + comment + my_args, 
@@ -116,14 +116,14 @@ bool wex::vcs_entry::execute(const std::string& command, const std::string& wd)
   std::string flags;
   std::string cmd(command);
   
-  if (const vcs_command& vc(find_command(get_word(cmd)));
+  if (const vcs_command& vc(find(get_word(cmd)));
     !vc.get_command().empty())
   {
     flags = " " + vc.flags();
   }
   
   return process::execute(
-    config(name()).get(name()) + " " + command + flags, 
+    config("vcs." + name()).get(name()) + " " + command + flags, 
     process::EXEC_WAIT, 
     wd);
 }
@@ -149,7 +149,7 @@ const std::string wex::vcs_entry::get_branch() const
 
 const std::string wex::vcs_entry::get_flags() const
 {
-  return config(_("Flags")).get();
+  return config(_("vcs.Flags")).get();
 }
 
 bool wex::vcs_entry::log(const path& p, const std::string& id)
@@ -161,8 +161,8 @@ bool wex::vcs_entry::log(const path& p, const std::string& id)
   }
   
   const std::string command = m_flags_location == FLAGS_LOCATION_PREFIX ?
-    config(name()).get(name()) + " log " + m_log_flags + " " + id:
-    config(name()).get(name()) + " log " + id + " " + m_log_flags;
+    config("vcs." + name()).get(name()) + " log " + m_log_flags + " " + id:
+    config("vcs." + name()).get(name()) + " log " + id + " " + m_log_flags;
 
   return process::execute(
     command,

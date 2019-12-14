@@ -58,7 +58,7 @@ wex::report::file::file(
     m_add_items_dialog->force_checkbox_checked(_("Add"));
     if (GetSelectedItemCount() > 0)
     {
-      wex::item item(m_add_items_dialog->get_item(m_text_in_folder));
+      wex::item item(m_add_items_dialog->find(m_text_in_folder));
       wxComboBox* cb = (wxComboBox* )item.window();
       cb->SetValue(listitem(
         this, GetFirstSelected()).get_filename().get_path());
@@ -100,7 +100,7 @@ void wex::report::file::add_items(
     {
       m_contents_changed = true;
   
-      if (config("List/SortSync").get(true))
+      if (config("list.SortSync").get(true))
       {
         sort_column(sorted_column_no(), SORT_KEEP);
       }
@@ -118,7 +118,7 @@ void wex::report::file::add_items(
 void wex::report::file::after_sorting()
 {
   // Only if we are not sort syncing set contents changed.
-  if (!config("List/SortSync").get(true))
+  if (!config("list.SortSync").get(true))
   {
     m_contents_changed = true;
   }
@@ -248,7 +248,7 @@ bool wex::report::file::item_from_text(const std::string& text)
     m_contents_changed = true;
     result = true;
     
-    if (config("List/SortSync").get(true))
+    if (config("list.SortSync").get(true))
     {
       sort_column(sorted_column_no(), SORT_KEEP);
     }

@@ -104,7 +104,8 @@ wex::shell::shell(
     }
     else
     {
-      if (config(_("vi mode")).get(true) && (GetCurrentPos() < m_command_start_pos))
+      if (config(_("stc.vi mode")).get(true) && 
+          (GetCurrentPos() < m_command_start_pos))
       {
         enable(false);
         event.Skip();
@@ -280,7 +281,7 @@ void wex::shell::enable(bool enabled)
   if (!m_enabled)
   {
     // A disabled shell follows vi mode.
-    get_vi().use(config(_("vi mode")).get(true));
+    get_vi().use(config(_("stc.vi mode")).get(true));
   }
   else
   {

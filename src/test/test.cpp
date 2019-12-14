@@ -66,8 +66,8 @@ bool wex::test::app::OnInit()
 
   lexers::get();
   
-  config(_("vi mode")).set(true);
-  config(_("Auto complete")).set(true);
+  config(_("stc.vi mode")).set(true);
+  config(_("stc.Auto complete")).set(true);
   config(_("locale")).set(get_locale().GetName().ToStdString()); // for coverage
   
   return true;

@@ -353,7 +353,7 @@ void wex::stc::bind_all()
     {
       m_margin_text_click = line;
         
-      if (config("blame_get_id").get(false))
+      if (config("blame.id").get(false))
       {
         wex::vcs vcs {{get_filename()}};
 
@@ -717,13 +717,13 @@ void wex::stc::bind_all()
     m_data.flags(stc_data::window_t().set(stc_data::WIN_HEX), control_data::XOR).inject();}, idHex);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    config("blame", "author").set(!config("blame.author").get(true));},
+    config("blame.author").set(!config("blame.author").get(true));},
     idMarginTextAuthor);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    config("blame", "date").set(!config("blame.date").get(true));},
+    config("blame.date").set(!config("blame.date").get(true));},
     idMarginTextDate);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    config("blame", "id").set(!config("blame.id").get(true));},
+    config("blame.id").set(!config("blame.id").get(true));},
     idMarginTextId);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SetZoom(++m_zoom);}, idZoomIn);
@@ -913,7 +913,7 @@ void wex::stc::build_popup_menu(menu& menu)
 
 void wex::stc::check_brace()
 {
-  if (!config(_("Show match")).get(1))
+  if (!config(_("stc.Show match")).get(1))
   {
     return;
   }

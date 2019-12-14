@@ -57,8 +57,16 @@ namespace wex
     
     // Stops the process.
     bool stop() {
-      if (m_io->stopped()) return false;
+      if (
+        m_process == nullptr || 
+        m_io == nullptr || 
+        m_io->stopped())
+      {
+        return false;
+      }
+
       log::verbose("stop") << m_process->get_exec();
+
       try
       {
         if (m_group.valid())
@@ -71,10 +79,16 @@ namespace wex
       {
         log(e) << "stop" << m_process->get_exec();
       }
+
       return true;};
     
     // Writes data to the input of the process.
     bool write(const std::string& text) {
+      if (m_process == nullptr || m_queue == nullptr)
+      {
+        return false;
+      }
+
       if (!is_debug())
       {
         show_process(m_process->get_frame(), true);

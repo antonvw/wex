@@ -19,6 +19,8 @@
 #include "../test-item.h"
 #include "test.h"
 
+TEST_SUITE_BEGIN("wex::item");
+
 TEST_CASE("wex::item")
 {
   auto* panel = new wxScrolledWindow(frame());
@@ -31,7 +33,9 @@ TEST_CASE("wex::item")
   {
     wex::item::use_config(false);
     
-    wex::item item("item", "hello string", 
+    wex::item item(
+      "item", 
+      "hello string", 
       wex::item::TEXTCTRL, 
       wex::control_data().is_required(true));
     
@@ -42,13 +46,13 @@ TEST_CASE("wex::item")
     REQUIRE( item.page().empty());
     REQUIRE( item.type() == wex::item::TEXTCTRL);
     REQUIRE( item.window() == nullptr);
-    REQUIRE(!item.get_value().has_value());
+    REQUIRE( item.get_value().has_value());
     REQUIRE(!item.is_row_growable());
     REQUIRE(!item.apply());
     
     REQUIRE(!item.to_config(false));
     wex::item::use_config(true);
-    REQUIRE( item.to_config(false));
+    REQUIRE(!item.to_config(false));
     wex::item::use_config(false);
     
     item.set_dialog(nullptr);
@@ -56,18 +60,37 @@ TEST_CASE("wex::item")
     
     // setting value if window is nullptr should have no effect.
     REQUIRE(!item.set_value("test"));
-    REQUIRE(!item.get_value().has_value());
+    REQUIRE( item.get_value().has_value());
+    
+    REQUIRE( item.layout(panel, sizer) != nullptr);
+    REQUIRE( item.window() != nullptr);
+    REQUIRE( std::any_cast<std::string>(item.get_value()) == "hello string");
+    REQUIRE( item.set_value(std::string("value changed")));
+    REQUIRE( std::any_cast<std::string>(item.get_value()) == "value changed");
+    REQUIRE( std::any_cast<std::string>(item.initial()) == "hello string");
     
     item.set_row_growable(true);
     REQUIRE( item.is_row_growable());
     
-    wex::item item_int("int", wex::item::TEXTCTRL_INT, std::string("100"));
+    wex::item item_int(
+      "int", 
+      wex::item::TEXTCTRL_INT, 
+      std::string("100"));
+
     REQUIRE( item_int.type() == wex::item::TEXTCTRL_INT);
-    
+    REQUIRE( item_int.layout(panel, sizer) != nullptr);
+    REQUIRE( item_int.window() != nullptr);
+    REQUIRE( std::any_cast<long>(item_int.get_value()) == 100);
+    REQUIRE( std::any_cast<std::string>(item_int.initial()) == "100");
+    REQUIRE( item_int.set_value(300l));
+    REQUIRE( std::any_cast<long>(item_int.get_value()) == 300);
+    REQUIRE( std::any_cast<std::string>(item_int.initial()) == "100");
+
     wex::item item_int2("int", wex::item::TEXTCTRL_INT, std::string("xxx"));
     REQUIRE( item_int2.type() == wex::item::TEXTCTRL_INT);
-    item_int2.layout(panel, sizer);
+    REQUIRE( item_int2.layout(panel, sizer) != nullptr);
     REQUIRE( item_int2.window() != nullptr);
+
     try
     {
       // an excption should be raised as xxx cannot be converted to
@@ -83,6 +106,8 @@ TEST_CASE("wex::item")
     wex::item item_float("float", 
       wex::item::TEXTCTRL_FLOAT, std::string("100.001"));
     REQUIRE( item_float.type() == wex::item::TEXTCTRL_FLOAT);
+    item_float.layout(panel, sizer);
+    REQUIRE( std::any_cast<double>(item_float.get_value()) == 100.001);
     
     wex::item item_spin("spindouble", 20.0, 30.0, 25.0, 0.1);
     REQUIRE( item_spin.type() == wex::item::SPINCTRLDOUBLE);
@@ -92,22 +117,6 @@ TEST_CASE("wex::item")
       wex::item::FILEPICKERCTRL, std::string("/usr/bin/git"));
 #endif
     
-    item.layout(panel, sizer);
-    REQUIRE( item.window() != nullptr);
-    REQUIRE( std::any_cast<std::string>(item.get_value()) == "hello string");
-    REQUIRE( item.set_value(std::string("value changed")));
-    REQUIRE( std::any_cast<std::string>(item.get_value()) == "value changed");
-    REQUIRE( std::any_cast<std::string>(item.initial()) == "hello string");
-    
-    REQUIRE( item_int.layout(panel, sizer) != nullptr);
-    REQUIRE( item_int.window() != nullptr);
-    REQUIRE( std::any_cast<long>(item_int.get_value()) == 100);
-    REQUIRE( item_int.set_value(300l));
-    REQUIRE( std::any_cast<long>(item_int.get_value()) == 300);
-
-    item_float.layout(panel, sizer);
-    REQUIRE( std::any_cast<double>(item_float.get_value()) == 100.001);
-
 #ifdef __UNIX__
     REQUIRE( item_picker.layout(panel, sizer) != nullptr);
     REQUIRE( std::any_cast<std::string>(item_picker.get_value()) == 
@@ -184,6 +193,7 @@ TEST_CASE("wex::item")
         wex::log::status(((wxTextCtrl *)user)->GetValue());});
     
     REQUIRE(ci_empty.type() == wex::item::EMPTY);
+    REQUIRE(ci_empty.empty());
     REQUIRE(!ci_empty.is_row_growable());
     REQUIRE(ci_cb.type() == wex::item::COMBOBOX);
     REQUIRE(ci_cb_dir.type() == wex::item::COMBOBOX_DIR);
@@ -227,6 +237,7 @@ TEST_CASE("wex::item")
          it.type() != wex::item::EMPTY)
       {
         REQUIRE(!it.label().empty());
+        REQUIRE(!it.empty());
       }
       
       it.set_row_growable(true);
@@ -243,14 +254,16 @@ TEST_CASE("wex::item")
       {
         REQUIRE( it.window() != nullptr);
         
+        CAPTURE(it.label());
+        CAPTURE(it.type());
+        
         if (
             it.type() == wex::item::CHECKLISTBOX_BOOL ||
-           (it.type() >= wex::item::NOTEBOOK && 
-            it.type() <= wex::item::NOTEBOOK_TREE) || 
             it.type() == wex::item::RADIOBOX ||
             it.type() == wex::item::STATICLINE ||
             it.type() == wex::item::USER ||
-            it.type() == wex::item::STATICTEXT)
+            it.type() == wex::item::STATICTEXT ||
+            it.is_notebook())
         {
           REQUIRE(!it.get_value().has_value());
         }
@@ -264,6 +277,7 @@ TEST_CASE("wex::item")
     REQUIRE(ci_user.apply());
 
     // Now check to_config (after layout).  
+    // These are copies, the window() is nullptr!
     REQUIRE( ci_str.layout(panel, sizer) != nullptr);
     REQUIRE( ci_st.layout(panel, sizer) != nullptr);
     REQUIRE( ci_str.to_config(true));
@@ -272,7 +286,23 @@ TEST_CASE("wex::item")
     REQUIRE(!ci_st.to_config(false));
     REQUIRE( ci_user.to_config(true));
     REQUIRE( ci_user.to_config(false));
-    REQUIRE( ci_grid.to_config(false));
+    REQUIRE(!ci_grid.to_config(false));
+  }
+
+  SUBCASE("label")
+  {
+    wex::item::use_config(true);
+    wex::item item("item-parent.child", "karmeliet");
+
+    REQUIRE( item.layout(panel, sizer) != nullptr);
+    REQUIRE( item.label() == "item-parent.child");
+    REQUIRE( std::any_cast<std::string>(item.get_value()) == "karmeliet");
+    REQUIRE( item.to_config(true));
+    REQUIRE( wex::config("item-parent").exists());
+    REQUIRE(!wex::config("item-parent").is_child());
+    REQUIRE( wex::config("item-parent.child").exists());
+    REQUIRE(!wex::config("item-parent.child").is_child());
+    REQUIRE( wex::config("item-parent.child").get() == "karmeliet");
   }
 
   SUBCASE("notebooks")
@@ -318,32 +348,18 @@ TEST_CASE("wex::item")
       dlg->Show();
 
       REQUIRE(std::any_cast<std::string>(
-        dlg->get_item("string1").initial()) == "first");
+        dlg->find("string1").initial()) == "first");
       REQUIRE(std::any_cast<std::string>(
-        dlg->get_item("string1").get_value()) == "first");
+        dlg->find("string1").get_value()) == "first");
       REQUIRE(
         dlg->set_item_value("string1", std::string("xxx")));
       REQUIRE(std::any_cast<std::string>(
-        dlg->get_item("string1").get_value()) == "xxx");
+        dlg->find("string1").get_value()) == "xxx");
 
       wxPostEvent(dlg, wxCommandEvent(wxEVT_BUTTON, wxAPPLY));
       wxPostEvent(dlg, wxCommandEvent(wxEVT_BUTTON, wxOK));
     }
   }
 }
-  
-TEST_CASE("wex::config_defaults")
-{
-  wex::config_defaults def({
-    {"def-colour", wex::item::COLOURPICKERWIDGET, *wxWHITE},
-    {"def-font", wex::item::FONTPICKERCTRL, 
-        wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT)},
-    {"def-double", wex::item::TEXTCTRL_FLOAT, 8.8},
-    {"def-string", wex::item::TEXTCTRL, std::string("a string")},
-    {"def-int", wex::item::TEXTCTRL_INT, 10l}});
-  
-  REQUIRE( wex::config("def-colour").exists());
-  REQUIRE( wex::config("def-double").exists());
-  REQUIRE( wex::config("def-int").exists());
-  REQUIRE( wex::config("def-string").exists());
-}
+
+TEST_SUITE_END();

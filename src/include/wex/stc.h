@@ -11,6 +11,7 @@
 #include <wx/stc/stc.h>
 #include <wex/autocomplete.h>
 #include <wex/hexmode.h>
+#include <wex/item.h>
 #include <wex/link.h>
 #include <wex/marker.h>
 #include <wex/stcfile.h>
@@ -21,6 +22,7 @@
 namespace wex
 {
   class indicator;
+  class item;
   class item_dialog;
   class lexer;
   class log;
@@ -48,6 +50,24 @@ namespace wex
     };
 
     typedef std::bitset<4> margin_t;
+    
+    /// Static interface
+
+    /// Shows a dialog with options, returns dialog return code.
+    /// If used modeless, it uses the dialog id as specified,
+    /// so you can use that id in frame::on_command_item_dialog.
+    static int config_dialog(const window_data& data = window_data());
+
+    /// Returns the config dialog.
+    static item_dialog* get_config_dialog() {return m_config_dialog;};
+    
+    /// Saves static data in cofig.
+    /// Invoked once during app::on_exit.
+    static void on_exit();
+    
+    /// Reads static data from config (e.g. zooming).
+    /// Invoked once during app::OnInit.
+    static void on_init();
     
     /// Default constructor, sets text if not empty.
     stc(
@@ -93,24 +113,6 @@ namespace wex
     /// allowing you to add your own processing.
     /// Return true if char was processed.
     virtual bool process_char(int c) {return false;};
-    
-    /// Static interface
-
-    /// Shows a dialog with options, returns dialog return code.
-    /// If used modeless, it uses the dialog id as specified,
-    /// so you can use that id in frame::on_command_item_dialog.
-    static int config_dialog(const window_data& data = window_data());
-
-    /// Returns the config dialog.
-    static item_dialog* get_config_dialog() {return m_config_dialog;};
-    
-    /// Saves static data in cofig.
-    /// Invoked once during app::on_exit.
-    static void on_exit();
-    
-    /// Reads static data from config (e.g. zooming).
-    /// Invoked once during app::OnInit.
-    static void on_init();
     
     /// Other methods.
 
@@ -361,14 +363,12 @@ namespace wex
     void build_popup_menu(menu& menu);
     void check_brace();
     bool check_brace(int pos);
-    bool file_readonly_attribute_changed(); // sets changed read-only attribute
+    bool file_readonly_attribute_changed();
     void fold_all();
-    /// Guesses the file type using a small sample size from this document, 
-    /// and sets EOL mode and updates statusbar if it found eols.
     void guess_type_and_modeline();
     bool link_open(
       link_t mode, 
-      std::string* filename = nullptr); // name of found file
+      std::string* filename = nullptr);
     void mark_modified(const wxStyledTextEvent& event);
     void on_idle(wxIdleEvent& event);
     void on_styled_text(wxStyledTextEvent& event);
@@ -411,5 +411,6 @@ namespace wex
     static inline item_dialog* m_config_dialog = nullptr;
     static inline stc_entry_dialog* m_entry_dialog = nullptr;
     static inline int m_zoom = -1;
+    static inline std::vector < item > * m_config_items = nullptr;
   };
 };

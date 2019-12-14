@@ -160,18 +160,18 @@ void wex::lexers::apply_margin_text_style(
   }
 }
 
+const wex::lexer wex::lexers::find(const std::string& name) const
+{
+  const auto& it = std::find_if(m_lexers.begin(), m_lexers.end(), 
+    [name](auto const& e) {return e.display_lexer() == name;});
+  return it != m_lexers.end() ? *it: lexer();
+}
+
 const wex::lexer wex::lexers::find_by_filename(const std::string& fullname) const
 {
   const auto& it = std::find_if(m_lexers.begin(), m_lexers.end(), 
     [fullname](auto const& e) {return !e.extensions().empty() && 
        matches_one_of(fullname, e.extensions());});
-  return it != m_lexers.end() ? *it: lexer();
-}
-
-const wex::lexer wex::lexers::find_by_name(const std::string& name) const
-{
-  const auto& it = std::find_if(m_lexers.begin(), m_lexers.end(), 
-    [name](auto const& e) {return e.display_lexer() == name;});
   return it != m_lexers.end() ? *it: lexer();
 }
 
@@ -190,7 +190,7 @@ const wex::lexer wex::lexers::find_by_text(const std::string& text) const
     for (const auto& t : m_texts) 
     {
       if (std::regex_search(filtered, std::regex(t.second)))
-        return find_by_name(t.first);
+        return find(t.first);
     }
   }
   catch (std::exception& e)
@@ -289,13 +289,13 @@ bool wex::lexers::load_document()
     }
   }
   
-  config conf;
-  if (!conf.item(_("Add what")).exists()) 
-    conf.set(l);
-  if (!conf.item(_("In files")).exists()) 
-    conf.set(l);
-  if (!conf.item(_("In folder")).exists()) 
-    conf.set(std::list<std::string>{wxGetHomeDir().ToStdString()});
+  if (!config(_("fif.Add what")).exists()) 
+  {
+    config(_("fif.Add what")).set(l);
+    config(_("fif.In files")).set(l);
+    config(_("fif.In folder")).set(
+      std::list<std::string>{wxGetHomeDir().ToStdString()});
+  }
   
   // Do some checking.
   if (!m_lexers.empty() && !m_theme.empty())

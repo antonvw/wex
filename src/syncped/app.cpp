@@ -35,7 +35,6 @@ bool app::OnInit()
   reset();
   
   if (bool exit = false;
-    !wex::app::OnInit() ||
     !wex::cmdline(
      {{{"debug,d", "use debug mode"}, 
         [&](bool on) {m_debug = on;}},
@@ -98,6 +97,11 @@ bool app::OnInit()
         m_data.control(
           wex::control_data().command(std::any_cast<std::string>(s)));}}},
 
+      {{"config,j", "json config file"}, 
+       {wex::cmdline::STRING, [&](const std::any& s) {
+        wex::config::set_file(
+          std::any_cast<std::string>(s));}}},
+
       {{"source,S", "source file"}, 
        {wex::cmdline::STRING, [&](const std::any& s) {
         m_data.control(
@@ -126,7 +130,9 @@ bool app::OnInit()
         for (const auto & f : v) 
           m_files.emplace_back(f);}},
      true,
-     "commandline").parse(argc, argv) || exit)
+     "commandline").parse(argc, argv) || 
+      exit ||
+     !wex::app::OnInit())
   {
     return false;
   }

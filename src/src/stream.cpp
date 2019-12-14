@@ -27,7 +27,7 @@ wex::stream::stream(const path& filename, const tool& tool)
   : m_path(filename)
   , m_tool(tool)
   , m_frd(find_replace_data::get())
-  , m_threshold(config(_("Max replacements")).get(-1))
+  , m_threshold(config(_("fif.Max replacements")).get(-1))
 {
 }
 
