@@ -6,7 +6,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/version.hpp>
+#ifndef __WXMSW__  
 #include <easylogging++.h>
+#endif
 #include <nlohmann/json.hpp>
 #include <pugixml.hpp>
 #include <wx/wxprec.h>
@@ -69,7 +71,9 @@ bool app::OnInit()
           << PUGIXML_VERSION % 1000 / 10 << "."  // minor version
           << PUGIXML_VERSION % 10                // patch level
           << "\n"
+#ifndef __WXMSW__  
           << "easylogging++ version: " << el::VersionInfo::version() << "\n"
+#endif
           << wxGetLibraryVersionInfo().GetDescription().c_str();
         exit = true;}},
 
