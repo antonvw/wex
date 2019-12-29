@@ -36,7 +36,7 @@ wex::otl::~otl()
 
 const std::string wex::otl::datasource() const
 {
-  return wex::config(_("Datasource")).firstof();
+  return wex::config(_("Datasource")).get_firstof();
 }
 
 bool wex::otl::logoff()
@@ -298,7 +298,7 @@ long wex::otl::query(
     rows++;
   }
 
-  log::verbose("queryi stc") << query << "records: " << rows;
+  log::verbose("query stc") << query << "records: " << rows;
 
   return rows;
 }

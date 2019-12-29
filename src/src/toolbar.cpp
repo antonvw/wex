@@ -57,17 +57,17 @@ namespace wex
     
     for (const auto& it : l)
     {
-      menu->Append(new wxMenuItem(menu, 
-        wex::ID_FIND_FIRST + i++, 
-        (it.size() >= max_size - 3 ? it.substr(0, max_size) + "..." : it)));
+      menu->append({
+        {wex::ID_FIND_FIRST + i++, 
+         (it.size() >= max_size - 3 ? it.substr(0, max_size) + "..." : it)}});
       
       if (i >= wex::FIND_MAX_FINDS) break;
     }
     
     if (menu->GetMenuItemCount() > 0)
     {
-      menu->append_separator();
-      menu->Append(wex::ID_CLEAR_FINDS, wxGetStockLabel(wxID_CLEAR));
+      menu->append({{},
+        {wex::ID_CLEAR_FINDS, wxGetStockLabel(wxID_CLEAR)}});
       win->PopupMenu(menu, pos);
     }
       

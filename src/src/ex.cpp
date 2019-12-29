@@ -242,7 +242,7 @@ wex::ex::ex(wex::stc* stc)
          {{"readonly", "readonly"}, [&](bool on){
            get_stc()->SetReadOnly(on);}},
          {{"showmode", "showmode"}, [&](bool on){
-           ((wex::statusbar *)m_frame->GetStatusBar())->show_field("PaneMode", on);
+           ((wex::statusbar *)m_frame->GetStatusBar())->show_pane("PaneMode", on);
            if (!modeline) config(_("stc.Show mode")).set(on);}},
          {{"sm", "showmatch"}, [&](bool on){
            if (!modeline) config(_("stc.Show match")).set(on);}},

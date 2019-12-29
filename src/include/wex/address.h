@@ -11,8 +11,8 @@
 
 namespace wex
 {
-  class ex;
   class addressrange;
+  class ex;
 
   /// Offers an address class to be used by vi address ranges.
   class address
@@ -31,9 +31,7 @@ namespace wex
       /// - . : current line 
       /// - or a combination of these, using + or -
       /// - or empty, call set_line afterwards
-      const std::string& address = std::string())
-      : m_address(address)
-      , m_ex(ex) {;};
+      const std::string& address = std::string());
     
     /// Prints this address, with context.
     bool adjust_window(const std::string& text) const;

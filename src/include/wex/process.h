@@ -30,6 +30,21 @@ namespace wex
       EXEC_NO_WAIT, ///< do not wait
       EXEC_WAIT,    ///< wait for process finish
     };
+    
+    /// Static interface.
+
+    /// Shows a config dialog, allowing you to set the command and folder.
+    /// Returns dialog return code.
+    static int config_dialog(const window_data& data = window_data());
+    
+    /// Returns the shell component 
+    /// (might be nullptr if prepare_output is not yet invoked).
+    static auto* get_shell() {return m_shell;};
+    
+    /// Construct the shell component.
+    static void prepare_output(wxWindow* parent);
+    
+    /// Other methods.
 
     /// Default constructor.
     process();
@@ -43,10 +58,6 @@ namespace wex
     /// Assignment operator.
     process& operator=(const process& p);
 
-    /// Shows a config dialog, allowing you to set the command and folder.
-    /// Returns dialog return code.
-    static int config_dialog(const window_data& data = window_data());
-    
     /// Executes the process.
     /// Return value is false if process could not execute, 
     /// or if config dialog was invoked and cancelled.
@@ -65,10 +76,6 @@ namespace wex
     /// Returns the frame.
     auto * get_frame() {return m_frame;};
     
-    /// Returns the shell component 
-    /// (might be nullptr if prepare_output is not yet invoked).
-    static auto* get_shell() {return m_shell;};
-    
     /// Returns the stderr.
     const auto & get_stderr() const {return m_stderr;};
     
@@ -80,9 +87,6 @@ namespace wex
     
     /// Returns true if this process is running.
     bool is_running() const;
-
-    /// Construct the shell component.
-    static void prepare_output(wxWindow* parent);
 
     /// Shows stdout or stderr from execute on the shell component.
     /// You can override this method to e.g. prepare a lexer on get_shell

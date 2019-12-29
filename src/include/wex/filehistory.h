@@ -13,6 +13,7 @@
 namespace wex
 {
   class file_history_imp;
+  class menu;
   class path;
 
   /// Offers file history methods.
@@ -33,8 +34,8 @@ namespace wex
     /// Destructor.
    ~file_history();
 
-    /// Adds a file to the file history list.
-    void add(const path& p);
+    /// Appends a file to the file history list.
+    void append(const path& p);
     
     /// Clears history.
     void clear();
@@ -68,7 +69,7 @@ namespace wex
     
     /// Adds a recent file submenu to specified menu,
     /// and sets the file history to use it.
-    void use_menu(wxWindowID id, wxMenu* menu);
+    void use_menu(wxWindowID id, wex::menu* menu);
   private:
     file_history_imp* m_history;
   };

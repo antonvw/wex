@@ -33,21 +33,21 @@ TEST_CASE("wex::statusbar")
   REQUIRE( get_statusbar()->get_statustext("Pane2") == "hello2");
   REQUIRE( get_statusbar()->get_statustext("Panexxx").empty());
   
-  REQUIRE( get_statusbar()->show_field("Pane0", false));
-  REQUIRE( get_statusbar()->get_field(0).get_name() == "PaneText");
+  REQUIRE( get_statusbar()->show_pane("Pane0", false));
+  REQUIRE( get_statusbar()->get_pane(0).get_name() == "PaneText");
   REQUIRE( ((wxStatusBar*) get_statusbar())->GetStatusText(1) == "hello1");
-  REQUIRE(!get_statusbar()->show_field("Pane0", false));
-  REQUIRE( get_statusbar()->show_field("Pane3", false));
-  REQUIRE( get_statusbar()->get_field(1).get_name() == "Pane0");
+  REQUIRE(!get_statusbar()->show_pane("Pane0", false));
+  REQUIRE( get_statusbar()->show_pane("Pane3", false));
+  REQUIRE( get_statusbar()->get_pane(1).get_name() == "Pane0");
   REQUIRE( ((wxStatusBar*) get_statusbar())->GetStatusText(1) == "hello1");
   REQUIRE( get_statusbar()->get_statustext("Pane0").empty());
-  REQUIRE( get_statusbar()->show_field("Pane0", true));
+  REQUIRE( get_statusbar()->show_pane("Pane0", true));
   REQUIRE( ((wxStatusBar*) get_statusbar())->GetStatusText(1) == "hello0");
   REQUIRE( get_statusbar()->get_statustext("Pane0") == "hello0");
-  REQUIRE( get_statusbar()->show_field("LastPane", false));
+  REQUIRE( get_statusbar()->show_pane("LastPane", false));
   REQUIRE( get_statusbar()->get_statustext("LastPane").empty());
   REQUIRE(!get_statusbar()->set_statustext("BackAgain", "LastPane"));
-  REQUIRE( get_statusbar()->show_field("LastPane", true));
+  REQUIRE( get_statusbar()->show_pane("LastPane", true));
   REQUIRE( get_statusbar()->get_statustext("LastPane") == "BackAgain");
 
   wex::statusbar_pane pane1("PaneInfo", 15, "hello");
@@ -66,6 +66,6 @@ TEST_CASE("wex::statusbar")
     {"Pane1"},
     {"Pane2"}});
 
-  REQUIRE( get_statusbar()->get_field(0).get_name() == "PaneInfo");
+  REQUIRE( get_statusbar()->get_pane(0).get_name() == "PaneInfo");
   REQUIRE( get_statusbar()->GetFieldsCount() == 5);
 }

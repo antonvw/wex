@@ -10,104 +10,148 @@
 #include <wx/wx.h>
 #endif
 #include <wex/menu.h>
-#include <wex/art.h>
+#include <wex/managedframe.h>
 #include <wex/lexers.h>
+#include <wex/listview.h>
+#include <wex/printing.h>
+#include <wex/stc.h>
 #include <wex/tool.h>
 #include <wex/util.h> // for wex::ellipsed
-#include <wex/vcs.h>
 
-wex::menu::menu(menu_t style)
+wex::menu::menu(
+  menu_t style,
+  const std::vector < menu_item > & items)
   : m_style(style)
 {
+  append(items);
 }
 
+wex::menu::menu(const std::vector < menu_item > & items)
+{
+  m_style = menu_t().set(DEFAULT);
+  append(items);
+}
+      
 wex::menu::menu(const std::string& title, menu_t style)
   : wxMenu(title)
   , m_style(style)
 {
 }
   
-wxMenuItem* wex::menu::append(
-  int id,
-  const std::string& name,
-  const std::string& helptext,
-  const wxArtID& artid)
+size_t wex::menu::append(const std::vector < menu_item > & items)
 {
-  auto* item = new wxMenuItem(this, id, name, helptext);
-
-  if (const stockart art(id); art.get_bitmap().IsOk())
+  const auto count(GetMenuItemCount());
+  
+  for (const auto & item : items)
   {
-    item->SetBitmap(art.get_bitmap(
-      wxART_MENU, 
-      wxArtProvider::GetSizeHint(wxART_MENU, true)));
-  }
-  else if (!artid.empty())
-  {
-    if (const wxBitmap bitmap(wxArtProvider::GetBitmap(
-        artid, 
-        wxART_MENU, 
-        wxArtProvider::GetSizeHint(wxART_MENU, true)));
-      bitmap.IsOk())
+    switch (item.type())
     {
-      item->SetBitmap(bitmap);
+      case menu_item::EDIT:
+        append_edit();
+        break;
+
+      case menu_item::EDIT_INVERT:
+        append_edit(true);
+        break;
+
+      case menu_item::EXIT:
+        append({{wxID_EXIT, "", "", "", [=](wxCommandEvent& event) {
+          auto * frame = wxDynamicCast(wxTheApp->GetTopWindow(), managed_frame);
+          frame->Close(true);}}});
+        break;
+
+      case menu_item::PRINT:
+        append_print();
+        break;
+
+      case menu_item::SEPARATOR:
+        append_separator();
+        break;
+      
+      case menu_item::TOOLS:
+        append_tools();
+        break;
+      
+      default:
+        item.append(this);
     }
   }
-
-  return Append(item);
+  
+  return GetMenuItemCount() - count;
 }
-
+  
 void wex::menu::append_edit(bool add_invert)
 {
   if (!m_style[IS_READ_ONLY] && m_style[IS_SELECTED])
   {
-    append(wxID_CUT);
+    append({{wxID_CUT}});
   }
 
   if (m_style[IS_SELECTED])
   {
-    append(wxID_COPY);
+    append({{wxID_COPY}});
   }
 
   if (!m_style[IS_READ_ONLY] && m_style[CAN_PASTE])
   {
-    append(wxID_PASTE);
+    append({{wxID_PASTE}});
   }
 
   if (!m_style[IS_SELECTED] && !m_style[IS_EMPTY])
   {
-    append(wxID_SELECTALL);
+    append({{wxID_SELECTALL}});
   }
   else
   {
     if (add_invert && !m_style[IS_EMPTY])
     {
-      append(ID_EDIT_SELECT_NONE, _("&Deselect All"));
+      append({{ID_EDIT_SELECT_NONE, _("&Deselect All")}});
     }
   }
 
   if (m_style[ALLOW_CLEAR])
   {
-    append(wxID_CLEAR);
+    append({{wxID_CLEAR}});
   }
 
   if (add_invert && !m_style[IS_EMPTY])
   {
-    append(ID_EDIT_SELECT_INVERT, _("&Invert"));
+    append({{ID_EDIT_SELECT_INVERT, _("&Invert")}});
   }
 
   if (!m_style[IS_READ_ONLY] &&
        m_style[IS_SELECTED] &&
       !m_style[IS_EMPTY])
   {
-    append(wxID_DELETE);
+    append({{wxID_DELETE}});
   }
 }
 
 void wex::menu::append_print()
 {
-  append(wxID_PRINT_SETUP, ellipsed(_("Page &Setup")));
-  append(wxID_PREVIEW);
-  append(wxID_PRINT);
+  append({
+    {wxID_PRINT_SETUP, ellipsed(_("Page &Setup")), "", "", [=](wxCommandEvent& event) {
+       wex::printing::get()->get_html_printer()->PageSetup();}},
+    {wxID_PREVIEW, "", "", "",  [=](wxCommandEvent& event) {
+      auto * frame = wxDynamicCast(wxTheApp->GetTopWindow(), managed_frame);
+      if (frame->get_stc() != nullptr)
+      {
+        frame->get_stc()->print_preview();
+      }
+      else if (frame->get_listview() != nullptr)
+      {
+        frame->get_listview()->print_preview();
+      }}},
+    {wxID_PRINT, "", "", "", [=](wxCommandEvent& event) {
+      auto * frame = wxDynamicCast(wxTheApp->GetTopWindow(), managed_frame);
+      if (frame->get_stc() != nullptr)
+      {
+        frame->get_stc()->print();
+      }
+      else if (frame->get_listview() != nullptr)
+      {
+        frame->get_listview()->print();
+      }}}});
 }
 
 void wex::menu::append_separator()
@@ -122,29 +166,11 @@ void wex::menu::append_separator()
   AppendSeparator();
 }
 
-void wex::menu::append_submenu(
-  wxMenu *submenu,
-  const std::string& text,
-  const std::string& help,
-  int itemid)
-{
-  if (itemid == wxID_ANY)
-  {
-    AppendSubMenu(submenu, text, help);
-  }
-  else
-  {
-    // This one is deprecated, but is necessary if
-    // we have an explicit itemid.
-    Append(itemid, text, submenu, help);
-  }
-}
-
-bool wex::menu::append_tools(int itemid)
+void wex::menu::append_tools()
 {
   if (lexers::get()->get_lexers().empty())
   {
-    return false;
+    return;
   }
 
   auto* menuTool = new wex::menu(m_style);
@@ -153,41 +179,12 @@ bool wex::menu::append_tools(int itemid)
   {
     if (!it.second.text().empty())
     {
-      menuTool->append(
+      menuTool->append({{
         it.first, 
         it.second.text(), 
-        it.second.help_text());
+        it.second.help_text()}});
     }
   }
 
-  append_submenu(menuTool, _("&Tools"), std::string(), itemid);
-
-  return true;
-}
-
-bool wex::menu::append_vcs(const path& filename, bool show_modal)
-{
-  if (!filename.stat().is_ok())
-  {
-    wex::vcs vcs;
-       
-    if (vcs.set_entry_from_base(
-      show_modal ? wxTheApp->GetTopWindow(): nullptr))
-    {
-      return vcs.entry().build_menu(ID_VCS_LOWEST + 1, this) > 0;
-    }
-  }
-  else
-  {
-    auto* vcsmenu = new wex::menu(m_style);
-
-    if (const wex::vcs vcs({filename.string()});
-      vcs.entry().build_menu(ID_EDIT_VCS_LOWEST + 1, vcsmenu))
-    { 
-      append_submenu(vcsmenu, vcs.entry().name());
-      return true;
-    }
-  }
-  
-  return false;
+  append({{menuTool, _("&Tools"), std::string(), wxID_ANY}});
 }

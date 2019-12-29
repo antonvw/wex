@@ -16,48 +16,42 @@
 
 TEST_CASE("wex::menu")
 {
-  auto* menu = new wex::menu;
+  wex::config(_("vcs.Base folder")).set(
+    std::list<std::string>{wxGetCwd().ToStdString()});
   
-  // append_separator
-  menu->append_separator();
-  menu->append_separator();
-  menu->append_separator();
-  menu->append_separator();
-  REQUIRE(menu->GetMenuItemCount() == 0);
+  SUBCASE("default constructor")
+  {
+    auto* menu = new wex::menu;
+    REQUIRE( menu->append({{}, {}, {}, {}}) == 0);
+  }
   
-  // Append  
-  menu->Append(wxID_SAVE);
-  REQUIRE(menu->GetMenuItemCount() > 0);
-  menu->Append(wxID_SAVE, "mysave");
-  
-  // append_edit
-  menu->append_edit();
-  menu->append_edit(true);
-  
-  // append_print
-  menu->append_print();
-  
-  // append_submenu
-  menu->append_submenu(new wxMenu("submenu"), "submenu");
-  
-  // append_tools
-  REQUIRE( menu->append_tools());
+  SUBCASE("constructor items")
+  {
+    auto* menu = new wex::menu({
+      {wxID_SAVE}, 
+      {wex::menu_item::EDIT},
+      {wex::menu_item::EDIT_INVERT},
+      {wex::menu_item::PRINT},
+      {wex::menu_item::TOOLS},
+      {wex::path(), false},
+      {wex::path::current(), false},
+      {wxID_SAVE, "mysave"},
+      {new wex::menu("submenu", 0), "submenu"}});
+    
+    REQUIRE( menu->GetMenuItemCount() > 9);
 
-  // append_vcs  
-  menu->append_vcs(wex::path(), false);
-  wex::config(_("vcs.Base folder")).set(std::list<std::string>{wxGetCwd().ToStdString()});
-  REQUIRE( menu->append_vcs(wex::path(), false));
-  REQUIRE( menu->append_vcs(wex::path::current(), false));
-
-  // style
-  REQUIRE(menu->style().test(wex::menu::DEFAULT));
+    auto *menubar = new wxMenuBar;
+    menubar->Append(menu, "&Menu");
+    frame()->SetMenuBar(menubar);
+    frame()->Update();
+  }
   
-  // style
-  menu->style().set(wex::menu::IS_READ_ONLY);
-  REQUIRE(menu->style().test(wex::menu::IS_READ_ONLY));
-
-  auto *menubar = new wxMenuBar;
-  menubar->Append(menu, "&Menu");
-  frame()->SetMenuBar(menubar);
-  frame()->Update();
+  SUBCASE("style")
+  {
+    auto* menu = new wex::menu;
+    REQUIRE(menu->style().test(wex::menu::DEFAULT));
+    
+    menu->style().set(wex::menu::IS_READ_ONLY);
+    REQUIRE(menu->style().test(wex::menu::IS_READ_ONLY));
+  }
 }

@@ -27,21 +27,116 @@ namespace wex
     VCS_AUTO = -1, // uses the VCS appropriate for current file
     VCS_START = 0  // no where fixed VCS start (index in vector)
   };
+  
+  /// Offers several vcs admin support methods.
+  class vcs_admin
+  {
+  public:
+    /// Constructor.
+    vcs_admin(const std::string& dir, const path& p)
+      : m_dir(dir)
+      , m_path(p)
+    {
+    }
+    
+    /// Returns true if admin dir exists for path.
+    bool exists() const
+    {
+      return 
+        !m_dir.empty() && 
+        !m_path.empty() &&
+         path(m_path).append(m_dir).dir_exists();
+    }
+
+    /// Returns true if toplevel is not empty.
+    bool is_toplevel() const
+    {
+      return !toplevel().empty();
+    }
+
+    /// Return toplevel dir.
+    path toplevel() const
+    {
+      // .git
+      // /home/user/wex/src/src/vi.cpp
+      // should return -> /home/user/wex
+      path root;
+
+      for (const auto & part : m_path.data())
+      {
+        if (vcs_admin(m_dir, root.append(part)).exists())
+        {
+          return root;
+        }
+      }
+
+      return path();
+    }
+  private:
+    const std::string m_dir;
+    const path m_path;
+  };
+  
+  const vcs_entry find_entry(
+    const std::vector<vcs_entry> & entries, const path& p)
+  {
+    if (const int vcs = config("vcs.VCS").get(VCS_AUTO);
+      vcs == VCS_AUTO)
+    {
+      if (!p.empty())
+      {
+        for (const auto& it : entries)
+        {
+          const vcs_admin va(it.admin_dir(), p);
+
+          if (it.admin_dir_is_toplevel() && va.is_toplevel())
+          {
+            return it;
+          }
+          else if (va.exists())
+          {
+            return it;
+          }
+        }
+      }
+    }
+    else if (vcs >= VCS_START && vcs < (int)entries.size())
+    {
+      return entries[vcs];
+    }
+    
+    return vcs_entry();
+  }
+
+  const vcs_entry find_entry(const std::vector<vcs_entry> & entries)
+  {
+    return find_entry(
+      entries, 
+      path(config(_("vcs.Base folder")).get_firstof()));
+  }
 };
 
 wex::vcs::vcs(const std::vector< path > & files, int command_no)
   : m_files(files)
   , m_title("VCS")
 {
-  m_entry = find_entry(get_file());
+  m_entry = find_entry(m_entries, get_file());
   
   if (!m_entry.name().empty())
   {
+    if (m_files.size() == 1 && !m_files[0].file_exists())
+    {
+      config(_("vcs.Base folder")).set_firstof(
+        vcs_admin(
+          m_entry.admin_dir(), 
+          m_files[0]).toplevel().string());
+    }
+  
     if (m_entry.set_command(command_no))
     {
       m_title = m_entry.name() + " " + 
         m_entry.get_command().get_command();
-  
+      
       if (!m_entry.get_command().is_help() && m_files.size() == 1)
       {
         m_title += " " + path(m_files[0]).fullname();
@@ -112,15 +207,15 @@ int wex::vcs::config_dialog(const window_data& par) const
 
 bool wex::vcs::dir_exists(const path& filename)
 {
-  if (const vcs_entry entry(find_entry(filename));
+  if (const vcs_entry entry(find_entry(m_entries, filename));
     entry.admin_dir_is_toplevel() && 
-    is_admin_dir_top_level(entry.admin_dir(), filename))
+    vcs_admin(entry.admin_dir(), filename).is_toplevel())
   {
     return true;
   }
   else 
   {
-    return is_admin_dir(entry.admin_dir(), filename);
+    return vcs_admin(entry.admin_dir(), filename).exists();
   }
 }
 
@@ -151,9 +246,9 @@ bool wex::vcs::execute()
     }
     else if (m_entry.name() == "git")
     {
-      wd = filename.get_path();
+      wd = !filename.file_exists() ? filename: filename.get_path();
       
-      if (!filename.fullname().empty())
+      if (filename.file_exists() && !filename.fullname().empty())
       {
         args = "\"" + filename.fullname() + "\"";
       }
@@ -173,123 +268,20 @@ bool wex::vcs::execute(const std::string& command)
   return m_entry.execute(command, get_file().get_path());
 }
   
-const wex::vcs_entry wex::vcs::find_entry(const std::string& filename) 
-{
-  return find_entry(path(filename));
-}
-
-const wex::vcs_entry wex::vcs::find_entry(const path& filename)
-{
-  if (const int vcs = config("vcs.VCS").get(VCS_AUTO);
-    vcs == VCS_AUTO)
-  {
-    if (!filename.empty())
-    {
-      for (const auto& it : m_entries)
-      {
-        const bool toplevel = it.admin_dir_is_toplevel();
-        const std::string admin_dir = it.admin_dir();
-
-        if (toplevel && is_admin_dir_top_level(admin_dir, filename))
-        {
-          return it;
-        }
-        else if (is_admin_dir(admin_dir, filename))
-        {
-          return it;
-        }
-      }
-    }
-  }
-  else if (vcs >= VCS_START && vcs < (int)m_entries.size())
-  {
-    return m_entries[vcs];
-  }
-  
-  return vcs_entry();
-}
-
 const std::string wex::vcs::get_branch() const
 {
   return config("vcs.VCS").get(VCS_AUTO) == VCS_NONE ?
     std::string(): 
-    m_entry.get_branch();
+    m_entry.get_branch(get_file().file_exists() ?
+      get_file().get_path():
+      get_file().string());
 }
 
 const wex::path wex::vcs::get_file() const
 {
-  return m_files.empty() ? config(_("vcs.Base folder")).get_firstof(): m_files[0];
-}
-
-const std::string wex::vcs::name() const
-{
-  switch (config("vcs.VCS").get(VCS_AUTO))
-  {
-    case VCS_NONE: return std::string();
-    case VCS_AUTO: return "Auto";
-    default: return m_entry.name();
-  }
-}
-
-// The .git dir only exists in the root, so check all components.
-
-const std::string wex::vcs::get_relative_file(
-  const std::string& admin_dir, const path& fn) const
-{
-  // .git
-  // /home/user/wex/src/src/vi.cpp
-  // should return -> src/src/vi.cpp
-
-  // Ignore all common parts in fn, so parts that are in top level dir.
-  auto it = std::find(fn.data().begin(), fn.data().end(), 
-    get_toplevel_dir(admin_dir, fn).fullname());
-
-  if (it == fn.data().end())
-  {
-    return std::string();
-  }
-
-  // The rest from fn is used for relative file.
-  path relative_file;
-
-  while (it != fn.data().end())
-  {
-    relative_file.append(*it++);
-  }
-
-  return relative_file.string();
-}
-
-const wex::path wex::vcs::get_toplevel_dir(
-  const std::string& admin_dir, const path& fn)
-{
-  // .git
-  // /home/user/wex/src/src/vi.cpp
-  // should return -> /home/user/wex
-  path root;
-
-  for (const auto & p : fn.data())
-  {
-    if (is_admin_dir(admin_dir, root.append(p)))
-    {
-      return root;
-    }
-  }
-
-  return path();
-}
-
-bool wex::vcs::is_admin_dir(const std::string& admin_dir, const path& fn)
-{
-  return 
-    !admin_dir.empty() && !fn.empty() &&
-     path(fn.get_path()).append(admin_dir).dir_exists();
-}
-
-bool wex::vcs::is_admin_dir_top_level(
-  const std::string& admin_dir, const path& fn)
-{
-  return !get_toplevel_dir(admin_dir, fn).empty();
+  return m_files.empty() ? 
+    config(_("vcs.Base folder")).get_firstof(): 
+    m_files[0];
 }
 
 bool wex::vcs::load_document()
@@ -317,6 +309,16 @@ bool wex::vcs::load_document()
   }
   
   return true;
+}
+
+const std::string wex::vcs::name() const
+{
+  switch (config("vcs.VCS").get(VCS_AUTO))
+  {
+    case VCS_NONE: return std::string();
+    case VCS_AUTO: return "Auto";
+    default: return m_entry.name();
+  }
 }
 
 wxStandardID wex::vcs::request(const window_data& data)
@@ -364,11 +366,11 @@ bool wex::vcs::set_entry_from_base(wxWindow* parent)
       return false;
     }
     
-    m_entry = find_entry(config(_("vcs.Base folder")).get_firstof());
+    m_entry = find_entry(m_entries);
   }
   else
   {
-    m_entry = find_entry(config(_("vcs.Base folder")).get_firstof());
+    m_entry = find_entry(m_entries);
   
     if (m_entry.name().empty())
     {
@@ -381,7 +383,7 @@ bool wex::vcs::set_entry_from_base(wxWindow* parent)
         return false;
       }
       
-      m_entry = find_entry(config(_("vcs.Base folder")).get_firstof());
+      m_entry = find_entry(m_entries);
     }
   }
   

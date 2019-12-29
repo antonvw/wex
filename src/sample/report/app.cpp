@@ -13,6 +13,7 @@
 #include <wex/lexers.h>
 #include <wex/listitem.h>
 #include <wex/log.h>
+#include <wex/menubar.h>
 #include <wex/printing.h>
 #include <wex/toolbar.h>
 #include <wex/util.h>
@@ -51,24 +52,22 @@ frame::frame()
 {
   SetIcon(wxICON(app));
 
-  auto* menuFile = new wex::menu;
-  menuFile->append(wxID_OPEN);
-  menuFile->append_separator();
-  menuFile->append_print();
-  menuFile->append_separator();
-  menuFile->append(wxID_EXIT);
-
-  auto* menuView = new wex::menu;
-  append_panes(menuView);
-
-  auto* menuHelp = new wex::menu;
-  menuHelp->append(wxID_ABOUT);
-
-  auto* menubar = new wxMenuBar;
-  menubar->Append(menuFile, "&File");
-  menubar->Append(menuView, "&View");
-  menubar->Append(menuHelp, "&Help");
-  SetMenuBar(menubar);
+  SetMenuBar(new wex::menubar({
+    {new wex::menu({
+      {wxID_OPEN}, 
+      {}, 
+      {wex::menu_item::PRINT}, 
+      {}, 
+      {wex::menu_item::EXIT}}), 
+      "&File"},
+    {new wex::menu({this}), "&View"},
+    {new wex::menu({
+      {wxID_ABOUT, "", "", "", [=](wxCommandEvent& event) {
+          wxAboutDialogInfo info;
+          info.SetIcon(GetIcon());
+          info.SetVersion(wex::get_version_info().get());
+          info.SetCopyright(wex::get_version_info().copyright());
+          wxAboutBox(info);}}}), "&Help"}}));
 
   get_toolbar()->add_standard();
   
@@ -121,53 +120,7 @@ frame::frame()
   item.insert();
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wxAboutDialogInfo info;
-    info.SetIcon(GetIcon());
-    info.SetVersion(wex::get_version_info().get());
-    info.SetCopyright(wex::get_version_info().copyright());
-    wxAboutBox(info);}, wxID_ABOUT);
-    
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    Close(true);}, wxID_EXIT);
-  
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {;}, wxID_HELP);
-
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     m_stc->get_file().file_new(wex::path());}, wxID_NEW);
-
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    if (m_stc->HasCapture())
-    {
-      m_stc->print_preview();
-    }
-    else
-    {
-      auto* lv = get_listview();
-
-      if (lv != nullptr)
-      {
-        lv->print_preview();
-      }
-      else
-      {
-        wex::log::status("No focus");
-      }
-    }}, wxID_PREVIEW);
-
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    auto* lv = get_listview();
-
-    if (lv != nullptr)
-    {
-      lv->print();
-    }
-    else
-    {
-      wex::log::status("No focus");
-    }}, wxID_PRINT);
-
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wex::printing::get()->get_html_printer()->PageSetup();}, wxID_PRINT_SETUP);
 }
 
 wex::report::listview* frame::activate(

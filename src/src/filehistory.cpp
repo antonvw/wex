@@ -43,7 +43,7 @@ namespace wex
     void AddFileToHistory(const wxString& file) override;
     wxString GetHistoryFile(size_t index = 0) const override;
 
-    void add(const path& p)
+    void append(const path& p)
     {
       if (p.file_exists())
       {
@@ -73,9 +73,9 @@ wex::file_history::~file_history()
   delete m_history;
 }
   
-void wex::file_history::add(const path& p)
+void wex::file_history::append(const path& p)
 {
-  m_history->add(p);
+  m_history->append(p);
 }
 
 void wex::file_history::clear()
@@ -147,11 +147,11 @@ void wex::file_history::popup_menu(wxWindow* win,
   
   if (menu->GetMenuItemCount() > 0)
   {
-    menu->append_separator();
+    menu->append({{}});
     
     if (clear_id != -1)
     {
-      menu->append(clear_id, wxGetStockLabel(wxID_CLEAR));
+      menu->append({{clear_id, wxGetStockLabel(wxID_CLEAR)}});
     }
       
     win->PopupMenu(menu, pos);
@@ -170,12 +170,11 @@ size_t wex::file_history::size() const
   return m_history->GetCount();
 }
   
-void wex::file_history::use_menu(wxWindowID id, wxMenu* menu)
+void wex::file_history::use_menu(wxWindowID id, wex::menu* menu)
 {
-  wxMenu* submenu = new wxMenu;
+  auto* submenu = new wex::menu;
   menu->Append(id, _("Open &Recent"), submenu);
-
-  m_history->UseMenu(submenu);
+  m_history->UseMenu(submenu);  
   m_history->AddFilesToMenu();
 }
 

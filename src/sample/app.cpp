@@ -20,6 +20,7 @@
 #include <wex/filedlg.h>
 #include <wex/itemdlg.h>
 #include <wex/lexers.h>
+#include <wex/menubar.h>
 #include <wex/printing.h>
 #include <wex/stcdlg.h>
 #include <wex/toolbar.h>
@@ -107,69 +108,55 @@ frame::frame()
   wex::process::prepare_output(this);
   
   SetIcon(wxICON(app));
-
-  auto* menuFile = new wex::menu;
-  menuFile->append(wxID_OPEN);
-  file_history().use_menu(ID_RECENTFILE_MENU, menuFile);
-  menuFile->append_separator();
-  menuFile->append(ID_SHOW_VCS, "Show VCS");
-  menuFile->append_print();
-  menuFile->append_separator();
-  menuFile->append(wxID_EXECUTE);
-  menuFile->append(wxID_STOP);
-  menuFile->append_separator();
-  menuFile->append(wxID_EXIT);
-
-  auto *menuEdit = new wex::menu();
-  menuEdit->append(wxID_UNDO);
-  menuEdit->append(wxID_REDO);
-  menuEdit->append_separator();
-  menuEdit->append(wxID_CUT);
-  menuEdit->append(wxID_COPY);
-  menuEdit->append(wxID_PASTE);
-  menuEdit->append_separator();
-  menuEdit->append(wxID_JUMP_TO);
-  menuEdit->append_separator();
-  auto* menuFind = new wex::menu();
-  menuFind->append(wxID_FIND);
-  menuFind->append(wxID_REPLACE);
-  menuEdit->append_submenu(menuFind, _("&Find And Replace"));
   
-  auto* menuDialog = new wex::menu;
-  menuDialog->append(ID_DLG_ITEM, wex::ellipsed("Item Dialog"));
-  menuDialog->append_separator();
-  menuDialog->append(ID_DLG_CONFIG_ITEM, wex::ellipsed("Config Dialog"));
-  menuDialog->append(ID_DLG_CONFIG_ITEM_COL, wex::ellipsed("Config Dialog Columns"));
-  menuDialog->append(ID_DLG_CONFIG_ITEM_READONLY, wex::ellipsed("Config Dialog Readonly"));
-  menuDialog->append_separator();
-  menuDialog->append(ID_DLG_LISTVIEW, wex::ellipsed("List Dialog"));
-  menuDialog->append_separator();
-  menuDialog->append(ID_DLG_STC_CONFIG, wex::ellipsed("STC Dialog"));
-  menuDialog->append(ID_DLG_STC_ENTRY, wex::ellipsed("STC Entry Dialog"));
-  menuDialog->append_separator();
-  menuDialog->append(ID_DLG_VCS, wex::ellipsed("VCS Dialog"));
-
-  auto* menuSTC = new wex::menu;
-  menuSTC->append(ID_STC_FLAGS, wex::ellipsed("Open Flag"));
-  menuSTC->append_separator();
-  menuSTC->append(ID_STC_SPLIT, "Split");
-
-  auto *menuView = new wex::menu;
-  append_panes(menuView);
-  menuView->append_separator();
-  menuView->append(ID_STATISTICS_SHOW, "Statistics");
-  
-  auto* menuHelp = new wex::menu;
-  menuHelp->append(wxID_ABOUT);
-
-  auto *menubar = new wxMenuBar;
-  menubar->Append(menuFile, "&File");
-  menubar->Append(menuEdit, "&Edit");
-  menubar->Append(menuView, "&View");
-  menubar->Append(menuDialog, "&Dialog");
-  menubar->Append(menuSTC, "&STC");
-  menubar->Append(menuHelp, "&Help");
-  SetMenuBar(menubar);
+  SetMenuBar(new wex::menubar({
+    {new wex::menu({
+      {wxID_OPEN},
+      {ID_RECENTFILE_MENU, file_history()}, 
+      {},
+      {ID_SHOW_VCS, "Show VCS"}, 
+      {wex::menu_item::PRINT}, 
+      {},
+      {wxID_EXECUTE}, 
+      {wxID_STOP}, 
+      {}, 
+      {wxID_EXIT}}), "&File"},
+    {new wex::menu({
+      {wxID_UNDO}, 
+      {wxID_REDO}, 
+      {}, 
+      {wxID_CUT}, 
+      {wxID_COPY},
+      {wxID_PASTE}, 
+      {}, 
+      {wxID_JUMP_TO}, 
+      {},
+      {new wex::menu({
+          {wxID_FIND, ""}, 
+          {wxID_REPLACE}}), 
+        _("&Find And Replace")}}),
+    "&Edit"},
+    {new wex::menu({
+      {this}, 
+      {ID_STATISTICS_SHOW, "Statistics"}}), "&View"},
+    {new wex::menu({
+      {ID_DLG_ITEM, wex::ellipsed("Item Dialog")}, 
+      {},
+      {ID_DLG_CONFIG_ITEM, wex::ellipsed("Config Dialog")},
+      {ID_DLG_CONFIG_ITEM_COL, wex::ellipsed("Config Dialog Columns")},
+      {ID_DLG_CONFIG_ITEM_READONLY, wex::ellipsed("Config Dialog Readonly")},
+      {},
+      {ID_DLG_LISTVIEW, wex::ellipsed("List Dialog")},
+      {},
+      {ID_DLG_STC_CONFIG, wex::ellipsed("STC Dialog")},
+      {ID_DLG_STC_ENTRY, wex::ellipsed("STC Entry Dialog")},
+      {},
+      {ID_DLG_VCS, wex::ellipsed("VCS Dialog")}}), "&Dialog"},
+    {new wex::menu({
+      {ID_STC_FLAGS, wex::ellipsed("Open Flag")},
+      {},
+      {ID_STC_SPLIT, "Split"}}), "&STC"},
+    {new wex::menu({{wxID_ABOUT, ""}}), "&Help"}}));
 
   manager().AddPane(m_notebook, 
     wxAuiPaneInfo().CenterPane().MinSize(wxSize(250, 250)));
@@ -249,14 +236,6 @@ frame::frame()
     info.SetVersion(wex::get_version_info().get());
     info.SetCopyright(wex::get_version_info().copyright());
     wxAboutBox(info);}, wxID_ABOUT);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    Close(true);}, wxID_EXIT);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_listview->print();}, wxID_PRINT);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_listview->print_preview();}, wxID_PREVIEW);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wex::printing::get()->get_html_printer()->PageSetup();}, wxID_PRINT_SETUP);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     const long val = wxGetNumberFromUser("Input columns:",

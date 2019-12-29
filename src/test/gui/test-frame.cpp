@@ -36,7 +36,7 @@ TEST_CASE("wex::frame")
   
   auto* bar = new wxMenuBar();
   auto* menu = new wex::menu();
-  menu->append_edit();
+  menu->append({{wex::menu_item::EDIT}});
   bar->Append(menu, "Edit");
   frame()->SetMenuBar(bar);
   

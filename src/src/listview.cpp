@@ -329,8 +329,7 @@ wex::listview::listview(const listview_data& data)
       menu::IS_SELECTED: 
       menu::DEFAULT);
       
-    menu.append(wxID_SORT_ASCENDING);
-    menu.append(wxID_SORT_DESCENDING);
+    menu.append({{wxID_SORT_ASCENDING}, {wxID_SORT_DESCENDING}});
 
     PopupMenu(&menu);});
     
@@ -493,34 +492,31 @@ void wex::listview::build_popup_menu(wex::menu& menu)
   if (GetSelectedItemCount() >= 1 && 
     listitem(this, GetFirstSelected()).get_filename().stat().is_ok())
   {
-    menu.append(ID_EDIT_OPEN, _("&Open"), wxART_FILE_OPEN);
-    menu.append_separator();
+    menu.append({{ID_EDIT_OPEN, _("&Open"), wxART_FILE_OPEN}, {}});
   }
 
-  menu.append_separator();
-  menu.append_edit(true);
+  menu.append({{}, {menu_item::EDIT_INVERT}});
   
   if (
     GetItemCount() > 0 && 
     GetSelectedItemCount() == 0 &&
     InReportView())
   {
-    menu.append_separator();
+    menu.append({{}});
 
-    auto* menuSort = new wxMenu;
+    auto* menuSort = new wex::menu;
 
     for (const auto& it : m_columns)
     {
-      menuSort->Append(ID_COL_FIRST + it.GetColumn(), it.GetText());
+      menuSort->append({{ID_COL_FIRST + it.GetColumn(), it.GetText()}});
     }
 
-    menu.append_submenu(menuSort, _("Sort On"));
+    menu.append({{menuSort, _("Sort On")}});
   }
   
   if (m_data.type() == listview_data::FOLDER && GetSelectedItemCount() <= 1)
   {
-    menu.append_separator();
-    menu.append(wxID_ADD);
+    menu.append({{}, {wxID_ADD}});
   }
 }
 

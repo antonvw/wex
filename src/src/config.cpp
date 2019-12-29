@@ -330,7 +330,22 @@ const std::vector < int > wex::config::get(
 const wex::config::statusbar_t wex::config::get(
   const statusbar_t & def) const
 {
-  return get_store()->value(m_item, def);
+  statusbar_t s;
+
+  for (const auto& it : def)
+  {
+    const auto style = get_store()->value(
+      m_item + ".styles." + std::get<0>(it), 
+       std::get<1>(it));
+    
+    const int width = get_store()->value(
+      m_item + ".widths." + std::get<0>(it), 
+      std::get<2>(it));
+
+    s.push_back({std::get<0>(it), style, width});
+  }
+
+  return s;
 }
 
 wxColour wex::config::get(const wxColour& def) const 
@@ -436,7 +451,11 @@ void wex::config::set(const std::vector < int > & v)
 
 void wex::config::set(const statusbar_t & v)
 {
-  get_store()->set(m_item, v);
+  for (const auto& it : v)
+  {
+    get_store()->set(m_item + ".styles." + std::get<0>(it), std::get<1>(it));
+    get_store()->set(m_item + ".widths." + std::get<0>(it), std::get<2>(it));
+  }
 }
 
 void wex::config::set(const wxColour& v) 

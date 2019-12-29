@@ -11,8 +11,8 @@
 #endif
 #include <wex/macro-mode.h>
 #include <wex/ex.h>
-#include <wex/frame.h>
 #include <wex/macros.h>
+#include <wex/managedframe.h>
 #include <wex/stc.h>
 #include <wex/util.h>
 #include "macro-fsm.h"
@@ -98,7 +98,13 @@ int wex::macro_mode::transition(
 
   std::string macro(command);
   const ex_command cmd(ex != nullptr ? ex->get_command(): ex_command());
-
+  
+  if (ex != nullptr)
+  {
+    ((wex::statusbar *)ex->frame()->GetStatusBar())->show_pane(
+      "PaneMacro", true);
+  }
+  
   switch (macro[0])
   {
     case 'q': 

@@ -105,7 +105,7 @@ namespace wex::report
       
     /// Updates project history.
     void set_recent_project(const path& path) {
-      m_project_history.add(path);};
+      m_project_history.append(path);};
 
     /// Uses specified history list, and adds all elements from file history
     /// to the list.

@@ -152,16 +152,14 @@ void wex::report::listview::build_popup_menu(wex::menu& menu)
   if (GetSelectedItemCount() > 1 && exists &&
      !config(_("Comparator")).empty())
   {
-    menu.append_separator();
-    menu.append(ID_LIST_COMPARE, _("C&ompare") + "\tCtrl+O");
+    menu.append({{}, {ID_LIST_COMPARE, _("C&ompare") + "\tCtrl+O"}});
   }
 
   if (GetSelectedItemCount() == 1)
   {
     if (is_make)
     {
-      menu.append_separator();
-      menu.append(ID_LIST_RUN_MAKE, _("&Make"));
+      menu.append({{}, {ID_LIST_RUN_MAKE, _("&Make")}});
     }
 
     if (data().type() != listview_data::FILE &&
@@ -180,9 +178,8 @@ void wex::report::listview::build_popup_menu(wex::menu& menu)
           current_file != with_file &&
             !config(_("Comparator")).empty())
         {
-          menu.append_separator();
-          menu.append(ID_LIST_COMPARE,
-            _("&Compare With") + " " + wxString(get_endoftext(with_file)));
+          menu.append({{}, {ID_LIST_COMPARE,
+            _("&Compare With") + " " + wxString(get_endoftext(with_file))}});
         }
       }
     }
@@ -195,8 +192,8 @@ void wex::report::listview::build_popup_menu(wex::menu& menu)
       if (vcs::dir_exists(
         listitem(this, GetFirstSelected()).get_filename()))
       {
-        menu.append_separator();
-        menu.append_vcs(listitem(this, GetFirstSelected()).get_filename());
+        menu.append({{}, 
+          {listitem(this, GetFirstSelected()).get_filename()}});
       }
     }
 
@@ -205,14 +202,13 @@ void wex::report::listview::build_popup_menu(wex::menu& menu)
         data().type() != listview_data::FIND && 
         m_menu_flags.test(listview_data::MENU_REPORT_FIND))
     {
-      menu.append_separator();
-      menu.append(ID_TOOL_REPORT_FIND, 
-        ellipsed(m_frame->find_in_files_title(ID_TOOL_REPORT_FIND)));
+      menu.append({{}, {ID_TOOL_REPORT_FIND, 
+        ellipsed(m_frame->find_in_files_title(ID_TOOL_REPORT_FIND))}});
 
       if (!readonly)
       {
-        menu.append(ID_TOOL_REPLACE, 
-          ellipsed(m_frame->find_in_files_title(ID_TOOL_REPLACE)));
+        menu.append({{ID_TOOL_REPLACE, 
+          ellipsed(m_frame->find_in_files_title(ID_TOOL_REPLACE))}});
       }
     }
   }
@@ -221,8 +217,7 @@ void wex::report::listview::build_popup_menu(wex::menu& menu)
       m_menu_flags.test(listview_data::MENU_TOOL) && 
      !lexers::get()->get_lexers().empty())
   {
-    menu.append_separator();
-    menu.append_tools();
+    menu.append({{}, {menu_item::TOOLS}});
   }
 }
 

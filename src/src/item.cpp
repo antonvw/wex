@@ -344,6 +344,11 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
         m_data.window().pos(), 
         m_data.window().size(), 
         m_data.window().style());
+
+      if (m_initial.has_value())
+      {
+        ((wxCheckBox *)m_window)->SetValue(std::any_cast<bool>(m_initial));
+      }
       break;
 
     case CHECKLISTBOX_BIT:
@@ -845,7 +850,14 @@ const std::any wex::item::get_value() const
     switch (m_type)
     {
       case CHECKBOX:
-        return false;
+        if (m_initial.has_value())
+        {
+          return std::any_cast<bool>(m_initial);
+        }
+        else
+        {
+          return false;
+        }
         break;
       
       case CHECKLISTBOX_BIT:
@@ -1083,6 +1095,10 @@ wxFlexGridSizer* wex::item::layout(
     return return_sizer;
   }
   catch (std::bad_cast& e)
+  {
+    wex::log(e) << *this << "layout";
+  }
+  catch (std::exception& e)
   {
     wex::log(e) << *this << "layout";
   }

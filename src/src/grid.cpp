@@ -240,7 +240,7 @@ const std::string wex::grid::build_page()
 
 void wex::grid::build_popup_menu(wex::menu& menu)
 {
-  menu.append_edit();
+  menu.append({{menu_item::EDIT}});
 }
 
 bool wex::grid::copy_selected_cells_to_clipboard() const

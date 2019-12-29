@@ -21,6 +21,12 @@
     output += std::string(40, '-') + m_ex->get_stc()->eol();  \
   }                                                       \
 
+wex::address::address(ex* ex, const std::string& address)
+  : m_address(address)
+  , m_ex(ex) 
+{
+}
+
 bool wex::address::adjust_window(const std::string& text) const
 {
   std::vector<std::string> v;

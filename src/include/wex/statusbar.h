@@ -54,10 +54,13 @@ namespace wex
       /// - wxSB_FLAT (1)
       /// - wxSB_RAISED (2)
       /// - wxSB_SUNKEN (3)
-      int style = wxSB_NORMAL)
+      int style = wxSB_NORMAL,
+      /// initially show or hide the pane
+      bool is_shown = true)
       : wxStatusBarPane(style, width)
-      , m_help(helptext.empty() ? name.substr(name.find('e') + 1): helptext)
-      , m_name(name) {};
+      , m_help_text(helptext.empty() ? name.substr(name.find('e') + 1): helptext)
+      , m_name(name)
+      , m_is_shown(is_shown) {};
       
     /// Returns hidden text.
     const auto& get_hidden_text() const {return m_hidden;};
@@ -66,7 +69,7 @@ namespace wex
     const auto& get_name() const {return m_name;};
     
     /// Returns statusbar pane help text.
-    const auto& help_text() const {return m_help;};
+    const auto& help_text() const {return m_help_text;};
     
     /// Returns whether this pane is shown.
     bool is_shown() const {return m_is_shown;};
@@ -79,7 +82,7 @@ namespace wex
     void show(bool show);
   private:
     std::string 
-      m_help, 
+      m_help_text, 
       m_hidden, 
       m_name; // no const
 
@@ -93,6 +96,20 @@ namespace wex
   class statusbar : public wxStatusBar
   {
   public:
+    /// Sets up the statusbar.
+    /// The status pane reserved for display status text messages is
+    /// automatically added by the framework as the first pane.
+    /// The next panes are used by the framework:
+    /// - PaneFileType, shows file types
+    /// - PaneInfo, shows info for control, e.g. lines
+    /// - PaneLexer, shows lexer
+    /// Returns created statusbar.
+    static statusbar* setup(
+      frame* frame,
+      const std::vector<statusbar_pane>& panes,
+      long style = wxST_SIZEGRIP,
+      const std::string& name = "statusBar");
+
     /// Constructor.
     statusbar(
       /// parent
@@ -110,45 +127,28 @@ namespace wex
    ~statusbar();  
 
     /// Returns the statusbar_pane representing the n-th pane. 
-    const statusbar_pane& get_field(int n) const;
+    const statusbar_pane& get_pane(int n) const;
    
-    /// Returns the status text on specified field.
-    /// Returns empty string if field does not exist
+    /// Returns the status text on specified pane.
+    /// Returns empty string if pane does not exist
     /// or is not shown.
-    const std::string get_statustext(const std::string& field) const;
+    const std::string get_statustext(const std::string& pane) const;
 
-    /// Sets text on specified field.
-    /// Returns false if field does not exist or is not shown.
+    /// Sets text on specified pane.
+    /// Returns false if pane does not exist or is not shown.
     bool set_statustext(
       /// text
       const std::string& text, 
-      /// field, default field text pane,
-      const std::string& field = std::string());
+      /// pane, default pane text pane,
+      const std::string& pane = std::string());
     
-    /// Sets up the statusbar.
-    /// The status pane reserved for display status text messages is
-    /// automatically added by the framework as the first pane.
-    /// The next panes are used by the framework:
-    /// - PaneFileType, shows file types
-    /// - PaneInfo, shows info for control, e.g. lines
-    /// - PaneLexer, shows lexer
-    /// Returns created statusbar.
-    static statusbar* setup(
-      frame* frame,
-      const std::vector<statusbar_pane>& panes,
-      long style = wxST_SIZEGRIP,
-      const std::string& name = "statusBar");
-
-    /// Shows or hides the field.
-    /// Returns true if field visibility actually changed.
-    bool show_field(const std::string& field, bool show);
-  protected:
-    /// React on some mouse events line button down, double click and
-    /// moving over.
-    void on_mouse(wxMouseEvent& event);
+    /// Shows or hides the pane.
+    /// Returns true if pane visibility actually changed.
+    bool show_pane(const std::string& pane, bool show);
   private:
-    std::tuple <bool, int, int> field_info(const std::string& field) const;
+    std::tuple <bool, int, int> pane_info(const std::string& pane) const;
     void handle(wxMouseEvent& event, const statusbar_pane& statusbar_pane);
+    void on_mouse(wxMouseEvent& event);
     
     frame* m_frame;
     static std::vector<statusbar_pane> m_panes;

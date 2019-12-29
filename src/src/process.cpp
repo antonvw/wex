@@ -136,7 +136,7 @@ namespace wex
 
       if (!ec)
       {
-        log::verbose("process", 1) << command << "cwd:" << cwd;
+        log::verbose("process", 2) << command << "cwd:" << cwd;
       }
       else
       {
@@ -348,7 +348,7 @@ bool wex::process_imp::async(const std::string& path)
     bp::async_system(
       *m_io.get(),
       [&](boost::system::error_code error, int i) {
-        log::verbose("async", 1) << "exit:" << error.message();
+        log::verbose("async", 2) << "exit:" << error.message();
         if (m_debug.load())
         {
           WEX_POST(ID_DEBUG_EXIT, "", m_process->get_frame()->get_debug())
@@ -366,7 +366,7 @@ bool wex::process_imp::async(const std::string& path)
     return false;
   }
 
-  log::verbose("bp::async_system", 1) << m_process->get_exec();
+  log::verbose("bp::async_system", 2) << m_process->get_exec();
 
   m_debug.store(m_process->get_frame()->get_debug()->debug_entry().name()
     == before(m_process->get_exec(), ' '));
@@ -449,7 +449,7 @@ bool wex::process_imp::async(const std::string& path)
           const std::string text(queue->front());
           queue->pop();
           
-          log::verbose("async") << "write:" << text;
+          log::verbose("async", 2) << "write:" << text;
 
           os << text << std::endl;
 

@@ -94,22 +94,7 @@ namespace wex
     /// Returns true if vcs usage is set in the config.
     bool use() const;
   private:
-    static const vcs_entry find_entry(const std::string& filename);
-    static const vcs_entry find_entry(const path& filename);
-    static const path get_toplevel_dir(
-      const std::string& admin_dir, 
-      const path& file);
-    static bool is_admin_dir(
-      const std::string& admin_dir, 
-      const path& fn);
-    static bool is_admin_dir_top_level(
-      const std::string& admin_dir, 
-      const path& fn);
-
     const path get_file() const;
-    const std::string get_relative_file(
-      const std::string& admin_dir, 
-      const path& file) const;
 
     vcs_entry m_entry;
 

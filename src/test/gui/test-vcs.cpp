@@ -47,7 +47,7 @@ TEST_CASE("wex::vcs")
     
     REQUIRE( vcs.request(wex::window_data().button(wxAPPLY | wxCANCEL)));
 
-    REQUIRE( vcs.entry().build_menu(100, new wex::menu("test")) > 0);
+    REQUIRE( vcs.entry().build_menu(100, new wex::menu("test", 0)) > 0);
     REQUIRE( vcs.entry().get_command().get_command() == "add");
     
     REQUIRE(!vcs.get_branch().empty());

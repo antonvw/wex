@@ -13,7 +13,7 @@
 
 TEST_CASE("wex::file_history")
 {
-  SUBCASE("Default constructor")
+  SUBCASE("default constructor")
   {
     wex::file_history history;
     history.clear();
@@ -24,12 +24,12 @@ TEST_CASE("wex::file_history")
     menu->Append(2, "y");
 
     history.use_menu(100, menu);
-    history.add("xxx.cpp");
-    history.add("");
+    history.append("xxx.cpp");
+    history.append("");
     REQUIRE( history.size() == 0);
     REQUIRE( history.get_history_file().empty());
     
-    history.add(wex::test::get_path("test.h"));
+    history.append(wex::test::get_path("test.h"));
     REQUIRE( history.size() == 1);
     REQUIRE( history.get_history_files(0).size() == 0);
     REQUIRE( history.get_history_files(5).size() == 1);
@@ -46,17 +46,17 @@ TEST_CASE("wex::file_history")
     history.save();
   }
 
-  SUBCASE("Other constructor")
+  SUBCASE("other constructor")
   {
     wex::file_history history(4, 1000, "MY-KEY");
-    history.add(wex::test::get_path("test.h"));
+    history.append(wex::test::get_path("test.h"));
     REQUIRE( history.size() == 1);
     REQUIRE( history.get_base_id() == 1000);
     REQUIRE( history.get_max_files() == 4);
     history.save();
   }
   
-  SUBCASE("Delete file")
+  SUBCASE("delete file")
   {
     wex::file_history history;
     history.clear();
@@ -65,7 +65,7 @@ TEST_CASE("wex::file_history")
       wex::file file(std::string("test-history.txt"), std::ios_base::out);
       REQUIRE( file.write(std::string("test")));
     }
-    history.add("test-history.txt");
+    history.append("test-history.txt");
     REQUIRE( history.get_history_file(0) == "test-history.txt");
     REQUIRE( remove("test-history.txt") == 0);
     REQUIRE( history.get_history_file(0).empty());

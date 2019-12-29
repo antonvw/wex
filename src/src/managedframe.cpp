@@ -24,6 +24,7 @@
 #include <wex/stc.h>
 #include <wex/toolbar.h>
 #include <wex/util.h>
+#include <wex/vcs.h>
 
 const auto ID_REGISTER = wxWindow::NewControlId();
 
@@ -214,25 +215,6 @@ bool wex::managed_frame::allow_close(wxWindowID id, wxWindow* page)
   return true;
 }
 
-void wex::managed_frame::append_panes(wxMenu* menu) const
-{
-#ifdef __WXMSW__
-  menu->AppendCheckItem(ID_VIEW_MENUBAR, _("&Menubar\tCtrl+M"));
-#endif
-
-  menu->AppendCheckItem(ID_VIEW_STATUSBAR, _("&Statusbar"));
-
-  for (const auto& it : m_toggled_panes)
-  {
-    if (it.first.first == "PROCESS" && process::get_shell() == nullptr)
-    {
-      continue;
-    }
-    
-    menu->AppendCheckItem(it.second, it.first.second);
-  }
-}
-  
 wxPanel* wex::managed_frame::create_ex_panel()
 {
   // An ex panel starts with small static text for : or /, then
@@ -291,6 +273,13 @@ void wex::managed_frame::on_notebook(wxWindowID id, wxWindow* page)
   if (auto* stc = wxDynamicCast(page, wex::stc); stc != nullptr)
   {
     set_recent_file(stc->get_filename());
+    
+    const vcs v({stc->get_filename()});
+
+    if (const auto& b(v.get_branch()); !b.empty())
+    {
+      statustext(b, "PaneVCS");
+    }
   }
 }
 
@@ -314,7 +303,7 @@ void wex::managed_frame::print_ex(ex* ex, const std::string& text)
 
 void wex::managed_frame::set_recent_file(const path& path) 
 {
-  m_file_history.add(path);
+  m_file_history.append(path);
 }
 
 void wex::managed_frame::show_ex_message(const std::string& text)

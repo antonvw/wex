@@ -5,6 +5,10 @@
 // Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/version.hpp>
+#include <easylogging++.h>
+#include <nlohmann/json.hpp>
+#include <pugixml.hpp>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -49,10 +53,24 @@ bool app::OnInit()
       {{"info,i", "show version"}, 
         [&](bool on) {
         if (!on) return;
-        std::cout << 
-          "syncped-" << wex::get_version_info().get() << " using\n" << 
-            wex::get_version_info().description() << " and:\n" << 
-            wxGetLibraryVersionInfo().GetDescription().c_str();
+        auto json(nlohmann::json::meta());
+        std::cout 
+          << "syncped-" << wex::get_version_info().get() << " using\n" 
+          << wex::get_version_info().description() << "\n"
+          << "Boost Libraries version: " 
+          << BOOST_VERSION / 100000     << "."  // major version
+          << BOOST_VERSION / 100 % 1000 << "."  // minor version
+          << BOOST_VERSION % 100                // patch level
+          << "\n"
+          << json.meta()["name"] << ": " << 
+             json.meta()["version"]["string"] << "\n"
+          << "pugixml version: " 
+          << PUGIXML_VERSION / 1000      << "."  // major version
+          << PUGIXML_VERSION % 1000 / 10 << "."  // minor version
+          << PUGIXML_VERSION % 10                // patch level
+          << "\n"
+          << "easylogging++ version: " << el::VersionInfo::version() << "\n"
+          << wxGetLibraryVersionInfo().GetDescription().c_str();
         exit = true;}},
 
       {{ "locale,l", "show locale"}, 

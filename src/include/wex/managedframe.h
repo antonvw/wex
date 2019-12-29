@@ -47,6 +47,12 @@ namespace wex
       HIDE_BAR_FORCE,           ///< hide bar, even if there is no statusbar
       HIDE_BAR_FORCE_FOCUS_STC, ///< as previous, and focus to stc
     };
+
+    /// Toggled panes type.
+    typedef std::vector <
+      std::pair <
+        std::pair < std::string, std::string >, 
+        int > > toggled_panes_t;
     
     /// Default constructor, registers the aui manager, and creates the bars.
     managed_frame(
@@ -114,9 +120,6 @@ namespace wex
     
     /// Other methods
     
-    /// Appends the toggle panes to the specified menu.
-    void append_panes(wxMenu* menu) const;
-    
     /// Returns file history.
     auto& file_history() {return m_file_history;};
     
@@ -161,6 +164,9 @@ namespace wex
     bool toggle_pane(
       const std::string& pane) {
         return show_pane(pane, !m_manager.GetPane(pane).IsShown());};
+    
+    /// Returns the toggled panes.
+    const auto & toggled_panes() const {return m_toggled_panes;};
   protected:
     void on_menu_history(
       const class file_history& history, 
@@ -173,7 +179,7 @@ namespace wex
       const std::string& caption = std::string());
     wxPanel* create_ex_panel();
     
-    const std::vector<std::pair<std::pair<std::string, std::string>, int>> 
+    const toggled_panes_t 
       m_toggled_panes;
     
     debug* m_debug {nullptr};

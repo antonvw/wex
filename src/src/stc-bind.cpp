@@ -257,8 +257,7 @@ void wex::stc::bind_all()
     if (
       !m_skip &&
       m_frame->get_debug() != nullptr &&
-      m_frame->get_debug()->process() != nullptr &&
-      m_frame->get_debug()->process()->is_running() &&
+      m_frame->get_debug()->is_active() &&
       matches_one_of(
         get_filename().extension(), 
         m_frame->get_debug()->debug_entry().extensions()))
@@ -372,8 +371,7 @@ void wex::stc::bind_all()
     {
       if (
         m_frame->get_debug() != nullptr &&
-        m_frame->get_debug()->process() != nullptr &&
-        m_frame->get_debug()->process()->is_running())
+        m_frame->get_debug()->is_active())
       {
         m_frame->get_debug()->toggle_breakpoint(line, this);
         m_skip = true;
@@ -391,11 +389,7 @@ void wex::stc::bind_all()
   Bind(wxEVT_STC_MARGIN_RIGHT_CLICK, [=](wxStyledTextEvent& event) {
     if (event.GetMargin() == m_margin_text_number)
     {
-      auto* menu = new wxMenu();
-
-      menu->Append(idMarginTextHide, "&Hide");
-      menu->AppendSeparator();
-
+      auto* menu = new wex::menu({{idMarginTextHide, "&Hide"}, {}});
       auto* author = menu->AppendCheckItem(idMarginTextAuthor, "&Show Author");
       auto* date = menu->AppendCheckItem(idMarginTextDate, "&Show Date");
       auto* id = menu->AppendCheckItem(idMarginTextId, "&Show Id");
@@ -805,7 +799,7 @@ void wex::stc::build_popup_menu(menu& menu)
 
   if (GetCurrentLine() == 0 && !lexers::get()->get_lexers().empty())
   {
-    menu.append(idShowProperties, _("Properties"));
+    menu.append({{idShowProperties, _("Properties")}});
   }
     
   if (m_data.menu().test(stc_data::MENU_OPEN_LINK))
@@ -813,28 +807,26 @@ void wex::stc::build_popup_menu(menu& menu)
     if (sel.empty() && link_open(link_t().set(
       LINK_OPEN_MIME).set(LINK_CHECK)))
     {
-      menu.append_separator();
-      menu.append(idopen_mime, _("&Preview"));
+      menu.append({{}, {idopen_mime, _("&Preview")}});
     }
     else if (std::string filename; link_open(link_t().set(
       LINK_OPEN).set(LINK_CHECK), &filename))
     {
-      menu.append_separator();
-      menu.append(idOpenLink, _("Open") + " " + filename);
+      menu.append({{}, {idOpenLink, _("Open") + " " + filename}});
     }
   }
 
   if (GetEdgeMode() == wxSTC_EDGE_MULTILINE)
   {
-    menu.append_separator();
-    menu.append(idEdgeSet, _("Edge get_column"));
-    menu.append(idEdgeClear, _("Edge get_column Reset"));
+    menu.append({
+      {}, 
+      {idEdgeSet, _("Edge get_column")}, 
+      {idEdgeClear, _("Edge get_column Reset")}});
   }
 
   if (m_data.menu().test(stc_data::MENU_OPEN_WWW) && !sel.empty())
   {
-    menu.append_separator();
-    menu.append(idOpenWWW, _("&Search"));
+    menu.append({{}, {idOpenWWW, _("&Search")}});
   }
   
   if (m_data.menu().test(stc_data::MENU_DEBUG) &&
@@ -849,51 +841,46 @@ void wex::stc::build_popup_menu(menu& menu)
       get_filename().file_exists() &&
       vcs::dir_exists(get_filename()))
   {
-    menu.append_separator();
-    menu.append_vcs(get_filename());
+    menu.append({{}, {get_filename()}});
   }
 
   if (!m_vi.is_active() && GetTextLength() > 0)
   {
-    menu.append_separator();
-    menu.append(wxID_FIND);
+    menu.append({{}, {wxID_FIND}});
 
     if (!GetReadOnly())
     {
-      menu.append(wxID_REPLACE);
+      menu.append({{wxID_REPLACE}});
     }
   }
 
-  menu.append_separator();
-  menu.append_edit();
+  menu.append({{}, {menu_item::EDIT}});
 
   if (!GetReadOnly())
   {
     if (!sel.empty())
     {
-      auto* menuSelection = new wex::menu(menu.style());
-      menuSelection->append(idUppercase, _("&Uppercase\tF11"));
-      menuSelection->append(idLowercase, _("&Lowercase\tF12"));
+      auto* menuSelection = new wex::menu(menu.style(), {
+        {idUppercase, _("&Uppercase\tF11")},
+        {idLowercase, _("&Lowercase\tF12")}});
 
       if (get_number_of_lines(sel) > 1)
       {
-        auto* menuSort = new wex::menu(menu.style());
-        menuSort->append(wxID_SORT_ASCENDING);
-        menuSort->append(wxID_SORT_DESCENDING);
-        menuSelection->append_separator();
-        menuSelection->append_submenu(menuSort, _("&Sort"));
+        menuSelection->append({{}, {
+          new wex::menu(menu.style(), 
+          {{wxID_SORT_ASCENDING}, {wxID_SORT_DESCENDING}}),
+          _("&Sort")}});
       }
 
-      menu.append_separator();
-      menu.append_submenu(menuSelection, _("&Selection"));
+      menu.append({{}, {menuSelection, _("&Selection")}});
     }
   }
 
   if (!GetReadOnly() && (CanUndo() || CanRedo()))
   {
-    menu.append_separator();
-    if (CanUndo()) menu.append(wxID_UNDO);
-    if (CanRedo()) menu.append(wxID_REDO);
+    menu.append({{}});
+    if (CanUndo()) menu.append({{wxID_UNDO}});
+    if (CanRedo()) menu.append({{wxID_REDO}});
   }
 
   // Folding if nothing selected, property is set,
@@ -904,10 +891,10 @@ void wex::stc::build_popup_menu(menu& menu)
      m_lexer.is_ok() &&
     !m_lexer.scintilla_lexer().empty())
   {
-    menu.append_separator();
-    menu.append(idToggleFold, _("&Toggle Fold\tCtrl+T"));
-    menu.append(idfold_all, _("&Fold All Lines\tF9"));
-    menu.append(idUnfold_all, _("&Unfold All Lines\tF10"));
+    menu.append({{},
+      {idToggleFold, _("&Toggle Fold\tCtrl+T")},
+      {idfold_all, _("&Fold All Lines\tF9")},
+      {idUnfold_all, _("&Unfold All Lines\tF10")}});
   }
 }
 
@@ -944,14 +931,14 @@ bool wex::stc::check_brace(int pos)
 
 void wex::stc::filetype_menu()
 {
-  auto* menu = new wex::menu();
-
   // The order here should be the same as the defines for wxSTC_EOL_CRLF.
   // So the FindItemByPosition can work
-  menu->AppendRadioItem(idEolDos, "&DOS");
-  menu->AppendRadioItem(idEolMac, "&MAC");
-  menu->AppendRadioItem(idEolUnix, "&UNIX");
-  menu->append_separator();
+  auto* menu = new wex::menu({
+    {idEolDos, "&DOS", menu_item::CHECK},
+    {idEolMac, "&MAC", menu_item::CHECK},
+    {idEolUnix, "&UNIX", menu_item::CHECK},
+    {}});
+
   auto* hex = menu->AppendCheckItem(idHex, "&HEX");
   
   menu->FindItemByPosition(GetEOLMode())->Check();

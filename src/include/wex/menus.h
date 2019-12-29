@@ -76,32 +76,31 @@ namespace wex
           {
             submenu = new wex::menu();
             prev_menu = it.submenu();
-            menu->append_separator();
-            menu->append_submenu(submenu, it.submenu());
+            menu->append({{}, {submenu, it.submenu()}});
           }
           else if (it.submenu().empty())
           {
             if (prev_menu != unused)
             {
               prev_menu = unused;
-              menu->append_separator();
+              menu->append({{}});
             }
             submenu = nullptr;
           }
 
           wex::menu* usemenu = (submenu == nullptr ? menu: submenu);
-          usemenu->append(
+          usemenu->append({{
             base_id + i, 
             ellipsed(
               it.text().empty() ? 
                 it.get_command(menu_command::INCLUDE_ACCELL):
                 it.text(),
               it.control(),
-              it.type().test(menu_command::ELLIPSES)));
+              it.type().test(menu_command::ELLIPSES))}});
 
           if (it.type().test(menu_command::SEPARATOR))
           {
-            usemenu->append_separator();
+            usemenu->append({{}});
           }
         }
         i++;

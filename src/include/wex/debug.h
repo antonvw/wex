@@ -29,7 +29,7 @@ namespace wex
   public:
     /// Constructor.
     debug(managed_frame* frame, process* process = nullptr);
-
+    
     /// Adds debug menu items to specified menu, default as no popup menu.
     /// These menus allow you to interact with the debug process.
     /// Returns number of items added to menu.
@@ -56,12 +56,12 @@ namespace wex
     /// As above, but for a menu action item.
     bool execute(int id, stc* stc = nullptr);
 
+    /// Returns true if a debug session is active.
+    bool is_active() const;
+
     /// Ask debugger to print contents of variable.
     /// Returns false if no debug process is available.
     bool print(const std::string& variable) const;
-
-    /// Returns process.
-    auto * process() {return m_process;};
 
     /// Shows dialog to select debug entry.
     bool show_dialog(frame* parent);
@@ -98,6 +98,7 @@ namespace wex
     managed_frame* m_frame;
     wex::debug_entry m_entry;
     wex::process* m_process {nullptr};
+    bool m_active {false};
     std::string m_stdout;
   };
 };

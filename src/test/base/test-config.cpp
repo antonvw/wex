@@ -27,10 +27,12 @@ TEST_CASE("wex::config")
 #endif
   }
   
-  const wex::config::statusbar_t sb {{"one", 1 , 2}, {"two", 3, 4}};
-
   SUBCASE("getters")
   {
+    const wex::config::statusbar_t sb {
+      {"one", {"normal"} , 2}, 
+      {"two", {"flat"}, 4}};
+
     REQUIRE( wex::config("x").get(4) == 4);
     REQUIRE( wex::config("xcvb").get(4) == 4);
     REQUIRE(!wex::config("xcvb").exists());
@@ -43,10 +45,10 @@ TEST_CASE("wex::config")
     REQUIRE(!wex::config("m").get(std::list<std::string>{"one"}).empty());
     
     REQUIRE( std::get<0>(wex::config("sb").get(sb)[0]) == "one");
-    REQUIRE( std::get<1>(wex::config("sb").get(sb)[0]) == 1);
+    REQUIRE( std::get<1>(wex::config("sb").get(sb)[0]).front() == "normal");
     REQUIRE( std::get<2>(wex::config("sb").get(sb)[0]) == 2);
     REQUIRE( std::get<0>(wex::config("sb").get(sb)[1]) == "two");
-    REQUIRE( std::get<1>(wex::config("sb").get(sb)[1]) == 3);
+    REQUIRE( std::get<1>(wex::config("sb").get(sb)[1]).front() == "flat");
     REQUIRE( std::get<2>(wex::config("sb").get(sb)[1]) == 4);
     REQUIRE( wex::config("sbg").get(wex::config::statusbar_t{}).empty());
   }
@@ -74,9 +76,12 @@ TEST_CASE("wex::config")
     wex::config("y").erase();
     REQUIRE(!wex::config("y").exists());
     
-    wex::config::statusbar_t sbs {{"three", 1 , 2}, {"four", 3, 4}};
+    const wex::config::statusbar_t sb {
+      {"three", {"normal"} , 2}, 
+      {"four", {"flat"}, 4}};
+    
     std::get<0>(wex::config("sbs").get(sb)[0]);
-    wex::config("sbs").set(sbs);
+    wex::config("sbs").set(sb);
     REQUIRE( std::get<0>(wex::config("sbs").get(sb)[0]) == "three");
   }
   

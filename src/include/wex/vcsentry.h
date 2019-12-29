@@ -79,7 +79,7 @@ namespace wex
     const blame& get_blame() const {return m_blame;};
     
     /// Returns the name of current branch.
-    const std::string get_branch() const;
+    const std::string get_branch(const std::string& wd = std::string()) const;
 
     /// Returns the flags used to run the command.
     const std::string get_flags() const;

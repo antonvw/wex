@@ -30,8 +30,7 @@ TEST_CASE("wex::debug")
   
   SUBCASE("constructor")
   {
-    REQUIRE( wex::debug(frame()).process() == nullptr);
-    REQUIRE( dbg.process() != nullptr);
+    REQUIRE(!wex::debug(frame()).is_active());
     REQUIRE( dbg.breakpoints().empty());
   }
   
@@ -61,13 +60,15 @@ TEST_CASE("wex::debug")
     REQUIRE( dbg.execute("break"));
     REQUIRE( dbg.execute("break all breakpoints"));
     REQUIRE( dbg.execute("break", get_stc()));
+    REQUIRE( dbg.is_active());
 #endif
     REQUIRE( dbg.breakpoints().empty()); // no file loaded
 #ifndef __WXMSW__
-    REQUIRE( dbg.process() != nullptr);
 #endif
 
     process.stop();
+
+    REQUIRE(!dbg.is_active());
   }
   
   SUBCASE("run")
@@ -96,6 +97,7 @@ TEST_CASE("wex::debug")
     REQUIRE(!dbg.debug_entry().name().empty());
 
     REQUIRE( dbg.print("i"));
+    REQUIRE( dbg.is_active());
     REQUIRE( dbg.toggle_breakpoint(1, stc));
     REQUIRE(!dbg.apply_breakpoints(stc));
   
@@ -103,6 +105,8 @@ TEST_CASE("wex::debug")
     
     wxMilliSleep(10);
       
+    REQUIRE(!dbg.is_active());
+    
 #ifndef __WXGTK__    
     REQUIRE(!dbg.execute(item));
     REQUIRE(!dbg.execute(item, stc));

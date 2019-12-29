@@ -136,8 +136,7 @@ void wex::report::file::build_popup_menu(wex::menu& menu)
     
   if (ok)
   {
-    menu.append_separator();
-    menu.append(wxID_ADD);
+    menu.append({{}, {wxID_ADD}});
   }
 }
 

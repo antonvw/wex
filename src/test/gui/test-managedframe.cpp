@@ -10,6 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <wex/managedframe.h>
+#include <wex/menu.h>
 #include <wex/defs.h>
 #include <wex/stc.h>
 #include <wex/toolbar.h>
@@ -47,7 +48,7 @@ TEST_CASE("wex::managed_frame")
   
   frame()->file_history().clear();
   
-  auto* menu = new wxMenu();
+  auto* menu = new wex::menu();
   frame()->file_history().use_menu(1000, menu);
   frame()->set_find_focus(frame()->get_stc());
   frame()->open_file(wex::test::get_path("test.h"));
@@ -86,8 +87,6 @@ TEST_CASE("wex::managed_frame")
   REQUIRE(!frame()->manager().GetPane("XXXXBAR").IsOk());
   
   frame()->on_notebook(100, get_stc());
-  
-  frame()->append_panes(menu);
 
 #ifndef __WXMSW__
   for (auto id : std::vector<int> {

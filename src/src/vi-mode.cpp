@@ -318,10 +318,10 @@ bool wex::vi_mode::transition(std::string& command)
     default: break;
   }
 
-  ((statusbar *)m_vi->frame()->GetStatusBar())->show_field(
+  ((statusbar *)m_vi->frame()->GetStatusBar())->show_pane(
     "PaneMode", 
     (!normal() || ex::get_macros().mode().is_recording()) && 
-       config(_("Show mode")).get(true));
+       config(_("stc.Show mode")).get(true));
 
   frame::statustext(str(), "PaneMode");
 

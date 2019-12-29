@@ -117,32 +117,29 @@ wex::report::dirctrl::dirctrl(
     
     if (filename.file_exists())
     {
-      menu.append(ID_EDIT_OPEN, _("&Open"));
-      menu.append_separator();
+      menu.append({{ID_EDIT_OPEN, _("&Open")}, {}});
     }
     
-    menu.append(ID_TREE_COPY,
-      wxGetStockLabel(wxID_COPY), std::string(), wxART_COPY);
+    menu.append({{ID_TREE_COPY,
+      wxGetStockLabel(wxID_COPY), std::string(), wxART_COPY}});
 
     if (vcs::dir_exists(filename))
     {
-      menu.append_separator();
-      menu.append_vcs(filename);
+      menu.append({{}, {filename}});
     }
 
     if (filename.lexer().scintilla_lexer() == "makefile")
     {
-      menu.append_separator();
-      menu.append(ID_TREE_RUN_MAKE, "&Make");
+      menu.append({{}, {ID_TREE_RUN_MAKE, "&Make"}});
     }
 
-    menu.append_separator();
-    menu.append(ID_TOOL_REPORT_FIND, 
-      ellipsed(frame->find_in_files_title(ID_TOOL_REPORT_FIND)));
-    menu.append(ID_TOOL_REPLACE, 
-      ellipsed(frame->find_in_files_title(ID_TOOL_REPLACE)));
+    menu.append({
+      {}, 
+      {ID_TOOL_REPORT_FIND, 
+         ellipsed(frame->find_in_files_title(ID_TOOL_REPORT_FIND))},
+      {ID_TOOL_REPLACE, 
+         ellipsed(frame->find_in_files_title(ID_TOOL_REPLACE))}, {}});
 
-    menu.append_separator();
     auto* item = menu.AppendCheckItem(idShowHidden, _("Show hidden"));
     if (config(_("Show hidden")).get(false))
       item->Check();

@@ -74,6 +74,7 @@ TEST_CASE("wex::macros")
     REQUIRE(!macros.is_recorded_macro("d"));
     
     stc->set_text("");
+    REQUIRE( stc->get_vi().mode().normal());
     REQUIRE( macros.mode().transition("@a", vi) == 2);
 
     REQUIRE( stc->GetText() == "test");

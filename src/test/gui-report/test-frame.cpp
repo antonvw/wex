@@ -7,6 +7,7 @@
 
 #include <wx/menu.h>
 #include <wex/frd.h>
+#include <wex/menu.h>
 #include <wex/report/defs.h>
 #include "test.h"
 
@@ -16,7 +17,7 @@ TEST_CASE("wex::report::frame")
 
   wex::test::add_pane(frame(), list);
 
-  auto* menu = new wxMenu();
+  auto* menu = new wex::menu();
   frame()->use_file_history_list(list);
   frame()->get_project_history().use_menu(1000, menu);
   list->Show();

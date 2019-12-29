@@ -23,9 +23,16 @@ namespace wex
   class config
   {
   public:
-    /// Type to hold statusbar panes setup,
-    /// as a vector of tuples for pane name, style, width.
-    typedef std::vector < std::tuple < std::string, int, int > > 
+    /// Type to hold statusbar panes setup
+    /// as a vector of tuples:
+    typedef std::vector < 
+      std::tuple < 
+        /// pane name
+        std::string, 
+        /// styles, first being actual used type
+        std::list < std::string >, 
+        /// width
+        int > > 
       statusbar_t;
 
     /// static interface

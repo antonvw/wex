@@ -176,7 +176,8 @@ wex::debug::debug(wex::managed_frame* frame, wex::process* debug)
       {
         if (auto* stc = m_frame->open_file(m_path); stc != nullptr)
         {
-          wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_EDIT_DEBUG_VARIABLE);
+          wxCommandEvent event(
+            wxEVT_COMMAND_MENU_SELECTED, ID_EDIT_DEBUG_VARIABLE);
           event.SetString(v[0]);
           wxPostEvent(stc, event);
           return;
@@ -234,8 +235,7 @@ int wex::debug::add_menu(wex::menu* menu, bool popup) const
   
   if (ret > 0 && popup)
   {
-    menu->append_separator();
-    menu->append_submenu(sub, "debug");
+    menu->append({{}, {sub, "debug"}});
   }
 
   return ret;
@@ -309,6 +309,8 @@ bool wex::debug::execute(const std::string& action, wex::stc* stc)
       m_process->execute(exe);
     }
     
+    m_active = true;
+
     return m_process->write(action == "interrupt" ?
       std::string(1, 3) : action + args);
   }
@@ -347,10 +349,14 @@ std::tuple<bool, std::string> wex::debug::get_args(
         }
         }}},
 #else
-      {"pid", item::TEXTCTRL_INT, std::any(), control_data().is_required(true),
+      {"debug.pid", 
+          item::TEXTCTRL_INT, 
+          std::any(), 
+          control_data().is_required(true),
         item::LABEL_LEFT,
         [&](wxWindow* user, const std::any& value, bool save) {
-           if (save) args += " " + std::to_string(std::any_cast<long>(value));}}},
+           if (save) args += " " + 
+             std::to_string(std::any_cast<long>(value));}}},
 #endif
       window_data().title("Attach").size({400, 400}).parent(m_frame));
     }
@@ -390,12 +396,17 @@ std::tuple<bool, std::string> wex::debug::get_args(
   else if (command == "file")
   {
     return {item_dialog(
-      {{"debug.File", item::COMBOBOX_FILE, std::any(), control_data().is_required(true),
-          item::LABEL_LEFT,
-          [&](wxWindow* user, const std::any& value, bool save) {
-             if (save) args += " " + std::any_cast<wxArrayString>(value)[0];}},
+      {{"debug.File", 
+        item::COMBOBOX_FILE, 
+        std::any(), 
+        control_data().is_required(true),
+        item::LABEL_LEFT,
+        [&](wxWindow* user, 
+        const std::any& value, bool save) {
+           if (save) args += " " + std::any_cast<wxArrayString>(value)[0];}},
        {"debug." + m_entry.name(), item::FILEPICKERCTRL}},
-      window_data().title("Debug").parent(m_frame)).ShowModal() != wxID_CANCEL, args};
+      window_data().title("Debug").parent(m_frame)).
+        ShowModal() != wxID_CANCEL, args};
   }
   else if ((match("^(p|print)", command, v) == 1) && stc != nullptr)
   {
@@ -409,8 +420,18 @@ std::tuple<bool, std::string> wex::debug::get_args(
   return {true, args};
 }
 
+bool wex::debug::is_active() const
+{
+  return 
+    m_active &&
+    m_process != nullptr &&
+    m_process->is_running();
+}
+  
 void wex::debug::is_finished()
 {
+  m_active = false;
+
   if (!m_frame->is_closing() && allow_open(m_path_execution_point))
   {
     if (auto* stc = m_frame->open_file(m_path_execution_point); stc != nullptr)
@@ -424,12 +445,7 @@ void wex::debug::is_finished()
 
 bool wex::debug::print(const std::string& variable) const
 {
-  if (m_process == nullptr)
-  {
-    return false;
-  }
-  
-  return m_process->write("print " + variable);
+  return is_active() && m_process->write("print " + variable);
 }
 
 void wex::debug::set_entry(const std::string& debugger)
