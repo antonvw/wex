@@ -2,7 +2,7 @@
 // Name:      item-vector.h
 // Purpose:   Declaration of wex::item_vector class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -69,7 +69,7 @@ namespace wex
         else if (item.is_notebook())
         {
           for (const auto& page : 
-            std::any_cast<item::items_notebook_t>(item.initial()))
+            std::any_cast<item::notebook_t>(item.initial()))
           {
             if (find<T>(&page.second, label, value))
             {

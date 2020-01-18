@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of class app
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/version.hpp>
@@ -30,7 +30,7 @@ wxIMPLEMENT_APP(app);
 #ifdef __WXOSX__  
 void app::MacOpenFiles(const wxArrayString& fileNames)
 {
-  frame* frame = wxDynamicCast(GetTopWindow(), ::frame);
+  auto* frame = dynamic_cast<::frame*>(GetTopWindow());
   wex::open_files(frame, wex::to_vector_path(fileNames).get(), m_data);
 }
 #endif

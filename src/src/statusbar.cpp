@@ -2,7 +2,7 @@
 // Name:      statusbar.cpp
 // Purpose:   Implementation of wex::statusbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -68,8 +68,50 @@ namespace wex
   private:
     const std::map < int, std::string > m_styles;
   };
+  
+  std::string determine_help_text(
+    const std::string& name, const std::string& text)
+  {
+    if (name == "PaneDBG")
+    {
+      return _("Debugger");
+    }
+    else if (name == "PaneFileType")
+    {
+      return _("File Type");
+    }
+    else if (name == "PaneInfo")
+    {
+      return _("Lines or Items");
+    }
+    else if (name == "PaneMode")
+    {
+      return "vi mode";
+    }
+    else if (name == "PaneTheme")
+    {
+      return _("Theme");
+    }
+    else
+    {
+      return text.empty() ? name.substr(name.find('e') + 1): text;
+    }
+  }
 }
 
+wex::statusbar_pane::statusbar_pane(
+  const std::string& name,
+  int width,
+  const std::string& helptext,
+  int style,
+  bool is_shown)
+  : wxStatusBarPane(style, width)
+  , m_help_text(determine_help_text(name, helptext))
+  , m_name(name)
+  , m_is_shown(is_shown) 
+{
+}
+      
 void wex::statusbar_pane::show(bool show)
 {
   m_is_shown = show;
@@ -147,7 +189,7 @@ void wex::statusbar::handle(wxMouseEvent& event, const statusbar_pane& pane)
             "statusbar.styles." + it.get_name(), 
             item::COMBOBOX, 
             pane_styles().find(it.GetStyle()),
-            control_data(),
+            control_data().window(window_data().style(wxCB_READONLY)),
             item::LABEL_NONE});
         }
       }
@@ -185,7 +227,6 @@ void wex::statusbar::handle(wxMouseEvent& event, const statusbar_pane& pane)
   // Show tooltip if tooltip is available, and not yet presented.
   else if (event.Moving())
   {
-#if wxUSE_TOOLTIPS
     if (const auto& tooltip = GetToolTipText(); pane.help_text().empty())
     {
       if (!tooltip.empty())
@@ -197,7 +238,6 @@ void wex::statusbar::handle(wxMouseEvent& event, const statusbar_pane& pane)
     {
       SetToolTip(pane.help_text());
     }
-#endif    
   }
 }
 

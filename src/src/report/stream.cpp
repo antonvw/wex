@@ -2,7 +2,7 @@
 // Name:      stream.cpp
 // Purpose:   Implementation of class wex::report::stream
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cctype> // for isspace
@@ -238,7 +238,7 @@ bool wex::report::stream::process(std::string& line, size_t line_no)
 
 bool wex::report::stream::process_begin()
 {
-  m_context_size = config(_("list.context size")).get(10);
+  m_context_size = config(_("list.Context size")).get(10);
 
   if (get_tool().id() != ID_TOOL_REPORT_KEYWORD)
   {

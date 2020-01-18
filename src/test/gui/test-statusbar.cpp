@@ -2,7 +2,7 @@
 // Name:      test-statusbar.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -52,7 +52,7 @@ TEST_CASE("wex::statusbar")
 
   wex::statusbar_pane pane1("PaneInfo", 15, "hello");
   REQUIRE( pane1.get_name() == "PaneInfo");
-  REQUIRE( pane1.help_text() == "hello");
+  REQUIRE( pane1.help_text() == "Lines or Items");
   REQUIRE( pane1.get_hidden_text().empty());
   REQUIRE( pane1.GetWidth() == 15);
   REQUIRE( pane1.is_shown() );

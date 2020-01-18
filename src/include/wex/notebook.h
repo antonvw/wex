@@ -2,7 +2,7 @@
 // Name:      notebook.h
 // Purpose:   Declaration of class wex::notebook
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -26,6 +26,15 @@ namespace wex
   class notebook : public wxAuiNotebook
   {
   public:
+    /// Static interface.
+
+    /// Shows a dialog with options, returns dialog return code.
+    /// If used modeless, it uses the dialog id as specified,
+    /// so you can use that id in frame::on_command_item_dialog.
+    static int config_dialog(const window_data& data = window_data());
+    
+    /// Other methods.
+
     /// Default constructor.
     notebook(const window_data& data = 
       window_data().style(wxAUI_NB_DEFAULT_STYLE));
@@ -41,6 +50,9 @@ namespace wex
     /// Changes the selection for the given page, returning the previous selection.
     /// If the key does not exist an empty string is returned.
     const std::string change_selection(const std::string& key);
+
+    /// Sets the configurable parameters to values currently in config.
+    void config_get();
 
     /// Returns key for the current page.
     const std::string current_page_key();
@@ -196,5 +208,7 @@ namespace wex
     // In bookctrl.h: m_pages
     std::map<std::string, wxWindow*> m_keys;
     std::map<wxWindow*, std::string> m_windows;
+    
+    static inline item_dialog* m_config_dialog = nullptr;
   };
 };

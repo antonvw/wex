@@ -2,7 +2,7 @@
 // Name:      file_history.cpp
 // Purpose:   Implementation of wex::file_history class methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <filesystem>
@@ -27,14 +27,14 @@ namespace wex
     file_history_imp(
       size_t maxFiles = 9, 
       wxWindowID idBase = wxID_FILE1,
-      const std::string& key = "xxxxx")
+      const std::string& key = std::string())
       : wxFileHistory(maxFiles, idBase)
       , m_key(key.empty() ? "recent.Files": key)
-      , m_history(config(m_key).get(std::list < std::string >{})) 
+      , m_contents(config(m_key).get(std::list < std::string >{})) 
       {
         // The order should be inverted, as the last one added is the most recent used.
         for (
-          auto it = m_history.rbegin(); it != m_history.rend(); ++it)
+          auto it = m_contents.rbegin(); it != m_contents.rend(); ++it)
         {
           AddFileToHistory(*it);
         }
@@ -47,18 +47,16 @@ namespace wex
     {
       if (p.file_exists())
       {
-        m_history.remove(p.string());
-        m_history.push_front(p.string());
+        m_contents.remove(p.string());
+        m_contents.push_front(p.string());
         AddFileToHistory(p.string());
       }
     }
 
-    const auto& history() const {return m_key;};
-
-    void save() {config(m_key).set(m_history);};
+    void save() {config(m_key).set(m_contents);};
   private:
     const std::string m_key;
-    std::list < std::string> m_history;
+    std::list < std::string> m_contents;
   };
 };
 
@@ -215,7 +213,7 @@ wxString wex::file_history_imp::GetHistoryFile(size_t index) const
 
     if (error)
     {
-      const_cast< file_history_imp * >( this )->m_history.remove(file);
+      const_cast< file_history_imp * >( this )->m_contents.remove(file);
       const_cast< file_history_imp * >( this )->RemoveFileFromHistory(index);
       log::status(_("Removed not existing file")) << file << "from history";
     }

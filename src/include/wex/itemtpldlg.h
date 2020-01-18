@@ -2,7 +2,7 @@
 // Name:      itemtpldlg.h
 // Purpose:   Declaration of wex::item_template_dialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -156,7 +156,7 @@ namespace wex
       return false;};
   private:
     void click(const wxCommandEvent& event) const {
-      if (frame* frame = wxDynamicCast(wxTheApp->GetTopWindow(), wex::frame);
+      if (auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
         frame != nullptr)
       {
         frame->on_command_item_dialog(GetId(), event);

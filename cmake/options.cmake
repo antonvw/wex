@@ -4,6 +4,9 @@
 option(wxBUILD_INSTALL "Create install/uninstall target for wxWidgets" OFF)
 option(wxBUILD_SHARED "Build wWidgets as shared library" OFF)
 
+# option to change toolkit
+# set(wxBUILD_TOOLKIT "gtk3")
+
 # See comment in root CMakeLists.
 # set(wxBUILD_CXX_STANDARD 17 CACHE INTERNAL "WX_CXX_STANDARD")
 

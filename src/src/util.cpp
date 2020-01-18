@@ -2,7 +2,7 @@
 // Name:      util.cpp
 // Purpose:   Implementation of wex utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -1056,7 +1056,7 @@ void wex::xml_error(
   // prevent recursion
   if (stc == nullptr && filename != lexers::get()->get_filename())
   {
-    if (auto* frame = wxDynamicCast(wxTheApp->GetTopWindow(), managed_frame);
+    if (auto* frame = dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
       frame != nullptr)
     {
       stc = frame->open_file(filename);

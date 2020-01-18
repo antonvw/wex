@@ -3,7 +3,7 @@
 // Purpose:   Implementation of class wex::ex
 //            http://pubs.opengroup.org/onlinepubs/9699919799/utilities/ex.html
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <fstream>
@@ -103,7 +103,7 @@ wex::macros wex::ex::m_macros;
 
 wex::ex::ex(wex::stc* stc)
   : m_command(ex_command(stc))
-  , m_frame(wxDynamicCast(wxTheApp->GetTopWindow(), managed_frame))
+  , m_frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
   , m_commands {
     {":ab", [&](const std::string& command) {
       return handle_container<std::string, macros::strings_map_t>(

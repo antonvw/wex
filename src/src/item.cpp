@@ -2,7 +2,7 @@
 // Name:      item.cpp
 // Purpose:   Implementation of wex::item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
@@ -219,8 +219,7 @@ wxFlexGridSizer* wex::item::add_browse_button(wxSizer* sizer) const
   return fgz;
 }
 
-void wex::item::add_items(
-  std::pair<std::string, std::vector<item>> & page, bool readonly)
+void wex::item::add_items(notebook_page_t & page, bool readonly)
 {
   wxFlexGridSizer* previous_item_sizer = nullptr;
   int previous_type = -1;
@@ -564,10 +563,10 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
       {
       auto* lv = new listview(m_listview_data.
         window(window_data(m_data.window()).parent(parent)));
-      lv->item_from_text(
+      lv->load(
         !m_initial.has_value() ? 
-           std::string(): 
-           std::any_cast<std::string>(m_initial));
+           std::list<std::string>(): 
+           std::any_cast<std::list<std::string>>(m_initial));
       m_window = lv;
       }
       break;
@@ -691,7 +690,8 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
         wxEmptyString,
         m_data.window().pos(), 
         m_data.window().size(),
-        wxSP_ARROW_KEYS | (readonly ? wxTE_READONLY: 0),
+        m_data.window().style() | 
+          (readonly ? wxTE_READONLY: 0),
         std::any_cast<int>(m_min), 
         std::any_cast<int>(m_max), 
         !m_initial.has_value() ? 
@@ -705,7 +705,8 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
         wxEmptyString,
         m_data.window().pos(), 
         m_data.window().size(),
-        wxSP_ARROW_KEYS | (readonly ? wxTE_READONLY: 0),
+        m_data.window().style() | 
+          (readonly ? wxTE_READONLY: 0),
         std::any_cast<double>(m_min), 
         std::any_cast<double>(m_max), 
         !m_initial.has_value() ? 
@@ -946,7 +947,7 @@ const std::any wex::item::get_value() const
         break;
       
       case LISTVIEW: 
-        any = ((wex::listview* )m_window)->item_to_text(-1); 
+        any = ((wex::listview* )m_window)->save(); 
         break;
       
       case CHECKLISTBOX_BOOL: 
@@ -1070,7 +1071,7 @@ wxFlexGridSizer* wex::item::layout(
           return_sizer = add(sizer, fgz);
           
           // Add all pages and recursive layout the subitems.
-          for (auto& page : std::any_cast<items_notebook_t>(m_initial))
+          for (auto& page : std::any_cast<notebook_t>(m_initial))
           {
             add_items(page, readonly);
           }
@@ -1188,8 +1189,7 @@ bool wex::item::set_value(const std::any& value) const
       case LISTVIEW:
         {
         auto* win = (listview*)window();
-        win->clear();
-        win->item_from_text(std::any_cast<std::string>(value));
+        win->load(std::any_cast<std::list<std::string>>(value));
         }
         break;
 

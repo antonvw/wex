@@ -2,7 +2,7 @@
 // Name:      menu.cpp
 // Purpose:   Implementation of wex::menu class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -56,7 +56,7 @@ size_t wex::menu::append(const std::vector < menu_item > & items)
 
       case menu_item::EXIT:
         append({{wxID_EXIT, "", "", "", [=](wxCommandEvent& event) {
-          auto * frame = wxDynamicCast(wxTheApp->GetTopWindow(), managed_frame);
+          auto * frame = dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
           frame->Close(true);}}});
         break;
 
@@ -133,7 +133,7 @@ void wex::menu::append_print()
     {wxID_PRINT_SETUP, ellipsed(_("Page &Setup")), "", "", [=](wxCommandEvent& event) {
        wex::printing::get()->get_html_printer()->PageSetup();}},
     {wxID_PREVIEW, "", "", "",  [=](wxCommandEvent& event) {
-      auto * frame = wxDynamicCast(wxTheApp->GetTopWindow(), managed_frame);
+      auto * frame = dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
       if (frame->get_stc() != nullptr)
       {
         frame->get_stc()->print_preview();
@@ -143,7 +143,7 @@ void wex::menu::append_print()
         frame->get_listview()->print_preview();
       }}},
     {wxID_PRINT, "", "", "", [=](wxCommandEvent& event) {
-      auto * frame = wxDynamicCast(wxTheApp->GetTopWindow(), managed_frame);
+      auto * frame = dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
       if (frame->get_stc() != nullptr)
       {
         frame->get_stc()->print();

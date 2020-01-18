@@ -124,7 +124,9 @@ namespace wex
       /// menu item id
       int id, 
       /// object for maintaining / retrieving history
-      file_history& history);
+      file_history& history,
+      /// callback for menu update action
+      std::function<void(wxUpdateUIEvent&)> ui = nullptr);
 
     /// Constructor for PANES menu items.
     menu_item(

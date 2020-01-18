@@ -2,7 +2,7 @@
 // Name:      test-stc.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -80,16 +80,6 @@ TEST_CASE("wex::stc")
     REQUIRE(!stc->find_next(std::string("less text")));
     REQUIRE( stc->get_find_string() != "less text");
     REQUIRE( stc->replace_all("%", "percent") == 0);
-  }
-
-  SUBCASE("vi")
-  {
-    stc->get_vi().command("\x1b");
-    REQUIRE(stc->get_vi().mode().normal());
-    stc->set_text("more text\notherline");
-    stc->get_vi().command("V");
-    REQUIRE( stc->get_vi().mode().get() == wex::vi_mode::state_t::VISUAL_LINE);
-    REQUIRE( stc->find_next(std::string("more text")));
   }
 
   SUBCASE("lexer")

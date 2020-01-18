@@ -2,11 +2,12 @@
 // Name:      stc.h
 // Purpose:   Declaration of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
+#include <vector>
 #include <wx/prntbase.h>
 #include <wx/stc/stc.h>
 #include <wex/autocomplete.h>
@@ -68,6 +69,8 @@ namespace wex
     /// Reads static data from config (e.g. zooming).
     /// Invoked once during app::OnInit.
     static void on_init();
+    
+    /// Constructors.
     
     /// Default constructor, sets text if not empty.
     stc(
@@ -220,6 +223,10 @@ namespace wex
     /// Returns true if we are in hex mode.
     bool is_hexmode() const {return m_hexmode.is_active();};
 
+    /// Returns true if line numbers are shown. 
+    bool is_shown_line_numbers() const {return
+      GetMarginWidth(m_margin_line_number) > 0;};
+
     /// Keeps event data.
     void keep_event_data(bool synced) {m_data.event(synced);};
     
@@ -300,10 +307,6 @@ namespace wex
     
     /// Sets the text.
     void set_text(const std::string& value);
-
-    /// Returns true if line numbers are shown. 
-    bool is_shown_line_numbers() const {return
-      GetMarginWidth(m_margin_line_number) > 0;};
 
     /// Shows blame info for vcs in the text margin.
     /// Returns true if info was added.

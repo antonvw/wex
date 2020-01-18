@@ -2,7 +2,7 @@
 // Name:      log.cpp
 // Purpose:   Implementation of class wex::log
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <iomanip>
@@ -79,11 +79,6 @@ const std::string wex::log::get() const
   return (!m_topic.empty() ? m_topic + ":": std::string()) + m_ss.str();
 }
 
-void wex::log::set_flags(int flags)
-{  
-  el::Loggers::addFlag((el::LoggingFlag)flags);
-}
-  
 wex::log& wex::log::operator<<(char r)
 {
   m_ss << S() << r;

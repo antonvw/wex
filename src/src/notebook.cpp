@@ -2,7 +2,7 @@
 // Name:      notebook.cpp
 // Purpose:   Implementation of class wex::notebook
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -10,8 +10,25 @@
 #include <wx/wx.h>
 #endif
 #include <wex/notebook.h>
+#include <wex/item-vector.h>
+#include <wex/itemdlg.h>
 #include <wex/config.h>
 
+namespace wex
+{
+  const std::vector < item > notebook_config_items() 
+  {
+    return std::vector < item > ({
+      {_("tab.Font"), 
+        item::FONTPICKERCTRL, 
+        wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
+      {_("tab.Art provider"), 
+        item::COMBOBOX, 
+        std::list < std::string >{"simple", "default"},
+        control_data().window(window_data().style(wxCB_READONLY))}});
+  };
+}
+    
 wex::notebook::notebook(const window_data& data)
   : wxAuiNotebook(
       data.parent(), 
@@ -23,30 +40,8 @@ wex::notebook::notebook(const window_data& data)
         data.style())
   , m_frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
 {
-  SetArtProvider(new wxAuiSimpleTabArt); 
+  config_get();
 
-  switch (data.id())
-  {
-    case ID_NOTEBOOK_EDITORS:
-      SetFont(config(_("Tab font")).get(
-        wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT))); 
-      break;
-
-    case ID_NOTEBOOK_LISTS:
-      SetFont(config(_("List tab font")).get(
-        wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT))); 
-      break;
-
-    case ID_NOTEBOOK_PROJECTS:
-      SetFont(config(_("Project tab font")).get(
-        wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT))); 
-      break;
-    
-    default:
-      // other notebooks no default font
-      ;
-  }
-  
   Bind(wxEVT_AUINOTEBOOK_PAGE_CHANGED, [=](wxAuiNotebookEvent& event) {
     event.Skip(); // call base
     if (m_frame != nullptr)
@@ -111,7 +106,47 @@ const std::string wex::notebook::change_selection(const std::string& key)
   
   return std::string();
 }
-  
+ 
+int wex::notebook::config_dialog(const window_data& par)
+{
+  const window_data data(window_data(par).title(_("Tab Options")));
+
+  if (m_config_dialog == nullptr)
+  {
+    m_config_dialog = new item_dialog(notebook_config_items(), data);
+  }
+
+  return (data.button() & wxAPPLY) ?
+    m_config_dialog->Show(): m_config_dialog->ShowModal();
+}
+
+void wex::notebook::config_get()
+{
+  const auto& ci(notebook_config_items());
+  const item_vector& iv(&ci);
+
+  if (const auto& p(
+    iv.find<std::list<std::string>>(_("tab.Art provider")));
+    p.empty())
+  {
+    log("no art provider");
+  }
+  else if (p.front() == "simple")
+  {
+    SetArtProvider(new wxAuiSimpleTabArt); 
+  }
+  else if (p.front() == "default")
+  {
+    SetArtProvider(new wxAuiDefaultTabArt); 
+  }
+  else
+  {
+    log("not supported art provider") << p.front();
+  }
+
+  SetFont(iv.find<wxFont>(_("tab.Font")));
+}
+
 bool wex::notebook::delete_page(const std::string& key)
 {
   if (const auto index = page_index_by_key(key);

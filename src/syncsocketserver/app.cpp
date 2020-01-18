@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of classes for syncsocketserver
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <functional>
@@ -109,14 +109,9 @@ frame::frame()
     {"PaneConnections", 75, "Number of local, remote connections"},
     {"PaneTimer", 75, "Repeat timer"},
     {"PaneBytes", 150, "Number of bytes received and sent"},
-    {"PaneFileType", 50, "File type"},
+    {"PaneFileType", 50},
     {"PaneInfo", 100, "Lines"},
-    {"PaneMode", 100}});
-
-  if (wex::lexers::get()->get_themes_size() <= 1)
-  {
-    m_statusbar->show_pane("PaneTheme", false);
-  }
+    {"PaneMode", 100, "", wxSB_NORMAL, false}});
 
   m_log->reset_margins();
 
@@ -160,7 +155,7 @@ frame::frame()
 #endif
 
 #ifndef __WXOSX__
-  auto* menuOptions = new wex::menu({{wxID_PREFERENCES}});
+  auto* menuOptions = new wex::menu({{wxID_PREFERENCES, std::string()}});
 #else
   menuFile->append({{wxID_PREFERENCES}}); // is moved!
 #endif
@@ -333,23 +328,22 @@ frame::frame()
         wxAboutBox(info);
         }}}), wxGetStockLabel(wxID_HELP)}}));
 
-  manager().AddPane(m_log,
-    wxAuiPaneInfo().CenterPane().MaximizeButton(true).Caption("Log").
-      Name("LOG"));
-  manager().AddPane(m_data,
-    wxAuiPaneInfo().Hide().Left().
-      MaximizeButton(true).Caption("Data").
-      Name("DATA"));
-  manager().AddPane(m_shell,
-    wxAuiPaneInfo().Hide().Left().
-      MaximizeButton(true).Caption("Shell").
-      Name("SHELL"));
-  manager().AddPane(m_stats.show(this),
-    wxAuiPaneInfo().Hide().Left().
-      MaximizeButton(true).Caption("Statistics").
-      Name("STATISTICS"));
-
-  manager().LoadPerspective(wex::config("Perspective").get());
+  add_panes({
+    {m_log,
+       wxAuiPaneInfo().CenterPane().MaximizeButton(true).Caption("Log").
+        Name("LOG")},
+    {m_data,
+       wxAuiPaneInfo().Hide().Left().
+       MaximizeButton(true).Caption("Data").
+       Name("DATA")},
+    {m_shell,
+       wxAuiPaneInfo().Hide().Left().
+         MaximizeButton(true).Caption("Shell").
+         Name("SHELL")},
+    {m_stats.show(this),
+       wxAuiPaneInfo().Hide().Left().
+         MaximizeButton(true).Caption("Statistics").
+         Name("STATISTICS")}}, "Perspective");
 
   if (setup_server())
   {
@@ -578,7 +572,6 @@ frame::frame()
     for (auto c : m_clients) c->Destroy();
     m_clients.clear();
 
-    wex::config("Perspective").set(manager().SavePerspective().ToStdString());
     event.Skip();});
     
   Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
@@ -620,8 +613,6 @@ frame::frame()
       (!m_clients.empty() || 
         (m_client != nullptr && m_client->IsConnected())) && 
        m_data->GetLength() > 0);}, id_write_data);
-
-  statustext(wex::lexers::get()->theme(), "PaneTheme");
 }
 
 frame::~frame()
@@ -818,21 +809,6 @@ void frame::statusbar_clicked(const std::string& pane)
   if (pane == "PaneTimer")
   {
     timer_dialog();
-  }
-  else if (pane == "PaneTheme")
-  {
-    if (wex::lexers::get()->show_theme_dialog(this))
-    {
-      m_data->get_lexer().set(m_data->get_lexer().display_lexer());
-      m_log->get_lexer().set(m_log->get_lexer().display_lexer());
-      m_shell->get_lexer().set(m_shell->get_lexer().display_lexer());
-
-      m_statusbar->show_pane(
-        "PaneLexer", 
-        !wex::lexers::get()->theme().empty());
-        
-      statustext(wex::lexers::get()->theme(), "PaneTheme");
-    }
   }
   else
   {

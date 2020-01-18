@@ -2,7 +2,7 @@
 // Name:      vcs_entry.h
 // Purpose:   Declaration of wex::vcs_entry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -94,6 +94,8 @@ namespace wex
 
     void show_output(const std::string& caption = std::string()) const override;
   private:
+    const std::string bin() const;
+
     // no const, as entry is set using operator+ in vcs.
     bool m_admin_dir_is_toplevel {false};
     int m_flags_location {FLAGS_LOCATION_POSTFIX};

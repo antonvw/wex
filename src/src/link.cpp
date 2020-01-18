@@ -2,7 +2,7 @@
 // Name:      link.cpp
 // Purpose:   Implementation of class wex::link
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -11,7 +11,6 @@
 #include <wex/lexer.h>
 #include <wex/path.h>
 #include <wex/stc.h>
-#include <wex/tokenizer.h>
 #include <wex/util.h>
 
 namespace wex
@@ -19,11 +18,12 @@ namespace wex
   class paths
   {
   public:
-    paths() : m_paths(tokenizer(
-      config(_("stc.Include directory")).get(), "\r\n").
-        tokenize<std::vector<std::string>>()) {;};
+    paths() 
+      : m_paths(config(_("stc.Include directory")).get(
+          std::list<std::string>())) {;};
 
-    path find_path(const std::string& path) const {
+    path find(const std::string& path) const 
+    {
       for (const auto& it : m_paths)
       {
         if (const wex::path valid(it, path); valid.file_exists())
@@ -31,9 +31,11 @@ namespace wex
           return valid;
         }
       }
-      return wex::path();};
+
+      return wex::path();
+    };
   private:
-    const std::vector<std::string> m_paths;
+    const std::list<std::string> m_paths;
   };
 };
 
@@ -126,7 +128,7 @@ const wex::path wex::link::find_filename(
     }
     else
     {
-      if (const path r(m_paths->find_path(q.string())); !r.empty())
+      if (const path r(m_paths->find(q.string())); !r.empty())
       {
         return r;
       }
@@ -205,6 +207,13 @@ const wex::path wex::link::get_path(
     return p;
   }
 
+  // if text is a file somewhere on the search paths
+  if (const auto& p(m_paths->find(link.string()));
+    !p.empty())
+  {
+    return p;
+  }
+
   // if text now exists, or exists in the stc directory
   if (wex::path file(link); file.file_exists())
   {
@@ -215,7 +224,8 @@ const wex::path wex::link::get_path(
     if (file.is_relative() && 
         m_stc != nullptr && m_stc->get_filename().file_exists())
     {
-      if (wex::path path(m_stc->get_filename().get_path(), file.fullname()); path.file_exists())
+      if (wex::path path(m_stc->get_filename().get_path(), file.fullname()); 
+        path.file_exists())
       {
         return path;
       }
@@ -241,8 +251,7 @@ const wex::path wex::link::get_path(
     }
   }
 
-  // if text is a file somewhere on the search paths
-  return m_paths->find_path(link.string());
+  return path();
 }
 
 void wex::link::set_from_config()

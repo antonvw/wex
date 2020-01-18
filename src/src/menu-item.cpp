@@ -2,7 +2,7 @@
 // Name:      menu.cpp
 // Purpose:   Implementation of wex::menu_item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -35,7 +35,7 @@ wex::menu_item::menu_item(
   , m_help_text(help)
   , m_artid(art) 
 {
-  auto * frame = wxDynamicCast(wxTheApp->GetTopWindow(), managed_frame);
+  auto * frame = dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
 
   if (action != nullptr)
   {
@@ -60,7 +60,7 @@ wex::menu_item::menu_item(
   , m_help_text(help)
   , m_name(name)
 {
-  auto * frame = wxDynamicCast(wxTheApp->GetTopWindow(), managed_frame);
+  auto * frame = dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
 
   if (action != nullptr)
   {
@@ -93,11 +93,19 @@ wex::menu_item::menu_item(const wex::path& p, bool show_modal)
 {
 }
 
-wex::menu_item::menu_item(int id, file_history& history)
+wex::menu_item::menu_item(
+  int id, 
+  file_history& history,
+  std::function<void(wxUpdateUIEvent&)> ui)
   : m_id(id)
   , m_type(HISTORY)
   , m_history(&history)
 {
+  if (auto * frame = dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
+    frame != nullptr && ui != nullptr)
+  {
+    frame->Bind(wxEVT_UPDATE_UI, ui, m_id);
+  }
 }
 
 wex::menu_item::menu_item(const managed_frame* frame)

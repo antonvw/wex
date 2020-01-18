@@ -2,7 +2,7 @@
 // Name:      vcs_entry.cpp
 // Purpose:   Implementation of wex::vcs_entry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/vcsentry.h>
@@ -26,6 +26,13 @@ wex::vcs_entry::vcs_entry(const pugi::xml_node& node)
   , m_blame(node)
   , m_log_flags(node.attribute("log-flags").value())
 {
+}
+
+const std::string wex::vcs_entry::bin() const
+{
+  return !config("vcs." + name()).get(name()).empty() ?
+    config("vcs." + name()).get(name()):
+    name();
 }
 
 size_t wex::vcs_entry::build_menu(int base_id, menu* menu) const
@@ -102,7 +109,7 @@ bool wex::vcs_entry::execute(
   }
 
   return process::execute(
-    config("vcs." + name()).get(name()) + " " + 
+    bin() + " " + 
       prefix +
       get_command().get_command() + " " + 
       subcommand + flags + comment + my_args, 
@@ -123,9 +130,7 @@ bool wex::vcs_entry::execute(const std::string& command, const std::string& wd)
   }
   
   return process::execute(
-    config("vcs." + name()).get(name()) + " " + command + flags, 
-    process::EXEC_WAIT, 
-    wd);
+    bin() + " " + command + flags, process::EXEC_WAIT, wd);
 }
   
 const std::string wex::vcs_entry::get_branch(const std::string& wd) const
@@ -164,8 +169,8 @@ bool wex::vcs_entry::log(const path& p, const std::string& id)
   }
   
   const std::string command = m_flags_location == FLAGS_LOCATION_PREFIX ?
-    config("vcs." + name()).get(name()) + " log " + m_log_flags + " " + id:
-    config("vcs." + name()).get(name()) + " log " + id + " " + m_log_flags;
+    bin() + " log " + m_log_flags + " " + id:
+    bin() + " log " + id + " " + m_log_flags;
 
   return process::execute(
     command,

@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of wex sample classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <chrono>
@@ -158,17 +158,18 @@ frame::frame()
       {ID_STC_SPLIT, "Split"}}), "&STC"},
     {new wex::menu({{wxID_ABOUT, ""}}), "&Help"}}));
 
-  manager().AddPane(m_notebook, 
-    wxAuiPaneInfo().CenterPane().MinSize(wxSize(250, 250)));
-  manager().AddPane(m_stc, 
-    wxAuiPaneInfo().Bottom().Caption("STC"));
-  manager().AddPane(m_shell, 
-    wxAuiPaneInfo().Bottom().Caption("Shell").MinSize(wxSize(250, 250)));
-  manager().AddPane(m_process->get_shell(), wxAuiPaneInfo()
-    .Bottom()
-    .Name("PROCESS")
-    .MinSize(250, 100)
-    .Caption(_("Process")));
+  add_panes({
+    {m_notebook, 
+       wxAuiPaneInfo().CenterPane().MinSize(wxSize(250, 250))},
+    {m_stc, 
+       wxAuiPaneInfo().Bottom().Caption("STC")},
+    {m_shell, 
+       wxAuiPaneInfo().Bottom().Caption("Shell").MinSize(wxSize(250, 250))},
+    {m_process->get_shell(), wxAuiPaneInfo()
+       .Bottom()
+       .Name("PROCESS")
+       .MinSize(250, 100)
+       .Caption(_("Process"))}});
 
   manager().Update();
 
@@ -214,8 +215,8 @@ frame::frame()
   }
 
   setup_statusbar({
-    {"PaneFileType", 50, "File type"},
-    {"PaneInfo", 100, "Lines or items"},
+    {"PaneFileType", 50},
+    {"PaneInfo", 100},
     {"PaneLexer", 60}});
 
   get_toolbar()->add_standard();

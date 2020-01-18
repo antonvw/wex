@@ -2,7 +2,7 @@
 // Name:      item.h
 // Purpose:   Declaration of wex::item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -177,12 +177,16 @@ namespace wex
       std::string> 
       choices_bool_t;
     
-    /// This is a vector of a pair of pages with a vector of items.
+    // A notebook_page is a pair of page text with a vector of items.
+    typedef std::pair<
+      std::string, 
+      std::vector<item>>
+      notebook_page_t;
+    
+    /// A notebook is a vector of notebook_pages.
     typedef std::vector<
-      std::pair<
-        std::string, 
-        std::vector<item>>> 
-      items_notebook_t;
+      notebook_page_t> 
+      notebook_t;
     
     /// A function that you can provide to e.g. specify what 
     /// to do when clicking on a button item.
@@ -271,7 +275,7 @@ namespace wex
       type_t type = SPINCTRL,
       /// control data
       const control_data& data = 
-        control_data().window(window_data().style(wxSL_HORIZONTAL)),
+        control_data().window(window_data().style(wxSP_ARROW_KEYS)),
       /// callback to apply
       user_apply_t apply = nullptr)
       : item(type, label, value, LABEL_LEFT, 1, min, max)
@@ -292,7 +296,7 @@ namespace wex
       double inc = 1,
       /// control data
       const control_data& data = 
-        control_data().window(window_data().style(wxSL_HORIZONTAL)),
+        control_data().window(window_data().style(wxSP_ARROW_KEYS)),
       /// callback to apply
       user_apply_t apply = nullptr)
       : item(SPINCTRLDOUBLE, label, value, LABEL_LEFT, 1, min, max, inc)
@@ -333,7 +337,7 @@ namespace wex
       /// label for this item
       const std::string& label,
       /// notebook items
-      const items_notebook_t & v,
+      const notebook_t & v,
       /// type of this item (kind of notebook):
       /// - NOTEBOOK
       /// - NOTEBOOK_AUI
@@ -415,6 +419,7 @@ namespace wex
       /// listview data
       const listview_data& data,
       /// initial value
+      /// expects std::list< std::string>
       const std::any& value = std::any(),
       /// type of label
       label_t label_t = LABEL_NONE,
@@ -443,7 +448,12 @@ namespace wex
       /// - TEXTCTRL_INT
       /// - TOGGLEBUTTON
       type_t type,
-      /// initial value for the control, if appropriate
+      /// initial value for the control, if appropriate:
+      /// - CHECKBOX expects bool 
+      /// - COMBOXBOX expects std::list< std::string>
+      /// - COLOURPICKERWIDGET expects a wxColour
+      /// - TEXTCTRL_FLOAT expects std::string with float contents
+      /// - TEXTCTRL_INT expects std::string with int contents
       const std::any& value = std::any(),
       /// control data
       const control_data& data = control_data(),
@@ -573,10 +583,7 @@ namespace wex
   private:
     wxFlexGridSizer* add(wxSizer* sizer, wxFlexGridSizer* current) const;
     wxFlexGridSizer* add_browse_button(wxSizer* sizer) const;
-    void add_items(
-      std::pair<std::string, 
-      std::vector<item>> & items, 
-      bool readonly);
+    void add_items(notebook_page_t & page, bool readonly);
     wxFlexGridSizer* add_static_text(wxSizer* sizer) const;
     bool create_window(wxWindow* parent, bool readonly);
 

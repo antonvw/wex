@@ -2,7 +2,7 @@
 // Name:      managed_frame.cpp
 // Purpose:   Implementation of wex::managed_frame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
@@ -98,10 +98,11 @@ wex::managed_frame::managed_frame(size_t maxFiles, const window_data& data)
 {
   m_manager.SetManagedWindow(this);
 
-  add_toolbar_pane(m_toolbar, "TOOLBAR", _("Toolbar"));
-  add_toolbar_pane(m_findbar,  "FINDBAR", _("Findbar"));
-  add_toolbar_pane(m_optionsbar, "OPTIONSBAR", _("Optionsbar"));
-  add_toolbar_pane(create_ex_panel(), "VIBAR");
+  add_toolbar_panes({
+    {m_toolbar, wxAuiPaneInfo().Name("TOOLBAR").Caption(_("Toolbar"))},
+    {m_findbar, wxAuiPaneInfo().Name("FINDBAR").Caption(_("Findbar"))},
+    {m_optionsbar, wxAuiPaneInfo().Name("OPTIONSBAR").Caption(_("Optionsbar"))},
+    {create_ex_panel(), wxAuiPaneInfo().Name("VIBAR")}});
 
   m_manager.Update();
   
@@ -116,6 +117,12 @@ wex::managed_frame::managed_frame(size_t maxFiles, const window_data& data)
   
   Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
     m_file_history.save();
+      
+    if (!m_perspective.empty())
+    {
+      wex::config(m_perspective).set(m_manager.SavePerspective().ToStdString());
+    }
+
     event.Skip();});
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -165,47 +172,71 @@ wex::managed_frame::~managed_frame()
   m_manager.UnInit();
 }
 
-bool wex::managed_frame::add_toolbar_pane(
-  wxWindow* window, 
-  const std::string& name,
-  const std::string& caption)
+bool wex::managed_frame::add_panes(
+  const panes_t& panes,
+  const std::string& perspective)
 {
-  wxAuiPaneInfo pane;
-  
-  pane
-    .LeftDockable(false)
-    .RightDockable(false)
-    .Name(name);
-
-  // If the toolbar has a caption, it is at the top, 
-  if (!caption.empty())
+  for (const auto& it : panes)
   {
-    pane
-      .Top()
-      .ToolbarPane()
-      .MinSize(-1, 30)
-      .Caption(caption);
-      
-    // Initially hide special bars.
-    if (name == "FINDBAR" || name == "OPTIONSBAR" )
+    if (!m_manager.AddPane(it.first, it.second))
     {
-      pane.Hide();
+      return false;
     }
   }
-  // otherwise (vi) fixed at the bottom and initially hidden.  
-  else
+  
+  if (!perspective.empty())
   {
-    pane
-      .Bottom()
-      .CloseButton(false)
-      .Hide()
-      .DockFixed(true)
-      .Movable(false)
-      .Row(10)
-      .CaptionVisible(false);
+    m_perspective = perspective;
+    m_manager.LoadPerspective(wex::config(m_perspective).get());
   }
   
-  return m_manager.AddPane(window, pane);
+  return true;
+}
+
+bool wex::managed_frame::add_toolbar_panes(const panes_t& panes)
+{
+  for (const auto& it : panes)
+  {
+    wxAuiPaneInfo pane(it.second);
+    
+    pane
+      .LeftDockable(false)
+      .RightDockable(false);
+
+    // If the toolbar has a caption, it is at the top, 
+    if (!pane.caption.empty())
+    {
+      pane
+        .Top()
+        .ToolbarPane()
+        .MinSize(-1, 30);
+        
+      // Initially hide special bars.
+      if (pane.name == "FINDBAR" || pane.name == "OPTIONSBAR" )
+      {
+        pane.Hide();
+      }
+    }
+    // otherwise (vi) fixed at the bottom and initially hidden.  
+    else
+    {
+      pane
+        .Bottom()
+        .CloseButton(false)
+        .Hide()
+        .DockFixed(true)
+        .Movable(false)
+        .Row(10)
+        .CaptionVisible(false);
+    }
+    
+    if (!add_panes({{it.first, pane}}))
+    {
+      return false;
+    }
+  }
+  
+  return true;
 }
 
 bool wex::managed_frame::allow_close(wxWindowID id, wxWindow* page)
@@ -238,7 +269,7 @@ void wex::managed_frame::on_menu_history(
   size_t index, 
   stc_data::window_t flags)
 {
-  if (const path file(history.get_history_file(index)); !file.empty())
+  if (const auto& file(history.get_history_file(index)); !file.empty())
   {
     open_file(file, stc_data().flags(flags));
   }
@@ -270,7 +301,7 @@ void wex::managed_frame::hide_ex_bar(int hide)
   
 void wex::managed_frame::on_notebook(wxWindowID id, wxWindow* page)
 {
-  if (auto* stc = wxDynamicCast(page, wex::stc); stc != nullptr)
+  if (auto* stc = dynamic_cast<wex::stc*>(page); stc != nullptr)
   {
     set_recent_file(stc->get_filename());
     
@@ -279,6 +310,10 @@ void wex::managed_frame::on_notebook(wxWindowID id, wxWindow* page)
     if (const auto& b(v.get_branch()); !b.empty())
     {
       statustext(b, "PaneVCS");
+    }
+    else
+    {
+      statustext(v.name(), "PaneVCS");
     }
   }
 }

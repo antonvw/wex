@@ -2,7 +2,7 @@
 // Name:      config.cpp
 // Purpose:   Implementation of class wex::config
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -27,7 +27,10 @@ namespace wex
   class config_imp
   {
   public:
-    /// Static iinterface.
+    /// Static interface.
+
+    /// Returns config file.
+    static auto file() {return m_file;}
 
     /// Sets config file to use. If not called,
     /// the default is used.
@@ -61,6 +64,12 @@ namespace wex
       }
     }
     
+    /// Returns number of elements.
+    size_t elements() const {
+      size_t total = 0;
+      elements(m_json, total);
+      return total;};
+
     /// Returns true if this item is present.
     bool exists(const std::string& item) 
     {
@@ -177,6 +186,19 @@ namespace wex
       }
     }
 
+    void elements(const json& o, size_t& total) const
+    {
+      total += o.size();
+      
+      for (const auto& x : o.items())
+      {
+        if (x.value().type() == json::value_t::object)
+        {
+          elements(x.value(), total);
+        }
+      }  
+    }
+
     json m_json;
     static inline std::string m_file;
     const std::string m_item;
@@ -280,6 +302,11 @@ bool wex::config::exists() const
   return !m_item.empty() ? get_store()->exists(m_item): false;
 }
   
+const std::string wex::config::file()
+{
+  return config_imp::file();
+}
+
 const std::string wex::config::get(const char* def) const
 {
   return get(std::string(def));
@@ -401,7 +428,19 @@ void wex::config::on_init()
   m_store = new config_imp();
   m_store->read();
   
-  log::verbose("config") << "size:" << size();
+  log::verbose("config") << 
+    "top size:" << size() << 
+    "elements:" << m_store->elements();
+}
+
+void wex::config::read()
+{
+  m_store->read();
+}
+    
+void wex::config::save()
+{
+  m_store->save();
 }
 
 void wex::config::set(const std::string& v)

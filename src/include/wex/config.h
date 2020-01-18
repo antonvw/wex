@@ -2,7 +2,7 @@
 // Name:      config.h
 // Purpose:   Declaration of class wex::config
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -40,12 +40,21 @@ namespace wex
     /// Returns the config dir for user data files.
     static const std::string dir();
     
+    /// Returns the current config file.
+    static const std::string file();
+
     /// Stores config, and frees objects.
     static void on_exit();
     
     /// Initializes global class.
     /// This should be done before first use of config.
     static void on_init();
+
+    /// Reads current config file.
+    static void read();
+
+    /// Saves current config file.
+    static void save();
     
     /// Sets the config file to use.
     /// If you do no use this, the default config file is used.

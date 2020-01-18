@@ -2,7 +2,7 @@
 // Name:      listview.cpp
 // Purpose:   Implementation of wex::listview and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cctype>
@@ -94,15 +94,12 @@ namespace wex
            {SORT_ASCENDING, _("Sort ascending")},
            {SORT_DESCENDING, _("Sort descending")},
            {SORT_TOGGLE, _("Sort toggle")}}},
-         {_("list.context size"), 0, 80, 10},
+         {_("list.Context size"), 0, 80, 10},
          {_("list.Rulers"),  {
            {wxLC_HRULES, _("Horizontal rulers")},
            {wxLC_VRULES, _("Vertical rulers")}}, false}}},
       {_("Font"),
-        {{_("list.font"), 
-          item::FONTPICKERCTRL, 
-          wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
-         {_("list.tab font"), 
+        {{_("list.Font"), 
           item::FONTPICKERCTRL, 
           wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)}}},
       {_("Colour"),
@@ -531,8 +528,7 @@ void wex::listview::clear()
 
 int wex::listview::config_dialog(const window_data& par)
 {
-  const window_data data(window_data(par).
-    title(_("List Options")));
+  const window_data data(window_data(par).title(_("List Options")));
 
   if (m_config_dialog == nullptr)
   {
@@ -552,7 +548,7 @@ void wex::listview::config_get()
     [=](const std::string& back) {
       SetBackgroundColour(wxColour(back));});
   
-  SetFont(iv.find<wxFont>(_("list.font")));
+  SetFont(iv.find<wxFont>(_("list.Font")));
   SetSingleStyle(wxLC_HRULES, (iv.find<long>(_("list.Rulers")) & wxLC_HRULES) > 0);
   SetSingleStyle(wxLC_VRULES, (iv.find<long>(_("list.Rulers")) & wxLC_VRULES) > 0);
   SetSingleStyle(wxLC_NO_HEADER, !iv.find<bool>(_("list.Header")));
@@ -983,6 +979,18 @@ void wex::listview::items_update()
   }
 }
 
+bool wex::listview::load(const std::list<std::string> & l)
+{
+  clear();
+
+  for (const auto& it : l)
+  {
+    item_from_text(it);
+  }
+  
+  return true;
+}
+  
 void wex::listview::print()
 {
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
@@ -999,6 +1007,18 @@ void wex::listview::print_preview()
 #endif
 }
 
+const std::list<std::string> wex::listview::save() const
+{
+  std::list<std::string> l;
+
+  for (auto i = 0; i < GetItemCount(); i++)
+  {
+    l.push_back(GetItemText(i));
+  }
+  
+  return l;
+}
+  
 std::vector<std::string>* pitems;
 
 int wxCALLBACK compare_cb(

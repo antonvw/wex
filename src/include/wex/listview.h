@@ -2,11 +2,12 @@
 // Name:      listview.h
 // Purpose:   Declaration of wex::listview and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
+#include <list>
 #include <map>
 #include <vector>
 #include <wx/artprov.h> // for wxArtID
@@ -132,11 +133,17 @@ namespace wex
     /// Returns false if insertings fails, or item is empty.
     bool insert_item(const std::vector < std::string > & item);
 
+    /// Loads listview from list.
+    bool load(const std::list<std::string> & l);
+    
     /// Prints the list.
     void print();
 
     /// Previews the list.
     void print_preview();
+
+    /// Saves listview to list.
+    const std::list<std::string> save() const;
 
     /// Sets an item string field at a particular column.
     /// Returns false if an error occurred.

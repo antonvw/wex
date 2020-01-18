@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of wex report sample classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -60,7 +60,10 @@ frame::frame()
       {}, 
       {wex::menu_item::EXIT}}), 
       "&File"},
-    {new wex::menu({this}), "&View"},
+    {new wex::menu({
+      {}, // fix  compile error
+      {this}, 
+      {}}), "&View"},
     {new wex::menu({
       {wxID_ABOUT, "", "", "", [=](wxCommandEvent& event) {
           wxAboutDialogInfo info;
@@ -90,17 +93,13 @@ frame::frame()
       true);
   }
 
-  manager().AddPane(
-    m_stc, 
-    wxAuiPaneInfo().CenterPane().CloseButton(false).MaximizeButton(true));
-
-  manager().AddPane(
-    m_notebook, 
-    wxAuiPaneInfo().CloseButton(false).Bottom().MinSize(wxSize(250, 250)));
-
-  manager().AddPane(
-    new wex::report::dirctrl(this),
-    wxAuiPaneInfo().Caption("DirCtrl").Left().MinSize(wxSize(250, 250)));
+  add_panes({
+    {m_stc, 
+       wxAuiPaneInfo().CenterPane().CloseButton(false).MaximizeButton(true)},
+    {m_notebook, 
+       wxAuiPaneInfo().CloseButton(false).Bottom().MinSize(wxSize(250, 250))},
+    {new wex::report::dirctrl(this),
+       wxAuiPaneInfo().Caption("DirCtrl").Left().MinSize(wxSize(250, 250))}});
 
   manager().Update();
 

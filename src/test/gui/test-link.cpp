@@ -2,7 +2,7 @@
 // Name:      test-link.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -62,7 +62,7 @@ TEST_CASE("wex::link")
   SUBCASE("Constructor with stc")
   {
     wex::link lnk(stc);  
-    wex::config(_("stc.Include directory")).set("/usr/bin");
+    wex::config(_("stc.Include directory")).set(std::list<std::string>{{"/usr/bin"}});
     lnk.set_from_config();
     
     // Test empty, or illegal paths.
@@ -122,7 +122,7 @@ TEST_CASE("wex::link")
   SUBCASE("http link")
   { 
     wex::link lnk(stc);
-    wex::config(_("stc.Include directory")).set("/usr/bin");
+    wex::config(_("stc.Include directory")).set(std::list<std::string>{{"/usr/bin"}});
     lnk.set_from_config();
 
     wex::control_data data;

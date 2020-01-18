@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of classes for syncodbcquery
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <chrono>
@@ -217,7 +217,7 @@ frame::frame()
 
   setup_statusbar({
     {"PaneInfo", 100, _("Lines").ToStdString()},
-    {"PaneTheme", 50, _("Theme").ToStdString()}});
+    {"PaneTheme", 50}});
 
   if (wex::lexers::get()->get_themes_size() <= 1)
   {
@@ -232,43 +232,38 @@ frame::frame()
     wxGetStockLabel(wxID_EXECUTE, wxSTOCK_NOFLAGS));
   get_toolbar()->Realize();
 
-  manager().AddPane(m_shell,
-    wxAuiPaneInfo().
-      Name("CONSOLE").
-      CenterPane());
+  add_panes({
+    {m_shell,
+      wxAuiPaneInfo().
+        Name("CONSOLE").
+        CenterPane()},
+    {m_results,
+      wxAuiPaneInfo().
+        Name("RESULTS").
+        Caption(_("Results")).
+        CloseButton(true).
+        Bottom().
+        MaximizeButton(true)},
+    {m_query,
+      wxAuiPaneInfo().
+        Name("QUERY").
+        Caption(_("Query")).
+        CloseButton(true).
+        MaximizeButton(true)},
+    {m_statistics.show(this),
+      wxAuiPaneInfo().Left().
+        Hide().
+        MaximizeButton(true).
+        Caption(_("Statistics")).
+        Name("STATISTICS")}}, "Perspective");
 
-  manager().AddPane(m_results,
-    wxAuiPaneInfo().
-      Name("RESULTS").
-      Caption(_("Results")).
-      CloseButton(true).
-      Bottom().
-      MaximizeButton(true));
-
-  manager().AddPane(m_query,
-    wxAuiPaneInfo().
-      Name("QUERY").
-      Caption(_("Query")).
-      CloseButton(true).
-      MaximizeButton(true));
-
-  manager().AddPane(m_statistics.show(this),
-    wxAuiPaneInfo().Left().
-      Hide().
-      MaximizeButton(true).
-      Caption(_("Statistics")).
-      Name("STATISTICS"));
-
-  manager().LoadPerspective(wex::config("Perspective").get());
   manager().GetPane("QUERY").Show(false);
-
   manager().Update();
   
   Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
     if (wex::file_dialog(
       &m_query->get_file()).show_modal_if_changed()  != wxID_CANCEL)
     {
-      wex::config("Perspective").set(manager().SavePerspective().ToStdString());
       event.Skip();
     }});
     

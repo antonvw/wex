@@ -2,13 +2,10 @@
 // Name:      stc.cpp
 // Purpose:   Implementation of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <vector>
 #include <wx/app.h>
-#include <wx/defs.h>
-#include <wx/settings.h>
 #include <wex/stc.h>
 #include <wex/blame.h>
 #include <wex/config.h>
@@ -57,8 +54,8 @@ wex::stc::stc(const path& p, const stc_data& data)
   
   if (!lexers::get()->get_lexers().empty())
   {
-    m_default_font = config(_("stc.Default font")).get(
-      wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT));
+    const item_vector& iv(m_config_items);
+    m_default_font = iv.find<wxFont>(_("stc.Default font"));
   }
   
 #ifdef __WXMSW__
@@ -275,25 +272,10 @@ bool wex::stc::file_readonly_attribute_changed()
 void wex::stc::fold(bool all)
 {
   if (
-     GetProperty("fold") == "1" &&
-     m_lexer.is_ok() &&
-    !m_lexer.scintilla_lexer().empty())
+    all || 
+    GetLineCount() > config(_("stc.Auto fold")).get(0))
   {
-    SetMarginWidth(m_margin_folding_number, config(_("stc.margin.Folding")).get(0));
-    SetFoldFlags(config(_("stc.Fold flags")).get(
-      wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | 
-      wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
-        
-    if (
-      all || 
-      GetLineCount() > config(_("stc.Auto fold")).get(0))
-    {
-      fold_all();
-    }
-  }
-  else
-  {
-    SetMarginWidth(m_margin_folding_number, 0);
+    fold_all();
   }
 }
   
@@ -302,9 +284,11 @@ void wex::stc::fold_all()
   if (GetProperty("fold") != "1") return;
 
   const auto current_line = GetCurrentLine();
+  const bool json = (m_lexer.scintilla_lexer() == "json");
   const bool xml = (m_lexer.language() == "xml");
 
-  int line = 0;
+  int line = (json ? 2: 0);
+
   while (line < GetLineCount())
   {
     if (const auto level = GetFoldLevel(line); xml && (
@@ -315,7 +299,11 @@ void wex::stc::fold_all()
     else if (const auto last_child_line = GetLastChild(line, level);
       last_child_line > line + 1)
     {
-      if (GetFoldExpanded(line)) ToggleFold(line);
+      if (GetFoldExpanded(line))
+      {
+        ToggleFold(line);
+      }
+
       line = last_child_line + 1;
     }
     else

@@ -2,7 +2,7 @@
 // Name:      process.cpp
 // Purpose:   Implementation of class wex::process
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -10,6 +10,7 @@
 #include <queue>
 #include <thread>
 #include <vector>
+#include <boost/version.hpp>
 #if BOOST_VERSION / 100 % 1000 <= 65
   #include <boost/asio.hpp>
 #endif
@@ -84,7 +85,9 @@ namespace wex
     
     // Writes data to the input of the process.
     bool write(const std::string& text) {
-      if (m_process == nullptr || m_queue == nullptr)
+      assert(!text.empty());
+
+      if (m_process == nullptr || m_queue == nullptr || !is_running())
       {
         return false;
       }
@@ -94,10 +97,7 @@ namespace wex
         show_process(m_process->get_frame(), true);
       }
     
-      if (is_running())
-      {
-        m_queue->push(text);
-      }
+      m_queue->push(text);
       return true;};
 
     bool is_debug() const {return m_debug.load();};
@@ -124,7 +124,12 @@ namespace wex
   {
     try
     {
+#if BOOST_VERSION / 100 % 1000 == 72
+      const int ec = bp::system(bp::start_dir = cwd, command);
+      error = "boost version 1.72 error, please change version";
+#else      
       std::future<std::string> of, ef;
+
       const int ec = bp::system(
         bp::start_dir = cwd, 
         command, 
@@ -133,15 +138,16 @@ namespace wex
 
       if (of.valid()) output = of.get();
       if (ef.valid()) error = ef.get();
+#endif    
 
       if (!ec)
       {
-        log::verbose("process", 2) << command << "cwd:" << cwd;
+        log::verbose("system", 2) << command << "cwd:" << cwd;
       }
       else
       {
         const std::string text(!error.empty() ? ":" + error: std::string());
-        log("bp::system") << command << "cwd:" << cwd << "ec:" << ec << text;
+        log("system") << command << "cwd:" << cwd << "ec:" << ec << text;
       }
       
       return ec;

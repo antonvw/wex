@@ -2,7 +2,7 @@
 // Name:      statusbar.h
 // Purpose:   Declaration of wex::statusbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -56,11 +56,7 @@ namespace wex
       /// - wxSB_SUNKEN (3)
       int style = wxSB_NORMAL,
       /// initially show or hide the pane
-      bool is_shown = true)
-      : wxStatusBarPane(style, width)
-      , m_help_text(helptext.empty() ? name.substr(name.find('e') + 1): helptext)
-      , m_name(name)
-      , m_is_shown(is_shown) {};
+      bool is_shown = true);
       
     /// Returns hidden text.
     const auto& get_hidden_text() const {return m_hidden;};

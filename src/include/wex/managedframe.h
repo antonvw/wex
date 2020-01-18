@@ -2,7 +2,7 @@
 // Name:      managedframe.h
 // Purpose:   Declaration of wex::managed_frame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -47,6 +47,12 @@ namespace wex
       HIDE_BAR_FORCE,           ///< hide bar, even if there is no statusbar
       HIDE_BAR_FORCE_FOCUS_STC, ///< as previous, and focus to stc
     };
+    
+    /// Panes vector with a pair of panes
+    typedef std::vector < 
+      std::pair < 
+        wxWindow*, 
+        wxAuiPaneInfo > > panes_t;
 
     /// Toggled panes type.
     typedef std::vector <
@@ -119,6 +125,13 @@ namespace wex
     void set_recent_file(const path& path) override;
     
     /// Other methods
+
+    /// Add panes to manager.
+    bool add_panes(
+      /// panes
+      const panes_t & panes,
+      /// perspective to load / save
+      const std::string& perspective = std::string());
     
     /// Returns file history.
     auto& file_history() {return m_file_history;};
@@ -173,11 +186,10 @@ namespace wex
       size_t index, 
       stc_data::window_t flags = 0);
   private:
-    bool add_toolbar_pane(
-      wxWindow* window, 
-      const std::string& name, 
-      const std::string& caption = std::string());
+    bool add_toolbar_panes(const panes_t& panes);
     wxPanel* create_ex_panel();
+    
+    std::string m_perspective;
     
     const toggled_panes_t 
       m_toggled_panes;

@@ -2,7 +2,7 @@
 // Name:      test-macros.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/macros.h>
@@ -67,7 +67,6 @@ TEST_CASE("wex::macros")
     REQUIRE(!macros.mode().is_recording());
     REQUIRE( macros.is_recorded("a"));
     REQUIRE( macros.starts_with("a"));
-    REQUIRE(!macros.starts_with("xx"));
     REQUIRE( macros.is_recorded_macro("a"));
     REQUIRE( macros.mode().get_macro() == "a");
     REQUIRE( macros.find("a").front() == "a");
@@ -76,8 +75,8 @@ TEST_CASE("wex::macros")
     stc->set_text("");
     REQUIRE( stc->get_vi().mode().normal());
     REQUIRE( macros.mode().transition("@a", vi) == 2);
-
     REQUIRE( stc->GetText() == "test");
+
     stc->set_text("");
     REQUIRE(!macros.mode().transition("@a", vi, true, 0));
     REQUIRE(!macros.mode().transition("@a", vi, true, -8));

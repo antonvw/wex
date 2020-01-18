@@ -2,7 +2,7 @@
 // Name:      log.h
 // Purpose:   Declaration of wex::log class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -39,9 +39,6 @@ namespace wex
     /// Should be called before constructing a log object.
     static void init(int arc, char** argv);
     
-    /// Sets (easy) logging flags.
-    static void set_flags(int flags);
-
     /// Builds a status logger.
     static log status() {
       return log(std::string(), STATUS);};

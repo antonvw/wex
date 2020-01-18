@@ -2,7 +2,7 @@
 // Name:      config_item.cpp
 // Purpose:   Implementation of wex::item class config methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <filesystem>
@@ -167,11 +167,17 @@ bool wex::item::to_config(bool save) const
       break;
     
     case GRID:
-    case LISTVIEW:
       if (save)
         config(m_label).set(std::any_cast<std::string>(get_value()));
       else
         set_value(config(m_label).get());
+      break;
+
+    case LISTVIEW:
+      if (save)
+        config(m_label).set(std::any_cast<std::list<std::string>>(get_value()));
+      else
+        set_value(config(m_label).get(std::list<std::string>()));
       break;
 
     case RADIOBOX:

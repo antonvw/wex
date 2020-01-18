@@ -170,6 +170,15 @@ void wex::stc::config_get()
   SetWrapMode(iv.find<long>(_("stc.Wrap line")));
   SetWrapVisualFlags(iv.find<long>(_("stc.Wrap visual flags")));
   
+  if (
+     GetProperty("fold") == "1" &&
+     m_lexer.is_ok() &&
+    !m_lexer.scintilla_lexer().empty())
+  {
+    SetMarginWidth(m_margin_folding_number, iv.find<int>(_("stc.margin.Folding")));
+    SetFoldFlags(iv.find<long>(_("stc.Fold flags")));
+  }
+    
   m_vi.use(iv.find<bool>(_("stc.vi mode")));
 
   show_line_numbers(iv.find<bool>(_("stc.Line numbers")));
@@ -244,9 +253,6 @@ void wex::stc::on_init()
       {{_("stc.Default font"), 
         item::FONTPICKERCTRL,
         wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)},
-       {_("stc.Tab font"), 
-        item::FONTPICKERCTRL, 
-        wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
        {_("stc.Text font"), 
         item::FONTPICKERCTRL, 
         wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)}}},

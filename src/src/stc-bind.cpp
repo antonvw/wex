@@ -2,7 +2,7 @@
 // Name:      stc-bind.cpp
 // Purpose:   Implementation of class wex::stc method bind_all
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -480,14 +480,16 @@ void wex::stc::bind_all()
         if (get_lexer().scintilla_lexer().empty() && 
           GetLength() < config("max-lines-lexer").get(10000000))
         {
-          get_lexer().set(get_filename().lexer(), true);
+          get_lexer().set(get_filename().lexer());
           config_get();
         }
         
         guess_type_and_modeline();
         log::status(_("Opened")) << get_filename();
         log::verbose("opened", 1) << get_filename();
+        fold();
         [[fallthrough]];
+
       case stc_file::FILE_LOAD_SYNC:
         EmptyUndoBuffer();
         use_modification_markers(true);
@@ -502,6 +504,7 @@ void wex::stc::bind_all()
         get_lexer().set(get_filename().lexer());
         SetName(get_filename().string());
         [[fallthrough]];
+
       case stc_file::FILE_SAVE:
         SetReadOnly(get_filename().is_readonly());
         marker_delete_all_change();

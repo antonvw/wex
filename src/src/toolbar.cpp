@@ -181,25 +181,31 @@ void wex::toolbar::add_find(bool realize)
     wxArtProvider::GetBitmap(wxART_GO_UP, wxART_TOOLBAR),
     _("Find previous"));
 
-  add_checkboxes(
-    {{NewControlId(), 
-      find_replace_data::get()->text_match_word(), "", "", 
-      _("Search matching words"), 
-      find_replace_data::get()->match_word(),
-      [](wxCheckBox* cb) {
-        find_replace_data::get()->set_match_word(cb->GetValue());}},
-     {NewControlId(), 
-      find_replace_data::get()->text_match_case(), "", "", 
-      _("Search case sensitive"), 
-      find_replace_data::get()->match_case(),
-      [](wxCheckBox* cb) {
-        find_replace_data::get()->set_match_case(cb->GetValue());}},
-     {NewControlId(), 
-      find_replace_data::get()->text_regex(), "", "", 
-      _("Search using regular expressions"), 
-      find_replace_data::get()->use_regex(),
-      [](wxCheckBox* cb) {
-        find_replace_data::get()->set_use_regex(cb->GetValue());}}},
+  add_checkboxes({
+    {NewControlId(), 
+     after(find_replace_data::get()->text_match_word(), '.', false), 
+     "", 
+     "", 
+     _("Search matching words"), 
+     find_replace_data::get()->match_word(),
+     [](wxCheckBox* cb) {
+       find_replace_data::get()->set_match_word(cb->GetValue());}},
+    {NewControlId(), 
+     after(find_replace_data::get()->text_match_case(), '.', false), 
+     "", 
+     "", 
+     _("Search case sensitive"), 
+     find_replace_data::get()->match_case(),
+     [](wxCheckBox* cb) {
+       find_replace_data::get()->set_match_case(cb->GetValue());}},
+    {NewControlId(), 
+     after(find_replace_data::get()->text_regex(), '.', false), 
+     "", 
+     "", 
+     _("Search using regular expressions"), 
+     find_replace_data::get()->use_regex(),
+     [](wxCheckBox* cb) {
+       find_replace_data::get()->set_use_regex(cb->GetValue());}}},
     false);
 
   if (realize)
