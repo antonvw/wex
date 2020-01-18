@@ -2,7 +2,7 @@
 // Name:      style.h
 // Purpose:   Declaration of wex::style class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -40,6 +40,9 @@ namespace wex
     /// Applies this style to stc component.
     /// If no style is present, stc StyleResetDefault is invoked.
     void apply(wxStyledTextCtrl* stc) const;
+    
+    /// Clears style.
+    void clear();
 
     /// Is the default style part of these styles.
     bool contains_default_style() const;

@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex::report::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -14,6 +14,7 @@
 #include <wex/config.h>
 #include <wex/frd.h>
 #include <wex/itemdlg.h>
+#include <wex/lexers.h>
 #include <wex/listitem.h>
 #include <wex/log.h>
 #include <wex/stc.h>
@@ -36,20 +37,18 @@ wex::report::frame::frame(
       find_replace_data::get()->text_match_case(),
       find_replace_data::get()->text_regex()})
 {
-  // Take care of default value.
-  if (!config(m_text_recursive).exists())
-  {
-    config(m_text_recursive).set(true); 
-  }
-
   std::set<std::string> t(m_info);
-  t.insert(m_text_recursive);
+  t.insert(m_text_recursive + ",1");
   
   const std::vector<item> f {
     {find_replace_data::get()->text_find(), 
-       item::COMBOBOX, std::any(), control_data().is_required(true)},
-    {m_text_in_files, item::COMBOBOX, std::any(), control_data().is_required(true)},
-    {m_text_in_folder, item::COMBOBOX_DIR, std::any(), control_data().is_required(true)},
+      item::COMBOBOX, std::any(), control_data().is_required(true)},
+    {m_text_in_files, 
+      item::COMBOBOX, default_extensions(), control_data().is_required(true)},
+    {m_text_in_folder, 
+      item::COMBOBOX_DIR, 
+        std::list<std::string>{wxGetHomeDir().ToStdString()}, 
+        control_data().is_required(true)},
     {t}};
   
   m_fif_dialog = new item_dialog(
@@ -123,23 +122,42 @@ wex::report::frame::frame(
     on_menu_history(m_project_history, 
       event.GetId() - m_project_history.get_base_id(), 
       wex::stc_data::window_t().set(stc_data::WIN_IS_PROJECT));},
-    m_project_history.get_base_id(), m_project_history.get_base_id() + m_project_history.get_max_files());
+    m_project_history.get_base_id(), 
+    m_project_history.get_base_id() + m_project_history.get_max_files());
 }
 
 const std::string find_replace_string(bool replace)
 {
   std::string log;
   
-  log = _("Searching for") + ": " + wex::find_replace_data::get()->get_find_string();
+  log = _("Searching for") + ": " + 
+    wex::find_replace_data::get()->get_find_string();
 
   if (replace)
   {
-    log += " " + _("replacing with") + ": " + wex::find_replace_data::get()->get_replace_string();
+    log += " " + _("replacing with") + ": " + 
+      wex::find_replace_data::get()->get_replace_string();
   }
 
   return log;
 }
 
+std::list <std::string> wex::report::frame::default_extensions() const
+{
+  std::list <std::string> l{
+    std::string(wxFileSelectorDefaultWildcardStr)};
+  
+  for (const auto& it : lexers::get()->get_lexers())
+  {
+    if (!it.extensions().empty())
+    {
+      l.push_back(it.extensions());
+    }
+  }
+  
+  return l;
+}
+  
 void wex::report::frame::find_in_files(wxWindowID dialogid)
 {
   const bool replace = (dialogid == ID_REPLACE_IN_FILES);
@@ -249,9 +267,15 @@ int wex::report::frame::find_in_files_dialog(
   }
 
   if (item_dialog({
-      {find_replace_data::get()->text_find(), item::COMBOBOX, std::any(), control_data().is_required(true)}, 
-      (add_in_files ? item(m_text_in_files, item::COMBOBOX, std::any(), control_data().is_required(true)) : item()),
-      (id == ID_TOOL_REPLACE ? item(find_replace_data::get()->text_replace_with(), item::COMBOBOX): item()),
+      {find_replace_data::get()->text_find(), 
+          item::COMBOBOX, std::any(), control_data().is_required(true)}, 
+      (add_in_files ? 
+        item(m_text_in_files, 
+          item::COMBOBOX, std::any(), control_data().is_required(true)) : 
+        item()),
+      (id == ID_TOOL_REPLACE ? 
+        item(find_replace_data::get()->text_replace_with(), item::COMBOBOX): 
+        item()),
       item(m_info)},
     window_data().title(find_in_files_title(id))).ShowModal() == wxID_CANCEL)
   {

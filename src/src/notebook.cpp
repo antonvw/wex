@@ -12,7 +12,6 @@
 #include <wex/notebook.h>
 #include <wex/item-vector.h>
 #include <wex/itemdlg.h>
-#include <wex/config.h>
 
 namespace wex
 {

@@ -2,7 +2,7 @@
 // Name:      lexers.cpp
 // Purpose:   Implementation of wex::lexers class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -248,7 +248,7 @@ bool wex::lexers::load_document()
 
   if (m_is_loaded)
   {
-    m_default_style = style();
+    m_default_style.clear();
     m_folding_background_colour.clear();
     m_folding_foreground_colour.clear();
     m_global_properties.clear();
@@ -279,24 +279,6 @@ bool wex::lexers::load_document()
     }
   }
 
-  std::list <std::string> l{std::string(wxFileSelectorDefaultWildcardStr)};
-
-  for (const auto& it : m_lexers)
-  {
-    if (!it.extensions().empty())
-    {
-      l.push_back(it.extensions());
-    }
-  }
-  
-  if (!config(_("fif.Add what")).exists()) 
-  {
-    config(_("fif.Add what")).set(l);
-    config(_("fif.In files")).set(l);
-    config(_("fif.In folder")).set(
-      std::list<std::string>{wxGetHomeDir().ToStdString()});
-  }
-  
   // Do some checking.
   if (!m_lexers.empty() && !m_theme.empty())
   {
