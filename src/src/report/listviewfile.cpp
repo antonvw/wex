@@ -2,7 +2,7 @@
 // Name:      listviewfile.cpp
 // Purpose:   Implementation of class wex::report::file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -25,10 +25,11 @@ wex::report::file::file(
   const std::string& file, const listview_data& data)
   : report::listview(listview_data(data).type(listview_data::FILE))
   , m_add_items_dialog(new item_dialog({
-        {m_text_add_what,item::COMBOBOX, std::any(), 
+        {m_text_add_what, item::COMBOBOX, get_frame()->default_extensions(), 
            control_data().is_required(true)},
-        {m_text_in_folder,item::COMBOBOX_DIR, std::any(), 
-           control_data().is_required(true)},
+        {m_text_in_folder,item::COMBOBOX_DIR, 
+          std::list<std::string>{wxGetHomeDir().ToStdString()}, 
+          control_data().is_required(true)},
         {std::set<std::string> {
           m_text_add_files, m_text_add_folders, m_text_add_recursive}}},
       window_data().

@@ -2,7 +2,7 @@
 // Name:      listviewfile.h
 // Purpose:   Declaration of class wex::report::file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -59,11 +59,11 @@ namespace wex::report
     bool m_contents_changed = false;
     
     const std::string 
-      m_text_add_files = _("Add files"),
-      m_text_add_folders = _("Add folders"),
-      m_text_add_recursive = _("Recursive"),
-      m_text_add_what = _("Add what"),
-      m_text_in_folder = _("In folder");
+      m_text_add_files = _("list.Add files"),
+      m_text_add_folders = _("list.Add folders"),
+      m_text_add_recursive = _("list.Recursive"),
+      m_text_add_what = _("list.Add what"),
+      m_text_in_folder = _("list.In folder");
     
     item_dialog* m_add_items_dialog;
   };

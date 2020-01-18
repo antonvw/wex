@@ -2,7 +2,7 @@
 
 - Fork the repository on GitHub
 
-- Create a topic branch from where you want to base your work
+- Create a feature branch from the develop branch to base your work
 
 - When using otl   
     `sudo apt-get install unixODBC unixODBC-dev` or   
@@ -65,3 +65,5 @@ make lcov
 
 - And, if you want to upload results to coveralls.    
   `make lcov-coveralls`   
+
+- Do a pull request from the feature branch to the develop branch

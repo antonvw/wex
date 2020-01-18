@@ -2,7 +2,7 @@
 // Name:      style.cpp
 // Purpose:   Implementation of wex::style class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -36,6 +36,13 @@ void wex::style::apply(wxStyledTextCtrl* stc) const
   }
 }
 
+void wex::style::clear()
+{
+  m_define.clear();
+  m_no.clear();
+  m_value.clear();
+}
+  
 bool wex::style::contains_default_style() const
 {
   return (m_no.find(wxSTC_STYLE_DEFAULT) != m_no.end());

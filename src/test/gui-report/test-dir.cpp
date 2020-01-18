@@ -2,7 +2,7 @@
 // Name:      test-dir.cpp
 // Purpose:   Implementation for wex report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/util.h>
@@ -15,7 +15,7 @@ TEST_CASE("wex::tool_dir")
 {
   const wex::tool tool(wex::ID_TOOL_REPORT_FIND);
   
-  wex::listview* lv = 
+  auto* lv = 
     new wex::listview(wex::listview_data().type(wex::listview_data::FIND));
     
   REQUIRE( tool.id() == wex::ID_TOOL_REPORT_FIND);
