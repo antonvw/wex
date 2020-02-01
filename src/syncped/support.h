@@ -2,7 +2,7 @@
 // Name:      support.h
 // Purpose:   Declaration of decorated_frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma
@@ -30,13 +30,6 @@ public:
   decorated_frame(app* app);
 protected:
   void add_pane_history();
-
-  const long m_pane_flag = 
-    wxAUI_NB_DEFAULT_STYLE |
-    wxAUI_NB_CLOSE_ON_ALL_TABS |
-    wxAUI_NB_CLOSE_BUTTON |
-    wxAUI_NB_WINDOWLIST_BUTTON |
-    wxAUI_NB_SCROLL_BUTTONS;
 
   editors *m_editors {nullptr};
   wex::report::listview* m_history {nullptr};

@@ -2,7 +2,7 @@
 // Name:      interruptable.h
 // Purpose:   Declaration of class wex::interruptable
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -30,8 +30,8 @@ namespace wex
     /// Stops interruptable process.
     static void stop();
   private:
-    static bool 
-      m_cancelled,
-      m_running;
+    static inline bool 
+      m_cancelled {false},
+      m_running {false};
   };
 };

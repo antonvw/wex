@@ -2,7 +2,7 @@
 // Name:      lexer.cpp
 // Purpose:   Implementation of wex::lexer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -699,6 +699,10 @@ bool wex::lexer::set(const std::string& lexer, bool fold)
     !set(lexers::get()->find(lexer), fold))
   {
     log::verbose("lexer is not known") << lexer;
+  }
+  else if (lexer.empty())
+  {
+    clear();
   }
   
   return m_is_ok;

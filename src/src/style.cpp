@@ -75,7 +75,7 @@ void wex::style::set(const pugi::xml_node& node, const std::string& macro)
 
       if (value.find("default-font") != std::string::npos)
       {
-        const wxFont font(config(_("stc.Default font")).get(
+        const auto& font(config(_("stc.Default font")).get(
           wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT)));
         
         replace_all(
@@ -84,7 +84,7 @@ void wex::style::set(const pugi::xml_node& node, const std::string& macro)
           "face:" + font.GetFaceName() + 
             ",size:" + std::to_string(font.GetPointSize()));
             
-        if (const wxFontStyle style = font.GetStyle(); 
+        if (const auto style = font.GetStyle(); 
           style == wxFONTSTYLE_ITALIC || style == wxFONTSTYLE_SLANT)
         {
           value += ",italic";

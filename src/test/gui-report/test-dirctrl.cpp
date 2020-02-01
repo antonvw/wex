@@ -2,7 +2,7 @@
 // Name:      test-dirctrl.cpp
 // Purpose:   Implementation for wex report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/report/dir.h> // necessary?
@@ -14,10 +14,10 @@ void Test(wex::report::dirctrl* ctrl)
 {
   for (auto id : std::vector<int> {
     wex::ID_EDIT_VCS_LOWEST + 2, 
-    wex::ID_TREE_COPY, 
     wex::ID_EDIT_OPEN, 
-    wex::ID_TREE_RUN_MAKE,
-    wex::ID_TOOL_REPORT_FIND})
+    wex::ID_TOOL_REPORT_FIND,
+    wex::report::ID_TREE_COPY, 
+    wex::report::ID_TREE_RUN_MAKE})
   {
     auto* event = new wxCommandEvent(wxEVT_MENU, id);
     wxQueueEvent(ctrl, event);

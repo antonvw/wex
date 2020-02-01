@@ -2,7 +2,7 @@
 // Name:      stc-config.cpp
 // Purpose:   Implementation of config related methods of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -264,12 +264,15 @@ void wex::stc::on_init()
          {wxSTC_EDGE_BACKGROUND, _("Background")},
          {wxSTC_EDGE_MULTILINE, _("Multiline")}}, true, 1}}},
     {_("Margin"),
-      {{_("stc.Tab width"), 1, 500, 2},
+      {{_("<i>Margins:</i>")},
+       {_("stc.Autocomplete maxwidth"), 0, 100, 0},
        {_("stc.Indent"), 0, 500, 2},
+       {_("stc.Tab width"), 1, 500, 2},
+       {_("<i>Line Margins:</i>")},
        {_("stc.margin.Divider"), 0, 40, 16},
        {_("stc.margin.Folding"), 0, 40, 16},
        {_("stc.margin.Line number"), 0, 100, 60},
-       {_("stc.Autocomplete maxwidth"), 0, 100, 0}}},
+       {_("stc.margin.Text"), -1, 100, -1}}},
     {_("Folding"),
       {{_("stc.Indentation guide"), item::CHECKBOX},
        {_("stc.Auto fold"), 0, INT_MAX, 1500},

@@ -49,6 +49,13 @@
 
 namespace wex
 {
+  const item::type_t use_type(
+    const std::string& label, 
+    item::type_t t)
+  {
+    return label.find(':') != std::string::npos ? item::STATICTEXT: t;
+  }
+  
   const std::string str(const std::string& name, const std::any& any)
   {
     std::stringstream s;
@@ -137,6 +144,7 @@ wex::item::item(type_t type,
     case NOTEBOOK_TREE: 
     case NOTEBOOK_WEX: 
     case RADIOBOX:
+    case STATICBOX:
     case STC:
       m_is_row_growable = true;
       m_sizer_flags.Expand();
@@ -164,6 +172,24 @@ wex::item::item(type_t type,
     
     default: ; // prevent warning
   }
+}
+
+wex::item::item(
+  const std::string& label,
+  const std::string& value,
+  type_t type,
+  const control_data& data,
+  label_t label_t,
+  user_apply_t apply)
+  : item(
+      use_type(label, type),
+      label, 
+      value, 
+      (use_type(label,type) != STATICTEXT && 
+       type != HYPERLINKCTRL ? label_t: LABEL_NONE))
+{
+  m_apply = apply;
+  m_data = data;
 }
 
 wxFlexGridSizer* wex::item::add(wxSizer* sizer, wxFlexGridSizer* current) const
@@ -219,63 +245,84 @@ wxFlexGridSizer* wex::item::add_browse_button(wxSizer* sizer) const
   return fgz;
 }
 
-void wex::item::add_items(notebook_page_t & page, bool readonly)
+void wex::item::add_items(group_t & page, bool readonly)
+{
+  int use_cols = 1;
+  auto* fgz = new wxFlexGridSizer(use_cols);
+  if (m_major_dimension != -1) use_cols = m_major_dimension;
+  
+  if (auto* bookctrl = dynamic_cast<wxBookCtrlBase*>(m_window);
+    bookctrl != nullptr)
+  {
+    m_page = page.first;
+    int imageId = wxWithImages::NO_IMAGE;
+
+    if (const size_t col = m_page.find(":"); col != std::string::npos)
+    {
+      use_cols = std::stoi(m_page.substr(col + 1));
+      m_page = m_page.substr(0, col);
+    }
+
+    if (m_image_list != nullptr)
+    {
+      if ((int)bookctrl->GetPageCount() < m_image_list->GetImageCount())
+      {
+        imageId = bookctrl->GetPageCount();
+      }
+      else
+      {
+        log() << "more pages than images";
+      }
+    }
+    
+    bookctrl->AddPage(
+      new wxWindow(bookctrl, wxID_ANY), 
+      m_page,
+      true, // select
+      imageId);
+    
+    bookctrl->GetCurrentPage()->SetSizer(fgz);
+    
+    for (int i = 0; i < use_cols; i++)
+    {
+      fgz->AddGrowableCol(i);
+    }
+    
+    add_items(bookctrl->GetCurrentPage(), fgz, page.second, readonly);
+  }
+  else if (auto* sb = dynamic_cast<wxStaticBox*>(m_window);
+    sb != nullptr)
+  {
+    add_items(sb, fgz, page.second, readonly);
+    sb->SetSizerAndFit(fgz);
+  }
+  else
+  {
+    assert(0);
+  }
+}
+        
+void wex::item::add_items(
+  wxWindow* parent, 
+  wxFlexGridSizer* fgz, 
+  std::vector <item> & v, 
+  bool readonly)
 {
   wxFlexGridSizer* previous_item_sizer = nullptr;
   int previous_type = -1;
-  m_page = page.first;
-  int use_cols = 1;
-  if (m_major_dimension != -1) use_cols = m_major_dimension;
-  
-  if (const size_t col = m_page.find(":"); col != std::string::npos)
-  {
-    use_cols = std::stoi(m_page.substr(col + 1));
-    m_page = m_page.substr(0, col);
-  }
 
-  auto* bookctrl = (wxBookCtrlBase*)m_window;
-  
-  int imageId = wxWithImages::NO_IMAGE;
-
-  if (m_image_list != nullptr)
-  {
-    if ((int)bookctrl->GetPageCount() < m_image_list->GetImageCount())
-    {
-      imageId = bookctrl->GetPageCount();
-    }
-    else
-    {
-      log() << "more pages than images";
-    }
-  }
-  
-  bookctrl->AddPage(
-    new wxWindow(bookctrl, wxID_ANY), 
-    m_page,
-    true, // select
-    imageId);
-  
-  auto* booksizer = new wxFlexGridSizer(use_cols);
-  bookctrl->GetCurrentPage()->SetSizer(booksizer);
-  
-  for (int i = 0; i < use_cols; i++)
-  {
-    booksizer->AddGrowableCol(i);
-  }
-  
-  for (auto& item: page.second)
+  for (auto& item: v)
   {
     // If this item has same type as previous type use previous sizer,
     // otherwise use no sizer (layout will create a new one).
     wxFlexGridSizer* current_item_sizer = (
       item.type() == previous_type ? previous_item_sizer: nullptr);
     
-    item.set_dialog(m_dialog);
     item.set_imagelist(m_image_list);
 
     previous_item_sizer = item.layout(
-      bookctrl->GetCurrentPage(),
-      booksizer,
+      parent,
+      fgz,
       readonly,
       current_item_sizer);
     
@@ -283,19 +330,20 @@ void wex::item::add_items(notebook_page_t & page, bool readonly)
     
     if (m_dialog != nullptr)
     {
+      item.set_dialog(m_dialog);
       m_dialog->add(item);
       m_dialog->bind_button(item);
     }
 
-    if (booksizer->GetEffectiveRowsCount() >= 1 &&
-       !booksizer->IsRowGrowable(booksizer->GetEffectiveRowsCount() - 1) &&
+    if (fgz->GetEffectiveRowsCount() >= 1 &&
+       !fgz->IsRowGrowable(fgz->GetEffectiveRowsCount() - 1) &&
         item.is_row_growable())
     {
-      booksizer->AddGrowableRow(booksizer->GetEffectiveRowsCount() - 1);
+      fgz->AddGrowableRow(fgz->GetEffectiveRowsCount() - 1);
     }
   }
 }
-        
+  
 wxFlexGridSizer* wex::item::add_static_text(wxSizer* sizer) const
 {
   assert(!m_label_window.empty());
@@ -714,6 +762,12 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
           std::any_cast<double>(m_initial), 
         std::any_cast<double>(m_inc));
       break;
+    
+    case STATICBOX:
+      m_window = new wxStaticBox(parent, 
+        m_data.window().id(),
+        m_label_window);
+      break;
 
     case STATICLINE:
       m_window = new wxStaticLine(parent, 
@@ -968,6 +1022,7 @@ const std::any wex::item::get_value() const
         any = ((wxSpinCtrlDouble* )m_window)->GetValue(); 
         break;
       
+      case STATICBOX: 
       case STATICLINE: 
       case STATICTEXT: 
         break;
@@ -1041,7 +1096,7 @@ wxFlexGridSizer* wex::item::layout(
       return nullptr;
     }
     
-    wxFlexGridSizer* return_sizer;
+    wxFlexGridSizer* return_sizer = nullptr;
     
     switch (m_type)
     {
@@ -1056,6 +1111,14 @@ wxFlexGridSizer* wex::item::layout(
       case SPACER: sizer->AddSpacer(m_data.window().style()); 
         return fgz;
       
+      case STATICBOX: 
+        {
+        auto group(std::any_cast<group_t>(m_initial));
+        return_sizer = add(sizer, fgz);
+        add_items(group, readonly);
+        }
+        break;
+
       default: 
         if (is_notebook())
         {

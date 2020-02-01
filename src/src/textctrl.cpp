@@ -2,7 +2,7 @@
 // Name:      textctrl.cpp
 // Purpose:   Implementation of wex::textctrl_input class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/textctrl.h>
@@ -74,9 +74,7 @@ bool wex::textctrl_input::set(int key, wxTextCtrl* tc)
 {
   if (m_values.empty()) return false;
   
-  const int page = 10;
-  
-  switch (key)
+  switch (const int page = 10; key)
   {
     case WXK_DOWN: if (m_iterator != m_values.cbegin()) m_iterator--; break;
     case WXK_END: m_iterator = m_values.cend(); m_iterator--; break;

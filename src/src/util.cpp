@@ -964,8 +964,9 @@ void wex::vcs_command_stc(const vcs_command& command,
 {
   if (command.is_blame())
   {
-    // Do not show an edge for blamed documents, they are too wide.
+    // Do not show an edge and wrap for blamed documents, they are too wide.
     stc->SetEdgeMode(wxSTC_EDGE_NONE);
+    stc->SetWrapMode(wxSTC_WRAP_NONE);
   }
   
   if (command.is_diff())

@@ -2,7 +2,7 @@
 // Name:      app.h
 // Purpose:   Declaration of wex sample classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/app.h>
@@ -42,6 +42,7 @@ class frame: public wex::managed_frame
 public:
   frame();
 private:  
+  bool allow_close(wxWindowID id, wxWindow* page) override;
   wex::listview* get_listview() override {return m_listview;};
   void on_command_item_dialog(
     wxWindowID id, 

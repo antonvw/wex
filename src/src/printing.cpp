@@ -2,7 +2,7 @@
 // Name:      printing.cpp
 // Purpose:   Implementation of wex::printing class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -17,21 +17,15 @@
 wex::printing* wex::printing::m_self = nullptr;
 
 wex::printing::printing()
-#if wxUSE_PRINTING_ARCHITECTURE
   : m_printer(std::make_unique<wxPrinter>())
-#if wxUSE_HTML
   , m_html_printer(std::make_unique<wxHtmlEasyPrinting>())
-#endif
-#endif
 {
-#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   m_html_printer->SetFonts(wxEmptyString, wxEmptyString); // use defaults
   m_html_printer->GetPageSetupData()->SetMarginBottomRight(wxPoint(15, 5));
   m_html_printer->GetPageSetupData()->SetMarginTopLeft(wxPoint(15, 5));
 
   m_html_printer->SetHeader(print_header(path()));
   m_html_printer->SetFooter(print_footer());
-#endif
 }
 
 wex::printing* wex::printing::get(bool createOnDemand)
@@ -51,7 +45,6 @@ wex::printing* wex::printing::set(printing* printing)
   return old;
 }
 
-#if wxUSE_PRINTING_ARCHITECTURE
 wex::printout::printout(wxStyledTextCtrl* owner)
   : wxPrintout(print_caption(owner->GetName().ToStdString()))
   , m_page_rect()
@@ -100,10 +93,12 @@ void wex::printout::GetPageInfo(
 void wex::printout::OnPreparePrinting()
 {
   const double factor = 22.4;
-  wxSize ppiScr;
-  GetPPIScreen(&ppiScr.x, &ppiScr.y);
-
-  wxPageSetupDialogData* dlg_data = printing::get()->get_html_printer()->GetPageSetupData();
+  const auto ppiScr = [&] {
+    wxSize s;
+    GetPPIScreen(&s.x, &s.y);
+    return s;}();
+    
+  auto* dlg_data = printing::get()->get_html_printer()->GetPageSetupData();
   wxSize page = dlg_data->GetPaperSize();
 
   if (page.x == 0 || page.y == 0)
@@ -230,4 +225,3 @@ void wex::printout::set_scale()
 
   GetDC()->SetUserScale(scale_x, scale_y);
 }
-#endif // wxUSE_PRINTING_ARCHITECTURE

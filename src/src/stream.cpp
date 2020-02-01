@@ -2,7 +2,7 @@
 // Name:      stream.cpp
 // Purpose:   Implementation of wex::stream class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -145,8 +145,14 @@ bool wex::stream::process_begin()
 bool wex::stream::run_tool()
 {
   if (std::fstream fs(m_path.data(), std::ios_base::in);
-    !fs.is_open() || !process_begin())
+    !fs.is_open())
   {
+    log("open") << m_path;
+    return false;
+  }
+  else if (!process_begin())
+  {
+    log("begin") << m_path;
     return false;
   }
   else

@@ -32,6 +32,13 @@
 #include "app.h"
 #include "defs.h"
 
+const long pane_flag = 
+  wxAUI_NB_DEFAULT_STYLE |
+  wxAUI_NB_CLOSE_ON_ALL_TABS |
+  wxAUI_NB_CLOSE_BUTTON |
+  wxAUI_NB_WINDOWLIST_BUTTON |
+  wxAUI_NB_SCROLL_BUTTONS;
+
 decorated_frame::decorated_frame(app* app)
   : wex::report::frame(
       25,  // maxFiles
@@ -39,12 +46,12 @@ decorated_frame::decorated_frame(app* app)
       wex::window_data().name("mainFrame").style(wxDEFAULT_FRAME_STYLE))
   , m_app(app)
   , m_editors(new editors(
-      wex::window_data().id(ID_NOTEBOOK_EDITORS).style(m_pane_flag)))
+      wex::window_data().id(ID_NOTEBOOK_EDITORS).style(pane_flag)))
   , m_lists(new wex::notebook(
-      wex::window_data().id(ID_NOTEBOOK_LISTS).style(m_pane_flag)))
+      wex::window_data().id(ID_NOTEBOOK_LISTS).style(pane_flag)))
   , m_process(new wex::process())
   , m_projects(new wex::notebook(
-      wex::window_data().id(ID_NOTEBOOK_PROJECTS).style(m_pane_flag)))
+      wex::window_data().id(ID_NOTEBOOK_PROJECTS).style(pane_flag)))
 {
   SetIcon(wxICON(app));
   
@@ -467,7 +474,7 @@ decorated_frame::decorated_frame(app* app)
           [=](wxUpdateUIEvent& event) {
           event.Enable(get_project() != nullptr && get_project()->IsShown());}},
 
-       {wex::ID_PROJECT_SAVE, 
+       {wex::report::ID_PROJECT_SAVE, 
         wxGetStockLabel(wxID_SAVE), std::string(), wxART_FILE_SAVE},
 
        {wxWindow::NewControlId(), 
@@ -593,4 +600,60 @@ void decorated_frame::on_notebook(wxWindowID id, wxWindow* page)
     default:
       assert(0);
   }
+}
+
+editors::editors(const wex::window_data& data)
+  : wex::notebook(data)
+{
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxPostEvent(wxAuiNotebook::GetCurrentPage(), event);
+    }, wex::ID_EDIT_VCS_LOWEST, wex::ID_EDIT_VCS_HIGHEST);
+
+  Bind(wxEVT_AUINOTEBOOK_END_DRAG, [=](wxAuiNotebookEvent& event) {
+    event.Skip();
+    m_split = true;
+    });
+
+  Bind(wxEVT_AUINOTEBOOK_TAB_RIGHT_UP, [=](wxAuiNotebookEvent& event) {
+    wex::menu menu(wex::menu::menu_t().set(wex::menu::IS_POPUP));
+    
+    auto* split = new wex::menu({
+      {ID_SPLIT_VERTICALLY, _("Split Vertically")},
+      {ID_SPLIT_HORIZONTALLY, _("Split Horizontally")}, 
+      {},
+      {ID_SPLIT, _("Split")}});
+    
+    if (GetPageCount() > 1)
+    {
+      split->append({
+        {},
+        {wxWindow::NewControlId(), 
+         _("Rearrange Vertically"), "", "", [=](wxCommandEvent&) {
+           rearrange(wxLEFT);}},
+        {wxWindow::NewControlId(), 
+         _("Rearrange Horizontally"), "", "", [=](wxCommandEvent&) {
+           rearrange(wxTOP);}}});
+    }
+
+    menu.append({
+      {split, _("Split"), std::string(), wxWindow::NewControlId()}, 
+      {},
+      {wxID_CLOSE},
+      {wex::ID_ALL_CLOSE, _("Close A&ll")}});
+    
+    if (GetPageCount() > 2)
+    {
+      menu.append({{wex::ID_ALL_CLOSE_OTHERS, _("Close Others")}});
+    }
+
+    if (auto* stc = dynamic_cast<wex::stc*>(wxAuiNotebook::GetCurrentPage());
+      stc->get_file().get_filename().file_exists() && 
+        wex::vcs::dir_exists(stc->get_file().get_filename()))
+    {
+      menu.append({
+       {}, 
+       {stc->get_file().get_filename()}});
+    }
+    
+    PopupMenu(&menu);});
 }

@@ -37,7 +37,7 @@
 
 enum
 {
-  ID_DLG_CONFIG_ITEM = wex::ID_EDIT_HIGHEST + 1,
+  ID_DLG_CONFIG_ITEM = wex::ID_HIGHEST + 1,
   ID_DLG_CONFIG_ITEM_COL,
   ID_DLG_CONFIG_ITEM_READONLY,
   ID_DLG_ITEM,
@@ -160,7 +160,7 @@ frame::frame()
 
   add_panes({
     {m_notebook, 
-       wxAuiPaneInfo().CenterPane().MinSize(wxSize(250, 250))},
+       wxAuiPaneInfo().CloseButton(false).CenterPane().MinSize(wxSize(250, 250))},
     {m_stc, 
        wxAuiPaneInfo().Bottom().Caption("STC")},
     {m_shell, 
@@ -336,6 +336,19 @@ frame::frame()
     event.Enable(
       (get_listview() != nullptr && get_listview()->GetItemCount() > 0) ||
       (get_stc() != nullptr && get_stc()->GetLength() > 0));}, wxID_PREVIEW);
+}
+
+bool frame::allow_close(wxWindowID id, wxWindow* page)
+{
+  if (page == get_listview())
+  {
+    // prevent possible crash
+    return false;
+  }  
+  else
+  {
+    return wex::managed_frame::allow_close(id, page);
+  }
 }
 
 void frame::on_command(wxCommandEvent& event)

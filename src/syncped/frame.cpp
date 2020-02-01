@@ -58,7 +58,7 @@ BEGIN_EVENT_TABLE(frame, decorated_frame)
   EVT_UPDATE_UI(ID_EDIT_MACRO_PLAYBACK, frame::on_update_ui)
   EVT_UPDATE_UI(ID_EDIT_MACRO_START_RECORD, frame::on_update_ui)
   EVT_UPDATE_UI(ID_EDIT_MACRO_STOP_RECORD, frame::on_update_ui)
-  EVT_UPDATE_UI(wex::ID_PROJECT_SAVE, frame::on_update_ui)
+  EVT_UPDATE_UI(wex::report::ID_PROJECT_SAVE, frame::on_update_ui)
   EVT_UPDATE_UI_RANGE(wex::ID_EDIT_FIND_NEXT, wex::ID_EDIT_FIND_PREVIOUS, frame::on_update_ui)
 END_EVENT_TABLE()
 
@@ -403,9 +403,7 @@ bool frame::is_open(const wex::path& filename)
 
 void frame::on_command(wxCommandEvent& event)
 {
-  auto* editor = get_stc();
-
-  switch (event.GetId())
+  switch (auto* editor = get_stc(); event.GetId())
   {
   // edit commands
   // Do not change the wxID* in wxID_LOWEST and wdID_HIGHEST,
@@ -659,7 +657,7 @@ void frame::on_update_ui(wxUpdateUIEvent& event)
       event.Enable(m_editors->GetPageCount() > 2);
     break;
 
-    case wex::ID_PROJECT_SAVE:
+    case wex::report::ID_PROJECT_SAVE:
       event.Enable(get_project() != nullptr && get_project()->get_contents_changed());
       break;
 
@@ -667,9 +665,7 @@ void frame::on_update_ui(wxUpdateUIEvent& event)
     {
       if (auto* editor = get_stc(); editor != nullptr)
       {
-        event.Enable(true);
-
-        switch (event.GetId())
+        switch (event.Enable(true); event.GetId())
         {
         case wxID_FIND:
         case wxID_JUMP_TO:
@@ -992,26 +988,20 @@ bool frame::save_current_page(const std::string& key)
 
 void frame::statusbar_clicked(const std::string& pane)
 {
-  if (pane == "PaneDBG")
-  {
-    if (get_debug()->show_dialog(this))
-    {
-      statustext(get_debug()->debug_entry().name(), "PaneDBG");
-    }
-  }
-  else if (pane == "PaneMacro")
-  {
-    if (auto* editor = get_stc(); editor != nullptr) 
-      editor->get_vi().get_macros().mode().transition(
-        "@", &editor->get_vi(), true);
-  }
-  else if (pane == "PaneTheme")
+  if (pane == "PaneTheme")
   {
     if (wex::lexers::get()->show_theme_dialog(m_editors))
     {
       m_editors->for_each<wex::stc>(wex::ID_ALL_STC_SET_LEXER_THEME);
+
       update_listviews();
 
+      wex::lexers::get()->apply_default_style(
+        [=](const std::string& back) {
+          m_dirctrl->GetTreeCtrl()->SetBackgroundColour(wxColour(back));},
+        [=](const std::string& fore) {
+          m_dirctrl->GetTreeCtrl()->SetForegroundColour(wxColour(fore));});
+     
       m_statusbar->show_pane(
         "PaneLexer", 
         !wex::lexers::get()->theme().empty());
@@ -1019,120 +1009,9 @@ void frame::statusbar_clicked(const std::string& pane)
       statustext(wex::lexers::get()->theme(), "PaneTheme");
     }
   }
-  else if (pane == "PaneVCS")
-  {
-    if (wex::vcs::size() > 0)
-    {
-      auto* menu = new wex::menu;
-      
-      if (auto* editor = get_stc(); editor != nullptr) 
-      {
-        if (menu->append({{editor->get_filename().get_path()}}))
-        {
-          PopupMenu(menu);
-        }
-      }
-      else if (menu->append({{wex::path()}}))
-      {
-        PopupMenu(menu);
-      }
-      
-      delete menu;
-    }
-  }
   else
   {
     decorated_frame::statusbar_clicked(pane);
-  }
-}
-
-void frame::statusbar_clicked_right(const std::string& pane)
-{
-  if (pane == "PaneInfo")
-  {
-    if (auto* stc = get_stc(); stc != nullptr)
-    {
-      auto* menu = new wex::menu();
-      menu->append({
-        {wxWindow::NewControlId(), 
-         stc->is_shown_line_numbers() ? "&Hide": "&Show", "", "", 
-         [=](wxCommandEvent&) {
-           if (get_stc() != nullptr)
-           {
-             get_stc()->show_line_numbers(!get_stc()->is_shown_line_numbers());
-           }}}});
-
-      PopupMenu(menu);
-    }
-  }
-  else if (pane == "PaneLexer" || pane == "PaneTheme")
-  {
-    std::string match;
-    
-    if (pane == "PaneLexer")
-    {
-      if (auto* stc = get_stc(); stc != nullptr)
-      {
-        if (
-          !stc->get_lexer().scintilla_lexer().empty() && 
-           stc->get_lexer().scintilla_lexer() == stc->get_lexer().display_lexer())
-        {
-          match = "lexer *name *= *\"" + stc->get_lexer().scintilla_lexer() + "\"";
-        }
-        else if (!stc->get_lexer().display_lexer().empty())
-        {
-          match = "display *= *\"" + stc->get_lexer().display_lexer() + "\"";
-        }
-        else
-        {
-          return;
-        }
-      }
-    }
-    else
-    {
-      if (wex::lexers::get()->theme().empty())
-      {
-        return;
-      }
-      
-      match = "theme *name *= *\"" + wex::lexers::get()->theme() + "\"";
-    }
-    
-    open_file(wex::lexers::get()->get_filename(),
-      wex::control_data().find(match, wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX));
-  }
-  else if (pane == "PaneMacro")
-  {
-    if (wex::ex::get_macros().get_filename().file_exists())
-    {
-      open_file(wex::ex::get_macros().get_filename(),
-        wex::control_data().find(!get_statustext(pane).empty() ? 
-          " name=\"" + get_statustext(pane) + "\"":
-          std::string()));
-    }
-  }
-  else if (pane == "PaneDBG" || pane == "PaneVCS")
-  {
-    std::string match(get_statustext(pane));
-
-    if (auto* stc = get_stc(); stc != nullptr)
-    {
-      match = (pane == "PaneVCS" ?
-        wex::vcs({stc->get_filename().string()}).entry().name():
-        wex::debug(this).debug_entry().name());
-    }
-
-    open_file(wex::menus::get_filename(), wex::control_data().find(match));
-  }
-  else if (pane == "PaneText")
-  {
-    wex::config::save();
-    open_file(wex::config::file());
-  }
-  else
-  {
-    decorated_frame::statusbar_clicked_right(pane);
   }
 }
 
@@ -1199,56 +1078,4 @@ void frame::update_listviews()
       lv->config_get();
     }
   }
-}
-          
-editors::editors(const wex::window_data& data)
-  : wex::notebook(data)
-{
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wxPostEvent(wxAuiNotebook::GetCurrentPage(), event);
-    }, wex::ID_EDIT_VCS_LOWEST, wex::ID_EDIT_VCS_HIGHEST);
-
-  Bind(wxEVT_AUINOTEBOOK_END_DRAG, [=](wxAuiNotebookEvent& event) {
-    event.Skip();
-    m_split = true;
-    });
-
-  Bind(wxEVT_AUINOTEBOOK_TAB_RIGHT_UP, [=](wxAuiNotebookEvent& event) {
-    wex::menu menu(wex::menu::menu_t().set(wex::menu::IS_POPUP));
-    
-    auto* split = new wex::menu({
-      {ID_SPLIT_VERTICALLY, _("Split Vertically")},
-      {ID_SPLIT_HORIZONTALLY, _("Split Horizontally")}, {},
-      {ID_SPLIT, _("Split")}});
-    
-    if (GetPageCount() > 1)
-    {
-      split->append({{},
-        {wxWindow::NewControlId(), 
-         _("Rearrange Vertically"), "", "", [=](wxCommandEvent&) {
-           rearrange(wxLEFT);}},
-        {wxWindow::NewControlId(), 
-         _("Rearrange Horizontally"), "", "", [=](wxCommandEvent&) {
-           rearrange(wxTOP);}}});
-    }
-
-    menu.append({
-      {split, _("Split"), std::string(), wxWindow::NewControlId()}, 
-      {},
-      {wxID_CLOSE},
-      {wex::ID_ALL_CLOSE, _("Close A&ll")}});
-    
-    if (GetPageCount() > 2)
-    {
-      menu.append({{wex::ID_ALL_CLOSE_OTHERS, _("Close Others")}});
-    }
-
-    if (auto* stc = dynamic_cast<wex::stc*>(wxAuiNotebook::GetCurrentPage());
-      stc->get_file().get_filename().file_exists() && 
-        wex::vcs::dir_exists(stc->get_file().get_filename()))
-    {
-      menu.append({{}, {stc->get_file().get_filename()}});
-    }
-    
-    PopupMenu(&menu);});
 }

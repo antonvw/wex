@@ -7,7 +7,7 @@ one of these applications, being a full featured source code text editor.
 # Requirements
 
 - [cmake](http://www.cmake.org/)    
-- [boost](https://www.boost.org) (version 1.72 does not compile)
+- [boost](https://www.boost.org) (do not use version 1.72)
 - a `c++17` standard supporting compiler (clang-8 on osx)    
 
 ## Building
