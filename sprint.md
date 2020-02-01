@@ -1,9 +1,6 @@
 # todo
-- fix test-dir
-- sonarqube
 
 # backlog
-- use recursive function in config for item hierarchy
 - use clang-9 (llvm@9, first on MacBook) (after macOS 10.15 deployed on travis)
 - use gcc-9 (check on linux)
   - enable lcov

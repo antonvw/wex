@@ -2,7 +2,7 @@
 // Name:      hexmode.cpp
 // Purpose:   Implementation of class wex::hexmode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <regex>
@@ -156,9 +156,9 @@ void wex::hexmode::deactivate()
 
   m_stc->EndUndoAction();
   m_stc->SetControlCharSymbol(0);
-  m_stc->SetEdgeMode(config(_("Edge line")).get(wxSTC_EDGE_NONE));
-  m_stc->SetViewEOL(config(_("End of line")).get(false));
-  m_stc->SetViewWhiteSpace(config(_("Whitespace visible")).get(wxSTC_WS_INVISIBLE));
+  m_stc->SetEdgeMode(config(_("stc.Edge line")).get(wxSTC_EDGE_NONE));
+  m_stc->SetViewEOL(config(_("stc.End of line")).get(false));
+  m_stc->SetViewWhiteSpace(config(_("stc.Whitespace visible")).get(wxSTC_WS_INVISIBLE));
   m_stc->clear(false);
   m_stc->append_text(m_buffer);
   m_stc->BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);

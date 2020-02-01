@@ -2,7 +2,7 @@
 // Name:      test-itemtpldlg.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -22,7 +22,7 @@ namespace wex
       : item(label, value) {;};
     testitem(const std::string& label, item::type_t type)
       : item(label, type) {;};
-    void set_dialog(item_template_dialog<testitem>* dlg) {;};
+    static void set_dialog(item_template_dialog<testitem>* dlg) {;};
   };
 };
 

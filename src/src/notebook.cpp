@@ -75,11 +75,11 @@ wex::notebook::notebook(const window_data& data)
 wxWindow* wex::notebook::add_page(
   wxWindow* page,
   const std::string& key,
-  const std::string& text,
+  const std::string& caption,
   bool select,
   const wxBitmap& bitmap)
 {
-  if (!AddPage(page, (text.empty() ? key: text), select, bitmap))
+  if (!AddPage(page, (caption.empty() ? key: caption), select, bitmap))
   {
     return nullptr;
   }
@@ -178,11 +178,11 @@ wxWindow* wex::notebook::insert_page(
   size_t page_idx,
   wxWindow* page,
   const std::string& key,
-  const std::string& text,
+  const std::string& caption,
   bool select,
   const wxBitmap& bitmap)
 {
-  if (!InsertPage(page_idx, page, (text.empty() ? key: text), select, bitmap))
+  if (!InsertPage(page_idx, page, (caption.empty() ? key: caption), select, bitmap))
   {
     return nullptr;
   }
@@ -204,11 +204,11 @@ void wex::notebook::rearrange(int direction)
 bool wex::notebook::set_page_text(
   const std::string& key,
   const std::string& new_key,
-  const std::string& text,
+  const std::string& caption,
   const wxBitmap& bitmap)
 {
   if (const auto index = page_index_by_key(key);
-    index == wxNOT_FOUND || !SetPageText(index, text))
+    index == wxNOT_FOUND || !SetPageText(index, caption))
   {
     return false;
   }

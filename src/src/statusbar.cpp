@@ -168,13 +168,11 @@ void wex::statusbar::handle(wxMouseEvent& event, const statusbar_pane& pane)
         {"width", 
           std::string(), 
           item::STATICTEXT, 
-          control_data().window(window_data().style(wxALIGN_RIGHT)), 
-          item::LABEL_NONE},
+          control_data().window(window_data().style(wxALIGN_RIGHT))},
         {"style", 
           std::string(), 
           item::STATICTEXT,
-          control_data().window(window_data().style(wxALIGN_RIGHT)), 
-          item::LABEL_NONE}};
+          control_data().window(window_data().style(wxALIGN_RIGHT))}};
       
       for (const auto& it : m_panes)
       {

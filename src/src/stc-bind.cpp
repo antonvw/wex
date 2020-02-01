@@ -14,6 +14,7 @@
 #include <wex/debug.h>
 #include <wex/defs.h>
 #include <wex/frd.h>
+#include <wex/item-vector.h>
 #include <wex/lexer-props.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
@@ -398,7 +399,7 @@ void wex::stc::bind_all()
         author->Check();
       if (config("blame.date").get(true))
         date->Check();
-      if (config("blame.id").get(false))
+      if (config("blame.id").get(true))
         id->Check();
 
       PopupMenu(menu);
@@ -714,13 +715,13 @@ void wex::stc::bind_all()
     m_data.flags(stc_data::window_t().set(stc_data::WIN_HEX), control_data::XOR).inject();}, idHex);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    config("blame.author").set(!config("blame.author").get(true));},
+    config("blame.author").toggle(true);},
     idMarginTextAuthor);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    config("blame.date").set(!config("blame.date").get(true));},
+    config("blame.date").toggle(true);},
     idMarginTextDate);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    config("blame.id").set(!config("blame.id").get(true));},
+    config("blame.id").toggle(true);},
     idMarginTextId);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SetZoom(++m_zoom);}, idZoomIn);
@@ -773,7 +774,9 @@ void wex::stc::bind_all()
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     reset_margins(margin_t().set(stc::MARGIN_TEXT));
-    m_margin_text_click = -1;}, 
+    m_margin_text_click = -1;
+    const item_vector& iv(m_config_items);
+    SetWrapMode(iv.find<long>(_("stc.Wrap line")));}, 
     idMarginTextHide);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -823,8 +826,8 @@ void wex::stc::build_popup_menu(menu& menu)
   {
     menu.append({
       {}, 
-      {idEdgeSet, _("Edge get_column")}, 
-      {idEdgeClear, _("Edge get_column Reset")}});
+      {idEdgeSet, _("Edge Column")}, 
+      {idEdgeClear, _("Edge Column Reset")}});
   }
 
   if (m_data.menu().test(stc_data::MENU_OPEN_WWW) && !sel.empty())

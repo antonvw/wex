@@ -369,6 +369,106 @@ bool wex::managed_frame::show_pane(const std::string& pane, bool show)
     return true;
   }
 }
+
+void wex::managed_frame::statusbar_clicked(const std::string& pane)
+{
+  if (pane == "PaneDBG")
+  {
+    if (get_debug()->show_dialog(this))
+    {
+      statustext(get_debug()->debug_entry().name(), "PaneDBG");
+    }
+  }
+  else
+  {
+    frame::statusbar_clicked(pane);
+  }
+}
+
+void wex::managed_frame::statusbar_clicked_right(const std::string& pane)
+{
+  if (pane == "PaneInfo")
+  {
+    if (auto* stc = get_stc(); stc != nullptr)
+    {
+      PopupMenu(new wex::menu({
+        {wxWindow::NewControlId(), 
+         stc->is_shown_line_numbers() ? "&Hide": "&Show", "", "", 
+         [=](wxCommandEvent&) {
+           stc->show_line_numbers(!stc->is_shown_line_numbers());
+           }}}));
+    }
+  }
+  else if (pane == "PaneLexer" || pane == "PaneTheme")
+  {
+    std::string match;
+    
+    if (pane == "PaneLexer")
+    {
+      if (auto* stc = get_stc(); stc != nullptr)
+      {
+        if (
+          !stc->get_lexer().scintilla_lexer().empty() && 
+           stc->get_lexer().scintilla_lexer() == stc->get_lexer().display_lexer())
+        {
+          match = "lexer *name *= *\"" + stc->get_lexer().scintilla_lexer() + "\"";
+        }
+        else if (!stc->get_lexer().display_lexer().empty())
+        {
+          match = "display *= *\"" + stc->get_lexer().display_lexer() + "\"";
+        }
+        else
+        {
+          return;
+        }
+      }
+    }
+    else
+    {
+      if (wex::lexers::get()->theme().empty())
+      {
+        return;
+      }
+      
+      match = "theme *name *= *\"" + wex::lexers::get()->theme() + "\"";
+    }
+    
+    open_file(wex::lexers::get()->get_filename(),
+      wex::control_data().find(match, wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX));
+  }
+  else if (pane == "PaneMacro")
+  {
+    if (wex::ex::get_macros().get_filename().file_exists())
+    {
+      open_file(wex::ex::get_macros().get_filename(),
+        wex::control_data().find(!get_statustext(pane).empty() ? 
+          " name=\"" + get_statustext(pane) + "\"":
+          std::string()));
+    }
+  }
+  else if (pane == "PaneDBG" || pane == "PaneVCS")
+  {
+    std::string match(get_statustext(pane));
+
+    if (auto* stc = get_stc(); stc != nullptr)
+    {
+      match = (pane == "PaneVCS" ?
+        wex::vcs({stc->get_filename().string()}).entry().name():
+        wex::debug(this).debug_entry().name());
+    }
+
+    open_file(wex::menus::get_filename(), wex::control_data().find(match));
+  }
+  else if (pane == "PaneText")
+  {
+    wex::config::save();
+    open_file(wex::config::file());
+  }
+  else
+  {
+    frame::statusbar_clicked_right(pane);
+  }
+}
   
 void wex::managed_frame::sync_all()
 {

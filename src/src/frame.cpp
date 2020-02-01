@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -17,11 +17,13 @@
 #include <wex/grid.h>
 #include <wex/lexers.h>
 #include <wex/listview.h>
+#include <wex/macros.h>
 #include <wex/path.h>
 #include <wex/printing.h>
 #include <wex/stc.h>
-#include <wex/util.h>
 #include <wex/tostring.h>
+#include <wex/util.h>
+#include <wex/vcs.h>
 #include <wex/vcsentry.h>
 
 #define wxCAST_TO(classname)                                 \
@@ -133,9 +135,7 @@ wex::frame::frame(const window_data& data)
   wxAcceleratorTable accel(WXSIZEOF(entries), entries);
   SetAcceleratorTable(accel);
 
-#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   printing::get()->get_html_printer()->SetParentWindow(this);
-#endif
 
   Bind(wxEVT_FIND, [=](wxFindDialogEvent& event) {
     if (m_find_focus != nullptr) wxPostEvent(m_find_focus, event);});
@@ -378,13 +378,40 @@ void wex::frame::statusbar_clicked(const std::string& pane)
         lv != nullptr) wxPostEvent(lv, wxCommandEvent(wxEVT_MENU, wxID_JUMP_TO));
     }
   }
+  else if (pane == "PaneFileType")
+  {
+    if (stc != nullptr) stc->filetype_menu();
+  }
   else if (pane == "PaneLexer")
   {
     if (stc != nullptr) lexers::get()->show_dialog(stc);
   }
-  else if (pane == "PaneFileType")
+  else if (pane == "PaneMacro")
   {
-    if (stc != nullptr) stc->filetype_menu();
+    if (stc != nullptr) 
+      stc->get_vi().get_macros().mode().transition(
+        "@", &stc->get_vi(), true);
+  }
+  else if (pane == "PaneVCS")
+  {
+    if (wex::vcs::size() > 0)
+    {
+      auto* menu = new wex::menu;
+      
+      if (stc != nullptr) 
+      {
+        if (menu->append({{stc->get_filename().get_path()}}))
+        {
+          PopupMenu(menu);
+        }
+      }
+      else if (menu->append({{wex::path()}}))
+      {
+        PopupMenu(menu);
+      }
+      
+      delete menu;
+    }
   }
   else
   {

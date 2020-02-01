@@ -2,7 +2,7 @@
 // Name:      blame.cpp
 // Purpose:   Implementation of class wex::blame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/blame.h>
@@ -11,18 +11,22 @@
 
 namespace wex
 {
-  void build(
-    const std::string& key, std::string& text, const std::string& append)
+  std::string build(
+    const std::string& key, const std::string& field, bool first = false)
   {
-    if (key.empty() || config("blame." + key).get(true))
+    std::string add;
+
+    if (config("blame." + key).get(true))
     {
-      if (!text.empty()) 
+      if (!first) 
       {
-        text += " ";
+        add += " ";
       }
       
-      text += append;
+      add += field;
     }
+    
+    return add;
   }
 }
   
@@ -40,11 +44,11 @@ std::tuple <bool, const std::string, wex::lexers::margin_style_t, int>
   {
     if (std::vector<std::string> v; match(m_blame_format, text, v) >= 3)
     {
-      std::string info;
-    
-      build("id", info, v[0]);
-      build("author", info, v[1]);
-      build("date", info, v[2].substr(0, m_date_print));
+      const std::string info(
+        build("id", v[0], true) +
+        build("author", v[1]) +
+        build("date", v[2].substr(0, m_date_print)));
+
       const auto line(v.size() == 4 ? std::stoi(v[3]) - 1: - 1);
 
       return {

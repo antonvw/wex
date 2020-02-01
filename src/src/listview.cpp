@@ -993,18 +993,14 @@ bool wex::listview::load(const std::list<std::string> & l)
   
 void wex::listview::print()
 {
-#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   wxBusyCursor wait;
   printing::get()->get_html_printer()->PrintText(build_page());
-#endif
 }
 
 void wex::listview::print_preview()
 {
-#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   wxBusyCursor wait;
   printing::get()->get_html_printer()->PreviewText(build_page());
-#endif
 }
 
 const std::list<std::string> wex::listview::save() const

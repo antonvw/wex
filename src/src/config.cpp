@@ -157,10 +157,10 @@ namespace wex
   private:
     json& accessor(const std::string& item)
     {
-      const auto& v(
-        tokenizer(item, ".").tokenize<std::vector<std::string>>());
-
-      switch (v.size())
+      switch (
+        const auto& v(
+          tokenizer(item, ".").tokenize<std::vector<std::string>>());
+        v.size())
       {
         case 0:
           return m_json;

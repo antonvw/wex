@@ -60,8 +60,6 @@ private:
   
   void statusbar_clicked(const std::string& pane) override;
   
-  void statusbar_clicked_right(const std::string& pane) override;
-  
   void sync_all() override;
   
   void sync_close_all(wxWindowID id) override;

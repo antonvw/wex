@@ -77,24 +77,16 @@ void wex::lexers::apply_global_styles(stc* stc)
 
   for (const auto& s : m_styles) s.apply(stc);
 
-  if (!m_folding_background_colour.empty())
-  {
-    stc->SetFoldMarginHiColour(true, m_folding_background_colour.c_str());
-  }
-  else
-  {
-    // See ViewStyle.cxx foldmarginColour
-    stc->SetFoldMarginHiColour(true, wxColour(0xc0, 0xc0, 0xc0));
-  }
+  stc->SetFoldMarginHiColour(true, 
+    !m_folding_background_colour.empty() ? 
+      wxColour(m_folding_background_colour.c_str()):
+      // See ViewStyle.cxx foldmarginColour
+      wxColour(0xc0, 0xc0, 0xc0));
 
-  if (!m_folding_foreground_colour.empty())
-  {
-    stc->SetFoldMarginColour(true, m_folding_foreground_colour.c_str());
-  }
-  else
-  {
-    stc->SetFoldMarginColour(true, wxColour(0xff, 0, 0));
-  }
+  stc->SetFoldMarginColour(true, 
+    !m_folding_foreground_colour.empty() ? 
+      wxColour(m_folding_foreground_colour.c_str()):
+      wxColour(0xff, 0, 0));
 
   if (const auto& colour_it = m_theme_colours.find(m_theme);
     colour_it != m_theme_colours.end())

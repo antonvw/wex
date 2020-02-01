@@ -2,7 +2,7 @@
 // Name:      path.cpp
 // Purpose:   Implementation of class wex::path
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/mimetype.h>
