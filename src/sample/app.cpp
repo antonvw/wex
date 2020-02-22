@@ -383,7 +383,7 @@ void frame::on_command(wxCommandEvent& event)
       if (m_stc->get_filename().data() == wex::lexers::get()->get_filename().data())
       {
         wex::lexers::get()->load_document();
-        wex::log::verbose("File contains") << 
+        wex::log::verbose("file contains") << 
           wex::lexers::get()->get_lexers().size() << "lexers";
         // As the lexer might have changed, update status bar field as well.
         update_statusbar(m_stc, "PaneLexer");

@@ -2,7 +2,7 @@
 // Name:      ex-command.cpp
 // Purpose:   Implementation of class wex::ex_command
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ex-command.h>
@@ -57,7 +57,7 @@ bool wex::ex_command::append_exec(char c)
 
 bool wex::ex_command::exec() const
 {
-  return m_stc != nullptr && m_stc->get_vi().command(m_text);
+  return m_stc != nullptr && m_stc->get_vi().command(command());
 }
 
 void wex::ex_command::restore(const ex_command& c)
@@ -95,8 +95,11 @@ wex::ex_command::type_t wex::ex_command::type() const
   }
   else switch (m_text[0])
   {
+    case WXK_CONTROL_R:
+      return m_text.size() > 1 && m_text[1] == '=' ? 
+        type_t::CALC: type_t::NONE;
+    
     case ':': return type_t::COMMAND;
-    case '=': return type_t::CALC;
     case '!': return type_t::EXEC;
     
     case '/':

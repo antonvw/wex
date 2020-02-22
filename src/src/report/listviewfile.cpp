@@ -127,15 +127,16 @@ void wex::report::file::after_sorting()
 
 void wex::report::file::build_popup_menu(wex::menu& menu)
 {
-  const bool ok =
-     !get_filename().file_exists() || 
-     (get_filename().file_exists() && !get_filename().is_readonly());
-
-  menu.style().set(wex::menu::IS_READ_ONLY, ok);
+  const bool ro(get_filename().file_exists() && get_filename().is_readonly());
+  
+  if (ro)
+  {
+    menu.style().set(wex::menu::IS_READ_ONLY, ro);
+  }
 
   listview::build_popup_menu(menu);
     
-  if (ok)
+  if (!ro)
   {
     menu.append({{}, {wxID_ADD}});
   }

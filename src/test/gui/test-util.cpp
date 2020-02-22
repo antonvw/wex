@@ -2,7 +2,7 @@
 // Name:      test-util.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -125,7 +125,7 @@ TEST_CASE("wex" * doctest::may_fail())
   
   SUBCASE("comparefile")
   {
-    wex::config(_("Comparator")).set("diff");
+    wex::config(_("list.Comparator")).set("diff");
 
     REQUIRE( wex::comparefile(
       wex::test::get_path("test.h"), wex::test::get_path("test.h")));

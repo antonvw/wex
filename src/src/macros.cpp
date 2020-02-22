@@ -2,14 +2,16 @@
 // Name:      macros.cpp
 // Purpose:   Implementation of class wex::macros
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <numeric>
+#include <wex/app.h>
 #include <wex/macros.h>
 #include <wex/config.h>
 #include <wex/lexer-props.h>
 #include <wex/log.h>
+#include <wex/managedframe.h>
 #include <wex/path.h>
 #include <wex/type-to-value.h>
 #include <wex/util.h>
@@ -272,6 +274,12 @@ void wex::macros::parse_node_variable(const pugi::xml_node& node)
 
 bool wex::macros::record(const std::string& text, bool new_command)
 {
+  if (auto* f = (dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()));
+    f != nullptr)
+  {
+    f->record(text);
+  }
+  
   if (
     !m_mode.is_recording() || 
     (m_mode.is_recording() && m_mode.is_playback()) ||
@@ -285,8 +293,8 @@ bool wex::macros::record(const std::string& text, bool new_command)
     log("macro record while macro empty") << text;
     return false;
   }
-  
-  log::verbose("recorded") << m_mode.get_macro() << ":" << text;
+
+  log::verbose("recorded") << "macro:" << m_mode.get_macro() << "->" << text;
 
   if (new_command) 
   {

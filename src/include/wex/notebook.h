@@ -47,7 +47,9 @@ namespace wex
       const std::string& key,
       /// caption for the page, if empty uses key as caption
       const std::string& caption = std::string(), 
+      /// select the page after it is inserted
       bool select = false,
+      /// bitmap for the page
       const wxBitmap& bitmap = wxNullBitmap);
 
     /// Changes the selection for the given page, returning the previous selection.
@@ -150,7 +152,9 @@ namespace wex
       const std::string& key,
       /// caption for the page, if empty uses key as caption
       const std::string& caption = std::string(),
+      /// select the page after it is inserted
       bool select = false,
+      /// bitmap for the page
       const wxBitmap& bitmap = wxNullBitmap);
 
     /// Returns the key specified by the given page.

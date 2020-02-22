@@ -2,12 +2,11 @@
 // Name:      frame.h
 // Purpose:   Declaration of class frame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wex/report/dirctrl.h>
 #include <wex/report/listview.h>
 #include "support.h"
 
@@ -73,8 +72,6 @@ private:
   bool m_maximized {false};
 
   int m_split_id {1};
-
-  wex::report::dirctrl* m_dirctrl {nullptr};
 
   std::string m_saved_page;
 

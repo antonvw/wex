@@ -238,7 +238,7 @@ void wex::combobox_from_list(wxComboBox* cb, const std::list < std::string > & t
 
 bool wex::comparefile(const path& file1, const path& file2)
 {
-  if (config(_("Comparator")).empty())
+  if (config(_("list.Comparator")).empty())
   {
     log("comparefile") << "empty comparator";
     return false;
@@ -254,9 +254,8 @@ bool wex::comparefile(const path& file1, const path& file2)
      (file1.stat().st_mtime < file2.stat().st_mtime) ?
        "\"" + file1.string() + "\" \"" + file2.string() + "\"":
        "\"" + file2.string() + "\" \"" + file1.string() + "\"";
-
-  if (!process().execute(
-    config(_("Comparator")).get() + " " + arguments, 
+   if (!process().execute(
+    config(_("list.Comparator")).get() + " " + arguments, 
     process::EXEC_WAIT))
   {
     return false;
@@ -437,7 +436,7 @@ long wex::make(const path& makefile)
     makefile.get_path());
 }
 
-bool wex::marker_and_register_expansion(ex* ex, std::string& text)
+bool wex::marker_and_register_expansion(const ex* ex, std::string& text)
 {
   if (ex == nullptr) return false;
 

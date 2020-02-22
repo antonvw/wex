@@ -175,7 +175,14 @@ void wex::report::frame::find_in_files(wxWindowID dialogid)
       
     dir::type_t type;
     type.set(dir::FILES);
-    if (config(m_text_recursive).get(true)) type.set(dir::RECURSIVE);
+
+    if (config(m_text_recursive).get(true)) 
+    {
+      type.set(dir::RECURSIVE);
+    }
+      
+    find_replace_data::get()->set_use_regex(
+      config(find_replace_data::get()->text_regex()).get(true));
 
     if (tool_dir dir(
       tool,

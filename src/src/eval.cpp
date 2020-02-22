@@ -235,6 +235,8 @@ wex::evaluator::~evaluator()
 
 std::tuple<int, std::string> wex::evaluator::eval(
   const wex::ex* ex, const std::string& text) const
-{
-  return m_eval->eval(ex, text);
+{ 
+  std::string expanded(text);
+  marker_and_register_expansion(ex, expanded);
+  return m_eval->eval(ex, expanded);
 }

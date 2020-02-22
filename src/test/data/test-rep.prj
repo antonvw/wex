@@ -1,37 +1,18 @@
 <?xml version="1.0"?>
 <files>
-	<!-- wxex-test-gui project test-rep.prj 2017 April 23, Sunday 17:30:17-->
-	<folder>/usr/include/cppunit/AdditionalMessage.h</folder>
-	<folder>/usr/include/cppunit/Asserter.h</folder>
-	<folder>/usr/include/cppunit/BriefTestProgressListener.h</folder>
-	<folder>/usr/include/cppunit/CompilerOutputter.h</folder>
-	<folder>/usr/include/cppunit/Exception.h</folder>
-	<folder>/usr/include/cppunit/Message.h</folder>
-	<folder>/usr/include/cppunit/Outputter.h</folder>
-	<folder>/usr/include/cppunit/Portability.h</folder>
-	<folder>/usr/include/cppunit/Protector.h</folder>
-	<folder>/usr/include/cppunit/SourceLine.h</folder>
-	<folder>/usr/include/cppunit/SynchronizedObject.h</folder>
+	<!-- syncped project test-rep.prj 2020 February 08, Saturday 17:07:53-->
 	<folder>/usr/include/cppunit/Test.h</folder>
-	<folder>/usr/include/cppunit/TestAssert.h</folder>
-	<folder>/usr/include/cppunit/TestCaller.h</folder>
-	<folder>/usr/include/cppunit/TestCase.h</folder>
-	<folder>/usr/include/cppunit/TestComposite.h</folder>
-	<folder>/usr/include/cppunit/TestFailure.h</folder>
-	<folder>/usr/include/cppunit/TestFixture.h</folder>
-	<folder>/usr/include/cppunit/TestLeaf.h</folder>
-	<folder>/usr/include/cppunit/TestListener.h</folder>
-	<folder>/usr/include/cppunit/TestPath.h</folder>
-	<folder>/usr/include/cppunit/TestResult.h</folder>
-	<folder>/usr/include/cppunit/TestResultCollector.h</folder>
-	<folder>/usr/include/cppunit/TestRunner.h</folder>
-	<folder>/usr/include/cppunit/TestSuccessListener.h</folder>
-	<folder>/usr/include/cppunit/TestSuite.h</folder>
-	<folder>/usr/include/cppunit/TextOutputter.h</folder>
-	<folder>/usr/include/cppunit/TextTestProgressListener.h</folder>
-	<folder>/usr/include/cppunit/TextTestResult.h</folder>
-	<folder>/usr/include/cppunit/TextTestRunner.h</folder>
-	<folder>/usr/include/cppunit/XmlOutputter.h</folder>
-	<folder>/usr/include/cppunit/XmlOutputterHook.h</folder>
-	<folder>/usr/include/cppunit/config-auto.h</folder>
+	<file>/Users/anton/wex/src/test/base/main.cpp</file>
+	<file>/Users/anton/wex/src/test/base/test-cmdlineparser.cpp</file>
+	<file>/Users/anton/wex/src/test/base/test-config.cpp</file>
+	<file>/Users/anton/wex/src/test/base/test-dir.cpp</file>
+	<file>/Users/anton/wex/src/test/base/test-file.cpp</file>
+	<file>/Users/anton/wex/src/test/base/test-interruptable.cpp</file>
+	<file>/Users/anton/wex/src/test/base/test-log.cpp</file>
+	<file>/Users/anton/wex/src/test/base/test-path.cpp</file>
+	<file>/Users/anton/wex/src/test/base/test-queue-thread.cpp</file>
+	<file>/Users/anton/wex/src/test/base/test-stat.cpp</file>
+	<file>/Users/anton/wex/src/test/base/test-statistics.cpp</file>
+	<file>/Users/anton/wex/src/test/base/test-tokenizer.cpp</file>
+	<file>/Users/anton/wex/src/test/base/test-tool.cpp</file>
 </files>

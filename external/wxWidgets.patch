@@ -31,3 +31,16 @@ index 35ba62b64b..8f02be356c 100644
      endif()
  
      wx_check_cxx_source_compiles("
+diff --git a/include/wx/msw/winundef.h b/include/wx/msw/winundef.h
+index 879a6ef626..feebf2b6eb 100644
+--- a/include/wx/msw/winundef.h
++++ b/include/wx/msw/winundef.h
+@@ -268,7 +268,7 @@
+    #else
+    inline int StartDoc(HDC h, CONST DOCINFOA* info)
+    {
+-      return StartDocA(h, const_cast<DOCINFOA*>(info);
++      return StartDocA(h, const_cast<DOCINFOA*>(info));
+    }
+    #endif
+ #endif
