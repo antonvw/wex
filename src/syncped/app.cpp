@@ -43,7 +43,7 @@ bool app::OnInit()
   if (bool exit = false;
     !wex::cmdline(
      {{{"debug,d", "use debug mode"}, 
-        [&](bool on) {m_debug = on;}},
+        [&](bool on) {m_is_debug = on;}},
 
       {{"hex,H", "hex mode"}, 
         [&](bool on) {
@@ -100,6 +100,10 @@ bool app::OnInit()
           }
         exit = true;}},
 
+      {{"project,p", "open specified files as projects"}, 
+        [&](bool on) {
+        m_is_project = on;}},
+
       {{"splithor,o", "split tabs horizontally"}, 
         [&](bool on) {
         if (on) m_split = wxBOTTOM;}},
@@ -147,6 +151,7 @@ bool app::OnInit()
 
      {{"files", 
        "input file[:line number][:column number]\n"
+        "or project file is -p was specified\n"
         "or executable file if -d was specified"}, 
       [&](const std::vector<std::string> & v) {
         for (const auto & f : v) 
@@ -173,6 +178,7 @@ void app::reset()
 {
   // do not reset flags
   m_data.control(wex::control_data().command(""));
-  m_tag.clear();
+  m_is_project = false;
   m_split = -1;
+  m_tag.clear();
 }

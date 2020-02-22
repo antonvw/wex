@@ -295,6 +295,7 @@ void wex::macro_fsm::recorded()
   {
     m_mode->get_macros()->save_macro(m_macro);
     log::status("Macro") << m_macro << "is recorded";
+    log::verbose("macro") << m_macro << "is recorded";
   }
   else
   {

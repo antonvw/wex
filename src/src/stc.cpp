@@ -13,6 +13,7 @@
 #include <wex/indicator.h>
 #include <wex/item-vector.h>
 #include <wex/lexers.h>
+#include <wex/macros.h>
 #include <wex/managedframe.h>
 #include <wex/path.h>
 #include <wex/printing.h>
@@ -50,7 +51,11 @@ wex::stc::stc(const path& p, const stc_data& data)
   , m_frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
   , m_lexer(this)
 {
-  if (config("AllowSync").get(true)) sync();
+  if (config("AllowSync").get(true) &&
+      p != wex::ex::get_macros().get_filename())
+  {
+    sync();
+  }
   
   if (!lexers::get()->get_lexers().empty())
   {
@@ -287,7 +292,7 @@ void wex::stc::fold_all()
   const bool json = (m_lexer.scintilla_lexer() == "json");
   const bool xml = (m_lexer.language() == "xml");
 
-  int line = (json ? 2: 0);
+  int line = (json ? 1: 0);
 
   while (line < GetLineCount())
   {

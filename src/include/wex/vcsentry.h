@@ -38,9 +38,6 @@ namespace wex
     /// Returns the administrative directory.
     const auto& admin_dir() const {return m_admin_dir;};
 
-    /// Returns true if admin dir is only at top level.
-    bool admin_dir_is_toplevel() const {return m_admin_dir_is_toplevel;};
-
     /// Builds a menu from all vcs commands.
     /// Returns (total) number of items in menu.
     size_t build_menu(
@@ -97,7 +94,6 @@ namespace wex
     const std::string bin() const;
 
     // no const, as entry is set using operator+ in vcs.
-    bool m_admin_dir_is_toplevel {false};
     int m_flags_location {FLAGS_LOCATION_POSTFIX};
 
     std::string 

@@ -353,14 +353,17 @@ void wex::stc::bind_all()
     {
       m_margin_text_click = line;
         
-      if (config("blame.id").get(false))
+      if (config("blame.id").get(true))
       {
         wex::vcs vcs {{get_filename()}};
 
         if (std::string margin(MarginGetText(line));
           !margin.empty() && vcs.entry().log(get_filename(), get_word(margin)))
         {
-          AnnotationSetText(line, vcs.entry().get_stdout());
+          AnnotationSetText(
+            line, 
+            align_text(
+              trim(vcs.entry().get_stdout(), skip_t().all())));
         }
         else if (!vcs.entry().get_stderr().empty())
         {
@@ -721,7 +724,7 @@ void wex::stc::bind_all()
     config("blame.date").toggle(true);},
     idMarginTextDate);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    config("blame.id").toggle(true);},
+    config("blame.id").toggle(false);},
     idMarginTextId);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SetZoom(++m_zoom);}, idZoomIn);

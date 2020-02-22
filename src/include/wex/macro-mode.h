@@ -2,7 +2,7 @@
 // Name:      macro-mode.h
 // Purpose:   Implementation of class wex::macro_mode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -60,7 +60,7 @@ namespace wex
     /// If command starts with:
     /// q: Starts recording a macro (appends to 
     ///    existing macro if macro is single upper case character).
-    /// @: Playsback the macro.
+    /// \@: Playsback the macro.
     /// Returns number of characters processed from command.
     int transition(
       /// macro name after first character

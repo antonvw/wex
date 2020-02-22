@@ -2,7 +2,7 @@
 // Name:      listitem.cpp
 // Purpose:   Implementation of class 'wex::listitem'
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -123,7 +123,7 @@ void wex::listitem::set_readonly(bool readonly)
   }
   else
   {
-    SetTextColour(config(_("Readonly colour")).get(*wxRED));
+    SetTextColour(config(_("list.Readonly colour")).get(*wxLIGHT_GREY));
   }
 
   ((wxListView* )m_listview)->SetItem(*this);

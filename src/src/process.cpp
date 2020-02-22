@@ -307,7 +307,7 @@ bool wex::process::is_running() const
   return m_process != nullptr && m_process->is_running();
 }
 
-void wex::process::prepare_output(wxWindow* parent)
+wex::shell* wex::process::prepare_output(wxWindow* parent)
 {
   if (m_shell == nullptr)
   {
@@ -315,6 +315,8 @@ void wex::process::prepare_output(wxWindow* parent)
       stc_data().window(window_data().parent(parent)),
       std::string()); // empty prompt
   }
+  
+  return m_shell;
 }
 
 void wex::process::show_output(const std::string& caption) const

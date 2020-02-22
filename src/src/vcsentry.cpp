@@ -18,8 +18,6 @@ wex::vcs_entry::vcs_entry(const pugi::xml_node& node)
   : process()
   , menu_commands(node)
   , m_admin_dir(node.attribute("admin-dir").value())
-  , m_admin_dir_is_toplevel(
-      strcmp(node.attribute("toplevel").value(), "true") == 0)
   , m_flags_location(
       (strcmp(node.attribute("flags-location").value(), "prefix") == 0 ?
          FLAGS_LOCATION_PREFIX: FLAGS_LOCATION_POSTFIX))

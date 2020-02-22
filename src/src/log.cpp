@@ -230,7 +230,7 @@ void wex::log::init(int argc, char** argv)
   m_verbosity = el::Loggers::verboseLevel();
 
   verbose(2) << "verbosity:" << (int)el::Loggers::verboseLevel();
-  verbose(9) << "config:" << elp.string();
+  verbose(9) << "log setup:" << elp.string();
 }
   
 const std::string wex::log::S()

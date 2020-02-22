@@ -2,7 +2,7 @@
 // Name:      util.h
 // Purpose:   Include file for wex utility functions
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -47,16 +47,16 @@ namespace wex
     /// The header is used as a prefix for the line, directly 
     /// followed by the lines, and if necessary on the next line
     /// the header is repeated as a string of spaces.
-    const std::string_view& header,
+    const std::string_view& header = std::string(),
     /// if fill out, then use space
-    bool fill_out_with_space,
+    bool fill_out_with_space = true,
     /// fill out
-    bool fill_out,
+    bool fill_out = false,
     /// if lexer is specified 
     /// fills out over lexer comment lines  
     /// If the lexer has no comment end character, fill out
     /// with spaces is not done.
-    const lexer& lexer);
+    const lexer& l = lexer());
 
   /// Tries to autocomplete filename,
   /// the result is stored in the tuple.
@@ -208,7 +208,7 @@ namespace wex
 
   /// Expands all markers and registers in command.
   /// Returns false if a marker could not be found.
-  bool marker_and_register_expansion(ex* ex, std::string& command);
+  bool marker_and_register_expansion(const ex* ex, std::string& command);
 
   /// Regular expression match.
   /// Returns:

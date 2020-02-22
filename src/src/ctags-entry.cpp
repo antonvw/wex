@@ -2,7 +2,7 @@
 // Name:      ctags-entry.cpp
 // Purpose:   Implementation of class wex::ctags_entry
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ctags-entry.h>
@@ -22,12 +22,17 @@ wex::ctags_entry& wex::ctags_entry::class_name(const std::string& v)
 
 void wex::ctags_entry::clear()
 {
-  log::verbose("filter") << log() << " cleared";
+  if (!is_active())
+  {
+    return;
+  }
 
   m_access.clear();
   m_class.clear();
   m_kind.clear();
   m_signature.clear();
+  
+  log::verbose("filter") << log() << " cleared";
 }
 
 bool wex::ctags_entry::is_active() const

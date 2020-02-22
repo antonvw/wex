@@ -132,8 +132,8 @@ namespace wex
     bool add_panes(
       /// panes
       const panes_t & panes,
-      /// perspective to load / save
-      const std::string& perspective = std::string());
+      /// name of perspective to load / save
+      const std::string& perspective = "managed frame");
     
     /// Returns file history.
     auto& file_history() {return m_file_history;};

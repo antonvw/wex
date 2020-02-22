@@ -19,6 +19,7 @@
 #include <wex/macros.h>
 #include <wex/menu.h>
 #include <wex/menubar.h>
+#include <wex/shell.h>
 #include <wex/stc.h>
 #include <wex/tostring.h>
 #include <wex/util.h>
@@ -38,6 +39,42 @@ const long pane_flag =
   wxAUI_NB_CLOSE_BUTTON |
   wxAUI_NB_WINDOWLIST_BUTTON |
   wxAUI_NB_SCROLL_BUTTONS;
+  
+void build_ascii_table(wex::frame* frame)
+{
+  auto* stc = frame->open_file(wex::path("Ascii table"), 
+    std::string(), wex::stc_data());
+
+  // Do not show an edge, eol whitespace for ascii table.
+  stc->SetEdgeMode(wxSTC_EDGE_NONE);
+  stc->SetViewEOL(false);
+  stc->SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
+  stc->SetTabWidth(5);
+
+  for (int i = 1; i <= 255; i++)
+  {
+    switch (i)
+    {
+      case  9: 
+        stc->add_text(wxString::Format("%3d\tTAB", i)); 
+        break;
+      case 10: 
+        stc->add_text(wxString::Format("%3d\tLF", i)); 
+        break;
+      case 13: 
+        stc->add_text(wxString::Format("%3d\tCR", i)); 
+        break;
+      default:
+        stc->add_text(
+          wxString::Format("%3d\t%c", i, (wxUniChar)i));
+    }
+    stc->add_text((i % 5 == 0) ? stc->eol(): "\t");
+  }
+  
+  stc->EmptyUndoBuffer();
+  stc->SetSavePoint();
+  stc->SetReadOnly(true);
+}
 
 decorated_frame::decorated_frame(app* app)
   : wex::report::frame(
@@ -45,6 +82,7 @@ decorated_frame::decorated_frame(app* app)
       4,   // maxProjects
       wex::window_data().name("mainFrame").style(wxDEFAULT_FRAME_STYLE))
   , m_app(app)
+  , m_dirctrl(new wex::report::dirctrl(this))
   , m_editors(new editors(
       wex::window_data().id(ID_NOTEBOOK_EDITORS).style(pane_flag)))
   , m_lists(new wex::notebook(
@@ -56,6 +94,47 @@ decorated_frame::decorated_frame(app* app)
   SetIcon(wxICON(app));
   
   wex::process::prepare_output(this);
+  
+  add_panes({
+    {m_editors, wxAuiPaneInfo()
+      .CenterPane()
+      .MaximizeButton(true)
+      .Name("FILES")
+      .Caption(_("Files"))},
+    {m_dirctrl, wxAuiPaneInfo()
+      .Left()
+      .Hide()
+      .MaximizeButton(true)
+      .CloseButton(false)
+      .Name("DIRCTRL")
+      .MinSize(200, 150)
+      .Caption(_("Explorer"))},
+    {m_lists, wxAuiPaneInfo()
+      .Bottom()
+      .Hide()
+      .MaximizeButton(true)
+      .MinSize(250, 100)
+      .Name("OUTPUT")
+      .Row(0)
+      .Caption(_("Output"))},
+    {m_process->get_shell(), wxAuiPaneInfo()
+      .Bottom()
+      .Hide()
+      .Name("PROCESS")
+      .MinSize(250, 100)
+      .Caption(_("Process"))},
+    {m_projects, wxAuiPaneInfo()
+      .Left()
+      .Hide()
+      .MaximizeButton(true)
+      .Name("PROJECTS")
+      .MinSize(150, 150)
+      .Caption(_("Projects"))}});
+
+  if (wex::config("show.History").get(false))
+  {
+    add_pane_history();
+  }
 
 #ifdef __WXMSW__
   const int lexer_size = 60;
@@ -135,7 +214,7 @@ decorated_frame::decorated_frame(app* app)
   
   wex::menu* menuDebug = nullptr;
 
-  if (m_app->get_debug())
+  if (m_app->get_is_debug())
   {
     menuDebug = new wex::menu();
 
@@ -168,8 +247,8 @@ decorated_frame::decorated_frame(app* app)
              "PaneVCS", 
              vcs.use());
            statustext(vcs.name(), "PaneVCS");
-        }},
-      {}}});
+        }}}, 
+      {}});
   }
 
   menuOptions->append({
@@ -178,7 +257,6 @@ decorated_frame::decorated_frame(app* app)
 #else
     {wxID_PREFERENCES},
 #endif  
-    {}, 
     {ID_OPTION_LIST, wex::ellipsed(_("Set &List Options")), "", "",
         [=](wxCommandEvent& event) {
           wex::listview::config_dialog(wex::window_data().
@@ -300,7 +378,6 @@ decorated_frame::decorated_frame(app* app)
             toggle_pane("PROJECTS");},
           [=](wxUpdateUIEvent& event) {
             event.Check(
-              m_projects != nullptr && 
               manager().GetPane("PROJECTS").IsShown());}},
 
        {ID_VIEW_DIRCTRL, _("&Explorer"), wex::menu_item::CHECK, 
@@ -314,7 +391,6 @@ decorated_frame::decorated_frame(app* app)
             if (m_history == nullptr)
             {
               add_pane_history();
-              manager().Update();
             }
             else
             {
@@ -333,53 +409,9 @@ decorated_frame::decorated_frame(app* app)
 
        {},
 
-       {wxWindow::NewControlId(), _("&Ascii Table"), wex::menu_item::CHECK, 
+       {wxWindow::NewControlId(), _("&Ascii Table"), "", "", 
           [=](wxCommandEvent& event) {
-            if (m_ascii_table == nullptr)
-            {
-              m_ascii_table = new wex::stc();
-              manager().AddPane(m_ascii_table, wxAuiPaneInfo()
-                .Left()
-                .Name("ASCIITABLE")
-                .MinSize(500, 150)
-                .Caption(_("Ascii Table")));
-              manager().Update();
-              // Do not show an edge, eol or whitespace for ascii table.
-              m_ascii_table->SetEdgeMode(wxSTC_EDGE_NONE);
-              m_ascii_table->SetViewEOL(false);
-              m_ascii_table->SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
-              m_ascii_table->SetTabWidth(5);
-              for (int i = 1; i <= 255; i++)
-              {
-                switch (i)
-                {
-                  case  9: 
-                    m_ascii_table->add_text(wxString::Format("%3d\tTAB", i)); 
-                    break;
-                  case 10: 
-                    m_ascii_table->add_text(wxString::Format("%3d\tLF", i)); 
-                    break;
-                  case 13: 
-                    m_ascii_table->add_text(wxString::Format("%3d\tCR", i)); 
-                    break;
-                  default:
-                    m_ascii_table->add_text(
-                      wxString::Format("%3d\t%c", i, (wxUniChar)i));
-                }
-                m_ascii_table->add_text((i % 5 == 0) ? m_ascii_table->eol(): "\t");
-              }
-              m_ascii_table->EmptyUndoBuffer();
-              m_ascii_table->SetSavePoint();
-              m_ascii_table->SetReadOnly(true);
-            }
-            else
-            {
-              toggle_pane("ASCIITABLE"); 
-            };},
-          [=](wxUpdateUIEvent& event) {
-            event.Check(
-              m_ascii_table != nullptr && 
-              manager().GetPane("ASCIITABLE").IsShown());}}}),
+            build_ascii_table(this);}}}),
       _("&View")},
 
     {new wex::menu({
@@ -394,7 +426,7 @@ decorated_frame::decorated_frame(app* app)
        {},
 
        {wxID_EXECUTE, "", "", "", [=](wxCommandEvent& event) {
-          show_pane("PROCESS"); 
+          show_pane("PROCESS");
           m_process->execute();}},
 
        {wxID_STOP, "", "", "", [=](wxCommandEvent& event) {
@@ -481,7 +513,7 @@ decorated_frame::decorated_frame(app* app)
         wxGetStockLabel(wxID_SAVEAS), std::string(), wxART_FILE_SAVE_AS, 
           [=](wxCommandEvent& event) {
           if (auto* project = get_project();
-            project != nullptr && m_projects != nullptr)
+            project != nullptr)
           {
             wex::file_dialog dlg(
               project, 
@@ -547,13 +579,13 @@ void decorated_frame::add_pane_history()
   m_history = new wex::report::listview(
     wex::listview_data().type(wex::listview_data::HISTORY));
         
-  manager().AddPane(m_history, wxAuiPaneInfo()
+  add_panes({{m_history, wxAuiPaneInfo()
     .Left()
     .MaximizeButton(true)
     .Name("HISTORY")
     .CloseButton(false)
     .MinSize(150, 150)
-    .Caption(_("History")));
+    .Caption(_("History"))}});
 }
 
 bool decorated_frame::allow_close(wxWindowID id, wxWindow* page)
