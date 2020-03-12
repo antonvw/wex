@@ -269,14 +269,18 @@ wex::vi::vi(wex::stc* arg)
             get_macros().get_register(command[2]));
           return command.size();
         }
-        
+
         // This is a previous entered command.
+        // The trim is to enable find after -E option in syncped.
+        const auto text(command.back() != '\n' ? 
+          command.substr(1): trim(command.substr(1)));
+
         if (!get_stc()->find_next(
-          command.substr(1),
+          text,
           search_flags(),
           m_search_forward)) return (size_t)0;
         if (get_stc()->get_margin_text_click() == -1)
-          find_replace_data::get()->set_find_string(command.substr(1));
+          find_replace_data::get()->set_find_string(text);
         return command.size();
       }
       else
@@ -582,6 +586,9 @@ wex::vi::vi(wex::stc* arg)
         return 0;
       }
       return 1;}},
+    {_s(WXK_CONTROL_H), [&](const std::string& command){
+      if (!get_stc()->GetReadOnly() && !get_stc()->is_hexmode()) get_stc()->DeleteBack();
+      return command.size();}},
     {_s(WXK_CONTROL_J) + _s(WXK_CONTROL_L), [&](const std::string& command){REPEAT_WITH_UNDO(
       if (get_stc()->is_hexmode()) return 1;
       try 
@@ -604,9 +611,6 @@ wex::vi::vi(wex::stc* arg)
       {
       })
       return 1;}},
-    {_s(WXK_CONTROL_H), [&](const std::string& command){
-      if (!get_stc()->GetReadOnly() && !get_stc()->is_hexmode()) get_stc()->DeleteBack();
-      return command.size();}},
     {_s(WXK_CONTROL_R), [&](const std::string& command){
       if (command.size() > 2)
       {
@@ -694,6 +698,7 @@ bool wex::vi::command(const std::string& command)
     if (!m_mode.insert() &&
       command[0] != 'q' && 
       command[0] != ':' && 
+      command[0] != '!' && 
       command != "/" && 
       command != "?" && 
       command != _s(WXK_CONTROL_R) + "=")
@@ -737,11 +742,18 @@ void wex::vi::command_reg(const std::string& reg)
     case 0: 
       break;
 
-    // calc register
+    // calc register: control_r =
     case WXK_CONTROL_R:
-      // TODO
-      set_register_insert(std::string()); 
-      frame()->show_ex_command(this, reg); 
+      if (reg.size() > 1 && reg[1] == '=')
+      {
+        // TODO: set should not be necessary..
+        set_register_insert(std::string()); 
+        frame()->show_ex_command(this, reg); 
+      }
+      else
+      {
+        frame()->show_ex_message("calc register is control-R =");
+      }
       break;
     
     // clipboard register

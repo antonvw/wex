@@ -96,7 +96,7 @@ int wex::macro_mode::transition(
 
   wxWindow* parent = (ex != nullptr ? ex->get_stc(): wxTheApp->GetTopWindow());
 
-  std::string macro(command);
+  std::string macro(trim(command));
   const ex_command cmd(ex != nullptr ? ex->get_command(): ex_command());
   
   if (ex != nullptr)

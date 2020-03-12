@@ -10,6 +10,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wex/accelerators.h>
 #include <wex/config.h>
 #include <wex/interruptable.h>
 #include <wex/itemdlg.h>
@@ -33,16 +34,13 @@ wex::report::listview::listview(const listview_data& data)
     m_frame->use_file_history_list(this);
   }
 
-  wxAcceleratorEntry entries[5];
-  entries[0].Set(wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE);
-  entries[1].Set(wxACCEL_CTRL, WXK_INSERT, wxID_COPY);
-  entries[2].Set(wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE);
-  entries[3].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
-  entries[4].Set(wxACCEL_CTRL, 'O', ID_LIST_COMPARE);
+  accelerators({
+    {wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE},
+    {wxACCEL_CTRL, WXK_INSERT, wxID_COPY},
+    {wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE},
+    {wxACCEL_SHIFT, WXK_DELETE, wxID_CUT},
+    {wxACCEL_CTRL, 'O', ID_LIST_COMPARE}}).set(this);
 
-  wxAcceleratorTable accel(WXSIZEOF(entries), entries);
-  SetAcceleratorTable(accel);
-  
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     bool first = true;
     wxString file1,file2;

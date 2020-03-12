@@ -166,7 +166,8 @@ bool wex::vcs_entry::log(const path& p, const std::string& id)
     return false;
   }
   
-  const std::string command = m_flags_location == FLAGS_LOCATION_PREFIX ?
+  const std::string command = 
+    m_flags_location == FLAGS_LOCATION_PREFIX || name() == "svn" ? 
     bin() + " log " + m_log_flags + " " + id:
     bin() + " log " + id + " " + m_log_flags;
 

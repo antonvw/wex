@@ -136,7 +136,7 @@ std::stringstream wex::path::log() const
 {
   std::stringstream ss;
   
-  ss << (m_status[STAT_FULLPATH] ? string(): fullname());
+  ss << (m_status[STAT_FULLPATH] || fullname().empty() ? string(): fullname());
 
   if (stat().is_ok())
   {

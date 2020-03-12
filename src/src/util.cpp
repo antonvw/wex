@@ -576,6 +576,10 @@ int wex::open_files(
         path::current(),
         it.string(), stc_data.flags(), type).find_files();
     }
+    else if (it.dir_exists())
+    {
+      log("open file") << it;
+    }
     else
     {
       path fn(it);
