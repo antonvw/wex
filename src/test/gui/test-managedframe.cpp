@@ -2,7 +2,7 @@
 // Name:      test-managed_frame.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -34,7 +34,7 @@ TEST_CASE("wex::managed_frame")
   REQUIRE(!frame()->show_ex_command(vi, "xx"));
   REQUIRE( frame()->show_ex_command(vi, "/"));
   REQUIRE( frame()->show_ex_command(vi, "?"));
-  REQUIRE( frame()->show_ex_command(vi, "="));
+  REQUIRE( frame()->show_ex_command(vi, std::string(1, WXK_CONTROL_R) + "="));
   
   REQUIRE(!frame()->save_current_page("key"));
   REQUIRE( frame()->restore_page("key") == nullptr);

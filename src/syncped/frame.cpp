@@ -5,6 +5,7 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <thread>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -20,7 +21,6 @@
 #include <wex/macro-mode.h>
 #include <wex/menu.h>
 #include <wex/menus.h>
-#include <wex/printing.h>
 #include <wex/shell.h>
 #include <wex/stc.h>
 #include <wex/tokenizer.h>
@@ -258,11 +258,46 @@ frame::frame(app* app)
       m_maximized = false;
     };});
 
- Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Enable(m_app->get_is_debug());}, 
     wex::ID_EDIT_DEBUG_FIRST + 2, wex::ID_EDIT_DEBUG_LAST);
     
   m_app->reset();
+  
+  if (m_app->get_is_stdin())
+  {
+    std::thread v([&] 
+    {
+      std::string text;
+
+      while (std::cin.good())
+      {
+        const int c(std::cin.get()); 
+          
+        if (text.empty() || text.back() != WXK_ESCAPE)
+        {
+          text.push_back(c);
+        }
+              
+        if (c == '\n')
+        {
+          if (m_editors->GetSelection() != wxNOT_FOUND)
+          {
+            if (auto* stc(((wex::stc *)m_editors->GetPage(
+              m_editors->GetSelection())));
+              stc != nullptr)
+            {
+              stc->get_vi().command(text == "\n" ? "j": text);
+            }
+          }
+            
+          text.clear();
+        }
+      }
+    });
+
+    v.detach();
+  }
 }    
 
 wex::report::listview* frame::activate(
@@ -300,29 +335,36 @@ bool frame::exec_ex_command(wex::ex_command& command)
   if (command.command() == ":") return false;
 
   bool handled = false;
-
-  if (m_editors->GetPageCount() > 0)
+  
+  try
   {
-    if (command.command() == ":n")
+    if (m_editors->GetPageCount() > 0)
     {
-      if (m_editors->GetSelection() == m_editors->GetPageCount() - 1) return false;
-      
-      m_editors->AdvanceSelection();
-      handled = true;
-    }
-    else if (command.command() == ":prev")
-    {
-      if (m_editors->GetSelection() == 0) return false;
-      
-      m_editors->AdvanceSelection(false);
-      handled = true;
-    }
+      if (wex::trim(command.command()) == ":n")
+      {
+        if (m_editors->GetSelection() == m_editors->GetPageCount() - 1) return false;
+        
+        m_editors->AdvanceSelection();
+        handled = true;
+      }
+      else if (wex::trim(command.command()) == ":prev")
+      {
+        if (m_editors->GetSelection() == 0) return false;
+        
+        m_editors->AdvanceSelection(false);
+        handled = true;
+      }
 
-    if (handled && wex::ex::get_macros().mode().is_playback())
-    {
-      command.set(((wex::stc *)m_editors->GetPage(
-        m_editors->GetSelection()))->get_vi().get_command());
+      if (handled && wex::ex::get_macros().mode().is_playback())
+      {
+        command.set(((wex::stc *)m_editors->GetPage(
+          m_editors->GetSelection()))->get_vi().get_command());
+      }
     }
+  }
+  catch (std::exception& e)
+  {
+    wex::log(e) << command.command();
   }
 
   return handled;
@@ -910,6 +952,11 @@ void frame::print_ex(wex::ex* ex, const std::string& text)
   
 void frame::record(const std::string& command)
 {
+  if (m_app->get_is_echo())
+  {
+    std::cout << command << "\n";
+  }
+
   if (!m_app->get_scriptout().empty())
   {
     wex::file scriptout(

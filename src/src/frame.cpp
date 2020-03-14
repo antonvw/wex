@@ -11,6 +11,7 @@
 #endif
 #include <wx/fdrepdlg.h> // for wxFindDialogDialog and Event
 #include <wex/frame.h>
+#include <wex/accelerators.h>
 #include <wex/config.h>
 #include <wex/defs.h>
 #include <wex/frd.h>
@@ -125,15 +126,12 @@ wex::frame::frame(const window_data& data)
     data.size().GetHeight(), 
     data.pos().x, 
     data.pos().y});
-  
-  wxAcceleratorEntry entries[4];
-  entries[0].Set(wxACCEL_NORMAL, WXK_F5, wxID_FIND);
-  entries[1].Set(wxACCEL_NORMAL, WXK_F6, wxID_REPLACE);
-  entries[2].Set(wxACCEL_CTRL, (int)'I', ID_VIEW_MENUBAR);
-  entries[3].Set(wxACCEL_CTRL, (int)'T', ID_VIEW_TITLEBAR);
 
-  wxAcceleratorTable accel(WXSIZEOF(entries), entries);
-  SetAcceleratorTable(accel);
+  accelerators({
+    {wxACCEL_NORMAL, WXK_F5, wxID_FIND},
+    {wxACCEL_NORMAL, WXK_F6, wxID_REPLACE},
+    {wxACCEL_CTRL, 'I', ID_VIEW_MENUBAR},
+    {wxACCEL_CTRL, 'T', ID_VIEW_TITLEBAR}}).set(this);
 
   printing::get()->get_html_printer()->SetParentWindow(this);
 

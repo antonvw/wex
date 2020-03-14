@@ -229,7 +229,7 @@ Copyright: (c) 2020 Anton van Wezenbeek
 
     <commands>
       <command type="main"> &amp;add </command>
-      <command flags="-v" type="popup"> &amp;blame </command>
+      <command flags="-v --force" type="popup"> &amp;blame </command>
       <command flags="none" type="separator"> &amp;stat </command>
       <command type="ellipses popup"> &amp;cat </command>
       <command type="ellipses main"> &amp;cleanup </command>

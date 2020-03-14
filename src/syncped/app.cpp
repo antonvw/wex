@@ -45,6 +45,12 @@ bool app::OnInit()
      {{{"debug,d", "use debug mode"}, 
         [&](bool on) {m_is_debug = on;}},
 
+      {{"echo,e", "echo commands"}, 
+        [&](bool on) {m_is_echo = on;}},
+
+      {{"stdin,E", "use stdin"}, 
+        [&](bool on) {m_is_stdin = on;}},
+
       {{"hex,H", "hex mode"}, 
         [&](bool on) {
         if (!on) return;

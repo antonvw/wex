@@ -2,7 +2,7 @@
 // Name:      test-ex-command.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ex-command.h>
@@ -41,7 +41,7 @@ TEST_CASE("wex::ex_command")
       command.set(":");
       REQUIRE( command.type() == wex::ex_command::type_t::COMMAND);
       
-      command.set("=");
+      command.set(std::string(1, WXK_CONTROL_R) + "=");
       REQUIRE( command.type() == wex::ex_command::type_t::CALC);
 
       command.set("!");

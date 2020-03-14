@@ -6,10 +6,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
+#include <wx/app.h>
 #include <wx/fdrepdlg.h> // for wxFindDialogEvent
 #include <wx/msgdlg.h>
 #include <wx/numdlg.h>
 #include <wex/stc.h>
+#include <wex/accelerators.h>
 #include <wex/config.h>
 #include <wex/debug.h>
 #include <wex/defs.h>
@@ -53,55 +55,29 @@ const auto idZoomOut = wxWindow::NewControlId();
 
 void wex::stc::bind_all()
 {
-  const int accels = 30; // guess max number of entries
-  wxAcceleratorEntry entries[accels];
-
-  int i = 0;
-
-  entries[i++].Set(wxACCEL_CTRL, (int)'Z', wxID_UNDO);
-  entries[i++].Set(wxACCEL_CTRL, (int)'Y', wxID_REDO);
-  entries[i++].Set(wxACCEL_CTRL, (int)'D', idHexDecCalltip);
-  entries[i++].Set(wxACCEL_CTRL, (int)'K', ID_EDIT_CONTROL_CHAR);
-  entries[i++].Set(wxACCEL_CTRL, '=', idZoomIn);
-  entries[i++].Set(wxACCEL_CTRL, '-', idZoomOut);
-  entries[i++].Set(wxACCEL_CTRL, '9', idMarkerNext);
-  entries[i++].Set(wxACCEL_CTRL, '0', idMarkerPrevious);
-  entries[i++].Set(wxACCEL_CTRL, WXK_INSERT, wxID_COPY);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_F3, ID_EDIT_FIND_NEXT);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_F4, ID_EDIT_FIND_PREVIOUS);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_F7, wxID_SORT_ASCENDING);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_F8, wxID_SORT_DESCENDING);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_F9, idfold_all);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_F10, idUnfold_all);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_F11, idUppercase);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_F12, idLowercase);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE);
-  entries[i++].Set(wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE);
-  entries[i++].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
+  accelerators({
+    {wxACCEL_CTRL, 'D', idHexDecCalltip},
+    {wxACCEL_CTRL, 'K', ID_EDIT_CONTROL_CHAR},
+    {wxACCEL_CTRL, 'Y', wxID_REDO},
+    {wxACCEL_CTRL, 'Z', wxID_UNDO},
+    {wxACCEL_CTRL, '=', idZoomIn},
+    {wxACCEL_CTRL, '-', idZoomOut},
+    {wxACCEL_CTRL, '0', idMarkerPrevious},
+    {wxACCEL_CTRL, '9', idMarkerNext},
+    {wxACCEL_CTRL, WXK_INSERT, wxID_COPY},
+    {wxACCEL_NORMAL, WXK_F3, ID_EDIT_FIND_NEXT},
+    {wxACCEL_NORMAL, WXK_F4, ID_EDIT_FIND_PREVIOUS},
+    {wxACCEL_NORMAL, WXK_F7, wxID_SORT_ASCENDING},
+    {wxACCEL_NORMAL, WXK_F8, wxID_SORT_DESCENDING},
+    {wxACCEL_NORMAL, WXK_F9, idfold_all},
+    {wxACCEL_NORMAL, WXK_F10, idUnfold_all},
+    {wxACCEL_NORMAL, WXK_F11, idUppercase},
+    {wxACCEL_NORMAL, WXK_F12, idLowercase},
+    {wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE},
+    {wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE},
+    {wxACCEL_SHIFT, WXK_DELETE, wxID_CUT}},
+    m_data.menu().test(stc_data::MENU_DEBUG)).set(this);
   
-  if (m_data.menu().test(stc_data::MENU_DEBUG))
-  {
-    int j = ID_EDIT_DEBUG_FIRST;
-
-    for (const auto& e : m_frame->get_debug()->debug_entry().get_commands())
-    {
-      if (!e.control().empty())
-      {
-        entries[i++].Set(wxACCEL_CTRL, e.control().at(0), j);
-
-        if (i >= accels)
-        {
-          log("stc-bind") << "too many control accelerators";
-          break;
-        }
-      }
-      j++;
-    }
-  }
-
-  wxAcceleratorTable accel(i, entries);
-  SetAcceleratorTable(accel);
-
   Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
     if (!m_vi.is_active())
     {

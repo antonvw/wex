@@ -2,7 +2,7 @@
 // Name:      toolbar.cpp
 // Purpose:   Implementation of wex::toolbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
@@ -12,6 +12,7 @@
 #include <wx/wx.h>
 #endif
 #include <wex/toolbar.h>
+#include <wex/accelerators.h>
 #include <wex/config.h>
 #include <wex/art.h>
 #include <wex/defs.h>
@@ -330,11 +331,8 @@ wex::find_textctrl::find_textctrl(
       data.style() | wxTE_PROCESS_ENTER)
   , m_frame(frame)
 {
-  const int accels = 1;
-  wxAcceleratorEntry entries[accels];
-  entries[0].Set(wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE);
-  wxAcceleratorTable accel(accels, entries);
-  SetAcceleratorTable(accel);
+  accelerators({
+   {wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE, nullptr}}).set(this);
   
   Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
     if (!find_replace_data::get()->m_find_strings.set(event.GetKeyCode(), this))
