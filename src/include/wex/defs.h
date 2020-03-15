@@ -24,7 +24,7 @@ namespace wex
   /// These are used as window event ID's. Therefore after the highest wxWidgets ID.
   enum window_id
   {
-    ID_EDIT_LOWEST = wxID_HIGHEST + 1,
+    ID_LOWEST = wxID_HIGHEST + 1,
 
     ID_ALL_LOWEST,         // all ALL commands after this one
     ID_ALL_CLOSE,
@@ -44,9 +44,6 @@ namespace wex
     ID_DEBUG_STDIN,
     ID_DEBUG_STDOUT,
 
-    ID_FIND_FIRST,
-    ID_FIND_LAST = ID_FIND_FIRST + FIND_MAX_FINDS,
-
     ID_EDIT_DEBUG_FIRST,
     ID_EDIT_DEBUG_LAST = ID_EDIT_DEBUG_FIRST + DEBUG_MAX_DEBUGS,
 
@@ -62,12 +59,26 @@ namespace wex
     ID_EDIT_VCS_LOWEST,
     ID_EDIT_VCS_HIGHEST = ID_EDIT_VCS_LOWEST + VCS_MAX_COMMANDS,
 
+    ID_FIND_FIRST,
+    ID_FIND_LAST = ID_FIND_FIRST + FIND_MAX_FINDS,
+
     ID_SHELL_APPEND,
     ID_SHELL_APPEND_ERROR,
     ID_SHELL_COMMAND,
     ID_SHELL_COMMAND_STOP,
         
+    ID_TOOL_LOWEST,
+    ID_TOOL_REPLACE,
+    ID_TOOL_REPORT_FIRST,      // after this the first report
+    ID_TOOL_REPORT_FIND,
+    ID_TOOL_REPORT_KEYWORD,
+    ID_TOOL_REPORT_LAST,
+    ID_TOOL_HIGHEST,
+
     ID_UPDATE_STATUS_BAR,
+
+    ID_VCS_LOWEST,
+    ID_VCS_HIGHEST = ID_VCS_LOWEST + VCS_MAX_COMMANDS,
 
     ID_VIEW_MENUBAR,
     ID_VIEW_STATUSBAR,
@@ -76,22 +87,6 @@ namespace wex
     ID_VIEW_LOWEST,        // aui panes that can be toggled
     ID_VIEW_HIGHEST = ID_VIEW_LOWEST + VIEW_MAX_PANES,
 
-    ID_VCS_LOWEST,
-    ID_VCS_HIGHEST = ID_VCS_LOWEST + VCS_MAX_COMMANDS,
-
-    ID_EDIT_HIGHEST
-  };
-  
-  /// The available tools.
-  /// These are also used as window event ID's. Therefore after the highest edit ID.
-  enum tool_id
-  {
-    ID_TOOL_LOWEST = ID_EDIT_HIGHEST + 1,
-    ID_TOOL_REPLACE,
-    ID_TOOL_REPORT_FIRST,      // after this the first report
-    ID_TOOL_REPORT_FIND,
-    ID_TOOL_REPORT_KEYWORD,
-    ID_TOOL_REPORT_LAST,
-    ID_TOOL_HIGHEST
+    ID_HIGHEST
   };
 };

@@ -441,7 +441,7 @@ int wex::ex::calculator(const std::string& text)
 
   if (!err.empty())
   {
-    show_dialog("Error", err);
+    show_dialog("Calculate Error", err);
   }
 
   return val;
@@ -460,6 +460,7 @@ bool wex::ex::command(const std::string& cmd)
   
   if (m_frame->exec_ex_command(m_command.set(command)))
   {
+    m_macros.record(command);
     m_command.clear();
     return auto_write();
   }
@@ -476,7 +477,6 @@ bool wex::ex::command(const std::string& cmd)
   }
   else
   {
-    frame()->record(command);
     m_macros.record(command);
   }
 

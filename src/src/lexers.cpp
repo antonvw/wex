@@ -2,7 +2,7 @@
 // Name:      lexers.cpp
 // Purpose:   Implementation of wex::lexers class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -77,24 +77,16 @@ void wex::lexers::apply_global_styles(stc* stc)
 
   for (const auto& s : m_styles) s.apply(stc);
 
-  if (!m_folding_background_colour.empty())
-  {
-    stc->SetFoldMarginHiColour(true, m_folding_background_colour.c_str());
-  }
-  else
-  {
-    // See ViewStyle.cxx foldmarginColour
-    stc->SetFoldMarginHiColour(true, wxColour(0xc0, 0xc0, 0xc0));
-  }
+  stc->SetFoldMarginHiColour(true, 
+    !m_folding_background_colour.empty() ? 
+      wxColour(m_folding_background_colour.c_str()):
+      // See ViewStyle.cxx foldmarginColour
+      wxColour(0xc0, 0xc0, 0xc0));
 
-  if (!m_folding_foreground_colour.empty())
-  {
-    stc->SetFoldMarginColour(true, m_folding_foreground_colour.c_str());
-  }
-  else
-  {
-    stc->SetFoldMarginColour(true, wxColour(0xff, 0, 0));
-  }
+  stc->SetFoldMarginColour(true, 
+    !m_folding_foreground_colour.empty() ? 
+      wxColour(m_folding_foreground_colour.c_str()):
+      wxColour(0xff, 0, 0));
 
   if (const auto& colour_it = m_theme_colours.find(m_theme);
     colour_it != m_theme_colours.end())
@@ -248,7 +240,7 @@ bool wex::lexers::load_document()
 
   if (m_is_loaded)
   {
-    m_default_style = style();
+    m_default_style.clear();
     m_folding_background_colour.clear();
     m_folding_foreground_colour.clear();
     m_global_properties.clear();
@@ -279,24 +271,6 @@ bool wex::lexers::load_document()
     }
   }
 
-  std::list <std::string> l{std::string(wxFileSelectorDefaultWildcardStr)};
-
-  for (const auto& it : m_lexers)
-  {
-    if (!it.extensions().empty())
-    {
-      l.push_back(it.extensions());
-    }
-  }
-  
-  if (!config(_("fif.Add what")).exists()) 
-  {
-    config(_("fif.Add what")).set(l);
-    config(_("fif.In files")).set(l);
-    config(_("fif.In folder")).set(
-      std::list<std::string>{wxGetHomeDir().ToStdString()});
-  }
-  
   // Do some checking.
   if (!m_lexers.empty() && !m_theme.empty())
   {

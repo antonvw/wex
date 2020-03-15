@@ -2,7 +2,7 @@
 // Name:      listview.cpp
 // Purpose:   Implementation of class wex::report::listview
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -10,6 +10,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wex/accelerators.h>
 #include <wex/config.h>
 #include <wex/interruptable.h>
 #include <wex/itemdlg.h>
@@ -33,16 +34,13 @@ wex::report::listview::listview(const listview_data& data)
     m_frame->use_file_history_list(this);
   }
 
-  wxAcceleratorEntry entries[5];
-  entries[0].Set(wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE);
-  entries[1].Set(wxACCEL_CTRL, WXK_INSERT, wxID_COPY);
-  entries[2].Set(wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE);
-  entries[3].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
-  entries[4].Set(wxACCEL_CTRL, 'O', ID_LIST_COMPARE);
+  accelerators({
+    {wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE},
+    {wxACCEL_CTRL, WXK_INSERT, wxID_COPY},
+    {wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE},
+    {wxACCEL_SHIFT, WXK_DELETE, wxID_CUT},
+    {wxACCEL_CTRL, 'O', ID_LIST_COMPARE}}).set(this);
 
-  wxAcceleratorTable accel(WXSIZEOF(entries), entries);
-  SetAcceleratorTable(accel);
-  
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     bool first = true;
     wxString file1,file2;
@@ -150,16 +148,20 @@ void wex::report::listview::build_popup_menu(wex::menu& menu)
   wex::listview::build_popup_menu(menu);
 
   if (GetSelectedItemCount() > 1 && exists &&
-     !config(_("Comparator")).empty())
+     !config(_("list.Comparator")).empty())
   {
-    menu.append({{}, {ID_LIST_COMPARE, _("C&ompare") + "\tCtrl+O"}});
+    menu.append({
+      {}, 
+      {ID_LIST_COMPARE, _("C&ompare") + "\tCtrl+O"}});
   }
 
   if (GetSelectedItemCount() == 1)
   {
     if (is_make)
     {
-      menu.append({{}, {ID_LIST_RUN_MAKE, _("&Make")}});
+      menu.append({
+        {}, 
+        {ID_LIST_RUN_MAKE, _("&Make")}});
     }
 
     if (data().type() != listview_data::FILE &&
@@ -176,10 +178,12 @@ void wex::report::listview::build_popup_menu(wex::menu& menu)
 
         if (const std::string with_file = otherlist.get_filename().string(); 
           current_file != with_file &&
-            !config(_("Comparator")).empty())
+            !config(_("list.Comparator")).empty())
         {
-          menu.append({{}, {ID_LIST_COMPARE,
-            _("&Compare With") + " " + wxString(get_endoftext(with_file))}});
+          menu.append({
+            {}, 
+            {ID_LIST_COMPARE,
+              _("&Compare With") + " " + wxString(get_endoftext(with_file))}});
         }
       }
     }
@@ -192,8 +196,24 @@ void wex::report::listview::build_popup_menu(wex::menu& menu)
       if (vcs::dir_exists(
         listitem(this, GetFirstSelected()).get_filename()))
       {
-        menu.append({{}, 
+        bool restore = false;
+
+        // The xml menus interprete is_selected for text parts,
+        // so override.
+        if (menu.style().test(menu::IS_SELECTED))
+        {
+          menu.style().set(menu::IS_SELECTED, false);
+          restore = true;
+        }
+
+        menu.append({
+          {}, 
           {listitem(this, GetFirstSelected()).get_filename()}});
+        
+        if (restore)
+        {
+          menu.style().set(menu::IS_SELECTED);
+        }
       }
     }
 
@@ -202,13 +222,16 @@ void wex::report::listview::build_popup_menu(wex::menu& menu)
         data().type() != listview_data::FIND && 
         m_menu_flags.test(listview_data::MENU_REPORT_FIND))
     {
-      menu.append({{}, {ID_TOOL_REPORT_FIND, 
-        ellipsed(m_frame->find_in_files_title(ID_TOOL_REPORT_FIND))}});
+      menu.append({
+        {}, 
+        {ID_TOOL_REPORT_FIND, 
+          ellipsed(m_frame->find_in_files_title(ID_TOOL_REPORT_FIND))}});
 
       if (!readonly)
       {
-        menu.append({{ID_TOOL_REPLACE, 
-          ellipsed(m_frame->find_in_files_title(ID_TOOL_REPLACE))}});
+        menu.append({
+          {ID_TOOL_REPLACE, 
+            ellipsed(m_frame->find_in_files_title(ID_TOOL_REPLACE))}});
       }
     }
   }
@@ -217,7 +240,9 @@ void wex::report::listview::build_popup_menu(wex::menu& menu)
       m_menu_flags.test(listview_data::MENU_TOOL) && 
      !lexers::get()->get_lexers().empty())
   {
-    menu.append({{}, {menu_item::TOOLS}});
+    menu.append({
+      {}, 
+      {menu_item::TOOLS}});
   }
 }
 

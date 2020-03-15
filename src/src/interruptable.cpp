@@ -2,13 +2,10 @@
 // Name:      interruptable.cpp
 // Purpose:   Implementation of class wex::interruptable
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/interruptable.h>
-
-bool wex::interruptable::m_cancelled = false;
-bool wex::interruptable::m_running = false;
 
 bool wex::interruptable::cancel()
 {

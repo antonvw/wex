@@ -2,7 +2,7 @@
 // Name:      test-item.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -305,6 +305,20 @@ TEST_CASE("wex::item")
     REQUIRE( wex::config("item-parent.child").get() == "karmeliet");
   }
 
+  SUBCASE("group")
+  {
+    auto* dlg = new wex::item_dialog({
+      {{"group", {
+         {"element1"},
+         {"element2"},
+         {"element3"},
+         {"element4"}}}}},
+      wex::window_data().
+        button(wxOK | wxCANCEL | wxAPPLY));
+      
+    dlg->Show();
+  }
+  
   SUBCASE("notebooks")
   {
     const std::vector<std::string> titles {

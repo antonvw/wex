@@ -58,7 +58,10 @@ namespace wex::report
     void set_recent_file(const path& path) override;
 
     /// Other methods
-    
+
+    /// Returns a list with default file extensions.
+    std::list <std::string> default_extensions() const;
+
     /// Finds (or replaces) in specified files.
     /// Returns true if process started.
     bool find_in_files(

@@ -2,7 +2,7 @@
 // Name:      vcs.cpp
 // Purpose:   Implementation of wex::vcs class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <map>
@@ -89,7 +89,7 @@ namespace wex
         {
           const vcs_admin va(it.admin_dir(), p);
 
-          if (it.admin_dir_is_toplevel() && va.is_toplevel())
+          if (va.is_toplevel())
           {
             return it;
           }
@@ -208,7 +208,6 @@ int wex::vcs::config_dialog(const window_data& par) const
 bool wex::vcs::dir_exists(const path& filename)
 {
   if (const vcs_entry entry(find_entry(m_entries, filename));
-    entry.admin_dir_is_toplevel() && 
     vcs_admin(entry.admin_dir(), filename).is_toplevel())
   {
     return true;

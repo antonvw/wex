@@ -2,7 +2,7 @@
 // Name:      grid.cpp
 // Purpose:   Implementation of wex::grid class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -549,18 +549,14 @@ void wex::grid::paste_cells_from_clipboard()
 
 void wex::grid::print()
 {
-#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   wxBusyCursor wait;
   printing::get()->get_html_printer()->PrintText(build_page());
-#endif
 }
 
 void wex::grid::print_preview()
 {
-#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   wxBusyCursor wait;
   printing::get()->get_html_printer()->PreviewText(build_page());
-#endif
 }
 
 void wex::grid::set_cell_value(

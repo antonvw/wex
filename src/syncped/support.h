@@ -2,11 +2,12 @@
 // Name:      support.h
 // Purpose:   Declaration of decorated_frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma
 
+#include <wex/report/dirctrl.h>
 #include <wex/report/frame.h>
 #include <wex/notebook.h>
 #include <wex/process.h>
@@ -31,14 +32,8 @@ public:
 protected:
   void add_pane_history();
 
-  const long m_pane_flag = 
-    wxAUI_NB_DEFAULT_STYLE |
-    wxAUI_NB_CLOSE_ON_ALL_TABS |
-    wxAUI_NB_CLOSE_BUTTON |
-    wxAUI_NB_WINDOWLIST_BUTTON |
-    wxAUI_NB_SCROLL_BUTTONS;
-
   editors *m_editors {nullptr};
+  wex::report::dirctrl* m_dirctrl {nullptr};
   wex::report::listview* m_history {nullptr};
   
   app* m_app;
@@ -55,6 +50,4 @@ private:
   const std::string m_project_wildcard {_("Project Files") + " (*.prj)|*.prj"};
 
   int m_project_id {1};
-
-  wex::stc* m_ascii_table {nullptr};
 };

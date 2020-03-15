@@ -68,6 +68,8 @@ namespace wex
     wex::ex* m_ex {nullptr};
     managed_frame* m_frame;
     wxStaticText* m_prefix;
+    
+    std::string m_prefix_text;
 
     bool 
       m_control_r {false}, 
@@ -103,6 +105,8 @@ wex::managed_frame::managed_frame(size_t maxFiles, const window_data& data)
     {m_findbar, wxAuiPaneInfo().Name("FINDBAR").Caption(_("Findbar"))},
     {m_optionsbar, wxAuiPaneInfo().Name("OPTIONSBAR").Caption(_("Optionsbar"))},
     {create_ex_panel(), wxAuiPaneInfo().Name("VIBAR")}});
+
+  hide_ex_bar();
 
   m_manager.Update();
   
@@ -186,8 +190,13 @@ bool wex::managed_frame::add_panes(
   
   if (!perspective.empty())
   {
-    m_perspective = perspective;
-    m_manager.LoadPerspective(wex::config(m_perspective).get());
+    m_perspective = "perspective." + perspective;
+    
+    if (const auto& val(wex::config(m_perspective).get());
+      !val.empty())
+    {
+      m_manager.LoadPerspective(val);
+    }
   }
   
   return true;
@@ -369,6 +378,106 @@ bool wex::managed_frame::show_pane(const std::string& pane, bool show)
     return true;
   }
 }
+
+void wex::managed_frame::statusbar_clicked(const std::string& pane)
+{
+  if (pane == "PaneDBG")
+  {
+    if (get_debug()->show_dialog(this))
+    {
+      statustext(get_debug()->debug_entry().name(), "PaneDBG");
+    }
+  }
+  else
+  {
+    frame::statusbar_clicked(pane);
+  }
+}
+
+void wex::managed_frame::statusbar_clicked_right(const std::string& pane)
+{
+  if (pane == "PaneInfo")
+  {
+    if (auto* stc = get_stc(); stc != nullptr)
+    {
+      PopupMenu(new wex::menu({
+        {wxWindow::NewControlId(), 
+         stc->is_shown_line_numbers() ? "&Hide": "&Show", "", "", 
+         [=](wxCommandEvent&) {
+           stc->show_line_numbers(!stc->is_shown_line_numbers());
+           }}}));
+    }
+  }
+  else if (pane == "PaneLexer" || pane == "PaneTheme")
+  {
+    std::string match;
+    
+    if (pane == "PaneLexer")
+    {
+      if (auto* stc = get_stc(); stc != nullptr)
+      {
+        if (
+          !stc->get_lexer().scintilla_lexer().empty() && 
+           stc->get_lexer().scintilla_lexer() == stc->get_lexer().display_lexer())
+        {
+          match = "lexer *name *= *\"" + stc->get_lexer().scintilla_lexer() + "\"";
+        }
+        else if (!stc->get_lexer().display_lexer().empty())
+        {
+          match = "display *= *\"" + stc->get_lexer().display_lexer() + "\"";
+        }
+        else
+        {
+          return;
+        }
+      }
+    }
+    else
+    {
+      if (wex::lexers::get()->theme().empty())
+      {
+        return;
+      }
+      
+      match = "theme *name *= *\"" + wex::lexers::get()->theme() + "\"";
+    }
+    
+    open_file(wex::lexers::get()->get_filename(),
+      wex::control_data().find(match, wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX));
+  }
+  else if (pane == "PaneMacro")
+  {
+    if (wex::ex::get_macros().get_filename().file_exists())
+    {
+      open_file(wex::ex::get_macros().get_filename(),
+        wex::control_data().find(!get_statustext(pane).empty() ? 
+          " name=\"" + get_statustext(pane) + "\"":
+          std::string()));
+    }
+  }
+  else if (pane == "PaneDBG" || pane == "PaneVCS")
+  {
+    std::string match(get_statustext(pane));
+
+    if (auto* stc = get_stc(); stc != nullptr)
+    {
+      match = (pane == "PaneVCS" ?
+        wex::vcs({stc->get_filename().string()}).entry().name():
+        wex::debug(this).debug_entry().name());
+    }
+
+    open_file(wex::menus::get_filename(), wex::control_data().find(match));
+  }
+  else if (pane == "PaneText")
+  {
+    wex::config::save();
+    open_file(wex::config::file());
+  }
+  else
+  {
+    frame::statusbar_clicked_right(pane);
+  }
+}
   
 void wex::managed_frame::sync_all()
 {
@@ -464,22 +573,33 @@ wex::textctrl::textctrl(
         {
           event.Skip();
         }
-      }}});
+      }}
+    });
 
   Bind(wxEVT_KEY_DOWN, [=](wxKeyEvent& event) {
     if (event.GetKeyCode() != WXK_RETURN && !GetStringSelection().empty())
     {
       // TODO: only clear selection
-      m_command.set(m_prefix->GetLabel());
+      m_command.set(m_prefix_text);
     }
 
     switch (event.GetKeyCode())
     {
       case 'r': 
       case 'R':
-        if (event.ControlDown())
+#ifdef __WXMAC__
+        if (event.GetModifiers() & wxMOD_RAW_CONTROL) 
+#else
+        if (event.GetModifiers() & wxMOD_CONTROL) 
+#endif
         {
+          if (!GetStringSelection().empty())
+          {
+            Cut();
+          }
+
           m_command.append(WXK_CONTROL_R);
+          m_user_input = true;
           m_control_r = true; 
           m_control_r_present = true; 
         }
@@ -531,7 +651,8 @@ wex::textctrl::textctrl(
       default: 
         event.Skip();
         break;
-      }});
+      }
+    });
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     WriteText(event.GetString());}, ID_REGISTER);
@@ -551,7 +672,7 @@ wex::textctrl::textctrl(
       m_ex->get_stc()->find_next(
         GetValue(),
         m_ex->search_flags(),
-        m_prefix->GetLabel() == "/");
+        m_prefix_text == "/");
     }});
 
   Bind(wxEVT_TEXT_ENTER, [=](wxCommandEvent& event) {
@@ -563,14 +684,13 @@ wex::textctrl::textctrl(
       
     if (!m_control_r_present)
     {
-      m_command.set(m_prefix->GetLabel() + GetValue());
+      m_command.set(m_prefix_text + GetValue());
     }
 
     if (m_user_input && 
       m_command.type() == ex_command::type_t::FIND && m_ex != nullptr)
     {
-      m_frame->record(m_prefix->GetLabel() + GetValue());
-      m_ex->get_macros().record(m_prefix->GetLabel() + GetValue());
+      m_ex->get_macros().record(m_prefix_text + GetValue());
     }
         
     if ((m_user_input && m_command.type() == ex_command::type_t::FIND)
@@ -618,7 +738,9 @@ bool wex::textctrl::set_ex(wex::ex* ex, const std::string& command)
   const std::string range(command.substr(1));
   m_command = ex_command(ex->get_command()).set(command);
   m_mode_visual = !range.empty();
-  m_prefix->SetLabel(command.substr(0, 1));
+  m_prefix_text = ex->get_command().type() == ex_command::type_t::CALC ? 
+    command.substr(0, 2): command.substr(0, 1);
+  m_prefix->SetLabel(std::string(1, m_prefix_text.back()));
   m_control_r = false;
   m_control_r_present = false;
 
@@ -673,18 +795,18 @@ void wex::textctrl::AppendText(const wxString& text)
 
 void wex::textctrl::ChangeValue(const wxString& value)
 {
-  m_command.set(m_prefix->GetLabel() + value);
+  m_command.set(m_prefix_text + value);
   wxTextCtrl::ChangeValue(value);
 }
 
 void wex::textctrl::Clear()
 {
-  m_command.set(m_prefix->GetLabel());
+  m_command.set(m_prefix_text);
   wxTextCtrl::Clear();
 }
   
 void wex::textctrl::SetValue(const wxString& value)
 {
-  m_command.set(m_prefix->GetLabel() + value);
+  m_command.set(m_prefix_text + value);
   wxTextCtrl::SetValue(value);
 }

@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -11,17 +11,20 @@
 #endif
 #include <wx/fdrepdlg.h> // for wxFindDialogDialog and Event
 #include <wex/frame.h>
+#include <wex/accelerators.h>
 #include <wex/config.h>
 #include <wex/defs.h>
 #include <wex/frd.h>
 #include <wex/grid.h>
 #include <wex/lexers.h>
 #include <wex/listview.h>
+#include <wex/macros.h>
 #include <wex/path.h>
 #include <wex/printing.h>
 #include <wex/stc.h>
-#include <wex/util.h>
 #include <wex/tostring.h>
+#include <wex/util.h>
+#include <wex/vcs.h>
 #include <wex/vcsentry.h>
 
 #define wxCAST_TO(classname)                                 \
@@ -123,19 +126,14 @@ wex::frame::frame(const window_data& data)
     data.size().GetHeight(), 
     data.pos().x, 
     data.pos().y});
-  
-  wxAcceleratorEntry entries[4];
-  entries[0].Set(wxACCEL_NORMAL, WXK_F5, wxID_FIND);
-  entries[1].Set(wxACCEL_NORMAL, WXK_F6, wxID_REPLACE);
-  entries[2].Set(wxACCEL_CTRL, (int)'I', ID_VIEW_MENUBAR);
-  entries[3].Set(wxACCEL_CTRL, (int)'T', ID_VIEW_TITLEBAR);
 
-  wxAcceleratorTable accel(WXSIZEOF(entries), entries);
-  SetAcceleratorTable(accel);
+  accelerators({
+    {wxACCEL_NORMAL, WXK_F5, wxID_FIND},
+    {wxACCEL_NORMAL, WXK_F6, wxID_REPLACE},
+    {wxACCEL_CTRL, 'I', ID_VIEW_MENUBAR},
+    {wxACCEL_CTRL, 'T', ID_VIEW_TITLEBAR}}).set(this);
 
-#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   printing::get()->get_html_printer()->SetParentWindow(this);
-#endif
 
   Bind(wxEVT_FIND, [=](wxFindDialogEvent& event) {
     if (m_find_focus != nullptr) wxPostEvent(m_find_focus, event);});
@@ -378,13 +376,40 @@ void wex::frame::statusbar_clicked(const std::string& pane)
         lv != nullptr) wxPostEvent(lv, wxCommandEvent(wxEVT_MENU, wxID_JUMP_TO));
     }
   }
+  else if (pane == "PaneFileType")
+  {
+    if (stc != nullptr) stc->filetype_menu();
+  }
   else if (pane == "PaneLexer")
   {
     if (stc != nullptr) lexers::get()->show_dialog(stc);
   }
-  else if (pane == "PaneFileType")
+  else if (pane == "PaneMacro")
   {
-    if (stc != nullptr) stc->filetype_menu();
+    if (stc != nullptr) 
+      stc->get_vi().get_macros().mode().transition(
+        "@", &stc->get_vi(), true);
+  }
+  else if (pane == "PaneVCS")
+  {
+    if (wex::vcs::size() > 0)
+    {
+      auto* menu = new wex::menu;
+      
+      if (stc != nullptr) 
+      {
+        if (menu->append({{stc->get_filename().get_path()}}))
+        {
+          PopupMenu(menu);
+        }
+      }
+      else if (menu->append({{wex::path()}}))
+      {
+        PopupMenu(menu);
+      }
+      
+      delete menu;
+    }
   }
   else
   {

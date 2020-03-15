@@ -2,7 +2,7 @@
 
 - Fork the repository on GitHub
 
-- Create a topic branch from where you want to base your work
+- Create a feature branch from the develop branch to base your work
 
 - When using otl   
     `sudo apt-get install unixODBC unixODBC-dev` or   
@@ -65,3 +65,28 @@ make lcov
 
 - And, if you want to upload results to coveralls.    
   `make lcov-coveralls`   
+
+- Do a pull request from the feature branch to the develop branch
+
+## Boost build
+
+if you want to use another boost version from current one on your system
+
+
+### Get, install, use boost
+
+```
+wget https://dl.bintray.com/boostorg/release/<>/source/boost_<>.tar.gz
+tar -xzf boost_<>*
+cd boost_<>*
+./bootstrap.sh --prefix=<path>
+./b2
+sudo ./b2 install --prefix=<path> --with=all
+cmake -DBOOST_ROOT=<path> 
+```
+
+### Patch common.cmake
+
+if link errors appear you could try to add boost libs
+
+<path>/lib/libboost_program_options.a

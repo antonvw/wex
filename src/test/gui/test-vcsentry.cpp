@@ -39,7 +39,6 @@ TEST_CASE("wex::vcs_entry")
 
     REQUIRE( entry.get_commands().size() == 2);
     REQUIRE(!entry.get_command().get_command().empty());
-    REQUIRE(!entry.admin_dir_is_toplevel());
     REQUIRE( entry.admin_dir() == "./");
     REQUIRE(!entry.get_branch().empty());
     REQUIRE( entry.get_flags().empty());

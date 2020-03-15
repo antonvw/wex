@@ -5,7 +5,7 @@ Name:      wex-lexers.xml
 Purpose:   Lexers configuration for wex.
            See scintilla 3.7.2 (www.scintilla.org).
 Author:    Anton van Wezenbeek
-Copyright: (c) 2019, Anton van Wezenbeek
+Copyright: (c) 2020, Anton van Wezenbeek
 -->
 
 <lexers>
@@ -2122,7 +2122,7 @@ Copyright: (c) 2019, Anton van Wezenbeek
         <def style ="bracelight"> back:yellow,fore:black</def>
         <def style ="char"> fore:pink </def>
         <def style ="command"> fore:steel blue </def>
-        <def style ="comment"> fore:yellow,italic,back:gray 95,eol </def>
+        <def style ="comment"> fore:brown,italic,back:gray 95,eol </def>
         <def style ="commentdockeyword"> fore:medium sea green,italic </def>
         <def style ="error"> fore:red,italic,eol </def>
         <def style ="folder"> blue </def>
@@ -3959,7 +3959,7 @@ Copyright: (c) 2019, Anton van Wezenbeek
       <property name="fold.comment"> 1 </property>
     </properties>
   </lexer>
-  <lexer name="props" extensions="*.ini;*.conf;*.desktop" edgemode="none">
+  <lexer name="props" extensions="*.ini;*.conf;*.desktop;*.rc" edgemode="none">
     <styles>
     <style no="section"> fore:sky blue </style>
     <style no="assignment"> fore:khaki</style>

@@ -2,7 +2,7 @@
 // Name:      printing.h
 // Purpose:   Include file for wex::printing class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -26,15 +26,14 @@ namespace wex
     static printing* get(bool createOnDemand = true);
 
     /// Sets the object as the current one, returns the pointer 
-    /// to the previous current object (both the parameter and returned value may be nullptr). 
+    /// to the previous current object (both the parameter and 
+    /// returned value may be nullptr). 
     static printing* set(printing* printing);
     
     /// Other methods.
 
-#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
     /// Returns the html printer.
     auto* get_html_printer() {return m_html_printer.get();};
-#endif
 
     /// Returns the printer.
     auto* get_printer() {return m_printer.get();};
@@ -42,9 +41,7 @@ namespace wex
     printing();
 
     std::unique_ptr<wxPrinter> m_printer;
-#if wxUSE_HTML
     std::unique_ptr<wxHtmlEasyPrinting> m_html_printer;
-#endif
 
     static printing* m_self;
   };

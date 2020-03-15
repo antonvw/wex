@@ -116,13 +116,15 @@ namespace wex
     
     /// overriden methods
 
-    /// Allows derived class to update file history.
-    /// Interface from frame.
     stc* open_file(
       const path& filename,
       const stc_data& data = stc_data()) override;
 
     void set_recent_file(const path& path) override;
+    
+    void statusbar_clicked(const std::string& ) override;
+
+    void statusbar_clicked_right(const std::string& ) override;
     
     /// Other methods
 
@@ -130,8 +132,8 @@ namespace wex
     bool add_panes(
       /// panes
       const panes_t & panes,
-      /// perspective to load / save
-      const std::string& perspective = std::string());
+      /// name of perspective to load / save
+      const std::string& perspective = "managed frame");
     
     /// Returns file history.
     auto& file_history() {return m_file_history;};

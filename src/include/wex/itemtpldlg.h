@@ -47,6 +47,7 @@ namespace wex
     : dialog(data)
     , m_force_checkbox_checked(false)
     , m_items(v) {
+      T::set_dialog(this);
       layout(rows, cols);
       Bind(wxEVT_BUTTON, &item_template_dialog::on_command, this, wxID_APPLY);
       Bind(wxEVT_BUTTON, &item_template_dialog::on_command, this, wxID_CANCEL);
@@ -177,8 +178,6 @@ namespace wex
       {
         if (item.empty()) continue;
 
-        item.set_dialog(this);
-        
         // If this item has same type as previous type use previous sizer,
         // otherwise use no sizer (layout will create a new one).
         wxFlexGridSizer* current_item_sizer = 

@@ -2,7 +2,7 @@
 // Name:      test-frame.cpp
 // Purpose:   Implementation for wex report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/menu.h>
@@ -65,7 +65,10 @@ TEST_CASE("wex::report::frame")
   frame()->set_recent_file(wex::test::get_path("test.h"));
 
   for (auto id : std::vector<int> {
-    wex::ID_CLEAR_PROJECTS, wex::ID_PROJECT_SAVE, wex::ID_TOOL_REPORT_FIND, wex::ID_TOOL_REPLACE}) 
+    wex::ID_CLEAR_PROJECTS, 
+    wex::ID_TOOL_REPORT_FIND, 
+    wex::ID_TOOL_REPLACE,
+    wex::report::ID_PROJECT_SAVE})
   {
     auto* event = new wxCommandEvent(wxEVT_MENU, id);
     wxQueueEvent(frame(), event);

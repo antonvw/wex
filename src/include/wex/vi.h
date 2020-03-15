@@ -2,7 +2,7 @@
 // Name:      vi.h
 // Purpose:   Declaration of class wex::vi
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -79,7 +79,7 @@ namespace wex
     enum class motion_t;
 
     void command_calc(const std::string& reg);
-    void command_reg(char reg);
+    void command_reg(const std::string& reg);
     char convert_key_event(const wxKeyEvent& event) const;
     bool delete_range(int start, int end);
     void filter_count(std::string& command);

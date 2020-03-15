@@ -13,6 +13,7 @@
 #include <wex/indicator.h>
 #include <wex/item-vector.h>
 #include <wex/lexers.h>
+#include <wex/macros.h>
 #include <wex/managedframe.h>
 #include <wex/path.h>
 #include <wex/printing.h>
@@ -50,7 +51,11 @@ wex::stc::stc(const path& p, const stc_data& data)
   , m_frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
   , m_lexer(this)
 {
-  if (config("AllowSync").get(true)) sync();
+  if (config("AllowSync").get(true) &&
+      p != wex::ex::get_macros().get_filename())
+  {
+    sync();
+  }
   
   if (!lexers::get()->get_lexers().empty())
   {
@@ -271,9 +276,9 @@ bool wex::stc::file_readonly_attribute_changed()
 
 void wex::stc::fold(bool all)
 {
-  if (
+  if (const item_vector& iv(m_config_items);
     all || 
-    GetLineCount() > config(_("stc.Auto fold")).get(0))
+    GetLineCount() > iv.find<int>(_("stc.Auto fold")))
   {
     fold_all();
   }
@@ -287,7 +292,7 @@ void wex::stc::fold_all()
   const bool json = (m_lexer.scintilla_lexer() == "json");
   const bool xml = (m_lexer.language() == "xml");
 
-  int line = (json ? 2: 0);
+  int line = (json ? 1: 0);
 
   while (line < GetLineCount())
   {
@@ -644,16 +649,13 @@ void wex::stc::position_save()
   }
 }
 
-#if wxUSE_PRINTING_ARCHITECTURE
 void wex::stc::print(bool prompt)
 {
   auto* data = printing::get()->get_html_printer()->GetPrintData();
   printing::get()->get_printer()->GetPrintDialogData().SetPrintData(*data);
   printing::get()->get_printer()->Print(this, new printout(this), prompt);
 }
-#endif
 
-#if wxUSE_PRINTING_ARCHITECTURE
 void wex::stc::print_preview(wxPreviewFrameModalityKind kind)
 {
   auto* preview = new wxPrintPreview(
@@ -676,7 +678,6 @@ void wex::stc::print_preview(wxPreviewFrameModalityKind kind)
   frame->InitializeWithModality(kind);
   frame->Show();
 }
-#endif
 
 void wex::stc::properties_message(path::status_t flags)
 {
@@ -890,18 +891,24 @@ bool wex::stc::show_blame(const vcs_entry* vcs)
   std::string prev ("!@#$%");
   bool first = true;
   int line = 0;
+  
+  SetWrapMode(wxSTC_WRAP_NONE);
+  const item_vector& iv(m_config_items);
+  const int margin_blame(iv.find<int>(_("stc.margin.Text")));
 
   for (tokenizer tkz(vcs->get_stdout(), "\r\n"); tkz.has_more_tokens(); )
   {
-    if (const auto [r, bl, t, l] = vcs->get_blame().get(tkz.get_next_token());
+    if (const auto& [r, bl, t, l] = vcs->get_blame().get(tkz.get_next_token());
       bl != prev && r)
     {
       if (first)
       {
         SetMarginWidth(
           m_margin_text_number, 
-          bl.size() * 
-           (StyleGetFont(m_margin_text_number).GetPixelSize().GetWidth() + 1));
+          margin_blame == -1 ?
+            bl.size() * 
+              (StyleGetFont(m_margin_text_number).GetPixelSize().GetWidth() + 1):
+            margin_blame);
         first = false;
       }
       

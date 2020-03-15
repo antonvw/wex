@@ -2,7 +2,7 @@
 // Name:      test-vi.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -53,7 +53,7 @@ TEST_CASE("wex::vi")
 
     vi->command("=5+5+5");
     REQUIRE( 
-      wex::ex::get_macros().get_register('0').find("15") !=
+      wex::ex::get_macros().get_register('0').find("15") ==
       std::string::npos);
   }
 

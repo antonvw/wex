@@ -16,6 +16,7 @@
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/imaglist.h>
 #include <wex/listview.h>
+#include <wex/accelerators.h>
 #include <wex/config.h>
 #include <wex/defs.h>
 #include <wex/frame.h>
@@ -157,11 +158,23 @@ void wex::column::set_is_sorted_ascending(sort_t type)
 {
   switch (type)
   {
-    case SORT_ASCENDING: m_is_sorted_ascending = true; break;
-    case SORT_DESCENDING: m_is_sorted_ascending = false; break;
-    case SORT_KEEP: break;
-    case SORT_TOGGLE: m_is_sorted_ascending = !m_is_sorted_ascending; break;
-    default: assert(0); break;
+    case SORT_ASCENDING: 
+      m_is_sorted_ascending = true; 
+      break;
+
+    case SORT_DESCENDING: 
+      m_is_sorted_ascending = false; 
+      break;
+
+    case SORT_KEEP: 
+      break;
+
+    case SORT_TOGGLE: 
+      m_is_sorted_ascending = !m_is_sorted_ascending; 
+      break;
+
+    default: assert(0); 
+      break;
   }
 }
 
@@ -192,30 +205,29 @@ wex::listview::listview(const listview_data& data)
   // as list items can also be copied and pasted.
   SetDropTarget(new droptarget(this));
 
-  wxAcceleratorEntry entries[4];
+  accelerators({
+    {wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE},
+    {wxACCEL_CTRL, WXK_INSERT, wxID_COPY},
+    {wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE},
+    {wxACCEL_SHIFT, WXK_DELETE, wxID_CUT}}).set(this);
 
-  entries[0].Set(wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE);
-  entries[1].Set(wxACCEL_CTRL, WXK_INSERT, wxID_COPY);
-  entries[2].Set(wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE);
-  entries[3].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
-
-  wxAcceleratorTable accel(WXSIZEOF(entries), entries);
-  SetAcceleratorTable(accel);
-  
   switch (m_data.image())
   {
     case listview_data::IMAGE_NONE: 
       break;
+
     case listview_data::IMAGE_ART:
     case listview_data::IMAGE_OWN:
       AssignImageList(
         new wxImageList(m_image_width, m_image_height, true, 0), 
           wxIMAGE_LIST_SMALL);
       break;
+
     case listview_data::IMAGE_FILE_ICON:
       SetImageList(
         wxTheFileIconsTable->GetSmallImageList(), wxIMAGE_LIST_SMALL);
       break;
+
     default:
       assert(0);
   }
@@ -745,12 +757,18 @@ bool wex::listview::insert_item(const std::vector < std::string > & item)
           case column::DATE:
             if (const auto& [r, t] = get_time(col); !r) return false;
             break;
-          case column::FLOAT: std::stof(col); 
+
+          case column::FLOAT: 
+            std::stof(col); 
             break;
-          case column::INT: std::stoi(col); 
+
+          case column::INT: 
+            std::stoi(col); 
             break;
+
           case column::STRING: 
             break;
+
           default: 
             break;
         }
@@ -993,18 +1011,14 @@ bool wex::listview::load(const std::list<std::string> & l)
   
 void wex::listview::print()
 {
-#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   wxBusyCursor wait;
   printing::get()->get_html_printer()->PrintText(build_page());
-#endif
 }
 
 void wex::listview::print_preview()
 {
-#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   wxBusyCursor wait;
   printing::get()->get_html_printer()->PreviewText(build_page());
-#endif
 }
 
 const std::list<std::string> wex::listview::save() const
@@ -1104,10 +1118,20 @@ bool wex::listview::set_item(
       case column::DATE:
         if (const auto& [r, t] = get_time(text); !r) return false;
         break;
-      case column::FLOAT: std::stof(text); break;
-      case column::INT: std::stoi(text); break;
-      case column::STRING: break;
-      default: break;
+    
+      case column::FLOAT: 
+        std::stof(text); 
+        break;
+
+      case column::INT: 
+        std::stoi(text); 
+        break;
+
+      case column::STRING: 
+        break;
+
+      default: 
+        break;
     }
 
     return wxListView::SetItem(index, column, text, imageId);

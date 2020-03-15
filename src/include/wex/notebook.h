@@ -41,10 +41,15 @@ namespace wex
 
     /// Adds the page with given key and fills the keys.
     wxWindow* add_page(
+      /// page to add
       wxWindow* page,
+      /// key for the page
       const std::string& key,
-      const std::string& text = std::string(), // in that case uses key as text
+      /// caption for the page, if empty uses key as caption
+      const std::string& caption = std::string(), 
+      /// select the page after it is inserted
       bool select = false,
+      /// bitmap for the page
       const wxBitmap& bitmap = wxNullBitmap);
 
     /// Changes the selection for the given page, returning the previous selection.
@@ -74,9 +79,7 @@ namespace wex
       // The page should be an int (no), otherwise page >= 0 never fails!
       for (int page = GetPageCount() - 1; page >= 0; page--)
       {
-        T* win = (T*)GetPage(page);
-
-        switch (id)
+        switch (T* win = (T*)GetPage(page); id)
         {
         case ID_ALL_CLOSE:
         case ID_ALL_CLOSE_OTHERS:
@@ -139,6 +142,21 @@ namespace wex
       }
       return true;};
     
+    /// Inserts the page with given key and fills the keys.
+    wxWindow* insert_page(
+      /// index fo the page
+      size_t page_idx,
+      /// page to add
+      wxWindow* page,
+      /// key for the pagw
+      const std::string& key,
+      /// caption for the page, if empty uses key as caption
+      const std::string& caption = std::string(),
+      /// select the page after it is inserted
+      bool select = false,
+      /// bitmap for the page
+      const wxBitmap& bitmap = wxNullBitmap);
+
     /// Returns the key specified by the given page.
     /// If the page does not exist or is nullptr an empty string is returned.
     const std::string key_by_page(wxWindow* page) const {
@@ -155,18 +173,9 @@ namespace wex
     /// Returns the page index specified by the given key.
     /// If the key does not exist wxNOT_FOUND is returned.
     int page_index_by_key(const std::string& key) const {
-      wxWindow* page = page_by_key(key);
+      auto* page = page_by_key(key);
       return (page != nullptr ? GetPageIndex(page): wxNOT_FOUND);};
     
-    /// Inserts the page with given key and fills the keys.
-    wxWindow* insert_page(
-      size_t page_idx,
-      wxWindow* page,
-      const std::string& key,
-      const std::string& text = std::string(), // in that case uses key as text
-      bool select = false,
-      const wxBitmap& bitmap = wxNullBitmap);
-
     /// Rearranges all pages.
     void rearrange(
       /// Specify where the pane should go.
@@ -183,7 +192,7 @@ namespace wex
     bool set_page_text(
       const std::string& key,
       const std::string& new_key,
-      const std::string& text,
+      const std::string& caption,
       const wxBitmap& bitmap = wxNullBitmap);
         
     /// Selects (and returns) the page specified by the given key.

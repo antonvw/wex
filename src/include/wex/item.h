@@ -37,6 +37,7 @@ namespace wex
   /// 
   /// For corresponding window (such as wxFLP_DEFAULT_STYLE for FILEPICKERCTRL)
   /// the style for the control used (e.g. wxTE_MULTILINE or wxTE_PASSWORD).
+  /// If the window supports it you can use a markup label.
   class item
   {
   public:
@@ -128,7 +129,10 @@ namespace wex
       SPINCTRL,           
 
       /// wxSpinCtrlDouble item
-      SPINCTRLDOUBLE,     
+      SPINCTRLDOUBLE,
+
+      /// wxStaticBox item
+      STATICBOX,
 
       /// wxStaticLine item
       STATICLINE,         
@@ -177,15 +181,15 @@ namespace wex
       std::string> 
       choices_bool_t;
     
-    // A notebook_page is a pair of page text with a vector of items.
+    // A group is a pair of text with a vector of items.
     typedef std::pair<
       std::string, 
       std::vector<item>>
-      notebook_page_t;
+      group_t;
     
-    /// A notebook is a vector of notebook_pages.
+    /// A notebook is a vector of groups.
     typedef std::vector<
-      notebook_page_t> 
+      group_t> 
       notebook_t;
     
     /// A function that you can provide to e.g. specify what 
@@ -210,29 +214,35 @@ namespace wex
     typedef std::function<bool(wxWindow* user, bool save)> 
       user_window_to_config_t;
 
+    /// Sets dialog to parent, to allow subitems to be added
+    /// to the template dialog.
+    static void set_dialog(item_template_dialog<item>* dlg);
+      
     /// Use config for getting and retrieving values.
     /// Default the config is used.
     /// The label is used as entry in the config.
     static void use_config(bool use) {m_use_config = use;};
     
     /// Default constructor for an EMPTY item.
-    item() : item(EMPTY, std::string()) {;};
+    item() 
+      : item(EMPTY, std::string()) {;};
 
     /// Constructor for a SPACER item.
     /// The size is the size for the spacer used.
-    item(int size) : item(SPACER) {
-      m_data.window(window_data().style(size));};
+    item(int size) 
+      : item(SPACER) {
+        m_data.window(window_data().style(size));};
 
-    /// Constuctor for a STATICLINE item.
+    /// Constructor for a STATICLINE item.
     /// The orientation is wxHORIZONTAL or wxVERTICAL.
-    item(wxOrientation orientation) : item(STATICLINE) {
-      m_data.window(window_data().style(orientation));};
+    item(wxOrientation orientation) 
+      : item(STATICLINE) {
+        m_data.window(window_data().style(orientation));};
       
     /// Constructor for several items.
     item(
       /// label for the window as on the dialog,
       /// might also contain the note after a tab for a command link button
-      /// if the window supports it you can use a markup label
       /// you can use a parent child config item by using a
       /// dot in the label, the prefix is not shown on the window
       const std::string& label,
@@ -245,6 +255,9 @@ namespace wex
       /// - STATICTEXT
       /// - STC
       /// - TEXTCTRL
+      /// if the label contains a colon, it is a STATICTEXT,
+      /// otherwise default TEXTCTRL
+      /// if type is STATICTEXT then markup is allowed in the label text
       type_t type = TEXTCTRL,
       /// control data
       const control_data& data = control_data(),
@@ -252,12 +265,7 @@ namespace wex
       /// ignored for a static text
       label_t label_t = LABEL_LEFT,
       /// callback to apply
-      user_apply_t apply = nullptr)
-      : item(type, label, value, 
-        (type != STATICTEXT && 
-         type != HYPERLINKCTRL ? label_t: LABEL_NONE))
-        {m_apply = apply;
-         m_data = data;};
+      user_apply_t apply = nullptr);
 
     /// Constructor for a SPINCTRL or a SLIDER item.
     item(
@@ -319,7 +327,7 @@ namespace wex
         {m_apply = apply;
          m_data = data;};
 
-    /// Constuctor for a NOTEBOOK item, being a vector
+    /// Constructor for a NOTEBOOK item, being a vector
     /// of a pair of pages with a vector of items.
     /// e.g.:
     /// \code
@@ -367,6 +375,15 @@ namespace wex
           v, label_t, cols, 0, 1, 1, nullptr, nullptr, nullptr, imageList) {
           m_data= data;};
     
+    /// Constructor for a STATICBOX item.
+    item(
+      /// group items
+      const group_t & v,
+      /// control data
+      const control_data& data = control_data())
+      : item(STATICBOX, v.first, v) {
+          m_data = data;};
+
     /// Constructor for a RADIOBOX, or a CHECKLISTBOX_BIT item. 
     /// This checklistbox (not mutually exclusive choices)
     /// can be used to get/set individual bits in a long.
@@ -412,7 +429,7 @@ namespace wex
           std::string(), label_t, 1, 0, 1, 1, window, create, config) {
           m_apply = apply;};
 
-    /// Constuctor a LISTVIEW item.
+    /// Constructor a LISTVIEW item.
     item(
       /// label for this item
       const std::string& label,
@@ -429,9 +446,10 @@ namespace wex
           m_apply = apply;
           m_listview_data = data;};
 
-    /// Constuctor several items.
+    /// Constructor several items.
     item(
       /// label for this item
+      /// if type is BUTTON then markup is allowed in the label text
       const std::string& label,
       /// type of item:
       /// - BUTTON
@@ -525,10 +543,6 @@ namespace wex
     /// Returns the page.
     const auto& page() const {return m_page;};
 
-    /// Sets dialog to parent, to allow subitems to be added
-    /// to the template dialog.
-    void set_dialog(item_template_dialog<item>* dlg);
-      
     /// Sets image list.
     void set_imagelist(wxImageList* il) {m_image_list = il;};
     
@@ -583,7 +597,12 @@ namespace wex
   private:
     wxFlexGridSizer* add(wxSizer* sizer, wxFlexGridSizer* current) const;
     wxFlexGridSizer* add_browse_button(wxSizer* sizer) const;
-    void add_items(notebook_page_t & page, bool readonly);
+    void add_items(group_t & page, bool readonly);
+    void add_items(
+      wxWindow* parent, 
+      wxFlexGridSizer* sizer, 
+      std::vector <item> & v, 
+      bool readonly);
     wxFlexGridSizer* add_static_text(wxSizer* sizer) const;
     bool create_window(wxWindow* parent, bool readonly);
 
@@ -607,7 +626,6 @@ namespace wex
       m_label_window,
       m_page;
     
-    item_template_dialog<item>* m_dialog {nullptr};
     control_data m_data;
     listview_data m_listview_data;
 
@@ -619,6 +637,7 @@ namespace wex
     wxSizerFlags m_sizer_flags;
     wxWindow* m_window;
 
+    static inline item_template_dialog<item>* m_dialog = nullptr;
     static inline bool m_use_config = true;
   };
 };

@@ -2,7 +2,7 @@
 // Name:      style.cpp
 // Purpose:   Implementation of wex::style class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -36,6 +36,13 @@ void wex::style::apply(wxStyledTextCtrl* stc) const
   }
 }
 
+void wex::style::clear()
+{
+  m_define.clear();
+  m_no.clear();
+  m_value.clear();
+}
+  
 bool wex::style::contains_default_style() const
 {
   return (m_no.find(wxSTC_STYLE_DEFAULT) != m_no.end());
@@ -68,7 +75,7 @@ void wex::style::set(const pugi::xml_node& node, const std::string& macro)
 
       if (value.find("default-font") != std::string::npos)
       {
-        const wxFont font(config(_("stc.Default font")).get(
+        const auto& font(config(_("stc.Default font")).get(
           wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT)));
         
         replace_all(
@@ -77,7 +84,7 @@ void wex::style::set(const pugi::xml_node& node, const std::string& macro)
           "face:" + font.GetFaceName() + 
             ",size:" + std::to_string(font.GetPointSize()));
             
-        if (const wxFontStyle style = font.GetStyle(); 
+        if (const auto style = font.GetStyle(); 
           style == wxFONTSTYLE_ITALIC || style == wxFONTSTYLE_SLANT)
         {
           value += ",italic";

@@ -198,24 +198,21 @@ const wex::path wex::link::get_path(
   // if we have something in between
   const wex::path between(find_between(text));
   
-  wex::path link(
-    between.is_relative() ? between.string(): trim(text));
-
   // if between text now starts with file:line:no
-  if (const path p(find_filename(link.string(), data)); !p.empty())
+  if (const path p(find_filename(between.string(), data)); !p.empty())
   {
     return p;
   }
 
   // if text is a file somewhere on the search paths
-  if (const auto& p(m_paths->find(link.string()));
+  if (const auto& p(m_paths->find(between.string()));
     !p.empty())
   {
     return p;
   }
 
   // if text now exists, or exists in the stc directory
-  if (wex::path file(link); file.file_exists())
+  if (wex::path file(between); file.file_exists())
   {
     return file.make_absolute();
   }

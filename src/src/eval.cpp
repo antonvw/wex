@@ -2,7 +2,7 @@
 // Name:      eval.cpp
 // Purpose:   Implementation of class wex::evaluator
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
@@ -95,8 +95,9 @@ namespace wex
             
       int operator() (int lhs, operation const& x) const
       {
-        const auto rhs = boost::apply_visitor(*this, x.operand_);
-        switch (x.operator_)
+        switch (
+          const auto rhs = boost::apply_visitor(*this, x.operand_);
+          x.operator_)
         {
           case '+': return lhs + rhs;
           case '-': return lhs - rhs;
@@ -234,6 +235,8 @@ wex::evaluator::~evaluator()
 
 std::tuple<int, std::string> wex::evaluator::eval(
   const wex::ex* ex, const std::string& text) const
-{
-  return m_eval->eval(ex, text);
+{ 
+  std::string expanded(text);
+  marker_and_register_expansion(ex, expanded);
+  return m_eval->eval(ex, expanded);
 }
