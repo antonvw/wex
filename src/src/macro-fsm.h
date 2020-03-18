@@ -2,11 +2,11 @@
 // Name:      macro-fsm.h
 // Purpose:   Declaration of class wex::macro_fsm
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <string>
 #include <boost/statechart/state_machine.hpp>
+#include <string>
 
 namespace sc = boost::statechart;
 
@@ -21,9 +21,9 @@ namespace wex
   struct ssIDLE;
   struct ssRECORDING;
 
-  /// This class offers the state machine 
+  /// This class offers the state machine
   /// and initially enters the idle mode.
-  class macro_fsm : public sc::state_machine< macro_fsm, ssACTIVE >
+  class macro_fsm : public sc::state_machine<macro_fsm, ssACTIVE>
   {
   public:
     enum state_t
@@ -33,33 +33,32 @@ namespace wex
     };
 
     // All events.
-    struct evRECORD : sc::event< evRECORD > {};
+    struct evRECORD : sc::event<evRECORD>
+    {
+    };
 
     /// Constructor.
     macro_fsm(macro_mode* mode);
 
     /// Expands a variable template into a string.
     /// The ex component is used for info.
-    bool expand_template(
-      const variable& v, 
-      ex* ex, 
-      std::string& expanded);
+    bool expand_template(const variable& v, ex* ex, std::string& expanded);
 
     /// Expands a variable into a ex component.
     bool expand_variable(const std::string& v, ex* ex) const;
 
     /// Returns the internal state.
-    auto get() const {return m_state;};
+    auto get() const { return m_state; };
 
     /// Returns the macro.
-    auto & get_macro() const {return m_macro;};
+    auto& get_macro() const { return m_macro; };
 
-    /// Are we playng back?
-    bool is_playback() const {return m_playback;};
+    /// Are we playing back?
+    bool is_playback() const { return m_playback; };
 
     /// Plays back macro to ex.
     void playback(const std::string& macro, ex* ex, int repeat);
-    
+
     /// Starts or stops recording a macro.
     void record(const std::string& macro, ex* ex = nullptr);
 
@@ -70,21 +69,27 @@ namespace wex
     void state(state_t s);
 
     /// Returns state string.
-    const std::string str() const {
+    const std::string str() const
+    {
       switch (m_state)
       {
-        case IDLE: return std::string(); 
-        case RECORDING: return "recording";
-        default: return "unhandled state";
-      };};
+        case IDLE:
+          return std::string();
+        case RECORDING:
+          return "recording";
+        default:
+          return "unhandled state";
+      };
+    };
+
   private:
-    bool expanding_variable(
-      ex* ex, const std::string& name, std::string* value) const;
+    bool expanding_variable(ex* ex, const std::string& name, std::string* value)
+      const;
     void set_ask_for_input() const;
 
-    bool m_playback {false};
+    bool        m_playback{false};
     std::string m_macro;
-    state_t m_state {IDLE};
+    state_t     m_state{IDLE};
     macro_mode* m_mode;
   };
-};
+}; // namespace wex

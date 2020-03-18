@@ -3959,7 +3959,7 @@ Copyright: (c) 2020, Anton van Wezenbeek
       <property name="fold.comment"> 1 </property>
     </properties>
   </lexer>
-  <lexer name="props" extensions="*.ini;*.conf;*.desktop;*.rc" edgemode="none">
+  <lexer name="props" extensions="*.ini;*.conf;*.desktop;*.rc;.clang-format" edgemode="none">
     <styles>
     <style no="section"> fore:sky blue </style>
     <style no="assignment"> fore:khaki</style>

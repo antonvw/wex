@@ -2,14 +2,14 @@
 // Name:      menu-item.h
 // Purpose:   Declaration of wex::menu_item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wx/artprov.h> // for wxArtID
 #include <wex/filehistory.h>
 #include <wex/path.h>
+#include <wx/artprov.h> // for wxArtID
 
 namespace wex
 {
@@ -28,25 +28,25 @@ namespace wex
 
       /// edit menu items
       EDIT,
-      
+
       /// edit invert menu items
       EDIT_INVERT,
-      
+
       /// exit menu item
       EXIT,
-      
+
       /// file_history menu items
       HISTORY,
-      
+
       /// a normal menu item
       MENU,
-      
-      /// toggle panes from managaed frame menu items
+
+      /// toggle panes from managed frame menu items
       PANES,
-      
+
       /// print menu items
       PRINT,
-      
+
       /// a radio menu item
       RADIO,
 
@@ -54,10 +54,10 @@ namespace wex
       /// If previous item was a separator, it ignores this one.
       /// If no items have yet been appended, it ignores this one.
       SEPARATOR,
-      
+
       /// a submenu item
       SUBMENU,
-      
+
       /// tools menu items
       TOOLS,
 
@@ -73,9 +73,9 @@ namespace wex
     /// Constructor for a normal MENU item.
     menu_item(
       /// menu item id
-      int id, 
+      int id,
       /// menu name or text
-      const std::string& name = std::string(), 
+      const std::string& name = std::string(),
       /// menu help text
       const std::string& help = std::string(),
       /// menu artid
@@ -84,13 +84,13 @@ namespace wex
       std::function<void(wxCommandEvent&)> action = nullptr,
       /// callback for menu update action
       std::function<void(wxUpdateUIEvent&)> ui = nullptr);
-     
+
     /// Constructor for a checkable item.
     menu_item(
       /// menu item id
-      int id, 
+      int id,
       /// menu name or text
-      const std::string& name, 
+      const std::string& name,
       /// Constructor for a CHECK or RADIO item.
       type_t type,
       /// callback for menu event action
@@ -118,11 +118,11 @@ namespace wex
       const path& p,
       /// shows modal dialog if necessary
       bool show_modal = true);
-    
+
     /// Constructor for HISTORY menu item.
     menu_item(
       /// menu item id
-      int id, 
+      int id,
       /// object for maintaining / retrieving history
       file_history& history,
       /// callback for menu update action
@@ -137,27 +137,26 @@ namespace wex
     void append(wex::menu* menu) const;
 
     /// Returns menu item id.
-    auto id() const {return m_id;};
-    
+    auto id() const { return m_id; };
+
     /// Returns menu item name.
-    auto & name() const {return m_name;};
-    
+    auto& name() const { return m_name; };
+
     /// Returns menu item type.
-    auto type() const {return m_type;};
+    auto type() const { return m_type; };
+
   private:
     void append_panes(wex::menu* menu) const;
     void append_vcs(wex::menu* menu) const;
 
-    const managed_frame* m_frame {nullptr};
-    file_history* m_history {nullptr};
-    wex::menu* m_menu {nullptr};
-    const bool m_modal {false};
-    const wex::path m_path;
-    const int m_id {-1};
-    const type_t m_type {SEPARATOR};
-    const std::string 
-      m_help_text,
-      m_name;
-    const wxArtID m_artid;
+    const managed_frame* m_frame{nullptr};
+    file_history*        m_history{nullptr};
+    wex::menu*           m_menu{nullptr};
+    const bool           m_modal{false};
+    const wex::path      m_path;
+    const int            m_id{-1};
+    const type_t         m_type{SEPARATOR};
+    const std::string    m_help_text, m_name;
+    const wxArtID        m_artid;
   };
-};
+}; // namespace wex
