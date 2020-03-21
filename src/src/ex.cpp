@@ -344,7 +344,7 @@ wex::ex::ex(wex::stc* stc)
                      {{"showmode", "showmode"},
                       [&](bool on) {
                         ((wex::statusbar*)m_frame->GetStatusBar())
-                          ->show_pane("PaneMode", on);
+                          ->pane_show("PaneMode", on);
                         if (!modeline)
                           config(_("stc.Show mode")).set(on);
                       }},

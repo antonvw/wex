@@ -8,85 +8,114 @@
 #include <algorithm>
 #include <boost/mpl/list.hpp>
 #include <boost/statechart/custom_reaction.hpp>
-#include <boost/statechart/state_machine.hpp>
 #include <boost/statechart/state.hpp>
+#include <boost/statechart/state_machine.hpp>
 #include <boost/statechart/transition.hpp>
-#include <wex/vi-mode.h>
 #include <wex/config.h>
 #include <wex/log.h>
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
 #include <wex/managedframe.h>
 #include <wex/stc.h>
+#include <wex/vi-mode.h>
 #include <wex/vi.h>
 
 namespace mpl = boost::mpl;
-namespace sc = boost::statechart;
+namespace sc  = boost::statechart;
 
 namespace wex
 {
   struct ssACTIVE;
 
-  /// This class offers the state machine 
+  /// This class offers the state machine
   /// and initially enters the active mode.
-  class vi_fsm : public sc::state_machine< vi_fsm, ssACTIVE >
+  class vi_fsm : public sc::state_machine<vi_fsm, ssACTIVE>
   {
   public:
-    vi_fsm(stc* stc, 
-      std::function<void(const std::string& command)> insert, 
-      std::function<void()> normal)
+    vi_fsm(
+      stc*                                            stc,
+      std::function<void(const std::string& command)> insert,
+      std::function<void()>                           normal)
       : m_stc(stc)
       , m_insert(insert)
-      , m_normal(normal) {;};     
+      , m_normal(normal)
+    {
+      ;
+    };
 
-    stc* get_stc() {return m_stc;};
+    stc* get_stc() { return m_stc; };
 
-    void insert_mode() {
+    void insert_mode()
+    {
       if (m_insert != nullptr)
       {
         m_insert(m_command);
-      }};
+      }
+    };
 
-    void normal_mode() {
+    void normal_mode()
+    {
       if (m_normal != nullptr)
       {
         m_normal();
-      }};
+      }
+    };
 
-    void process(const std::string& command, const event_base_type& ev) {
+    void process(const std::string& command, const event_base_type& ev)
+    {
       m_command = command;
-      process_event(ev);};
-      
-    const vi_mode::state_t state() const {return m_state;};
+      process_event(ev);
+    };
 
-    void state(vi_mode::state_t s) {m_state = s;};
+    const vi_mode::state_t state() const { return m_state; };
 
-    const std::string state_string() const {
+    void state(vi_mode::state_t s) { m_state = s; };
+
+    const std::string state_string() const
+    {
       switch (state())
       {
         case vi_mode::state_t::INSERT:
-          return m_stc != nullptr && m_stc->GetOvertype() ? "replace": "insert";
-        case vi_mode::state_t::INSERT_RECT: 
-          return m_stc != nullptr && m_stc->GetOvertype() ? "replace rect": "insert rect";
-        case vi_mode::state_t::VISUAL:      return "visual";
-        case vi_mode::state_t::VISUAL_LINE: return "visual line";
-        case vi_mode::state_t::VISUAL_RECT: return "visual rect";
-        default: return ex::get_macros().mode().str();
-      }};
+          return m_stc != nullptr && m_stc->GetOvertype() ? "replace" :
+                                                            "insert";
+        case vi_mode::state_t::INSERT_RECT:
+          return m_stc != nullptr && m_stc->GetOvertype() ? "replace rect" :
+                                                            "insert rect";
+        case vi_mode::state_t::VISUAL:
+          return "visual";
+        case vi_mode::state_t::VISUAL_LINE:
+          return "visual line";
+        case vi_mode::state_t::VISUAL_RECT:
+          return "visual rect";
+        default:
+          return ex::get_macros().mode().str();
+      }
+    };
+
   private:
-    std::string m_command;
-    std::function<void(const std::string& command)> m_insert {nullptr};
-    std::function<void()> m_normal {nullptr};
-    vi_mode::state_t m_state {vi_mode::NORMAL};
-    stc* m_stc;
+    std::string                                     m_command;
+    std::function<void(const std::string& command)> m_insert{nullptr};
+    std::function<void()>                           m_normal{nullptr};
+    vi_mode::state_t                                m_state{vi_mode::NORMAL};
+    stc*                                            m_stc;
   };
 
   // All events.
-  struct evESCAPE : sc::event< evESCAPE > {};
-  struct evINSERT : sc::event< evINSERT > {};
-  struct evVISUAL : sc::event< evVISUAL > {};
-  struct evVISUAL_LINE : sc::event< evVISUAL_LINE > {};
-  struct evVISUAL_RECT : sc::event< evVISUAL_RECT > {};
+  struct evESCAPE : sc::event<evESCAPE>
+  {
+  };
+  struct evINSERT : sc::event<evINSERT>
+  {
+  };
+  struct evVISUAL : sc::event<evVISUAL>
+  {
+  };
+  struct evVISUAL_LINE : sc::event<evVISUAL_LINE>
+  {
+  };
+  struct evVISUAL_RECT : sc::event<evVISUAL_RECT>
+  {
+  };
 
   // Forward the simple states.
   struct ssCOMMAND;
@@ -98,135 +127,170 @@ namespace wex
   struct ssVISUAL_RECT_TEXTINPUT;
 
   // Implement the simple states.
-  struct ssACTIVE : sc::simple_state< ssACTIVE, vi_fsm, ssCOMMAND > {};
+  struct ssACTIVE : sc::simple_state<ssACTIVE, vi_fsm, ssCOMMAND>
+  {
+  };
 
-  struct ssCOMMAND : sc::state< ssCOMMAND, ssACTIVE >
+  struct ssCOMMAND : sc::state<ssCOMMAND, ssACTIVE>
   {
     typedef mpl::list<
-      sc::transition< evESCAPE, ssCOMMAND >,
-      sc::custom_reaction< evINSERT >,
-      sc::transition< evVISUAL, ssVISUAL_MODE >,
-      sc::transition< evVISUAL_LINE, ssVISUAL_LINE >,
-      sc::transition< evVISUAL_RECT, ssVISUAL_RECT > > reactions;
+      sc::transition<evESCAPE, ssCOMMAND>,
+      sc::custom_reaction<evINSERT>,
+      sc::transition<evVISUAL, ssVISUAL_MODE>,
+      sc::transition<evVISUAL_LINE, ssVISUAL_LINE>,
+      sc::transition<evVISUAL_RECT, ssVISUAL_RECT>>
+      reactions;
 
-    ssCOMMAND(my_context ctx) : my_base ( ctx )
+    ssCOMMAND(my_context ctx)
+      : my_base(ctx)
     {
       log::verbose("vi mode") << "normal";
-      context< vi_fsm >().state(vi_mode::NORMAL);
+      context<vi_fsm>().state(vi_mode::NORMAL);
     };
-    
-    sc::result react( const evINSERT & ) {
-      return context< vi_fsm >().get_stc()->GetReadOnly() ?
-        forward_event():
-        transit< ssTEXTINPUT >();};
+
+    sc::result react(const evINSERT&)
+    {
+      return context<vi_fsm>().get_stc()->GetReadOnly() ?
+               forward_event() :
+               transit<ssTEXTINPUT>();
+    };
   };
 
-  struct ssTEXTINPUT : sc::state< ssTEXTINPUT, ssACTIVE >
+  struct ssTEXTINPUT : sc::state<ssTEXTINPUT, ssACTIVE>
   {
-    typedef sc::custom_reaction< evESCAPE > reactions;
+    typedef sc::custom_reaction<evESCAPE> reactions;
 
-    ssTEXTINPUT(my_context ctx) : my_base ( ctx )
+    ssTEXTINPUT(my_context ctx)
+      : my_base(ctx)
     {
       log::verbose("vi mode") << "insert";
-      context< vi_fsm >().state(vi_mode::INSERT);
-      context< vi_fsm >().insert_mode();
+      context<vi_fsm>().state(vi_mode::INSERT);
+      context<vi_fsm>().insert_mode();
     };
 
-    sc::result react( const evESCAPE & ) {
-      context< vi_fsm >().normal_mode();
-      return transit< ssCOMMAND >();};
+    sc::result react(const evESCAPE&)
+    {
+      context<vi_fsm>().normal_mode();
+      return transit<ssCOMMAND>();
+    };
   };
 
-  struct ssVISUAL_MODE : sc::simple_state< ssVISUAL_MODE, ssACTIVE, ssVISUAL >
+  struct ssVISUAL_MODE : sc::simple_state<ssVISUAL_MODE, ssACTIVE, ssVISUAL>
   {
     typedef mpl::list<
-      sc::transition< evESCAPE, ssCOMMAND >,
-      sc::transition< evVISUAL, ssVISUAL >,
-      sc::transition< evVISUAL_LINE, ssVISUAL_LINE >,
-      sc::transition< evVISUAL_RECT, ssVISUAL_RECT > > reactions;
+      sc::transition<evESCAPE, ssCOMMAND>,
+      sc::transition<evVISUAL, ssVISUAL>,
+      sc::transition<evVISUAL_LINE, ssVISUAL_LINE>,
+      sc::transition<evVISUAL_RECT, ssVISUAL_RECT>>
+      reactions;
   };
 
-  struct ssVISUAL : sc::state< ssVISUAL, ssVISUAL_MODE>
+  struct ssVISUAL : sc::state<ssVISUAL, ssVISUAL_MODE>
   {
-    ssVISUAL(my_context ctx) : my_base ( ctx )
+    ssVISUAL(my_context ctx)
+      : my_base(ctx)
     {
       log::verbose("vi mode") << "visual";
-      context< vi_fsm >().state(vi_mode::VISUAL);
+      context<vi_fsm>().state(vi_mode::VISUAL);
     };
   };
 
-  struct ssVISUAL_LINE : sc::state< ssVISUAL_LINE, ssVISUAL_MODE >
+  struct ssVISUAL_LINE : sc::state<ssVISUAL_LINE, ssVISUAL_MODE>
   {
-    ssVISUAL_LINE(my_context ctx) : my_base ( ctx )
+    ssVISUAL_LINE(my_context ctx)
+      : my_base(ctx)
     {
       log::verbose("vi mode") << "visual line";
-      context< vi_fsm >().state(vi_mode::VISUAL_LINE);
+      context<vi_fsm>().state(vi_mode::VISUAL_LINE);
     };
   };
 
-  struct ssVISUAL_RECT : sc::state< ssVISUAL_RECT, ssVISUAL_MODE >
+  struct ssVISUAL_RECT : sc::state<ssVISUAL_RECT, ssVISUAL_MODE>
   {
-    typedef sc::transition< evINSERT, ssVISUAL_RECT_TEXTINPUT> reactions;
+    typedef sc::transition<evINSERT, ssVISUAL_RECT_TEXTINPUT> reactions;
 
-    ssVISUAL_RECT(my_context ctx) : my_base ( ctx )
+    ssVISUAL_RECT(my_context ctx)
+      : my_base(ctx)
     {
       log::verbose("vi mode") << "visual rect";
-      context< vi_fsm >().state(vi_mode::VISUAL_RECT);
+      context<vi_fsm>().state(vi_mode::VISUAL_RECT);
     };
   };
 
-  struct ssVISUAL_RECT_TEXTINPUT : sc::state< ssVISUAL_RECT_TEXTINPUT, ssVISUAL_MODE >
+  struct ssVISUAL_RECT_TEXTINPUT
+    : sc::state<ssVISUAL_RECT_TEXTINPUT, ssVISUAL_MODE>
   {
-    typedef sc::transition< evESCAPE, ssVISUAL_MODE > reactions;
+    typedef sc::transition<evESCAPE, ssVISUAL_MODE> reactions;
 
-    ssVISUAL_RECT_TEXTINPUT(my_context ctx) : my_base ( ctx )
+    ssVISUAL_RECT_TEXTINPUT(my_context ctx)
+      : my_base(ctx)
     {
       log::verbose("vi mode") << "visual rect insert";
-      context< vi_fsm >().state(vi_mode::INSERT_RECT);
-      context< vi_fsm >().insert_mode();
+      context<vi_fsm>().state(vi_mode::INSERT_RECT);
+      context<vi_fsm>().insert_mode();
     };
   };
-};
+}; // namespace wex
 
-#define NAVIGATE(SCOPE, DIRECTION)      \
-  m_vi->get_stc()->SCOPE##DIRECTION();  \
-  
-wex::vi_mode::vi_mode(vi* vi, 
-  std::function<void(const std::string&)> insert, 
-  std::function<void()> normal)
+#define NAVIGATE(SCOPE, DIRECTION) m_vi->get_stc()->SCOPE##DIRECTION();
+
+wex::vi_mode::vi_mode(
+  vi*                                     vi,
+  std::function<void(const std::string&)> insert,
+  std::function<void()>                   normal)
   : m_vi(vi)
   , m_fsm(std::make_unique<vi_fsm>(vi->get_stc(), insert, normal))
-  , m_insert_commands {
-    {'a', [&](){NAVIGATE(Char, Right);}},
-    {'c', [&](){;}},
-    {'i', [&](){;}},
-    {'o', [&](){
-      NAVIGATE(Line, End);
-      m_vi->get_stc()->NewLine();}},
-    {'A', [&](){NAVIGATE(Line, End);}},
-    {'C', [&](){
-      m_vi->get_stc()->LineEndExtend();
-      m_vi->cut();}},
-    {'I', [&](){NAVIGATE(Line, Home);}},
-    {'O', [&](){
-      NAVIGATE(Line, Home); 
-      m_vi->get_stc()->NewLine(); 
-      NAVIGATE(Line, Up);}},
-    {'R', [&](){m_vi->get_stc()->SetOvertype(true);}}}
+  , m_insert_commands{{'a',
+                       [&]() {
+                         NAVIGATE(Char, Right);
+                       }},
+                      {'c',
+                       [&]() {
+                         ;
+                       }},
+                      {'i',
+                       [&]() {
+                         ;
+                       }},
+                      {'o',
+                       [&]() {
+                         NAVIGATE(Line, End);
+                         m_vi->get_stc()->NewLine();
+                       }},
+                      {'A',
+                       [&]() {
+                         NAVIGATE(Line, End);
+                       }},
+                      {'C',
+                       [&]() {
+                         m_vi->get_stc()->LineEndExtend();
+                         m_vi->cut();
+                       }},
+                      {'I',
+                       [&]() {
+                         NAVIGATE(Line, Home);
+                       }},
+                      {'O',
+                       [&]() {
+                         NAVIGATE(Line, Home);
+                         m_vi->get_stc()->NewLine();
+                         NAVIGATE(Line, Up);
+                       }},
+                      {'R', [&]() {
+                         m_vi->get_stc()->SetOvertype(true);
+                       }}}
 {
   m_fsm->initiate();
 }
 
-wex::vi_mode::~vi_mode()
-{
-}
+wex::vi_mode::~vi_mode() {}
 
-bool wex::vi_mode::escape() 
+bool wex::vi_mode::escape()
 {
   std::string command("\x1b");
   return transition(command);
 }
-    
+
 wex::vi_mode::state_t wex::vi_mode::get() const
 {
   return m_fsm->state();
@@ -236,14 +300,12 @@ const std::string wex::vi_mode::str() const
 {
   return m_fsm->state_string();
 }
-  
-bool wex::vi_mode::insert() const 
+
+bool wex::vi_mode::insert() const
 {
-  return 
-    get() == INSERT || 
-    get() == INSERT_RECT;
+  return get() == INSERT || get() == INSERT_RECT;
 }
-      
+
 bool wex::vi_mode::transition(std::string& command)
 {
   if (command.empty())
@@ -254,7 +316,7 @@ bool wex::vi_mode::transition(std::string& command)
   {
     if (command.size() == 1)
     {
-       return false;
+      return false;
     }
     else
     {
@@ -265,36 +327,54 @@ bool wex::vi_mode::transition(std::string& command)
     }
   }
 
-  if (std::find_if(m_insert_commands.begin(), m_insert_commands.end(), 
-    [command](auto const& e) {return e.first == command[0];}) 
-    != m_insert_commands.end())
+  if (
+    std::find_if(
+      m_insert_commands.begin(),
+      m_insert_commands.end(),
+      [command](auto const& e) {
+        return e.first == command[0];
+      }) != m_insert_commands.end())
   {
     m_fsm->process(command, evINSERT());
   }
-  else switch (command[0])
-  {
-    case 'K': m_fsm->process(command, evVISUAL_RECT()); break;
-    case 'v': m_fsm->process(command, evVISUAL()); break;
-    case 'V': m_fsm->process(command, evVISUAL_LINE()); break;
-    case 27:  m_fsm->process(command, evESCAPE()); break;
-    default: return false;
-  }
+  else
+    switch (command[0])
+    {
+      case 'K':
+        m_fsm->process(command, evVISUAL_RECT());
+        break;
+      case 'v':
+        m_fsm->process(command, evVISUAL());
+        break;
+      case 'V':
+        m_fsm->process(command, evVISUAL_LINE());
+        break;
+      case 27:
+        m_fsm->process(command, evESCAPE());
+        break;
+      default:
+        return false;
+    }
 
   switch (get())
   {
     case INSERT:
       if (!m_vi->get_stc()->is_hexmode())
       {
-        if (const auto& it = std::find_if(m_insert_commands.begin(), m_insert_commands.end(), 
-          [command](auto const& e) {return e.first == command[0];});
-          it != m_insert_commands.end() && it->second != nullptr)
-          {
-            it->second();
-            m_vi->append_insert_command(command.substr(0, 1));
-          }
+        if (const auto& it = std::find_if(
+              m_insert_commands.begin(),
+              m_insert_commands.end(),
+              [command](auto const& e) {
+                return e.first == command[0];
+              });
+            it != m_insert_commands.end() && it->second != nullptr)
+        {
+          it->second();
+          m_vi->append_insert_command(command.substr(0, 1));
+        }
       }
       break;
-      
+
     case VISUAL_LINE:
       if (m_vi->get_stc()->SelectionIsRectangle())
       {
@@ -308,20 +388,27 @@ bool wex::vi_mode::transition(std::string& command)
       }
       else
       {
-        const auto selstart = m_vi->get_stc()->PositionFromLine(m_vi->get_stc()->LineFromPosition(m_vi->get_stc()->GetSelectionStart()));
-        const auto selend = m_vi->get_stc()->PositionFromLine(m_vi->get_stc()->LineFromPosition(m_vi->get_stc()->GetSelectionEnd()) + 1);
+        const auto selstart =
+          m_vi->get_stc()->PositionFromLine(m_vi->get_stc()->LineFromPosition(
+            m_vi->get_stc()->GetSelectionStart()));
+        const auto selend = m_vi->get_stc()->PositionFromLine(
+          m_vi->get_stc()->LineFromPosition(
+            m_vi->get_stc()->GetSelectionEnd()) +
+          1);
         m_vi->get_stc()->SetSelection(selstart, selend);
         m_vi->get_stc()->HomeExtend();
       }
       break;
-    
-    default: break;
+
+    default:
+      break;
   }
 
-  ((statusbar *)m_vi->frame()->GetStatusBar())->show_pane(
-    "PaneMode", 
-    (!normal() || ex::get_macros().mode().is_recording()) && 
-       config(_("stc.Show mode")).get(true));
+  ((statusbar*)m_vi->frame()->GetStatusBar())
+    ->pane_show(
+      "PaneMode",
+      (!normal() || ex::get_macros().mode().is_recording()) &&
+        config(_("stc.Show mode")).get(true));
 
   frame::statustext(str(), "PaneMode");
 
@@ -330,10 +417,7 @@ bool wex::vi_mode::transition(std::string& command)
   return true;
 }
 
-bool wex::vi_mode::visual() const 
+bool wex::vi_mode::visual() const
 {
-  return 
-   get() == VISUAL || 
-   get() == VISUAL_LINE || 
-   get() == VISUAL_RECT;
+  return get() == VISUAL || get() == VISUAL_LINE || get() == VISUAL_RECT;
 }

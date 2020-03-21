@@ -279,7 +279,7 @@ void wex::macro_fsm::record(const std::string& macro, ex* ex)
 
   if (ex != nullptr)
   {
-    ((statusbar *)ex->frame()->GetStatusBar())->show_pane(
+    ((statusbar *)ex->frame()->GetStatusBar())->pane_show(
       "PaneMode", 
       m_state != IDLE && config(_("stc.Show mode")).get(true));
   }

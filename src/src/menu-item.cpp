@@ -9,33 +9,34 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/menu.h>
-#include <wex/menu-item.h>
 #include <wex/art.h>
+#include <wex/defs.h>
 #include <wex/managedframe.h>
+#include <wex/menu-item.h>
 #include <wex/menu.h>
 #include <wex/process.h>
 #include <wex/vcs.h>
+#include <wx/menu.h>
 
-wex::menu_item::menu_item(type_t type) 
+wex::menu_item::menu_item(type_t type)
   : m_type(type)
 {
 }
 
 wex::menu_item::menu_item(
-  int id, 
-  const std::string& name, 
-  const std::string& help,
-  const wxArtID& art,
-  std::function<void(wxCommandEvent&)> action,
+  int                                   id,
+  const std::string&                    name,
+  const std::string&                    help,
+  const wxArtID&                        art,
+  std::function<void(wxCommandEvent&)>  action,
   std::function<void(wxUpdateUIEvent&)> ui)
   : m_id(id)
   , m_type(MENU)
   , m_name(name)
   , m_help_text(help)
-  , m_artid(art) 
+  , m_artid(art)
 {
-  auto * frame = dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
+  auto* frame = dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
 
   if (action != nullptr)
   {
@@ -47,37 +48,37 @@ wex::menu_item::menu_item(
     frame->Bind(wxEVT_UPDATE_UI, ui, m_id);
   }
 }
- 
+
 wex::menu_item::menu_item(
-  int id, 
-  const std::string& name, 
-  type_t type,
-  std::function<void(wxCommandEvent&)> action,
+  int                                   id,
+  const std::string&                    name,
+  type_t                                type,
+  std::function<void(wxCommandEvent&)>  action,
   std::function<void(wxUpdateUIEvent&)> ui,
-  const std::string& help)
+  const std::string&                    help)
   : m_id(id)
   , m_type(type)
   , m_help_text(help)
   , m_name(name)
 {
-  auto * frame = dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
+  auto* frame = dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
 
   if (action != nullptr)
   {
     frame->Bind(wxEVT_MENU, action, m_id);
   }
-  
+
   if (ui != nullptr)
   {
     frame->Bind(wxEVT_UPDATE_UI, ui, m_id);
   }
 }
-      
+
 wex::menu_item::menu_item(
-  wex::menu* submenu, 
-  const std::string& name, 
-  const std::string& help,   
-  int id)
+  wex::menu*         submenu,
+  const std::string& name,
+  const std::string& help,
+  int                id)
   : m_id(id)
   , m_type(SUBMENU)
   , m_name(name)
@@ -94,15 +95,15 @@ wex::menu_item::menu_item(const wex::path& p, bool show_modal)
 }
 
 wex::menu_item::menu_item(
-  int id, 
-  file_history& history,
+  int                                   id,
+  file_history&                         history,
   std::function<void(wxUpdateUIEvent&)> ui)
   : m_id(id)
   , m_type(HISTORY)
   , m_history(&history)
 {
-  if (auto * frame = dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
-    frame != nullptr && ui != nullptr)
+  if (auto* frame = dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
+      frame != nullptr && ui != nullptr)
   {
     frame->Bind(wxEVT_UPDATE_UI, ui, m_id);
   }
@@ -113,7 +114,7 @@ wex::menu_item::menu_item(const managed_frame* frame)
   , m_type(PANES)
 {
 }
-  
+
 void wex::menu_item::append(wex::menu* menu) const
 {
   switch (m_type)
@@ -127,30 +128,30 @@ void wex::menu_item::append(wex::menu* menu) const
       break;
 
     case MENU:
-      {
+    {
       auto* item = new wxMenuItem(menu, m_id, m_name, m_help_text);
 
       if (const stockart art(m_id); art.get_bitmap().IsOk())
       {
         item->SetBitmap(art.get_bitmap(
-          wxART_MENU, 
+          wxART_MENU,
           wxArtProvider::GetSizeHint(wxART_MENU, true)));
       }
       else if (!m_artid.empty())
       {
         if (const wxBitmap bitmap(wxArtProvider::GetBitmap(
-            m_artid, 
-            wxART_MENU, 
-            wxArtProvider::GetSizeHint(wxART_MENU, true)));
-          bitmap.IsOk())
+              m_artid,
+              wxART_MENU,
+              wxArtProvider::GetSizeHint(wxART_MENU, true)));
+            bitmap.IsOk())
         {
           item->SetBitmap(bitmap);
         }
       }
 
       menu->Append(item);
-      }
-      break;
+    }
+    break;
 
     case PANES:
       append_panes(menu);
@@ -171,7 +172,7 @@ void wex::menu_item::append(wex::menu* menu) const
         // we have an explicit itemid.
         menu->Append(m_id, m_name, m_menu, m_help_text);
       }
-    break;
+      break;
 
     case VCS:
       append_vcs(menu);
@@ -196,7 +197,7 @@ void wex::menu_item::append_panes(wex::menu* menu) const
     {
       continue;
     }
-    
+
     menu->append({{it.second, it.first.second, CHECK}});
   }
 }
@@ -214,9 +215,8 @@ void wex::menu_item::append_vcs(wex::menu* menu) const
     else
     {
       wex::vcs vcs;
-         
-      if (vcs.set_entry_from_base(
-        m_modal ? wxTheApp->GetTopWindow(): nullptr))
+
+      if (vcs.set_entry_from_base(m_modal ? wxTheApp->GetTopWindow() : nullptr))
       {
         vcs.entry().build_menu(ID_VCS_LOWEST + 1, menu);
       }
@@ -227,8 +227,8 @@ void wex::menu_item::append_vcs(wex::menu* menu) const
     auto* vcsmenu = new wex::menu(menu->style());
 
     if (const wex::vcs vcs({m_path.string()});
-      vcs.entry().build_menu(ID_EDIT_VCS_LOWEST + 1, vcsmenu))
-    { 
+        vcs.entry().build_menu(ID_EDIT_VCS_LOWEST + 1, vcsmenu))
+    {
       menu->append({{vcsmenu, vcs.entry().name()}});
     }
   }
