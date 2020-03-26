@@ -8,17 +8,17 @@
 #pragma once
 
 #include <vector>
-#include <wx/prntbase.h>
-#include <wx/stc/stc.h>
 #include <wex/autocomplete.h>
 #include <wex/hexmode.h>
 #include <wex/item.h>
 #include <wex/link.h>
 #include <wex/marker.h>
-#include <wex/stcfile.h>
 #include <wex/stc-data.h>
+#include <wex/stcfile.h>
 #include <wex/util.h>
 #include <wex/vi.h>
+#include <wx/prntbase.h>
+#include <wx/stc/stc.h>
 
 namespace wex
 {
@@ -35,7 +35,7 @@ namespace wex
   /// Offers a styled text ctrl with:
   /// - lexer support (syntax colouring, folding)
   /// - vi support (default vi mode is off)
-  /// - find/replace 
+  /// - find/replace
   /// - popup menu
   /// - printing
   class stc : public wxStyledTextCtrl
@@ -51,7 +51,7 @@ namespace wex
     };
 
     typedef std::bitset<4> margin_t;
-    
+
     /// Static interface
 
     /// Shows a dialog with options, returns dialog return code.
@@ -60,34 +60,34 @@ namespace wex
     static int config_dialog(const window_data& data = window_data());
 
     /// Returns the config dialog.
-    static item_dialog* get_config_dialog() {return m_config_dialog;};
-    
-    /// Saves static data in cofig.
+    static item_dialog* get_config_dialog() { return m_config_dialog; };
+
+    /// Saves static data in config.
     /// Invoked once during app::on_exit.
     static void on_exit();
-    
+
     /// Reads static data from config (e.g. zooming).
     /// Invoked once during app::OnInit.
     static void on_init();
-    
+
     /// Constructors.
-    
+
     /// Default constructor, sets text if not empty.
     stc(
-      const std::string& text = std::string(), 
-      const stc_data& data = stc_data());
+      const std::string& text = std::string(),
+      const stc_data&    data = stc_data());
 
     /// Constructor, opens the file if it exists.
     stc(const path& file, const stc_data& data = stc_data());
 
     /// Virtual override methods.
-    
-    /// Will a cut succeed? 
+
+    /// Will a cut succeed?
     bool CanCut() const override;
 
-    /// Will a paste succeed? 
+    /// Will a paste succeed?
     bool CanPaste() const override;
-    
+
     /// Clear the selection.
     void Clear() override;
 
@@ -101,22 +101,22 @@ namespace wex
     void Paste() override;
 
     /// Deselects selected text in the control.
-    // Reimplemented, since scintilla version sets 
+    // Reimplemented, since scintilla version sets
     // empty sel at 0, and sets caret on pos 0.
     void SelectNone() override;
-    
-    /// If there is an undo facility and the last operation can be undone, 
-    /// undoes the last operation. 
+
+    /// If there is an undo facility and the last operation can be undone,
+    /// undoes the last operation.
     void Undo() override;
-    
+
     /// Virtual interface
 
     /// Processes specified char.
     /// Default does nothing, but is invoked during control_char_dialog,
     /// allowing you to add your own processing.
     /// Return true if char was processed.
-    virtual bool process_char(int c) {return false;};
-    
+    virtual bool process_char(int c) { return false; };
+
     /// Other methods.
 
     /// Adds text.
@@ -126,12 +126,12 @@ namespace wex
     void append_text(const std::string& text);
 
     /// Returns autocomplete.
-    auto & auto_complete() {return m_auto_complete;};
+    auto& auto_complete() { return m_auto_complete; };
 
     /// After pressing enter, starts new line at same place
     /// as previous line.
     bool auto_indentation(int c);
-    
+
     // Clears the component: all text is cleared and all styles are reset.
     // Invoked by Open and do_file_new.
     // (Clear is used by scintilla to clear the selection).
@@ -141,14 +141,14 @@ namespace wex
     void config_get();
 
     /// Returns associated data.
-    const auto& data() const {return m_data;};
+    const auto& data() const { return m_data; };
 
     /// Returns EOL string.
     /// If you only want to insert a newline, use NewLine()
     /// (from wxStyledTextCtrl).
     const std::string eol() const;
 
-    /// Shows a menu with current line type checked, 
+    /// Shows a menu with current line type checked,
     /// and allows you to change it.
     void filetype_menu();
 
@@ -158,7 +158,7 @@ namespace wex
     /// Finds next.
     bool find_next(
       /// text to find
-      const std::string& text, 
+      const std::string& text,
       /// search flags to be used:
       /// - wxSTC_FIND_WHOLEWORD
       /// - wxSTC_FIND_MATCHCASE
@@ -169,19 +169,19 @@ namespace wex
       int find_flags = -1,
       /// finds next or previous
       bool find_next = true);
-      
+
     /// Enables or disables folding depending on fold property.
     void fold(
       /// if document contains more than 'Auto fold' lines,
-      /// or if fold_all (and fold propertry is on) is specified, 
+      /// or if fold_all (and fold property is on) is specified,
       /// always all lines are folded.
       bool fold_all = false);
 
     /// Returns the file.
-    auto & get_file() {return m_file;};
+    auto& get_file() { return m_file; };
 
     /// Returns the filename, as used by the file.
-    const auto & get_filename() const {return m_file.get_filename();};
+    const auto& get_filename() const { return m_file.get_filename(); };
 
     /// Returns find string, from selected text or from config.
     /// The search flags are taken from frd.
@@ -189,62 +189,64 @@ namespace wex
     const std::string get_find_string();
 
     /// Returns hex mode component.
-    const auto & get_hexmode() const {return m_hexmode;};
-    
+    const auto& get_hexmode() const { return m_hexmode; };
+
     /// Returns writable hex mode component.
-    auto & get_hexmode() {return m_hexmode;};
-    
-    /// Returns the lexer.
-    const auto & get_lexer() const {return m_lexer;};
+    auto& get_hexmode() { return m_hexmode; };
 
     /// Returns the lexer.
-    auto & get_lexer() {return m_lexer;};
+    const auto& get_lexer() const { return m_lexer; };
+
+    /// Returns the lexer.
+    auto& get_lexer() { return m_lexer; };
 
     /// Returns line on which text margin was clicked,
     /// or -1 if not.
-    auto get_margin_text_click() const {return m_margin_text_click;};
+    auto get_margin_text_click() const { return m_margin_text_click; };
 
     /// Returns selected text as a string.
     const std::string get_selected_text();
-    
+
     /// Returns vi component.
-    const auto & get_vi() const {return m_vi;};
-    
+    const auto& get_vi() const { return m_vi; };
+
     /// Returns writable vi component.
     /// This allows you to do vi like editing:
     /// - get_vi().Command(":1,$s/xx/yy/g")
     /// - get_vi().Command(":w")
     /// to replace all xx by yy, and save the file.
-    auto & get_vi() {return m_vi;};
-    
+    auto& get_vi() { return m_vi; };
+
     /// Returns word at position.
     const std::string get_word_at_pos(int pos) const;
 
     /// Returns true if we are in hex mode.
-    bool is_hexmode() const {return m_hexmode.is_active();};
+    bool is_hexmode() const { return m_hexmode.is_active(); };
 
-    /// Returns true if line numbers are shown. 
-    bool is_shown_line_numbers() const {return
-      GetMarginWidth(m_margin_line_number) > 0;};
+    /// Returns true if line numbers are shown.
+    bool is_shown_line_numbers() const
+    {
+      return GetMarginWidth(m_margin_line_number) > 0;
+    };
 
     /// Keeps event data.
-    void keep_event_data(bool synced) {m_data.event(synced);};
-    
+    void keep_event_data(bool synced) { m_data.event(synced); };
+
     /// If selected text is a link, opens the link.
     bool link_open();
 
     /// Deletes all change markers.
     /// Returns false if marker change is not loaded.
     bool marker_delete_all_change();
-    
-    /// Opens the file, reads the content into the window, 
+
+    /// Opens the file, reads the content into the window,
     /// then closes the file and sets the lexer.
     bool open(const path& filename, const stc_data& data = stc_data());
 
     /// Restores saved position.
     /// Returns true if position was saved before.
     bool position_restore();
-    
+
     /// Saves position.
     void position_save();
 
@@ -252,20 +254,19 @@ namespace wex
     void print(bool prompt = true);
 
     /// Shows a print preview.
-    void print_preview(
-      wxPreviewFrameModalityKind kind = wxPreviewFrame_AppModal);
+    void
+    print_preview(wxPreviewFrameModalityKind kind = wxPreviewFrame_AppModal);
 
     /// Shows properties on the statusbar using specified flags.
     void properties_message(path::status_t flags = 0);
-    
+
     /// Replaces all text.
     /// It there is a selection, it replaces in the selection, otherwise
     /// in the entire document.
     /// Returns the number of replacements.
-    int replace_all(
-      const std::string& find_text, 
-      const std::string& replace_text);
-    
+    int
+    replace_all(const std::string& find_text, const std::string& replace_text);
+
     /// Replaces text and calls find next.
     /// Uses settings from find replace data.
     bool replace_next(bool stc_find_string = true);
@@ -275,7 +276,7 @@ namespace wex
     /// it starts at current position.
     bool replace_next(
       /// text to find
-      const std::string& find_text, 
+      const std::string& find_text,
       /// text to replace with
       const std::string& replace_text,
       /// search flags to be used:
@@ -288,7 +289,7 @@ namespace wex
       int find_flags = 0,
       /// argument passed on to find_next
       bool stc_find_string = true);
-    
+
     /// Reset all margins.
     /// Default also resets the divider margin.
     void reset_margins(margin_t type = margin_t().set());
@@ -304,7 +305,7 @@ namespace wex
     /// - wxSTC_FIND_POSIX
     /// - if -1, use flags from find replace data
     void set_search_flags(int flags);
-    
+
     /// Sets the text.
     void set_text(const std::string& value);
 
@@ -314,15 +315,15 @@ namespace wex
 
     /// Shows or hides line numbers.
     void show_line_numbers(bool show);
-    
+
     /// Starts or stops syncing.
     /// Default syncing is started during construction.
     void sync(bool start = true);
-    
+
     /// Use and show modification markers in the margin.
     /// If you open a file, the modification markers are used.
     void use_modification_markers(bool use);
-    
+
     // These methods are not yet available in scintilla, create stubs
     // (for the vi MOTION macro).
     void BigWordLeft();
@@ -334,24 +335,25 @@ namespace wex
     void BigWordRightEndRectExtend();
     void BigWordRightExtend();
     void BigWordRightRectExtend();
-    void LineHome() {Home();};
-    void LineHomeExtend() {HomeExtend();};
-    void LineHomeRectExtend() {HomeRectExtend();};
-    void LineScrollDownExtend() {;};
-    void LineScrollDownRectExtend() {;};
-    void LineScrollUpExtend() {;};
-    void LineScrollUpRectExtend() {;};
+    void LineHome() { Home(); };
+    void LineHomeExtend() { HomeExtend(); };
+    void LineHomeRectExtend() { HomeRectExtend(); };
+    void LineScrollDownExtend() { ; };
+    void LineScrollDownRectExtend() { ; };
+    void LineScrollUpExtend() { ; };
+    void LineScrollUpRectExtend() { ; };
     void PageScrollDown();
-    void PageScrollDownExtend() {;};
-    void PageScrollDownRectExtend() {;};
+    void PageScrollDownExtend() { ; };
+    void PageScrollDownRectExtend() { ; };
     void PageScrollUp();
-    void PageScrollUpExtend() {;};
-    void PageScrollUpRectExtend() {;};
-    void ParaUpRectExtend() {;};
-    void ParaDownRectExtend() {;};
+    void PageScrollUpExtend() { ; };
+    void PageScrollUpRectExtend() { ; };
+    void ParaUpRectExtend() { ; };
+    void ParaDownRectExtend() { ; };
     void WordLeftRectExtend();
     void WordRightRectExtend();
-    void WordRightEndRectExtend() {;};
+    void WordRightEndRectExtend() { ; };
+
   private:
     enum
     {
@@ -359,9 +361,9 @@ namespace wex
       LINK_OPEN      = 1,
       LINK_OPEN_MIME = 2,
     };
-    
+
     typedef std::bitset<3> link_t;
-    
+
     void bind_all();
     void build_popup_menu(menu& menu);
     void check_brace();
@@ -369,51 +371,40 @@ namespace wex
     bool file_readonly_attribute_changed();
     void fold_all();
     void guess_type_and_modeline();
-    bool link_open(
-      link_t mode, 
-      std::string* filename = nullptr);
+    bool link_open(link_t mode, std::string* filename = nullptr);
     void mark_modified(const wxStyledTextEvent& event);
     void on_idle(wxIdleEvent& event);
     void on_styled_text(wxStyledTextEvent& event);
 
-    const int 
-      m_margin_divider_number {1}, 
-      m_margin_folding_number {2},
-      m_margin_line_number {0}, 
-      m_margin_text_number {3};
+    const int m_margin_divider_number{1}, m_margin_folding_number{2},
+      m_margin_line_number{0}, m_margin_text_number{3};
 
     const marker m_marker_change = marker(1);
 
-    int 
-      m_fold_level {0}, 
-      m_margin_text_click {-1},
-      m_saved_pos {-1}, 
-      m_saved_selection_start {-1}, 
-      m_saved_selection_end {-1};
-    
-    bool 
-      m_adding_chars {false}, 
-      m_skip {false};
+    int m_fold_level{0}, m_margin_text_click{-1}, m_saved_pos{-1},
+      m_saved_selection_start{-1}, m_saved_selection_end{-1};
+
+    bool m_adding_chars{false}, m_skip{false};
 
     managed_frame* m_frame;
 
     autocomplete m_auto_complete;
-    hexmode m_hexmode;
+    hexmode      m_hexmode;
     // We use a separate lexer here as well
     // (though stc_file offers one), as you can manually override
     // the lexer.
-    lexer m_lexer;
-    link m_link;
+    lexer    m_lexer;
+    link     m_link;
     stc_data m_data;
     stc_file m_file;
-    vi m_vi;
-    
+    vi       m_vi;
+
     wxFont m_default_font;
 
     // All objects share the following:
-    static inline item_dialog* m_config_dialog = nullptr;
-    static inline stc_entry_dialog* m_entry_dialog = nullptr;
-    static inline int m_zoom = -1;
-    static inline std::vector < item > * m_config_items = nullptr;
+    static inline item_dialog*       m_config_dialog = nullptr;
+    static inline stc_entry_dialog*  m_entry_dialog  = nullptr;
+    static inline int                m_zoom          = -1;
+    static inline std::vector<item>* m_config_items  = nullptr;
   };
-};
+}; // namespace wex

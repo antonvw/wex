@@ -1,3 +1,6 @@
+# feature/style
+- add missing dll vcruntime140_1.dll (appveyor) 
+
 # feature/aui
 - the wxAuiManager should be private for managed_frame
 
@@ -13,11 +16,6 @@
 - command_calc command_reg can be combined
 - ex_command should have a prefix, instead of textctrl in managedframe
 - test in vi::calc and ex_command, managed_frame
-
-# feature/insight
-- typo fix like separator
-- no break in switch after return
-- use final if appropriate
 
 # feature/blame
 - improve blame size calculation, now only uses size of first blame line,

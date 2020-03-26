@@ -10,6 +10,8 @@
 
 ## Adding functionality
 
+- use style as indicated by .clang-format
+
 - use STL whenever possible 
 
 - icons and bitmaps

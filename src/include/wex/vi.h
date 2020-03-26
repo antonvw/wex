@@ -31,7 +31,7 @@ namespace wex
     
     /// Executes vi command.
     /// Returns true if the command was executed.
-    bool command(const std::string& command) override;
+    bool command(const std::string& command) final;
     
     /// Returns inserted text.
     const auto & inserted_text() const {return m_insert_text;};
