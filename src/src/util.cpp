@@ -582,21 +582,36 @@ int wex::open_files(
     }
     else
     {
-      path fn(it);
-      wex::stc_data data(stc_data);
-
-      if (!it.file_exists() && it.string().find(":") != std::string::npos)
+      try
       {
-        if (const path& val(link().get_path(it.string(), data.control()));
-          !val.empty())
+        path fn(it);
+        wex::stc_data data(stc_data);
+
+        if (!it.file_exists() && it.string().find(":") != std::string::npos)
         {
-          fn = val;
+          if (const path& val(link().get_path(it.string(), data.control()));
+            !val.empty())
+          {
+            fn = val;
+          }
+        }
+
+        fn.make_absolute();
+        count++;
+        
+        if (fn.file_exists())
+        {
+          frame->open_file(fn, data);
+        }
+        else
+        {
+          log("open file") << fn;
         }
       }
-
-      fn.make_absolute();
-      count++;
-      frame->open_file(fn, data);
+      catch (std::exception& e)
+      {
+        log(e) << it;
+      }
     }
   }
   

@@ -154,7 +154,7 @@ wex::managed_frame::managed_frame(size_t maxFiles, const window_data& data)
     Bind(
       wxEVT_MENU,
       [=](wxCommandEvent& event) {
-        toggle_pane(it.first.first);
+        pane_toggle(it.first.first);
       },
       it.second);
   }
@@ -210,31 +210,6 @@ wex::managed_frame::~managed_frame()
   m_manager.UnInit();
 }
 
-bool wex::managed_frame::add_panes(
-  const panes_t&     panes,
-  const std::string& perspective)
-{
-  for (const auto& it : panes)
-  {
-    if (!m_manager.AddPane(it.first, it.second))
-    {
-      return false;
-    }
-  }
-
-  if (!perspective.empty())
-  {
-    m_perspective = "perspective." + perspective;
-
-    if (const auto& val(wex::config(m_perspective).get()); !val.empty())
-    {
-      m_manager.LoadPerspective(val);
-    }
-  }
-
-  return true;
-}
-
 bool wex::managed_frame::add_toolbar_panes(const panes_t& panes)
 {
   for (const auto& it : panes)
@@ -266,7 +241,7 @@ bool wex::managed_frame::add_toolbar_panes(const panes_t& panes)
         .CaptionVisible(false);
     }
 
-    if (!add_panes({{it.first, pane}}))
+    if (!pane_add({{it.first, pane}}))
     {
       return false;
     }
@@ -313,7 +288,7 @@ void wex::managed_frame::on_menu_history(
 
 bool wex::managed_frame::show_ex_command(ex* ex, const std::string& command)
 {
-  return show_pane("VIBAR") && m_textctrl->set_ex(ex, command);
+  return pane_show("VIBAR") && m_textctrl->set_ex(ex, command);
 }
 
 void wex::managed_frame::hide_ex_bar(int hide)
@@ -324,7 +299,7 @@ void wex::managed_frame::hide_ex_bar(int hide)
       hide == HIDE_BAR_FORCE || hide == HIDE_BAR_FORCE_FOCUS_STC ||
       (GetStatusBar() != nullptr && GetStatusBar()->IsShown()))
     {
-      show_pane("VIBAR", false);
+      pane_show("VIBAR", false);
     }
 
     if (
@@ -366,6 +341,67 @@ wex::stc* wex::managed_frame::open_file(const path& file, const stc_data& data)
   return nullptr;
 }
 
+bool wex::managed_frame::pane_add(
+  const panes_t&     panes,
+  const std::string& perspective)
+{
+  for (const auto& it : panes)
+  {
+    if (!m_manager.AddPane(it.first, it.second))
+    {
+      return false;
+    }
+  }
+
+  if (!perspective.empty())
+  {
+    m_perspective = "perspective." + perspective;
+
+    if (const auto& val(wex::config(m_perspective).get()); !val.empty())
+    {
+      m_manager.LoadPerspective(val);
+    }
+  }
+  
+  m_manager.Update();
+
+  return true;
+}
+
+bool wex::managed_frame::pane_maximize(const std::string& pane)
+{
+  m_manager.GetPane(pane).Maximize();
+  m_manager.Update();
+
+  return true;
+}
+    
+bool wex::managed_frame::pane_restore(const std::string& pane)
+{  
+  m_manager.GetPane(pane).Restore();
+  m_manager.Update();
+
+  return true;
+}
+    
+bool wex::managed_frame::pane_show(const std::string& pane, bool show)
+{
+  if (wxAuiPaneInfo& info = m_manager.GetPane(pane); !info.IsOk())
+  {
+    return false;
+  }
+  else
+  {
+    show ? info.Show() : info.Hide();
+
+    // ignore result, e.g. VIBAR
+    m_optionsbar->set_checkbox(pane, show);
+
+    m_manager.Update();
+    return true;
+  }
+}
+
 void wex::managed_frame::print_ex(ex* ex, const std::string& text)
 {
   ex->print(text);
@@ -386,22 +422,6 @@ void wex::managed_frame::show_ex_message(const std::string& text)
   else
   {
     m_textctrl->SetValue(text);
-  }
-}
-
-bool wex::managed_frame::show_pane(const std::string& pane, bool show)
-{
-  if (wxAuiPaneInfo& info = m_manager.GetPane(pane); !info.IsOk())
-  {
-    return false;
-  }
-  else
-  {
-    show ? info.Show() : info.Hide();
-    m_manager.Update();
-    // ignore result, e.g. VIBAR
-    m_optionsbar->set_checkbox(pane, show);
-    return true;
   }
 }
 

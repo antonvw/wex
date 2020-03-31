@@ -12,43 +12,36 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/timer.h>
+#include "test.h"
 #include <wex/config.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
 #include <wex/managedframe.h>
-#include "test.h"
+#include <wx/timer.h>
 
 const std::string wex::test::add_pane(wex::managed_frame* frame, wxWindow* pane)
 {
   static int no = 0;
-  
-  wxAuiPaneInfo info(frame->manager().GetAllPanes().GetCount() == 5 ?
-    wxAuiPaneInfo().Center():
-    wxAuiPaneInfo().Bottom());
+
+  wxAuiPaneInfo info(
+    frame->panes() == 5 ? wxAuiPaneInfo().Center() : wxAuiPaneInfo().Bottom());
 
   const std::string name("PANE " + std::to_string(no++));
-  
-  frame->manager().AddPane(pane, wxAuiPaneInfo(info)
-    .Name(name)
-    .MinSize(250, 200)
-    .Caption(name));
-  
-  frame->manager().Update();
-  
+
+  frame->pane_add(
+    {{pane, wxAuiPaneInfo(info).Name(name).MinSize(250, 200).Caption(name)}});
+
   return name;
 }
 
-const wex::path wex::test::get_path(const std::string& file) 
+const wex::path wex::test::get_path(const std::string& file)
 {
   return wex::test::app::get_path(file);
 }
 
 wex::path wex::test::app::get_path(const std::string& file)
 {
-  return file.empty() ?
-    m_path:
-    path(m_path.string(), file);
+  return file.empty() ? m_path : path(m_path.string(), file);
 }
 
 bool wex::test::app::OnInit()
@@ -65,11 +58,11 @@ bool wex::test::app::OnInit()
   }
 
   lexers::get();
-  
+
   config(_("stc.vi mode")).set(true);
   config(_("stc.Auto complete")).set(true);
   config(_("locale")).set(get_locale().GetName().ToStdString()); // for coverage
-  
+
   return true;
 }
 
@@ -86,7 +79,8 @@ int wex::test::app::OnRun()
     {
       OnExit();
       ExitMainLoop();
-    }});
+    }
+  });
 
   return wex::app::OnRun();
 }
@@ -95,7 +89,7 @@ void wex::test::app::set_context(doctest::Context* context)
 {
   m_context = context;
 }
-  
+
 int wex::test::main(int argc, char* argv[], wex::test::app* app)
 {
 #ifndef __WXMSW__

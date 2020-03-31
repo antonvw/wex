@@ -1,9 +1,3 @@
-# feature/style
-- add missing dll vcruntime140_1.dll (appveyor) 
-
-# feature/aui
-- the wxAuiManager should be private for managed_frame
-
 # feature/ex
 - the :a, :i, :c ex commands do not follow ex opengroup specs
   e.g. :a xxx should give an error, and . on empty line should end append
@@ -42,9 +36,10 @@
   - wxDateTime replace by c++20 methods date and time utilities
 
 # backlog
+- add missing dll vcruntime140_1.dll (appveyor) 
 - bug :prev or :n from stdin
 - add use namespace wex
-- use configurble toobar from xml
+- use configurable toobar from xml
 - start up with recent project, close project
   -> windows appear
 - each process separate stc
