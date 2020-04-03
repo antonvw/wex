@@ -688,7 +688,7 @@ bool wex::ex::command_address(const std::string& command)
                                  "mark|ma|"
                                  "pu|"
                                  "read|"
-                                 "[aikrz=])(.*)");
+                                 "[aikrz=])([\\s\\S]*)");
 
     // 2addr commands
     const std::string cmds_2addr("(change|"
@@ -703,7 +703,7 @@ bool wex::ex::command_address(const std::string& command)
                                  "substitute|"
                                  "write|"
                                  "yank|ya|"
-                                 "[cdgjlmpsStvwy<>\\!&~@#])(.*)");
+                                 "[cdgjlmpsStvwy<>\\!&~@#])([\\s\\S]*)");
 
     if (std::vector<std::string> v;
         // 2addr % range
@@ -779,10 +779,26 @@ bool wex::ex::command_address(const std::string& command)
         return false;
 
       case 'a':
-        return addr.append(rest);
+        if (rest.find('|') != std::string::npos)
+        {
+          m_frame->hide_ex_bar();
+          return addr.append(after(rest, '|'));
+        }
+        else
+        {
+          return m_frame->show_ex_input(this, cmd[0]);
+        }
 
       case 'i':
-        return addr.insert(rest);
+        if (rest.find('|') != std::string::npos)
+        {
+          m_frame->hide_ex_bar();
+          return addr.insert(after(rest, '|'));
+        }
+        else
+        {
+          return m_frame->show_ex_input(this, cmd[0]);
+        }
 
       case 'k':
         return !rest.empty() ? addr.marker_add(rest[0]) : false;
@@ -819,7 +835,15 @@ bool wex::ex::command_address(const std::string& command)
         return false;
 
       case 'c':
-        return range.change(rest);
+        if (rest.find('|') != std::string::npos)
+        {
+          m_frame->hide_ex_bar();
+          return range.change(after(rest, '|'));
+        }
+        else
+        {
+          return m_frame->show_ex_input(this, cmd[0]);
+        }
 
       case 'd':
         r  = range.erase();

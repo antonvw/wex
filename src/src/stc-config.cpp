@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
+#include <wex/beautify.h>
 #include <wex/config.h>
 #include <wex/item-vector.h>
 #include <wex/itemdlg.h>
@@ -215,14 +216,16 @@ void wex::stc::on_init()
                _("stc.Use tabs"),
                def(_("stc.Caret line")),
                def(_("stc.Scroll bars")),
+               _("stc.Auto beautify"),
                _("stc.Auto blame"),
                _("stc.Auto complete"),
+               def(_("stc.Keep zoom")),
                def(_("stc.Keep zoom")),
                def(_("stc.vi mode")),
                _("stc.vi tag fullpath")}},
              {_("stc.Beautifier"),
               item::COMBOBOX,
-              std::list<std::string>{{""}, {"clang-format"}}},
+              beautify().list()},
              {_("stc.Search engine"),
               item::COMBOBOX,
               std::list<std::string>{{"https://duckduckgo.com"}}}}},

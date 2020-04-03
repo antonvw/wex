@@ -526,8 +526,9 @@ wex::vi::vi(wex::stc* arg)
            }
            else
            {
-             get_stc()->SetTargetStart(get_stc()->GetCurrentPos());
-             get_stc()->SetTargetEnd(get_stc()->GetCurrentPos() + m_count);
+             get_stc()->SetTargetRange(
+               get_stc()->GetCurrentPos(),
+               get_stc()->GetCurrentPos() + m_count);
              get_stc()->ReplaceTarget(std::string(m_count, command.back()));
            }
            return 2;
@@ -1313,8 +1314,9 @@ void wex::vi::insert_mode_normal(const std::string& text)
 
               if (match_pos != wxSTC_INVALID_POSITION)
               {
-                get_stc()->SetTargetStart(match_pos);
-                get_stc()->SetTargetEnd(match_pos + it->first.size());
+                get_stc()->SetTargetRange(
+                  match_pos,
+                  match_pos + it->first.size());
                 get_stc()->ReplaceTarget(it->second);
                 get_stc()->SetCurrentPos(
                   pos + it->second.size() - it->first.size());

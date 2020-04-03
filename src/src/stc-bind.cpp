@@ -8,6 +8,7 @@
 #include <vector>
 #include <wex/accelerators.h>
 #include <wex/addressrange.h>
+#include <wex/beautify.h>
 #include <wex/config.h>
 #include <wex/debug.h>
 #include <wex/defs.h>
@@ -832,15 +833,7 @@ void wex::stc::bind_all()
   Bind(
     wxEVT_MENU,
     [=](wxCommandEvent& event) {
-      const auto&        beauty(item_vector(m_config_items)
-                           .find<std::list<std::string>>(_("stc.Beautifier")));
-      const std::string& lines(
-        GetSelectedText().empty() ?
-          std::string() :
-          " --lines " +
-            std::to_string(LineFromPosition(GetSelectionStart()) + 1) + ":" +
-            std::to_string(LineFromPosition(GetSelectionEnd()) + 1));
-      addressrange(&m_vi, "%").escape(beauty.front() + lines);
+      beautify().stc(*this);
     },
     idBeautify);
 
@@ -1065,9 +1058,8 @@ void wex::stc::build_popup_menu(menu& menu)
 
   menu.append({{}, {menu_item::EDIT}});
 
-  const bool beautify(!item_vector(m_config_items)
-    .find<std::list<std::string>>(_("stc.Beautifier")).front().empty());
-  
+  const bool beautify_add(beautify().is_active() && !beautify().is_auto());
+
   if (!GetReadOnly())
   {
     if (!sel.empty())
@@ -1075,13 +1067,11 @@ void wex::stc::build_popup_menu(menu& menu)
       auto* menuSelection = new wex::menu(
         menu.style(),
         {{idUppercase, _("&Uppercase\tF11")},
-        {idLowercase, _("&Lowercase\tF12")}});
-      
-      if (beautify)
+         {idLowercase, _("&Lowercase\tF12")}});
+
+      if (beautify_add)
       {
-        menuSelection->append({
-         {},
-         {idBeautify, _("&Beautify")}});
+        menuSelection->append({{}, {idBeautify, _("&Beautify")}});
       }
 
       if (get_number_of_lines(sel) > 1)
@@ -1108,10 +1098,8 @@ void wex::stc::build_popup_menu(menu& menu)
   }
 
   if (
-    !GetReadOnly() && sel.empty() && beautify &&
-    (m_lexer.scintilla_lexer() == "cpp" ||
-     m_lexer.scintilla_lexer() == "java" ||
-     m_lexer.scintilla_lexer() == "javascript"))
+    !GetReadOnly() && sel.empty() && beautify_add &&
+    beautify().is_supported(m_lexer))
   {
     menu.append({{}, {idBeautify, _("&Beautify")}});
   }

@@ -10,60 +10,60 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wex/config.h>
+#include <wex/frd.h>
+#include <wex/item.h>
+#include <wex/log.h>
+#include <wex/tostring.h>
+#include <wex/util.h>
 #include <wx/checklst.h>
 #include <wx/clrpicker.h>
 #include <wx/spinctrl.h>
 #include <wx/window.h>
-#include <wex/config.h>
-#include <wex/item.h>
-#include <wex/frd.h>
-#include <wex/log.h>
-#include <wex/tostring.h>
-#include <wex/util.h>
 
-#define PERSISTENT(TYPE, DEFAULT)                          \
-{                                                          \
-  if (save)                                                \
-    config(m_label).set(std::any_cast<TYPE>(get_value())); \
-  else                                                     \
-    set_value((TYPE)config(m_label).get(DEFAULT));         \
-}                                                          \
+#define PERSISTENT(TYPE, DEFAULT)                            \
+  {                                                          \
+    if (save)                                                \
+      config(m_label).set(std::any_cast<TYPE>(get_value())); \
+    else                                                     \
+      set_value((TYPE)config(m_label).get(DEFAULT));         \
+  }
 
-bool update(
-  wex::find_replace_data* frd, 
-  wxCheckListBox* clb, 
-  int item, 
-  bool save, 
-  bool value)
+namespace wex
 {
-  if (const std::string field(clb->GetString(item));
-    field == frd->text_match_word())
+  bool update(
+    wex::find_replace_data* frd,
+    wxCheckListBox*         clb,
+    int                     item,
+    bool                    save,
+    bool                    value)
   {
-    !save ? clb->Check(
-       item, frd->match_word()): frd->set_match_word(value);
-  }
-  else if (field == frd->text_match_case())
-  {
-    !save ? clb->Check(
-       item, frd->match_case()): frd->set_match_case(value);
-  }
-  else if (field == frd->text_regex())
-  {
-    !save ? clb->Check(
-       item, frd->use_regex()): frd->set_use_regex(value);
-  }
-  else if (field == frd->text_search_down())
-  {
-    !save ? clb->Check(
-       item, frd->search_down()): frd->set_search_down(value);
-  }
-  else
-  {
-    return false;
-  }
+    if (const std::string field(clb->GetString(item));
+        field == frd->text_match_word())
+    {
+      !save ? clb->Check(item, frd->match_word()) : frd->set_match_word(value);
+    }
+    else if (field == frd->text_match_case())
+    {
+      !save ? clb->Check(item, frd->match_case()) : frd->set_match_case(value);
+    }
+    else if (field == frd->text_regex())
+    {
+      !save ? clb->Check(item, frd->use_regex()) : frd->set_use_regex(value);
+    }
+    else if (field == frd->text_search_down())
+    {
+      !save ? clb->Check(item, frd->search_down()) :
+              frd->set_search_down(value);
+    }
+    else
+    {
+      return false;
+    }
 
-  return true;
-}
+    return true;
+  }
+} // namespace wex
 
 bool wex::item::to_config(bool save) const
 {
@@ -74,23 +74,27 @@ bool wex::item::to_config(bool save) const
 
   switch (type())
   {
-    case CHECKBOX:           
-      PERSISTENT(bool, ((wxCheckBox* )m_window)->GetValue());
+    case CHECKBOX:
+      PERSISTENT(bool, ((wxCheckBox*)m_window)->GetValue());
       break;
 
-    case CHECKLISTBOX_BIT:   
+    case CHECKLISTBOX_BIT:
       PERSISTENT(long, std::any_cast<long>(get_value()));
       break;
-    
+
     case CHECKLISTBOX_BOOL:
-      if (auto* clb = (wxCheckListBox*)m_window;
-        clb != nullptr)
+      if (auto* clb = (wxCheckListBox*)m_window; clb != nullptr)
       {
         size_t i = 0;
-      
+
         for (const auto& c : std::any_cast<choices_bool_t>(m_initial))
         {
-          if (!update(find_replace_data::get(), clb, i, save, clb->IsChecked(i)))
+          if (!update(
+                find_replace_data::get(),
+                clb,
+                i,
+                save,
+                clb->IsChecked(i)))
           {
             if (save)
               config(before(c, ',')).set(clb->IsChecked(i));
@@ -103,17 +107,17 @@ bool wex::item::to_config(bool save) const
       }
       break;
 
-    case COLOURPICKERWIDGET: 
-      PERSISTENT(wxColour, ((wxColourPickerWidget* )m_window)->GetColour()); 
+    case COLOURPICKERWIDGET:
+      PERSISTENT(wxColour, ((wxColourPickerWidget*)m_window)->GetColour());
       break;
-    
+
     case COMBOBOX:
     case COMBOBOX_DIR:
     case COMBOBOX_FILE:
       if (auto* cb = (wxComboBox*)m_window; save)
       {
         if (const auto l = to_list_string(cb, m_max_items).get();
-          m_label == find_replace_data::get()->text_find())
+            m_label == find_replace_data::get()->text_find())
         {
           find_replace_data::get()->set_find_strings(l);
         }
@@ -128,17 +132,19 @@ bool wex::item::to_config(bool save) const
       }
       else
       {
-        combobox_from_list(cb, config(m_label).get(
-          !m_initial.has_value() ? 
-            std::list<std::string>{}:
-            std::any_cast<std::list<std::string>>(m_initial)));
+        combobox_from_list(
+          cb,
+          config(m_label).get(
+            !m_initial.has_value() ?
+              std::list<std::string>{} :
+              std::any_cast<std::list<std::string>>(m_initial)));
       }
       break;
 
-    case DIRPICKERCTRL:      
-      PERSISTENT(std::string, m_label); 
+    case DIRPICKERCTRL:
+      PERSISTENT(std::string, m_label);
       break;
-    
+
     case FILEPICKERCTRL:
       if (save)
       {
@@ -160,12 +166,10 @@ bool wex::item::to_config(bool save) const
       }
       break;
 
-    case FONTPICKERCTRL:     
-      PERSISTENT(
-        wxFont, 
-        wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)); 
+    case FONTPICKERCTRL:
+      PERSISTENT(wxFont, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
       break;
-    
+
     case GRID:
       if (save)
         config(m_label).set(std::any_cast<std::string>(get_value()));
@@ -194,51 +198,53 @@ bool wex::item::to_config(bool save) const
       else
       {
         const auto& choices(std::any_cast<choices_t>(initial()));
-        
-        if (const auto c = choices.find(config(m_label).get(rb->GetSelection()));
-          c != choices.end())
+
+        if (const auto c =
+              choices.find(config(m_label).get(rb->GetSelection()));
+            c != choices.end())
         {
           rb->SetStringSelection(before(c->second, ','));
         }
       }
       break;
 
-    case SLIDER:             
-      PERSISTENT(int, ((wxSlider* )m_window)->GetValue()); 
+    case SLIDER:
+      PERSISTENT(int, ((wxSlider*)m_window)->GetValue());
       break;
-    
-    case SPINCTRL:           
-      PERSISTENT(int, ((wxSpinCtrl* )m_window)->GetValue()); 
+
+    case SPINCTRL:
+      PERSISTENT(int, ((wxSpinCtrl*)m_window)->GetValue());
       break;
-    
-    case SPINCTRLDOUBLE:     
-      PERSISTENT(double, ((wxSpinCtrlDouble* )m_window)->GetValue()); 
+
+    case SPINCTRLDOUBLE:
+      PERSISTENT(double, ((wxSpinCtrlDouble*)m_window)->GetValue());
       break;
-    
-    case TEXTCTRL:           
+
+    case TEXTCTRL:
       PERSISTENT(std::string, std::any_cast<std::string>(get_value()));
       break;
-    
+
     case TEXTCTRL_FLOAT:
       PERSISTENT(double, std::any_cast<double>(get_value()));
       break;
-    
-    case TEXTCTRL_INT:       
+
+    case TEXTCTRL_INT:
       PERSISTENT(long, std::any_cast<long>(get_value()));
       break;
-    
-    case TOGGLEBUTTON:       
-      PERSISTENT(bool, false); 
+
+    case TOGGLEBUTTON:
+      PERSISTENT(bool, false);
       break;
 
     case USER:
-      if (m_user_window_to_config_t != nullptr &&
+      if (
+        m_user_window_to_config_t != nullptr &&
         !(m_user_window_to_config_t)(m_window, save))
-      { 
+      {
         return false;
       }
       break;
-      
+
     default:
       // the other types (including STC) have no persistent info
       return false;

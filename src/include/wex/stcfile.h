@@ -2,7 +2,7 @@
 // Name:      stc_file.h
 // Purpose:   Declaration of class wex::stc_file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -14,7 +14,7 @@ namespace wex
   class stc;
 
   /// Adds file read and write to stc.
-  class stc_file: public file
+  class stc_file : public file
   {
   public:
     /// After loading / saving an event is sent to stc to update gui,
@@ -33,15 +33,16 @@ namespace wex
       stc* stc,
       /// the filename to be assigned if not empty
       const std::string& filename = std::string());
-    
+
     bool get_contents_changed() const override;
     void reset_contents_changed() override;
+
   private:
     bool do_file_load(bool synced = false) override;
     void do_file_new() override;
     void do_file_save(bool save_as = false) override;
 
-    stc* m_stc;
-    std::streampos m_previous_size {0};
+    stc*           m_stc;
+    std::streampos m_previous_size{0};
   };
-};
+}; // namespace wex

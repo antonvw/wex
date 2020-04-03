@@ -1,10 +1,6 @@
-# feature/ex
-- the :a, :i, :c ex commands do not follow ex opengroup specs
-  e.g. :a xxx should give an error, and . on empty line should end append
-- so the tests are not ok as well, first fix them
-
-# feature/align
+# feature/stc
 - improve align_text (see e.g. blame annotations)
+- add stc get_text, and use it instead of GetText (159 times)
 
 # feature/calc
 - command_calc command_reg can be combined
@@ -17,16 +13,20 @@
   
 # feature/link
 - find_between be configurable
+- the ex link in header is no longer clickable
 
 # feature/git
 - allow checkout by showing other branches, and remove from menu
 
 # feature/tests
-- fix failing tests
+- fix failing tests, and beautify all, 
+- reenable test on travis (first osx)
+- enable test on appveyor
 
 # feature/c++20
+- no longer use StartsWidth (after new develop merge) or find() == 0
+  as starts_with
 - c++latest gives error on visual studio
-- wxWidgets submodule is not same as develop
 - fix [=](wxCommandEvent& event) should be [=, this](wxCommandEvent& event)
   (use CMAKE_CXX_STANDARD)
 - use clang-9 (llvm@9, first on MacBook) (after macOS 10.15 deployed on travis)

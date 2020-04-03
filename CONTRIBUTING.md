@@ -70,6 +70,11 @@ make lcov
 
 - Do a pull request from the feature branch to the develop branch
 
+## YAML
+- if you have an error in a yml file (as travis could not parse), try 
+  http://www.yamllint.com
+  to detect errors inside your file
+
 ## Boost build
 
 if you want to use another boost version from current one on your system

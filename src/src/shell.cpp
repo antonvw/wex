@@ -11,26 +11,29 @@
 #endif
 #include <functional>
 #include <numeric>
-#include <wex/shell.h>
 #include <wex/config.h>
 #include <wex/defs.h>
 #include <wex/process.h>
+#include <wex/shell.h>
 #include <wex/tokenizer.h>
 #include <wex/util.h>
 
 wex::shell::shell(
-  const stc_data& data,
-  const std::string& prompt, 
+  const stc_data&    data,
+  const std::string& prompt,
   const std::string& command_end,
-  bool echo, 
+  bool               echo,
   const std::string& lexer,
-  int commands_save_in_config)
-  : stc(std::string(), stc_data(data).
-      flags(stc_data::window_t().set(stc_data::WIN_NO_INDICATOR), control_data::OR))
-  , m_command_end(command_end == std::string() ? eol(): command_end)
+  int                commands_save_in_config)
+  : stc(
+      std::string(),
+      stc_data(data).flags(
+        stc_data::window_t().set(stc_data::WIN_NO_INDICATOR),
+        control_data::OR))
+  , m_command_end(command_end == std::string() ? eol() : command_end)
   , m_echo(echo)
-  , m_commands(config("Shell").get(std::list< std::string> {}))
-    // Take care that m_commands_iterator is valid.
+  , m_commands(config("Shell").get(std::list<std::string>{}))
+  // Take care that m_commands_iterator is valid.
   , m_commands_iterator(m_commands.end())
   , m_commands_save_in_config(commands_save_in_config)
   , m_prompt(prompt)
@@ -45,11 +48,11 @@ wex::shell::shell(
   shell::prompt(std::string(), false);
 
   enable(true);
-  
+
   auto_complete().use(false); // we have our own autocomplete
 
   get_lexer().set(lexer);
-  
+
   Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
     if (m_enabled)
     {
@@ -58,17 +61,30 @@ wex::shell::shell(
     if (m_echo)
     {
       event.Skip();
-    }});
+    }
+  });
 
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    AppendText(event.GetString());}, ID_SHELL_APPEND);
-  
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    AppendText(event.GetString());}, ID_SHELL_APPEND_ERROR);
-  
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    AppendText(event.GetString());}, ID_SHELL_COMMAND);
-  
+  Bind(
+    wxEVT_MENU,
+    [=](wxCommandEvent& event) {
+      AppendText(event.GetString());
+    },
+    ID_SHELL_APPEND);
+
+  Bind(
+    wxEVT_MENU,
+    [=](wxCommandEvent& event) {
+      AppendText(event.GetString());
+    },
+    ID_SHELL_APPEND_ERROR);
+
+  Bind(
+    wxEVT_MENU,
+    [=](wxCommandEvent& event) {
+      AppendText(event.GetString());
+    },
+    ID_SHELL_COMMAND);
+
   Bind(wxEVT_MIDDLE_UP, [=](wxMouseEvent& event) {
     if (event.MiddleUp())
     {
@@ -81,8 +97,9 @@ wex::shell::shell(
     else
     {
       event.Skip();
-    }});
-    
+    }
+  });
+
   Bind(wxEVT_KEY_DOWN, [=](wxKeyEvent& event) {
     if (!m_enabled)
     {
@@ -91,8 +108,9 @@ wex::shell::shell(
         DocumentEnd();
         get_vi().mode().escape();
       }
-      if (GetCurrentPos() >= m_command_start_pos && 
-          (m_process == nullptr || m_process->is_running()))
+      if (
+        GetCurrentPos() >= m_command_start_pos &&
+        (m_process == nullptr || m_process->is_running()))
       {
         enable(true);
       }
@@ -104,8 +122,9 @@ wex::shell::shell(
     }
     else
     {
-      if (config(_("stc.vi mode")).get(true) && 
-          (GetCurrentPos() < m_command_start_pos))
+      if (
+        config(_("stc.vi mode")).get(true) &&
+        (GetCurrentPos() < m_command_start_pos))
       {
         enable(false);
         event.Skip();
@@ -114,15 +133,17 @@ wex::shell::shell(
     }
 
     bool skip = true;
-    
+
     switch (const int key = event.GetKeyCode(); key)
     {
       case WXK_RETURN:
       case WXK_TAB:
-        if (m_echo && process_char(key)) event.Skip();
+        if (m_echo && process_char(key))
+          event.Skip();
         break;
-      
-      // Up or down key pressed, and at the end of document (and autocomplete active)
+
+      // Up or down key pressed, and at the end of document (and autocomplete
+      // active)
       case WXK_UP:
       case WXK_DOWN:
         if (GetCurrentPos() == GetTextLength() && !AutoCompActive())
@@ -134,7 +155,7 @@ wex::shell::shell(
           event.Skip();
         }
         break;
-        
+
       case WXK_HOME:
         Home();
         if (GetLine(GetCurrentLine()).StartsWith(m_prompt))
@@ -142,7 +163,7 @@ wex::shell::shell(
           GotoPos(GetCurrentPos() + m_prompt.length());
         }
         break;
-        
+
       // Shift-Insert key pressed, used for pasting.
       case WXK_INSERT:
         if (event.GetModifiers() == wxMOD_SHIFT)
@@ -150,12 +171,12 @@ wex::shell::shell(
           Paste();
         }
         break;
-        
+
       // Middle mouse button, to paste, though actually OnMouse is used.
       case WXK_MBUTTON:
         Paste();
         break;
-        
+
       // Backspace or delete key pressed.
       case WXK_BACK:
       case WXK_DELETE:
@@ -167,10 +188,11 @@ wex::shell::shell(
         {
           // Allow.
           process_char(key);
-          if (m_echo) event.Skip();
+          if (m_echo)
+            event.Skip();
         }
         break;
-        
+
       case WXK_ESCAPE:
         if (AutoCompActive())
         {
@@ -181,7 +203,7 @@ wex::shell::shell(
           event.Skip();
         }
         break;
-        
+
       default:
         // Ctrl-C pressed.
         if (event.GetModifiers() == wxMOD_CONTROL && key == 'C')
@@ -202,7 +224,9 @@ wex::shell::shell(
           }
           else
           {
-            wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND_STOP);
+            wxCommandEvent event(
+              wxEVT_COMMAND_MENU_SELECTED,
+              ID_SHELL_COMMAND_STOP);
             wxPostEvent(GetParent(), event);
           }
         }
@@ -211,16 +235,19 @@ wex::shell::shell(
         {
           Paste();
         }
-        // If we enter regular text and not already building a command, first goto end.
-        else if (event.GetModifiers() == wxMOD_NONE &&
-          key < WXK_START &&
+        // If we enter regular text and not already building a command, first
+        // goto end.
+        else if (
+          event.GetModifiers() == wxMOD_NONE && key < WXK_START &&
           GetCurrentPos() < m_command_start_pos)
         {
           DocumentEnd();
         }
         m_commands_iterator = m_commands.end();
-        if (m_echo && skip) event.Skip();
-    }});
+        if (m_echo && skip)
+          event.Skip();
+    }
+  });
 
   Bind(wxEVT_STC_CHARADDED, [=](wxStyledTextEvent& event) {
     if (!m_enabled)
@@ -228,17 +255,18 @@ wex::shell::shell(
       event.Skip();
     }
     // do nothing, keep event from sent to stc.
-    });
-  
+  });
+
   Bind(wxEVT_STC_DO_DROP, [=](wxStyledTextEvent& event) {
     if (!m_enabled)
     {
       event.Skip();
     }
     event.SetDragResult(wxDragNone);
-    event.Skip();});
-  
-  Bind(wxEVT_STC_START_DRAG,  [=](wxStyledTextEvent& event) {
+    event.Skip();
+  });
+
+  Bind(wxEVT_STC_START_DRAG, [=](wxStyledTextEvent& event) {
     if (!m_enabled)
     {
       event.Skip();
@@ -246,7 +274,8 @@ wex::shell::shell(
     // Currently no drag/drop, though we might be able to
     // drag/drop copy to command line.
     event.SetDragAllowMove(false);
-    event.Skip();});
+    event.Skip();
+  });
 }
 
 wex::shell::~shell()
@@ -262,11 +291,11 @@ void wex::shell::AppendText(const wxString& text)
   const bool pos_at_end = (GetCurrentPos() >= GetTextLength());
 
   stc::AppendText(text);
-  
+
   m_command_start_pos = GetTextLength();
-  
+
   EmptyUndoBuffer();
-  
+
   if (pos_at_end)
   {
     DocumentEnd();
@@ -277,7 +306,7 @@ void wex::shell::AppendText(const wxString& text)
 void wex::shell::enable(bool enabled)
 {
   m_enabled = enabled;
-  
+
   if (!m_enabled)
   {
     // A disabled shell follows vi mode.
@@ -308,17 +337,17 @@ void wex::shell::expand()
   // path:   src/vi
   // subdir: src
   // prefix: vi
-  wex::path path(after(m_command, ' ', false));
+  wex::path   path(after(m_command, ' ', false));
   std::string expansion;
-  
+
   if (const auto prefix(path.fullname()); AutoCompActive())
   {
-    if (const auto index = AutoCompGetCurrent(); 
-      index >= 0 && index < (int)m_auto_complete_list.size())
+    if (const auto index = AutoCompGetCurrent();
+        index >= 0 && index < (int)m_auto_complete_list.size())
     {
       expansion = m_auto_complete_list[index].substr(prefix.length());
     }
-    
+
     AutoCompCancel();
   }
   else if (const auto [r, e, v] = autocomplete_filename(m_command); r)
@@ -326,12 +355,17 @@ void wex::shell::expand()
     if (v.size() > 1)
     {
       m_auto_complete_list = v;
-      AutoCompShow(prefix.length(), std::accumulate(
-        v.begin(), v.end(), std::string(), 
-        [&](const std::string& a, const std::string& b) {
-          return a.empty() ? b : a + (char)AutoCompGetSeparator() + b;}));
+      AutoCompShow(
+        prefix.length(),
+        std::accumulate(
+          v.begin(),
+          v.end(),
+          std::string(),
+          [&](const std::string& a, const std::string& b) {
+            return a.empty() ? b : a + (char)AutoCompGetSeparator() + b;
+          }));
     }
-    else 
+    else
     {
       expansion = e;
     }
@@ -340,17 +374,17 @@ void wex::shell::expand()
   if (!expansion.empty())
   {
     m_command += expansion;
-    
+
     // We cannot use our AppendText, as command start pos
     // should not be changed.
     wex::stc::AppendText(expansion);
     DocumentEnd();
   }
 }
-    
+
 const std::string wex::shell::get_command() const
 {
-  return !m_commands.empty() ? m_commands.back(): std::string();
+  return !m_commands.empty() ? m_commands.back() : std::string();
 }
 
 const std::string wex::shell::get_history() const
@@ -365,7 +399,7 @@ void wex::shell::keep_command()
   {
     m_command = trim(m_command);
   }
-  
+
   m_commands.emplace_back(m_command);
 }
 
@@ -375,22 +409,22 @@ void wex::shell::Paste()
   {
     return;
   }
-  
+
   // Take care that we cannot paste somewhere inside.
   if (GetCurrentPos() < m_command_start_pos)
   {
     DocumentEnd();
   }
-  
+
   wex::stc::Paste();
-  
-  m_command += clipboard_get();  
+
+  m_command += clipboard_get();
 }
 
 bool wex::shell::process_char(int key)
 {
   bool processed = false;
-  
+
   // No need to check m_enabled, already done by calling this method.
   switch (key)
   {
@@ -411,15 +445,15 @@ bool wex::shell::process_char(int key)
         send_command();
       }
       else if (
-        m_command_end == eol() ||
-        wxString(m_command).EndsWith(m_command_end))
+        m_command_end == eol() || wxString(m_command).EndsWith(m_command_end))
       {
         // We have a command.
         EmptyUndoBuffer();
-        
+
         // History command.
-        if (m_command == "history" +
-           (m_command_end == eol() ? std::string(): m_command_end))
+        if (
+          m_command ==
+          "history" + (m_command_end == eol() ? std::string() : m_command_end))
         {
           keep_command();
           show_history();
@@ -452,22 +486,22 @@ bool wex::shell::process_char(int key)
 
       m_commands_iterator = m_commands.end();
       break;
-  
+
     case WXK_BACK:
     case WXK_DELETE:
       // Delete the key at current position.
-      if (const int offset = (key == WXK_BACK ? 1: 0), 
-        index = GetCurrentPos() - m_command_start_pos - offset;
-        !m_command.empty() && index >= 0 && index < (int)m_command.length())
+      if (const int offset = (key == WXK_BACK ? 1 : 0),
+          index            = GetCurrentPos() - m_command_start_pos - offset;
+          !m_command.empty() && index >= 0 && index < (int)m_command.length())
       {
         m_command.erase(index, 1);
       }
       break;
-    
+
     case WXK_TAB:
       expand();
       break;
-      
+
     default:
       process_char_default(key);
       processed = true;
@@ -480,8 +514,8 @@ void wex::shell::process_char_default(int key)
 {
   // Insert the key at current position.
   if (const int index = GetCurrentPos() - m_command_start_pos;
-    GetCurrentPos() < GetLength() && 
-    index >= 0 && index < (int)m_command.size())
+      GetCurrentPos() < GetLength() && index >= 0 &&
+      index < (int)m_command.size())
   {
     m_command.insert(index, 1, char(key));
   }
@@ -490,16 +524,16 @@ void wex::shell::process_char_default(int key)
     m_command.append(1, char(key));
   }
 }
-  
+
 bool wex::shell::prompt(const std::string& text, bool add_eol)
 {
   if (!m_enabled)
   {
     return false;
   }
-  
+
   bool appended = false;
-  
+
   if (!text.empty())
   {
     appended = true;
@@ -517,16 +551,16 @@ bool wex::shell::prompt(const std::string& text, bool add_eol)
     appended = true;
     AppendText(m_prompt);
   }
-  
+
   DocumentEnd();
-  
+
   if (!appended)
   {
     EmptyUndoBuffer();
   }
-  
+
   m_command_start_pos = GetCurrentPos();
-  
+
   return true;
 }
 
@@ -535,7 +569,7 @@ void wex::shell::send_command()
   if (m_process != nullptr && m_process->is_running())
   {
     AppendText(eol());
-    m_process->write(m_command.empty() ? "\n": m_command);
+    m_process->write(m_command.empty() ? "\n" : m_command);
   }
   else
   {
@@ -552,7 +586,7 @@ bool wex::shell::set_command_from_history(const std::string& short_command)
   try
   {
     const auto no_asked_for = std::stoi(short_command);
-    int no = 1;
+    int        no           = 1;
 
     for (const auto& it : m_commands)
     {
@@ -575,26 +609,21 @@ bool wex::shell::set_command_from_history(const std::string& short_command)
     }
     else
     {
-      short_command_check =
-        short_command.substr(
-          0,
-          short_command.length() - m_command_end.length());
+      short_command_check = short_command.substr(
+        0,
+        short_command.length() - m_command_end.length());
     }
 
-    for (
-      auto it = m_commands.rbegin();
-      it != m_commands.rend();
-      ++it)
+    for (auto it = m_commands.rbegin(); it != m_commands.rend(); ++it)
     {
       if (const auto command = *it;
-        command.substr(0, short_command_check.size()) == short_command_check)
+          command.substr(0, short_command_check.size()) == short_command_check)
       {
         m_command = command;
         return true;
       }
     }
   }
-  
 
   prompt(eol() + short_command + ": event not found");
 
@@ -608,27 +637,26 @@ void wex::shell::set_process(process* process)
   wex::path::current(get_filename().get_path());
 }
 
-bool wex::shell::set_prompt(const std::string& prompt, bool do_prompt) 
+bool wex::shell::set_prompt(const std::string& prompt, bool do_prompt)
 {
   if (!m_enabled)
   {
     return false;
   }
-  
+
   m_prompt = prompt;
-  
-  if (do_prompt) 
+
+  if (do_prompt)
   {
     shell::prompt();
   }
-  
+
   return true;
 }
 
 void wex::shell::show_command(int key)
 {
-  SetTargetStart(m_command_start_pos);
-  SetTargetEnd(GetTextLength());
+  SetTargetRange(m_command_start_pos, GetTextLength());
 
   if (key == WXK_UP)
   {
@@ -674,6 +702,6 @@ void wex::shell::Undo()
   {
     wex::stc::Undo();
   }
-  
+
   m_command.clear();
 }

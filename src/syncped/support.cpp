@@ -9,6 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wex/beautify.h>
 #include <wex/config.h>
 #include <wex/debug.h>
 #include <wex/filedlg.h>
@@ -330,12 +331,11 @@ decorated_frame::decorated_frame(app* app)
                     "",
                     "",
                     [=](wxCommandEvent& event) {
-                      auto* editor = get_stc();
-                      if (editor != nullptr)
+                      if (auto* stc = get_stc(); stc != nullptr)
                       {
-                        if (!allow_close(m_editors->GetId(), editor))
+                        if (!allow_close(m_editors->GetId(), stc))
                           return;
-                        m_editors->delete_page(m_editors->key_by_page(editor));
+                        m_editors->delete_page(m_editors->key_by_page(stc));
                       };
                     },
                     [=](wxUpdateUIEvent& event) {
@@ -458,8 +458,7 @@ decorated_frame::decorated_frame(app* app)
                     },
                     [=](wxUpdateUIEvent& event) {
                       event.Check(
-                        m_history != nullptr &&
-                        pane_is_shown("HISTORY"));
+                        m_history != nullptr && pane_is_shown("HISTORY"));
                     }},
 
                    {wxWindow::NewControlId(),
@@ -712,15 +711,16 @@ void decorated_frame::add_pane_history()
   m_history = new wex::report::listview(
     wex::listview_data().type(wex::listview_data::HISTORY));
 
-  pane_add({{m_history,
-              wxAuiPaneInfo()
-                .Left()
-                .MaximizeButton(true)
-                .Name("HISTORY")
-                .CloseButton(false)
-                .MinSize(150, 150)
-                .Caption(_("History"))}},
-           std::string());
+  pane_add(
+    {{m_history,
+      wxAuiPaneInfo()
+        .Left()
+        .MaximizeButton(true)
+        .Name("HISTORY")
+        .CloseButton(false)
+        .MinSize(150, 150)
+        .Caption(_("History"))}},
+    std::string());
 }
 
 bool decorated_frame::allow_close(wxWindowID id, wxWindow* page)
@@ -728,11 +728,16 @@ bool decorated_frame::allow_close(wxWindowID id, wxWindow* page)
   switch (id)
   {
     case ID_NOTEBOOK_EDITORS:
-      if (
-        wex::file_dialog(&((wex::stc*)page)->get_file())
-          .show_modal_if_changed() == wxID_CANCEL)
+      if (auto* stc = (wex::stc*)page;
+          wex::file_dialog(&stc->get_file()).show_modal_if_changed() ==
+          wxID_CANCEL)
       {
         return false;
+      }
+      else if (wex::beautify b; b.is_active() && stc->get_file().is_written())
+      {
+        stc->get_file().close();
+        b.file(stc->get_filename());
       }
       break;
     case ID_NOTEBOOK_PROJECTS:

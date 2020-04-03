@@ -2,12 +2,12 @@
 // Name:      file.cpp
 // Purpose:   Implementation of class wex::file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <fstream>
-#include <wex/file.h>
 #include <wex/config.h>
+#include <wex/file.h>
 #include <wex/stat.h>
 
 namespace wex
@@ -15,35 +15,47 @@ namespace wex
   class file_imp
   {
   public:
-    file_imp() {;};
+    file_imp() { ; };
 
-    file_imp(const path& filename) 
-      : m_path(filename)
-      , m_stat(m_path.string()) {;};
-    
-    file_imp(const path& filename, std::ios_base::openmode mode) 
+    file_imp(const path& filename)
       : m_path(filename)
       , m_stat(m_path.string())
-      , m_fs(m_path.data(), mode) {;};
+    {
+      ;
+    };
 
-    virtual ~file_imp() {;};
+    file_imp(const path& filename, std::ios_base::openmode mode)
+      : m_path(filename)
+      , m_stat(m_path.string())
+      , m_fs(m_path.data(), mode)
+    {
+      ;
+    };
 
-    void assign(const path& p) {
+    virtual ~file_imp() { ; };
+
+    void assign(const path& p)
+    {
       close();
       m_path = p;
       m_stat.sync(m_path.string());
-      m_fs = std::fstream(m_path.data());};
+      m_fs = std::fstream(m_path.data());
+    };
 
-    bool close() {
-      if (!m_fs.is_open()) return true;
+    bool close()
+    {
+      if (!m_fs.is_open())
+        return true;
       m_fs.close();
-      return !m_fs.is_open();};
+      return !m_fs.is_open();
+    };
 
-    bool open(
-      const path& p, 
-      std::ios_base::openmode mode = std::ios_base::in) {
+    bool is_written() const { return m_is_written; };
+
+    bool open(const path& p, std::ios_base::openmode mode = std::ios_base::in)
+    {
       if (m_fs.is_open())
-      { 
+      {
         return true;
       }
       if (m_path != p)
@@ -51,12 +63,14 @@ namespace wex
         assign(p);
       }
       m_fs.open(m_path.data(), mode);
-      return m_fs.is_open();};
+      return m_fs.is_open();
+    };
 
-    auto & path() {return m_path;};
+    auto& path() { return m_path; };
 
-    const std::string* read(std::streampos seek_position) {
-      if (!m_fs.is_open()) 
+    const std::string* read(std::streampos seek_position)
+    {
+      if (!m_fs.is_open())
       {
         if (!open(m_path.data()))
         {
@@ -65,21 +79,22 @@ namespace wex
         }
       }
 
-      if ((m_buffer.get() != nullptr && seek_position > 0) || 
-          (m_fs.tellg() != seek_position))
+      if (
+        (m_buffer.get() != nullptr && seek_position > 0) ||
+        (m_fs.tellg() != seek_position))
       {
         m_fs.seekg(seek_position);
       }
 
-      m_buffer = std::make_unique<std::string> ();
+      m_buffer = std::make_unique<std::string>();
 
-#ifndef __WXMSW__      
+#ifndef __WXMSW__
       m_buffer->resize(path().stat().st_size - seek_position);
       m_fs.read(m_buffer->data(), m_buffer->size());
-#else      
+#else
       char c;
       while (m_fs.get(c))
-      { 
+      {
         m_buffer->push_back(c);
       }
 #endif
@@ -89,14 +104,16 @@ namespace wex
         return nullptr;
       }
 
-      return m_buffer.get();};
-      
-    auto & stat() {return m_stat;};
+      return m_buffer.get();
+    };
 
-    auto & stream() const {return m_fs;};
+    auto& stat() { return m_stat; };
 
-    bool write(const char* s, size_t n) {
-      if (!m_fs.is_open()) 
+    auto& stream() const { return m_fs; };
+
+    bool write(const char* s, size_t n)
+    {
+      if (!m_fs.is_open())
       {
         if (!open(m_path.data(), std::ios_base::out))
         {
@@ -111,27 +128,33 @@ namespace wex
       {
         log_stream_info("write", n);
       }
-      return m_fs.good();};
+      else
+      {
+        m_is_written = true;
+      }
+
+      return m_fs.good();
+    };
+
   private:
-    void log_stream_info(const std::string& info, size_t s) {
-      log(info) 
-        << "eofbit" << m_fs.eof()
-        << "fail" << m_fs.fail()
-        << "bad" << m_fs.bad()
-        << "tellg" << (size_t)m_fs.tellg()
-        << "tellp" << (size_t)m_fs.tellp()
-        << "count" << (size_t)m_fs.gcount() 
-        << "size" << s;};
-      
-    wex::path m_path;
-    file_stat m_stat; // used to check for sync
-    std::fstream m_fs;
+    void log_stream_info(const std::string& info, size_t s)
+    {
+      log(info) << "eofbit" << m_fs.eof() << "fail" << m_fs.fail() << "bad"
+                << m_fs.bad() << "tellg" << (size_t)m_fs.tellg() << "tellp"
+                << (size_t)m_fs.tellp() << "count" << (size_t)m_fs.gcount()
+                << "size" << s;
+    };
+
+    wex::path                    m_path;
+    file_stat                    m_stat; // used to check for sync
+    bool                         m_is_written{false};
+    std::fstream                 m_fs;
     std::unique_ptr<std::string> m_buffer;
   };
-};
+}; // namespace wex
 
 wex::file::file()
-  : m_file(std::make_unique<file_imp>()) 
+  : m_file(std::make_unique<file_imp>())
 {
 }
 
@@ -139,52 +162,50 @@ wex::file::file(const path& p)
   : m_file(std::make_unique<file_imp>(p))
 {
 }
-  
+
 wex::file::file(const path& p, std::ios_base::openmode mode)
   : m_file(std::make_unique<file_imp>(p, mode))
 {
 }
-  
+
 wex::file::file(const char* filename)
   : wex::file(path(filename))
 {
 }
 
 wex::file::file(const char* filename, std::ios_base::openmode mode)
-  : wex::file(path(filename), mode) 
+  : wex::file(path(filename), mode)
 {
 }
 
-wex::file::file(const file& rhs) 
+wex::file::file(const file& rhs)
 {
   *this = rhs;
 }
 
-wex::file::~file()
-{
-}
+wex::file::~file() {}
 
 wex::file& wex::file::operator=(const file& f)
 {
   if (this != &f)
   {
-    m_file = std::make_unique<file_imp>(f.m_file->path());
+    m_file      = std::make_unique<file_imp>(f.m_file->path());
     m_is_loaded = f.m_is_loaded;
   }
 
   return *this;
 }
 
-void wex::file::assign(const path& p) 
+void wex::file::assign(const path& p)
 {
   m_file->assign(p);
 }
 
 bool wex::file::check_sync()
 {
-  if (is_open() ||
-      !m_file->path().stat().is_ok() ||
-      !config("AllowSync").get(true))
+  if (
+    is_open() || !m_file->path().stat().is_ok() ||
+    !config("AllowSync").get(true))
   {
     return false;
   }
@@ -192,16 +213,16 @@ bool wex::file::check_sync()
   if (m_file->path().m_stat.sync())
   {
     bool sync_needed = false;
-    
+
     if (m_file->path().m_stat.st_mtime != m_file->stat().st_mtime)
     {
       // Do not check return value,
       // we sync anyhow, to force nex time no sync.
       file_load(true);
-      
+
       sync_needed = true;
     }
-    
+
     if (m_file->path().m_stat.is_readonly() != m_file->stat().is_readonly())
     {
       sync_needed = true;
@@ -214,12 +235,17 @@ bool wex::file::check_sync()
       {
         log::status("Could not sync") << m_file->path();
       }
-        
+
       return true;
     }
   }
-  
+
   return false;
+}
+
+bool wex::file::close()
+{
+  return m_file->close();
 }
 
 bool wex::file::file_load(bool synced)
@@ -283,20 +309,23 @@ bool wex::file::file_save(const path& p)
   do_file_save(save_as);
   m_file->close();
   reset_contents_changed();
-  
-  return 
-    m_file->path().m_stat.sync() &&
-    m_file->stat().sync();
+
+  return m_file->path().m_stat.sync() && m_file->stat().sync();
 }
 
-const wex::path& wex::file::get_filename() const 
+const wex::path& wex::file::get_filename() const
 {
   return m_file->path();
 }
 
-bool wex::file::is_open() const 
+bool wex::file::is_open() const
 {
   return m_file->stream().is_open();
+}
+
+bool wex::file::is_written() const
+{
+  return m_file->is_written();
 }
 
 bool wex::file::open(std::ios_base::openmode mode)
@@ -319,7 +348,7 @@ bool wex::file::write(const char* s, size_t n)
   return m_file->write(s, n);
 }
 
-bool wex::file::write(const std::string& s) 
+bool wex::file::write(const std::string& s)
 {
   return m_file->write(s.c_str(), s.size());
-} 
+}

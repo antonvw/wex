@@ -129,8 +129,7 @@ void wex::stc::add_text(const std::string& text)
   }
   else
   {
-    SetTargetStart(GetCurrentPos());
-    SetTargetEnd(GetCurrentPos() + text.size());
+    SetTargetRange(GetCurrentPos(), GetCurrentPos() + text.size());
     ReplaceTarget(text);
   }
 }
@@ -709,8 +708,7 @@ int wex::stc::replace_all(
   }
   else
   {
-    SetTargetStart(0);
-    SetTargetEnd(GetLength());
+    TargetWholeDocument();
   }
 
   int nr_replacements = 0;
@@ -754,8 +752,8 @@ int wex::stc::replace_all(
       nr_replacements++;
     }
 
-    SetTargetStart(GetTargetEnd());
-    SetTargetEnd(GetLength() - selection_from_end);
+    SetTargetRange(GetTargetEnd(),
+      GetLength() - selection_from_end);
 
     if (GetTargetStart() >= GetTargetEnd())
     {
@@ -792,8 +790,7 @@ bool wex::stc::replace_next(
   }
   else
   {
-    SetTargetStart(GetCurrentPos());
-    SetTargetEnd(GetLength());
+    SetTargetRange(GetCurrentPos(), GetLength());
     set_search_flags(find_flags);
     if (SearchInTarget(find_text) == -1)
       return false;

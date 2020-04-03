@@ -93,18 +93,19 @@ bool wex::address::adjust_window(const std::string& text) const
 
 bool wex::address::append(const std::string& text) const
 {
-  if (
-    m_ex->get_stc()->GetReadOnly() || m_ex->get_stc()->is_hexmode() ||
-    get_line() <= 0)
+  if (const auto line = get_line(); m_ex->get_stc()->GetReadOnly() ||
+                                    m_ex->get_stc()->is_hexmode() || line <= 0)
   {
     return false;
   }
+  else
+  {
+    m_ex->get_stc()->InsertText(m_ex->get_stc()->PositionFromLine(line), text);
 
-  m_ex->get_stc()->InsertText(
-    m_ex->get_stc()->PositionFromLine(get_line()),
-    text);
+    m_ex->get_stc()->GotoLine(line + get_number_of_lines(text) - 1);
 
-  return true;
+    return true;
+  }
 }
 
 bool wex::address::flags_supported(const std::string& flags) const
@@ -136,8 +137,8 @@ int wex::address::get_line() const
   // If this is a // address, return line with first forward match.
   if (std::vector<std::string> v; match("/(.*)/$", m_address, v) > 0)
   {
-    m_ex->get_stc()->SetTargetStart(m_ex->get_stc()->GetCurrentPos());
-    m_ex->get_stc()->SetTargetEnd(m_ex->get_stc()->GetTextLength());
+    m_ex->get_stc()->SetTargetRange(m_ex->get_stc()->GetCurrentPos(),
+      m_ex->get_stc()->GetTextLength());
 
     if (m_ex->get_stc()->SearchInTarget(v[0]) != -1)
     {
@@ -146,8 +147,7 @@ int wex::address::get_line() const
              1;
     }
 
-    m_ex->get_stc()->SetTargetStart(0);
-    m_ex->get_stc()->SetTargetEnd(m_ex->get_stc()->GetCurrentPos());
+    m_ex->get_stc()->SetTargetRange(0, m_ex->get_stc()->GetCurrentPos());
 
     if (m_ex->get_stc()->SearchInTarget(v[0]) != -1)
     {
@@ -161,8 +161,7 @@ int wex::address::get_line() const
   // If this is a ?? address, return line with first backward match.
   else if (match("\\?(.*)\\?", m_address, v) > 0)
   {
-    m_ex->get_stc()->SetTargetStart(m_ex->get_stc()->GetCurrentPos());
-    m_ex->get_stc()->SetTargetEnd(0);
+    m_ex->get_stc()->SetTargetRange(m_ex->get_stc()->GetCurrentPos(), 0);
 
     if (m_ex->get_stc()->SearchInTarget(v[0]) != -1)
     {
@@ -171,8 +170,8 @@ int wex::address::get_line() const
              1;
     }
 
-    m_ex->get_stc()->SetTargetStart(m_ex->get_stc()->GetTextLength());
-    m_ex->get_stc()->SetTargetEnd(m_ex->get_stc()->GetCurrentPos());
+    m_ex->get_stc()->SetTargetRange(m_ex->get_stc()->GetTextLength(),
+      m_ex->get_stc()->GetCurrentPos());
 
     if (m_ex->get_stc()->SearchInTarget(v[0]) != -1)
     {
@@ -201,18 +200,18 @@ int wex::address::get_line() const
 
 bool wex::address::insert(const std::string& text) const
 {
-  if (
-    m_ex->get_stc()->GetReadOnly() || m_ex->get_stc()->is_hexmode() ||
-    get_line() <= 0)
+  if (const auto line = get_line(); m_ex->get_stc()->GetReadOnly() ||
+                                    m_ex->get_stc()->is_hexmode() || line <= 0)
   {
     return false;
   }
-
-  m_ex->get_stc()->InsertText(
-    m_ex->get_stc()->PositionFromLine(get_line() - 1),
-    text);
-
-  return true;
+  else
+  {
+    m_ex->get_stc()->InsertText(
+      m_ex->get_stc()->PositionFromLine(line - 1),
+      text);
+    return true;
+  }
 }
 
 bool wex::address::marker_add(char marker) const
@@ -228,18 +227,18 @@ bool wex::address::marker_delete() const
 
 bool wex::address::put(char name) const
 {
-  if (
-    m_ex->get_stc()->GetReadOnly() || m_ex->get_stc()->is_hexmode() ||
-    get_line() <= 0)
+  if (const auto line = get_line(); m_ex->get_stc()->GetReadOnly() ||
+                                    m_ex->get_stc()->is_hexmode() || line <= 0)
   {
     return false;
   }
-
-  m_ex->get_stc()->InsertText(
-    m_ex->get_stc()->PositionFromLine(get_line()),
-    m_ex->get_macros().get_register(name));
-
-  return true;
+  else
+  {
+    m_ex->get_stc()->InsertText(
+      m_ex->get_stc()->PositionFromLine(get_line()),
+      m_ex->get_macros().get_register(name));
+    return true;
+  }
 }
 
 bool wex::address::read(const std::string& arg) const
@@ -311,12 +310,13 @@ void wex::address::set_line(int line)
 
 bool wex::address::write_line_number() const
 {
-  if (get_line() <= 0)
+  if (const auto line = get_line(); line <= 0)
   {
     return false;
   }
-
-  m_ex->frame()->show_ex_message(std::to_string(get_line()));
-
-  return true;
+  else
+  {
+    m_ex->frame()->show_ex_message(std::to_string(get_line()));
+    return true;
+  }
 }

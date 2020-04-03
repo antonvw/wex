@@ -1,5 +1,7 @@
 **v20.10**
   - clang-format support, and wex code follows these guidelines
+  - ex append, insert, change commands follow
+    The Open Group Base Specifications Issue 7, 2018 edition
 
 **v20.04** *March 15, 2020*
   - scintilla is compiled to use std::regex (ECMAScript)

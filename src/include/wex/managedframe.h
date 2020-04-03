@@ -146,7 +146,7 @@ namespace wex
       const panes_t& panes,
       /// name of perspective to load / save
       const std::string& perspective = "managed frame");
-
+    
     /// Returns true if the managed pane is maximized.
     bool pane_is_maximized(const std::string& pane)
     {
@@ -167,6 +167,10 @@ namespace wex
     /// Returns false if pane is not managed.
     bool pane_restore(const std::string& pane);
     
+    /// Updates pane info for managed pane.
+    /// Returns false if pane is not managed.
+    bool pane_set(const std::string& pane, const wxAuiPaneInfo& info);
+
     /// Shows or hides the managed pane.
     /// Returns false if pane is not managed.
     bool pane_show(const std::string& pane, bool show = true);
@@ -190,6 +194,14 @@ namespace wex
       ex* ex,
       /// label for the ex bar (/, ?, :, =)
       const std::string& label);
+
+    /// Shows ex bar, and enters inut mode.
+    /// Returns false if command is not supported.
+    bool show_ex_input(
+      /// the ex on which command is to be done
+      ex* ex,
+      /// the command (a, c, or i)
+      char command);
 
     /// Shows text in ex bar.
     void show_ex_message(const std::string& text);

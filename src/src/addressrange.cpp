@@ -479,8 +479,9 @@ bool wex::addressrange::global(const std::string& text, bool inverse) const
 
   const global_env g(m_ex, m_find_indicator, rest);
   m_ex->marker_add('%', m_end.get_line() - 1);
-  m_stc->SetTargetStart(m_stc->PositionFromLine(m_begin.get_line() - 1));
-  m_stc->SetTargetEnd(m_stc->GetLineEndPosition(m_ex->marker_line('%')));
+  m_stc->SetTargetRange(
+    m_stc->PositionFromLine(m_begin.get_line() - 1),
+    m_stc->GetLineEndPosition(m_ex->marker_line('%')));
 
   const bool infinite =
     (g.changes() > 0 && rest != "$" && rest != "1" && rest != "d");
@@ -511,9 +512,9 @@ bool wex::addressrange::global(const std::string& text, bool inverse) const
       return false;
     }
 
-    m_stc->SetTargetStart(
-      g.changes() > 0 ? m_stc->PositionFromLine(match) : m_stc->GetTargetEnd());
-    m_stc->SetTargetEnd(m_stc->GetLineEndPosition(m_ex->marker_line('%')));
+    m_stc->SetTargetRange(
+      g.changes() > 0 ? m_stc->PositionFromLine(match) : m_stc->GetTargetEnd(),
+      m_stc->GetLineEndPosition(m_ex->marker_line('%')));
 
     if (m_stc->GetTargetStart() >= m_stc->GetTargetEnd())
     {
@@ -571,8 +572,9 @@ bool wex::addressrange::join() const
   }
 
   m_stc->BeginUndoAction();
-  m_stc->SetTargetStart(m_stc->PositionFromLine(m_begin.get_line() - 1));
-  m_stc->SetTargetEnd(m_stc->PositionFromLine(m_end.get_line()));
+  m_stc->SetTargetRange(
+    m_stc->PositionFromLine(m_begin.get_line() - 1),
+    m_stc->PositionFromLine(m_end.get_line()));
   m_stc->LinesJoin();
   m_stc->EndUndoAction();
 
@@ -841,8 +843,9 @@ bool wex::addressrange::substitute(const std::string& text, char cmd)
 
   m_stc->set_search_flags(searchFlags);
   m_stc->BeginUndoAction();
-  m_stc->SetTargetStart(m_stc->PositionFromLine(m_ex->marker_line('#')));
-  m_stc->SetTargetEnd(m_stc->GetLineEndPosition(m_ex->marker_line('$')));
+  m_stc->SetTargetRange(
+    m_stc->PositionFromLine(m_ex->marker_line('#')),
+    m_stc->GetLineEndPosition(m_ex->marker_line('$')));
 
   int        nr_replacements = 0;
   int        result          = wxID_YES;
@@ -879,11 +882,11 @@ bool wex::addressrange::substitute(const std::string& text, char cmd)
       nr_replacements++;
     }
 
-    m_stc->SetTargetStart(
+    m_stc->SetTargetRange(
       global ? m_stc->GetTargetEnd() :
                m_stc->GetLineEndPosition(
-                 m_stc->LineFromPosition(m_stc->GetTargetEnd())));
-    m_stc->SetTargetEnd(m_stc->GetLineEndPosition(m_ex->marker_line('$')));
+                 m_stc->LineFromPosition(m_stc->GetTargetEnd())),
+      m_stc->GetLineEndPosition(m_ex->marker_line('$')));
 
     if (m_stc->GetTargetStart() >= m_stc->GetTargetEnd())
     {

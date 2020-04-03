@@ -117,7 +117,7 @@ namespace wex
   void combobox_from_list(wxComboBox* cb, const std::list<std::string>& text);
 
   /// Compares the files, using comparator set in the config.
-  bool comparefile(const path& file1, const path& file2);
+  bool compare_file(const path& file1, const path& file2);
 
   /// Adds an ellipses after text.
   /// The control, if present is postfixed, after a tab character (for accels).
