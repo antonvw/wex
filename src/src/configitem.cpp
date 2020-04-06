@@ -181,7 +181,10 @@ bool wex::item::to_config(bool save) const
       if (save)
         config(m_label).set(std::any_cast<std::list<std::string>>(get_value()));
       else
-        set_value(config(m_label).get(std::list<std::string>()));
+        set_value(config(m_label).get(
+          !m_initial.has_value() ?
+            std::list<std::string>{} :
+            std::any_cast<std::list<std::string>>(m_initial)));
       break;
 
     case RADIOBOX:

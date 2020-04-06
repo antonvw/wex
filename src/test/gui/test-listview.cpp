@@ -2,7 +2,7 @@
 // Name:      test-listview.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -21,6 +21,8 @@ TEST_CASE("wex::listview")
 
   SUBCASE("general")
   {
+    REQUIRE(lv->data().type() == wex::listview_data::NONE);
+
     wex::listview::config_dialog(wex::window_data().button(wxAPPLY | wxCANCEL));
 
     REQUIRE(lv->data().image() == wex::listview_data::IMAGE_ART);
@@ -131,6 +133,22 @@ TEST_CASE("wex::listview")
       auto* event = new wxCommandEvent(wxEVT_MENU, id);
       wxQueueEvent(lv, event);
     }
+  }
+}
+
+TEST_CASE("wex::listview::TSV")
+{
+  auto* lv =
+    new wex::listview(wex::listview_data().type(wex::listview_data::TSV));
+  wex::test::add_pane(frame(), lv);
+
+  SUBCASE("general")
+  {
+    REQUIRE(lv->GetColumnCount() == 0);
+    REQUIRE(lv->data().type() == wex::listview_data::TSV);
+    REQUIRE(lv->load({"x\ty\tz", "v\tw\tx", "a\tb\tc", "f\tg\th"}));
+    REQUIRE(lv->GetColumnCount() == 3);
+    REQUIRE(lv->GetItemCount() == 4);
   }
 }
 

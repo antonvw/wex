@@ -59,8 +59,11 @@ namespace wex
     /// so you can use that id in frame::on_command_item_dialog.
     static int config_dialog(const window_data& data = window_data());
 
+    /// Returns config items.
+    static auto* config_items() { return m_config_items; };
+
     /// Returns the config dialog.
-    static item_dialog* get_config_dialog() { return m_config_dialog; };
+    static auto* get_config_dialog() { return m_config_dialog; };
 
     /// Saves static data in config.
     /// Invoked once during app::on_exit.

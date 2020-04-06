@@ -223,9 +223,7 @@ void wex::stc::on_init()
                def(_("stc.Keep zoom")),
                def(_("stc.vi mode")),
                _("stc.vi tag fullpath")}},
-             {_("stc.Beautifier"),
-              item::COMBOBOX,
-              beautify().list()},
+             {_("stc.Beautifier"), item::COMBOBOX, beautify().list()},
              {_("stc.Search engine"),
               item::COMBOBOX,
               std::list<std::string>{{"https://duckduckgo.com"}}}}},
@@ -313,11 +311,20 @@ void wex::stc::on_init()
             def(_("Line after contracted"))},
            {wxSTC_FOLDFLAG_LEVELNUMBERS, _("Level numbers")}},
           false}}},
-       {_("Directory"),
-        {{_("stc.Include directory"),
+       {_("Linking"),
+        {{_("<i>Includes:</i>")},
+         {_("stc.link.Include directory"),
           listview_data()
             .type(listview_data::FOLDER)
-            .window(window_data().size({200, 200}))}}},
+            .window(window_data().size({200, 200}))},
+         {_("<i>Matches:</i>")},
+         {_("stc.link.Pairs"),
+          listview_data()
+            .type(listview_data::TSV)
+            .window(window_data().size({200, 200})),
+          // First try to find "..", then <..>, as in next example:
+          // <A HREF="http://www.scintilla.org">scintilla</A> component.
+          std::list<std::string>({"\"\t\"", "<\t>", "[\t]", "'\t'", "{\t}"})}}},
        {_("Printer"),
         {{_("stc.Print flags"),
           {{wxSTC_PRINT_NORMAL, _("Normal")},

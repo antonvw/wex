@@ -11,10 +11,6 @@
 - improve blame size calculation, now only uses size of first blame line,
   should be more, or all
   
-# feature/link
-- find_between be configurable
-- the ex link in header is no longer clickable
-
 # feature/git
 - allow checkout by showing other branches, and remove from menu
 

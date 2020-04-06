@@ -19,7 +19,6 @@
 #include <wex/item-vector.h>
 #include <wex/item.h>
 #include <wex/itemdlg.h>
-#include <wex/lexer.h>
 #include <wex/lexers.h>
 #include <wex/listitem.h>
 #include <wex/listview.h>
@@ -210,8 +209,9 @@ wex::listview::listview(const listview_data& data)
   , m_data(
       this,
       listview_data(data).image(
-        data.type() == listview_data::NONE ? data.image() :
-                                             listview_data::IMAGE_FILE_ICON))
+        data.type() == listview_data::NONE || listview_data::TSV ?
+          data.image() :
+          listview_data::IMAGE_FILE_ICON))
 {
   config_get();
 
@@ -263,7 +263,8 @@ wex::listview::listview(const listview_data& data)
       find_replace_data::get()->search_down());
   });
 
-  if (m_data.type() != listview_data::NONE)
+  if (
+    m_data.type() != listview_data::NONE && m_data.type() != listview_data::TSV)
   {
     Bind(wxEVT_IDLE, [=](wxIdleEvent& event) {
       event.Skip();
@@ -437,23 +438,43 @@ wex::listview::listview(const listview_data& data)
   Bind(
     wxEVT_MENU,
     [=](wxCommandEvent& event) {
-      std::string defaultPath;
-      if (GetSelectedItemCount() > 0)
+      long new_index = GetSelectedItemCount() > 0 ? GetFirstSelected() : -1;
+      switch (m_data.type())
       {
-        defaultPath =
-          listitem(this, GetFirstSelected()).get_filename().string();
-      }
-      wxDirDialog dir_dlg(
-        this,
-        _(wxDirSelectorPromptStr),
-        defaultPath,
-        wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
-      if (dir_dlg.ShowModal() == wxID_OK)
-      {
-        const auto no =
-          (GetSelectedItemCount() > 0 ? GetFirstSelected() : GetItemCount());
+        case listview_data::TSV:
+          if (wxTextEntryDialog
+                dlg(this, _("Input") + ":", _("Item"), item_to_text(new_index));
+              dlg.ShowModal() == wxID_OK)
+          {
+            insert_item(
+              tokenizer(dlg.GetValue(), std::string(1, m_field_separator))
+                .tokenize<std::vector<std::string>>(),
+              new_index);
+          }
+          break;
 
-        listitem(this, dir_dlg.GetPath().ToStdString()).insert(no);
+        default:
+        {
+          std::string defaultPath;
+          if (GetSelectedItemCount() > 0)
+          {
+            defaultPath =
+              listitem(this, GetFirstSelected()).get_filename().string();
+          }
+          wxDirDialog dir_dlg(
+            this,
+            _(wxDirSelectorPromptStr),
+            defaultPath,
+            wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
+          if (dir_dlg.ShowModal() == wxID_OK)
+          {
+            const auto no =
+              (GetSelectedItemCount() > 0 ? GetFirstSelected() :
+                                            GetItemCount());
+
+            listitem(this, dir_dlg.GetPath().ToStdString()).insert(no);
+          }
+        }
       }
     },
     wxID_ADD);
@@ -536,7 +557,9 @@ bool wex::listview::append_columns(const std::vector<column>& cols)
           mycol.GetAlign(),
           mycol.GetWidth());
         index == -1)
+    {
       return false;
+    }
 
     mycol.SetColumn(GetColumnCount() - 1);
     m_columns.emplace_back(mycol);
@@ -594,6 +617,10 @@ void wex::listview::build_popup_menu(wex::menu& menu)
   {
     menu.append({{ID_EDIT_OPEN, _("&Open"), wxART_FILE_OPEN}, {}});
   }
+  else if (GetSelectedItemCount() >= 1 && m_data.type() == listview_data::TSV)
+  {
+    menu.append({{ID_EDIT_OPEN, _("&Open")}});
+  }
 
   menu.append({{}, {menu_item::EDIT_INVERT}});
 
@@ -611,7 +638,9 @@ void wex::listview::build_popup_menu(wex::menu& menu)
     menu.append({{menuSort, _("Sort On")}});
   }
 
-  if (m_data.type() == listview_data::FOLDER && GetSelectedItemCount() <= 1)
+  if (
+    (m_data.type() == listview_data::FOLDER && GetSelectedItemCount() <= 1) ||
+    m_data.type() == listview_data::TSV)
   {
     menu.append({{}, {wxID_ADD}});
   }
@@ -655,7 +684,9 @@ void wex::listview::config_get()
   SetSingleStyle(
     wxLC_VRULES,
     (iv.find<long>(_("list.Rulers")) & wxLC_VRULES) > 0);
-  SetSingleStyle(wxLC_NO_HEADER, !iv.find<bool>(_("list.Header")));
+  SetSingleStyle(
+    wxLC_NO_HEADER,
+    !iv.find<bool>(_("list.Header")) || m_data.type() == listview_data::TSV);
   SetSingleStyle(wxLC_SINGLE_SEL, iv.find<bool>(_("list.Single selection")));
 
   items_update();
@@ -828,7 +859,9 @@ const std::string wex::listview::get_item_text(
   return col < 0 ? std::string() : GetItemText(item_number, col).ToStdString();
 }
 
-bool wex::listview::insert_item(const std::vector<std::string>& item)
+bool wex::listview::insert_item(
+  const std::vector<std::string>& item,
+  long                            requested_index)
 {
   if (item.empty() || item.front().empty() || item.size() > m_columns.size())
   {
@@ -868,8 +901,12 @@ bool wex::listview::insert_item(const std::vector<std::string>& item)
 
         if (no == 0)
         {
-          if ((index = InsertItem(GetItemCount(), col)) == -1)
+          if (
+            (index = InsertItem(
+               requested_index == -1 ? GetItemCount() : requested_index,
+               col)) == -1)
           {
+            log("listview insert") << "index:" << index << "col:" << col;
             return false;
           }
 
@@ -885,7 +922,10 @@ bool wex::listview::insert_item(const std::vector<std::string>& item)
         else
         {
           if (!set_item(index, no, col))
+          {
+            log("listview set_item") << "index:" << index << "col:" << col;
             return false;
+          }
         }
       }
 
@@ -905,52 +945,73 @@ void wex::listview::item_activated(long item_number)
 {
   assert(item_number >= 0);
 
-  if (m_data.type() == listview_data::FOLDER)
+  switch (m_data.type())
   {
-    wxDirDialog dir_dlg(
-      this,
-      _(wxDirSelectorPromptStr),
-      GetItemText(item_number),
-      wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
-
-    if (dir_dlg.ShowModal() == wxID_OK)
+    case listview_data::FOLDER:
     {
-      SetItemText(item_number, dir_dlg.GetPath());
-      listitem(this, item_number).update();
-    }
-  }
-  else
-  {
-    // Cannot be const because of SetItem later on.
-    if (listitem item(this, item_number); item.get_filename().file_exists())
-    {
-      if (auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
-          frame != nullptr)
-      {
-        const auto no(get_item_text(item_number, _("Line No")));
-        auto       data(
-          (m_data.type() == listview_data::FIND && !no.empty() ?
-             control_data()
-               .line(std::stoi(no))
-               .find(get_item_text(item_number, _("Match"))) :
-             control_data()));
-
-        frame->open_file(item.get_filename(), data);
-      }
-    }
-    else if (item.get_filename().dir_exists())
-    {
-      wxTextEntryDialog dlg(
+      wxDirDialog dir_dlg(
         this,
-        _("Input") + ":",
-        _("Folder Type"),
-        get_item_text(item_number, _("Type")));
+        _(wxDirSelectorPromptStr),
+        GetItemText(item_number),
+        wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
 
-      if (dlg.ShowModal() == wxID_OK)
+      if (dir_dlg.ShowModal() == wxID_OK)
       {
-        item.set_item(_("Type"), dlg.GetValue());
+        SetItemText(item_number, dir_dlg.GetPath());
+        listitem(this, item_number).update();
       }
     }
+    break;
+
+    case listview_data::TSV:
+    {
+      if (wxTextEntryDialog
+            dlg(this, _("Input") + ":", _("Item"), item_to_text(item_number));
+          dlg.ShowModal() == wxID_OK)
+      {
+        tokenizer tkz(dlg.GetValue(), std::string(1, m_field_separator));
+        int       col = 0;
+
+        while (tkz.has_more_tokens() && col < GetColumnCount())
+        {
+          const auto value = tkz.get_next_token();
+          set_item(item_number, col++, value);
+        }
+      }
+    }
+    break;
+
+    default:
+      // Cannot be const because of SetItem later on.
+      if (listitem item(this, item_number); item.get_filename().file_exists())
+      {
+        if (auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
+            frame != nullptr)
+        {
+          const auto no(get_item_text(item_number, _("Line No")));
+          auto       data(
+            (m_data.type() == listview_data::FIND && !no.empty() ?
+               control_data()
+                 .line(std::stoi(no))
+                 .find(get_item_text(item_number, _("Match"))) :
+               control_data()));
+
+          frame->open_file(item.get_filename(), data);
+        }
+      }
+      else if (item.get_filename().dir_exists())
+      {
+        wxTextEntryDialog dlg(
+          this,
+          _("Input") + ":",
+          _("Folder Type"),
+          get_item_text(item_number, _("Type")));
+
+        if (dlg.ShowModal() == wxID_OK)
+        {
+          item.set_item(_("Type"), dlg.GetValue());
+        }
+      }
   }
 }
 
@@ -965,72 +1026,74 @@ bool wex::listview::item_from_text(const std::string& text)
 
   for (tokenizer tkz(text, "\n"); tkz.has_more_tokens();)
   {
-    if (m_data.type() != listview_data::NONE)
+    switch (m_data.type())
     {
-      modified = true;
-
-      if (!InReportView())
-      {
-        listitem(this, tkz.get_next_token()).insert();
-      }
-      else
-      {
-        const auto token(tkz.get_next_token());
-        tokenizer  tk(token, std::string(1, field_separator()));
-
-        if (tk.has_more_tokens())
+      case listview_data::NONE:
+      case listview_data::TSV:
+        if (const auto line = tkz.get_next_token();
+            insert_item(tokenizer(line, std::string(1, m_field_separator))
+                          .tokenize<std::vector<std::string>>()))
         {
-          const auto value = tk.get_next_token();
+          modified = true;
+        }
+        break;
 
-          if (path fn(value); fn.file_exists())
+      default:
+        modified = true;
+
+        if (!InReportView())
+        {
+          listitem(this, tkz.get_next_token()).insert();
+        }
+        else
+        {
+          const auto token(tkz.get_next_token());
+
+          if (tokenizer tk(token, std::string(1, field_separator()));
+              tk.has_more_tokens())
           {
-            listitem item(this, fn);
-            item.insert();
+            const auto value = tk.get_next_token();
 
-            // And try to set the rest of the columns
-            // (that are not already set by inserting).
-            int col = 1;
-            while (tk.has_more_tokens() && col < GetColumnCount() - 1)
+            if (path fn(value); fn.file_exists())
             {
-              const auto value = tk.get_next_token();
+              listitem item(this, fn);
+              item.insert();
 
-              if (
-                col != find_column(_("Type")) &&
-                col != find_column(_("In Folder")) &&
-                col != find_column(_("Size")) &&
-                col != find_column(_("Modified")))
+              // And try to set the rest of the columns
+              // (that are not already set by inserting).
+              int col = 1;
+              while (tk.has_more_tokens() && col < GetColumnCount() - 1)
               {
-                if (!set_item(item.GetId(), col, value))
-                  return false;
-              }
+                const auto value = tk.get_next_token();
 
-              col++;
+                if (
+                  col != find_column(_("Type")) &&
+                  col != find_column(_("In Folder")) &&
+                  col != find_column(_("Size")) &&
+                  col != find_column(_("Modified")))
+                {
+                  if (!set_item(item.GetId(), col, value))
+                    return false;
+                }
+
+                col++;
+              }
+            }
+            else
+            {
+              // Now we need only the first column (containing findfiles). If
+              // more columns are present, these are ignored.
+              const auto findfiles =
+                (tk.has_more_tokens() ? tk.get_next_token() : tk.get_string());
+
+              listitem(this, value, findfiles).insert();
             }
           }
           else
           {
-            // Now we need only the first column (containing findfiles). If more
-            // columns are present, these are ignored.
-            const auto findfiles =
-              (tk.has_more_tokens() ? tk.get_next_token() : tk.get_string());
-
-            listitem(this, value, findfiles).insert();
+            listitem(this, token).insert();
           }
         }
-        else
-        {
-          listitem(this, token).insert();
-        }
-      }
-    }
-    else
-    {
-      if (const auto line = tkz.get_next_token();
-          insert_item(tokenizer(line, std::string(1, m_field_separator))
-                        .tokenize<std::vector<std::string>>()))
-      {
-        modified = true;
-      }
     }
   }
 
@@ -1090,7 +1153,8 @@ const std::string wex::listview::item_to_text(long item_number) const
 
 void wex::listview::items_update()
 {
-  if (m_data.type() != listview_data::NONE)
+  if (
+    m_data.type() != listview_data::NONE && m_data.type() != listview_data::TSV)
   {
     for (auto i = 0; i < GetItemCount(); i++)
     {
@@ -1102,6 +1166,21 @@ void wex::listview::items_update()
 bool wex::listview::load(const std::list<std::string>& l)
 {
   clear();
+
+  if (l.empty())
+  {
+    return true;
+  }
+
+  if (m_data.type() == listview_data::TSV && GetColumnCount() == 0)
+  {
+    const auto cols = tokenizer(l.front(), "\t").count_tokens();
+
+    for (size_t i = 0; i < cols; i++)
+    {
+      append_columns({{std::to_string(i + 1), column::STRING, 50}});
+    }
+  }
 
   for (const auto& it : l)
   {
@@ -1129,7 +1208,7 @@ const std::list<std::string> wex::listview::save() const
 
   for (auto i = 0; i < GetItemCount(); i++)
   {
-    l.push_back(GetItemText(i));
+    l.push_back(item_to_text(i));
   }
 
   return l;

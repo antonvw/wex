@@ -216,7 +216,7 @@ void wex::stc::bind_all()
       }
     }
 
-    if (link_open(link_t().set(LINK_OPEN)))
+    if (link_open(link_t().set(LINK_OPEN).set(LINK_OPEN_MIME)))
     {
       return;
     }
@@ -1119,7 +1119,7 @@ void wex::stc::build_popup_menu(menu& menu)
 
 void wex::stc::check_brace()
 {
-  if (!config(_("stc.Show match")).get(1))
+  if (!config(_("stc.Show match")).get(true))
   {
     return;
   }

@@ -6,9 +6,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
-#include <wex/link.h>
 #include <wex/config.h>
+#include <wex/item-vector.h>
 #include <wex/lexer.h>
+#include <wex/link.h>
 #include <wex/path.h>
 #include <wex/stc.h>
 #include <wex/util.h>
@@ -18,11 +19,14 @@ namespace wex
   class paths
   {
   public:
-    paths() 
-      : m_paths(config(_("stc.Include directory")).get(
-          std::list<std::string>())) {;};
+    paths()
+      : m_paths(
+          config(_("stc.link.Include directory")).get(std::list<std::string>()))
+    {
+      ;
+    };
 
-    path find(const std::string& path) const 
+    path find(const std::string& path) const
     {
       for (const auto& it : m_paths)
       {
@@ -34,10 +38,11 @@ namespace wex
 
       return wex::path();
     };
+
   private:
     const std::list<std::string> m_paths;
   };
-};
+}; // namespace wex
 
 wex::link::link(stc* stc)
   : m_stc(stc)
@@ -45,9 +50,7 @@ wex::link::link(stc* stc)
 {
 }
 
-wex::link::~link()
-{
-}
+wex::link::~link() {}
 
 const wex::path wex::link::find_between(const std::string& text) const
 {
@@ -58,19 +61,17 @@ const wex::path wex::link::find_between(const std::string& text) const
 
   // Path in .po files.
   if (
-    m_stc != nullptr &&
-    m_stc->get_lexer().scintilla_lexer() == "po" && text.substr(0, 3) == "#: ")
+    m_stc != nullptr && m_stc->get_lexer().scintilla_lexer() == "po" &&
+    text.substr(0, 3) == "#: ")
   {
     return text.substr(3);
   }
-  
-  // Better first try to find "...", then <...>, as in next example.
-  // <A HREF="http://www.scintilla.org">scintilla</A> component.
-  for (const auto& p: std::vector < std::pair < std::string, std::string> >
-    {{"\"", "\""}, {"<", ">"}, {"[", "]"}, {"'", "'"}, {"{", "}"}})
+
+  for (const auto& p : item_vector(stc::config_items())
+                         .find<std::list<std::string>>(_("stc.link.Pairs")))
   {
-    const auto pos1 = text.find(p.first);
-    const auto pos2 = text.rfind(p.second);
+    const auto pos1 = text.find(before(p, '\t'));
+    const auto pos2 = text.rfind(after(p, '\t'));
 
     if (pos1 != std::string::npos && pos2 != std::string::npos && pos2 > pos1)
     {
@@ -82,14 +83,14 @@ const wex::path wex::link::find_between(const std::string& text) const
   return trim(text);
 }
 
-const wex::path wex::link::find_filename(
-  const std::string& text, control_data& data) const
+const wex::path
+wex::link::find_filename(const std::string& text, control_data& data) const
 {
   if (text.empty())
   {
     return path();
   }
-  
+
   std::string link(text);
   // The harddrive letter is filtered, it does not work
   // when adding it to match.
@@ -99,29 +100,29 @@ const wex::path wex::link::find_filename(
   if (link.size() > 1 && isalpha(link[0]) && link[1] == ':')
   {
     prefix = link.substr(0, 1);
-    link = link.substr(2);
+    link   = link.substr(2);
   }
 #endif
 
   // file[:line[:column]]
-  if (std::vector <std::string> v;
-    match("^([0-9A-Za-z _/.-]+):([0-9]*):?([0-9]*)", link, v) > 0)
+  if (std::vector<std::string> v;
+      match("^([0-9A-Za-z _/.-]+):([0-9]*):?([0-9]*)", link, v) > 0)
   {
     link = v[0];
     data.reset();
-      
+
     if (v.size() > 1 && !v[1].empty())
     {
       data.line(std::stoi(v[1]));
-        
+
       if (v.size() > 2 && !v[2].empty())
       {
         data.col(std::stoi(v[2]));
       }
     }
-      
+
     path p(trim(prefix + link));
-    
+
     if (const path q(before(p.string(), ':')); q.file_exists())
     {
       return p.make_absolute();
@@ -134,25 +135,25 @@ const wex::path wex::link::find_filename(
       }
     }
   }
-  
+
   return path();
 }
 
 const wex::path wex::link::find_url_or_mime(
-  const std::string& text, const control_data& data) const
+  const std::string&  text,
+  const control_data& data) const
 {
   if (!text.empty())
   {
     // hypertext link
-    if (std::vector <std::string> v; 
-        (data.line() == LINE_OPEN_URL || LINE_OPEN_URL_AND_MIME) && 
-        (match("(https?:.*)", text, v) > 0 || 
-         match("(www.*)", text, v) > 0))
+    if (std::vector<std::string> v;
+        (data.line() == LINE_OPEN_URL || LINE_OPEN_URL_AND_MIME) &&
+        (match("(https?:.*)", text, v) > 0 || match("(www.*)", text, v) > 0))
     {
       // with a possible delimiter
-      const auto match(v[0]);
+      const auto        match(v[0]);
       const std::string delimiters("\")]");
-      
+
       for (const auto& c : delimiters)
       {
         if (const auto pos = match.find(c); pos != std::string::npos)
@@ -160,31 +161,31 @@ const wex::path wex::link::find_url_or_mime(
           return match.substr(0, pos);
         }
       }
-      
+
       // without delimiter
       return match;
     }
   }
-  
+
   // previewable (MIME) file
   if (m_stc != nullptr && m_stc->get_lexer().previewable())
   {
     return m_stc->get_filename();
   }
-  else 
+  else
   {
     return path();
   }
 }
-  
+
 // text contains selected text, or current line
-const wex::path wex::link::get_path(
-  const std::string& text, control_data& data) const
+const wex::path
+wex::link::get_path(const std::string& text, control_data& data) const
 {
   // mime or url
-  if (data.line() == LINE_OPEN_MIME ||
-      data.line() == LINE_OPEN_URL ||  
-      data.line() == LINE_OPEN_URL_AND_MIME)
+  if (
+    data.line() == LINE_OPEN_MIME || data.line() == LINE_OPEN_URL ||
+    data.line() == LINE_OPEN_URL_AND_MIME)
   {
     return find_url_or_mime(text, data);
   }
@@ -197,7 +198,7 @@ const wex::path wex::link::get_path(
 
   // if we have something in between
   const wex::path between(find_between(text));
-  
+
   // if between text now starts with file:line:no
   if (const path p(find_filename(between.string(), data)); !p.empty())
   {
@@ -205,8 +206,7 @@ const wex::path wex::link::get_path(
   }
 
   // if text is a file somewhere on the search paths
-  if (const auto& p(m_paths->find(between.string()));
-    !p.empty())
+  if (const auto& p(m_paths->find(between.string())); !p.empty())
   {
     return p;
   }
@@ -218,11 +218,12 @@ const wex::path wex::link::get_path(
   }
   else
   {
-    if (file.is_relative() && 
-        m_stc != nullptr && m_stc->get_filename().file_exists())
+    if (
+      file.is_relative() && m_stc != nullptr &&
+      m_stc->get_filename().file_exists())
     {
-      if (wex::path path(m_stc->get_filename().get_path(), file.fullname()); 
-        path.file_exists())
+      if (wex::path path(m_stc->get_filename().get_path(), file.fullname());
+          path.file_exists())
       {
         return path;
       }
@@ -230,9 +231,9 @@ const wex::path wex::link::get_path(
   }
 
   // if last word is a file
-  const auto pos = between.string().find_last_of(' ');
-  wex::path word = trim((
-    pos != std::string::npos ? between.string().substr(pos): std::string()));
+  const auto pos  = between.string().find_last_of(' ');
+  wex::path  word = trim(
+    (pos != std::string::npos ? between.string().substr(pos) : std::string()));
 
   if (!word.empty())
   {
@@ -241,7 +242,7 @@ const wex::path wex::link::get_path(
       data.reset();
       return word.make_absolute();
     }
-    
+
     if (const path p(find_filename(word.string(), data)); !p.empty())
     {
       return p;
