@@ -107,7 +107,7 @@ namespace wex
     /// Default resets the find focus.
     virtual void sync_close_all(wxWindowID id);
 
-    /// overriden methods
+    /// overridden methods
 
     stc*
     open_file(const path& filename, const stc_data& data = stc_data()) override;

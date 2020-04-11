@@ -462,7 +462,7 @@ bool wex::addressrange::global(const std::string& text, bool inverse) const
         arg += "/" + subpattern + "/" + next.get_string();
       }
 
-      rest = std::string(1, command) + arg;
+      rest = command + arg;
     }
   }
 

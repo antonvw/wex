@@ -913,8 +913,7 @@ const std::any wex::item::get_value() const
         {
           return false;
         }
-        break;
-      
+
       case CHECKLISTBOX_BIT:
       case RADIOBOX: {
         long value = 0;
@@ -929,8 +928,7 @@ const std::any wex::item::get_value() const
         }
         return std::any(value);
         }
-        break;
-        
+
       default:
         return m_initial;
     }

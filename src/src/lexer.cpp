@@ -91,8 +91,9 @@ wex::lexer::lexer(const pugi::xml_node* node)
         // Add all keywords that point to a keyword set.
         for (const auto& att : child.attributes())
         {
-          std::string nm(att.name());
-          const auto  pos = nm.find("-");
+          const std::string nm(att.name());
+          const auto        pos = nm.find("-");
+
           try
           {
             const auto setno =

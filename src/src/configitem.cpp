@@ -251,7 +251,6 @@ bool wex::item::to_config(bool save) const
     default:
       // the other types (including STC) have no persistent info
       return false;
-      break;
   }
 
   if (m_apply != nullptr)

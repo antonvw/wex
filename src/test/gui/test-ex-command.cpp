@@ -5,9 +5,9 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include "test.h"
 #include <wex/ex-command.h>
 #include <wex/stc.h>
-#include "test.h"
 
 TEST_SUITE_BEGIN("wex::ex");
 
@@ -20,86 +20,98 @@ TEST_CASE("wex::ex_command")
   {
     wex::ex_command command(stc);
 
-    REQUIRE( command.empty());
-    REQUIRE( command.get_stc() == stc);
+    REQUIRE(command.empty());
+    REQUIRE(command.get_stc() == stc);
 
     SUBCASE("clear")
     {
       command.set("12345");
       REQUIRE(!command.empty());
       command.clear();
-      REQUIRE( command.empty());
+      REQUIRE(command.empty());
+      REQUIRE(command.str().empty());
     }
-    
-    SUBCASE("type")
-    {
-      REQUIRE( command.type() == wex::ex_command::type_t::NONE);
-      
-      command.set("G");
-      REQUIRE( command.type() == wex::ex_command::type_t::VI);
 
-      command.set(":");
-      REQUIRE( command.type() == wex::ex_command::type_t::COMMAND);
-      
+    SUBCASE("set")
+    {
+      REQUIRE(command.type() == wex::ex_command::type_t::NONE);
+
+      command.set("G");
+      REQUIRE(command.type() == wex::ex_command::type_t::VI);
+      REQUIRE(command.str() == "G");
+
+      command.set(":100");
+      REQUIRE(command.type() == wex::ex_command::type_t::COMMAND);
+      REQUIRE(command.str() == ":");
+
       command.set(std::string(1, WXK_CONTROL_R) + "=");
-      REQUIRE( command.type() == wex::ex_command::type_t::CALC);
+      REQUIRE(command.type() == wex::ex_command::type_t::CALC);
 
       command.set("!");
-      REQUIRE( command.type() == wex::ex_command::type_t::EXEC);
-      
+      REQUIRE(command.type() == wex::ex_command::type_t::EXEC);
+
       command.set("/");
-      REQUIRE( command.type() == wex::ex_command::type_t::FIND);
-      
+      REQUIRE(command.type() == wex::ex_command::type_t::FIND);
+
       command.set("?");
-      REQUIRE( command.type() == wex::ex_command::type_t::FIND);
-      
+      REQUIRE(command.type() == wex::ex_command::type_t::FIND);
+
       command.set("w");
-      REQUIRE( command.type() == wex::ex_command::type_t::VI);
+      REQUIRE(command.type() == wex::ex_command::type_t::VI);
+      REQUIRE(command.str() == "w");
+    }
+
+    SUBCASE("reset")
+    {
+      command.set(":100");
+      REQUIRE(command.str() == ":");
+      command.reset();
+      REQUIRE(command.str() == ":");
     }
 
     SUBCASE("exec")
     {
       command.set("G");
-      REQUIRE( command.command() == "G");
-      REQUIRE( command.exec() );
-      REQUIRE( stc->GetCurrentLine() == 2);
+      REQUIRE(command.command() == "G");
+      REQUIRE(command.exec());
+      REQUIRE(stc->GetCurrentLine() == 2);
     }
 
     SUBCASE("change")
     {
       command.append('g');
-      REQUIRE( command.command() == "g");
+      REQUIRE(command.command() == "g");
       command.append('g');
-      REQUIRE( command.command() == "gg");
-      REQUIRE( command.front() == 'g');
-      REQUIRE( command.back() == 'g');
-      REQUIRE( command.size() == 2);
+      REQUIRE(command.command() == "gg");
+      REQUIRE(command.front() == 'g');
+      REQUIRE(command.back() == 'g');
+      REQUIRE(command.size() == 2);
       command.pop_back();
-      REQUIRE( command.size() == 1);
-      REQUIRE( command.append_exec('g'));
-      REQUIRE( stc->GetCurrentLine() == 0);
+      REQUIRE(command.size() == 1);
+      REQUIRE(command.append_exec('g'));
+      REQUIRE(stc->GetCurrentLine() == 0);
 
       command.set(wex::ex_command("dd"));
-      REQUIRE( command.command() == "dd");
-      REQUIRE( command.get_stc() == stc);
+      REQUIRE(command.command() == "dd");
+      REQUIRE(command.get_stc() == stc);
       command.restore(wex::ex_command("ww"));
-      REQUIRE( command.command() == "ww");
+      REQUIRE(command.command() == "ww");
       command.append("ww");
-      REQUIRE( command.command() == "wwww");
-      REQUIRE( command.get_stc() == stc);
+      REQUIRE(command.command() == "wwww");
+      REQUIRE(command.get_stc() == stc);
     }
   }
-  
+
   SUBCASE("constructor command")
   {
     wex::ex_command command("G");
 
-    REQUIRE( command.command() == "G");
-    REQUIRE( command.get_stc() == nullptr);
-    REQUIRE( command.type() == wex::ex_command::type_t::VI);
+    REQUIRE(command.command() == "G");
+    REQUIRE(command.get_stc() == nullptr);
+    REQUIRE(command.type() == wex::ex_command::type_t::VI);
 
-    REQUIRE(!command.exec() );
-    REQUIRE( stc->GetCurrentLine() == 0);
+    REQUIRE(!command.exec());
+    REQUIRE(stc->GetCurrentLine() == 0);
   }
 }
 

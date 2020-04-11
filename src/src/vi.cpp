@@ -814,7 +814,7 @@ wex::vi::vi(wex::stc* arg)
        [&](const std::string& command) {
          if (command.size() > 2)
          {
-           command_calc(command);
+           command_reg(command);
            return command.size();
          }
          else if (command.size() == 2 && regafter(_s(WXK_CONTROL_R), command))
@@ -908,31 +908,6 @@ bool wex::vi::command(const std::string& command)
   }
 }
 
-void wex::vi::command_calc(const std::string& command)
-{
-  // the command starts with control-r =
-  assert(command.size() >= 2);
-
-  const auto sum = calculator(command.substr(2));
-
-  if (mode().insert())
-  {
-    if (m_last_command.find('c') != std::string::npos)
-    {
-      get_stc()->ReplaceSelection(wxEmptyString);
-    }
-
-    get_stc()->add_text(std::to_string(sum));
-
-    append_insert_command(command);
-  }
-  else
-  {
-    set_register_yank(std::to_string(sum));
-    frame()->show_ex_message(std::to_string(sum));
-  }
-}
-
 void wex::vi::command_reg(const std::string& reg)
 {
   switch (reg[0])
@@ -940,13 +915,37 @@ void wex::vi::command_reg(const std::string& reg)
     case 0:
       break;
 
-    // calc register: control_r =
+    // calc register: control-R =
     case WXK_CONTROL_R:
       if (reg.size() > 1 && reg[1] == '=')
       {
-        // TODO: set should not be necessary..
-        set_register_insert(std::string());
-        frame()->show_ex_command(this, reg);
+        if (reg.size() == 2)
+        {
+          // TODO: set should not be necessary..
+          set_register_insert(std::string());
+          frame()->show_ex_command(this, reg);
+        }
+        else
+        {
+          const auto sum = calculator(reg.substr(2));
+
+          if (mode().insert())
+          {
+            if (m_last_command.find('c') != std::string::npos)
+            {
+              get_stc()->ReplaceSelection(wxEmptyString);
+            }
+
+            get_stc()->add_text(std::to_string(sum));
+
+            append_insert_command(reg);
+          }
+          else
+          {
+            set_register_yank(std::to_string(sum));
+            frame()->show_ex_message(std::to_string(sum));
+          }
+        }
       }
       else
       {
@@ -1135,14 +1134,7 @@ bool wex::vi::insert_mode(const std::string& command)
 
   if (command.find(_s(WXK_CONTROL_R) + "=") == 0)
   {
-    if (command.size() == 2)
-    {
-      command_reg(command);
-    }
-    else
-    {
-      command_calc(command);
-    }
+    command_reg(command);
     return true;
   }
   else if (command.find(_s(WXK_CONTROL_R)) != std::string::npos)
@@ -1238,7 +1230,7 @@ bool wex::vi::insert_mode(const std::string& command)
 
       if (
         !m_insert_text.empty() &&
-        m_insert_text.back() == wxUniChar(WXK_CONTROL_R))
+        m_insert_text.back() == WXK_CONTROL_R)
       {
         get_stc()->ReplaceSelection(wxEmptyString);
 

@@ -2,29 +2,29 @@
 // Name:      presentation.cpp
 // Purpose:   Implementation of class wex::presentation
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/presentation.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
+#include <wex/presentation.h>
 #include <wex/stc.h>
 #include <wex/tokenizer.h>
 
-wex::presentation::presentation(
-  presentation_t type, const pugi::xml_node& node)
+wex::presentation::presentation(presentation_t type, const pugi::xml_node& node)
   : m_type(type)
 {
-  if (node.empty()) return;
+  if (node.empty())
+    return;
 
   try
   {
-    const auto single = 
+    const auto single =
       lexers::get()->apply_macro(node.attribute("no").value());
 
     tokenizer fields(node.text().get(), ",");
 
-    m_no = std::stoi(single);
+    m_no    = std::stoi(single);
     m_style = std::stoi(lexers::get()->apply_macro(fields.get_next_token()));
 
     if (fields.has_more_tokens())
@@ -35,10 +35,11 @@ wex::presentation::presentation(
       {
         m_under = (fields.get_next_token() == "true");
       }
-      
+
       if (m_type == MARKER && fields.has_more_tokens())
       {
-        m_background_colour = lexers::get()->apply_macro(fields.get_next_token());
+        m_background_colour =
+          lexers::get()->apply_macro(fields.get_next_token());
       }
     }
 
@@ -67,9 +68,8 @@ bool wex::presentation::operator<(const wex::presentation& i) const
 
 bool wex::presentation::operator==(const wex::presentation& i) const
 {
-  return m_style == -1 ?
-    m_no == i.m_no:
-    m_no == i.m_no && m_style == i.m_style;
+  return m_style == -1 ? m_no == i.m_no :
+                         m_no == i.m_no && m_style == i.m_style;
 }
 
 void wex::presentation::apply(stc* stc) const
@@ -87,14 +87,15 @@ void wex::presentation::apply(stc* stc) const
         }
 
         stc->IndicatorSetUnder(m_no, m_under);
-      break;
-      
+        break;
+
       case MARKER:
-        stc->MarkerDefine(m_no, 
-          m_style, 
-          wxString(m_foreground_colour), 
+        stc->MarkerDefine(
+          m_no,
+          m_style,
+          wxString(m_foreground_colour),
           wxString(m_background_colour));
-      break;
+        break;
     }
   }
 }
@@ -104,19 +105,16 @@ bool wex::presentation::is_ok() const
   switch (m_type)
   {
     case INDICATOR:
-      return 
-        m_no >= 0 && m_no <= wxSTC_INDIC_MAX &&
-        m_style >= 0 && m_style <= wxSTC_INDIC_ROUNDBOX;
-    break;
-  
+      return m_no >= 0 && m_no <= wxSTC_INDIC_MAX && m_style >= 0 &&
+             m_style <= wxSTC_INDIC_ROUNDBOX;
+
     case MARKER:
-      return 
-        m_no >= 0 && m_no <= wxSTC_MARKER_MAX &&
-        ((m_style >= 0 && m_style <= wxSTC_MARKER_MAX) || 
-         (m_style >= wxSTC_MARK_CHARACTER && m_style <= wxSTC_MARK_CHARACTER + 255));
-    break;
+      return m_no >= 0 && m_no <= wxSTC_MARKER_MAX &&
+             ((m_style >= 0 && m_style <= wxSTC_MARKER_MAX) ||
+              (m_style >= wxSTC_MARK_CHARACTER &&
+               m_style <= wxSTC_MARK_CHARACTER + 255));
   }
-  
+
   return false;
 }
 
@@ -124,9 +122,11 @@ const std::string wex::presentation::name() const
 {
   switch (m_type)
   {
-    case INDICATOR: return "indicator"; break;
-    case MARKER: return "marker"; break;
+    case INDICATOR:
+      return "indicator";
+    case MARKER:
+      return "marker";
   }
-  
+
   return std::string();
 }

@@ -1190,10 +1190,10 @@ void wex::ex::set_registers_delete(const std::string& value) const
 
   for (int i = 9; i >= 2; i--)
   {
-    if (const auto value(m_macros.get_register(wxUniChar(48 + i - 1)));
+    if (const auto value(m_macros.get_register(char(48 + i - 1)));
         !value.empty())
     {
-      m_macros.set_register(wxUniChar(48 + i), value);
+      m_macros.set_register(char(48 + i), value);
     }
   }
 

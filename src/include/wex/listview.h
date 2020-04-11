@@ -221,7 +221,7 @@ namespace wex
           false);
     };
 
-    const wxUniChar m_field_separator = '\t';
+    const char m_field_separator = '\t';
 
     const int m_image_height, m_image_width;
 

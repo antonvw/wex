@@ -12,8 +12,7 @@
 
 bool wex::beautify::file(const path& p) const
 {
-  return is_auto() && is_active() &&
-         is_supported(p.lexer()) &&
+  return is_auto() && is_active() && is_supported(p.lexer()) &&
          process().execute(name() + " -i " + p.string(), process::EXEC_WAIT);
 }
 
@@ -29,8 +28,8 @@ bool wex::beautify::is_auto() const
 
 bool wex::beautify::is_supported(const lexer& l) const
 {
-  return l.scintilla_lexer() == "cpp" || l.scintilla_lexer() == "java" ||
-         l.scintilla_lexer() == "javascript";
+  return l.display_lexer() == "cpp" || l.display_lexer() == "java" ||
+         l.display_lexer() == "javascript";
 }
 
 std::list<std::string> wex::beautify::list() const

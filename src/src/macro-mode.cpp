@@ -167,7 +167,7 @@ int wex::macro_mode::transition(
       }
       else if (regafter("@", macro))
       {
-        macro = std::string(1, macro.back());
+        macro = macro.back();
 
         if (!ex::get_macros().is_recorded(macro))
         {

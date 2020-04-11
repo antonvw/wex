@@ -2,11 +2,6 @@
 - improve align_text (see e.g. blame annotations)
 - add stc get_text, and use it instead of GetText (159 times)
 
-# feature/calc
-- command_calc command_reg can be combined
-- ex_command should have a prefix, instead of textctrl in managedframe
-- test in vi::calc and ex_command, managed_frame
-
 # feature/blame
 - improve blame size calculation, now only uses size of first blame line,
   should be more, or all

@@ -663,7 +663,7 @@ void wex::stc::bind_all()
       {
         if (GetSelectedText().length() == 1)
         {
-          const wxUniChar value = GetSelectedText().GetChar(0);
+          const char value = GetSelectedText().GetChar(0);
           wxMessageBox(
             wxString::Format("hex: %x dec: %d", value, value),
             _("Control Character"));

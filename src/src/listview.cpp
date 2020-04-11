@@ -1134,7 +1134,6 @@ const std::string wex::listview::item_to_text(long item_number) const
 
     case listview_data::FOLDER:
       return GetItemText(item_number);
-      break;
 
     default:
       for (int col = 0; col < GetColumnCount(); col++)
@@ -1395,11 +1394,11 @@ bool wex::listview::sort_column(int column_no, sort_t sort_method)
       after_sorting();
     }
 
-    log::status(_("Sorted on")) << sorted_col.GetText();
+    log::status(_("Sorted on")) << sorted_col.GetText().ToStdString();
   }
   catch (std::exception& e)
   {
-    log(e) << "sort:" << sorted_col.GetText();
+    log(e) << "sort:" << sorted_col.GetText().ToStdString();
     return false;
   }
 

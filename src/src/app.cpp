@@ -39,8 +39,10 @@ void wex::app::OnAssertFailure(
   const wxChar* msg)
 {
 #ifdef NO_ASSERT
-  log("OnAssertFailure") << "file:" << file << "line:" << line
-                         << "func:" << func << "cond:" << cond << "msg:" << msg;
+  log("OnAssertFailure") << "file:" << (const char*)file << "line:" << line
+                         << "func:" << (const char*)func
+                         << "cond:" << (const char*)cond
+                         << "msg:" << (const char*)msg;
 #else
   wxApp::OnAssertFailure(file, line, func, cond, msg);
 #endif
@@ -66,7 +68,8 @@ int wex::app::OnExit()
 bool wex::app::OnInit()
 {
   log::init(argc, argv);
-  log::verbose(1) << "started:" << GetAppName() << get_version_info().get();
+  log::verbose(1) << "started:" << GetAppName().ToStdString()
+                  << get_version_info().get();
 
   config::on_init();
 
@@ -121,7 +124,7 @@ bool wex::app::OnInit()
     }
     else if (info != nullptr)
     {
-      log("missing locale files for") << m_locale.GetName();
+      log("missing locale files for") << m_locale.GetName().ToStdString();
     }
   }
 

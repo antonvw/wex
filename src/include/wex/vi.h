@@ -10,9 +10,9 @@
 #include <functional>
 #include <string>
 #include <vector>
-#include <wx/event.h>
 #include <wex/ex.h>
 #include <wex/vi-mode.h>
+#include <wx/event.h>
 
 namespace wex
 {
@@ -25,28 +25,28 @@ namespace wex
 
     /// Appends string to executed insert command.
     void append_insert_command(const std::string& s);
-    
+
     /// Appends string to insert text.
     void append_insert_text(const std::string& s);
-    
+
     /// Executes vi command.
     /// Returns true if the command was executed.
     bool command(const std::string& command) final;
-    
+
     /// Returns inserted text.
-    const auto & inserted_text() const {return m_insert_text;};
-    
+    const auto& inserted_text() const { return m_insert_text; };
+
     /// Returns last entered command.
-    const auto & last_command() const {return m_last_command;};
+    const auto& last_command() const { return m_last_command; };
 
-    /// Returns the mode we are in.  
-    const auto & mode() const {return m_mode;};
+    /// Returns the mode we are in.
+    const auto& mode() const { return m_mode; };
 
-    /// Returns writeable mode.  
-    auto & mode() {return m_mode;};
+    /// Returns writeable mode.
+    auto& mode() { return m_mode; };
 
     /// Returns motion commands.
-    const auto & motion_commands() const {return m_motion_commands;};
+    const auto& motion_commands() const { return m_motion_commands; };
 
     /// Handles char events.
     /// Returns true if event is allowed to be skipped.
@@ -60,25 +60,23 @@ namespace wex
     bool on_key_down(const wxKeyEvent& event);
 
     /// Returns other commands.
-    const auto & other_commands() const {return m_other_commands;};
+    const auto& other_commands() const { return m_other_commands; };
 
     /// Extend visual selection.
     void visual_extend(int start_pos, int end_pos);
+
   private:
     /// commands to be used in lambda
-    typedef std::vector<
-      std::pair<
-        /// the command
-        const std::string, 
-        /// command callback, returns number of chars processed
-        /// by this command
-        std::function<size_t(const std::string& command)>
-        > 
-      > commands_t;
+    typedef std::vector<std::pair<
+      /// the command
+      const std::string,
+      /// command callback, returns number of chars processed
+      /// by this command
+      std::function<size_t(const std::string& command)>>>
+      commands_t;
 
     enum class motion_t;
 
-    void command_calc(const std::string& reg);
     void command_reg(const std::string& reg);
     char convert_key_event(const wxKeyEvent& event) const;
     bool delete_range(int start, int end);
@@ -90,27 +88,20 @@ namespace wex
     bool parse_command(std::string& command);
     bool put(bool after);
     void set_last_command(const std::string& command);
-    
+
     static inline std::string m_last_command;
     static inline std::string m_last_find_char_command;
 
-    bool 
-      m_count_present {false},
-      m_dot {false}, 
-      m_search_forward {true};
-    
+    bool m_count_present{false}, m_dot{false}, m_search_forward{true};
+
     int m_count{1};
-    
-    std::string 
-      m_insert_command, 
-      m_insert_text;
-    
+
+    std::string m_insert_command, m_insert_text;
+
     vi_mode m_mode;
-    
-    const commands_t 
-      m_motion_commands, 
-      m_other_commands;
+
+    const commands_t m_motion_commands, m_other_commands;
 
     const std::vector<std::string> m_last_commands;
   };
-};
+}; // namespace wex

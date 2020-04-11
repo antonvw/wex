@@ -50,9 +50,6 @@ namespace wex
     // Returns ex component.
     auto* ex() { return m_ex; };
 
-    // Get string value.
-    const std::string get_value() const { return GetValue().ToStdString(); };
-
     // Sets ex component using string command.
     // Returns false if command not supported.
     bool set_ex(wex::ex* ex, const std::string& command);
@@ -60,6 +57,9 @@ namespace wex
     // Sets ex component using char command.
     // Returns false if command not supported.
     bool set_ex(wex::ex* ex, char command);
+
+    // Get string value.
+    const std::string str() const { return GetValue().ToStdString(); };
 
   private:
     textctrl_input& TCI()
@@ -82,8 +82,7 @@ namespace wex
     managed_frame* m_frame;
     wxStaticText*  m_prefix;
 
-    char        m_input{0};
-    std::string m_prefix_text;
+    char m_input{0};
 
     bool m_control_r{false}, m_control_r_present{false}, m_mode_visual{false},
       m_user_input{false};
@@ -681,8 +680,7 @@ wex::textctrl::textctrl(
   Bind(wxEVT_KEY_DOWN, [=](wxKeyEvent& event) {
     if (event.GetKeyCode() != WXK_RETURN && !GetStringSelection().empty())
     {
-      // TODO: only clear selection
-      m_command.set(m_prefix_text);
+      m_command.reset();
     }
 
     switch (event.GetKeyCode())
@@ -782,14 +780,14 @@ wex::textctrl::textctrl(
     {
       m_ex->get_stc()->position_restore();
       m_ex->get_stc()->find_next(
-        get_value(),
+        str(),
         m_ex->search_flags(),
-        m_prefix_text == "/");
+        m_command.str() == "/");
     }
   });
 
   Bind(wxEVT_TEXT_ENTER, [=](wxCommandEvent& event) {
-    if (m_ex == nullptr || get_value().empty())
+    if (m_ex == nullptr || str().empty())
     {
       m_frame->hide_ex_bar(managed_frame::HIDE_BAR_FORCE_FOCUS_STC);
       return;
@@ -797,14 +795,14 @@ wex::textctrl::textctrl(
 
     if (!m_control_r_present)
     {
-      m_command.set(m_prefix_text + get_value());
+      m_command.reset(str());
     }
 
     if (
       m_user_input && m_command.type() == ex_command::type_t::FIND &&
       m_ex != nullptr)
     {
-      m_ex->get_macros().record(m_prefix_text + get_value());
+      m_ex->get_macros().record(m_command.str() + str());
     }
 
     if (
@@ -838,7 +836,7 @@ wex::textctrl::textctrl(
 
       if (m_command.type() == ex_command::type_t::FIND)
       {
-        find_replace_data::get()->set_find_string(get_value());
+        find_replace_data::get()->set_find_string(str());
       }
       else
       {
@@ -847,12 +845,12 @@ wex::textctrl::textctrl(
         if (m_command.type() == ex_command::type_t::COMMAND)
         {
           if (
-            get_value() == "gt" || get_value() == "n" ||
-            get_value() == "prev" || get_value().find("ta") == 0)
+            str() == "gt" || str() == "n" || str() == "prev" ||
+            str().find("ta") == 0)
           {
             focus = managed_frame::HIDE_BAR_FORCE;
           }
-          else if (get_value().find("!") == 0)
+          else if (str().find("!") == 0)
           {
             focus = managed_frame::HIDE_BAR;
           }
@@ -874,19 +872,16 @@ bool wex::textctrl::set_ex(wex::ex* ex, const std::string& command)
 
   const std::string range(command.substr(1));
 
-  m_ex          = ex;
-  m_user_input  = false;
-  m_command     = ex_command(ex->get_command()).set(command);
-  m_input       = 0;
-  m_mode_visual = !range.empty();
-  m_prefix_text = ex->get_command().type() == ex_command::type_t::CALC ?
-                    command.substr(0, 2) :
-                    command.substr(0, 1);
+  m_ex                = ex;
+  m_user_input        = false;
+  m_command           = ex_command(ex->get_command()).set(command);
+  m_input             = 0;
+  m_mode_visual       = !range.empty();
   m_control_r         = false;
   m_control_r_present = false;
 
   m_frame->pane_set("VIBAR", wxAuiPaneInfo().BestSize(-1, 22));
-  m_prefix->SetLabel(std::string(1, m_prefix_text.back()));
+  m_prefix->SetLabel(std::string(1, m_command.str().back()));
 
   switch (m_command.type())
   {
@@ -938,9 +933,9 @@ bool wex::textctrl::set_ex(wex::ex* ex, char command)
   m_ex    = ex;
   m_input = command;
 
-  if (m_prefix_text.empty())
+  if (m_command.empty())
   {
-    m_prefix_text = std::string(1, command);
+    m_command.append(command);
   }
 
   Clear();
@@ -958,18 +953,18 @@ void wex::textctrl::AppendText(const wxString& text)
 
 void wex::textctrl::ChangeValue(const wxString& value)
 {
-  m_command.set(m_prefix_text + value);
+  m_command.reset(value);
   wxTextCtrl::ChangeValue(value);
 }
 
 void wex::textctrl::Clear()
 {
-  m_command.set(m_prefix_text);
+  m_command.reset();
   wxTextCtrl::Clear();
 }
 
 void wex::textctrl::SetValue(const wxString& value)
 {
-  m_command.set(m_prefix_text + value);
+  m_command.reset(value);
   wxTextCtrl::SetValue(value);
 }

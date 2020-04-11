@@ -2,14 +2,12 @@
 // Name:      hexmodeline.h
 // Purpose:   Declaration of class hexmode_line
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wex/hexmode.h>
+#include <wx/event.h>
+#include <wx/stc/stc.h>
 
 namespace wex
 {
@@ -22,13 +20,11 @@ namespace wex
     /// Constructor.
     /// Uses current position and line.
     hexmode_line(hexmode* hex);
-    
+
     /// Constructor.
     /// Specify position or byte offset.
     /// Default assumes you specify a position.
-    hexmode_line(hexmode* hex, 
-      int pos_or_offset, 
-      bool is_position = true);
+    hexmode_line(hexmode* hex, int pos_or_offset, bool is_position = true);
 
     bool erase(int count, bool settext = true);
 
@@ -36,14 +32,19 @@ namespace wex
 
     bool insert(const std::string& text);
 
-    bool is_ascii_field() const {
-      return m_column_no >= m_start_ascii_field && 
-             m_column_no < m_start_ascii_field + (int)m_hex->m_bytes_per_line;};
+    bool is_ascii_field() const
+    {
+      return m_column_no >= m_start_ascii_field &&
+             m_column_no < m_start_ascii_field + (int)m_hex->m_bytes_per_line;
+    };
 
-    bool is_hex_field() const {
-      return m_column_no >= 0 && m_column_no < m_start_ascii_field;};
+    bool is_hex_field() const
+    {
+      return m_column_no >= 0 && m_column_no < m_start_ascii_field;
+    };
 
-    bool is_readonly() const {
+    bool is_readonly() const
+    {
       if (is_ascii_field())
       {
         return false;
@@ -55,9 +56,11 @@ namespace wex
           return false;
         }
       }
-      return true;};
+      return true;
+    };
 
-    int other_field() const {
+    int other_field() const
+    {
       if (is_ascii_field())
       {
         return get_hex_field();
@@ -69,40 +72,43 @@ namespace wex
       else
       {
         return wxSTC_INVALID_POSITION;
-      }};
-    
+      }
+    };
+
     bool replace(char c);
     void replace(const std::string& hex, bool settext);
     void replace_hex(int value);
 
     bool set_pos() const;
     void set_pos(const wxKeyEvent& event) const;
+
   private:
     int buffer_index() const;
-    int convert(int offset) const {
-      return (m_line_no << 4) + offset;};
-    int get_ascii_field() const {
+    int convert(int offset) const { return (m_line_no << 4) + offset; };
+    int get_ascii_field() const
+    {
       if (m_line[m_column_no] != ' ')
       {
         const int offset = m_column_no / m_hex->m_each_hex_field;
         return m_start_ascii_field + offset;
       }
-      return wxSTC_INVALID_POSITION;};
+      return wxSTC_INVALID_POSITION;
+    };
 
-    int get_hex_field() const {
+    int get_hex_field() const
+    {
       const int offset = m_column_no - m_start_ascii_field;
-      return m_hex->m_each_hex_field * offset;};
-    
+      return m_hex->m_each_hex_field * offset;
+    };
+
     const int m_start_ascii_field;
 
     std::string m_line;
-    
-    int 
-      m_column_no, 
-      m_line_no;
-    
+
+    int m_column_no, m_line_no;
+
     hexmode* m_hex;
   };
 
   char printable(unsigned int c, stc* stc);
-};
+}; // namespace wex
