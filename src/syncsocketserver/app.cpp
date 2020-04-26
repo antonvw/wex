@@ -15,12 +15,12 @@
 #include "app.h"
 #include <wex/cmdline.h>
 #include <wex/config.h>
+#include <wex/defs.h>
 #include <wex/filedlg.h>
 #include <wex/grid.h>
 #include <wex/itemdlg.h>
 #include <wex/lexers.h>
 #include <wex/menubar.h>
-#include <wex/statistics.h>
 #include <wex/toolbar.h>
 #include <wex/util.h>
 #include <wex/version.h>

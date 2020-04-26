@@ -8,7 +8,7 @@
 #pragma once
 
 #include <vector>
-#include <wex/autocomplete.h>
+#include <wex/auto-complete.h>
 #include <wex/hexmode.h>
 #include <wex/item.h>
 #include <wex/link.h>
@@ -128,7 +128,7 @@ namespace wex
     /// Appends text (to end).
     void append_text(const std::string& text);
 
-    /// Returns autocomplete.
+    /// Returns auto_complete.
     auto& auto_complete() { return m_auto_complete; };
 
     /// After pressing enter, starts new line at same place
@@ -190,6 +190,9 @@ namespace wex
     /// The search flags are taken from frd.
     /// If text is selected, it also sets the find string.
     const std::string get_find_string();
+
+    /// Returns current line fold level.
+    int get_fold_level();
 
     /// Returns hex mode component.
     const auto& get_hexmode() const { return m_hexmode; };
@@ -391,8 +394,8 @@ namespace wex
 
     managed_frame* m_frame;
 
-    autocomplete m_auto_complete;
-    hexmode      m_hexmode;
+    class auto_complete m_auto_complete;
+    hexmode             m_hexmode;
     // We use a separate lexer here as well
     // (though stc_file offers one), as you can manually override
     // the lexer.

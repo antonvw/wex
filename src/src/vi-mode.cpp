@@ -343,15 +343,19 @@ bool wex::vi_mode::transition(std::string& command)
       case 'K':
         m_fsm->process(command, evVISUAL_RECT());
         break;
+
       case 'v':
         m_fsm->process(command, evVISUAL());
         break;
+
       case 'V':
         m_fsm->process(command, evVISUAL_LINE());
         break;
+
       case 27:
         m_fsm->process(command, evESCAPE());
         break;
+
       default:
         return false;
     }

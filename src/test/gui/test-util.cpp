@@ -60,37 +60,37 @@ TEST_CASE("wex" * doctest::may_fail())
         .size() == std::string("// headertest").size());
   }
 
-  SUBCASE("autocomplete_text")
+  SUBCASE("auto_complete_text")
   {
     REQUIRE(wex::ex::get_macros().load_document());
     std::string s;
-    REQUIRE(!wex::autocomplete_text(
+    REQUIRE(!wex::auto_complete_text(
       "xxxx",
       get_stc()->get_vi().get_macros().get(),
       s));
-    REQUIRE(!wex::autocomplete_text(
+    REQUIRE(!wex::auto_complete_text(
       "Date", // not unique!
       get_stc()->get_vi().get_macros().get(),
       s));
-    REQUIRE(wex::autocomplete_text(
+    REQUIRE(wex::auto_complete_text(
       "Datet",
       get_stc()->get_vi().get_macros().get(),
       s));
     REQUIRE(s == "Datetime");
   }
 
-  SUBCASE("autocomplete_filename")
+  SUBCASE("auto_complete_filename")
   {
-    REQUIRE(std::get<0>(wex::autocomplete_filename("te")));
-    REQUIRE(std::get<1>(wex::autocomplete_filename("te")) == "st");
-    REQUIRE(!std::get<0>(wex::autocomplete_filename("XX")));
+    REQUIRE(std::get<0>(wex::auto_complete_filename("te")));
+    REQUIRE(std::get<1>(wex::auto_complete_filename("te")) == "st");
+    REQUIRE(!std::get<0>(wex::auto_complete_filename("XX")));
 
 #ifdef __UNIX__
 #ifndef __WXOSX__
-    REQUIRE(std::get<0>(wex::autocomplete_filename("/usr/include/s")));
-    REQUIRE(std::get<0>(wex::autocomplete_filename("../../../src/src/v")));
+    REQUIRE(std::get<0>(wex::auto_complete_filename("/usr/include/s")));
+    REQUIRE(std::get<0>(wex::auto_complete_filename("../../../src/src/v")));
     // It is not clear whether ~ is relative or absolute...
-    // REQUIRE( wex::autocomplete_filename("~/", expansion, v));
+    // REQUIRE( wex::auto_complete_filename("~/", expansion, v));
 #endif
 #endif
   }

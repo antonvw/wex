@@ -57,8 +57,8 @@ namespace wex
     // config settings.
     const std::string name() const
     {
-      return config(_("vi tag fullpath")).get(false) ? m_path.string() :
-                                                       m_path.fullname();
+      return config(_("stc.vi tag fullpath")).get(false) ? m_path.string() :
+                                                           m_path.fullname();
     };
 
     // Opens file in specified frame.
@@ -80,21 +80,17 @@ namespace wex
     const std::string& text,
     const std::string& field)
   {
-    const char* valuep = tagsField(&entry, field.c_str());
-
-    if (valuep == nullptr)
+    if (const char* valuep = tagsField(&entry, field.c_str());
+        valuep != nullptr)
     {
-      return false;
+      if (std::string value(valuep); value.find("::") != std::string::npos)
+      {
+        value = wex::after(value, ':', false);
+        return text == value;
+      }
     }
 
-    std::string value(valuep);
-
-    if (value.find("::") != std::string::npos)
-    {
-      value = wex::after(value, ':', false);
-    }
-
-    return text == value;
+    return false;
   }
 
   const std::string
@@ -183,7 +179,7 @@ wex::ctags::ctags(wex::ex* ex, bool open_file)
 }
 
 const std::string
-wex::ctags::autocomplete(const std::string& text, const ctags_entry& filter)
+wex::ctags::auto_complete(const std::string& text, const ctags_entry& filter)
 {
   if (m_file == nullptr)
   {
@@ -209,9 +205,9 @@ wex::ctags::autocomplete(const std::string& text, const ctags_entry& filter)
     return std::string();
   }
 
-  if (!m_prepare)
+  if (!m_is_prepared)
   {
-    autocomplete_prepare();
+    auto_complete_prepare();
   }
 
   std::string s, prev_tag;
@@ -257,12 +253,12 @@ wex::ctags::autocomplete(const std::string& text, const ctags_entry& filter)
       (text.empty() ? tagsNext(m_file, &entry) : tagsFindNext(m_file, &entry));
   } while (result == TagSuccess && count < max);
 
-  log::verbose("ctags autocomplete") << count;
+  log::verbose("ctags::auto_complete count") << count;
 
   return s;
 }
 
-void wex::ctags::autocomplete_prepare()
+void wex::ctags::auto_complete_prepare()
 {
   m_ex->get_stc()->AutoCompSetIgnoreCase(false);
   m_ex->get_stc()->AutoCompSetAutoHide(false);
@@ -277,13 +273,19 @@ void wex::ctags::autocomplete_prepare()
     IMAGE_PRIVATE,
     wxArtProvider::GetBitmap(wxART_TICK_MARK));
 
-  m_prepare = true;
+  m_is_prepared = true;
 }
 
-void wex::ctags::close()
+bool wex::ctags::close()
 {
-  tagsClose(m_file);
+  if (m_file == nullptr || tagsClose(m_file) == TagFailure)
+  {
+    return false;
+  }
+
   m_file = nullptr;
+
+  return true;
 }
 
 bool wex::ctags::do_open(const std::string& path)
@@ -300,11 +302,13 @@ bool wex::ctags::do_open(const std::string& path)
 bool wex::ctags::find(const std::string& tag)
 {
   if (m_file == nullptr)
+  {
     return false;
+  }
 
   if (tag.empty())
   {
-    log::verbose("ctags find empty tag") << m_matches.size();
+    log::verbose("ctags::find empty tag") << m_matches.size();
     return next();
   }
 
@@ -326,7 +330,7 @@ bool wex::ctags::find(const std::string& tag)
 
   m_iterator = m_matches.begin();
 
-  log::verbose("ctags matches") << m_matches.size();
+  log::verbose("ctags::find matches") << m_matches.size();
 
   if (m_matches.size() == 1)
   {
@@ -364,13 +368,12 @@ bool master(const tagEntry& entry)
           (strcmp(entry.kind, "m") == 0));
 }
 
-bool wex::ctags::find(
-  const std::string& tag,
-  wex::ctags_entry&  current,
-  wex::ctags_entry&  filter)
+bool wex::ctags::find(const std::string& tag, wex::ctags_entry& filter)
 {
   if (m_file == nullptr)
+  {
     return false;
+  }
 
   tagEntry entry;
 
@@ -385,13 +388,6 @@ bool wex::ctags::find(
 
   do
   {
-    current.kind(entry.kind).class_name(entry.name);
-
-    if (const char* value = tagsField(&entry, "signature"); value != nullptr)
-    {
-      current.signature(value);
-    }
-
     // If this is not a master entry find next.
     if (master(entry))
     {
@@ -419,7 +415,7 @@ bool wex::ctags::next()
 {
   if (m_matches.size() <= 1)
   {
-    log::verbose("ctags no next match") << m_matches.size();
+    log::verbose("ctags::next no next match") << m_matches.size();
     return false;
   }
 
@@ -436,7 +432,9 @@ bool wex::ctags::next()
 void wex::ctags::open(const std::string& filename)
 {
   if (m_file != nullptr)
+  {
     return;
+  }
 
   m_iterator = m_matches.begin();
 
@@ -465,7 +463,7 @@ bool wex::ctags::previous()
 {
   if (m_matches.size() <= 1)
   {
-    log::verbose("ctags no previous match") << m_matches.size();
+    log::verbose("ctags::previous no previous match") << m_matches.size();
     return false;
   }
 

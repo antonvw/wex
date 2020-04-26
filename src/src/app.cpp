@@ -128,7 +128,7 @@ bool wex::app::OnInit()
     }
   }
 
-  // Necessary for autocomplete images.
+  // Necessary for auto_complete images.
   wxInitAllImageHandlers();
 
   stc::on_init();

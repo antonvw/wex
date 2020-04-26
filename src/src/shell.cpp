@@ -2,7 +2,7 @@
 // Name:      shell.cpp
 // Purpose:   Implementation of class wex::shell
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -49,7 +49,7 @@ wex::shell::shell(
 
   enable(true);
 
-  auto_complete().use(false); // we have our own autocomplete
+  auto_complete().use(false); // we have our own auto_complete
 
   get_lexer().set(lexer);
 
@@ -142,7 +142,7 @@ wex::shell::shell(
           event.Skip();
         break;
 
-      // Up or down key pressed, and at the end of document (and autocomplete
+      // Up or down key pressed, and at the end of document (and auto_complete
       // active)
       case WXK_UP:
       case WXK_DOWN:
@@ -350,7 +350,7 @@ void wex::shell::expand()
 
     AutoCompCancel();
   }
-  else if (const auto [r, e, v] = autocomplete_filename(m_command); r)
+  else if (const auto [r, e, v] = auto_complete_filename(m_command); r)
   {
     if (v.size() > 1)
     {

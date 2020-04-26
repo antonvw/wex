@@ -86,7 +86,7 @@ const std::string wex::align_text(
 }
 
 std::tuple<bool, const std::string, const std::vector<std::string>>
-wex::autocomplete_filename(const std::string& text)
+wex::auto_complete_filename(const std::string& text)
 {
   // E.g.:
   // 1) text: src/vi
@@ -146,7 +146,7 @@ wex::autocomplete_filename(const std::string& text)
   }
 }
 
-bool wex::autocomplete_text(
+bool wex::auto_complete_text(
   const std::string&              text,
   const std::vector<std::string>& v,
   std::string&                    s)

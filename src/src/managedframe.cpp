@@ -626,7 +626,7 @@ wex::textctrl::textctrl(
         }
 
         if ([[maybe_unused]] const auto& [r, e, v] =
-              autocomplete_filename(m_command.command());
+              auto_complete_filename(m_command.command());
             r)
         {
           AppendText(e);

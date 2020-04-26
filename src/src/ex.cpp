@@ -157,11 +157,7 @@ wex::ex::ex(wex::stc* stc)
                        << 100 * (get_stc()->GetCurrentLine() + 1) /
                             get_stc()->GetLineCount()
                        << "--%"
-                       << " level "
-                       << (get_stc()->GetFoldLevel(
-                             get_stc()->GetCurrentLine()) &
-                           wxSTC_FOLDLEVELNUMBERMASK) -
-                            wxSTC_FOLDLEVELBASE;
+                       << " level " << get_stc()->get_fold_level();
                   m_frame->show_ex_message(text.str());
                   return true;
                 }},
@@ -283,7 +279,7 @@ wex::ex::ex(wex::stc* stc)
                   std::replace(text.begin(), text.end(), '=', ' ');
                   wex::cmdline cmdline(
                     // switches
-                    {{{"ac", "autocomplete"},
+                    {{{"ac", "auto_complete"},
                       [&](bool on) {
                         if (!modeline)
                           config(_("Auto complete")).set(on);

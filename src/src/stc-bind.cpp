@@ -97,7 +97,7 @@ void wex::stc::bind_all()
         m_adding_chars = true;
       }
 
-      m_auto_complete.apply(event.GetUnicodeKey());
+      m_auto_complete.on_char(event.GetUnicodeKey());
     }
     else
     {
@@ -111,6 +111,7 @@ void wex::stc::bind_all()
         log::status(_("Document is readonly"));
         return;
       }
+
       if (is_hexmode())
       {
         if (GetOvertype())
@@ -122,10 +123,12 @@ void wex::stc::bind_all()
         }
         return;
       }
+
       if (!m_vi.is_active())
       {
-        m_auto_complete.apply(event.GetUnicodeKey());
+        m_auto_complete.on_char(event.GetUnicodeKey());
       }
+
       event.Skip();
     }
     if (
@@ -187,22 +190,22 @@ void wex::stc::bind_all()
         m_hexmode.set_pos(event);
       }
     }
-    if (event.GetKeyCode() == WXK_BACK)
-    {
-      m_auto_complete.apply(event.GetKeyCode());
-    }
+
     if (m_vi.on_key_down(event))
     {
       event.Skip();
+    }
+
+    if (event.GetKeyCode() == WXK_BACK || event.GetKeyCode() == WXK_RETURN)
+    {
+      m_auto_complete.on_char(event.GetKeyCode());
     }
   });
 
   Bind(wxEVT_KEY_UP, [=](wxKeyEvent& event) {
     event.Skip();
     check_brace();
-    m_fold_level =
-      (GetFoldLevel(GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK) -
-      wxSTC_FOLDLEVELBASE;
+    m_fold_level = get_fold_level();
   });
 
   Bind(wxEVT_LEFT_DCLICK, [=](wxMouseEvent& event) {
@@ -229,9 +232,7 @@ void wex::stc::bind_all()
     event.Skip();
     check_brace();
     m_adding_chars = false;
-    m_fold_level =
-      (GetFoldLevel(GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK) -
-      wxSTC_FOLDLEVELBASE;
+    m_fold_level   = get_fold_level();
 
     if (
       !m_skip && m_frame->get_debug() != nullptr &&
@@ -249,6 +250,7 @@ void wex::stc::bind_all()
         m_frame->get_debug()->print(word);
       }
     }
+
     m_skip = false;
   });
 
@@ -962,7 +964,7 @@ void wex::stc::bind_all()
   Bind(
     wxEVT_MENU,
     [=](wxCommandEvent& event) {
-      reset_margins(margin_t().set(stc::MARGIN_TEXT));
+      reset_margins(margin_t().set(MARGIN_TEXT));
       m_margin_text_click = -1;
       const item_vector& iv(m_config_items);
       SetWrapMode(iv.find<long>(_("stc.Wrap line")));

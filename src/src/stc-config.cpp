@@ -53,17 +53,15 @@ bool wex::stc::auto_indentation(int c)
       break;
   }
 
-  const int currentLine = GetCurrentLine();
+  const auto currentLine = GetCurrentLine();
 
   if (!is_nl || currentLine == 0)
   {
     return false;
   }
 
-  const int level = (GetFoldLevel(currentLine) & wxSTC_FOLDLEVELNUMBERMASK) -
-                    wxSTC_FOLDLEVELBASE;
-
-  int indent = 0;
+  const auto level  = get_fold_level();
+  int        indent = 0;
 
   if (level <= 0)
   {

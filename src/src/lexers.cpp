@@ -50,7 +50,7 @@ void wex::lexers::apply(stc* stc) const
 
 void wex::lexers::apply_default_style(
   std::function<void(const std::string&)> back,
-  std::function<void(const std::string&)> fore)
+  std::function<void(const std::string&)> fore) const
 {
   if (std::vector<std::string> v;
       back != nullptr && match(",back:(.*),", m_default_style.value(), v) > 0)
@@ -120,8 +120,9 @@ void wex::lexers::apply_global_styles(stc* stc)
   }
 }
 
-const std::string
-wex::lexers::apply_macro(const std::string& text, const std::string& lexer)
+const std::string wex::lexers::apply_macro(
+  const std::string& text,
+  const std::string& lexer) const
 {
   if (const auto& it = get_macros(lexer).find(text);
       it != get_macros(lexer).end())
@@ -171,16 +172,26 @@ void wex::lexers::apply_margin_text_style(
   }
 }
 
-const wex::lexer wex::lexers::find(const std::string& name) const
+void wex::lexers::clear_theme()
+{
+  if (!m_theme.empty())
+  {
+    m_theme_previous = m_theme;
+    m_theme.clear();
+  }
+}
+
+const wex::lexer& wex::lexers::find(const std::string& name) const
 {
   const auto& it =
     std::find_if(m_lexers.begin(), m_lexers.end(), [name](auto const& e) {
       return e.display_lexer() == name;
     });
-  return it != m_lexers.end() ? *it : lexer();
+
+  return it != m_lexers.end() ? *it : m_lexers.front();
 }
 
-const wex::lexer
+const wex::lexer&
 wex::lexers::find_by_filename(const std::string& fullname) const
 {
   const auto& it =
@@ -188,14 +199,15 @@ wex::lexers::find_by_filename(const std::string& fullname) const
       return !e.extensions().empty() &&
              matches_one_of(fullname, e.extensions());
     });
-  return it != m_lexers.end() ? *it : lexer();
+
+  return it != m_lexers.end() ? *it : m_lexers.front();
 }
 
-const wex::lexer wex::lexers::find_by_text(const std::string& text) const
+const wex::lexer& wex::lexers::find_by_text(const std::string& text) const
 {
   if (text.empty())
   {
-    return lexer();
+    return m_lexers.front();
   }
 
   try
@@ -217,7 +229,7 @@ const wex::lexer wex::lexers::find_by_text(const std::string& text) const
     log(e) << "find_by_text";
   }
 
-  return lexer();
+  return m_lexers.front();
 }
 
 wex::lexers* wex::lexers::get(bool createOnDemand)
@@ -231,23 +243,34 @@ wex::lexers* wex::lexers::get(bool createOnDemand)
   return m_self;
 }
 
-const wex::indicator
+const wex::indicator&
 wex::lexers::get_indicator(const indicator& indicator) const
 {
   const auto& it = m_indicators.find(indicator);
-  return (it != m_indicators.end() ? *it : wex::indicator());
+  return (
+    it != m_indicators.end() ? *it : *m_indicators.find(wex::indicator()));
 }
 
-const wex::marker wex::lexers::get_marker(const marker& marker) const
+const wex::lexers::name_values_t&
+wex::lexers::get_macros(const std::string& lexer) const
+{
+  const auto& it = m_macros.find(lexer);
+  return (
+    it != m_macros.end() ? it->second : m_macros.find(std::string())->second);
+}
+
+const wex::marker& wex::lexers::get_marker(const marker& marker) const
 {
   const auto& it = m_markers.find(marker);
-  return (it != m_markers.end() ? *it : wex::marker());
+  return (it != m_markers.end() ? *it : *m_markers.find(wex::marker()));
 }
 
-const std::string wex::lexers::keywords(const std::string& set) const
+const std::string& wex::lexers::keywords(const std::string& set) const
 {
   const auto& it = m_keywords.find(set);
-  return (it != m_keywords.end() ? it->second : std::string());
+  return (
+    it != m_keywords.end() ? it->second :
+                             m_keywords.find(std::string())->second);
 }
 
 bool wex::lexers::load_document()
@@ -286,8 +309,13 @@ bool wex::lexers::load_document()
     m_theme_macros.clear();
   }
 
+  m_indicators.insert(indicator());
+  m_keywords[std::string()] = std::string();
+  m_lexers.push_back(std::string());
+  m_macros[std::string()] = name_values_t{};
+  m_markers.insert(marker());
   m_theme_colours[std::string()] = m_default_colours;
-  m_theme_macros[std::string()]  = std::map<std::string, std::string>{};
+  m_theme_macros[std::string()]  = name_values_t{};
 
   for (const auto& node : doc.document_element().children())
   {
@@ -313,7 +341,7 @@ bool wex::lexers::load_document()
       log() << "default style does not contain default style";
   }
 
-  if (m_theme_macros.empty())
+  if (m_theme_macros.size() == 1)
   {
     log() << "themes are missing";
   }
@@ -450,9 +478,9 @@ void wex::lexers::parse_node_macro(const pugi::xml_node& node)
   {
     if (strcmp(child.name(), "def") == 0)
     {
-      const std::string                  name = child.attribute("name").value();
-      std::map<std::string, std::string> macro_map;
-      int                                val = 0;
+      const std::string name = child.attribute("name").value();
+      name_values_t     macro_map;
+      int               val = 0;
 
       for (const auto& macro : child.children())
       {
@@ -502,7 +530,7 @@ void wex::lexers::parse_node_theme(const pugi::xml_node& node)
     m_theme = std::string(node.attribute("name").value());
   }
 
-  std::map<std::string, std::string> tmpColours, tmpMacros;
+  name_values_t tmpColours, tmpMacros;
 
   for (const auto& child : node.children())
   {
@@ -548,7 +576,6 @@ wex::lexers* wex::lexers::set(wex::lexers* lexers)
 bool wex::lexers::show_dialog(stc* stc) const
 {
   wxArrayString s;
-  s.Add(std::string());
   for (const auto& it : m_lexers)
     s.Add(it.display_lexer());
 
@@ -574,4 +601,12 @@ bool wex::lexers::show_theme_dialog(wxWindow* parent)
   config("theme").set(m_theme);
 
   return load_document();
+}
+
+const wex::lexers::name_values_t& wex::lexers::theme_macros() const
+{
+  const auto& it = m_theme_macros.find(m_theme);
+  return (
+    it != m_theme_macros.end() ? it->second :
+                                 m_theme_macros.find(std::string())->second);
 }

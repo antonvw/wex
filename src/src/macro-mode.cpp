@@ -183,7 +183,7 @@ int wex::macro_mode::transition(
         else if (ex::get_macros().starts_with(macro.substr(1)))
         {
           if (std::string s;
-              autocomplete_text(macro.substr(1), ex::get_macros().get(), s))
+              auto_complete_text(macro.substr(1), ex::get_macros().get(), s))
           {
             frame::statustext(s, "PaneMacro");
             macro = s;

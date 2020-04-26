@@ -367,6 +367,12 @@ const std::string wex::stc::get_find_string()
   return find_replace_data::get()->get_find_string();
 }
 
+int wex::stc::get_fold_level()
+{
+  return (GetFoldLevel(GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK) -
+         wxSTC_FOLDLEVELBASE;
+}
+
 const std::string wex::stc::get_selected_text()
 {
   const wxCharBuffer& b(GetSelectedTextRaw());
@@ -752,8 +758,7 @@ int wex::stc::replace_all(
       nr_replacements++;
     }
 
-    SetTargetRange(GetTargetEnd(),
-      GetLength() - selection_from_end);
+    SetTargetRange(GetTargetEnd(), GetLength() - selection_from_end);
 
     if (GetTargetStart() >= GetTargetEnd())
     {

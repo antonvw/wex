@@ -129,6 +129,8 @@ wex::vi::vi(wex::stc* arg)
         {
           m_insert_text.clear();
         }
+
+        get_stc()->auto_complete().sync();
         get_stc()->BeginUndoAction();
       },
       // back to normal mode process
@@ -142,7 +144,7 @@ wex::vi::vi(wex::stc* arg)
         }
         m_command.clear();
         m_insert_command.clear();
-        get_stc()->auto_complete().reset();
+        get_stc()->auto_complete().clear();
         get_stc()->EndUndoAction();
       })
   , m_last_commands{{"!", "<", ">", "A", "C", "D", "I", "J", "O",
@@ -1228,9 +1230,7 @@ bool wex::vi::insert_mode(const std::string& command)
         get_stc()->ReplaceSelection(wxEmptyString);
       }
 
-      if (
-        !m_insert_text.empty() &&
-        m_insert_text.back() == WXK_CONTROL_R)
+      if (!m_insert_text.empty() && m_insert_text.back() == WXK_CONTROL_R)
       {
         get_stc()->ReplaceSelection(wxEmptyString);
 
