@@ -9,7 +9,7 @@
 #include <wex/filehistory.h>
 #include <wex/managedframe.h>
 #include <wex/menu.h>
-#include "test.h"
+#include "../test.h"
 
 TEST_CASE("wex::menu_item")
 {

@@ -17,7 +17,7 @@
 #include <wex/macros.h>
 #include <wex/managedframe.h>
 #include <wex/stc.h>
-#include "test.h"
+#include "../test.h"
 
 #define ESC "\x1b"
 

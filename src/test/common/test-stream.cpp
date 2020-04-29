@@ -8,7 +8,7 @@
 #include <chrono>
 #include <wex/stream.h>
 #include <wex/frd.h>
-#include "test.h"
+#include "../test.h"
 
 TEST_CASE("wex::stream_statistics")
 {

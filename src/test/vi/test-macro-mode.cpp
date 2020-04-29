@@ -8,7 +8,7 @@
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
 #include <wex/variable.h>
-#include "test.h"
+#include "../test.h"
 
 TEST_SUITE_BEGIN("wex::vi");
 

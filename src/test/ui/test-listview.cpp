@@ -9,7 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include "test.h"
+#include "../test.h"
 #include <wex/defs.h>
 #include <wex/listview.h>
 #include <wex/managedframe.h>

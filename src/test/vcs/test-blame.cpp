@@ -7,7 +7,7 @@
 
 #include <wex/blame.h>
 #include <wex/config.h>
-#include "test.h"
+#include "../test.h"
 
 TEST_SUITE_BEGIN("wex::vcs");
 

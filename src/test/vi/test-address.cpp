@@ -5,7 +5,7 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "test.h"
+#include "../test.h"
 #include <wex/address.h>
 #include <wex/macros.h>
 #include <wex/managedframe.h>

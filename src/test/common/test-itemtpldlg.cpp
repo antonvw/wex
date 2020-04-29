@@ -10,7 +10,7 @@
 #include <wex/item.h>
 #include <wex/report/defs.h>
 #include <wex/managedframe.h>
-#include "test.h"
+#include "../test.h"
 
 namespace wex
 {

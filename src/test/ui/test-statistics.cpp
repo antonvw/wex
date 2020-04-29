@@ -11,7 +11,7 @@
 #endif
 #include <wex/statistics.h>
 #include <wex/managedframe.h>
-#include "test.h"
+#include "../test.h"
 
 TEST_CASE("wex::statistics")
 {

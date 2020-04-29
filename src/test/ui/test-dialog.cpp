@@ -7,7 +7,7 @@
 
 #include <wex/dialog.h>
 #include <wex/managedframe.h>
-#include "test.h"
+#include "../test.h"
 
 TEST_CASE("wex::dialog")
 {

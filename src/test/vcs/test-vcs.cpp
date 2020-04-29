@@ -14,7 +14,7 @@
 #include <wex/config.h>
 #include <wex/managedframe.h>
 #include <wex/menu.h>
-#include "test.h"
+#include "../test.h"
 
 TEST_SUITE_BEGIN("wex::vcs");
 

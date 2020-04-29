@@ -11,7 +11,7 @@
 #endif
 #include <wex/listview-data.h>
 #include <wex/listview.h>
-#include "test.h"
+#include "../test.h"
 
 TEST_CASE("wex::listview_data")
 {

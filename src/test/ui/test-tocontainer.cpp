@@ -11,7 +11,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include "test.h"
+#include "../test.h"
 #include <wex/managedframe.h>
 #include <wex/tostring.h>
 #include <wex/util.h>

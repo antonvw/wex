@@ -5,7 +5,7 @@
 // Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "test.h"
+#include "../test.h"
 #include <chrono>
 #include <wex/listitem.h>
 #include <wex/managedframe.h>

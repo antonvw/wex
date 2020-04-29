@@ -12,7 +12,7 @@
 #include <wex/filedlg.h>
 #include <wex/file.h>
 #include <wex/managedframe.h>
-#include "test.h"
+#include "../test.h"
 
 TEST_CASE("wex::file_dialog")
 {

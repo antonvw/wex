@@ -10,7 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <wex/managedframe.h>
-#include "test.h"
+#include "../test.h"
 #include <wex/config.h>
 #include <wex/grid.h>
 #include <wex/otl.h>

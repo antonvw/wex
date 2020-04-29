@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ctags-entry.h>
-#include "test.h"
+#include "../test.h"
 
 TEST_CASE("wex::ctags_entry")
 {

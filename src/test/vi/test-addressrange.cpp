@@ -9,7 +9,7 @@
 #include <wex/macros.h>
 #include <wex/managedframe.h>
 #include <wex/stc.h>
-#include "test.h"
+#include "../test.h"
 
 TEST_SUITE_BEGIN("wex::ex");
 

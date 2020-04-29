@@ -10,7 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <wex/window-data.h>
-#include "test.h"
+#include "../test.h"
 
 TEST_CASE("wex::window_data")
 {

@@ -10,7 +10,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include "test.h"
+#include "../test.h"
 #include <wex/lexer.h>
 #include <wex/lexers.h>
 #include <wex/managedframe.h>

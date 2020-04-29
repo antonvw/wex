@@ -7,7 +7,7 @@
 
 #include <regex>
 #include <wex/lexer-props.h>
-#include "test.h"
+#include "../test.h"
 
 TEST_CASE("wex::lexer_props")
 {

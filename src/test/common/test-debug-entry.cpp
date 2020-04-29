@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/debug-entry.h>
-#include "test.h"
+#include "../test.h"
 
 TEST_SUITE_BEGIN("wex::process");
 

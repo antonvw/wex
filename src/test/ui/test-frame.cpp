@@ -13,7 +13,7 @@
 #include <wex/managedframe.h>
 #include <wex/menu.h>
 #include <wex/stc.h>
-#include "test.h"
+#include "../test.h"
 
 TEST_CASE("wex::frame")
 {

@@ -12,7 +12,7 @@
 #include <wex/menus.h>
 #include <wex/menucommand.h>
 #include <wex/menucommands.h>
-#include "test.h"
+#include "../test.h"
 
 TEST_CASE("wex::menus")
 {

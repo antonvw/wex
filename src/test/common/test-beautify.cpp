@@ -5,7 +5,7 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "test.h"
+#include "../test.h"
 #include <wex/beautify.h>
 
 TEST_CASE("wex::beautify")

@@ -15,7 +15,7 @@
 #include <wex/process.h>
 #include <wex/shell.h>
 
-#include "test.h"
+#include "../test.h"
 
 IMPLEMENT_APP_NO_MAIN(wex::test::gui_app);
 

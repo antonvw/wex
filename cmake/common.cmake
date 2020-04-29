@@ -91,7 +91,7 @@ macro(target_link_all)
   set (extra_macro_args ${ARGN})
   set (wxWidgets_LIBRARIES aui adv stc html core net base)
   set (wex_LIBRARIES 
-    wex-common wex-data wex-lexer wex-report 
+    wex-report wex-common wex-data wex-lexer 
     wex-stc wex-ui wex-vcs wex-vi wex-core)
           
   if (WIN32)

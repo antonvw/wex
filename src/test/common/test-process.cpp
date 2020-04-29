@@ -12,7 +12,7 @@
 #include <wex/process.h>
 #include <wex/managedframe.h>
 #include <wex/shell.h>
-#include "test.h"
+#include "../test.h"
 
 TEST_SUITE_BEGIN("wex::process");
 

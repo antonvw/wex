@@ -11,7 +11,7 @@
 #include <wex/menu.h>
 #include <wex/process.h>
 #include <wex/stc.h>
-#include "test.h"
+#include "../test.h"
 
 TEST_SUITE_BEGIN("wex::process");
 

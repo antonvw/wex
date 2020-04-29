@@ -11,7 +11,7 @@
 #endif
 #include <wex/marker.h>
 #include <wex/stc.h>
-#include "test.h"
+#include "../test.h"
 
 TEST_CASE("wex::marker")
 {

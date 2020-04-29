@@ -9,7 +9,7 @@
 #include <wex/variable.h>
 #include <wex/managedframe.h>
 #include <wex/stc.h>
-#include "test.h"
+#include "../test.h"
 
 TEST_CASE("wex::variable")
 {

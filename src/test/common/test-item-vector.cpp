@@ -7,7 +7,7 @@
 
 #include <wex/item-vector.h>
 #include <wex/item.h>
-#include "test.h"
+#include "../test.h"
 
 TEST_SUITE_BEGIN("wex::item");
 

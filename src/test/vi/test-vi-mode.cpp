@@ -9,7 +9,7 @@
 #include <wex/managedframe.h>
 #include <wex/stc.h>
 #include <wex/vi.h>
-#include "test.h"
+#include "../test.h"
 
 TEST_SUITE_BEGIN("wex::vi");
 

@@ -11,7 +11,7 @@
 #endif
 #include "test-configitem.h"
 #include "test-item.h"
-#include "test.h"
+#include "../test.h"
 #include <wex/config.h>
 #include <wex/item.h>
 #include <wex/itemdlg.h>

@@ -10,7 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <wex/art.h>
-#include "test.h"
+#include "../test.h"
 
 TEST_CASE("wex::art")
 {
