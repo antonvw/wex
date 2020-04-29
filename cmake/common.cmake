@@ -90,12 +90,14 @@ endfunction()
 macro(target_link_all)
   set (extra_macro_args ${ARGN})
   set (wxWidgets_LIBRARIES aui adv stc html core net base)
+  set (wex_LIBRARIES 
+    wex-common wex-data wex-lexer wex-report 
+    wex-stc wex-ui wex-vcs wex-vi wex-core)
           
   if (WIN32)
     target_link_libraries(
       ${PROJECT_NAME}
-      wex-rep
-      wex
+      ${wex_LIBRARIES}
       ${wxWidgets_LIBRARIES} wxscintilla
       ${Boost_LIBRARIES}
       ${extra_macro_args}
@@ -103,8 +105,7 @@ macro(target_link_all)
   elseif (APPLE)
     target_link_libraries(
       ${PROJECT_NAME}
-      wex-rep
-      wex
+      ${wex_LIBRARIES}
       ${wxWidgets_LIBRARIES} 
       ${Boost_LIBRARIES}
       ${extra_macro_args}
@@ -114,8 +115,7 @@ macro(target_link_all)
   else ()
     target_link_libraries(
       ${PROJECT_NAME}
-      wex-rep
-      wex
+      ${wex_LIBRARIES}
       ${wxWidgets_LIBRARIES} 
       ${Boost_LIBRARIES}
       ${extra_macro_args}
@@ -127,8 +127,6 @@ macro(target_link_all)
 endmacro()  
 
 function(test_app)
-  file(GLOB SRCS "*.cpp" "../*.cpp")
-    
   add_executable(
     ${PROJECT_NAME} 
     ${SRCS})

@@ -3,9 +3,9 @@ project(wex-test)
 include_directories(../include/)
 include_directories(../../external/doctest/doctest)
   
-add_subdirectory(base)
-add_subdirectory(gui)
-add_subdirectory(gui-report)
+add_subdirectory(core)
+add_subdirectory(ui)
+add_subdirectory(report)
 
 if (WIN32)
   set(CONFIG_INSTALL_DIR bin)

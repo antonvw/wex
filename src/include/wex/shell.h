@@ -39,14 +39,7 @@ namespace wex
       /// The default uses the eol.
       const std::string& prompt = ">",
       /// The command used to end a line.
-      const std::string& command_end = std::string(),
-      /// Will commands be echoed.
-      bool echo = true,
-      /// The lexer used by stc.
-      const std::string& lexer = std::string(),
-      /// Give the number of commands that are kept in the config.
-      /// If -1, no commands are kept.
-      int commands_save_in_config = 100);
+      const std::string& command_end = std::string());
 
     /// Destructor, keeps the commands in the config, if required.
     virtual ~shell();

@@ -16,6 +16,7 @@
 #include <wex/config.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
+#include <wex/macros.h>
 #include <wex/managedframe.h>
 #include <wx/timer.h>
 
@@ -88,6 +89,52 @@ int wex::test::app::OnRun()
 void wex::test::app::set_context(doctest::Context* context)
 {
   m_context = context;
+}
+
+std::vector<std::pair<std::string, std::string>> get_abbreviations()
+{
+  return std::vector<std::pair<std::string, std::string>>{
+    {"XX", "GREAT"}, // see also test-source.txt
+    {"YY", "WHITE"},
+    {"ZZ", "SHARK"}};
+}
+
+std::vector<std::string> get_builtin_variables()
+{
+  std::vector<std::string> v;
+
+  for (const auto i : wex::ex::get_macros().get_variables())
+  {
+    if (i.second.is_builtin())
+    {
+      v.push_back(i.first);
+    }
+  }
+
+  return v;
+}
+
+wex::managed_frame* frame()
+{
+  return wex::test::gui_app::frame();
+}
+
+wex::statusbar* get_statusbar()
+{
+  return wex::test::gui_app::get_statusbar();
+}
+
+wex::stc* get_stc()
+{
+  return wex::test::gui_app::get_stc();
+}
+
+void process(const std::string& str, wex::shell* shell)
+{
+  for (unsigned i = 0; i < str.length(); ++i)
+  {
+    shell->process_char(str.at(i));
+  }
 }
 
 int wex::test::main(int argc, char* argv[], wex::test::app* app)
