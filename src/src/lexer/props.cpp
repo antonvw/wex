@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      lexer-props.cpp
+// Name:      lexer/props.cpp
 // Purpose:   Implementation of wex::lexer_props class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2019 Anton van Wezenbeek

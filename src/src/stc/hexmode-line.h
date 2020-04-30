@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      hexmodeline.h
+// Name:      stc/hexmode-line.h
 // Purpose:   Declaration of class hexmode_line
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020 Anton van Wezenbeek

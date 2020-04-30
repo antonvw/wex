@@ -10,7 +10,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include "hexmodeline.h"
+#include "hexmode-line.h"
 #include <wex/config.h>
 #include <wex/hexmode.h>
 #include <wex/item.h>

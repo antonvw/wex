@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      stc-config.cpp
+// Name:      stc/config.cpp
 // Purpose:   Implementation of config related methods of class wex::stc
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020 Anton van Wezenbeek

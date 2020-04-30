@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      vcs_command.cpp
+// Name:      vcs/command.cpp
 // Purpose:   Implementation of wex::vcs_command class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek

@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      stcdlg.cpp
+// Name:      stc/dialog.cpp
 // Purpose:   Implementation of class wex::stc_entry_dialog
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -21,7 +21,7 @@ wex::stc_entry_dialog::stc_entry_dialog(
 {
   if (!prompt.empty())
   {
-    // See wxWidgets: src\generic\textdlgg.cpp, use similar bottom border flags.
+    // See wxWidgets/src/generic/textdlgg.cpp, use similar bottom border flags.
     add_user_sizer(CreateTextSizer(prompt), 
       wxSizerFlags().DoubleBorder(wxBOTTOM));
   }
