@@ -9,9 +9,9 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include "../test.h"
 #include "test-configitem.h"
 #include "test-item.h"
-#include "../test.h"
 #include <wex/config.h>
 #include <wex/item.h>
 #include <wex/itemdlg.h>
@@ -37,18 +37,19 @@ TEST_CASE("wex::item")
       "item",
       "hello string",
       wex::item::TEXTCTRL,
-      wex::control_data().is_required(true));
+      wex::item_data(wex::control_data().is_required(true)));
 
-    REQUIRE(item.columns() == 1);
-    REQUIRE(std::any_cast<std::string>(item.initial()) == "hello string");
-    REQUIRE(item.data().is_required());
+    REQUIRE(item.data().columns() == 1);
+    REQUIRE(
+      std::any_cast<std::string>(item.data().initial()) == "hello string");
+    REQUIRE(item.data().control().is_required());
     REQUIRE(item.label() == "item");
     REQUIRE(item.page().empty());
     REQUIRE(item.type() == wex::item::TEXTCTRL);
     REQUIRE(item.window() == nullptr);
     REQUIRE(item.get_value().has_value());
     REQUIRE(!item.is_row_growable());
-    REQUIRE(!item.apply());
+    REQUIRE(!item.data().apply());
 
     REQUIRE(!item.to_config(false));
     wex::item::use_config(true);
@@ -56,7 +57,6 @@ TEST_CASE("wex::item")
     wex::item::use_config(false);
 
     item.set_dialog(nullptr);
-    item.set_imagelist(nullptr);
 
     // setting value if window is nullptr should have no effect.
     REQUIRE(!item.set_value("test"));
@@ -67,7 +67,8 @@ TEST_CASE("wex::item")
     REQUIRE(std::any_cast<std::string>(item.get_value()) == "hello string");
     REQUIRE(item.set_value(std::string("value changed")));
     REQUIRE(std::any_cast<std::string>(item.get_value()) == "value changed");
-    REQUIRE(std::any_cast<std::string>(item.initial()) == "hello string");
+    REQUIRE(
+      std::any_cast<std::string>(item.data().initial()) == "hello string");
 
     item.set_row_growable(true);
     REQUIRE(item.is_row_growable());
@@ -78,10 +79,10 @@ TEST_CASE("wex::item")
     REQUIRE(item_int.layout(panel, sizer) != nullptr);
     REQUIRE(item_int.window() != nullptr);
     REQUIRE(std::any_cast<long>(item_int.get_value()) == 100);
-    REQUIRE(std::any_cast<std::string>(item_int.initial()) == "100");
+    REQUIRE(std::any_cast<std::string>(item_int.data().initial()) == "100");
     REQUIRE(item_int.set_value(300l));
     REQUIRE(std::any_cast<long>(item_int.get_value()) == 300);
-    REQUIRE(std::any_cast<std::string>(item_int.initial()) == "100");
+    REQUIRE(std::any_cast<std::string>(item_int.data().initial()) == "100");
 
     wex::item item_int2("int", wex::item::TEXTCTRL_INT, std::string("xxx"));
     REQUIRE(item_int2.type() == wex::item::TEXTCTRL_INT);
@@ -108,7 +109,8 @@ TEST_CASE("wex::item")
     item_float.layout(panel, sizer);
     REQUIRE(std::any_cast<double>(item_float.get_value()) == 100.001);
 
-    wex::item item_spin("spindouble", 20.0, 30.0, 25.0, 0.1);
+    wex::item
+      item_spin("spindouble", 20.0, 30.0, 25.0, wex::item_data().inc(0.1));
     REQUIRE(item_spin.type() == wex::item::SPINCTRLDOUBLE);
 
 #ifdef __UNIX__
@@ -184,19 +186,20 @@ TEST_CASE("wex::item")
     const wex::item ci_user(
       "ci-usr",
       new wxTextCtrl(),
-      [=](wxWindow* user, wxWindow* parent, bool readonly) {
-        ((wxTextCtrl*)user)->Create(parent, 100);
-      },
-      [=](wxWindow* user, bool save) {
-        if (save)
-          wex::config("mytext").set(
-            ((wxTextCtrl*)user)->GetValue().ToStdString());
-        return true;
-      },
-      wex::item::LABEL_LEFT,
-      [=](wxWindow* user, const std::any& value, bool save) {
-        wex::log::status(((wxTextCtrl*)user)->GetValue());
-      });
+      wex::item_data()
+        .user_window_create(
+          [=](wxWindow* user, wxWindow* parent, bool readonly) {
+            ((wxTextCtrl*)user)->Create(parent, 100);
+          })
+        .user_window_to_config([=](wxWindow* user, bool save) {
+          if (save)
+            wex::config("mytext").set(
+              ((wxTextCtrl*)user)->GetValue().ToStdString());
+          return true;
+        })
+        .apply([=](wxWindow* user, const std::any& value, bool save) {
+          wex::log::status(((wxTextCtrl*)user)->GetValue());
+        }));
 
     REQUIRE(ci_empty.type() == wex::item::EMPTY);
     REQUIRE(ci_empty.empty());
@@ -244,7 +247,7 @@ TEST_CASE("wex::item")
     // Check members are initialized.
     for (auto& it : items)
     {
-      REQUIRE(it.columns() == 1);
+      REQUIRE(it.data().columns() == 1);
 
       if (it.type() == wex::item::USER)
         REQUIRE(it.window() != nullptr);
@@ -271,10 +274,10 @@ TEST_CASE("wex::item")
 
       if (it.type() != wex::item::EMPTY && it.type() != wex::item::SPACER)
       {
-        REQUIRE(it.window() != nullptr);
-
         CAPTURE(it.label());
         CAPTURE(it.type());
+
+        REQUIRE(it.window() != nullptr);
 
         if (
           it.type() == wex::item::CHECKLISTBOX_BOOL ||
@@ -291,7 +294,7 @@ TEST_CASE("wex::item")
       }
     }
 
-    REQUIRE(ci_user.apply());
+    REQUIRE(ci_user.data().apply());
 
     // Now check to_config (after layout).
     // These are copies, the window() is nullptr!
@@ -366,7 +369,7 @@ TEST_CASE("wex::item")
       auto* dlg = new wex::item_dialog(
         {test_notebook_item(
           (wex::item::type_t)style,
-          wex::item::LABEL_NONE,
+          wex::item_data::LABEL_NONE,
           il)},
         wex::window_data()
           .button(wxOK | wxCANCEL | wxAPPLY)
@@ -375,7 +378,8 @@ TEST_CASE("wex::item")
       dlg->Show();
 
       REQUIRE(
-        std::any_cast<std::string>(dlg->find("string1").initial()) == "first");
+        std::any_cast<std::string>(dlg->find("string1").data().initial()) ==
+        "first");
       REQUIRE(
         std::any_cast<std::string>(dlg->find("string1").get_value()) ==
         "first");

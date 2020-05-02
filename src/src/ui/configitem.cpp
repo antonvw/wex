@@ -87,7 +87,7 @@ bool wex::item::to_config(bool save) const
       {
         size_t i = 0;
 
-        for (const auto& c : std::any_cast<choices_bool_t>(m_initial))
+        for (const auto& c : std::any_cast<choices_bool_t>(m_data.initial()))
         {
           if (!update(
                 find_replace_data::get(),
@@ -135,9 +135,9 @@ bool wex::item::to_config(bool save) const
         combobox_from_list(
           cb,
           config(m_label).get(
-            !m_initial.has_value() ?
+            !m_data.initial().has_value() ?
               std::list<std::string>{} :
-              std::any_cast<std::list<std::string>>(m_initial)));
+              std::any_cast<std::list<std::string>>(m_data.initial())));
       }
       break;
 
@@ -182,15 +182,15 @@ bool wex::item::to_config(bool save) const
         config(m_label).set(std::any_cast<std::list<std::string>>(get_value()));
       else
         set_value(config(m_label).get(
-          !m_initial.has_value() ?
+          !m_data.initial().has_value() ?
             std::list<std::string>{} :
-            std::any_cast<std::list<std::string>>(m_initial)));
+            std::any_cast<std::list<std::string>>(m_data.initial())));
       break;
 
     case RADIOBOX:
       if (auto* rb = (wxRadioBox*)m_window; save)
       {
-        for (const auto& b : std::any_cast<choices_t>(initial()))
+        for (const auto& b : std::any_cast<choices_t>(m_data.initial()))
         {
           if (before(b.second, ',') == rb->GetStringSelection())
           {
@@ -200,7 +200,7 @@ bool wex::item::to_config(bool save) const
       }
       else
       {
-        const auto& choices(std::any_cast<choices_t>(initial()));
+        const auto& choices(std::any_cast<choices_t>(m_data.initial()));
 
         if (const auto c =
               choices.find(config(m_label).get(rb->GetSelection()));
@@ -241,8 +241,8 @@ bool wex::item::to_config(bool save) const
 
     case USER:
       if (
-        m_user_window_to_config_t != nullptr &&
-        !(m_user_window_to_config_t)(m_window, save))
+        m_data.user_window_to_config() != nullptr &&
+        !(m_data.user_window_to_config())(m_window, save))
       {
         return false;
       }
@@ -253,9 +253,9 @@ bool wex::item::to_config(bool save) const
       return false;
   }
 
-  if (m_apply != nullptr)
+  if (m_data.apply() != nullptr)
   {
-    (m_apply)(m_window, get_value(), save);
+    (m_data.apply())(m_window, get_value(), save);
   }
 
   return true;

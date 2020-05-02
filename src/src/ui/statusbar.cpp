@@ -183,12 +183,12 @@ void wex::statusbar::handle(wxMouseEvent& event, const statusbar_pane& pane)
                          item::TEXTCTRL_INT,
                          std::to_string(it.GetWidth())});
 
-          v_i.push_back(
-            {"statusbar.styles." + it.get_name(),
-             item::COMBOBOX,
-             pane_styles().find(it.GetStyle()),
-             control_data().window(window_data().style(wxCB_READONLY)),
-             item::LABEL_NONE});
+          v_i.push_back({"statusbar.styles." + it.get_name(),
+                         item::COMBOBOX,
+                         pane_styles().find(it.GetStyle()),
+                         item_data(control_data().window(
+                                     window_data().style(wxCB_READONLY)))
+                           .label_type(item_data::LABEL_NONE)});
         }
       }
 

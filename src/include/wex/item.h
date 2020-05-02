@@ -13,10 +13,8 @@
 #include <set>
 #include <utility>
 #include <vector>
-#include <wex/control-data.h>
+#include <wex/item-data.h>
 #include <wex/listview-data.h>
-#include <wex/log.h>
-#include <wx/imaglist.h>
 #include <wx/sizer.h> // for wxSizer, and wxSizerFlags
 #include <wx/slider.h>
 
@@ -159,14 +157,6 @@ namespace wex
       USER,
     };
 
-    /// Label types supported.
-    enum label_t
-    {
-      LABEL_NONE,  ///< no label
-      LABEL_LEFT,  ///< label left from window
-      LABEL_ABOVE, ///< label above window
-    };
-
     /// Choices for radioboxes.
     typedef std::map<
       /// value
@@ -184,23 +174,6 @@ namespace wex
 
     /// A notebook is a vector of groups.
     typedef std::vector<group_t> notebook_t;
-
-    /// A function that you can provide to e.g. specify what
-    /// to do when clicking on a button item.
-    typedef std::function<
-      void(wxWindow* user, const std::any& value, bool save)>
-      user_apply_t;
-
-    /// A function that you can provide to specify what needs to
-    /// be done for creating a user item.
-    typedef std::function<void(wxWindow* user, wxWindow* parent, bool readonly)>
-      user_window_create_t;
-
-    /// A function that you can provide to specify what needs to
-    /// be done of loading or saving a user item to
-    /// the config.
-    typedef std::function<bool(wxWindow* user, bool save)>
-      user_window_to_config_t;
 
     /// Sets dialog to parent, to allow subitems to be added
     /// to the template dialog.
@@ -254,13 +227,8 @@ namespace wex
       /// otherwise default TEXTCTRL
       /// if type is STATICTEXT then markup is allowed in the label text
       type_t type = TEXTCTRL,
-      /// control data
-      const control_data& data = control_data(),
-      /// will the label be displayed as a static text
-      /// ignored for a static text
-      label_t label_t = LABEL_LEFT,
-      /// callback to apply
-      user_apply_t apply = nullptr);
+      /// item data
+      const item_data& data = item_data());
 
     /// Constructor for a SPINCTRL or a SLIDER item.
     item(
@@ -276,16 +244,16 @@ namespace wex
       /// - SPINCTRL
       /// - SLIDER
       type_t type = SPINCTRL,
-      /// control data
-      const control_data& data =
-        control_data().window(window_data().style(wxSP_ARROW_KEYS)),
-      /// callback to apply
-      user_apply_t apply = nullptr)
-      : item(type, label, value, LABEL_LEFT, 1, min, max)
-    {
-      m_apply = apply;
-      m_data  = data;
-    };
+      /// item data
+      const item_data& data = item_data())
+      : item(
+          type,
+          label,
+          value,
+          item_data(data)
+            .window(window_data().style(wxSP_ARROW_KEYS))
+            .min(min)
+            .max(max)){};
 
     /// Constructor for a SPINCTRLDOUBLE item.
     item(
@@ -297,18 +265,10 @@ namespace wex
       double max,
       /// default value
       const std::any& value = std::any(),
-      /// inc value
-      double inc = 1,
-      /// control data
-      const control_data& data =
-        control_data().window(window_data().style(wxSP_ARROW_KEYS)),
-      /// callback to apply
-      user_apply_t apply = nullptr)
-      : item(SPINCTRLDOUBLE, label, value, LABEL_LEFT, 1, min, max, inc)
-    {
-      m_apply = apply;
-      m_data  = data;
-    };
+      /// item data
+      const item_data& data =
+        item_data().window(window_data().style(wxSP_ARROW_KEYS)))
+      : item(SPINCTRLDOUBLE, label, value, item_data(data).min(min).max(max)){};
 
     /// Constructor for a CHECKLISTBOX_BOOL item.
     /// This checklistbox can be used to get/set several boolean values.
@@ -317,23 +277,9 @@ namespace wex
       /// the default value is false, but can be changed by adding a
       /// ',1' postfix to the name
       const choices_bool_t& choices,
-      /// control data
-      const control_data& data = control_data(),
-      /// callback to apply
-      user_apply_t apply = nullptr)
-      : item(
-          CHECKLISTBOX_BOOL,
-          "checklistbox_bool",
-          choices,
-          LABEL_NONE,
-          1,
-          0,
-          1,
-          1)
-    {
-      m_apply = apply;
-      m_data  = data;
-    };
+      /// item data
+      const item_data& data = item_data().label_type(item_data::LABEL_NONE))
+      : item(CHECKLISTBOX_BOOL, "checklistbox_bool", choices, data){};
 
     /// Constructor for a NOTEBOOK item, being a vector
     /// of a pair of pages with a vector of items.
@@ -368,43 +314,17 @@ namespace wex
 #else
       type_t type = NOTEBOOK,
 #endif
-      /// number of rows
-      int rows = 0,
-      /// number of cols
-      int cols = 1,
-      /// control data
-      const control_data& data = control_data(),
-      /// type of label
-      label_t label_t = LABEL_NONE,
-      /// image list to be used (required for a tool book)
-      wxImageList* imageList = nullptr)
-      : item(
-          type,
-          label,
-          v,
-          label_t,
-          cols,
-          0,
-          1,
-          1,
-          nullptr,
-          nullptr,
-          nullptr,
-          imageList)
-    {
-      m_data = data;
-    };
+      /// item data
+      const item_data& data = item_data().label_type(item_data::LABEL_NONE))
+      : item(type, label, v, data){};
 
     /// Constructor for a STATICBOX item.
     item(
       /// group items
       const group_t& v,
-      /// control data
-      const control_data& data = control_data())
-      : item(STATICBOX, v.first, v)
-    {
-      m_data = data;
-    };
+      /// item data
+      const item_data& data = item_data().label_type(item_data::LABEL_NONE))
+      : item(STATICBOX, v.first, v, data){};
 
     /// Constructor for a RADIOBOX, or a CHECKLISTBOX_BIT item.
     /// This checklistbox (not mutually exclusive choices)
@@ -419,26 +339,15 @@ namespace wex
       const choices_t& choices,
       /// indicates whether to use a radiobox or a checklistbox.
       bool use_radiobox = true,
-      /// major dimension for the radiobox
-      int major_dimension = 1,
-      /// control data
-      const control_data& data =
-        control_data().window(window_data().style(wxRA_SPECIFY_COLS)),
-      /// callback to apply
-      user_apply_t apply = nullptr)
+      /// item data
+      const item_data& data = item_data())
       : item(
           use_radiobox ? RADIOBOX : CHECKLISTBOX_BIT,
           label,
           choices,
-          LABEL_NONE,
-          major_dimension,
-          0,
-          1,
-          1)
-    {
-      m_apply = apply;
-      m_data  = data;
-    };
+          item_data(data)
+            .window(window_data().style(wxRA_SPECIFY_COLS))
+            .label_type(item_data::LABEL_NONE)){};
 
     /// Constructor for a USER item.
     item(
@@ -446,30 +355,9 @@ namespace wex
       const std::string& label,
       /// the window (use default constructor for it)
       wxWindow* window,
-      /// callback for window creation (required, useless without one)
-      user_window_create_t create,
-      /// callback for load and save to config
-      /// if nullptr it has no relation to the config
-      user_window_to_config_t config = nullptr,
-      /// type of label
-      label_t label_t = LABEL_LEFT,
-      /// callback to apply
-      user_apply_t apply = nullptr)
-      : item(
-          USER,
-          label,
-          std::string(),
-          label_t,
-          1,
-          0,
-          1,
-          1,
-          window,
-          create,
-          config)
-    {
-      m_apply = apply;
-    };
+      /// remember to set callback for window creation
+      const item_data& data)
+      : item(USER, label, std::string(), data, window){};
 
     /// Constructor a LISTVIEW item.
     item(
@@ -480,13 +368,10 @@ namespace wex
       /// initial value
       /// expects std::list< std::string>
       const std::any& value = std::any(),
-      /// type of label
-      label_t label_t = LABEL_NONE,
-      /// callback to apply
-      user_apply_t apply = nullptr)
-      : item(LISTVIEW, label, value, label_t)
+      /// item data
+      const item_data& d = item_data().label_type(item_data::LABEL_NONE))
+      : item(LISTVIEW, label, value, d)
     {
-      m_apply         = apply;
       m_listview_data = data;
     };
 
@@ -517,41 +402,31 @@ namespace wex
       /// - TEXTCTRL_FLOAT expects std::string with float contents
       /// - TEXTCTRL_INT expects std::string with int contents
       const std::any& value = std::any(),
-      /// control data
-      const control_data& data = control_data(),
-      /// type of label
-      label_t label_t = LABEL_LEFT,
-      /// callback to apply
-      user_apply_t apply = nullptr)
+      /// item data
+      const item_data& data = item_data())
       : item(
           type,
           label,
           value,
-          type == BUTTON || type == CHECKBOX || type == COMMANDLINKBUTTON ||
-              type == TOGGLEBUTTON ?
-            LABEL_NONE :
-            label_t)
-    {
-      m_apply = apply;
-      m_data  = data;
-    };
+          item_data(data).label_type(
+            type == BUTTON || type == CHECKBOX || type == COMMANDLINKBUTTON ||
+                type == TOGGLEBUTTON ?
+              item_data::LABEL_NONE :
+              data.label_type())){};
 
     /// If apply callback has been provided calls apply.
     /// Otherwise return false.
     bool apply(bool save = true) const
     {
-      if (m_apply != nullptr)
+      if (m_data.apply() != nullptr)
       {
-        (m_apply)(m_window, get_value(), save);
+        (m_data.apply())(m_window, get_value(), save);
         return true;
       }
       return false;
     };
 
-    /// Returns the number of columns for the current page.
-    auto columns() const { return m_major_dimension; };
-
-    /// Returns control data.
+    /// Returns item data.
     const auto& data() const { return m_data; };
 
     /// Returns true if this item is empty.
@@ -560,9 +435,6 @@ namespace wex
     /// Returns actual value, or empty object if this item
     /// has no (or not yet) associated window, or conversion is not implemented.
     const std::any get_value() const;
-
-    /// Returns the initial value.
-    const auto& initial() const { return m_initial; };
 
     /// Returns true if this item is a notebook.
     bool is_notebook() const;
@@ -594,9 +466,6 @@ namespace wex
     /// Returns the page.
     const auto& page() const { return m_page; };
 
-    /// Sets image list.
-    void set_imagelist(wxImageList* il) { m_image_list = il; };
-
     /// Sets this item to be growable.
     /// Default whether the item row is growable is determined
     /// by the kind of item. You can override this using SetRowGrowable.
@@ -627,57 +496,36 @@ namespace wex
       const std::string& label = std::string(),
       /// initial value if appropriate
       const std::any& value = std::string(),
-      /// If you specify add label, then the label is added as a label in front
-      /// of the item, otherwise the label is not added
-      label_t label_t = LABEL_NONE,
-      /// major dimension for radio boxes
-      int major_dimension = 1,
-      /// min value if appropriate
-      const std::any& min = 0,
-      /// max value if appropriate
-      const std::any& max = 1,
-      /// increment value if appropriate
-      const std::any& inc = 1,
-      /// window, normally created by layout, but may be supplied here
-      wxWindow* window = nullptr,
-      /// the process callback for window creation
-      user_window_create_t create = nullptr,
-      /// the process callback for window config
-      user_window_to_config_t config = nullptr,
-      /// the imagelist
-      wxImageList* imageList = nullptr);
+      /// item data
+      const item_data& = item_data(),
+      /// window
+      wxWindow* window = nullptr);
 
   private:
     wxFlexGridSizer* add(wxSizer* sizer, wxFlexGridSizer* current) const;
     wxFlexGridSizer* add_browse_button(wxSizer* sizer) const;
-    void             add_items(group_t& page, bool readonly);
-    void             add_items(
-                  wxWindow*          parent,
-                  wxFlexGridSizer*   sizer,
-                  std::vector<item>& v,
-                  bool               readonly);
     wxFlexGridSizer* add_static_text(wxSizer* sizer) const;
-    bool             create_window(wxWindow* parent, bool readonly);
+
+    void add_items(group_t& page, bool readonly);
+    void add_items(
+      wxWindow*          parent,
+      wxFlexGridSizer*   sizer,
+      std::vector<item>& v,
+      bool               readonly);
+
+    bool create_window(wxWindow* parent, bool readonly);
 
     bool m_is_row_growable = false;
 
-    int m_major_dimension, m_max_items{25};
+    int m_max_items{25};
 
-    type_t  m_type;
-    label_t m_label_type;
-
-    std::any m_initial, m_min, m_max, m_inc;
+    type_t m_type;
 
     std::string m_label, m_label_window, m_page;
 
-    control_data  m_data;
+    item_data     m_data;
     listview_data m_listview_data;
 
-    user_apply_t            m_apply;
-    user_window_create_t    m_user_window_create_t;
-    user_window_to_config_t m_user_window_to_config_t;
-
-    wxImageList* m_image_list;
     wxSizerFlags m_sizer_flags;
     wxWindow*    m_window;
 

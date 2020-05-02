@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      listview-data.cpp
+// Name:      data/listview.cpp
 // Purpose:   Implementation of wex::listview_data
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/lexer.h>
