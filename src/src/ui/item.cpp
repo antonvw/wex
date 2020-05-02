@@ -105,13 +105,11 @@ wex::item::item(
   type_t             type,
   const std::string& label,
   const std::any&    value,
-  const item_data&   data,
-  wxWindow*          window)
+  const item_data&   data)
   : m_type(type)
   , m_data(data, value)
   , m_label(label)
   , m_label_window(after(label, '.', false))
-  , m_window(window)
   , m_sizer_flags(wxSizerFlags().Border().Left())
 {
   switch (m_type)

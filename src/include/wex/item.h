@@ -186,7 +186,7 @@ namespace wex
 
     /// Default constructor for an EMPTY item.
     item()
-      : item(EMPTY, std::string())
+      : item(EMPTY)
     {
       ;
     };
@@ -357,7 +357,10 @@ namespace wex
       wxWindow* window,
       /// remember to set callback for window creation
       const item_data& data)
-      : item(USER, label, std::string(), data, window){};
+      : item(USER, label, std::string(), data)
+    {
+      m_window = window;
+    };
 
     /// Constructor a LISTVIEW item.
     item(
@@ -487,21 +490,14 @@ namespace wex
     /// otherwise it is nullptr).
     auto* window() const { return m_window; };
 
-  protected:
+  private:
     /// Delegate constructor.
     item(
-      /// the item type
-      type_t type,
-      /// the label to appear in front of the item
+      type_t             type,
       const std::string& label = std::string(),
-      /// initial value if appropriate
-      const std::any& value = std::string(),
-      /// item data
-      const item_data& = item_data(),
-      /// window
-      wxWindow* window = nullptr);
+      const std::any&    value = std::string(),
+      const item_data&         = item_data());
 
-  private:
     wxFlexGridSizer* add(wxSizer* sizer, wxFlexGridSizer* current) const;
     wxFlexGridSizer* add_browse_button(wxSizer* sizer) const;
     wxFlexGridSizer* add_static_text(wxSizer* sizer) const;
@@ -527,7 +523,7 @@ namespace wex
     listview_data m_listview_data;
 
     wxSizerFlags m_sizer_flags;
-    wxWindow*    m_window;
+    wxWindow*    m_window{nullptr};
 
     static inline item_template_dialog<item>* m_dialog     = nullptr;
     static inline bool                        m_use_config = true;

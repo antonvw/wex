@@ -410,7 +410,6 @@ wex::debug::get_args(const std::string& command, stc* stc)
                 item::COMBOBOX_FILE,
                 std::any(),
                 item_data(control_data().is_required(true))
-                  .label_type(item_data::LABEL_LEFT)
                   .apply([&](wxWindow* user, const std::any& value, bool save) {
                     if (save)
                       args += " " + std::any_cast<wxArrayString>(value)[0];
