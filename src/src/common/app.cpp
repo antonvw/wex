@@ -39,10 +39,8 @@ void wex::app::OnAssertFailure(
   const wxChar* msg)
 {
 #ifdef NO_ASSERT
-  log("OnAssertFailure") << "file:" << (const char*)file << "line:" << line
-                         << "func:" << (const char*)func
-                         << "cond:" << (const char*)cond
-                         << "msg:" << (const char*)msg;
+  log("OnAssertFailure") << "file:" << file << "line:" << line
+                         << "func:" << func << "cond:" << cond << "msg:" << msg;
 #else
   wxApp::OnAssertFailure(file, line, func, cond, msg);
 #endif

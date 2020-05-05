@@ -56,8 +56,11 @@ wex::log::~log()
 void wex::log::flush()
 {
   const std::string topic =
-    !m_topic.empty() && !m_ss.str().empty() ? m_topic + ":" : m_topic;
-  const std::string text(topic + m_ss.str());
+    !m_topic.empty() && !(m_ss.str().empty() || m_wss.str().empty()) ?
+      m_topic + ":" :
+      m_topic;
+
+  const std::string text(topic + m_ss.str() + m_wss.str());
 
   if (!text.empty() || m_level == STATUS)
   {
@@ -129,6 +132,12 @@ wex::log& wex::log::operator<<(long long r)
 wex::log& wex::log::operator<<(const char* r)
 {
   m_ss << S() << r;
+  return *this;
+}
+
+wex::log& wex::log::operator<<(const wchar_t* r)
+{
+  m_wss << S() << r;
   return *this;
 }
 

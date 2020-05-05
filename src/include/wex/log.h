@@ -138,6 +138,9 @@ namespace wex
     /// Logs char* according to level.
     log& operator<<(const char*);
 
+    /// Logs char* according to level.
+    log& operator<<(const wchar_t*);
+
     /// Logs a bitset according to level.
     template <std::size_t N> log& operator<<(const std::bitset<N>& b)
     {
@@ -160,10 +163,11 @@ namespace wex
     void              flush();
     const std::string S(); // separator
 
-    const std::string m_topic;
-    std::stringstream m_ss;
-    bool              m_separator{true};
-    level_t           m_level{ERROR};
-    inline static int m_verbosity{1};
+    const std::string  m_topic;
+    std::stringstream  m_ss;
+    std::wstringstream m_wss;
+    bool               m_separator{true};
+    level_t            m_level{ERROR};
+    inline static int  m_verbosity{1};
   };
 }; // namespace wex
