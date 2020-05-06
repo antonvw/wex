@@ -115,38 +115,22 @@ frame::frame()
   m_log->reset_margins();
 
   auto* menuFile = new wex::menu({
-    {wxID_NEW,
-     "",
-     "",
-     "",
-     [=](wxCommandEvent& event) {
+    {wxID_NEW, "", wex::menu_data().action([=](wxCommandEvent& event) {
        m_data->get_file().file_new(wex::path());
        pane_show("DATA");
-     }},
-      {wxID_OPEN,
-       "",
-       "",
-       "",
-       [=](wxCommandEvent& event) {
+     })},
+      {wxID_OPEN, "", wex::menu_data().action([=](wxCommandEvent& event) {
          wex::open_files_dialog(
            this,
            wxFD_OPEN | wxFD_CHANGE_DIR,
            wxFileSelectorDefaultWildcardStr,
            true);
-       }},
+       })},
       {}, {id_recent_file_menu, file_history()},
-      {wxID_SAVE,
-       "",
-       "",
-       "",
-       [=](wxCommandEvent& event) {
+      {wxID_SAVE, "", wex::menu_data().action([=](wxCommandEvent& event) {
          m_data->get_file().file_save();
-       }},
-      {wxID_SAVEAS,
-       "",
-       "",
-       "",
-       [=](wxCommandEvent& event) {
+       })},
+      {wxID_SAVEAS, "", wex::menu_data().action([=](wxCommandEvent& event) {
          wex::file_dialog dlg(
            &m_data->get_file(),
            wex::window_data().style(wxFD_SAVE).parent(this).title(
@@ -155,24 +139,24 @@ frame::frame()
          {
            m_data->get_file().file_save(dlg.GetPath().ToStdString());
          }
-       }},
+       })},
       {},
       {id_clear_statistics,
        "Clear Statistics",
-       "Clears the statistics",
-       "",
-       [=](wxCommandEvent& event) {
-         m_stats.clear();
-       }},
+       wex::menu_data()
+         .help_text("Clears the statistics")
+         .action([=](wxCommandEvent& event) {
+           m_stats.clear();
+         })},
       {},
 #if wxUSE_TASKBARICON
       {id_hide,
        "Hide",
-       "Puts back in the task bar",
-       "",
-       [=](wxCommandEvent& event) {
-         Close(false);
-       }},
+       wex::menu_data()
+         .help_text("Puts back in the task bar")
+         .action([=](wxCommandEvent& event) {
+           Close(false);
+         })},
 
 #else
     {
@@ -187,276 +171,262 @@ frame::frame()
   menuFile->append({{wxID_PREFERENCES}}); // is moved!
 #endif
 
-    SetMenuBar(
-      new wex::
-        menubar({{menuFile, wxGetStockLabel(wxID_FILE)},
-                 {new wex::menu({{this},
-                                 {},
-                                 {id_view_log,
-                                  "Log",
-                                  wex::menu_item::CHECK,
-                                  [=](wxCommandEvent& event) {
-                                    pane_toggle("LOG");
-                                  }},
-                                 {id_view_data,
-                                  "Data",
-                                  wex::menu_item::CHECK,
-                                  [=](wxCommandEvent& event) {
-                                    pane_toggle("DATA");
-                                  }},
-                                 {id_view_shell,
-                                  "Shell",
-                                  wex::menu_item::CHECK,
-                                  [=](wxCommandEvent& event) {
-                                    pane_toggle("SHELL");
-                                  }},
-                                 {id_view_statistics,
-                                  "Statistics",
-                                  wex::menu_item::CHECK,
-                                  [=](wxCommandEvent& event) {
-                                    pane_toggle("STATISTICS");
-                                  }}}),
-                  "&View"},
-                 {new wex::menu(
-                    {{id_server_config,
-                      "Configuration",
-                      "Configures the server",
-                      "",
-                      [=](wxCommandEvent& event) {
-                        // Configuring only possible if server is stopped,
-                        // otherwise just show settings readonly mode.
-                        wex::item_dialog(
-                          {{"Hostname",
-                            std::string(),
-                            wex::item::TEXTCTRL,
-                            wex::control_data().is_required(true)},
-                           // Well known ports are in the range from 0 to 1023.
-                           // Just allow here for most flexibility.
-                           {"Port", 1, 65536, 3000}},
-                          wex::window_data()
-                            .title("Server Config")
-                            .button(
-                              m_server == nullptr ? wxOK | wxCANCEL : wxCANCEL))
-                          .ShowModal();
-                      }},
-                     {},
-                     {wxID_EXECUTE,
-                      "",
-                      "",
-                      "",
-                      [=](wxCommandEvent& event) {
-                        setup_server();
-                      }},
-                     {wxID_STOP,
-                      "",
-                      "",
-                      "",
-                      [=](wxCommandEvent& event) {
-                        if (
-                          wxMessageBox(
-                            "Stop server?",
-                            "Confirm",
-                            wxOK | wxCANCEL | wxICON_QUESTION) == wxCANCEL)
-                        {
-                          return;
-                        }
-                        const std::string text("server stopped");
-                        wex::log::status(text);
-                        wex::log::verbose("server") << "stopped";
-                        append_text(m_log, text, data_mode_t::MESSAGE);
-                        for (auto& it : m_clients)
-                        {
-                          socket_closed(it, false);
-                        }
-                        m_clients.clear();
-                        m_server->Destroy();
-                        m_server = nullptr;
+    SetMenuBar(new wex::menubar(
+      {{menuFile, wxGetStockLabel(wxID_FILE)},
+       {new wex::menu({{this},
+                       {},
+                       {id_view_log,
+                        "Log",
+                        wex::menu_item::CHECK,
+                        wex::menu_data().action([=](wxCommandEvent& event) {
+                          pane_toggle("LOG");
+                        })},
+                       {id_view_data,
+                        "Data",
+                        wex::menu_item::CHECK,
+                        wex::menu_data().action([=](wxCommandEvent& event) {
+                          pane_toggle("DATA");
+                        })},
+                       {id_view_shell,
+                        "Shell",
+                        wex::menu_item::CHECK,
+                        wex::menu_data().action([=](wxCommandEvent& event) {
+                          pane_toggle("SHELL");
+                        })},
+                       {id_view_statistics,
+                        "Statistics",
+                        wex::menu_item::CHECK,
+                        wex::menu_data().action([=](wxCommandEvent& event) {
+                          pane_toggle("STATISTICS");
+                        })}}),
+        "&View"},
+       {new wex::menu(
+          {{id_server_config,
+            "Configuration",
+            wex::menu_data()
+              .help_text("Configures the server")
+              .action([=](wxCommandEvent& event) {
+                // Configuring only possible if server is stopped,
+                // otherwise just show settings readonly mode.
+                wex::item_dialog(
+                  {{"Hostname",
+                    std::string(),
+                    wex::item::TEXTCTRL,
+                    wex::control_data().is_required(true)},
+                   // Well known ports are in the range from 0 to
+                   // 1023. Just allow here for most flexibility.
+                   {"Port", 1, 65536, 3000}},
+                  wex::window_data()
+                    .title("Server Config")
+                    .button(m_server == nullptr ? wxOK | wxCANCEL : wxCANCEL))
+                  .ShowModal();
+              })},
+           {},
+           {wxID_EXECUTE,
+            "",
+            wex::menu_data().action([=](wxCommandEvent& event) {
+              setup_server();
+            })},
+           {wxID_STOP, "", wex::menu_data().action([=](wxCommandEvent& event) {
+              if (
+                wxMessageBox(
+                  "Stop server?",
+                  "Confirm",
+                  wxOK | wxCANCEL | wxICON_QUESTION) == wxCANCEL)
+              {
+                return;
+              }
+              const std::string text("server stopped");
+              wex::log::status(text);
+              wex::log::verbose("server") << "stopped";
+              append_text(m_log, text, data_mode_t::MESSAGE);
+              for (auto& it : m_clients)
+              {
+                socket_closed(it, false);
+              }
+              m_clients.clear();
+              m_server->Destroy();
+              m_server = nullptr;
 #if wxUSE_TASKBARICON
-                        m_taskbar_icon->SetIcon(wxICON(notready), text);
+              m_taskbar_icon->SetIcon(wxICON(notready), text);
 #endif
-                        update_connections_pane();
-                      }},
-                     {},
-                     {new wex::menu(
-                        {{id_remote_server_config,
-                          "Configuration",
-                          "Configures the remote server",
-                          "",
-                          [=](wxCommandEvent& event) {
-                            // Configuring only possible if no client is active,
-                            // otherwise just show settings readonly mode.
-                            wex::item_dialog(
-                              {{"Remote Hostname",
-                                wex::item::COMBOBOX,
-                                std::any(),
-                                wex::control_data().is_required(true)},
-                               // Well known ports are in the range from 0 to
-                               // 1023. Just allow here for most flexibility.
-                               {"Remote Port", 1, 65536, 3000}},
-                              wex::window_data()
-                                .title("Remote Server Config")
-                                .button(
-                                  m_client == nullptr ? wxOK | wxCANCEL :
-                                                        wxCANCEL))
-                              .ShowModal();
-                          }},
-                         {},
-                         {id_remote_server_connect,
-                          "Connect",
-                          "Tries to connect to server",
-                          "",
-                          [=](wxCommandEvent& event) {
-                            assert(m_client == nullptr);
+              update_connections_pane();
+            })},
+           {},
+           {new wex::menu(
+              {{id_remote_server_config,
+                "Configuration",
+                wex::menu_data()
+                  .help_text("Configures the remote server")
+                  .action([=](wxCommandEvent& event) {
+                    // Configuring only possible if no client is
+                    // active, otherwise just show settings
+                    // readonly mode.
+                    wex::item_dialog(
+                      {{"Remote Hostname",
+                        wex::item::COMBOBOX,
+                        std::any(),
+                        wex::control_data().is_required(true)},
+                       // Well known ports are in the range from 0
+                       // to 1023. Just allow here for most
+                       // flexibility.
+                       {"Remote Port", 1, 65536, 3000}},
+                      wex::window_data()
+                        .title("Remote Server Config")
+                        .button(
+                          m_client == nullptr ? wxOK | wxCANCEL : wxCANCEL))
+                      .ShowModal();
+                  })},
+               {},
+               {id_remote_server_connect,
+                "Connect",
+                wex::menu_data()
+                  .help_text("Tries to connect to server")
+                  .action([=](wxCommandEvent& event) {
+                    assert(m_client == nullptr);
 
-                            wxIPV4address addr;
-                            addr.Hostname(
-                              wex::config("Remote Hostname").get("localhost"));
-                            addr.Service(wex::config("Remote Port").get(3000));
+                    wxIPV4address addr;
+                    addr.Hostname(
+                      wex::config("Remote Hostname").get("localhost"));
+                    addr.Service(wex::config("Remote Port").get(3000));
 
-                            m_client = new wxSocketClient();
-                            m_client->SetEventHandler(
-                              *this,
-                              id_socket_remoteclient);
-                            m_client->SetNotify(wxSOCKET_CONNECTION_FLAG);
-                            m_client->Notify(true);
-                            m_client->Connect(addr, false);
-                          }},
-                         {id_remote_server_disconnect,
-                          "Disconnect",
-                          "Disconnects from remote server",
-                          "",
-                          [=](wxCommandEvent& event) {
-                            assert(m_client != nullptr);
+                    m_client = new wxSocketClient();
+                    m_client->SetEventHandler(*this, id_socket_remoteclient);
+                    m_client->SetNotify(wxSOCKET_CONNECTION_FLAG);
+                    m_client->Notify(true);
+                    m_client->Connect(addr, false);
+                  })},
+               {id_remote_server_disconnect,
+                "Disconnect",
+                wex::menu_data()
+                  .help_text("Disconnects from remote server")
+                  .action([=](wxCommandEvent& event) {
+                    assert(m_client != nullptr);
 
-                            if (m_client->IsConnected())
-                            {
-                              socket_closed(m_client, false);
-                            }
+                    if (m_client->IsConnected())
+                    {
+                      socket_closed(m_client, false);
+                    }
 
-                            update_connections_pane();
+                    update_connections_pane();
 
-                            m_client = nullptr;
-                          }}}),
-                      "&Remote"}}),
-                  "&Server"},
-                 {new wex::menu(
-                    {{new wex::menu(
-                        {{id_client_answer_off,
-                          "Off",
-                          wex::menu_item::RADIO,
-                          [=](wxCommandEvent& event) {
-                            m_answer = answer_t::OFF;
-                          },
-                          nullptr,
-                          "No answer back to connection"},
-                         {id_client_answer_echo,
-                          "Echo",
-                          wex::menu_item::RADIO,
-                          [=](wxCommandEvent& event) {
-                            m_answer = answer_t::ECHO;
-                          },
-                          nullptr,
-                          "Echo's received data back to connection"},
-                         {id_client_answer_command,
-                          "Command",
-                          wex::menu_item::RADIO,
-                          [=](wxCommandEvent& event) {
-                            m_answer = answer_t::COMMAND;
-                          },
-                          nullptr,
-                          "Send last shell command back to connection"},
-                         {id_client_answer_file,
-                          "File",
-                          wex::menu_item::RADIO,
-                          [=](wxCommandEvent& event) {
-                            m_answer = answer_t::FILE;
-                          },
-                          nullptr,
-                          "Send file contents back to connection"}}),
-                      "&Answer"},
-                     {},
-                     {id_client_log_data,
-                      "Log Data",
-                      wex::menu_item::CHECK,
-                      [=](wxCommandEvent& event) {
-                        wex::config("Log Data")
-                          .set(!wex::config("Log Data").get(true));
-                      },
-                      nullptr,
-                      "Logs data read from and written to connection"},
-                     {id_client_log_data_count_only,
-                      "Count Only",
-                      wex::menu_item::CHECK,
-                      [=](wxCommandEvent& event) {
-                        wex::config("Count Only")
-                          .set(!wex::config("Count Only").get(true));
-                      },
-                      nullptr,
-                      "Logs only byte counts, no text"},
-                     {},
-                     {id_client_buffer_size,
-                      wex::ellipsed("Buffer Size"),
-                      "Sets buffersize for data retrieved from connection",
-                      "",
-                      [=](wxCommandEvent& event) {
-                        if (const auto val(wxGetNumberFromUser(
-                              "Input:",
-                              wxEmptyString,
-                              "Buffer Size",
-                              wex::config("Buffer Size").get(4096),
-                              1,
-                              65536));
-                            val > 0)
-                        {
-                          wex::config("Buffer Size").set(val);
-                        }
-                      }},
-                     {},
-                     {id_timer_start,
-                      wex::ellipsed("Repeat Timer"),
-                      "Repeats with timer writing last data to all connections",
-                      "",
-                      [=](wxCommandEvent& event) {
-                        timer_dialog();
-                      }},
-                     {id_timer_stop,
-                      "Stop Timer",
-                      "Stops the timer",
-                      "",
-                      [=](wxCommandEvent& event) {
-                        m_timer.Stop();
-                        wex::log::verbose("timer") << "stopped";
-                        statustext(std::string(), "PaneTimer");
-                      }},
-                     {},
-                     {id_write_data,
-                      "Write",
-                      "Writes data to all connections",
-                      wxART_GO_FORWARD,
-                      [=](wxCommandEvent& event) {
-                        write_data_window_to_connections();
-                      }}}),
-                  "&Connection"},
+                    m_client = nullptr;
+                  })}}),
+            "&Remote"}}),
+        "&Server"},
+       {new wex::menu(
+          {{new wex::menu(
+              {{id_client_answer_off,
+                "Off",
+                wex::menu_item::RADIO,
+                wex::menu_data()
+                  .action([=](wxCommandEvent& event) {
+                    m_answer = answer_t::OFF;
+                  })
+                  .help_text("No answer back to connection")},
+               {id_client_answer_echo,
+                "Echo",
+                wex::menu_item::RADIO,
+                wex::menu_data()
+                  .action([=](wxCommandEvent& event) {
+                    m_answer = answer_t::ECHO;
+                  })
+                  .help_text("Echo's received data back to connection")},
+               {id_client_answer_command,
+                "Command",
+                wex::menu_item::RADIO,
+                wex::menu_data()
+                  .action([=](wxCommandEvent& event) {
+                    m_answer = answer_t::COMMAND;
+                  })
+                  .help_text("Send last shell command back to connection")},
+               {id_client_answer_file,
+                "File",
+                wex::menu_item::RADIO,
+                wex::menu_data()
+                  .action([=](wxCommandEvent& event) {
+                    m_answer = answer_t::FILE;
+                  })
+                  .help_text("Send file contents back to connection")}}),
+            "&Answer"},
+           {},
+           {id_client_log_data,
+            "Log Data",
+            wex::menu_item::CHECK,
+            wex::menu_data()
+              .action([=](wxCommandEvent& event) {
+                wex::config("Log Data").set(!wex::config("Log Data").get(true));
+              })
+              .help_text("Logs data read from and written to connection")},
+           {id_client_log_data_count_only,
+            "Count Only",
+            wex::menu_item::CHECK,
+            wex::menu_data()
+              .action([=](wxCommandEvent& event) {
+                wex::config("Count Only")
+                  .set(!wex::config("Count Only").get(true));
+              })
+              .help_text("Logs only byte counts, no text")},
+           {},
+           {id_client_buffer_size,
+            wex::ellipsed("Buffer Size"),
+            wex::menu_data()
+              .help_text("Sets buffersize for data retrieved from connection")
+              .action([=](wxCommandEvent& event) {
+                if (const auto val(wxGetNumberFromUser(
+                      "Input:",
+                      wxEmptyString,
+                      "Buffer Size",
+                      wex::config("Buffer Size").get(4096),
+                      1,
+                      65536));
+                    val > 0)
+                {
+                  wex::config("Buffer Size").set(val);
+                }
+              })},
+           {},
+           {id_timer_start,
+            wex::ellipsed("Repeat Timer"),
+            wex::menu_data()
+              .help_text("Repeats with timer writing last data to all "
+                         "connections")
+              .action([=](wxCommandEvent& event) {
+                timer_dialog();
+              })},
+           {id_timer_stop,
+            "Stop Timer",
+            wex::menu_data()
+              .help_text("Stops the timer")
+              .action([=](wxCommandEvent& event) {
+                m_timer.Stop();
+                wex::log::verbose("timer") << "stopped";
+                statustext(std::string(), "PaneTimer");
+              })},
+           {},
+           {id_write_data,
+            "Write",
+            wex::menu_data()
+              .help_text("Writes data to all connections")
+              .art(wxART_GO_FORWARD)
+              .action([=](wxCommandEvent& event) {
+                write_data_window_to_connections();
+              })}}),
+        "&Connection"},
 #ifndef __WXOSX__
-                 {menuOptions, "&Options"},
+       {menuOptions, "&Options"},
 #endif
-                 {new wex::menu({{wxID_ABOUT,
-                                  "",
-                                  "",
-                                  "",
-                                  [=](wxCommandEvent& event) {
-                                    wxAboutDialogInfo info;
-                                    info.SetIcon(GetIcon());
-                                    info.SetDescription(
-                                      "This program offers a general socket "
-                                      "server.");
-                                    info.SetVersion(
-                                      wex::get_version_info().get());
-                                    info.SetCopyright(
-                                      wex::get_version_info().copyright());
-                                    wxAboutBox(info);
-                                  }}}),
-                  wxGetStockLabel(wxID_HELP)}}));
+       {new wex::menu(
+          {{wxID_ABOUT, "", wex::menu_data().action([=](wxCommandEvent& event) {
+              wxAboutDialogInfo info;
+              info.SetIcon(GetIcon());
+              info.SetDescription("This program offers a general socket "
+                                  "server.");
+              info.SetVersion(wex::get_version_info().get());
+              info.SetCopyright(wex::get_version_info().copyright());
+              wxAboutBox(info);
+            })}}),
+        wxGetStockLabel(wxID_HELP)}}));
 
     if (setup_server())
     {

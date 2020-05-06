@@ -58,17 +58,14 @@ frame::frame()
                      {this},
                      {}}),
       "&View"},
-     {new wex::menu({{wxID_ABOUT,
-                      "",
-                      "",
-                      "",
-                      [=](wxCommandEvent& event) {
-                        wxAboutDialogInfo info;
-                        info.SetIcon(GetIcon());
-                        info.SetVersion(wex::get_version_info().get());
-                        info.SetCopyright(wex::get_version_info().copyright());
-                        wxAboutBox(info);
-                      }}}),
+     {new wex::menu(
+        {{wxID_ABOUT, "", wex::menu_data().action([=](wxCommandEvent& event) {
+            wxAboutDialogInfo info;
+            info.SetIcon(GetIcon());
+            info.SetVersion(wex::get_version_info().get());
+            info.SetCopyright(wex::get_version_info().copyright());
+            wxAboutBox(info);
+          })}}),
       "&Help"}}));
 
   get_toolbar()->add_standard();

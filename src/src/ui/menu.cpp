@@ -53,11 +53,11 @@ size_t wex::menu::append(const std::vector<menu_item>& items)
         break;
 
       case menu_item::EXIT:
-        append({{wxID_EXIT, "", "", "", [=](wxCommandEvent& event) {
+        append({{wxID_EXIT, "", menu_data().action([=](wxCommandEvent& event) {
                    auto* frame =
                      dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
                    frame->Close(true);
-                 }}});
+                 })}});
         break;
 
       case menu_item::PRINT:
@@ -129,16 +129,10 @@ void wex::menu::append_print()
 {
   append({{wxID_PRINT_SETUP,
            ellipsed(_("Page &Setup")),
-           "",
-           "",
-           [=](wxCommandEvent& event) {
+           menu_data().action([=](wxCommandEvent& event) {
              wex::printing::get()->get_html_printer()->PageSetup();
-           }},
-          {wxID_PREVIEW,
-           "",
-           "",
-           "",
-           [=](wxCommandEvent& event) {
+           })},
+          {wxID_PREVIEW, "", menu_data().action([=](wxCommandEvent& event) {
              auto* frame =
                dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
              if (frame->get_stc() != nullptr)
@@ -149,8 +143,8 @@ void wex::menu::append_print()
              {
                frame->get_listview()->print_preview();
              }
-           }},
-          {wxID_PRINT, "", "", "", [=](wxCommandEvent& event) {
+           })},
+          {wxID_PRINT, "", menu_data().action([=](wxCommandEvent& event) {
              auto* frame =
                dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
              if (frame->get_stc() != nullptr)
@@ -161,7 +155,7 @@ void wex::menu::append_print()
              {
                frame->get_listview()->print();
              }
-           }}});
+           })}});
 }
 
 void wex::menu::append_separator()
@@ -189,9 +183,11 @@ void wex::menu::append_tools()
   {
     if (!it.second.text().empty())
     {
-      menuTool->append({{it.first, it.second.text(), it.second.help_text()}});
+      menuTool->append({{it.first,
+                         it.second.text(),
+                         menu_data().help_text(it.second.help_text())}});
     }
   }
 
-  append({{menuTool, _("&Tools"), std::string(), wxID_ANY}});
+  append({{menuTool, _("&Tools"), wxID_ANY}});
 }

@@ -615,7 +615,8 @@ void wex::listview::build_popup_menu(wex::menu& menu)
     GetSelectedItemCount() >= 1 &&
     listitem(this, GetFirstSelected()).get_filename().stat().is_ok())
   {
-    menu.append({{ID_EDIT_OPEN, _("&Open"), wxART_FILE_OPEN}, {}});
+    menu.append(
+      {{ID_EDIT_OPEN, _("&Open"), menu_data().art(wxART_FILE_OPEN)}, {}});
   }
   else if (GetSelectedItemCount() >= 1 && m_data.type() == listview_data::TSV)
   {

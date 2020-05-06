@@ -205,11 +205,9 @@ decorated_frame::decorated_frame(app* app)
     menuMacro->append({{},
                        {ID_EDIT_MACRO,
                         wxGetStockLabel(wxID_EDIT),
-                        "",
-                        "",
-                        [=](wxCommandEvent&) {
+                        wex::menu_data().action([=](wxCommandEvent&) {
                           open_file(wex::ex::get_macros().get_filename());
-                        }}});
+                        })}});
   }
 
   wex::menu* menuDebug = nullptr;
@@ -238,9 +236,7 @@ decorated_frame::decorated_frame(app* app)
   {
     menuOptions->append({{wxWindow::NewControlId(),
                           wex::ellipsed(_("Set &VCS")),
-                          "",
-                          "",
-                          [=](wxCommandEvent&) {
+                          wex::menu_data().action([=](wxCommandEvent&) {
                             if (wex::vcs().config_dialog() == wxID_OK)
                             {
                               wex::vcs vcs;
@@ -248,7 +244,7 @@ decorated_frame::decorated_frame(app* app)
                               m_statusbar->pane_show("PaneVCS", vcs.use());
                               statustext(vcs.name(), "PaneVCS");
                             }
-                          }},
+                          })},
                          {}});
   }
 
@@ -260,450 +256,397 @@ decorated_frame::decorated_frame(app* app)
 #endif
     {ID_OPTION_LIST,
      wex::ellipsed(_("Set &List Options")),
-     "",
-     "",
-     [=](wxCommandEvent& event) {
+     wex::menu_data().action([=](wxCommandEvent& event) {
        wex::listview::config_dialog(wex::window_data()
                                       .button(wxOK | wxCANCEL | wxAPPLY)
                                       .id(ID_OPTION_LIST));
-     }},
+     })},
     {ID_OPTION_TAB,
      wex::ellipsed(_("Set &Tab Options")),
-     "",
-     "",
-     [=](wxCommandEvent& event) {
+     wex::menu_data().action([=](wxCommandEvent& event) {
        wex::notebook::config_dialog(wex::window_data()
                                       .button(wxOK | wxCANCEL | wxAPPLY)
                                       .id(ID_OPTION_TAB));
-     }}});
+     })}});
 
-  SetMenuBar(
-    new wex::
-      menubar({{new wex::menu(
-                  {{wxID_NEW,
-                    wex::ellipsed(
-                      wxGetStockLabel(wxID_NEW, wxSTOCK_NOFLAGS),
-                      "\tCtrl+N"),
-                    "",
-                    "",
-                    [=](wxCommandEvent& event) {
-                      // In hex mode we cannot edit the file.
-                      if (wex::config("is_hexmode").get(false))
-                        return;
+  SetMenuBar(new wex::menubar(
+    {{new wex::menu(
+        {{wxID_NEW,
+          wex::ellipsed(wxGetStockLabel(wxID_NEW, wxSTOCK_NOFLAGS), "\tCtrl+N"),
+          wex::menu_data().action([=](wxCommandEvent& event) {
+            // In hex mode we cannot edit the file.
+            if (wex::config("is_hexmode").get(false))
+              return;
 
-                      static std::string name = event.GetString();
-                      wxTextEntryDialog  dlg(
-                        this,
-                        _("Input") + ":",
-                        _("File Name"),
-                        name);
-                      wxTextValidator validator(wxFILTER_EXCLUDE_CHAR_LIST);
-                      validator.SetCharExcludes("/\\?%*:|\"<>");
-                      dlg.SetTextValidator(validator);
-                      if (dlg.ShowModal() == wxID_CANCEL)
-                        return;
+            static std::string name = event.GetString();
+            wxTextEntryDialog dlg(this, _("Input") + ":", _("File Name"), name);
+            wxTextValidator   validator(wxFILTER_EXCLUDE_CHAR_LIST);
+            validator.SetCharExcludes("/\\?%*:|\"<>");
+            dlg.SetTextValidator(validator);
+            if (dlg.ShowModal() == wxID_CANCEL)
+              return;
 
-                      if (name = dlg.GetValue(); !name.empty())
-                      {
-                        auto* page = new wex::stc(
-                          std::string(),
-                          wex::stc_data(m_app->data())
-                            .window(wex::window_data().parent(m_editors)));
-                        page->get_file().file_new(name);
-                        // This file does yet exist, so do not give it a bitmap.
-                        m_editors->add_page(page, name, name, true);
-                        pane_show("FILES");
-                      };
-                    }},
+            if (name = dlg.GetValue(); !name.empty())
+            {
+              auto* page = new wex::stc(
+                std::string(),
+                wex::stc_data(m_app->data())
+                  .window(wex::window_data().parent(m_editors)));
+              page->get_file().file_new(name);
+              // This file does yet exist, so do not give it a bitmap.
+              m_editors->add_page(page, name, name, true);
+              pane_show("FILES");
+            };
+          })},
 
-                   {wxID_OPEN},
+         {wxID_OPEN},
 
-                   {},
+         {},
 
-                   {wxWindow::NewControlId(),
-                    file_history(),
-                    [=](wxUpdateUIEvent& event) {
-                      event.Enable(!file_history().get_history_file().empty());
-                    }},
+         {wxWindow::NewControlId(),
+          file_history(),
+          wex::menu_data().ui([=](wxUpdateUIEvent& event) {
+            event.Enable(!file_history().get_history_file().empty());
+          })},
 
-                   {wxID_CLOSE,
-                    wxGetStockLabel(wxID_CLOSE, wxSTOCK_NOFLAGS) + "\tCtrl+W",
-                    "",
-                    "",
-                    [=](wxCommandEvent& event) {
-                      if (auto* stc = get_stc(); stc != nullptr)
-                      {
-                        if (!allow_close(m_editors->GetId(), stc))
-                          return;
-                        m_editors->delete_page(m_editors->key_by_page(stc));
-                      };
-                    },
-                    [=](wxUpdateUIEvent& event) {
-                      event.Enable(
-                        m_editors->IsShown() && m_editors->GetPageCount() > 0);
-                    }},
+         {wxID_CLOSE,
+          wxGetStockLabel(wxID_CLOSE, wxSTOCK_NOFLAGS) + "\tCtrl+W",
+          wex::menu_data()
+            .action([=](wxCommandEvent& event) {
+              if (auto* stc = get_stc(); stc != nullptr)
+              {
+                if (!allow_close(m_editors->GetId(), stc))
+                  return;
+                m_editors->delete_page(m_editors->key_by_page(stc));
+              };
+            })
+            .ui([=](wxUpdateUIEvent& event) {
+              event.Enable(
+                m_editors->IsShown() && m_editors->GetPageCount() > 0);
+            })},
 
-                   {},
+         {},
 
-                   {wxID_SAVE},
+         {wxID_SAVE},
 
-                   {wxID_SAVEAS,
-                    "",
-                    "",
-                    "",
-                    nullptr,
-                    [=](wxUpdateUIEvent& event) {
-                      event.Enable(
-                        m_editors->IsShown() && m_editors->GetPageCount() > 0);
-                    }},
+         {wxID_SAVEAS, "", wex::menu_data().ui([=](wxUpdateUIEvent& event) {
+            event.Enable(m_editors->IsShown() && m_editors->GetPageCount() > 0);
+          })},
 
-                   {wex::ID_ALL_SAVE,
-                    _("Save A&ll"),
-                    std::string(),
-                    wxART_FILE_SAVE},
+         {wex::ID_ALL_SAVE,
+          _("Save A&ll"),
+          wex::menu_data().art(wxART_FILE_SAVE)},
 
-                   {},
+         {},
 
-                   {wex::menu_item::PRINT},
+         {wex::menu_item::PRINT},
 
-                   {},
+         {},
 
-                   {wex::menu_item::EXIT}}),
+         {wex::menu_item::EXIT}}),
 
-                wxGetStockLabel(wxID_FILE)},
+      wxGetStockLabel(wxID_FILE)},
 
-               {new wex::menu(
-                  {{wxID_UNDO},
-                   {wxID_REDO},
-                   {},
-                   {wxID_CUT},
-                   {wxID_COPY},
-                   {wxID_PASTE},
-                   {},
-                   {wxID_JUMP_TO},
-                   {wxID_CLEAR},
-                   {wxID_SELECTALL},
-                   {},
-                   {menuFind,
-                    !m_app->data().flags().test(wex::stc_data::WIN_READ_ONLY) ?
-                      _("&Find and Replace") :
-                      _("&Find")},
-                   {},
-                   {wex::ID_EDIT_CONTROL_CHAR,
-                    wex::ellipsed(_("&Control Char"), "Ctrl+K"),
-                    "",
-                    "",
-                    [=](wxCommandEvent& event) {
-                      if (get_stc() != nullptr)
-                      {
-                        wxPostEvent(get_stc(), event);
-                      }
-                    }},
-                   {},
-                   {menuMacro,
-                    _("&Macro"),
-                    std::string(),
-                    ID_EDIT_MACRO_MENU}}),
-                wxGetStockLabel(wxID_EDIT)},
+     {new wex::menu(
+        {{wxID_UNDO},
+         {wxID_REDO},
+         {},
+         {wxID_CUT},
+         {wxID_COPY},
+         {wxID_PASTE},
+         {},
+         {wxID_JUMP_TO},
+         {wxID_CLEAR},
+         {wxID_SELECTALL},
+         {},
+         {menuFind,
+          !m_app->data().flags().test(wex::stc_data::WIN_READ_ONLY) ?
+            _("&Find and Replace") :
+            _("&Find")},
+         {},
+         {wex::ID_EDIT_CONTROL_CHAR,
+          wex::ellipsed(_("&Control Char"), "Ctrl+K"),
+          wex::menu_data().action([=](wxCommandEvent& event) {
+            if (get_stc() != nullptr)
+            {
+              wxPostEvent(get_stc(), event);
+            }
+          })},
+         {},
+         {menuMacro, _("&Macro"), ID_EDIT_MACRO_MENU}}),
+      wxGetStockLabel(wxID_EDIT)},
 
-               {new wex::menu(
-                  {{this},
-                   {},
-                   {wxWindow::NewControlId(),
-                    _("&Files"),
-                    wex::menu_item::CHECK,
-                    [=](wxCommandEvent& event) {
-                      pane_toggle("FILES");
-                      if (!pane_is_shown("FILES") && pane_is_shown("PROJECTS"))
-                      {
-                        pane_maximize("PROJECTS");
-                      };
-                    },
-                    [=](wxUpdateUIEvent& event) {
-                      event.Check(pane_is_shown("FILES"));
-                    }},
+     {new wex::menu(
+        {{this},
+         {},
+         {wxWindow::NewControlId(),
+          _("&Files"),
+          wex::menu_item::CHECK,
+          wex::menu_data()
+            .action([=](wxCommandEvent& event) {
+              pane_toggle("FILES");
+              if (!pane_is_shown("FILES") && pane_is_shown("PROJECTS"))
+              {
+                pane_maximize("PROJECTS");
+              };
+            })
+            .ui([=](wxUpdateUIEvent& event) {
+              event.Check(pane_is_shown("FILES"));
+            })},
 
-                   {wxWindow::NewControlId(),
-                    _("&Projects"),
-                    wex::menu_item::CHECK,
-                    [=](wxCommandEvent& event) {
-                      pane_toggle("PROJECTS");
-                    },
-                    [=](wxUpdateUIEvent& event) {
-                      event.Check(pane_is_shown("PROJECTS"));
-                    }},
+         {wxWindow::NewControlId(),
+          _("&Projects"),
+          wex::menu_item::CHECK,
+          wex::menu_data()
+            .action([=](wxCommandEvent& event) {
+              pane_toggle("PROJECTS");
+            })
+            .ui([=](wxUpdateUIEvent& event) {
+              event.Check(pane_is_shown("PROJECTS"));
+            })},
 
-                   {ID_VIEW_DIRCTRL,
-                    _("&Explorer"),
-                    wex::menu_item::CHECK,
-                    [=](wxCommandEvent& event) {
-                      pane_toggle("DIRCTRL");
-                    },
-                    [=](wxUpdateUIEvent& event) {
-                      event.Check(pane_is_shown("DIRCTRL"));
-                    }},
+         {ID_VIEW_DIRCTRL,
+          _("&Explorer"),
+          wex::menu_item::CHECK,
+          wex::menu_data()
+            .action([=](wxCommandEvent& event) {
+              pane_toggle("DIRCTRL");
+            })
+            .ui([=](wxUpdateUIEvent& event) {
+              event.Check(pane_is_shown("DIRCTRL"));
+            })},
 
-                   {ID_VIEW_HISTORY,
-                    _("&History"),
-                    wex::menu_item::CHECK,
-                    [=](wxCommandEvent& event) {
-                      if (m_history == nullptr)
-                      {
-                        add_pane_history();
-                      }
-                      else
-                      {
-                        pane_toggle("HISTORY");
-                      };
-                    },
-                    [=](wxUpdateUIEvent& event) {
-                      event.Check(
-                        m_history != nullptr && pane_is_shown("HISTORY"));
-                    }},
+         {ID_VIEW_HISTORY,
+          _("&History"),
+          wex::menu_item::CHECK,
+          wex::menu_data()
+            .action([=](wxCommandEvent& event) {
+              if (m_history == nullptr)
+              {
+                add_pane_history();
+              }
+              else
+              {
+                pane_toggle("HISTORY");
+              };
+            })
+            .ui([=](wxUpdateUIEvent& event) {
+              event.Check(m_history != nullptr && pane_is_shown("HISTORY"));
+            })},
 
-                   {wxWindow::NewControlId(),
-                    _("&Output"),
-                    wex::menu_item::CHECK,
-                    [=](wxCommandEvent& event) {
-                      pane_toggle("OUTPUT");
-                    },
-                    [=](wxUpdateUIEvent& event) {
-                      event.Check(pane_is_shown("OUTPUT"));
-                    }},
+         {wxWindow::NewControlId(),
+          _("&Output"),
+          wex::menu_item::CHECK,
+          wex::menu_data()
+            .action([=](wxCommandEvent& event) {
+              pane_toggle("OUTPUT");
+            })
+            .ui([=](wxUpdateUIEvent& event) {
+              event.Check(pane_is_shown("OUTPUT"));
+            })},
 
-                   {},
+         {},
 
-                   {wxWindow::NewControlId(),
-                    _("&Ascii Table"),
-                    "",
-                    "",
-                    [=](wxCommandEvent& event) {
-                      build_ascii_table(this);
-                    }}}),
-                _("&View")},
+         {wxWindow::NewControlId(),
+          _("&Ascii Table"),
+          wex::menu_data().action([=](wxCommandEvent& event) {
+            build_ascii_table(this);
+          })}}),
+      _("&View")},
 
-               {new wex::menu({{wxWindow::NewControlId(),
-                                wex::ellipsed(_("&Select")),
-                                "",
-                                "",
-                                [=](wxCommandEvent& event) {
-                                  if (wex::process::config_dialog() == wxID_OK)
-                                  {
-                                    pane_show("PROCESS");
-                                    m_process->execute();
-                                  };
-                                }},
+     {new wex::menu(
+        {{wxWindow::NewControlId(),
+          wex::ellipsed(_("&Select")),
+          wex::menu_data().action([=](wxCommandEvent& event) {
+            if (wex::process::config_dialog() == wxID_OK)
+            {
+              pane_show("PROCESS");
+              m_process->execute();
+            };
+          })},
 
-                               {},
+         {},
 
-                               {wxID_EXECUTE,
-                                "",
-                                "",
-                                "",
-                                [=](wxCommandEvent& event) {
-                                  pane_show("PROCESS");
-                                  m_process->execute();
-                                }},
+         {wxID_EXECUTE, "", wex::menu_data().action([=](wxCommandEvent& event) {
+            pane_show("PROCESS");
+            m_process->execute();
+          })},
 
-                               {wxID_STOP,
-                                "",
-                                "",
-                                "",
-                                [=](wxCommandEvent& event) {
-                                  m_process->stop();
-                                  pane_show("PROCESS", false);
-                                }}}),
-                _("&Process")},
+         {wxID_STOP, "", wex::menu_data().action([=](wxCommandEvent& event) {
+            m_process->stop();
+            pane_show("PROCESS", false);
+          })}}),
+      _("&Process")},
 
-               {new wex::menu(
-                  {{wxWindow::NewControlId(),
-                    wxGetStockLabel(wxID_NEW),
-                    std::string(),
-                    wxART_NEW,
-                    [=](wxCommandEvent& event) {
-                      const std::string text =
-                        wxString::Format("%s%d", _("project"), m_project_id++)
-                          .ToStdString();
-                      const wex::path fn(
-                        (!get_project_history().get_history_file().empty() ?
-                           get_project_history().get_history_file().get_path() :
-                           wex::config::dir()),
-                        text + ".prj");
-                      wxWindow* page = new wex::report::file(
-                        fn.string(),
-                        wex::window_data().parent(m_projects));
-                      ((wex::report::file*)page)->file_new(fn.string());
-                      // This file does yet exist, so do not give it a bitmap.
-                      m_projects->add_page(page, fn.string(), text, true);
-                      set_recent_project(fn.string());
-                      pane_show("PROJECTS");
-                    }},
+     {new wex::menu(
+        {{wxWindow::NewControlId(),
+          wxGetStockLabel(wxID_NEW),
+          wex::menu_data().art(wxART_NEW).action([=](wxCommandEvent& event) {
+            const std::string text =
+              wxString::Format("%s%d", _("project"), m_project_id++)
+                .ToStdString();
+            const wex::path fn(
+              (!get_project_history().get_history_file().empty() ?
+                 get_project_history().get_history_file().get_path() :
+                 wex::config::dir()),
+              text + ".prj");
+            wxWindow* page = new wex::report::file(
+              fn.string(),
+              wex::window_data().parent(m_projects));
+            ((wex::report::file*)page)->file_new(fn.string());
+            // This file does yet exist, so do not give it a bitmap.
+            m_projects->add_page(page, fn.string(), text, true);
+            set_recent_project(fn.string());
+            pane_show("PROJECTS");
+          })},
 
-                   {wxWindow::NewControlId(),
-                    wxGetStockLabel(wxID_OPEN),
-                    std::string(),
-                    wxART_FILE_OPEN,
-                    [=](wxCommandEvent& event) {
-                      wxFileDialog dlg(
-                        this,
-                        _("Select Projects"),
-                        (!get_project_history().get_history_file().empty() ?
-                           get_project_history().get_history_file().get_path() :
-                           wex::config::dir()),
-                        wxEmptyString,
-                        m_project_wildcard,
-                        wxFD_OPEN | wxFD_MULTIPLE);
-                      if (dlg.ShowModal() == wxID_CANCEL)
-                        return;
-                      const std::vector<wex::path> v(
+         {wxWindow::NewControlId(),
+          wxGetStockLabel(wxID_OPEN),
+          wex::menu_data()
+            .art(wxART_FILE_OPEN)
+            .action([=](wxCommandEvent& event) {
+              wxFileDialog dlg(
+                this,
+                _("Select Projects"),
+                (!get_project_history().get_history_file().empty() ?
+                   get_project_history().get_history_file().get_path() :
+                   wex::config::dir()),
+                wxEmptyString,
+                m_project_wildcard,
+                wxFD_OPEN | wxFD_MULTIPLE);
+              if (dlg.ShowModal() == wxID_CANCEL)
+                return;
+              const std::vector<wex::path> v(
 #ifdef __WXOSX__
-                        {dlg.GetPath().ToStdString()});
+                {dlg.GetPath().ToStdString()});
 #else
-                        wex::to_vector_path(dlg).get());
+                wex::to_vector_path(dlg).get());
 #endif
-                      wex::open_files(
-                        this,
-                        v,
-                        wex::stc_data().flags(wex::stc_data::window_t().set(
-                          wex::stc_data::WIN_IS_PROJECT)));
-                    }},
+              wex::open_files(
+                this,
+                v,
+                wex::stc_data().flags(wex::stc_data::window_t().set(
+                  wex::stc_data::WIN_IS_PROJECT)));
+            })},
 
-                   {wxWindow::NewControlId(),
-                    _("&Open as Text"),
-                    "",
-                    "",
-                    [=](wxCommandEvent& event) {
-                      if (auto* project = get_project(); project != nullptr)
-                      {
-                        if (
-                          wex::file_dialog(project).show_modal_if_changed() !=
-                          wxID_CANCEL)
-                        {
-                          open_file(project->get_filename());
-                        }
-                      };
-                    },
-                    [=](wxUpdateUIEvent& event) {
-                      event.Enable(
-                        get_project() != nullptr &&
-                        !get_project()->get_filename().empty());
-                    }},
+         {wxWindow::NewControlId(),
+          _("&Open as Text"),
+          wex::menu_data()
+            .action([=](wxCommandEvent& event) {
+              if (auto* project = get_project(); project != nullptr)
+              {
+                if (
+                  wex::file_dialog(project).show_modal_if_changed() !=
+                  wxID_CANCEL)
+                {
+                  open_file(project->get_filename());
+                }
+              };
+            })
+            .ui([=](wxUpdateUIEvent& event) {
+              event.Enable(
+                get_project() != nullptr &&
+                !get_project()->get_filename().empty());
+            })},
 
-                   {},
+         {},
 
-                   {wxWindow::NewControlId(),
-                    get_project_history(),
-                    [=](wxUpdateUIEvent& event) {
-                      event.Enable(
-                        !get_project_history().get_history_file().empty());
-                    }},
+         {wxWindow::NewControlId(),
+          get_project_history(),
+          wex::menu_data().ui([=](wxUpdateUIEvent& event) {
+            event.Enable(!get_project_history().get_history_file().empty());
+          })},
 
-                   {wxWindow::NewControlId(),
-                    wxGetStockLabel(wxID_CLOSE),
-                    std::string(),
-                    wxART_CLOSE,
-                    [=](wxCommandEvent& event) {
-                      if (auto* project = get_project(); project != nullptr)
-                      {
-                        m_projects->delete_page(
-                          project->get_filename().string());
-                      };
-                    },
-                    [=](wxUpdateUIEvent& event) {
-                      event.Enable(
-                        get_project() != nullptr && get_project()->IsShown());
-                    }},
+         {wxWindow::NewControlId(),
+          wxGetStockLabel(wxID_CLOSE),
+          wex::menu_data()
+            .art(wxART_CLOSE)
+            .action([=](wxCommandEvent& event) {
+              if (auto* project = get_project(); project != nullptr)
+              {
+                m_projects->delete_page(project->get_filename().string());
+              };
+            })
+            .ui([=](wxUpdateUIEvent& event) {
+              event.Enable(
+                get_project() != nullptr && get_project()->IsShown());
+            })},
 
-                   {wex::report::ID_PROJECT_SAVE,
-                    wxGetStockLabel(wxID_SAVE),
-                    std::string(),
-                    wxART_FILE_SAVE},
+         {wex::report::ID_PROJECT_SAVE,
+          wxGetStockLabel(wxID_SAVE),
+          wex::menu_data().art(wxART_FILE_SAVE)},
 
-                   {wxWindow::NewControlId(),
-                    wxGetStockLabel(wxID_SAVEAS),
-                    std::string(),
-                    wxART_FILE_SAVE_AS,
-                    [=](wxCommandEvent& event) {
-                      if (auto* project = get_project(); project != nullptr)
-                      {
-                        wex::file_dialog dlg(
-                          project,
-                          wex::window_data()
-                            .style(wxFD_SAVE)
-                            .parent(this)
-                            .title(_("Project Save As").ToStdString()),
-                          m_project_wildcard);
-                        if (dlg.ShowModal() == wxID_OK)
-                        {
-                          project->file_save(dlg.GetPath().ToStdString());
-                          m_projects->set_page_text(
-                            m_projects->key_by_page(project),
-                            project->get_filename().string(),
-                            project->get_filename().name());
-                        }
-                      };
-                    },
-                    [=](wxUpdateUIEvent& event) {
-                      event.Enable(
-                        get_project() != nullptr && get_project()->IsShown());
-                    }},
+         {wxWindow::NewControlId(),
+          wxGetStockLabel(wxID_SAVEAS),
+          wex::menu_data()
+            .art(wxART_FILE_SAVE_AS)
+            .action([=](wxCommandEvent& event) {
+              if (auto* project = get_project(); project != nullptr)
+              {
+                wex::file_dialog dlg(
+                  project,
+                  wex::window_data().style(wxFD_SAVE).parent(this).title(
+                    _("Project Save As").ToStdString()),
+                  m_project_wildcard);
+                if (dlg.ShowModal() == wxID_OK)
+                {
+                  project->file_save(dlg.GetPath().ToStdString());
+                  m_projects->set_page_text(
+                    m_projects->key_by_page(project),
+                    project->get_filename().string(),
+                    project->get_filename().name());
+                }
+              };
+            })
+            .ui([=](wxUpdateUIEvent& event) {
+              event.Enable(
+                get_project() != nullptr && get_project()->IsShown());
+            })},
 
-                   {},
+         {},
 
-                   {wxWindow::NewControlId(),
-                    _("&Auto Sort"),
-                    wex::menu_item::CHECK,
-                    [=](wxCommandEvent& event) {
-                      wex::config("list.SortSync")
-                        .set(!wex::config("list.SortSync").get(true));
-                    },
-                    [=](wxUpdateUIEvent& event) {
-                      event.Check(wex::config("list.SortSync").get(true));
-                    }}}),
-                _("&Project")},
+         {wxWindow::NewControlId(),
+          _("&Auto Sort"),
+          wex::menu_item::CHECK,
+          wex::menu_data()
+            .action([=](wxCommandEvent& event) {
+              wex::config("list.SortSync")
+                .set(!wex::config("list.SortSync").get(true));
+            })
+            .ui([=](wxUpdateUIEvent& event) {
+              event.Check(wex::config("list.SortSync").get(true));
+            })}}),
+      _("&Project")},
 
-               {menuDebug, _("&Debug")},
+     {menuDebug, _("&Debug")},
 
-               {menuOptions, _("&Options")},
+     {menuOptions, _("&Options")},
 
-               {new wex::menu({{wxID_ABOUT,
-                                "",
-                                "",
-                                "",
-                                [=](wxCommandEvent& event) {
-                                  wxAboutDialogInfo info;
-                                  info.SetIcon(GetIcon());
-                                  info.SetVersion(
-                                    wex::get_version_info().get());
-                                  wxString description(
-                                    _("This program offers a portable text or "
-                                      "binary editor\n"
-                                      "with automatic syncing."));
+     {new wex::menu(
+        {{wxID_ABOUT, "", wex::menu_data().action([=](wxCommandEvent& event) {
+            wxAboutDialogInfo info;
+            info.SetIcon(GetIcon());
+            info.SetVersion(wex::get_version_info().get());
+            wxString description(_("This program offers a portable text or "
+                                   "binary editor\n"
+                                   "with automatic syncing."));
 #ifdef __WXMSW__
-                                  description +=
-                                    _(" All its config files are read\n"
-                                      "and saved in the same directory as "
-                                      "where the executable is.");
+            description += _(" All its config files are read\n"
+                             "and saved in the same directory as "
+                             "where the executable is.");
 #endif
-                                  info.SetDescription(description);
-                                  info.SetCopyright(
-                                    wex::get_version_info().copyright());
-                                  info.SetWebSite(
-                                    "http://sourceforge.net/projects/syncped/");
-                                  wxAboutBox(info, this);
-                                }},
+            info.SetDescription(description);
+            info.SetCopyright(wex::get_version_info().copyright());
+            info.SetWebSite("http://sourceforge.net/projects/syncped/");
+            wxAboutBox(info, this);
+          })},
 
-                               {wxID_HELP,
-                                "",
-                                "",
-                                "",
-                                [=](wxCommandEvent& event) {
-                                  wxLaunchDefaultBrowser(
-                                    "http://antonvw.github.io/syncped/v" +
-                                    wex::get_version_info().get() +
-                                    "/syncped.htm");
-                                }}}),
-                wxGetStockLabel(wxID_HELP)}}));
+         {wxID_HELP, "", wex::menu_data().action([=](wxCommandEvent& event) {
+            wxLaunchDefaultBrowser(
+              "http://antonvw.github.io/syncped/v" +
+              wex::get_version_info().get() + "/syncped.htm");
+          })}}),
+      wxGetStockLabel(wxID_HELP)}}));
 }
 
 void decorated_frame::add_pane_history()
@@ -806,21 +749,17 @@ editors::editors(const wex::window_data& data)
       split->append({{},
                      {wxWindow::NewControlId(),
                       _("Rearrange Vertically"),
-                      "",
-                      "",
-                      [=](wxCommandEvent&) {
+                      wex::menu_data().action([=](wxCommandEvent&) {
                         rearrange(wxLEFT);
-                      }},
+                      })},
                      {wxWindow::NewControlId(),
                       _("Rearrange Horizontally"),
-                      "",
-                      "",
-                      [=](wxCommandEvent&) {
+                      wex::menu_data().action([=](wxCommandEvent&) {
                         rearrange(wxTOP);
-                      }}});
+                      })}});
     }
 
-    menu.append({{split, _("Split"), std::string(), wxWindow::NewControlId()},
+    menu.append({{split, _("Split"), wxWindow::NewControlId()},
                  {},
                  {wxID_CLOSE},
                  {wex::ID_ALL_CLOSE, _("Close A&ll")}});

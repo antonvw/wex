@@ -24,89 +24,62 @@ wex::menu_item::menu_item(type_t type)
 }
 
 wex::menu_item::menu_item(
-  int                                   id,
-  const std::string&                    name,
-  const std::string&                    help,
-  const wxArtID&                        art,
-  std::function<void(wxCommandEvent&)>  action,
-  std::function<void(wxUpdateUIEvent&)> ui)
+  int                id,
+  const std::string& name,
+  const menu_data&   data)
   : m_id(id)
   , m_type(MENU)
+  , m_data(data)
   , m_name(name)
-  , m_help_text(help)
-  , m_artid(art)
 {
-  auto* frame = dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
-
-  if (action != nullptr)
-  {
-    frame->Bind(wxEVT_MENU, action, m_id);
-  }
-
-  if (ui != nullptr)
-  {
-    frame->Bind(wxEVT_UPDATE_UI, ui, m_id);
-  }
+  m_data.bind(m_id);
 }
 
 wex::menu_item::menu_item(
-  int                                   id,
-  const std::string&                    name,
-  type_t                                type,
-  std::function<void(wxCommandEvent&)>  action,
-  std::function<void(wxUpdateUIEvent&)> ui,
-  const std::string&                    help)
+  int                id,
+  const std::string& name,
+  type_t             type,
+  const menu_data&   data)
   : m_id(id)
   , m_type(type)
-  , m_help_text(help)
   , m_name(name)
+  , m_data(data)
 {
-  auto* frame = dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
-
-  if (action != nullptr)
-  {
-    frame->Bind(wxEVT_MENU, action, m_id);
-  }
-
-  if (ui != nullptr)
-  {
-    frame->Bind(wxEVT_UPDATE_UI, ui, m_id);
-  }
+  m_data.bind(m_id);
 }
 
 wex::menu_item::menu_item(
   wex::menu*         submenu,
   const std::string& name,
-  const std::string& help,
-  int                id)
+  int                id,
+  const menu_data&   data)
   : m_id(id)
   , m_type(SUBMENU)
   , m_name(name)
-  , m_help_text(help)
   , m_menu(submenu)
+  , m_data(data)
 {
+  m_data.bind(m_id);
 }
 
-wex::menu_item::menu_item(const wex::path& p, bool show_modal)
+wex::menu_item::menu_item(
+  const wex::path& p,
+  bool             show_modal,
+  const menu_data& data)
   : m_type(VCS)
   , m_path(p)
   , m_modal(show_modal)
 {
+  m_data.bind(m_id);
 }
 
-wex::menu_item::menu_item(
-  int                                   id,
-  file_history&                         history,
-  std::function<void(wxUpdateUIEvent&)> ui)
+wex::menu_item::menu_item(int id, file_history& history, const menu_data& data)
   : m_id(id)
   , m_type(HISTORY)
   , m_history(&history)
+  , m_data(data)
 {
-  if (auto* frame = dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
-      frame != nullptr && ui != nullptr)
-  {
-    frame->Bind(wxEVT_UPDATE_UI, ui, m_id);
-  }
+  m_data.bind(m_id);
 }
 
 wex::menu_item::menu_item(const managed_frame* frame)
@@ -120,7 +93,7 @@ void wex::menu_item::append(wex::menu* menu) const
   switch (m_type)
   {
     case CHECK:
-      menu->AppendCheckItem(m_id, m_name, m_help_text);
+      menu->AppendCheckItem(m_id, m_name, m_data.help_text());
       break;
 
     case HISTORY:
@@ -129,7 +102,7 @@ void wex::menu_item::append(wex::menu* menu) const
 
     case MENU:
     {
-      auto* item = new wxMenuItem(menu, m_id, m_name, m_help_text);
+      auto* item = new wxMenuItem(menu, m_id, m_name, m_data.help_text());
 
       if (const stockart art(m_id); art.get_bitmap().IsOk())
       {
@@ -137,10 +110,10 @@ void wex::menu_item::append(wex::menu* menu) const
           wxART_MENU,
           wxArtProvider::GetSizeHint(wxART_MENU, true)));
       }
-      else if (!m_artid.empty())
+      else if (!m_data.art().empty())
       {
         if (const wxBitmap bitmap(wxArtProvider::GetBitmap(
-              m_artid,
+              m_data.art(),
               wxART_MENU,
               wxArtProvider::GetSizeHint(wxART_MENU, true)));
             bitmap.IsOk())
@@ -158,19 +131,19 @@ void wex::menu_item::append(wex::menu* menu) const
       break;
 
     case RADIO:
-      menu->AppendRadioItem(m_id, m_name, m_help_text);
+      menu->AppendRadioItem(m_id, m_name, m_data.help_text());
       break;
 
     case SUBMENU:
       if (m_id == wxID_ANY)
       {
-        menu->AppendSubMenu(m_menu, m_name, m_help_text);
+        menu->AppendSubMenu(m_menu, m_name, m_data.help_text());
       }
       else
       {
         // This one is deprecated, but is necessary if
         // we have an explicit itemid.
-        menu->Append(m_id, m_name, m_menu, m_help_text);
+        menu->Append(m_id, m_name, m_menu, m_data.help_text());
       }
       break;
 

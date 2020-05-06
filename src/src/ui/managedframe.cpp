@@ -490,11 +490,9 @@ void wex::managed_frame::statusbar_clicked_right(const std::string& pane)
       PopupMenu(
         new wex::menu({{wxWindow::NewControlId(),
                         stc->is_shown_line_numbers() ? "&Hide" : "&Show",
-                        "",
-                        "",
-                        [=](wxCommandEvent&) {
+                        menu_data().action([=](wxCommandEvent&) {
                           stc->show_line_numbers(!stc->is_shown_line_numbers());
-                        }}}));
+                        })}}));
     }
   }
   else if (pane == "PaneLexer" || pane == "PaneTheme")
