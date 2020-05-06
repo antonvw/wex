@@ -202,7 +202,7 @@ frame::frame()
         "&View"},
        {new wex::menu(
           {{id_server_config,
-            "Configuration",
+            wex::ellipsed("Configuration"),
             wex::menu_data()
               .help_text("Configures the server")
               .action([=](wxCommandEvent& event) {
@@ -255,7 +255,7 @@ frame::frame()
            {},
            {new wex::menu(
               {{id_remote_server_config,
-                "Configuration",
+                wex::ellipsed("Configuration"),
                 wex::menu_data()
                   .help_text("Configures the remote server")
                   .action([=](wxCommandEvent& event) {
