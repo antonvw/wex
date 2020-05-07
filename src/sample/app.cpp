@@ -156,7 +156,7 @@ frame::frame()
 
   pane_add(
     {{m_notebook,
-      wxAuiPaneInfo().CloseButton(false).CenterPane().MinSize(
+      wxAuiPaneInfo().Name("NOTEBOOK").CloseButton(false).CenterPane().MinSize(
         wxSize(250, 250))},
      {m_stc, wxAuiPaneInfo().Bottom().Caption("STC")},
      {m_shell,
