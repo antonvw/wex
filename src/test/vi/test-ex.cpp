@@ -5,11 +5,9 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/version.hpp>
 #include <vector>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
+
 #include "../test.h"
 #include <wex/ex.h>
 #include <wex/frd.h>
@@ -182,7 +180,10 @@ TEST_CASE("wex::ex")
     REQUIRE(ex->command(":'<,'>w test-ex.txt"));
     REQUIRE(ex->command(":'<,'><"));
     ex->command(":'<,'>>");
+
+#if BOOST_VERSION / 100 % 1000 != 72
     ex->command(":'<,'>!sort");
+#endif
 
     stc->GotoLine(2);
     stc->LineDownExtend();
@@ -200,10 +201,12 @@ TEST_CASE("wex::ex")
     REQUIRE(!ex->command(":so test-surce.txt"));
     stc->set_text("xx\nxx\nyy\nzz\n");
     REQUIRE(!ex->command(":so test-source-2.txt"));
-
     REQUIRE(ex->command(":d"));
+
+#if BOOST_VERSION / 100 % 1000 != 72
     REQUIRE(ex->command(":r !echo qwerty"));
     REQUIRE(stc->GetText().Contains("qwerty"));
+#endif
 #endif
   }
 

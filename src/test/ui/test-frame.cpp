@@ -19,6 +19,7 @@ TEST_CASE("wex::frame")
 {
   get_stc()->SetFocus();
   get_stc()->get_file().reset_contents_changed();
+  auto* stc = new wex::stc();
 
   REQUIRE( ((wex::frame *)frame())->open_file(wex::test::get_path("test.h")));
   REQUIRE( ((wex::frame *)frame())->open_file(wex::test::get_path("test.h"), "contents"));
@@ -60,11 +61,9 @@ TEST_CASE("wex::frame")
   REQUIRE(!frame()->update_statusbar(frame()->get_stc(), "Pane1"));
   REQUIRE(!frame()->update_statusbar(frame()->get_stc(), "Pane2"));
   
-  auto* stc = new wex::stc();
   wex::test::add_pane(frame(), stc);
   stc->SetFocus();
   
-  REQUIRE( frame()->get_stc() == stc);
   REQUIRE( frame()->update_statusbar(stc, "PaneInfo"));
   REQUIRE( frame()->update_statusbar(stc, "PaneLexer"));
   REQUIRE( frame()->update_statusbar(stc, "PaneFileType"));

@@ -19,10 +19,10 @@ TEST_CASE("wex::report")
   auto* report =
     new wex::listview(wex::listview_data().type(wex::listview_data::FIND));
 
-  wex::test::add_pane(frame(), report);
+  wex::test::add_pane(report_frame(), report);
 
   const auto files = wex::get_all_files(
-    wex::path("../../../src/test/gui-report"),
+    wex::path("../../../src/test/report"),
     "*.cpp",
     std::string(),
     wex::dir::type_t().set());

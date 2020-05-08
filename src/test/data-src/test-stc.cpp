@@ -11,8 +11,6 @@
 
 TEST_CASE("wex::stc_data")
 {
-  auto* stc = get_stc();
-
   SUBCASE("Default constructor")
   {
     REQUIRE(wex::stc_data().control().line() == 0);
@@ -45,11 +43,15 @@ TEST_CASE("wex::stc_data")
 
   SUBCASE("Constructor from stc")
   {
+    auto* stc = get_stc();
+    assert(stc != nullptr);
     REQUIRE(wex::stc_data(stc).event(true).event().pos_at_end());
   }
 
   SUBCASE("inject")
   {
+    auto* stc = get_stc();
+    assert(stc != nullptr);
     stc->set_text("line 1\nline 2\nline 3\n");
     REQUIRE(
       wex::stc_data(stc).control(wex::control_data().line(1).col(5)).inject());
