@@ -57,7 +57,7 @@ namespace wex
     /// with spaces is not done.
     const lexer& l = lexer());
 
-  /// Tries to autocomplete filename,
+  /// Tries to auto_complete filename,
   /// the result is stored in the tuple.
   std::tuple<
     /// true if a match was found
@@ -68,14 +68,14 @@ namespace wex
     const std::string,
     /// vector containing completed file name(s)
     const std::vector<std::string>>
-  autocomplete_filename(
+  auto_complete_filename(
     /// text containing start of a filename
     const std::string& text);
 
-  /// Tries to autocomplete text from a vector of strings,
+  /// Tries to auto_complete text from a vector of strings,
   /// result stored in the string.
   /// Returns true if a unique match was found.
-  bool autocomplete_text(
+  bool auto_complete_text(
     /// text to be completed
     const std::string& text,
     /// vector with completed text
@@ -117,7 +117,7 @@ namespace wex
   void combobox_from_list(wxComboBox* cb, const std::list<std::string>& text);
 
   /// Compares the files, using comparator set in the config.
-  bool comparefile(const path& file1, const path& file2);
+  bool compare_file(const path& file1, const path& file2);
 
   /// Adds an ellipses after text.
   /// The control, if present is postfixed, after a tab character (for accels).

@@ -8,7 +8,7 @@
 #pragma once
 
 #include <vector>
-#include <wex/autocomplete.h>
+#include <wex/auto-complete.h>
 #include <wex/hexmode.h>
 #include <wex/item.h>
 #include <wex/link.h>
@@ -59,8 +59,11 @@ namespace wex
     /// so you can use that id in frame::on_command_item_dialog.
     static int config_dialog(const window_data& data = window_data());
 
+    /// Returns config items.
+    static auto* config_items() { return m_config_items; };
+
     /// Returns the config dialog.
-    static item_dialog* get_config_dialog() { return m_config_dialog; };
+    static auto* get_config_dialog() { return m_config_dialog; };
 
     /// Saves static data in config.
     /// Invoked once during app::on_exit.
@@ -125,7 +128,7 @@ namespace wex
     /// Appends text (to end).
     void append_text(const std::string& text);
 
-    /// Returns autocomplete.
+    /// Returns auto_complete.
     auto& auto_complete() { return m_auto_complete; };
 
     /// After pressing enter, starts new line at same place
@@ -187,6 +190,9 @@ namespace wex
     /// The search flags are taken from frd.
     /// If text is selected, it also sets the find string.
     const std::string get_find_string();
+
+    /// Returns current line fold level.
+    int get_fold_level();
 
     /// Returns hex mode component.
     const auto& get_hexmode() const { return m_hexmode; };
@@ -388,8 +394,8 @@ namespace wex
 
     managed_frame* m_frame;
 
-    autocomplete m_auto_complete;
-    hexmode      m_hexmode;
+    class auto_complete m_auto_complete;
+    hexmode             m_hexmode;
     // We use a separate lexer here as well
     // (though stc_file offers one), as you can manually override
     // the lexer.

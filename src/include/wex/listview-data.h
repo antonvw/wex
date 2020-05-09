@@ -2,7 +2,7 @@
 // Name:      listview-data.h
 // Purpose:   Declaration of wex::listview_data
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -14,19 +14,20 @@ namespace wex
   class lexer;
   class listview;
 
-  /// Offers user data to be used by listview. 
+  /// Offers user data to be used by listview.
   class listview_data
   {
   public:
     /// The supported lists.
     enum type_t
     {
-      FOLDER,   ///< a list containing folders only
-      FIND,     ///< a list to show find results
-      HISTORY,  ///< a list to show history items
-      KEYWORD,  ///< a list to show keywords
-      FILE,     ///< a list associated with a file
-      NONE,     ///< a list without predefined columns
+      FOLDER,  ///< a list containing folders only
+      FIND,    ///< a list to show find results
+      HISTORY, ///< a list to show history items
+      KEYWORD, ///< a list to show keywords
+      FILE,    ///< a list associated with a file
+      TSV,     ///< a list with tab separated values for columns
+      NONE,    ///< a list without predefined columns
     };
 
     /// Which images to use.
@@ -44,9 +45,9 @@ namespace wex
       MENU_REPORT_FIND = 0, ///< for adding find and replace in files
       MENU_TOOL        = 1, ///< for adding tool menu
     };
-    
+
     typedef std::bitset<2> menu_t;
-    
+
     /// Default constructor.
     listview_data(listview* lv = nullptr);
 
@@ -63,37 +64,40 @@ namespace wex
     listview_data& operator=(const listview_data& r);
 
     /// Returns control data.
-    const auto& control() const {return m_data;};
+    const auto& control() const { return m_data; };
 
     /// Sets control data.
-    listview_data& control(control_data& data) {m_data = data; return *this;};
-    
+    listview_data& control(control_data& data)
+    {
+      m_data = data;
+      return *this;
+    };
+
     /// Returns image type.
-    const auto& image() const {return m_image_type;};
+    const auto& image() const { return m_image_type; };
 
     /// Sets image type.
     listview_data& image(image_t type);
 
-    /// injects data.  
+    /// injects data.
     bool inject();
 
     /// Returns lexer.
-    const auto& lexer() const {return m_lexer;};
+    const auto& lexer() const { return m_lexer; };
 
     /// Sets lexer.
     listview_data& lexer(const wex::lexer* lexer);
 
     /// Returns menu flags.
-    const auto& menu() const {return m_menu_flags;};
+    const auto& menu() const { return m_menu_flags; };
 
     /// Sets menu flags.
-    listview_data& menu(
-      menu_t flags, 
-      control_data::action_t action = control_data::SET);
+    listview_data&
+    menu(menu_t flags, control_data::action_t action = control_data::SET);
 
     /// Returns type.
-    const auto& type() const {return m_type;};
-    
+    const auto& type() const { return m_type; };
+
     /// Sets type.
     listview_data& type(type_t type);
 
@@ -101,24 +105,28 @@ namespace wex
     const std::string type_description() const;
 
     /// Returns window data.
-    const auto& window() const {return m_data.window();};
+    const auto& window() const { return m_data.window(); };
 
     /// Sets window data.
-    listview_data& window(window_data& data) {
-      m_data.window(data); return *this;};
-  private:  
+    listview_data& window(window_data& data)
+    {
+      m_data.window(data);
+      return *this;
+    };
+
+  private:
     void add_columns();
 
     control_data m_data;
 
     menu_t m_menu_flags = menu_t().set();
 
-    const wex::lexer* m_lexer = nullptr;
-    listview* m_listview = nullptr;
+    const wex::lexer* m_lexer    = nullptr;
+    listview*         m_listview = nullptr;
 
     image_t m_image_type = IMAGE_ART;
-    type_t m_type = NONE;
+    type_t  m_type       = NONE;
 
     bool m_initialized = false;
   };
-};
+}; // namespace wex

@@ -3407,6 +3407,11 @@ Copyright: (c) 2020, Anton van Wezenbeek
   <lexer name="au3"/>
   <lexer name="ave"/>
   <lexer name="avs"/>
+  <lexer display="awk" name="bash" extensions="*.awk">
+    <keywords set-0="csh">
+      BEGIN END FS function length printf sprintf substr
+    </keywords>
+  </lexer>
   <lexer name="baan"/>
   <lexer name="bash" extensions="*.bash;*.sh;Doxyfile"> 
     <keywords>    
@@ -3418,8 +3423,7 @@ Copyright: (c) 2020, Anton van Wezenbeek
       help history if in jobs kill mount rm select sleep 
       mapfile popd printf pushd pwd read readarray readonly return select
       set shift shopt source suspend test time times trap true type typeset
-      tail then time ulimit umount unalias unset until while
-      ulimit umask unalias unset until
+      tail then time ulimit umount unalias umask unset until while
     </keywords>
     <properties>
       <property name="fold"> 1 </property>

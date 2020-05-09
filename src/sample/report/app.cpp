@@ -17,7 +17,6 @@
 #include <wex/printing.h>
 #include <wex/report/dir.h>
 #include <wex/report/dirctrl.h>
-#include <wex/report/listview.h>
 #include <wex/toolbar.h>
 #include <wex/util.h>
 #include <wex/version.h>
@@ -59,17 +58,14 @@ frame::frame()
                      {this},
                      {}}),
       "&View"},
-     {new wex::menu({{wxID_ABOUT,
-                      "",
-                      "",
-                      "",
-                      [=](wxCommandEvent& event) {
-                        wxAboutDialogInfo info;
-                        info.SetIcon(GetIcon());
-                        info.SetVersion(wex::get_version_info().get());
-                        info.SetCopyright(wex::get_version_info().copyright());
-                        wxAboutBox(info);
-                      }}}),
+     {new wex::menu(
+        {{wxID_ABOUT, "", wex::menu_data().action([=](wxCommandEvent& event) {
+            wxAboutDialogInfo info;
+            info.SetIcon(GetIcon());
+            info.SetVersion(wex::get_version_info().get());
+            info.SetCopyright(wex::get_version_info().copyright());
+            wxAboutBox(info);
+          })}}),
       "&Help"}}));
 
   get_toolbar()->add_standard();

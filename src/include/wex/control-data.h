@@ -137,7 +137,7 @@ namespace wex
     const auto& window() const { return m_data; };
 
     /// Sets window data.
-    control_data& window(window_data& data)
+    control_data& window(const window_data& data)
     {
       m_data = data;
       return *this;

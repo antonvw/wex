@@ -36,7 +36,7 @@ namespace wex
       /// - you can specify a flag after name separated by comma
       /// - after description you can also add an implicit value,
       ///   otherwise true is assumed
-      /// default a switch toggles, this can be overriden by calling toggle
+      /// default a switch toggles, this can be overridden by calling toggle
       const std::vector<std::string>, 
       /// process callback if option is found
       std::function<void(bool on)>>> cmd_switches_t;

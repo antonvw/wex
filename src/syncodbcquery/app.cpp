@@ -84,11 +84,7 @@ frame::frame()
   SetIcon(wxICON(app));
 
   auto* menuQuery = new wex::menu(
-    {{wxID_EXECUTE,
-      "",
-      "",
-      "",
-      [=](wxCommandEvent& event) {
+    {{wxID_EXECUTE, "", wex::menu_data().action([=](wxCommandEvent& event) {
         m_stopped = false;
         if (m_query->GetText().empty())
           return;
@@ -138,11 +134,11 @@ frame::frame()
                           (float)milli.count() / (float)1000)
                           .ToStdString());
         m_running = false;
-      }},
-     {wxID_STOP, "", "", "", [=](wxCommandEvent& event) {
+      })},
+     {wxID_STOP, "", wex::menu_data().action([=](wxCommandEvent& event) {
         m_running = false;
         m_stopped = true;
-      }}});
+      })}});
 
 #ifndef __WXOSX__
   auto* menuOptions = new wex::menu({{wxID_PREFERENCES}});
@@ -152,20 +148,12 @@ frame::frame()
 
   SetMenuBar(new wex::menubar(
     {{new wex::menu(
-        {{wxID_NEW,
-          "",
-          "",
-          "",
-          [=](wxCommandEvent& event) {
+        {{wxID_NEW, "", wex::menu_data().action([=](wxCommandEvent& event) {
             m_query->get_file().file_new(wex::path());
             m_query->SetFocus();
             pane_show("QUERY");
-          }},
-         {wxID_OPEN,
-          "",
-          "",
-          "",
-          [=](wxCommandEvent& event) {
+          })},
+         {wxID_OPEN, "", wex::menu_data().action([=](wxCommandEvent& event) {
             wex::open_files_dialog(
               this,
               wxFD_OPEN | wxFD_CHANGE_DIR,
@@ -175,36 +163,34 @@ frame::frame()
                   wxFileSelectorDefaultWildcardStr,
                   wxFileSelectorDefaultWildcardStr),
               true);
-          }},
+          })},
          {idRecentfileMenu, file_history()},
          {},
          {wxID_SAVE,
           "",
-          "",
-          "",
-          [=](wxCommandEvent& event) {
-            m_query->get_file().file_save();
-          },
-          [=](wxUpdateUIEvent& event) {
-            event.Enable(m_query->GetModify());
-          }},
+          wex::menu_data()
+            .action([=](wxCommandEvent& event) {
+              m_query->get_file().file_save();
+            })
+            .ui([=](wxUpdateUIEvent& event) {
+              event.Enable(m_query->GetModify());
+            })},
          {wxID_SAVEAS,
           "",
-          "",
-          "",
-          [=](wxCommandEvent& event) {
-            wex::file_dialog dlg(
-              &m_query->get_file(),
-              wex::window_data().style(wxFD_SAVE).parent(this).title(
-                wxGetStockLabel(wxID_SAVEAS).ToStdString()));
-            if (dlg.ShowModal() == wxID_OK)
-            {
-              m_query->get_file().file_save(dlg.GetPath().ToStdString());
-            }
-          },
-          [=](wxUpdateUIEvent& event) {
-            event.Enable(m_query->GetLength() > 0);
-          }},
+          wex::menu_data()
+            .action([=](wxCommandEvent& event) {
+              wex::file_dialog dlg(
+                &m_query->get_file(),
+                wex::window_data().style(wxFD_SAVE).parent(this).title(
+                  wxGetStockLabel(wxID_SAVEAS).ToStdString()));
+              if (dlg.ShowModal() == wxID_OK)
+              {
+                m_query->get_file().file_save(dlg.GetPath().ToStdString());
+              }
+            })
+            .ui([=](wxUpdateUIEvent& event) {
+              event.Enable(m_query->GetLength() > 0);
+            })},
          {},
          {wex::menu_item::EXIT}}),
       wxGetStockLabel(wxID_FILE)},
@@ -213,71 +199,65 @@ frame::frame()
                      {idViewQuery,
                       _("Query"),
                       wex::menu_item::CHECK,
-                      [=](wxCommandEvent& event) {
-                        pane_toggle("QUERY");
-                      },
-                      [=](wxUpdateUIEvent& event) {
-                        event.Check(pane_is_shown("QUERY"));
-                      }},
+                      wex::menu_data()
+                        .action([=](wxCommandEvent& event) {
+                          pane_toggle("QUERY");
+                        })
+                        .ui([=](wxUpdateUIEvent& event) {
+                          event.Check(pane_is_shown("QUERY"));
+                        })},
                      {idViewResults,
                       _("Results"),
                       wex::menu_item::CHECK,
-                      [=](wxCommandEvent& event) {
-                        pane_toggle("RESULTS");
-                      },
-                      [=](wxUpdateUIEvent& event) {
-                        event.Check(pane_is_shown("RESULTS"));
-                      }},
+                      wex::menu_data()
+                        .action([=](wxCommandEvent& event) {
+                          pane_toggle("RESULTS");
+                        })
+                        .ui([=](wxUpdateUIEvent& event) {
+                          event.Check(pane_is_shown("RESULTS"));
+                        })},
                      {idViewStatistics,
                       _("Statistics"),
                       wex::menu_item::CHECK,
-                      [=](wxCommandEvent& event) {
-                        pane_toggle("STATISTICS");
-                      },
-                      [=](wxUpdateUIEvent& event) {
-                        event.Check(pane_is_shown("STATISTICS"));
-                      }}}),
+                      wex::menu_data()
+                        .action([=](wxCommandEvent& event) {
+                          pane_toggle("STATISTICS");
+                        })
+                        .ui([=](wxUpdateUIEvent& event) {
+                          event.Check(pane_is_shown("STATISTICS"));
+                        })}}),
       _("&View")},
      {new wex::menu({{idDatabaseOpen,
                       wex::ellipsed(_("&Open")),
-                      "",
-                      "",
-                      [=](wxCommandEvent& event) {
+                      wex::menu_data().action([=](wxCommandEvent& event) {
                         if (m_otl.logon())
                         {
                           m_shell->set_prompt(m_otl.datasource() + ">");
                         }
-                      }},
+                      })},
                      {idDatabaseClose,
                       _("&Close"),
-                      "",
-                      "",
-                      [=](wxCommandEvent& event) {
+                      wex::menu_data().action([=](wxCommandEvent& event) {
                         if (m_otl.logoff())
                         {
                           m_shell->set_prompt(">");
                         }
-                      }}}),
+                      })}}),
       _("&Connection")},
      {menuQuery, _("&Query")},
 #ifndef __WXOSX__
      {menuOptions, _("&Options")},
 #endif
-     {new wex::menu({{wxID_ABOUT,
-                      "",
-                      "",
-                      "",
-                      [=](wxCommandEvent& event) {
-                        wxAboutDialogInfo info;
-                        info.SetIcon(GetIcon());
-                        info.SetDescription(
-                          _("This program offers a general ODBC query."));
-                        info.SetVersion(wex::get_version_info().get());
-                        info.SetCopyright(wex::get_version_info().copyright());
-                        info.AddDeveloper(
-                          "otl:" + wex::otl::get_version_info().get());
-                        wxAboutBox(info);
-                      }}}),
+     {new wex::menu(
+        {{wxID_ABOUT, "", wex::menu_data().action([=](wxCommandEvent& event) {
+            wxAboutDialogInfo info;
+            info.SetIcon(GetIcon());
+            info.SetDescription(_("This program offers a general ODBC query."));
+            info.SetVersion(wex::get_version_info().get());
+            info.SetCopyright(wex::get_version_info().copyright());
+            info.AddDeveloper("otl:" + wex::otl::get_version_info().get());
+            wxAboutBox(info);
+          })}}),
       wxGetStockLabel(wxID_HELP)}}));
 
   m_results->CreateGrid(0, 0);

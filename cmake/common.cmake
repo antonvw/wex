@@ -90,12 +90,14 @@ endfunction()
 macro(target_link_all)
   set (extra_macro_args ${ARGN})
   set (wxWidgets_LIBRARIES aui adv stc html core net base)
+  set (wex_LIBRARIES 
+    wex-report wex-common wex-data wex-lexer 
+    wex-stc wex-ui wex-vcs wex-vi wex-core wex-lexer wex-common wex-ui wex-data)
           
   if (WIN32)
     target_link_libraries(
       ${PROJECT_NAME}
-      wex-rep
-      wex
+      ${wex_LIBRARIES}
       ${wxWidgets_LIBRARIES} wxscintilla
       ${Boost_LIBRARIES}
       ${extra_macro_args}
@@ -103,8 +105,7 @@ macro(target_link_all)
   elseif (APPLE)
     target_link_libraries(
       ${PROJECT_NAME}
-      wex-rep
-      wex
+      ${wex_LIBRARIES}
       ${wxWidgets_LIBRARIES} 
       ${Boost_LIBRARIES}
       ${extra_macro_args}
@@ -114,21 +115,20 @@ macro(target_link_all)
   else ()
     target_link_libraries(
       ${PROJECT_NAME}
-      wex-rep
-      wex
+      ${wex_LIBRARIES}
       ${wxWidgets_LIBRARIES} 
       ${Boost_LIBRARIES}
       ${extra_macro_args}
       stdc++
       stdc++fs
+#      /usr/gnat/lib64/libstdc++.a
+#      /usr/gnat/lib64/libstdc++fs.a
       m
       )
   endif ()
 endmacro()  
 
 function(test_app)
-  file(GLOB SRCS "*.cpp" "../*.cpp")
-    
   add_executable(
     ${PROJECT_NAME} 
     ${SRCS})
@@ -189,7 +189,7 @@ list(APPEND wxTOOLKIT_INCLUDE_DIRS
   src/include 
   external/json/single_include 
   external/wxWidgets/include 
-  external/ctags/read 
+  external/ctags/libreadtags 
   external/easyloggingpp/src 
   external/pugixml/src)
 

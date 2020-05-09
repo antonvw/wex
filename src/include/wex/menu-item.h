@@ -8,8 +8,8 @@
 #pragma once
 
 #include <wex/filehistory.h>
+#include <wex/menu-data.h>
 #include <wex/path.h>
-#include <wx/artprov.h> // for wxArtID
 
 namespace wex
 {
@@ -76,14 +76,8 @@ namespace wex
       int id,
       /// menu name or text
       const std::string& name = std::string(),
-      /// menu help text
-      const std::string& help = std::string(),
-      /// menu artid
-      const wxArtID& art = std::string(),
-      /// callback for menu action
-      std::function<void(wxCommandEvent&)> action = nullptr,
-      /// callback for menu update action
-      std::function<void(wxUpdateUIEvent&)> ui = nullptr);
+      /// menu data
+      const menu_data& data = menu_data());
 
     /// Constructor for a checkable item.
     menu_item(
@@ -93,12 +87,8 @@ namespace wex
       const std::string& name,
       /// Constructor for a CHECK or RADIO item.
       type_t type,
-      /// callback for menu event action
-      std::function<void(wxCommandEvent&)> action = nullptr,
-      /// callback for menu update action
-      std::function<void(wxUpdateUIEvent&)> ui = nullptr,
-      /// menu help text
-      const std::string& help = std::string());
+      /// menu data
+      const menu_data& data = menu_data());
 
     /// Constructor for a SUBMENU item.
     menu_item(
@@ -106,10 +96,10 @@ namespace wex
       menu* submenu,
       /// menu name or text
       const std::string& name,
-      /// menu help text
-      const std::string& help = std::string(),
       /// menu item id
-      int id = wxID_ANY);
+      int id = wxID_ANY,
+      /// menu data
+      const menu_data& data = menu_data());
 
     /// Constructor for a VCS submenu item.
     menu_item(
@@ -117,7 +107,9 @@ namespace wex
       /// otherwise as menu items.
       const path& p,
       /// shows modal dialog if necessary
-      bool show_modal = true);
+      bool show_modal = true,
+      /// menu data
+      const menu_data& data = menu_data());
 
     /// Constructor for HISTORY menu item.
     menu_item(
@@ -125,8 +117,8 @@ namespace wex
       int id,
       /// object for maintaining / retrieving history
       file_history& history,
-      /// callback for menu update action
-      std::function<void(wxUpdateUIEvent&)> ui = nullptr);
+      /// menu data
+      const menu_data& data = menu_data());
 
     /// Constructor for PANES menu items.
     menu_item(
@@ -135,6 +127,9 @@ namespace wex
 
     /// Appends this item(s) to menu.
     void append(wex::menu* menu) const;
+
+    /// Returns data.
+    auto& data() const { return m_data; };
 
     /// Returns menu item id.
     auto id() const { return m_id; };
@@ -154,9 +149,9 @@ namespace wex
     wex::menu*           m_menu{nullptr};
     const bool           m_modal{false};
     const wex::path      m_path;
-    const int            m_id{-1};
+    const wxWindowID     m_id{wxID_ANY};
     const type_t         m_type{SEPARATOR};
-    const std::string    m_help_text, m_name;
-    const wxArtID        m_artid;
+    const std::string    m_name;
+    menu_data            m_data;
   };
 }; // namespace wex

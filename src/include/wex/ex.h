@@ -148,7 +148,7 @@ namespace wex
       std::function<bool(const std::string&, const std::string&)> cb);
 
     void info_message(const std::string& text, info_message_t type) const;
-
+    
     template <typename S, typename T>
     std::string report_container(const T & container) const;
 

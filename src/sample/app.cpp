@@ -32,8 +32,8 @@
 #include "app.xpm"
 #endif
 
-#include "../test/test-configitem.h"
-#include "../test/test-item.h"
+#include "../test/ui/test-configitem.h"
+#include "../test/ui/test-item.h"
 
 enum
 {
@@ -156,7 +156,7 @@ frame::frame()
 
   pane_add(
     {{m_notebook,
-      wxAuiPaneInfo().CloseButton(false).CenterPane().MinSize(
+      wxAuiPaneInfo().Name("NOTEBOOK").CloseButton(false).CenterPane().MinSize(
         wxSize(250, 250))},
      {m_stc, wxAuiPaneInfo().Bottom().Caption("STC")},
      {m_shell,

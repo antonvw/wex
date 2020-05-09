@@ -134,7 +134,11 @@ namespace wex
 
     /// Inserts item with provided columns.
     /// Returns false if inserting fails, or item is empty.
-    bool insert_item(const std::vector<std::string>& item);
+    bool insert_item(
+      /// the item
+      const std::vector<std::string>& item,
+      /// if index -1, appends item, otherwise inserts before index
+      long index = -1);
 
     /// Loads listview from list.
     bool load(const std::list<std::string>& l);
@@ -217,7 +221,7 @@ namespace wex
           false);
     };
 
-    const wxUniChar m_field_separator = '\t';
+    const char m_field_separator = '\t';
 
     const int m_image_height, m_image_width;
 

@@ -1,11 +1,9 @@
-file(GLOB SRCS 
-  "*.cpp"
-  "../../external/ctags/read/*.c"
-  "../../external/easyloggingpp/src/*.cc"
-  "../../external/pugixml/src/*.cpp")
-
-add_library(
-  wex 
-  ${SRCS})
-
-set_target_properties(wex PROPERTIES DEBUG_POSTFIX "d")
+add_subdirectory(core)
+add_subdirectory(common)
+add_subdirectory(data)
+add_subdirectory(lexer)
+add_subdirectory(report)
+add_subdirectory(stc)
+add_subdirectory(ui)
+add_subdirectory(vcs)
+add_subdirectory(vi)

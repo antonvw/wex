@@ -85,7 +85,7 @@ frame::frame(app* app)
         wex::path(get_project_history().get_history_file()),
         wex::stc_data().flags(
           wex::stc_data::window_t().set(wex::stc_data::WIN_IS_PROJECT)));
-      
+
       pane_maximize("PROJECTS");
     }
 
@@ -165,9 +165,7 @@ frame::frame(app* app)
         pane_toggle("DIRCTRL");
         cb->SetValue(pane_is_shown("DIRCTRL"));
         get_toolbar()->Realize();
-        if (
-          pane_is_shown("DIRCTRL") &&
-          pane_is_shown("FILES"))
+        if (pane_is_shown("DIRCTRL") && pane_is_shown("FILES"))
         {
           if (auto* editor = get_stc(); editor != nullptr)
           {
@@ -1125,7 +1123,7 @@ void frame::update_listviews()
 
   if (const auto* dlg = wex::stc::get_config_dialog(); dlg != nullptr)
   {
-    const auto& item(dlg->find(_("stc.Include directory")));
+    const auto& item(dlg->find(_("stc.link.Include directory")));
 
     if (auto* lv = (wex::listview*)item.window(); lv != nullptr)
     {

@@ -41,6 +41,9 @@ namespace wex
       OTHER
     };
 
+    /// Name values type for macros.
+    typedef std::map<std::string, std::string> name_values_t;
+
     /// static interface
 
     /// Returns the lexers object.
@@ -61,7 +64,7 @@ namespace wex
     /// Applies default style to functions for back and foreground colours.
     void apply_default_style(
       std::function<void(const std::string&)> back,
-      std::function<void(const std::string&)> fore = nullptr);
+      std::function<void(const std::string&)> fore = nullptr) const;
 
     /// Sets global styles (and colours and indicators)
     /// for current theme for specified component.
@@ -70,8 +73,9 @@ namespace wex
     /// Applies macro to text:
     /// if text is referring to a macro, text is replaced by the macro value.
     /// Otherwise the same text is returned.
-    const std::string
-    apply_macro(const std::string& text, const std::string& lexer = "global");
+    const std::string apply_macro(
+      const std::string& text,
+      const std::string& lexer = "global") const;
 
     /// Applies margin text style to stc line.
     /// If text is supplied also sets margin text.
@@ -86,23 +90,16 @@ namespace wex
       const std::string& text = std::string()) const;
 
     /// Clears the theme.
-    void clear_theme()
-    {
-      if (!m_theme.empty())
-      {
-        m_theme_previous = m_theme;
-        m_theme.clear();
-      }
-    };
+    void clear_theme();
 
     /// Finds a lexer specified by the (display scintilla) name.
-    const lexer find(const std::string& name) const;
+    const lexer& find(const std::string& name) const;
 
     /// Finds a lexer specified by a filename (fullname).
-    const lexer find_by_filename(const std::string& fullname) const;
+    const lexer& find_by_filename(const std::string& fullname) const;
 
     /// Finds a lexer if text starts with some special tokens.
-    const lexer find_by_text(const std::string& text) const;
+    const lexer& find_by_text(const std::string& text) const;
 
     /// Returns the default style.
     const style& get_default_style() const { return m_default_style; };
@@ -112,20 +109,17 @@ namespace wex
 
     /// Returns indicator from loaded indicators,
     /// based on the no of specified indicator.
-    const indicator get_indicator(const indicator& indicator) const;
+    const indicator& get_indicator(const indicator& indicator) const;
 
     /// Returns the lexers.
     const auto& get_lexers() const { return m_lexers; };
 
     /// Returns the macros for specified lexer.
-    const auto& get_macros(const std::string& lexer)
-    {
-      return m_macros[lexer];
-    };
+    const name_values_t& get_macros(const std::string& lexer) const;
 
     /// Returns marker from loaded markers,
     /// based on the no of specified marker.
-    const marker get_marker(const marker& marker) const;
+    const marker& get_marker(const marker& marker) const;
 
     /// Returns number of themes (should at least contain empty theme).
     auto get_themes_size() const { return m_theme_macros.size(); };
@@ -138,7 +132,7 @@ namespace wex
 
     /// Returns the keywords for the specified named set of keywords.
     /// Returns empty string if set does not exist.
-    const std::string keywords(const std::string& set) const;
+    const std::string& keywords(const std::string& set) const;
 
     /// Loads all lexers from document.
     /// Returns true if the document is loaded.
@@ -169,7 +163,7 @@ namespace wex
     const auto& theme() const { return m_theme; };
 
     /// Returns the theme macros for the current theme.
-    const auto& theme_macros() { return m_theme_macros[m_theme]; };
+    const name_values_t& theme_macros() const;
 
   private:
     lexers(const path& filename);
@@ -181,10 +175,10 @@ namespace wex
     void parse_node_theme(const pugi::xml_node& node);
     void parse_node_themes(const pugi::xml_node& node);
 
-    std::map<std::string, std::string> m_default_colours, m_keywords;
+    name_values_t m_default_colours, m_keywords;
 
-    std::map<std::string, std::map<std::string, std::string>> m_macros,
-      m_theme_colours, m_theme_macros;
+    std::map<std::string, name_values_t> m_macros, m_theme_colours,
+      m_theme_macros;
 
     std::set<indicator> m_indicators;
     std::set<marker>    m_markers;
