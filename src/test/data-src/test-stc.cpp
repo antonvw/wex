@@ -45,6 +45,7 @@ TEST_CASE("wex::stc_data")
   {
     auto* stc = get_stc();
     assert(stc != nullptr);
+    stc->DocumentEnd();
     REQUIRE(wex::stc_data(stc).event(true).event().pos_at_end());
   }
 

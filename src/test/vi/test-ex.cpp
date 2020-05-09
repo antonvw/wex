@@ -39,17 +39,25 @@ TEST_CASE("wex::ex")
     SUBCASE("head")
     {
       auto* stc = new wex::stc(wex::path("test-modeline.txt"));
-      wxSafeYield();
       wex::test::add_pane(frame(), stc);
-      REQUIRE(stc->get_lexer().scintilla_lexer() == "sql");
+
+      auto* timer = new wxTimer(frame());
+      timer->StartOnce(1000);
+      frame()->Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
+        REQUIRE(stc->get_lexer().scintilla_lexer() == "sql");
+      });
     }
 
     SUBCASE("tail")
     {
       auto* stc = new wex::stc(wex::path("test-modeline2.txt"));
-      wxSafeYield();
       wex::test::add_pane(frame(), stc);
-      REQUIRE(stc->get_lexer().scintilla_lexer() == "sql");
+
+      auto* timer = new wxTimer(frame());
+      timer->StartOnce(1000);
+      frame()->Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
+        REQUIRE(stc->get_lexer().scintilla_lexer() == "sql");
+      });
     }
   }
 

@@ -49,9 +49,9 @@ script:
   - make -j 4
   # - if [ $TRAVIS_OS_NAME != osx ]; then make lcov-prep; fi
   # ctest --timeout 120 -V ..
-  #- src/test/base/wex-test-base
+  - src/test/core/wex-test-core
   #- src/test/gui/wex-test-gui --tse=wex::process
-  #- src/test/gui-report/wex-test-gui-report
+  - src/test/report/wex-test-report
         
 after_success:
   # - if [ $TRAVIS_OS_NAME != osx ]; then make lcov; fi

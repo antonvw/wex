@@ -36,9 +36,11 @@ TEST_CASE("wex::vcs")
     REQUIRE(vcs.config_dialog(wex::window_data().button(wxAPPLY | wxCANCEL)));
 
 #ifndef __WXMSW__
+#if BOOST_VERSION / 100 % 1000 != 72
     REQUIRE(vcs.execute());
     REQUIRE(vcs.execute("status"));
     REQUIRE(!vcs.execute("xxx"));
+#endif
 
     REQUIRE(vcs.show_dialog(wex::window_data().button(wxAPPLY | wxCANCEL)));
 

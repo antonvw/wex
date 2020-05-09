@@ -10,7 +10,6 @@
 - allow checkout by showing other branches, and remove from menu
 
 # feature/tests
-- fix failing tests, and beautify all, 
 - reenable test on travis (first osx)
 - enable test on appveyor
 

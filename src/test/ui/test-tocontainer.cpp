@@ -28,16 +28,17 @@ TEST_CASE("wex::to_container")
   a.Add("c");
   a.Add("d");
 
-  wxFileDialog     dlg(nullptr);
-  wxGenericDirCtrl dir(nullptr);
+  wxFileDialog     dlg(frame());
+  wxGenericDirCtrl dir(frame());
+
   REQUIRE(wex::to_vector_string(dlg).get().empty());
-  REQUIRE(wex::to_vector_string(dir).get().empty());
+  REQUIRE(!wex::to_vector_string(dir).get().empty());
   REQUIRE(wex::to_vector_string(a).get().size() == 4);
   REQUIRE(wex::to_vector_string("test test test").get().size() == 3);
   REQUIRE(wex::to_vector_string("test\\ test test").get().size() == 2);
 
   REQUIRE(wex::to_list_string(dlg).get().empty());
-  REQUIRE(wex::to_list_string(dir).get().empty());
+  REQUIRE(!wex::to_list_string(dir).get().empty());
   REQUIRE(wex::to_list_string(a).get().size() == 4);
   REQUIRE(wex::to_list_string("test test test").get().size() == 3);
   REQUIRE(wex::to_container<std::list<std::string>>(cb, 5).get().size() == 1);

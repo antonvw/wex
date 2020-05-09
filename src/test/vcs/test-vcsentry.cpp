@@ -36,8 +36,10 @@ TEST_CASE("wex::vcs_entry")
 
     wex::vcs_entry entry(doc.document_element());
     REQUIRE(entry.name() == "git");
+#if BOOST_VERSION / 100 % 1000 != 72
     REQUIRE(!entry.log(wex::test::get_path("test.h"), "x"));
     REQUIRE(entry.log(wex::test::get_path("test.h"), "-1"));
+#endif
     REQUIRE(entry.get_blame().use());
 
     REQUIRE(entry.get_commands().size() == 2);
@@ -51,7 +53,7 @@ TEST_CASE("wex::vcs_entry")
     entry.show_output();
 
     wex::menu menu;
-    REQUIRE(entry.build_menu(0, &menu) == 2);
+    REQUIRE(entry.build_menu(5, &menu) == 2);
 
 #ifndef __WXMSW__
     // This should have no effect.
@@ -66,12 +68,12 @@ TEST_CASE("wex::vcs_entry")
     REQUIRE(entry.execute()); // executes just git, shows help
     REQUIRE(entry.get_stdout().find("usage: ") != std::string::npos);
     entry.show_output();
-#endif
 
     auto* other = new wex::vcs_entry(doc.document_element());
     REQUIRE(
       other->execute(std::string(), wex::lexer(), wex::process::EXEC_WAIT));
     other->show_output();
+#endif
 #endif
   }
 }
