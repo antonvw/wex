@@ -1,15 +1,15 @@
 component_depth: 3
 
 languages:
-name: cpp
+
+-name: cpp
   production:
     exclude:
     - /src/test/.*
+
   test:
     include:
     - /src/test/.*
 
-- script
-
-exclude:
-- /external/.*
+  exclude:
+    - /external/.*
