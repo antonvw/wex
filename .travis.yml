@@ -47,12 +47,6 @@ script:
   - mkdir build && pushd build
   - cmake -DCMAKE_CXX_COMPILER=${CXX} -DCMAKE_BUILD_TYPE=Coverage -DwexBUILD_TESTS=ON ..
   - make -j 4
-  # - if [ $TRAVIS_OS_NAME != osx ]; then make lcov-prep; fi
-  # ctest --timeout 120 -V ..
-  - src/test/core/wex-test-core
-  #- src/test/gui/wex-test-gui --tse=wex::process
-  - src/test/report/wex-test-report
-        
-after_success:
-  # - if [ $TRAVIS_OS_NAME != osx ]; then make lcov; fi
-  # - if [ $TRAVIS_OS_NAME != osx ]; then make lcov-coveralls; fi
+  - if [ $TRAVIS_OS_NAME = osx ]; then src/test/core/wex-test-core; fi
+  - if [ $TRAVIS_OS_NAME = osx ]; then src/test/ui/wex-test-ui -tse=wex::process; fi
+  - if [ $TRAVIS_OS_NAME = osx ]; then src/test/report/wex-test-report; fi
