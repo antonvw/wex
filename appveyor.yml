@@ -7,7 +7,7 @@ clone_depth: 250
 environment:
   matrix:
   - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-    BOOST: 71
+    BOOST: 73
     YEAR: 2019
 
 configuration: 

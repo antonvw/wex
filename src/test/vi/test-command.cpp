@@ -16,6 +16,18 @@ TEST_CASE("wex::ex_command")
   auto* stc = get_stc();
   stc->set_text("more text\notherline\nother line");
 
+  SUBCASE("constructor command")
+  {
+    wex::ex_command command("G");
+
+    REQUIRE(command.command() == "G");
+    REQUIRE(command.get_stc() == nullptr);
+    REQUIRE(command.type() == wex::ex_command::type_t::VI);
+
+    REQUIRE(!command.exec());
+    REQUIRE(stc->GetCurrentLine() == 0);
+  }
+
   SUBCASE("constructor stc")
   {
     wex::ex_command command(stc);
@@ -100,18 +112,26 @@ TEST_CASE("wex::ex_command")
       REQUIRE(command.command() == "wwww");
       REQUIRE(command.get_stc() == stc);
     }
-  }
 
-  SUBCASE("constructor command")
-  {
-    wex::ex_command command("G");
+    SUBCASE("erase")
+    {
+      command.set("xyz");
+      command.no_type();
+      command.erase(5);
+      REQUIRE(command.command() == "xyz");
+      command.erase(0);
+      REQUIRE(command.command() == "yz");
 
-    REQUIRE(command.command() == "G");
-    REQUIRE(command.get_stc() == nullptr);
-    REQUIRE(command.type() == wex::ex_command::type_t::VI);
+      command = wex::ex_command("/xyz");
+      REQUIRE(command.command() == "/xyz");
+      command.erase(0);
+      REQUIRE(command.command() == "/yz");
 
-    REQUIRE(!command.exec());
-    REQUIRE(stc->GetCurrentLine() == 0);
+      command = wex::ex_command("/0123456789");
+      REQUIRE(command.command() == "/0123456789");
+      command.erase(3, 4);
+      REQUIRE(command.command() == "/012789");
+    }
   }
 }
 

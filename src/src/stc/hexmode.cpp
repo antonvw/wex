@@ -90,8 +90,7 @@ void wex::hexmode::activate()
   m_stc->SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
   m_stc->BeginUndoAction();
 
-  const auto& buffer(m_stc->GetTextRaw());
-  set_text(std::string(buffer.data(), buffer.length()));
+  set_text(m_stc->get_text());
 
   lexers::get()->apply(m_stc);
 }

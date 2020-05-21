@@ -56,11 +56,8 @@ const std::string wex::align_text(
   const auto header_with_spaces =
     (header.empty()) ? std::string() : std::string(header.size(), ' ');
 
-  std::string in(lines);
-  std::string line(header);
-
   bool        at_begin = true;
-  std::string out;
+  std::string in(lines), line(header), out;
 
   while (!in.empty())
   {

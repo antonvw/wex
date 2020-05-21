@@ -10,7 +10,7 @@
 #include <list>
 #include <regex>
 #include <string>
-#include <wex/textctrl.h>
+#include <wex/textctrl-input.h>
 #include <wx/translation.h>
 
 class wxFindReplaceData;
@@ -21,7 +21,7 @@ namespace wex
   class find_replace_data
   {
     friend class find_textctrl;
-    friend class textctrl;
+    friend class textctrl_imp;
 
   public:
     /// Destructor, writes data to config.

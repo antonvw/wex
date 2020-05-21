@@ -1,125 +1,72 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      textctrl.cpp
-// Purpose:   Implementation of wex::textctrl_input class
+// Purpose:   Implementation of wex::textctrl class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/textctrl.h>
+#include <wex/ex.h>
 #include <wex/textctrl.h>
-#include <wex/config.h>
-#include <wex/frd.h>
-#include <wex/log.h>
 
-wex::textctrl_input::textctrl_input(ex_command::type_t type) 
-  : m_type(type)
-  , m_name([](ex_command::type_t type) {
-      switch (type)
-      {
-        case ex_command::type_t::CALC: 
-          return std::string("ex-cmd.calc");
+#include "textctrl-imp.h"
 
-        case ex_command::type_t::COMMAND: 
-          return std::string("ex-cmd.command");
-
-        case ex_command::type_t::EXEC: 
-          return std::string("ex-cmd.exec");
-
-        case ex_command::type_t::FIND: 
-          return find_replace_data::text_find();
-
-        case ex_command::type_t::FIND_MARGIN: 
-          return std::string("ex-cmd.margin");
-
-        case ex_command::type_t::REPLACE: 
-          return find_replace_data::text_replace_with();
-
-        default: return std::string("ex-cmd.other");
-      }}(type))
-  , m_values(config(m_name).get(std::list<std::string>{}))
-  , m_iterator(m_values.cbegin())
+wex::textctrl::textctrl(
+  managed_frame*     frame,
+  wxControl*         prefix,
+  const window_data& data)
+  : m_imp(new textctrl_imp(this, prefix, data))
+  , m_frame(frame)
 {
-  log::verbose("TCI") << m_name << "size:" << m_values.size();
 }
 
-wex::textctrl_input::~textctrl_input() 
+wex::textctrl::textctrl(
+  managed_frame*     frame,
+  const std::string& value,
+  const window_data& data)
+  : m_imp(new textctrl_imp(this, value, data))
+  , m_frame(frame)
 {
-  wex::config(m_name).set(m_values);
 }
 
-const std::string wex::textctrl_input::get() const 
+wex::textctrl::~textctrl()
 {
-  try
+  delete m_imp;
+}
+
+wxControl* wex::textctrl::control()
+{
+  return m_imp;
+}
+
+const std::string wex::textctrl::get_text() const
+{
+  return m_imp->get_text();
+}
+
+void wex::textctrl::select_all() const
+{
+  return m_imp->SelectAll();
+}
+
+bool wex::textctrl::set_ex(wex::ex* ex, const std::string& command)
+{
+  if (command.empty())
   {
-    return m_iterator != m_values.end() ? *m_iterator: std::string();
-  }
-  catch (std::exception& e)
-  {
-    log(e) << "TCI:" << m_name;
-    return std::string();
-  }
-}
-  
-void wex::textctrl_input::set(const std::string& value)
-{
-  assert(!value.empty());
-
-  m_values.remove(value);
-  m_values.push_front(value);
-  m_iterator = m_values.cbegin();
-  config(m_name).set(m_values);
-}
-
-bool wex::textctrl_input::set(int key, wxTextCtrl* tc) 
-{
-  if (m_values.empty()) return false;
-  
-  switch (const int page = 10; key)
-  {
-    case WXK_DOWN: if (m_iterator != m_values.cbegin()) m_iterator--; break;
-    case WXK_END: m_iterator = m_values.cend(); m_iterator--; break;
-    case WXK_HOME: m_iterator = m_values.cbegin(); break;
-    case WXK_UP: if (m_iterator != m_values.cend()) m_iterator++; break;
-    
-    case WXK_PAGEDOWN: 
-      if (std::distance(m_values.cbegin(), m_iterator) > page)
-        std::advance(m_iterator, -page); 
-      else
-        m_iterator = m_values.cbegin();
-      break;
-    case WXK_PAGEUP: 
-      if (std::distance(m_iterator, m_values.cend()) > page)
-        std::advance(m_iterator, page); 
-      else
-      {
-        m_iterator = m_values.cend();
-        m_iterator--;
-      }
-      break;
-    
-    default: return false;
+    return false;
   }
 
-  if (tc != nullptr)
-  {
-    tc->SetValue(get());
-    tc->SetInsertionPointEnd();
-  }
-  
-  return true;
+  m_ex = ex;
+
+  return m_imp->handle(command);
 }
 
-void wex::textctrl_input::set(const wxTextCtrl* tc) 
+bool wex::textctrl::set_ex(wex::ex* ex, char command)
 {
-  if (const auto v(tc->GetValue().ToStdString()); !v.empty())
-  {
-    set(v);
-  }
+  m_ex = ex;
+  return m_imp->handle(command);
 }
-  
-void wex::textctrl_input::set(const std::list < std::string > & values)
+
+void wex::textctrl::set_text(const std::string& text)
 {
-  m_values.assign(values.cbegin(), values.cend());
-  m_iterator = m_values.cbegin();
-  config(m_name).set(values);
+  m_imp->set_text(text);
 }

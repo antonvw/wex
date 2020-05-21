@@ -75,13 +75,13 @@ TEST_CASE("wex::ex")
   SUBCASE("input mode")
   {
     REQUIRE(ex->command(":a|added"));
-    REQUIRE(stc->GetText().find("added") != std::string::npos);
+    REQUIRE(stc->get_text().find("added") != std::string::npos);
 
     REQUIRE(ex->command(":i|inserted"));
-    REQUIRE(stc->GetText().find("inserted") != std::string::npos);
+    REQUIRE(stc->get_text().find("inserted") != std::string::npos);
 
     REQUIRE(ex->command(":c|changed"));
-    REQUIRE(stc->GetText().find("changed") != std::string::npos);
+    REQUIRE(stc->get_text().find("changed") != std::string::npos);
   }
 
   SUBCASE("is_active")
@@ -143,7 +143,7 @@ TEST_CASE("wex::ex")
     stc->set_text("123456789");
     REQUIRE(ex->command(":map :xx :%d"));
     REQUIRE(ex->command(":xx"));
-    REQUIRE(stc->GetText().empty());
+    REQUIRE(stc->get_text().empty());
     REQUIRE(ex->command(":unm xx"));
   }
 
@@ -151,12 +151,12 @@ TEST_CASE("wex::ex")
   {
     stc->set_text("xyz\n");
     REQUIRE(ex->command(":append|extra"));
-    REQUIRE(stc->GetText() == "xyz\nextra");
+    REQUIRE(stc->get_text() == "xyz\nextra");
     REQUIRE(ex->command(":insert|before\n"));
-    REQUIRE(stc->GetText() == "xyz\nbefore\nextra");
+    REQUIRE(stc->get_text() == "xyz\nbefore\nextra");
     stc->set_text("xyz\n");
     REQUIRE(ex->command(":c|new\n"));
-    REQUIRE(stc->GetText() == "new\n");
+    REQUIRE(stc->get_text() == "new\n");
   }
 
   SUBCASE("abbreviations")
@@ -213,7 +213,7 @@ TEST_CASE("wex::ex")
 
 #if BOOST_VERSION / 100 % 1000 != 72
     REQUIRE(ex->command(":r !echo qwerty"));
-    REQUIRE(stc->GetText().Contains("qwerty"));
+    REQUIRE(stc->get_text().find("qwerty") != std::string::npos);
 #endif
 #endif
   }
@@ -252,27 +252,27 @@ TEST_CASE("wex::ex")
     stc->AppendText("line xxxx 6 added\n");
     stc->AppendText("line xxxx 7 added\n");
     REQUIRE(ex->command(":g/xxxx/s//yyyy"));
-    REQUIRE(stc->GetText().Contains("yyyy"));
+    REQUIRE(stc->get_text().find("yyyy") != std::string::npos);
     REQUIRE(ex->command(":g//"));
 
     // Test global move.
     stc->set_text("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
     REQUIRE(!ex->command(":g/d/m$")); // possible infinite loop
-    REQUIRE(stc->GetText().Contains("d"));
+    REQUIRE(stc->get_text().find("d") != std::string::npos);
   }
 
   SUBCASE("substitute")
   {
     stc->set_text("we have ccccc yyyy zzzz");
     REQUIRE(ex->command(":%s/ccccc/ddd"));
-    REQUIRE(stc->GetText() == "we have ddd yyyy zzzz");
+    REQUIRE(stc->get_text() == "we have ddd yyyy zzzz");
     stc->set_text("we have xxxx yyyy zzzz");
     ex->reset_search_flags();
     REQUIRE(ex->command(":%s/(x+) *(y+)/\\\\2 \\\\1"));
-    REQUIRE(stc->GetText() == "we have yyyy xxxx zzzz");
+    REQUIRE(stc->get_text() == "we have yyyy xxxx zzzz");
     stc->set_text("we have xxxx 'zzzz'");
     REQUIRE(ex->command(":%s/'//g"));
-    REQUIRE(stc->GetText() == "we have xxxx zzzz");
+    REQUIRE(stc->get_text() == "we have xxxx zzzz");
     REQUIRE(!ex->command(":.s/x*//g"));
     REQUIRE(!ex->command(":.s/ *//g"));
   }

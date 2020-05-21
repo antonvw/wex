@@ -46,7 +46,6 @@ wex::stc::stc(const path& p, const stc_data& data)
   , m_auto_complete(this)
   , m_vi(this)
   , m_file(this, data.window().name())
-  , m_link(this)
   , m_hexmode(hexmode(this))
   , m_frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
   , m_lexer(this)
@@ -55,12 +54,6 @@ wex::stc::stc(const path& p, const stc_data& data)
     config("AllowSync").get(true) && p != wex::ex::get_macros().get_filename())
   {
     sync();
-  }
-
-  if (!lexers::get()->get_lexers().empty())
-  {
-    const item_vector& iv(m_config_items);
-    m_default_font = iv.find<wxFont>(_("stc.Default font"));
   }
 
 #ifdef __WXMSW__
@@ -373,11 +366,17 @@ int wex::stc::get_fold_level()
          wxSTC_FOLDLEVELBASE;
 }
 
-const std::string wex::stc::get_selected_text()
+const std::string wex::stc::get_selected_text() const
 {
-  const wxCharBuffer& b(GetSelectedTextRaw());
+  const wxCharBuffer& b(const_cast<stc*>(this)->GetSelectedTextRaw());
   return b.length() == 0 ? std::string() :
                            std::string(b.data(), b.length() - 1);
+}
+
+const std::string wex::stc::get_text() const
+{
+  const wxCharBuffer& b(const_cast<stc*>(this)->GetTextRaw());
+  return std::string(b.data(), b.length());
 }
 
 const std::string wex::stc::get_word_at_pos(int pos) const
@@ -458,8 +457,10 @@ bool wex::stc::link_open(link_t mode, std::string* filename)
 
   if (mode[LINK_OPEN_MIME])
   {
-    const path path(
-      m_link.get_path(text, control_data().line(link::LINE_OPEN_URL_AND_MIME)));
+    const path path(m_link->get_path(
+      text,
+      control_data().line(link::LINE_OPEN_URL_AND_MIME),
+      this));
 
     if (!path.string().empty())
     {
@@ -476,7 +477,7 @@ bool wex::stc::link_open(link_t mode, std::string* filename)
   {
     control_data data;
 
-    if (const wex::path path(m_link.get_path(text, data));
+    if (const wex::path path(m_link->get_path(text, data, this));
         !path.string().empty())
     {
       if (filename != nullptr)

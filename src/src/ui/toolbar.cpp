@@ -22,6 +22,7 @@
 #include <wex/menu.h>
 #include <wex/process.h>
 #include <wex/stc.h>
+#include <wex/textctrl.h>
 #include <wex/toolbar.h>
 #include <wex/util.h>
 
@@ -33,18 +34,15 @@ namespace wex
   /// Pressing key up and down browses through values from
   /// find_replace_data, and pressing enter sets value
   /// in find_replace_data.
-  class find_textctrl : public wxTextCtrl
+  class find_textctrl : public textctrl
   {
   public:
     /// Constructor. Fills the textctrl with value
     /// from find_replace_data.
-    find_textctrl(frame* frame, const window_data& data);
+    find_textctrl(managed_frame* frame, const window_data& data);
 
     /// Finds current value in control.
     void find(bool find_next = true, bool restore_position = false);
-
-  private:
-    frame* m_frame;
   };
 
   void find_popup_menu(
@@ -187,7 +185,7 @@ void wex::toolbar::add_find(bool realize)
 {
   auto* findCtrl = new find_textctrl(m_frame, window_data().parent(this));
 
-  AddControl(findCtrl);
+  AddControl(findCtrl->control());
 
   add_tool(
     wxID_DOWN,
@@ -253,14 +251,14 @@ void wex::toolbar::add_find(bool realize)
   Bind(
     wxEVT_UPDATE_UI,
     [=](wxUpdateUIEvent& event) {
-      event.Enable(!findCtrl->GetValue().empty());
+      event.Enable(!findCtrl->get_text().empty());
     },
     wxID_DOWN);
 
   Bind(
     wxEVT_UPDATE_UI,
     [=](wxUpdateUIEvent& event) {
-      event.Enable(!findCtrl->GetValue().empty());
+      event.Enable(!findCtrl->get_text().empty());
     },
     wxID_UP);
 }
@@ -363,43 +361,37 @@ bool wex::toolbar::set_checkbox(const std::string& name, bool show) const
 
 // Implementation of support class.
 
-wex::find_textctrl::find_textctrl(frame* frame, const window_data& data)
-  : wxTextCtrl(
-      data.parent(),
-      data.id(),
-      find_replace_data::get()->get_find_string(),
-      data.pos(),
-      data.size(),
-      data.style() | wxTE_PROCESS_ENTER)
-  , m_frame(frame)
+wex::find_textctrl::find_textctrl(managed_frame* mng, const window_data& data)
+  : textctrl(mng, find_replace_data::get()->get_find_string(), data)
 {
-  accelerators({{wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE, nullptr}}).set(this);
+  accelerators({{wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE, nullptr}})
+    .set(control());
 
-  Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
+  control()->Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
     if (!find_replace_data::get()->m_find_strings.set(event.GetKeyCode(), this))
     {
       event.Skip();
     }
   });
 
-  Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
-    if (auto* stc = m_frame->get_stc(); stc != nullptr)
+  control()->Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
+    if (auto* stc = frame()->get_stc(); stc != nullptr)
     {
       stc->position_save();
     }
     event.Skip();
   });
 
-  Bind(wxEVT_TEXT, [=](wxCommandEvent& event) {
+  control()->Bind(wxEVT_TEXT, [=](wxCommandEvent& event) {
     event.Skip();
     find(true, true);
   });
 
-  Bind(wxEVT_TEXT_ENTER, [=](wxCommandEvent& event) {
+  control()->Bind(wxEVT_TEXT_ENTER, [=](wxCommandEvent& event) {
     event.Skip();
-    if (!GetValue().empty())
+    if (!get_text().empty())
     {
-      find_replace_data::get()->set_find_string(GetValue());
+      find_replace_data::get()->set_find_string(get_text());
       find();
     }
   });
@@ -407,23 +399,21 @@ wex::find_textctrl::find_textctrl(frame* frame, const window_data& data)
 
 void wex::find_textctrl::find(bool find_next, bool restore_position)
 {
-  // We cannot use events here, as OnFindDialog in stc uses frd data,
-  // whereas we need the GetValue here.
-  if (auto* stc = m_frame->get_stc(); stc != nullptr)
+  if (auto* stc = frame()->get_stc(); stc != nullptr)
   {
     if (restore_position)
     {
       stc->position_restore();
     }
 
-    stc->find_next(GetValue(), -1, find_next);
+    stc->find_next(get_text(), -1, find_next);
   }
-  else if (auto* grid = m_frame->get_grid(); grid != nullptr)
+  else if (auto* grid = frame()->get_grid(); grid != nullptr)
   {
-    grid->find_next(GetValue(), find_next);
+    grid->find_next(get_text(), find_next);
   }
-  else if (auto* lv = m_frame->get_listview(); lv != nullptr)
+  else if (auto* lv = frame()->get_listview(); lv != nullptr)
   {
-    lv->find_next(GetValue(), find_next);
+    lv->find_next(get_text(), find_next);
   }
 }

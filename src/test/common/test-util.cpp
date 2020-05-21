@@ -446,13 +446,13 @@ TEST_CASE("wex" * doctest::may_fail())
     REQUIRE(get_stc()->get_vi().mode().visual());
 
     REQUIRE(wex::sort_selection(get_stc(), 0, 3, 5));
-    REQUIRE(wex::trim(get_stc()->GetText()) == wex::trim(sorted));
+    REQUIRE(wex::trim(get_stc()->get_text()) == wex::trim(sorted));
     REQUIRE(wex::sort_selection(
       get_stc(),
       wex::string_sort_t().set(wex::STRING_SORT_DESCENDING),
       3,
       5));
-    REQUIRE(get_stc()->GetText() != sorted);
+    REQUIRE(get_stc()->get_text() != sorted);
   }
 
   SUBCASE("translate")

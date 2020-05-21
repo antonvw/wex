@@ -58,7 +58,7 @@ TEST_CASE("wex::address")
   SUBCASE("append")
   {
     REQUIRE(address.append("appended text"));
-    REQUIRE(stc->GetText().Contains("appended text"));
+    REQUIRE(stc->get_text().find("appended text") != std::string::npos);
   }
 
   SUBCASE("flags")
@@ -68,13 +68,11 @@ TEST_CASE("wex::address")
     REQUIRE(!address.flags_supported("x"));
   }
 
-  SUBCASE("get, get_line")
+  SUBCASE("get_line")
   {
     REQUIRE(wex::address(ex).get_line() == 0);
     REQUIRE(wex::address(ex, "-1").get_line() == 1);
-    REQUIRE(wex::address(ex, "-1").get() == "-1");
     REQUIRE(wex::address(ex, "1").get_line() == 1);
-    REQUIRE(wex::address(ex, "1").get() == "1");
     REQUIRE(wex::address(ex, "100").get_line() == lines);
 
     wex::address address2(ex, "'a");
@@ -86,7 +84,7 @@ TEST_CASE("wex::address")
   SUBCASE("insert")
   {
     REQUIRE(address.insert("inserted text"));
-    REQUIRE(stc->GetText().Contains("inserted text"));
+    REQUIRE(stc->get_text().find("inserted text") != std::string::npos);
   }
 
   SUBCASE("marker_add") { REQUIRE(address.marker_add('x')); }
@@ -102,7 +100,7 @@ TEST_CASE("wex::address")
   {
     ex->get_macros().set_register('z', "zzzzz");
     REQUIRE(address.put('z'));
-    REQUIRE(stc->GetText().Contains("zzzz"));
+    REQUIRE(stc->get_text().find("zzzz") != std::string::npos);
   }
 
   SUBCASE("read")

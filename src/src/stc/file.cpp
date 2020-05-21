@@ -149,8 +149,7 @@ void wex::stc_file::do_file_save(bool save_as)
 #ifdef USE_THREAD
     std::thread t([&] {
 #endif
-      if (const auto& buffer(m_stc->GetTextRaw());
-          write(buffer.data(), buffer.length()))
+      if (write(m_stc->get_text()))
       {
         FILE_POST(save_as ? FILE_SAVE_AS : FILE_SAVE);
       }

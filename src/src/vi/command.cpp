@@ -8,6 +8,7 @@
 #include <wex/ex-command.h>
 #include <wex/stc.h>
 #include <wex/vi.h>
+#include <wx/textentry.h>
 
 wex::ex_command::ex_command() {}
 
@@ -31,7 +32,8 @@ wex::ex_command& wex::ex_command::operator=(const ex_command& c)
 {
   if (this != &c)
   {
-    m_text = c.m_text;
+    m_has_type = c.m_has_type;
+    m_text     = c.m_text;
 
     if (c.m_stc != nullptr)
     {
@@ -53,20 +55,101 @@ bool wex::ex_command::append_exec(char c)
   return exec();
 }
 
+void wex::ex_command::erase(size_t pos, size_t len)
+{
+  if (pos >= m_text.size())
+  {
+    return;
+  }
+
+  if (pos + len >= m_text.size())
+  {
+    len = std::string::npos;
+  }
+
+  m_text.erase(pos + (m_has_type ? str().size() : 0), len);
+}
+
 bool wex::ex_command::exec() const
 {
   return m_stc != nullptr && m_stc->get_vi().command(command());
 }
 
+void wex::ex_command::handle(const wxTextEntry* te, int keycode)
+{
+  switch (const size_t pos = te->GetInsertionPoint(); keycode)
+  {
+    case wxID_CUT:
+      if (!te->GetStringSelection().empty())
+      {
+        long from, to;
+        te->GetSelection(&from, &to);
+        erase(from, to - from);
+      }
+      break;
+
+    case WXK_BACK:
+      if (!empty())
+      {
+        size_t len = 1;
+
+        if (!te->GetStringSelection().empty())
+        {
+          long from, to;
+          te->GetSelection(&from, &to);
+          len = to - from;
+        }
+
+        if (pos == te->GetLastPosition())
+        {
+          pop_back();
+        }
+        else
+        {
+          erase(pos - 1, len);
+        }
+      }
+      break;
+
+    default:
+      if (pos == te->GetLastPosition())
+      {
+        append(keycode);
+      }
+      else
+      {
+        insert(pos, keycode);
+      }
+  }
+}
+
+void wex::ex_command::insert(size_t pos, char c)
+{
+  if (m_has_type)
+  {
+    if (pos < m_text.size())
+    {
+      m_text.insert(str().size() + pos, 1, c);
+    }
+  }
+}
+
+void wex::ex_command::no_type()
+{
+  m_has_type = false;
+}
+
 wex::ex_command& wex::ex_command::reset(const std::string& text)
 {
-  m_text = m_text.substr(0, str().size()) + text;
+  m_text = m_has_type ? m_text.substr(0, str().size()) + text : text;
+
   return *this;
 }
-  
+
 void wex::ex_command::restore(const ex_command& c)
 {
-  m_text = c.m_text;
+  m_has_type = c.m_has_type;
+  m_text     = c.m_text;
 
   if (c.m_stc != nullptr || c.m_stc_original != nullptr)
   {
@@ -76,14 +159,15 @@ void wex::ex_command::restore(const ex_command& c)
 
 wex::ex_command& wex::ex_command::set(const std::string& text)
 {
-  assert(!text.empty());
   m_text = text;
+
   return *this;
 }
 
 void wex::ex_command::set(const ex_command& c)
 {
-  m_text = c.m_text;
+  m_has_type = c.m_has_type;
+  m_text     = c.m_text;
 
   if (c.m_stc != nullptr || c.m_stc_original != nullptr)
   {
@@ -93,22 +177,29 @@ void wex::ex_command::set(const ex_command& c)
 
 std::string wex::ex_command::str() const
 {
-  switch (type())
+  if (!m_has_type)
   {
-    case type_t::NONE:
-      return std::string();
+    return m_text;
+  }
+  else
+  {
+    switch (type())
+    {
+      case type_t::NONE:
+        return std::string();
 
-    case type_t::CALC:
-      return m_text.substr(0, 2);
+      case type_t::CALC:
+        return m_text.substr(0, 2);
 
-    default:
-      return m_text.substr(0, 1);
+      default:
+        return m_text.substr(0, 1);
+    }
   }
 }
 
 wex::ex_command::type_t wex::ex_command::type() const
 {
-  if (m_text.empty())
+  if (m_text.empty() || !m_has_type)
   {
     return type_t::NONE;
   }

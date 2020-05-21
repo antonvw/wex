@@ -19,7 +19,6 @@
 #include <wex/filedlg.h>
 #include <wex/grid.h>
 #include <wex/itemdlg.h>
-#include <wex/lexers.h>
 #include <wex/menubar.h>
 #include <wex/toolbar.h>
 #include <wex/util.h>
@@ -538,11 +537,9 @@ frame::frame()
           m_clients.emplace_back(sock);
           log_connection(sock, true);
 
-          if (const auto& buffer = m_data->GetTextRaw(); buffer.length() > 0)
+          if (const auto& buffer = m_data->get_text(); !buffer.empty())
           {
-            write_data_to_socket(
-              std::string(buffer.data(), buffer.length() - 1),
-              sock);
+            write_data_to_socket(buffer, sock);
           }
 #if wxUSE_TASKBARICON
           update_taskbar();
@@ -563,11 +560,9 @@ frame::frame()
             m_stats.inc("Connections Remote");
             log_connection(sock, true);
             sock->SetNotify(wxSOCKET_LOST_FLAG | wxSOCKET_INPUT_FLAG);
-            if (const auto& buffer = m_data->GetTextRaw(); buffer.length() > 0)
+            if (const auto& buffer = m_data->get_text(); !buffer.empty())
             {
-              write_data_to_socket(
-                std::string(buffer.data(), buffer.length() - 1),
-                sock);
+              write_data_to_socket(buffer, sock);
             }
           }
           break;
@@ -621,10 +616,9 @@ frame::frame()
                   break;
 
                 case answer_t::FILE:
-                  if (const auto& b(m_data->GetTextRaw()); b.length() > 0)
+                  if (const auto& b(m_data->get_text()); !b.empty())
                   {
-                    const auto& data = std::string(b.data(), b.length() - 1);
-                    write_data_to_socket(data, sock);
+                    write_data_to_socket(b, sock);
                   }
                   break;
 
@@ -1148,10 +1142,8 @@ size_t frame::write_data_window_to_connections()
 {
     size_t written = 0;
 
-    if (const auto& b(m_data->GetTextRaw()); b.length() > 0)
+    if (const auto& buffer(m_data->get_text()); !buffer.empty())
     {
-      const auto& buffer = std::string(b.data(), b.length() - 1);
-
       for (auto& it : m_clients)
       {
         written += write_data_to_socket(buffer, it);

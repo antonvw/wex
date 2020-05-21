@@ -2,7 +2,7 @@
 // Name:      link.h
 // Purpose:   Declaration of class wex::link
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -21,7 +21,7 @@ namespace wex
   class link
   {
   public:
-    /// line number to be used for control_data 
+    /// line number to be used for control_data
     /// Afterwards line and col from data are filled in if possible.
     enum
     {
@@ -31,29 +31,33 @@ namespace wex
     };
 
     /// Default constructor.
-    link(stc* stc = nullptr);
+    link();
 
     /// Destructor.
-   ~link();
-    
+    ~link();
+
     /// Returns a path from text, using paths if necessary,
     /// returns empty path if no path could be found.
     const path get_path(
       /// text containing a path somewhere
       const std::string& text,
       /// control data to be filled in Line from data
-      control_data& data) const;
-    
+      control_data& data,
+      /// stc component
+      stc* stc = nullptr) const;
+
     /// Sets paths with info from config.
     /// If there is no config, paths will be empty.
     void set_from_config();
+
   private:
-    const path find_between(const std::string& text) const;
+    const path find_between(const std::string& text, stc* stc) const;
     const path find_filename(const std::string& text, control_data& data) const;
     const path find_url_or_mime(
-      const std::string& text, const control_data& data) const;
-    
+      const std::string&  text,
+      const control_data& data,
+      stc*                stc) const;
+
     std::unique_ptr<paths> m_paths;
-    stc* m_stc;
   };
-};
+}; // namespace wex

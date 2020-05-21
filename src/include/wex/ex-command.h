@@ -9,6 +9,8 @@
 
 #include <string>
 
+class wxTextEntry;
+
 namespace wex
 {
   class stc;
@@ -74,6 +76,9 @@ namespace wex
     /// Returns true if command text is empty.
     auto empty() const { return m_text.empty(); };
 
+    /// Erases element(s) at position from command text.
+    void erase(size_t pos, size_t len = 1);
+
     /// Executes the command on the stc component if available.
     bool exec() const;
 
@@ -82,6 +87,15 @@ namespace wex
 
     /// Returns stc component.
     auto* get_stc() const { return m_stc; };
+
+    /// Handles keycode from textntry component.
+    void handle(const wxTextEntry* te, int keycode);
+
+    /// Inserts char at pos.
+    void insert(size_t pos, char c);
+
+    /// Sets to no type.
+    void no_type();
 
     /// Removes last char of command text.
     void pop_back() { m_text.pop_back(); };
@@ -112,6 +126,8 @@ namespace wex
 
   private:
     std::string m_text;
+
+    bool m_has_type{true};
 
     wex::stc *m_stc{nullptr}, *m_stc_original{nullptr};
   };

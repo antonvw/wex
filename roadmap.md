@@ -1,16 +1,17 @@
-# feature/stc
-- improve align_text (see e.g. blame annotations)
-- add stc get_text, and use it instead of GetText (159 times)
+# update rfw FOR keywords
 
 # feature/blame
 - improve blame size calculation, now only uses size of first blame line,
   should be more, or all
+  improve align_text (see e.g. blame annotations)
   
 # feature/git
 - allow checkout by showing other branches, and remove from menu
 
+# use wxTextCompleter
+
 # feature/tests
-- reenable test on travis (first osx)
+- reenable ubuntu test on travis
 - enable test on appveyor
 
 # feature/c++20

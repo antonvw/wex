@@ -86,7 +86,7 @@ frame::frame()
   auto* menuQuery = new wex::menu(
     {{wxID_EXECUTE, "", wex::menu_data().action([=](wxCommandEvent& event) {
         m_stopped = false;
-        if (m_query->GetText().empty())
+        if (m_query->get_text().empty())
           return;
         if (m_results->IsShown())
         {
@@ -95,7 +95,7 @@ frame::frame()
         // Skip sql comments.
         std::regex  re("--.*$");
         std::string output = std::regex_replace(
-          m_query->GetText().ToStdString(),
+          m_query->get_text(),
           re,
           "",
           std::regex_constants::format_sed);

@@ -263,7 +263,7 @@ bool wex::addressrange::change(const std::string& text) const
     return false;
   }
 
-  m_ex->get_stc()->add_text(text);
+  m_stc->add_text(text);
 
   return true;
 }
@@ -309,7 +309,7 @@ bool wex::addressrange::copy(const wex::address& destination) const
   if (yank())
   {
     m_stc->GotoLine(dest_line - 1);
-    m_ex->get_stc()->add_text(m_ex->register_text());
+    m_stc->add_text(m_ex->register_text());
   }
 
   m_stc->EndUndoAction();
@@ -597,7 +597,7 @@ bool wex::addressrange::move(const address& destination) const
   if (erase())
   {
     m_stc->GotoLine(dest_line - 1);
-    m_ex->get_stc()->add_text(m_ex->register_text());
+    m_stc->add_text(m_ex->register_text());
   }
 
   m_stc->EndUndoAction();
@@ -685,7 +685,7 @@ bool wex::addressrange::print(const std::string& flags) const
   return true;
 }
 
-void wex::addressrange::set(address& begin, address& end, int lines)
+void wex::addressrange::set(address& begin, address& end, int lines) const
 {
   begin.set_line(m_stc->LineFromPosition(m_stc->GetCurrentPos()) + 1);
   end.set_line(begin.get_line() + lines - 1);

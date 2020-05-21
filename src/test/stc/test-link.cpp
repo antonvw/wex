@@ -5,10 +5,6 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include "../test.h"
 #include <wex/config.h>
 #include <wex/link.h>
@@ -54,14 +50,11 @@ TEST_CASE("wex::link")
 {
   auto* stc = get_stc();
 
-  SUBCASE("Default constructor") { link(wex::link(), "xxxxx"); }
-
-  SUBCASE("Constructor with stc")
+  SUBCASE("constructor")
   {
-    wex::link lnk(stc);
     wex::config(_("stc.link.Include directory"))
       .set(std::list<std::string>{{"/usr/bin"}});
-    lnk.set_from_config();
+    wex::link lnk;
 
     // Test empty, or illegal paths.
     link(lnk, "");
@@ -108,7 +101,6 @@ TEST_CASE("wex::link")
 
     // po file format
     link(lnk, "#: who:120", "/usr/bin/who", 120);
-    stc->get_lexer().set("po");
     link(lnk, "#: who:120", "/usr/bin/who", 120);
 
     link(lnk, "gcc", "/usr/bin/gcc");
@@ -119,7 +111,7 @@ TEST_CASE("wex::link")
 
   SUBCASE("http link")
   {
-    wex::link lnk(stc);
+    wex::link lnk;
     wex::config(_("stc.link.Include directory"))
       .set(std::list<std::string>{{"/usr/bin"}});
     lnk.set_from_config();
@@ -152,10 +144,10 @@ TEST_CASE("wex::link")
     stc->get_file().file_new("test.html");
     REQUIRE(
       lnk.get_path("www.wxwidgets.org", data).data() == "www.wxwidgets.org");
-    REQUIRE(lnk.get_path("xxx.wxwidgets.org", data) == "test.html");
-    REQUIRE(lnk.get_path("xx", data).data() == "test.html");
+    REQUIRE(lnk.get_path("xxx.wxwidgets.org", data, stc) == "test.html");
+    REQUIRE(lnk.get_path("xx", data, stc).data() == "test.html");
     data.line(-99);
-    REQUIRE(lnk.get_path("xx", data).empty());
+    REQUIRE(lnk.get_path("xx", data, stc).empty());
   }
 }
 #endif

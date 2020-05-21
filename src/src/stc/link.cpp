@@ -44,15 +44,14 @@ namespace wex
   };
 }; // namespace wex
 
-wex::link::link(stc* stc)
-  : m_stc(stc)
-  , m_paths(std::make_unique<paths>())
+wex::link::link()
+  : m_paths(std::make_unique<paths>())
 {
 }
 
 wex::link::~link() {}
 
-const wex::path wex::link::find_between(const std::string& text) const
+const wex::path wex::link::find_between(const std::string& text, stc* stc) const
 {
   if (text.empty())
   {
@@ -61,7 +60,7 @@ const wex::path wex::link::find_between(const std::string& text) const
 
   // Path in .po files.
   if (
-    m_stc != nullptr && m_stc->get_lexer().scintilla_lexer() == "po" &&
+    stc != nullptr && stc->get_lexer().scintilla_lexer() == "po" &&
     text.substr(0, 3) == "#: ")
   {
     return text.substr(3);
@@ -141,7 +140,8 @@ wex::link::find_filename(const std::string& text, control_data& data) const
 
 const wex::path wex::link::find_url_or_mime(
   const std::string&  text,
-  const control_data& data) const
+  const control_data& data,
+  stc*                stc) const
 {
   if (!text.empty())
   {
@@ -168,9 +168,9 @@ const wex::path wex::link::find_url_or_mime(
   }
 
   // previewable (MIME) file
-  if (m_stc != nullptr && m_stc->get_lexer().previewable())
+  if (stc != nullptr && stc->get_lexer().previewable())
   {
-    return m_stc->get_filename();
+    return stc->get_filename();
   }
   else
   {
@@ -180,14 +180,14 @@ const wex::path wex::link::find_url_or_mime(
 
 // text contains selected text, or current line
 const wex::path
-wex::link::get_path(const std::string& text, control_data& data) const
+wex::link::get_path(const std::string& text, control_data& data, stc* stc) const
 {
   // mime or url
   if (
     data.line() == LINE_OPEN_MIME || data.line() == LINE_OPEN_URL ||
     data.line() == LINE_OPEN_URL_AND_MIME)
   {
-    return find_url_or_mime(text, data);
+    return find_url_or_mime(text, data, stc);
   }
 
   // if text starts with file:[line[:col]]
@@ -197,7 +197,7 @@ wex::link::get_path(const std::string& text, control_data& data) const
   }
 
   // if we have something in between
-  const wex::path between(find_between(text));
+  const wex::path between(find_between(text, stc));
 
   // if between text now starts with file:line:no
   if (const path p(find_filename(between.string(), data)); !p.empty())
@@ -219,10 +219,9 @@ wex::link::get_path(const std::string& text, control_data& data) const
   else
   {
     if (
-      file.is_relative() && m_stc != nullptr &&
-      m_stc->get_filename().file_exists())
+      file.is_relative() && stc != nullptr && stc->get_filename().file_exists())
     {
-      if (wex::path path(m_stc->get_filename().get_path(), file.fullname());
+      if (wex::path path(stc->get_filename().get_path(), file.fullname());
           path.file_exists())
       {
         return path;

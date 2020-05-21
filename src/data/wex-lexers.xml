@@ -3992,7 +3992,7 @@ Copyright: (c) 2020, Anton van Wezenbeek
   <lexer name="rebol"/>
   <lexer name="registry"/>
   <lexer name="rfw" 
-    extensions="TCS*.txt;*.robot;__init__.*" 
+    extensions="*.robot" 
     edgemode="none"
     tabmode="use"
     tabwidth="8">

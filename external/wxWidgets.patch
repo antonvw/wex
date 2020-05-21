@@ -43,3 +43,18 @@ index c06a8cc5f0..1c6ddd2e10 100644
              src/png/intel/intel_init.c
              src/png/intel/filter_sse2_intrinsics.c
              ${PNG_EXTRA_SOURCES}
+index 2b8dbbe5db..dcc588adc6 100644
+--- a/build/cmake/toolkit.cmake
++++ b/build/cmake/toolkit.cmake
+@@ -80,7 +80,10 @@ if(WXGTK)
+         set(gtk_lib GTK2)
+     endif()
+ 
+-    find_package(${gtk_lib} REQUIRED)
++#    find_package(${gtk_lib} REQUIRED)
++    FIND_PACKAGE(PkgConfig REQUIRED)
++    PKG_CHECK_MODULES(GTK3 REQUIRED gtk+-3.0)
++
+     list(APPEND wxTOOLKIT_INCLUDE_DIRS ${${gtk_lib}_INCLUDE_DIRS})
+     list(APPEND wxTOOLKIT_LIBRARIES ${${gtk_lib}_LIBRARIES})
+     list(APPEND wxTOOLKIT_DEFINITIONS ${${gtk_lib}_DEFINITIONS})

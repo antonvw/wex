@@ -96,6 +96,9 @@ void wex::presentation::apply(stc* stc) const
           wxString(m_foreground_colour),
           wxString(m_background_colour));
         break;
+
+      default:
+        assert(0);
     }
   }
 }
@@ -113,9 +116,10 @@ bool wex::presentation::is_ok() const
              ((m_style >= 0 && m_style <= wxSTC_MARKER_MAX) ||
               (m_style >= wxSTC_MARK_CHARACTER &&
                m_style <= wxSTC_MARK_CHARACTER + 255));
+    default:
+      assert(0);
+      return false;
   }
-
-  return false;
 }
 
 const std::string wex::presentation::name() const
@@ -124,9 +128,12 @@ const std::string wex::presentation::name() const
   {
     case INDICATOR:
       return "indicator";
+
     case MARKER:
       return "marker";
-  }
 
-  return std::string();
+    default:
+      assert(0);
+      return std::string();
+  }
 }

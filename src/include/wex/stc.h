@@ -211,7 +211,10 @@ namespace wex
     auto get_margin_text_click() const { return m_margin_text_click; };
 
     /// Returns selected text as a string.
-    const std::string get_selected_text();
+    const std::string get_selected_text() const;
+
+    /// Returns text.
+    const std::string get_text() const;
 
     /// Returns vi component.
     const auto& get_vi() const { return m_vi; };
@@ -400,16 +403,14 @@ namespace wex
     // (though stc_file offers one), as you can manually override
     // the lexer.
     lexer    m_lexer;
-    link     m_link;
     stc_data m_data;
     stc_file m_file;
     vi       m_vi;
 
-    wxFont m_default_font;
-
     // All objects share the following:
     static inline item_dialog*       m_config_dialog = nullptr;
     static inline stc_entry_dialog*  m_entry_dialog  = nullptr;
+    static inline link*              m_link          = nullptr;
     static inline int                m_zoom          = -1;
     static inline std::vector<item>* m_config_items  = nullptr;
   };

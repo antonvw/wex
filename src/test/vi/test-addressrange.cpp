@@ -86,7 +86,7 @@ TEST_CASE("wex::addressrange")
   {
     stc->set_text("a\nb\nc\nd\ne\nf\ng\n");
     REQUIRE(wex::addressrange(ex, 4).change("changed"));
-    REQUIRE(stc->GetText().Contains("changed"));
+    REQUIRE(stc->get_text().find("changed") != std::string::npos);
   }
 
   SUBCASE("copy")
@@ -166,7 +166,7 @@ TEST_CASE("wex::addressrange")
   {
     stc->set_text("a\nb\nc\nd\ne\nf\ng\n");
     REQUIRE(wex::addressrange(ex, "%").join());
-    REQUIRE(stc->GetText().Contains("a"));
+    REQUIRE(stc->get_text().find("a") != std::string::npos);
     REQUIRE(stc->GetLineCount() == 1);
   }
 
@@ -198,46 +198,46 @@ TEST_CASE("wex::addressrange")
     stc->set_text(contents);
     stc->GotoLine(1);
     REQUIRE(wex::addressrange(ex, "%").substitute("/tiger//"));
-    REQUIRE(!stc->GetText().Contains("tiger"));
+    REQUIRE(stc->get_text().find("tiger") == std::string::npos);
 
     stc->set_text(contents);
     REQUIRE(wex::addressrange(ex, "%").substitute("/tiger/\\U&/"));
-    REQUIRE(stc->GetText().Contains("TIGER"));
-    REQUIRE(!stc->GetText().Contains("tiger"));
-    REQUIRE(!stc->GetText().Contains("\\U"));
+    REQUIRE(stc->get_text().find("TIGER") != std::string::npos);
+    REQUIRE(stc->get_text().find("tiger") == std::string::npos);
+    REQUIRE(stc->get_text().find("\\U") == std::string::npos);
 
     stc->set_text(contents);
     REQUIRE(wex::addressrange(ex, "%").substitute(
       "/tiger/\\U&&\\L& \\0 \\0 & & \\U&/"));
-    REQUIRE(stc->GetText().Contains("TIGER"));
-    REQUIRE(stc->GetText().Contains("tiger"));
-    REQUIRE(!stc->GetText().Contains("\\U"));
-    REQUIRE(!stc->GetText().Contains("\\L"));
-    REQUIRE(!stc->GetText().Contains("\\0"));
+    REQUIRE(stc->get_text().find("TIGER") != std::string::npos);
+    REQUIRE(stc->get_text().find("tiger") != std::string::npos);
+    REQUIRE(stc->get_text().find("\\U") == std::string::npos);
+    REQUIRE(stc->get_text().find("\\L") == std::string::npos);
+    REQUIRE(stc->get_text().find("\\0") == std::string::npos);
 
     stc->set_text(contents);
     REQUIRE(wex::addressrange(ex, "%").substitute("/tiger/lion/"));
-    REQUIRE(stc->GetText().Contains("lion"));
+    REQUIRE(stc->get_text().find("lion") != std::string::npos);
 
     stc->set_text(contents);
     REQUIRE(wex::addressrange(ex, "%").substitute("", '&'));
-    REQUIRE(stc->GetText().Contains("lion"));
+    REQUIRE(stc->get_text().find("lion") != std::string::npos);
 
     stc->set_text(contents);
     REQUIRE(wex::addressrange(ex, "%").substitute("", '~'));
-    REQUIRE(stc->GetText().Contains("lion"));
+    REQUIRE(stc->get_text().find("lion") != std::string::npos);
 
     stc->set_text("special char \\ present");
     REQUIRE(wex::addressrange(ex, "%").substitute("/\\\\//"));
-    REQUIRE(stc->GetText().Contains("char  present"));
+    REQUIRE(stc->get_text().find("char  present") != std::string::npos);
 
     stc->set_text("special char / present");
     REQUIRE(wex::addressrange(ex, "%").substitute("/\\///"));
-    REQUIRE(stc->GetText().Contains("char  present"));
+    REQUIRE(stc->get_text().find("char  present") != std::string::npos);
 
     stc->set_text("special char ' present");
     REQUIRE(wex::addressrange(ex, "%").substitute("/'//"));
-    REQUIRE(stc->GetText().Contains("char  present"));
+    REQUIRE(stc->get_text().find("char  present") != std::string::npos);
   }
 
   SUBCASE("substitute and flags")

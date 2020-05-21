@@ -122,17 +122,6 @@ int wex::stc::config_dialog(const window_data& par)
 void wex::stc::config_get()
 {
   const item_vector& iv(m_config_items);
-  const wxFont       font(iv.find<wxFont>(_("stc.Default font")));
-
-  if (m_default_font != font)
-  {
-    m_default_font = font;
-
-    StyleResetDefault();
-
-    // Doing this once is enough, not yet possible.
-    lexers::get()->load_document();
-  }
 
   SetEdgeColumn(iv.find<int>(_("stc.Edge column")));
 
@@ -145,6 +134,7 @@ void wex::stc::config_get()
     if (const auto el = iv.find<long>(_("stc.Edge line"));
         el != wxSTC_EDGE_NONE)
     {
+      const wxFont font(iv.find<wxFont>(_("stc.Default font")));
       SetEdgeMode(font.IsFixedWidth() ? el : wxSTC_EDGE_BACKGROUND);
     }
     else
@@ -187,8 +177,6 @@ void wex::stc::config_get()
 
   show_line_numbers(iv.find<bool>(_("stc.Line numbers")));
 
-  m_link.set_from_config();
-
   m_lexer.apply(); // at end, to prioritize local xml config
 }
 
@@ -200,6 +188,7 @@ void wex::stc::on_exit()
   }
 
   delete m_config_items;
+  delete m_link;
 }
 
 void wex::stc::on_init()
@@ -274,12 +263,17 @@ void wex::stc::on_init()
        {_("Font"),
         {{_("stc.Default font"),
           item::FONTPICKERCTRL,
-          wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)},
+          wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT),
+          item_data().apply(
+            [=](wxWindow* user, const std::any& value, bool save) {
+              // Doing this once is enough, not yet possible.
+              lexers::get()->load_document();
+            })},
          {_("stc.Text font"),
           item::FONTPICKERCTRL,
           wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)}}},
        {_("Edge"),
-        {{_("stc.Edge column"), 0, 80, 80},
+        {{_("stc.Edge column"), 0, 500, 80},
          {_("stc.Edge line"),
           {{wxSTC_EDGE_NONE, _("None")},
            {wxSTC_EDGE_LINE, _("Line")},
@@ -314,7 +308,13 @@ void wex::stc::on_init()
          {_("stc.link.Include directory"),
           listview_data()
             .type(listview_data::FOLDER)
-            .window(window_data().size({200, 200}))},
+            .window(window_data().size({200, 200})),
+          std::any(),
+          item_data()
+            .label_type(item_data::LABEL_NONE)
+            .apply([=](wxWindow* user, const std::any& value, bool save) {
+              m_link->set_from_config();
+            })},
          {_("<i>Matches:</i>")},
          {_("stc.link.Pairs"),
           listview_data()
@@ -337,4 +337,6 @@ void wex::stc::on_init()
   {
     m_zoom = config("stc.zoom").get(-1);
   }
+
+  m_link = new link();
 }
