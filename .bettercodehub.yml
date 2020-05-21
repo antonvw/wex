@@ -1,7 +1,11 @@
 component_depth: 3
 
+languages:
+- cpp
+
 exclude:
 - /ci/.*
 - /external/.*
 - /src/data/.*
 - /src/locale/.*
+- /src/src/lexers/.*

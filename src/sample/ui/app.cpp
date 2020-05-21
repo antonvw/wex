@@ -32,8 +32,8 @@
 #include "app.xpm"
 #endif
 
-#include "../test/ui/test-configitem.h"
-#include "../test/ui/test-item.h"
+#include "../../test/ui/test-configitem.h"
+#include "../../test/ui/test-item.h"
 
 enum
 {
@@ -56,7 +56,7 @@ wxIMPLEMENT_APP(app);
 
 bool app::OnInit()
 {
-  SetAppName("wex-sample");
+  SetAppName("wex-sample-ui");
 
   if (!wex::app::OnInit() || !wex::cmdline().parse(argc, argv))
   {
@@ -156,8 +156,11 @@ frame::frame()
 
   pane_add(
     {{m_notebook,
-      wxAuiPaneInfo().Name("NOTEBOOK").CloseButton(false).CenterPane().MinSize(
-        wxSize(250, 250))},
+      wxAuiPaneInfo()
+        .Name("NOTEBOOK")
+        .CloseButton(false)
+        .CenterPane()
+        .MinSize(wxSize(250, 250))},
      {m_stc, wxAuiPaneInfo().Bottom().Caption("STC")},
      {m_shell,
       wxAuiPaneInfo().Bottom().Caption("Shell").MinSize(wxSize(250, 250))},
