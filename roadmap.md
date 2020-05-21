@@ -1,5 +1,3 @@
-# add test for new handle in ex_command
-
 # feature/blame
 - improve blame size calculation, now only uses size of first blame line,
   should be more, or all

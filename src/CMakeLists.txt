@@ -1,6 +1,6 @@
 include_directories(${Boost_INCLUDE_DIRS})
 
-add_subdirectory(src)
+add_subdirectory(lib)
 
 if (wexBUILD_SAMPLES)
   add_subdirectory(sample)

@@ -111,6 +111,9 @@ void wex::ex_command::handle(const wxTextEntry* te, int keycode)
       }
       break;
 
+    case WXK_NONE:
+      break;
+
     default:
       if (pos == te->GetLastPosition())
       {
