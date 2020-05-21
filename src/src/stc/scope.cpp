@@ -25,7 +25,7 @@ bool wex::scope::check_levels(check_t type)
   const auto size(m_filters.size());
   bool       changed = false;
 
-  if (type[LEVEL_DOWN] && m_level < size - 1 && m_level >= 0)
+  if (type[LEVEL_DOWN] && m_level < size - 1)
   {
     m_filters.erase(m_filters.begin() + m_level + 1, m_filters.end());
     changed = true;

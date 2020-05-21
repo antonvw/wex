@@ -7,10 +7,10 @@
 
 #include <numeric>
 #include <wex/app.h>
-#include <wex/macros.h>
 #include <wex/config.h>
 #include <wex/lexer-props.h>
 #include <wex/log.h>
+#include <wex/macros.h>
 #include <wex/managedframe.h>
 #include <wex/path.h>
 #include <wex/type-to-value.h>
@@ -20,7 +20,7 @@ wex::macros::macros()
   : m_mode(this)
 {
 }
-  
+
 bool wex::macros::erase()
 {
   if (m_macros.erase(m_mode.get_macro()) == 0)
@@ -28,12 +28,11 @@ bool wex::macros::erase()
     log("erase macro") << m_mode.get_macro();
     return false;
   }
-  
+
   return true;
 }
-    
-const std::vector< std::string > wex::macros::find(
-  const std::string& macro) const
+
+const std::vector<std::string> wex::macros::find(const std::string& macro) const
 {
   if (const auto& it = m_macros.find(macro); it != m_macros.end())
   {
@@ -45,17 +44,17 @@ const std::vector< std::string > wex::macros::find(
     {
       return {it->second.get_value()};
     }
-    else 
+    else
     {
       return {};
     }
   }
 }
 
-const std::vector< std::string > wex::macros::get() const
+const std::vector<std::string> wex::macros::get() const
 {
-  std::vector< std::string > v;
-    
+  std::vector<std::string> v;
+
   for (const auto& it : m_macros)
   {
     if (it.first.size() > 1)
@@ -63,14 +62,14 @@ const std::vector< std::string > wex::macros::get() const
       v.emplace_back(it.first);
     }
   }
-   
+
   for (const auto& it : m_variables)
   {
     v.emplace_back(it.first);
   }
-  
+
   std::sort(v.begin(), v.end());
-  
+
   return v;
 }
 
@@ -79,58 +78,66 @@ const wex::path wex::macros::get_filename() const
   return path(config::dir(), "wex-macros.xml");
 }
 
-const wex::macros::keys_map_t & wex::macros::get_keys_map(
-  key_t type) const
+const wex::macros::keys_map_t& wex::macros::get_keys_map(key_t type) const
 {
   switch (type)
   {
-    case KEY_ALT: return m_map_alt_keys;
-    case KEY_CONTROL: return m_map_control_keys;
-    default: return m_map_keys;
- }
+    case KEY_ALT:
+      return m_map_alt_keys;
+    case KEY_CONTROL:
+      return m_map_control_keys;
+    default:
+      return m_map_keys;
+  }
 }
 
-const std::vector<std::string> wex::macros::get_macro_commands(
-  const std::string& macro) const
+const std::vector<std::string>
+wex::macros::get_macro_commands(const std::string& macro) const
 {
   const auto& it = m_macros.find(macro);
-  return (it != m_macros.end()) ? it->second: std::vector< std::string >();
+  return (it != m_macros.end()) ? it->second : std::vector<std::string>();
 }
-      
+
 const std::string wex::macros::get_register(char name) const
 {
   switch (name)
   {
     case '*':
-    case '\"': return clipboard_get();
-    default: {   
+    case '\"':
+      return clipboard_get();
+    default:
+    {
       const auto& it = m_macros.find(std::string(1, name));
-      return it != m_macros.end() ?
-        std::accumulate(it->second.begin(), it->second.end(), std::string()):
-        std::string();
+      return it != m_macros.end() ? std::accumulate(
+                                      it->second.begin(),
+                                      it->second.end(),
+                                      std::string()) :
+                                    std::string();
     }
   }
 }
 
-const std::vector< std::string > wex::macros::get_registers() const
+const std::vector<std::string> wex::macros::get_registers() const
 {
-  std::vector< std::string > r;
-  lexer_props l;
-  
+  std::vector<std::string> r;
+  lexer_props              l;
+
   for (const auto& it : m_macros)
   {
     if (it.first.size() == 1)
     {
-      r.emplace_back(l.make_key(it.first, trim(
-        std::accumulate(it.second.begin(), it.second.end(), std::string()))));
+      r.emplace_back(l.make_key(
+        it.first,
+        trim(
+          std::accumulate(it.second.begin(), it.second.end(), std::string()))));
     }
   }
-   
+
   if (const std::string clipboard(trim(clipboard_get())); !clipboard.empty())
   {
     r.emplace_back(l.make_key("*", clipboard));
   }
-                
+
   return r;
 }
 
@@ -151,16 +158,17 @@ bool wex::macros::load_document()
     return false;
   }
 
-  if (const auto result = m_doc.load_file(get_filename().string().c_str(),
-    pugi::parse_default | pugi::parse_comments);
-    !result)
+  if (const auto result = m_doc.load_file(
+        get_filename().string().c_str(),
+        pugi::parse_default | pugi::parse_comments);
+      !result)
   {
     xml_error(get_filename(), &result);
     return false;
   }
 
   m_is_modified = false;
-  
+
   if (m_is_loaded)
   {
     m_abbreviations.clear();
@@ -171,13 +179,15 @@ bool wex::macros::load_document()
     m_map_keys.clear();
     m_variables.clear();
   }
-  
-  for (const auto& child: m_doc.document_element().children())
+
+  for (const auto& child : m_doc.document_element().children())
   {
     if (strcmp(child.name(), "abbreviation") == 0)
     {
-      parse_node<std::string, strings_map_t> (
-        child, "abbreviation", m_abbreviations);
+      parse_node<std::string, strings_map_t>(
+        child,
+        "abbreviation",
+        m_abbreviations);
     }
     else if (strcmp(child.name(), "macro") == 0)
     {
@@ -204,30 +214,27 @@ bool wex::macros::load_document()
       parse_node_variable(child);
     }
   }
-  
-  log::verbose("macros info") << 
-    "abbreviations:" << m_abbreviations.size() <<
-    "maps:" << m_map.size() <<
-    "macros:" << m_macros.size() <<
-    "variables:" << m_variables.size();
-  
+
+  log::verbose("macros info")
+    << "abbreviations:" << m_abbreviations.size() << "maps:" << m_map.size()
+    << "macros:" << m_macros.size() << "variables:" << m_variables.size();
+
   m_is_loaded = true;
 
   return true;
 }
 
-template <typename S, typename T> 
+template <typename S, typename T>
 void wex::macros::parse_node(
   const pugi::xml_node& node,
-  const std::string& name,
-  T & container)
+  const std::string&    name,
+  T&                    container)
 {
   if (const S value = type_to_value<S>(node.attribute("name").value()).get();
-    container.find(value) != container.end())
+      container.find(value) != container.end())
   {
-    log() << "duplicate" << 
-      name << ":" << value << "from:" << 
-      node.attribute("name").value() << node;
+    log() << "duplicate" << name << ":" << value
+          << "from:" << node.attribute("name").value() << node;
   }
   else
   {
@@ -238,14 +245,14 @@ void wex::macros::parse_node(
 void wex::macros::parse_node_macro(const pugi::xml_node& node)
 {
   std::vector<std::string> v;
-  
-  for (const auto& command: node.children())
+
+  for (const auto& command : node.children())
   {
     v.emplace_back(command.text().get());
   }
-  
+
   if (const auto& it = m_macros.find(node.attribute("name").value());
-    it != m_macros.end())
+      it != m_macros.end())
   {
     log() << "duplicate macro:" << node.attribute("name").value() << node;
   }
@@ -262,7 +269,7 @@ void wex::macros::parse_node_variable(const pugi::xml_node& node)
     log() << "empty variable:" << node;
   }
   else if (const auto& it = m_variables.find(variable.get_name());
-    it != m_variables.end())
+           it != m_variables.end())
   {
     log() << "duplicate variable:" << variable.get_name() << node;
   }
@@ -275,19 +282,18 @@ void wex::macros::parse_node_variable(const pugi::xml_node& node)
 bool wex::macros::record(const std::string& text, bool new_command)
 {
   if (auto* f = (dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()));
-    f != nullptr)
+      f != nullptr)
   {
     f->record(text);
   }
-  
+
   if (
-    !m_mode.is_recording() || 
-    (m_mode.is_recording() && m_mode.is_playback()) ||
+    !m_mode.is_recording() || (m_mode.is_recording() && m_mode.is_playback()) ||
     text.empty())
   {
     return false;
   }
-  
+
   if (m_mode.get_macro().empty())
   {
     log("macro record while macro empty") << text;
@@ -296,9 +302,9 @@ bool wex::macros::record(const std::string& text, bool new_command)
 
   log::verbose("recorded") << "macro:" << m_mode.get_macro() << "->" << text;
 
-  if (new_command) 
+  if (new_command)
   {
-    m_macros[m_mode.get_macro()].emplace_back(text == " " ? "l": text);
+    m_macros[m_mode.get_macro()].emplace_back(text == " " ? "l" : text);
   }
   else
   {
@@ -307,10 +313,10 @@ bool wex::macros::record(const std::string& text, bool new_command)
       std::string s;
       m_macros[m_mode.get_macro()].emplace_back(s);
     }
-    
+
     m_macros[m_mode.get_macro()].back() += text;
   }
-  
+
   return true;
 }
 
@@ -320,9 +326,9 @@ bool wex::macros::save_document(bool only_if_modified)
   {
     return false;
   }
-  
+
   const bool ok = m_doc.save_file(get_filename().string().c_str());
-  
+
   if (ok)
   {
     m_is_modified = false;
@@ -336,8 +342,8 @@ void wex::macros::save_macro(const std::string& macro)
   try
   {
     if (auto node = m_doc.document_element().select_node(
-      std::string("//macro[@name='" + macro + "']").c_str());
-      node && node.node())
+          std::string("//macro[@name='" + macro + "']").c_str());
+        node && node.node())
     {
       m_doc.document_element().remove_child(node.node());
     }
@@ -345,13 +351,13 @@ void wex::macros::save_macro(const std::string& macro)
     pugi::xml_node node_macro = m_doc.document_element().append_child("macro");
     node_macro.append_attribute("name") = macro.c_str();
 
-    for (const auto& it: m_macros[macro])
+    for (const auto& it : m_macros[macro])
     {
       node_macro.append_child("command").text().set(it.c_str());
     }
 
     m_is_modified = true;
-    
+
     save_document();
   }
   catch (pugi::xpath_exception& e)
@@ -360,9 +366,9 @@ void wex::macros::save_macro(const std::string& macro)
   }
 }
 
-template <typename S, typename T> 
+template <typename S, typename T>
 void wex::macros::set(
-  T  & container,
+  T&                 container,
   const std::string& xpath,
   const std::string& name,
   const std::string& value)
@@ -370,8 +376,8 @@ void wex::macros::set(
   try
   {
     if (auto node = m_doc.document_element().select_node(
-      std::string("//" + xpath + "[@name='" + name + "']").c_str());
-      node && node.node())
+          std::string("//" + xpath + "[@name='" + name + "']").c_str());
+        node && node.node())
     {
       m_doc.document_element().remove_child(node.node());
     }
@@ -382,7 +388,7 @@ void wex::macros::set(
     }
     else
     {
-      pugi::xml_node child = 
+      pugi::xml_node child =
         m_doc.document_element().append_child(xpath.c_str());
       child.append_attribute("name") = name.c_str();
       child.text().set(value.c_str());
@@ -399,49 +405,47 @@ void wex::macros::set(
 }
 
 void wex::macros::set_abbreviation(
-  const std::string& name, 
+  const std::string& name,
   const std::string& value)
 {
-  set<std::string, strings_map_t>(
-    m_abbreviations, "abbreviation", name, value);
+  set<std::string, strings_map_t>(m_abbreviations, "abbreviation", name, value);
 }
 
 void wex::macros::set_key_map(
-  const std::string& name, 
+  const std::string& name,
   const std::string& value,
-  macros::key_t type)
+  macros::key_t      type)
 {
   switch (type)
   {
-    case KEY_ALT: 
-      set<int, keys_map_t>(m_map_alt_keys, "map-alt", name, value); 
+    case KEY_ALT:
+      set<int, keys_map_t>(m_map_alt_keys, "map-alt", name, value);
       break;
 
-    case KEY_CONTROL: 
-      set<int, keys_map_t>(m_map_control_keys, "map-control", name, value); 
+    case KEY_CONTROL:
+      set<int, keys_map_t>(m_map_control_keys, "map-control", name, value);
       break;
 
-    case KEY_NORMAL: 
-      set<int, keys_map_t>(m_map_keys, "map-key", name, value); 
+    case KEY_NORMAL:
+      set<int, keys_map_t>(m_map_keys, "map-key", name, value);
       break;
   }
 }
 
-void wex::macros::set_map(
-  const std::string& name, 
-  const std::string& value)
+void wex::macros::set_map(const std::string& name, const std::string& value)
 {
   set<std::string, strings_map_t>(m_map, "map", name, value);
 }
 
 bool wex::macros::set_register(char name, const std::string& value)
 {
-  if (!isalnum(name) && !isdigit(name) && 
-       name != '%' && name != '_' && name != '*' && name != '.')
+  if (
+    !isalnum(name) && !isdigit(name) && name != '%' && name != '_' &&
+    name != '*' && name != '.')
   {
     return false;
   }
-  
+
   if (name == '*')
   {
     clipboard_add(value);
@@ -449,7 +453,7 @@ bool wex::macros::set_register(char name, const std::string& value)
   }
 
   std::vector<std::string> v;
-  
+
   // The black hole register, everything written to it is discarded.
   if (name != '_')
   {
@@ -462,7 +466,7 @@ bool wex::macros::set_register(char name, const std::string& value)
       v.emplace_back(value);
     }
   }
-  
+
   m_macros[std::string(1, (char)tolower(name))] = v;
   save_macro(std::string(1, (char)tolower(name)));
 
@@ -483,7 +487,7 @@ bool wex::macros::starts_with(const std::string_view& text)
       return true;
     }
   }
-   
+
   for (const auto& it : m_variables)
   {
     if (it.first.substr(0, text.size()) == text)
@@ -491,6 +495,6 @@ bool wex::macros::starts_with(const std::string_view& text)
       return true;
     }
   }
-  
+
   return false;
 }

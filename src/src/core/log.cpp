@@ -188,7 +188,6 @@ void wex::log::init(int argc, char** argv)
 
   // We need to convert argc and argv, as elp expects = sign between values.
   // The logging-flags are handled by syncped.
-  bool                                                   error = false;
   std::vector<std::string>                               v;
   const std::vector<std::pair<std::string, std::string>> supported{
     {"-m", "-vmodule"},

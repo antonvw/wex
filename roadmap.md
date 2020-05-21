@@ -1,4 +1,4 @@
-# update rfw FOR keywords
+# add test for new handle in ex_command
 
 # feature/blame
 - improve blame size calculation, now only uses size of first blame line,
@@ -35,4 +35,4 @@
   -> windows appear
 - each process separate stc
   - process shell and aui
-- invest using RFW spaced keywords
+- invest using RFW spaced keywords, update rfw FOR keywords
