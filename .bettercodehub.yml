@@ -1,4 +1,7 @@
 component_depth: 3
 
 exclude:
+- /ci/.*
 - /external/.*
+- /src/data/.*
+- /src/locale/.*
