@@ -1,5 +1,3 @@
-project(wex-lib)
-
 include_directories(${Boost_INCLUDE_DIRS})
 
 add_subdirectory(src)
@@ -8,22 +6,11 @@ if (wexBUILD_SAMPLES)
   add_subdirectory(sample)
 endif ()
 
-if (wexBUILD_SP)
-  add_subdirectory(syncped)
-endif ()
-
-if (wexBUILD_SOQ)
-  add_subdirectory(syncodbcquery)
-endif ()
-
-if (wexBUILD_SSS)
-  add_subdirectory(syncsocketserver)
-endif ()
-
 if (wexBUILD_TESTS)
   add_subdirectory(test)
 endif ()
 
+add_subdirectory(app)
 add_subdirectory(locale)
 
 if (CMAKE_BUILD_TYPE MATCHES "Coverage")

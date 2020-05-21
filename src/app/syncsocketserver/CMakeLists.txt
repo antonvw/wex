@@ -1,7 +1,5 @@
 project(syncsocketserver)
 
-include(../../cmake/common.cmake)
-
 file(GLOB SRCS "*.cpp")
   
 if(WIN32)

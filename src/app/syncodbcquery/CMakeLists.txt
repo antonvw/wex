@@ -1,7 +1,5 @@
 project(syncodbcquery)
 
-include(../../cmake/common.cmake)
-
 if (NOT ${ODBC_FOUND})
   message(FATAL_ERROR "odbc lib not found")
 endif()
