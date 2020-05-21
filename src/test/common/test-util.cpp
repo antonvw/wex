@@ -88,7 +88,7 @@ TEST_CASE("wex" * doctest::may_fail())
 #ifdef __UNIX__
 #ifndef __WXOSX__
     REQUIRE(std::get<0>(wex::auto_complete_filename("/usr/include/s")));
-    REQUIRE(std::get<0>(wex::auto_complete_filename("../../../src/src/v")));
+    REQUIRE(std::get<0>(wex::auto_complete_filename("../../../src/lib/v")));
     // It is not clear whether ~ is relative or absolute...
     // REQUIRE( wex::auto_complete_filename("~/", expansion, v));
 #endif

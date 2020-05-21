@@ -7,5 +7,5 @@ exclude:
 - /ci/.*
 - /external/.*
 - /src/data/.*
+- /src/lib/lexers/.*
 - /src/locale/.*
-- /src/src/lexers/.*
