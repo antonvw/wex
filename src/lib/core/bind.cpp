@@ -13,19 +13,27 @@ wex::bind::bind(wxEvtHandler* evt)
 {
 }
 
-void wex::bind::menus(
+void wex::bind::command(
   std::vector<std::pair<std::function<void(wxCommandEvent&)>, int>> v)
 {
   for (const auto& it : v)
   {
     switch (it.second)
     {
+      case ID_ALL_CLOSE:
+        m_handler->Bind(wxEVT_MENU, it.first, it.second, ID_ALL_SAVE);
+        break;
+
       case ID_EDIT_DEBUG_FIRST:
         m_handler->Bind(wxEVT_MENU, it.first, it.second, ID_EDIT_DEBUG_LAST);
         break;
 
       case ID_EDIT_VCS_LOWEST:
         m_handler->Bind(wxEVT_MENU, it.first, it.second, ID_EDIT_VCS_HIGHEST);
+        break;
+
+      case ID_VCS_LOWEST:
+        m_handler->Bind(wxEVT_MENU, it.first, it.second, ID_VCS_HIGHEST);
         break;
 
       case wxID_SORT_ASCENDING:
@@ -38,5 +46,14 @@ void wex::bind::menus(
         else
           m_handler->Bind(wxEVT_MENU, it.first, it.second);
     }
+  }
+}
+
+void wex::bind::ui(
+  std::vector<std::pair<std::function<void(wxUpdateUIEvent&)>, int>> v)
+{
+  for (const auto& it : v)
+  {
+    m_handler->Bind(wxEVT_UPDATE_UI, it.first, it.second);
   }
 }

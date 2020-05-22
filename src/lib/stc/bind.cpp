@@ -74,7 +74,7 @@ void wex::stc::bind_all()
     m_data.menu().test(stc_data::MENU_DEBUG))
     .set(this);
 
-  bind(this).menus(
+  bind(this).command(
     {{[=](wxCommandEvent& event) {
         Copy();
       },

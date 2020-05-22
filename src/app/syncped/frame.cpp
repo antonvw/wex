@@ -13,6 +13,7 @@
 #include "app.h"
 #include "defs.h"
 #include "frame.h"
+#include <wex/bind.h>
 #include <wex/config.h>
 #include <wex/ctags.h>
 #include <wex/debug.h>
@@ -254,30 +255,22 @@ frame::frame(app* app)
     event.Skip();
   });
 
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      get_debug()->execute(event.GetId() - wex::ID_EDIT_DEBUG_FIRST);
-    },
-    wex::ID_EDIT_DEBUG_FIRST,
-    wex::ID_EDIT_DEBUG_LAST);
-
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      m_editors->for_each<wex::stc>(event.GetId());
-    },
-    wex::ID_ALL_CLOSE,
-    wex::ID_ALL_SAVE);
-
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      wex::vcs(std::vector<wex::path>(), event.GetId() - wex::ID_VCS_LOWEST - 1)
-        .request();
-    },
-    wex::ID_VCS_LOWEST,
-    wex::ID_VCS_HIGHEST);
+  wex::bind(this).command({{[=](wxCommandEvent& event) {
+                              get_debug()->execute(
+                                event.GetId() - wex::ID_EDIT_DEBUG_FIRST);
+                            },
+                            wex::ID_EDIT_DEBUG_FIRST},
+                           {[=](wxCommandEvent& event) {
+                              m_editors->for_each<wex::stc>(event.GetId());
+                            },
+                            wex::ID_ALL_CLOSE},
+                           {[=](wxCommandEvent& event) {
+                              wex::vcs(
+                                std::vector<wex::path>(),
+                                event.GetId() - wex::ID_VCS_LOWEST - 1)
+                                .request();
+                            },
+                            wex::ID_VCS_LOWEST}});
 
   Bind(wxEVT_SIZE, [=](wxSizeEvent& event) {
     event.Skip();

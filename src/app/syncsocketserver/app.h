@@ -84,6 +84,15 @@ private:
 
   size_t write_data_window_to_connections();
 
+  const wxWindowID m_id_clear_log, m_id_socket_client, m_id_socket_server,
+    m_id_clear_statistics, m_id_client_buffer_size, m_id_client_answer_command,
+    m_id_client_answer_echo, m_id_client_answer_file, m_id_client_answer_off,
+    m_id_client_log_data, m_id_client_log_data_count_only, m_id_hide,
+    m_id_recent_file_menu, m_id_server_config, m_id_remote_server_connect,
+    m_id_remote_server_disconnect, m_id_remote_server_config,
+    m_id_socket_remoteclient, m_id_timer_stop, m_id_timer_start, m_id_view_data,
+    m_id_view_log, m_id_view_shell, m_id_view_statistics, m_id_write_data;
+
   std::list<wxSocketBase*> m_clients;
 
   wex::shell* m_shell;

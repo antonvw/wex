@@ -41,32 +41,6 @@
 #undef wxUSE_TASKBARICON
 #endif
 
-const auto id_clear_log                  = wxWindow::NewControlId();
-const auto id_socket_client              = wxWindow::NewControlId();
-const auto id_socket_server              = wxWindow::NewControlId();
-const auto id_clear_statistics           = wxWindow::NewControlId();
-const auto id_client_buffer_size         = wxWindow::NewControlId();
-const auto id_client_answer_command      = wxWindow::NewControlId();
-const auto id_client_answer_echo         = wxWindow::NewControlId();
-const auto id_client_answer_file         = wxWindow::NewControlId();
-const auto id_client_answer_off          = wxWindow::NewControlId();
-const auto id_client_log_data            = wxWindow::NewControlId();
-const auto id_client_log_data_count_only = wxWindow::NewControlId();
-const auto id_hide                       = wxWindow::NewControlId();
-const auto id_recent_file_menu           = wxWindow::NewControlId();
-const auto id_server_config              = wxWindow::NewControlId();
-const auto id_remote_server_connect      = wxWindow::NewControlId();
-const auto id_remote_server_disconnect   = wxWindow::NewControlId();
-const auto id_remote_server_config       = wxWindow::NewControlId();
-const auto id_socket_remoteclient        = wxWindow::NewControlId();
-const auto id_timer_stop                 = wxWindow::NewControlId();
-const auto id_timer_start                = wxWindow::NewControlId();
-const auto id_view_data                  = wxWindow::NewControlId();
-const auto id_view_log                   = wxWindow::NewControlId();
-const auto id_view_shell                 = wxWindow::NewControlId();
-const auto id_view_statistics            = wxWindow::NewControlId();
-const auto id_write_data                 = wxWindow::NewControlId();
-
 wxIMPLEMENT_APP(app);
 
 bool app::OnInit()
@@ -92,6 +66,31 @@ frame::frame()
       wex::stc_data().flags(
         wex::stc_data::window_t().set(wex::stc_data::WIN_NO_INDICATOR))))
   , m_shell(new wex::shell)
+  , m_id_clear_log(NewControlId())
+  , m_id_socket_client(NewControlId())
+  , m_id_socket_server(NewControlId())
+  , m_id_clear_statistics(NewControlId())
+  , m_id_client_buffer_size(NewControlId())
+  , m_id_client_answer_command(NewControlId())
+  , m_id_client_answer_echo(NewControlId())
+  , m_id_client_answer_file(NewControlId())
+  , m_id_client_answer_off(NewControlId())
+  , m_id_client_log_data(NewControlId())
+  , m_id_client_log_data_count_only(NewControlId())
+  , m_id_hide(NewControlId())
+  , m_id_recent_file_menu(NewControlId())
+  , m_id_server_config(NewControlId())
+  , m_id_remote_server_connect(NewControlId())
+  , m_id_remote_server_disconnect(NewControlId())
+  , m_id_remote_server_config(NewControlId())
+  , m_id_socket_remoteclient(NewControlId())
+  , m_id_timer_stop(NewControlId())
+  , m_id_timer_start(NewControlId())
+  , m_id_view_data(NewControlId())
+  , m_id_view_log(NewControlId())
+  , m_id_view_shell(NewControlId())
+  , m_id_view_statistics(NewControlId())
+  , m_id_write_data(NewControlId())
 {
   SetIcon(wxICON(app));
 
@@ -124,7 +123,7 @@ frame::frame()
            wxFileSelectorDefaultWildcardStr,
            true);
        })},
-      {}, {id_recent_file_menu, file_history()},
+      {}, {m_id_recent_file_menu, file_history()},
       {wxID_SAVE, "", wex::menu_data().action([=](wxCommandEvent& event) {
          m_data->get_file().file_save();
        })},
@@ -139,7 +138,7 @@ frame::frame()
          }
        })},
       {},
-      {id_clear_statistics,
+      {m_id_clear_statistics,
        "Clear Statistics",
        wex::menu_data()
          .help_text("Clears the statistics")
@@ -148,7 +147,7 @@ frame::frame()
          })},
       {},
 #if wxUSE_TASKBARICON
-      {id_hide,
+      {m_id_hide,
        "Hide",
        wex::menu_data()
          .help_text("Puts back in the task bar")
@@ -173,25 +172,25 @@ frame::frame()
       {{menuFile, wxGetStockLabel(wxID_FILE)},
        {new wex::menu({{this},
                        {},
-                       {id_view_log,
+                       {m_id_view_log,
                         "Log",
                         wex::menu_item::CHECK,
                         wex::menu_data().action([=](wxCommandEvent& event) {
                           pane_toggle("LOG");
                         })},
-                       {id_view_data,
+                       {m_id_view_data,
                         "Data",
                         wex::menu_item::CHECK,
                         wex::menu_data().action([=](wxCommandEvent& event) {
                           pane_toggle("DATA");
                         })},
-                       {id_view_shell,
+                       {m_id_view_shell,
                         "Shell",
                         wex::menu_item::CHECK,
                         wex::menu_data().action([=](wxCommandEvent& event) {
                           pane_toggle("SHELL");
                         })},
-                       {id_view_statistics,
+                       {m_id_view_statistics,
                         "Statistics",
                         wex::menu_item::CHECK,
                         wex::menu_data().action([=](wxCommandEvent& event) {
@@ -199,7 +198,7 @@ frame::frame()
                         })}}),
         "&View"},
        {new wex::menu(
-          {{id_server_config,
+          {{m_id_server_config,
             wex::ellipsed("Configuration"),
             wex::menu_data()
               .help_text("Configures the server")
@@ -252,7 +251,7 @@ frame::frame()
             })},
            {},
            {new wex::menu(
-              {{id_remote_server_config,
+              {{m_id_remote_server_config,
                 wex::ellipsed("Configuration"),
                 wex::menu_data()
                   .help_text("Configures the remote server")
@@ -276,7 +275,7 @@ frame::frame()
                       .ShowModal();
                   })},
                {},
-               {id_remote_server_connect,
+               {m_id_remote_server_connect,
                 "Connect",
                 wex::menu_data()
                   .help_text("Tries to connect to server")
@@ -289,12 +288,12 @@ frame::frame()
                     addr.Service(wex::config("Remote Port").get(3000));
 
                     m_client = new wxSocketClient();
-                    m_client->SetEventHandler(*this, id_socket_remoteclient);
+                    m_client->SetEventHandler(*this, m_id_socket_remoteclient);
                     m_client->SetNotify(wxSOCKET_CONNECTION_FLAG);
                     m_client->Notify(true);
                     m_client->Connect(addr, false);
                   })},
-               {id_remote_server_disconnect,
+               {m_id_remote_server_disconnect,
                 "Disconnect",
                 wex::menu_data()
                   .help_text("Disconnects from remote server")
@@ -314,7 +313,7 @@ frame::frame()
         "&Server"},
        {new wex::menu(
           {{new wex::menu(
-              {{id_client_answer_off,
+              {{m_id_client_answer_off,
                 "Off",
                 wex::menu_item::RADIO,
                 wex::menu_data()
@@ -322,7 +321,7 @@ frame::frame()
                     m_answer = answer_t::OFF;
                   })
                   .help_text("No answer back to connection")},
-               {id_client_answer_echo,
+               {m_id_client_answer_echo,
                 "Echo",
                 wex::menu_item::RADIO,
                 wex::menu_data()
@@ -330,7 +329,7 @@ frame::frame()
                     m_answer = answer_t::ECHO;
                   })
                   .help_text("Echo's received data back to connection")},
-               {id_client_answer_command,
+               {m_id_client_answer_command,
                 "Command",
                 wex::menu_item::RADIO,
                 wex::menu_data()
@@ -338,7 +337,7 @@ frame::frame()
                     m_answer = answer_t::COMMAND;
                   })
                   .help_text("Send last shell command back to connection")},
-               {id_client_answer_file,
+               {m_id_client_answer_file,
                 "File",
                 wex::menu_item::RADIO,
                 wex::menu_data()
@@ -348,7 +347,7 @@ frame::frame()
                   .help_text("Send file contents back to connection")}}),
             "&Answer"},
            {},
-           {id_client_log_data,
+           {m_id_client_log_data,
             "Log Data",
             wex::menu_item::CHECK,
             wex::menu_data()
@@ -356,7 +355,7 @@ frame::frame()
                 wex::config("Log Data").set(!wex::config("Log Data").get(true));
               })
               .help_text("Logs data read from and written to connection")},
-           {id_client_log_data_count_only,
+           {m_id_client_log_data_count_only,
             "Count Only",
             wex::menu_item::CHECK,
             wex::menu_data()
@@ -366,7 +365,7 @@ frame::frame()
               })
               .help_text("Logs only byte counts, no text")},
            {},
-           {id_client_buffer_size,
+           {m_id_client_buffer_size,
             wex::ellipsed("Buffer Size"),
             wex::menu_data()
               .help_text("Sets buffersize for data retrieved from connection")
@@ -384,7 +383,7 @@ frame::frame()
                 }
               })},
            {},
-           {id_timer_start,
+           {m_id_timer_start,
             wex::ellipsed("Repeat Timer"),
             wex::menu_data()
               .help_text("Repeats with timer writing last data to all "
@@ -392,7 +391,7 @@ frame::frame()
               .action([=](wxCommandEvent& event) {
                 timer_dialog();
               })},
-           {id_timer_stop,
+           {m_id_timer_stop,
             "Stop Timer",
             wex::menu_data()
               .help_text("Stops the timer")
@@ -402,7 +401,7 @@ frame::frame()
                 statustext(std::string(), "PaneTimer");
               })},
            {},
-           {id_write_data,
+           {m_id_write_data,
             "Write",
             wex::menu_data()
               .help_text("Writes data to all connections")
@@ -446,7 +445,7 @@ frame::frame()
 
     get_toolbar()->add_standard(false); // no realize yet
     get_toolbar()->add_tool(
-      id_write_data,
+      m_id_write_data,
       std::string(),
       wxArtProvider::GetBitmap(
         wxART_GO_FORWARD,
@@ -454,7 +453,7 @@ frame::frame()
         get_toolbar()->GetToolBitmapSize()),
       "Write data");
     get_toolbar()->add_tool(
-      id_clear_log,
+      m_id_clear_log,
       std::string(),
       wxArtProvider::GetBitmap(
         wxART_CROSS_MARK,
@@ -549,323 +548,6 @@ void frame::append_text(wex::stc* stc, const std::string& text, data_mode_t mode
     {
       stc->DocumentEnd();
     }
-}
-
-void frame::bind_all()
-{
-    Bind(
-      wxEVT_MENU,
-      [=](wxCommandEvent& event) {
-        const std::string buffer(event.GetString());
-        size_t            written = 0;
-
-        for (auto& it : m_clients)
-        {
-          written += write_data_to_socket(buffer + "\n", it);
-        }
-        if (m_client != nullptr)
-        {
-          written += write_data_to_socket(buffer + "\n", m_client);
-        }
-
-        if (written == 0)
-        {
-          wex::log::verbose("ignored") << buffer;
-        }
-
-        m_shell->prompt();
-      },
-      wex::ID_SHELL_COMMAND);
-
-    Bind(
-      wxEVT_MENU,
-      [=](wxCommandEvent& event) {
-        m_log->clear();
-      },
-      id_clear_log);
-
-    Bind(
-      wxEVT_SOCKET,
-      [=](wxSocketEvent& event) {
-        if (wxSocketBase* sock = m_server->Accept(false); sock == nullptr)
-        {
-          wex::log() << "couldn't accept a new connection";
-        }
-        else
-        {
-          m_stats.inc("Connections Server");
-          sock->SetEventHandler(*this, id_socket_client);
-          sock->SetNotify(wxSOCKET_INPUT_FLAG | wxSOCKET_LOST_FLAG);
-          sock->Notify(true);
-          m_clients.emplace_back(sock);
-          log_connection(sock, true);
-
-          if (const auto& buffer = m_data->get_text(); !buffer.empty())
-          {
-            write_data_to_socket(buffer, sock);
-          }
-#if wxUSE_TASKBARICON
-          update_taskbar();
-#endif
-        };
-      },
-      id_socket_server);
-
-    Bind(
-      wxEVT_SOCKET,
-      [=](wxSocketEvent& event) {
-        wxSocketBase* sock = event.GetSocket();
-
-        switch (event.GetSocketEvent())
-        {
-          case wxSOCKET_CONNECTION:
-          {
-            m_stats.inc("Connections Remote");
-            log_connection(sock, true);
-            sock->SetNotify(wxSOCKET_LOST_FLAG | wxSOCKET_INPUT_FLAG);
-            if (const auto& buffer = m_data->get_text(); !buffer.empty())
-            {
-              write_data_to_socket(buffer, sock);
-            }
-          }
-          break;
-
-          case wxSOCKET_INPUT:
-          {
-            // We disable input events, so that the test doesn't trigger
-            // wxSocketEvent again.
-            sock->SetNotify(wxSOCKET_LOST_FLAG);
-
-            const long size   = wex::config("Buffer Size").get(4096);
-            char*      buffer = new char[size];
-            sock->Read(buffer, size);
-
-            if (sock->LastReadCount() > 0)
-            {
-              m_stats.inc("Messages Received");
-              m_stats.inc("Bytes Received", sock->LastReadCount());
-
-              const std::string text(buffer, sock->LastReadCount());
-
-              if (wex::config("Log Data").get(true))
-              {
-                if (wex::config("Count Only").get(true))
-                {
-                  append_text(
-                    m_log,
-                    "read " + std::to_string(sock->LastReadCount()) +
-                      " bytes from " + socket_details(sock),
-                    data_mode_t::MESSAGE);
-                }
-                else
-                {
-                  append_text(m_log, text, data_mode_t::READ);
-                }
-              }
-
-              wex::log::verbose("read") << text;
-
-              switch (m_answer)
-              {
-                case answer_t::COMMAND:
-                  if (m_shell->get_command() != "history")
-                  {
-                    write_data_to_socket(m_shell->get_command(), sock);
-                  }
-                  break;
-
-                case answer_t::ECHO:
-                  write_data_to_socket(text, sock);
-                  break;
-
-                case answer_t::FILE:
-                  if (const auto& b(m_data->get_text()); !b.empty())
-                  {
-                    write_data_to_socket(b, sock);
-                  }
-                  break;
-
-                default:
-                  break;
-              }
-
-              if (pane_is_shown("SHELL"))
-              {
-                append_text(m_shell, text, data_mode_t::MESSAGE_RAW);
-                m_shell->prompt(std::string(), false); // no eol
-              }
-            }
-
-            statustext(
-              std::to_string(m_stats.get("Bytes Received")) + "," +
-                std::to_string(m_stats.get("Bytes Sent")),
-              "PaneBytes");
-
-#if wxUSE_TASKBARICON
-            update_taskbar();
-#endif
-            // Enable input events again.
-            sock->SetNotify(wxSOCKET_LOST_FLAG | wxSOCKET_INPUT_FLAG);
-
-            delete[] buffer;
-          }
-          break;
-
-          case wxSOCKET_LOST:
-            m_stats.inc("Connections Closed");
-
-            if (event.GetId() == id_socket_client)
-            {
-              socket_closed(sock, true);
-            }
-            else
-            {
-              socket_closed(sock, false);
-              m_client = nullptr;
-            }
-
-            update_connections_pane();
-
-#if wxUSE_TASKBARICON
-            update_taskbar();
-#endif
-            break;
-
-          default:
-            assert(0);
-        };
-      },
-      id_socket_client,
-      id_socket_remoteclient);
-
-    Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
-#if wxUSE_TASKBARICON
-      if (event.CanVeto())
-      {
-        Hide();
-        return;
-      }
-#endif
-      if (
-        wex::file_dialog(&m_data->get_file()).show_modal_if_changed() ==
-        wxID_CANCEL)
-      {
-        return;
-      }
-
-      if (m_client != nullptr)
-      {
-        m_client->Destroy();
-        m_client = nullptr;
-      }
-
-      for (auto c : m_clients)
-        c->Destroy();
-      m_clients.clear();
-
-      event.Skip();
-    });
-
-    Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
-      write_data_window_to_connections();
-    });
-
-    Bind(
-      wxEVT_UPDATE_UI,
-      [=](wxUpdateUIEvent& event) {
-        event.Enable(m_server == nullptr);
-      },
-      wxID_EXECUTE);
-    Bind(
-      wxEVT_UPDATE_UI,
-      [=](wxUpdateUIEvent& event) {
-        event.Enable(m_data->GetModify());
-      },
-      wxID_SAVE);
-    Bind(
-      wxEVT_UPDATE_UI,
-      [=](wxUpdateUIEvent& event) {
-        event.Enable(m_server != nullptr);
-      },
-      wxID_STOP);
-
-    Bind(
-      wxEVT_UPDATE_UI,
-      [=](wxUpdateUIEvent& event) {
-        event.Enable(m_client == nullptr);
-      },
-      id_remote_server_connect);
-    Bind(
-      wxEVT_UPDATE_UI,
-      [=](wxUpdateUIEvent& event) {
-        event.Enable(m_client != nullptr);
-      },
-      id_remote_server_disconnect);
-
-    Bind(
-      wxEVT_UPDATE_UI,
-      [=](wxUpdateUIEvent& event) {
-        event.Enable(!m_stats.get_items().empty());
-      },
-      id_clear_statistics);
-    Bind(
-      wxEVT_UPDATE_UI,
-      [=](wxUpdateUIEvent& event) {
-        event.Check(wex::config("Log Data").get(true));
-      },
-      id_client_log_data);
-    Bind(
-      wxEVT_UPDATE_UI,
-      [=](wxUpdateUIEvent& event) {
-        event.Enable(wex::config("Log Data").get(true));
-        event.Check(wex::config("Count Only").get(true));
-      },
-      id_client_log_data_count_only);
-    Bind(
-      wxEVT_UPDATE_UI,
-      [=](wxUpdateUIEvent& event) {
-        event.Enable(!file_history().get_history_file().empty());
-      },
-      id_recent_file_menu);
-    Bind(
-      wxEVT_UPDATE_UI,
-      [=](wxUpdateUIEvent& event) {
-        event.Enable(m_timer.IsRunning());
-      },
-      id_timer_stop);
-    Bind(
-      wxEVT_UPDATE_UI,
-      [=](wxUpdateUIEvent& event) {
-        event.Check(pane_is_shown("DATA"));
-      },
-      id_view_data);
-    Bind(
-      wxEVT_UPDATE_UI,
-      [=](wxUpdateUIEvent& event) {
-        event.Check(pane_is_shown("LOG"));
-      },
-      id_view_log);
-    Bind(
-      wxEVT_UPDATE_UI,
-      [=](wxUpdateUIEvent& event) {
-        event.Check(pane_is_shown("SHELL"));
-      },
-      id_view_shell);
-    Bind(
-      wxEVT_UPDATE_UI,
-      [=](wxUpdateUIEvent& event) {
-        event.Check(pane_is_shown("STATISTICS"));
-      },
-      id_view_statistics);
-    Bind(
-      wxEVT_UPDATE_UI,
-      [=](wxUpdateUIEvent& event) {
-        event.Enable(
-          (!m_clients.empty() ||
-           (m_client != nullptr && m_client->IsConnected())) &&
-          m_data->GetLength() > 0);
-      },
-      id_write_data);
 }
   
 void frame::log_connection(
@@ -962,7 +644,7 @@ bool frame::setup_server()
 
       // Setup the event handler and subscribe to connection events
       m_server = server;
-      m_server->SetEventHandler(*this, id_socket_server);
+      m_server->SetEventHandler(*this, m_id_socket_server);
       m_server->SetNotify(wxSOCKET_CONNECTION_FLAG);
       m_server->Notify(true);
 
@@ -1162,7 +844,7 @@ size_t frame::write_data_window_to_connections()
     return written;
 }
 
-const auto id_open = wxWindow::NewControlId();
+const auto m_id_open = wxWindow::NewControlId();
 
 #if wxUSE_TASKBARICON
 taskbar_icon::taskbar_icon(frame* frame)
@@ -1180,7 +862,7 @@ taskbar_icon::taskbar_icon(frame* frame)
       [=](wxCommandEvent& event) {
         m_frame->Show();
       },
-      id_open);
+      m_id_open);
 
     Bind(wxEVT_TASKBAR_LEFT_DCLICK, [=](wxTaskBarIconEvent&) {
       m_frame->Show();
@@ -1196,6 +878,6 @@ taskbar_icon::taskbar_icon(frame* frame)
 
 wxMenu *taskbar_icon::CreatePopupMenu()
 {
-    return new wex::menu({{id_open, "Open"}, {}, {wxID_EXIT}});
+    return new wex::menu({{m_id_open, "Open"}, {}, {wxID_EXIT}});
 }
 #endif
