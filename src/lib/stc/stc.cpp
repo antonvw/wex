@@ -49,6 +49,10 @@ wex::stc::stc(const path& p, const stc_data& data)
   , m_hexmode(hexmode(this))
   , m_frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
   , m_lexer(this)
+  , m_id_margin_text_hide(NewControlId())
+  , m_id_margin_text_author(NewControlId())
+  , m_id_margin_text_date(NewControlId())
+  , m_id_margin_text_id(NewControlId())
 {
   if (
     config("AllowSync").get(true) && p != wex::ex::get_macros().get_filename())

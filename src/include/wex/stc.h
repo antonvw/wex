@@ -374,6 +374,7 @@ namespace wex
     typedef std::bitset<3> link_t;
 
     void bind_all();
+    void bind_other();
     void build_popup_menu(menu& menu);
     void check_brace();
     bool check_brace(int pos);
@@ -389,6 +390,9 @@ namespace wex
       m_margin_line_number{0}, m_margin_text_number{3};
 
     const marker m_marker_change = marker(1);
+
+    const wxWindowID m_id_margin_text_hide, m_id_margin_text_author,
+      m_id_margin_text_date, m_id_margin_text_id;
 
     int m_fold_level{0}, m_margin_text_click{-1}, m_saved_pos{-1},
       m_saved_selection_start{-1}, m_saved_selection_end{-1};

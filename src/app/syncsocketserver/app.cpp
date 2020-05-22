@@ -41,7 +41,31 @@
 #undef wxUSE_TASKBARICON
 #endif
 
-const auto id_socket_server = wxWindow::NewControlId();
+const auto id_clear_log                  = wxWindow::NewControlId();
+const auto id_socket_client              = wxWindow::NewControlId();
+const auto id_socket_server              = wxWindow::NewControlId();
+const auto id_clear_statistics           = wxWindow::NewControlId();
+const auto id_client_buffer_size         = wxWindow::NewControlId();
+const auto id_client_answer_command      = wxWindow::NewControlId();
+const auto id_client_answer_echo         = wxWindow::NewControlId();
+const auto id_client_answer_file         = wxWindow::NewControlId();
+const auto id_client_answer_off          = wxWindow::NewControlId();
+const auto id_client_log_data            = wxWindow::NewControlId();
+const auto id_client_log_data_count_only = wxWindow::NewControlId();
+const auto id_hide                       = wxWindow::NewControlId();
+const auto id_recent_file_menu           = wxWindow::NewControlId();
+const auto id_server_config              = wxWindow::NewControlId();
+const auto id_remote_server_connect      = wxWindow::NewControlId();
+const auto id_remote_server_disconnect   = wxWindow::NewControlId();
+const auto id_remote_server_config       = wxWindow::NewControlId();
+const auto id_socket_remoteclient        = wxWindow::NewControlId();
+const auto id_timer_stop                 = wxWindow::NewControlId();
+const auto id_timer_start                = wxWindow::NewControlId();
+const auto id_view_data                  = wxWindow::NewControlId();
+const auto id_view_log                   = wxWindow::NewControlId();
+const auto id_view_shell                 = wxWindow::NewControlId();
+const auto id_view_statistics            = wxWindow::NewControlId();
+const auto id_write_data                 = wxWindow::NewControlId();
 
 wxIMPLEMENT_APP(app);
 
@@ -69,31 +93,6 @@ frame::frame()
         wex::stc_data::window_t().set(wex::stc_data::WIN_NO_INDICATOR))))
   , m_shell(new wex::shell)
 {
-  const auto id_clear_log                  = NewControlId();
-  const auto id_clear_statistics           = NewControlId();
-  const auto id_client_buffer_size         = NewControlId();
-  const auto id_client_answer_command      = NewControlId();
-  const auto id_client_answer_echo         = NewControlId();
-  const auto id_client_answer_file         = NewControlId();
-  const auto id_client_answer_off          = NewControlId();
-  const auto id_client_log_data            = NewControlId();
-  const auto id_client_log_data_count_only = NewControlId();
-  const auto id_hide                       = NewControlId();
-  const auto id_recent_file_menu           = NewControlId();
-  const auto id_server_config              = NewControlId();
-  const auto id_remote_server_connect      = NewControlId();
-  const auto id_remote_server_disconnect   = NewControlId();
-  const auto id_remote_server_config       = NewControlId();
-  const auto id_socket_remoteclient        = NewControlId();
-  const auto id_socket_client              = NewControlId();
-  const auto id_timer_stop                 = NewControlId();
-  const auto id_timer_start                = NewControlId();
-  const auto id_view_data                  = NewControlId();
-  const auto id_view_log                   = NewControlId();
-  const auto id_view_shell                 = NewControlId();
-  const auto id_view_statistics            = NewControlId();
-  const auto id_write_data                 = NewControlId();
-
   SetIcon(wxICON(app));
 
 #if wxUSE_TASKBARICON
@@ -490,6 +489,70 @@ frame::frame()
           .Name("STATISTICS")}},
       "Perspective");
 
+    bind_all();
+}
+
+frame::~frame()
+{
+#if wxUSE_TASKBARICON
+    delete m_taskbar_icon;
+#endif
+    delete m_client;
+    delete m_server;
+}
+
+void frame::append_text(wex::stc* stc, const std::string& text, data_mode_t mode)
+{
+    const bool pos_at_end = (stc->GetCurrentPos() == stc->GetTextLength());
+
+    std::string prefix;
+
+    switch (mode)
+    {
+      case data_mode_t::MESSAGE:
+        break;
+      case data_mode_t::MESSAGE_RAW:
+        break;
+      case data_mode_t::READ:
+        prefix = "r: ";
+        break;
+      case data_mode_t::WRITE:
+        prefix = "w: ";
+        break;
+    }
+
+    if (mode != data_mode_t::MESSAGE_RAW)
+    {
+      stc->AppendText(wxDateTime::Now().Format("%T") + " " + prefix);
+    }
+
+    if (
+      !stc->is_hexmode() || mode == data_mode_t::MESSAGE ||
+      mode == data_mode_t::MESSAGE_RAW)
+    {
+      stc->AppendText(text);
+    }
+    else
+    {
+      stc->get_hexmode().append_text(text);
+    }
+
+    if (text.back() != '\n')
+    {
+      stc->AppendText(stc->eol());
+    }
+
+    stc->EmptyUndoBuffer();
+    stc->SetSavePoint();
+
+    if (pos_at_end)
+    {
+      stc->DocumentEnd();
+    }
+}
+
+void frame::bind_all()
+{
     Bind(
       wxEVT_MENU,
       [=](wxCommandEvent& event) {
@@ -804,66 +867,7 @@ frame::frame()
       },
       id_write_data);
 }
-
-frame::~frame()
-{
-#if wxUSE_TASKBARICON
-    delete m_taskbar_icon;
-#endif
-    delete m_client;
-    delete m_server;
-}
-
-void frame::append_text(wex::stc* stc, const std::string& text, data_mode_t mode)
-{
-    const bool pos_at_end = (stc->GetCurrentPos() == stc->GetTextLength());
-
-    std::string prefix;
-
-    switch (mode)
-    {
-      case data_mode_t::MESSAGE:
-        break;
-      case data_mode_t::MESSAGE_RAW:
-        break;
-      case data_mode_t::READ:
-        prefix = "r: ";
-        break;
-      case data_mode_t::WRITE:
-        prefix = "w: ";
-        break;
-    }
-
-    if (mode != data_mode_t::MESSAGE_RAW)
-    {
-      stc->AppendText(wxDateTime::Now().Format("%T") + " " + prefix);
-    }
-
-    if (
-      !stc->is_hexmode() || mode == data_mode_t::MESSAGE ||
-      mode == data_mode_t::MESSAGE_RAW)
-    {
-      stc->AppendText(text);
-    }
-    else
-    {
-      stc->get_hexmode().append_text(text);
-    }
-
-    if (text.back() != '\n')
-    {
-      stc->AppendText(stc->eol());
-    }
-
-    stc->EmptyUndoBuffer();
-    stc->SetSavePoint();
-
-    if (pos_at_end)
-    {
-      stc->DocumentEnd();
-    }
-}
-
+  
 void frame::log_connection(
   wxSocketBase* sock,
   bool opend,

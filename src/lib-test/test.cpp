@@ -50,7 +50,7 @@ bool wex::test::app::OnInit()
   SetAppName("wex-test"); // as in CMakeLists
 
   m_path = path(path::current()).data().parent_path();
-  m_path.append("src").append("test").append("data");
+  m_path.append("src").append("lib-test").append("data");
   path::current(m_path.string());
 
   if (!wex::app::OnInit() || !m_path.dir_exists())

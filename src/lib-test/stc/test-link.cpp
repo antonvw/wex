@@ -68,11 +68,11 @@ TEST_CASE("wex::link")
     link(lnk, "on xxxx: not a number");
 
     // Test existing file in test data dir.
-    const std::string test("/src/test/data/test.h");
+    const std::string test("/src/lib-test/data/test.h");
     link(lnk, "test.h", test);
     link(lnk, "  test.h", test);
 
-    const std::string special("/src/test/data/test-special.h");
+    const std::string special("/src/lib-test/data/test-special.h");
     link(lnk, "test-special.h", special);
     link(lnk, "  test-special.h", special);
 

@@ -7,7 +7,7 @@ if (wexBUILD_SAMPLES)
 endif ()
 
 if (wexBUILD_TESTS)
-  add_subdirectory(test)
+  add_subdirectory(lib-test)
 endif ()
 
 add_subdirectory(app)

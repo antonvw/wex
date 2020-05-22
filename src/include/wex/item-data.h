@@ -8,6 +8,7 @@
 #pragma once
 
 #include <any>
+#include <functional>
 #include <wex/control-data.h>
 #include <wx/imaglist.h>
 

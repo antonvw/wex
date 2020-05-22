@@ -22,7 +22,7 @@ TEST_CASE("wex::report")
   wex::test::add_pane(report_frame(), report);
 
   const auto files = wex::get_all_files(
-    wex::path("../../../src/test/report"),
+    wex::path("../../../src/lib-test/report"),
     "*.cpp",
     std::string(),
     wex::dir::type_t().set());
