@@ -11,6 +11,7 @@
 #include <wx/wx.h>
 #endif
 #include <wex/accelerators.h>
+#include <wex/bind.h>
 #include <wex/config.h>
 #include <wex/interruptable.h>
 #include <wex/itemdlg.h>
@@ -41,119 +42,110 @@ wex::report::listview::listview(const listview_data& data)
                 {wxACCEL_CTRL, 'O', ID_LIST_COMPARE}})
     .set(this);
 
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      bool           first = true;
-      wxString       file1, file2;
-      wex::listview* list = nullptr;
-      for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
-      {
-        listitem         li(this, i);
-        const wex::path* filename = &li.get_filename();
-        if (!filename->file_exists())
-          continue;
-        switch (event.GetId())
+  bind(this).command(
+    {{[=](wxCommandEvent& event) {
+        bool           first = true;
+        wxString       file1, file2;
+        wex::listview* list = nullptr;
+        for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
         {
-          case ID_LIST_COMPARE:
+          listitem         li(this, i);
+          const wex::path* filename = &li.get_filename();
+          if (!filename->file_exists())
+            continue;
+          switch (event.GetId())
           {
-            if (GetSelectedItemCount() == 1)
+            case ID_LIST_COMPARE:
             {
-              list = m_frame->activate(listview_data::FILE);
-              if (list == nullptr)
-                return;
-              const int main_selected = list->GetFirstSelected();
-              compare_file(
-                listitem(list, main_selected).get_filename(),
-                *filename);
-            }
-            else
-            {
-              if (first)
+              if (GetSelectedItemCount() == 1)
               {
-                first = false;
-                file1 = filename->string();
+                list = m_frame->activate(listview_data::FILE);
+                if (list == nullptr)
+                  return;
+                const int main_selected = list->GetFirstSelected();
+                compare_file(
+                  listitem(list, main_selected).get_filename(),
+                  *filename);
               }
               else
               {
-                first = true;
-                file2 = filename->string();
+                if (first)
+                {
+                  first = false;
+                  file1 = filename->string();
+                }
+                else
+                {
+                  first = true;
+                  file2 = filename->string();
+                }
+                if (first)
+                  compare_file(path(file1), path(file2));
               }
-              if (first)
-                compare_file(path(file1), path(file2));
+            }
+            break;
+          }
+        }
+      },
+      ID_LIST_COMPARE},
+     {[=](wxCommandEvent& event) {
+        make(listitem(this, GetFirstSelected()).get_filename());
+      },
+      ID_LIST_RUN_MAKE},
+     {[=](wxCommandEvent& event) {
+        const wex::tool& tool(event.GetId());
+        if (
+          tool.id() == ID_TOOL_REPORT_KEYWORD &&
+          data.type() == listview_data::KEYWORD)
+          return;
+        if (
+          tool.is_find_type() &&
+          m_frame->find_in_files_dialog(tool.id()) == wxID_CANCEL)
+          return;
+        if (!report::stream::setup_tool(tool, m_frame))
+          return;
+
+#ifdef __WXMSW__
+        std::thread t([=] {
+#endif
+          statistics<int> stats;
+
+          for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+          {
+            const listitem item(this, i);
+            log::status() << item.get_filename();
+            if (item.get_filename().file_exists())
+            {
+              stream file(item.get_filename(), tool);
+              file.run_tool();
+              stats += file.get_statistics().get_elements();
+            }
+            else
+            {
+              tool_dir dir(
+                tool,
+                item.get_filename().string(),
+                item.file_spec());
+              dir.find_files();
+              stats += dir.get_statistics().get_elements();
             }
           }
-          break;
-        }
-      }
-    },
-    ID_LIST_COMPARE);
-
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      make(listitem(this, GetFirstSelected()).get_filename());
-    },
-    ID_LIST_RUN_MAKE);
-
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      const wex::tool& tool(event.GetId());
-      if (
-        tool.id() == ID_TOOL_REPORT_KEYWORD &&
-        data.type() == listview_data::KEYWORD)
-        return;
-      if (
-        tool.is_find_type() &&
-        m_frame->find_in_files_dialog(tool.id()) == wxID_CANCEL)
-        return;
-      if (!report::stream::setup_tool(tool, m_frame))
-        return;
-
+          log::status(tool.info(&stats));
 #ifdef __WXMSW__
-      std::thread t([=] {
+        });
+        t.detach();
 #endif
-        statistics<int> stats;
-
+      },
+      ID_TOOL_LOWEST},
+     {[=](wxCommandEvent& event) {
+        std::vector<path> files;
         for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
         {
-          const listitem item(this, i);
-          log::status() << item.get_filename();
-          if (item.get_filename().file_exists())
-          {
-            stream file(item.get_filename(), tool);
-            file.run_tool();
-            stats += file.get_statistics().get_elements();
-          }
-          else
-          {
-            tool_dir dir(tool, item.get_filename().string(), item.file_spec());
-            dir.find_files();
-            stats += dir.get_statistics().get_elements();
-          }
+          files.emplace_back(listitem(this, i).get_filename().data());
         }
-        log::status(tool.info(&stats));
-#ifdef __WXMSW__
-      });
-      t.detach();
-#endif
-    },
-    ID_TOOL_LOWEST,
-    ID_TOOL_HIGHEST);
-
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      std::vector<path> files;
-      for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
-      {
-        files.emplace_back(listitem(this, i).get_filename().data());
-      }
-      vcs_execute(m_frame, event.GetId() - ID_EDIT_VCS_LOWEST - 1, files);
-    },
-    ID_EDIT_VCS_LOWEST,
-    ID_EDIT_VCS_HIGHEST);
+        vcs_execute(m_frame, event.GetId() - ID_EDIT_VCS_LOWEST - 1, files);
+      },
+      ID_EDIT_VCS_LOWEST}});
 }
 
 void wex::report::listview::build_popup_menu(wex::menu& menu)

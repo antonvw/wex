@@ -13,6 +13,7 @@
 #endif
 #include <wex/accelerators.h>
 #include <wex/art.h>
+#include <wex/bind.h>
 #include <wex/config.h>
 #include <wex/defs.h>
 #include <wex/frd.h>
@@ -234,33 +235,23 @@ void wex::toolbar::add_find(bool realize)
     Realize();
   }
 
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      findCtrl->find(true);
-    },
-    wxID_DOWN);
+  bind(this).command({{[=](wxCommandEvent& event) {
+                         findCtrl->find(true);
+                       },
+                       wxID_DOWN},
+                      {[=](wxCommandEvent& event) {
+                         findCtrl->find(false);
+                       },
+                       wxID_UP}});
 
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      findCtrl->find(false);
-    },
-    wxID_UP);
-
-  Bind(
-    wxEVT_UPDATE_UI,
-    [=](wxUpdateUIEvent& event) {
-      event.Enable(!findCtrl->get_text().empty());
-    },
-    wxID_DOWN);
-
-  Bind(
-    wxEVT_UPDATE_UI,
-    [=](wxUpdateUIEvent& event) {
-      event.Enable(!findCtrl->get_text().empty());
-    },
-    wxID_UP);
+  bind(this).ui({{[=](wxUpdateUIEvent& event) {
+                    event.Enable(!findCtrl->get_text().empty());
+                  },
+                  wxID_DOWN},
+                 {[=](wxUpdateUIEvent& event) {
+                    event.Enable(!findCtrl->get_text().empty());
+                  },
+                  wxID_UP}});
 }
 
 void wex::toolbar::add_standard(bool realize)

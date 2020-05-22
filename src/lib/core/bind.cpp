@@ -32,6 +32,14 @@ void wex::bind::command(
         m_handler->Bind(wxEVT_MENU, it.first, it.second, ID_EDIT_VCS_HIGHEST);
         break;
 
+      case ID_FIND_FIRST:
+        m_handler->Bind(wxEVT_MENU, it.first, it.second, ID_FIND_LAST);
+        break;
+
+      case ID_TOOL_LOWEST:
+        m_handler->Bind(wxEVT_MENU, it.first, it.second, ID_TOOL_HIGHEST);
+        break;
+
       case ID_VCS_LOWEST:
         m_handler->Bind(wxEVT_MENU, it.first, it.second, ID_VCS_HIGHEST);
         break;
@@ -42,9 +50,13 @@ void wex::bind::command(
 
       default:
         if (it.second == ID_EDIT_EOL_DOS)
+        {
           m_handler->Bind(wxEVT_MENU, it.first, it.second, ID_EDIT_EOL_MAC);
+        }
         else
+        {
           m_handler->Bind(wxEVT_MENU, it.first, it.second);
+        }
     }
   }
 }

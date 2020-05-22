@@ -2,7 +2,7 @@
 // Name:      debug.cpp
 // Purpose:   Implementation of class wex::debug
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <fstream>
@@ -11,6 +11,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wex/bind.h>
 #include <wex/config.h>
 #include <wex/debug.h>
 #include <wex/defs.h>
@@ -78,150 +79,144 @@ wex::debug::debug(wex::managed_frame* frame, wex::process* debug)
 {
   set_entry(config("debug.debugger").get());
 
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      is_finished();
-    },
-    ID_DEBUG_EXIT);
-
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      const std::string text(event.GetString());
-      // parse delete a breakpoint with text, numbers
-      if (std::vector<std::string> v;
-          match("(d|del|delete) +([0-9 ]*)", text, v) > 0)
-      {
-        switch (v.size())
+  bind(this).command(
+    {{[=](wxCommandEvent& event) {
+        is_finished();
+      },
+      ID_DEBUG_EXIT},
+     {[=](wxCommandEvent& event) {
+        const std::string text(event.GetString());
+        // parse delete a breakpoint with text, numbers
+        if (std::vector<std::string> v;
+            match("(d|del|delete) +([0-9 ]*)", text, v) > 0)
         {
-          case 1:
-            clear_breakpoints(text);
-            break;
+          switch (v.size())
+          {
+            case 1:
+              clear_breakpoints(text);
+              break;
 
-          case 2:
-            for (tokenizer tkz(v[1], " "); tkz.has_more_tokens();)
-            {
-              if (const auto& it = m_breakpoints.find(tkz.get_next_token());
-                  it != m_breakpoints.end() &&
-                  m_frame->is_open(std::get<0>(it->second)))
+            case 2:
+              for (tokenizer tkz(v[1], " "); tkz.has_more_tokens();)
               {
-                auto* stc = m_frame->open_file(std::get<0>(it->second));
-                stc->MarkerDeleteHandle(std::get<1>(it->second));
+                if (const auto& it = m_breakpoints.find(tkz.get_next_token());
+                    it != m_breakpoints.end() &&
+                    m_frame->is_open(std::get<0>(it->second)))
+                {
+                  auto* stc = m_frame->open_file(std::get<0>(it->second));
+                  stc->MarkerDeleteHandle(std::get<1>(it->second));
+                }
+              }
+              break;
+          }
+        }
+      },
+      ID_DEBUG_STDIN},
+     {[=](wxCommandEvent& event) {
+        m_stdout += event.GetString();
+        stc_data data;
+
+        if (std::vector<std::string> v; MATCH(NO_FILE_LINE) == 3)
+        {
+          m_stdout.clear();
+
+          if (const wex::path filename(
+                path(v[1]).is_absolute() ? path(v[1]) :
+                                           path(m_path.get_path(), v[1]));
+              allow_open(filename))
+          {
+            if (auto* stc = m_frame->open_file(filename); stc != nullptr)
+            {
+              const auto line = std::stoi(v[2]) - 1;
+              const auto id =
+                stc->MarkerAdd(line, m_marker_breakpoint.number());
+              m_breakpoints[v[0]] = std::make_tuple(filename, id, line);
+              return;
+            }
+          }
+
+          log("debug break") << v[1];
+        }
+        else if (MATCH(PATH) == 1)
+        {
+          if (path(v[0]).is_absolute())
+          {
+            log::verbose("debug path") << v[0];
+
+            if (m_path.string() == v[0] && m_process != nullptr)
+            {
+              // Debug same exe as before, so
+              // reapply all breakpoints.
+              for (auto& it : m_breakpoints)
+              {
+                m_process->write(
+                  m_entry.break_set() + " " + std::get<0>(it.second).string() +
+                  ":" + std::to_string(std::get<2>(it.second) + 1));
               }
             }
-            break;
-        }
-      }
-    },
-    ID_DEBUG_STDIN);
 
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      m_stdout += event.GetString();
-      stc_data data;
-
-      if (std::vector<std::string> v; MATCH(NO_FILE_LINE) == 3)
-      {
-        m_stdout.clear();
-
-        if (const wex::path filename(
-              path(v[1]).is_absolute() ? path(v[1]) :
-                                         path(m_path.get_path(), v[1]));
-            allow_open(filename))
-        {
-          if (auto* stc = m_frame->open_file(filename); stc != nullptr)
-          {
-            const auto line = std::stoi(v[2]) - 1;
-            const auto id = stc->MarkerAdd(line, m_marker_breakpoint.number());
-            m_breakpoints[v[0]] = std::make_tuple(filename, id, line);
-            return;
+            m_path = path(v[0]);
           }
+          m_stdout.clear();
         }
-
-        log("debug break") << v[1];
-      }
-      else if (MATCH(PATH) == 1)
-      {
-        if (path(v[0]).is_absolute())
+        else if (MATCH(AT_LINE) == 1 || MATCH(AT_PATH_LINE) == 2)
         {
-          log::verbose("debug path") << v[0];
-
-          if (m_path.string() == v[0] && m_process != nullptr)
+          if (v.size() == 2)
           {
-            // Debug same exe as before, so
-            // reapply all breakpoints.
-            for (auto& it : m_breakpoints)
+            m_path                 = path(m_path.get_path(), v[0]);
+            m_path_execution_point = m_path;
+            log::verbose("debug path and exec") << m_path.string();
+          }
+          data.indicator_no(stc_data::IND_DEBUG);
+          data.control().line(std::stoi(v.back()));
+          m_stdout.clear();
+        }
+        else if (MATCH(VARIABLE_MULTI) > 0 || MATCH(VARIABLE) > 0)
+        {
+          m_stdout.clear();
+
+          if (allow_open(m_path))
+          {
+            if (auto* stc = m_frame->open_file(m_path); stc != nullptr)
             {
-              m_process->write(
-                m_entry.break_set() + " " + std::get<0>(it.second).string() +
-                ":" + std::to_string(std::get<2>(it.second) + 1));
+              wxCommandEvent event(
+                wxEVT_COMMAND_MENU_SELECTED,
+                ID_EDIT_DEBUG_VARIABLE);
+              event.SetString(v[0]);
+              wxPostEvent(stc, event);
+              return;
             }
           }
-
-          m_path = path(v[0]);
         }
-        m_stdout.clear();
-      }
-      else if (MATCH(AT_LINE) == 1 || MATCH(AT_PATH_LINE) == 2)
-      {
-        if (v.size() == 2)
+        else if (MATCH(EXIT) >= 0)
         {
-          m_path                 = path(m_path.get_path(), v[0]);
-          m_path_execution_point = m_path;
-          log::verbose("debug path and exec") << m_path.string();
+          is_finished();
+          m_stdout.clear();
         }
-        data.indicator_no(stc_data::IND_DEBUG);
-        data.control().line(std::stoi(v.back()));
-        m_stdout.clear();
-      }
-      else if (MATCH(VARIABLE_MULTI) > 0 || MATCH(VARIABLE) > 0)
-      {
-        m_stdout.clear();
-
-        if (allow_open(m_path))
+        else if (clear_breakpoints(m_stdout))
         {
-          if (auto* stc = m_frame->open_file(m_path); stc != nullptr)
+          m_stdout.clear();
+        }
+        else if (match("'(.*)'", m_stdout, v) == 1)
+        {
+          if (wex::path filename(v[0]); allow_open(filename))
           {
-            wxCommandEvent event(
-              wxEVT_COMMAND_MENU_SELECTED,
-              ID_EDIT_DEBUG_VARIABLE);
-            event.SetString(v[0]);
-            wxPostEvent(stc, event);
-            return;
+            m_path = v[0];
+            log::verbose("debug path") << v[0];
           }
+          m_stdout.clear();
         }
-      }
-      else if (MATCH(EXIT) >= 0)
-      {
-        is_finished();
-        m_stdout.clear();
-      }
-      else if (clear_breakpoints(m_stdout))
-      {
-        m_stdout.clear();
-      }
-      else if (match("'(.*)'", m_stdout, v) == 1)
-      {
-        if (wex::path filename(v[0]); allow_open(filename))
+        else if (m_stdout.find("{") == std::string::npos)
         {
-          m_path = v[0];
-          log::verbose("debug path") << v[0];
+          m_stdout.clear();
         }
-        m_stdout.clear();
-      }
-      else if (m_stdout.find("{") == std::string::npos)
-      {
-        m_stdout.clear();
-      }
 
-      if (data.control().line() > 0 && allow_open(m_path))
-      {
-        m_frame->open_file(m_path, data);
-      }
-    },
-    ID_DEBUG_STDOUT);
+        if (data.control().line() > 0 && allow_open(m_path))
+        {
+          m_frame->open_file(m_path, data);
+        }
+      },
+      ID_DEBUG_STDOUT}});
 }
 
 int wex::debug::add_menu(wex::menu* menu, bool popup) const

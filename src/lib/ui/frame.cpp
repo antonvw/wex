@@ -10,6 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <wex/accelerators.h>
+#include <wex/bind.h>
 #include <wex/config.h>
 #include <wex/defs.h>
 #include <wex/frame.h>
@@ -163,110 +164,91 @@ wex::frame::frame(const window_data& data)
     m_find_replace_dialog = nullptr;
   });
 
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      if (GetStatusBar() != nullptr)
-      {
-        GetStatusBar()->Show(!GetStatusBar()->IsShown());
-        SendSizeEvent();
-      }
-    },
-    ID_VIEW_STATUSBAR);
-  Bind(
-    wxEVT_UPDATE_UI,
-    [=](wxUpdateUIEvent& event) {
-      (GetStatusBar() != nullptr ? event.Check(GetStatusBar()->IsShown()) :
+  bind(this).ui(
+    {{[=](wxUpdateUIEvent& event) {
+        (GetStatusBar() != nullptr ? event.Check(GetStatusBar()->IsShown()) :
+                                     event.Check(false));
+      },
+      ID_VIEW_STATUSBAR},
+     {[=](wxUpdateUIEvent& event) {
+        if (auto* lv = get_listview(); lv != nullptr && lv->HasFocus())
+        {
+          update_statusbar(lv);
+        }
+      },
+      ID_UPDATE_STATUS_BAR},
+     {[=](wxUpdateUIEvent& event) {
+        (GetMenuBar() != nullptr ? event.Check(GetMenuBar()->IsShown()) :
                                    event.Check(false));
-    },
-    ID_VIEW_STATUSBAR);
+      },
+      ID_VIEW_MENUBAR}});
 
-  Bind(
-    wxEVT_UPDATE_UI,
-    [=](wxUpdateUIEvent& event) {
-      if (auto* lv = get_listview(); lv != nullptr && lv->HasFocus())
-      {
-        update_statusbar(lv);
-      }
-    },
-    ID_UPDATE_STATUS_BAR);
-
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      FIND_REPLACE(_("Find"), 0);
-    },
-    wxID_FIND);
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      FIND_REPLACE(_("Replace"), wxFR_REPLACEDIALOG);
-    },
-    wxID_REPLACE);
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      m_is_command = true;
-
-      // :e [+command] [file]
-      if (!event.GetString().empty())
-      {
-        std::string text(event.GetString());
-
-        if (auto* stc = get_stc(); stc != nullptr)
+  bind(this).command(
+    {{[=](wxCommandEvent& event) {
+        if (GetStatusBar() != nullptr)
         {
-          wex::path::current(stc->get_filename().get_path());
-          if (!marker_and_register_expansion(&stc->get_vi(), text))
+          GetStatusBar()->Show(!GetStatusBar()->IsShown());
+          SendSizeEvent();
+        }
+      },
+      ID_VIEW_STATUSBAR},
+     {[=](wxCommandEvent& event) {
+        FIND_REPLACE(_("Find"), 0);
+      },
+      wxID_FIND},
+     {[=](wxCommandEvent& event) {
+        FIND_REPLACE(_("Replace"), wxFR_REPLACEDIALOG);
+      },
+      wxID_REPLACE},
+     {[=](wxCommandEvent& event) {
+        m_is_command = true;
+
+        // :e [+command] [file]
+        if (!event.GetString().empty())
+        {
+          std::string text(event.GetString());
+
+          if (auto* stc = get_stc(); stc != nullptr)
+          {
+            wex::path::current(stc->get_filename().get_path());
+            if (!marker_and_register_expansion(&stc->get_vi(), text))
+              return;
+          }
+
+          if (!shell_expansion(text))
             return;
+
+          std::string cmd;
+          if (std::vector<std::string> v;
+              match("\\+([^ \t]+)* *(.*)", text, v) > 1)
+          {
+            cmd  = v[0];
+            text = v[1];
+          }
+
+          open_files(
+            this,
+            to_vector_path(text).get(),
+            control_data().command(cmd));
         }
-
-        if (!shell_expansion(text))
-          return;
-
-        std::string cmd;
-        if (std::vector<std::string> v;
-            match("\\+([^ \t]+)* *(.*)", text, v) > 1)
+        else
         {
-          cmd  = v[0];
-          text = v[1];
+          open_files_dialog(this);
         }
-
-        open_files(
-          this,
-          to_vector_path(text).get(),
-          control_data().command(cmd));
-      }
-      else
-      {
-        open_files_dialog(this);
-      }
-    },
-    wxID_OPEN);
-
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      SetMenuBar(GetMenuBar() != nullptr ? nullptr : m_menubar);
-    },
-    ID_VIEW_MENUBAR);
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      SetWindowStyleFlag(
-        !(GetWindowStyleFlag() & wxCAPTION) ?
-          wxDEFAULT_FRAME_STYLE :
-          GetWindowStyleFlag() & ~wxCAPTION);
-      Refresh();
-    },
-    ID_VIEW_TITLEBAR);
-
-  Bind(
-    wxEVT_UPDATE_UI,
-    [=](wxUpdateUIEvent& event) {
-      (GetMenuBar() != nullptr ? event.Check(GetMenuBar()->IsShown()) :
-                                 event.Check(false));
-    },
-    ID_VIEW_MENUBAR);
+      },
+      wxID_OPEN},
+     {[=](wxCommandEvent& event) {
+        SetMenuBar(GetMenuBar() != nullptr ? nullptr : m_menubar);
+      },
+      ID_VIEW_MENUBAR},
+     {[=](wxCommandEvent& event) {
+        SetWindowStyleFlag(
+          !(GetWindowStyleFlag() & wxCAPTION) ?
+            wxDEFAULT_FRAME_STYLE :
+            GetWindowStyleFlag() & ~wxCAPTION);
+        Refresh();
+      },
+      ID_VIEW_TITLEBAR}});
 
   Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
     if (IsMaximized())

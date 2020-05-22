@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
+#include <wex/bind.h>
 #include <wex/config.h>
 #include <wex/debug.h>
 #include <wex/defs.h>
@@ -65,16 +66,6 @@ wex::managed_frame::managed_frame(size_t maxFiles, const window_data& data)
     event.Skip();
   });
 
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      on_menu_history(
-        m_file_history,
-        event.GetId() - m_file_history.get_base_id());
-    },
-    m_file_history.get_base_id(),
-    m_file_history.get_base_id() + m_file_history.get_max_files());
-
   for (const auto& it : m_toggled_panes)
   {
     Bind(
@@ -94,45 +85,44 @@ wex::managed_frame::managed_frame(size_t maxFiles, const window_data& data)
   Bind(
     wxEVT_MENU,
     [=](wxCommandEvent& event) {
-      find_replace_data::get()->set_find_strings(std::list<std::string>{});
+      on_menu_history(
+        m_file_history,
+        event.GetId() - m_file_history.get_base_id());
     },
-    ID_CLEAR_FINDS);
+    m_file_history.get_base_id(),
+    m_file_history.get_base_id() + m_file_history.get_max_files());
 
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      stc::config_dialog(window_data()
-                           .id(wxID_PREFERENCES)
-                           .parent(this)
-                           .title(_("Editor Options"))
-                           .button(wxAPPLY | wxOK | wxCANCEL));
-    },
-    wxID_PREFERENCES);
-
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      m_file_history.clear();
-    },
-    ID_CLEAR_FILES);
-
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      if (auto* stc = get_stc(); stc != nullptr)
-      {
-        auto it = find_replace_data::get()->get_find_strings().begin();
-        std::advance(it, event.GetId() - ID_FIND_FIRST);
-        if (const std::string text(*it); stc->find_next(
-              text,
-              stc->get_vi().is_active() ? stc->get_vi().search_flags() : -1))
+  bind(this).command(
+    {{[=](wxCommandEvent& event) {
+        find_replace_data::get()->set_find_strings(std::list<std::string>{});
+      },
+      ID_CLEAR_FINDS},
+     {[=](wxCommandEvent& event) {
+        stc::config_dialog(window_data()
+                             .id(wxID_PREFERENCES)
+                             .parent(this)
+                             .title(_("Editor Options"))
+                             .button(wxAPPLY | wxOK | wxCANCEL));
+      },
+      wxID_PREFERENCES},
+     {[=](wxCommandEvent& event) {
+        m_file_history.clear();
+      },
+      ID_CLEAR_FILES},
+     {[=](wxCommandEvent& event) {
+        if (auto* stc = get_stc(); stc != nullptr)
         {
-          find_replace_data::get()->set_find_string(text);
+          auto it = find_replace_data::get()->get_find_strings().begin();
+          std::advance(it, event.GetId() - ID_FIND_FIRST);
+          if (const std::string text(*it); stc->find_next(
+                text,
+                stc->get_vi().is_active() ? stc->get_vi().search_flags() : -1))
+          {
+            find_replace_data::get()->set_find_string(text);
+          }
         }
-      }
-    },
-    ID_FIND_FIRST,
-    ID_FIND_LAST);
+      },
+      ID_FIND_FIRST}});
 }
 
 wex::managed_frame::~managed_frame()

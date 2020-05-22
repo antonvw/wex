@@ -12,6 +12,6 @@ languages:
       - /src/lib-test/.*
       - /src/locale/.*
       
-    test:
-      include:
-      - /src/lib-test/.*
+  test:
+    include:
+    - /src/lib-test/.*

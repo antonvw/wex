@@ -11,6 +11,7 @@
 #include <wx/wx.h>
 #endif
 #include <wex/accelerators.h>
+#include <wex/bind.h>
 #include <wex/config.h>
 #include <wex/defs.h>
 #include <wex/frame.h>
@@ -364,150 +365,122 @@ wex::listview::listview(const listview_data& data)
     PopupMenu(&menu);
   });
 
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      clear();
-    },
-    wxID_CLEAR);
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      copy_selection_to_clipboard();
-    },
-    wxID_COPY);
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      edit_delete();
-    },
-    wxID_DELETE);
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      item_from_text(clipboard_get());
-    },
-    wxID_PASTE);
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      SetItemState(-1, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
-    },
-    wxID_SELECTALL);
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      sort_column(m_to_be_sorted_column_no, SORT_ASCENDING);
-    },
-    wxID_SORT_ASCENDING);
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      sort_column(m_to_be_sorted_column_no, SORT_DESCENDING);
-    },
-    wxID_SORT_DESCENDING);
-
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      copy_selection_to_clipboard();
-      edit_delete();
-    },
-    wxID_CUT);
-
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      for (auto i = 0; i < GetItemCount(); i++)
-      {
-        Select(i, !IsSelected(i));
-      }
-    },
-    ID_EDIT_SELECT_INVERT);
-
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      for (auto i = 0; i < GetItemCount(); i++)
-      {
-        Select(i, false);
-      }
-    },
-    ID_EDIT_SELECT_NONE);
-
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      long new_index = GetSelectedItemCount() > 0 ? GetFirstSelected() : -1;
-      switch (m_data.type())
-      {
-        case listview_data::TSV:
-          if (wxTextEntryDialog
-                dlg(this, _("Input") + ":", _("Item"), item_to_text(new_index));
-              dlg.ShowModal() == wxID_OK)
-          {
-            insert_item(
-              tokenizer(dlg.GetValue(), std::string(1, m_field_separator))
-                .tokenize<std::vector<std::string>>(),
-              new_index);
-          }
-          break;
-
-        default:
+  bind(this).command(
+    {{[=](wxCommandEvent& event) {
+        clear();
+      },
+      wxID_CLEAR},
+     {[=](wxCommandEvent& event) {
+        copy_selection_to_clipboard();
+      },
+      wxID_COPY},
+     {[=](wxCommandEvent& event) {
+        edit_delete();
+      },
+      wxID_DELETE},
+     {[=](wxCommandEvent& event) {
+        item_from_text(clipboard_get());
+      },
+      wxID_PASTE},
+     {[=](wxCommandEvent& event) {
+        SetItemState(-1, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+      },
+      wxID_SELECTALL},
+     {[=](wxCommandEvent& event) {
+        sort_column(m_to_be_sorted_column_no, SORT_ASCENDING);
+      },
+      wxID_SORT_ASCENDING},
+     {[=](wxCommandEvent& event) {
+        sort_column(m_to_be_sorted_column_no, SORT_DESCENDING);
+      },
+      wxID_SORT_DESCENDING},
+     {[=](wxCommandEvent& event) {
+        copy_selection_to_clipboard();
+        edit_delete();
+      },
+      wxID_CUT},
+     {[=](wxCommandEvent& event) {
+        for (auto i = 0; i < GetItemCount(); i++)
         {
-          std::string defaultPath;
-          if (GetSelectedItemCount() > 0)
-          {
-            defaultPath =
-              listitem(this, GetFirstSelected()).get_filename().string();
-          }
-          wxDirDialog dir_dlg(
-            this,
-            _(wxDirSelectorPromptStr),
-            defaultPath,
-            wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
-          if (dir_dlg.ShowModal() == wxID_OK)
-          {
-            const auto no =
-              (GetSelectedItemCount() > 0 ? GetFirstSelected() :
-                                            GetItemCount());
+          Select(i, !IsSelected(i));
+        }
+      },
+      ID_EDIT_SELECT_INVERT},
+     {[=](wxCommandEvent& event) {
+        for (auto i = 0; i < GetItemCount(); i++)
+        {
+          Select(i, false);
+        }
+      },
+      ID_EDIT_SELECT_NONE},
+     {[=](wxCommandEvent& event) {
+        long new_index = GetSelectedItemCount() > 0 ? GetFirstSelected() : -1;
+        switch (m_data.type())
+        {
+          case listview_data::TSV:
+            if (wxTextEntryDialog dlg(
+                  this,
+                  _("Input") + ":",
+                  _("Item"),
+                  item_to_text(new_index));
+                dlg.ShowModal() == wxID_OK)
+            {
+              insert_item(
+                tokenizer(dlg.GetValue(), std::string(1, m_field_separator))
+                  .tokenize<std::vector<std::string>>(),
+                new_index);
+            }
+            break;
 
-            listitem(this, dir_dlg.GetPath().ToStdString()).insert(no);
+          default:
+          {
+            std::string defaultPath;
+            if (GetSelectedItemCount() > 0)
+            {
+              defaultPath =
+                listitem(this, GetFirstSelected()).get_filename().string();
+            }
+            wxDirDialog dir_dlg(
+              this,
+              _(wxDirSelectorPromptStr),
+              defaultPath,
+              wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
+            if (dir_dlg.ShowModal() == wxID_OK)
+            {
+              const auto no =
+                (GetSelectedItemCount() > 0 ? GetFirstSelected() :
+                                              GetItemCount());
+
+              listitem(this, dir_dlg.GetPath().ToStdString()).insert(no);
+            }
           }
         }
-      }
-    },
-    wxID_ADD);
-
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      for (auto i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
-      {
-        item_activated(i);
-      }
-    },
-    ID_EDIT_OPEN);
-
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      if (!IsShown() || GetItemCount() == 0)
-        return false;
-      if (const auto val(wxGetNumberFromUser(
-            _("Input") + " (1 - " + std::to_string(GetItemCount()) + "):",
-            wxEmptyString,
-            _("Enter Item Number"),
-            (GetFirstSelected() == -1 ? 1 : GetFirstSelected() + 1),
-            1,
-            GetItemCount()));
-          val > 0)
-      {
-        listview_data(control_data().line(val), this).inject();
-      }
-      return true;
-    },
-    wxID_JUMP_TO);
+      },
+      wxID_ADD},
+     {[=](wxCommandEvent& event) {
+        for (auto i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+        {
+          item_activated(i);
+        }
+      },
+      ID_EDIT_OPEN},
+     {[=](wxCommandEvent& event) {
+        if (!IsShown() || GetItemCount() == 0)
+          return false;
+        if (const auto val(wxGetNumberFromUser(
+              _("Input") + " (1 - " + std::to_string(GetItemCount()) + "):",
+              wxEmptyString,
+              _("Enter Item Number"),
+              (GetFirstSelected() == -1 ? 1 : GetFirstSelected() + 1),
+              1,
+              GetItemCount()));
+            val > 0)
+        {
+          listview_data(control_data().line(val), this).inject();
+        }
+        return true;
+      },
+      wxID_JUMP_TO}});
 
   Bind(wxEVT_RIGHT_DOWN, [=](wxMouseEvent& event) {
     menu::menu_t style(menu::menu_t().set(menu::IS_POPUP));
