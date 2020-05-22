@@ -96,6 +96,7 @@ namespace wex
 
     return command_arg_t::OTHER;
   }
+
 }; // namespace wex
 
 wex::macros wex::ex::m_macros;
@@ -263,209 +264,7 @@ wex::ex::ex(wex::stc* stc)
                 }},
                {":set",
                 [&](const std::string& command) {
-                  const bool  modeline = command.back() == '*';
-                  std::string text(command.substr(
-                    4,
-                    command.back() == '*' ? command.size() - 5 :
-                                            std::string::npos));
-                  // Convert arguments (add -- to each group, remove all =).
-                  // ts=120 ac ic sy=cpp -> --ts 120 --ac --ic --sy cpp
-                  std::regex re("[0-9a-z=]+");
-                  text = std::regex_replace(
-                    text,
-                    re,
-                    "--&",
-                    std::regex_constants::format_sed);
-                  std::replace(text.begin(), text.end(), '=', ' ');
-                  wex::cmdline cmdline(
-                    // switches
-                    {{{"ac", "auto_complete"},
-                      [&](bool on) {
-                        if (!modeline)
-                          config(_("Auto complete")).set(on);
-                      }},
-                     {{"ai", "autoindent"},
-                      [&](bool on) {
-                        if (!modeline)
-                          config("stc.Auto indent").set(on ? (long)2 : (long)0);
-                      }},
-                     {{"aw", "autowrite"},
-                      [&](bool on) {
-                        if (!modeline)
-                          config(_("stc.Auto write")).set(on);
-                        m_auto_write = on;
-                      }},
-                     {{"eb", "errorbells"},
-                      [&](bool on) {
-                        if (!modeline)
-                          config(_("stc.Error bells")).set(on);
-                      }},
-                     {{"el", "edgeline"},
-                      [&](bool on) {
-                        if (!modeline)
-                          config(_("stc.Edge line"))
-                            .set(
-                              on ? (long)wxSTC_EDGE_LINE :
-                                   (long)wxSTC_EDGE_NONE);
-                        else
-                          get_stc()->SetEdgeMode(wxSTC_EDGE_LINE);
-                      }},
-                     {{"ic", "ignorecase"},
-                      [&](bool on) {
-                        if (!on)
-                          m_search_flags |= wxSTC_FIND_MATCHCASE;
-                        else
-                          m_search_flags &= ~wxSTC_FIND_MATCHCASE;
-                        wex::find_replace_data::get()->set_match_case(!on);
-                      }},
-                     {{"mw", "matchwords"},
-                      [&](bool on) {
-                        if (on)
-                          m_search_flags |= wxSTC_FIND_WHOLEWORD;
-                        else
-                          m_search_flags &= ~wxSTC_FIND_WHOLEWORD;
-                        wex::find_replace_data::get()->set_match_word(on);
-                      }},
-                     {{"nu", "number"},
-                      [&](bool on) {
-                        if (!modeline)
-                          config(_("stc.Line numbers")).set(on);
-                        else
-                          get_stc()->show_line_numbers(on);
-                      }},
-                     {{"readonly", "readonly"},
-                      [&](bool on) {
-                        get_stc()->SetReadOnly(on);
-                      }},
-                     {{"showmode", "showmode"},
-                      [&](bool on) {
-                        ((wex::statusbar*)m_frame->GetStatusBar())
-                          ->pane_show("PaneMode", on);
-                        if (!modeline)
-                          config(_("stc.Show mode")).set(on);
-                      }},
-                     {{"sm", "showmatch"},
-                      [&](bool on) {
-                        if (!modeline)
-                          config(_("stc.Show match")).set(on);
-                      }},
-                     {{"sws", "showwhitespace"},
-                      [&](bool on) {
-                        if (!modeline)
-                        {
-                          config(_("stc.Whitespace visible"))
-                            .set(
-                              on ? wxSTC_WS_VISIBLEALWAYS : wxSTC_WS_INVISIBLE);
-                          config(_("stc.End of line")).set(on);
-                        }
-                        else
-                        {
-                          get_stc()->SetViewWhiteSpace(wxSTC_WS_VISIBLEALWAYS);
-                          get_stc()->SetViewEOL(true);
-                        }
-                      }},
-                     {{"ut", "usetabs"},
-                      [&](bool on) {
-                        if (!modeline)
-                          config(_("stc.Use tabs")).set(on);
-                        else
-                          get_stc()->SetUseTabs(on);
-                      }},
-                     {{"wm", "wrapmargin"},
-                      [&](bool on) {
-                        if (!modeline)
-                          config(_("stc.Wrap line"))
-                            .set(on ? wxSTC_WRAP_CHAR : wxSTC_WRAP_NONE);
-                        else
-                          get_stc()->SetWrapMode(wxSTC_WRAP_CHAR);
-                      }},
-                     {{"ws", "wrapscan", "1"},
-                      [&](bool on) {
-                        config(_("stc.Wrap scan")).set(on);
-                      }}},
-                    // options
-                    {{{"dir", "dir", wex::path::current()},
-                      {cmdline::STRING,
-                       [&](const std::any& val) {
-                         wex::path::current(std::any_cast<std::string>(val));
-                       }}},
-                     {{"ec",
-                       "edgecolumn",
-                       std::to_string(get_stc()->GetEdgeColumn())},
-                      {cmdline::INT,
-                       [&](const std::any& val) {
-                         if (!modeline)
-                           config(_("stc.Edge column"))
-                             .set(std::any_cast<int>(val));
-                         else
-                           get_stc()->SetEdgeColumn(std::any_cast<int>(val));
-                       }}},
-                     {{"report",
-                       "report",
-                       std::to_string(config("stc.Reported lines").get(5))},
-                      {cmdline::INT,
-                       [&](const std::any& val) {
-                         config("stc.Reported lines")
-                           .set(std::any_cast<int>(val));
-                       }}},
-                     {{"sw",
-                       "shiftwidth",
-                       std::to_string(get_stc()->GetIndent())},
-                      {cmdline::INT,
-                       [&](const std::any& val) {
-                         if (!modeline)
-                           config(_("stc.Indent")).set(std::any_cast<int>(val));
-                         else
-                           get_stc()->SetIndent(std::any_cast<int>(val));
-                       }}},
-                     {{"sy", "syntax"},
-                      {cmdline::STRING,
-                       [&](const std::any& val) {
-                         if (std::any_cast<std::string>(val) != "off")
-                           get_stc()->get_lexer().set(
-                             std::any_cast<std::string>(val),
-                             true); // allow folding
-                         else
-                           get_stc()->get_lexer().clear();
-                       }}},
-                     {{"ts",
-                       "tabstop",
-                       std::to_string(get_stc()->GetTabWidth())},
-                      {cmdline::INT,
-                       [&](const std::any& val) {
-                         if (!modeline)
-                           config(_("stc.Tab width"))
-                             .set(std::any_cast<int>(val));
-                         else
-                           get_stc()->SetTabWidth(std::any_cast<int>(val));
-                       }}}},
-                    {},
-                    // no standard options
-                    false,
-                    // prefix
-                    "ex-set");
-
-                  if (std::string help; !cmdline.toggle(!modeline).parse(
-                        text.empty() ? "-h" : text,
-                        help,
-                        !modeline))
-                  {
-                    if (modeline)
-                    {
-                      std::cout << help << "\n";
-                    }
-                    else
-                    {
-                      show_dialog("Options", help, "markdown");
-                    }
-                  }
-                  else if (!modeline)
-                  {
-                    m_frame->on_command_item_dialog(
-                      wxID_PREFERENCES,
-                      wxCommandEvent(wxEVT_BUTTON, wxOK));
-                  }
-                  log::verbose(":set") << text;
+                  command_set(command);
                   return true;
                 }},
                {":so",
@@ -931,6 +730,192 @@ bool wex::ex::command_handle(const std::string& command) const
     });
 
   return it != m_commands.end() && it->second(command);
+}
+
+void wex::ex::command_set(const std::string& command)
+{
+  const bool  modeline = command.back() == '*';
+  std::string text(command.substr(
+    4,
+    command.back() == '*' ? command.size() - 5 : std::string::npos));
+  // Convert arguments (add -- to each group, remove all =).
+  // ts=120 ac ic sy=cpp -> --ts 120 --ac --ic --sy cpp
+  std::regex re("[0-9a-z=]+");
+  text = std::regex_replace(text, re, "--&", std::regex_constants::format_sed);
+  std::replace(text.begin(), text.end(), '=', ' ');
+  wex::cmdline cmdline(
+    // switches
+    {{{"ac", "auto_complete"},
+      [&](bool on) {
+        if (!modeline)
+          config(_("Auto complete")).set(on);
+      }},
+     {{"ai", "autoindent"},
+      [&](bool on) {
+        if (!modeline)
+          config("stc.Auto indent").set(on ? (long)2 : (long)0);
+      }},
+     {{"aw", "autowrite"},
+      [&](bool on) {
+        if (!modeline)
+          config(_("stc.Auto write")).set(on);
+        m_auto_write = on;
+      }},
+     {{"eb", "errorbells"},
+      [&](bool on) {
+        if (!modeline)
+          config(_("stc.Error bells")).set(on);
+      }},
+     {{"el", "edgeline"},
+      [&](bool on) {
+        if (!modeline)
+          config(_("stc.Edge line"))
+            .set(on ? (long)wxSTC_EDGE_LINE : (long)wxSTC_EDGE_NONE);
+        else
+          get_stc()->SetEdgeMode(wxSTC_EDGE_LINE);
+      }},
+     {{"ic", "ignorecase"},
+      [&](bool on) {
+        if (!on)
+          m_search_flags |= wxSTC_FIND_MATCHCASE;
+        else
+          m_search_flags &= ~wxSTC_FIND_MATCHCASE;
+        wex::find_replace_data::get()->set_match_case(!on);
+      }},
+     {{"mw", "matchwords"},
+      [&](bool on) {
+        if (on)
+          m_search_flags |= wxSTC_FIND_WHOLEWORD;
+        else
+          m_search_flags &= ~wxSTC_FIND_WHOLEWORD;
+        wex::find_replace_data::get()->set_match_word(on);
+      }},
+     {{"nu", "number"},
+      [&](bool on) {
+        if (!modeline)
+          config(_("stc.Line numbers")).set(on);
+        else
+          get_stc()->show_line_numbers(on);
+      }},
+     {{"readonly", "readonly"},
+      [&](bool on) {
+        get_stc()->SetReadOnly(on);
+      }},
+     {{"showmode", "showmode"},
+      [&](bool on) {
+        ((wex::statusbar*)m_frame->GetStatusBar())->pane_show("PaneMode", on);
+        if (!modeline)
+          config(_("stc.Show mode")).set(on);
+      }},
+     {{"sm", "showmatch"},
+      [&](bool on) {
+        if (!modeline)
+          config(_("stc.Show match")).set(on);
+      }},
+     {{"sws", "showwhitespace"},
+      [&](bool on) {
+        if (!modeline)
+        {
+          config(_("stc.Whitespace visible"))
+            .set(on ? wxSTC_WS_VISIBLEALWAYS : wxSTC_WS_INVISIBLE);
+          config(_("stc.End of line")).set(on);
+        }
+        else
+        {
+          get_stc()->SetViewWhiteSpace(wxSTC_WS_VISIBLEALWAYS);
+          get_stc()->SetViewEOL(true);
+        }
+      }},
+     {{"ut", "usetabs"},
+      [&](bool on) {
+        if (!modeline)
+          config(_("stc.Use tabs")).set(on);
+        else
+          get_stc()->SetUseTabs(on);
+      }},
+     {{"wm", "wrapmargin"},
+      [&](bool on) {
+        if (!modeline)
+          config(_("stc.Wrap line"))
+            .set(on ? wxSTC_WRAP_CHAR : wxSTC_WRAP_NONE);
+        else
+          get_stc()->SetWrapMode(wxSTC_WRAP_CHAR);
+      }},
+     {{"ws", "wrapscan", "1"},
+      [&](bool on) {
+        config(_("stc.Wrap scan")).set(on);
+      }}},
+    // options
+    {{{"dir", "dir", wex::path::current()},
+      {cmdline::STRING,
+       [&](const std::any& val) {
+         wex::path::current(std::any_cast<std::string>(val));
+       }}},
+     {{"ec", "edgecolumn", std::to_string(get_stc()->GetEdgeColumn())},
+      {cmdline::INT,
+       [&](const std::any& val) {
+         if (!modeline)
+           config(_("stc.Edge column")).set(std::any_cast<int>(val));
+         else
+           get_stc()->SetEdgeColumn(std::any_cast<int>(val));
+       }}},
+     {{"report", "report", std::to_string(config("stc.Reported lines").get(5))},
+      {cmdline::INT,
+       [&](const std::any& val) {
+         config("stc.Reported lines").set(std::any_cast<int>(val));
+       }}},
+     {{"sw", "shiftwidth", std::to_string(get_stc()->GetIndent())},
+      {cmdline::INT,
+       [&](const std::any& val) {
+         if (!modeline)
+           config(_("stc.Indent")).set(std::any_cast<int>(val));
+         else
+           get_stc()->SetIndent(std::any_cast<int>(val));
+       }}},
+     {{"sy", "syntax"},
+      {cmdline::STRING,
+       [&](const std::any& val) {
+         if (std::any_cast<std::string>(val) != "off")
+           get_stc()->get_lexer().set(
+             std::any_cast<std::string>(val),
+             true); // allow folding
+         else
+           get_stc()->get_lexer().clear();
+       }}},
+     {{"ts", "tabstop", std::to_string(get_stc()->GetTabWidth())},
+      {cmdline::INT,
+       [&](const std::any& val) {
+         if (!modeline)
+           config(_("stc.Tab width")).set(std::any_cast<int>(val));
+         else
+           get_stc()->SetTabWidth(std::any_cast<int>(val));
+       }}}},
+    {},
+    // no standard options
+    false,
+    // prefix
+    "ex-set");
+
+  if (std::string help; !cmdline.toggle(!modeline)
+                           .parse(text.empty() ? "-h" : text, help, !modeline))
+  {
+    if (modeline)
+    {
+      std::cout << help << "\n";
+    }
+    else
+    {
+      show_dialog("Options", help, "markdown");
+    }
+  }
+  else if (!modeline)
+  {
+    m_frame->on_command_item_dialog(
+      wxID_PREFERENCES,
+      wxCommandEvent(wxEVT_BUTTON, wxOK));
+  }
+
+  log::verbose(":set") << text;
 }
 
 void wex::ex::copy(const wex::ex* ex)
