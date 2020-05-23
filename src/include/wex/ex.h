@@ -24,7 +24,15 @@ namespace wex
   class stc;
   class stc_entry_dialog;
 
-  enum class info_message_t;
+  enum class info_message_t
+  {
+    MSG_NONE,
+    ADD,
+    COPY,
+    DEL,
+    MOVE,
+    YANK,
+  };
 
   /// Offers a class that adds ex editor to wex::stc.
   class ex
@@ -140,6 +148,13 @@ namespace wex
     ex_command m_command;
 
   private:
+    enum class address_t;
+
+    bool address_parse(
+      std::string& command,
+      std::string& range,
+      std::string& cmd,
+      address_t&   type);
     bool command_address(const std::string& command);
     bool command_handle(const std::string& command) const;
     void command_set(const std::string& command);

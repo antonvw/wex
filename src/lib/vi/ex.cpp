@@ -63,16 +63,6 @@ namespace wex
     OTHER,
   };
 
-  enum class info_message_t
-  {
-    MSG_NONE,
-    ADD,
-    COPY,
-    DEL,
-    MOVE,
-    YANK,
-  };
-
   command_arg_t get_command_arg(const std::string& command)
   {
     if (const auto post(wex::after(command, ' ')); post == command)
@@ -98,6 +88,13 @@ namespace wex
   }
 
 }; // namespace wex
+
+enum class wex::ex::address_t
+{
+  NONE,
+  ONE,
+  RANGE,
+};
 
 wex::macros wex::ex::m_macros;
 
@@ -383,6 +380,130 @@ wex::ex::~ex()
   delete m_ctags;
 }
 
+bool wex::ex::address_parse(
+  std::string& rest,
+  std::string& range_str,
+  std::string& cmd,
+  address_t&   type)
+{
+  if (rest.compare(0, 5, "'<,'>") == 0)
+  {
+    if (get_stc()->get_selected_text().empty())
+    {
+      return false;
+    }
+
+    type      = address_t::RANGE;
+    range_str = "'<,'>";
+    cmd       = rest.substr(5);
+    rest      = rest.substr(6);
+  }
+  else
+  {
+    marker_and_register_expansion(this, rest);
+
+    // Addressing in ex.
+    const std::string addr(
+      // (1) . (2) $ (3) decimal number, + or - (7)
+      "[\\.\\$0-9\\+\\-]+|"
+      // (4) marker
+      "'[a-z]|"
+      // (5) (6) regex find, non-greedy!
+      "[\\?/].*?[\\?/]");
+
+    // Command Descriptions in ex.
+    // 1addr commands
+    const std::string cmds_1addr("(append|"
+                                 "insert|"
+                                 "mark|ma|"
+                                 "pu|"
+                                 "read|"
+                                 "[aikrz=])([\\s\\S]*)");
+
+    // 2addr commands
+    const std::string cmds_2addr("(change|"
+                                 "copy|co|"
+                                 "delete|"
+                                 "global|"
+                                 "join|"
+                                 "list|"
+                                 "move|"
+                                 "number|nu|"
+                                 "print|"
+                                 "substitute|"
+                                 "write|"
+                                 "yank|ya|"
+                                 "[cdgjlmpsStvwy<>\\!&~@#])([\\s\\S]*)");
+
+    if (std::vector<std::string> v;
+        // 2addr % range
+        match("^%" + cmds_2addr, rest, v) == 2 ||
+        // 1addr (or none)
+        match("^(" + addr + ")?" + cmds_1addr, rest, v) == 3 ||
+        // 2addr
+        match("^(" + addr + ")?(," + addr + ")?" + cmds_2addr, rest, v) == 4)
+    {
+      switch (v.size())
+      {
+        case 2:
+          type      = address_t::RANGE;
+          range_str = "%";
+          cmd       = v[0];
+          rest      = v[1];
+          break;
+
+        case 3:
+          type      = address_t::ONE;
+          range_str = v[0];
+          cmd       = (v[1] == "mark" ? "k" : v[1]);
+          rest      = trim(v[2], skip_t().set(TRIM_LEFT));
+          break;
+
+        case 4:
+          type      = address_t::RANGE;
+          range_str = v[0] + v[1];
+
+          if (v[2].substr(0, 2) == "co")
+          {
+            cmd = "t";
+          }
+          else if (v[2].substr(0, 2) == "nu")
+          {
+            cmd = "#";
+          }
+          else
+          {
+            cmd = v[2];
+          }
+
+          rest = v[3];
+          break;
+
+        default:
+          assert(0);
+          break;
+      }
+    }
+    else
+    {
+      type = address_t::NONE;
+      const auto line(address(this, rest).get_line());
+
+      if (line > 0)
+        stc_data(get_stc()).control(control_data().line(line)).inject();
+
+      return line > 0;
+    }
+
+    if (range_str.empty() && cmd != '!')
+    {
+      range_str = (cmd == "g" || cmd == 'v' || cmd == 'w' ? "%" : ".");
+    }
+  }
+
+  return true;
+}
+
 bool wex::ex::auto_write()
 {
   if (!m_auto_write || !get_stc()->IsModified())
@@ -448,276 +569,43 @@ bool wex::ex::command(const std::string& cmd)
 
 bool wex::ex::command_address(const std::string& command)
 {
-  auto        rest(command);
-  std::string range_str, cmd;
-  bool        is_1addr = false; // single address
+  std::string range, cmd, rest(command);
+  address_t   type;
 
-  if (rest.compare(0, 5, "'<,'>") == 0)
+  if (!address_parse(rest, range, cmd, type))
   {
-    if (get_stc()->get_selected_text().empty())
-    {
-      return false;
-    }
-
-    range_str = "'<,'>";
-    cmd       = rest.substr(5);
-    rest      = rest.substr(6);
+    return false;
   }
-  else
+
+  switch (type)
   {
-    marker_and_register_expansion(this, rest);
+    case address_t::NONE:
+      break;
 
-    // Addressing in ex.
-    const std::string addr(
-      // (1) . (2) $ (3) decimal number, + or - (7)
-      "[\\.\\$0-9\\+\\-]+|"
-      // (4) marker
-      "'[a-z]|"
-      // (5) (6) regex find, non-greedy!
-      "[\\?/].*?[\\?/]");
-
-    // Command Descriptions in ex.
-    // 1addr commands
-    const std::string cmds_1addr("(append|"
-                                 "insert|"
-                                 "mark|ma|"
-                                 "pu|"
-                                 "read|"
-                                 "[aikrz=])([\\s\\S]*)");
-
-    // 2addr commands
-    const std::string cmds_2addr("(change|"
-                                 "copy|co|"
-                                 "delete|"
-                                 "global|"
-                                 "join|"
-                                 "list|"
-                                 "move|"
-                                 "number|nu|"
-                                 "print|"
-                                 "substitute|"
-                                 "write|"
-                                 "yank|ya|"
-                                 "[cdgjlmpsStvwy<>\\!&~@#])([\\s\\S]*)");
-
-    if (std::vector<std::string> v;
-        // 2addr % range
-        match("^%" + cmds_2addr, rest, v) == 2 ||
-        // 1addr (or none)
-        match("^(" + addr + ")?" + cmds_1addr, rest, v) == 3 ||
-        // 2addr
-        match("^(" + addr + ")?(," + addr + ")?" + cmds_2addr, rest, v) == 4)
-    {
-      switch (v.size())
+    case address_t::ONE:
+      if (!address(this, range).parse(rest, cmd))
       {
-        case 2:
-          range_str = "%";
-          cmd       = v[0];
-          rest      = v[1];
-          break;
-
-        case 3:
-          is_1addr  = true;
-          range_str = v[0];
-          cmd       = (v[1] == "mark" ? "k" : v[1]);
-          rest      = trim(v[2], skip_t().set(TRIM_LEFT));
-          break;
-
-        case 4:
-          range_str = v[0] + v[1];
-
-          if (v[2].substr(0, 2) == "co")
-          {
-            cmd = "t";
-          }
-          else if (v[2].substr(0, 2) == "nu")
-          {
-            cmd = "#";
-          }
-          else
-          {
-            cmd = v[2];
-          }
-
-          rest = v[3];
-          break;
-
-        default:
-          assert(0);
-          break;
+        return false;
       }
-    }
-    else
-    {
-      const auto line(address(this, rest).get_line());
+      break;
 
-      if (line > 0)
-        stc_data(get_stc()).control(control_data().line(line)).inject();
+    case address_t::RANGE:
+      if (info_message_t im(info_message_t::MSG_NONE);
+          !addressrange(this, range).parse(rest, cmd, im))
+      {
+        return false;
+      }
+      else if (im != info_message_t::MSG_NONE)
+      {
+        info_message(register_text(), im);
+      }
+      break;
 
-      return line > 0;
-    }
-
-    if (range_str.empty() && cmd != '!')
-    {
-      range_str = (cmd == "g" || cmd == 'v' || cmd == 'w' ? "%" : ".");
-    }
+    default:
+      assert(0);
   }
 
-  bool           r;
-  info_message_t im(info_message_t::MSG_NONE);
-
-  if (is_1addr)
-  {
-    switch (const address addr(this, range_str); (int)cmd[0])
-    {
-      case 0:
-        return false;
-
-      case 'a':
-        if (rest.find('|') != std::string::npos)
-        {
-          m_frame->hide_ex_bar();
-          return addr.append(after(rest, '|'));
-        }
-        else
-        {
-          return m_frame->show_ex_input(this, cmd[0]);
-        }
-
-      case 'i':
-        if (rest.find('|') != std::string::npos)
-        {
-          m_frame->hide_ex_bar();
-          return addr.insert(after(rest, '|'));
-        }
-        else
-        {
-          return m_frame->show_ex_input(this, cmd[0]);
-        }
-
-      case 'k':
-        return !rest.empty() ? addr.marker_add(rest[0]) : false;
-
-      case 'p':
-        if (cmd == "pu")
-        {
-          return !rest.empty() ? addr.put(rest[0]) : addr.put();
-        }
-        else
-        {
-          return false;
-        }
-
-      case 'r':
-        return addr.read(rest);
-
-      case 'z':
-        return addr.adjust_window(rest);
-
-      case '=':
-        return addr.write_line_number();
-
-      default:
-        log::status("Unknown address command") << cmd;
-        return false;
-    }
-  }
-  else
-  {
-    switch (addressrange range(this, range_str); (int)cmd[0])
-    {
-      case 0:
-        return false;
-
-      case 'c':
-        if (rest.find('|') != std::string::npos)
-        {
-          m_frame->hide_ex_bar();
-          return range.change(after(rest, '|'));
-        }
-        else
-        {
-          return m_frame->show_ex_input(this, cmd[0]);
-        }
-
-      case 'd':
-        r  = range.erase();
-        im = info_message_t::DEL;
-        break;
-
-      case 'v':
-      case 'g':
-        return range.global(rest, cmd[0] == 'v');
-
-      case 'j':
-        return range.join();
-
-      case 'm':
-        r  = range.move(address(this, rest));
-        im = info_message_t::MOVE;
-        break;
-
-      case 'l':
-      case 'p':
-        return (get_stc()->GetName() != "Print" ? range.print(rest) : false);
-
-      case 's':
-      case '&':
-      case '~':
-        return range.substitute(rest, cmd[0]);
-
-      case 'S':
-        return range.sort(rest);
-
-      case 't':
-        r  = range.copy(address(this, rest));
-        im = info_message_t::COPY;
-        break;
-
-      case 'w':
-        if (!rest.empty())
-        {
-          return range.write(rest);
-        }
-        else
-        {
-          POST_COMMAND(wxID_SAVE)
-          return true;
-        }
-
-      case 'y':
-        r  = range.yank(rest.empty() ? '0' : (char)rest[0]);
-        im = info_message_t::YANK;
-        break;
-
-      case '>':
-        return range.shift_right();
-
-      case '<':
-        return range.shift_left();
-
-      case '!':
-        return range.escape(rest);
-
-      case '@':
-        return range.execute(rest);
-
-      case '#':
-        return (
-          get_stc()->GetName() != "Print" ? range.print("#" + rest) : false);
-
-      default:
-        log::status("Unknown range command") << cmd;
-        return false;
-    }
-  }
-
-  if (r && im != info_message_t::MSG_NONE)
-  {
-    info_message(register_text(), im);
-  }
-
-  return r;
+  return true;
 }
 
 bool wex::ex::command_handle(const std::string& command) const

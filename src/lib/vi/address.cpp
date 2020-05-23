@@ -137,7 +137,8 @@ int wex::address::get_line() const
   // If this is a // address, return line with first forward match.
   if (std::vector<std::string> v; match("/(.*)/$", m_address, v) > 0)
   {
-    m_ex->get_stc()->SetTargetRange(m_ex->get_stc()->GetCurrentPos(),
+    m_ex->get_stc()->SetTargetRange(
+      m_ex->get_stc()->GetCurrentPos(),
       m_ex->get_stc()->GetTextLength());
 
     if (m_ex->get_stc()->SearchInTarget(v[0]) != -1)
@@ -170,7 +171,8 @@ int wex::address::get_line() const
              1;
     }
 
-    m_ex->get_stc()->SetTargetRange(m_ex->get_stc()->GetTextLength(),
+    m_ex->get_stc()->SetTargetRange(
+      m_ex->get_stc()->GetTextLength(),
       m_ex->get_stc()->GetCurrentPos());
 
     if (m_ex->get_stc()->SearchInTarget(v[0]) != -1)
@@ -223,6 +225,63 @@ bool wex::address::marker_delete() const
 {
   return m_address.size() > 1 && m_address[0] == '\'' &&
          m_ex->marker_delete(m_address[1]);
+}
+
+bool wex::address::parse(const std::string& rest, const std::string& cmd)
+{
+  switch (cmd[0])
+  {
+    case 0:
+      return false;
+
+    case 'a':
+      if (rest.find('|') != std::string::npos)
+      {
+        m_ex->frame()->hide_ex_bar();
+        return append(after(rest, '|'));
+      }
+      else
+      {
+        return m_ex->frame()->show_ex_input(m_ex, cmd[0]);
+      }
+
+    case 'i':
+      if (rest.find('|') != std::string::npos)
+      {
+        m_ex->frame()->hide_ex_bar();
+        return insert(after(rest, '|'));
+      }
+      else
+      {
+        return m_ex->frame()->show_ex_input(m_ex, cmd[0]);
+      }
+
+    case 'k':
+      return !rest.empty() ? marker_add(rest[0]) : false;
+
+    case 'p':
+      if (cmd == "pu")
+      {
+        return !rest.empty() ? put(rest[0]) : put();
+      }
+      else
+      {
+        return false;
+      }
+
+    case 'r':
+      return read(rest);
+
+    case 'z':
+      return adjust_window(rest);
+
+    case '=':
+      return write_line_number();
+
+    default:
+      log::status("Unknown address command") << cmd;
+      return false;
+  }
 }
 
 bool wex::address::put(char name) const

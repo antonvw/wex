@@ -611,6 +611,104 @@ void wex::addressrange::on_exit()
 }
 
 bool wex::addressrange::parse(
+  const std::string& rest,
+  const std::string& cmd,
+  info_message_t&    im)
+{
+  bool r = true;
+
+  switch (cmd[0])
+  {
+    case 0:
+      return false;
+
+    case 'c':
+      if (rest.find('|') != std::string::npos)
+      {
+        m_ex->frame()->hide_ex_bar();
+        return change(after(rest, '|'));
+      }
+      else
+      {
+        return m_ex->frame()->show_ex_input(m_ex, cmd[0]);
+      }
+
+    case 'd':
+      r  = erase();
+      im = info_message_t::DEL;
+      break;
+
+    case 'v':
+    case 'g':
+      return global(rest, cmd[0] == 'v');
+
+    case 'j':
+      return join();
+
+    case 'm':
+      r  = move(address(m_ex, rest));
+      im = info_message_t::MOVE;
+      break;
+
+    case 'l':
+    case 'p':
+      return (m_ex->get_stc()->GetName() != "Print" ? print(rest) : false);
+
+    case 's':
+    case '&':
+    case '~':
+      return substitute(rest, cmd[0]);
+
+    case 'S':
+      return sort(rest);
+
+    case 't':
+      r  = copy(address(m_ex, rest));
+      im = info_message_t::COPY;
+      break;
+
+    case 'w':
+      if (!rest.empty())
+      {
+        return write(rest);
+      }
+      else
+      {
+        wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVE);
+        wxPostEvent(wxTheApp->GetTopWindow(), event);
+        return true;
+      }
+
+    case 'y':
+      r  = yank(rest.empty() ? '0' : (char)rest[0]);
+      im = info_message_t::YANK;
+      break;
+
+    case '>':
+      return shift_right();
+
+    case '<':
+      return shift_left();
+
+    case '!':
+      return escape(rest);
+
+    case '@':
+      return execute(rest);
+
+    case '#':
+      return (
+        m_ex->get_stc()->GetName() != "Print" ? print("#" + rest) : false);
+
+    default:
+      log::status("Unknown range command") << cmd;
+      return false;
+  }
+
+  return r;
+}
+
+bool wex::addressrange::parse(
   const std::string& command_org,
   std::string&       pattern,
   std::string&       replacement,

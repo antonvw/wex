@@ -9,3 +9,7 @@ add_subdirectory(stc)
 add_subdirectory(ui)
 add_subdirectory(vcs)
 add_subdirectory(vi)
+
+if (wexBUILD_SAMPLES)
+  add_subdirectory(sample)
+endif ()

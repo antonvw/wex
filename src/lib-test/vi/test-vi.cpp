@@ -623,7 +623,6 @@ TEST_CASE("wex::vi")
     {
       event.m_keyCode = nav_key;
       CAPTURE(nav_key);
-      //      REQUIRE( vi->on_key_down(event));
       change_mode(vi, ESC, wex::vi_mode::state_t::NORMAL);
     }
 

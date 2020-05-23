@@ -133,5 +133,5 @@ bool wex::app::OnInit()
   vcs::load_document();
   ex::get_macros().load_document();
 
-  return true; // wxApp::OnInit(); // we have our own cmd line processing
+  return true; // do not call base class: we have our own cmd line processing
 }

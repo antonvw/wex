@@ -60,6 +60,9 @@ namespace wex
     /// Deletes marker (if this address concerns a marker).
     bool marker_delete() const;
 
+    /// Parse this address based on cmd.
+    bool parse(const std::string& text, const std::string& command);
+
     /// Append text from the specified register at this address,
     /// default uses yank register.
     bool put(char name = '0') const;

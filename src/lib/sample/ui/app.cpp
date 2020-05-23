@@ -32,8 +32,8 @@
 #include "app.xpm"
 #endif
 
-#include "../../lib-test/ui/test-configitem.h"
-#include "../../lib-test/ui/test-item.h"
+#include "../../../lib-test/ui/test-configitem.h"
+#include "../../../lib-test/ui/test-item.h"
 
 enum
 {

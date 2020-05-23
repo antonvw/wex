@@ -1,6 +1,3 @@
-# simplify 
-- ex::command_address
-
 # feature/blame
 - improve blame size calculation, now only uses size of first blame line,
   should be more, or all

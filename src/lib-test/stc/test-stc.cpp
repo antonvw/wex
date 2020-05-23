@@ -135,13 +135,10 @@ TEST_CASE("wex::stc")
     stc->clear();
     stc->config_get();
     stc->Cut();
-    //  stc->filetype_menu();
     stc->fold();
-    // FoldAll
     wex::config(_("stc.Auto fold")).set(3);
     stc->fold(true);
     stc->Paste();
-    //  stc->Print();
     stc->print_preview();
     stc->process_char(5);
     stc->properties_message();
@@ -197,7 +194,6 @@ TEST_CASE("wex::stc")
     REQUIRE(stc->get_lexer().set("cpp"));
     stc->set_text("\nif ()\n{\n");
     stc->DocumentEnd();
-    //  REQUIRE( stc->auto_indentation('\n'));
   }
 
   SUBCASE("link") { REQUIRE(!stc->link_open()); }

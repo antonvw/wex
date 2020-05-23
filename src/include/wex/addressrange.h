@@ -13,6 +13,7 @@
 
 namespace wex
 {
+  enum class info_message_t;
   class process;
   class stc;
 
@@ -92,6 +93,12 @@ namespace wex
 
     /// moves range to destination.
     bool move(const address& destination) const;
+
+    /// Parses this addressrange based on cmd.
+    bool parse(
+      const std::string& text,
+      const std::string& command,
+      info_message_t&    msg);
 
     /// Prints range to print file.
     bool print(const std::string& flags = std::string()) const;

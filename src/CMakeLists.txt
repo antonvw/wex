@@ -2,10 +2,6 @@ include_directories(${Boost_INCLUDE_DIRS})
 
 add_subdirectory(lib)
 
-if (wexBUILD_SAMPLES)
-  add_subdirectory(sample)
-endif ()
-
 if (wexBUILD_TESTS)
   add_subdirectory(lib-test)
 endif ()
