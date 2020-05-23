@@ -60,6 +60,7 @@ private:
   void append_text(wex::stc* stc, const std::string& text, data_mode_t mode);
 
   void bind_all();
+  void build_menu();
 
   void log_connection(
     wxSocketBase* sock,

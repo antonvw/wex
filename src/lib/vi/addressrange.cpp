@@ -611,7 +611,7 @@ void wex::addressrange::on_exit()
 }
 
 bool wex::addressrange::parse(
-  const std::string& rest,
+  const std::string& text,
   const std::string& cmd,
   info_message_t&    im)
 {
@@ -623,10 +623,10 @@ bool wex::addressrange::parse(
       return false;
 
     case 'c':
-      if (rest.find('|') != std::string::npos)
+      if (text.find('|') != std::string::npos)
       {
         m_ex->frame()->hide_ex_bar();
-        return change(after(rest, '|'));
+        return change(after(text, '|'));
       }
       else
       {
@@ -640,37 +640,37 @@ bool wex::addressrange::parse(
 
     case 'v':
     case 'g':
-      return global(rest, cmd[0] == 'v');
+      return global(text, cmd[0] == 'v');
 
     case 'j':
       return join();
 
     case 'm':
-      r  = move(address(m_ex, rest));
+      r  = move(address(m_ex, text));
       im = info_message_t::MOVE;
       break;
 
     case 'l':
     case 'p':
-      return (m_ex->get_stc()->GetName() != "Print" ? print(rest) : false);
+      return (m_stc->GetName() != "Print" ? print(text) : false);
 
     case 's':
     case '&':
     case '~':
-      return substitute(rest, cmd[0]);
+      return substitute(text, cmd[0]);
 
     case 'S':
-      return sort(rest);
+      return sort(text);
 
     case 't':
-      r  = copy(address(m_ex, rest));
+      r  = copy(address(m_ex, text));
       im = info_message_t::COPY;
       break;
 
     case 'w':
-      if (!rest.empty())
+      if (!text.empty())
       {
-        return write(rest);
+        return write(text);
       }
       else
       {
@@ -680,7 +680,7 @@ bool wex::addressrange::parse(
       }
 
     case 'y':
-      r  = yank(rest.empty() ? '0' : (char)rest[0]);
+      r  = yank(text.empty() ? '0' : (char)text[0]);
       im = info_message_t::YANK;
       break;
 
@@ -691,14 +691,13 @@ bool wex::addressrange::parse(
       return shift_left();
 
     case '!':
-      return escape(rest);
+      return escape(text);
 
     case '@':
-      return execute(rest);
+      return execute(text);
 
     case '#':
-      return (
-        m_ex->get_stc()->GetName() != "Print" ? print("#" + rest) : false);
+      return (m_stc->GetName() != "Print" ? print("#" + text) : false);
 
     default:
       log::status("Unknown range command") << cmd;
