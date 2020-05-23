@@ -26,20 +26,20 @@ execute_process(
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets)
 
 configure_file(
-  src/src/lexers/LexAda.cxx 
+  src/lib/lexers/LexAda.cxx 
   ${CMAKE_SOURCE_DIR}/external/wxWidgets/src/stc/scintilla/lexers COPYONLY)
 configure_file(
-  src/src/lexers/LexBash.cxx 
+  src/lib/lexers/LexBash.cxx 
   ${CMAKE_SOURCE_DIR}/external/wxWidgets/src/stc/scintilla/lexers COPYONLY)
 configure_file(
-  src/src/lexers/Catalogue.cxx 
+  src/lib/lexers/Catalogue.cxx 
   ${CMAKE_SOURCE_DIR}/external/wxWidgets/src/stc/scintilla/src COPYONLY)
 
 add_subdirectory(external)
 
 include(external/wxWidgets/build/cmake/toolkit.cmake)
 
-file(READ src/src/core/version.cpp WEX_VERSION_CONTENTS)
+file(READ src/lib/core/version.cpp WEX_VERSION_CONTENTS)
 string(REGEX MATCH "[ \t]+[0-9]+,[0-9, ]+[0-9]+"
   WEX_VERSION ${WEX_VERSION_CONTENTS})
 string(REGEX REPLACE "[ \t]+" "" WEX_VERSION ${WEX_VERSION})

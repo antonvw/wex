@@ -30,7 +30,7 @@ matrix:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-8']
           packages: ['clang-8', 'valgrind', 'libboost-all-dev']
       os: osx
-      osx_image: xcode11.3
+      osx_image: xcode11.5
       sudo: required
 
 before_install:
@@ -47,6 +47,6 @@ script:
   - mkdir build && pushd build
   - cmake -DCMAKE_CXX_COMPILER=${CXX} -DCMAKE_BUILD_TYPE=Coverage -DwexBUILD_TESTS=ON ..
   - make -j 4
-  - if [ $TRAVIS_OS_NAME = osx ]; then src/test/core/wex-test-core; fi
-  - if [ $TRAVIS_OS_NAME = osx ]; then src/test/ui/wex-test-ui -tse=wex::process; fi
-  - if [ $TRAVIS_OS_NAME = osx ]; then src/test/report/wex-test-report; fi
+  - if [ $TRAVIS_OS_NAME = osx ]; then src/lib-test/core/wex-test-core; fi
+  - if [ $TRAVIS_OS_NAME = osx ]; then src/lib-test/ui/wex-test-ui -tse=wex::process; fi
+  - if [ $TRAVIS_OS_NAME = osx ]; then src/lib-test/report/wex-test-report; fi

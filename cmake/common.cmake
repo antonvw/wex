@@ -30,7 +30,7 @@ function(pack)
     install(FILES ${dlls} DESTINATION ${CONFIG_INSTALL_DIR})
   endif()
 
-  configure_file(../data/wex-conf.elp.cmake conf.elp)
+  configure_file(../../data/wex-conf.elp.cmake conf.elp)
 
   install(DIRECTORY ../data/ DESTINATION ${CONFIG_INSTALL_DIR} 
     FILES_MATCHING PATTERN "*.xml" )

@@ -3,7 +3,8 @@
   - ex append, insert, change commands follow
     The Open Group Base Specifications Issue 7, 2018 edition
   - ctags update to use libreadtags and auto_complete improvements
-  - bettercodehub improvements
+  - bettercodehub improvements, split up of src directories
+  - gtk3 is used as default widget toolkit
 
 **v20.04** *March 15, 2020*
   - scintilla is compiled to use std::regex (ECMAScript)

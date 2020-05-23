@@ -211,7 +211,10 @@ namespace wex
     auto get_margin_text_click() const { return m_margin_text_click; };
 
     /// Returns selected text as a string.
-    const std::string get_selected_text();
+    const std::string get_selected_text() const;
+
+    /// Returns text.
+    const std::string get_text() const;
 
     /// Returns vi component.
     const auto& get_vi() const { return m_vi; };
@@ -371,6 +374,7 @@ namespace wex
     typedef std::bitset<3> link_t;
 
     void bind_all();
+    void bind_other();
     void build_popup_menu(menu& menu);
     void check_brace();
     bool check_brace(int pos);
@@ -387,6 +391,9 @@ namespace wex
 
     const marker m_marker_change = marker(1);
 
+    const wxWindowID m_id_margin_text_hide, m_id_margin_text_author,
+      m_id_margin_text_date, m_id_margin_text_id;
+
     int m_fold_level{0}, m_margin_text_click{-1}, m_saved_pos{-1},
       m_saved_selection_start{-1}, m_saved_selection_end{-1};
 
@@ -400,16 +407,14 @@ namespace wex
     // (though stc_file offers one), as you can manually override
     // the lexer.
     lexer    m_lexer;
-    link     m_link;
     stc_data m_data;
     stc_file m_file;
     vi       m_vi;
 
-    wxFont m_default_font;
-
     // All objects share the following:
     static inline item_dialog*       m_config_dialog = nullptr;
     static inline stc_entry_dialog*  m_entry_dialog  = nullptr;
+    static inline link*              m_link          = nullptr;
     static inline int                m_zoom          = -1;
     static inline std::vector<item>* m_config_items  = nullptr;
   };

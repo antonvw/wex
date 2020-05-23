@@ -1,0 +1,15 @@
+project(wex-lib)
+
+add_subdirectory(core)
+add_subdirectory(common)
+add_subdirectory(data)
+add_subdirectory(lexer)
+add_subdirectory(report)
+add_subdirectory(stc)
+add_subdirectory(ui)
+add_subdirectory(vcs)
+add_subdirectory(vi)
+
+if (wexBUILD_SAMPLES)
+  add_subdirectory(sample)
+endif ()
