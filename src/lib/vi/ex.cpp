@@ -18,6 +18,7 @@
 #include <wex/addressrange.h>
 #include <wex/cmdline.h>
 #include <wex/config.h>
+#include <wex/core.h>
 #include <wex/ctags.h>
 #include <wex/debug.h>
 #include <wex/defs.h>
@@ -28,11 +29,11 @@
 #include <wex/log.h>
 #include <wex/macros.h>
 #include <wex/managedframe.h>
+#include <wex/statusbar.h>
 #include <wex/stc.h>
 #include <wex/stcdlg.h>
 #include <wex/tokenizer.h>
 #include <wex/type-to-value.h>
-#include <wex/util.h>
 #include <wex/version.h>
 
 #define POST_CLOSE(ID, VETO)                      \
@@ -176,7 +177,6 @@ wex::ex::ex(wex::stc* stc)
                   switch (get_command_arg(command))
                   {
                     case wex::command_arg_t::INT:
-                      // TODO: at this moment you cannot set KEY_CONTROL
                       return handle_container<int, wex::macros::keys_map_t>(
                         "Map",
                         command,
@@ -381,26 +381,26 @@ wex::ex::~ex()
 }
 
 bool wex::ex::address_parse(
-  std::string& rest,
-  std::string& range_str,
+  std::string& text,
+  std::string& range,
   std::string& cmd,
   address_t&   type)
 {
-  if (rest.compare(0, 5, "'<,'>") == 0)
+  if (text.compare(0, 5, "'<,'>") == 0)
   {
     if (get_stc()->get_selected_text().empty())
     {
       return false;
     }
 
-    type      = address_t::RANGE;
-    range_str = "'<,'>";
-    cmd       = rest.substr(5);
-    rest      = rest.substr(6);
+    type  = address_t::RANGE;
+    range = "'<,'>";
+    cmd   = text.substr(5);
+    text  = text.substr(6);
   }
   else
   {
-    marker_and_register_expansion(this, rest);
+    marker_and_register_expansion(this, text);
 
     // Addressing in ex.
     const std::string addr(
@@ -437,31 +437,31 @@ bool wex::ex::address_parse(
 
     if (std::vector<std::string> v;
         // 2addr % range
-        match("^%" + cmds_2addr, rest, v) == 2 ||
+        match("^%" + cmds_2addr, text, v) == 2 ||
         // 1addr (or none)
-        match("^(" + addr + ")?" + cmds_1addr, rest, v) == 3 ||
+        match("^(" + addr + ")?" + cmds_1addr, text, v) == 3 ||
         // 2addr
-        match("^(" + addr + ")?(," + addr + ")?" + cmds_2addr, rest, v) == 4)
+        match("^(" + addr + ")?(," + addr + ")?" + cmds_2addr, text, v) == 4)
     {
       switch (v.size())
       {
         case 2:
-          type      = address_t::RANGE;
-          range_str = "%";
-          cmd       = v[0];
-          rest      = v[1];
+          type  = address_t::RANGE;
+          range = "%";
+          cmd   = v[0];
+          text  = v[1];
           break;
 
         case 3:
-          type      = address_t::ONE;
-          range_str = v[0];
-          cmd       = (v[1] == "mark" ? "k" : v[1]);
-          rest      = trim(v[2], skip_t().set(TRIM_LEFT));
+          type  = address_t::ONE;
+          range = v[0];
+          cmd   = (v[1] == "mark" ? "k" : v[1]);
+          text  = trim(v[2], skip_t().set(TRIM_LEFT));
           break;
 
         case 4:
-          type      = address_t::RANGE;
-          range_str = v[0] + v[1];
+          type  = address_t::RANGE;
+          range = v[0] + v[1];
 
           if (v[2].substr(0, 2) == "co")
           {
@@ -476,7 +476,7 @@ bool wex::ex::address_parse(
             cmd = v[2];
           }
 
-          rest = v[3];
+          text = v[3];
           break;
 
         default:
@@ -487,17 +487,17 @@ bool wex::ex::address_parse(
     else
     {
       type = address_t::NONE;
-      const auto line(address(this, rest).get_line());
+      const auto line(address(this, text).get_line());
 
       if (line > 0)
-        stc_data(get_stc()).control(control_data().line(line)).inject();
+        data::stc(get_stc()).control(data::control().line(line)).inject();
 
       return line > 0;
     }
 
-    if (range_str.empty() && cmd != '!')
+    if (range.empty() && cmd != '!')
     {
-      range_str = (cmd == "g" || cmd == 'v' || cmd == 'w' ? "%" : ".");
+      range = (cmd == "g" || cmd == 'v' || cmd == 'w' ? "%" : ".");
     }
   }
 
@@ -583,19 +583,18 @@ bool wex::ex::command_address(const std::string& command)
       break;
 
     case address_t::ONE:
-      if (!address(this, range).parse(rest, cmd))
+      if (!address(this, range).parse(cmd, rest))
       {
         return false;
       }
       break;
 
     case address_t::RANGE:
-      if (info_message_t im(info_message_t::MSG_NONE);
-          !addressrange(this, range).parse(rest, cmd, im))
+      if (info_message_t im; !addressrange(this, range).parse(cmd, rest, im))
       {
         return false;
       }
-      else if (im != info_message_t::MSG_NONE)
+      else if (im != info_message_t::NONE)
       {
         info_message(register_text(), im);
       }
@@ -961,7 +960,7 @@ bool wex::ex::marker_goto(char marker)
 {
   if (const auto line = marker_line(marker); line != -1)
   {
-    stc_data(get_stc()).control(control_data().line(line + 1)).inject();
+    data::stc(get_stc()).control(data::control().line(line + 1)).inject();
     return true;
   }
 
@@ -1099,7 +1098,7 @@ void wex::ex::show_dialog(
     m_dialog = new stc_entry_dialog(
       text,
       std::string(),
-      window_data().button(wxOK).title(title).size({450, 450}));
+      data::window().button(wxOK).title(title).size({450, 450}));
   }
   else
   {

@@ -5,28 +5,25 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <functional>
 #include <numeric>
+#include <wex/bind.h>
 #include <wex/config.h>
+#include <wex/core.h>
 #include <wex/defs.h>
+#include <wex/log.h>
 #include <wex/process.h>
 #include <wex/shell.h>
 #include <wex/tokenizer.h>
-#include <wex/util.h>
 
 wex::shell::shell(
-  const stc_data&    data,
+  const data::stc&    data,
   const std::string& prompt,
   const std::string& command_end)
   : stc(
       std::string(),
-      stc_data(data).flags(
-        stc_data::window_t().set(stc_data::WIN_NO_INDICATOR),
-        control_data::OR))
+      data::stc(data).flags(
+        data::stc::window_t().set(data::stc::WIN_NO_INDICATOR),
+        data::control::OR))
   , m_command_end(command_end == std::string() ? eol() : command_end)
   , m_echo(true)
   , m_commands(config("Shell").get(std::list<std::string>{}))
@@ -59,26 +56,18 @@ wex::shell::shell(
     }
   });
 
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      AppendText(event.GetString());
-    },
-    ID_SHELL_APPEND);
-
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      AppendText(event.GetString());
-    },
-    ID_SHELL_APPEND_ERROR);
-
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      AppendText(event.GetString());
-    },
-    ID_SHELL_COMMAND);
+  bind(this).command({{[=](wxCommandEvent& event) {
+                         AppendText(event.GetString());
+                       },
+                       ID_SHELL_APPEND},
+                      {[=](wxCommandEvent& event) {
+                         AppendText(event.GetString());
+                       },
+                       ID_SHELL_APPEND_ERROR},
+                      {[=](wxCommandEvent& event) {
+                         AppendText(event.GetString());
+                       },
+                       ID_SHELL_COMMAND}});
 
   Bind(wxEVT_MIDDLE_UP, [=](wxMouseEvent& event) {
     if (event.MiddleUp())

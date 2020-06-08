@@ -13,7 +13,6 @@
 #include <wex/managedframe.h>
 #include <wex/menu.h>
 #include <wex/stc.h>
-#include <wex/util.h>
 #include <wex/vcs.h>
 #include <wx/fdrepdlg.h> // for wxFindDialogEvent
 
@@ -85,9 +84,9 @@ void wex::stc::bind_other()
         {
           if (const std::string add("</" + match + ">"); m_vi.is_active())
           {
-            if (const int esc = 27; !m_vi.command(add) ||
-                                    !m_vi.command(std::string(1, esc)) ||
-                                    !m_vi.command("%") || !m_vi.command("i"))
+            if (
+              !m_vi.command(add) || !m_vi.command(std::string(1, WXK_ESCAPE)) ||
+              !m_vi.command("%") || !m_vi.command("i"))
             {
               log::status("Autocomplete failed");
             }
@@ -293,7 +292,7 @@ void wex::stc::bind_other()
         {
           AnnotationSetText(
             line,
-            align_text(trim(vcs.entry().get_stdout(), skip_t().all())));
+            m_lexer.align_text(trim(vcs.entry().get_stdout(), skip_t().all())));
         }
         else if (!vcs.entry().get_stderr().empty())
         {

@@ -18,9 +18,9 @@ TEST_CASE("wex::toolbar")
   SUBCASE("controls")
   {
     frame()->get_toolbar()->add_standard(false);
-    frame()->get_toolbar()->add_tool(wxID_FIND);
-    frame()->get_toolbar()->add_tool(wxID_CLEAR);
-    frame()->get_toolbar()->add_tool(wxID_PREFERENCES);
+    frame()->get_toolbar()->add_tool({{wxID_FIND}});
+    frame()->get_toolbar()->add_tool({{wxID_CLEAR}});
+    frame()->get_toolbar()->add_tool({{wxID_PREFERENCES}});
     frame()->get_toolbar()->Realize();
 
     frame()->get_find_toolbar()->add_find();

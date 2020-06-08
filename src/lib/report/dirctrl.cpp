@@ -2,9 +2,11 @@
 // Name:      dirctrl.cpp
 // Purpose:   Implementation of class wex::report::dirctrl
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/bind.h>
+#include <wex/core.h>
 #include <wex/lexers.h>
 #include <wex/path.h>
 #include <wex/report/defs.h>
@@ -25,11 +27,7 @@
 
 const int idShowHidden = wxWindow::NewControlId();
 
-wex::report::dirctrl::dirctrl(
-  frame*             frame,
-  const std::string& filter,
-  int                defaultFilter,
-  const window_data& data)
+wex::report::dirctrl::dirctrl(frame* frame, const data::window& data)
   : wxGenericDirCtrl(
       data.parent(),
       data.id(),
@@ -37,8 +35,8 @@ wex::report::dirctrl::dirctrl(
       data.pos(),
       data.size(),
       data.style(),
-      (filter.empty() ? "*" : filter),
-      defaultFilter,
+      "*", // filter
+      0,   // filter index
       data.name())
 {
   if (config(_("Show hidden")).get(false))
@@ -54,70 +52,50 @@ wex::report::dirctrl::dirctrl(
       GetTreeCtrl()->SetForegroundColour(wxColour(fore));
     });
 
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      vcs_execute(
-        frame,
-        event.GetId() - ID_EDIT_VCS_LOWEST - 1,
-        to_vector_path(*this).get());
-    },
-    ID_EDIT_VCS_LOWEST + 1,
-    ID_EDIT_VCS_HIGHEST - 1);
-
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      std::string clipboard;
-      const auto  v(to_vector_string(*this).get());
-      for (const auto& it : v)
-      {
-        clipboard += it + "\n";
-      }
-      clipboard_add(clipboard);
-    },
-    ID_TREE_COPY);
-
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      open_files(
-        frame,
-        to_vector_path(*this).get(),
-        stc_data(),
-        dir::type_t().set(dir::FILES));
-    },
-    ID_EDIT_OPEN);
-
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      GET_VECTOR_FILES
-      make(files[0]);
-    },
-    ID_TREE_RUN_MAKE);
-
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      frame->find_in_files(to_vector_path(*this).get(), event.GetId());
-    },
-    ID_TOOL_REPORT_FIND);
-
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      frame->find_in_files(to_vector_path(*this).get(), event.GetId());
-    },
-    ID_TOOL_REPLACE);
-
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      ShowHidden(!config(_("Show hidden")).get(false));
-      config(_("Show hidden")).set(!config(_("Show hidden")).get(false));
-    },
-    idShowHidden);
+  bind(this).command(
+    {{[=](wxCommandEvent& event) {
+        vcs_execute(
+          frame,
+          event.GetId() - ID_EDIT_VCS_LOWEST - 1,
+          to_vector_path(*this).get());
+      },
+      ID_EDIT_VCS_LOWEST + 1},
+     {[=](wxCommandEvent& event) {
+        std::string clipboard;
+        const auto  v(to_vector_string(*this).get());
+        for (const auto& it : v)
+        {
+          clipboard += it + "\n";
+        }
+        clipboard_add(clipboard);
+      },
+      ID_TREE_COPY},
+     {[=](wxCommandEvent& event) {
+        open_files(
+          frame,
+          to_vector_path(*this).get(),
+          data::stc(),
+          data::dir::type_t().set(data::dir::FILES));
+      },
+      ID_EDIT_OPEN},
+     {[=](wxCommandEvent& event) {
+        GET_VECTOR_FILES
+        make(files[0]);
+      },
+      ID_TREE_RUN_MAKE},
+     {[=](wxCommandEvent& event) {
+        frame->find_in_files(to_vector_path(*this).get(), event.GetId());
+      },
+      ID_TOOL_REPORT_FIND},
+     {[=](wxCommandEvent& event) {
+        frame->find_in_files(to_vector_path(*this).get(), event.GetId());
+      },
+      ID_TOOL_REPLACE},
+     {[=](wxCommandEvent& event) {
+        ShowHidden(!config(_("Show hidden")).get(false));
+        config(_("Show hidden")).set(!config(_("Show hidden")).get(false));
+      },
+      idShowHidden}});
 
   Bind(wxEVT_TREE_ITEM_ACTIVATED, [=](wxTreeEvent& event) {
     GET_VECTOR_FILES
@@ -135,7 +113,11 @@ wex::report::dirctrl::dirctrl(
     }
     else
     {
-      open_files(frame, files, stc_data(), dir::type_t().set(dir::FILES));
+      open_files(
+        frame,
+        files,
+        data::stc(),
+        data::dir::type_t().set(data::dir::FILES));
     }
   });
 
@@ -152,7 +134,7 @@ wex::report::dirctrl::dirctrl(
 
     menu.append({{ID_TREE_COPY,
                   wxGetStockLabel(wxID_COPY),
-                  menu_data().art(wxART_COPY)}});
+                  data::menu().art(wxART_COPY)}});
 
     if (vcs::dir_exists(filename))
     {

@@ -18,10 +18,10 @@
 #include <fstream>
 #include <iostream>
 #include <wex/config.h>
+#include <wex/core.h>
 #include <wex/frd.h>
 #include <wex/log.h>
 #include <wex/stream.h>
-#include <wex/util.h>
 
 wex::stream::stream(const path& filename, const tool& tool)
   : m_path(filename)

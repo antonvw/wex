@@ -23,7 +23,7 @@
 #include <wx/panel.h>
 #include <wx/stattext.h>
 
-wex::managed_frame::managed_frame(size_t maxFiles, const window_data& data)
+wex::managed_frame::managed_frame(size_t maxFiles, const data::window& data)
   : frame(data)
   , m_debug(new debug(this))
   , m_file_history(maxFiles, wxID_FILE1)
@@ -98,7 +98,7 @@ wex::managed_frame::managed_frame(size_t maxFiles, const window_data& data)
       },
       ID_CLEAR_FINDS},
      {[=](wxCommandEvent& event) {
-        stc::config_dialog(window_data()
+        stc::config_dialog(data::window()
                              .id(wxID_PREFERENCES)
                              .parent(this)
                              .title(_("Editor Options"))
@@ -185,7 +185,7 @@ wxPanel* wex::managed_frame::create_ex_panel()
   // comes the ex textctrl for getting user input.
   auto* panel = new wxPanel(this);
   auto* text  = new wxStaticText(panel, wxID_ANY, " ");
-  m_textctrl  = new textctrl(this, text, window_data().parent(panel));
+  m_textctrl  = new textctrl(this, text, data::window().parent(panel));
 
   auto* sizer = new wxFlexGridSizer(2);
   sizer->AddGrowableCol(1);
@@ -200,11 +200,11 @@ wxPanel* wex::managed_frame::create_ex_panel()
 void wex::managed_frame::on_menu_history(
   const class file_history& history,
   size_t                    index,
-  stc_data::window_t        flags)
+  data::stc::window_t        flags)
 {
   if (const auto& file(history.get_history_file(index)); !file.empty())
   {
-    open_file(file, stc_data().flags(flags));
+    open_file(file, data::stc().flags(flags));
   }
 }
 
@@ -247,7 +247,7 @@ void wex::managed_frame::on_notebook(wxWindowID id, wxWindow* page)
   }
 }
 
-wex::stc* wex::managed_frame::open_file(const path& file, const stc_data& data)
+wex::stc* wex::managed_frame::open_file(const path& file, const data::stc& data)
 {
   if (auto* stc = frame::open_file(file, data); stc != nullptr)
   {
@@ -408,7 +408,7 @@ void wex::managed_frame::statusbar_clicked_right(const std::string& pane)
       PopupMenu(
         new wex::menu({{wxWindow::NewControlId(),
                         stc->is_shown_line_numbers() ? "&Hide" : "&Show",
-                        menu_data().action([=](wxCommandEvent&) {
+                        data::menu().action([=](wxCommandEvent&) {
                           stc->show_line_numbers(!stc->is_shown_line_numbers());
                         })}}));
     }
@@ -451,7 +451,7 @@ void wex::managed_frame::statusbar_clicked_right(const std::string& pane)
 
     open_file(
       wex::lexers::get()->get_filename(),
-      wex::control_data().find(
+      wex::data::control().find(
         match,
         wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX));
   }
@@ -461,7 +461,7 @@ void wex::managed_frame::statusbar_clicked_right(const std::string& pane)
     {
       open_file(
         wex::ex::get_macros().get_filename(),
-        wex::control_data().find(
+        wex::data::control().find(
           !get_statustext(pane).empty() ?
             " name=\"" + get_statustext(pane) + "\"" :
             std::string()));
@@ -479,7 +479,7 @@ void wex::managed_frame::statusbar_clicked_right(const std::string& pane)
            wex::debug(this).debug_entry().name());
     }
 
-    open_file(wex::menus::get_filename(), wex::control_data().find(match));
+    open_file(wex::menus::get_filename(), wex::data::control().find(match));
   }
   else if (pane == "PaneText")
   {

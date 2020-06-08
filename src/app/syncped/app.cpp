@@ -66,8 +66,8 @@ bool app::OnInit()
              if (!on)
                return;
              m_data.flags(
-               wex::stc_data::window_t().set(wex::stc_data::WIN_HEX),
-               wex::control_data::OR);
+               wex::data::stc::window_t().set(wex::data::stc::WIN_HEX),
+               wex::data::control::OR);
            }},
 
           {{"info,i", "show versions"},
@@ -149,8 +149,8 @@ bool app::OnInit()
            [&](bool on) {
              if (on)
                m_data.flags(
-                 wex::stc_data::window_t().set(wex::stc_data::WIN_READ_ONLY),
-                 wex::control_data::OR);
+                 wex::data::stc::window_t().set(wex::data::stc::WIN_READ_ONLY),
+                 wex::data::control::OR);
            }}},
 
          {// options with arguments
@@ -158,7 +158,7 @@ bool app::OnInit()
            {wex::cmdline::STRING,
             [&](const std::any& s) {
               m_data.control(
-                wex::control_data().command(std::any_cast<std::string>(s)));
+                wex::data::control().command(std::any_cast<std::string>(s)));
             }}},
 
           {{"config,j", "json config file"},
@@ -170,7 +170,7 @@ bool app::OnInit()
           {{"source,S", "source file"},
            {wex::cmdline::STRING,
             [&](const std::any& s) {
-              m_data.control(wex::control_data().command(
+              m_data.control(wex::data::control().command(
                 ":so " + std::any_cast<std::string>(s)));
             }}},
 
@@ -237,7 +237,7 @@ bool app::OnInit()
 void app::reset()
 {
   // do not reset flags
-  m_data.control(wex::control_data().command(""));
+  m_data.control(wex::data::control().command(""));
   m_is_project = false;
   m_split      = -1;
   m_tag.clear();

@@ -2,7 +2,7 @@
 // Name:      macro-mode.cpp
 // Purpose:   Implementation of class wex::macro_mode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -10,12 +10,13 @@
 #include <wx/wx.h>
 #endif
 #include "macro-fsm.h"
+#include <wex/core.h>
 #include <wex/ex.h>
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
 #include <wex/managedframe.h>
+#include <wex/statusbar.h>
 #include <wex/stc.h>
-#include <wex/util.h>
 
 bool show_dialog(
   wxWindow*          parent,

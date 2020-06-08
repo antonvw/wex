@@ -8,8 +8,8 @@
 #include <wex/lexers.h>
 #include <wex/log.h>
 #include <wex/presentation.h>
-#include <wex/stc.h>
 #include <wex/tokenizer.h>
+#include <wx/stc/stc.h>
 
 wex::presentation::presentation(presentation_t type, const pugi::xml_node& node)
   : m_type(type)
@@ -72,7 +72,7 @@ bool wex::presentation::operator==(const wex::presentation& i) const
                          m_no == i.m_no && m_style == i.m_style;
 }
 
-void wex::presentation::apply(stc* stc) const
+void wex::presentation::apply(wxStyledTextCtrl* stc) const
 {
   if (is_ok())
   {

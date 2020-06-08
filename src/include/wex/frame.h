@@ -8,7 +8,7 @@
 #pragma once
 
 #include <vector>
-#include <wex/statusbar.h>
+#include <wex/statusbar-pane.h>
 #include <wex/stc-data.h>
 #include <wex/window-data.h>
 #include <wx/frame.h>
@@ -23,6 +23,7 @@ namespace wex
   class path;
   class path;
   class process;
+  class statusbar;
   class stc;
   class vcs_entry;
 
@@ -53,7 +54,7 @@ namespace wex
     static bool update_statusbar(stc* stc, const std::string& pane);
 
     /// Default constructor,
-    frame(const window_data& data = window_data());
+    frame(const data::window& data = data::window());
 
     /// Destructor.
     virtual ~frame();
@@ -93,21 +94,21 @@ namespace wex
     /// Default opens the file using get_stc.
     /// Returns stc component opened, or nullptr.
     virtual stc*
-    open_file(const path& filename, const stc_data& data = stc_data());
+    open_file(const path& filename, const data::stc& data = data::stc());
 
     /// Allows you to open a filename with info from vcs.
     /// Returns stc component opened, or nullptr.
     virtual stc* open_file(
       const path&      filename,
       const vcs_entry& vcs,
-      const stc_data&  data = stc_data());
+      const data::stc&  data = data::stc());
 
     /// Allows you to open a filename with specified contents.
     /// Returns stc component opened, or nullptr.
     virtual stc* open_file(
       const path&        filename,
       const std::string& text,
-      const stc_data&    data = stc_data());
+      const data::stc&    data = data::stc());
 
     /// Allows derived class to update file history.
     virtual void set_recent_file(const path& path) { ; };
@@ -127,10 +128,7 @@ namespace wex
     statusbar* setup_statusbar(
       const std::vector<statusbar_pane>& panes,
       long                               style = wxST_SIZEGRIP,
-      const std::string&                 name  = "statusBar")
-    {
-      return statusbar::setup(this, panes, style, name);
-    };
+      const std::string&                 name  = "statusBar");
 
   protected:
     // Interface from wxFrame.

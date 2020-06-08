@@ -13,8 +13,10 @@
 #endif
 #include <wex/bind.h>
 #include <wex/config.h>
+#include <wex/core.h>
 #include <wex/debug.h>
 #include <wex/defs.h>
+#include <wex/dir.h>
 #include <wex/itemdlg.h>
 #include <wex/listview.h>
 #include <wex/managedframe.h>
@@ -24,7 +26,6 @@
 #include <wex/shell.h>
 #include <wex/stc.h>
 #include <wex/tokenizer.h>
-#include <wex/util.h>
 
 #ifdef __WXGTK__
 namespace wex
@@ -37,7 +38,10 @@ namespace wex
   {
   public:
     process_dir(listview* lv, bool init)
-      : dir("/proc", "[0-9]+", std::string(), type_t().set(dir::DIRS))
+      : dir("/proc", 
+          data::dir()
+            .file_spec("[0-9]+")
+            .type(data::dir::type_t().set(data::dir::DIRS)))
       , m_listview(lv)
     {
       if (init)
@@ -114,7 +118,7 @@ wex::debug::debug(wex::managed_frame* frame, wex::process* debug)
       ID_DEBUG_STDIN},
      {[=](wxCommandEvent& event) {
         m_stdout += event.GetString();
-        stc_data data;
+        data::stc data;
 
         if (std::vector<std::string> v; MATCH(NO_FILE_LINE) == 3)
         {
@@ -167,7 +171,7 @@ wex::debug::debug(wex::managed_frame* frame, wex::process* debug)
             m_path_execution_point = m_path;
             log::verbose("debug path and exec") << m_path.string();
           }
-          data.indicator_no(stc_data::IND_DEBUG);
+          data.indicator_no(data::stc::IND_DEBUG);
           data.control().line(std::stoi(v.back()));
           m_stdout.clear();
         }
@@ -339,10 +343,10 @@ wex::debug::get_args(const std::string& command, stc* stc)
         {
 #ifdef __WXGTK__
           {"debug.processes",
-           listview_data(),
+           data::listview(),
            std::any(),
-           item_data()
-             .label_type(item_data::LABEL_NONE)
+           data::item()
+             .label_type(data::item::LABEL_NONE)
              .apply([&](wxWindow* user, const std::any& value, bool save) {
                lv = ((wex::listview*)user);
                if (save && lv->GetFirstSelected() != -1)
@@ -354,14 +358,14 @@ wex::debug::get_args(const std::string& command, stc* stc)
           {"debug.pid",
            item::TEXTCTRL_INT,
            std::any(),
-           item_data(control_data().is_required(true))
-             .label_type(item_data::LABEL_LEFT)
+           data::item(data::control().is_required(true))
+             .label_type(data::item::LABEL_LEFT)
              .apply([&](wxWindow* user, const std::any& value, bool save) {
                if (save)
                  args += " " + std::to_string(std::any_cast<long>(value));
              })}},
 #endif
-        window_data().title("Attach").size({400, 400}).parent(m_frame));
+        data::window().title("Attach").size({400, 400}).parent(m_frame));
     }
 
 #ifdef __WXGTK__
@@ -404,13 +408,13 @@ wex::debug::get_args(const std::string& command, stc* stc)
               {{"debug.File",
                 item::COMBOBOX_FILE,
                 std::any(),
-                item_data(control_data().is_required(true))
+                data::item(data::control().is_required(true))
                   .apply([&](wxWindow* user, const std::any& value, bool save) {
                     if (save)
                       args += " " + std::any_cast<wxArrayString>(value)[0];
                   })},
                {"debug." + m_entry.name(), item::FILEPICKERCTRL}},
-              window_data().title("Debug").parent(m_frame))
+              data::window().title("Debug").parent(m_frame))
                 .ShowModal() != wxID_CANCEL,
             args};
   }
@@ -440,7 +444,7 @@ void wex::debug::is_finished()
   {
     if (auto* stc = m_frame->open_file(m_path_execution_point); stc != nullptr)
     {
-      stc->SetIndicatorCurrent(stc_data::IND_DEBUG);
+      stc->SetIndicatorCurrent(data::stc::IND_DEBUG);
       stc->IndicatorClearRange(0, stc->GetTextLength() - 1);
       stc->AnnotationClearAll();
     }

@@ -12,6 +12,7 @@
 #endif
 #include "../test.h"
 #include <wex/config.h>
+#include <wex/core.h>
 #include <wex/ex.h>
 #include <wex/lexers.h>
 #include <wex/macros.h>
@@ -46,18 +47,6 @@ TEST_CASE("wex" * doctest::may_fail())
     REQUIRE(wex::after("some space and more", ' ', false) == "more");
     REQUIRE(wex::after("some space and more", ' ', true) == "space and more");
     REQUIRE(wex::after("some space and more", 'm', false) == "ore");
-  }
-
-  SUBCASE("align_text")
-  {
-    REQUIRE(
-      wex::align_text(
-        "test",
-        "header",
-        true,
-        true,
-        wex::lexers::get()->find("cpp"))
-        .size() == std::string("// headertest").size());
   }
 
   SUBCASE("auto_complete_text")
@@ -430,13 +419,13 @@ TEST_CASE("wex" * doctest::may_fail())
     REQUIRE(!wex::sort_selection(get_stc(), 0, 20, 10));
   }
 
-  SUBCASE("sort_selection_rect")
+  SUBCASE("sort_selection block")
   {
     get_stc()->get_vi().command("\x1b");
     get_stc()->SelectNone();
     get_stc()->set_text(rect);
 
-    // make a rectangular selection, invoke sort, and check result
+    // make a block selection, invoke sort, and check result
     REQUIRE(get_stc()->get_vi().mode().normal());
     REQUIRE(get_stc()->get_vi().command("3 "));
     REQUIRE(get_stc()->get_vi().command("K"));

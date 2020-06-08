@@ -7,6 +7,7 @@
 
 #include "../test.h"
 #include <wex/ctags-entry.h>
+#include <wex/log.h>
 
 TEST_CASE("wex::ctags_entry")
 {

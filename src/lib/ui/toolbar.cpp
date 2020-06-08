@@ -15,6 +15,7 @@
 #include <wex/art.h>
 #include <wex/bind.h>
 #include <wex/config.h>
+#include <wex/core.h>
 #include <wex/defs.h>
 #include <wex/frd.h>
 #include <wex/grid.h>
@@ -25,7 +26,6 @@
 #include <wex/stc.h>
 #include <wex/textctrl.h>
 #include <wex/toolbar.h>
-#include <wex/util.h>
 
 namespace wex
 {
@@ -40,7 +40,7 @@ namespace wex
   public:
     /// Constructor. Fills the textctrl with value
     /// from find_replace_data.
-    find_textctrl(managed_frame* frame, const window_data& data);
+    find_textctrl(managed_frame* frame, const data::window& data);
 
     /// Finds current value in control.
     void find(bool find_next = true, bool restore_position = false);
@@ -97,7 +97,7 @@ namespace wex
   const wxWindowID ID_VIEW_PROCESS = wxWindowBase::NewControlId();
 }; // namespace wex
 
-wex::toolbar::toolbar(managed_frame* frame, const window_data& data)
+wex::toolbar::toolbar(managed_frame* frame, const data::window& data)
   : wxAuiToolBar(
       frame,
       data.id(),
@@ -184,21 +184,16 @@ void wex::toolbar::add_checkboxes_standard(bool realize)
 
 void wex::toolbar::add_find(bool realize)
 {
-  auto* findCtrl = new find_textctrl(m_frame, window_data().parent(this));
+  auto* findCtrl = new find_textctrl(m_frame, data::window().parent(this));
 
   AddControl(findCtrl->control());
 
-  add_tool(
-    wxID_DOWN,
-    std::string(),
-    wxArtProvider::GetBitmap(wxART_GO_DOWN, wxART_TOOLBAR),
-    _("Find next"));
-
-  add_tool(
-    wxID_UP,
-    std::string(),
-    wxArtProvider::GetBitmap(wxART_GO_UP, wxART_TOOLBAR),
-    _("Find previous"));
+  add_tool({data::toolbar_item(wxID_DOWN)
+              .bitmap(wxArtProvider::GetBitmap(wxART_GO_DOWN, wxART_TOOLBAR))
+              .help(_("Find next")),
+            data::toolbar_item(wxID_UP)
+              .bitmap(wxArtProvider::GetBitmap(wxART_GO_UP, wxART_TOOLBAR))
+              .help(_("Find previous"))});
 
   add_checkboxes(
     {{NewControlId(),
@@ -256,17 +251,19 @@ void wex::toolbar::add_find(bool realize)
 
 void wex::toolbar::add_standard(bool realize)
 {
-  add_tool(wxID_NEW);
-  add_tool(wxID_OPEN);
-  add_tool(wxID_SAVE);
-  add_tool(wxID_PRINT);
-  add_tool(wxID_UNDO);
-  add_tool(wxID_REDO);
-  add_tool(wxID_FIND);
+  add_tool(
+    {{wxID_NEW},
+     {wxID_OPEN},
+     {wxID_SAVE},
+     {wxID_PRINT},
+     {wxID_UNDO},
+     {wxID_REDO},
+     {wxID_FIND}},
+    false);
 
   if (process::get_shell() != nullptr)
   {
-    add_tool(wxID_EXECUTE);
+    add_tool({{wxID_EXECUTE}}, false);
   }
 
   SetToolDropDown(wxID_FIND, true);
@@ -308,32 +305,43 @@ void wex::toolbar::add_standard(bool realize)
   }
 }
 
-wxAuiToolBarItem* wex::toolbar::add_tool(
-  int                toolId,
-  const std::string& label,
-  const wxBitmap&    bitmap,
-  const std::string& shortHelp,
-  wxItemKind         kind)
+bool wex::toolbar::add_tool(
+  const std::vector<data::toolbar_item> v,
+  bool                                  realize)
 {
-  if (const stockart art(toolId); art.get_bitmap(wxART_TOOLBAR).IsOk())
+  for (const auto& it : v)
   {
-    return AddTool(
-      toolId,
-      wxEmptyString, // no label
+    if (const stockart art(it.id()); art.get_bitmap(wxART_TOOLBAR).IsOk())
+    {
+      if (!AddTool(
+            it.id(),
+            wxEmptyString, // no label
 #ifdef __WXGTK__
-      art.get_bitmap(wxART_TOOLBAR),
+            art.get_bitmap(wxART_TOOLBAR),
 #else
-      art.get_bitmap(wxART_MENU, wxSize(16, 16)),
+            art.get_bitmap(wxART_MENU, wxSize(16, 16)),
 #endif
-      wxGetStockLabel(toolId, wxSTOCK_NOFLAGS), // short help
-      kind);
-  }
-  else if (bitmap.IsOk())
-  {
-    return AddTool(toolId, label, bitmap, shortHelp, kind);
+            wxGetStockLabel(it.id(), wxSTOCK_NOFLAGS), // short help
+            it.kind()))
+      {
+        return false;
+      }
+    }
+    else if (it.bitmap().IsOk())
+    {
+      if (!AddTool(it.id(), it.label(), it.bitmap(), it.help(), it.kind()))
+      {
+        return false;
+      }
+    }
   }
 
-  return nullptr;
+  if (realize)
+  {
+    Realize();
+  }
+
+  return true;
 }
 
 bool wex::toolbar::set_checkbox(const std::string& name, bool show) const
@@ -352,7 +360,7 @@ bool wex::toolbar::set_checkbox(const std::string& name, bool show) const
 
 // Implementation of support class.
 
-wex::find_textctrl::find_textctrl(managed_frame* mng, const window_data& data)
+wex::find_textctrl::find_textctrl(managed_frame* mng, const data::window& data)
   : textctrl(mng, find_replace_data::get()->get_find_string(), data)
 {
   accelerators({{wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE, nullptr}})

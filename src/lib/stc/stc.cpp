@@ -7,6 +7,7 @@
 
 #include <wex/blame.h>
 #include <wex/config.h>
+#include <wex/core.h>
 #include <wex/frd.h>
 #include <wex/indicator.h>
 #include <wex/item-vector.h>
@@ -18,11 +19,10 @@
 #include <wex/stc.h>
 #include <wex/stcdlg.h>
 #include <wex/tokenizer.h>
-#include <wex/util.h>
 #include <wex/vcs.h>
 #include <wx/app.h>
 
-wex::stc::stc(const std::string& text, const stc_data& data)
+wex::stc::stc(const std::string& text, const data::stc& data)
   : stc(path(), data)
 {
   if (!text.empty())
@@ -34,15 +34,8 @@ wex::stc::stc(const std::string& text, const stc_data& data)
   m_data.inject();
 }
 
-wex::stc::stc(const path& p, const stc_data& data)
-  : wxStyledTextCtrl(
-      data.window().parent(),
-      data.window().id(),
-      data.window().pos(),
-      data.window().size(),
-      data.window().style(),
-      data.window().name())
-  , m_data(this, data)
+wex::stc::stc(const path& p, const data::stc& data)
+  : m_data(this, data)
   , m_auto_complete(this)
   , m_vi(this)
   , m_file(this, data.window().name())
@@ -54,6 +47,14 @@ wex::stc::stc(const path& p, const stc_data& data)
   , m_id_margin_text_date(NewControlId())
   , m_id_margin_text_id(NewControlId())
 {
+  Create(
+    data.window().parent(),
+    data.window().id(),
+    data.window().pos(),
+    data.window().size(),
+    data.window().style(),
+    data.window().name());
+
   if (
     config("AllowSync").get(true) && p != wex::ex::get_macros().get_filename())
   {
@@ -210,19 +211,19 @@ void wex::stc::PageScrollUp()
 
 bool wex::stc::CanCut() const
 {
-  return wxStyledTextCtrl::CanCut() && !GetReadOnly() && !is_hexmode();
+  return core::stc::CanCut() && !GetReadOnly() && !is_hexmode();
 }
 
 bool wex::stc::CanPaste() const
 {
-  return wxStyledTextCtrl::CanPaste() && !GetReadOnly() && !is_hexmode();
+  return core::stc::CanPaste() && !GetReadOnly() && !is_hexmode();
 }
 
 void wex::stc::Clear()
 {
   m_vi.is_active() && GetSelectedText().empty() ?
     (void)m_vi.command(std::string(1, WXK_DELETE)) :
-    wxStyledTextCtrl::Clear();
+    core::stc::Clear();
 }
 
 void wex::stc::clear(bool set_savepoint)
@@ -242,7 +243,7 @@ void wex::stc::Copy()
 {
   if (CanCopy())
   {
-    wxStyledTextCtrl::Copy();
+    core::stc::Copy();
   }
 }
 
@@ -256,7 +257,7 @@ void wex::stc::Cut()
       m_vi.set_register_yank(get_selected_text());
     }
 
-    wxStyledTextCtrl::Cut();
+    core::stc::Cut();
   }
 }
 
@@ -463,7 +464,7 @@ bool wex::stc::link_open(link_t mode, std::string* filename)
   {
     const path path(m_link->get_path(
       text,
-      control_data().line(link::LINE_OPEN_URL_AND_MIME),
+      data::control().line(link::LINE_OPEN_URL_AND_MIME),
       this));
 
     if (!path.string().empty())
@@ -479,7 +480,7 @@ bool wex::stc::link_open(link_t mode, std::string* filename)
 
   if (mode[LINK_OPEN])
   {
-    control_data data;
+    data::control data;
 
     if (const wex::path path(m_link->get_path(text, data, this));
         !path.string().empty())
@@ -573,7 +574,7 @@ void wex::stc::on_idle(wxIdleEvent& event)
     m_file.check_sync() &&
     // the readonly flags bit of course can differ from file actual readonly
     // mode, therefore add this check
-    !m_data.flags().test(stc_data::WIN_READ_ONLY) &&
+    !m_data.flags().test(data::stc::WIN_READ_ONLY) &&
     get_filename().stat().is_readonly() != GetReadOnly())
   {
     file_readonly_attribute_changed();
@@ -586,9 +587,9 @@ void wex::stc::on_styled_text(wxStyledTextEvent& event)
   event.Skip();
 }
 
-bool wex::stc::open(const path& p, const stc_data& data)
+bool wex::stc::open(const path& p, const data::stc& data)
 {
-  m_data = stc_data(data).window(window_data().name(p.string()));
+  m_data = data::stc(data).window(data::window().name(p.string()));
 
   if (get_filename() != p)
   {
@@ -614,7 +615,7 @@ void wex::stc::Paste()
 {
   if (CanPaste())
   {
-    wxStyledTextCtrl::Paste();
+    core::stc::Paste();
   }
 }
 
@@ -954,7 +955,7 @@ void wex::stc::sync(bool start)
 
 void wex::stc::Undo()
 {
-  wxStyledTextCtrl::Undo();
+  core::stc::Undo();
   m_hexmode.undo();
 }
 

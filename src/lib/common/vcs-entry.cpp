@@ -1,18 +1,19 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      vcs/entry.cpp
+// Name:      vcs-entry.cpp
 // Purpose:   Implementation of wex::vcs_entry class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/vcsentry.h>
 #include <wex/config.h>
+#include <wex/core.h>
 #include <wex/log.h>
 #include <wex/menu.h>
 #include <wex/menus.h>
 #include <wex/shell.h>
 #include <wex/tokenizer.h>
 #include <wex/util.h>
+#include <wex/vcsentry.h>
 
 wex::vcs_entry::vcs_entry(const pugi::xml_node& node)
   : process()
@@ -20,7 +21,8 @@ wex::vcs_entry::vcs_entry(const pugi::xml_node& node)
   , m_admin_dir(node.attribute("admin-dir").value())
   , m_flags_location(
       (strcmp(node.attribute("flags-location").value(), "prefix") == 0 ?
-         FLAGS_LOCATION_PREFIX: FLAGS_LOCATION_POSTFIX))
+         FLAGS_LOCATION_PREFIX :
+         FLAGS_LOCATION_POSTFIX))
   , m_blame(node)
   , m_log_flags(node.attribute("log-flags").value())
 {
@@ -29,8 +31,8 @@ wex::vcs_entry::vcs_entry(const pugi::xml_node& node)
 const std::string wex::vcs_entry::bin() const
 {
   return !config("vcs." + name()).get(name()).empty() ?
-    config("vcs." + name()).get(name()):
-    name();
+           config("vcs." + name()).get(name()) :
+           name();
 }
 
 size_t wex::vcs_entry::build_menu(int base_id, menu* menu) const
@@ -40,26 +42,25 @@ size_t wex::vcs_entry::build_menu(int base_id, menu* menu) const
 
 bool wex::vcs_entry::execute(
   const std::string& args,
-  const lexer& lexer,
-  exec_t type,
+  const lexer&       lexer,
   const std::string& wd)
 {
   m_lexer = lexer;
-  
+
   std::string prefix;
-  
+
   if (m_flags_location == FLAGS_LOCATION_PREFIX)
   {
     prefix = config(_("vcs.Prefix flags")).get();
-    
+
     if (!prefix.empty())
     {
       prefix += " ";
     }
   }
-  
+
   std::string subcommand;
-  
+
   if (get_command().use_subcommand())
   {
     subcommand = config(_("vcs.Subcommand")).get();
@@ -80,7 +81,7 @@ bool wex::vcs_entry::execute(
   {
     flags = get_command().flags();
   }
-  
+
   // E.g. in git you can do
   // git show HEAD~15:syncped/frame.cpp
   // where flags is HEAD~15:,
@@ -94,24 +95,21 @@ bool wex::vcs_entry::execute(
 
   if (get_command().is_commit())
   {
-    comment = 
-      "-m \"" + config(_("vcs.Revision comment")).get_firstof() + "\" ";
+    comment = "-m \"" + config(_("vcs.Revision comment")).get_firstof() + "\" ";
   }
 
   std::string my_args(args);
 
-  // If we specified help (flags), we do not need a file argument.      
+  // If we specified help (flags), we do not need a file argument.
   if (get_command().is_help() || flags.find("help") != std::string::npos)
   {
     my_args.clear();
   }
 
   return process::execute(
-    bin() + " " + 
-      prefix +
-      get_command().get_command() + " " + 
-      subcommand + flags + comment + my_args, 
-    type,
+    bin() + " " + prefix + get_command().get_command() + " " + subcommand +
+      flags + comment + my_args,
+    process::EXEC_WAIT,
     wd);
 }
 
@@ -120,27 +118,25 @@ bool wex::vcs_entry::execute(const std::string& command, const std::string& wd)
   // Get flags if available.
   std::string flags;
   std::string cmd(command);
-  
-  if (const vcs_command& vc(find(get_word(cmd)));
-    !vc.get_command().empty())
+
+  if (const vcs_command & vc(find(get_word(cmd))); !vc.get_command().empty())
   {
     flags = " " + vc.flags();
   }
-  
+
   return process::execute(
-    bin() + " " + command + flags, process::EXEC_WAIT, wd);
+    bin() + " " + command + flags,
+    process::EXEC_WAIT,
+    wd);
 }
-  
+
 const std::string wex::vcs_entry::get_branch(const std::string& wd) const
 {
   if (name() == "git")
-  { 
-    if (process p; 
-      p.execute("git branch", 
-      process::EXEC_WAIT,
-      wd))
+  {
+    if (process p; p.execute("git branch", process::EXEC_WAIT, wd))
     {
-      for (tokenizer tkz(p.get_stdout(), "\r\n"); tkz.has_more_tokens(); )
+      for (tokenizer tkz(p.get_stdout(), "\r\n"); tkz.has_more_tokens();)
       {
         if (const auto token(tkz.get_next_token()); token.find('*') == 0)
         {
@@ -165,18 +161,15 @@ bool wex::vcs_entry::log(const path& p, const std::string& id)
     wex::log("log flags empty") << name();
     return false;
   }
-  
-  const std::string command = 
-    m_flags_location == FLAGS_LOCATION_PREFIX || name() == "svn" ? 
-    bin() + " log " + m_log_flags + " " + id:
-    bin() + " log " + id + " " + m_log_flags;
 
-  return process::execute(
-    command,
-    process::EXEC_WAIT,
-    p.get_path());
+  const std::string command =
+    m_flags_location == FLAGS_LOCATION_PREFIX || name() == "svn" ?
+      bin() + " log " + m_log_flags + " " + id :
+      bin() + " log " + id + " " + m_log_flags;
+
+  return process::execute(command, process::EXEC_WAIT, p.get_path());
 }
-  
+
 void wex::vcs_entry::show_output(const std::string& caption) const
 {
   if (!get_stdout().empty() && get_shell() != nullptr)
@@ -187,10 +180,7 @@ void wex::vcs_entry::show_output(const std::string& caption) const
     }
     else
     {
-      vcs_command_stc(
-        get_command(), 
-        m_lexer, 
-        get_shell());
+      vcs_command_stc(get_command(), m_lexer, get_shell());
     }
   }
 

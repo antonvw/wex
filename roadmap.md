@@ -1,16 +1,19 @@
-# feature/blame
+# feature/platform
+- enlarge font button
+- in ex mode left and right do not work initially (GTK3)
+- /bin/git grep -n xxx -- "*.adb" does not work (GTK3)
+  this is related to editing in text field, not ok
+- git blame margin default not wide enough (MSW)
+- add manifest file (MSW)
+- add missing dll vcruntime140_1.dll (appveyor) (MSW)
+- enable test on appveyor
+- upgrade and fix wxWidgets
+
+# feature/vcs
 - improve blame size calculation, now only uses size of first blame line,
   should be more, or all
   improve align_text (see e.g. blame annotations)
-  
-# feature/git
 - allow checkout by showing other branches, and remove from menu
-
-# use wxTextCompleter
-
-# feature/tests
-- reenable ubuntu test on travis
-- enable test on appveyor
 
 # feature/c++20
 - no longer use StartsWidth (after new develop merge) or find() == 0
@@ -25,9 +28,10 @@
   - wxDateTime replace by c++20 methods date and time utilities
 
 # backlog
-- add missing dll vcruntime140_1.dll (appveyor) 
+- use abstract factory design pattern
+- reenable ubuntu test on travis (after ubuntu 20.04)
+- invest use wxTextCompleter
 - bug :prev or :n from stdin
-- add use namespace wex
 - use configurable toobar from xml
 - start up with recent project, close project
   -> windows appear

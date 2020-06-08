@@ -10,13 +10,12 @@
 #include <numeric>
 #include <pugixml.hpp>
 #include <wex/config.h>
-#include <wex/frame.h>
+#include <wex/core.h>
 #include <wex/lexer.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
-#include <wex/stc.h>
+#include <wex/stc-core.h>
 #include <wex/tokenizer.h>
-#include <wex/util.h>
 
 namespace wex
 {
@@ -40,10 +39,13 @@ namespace wex
 
 wex::lexer::lexer(const std::string& lexer)
 {
-  set(lexer);
+  if (!lexer.empty())
+  {
+    set(lexer);
+  }
 }
 
-wex::lexer::lexer(stc* stc)
+wex::lexer::lexer(core::stc* stc)
   : m_stc(stc)
 {
 }
@@ -236,10 +238,50 @@ bool wex::lexer::add_keywords(const std::string& value, int setno)
   return true;
 }
 
+const std::string wex::lexer::align_text(
+  const std::string_view& lines,
+  const std::string_view& header,
+  bool                    fill_out_with_space,
+  bool                    fill_out) const
+{
+  const auto line_length = usable_chars_per_line();
+
+  // Use the header, with one space extra to separate, or no header at all.
+  const auto header_with_spaces =
+    (header.empty()) ? std::string() : std::string(header.size(), ' ');
+
+  bool        at_begin = true;
+  std::string in(lines), line(header), out;
+
+  while (!in.empty())
+  {
+    if (const auto word = get_word(in);
+        line.size() + 1 + word.size() > line_length)
+    {
+      out +=
+        make_single_line_comment(line, fill_out_with_space, fill_out) +
+        "\n";
+      line = header_with_spaces + word;
+    }
+    else
+    {
+      line +=
+        (!line.empty() && !at_begin ? std::string(" ") : std::string()) + word;
+      at_begin = false;
+    }
+  }
+
+  out += make_single_line_comment(line, fill_out_with_space, fill_out);
+
+  return out;
+}
+
 bool wex::lexer::apply() const
 {
   if (m_stc == nullptr)
+  {
     return false;
+  }
 
   m_stc->ClearDocumentStyle();
 
@@ -383,10 +425,9 @@ void wex::lexer::clear()
 
   if (m_stc != nullptr)
   {
-    ((wxStyledTextCtrl*)m_stc)->SetLexer(wxSTC_LEX_NULL);
+    m_stc->SetLexer(wxSTC_LEX_NULL);
     apply();
-    frame::statustext(std::string(), "PaneLexer");
-    m_stc->reset_margins(stc::margin_t().set(stc::MARGIN_FOLDING));
+    m_stc->reset_margins(core::stc::margin_t().set(core::stc::MARGIN_FOLDING));
   }
 }
 
@@ -423,8 +464,7 @@ const std::string wex::lexer::formatted_text(
       text.substr(0, nCharIndex),
       header_to_use,
       fill_out_with_space,
-      fill_out,
-      *this);
+      fill_out);
 
     text          = text.substr(nCharIndex + 1);
     header_to_use = std::string(header.size(), ' ');
@@ -433,7 +473,7 @@ const std::string wex::lexer::formatted_text(
   if (!text.empty())
   {
     out +=
-      align_text(text, header_to_use, fill_out_with_space, fill_out, *this);
+      align_text(text, header_to_use, fill_out_with_space, fill_out);
   }
 
   return out;
@@ -497,7 +537,7 @@ const std::string wex::lexer::make_comment(
   text.find("\n") != std::string::npos ?
     out += formatted_text(text, std::string(), fill_out_with_space, fill_out) :
     out +=
-    align_text(text, std::string(), fill_out_with_space, fill_out, *this);
+    align_text(text, std::string(), fill_out_with_space, fill_out);
 
   return out;
 }
@@ -510,7 +550,7 @@ const std::string wex::lexer::make_comment(
 
   text.find("\n") != std::string::npos ?
     out += formatted_text(text, prefix, true, true) :
-    out += align_text(text, prefix, true, true, *this);
+    out += align_text(text, prefix, true, true);
 
   return out;
 }
@@ -611,7 +651,7 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
                             {"line", wxSTC_EDGE_LINE},
                             {"background", wxSTC_EDGE_BACKGROUND}},
                            a),
-                         [&](stc* stc, int attrib) {
+                         [&](core::stc* stc, int attrib) {
                            switch (attrib)
                            {
                              case -1:
@@ -640,7 +680,7 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
                             {"afterindent", wxSTC_WS_VISIBLEAFTERINDENT},
                             {"onlyindent", wxSTC_WS_VISIBLEONLYININDENT}},
                            a),
-                         [&](stc* stc, int attrib) {
+                         [&](core::stc* stc, int attrib) {
                            if (attrib >= 0)
                            {
                              stc->SetViewWhiteSpace(attrib);
@@ -655,7 +695,7 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
        convert_attrib(
          {{"arrow", wxSTC_TD_LONGARROW}, {"strike", wxSTC_TD_STRIKEOUT}},
          a),
-       [&](stc* stc, int attrib) {
+       [&](core::stc* stc, int attrib) {
          if (attrib >= 0)
          {
            stc->SetTabDrawMode(attrib);
@@ -667,7 +707,7 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
   {
     m_attribs.push_back({_("Use tabs"),
                          convert_attrib({{"use", 1}, {"off", 0}}, a),
-                         [&](stc* stc, int attrib) {
+                         [&](core::stc* stc, int attrib) {
                            if (attrib >= 0)
                            {
                              stc->SetUseTabs(true);
@@ -677,7 +717,7 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
 
   if (const auto a(node->attribute("tabwidth").as_int(0)); a > 0)
   {
-    m_attribs.push_back({_("Tab width"), a, [&](stc* stc, int attrib) {
+    m_attribs.push_back({_("Tab width"), a, [&](core::stc* stc, int attrib) {
                            if (attrib >= 0)
                            {
                              stc->SetIndent(attrib);
@@ -695,7 +735,7 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
                             {"char", wxSTC_WRAP_CHAR},
                             {"whitespace", wxSTC_WRAP_WHITESPACE}},
                            a),
-                         [&](stc* stc, int attrib) {
+                         [&](core::stc* stc, int attrib) {
                            if (attrib >= 0)
                            {
                              stc->SetWrapMode(attrib);
@@ -723,25 +763,26 @@ bool wex::lexer::set(const std::string& lexer, bool fold)
 bool wex::lexer::set(const lexer& lexer, bool fold)
 {
   (*this) =
-    (lexer.m_scintilla_lexer.empty() && m_stc != nullptr ?
+    (lexer.m_scintilla_lexer.empty() && m_stc != nullptr &&
+         !lexers::get()->get_lexers().empty() ?
        lexers::get()->find_by_text(m_stc->GetLine(0)) :
        lexer);
 
   if (m_stc == nullptr)
+  {
     return m_is_ok;
+  }
 
   m_stc->SetLexerLanguage(m_scintilla_lexer);
 
   apply();
 
-  const bool ok = (((wxStyledTextCtrl*)m_stc)->GetLexer()) != wxSTC_LEX_NULL;
+  const bool ok = m_stc->GetLexer() != wxSTC_LEX_NULL;
 
   if (!m_scintilla_lexer.empty() && !ok)
   {
     log::verbose("lexer is not set") << lexer.display_lexer();
   }
-
-  frame::statustext(display_lexer(), "PaneLexer");
 
   if (fold)
   {

@@ -62,7 +62,16 @@ TEST_CASE("wex::lexer")
     REQUIRE(lexer.attrib(_("Tab width")) == 12);
   }
 
-  SUBCASE("Set")
+  SUBCASE("align")
+  {
+    REQUIRE(
+      wex::lexers::get()
+        ->find("cpp")
+        .align_text("test", "header", true, true)
+        .size() == std::string("// headertest").size());
+  }
+
+  SUBCASE("set")
   {
     REQUIRE(lexer.set("xsl"));
     REQUIRE(lexer.language() == "xml");
@@ -90,7 +99,7 @@ TEST_CASE("wex::lexer")
     REQUIRE(lexer.scintilla_lexer() == "cpp");
   }
 
-  SUBCASE("Clear")
+  SUBCASE("clear")
   {
     lexer.set("markdown");
     REQUIRE(!lexer.attribs().empty());
@@ -102,7 +111,7 @@ TEST_CASE("wex::lexer")
     REQUIRE(lexer.attrib(_("Edge line")) == -1);
   }
 
-  SUBCASE("Testing several methods")
+  SUBCASE("several methods")
   {
     REQUIRE(lexer.set("cpp"));
     REQUIRE(lexer.display_lexer() == "cpp");
@@ -157,7 +166,7 @@ TEST_CASE("wex::lexer")
     REQUIRE(!lexer.apply());
   }
 
-  SUBCASE("Property")
+  SUBCASE("property")
   {
     lexer.set_property("test", "value");
     lexer.set_property("other", "one");
@@ -166,7 +175,7 @@ TEST_CASE("wex::lexer")
     REQUIRE(lexer.properties().back().value() == "one");
   }
 
-  SUBCASE("Comment complete")
+  SUBCASE("comment complete")
   {
     REQUIRE(lexer.set("pascal"));
     REQUIRE(lexer.display_lexer() == "pascal");

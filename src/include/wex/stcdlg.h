@@ -27,7 +27,7 @@ namespace wex
       /// prompt (as with wxTextEntryDialog)
       const std::string& prompt = std::string(),
       /// data
-      const window_data& data = window_data());
+      const data::window& data = data::window());
       
     /// Returns stc component.
     auto* get_stc() {return m_stc;};

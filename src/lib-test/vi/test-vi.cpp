@@ -12,6 +12,7 @@
 #endif
 #include "../test.h"
 #include <wex/config.h>
+#include <wex/core.h>
 #include <wex/frd.h>
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
@@ -333,7 +334,7 @@ TEST_CASE("wex::vi")
         REQUIRE(vi->command(nc));
 
         // test navigate while in rect mode
-        change_mode(vi, "K", wex::vi_mode::state_t::VISUAL_RECT);
+        change_mode(vi, "K", wex::vi_mode::state_t::VISUAL_BLOCK);
         REQUIRE(vi->command(nc));
         REQUIRE(vi->mode().visual());
         change_mode(vi, ESC, wex::vi_mode::state_t::NORMAL);
@@ -526,7 +527,7 @@ TEST_CASE("wex::vi")
          std::vector<std::pair<std::string, wex::vi_mode::state_t>>{
            {"v", wex::vi_mode::state_t::VISUAL},
            {"V", wex::vi_mode::state_t::VISUAL_LINE},
-           {"K", wex::vi_mode::state_t::VISUAL_RECT}})
+           {"K", wex::vi_mode::state_t::VISUAL_BLOCK}})
     {
       wxKeyEvent event(wxEVT_CHAR);
       change_mode(vi, visual.first, visual.second);
@@ -546,9 +547,18 @@ TEST_CASE("wex::vi")
     stc->set_text("123456789");
     vi->command("v");
     REQUIRE(vi->mode().visual());
+    
     vi->visual_extend(0, 10);
     REQUIRE(vi->get_stc()->get_selected_text() == "123456789");
     vi->mode().escape();
+
+    vi->command("gg");
+    vi->command("v");
+    REQUIRE(vi->mode().visual());
+    vi->command("llll");
+    REQUIRE(vi->command("y"));
+    REQUIRE(vi->mode().normal());
+    REQUIRE(vi->register_text() == "1234");
   }
 
   SUBCASE("yank")

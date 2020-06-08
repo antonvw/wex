@@ -41,7 +41,7 @@ TEST_CASE("wex::report::file")
   listView->after_sorting();
 
 #ifdef __UNIX__
-  listView->add_items("./", "*.h", wex::dir::type_t().set(wex::dir::FILES));
+  listView->add_items("./", "*.h", wex::data::dir::FILES);
 #endif
 
 #ifndef __WXMSW__

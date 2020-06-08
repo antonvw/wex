@@ -35,7 +35,7 @@ namespace wex
 
     /// Shows a config dialog, allowing you to set the command and folder.
     /// Returns dialog return code.
-    static int config_dialog(const window_data& data = window_data());
+    static int config_dialog(const data::window& data = data::window());
     
     /// Returns the shell component 
     /// (might be nullptr if prepare_output is not yet invoked).

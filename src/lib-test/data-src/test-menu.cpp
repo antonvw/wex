@@ -8,13 +8,13 @@
 #include "../test.h"
 #include <wex/menu-data.h>
 
-TEST_CASE("wex::menu_data")
+TEST_CASE("wex::data::menu")
 {
   SUBCASE("Constructor")
   {
-    REQUIRE(wex::menu_data().art().empty());
-    REQUIRE(wex::menu_data().help_text().empty());
+    REQUIRE(wex::data::menu().art().empty());
+    REQUIRE(wex::data::menu().help_text().empty());
     
-    wex::menu_data().bind(0);
+    wex::data::menu().bind(0);
   }
 }

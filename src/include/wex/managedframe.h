@@ -56,7 +56,7 @@ namespace wex
     /// Default constructor, registers the aui manager, and creates the bars.
     managed_frame(
       size_t             maxFiles = 9,
-      const window_data& data     = window_data().style(wxDEFAULT_FRAME_STYLE));
+      const data::window& data     = data::window().style(wxDEFAULT_FRAME_STYLE));
 
     /// Destructor, uninits the aui manager.
     virtual ~managed_frame();
@@ -110,7 +110,7 @@ namespace wex
     /// overridden methods
 
     stc*
-    open_file(const path& filename, const stc_data& data = stc_data()) override;
+    open_file(const path& filename, const data::stc& data = data::stc()) override;
 
     void set_recent_file(const path& path) override;
 
@@ -213,7 +213,7 @@ namespace wex
     void on_menu_history(
       const class file_history& history,
       size_t                    index,
-      stc_data::window_t        flags = 0);
+      data::stc::window_t        flags = 0);
 
   private:
     bool     add_toolbar_panes(const panes_t& panes);

@@ -2,7 +2,7 @@
 // Name:      debug_entry.h
 // Purpose:   Declaration of wex::debug_entry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -14,7 +14,7 @@
 namespace wex
 {
   /// This class collects a single debugger.
-  class debug_entry : public menu_commands < menu_command >
+  class debug_entry : public menu_commands<menu_command>
   {
   public:
     /// The type of regex to match debugger stdout.
@@ -28,33 +28,27 @@ namespace wex
       VARIABLE,       /// a variable e.g. to show in a tooltip
       VARIABLE_MULTI, /// a variable split over several lines
     };
-    
-    /// Default constructor.
-    debug_entry() {;};
-    
-    /// Constructor using xml node.
-    debug_entry(const pugi::xml_node& node);
+
+    /// Default constructor using xml node.
+    debug_entry(const pugi::xml_node& node = pugi::xml_node());
 
     /// Returns the delete breakpoint command.
-    const auto& break_del() const {return m_break_del;};
+    const auto& break_del() const { return m_break_del; };
 
     /// Returns the set breakpoint command.
-    const auto& break_set() const {return m_break_set;};
+    const auto& break_set() const { return m_break_set; };
 
     /// Returns the extensions.
-    const auto& extensions() const {return m_extensions;};
+    const auto& extensions() const { return m_extensions; };
 
     /// Returns the flags.
-    const auto& flags() const {return m_flags;};
+    const auto& flags() const { return m_flags; };
 
     /// Returns the regex for interpreting debug stdout.
     std::string regex_stdout(regex_t r) const;
+
   private:
-    std::string 
-      m_break_del,
-      m_break_set, 
-      m_extensions,
-      m_flags;
-    std::map < regex_t, std::string> m_regex_stdouts;
+    std::string m_break_del, m_break_set, m_extensions, m_flags;
+    std::map<regex_t, std::string> m_regex_stdouts;
   };
-};
+}; // namespace wex

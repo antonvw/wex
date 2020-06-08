@@ -13,7 +13,7 @@ TEST_CASE("wex::dialog")
 {
   wex::dialog().Show();
   
-  auto* dlg = new wex::dialog(wex::window_data().button(0).title("no buttons"));
+  auto* dlg = new wex::dialog(wex::data::window().button(0).title("no buttons"));
   dlg->Show();
 
   REQUIRE(dlg->data().button() == 0);

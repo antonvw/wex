@@ -14,6 +14,7 @@
 #include <wex/addressrange.h>
 #include <wex/app.h>
 #include <wex/config.h>
+#include <wex/core.h>
 #include <wex/ctags.h>
 #include <wex/ex.h>
 #include <wex/frd.h>
@@ -22,7 +23,6 @@
 #include <wex/macros.h>
 #include <wex/printing.h>
 #include <wex/stc.h>
-#include <wex/util.h>
 #include <wex/vcs.h>
 #include <wex/version.h>
 #include <wx/stdpaths.h>
@@ -30,21 +30,6 @@
 #define NO_ASSERT 1
 
 namespace fs = std::filesystem;
-
-void wex::app::OnAssertFailure(
-  const wxChar* file,
-  int           line,
-  const wxChar* func,
-  const wxChar* cond,
-  const wxChar* msg)
-{
-#ifdef NO_ASSERT
-  log("OnAssertFailure") << "file:" << file << "line:" << line
-                         << "func:" << func << "cond:" << cond << "msg:" << msg;
-#else
-  wxApp::OnAssertFailure(file, line, func, cond, msg);
-#endif
-}
 
 int wex::app::OnExit()
 {

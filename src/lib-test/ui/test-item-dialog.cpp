@@ -77,7 +77,7 @@ TEST_CASE("wex::item_dialog")
     {
       auto* dlg = new wex::item_dialog(
         items,
-        wex::window_data().button(wxOK | wxCANCEL | wxAPPLY));
+        wex::data::window().button(wxOK | wxCANCEL | wxAPPLY));
 
       dlg->Show();
 
@@ -91,7 +91,7 @@ TEST_CASE("wex::item_dialog")
     {
       auto* dlg = new wex::item_dialog(
         items_default,
-        wex::window_data().button(wxOK | wxCANCEL | wxAPPLY));
+        wex::data::window().button(wxOK | wxCANCEL | wxAPPLY));
 
       dlg->Show();
       dlg->force_checkbox_checked();
@@ -124,7 +124,7 @@ TEST_CASE("wex::item_dialog")
     {
       auto* dlg = new wex::item_dialog(
         items_default,
-        wex::window_data().button(wxOK | wxCANCEL | wxAPPLY));
+        wex::data::window().button(wxOK | wxCANCEL | wxAPPLY));
 
       dlg->Show();
 
@@ -139,7 +139,7 @@ TEST_CASE("wex::item_dialog")
     {
       auto* dlg = new wex::item_dialog(
         items,
-        wex::window_data().button(wxOK | wxCANCEL | wxAPPLY));
+        wex::data::window().button(wxOK | wxCANCEL | wxAPPLY));
 
       dlg->Show();
       

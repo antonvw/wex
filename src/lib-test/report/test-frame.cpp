@@ -7,6 +7,7 @@
 
 #include "test.h"
 #include <wex/frd.h>
+#include <wex/log.h>
 #include <wex/menu.h>
 #include <wex/report/defs.h>
 #include <wx/menu.h>
@@ -14,7 +15,7 @@
 TEST_CASE("wex::report::frame")
 {
   auto* list =
-    new wex::listview(wex::listview_data().type(wex::listview_data::HISTORY));
+    new wex::listview(wex::data::listview().type(wex::data::listview::HISTORY));
 
   wex::test::add_pane(report_frame(), list);
 
@@ -31,7 +32,7 @@ TEST_CASE("wex::report::frame")
 
   REQUIRE(!report_frame()->open_file(
     wex::path(get_project()),
-    wex::stc_data().flags(wex::stc_data::WIN_IS_PROJECT)));
+    wex::data::stc().flags(wex::data::stc::WIN_IS_PROJECT)));
 
   wex::find_replace_data::get()->set_find_string("wex::test_app");
 

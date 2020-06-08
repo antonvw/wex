@@ -107,8 +107,9 @@ namespace wex
     void undo();
 
   private:
-    void activate();
-    void deactivate();
+    void              activate();
+    void              deactivate();
+    const std::string make_line(const std::string& buffer, size_t offset) const;
 
     const size_t m_bytes_per_line, m_each_hex_field;
 

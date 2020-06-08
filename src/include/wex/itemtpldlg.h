@@ -39,7 +39,7 @@ namespace wex
       /// vector with items
       const std::vector<T>& v,
       /// data
-      const window_data& data = wex::window_data(),
+      const data::window& data = wex::data::window(),
       /// number of rows (if 0 add similar items on next row)
       int rows = 0,
       /// number of columns

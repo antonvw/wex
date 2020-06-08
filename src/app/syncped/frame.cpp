@@ -20,12 +20,14 @@
 #include <wex/filedlg.h>
 #include <wex/itemdlg.h>
 #include <wex/lexers.h>
+#include <wex/log.h>
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
 #include <wex/menu.h>
 #include <wex/menus.h>
 #include <wex/report/listviewfile.h>
 #include <wex/shell.h>
+#include <wex/statusbar.h>
 #include <wex/stc.h>
 #include <wex/tokenizer.h>
 #include <wex/toolbar.h>
@@ -84,8 +86,8 @@ frame::frame(app* app)
     {
       open_file(
         wex::path(get_project_history().get_history_file()),
-        wex::stc_data().flags(
-          wex::stc_data::window_t().set(wex::stc_data::WIN_IS_PROJECT)));
+        wex::data::stc().flags(
+          wex::data::stc::window_t().set(wex::data::stc::WIN_IS_PROJECT)));
 
       pane_maximize("PROJECTS");
     }
@@ -101,10 +103,11 @@ frame::frame(app* app)
     {
       auto* page = new wex::stc(
         std::string(),
-        wex::stc_data(m_app->data())
-          .window(wex::window_data().parent(m_editors)));
+        wex::data::stc(m_app->data())
+          .window(wex::data::window().parent(m_editors)));
       page->get_file().file_new("no name");
-      m_editors->add_page(page, "no name", std::string(), true);
+      m_editors->add_page(
+        wex::data::notebook().page(page).key("no name").select());
       pane_show("FILES");
     }
   }
@@ -134,8 +137,8 @@ frame::frame(app* app)
       wex::open_files(
         this,
         m_app->get_files(),
-        wex::stc_data().flags(
-          wex::stc_data::window_t().set(wex::stc_data::WIN_IS_PROJECT)));
+        wex::data::stc().flags(
+          wex::data::stc::window_t().set(wex::data::stc::WIN_IS_PROJECT)));
     }
     else
     {
@@ -143,7 +146,7 @@ frame::frame(app* app)
         this,
         m_app->get_files(),
         m_app->data(),
-        wex::dir::type_t().set(wex::dir::FILES));
+        wex::data::dir::type_t().set(wex::data::dir::FILES));
     }
   }
 
@@ -336,9 +339,9 @@ frame::frame(app* app)
 }
 
 wex::report::listview*
-frame::activate(wex::listview_data::type_t type, const wex::lexer* lexer)
+frame::activate(wex::data::listview::type_t type, const wex::lexer* lexer)
 {
-  if (type == wex::listview_data::FILE)
+  if (type == wex::data::listview::FILE)
   {
     return get_project();
   }
@@ -347,18 +350,18 @@ frame::activate(wex::listview_data::type_t type, const wex::lexer* lexer)
     pane_show("OUTPUT");
 
     const std::string name =
-      wex::listview_data().type(type).type_description() +
+      wex::data::listview().type(type).type_description() +
       (lexer != nullptr ? " " + lexer->display_lexer() : std::string());
     auto* list = (wex::report::listview*)m_lists->page_by_key(name);
 
-    if (list == nullptr && type != wex::listview_data::FILE)
+    if (list == nullptr && type != wex::data::listview::FILE)
     {
       list = new wex::report::listview(
-        wex::listview_data(wex::window_data().parent(m_lists))
+        wex::data::listview(wex::data::window().parent(m_lists))
           .type(type)
           .lexer(lexer));
 
-      m_lists->add_page(list, name, name, true);
+      m_lists->add_page(wex::data::notebook().page(list).key(name).select());
     }
 
     return list;
@@ -508,7 +511,7 @@ void frame::on_command(wxCommandEvent& event)
         {
           wex::file_dialog dlg(
             &editor->get_file(),
-            wex::window_data().style(wxFD_SAVE).parent(this).title(
+            wex::data::window().style(wxFD_SAVE).parent(this).title(
               wxGetStockLabel(wxID_SAVEAS, wxSTOCK_NOFLAGS).ToStdString()));
 
           if (dlg.ShowModal() != wxID_OK)
@@ -567,17 +570,17 @@ void frame::on_command(wxCommandEvent& event)
       {
         auto* stc = new wex::stc(
           editor->get_filename(),
-          wex::stc_data().window(wex::window_data().parent(m_editors)));
+          wex::data::stc().window(wex::data::window().parent(m_editors)));
         editor->sync(false);
         stc->sync(false);
         stc->get_vi().copy(&editor->get_vi());
 
-        wxBitmap bitmap(wxNullBitmap);
+        wex::data::notebook nd;
 
         if (editor->get_filename().file_exists())
         {
-          bitmap = wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
-            wex::get_iconid(editor->get_filename()));
+          nd.bitmap(wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
+            wex::get_iconid(editor->get_filename())));
         }
         else if (!editor->get_lexer().scintilla_lexer().empty())
         {
@@ -585,27 +588,24 @@ void frame::on_command(wxCommandEvent& event)
         }
 
         // key should be unique
-        const std::string key("split" + std::to_string(m_split_id++));
+        nd.key("split" + std::to_string(m_split_id++));
 
         // Place new page before page for editor.
-        m_editors->insert_page(
-          m_editors->GetPageIndex(editor),
-          stc,
-          key,
-          editor->get_filename().fullname(),
-          true,
-          bitmap);
+        m_editors->insert_page(nd.index(m_editors->GetPageIndex(editor))
+                                 .page(stc)
+                                 .caption(editor->get_filename().fullname())
+                                 .select());
 
         stc->SetDocPointer(editor->GetDocPointer());
 
         if (event.GetId() == ID_SPLIT_HORIZONTALLY)
         {
-          m_editors->split(key, wxBOTTOM);
+          m_editors->split(nd.key(), wxBOTTOM);
           m_editors->set_selection(editor->get_filename().string());
         }
         else if (event.GetId() == ID_SPLIT_VERTICALLY)
         {
-          m_editors->split(key, wxRIGHT);
+          m_editors->split(nd.key(), wxRIGHT);
           m_editors->set_selection(editor->get_filename().string());
         }
       }
@@ -783,7 +783,7 @@ void frame::on_update_ui(wxUpdateUIEvent& event)
 wex::stc* frame::open_file(
   const wex::path&      filename,
   const wex::vcs_entry& vcs,
-  const wex::stc_data&  data)
+  const wex::data::stc& data)
 {
   if (vcs.get_command().is_blame())
   {
@@ -797,44 +797,44 @@ wex::stc* frame::open_file(
 
   const std::string unique =
     vcs.get_command().get_command() + " " + vcs.get_flags();
-  const std::string key = filename.string() + " " + unique;
 
-  auto* page = (wex::stc*)m_editors->set_selection(key);
+  wex::data::notebook nd;
+  nd.select()
+    .key(filename.string() + " " + unique)
+    .page((wex::stc*)m_editors->set_selection(nd.key()));
 
-  if (page == nullptr)
+  if (nd.page() == nullptr)
   {
-    page = new wex::stc(
+    nd.page(new wex::stc(
       vcs.get_stdout(),
-      wex::stc_data(data).window(wex::window_data().parent(m_editors).name(
-        filename.fullname() + " " + unique)));
+      wex::data::stc(data).window(wex::data::window().parent(m_editors).name(
+        filename.fullname() + " " + unique))));
 
-    wex::vcs_command_stc(vcs.get_command(), filename.lexer(), page);
+    wex::vcs_command_stc(
+      vcs.get_command(),
+      filename.lexer(),
+      (wex::stc*)nd.page());
 
     if (const int index = m_editors->page_index_by_key(filename.string());
         index != -1)
     {
       // Place new page before the one used for vcs.
-      m_editors->insert_page(
-        index,
-        page,
-        key,
-        filename.fullname() + " " + unique,
-        true);
+      m_editors->insert_page(nd.index(index));
     }
     else
     {
       // Just add at the end.
-      m_editors->add_page(page, key, filename.fullname() + " " + unique, true);
+      m_editors->add_page(nd);
     }
   }
 
-  return page;
+  return (wex::stc*)nd.page();
 }
 
 wex::stc* frame::open_file(
-  const wex::path&     filename,
-  const std::string&   text,
-  const wex::stc_data& data)
+  const wex::path&      filename,
+  const std::string&    text,
+  const wex::data::stc& data)
 {
   auto* page = (wex::stc*)m_editors->set_selection(filename.string());
 
@@ -842,10 +842,14 @@ wex::stc* frame::open_file(
   {
     page = new wex::stc(
       text,
-      wex::stc_data(data).window(
-        wex::window_data().parent(m_editors).name(filename.string())));
+      wex::data::stc(data).window(
+        wex::data::window().parent(m_editors).name(filename.string())));
     page->get_lexer().set(filename.lexer());
-    m_editors->add_page(page, filename.string(), filename.fullname(), true);
+    m_editors->add_page(wex::data::notebook()
+                          .page(page)
+                          .key(filename.string())
+                          .caption(filename.fullname())
+                          .select());
   }
   else
   {
@@ -855,16 +859,18 @@ wex::stc* frame::open_file(
   return page;
 }
 
-wex::stc* frame::open_file(const wex::path& filename, const wex::stc_data& data)
+wex::stc*
+frame::open_file(const wex::path& filename, const wex::data::stc& data)
 {
   wex::notebook* notebook =
-    (data.flags().test(wex::stc_data::WIN_IS_PROJECT) ? m_projects : m_editors);
+    (data.flags().test(wex::data::stc::WIN_IS_PROJECT) ? m_projects :
+                                                         m_editors);
 
   assert(notebook != nullptr);
 
   auto* page = notebook->set_selection(filename.string());
 
-  if (data.flags().test(wex::stc_data::WIN_IS_PROJECT))
+  if (data.flags().test(wex::data::stc::WIN_IS_PROJECT))
   {
     if (!pane_is_shown("PROJECTS"))
     {
@@ -875,15 +881,16 @@ wex::stc* frame::open_file(const wex::path& filename, const wex::stc_data& data)
     {
       auto* project = new wex::report::file(
         filename.string(),
-        wex::window_data().parent(m_projects));
+        wex::data::window().parent(m_projects));
 
       notebook->add_page(
-        project,
-        filename.string(),
-        filename.name(),
-        true,
-        wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
-          wex::get_iconid(filename)));
+        wex::data::notebook()
+          .page(project)
+          .key(filename.string())
+          .caption(filename.name())
+          .select()
+          .bitmap(wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
+            wex::get_iconid(filename))));
     }
   }
   else
@@ -907,19 +914,19 @@ wex::stc* frame::open_file(const wex::path& filename, const wex::stc_data& data)
 
     if (page == nullptr)
     {
-      wex::stc_data::menu_t   mf(m_app->data().menu());
-      wex::stc_data::window_t wf(m_app->data().flags());
+      wex::data::stc::menu_t   mf(m_app->data().menu());
+      wex::data::stc::window_t wf(m_app->data().flags());
 
       if (wex::config("is_hexmode").get(false))
-        wf.set(wex::stc_data::WIN_HEX);
+        wf.set(wex::data::stc::WIN_HEX);
       if (m_app->get_is_debug())
-        mf.set(wex::stc_data::MENU_DEBUG);
+        mf.set(wex::data::stc::MENU_DEBUG);
 
       editor = new wex::stc(
         filename,
-        wex::stc_data(data)
-          .window(wex::window_data().parent(m_editors))
-          .flags(wf, wex::control_data::OR)
+        wex::data::stc(data)
+          .window(wex::data::window().parent(m_editors))
+          .flags(wf, wex::data::control::OR)
           .menu(mf));
 
       if (m_app->get_is_debug())
@@ -927,24 +934,24 @@ wex::stc* frame::open_file(const wex::path& filename, const wex::stc_data& data)
         get_debug()->apply_breakpoints(editor);
       }
 
-      const std::string key(filename.stat().path());
+      wex::data::notebook nd;
+      nd.key(filename.stat().path());
 
       notebook->add_page(
-        editor,
-        key,
-        filename.fullname(),
-        true,
-        wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
-          wex::get_iconid(filename)));
+        nd.page(editor)
+          .caption(filename.fullname())
+          .select()
+          .bitmap(wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
+            wex::get_iconid(filename))));
 
       if (notebook->GetPageCount() >= 2 && m_app->get_split() != -1)
       {
-        notebook->split(key, m_app->get_split());
+        notebook->split(nd.key(), m_app->get_split());
       }
 
       if (pane_is_shown("DIRCTRL"))
       {
-        m_dirctrl->expand_and_select_path(key);
+        m_dirctrl->expand_and_select_path(nd.key());
       }
 
       // Do not show an edge for project files opened as text.
@@ -968,7 +975,7 @@ wex::stc* frame::open_file(const wex::path& filename, const wex::stc_data& data)
     }
     else
     {
-      wex::stc_data(editor, data).inject();
+      wex::data::stc(editor, data).inject();
     }
 
     editor->SetFocus();
@@ -987,9 +994,9 @@ void frame::print_ex(wex::ex* ex, const std::string& text)
   {
     page = new wex::stc(
       text,
-      wex::stc_data().window(
-        wex::window_data().name("Print").parent(m_editors)));
-    m_editors->add_page(page, "Print", "Print", true);
+      wex::data::stc().window(
+        wex::data::window().name("Print").parent(m_editors)));
+    m_editors->add_page(wex::data::notebook().page(page).key("Print").select());
     m_editors->split("Print", wxBOTTOM);
   }
   else

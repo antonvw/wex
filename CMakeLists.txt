@@ -42,8 +42,8 @@ include(external/wxWidgets/build/cmake/toolkit.cmake)
 file(READ src/lib/core/version.cpp WEX_VERSION_CONTENTS)
 string(REGEX MATCH "[ \t]+[0-9]+,[0-9, ]+[0-9]+"
   WEX_VERSION ${WEX_VERSION_CONTENTS})
-string(REGEX REPLACE "[ \t]+" "" WEX_VERSION ${WEX_VERSION})
-string(REGEX REPLACE "," "." WEX_VERSION ${WEX_VERSION})
+string(REGEX REPLACE "[ \t]+" "" WEX_VERSION "${WEX_VERSION}")
+string(REGEX REPLACE "," "." WEX_VERSION "${WEX_VERSION}")
 set(WEX_VERSION ${WEX_VERSION})
 string(REGEX MATCH "[0-9]+-[0-9]+"
   WEX_COPYRIGHT ${WEX_VERSION_CONTENTS})

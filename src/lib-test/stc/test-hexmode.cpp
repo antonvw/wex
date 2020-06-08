@@ -22,8 +22,8 @@ TEST_CASE("wex::hexmode")
   // 30 31 32 33 34 35 36 37 38 39                   0123456789
   auto* stc = new wex::stc(
     std::string("0123456789"),
-    wex::stc_data().flags(
-      wex::stc_data::window_t().set(wex::stc_data::WIN_HEX)));
+    wex::data::stc().flags(
+      wex::data::stc::window_t().set(wex::data::stc::WIN_HEX)));
 
   wex::test::add_pane(frame(), stc);
   REQUIRE(stc->get_text() != "0123456789");

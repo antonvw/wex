@@ -34,7 +34,7 @@ private:
 
   wex::stc* open_file(
     const wex::path& filename, 
-    const wex::stc_data& data = wex::stc_data()) override;
+    const wex::data::stc& data = wex::data::stc()) override;
 
   void statusbar_clicked(const std::string& pane) override;
 

@@ -33,7 +33,7 @@ TEST_CASE("wex::vcs")
     // using this constructor results in command id 3, being add.
     wex::vcs vcs(std::vector<wex::path>{file}, 3);
 
-    REQUIRE(vcs.config_dialog(wex::window_data().button(wxAPPLY | wxCANCEL)));
+    REQUIRE(vcs.config_dialog(wex::data::window().button(wxAPPLY | wxCANCEL)));
 
 #ifndef __WXMSW__
 #if BOOST_VERSION / 100 % 1000 != 72
@@ -42,9 +42,9 @@ TEST_CASE("wex::vcs")
     REQUIRE(!vcs.execute("xxx"));
 #endif
 
-    REQUIRE(vcs.show_dialog(wex::window_data().button(wxAPPLY | wxCANCEL)));
+    REQUIRE(vcs.show_dialog(wex::data::window().button(wxAPPLY | wxCANCEL)));
 
-    REQUIRE(vcs.request(wex::window_data().button(wxAPPLY | wxCANCEL)));
+    REQUIRE(vcs.request(wex::data::window().button(wxAPPLY | wxCANCEL)));
 
     REQUIRE(vcs.entry().build_menu(100, new wex::menu("test", 0)) > 0);
     REQUIRE(vcs.entry().get_command().get_command() == "add");

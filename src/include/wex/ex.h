@@ -26,11 +26,11 @@ namespace wex
 
   enum class info_message_t
   {
-    MSG_NONE,
     ADD,
     COPY,
     DEL,
     MOVE,
+    NONE,
     YANK,
   };
 
@@ -201,4 +201,8 @@ namespace wex
       // relate a marker to mark number
       m_marker_numbers;
   };
+
+  /// Expands all markers and registers in command.
+  /// Returns false if a marker could not be found.
+  bool marker_and_register_expansion(const ex* ex, std::string& command);
 }; // namespace wex

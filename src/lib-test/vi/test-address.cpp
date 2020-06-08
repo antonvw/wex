@@ -21,9 +21,9 @@ TEST_CASE("wex::address")
 
   const int lines = stc->GetLineCount();
   auto*     ex    = new wex::ex(stc);
-  wex::stc_data(stc).control(wex::control_data().line(1)).inject();
+  wex::data::stc(stc).control(wex::data::control().line(1)).inject();
   ex->marker_add('a');
-  wex::stc_data(stc).control(wex::control_data().line(2)).inject();
+  wex::data::stc(stc).control(wex::data::control().line(2)).inject();
   ex->marker_add('b');
 
   REQUIRE(wex::address(ex).get_line() == 0);
@@ -94,6 +94,14 @@ TEST_CASE("wex::address")
     REQUIRE(!address.marker_delete());
     REQUIRE(address.marker_add('x'));
     REQUIRE(wex::address(ex, "'x").marker_delete());
+  }
+
+  SUBCASE("parse")
+  {
+    REQUIRE(!wex::address(ex, "3").parse(""));
+    REQUIRE(wex::address(ex, "3").parse("z"));
+    REQUIRE(wex::address(ex, "3").parse("z", "="));
+    REQUIRE(!wex::address(ex, "3").parse("z", "P"));
   }
 
   SUBCASE("put")

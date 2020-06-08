@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/config.h>
+#include <wex/core.h>
 #include <wex/ex.h>
 #include <wex/frd.h>
 #include <wex/log.h>
@@ -24,7 +25,7 @@ const auto ID_REGISTER = wxWindow::NewControlId();
 wex::textctrl_imp::textctrl_imp(
   textctrl*          tc,
   wxControl*         prefix,
-  const window_data& data)
+  const data::window& data)
   : wxTextCtrl(
       data.parent(),
       data.id(),
@@ -298,7 +299,7 @@ wex::textctrl_imp::textctrl_imp(
 wex::textctrl_imp::textctrl_imp(
   textctrl*          tc,
   const std::string& value,
-  const window_data& data)
+  const data::window& data)
   : wxTextCtrl(
       data.parent(),
       data.id(),

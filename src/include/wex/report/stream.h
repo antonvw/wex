@@ -91,8 +91,8 @@ namespace wex::report
     void
     process_match(const std::string& line, size_t line_no, int pos) override;
 
-    static wex::listview* m_report;
-    static report::frame* m_frame;
+    static inline wex::listview* m_report = nullptr;
+    static inline report::frame* m_frame  = nullptr;
 
     bool m_is_comment_statement{false}, m_is_string{false};
 

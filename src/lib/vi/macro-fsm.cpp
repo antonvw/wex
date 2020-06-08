@@ -18,8 +18,8 @@
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
 #include <wex/managedframe.h>
+#include <wex/statusbar.h>
 #include <wex/stc.h>
-#include <wex/util.h>
 #include <wex/variable.h>
 
 namespace mpl = boost::mpl;

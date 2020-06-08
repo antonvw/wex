@@ -18,12 +18,12 @@ namespace wex
   class textctrl_imp : public wxTextCtrl
   {
   public:
-    textctrl_imp(textctrl* tc, wxControl* prefix, const window_data& data);
+    textctrl_imp(textctrl* tc, wxControl* prefix, const data::window& data);
 
     textctrl_imp(
       textctrl*          tc,
       const std::string& value = std::string(),
-      const window_data& data  = window_data());
+      const data::window& data  = data::window());
 
     const std::string get_text() const;
     bool              handle(const std::string& command);

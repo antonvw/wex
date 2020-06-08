@@ -22,18 +22,10 @@
 
 namespace wex
 {
-  int get_hex_number(
-    const std::string& message,
-    const std::string& caption,
-    int                value,
-    int                min,
-    int                max,
-    wxWindow*          parent)
+  int get_hex_number(const std::string& message, const data::item& data)
   {
     item::use_config(false);
-    item_dialog dlg(
-      {{message, min, max, value}},
-      window_data().title(caption).parent(parent));
+    item_dialog dlg({{message, item::SPINCTRL, data}}, data.window());
     item::use_config(true);
 
     ((wxSpinCtrl*)dlg.find(message).window())->SetBase(16);
@@ -43,34 +35,6 @@ namespace wex
              std::any_cast<int>(dlg.get_item_value(message));
   }
 
-  const std::string make_line(
-    stc*               stc,
-    const std::string& buffer,
-    size_t             offset,
-    size_t             bytesPerLine,
-    size_t             eachHexField)
-  {
-    std::string field_hex, field_ascii;
-
-    auto count = buffer.size() - offset;
-    count      = (bytesPerLine < count ? bytesPerLine : count);
-
-    for (size_t byte = 0; byte < count; byte++)
-    {
-      const unsigned char c = buffer[offset + byte];
-
-      char buff[4];
-      sprintf(buff, "%02X ", c);
-      field_hex += buff;
-      field_ascii += printable(c, stc);
-    }
-
-    const auto field_spaces =
-      std::string((bytesPerLine - count) * eachHexField, ' ');
-
-    return field_hex + field_spaces + field_ascii +
-           (buffer.size() - offset > bytesPerLine ? stc->eol() : std::string());
-  }
 } // namespace wex
 
 wex::hexmode::hexmode(wex::stc* stc, size_t bytesPerLine)
@@ -115,8 +79,7 @@ void wex::hexmode::append_text(const std::string& buffer)
 
   for (size_t offset = 0; offset < buffer.size(); offset += m_bytes_per_line)
   {
-    text +=
-      make_line(m_stc, buffer, offset, m_bytes_per_line, m_each_hex_field);
+    text += make_line(buffer, offset);
   }
 
   m_stc->append_text(text);
@@ -127,15 +90,12 @@ void wex::hexmode::control_char_dialog(const std::string& caption)
   if (hexmode_line ml(this, m_stc->GetSelectionStart());
       ml.is_ascii_field() && m_stc->GetSelectedText().size() == 1)
   {
-    const char value = m_stc->GetSelectedText().GetChar(0);
-
-    if (const int new_value(get_hex_number(
+    if (const auto new_value(get_hex_number(
           _("Input") + " 00 - FF",
-          caption,
-          value,
-          0,
-          255,
-          m_stc));
+          data::item(
+            data::item().min(0).max(255).window(
+              data::window().title(caption).parent(m_stc)),
+            (int)m_stc->GetSelectedText().GetChar(0))));
         new_value >= 0)
     {
       ml.replace(new_value);
@@ -147,11 +107,10 @@ void wex::hexmode::control_char_dialog(const std::string& caption)
     {
       if (const auto new_value(get_hex_number(
             _("Input") + " 00 - FF",
-            caption,
-            value,
-            0,
-            255,
-            m_stc));
+            data::item(
+              data::item().min(0).max(255).window(
+                data::window().title(caption).parent(m_stc)),
+              (int)value)));
           new_value >= 0)
       {
         ml.replace_hex(new_value);
@@ -192,7 +151,7 @@ bool wex::hexmode::goto_dialog()
         _("Input") + " 0 - " + std::to_string(m_buffer.size() - 1) + ":",
         wxEmptyString,
         _("Enter Byte Offset"),
-        m_goto, // initial value
+        m_goto, // intial value
         0,
         m_buffer.size() - 1,
         m_stc));
@@ -248,6 +207,32 @@ bool wex::hexmode::replace(char c, int pos)
 {
   return pos == -1 ? hexmode_line(this).replace(c) :
                      hexmode_line(this, pos).replace(c);
+}
+
+const std::string
+wex::hexmode::make_line(const std::string& buffer, size_t offset) const
+{
+  std::string field_hex, field_ascii;
+
+  auto count = buffer.size() - offset;
+  count      = (m_bytes_per_line < count ? m_bytes_per_line : count);
+
+  for (size_t byte = 0; byte < count; byte++)
+  {
+    const unsigned char c = buffer[offset + byte];
+
+    char buff[4];
+    sprintf(buff, "%02X ", c);
+    field_hex += buff;
+    field_ascii += printable(c, m_stc);
+  }
+
+  const auto field_spaces =
+    std::string((m_bytes_per_line - count) * m_each_hex_field, ' ');
+
+  return field_hex + field_spaces + field_ascii +
+         (buffer.size() - offset > m_bytes_per_line ? m_stc->eol() :
+                                                      std::string());
 }
 
 bool wex::hexmode::replace_target(const std::string& replacement, bool settext)

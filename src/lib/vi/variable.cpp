@@ -9,13 +9,13 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wex/core.h>
 #include <wex/ex.h>
 #include <wex/log.h>
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
 #include <wex/stc.h>
 #include <wex/stcdlg.h>
-#include <wex/util.h>
 #include <wex/variable.h>
 
 // Several types of variables are supported.
@@ -319,7 +319,7 @@ bool wex::variable::expand_input(std::string& expanded) const
       m_dialog = new stc_entry_dialog(
         use,
         std::string(),
-        window_data().title(m_name + ":"));
+        data::window().title(m_name + ":"));
 
       m_dialog->get_stc()->get_vi().use(false);
       m_dialog->get_stc()->SetWrapMode(wxSTC_WRAP_WORD);

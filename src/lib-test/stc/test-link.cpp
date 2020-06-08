@@ -25,7 +25,7 @@ void link(
   int                expect_line_no,
   int                expect_col_no)
 {
-  wex::control_data data;
+  wex::data::control data;
 
   if (!expect.empty())
   {
@@ -116,7 +116,7 @@ TEST_CASE("wex::link")
       .set(std::list<std::string>{{"/usr/bin"}});
     lnk.set_from_config();
 
-    wex::control_data data;
+    wex::data::control data;
     data.line(wex::link::LINE_OPEN_URL);
     REQUIRE(
       lnk.get_path("www.wxwidgets.org", data).data() == "www.wxwidgets.org");

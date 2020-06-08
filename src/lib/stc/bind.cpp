@@ -10,6 +10,7 @@
 #include <wex/beautify.h>
 #include <wex/bind.h>
 #include <wex/config.h>
+#include <wex/core.h>
 #include <wex/debug.h>
 #include <wex/defs.h>
 #include <wex/frd.h>
@@ -71,7 +72,7 @@ void wex::stc::bind_all()
      {wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE},
      {wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE},
      {wxACCEL_SHIFT, WXK_DELETE, wxID_CUT}},
-    m_data.menu().test(stc_data::MENU_DEBUG))
+    m_data.menu().test(data::stc::MENU_DEBUG))
     .set(this);
 
   bind(this).command(
@@ -122,7 +123,7 @@ void wex::stc::bind_all()
                  this)) > 0)
           {
             m_data.control().line(val);
-            stc_data(control_data().line(val), this).inject();
+            data::stc(data::control().line(val), this).inject();
           }
         }
         return true;
@@ -274,7 +275,7 @@ void wex::stc::bind_all()
           m_entry_dialog = new stc_entry_dialog(
             properties,
             std::string(),
-            window_data().size({300, 450}).button(wxOK).title(_("Properties")));
+            data::window().size({300, 450}).button(wxOK).title(_("Properties")));
           m_entry_dialog->get_stc()->get_lexer().set(l);
         }
         else
@@ -458,7 +459,7 @@ void wex::stc::bind_all()
       idUnfold_all},
      {[=](wxCommandEvent& event) {
         m_data
-          .flags(stc_data::window_t().set(stc_data::WIN_HEX), control_data::XOR)
+          .flags(data::stc::window_t().set(data::stc::WIN_HEX), data::control::XOR)
           .inject();
       },
       idHex},
@@ -596,7 +597,7 @@ void wex::stc::build_popup_menu(menu& menu)
     menu.append({{idShowProperties, _("Properties")}});
   }
 
-  if (m_data.menu().test(stc_data::MENU_OPEN_LINK))
+  if (m_data.menu().test(data::stc::MENU_OPEN_LINK))
   {
     if (sel.empty() && link_open(link_t().set(LINK_OPEN_MIME).set(LINK_CHECK)))
     {
@@ -616,13 +617,13 @@ void wex::stc::build_popup_menu(menu& menu)
                  {idEdgeClear, _("Edge Column Reset")}});
   }
 
-  if (m_data.menu().test(stc_data::MENU_OPEN_WWW) && !sel.empty())
+  if (m_data.menu().test(data::stc::MENU_OPEN_WWW) && !sel.empty())
   {
     menu.append({{}, {idOpenWWW, _("&Search")}});
   }
 
   if (
-    m_data.menu().test(stc_data::MENU_DEBUG) &&
+    m_data.menu().test(data::stc::MENU_DEBUG) &&
     matches_one_of(
       get_filename().extension(),
       m_frame->get_debug()->debug_entry().extensions()))
@@ -631,7 +632,7 @@ void wex::stc::build_popup_menu(menu& menu)
   }
 
   if (
-    m_data.menu().test(stc_data::MENU_VCS) && get_filename().file_exists() &&
+    m_data.menu().test(data::stc::MENU_VCS) && get_filename().file_exists() &&
     vcs::dir_exists(get_filename()))
   {
     menu.append({{}, {get_filename()}});

@@ -35,7 +35,7 @@ TEST_CASE("wex::otl")
   REQUIRE(!otl.get_version_info().get().empty());
   REQUIRE(!otl.datasource().empty());
   
-  otl.logon(wex::window_data().button(0));
+  otl.logon(wex::data::window().button(0));
 
   bool stopped = false;
 

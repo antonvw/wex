@@ -70,8 +70,7 @@ TEST_CASE("wex::vcs_entry")
     entry.show_output();
 
     auto* other = new wex::vcs_entry(doc.document_element());
-    REQUIRE(
-      other->execute(std::string(), wex::lexer(), wex::process::EXEC_WAIT));
+    REQUIRE(other->execute(std::string(), wex::lexer()));
     other->show_output();
 #endif
 #endif

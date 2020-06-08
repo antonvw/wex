@@ -8,6 +8,7 @@
 #include "scope.h"
 #include <wex/auto-complete.h>
 #include <wex/config.h>
+#include <wex/core.h>
 #include <wex/ctags.h>
 #include <wex/log.h>
 #include <wex/stc.h>

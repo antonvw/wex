@@ -42,5 +42,5 @@ private:
     m_is_stdin{false};
 
   int           m_split;
-  wex::stc_data m_data;
+  wex::data::stc m_data;
 };

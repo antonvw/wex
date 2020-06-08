@@ -21,7 +21,7 @@ TEST_CASE("wex::stc")
 
   SUBCASE("config_dialog")
   {
-    wex::stc::config_dialog(wex::window_data().button(wxCANCEL | wxAPPLY));
+    wex::stc::config_dialog(wex::data::window().button(wxCANCEL | wxAPPLY));
   }
 
   SUBCASE("text")
@@ -139,7 +139,6 @@ TEST_CASE("wex::stc")
     wex::config(_("stc.Auto fold")).set(3);
     stc->fold(true);
     stc->Paste();
-    stc->print_preview();
     stc->process_char(5);
     stc->properties_message();
     stc->reset_margins();
@@ -151,6 +150,7 @@ TEST_CASE("wex::stc")
     stc->auto_complete().use(false);
     stc->use_modification_markers(true);
     stc->use_modification_markers(false);
+
     stc->LineHome();
     stc->LineHomeExtend();
     stc->LineHomeRectExtend();

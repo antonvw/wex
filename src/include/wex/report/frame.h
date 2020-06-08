@@ -34,14 +34,14 @@ namespace wex::report
     frame(
       size_t             maxFiles    = 9,
       size_t             maxProjects = 0,
-      const window_data& data = window_data().style(wxDEFAULT_FRAME_STYLE));
+      const data::window& data = data::window().style(wxDEFAULT_FRAME_STYLE));
 
     /// Virtual interface
 
     /// This method is called to activate a certain listview.
     /// Default it returns nullptr.
     virtual listview*
-    activate(wex::listview_data::type_t, const lexer* lexer = nullptr)
+    activate(wex::data::listview::type_t, const lexer* lexer = nullptr)
     {
       return nullptr;
     };

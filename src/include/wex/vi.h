@@ -77,17 +77,18 @@ namespace wex
 
     enum class motion_t;
 
-    void command_reg(const std::string& reg);
-    char convert_key_event(const wxKeyEvent& event) const;
-    bool delete_range(int start, int end);
-    void filter_count(std::string& command);
-    bool insert_mode(const std::string& text);
-    void insert_mode_normal(const std::string& text);
-    bool motion_command(motion_t type, std::string& command);
-    bool other_command(std::string& command);
-    bool parse_command(std::string& command);
-    bool put(bool after);
-    void set_last_command(const std::string& command);
+    void     command_reg(const std::string& reg);
+    char     convert_key_event(const wxKeyEvent& event) const;
+    bool     delete_range(int start, int end);
+    void     filter_count(std::string& command);
+    motion_t get_motion(char c) const;
+    bool     insert_mode(const std::string& text);
+    void     insert_mode_normal(const std::string& text);
+    bool     motion_command(motion_t type, std::string& command);
+    bool     other_command(std::string& command);
+    bool     parse_command(std::string& command);
+    bool     put(bool after);
+    void     set_last_command(const std::string& command);
 
     static inline std::string m_last_command;
     static inline std::string m_last_find_char_command;

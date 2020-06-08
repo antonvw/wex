@@ -8,8 +8,8 @@
 #pragma once
 
 #include <list>
+#include <string>
 #include <wex/ex-command.h>
-#include <wex/window-data.h>
 
 namespace wex
 {

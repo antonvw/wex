@@ -1,34 +1,34 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      data/menu.cpp
-// Purpose:   Implementation of wex::menu_data
+// Purpose:   Implementation of wex::data::menu
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/managedframe.h>
 #include <wex/menu-data.h>
 #include <wx/app.h>
+#include <wx/frame.h>
 
-wex::menu_data& wex::menu_data::action(const action_t rhs)
+wex::data::menu& wex::data::menu::action(const action_t rhs)
 {
   m_action = rhs;
   return *this;
 }
 
-wex::menu_data& wex::menu_data::art(const wxArtID& rhs)
+wex::data::menu& wex::data::menu::art(const wxArtID& rhs)
 {
   m_artid = rhs;
   return *this;
 }
 
-void wex::menu_data::bind(int id) const
+void wex::data::menu::bind(int id) const
 {
   if (id == wxID_ANY)
   {
     return;
   }
 
-  auto* frame = dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
+  auto* frame = dynamic_cast<wxFrame*>(wxTheApp->GetTopWindow());
 
   if (m_action != nullptr)
   {
@@ -41,13 +41,13 @@ void wex::menu_data::bind(int id) const
   }
 }
 
-wex::menu_data& wex::menu_data::help_text(const std::string& rhs)
+wex::data::menu& wex::data::menu::help_text(const std::string& rhs)
 {
   m_help_text = rhs;
   return *this;
 }
 
-wex::menu_data& wex::menu_data::ui(const ui_t rhs)
+wex::data::menu& wex::data::menu::ui(const ui_t rhs)
 {
   m_ui = rhs;
   return *this;

@@ -26,7 +26,7 @@ namespace wex
 
   /*! \file */
   /// Container class for using with item_dialog.
-  /// The next items can be set using specified control_data:
+  /// The next items can be set using specified data::control:
   /// - id: as used by the window, see frame::on_command_item_dialog,
   /// - is_required: ensures that the control must have a value otherwise OK,
   ///   APPLY is not enabled,
@@ -195,7 +195,7 @@ namespace wex
     item(int size)
       : item(SPACER)
     {
-      m_data.window(window_data().style(size));
+      m_data.window(data::window().style(size));
     };
 
     /// Constructor for a STATICLINE item.
@@ -203,8 +203,17 @@ namespace wex
     item(wxOrientation orientation)
       : item(STATICLINE)
     {
-      m_data.window(window_data().style(orientation));
+      m_data.window(data::window().style(orientation));
     };
+
+    /// Constructor from data::item.
+    item(
+      /// label for the window as on the dialog,
+      const std::string& label,
+      /// type of this item
+      type_t type,
+      /// item data
+      const data::item& data);
 
     /// Constructor for several items.
     item(
@@ -227,7 +236,7 @@ namespace wex
       /// if type is STATICTEXT then markup is allowed in the label text
       type_t type = TEXTCTRL,
       /// item data
-      const item_data& data = item_data());
+      const data::item& data = data::item());
 
     /// Constructor for a SPINCTRL or a SLIDER item.
     item(
@@ -244,13 +253,13 @@ namespace wex
       /// - SLIDER
       type_t type = SPINCTRL,
       /// item data
-      const item_data& data = item_data())
+      const data::item& data = data::item())
       : item(
           type,
           label,
           value,
-          item_data(data)
-            .window(window_data().style(wxSP_ARROW_KEYS))
+          data::item(data)
+            .window(data::window().style(wxSP_ARROW_KEYS))
             .min(min)
             .max(max)){};
 
@@ -265,9 +274,9 @@ namespace wex
       /// default value
       const std::any& value = std::any(),
       /// item data
-      const item_data& data =
-        item_data().window(window_data().style(wxSP_ARROW_KEYS)))
-      : item(SPINCTRLDOUBLE, label, value, item_data(data).min(min).max(max)){};
+      const data::item& data =
+        data::item().window(data::window().style(wxSP_ARROW_KEYS)))
+      : item(SPINCTRLDOUBLE, label, value, data::item(data).min(min).max(max)){};
 
     /// Constructor for a CHECKLISTBOX_BOOL item.
     /// This checklistbox can be used to get/set several boolean values.
@@ -277,7 +286,7 @@ namespace wex
       /// ',1' postfix to the name
       const choices_bool_t& choices,
       /// item data
-      const item_data& data = item_data().label_type(item_data::LABEL_NONE))
+      const data::item& data = data::item().label_type(data::item::LABEL_NONE))
       : item(CHECKLISTBOX_BOOL, "checklistbox_bool", choices, data){};
 
     /// Constructor for a NOTEBOOK item, being a vector
@@ -314,7 +323,7 @@ namespace wex
       type_t type = NOTEBOOK,
 #endif
       /// item data
-      const item_data& data = item_data().label_type(item_data::LABEL_NONE))
+      const data::item& data = data::item().label_type(data::item::LABEL_NONE))
       : item(type, label, v, data){};
 
     /// Constructor for a STATICBOX item.
@@ -322,7 +331,7 @@ namespace wex
       /// group items
       const group_t& v,
       /// item data
-      const item_data& data = item_data().label_type(item_data::LABEL_NONE))
+      const data::item& data = data::item().label_type(data::item::LABEL_NONE))
       : item(STATICBOX, v.first, v, data){};
 
     /// Constructor for a RADIOBOX, or a CHECKLISTBOX_BIT item.
@@ -339,14 +348,14 @@ namespace wex
       /// indicates whether to use a radiobox or a checklistbox.
       bool use_radiobox = true,
       /// item data
-      const item_data& data = item_data())
+      const data::item& data = data::item())
       : item(
           use_radiobox ? RADIOBOX : CHECKLISTBOX_BIT,
           label,
           choices,
-          item_data(data)
-            .window(window_data().style(wxRA_SPECIFY_COLS))
-            .label_type(item_data::LABEL_NONE)){};
+          data::item(data)
+            .window(data::window().style(wxRA_SPECIFY_COLS))
+            .label_type(data::item::LABEL_NONE)){};
 
     /// Constructor for a USER item.
     item(
@@ -355,7 +364,7 @@ namespace wex
       /// the window (use default constructor for it)
       wxWindow* window,
       /// remember to set callback for window creation
-      const item_data& data)
+      const data::item& data)
       : item(USER, label, std::string(), data)
     {
       m_window = window;
@@ -366,15 +375,15 @@ namespace wex
       /// label for this item
       const std::string& label,
       /// listview data
-      const listview_data& data,
+      const data::listview& data,
       /// initial value
       /// expects std::list< std::string>
       const std::any& value = std::any(),
       /// item data
-      const item_data& d = item_data().label_type(item_data::LABEL_NONE))
+      const data::item& d = data::item().label_type(data::item::LABEL_NONE))
       : item(LISTVIEW, label, value, d)
     {
-      m_listview_data = data;
+      m_data_listview = data;
     };
 
     /// Constructor several items.
@@ -405,15 +414,15 @@ namespace wex
       /// - TEXTCTRL_INT expects std::string with int contents
       const std::any& value = std::any(),
       /// item data
-      const item_data& data = item_data())
+      const data::item& data = data::item())
       : item(
           type,
           label,
           value,
-          item_data(data).label_type(
+          data::item(data).label_type(
             type == BUTTON || type == CHECKBOX || type == COMMANDLINKBUTTON ||
                 type == TOGGLEBUTTON ?
-              item_data::LABEL_NONE :
+              data::item::LABEL_NONE :
               data.label_type())){};
 
     /// If apply callback has been provided calls apply.
@@ -495,7 +504,7 @@ namespace wex
       type_t             type,
       const std::string& label = std::string(),
       const std::any&    value = std::string(),
-      const item_data&         = item_data());
+      const data::item&         = data::item());
 
     wxFlexGridSizer* add(wxSizer* sizer, wxFlexGridSizer* current) const;
     wxFlexGridSizer* add_browse_button(wxSizer* sizer) const;
@@ -518,8 +527,8 @@ namespace wex
 
     std::string m_label, m_label_window, m_page;
 
-    item_data     m_data;
-    listview_data m_listview_data;
+    data::item      m_data;
+    data::listview m_data_listview;
 
     wxSizerFlags m_sizer_flags;
     wxWindow*    m_window{nullptr};

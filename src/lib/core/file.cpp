@@ -8,6 +8,7 @@
 #include <fstream>
 #include <wex/config.h>
 #include <wex/file.h>
+#include <wex/log.h>
 #include <wex/stat.h>
 
 namespace wex

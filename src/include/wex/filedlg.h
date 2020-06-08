@@ -2,13 +2,13 @@
 // Name:      filedlg.h
 // Purpose:   Declaration of wex::file_dialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wx/filedlg.h>
 #include <wex/window-data.h>
+#include <wx/filedlg.h>
 
 namespace wex
 {
@@ -21,36 +21,29 @@ namespace wex
     /// Default constructor for hexmode only.
     file_dialog(
       /// window data
-      const window_data& data = window_data().style(wxFD_DEFAULT_STYLE),
-      /// wildcard
-      /// if wildcard is default and file is initialized, 
-      /// the wildcard is taken from the file
-      const std::string& wildcard = wxFileSelectorDefaultWildcardStr);
+      const data::window& data = data::window().style(wxFD_DEFAULT_STYLE));
 
     /// Constructor for file and a hexmode.
     file_dialog(
       /// specify file
       file* file,
       /// window data
-      const window_data& data = window_data().style(wxFD_DEFAULT_STYLE),
-      /// wildcard
-      /// if wildcard is default and file is initialized, 
-      /// the wildcard is taken from the file
-      const std::string& wildcard = wxFileSelectorDefaultWildcardStr);
+      const data::window& data = data::window().style(wxFD_DEFAULT_STYLE));
 
     /// Virtual interface.
     int ShowModal() override;
-    
+
     /// Other methods.
 
     /// Returns true if hexmode checkbox is (was) checked.
-    bool hexmode() const {return m_hexmode;};
+    bool hexmode() const { return m_hexmode; };
 
     /// Shows the dialog depending on the changes on the file.
     /// If you specify show_modal then dialog is always shown.
     int show_modal_if_changed(bool show_modal = false);
+
   private:
-    file* m_file {nullptr};
-    bool m_hexmode {false};
+    file* m_file{nullptr};
+    bool  m_hexmode{false};
   };
-};
+}; // namespace wex

@@ -12,9 +12,10 @@
 #include <numeric>
 
 #include <wex/config.h>
+#include <wex/core.h>
+#include <wex/log.h>
 #include <wex/path.h>
 #include <wex/tokenizer.h>
-#include <wex/util.h>
 #include <wx/app.h>
 #include <wx/colour.h>
 #include <wx/font.h>

@@ -7,7 +7,8 @@
 
 #include <wex/blame.h>
 #include <wex/config.h>
-#include <wex/util.h>
+#include <wex/core.h>
+#include <wex/log.h>
 
 namespace wex
 {

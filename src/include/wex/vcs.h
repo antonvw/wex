@@ -48,7 +48,7 @@ namespace wex
     /// Shows a dialog allowing you to choose which vcs to use
     /// and to set the path for each vcs entry.
     /// Returns dialog return code.
-    int config_dialog(const window_data& data = window_data()) const;
+    int config_dialog(const data::window& data = data::window()) const;
 
     /// Returns the current vcs entry.
     auto& entry() {return m_entry;};
@@ -77,7 +77,7 @@ namespace wex
     /// - Returns wxID_CANCEL if dialog was cancelled, or an execute error occurred.
     /// - Returns wxID_OK if okay (use vcs entry error
     ///   to check whether the output contains errors or normal info).
-    wxStandardID request(const window_data& data = window_data());
+    wxStandardID request(const data::window& data = data::window());
 
     /// Sets the vcs entry using base folder.
     /// If not, it will show
@@ -89,7 +89,7 @@ namespace wex
       wxWindow* parent = nullptr);
 
     /// Shows dialog for the current vcs entry.
-    int show_dialog(const window_data& data = window_data());
+    int show_dialog(const data::window& data = data::window());
 
     /// Returns true if vcs usage is set in the config.
     bool use() const;

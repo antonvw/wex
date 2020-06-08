@@ -28,14 +28,14 @@ public:
 
 private:
   wex::report::listview* activate(
-    wex::listview_data::type_t type,
+    wex::data::listview::type_t type,
     const wex::lexer*          lexer = nullptr) override;
   bool           allow_close(wxWindowID id, wxWindow* page) override;
   wex::listview* get_listview() override;
   wex::stc*      get_stc() override;
   wex::stc*      open_file(
-         const wex::path&     file,
-         const wex::stc_data& stc_data = wex::stc_data()) override;
+         const wex::path&      file,
+         const wex::data::stc& data = wex::data::stc()) override;
 
   wex::notebook* m_notebook;
   wex::stc*      m_stc;

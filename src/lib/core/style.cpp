@@ -11,13 +11,12 @@
 #endif
 #include <numeric>
 #include <wex/config.h>
-#include <wex/item-vector.h>
+#include <wex/core.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
-#include <wex/stc.h>
 #include <wex/style.h>
 #include <wex/tokenizer.h>
-#include <wex/util.h>
+#include <wx/stc/stc.h>
 
 void wex::style::apply(wxStyledTextCtrl* stc) const
 {
@@ -80,8 +79,9 @@ void wex::style::set(const pugi::xml_node& node, const std::string& macro)
 
       if (value.find("default-font") != std::string::npos)
       {
-        const item_vector& iv(stc::config_items());
-        const auto&        font(iv.find<wxFont>(_("stc.Default font")));
+        const auto font(
+          config(_("stc.Default font"))
+            .get(wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
 
         replace_all(
           value,

@@ -15,6 +15,7 @@
 #include <wex/config.h>
 #include <wex/item.h>
 #include <wex/itemdlg.h>
+#include <wex/log.h>
 #include <wex/managedframe.h>
 #include <wx/artprov.h>
 #include <wx/imaglist.h>
@@ -37,7 +38,7 @@ TEST_CASE("wex::item")
       "item",
       "hello string",
       wex::item::TEXTCTRL,
-      wex::item_data(wex::control_data().is_required(true)));
+      wex::data::item(wex::data::control().is_required(true)));
 
     REQUIRE(item.data().columns() == 1);
     REQUIRE(
@@ -110,7 +111,7 @@ TEST_CASE("wex::item")
     REQUIRE(std::any_cast<double>(item_float.get_value()) == 100.001);
 
     wex::item
-      item_spin("spindouble", 20.0, 30.0, 25.0, wex::item_data().inc(0.1));
+      item_spin("spindouble", 20.0, 30.0, 25.0, wex::data::item().inc(0.1));
     REQUIRE(item_spin.type() == wex::item::SPINCTRLDOUBLE);
 
 #ifdef __UNIX__
@@ -166,7 +167,7 @@ TEST_CASE("wex::item")
     const wex::item ci_cb("ci-cb", wex::item::COMBOBOX);
     const wex::item ci_cb_dir("ci-cb-dir", wex::item::COMBOBOX_DIR);
     const wex::item ci_sp("ci-sp", 1, 5);
-    const wex::item ci_sp_d("ci-sp-d", 1.0, 5.0);
+    const wex::item ci_sp_d("ci-sp-d", 1.0, 5.0, 1.0, wex::data::item().inc((double)1.0));
     const wex::item ci_sl("ci-sl", 1, 5, 2, wex::item::SLIDER);
     const wex::item ci_vl(wxLI_HORIZONTAL);
     wex::item       ci_str("ci-string", std::string());
@@ -186,7 +187,7 @@ TEST_CASE("wex::item")
     const wex::item ci_user(
       "ci-usr",
       new wxTextCtrl(),
-      wex::item_data()
+      wex::data::item()
         .user_window_create(
           [=](wxWindow* user, wxWindow* parent, bool readonly) {
             ((wxTextCtrl*)user)->Create(parent, 100);
@@ -329,7 +330,7 @@ TEST_CASE("wex::item")
   {
     auto* dlg = new wex::item_dialog(
       {{{"group", {{"element1"}, {"element2"}, {"element3"}, {"element4"}}}}},
-      wex::window_data().button(wxOK | wxCANCEL | wxAPPLY));
+      wex::data::window().button(wxOK | wxCANCEL | wxAPPLY));
 
     dlg->Show();
   }
@@ -369,9 +370,9 @@ TEST_CASE("wex::item")
       auto* dlg = new wex::item_dialog(
         {test_notebook_item(
           (wex::item::type_t)style,
-          wex::item_data::LABEL_NONE,
+          wex::data::item::LABEL_NONE,
           il)},
-        wex::window_data()
+        wex::data::window()
           .button(wxOK | wxCANCEL | wxAPPLY)
           .title(titles[style - wex::item::NOTEBOOK]));
 

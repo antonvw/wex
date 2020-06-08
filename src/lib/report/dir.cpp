@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      dir.cpp
-// Purpose:   Implementation of wex::report::dir 
+// Purpose:   Implementation of wex::report::dir
 //            and wex::report::tool_dir classes
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020 Anton van Wezenbeek
@@ -11,33 +11,31 @@
 #include <wex/report/stream.h>
 
 wex::report::dir::dir(
-  wex::listview* listview,
-  const path& fullpath, 
-  const std::string& filespec, 
-  dir::type_t flags)
-  : wex::dir(fullpath, filespec, std::string(), flags)
+  wex::listview*   listview,
+  const path&      fullpath,
+  const data::dir& data)
+  : wex::dir(fullpath, data)
   , m_listview(listview)
 {
 }
 
 bool wex::report::dir::on_dir(const path& dir)
 {
-  listitem(m_listview, dir, file_spec()).insert();
+  listitem(m_listview, dir, data().file_spec()).insert();
   return true;
 }
 
 bool wex::report::dir::on_file(const path& file)
 {
-  listitem(m_listview, file, file_spec()).insert();
+  listitem(m_listview, file, data().file_spec()).insert();
   return true;
 }
 
 wex::report::tool_dir::tool_dir(
-  const tool& tool,
-  const path& fullpath, 
-  const std::string& filespec, 
-  dir::type_t flags)
-  : wex::dir(fullpath, filespec, std::string(), flags)
+  const tool&      tool,
+  const path&      fullpath,
+  const data::dir& data)
+  : wex::dir(fullpath, data)
   , m_statistics()
   , m_tool(tool)
 {

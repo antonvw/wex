@@ -11,6 +11,7 @@
 #include <wx/wx.h>
 #endif
 #include <wex/config.h>
+#include <wex/core.h>
 #include <wex/frd.h>
 #include <wex/item.h>
 #include <wex/log.h>
@@ -31,30 +32,30 @@
 
 namespace wex
 {
-  bool update(
-    wex::find_replace_data* frd,
-    wxCheckListBox*         clb,
-    int                     item,
-    bool                    save,
-    bool                    value)
+  bool update(wxCheckListBox* clb, int item, bool save)
   {
+    find_replace_data* frd = find_replace_data::get();
+
     if (const std::string field(clb->GetString(item));
         field == frd->text_match_word())
     {
-      !save ? clb->Check(item, frd->match_word()) : frd->set_match_word(value);
+      !save ? clb->Check(item, frd->match_word()) :
+              frd->set_match_word(clb->IsChecked(item));
     }
     else if (field == frd->text_match_case())
     {
-      !save ? clb->Check(item, frd->match_case()) : frd->set_match_case(value);
+      !save ? clb->Check(item, frd->match_case()) :
+              frd->set_match_case(clb->IsChecked(item));
     }
     else if (field == frd->text_regex())
     {
-      !save ? clb->Check(item, frd->use_regex()) : frd->set_use_regex(value);
+      !save ? clb->Check(item, frd->use_regex()) :
+              frd->set_use_regex(clb->IsChecked(item));
     }
     else if (field == frd->text_search_down())
     {
       !save ? clb->Check(item, frd->search_down()) :
-              frd->set_search_down(value);
+              frd->set_search_down(clb->IsChecked(item));
     }
     else
     {
@@ -89,12 +90,7 @@ bool wex::item::to_config(bool save) const
 
         for (const auto& c : std::any_cast<choices_bool_t>(m_data.initial()))
         {
-          if (!update(
-                find_replace_data::get(),
-                clb,
-                i,
-                save,
-                clb->IsChecked(i)))
+          if (!update(clb, i, save))
           {
             if (save)
               config(before(c, ',')).set(clb->IsChecked(i));

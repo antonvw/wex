@@ -13,7 +13,7 @@
 wex::textctrl::textctrl(
   managed_frame*     frame,
   wxControl*         prefix,
-  const window_data& data)
+  const data::window& data)
   : m_imp(new textctrl_imp(this, prefix, data))
   , m_frame(frame)
 {
@@ -22,7 +22,7 @@ wex::textctrl::textctrl(
 wex::textctrl::textctrl(
   managed_frame*     frame,
   const std::string& value,
-  const window_data& data)
+  const data::window& data)
   : m_imp(new textctrl_imp(this, value, data))
   , m_frame(frame)
 {

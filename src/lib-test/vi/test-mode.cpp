@@ -55,7 +55,7 @@ TEST_CASE("wex::vi_mode")
   for (const auto& visual : std::vector<std::pair<std::string, wex::vi_mode::state_t>> {
     {"v",wex::vi_mode::state_t::VISUAL},
     {"V",wex::vi_mode::state_t::VISUAL_LINE},
-    {"K",wex::vi_mode::state_t::VISUAL_RECT}})
+    {"K",wex::vi_mode::state_t::VISUAL_BLOCK}})
   {
     std::string command(visual.first);
     REQUIRE( mode.transition(command));

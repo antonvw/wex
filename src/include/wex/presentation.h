@@ -9,10 +9,10 @@
 
 #include <pugixml.hpp>
 
+class wxStyledTextCtrl;
+
 namespace wex
 {
-  class stc;
-
   /// This class defines our scintilla presentations.
   class presentation
   {
@@ -22,60 +22,57 @@ namespace wex
       INDICATOR,
       MARKER,
     };
-    
+
     /// Constructor.
     presentation(
-      presentation_t t, const pugi::xml_node& node = pugi::xml_node());
+      presentation_t        t,
+      const pugi::xml_node& node = pugi::xml_node());
 
     /// Constructor.
     /// Only sets no and style, and not the colour and under.
-    presentation(
-      presentation_t t, int no, int style = -1);
+    presentation(presentation_t t, int no, int style = -1);
 
     /// < Operator.
     bool operator<(const presentation& i) const;
 
-    /// == Operator. 
+    /// == Operator.
     /// Returns true if no and style are equal
     /// (if style is not -1).
     bool operator==(const presentation& i) const;
-    
+
     /// != Operator.
-    bool operator!=(const presentation& i) const {return !operator==(i);};
+    bool operator!=(const presentation& i) const { return !operator==(i); };
 
     /// Applies this presentation to stc component.
-    void apply(stc* stc) const;
+    void apply(wxStyledTextCtrl* stc) const;
 
     /// Returns background colour.
-    const auto & background_colour() const {return m_background_colour;};
-    
+    const auto& background_colour() const { return m_background_colour; };
+
     /// Returns foreground colour.
-    const auto & foreground_colour() const {return m_foreground_colour;};
-    
+    const auto& foreground_colour() const { return m_foreground_colour; };
+
     /// Returns true if this presentation is valid.
     bool is_ok() const;
-    
+
     /// Returns name of presentation.
     const std::string name() const;
-  
+
     /// Returns the no.
-    int number() const {return m_no;};
+    int number() const { return m_no; };
 
     /// Returns the style.
-    int style() const {return m_style;};
-    
+    int style() const { return m_style; };
+
     /// Returns underlined.
-    bool underlined() const {return m_under;};
+    bool underlined() const { return m_under; };
+
   private:
-    std::string 
-      m_background_colour, 
-      m_foreground_colour;
+    std::string m_background_colour, m_foreground_colour;
 
-    int 
-      m_no {-1}, 
-      m_style {-1};
+    int m_no{-1}, m_style{-1};
 
-    bool m_under {false};
+    bool                 m_under{false};
     const presentation_t m_type;
   };
-};
+}; // namespace wex

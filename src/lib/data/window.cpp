@@ -1,66 +1,72 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      data/window.cpp
-// Purpose:   Implementation of wex::window_data
+// Purpose:   Implementation of wex::data::window
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/managedframe.h>
 #include <wex/window-data.h>
 #include <wx/app.h>
+#include <wx/window.h>
 
-wex::window_data::window_data()
+wex::data::window::window()
 {
   if (m_parent == nullptr && wxTheApp != nullptr)
   {
-    m_parent = dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
+    m_parent = dynamic_cast<wxWindow*>(wxTheApp->GetTopWindow());
   }
 }
 
-wex::window_data& wex::window_data::button(long button)
+wex::data::window& wex::data::window::button(long button)
 {
   m_button = button;
   return *this;
 }
 
-wex::window_data& wex::window_data::id(wxWindowID id)
+wex::data::window& wex::data::window::id(wxWindowID id)
 {
   m_id = id;
   return *this;
 }
 
-wex::window_data& wex::window_data::name(const std::string& name)
+wex::data::window& wex::data::window::name(const std::string& name)
 {
   m_name = name;
   return *this;
 }
 
-wex::window_data& wex::window_data::parent(wxWindow* parent)
+wex::data::window& wex::data::window::parent(wxWindow* parent)
 {
   m_parent = parent;
   return *this;
 }
 
-wex::window_data& wex::window_data::pos(const wxPoint& point)
+wex::data::window& wex::data::window::pos(const wxPoint& point)
 {
   m_pos = point;
   return *this;
 }
 
-wex::window_data& wex::window_data::size(const wxSize& size)
+wex::data::window& wex::data::window::size(const wxSize& size)
 {
   m_size = size;
   return *this;
 }
 
-wex::window_data& wex::window_data::style(long style)
+wex::data::window& wex::data::window::style(long style)
 {
   m_style = style;
   return *this;
 }
 
-wex::window_data& wex::window_data::title(const std::string& title)
+wex::data::window& wex::data::window::title(const std::string& title)
 {
   m_title = title;
+  return *this;
+}
+
+wex::data::window& wex::data::window::wildcard(const std::string& rhs)
+{
+  m_wildcard = rhs;
   return *this;
 }

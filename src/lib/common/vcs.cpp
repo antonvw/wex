@@ -138,7 +138,7 @@ wex::vcs::vcs(const std::vector<path>& files, int command_no)
   }
 }
 
-int wex::vcs::config_dialog(const window_data& par) const
+int wex::vcs::config_dialog(const data::window& par) const
 {
   if (m_entries.empty())
   {
@@ -179,15 +179,15 @@ int wex::vcs::config_dialog(const window_data& par) const
   }
 
   // use a radiobox
-  std::vector<item> v{{"vcs.VCS", choices, true, item_data().columns(cols)}};
+  std::vector<item> v{{"vcs.VCS", choices, true, data::item().columns(cols)}};
 
   for (const auto& it : m_entries)
   {
     v.push_back({"vcs." + it.name(), item::FILEPICKERCTRL});
   }
 
-  if (const window_data data(
-        window_data(par).title(_("Set VCS").ToStdString()));
+  if (const data::window data(
+        data::window(par).title(_("Set VCS").ToStdString()));
       data.button() & wxAPPLY)
   {
     auto* dlg = new item_dialog(v, data);
@@ -220,7 +220,6 @@ bool wex::vcs::execute()
       m_entry.get_command().is_add() ? config(_("vcs.data")).get_firstof() :
                                        std::string(),
       lexer(),
-      process::EXEC_WAIT,
       config(_("vcs.Base folder")).get_firstof());
   }
   else
@@ -250,8 +249,7 @@ bool wex::vcs::execute()
       args = "\"" + filename.string() + "\"";
     }
 
-    return m_entry
-      .execute(args, filename.lexer(), process::EXEC_WAIT, wd.string());
+    return m_entry.execute(args, filename.lexer(), wd.string());
   }
 }
 
@@ -316,7 +314,7 @@ const std::string wex::vcs::name() const
   }
 }
 
-wxStandardID wex::vcs::request(const window_data& data)
+wxStandardID wex::vcs::request(const data::window& data)
 {
   if (show_dialog(data) == wxID_CANCEL)
   {
@@ -347,13 +345,13 @@ bool wex::vcs::set_entry_from_base(wxWindow* parent)
     const std::vector<item> v{{_("vcs.Base folder"),
                                item::COMBOBOX_DIR,
                                std::any(),
-                               control_data().is_required(true)}};
+                               data::control().is_required(true)}};
 
     config(_("vcs.Base folder")).get_firstof().empty())
   {
     if (
       parent != nullptr &&
-      item_dialog(v, window_data().parent(parent).title(message)).ShowModal() ==
+      item_dialog(v, data::window().parent(parent).title(message)).ShowModal() ==
         wxID_CANCEL)
     {
       return false;
@@ -369,7 +367,7 @@ bool wex::vcs::set_entry_from_base(wxWindow* parent)
     {
       if (
         parent != nullptr &&
-        item_dialog(v, window_data().parent(parent).title(message))
+        item_dialog(v, data::window().parent(parent).title(message))
             .ShowModal() == wxID_CANCEL)
       {
         return false;
@@ -382,14 +380,14 @@ bool wex::vcs::set_entry_from_base(wxWindow* parent)
   return !m_entry.name().empty();
 }
 
-int wex::vcs::show_dialog(const window_data& arg)
+int wex::vcs::show_dialog(const data::window& arg)
 {
   if (m_entry.get_command().get_command().empty())
   {
     return wxID_CANCEL;
   }
 
-  window_data data(window_data(arg).title(m_title));
+  data::window data(data::window(arg).title(m_title));
   const bool  add_folder(m_files.empty());
 
   if (m_entry.get_command().ask_flags())
@@ -410,14 +408,14 @@ int wex::vcs::show_dialog(const window_data& arg)
                                            _("vcs.Revision comment"),
                                            item::COMBOBOX,
                                            std::any(),
-                                           control_data().is_required(true)) :
+                                           data::control().is_required(true)) :
                                          item(),
      add_folder && !m_entry.get_command().is_help() ?
        item(
          _("vcs.Base folder"),
          item::COMBOBOX_DIR,
          std::any(),
-         control_data().is_required(true)) :
+         data::control().is_required(true)) :
        item(),
      add_folder && !m_entry.get_command().is_help() &&
          m_entry.get_command().is_add() ?
@@ -425,15 +423,15 @@ int wex::vcs::show_dialog(const window_data& arg)
          _("vcs.Path"),
          item::COMBOBOX,
          std::any(),
-         control_data().is_required(true)) :
+         data::control().is_required(true)) :
        item(),
      m_entry.get_command().ask_flags() ?
        item(
          _("vcs.Flags"),
          std::string(),
          item::TEXTCTRL,
-         item_data()
-           .label_type(item_data::LABEL_LEFT)
+         data::item()
+           .label_type(data::item::LABEL_LEFT)
            .apply([=](wxWindow* user, const std::any& value, bool save) {
              config(m_entry.flags_key()).set(m_entry.get_flags());
            })) :

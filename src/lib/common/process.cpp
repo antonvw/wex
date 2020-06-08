@@ -16,6 +16,7 @@
 #endif
 #include <boost/process.hpp>
 #include <wex/config.h>
+#include <wex/core.h>
 #include <wex/debug.h>
 #include <wex/defs.h>
 #include <wex/itemdlg.h>
@@ -23,7 +24,6 @@
 #include <wex/managedframe.h>
 #include <wex/process.h>
 #include <wex/shell.h>
-#include <wex/util.h>
 #include <wx/valtext.h>
 
 namespace bp = boost::process;
@@ -204,20 +204,20 @@ wex::process& wex::process::operator=(const process& p)
   return *this;
 }
 
-int wex::process::config_dialog(const window_data& par)
+int wex::process::config_dialog(const data::window& par)
 {
   wxTextValidator validator(wxFILTER_EXCLUDE_CHAR_LIST);
   validator.SetCharExcludes("?%*\"");
-  const window_data       data(window_data(par).title(_("Select Process")));
+  const data::window       data(data::window(par).title(_("Select Process")));
   const std::vector<item> v{
     {_("Process"),
      item::COMBOBOX,
      std::any(),
-     control_data().validator(&validator).is_required(true)},
+     data::control().validator(&validator).is_required(true)},
     {m_working_dir_key,
      item::COMBOBOX_DIR,
      std::any(),
-     control_data().is_required(true)}};
+     data::control().is_required(true)}};
 
   if (data.button() & wxAPPLY)
   {
@@ -329,7 +329,7 @@ wex::shell* wex::process::prepare_output(wxWindow* parent)
   if (m_shell == nullptr)
   {
     m_shell = new shell(
-      stc_data().window(window_data().parent(parent)),
+      data::stc().window(data::window().parent(parent)),
       std::string()); // empty prompt
   }
 

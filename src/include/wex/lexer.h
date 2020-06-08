@@ -20,7 +20,10 @@ namespace pugi
 
 namespace wex
 {
-  class stc;
+  namespace core
+  {
+    class stc;
+  };
 
   /// This class defines a lexer using file extensions,
   /// syntax colouring and comment definitions.
@@ -32,8 +35,8 @@ namespace wex
     /// Default constructor.
     lexer(const std::string& lexer = std::string());
 
-    /// Constructor using stc.
-    lexer(stc* stc);
+    /// Constructor using core stc.
+    lexer(core::stc* stc);
 
     /// Constructor using xml node.
     lexer(const pugi::xml_node* node);
@@ -44,6 +47,22 @@ namespace wex
 
     /// Adds keywords (public for testing only).
     bool add_keywords(const std::string& text, int setno = 0);
+
+    /// Aligns text.
+    /// Fills out over lexer comment lines
+    /// If the lexer has no comment end character, fill out
+    /// with spaces is not done.
+    const std::string align_text(
+      /// lines to align
+      const std::string_view& lines,
+      /// The header is used as a prefix for the line, directly
+      /// followed by the lines, and if necessary on the next line
+      /// the header is repeated as a string of spaces.
+      const std::string_view& header = std::string(),
+      /// if fill out, then use space
+      bool fill_out_with_space = true,
+      /// fill out
+      bool fill_out = false) const;
 
     /// Applies this lexer to stc component (and colours the component).
     bool apply() const;
@@ -182,12 +201,14 @@ namespace wex
     std::vector<size_t>   m_edge_columns; // last one is used for line size
     std::vector<property> m_properties;
     std::vector<style>    m_styles;
-    std::vector<
-      std::tuple<std::string, int, std::function<void(stc* stc, int attrib)>>>
+    std::vector<std::tuple<
+      std::string,
+      int,
+      std::function<void(core::stc* stc, int attrib)>>>
       m_attribs;
 
     bool m_is_ok{false}, m_previewable{false};
 
-    stc* m_stc{nullptr};
+    core::stc* m_stc{nullptr};
   };
 }; // namespace wex

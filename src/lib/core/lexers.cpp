@@ -14,11 +14,11 @@
 #include <numeric>
 #include <regex>
 #include <wex/config.h>
+#include <wex/core.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
-#include <wex/stc.h>
+#include <wex/stc-core.h>
 #include <wex/tokenizer.h>
-#include <wex/util.h>
 
 // Constructor for lexers from specified filename.
 // This must be an existing xml file containing all lexers.
@@ -30,7 +30,7 @@ wex::lexers::lexers(const path& filename)
 {
 }
 
-void wex::lexers::apply(stc* stc) const
+void wex::lexers::apply(core::stc* stc) const
 {
   m_default_style.apply(stc);
 
@@ -41,7 +41,7 @@ void wex::lexers::apply(stc* stc) const
   for (const auto& m : m_markers)
     m.apply(stc);
 
-  if (stc->get_hexmode().is_active())
+  if (stc->is_hexmode())
   {
     for (const auto& s : m_styles_hex)
       s.apply(stc);
@@ -66,7 +66,7 @@ void wex::lexers::apply_default_style(
 }
 
 // No longer const, as it updates m_default_colours.
-void wex::lexers::apply_global_styles(stc* stc)
+void wex::lexers::apply_global_styles(core::stc* stc)
 {
   if (m_default_colours.empty())
   {
@@ -135,7 +135,7 @@ const std::string wex::lexers::apply_macro(
 }
 
 void wex::lexers::apply_margin_text_style(
-  stc*               stc,
+  core::stc*         stc,
   int                line,
   margin_style_t     style,
   const std::string& text) const
@@ -183,6 +183,8 @@ void wex::lexers::clear_theme()
 
 const wex::lexer& wex::lexers::find(const std::string& name) const
 {
+  assert(!m_lexers.empty());
+
   const auto& it =
     std::find_if(m_lexers.begin(), m_lexers.end(), [name](auto const& e) {
       return e.display_lexer() == name;
@@ -194,6 +196,8 @@ const wex::lexer& wex::lexers::find(const std::string& name) const
 const wex::lexer&
 wex::lexers::find_by_filename(const std::string& fullname) const
 {
+  assert(!m_lexers.empty());
+
   const auto& it =
     std::find_if(m_lexers.begin(), m_lexers.end(), [fullname](auto const& e) {
       return !e.extensions().empty() &&
@@ -205,6 +209,8 @@ wex::lexers::find_by_filename(const std::string& fullname) const
 
 const wex::lexer& wex::lexers::find_by_text(const std::string& text) const
 {
+  assert(!m_lexers.empty());
+
   if (text.empty())
   {
     return m_lexers.front();
@@ -275,22 +281,6 @@ const std::string& wex::lexers::keywords(const std::string& set) const
 
 bool wex::lexers::load_document()
 {
-  // This test is to prevent showing an error if the lexers file does not exist,
-  // as this is not required.
-  if (!m_path.file_exists())
-    return false;
-
-  pugi::xml_document doc;
-
-  if (const auto result = doc.load_file(
-        m_path.string().c_str(),
-        pugi::parse_default | pugi::parse_trim_pcdata);
-      !result)
-  {
-    xml_error(m_path, &result);
-    return false;
-  }
-
   if (m_is_loaded)
   {
     m_default_style.clear();
@@ -316,6 +306,23 @@ bool wex::lexers::load_document()
   m_markers.insert(marker());
   m_theme_colours[std::string()] = m_default_colours;
   m_theme_macros[std::string()]  = name_values_t{};
+
+  // This test is to prevent showing an error if the lexers file does not exist,
+  // as this is not required.
+  if (!m_path.file_exists())
+  {
+    return false;
+  }
+
+  pugi::xml_document doc;
+
+  if (const auto result = doc.load_file(
+        m_path.string().c_str(),
+        pugi::parse_default | pugi::parse_trim_pcdata);
+      !result)
+  {
+    log(result) << m_path;
+  }
 
   for (const auto& node : doc.document_element().children())
   {
@@ -571,22 +578,6 @@ wex::lexers* wex::lexers::set(wex::lexers* lexers)
   wex::lexers* old = m_self;
   m_self           = lexers;
   return old;
-}
-
-bool wex::lexers::show_dialog(stc* stc) const
-{
-  wxArrayString s;
-  for (const auto& it : m_lexers)
-    s.Add(it.display_lexer());
-
-  auto lexer = stc->get_lexer().display_lexer();
-  if (!single_choice_dialog(stc, _("Enter Lexer"), s, lexer))
-    return false;
-
-  lexer.empty() ? stc->get_lexer().clear() :
-                  (void)stc->get_lexer().set(lexer, true);
-
-  return true;
 }
 
 bool wex::lexers::show_theme_dialog(wxWindow* parent)

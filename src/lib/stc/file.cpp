@@ -12,7 +12,6 @@
 #endif
 #include <wex/defs.h>
 #include <wex/filedlg.h>
-#include <wex/lexers.h>
 #include <wex/stc.h>
 #include <wex/stcfile.h>
 
@@ -64,7 +63,7 @@ bool wex::stc_file::do_file_load(bool synced)
   m_stc->keep_event_data(synced);
 
   const bool hexmode =
-    dlg.hexmode() || m_stc->data().flags().test(stc_data::WIN_HEX);
+    dlg.hexmode() || m_stc->data().flags().test(data::stc::WIN_HEX);
 
   const std::streampos offset =
     m_previous_size < m_stc->get_filename().stat().st_size &&

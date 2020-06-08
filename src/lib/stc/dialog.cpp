@@ -15,9 +15,9 @@
 wex::stc_entry_dialog::stc_entry_dialog(
   const std::string& text,
   const std::string& prompt,
-  const window_data& data)
+  const data::window& data)
   : dialog(data)
-  , m_stc(new wex::stc(text, stc_data().window(window_data().parent(this))))
+  , m_stc(new wex::stc(text, data::stc().window(data::window().parent(this))))
 {
   if (!prompt.empty())
   {

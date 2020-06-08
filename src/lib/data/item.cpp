@@ -1,24 +1,24 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      data/item.cpp
-// Purpose:   Implementation of wex::item_data
+// Purpose:   Implementation of wex::data::item
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/item-data.h>
 
-wex::item_data::item_data(const control_data& data)
+wex::data::item::item(const data::control& data)
 {
   m_data = data;
 }
 
-wex::item_data::item_data(const item_data& r, const std::any& initial)
+wex::data::item::item(const item& r, const std::any& initial)
   : m_initial(initial)
 {
   *this = r;
 }
 
-wex::item_data& wex::item_data::operator=(const item_data& r)
+wex::data::item& wex::data::item::operator=(const data::item& r)
 {
   if (this != &r)
   {
@@ -42,69 +42,69 @@ wex::item_data& wex::item_data::operator=(const item_data& r)
   return *this;
 }
 
-wex::item_data& wex::item_data::apply(const user_apply_t rhs)
+wex::data::item& wex::data::item::apply(const user_apply_t rhs)
 {
   m_apply = rhs;
   return *this;
 }
 
-wex::item_data& wex::item_data::columns(int rhs)
+wex::data::item& wex::data::item::columns(int rhs)
 {
   m_major_dimension = rhs;
   return *this;
 }
 
-wex::item_data& wex::item_data::control(const control_data& rhs)
+wex::data::item& wex::data::item::control(const data::control& rhs)
 {
   m_data = rhs;
   return *this;
 }
 
-wex::item_data& wex::item_data::inc(const std::any& rhs)
+wex::data::item& wex::data::item::inc(const std::any& rhs)
 {
   m_inc = rhs;
   return *this;
 }
 
-wex::item_data& wex::item_data::label_type(label_t rhs)
+wex::data::item& wex::data::item::label_type(label_t rhs)
 {
   m_label_type = rhs;
   return *this;
 }
 
-wex::item_data& wex::item_data::min(const std::any& rhs)
+wex::data::item& wex::data::item::min(const std::any& rhs)
 {
   m_min = rhs;
   return *this;
 }
 
-wex::item_data& wex::item_data::max(const std::any& rhs)
+wex::data::item& wex::data::item::max(const std::any& rhs)
 {
   m_max = rhs;
   return *this;
 }
 
-wex::item_data& wex::item_data::image_list(wxImageList* il)
+wex::data::item& wex::data::item::image_list(wxImageList* il)
 {
   m_image_list = il;
   return *this;
 }
 
-wex::item_data&
-wex::item_data::user_window_create(const user_window_create_t rhs)
+wex::data::item&
+wex::data::item::user_window_create(const user_window_create_t rhs)
 {
   m_user_window_create_t = rhs;
   return *this;
 }
 
-wex::item_data&
-wex::item_data::user_window_to_config(const user_window_to_config_t rhs)
+wex::data::item&
+wex::data::item::user_window_to_config(const user_window_to_config_t rhs)
 {
   m_user_window_to_config_t = rhs;
   return *this;
 }
 
-wex::item_data& wex::item_data::window(const window_data& rhs)
+wex::data::item& wex::data::item::window(const data::window& rhs)
 {
   m_data.window(rhs);
   return *this;

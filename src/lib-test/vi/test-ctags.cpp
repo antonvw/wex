@@ -12,7 +12,7 @@
 
 TEST_CASE("wex::ctags")
 {
-  wex::stc_data data;
+  wex::data::stc data;
 
   SUBCASE("tags default")
   {

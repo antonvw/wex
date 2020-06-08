@@ -22,7 +22,10 @@ class wxWindow;
 
 namespace wex
 {
-  class stc;
+  namespace core
+  {
+    class stc;
+  };
 
   /// Collection of all lexers.
   /// The lexers are loaded from wex-lexers.xml, this is done
@@ -59,7 +62,7 @@ namespace wex
     /// other methods
 
     /// Applies containers (except global styles) to specified component.
-    void apply(stc* stc) const;
+    void apply(core::stc* stc) const;
 
     /// Applies default style to functions for back and foreground colours.
     void apply_default_style(
@@ -68,7 +71,7 @@ namespace wex
 
     /// Sets global styles (and colours and indicators)
     /// for current theme for specified component.
-    void apply_global_styles(stc* stc);
+    void apply_global_styles(core::stc* stc);
 
     /// Applies macro to text:
     /// if text is referring to a macro, text is replaced by the macro value.
@@ -81,7 +84,7 @@ namespace wex
     /// If text is supplied also sets margin text.
     void apply_margin_text_style(
       /// stc component
-      stc* stc,
+      core::stc* stc,
       /// line no
       int line,
       /// style type
@@ -149,11 +152,6 @@ namespace wex
 
     /// Restores the theme from previous theme.
     void restore_theme() { m_theme = m_theme_previous; };
-
-    /// Shows a dialog with all lexers, allowing you to choose one.
-    /// Returns true and sets the lexer on the stc component if you selected
-    /// one.
-    bool show_dialog(stc* stc) const;
 
     /// Shows a dialog with all themes, allowing you to choose one.
     /// Returns true and sets current theme if you select one.

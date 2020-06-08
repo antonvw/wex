@@ -12,6 +12,7 @@
 #include <wex/accelerators.h>
 #include <wex/bind.h>
 #include <wex/config.h>
+#include <wex/core.h>
 #include <wex/defs.h>
 #include <wex/frame.h>
 #include <wex/frd.h>
@@ -21,12 +22,14 @@
 #include <wex/macros.h>
 #include <wex/path.h>
 #include <wex/printing.h>
+#include <wex/statusbar.h>
 #include <wex/stc.h>
 #include <wex/tostring.h>
 #include <wex/util.h>
 #include <wex/vcs.h>
 #include <wex/vcsentry.h>
 #include <wx/fdrepdlg.h> // for wxFindDialogDialog and Event
+#include <wx/filedlg.h>  // for wxFD_OPEN etc.
 
 #define wxCAST_TO(classname)                                     \
   if (m_find_focus != nullptr && m_find_focus->IsShown())        \
@@ -112,7 +115,7 @@ namespace wex
   bool win_shown = false;
 }; // namespace wex
 
-wex::frame::frame(const window_data& data)
+wex::frame::frame(const data::window& data)
   : wxFrame(
       data.parent(),
       data.id(),
@@ -120,8 +123,8 @@ wex::frame::frame(const window_data& data)
                              data.title(),
       data.pos(),
       data.size(),
-      data.style() == DATA_NUMBER_NOT_SET ? wxDEFAULT_FRAME_STYLE :
-                                            data.style(),
+      data.style() == data::NUMBER_NOT_SET ? wxDEFAULT_FRAME_STYLE :
+                                             data.style(),
       data.name().empty() ? "frame" : data.name())
 {
   SetDropTarget(new file_droptarget(this));
@@ -229,11 +232,13 @@ wex::frame::frame(const window_data& data)
           open_files(
             this,
             to_vector_path(text).get(),
-            control_data().command(cmd));
+            data::control().command(cmd));
         }
         else
         {
-          open_files_dialog(this);
+          data::window data;
+          data.style(wxFD_OPEN | wxFD_MULTIPLE | wxFD_CHANGE_DIR);
+          open_files_dialog(this, false, data::stc(data));
         }
       },
       wxID_OPEN},
@@ -317,14 +322,15 @@ wxStatusBar* wex::frame::OnCreateStatusBar(
   wxWindowID      id,
   const wxString& name)
 {
-  m_statusbar =
-    new wex::statusbar(this, wex::window_data().id(id).style(style).name(name));
+  m_statusbar = new wex::statusbar(
+    this,
+    wex::data::window().id(id).style(style).name(name));
   m_statusbar->SetFieldsCount(number);
   return m_statusbar;
 }
 
 wex::stc*
-wex::frame::open_file(const wex::path& filename, const wex::stc_data& data)
+wex::frame::open_file(const wex::path& filename, const wex::data::stc& data)
 {
   if (auto* stc = get_stc(); stc != nullptr)
   {
@@ -338,7 +344,7 @@ wex::frame::open_file(const wex::path& filename, const wex::stc_data& data)
 wex::stc* wex::frame::open_file(
   const wex::path& filename,
   const vcs_entry& vcs,
-  const stc_data&  data)
+  const data::stc& data)
 {
   if (auto* stc = get_stc(); stc != nullptr)
   {
@@ -353,7 +359,7 @@ wex::stc* wex::frame::open_file(
 wex::stc* wex::frame::open_file(
   const path&        filename,
   const std::string& text,
-  const stc_data&    data)
+  const data::stc&   data)
 {
   if (auto* stc = get_stc(); stc != nullptr)
   {
@@ -362,6 +368,14 @@ wex::stc* wex::frame::open_file(
   }
 
   return nullptr;
+}
+
+wex::statusbar* wex::frame::setup_statusbar(
+  const std::vector<statusbar_pane>& panes,
+  long                               style,
+  const std::string&                 name)
+{
+  return statusbar::setup(this, panes, style, name);
 }
 
 void wex::frame::SetMenuBar(wxMenuBar* bar)
@@ -415,7 +429,9 @@ void wex::frame::statusbar_clicked(const std::string& pane)
   else if (pane == "PaneLexer")
   {
     if (stc != nullptr)
-      lexers::get()->show_dialog(stc);
+    {
+      lexers_dialog(stc);
+    }
   }
   else if (pane == "PaneMacro")
   {

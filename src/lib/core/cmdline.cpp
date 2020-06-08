@@ -9,9 +9,9 @@
 #include <iostream>
 #include <wex/cmdline.h>
 #include <wex/config.h>
+#include <wex/core.h>
 #include <wex/log.h>
 #include <wex/tokenizer.h>
-#include <wex/util.h>
 #include <wex/version.h>
 #include <wx/app.h>
 
@@ -241,12 +241,12 @@ wex::cmdline::cmdline(
   const cmd_params_t&   p,
   bool                  add_standard_options,
   const std::string&    prefix)
-  : m_cfg(prefix)
-  , m_parser(new cmdline_imp(add_standard_options, m_cfg))
+  : m_cfg(new config(prefix))
+  , m_parser(new cmdline_imp(add_standard_options, *m_cfg))
 {
   if (!prefix.empty())
   {
-    m_cfg.child_start();
+    m_cfg->child_start();
   }
 
   try
@@ -260,7 +260,7 @@ wex::cmdline::cmdline(
         const std::string def_specified =
           (it->first.size() > 2 ? it->first.back() : std::string("1"));
 
-        m_cfg.item(before(it->first[p_n], ','))
+        m_cfg->item(before(it->first[p_n], ','))
           .set((bool)std::stoi(def_specified));
       }
 
@@ -314,6 +314,7 @@ wex::cmdline::cmdline(
 
 wex::cmdline::~cmdline()
 {
+  delete m_cfg;
   delete m_parser;
 }
 

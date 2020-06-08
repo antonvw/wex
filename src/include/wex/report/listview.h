@@ -20,18 +20,18 @@ namespace wex::report
   {
   public:
     /// Default constructor.
-    listview(const listview_data& data = listview_data());
+    listview(const data::listview& data = data::listview());
       
     /// Destroys the window safely.
     bool Destroy() override;
 
     /// Returns list type from tool id.
-    static listview_data::type_t type_tool(const tool& tool);
+    static data::listview::type_t type_tool(const tool& tool);
   protected:
     void build_popup_menu(menu& menu) override;
     frame* get_frame() {return m_frame;};
   private:
-    const listview_data::menu_t m_menu_flags;
+    const data::listview::menu_t m_menu_flags;
     class frame* m_frame;
   };
 };

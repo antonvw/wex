@@ -8,6 +8,7 @@
 #include <numeric>
 #include <wex/app.h>
 #include <wex/config.h>
+#include <wex/core.h>
 #include <wex/lexer-props.h>
 #include <wex/log.h>
 #include <wex/macros.h>

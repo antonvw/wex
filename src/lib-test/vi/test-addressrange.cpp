@@ -9,6 +9,7 @@
 
 #include "../test.h"
 #include <wex/addressrange.h>
+#include <wex/frd.h>
 #include <wex/macros.h>
 #include <wex/managedframe.h>
 #include <wex/stc.h>
@@ -178,6 +179,17 @@ TEST_CASE("wex::addressrange")
     REQUIRE(stc->GetLineCount() == 8);
   }
 
+  SUBCASE("parse")
+  {
+    wex::info_message_t im;
+
+    REQUIRE(!wex::addressrange(ex, "1,3").parse("", "", im));
+    REQUIRE(im == wex::info_message_t::NONE);
+
+    REQUIRE(wex::addressrange(ex, "1,3").parse("y", "k", im));
+    REQUIRE(im == wex::info_message_t::YANK);
+  }
+
   SUBCASE("print")
   {
     stc->set_text(contents);
@@ -223,9 +235,11 @@ TEST_CASE("wex::addressrange")
     REQUIRE(wex::addressrange(ex, "%").substitute("", '&'));
     REQUIRE(stc->get_text().find("lion") != std::string::npos);
 
-    stc->set_text(contents);
+    wex::find_replace_data::get()->set_find_string("MORE");
+    stc->set_text(contents + " MORE");
     REQUIRE(wex::addressrange(ex, "%").substitute("", '~'));
     REQUIRE(stc->get_text().find("lion") != std::string::npos);
+    REQUIRE(stc->get_text().find("MORE") == std::string::npos);
 
     stc->set_text("special char \\ present");
     REQUIRE(wex::addressrange(ex, "%").substitute("/\\\\//"));

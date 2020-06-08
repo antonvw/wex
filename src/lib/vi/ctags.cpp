@@ -10,6 +10,7 @@
 #include <readtags.h>
 #include <vector>
 #include <wex/config.h>
+#include <wex/core.h>
 #include <wex/ctags.h>
 #include <wex/ex.h>
 #include <wex/frd.h>
@@ -17,7 +18,6 @@
 #include <wex/managedframe.h>
 #include <wex/path.h>
 #include <wex/stc.h>
-#include <wex/util.h>
 #include <wx/app.h>
 #include <wx/artprov.h>
 #include <wx/choicdlg.h>
@@ -66,7 +66,7 @@ namespace wex
     {
       return frame->open_file(
         m_path,
-        control_data().line(m_line_number).command(m_pattern));
+        data::control().line(m_line_number).command(m_pattern));
     }
 
   private:

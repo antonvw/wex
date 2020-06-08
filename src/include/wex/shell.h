@@ -34,7 +34,7 @@ namespace wex
     /// Default constructor.
     shell(
       /// data
-      const stc_data& data = stc_data(),
+      const data::stc& data = data::stc(),
       /// Give the command used to end a line.
       /// The default uses the eol.
       const std::string& prompt = ">",

@@ -9,6 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wex/core.h>
 #include <wex/item-vector.h>
 #include <wex/itemdlg.h>
 #include <wex/notebook.h>
@@ -24,18 +25,18 @@ namespace wex
        {_("tab.Art provider"),
         item::COMBOBOX,
         std::list<std::string>{"simple", "default"},
-        control_data().window(window_data().style(wxCB_READONLY))}});
+        data::control().window(data::window().style(wxCB_READONLY))}});
   };
 } // namespace wex
 
-wex::notebook::notebook(const window_data& data)
+wex::notebook::notebook(const data::window& data)
   : wxAuiNotebook(
       data.parent(),
       data.id(),
       data.pos(),
       data.size(),
-      data.style() == DATA_NUMBER_NOT_SET ? wxAUI_NB_DEFAULT_STYLE :
-                                            data.style())
+      data.style() == data::NUMBER_NOT_SET ? wxAUI_NB_DEFAULT_STYLE :
+                                             data.style())
   , m_frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
 {
   config_get();
@@ -74,22 +75,21 @@ wex::notebook::notebook(const window_data& data)
   });
 }
 
-wxWindow* wex::notebook::add_page(
-  wxWindow*          page,
-  const std::string& key,
-  const std::string& caption,
-  bool               select,
-  const wxBitmap&    bitmap)
+wxWindow* wex::notebook::add_page(const data::notebook& data)
 {
-  if (!AddPage(page, (caption.empty() ? key : caption), select, bitmap))
+  if (!AddPage(
+        data.page(),
+        (data.caption().empty() ? data.key() : data.caption()),
+        data.select(),
+        data.bitmap()))
   {
     return nullptr;
   }
 
-  m_keys[key]     = page;
-  m_windows[page] = key;
+  m_keys[data.key()]     = data.page();
+  m_windows[data.page()] = data.key();
 
-  return page;
+  return data.page();
 }
 
 const std::string wex::notebook::change_selection(const std::string& key)
@@ -109,9 +109,9 @@ const std::string wex::notebook::change_selection(const std::string& key)
   return std::string();
 }
 
-int wex::notebook::config_dialog(const window_data& par)
+int wex::notebook::config_dialog(const data::window& par)
 {
-  const window_data data(window_data(par).title(_("Tab Options")));
+  const data::window data(data::window(par).title(_("Tab Options")));
 
   if (m_config_dialog == nullptr)
   {
@@ -176,28 +176,22 @@ const std::string wex::notebook::current_page_key()
   return key_by_page(page);
 }
 
-wxWindow* wex::notebook::insert_page(
-  size_t             page_idx,
-  wxWindow*          page,
-  const std::string& key,
-  const std::string& caption,
-  bool               select,
-  const wxBitmap&    bitmap)
+wxWindow* wex::notebook::insert_page(const data::notebook& data)
 {
   if (!InsertPage(
-        page_idx,
-        page,
-        (caption.empty() ? key : caption),
-        select,
-        bitmap))
+        data.index(),
+        data.page(),
+        (data.caption().empty() ? data.key() : data.caption()),
+        data.select(),
+        data.bitmap()))
   {
     return nullptr;
   }
 
-  m_keys[key]     = page;
-  m_windows[page] = key;
+  m_keys[data.key()]     = data.page();
+  m_windows[data.page()] = data.key();
 
-  return page;
+  return data.page();
 }
 
 void wex::notebook::rearrange(int direction)

@@ -9,6 +9,7 @@
 
 #include <wex/config.h>
 #include <wex/item.h>
+#include <wex/log.h>
 #include <wx/html/htmlwin.h>
 
 /// Returns a vector with all config items available.
@@ -27,8 +28,8 @@ const auto test_config_items(int rows = 0, int cols = 0)
         {"lambda",
          wex::item::BUTTON,
          std::any(),
-         wex::item_data()
-           .label_type(wex::item_data::LABEL_LEFT)
+         wex::data::item()
+           .label_type(wex::data::item::LABEL_LEFT)
            .apply([=](wxWindow* user, const std::any& value, bool save) {
              wex::log::status("Click on lambda");
            })}}},
@@ -48,7 +49,7 @@ const auto test_config_items(int rows = 0, int cols = 0)
         {"combobox dir is_required",
          wex::item::COMBOBOX_DIR,
          std::any(),
-         wex::item_data(wex::control_data().is_required(true))},
+         wex::data::item(wex::data::control().is_required(true))},
         {"combobox dir", wex::item::COMBOBOX_DIR},
         {"combobox file", wex::item::COMBOBOX_FILE}}},
       {"command link buttons",
@@ -60,7 +61,7 @@ const auto test_config_items(int rows = 0, int cols = 0)
        {{"hyper link 1", "www.wxwidgets.org", wex::item::HYPERLINKCTRL},
         {"hyper link 2", "www.scintilla.org", wex::item::HYPERLINKCTRL}}},
       {"integers", {{"integer", wex::item::TEXTCTRL_INT}}},
-      {"listviews", {{"listview", wex::listview_data()}}},
+      {"listviews", {{"listview", wex::data::listview()}}},
       {"pickers",
        {{10},
         {"dir picker", wex::item::DIRPICKERCTRL},
@@ -78,7 +79,7 @@ const auto test_config_items(int rows = 0, int cols = 0)
       {"spin controls",
        {{"slider", 1, 3, 2, wex::item::SLIDER},
         {"spin control", 1, 2},
-        {"spin control double", 1.0, 3.0, 1.0, wex::item_data().inc(0.01)}}},
+        {"spin control double", 1.0, 3.0, 1.0, wex::data::item().inc(0.01)}}},
       {"static text",
        {{"static text", "this is my static text", wex::item::STATICTEXT}}},
       {"static line", {{wxHORIZONTAL}, {wxVERTICAL}}},
@@ -88,16 +89,16 @@ const auto test_config_items(int rows = 0, int cols = 0)
         {"string validator",
          std::string(),
          wex::item::TEXTCTRL,
-         wex::item_data(wex::control_data().validator(validator))},
+         wex::data::item(wex::data::control().validator(validator))},
         {"string multiline",
          std::string(),
          wex::item::TEXTCTRL,
-         wex::item_data().window(wex::window_data().style(wxTE_MULTILINE))}}},
+         wex::data::item().window(wex::data::window().style(wxTE_MULTILINE))}}},
       {"toggle buttons", {{"toggle button", wex::item::TOGGLEBUTTON}}},
       {"user controls",
        {{"wxHtmlWindow",
          new wxHtmlWindow(),
-         wex::item_data().user_window_create(
+         wex::data::item().user_window_create(
            [=](wxWindow* user, wxWindow* parent, bool readonly) {
              ((wxHtmlWindow*)user)
                ->Create(parent, 100, wxDefaultPosition, wxSize(200, 200));
@@ -107,12 +108,12 @@ const auto test_config_items(int rows = 0, int cols = 0)
            })},
         {"wxTextCtrl",
          new wxTextCtrl(),
-         wex::item_data()
+         wex::data::item()
            .user_window_create(
              [=](wxWindow* user, wxWindow* parent, bool readonly) {
                ((wxTextCtrl*)user)->Create(parent, 100, "Hello world");
              })
-           .label_type(wex::item_data::LABEL_LEFT)
+           .label_type(wex::data::item::LABEL_LEFT)
            .user_window_to_config([=](wxWindow* user, bool save) {
              if (save)
                wex::config("mytext").set(
@@ -123,5 +124,5 @@ const auto test_config_items(int rows = 0, int cols = 0)
              wex::log::status(((wxTextCtrl*)user)->GetValue());
            })}}}},
      wex::item::NOTEBOOK_LIST,
-     wex::item_data().columns(cols)}};
+     wex::data::item().columns(cols)}};
 }
