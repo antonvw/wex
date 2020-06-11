@@ -16,7 +16,7 @@
 #include <wex/tokenizer.h>
 
 wex::shell::shell(
-  const data::stc&    data,
+  const data::stc&   data,
   const std::string& prompt,
   const std::string& command_end)
   : stc(
@@ -428,8 +428,7 @@ bool wex::shell::process_char(int key)
       {
         send_command();
       }
-      else if (
-        m_command_end == eol() || wxString(m_command).EndsWith(m_command_end))
+      else if (m_command_end == eol() || m_command.ends_with(m_command_end))
       {
         // We have a command.
         EmptyUndoBuffer();
