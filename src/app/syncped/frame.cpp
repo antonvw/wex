@@ -28,6 +28,7 @@
 #include <wex/report/listviewfile.h>
 #include <wex/shell.h>
 #include <wex/statusbar.h>
+#include <wex/stc-bind.h>
 #include <wex/stc.h>
 #include <wex/tokenizer.h>
 #include <wex/toolbar.h>
@@ -105,9 +106,12 @@ frame::frame(app* app)
         std::string(),
         wex::data::stc(m_app->data())
           .window(wex::data::window().parent(m_editors)));
+
       page->get_file().file_new("no name");
+
       m_editors->add_page(
         wex::data::notebook().page(page).key("no name").select());
+
       pane_show("FILES");
     }
   }
@@ -308,7 +312,7 @@ frame::frame(app* app)
     std::thread v([&] {
       std::string text;
 
-      while (std::cin.good())
+      while (!std::cin.fail())
       {
         const int c(std::cin.get());
 
@@ -319,14 +323,13 @@ frame::frame(app* app)
 
         if (c == '\n')
         {
-          if (m_editors->GetSelection() != wxNOT_FOUND)
+          if (auto* stc(((wex::stc*)m_editors->GetCurrentPage()));
+              stc != nullptr)
           {
-            if (auto* stc(
-                  ((wex::stc*)m_editors->GetPage(m_editors->GetSelection())));
-                stc != nullptr)
-            {
-              stc->get_vi().command(text == "\n" ? "j" : text);
-            }
+            wxCommandEvent event(wxEVT_MENU, wex::id::stc::vi_command);
+            event.SetString(
+              text == "\n" && !stc->get_vi().mode().insert() ? "j" : text);
+            wxPostEvent(stc, event);
           }
 
           text.clear();
@@ -844,7 +847,9 @@ wex::stc* frame::open_file(
       text,
       wex::data::stc(data).window(
         wex::data::window().parent(m_editors).name(filename.string())));
+
     page->get_lexer().set(filename.lexer());
+
     m_editors->add_page(wex::data::notebook()
                           .page(page)
                           .key(filename.string())
@@ -916,6 +921,12 @@ frame::open_file(const wex::path& filename, const wex::data::stc& data)
     {
       wex::data::stc::menu_t   mf(m_app->data().menu());
       wex::data::stc::window_t wf(m_app->data().flags());
+      wex::data::control       cd(data.control());
+
+      if (!m_app->data().control().command().empty())
+      {
+        cd.command(m_app->data().control().command());
+      }
 
       if (wex::config("is_hexmode").get(false))
         wf.set(wex::data::stc::WIN_HEX);
@@ -925,6 +936,7 @@ frame::open_file(const wex::path& filename, const wex::data::stc& data)
       editor = new wex::stc(
         filename,
         wex::data::stc(data)
+          .control(cd)
           .window(wex::data::window().parent(m_editors))
           .flags(wf, wex::data::control::OR)
           .menu(mf));
@@ -967,11 +979,6 @@ frame::open_file(const wex::path& filename, const wex::data::stc& data)
           editor->show_blame(&vcs.entry());
         }
       }
-
-      if (!m_app->get_scriptin().empty())
-      {
-        editor->get_vi().command(":so " + m_app->get_scriptin());
-      }
     }
     else
     {
@@ -984,6 +991,12 @@ frame::open_file(const wex::path& filename, const wex::data::stc& data)
   }
 
   return (wex::stc*)page;
+}
+
+bool frame::output(const std::string& text) const
+{
+  provide_output(text);
+  return true;
 }
 
 void frame::print_ex(wex::ex* ex, const std::string& text)
@@ -1009,6 +1022,20 @@ void frame::print_ex(wex::ex* ex, const std::string& text)
   page->get_lexer().set(ex->get_stc()->get_lexer());
 }
 
+void frame::provide_output(const std::string& text) const
+{
+  if (m_app->get_is_output())
+  {
+    std::cout << text << "\n";
+  }
+
+  if (!m_app->get_output().empty())
+  {
+    wex::file(m_app->get_output(), std::ios_base::out | std::ios_base::app)
+      .write(text + "\n");
+  }
+}
+
 void frame::record(const std::string& command)
 {
   if (m_app->get_is_echo())
@@ -1018,10 +1045,8 @@ void frame::record(const std::string& command)
 
   if (!m_app->get_scriptout().empty())
   {
-    wex::file scriptout(
-      m_app->get_scriptout(),
-      std::ios_base::out | std::ios_base::app);
-    scriptout.write(command + "\n");
+    wex::file(m_app->get_scriptout(), std::ios_base::out | std::ios_base::app)
+      .write(command + "\n");
   }
 }
 
@@ -1069,6 +1094,16 @@ void frame::statusbar_clicked(const std::string& pane)
   {
     decorated_frame::statusbar_clicked(pane);
   }
+}
+
+bool frame::statustext(const std::string& text, const std::string& pane) const
+{
+  if (pane.empty())
+  {
+    provide_output(text);
+  }
+
+  return decorated_frame::statustext(text, pane);
 }
 
 void frame::sync_all()

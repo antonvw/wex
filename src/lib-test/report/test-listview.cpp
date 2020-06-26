@@ -48,10 +48,12 @@ TEST_CASE("wex::report::listview")
 #endif
   }
 
+#ifndef __WXMSW__
   SUBCASE("destroy")
   {
     auto* lv = new wex::report::listview(
       wex::data::listview().type(wex::data::listview::FIND));
     lv->Destroy();
   }
+#endif
 }

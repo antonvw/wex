@@ -55,8 +55,8 @@ namespace wex
 
     /// Default constructor, registers the aui manager, and creates the bars.
     managed_frame(
-      size_t             maxFiles = 9,
-      const data::window& data     = data::window().style(wxDEFAULT_FRAME_STYLE));
+      size_t              maxFiles = 9,
+      const data::window& data = data::window().style(wxDEFAULT_FRAME_STYLE));
 
     /// Destructor, uninits the aui manager.
     virtual ~managed_frame();
@@ -109,8 +109,8 @@ namespace wex
 
     /// overridden methods
 
-    stc*
-    open_file(const path& filename, const data::stc& data = data::stc()) override;
+    stc* open_file(const path& filename, const data::stc& data = data::stc())
+      override;
 
     void set_recent_file(const path& path) override;
 
@@ -146,7 +146,7 @@ namespace wex
       const panes_t& panes,
       /// name of perspective to load / save
       const std::string& perspective = "managed frame");
-    
+
     /// Returns true if the managed pane is maximized.
     bool pane_is_maximized(const std::string& pane)
     {
@@ -162,11 +162,11 @@ namespace wex
     /// Maximizes the managed pane.
     /// Returns false if pane is not managed.
     bool pane_maximize(const std::string& pane);
-    
+
     /// Restores the managed pane.
     /// Returns false if pane is not managed.
     bool pane_restore(const std::string& pane);
-    
+
     /// Updates pane info for managed pane.
     /// Returns false if pane is not managed.
     bool pane_set(const std::string& pane, const wxAuiPaneInfo& info);
@@ -181,7 +181,7 @@ namespace wex
     {
       return pane_show(pane, !pane_is_shown(pane));
     };
-    
+
     /// Returns number of panes.
     size_t panes() { return m_manager.GetAllPanes().GetCount(); };
 
@@ -206,6 +206,9 @@ namespace wex
     /// Shows text in ex bar.
     void show_ex_message(const std::string& text);
 
+    /// Shows or hide process pane.
+    void show_process(bool show);
+
     /// Returns the toggled panes.
     const auto& toggled_panes() const { return m_toggled_panes; };
 
@@ -213,7 +216,7 @@ namespace wex
     void on_menu_history(
       const class file_history& history,
       size_t                    index,
-      data::stc::window_t        flags = 0);
+      data::stc::window_t       flags = 0);
 
   private:
     bool     add_toolbar_panes(const panes_t& panes);

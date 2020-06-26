@@ -15,6 +15,7 @@
 
 namespace wex
 {
+  class frame;
   class item_dialog;
   class menu;
 
@@ -180,6 +181,8 @@ namespace wex
 
     std::map<wxArtID, unsigned int> m_art_ids;
     std::vector<column>             m_columns;
+
+    class frame* m_frame;
 
     static inline item_dialog* m_config_dialog = nullptr;
   };

@@ -255,10 +255,6 @@ void wex::stc::on_init()
                {wxSTC_WRAP_WHITESPACE, _("Whitespace")}},
               true,
               data::item().columns(2)}}}}
-#ifdef __WXMSW__
-          ,
-          item::NOTEBOOK_AUI
-#endif
         }}},
        {_("Font"),
         {{_("stc.Default font"),
@@ -290,7 +286,7 @@ void wex::stc::on_init()
          {_("stc.margin.Divider"), 0, 40, 16},
          {_("stc.margin.Folding"), 0, 40, 16},
          {_("stc.margin.Line number"), 0, 100, 60},
-         {_("stc.margin.Text"), -1, 100, -1}}},
+         {_("stc.margin.Text"), -1, 500, -1}}},
        {_("Folding"),
         {{_("stc.Indentation guide"), item::CHECKBOX},
          {_("stc.Auto fold"), 0, INT_MAX, 1500},

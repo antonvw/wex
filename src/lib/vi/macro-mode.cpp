@@ -105,8 +105,7 @@ int wex::macro_mode::transition(
 
   if (ex != nullptr)
   {
-    ((wex::statusbar*)ex->frame()->GetStatusBar())
-      ->pane_show("PaneMacro", true);
+    ex->frame()->get_statusbar()->pane_show("PaneMacro", true);
   }
 
   switch (macro[0])
@@ -186,18 +185,27 @@ int wex::macro_mode::transition(
           if (std::string s;
               auto_complete_text(macro.substr(1), ex::get_macros().get(), s))
           {
-            frame::statustext(s, "PaneMacro");
+            if (ex != nullptr)
+            {
+              ex->frame()->statustext(s, "PaneMacro");
+            }
             macro = s;
           }
           else
           {
-            frame::statustext(macro.substr(1), "PaneMacro");
+            if (ex != nullptr)
+            {
+              ex->frame()->statustext(macro.substr(1), "PaneMacro");
+            }
             return 0;
           }
         }
         else
         {
-          frame::statustext(get_macro(), "PaneMacro");
+          if (ex != nullptr)
+          {
+            ex->frame()->statustext(get_macro(), "PaneMacro");
+          }
           return macro.size();
         }
       }

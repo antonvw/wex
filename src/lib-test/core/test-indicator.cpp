@@ -7,8 +7,7 @@
 
 #include "../test.h"
 #include <wex/indicator.h>
-#include <wex/managedframe.h>
-#include <wex/stc.h>
+#include <wx/stc/stc.h>
 
 TEST_CASE("wex::indicator")
 {
@@ -46,7 +45,9 @@ TEST_CASE("wex::indicator")
     REQUIRE(!ind.underlined());
     REQUIRE(ind.is_ok());
 
-    ind.apply(get_stc());
+    wxStyledTextCtrl s;
+    ind.apply(&s);
+
     REQUIRE(ind.is_ok());
   }
 

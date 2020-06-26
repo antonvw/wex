@@ -295,7 +295,7 @@ wex::listview* wex::frame::get_listview()
   wxCAST_TO(wex::listview);
 }
 
-std::string wex::frame::get_statustext(const std::string& pane)
+std::string wex::frame::get_statustext(const std::string& pane) const
 {
   return (
     m_statusbar == nullptr ? std::string() : m_statusbar->get_statustext(pane));
@@ -428,9 +428,9 @@ void wex::frame::statusbar_clicked(const std::string& pane)
   }
   else if (pane == "PaneLexer")
   {
-    if (stc != nullptr)
+    if (stc != nullptr && lexers_dialog(stc))
     {
-      lexers_dialog(stc);
+      statustext(stc->get_lexer().display_lexer(), "PaneLexer");
     }
   }
   else if (pane == "PaneMacro")
@@ -466,6 +466,7 @@ void wex::frame::statusbar_clicked(const std::string& pane)
 }
 
 bool wex::frame::statustext(const std::string& text, const std::string& pane)
+  const
 {
   return (
     m_is_closing || m_statusbar == nullptr ?

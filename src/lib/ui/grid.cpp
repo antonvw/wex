@@ -189,7 +189,8 @@ wex::grid::grid(const data::window& data)
   });
 
   Bind(wxEVT_GRID_SELECT_CELL, [=](wxGridEvent& event) {
-    frame::statustext(
+    auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
+    frame->statustext(
       std::to_string(1 + event.GetCol()) + "," +
         std::to_string(1 + event.GetRow()),
       "PaneInfo");
@@ -198,13 +199,14 @@ wex::grid::grid(const data::window& data)
 
   Bind(wxEVT_GRID_RANGE_SELECT, [=](wxGridRangeSelectEvent& event) {
     event.Skip();
-    frame::statustext(
+    auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
+    frame->statustext(
       std::to_string(GetSelectedCells().GetCount()),
       "PaneInfo");
   });
 
   Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
-    wex::frame* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
+    auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
     if (frame != nullptr)
     {
       frame->set_find_focus(this);
@@ -399,7 +401,8 @@ bool wex::grid::find_next(const std::string& text, bool forward)
   {
     bool result = false;
 
-    frame::statustext(get_find_result(text, forward, recursive), std::string());
+    auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
+    frame->statustext(get_find_result(text, forward, recursive), std::string());
 
     if (!recursive)
     {

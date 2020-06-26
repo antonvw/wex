@@ -66,7 +66,7 @@ namespace wex
     /// Default constructor, sets text if not empty.
     stc(
       const std::string& text = std::string(),
-      const data::stc&    data = data::stc());
+      const data::stc&   data = data::stc());
 
     /// Constructor, opens the file if it exists.
     stc(const path& file, const data::stc& data = data::stc());
@@ -151,6 +151,9 @@ namespace wex
 
     /// Returns current line fold level.
     int get_fold_level();
+
+    /// Returns frame.
+    auto get_frame() { return m_frame; };
 
     /// Returns hex mode component.
     const auto& get_hexmode() const { return m_hexmode; };
@@ -345,9 +348,6 @@ namespace wex
 
     const marker m_marker_change = marker(1);
 
-    const wxWindowID m_id_margin_text_hide, m_id_margin_text_author,
-      m_id_margin_text_date, m_id_margin_text_id;
-
     int m_fold_level{0}, m_margin_text_click{-1}, m_saved_pos{-1},
       m_saved_selection_start{-1}, m_saved_selection_end{-1};
 
@@ -360,10 +360,10 @@ namespace wex
     // We use a separate lexer here as well
     // (though stc_file offers one), as you can manually override
     // the lexer.
-    lexer    m_lexer;
+    lexer     m_lexer;
     data::stc m_data;
-    stc_file m_file;
-    vi       m_vi;
+    stc_file  m_file;
+    vi        m_vi;
 
     // All objects share the following:
     static inline item_dialog*       m_config_dialog = nullptr;

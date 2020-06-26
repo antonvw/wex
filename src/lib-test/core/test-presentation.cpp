@@ -6,9 +6,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
-#include <wex/managedframe.h>
 #include <wex/presentation.h>
-#include <wex/stc.h>
+#include <wx/stc/stc.h>
 
 TEST_CASE("wex::presentation")
 {
@@ -60,7 +59,8 @@ TEST_CASE("wex::presentation")
     REQUIRE(!p.underlined());
     REQUIRE(p.is_ok());
 
-    p.apply(get_stc());
+    wxStyledTextCtrl s;
+    p.apply(&s);
     REQUIRE(p.is_ok());
   }
 

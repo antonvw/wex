@@ -6,21 +6,16 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <regex>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
+
 #include "../test.h"
 #include <wex/lexer.h>
 #include <wex/lexers.h>
-#include <wex/managedframe.h>
-#include <wex/stc.h>
 
 TEST_CASE("wex::lexer")
 {
   wex::lexer lexer;
 
-  SUBCASE("Default constructor")
+  SUBCASE("default constructor")
   {
     REQUIRE(!lexer.is_ok());
     REQUIRE(!lexer.apply());
@@ -31,7 +26,7 @@ TEST_CASE("wex::lexer")
     REQUIRE(lexer.line_size() > 0);
   }
 
-  SUBCASE("Default constructor with lexer")
+  SUBCASE("default constructor with lexer")
   {
     REQUIRE(wex::lexer("cpp").is_ok());
     REQUIRE(wex::lexer("pascal").is_ok());
@@ -39,18 +34,7 @@ TEST_CASE("wex::lexer")
     REQUIRE(!wex::lexer().set("xxx"));
   }
 
-  SUBCASE("Constructor using stc")
-  {
-    wex::lexer lexer(get_stc());
-    REQUIRE(!lexer.is_ok());
-    REQUIRE(lexer.apply());
-
-    get_stc()->SetText("// a rust comment");
-    REQUIRE(lexer.set("rust"));
-    REQUIRE(lexer.scintilla_lexer() == "rust");
-  }
-
-  SUBCASE("Constructor using xml")
+  SUBCASE("constructor using xml")
   {
     pugi::xml_document doc;
     REQUIRE(doc.load_string("<lexer name=\"xyz\" tabwidth=\"12\"></lexer>"));
@@ -183,26 +167,5 @@ TEST_CASE("wex::lexer")
     REQUIRE(std::regex_match(
       lexer.comment_complete("(*test"),
       std::regex(" +\\*\\)")));
-  }
-
-  SUBCASE("lexers")
-  {
-    for (const auto& l : wex::lexers::get()->get_lexers())
-    {
-      if (!l.scintilla_lexer().empty())
-      {
-        CAPTURE(l.scintilla_lexer());
-        wex::lexer one(l.scintilla_lexer());
-        REQUIRE(one.is_ok());
-        wex::lexer two(get_stc());
-        REQUIRE(two.set(one));
-        REQUIRE(two.is_ok());
-      }
-    }
-
-    REQUIRE(!wex::lexer().is_ok());
-    REQUIRE(!wex::lexer(" cpp").is_ok());
-    REQUIRE(!wex::lexer("cpp ").is_ok());
-    REQUIRE(!wex::lexer("xxx").is_ok());
   }
 }

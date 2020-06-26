@@ -146,7 +146,7 @@ bool wex::macro_fsm::expand_template(
   set_ask_for_input();
 
   m_macro = var.get_name();
-  frame::statustext(m_macro, "PaneMacro");
+  ex->frame()->statustext(m_macro, "PaneMacro");
 
   log::status(_("Macro expanded"));
 
@@ -282,15 +282,13 @@ void wex::macro_fsm::record(const std::string& macro, ex* ex)
 
   process_event(macro_fsm::evRECORD());
 
-  frame::statustext(m_macro, "PaneMacro");
-  frame::statustext(str(), "PaneMode");
-
   if (ex != nullptr)
   {
-    ((statusbar*)ex->frame()->GetStatusBar())
-      ->pane_show(
-        "PaneMode",
-        m_state != IDLE && config(_("stc.Show mode")).get(true));
+    ex->frame()->statustext(m_macro, "PaneMacro");
+    ex->frame()->statustext(str(), "PaneMode");
+    ex->frame()->get_statusbar()->pane_show(
+      "PaneMode",
+      m_state != IDLE && config(_("stc.Show mode")).get(true));
   }
 }
 

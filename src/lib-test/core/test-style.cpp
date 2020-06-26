@@ -7,9 +7,8 @@
 
 #include "../test.h"
 #include <numeric>
-#include <wex/managedframe.h>
-#include <wex/stc.h>
 #include <wex/style.h>
+#include <wx/stc/stc.h>
 
 TEST_CASE("wex::style")
 {
@@ -71,11 +70,12 @@ TEST_CASE("wex::style")
 
   SUBCASE("apply")
   {
-    wex::style style("mark_circle", "0");
-    style.apply(get_stc());
+    wex::style       style("mark_circle", "0");
+    wxStyledTextCtrl s;
+    style.apply(&s);
     REQUIRE(style.is_ok());
     REQUIRE(!style.contains_default_style());
 
-    wex::style().apply(get_stc());
+    wex::style().apply(&s);
   }
 }

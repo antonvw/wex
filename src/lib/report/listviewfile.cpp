@@ -81,7 +81,7 @@ wex::report::file::file(const std::string& file, const data::listview& data)
       if (!get_filename().file_exists() || !get_filename().is_readonly())
       {
         m_contents_changed = true;
-        frame::update_statusbar(this);
+        get_frame()->update_statusbar(this);
       }
     },
     wxID_EDIT,

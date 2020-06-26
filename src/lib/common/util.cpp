@@ -140,7 +140,7 @@ int wex::open_files(
     }
     else if (it.dir_exists())
     {
-      log("open file") << it;
+      log("open dir") << it;
     }
     else
     {
@@ -161,11 +161,9 @@ int wex::open_files(
         fn.make_absolute();
         count++;
 
-        if (fn.file_exists())
-        {
-          frame->open_file(fn, data);
-        }
-        else
+        frame->open_file(fn, data);
+
+        if (!fn.file_exists())
         {
           log("open file") << fn;
         }
@@ -265,8 +263,6 @@ bool wex::lexers_dialog(stc* stc)
 
   lexer.empty() ? stc->get_lexer().clear() :
                   (void)stc->get_lexer().set(lexer, true);
-
-  frame::statustext(stc->get_lexer().display_lexer(), "PaneLexer");
 
   return true;
 }

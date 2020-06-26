@@ -88,6 +88,66 @@ namespace wex
     return command_arg_t::OTHER;
   }
 
+  bool source(ex* ex, const std::string& cmd)
+  {
+    if (cmd.find(" ") == std::string::npos)
+    {
+      return false;
+    }
+
+    wex::path path(wex::firstof(cmd, " "));
+
+    if (path.is_relative())
+    {
+      path.make_absolute();
+    }
+
+    if (!path.file_exists())
+    {
+      return false;
+    }
+
+    wex::file script(path.data());
+    bool      result = true;
+
+    if (const auto buffer(script.read()); buffer != nullptr)
+    {
+      wex::tokenizer tkz(*buffer, "\r\n");
+      int            i = 0;
+
+      while (tkz.has_more_tokens())
+      {
+        if (const std::string line(tkz.get_next_token()); !line.empty())
+        {
+          if (line == cmd)
+          {
+            log("recursive line") << i + 1 << line;
+            return false;
+          }
+
+          if (
+            line.find(":a") == 0 || line.find(":i") == 0 ||
+            line.find(":c") == 0)
+          {
+            if (!ex->command(line + tkz.last_delimiter()))
+            {
+              log("command failed line") << i + 1 << line;
+              result = false;
+            }
+          }
+          else if (!ex->command(line))
+          {
+            log("command failed line") << i + 1 << line;
+            result = false;
+          }
+        }
+
+        i++;
+      }
+    }
+
+    return result;
+  };
 }; // namespace wex
 
 enum class wex::ex::address_t
@@ -266,40 +326,7 @@ wex::ex::ex(wex::stc* stc)
                 }},
                {":so",
                 [&](const std::string& cmd) {
-                  if (cmd.find(" ") == std::string::npos)
-                    return false;
-                  wex::path path(wex::firstof(cmd, " "));
-                  if (path.is_relative())
-                  {
-                    path.make_absolute();
-                  }
-                  if (!path.file_exists())
-                    return false;
-                  wex::file script(path.data());
-                  if (const auto buffer(script.read()); buffer != nullptr)
-                  {
-                    wex::tokenizer tkz(*buffer, "\r\n");
-                    int            i = 0;
-                    while (tkz.has_more_tokens())
-                    {
-                      const std::string line(tkz.get_next_token());
-                      if (!line.empty())
-                      {
-                        if (line == cmd)
-                        {
-                          log("recursive line") << i + 1 << line;
-                          return false;
-                        }
-                        else if (!command(line))
-                        {
-                          log("command failed line") << i + 1 << line;
-                          return false;
-                        }
-                      }
-                      i++;
-                    }
-                  }
-                  return true;
+                  return source(this, cmd);
                 }},
                {":syntax",
                 [&](const std::string& command) {
@@ -577,31 +604,39 @@ bool wex::ex::command_address(const std::string& command)
     return false;
   }
 
-  switch (type)
+  try
   {
-    case address_t::NONE:
-      break;
+    switch (type)
+    {
+      case address_t::NONE:
+        break;
 
-    case address_t::ONE:
-      if (!address(this, range).parse(cmd, rest))
-      {
-        return false;
-      }
-      break;
+      case address_t::ONE:
+        if (!address(this, range).parse(cmd, rest))
+        {
+          return false;
+        }
+        break;
 
-    case address_t::RANGE:
-      if (info_message_t im; !addressrange(this, range).parse(cmd, rest, im))
-      {
-        return false;
-      }
-      else if (im != info_message_t::NONE)
-      {
-        info_message(register_text(), im);
-      }
-      break;
+      case address_t::RANGE:
+        if (info_message_t im; !addressrange(this, range).parse(cmd, rest, im))
+        {
+          return false;
+        }
+        else if (im != info_message_t::NONE)
+        {
+          info_message(register_text(), im);
+        }
+        break;
 
-    default:
-      assert(0);
+      default:
+        assert(0);
+    }
+  }
+  catch (std::exception& e)
+  {
+    log(e) << command;
+    return false;
   }
 
   return true;
@@ -625,11 +660,13 @@ void wex::ex::command_set(const std::string& command)
   std::string text(command.substr(
     4,
     command.back() == '*' ? command.size() - 5 : std::string::npos));
+
   // Convert arguments (add -- to each group, remove all =).
   // ts=120 ac ic sy=cpp -> --ts 120 --ac --ic --sy cpp
   std::regex re("[0-9a-z=]+");
   text = std::regex_replace(text, re, "--&", std::regex_constants::format_sed);
   std::replace(text.begin(), text.end(), '=', ' ');
+
   wex::cmdline cmdline(
     // switches
     {{{"ac", "auto_complete"},
@@ -690,7 +727,7 @@ void wex::ex::command_set(const std::string& command)
       }},
      {{"showmode", "showmode"},
       [&](bool on) {
-        ((wex::statusbar*)m_frame->GetStatusBar())->pane_show("PaneMode", on);
+        m_frame->get_statusbar()->pane_show("PaneMode", on);
         if (!modeline)
           config(_("stc.Show mode")).set(on);
       }},
@@ -788,7 +825,10 @@ void wex::ex::command_set(const std::string& command)
   {
     if (modeline)
     {
-      std::cout << help << "\n";
+      if (!m_frame->output(help))
+      {
+        std::cout << help << "\n";
+      }
     }
     else
     {

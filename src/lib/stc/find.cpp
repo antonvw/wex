@@ -53,7 +53,7 @@ bool wex::stc::find_next(const std::string& text, int find_flags, bool forward)
 
   if (SearchInTarget(text) == -1)
   {
-    frame::statustext(
+    m_frame->statustext(
       get_find_result(text, forward, f.recursive()),
       std::string());
 

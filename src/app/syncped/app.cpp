@@ -21,7 +21,7 @@
 #include <wex/ctags.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
-#include <wex/stc.h>
+#include <wex/stc-data.h>
 #include <wex/tostring.h>
 #include <wex/util.h>
 #include <wex/version.h>
@@ -39,13 +39,17 @@ void app::MacOpenFiles(const wxArrayString& fileNames)
 bool app::OnInit()
 {
   SetAppName("syncped");
-  reset();
 
   bool list_lexers = false;
 
   if (bool exit = false;
       !wex::cmdline(
          {// boolean options
+          {{"end,+", "start at end any file opened"},
+           [&](const std::any& s) {
+             m_data.control(wex::data::control().command("G"));
+           }},
+
           {{"debug,d", "use debug mode"},
            [&](bool on) {
              m_is_debug = on;
@@ -98,10 +102,16 @@ bool app::OnInit()
              exit = true;
            }},
 
-          {{"list-lexers", "show list of lexers"},
+          {{"keep,k", "keep vi parameters"},
+           [&](bool on) {
+             m_keep = on;
+           }},
+
+          {{"list-lexers,L", "show list of lexers"},
            [&](bool on) {
              list_lexers = on;
            }},
+
           {{"locale,l", "show locale"},
            [&](bool on) {
              if (!on)
@@ -151,6 +161,11 @@ bool app::OnInit()
                m_data.flags(
                  wex::data::stc::window_t().set(wex::data::stc::WIN_READ_ONLY),
                  wex::data::control::OR);
+           }},
+
+          {{"echo-output,x", "echo output commands"},
+           [&](bool on) {
+             m_is_output = on;
            }}},
 
          {// options with arguments
@@ -167,13 +182,6 @@ bool app::OnInit()
               wex::config::set_file(std::any_cast<std::string>(s));
             }}},
 
-          {{"source,S", "source file"},
-           {wex::cmdline::STRING,
-            [&](const std::any& s) {
-              m_data.control(wex::data::control().command(
-                ":so " + std::any_cast<std::string>(s)));
-            }}},
-
           {{"tag,t", "start at tag"},
            {wex::cmdline::STRING,
             [&](const std::any& s) {
@@ -186,16 +194,23 @@ bool app::OnInit()
               wex::ctags::open(std::any_cast<std::string>(s));
             }}},
 
-          {{"scriptin,s", "script in"},
+          {{"scriptin,s", "script in (:so <arg> applied on any file opened)"},
            {wex::cmdline::STRING,
             [&](const std::any& s) {
-              m_scriptin = std::any_cast<std::string>(s);
+              m_data.control(wex::data::control().command(
+                ":so " + std::any_cast<std::string>(s)));
             }}},
 
-          {{"scriptout,w", "script out append"},
+          {{"scriptout,w", "script out append (echo to file <arg>)"},
            {wex::cmdline::STRING,
             [&](const std::any& s) {
               m_scriptout = std::any_cast<std::string>(s);
+            }}},
+
+          {{"output,X", "output (statusbar) append to file"},
+           {wex::cmdline::STRING,
+            [&](const std::any& s) {
+              m_output = std::any_cast<std::string>(s);
             }}}},
 
          {{"files",
@@ -216,9 +231,11 @@ bool app::OnInit()
 
   if (list_lexers)
   {
+    // code cannot be part of lambda, as OnInit is required
     for (const auto& l : wex::lexers::get()->get_lexers())
     {
-      std::cout << l.display_lexer() << "\n";
+      if (!l.display_lexer().empty())
+        std::cout << l.display_lexer() << "\n";
     }
 
     return false;
@@ -236,8 +253,11 @@ bool app::OnInit()
 
 void app::reset()
 {
-  // do not reset flags
-  m_data.control(wex::data::control().command(""));
+  if (!m_keep)
+  {
+    m_data.control(wex::data::control().command(""));
+  }
+
   m_is_project = false;
   m_split      = -1;
   m_tag.clear();

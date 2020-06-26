@@ -221,6 +221,7 @@ bool wex::clipboard_add(const std::string& text)
 
   if (wxClipboardLocker locker; !locker)
   {
+    log("clipboard lock");
     return false;
   }
   else
@@ -230,8 +231,12 @@ bool wex::clipboard_add(const std::string& text)
       // Take care that clipboard data remain after exiting
       // This is a boolean method as well, we don't check it, as
       // clipboard data is copied.
-      // At least on Ubuntu 8.10 FLush returns false.
       wxTheClipboard->Flush();
+    }
+    else
+    {
+      log("clipboard add");
+      return false;
     }
   }
 
@@ -242,6 +247,7 @@ const std::string wex::clipboard_get()
 {
   if (wxClipboardLocker locker; !locker)
   {
+    log("clipboard lock");
     return std::string();
   }
   else if (wxTheClipboard->IsSupported(wxDF_TEXT))
