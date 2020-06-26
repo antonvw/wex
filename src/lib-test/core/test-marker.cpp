@@ -5,13 +5,9 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include "../test.h"
 #include <wex/marker.h>
-#include <wex/stc.h>
+#include <wx/stc/stc.h>
 
 TEST_CASE("wex::marker")
 {
@@ -38,7 +34,8 @@ TEST_CASE("wex::marker")
     REQUIRE(wex::marker(5, 2) == wex::marker(5, 2));
     REQUIRE(wex::marker(5, 1) != wex::marker(5, 2));
 
-    markerx.apply(get_stc());
+    wxStyledTextCtrl s;
+    markerx.apply(&s);
   }
 
   SUBCASE("Constructor xml")

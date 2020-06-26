@@ -21,54 +21,35 @@
 #include <wex/managedframe.h>
 #include <wex/menu.h>
 #include <wex/path.h>
+#include <wex/stc-bind.h>
 #include <wex/stc.h>
 #include <wex/stcdlg.h>
 #include <wex/tokenizer.h>
 #include <wex/util.h>
 #include <wex/vcs.h>
-#include <wx/app.h>
 #include <wx/msgdlg.h>
 #include <wx/numdlg.h>
-
-const auto idEdgeClear      = wxWindow::NewControlId();
-const auto idEdgeSet        = wxWindow::NewControlId();
-const auto idfold_all       = wxWindow::NewControlId();
-const auto idBeautify       = wxWindow::NewControlId();
-const auto idHex            = wxWindow::NewControlId();
-const auto idHexDecCalltip  = wxWindow::NewControlId();
-const auto idLowercase      = wxWindow::NewControlId();
-const auto idMarkerNext     = wxWindow::NewControlId(2);
-const auto idMarkerPrevious = idMarkerNext + 1;
-const auto idOpenLink       = wxWindow::NewControlId();
-const auto idopen_mime      = wxWindow::NewControlId();
-const auto idOpenWWW        = wxWindow::NewControlId();
-const auto idShowProperties = wxWindow::NewControlId();
-const auto idToggleFold     = wxWindow::NewControlId();
-const auto idUnfold_all     = wxWindow::NewControlId();
-const auto idUppercase      = wxWindow::NewControlId();
-const auto idZoomIn         = wxWindow::NewControlId();
-const auto idZoomOut        = wxWindow::NewControlId();
 
 void wex::stc::bind_all()
 {
   accelerators(
-    {{wxACCEL_CTRL, 'D', idHexDecCalltip},
+    {{wxACCEL_CTRL, 'D', id::stc::hex_dec_calltip},
      {wxACCEL_CTRL, 'K', ID_EDIT_CONTROL_CHAR},
      {wxACCEL_CTRL, 'Y', wxID_REDO},
      {wxACCEL_CTRL, 'Z', wxID_UNDO},
-     {wxACCEL_CTRL, '=', idZoomIn},
-     {wxACCEL_CTRL, '-', idZoomOut},
-     {wxACCEL_CTRL, '0', idMarkerPrevious},
-     {wxACCEL_CTRL, '9', idMarkerNext},
+     {wxACCEL_CTRL, '=', id::stc::zoom_in},
+     {wxACCEL_CTRL, '-', id::stc::zoom_out},
+     {wxACCEL_CTRL, '0', id::stc::marker_previous},
+     {wxACCEL_CTRL, '9', id::stc::marker_next},
      {wxACCEL_CTRL, WXK_INSERT, wxID_COPY},
      {wxACCEL_NORMAL, WXK_F3, ID_EDIT_FIND_NEXT},
      {wxACCEL_NORMAL, WXK_F4, ID_EDIT_FIND_PREVIOUS},
      {wxACCEL_NORMAL, WXK_F7, wxID_SORT_ASCENDING},
      {wxACCEL_NORMAL, WXK_F8, wxID_SORT_DESCENDING},
-     {wxACCEL_NORMAL, WXK_F9, idfold_all},
-     {wxACCEL_NORMAL, WXK_F10, idUnfold_all},
-     {wxACCEL_NORMAL, WXK_F11, idUppercase},
-     {wxACCEL_NORMAL, WXK_F12, idLowercase},
+     {wxACCEL_NORMAL, WXK_F9, id::stc::fold_all},
+     {wxACCEL_NORMAL, WXK_F10, id::stc::unfold_all},
+     {wxACCEL_NORMAL, WXK_F11, id::stc::uppercase},
+     {wxACCEL_NORMAL, WXK_F12, id::stc::lowercase},
      {wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE},
      {wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE},
      {wxACCEL_SHIFT, WXK_DELETE, wxID_CUT}},
@@ -80,31 +61,43 @@ void wex::stc::bind_all()
         Copy();
       },
       wxID_COPY},
+
+     {[=](wxCommandEvent& event) {
+        m_vi.command(event.GetString());
+      },
+      id::stc::vi_command},
+
      {[=](wxCommandEvent& event) {
         Cut();
       },
       wxID_CUT},
+
      {[=](wxCommandEvent& event) {
         Paste();
       },
       wxID_PASTE},
+
      {[=](wxCommandEvent& event) {
         Undo();
       },
       wxID_UNDO},
+
      {[=](wxCommandEvent& event) {
         Redo();
       },
       wxID_REDO},
+
      {[=](wxCommandEvent& event) {
         SelectAll();
       },
       wxID_SELECTALL},
+
      {[=](wxCommandEvent& event) {
         if (!GetReadOnly() && !is_hexmode())
           Clear();
       },
       wxID_DELETE},
+
      {[=](wxCommandEvent& event) {
         if (is_hexmode())
         {
@@ -129,11 +122,13 @@ void wex::stc::bind_all()
         return true;
       },
       wxID_JUMP_TO},
+
      {[=](wxCommandEvent& event) {
         get_find_string();
         event.Skip();
       },
       wxID_FIND},
+
      {[=](wxCommandEvent& event) {
         get_find_string();
         event.Skip();
@@ -232,11 +227,12 @@ void wex::stc::bind_all()
      {[=](wxCommandEvent& event) {
         browser_search(GetSelectedText().ToStdString());
       },
-      idOpenWWW},
+      id::stc::open_www},
+
      {[=](wxCommandEvent& event) {
         link_open(link_t().set(LINK_OPEN));
       },
-      idOpenLink},
+      id::stc::open_link},
 
      {[=](wxCommandEvent& event) {
         const std::string propnames(PropertyNames());
@@ -275,7 +271,10 @@ void wex::stc::bind_all()
           m_entry_dialog = new stc_entry_dialog(
             properties,
             std::string(),
-            data::window().size({300, 450}).button(wxOK).title(_("Properties")));
+            data::window()
+              .size({300, 450})
+              .button(wxOK)
+              .title(_("Properties")));
           m_entry_dialog->get_stc()->get_lexer().set(l);
         }
         else
@@ -284,7 +283,7 @@ void wex::stc::bind_all()
         }
         m_entry_dialog->Show();
       },
-      idShowProperties},
+      id::stc::show_properties},
 
      {[=](wxCommandEvent& event) {
         if (GetSelectedText().length() > 2)
@@ -426,87 +425,101 @@ void wex::stc::bind_all()
           clipboard_add(stream.str());
         }
       },
-      idHexDecCalltip},
+      id::stc::hex_dec_calltip},
 
      {[=](wxCommandEvent& event) {
         MultiEdgeClearAll();
       },
-      idEdgeClear},
+      id::stc::edge_clear},
+
      {[=](wxCommandEvent& event) {
         MultiEdgeAddLine(GetColumn(GetCurrentPos()), GetEdgeColour());
       },
-      idEdgeSet},
+      id::stc::edge_set},
+
      {[=](wxCommandEvent& event) {
         LowerCase();
       },
-      idLowercase},
+      id::stc::lowercase},
+
      {[=](wxCommandEvent& event) {
         UpperCase();
       },
-      idUppercase},
+      id::stc::uppercase},
      {[=](wxCommandEvent& event) {
         fold_all();
       },
-      idfold_all},
+      id::stc::fold_all},
+
      {[=](wxCommandEvent& event) {
         beautify().stc(*this);
       },
-      idBeautify},
+      id::stc::beautify},
+
      {[=](wxCommandEvent& event) {
         for (int i = 0; i < GetLineCount(); i++)
           EnsureVisible(i);
       },
-      idUnfold_all},
+      id::stc::unfold_all},
+
      {[=](wxCommandEvent& event) {
         m_data
-          .flags(data::stc::window_t().set(data::stc::WIN_HEX), data::control::XOR)
+          .flags(
+            data::stc::window_t().set(data::stc::WIN_HEX),
+            data::control::XOR)
           .inject();
       },
-      idHex},
+      id::stc::hex},
 
      {[=](wxCommandEvent& event) {
         config("blame.author").toggle(true);
       },
-      m_id_margin_text_author},
+      id::stc::margin_text_author},
+
      {[=](wxCommandEvent& event) {
         config("blame.date").toggle(true);
       },
-      m_id_margin_text_date},
+      id::stc::margin_text_date},
+
      {[=](wxCommandEvent& event) {
         config("blame.id").toggle(false);
       },
-      m_id_margin_text_id},
+      id::stc::margin_text_id},
+
      {[=](wxCommandEvent& event) {
         reset_margins(margin_t().set(MARGIN_TEXT));
         m_margin_text_click = -1;
         const item_vector& iv(m_config_items);
         SetWrapMode(iv.find<long>(_("stc.Wrap line")));
       },
-      m_id_margin_text_hide},
+      id::stc::margin_text_hide},
 
      {[=](wxCommandEvent& event) {
         SetZoom(++m_zoom);
       },
-      idZoomIn},
+      id::stc::zoom_in},
+
      {[=](wxCommandEvent& event) {
         SetZoom(--m_zoom);
       },
-      idZoomOut},
+      id::stc::zoom_out},
 
      {[=](wxCommandEvent& event) {
         find_replace_data::get()->set_search_down(true);
         find_next();
       },
       ID_EDIT_FIND_NEXT},
+
      {[=](wxCommandEvent& event) {
         find_replace_data::get()->set_search_down(false);
         find_next();
       },
       ID_EDIT_FIND_PREVIOUS},
+
      {[=](wxCommandEvent& event) {
         link_open(link_t().set(LINK_OPEN_MIME));
       },
-      idopen_mime},
+      id::stc::open_mime},
 
      {[=](wxCommandEvent& event) {
         const auto level        = GetFoldLevel(GetCurrentLine());
@@ -515,7 +528,7 @@ void wex::stc::bind_all()
                                     GetFoldParent(GetCurrentLine());
         ToggleFold(line_to_fold);
       },
-      idToggleFold},
+      id::stc::toggle_fold},
 
      {[=](wxCommandEvent& event) {
         vcs_execute(
@@ -538,19 +551,19 @@ void wex::stc::bind_all()
           }
           else
           {
-            int eol_mode = wxSTC_EOL_LF; // default ID_EDIT_EOL_UNIX
-            if (event.GetId() == ID_EDIT_EOL_DOS)
+            int eol_mode = wxSTC_EOL_LF; // default id::stc::eol_unix
+            if (event.GetId() == id::stc::eol_dos)
               eol_mode = wxSTC_EOL_CRLF;
-            else if (event.GetId() == ID_EDIT_EOL_MAC)
+            else if (event.GetId() == id::stc::eol_mac)
               eol_mode = wxSTC_EOL_CR;
 
             ConvertEOLs(eol_mode);
             SetEOLMode(eol_mode);
-            frame::update_statusbar(this, "PaneFileType");
+            m_frame->update_statusbar(this, "PaneFileType");
           }
         }
       },
-      ID_EDIT_EOL_DOS},
+      id::stc::eol_dos},
 
      {[=](wxCommandEvent& event) {
         auto line = MarkerNext(GetCurrentLine() + 1, 0xFFFF);
@@ -567,7 +580,8 @@ void wex::stc::bind_all()
           log::status(_("No markers present"));
         }
       },
-      idMarkerNext},
+      id::stc::marker_next},
+
      {[=](wxCommandEvent& event) {
         auto line = MarkerPrevious(GetCurrentLine() - 1, 0xFFFF);
         if (line == -1)
@@ -583,7 +597,7 @@ void wex::stc::bind_all()
           log::status(_("No markers present"));
         }
       },
-      idMarkerPrevious}});
+      id::stc::marker_previous}});
 
   bind_other();
 }
@@ -594,32 +608,32 @@ void wex::stc::build_popup_menu(menu& menu)
 
   if (GetCurrentLine() == 0 && !lexers::get()->get_lexers().empty())
   {
-    menu.append({{idShowProperties, _("Properties")}});
+    menu.append({{id::stc::show_properties, _("Properties")}});
   }
 
   if (m_data.menu().test(data::stc::MENU_OPEN_LINK))
   {
     if (sel.empty() && link_open(link_t().set(LINK_OPEN_MIME).set(LINK_CHECK)))
     {
-      menu.append({{}, {idopen_mime, _("&Preview")}});
+      menu.append({{}, {id::stc::open_mime, _("&Preview")}});
     }
     else if (std::string filename;
              link_open(link_t().set(LINK_OPEN).set(LINK_CHECK), &filename))
     {
-      menu.append({{}, {idOpenLink, _("Open") + " " + filename}});
+      menu.append({{}, {id::stc::open_link, _("Open") + " " + filename}});
     }
   }
 
   if (GetEdgeMode() == wxSTC_EDGE_MULTILINE)
   {
     menu.append({{},
-                 {idEdgeSet, _("Edge Column")},
-                 {idEdgeClear, _("Edge Column Reset")}});
+                 {id::stc::edge_set, _("Edge Column")},
+                 {id::stc::edge_clear, _("Edge Column Reset")}});
   }
 
   if (m_data.menu().test(data::stc::MENU_OPEN_WWW) && !sel.empty())
   {
-    menu.append({{}, {idOpenWWW, _("&Search")}});
+    menu.append({{}, {id::stc::open_www, _("&Search")}});
   }
 
   if (
@@ -658,12 +672,12 @@ void wex::stc::build_popup_menu(menu& menu)
     {
       auto* menuSelection = new wex::menu(
         menu.style(),
-        {{idUppercase, _("&Uppercase\tF11")},
-         {idLowercase, _("&Lowercase\tF12")}});
+        {{id::stc::uppercase, _("&Uppercase\tF11")},
+         {id::stc::lowercase, _("&Lowercase\tF12")}});
 
       if (beautify_add)
       {
-        menuSelection->append({{}, {idBeautify, _("&Beautify")}});
+        menuSelection->append({{}, {id::stc::beautify, _("&Beautify")}});
       }
 
       if (get_number_of_lines(sel) > 1)
@@ -693,7 +707,7 @@ void wex::stc::build_popup_menu(menu& menu)
     !GetReadOnly() && sel.empty() && beautify_add &&
     beautify().is_supported(m_lexer))
   {
-    menu.append({{}, {idBeautify, _("&Beautify")}});
+    menu.append({{}, {id::stc::beautify, _("&Beautify")}});
   }
 
   // Folding if nothing selected, property is set,
@@ -703,9 +717,9 @@ void wex::stc::build_popup_menu(menu& menu)
     !m_lexer.scintilla_lexer().empty())
   {
     menu.append({{},
-                 {idToggleFold, _("&Toggle Fold\tCtrl+T")},
-                 {idfold_all, _("&Fold All Lines\tF9")},
-                 {idUnfold_all, _("&Unfold All Lines\tF10")}});
+                 {id::stc::toggle_fold, _("&Toggle Fold\tCtrl+T")},
+                 {id::stc::fold_all, _("&Fold All Lines\tF9")},
+                 {id::stc::unfold_all, _("&Unfold All Lines\tF10")}});
   }
 }
 
@@ -745,12 +759,12 @@ void wex::stc::filetype_menu()
 {
   // The order here should be the same as the defines for wxSTC_EOL_CRLF.
   // So the FindItemByPosition can work
-  auto* menu = new wex::menu({{ID_EDIT_EOL_DOS, "&DOS", menu_item::CHECK},
-                              {ID_EDIT_EOL_MAC, "&MAC", menu_item::CHECK},
-                              {ID_EDIT_EOL_UNIX, "&UNIX", menu_item::CHECK},
+  auto* menu = new wex::menu({{id::stc::eol_dos, "&DOS", menu_item::CHECK},
+                              {id::stc::eol_mac, "&MAC", menu_item::CHECK},
+                              {id::stc::eol_unix, "&UNIX", menu_item::CHECK},
                               {}});
 
-  auto* hex = menu->AppendCheckItem(idHex, "&HEX");
+  auto* hex = menu->AppendCheckItem(id::stc::hex, "&HEX");
 
   menu->FindItemByPosition(GetEOLMode())->Check();
 

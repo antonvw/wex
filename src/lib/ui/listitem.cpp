@@ -11,7 +11,6 @@
 #endif
 #include <wex/config.h>
 #include <wex/core.h>
-#include <wex/frame.h>
 #include <wex/lexers.h>
 #include <wex/listitem.h>
 #include <wex/log.h>
@@ -71,9 +70,7 @@ void wex::listitem::insert(long index)
     SetText(filename);
   }
 
-  ((wxListView*)m_listview)->InsertItem(*this);
-
-  frame::update_statusbar(m_listview);
+  m_listview->InsertItem(*this);
 
   update();
 

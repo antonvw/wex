@@ -23,15 +23,18 @@ void wex::style::apply(wxStyledTextCtrl* stc) const
   // Currently the default style is constructed using
   // default constructor.
   // If this is the only style, reset stc.
-  if (m_no.empty())
+  if (stc->GetParent() != nullptr)
   {
-    stc->StyleResetDefault();
-  }
-  else
-  {
-    for (const auto& it : m_no)
+    if (m_no.empty())
     {
-      stc->StyleSetSpec(it, m_value);
+      stc->StyleResetDefault();
+    }
+    else
+    {
+      for (const auto& it : m_no)
+      {
+        stc->StyleSetSpec(it, m_value);
+      }
     }
   }
 }

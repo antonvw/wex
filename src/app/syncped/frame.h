@@ -49,6 +49,8 @@ private:
     const std::string&    text,
     const wex::data::stc& data = wex::data::stc()) override;
 
+  bool output(const std::string& text) const override;
+
   void print_ex(wex::ex* ex, const std::string& text) override;
 
   void record(const std::string& command) override;
@@ -59,6 +61,9 @@ private:
 
   void statusbar_clicked(const std::string& pane) override;
 
+  bool
+  statustext(const std::string& text, const std::string& pane) const override;
+
   void sync_all() override;
 
   void sync_close_all(wxWindowID id) override;
@@ -67,6 +72,7 @@ private:
 
   void on_command(wxCommandEvent& event);
   void on_update_ui(wxUpdateUIEvent& event);
+  void provide_output(const std::string& text) const;
   void update_listviews();
 
   bool m_maximized{false};

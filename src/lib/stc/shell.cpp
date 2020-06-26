@@ -11,12 +11,13 @@
 #include <wex/core.h>
 #include <wex/defs.h>
 #include <wex/log.h>
+#include <wex/managedframe.h>
 #include <wex/process.h>
 #include <wex/shell.h>
 #include <wex/tokenizer.h>
 
 wex::shell::shell(
-  const data::stc&    data,
+  const data::stc&   data,
   const std::string& prompt,
   const std::string& command_end)
   : stc(
@@ -58,6 +59,7 @@ wex::shell::shell(
 
   bind(this).command({{[=](wxCommandEvent& event) {
                          AppendText(event.GetString());
+                         get_frame()->output(event.GetString());
                        },
                        ID_SHELL_APPEND},
                       {[=](wxCommandEvent& event) {

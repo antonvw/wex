@@ -410,13 +410,11 @@ bool wex::vi_mode::transition(std::string& command)
       break;
   }
 
-  ((statusbar*)m_vi->frame()->GetStatusBar())
-    ->pane_show(
-      "PaneMode",
-      (!normal() || ex::get_macros().mode().is_recording()) &&
-        config(_("stc.Show mode")).get(true));
-
-  frame::statustext(str(), "PaneMode");
+  m_vi->frame()->get_statusbar()->pane_show(
+    "PaneMode",
+    (!normal() || ex::get_macros().mode().is_recording()) &&
+      config(_("stc.Show mode")).get(true));
+  m_vi->frame()->statustext(str(), "PaneMode");
 
   command.erase(0, 1);
 

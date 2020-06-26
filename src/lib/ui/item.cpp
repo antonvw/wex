@@ -21,9 +21,7 @@
 #include <wx/spinctrl.h>
 #include <wx/statline.h>
 #include <wx/tglbtn.h>
-#ifndef __WXMSW__
 #include <wx/valnum.h>
-#endif
 #include <wx/valtext.h>
 #include <wx/window.h>
 
@@ -492,7 +490,7 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
         m_data.window().pos(),
         m_data.window().size(),
         m_data.window().style() == data::NUMBER_NOT_SET ?
-          wxCLRBTN_DEFAULT_STYLE :
+          wxCLRP_DEFAULT_STYLE :
           m_data.window().style());
       break;
 
@@ -812,21 +810,11 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
   {
     if (m_type == TEXTCTRL_FLOAT)
     {
-#ifdef __WXMSW__
-      // TODO: using wxFloatingPointValidator and wxIntegerValidator
-      // gives compile error in MSW.
-      ;
-#else
       m_window->SetValidator(wxFloatingPointValidator<double>());
-#endif
     }
     else if (m_type == TEXTCTRL_INT)
     {
-#ifdef __WXMSW__
-      ;
-#else
       m_window->SetValidator(wxIntegerValidator<int>());
-#endif
     }
   }
 

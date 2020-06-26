@@ -30,7 +30,7 @@ wex::property::property(const std::string& name, const std::string& value)
 
 void wex::property::apply(wxStyledTextCtrl* stc) const
 {
-  if (is_ok())
+  if (is_ok() && stc->GetParent() != nullptr)
   {
     stc->SetProperty(m_name, m_value);
   }
@@ -38,7 +38,10 @@ void wex::property::apply(wxStyledTextCtrl* stc) const
 
 void wex::property::apply_reset(wxStyledTextCtrl* stc) const
 {
-  stc->SetProperty(m_name, wxEmptyString);
+  if (!m_name.empty() && stc->GetParent() != nullptr)
+  {
+    stc->SetProperty(m_name, wxEmptyString);
+  }
 }
 
 bool wex::property::is_ok() const

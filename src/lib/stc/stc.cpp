@@ -21,6 +21,7 @@
 #include <wex/tokenizer.h>
 #include <wex/vcs.h>
 #include <wx/app.h>
+#include <wx/settings.h>
 
 wex::stc::stc(const std::string& text, const data::stc& data)
   : stc(path(), data)
@@ -42,10 +43,6 @@ wex::stc::stc(const path& p, const data::stc& data)
   , m_hexmode(hexmode(this))
   , m_frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
   , m_lexer(this)
-  , m_id_margin_text_hide(NewControlId())
-  , m_id_margin_text_author(NewControlId())
-  , m_id_margin_text_date(NewControlId())
-  , m_id_margin_text_id(NewControlId())
 {
   Create(
     data.window().parent(),
@@ -115,6 +112,7 @@ wex::stc::stc(const path& p, const data::stc& data)
     config_get();
     m_lexer.set(p.lexer(), true);
     m_file.file_new(p);
+    m_data.inject();
   }
 }
 
@@ -441,7 +439,7 @@ void wex::stc::guess_type_and_modeline()
   else
     return; // do nothing
 
-  frame::update_statusbar(this, "PaneFileType");
+  m_frame->update_statusbar(this, "PaneFileType");
 }
 
 bool wex::stc::link_open()
@@ -689,12 +687,12 @@ void wex::stc::properties_message(path::status_t flags)
 
   if (!flags[path::STAT_SYNC])
   {
-    frame::update_statusbar(this, "PaneFileType");
-    frame::update_statusbar(this, "PaneLexer");
-    frame::update_statusbar(this, "PaneMode");
+    m_frame->update_statusbar(this, "PaneFileType");
+    m_frame->update_statusbar(this, "PaneLexer");
+    m_frame->update_statusbar(this, "PaneMode");
   }
 
-  frame::update_statusbar(this, "PaneInfo");
+  m_frame->update_statusbar(this, "PaneInfo");
 
   if (!flags[path::STAT_SYNC] && m_frame != nullptr)
   {
@@ -911,13 +909,17 @@ bool wex::stc::show_blame(const vcs_entry* vcs)
     {
       if (first)
       {
+        const int w(std::max(
+          config(_("stc.Default font"))
+            .get(wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT))
+            .GetPixelSize()
+            .GetWidth(),
+          5));
+
         SetMarginWidth(
           m_margin_text_number,
-          margin_blame == -1 ?
-            bl.size() *
-              (StyleGetFont(m_margin_text_number).GetPixelSize().GetWidth() +
-               1) :
-            margin_blame);
+          margin_blame == -1 ? bl.size() * w : margin_blame);
+
         first = false;
       }
 

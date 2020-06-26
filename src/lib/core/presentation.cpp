@@ -74,7 +74,7 @@ bool wex::presentation::operator==(const wex::presentation& i) const
 
 void wex::presentation::apply(wxStyledTextCtrl* stc) const
 {
-  if (is_ok())
+  if (is_ok() && stc->GetParent() != nullptr)
   {
     switch (m_type)
     {

@@ -89,6 +89,9 @@ namespace wex
       stc& operator=(const data::stc& r);
 
       /// Returns control data.
+      auto& control() const { return m_data; };
+
+      /// Returns (or sets) control data.
       auto& control() { return m_data; };
 
       /// Sets control data.

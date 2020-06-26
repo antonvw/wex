@@ -190,7 +190,9 @@ TEST_CASE("wex::ex")
     ex->command(":'<,'>>");
 
 #if BOOST_VERSION / 100 % 1000 != 72
+#ifndef __WXMSW__
     ex->command(":'<,'>!sort");
+#endif
 #endif
 
     stc->GotoLine(2);

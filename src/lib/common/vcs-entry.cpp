@@ -134,15 +134,22 @@ const std::string wex::vcs_entry::get_branch(const std::string& wd) const
 {
   if (name() == "git")
   {
-    if (process p; p.execute("git branch", process::EXEC_WAIT, wd))
+    try
     {
-      for (tokenizer tkz(p.get_stdout(), "\r\n"); tkz.has_more_tokens();)
+      if (process p; p.execute("git branch", process::EXEC_WAIT, wd))
       {
-        if (const auto token(tkz.get_next_token()); token.find('*') == 0)
+        for (tokenizer tkz(p.get_stdout(), "\r\n"); tkz.has_more_tokens();)
         {
-          return trim(token.substr(1));
+          if (const auto token(tkz.get_next_token()); token.find('*') == 0)
+          {
+            return trim(token.substr(1));
+          }
         }
       }
+    }
+    catch (std::exception& e)
+    {
+      wex::log(e) << name();
     }
   }
 
@@ -184,6 +191,10 @@ void wex::vcs_entry::show_output(const std::string& caption) const
     }
   }
 
-  wex::process::get_shell()->clear();
+  if (get_shell() != nullptr)
+  {
+    get_shell()->clear();
+  }
+
   wex::process::show_output(caption);
 }

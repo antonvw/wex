@@ -5,15 +5,9 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include "../test.h"
 #include <wex/lexers.h>
-#include <wex/managedframe.h>
 #include <wex/path.h>
-#include <wex/stc.h>
 
 TEST_CASE("wex::lexers")
 {
@@ -107,14 +101,5 @@ TEST_CASE("wex::lexers")
     REQUIRE(wxTheColourDatabase->Find("gray 2").IsOk());
 
     REQUIRE(wex::lexers::get()->load_document());
-
-    get_stc()->get_lexer().set("cpp");
-    get_stc()->open(wex::test::get_path());
-    wex::lexers::get()->apply_global_styles(get_stc());
-    wex::lexers::get()->apply(get_stc());
-    wex::lexers::get()->apply_margin_text_style(
-      get_stc(),
-      30,
-      wex::lexers::margin_style_t::DAY);
   }
 }
