@@ -157,7 +157,7 @@ namespace wex
       address_t&   type);
     bool command_address(const std::string& command);
     bool command_handle(const std::string& command) const;
-    void command_set(const std::string& command);
+    bool command_set(const std::string& command);
 
     template <typename S, typename T>
     bool handle_container(

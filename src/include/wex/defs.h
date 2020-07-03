@@ -25,7 +25,7 @@ namespace wex
   /// ID.
   enum window_id
   {
-    ID_LOWEST = wxID_HIGHEST + 1,
+    ID_LOWEST = wxID_HIGHEST + 1000, // see stc-bind.h
 
     ID_ALL_LOWEST, // all ALL commands after this one
     ID_ALL_CLOSE,

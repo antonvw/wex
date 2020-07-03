@@ -35,8 +35,7 @@ namespace wex
       /// vector of switch name, description
       /// - you can specify a flag after name separated by comma
       /// - after description you can also add an implicit value,
-      ///   otherwise true is assumed
-      /// default a switch toggles, this can be overridden by calling toggle
+      ///   otherwise false is assumed
       const std::vector<std::string>,
       /// process callback if option is found
       std::function<void(bool on)>>>
@@ -85,7 +84,7 @@ namespace wex
       /// arguments
       char* av[],
       /// keep changed values in config
-      bool save = false) const;
+      bool save = false);
 
     /// As above, for specified command line string containing all arguments.
     bool parse(
@@ -94,22 +93,34 @@ namespace wex
       /// help default goes to specified string
       std::string& help,
       /// keep changed values in config
+      bool save = false);
+
+    /// Parses the command line arguments and invokes callbacks.
+    /// Options are specified according to ex :set specification.
+    /// Returns false if option was not found.
+    /// [option[=[value]] ...][nooption ...][option? ...][all]
+    bool parse_set(
+      /// command line
+      const std::string& cmdline,
+      /// help default goes to specified string
+      std::string& help,
+      /// keep changed values in config
       bool save = false) const;
 
-    /// Return toggle mode.
-    static bool toggle() { return m_toggle; };
-
-    /// Sets toggle mode for switches.
-    cmdline& toggle(bool value)
-    {
-      m_toggle = value;
-      return *this;
-    };
-
   private:
-    config*      m_cfg;
-    cmdline_imp* m_parser;
+    void get_all(std::string& help) const;
+    bool get_single(const std::vector<std::string>& v, std::string& help) const;
+    void init();
+    bool set_no_option(const std::vector<std::string>& v, bool save) const;
+    bool set_option(const std::vector<std::string>& v, bool save) const;
 
-    static inline bool m_first{true}, m_toggle{true};
+    const bool m_add_standard_options;
+
+    const cmd_options_t  m_options;
+    const cmd_params_t   m_params;
+    const cmd_switches_t m_switches;
+
+    config*      m_cfg;
+    cmdline_imp* m_parser{nullptr};
   };
 }; // namespace wex

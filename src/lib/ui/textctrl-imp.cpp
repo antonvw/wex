@@ -9,22 +9,18 @@
 #include <wex/core.h>
 #include <wex/ex.h>
 #include <wex/frd.h>
-#include <wex/log.h>
 #include <wex/macros.h>
 #include <wex/managedframe.h>
 #include <wex/stc.h>
 #include <wex/textctrl.h>
 #include <wx/control.h>
 #include <wx/settings.h>
-#include <wx/timer.h>
 
 #include "textctrl-imp.h"
 
-const auto ID_REGISTER = wxWindow::NewControlId();
-
 wex::textctrl_imp::textctrl_imp(
-  textctrl*          tc,
-  wxControl*         prefix,
+  textctrl*           tc,
+  wxControl*          prefix,
   const data::window& data)
   : wxTextCtrl(
       data.parent(),
@@ -33,6 +29,7 @@ wex::textctrl_imp::textctrl_imp(
       data.pos(),
       data.size(),
       data.style() | wxTE_PROCESS_ENTER | wxTE_MULTILINE)
+  , m_id_register(NewControlId())
   , m_prefix(prefix)
   , m_tc(tc)
   , m_timer(this)
@@ -81,7 +78,7 @@ wex::textctrl_imp::textctrl_imp(
         {
           skip             = false;
           const char     c = event.GetUnicodeKey();
-          wxCommandEvent event(wxEVT_MENU, ID_REGISTER);
+          wxCommandEvent event(wxEVT_MENU, m_id_register);
 
           if (c == '%')
           {
@@ -138,10 +135,46 @@ wex::textctrl_imp::textctrl_imp(
       case WXK_DOWN:
       case WXK_END:
       case WXK_HOME:
+      case WXK_LEFT:
       case WXK_PAGEDOWN:
       case WXK_PAGEUP:
+      case WXK_RIGHT:
       case WXK_UP:
-        if (
+        if (event.GetKeyCode() == WXK_LEFT)
+        {
+          if (m_all_selected)
+          {
+            SetInsertionPoint(0);
+          }
+          else if (GetInsertionPoint() > 0)
+          {
+            SetInsertionPoint(GetInsertionPoint() - 1);
+          }
+          else
+          {
+            SelectNone();
+          }
+
+          m_all_selected = false;
+        }
+        else if (event.GetKeyCode() == WXK_RIGHT)
+        {
+          if (m_all_selected)
+          {
+            SetInsertionPointEnd();
+          }
+          else if (GetInsertionPoint() < GetLastPosition())
+          {
+            SetInsertionPoint(GetInsertionPoint() + 1);
+          }
+          else
+          {
+            SelectNone();
+          }
+
+          m_all_selected = false;
+        }
+        else if (
           (event.GetKeyCode() == WXK_HOME || event.GetKeyCode() == WXK_END) &&
           !event.ControlDown())
         {
@@ -193,7 +226,7 @@ wex::textctrl_imp::textctrl_imp(
     [=](wxCommandEvent& event) {
       WriteText(event.GetString());
     },
-    ID_REGISTER);
+    m_id_register);
 
   Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
     event.Skip();
@@ -297,8 +330,8 @@ wex::textctrl_imp::textctrl_imp(
 }
 
 wex::textctrl_imp::textctrl_imp(
-  textctrl*          tc,
-  const std::string& value,
+  textctrl*           tc,
+  const std::string&  value,
   const data::window& data)
   : wxTextCtrl(
       data.parent(),
@@ -307,6 +340,7 @@ wex::textctrl_imp::textctrl_imp(
       data.pos(),
       data.size(),
       data.style() | wxTE_PROCESS_ENTER)
+  , m_id_register(0)
   , m_tc(tc)
   , m_timer(this)
 {
@@ -320,6 +354,7 @@ void wex::textctrl_imp::bind()
 {
   Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
     wxTextCtrl::SelectAll();
+    m_all_selected = true;
   });
 }
 
@@ -353,7 +388,7 @@ bool wex::textctrl_imp::handle(const std::string& command)
 
   m_tc->frame()->pane_set(
     "VIBAR",
-    wxAuiPaneInfo().BestSize(-1, GetFont().GetPixelSize().GetHeight() + 5));
+    wxAuiPaneInfo().BestSize(-1, GetFont().GetPixelSize().GetHeight() + 10));
 
   if (m_prefix != nullptr)
   {
@@ -417,7 +452,9 @@ bool wex::textctrl_imp::handle(char command)
 
   m_tc->frame()->pane_set(
     "VIBAR",
-    wxAuiPaneInfo().BestSize(-1, 4 * GetFont().GetPixelSize().GetHeight() + 5));
+    wxAuiPaneInfo().BestSize(
+      -1,
+      4 * GetFont().GetPixelSize().GetHeight() + 10));
 
   return true;
 }
@@ -452,6 +489,7 @@ void wex::textctrl_imp::SelectAll()
   else
   {
     wxTextCtrl::SelectAll();
+    m_all_selected = true;
   }
 }
 

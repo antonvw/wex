@@ -858,10 +858,13 @@ void wex::stc::set_search_flags(int flags)
     flags = 0;
 
     auto* frd = find_replace_data::get();
+
     if (frd->use_regex())
       flags |= wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX;
-    if (frd->match_word())
+
+    if (frd->match_word() && !frd->use_regex())
       flags |= wxSTC_FIND_WHOLEWORD;
+
     if (frd->match_case())
       flags |= wxSTC_FIND_MATCHCASE;
   }

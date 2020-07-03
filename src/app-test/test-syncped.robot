@@ -145,10 +145,21 @@ tc-ex-process
 	Output Contains	build
 
 tc-ex-set
-	Input	:set -h *
+	Input	:set all *
 	Syncped
 	Output Contains	2
 
+tc-ex-set-bool
+	Input	:set nosws *
+	...	:set sws ? *
+	Syncped
+	Output Contains	nosws
+	
+tc-ex-set-info
+	Input	:set ts ? *
+	Syncped
+	Output Contains	2
+	
 tc-ex-substitute
 	Input	:a|line has text
 	...	:a|line has a tiger
@@ -177,6 +188,14 @@ tc-vi-delete
 	Syncped
 	Output Contains	59
 	Output Contains	fewer
+
+tc-vi-delete-D
+	Input	:a|line has some text
+	...	:1
+	...	ww
+	...	D
+	Syncped
+	Contents Does Not Contain	some text
 
 tc-vi-calculate
 	Input	:a|x

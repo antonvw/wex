@@ -49,9 +49,20 @@ bool wex::stc::find_next(const std::string& text, int find_flags, bool forward)
   }
 
   SetTargetRange(f.start_pos(), f.end_pos());
+
   set_search_flags(find_flags);
 
-  if (SearchInTarget(text) == -1)
+  std::string stext(text);
+
+  // match word related to regex ECMAScript
+  if (
+    find_flags != -1 && (find_flags & wxSTC_FIND_CXX11REGEX) &&
+    (find_flags & wxSTC_FIND_WHOLEWORD))
+  {
+    stext = "\\b" + text + "\\b";
+  }
+
+  if (SearchInTarget(stext) == -1)
   {
     m_frame->statustext(
       get_find_result(text, forward, f.recursive()),

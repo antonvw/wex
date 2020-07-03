@@ -385,7 +385,11 @@ bool wex::statusbar::pane_show(const std::string& pane, bool show)
       int z = 0;
       for (int j = changes.size() - 1; j >= 0; j--)
       {
-        SetStatusText(changes[j], GetFieldsCount() - 1 - z);
+        if (const int no = GetFieldsCount() - 1 - z; no >= 0)
+        {
+          SetStatusText(changes[j], no);
+        }
+
         z++;
       }
     }

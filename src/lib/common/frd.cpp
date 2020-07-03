@@ -151,12 +151,6 @@ void wex::find_replace_data::set_match_word(bool value)
     flags &= ~wxFR_WHOLEWORD;
 
   m_frd->SetFlags(flags);
-
-  // Match word and regular expression do not work together.
-  if (value)
-  {
-    set_use_regex(false);
-  }
 }
 
 void wex::find_replace_data::set_replace_string(const std::string& value)

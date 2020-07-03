@@ -766,11 +766,10 @@ wex::vi::vi(wex::stc* arg)
            }
            else
            {
-             // related to regex ECMAScript
-             find_replace_data::get()->set_find_string("\\b" + word + "\\b");
+             find_replace_data::get()->set_find_string(word);
              get_stc()->find_next(
                find_replace_data::get()->get_find_string(),
-               search_flags(),
+               search_flags() | wxSTC_FIND_WHOLEWORD,
                command == "*");
            }
          }
