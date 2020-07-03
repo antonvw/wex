@@ -8,7 +8,7 @@ add_subdirectory(ui)
 add_subdirectory(report)
 
 if (WIN32)
-  set(CONFIG_INSTALL_DIR bin)
+  set(CONFIG_INSTALL_DIR /Users/$ENV{USERNAME}/.config/${PROJECT_NAME})
 elseif (APPLE)
   set(CONFIG_INSTALL_DIR /Users/$ENV{USER}/.config/${PROJECT_NAME})
 else ()

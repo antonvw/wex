@@ -28,7 +28,7 @@ namespace wex
 {
   struct ssACTIVE;
 
-  /// This class offers the state machine
+  /// This class offers the vi mode state machine
   /// and initially enters the active mode.
   class vi_fsm : public sc::state_machine<vi_fsm, ssACTIVE>
   {
@@ -84,10 +84,13 @@ namespace wex
                                                             "insert block";
         case vi_mode::state_t::VISUAL:
           return "visual";
+        
         case vi_mode::state_t::VISUAL_LINE:
           return "visual line";
+        
         case vi_mode::state_t::VISUAL_BLOCK:
           return "visual block";
+        
         default:
           return ex::get_macros().mode().str();
       }
@@ -221,7 +224,7 @@ namespace wex
   struct ssVISUAL_BLOCK_TEXTINPUT
     : sc::state<ssVISUAL_BLOCK_TEXTINPUT, ssVISUAL_MODE>
   {
-    typedef sc::transition<evESCAPE, ssVISUAL_MODE> reactions;
+    typedef sc::transition<evESCAPE, ssVISUAL_BLOCK> reactions;
 
     ssVISUAL_BLOCK_TEXTINPUT(my_context ctx)
       : my_base(ctx)
@@ -410,13 +413,11 @@ bool wex::vi_mode::transition(std::string& command)
       break;
   }
 
-  ((statusbar*)m_vi->frame()->GetStatusBar())
-    ->pane_show(
-      "PaneMode",
-      (!normal() || ex::get_macros().mode().is_recording()) &&
-        config(_("stc.Show mode")).get(true));
-
-  frame::statustext(str(), "PaneMode");
+  m_vi->frame()->get_statusbar()->pane_show(
+    "PaneMode",
+    (!normal() || ex::get_macros().mode().is_recording()) &&
+      config(_("stc.Show mode")).get(true));
+  m_vi->frame()->statustext(str(), "PaneMode");
 
   command.erase(0, 1);
 

@@ -22,22 +22,23 @@ public:
   bool checked() const { return m_checked; };
 
 private:
+  const int   m_id_checkbox;
   bool        m_checked{false};
   wxCheckBox* m_cb;
 };
 
-const auto id_checkbox = wxWindow::NewControlId();
 
 extra_panel::extra_panel(wxWindow* parent)
   : wxPanel(parent)
-  , m_cb(new wxCheckBox(this, id_checkbox, "Hex"))
+  , m_id_checkbox(NewControlId())
+  , m_cb(new wxCheckBox(this, m_id_checkbox, "Hex"))
 {
   Bind(
     wxEVT_CHECKBOX,
     [&](wxCommandEvent& event) {
       m_checked = !m_checked;
     },
-    id_checkbox);
+    m_id_checkbox);
 
   auto* sizerTop = new wxBoxSizer(wxHORIZONTAL);
   sizerTop->Add(

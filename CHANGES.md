@@ -1,6 +1,6 @@
 **v20.10**
   - clang-format support, and wex code follows these guidelines
-  - ex append, insert, change commands follow
+  - ex append, insert, change, set commands follow
     The Open Group Base Specifications Issue 7, 2018 edition
   - ctags update to use libreadtags and auto_complete improvements
   - bettercodehub improvements, split up of src directories

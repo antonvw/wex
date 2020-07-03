@@ -10,7 +10,7 @@
 #include <wex/defs.h>
 #include <wex/frd.h>
 #include <wex/indicator.h>
-#include <wex/managedframe.h>
+#include <wex/lexers.h>
 #include <wex/stc.h>
 
 TEST_CASE("wex::stc")
@@ -91,11 +91,53 @@ TEST_CASE("wex::stc")
     REQUIRE(lexer.set("cpp", true));
     REQUIRE(!lexer.set("xyz"));
     REQUIRE(stc->get_lexer().set(lexer));
+
+    wex::lexer lexer_s(stc);
+    REQUIRE(!lexer_s.is_ok());
+    REQUIRE(lexer_s.apply());
+
+    stc->SetText("// a rust comment");
+    REQUIRE(lexer_s.set("rust"));
+    REQUIRE(lexer_s.scintilla_lexer() == "rust");
+  }
+
+  SUBCASE("lexers")
+  {
+    for (const auto& l : wex::lexers::get()->get_lexers())
+    {
+      if (!l.scintilla_lexer().empty())
+      {
+        CAPTURE(l.scintilla_lexer());
+        wex::lexer one(l.scintilla_lexer());
+        REQUIRE(one.is_ok());
+#ifndef __WXMSW__
+        wex::lexer two(stc);
+        REQUIRE(two.set(one));
+        REQUIRE(two.is_ok());
+#endif
+      }
+    }
+
+    REQUIRE(!wex::lexer().is_ok());
+    REQUIRE(!wex::lexer(" cpp").is_ok());
+    REQUIRE(!wex::lexer("cpp ").is_ok());
+    REQUIRE(!wex::lexer("xxx").is_ok());
+
+    stc->get_lexer().set("cpp");
+    stc->open(wex::test::get_path());
+    wex::lexers::get()->apply_global_styles(stc);
+    wex::lexers::get()->apply(stc);
+    wex::lexers::get()->apply_margin_text_style(
+      stc,
+      30,
+      wex::lexers::margin_style_t::DAY);
+
+    stc->get_file().reset_contents_changed();
   }
 
   SUBCASE("binary")
   {
-    // do the same test as with wex::file in base for a binary file
+    // do the same test as with wex::file in core for a binary file
     REQUIRE(stc->open(wex::test::get_path("test.bin")));
     REQUIRE(stc->data().flags() == 0);
     const auto& buffer = stc->get_text();
@@ -214,7 +256,7 @@ TEST_CASE("wex::stc")
     REQUIRE(!stc.open("XXX"));
   }
 
-  SUBCASE("omplete")
+  SUBCASE("complete")
   {
     REQUIRE(stc->get_lexer().set("xml"));
     stc->get_vi().command("i<xxxx>");

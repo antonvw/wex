@@ -16,6 +16,7 @@
 #include <wex/log.h>
 #include <wex/stc-core.h>
 #include <wex/tokenizer.h>
+#include <wx/platinfo.h>
 
 namespace wex
 {
@@ -259,8 +260,7 @@ const std::string wex::lexer::align_text(
         line.size() + 1 + word.size() > line_length)
     {
       out +=
-        make_single_line_comment(line, fill_out_with_space, fill_out) +
-        "\n";
+        make_single_line_comment(line, fill_out_with_space, fill_out) + "\n";
       line = header_with_spaces + word;
     }
     else
@@ -472,8 +472,7 @@ const std::string wex::lexer::formatted_text(
 
   if (!text.empty())
   {
-    out +=
-      align_text(text, header_to_use, fill_out_with_space, fill_out);
+    out += align_text(text, header_to_use, fill_out_with_space, fill_out);
   }
 
   return out;
@@ -536,8 +535,7 @@ const std::string wex::lexer::make_comment(
 
   text.find("\n") != std::string::npos ?
     out += formatted_text(text, std::string(), fill_out_with_space, fill_out) :
-    out +=
-    align_text(text, std::string(), fill_out_with_space, fill_out);
+    out += align_text(text, std::string(), fill_out_with_space, fill_out);
 
   return out;
 }
@@ -608,24 +606,13 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
   m_display_lexer =
     (!node->attribute("display").empty() ? node->attribute("display").value() :
                                            m_scintilla_lexer);
-  const std::string exclude(node->attribute("exclude").value());
   m_extensions  = node->attribute("extensions").value();
   m_language    = node->attribute("language").value();
   m_previewable = !node->attribute("preview").empty();
 
-  std::string platform;
-
-#ifdef __WXGTK__
-  platform = "linux";
-#endif
-#ifdef __WXMSW__
-  platform = "msw";
-#endif
-#ifdef __WXOSX__
-  platform = "osx";
-#endif
-
-  if (exclude.find(platform) != std::string::npos)
+  if (const std::string exclude(node->attribute("exclude").value());
+      exclude.find(wxPlatformInfo().GetOperatingSystemFamilyName()) !=
+      std::string::npos)
   {
     m_is_ok = false;
     return;

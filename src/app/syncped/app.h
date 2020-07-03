@@ -18,9 +18,10 @@ public:
   auto& get_files() const { return m_files; };
   auto  get_is_debug() const { return m_is_debug; };
   auto  get_is_echo() const { return m_is_echo; };
+  auto  get_is_output() const { return m_is_output; };
   auto  get_is_project() const { return m_is_project; };
   auto  get_is_stdin() const { return m_is_stdin; };
-  auto& get_scriptin() { return m_scriptin; };
+  auto& get_output() { return m_output; };
   auto& get_scriptout() { return m_scriptout; };
   auto  get_split() const { return m_split; };
   auto& get_tag() const { return m_tag; };
@@ -34,13 +35,13 @@ private:
 
   bool OnInit() override;
 
-  std::string m_scriptin, m_scriptout, m_tag;
+  std::string m_output, m_scriptout, m_tag;
 
   std::vector<wex::path> m_files;
 
-  bool m_is_echo{false}, m_is_debug{false}, m_is_project{false},
-    m_is_stdin{false};
+  bool m_is_echo{false}, m_is_debug{false}, m_is_output{false},
+    m_is_project{false}, m_is_stdin{false}, m_keep{false};
 
-  int           m_split;
+  int            m_split{-1};
   wex::data::stc m_data;
 };

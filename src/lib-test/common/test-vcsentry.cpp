@@ -47,7 +47,7 @@ TEST_CASE("wex::vcs_entry")
     REQUIRE(entry.admin_dir() == "./");
     REQUIRE(entry.get_flags().empty());
 #if BOOST_VERSION / 100 % 1000 != 72
-    REQUIRE(!entry.get_branch().empty());
+    REQUIRE(entry.get_branch().empty());
     REQUIRE(!entry.get_stdout().empty());
 #endif
     entry.show_output();

@@ -121,7 +121,12 @@ void wex::stc_file::do_file_new()
 {
   m_stc->SetName(get_filename().string());
   m_stc->properties_message();
-  m_stc->clear();
+
+  if (m_stc->data().control().command().empty())
+  {
+    m_stc->clear();
+  }
+
   m_stc->get_lexer().set(get_filename().lexer(), true); // allow fold
 }
 

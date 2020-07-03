@@ -37,13 +37,20 @@ int wex::app::OnExit()
   delete lexers::set(nullptr);
   delete printing::set(nullptr);
 
-  addressrange::on_exit();
-  ctags::close();
-  stc::on_exit();
+  try
+  {
+    addressrange::on_exit();
+    ctags::close();
+    stc::on_exit();
 
-  config::on_exit();
+    config::on_exit();
 
-  log::verbose(1) << "exit";
+    log::verbose(1) << "exit";
+  }
+  catch (std::exception& e)
+  {
+    std::cout << e.what() << "\n";
+  }
 
   return wxApp::OnExit();
 }

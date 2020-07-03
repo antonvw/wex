@@ -130,6 +130,7 @@ wex::listview::listview(const data::listview& data)
         data.type() == data::listview::NONE || data::listview::TSV ?
           data.image() :
           data::listview::IMAGE_FILE_ICON))
+  , m_frame(dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow()))
 {
   Create(
     data.window().parent(),
@@ -178,7 +179,7 @@ wex::listview::listview(const data::listview& data)
       assert(0);
   }
 
-  frame::update_statusbar(this);
+  m_frame->update_statusbar(this);
 
   Bind(wxEVT_FIND, [=](wxFindDialogEvent& event) {
     find_next(
@@ -259,7 +260,7 @@ wex::listview::listview(const data::listview& data)
   });
 
   Bind(wxEVT_LIST_ITEM_DESELECTED, [=](wxListEvent& event) {
-    frame::update_statusbar(this);
+    m_frame->update_statusbar(this);
   });
 
   Bind(wxEVT_LIST_ITEM_SELECTED, [=](wxListEvent& event) {
@@ -275,7 +276,8 @@ wex::listview::listview(const data::listview& data)
         log::status(get_item_text(GetFirstSelected()));
       }
     }
-    frame::update_statusbar(this);
+
+    m_frame->update_statusbar(this);
   });
 
   Bind(wxEVT_LIST_COL_CLICK, [=](wxListEvent& event) {
@@ -381,6 +383,7 @@ wex::listview::listview(const data::listview& data)
                                               GetItemCount());
 
               listitem(this, dir_dlg.GetPath().ToStdString()).insert(no);
+              m_frame->update_statusbar(this);
             }
           }
         }
@@ -432,17 +435,13 @@ wex::listview::listview(const data::listview& data)
   });
 
   Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
-    if (auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
-        frame != nullptr)
-    {
-      frame->set_find_focus(this);
-    }
+    m_frame->set_find_focus(this);
     event.Skip();
   });
 
   Bind(wxEVT_SHOW, [=](wxShowEvent& event) {
     event.Skip();
-    frame::update_statusbar(this);
+    m_frame->update_statusbar(this);
   });
 }
 
@@ -553,7 +552,7 @@ void wex::listview::clear()
 
   sort_column_reset();
 
-  frame::update_statusbar(this);
+  m_frame->update_statusbar(this);
 }
 
 int wex::listview::config_dialog(const data::window& par)
@@ -697,7 +696,9 @@ bool wex::listview::find_next(const std::string& text, bool forward)
   }
   else
   {
-    frame::statustext(get_find_result(text, forward, recursive), std::string());
+    m_frame->statustext(
+      get_find_result(text, forward, recursive),
+      std::string());
 
     if (!recursive)
     {
@@ -886,19 +887,15 @@ void wex::listview::item_activated(long item_number)
       // Cannot be const because of SetItem later on.
       if (listitem item(this, item_number); item.get_filename().file_exists())
       {
-        if (auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
-            frame != nullptr)
-        {
-          const auto no(get_item_text(item_number, _("Line No")));
-          auto       data(
-            (m_data.type() == data::listview::FIND && !no.empty() ?
-               data::control()
-                 .line(std::stoi(no))
-                 .find(get_item_text(item_number, _("Match"))) :
-               data::control()));
+        const auto no(get_item_text(item_number, _("Line No")));
+        auto       data(
+          (m_data.type() == data::listview::FIND && !no.empty() ?
+             data::control()
+               .line(std::stoi(no))
+               .find(get_item_text(item_number, _("Match"))) :
+             data::control()));
 
-          frame->open_file(item.get_filename(), data);
-        }
+        m_frame->open_file(item.get_filename(), data);
       }
       else if (item.get_filename().dir_exists())
       {
@@ -997,6 +994,8 @@ bool wex::listview::item_from_text(const std::string& text)
         }
     }
   }
+
+  m_frame->update_statusbar(this);
 
   return modified;
 }

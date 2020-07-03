@@ -279,15 +279,30 @@ decorated_frame::decorated_frame(app* app)
             if (wex::config("is_hexmode").get(false))
               return;
 
-            static std::string name = event.GetString();
-            wxTextEntryDialog dlg(this, _("Input") + ":", _("File Name"), name);
-            wxTextValidator   validator(wxFILTER_EXCLUDE_CHAR_LIST);
-            validator.SetCharExcludes("/\\?%*:|\"<>");
-            dlg.SetTextValidator(validator);
-            if (dlg.ShowModal() == wxID_CANCEL)
-              return;
+            static std::string name;
 
-            if (name = dlg.GetValue(); !name.empty())
+            if (event.GetString().empty())
+            {
+              wxTextEntryDialog dlg(
+                this,
+                _("Input") + ":",
+                _("File Name"),
+                name);
+              wxTextValidator validator(wxFILTER_EXCLUDE_CHAR_LIST);
+              validator.SetCharExcludes("/\\?%*:|\"<>");
+              dlg.SetTextValidator(validator);
+
+              if (dlg.ShowModal() == wxID_CANCEL)
+                return;
+
+              name = dlg.GetValue();
+            }
+            else
+            {
+              name = event.GetString();
+            }
+
+            if (!name.empty())
             {
               auto* page = new wex::stc(
                 std::string(),
@@ -469,7 +484,9 @@ decorated_frame::decorated_frame(app* app)
 
          {},
 
-         {wxID_EXECUTE, "", wex::data::menu().action([=](wxCommandEvent& event) {
+         {wxID_EXECUTE,
+          "",
+          wex::data::menu().action([=](wxCommandEvent& event) {
             pane_show("PROCESS");
             m_process->execute();
           })},

@@ -663,14 +663,18 @@ wex::vi::vi(wex::stc* arg)
            (level & wxSTC_FOLDLEVELHEADERFLAG) ?
              get_stc()->GetCurrentLine() :
              get_stc()->GetFoldParent(get_stc()->GetCurrentLine());
+
          switch (command[1])
          {
            case 'c':
            case 'o':
-             if (get_stc()->GetFoldExpanded(line_to_fold) && command == "zc")
+             if (
+               get_stc()->GetFoldExpanded(line_to_fold) &&
+               trim(command) == "zc")
                get_stc()->ToggleFold(line_to_fold);
              else if (
-               !get_stc()->GetFoldExpanded(line_to_fold) && command == "zo")
+               !get_stc()->GetFoldExpanded(line_to_fold) &&
+               trim(command) == "zo")
                get_stc()->ToggleFold(line_to_fold);
              break;
            case 'f':
@@ -749,11 +753,12 @@ wex::vi::vi(wex::stc* arg)
            get_stc()->WordStartPosition(get_stc()->GetCurrentPos(), true);
          const auto end =
            get_stc()->WordEndPosition(get_stc()->GetCurrentPos(), true);
-         const std::string word(
-           get_stc()->GetSelectedText().empty() ?
-             get_stc()->GetTextRange(start, end).ToStdString() :
-             get_stc()->GetSelectedText().ToStdString());
-         if (!word.empty())
+
+         if (const std::string word(
+               get_stc()->GetSelectedText().empty() ?
+                 get_stc()->GetTextRange(start, end).ToStdString() :
+                 get_stc()->GetSelectedText().ToStdString());
+             !word.empty())
          {
            if (command == "U")
            {
@@ -761,11 +766,10 @@ wex::vi::vi(wex::stc* arg)
            }
            else
            {
-             // related to regex ECMAScript
-             find_replace_data::get()->set_find_string("\\b" + word + "\\b");
+             find_replace_data::get()->set_find_string(word);
              get_stc()->find_next(
                find_replace_data::get()->get_find_string(),
-               search_flags(),
+               search_flags() | wxSTC_FIND_WHOLEWORD,
                command == "*");
            }
          }
@@ -1370,8 +1374,7 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
     {
       return addressrange(this, m_count).yank();
     }
-    else if (type == motion_t::MOTION_DELETE ||
-      type == motion_t::MOTION_CHANGE)
+    else if (type == motion_t::MOTION_DELETE || type == motion_t::MOTION_CHANGE)
     {
       return addressrange(this, m_count).erase();
     }
@@ -1748,8 +1751,7 @@ bool wex::vi::parse_command(std::string& command)
       if (
         m_mode.visual() &&
         (motion == motion_t::MOTION_CHANGE ||
-         motion == motion_t::MOTION_DELETE || 
-         motion == motion_t::MOTION_YANK))
+         motion == motion_t::MOTION_DELETE || motion == motion_t::MOTION_YANK))
       {
         if (motion == motion_t::MOTION_CHANGE)
         {

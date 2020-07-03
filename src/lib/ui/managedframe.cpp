@@ -200,7 +200,7 @@ wxPanel* wex::managed_frame::create_ex_panel()
 void wex::managed_frame::on_menu_history(
   const class file_history& history,
   size_t                    index,
-  data::stc::window_t        flags)
+  data::stc::window_t       flags)
 {
   if (const auto& file(history.get_history_file(index)); !file.empty())
   {
@@ -373,15 +373,8 @@ bool wex::managed_frame::show_ex_input(ex* ex, char cmd)
 
 void wex::managed_frame::show_ex_message(const std::string& text)
 {
-  if (GetStatusBar() != nullptr && GetStatusBar()->IsShown())
-  {
-    hide_ex_bar();
-    GetStatusBar()->SetStatusText(text);
-  }
-  else
-  {
-    m_textctrl->set_text(text);
-  }
+  hide_ex_bar();
+  statustext(text, std::string());
 }
 
 void wex::managed_frame::statusbar_clicked(const std::string& pane)
@@ -397,6 +390,11 @@ void wex::managed_frame::statusbar_clicked(const std::string& pane)
   {
     frame::statusbar_clicked(pane);
   }
+}
+
+void wex::managed_frame::show_process(bool show)
+{
+  pane_show("PROCESS", show);
 }
 
 void wex::managed_frame::statusbar_clicked_right(const std::string& pane)

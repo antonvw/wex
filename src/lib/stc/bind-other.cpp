@@ -12,6 +12,7 @@
 #include <wex/log.h>
 #include <wex/managedframe.h>
 #include <wex/menu.h>
+#include <wex/stc-bind.h>
 #include <wex/stc.h>
 #include <wex/vcs.h>
 #include <wx/fdrepdlg.h> // for wxFindDialogEvent
@@ -321,11 +322,12 @@ void wex::stc::bind_other()
   Bind(wxEVT_STC_MARGIN_RIGHT_CLICK, [=](wxStyledTextEvent& event) {
     if (event.GetMargin() == m_margin_text_number)
     {
-      auto* menu = new wex::menu({{m_id_margin_text_hide, "&Hide"}, {}});
+      auto* menu = new wex::menu({{id::stc::margin_text_hide, "&Hide"}, {}});
       auto* author =
-        menu->AppendCheckItem(m_id_margin_text_author, "&Show Author");
-      auto* date = menu->AppendCheckItem(m_id_margin_text_date, "&Show Date");
-      auto* id   = menu->AppendCheckItem(m_id_margin_text_id, "&Show Id");
+        menu->AppendCheckItem(id::stc::margin_text_author, "&Show Author");
+      auto* date =
+        menu->AppendCheckItem(id::stc::margin_text_date, "&Show Date");
+      auto* id = menu->AppendCheckItem(id::stc::margin_text_id, "&Show Id");
 
       if (config("blame.author").get(true))
         author->Check();
@@ -341,6 +343,6 @@ void wex::stc::bind_other()
 
   Bind(wxEVT_STC_UPDATEUI, [=](wxStyledTextEvent& event) {
     event.Skip();
-    frame::update_statusbar(this, "PaneInfo");
+    m_frame->update_statusbar(this, "PaneInfo");
   });
 }

@@ -4012,7 +4012,7 @@ Copyright: (c) 2020, Anton van Wezenbeek
       Template Timeout 
     </keywords>
   </lexer>
-  <lexer name="ruby" extensions="*.rb" exclude="osx">
+  <lexer name="ruby" extensions="*.rb" exclude="Macintosh">
     <properties>
       <property name="fold"> 1 </property>
       <property name="fold.compact"> 1 </property>

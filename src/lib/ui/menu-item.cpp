@@ -26,7 +26,7 @@ wex::menu_item::menu_item(type_t type)
 wex::menu_item::menu_item(
   int                id,
   const std::string& name,
-  const data::menu&   data)
+  const data::menu&  data)
   : m_id(id)
   , m_type(MENU)
   , m_data(data)
@@ -39,7 +39,7 @@ wex::menu_item::menu_item(
   int                id,
   const std::string& name,
   type_t             type,
-  const data::menu&   data)
+  const data::menu&  data)
   : m_id(id)
   , m_type(type)
   , m_name(name)
@@ -52,7 +52,7 @@ wex::menu_item::menu_item(
   wex::menu*         submenu,
   const std::string& name,
   int                id,
-  const data::menu&   data)
+  const data::menu&  data)
   : m_id(id)
   , m_type(SUBMENU)
   , m_name(name)
@@ -63,8 +63,8 @@ wex::menu_item::menu_item(
 }
 
 wex::menu_item::menu_item(
-  const wex::path& p,
-  bool             show_modal,
+  const wex::path&  p,
+  bool              show_modal,
   const data::menu& data)
   : m_type(VCS)
   , m_path(p)

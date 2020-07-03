@@ -25,7 +25,7 @@ namespace wex
   /// ID.
   enum window_id
   {
-    ID_LOWEST = wxID_HIGHEST + 1,
+    ID_LOWEST = wxID_HIGHEST + 1000, // see stc-bind.h
 
     ID_ALL_LOWEST, // all ALL commands after this one
     ID_ALL_CLOSE,
@@ -50,9 +50,6 @@ namespace wex
 
     ID_EDIT_CONTROL_CHAR,
     ID_EDIT_DEBUG_VARIABLE,
-    ID_EDIT_EOL_DOS,
-    ID_EDIT_EOL_UNIX,
-    ID_EDIT_EOL_MAC,
     ID_EDIT_FILE_ACTION,
     ID_EDIT_FIND_NEXT,
     ID_EDIT_FIND_PREVIOUS,
