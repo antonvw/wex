@@ -19,7 +19,7 @@ namespace wex
   {
   public:
     /// Default constructor.
-    grid(const window_data& data = window_data().style(wxWANTS_CHARS));
+    grid(const data::window& data = data::window().style(wxWANTS_CHARS));
 
     /// Virtual Interface.
     /// This one is invoked after IsAllowedDropSelection, and drops the data.

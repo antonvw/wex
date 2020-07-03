@@ -12,21 +12,22 @@
 namespace wex
 {
   const int DEBUG_MAX_DEBUGS = 25;
-  const int FIND_MAX_FINDS = 25;
+  const int FIND_MAX_FINDS   = 25;
   const int VCS_MAX_COMMANDS = 25;
-  const int VIEW_MAX_PANES = 10;
+  const int VIEW_MAX_PANES   = 10;
 
   /// The maximal number of files and projects to be supported.
-  const int NUMBER_RECENT_FILES = 25;
-  const int NUMBER_RECENT_PROJECTS = 25;
-  const int ID_RECENT_PROJECT_LOWEST =  wxID_FILE1 + NUMBER_RECENT_FILES + 1;
+  const int NUMBER_RECENT_FILES      = 25;
+  const int NUMBER_RECENT_PROJECTS   = 25;
+  const int ID_RECENT_PROJECT_LOWEST = wxID_FILE1 + NUMBER_RECENT_FILES + 1;
 
-  /// These are used as window event ID's. Therefore after the highest wxWidgets ID.
+  /// These are used as window event ID's. Therefore after the highest wxWidgets
+  /// ID.
   enum window_id
   {
-    ID_LOWEST = wxID_HIGHEST + 1,
+    ID_LOWEST = wxID_HIGHEST + 1000, // see stc-bind.h
 
-    ID_ALL_LOWEST,         // all ALL commands after this one
+    ID_ALL_LOWEST, // all ALL commands after this one
     ID_ALL_CLOSE,
     ID_ALL_CLOSE_OTHERS,
     ID_ALL_CONFIG_GET,
@@ -34,7 +35,7 @@ namespace wex
     ID_ALL_STC_SET_LEXER,
     ID_ALL_STC_SET_LEXER_THEME,
     ID_ALL_STC_SYNC,
-    ID_ALL_HIGHEST,        // and before this one
+    ID_ALL_HIGHEST, // and before this one
 
     ID_CLEAR_FILES,
     ID_CLEAR_FINDS,
@@ -66,10 +67,10 @@ namespace wex
     ID_SHELL_APPEND_ERROR,
     ID_SHELL_COMMAND,
     ID_SHELL_COMMAND_STOP,
-        
+
     ID_TOOL_LOWEST,
     ID_TOOL_REPLACE,
-    ID_TOOL_REPORT_FIRST,      // after this the first report
+    ID_TOOL_REPORT_FIRST, // after this the first report
     ID_TOOL_REPORT_FIND,
     ID_TOOL_REPORT_KEYWORD,
     ID_TOOL_REPORT_LAST,
@@ -84,9 +85,9 @@ namespace wex
     ID_VIEW_STATUSBAR,
     ID_VIEW_TITLEBAR,
 
-    ID_VIEW_LOWEST,        // aui panes that can be toggled
+    ID_VIEW_LOWEST, // aui panes that can be toggled
     ID_VIEW_HIGHEST = ID_VIEW_LOWEST + VIEW_MAX_PANES,
 
     ID_HIGHEST
   };
-};
+}; // namespace wex

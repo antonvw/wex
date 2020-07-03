@@ -3407,6 +3407,11 @@ Copyright: (c) 2020, Anton van Wezenbeek
   <lexer name="au3"/>
   <lexer name="ave"/>
   <lexer name="avs"/>
+  <lexer display="awk" name="bash" extensions="*.awk">
+    <keywords set-0="csh">
+      BEGIN END FS function length printf sprintf substr
+    </keywords>
+  </lexer>
   <lexer name="baan"/>
   <lexer name="bash" extensions="*.bash;*.sh;Doxyfile"> 
     <keywords>    
@@ -3418,8 +3423,7 @@ Copyright: (c) 2020, Anton van Wezenbeek
       help history if in jobs kill mount rm select sleep 
       mapfile popd printf pushd pwd read readarray readonly return select
       set shift shopt source suspend test time times trap true type typeset
-      tail then time ulimit umount unalias unset until while
-      ulimit umask unalias unset until
+      tail then time ulimit umount unalias umask unset until while
     </keywords>
     <properties>
       <property name="fold"> 1 </property>
@@ -3959,7 +3963,7 @@ Copyright: (c) 2020, Anton van Wezenbeek
       <property name="fold.comment"> 1 </property>
     </properties>
   </lexer>
-  <lexer name="props" extensions="*.ini;*.conf;*.desktop;*.rc" edgemode="none">
+  <lexer name="props" extensions="*.ini;*.conf;*.desktop;*.rc;.clang-format" edgemode="none">
     <styles>
     <style no="section"> fore:sky blue </style>
     <style no="assignment"> fore:khaki</style>
@@ -3988,7 +3992,7 @@ Copyright: (c) 2020, Anton van Wezenbeek
   <lexer name="rebol"/>
   <lexer name="registry"/>
   <lexer name="rfw" 
-    extensions="TCS*.txt;*.robot;__init__.*" 
+    extensions="*.robot" 
     edgemode="none"
     tabmode="use"
     tabwidth="8">
@@ -4008,7 +4012,7 @@ Copyright: (c) 2020, Anton van Wezenbeek
       Template Timeout 
     </keywords>
   </lexer>
-  <lexer name="ruby" extensions="*.rb" exclude="osx">
+  <lexer name="ruby" extensions="*.rb" exclude="Macintosh">
     <properties>
       <property name="fold"> 1 </property>
       <property name="fold.compact"> 1 </property>

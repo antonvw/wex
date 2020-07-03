@@ -1,0 +1,19 @@
+component_depth: 3
+
+languages:
+- name: cpp
+
+  production:
+    exclude:
+      - /ci/.*
+      - /external/.*
+      - /src/app/.*
+      - /src/data/.*
+      - /src/lib/lexers/.*
+      - /src/lib-test/.*
+      - /src/locale/.*
+      
+  test:
+    include:
+    - /src/app-test/.*
+    - /src/lib-test/.*

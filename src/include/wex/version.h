@@ -2,14 +2,13 @@
 // Name:      version.h
 // Purpose:   Declaration of class wex::version_info
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <string>
-
-class wxVersionInfo;
+#include <wx/versioninfo.h>
 
 namespace wex
 {
@@ -17,26 +16,22 @@ namespace wex
   class version_info
   {
   public:
-    /// Constructor.
-    version_info(const std::string& name = std::string(),
-      int major = 0,
-      int minor = 0,
-      int micro = 0,
-      const std::string& description = std::string(),
-      const std::string& copyright = std::string());
-         
+    /// Default constructor.
+    version_info(const wxVersionInfo& info = wxVersionInfo());
+
     /// Returns copyright.
     const std::string copyright() const;
-          
+
     /// Returns description.
     const std::string description() const;
-          
+
     /// Returns string version.
     const std::string get() const;
+
   private:
-    wxVersionInfo m_version;
+    const wxVersionInfo m_version;
   };
 
   /// Returns instantiation of version info class.
   const version_info get_version_info();
-};
+}; // namespace wex

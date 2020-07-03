@@ -19,20 +19,20 @@ cmake .. && make
 ```
 
 For Visual Studio 2019 do 
-  `devenv wex.sln /Build Release`,
+  `devenv wex.sln /build Release`,
 for mingw add `-G "MinGW Makefiles"` and do `mingw32-make`, for osx do 
 `brew install llvm@8` and `. ci/use-clang.sh` before invoking cmake.
 
 # Build process 
 
-  [![Travis](https://travis-ci.org/antonvw/wex.png?branch=master)](https://travis-ci.org/antonvw/wex)
+  [![Travis](https://travis-ci.org/antonvw/wex.png?branch=develop)](https://travis-ci.org/antonvw/wex)
   [![Appveyor](https://ci.appveyor.com/api/projects/status/a346d8537whyrjev?svg=true)](https://ci.appveyor.com/project/antonvw/wex)
-  [![Coveralls](https://coveralls.io/repos/antonvw/wex/badge.svg?branch=master&service=github)](https://coveralls.io/github/antonvw/wex?branch=master)   
+  [![Coveralls](https://coveralls.io/repos/antonvw/wex/badge.svg?branch=develop&service=github)](https://coveralls.io/github/antonvw/wex?branch=develop)   
 
 # Uses
 
 - [doctest lib](https://github.com/onqtam/doctest)    
-- [easylogging++ lib](https://github.com/muflihun/easyloggingpp)    
+- [easylogging++ lib](https://github.com/amrayn/easyloggingpp)
 - [json lib](https://github.com/nlohmann/json)    
 - [OTL database lib](http://otl.sourceforge.net/)    
 - [pugixml lib](https://github.com/zeux/pugixml)    

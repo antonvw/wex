@@ -16,16 +16,16 @@ namespace wex
   class vcs_command : public menu_command
   {
   public:
-    /// Default constructor.
-    vcs_command() {;};
-
-    /// Constructor using xml node.
-    vcs_command(const pugi::xml_node& node)
-      : menu_command(node) {;};
+    /// Default constructor using xml node.
+    vcs_command(const pugi::xml_node& node = pugi::xml_node())
+      : menu_command(node)
+    {
+      ;
+    };
 
     /// Returns true if this is a add like command.
     bool is_add() const;
-    
+
     /// Returns true if this is a blame like command.
     bool is_blame() const;
 
@@ -40,9 +40,9 @@ namespace wex
 
     /// Returns true if this is a history like command.
     bool is_history() const;
-    
+
     /// Returns true if this command can behave like
     /// opening a file.
     bool is_open() const;
   };
-};
+}; // namespace wex

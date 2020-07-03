@@ -1,40 +1,14 @@
-# feature/aui
-- the wxAuiManager should be private for managed_frame
-
-# feature/ex
-- the :a, :i, :c ex commands do not follow ex opengroup specs
-  e.g. :a xxx should give an error, and . on empty line should end append
-- so the tests are not ok as well, first fix them
-
-# feature/align
-- improve align_text (see e.g. blame annotations)
-
-# feature/calc
-- command_calc command_reg can be combined
-- ex_command should have a prefix, instead of textctrl in managedframe
-- test in vi::calc and ex_command, managed_frame
-
-# feature/insight
-- typo fix like separator
-- no break in switch after return
-- use final if appropriate
-
-# feature/blame
+# feature/vcs
 - improve blame size calculation, now only uses size of first blame line,
   should be more, or all
-  
-# feature/link
-- find_between be configurable
-
-# feature/git
+  improve align_text (see e.g. blame annotations)
+- git blame margin default not wide enough (MSW)
 - allow checkout by showing other branches, and remove from menu
 
-# feature/tests
-- fix failing tests
-
 # feature/c++20
+- no longer use StartsWidth (after new develop merge) or find() == 0
+  as starts_with
 - c++latest gives error on visual studio
-- wxWidgets submodule is not same as develop
 - fix [=](wxCommandEvent& event) should be [=, this](wxCommandEvent& event)
   (use CMAKE_CXX_STANDARD)
 - use clang-9 (llvm@9, first on MacBook) (after macOS 10.15 deployed on travis)
@@ -44,11 +18,13 @@
   - wxDateTime replace by c++20 methods date and time utilities
 
 # backlog
-- bug :prev or :n from stdin
-- add use namespace wex
-- use configurble toobar from xml
+- use abstract factory design pattern
+- super linter
+- reenable ubuntu test on travis (after ubuntu 20.04)
+- less platform dependant code
+- invest use wxTextCompleter
 - start up with recent project, close project
   -> windows appear
 - each process separate stc
   - process shell and aui
-- invest using RFW spaced keywords
+- invest using RFW spaced keywords, update rfw FOR keywords

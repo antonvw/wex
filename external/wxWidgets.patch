@@ -1,5 +1,18 @@
+diff --git a/build/cmake/lib/png.cmake b/build/cmake/lib/png.cmake
+index c06a8cc5f0..1c6ddd2e10 100644
+--- a/build/cmake/lib/png.cmake
++++ b/build/cmake/lib/png.cmake
+@@ -34,7 +34,7 @@ if(wxUSE_LIBPNG STREQUAL "builtin")
+             src/png/pngwutil.c
+             src/png/arm/arm_init.c
+             src/png/arm/filter_neon_intrinsics.c
+-            src/png/arm/palette_neon_intrinsics.c
++#            src/png/arm/palette_neon_intrinsics.c
+             src/png/intel/intel_init.c
+             src/png/intel/filter_sse2_intrinsics.c
+             ${PNG_EXTRA_SOURCES}
 diff --git a/build/cmake/lib/stc/CMakeLists.txt b/build/cmake/lib/stc/CMakeLists.txt
-index f96687d2d8..12ef655f54 100644
+index bd6acd858c..3f021ed587 100644
 --- a/build/cmake/lib/stc/CMakeLists.txt
 +++ b/build/cmake/lib/stc/CMakeLists.txt
 @@ -165,7 +165,6 @@ target_include_directories(wxscintilla PRIVATE
@@ -10,37 +23,40 @@ index f96687d2d8..12ef655f54 100644
      __WX__
      SCI_LEXER
      LINK_LEXERS
-@@ -189,7 +188,6 @@ wx_lib_include_directories(stc PRIVATE
+@@ -189,7 +188,6 @@ wx_lib_include_directories(wxstc PRIVATE
      ${wxSOURCE_DIR}/src/stc/scintilla/src
      )
- wx_lib_compile_definitions(stc PRIVATE
+ wx_lib_compile_definitions(wxstc PRIVATE
 -    NO_CXX11_REGEX
      __WX__
      SCI_LEXER
      LINK_LEXERS
 diff --git a/build/cmake/setup.cmake b/build/cmake/setup.cmake
-index 35ba62b64b..8f02be356c 100644
+index e26af41982..c4f5cf4a43 100644
 --- a/build/cmake/setup.cmake
 +++ b/build/cmake/setup.cmake
-@@ -158,7 +158,7 @@ if(wxUSE_STL)
+@@ -154,7 +154,7 @@ if(wxUSE_STL AND NOT wxHAS_CXX11)
          string functional algorithm vector list
          )
      if(NOT wxTEST_STL)
 -        message(FATAL_ERROR "Can't use wxUSE_STL as basic STL functionality is missing")
 +#        message(FATAL_ERROR "Can't use wxUSE_STL as basic STL functionality is missing")
      endif()
+ endif()
  
-     wx_check_cxx_source_compiles("
-diff --git a/include/wx/msw/winundef.h b/include/wx/msw/winundef.h
-index 879a6ef626..feebf2b6eb 100644
---- a/include/wx/msw/winundef.h
-+++ b/include/wx/msw/winundef.h
-@@ -268,7 +268,7 @@
-    #else
-    inline int StartDoc(HDC h, CONST DOCINFOA* info)
-    {
--      return StartDocA(h, const_cast<DOCINFOA*>(info);
-+      return StartDocA(h, const_cast<DOCINFOA*>(info));
-    }
-    #endif
- #endif
+diff --git a/build/cmake/toolkit.cmake b/build/cmake/toolkit.cmake
+index 2b8dbbe5db..dcc588adc6 100644
+--- a/build/cmake/toolkit.cmake
++++ b/build/cmake/toolkit.cmake
+@@ -80,7 +80,10 @@ if(WXGTK)
+         set(gtk_lib GTK2)
+     endif()
+ 
+-    find_package(${gtk_lib} REQUIRED)
++#    find_package(${gtk_lib} REQUIRED)
++    FIND_PACKAGE(PkgConfig REQUIRED)
++    PKG_CHECK_MODULES(GTK3 REQUIRED gtk+-3.0)
++
+     list(APPEND wxTOOLKIT_INCLUDE_DIRS ${${gtk_lib}_INCLUDE_DIRS})
+     list(APPEND wxTOOLKIT_LIBRARIES ${${gtk_lib}_LIBRARIES})
+     list(APPEND wxTOOLKIT_DEFINITIONS ${${gtk_lib}_DEFINITIONS})

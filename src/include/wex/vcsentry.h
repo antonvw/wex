@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include <vector>
 #include <pugixml.hpp>
+#include <vector>
 #include <wex/blame.h>
 #include <wex/lexer.h>
 #include <wex/menucommands.h>
@@ -18,31 +18,30 @@
 namespace wex
 {
   class menu;
-  
+
   /// This class collects a single vcs.
-  class vcs_entry : public process, public menu_commands < vcs_command >
+  class vcs_entry
+    : public process
+    , public menu_commands<vcs_command>
   {
   public:
     enum
     {
       FLAGS_LOCATION_POSTFIX,
-      FLAGS_LOCATION_PREFIX 
+      FLAGS_LOCATION_PREFIX
     };
-    
-    /// Default constructor.
-    vcs_entry() {;};
 
-    /// Constructor using xml node.
-    vcs_entry(const pugi::xml_node& node);
+    /// Default constructor using xml node.
+    vcs_entry(const pugi::xml_node& node = pugi::xml_node());
 
     /// Returns the administrative directory.
-    const auto& admin_dir() const {return m_admin_dir;};
+    const auto& admin_dir() const { return m_admin_dir; };
 
     /// Builds a menu from all vcs commands.
     /// Returns (total) number of items in menu.
     size_t build_menu(
       /// menu id to be added to the vcs commands
-      int base_id, 
+      int base_id,
       /// menu to be built
       menu* menu) const;
 
@@ -56,11 +55,9 @@ namespace wex
       const std::string& args = std::string(),
       /// lexer that is used for presenting the output
       const lexer& lexer = wex::lexer(),
-      /// wait to finish
-      process::exec_t type = process::EXEC_WAIT,
       /// working directory
       const std::string& wd = std::string());
-    
+
     /// Executes the command.
     /// Return value is false if process could not execute.
     bool execute(
@@ -70,11 +67,11 @@ namespace wex
       const std::string& wd);
 
     /// Returns flags location.
-    auto flags_location() const {return m_flags_location;};
+    auto flags_location() const { return m_flags_location; };
 
     /// Returns blame info.
-    const blame& get_blame() const {return m_blame;};
-    
+    const blame& get_blame() const { return m_blame; };
+
     /// Returns the name of current branch.
     const std::string get_branch(const std::string& wd = std::string()) const;
 
@@ -90,17 +87,16 @@ namespace wex
       const std::string& id);
 
     void show_output(const std::string& caption = std::string()) const override;
+
   private:
     const std::string bin() const;
 
     // no const, as entry is set using operator+ in vcs.
-    int m_flags_location {FLAGS_LOCATION_POSTFIX};
+    int m_flags_location{FLAGS_LOCATION_POSTFIX};
 
-    std::string 
-      m_admin_dir, 
-      m_log_flags;
-  
+    std::string m_admin_dir, m_log_flags;
+
     class blame m_blame;
-    lexer m_lexer;
+    lexer       m_lexer;
   };
-};
+}; // namespace wex

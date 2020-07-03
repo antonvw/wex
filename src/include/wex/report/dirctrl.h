@@ -2,13 +2,14 @@
 // Name:      dirctrl.h
 // Purpose:   Declaration of class wex::report::dirctrl
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wx/generic/dirctrlg.h>
+#include <wex/path.h>
 #include <wex/window-data.h>
+#include <wx/generic/dirctrlg.h>
 
 namespace wex::report
 {
@@ -21,13 +22,11 @@ namespace wex::report
   public:
     /// Default constructor.
     dirctrl(
-      report::frame* frame,
-      const std::string& filter = std::string(), 
-      int defaultFilter = 0,
-      const window_data& data = window_data().
-        style(wxDIRCTRL_3D_INTERNAL | wxDIRCTRL_MULTIPLE));
+      report::frame*      frame,
+      const data::window& data =
+        data::window().style(wxDIRCTRL_3D_INTERNAL | wxDIRCTRL_MULTIPLE));
 
     /// Expands path and selects it.
     void expand_and_select_path(const path& path);
   };
-};
+}; // namespace wex::report

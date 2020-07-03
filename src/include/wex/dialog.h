@@ -2,14 +2,14 @@
 // Name:      dialog.h
 // Purpose:   Declaration of wex::dialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
+#include <wex/window-data.h>
 #include <wx/dialog.h>
 #include <wx/sizer.h>
-#include <wex/window-data.h>
 
 namespace wex
 {
@@ -19,30 +19,32 @@ namespace wex
   {
   public:
     /// Default constructor.
-    dialog(const window_data& data = window_data());
+    dialog(const data::window& data = data::window());
 
     /// Returns the window data.
-    const auto& data() const {return m_data;};
+    const auto& data() const { return m_data; };
+
   protected:
     /// Adds to the user sizer using the sizer flags.
     wxSizerItem* add_user_sizer(
-      wxWindow* window,
+      wxWindow*           window,
       const wxSizerFlags& flags = wxSizerFlags().Expand());
 
     /// Adds to the user sizer using the sizer flags.
     wxSizerItem* add_user_sizer(
-      wxSizer* sizer,
+      wxSizer*            sizer,
       const wxSizerFlags& flags = wxSizerFlags().Expand());
 
     /// layouts the sizers. Should be invoked after adding to sizers.
     /// If you specified button flags,
     /// they will be put at the bottom of the top sizer,
-    /// and a sepator line will be added as specified.
+    /// and a separator line will be added as specified.
     void layout_sizers(bool add_separator_line = true);
+
   private:
-    const window_data m_data;
-    
+    const data::window m_data;
+
     wxFlexGridSizer* m_top_sizer;
     wxFlexGridSizer* m_user_sizer;
   };
-};
+}; // namespace wex

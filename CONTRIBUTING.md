@@ -10,6 +10,8 @@
 
 ## Adding functionality
 
+- use style as indicated by .clang-format
+
 - use STL whenever possible 
 
 - icons and bitmaps
@@ -67,6 +69,20 @@ make lcov
   `make lcov-coveralls`   
 
 - Do a pull request from the feature branch to the develop branch
+
+## YAML
+- if you have an error in a yml file (as travis could not parse), try 
+  http://www.yamllint.com
+  to detect errors inside your file
+  
+## ctags osx
+- see ctgs/docs/osx.rst:
+
+```
+brew tap universal-ctags/universal-ctags
+brew install --HEAD universal-ctags
+brew reinstall universal-ctags
+```
 
 ## Boost build
 

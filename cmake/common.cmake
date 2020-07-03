@@ -17,20 +17,18 @@ function(pack)
   if (MSVC)
     if (${MSVC_TOOLSET_VERSION} LESS 142)
       # Visual studio 2017:
-      # c:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\redist\x86\Microsoft.VC140.CRT
       file(GLOB_RECURSE dlls 
         "C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/redist/x86/*.dll")
     else()
       # Visual studio 2019:
-      # C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Redist\MSVC\14.23.27820\x86\Microsoft.VC142.CRT
       file(GLOB_RECURSE dlls 
-        "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Redist/MSVC/14*/x86/*.dll")
+        "C:/Program Files (x86)/Microsoft Visual Studio/2019/vcruntime14*.dll")
     endif()
 
     install(FILES ${dlls} DESTINATION ${CONFIG_INSTALL_DIR})
   endif()
 
-  configure_file(../data/wex-conf.elp.cmake conf.elp)
+  configure_file(../../data/wex-conf.elp.cmake conf.elp)
 
   install(DIRECTORY ../data/ DESTINATION ${CONFIG_INSTALL_DIR} 
     FILES_MATCHING PATTERN "*.xml" )
@@ -89,13 +87,15 @@ endfunction()
 
 macro(target_link_all)
   set (extra_macro_args ${ARGN})
-  set (wxWidgets_LIBRARIES aui adv stc html core net base)
+  set (wxWidgets_LIBRARIES wxaui wxadv wxstc wxhtml wxcore wxnet wxbase)
+  set (wex_LIBRARIES 
+    wex-report wex-common 
+    wex-stc wex-ui wex-vi wex-common wex-stc wex-ui wex-data wex-core)
           
   if (WIN32)
     target_link_libraries(
       ${PROJECT_NAME}
-      wex-rep
-      wex
+      ${wex_LIBRARIES}
       ${wxWidgets_LIBRARIES} wxscintilla
       ${Boost_LIBRARIES}
       ${extra_macro_args}
@@ -103,8 +103,7 @@ macro(target_link_all)
   elseif (APPLE)
     target_link_libraries(
       ${PROJECT_NAME}
-      wex-rep
-      wex
+      ${wex_LIBRARIES}
       ${wxWidgets_LIBRARIES} 
       ${Boost_LIBRARIES}
       ${extra_macro_args}
@@ -114,21 +113,20 @@ macro(target_link_all)
   else ()
     target_link_libraries(
       ${PROJECT_NAME}
-      wex-rep
-      wex
+      ${wex_LIBRARIES}
       ${wxWidgets_LIBRARIES} 
       ${Boost_LIBRARIES}
       ${extra_macro_args}
       stdc++
       stdc++fs
+#      /usr/gnat/lib64/libstdc++.a
+#      /usr/gnat/lib64/libstdc++fs.a
       m
       )
   endif ()
 endmacro()  
 
 function(test_app)
-  file(GLOB SRCS "*.cpp" "../*.cpp")
-    
   add_executable(
     ${PROJECT_NAME} 
     ${SRCS})
@@ -189,7 +187,7 @@ list(APPEND wxTOOLKIT_INCLUDE_DIRS
   src/include 
   external/json/single_include 
   external/wxWidgets/include 
-  external/ctags/read 
+  external/ctags/libreadtags 
   external/easyloggingpp/src 
   external/pugixml/src)
 

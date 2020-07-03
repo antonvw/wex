@@ -1,74 +1,67 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      textctrl.h
-// Purpose:   Declaration of wex::textctrl_input class
+// Purpose:   Declaration of wex::textctrl class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <list>
-#include <wex/ex-command.h>
+#include <wex/window-data.h>
 
-class wxTextCtrl;
+class wxControl;
 
 namespace wex
 {
-  /// Offers a class to relate text control to values with iterators.
-  class textctrl_input
+  class ex;
+  class managed_frame;
+  class textctrl_imp;
+
+  /// Offers a text ctrl related to a ex object.
+  class textctrl
   {
   public:
-    /// Constructor, fills values from config.
-    /// The specified type determines which key to use
-    /// to retrieve the values.
-    textctrl_input(
-      /// the ex_command type used to get config values
-      ex_command::type_t type);
-    
-    /// Destructor, writes values to config.
-   ~textctrl_input();
+    /// Constructor. Creates empty control.
+    textctrl(managed_frame* frame, wxControl* prefix, const data::window& data);
 
-    /// Returns value on the list pointed to by iterator, 
-    /// or empty string, if iterator is at end.
-    const std::string get() const;
-    
-    /// Sets first value on the list, and removes it
-    /// at other positions if present.
-    /// Sets iterator to begin of list.
-    void set(const std::string& value);
-    
-    /// Sets first value on the list from specified text control.
-    void set(const wxTextCtrl* tc);
+    /// Constructor. Skips prefix.
+    textctrl(
+      managed_frame*     frame,
+      const std::string& value = std::string(),
+      const data::window& data  = data::window());
 
-    /// Sets iterator according to specified key, and then
-    /// sets value of text control (if not nullptr) to the list value 
-    /// related to iterator.
-    /// Returns false if current list is empty, or key not ok.
-    bool set(
-      /// the key:
-      /// - WXK_UP
-      /// - WKK_DOWN
-      /// - WXK_HOME
-      /// - WXK_END
-      /// - WXK_PAGEUP
-      /// - WXK_PAGEDOWN
-      int key,
-      /// the text control
-      wxTextCtrl* tc = nullptr); 
-    
-    /// Sets all values (values might be empty).
-    /// Sets iterator to begin of list.
-    void set(const std::list < std::string > & values);
+    /// Destructor.
+    ~textctrl();
 
-    /// Returns type.
-    auto type() const {return m_type;};
+    /// Returns the control window for the component.
+    wxControl* control();
 
-    /// Gets all values.
-    const auto& values() const {return m_values;};
+    /// Returns ex component.
+    wex::ex* ex() { return m_ex; };
+
+    /// Returns frame.
+    managed_frame* frame() { return m_frame; };
+
+    /// Get string value.
+    const std::string get_text() const;
+
+    /// Selects all text.
+    void select_all() const;
+
+    /// Sets ex component using string command.
+    /// Returns false if command not supported.
+    bool set_ex(wex::ex* ex, const std::string& command);
+
+    /// Sets ex component using char command.
+    /// Returns false if command not supported.
+    bool set_ex(wex::ex* ex, char command);
+
+    /// Sets text.
+    void set_text(const std::string& text);
+
   private:
-    const ex_command::type_t m_type;
-    const std::string m_name;
-    std::list < std::string > m_values;
-    std::list < std::string >::const_iterator m_iterator;
+    wex::ex*       m_ex{nullptr};
+    managed_frame* m_frame;
+    textctrl_imp*  m_imp;
   };
-};
+}; // namespace wex

@@ -10,9 +10,9 @@
 #include <any>
 #include <vector>
 #include <wex/config.h>
+#include <wex/core.h>
 #include <wex/item.h>
 #include <wex/log.h>
-#include <wex/util.h>
 
 namespace wex
 {
@@ -21,14 +21,16 @@ namespace wex
   {
   public:
     /// Constructor, provide the vector of items.
-    item_vector(const std::vector < item > * v)
-      : m_v(v) {;};
+    item_vector(const std::vector<item>* v)
+      : m_v(v)
+    {
+      ;
+    };
 
-    /// Finds item by label. 
+    /// Finds item by label.
     /// First tries to get the item from the config,
     /// if not yet present, returns the default value from the vector.
-    template <typename T> 
-    const T find(const std::string& label) const
+    template <typename T> const T find(const std::string& label) const
     {
       if (config(label).exists())
       {
@@ -51,13 +53,13 @@ namespace wex
 
       return value;
     }
+
   private:
     /// Retrieves current value for label.
     template <typename T>
-    bool find(
-      const std::vector < item > * items,
-      const std::string& label, 
-      T& value) const
+    bool
+    find(const std::vector<item>* items, const std::string& label, T& value)
+      const
     {
       for (const auto& item : *items)
       {
@@ -68,8 +70,8 @@ namespace wex
         }
         else if (item.is_notebook())
         {
-          for (const auto& page : 
-            std::any_cast<item::notebook_t>(item.initial()))
+          for (const auto& page :
+               std::any_cast<item::notebook_t>(item.data().initial()))
           {
             if (find<T>(&page.second, label, value))
             {
@@ -79,8 +81,8 @@ namespace wex
         }
         else if (item.type() == item::CHECKLISTBOX_BOOL)
         {
-          for (const auto& choice : 
-            std::any_cast<item::choices_bool_t>(item.initial()))
+          for (const auto& choice :
+               std::any_cast<item::choices_bool_t>(item.data().initial()))
           {
             if (before(choice, ',') == label)
             {
@@ -93,7 +95,7 @@ namespace wex
 
       return false;
     }
-    
-    const std::vector < item > * m_v;
+
+    const std::vector<item>* m_v;
   };
-}
+} // namespace wex

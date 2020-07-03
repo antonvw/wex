@@ -28,16 +28,16 @@ namespace wex
     macro_mode(macros* macros);
 
     /// Destructor.
-   ~macro_mode();
+    ~macro_mode();
 
     /// Expands template variable.
     /// Returns true if the template file name exists,
     /// and all variables in it could be expanded.
     bool expand(
       /// ex component to use
-      ex* ex, 
+      ex* ex,
       /// variable (containing template file name)
-      const variable& variable, 
+      const variable& variable,
       /// value to receive contents
       std::string& expanded) const;
 
@@ -45,8 +45,8 @@ namespace wex
     const std::string get_macro() const;
 
     /// Returns the macros collection.
-    auto * get_macros() {return m_macros;};
-    
+    auto* get_macros() { return m_macros; };
+
     /// Are we playing back?
     bool is_playback() const;
 
@@ -58,21 +58,22 @@ namespace wex
 
     /// transitions between modes.
     /// If command starts with:
-    /// q: Starts recording a macro (appends to 
+    /// q: Starts recording a macro (appends to
     ///    existing macro if macro is single upper case character).
     /// \@: Playsback the macro.
     /// Returns number of characters processed from command.
     int transition(
       /// macro name after first character
-      const std::string& command, 
+      const std::string& command,
       /// ex component to use, required in case of playback
-      ex* ex = nullptr, 
+      ex* ex = nullptr,
       /// is the command complete
       bool complete = false,
-      /// number of times this maco should be executed, in case of playback
+      /// number of times this macro should be executed, in case of playback
       int repeat = 1);
+
   private:
     macro_fsm* m_fsm;
-    macros* m_macros;
+    macros*    m_macros;
   };
-};
+}; // namespace wex

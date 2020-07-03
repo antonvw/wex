@@ -1,8 +1,8 @@
-////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////functionality///////////////////
 // Name:      frd.h
 // Purpose:   Declaration of wex::find_replace_data class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,73 +10,77 @@
 #include <list>
 #include <regex>
 #include <string>
+#include <wex/textctrl-input.h>
 #include <wx/translation.h>
-#include <wex/textctrl.h>
 
 class wxFindReplaceData;
 
 namespace wex
 {
-  /// Offers a class to hold data for find replace funtionality.
+  /// Offers a class to hold data for find replace functionality.
   class find_replace_data
   {
     friend class find_textctrl;
-    friend class textctrl;
+    friend class textctrl_imp;
+
   public:
     /// Destructor, writes data to config.
-   ~find_replace_data();
-   
+    ~find_replace_data();
+
     /// Access to data.
     wxFindReplaceData* data();
-    
+
     /// Static interface.
 
     /// Returns the find replace data.
     static find_replace_data* get(bool createOnDemand = true);
 
-    /// Sets the object as the current one, returns the pointer 
-    /// to the previous current object 
-    /// (both the parameter and returned value may be nullptr). 
+    /// Sets the object as the current one, returns the pointer
+    /// to the previous current object
+    /// (both the parameter and returned value may be nullptr).
     static find_replace_data* set(find_replace_data* frd);
 
     /// Returns text.
-    static const auto & text_find() {return m_text_find;};
+    static const auto& text_find() { return m_text_find; };
 
     /// Returns text.
-    static const auto & text_match_case() {return m_text_match_case;};
+    static const auto& text_match_case() { return m_text_match_case; };
 
     /// Returns text.
-    static const auto & text_match_word() {return m_text_match_word;};
+    static const auto& text_match_word() { return m_text_match_word; };
 
     /// Returns text.
-    static const auto & text_regex() {return m_text_regex;};
+    static const auto& text_regex() { return m_text_regex; };
 
     /// Returns text.
-    static const auto & text_replace_with() {return m_text_replace_with;};
+    static const auto& text_replace_with() { return m_text_replace_with; };
 
     /// Returns text.
-    static const auto & text_search_down() {return m_text_search_down;};
-    
+    static const auto& text_search_down() { return m_text_search_down; };
+
     /// Other methods.
-    
+
     /// Returns the find string.
     const std::string get_find_string() const;
 
     /// Returns the find strings.
-    const auto & get_find_strings() const {return m_find_strings.values();};
-    
+    const auto& get_find_strings() const { return m_find_strings.values(); };
+
     /// Returns the replace string.
     const std::string get_replace_string() const;
 
     /// Returns the replace strings.
-    const auto & get_replace_strings() const {return m_replace_strings.values();};
+    const auto& get_replace_strings() const
+    {
+      return m_replace_strings.values();
+    };
 
     /// Returns true if the flags have match case set.
     bool match_case() const;
 
     /// Returns true if the flags have whole word set.
     bool match_word() const;
-    
+
     /// Replaces all occurrences of the find string as regular expression
     /// in text by the replace string.
     /// Returns number of replacements done in text.
@@ -86,7 +90,7 @@ namespace wex
     /// Returns -1 if find string as regular expression does not match text,
     /// otherwise the start pos of the match.
     int regex_search(const std::string& text) const;
-    
+
     /// Returns true if the flags have search down set.
     bool search_down() const;
 
@@ -100,8 +104,8 @@ namespace wex
     /// Sets the find strings.
     /// Als moves the find string to the beginning of the find
     /// strings list.
-    void set_find_strings(const std::list < std::string > & value);
-    
+    void set_find_strings(const std::list<std::string>& value);
+
     /// Sets flags for match case.
     void set_match_case(bool value);
 
@@ -116,7 +120,7 @@ namespace wex
     /// Sets the replace strings.
     /// Als moves the replace string to the beginning of the replace
     /// strings list.
-    void set_replace_strings(const std::list < std::string > & value);
+    void set_replace_strings(const std::list<std::string>& value);
 
     /// Sets flags for search down.
     void set_search_down(bool value);
@@ -127,28 +131,26 @@ namespace wex
     void set_use_regex(bool value);
 
     /// Returns true if find text is used as a regular expression.
-    bool use_regex() const {return m_use_regex;};
+    bool use_regex() const { return m_use_regex; };
+
   private:
     find_replace_data();
-    
+
     static inline find_replace_data* m_self = nullptr;
 
-    static inline std::string 
-      m_text_find = _("fif.Find what"),
-      m_text_match_case = _("fif.Match case"),
-      m_text_match_word = _("fif.Match whole word"),
-      m_text_regex = _("fif.Regular expression"),
-      m_text_replace_with = _("fif.Replace with"),
-      m_text_search_down = _("fif.Search down");
+    static inline std::string m_text_find         = _("fif.Find what"),
+                              m_text_match_case   = _("fif.Match case"),
+                              m_text_match_word   = _("fif.Match whole word"),
+                              m_text_regex        = _("fif.Regular expression"),
+                              m_text_replace_with = _("fif.Replace with"),
+                              m_text_search_down  = _("fif.Search down");
 
-    wxFindReplaceData* m_frd {nullptr};
+    wxFindReplaceData* m_frd{nullptr};
 
-    bool m_use_regex {false};
+    bool m_use_regex{false};
 
-    textctrl_input 
-      m_find_strings, 
-      m_replace_strings;
+    textctrl_input m_find_strings, m_replace_strings;
 
     std::regex m_regex;
   };
-};
+}; // namespace wex
