@@ -76,7 +76,11 @@ void wex::log::flush()
         LOG(FATAL) << text;
         break;
       case STATUS:
-        wxLogStatus(text.c_str());
+        // this is a wxMSW bug, crash in test -tc=wex::stc -sc=find
+        if (text.find("%") == std::string::npos)
+        {
+          wxLogStatus(text.c_str());
+        }
         break;
       case VERBOSE:
         VLOG(m_verbosity) << text;

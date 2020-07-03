@@ -11,10 +11,11 @@
 #include <wx/wx.h>
 #endif
 #include <wex/config.h>
+#include <wex/core.h>
 #include <wex/filehistory.h>
+#include <wex/log.h>
 #include <wex/menu.h>
 #include <wex/path.h>
-#include <wex/util.h>
 #include <wx/filehistory.h>
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/imaglist.h>

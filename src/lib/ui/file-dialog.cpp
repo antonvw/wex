@@ -9,33 +9,40 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/checklst.h>
-#include <wex/filedlg.h>
+#include <wex/core.h>
 #include <wex/file.h>
+#include <wex/filedlg.h>
 #include <wex/lexers.h>
-#include <wex/util.h>
+#include <wx/checklst.h>
 
 class extra_panel : public wxPanel
 {
 public:
-  extra_panel(wxWindow *parent);
-  bool checked() const {return m_checked;};
+  extra_panel(wxWindow* parent);
+  bool checked() const { return m_checked; };
+
 private:
-  bool m_checked {false};
-  wxCheckBox *m_cb;
+  const int   m_id_checkbox;
+  bool        m_checked{false};
+  wxCheckBox* m_cb;
 };
 
-const auto id_checkbox = wxWindow::NewControlId(); 
 
-extra_panel::extra_panel(wxWindow *parent)
+extra_panel::extra_panel(wxWindow* parent)
   : wxPanel(parent)
-  , m_cb(new wxCheckBox(this, id_checkbox, "Hex"))
+  , m_id_checkbox(NewControlId())
+  , m_cb(new wxCheckBox(this, m_id_checkbox, "Hex"))
 {
-  Bind(wxEVT_CHECKBOX, [&](wxCommandEvent& event) {
-    m_checked = !m_checked;}, id_checkbox);
+  Bind(
+    wxEVT_CHECKBOX,
+    [&](wxCommandEvent& event) {
+      m_checked = !m_checked;
+    },
+    m_id_checkbox);
 
-  auto *sizerTop = new wxBoxSizer(wxHORIZONTAL);
-  sizerTop->Add(new wxStaticText(this, wxID_ANY, "Mode:"),
+  auto* sizerTop = new wxBoxSizer(wxHORIZONTAL);
+  sizerTop->Add(
+    new wxStaticText(this, wxID_ANY, "Mode:"),
     wxSizerFlags().Centre().Border());
   sizerTop->AddSpacer(10);
   sizerTop->Add(m_cb, wxSizerFlags().Centre().Border());
@@ -44,62 +51,57 @@ extra_panel::extra_panel(wxWindow *parent)
   SetSizerAndFit(sizerTop);
 }
 
-static wxWindow* create_extra_panel(wxWindow *parent)
+static wxWindow* create_extra_panel(wxWindow* parent)
 {
   return new extra_panel(parent);
 }
 
-wex::file_dialog::file_dialog(
-  const window_data& data, const std::string& wildcard)
+wex::file_dialog::file_dialog(const data::window& data)
   : wxFileDialog(
-      data.parent(), 
-      data.title(), 
-      std::string(), 
-      std::string(), 
-      wildcard, 
-      data.style(), 
-      data.pos(), 
-      data.size()) 
+      data.parent(),
+      data.title(),
+      std::string(),
+      std::string(),
+      data.wildcard(),
+      data.style(),
+      data.pos(),
+      data.size())
 {
-  SetWildcard(wildcard);
 }
-      
-wex::file_dialog::file_dialog(
-  wex::file* file,
-  const window_data& data,
-  const std::string& wildcard)
+
+wex::file_dialog::file_dialog(wex::file* file, const data::window& data)
   : wxFileDialog(
-      data.parent(), 
-      data.title(), 
-      file->get_filename().get_path(), 
-      file->get_filename().fullname(), 
-      wildcard, 
-      data.style(), 
-      data.pos(), 
-      data.size()) 
-// when compiling under x11 the name is not used as argument,
-// so outcommented it here.      
-//      name)
+      data.parent(),
+      data.title(),
+      file->get_filename().get_path(),
+      file->get_filename().fullname(),
+      data.wildcard(),
+      data.style(),
+      data.pos(),
+      data.size())
+  // when compiling under x11 the name is not used as argument,
+  // so outcommented it here.
+  //      name)
   , m_file(file)
 {
-  if (wildcard == wxFileSelectorDefaultWildcardStr &&
-      m_file->get_filename().stat().is_ok())
+  if (
+    data.wildcard() == wxFileSelectorDefaultWildcardStr &&
+    m_file->get_filename().stat().is_ok())
   {
-    std::string wildcards = 
-      _("All Files") + " (" + wxFileSelectorDefaultWildcardStr + ") |" +  
-        wxFileSelectorDefaultWildcardStr;
+    std::string wildcards = _("All Files") + " (" +
+                            wxFileSelectorDefaultWildcardStr + ") |" +
+                            wxFileSelectorDefaultWildcardStr;
 
     for (const auto& it : lexers::get()->get_lexers())
     {
       if (!it.extensions().empty())
       {
         const std::string wildcard =
-          it.display_lexer() +
-          " (" + it.extensions() + ") |" +
-          it.extensions();
-        wildcards = (matches_one_of(
-          file->get_filename().fullname(), it.extensions()) ?
-          wildcard + "|" + wildcards: wildcards + "|" + wildcard);
+          it.display_lexer() + " (" + it.extensions() + ") |" + it.extensions();
+        wildcards =
+          (matches_one_of(file->get_filename().fullname(), it.extensions()) ?
+             wildcard + "|" + wildcards :
+             wildcards + "|" + wildcard);
       }
     }
 
@@ -115,7 +117,7 @@ int wex::file_dialog::show_modal_if_changed(bool show_modal)
   }
 
   bool reset = false;
-  
+
   if (m_file->get_contents_changed())
   {
     if (!m_file->get_filename().stat().is_ok())
@@ -125,9 +127,13 @@ int wex::file_dialog::show_modal_if_changed(bool show_modal)
         _("Confirm"),
         wxYES_NO | wxCANCEL | wxICON_QUESTION))
       {
-        case wxYES: return ShowModal();
-        case wxNO: reset = true; break;
-        case wxCANCEL: return wxID_CANCEL;
+        case wxYES:
+          return ShowModal();
+        case wxNO:
+          reset = true;
+          break;
+        case wxCANCEL:
+          return wxID_CANCEL;
       }
     }
     else
@@ -137,9 +143,14 @@ int wex::file_dialog::show_modal_if_changed(bool show_modal)
         _("Confirm"),
         wxYES_NO | wxCANCEL | wxICON_QUESTION))
       {
-        case wxYES: m_file->file_save(); break;
-        case wxNO: reset = true; break;
-        case wxCANCEL: return wxID_CANCEL;
+        case wxYES:
+          m_file->file_save();
+          break;
+        case wxNO:
+          reset = true;
+          break;
+        case wxCANCEL:
+          return wxID_CANCEL;
       }
     }
   }
@@ -147,12 +158,12 @@ int wex::file_dialog::show_modal_if_changed(bool show_modal)
   if (show_modal)
   {
     const int result = ShowModal();
-    
+
     if (reset && result != wxID_CANCEL)
     {
-      m_file->reset_contents_changed(); 
+      m_file->reset_contents_changed();
     }
-  
+
     return result;
   }
 
@@ -163,12 +174,12 @@ int wex::file_dialog::ShowModal()
 {
   SetExtraControlCreator(&create_extra_panel);
 
-  const auto id = wxFileDialog::ShowModal(); 
-  
+  const auto id = wxFileDialog::ShowModal();
+
   if (id == wxID_OK)
   {
-    auto * extra = GetExtraControl();
-    m_hexmode = static_cast<extra_panel*>(extra)->checked();
+    auto* extra = GetExtraControl();
+    m_hexmode   = static_cast<extra_panel*>(extra)->checked();
   }
 
   return id;

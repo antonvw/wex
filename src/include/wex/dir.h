@@ -1,72 +1,52 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      dir.h
-// Purpose:   Declaration of class wex::dir and wex::open_file_dir
+// Purpose:   Declaration of class wex::dir
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <memory>
 #include <string>
+#include <wex/dir-data.h>
 #include <wex/interruptable.h>
 #include <wex/path.h>
-#include <wex/stc-data.h>
 
 namespace wex
 {
-  class path;
-
   /// Offers find_files method.
   /// By overriding on_dir and on_file you can take care
   /// of what to do with the result.
   class dir : public interruptable
   {
   public:
-    /// dir flags.
-    enum
-    {
-      FILES     = 0, // include files
-      DIRS      = 1, // include directories
-      RECURSIVE = 2, // recursive
-      HIDDEN    = 3, // include hidden files
-    };
-
-    typedef std::bitset<4> type_t;
-    
     /// Constructor.
     dir(
       /// the dir to start finding
       const path& path,
-      /// the files to be found
-      const std::string& filespec = std::string(),
-      /// the dirs to be found
-      const std::string& dirspec = std::string(),
-      /// finds all
-      type_t flags = type_t().set()); 
-    
+      /// the dir data
+      const data::dir& data = data::dir());
+
     /// Destructor.
-    virtual ~dir() {;};
-    
+    virtual ~dir() { ; };
+
     /// Virtual interface.
 
     /// Do something with the dir.
-    /// Not made pure virtual, to allow this 
+    /// Not made pure virtual, to allow this
     /// class to be tested by calling find_files.
-    virtual bool on_dir(const path& ) {return true;};
+    virtual bool on_dir(const path&) { return true; };
 
     /// Do something with the file.
-    /// Not made pure virtual, to allow this 
+    /// Not made pure virtual, to allow this
     /// class to be tested by calling find_files.
-    virtual bool on_file(const path& ) {return true;};
-    
+    virtual bool on_file(const path&) { return true; };
+
     /// Other methods.
 
-    /// Returns the dir spec.
-    const auto & dir_spec() const {return m_dir_spec;};
-
-    /// Returns the file spec.
-    const auto & file_spec() const {return m_file_spec;};
+    /// Returns the data.
+    const auto& data() const { return m_data; };
 
     /// Finds matching files.
     /// This results in recursive calls for on_dir and on_file.
@@ -74,62 +54,24 @@ namespace wex
     int find_files();
 
     /// Returns the path.
-    const auto & get_path() const {return m_dir;};
+    const auto& get_path() const { return m_dir; };
 
-    /// Returns the flags.
-    auto type() const {return m_flags;};
   private:
-    const path m_dir;
-
-    const std::string 
-      m_dir_spec, 
-      m_file_spec;
-
-    const type_t m_flags;
+    const path      m_dir;
+    const data::dir m_data;
   };
 
   /// Returns all matching files into a vector of paths.
-  std::vector <path> get_all_files(
+  std::vector<path> get_all_files(
     /// the dir to start finding
     const path& path,
-    /// the files to be found
-    const std::string& filespec = std::string(),
-    /// the dirs to be found
-    const std::string& dirspec = std::string(),
-    /// finds all
-    dir::type_t flags = dir::type_t().set()); 
+    /// the dir data
+    const data::dir& data = data::dir());
 
   /// Returns all matching files into a vector of strings (without paths).
-  std::vector <std::string> get_all_files(
+  std::vector<std::string> get_all_files(
     /// the dir to start finding
     const std::string& path,
-    /// the files to be found
-    const std::string& filespec = std::string(),
-    /// the dirs to be found
-    const std::string& dirspec = std::string(),
-    /// finds all
-    dir::type_t flags = dir::type_t().set());
-
-  class frame;
-
-  /// Allows you to easily open all files on specified path.
-  /// After constructing, invoke find_files which
-  /// causes all found files to be opened using open_file from frame.
-  class open_file_dir : public dir
-  {
-  public:
-    /// Constructor.
-    /// Flags are passed on to open_file, and dir flags for treating subdirs.
-    open_file_dir(frame* frame,
-      const path& path,
-      const std::string& filespec,
-      stc_data::window_t file_flags = 0,
-      type_t type = dir::type_t().set());
-  protected:
-    /// Opens each found file.
-    bool on_file(const path& file) override;
-  private:
-    frame* m_frame;
-    stc_data::window_t m_flags;
-  };
-};
+    /// the dir data
+    const data::dir& data = data::dir());
+}; // namespace wex

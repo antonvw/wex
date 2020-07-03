@@ -39,8 +39,6 @@ TEST_CASE("wex::grid")
 
   grid->paste_cells_from_clipboard();
 
-  grid->print_preview();
-
   grid->use_drag_and_drop(true);
   REQUIRE(grid->is_allowed_drag_selection());
   grid->use_drag_and_drop(false);

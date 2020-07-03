@@ -12,9 +12,9 @@
 #include "../test.h"
 #include <wex/window-data.h>
 
-TEST_CASE("wex::window_data")
+TEST_CASE("wex::data::window")
 {
-  REQUIRE(wex::window_data().id() == wxID_ANY);
-  REQUIRE(wex::window_data().name().empty());
-  REQUIRE(wex::window_data().name("xxx").name() == "xxx");
+  REQUIRE(wex::data::window().id() == wxID_ANY);
+  REQUIRE(wex::data::window().name().empty());
+  REQUIRE(wex::data::window().name("xxx").name() == "xxx");
 }

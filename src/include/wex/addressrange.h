@@ -14,6 +14,7 @@
 namespace wex
 {
   enum class info_message_t;
+  class global_env;
   class process;
   class stc;
 
@@ -24,6 +25,8 @@ namespace wex
   /// All methods return false if the range is not ok.
   class addressrange
   {
+    friend class global_env;
+
   public:
     /// Static interface.
 
@@ -94,11 +97,15 @@ namespace wex
     /// moves range to destination.
     bool move(const address& destination) const;
 
-    /// Parses this addressrange based on cmd.
+    /// Parses this addressrange based on command, and text.
+    /// Returns true if command is valid.
     bool parse(
-      const std::string& text,
+      /// mostly a one letter string like "p" for print
       const std::string& command,
-      info_message_t&    msg);
+      /// text, as required by command
+      const std::string& text,
+      /// extra information in case command failed
+      info_message_t& msg);
 
     /// Prints range to print file.
     bool print(const std::string& flags = std::string()) const;

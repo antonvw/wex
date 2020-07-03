@@ -20,7 +20,7 @@ namespace wex
     /// Constructor.
     item_dialog(
       const std::vector< item >& v,
-      const window_data& data = window_data().title(_("Options").ToStdString()),
+      const data::window& data = data::window().title(_("Options").ToStdString()),
       int rows = 0,
       int cols = 1)
     : item_template_dialog(v, data, rows, cols) {

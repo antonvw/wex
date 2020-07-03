@@ -8,7 +8,7 @@
 #pragma once
 
 #include <vector>
-#include <wex/statusbar.h>
+#include <wex/statusbar-pane.h>
 #include <wex/stc-data.h>
 #include <wex/window-data.h>
 #include <wx/frame.h>
@@ -23,6 +23,7 @@ namespace wex
   class path;
   class path;
   class process;
+  class statusbar;
   class stc;
   class vcs_entry;
 
@@ -33,27 +34,8 @@ namespace wex
   class frame : public wxFrame
   {
   public:
-    /// Static interface.
-
-    /// Returns text on specified pane.
-    /// Don't forget to call setup_statusbar first.
-    static std::string get_statustext(const std::string& pane);
-
-    /// Are we closing?
-    static bool is_closing() { return m_is_closing; };
-
-    /// Sets text on specified pane.
-    /// Don't forget to call setup_statusbar first.
-    static bool statustext(const std::string& text, const std::string& pane);
-
-    /// Updates statusbar pane items pane with values from specified listview.
-    static bool update_statusbar(const wxListView* lv);
-
-    /// Updates the specified statusbar pane with values from specified stc.
-    static bool update_statusbar(stc* stc, const std::string& pane);
-
     /// Default constructor,
-    frame(const window_data& data = window_data());
+    frame(const data::window& data = data::window());
 
     /// Destructor.
     virtual ~frame();
@@ -93,21 +75,26 @@ namespace wex
     /// Default opens the file using get_stc.
     /// Returns stc component opened, or nullptr.
     virtual stc*
-    open_file(const path& filename, const stc_data& data = stc_data());
+    open_file(const path& filename, const data::stc& data = data::stc());
 
     /// Allows you to open a filename with info from vcs.
     /// Returns stc component opened, or nullptr.
     virtual stc* open_file(
       const path&      filename,
       const vcs_entry& vcs,
-      const stc_data&  data = stc_data());
+      const data::stc& data = data::stc());
 
     /// Allows you to open a filename with specified contents.
     /// Returns stc component opened, or nullptr.
     virtual stc* open_file(
       const path&        filename,
       const std::string& text,
-      const stc_data&    data = stc_data());
+      const data::stc&   data = data::stc());
+
+    /// Allows you to handle output text, .e.g. from a process.
+    /// Default no action is taken, and false is returned,
+    /// and some methos default send output to stdout.
+    virtual bool output(const std::string& text) const { return false; };
 
     /// Allows derived class to update file history.
     virtual void set_recent_file(const path& path) { ; };
@@ -118,7 +105,22 @@ namespace wex
     /// Do something when statusbar is (right) clicked.
     virtual void statusbar_clicked_right(const std::string&){};
 
+    /// Sets text on specified pane.
+    /// Don't forget to call setup_statusbar first.
+    virtual bool
+    statustext(const std::string& text, const std::string& pane) const;
+
     /// Other methods
+
+    /// Returns statusbar.
+    auto* get_statusbar() { return m_statusbar; };
+
+    /// Returns text on specified pane.
+    /// Don't forget to call setup_statusbar first.
+    std::string get_statustext(const std::string& pane) const;
+
+    /// Are we closing?
+    bool is_closing() const { return m_is_closing; };
 
     /// Sets the find focus to specified window.
     void set_find_focus(wxWindow* focus) { m_find_focus = focus; };
@@ -127,10 +129,13 @@ namespace wex
     statusbar* setup_statusbar(
       const std::vector<statusbar_pane>& panes,
       long                               style = wxST_SIZEGRIP,
-      const std::string&                 name  = "statusBar")
-    {
-      return statusbar::setup(this, panes, style, name);
-    };
+      const std::string&                 name  = "statusBar");
+
+    /// Updates statusbar pane items pane with values from specified listview.
+    bool update_statusbar(const wxListView* lv);
+
+    /// Updates the specified statusbar pane with values from specified stc.
+    bool update_statusbar(stc* stc, const std::string& pane);
 
   protected:
     // Interface from wxFrame.
@@ -140,12 +145,12 @@ namespace wex
       wxWindowID      id,
       const wxString& name) override;
 
-    static inline statusbar* m_statusbar = nullptr;
+    statusbar* m_statusbar{nullptr};
 
   private:
-    static inline bool m_is_closing = false;
+    bool m_is_closing{false};
+    bool m_is_command{false};
 
-    bool                 m_is_command{false};
     wxWindow*            m_find_focus{nullptr};
     wxFindReplaceDialog* m_find_replace_dialog{nullptr};
     wxMenuBar*           m_menubar{nullptr};

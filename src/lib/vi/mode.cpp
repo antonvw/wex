@@ -16,6 +16,7 @@
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
 #include <wex/managedframe.h>
+#include <wex/statusbar.h>
 #include <wex/stc.h>
 #include <wex/vi-mode.h>
 #include <wex/vi.h>
@@ -27,7 +28,7 @@ namespace wex
 {
   struct ssACTIVE;
 
-  /// This class offers the state machine
+  /// This class offers the vi mode state machine
   /// and initially enters the active mode.
   class vi_fsm : public sc::state_machine<vi_fsm, ssACTIVE>
   {
@@ -78,15 +79,18 @@ namespace wex
         case vi_mode::state_t::INSERT:
           return m_stc != nullptr && m_stc->GetOvertype() ? "replace" :
                                                             "insert";
-        case vi_mode::state_t::INSERT_RECT:
-          return m_stc != nullptr && m_stc->GetOvertype() ? "replace rect" :
-                                                            "insert rect";
+        case vi_mode::state_t::INSERT_BLOCK:
+          return m_stc != nullptr && m_stc->GetOvertype() ? "replace block" :
+                                                            "insert block";
         case vi_mode::state_t::VISUAL:
           return "visual";
+        
         case vi_mode::state_t::VISUAL_LINE:
           return "visual line";
-        case vi_mode::state_t::VISUAL_RECT:
-          return "visual rect";
+        
+        case vi_mode::state_t::VISUAL_BLOCK:
+          return "visual block";
+        
         default:
           return ex::get_macros().mode().str();
       }
@@ -113,7 +117,7 @@ namespace wex
   struct evVISUAL_LINE : sc::event<evVISUAL_LINE>
   {
   };
-  struct evVISUAL_RECT : sc::event<evVISUAL_RECT>
+  struct evVISUAL_BLOCK : sc::event<evVISUAL_BLOCK>
   {
   };
 
@@ -123,8 +127,8 @@ namespace wex
   struct ssVISUAL;
   struct ssVISUAL_LINE;
   struct ssVISUAL_MODE;
-  struct ssVISUAL_RECT;
-  struct ssVISUAL_RECT_TEXTINPUT;
+  struct ssVISUAL_BLOCK;
+  struct ssVISUAL_BLOCK_TEXTINPUT;
 
   // Implement the simple states.
   struct ssACTIVE : sc::simple_state<ssACTIVE, vi_fsm, ssCOMMAND>
@@ -138,7 +142,7 @@ namespace wex
       sc::custom_reaction<evINSERT>,
       sc::transition<evVISUAL, ssVISUAL_MODE>,
       sc::transition<evVISUAL_LINE, ssVISUAL_LINE>,
-      sc::transition<evVISUAL_RECT, ssVISUAL_RECT>>
+      sc::transition<evVISUAL_BLOCK, ssVISUAL_BLOCK>>
       reactions;
 
     ssCOMMAND(my_context ctx)
@@ -181,7 +185,7 @@ namespace wex
       sc::transition<evESCAPE, ssCOMMAND>,
       sc::transition<evVISUAL, ssVISUAL>,
       sc::transition<evVISUAL_LINE, ssVISUAL_LINE>,
-      sc::transition<evVISUAL_RECT, ssVISUAL_RECT>>
+      sc::transition<evVISUAL_BLOCK, ssVISUAL_BLOCK>>
       reactions;
   };
 
@@ -205,28 +209,28 @@ namespace wex
     };
   };
 
-  struct ssVISUAL_RECT : sc::state<ssVISUAL_RECT, ssVISUAL_MODE>
+  struct ssVISUAL_BLOCK : sc::state<ssVISUAL_BLOCK, ssVISUAL_MODE>
   {
-    typedef sc::transition<evINSERT, ssVISUAL_RECT_TEXTINPUT> reactions;
+    typedef sc::transition<evINSERT, ssVISUAL_BLOCK_TEXTINPUT> reactions;
 
-    ssVISUAL_RECT(my_context ctx)
+    ssVISUAL_BLOCK(my_context ctx)
       : my_base(ctx)
     {
-      log::verbose("vi mode") << "visual rect";
-      context<vi_fsm>().state(vi_mode::VISUAL_RECT);
+      log::verbose("vi mode") << "visual block";
+      context<vi_fsm>().state(vi_mode::VISUAL_BLOCK);
     };
   };
 
-  struct ssVISUAL_RECT_TEXTINPUT
-    : sc::state<ssVISUAL_RECT_TEXTINPUT, ssVISUAL_MODE>
+  struct ssVISUAL_BLOCK_TEXTINPUT
+    : sc::state<ssVISUAL_BLOCK_TEXTINPUT, ssVISUAL_MODE>
   {
-    typedef sc::transition<evESCAPE, ssVISUAL_MODE> reactions;
+    typedef sc::transition<evESCAPE, ssVISUAL_BLOCK> reactions;
 
-    ssVISUAL_RECT_TEXTINPUT(my_context ctx)
+    ssVISUAL_BLOCK_TEXTINPUT(my_context ctx)
       : my_base(ctx)
     {
-      log::verbose("vi mode") << "visual rect insert";
-      context<vi_fsm>().state(vi_mode::INSERT_RECT);
+      log::verbose("vi mode") << "visual block insert";
+      context<vi_fsm>().state(vi_mode::INSERT_BLOCK);
       context<vi_fsm>().insert_mode();
     };
   };
@@ -303,7 +307,7 @@ const std::string wex::vi_mode::str() const
 
 bool wex::vi_mode::insert() const
 {
-  return get() == INSERT || get() == INSERT_RECT;
+  return get() == INSERT || get() == INSERT_BLOCK;
 }
 
 bool wex::vi_mode::transition(std::string& command)
@@ -341,7 +345,8 @@ bool wex::vi_mode::transition(std::string& command)
     switch (command[0])
     {
       case 'K':
-        m_fsm->process(command, evVISUAL_RECT());
+      case WXK_CONTROL_V:
+        m_fsm->process(command, evVISUAL_BLOCK());
         break;
 
       case 'v':
@@ -352,7 +357,7 @@ bool wex::vi_mode::transition(std::string& command)
         m_fsm->process(command, evVISUAL_LINE());
         break;
 
-      case 27:
+      case WXK_ESCAPE:
         m_fsm->process(command, evESCAPE());
         break;
 
@@ -408,13 +413,11 @@ bool wex::vi_mode::transition(std::string& command)
       break;
   }
 
-  ((statusbar*)m_vi->frame()->GetStatusBar())
-    ->pane_show(
-      "PaneMode",
-      (!normal() || ex::get_macros().mode().is_recording()) &&
-        config(_("stc.Show mode")).get(true));
-
-  frame::statustext(str(), "PaneMode");
+  m_vi->frame()->get_statusbar()->pane_show(
+    "PaneMode",
+    (!normal() || ex::get_macros().mode().is_recording()) &&
+      config(_("stc.Show mode")).get(true));
+  m_vi->frame()->statustext(str(), "PaneMode");
 
   command.erase(0, 1);
 
@@ -423,5 +426,5 @@ bool wex::vi_mode::transition(std::string& command)
 
 bool wex::vi_mode::visual() const
 {
-  return get() == VISUAL || get() == VISUAL_LINE || get() == VISUAL_RECT;
+  return get() == VISUAL || get() == VISUAL_LINE || get() == VISUAL_BLOCK;
 }

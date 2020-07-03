@@ -69,19 +69,25 @@ bool wex::test::app::OnInit()
 
 int wex::test::app::OnRun()
 {
-  auto* timer = new wxTimer(this);
-  timer->StartOnce(1000);
+  const int id_start    = wxWindow::NewControlId();
+  auto*     timer_start = new wxTimer(this, id_start);
 
-  Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
-    m_context->run();
-    config("AllowSync").set(false);
+  timer_start->StartOnce(1000);
 
-    if (m_context->shouldExit())
-    {
-      OnExit();
-      ExitMainLoop();
-    }
-  });
+  Bind(
+    wxEVT_TIMER,
+    [=](wxTimerEvent& event) {
+      m_context->run();
+
+      config("AllowSync").set(false);
+
+      if (m_context->shouldExit())
+      {
+        remove("test-ex.txt");
+        Exit();
+      }
+    },
+    id_start);
 
   return wex::app::OnRun();
 }

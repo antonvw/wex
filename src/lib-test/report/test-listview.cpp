@@ -16,16 +16,16 @@ TEST_CASE("wex::report::listview")
   {
     REQUIRE(
       wex::report::listview::type_tool(wex::tool(wex::ID_TOOL_REPORT_FIND)) ==
-      wex::listview_data::FIND);
+      wex::data::listview::FIND);
     REQUIRE(
       wex::report::listview::type_tool(
-        wex::tool(wex::ID_TOOL_REPORT_KEYWORD)) == wex::listview_data::KEYWORD);
+        wex::tool(wex::ID_TOOL_REPORT_KEYWORD)) == wex::data::listview::KEYWORD);
   }
 
   SUBCASE("flow")
   {
     auto* lv = new wex::report::listview(
-      wex::listview_data().type(wex::listview_data::FIND));
+      wex::data::listview().type(wex::data::listview::FIND));
     wex::test::add_pane(report_frame(), lv);
 
     wex::listitem item(lv, wex::test::get_path("test.h"));
@@ -48,10 +48,12 @@ TEST_CASE("wex::report::listview")
 #endif
   }
 
+#ifndef __WXMSW__
   SUBCASE("destroy")
   {
     auto* lv = new wex::report::listview(
-      wex::listview_data().type(wex::listview_data::FIND));
+      wex::data::listview().type(wex::data::listview::FIND));
     lv->Destroy();
   }
+#endif
 }

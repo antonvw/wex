@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      dir.h
-// Purpose:   Include file for wex::report::dir 
+// Purpose:   Include file for wex::report::dir
 //            and wex::report::tool_dir classes
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020 Anton van Wezenbeek
@@ -21,13 +21,15 @@ namespace wex::report
   {
   public:
     /// Constructor, provide your listview and a path.
-    dir(wex::listview* listview,
-      const path& fullpath,
-      const std::string& filespec = std::string(),
-      dir::type_t flags = dir::type_t().set());
+    dir(
+      wex::listview*   listview,
+      const path&      fullpath,
+      const data::dir& data = data::dir());
+
   protected:
     bool on_dir(const path& dir) override;
     bool on_file(const path& file) override;
+
   private:
     wex::listview* m_listview;
   };
@@ -39,17 +41,19 @@ namespace wex::report
   public:
     /// Constructor, provide your tool and a path.
     /// setup_tool should already be called.
-    tool_dir(const tool& tool,
-      const path& fullpath,
-      const std::string& filespec = std::string(),
-      dir::type_t flags = dir::type_t().set());
-      
+    tool_dir(
+      const tool&      tool,
+      const path&      fullpath,
+      const data::dir& data = data::dir());
+
     /// Returns the statistics.
-    auto & get_statistics() const {return m_statistics;};
-  protected:  
+    auto& get_statistics() const { return m_statistics; };
+
+  protected:
     bool on_file(const path& file) override;
-  private:    
+
+  private:
     stream_statistics m_statistics;
-    const tool m_tool;
+    const tool        m_tool;
   };
-};
+}; // namespace wex::report

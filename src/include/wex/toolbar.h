@@ -1,13 +1,14 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      toolbar.h
-// Purpose:   Declaration of wex::toolbar classes
+// Purpose:   Declaration of wex::toolbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <vector>
+#include <wex/toolbar-item-data.h>
 #include <wex/window-data.h>
 #include <wx/aui/auibar.h>
 
@@ -39,7 +40,7 @@ namespace wex
     /// Constructor.
     toolbar(
       managed_frame*     frame,
-      const window_data& data = window_data().style(wxAUI_TB_DEFAULT_STYLE));
+      const data::window& data = data::window().style(wxAUI_TB_DEFAULT_STYLE));
 
     /// Adds a vector of checkbox controls to this toolbar.
     void add_checkboxes(const checkboxes_t& v, bool realize = true);
@@ -58,14 +59,9 @@ namespace wex
     /// Adds the standard controls (e.g. file open).
     void add_standard(bool realize = true);
 
-    /// Adds automatic naming (for stock menu id's) and
-    /// art id for toolbar normal items.
-    wxAuiToolBarItem* add_tool(
-      int                toolId,
-      const std::string& label     = std::string(),
-      const wxBitmap&    bitmap    = wxNullBitmap,
-      const std::string& shortHelp = std::string(),
-      wxItemKind         kind      = wxITEM_NORMAL);
+    /// Adds a vector of general toolbar items to this toolbar.
+    /// Returns false if one of the items could not be added.
+    bool add_tool(std::vector<data::toolbar_item> v, bool realize = true);
 
     /// Sets checkbox state of checkboxes added using add_checkboxes.
     /// Returns true if checkbox was found.

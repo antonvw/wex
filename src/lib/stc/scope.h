@@ -67,6 +67,6 @@ namespace wex
     stc*                  m_stc;
     std::vector<map_t>    m_filters;
     map_t::const_iterator m_it;
-    size_t                m_level;
+    size_t                m_level{0};
   };
 }; // namespace wex

@@ -34,7 +34,7 @@ TEST_CASE("wex::process")
 
   SUBCASE("dialog")
   {
-    process->config_dialog(wex::window_data().button(wxAPPLY | wxCANCEL));
+    process->config_dialog(wex::data::window().button(wxAPPLY | wxCANCEL));
   }
 
 #ifdef __UNIX__

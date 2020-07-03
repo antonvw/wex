@@ -8,11 +8,11 @@
 #include <vector>
 #include <wex/beautify.h>
 #include <wex/config.h>
+#include <wex/core.h>
 #include <wex/item-vector.h>
 #include <wex/itemdlg.h>
 #include <wex/lexers.h>
 #include <wex/stc.h>
-#include <wex/util.h>
 #include <wx/settings.h>
 #include <wx/stockitem.h>
 
@@ -96,16 +96,16 @@ bool wex::stc::auto_indentation(int c)
   return true;
 }
 
-int wex::stc::config_dialog(const window_data& par)
+int wex::stc::config_dialog(const data::window& par)
 {
-  const window_data data(
-    window_data(par).title(_("Editor Options").ToStdString()));
+  const data::window data(
+    data::window(par).title(_("Editor Options").ToStdString()));
 
   if (m_config_dialog == nullptr)
   {
     m_config_dialog = new item_dialog(
       *m_config_items,
-      window_data(data).title(
+      data::window(data).title(
         data.id() == wxID_PREFERENCES ?
           wxGetStockLabel(data.id(), 0).ToStdString() :
           data.title()));
@@ -221,50 +221,46 @@ void wex::stc::on_init()
                {INDENT_LEVEL, _("Level")},
                {INDENT_ALL, def(_("Both"))}},
               true,
-              item_data().columns(4)},
+              data::item().columns(4)},
              {_("stc.Wrap visual flags"),
               {{wxSTC_WRAPVISUALFLAG_NONE, _("None")},
                {wxSTC_WRAPVISUALFLAG_END, _("End")},
                {wxSTC_WRAPVISUALFLAG_START, _("Start")},
                {wxSTC_WRAPVISUALFLAG_MARGIN, _("Margin")}},
               true,
-              item_data().columns(4)},
+              data::item().columns(4)},
              {_("stc.Tab draw mode"),
               {{wxSTC_TD_LONGARROW, def(_("Longarrow"))},
                {wxSTC_TD_STRIKEOUT, _("Strikeout")}},
               true,
-              item_data().columns(2)},
+              data::item().columns(2)},
              {_("stc.Whitespace visible"),
               {{wxSTC_WS_INVISIBLE, _("Off")},
                {wxSTC_WS_VISIBLEAFTERINDENT, _("After indent")},
                {wxSTC_WS_VISIBLEALWAYS, _("Always")},
                {wxSTC_WS_VISIBLEONLYININDENT, _("Only indent")}},
               true,
-              item_data().columns(2)},
+              data::item().columns(2)},
              {_("stc.Annotation style"),
               {{wxSTC_ANNOTATION_HIDDEN, _("Hidden")},
                {wxSTC_ANNOTATION_STANDARD, _("Standard")},
                {wxSTC_ANNOTATION_BOXED, def(_("Boxed"))},
                {wxSTC_ANNOTATION_INDENTED, _("indented")}},
               true,
-              item_data().columns(2)},
+              data::item().columns(2)},
              {_("stc.Wrap line"),
               {{wxSTC_WRAP_NONE, _("None")},
                {wxSTC_WRAP_WORD, _("Word")},
                {wxSTC_WRAP_CHAR, _("Char")},
                {wxSTC_WRAP_WHITESPACE, _("Whitespace")}},
               true,
-              item_data().columns(2)}}}}
-#ifdef __WXMSW__
-          ,
-          item::NOTEBOOK_AUI
-#endif
+              data::item().columns(2)}}}}
         }}},
        {_("Font"),
         {{_("stc.Default font"),
           item::FONTPICKERCTRL,
           wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT),
-          item_data().apply(
+          data::item().apply(
             [=](wxWindow* user, const std::any& value, bool save) {
               // Doing this once is enough, not yet possible.
               lexers::get()->load_document();
@@ -280,7 +276,7 @@ void wex::stc::on_init()
            {wxSTC_EDGE_BACKGROUND, _("Background")},
            {wxSTC_EDGE_MULTILINE, _("Multiline")}},
           true,
-          item_data().columns(1)}}},
+          data::item().columns(1)}}},
        {_("Margin"),
         {{_("<i>Margins:</i>")},
          {_("stc.Autocomplete maxwidth"), 0, 100, 0},
@@ -290,7 +286,7 @@ void wex::stc::on_init()
          {_("stc.margin.Divider"), 0, 40, 16},
          {_("stc.margin.Folding"), 0, 40, 16},
          {_("stc.margin.Line number"), 0, 100, 60},
-         {_("stc.margin.Text"), -1, 100, -1}}},
+         {_("stc.margin.Text"), -1, 500, -1}}},
        {_("Folding"),
         {{_("stc.Indentation guide"), item::CHECKBOX},
          {_("stc.Auto fold"), 0, INT_MAX, 1500},
@@ -306,20 +302,20 @@ void wex::stc::on_init()
        {_("Linking"),
         {{_("<i>Includes:</i>")},
          {_("stc.link.Include directory"),
-          listview_data()
-            .type(listview_data::FOLDER)
-            .window(window_data().size({200, 200})),
+          data::listview()
+            .type(data::listview::FOLDER)
+            .window(data::window().size({200, 200})),
           std::any(),
-          item_data()
-            .label_type(item_data::LABEL_NONE)
+          data::item()
+            .label_type(data::item::LABEL_NONE)
             .apply([=](wxWindow* user, const std::any& value, bool save) {
               m_link->set_from_config();
             })},
          {_("<i>Matches:</i>")},
          {_("stc.link.Pairs"),
-          listview_data()
-            .type(listview_data::TSV)
-            .window(window_data().size({200, 200})),
+          data::listview()
+            .type(data::listview::TSV)
+            .window(data::window().size({200, 200})),
           // First try to find "..", then <..>, as in next example:
           // <A HREF="http://www.scintilla.org">scintilla</A> component.
           std::list<std::string>({"\"\t\"", "<\t>", "[\t]", "'\t'", "{\t}"})}}},
@@ -331,7 +327,7 @@ void wex::stc::on_init()
            {wxSTC_PRINT_COLOURONWHITE, _("Colour on white")},
            {wxSTC_PRINT_COLOURONWHITEDEFAULTBG, _("Colour on white normal")}},
           true,
-          item_data().columns(1)}}}}}});
+          data::item().columns(1)}}}}}});
 
   if (item_vector(m_config_items).find<bool>(_("stc.Keep zoom")))
   {

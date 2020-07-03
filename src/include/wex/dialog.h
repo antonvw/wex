@@ -19,7 +19,7 @@ namespace wex
   {
   public:
     /// Default constructor.
-    dialog(const window_data& data = window_data());
+    dialog(const data::window& data = data::window());
 
     /// Returns the window data.
     const auto& data() const { return m_data; };
@@ -42,7 +42,7 @@ namespace wex
     void layout_sizers(bool add_separator_line = true);
 
   private:
-    const window_data m_data;
+    const data::window m_data;
 
     wxFlexGridSizer* m_top_sizer;
     wxFlexGridSizer* m_user_sizer;

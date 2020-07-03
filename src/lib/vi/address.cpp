@@ -7,13 +7,13 @@
 
 #include <memory>
 #include <wex/address.h>
+#include <wex/core.h>
 #include <wex/ex.h>
 #include <wex/log.h>
 #include <wex/macros.h>
 #include <wex/managedframe.h>
 #include <wex/process.h>
 #include <wex/stc.h>
-#include <wex/util.h>
 
 #define SEPARATE                                             \
   if (separator)                                             \
@@ -227,42 +227,43 @@ bool wex::address::marker_delete() const
          m_ex->marker_delete(m_address[1]);
 }
 
-bool wex::address::parse(const std::string& rest, const std::string& cmd)
+bool wex::address::parse(const std::string& command, const std::string& text)
+  const
 {
-  switch (cmd[0])
+  switch (command[0])
   {
     case 0:
       return false;
 
     case 'a':
-      if (rest.find('|') != std::string::npos)
+      if (text.find('|') != std::string::npos)
       {
         m_ex->frame()->hide_ex_bar();
-        return append(after(rest, '|'));
+        return append(after(text, '|'));
       }
       else
       {
-        return m_ex->frame()->show_ex_input(m_ex, cmd[0]);
+        return m_ex->frame()->show_ex_input(m_ex, command[0]);
       }
 
     case 'i':
-      if (rest.find('|') != std::string::npos)
+      if (text.find('|') != std::string::npos)
       {
         m_ex->frame()->hide_ex_bar();
-        return insert(after(rest, '|'));
+        return insert(after(text, '|'));
       }
       else
       {
-        return m_ex->frame()->show_ex_input(m_ex, cmd[0]);
+        return m_ex->frame()->show_ex_input(m_ex, command[0]);
       }
 
     case 'k':
-      return !rest.empty() ? marker_add(rest[0]) : false;
+      return !text.empty() ? marker_add(text[0]) : false;
 
     case 'p':
-      if (cmd == "pu")
+      if (command == "pu")
       {
-        return !rest.empty() ? put(rest[0]) : put();
+        return !text.empty() ? put(text[0]) : put();
       }
       else
       {
@@ -270,16 +271,16 @@ bool wex::address::parse(const std::string& rest, const std::string& cmd)
       }
 
     case 'r':
-      return read(rest);
+      return read(text);
 
     case 'z':
-      return adjust_window(rest);
+      return adjust_window(text);
 
     case '=':
       return write_line_number();
 
     default:
-      log::status("Unknown address command") << cmd;
+      log::status("Unknown address command") << command;
       return false;
   }
 }

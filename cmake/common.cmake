@@ -17,14 +17,12 @@ function(pack)
   if (MSVC)
     if (${MSVC_TOOLSET_VERSION} LESS 142)
       # Visual studio 2017:
-      # c:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\redist\x86\Microsoft.VC140.CRT
       file(GLOB_RECURSE dlls 
         "C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/redist/x86/*.dll")
     else()
       # Visual studio 2019:
-      # C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Redist\MSVC\14.23.27820\x86\Microsoft.VC142.CRT
       file(GLOB_RECURSE dlls 
-        "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Redist/MSVC/14*/x86/*.dll")
+        "C:/Program Files (x86)/Microsoft Visual Studio/2019/vcruntime14*.dll")
     endif()
 
     install(FILES ${dlls} DESTINATION ${CONFIG_INSTALL_DIR})
@@ -89,10 +87,10 @@ endfunction()
 
 macro(target_link_all)
   set (extra_macro_args ${ARGN})
-  set (wxWidgets_LIBRARIES aui adv stc html core net base)
+  set (wxWidgets_LIBRARIES wxaui wxadv wxstc wxhtml wxcore wxnet wxbase)
   set (wex_LIBRARIES 
-    wex-report wex-common wex-data wex-lexer 
-    wex-stc wex-ui wex-vcs wex-vi wex-core wex-lexer wex-common wex-ui wex-data)
+    wex-report wex-common 
+    wex-stc wex-ui wex-vi wex-common wex-stc wex-ui wex-data wex-core)
           
   if (WIN32)
     target_link_libraries(

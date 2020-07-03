@@ -17,6 +17,7 @@
 #include <wex/defs.h>
 #include <wex/filedlg.h>
 #include <wex/itemdlg.h>
+#include <wex/log.h>
 #include <wex/util.h>
 #include <wx/numdlg.h>
 
@@ -30,36 +31,33 @@
 
 void frame::bind_all()
 {
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      const std::string buffer(event.GetString());
-      size_t            written = 0;
+  wex::bind(this).command({{[=](wxCommandEvent& event) {
+                              const std::string buffer(event.GetString());
+                              size_t            written = 0;
 
-      for (auto& it : m_clients)
-      {
-        written += write_data_to_socket(buffer + "\n", it);
-      }
-      if (m_client != nullptr)
-      {
-        written += write_data_to_socket(buffer + "\n", m_client);
-      }
+                              for (auto& it : m_clients)
+                              {
+                                written +=
+                                  write_data_to_socket(buffer + "\n", it);
+                              }
+                              if (m_client != nullptr)
+                              {
+                                written +=
+                                  write_data_to_socket(buffer + "\n", m_client);
+                              }
 
-      if (written == 0)
-      {
-        wex::log::verbose("ignored") << buffer;
-      }
+                              if (written == 0)
+                              {
+                                wex::log::verbose("ignored") << buffer;
+                              }
 
-      m_shell->prompt();
-    },
-    wex::ID_SHELL_COMMAND);
-
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      m_log->clear();
-    },
-    m_id_clear_log);
+                              m_shell->prompt();
+                            },
+                            wex::ID_SHELL_COMMAND},
+                           {[=](wxCommandEvent& event) {
+                              m_log->clear();
+                            },
+                            m_id_clear_log}});
 
   Bind(
     wxEVT_SOCKET,

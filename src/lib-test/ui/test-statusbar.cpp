@@ -50,9 +50,11 @@ TEST_CASE("wex::statusbar")
   REQUIRE(get_statusbar()->pane_show("LastPane", true));
   REQUIRE(get_statusbar()->get_statustext("LastPane") == "BackAgain");
 
-  wex::statusbar_pane pane1("PaneInfo", 15, "hello");
+  wex::statusbar_pane pane1("PaneInfo", 15);
+  pane1.help("hello");
+
   REQUIRE(pane1.get_name() == "PaneInfo");
-  REQUIRE(pane1.help_text() == "Lines or Items");
+  REQUIRE(pane1.help_text() == "hello");
   REQUIRE(pane1.get_hidden_text().empty());
   REQUIRE(pane1.GetWidth() == 15);
   REQUIRE(pane1.is_shown());

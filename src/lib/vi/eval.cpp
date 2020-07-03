@@ -18,7 +18,6 @@
 #include <wex/ex.h>
 #include <wex/log.h>
 #include <wex/stc.h>
-#include <wex/util.h>
 
 namespace x3 = boost::spirit::x3;
 

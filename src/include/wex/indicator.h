@@ -2,7 +2,7 @@
 // Name:      indicator.h
 // Purpose:   Declaration of class wex::indicator
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -11,8 +11,6 @@
 
 namespace wex
 {
-  class stc;
-
   /// This class defines our scintilla indicators.
   class indicator : public presentation
   {
@@ -24,4 +22,4 @@ namespace wex
     /// Only sets no and style, and not the colour and under.
     indicator(int no, int style = -1);
   };
-};
+}; // namespace wex

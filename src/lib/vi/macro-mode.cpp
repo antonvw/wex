@@ -2,7 +2,7 @@
 // Name:      macro-mode.cpp
 // Purpose:   Implementation of class wex::macro_mode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -10,12 +10,13 @@
 #include <wx/wx.h>
 #endif
 #include "macro-fsm.h"
+#include <wex/core.h>
 #include <wex/ex.h>
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
 #include <wex/managedframe.h>
+#include <wex/statusbar.h>
 #include <wex/stc.h>
-#include <wex/util.h>
 
 bool show_dialog(
   wxWindow*          parent,
@@ -104,8 +105,7 @@ int wex::macro_mode::transition(
 
   if (ex != nullptr)
   {
-    ((wex::statusbar*)ex->frame()->GetStatusBar())
-      ->pane_show("PaneMacro", true);
+    ex->frame()->get_statusbar()->pane_show("PaneMacro", true);
   }
 
   switch (macro[0])
@@ -185,18 +185,27 @@ int wex::macro_mode::transition(
           if (std::string s;
               auto_complete_text(macro.substr(1), ex::get_macros().get(), s))
           {
-            frame::statustext(s, "PaneMacro");
+            if (ex != nullptr)
+            {
+              ex->frame()->statustext(s, "PaneMacro");
+            }
             macro = s;
           }
           else
           {
-            frame::statustext(macro.substr(1), "PaneMacro");
+            if (ex != nullptr)
+            {
+              ex->frame()->statustext(macro.substr(1), "PaneMacro");
+            }
             return 0;
           }
         }
         else
         {
-          frame::statustext(get_macro(), "PaneMacro");
+          if (ex != nullptr)
+          {
+            ex->frame()->statustext(get_macro(), "PaneMacro");
+          }
           return macro.size();
         }
       }

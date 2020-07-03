@@ -13,6 +13,7 @@
 #include <wex/accelerators.h>
 #include <wex/bind.h>
 #include <wex/config.h>
+#include <wex/core.h>
 #include <wex/interruptable.h>
 #include <wex/itemdlg.h>
 #include <wex/lexers.h>
@@ -25,12 +26,12 @@
 #include <wex/util.h>
 #include <wex/vcs.h>
 
-wex::report::listview::listview(const listview_data& data)
+wex::report::listview::listview(const data::listview& data)
   : wex::listview(data)
   , m_frame(dynamic_cast<report::frame*>(wxTheApp->GetTopWindow()))
   , m_menu_flags(data.menu())
 {
-  if (data.type() == listview_data::HISTORY)
+  if (data.type() == data::listview::HISTORY)
   {
     m_frame->use_file_history_list(this);
   }
@@ -59,7 +60,7 @@ wex::report::listview::listview(const listview_data& data)
             {
               if (GetSelectedItemCount() == 1)
               {
-                list = m_frame->activate(listview_data::FILE);
+                list = m_frame->activate(data::listview::FILE);
                 if (list == nullptr)
                   return;
                 const int main_selected = list->GetFirstSelected();
@@ -96,7 +97,7 @@ wex::report::listview::listview(const listview_data& data)
         const wex::tool& tool(event.GetId());
         if (
           tool.id() == ID_TOOL_REPORT_KEYWORD &&
-          data.type() == listview_data::KEYWORD)
+          data.type() == data::listview::KEYWORD)
           return;
         if (
           tool.is_find_type() &&
@@ -125,7 +126,7 @@ wex::report::listview::listview(const listview_data& data)
               tool_dir dir(
                 tool,
                 item.get_filename().string(),
-                item.file_spec());
+                data::dir().file_spec(item.file_spec()));
               dir.find_files();
               stats += dir.get_statistics().get_elements();
             }
@@ -179,10 +180,10 @@ void wex::report::listview::build_popup_menu(wex::menu& menu)
     }
 
     if (
-      data().type() != listview_data::FILE && !wex::vcs().use() && exists &&
+      data().type() != data::listview::FILE && !wex::vcs().use() && exists &&
       !is_folder)
     {
-      if (auto* list = m_frame->activate(listview_data::FILE);
+      if (auto* list = m_frame->activate(data::listview::FILE);
           list != nullptr && list->GetSelectedItemCount() == 1)
       {
         listitem       thislist(this, GetFirstSelected());
@@ -227,11 +228,11 @@ void wex::report::listview::build_popup_menu(wex::menu& menu)
       }
     }
 
-    // Finding in the listview_data::FIND would result in recursive calls, do
+    // Finding in the data::listview::FIND would result in recursive calls, do
     // not add it.
     if (
-      exists && data().type() != listview_data::FIND &&
-      m_menu_flags.test(listview_data::MENU_REPORT_FIND))
+      exists && data().type() != data::listview::FIND &&
+      m_menu_flags.test(data::listview::MENU_REPORT_FIND))
     {
       menu.append(
         {{},
@@ -249,7 +250,7 @@ void wex::report::listview::build_popup_menu(wex::menu& menu)
 
   if (
     GetSelectedItemCount() > 0 && exists &&
-    m_menu_flags.test(listview_data::MENU_TOOL) &&
+    m_menu_flags.test(data::listview::MENU_TOOL) &&
     !lexers::get()->get_lexers().empty())
   {
     menu.append({{}, {menu_item::TOOLS}});
@@ -262,18 +263,18 @@ bool wex::report::listview::Destroy()
   return wex::listview::Destroy();
 }
 
-wex::listview_data::type_t wex::report::listview::type_tool(const tool& tool)
+wex::data::listview::type_t wex::report::listview::type_tool(const tool& tool)
 {
   switch (tool.id())
   {
     case ID_TOOL_REPLACE:
     case ID_TOOL_REPORT_FIND:
-      return listview_data::FIND;
+      return data::listview::FIND;
 
     case ID_TOOL_REPORT_KEYWORD:
-      return listview_data::KEYWORD;
+      return data::listview::KEYWORD;
 
     default:
-      return listview_data::NONE;
+      return data::listview::NONE;
   }
 }

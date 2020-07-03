@@ -1,38 +1,39 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      data/stc.cpp
-// Purpose:   Implementation of wex::stc_data
+// Purpose:   Implementation of wex::data::stc
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/indicator.h>
+#include <wex/path.h>
+#include <wex/stc-core.h>
 #include <wex/stc-data.h>
-#include <wex/stc.h>
 
-wex::stc_data::stc_data(stc* stc)
+wex::data::stc::stc(wex::core::stc* stc)
   : m_stc(stc)
 {
 }
 
-wex::stc_data::stc_data(stc* stc, const stc_data& r)
+wex::data::stc::stc(wex::core::stc* stc, const data::stc& r)
   : m_stc(stc)
 {
   *this = r;
 }
 
-wex::stc_data::stc_data(control_data& data, stc* stc)
+wex::data::stc::stc(data::control& data, wex::core::stc* stc)
   : m_data(data)
   , m_stc(stc)
 {
 }
 
-wex::stc_data::stc_data(window_data& data, stc* stc)
-  : m_data(control_data().window(data))
+wex::data::stc::stc(data::window& data, wex::core::stc* stc)
+  : m_data(data::control().window(data))
   , m_stc(stc)
 {
 }
 
-wex::stc_data& wex::stc_data::operator=(const stc_data& r)
+wex::data::stc& wex::data::stc::operator=(const data::stc& r)
 {
   if (this != &r)
   {
@@ -51,22 +52,22 @@ wex::stc_data& wex::stc_data::operator=(const stc_data& r)
   return *this;
 }
 
-wex::stc_data&
-wex::stc_data::flags(window_t flags, control_data::action_t action)
+wex::data::stc&
+wex::data::stc::flags(window_t flags, data::control::action_t action)
 {
   m_data.flags<flags.size()>(flags, m_win_flags, action);
 
   return *this;
 }
 
-wex::stc_data& wex::stc_data::indicator_no(indicator_t t)
+wex::data::stc& wex::data::stc::indicator_no(indicator_t t)
 {
   m_indicator_no = t;
 
   return *this;
 }
 
-bool wex::stc_data::inject() const
+bool wex::data::stc::inject() const
 {
   if (m_stc == nullptr)
     return false;
@@ -93,7 +94,7 @@ bool wex::stc_data::inject() const
           m_data.col() > 0 ? m_stc->PositionFromLine(line) + m_data.col() - 1 :
                              m_stc->GetLineEndPosition(line));
       }
-      else if (m_data.line() == DATA_NUMBER_NOT_SET)
+      else if (m_data.line() == NUMBER_NOT_SET)
       {
         return false;
       }
@@ -130,7 +131,7 @@ bool wex::stc_data::inject() const
           m_stc->SetSelection(m_stc->GetTargetStart(), m_stc->GetTargetEnd());
         }
       }
-      else if (m_data.line() == DATA_NUMBER_NOT_SET)
+      else if (m_data.line() == NUMBER_NOT_SET)
       {
         m_stc->find_next(m_data.find(), m_data.find_flags());
       }
@@ -142,7 +143,7 @@ bool wex::stc_data::inject() const
     },
     [&]() {
       // command
-      return m_stc->get_vi().command(m_data.command().command());
+      return m_stc->vi_command(m_data.command());
     });
 
   if (!m_data.window().name().empty())
@@ -158,7 +159,7 @@ bool wex::stc_data::inject() const
     injected = true;
   }
 
-  if (m_stc->get_hexmode().set(m_win_flags[WIN_HEX]))
+  if (m_stc->set_hexmode(m_win_flags[WIN_HEX]))
   {
     injected = true;
   }
@@ -194,14 +195,15 @@ bool wex::stc_data::inject() const
   return injected;
 }
 
-wex::stc_data& wex::stc_data::menu(menu_t flags, control_data::action_t action)
+wex::data::stc&
+wex::data::stc::menu(menu_t flags, data::control::action_t action)
 {
   m_data.flags<flags.size()>(flags, m_menu_flags, action);
 
   return *this;
 }
 
-void wex::stc_data::event_data::set(stc* s, bool synced)
+void wex::data::stc::event_data::set(core::stc* s, bool synced)
 {
   if (s == nullptr)
   {

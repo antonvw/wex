@@ -5,10 +5,13 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <sstream>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wex/bind.h>
+#include <wex/core.h>
 #include <wex/defs.h>
 #include <wex/frame.h>
 #include <wex/frd.h>
@@ -16,7 +19,6 @@
 #include <wex/lexers.h>
 #include <wex/printing.h>
 #include <wex/tokenizer.h>
-#include <wex/util.h>
 #include <wx/dnd.h>
 #include <wx/fdrepdlg.h>
 
@@ -60,7 +62,7 @@ namespace wex
   }
 }; // namespace wex
 
-wex::grid::grid(const window_data& data)
+wex::grid::grid(const data::window& data)
   : wxGrid(
       data.parent(),
       data.id(),
@@ -79,48 +81,31 @@ wex::grid::grid(const window_data& data)
       SetDefaultCellTextColour(wxColour(fore));
     });
 
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      empty_selection();
-    },
-    wxID_DELETE);
-
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      SelectAll();
-    },
-    wxID_SELECTALL);
-
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      ClearSelection();
-    },
-    ID_EDIT_SELECT_NONE);
-
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      copy_selected_cells_to_clipboard();
-    },
-    wxID_COPY);
-
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      copy_selected_cells_to_clipboard();
-      empty_selection();
-    },
-    wxID_CUT);
-
-  Bind(
-    wxEVT_MENU,
-    [=](wxCommandEvent& event) {
-      paste_cells_from_clipboard();
-    },
-    wxID_PASTE);
+  bind(this).command({{[=](wxCommandEvent& event) {
+                         empty_selection();
+                       },
+                       wxID_DELETE},
+                      {[=](wxCommandEvent& event) {
+                         SelectAll();
+                       },
+                       wxID_SELECTALL},
+                      {[=](wxCommandEvent& event) {
+                         ClearSelection();
+                       },
+                       ID_EDIT_SELECT_NONE},
+                      {[=](wxCommandEvent& event) {
+                         copy_selected_cells_to_clipboard();
+                       },
+                       wxID_COPY},
+                      {[=](wxCommandEvent& event) {
+                         copy_selected_cells_to_clipboard();
+                         empty_selection();
+                       },
+                       wxID_CUT},
+                      {[=](wxCommandEvent& event) {
+                         paste_cells_from_clipboard();
+                       },
+                       wxID_PASTE}});
 
   Bind(wxEVT_FIND, [=](wxFindDialogEvent& event) {
     find_next(
@@ -204,7 +189,8 @@ wex::grid::grid(const window_data& data)
   });
 
   Bind(wxEVT_GRID_SELECT_CELL, [=](wxGridEvent& event) {
-    frame::statustext(
+    auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
+    frame->statustext(
       std::to_string(1 + event.GetCol()) + "," +
         std::to_string(1 + event.GetRow()),
       "PaneInfo");
@@ -213,13 +199,14 @@ wex::grid::grid(const window_data& data)
 
   Bind(wxEVT_GRID_RANGE_SELECT, [=](wxGridRangeSelectEvent& event) {
     event.Skip();
-    frame::statustext(
+    auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
+    frame->statustext(
       std::to_string(GetSelectedCells().GetCount()),
       "PaneInfo");
   });
 
   Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
-    wex::frame* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
+    auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
     if (frame != nullptr)
     {
       frame->set_find_focus(this);
@@ -414,7 +401,8 @@ bool wex::grid::find_next(const std::string& text, bool forward)
   {
     bool result = false;
 
-    frame::statustext(get_find_result(text, forward, recursive), std::string());
+    auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
+    frame->statustext(get_find_result(text, forward, recursive), std::string());
 
     if (!recursive)
     {

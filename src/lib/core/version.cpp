@@ -9,26 +9,25 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <iomanip>	
+#include <iomanip>
 #include <sstream>
-#include <wx/versioninfo.h>
 #include <wex/version.h>
+#include <wx/versioninfo.h>
 
-const wex::version_info wex::get_version_info() 
+const wex::version_info wex::get_version_info()
 {
-  return version_info("wex", 
-    20, 10, 0, 
-    "wex Library (a library that offers windows ex and vi components)",
-    "(c) 1998-2020, Anton van Wezenbeek." + std::string(_("All rights reserved.")));
+  return version_info(
+    {"wex",
+     20,
+     10,
+     0,
+     "wex Library (a library that offers windows ex and vi components)",
+     "(c) 1998-2020, Anton van Wezenbeek." +
+       std::string(_("All rights reserved."))});
 }
 
-wex::version_info::version_info(const std::string& name,
-  int major,
-  int minor,
-  int micro,
-  const std::string& description,
-  const std::string& copyright)
-  : m_version(name, major, minor, micro, description, copyright)
+wex::version_info::version_info(const wxVersionInfo& info)
+  : m_version(info)
 {
 }
 
@@ -45,9 +44,7 @@ const std::string wex::version_info::description() const
 const std::string wex::version_info::get() const
 {
   std::stringstream ss;
-  ss << 
-    m_version.GetMajor() << "." << std::setfill('0') << std::setw(2) << 
-    m_version.GetMinor() << "." << 
-    m_version.GetMicro();
+  ss << m_version.GetMajor() << "." << std::setfill('0') << std::setw(2)
+     << m_version.GetMinor() << "." << m_version.GetMicro();
   return ss.str();
 }

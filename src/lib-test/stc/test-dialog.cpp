@@ -22,7 +22,7 @@ TEST_CASE("wex::stc_entry_dialog")
   wex::stc_entry_dialog* dlg2 = new wex::stc_entry_dialog(
     "hello2",
     "testing2",
-    wex::window_data().button(wxOK));
+    wex::data::window().button(wxOK));
 
   REQUIRE(!dlg2->get_stc()->get_text().empty());
 

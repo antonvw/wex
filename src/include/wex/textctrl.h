@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <wex/ex-command.h>
 #include <wex/window-data.h>
 
 class wxControl;
@@ -23,13 +22,13 @@ namespace wex
   {
   public:
     /// Constructor. Creates empty control.
-    textctrl(managed_frame* frame, wxControl* prefix, const window_data& data);
+    textctrl(managed_frame* frame, wxControl* prefix, const data::window& data);
 
     /// Constructor. Skips prefix.
     textctrl(
       managed_frame*     frame,
       const std::string& value = std::string(),
-      const window_data& data  = window_data());
+      const data::window& data  = data::window());
 
     /// Destructor.
     ~textctrl();

@@ -7,6 +7,7 @@
 
 #include <wex/bind.h>
 #include <wex/defs.h>
+#include <wex/stc-bind.h>
 
 wex::bind::bind(wxEvtHandler* evt)
   : m_handler(evt)
@@ -49,9 +50,9 @@ void wex::bind::command(
         break;
 
       default:
-        if (it.second == ID_EDIT_EOL_DOS)
+        if (it.second == id::stc::eol_dos)
         {
-          m_handler->Bind(wxEVT_MENU, it.first, it.second, ID_EDIT_EOL_MAC);
+          m_handler->Bind(wxEVT_MENU, it.first, it.second, id::stc::eol_mac);
         }
         else
         {

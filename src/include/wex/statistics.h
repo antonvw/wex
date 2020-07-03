@@ -16,28 +16,38 @@ namespace wex
 {
   template <class T> class statistics;
 
-  /// Helper class for adding clear menu to the grid, and 
+  /// Helper class for adding clear menu to the grid, and
   /// calling clear for the statistics.
-  template <class T> class grid_statistics: public grid
+  template <class T> class grid_statistics : public grid
   {
   public:
     /// Constructor.
     grid_statistics(
-      statistics <T> * statistics,
-      const window_data& data = window_data().style(wxWANTS_CHARS))
+      statistics<T>*      statistics,
+      const data::window& data = data::window().style(wxWANTS_CHARS))
       : grid(data)
       , m_statistics(statistics)
     {
-      Bind(wxEVT_MENU, [=](wxCommandEvent& event) {m_statistics->clear();}, wxID_CLEAR);
+      Bind(
+        wxEVT_MENU,
+        [=](wxCommandEvent& event) {
+          m_statistics->clear();
+        },
+        wxID_CLEAR);
     }
+
   protected:
-    void build_popup_menu(menu& menu) override {
+    void build_popup_menu(menu& menu) override
+    {
       menu.style().reset();
       menu.style().set(menu::ALLOW_CLEAR);
-      if (IsSelection()) menu.style().set(menu::IS_SELECTED);
-      grid::build_popup_menu(menu);};
+      if (IsSelection())
+        menu.style().set(menu::IS_SELECTED);
+      grid::build_popup_menu(menu);
+    };
+
   private:
-    statistics <T> * m_statistics;
+    statistics<T>* m_statistics;
   };
 
   /// Offers base statistics. All statistics involve a key value pair,
@@ -49,23 +59,28 @@ namespace wex
   public:
     /// Default constructor.
     /// You can specify a vector of values to initialize the statistics.
-    statistics(const std::vector<std::pair<const std::string, T>> & v = {}) {
+    statistics(const std::vector<std::pair<const std::string, T>>& v = {})
+    {
       for (const auto& it : v)
       {
         set(it.first, it.second);
-      }};
+      }
+    };
 
     /// Adds other statistics.
-    statistics& operator+=(const statistics& s) {
+    statistics& operator+=(const statistics& s)
+    {
       for (const auto& it : s.m_items)
       {
         inc(it.first, it.second);
       }
-      return *this;}
+      return *this;
+    }
 
     /// Clears the items. If you have shown the statistics
     /// the window is updated as well.
-    void clear() {
+    void clear()
+    {
       m_items.clear();
       m_rows.clear();
 
@@ -80,12 +95,15 @@ namespace wex
     };
 
     /// Decrements key with value.
-    const T dec(const std::string& key, T dec_value = 1) {
-      return set(key, get(key) - dec_value);};
+    const T dec(const std::string& key, T dec_value = 1)
+    {
+      return set(key, get(key) - dec_value);
+    };
 
     /// Returns all items as a string. All items are returned as a string,
     /// with comma's separating items, and a : separating key and value.
-    const std::string get() const {
+    const std::string get() const
+    {
       std::string text;
       for (const auto& it : m_items)
       {
@@ -93,26 +111,32 @@ namespace wex
         {
           text += ", ";
         }
-        
+
         text += it.first + ":" + std::to_string(it.second);
       }
-      return text;};
+      return text;
+    };
 
     /// Returns value for specified key.
-    const T get(const std::string& key) const {
+    const T get(const std::string& key) const
+    {
       const auto it = m_items.find(key);
-      return it != m_items.end() ? it->second: T();};
+      return it != m_items.end() ? it->second : T();
+    };
 
     /// Returns the items.
-    const auto & get_items() const {return m_items;};
+    const auto& get_items() const { return m_items; };
 
     /// Increments key with value.
-    const T inc(const std::string& key, T inc_value = 1) {
-      return set(key, get(key) + inc_value);};
+    const T inc(const std::string& key, T inc_value = 1)
+    {
+      return set(key, get(key) + inc_value);
+    };
 
     /// Sets key to value. If you have shown the statistics
     /// the window is updated as well.
-    const T set(const std::string& key, T value) {
+    const T set(const std::string& key, T value)
+    {
       m_items[key] = value;
       if (m_grid != nullptr)
       {
@@ -137,7 +161,8 @@ namespace wex
 
         m_grid->ForceRefresh();
       }
-      return value;};
+      return value;
+    };
 
     /// Shows the statistics as a grid window on the parent,
     /// and specify whether to show row labels and col labels.
@@ -152,11 +177,12 @@ namespace wex
       bool hide_col_labels = true,
       /// the id of the grid component
       wxWindowID id = wxID_ANY)
-      {
+    {
       if (m_grid == nullptr)
       {
-        m_grid = new grid_statistics<T>(this,
-          window_data().style(wxWANTS_CHARS).id(id));
+        m_grid = new grid_statistics<T>(
+          this,
+          data::window().style(wxWANTS_CHARS).id(id));
         m_grid->CreateGrid(0, 0);
         m_grid->AppendCols(2);
         m_grid->EnableEditing(false);
@@ -189,13 +215,15 @@ namespace wex
         m_grid->AutoSizeColumn(0);
       }
       m_grid->Show();
-      return m_grid;}
+      return m_grid;
+    }
 
     /// Access to the grid, returns nullptr if the grid has not been shown yet.
-    const grid* get_grid() const {return m_grid;}
+    const grid* get_grid() const { return m_grid; }
+
   private:
-    std::map<std::string, T> m_items;
+    std::map<std::string, T>   m_items;
     std::map<std::string, int> m_rows;
-    grid_statistics<T>* m_grid {nullptr};
+    grid_statistics<T>*        m_grid{nullptr};
   };
-};
+}; // namespace wex

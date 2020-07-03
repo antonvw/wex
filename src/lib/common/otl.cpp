@@ -2,7 +2,7 @@
 // Name:      otl.cpp
 // Purpose:   Implementation of wex::otl class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -13,18 +13,19 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/grid.h>
-#include <wx/stc/stc.h>
-#include <wex/otl.h>
 #include <wex/config.h>
+#include <wex/core.h>
 #include <wex/itemdlg.h>
 #include <wex/log.h>
+#include <wex/otl.h>
 #include <wex/stcdlg.h>
-#include <wex/util.h>
+#include <wx/grid.h>
+#include <wx/stc/stc.h>
 
 #if wexUSE_OTL
 
-wex::otl::otl(int threaded_mode)
+wex::otl::otl(int threaded_mode, size_t buffer_size)
+  : m_buffer_size(buffer_size)
 {
   otl_connect::otl_initialize(threaded_mode);
 }
@@ -45,9 +46,9 @@ bool wex::otl::logoff()
   {
     return false;
   }
-  
+
   m_connect.logoff();
-  
+
   return true;
 }
 
@@ -55,33 +56,35 @@ const wex::version_info wex::otl::get_version_info()
 {
   const long version = OTL_VERSION_NUMBER;
 
-  return version_info(
-    "OTL", 
-     version >> 16,
-     0,
-    (version & 0xffff));
+  return version_info({"OTL", version >> 16, 0, (version & 0xffff)});
 }
 
-void wex::otl::handle_error(
-  const otl_exception& e, const otl_column_desc& desc) const
+void wex::otl::handle_error(const otl_exception& e, const otl_column_desc& desc)
+  const
 {
-  log::verbose() <<
-    "OTL error: " << (const char *)e.msg <<
-    "skipped: (" << desc.otl_var_dbtype << "," << desc.dbsize << ")";
+  log::verbose() << "OTL error: " << (const char*)e.msg << "skipped: ("
+                 << desc.otl_var_dbtype << "," << desc.dbsize << ")";
 }
-  
-bool wex::otl::logon(const wex::window_data& par)
+
+bool wex::otl::logon(const wex::data::window& par)
 {
-  const window_data data(window_data(par).
-    title(_("Open ODBC Connection")));
-    
+  const data::window data(data::window(par).title(_("Open ODBC Connection")));
+
   if (data.button() != 0)
   {
-    if (item_dialog({
-        {_("Datasource"), item::COMBOBOX, std::any(), control_data().is_required(true)},
-        {_("User")},
-        {_("Password"), std::string(), item::TEXTCTRL, control_data().window(window_data().style(wxTE_PASSWORD))}}, 
-        data).ShowModal() == wxID_CANCEL)
+    if (
+      item_dialog(
+        {{_("Datasource"),
+          item::COMBOBOX,
+          std::any(),
+          data::control().is_required(true)},
+         {_("User")},
+         {_("Password"),
+          std::string(),
+          item::TEXTCTRL,
+          data::control().window(data::window().style(wxTE_PASSWORD))}},
+        data)
+        .ShowModal() == wxID_CANCEL)
     {
       return false;
     }
@@ -89,19 +92,19 @@ bool wex::otl::logon(const wex::window_data& par)
 
   try
   {
-    const std::string connect =
-      config(_("User")).get() + "/" + 
-      config(_("Password")).get() + "@" +
-      datasource();
+    const std::string connect = config(_("User")).get() + "/" +
+                                config(_("Password")).get() + "@" +
+                                datasource();
 
     m_connect.rlogon(connect.c_str(),
-      1); // autocommit-flag
+                     1); // autocommit-flag
   }
   catch (otl_exception& p)
   {
     stc_entry_dialog(
-      "Cannot logon to " + datasource() + 
-      " because of: " + std::string((const char *)p.msg)).Show();
+      "Cannot logon to " + datasource() +
+      " because of: " + std::string((const char*)p.msg))
+      .Show();
   }
 
   return is_connected();
@@ -113,7 +116,7 @@ long wex::otl::query(const std::string& query)
   {
     return 0;
   }
-  
+
   const auto records(otl_cursor::direct_exec(m_connect, query.c_str()));
   log::verbose("query") << query << "records: " << records;
   return records;
@@ -122,27 +125,22 @@ long wex::otl::query(const std::string& query)
 // Cannot be const because of open call.
 long wex::otl::query(
   const std::string& query,
-  wxGrid* grid,
-  bool& stopped,
-  bool empty_results,
-  int buffer_size)
+  wxGrid*            grid,
+  bool&              stopped,
+  bool               empty_results)
 {
   if (!is_connected())
   {
     return 0;
   }
-  
+
   assert(grid != nullptr);
 
   otl_stream i;
   i.set_all_column_types(otl_all_num2str | otl_all_date2str);
-  i.open(
-    buffer_size,
-    query.c_str(),
-    m_connect,
-    otl_implicit_select);
+  i.open(m_buffer_size, query.c_str(), m_connect, otl_implicit_select);
 
-  long rows = 0;
+  long             rows = 0;
   otl_column_desc* desc;
 
   // Get column names.
@@ -221,28 +219,23 @@ long wex::otl::query(
 // Cannot be const because of open call.
 long wex::otl::query(
   const std::string& query,
-  wxStyledTextCtrl* stc,
-  bool& stopped,
-  int buffer_size)
+  wxStyledTextCtrl*  stc,
+  bool&              stopped)
 {
   if (!is_connected())
   {
     return 0;
   }
-  
+
   assert(stc != nullptr);
 
   otl_stream i;
   i.set_all_column_types(otl_all_num2str | otl_all_date2str);
-  i.open(
-    buffer_size,
-    query.c_str(),
-    m_connect,
-    otl_implicit_select);
+  i.open(m_buffer_size, query.c_str(), m_connect, otl_implicit_select);
 
   stc->NewLine();
 
-  long rows = 0;
+  long             rows = 0;
   otl_column_desc* desc;
 
   // Get column names.
@@ -252,7 +245,8 @@ long wex::otl::query(
   for (auto n = 0; n < desc_len; n++)
   {
     stc->AppendText(desc[n].name);
-    if (n < desc_len - 1) stc->AppendText('\t');
+    if (n < desc_len - 1)
+      stc->AppendText('\t');
   }
 
   stc->NewLine();
@@ -284,12 +278,13 @@ long wex::otl::query(
         handle_error(e, desc[n]);
       }
 
-      if (n < desc_len - 1) line += '\t';
+      if (n < desc_len - 1)
+        line += '\t';
     }
 
     stc->AppendText(line);
     stc->NewLine();
-    
+
     if ((rows & 0xff) == 0)
     {
       wxTheApp->Yield();

@@ -83,12 +83,6 @@ namespace wex
     class gui_app : public app
     {
     public:
-      int OnExit() override
-      {
-        remove("test-ex.txt");
-        return test::app::OnExit();
-      }
-
       bool OnInit() override
       {
         if (!test::app::OnInit())

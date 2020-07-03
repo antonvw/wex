@@ -13,7 +13,6 @@
 
 wex::scope::scope(stc* s)
   : m_stc(s)
-  , m_level(get_current_level())
 {
   check_levels(check_t().set(LEVEL_UP));
 

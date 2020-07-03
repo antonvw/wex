@@ -17,15 +17,13 @@ TEST_CASE("wex::report")
   wex::tool tool(wex::ID_TOOL_REPORT_FIND);
 
   auto* report =
-    new wex::listview(wex::listview_data().type(wex::listview_data::FIND));
+    new wex::listview(wex::data::listview().type(wex::data::listview::FIND));
 
   wex::test::add_pane(report_frame(), report);
 
   const auto files = wex::get_all_files(
     wex::path("../../../src/lib-test/report"),
-    "*.cpp",
-    std::string(),
-    wex::dir::type_t().set());
+    wex::data::dir().file_spec("*.cpp"));
 
   REQUIRE(files.size() > 5);
 

@@ -25,14 +25,17 @@ TEST_CASE("wex::report::tool_dir")
   const wex::tool tool(wex::ID_TOOL_REPORT_FIND);
 
   auto* lv =
-    new wex::listview(wex::listview_data().type(wex::listview_data::FIND));
+    new wex::listview(wex::data::listview().type(wex::data::listview::FIND));
 
   REQUIRE(tool.id() == wex::ID_TOOL_REPORT_FIND);
   REQUIRE(wex::report::stream::setup_tool(tool, report_frame(), lv));
 
   wex::test::add_pane(report_frame(), lv);
   wex::find_replace_data::get()->set_find_string("test");
-  wex::report::tool_dir dir(tool, "./", "*.cpp;*.h", wex::dir::type_t().set());
+  wex::report::tool_dir dir(
+    tool,
+    "./",
+    wex::data::dir().file_spec("*.cpp;*.h"));
 
   REQUIRE(dir.get_statistics().get_elements().get_items().empty());
   REQUIRE(dir.find_files() > 0);

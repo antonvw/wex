@@ -13,6 +13,7 @@
 #include <wex/accelerators.h>
 #include <wex/bind.h>
 #include <wex/config.h>
+#include <wex/core.h>
 #include <wex/defs.h>
 #include <wex/frame.h>
 #include <wex/frd.h>
@@ -27,7 +28,6 @@
 #include <wex/menu.h>
 #include <wex/printing.h>
 #include <wex/tokenizer.h>
-#include <wex/util.h>
 #include <wx/dnd.h>
 #include <wx/fdrepdlg.h>         // for wxFindDialogEvent
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
@@ -120,100 +120,29 @@ namespace wex
   }
 }; // namespace wex
 
-wex::column::column()
-{
-  SetColumn(-1);
-}
-
-wex::column::column(const std::string& name, type_t type, int width)
-  : m_type(type)
-{
-  wxListColumnFormat align;
-
-  switch (m_type)
-  {
-    case column::FLOAT:
-      align = wxLIST_FORMAT_RIGHT;
-      if (width == 0)
-        width = 80;
-      break;
-
-    case column::INT:
-      align = wxLIST_FORMAT_RIGHT;
-      if (width == 0)
-        width = 60;
-      break;
-
-    case column::STRING:
-      align = wxLIST_FORMAT_LEFT;
-      if (width == 0)
-        width = 100;
-      break;
-
-    case column::DATE:
-      align = wxLIST_FORMAT_LEFT;
-      if (width == 0)
-        width = 150;
-      break;
-
-    default:
-      assert(0);
-  }
-
-  SetColumn(-1); // default value, is set when inserting the col
-  SetText(name);
-  SetAlign(align);
-  SetWidth(width);
-}
-
-void wex::column::set_is_sorted_ascending(sort_t type)
-{
-  switch (type)
-  {
-    case SORT_ASCENDING:
-      m_is_sorted_ascending = true;
-      break;
-
-    case SORT_DESCENDING:
-      m_is_sorted_ascending = false;
-      break;
-
-    case SORT_KEEP:
-      break;
-
-    case SORT_TOGGLE:
-      m_is_sorted_ascending = !m_is_sorted_ascending;
-      break;
-
-    default:
-      assert(0);
-      break;
-  }
-}
-
-// wxWindow::NewControlId() is negative...
-const wxWindowID ID_COL_FIRST = 1000;
-
-wex::listview::listview(const listview_data& data)
-  : wxListView(
-      data.window().parent(),
-      data.window().id(),
-      data.window().pos(),
-      data.window().size(),
-      data.window().style() == DATA_NUMBER_NOT_SET ? wxLC_REPORT :
-                                                     data.window().style(),
-      data.control().validator() != nullptr ? *data.control().validator() :
-                                              wxDefaultValidator,
-      data.window().name())
-  , m_image_height(16) // not used if IMAGE_FILE_ICON is used, then 16 is fixed
+wex::listview::listview(const data::listview& data)
+  : m_image_height(16) // not used if IMAGE_FILE_ICON is used, then 16 is fixed
   , m_image_width(16)
+  , m_col_event_id(1000)
   , m_data(
       this,
-      listview_data(data).image(
-        data.type() == listview_data::NONE || listview_data::TSV ?
+      data::listview(data).image(
+        data.type() == data::listview::NONE || data::listview::TSV ?
           data.image() :
-          listview_data::IMAGE_FILE_ICON))
+          data::listview::IMAGE_FILE_ICON))
+  , m_frame(dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow()))
 {
+  Create(
+    data.window().parent(),
+    data.window().id(),
+    data.window().pos(),
+    data.window().size(),
+    data.window().style() == data::NUMBER_NOT_SET ? wxLC_REPORT :
+                                                    data.window().style(),
+    data.control().validator() != nullptr ? *data.control().validator() :
+                                            wxDefaultValidator,
+    data.window().name());
+
   config_get();
 
   m_data.inject();
@@ -230,17 +159,17 @@ wex::listview::listview(const listview_data& data)
 
   switch (m_data.image())
   {
-    case listview_data::IMAGE_NONE:
+    case data::listview::IMAGE_NONE:
       break;
 
-    case listview_data::IMAGE_ART:
-    case listview_data::IMAGE_OWN:
+    case data::listview::IMAGE_ART:
+    case data::listview::IMAGE_OWN:
       AssignImageList(
         new wxImageList(m_image_width, m_image_height, true, 0),
         wxIMAGE_LIST_SMALL);
       break;
 
-    case listview_data::IMAGE_FILE_ICON:
+    case data::listview::IMAGE_FILE_ICON:
       SetImageList(
         wxTheFileIconsTable->GetSmallImageList(),
         wxIMAGE_LIST_SMALL);
@@ -250,7 +179,7 @@ wex::listview::listview(const listview_data& data)
       assert(0);
   }
 
-  frame::update_statusbar(this);
+  m_frame->update_statusbar(this);
 
   Bind(wxEVT_FIND, [=](wxFindDialogEvent& event) {
     find_next(
@@ -265,7 +194,8 @@ wex::listview::listview(const listview_data& data)
   });
 
   if (
-    m_data.type() != listview_data::NONE && m_data.type() != listview_data::TSV)
+    m_data.type() != data::listview::NONE &&
+    m_data.type() != data::listview::TSV)
   {
     Bind(wxEVT_IDLE, [=](wxIdleEvent& event) {
       event.Skip();
@@ -296,7 +226,7 @@ wex::listview::listview(const listview_data& data)
 
         if (m_item_updated)
         {
-          if (m_data.type() == listview_data::FILE)
+          if (m_data.type() == data::listview::FILE)
           {
             if (
               config("list.SortSync").get(true) &&
@@ -330,11 +260,11 @@ wex::listview::listview(const listview_data& data)
   });
 
   Bind(wxEVT_LIST_ITEM_DESELECTED, [=](wxListEvent& event) {
-    frame::update_statusbar(this);
+    m_frame->update_statusbar(this);
   });
 
   Bind(wxEVT_LIST_ITEM_SELECTED, [=](wxListEvent& event) {
-    if (m_data.type() != listview_data::NONE && GetSelectedItemCount() == 1)
+    if (m_data.type() != data::listview::NONE && GetSelectedItemCount() == 1)
     {
       if (const wex::path fn(listitem(this, event.GetIndex()).get_filename());
           fn.stat().is_ok())
@@ -346,7 +276,8 @@ wex::listview::listview(const listview_data& data)
         log::status(get_item_text(GetFirstSelected()));
       }
     }
-    frame::update_statusbar(this);
+
+    m_frame->update_statusbar(this);
   });
 
   Bind(wxEVT_LIST_COL_CLICK, [=](wxListEvent& event) {
@@ -417,7 +348,7 @@ wex::listview::listview(const listview_data& data)
         long new_index = GetSelectedItemCount() > 0 ? GetFirstSelected() : -1;
         switch (m_data.type())
         {
-          case listview_data::TSV:
+          case data::listview::TSV:
             if (wxTextEntryDialog dlg(
                   this,
                   _("Input") + ":",
@@ -452,6 +383,7 @@ wex::listview::listview(const listview_data& data)
                                               GetItemCount());
 
               listitem(this, dir_dlg.GetPath().ToStdString()).insert(no);
+              m_frame->update_statusbar(this);
             }
           }
         }
@@ -476,7 +408,7 @@ wex::listview::listview(const listview_data& data)
               GetItemCount()));
             val > 0)
         {
-          listview_data(control_data().line(val), this).inject();
+          data::listview(data::control().line(val), this).inject();
         }
         return true;
       },
@@ -488,7 +420,7 @@ wex::listview::listview(const listview_data& data)
       style.set(menu::IS_SELECTED);
     if (GetItemCount() == 0)
       style.set(menu::IS_EMPTY);
-    if (m_data.type() != listview_data::FIND)
+    if (m_data.type() != data::listview::FIND)
       style.set(menu::CAN_PASTE);
     if (GetSelectedItemCount() == 0 && GetItemCount() > 0)
     {
@@ -503,17 +435,13 @@ wex::listview::listview(const listview_data& data)
   });
 
   Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
-    if (auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
-        frame != nullptr)
-    {
-      frame->set_find_focus(this);
-    }
+    m_frame->set_find_focus(this);
     event.Skip();
   });
 
   Bind(wxEVT_SHOW, [=](wxShowEvent& event) {
     event.Skip();
-    frame::update_statusbar(this);
+    m_frame->update_statusbar(this);
   });
 }
 
@@ -525,10 +453,8 @@ bool wex::listview::append_columns(const std::vector<column>& cols)
   {
     auto mycol(col);
 
-    if (const auto index = wxListView::AppendColumn(
-          mycol.GetText(),
-          mycol.GetAlign(),
-          mycol.GetWidth());
+    if (const auto index =
+          AppendColumn(mycol.GetText(), mycol.GetAlign(), mycol.GetWidth());
         index == -1)
     {
       return false;
@@ -540,9 +466,9 @@ bool wex::listview::append_columns(const std::vector<column>& cols)
     Bind(
       wxEVT_MENU,
       [=](wxCommandEvent& event) {
-        sort_column(event.GetId() - ID_COL_FIRST, SORT_TOGGLE);
+        sort_column(event.GetId() - m_col_event_id, SORT_TOGGLE);
       },
-      ID_COL_FIRST + GetColumnCount() - 1);
+      m_col_event_id + GetColumnCount() - 1);
   }
 
   return true;
@@ -589,9 +515,9 @@ void wex::listview::build_popup_menu(wex::menu& menu)
     listitem(this, GetFirstSelected()).get_filename().stat().is_ok())
   {
     menu.append(
-      {{ID_EDIT_OPEN, _("&Open"), menu_data().art(wxART_FILE_OPEN)}, {}});
+      {{ID_EDIT_OPEN, _("&Open"), data::menu().art(wxART_FILE_OPEN)}, {}});
   }
-  else if (GetSelectedItemCount() >= 1 && m_data.type() == listview_data::TSV)
+  else if (GetSelectedItemCount() >= 1 && m_data.type() == data::listview::TSV)
   {
     menu.append({{ID_EDIT_OPEN, _("&Open")}});
   }
@@ -606,15 +532,15 @@ void wex::listview::build_popup_menu(wex::menu& menu)
 
     for (const auto& it : m_columns)
     {
-      menuSort->append({{ID_COL_FIRST + it.GetColumn(), it.GetText()}});
+      menuSort->append({{m_col_event_id + it.GetColumn(), it.GetText()}});
     }
 
     menu.append({{menuSort, _("Sort On")}});
   }
 
   if (
-    (m_data.type() == listview_data::FOLDER && GetSelectedItemCount() <= 1) ||
-    m_data.type() == listview_data::TSV)
+    (m_data.type() == data::listview::FOLDER && GetSelectedItemCount() <= 1) ||
+    m_data.type() == data::listview::TSV)
   {
     menu.append({{}, {wxID_ADD}});
   }
@@ -626,12 +552,12 @@ void wex::listview::clear()
 
   sort_column_reset();
 
-  frame::update_statusbar(this);
+  m_frame->update_statusbar(this);
 }
 
-int wex::listview::config_dialog(const window_data& par)
+int wex::listview::config_dialog(const data::window& par)
 {
-  const window_data data(window_data(par).title(_("List Options")));
+  const data::window data(data::window(par).title(_("List Options")));
 
   if (m_config_dialog == nullptr)
   {
@@ -660,7 +586,7 @@ void wex::listview::config_get()
     (iv.find<long>(_("list.Rulers")) & wxLC_VRULES) > 0);
   SetSingleStyle(
     wxLC_NO_HEADER,
-    !iv.find<bool>(_("list.Header")) || m_data.type() == listview_data::TSV);
+    !iv.find<bool>(_("list.Header")) || m_data.type() == data::listview::TSV);
   SetSingleStyle(wxLC_SINGLE_SEL, iv.find<bool>(_("list.Single selection")));
 
   items_update();
@@ -770,7 +696,9 @@ bool wex::listview::find_next(const std::string& text, bool forward)
   }
   else
   {
-    frame::statustext(get_find_result(text, forward, recursive), std::string());
+    m_frame->statustext(
+      get_find_result(text, forward, recursive),
+      std::string());
 
     if (!recursive)
     {
@@ -921,7 +849,7 @@ void wex::listview::item_activated(long item_number)
 
   switch (m_data.type())
   {
-    case listview_data::FOLDER:
+    case data::listview::FOLDER:
     {
       wxDirDialog dir_dlg(
         this,
@@ -937,7 +865,7 @@ void wex::listview::item_activated(long item_number)
     }
     break;
 
-    case listview_data::TSV:
+    case data::listview::TSV:
     {
       if (wxTextEntryDialog
             dlg(this, _("Input") + ":", _("Item"), item_to_text(item_number));
@@ -959,19 +887,15 @@ void wex::listview::item_activated(long item_number)
       // Cannot be const because of SetItem later on.
       if (listitem item(this, item_number); item.get_filename().file_exists())
       {
-        if (auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
-            frame != nullptr)
-        {
-          const auto no(get_item_text(item_number, _("Line No")));
-          auto       data(
-            (m_data.type() == listview_data::FIND && !no.empty() ?
-               control_data()
-                 .line(std::stoi(no))
-                 .find(get_item_text(item_number, _("Match"))) :
-               control_data()));
+        const auto no(get_item_text(item_number, _("Line No")));
+        auto       data(
+          (m_data.type() == data::listview::FIND && !no.empty() ?
+             data::control()
+               .line(std::stoi(no))
+               .find(get_item_text(item_number, _("Match"))) :
+             data::control()));
 
-          frame->open_file(item.get_filename(), data);
-        }
+        m_frame->open_file(item.get_filename(), data);
       }
       else if (item.get_filename().dir_exists())
       {
@@ -1002,8 +926,8 @@ bool wex::listview::item_from_text(const std::string& text)
   {
     switch (m_data.type())
     {
-      case listview_data::NONE:
-      case listview_data::TSV:
+      case data::listview::NONE:
+      case data::listview::TSV:
         if (const auto line = tkz.get_next_token();
             insert_item(tokenizer(line, std::string(1, m_field_separator))
                           .tokenize<std::vector<std::string>>()))
@@ -1071,6 +995,8 @@ bool wex::listview::item_from_text(const std::string& text)
     }
   }
 
+  m_frame->update_statusbar(this);
+
   return modified;
 }
 
@@ -1090,8 +1016,8 @@ const std::string wex::listview::item_to_text(long item_number) const
 
   switch (m_data.type())
   {
-    case listview_data::FILE:
-    case listview_data::HISTORY:
+    case data::listview::FILE:
+    case data::listview::HISTORY:
     {
       const listitem item(const_cast<listview*>(this), item_number);
       text =
@@ -1106,7 +1032,7 @@ const std::string wex::listview::item_to_text(long item_number) const
     }
     break;
 
-    case listview_data::FOLDER:
+    case data::listview::FOLDER:
       return GetItemText(item_number);
 
     default:
@@ -1127,7 +1053,8 @@ const std::string wex::listview::item_to_text(long item_number) const
 void wex::listview::items_update()
 {
   if (
-    m_data.type() != listview_data::NONE && m_data.type() != listview_data::TSV)
+    m_data.type() != data::listview::NONE &&
+    m_data.type() != data::listview::TSV)
   {
     for (auto i = 0; i < GetItemCount(); i++)
     {
@@ -1145,7 +1072,7 @@ bool wex::listview::load(const std::list<std::string>& l)
     return true;
   }
 
-  if (m_data.type() == listview_data::TSV && GetColumnCount() == 0)
+  if (m_data.type() == data::listview::TSV && GetColumnCount() == 0)
   {
     const auto cols = tokenizer(l.front(), "\t").count_tokens();
 
@@ -1298,7 +1225,7 @@ bool wex::listview::set_item(
         break;
     }
 
-    return wxListView::SetItem(index, column, text, imageId);
+    return SetItem(index, column, text, imageId);
   }
   catch (std::exception& e)
   {
@@ -1315,7 +1242,7 @@ bool wex::listview::set_item_image(long item_number, const wxArtID& artid)
   }
 
   return (
-    m_data.image() == listview_data::IMAGE_ART ?
+    m_data.image() == data::listview::IMAGE_ART ?
       SetItemImage(item_number, get_art_id(artid)) :
       false);
 }
@@ -1354,7 +1281,7 @@ bool wex::listview::sort_column(int column_no, sort_t sort_method)
 
     m_sorted_column_no = column_no;
 
-    if (m_data.image() != listview_data::IMAGE_NONE)
+    if (m_data.image() != data::listview::IMAGE_NONE)
     {
       SetColumnImage(
         column_no,

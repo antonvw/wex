@@ -9,10 +9,10 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/stc/stc.h>
-#include <wex/printing.h>
+#include <wex/core.h>
 #include <wex/path.h>
-#include <wex/util.h>
+#include <wex/printing.h>
+#include <wx/stc/stc.h>
 
 wex::printing* wex::printing::m_self = nullptr;
 
@@ -41,7 +41,7 @@ wex::printing* wex::printing::get(bool createOnDemand)
 wex::printing* wex::printing::set(printing* printing)
 {
   wex::printing* old = m_self;
-  m_self = printing;
+  m_self             = printing;
   return old;
 }
 
@@ -56,7 +56,8 @@ wex::printout::printout(wxStyledTextCtrl* owner)
 
 void wex::printout::count_pages()
 {
-  if (GetDC() == nullptr) return;
+  if (GetDC() == nullptr)
+    return;
 
   wxBusyCursor wait;
 
@@ -82,24 +83,28 @@ void wex::printout::count_pages()
 }
 
 void wex::printout::GetPageInfo(
-  int* minPage, int* maxPage, int* pageFrom, int* pageTo)
+  int* minPage,
+  int* maxPage,
+  int* pageFrom,
+  int* pageTo)
 {
-  *minPage = 1;
-  *maxPage = m_page_breaks.size() - 1;
+  *minPage  = 1;
+  *maxPage  = m_page_breaks.size() - 1;
   *pageFrom = 1;
-  *pageTo = m_page_breaks.size() - 1;
+  *pageTo   = m_page_breaks.size() - 1;
 }
 
 void wex::printout::OnPreparePrinting()
 {
   const double factor = 22.4;
-  const auto ppiScr = [&] {
+  const auto   ppiScr = [&] {
     wxSize s;
     GetPPIScreen(&s.x, &s.y);
-    return s;}();
-    
-  auto* dlg_data = printing::get()->get_html_printer()->GetPageSetupData();
-  wxSize page = dlg_data->GetPaperSize();
+    return s;
+  }();
+
+  auto*  dlg_data = printing::get()->get_html_printer()->GetPageSetupData();
+  wxSize page     = dlg_data->GetPaperSize();
 
   if (page.x == 0 || page.y == 0)
   {
@@ -112,23 +117,21 @@ void wex::printout::OnPreparePrinting()
 
   m_page_rect = wxRect(0, 0, page.x, page.y);
 
-  int left = (int)(dlg_data->GetMarginTopLeft().x * ppiScr.x / factor);
-  int top = (int)(dlg_data->GetMarginTopLeft().y * ppiScr.y / factor);
-  int right = (int)(dlg_data->GetMarginBottomRight().x * ppiScr.x / factor);
+  int left   = (int)(dlg_data->GetMarginTopLeft().x * ppiScr.x / factor);
+  int top    = (int)(dlg_data->GetMarginTopLeft().y * ppiScr.y / factor);
+  int right  = (int)(dlg_data->GetMarginBottomRight().x * ppiScr.x / factor);
   int bottom = (int)(dlg_data->GetMarginBottomRight().y * ppiScr.y / factor);
 
-  m_print_rect = wxRect(
-    left,
-    top,
-    page.x - (left + right),
-    page.y - (top + bottom));
+  m_print_rect =
+    wxRect(left, top, page.x - (left + right), page.y - (top + bottom));
 
   count_pages();
 }
 
 bool wex::printout::OnPrintPage(int pageNum)
 {
-  if (GetDC() == nullptr) return false;
+  if (GetDC() == nullptr)
+    return false;
 
   if (pageNum > (int)m_page_breaks.size())
   {
@@ -160,7 +163,7 @@ bool wex::printout::OnPrintPage(int pageNum)
   {
     const int text_from_top = 23;
     const int line_from_top = 8;
-    
+
     GetDC()->DrawText(
       translate(header, pageNum, m_page_breaks.size() - 1),
       m_print_rect.GetTopLeft().x,
@@ -194,7 +197,8 @@ bool wex::printout::OnPrintPage(int pageNum)
 
 void wex::printout::set_scale()
 {
-  if (GetDC() == nullptr) return;
+  if (GetDC() == nullptr)
+    return;
 
   wxSize ppiScr, ppiPrt;
   GetPPIScreen(&ppiScr.x, &ppiScr.y);
@@ -216,12 +220,14 @@ void wex::printout::set_scale()
   }
 
   const wxSize dcSize = GetDC()->GetSize();
-  wxSize pageSize;
+  wxSize       pageSize;
   GetPageSizePixels(&pageSize.x, &pageSize.y);
 
   const double factor = 0.8;
-  const float scale_x = (float)(factor * ppiPrt.x * dcSize.x) / (float)(ppiScr.x * pageSize.x);
-  const float scale_y = (float)(factor * ppiPrt.y * dcSize.y) / (float)(ppiScr.y * pageSize.y);
+  const float  scale_x =
+    (float)(factor * ppiPrt.x * dcSize.x) / (float)(ppiScr.x * pageSize.x);
+  const float scale_y =
+    (float)(factor * ppiPrt.y * dcSize.y) / (float)(ppiScr.y * pageSize.y);
 
   GetDC()->SetUserScale(scale_x, scale_y);
 }

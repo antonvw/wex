@@ -2,7 +2,7 @@
 // Name:      debug.h
 // Purpose:   Declaration of class wex::debug
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -16,6 +16,7 @@
 
 namespace wex
 {
+  class frame;
   class item_dialog;
   class managed_frame;
   class menu;
@@ -29,23 +30,23 @@ namespace wex
   public:
     /// Constructor.
     debug(managed_frame* frame, process* process = nullptr);
-    
+
     /// Adds debug menu items to specified menu, default as no popup menu.
     /// These menus allow you to interact with the debug process.
     /// Returns number of items added to menu.
     int add_menu(menu* menu, bool popup = false) const;
-    
+
     /// Applies current breakpoints markers to stc component
     /// if applicable.
     /// Returns false if no markers were added.
     bool apply_breakpoints(stc* stc) const;
 
     /// Returns breakpoints.
-    auto & breakpoints() const {return m_breakpoints;};
-    
+    auto& breakpoints() const { return m_breakpoints; };
+
     /// Returns current entry.
-    const auto & debug_entry() const {return m_entry;};
-    
+    const auto& debug_entry() const { return m_entry; };
+
     /// Executes the item action using the current debug process,
     /// if there is not yet a debug process, invokes frame::process
     /// to allow derived classed to provide one,
@@ -69,14 +70,14 @@ namespace wex
     /// Toggles breakpoint on line.
     /// Returns false if no debug process is available.
     bool toggle_breakpoint(int line, stc* stc);
+
   private:
     bool allow_open(const path& p) const;
 
     bool clear_breakpoints(const std::string& text);
 
-    std::tuple<bool, std::string> get_args(
-      const std::string& command, 
-      stc* stc);
+    std::tuple<bool, std::string>
+    get_args(const std::string& command, stc* stc);
 
     void is_finished();
 
@@ -86,19 +87,16 @@ namespace wex
 
     /// The breakpoints, relating debugging breakpoint no to
     /// tuple of filename, marker identifier, and line no.
-    std::map<
-      std::string, std::tuple<path, int, int>> m_breakpoints;
+    std::map<std::string, std::tuple<path, int, int>> m_breakpoints;
 
-    static inline item_dialog* m_dialog = nullptr;  
+    static inline item_dialog* m_dialog = nullptr;
 
-    path 
-      m_path, 
-      m_path_execution_point;
+    path m_path, m_path_execution_point;
 
-    managed_frame* m_frame;
+    managed_frame*   m_frame;
     wex::debug_entry m_entry;
-    wex::process* m_process {nullptr};
-    bool m_active {false};
-    std::string m_stdout;
+    wex::process*    m_process{nullptr};
+    bool             m_active{false};
+    std::string      m_stdout;
   };
-};
+}; // namespace wex

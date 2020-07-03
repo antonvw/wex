@@ -42,7 +42,7 @@ TEST_CASE("wex::item_template_dialog")
         {"string1"},
         {"string2"},
         {"more fruit", "citron"}},
-      wex::window_data().title("3 columns"), 0, 3);
+      wex::data::window().title("3 columns"), 0, 3);
     
     REQUIRE( wex::testitem("test", wex::item::BUTTON).type() == wex::item::BUTTON);
     
@@ -71,7 +71,7 @@ TEST_CASE("wex::item_template_dialog")
     wex::item_template_dialog<wex::testitem>* dlg = 
       new wex::item_template_dialog<wex::testitem>(
       std::vector <wex::testitem> {{"checkbox", wex::item::CHECKBOX}},
-      wex::window_data().title("checkbox items"));
+      wex::data::window().title("checkbox items"));
 
     dlg->force_checkbox_checked();
     dlg->Show();
@@ -84,7 +84,7 @@ TEST_CASE("wex::item_template_dialog")
       std::vector <wex::testitem> {
         {"string1"},
         {"string2"}},
-      wex::window_data().button(0).title("no buttons"));
+      wex::data::window().button(0).title("no buttons"));
     dlg->Show();
   }
 
@@ -93,7 +93,7 @@ TEST_CASE("wex::item_template_dialog")
     wex::item_template_dialog<wex::testitem>* dlg = 
       new wex::item_template_dialog<wex::testitem>(
       std::vector <wex::testitem>(),
-      wex::window_data().title("no items"));
+      wex::data::window().title("no items"));
     dlg->Show();
   }
   
@@ -102,7 +102,7 @@ TEST_CASE("wex::item_template_dialog")
     wex::item_template_dialog<wex::testitem>* dlg = 
       new wex::item_template_dialog<wex::testitem>(
       std::vector <wex::testitem> {{}, {}, {}},
-      wex::window_data().title("empty items"));
+      wex::data::window().title("empty items"));
     dlg->Show();
   }
 }

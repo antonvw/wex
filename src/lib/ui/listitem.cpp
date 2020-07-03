@@ -10,25 +10,22 @@
 #include <wx/wx.h>
 #endif
 #include <wex/config.h>
-#include <wex/frame.h>
+#include <wex/core.h>
 #include <wex/lexers.h>
 #include <wex/listitem.h>
 #include <wex/log.h>
-#include <wex/util.h>
 
 // Do not give an error if columns do not exist.
 // E.g. the LIST_PROCESS has none of the file columns.
-wex::listitem::listitem(
-  listview* lv, 
-  long itemnumber)
+wex::listitem::listitem(listview* lv, long itemnumber)
   : m_listview(lv)
   , m_path(
-    (!lv->get_item_text(itemnumber, _("File Name")).empty() &&
-     !lv->get_item_text(itemnumber, _("In Folder")).empty() ?
-        path(
-          lv->get_item_text(itemnumber, _("In Folder")),
-          lv->get_item_text(itemnumber, _("File Name"))) : 
-        path(lv->get_item_text(itemnumber))))
+      (!lv->get_item_text(itemnumber, _("File Name")).empty() &&
+           !lv->get_item_text(itemnumber, _("In Folder")).empty() ?
+         path(
+           lv->get_item_text(itemnumber, _("In Folder")),
+           lv->get_item_text(itemnumber, _("File Name"))) :
+         path(lv->get_item_text(itemnumber))))
   , m_file_spec(lv->get_item_text(itemnumber, _("Type")))
 {
   SetId(itemnumber);
@@ -36,8 +33,8 @@ wex::listitem::listitem(
 }
 
 wex::listitem::listitem(
-  listview* listview,
-  const path& filename,
+  listview*          listview,
+  const path&        filename,
   const std::string& filespec)
   : m_listview(listview)
   , m_path(filename)
@@ -49,17 +46,18 @@ wex::listitem::listitem(
 
 void wex::listitem::insert(long index)
 {
-  SetId(index == -1 ? m_listview->GetItemCount(): index);
-  
-  int col = 0;
+  SetId(index == -1 ? m_listview->GetItemCount() : index);
+
+  int         col = 0;
   std::string filename;
-  
+
   if (m_listview->InReportView())
   {
     col = m_listview->find_column(_("File Name"));
     assert(col >= 0);
-    filename = (m_path.file_exists() || m_path.dir_exists() ? 
-      m_path.fullname(): m_path.string());
+    filename =
+      (m_path.file_exists() || m_path.dir_exists() ? m_path.fullname() :
+                                                     m_path.string());
   }
   else
   {
@@ -72,9 +70,7 @@ void wex::listitem::insert(long index)
     SetText(filename);
   }
 
-  ((wxListView* )m_listview)->InsertItem(*this);
-  
-  frame::update_statusbar(m_listview);
+  m_listview->InsertItem(*this);
 
   update();
 
@@ -94,7 +90,8 @@ std::stringstream wex::listitem::log() const
 }
 
 bool wex::listitem::set_item(
-  const std::string& col_name, const std::string& text) 
+  const std::string& col_name,
+  const std::string& text)
 {
   if (const auto col = m_listview->find_column(col_name); col != -1)
   {
@@ -109,7 +106,7 @@ bool wex::listitem::set_item(
     log() << *this << col_name << "unknown";
     return false;
   }
-  
+
   return true;
 }
 
@@ -117,16 +114,16 @@ void wex::listitem::set_readonly(bool readonly)
 {
   if (!readonly)
   {
-    lexers::get()->apply_default_style(nullptr,
-      [=](const std::string& fore) {
-        SetTextColour(wxColour(fore));});
+    lexers::get()->apply_default_style(nullptr, [=](const std::string& fore) {
+      SetTextColour(wxColour(fore));
+    });
   }
   else
   {
     SetTextColour(config(_("list.Readonly colour")).get(*wxLIGHT_GREY));
   }
 
-  ((wxListView* )m_listview)->SetItem(*this);
+  ((wxListView*)m_listview)->SetItem(*this);
 
   // Using GetTextColour did not work, so keep state in boolean.
   m_is_readonly = readonly;
@@ -136,22 +133,21 @@ void wex::listitem::set_readonly(bool readonly)
 void wex::listitem::update()
 {
   SetImage(
-    m_listview->data().image() == listview_data::IMAGE_FILE_ICON && 
-    m_path.stat().is_ok() ? get_iconid(m_path): -1);
+    m_listview->data().image() == data::listview::IMAGE_FILE_ICON &&
+        m_path.stat().is_ok() ?
+      get_iconid(m_path) :
+      -1);
 
   set_readonly(m_path.stat().is_readonly());
 
-  ((wxListView *)m_listview)->SetItem(*this);
+  ((wxListView*)m_listview)->SetItem(*this);
 
-  if (
-     m_listview->InReportView() &&
-     m_path.stat().is_ok())
+  if (m_listview->InReportView() && m_path.stat().is_ok())
   {
-    set_item(_("Type"),
-      m_path.dir_exists() ? m_file_spec: m_path.extension());
+    set_item(_("Type"), m_path.dir_exists() ? m_file_spec : m_path.extension());
     set_item(_("In Folder"), m_path.get_path());
     set_item(_("Modified"), m_path.stat().get_modification_time());
-  
+
     if (m_path.file_exists())
     {
       set_item(_("Size"), std::to_string(m_path.stat().st_size));

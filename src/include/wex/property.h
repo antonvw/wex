@@ -2,14 +2,13 @@
 // Name:      property.h
 // Purpose:   Declaration of wex::property class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <pugixml.hpp> 
+#include <pugixml.hpp>
 #include <wx/stc/stc.h>
-#include <wex/log.h>
 
 namespace wex
 {
@@ -18,44 +17,31 @@ namespace wex
   {
   public:
     /// Default constructor.
-    property(const pugi::xml_node& node = pugi::xml_node()) {
-      if (!node.empty()) {
-        m_name = node.attribute("name").value();
-        m_value = node.text().get();
-        if (m_value.empty())
-        {
-          log("empty property") << m_name << node;
-        }}};
-    
+    property(const pugi::xml_node& node = pugi::xml_node());
+
     /// Constructor using name, value pair.
-    property(const std::string& name, const std::string& value)
-      : m_name(name)
-      , m_value(value){;};
+    property(const std::string& name, const std::string& value);
 
     /// Applies this property to stc component.
-    void apply(wxStyledTextCtrl* stc) const {
-      if (is_ok()) stc->SetProperty(m_name, m_value);};
+    void apply(wxStyledTextCtrl* stc) const;
 
     /// Resets this property (resets the value of this property
     /// on the stc component, but does not change the value).
-    void apply_reset(wxStyledTextCtrl* stc) const {
-      stc->SetProperty(m_name, wxEmptyString);};
-    
+    void apply_reset(wxStyledTextCtrl* stc) const;
+
     /// Returns true if property is valid.
-    bool is_ok() const {
-      return !m_name.empty() && !m_value.empty();};
-    
+    bool is_ok() const;
+
     /// Returns the name of this property.
-    const auto & name() const {return m_name;};
+    const auto& name() const { return m_name; };
 
     /// Override this property (so does not apply this property).
-    void set(const std::string& value) {m_value = value;};
+    void set(const std::string& value) { m_value = value; };
 
     /// Returns the value of this property.
-    const auto & value() const {return m_value;};
+    const auto& value() const { return m_value; };
+
   private:
-    std::string 
-      m_name, 
-      m_value;
+    std::string m_name, m_value;
   };
-};
+}; // namespace wex

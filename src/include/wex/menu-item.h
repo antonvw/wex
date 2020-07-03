@@ -77,7 +77,7 @@ namespace wex
       /// menu name or text
       const std::string& name = std::string(),
       /// menu data
-      const menu_data& data = menu_data());
+      const data::menu& data = data::menu());
 
     /// Constructor for a checkable item.
     menu_item(
@@ -88,7 +88,7 @@ namespace wex
       /// Constructor for a CHECK or RADIO item.
       type_t type,
       /// menu data
-      const menu_data& data = menu_data());
+      const data::menu& data = data::menu());
 
     /// Constructor for a SUBMENU item.
     menu_item(
@@ -99,7 +99,7 @@ namespace wex
       /// menu item id
       int id = wxID_ANY,
       /// menu data
-      const menu_data& data = menu_data());
+      const data::menu& data = data::menu());
 
     /// Constructor for a VCS submenu item.
     menu_item(
@@ -109,7 +109,7 @@ namespace wex
       /// shows modal dialog if necessary
       bool show_modal = true,
       /// menu data
-      const menu_data& data = menu_data());
+      const data::menu& data = data::menu());
 
     /// Constructor for HISTORY menu item.
     menu_item(
@@ -118,7 +118,7 @@ namespace wex
       /// object for maintaining / retrieving history
       file_history& history,
       /// menu data
-      const menu_data& data = menu_data());
+      const data::menu& data = data::menu());
 
     /// Constructor for PANES menu items.
     menu_item(
@@ -152,6 +152,6 @@ namespace wex
     const wxWindowID     m_id{wxID_ANY};
     const type_t         m_type{SEPARATOR};
     const std::string    m_name;
-    menu_data            m_data;
+    data::menu            m_data;
   };
 }; // namespace wex

@@ -105,17 +105,22 @@ namespace wex
 wex::statusbar_pane::statusbar_pane(
   const std::string& name,
   int                width,
-  const std::string& helptext,
-  int                style,
-  bool               is_shown)
-  : wxStatusBarPane(style, width)
-  , m_help_text(determine_help_text(name, helptext))
+  bool               show)
+  : wxStatusBarPane(wxSB_NORMAL, width)
+  , m_help_text(determine_help_text(name, std::string()))
+  , m_is_shown(show)
   , m_name(name)
-  , m_is_shown(is_shown)
 {
 }
 
-void wex::statusbar_pane::show(bool show)
+wex::statusbar_pane& wex::statusbar_pane::help(const std::string& rhs)
+{
+  m_help_text = rhs;
+
+  return *this;
+}
+
+wex::statusbar_pane& wex::statusbar_pane::show(bool show)
 {
   m_is_shown = show;
 
@@ -127,11 +132,20 @@ void wex::statusbar_pane::show(bool show)
   {
     m_hidden = GetText();
   }
+
+  return *this;
+}
+
+wex::statusbar_pane& wex::statusbar_pane::style(int rhs)
+{
+  SetStyle(rhs);
+
+  return *this;
 }
 
 std::vector<wex::statusbar_pane> wex::statusbar::m_panes = {{}};
 
-wex::statusbar::statusbar(frame* parent, const window_data& data)
+wex::statusbar::statusbar(frame* parent, const data::window& data)
   : wxStatusBar(parent, data.id(), data.style(), data.name())
   , m_frame(parent)
 {
@@ -169,11 +183,11 @@ void wex::statusbar::handle(wxMouseEvent& event, const statusbar_pane& pane)
         {"width",
          std::string(),
          item::STATICTEXT,
-         control_data().window(window_data().style(wxALIGN_RIGHT))},
+         data::control().window(data::window().style(wxALIGN_RIGHT))},
         {"style",
          std::string(),
          item::STATICTEXT,
-         control_data().window(window_data().style(wxALIGN_RIGHT))}};
+         data::control().window(data::window().style(wxALIGN_RIGHT))}};
 
       for (const auto& it : m_panes)
       {
@@ -186,27 +200,31 @@ void wex::statusbar::handle(wxMouseEvent& event, const statusbar_pane& pane)
           v_i.push_back({"statusbar.styles." + it.get_name(),
                          item::COMBOBOX,
                          pane_styles().find(it.GetStyle()),
-                         item_data(control_data().window(
-                                     window_data().style(wxCB_READONLY)))
-                           .label_type(item_data::LABEL_NONE)});
+                         data::item(data::control().window(
+                                      data::window().style(wxCB_READONLY)))
+                           .label_type(data::item::LABEL_NONE)});
         }
       }
 
       if (
-        item_dialog(v_i, window_data().title("Statusbar Panes"), 0, 2)
+        item_dialog(v_i, data::window().title("Statusbar Panes"), 0, 2)
           .ShowModal() == wxID_OK)
       {
         std::vector<statusbar_pane> v_p;
 
         for (const auto& it : m_panes)
         {
-          v_p.push_back(
-            {it.get_name(),
-             config("statusbar.widths." + it.get_name()).get(it.GetWidth()),
-             it.help_text(),
-             pane_styles().style(config("statusbar.styles." + it.get_name())
-                                   .get(pane_styles().find(it.GetStyle()))),
-             it.is_shown()});
+          statusbar_pane p(
+            it.get_name(),
+            config("statusbar.widths." + it.get_name()).get(it.GetWidth()));
+
+          p.help(it.help_text())
+            .style(
+              pane_styles().style(config("statusbar.styles." + it.get_name())
+                                    .get(pane_styles().find(it.GetStyle()))))
+            .show(it.is_shown());
+
+          v_p.push_back(p);
         }
 
         setup(m_frame, v_p);
@@ -298,99 +316,6 @@ wex::statusbar::pane_info(const std::string& pane) const
   return {false, 0, 0};
 }
 
-wex::statusbar* wex::statusbar::setup(
-  frame*                             frame,
-  const std::vector<statusbar_pane>& panes,
-  long                               style,
-  const std::string&                 name)
-{
-  if (m_panes.size() > 1)
-  {
-    m_panes.clear();
-  }
-
-  m_panes.insert(std::end(m_panes), std::begin(panes), std::end(panes));
-
-  const bool first(frame->GetStatusBar() == nullptr);
-
-  statusbar* sb =
-    (frame->GetStatusBar() == nullptr ?
-       (statusbar*)frame
-         ->CreateStatusBar(m_panes.size(), style, ID_UPDATE_STATUS_BAR, name) :
-       (statusbar*)frame->GetStatusBar());
-
-  config::statusbar_t sb_def;
-
-  for (const auto& it : m_panes)
-  {
-    sb_def.push_back(
-      {it.get_name(), pane_styles().find(it.GetStyle()), it.GetWidth()});
-  }
-
-  const auto sb_config(config("statusbar").get(sb_def));
-  config("statusbar").set(sb_config);
-
-  int   panes_shown = 0;
-  auto* styles      = new int[sb_config.size()];
-  auto* widths      = new int[sb_config.size()];
-
-  int i = 0;
-  for (const auto& it : sb_config)
-  {
-    if (m_panes[i].is_shown())
-    {
-      styles[panes_shown] = pane_styles().style(std::get<1>(it));
-      widths[panes_shown] = std::get<2>(it);
-
-      m_panes[i].SetStyle(styles[panes_shown]);
-      m_panes[i].SetWidth(widths[panes_shown]);
-      panes_shown++;
-    }
-
-    i++;
-  }
-
-  sb->SetFieldsCount(panes_shown, widths);
-  sb->SetStatusStyles(panes_shown, styles);
-
-  delete[] styles;
-  delete[] widths;
-
-  if (first)
-  {
-    sb->Bind(wxEVT_LEFT_UP, &statusbar::on_mouse, sb);
-    sb->Bind(wxEVT_RIGHT_UP, &statusbar::on_mouse, sb);
-    sb->Bind(wxEVT_MOTION, &statusbar::on_mouse, sb);
-  }
-
-  return sb;
-}
-
-bool wex::statusbar::set_statustext(
-  const std::string& text,
-  const std::string& pane)
-{
-  if (const auto& [res, shown_pane_no, pane_no] = pane_info(pane); !res)
-  {
-    // Do not show error, as you might explicitly want to ignore messages.
-    return false;
-  }
-  else if (shown_pane_no == FIELD_NOT_SHOWN)
-  {
-    m_panes[pane_no].set_hidden_text(text);
-    return false;
-  }
-  else
-  {
-    m_panes[pane_no].SetText(text);
-
-    // wxStatusBar checks whether new text differs from current,
-    // and does nothing if the same to avoid flicker.
-    SetStatusText(text, shown_pane_no);
-    return true;
-  }
-}
-
 bool wex::statusbar::pane_show(const std::string& pane, bool show)
 {
   assert(!m_panes.empty());
@@ -460,7 +385,11 @@ bool wex::statusbar::pane_show(const std::string& pane, bool show)
       int z = 0;
       for (int j = changes.size() - 1; j >= 0; j--)
       {
-        SetStatusText(changes[j], GetFieldsCount() - 1 - z);
+        if (const int no = GetFieldsCount() - 1 - z; no >= 0)
+        {
+          SetStatusText(changes[j], no);
+        }
+
         z++;
       }
     }
@@ -470,4 +399,97 @@ bool wex::statusbar::pane_show(const std::string& pane, bool show)
   delete[] widths;
 
   return !changes.empty() || changed;
+}
+
+bool wex::statusbar::set_statustext(
+  const std::string& text,
+  const std::string& pane)
+{
+  if (const auto& [res, shown_pane_no, pane_no] = pane_info(pane); !res)
+  {
+    // Do not show error, as you might explicitly want to ignore messages.
+    return false;
+  }
+  else if (shown_pane_no == FIELD_NOT_SHOWN)
+  {
+    m_panes[pane_no].set_hidden_text(text);
+    return false;
+  }
+  else
+  {
+    m_panes[pane_no].SetText(text);
+
+    // wxStatusBar checks whether new text differs from current,
+    // and does nothing if the same to avoid flicker.
+    SetStatusText(text, shown_pane_no);
+    return true;
+  }
+}
+
+wex::statusbar* wex::statusbar::setup(
+  frame*                             frame,
+  const std::vector<statusbar_pane>& panes,
+  long                               style,
+  const std::string&                 name)
+{
+  if (m_panes.size() > 1)
+  {
+    m_panes.clear();
+  }
+
+  m_panes.insert(std::end(m_panes), std::begin(panes), std::end(panes));
+
+  const bool first(frame->GetStatusBar() == nullptr);
+
+  statusbar* sb =
+    (frame->GetStatusBar() == nullptr ?
+       (statusbar*)frame
+         ->CreateStatusBar(m_panes.size(), style, ID_UPDATE_STATUS_BAR, name) :
+       (statusbar*)frame->GetStatusBar());
+
+  config::statusbar_t sb_def;
+
+  for (const auto& it : m_panes)
+  {
+    sb_def.push_back(
+      {it.get_name(), pane_styles().find(it.GetStyle()), it.GetWidth()});
+  }
+
+  const auto sb_config(config("statusbar").get(sb_def));
+  config("statusbar").set(sb_config);
+
+  int   panes_shown = 0;
+  auto* styles      = new int[sb_config.size()];
+  auto* widths      = new int[sb_config.size()];
+
+  int i = 0;
+  for (const auto& it : sb_config)
+  {
+    if (m_panes[i].is_shown())
+    {
+      styles[panes_shown] = pane_styles().style(std::get<1>(it));
+      widths[panes_shown] = std::get<2>(it);
+
+      m_panes[i].SetStyle(styles[panes_shown]);
+      m_panes[i].SetWidth(widths[panes_shown]);
+      panes_shown++;
+    }
+
+    i++;
+  }
+
+  sb->SetFieldsCount(panes_shown, widths);
+  sb->SetStatusStyles(panes_shown, styles);
+
+  delete[] styles;
+  delete[] widths;
+
+  if (first)
+  {
+    sb->Bind(wxEVT_LEFT_UP, &statusbar::on_mouse, sb);
+    sb->Bind(wxEVT_RIGHT_UP, &statusbar::on_mouse, sb);
+    sb->Bind(wxEVT_MOTION, &statusbar::on_mouse, sb);
+  }
+
+  return sb;
 }

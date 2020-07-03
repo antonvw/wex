@@ -9,81 +9,12 @@
 
 #include <tuple>
 #include <vector>
+#include <wex/statusbar-pane.h>
 #include <wex/window-data.h>
 #include <wx/statusbr.h>
 
 namespace wex
 {
-  /// This class defines our statusbar panes, used by
-  /// wex::frame::setup_statusbar. It just adds some members to the base class
-  /// (that offers GetText(), style() and GetWidth()).
-  class statusbar_pane : public wxStatusBarPane
-  {
-  public:
-    /// Default constructor.
-    /// This constructs the PaneText pane.
-    statusbar_pane(
-      /// width of the pane (default, might be overridden in the config)
-      int width = -5,
-      /// style (default, might be overridden in the config)
-      int style = wxSB_NORMAL)
-      : wxStatusBarPane(style, width)
-      , m_name("PaneText"){};
-
-    /// Constructor.
-    statusbar_pane(
-      /// name of the pane
-      /// this lib uses:
-      /// - PaneFileType
-      /// - PaneInfo
-      /// - PaneLexer
-      /// - PaneTheme
-      /// - PaneMacro
-      /// - PaneMode
-      /// by setting up one of these panes,
-      /// your panes will get controlled by the lib.
-      const std::string& name,
-      /// width of the pane (default, might be overridden in the config)
-      int width = 50,
-      /// helptext shown as a tooltip
-      /// If you do no provide helptext, it is derived from the name, by using
-      /// text after the first 'e' character (so after 'Pane').
-      const std::string& helptext = std::string(),
-      /// style (default, might be overridden in the config)
-      /// - wxSB_NORMAL (0)
-      /// - wxSB_FLAT (1)
-      /// - wxSB_RAISED (2)
-      /// - wxSB_SUNKEN (3)
-      int style = wxSB_NORMAL,
-      /// initially show or hide the pane
-      bool is_shown = true);
-
-    /// Returns hidden text.
-    const auto& get_hidden_text() const { return m_hidden; };
-
-    /// Returns statusbar pane name.
-    const auto& get_name() const { return m_name; };
-
-    /// Returns statusbar pane help text.
-    const auto& help_text() const { return m_help_text; };
-
-    /// Returns whether this pane is shown.
-    bool is_shown() const { return m_is_shown; };
-
-    /// Sets hidden text.
-    void set_hidden_text(const std::string& text) { m_hidden = text; };
-
-    /// Sets whether this pane is shown.
-    /// Resets the hidden text if show is true.
-    void show(bool show);
-
-  private:
-    std::string m_help_text, m_hidden,
-      m_name; // no const
-
-    bool m_is_shown{true};
-  };
-
   class frame;
 
   /// Offers a status bar that calls virtual methods from wex::frame,
@@ -117,7 +48,7 @@ namespace wex
       /// - wxSTB_ELLIPSIZE_START
       /// - wxSTB_SHOW_TIPS
       /// - wxSTB_SIZEGRIP
-      const window_data& data = window_data().style(wxSTB_DEFAULT_STYLE));
+      const data::window& data = data::window().style(wxSTB_DEFAULT_STYLE));
 
     /// Destructor.
     ~statusbar();

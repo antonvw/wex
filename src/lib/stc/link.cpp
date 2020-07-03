@@ -7,12 +7,12 @@
 
 #include <algorithm>
 #include <wex/config.h>
+#include <wex/core.h>
 #include <wex/item-vector.h>
 #include <wex/lexer.h>
 #include <wex/link.h>
 #include <wex/path.h>
 #include <wex/stc.h>
-#include <wex/util.h>
 
 namespace wex
 {
@@ -83,7 +83,7 @@ const wex::path wex::link::find_between(const std::string& text, stc* stc) const
 }
 
 const wex::path
-wex::link::find_filename(const std::string& text, control_data& data) const
+wex::link::find_filename(const std::string& text, data::control& data) const
 {
   if (text.empty())
   {
@@ -140,7 +140,7 @@ wex::link::find_filename(const std::string& text, control_data& data) const
 
 const wex::path wex::link::find_url_or_mime(
   const std::string&  text,
-  const control_data& data,
+  const data::control& data,
   stc*                stc) const
 {
   if (!text.empty())
@@ -180,7 +180,7 @@ const wex::path wex::link::find_url_or_mime(
 
 // text contains selected text, or current line
 const wex::path
-wex::link::get_path(const std::string& text, control_data& data, stc* stc) const
+wex::link::get_path(const std::string& text, data::control& data, stc* stc) const
 {
   // mime or url
   if (

@@ -11,25 +11,25 @@
 #endif
 #include <wex/dialog.h>
 
-wex::dialog::dialog(const wex::window_data& data)
+wex::dialog::dialog(const data::window& data)
   : wxDialog(
       data.parent(),
-      data.id(), 
-      data.title().empty() ? "Dialog": data.title(), 
-      data.pos(), 
-      data.size(), 
-      data.style() == DATA_NUMBER_NOT_SET ? 
-        wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER: data.style(), 
-      data.name().empty() ? "dialog": data.name())
+      data.id(),
+      data.title().empty() ? "Dialog" : data.title(),
+      data.pos(),
+      data.size(),
+      data.style() == data::NUMBER_NOT_SET ?
+        wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER :
+        data.style(),
+      data.name().empty() ? "dialog" : data.name())
   , m_data(data)
   , m_top_sizer(new wxFlexGridSizer(1, 0, 0))
   , m_user_sizer(new wxFlexGridSizer(1, 0, 0))
 {
 }
 
-wxSizerItem* wex::dialog::add_user_sizer(
-  wxWindow* window,
-  const wxSizerFlags& flags)
+wxSizerItem*
+wex::dialog::add_user_sizer(wxWindow* window, const wxSizerFlags& flags)
 {
   wxSizerItem* item = m_user_sizer->Add(window, flags);
 
@@ -41,9 +41,8 @@ wxSizerItem* wex::dialog::add_user_sizer(
   return item;
 }
 
-wxSizerItem* wex::dialog::add_user_sizer(
-  wxSizer* sizer,
-  const wxSizerFlags& flags)
+wxSizerItem*
+wex::dialog::add_user_sizer(wxSizer* sizer, const wxSizerFlags& flags)
 {
   wxSizerItem* item = m_user_sizer->Add(sizer, flags);
 
@@ -73,10 +72,10 @@ void wex::dialog::layout_sizers(bool add_separator_line)
   // Then, if buttons were specified, the button sizer.
   if (m_data.button() != 0)
   {
-    if (wxSizer* sizer = (add_separator_line ?
-      CreateSeparatedButtonSizer(m_data.button()):
-      CreateButtonSizer(m_data.button()));
-      sizer != nullptr)
+    if (wxSizer* sizer =
+          (add_separator_line ? CreateSeparatedButtonSizer(m_data.button()) :
+                                CreateButtonSizer(m_data.button()));
+        sizer != nullptr)
     {
       m_top_sizer->Add(sizer, flag);
     }

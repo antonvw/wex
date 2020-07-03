@@ -9,6 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wex/core.h>
 #include <wex/lexers.h>
 #include <wex/listview.h>
 #include <wex/managedframe.h>
@@ -16,7 +17,6 @@
 #include <wex/printing.h>
 #include <wex/stc.h>
 #include <wex/tool.h>
-#include <wex/util.h> // for wex::ellipsed
 
 wex::menu::menu(menu_t style, const std::vector<menu_item>& items)
   : m_style(style)
@@ -53,7 +53,7 @@ size_t wex::menu::append(const std::vector<menu_item>& items)
         break;
 
       case menu_item::EXIT:
-        append({{wxID_EXIT, "", menu_data().action([=](wxCommandEvent& event) {
+        append({{wxID_EXIT, "", data::menu().action([=](wxCommandEvent& event) {
                    auto* frame =
                      dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
                    frame->Close(true);
@@ -129,10 +129,10 @@ void wex::menu::append_print()
 {
   append({{wxID_PRINT_SETUP,
            ellipsed(_("Page &Setup")),
-           menu_data().action([=](wxCommandEvent& event) {
+           data::menu().action([=](wxCommandEvent& event) {
              wex::printing::get()->get_html_printer()->PageSetup();
            })},
-          {wxID_PREVIEW, "", menu_data().action([=](wxCommandEvent& event) {
+          {wxID_PREVIEW, "", data::menu().action([=](wxCommandEvent& event) {
              auto* frame =
                dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
              if (frame->get_stc() != nullptr)
@@ -144,7 +144,7 @@ void wex::menu::append_print()
                frame->get_listview()->print_preview();
              }
            })},
-          {wxID_PRINT, "", menu_data().action([=](wxCommandEvent& event) {
+          {wxID_PRINT, "", data::menu().action([=](wxCommandEvent& event) {
              auto* frame =
                dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
              if (frame->get_stc() != nullptr)
@@ -185,7 +185,7 @@ void wex::menu::append_tools()
     {
       menuTool->append({{it.first,
                          it.second.text(),
-                         menu_data().help_text(it.second.help_text())}});
+                         data::menu().help_text(it.second.help_text())}});
     }
   }
 

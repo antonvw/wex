@@ -12,7 +12,7 @@
 // Returns a notebook item (no subnotebook yet).
 const auto test_notebook_item(
   wex::item::type_t       style = wex::item::NOTEBOOK,
-  wex::item_data::label_t label = wex::item_data::LABEL_LEFT,
+  wex::data::item::label_t label = wex::data::item::LABEL_LEFT,
   wxImageList*            il    = nullptr)
 {
   return wex::item(
@@ -28,9 +28,9 @@ const auto test_notebook_item(
       {{"spin1", 0, 10},
        {"spin2", 0, 10},
        {"spin3", 0, 10},
-       {"spin control double", 10.1, 15.0, 11.0, wex::item_data().inc(0.1)}}}},
+       {"spin control double", 10.1, 15.0, 11.0, wex::data::item().inc(0.1)}}}},
     style,
-    wex::item_data().label_type(label).image_list(il));
+    wex::data::item().label_type(label).image_list(il));
 };
 
 /// Returns a vector with some items.

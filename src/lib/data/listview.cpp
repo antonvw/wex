@@ -1,38 +1,38 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      data/listview.cpp
-// Purpose:   Implementation of wex::listview_data
+// Purpose:   Implementation of wex::data::listview
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/lexer.h>
+#include <wex/listview-core.h>
 #include <wex/listview-data.h>
-#include <wex/listview.h>
 
-wex::listview_data::listview_data(listview* lv)
+wex::data::listview::listview(core::listview* lv)
   : m_listview(lv)
 {
 }
 
-wex::listview_data::listview_data(listview* lv, const listview_data& r)
+wex::data::listview::listview(core::listview* lv, const data::listview& r)
   : m_listview(lv)
 {
   *this = r;
 }
 
-wex::listview_data::listview_data(control_data& data, listview* lv)
+wex::data::listview::listview(data::control& data, core::listview* lv)
   : m_data(data)
   , m_listview(lv)
 {
 }
 
-wex::listview_data::listview_data(window_data& data, listview* lv)
-  : m_data(control_data().window(data))
+wex::data::listview::listview(data::window& data, core::listview* lv)
+  : m_data(data::control().window(data))
   , m_listview(lv)
 {
 }
 
-wex::listview_data& wex::listview_data::operator=(const listview_data& r)
+wex::data::listview& wex::data::listview::operator=(const data::listview& r)
 {
   if (this != &r)
   {
@@ -52,7 +52,7 @@ wex::listview_data& wex::listview_data::operator=(const listview_data& r)
   return *this;
 }
 
-void wex::listview_data::add_columns()
+void wex::data::listview::add_columns()
 {
   m_listview->append_columns({{_("File Name"), column::STRING}});
 
@@ -81,13 +81,13 @@ void wex::listview_data::add_columns()
                               {_("Size")}});
 }
 
-wex::listview_data& wex::listview_data::image(image_t type)
+wex::data::listview& wex::data::listview::image(image_t type)
 {
   m_image_type = type;
   return *this;
 }
 
-bool wex::listview_data::inject()
+bool wex::data::listview::inject()
 {
   bool injected = m_listview != nullptr && m_listview->GetItemCount() > 0 &&
                   m_data.inject(
@@ -142,32 +142,32 @@ bool wex::listview_data::inject()
     }
 
     m_listview->SetName(name);
-    m_data.window(window_data().name(name));
+    m_data.window(data::window().name(name));
   }
 
   return injected;
 }
 
-wex::listview_data& wex::listview_data::lexer(const wex::lexer* lexer)
+wex::data::listview& wex::data::listview::lexer(const wex::lexer* lexer)
 {
   m_lexer = lexer;
   return *this;
 }
 
-wex::listview_data&
-wex::listview_data::menu(menu_t flags, control_data::action_t action)
+wex::data::listview&
+wex::data::listview::menu(menu_t flags, data::control::action_t action)
 {
   m_data.flags<flags.size()>(flags, m_menu_flags, action);
   return *this;
 }
 
-wex::listview_data& wex::listview_data::type(type_t type)
+wex::data::listview& wex::data::listview::type(type_t type)
 {
   m_type = type;
   return *this;
 }
 
-const std::string wex::listview_data::type_description() const
+const std::string wex::data::listview::type_description() const
 {
   std::string value;
 

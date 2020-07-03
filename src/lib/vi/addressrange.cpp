@@ -10,7 +10,10 @@
 #include <wx/wx.h>
 #endif
 #include <wex/addressrange.h>
+#include <wex/core.h>
 #include <wex/ex.h>
+#include <wex/frd.h>
+#include <wex/log.h>
 #include <wex/macros.h>
 #include <wex/managedframe.h>
 #include <wex/process.h>
@@ -23,9 +26,9 @@ namespace wex
   class global_env
   {
   public:
-    global_env(ex* ex, const indicator& indicator, const std::string& commands)
-      : m_ex(ex)
-      , m_find_indicator(indicator)
+    global_env(const addressrange* ar, const std::string& commands)
+      : m_ex(ar->m_ex)
+      , m_ar(ar)
     {
       m_ex->get_stc()->set_search_flags(m_ex->search_flags());
       m_ex->get_stc()->BeginUndoAction();
@@ -61,7 +64,7 @@ namespace wex
       if (!commands())
       {
         m_ex->get_stc()->set_indicator(
-          m_find_indicator,
+          m_ar->m_find_indicator,
           m_ex->get_stc()->GetTargetStart(),
           m_ex->get_stc()->GetTargetEnd());
       }
@@ -95,7 +98,7 @@ namespace wex
           else
           {
             m_ex->get_stc()->set_indicator(
-              m_find_indicator,
+              m_ar->m_find_indicator,
               m_ex->get_stc()->PositionFromLine(i),
               m_ex->get_stc()->GetLineEndPosition(i));
           }
@@ -121,11 +124,22 @@ namespace wex
     }
 
   private:
-    const indicator          m_find_indicator;
+    const addressrange*      m_ar;
     std::vector<std::string> m_commands;
     int                      m_changes{0};
     ex*                      m_ex;
   };
+
+  void toggle_case(stc* stc, std::string& target, char c)
+  {
+    std::transform(
+      target.begin(),
+      target.end(),
+      target.begin(),
+      c == 'U' ? ::toupper : ::tolower);
+
+    stc->Replace(stc->GetTargetStart(), stc->GetTargetEnd(), target);
+  }
 }; // namespace wex
 
 wex::addressrange::addressrange(wex::ex* ex, int lines)
@@ -206,35 +220,10 @@ wex::addressrange::build_replacement(const std::string& text) const
         break;
 
       case 'L':
-        if (backslash)
-        {
-          std::transform(
-            target.begin(),
-            target.end(),
-            target.begin(),
-            ::tolower);
-          m_stc->Replace(
-            m_stc->GetTargetStart(),
-            m_stc->GetTargetEnd(),
-            target);
-        }
-        else
-          replacement += c;
-        backslash = false;
-        break;
-
       case 'U':
         if (backslash)
         {
-          std::transform(
-            target.begin(),
-            target.end(),
-            target.begin(),
-            ::toupper);
-          m_stc->Replace(
-            m_stc->GetTargetStart(),
-            m_stc->GetTargetEnd(),
-            target);
+          toggle_case(m_stc, target, c);
         }
         else
           replacement += c;
@@ -477,7 +466,7 @@ bool wex::addressrange::global(const std::string& text, bool inverse) const
     return true;
   }
 
-  const global_env g(m_ex, m_find_indicator, rest);
+  const global_env g(this, rest);
   m_ex->marker_add('%', m_end.get_line() - 1);
   m_stc->SetTargetRange(
     m_stc->PositionFromLine(m_begin.get_line() - 1),
@@ -611,13 +600,13 @@ void wex::addressrange::on_exit()
 }
 
 bool wex::addressrange::parse(
+  const std::string& command,
   const std::string& text,
-  const std::string& cmd,
   info_message_t&    im)
 {
-  bool r = true;
+  im = info_message_t::NONE;
 
-  switch (cmd[0])
+  switch (command[0])
   {
     case 0:
       return false;
@@ -630,25 +619,23 @@ bool wex::addressrange::parse(
       }
       else
       {
-        return m_ex->frame()->show_ex_input(m_ex, cmd[0]);
+        return m_ex->frame()->show_ex_input(m_ex, command[0]);
       }
 
     case 'd':
-      r  = erase();
       im = info_message_t::DEL;
-      break;
+      return erase();
 
     case 'v':
     case 'g':
-      return global(text, cmd[0] == 'v');
+      return global(text, command[0] == 'v');
 
     case 'j':
       return join();
 
     case 'm':
-      r  = move(address(m_ex, text));
       im = info_message_t::MOVE;
-      break;
+      return move(address(m_ex, text));
 
     case 'l':
     case 'p':
@@ -657,15 +644,14 @@ bool wex::addressrange::parse(
     case 's':
     case '&':
     case '~':
-      return substitute(text, cmd[0]);
+      return substitute(text, command[0]);
 
     case 'S':
       return sort(text);
 
     case 't':
-      r  = copy(address(m_ex, text));
       im = info_message_t::COPY;
-      break;
+      return copy(address(m_ex, text));
 
     case 'w':
       if (!text.empty())
@@ -680,9 +666,8 @@ bool wex::addressrange::parse(
       }
 
     case 'y':
-      r  = yank(text.empty() ? '0' : (char)text[0]);
       im = info_message_t::YANK;
-      break;
+      return yank(text.empty() ? '0' : (char)text[0]);
 
     case '>':
       return shift_right();
@@ -700,11 +685,9 @@ bool wex::addressrange::parse(
       return (m_stc->GetName() != "Print" ? print("#" + text) : false);
 
     default:
-      log::status("Unknown range command") << cmd;
+      log::status("Unknown range command") << command;
       return false;
   }
-
-  return r;
 }
 
 bool wex::addressrange::parse(
@@ -885,7 +868,7 @@ bool wex::addressrange::substitute(const std::string& text, char cmd)
 
     case '~':
       repl    = m_replacement;
-      pattern = m_pattern;
+      pattern = find_replace_data::get()->get_find_string();
       options = text;
       break;
 

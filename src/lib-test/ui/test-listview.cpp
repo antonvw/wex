@@ -21,11 +21,11 @@ TEST_CASE("wex::listview")
 
   SUBCASE("general")
   {
-    REQUIRE(lv->data().type() == wex::listview_data::NONE);
+    REQUIRE(lv->data().type() == wex::data::listview::NONE);
 
-    wex::listview::config_dialog(wex::window_data().button(wxAPPLY | wxCANCEL));
+    wex::listview::config_dialog(wex::data::window().button(wxAPPLY | wxCANCEL));
 
-    REQUIRE(lv->data().image() == wex::listview_data::IMAGE_ART);
+    REQUIRE(lv->data().image() == wex::data::listview::IMAGE_ART);
 
     lv->config_get();
 
@@ -58,9 +58,6 @@ TEST_CASE("wex::listview")
 
     REQUIRE(lv->item_to_text(0).find("95") != std::string::npos);
     REQUIRE(!lv->item_to_text(-1).empty());
-
-    // lv->print(); // waits for input
-    // lv->print_preview();
   }
 
   SUBCASE("clear")
@@ -112,7 +109,7 @@ TEST_CASE("wex::listview")
     REQUIRE(lv->item_from_text("test.h\ntest.h"));
     REQUIRE(lv->set_item_image(0, wxART_WARNING));
     lv->items_update();
-    REQUIRE(lv->data().image() == wex::listview_data::IMAGE_ART);
+    REQUIRE(lv->data().image() == wex::data::listview::IMAGE_ART);
     REQUIRE(!lv->data().type_description().empty());
     REQUIRE(!lv->item_to_text(0).empty());
     REQUIRE(!lv->item_to_text(-1).empty());
@@ -139,13 +136,13 @@ TEST_CASE("wex::listview")
 TEST_CASE("wex::listview::TSV")
 {
   auto* lv =
-    new wex::listview(wex::listview_data().type(wex::listview_data::TSV));
+    new wex::listview(wex::data::listview().type(wex::data::listview::TSV));
   wex::test::add_pane(frame(), lv);
 
   SUBCASE("general")
   {
     REQUIRE(lv->GetColumnCount() == 0);
-    REQUIRE(lv->data().type() == wex::listview_data::TSV);
+    REQUIRE(lv->data().type() == wex::data::listview::TSV);
     REQUIRE(lv->load({"x\ty\tz", "v\tw\tx", "a\tb\tc", "f\tg\th"}));
     REQUIRE(lv->GetColumnCount() == 3);
     REQUIRE(lv->GetItemCount() == 4);

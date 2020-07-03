@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      menu-data.h
-// Purpose:   Declaration of wex::menu_data class
+// Purpose:   Declaration of wex::data::menu class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -10,12 +10,10 @@
 #include <wx/artprov.h> // for wxArtID
 #include <wx/event.h>
 
-namespace wex
+namespace wex::data
 {
-  class menu;
-
   /// Offers user data to be used by item.
-  class menu_data
+  class menu
   {
   public:
     /// Callback for menu action.
@@ -25,13 +23,13 @@ namespace wex
     typedef std::function<void(wxUpdateUIEvent&)> ui_t;
 
     /// Sets action.
-    menu_data& action(const action_t rhs);
+    menu& action(const action_t rhs);
 
     /// Returns art.
     auto& art() const { return m_artid; };
 
     /// Sets art.
-    menu_data& art(const wxArtID& rhs);
+    menu& art(const wxArtID& rhs);
 
     /// Binds action or ui to frame.
     void bind(int id) const;
@@ -40,10 +38,10 @@ namespace wex
     auto& help_text() const { return m_help_text; };
 
     /// Sets help text.
-    menu_data& help_text(const std::string& rhs);
+    menu& help_text(const std::string& rhs);
 
     /// Sets ui.
-    menu_data& ui(const ui_t rhs);
+    menu& ui(const ui_t rhs);
 
   private:
     std::string m_help_text;
@@ -51,4 +49,4 @@ namespace wex
     action_t    m_action{nullptr};
     ui_t        m_ui{nullptr};
   };
-} // namespace wex
+} // namespace wex::data

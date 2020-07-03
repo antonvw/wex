@@ -8,14 +8,13 @@
 #include "../test.h"
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
-#include <wex/managedframe.h>
 #include <wex/stc.h>
 
 #define ESC "\x1b"
 
 TEST_SUITE_BEGIN("wex::vi");
 
-TEST_CASE("wex::macros")
+TEST_CASE("wex::macros" * doctest::may_fail())
 {
   auto* vi = &get_stc()->get_vi();
 
@@ -44,6 +43,7 @@ TEST_CASE("wex::macros")
   SUBCASE("record and playback")
   {
     vi->get_stc()->set_text("hello");
+    REQUIRE(vi->get_stc()->get_vi().mode().normal());
     REQUIRE(macros.mode().transition("qa") == 2);
     REQUIRE(!macros.is_modified());
     REQUIRE(macros.mode().is_recording());

@@ -10,9 +10,9 @@
 #include <any>
 #include <vector>
 #include <wex/config.h>
+#include <wex/core.h>
 #include <wex/item.h>
 #include <wex/log.h>
-#include <wex/util.h>
 
 namespace wex
 {

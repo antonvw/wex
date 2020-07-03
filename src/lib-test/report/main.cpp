@@ -19,12 +19,12 @@ namespace wex
       {
         lexer lexer("cpp");
         m_report = new listview(
-          listview_data().type(listview_data::KEYWORD).lexer(&lexer));
+          data::listview().type(data::listview::KEYWORD).lexer(&lexer));
         wex::test::add_pane(this, m_report);
       };
 
       listview*
-      activate(listview_data::type_t listview_type, const lexer* lexer) override
+      activate(data::listview::type_t listview_type, const lexer* lexer) override
       {
         // only for coverage
         report::frame::activate(listview_type, lexer);

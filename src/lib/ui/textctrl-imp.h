@@ -15,28 +15,42 @@ namespace wex
 {
   class textctrl;
 
+  /// Offers textctrl implementation.
   class textctrl_imp : public wxTextCtrl
   {
   public:
-    textctrl_imp(textctrl* tc, wxControl* prefix, const window_data& data);
+    /// Constructor. Creates empty control.
+    textctrl_imp(textctrl* tc, wxControl* prefix, const data::window& data);
 
+    /// Constructor. Skips prefix.
     textctrl_imp(
-      textctrl*          tc,
-      const std::string& value = std::string(),
-      const window_data& data  = window_data());
+      textctrl*           tc,
+      const std::string&  value = std::string(),
+      const data::window& data  = data::window());
 
+    /// Returns text.
     const std::string get_text() const;
-    bool              handle(const std::string& command);
-    bool              handle(char command);
-    void              set_text(const std::string& text);
 
+    /// Handles string command.
+    bool handle(const std::string& command);
+
+    /// Handles chr command.
+    bool handle(char command);
+
+    /// Sets text.
+    void set_text(const std::string& text);
+
+    /// Selects all.
     void SelectAll() override;
 
   private:
-    void            bind();
-    void            cut();
-    bool            input_mode_finish() const;
+    void bind();
+    void cut();
+    bool input_mode_finish() const;
+
     textctrl_input& TCI();
+
+    const int m_id_register;
 
     wxControl* m_prefix{nullptr};
     textctrl*  m_tc;
@@ -44,7 +58,8 @@ namespace wex
 
     char m_input{0};
 
-    bool m_control_r{false}, m_mode_visual{false}, m_user_input{false};
+    bool m_all_selected{false}, m_control_r{false}, m_mode_visual{false},
+      m_user_input{false};
 
     textctrl_input m_calcs{ex_command::type_t::CALC},
       m_commands{ex_command::type_t::COMMAND},

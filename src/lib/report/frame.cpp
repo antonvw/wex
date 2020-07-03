@@ -28,9 +28,9 @@
 #include <wex/util.h>
 
 wex::report::frame::frame(
-  size_t             maxFiles,
-  size_t             maxProjects,
-  const window_data& data)
+  size_t              maxFiles,
+  size_t              maxProjects,
+  const data::window& data)
   : managed_frame(maxFiles, data)
   , m_project_history(maxProjects, ID_RECENT_PROJECT_LOWEST, "recent.Projects")
   , m_info({find_replace_data::get()->text_match_word(),
@@ -44,20 +44,20 @@ wex::report::frame::frame(
     {find_replace_data::get()->text_find(),
      item::COMBOBOX,
      std::any(),
-     control_data().is_required(true)},
+     data::control().is_required(true)},
     {m_text_in_files,
      item::COMBOBOX,
      default_extensions(),
-     control_data().is_required(true)},
+     data::control().is_required(true)},
     {m_text_in_folder,
      item::COMBOBOX_DIR,
      std::list<std::string>{wxGetHomeDir().ToStdString()},
-     control_data().is_required(true)},
+     data::control().is_required(true)},
     {t}};
 
   m_fif_dialog = new item_dialog(
     f,
-    window_data()
+    data::window()
       .button(wxAPPLY | wxCANCEL)
       .id(ID_FIND_IN_FILES)
       .title(_("Find In Files"))
@@ -73,7 +73,7 @@ wex::report::frame::frame(
      {{find_replace_data::get()->text_match_case(),
        find_replace_data::get()->text_regex(),
        m_text_recursive}}},
-    window_data()
+    data::window()
       .button(wxAPPLY | wxCANCEL)
       .id(ID_REPLACE_IN_FILES)
       .title(_("Replace In Files"))
@@ -135,7 +135,7 @@ wex::report::frame::frame(
       on_menu_history(
         m_project_history,
         event.GetId() - m_project_history.get_base_id(),
-        wex::stc_data::window_t().set(stc_data::WIN_IS_PROJECT));
+        wex::data::stc::window_t().set(data::stc::WIN_IS_PROJECT));
     },
     m_project_history.get_base_id(),
     m_project_history.get_base_id() + m_project_history.get_max_files());
@@ -187,12 +187,12 @@ void wex::report::frame::find_in_files(wxWindowID dialogid)
 
     Unbind(wxEVT_IDLE, &frame::on_idle, this);
 
-    dir::type_t type;
-    type.set(dir::FILES);
+    data::dir::type_t type;
+    type.set(data::dir::FILES);
 
     if (config(m_text_recursive).get(true))
     {
-      type.set(dir::RECURSIVE);
+      type.set(data::dir::RECURSIVE);
     }
 
     find_replace_data::get()->set_use_regex(
@@ -201,8 +201,9 @@ void wex::report::frame::find_in_files(wxWindowID dialogid)
     if (tool_dir dir(
           tool,
           config(m_text_in_folder).get_firstof(),
-          config(m_text_in_files).get_firstof(),
-          type);
+          data::dir()
+            .file_spec(config(m_text_in_files).get_firstof())
+            .type(type));
 
         dir.find_files() >= 0)
     {
@@ -260,7 +261,10 @@ bool wex::report::frame::find_in_files(
       }
       else if (it.dir_exists())
       {
-        tool_dir dir(tool, it, config(m_text_in_files).get_firstof());
+        tool_dir dir(
+          tool,
+          it,
+          data::dir().file_spec(config(m_text_in_files).get_firstof()));
 
         dir.find_files();
         stats += dir.get_statistics().get_elements();
@@ -289,18 +293,18 @@ int wex::report::frame::find_in_files_dialog(int id, bool add_in_files)
       {{find_replace_data::get()->text_find(),
         item::COMBOBOX,
         std::any(),
-        control_data().is_required(true)},
+        data::control().is_required(true)},
        (add_in_files ? item(
                          m_text_in_files,
                          item::COMBOBOX,
                          std::any(),
-                         control_data().is_required(true)) :
+                         data::control().is_required(true)) :
                        item()),
        (id == ID_TOOL_REPLACE ?
           item(find_replace_data::get()->text_replace_with(), item::COMBOBOX) :
           item()),
        item(m_info)},
-      window_data().title(find_in_files_title(id)))
+      data::window().title(find_in_files_title(id)))
       .ShowModal() == wxID_CANCEL)
   {
     return wxID_CANCEL;
@@ -319,9 +323,9 @@ const std::string wex::report::frame::find_in_files_title(int id) const
 
 bool wex::report::frame::grep(const std::string& arg, bool sed)
 {
-  static std::string arg1 = config(m_text_in_folder).get_firstof();
-  static std::string arg2 = config(m_text_in_files).get_firstof();
-  static dir::type_t arg3 = dir::FILES;
+  static std::string       arg1 = config(m_text_in_folder).get_firstof();
+  static std::string       arg2 = config(m_text_in_files).get_firstof();
+  static data::dir::type_t arg3 = data::dir::FILES;
 
   if (get_stc() != nullptr)
   {
@@ -332,7 +336,7 @@ bool wex::report::frame::grep(const std::string& arg, bool sed)
       !cmdline(
          {{{"recursive,r", "recursive"},
            [&](bool on) {
-             arg3.set(dir::RECURSIVE, on);
+             arg3.set(data::dir::RECURSIVE, on);
            }}},
          {},
          {{"rest",
@@ -384,7 +388,7 @@ bool wex::report::frame::grep(const std::string& arg, bool sed)
     log::status(find_replace_string(false));
     Unbind(wxEVT_IDLE, &frame::on_idle, this);
 
-    tool_dir dir(tool, arg1, arg2, arg3);
+    tool_dir dir(tool, arg1, data::dir().file_spec(arg2).type(arg3));
     dir.find_files();
 
     log::status(tool.info(&dir.get_statistics().get_elements()));
@@ -418,14 +422,14 @@ void wex::report::frame::on_command_item_dialog(
         case wxID_ADD:
           if (get_project() != nullptr)
           {
-            dir::type_t flags = 0;
+            data::dir::type_t flags = 0;
 
             if (config(get_project()->text_addfiles()).get(true))
-              flags.set(dir::FILES);
+              flags.set(data::dir::FILES);
             if (config(get_project()->text_addrecursive()).get(true))
-              flags.set(dir::RECURSIVE);
+              flags.set(data::dir::RECURSIVE);
             if (config(get_project()->text_addfolders()).get(true))
-              flags.set(dir::DIRS);
+              flags.set(data::dir::DIRS);
 
             get_project()->add_items(
               config(get_project()->text_infolder()).get_firstof(),
@@ -468,7 +472,7 @@ void wex::report::frame::on_idle(wxIdleEvent& event)
       (project != nullptr && project->get_contents_changed()) ||
       // using get_contents_changed gives assert in vcs dialog
       (stc != nullptr && stc->GetModify() &&
-       !stc->data().flags().test(stc_data::WIN_NO_INDICATOR)))
+       !stc->data().flags().test(data::stc::WIN_NO_INDICATOR)))
   {
     // Project or editor changed, add indicator if not yet done.
     if (title.substr(pos) != indicator)
@@ -510,7 +514,7 @@ void wex::report::frame::set_recent_file(const wex::path& path)
 
 void wex::report::frame::use_file_history_list(wex::listview* list)
 {
-  assert(list->data().type() == listview_data::HISTORY);
+  assert(list->data().type() == data::listview::HISTORY);
 
   m_file_history_listview = list;
   m_file_history_listview->Hide();

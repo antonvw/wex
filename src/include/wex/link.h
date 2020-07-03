@@ -13,7 +13,11 @@
 
 namespace wex
 {
-  class control_data;
+  namespace data
+  {
+    class control;
+  };
+
   class paths;
   class stc;
 
@@ -21,7 +25,7 @@ namespace wex
   class link
   {
   public:
-    /// line number to be used for control_data
+    /// line number to be used for data::control
     /// Afterwards line and col from data are filled in if possible.
     enum
     {
@@ -42,7 +46,7 @@ namespace wex
       /// text containing a path somewhere
       const std::string& text,
       /// control data to be filled in Line from data
-      control_data& data,
+      data::control& data,
       /// stc component
       stc* stc = nullptr) const;
 
@@ -52,11 +56,12 @@ namespace wex
 
   private:
     const path find_between(const std::string& text, stc* stc) const;
-    const path find_filename(const std::string& text, control_data& data) const;
+    const path
+               find_filename(const std::string& text, data::control& data) const;
     const path find_url_or_mime(
-      const std::string&  text,
-      const control_data& data,
-      stc*                stc) const;
+      const std::string&   text,
+      const data::control& data,
+      stc*                 stc) const;
 
     std::unique_ptr<paths> m_paths;
   };

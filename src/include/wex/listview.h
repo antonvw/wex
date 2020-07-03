@@ -9,77 +9,25 @@
 
 #include <list>
 #include <map>
-#include <vector>
+#include <wex/listview-core.h>
 #include <wex/listview-data.h>
 #include <wx/artprov.h> // for wxArtID
-#include <wx/listctrl.h>
 
 namespace wex
 {
+  class frame;
   class item_dialog;
   class menu;
-
-  /*! \file */
-  /// Sort types.
-  enum sort_t
-  {
-    SORT_KEEP = 1,   ///< keep current order, just resort
-    SORT_ASCENDING,  ///< sort ascending
-    SORT_DESCENDING, ///< sort descending
-    SORT_TOGGLE      ///< toggle sort order
-  };
-
-  /// Offers a column to be used in a wxListCtrl. Facilitates sorting.
-  class column : public wxListItem
-  {
-  public:
-    /// get_column types.
-    enum type_t
-    {
-      INVALID, ///< illegal col
-      INT = 1, ///< integer
-      DATE,    ///< date
-      FLOAT,   ///< float
-      STRING   ///< string
-    };
-
-    /// Default constructor.
-    column();
-
-    /// Constructor.
-    column(
-      /// name of the column
-      const std::string& name,
-      /// type of the column
-      type_t type = INT,
-      /// width of the column, default width (0) uses a width
-      /// that depends on the column type
-      /// if you specify a width other than 0, that one is used.
-      int width = 0);
-
-    /// Returns whether sorting is ascending.
-    bool is_sorted_ascending() const { return m_is_sorted_ascending; }
-
-    /// Sets the sort ascending member.
-    void set_is_sorted_ascending(sort_t type);
-
-    /// Returns the column type.
-    auto type() const { return m_type; }
-
-  private:
-    const type_t m_type                = INVALID;
-    bool         m_is_sorted_ascending = false;
-  };
 
   /// Adds printing, popup menu, images, columns and items to wxListView.
   /// Allows for sorting on any column.
   /// Adds some standard lists, all these lists
   /// have items associated with files or folders.
-  class listview : public wxListView
+  class listview : public core::listview
   {
   public:
     /// Default constructor.
-    listview(const listview_data& data = listview_data());
+    listview(const data::listview& data = data::listview());
 
     /// Virtual interface
 
@@ -98,17 +46,13 @@ namespace wex
 
     /// Other methods
 
-    /// Appends new columns.
-    /// Returns false if appending a column failed.
-    bool append_columns(const std::vector<column>& cols);
-
     /// Clears all items.
     void clear();
 
     /// Shows a dialog with options, returns dialog return code.
     /// If used modeless, it uses the dialog id as specified,
     /// so you can use that id in frame::on_command_item_dialog.
-    static int config_dialog(const window_data& data = window_data());
+    static int config_dialog(const data::window& data = data::window());
 
     /// Sets the configurable parameters to values currently in config.
     void config_get();
@@ -121,9 +65,6 @@ namespace wex
     {
       return get_column(name).GetColumn();
     };
-
-    /// Finds next.
-    bool find_next(const std::string& text, bool find_next = true);
 
     /// Returns the item text using item number and column name.
     /// If you do not specify a column, the item label is returned
@@ -189,6 +130,11 @@ namespace wex
     /// Returns current sorted column no.
     int sorted_column_no() const { return m_sorted_column_no; };
 
+    /// Virtual methods from core.
+
+    bool append_columns(const std::vector<column>& cols) override;
+    bool find_next(const std::string& text, bool find_next = true) override;
+
   protected:
     /// Virtual interface
 
@@ -216,7 +162,7 @@ namespace wex
     bool         set_item_image(long item_number, int iconid)
     {
       return (
-        m_data.image() == listview_data::IMAGE_FILE_ICON ?
+        m_data.image() == data::listview::IMAGE_FILE_ICON ?
           SetItemImage(item_number, iconid) :
           false);
     };
@@ -225,15 +171,18 @@ namespace wex
 
     const int m_image_height, m_image_width;
 
-    listview_data m_data;
+    data::listview m_data;
 
     bool m_item_updated = false;
     long m_item_number  = 0;
 
+    int m_col_event_id     = -1;
     int m_sorted_column_no = -1, m_to_be_sorted_column_no = -1;
 
     std::map<wxArtID, unsigned int> m_art_ids;
     std::vector<column>             m_columns;
+
+    class frame* m_frame;
 
     static inline item_dialog* m_config_dialog = nullptr;
   };
