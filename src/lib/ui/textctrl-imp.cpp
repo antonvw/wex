@@ -140,59 +140,57 @@ wex::textctrl_imp::textctrl_imp(
       case WXK_PAGEUP:
       case WXK_RIGHT:
       case WXK_UP:
-        if (event.GetKeyCode() == WXK_LEFT)
-        {
-          if (m_all_selected)
-          {
-            SetInsertionPoint(0);
-          }
-          else if (GetInsertionPoint() > 0)
-          {
-            SetInsertionPoint(GetInsertionPoint() - 1);
-          }
-          else
-          {
-            SelectNone();
-          }
+        switch (event.GetKeyCode())
+        { 
+          case WXK_LEFT:
+            if (m_all_selected)
+            {
+              SetInsertionPoint(0);
+            }
+            else if (const auto ip(GetInsertionPoint()); ip > 0)
+            {
+              SetInsertionPoint(ip - 1);
+            }
+            else
+            {
+              SelectNone();
+            }
 
-          m_all_selected = false;
-        }
-        else if (event.GetKeyCode() == WXK_RIGHT)
-        {
-          if (m_all_selected)
-          {
-            SetInsertionPointEnd();
-          }
-          else if (GetInsertionPoint() < GetLastPosition())
-          {
-            SetInsertionPoint(GetInsertionPoint() + 1);
-          }
-          else
-          {
-            SelectNone();
-          }
+            m_all_selected = false;
+            break;
 
-          m_all_selected = false;
-        }
-        else if (
-          (event.GetKeyCode() == WXK_HOME || event.GetKeyCode() == WXK_END) &&
-          !event.ControlDown())
-        {
-          event.Skip();
-        }
-        else if (m_command.type() == ex_command::type_t::FIND)
-        {
-          find_replace_data::get()->m_find_strings.set(
-            event.GetKeyCode(),
-            m_tc);
-        }
-        else if (m_input == 0)
-        {
-          TCI().set(event.GetKeyCode(), m_tc);
-        }
-        else
-        {
-          event.Skip();
+          case WXK_RIGHT:
+            if (m_all_selected)
+            {
+              SetInsertionPointEnd();
+            }
+            else if (const auto ip(GetInsertionPoint()); ip < GetLastPosition())
+            {
+              SetInsertionPoint(ip + 1);
+            }
+            else
+            {
+              SelectNone();
+            }
+
+            m_all_selected = false;
+            break;
+          
+          default:
+            if (m_command.type() == ex_command::type_t::FIND)
+            {
+              find_replace_data::get()->m_find_strings.set(
+                event.GetKeyCode(),
+                m_tc);
+            }
+            else if (m_input == 0)
+            {
+              TCI().set(event.GetKeyCode(), m_tc);
+            }
+            else
+            {
+              event.Skip();
+            }
         }
         break;
 
@@ -217,7 +215,6 @@ wex::textctrl_imp::textctrl_imp(
           cut();
         }
         event.Skip();
-        break;
     }
   });
 
@@ -326,6 +323,23 @@ wex::textctrl_imp::textctrl_imp(
     }
   });
 
+  Bind(wxEVT_TEXT_CUT, [=](wxClipboardTextEvent& event) {
+    // prevent cut
+  });
+
+  Bind(wxEVT_TEXT_PASTE, [=](wxClipboardTextEvent& event) {
+    if (const std::string text(clipboard_get()); !text.empty())
+    {
+      if (!GetStringSelection().empty())
+      {
+        m_command.handle(this, wxID_CUT);
+      }
+      
+      m_command.insert(GetInsertionPoint(), text);
+      event.Skip();
+    }
+  });
+
   bind();
 }
 
@@ -363,7 +377,8 @@ void wex::textctrl_imp::cut()
   if (!GetStringSelection().empty())
   {
     m_command.handle(this, wxID_CUT);
-    Cut();
+
+    wxTextCtrl::Cut();
   }
 }
 

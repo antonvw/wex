@@ -197,17 +197,6 @@ wxPanel* wex::managed_frame::create_ex_panel()
   return panel;
 }
 
-void wex::managed_frame::on_menu_history(
-  const class file_history& history,
-  size_t                    index,
-  data::stc::window_t       flags)
-{
-  if (const auto& file(history.get_history_file(index)); !file.empty())
-  {
-    open_file(file, data::stc().flags(flags));
-  }
-}
-
 void wex::managed_frame::hide_ex_bar(int hide)
 {
   if (m_manager.GetPane("VIBAR").IsShown())
@@ -225,6 +214,17 @@ void wex::managed_frame::hide_ex_bar(int hide)
     {
       m_textctrl->ex()->get_stc()->SetFocus();
     }
+  }
+}
+
+void wex::managed_frame::on_menu_history(
+  const class file_history& history,
+  size_t                    index,
+  data::stc::window_t       flags)
+{
+  if (const auto& file(history.get_history_file(index)); !file.empty())
+  {
+    open_file(file, data::stc().flags(flags));
   }
 }
 

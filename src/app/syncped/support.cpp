@@ -41,8 +41,7 @@ const long pane_flag = wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_CLOSE_ON_ALL_TABS |
 
 void build_ascii_table(wex::frame* frame)
 {
-  auto* stc =
-    frame->open_file(wex::path("Ascii table"), std::string(), wex::data::stc());
+  auto* stc = frame->open_file(wex::path("Ascii table"), std::string());
 
   // Do not show an edge, eol whitespace for ascii table.
   stc->SetEdgeMode(wxSTC_EDGE_NONE);

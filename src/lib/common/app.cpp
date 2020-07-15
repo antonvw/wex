@@ -7,6 +7,7 @@
 
 #include <filesystem>
 
+#include <wx/clipbrd.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -121,6 +122,8 @@ bool wex::app::OnInit()
   // Necessary for auto_complete images.
   wxInitAllImageHandlers();
 
+  wxTheClipboard->UsePrimarySelection(true);
+  
   stc::on_init();
   vcs::load_document();
   ex::get_macros().load_document();

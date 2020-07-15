@@ -590,7 +590,7 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
         m_data.window().pos(),
         m_data.window().size(),
         m_data.window().style() == data::NUMBER_NOT_SET ?
-          wxFNTP_DEFAULT_STYLE:
+          wxFNTP_DEFAULT_STYLE :
           m_data.window().style());
 
       m_window = pc;
@@ -806,16 +806,13 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
   {
     m_window->SetValidator(*m_data.control().validator());
   }
-  else
+  else if (m_type == TEXTCTRL_FLOAT)
   {
-    if (m_type == TEXTCTRL_FLOAT)
-    {
-      m_window->SetValidator(wxFloatingPointValidator<double>());
-    }
-    else if (m_type == TEXTCTRL_INT)
-    {
-      m_window->SetValidator(wxIntegerValidator<int>());
-    }
+    m_window->SetValidator(wxFloatingPointValidator<double>());
+  }
+  else if (m_type == TEXTCTRL_INT)
+  {
+    m_window->SetValidator(wxIntegerValidator<int>());
   }
 
   if (bookctrl != nullptr)

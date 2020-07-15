@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <tuple>
 #include <vector>
 #include <wex/toolbar-item-data.h>
 #include <wex/window-data.h>
@@ -39,7 +40,7 @@ namespace wex
 
     /// Constructor.
     toolbar(
-      managed_frame*     frame,
+      managed_frame*      frame,
       const data::window& data = data::window().style(wxAUI_TB_DEFAULT_STYLE));
 
     /// Adds a vector of checkbox controls to this toolbar.

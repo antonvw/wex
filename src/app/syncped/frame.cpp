@@ -81,6 +81,8 @@ frame::frame(app* app)
   }
   else if (m_app->get_files().empty())
   {
+    bool project_opened = false;
+
     if (
       wex::config("show.Projects").get(false) &&
       !get_project_history().get_history_file().empty())
@@ -89,8 +91,7 @@ frame::frame(app* app)
         wex::path(get_project_history().get_history_file()),
         wex::data::stc().flags(
           wex::data::stc::window_t().set(wex::data::stc::WIN_IS_PROJECT)));
-
-      pane_maximize("PROJECTS");
+      project_opened = true;
     }
 
     if (const int count = wex::config("recent.OpenFiles").get(0); count > 0)
@@ -102,17 +103,24 @@ frame::frame(app* app)
     }
     else
     {
-      auto* page = new wex::stc(
-        std::string(),
-        wex::data::stc(m_app->data())
-          .window(wex::data::window().parent(m_editors)));
+      if (project_opened)
+      {
+        pane_maximize("PROJECTS");
+      }
+      else
+      {
+        auto* page = new wex::stc(
+          std::string(),
+          wex::data::stc(m_app->data())
+            .window(wex::data::window().parent(m_editors)));
 
-      page->get_file().file_new("no name");
+        page->get_file().file_new("no name");
 
-      m_editors->add_page(
-        wex::data::notebook().page(page).key("no name").select());
+        m_editors->add_page(
+          wex::data::notebook().page(page).key("no name").select());
 
-      pane_show("FILES");
+        pane_show("FILES");
+      }
     }
   }
   else
