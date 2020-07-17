@@ -25,29 +25,33 @@ namespace wex
   public:
     /// Type to hold statusbar panes setup
     /// as a vector of tuples:
-    typedef std::vector < 
-      std::tuple < 
-        /// pane name
-        std::string, 
-        /// styles, first being actual used type
-        std::list < std::string >, 
-        /// width
-        int > > 
+    typedef std::vector<std::tuple<
+      /// pane name
+      std::string,
+      /// styles, first being actual used type
+      std::list<std::string>,
+      /// width
+      int>>
       statusbar_t;
 
     /// static interface
-    
+
     /// Returns the config dir for user data files.
     static const std::string dir();
-    
+
+    /// Do not save current config file on exit.
+    static void discard() { m_store_save = false; };
+
     /// Returns the current config file.
     static const std::string file();
 
-    /// Stores config, and frees objects.
+    /// Saves changes to store (unless discard was invoked), and frees objects.
+    /// This is done in app::OnExit.
     static void on_exit();
-    
-    /// Initializes global class.
-    /// This should be done before first use of config.
+
+    /// Initializes the store, and reads previous file.
+    /// This should be done before first use of config,
+    /// and is done in app::OnInit.
     static void on_init();
 
     /// Reads current config file.
@@ -55,11 +59,11 @@ namespace wex
 
     /// Saves current config file.
     static void save();
-    
+
     /// Sets the config file to use.
     /// If you do no use this, the default config file is used.
     static void set_file(const std::string& file);
-    
+
     /// Returns number of top level entries.
     static size_t size();
 
@@ -98,13 +102,13 @@ namespace wex
     config(const std::string& parent, const std::string& child);
 
     /// Destructor, calls child_end.
-   ~config();
-    
+    ~config();
+
     /// Saves changes to current config file, and sets
     /// and uses new file as config file.
     bool change_file(const std::string& file);
-    
-    /// Ends setting child values for this item, 
+
+    /// Ends setting child values for this item,
     /// deletes a possible local store for a child item.
     /// Returns false if not yet started.
     bool child_end();
@@ -138,10 +142,10 @@ namespace wex
 
     /// Returns long config value for item.
     long get(long def) const;
-    
+
     /// Returns long config value for item.
     int get(int def) const;
-    
+
     /// Returns float config value for item.
     float get(float def) const;
 
@@ -150,19 +154,18 @@ namespace wex
 
     /// Returns colour config value for item.
     wxColour get(const wxColour& def) const;
-    
+
     /// Returns font config value for item.
     wxFont get(const wxFont& def) const;
-    
+
     /// Returns a list with strings for item.
-    const std::list < std::string > get(
-      const std::list < std::string> & def) const;
+    const std::list<std::string> get(const std::list<std::string>& def) const;
 
     /// Returns a vector with ints for item.
-    const std::vector < int > get(const std::vector < int > & def) const;
+    const std::vector<int> get(const std::vector<int>& def) const;
 
     /// Returns a statusbar_t for item.
-    const statusbar_t get(const statusbar_t & def) const;
+    const statusbar_t get(const statusbar_t& def) const;
 
     /// Returns first of a list of strings from item.
     const std::string get_firstof() const;
@@ -173,11 +176,11 @@ namespace wex
     /// Item access / nested values.
 
     /// Returns the item.
-    auto & item() const {return m_item;};
-    
+    auto& item() const { return m_item; };
+
     /// Sets the item, and returns config.
     config& item(const std::string& item);
-    
+
     // Setter methods.
 
     /// Sets value from a string.
@@ -191,44 +194,46 @@ namespace wex
 
     /// Sets value from a long.
     void set(long v);
-    
+
     /// Sets value from a int.
     void set(int v);
-    
+
     /// Sets value from a float.
     void set(float v);
-    
+
     /// Sets value from a double.
     void set(double v);
-    
+
     /// Sets value from a colour.
     void set(const wxColour& v);
-    
+
     /// Sets value from a font.
     void set(const wxFont& v);
-    
+
     /// Sets value from a list with strings.
-    void set(const std::list < std::string > & v);
+    void set(const std::list<std::string>& v);
 
     /// Sets value from a vector with int.
-    void set(const std::vector < int > & v);
+    void set(const std::vector<int>& v);
 
     /// Sets value from a statusbar_t.
-    void set(const statusbar_t & r);
+    void set(const statusbar_t& r);
 
     /// Sets first of a list of strings in config key,
     /// deletes it if present at other places.
     /// If the list size would be greater than max, the last element is deleted.
     /// And returns the value.
     const std::string set_firstof(const std::string& v, size_t max = 75);
-    
+
     /// If this item is a bool, toggles value and returns new value.
     bool toggle(bool def = false);
+
   private:
     config_imp* get_store() const;
 
-    std::string m_item;
-    config_imp* m_local {nullptr};
+    std::string               m_item;
+    config_imp*               m_local{nullptr};
     inline static config_imp* m_store = nullptr;
+    inline static bool        m_store_save{true};
   };
-};
+}; // namespace wex

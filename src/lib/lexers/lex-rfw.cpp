@@ -5,6 +5,7 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include  <iostream>
 #include <regex>
 #include <string>
 #include <vector>
@@ -20,8 +21,7 @@ void parse_keyword(
   int&                cmdStateNew)
 {
   const WordList& keywords1 = *keywordlists[0];
-  const WordList& keywords2 = *keywordlists[1];
-
+  
   WordList rfwStruct;
   rfwStruct.Set("");
 
@@ -78,7 +78,7 @@ void parse_keyword(
     // disambiguate keywords and identifiers
     else if (
       cmdState != RFW_CMD_START ||
-      !((keywords1.InList(s) || keywords2.InList(s)) && keywordEnds))
+      !(keywords1.InList(s) && keywordEnds))
     {
       if (cmdStateNew != RFW_CMD_SKW_PARTIAL)
         sc.ChangeState(SCE_SH_IDENTIFIER);
@@ -99,17 +99,22 @@ static void colourise(
   WordList cmdDelimiter;
   cmdDelimiter.Set("| || |& & && ; ;; ( ) { }");
 
-  const std::vector<std::pair<std::string, bool>> special_keywords{
-    {"IN RANGE", false},          {"*Keywords*", true},
-    {"* Keywords *", true},       {"** Keywords **", true},
-    {"*** Keywords ***", true},   {"*Settings*", true},
-    {"* Settings *", true},       {"** Settings **", true},
-    {"*** Settings ***", true},   {"Suite Setup", false},
-    {"Suite Teardown", false},    {"*Test Cases*", true},
-    {"* Test Cases *", true},     {"** Test Cases **", true},
-    {"*** Test Cases ***", true}, {"Test Setup", false},
-    {"*Variables*", true},        {"* Variables *", true},
-    {"** Variables **", true},    {"*** Variables ***", true}};
+  const WordList& keywords2 = *keywordlists[1];
+  
+  std::vector<std::string> special_keywords;
+  
+  for (int i = 0; i < keywords2.Length(); i++)
+  {
+    special_keywords.push_back(keywords2.WordAt(i));
+    
+    for (int j = 0; j < special_keywords[i].size(); j++)
+    {
+      if (special_keywords[i][j] == '_')
+      {
+        special_keywords[i][j] = ' ';
+      }
+    }
+  }
 
   const CharacterSet setWordStart(CharacterSet::setAlpha, ":_[*");
   const CharacterSet setWordStartTSV(CharacterSet::setAlphaNum, ":_[*");
@@ -195,9 +200,9 @@ static void colourise(
       if (std::equal(
             words.begin(),
             words.end(),
-            special_keywords[ki].first.begin()))
+            special_keywords[ki].begin()))
       {
-        if (words.size() == special_keywords[ki].first.size())
+        if (words.size() == special_keywords[ki].size())
         {
           sc.Forward();
           sc.SetState(SCE_SH_WORD);
