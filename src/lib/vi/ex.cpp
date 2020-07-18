@@ -126,8 +126,8 @@ namespace wex
           }
 
           if (
-            line.find(":a") == 0 || line.find(":i") == 0 ||
-            line.find(":c") == 0)
+            line.starts_with(":a") || line.starts_with(":i") ||
+            line.starts_with(":c"))
           {
             if (!ex->command(line + tkz.last_delimiter()))
             {

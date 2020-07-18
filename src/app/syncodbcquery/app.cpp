@@ -408,7 +408,8 @@ void frame::on_command_item_dialog(
   }
 }
 
-wex::stc* frame::open_file(const wex::path& filename, const wex::data::stc& data)
+wex::stc*
+frame::open_file(const wex::path& filename, const wex::data::stc& data)
 {
   if (m_query->open(filename, data))
   {
@@ -433,9 +434,9 @@ void frame::run_query(const std::string& query, bool empty_results)
   // $SQLTables $1:'%'
   // allow you to get database schema.
   if (
-    query_lower.find("select") == 0 || query_lower.find("describe") == 0 ||
-    query_lower.find("show") == 0 || query_lower.find("explain") == 0 ||
-    query_lower.find("$sql" == 0))
+    query_lower.starts_with("select") || query_lower.starts_with("describe") ||
+    query_lower.starts_with("show") || query_lower.starts_with("explain") ||
+    query_lower.starts_with("$sql"))
   {
     rpc = m_results->IsShown() ?
             m_otl.query(query, m_results, m_stopped, empty_results) :

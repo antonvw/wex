@@ -226,7 +226,7 @@ void wex::data::stc::event_data::set(core::stc* s, bool synced)
   // Other kind of files might get new data anywhere inside the file,
   // we cannot sync that by keeping pos.
   // Also only do it for reasonably large files.
-  const bool is_log = (s->get_filename().extension().find(".log") == 0);
+  const bool is_log = (s->get_filename().extension().starts_with(".log"));
   m_synced          = synced;
   m_synced_log      = synced && is_log && s->GetTextLength() > 1024;
 }

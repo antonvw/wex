@@ -514,7 +514,7 @@ size_t wex::lexer::line_size() const
 bool wex::lexer::keyword_starts_with(const std::string& word) const
 {
   const auto& it = m_keywords.lower_bound(word);
-  return it != m_keywords.end() && it->find(word) == 0;
+  return it != m_keywords.end() && it->starts_with(word);
 }
 
 std::stringstream wex::lexer::log() const

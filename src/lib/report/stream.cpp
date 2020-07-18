@@ -44,8 +44,8 @@ wex::report::stream::comment_t wex::report::stream::check_comment_syntax(
   }
 
   if (
-    syntax_begin.find(text) == 0 ||
-    (!syntax_end.empty() && syntax_end.find(text) == 0))
+    syntax_begin.starts_with(text) ||
+    (!syntax_end.empty() && syntax_end.starts_with(text)))
   {
     return COMMENT_INCOMPLETE;
   }

@@ -141,7 +141,7 @@ wex::textctrl_imp::textctrl_imp(
       case WXK_RIGHT:
       case WXK_UP:
         switch (event.GetKeyCode())
-        { 
+        {
           case WXK_LEFT:
             if (m_all_selected)
             {
@@ -175,7 +175,7 @@ wex::textctrl_imp::textctrl_imp(
 
             m_all_selected = false;
             break;
-          
+
           default:
             if (m_command.type() == ex_command::type_t::FIND)
             {
@@ -305,11 +305,11 @@ wex::textctrl_imp::textctrl_imp(
         {
           if (
             get_text() == "gt" || get_text() == "n" || get_text() == "prev" ||
-            get_text().find("ta") == 0)
+            get_text().starts_with("ta"))
           {
             focus = managed_frame::HIDE_BAR_FORCE;
           }
-          else if (get_text().find("!") == 0)
+          else if (get_text().starts_with("!"))
           {
             focus = managed_frame::HIDE_BAR;
           }
@@ -334,7 +334,7 @@ wex::textctrl_imp::textctrl_imp(
       {
         m_command.handle(this, wxID_CUT);
       }
-      
+
       m_command.insert(GetInsertionPoint(), text);
       event.Skip();
     }
