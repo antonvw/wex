@@ -258,6 +258,7 @@ const std::string wex::clipboard_get()
     }
   }
 
+  log("clipboard empty");
   return std::string();
 }
 

@@ -44,7 +44,7 @@ bool app::OnInit()
 
   if (bool exit = false;
       !wex::cmdline(
-         {// boolean options
+         {// --- boolean options ---
           {{"end,+", "start at end any file opened"},
            [&](const std::any& s) {
              m_data.control(wex::data::control().command("G"));
@@ -102,7 +102,7 @@ bool app::OnInit()
              exit = true;
            }},
 
-          {{"keep,k", "keep vi parameters"},
+          {{"keep,k", "keep vi options: + -c -s"},
            [&](bool on) {
              m_keep = on;
            }},
@@ -138,6 +138,14 @@ bool app::OnInit()
              exit = true;
            }},
 
+          {{"no-config,n", "do not save json config on exit"},
+           [&](bool on) {
+             if (on)
+             {
+               wex::config::discard();
+             }
+           }},
+
           {{"project,p", "open specified files as projects"},
            [&](bool on) {
              m_is_project = on;
@@ -168,7 +176,7 @@ bool app::OnInit()
              m_is_output = on;
            }}},
 
-         {// options with arguments
+         {// --- options with arguments ---
           {{"command,c", "vi command"},
            {wex::cmdline::STRING,
             [&](const std::any& s) {

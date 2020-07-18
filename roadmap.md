@@ -1,11 +1,15 @@
-# feature/vcs
+# roadmap
+
+## feature/july
+
+## feature/vcs
 - improve blame size calculation, now only uses size of first blame line,
   should be more, or all
   improve align_text (see e.g. blame annotations)
 - git blame margin default not wide enough (MSW)
 - allow checkout by showing other branches, and remove from menu
 
-# feature/c++20
+## feature/c++20
 - no longer use StartsWidth (after new develop merge) or find() == 0
   as starts_with
 - c++latest gives error on visual studio
@@ -17,9 +21,8 @@
   - use :1 bit for several bools
   - wxDateTime replace by c++20 methods date and time utilities
 
-# backlog
+## backlog
 - use abstract factory design pattern
-- super linter
 - reenable ubuntu test on travis (after ubuntu 20.04)
 - less platform dependant code
 - invest use wxTextCompleter
@@ -27,4 +30,3 @@
   -> windows appear
 - each process separate stc
   - process shell and aui
-- invest using RFW spaced keywords, update rfw FOR keywords

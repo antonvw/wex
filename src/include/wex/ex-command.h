@@ -94,6 +94,9 @@ namespace wex
     /// Inserts char at pos.
     void insert(size_t pos, char c);
 
+    /// Inserts string at pos.
+    void insert(size_t pos, const std::string& s);
+
     /// Sets to no type.
     void no_type();
 

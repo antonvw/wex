@@ -116,7 +116,7 @@ Variables are expanded when playing back the macro.
   <macro name="Hdr">
     <command>gg</command>
     <command>O</command>
-    <command>&#27;</command>
+    <command>"&#27;"</command>
     <command>@Cl@</command>
     <command>o</command>
     <command>&#27;</command>

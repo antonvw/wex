@@ -137,6 +137,16 @@ TEST_CASE("wex::ex_command")
     REQUIRE(command.command() == "/012789");
   }
 
+  SUBCASE("insert")
+  {
+    command = wex::ex_command("/0123456789");
+    REQUIRE(command.command() == "/0123456789");
+    command.insert(1, 'a');
+    REQUIRE(command.command() == "/0a123456789");
+    command.insert(1, "xyz");
+    REQUIRE(command.command() == "/0xyza123456789");
+  }
+
   SUBCASE("handle")
   {
     auto* tc = new wxTextCtrl(frame(), wxID_ANY);

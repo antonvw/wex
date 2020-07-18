@@ -582,17 +582,20 @@ wex::vi::vi(wex::stc* arg)
       {"Q",
        [&](const std::string& command) {
          frame()->save_current_page("ctags");
+
          if (get_stc()->GetSelectedText().empty())
          {
            get_stc()->GetColumn(get_stc()->GetCurrentPos()) == 0 ?
              ctags::find(std::string()) :
              ctags::find(
-               get_stc()->get_word_at_pos(get_stc()->GetCurrentPos()));
+               get_stc()->get_word_at_pos(get_stc()->GetCurrentPos()),
+               this);
          }
          else
          {
-           ctags::find(get_stc()->GetSelectedText().ToStdString());
+           ctags::find(get_stc()->GetSelectedText().ToStdString(), this);
          }
+
          return 1;
        }},
       {_s(WXK_CONTROL_W),
@@ -1711,6 +1714,8 @@ bool wex::vi::other_command(std::string& command)
 
 bool wex::vi::parse_command(std::string& command)
 {
+  const auto org(command);
+  
   if (const auto& it = get_macros().get_keys_map().find(command.front());
       it != get_macros().get_keys_map().end())
   {
@@ -1817,7 +1822,18 @@ bool wex::vi::parse_command(std::string& command)
 
   if (!command.empty())
   {
-    m_mode.insert() ? insert_mode(command) : parse_command(command);
+    if (m_mode.insert())
+    {
+      return insert_mode(command);
+    }
+    else if (command != org) 
+    {
+      return parse_command(command);
+    }
+    else
+    {
+      return false;
+    }
   }
 
   return true;
@@ -1878,7 +1894,7 @@ void wex::vi::set_last_command(const std::string& command)
   }
 }
 
-void wex::vi::visual_extend(int begin_pos, int end_pos)
+void wex::vi::visual_extend(int begin_pos, int end_pos) const
 {
   if (begin_pos == wxSTC_INVALID_POSITION || end_pos == wxSTC_INVALID_POSITION)
   {

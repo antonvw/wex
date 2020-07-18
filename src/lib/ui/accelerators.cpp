@@ -17,9 +17,11 @@ wex::accelerators::accelerators(
   bool                                   debug)
 {
   auto* frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()));
+
   m_size =
     v.size() +
     (debug ? frame->get_debug()->debug_entry().get_commands().size() : 0);
+
   m_entries = new wxAcceleratorEntry[m_size];
 
   int i = 0;

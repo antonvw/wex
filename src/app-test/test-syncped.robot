@@ -31,7 +31,7 @@ Suite Setup
 	Find Syncped
 	Variable Should Exist	${syncped}
 
-Test Setup	
+Test Setup
 	Create File	${file-input}
 	Create File	${file-output}
 

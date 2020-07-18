@@ -29,7 +29,10 @@ bool wex::data::find::find_margin(const std::string& text, int& found_line)
   const bool wrapscan(config(_("stc.Wrap scan")).get(true));
   std::match_results<std::string::const_iterator> m;
 
-  int  line  = m_stc->LineFromPosition(m_start_pos) + (m_forward ? +1 : -1);
+  int line = !m_recursive ?
+               m_stc->LineFromPosition(m_start_pos) + (m_forward ? +1 : -1) :
+               m_stc->LineFromPosition(m_start_pos);
+
   bool found = false;
 
   do
@@ -57,13 +60,18 @@ bool wex::data::find::find_margin(const std::string& text, int& found_line)
     set_pos();
     found = find_margin(text, line);
 
+    if (found)
+    {
+      found_line = line;
+    }
+
     m_recursive = false;
   }
 
   return found;
 }
 
-wex::data::find& wex::data::find::set_pos()
+void wex::data::find::set_pos()
 {
   if (m_forward)
   {
@@ -98,6 +106,4 @@ wex::data::find& wex::data::find::set_pos()
       m_end_pos = 0;
     }
   }
-
-  return *this;
 }

@@ -234,7 +234,11 @@ wex::config& wex::config::item(const std::string& item)
 
 void wex::config::on_exit()
 {
-  m_store->save();
+  if (m_store_save)
+  {
+    m_store->save();
+  }
+
   delete m_store;
 }
 

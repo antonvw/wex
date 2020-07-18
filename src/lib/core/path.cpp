@@ -27,7 +27,7 @@ namespace wex
   {
     lexers* l = lexers::get(false);
     return l != nullptr && !l->get_lexers().empty() ?
-             l->find_by_filename(filename).scintilla_lexer() :
+             l->find_by_filename(filename).display_lexer() :
              std::string();
   }
 }; // namespace wex
