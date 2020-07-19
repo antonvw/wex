@@ -29,9 +29,6 @@ configure_file(
   src/lib/lexers/LexAda.cxx 
   ${CMAKE_SOURCE_DIR}/external/wxWidgets/src/stc/scintilla/lexers COPYONLY)
 configure_file(
-  src/lib/lexers/LexBash.cxx 
-  ${CMAKE_SOURCE_DIR}/external/wxWidgets/src/stc/scintilla/lexers COPYONLY)
-configure_file(
   src/lib/lexers/Catalogue.cxx 
   ${CMAKE_SOURCE_DIR}/external/wxWidgets/src/stc/scintilla/src COPYONLY)
 

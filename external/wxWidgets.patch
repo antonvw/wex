@@ -60,3 +60,16 @@ index 2b8dbbe5db..dcc588adc6 100644
      list(APPEND wxTOOLKIT_INCLUDE_DIRS ${${gtk_lib}_INCLUDE_DIRS})
      list(APPEND wxTOOLKIT_LIBRARIES ${${gtk_lib}_LIBRARIES})
      list(APPEND wxTOOLKIT_DEFINITIONS ${${gtk_lib}_DEFINITIONS})
+diff --git a/src/stc/scintilla/lexers/LexBash.cxx b/src/stc/scintilla/lexers/LexBash.cxx
+index af8507d7de..4a804678bd 100644
+--- a/src/stc/scintilla/lexers/LexBash.cxx
++++ b/src/stc/scintilla/lexers/LexBash.cxx
+@@ -23,6 +23,8 @@
+ #include "CharacterSet.h"
+ #include "LexerModule.h"
+ 
++#include "../../../../../../src/lib/lexers/lex-rfw.cpp"
++
+ #ifdef SCI_NAMESPACE
+ using namespace Scintilla;
+ #endif

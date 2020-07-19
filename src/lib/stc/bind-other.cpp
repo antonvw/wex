@@ -17,6 +17,44 @@
 #include <wex/vcs.h>
 #include <wx/fdrepdlg.h> // for wxFindDialogEvent
 
+namespace wex
+{
+  void hypertext(stc* stc)
+  {
+    if (const auto match_pos = stc->FindText(
+          stc->GetCurrentPos() - 1,
+          stc->PositionFromLine(stc->GetCurrentLine()),
+          "<");
+        match_pos != wxSTC_INVALID_POSITION &&
+        stc->GetCharAt(match_pos + 1) != '!')
+    {
+      if (const auto match(stc->get_word_at_pos(match_pos + 1));
+          match.find("/") != 0 &&
+          stc->GetCharAt(stc->GetCurrentPos() - 2) != '/' &&
+          (stc->get_lexer().language() == "xml" ||
+           stc->get_lexer().is_keyword(match)) &&
+          !stc->SelectionIsRectangle())
+      {
+        if (const std::string add("</" + match + ">");
+            stc->get_vi().is_active())
+        {
+          if (
+            !stc->get_vi().command(add) ||
+            !stc->get_vi().command(std::string(1, WXK_ESCAPE)) ||
+            !stc->get_vi().command("%") || !stc->get_vi().command("i"))
+          {
+            log::status("Autocomplete failed");
+          }
+        }
+        else
+        {
+          stc->InsertText(stc->GetCurrentPos(), add);
+        }
+      }
+    }
+  }
+}; // namespace wex
+
 void wex::stc::bind_other()
 {
   Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
@@ -68,36 +106,11 @@ void wex::stc::bind_other()
 
       event.Skip();
     }
+
     if (
       event.GetUnicodeKey() == '>' && m_lexer.scintilla_lexer() == "hypertext")
     {
-      if (const auto match_pos = FindText(
-            GetCurrentPos() - 1,
-            PositionFromLine(GetCurrentLine()),
-            "<");
-          match_pos != wxSTC_INVALID_POSITION &&
-          GetCharAt(match_pos + 1) != '!')
-      {
-        if (const auto match(get_word_at_pos(match_pos + 1));
-            match.find("/") != 0 && GetCharAt(GetCurrentPos() - 2) != '/' &&
-            (m_lexer.language() == "xml" || m_lexer.is_keyword(match)) &&
-            !SelectionIsRectangle())
-        {
-          if (const std::string add("</" + match + ">"); m_vi.is_active())
-          {
-            if (
-              !m_vi.command(add) || !m_vi.command(std::string(1, WXK_ESCAPE)) ||
-              !m_vi.command("%") || !m_vi.command("i"))
-            {
-              log::status("Autocomplete failed");
-            }
-          }
-          else
-          {
-            InsertText(GetCurrentPos(), add);
-          }
-        }
-      }
+      hypertext(this);
     }
   });
 
@@ -343,6 +356,9 @@ void wex::stc::bind_other()
 
   Bind(wxEVT_STC_UPDATEUI, [=](wxStyledTextEvent& event) {
     event.Skip();
-    m_frame->update_statusbar(this, "PaneInfo");
+    if (event.GetUpdated() & wxSTC_UPDATE_SELECTION)
+    {
+      m_frame->update_statusbar(this, "PaneInfo");
+    }
   });
 }

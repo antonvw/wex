@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
-#include <tuple>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -98,12 +97,7 @@ namespace wex
 }; // namespace wex
 
 wex::toolbar::toolbar(managed_frame* frame, const data::window& data)
-  : wxAuiToolBar(
-      frame,
-      data.id(),
-      data.pos(),
-      data.size(),
-      data.style() | wxAUI_TB_HORZ_TEXT | wxAUI_TB_PLAIN_BACKGROUND)
+  : wxAuiToolBar(frame, data.id(), data.pos(), data.size(), data.style())
   , m_frame(frame)
 {
 }
