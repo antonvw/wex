@@ -773,11 +773,11 @@ void wex::stc::filetype_menu()
   // The order here should be the same as the defines for wxSTC_EOL_CRLF.
   // So the FindItemByPosition can work
   auto* menu = new wex::menu({{id::stc::eol_dos, "&DOS", menu_item::CHECK},
-                              {id::stc::eol_mac, "&MAC", menu_item::CHECK},
-                              {id::stc::eol_unix, "&UNIX", menu_item::CHECK},
+                              {id::stc::eol_mac, "&Mac", menu_item::CHECK},
+                              {id::stc::eol_unix, "&Unix", menu_item::CHECK},
                               {}});
 
-  auto* hex = menu->AppendCheckItem(id::stc::hex, "&HEX");
+  auto* hex = menu->AppendCheckItem(id::stc::hex, "&Hex");
 
   menu->FindItemByPosition(GetEOLMode())->Check();
 

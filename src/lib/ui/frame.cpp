@@ -547,17 +547,11 @@ bool wex::frame::update_statusbar(stc* stc, const std::string& pane)
   {
     switch (stc->GetEOLMode())
     {
-      case wxSTC_EOL_CRLF:
-        text << "DOS";
-        break;
-      case wxSTC_EOL_CR:
-        text << "MAC";
-        break;
-      case wxSTC_EOL_LF:
-        text << "UNIX";
-        break;
+      case wxSTC_EOL_CRLF: text << "DOS"; break;
+      case wxSTC_EOL_CR: text << "Mac"; break;
+      case wxSTC_EOL_LF: text << "Unix"; break;
       default:
-        text << "UNKNOWN";
+        assert(0);
     }
   }
   else if (pane == "PaneMode")
