@@ -36,6 +36,7 @@ TEST_CASE("wex::data::find")
     stc->DocumentStart();
     stc->SetMarginWidth(3, 100);
     stc->MarginSetText(1, "hello world");
+    stc->MarginSetText(2, "hello world");
 
     wex::data::find f(stc);
     int             line = 10;

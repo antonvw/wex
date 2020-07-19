@@ -137,6 +137,17 @@ void wex::ex_command::insert(size_t pos, char c)
   }
 }
 
+void wex::ex_command::insert(size_t pos, const std::string& s)
+{
+  if (m_has_type)
+  {
+    if (pos < m_text.size())
+    {
+      m_text.insert(str().size() + pos, s);
+    }
+  }
+}
+
 void wex::ex_command::no_type()
 {
   m_has_type = false;

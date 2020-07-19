@@ -37,7 +37,11 @@ namespace wex
     /// If the name is empty, next is invoked.
     /// Otherwise shows a dialog to select a file from the matches.
     /// Returns false if dialog was cancelled.
-    static bool find(const std::string& tag);
+    static bool find(
+      /// tag to find
+      const std::string& tag, 
+      /// a possible active ex
+      ex* ex = nullptr);
 
     /// Finds the tag matching 'tag' and uses it to fill the supplied entries.
     /// Returns true if a matching tag is found,

@@ -28,6 +28,13 @@ namespace wex
       const std::string&  value = std::string(),
       const data::window& data  = data::window());
 
+    /// virtual interface
+
+    /// Selects all.
+    void SelectAll() override;
+
+    /// other methods
+
     /// Returns text.
     const std::string get_text() const;
 
@@ -39,9 +46,6 @@ namespace wex
 
     /// Sets text.
     void set_text(const std::string& text);
-
-    /// Selects all.
-    void SelectAll() override;
 
   private:
     void bind();

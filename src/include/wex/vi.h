@@ -63,7 +63,7 @@ namespace wex
     const auto& other_commands() const { return m_other_commands; };
 
     /// Extend visual selection.
-    void visual_extend(int start_pos, int end_pos);
+    void visual_extend(int start_pos, int end_pos) const;
 
   private:
     /// commands to be used in lambda

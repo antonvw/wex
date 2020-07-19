@@ -1,2 +1,4 @@
-This library contains data classes for wex. 
+# data library
+
+This library contains data classes for wex.
 It only uses the core wex library.

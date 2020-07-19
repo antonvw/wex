@@ -35,15 +35,23 @@ namespace wex::data
     /// Returns true if text found in margin, and sets line.
     bool find_margin(const std::string& text, int& line);
 
+    /// Returns find flags.
+    int flags() const { return m_flags; };
+
     /// Sets find flags.
     find& flags(int rhs);
+
+    /// Returns if forward search is true.
+    bool forward() const { return m_forward; };
 
     /// Returns start pos.
     int start_pos() const { return m_start_pos; };
 
+    /// Returns stc member.
+    core::stc* stc() { return m_stc; };
+
   private:
-    /// Sets start and end pos based on stc.
-    find& set_pos();
+    void set_pos();
 
     core::stc* m_stc;
 
