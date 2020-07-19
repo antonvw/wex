@@ -1,9 +1,5 @@
 # roadmap
 
-## feature/clang
-- clang 11
-- clang-format only if clang available
-
 ## feature/vcs
 - improve blame size calculation, now only uses size of first blame line,
   should be more, or all

@@ -13,7 +13,9 @@
 bool wex::beautify::file(const path& p) const
 {
   return is_auto() && is_active() && is_supported(p.lexer()) &&
-         process().execute(name() + " -i " + p.string(), process::EXEC_WAIT);
+         process().execute(
+           name() + " -i " + p.string() + " --style=file --fallback-style=none",
+           process::EXEC_WAIT);
 }
 
 bool wex::beautify::is_active() const
