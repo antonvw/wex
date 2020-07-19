@@ -10,7 +10,7 @@ one of these applications, being a full featured source code text editor.
 
 - [cmake](http://www.cmake.org/)
 - [boost](https://www.boost.org) (do not use version 1.72)
-- a `c++17` standard supporting compiler (clang-8 on osx)
+- a `c++20` standard supporting compiler (clang-8 on osx)
 
 ## Building
 
