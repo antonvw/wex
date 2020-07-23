@@ -55,14 +55,11 @@ namespace wex
     /// Add function.
     void add_function(const std::string& name, const function_t& t);
 
-    /// Parse line from arg count and array.
-    bool parse(int ac, char* av[], bool save);
-
-    /// Parse line from string.
-    bool parse(const std::string& s, std::string& help, bool save);
+    /// Parse cmdline.
+    bool parse(data::cmdline& data);
 
   private:
-    bool parse_handle(std::string* help, bool save);
+    bool parse_handle(data::cmdline& data);
 
     std::map<std::string, function_t> m_functions;
 

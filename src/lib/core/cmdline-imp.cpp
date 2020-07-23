@@ -19,7 +19,7 @@
 
 #define WEX_CALLBACK(TYPE, FIELD)        \
   v->second.FIELD(it.second.as<TYPE>()); \
-  if (save)                              \
+  if (data.save())                       \
     m_cfg.item(before(it.first, ',')).set(it.second.as<TYPE>());
 
 wex::cmdline_imp::function_t::function_t(
@@ -72,28 +72,30 @@ void wex::cmdline_imp::add_function(
   m_functions.insert({before(name, ','), t});
 }
 
-bool wex::cmdline_imp::parse(int ac, char* av[], bool save)
+bool wex::cmdline_imp::parse(data::cmdline& data)
 {
-  po::store(
-    po::command_line_parser(ac, av)
-      .options(m_desc)
-      .positional(m_pos_desc)
-      .run(),
-    m_vm);
-  return parse_handle(nullptr, save);
+  if (data.av() != nullptr)
+  {
+    po::store(
+      po::command_line_parser(data.ac(), data.av())
+        .options(m_desc)
+        .positional(m_pos_desc)
+        .run(),
+      m_vm);
+  }
+  else
+  {
+    tokenizer  tkz(data.string());
+    const auto v(tkz.tokenize<std::vector<std::string>>());
+    po::store(
+      po::command_line_parser(v).options(m_desc).positional(m_pos_desc).run(),
+      m_vm);
+  }
+
+  return parse_handle(data);
 }
 
-bool wex::cmdline_imp::parse(const std::string& s, std::string& help, bool save)
-{
-  tokenizer  tkz(s);
-  const auto v(tkz.tokenize<std::vector<std::string>>());
-  po::store(
-    po::command_line_parser(v).options(m_desc).positional(m_pos_desc).run(),
-    m_vm);
-  return parse_handle(&help, save);
-}
-
-bool wex::cmdline_imp::parse_handle(std::string* help, bool save)
+bool wex::cmdline_imp::parse_handle(data::cmdline& data)
 {
   po::notify(m_vm);
 
@@ -101,7 +103,7 @@ bool wex::cmdline_imp::parse_handle(std::string* help, bool save)
   {
     std::stringstream ss;
 
-    if (help == nullptr)
+    if (data.av() != nullptr)
     {
       if (m_vm.count("help"))
         std::cout << m_desc;
@@ -114,11 +116,11 @@ bool wex::cmdline_imp::parse_handle(std::string* help, bool save)
       if (m_vm.count("help"))
       {
         ss << m_desc;
-        *help = ss.str();
+        data.help(ss.str());
       }
       else
       {
-        *help = get_version_info().get();
+        data.help(get_version_info().get());
       }
     }
 
@@ -169,7 +171,7 @@ bool wex::cmdline_imp::parse_handle(std::string* help, bool save)
 
               v->second.m_fs(val);
 
-              if (save)
+              if (data.save())
               {
                 m_cfg.item(before(it.first, ',')).set(val);
               }
