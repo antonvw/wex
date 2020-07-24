@@ -1,8 +1,10 @@
 # roadmap
 
+- CodeScene
+
 # feature/clang
-- more binds to data bind
 - vi split up
+- ctags if matches 1 find next not ok
 - syncing with a txt file
 - codespell
 - upgrade to wxWidgets 3.1.4

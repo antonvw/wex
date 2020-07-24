@@ -59,8 +59,6 @@ namespace wex
     bool parse(data::cmdline& data);
 
   private:
-    bool parse_handle(data::cmdline& data);
-
     std::map<std::string, function_t> m_functions;
 
     po::options_description            m_desc;

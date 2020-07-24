@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/program_options.hpp>
-#include <iostream>
+#include <sstream>
 #include <wex/cmdline.h>
 #include <wex/config.h>
 #include <wex/core.h>
@@ -74,29 +74,21 @@ void wex::cmdline_imp::add_function(
 
 bool wex::cmdline_imp::parse(data::cmdline& data)
 {
-  if (data.av() != nullptr)
-  {
+  data.av() != nullptr ?
     po::store(
       po::command_line_parser(data.ac(), data.av())
         .options(m_desc)
         .positional(m_pos_desc)
         .run(),
-      m_vm);
-  }
-  else
-  {
-    tokenizer  tkz(data.string());
-    const auto v(tkz.tokenize<std::vector<std::string>>());
+      m_vm) :
     po::store(
-      po::command_line_parser(v).options(m_desc).positional(m_pos_desc).run(),
+      po::command_line_parser(
+        tokenizer(data.string()).tokenize<std::vector<std::string>>())
+        .options(m_desc)
+        .positional(m_pos_desc)
+        .run(),
       m_vm);
-  }
 
-  return parse_handle(data);
-}
-
-bool wex::cmdline_imp::parse_handle(data::cmdline& data)
-{
   po::notify(m_vm);
 
   if (m_vm.count("help") || m_vm.count("version"))

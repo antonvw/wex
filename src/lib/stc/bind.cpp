@@ -239,27 +239,7 @@ void wex::stc::bind_all()
       wxID_DELETE},
 
      {[=](wxCommandEvent& event) {
-        if (is_hexmode())
-        {
-          m_hexmode.goto_dialog();
-        }
-        else
-        {
-          if (static long val;
-              (val = wxGetNumberFromUser(
-                 _("Input") + " 1 - " + std::to_string(GetLineCount()) + ":",
-                 wxEmptyString,
-                 _("Enter Line Number"),
-                 m_data.control().line(), // initial value
-                 1,
-                 GetLineCount(),
-                 this)) > 0)
-          {
-            m_data.control().line(val);
-            data::stc(data::control().line(val), this).inject();
-          }
-        }
-        return true;
+        jump_action();
       },
       wxID_JUMP_TO},
 
@@ -276,31 +256,7 @@ void wex::stc::bind_all()
       wxID_REPLACE},
 
      {[=](wxCommandEvent& event) {
-        if (SelectionIsRectangle())
-        {
-          sort_selection(
-            this,
-            event.GetId() == wxID_SORT_ASCENDING ?
-              string_sort_t() :
-              string_sort_t().set(STRING_SORT_DESCENDING));
-        }
-        else if (const auto pos(wxGetNumberFromUser(
-                   _("Input") + ":",
-                   wxEmptyString,
-                   _("Enter Sort Position"),
-                   GetCurrentPos() + 1 - PositionFromLine(GetCurrentLine()),
-                   1,
-                   GetLineEndPosition(GetCurrentLine()),
-                   this));
-                 pos > 0)
-        {
-          sort_selection(
-            this,
-            event.GetId() == wxID_SORT_ASCENDING ?
-              string_sort_t() :
-              string_sort_t().set(STRING_SORT_DESCENDING),
-            pos - 1);
-        }
+        sort_action(event);
       },
       wxID_SORT_ASCENDING},
 
@@ -312,55 +268,7 @@ void wex::stc::bind_all()
       ID_EDIT_DEBUG_FIRST},
 
      {[=](wxCommandEvent& event) {
-        switch (event.GetInt())
-        {
-          case stc_file::FILE_LOAD:
-            if (
-              get_lexer().scintilla_lexer().empty() &&
-              GetLength() < config("max-lines-lexer").get(10000000))
-            {
-              get_lexer().set(get_filename().lexer());
-              config_get();
-            }
-
-            guess_type_and_modeline();
-            log::status(_("Opened")) << get_filename();
-            log::verbose("opened", 1) << get_filename();
-            fold();
-            [[fallthrough]];
-
-          case stc_file::FILE_LOAD_SYNC:
-            EmptyUndoBuffer();
-            use_modification_markers(true);
-
-            if (!m_data.inject())
-            {
-              properties_message();
-            }
-            break;
-
-          case stc_file::FILE_SAVE_AS:
-            get_lexer().set(get_filename().lexer());
-            SetName(get_filename().string());
-            [[fallthrough]];
-
-          case stc_file::FILE_SAVE:
-            SetReadOnly(get_filename().is_readonly());
-            marker_delete_all_change();
-            log::status(_("Saved")) << get_filename();
-            log::verbose("saved", 1) << get_filename();
-            break;
-        }
-
-        if (get_filename().lexer().language() == "xml")
-        {
-          if (const pugi::xml_parse_result result =
-                pugi::xml_document().load_file(get_filename().string().c_str());
-              !result)
-          {
-            xml_error(get_filename(), &result, this);
-          }
-        }
+        file_action(event);
       },
       ID_EDIT_FILE_ACTION},
 
@@ -375,53 +283,7 @@ void wex::stc::bind_all()
       id::stc::open_link},
 
      {[=](wxCommandEvent& event) {
-        const std::string propnames(PropertyNames());
-        const lexer_props l;
-
-        std::string properties =
-          (!propnames.empty() ? l.make_section("Current properties") :
-                                std::string());
-
-        // Add current (global and lexer) properties.
-        for (const auto& it : lexers::get()->properties())
-        {
-          properties += l.make_key(it.name(), GetProperty(it.name()));
-        }
-
-        for (const auto& it : m_lexer.properties())
-        {
-          properties += l.make_key(it.name(), GetProperty(it.name()));
-        }
-
-        // Add available properties.
-        if (!propnames.empty())
-        {
-          properties += "\n" + l.make_section("Available properties");
-
-          for (tokenizer tkz(propnames, "\n"); tkz.has_more_tokens();)
-          {
-            const auto prop(tkz.get_next_token());
-            properties +=
-              l.make_key(prop, GetProperty(prop), DescribeProperty(prop));
-          }
-        }
-
-        if (m_entry_dialog == nullptr)
-        {
-          m_entry_dialog = new stc_entry_dialog(
-            properties,
-            std::string(),
-            data::window()
-              .size({300, 450})
-              .button(wxOK)
-              .title(_("Properties")));
-          m_entry_dialog->get_stc()->get_lexer().set(l);
-        }
-        else
-        {
-          m_entry_dialog->get_stc()->set_text(properties);
-        }
-        m_entry_dialog->Show();
+        show_properties();
       },
       id::stc::show_properties},
 
@@ -552,29 +414,7 @@ void wex::stc::bind_all()
       ID_EDIT_VCS_LOWEST},
 
      {[=](wxCommandEvent& event) {
-        if (GetReadOnly())
-        {
-          log::status(_("Document is readonly"));
-        }
-        else
-        {
-          if (is_hexmode())
-          {
-            log::status(_("Not allowed in hex mode"));
-          }
-          else
-          {
-            int eol_mode = wxSTC_EOL_LF; // default id::stc::eol_unix
-            if (event.GetId() == id::stc::eol_dos)
-              eol_mode = wxSTC_EOL_CRLF;
-            else if (event.GetId() == id::stc::eol_mac)
-              eol_mode = wxSTC_EOL_CR;
-
-            ConvertEOLs(eol_mode);
-            SetEOLMode(eol_mode);
-            m_frame->update_statusbar(this, "PaneFileType");
-          }
-        }
+        eol_action(event);
       },
       id::stc::eol_dos},
 
@@ -768,6 +608,86 @@ bool wex::stc::check_brace(int pos)
   }
 }
 
+void wex::stc::eol_action(const wxCommandEvent& event)
+{
+  if (GetReadOnly())
+  {
+    log::status(_("Document is readonly"));
+  }
+  else
+  {
+    if (is_hexmode())
+    {
+      log::status(_("Not allowed in hex mode"));
+    }
+    else
+    {
+      int eol_mode = wxSTC_EOL_LF; // default id::stc::eol_unix
+      if (event.GetId() == id::stc::eol_dos)
+        eol_mode = wxSTC_EOL_CRLF;
+      else if (event.GetId() == id::stc::eol_mac)
+        eol_mode = wxSTC_EOL_CR;
+
+      ConvertEOLs(eol_mode);
+      SetEOLMode(eol_mode);
+      m_frame->update_statusbar(this, "PaneFileType");
+    }
+  }
+}
+
+void wex::stc::file_action(const wxCommandEvent& event)
+{
+  switch (event.GetInt())
+  {
+    case stc_file::FILE_LOAD:
+      if (
+        get_lexer().scintilla_lexer().empty() &&
+        GetLength() < config("max-lines-lexer").get(10000000))
+      {
+        get_lexer().set(get_filename().lexer());
+        config_get();
+      }
+
+      guess_type_and_modeline();
+      log::status(_("Opened")) << get_filename();
+      log::verbose("opened", 1) << get_filename();
+      fold();
+      [[fallthrough]];
+
+    case stc_file::FILE_LOAD_SYNC:
+      EmptyUndoBuffer();
+      use_modification_markers(true);
+
+      if (!m_data.inject())
+      {
+        properties_message();
+      }
+      break;
+
+    case stc_file::FILE_SAVE_AS:
+      get_lexer().set(get_filename().lexer());
+      SetName(get_filename().string());
+      [[fallthrough]];
+
+    case stc_file::FILE_SAVE:
+      SetReadOnly(get_filename().is_readonly());
+      marker_delete_all_change();
+      log::status(_("Saved")) << get_filename();
+      log::verbose("saved", 1) << get_filename();
+      break;
+  }
+
+  if (get_filename().lexer().language() == "xml")
+  {
+    if (const pugi::xml_parse_result result =
+          pugi::xml_document().load_file(get_filename().string().c_str());
+        !result)
+    {
+      xml_error(get_filename(), &result, this);
+    }
+  }
+}
+
 void wex::stc::filetype_menu()
 {
   // The order here should be the same as the defines for wxSTC_EOL_CRLF.
@@ -789,4 +709,100 @@ void wex::stc::filetype_menu()
   PopupMenu(menu);
 
   delete menu;
+}
+
+void wex::stc::jump_action()
+{
+  if (is_hexmode())
+  {
+    m_hexmode.goto_dialog();
+  }
+  else if (static long val;
+           (val = wxGetNumberFromUser(
+              _("Input") + " 1 - " + std::to_string(GetLineCount()) + ":",
+              wxEmptyString,
+              _("Enter Line Number"),
+              m_data.control().line(), // initial value
+              1,
+              GetLineCount(),
+              this)) > 0)
+  {
+    m_data.control().line(val);
+    data::stc(data::control().line(val), this).inject();
+  }
+}
+
+void wex::stc::show_properties()
+{
+  const std::string propnames(PropertyNames());
+  const lexer_props l;
+
+  std::string properties =
+    (!propnames.empty() ? l.make_section("Current properties") : std::string());
+
+  // Add current (global and lexer) properties.
+  for (const auto& it : lexers::get()->properties())
+  {
+    properties += l.make_key(it.name(), GetProperty(it.name()));
+  }
+
+  for (const auto& it : m_lexer.properties())
+  {
+    properties += l.make_key(it.name(), GetProperty(it.name()));
+  }
+
+  // Add available properties.
+  if (!propnames.empty())
+  {
+    properties += "\n" + l.make_section("Available properties");
+
+    for (tokenizer tkz(propnames, "\n"); tkz.has_more_tokens();)
+    {
+      const auto prop(tkz.get_next_token());
+      properties += l.make_key(prop, GetProperty(prop), DescribeProperty(prop));
+    }
+  }
+
+  if (m_entry_dialog == nullptr)
+  {
+    m_entry_dialog = new stc_entry_dialog(
+      properties,
+      std::string(),
+      data::window().size({300, 450}).button(wxOK).title(_("Properties")));
+    m_entry_dialog->get_stc()->get_lexer().set(l);
+  }
+  else
+  {
+    m_entry_dialog->get_stc()->set_text(properties);
+  }
+  m_entry_dialog->Show();
+}
+
+void wex::stc::sort_action(const wxCommandEvent& event)
+{
+  if (SelectionIsRectangle())
+  {
+    sort_selection(
+      this,
+      event.GetId() == wxID_SORT_ASCENDING ?
+        string_sort_t() :
+        string_sort_t().set(STRING_SORT_DESCENDING));
+  }
+  else if (const auto pos(wxGetNumberFromUser(
+             _("Input") + ":",
+             wxEmptyString,
+             _("Enter Sort Position"),
+             GetCurrentPos() + 1 - PositionFromLine(GetCurrentLine()),
+             1,
+             GetLineEndPosition(GetCurrentLine()),
+             this));
+           pos > 0)
+  {
+    sort_selection(
+      this,
+      event.GetId() == wxID_SORT_ASCENDING ?
+        string_sort_t() :
+        string_sort_t().set(STRING_SORT_DESCENDING),
+      pos - 1);
+  }
 }
