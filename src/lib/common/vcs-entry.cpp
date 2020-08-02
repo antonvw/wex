@@ -136,7 +136,7 @@ const std::string wex::vcs_entry::get_branch(const std::string& wd) const
   {
     try
     {
-      if (process p; p.execute("git branch", process::EXEC_WAIT, wd))
+      if (process p; p.execute(bin() + " branch", process::EXEC_WAIT, wd))
       {
         for (tokenizer tkz(p.get_stdout(), "\r\n"); tkz.has_more_tokens();)
         {

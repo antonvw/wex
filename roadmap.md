@@ -1,13 +1,15 @@
 # roadmap
 
 - CodeScene
+- codacy
+- make organization wwwex
 
 # feature/clang
-- vi split up
+- vi, listview split up
 - ctags if matches 1 find next not ok
 - syncing with a txt file
 - codespell
-- upgrade to wxWidgets 3.1.4
+- upgrade to wxWidgets 3.1.5
 
 ## feature/vcs
 - improve blame size calculation, now only uses size of first blame line,

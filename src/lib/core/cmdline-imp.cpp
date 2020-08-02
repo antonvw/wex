@@ -133,7 +133,7 @@ bool wex::cmdline_imp::parse(data::cmdline& data)
     {
       try
       {
-        if (auto v = m_functions.find(it.first); v != m_functions.end())
+        if (const auto& v = m_functions.find(it.first); v != m_functions.end())
         {
           switch (v->second.m_type)
           {

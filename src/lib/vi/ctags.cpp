@@ -326,11 +326,8 @@ bool wex::ctags::find(const std::string& tag, ex* ex)
 
   do
   {
-    const ctags_info ct(entry);
-
-    if (
-      ex == nullptr ||
-      (ex != nullptr && ct.name() != tag_name(ex->get_stc()->get_filename())))
+    if (const ctags_info ct(entry);
+        ex == nullptr || (ct.name() != tag_name(ex->get_stc()->get_filename())))
     {
       m_matches.insert({ct.name(), ct});
     }
