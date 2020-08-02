@@ -40,7 +40,8 @@ bool app::OnInit()
 {
   SetAppName("syncped");
 
-  bool list_lexers = false;
+  bool               list_lexers = false;
+  wex::data::cmdline data(argc, argv);
 
   if (bool exit = false;
       !wex::cmdline(
@@ -231,7 +232,7 @@ bool app::OnInit()
           }},
          true,
          "commandline")
-         .parse(argc, argv) ||
+         .parse(data) ||
       exit || !wex::app::OnInit())
   {
     return false;

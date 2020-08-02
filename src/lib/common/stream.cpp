@@ -16,7 +16,6 @@
 #include <functional>
 #endif
 #include <fstream>
-#include <iostream>
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/frd.h>

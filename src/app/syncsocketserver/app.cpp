@@ -43,7 +43,8 @@ bool app::OnInit()
 {
   SetAppName("syncsocketserver");
 
-  if (!wex::app::OnInit() || !wex::cmdline().parse(argc, argv))
+  if (wex::data::cmdline data(argc, argv);
+      !wex::app::OnInit() || !wex::cmdline().parse(data))
   {
     return false;
   }
@@ -270,7 +271,8 @@ void frame::on_command_item_dialog(
   }
 }
 
-wex::stc* frame::open_file(const wex::path& filename, const wex::data::stc& data)
+wex::stc*
+frame::open_file(const wex::path& filename, const wex::data::stc& data)
 {
   if (m_data->open(filename, data))
   {

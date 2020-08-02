@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
-#include <boost/version.hpp>
 #include <wex/defs.h>
 #include <wex/vcsentry.h>
 
@@ -36,20 +35,16 @@ TEST_CASE("wex::vcs_entry")
 
     wex::vcs_entry entry(doc.document_element());
     REQUIRE(entry.name() == "git");
-#if BOOST_VERSION / 100 % 1000 != 72
     REQUIRE(!entry.log(wex::test::get_path("test.h"), "x"));
     REQUIRE(entry.log(wex::test::get_path("test.h"), "-1"));
-#endif
     REQUIRE(entry.get_blame().use());
 
     REQUIRE(entry.get_commands().size() == 2);
     REQUIRE(!entry.get_command().get_command().empty());
     REQUIRE(entry.admin_dir() == "./");
     REQUIRE(entry.get_flags().empty());
-#if BOOST_VERSION / 100 % 1000 != 72
     REQUIRE(entry.get_branch().empty());
     REQUIRE(!entry.get_stdout().empty());
-#endif
     entry.show_output();
 
     wex::menu menu;
@@ -63,7 +58,6 @@ TEST_CASE("wex::vcs_entry")
 
     REQUIRE(entry.get_commands().size() == 2);
     REQUIRE(entry.get_flags().empty());
-#if BOOST_VERSION / 100 % 1000 != 72
     REQUIRE(!entry.get_stdout().empty());
     REQUIRE(entry.execute()); // executes just git, shows help
     REQUIRE(entry.get_stdout().find("usage: ") != std::string::npos);
@@ -72,7 +66,6 @@ TEST_CASE("wex::vcs_entry")
     auto* other = new wex::vcs_entry(doc.document_element());
     REQUIRE(other->execute(std::string(), wex::lexer()));
     other->show_output();
-#endif
 #endif
   }
 }

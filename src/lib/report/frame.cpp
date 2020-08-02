@@ -332,7 +332,7 @@ bool wex::report::frame::grep(const std::string& arg, bool sed)
     get_stc()->get_find_string();
   }
 
-  if (std::string help;
+  if (data::cmdline cmdl(arg);
       !cmdline(
          {{{"recursive,r", "recursive"},
            [&](bool on) {
@@ -360,9 +360,9 @@ bool wex::report::frame::grep(const std::string& arg, bool sed)
           }},
          false,
          "grep")
-         .parse(arg, help))
+         .parse(cmdl))
   {
-    stc_entry_dialog(help).ShowModal();
+    stc_entry_dialog(cmdl.help()).ShowModal();
     return false;
   }
 

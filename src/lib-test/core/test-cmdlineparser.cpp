@@ -12,12 +12,26 @@ TEST_CASE("wex::cmdline")
 {
   SUBCASE("default constructor")
   {
-    std::string  help;
-    wex::cmdline cmdl;
+    SUBCASE("1")
+    {
+      wex::data::cmdline data("");
+      wex::cmdline       cmdl;
+      REQUIRE(cmdl.parse(data));
+    }
 
-    REQUIRE(cmdl.parse(std::string(), help));
-    REQUIRE(!cmdl.parse("xxx", help));
-    REQUIRE(!cmdl.parse("-h", help));
+    SUBCASE("2")
+    {
+      wex::data::cmdline data("xxx");
+      wex::cmdline       cmdl;
+      REQUIRE(!cmdl.parse(data));
+    }
+
+    SUBCASE("3")
+    {
+      wex::data::cmdline data("-h");
+      wex::cmdline       cmdl;
+      REQUIRE(!cmdl.parse(data));
+    }
   }
 
   SUBCASE("constructor")
@@ -25,7 +39,7 @@ TEST_CASE("wex::cmdline")
     int         a{0};
     float       b{0};
     bool        s{false}, t{false}, u{false}, w{false}, x{false};
-    std::string c, p, q, r, help;
+    std::string c, p, q, r;
 
     wex::cmdline cmdl(
       {{{"s1,s", "bool"},
@@ -71,19 +85,20 @@ TEST_CASE("wex::cmdline")
 
     SUBCASE("help")
     {
-      const bool res(cmdl.parse("-h", help));
+      wex::data::cmdline data("-h");
+      const bool         res(cmdl.parse(data));
 
       REQUIRE(!res);
-      REQUIRE(!help.empty());
+      REQUIRE(!data.help().empty());
     }
 
     SUBCASE("parse")
     {
-      const bool res(cmdl.parse(
-        "-a 10 -b 5.1 -c test -s -t -u -w --xx one two three",
-        help));
+      wex::data::cmdline data(
+        "-a 10 -b 5.1 -c test -s -t -u -w --xx one two three");
+      const bool res(cmdl.parse(data));
 
-      CAPTURE(help);
+      CAPTURE(data.help());
 
       REQUIRE(res);
 
@@ -102,17 +117,18 @@ TEST_CASE("wex::cmdline")
 
     SUBCASE("parse_set")
     {
-      REQUIRE(cmdl.parse_set("all", help));
-      REQUIRE(!help.empty());
+      wex::data::cmdline data("all");
+      REQUIRE(cmdl.parse_set(data));
+      REQUIRE(!data.help().empty());
 
-      const bool res1(cmdl.parse_set("s1 s2", help));
+      const bool res1(cmdl.parse_set(data.string("s1 s2")));
 
-      CAPTURE(help);
+      CAPTURE(data.help());
       REQUIRE(res1);
 
-      REQUIRE(!cmdl.parse_set("s9", help));
-      REQUIRE(cmdl.parse_set("s1?", help));
-      REQUIRE(cmdl.parse_set("nos1", help));
+      REQUIRE(!cmdl.parse_set(data.string("s9")));
+      REQUIRE(cmdl.parse_set(data.string("s1?")));
+      REQUIRE(cmdl.parse_set(data.string("nos1")));
     }
   }
 
@@ -121,7 +137,7 @@ TEST_CASE("wex::cmdline")
     bool        s{false}, t{false}, u{false}, w{false};
     int         a{0};
     float       b{0};
-    std::string c, help;
+    std::string c;
 
     wex::cmdline cmdl(
       {{{"s1,s", "bool"},
@@ -159,9 +175,10 @@ TEST_CASE("wex::cmdline")
       true,
       "prefix");
 
-    const bool res(cmdl.parse("-a 10 -b 5.1 -c test -s -t -u -w", help));
+    wex::data::cmdline data("-a 10 -b 5.1 -c test -s -t -u -w");
+    const bool         res(cmdl.parse(data));
 
-    CAPTURE(help);
+    CAPTURE(data.help());
 
     REQUIRE(res);
 
