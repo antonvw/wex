@@ -5,8 +5,6 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <boost/version.hpp>
-
 #include "../test.h"
 #include <wex/addressrange.h>
 #include <wex/frd.h>
@@ -116,7 +114,6 @@ TEST_CASE("wex::addressrange")
     stc->SelectNone();
   }
 
-#if BOOST_VERSION / 100 % 1000 != 72
   SUBCASE("escape")
   {
 #ifdef __UNIX__
@@ -130,7 +127,6 @@ TEST_CASE("wex::addressrange")
     REQUIRE(wex::addressrange(ex).escape("ls  `echo \x12*`"));
 #endif
   }
-#endif
 
   SUBCASE("execute")
   {

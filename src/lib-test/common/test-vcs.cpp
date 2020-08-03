@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
-#include <boost/version.hpp>
 #include <vector>
 #include <wex/config.h>
 #include <wex/managedframe.h>
@@ -36,11 +35,9 @@ TEST_CASE("wex::vcs")
     REQUIRE(vcs.config_dialog(wex::data::window().button(wxAPPLY | wxCANCEL)));
 
 #ifndef __WXMSW__
-#if BOOST_VERSION / 100 % 1000 != 72
     REQUIRE(vcs.execute());
     REQUIRE(vcs.execute("status"));
     REQUIRE(!vcs.execute("xxx"));
-#endif
 
     REQUIRE(vcs.show_dialog(wex::data::window().button(wxAPPLY | wxCANCEL)));
 
@@ -49,9 +46,7 @@ TEST_CASE("wex::vcs")
     REQUIRE(vcs.entry().build_menu(100, new wex::menu("test", 0)) > 0);
     REQUIRE(vcs.entry().get_command().get_command() == "add");
 
-#if BOOST_VERSION / 100 % 1000 != 72
     REQUIRE(!vcs.get_branch().empty());
-#endif
 
     REQUIRE(vcs.name() == "Auto");
     REQUIRE(!vcs.entry().get_command().is_open());

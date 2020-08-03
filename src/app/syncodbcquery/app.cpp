@@ -41,26 +41,26 @@ bool app::OnInit()
 {
   SetAppName("syncodbcquery");
 
-  if (
-    !wex::app::OnInit() ||
-    !wex::cmdline(
-       {},
-       {{{"datasource,d", "odbc datasource"},
-         {wex::cmdline::STRING,
-          [&](const std::any& a) {
-            wex::config(_("Datasource")).set(std::any_cast<std::string>(a));
-          }}},
-        {{"password,p", "password for user"},
-         {wex::cmdline::STRING,
-          [&](const std::any& a) {
-            wex::config(_("Password")).set(std::any_cast<std::string>(a));
-          }}},
-        {{"user,u", "user to login"},
-         {wex::cmdline::STRING,
-          [&](const std::any& a) {
-            wex::config(_("User")).set(std::any_cast<std::string>(a));
-          }}}})
-       .parse(argc, argv))
+  if (wex::data::cmdline data(argc, argv);
+      !wex::app::OnInit() ||
+      !wex::cmdline(
+         {},
+         {{{"datasource,d", "odbc datasource"},
+           {wex::cmdline::STRING,
+            [&](const std::any& a) {
+              wex::config(_("Datasource")).set(std::any_cast<std::string>(a));
+            }}},
+          {{"password,p", "password for user"},
+           {wex::cmdline::STRING,
+            [&](const std::any& a) {
+              wex::config(_("Password")).set(std::any_cast<std::string>(a));
+            }}},
+          {{"user,u", "user to login"},
+           {wex::cmdline::STRING,
+            [&](const std::any& a) {
+              wex::config(_("User")).set(std::any_cast<std::string>(a));
+            }}}})
+         .parse(data))
   {
     return false;
   }

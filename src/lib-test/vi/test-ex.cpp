@@ -5,7 +5,6 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <boost/version.hpp>
 #include <vector>
 
 #include "../test.h"
@@ -189,10 +188,8 @@ TEST_CASE("wex::ex")
     REQUIRE(ex->command(":'<,'><"));
     ex->command(":'<,'>>");
 
-#if BOOST_VERSION / 100 % 1000 != 72
 #ifndef __WXMSW__
     ex->command(":'<,'>!sort");
-#endif
 #endif
 
     stc->GotoLine(2);
@@ -213,10 +210,8 @@ TEST_CASE("wex::ex")
     REQUIRE(!ex->command(":so test-source-2.txt"));
     REQUIRE(ex->command(":d"));
 
-#if BOOST_VERSION / 100 % 1000 != 72
     REQUIRE(ex->command(":r !echo qwerty"));
     REQUIRE(stc->get_text().find("qwerty") != std::string::npos);
-#endif
 #endif
   }
 

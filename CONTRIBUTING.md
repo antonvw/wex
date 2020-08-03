@@ -1,10 +1,10 @@
 # How to contribute
 
-- Fork the repository on GitHub
+- fork the repository on GitHub
 
-- Create a feature branch from the develop branch to base your work
+- create a feature branch from the develop branch to base your work
 
-- When using otl
+- when using otl
     `sudo apt-get install unixODBC unixODBC-dev` or
     `yum install unixODBC unixODBC-devel`
 
@@ -27,8 +27,6 @@
   API documentation is generated from the sources
   using [Doxygen](http://www.stack.nl/~dimitri/doxygen/)
 
-- add a test and update sample
-
 - translation is done using xgettext by invoking po-sync.sh
   - to translate wex copy the wex.pot file to the correct language po
     file, and fill in the translation.
@@ -45,6 +43,7 @@
   - To add translation files add -DENABLE_GETTEXT=ON to cmake.
 
 ## Test it
+- add a test and update sample
 
 ```bash
 mkdir build && cd build
@@ -57,7 +56,7 @@ make test
   This requires `lcov` and `genhtml` tools (part of lcov, v1.9).
 
 ```bash
-mkdir Coverage && cd Coverage
+mkdir coverage && cd coverage
 cmake -DCMAKE_BUILD_TYPE=Coverage -DwexBUILD_TESTS=ON ..
 make
 make lcov-prep
@@ -81,10 +80,7 @@ brew reinstall universal-ctags
 
 ## Boost build
 
-if you want to use another boost version from current one on your system
-
-
-### Get, install, use boost
+- if you want to use another boost version from current one on your system:
 
 ```bash
 wget https://dl.bintray.com/boostorg/release/<>/source/boost_<>.tar.gz
@@ -95,9 +91,3 @@ cd boost_<>*
 sudo ./b2 install --prefix=<path> --with=all
 cmake -DBOOST_ROOT=<path>
 ```
-
-### Patch common.cmake
-
-if link errors appear you could try to add boost libs
-
-<path>/lib/libboost_program_options.a

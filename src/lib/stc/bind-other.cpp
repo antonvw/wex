@@ -58,60 +58,7 @@ namespace wex
 void wex::stc::bind_other()
 {
   Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
-    if (!m_vi.is_active())
-    {
-      if (isalnum(event.GetUnicodeKey()))
-      {
-        m_adding_chars = true;
-      }
-    }
-    else if (m_vi.mode().insert())
-    {
-      if (isalnum(event.GetUnicodeKey()))
-      {
-        m_adding_chars = true;
-      }
-
-      m_auto_complete.on_char(event.GetUnicodeKey());
-    }
-    else
-    {
-      m_adding_chars = false;
-    }
-
-    if (m_vi.on_char(event))
-    {
-      if (GetReadOnly() && isalnum(event.GetUnicodeKey()))
-      {
-        log::status(_("Document is readonly"));
-        return;
-      }
-
-      if (is_hexmode())
-      {
-        if (GetOvertype())
-        {
-          if (m_hexmode.replace(event.GetUnicodeKey()))
-          {
-            CharRight();
-          }
-        }
-        return;
-      }
-
-      if (!m_vi.is_active())
-      {
-        m_auto_complete.on_char(event.GetUnicodeKey());
-      }
-
-      event.Skip();
-    }
-
-    if (
-      event.GetUnicodeKey() == '>' && m_lexer.scintilla_lexer() == "hypertext")
-    {
-      hypertext(this);
-    }
+    key_action(event);
   });
 
   Bind(wxEVT_FIND, [=](wxFindDialogEvent& event) {
@@ -158,85 +105,17 @@ void wex::stc::bind_other()
   });
 
   Bind(wxEVT_LEFT_DCLICK, [=](wxMouseEvent& event) {
-    m_margin_text_click = -1;
-
-    if (GetCurLine().Contains("href"))
-    {
-      if (link_open(link_t().set(LINK_OPEN_MIME)))
-      {
-        return;
-      }
-    }
-
-    if (link_open(link_t().set(LINK_OPEN).set(LINK_OPEN_MIME)))
-    {
-      return;
-    }
-
-    event.Skip();
+    mouse_action(event);
   });
 
   Bind(wxEVT_LEFT_UP, [=](wxMouseEvent& event) {
-    properties_message();
-    event.Skip();
-    check_brace();
-    m_adding_chars = false;
-    m_fold_level   = get_fold_level();
-
-    if (
-      !m_skip && m_frame->get_debug() != nullptr &&
-      m_frame->get_debug()->is_active() &&
-      matches_one_of(
-        get_filename().extension(),
-        m_frame->get_debug()->debug_entry().extensions()))
-    {
-      const auto word =
-        (!GetSelectedText().empty() ? GetSelectedText().ToStdString() :
-                                      get_word_at_pos(GetCurrentPos()));
-
-      if (!word.empty() && isalnum(word[0]))
-      {
-        m_frame->get_debug()->print(word);
-      }
-    }
-
-    m_skip = false;
+    mouse_action(event);
   });
 
   if (m_data.menu().any())
   {
     Bind(wxEVT_RIGHT_UP, [=](wxMouseEvent& event) {
-      try
-      {
-        menu::menu_t style(menu::menu_t().set(menu::IS_POPUP));
-
-        if (GetReadOnly() || is_hexmode())
-          style.set(menu::IS_READ_ONLY);
-        if (!GetSelectedText().empty())
-          style.set(menu::IS_SELECTED);
-        if (GetTextLength() == 0)
-          style.set(menu::IS_EMPTY);
-        if (CanPaste())
-          style.set(menu::CAN_PASTE);
-
-        menu menu(style);
-        build_popup_menu(menu);
-        if (menu.GetMenuItemCount() > 0)
-        {
-          // If last item is a separator, delete it.
-          if (wxMenuItem* item =
-                menu.FindItemByPosition(menu.GetMenuItemCount() - 1);
-              item->IsSeparator())
-          {
-            menu.Delete(item->GetId());
-          }
-          PopupMenu(&menu);
-        }
-      }
-      catch (std::exception& e)
-      {
-        log(e) << "menu";
-      }
+      mouse_action(event);
     });
   }
 
@@ -281,55 +160,7 @@ void wex::stc::bind_other()
   // not yet possible for wx3.0. And add wxSTC_AUTOMATICFOLD_CLICK
   // to config_dialog, and SetAutomaticFold.
   Bind(wxEVT_STC_MARGINCLICK, [=](wxStyledTextEvent& event) {
-    m_skip = false;
-    if (const auto line = LineFromPosition(event.GetPosition());
-        event.GetMargin() == m_margin_folding_number)
-    {
-      if (const auto level = GetFoldLevel(line);
-          (level & wxSTC_FOLDLEVELHEADERFLAG) > 0)
-      {
-        ToggleFold(line);
-      }
-      m_margin_text_click = -1;
-    }
-    else if (event.GetMargin() == m_margin_text_number)
-    {
-      m_margin_text_click = line;
-
-      if (config("blame.id").get(true))
-      {
-        wex::vcs vcs{{get_filename()}};
-
-        if (std::string margin(MarginGetText(line));
-            !margin.empty() &&
-            vcs.entry().log(get_filename(), get_word(margin)))
-        {
-          AnnotationSetText(
-            line,
-            m_lexer.align_text(trim(vcs.entry().get_stdout(), skip_t().all())));
-        }
-        else if (!vcs.entry().get_stderr().empty())
-        {
-          log("margin") << vcs.entry().get_stderr();
-        }
-      }
-    }
-    else if (event.GetMargin() == m_margin_divider_number)
-    {
-      if (m_frame->get_debug() != nullptr && m_frame->get_debug()->is_active())
-      {
-        m_frame->get_debug()->toggle_breakpoint(line, this);
-        m_skip = true;
-      }
-      else
-      {
-        event.Skip();
-      }
-    }
-    else
-    {
-      event.Skip();
-    }
+    margin_action(event);
   });
 
   Bind(wxEVT_STC_MARGIN_RIGHT_CLICK, [=](wxStyledTextEvent& event) {
@@ -361,4 +192,196 @@ void wex::stc::bind_other()
       m_frame->update_statusbar(this, "PaneInfo");
     }
   });
+}
+
+void wex::stc::key_action(wxKeyEvent& event)
+{
+  if (!m_vi.is_active())
+  {
+    if (isalnum(event.GetUnicodeKey()))
+    {
+      m_adding_chars = true;
+    }
+  }
+  else if (m_vi.mode().insert())
+  {
+    if (isalnum(event.GetUnicodeKey()))
+    {
+      m_adding_chars = true;
+    }
+
+    m_auto_complete.on_char(event.GetUnicodeKey());
+  }
+  else
+  {
+    m_adding_chars = false;
+  }
+
+  if (m_vi.on_char(event))
+  {
+    if (GetReadOnly() && isalnum(event.GetUnicodeKey()))
+    {
+      log::status(_("Document is readonly"));
+      return;
+    }
+
+    if (is_hexmode())
+    {
+      if (GetOvertype())
+      {
+        if (m_hexmode.replace(event.GetUnicodeKey()))
+        {
+          CharRight();
+        }
+      }
+      return;
+    }
+
+    if (!m_vi.is_active())
+    {
+      m_auto_complete.on_char(event.GetUnicodeKey());
+    }
+
+    event.Skip();
+  }
+
+  if (event.GetUnicodeKey() == '>' && m_lexer.scintilla_lexer() == "hypertext")
+  {
+    hypertext(this);
+  }
+}
+
+void wex::stc::margin_action(wxStyledTextEvent& event)
+{
+  m_skip = false;
+
+  if (const auto line = LineFromPosition(event.GetPosition());
+      event.GetMargin() == m_margin_folding_number)
+  {
+    if (const auto level = GetFoldLevel(line);
+        (level & wxSTC_FOLDLEVELHEADERFLAG) > 0)
+    {
+      ToggleFold(line);
+    }
+    m_margin_text_click = -1;
+  }
+  else if (event.GetMargin() == m_margin_text_number)
+  {
+    m_margin_text_click = line;
+
+    if (config("blame.id").get(true))
+    {
+      wex::vcs vcs{{get_filename()}};
+
+      if (std::string margin(MarginGetText(line));
+          !margin.empty() && vcs.entry().log(get_filename(), get_word(margin)))
+      {
+        AnnotationSetText(
+          line,
+          m_lexer.align_text(trim(vcs.entry().get_stdout(), skip_t().all())));
+      }
+      else if (!vcs.entry().get_stderr().empty())
+      {
+        log("margin") << vcs.entry().get_stderr();
+      }
+    }
+  }
+  else if (event.GetMargin() == m_margin_divider_number)
+  {
+    if (m_frame->get_debug() != nullptr && m_frame->get_debug()->is_active())
+    {
+      m_frame->get_debug()->toggle_breakpoint(line, this);
+      m_skip = true;
+    }
+    else
+    {
+      event.Skip();
+    }
+  }
+  else
+  {
+    event.Skip();
+  }
+}
+
+void wex::stc::mouse_action(wxMouseEvent& event)
+{
+  try
+  {
+    if (event.LeftUp())
+    {
+      properties_message();
+
+      event.Skip();
+      check_brace();
+      m_adding_chars = false;
+      m_fold_level   = get_fold_level();
+
+      if (
+        !m_skip && m_frame->get_debug() != nullptr &&
+        m_frame->get_debug()->is_active() &&
+        matches_one_of(
+          get_filename().extension(),
+          m_frame->get_debug()->debug_entry().extensions()))
+      {
+        const auto word =
+          (!GetSelectedText().empty() ? GetSelectedText().ToStdString() :
+                                        get_word_at_pos(GetCurrentPos()));
+
+        if (!word.empty() && isalnum(word[0]))
+        {
+          m_frame->get_debug()->print(word);
+        }
+      }
+
+      m_skip = false;
+    }
+    else if (event.RightUp())
+    {
+      menu::menu_t style(menu::menu_t().set(menu::IS_POPUP));
+
+      if (GetReadOnly() || is_hexmode())
+        style.set(menu::IS_READ_ONLY);
+      if (!GetSelectedText().empty())
+        style.set(menu::IS_SELECTED);
+      if (GetTextLength() == 0)
+        style.set(menu::IS_EMPTY);
+      if (CanPaste())
+        style.set(menu::CAN_PASTE);
+
+      menu menu(style);
+      build_popup_menu(menu);
+
+      if (menu.GetMenuItemCount() > 0)
+      {
+        // If last item is a separator, delete it.
+        if (wxMenuItem* item =
+              menu.FindItemByPosition(menu.GetMenuItemCount() - 1);
+            item->IsSeparator())
+        {
+          menu.Delete(item->GetId());
+        }
+
+        PopupMenu(&menu);
+      }
+    }
+    else if (event.LeftDClick())
+    {
+      m_margin_text_click = -1;
+
+      if (
+        GetCurLine().Contains("href") &&
+        link_open(link_t().set(LINK_OPEN_MIME)))
+        return;
+
+      if (!link_open(link_t().set(LINK_OPEN).set(LINK_OPEN_MIME)))
+      {
+        event.Skip();
+      }
+    }
+  }
+  catch (std::exception& e)
+  {
+    log(e) << "mouse action";
+  }
 }
