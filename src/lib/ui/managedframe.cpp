@@ -383,7 +383,7 @@ void wex::managed_frame::statusbar_clicked(const std::string& pane)
   {
     if (get_debug()->show_dialog(this))
     {
-      statustext(get_debug()->debug_entry().name(), "PaneDBG");
+      statustext(get_debug()->debug_entry().name(), pane);
     }
   }
   else

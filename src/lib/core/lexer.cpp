@@ -461,10 +461,11 @@ const std::string wex::lexer::formatted_text(
   for (size_t nCharIndex; (nCharIndex = text.find("\n")) != std::string::npos;)
   {
     out += align_text(
-      text.substr(0, nCharIndex),
-      header_to_use,
-      fill_out_with_space,
-      fill_out);
+             text.substr(0, nCharIndex),
+             header_to_use,
+             fill_out_with_space,
+             fill_out) +
+           "\n";
 
     text          = text.substr(nCharIndex + 1);
     header_to_use = std::string(header.size(), ' ');
@@ -472,7 +473,8 @@ const std::string wex::lexer::formatted_text(
 
   if (!text.empty())
   {
-    out += align_text(text, header_to_use, fill_out_with_space, fill_out);
+    out +=
+      align_text(text, header_to_use, fill_out_with_space, fill_out) + "\n";
   }
 
   return out;
