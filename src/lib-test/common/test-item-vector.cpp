@@ -2,7 +2,7 @@
 // Name:      test-item-vector.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
@@ -17,7 +17,7 @@ TEST_CASE("wex::item_vector")
 
   wex::item_vector iv(&v);
 
-  REQUIRE(iv.starts_with<int>("spin1"));
+  REQUIRE(iv.find<int>("spin1") == 0);
 }
 
 TEST_SUITE_END();
