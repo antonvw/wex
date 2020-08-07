@@ -84,13 +84,13 @@ namespace wex
                                                             "insert block";
         case vi_mode::state_t::VISUAL:
           return "visual";
-        
+
         case vi_mode::state_t::VISUAL_LINE:
           return "visual line";
-        
+
         case vi_mode::state_t::VISUAL_BLOCK:
           return "visual block";
-        
+
         default:
           return ex::get_macros().mode().str();
       }
@@ -145,7 +145,7 @@ namespace wex
       sc::transition<evVISUAL_BLOCK, ssVISUAL_BLOCK>>
       reactions;
 
-    ssCOMMAND(my_context ctx)
+    explicit ssCOMMAND(my_context ctx)
       : my_base(ctx)
     {
       log::verbose("vi mode") << "normal";
@@ -164,7 +164,7 @@ namespace wex
   {
     typedef sc::custom_reaction<evESCAPE> reactions;
 
-    ssTEXTINPUT(my_context ctx)
+    explicit ssTEXTINPUT(my_context ctx)
       : my_base(ctx)
     {
       log::verbose("vi mode") << "insert";
@@ -191,7 +191,7 @@ namespace wex
 
   struct ssVISUAL : sc::state<ssVISUAL, ssVISUAL_MODE>
   {
-    ssVISUAL(my_context ctx)
+    explicit ssVISUAL(my_context ctx)
       : my_base(ctx)
     {
       log::verbose("vi mode") << "visual";
@@ -201,7 +201,7 @@ namespace wex
 
   struct ssVISUAL_LINE : sc::state<ssVISUAL_LINE, ssVISUAL_MODE>
   {
-    ssVISUAL_LINE(my_context ctx)
+    explicit ssVISUAL_LINE(my_context ctx)
       : my_base(ctx)
     {
       log::verbose("vi mode") << "visual line";
@@ -213,7 +213,7 @@ namespace wex
   {
     typedef sc::transition<evINSERT, ssVISUAL_BLOCK_TEXTINPUT> reactions;
 
-    ssVISUAL_BLOCK(my_context ctx)
+    explicit ssVISUAL_BLOCK(my_context ctx)
       : my_base(ctx)
     {
       log::verbose("vi mode") << "visual block";
@@ -226,7 +226,7 @@ namespace wex
   {
     typedef sc::transition<evESCAPE, ssVISUAL_BLOCK> reactions;
 
-    ssVISUAL_BLOCK_TEXTINPUT(my_context ctx)
+    explicit ssVISUAL_BLOCK_TEXTINPUT(my_context ctx)
       : my_base(ctx)
     {
       log::verbose("vi mode") << "visual block insert";

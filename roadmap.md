@@ -1,8 +1,6 @@
 # roadmap
 
 ## backlog
-- vi, listview split up
-- syncing with a txt file
 - codespell
 - upgrade to wxWidgets 3.1.5
 - use abstract factory design pattern
@@ -13,5 +11,3 @@
   -> windows appear
 - each process separate stc
   - process shell and aui
-- CodeScene
-- codacy
