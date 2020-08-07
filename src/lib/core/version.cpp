@@ -65,14 +65,13 @@ const std::stringstream wex::version_info::external_libraries() const
 
   ss << wex::get_version_info().description() << "\n"
 
-     << "Boost library: " << BOOST_VERSION / 100000
-     << "."                               // major version
-     << BOOST_VERSION / 100 % 1000 << "." // minor version
-     << BOOST_VERSION % 100               // patch level
+     << "Boost library: " << BOOST_VERSION / 100000 << "." // major version
+     << BOOST_VERSION / 100 % 1000 << "."                  // minor version
+     << BOOST_VERSION % 100                                // patch level
      << "\n"
 
-     << skip_quotes(json.meta()["name"]) << " library: "
-     << skip_quotes(json.meta()["version"]["string"]) << "\n"
+     << skip_quotes(json.meta()["name"])
+     << " library: " << skip_quotes(json.meta()["version"]["string"]) << "\n"
 
      << "pugixml library: " << PUGIXML_VERSION / 1000 << "." // major version
      << PUGIXML_VERSION % 1000 / 10 << "."                   // minor version
