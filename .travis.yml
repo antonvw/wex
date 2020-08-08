@@ -44,7 +44,7 @@ before_script:
   - if [ $TRAVIS_OS_NAME = osx ]; then . ./ci/use-clang.sh; fi
 
 script:
-  - ./ci/codespell.sh
+  - if [ $TRAVIS_OS_NAME = osx ]; then ./ci/codespell.sh; fi
   - mkdir build && pushd build
   - cmake -DCMAKE_CXX_COMPILER=${CXX} -DCMAKE_BUILD_TYPE=Coverage -DwexBUILD_TESTS=ON ..
   - make -j 4
