@@ -14,7 +14,7 @@
 #include <wex/bind.h>
 #include <wex/config.h>
 #include <wex/core.h>
-#include <wex/interruptable.h>
+#include <wex/interruptible.h>
 #include <wex/itemdlg.h>
 #include <wex/lexers.h>
 #include <wex/listitem.h>
@@ -211,7 +211,7 @@ void wex::report::listview::build_popup_menu(wex::menu& menu)
       {
         bool restore = false;
 
-        // The xml menus interprete is_selected for text parts,
+        // The xml menus is_selected for text parts,
         // so override.
         if (menu.style().test(menu::IS_SELECTED))
         {
@@ -259,7 +259,7 @@ void wex::report::listview::build_popup_menu(wex::menu& menu)
 
 bool wex::report::listview::Destroy()
 {
-  interruptable::cancel();
+  interruptible::cancel();
   return wex::listview::Destroy();
 }
 

@@ -17,7 +17,7 @@
 #include <wex/defs.h>
 #include <wex/frame.h>
 #include <wex/frd.h>
-#include <wex/interruptable.h>
+#include <wex/interruptible.h>
 #include <wex/item-vector.h>
 #include <wex/item.h>
 #include <wex/itemdlg.h>
@@ -249,7 +249,7 @@ wex::listview::listview(const data::listview& data)
     Bind(wxEVT_IDLE, [=](wxIdleEvent& event) {
       event.Skip();
       if (
-        !IsShown() || interruptable::is_running() || GetItemCount() == 0 ||
+        !IsShown() || interruptible::is_running() || GetItemCount() == 0 ||
         !config("AllowSync").get(true))
       {
         return;

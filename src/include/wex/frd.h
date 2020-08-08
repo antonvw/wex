@@ -97,12 +97,12 @@ namespace wex
     /// Sets the find string.
     /// If use_regex also sets the regular expression.
     /// This string is used for tool find in files and replace in files.
-    /// Als moves the find string to the beginning of the find
+    /// Also moves the find string to the beginning of the find
     /// strings list.
     void set_find_string(const std::string& value);
 
     /// Sets the find strings.
-    /// Als moves the find string to the beginning of the find
+    /// Also moves the find string to the beginning of the find
     /// strings list.
     void set_find_strings(const std::list<std::string>& value);
 
@@ -113,12 +113,12 @@ namespace wex
     void set_match_word(bool value);
 
     /// Sets the replace string.
-    /// Als moves the replace string to the beginning of the replace
+    /// Also moves the replace string to the beginning of the replace
     /// strings list.
     void set_replace_string(const std::string& value);
 
     /// Sets the replace strings.
-    /// Als moves the replace string to the beginning of the replace
+    /// Also moves the replace string to the beginning of the replace
     /// strings list.
     void set_replace_strings(const std::list<std::string>& value);
 

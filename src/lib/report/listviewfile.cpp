@@ -185,7 +185,7 @@ bool wex::report::file::do_file_load(bool synced)
         listitem(this, value, child.attribute("extensions").value()).insert();
       }
 
-      if (interruptable::is_cancelled())
+      if (interruptible::is_cancelled())
         break;
     }
 

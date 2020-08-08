@@ -44,9 +44,9 @@ Variables are expanded when playing back the macro.
   
   If you do not specify this attribute, then the variable is expanded
   to the xml contents as specified here.
-  Finally a variable can be intialized using another variable 
+  Finally a variable can be initialized using another variable 
   using the @OTHER@ as contents for that variable referring
-  to the OTHER variable to for intialization. E.g. see the Copyright variable.
+  to the OTHER variable to for initialization. E.g. see the Copyright variable.
   
 - A variable can have a "prefix" attribute. 
   This attribute causes a comment line to be generated that is prefixed with

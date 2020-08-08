@@ -10,7 +10,7 @@
 #include <memory>
 #include <string>
 #include <wex/dir-data.h>
-#include <wex/interruptable.h>
+#include <wex/interruptible.h>
 #include <wex/path.h>
 
 namespace wex
@@ -18,7 +18,7 @@ namespace wex
   /// Offers find_files method.
   /// By overriding on_dir and on_file you can take care
   /// of what to do with the result.
-  class dir : public interruptable
+  class dir : public interruptible
   {
   public:
     /// Constructor.

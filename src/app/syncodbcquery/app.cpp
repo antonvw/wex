@@ -102,7 +102,7 @@ frame::frame()
           re,
           "",
           std::regex_constants::format_sed);
-        // Queries are seperated by ; character.
+        // Queries are separated by ; character.
         wex::tokenizer tkz(output, ";");
         int            no_queries = 0;
         m_running                 = true;
