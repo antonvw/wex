@@ -151,7 +151,7 @@ bool wex::hexmode::goto_dialog()
         _("Input") + " 0 - " + std::to_string(m_buffer.size() - 1) + ":",
         wxEmptyString,
         _("Enter Byte Offset"),
-        m_goto, // intial value
+        m_goto, // initial value
         0,
         m_buffer.size() - 1,
         m_stc));

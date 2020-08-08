@@ -278,7 +278,7 @@ void wex::stc::margin_action(wxStyledTextEvent& event)
       {
         AnnotationSetText(
           line,
-          m_lexer.align_text(trim(vcs.entry().get_stdout(), skip_t().all())));
+          lexer().make_comment(trim(vcs.entry().get_stdout(), skip_t().all())));
       }
       else if (!vcs.entry().get_stderr().empty())
       {

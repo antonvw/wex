@@ -7,7 +7,7 @@
 	<file>/Users/anton/wex/src/test/base/test-config.cpp</file>
 	<file>/Users/anton/wex/src/test/base/test-dir.cpp</file>
 	<file>/Users/anton/wex/src/test/base/test-file.cpp</file>
-	<file>/Users/anton/wex/src/test/base/test-interruptable.cpp</file>
+	<file>/Users/anton/wex/src/test/base/test-interruptible.cpp</file>
 	<file>/Users/anton/wex/src/test/base/test-log.cpp</file>
 	<file>/Users/anton/wex/src/test/base/test-path.cpp</file>
 	<file>/Users/anton/wex/src/test/base/test-queue-thread.cpp</file>

@@ -601,8 +601,6 @@ static void colourise(
       }
       else if (setRFWOperator.Contains(sc.ch))
       {
-        char s[10];
-        bool isCmdDelim = false;
         sc.SetState(SCE_SH_OPERATOR);
         // globs have no whitespace, do not appear in arithmetic expressions
         if (cmdState != RFW_CMD_ARITH && sc.ch == '(' && sc.chNext != '(')
@@ -649,7 +647,10 @@ static void colourise(
           cmdState == RFW_CMD_WORD ||
           (cmdState == RFW_CMD_TEST && testExprType == 0))
         {
-          s[0] = static_cast<char>(sc.ch);
+          char s[10];
+          bool isCmdDelim = false;
+          s[0]            = static_cast<char>(sc.ch);
+
           if (setRFWOperator.Contains(sc.chNext))
           {
             s[1]       = static_cast<char>(sc.chNext);

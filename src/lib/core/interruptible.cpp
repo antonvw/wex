@@ -1,26 +1,26 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      interruptable.cpp
-// Purpose:   Implementation of class wex::interruptable
+// Name:      interruptible.cpp
+// Purpose:   Implementation of class wex::interruptible
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/interruptable.h>
+#include <wex/interruptible.h>
 
-bool wex::interruptable::cancel()
+bool wex::interruptible::cancel()
 {
   if (!m_running)
   {
-    return false;  
+    return false;
   }
-  
+
   m_cancelled = true;
-  m_running = false;
-  
+  m_running   = false;
+
   return true;
 }
 
-bool wex::interruptable::start()
+bool wex::interruptible::start()
 {
   if (m_running)
   {
@@ -28,12 +28,12 @@ bool wex::interruptable::start()
   }
 
   m_cancelled = false;
-  m_running = true;
+  m_running   = true;
 
   return true;
 }
 
-void wex::interruptable::stop()
+void wex::interruptible::stop()
 {
   m_running = false;
 }

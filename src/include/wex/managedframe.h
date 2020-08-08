@@ -195,7 +195,7 @@ namespace wex
       /// label for the ex bar (/, ?, :, =)
       const std::string& label);
 
-    /// Shows ex bar, and enters inut mode.
+    /// Shows ex bar, and enters input mode.
     /// Returns false if command is not supported.
     bool show_ex_input(
       /// the ex on which command is to be done

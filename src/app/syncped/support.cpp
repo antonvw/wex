@@ -659,6 +659,9 @@ decorated_frame::decorated_frame(app* app)
                              "and saved in the same directory as "
                              "where the executable is.");
 #endif
+            description += "\n\nUsing:\n" +
+                           wex::get_version_info().external_libraries().str();
+
             info.SetDescription(description);
             info.SetCopyright(wex::get_version_info().copyright());
             info.SetWebSite("http://sourceforge.net/projects/syncped/");
