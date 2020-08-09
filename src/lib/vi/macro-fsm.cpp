@@ -35,7 +35,7 @@ namespace wex
   {
     typedef sc::transition<macro_fsm::evRECORD, ssRECORDING> reactions;
 
-    ssIDLE(my_context ctx)
+    explicit ssIDLE(my_context ctx)
       : my_base(ctx)
     {
       context<macro_fsm>().state(macro_fsm::IDLE);
@@ -46,7 +46,7 @@ namespace wex
   {
     typedef sc::custom_reaction<macro_fsm::evRECORD> reactions;
 
-    ssRECORDING(my_context ctx)
+    explicit ssRECORDING(my_context ctx)
       : my_base(ctx)
     {
       context<macro_fsm>().state(macro_fsm::RECORDING);

@@ -56,7 +56,7 @@ wex::cmdline_imp::cmdline_imp(bool add_standard_options, config& cfg)
       "level,V",
       po::value<int>()->default_value(1),
       "activates "
-      "verbosity upto verbose level (valid range: 1-9)")(
+      "verbosity up to verbose level (valid range: 1-9)")(
       "verbose,v",
       "activates maximum verbosity")(
       "logfile,D",

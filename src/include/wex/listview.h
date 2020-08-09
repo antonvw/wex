@@ -60,6 +60,9 @@ namespace wex
     /// Returns associated data.
     const auto& data() const { return m_data; };
 
+    /// Returns the field separator.
+    const auto& field_separator() const { return m_field_separator; };
+
     /// If column is not found, -1 is returned,
     int find_column(const std::string& name) const
     {
@@ -143,11 +146,6 @@ namespace wex
 
     /// Builds the popup menu.
     virtual void build_popup_menu(menu& menu);
-
-    /// Other methods.
-
-    /// Returns the field separator.
-    const auto& field_separator() const { return m_field_separator; };
 
   private:
     const std::string build_page();

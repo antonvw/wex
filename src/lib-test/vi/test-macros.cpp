@@ -140,7 +140,7 @@ TEST_CASE("wex::macros" * doctest::may_fail())
 
   SUBCASE("save")
   {
-    macros.set_abbreviation("TEST", "tiggers is_modified");
+    macros.set_abbreviation("TEST", "document is_modified");
     REQUIRE(macros.is_modified());
     REQUIRE(macros.save_document());
     REQUIRE(!macros.is_modified());

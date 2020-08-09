@@ -409,7 +409,7 @@ void wex::report::frame::on_command_item_dialog(
   switch (event.GetId())
   {
     case wxID_CANCEL:
-      if (interruptable::cancel())
+      if (interruptible::cancel())
       {
         log::status(_("Cancelled"));
       }

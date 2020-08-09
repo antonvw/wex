@@ -1044,7 +1044,7 @@ Copyright: (c) 2020, Anton van Wezenbeek
     
     <def name = "kvirc">
       <def no ="default"/>
-      <def no ="commen"/>
+      <def no ="comment"/>
       <def no ="commentblock"/>
       <def no ="string"/>
       <def no ="word"/>
@@ -3699,7 +3699,7 @@ Copyright: (c) 2020, Anton van Wezenbeek
       <property name="asp.default.language"> 1 </property>
     </properties>
     <keywords set-1="javascript" set-2="vb" set-3="python" set-4="php" set-5="sgml">
-      <!-- See scintilla html.properies -->      
+      <!-- See scintilla html.properties -->      
       a abbr acronym address applet area b base basefont
       bdo big blockquote body br button caption center
       cite code col colgroup dd del dfn dir div dl dt em
@@ -4089,10 +4089,19 @@ Copyright: (c) 2020, Anton van Wezenbeek
   </lexer>
   <lexer name="tcmd"/>
   <lexer display="tcsh" name="bash" extensions="*.tcsh"> 
+    <!-- see https://www.computerhope.com/unix/ucsh.htm -->
     <keywords set ="csh">    
-      alloc bindkey builtins complete echotc
-      filetest hup log ls-F nice nohup sched
-      settc setty telltc uncomplete where which      
+      alias alloc bg break breaksw case
+      cd chdir continue cputime datasize default
+      dirs echo else end endif endsw
+      eval exec exit fg filesize foreach
+      glob goto hashstat history if jobs
+      kill limit login logout maxproc memorylocked
+      memoryuse nice nohup notify onintr openfiles
+      popd pushd rehash repeat set setenv
+      shift source stacksize stop suspend switch
+      time umask unalias unhash unlimit unset
+      unsetenv vmemoryuse wait which while
     </keywords>
   </lexer>
   <lexer name="tehex" macro="ihex"/>

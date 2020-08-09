@@ -15,6 +15,7 @@ class app : public wex::app
 {
 public:
   auto& data() { return m_data; };
+
   auto& get_files() const { return m_files; };
   auto  get_is_debug() const { return m_is_debug; };
   auto  get_is_echo() const { return m_is_echo; };

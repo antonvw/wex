@@ -5,12 +5,6 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <boost/version.hpp>
-#ifndef __WXMSW__
-#include <easylogging++.h>
-#endif
-#include <nlohmann/json.hpp>
-#include <pugixml.hpp>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -20,7 +14,6 @@
 #include <wex/cmdline.h>
 #include <wex/ctags.h>
 #include <wex/lexers.h>
-#include <wex/log.h>
 #include <wex/stc-data.h>
 #include <wex/tostring.h>
 #include <wex/util.h>
@@ -77,33 +70,16 @@ bool app::OnInit()
 
           {{"info,i", "show versions"},
            [&](bool on) {
-             if (!on)
-               return;
-             auto json(nlohmann::json::meta());
-             std::cout << "syncped-" << wex::get_version_info().get()
-                       << " using\n"
-                       << wex::get_version_info().description() << "\n"
-                       << "Boost Libraries version: " << BOOST_VERSION / 100000
-                       << "."                               // major version
-                       << BOOST_VERSION / 100 % 1000 << "." // minor version
-                       << BOOST_VERSION % 100               // patch level
-                       << "\n"
-                       << json.meta()["name"] << ": "
-                       << json.meta()["version"]["string"] << "\n"
-                       << "pugixml version: " << PUGIXML_VERSION / 1000
-                       << "."                                // major version
-                       << PUGIXML_VERSION % 1000 / 10 << "." // minor version
-                       << PUGIXML_VERSION % 10               // patch level
-                       << "\n"
-#ifndef __WXMSW__
-                       << "easylogging++ version: "
-                       << el::VersionInfo::version() << "\n"
-#endif
-                       << wxGetLibraryVersionInfo().GetDescription().c_str();
-             exit = true;
+             if (on)
+             {
+               std::cout << "syncped-" << wex::get_version_info().get()
+                         << " using\n"
+                         << wex::get_version_info().external_libraries().str();
+               exit = true;
+             }
            }},
 
-          {{"keep,k", "keep vi options: + -c -s"},
+          {{"keep,k", "keep vi options: +, c, s"},
            [&](bool on) {
              m_keep = on;
            }},

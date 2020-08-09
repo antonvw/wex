@@ -74,7 +74,7 @@ const wex::path wex::link::find_between(const std::string& text, stc* stc) const
 
     if (pos1 != std::string::npos && pos2 != std::string::npos && pos2 > pos1)
     {
-      // Okay, get everything inbetween, and make sure we skip white space.
+      // Okay, get everything in between, and make sure we skip white space.
       return trim(text.substr(pos1 + 1, pos2 - pos1 - 1));
     }
   }
@@ -139,9 +139,9 @@ wex::link::find_filename(const std::string& text, data::control& data) const
 }
 
 const wex::path wex::link::find_url_or_mime(
-  const std::string&  text,
+  const std::string&   text,
   const data::control& data,
-  stc*                stc) const
+  stc*                 stc) const
 {
   if (!text.empty())
   {
@@ -179,8 +179,10 @@ const wex::path wex::link::find_url_or_mime(
 }
 
 // text contains selected text, or current line
-const wex::path
-wex::link::get_path(const std::string& text, data::control& data, stc* stc) const
+const wex::path wex::link::get_path(
+  const std::string& text,
+  data::control&     data,
+  stc*               stc) const
 {
   // mime or url
   if (

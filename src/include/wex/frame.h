@@ -93,7 +93,7 @@ namespace wex
 
     /// Allows you to handle output text, .e.g. from a process.
     /// Default no action is taken, and false is returned,
-    /// and some methos default send output to stdout.
+    /// and some methods default send output to stdout.
     virtual bool output(const std::string& text) const { return false; };
 
     /// Allows derived class to update file history.

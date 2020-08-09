@@ -32,7 +32,7 @@ TEST_CASE("wex::hexmode")
 
   auto* hm = &stc->get_hexmode();
 
-  SUBCASE("intial")
+  SUBCASE("initial")
   {
     REQUIRE(hm->is_active());
     REQUIRE(hm->get_stc() == stc);
