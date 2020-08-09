@@ -43,7 +43,7 @@ TEST_CASE("wex::vcs_entry")
     REQUIRE(!entry.get_command().get_command().empty());
     REQUIRE(entry.admin_dir() == "./");
     REQUIRE(entry.get_flags().empty());
-    REQUIRE(entry.get_branch().empty());
+    REQUIRE(!entry.get_branch().empty());
     REQUIRE(!entry.get_stdout().empty());
     entry.show_output();
 

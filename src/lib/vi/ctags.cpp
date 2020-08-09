@@ -133,7 +133,7 @@ namespace wex
   {
   public:
     // Constructor.
-    ctags_info(const tagEntry& entry)
+    explicit ctags_info(const tagEntry& entry)
       : m_line_number(entry.address.lineNumber)
       , m_path(entry.file)
       , m_pattern(
