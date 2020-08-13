@@ -49,5 +49,5 @@ script:
   - cmake -DCMAKE_CXX_COMPILER=${CXX} -DCMAKE_BUILD_TYPE=Coverage -DwexBUILD_TESTS=ON ..
   - make -j 4
   - if [ $TRAVIS_OS_NAME = osx ]; then src/lib-test/core/wex-test-core; fi
-  - if [ $TRAVIS_OS_NAME = osx ]; then src/lib-test/ui/wex-test-ui -tse=wex::process; fi
+  - if [ $TRAVIS_OS_NAME = osx ]; then src/lib-test/ui/wex-test-ui -tce=wex::debug; fi
   - if [ $TRAVIS_OS_NAME = osx ]; then src/lib-test/report/wex-test-report; fi
