@@ -307,9 +307,9 @@ bool wex::debug::execute(const std::string& action, wex::stc* stc)
   }
   else
   {
-    if (!m_process->is_running())
+    if (!m_process->is_running() && !m_process->execute(exe))
     {
-      m_process->execute(exe);
+      return false;
     }
 
     m_active = true;
