@@ -29,7 +29,7 @@ namespace wex::data
     /// Sets caption.
     notebook& caption(const std::string& rhs);
 
-    /// Returns index fo the page.
+    /// Returns index for the page.
     size_t index() const { return m_page_index; };
 
     /// Sets index.

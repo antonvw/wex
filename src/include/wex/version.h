@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <sstream>
 #include <string>
 #include <wx/versioninfo.h>
 
@@ -24,6 +25,9 @@ namespace wex
 
     /// Returns description.
     const std::string description() const;
+
+    /// Returns external libraries used.
+    const std::stringstream external_libraries() const;
 
     /// Returns string version.
     const std::string get() const;

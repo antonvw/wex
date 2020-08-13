@@ -41,26 +41,26 @@ bool app::OnInit()
 {
   SetAppName("syncodbcquery");
 
-  if (
-    !wex::app::OnInit() ||
-    !wex::cmdline(
-       {},
-       {{{"datasource,d", "odbc datasource"},
-         {wex::cmdline::STRING,
-          [&](const std::any& a) {
-            wex::config(_("Datasource")).set(std::any_cast<std::string>(a));
-          }}},
-        {{"password,p", "password for user"},
-         {wex::cmdline::STRING,
-          [&](const std::any& a) {
-            wex::config(_("Password")).set(std::any_cast<std::string>(a));
-          }}},
-        {{"user,u", "user to login"},
-         {wex::cmdline::STRING,
-          [&](const std::any& a) {
-            wex::config(_("User")).set(std::any_cast<std::string>(a));
-          }}}})
-       .parse(argc, argv))
+  if (wex::data::cmdline data(argc, argv);
+      !wex::app::OnInit() ||
+      !wex::cmdline(
+         {},
+         {{{"datasource,d", "odbc datasource"},
+           {wex::cmdline::STRING,
+            [&](const std::any& a) {
+              wex::config(_("Datasource")).set(std::any_cast<std::string>(a));
+            }}},
+          {{"password,p", "password for user"},
+           {wex::cmdline::STRING,
+            [&](const std::any& a) {
+              wex::config(_("Password")).set(std::any_cast<std::string>(a));
+            }}},
+          {{"user,u", "user to login"},
+           {wex::cmdline::STRING,
+            [&](const std::any& a) {
+              wex::config(_("User")).set(std::any_cast<std::string>(a));
+            }}}})
+         .parse(data))
   {
     return false;
   }
@@ -102,7 +102,7 @@ frame::frame()
           re,
           "",
           std::regex_constants::format_sed);
-        // Queries are seperated by ; character.
+        // Queries are separated by ; character.
         wex::tokenizer tkz(output, ";");
         int            no_queries = 0;
         m_running                 = true;
@@ -408,7 +408,8 @@ void frame::on_command_item_dialog(
   }
 }
 
-wex::stc* frame::open_file(const wex::path& filename, const wex::data::stc& data)
+wex::stc*
+frame::open_file(const wex::path& filename, const wex::data::stc& data)
 {
   if (m_query->open(filename, data))
   {

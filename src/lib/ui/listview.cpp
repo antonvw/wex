@@ -17,7 +17,7 @@
 #include <wex/defs.h>
 #include <wex/frame.h>
 #include <wex/frd.h>
-#include <wex/interruptable.h>
+#include <wex/interruptible.h>
 #include <wex/item-vector.h>
 #include <wex/item.h>
 #include <wex/itemdlg.h>
@@ -118,6 +118,55 @@ namespace wex
             item::COLOURPICKERWIDGET,
             *wxLIGHT_GREY}}}}}});
   }
+
+  bool on_command(listview* lv, wxCommandEvent& event)
+  {
+    switch (const long new_index =
+              lv->GetSelectedItemCount() > 0 ? lv->GetFirstSelected() : -1;
+            lv->data().type())
+    {
+      case data::listview::TSV:
+        if (wxTextEntryDialog
+              dlg(lv, _("Input") + ":", _("Item"), lv->item_to_text(new_index));
+            dlg.ShowModal() == wxID_OK)
+        {
+          lv->insert_item(
+            tokenizer(dlg.GetValue(), std::string(1, lv->field_separator()))
+              .tokenize<std::vector<std::string>>(),
+            new_index);
+        }
+        break;
+
+      default:
+      {
+        std::string defaultPath;
+
+        if (lv->GetSelectedItemCount() > 0)
+        {
+          defaultPath =
+            listitem(lv, lv->GetFirstSelected()).get_filename().string();
+        }
+
+        wxDirDialog dir_dlg(
+          lv,
+          _(wxDirSelectorPromptStr),
+          defaultPath,
+          wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
+
+        if (dir_dlg.ShowModal() == wxID_OK)
+        {
+          const auto no =
+            (lv->GetSelectedItemCount() > 0 ? lv->GetFirstSelected() :
+                                              lv->GetItemCount());
+
+          listitem(lv, dir_dlg.GetPath().ToStdString()).insert(no);
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
 }; // namespace wex
 
 wex::listview::listview(const data::listview& data)
@@ -200,7 +249,7 @@ wex::listview::listview(const data::listview& data)
     Bind(wxEVT_IDLE, [=](wxIdleEvent& event) {
       event.Skip();
       if (
-        !IsShown() || interruptable::is_running() || GetItemCount() == 0 ||
+        !IsShown() || interruptible::is_running() || GetItemCount() == 0 ||
         !config("AllowSync").get(true))
       {
         return;
@@ -345,47 +394,9 @@ wex::listview::listview(const data::listview& data)
       },
       ID_EDIT_SELECT_NONE},
      {[=](wxCommandEvent& event) {
-        long new_index = GetSelectedItemCount() > 0 ? GetFirstSelected() : -1;
-        switch (m_data.type())
+        if (on_command(this, event))
         {
-          case data::listview::TSV:
-            if (wxTextEntryDialog dlg(
-                  this,
-                  _("Input") + ":",
-                  _("Item"),
-                  item_to_text(new_index));
-                dlg.ShowModal() == wxID_OK)
-            {
-              insert_item(
-                tokenizer(dlg.GetValue(), std::string(1, m_field_separator))
-                  .tokenize<std::vector<std::string>>(),
-                new_index);
-            }
-            break;
-
-          default:
-          {
-            std::string defaultPath;
-            if (GetSelectedItemCount() > 0)
-            {
-              defaultPath =
-                listitem(this, GetFirstSelected()).get_filename().string();
-            }
-            wxDirDialog dir_dlg(
-              this,
-              _(wxDirSelectorPromptStr),
-              defaultPath,
-              wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
-            if (dir_dlg.ShowModal() == wxID_OK)
-            {
-              const auto no =
-                (GetSelectedItemCount() > 0 ? GetFirstSelected() :
-                                              GetItemCount());
-
-              listitem(this, dir_dlg.GetPath().ToStdString()).insert(no);
-              m_frame->update_statusbar(this);
-            }
-          }
+          m_frame->update_statusbar(this);
         }
       },
       wxID_ADD},
@@ -398,7 +409,7 @@ wex::listview::listview(const data::listview& data)
       ID_EDIT_OPEN},
      {[=](wxCommandEvent& event) {
         if (!IsShown() || GetItemCount() == 0)
-          return false;
+          return;
         if (const auto val(wxGetNumberFromUser(
               _("Input") + " (1 - " + std::to_string(GetItemCount()) + "):",
               wxEmptyString,
@@ -410,7 +421,6 @@ wex::listview::listview(const data::listview& data)
         {
           data::listview(data::control().line(val), this).inject();
         }
-        return true;
       },
       wxID_JUMP_TO}});
 

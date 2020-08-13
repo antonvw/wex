@@ -5,7 +5,6 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include  <iostream>
 #include <regex>
 #include <string>
 #include <vector>
@@ -21,7 +20,7 @@ void parse_keyword(
   int&                cmdStateNew)
 {
   const WordList& keywords1 = *keywordlists[0];
-  
+
   WordList rfwStruct;
   rfwStruct.Set("");
 
@@ -76,9 +75,7 @@ void parse_keyword(
         sc.ChangeState(SCE_SH_IDENTIFIER);
     }
     // disambiguate keywords and identifiers
-    else if (
-      cmdState != RFW_CMD_START ||
-      !(keywords1.InList(s) && keywordEnds))
+    else if (cmdState != RFW_CMD_START || !(keywords1.InList(s) && keywordEnds))
     {
       if (cmdStateNew != RFW_CMD_SKW_PARTIAL)
         sc.ChangeState(SCE_SH_IDENTIFIER);
@@ -100,13 +97,13 @@ static void colourise(
   cmdDelimiter.Set("| || |& & && ; ;; ( ) { }");
 
   const WordList& keywords2 = *keywordlists[1];
-  
+
   std::vector<std::string> special_keywords;
-  
+
   for (int i = 0; i < keywords2.Length(); i++)
   {
     special_keywords.push_back(keywords2.WordAt(i));
-    
+
     for (int j = 0; j < special_keywords[i].size(); j++)
     {
       if (special_keywords[i][j] == '_')
@@ -197,10 +194,7 @@ static void colourise(
     words.append(1, sc.ch);
     for (unsigned ki = 0; ki < special_keywords.size(); ki++)
     {
-      if (std::equal(
-            words.begin(),
-            words.end(),
-            special_keywords[ki].begin()))
+      if (std::equal(words.begin(), words.end(), special_keywords[ki].begin()))
       {
         if (words.size() == special_keywords[ki].size())
         {
@@ -607,8 +601,6 @@ static void colourise(
       }
       else if (setRFWOperator.Contains(sc.ch))
       {
-        char s[10];
-        bool isCmdDelim = false;
         sc.SetState(SCE_SH_OPERATOR);
         // globs have no whitespace, do not appear in arithmetic expressions
         if (cmdState != RFW_CMD_ARITH && sc.ch == '(' && sc.chNext != '(')
@@ -655,7 +647,10 @@ static void colourise(
           cmdState == RFW_CMD_WORD ||
           (cmdState == RFW_CMD_TEST && testExprType == 0))
         {
-          s[0] = static_cast<char>(sc.ch);
+          char s[10];
+          bool isCmdDelim = false;
+          s[0]            = static_cast<char>(sc.ch);
+
           if (setRFWOperator.Contains(sc.chNext))
           {
             s[1]       = static_cast<char>(sc.chNext);

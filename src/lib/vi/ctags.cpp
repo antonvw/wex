@@ -133,7 +133,7 @@ namespace wex
   {
   public:
     // Constructor.
-    ctags_info(const tagEntry& entry)
+    explicit ctags_info(const tagEntry& entry)
       : m_line_number(entry.address.lineNumber)
       , m_path(entry.file)
       , m_pattern(
@@ -326,11 +326,8 @@ bool wex::ctags::find(const std::string& tag, ex* ex)
 
   do
   {
-    const ctags_info ct(entry);
-
-    if (
-      ex == nullptr ||
-      (ex != nullptr && ct.name() != tag_name(ex->get_stc()->get_filename())))
+    if (const ctags_info ct(entry);
+        ex == nullptr || (ct.name() != tag_name(ex->get_stc()->get_filename())))
     {
       m_matches.insert({ct.name(), ct});
     }
@@ -340,30 +337,40 @@ bool wex::ctags::find(const std::string& tag, ex* ex)
 
   log::verbose("ctags::find matches") << m_matches.size();
 
-  if (m_matches.size() == 1)
+  switch (m_matches.size())
   {
-    m_matches.begin()->second.open_file(get_frame());
-  }
-  else
-  {
-    wxArrayString as;
+    case 0:
+      if (ex != nullptr)
+      {
+        ex->get_stc()->find_next(tag);
+      }
+      break;
 
-    for (const auto& it : m_matches)
-      as.Add(it.second.name());
+    case 1:
+      m_matches.begin()->second.open_file(get_frame());
+      break;
 
-    wxMultiChoiceDialog dialog(
-      get_frame(),
-      _("Input") + ":",
-      _("Select File"),
-      as);
-
-    if (dialog.ShowModal() != wxID_OK)
-      return false;
-
-    for (const auto& sel : dialog.GetSelections())
+    default:
     {
-      m_iterator = m_matches.find(as[sel]);
-      m_iterator->second.open_file(get_frame());
+      wxArrayString as;
+
+      for (const auto& it : m_matches)
+        as.Add(it.second.name());
+
+      wxMultiChoiceDialog dialog(
+        get_frame(),
+        _("Input") + ":",
+        _("Select File"),
+        as);
+
+      if (dialog.ShowModal() != wxID_OK)
+        return false;
+
+      for (const auto& sel : dialog.GetSelections())
+      {
+        m_iterator = m_matches.find(as[sel]);
+        m_iterator->second.open_file(get_frame());
+      }
     }
   }
 

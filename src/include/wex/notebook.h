@@ -56,7 +56,7 @@ namespace wex
     bool delete_page(const std::string& key);
 
     /// Do something for each page in the notebook.
-    /// The id should be inbetween ID_ALL_LOWEST and ID_ALL_HIGHEST.
+    /// The id should be in between ID_ALL_LOWEST and ID_ALL_HIGHEST.
     /// Cannot be const as it can call delete_page.
     template <class T> bool for_each(int id)
     {

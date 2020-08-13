@@ -216,7 +216,7 @@ void wex::cmdline::init()
   }
 }
 
-bool wex::cmdline::parse(int ac, char* av[], bool save)
+bool wex::cmdline::parse(data::cmdline& data)
 {
   try
   {
@@ -226,41 +226,23 @@ bool wex::cmdline::parse(int ac, char* av[], bool save)
       init();
     }
 
-    return m_parser->parse(ac, av, save);
+    return m_parser->parse(data);
   }
   catch (std::exception& e)
   {
-    std::cout << e.what() << "\n";
-    return false;
-  }
-}
-
-bool wex::cmdline::parse(
-  const std::string& cmdline,
-  std::string&       help,
-  bool               save)
-{
-  try
-  {
-    if (m_parser == nullptr)
+    if (data.av() != nullptr)
     {
-      m_parser = new cmdline_imp(m_add_standard_options, *m_cfg);
-      init();
+      std::cout << e.what() << "\n";
     }
-
-    return m_parser->parse(cmdline, help, save);
-  }
-  catch (std::exception& e)
-  {
-    help = e.what();
+    else
+    {
+      data.help(e.what());
+    }
     return false;
   }
 }
 
-bool wex::cmdline::parse_set(
-  const std::string& cmdline,
-  std::string&       help,
-  bool               save) const
+bool wex::cmdline::parse_set(data::cmdline& data) const
 {
   // [option[=[value]] ...][nooption ...][option? ...][all]
   /*
@@ -283,8 +265,9 @@ bool wex::cmdline::parse_set(
     or more <blank> characters.
     */
   std::vector<std::string> v;
-  std::string              line(trim(cmdline));
+  std::string              line(trim(data.string()));
   bool                     found = false;
+  std::string              help;
 
   while (!line.empty())
   {
@@ -292,29 +275,33 @@ bool wex::cmdline::parse_set(
     if (match("all", line, v) == 0)
     {
       get_all(help);
+      data.help(help);
       return true;
     }
     // [nooption ...]
     else if (match("no([a-z0-9]+)(.*)", line, v) > 0)
     {
-      if (set_no_option(v, save))
+      if (set_no_option(v, data.save()))
         found = true;
     }
     // [option? ...]
     else if (match("([a-z0-9]+)[ \t]*\\?(.*)", line, v) > 0)
     {
       if (get_single(v, help))
+      {
+        data.help(help);
         found = true;
+      }
     }
     // [option[=[value]] ...]
     else if (match("([a-z0-9]+)(=[a-z0-9]+)?(.*)", line, v) > 0)
     {
-      if (set_option(v, save))
+      if (set_option(v, data.save()))
         found = true;
     }
     else
     {
-      help = "unmatched cmdline: " + line;
+      data.help("unmatched cmdline: " + line);
       return false;
     }
 

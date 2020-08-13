@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
-#include <boost/version.hpp>
 #include <wex/address.h>
 #include <wex/macros.h>
 #include <wex/managedframe.h>
@@ -116,9 +115,7 @@ TEST_CASE("wex::address")
     REQUIRE(!address.read("XXXXX"));
     REQUIRE(address.read(wex::test::get_path("test.bin").string()));
 #ifdef __UNIX__
-#if BOOST_VERSION / 100 % 1000 != 72
     REQUIRE(address.read("!ls"));
-#endif
 #endif
   }
 

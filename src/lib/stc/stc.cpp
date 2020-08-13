@@ -916,7 +916,7 @@ bool wex::stc::show_blame(const vcs_entry* vcs)
           config(_("stc.Default font"))
             .get(wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT))
             .GetPixelSize()
-            .GetWidth(),
+            .GetWidth() + 1,
           5));
 
         SetMarginWidth(

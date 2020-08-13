@@ -64,7 +64,7 @@ bool wex::scope::find(const std::string& text)
 
   for (int i = std::min(m_level, m_filters.size() - 1); i >= 0; i--)
   {
-    if (const auto it = m_filters[i].find(text); it != m_filters[i].end())
+    if (const auto& it = m_filters[i].find(text); it != m_filters[i].end())
     {
       m_it = it;
       return true;

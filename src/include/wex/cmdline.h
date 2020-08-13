@@ -13,6 +13,8 @@
 #include <utility>
 #include <vector>
 
+#include <wex/cmdline-data.h>
+
 namespace wex
 {
   class cmdline_imp;
@@ -78,34 +80,13 @@ namespace wex
 
     /// Parses the command line arguments and invokes callbacks.
     /// Returns false if error is found, or exit condition is true.
-    bool parse(
-      /// argument count
-      int ac,
-      /// arguments
-      char* av[],
-      /// keep changed values in config
-      bool save = false);
-
-    /// As above, for specified command line string containing all arguments.
-    bool parse(
-      /// command line
-      const std::string& cmdline,
-      /// help default goes to specified string
-      std::string& help,
-      /// keep changed values in config
-      bool save = false);
+    bool parse(data::cmdline& data);
 
     /// Parses the command line arguments and invokes callbacks.
     /// Options are specified according to ex :set specification.
-    /// Returns false if option was not found.
     /// [option[=[value]] ...][nooption ...][option? ...][all]
-    bool parse_set(
-      /// command line
-      const std::string& cmdline,
-      /// help default goes to specified string
-      std::string& help,
-      /// keep changed values in config
-      bool save = false) const;
+    /// Returns false if option was not found.
+    bool parse_set(data::cmdline& data) const;
 
   private:
     void get_all(std::string& help) const;

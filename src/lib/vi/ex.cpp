@@ -6,9 +6,8 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <fstream>
-#include <iostream>
 #include <regex>
+#include <sstream>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -785,26 +784,26 @@ bool wex::ex::command_set(const std::string& command)
     // no standard options
     false);
 
-  bool        found;
-  std::string help;
-  std::string text(command.substr(
+  bool          found;
+  data::cmdline cmdl(command.substr(
     4,
     command.back() == '*' ? command.size() - 5 : std::string::npos));
+  cmdl.save(!modeline);
 
-  if ((found = cmdline.parse_set(text, help, !modeline)) && !modeline)
+  if ((found = cmdline.parse_set(cmdl)) && !modeline)
   {
     m_frame->on_command_item_dialog(
       wxID_PREFERENCES,
       wxCommandEvent(wxEVT_BUTTON, wxOK));
   }
 
-  if (!help.empty())
+  if (!cmdl.help().empty())
   {
-    m_frame->output(help);
+    m_frame->output(cmdl.help());
 
     if (!modeline)
     {
-      show_dialog("Options", help, lexer_props().scintilla_lexer());
+      show_dialog("Options", cmdl.help(), lexer_props().scintilla_lexer());
     }
   }
 

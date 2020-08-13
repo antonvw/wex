@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <fstream>
-#include <iostream>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -38,10 +37,10 @@ namespace wex
   {
   public:
     process_dir(listview* lv, bool init)
-      : dir("/proc", 
-          data::dir()
-            .file_spec("[0-9]+")
-            .type(data::dir::type_t().set(data::dir::DIRS)))
+      : dir(
+          "/proc",
+          data::dir().file_spec("[0-9]+").type(
+            data::dir::type_t().set(data::dir::DIRS)))
       , m_listview(lv)
     {
       if (init)
@@ -308,9 +307,9 @@ bool wex::debug::execute(const std::string& action, wex::stc* stc)
   }
   else
   {
-    if (!m_process->is_running())
+    if (!m_process->is_running() && !m_process->execute(exe))
     {
-      m_process->execute(exe);
+      return false;
     }
 
     m_active = true;
