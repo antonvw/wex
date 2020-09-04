@@ -10,6 +10,7 @@ some functions are not tested:
 
 - print()
   waits for input
+
 - print_preview()
   for grid, listview, stc
   this shows a dialog, not correctly destroyed when application exits.
@@ -18,7 +19,9 @@ some functions are not tested:
 
 - wex-test-core
   tests wex-core classes
+
 - wex-test-report
-  tests wex-report classes
-- wex-test-ui 
+  test wex-report classes
+
+- wex-test-ui
   tests other classes
