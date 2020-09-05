@@ -1,16 +1,20 @@
-# syncped is a vi compatible source code editor written in the C++ language
+# syncped is a vi compatible source code editor written in the c++ language
 
-It benefits from the following C++ features:
+It benefits from the following c++ features:
 
-## C++ libraries
+## c++ libraries
 
-- Filesystem library (C++17)
+- Filesystem library (c++17)
+```cpp
   std::filesystem
   std::filesystem::directory_iterator
   std::filesystem::recursive_directory_iterator
+```
 
 - Algorithms library
-  std::all_of (C++11)
+```cpp
+  std::all_of (c++11)
+```
 
   As syncped allows you to search in files or replace in files, this
   functionality is used.
@@ -47,14 +51,18 @@ It benefits from the following C++ features:
       }
 ```
 
-- Regular expressions library (C++11)
+- Regular expressions library (c++11)
+```cpp
   std::regex
   std::regex_match
   std::regex_replace
   std::regex_search
+```
 
   E.g. here is code to parse a:
+```cpp
   // :set [option[=[value]] ...][nooption ...][option? ...][all]
+```
   that implements the ex :set OpenSource specs.
 
   example:
@@ -104,22 +112,30 @@ It benefits from the following C++ features:
 ```
 
 - Strings library
-  std::stoi (C++11)
-  std::to_string (C++11)
+```cpp
+  std::stoi (c++11)
+  std::to_string (c++11)
+```
     These functions are used heavily, the advice is to be sure that
   you should be aware that a std::exception might be raised.
 
-- Thread support library (C++17)
+- Thread support library (c++17)
+```cpp
   std::thread
-  std::future (together with boost) (C++11)
+  std::future (together with boost) (c++11)
+```
     See next.
 
 - Utilities library
-  std::any (C++17)
+```cpp
+  std::any (c++17)
+```
     The std::any container is used as general container for
   gui elements.
 
-  std::function (C++11)
+```cpp
+  std::function (c++11)
+```
     A lot used for callbacks, e.g.:
 
     example:
@@ -150,11 +166,13 @@ It benefits from the following C++ features:
       });
 ```
 
-  std::make_unique (C++14)
-  std::shared_ptr (C++11)
-  std::unique_ptr (C++11)
+```cpp
+  std::make_unique (c++14)
+  std::shared_ptr (c++11)
+  std::unique_ptr (c++11)
 
   std::chrono
+```
 
   example:
 ```cpp
@@ -187,11 +205,15 @@ It benefits from the following C++ features:
 ```
 
 - Input/output library
+```cpp
   std::fstream
+```
     The base of all io uses a std::fstream class.
 
 - Numerics library
+```cpp
   std::accumulate
+```
     The std::accumulate is used e.g. within the vi macros to
   return a string containing all elements of the requested
   register (the find returns a std::vector<std::string>).
@@ -206,17 +228,17 @@ It benefits from the following C++ features:
                                 std::string();
 ```
 
-## C++ language
+## c++ language
 
-- init_statement in if and case statements (C++17)
+- init_statement in if and case statements (c++17)
   vi/command.cpp:
     ui/textctrl-input.cpp:
 ```cpp
       switch (const int page = 10; key)
 ```
 
-- initializer_list (C++11)
+- initializer_list (c++11)
 
-- lambda expressions (C++11)
+- lambda expressions (c++11)
 
-- nested namespaces (C++17)
+- nested namespaces (c++17)
