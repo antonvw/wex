@@ -116,7 +116,7 @@ It benefits from the following c++ features:
   std::stoi (c++11)
   std::to_string (c++11)
 ```
-    These functions are used heavily, the advice is to be sure that
+  These functions are used heavily, the advice is to be sure that
   you should be aware that a std::exception might be raised.
 
 - Thread support library (c++17)
@@ -124,22 +124,21 @@ It benefits from the following c++ features:
   std::thread
   std::future (together with boost) (c++11)
 ```
-    See next.
+  See next.
 
 - Utilities library
 ```cpp
   std::any (c++17)
 ```
-    The std::any container is used as general container for
+  The std::any container is used as general container for
   gui elements.
 
 ```cpp
   std::function (c++11)
 ```
-    A lot used for callbacks, e.g.:
+  A lot used for callbacks, e.g.:
 
-    example:
-      in lexers:
+  example: in lexers:
 ```cpp
     void wex::lexers::apply_default_style(
       std::function<void(const std::string&)> back,
@@ -208,13 +207,13 @@ It benefits from the following c++ features:
 ```cpp
   std::fstream
 ```
-    The base of all io uses a std::fstream class.
+  The base of all io uses a std::fstream class.
 
 - Numerics library
 ```cpp
   std::accumulate
 ```
-    The std::accumulate is used e.g. within the vi macros to
+  The std::accumulate is used e.g. within the vi macros to
   return a string containing all elements of the requested
   register (the find returns a std::vector<std::string>).
 
