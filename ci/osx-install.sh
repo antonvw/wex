@@ -2,4 +2,4 @@
 
 brew update
 brew install codespell
-#brew install llvm@8
+brew install llvm@8
