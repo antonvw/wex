@@ -145,6 +145,12 @@ TEST_CASE("wex::ex_command")
     REQUIRE(command.command() == "/0a123456789");
     command.insert(1, "xyz");
     REQUIRE(command.command() == "/0xyza123456789");
+    command.insert(0, '5');
+    REQUIRE(command.command() == "/50xyza123456789");
+  
+    command = wex::ex_command("/");
+    command.insert(0, 'x');
+    REQUIRE(command.command() == "/x");
   }
 
   SUBCASE("handle")

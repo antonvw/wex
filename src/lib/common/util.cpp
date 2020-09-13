@@ -165,7 +165,7 @@ int wex::open_files(
 
         if (!fn.file_exists())
         {
-          log("open file") << fn;
+          log::verbose("open file") << fn;
         }
       }
       catch (std::exception& e)

@@ -97,7 +97,7 @@ Suite Teardown
 
 tc-help
 	[Documentation]	Check whether we can startup correctly
-	${result}=	Run Process	syncped	-h
+	${result}=	Run Process	${syncped}	-h
 	# required by OpenGroup
 	Should Contain	${result.stdout}		-c
 	Should Contain	${result.stdout}		-R

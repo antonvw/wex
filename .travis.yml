@@ -18,10 +18,10 @@ matrix:
     - addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-8', 'libboost-all-dev']
+          packages: ['libboost-all-dev']
       os: linux
-      env: CC=gcc-8 CXX=g++-8
-      dist: bionic
+      env: CC=gcc CXX=g++
+      dist: focal
       sudo: required
       services: xvfb
 
@@ -48,6 +48,6 @@ script:
   - mkdir build && pushd build
   - cmake -DCMAKE_CXX_COMPILER=${CXX} -DCMAKE_BUILD_TYPE=Coverage -DwexBUILD_TESTS=ON ..
   - make -j 4
-  - if [ $TRAVIS_OS_NAME = osx ]; then src/lib-test/core/wex-test-core; fi
-  - if [ $TRAVIS_OS_NAME = osx ]; then src/lib-test/ui/wex-test-ui -tce=wex::debug; fi
-  - if [ $TRAVIS_OS_NAME = osx ]; then src/lib-test/report/wex-test-report; fi
+  - src/lib-test/core/wex-test-core
+  - src/lib-test/ui/wex-test-ui -tce=wex::debug
+  - src/lib-test/report/wex-test-report
