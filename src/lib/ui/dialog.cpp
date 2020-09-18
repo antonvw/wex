@@ -2,7 +2,7 @@
 // Name:      dialog.cpp
 // Purpose:   Implementation of wex::dialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -31,7 +31,7 @@ wex::dialog::dialog(const data::window& data)
 wxSizerItem*
 wex::dialog::add_user_sizer(wxWindow* window, const wxSizerFlags& flags)
 {
-  wxSizerItem* item = m_user_sizer->Add(window, flags);
+  auto* item = m_user_sizer->Add(window, flags);
 
   if (flags.GetFlags() & wxEXPAND)
   {
@@ -44,7 +44,7 @@ wex::dialog::add_user_sizer(wxWindow* window, const wxSizerFlags& flags)
 wxSizerItem*
 wex::dialog::add_user_sizer(wxSizer* sizer, const wxSizerFlags& flags)
 {
-  wxSizerItem* item = m_user_sizer->Add(sizer, flags);
+  auto* item = m_user_sizer->Add(sizer, flags);
 
   if (flags.GetFlags() & wxEXPAND)
   {
@@ -59,7 +59,7 @@ void wex::dialog::layout_sizers(bool add_separator_line)
   m_top_sizer->AddGrowableCol(0);
   m_user_sizer->AddGrowableCol(0);
 
-  const wxSizerFlags flag = wxSizerFlags().Expand().Border();
+  const auto flag = wxSizerFlags().Expand().Border();
 
   // The top sizer starts with a spacer, for a nice border.
   m_top_sizer->AddSpacer(wxSizerFlags::GetDefaultBorder());
