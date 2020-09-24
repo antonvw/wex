@@ -1,6 +1,8 @@
 # changes
 
-**v20.10**
+**v21.04**
+
+**v20.10** *October 2, 2020*
 - clang-format support, and wex code follows these guidelines
 - ex append, insert, change, set commands follow
     The Open Group Base Specifications Issue 7, 2018 edition

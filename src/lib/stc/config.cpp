@@ -254,12 +254,15 @@ void wex::stc::on_init()
                {wxSTC_WRAP_CHAR, _("Char")},
                {wxSTC_WRAP_WHITESPACE, _("Whitespace")}},
               true,
-              data::item().columns(2)}}}}
-        }}},
+              data::item().columns(2)}}}}}}},
        {_("Font"),
         {{_("stc.Default font"),
           item::FONTPICKERCTRL,
-          wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT),
+          wxFont(
+            12,
+            wxFONTFAMILY_DEFAULT,
+            wxFONTSTYLE_NORMAL,
+            wxFONTWEIGHT_NORMAL),
           data::item().apply(
             [=](wxWindow* user, const std::any& value, bool save) {
               // Doing this once is enough, not yet possible.

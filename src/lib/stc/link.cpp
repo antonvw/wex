@@ -218,16 +218,13 @@ const wex::path wex::link::get_path(
   {
     return file.make_absolute();
   }
-  else
+  else if (
+    file.is_relative() && stc != nullptr && stc->get_filename().file_exists())
   {
-    if (
-      file.is_relative() && stc != nullptr && stc->get_filename().file_exists())
+    if (wex::path path(stc->get_filename().get_path());
+        path.append(file).file_exists())
     {
-      if (wex::path path(stc->get_filename().get_path(), file.fullname());
-          path.file_exists())
-      {
-        return path;
-      }
+      return path;
     }
   }
 
