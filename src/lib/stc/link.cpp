@@ -224,7 +224,7 @@ const wex::path wex::link::get_path(
     if (wex::path path(stc->get_filename().get_path());
         path.append(file).file_exists())
     {
-      return path;
+      return path.make_absolute();
     }
   }
 
