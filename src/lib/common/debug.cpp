@@ -403,19 +403,20 @@ wex::debug::get_args(const std::string& command, stc* stc)
   }
   else if (command == "file")
   {
-    return {item_dialog(
-              {{"debug.File",
-                item::COMBOBOX_FILE,
-                std::any(),
-                data::item(data::control().is_required(true))
-                  .apply([&](wxWindow* user, const std::any& value, bool save) {
-                    if (save)
-                      args += " " + std::any_cast<wxArrayString>(value)[0];
-                  })},
-               {"debug." + m_entry.name(), item::FILEPICKERCTRL}},
-              data::window().title("Debug").parent(m_frame))
-                .ShowModal() != wxID_CANCEL,
-            args};
+    return {
+      item_dialog(
+        {{"debug.File",
+          item::COMBOBOX_FILE,
+          std::any(),
+          data::item(data::control().is_required(true))
+            .apply([&](wxWindow* user, const std::any& value, bool save) {
+              if (save)
+                args += " " + std::any_cast<wxArrayString>(value)[0];
+            })},
+         {"debug." + m_entry.name(), item::FILEPICKERCTRL}},
+        data::window().title("Debug").parent(m_frame))
+          .ShowModal() != wxID_CANCEL,
+      args};
   }
   else if ((match("^(p|print)", command, v) == 1) && stc != nullptr)
   {
@@ -486,7 +487,10 @@ void wex::debug::set_entry(const std::string& debugger)
     }
   }
 
-  log::verbose("debug entries") << v.size() << "debugger:" << m_entry.name();
+  if (!v.empty())
+  {
+    log::verbose("debug entries") << v.size() << "debugger:" << m_entry.name();
+  }
 }
 
 bool wex::debug::show_dialog(frame* parent)

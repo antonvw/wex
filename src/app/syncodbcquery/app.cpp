@@ -185,7 +185,7 @@ frame::frame()
               wex::file_dialog dlg(
                 &m_query->get_file(),
                 wex::data::window().style(wxFD_SAVE).parent(this).title(
-                  wxGetStockLabel(wxID_SAVEAS).ToStdString()));
+                  wxGetStockLabel(wxID_SAVEAS, wxSTOCK_NOFLAGS).ToStdString()));
               if (dlg.ShowModal() == wxID_OK)
               {
                 m_query->get_file().file_save(dlg.GetPath().ToStdString());
@@ -197,55 +197,57 @@ frame::frame()
          {},
          {wex::menu_item::EXIT}}),
       wxGetStockLabel(wxID_FILE)},
-     {new wex::menu({{this},
-                     {},
-                     {idViewQuery,
-                      _("Query"),
-                      wex::menu_item::CHECK,
-                      wex::data::menu()
-                        .action([=](wxCommandEvent& event) {
-                          pane_toggle("QUERY");
-                        })
-                        .ui([=](wxUpdateUIEvent& event) {
-                          event.Check(pane_is_shown("QUERY"));
-                        })},
-                     {idViewResults,
-                      _("Results"),
-                      wex::menu_item::CHECK,
-                      wex::data::menu()
-                        .action([=](wxCommandEvent& event) {
-                          pane_toggle("RESULTS");
-                        })
-                        .ui([=](wxUpdateUIEvent& event) {
-                          event.Check(pane_is_shown("RESULTS"));
-                        })},
-                     {idViewStatistics,
-                      _("Statistics"),
-                      wex::menu_item::CHECK,
-                      wex::data::menu()
-                        .action([=](wxCommandEvent& event) {
-                          pane_toggle("STATISTICS");
-                        })
-                        .ui([=](wxUpdateUIEvent& event) {
-                          event.Check(pane_is_shown("STATISTICS"));
-                        })}}),
+     {new wex::menu(
+        {{this},
+         {},
+         {idViewQuery,
+          _("Query"),
+          wex::menu_item::CHECK,
+          wex::data::menu()
+            .action([=](wxCommandEvent& event) {
+              pane_toggle("QUERY");
+            })
+            .ui([=](wxUpdateUIEvent& event) {
+              event.Check(pane_is_shown("QUERY"));
+            })},
+         {idViewResults,
+          _("Results"),
+          wex::menu_item::CHECK,
+          wex::data::menu()
+            .action([=](wxCommandEvent& event) {
+              pane_toggle("RESULTS");
+            })
+            .ui([=](wxUpdateUIEvent& event) {
+              event.Check(pane_is_shown("RESULTS"));
+            })},
+         {idViewStatistics,
+          _("Statistics"),
+          wex::menu_item::CHECK,
+          wex::data::menu()
+            .action([=](wxCommandEvent& event) {
+              pane_toggle("STATISTICS");
+            })
+            .ui([=](wxUpdateUIEvent& event) {
+              event.Check(pane_is_shown("STATISTICS"));
+            })}}),
       _("&View")},
-     {new wex::menu({{idDatabaseOpen,
-                      wex::ellipsed(_("&Open")),
-                      wex::data::menu().action([=](wxCommandEvent& event) {
-                        if (m_otl.logon())
-                        {
-                          m_shell->set_prompt(m_otl.datasource() + ">");
-                        }
-                      })},
-                     {idDatabaseClose,
-                      _("&Close"),
-                      wex::data::menu().action([=](wxCommandEvent& event) {
-                        if (m_otl.logoff())
-                        {
-                          m_shell->set_prompt(">");
-                        }
-                      })}}),
+     {new wex::menu(
+        {{idDatabaseOpen,
+          wex::ellipsed(_("&Open")),
+          wex::data::menu().action([=](wxCommandEvent& event) {
+            if (m_otl.logon())
+            {
+              m_shell->set_prompt(m_otl.datasource() + ">");
+            }
+          })},
+         {idDatabaseClose,
+          _("&Close"),
+          wex::data::menu().action([=](wxCommandEvent& event) {
+            if (m_otl.logoff())
+            {
+              m_shell->set_prompt(">");
+            }
+          })}}),
       _("&Connection")},
      {menuQuery, _("&Query")},
 #ifndef __WXOSX__

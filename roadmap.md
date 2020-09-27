@@ -2,7 +2,7 @@
 - after cancel Cht macro, expansion no longer works
 
 ## backlog
-- no public wxWidgets inheritance
+- no public wxWidgets inheritance (18 of them)
 - invest use wxTextCompleter
 - start up with recent project, close project
   -> windows appear
