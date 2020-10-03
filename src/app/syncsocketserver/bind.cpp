@@ -31,33 +31,32 @@
 
 void frame::bind_all()
 {
-  wex::bind(this).command({{[=](wxCommandEvent& event) {
-                              const std::string buffer(event.GetString());
-                              size_t            written = 0;
+  wex::bind(this).command(
+    {{[=](wxCommandEvent& event) {
+        const std::string buffer(event.GetString());
+        size_t            written = 0;
 
-                              for (auto& it : m_clients)
-                              {
-                                written +=
-                                  write_data_to_socket(buffer + "\n", it);
-                              }
-                              if (m_client != nullptr)
-                              {
-                                written +=
-                                  write_data_to_socket(buffer + "\n", m_client);
-                              }
+        for (auto& it : m_clients)
+        {
+          written += write_data_to_socket(buffer + "\n", it);
+        }
+        if (m_client != nullptr)
+        {
+          written += write_data_to_socket(buffer + "\n", m_client);
+        }
 
-                              if (written == 0)
-                              {
-                                wex::log::verbose("ignored") << buffer;
-                              }
+        if (written == 0)
+        {
+          wex::log::verbose("ignored") << buffer;
+        }
 
-                              m_shell->prompt();
-                            },
-                            wex::ID_SHELL_COMMAND},
-                           {[=](wxCommandEvent& event) {
-                              m_log->clear();
-                            },
-                            m_id_clear_log}});
+        m_shell->prompt();
+      },
+      wex::ID_SHELL_COMMAND},
+     {[=](wxCommandEvent& event) {
+        m_log->clear();
+      },
+      m_id_clear_log}});
 
   Bind(
     wxEVT_SOCKET,
@@ -211,7 +210,7 @@ void frame::bind_all()
       };
     },
     m_id_socket_client,
-    m_id_socket_remoteclient);
+    m_id_socket_client_remote);
 
   Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
 #if wxUSE_TASKBARICON
@@ -245,69 +244,69 @@ void frame::bind_all()
     write_data_window_to_connections();
   });
 
-  wex::bind(this).ui({{[=](wxUpdateUIEvent& event) {
-                         event.Enable(m_server == nullptr);
-                       },
-                       wxID_EXECUTE},
-                      {[=](wxUpdateUIEvent& event) {
-                         event.Enable(m_data->GetModify());
-                       },
-                       wxID_SAVE},
-                      {[=](wxUpdateUIEvent& event) {
-                         event.Enable(m_server != nullptr);
-                       },
-                       wxID_STOP},
-                      {[=](wxUpdateUIEvent& event) {
-                         event.Enable(m_client == nullptr);
-                       },
-                       m_id_remote_server_connect},
-                      {[=](wxUpdateUIEvent& event) {
-                         event.Enable(m_client != nullptr);
-                       },
-                       m_id_remote_server_disconnect},
-                      {[=](wxUpdateUIEvent& event) {
-                         event.Enable(!m_stats.get_items().empty());
-                       },
-                       m_id_clear_statistics},
-                      {[=](wxUpdateUIEvent& event) {
-                         event.Check(wex::config("Log Data").get(true));
-                       },
-                       m_id_client_log_data},
-                      {[=](wxUpdateUIEvent& event) {
-                         event.Enable(wex::config("Log Data").get(true));
-                         event.Check(wex::config("Count Only").get(true));
-                       },
-                       m_id_client_log_data_count_only},
-                      {[=](wxUpdateUIEvent& event) {
-                         event.Enable(
-                           !file_history().get_history_file().empty());
-                       },
-                       m_id_recent_file_menu},
-                      {[=](wxUpdateUIEvent& event) {
-                         event.Enable(m_timer.IsRunning());
-                       },
-                       m_id_timer_stop},
-                      {[=](wxUpdateUIEvent& event) {
-                         event.Check(pane_is_shown("DATA"));
-                       },
-                       m_id_view_data},
-                      {[=](wxUpdateUIEvent& event) {
-                         event.Check(pane_is_shown("LOG"));
-                       },
-                       m_id_view_log},
-                      {[=](wxUpdateUIEvent& event) {
-                         event.Check(pane_is_shown("SHELL"));
-                       },
-                       m_id_view_shell},
-                      {[=](wxUpdateUIEvent& event) {
-                         event.Check(pane_is_shown("STATISTICS"));
-                       },
-                       m_id_view_statistics},
-                      {[=](wxUpdateUIEvent& event) {
-                         event.Enable(
-                           (!m_clients.empty() ||
-                            (m_client != nullptr && m_client->IsConnected())) &&
-                           m_data->GetLength() > 0);
-                       },
-                       m_id_write_data}});
+  wex::bind(this).ui(
+    {{[=](wxUpdateUIEvent& event) {
+        event.Enable(m_server == nullptr);
+      },
+      wxID_EXECUTE},
+     {[=](wxUpdateUIEvent& event) {
+        event.Enable(m_data->GetModify());
+      },
+      wxID_SAVE},
+     {[=](wxUpdateUIEvent& event) {
+        event.Enable(m_server != nullptr);
+      },
+      wxID_STOP},
+     {[=](wxUpdateUIEvent& event) {
+        event.Enable(m_client == nullptr);
+      },
+      m_id_remote_server_connect},
+     {[=](wxUpdateUIEvent& event) {
+        event.Enable(m_client != nullptr);
+      },
+      m_id_remote_server_disconnect},
+     {[=](wxUpdateUIEvent& event) {
+        event.Enable(!m_stats.get_items().empty());
+      },
+      m_id_clear_statistics},
+     {[=](wxUpdateUIEvent& event) {
+        event.Check(wex::config("Log Data").get(true));
+      },
+      m_id_client_log_data},
+     {[=](wxUpdateUIEvent& event) {
+        event.Enable(wex::config("Log Data").get(true));
+        event.Check(wex::config("Count Only").get(true));
+      },
+      m_id_client_log_data_count_only},
+     {[=](wxUpdateUIEvent& event) {
+        event.Enable(!file_history().get_history_file().empty());
+      },
+      m_id_recent_file_menu},
+     {[=](wxUpdateUIEvent& event) {
+        event.Enable(m_timer.IsRunning());
+      },
+      m_id_timer_stop},
+     {[=](wxUpdateUIEvent& event) {
+        event.Check(pane_is_shown("DATA"));
+      },
+      m_id_view_data},
+     {[=](wxUpdateUIEvent& event) {
+        event.Check(pane_is_shown("LOG"));
+      },
+      m_id_view_log},
+     {[=](wxUpdateUIEvent& event) {
+        event.Check(pane_is_shown("SHELL"));
+      },
+      m_id_view_shell},
+     {[=](wxUpdateUIEvent& event) {
+        event.Check(pane_is_shown("STATISTICS"));
+      },
+      m_id_view_statistics},
+     {[=](wxUpdateUIEvent& event) {
+        event.Enable(
+          (!m_clients.empty() ||
+           (m_client != nullptr && m_client->IsConnected())) &&
+          m_data->GetLength() > 0);
+      },
+      m_id_write_data}});
 }

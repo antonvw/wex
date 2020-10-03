@@ -65,6 +65,7 @@ frame::frame()
   , m_shell(new wex::shell)
   , m_id_clear_log(NewControlId())
   , m_id_socket_client(NewControlId())
+  , m_id_socket_client_remote(NewControlId())
   , m_id_socket_server(NewControlId())
   , m_id_clear_statistics(NewControlId())
   , m_id_client_buffer_size(NewControlId())
@@ -80,7 +81,6 @@ frame::frame()
   , m_id_remote_server_connect(NewControlId())
   , m_id_remote_server_disconnect(NewControlId())
   , m_id_remote_server_config(NewControlId())
-  , m_id_socket_remoteclient(NewControlId())
   , m_id_timer_stop(NewControlId())
   , m_id_timer_start(NewControlId())
   , m_id_view_data(NewControlId())
@@ -97,14 +97,15 @@ frame::frame()
 
   Show(); // otherwise statusbar is not placed correctly
 
-  setup_statusbar({wex::statusbar_pane("PaneConnections", 75)
-                     .help("Number of local, remote connections"),
-                   wex::statusbar_pane("PaneTimer", 75).help("Repeat timer"),
-                   wex::statusbar_pane("PaneBytes", 150)
-                     .help("Number of bytes received and sent"),
-                   {"PaneFileType", 50},
-                   {"PaneInfo", 100},
-                   {"PaneMode", 100, false}});
+  setup_statusbar(
+    {wex::statusbar_pane("PaneConnections", 75)
+       .help("Number of local, remote connections"),
+     wex::statusbar_pane("PaneTimer", 75).help("Repeat timer"),
+     wex::statusbar_pane("PaneBytes", 150)
+       .help("Number of bytes received and sent"),
+     {"PaneFileType", 50},
+     {"PaneInfo", 100},
+     {"PaneMode", 100, false}});
 
   m_log->reset_margins();
 
@@ -129,18 +130,19 @@ frame::frame()
   }
 
   get_toolbar()->add_standard(false); // no realize yet
-  get_toolbar()->add_tool({wex::data::toolbar_item(m_id_write_data)
-                             .bitmap(wxArtProvider::GetBitmap(
-                               wxART_GO_FORWARD,
-                               wxART_TOOLBAR,
-                               get_toolbar()->GetToolBitmapSize()))
-                             .label("Write data"),
-                           wex::data::toolbar_item(m_id_clear_log)
-                             .bitmap(wxArtProvider::GetBitmap(
-                               wxART_CROSS_MARK,
-                               wxART_TOOLBAR,
-                               get_toolbar()->GetToolBitmapSize()))
-                             .label("Clear log")});
+  get_toolbar()->add_tool(
+    {wex::data::toolbar_item(m_id_write_data)
+       .bitmap(wxArtProvider::GetBitmap(
+         wxART_GO_FORWARD,
+         wxART_TOOLBAR,
+         get_toolbar()->GetToolBitmapSize()))
+       .label("Write data"),
+     wex::data::toolbar_item(m_id_clear_log)
+       .bitmap(wxArtProvider::GetBitmap(
+         wxART_CROSS_MARK,
+         wxART_TOOLBAR,
+         get_toolbar()->GetToolBitmapSize()))
+       .label("Clear log")});
 
   get_find_toolbar()->add_find();
   get_options_toolbar()->add_checkboxes_standard();
@@ -527,14 +529,15 @@ const auto m_id_open = wxWindow::NewControlId();
 taskbar_icon::taskbar_icon(frame* frame)
   : m_frame(frame)
 {
-  bind(this).command({{[=](wxCommandEvent& event) {
-                         m_frame->Close(true);
-                       },
-                       wxID_EXIT},
-                      {[=](wxCommandEvent& event) {
-                         m_frame->Show();
-                       },
-                       m_id_open}});
+  bind(this).command(
+    {{[=](wxCommandEvent& event) {
+        m_frame->Close(true);
+      },
+      wxID_EXIT},
+     {[=](wxCommandEvent& event) {
+        m_frame->Show();
+      },
+      m_id_open}});
 
   Bind(wxEVT_TASKBAR_LEFT_DCLICK, [=](wxTaskBarIconEvent&) {
     m_frame->Show();

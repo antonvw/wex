@@ -90,32 +90,33 @@ void frame::build_menu()
 
     SetMenuBar(new wex::menubar(
       {{menuFile, wxGetStockLabel(wxID_FILE)},
-       {new wex::menu({{this},
-                       {},
-                       {m_id_view_log,
-                        "Log",
-                        wex::menu_item::CHECK,
-                        wex::data::menu().action([=](wxCommandEvent& event) {
-                          pane_toggle("LOG");
-                        })},
-                       {m_id_view_data,
-                        "Data",
-                        wex::menu_item::CHECK,
-                        wex::data::menu().action([=](wxCommandEvent& event) {
-                          pane_toggle("DATA");
-                        })},
-                       {m_id_view_shell,
-                        "Shell",
-                        wex::menu_item::CHECK,
-                        wex::data::menu().action([=](wxCommandEvent& event) {
-                          pane_toggle("SHELL");
-                        })},
-                       {m_id_view_statistics,
-                        "Statistics",
-                        wex::menu_item::CHECK,
-                        wex::data::menu().action([=](wxCommandEvent& event) {
-                          pane_toggle("STATISTICS");
-                        })}}),
+       {new wex::menu(
+          {{this},
+           {},
+           {m_id_view_log,
+            "Log",
+            wex::menu_item::CHECK,
+            wex::data::menu().action([=](wxCommandEvent& event) {
+              pane_toggle("LOG");
+            })},
+           {m_id_view_data,
+            "Data",
+            wex::menu_item::CHECK,
+            wex::data::menu().action([=](wxCommandEvent& event) {
+              pane_toggle("DATA");
+            })},
+           {m_id_view_shell,
+            "Shell",
+            wex::menu_item::CHECK,
+            wex::data::menu().action([=](wxCommandEvent& event) {
+              pane_toggle("SHELL");
+            })},
+           {m_id_view_statistics,
+            "Statistics",
+            wex::menu_item::CHECK,
+            wex::data::menu().action([=](wxCommandEvent& event) {
+              pane_toggle("STATISTICS");
+            })}}),
         "&View"},
        {new wex::menu(
           {{m_id_server_config,
@@ -208,7 +209,7 @@ void frame::build_menu()
                     addr.Service(wex::config("Remote Port").get(3000));
 
                     m_client = new wxSocketClient();
-                    m_client->SetEventHandler(*this, m_id_socket_remoteclient);
+                    m_client->SetEventHandler(*this, m_id_socket_client_remote);
                     m_client->SetNotify(wxSOCKET_CONNECTION_FLAG);
                     m_client->Notify(true);
                     m_client->Connect(addr, false);
@@ -334,7 +335,9 @@ void frame::build_menu()
        {menuOptions, "&Options"},
 #endif
        {new wex::menu(
-          {{wxID_ABOUT, "", wex::data::menu().action([=](wxCommandEvent& event) {
+          {{wxID_ABOUT,
+            "",
+            wex::data::menu().action([=](wxCommandEvent& event) {
               wxAboutDialogInfo info;
               info.SetIcon(GetIcon());
               info.SetDescription("This program offers a general socket "

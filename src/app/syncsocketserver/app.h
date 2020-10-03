@@ -52,7 +52,7 @@ private:
     override;
 
   wex::stc* open_file(
-    const wex::path&     filename,
+    const wex::path&      filename,
     const wex::data::stc& data = wex::data::stc()) override;
 
   void statusbar_clicked(const std::string& pane) override;
@@ -85,27 +85,29 @@ private:
 
   size_t write_data_window_to_connections();
 
-  const wxWindowID m_id_clear_log, m_id_socket_client, m_id_socket_server,
-    m_id_clear_statistics, m_id_client_buffer_size, m_id_client_answer_command,
+  const wxWindowID m_id_clear_log, m_id_socket_client_remote,
+    m_id_socket_client, m_id_socket_server, m_id_clear_statistics,
+    m_id_client_buffer_size, m_id_client_answer_command,
     m_id_client_answer_echo, m_id_client_answer_file, m_id_client_answer_off,
     m_id_client_log_data, m_id_client_log_data_count_only, m_id_hide,
     m_id_recent_file_menu, m_id_server_config, m_id_remote_server_connect,
-    m_id_remote_server_disconnect, m_id_remote_server_config,
-    m_id_socket_remoteclient, m_id_timer_stop, m_id_timer_start, m_id_view_data,
-    m_id_view_log, m_id_view_shell, m_id_view_statistics, m_id_write_data;
+    m_id_remote_server_disconnect, m_id_remote_server_config, m_id_timer_stop,
+    m_id_timer_start, m_id_view_data, m_id_view_log, m_id_view_shell,
+    m_id_view_statistics, m_id_write_data;
 
   std::list<wxSocketBase*> m_clients;
 
   wex::shell* m_shell;
   wex::stc *  m_data, *m_log;
 
-  wex::statistics<int> m_stats{{{"Messages Received", 0},
-                                {"Messages Sent", 0},
-                                {"Bytes Received", 0},
-                                {"Bytes Sent", 0},
-                                {"Connections Server", 0},
-                                {"Connections Remote", 0},
-                                {"Connections Closed", 0}}};
+  wex::statistics<int> m_stats{
+    {{"Messages Received", 0},
+     {"Messages Sent", 0},
+     {"Bytes Received", 0},
+     {"Bytes Sent", 0},
+     {"Connections Server", 0},
+     {"Connections Remote", 0},
+     {"Connections Closed", 0}}};
 
   wxSocketClient* m_client{nullptr};
   wxSocketServer* m_server{nullptr};
