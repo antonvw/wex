@@ -130,13 +130,13 @@ namespace wex
           {
             if (!ex->command(line + tkz.last_delimiter()))
             {
-              log("command failed line") << i + 1 << line;
+              log::verbose("command insert failed line") << i + 1 << line;
               result = false;
             }
           }
           else if (!ex->command(line))
           {
-            log("command failed line") << i + 1 << line;
+            log::verbose("command failed line") << i + 1 << line;
             result = false;
           }
         }

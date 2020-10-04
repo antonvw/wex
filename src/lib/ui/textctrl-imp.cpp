@@ -237,7 +237,7 @@ wex::textctrl_imp::textctrl_imp(
   Bind(wxEVT_TEXT, [=](wxCommandEvent& event) {
     event.Skip();
 
-    if (GetValue().size() == 0 && m_input == 0)
+    if (get_text().size() == 0 && m_input == 0)
     {
       m_command.reset();
     }
