@@ -1,10 +1,3 @@
-################################################################################
-# Name:      install-lib.sh
-# Purpose:   Installs wex libs and include files
-# Author:    Anton van Wezenbeek
-# Copyright: (c) 2020 Anton van Wezenbeek
-################################################################################
-  
 #!/usr/bin/env bash
 
 root=$(git rev-parse --show-toplevel)
