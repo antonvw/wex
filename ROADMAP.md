@@ -1,5 +1,4 @@
 # roadmap
-- after cancel Cht macro, expansion no longer works
 
 ## backlog
 - no public wxWidgets inheritance (18 of them)

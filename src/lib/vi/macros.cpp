@@ -328,7 +328,7 @@ bool wex::macros::save_document(bool only_if_modified)
     return false;
   }
 
-  const bool ok = m_doc.save_file(get_filename().string().c_str());
+  const bool ok = m_doc.save_file(get_filename().string().c_str(), "  ");
 
   if (ok)
   {
@@ -342,14 +342,14 @@ void wex::macros::save_macro(const std::string& macro)
 {
   try
   {
-    if (auto node = m_doc.document_element().select_node(
+    if (const auto& node = m_doc.document_element().select_node(
           std::string("//macro[@name='" + macro + "']").c_str());
         node && node.node())
     {
       m_doc.document_element().remove_child(node.node());
     }
 
-    pugi::xml_node node_macro = m_doc.document_element().append_child("macro");
+    auto node_macro = m_doc.document_element().append_child("macro");
     node_macro.append_attribute("name") = macro.c_str();
 
     for (const auto& it : m_macros[macro])
@@ -389,7 +389,7 @@ void wex::macros::set(
     }
     else
     {
-      pugi::xml_node child =
+      auto child =
         m_doc.document_element().append_child(xpath.c_str());
       child.append_attribute("name") = name.c_str();
       child.text().set(value.c_str());
