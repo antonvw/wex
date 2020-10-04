@@ -9,11 +9,16 @@ if(NOT Boost_FOUND)
   message(FATAL_ERROR "boost is required")
 endif()
 
-link_directories("/usr/local/Cellar/wex/lib")
-include_directories("/usr/local/Cellar/wex/include")
+link_directories("/usr/local/lib/wex")
+  
+include_directories("/usr/local/include/wex")
+  
+if (APPLE)
+  set(CMAKE_EXE_LINKER_FLAGS "-framework AudioToolbox -framework WebKit /usr/lib/libz.dylib /usr/lib/libiconv.dylib -framework CoreFoundation -framework Security -framework Carbon -framework Cocoa -framework IOKit")
+endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -g")
-set(CMAKE_EXE_LINKER_FLAGS "-framework AudioToolbox -framework WebKit /usr/lib/libz.dylib /usr/lib/libiconv.dylib -framework CoreFoundation -framework Security -framework Carbon -framework Cocoa -framework IOKit")
+
 set(wex_LIBRARIES
   wex-reportd 
   wex-commond 

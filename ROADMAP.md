@@ -1,4 +1,5 @@
 # roadmap
+- port wex.cmake and install-lib to msw
 
 ## backlog
 - no public wxWidgets inheritance (18 of them)
