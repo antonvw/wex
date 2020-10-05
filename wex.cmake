@@ -5,12 +5,24 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost 1.65.0 COMPONENTS 
   filesystem program_options date_time regex REQUIRED)
 
-if(NOT Boost_FOUND)
+if (NOT Boost_FOUND)
   message(FATAL_ERROR "boost is required")
 endif()
 
 link_directories("/usr/local/lib/wex")
-  
+
+if (WIN32)
+  add_definitions(-D__WXMSW__)
+elseif (APPLE AND IPHONE)
+  add_definitions(-D__WXOSX_IPHONE__)
+elseif (APPLE)
+  add_definitions(-D__WXOSX_COCOA__)
+elseif (UNIX)
+  add_definitions(-D__WXGTK3__)
+else()
+  message(FATAL_ERROR "Unsupported platform")
+endif()
+
 include_directories("/usr/local/include/wex")
   
 if (APPLE)
