@@ -27,7 +27,6 @@ private:
   wxCheckBox* m_cb;
 };
 
-
 extra_panel::extra_panel(wxWindow* parent)
   : wxPanel(parent)
   , m_id_checkbox(NewControlId())
@@ -172,14 +171,16 @@ int wex::file_dialog::show_modal_if_changed(bool show_modal)
 
 int wex::file_dialog::ShowModal()
 {
-  SetExtraControlCreator(&create_extra_panel);
+  if (!(GetWindowStyle() & wxFD_SAVE) && (GetWindowStyle() & wxFD_HEX_MODE))
+  {
+    SetExtraControlCreator(&create_extra_panel);
+  }
 
   const auto id = wxFileDialog::ShowModal();
 
-  if (id == wxID_OK)
+  if (auto* extra = GetExtraControl(); id == wxID_OK && extra != nullptr)
   {
-    auto* extra = GetExtraControl();
-    m_hexmode   = static_cast<extra_panel*>(extra)->checked();
+    m_hexmode = static_cast<extra_panel*>(extra)->checked();
   }
 
   return id;

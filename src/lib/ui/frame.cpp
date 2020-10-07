@@ -14,6 +14,7 @@
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/defs.h>
+#include <wex/filedlg.h>
 #include <wex/frame.h>
 #include <wex/frd.h>
 #include <wex/grid.h>
@@ -129,10 +130,11 @@ wex::frame::frame(const data::window& data)
 {
   SetDropTarget(new file_droptarget(this));
 
-  win_data = config(win_frame).get(std::vector<int>{data.size().GetWidth(),
-                                                    data.size().GetHeight(),
-                                                    data.pos().x,
-                                                    data.pos().y});
+  win_data = config(win_frame).get(std::vector<int>{
+    data.size().GetWidth(),
+    data.size().GetHeight(),
+    data.pos().x,
+    data.pos().y});
 
   accelerators({{wxACCEL_NORMAL, WXK_F5, wxID_FIND},
                 {wxACCEL_NORMAL, WXK_F6, wxID_REPLACE},
@@ -237,7 +239,8 @@ wex::frame::frame(const data::window& data)
         else
         {
           data::window data;
-          data.style(wxFD_OPEN | wxFD_MULTIPLE | wxFD_CHANGE_DIR);
+          data.style(
+            wxFD_OPEN | wxFD_MULTIPLE | wxFD_CHANGE_DIR | wxFD_HEX_MODE);
           open_files_dialog(this, false, data::stc(data));
         }
       },
@@ -263,10 +266,11 @@ wex::frame::frame(const data::window& data)
     else
     {
       config(win_max).set(false);
-      config(win_frame).set(std::vector<int>{GetSize().GetWidth(),
-                                             GetSize().GetHeight(),
-                                             GetPosition().x,
-                                             GetPosition().y});
+      config(win_frame).set(std::vector<int>{
+        GetSize().GetWidth(),
+        GetSize().GetHeight(),
+        GetPosition().x,
+        GetPosition().y});
     }
 
     m_is_closing = true;
@@ -547,9 +551,15 @@ bool wex::frame::update_statusbar(stc* stc, const std::string& pane)
   {
     switch (stc->GetEOLMode())
     {
-      case wxSTC_EOL_CRLF: text << "DOS"; break;
-      case wxSTC_EOL_CR: text << "Mac"; break;
-      case wxSTC_EOL_LF: text << "Unix"; break;
+      case wxSTC_EOL_CRLF:
+        text << "DOS";
+        break;
+      case wxSTC_EOL_CR:
+        text << "Mac";
+        break;
+      case wxSTC_EOL_LF:
+        text << "Unix";
+        break;
       default:
         assert(0);
     }

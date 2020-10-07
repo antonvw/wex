@@ -10,6 +10,9 @@
 #include <wex/window-data.h>
 #include <wx/filedlg.h>
 
+/// Extra flag to show hex mode button on dialog.
+#define wxFD_HEX_MODE wxFD_SHOW_HIDDEN << 2
+
 namespace wex
 {
   class file;
@@ -21,14 +24,16 @@ namespace wex
     /// Default constructor for hexmode only.
     file_dialog(
       /// window data
-      const data::window& data = data::window().style(wxFD_DEFAULT_STYLE));
+      const data::window& data =
+        data::window().style(wxFD_DEFAULT_STYLE | wxFD_HEX_MODE));
 
     /// Constructor for file and a hexmode.
     file_dialog(
       /// specify file
       file* file,
       /// window data
-      const data::window& data = data::window().style(wxFD_DEFAULT_STYLE));
+      const data::window& data =
+        data::window().style(wxFD_DEFAULT_STYLE | wxFD_HEX_MODE));
 
     /// Virtual interface.
     int ShowModal() override;

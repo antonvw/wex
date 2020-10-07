@@ -1,4 +1,5 @@
 # roadmap
+- rename stcfile etc. into stc-file
 - port wex.cmake and install-lib to msw
 
 ## backlog
