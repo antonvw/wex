@@ -13,12 +13,24 @@ link_directories("/usr/local/lib/wex")
 
 if (WIN32)
   add_definitions(-D__WXMSW__)
+  set(PLATFORM "msw")
 elseif (APPLE AND IPHONE)
   add_definitions(-D__WXOSX_IPHONE__)
+  set(PLATFORM "osx_iphone")
 elseif (APPLE)
   add_definitions(-D__WXOSX_COCOA__)
+  set(PLATFORM "osx_cocoa")
+  set(cpp_LIBRARIES stdc++)
+  set(extra_LIBRARIES wx_${PLATFORM}u_media-3.1 wxjpeg-3.1 wxpng-3.1)
 elseif (UNIX)
-  add_definitions(-D__WXGTK3__)
+  add_definitions(-D__WXGTK3__ -D__WXGTK__)
+  set(PLATFORM "gtk3")
+  set(cpp_LIBRARIES /usr/gnat/lib64/libstdc++.a /usr/gnat/lib64/libstdc++fs.a m 
+    pthread dl /usr/lib64/libjpeg.so /usr/lib64/libpng.so /usr/lib64/libz.so 
+    -lc -lpthread -ldl /usr/lib64/libSM.so /usr/lib64/libICE.so 
+    /usr/lib64/libX11.so /usr/lib64/libXext.so -lgtk-3 -lgdk-3 -latk-1.0 
+    -lgio-2.0 -lpangocairo-1.0 -lgdk_pixbuf-2.0 -lcairo-gobject -lpango-1.0 
+    -lcairo -lgobject-2.0 -lglib-2.0 /usr/lib64/libXtst.so)
 else()
   message(FATAL_ERROR "Unsupported platform")
 endif()
@@ -42,16 +54,14 @@ set(wex_LIBRARIES
   wex-uid 
   wex-datad 
   wex-cored 
-  wx_osx_cocoau_aui-3.1
-  wx_osx_cocoau_adv-3.1
-  wx_osx_cocoau_stc-3.1
-  wx_osx_cocoau_html-3.1
-  wx_osx_cocoau_core-3.1
-  wx_osx_cocoau_media-3.1
+  wx_${PLATFORM}u_aui-3.1
+  wx_${PLATFORM}u_adv-3.1
+  wx_${PLATFORM}u_stc-3.1
+  wx_${PLATFORM}u_html-3.1
+  wx_${PLATFORM}u_core-3.1
   wx_baseu-3.1 
   wx_baseu_net-3.1 
   wxscintilla-3.1
-  wxjpeg-3.1
-  wxpng-3.1
+  ${extra_LIBRARIES}
   ${Boost_LIBRARIES}
-  stdc++)
+  ${cpp_LIBRARIES})
