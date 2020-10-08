@@ -11,7 +11,7 @@
 #include <wex/ex.h>
 #include <wex/log.h>
 #include <wex/macros.h>
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 #include <wex/process.h>
 #include <wex/stc.h>
 

@@ -9,7 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wex/stcdlg.h>
+#include <wex/stc-entry-dialog.h>
 #include <wex/stc.h>
 
 wex::stc_entry_dialog::stc_entry_dialog(

@@ -12,7 +12,7 @@
 #endif
 #include <wex/config.h>
 #include <wex/core.h>
-#include <wex/filehistory.h>
+#include <wex/file-history.h>
 #include <wex/log.h>
 #include <wex/menu.h>
 #include <wex/path.h>

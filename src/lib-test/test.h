@@ -10,7 +10,7 @@
 #include <doctest.h>
 #include <string>
 #include <wex/app.h>
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 #include <wex/path.h>
 #include <wex/process.h>
 #include <wex/shell.h>

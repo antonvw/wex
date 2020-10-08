@@ -6,9 +6,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
+#include <wex/stc-file.h>
 #include <wex/stc.h>
-#include <wex/stcfile.h>
 
 TEST_CASE("wex::stc_file")
 {

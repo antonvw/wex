@@ -10,7 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <wex/statistics.h>
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 #include "../test.h"
 
 TEST_CASE("wex::statistics")

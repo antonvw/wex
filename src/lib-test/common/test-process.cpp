@@ -11,7 +11,7 @@
 #include <wx/wx.h>
 #endif
 #include "../test.h"
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 #include <wex/process.h>
 #include <wex/shell.h>
 

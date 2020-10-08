@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <wex/filehistory.h>
+#include <wex/file-history.h>
 #include <wex/menu-data.h>
 #include <wex/path.h>
 
@@ -152,6 +152,6 @@ namespace wex
     const wxWindowID     m_id{wxID_ANY};
     const type_t         m_type{SEPARATOR};
     const std::string    m_name;
-    data::menu            m_data;
+    data::menu           m_data;
   };
 }; // namespace wex

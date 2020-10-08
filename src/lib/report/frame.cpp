@@ -14,17 +14,17 @@
 #include <wex/cmdline.h>
 #include <wex/config.h>
 #include <wex/frd.h>
-#include <wex/itemdlg.h>
+#include <wex/item-dialog.h>
 #include <wex/lexers.h>
 #include <wex/listitem.h>
 #include <wex/log.h>
 #include <wex/report/defs.h>
 #include <wex/report/dir.h>
 #include <wex/report/frame.h>
-#include <wex/report/listviewfile.h>
+#include <wex/report/listview-file.h>
 #include <wex/report/stream.h>
+#include <wex/stc-entry-dialog.h>
 #include <wex/stc.h>
-#include <wex/stcdlg.h>
 #include <wex/util.h>
 
 wex::report::frame::frame(
@@ -33,9 +33,10 @@ wex::report::frame::frame(
   const data::window& data)
   : managed_frame(maxFiles, data)
   , m_project_history(maxProjects, ID_RECENT_PROJECT_LOWEST, "recent.Projects")
-  , m_info({find_replace_data::get()->text_match_word(),
-            find_replace_data::get()->text_match_case(),
-            find_replace_data::get()->text_regex()})
+  , m_info(
+      {find_replace_data::get()->text_match_word(),
+       find_replace_data::get()->text_match_case(),
+       find_replace_data::get()->text_regex()})
 {
   std::set<std::string> t(m_info);
   t.insert(m_text_recursive + ",1");

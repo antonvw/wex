@@ -18,12 +18,12 @@
 #include <wex/cmdline.h>
 #include <wex/core.h>
 #include <wex/defs.h>
-#include <wex/filedlg.h>
-#include <wex/itemdlg.h>
+#include <wex/file-dialog.h>
+#include <wex/item-dialog.h>
 #include <wex/lexers.h>
 #include <wex/menubar.h>
 #include <wex/printing.h>
-#include <wex/stcdlg.h>
+#include <wex/stc-entry-dialog.h>
 #include <wex/toolbar.h>
 #include <wex/vcs.h>
 #include <wex/version.h>

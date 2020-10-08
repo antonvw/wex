@@ -8,7 +8,7 @@
 #include "../test.h"
 #include <wex/address.h>
 #include <wex/macros.h>
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 #include <wex/stc.h>
 
 TEST_SUITE_BEGIN("wex::ex");

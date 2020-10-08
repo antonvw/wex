@@ -14,7 +14,7 @@
 #include <wex/config.h>
 #include <wex/hexmode.h>
 #include <wex/item.h>
-#include <wex/itemdlg.h>
+#include <wex/item-dialog.h>
 #include <wex/lexers.h>
 #include <wex/stc.h>
 #include <wx/numdlg.h>

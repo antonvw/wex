@@ -15,10 +15,10 @@
 #endif
 #include <wex/config.h>
 #include <wex/core.h>
-#include <wex/itemdlg.h>
+#include <wex/item-dialog.h>
 #include <wex/log.h>
 #include <wex/otl.h>
-#include <wex/stcdlg.h>
+#include <wex/stc-entry-dialog.h>
 #include <wx/grid.h>
 #include <wx/stc/stc.h>
 

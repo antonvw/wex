@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      menu_commands.h
+// Name:      menu-commands.h
 // Purpose:   Declaration of class wex::menu_commands
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020 Anton van Wezenbeek

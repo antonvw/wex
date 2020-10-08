@@ -13,11 +13,11 @@
 #include <wex/item-vector.h>
 #include <wex/lexers.h>
 #include <wex/macros.h>
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 #include <wex/path.h>
 #include <wex/printing.h>
 #include <wex/stc.h>
-#include <wex/stcdlg.h>
+#include <wex/stc-entry-dialog.h>
 #include <wex/tokenizer.h>
 #include <wex/vcs.h>
 #include <wx/app.h>
@@ -44,6 +44,8 @@ wex::stc::stc(const path& p, const data::stc& data)
   , m_frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
   , m_lexer(this)
 {
+  assert(m_frame != nullptr);
+
   Create(
     data.window().parent(),
     data.window().id(),
@@ -914,9 +916,14 @@ bool wex::stc::show_blame(const vcs_entry* vcs)
       {
         const int w(std::max(
           config(_("stc.Default font"))
-            .get(wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT))
-            .GetPixelSize()
-            .GetWidth() + 1,
+              .get(wxFont(
+                12,
+                wxFONTFAMILY_DEFAULT,
+                wxFONTSTYLE_NORMAL,
+                wxFONTWEIGHT_NORMAL))
+              .GetPixelSize()
+              .GetWidth() +
+            1,
           5));
 
         SetMarginWidth(

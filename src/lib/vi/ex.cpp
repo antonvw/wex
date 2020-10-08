@@ -27,10 +27,10 @@
 #include <wex/lexers.h>
 #include <wex/log.h>
 #include <wex/macros.h>
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 #include <wex/statusbar.h>
 #include <wex/stc.h>
-#include <wex/stcdlg.h>
+#include <wex/stc-entry-dialog.h>
 #include <wex/tokenizer.h>
 #include <wex/type-to-value.h>
 #include <wex/version.h>

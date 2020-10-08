@@ -16,7 +16,7 @@
 #include <wex/marker.h>
 #include <wex/stc-core.h>
 #include <wex/stc-data.h>
-#include <wex/stcfile.h>
+#include <wex/stc-file.h>
 #include <wex/vi.h>
 #include <wx/prntbase.h>
 

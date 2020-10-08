@@ -1,12 +1,12 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-vcs_command.cpp
+// Name:      test-vcs-command.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/vcscommand.h>
 #include "../test.h"
+#include <wex/vcs-command.h>
 
 TEST_SUITE_BEGIN("wex::vcs");
 
@@ -21,20 +21,22 @@ TEST_CASE("wex::vcs_command")
   const wex::vcs_command co(doc.document_element());
   doc.load_string("<command type=\"main\"> commit </command>");
   const wex::vcs_command commit(doc.document_element());
-  doc.load_string("<command type=\"popup\" submenu=\"submenu\"> diff </command>");
+  doc.load_string(
+    "<command type=\"popup\" submenu=\"submenu\"> diff </command>");
   const wex::vcs_command diff(doc.document_element());
   doc.load_string("<command type=\"main\"> log </command>");
   const wex::vcs_command log(doc.document_element());
   doc.load_string("<command subcommand=\"m&e\"> h&elp </command>");
   const wex::vcs_command help(doc.document_element());
-  doc.load_string("<command> update </command>");  
+  doc.load_string("<command> update </command>");
   const wex::vcs_command none;
 
   REQUIRE(add.get_command() == "add");
-  REQUIRE(add.get_command(wex::menu_command::include_t().
-    set(wex::menu_command::INCLUDE_SUBCOMMAND).
-    set(wex::menu_command::INCLUDE_ACCELL)) == "a&dd");
-  
+  REQUIRE(
+    add.get_command(wex::menu_command::include_t()
+                      .set(wex::menu_command::INCLUDE_SUBCOMMAND)
+                      .set(wex::menu_command::INCLUDE_ACCELL)) == "a&dd");
+
   REQUIRE(add.is_add());
   REQUIRE(blame.is_blame());
   REQUIRE(co.is_checkout());

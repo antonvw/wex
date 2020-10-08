@@ -7,7 +7,7 @@
 
 #include "test.h"
 #include <wex/dir.h>
-#include <wex/report/listviewfile.h>
+#include <wex/report/listview-file.h>
 
 TEST_CASE("wex::report::file")
 {

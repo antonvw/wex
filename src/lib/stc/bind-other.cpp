@@ -10,7 +10,7 @@
 #include <wex/debug.h>
 #include <wex/frd.h>
 #include <wex/log.h>
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 #include <wex/menu.h>
 #include <wex/stc-bind.h>
 #include <wex/stc.h>

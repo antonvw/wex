@@ -19,7 +19,7 @@
 #include <wex/frd.h>
 #include <wex/grid.h>
 #include <wex/listview.h>
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 #include <wex/menu.h>
 #include <wex/process.h>
 #include <wex/stc.h>

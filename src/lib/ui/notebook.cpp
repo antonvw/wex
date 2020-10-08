@@ -11,7 +11,7 @@
 #endif
 #include <wex/core.h>
 #include <wex/item-vector.h>
-#include <wex/itemdlg.h>
+#include <wex/item-dialog.h>
 #include <wex/notebook.h>
 
 namespace wex

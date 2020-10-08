@@ -20,7 +20,7 @@
 #include <wex/log.h>
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 #include <wex/stc.h>
 #include <wex/tokenizer.h>
 #include <wex/vi.h>
@@ -540,7 +540,9 @@ wex::vi::vi(wex::stc* arg)
        }},
       {"s",
        [&](const std::string& command) {
-         vi::command("c ");
+         const std::string cmd((m_count > 1 ? 
+           std::to_string(m_count): std::string()) + "c ");
+         vi::command(cmd);
          return 1;
        }},
       {"u",
@@ -575,7 +577,9 @@ wex::vi::vi(wex::stc* arg)
        }},
       {"S",
        [&](const std::string& command) {
-         vi::command("c_");
+         const std::string cmd((m_count > 1 ? 
+           std::to_string(m_count): std::string()) + "c_");
+         vi::command(cmd);
          return 1;
        }},
       // tag commands ->
@@ -1679,6 +1683,8 @@ bool wex::vi::other_command(std::string& command)
     return false;
   }
 
+  filter_count(command);
+
   if (const auto& it = std::find_if(
         m_other_commands.begin(),
         m_other_commands.end(),
@@ -1715,7 +1721,7 @@ bool wex::vi::other_command(std::string& command)
 bool wex::vi::parse_command(std::string& command)
 {
   const auto org(command);
-  
+
   if (const auto& it = get_macros().get_keys_map().find(command.front());
       it != get_macros().get_keys_map().end())
   {
@@ -1826,7 +1832,7 @@ bool wex::vi::parse_command(std::string& command)
     {
       return insert_mode(command);
     }
-    else if (command != org) 
+    else if (command != org)
     {
       return parse_command(command);
     }

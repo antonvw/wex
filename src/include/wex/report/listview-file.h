@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      listviewfile.h
+// Name:      listview-file.h
 // Purpose:   Declaration of class wex::report::file
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020 Anton van Wezenbeek
@@ -9,7 +9,7 @@
 
 #include <wex/dir.h>
 #include <wex/file.h>
-#include <wex/itemdlg.h>
+#include <wex/item-dialog.h>
 #include <wex/report/listview.h>
 
 namespace wex::report
