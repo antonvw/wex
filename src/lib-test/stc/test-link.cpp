@@ -8,7 +8,7 @@
 #include "../test.h"
 #include <wex/config.h>
 #include <wex/link.h>
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 #include <wex/stc.h>
 
 void link(

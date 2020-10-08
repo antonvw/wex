@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      managedframe.h
+// Name:      managed-frame.h
 // Purpose:   Declaration of wex::managed_frame class.
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020 Anton van Wezenbeek
@@ -9,7 +9,7 @@
 
 #include <utility>
 #include <vector>
-#include <wex/filehistory.h>
+#include <wex/file-history.h>
 #include <wex/frame.h>
 #include <wex/path.h>
 #include <wx/aui/framemanager.h> // for wxAuiManager

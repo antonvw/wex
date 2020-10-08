@@ -7,7 +7,7 @@
 
 #include "../test.h"
 #include <wex/defs.h>
-#include <wex/vcsentry.h>
+#include <wex/vcs-entry.h>
 
 TEST_SUITE_BEGIN("wex::vcs");
 

@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-itemdlg.cpp
+// Name:      test-item-dialog.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2019 Anton van Wezenbeek
@@ -10,8 +10,8 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wex/itemdlg.h>
-#include <wex/managedframe.h>
+#include <wex/item-dialog.h>
+#include <wex/managed-frame.h>
 #include "../test.h"
 
 TEST_SUITE_BEGIN("wex::item");

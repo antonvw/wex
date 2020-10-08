@@ -20,7 +20,7 @@
 #include <wex/interruptible.h>
 #include <wex/item-vector.h>
 #include <wex/item.h>
-#include <wex/itemdlg.h>
+#include <wex/item-dialog.h>
 #include <wex/lexers.h>
 #include <wex/listitem.h>
 #include <wex/listview.h>

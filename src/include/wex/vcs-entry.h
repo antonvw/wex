@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      vcs_entry.h
+// Name:      vcs-entry.h
 // Purpose:   Declaration of wex::vcs_entry class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020 Anton van Wezenbeek
@@ -11,9 +11,9 @@
 #include <vector>
 #include <wex/blame.h>
 #include <wex/lexer.h>
-#include <wex/menucommands.h>
+#include <wex/menu-commands.h>
 #include <wex/process.h>
-#include <wex/vcscommand.h>
+#include <wex/vcs-command.h>
 
 namespace wex
 {

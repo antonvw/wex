@@ -7,7 +7,3 @@ endif ()
 if (wexBUILD_SOQ)
   add_subdirectory(syncodbcquery)
 endif ()
-
-if (wexBUILD_SSS)
-  add_subdirectory(syncsocketserver)
-endif ()

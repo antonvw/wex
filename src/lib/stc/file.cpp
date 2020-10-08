@@ -11,9 +11,9 @@
 #include <wx/wx.h>
 #endif
 #include <wex/defs.h>
-#include <wex/filedlg.h>
+#include <wex/file-dialog.h>
+#include <wex/stc-file.h>
 #include <wex/stc.h>
-#include <wex/stcfile.h>
 
 //#define USE_THREAD 1
 

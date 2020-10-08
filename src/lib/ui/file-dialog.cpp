@@ -11,7 +11,7 @@
 #endif
 #include <wex/core.h>
 #include <wex/file.h>
-#include <wex/filedlg.h>
+#include <wex/file-dialog.h>
 #include <wex/lexers.h>
 #include <wx/checklst.h>
 

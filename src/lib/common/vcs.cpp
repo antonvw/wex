@@ -11,7 +11,7 @@
 #include <wx/wx.h>
 #endif
 #include <wex/config.h>
-#include <wex/itemdlg.h>
+#include <wex/item-dialog.h>
 #include <wex/menus.h>
 #include <wex/path.h>
 #include <wex/util.h>

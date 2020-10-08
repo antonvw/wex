@@ -15,12 +15,12 @@
 #include <wex/core.h>
 #include <wex/dir.h>
 #include <wex/ex.h>
-#include <wex/filedlg.h>
+#include <wex/file-dialog.h>
 #include <wex/lexer.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
 #include <wex/macros.h>
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 #include <wex/path.h>
 #include <wex/process.h>
 #include <wex/stc.h>

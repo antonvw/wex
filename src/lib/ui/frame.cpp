@@ -14,7 +14,7 @@
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/defs.h>
-#include <wex/filedlg.h>
+#include <wex/file-dialog.h>
 #include <wex/frame.h>
 #include <wex/frd.h>
 #include <wex/grid.h>
@@ -28,7 +28,7 @@
 #include <wex/tostring.h>
 #include <wex/util.h>
 #include <wex/vcs.h>
-#include <wex/vcsentry.h>
+#include <wex/vcs-entry.h>
 #include <wx/fdrepdlg.h> // for wxFindDialogDialog and Event
 #include <wx/filedlg.h>  // for wxFD_OPEN etc.
 

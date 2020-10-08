@@ -15,7 +15,7 @@
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/interruptible.h>
-#include <wex/itemdlg.h>
+#include <wex/item-dialog.h>
 #include <wex/lexers.h>
 #include <wex/listitem.h>
 #include <wex/report/defs.h>

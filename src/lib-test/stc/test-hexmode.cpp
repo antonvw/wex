@@ -12,7 +12,7 @@
 #include "../test.h"
 #include <wex/hexmode.h>
 #include <wex/lexers.h>
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 #include <wex/stc.h>
 
 TEST_CASE("wex::hexmode")

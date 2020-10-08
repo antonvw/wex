@@ -12,7 +12,7 @@
 #include <wex/core.h>
 #include <wex/lexers.h>
 #include <wex/listview.h>
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 #include <wex/menu.h>
 #include <wex/printing.h>
 #include <wex/stc.h>

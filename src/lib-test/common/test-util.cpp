@@ -14,10 +14,10 @@
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/ex.h>
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 #include <wex/stc.h>
 #include <wex/util.h>
-#include <wex/vcscommand.h>
+#include <wex/vcs-command.h>
 
 TEST_CASE("wex::util" * doctest::may_fail())
 {
@@ -83,9 +83,10 @@ TEST_CASE("wex::util" * doctest::may_fail())
     REQUIRE(
       wex::open_files(
         frame(),
-        std::vector<wex::path>{wex::test::get_path("test.h").data(),
-                               "test.cpp",
-                               "*xxxxxx*.cpp"}) == 2);
+        std::vector<wex::path>{
+          wex::test::get_path("test.h").data(),
+          "test.cpp",
+          "*xxxxxx*.cpp"}) == 2);
     REQUIRE(
       wex::open_files(
         frame(),

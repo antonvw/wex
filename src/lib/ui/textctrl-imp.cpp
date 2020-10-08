@@ -10,7 +10,7 @@
 #include <wex/ex.h>
 #include <wex/frd.h>
 #include <wex/macros.h>
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 #include <wex/stc.h>
 #include <wex/textctrl.h>
 #include <wx/control.h>

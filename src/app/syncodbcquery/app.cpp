@@ -16,7 +16,7 @@
 #include <wex/cmdline.h>
 #include <wex/config.h>
 #include <wex/core.h>
-#include <wex/filedlg.h>
+#include <wex/file-dialog.h>
 #include <wex/grid.h>
 #include <wex/lexers.h>
 #include <wex/menubar.h>

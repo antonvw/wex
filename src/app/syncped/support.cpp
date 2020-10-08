@@ -12,13 +12,13 @@
 #include <wex/beautify.h>
 #include <wex/config.h>
 #include <wex/debug.h>
-#include <wex/filedlg.h>
+#include <wex/file-dialog.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
 #include <wex/macros.h>
 #include <wex/menu.h>
 #include <wex/menubar.h>
-#include <wex/report/listviewfile.h>
+#include <wex/report/listview-file.h>
 #include <wex/shell.h>
 #include <wex/statusbar.h>
 #include <wex/stc.h>

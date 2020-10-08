@@ -12,7 +12,7 @@
 #include <wex/config.h>
 #include <wex/defs.h>
 #include <wex/frame.h>
-#include <wex/itemdlg.h>
+#include <wex/item-dialog.h>
 #include <wex/statusbar.h>
 
 const int FIELD_NOT_SHOWN = -1;

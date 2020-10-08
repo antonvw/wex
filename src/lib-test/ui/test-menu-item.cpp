@@ -2,30 +2,31 @@
 // Name:      test-menu-item.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/menu-item.h>
-#include <wex/filehistory.h>
-#include <wex/managedframe.h>
-#include <wex/menu.h>
 #include "../test.h"
+#include <wex/file-history.h>
+#include <wex/managed-frame.h>
+#include <wex/menu-item.h>
+#include <wex/menu.h>
 
 TEST_CASE("wex::menu_item")
 {
   SUBCASE("default constructor")
   {
-    REQUIRE( wex::menu_item().type() == wex::menu_item::SEPARATOR);
-    REQUIRE( wex::menu_item().id() == -1);
-    REQUIRE( wex::menu_item().name().empty());
+    REQUIRE(wex::menu_item().type() == wex::menu_item::SEPARATOR);
+    REQUIRE(wex::menu_item().id() == -1);
+    REQUIRE(wex::menu_item().name().empty());
   }
-  
+
   SUBCASE("constructor MENU")
   {
-    REQUIRE( wex::menu_item(wex::menu_item::HISTORY).type() == 
+    REQUIRE(
+      wex::menu_item(wex::menu_item::HISTORY).type() ==
       wex::menu_item::HISTORY);
-    REQUIRE( wex::menu_item(wex::menu_item::MENU).type() == 
-      wex::menu_item::MENU);
+    REQUIRE(
+      wex::menu_item(wex::menu_item::MENU).type() == wex::menu_item::MENU);
   }
 
   SUBCASE("constructor RADIO")
@@ -40,25 +41,25 @@ TEST_CASE("wex::menu_item")
   SUBCASE("constructor SUBMENU")
   {
     wex::menu m;
-    REQUIRE( wex::menu_item(&m, "submenu").type() == wex::menu_item::SUBMENU);
+    REQUIRE(wex::menu_item(&m, "submenu").type() == wex::menu_item::SUBMENU);
   }
 
   SUBCASE("constructor VCS")
   {
-    REQUIRE( wex::menu_item(wex::path()).type() == wex::menu_item::VCS);
+    REQUIRE(wex::menu_item(wex::path()).type() == wex::menu_item::VCS);
   }
-  
+
   SUBCASE("constructor HISTORY")
   {
     wex::file_history fh;
-    wex::menu_item item(10, fh);
-    
+    wex::menu_item    item(10, fh);
+
     REQUIRE(item.id() == 10);
     REQUIRE(item.type() == wex::menu_item::HISTORY);
   }
 
   SUBCASE("constructor PANES")
   {
-    REQUIRE( wex::menu_item(frame()).type() == wex::menu_item::PANES);
+    REQUIRE(wex::menu_item(frame()).type() == wex::menu_item::PANES);
   }
 }

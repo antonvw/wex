@@ -16,9 +16,9 @@
 #include <wex/debug.h>
 #include <wex/defs.h>
 #include <wex/dir.h>
-#include <wex/itemdlg.h>
+#include <wex/item-dialog.h>
 #include <wex/listview.h>
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 #include <wex/menu.h>
 #include <wex/menus.h>
 #include <wex/process.h>

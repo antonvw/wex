@@ -15,7 +15,7 @@
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
 #include <wex/stc.h>
-#include <wex/stcdlg.h>
+#include <wex/stc-entry-dialog.h>
 #include <wex/variable.h>
 
 // Several types of variables are supported.

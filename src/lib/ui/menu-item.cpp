@@ -11,7 +11,7 @@
 #endif
 #include <wex/art.h>
 #include <wex/defs.h>
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 #include <wex/menu-item.h>
 #include <wex/menu.h>
 #include <wex/process.h>

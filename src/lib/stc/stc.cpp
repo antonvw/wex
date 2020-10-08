@@ -13,11 +13,11 @@
 #include <wex/item-vector.h>
 #include <wex/lexers.h>
 #include <wex/macros.h>
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 #include <wex/path.h>
 #include <wex/printing.h>
 #include <wex/stc.h>
-#include <wex/stcdlg.h>
+#include <wex/stc-entry-dialog.h>
 #include <wex/tokenizer.h>
 #include <wex/vcs.h>
 #include <wx/app.h>

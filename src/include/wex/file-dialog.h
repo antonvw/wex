@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      filedlg.h
+// Name:      file-dialog.h
 // Purpose:   Declaration of wex::file_dialog class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020 Anton van Wezenbeek
@@ -18,22 +18,22 @@ namespace wex
   class file;
 
   /// Adds a file and / or a hexmode checkbox to wxFileDialog.
+  /// The hexmode option can be set by setting wxFD_HEX_MODE
+  /// in the window::data.
   class file_dialog : public wxFileDialog
   {
   public:
-    /// Default constructor for hexmode only.
+    /// Default constructor.
     file_dialog(
       /// window data
-      const data::window& data =
-        data::window().style(wxFD_DEFAULT_STYLE | wxFD_HEX_MODE));
+      const data::window& data = data::window().style(wxFD_DEFAULT_STYLE));
 
-    /// Constructor for file and a hexmode.
+    /// Constructor for file.
     file_dialog(
       /// specify file
       file* file,
       /// window data
-      const data::window& data =
-        data::window().style(wxFD_DEFAULT_STYLE | wxFD_HEX_MODE));
+      const data::window& data = data::window().style(wxFD_DEFAULT_STYLE));
 
     /// Virtual interface.
     int ShowModal() override;

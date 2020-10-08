@@ -17,7 +17,7 @@
 #include <wex/lexers.h>
 #include <wex/log.h>
 #include <wex/macros.h>
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 #include <wx/timer.h>
 
 const std::string wex::test::add_pane(wex::managed_frame* frame, wxWindow* pane)

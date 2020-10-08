@@ -7,7 +7,7 @@
 
 #include <algorithm>
 #include <wex/core.h>
-#include <wex/menucommand.h>
+#include <wex/menu-command.h>
 
 wex::menu_command::menu_command(const pugi::xml_node& node)
   : m_command(trim(node.text().get()))

@@ -10,7 +10,7 @@
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/item-vector.h>
-#include <wex/itemdlg.h>
+#include <wex/item-dialog.h>
 #include <wex/lexers.h>
 #include <wex/stc.h>
 #include <wx/settings.h>
