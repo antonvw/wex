@@ -1,4 +1,5 @@
 # roadmap
+- move github syncped and syncodbcquery to gitlab
 
 ## backlog
 - invest use wxTextCompleter

@@ -4,9 +4,6 @@
 #
 #     find_package(wex)
 #
-# Variables used by this module, they can change the default behaviour and need
-# to be set before calling find_package:
-#
 # Variables defined by this module:
 #
 #  wex_FOUND          System has wex libraries, include and library dirs found.
@@ -20,10 +17,6 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 
 find_package(Boost 1.65.0 COMPONENTS 
   filesystem program_options date_time regex REQUIRED)
-
-if (NOT Boost_FOUND)
-  message(FATAL_ERROR "boost is required")
-endif()
 
 if (WIN32)
   add_definitions(-D__WXMSW__)
@@ -50,13 +43,24 @@ else()
 endif()
 
 if (APPLE)
-  set(CMAKE_EXE_LINKER_FLAGS "-framework AudioToolbox -framework WebKit /usr/lib/libz.dylib /usr/lib/libiconv.dylib -framework CoreFoundation -framework Security -framework Carbon -framework Cocoa -framework IOKit")
+  set(CMAKE_EXE_LINKER_FLAGS "\
+    -framework AudioToolbox \
+    -framework WebKit \
+    /usr/lib/libz.dylib \
+    /usr/lib/libiconv.dylib \
+    -framework CoreFoundation \
+    -framework Security \
+    -framework Carbon \
+    -framework Cocoa \
+    -framework IOKit")
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -g")
 
-set(wex_INCLUDE_DIR "/usr/local/include/wex")
-set(wex_LIB_DIR "/usr/local/lib/wex")
+# these should be the same as in common.cmake
+set(wex_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include/wex")
+set(wex_LIB_DIR "${CMAKE_INSTALL_PREFIX}/lib/wex")
+
 set(wex_LIBRARIES
   wex-reportd 
   wex-commond 

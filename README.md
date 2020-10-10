@@ -25,6 +25,10 @@ For Visual Studio 2019 do
 for mingw add `-G "MinGW Makefiles"` and do `mingw32-make`, for osx do
 `brew install llvm@8` and `. ci/use-clang.sh` before invoking cmake.
 
+To use wex lib in your own application do `make install` and 
+do `find_package(wex)` in your CMakeLists.txt. This will provide the 
+`wex_FOUND`, `wex_INCLUDE_DIR`, `wex_LIB_DIR` and `wex_LIBRARIES` variables.
+
 ## Build process
 
   [![Travis](https://travis-ci.org/antonvw/wex.png?branch=develop)](https://travis-ci.org/antonvw/wex)

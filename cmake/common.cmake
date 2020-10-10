@@ -36,29 +36,48 @@ function(pack)
 
   # install config elp file
   configure_file(../../data/wex-conf.elp.cmake conf.elp)
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/conf.elp DESTINATION ${CONFIG_INSTALL_DIR})
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/conf.elp 
+    DESTINATION ${CONFIG_INSTALL_DIR})
 
-  # install config files
-  install(DIRECTORY ../data/ DESTINATION ${CONFIG_INSTALL_DIR} 
+  # install config files in ${CONFIG_INSTALL_DIR}
+  install(DIRECTORY ../data/ 
+    DESTINATION ${CONFIG_INSTALL_DIR} 
     FILES_MATCHING PATTERN "*.xml" )
   
-  install(DIRECTORY ../data/ DESTINATION ${CONFIG_INSTALL_DIR} 
+  install(DIRECTORY ../data/ 
+    DESTINATION ${CONFIG_INSTALL_DIR} 
     FILES_MATCHING PATTERN "*.xsl" )
   
-  install(DIRECTORY ../data/ DESTINATION ${CONFIG_INSTALL_DIR} 
+  install(DIRECTORY ../data/ 
+    DESTINATION ${CONFIG_INSTALL_DIR} 
     FILES_MATCHING PATTERN "*.txt" )
 
+  # install FindWEX.cmake
+  install(FILES ${CMAKE_SOURCE_DIR}/cmake/FindWEX.cmake 
+    DESTINATION Cellar/cmake/3.17.3/share/cmake/Modules)
+  
   # install include files
-  install(FILES ${CMAKE_SOURCE_DIR}/cmake/FindWEX.cmake DESTINATION Cellar/cmake/3.17.3/share/cmake/Modules)
-  install(DIRECTORY ${CMAKE_SOURCE_DIR}/src/include/wex DESTINATION "include")
-  install(DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets/include/wx DESTINATION "include")
-  install(FILES ${CMAKE_SOURCE_DIR}/external/pugixml/src/pugiconfig.hpp DESTINATION "include")
-  install(FILES ${CMAKE_SOURCE_DIR}/external/pugixml/src/pugixml.hpp DESTINATION "include")
-  install(FILES ${wexSETUP_H} DESTINATION "include/wx")
+  # this should be the dir as in FindWEX.cmake
+  install(DIRECTORY ${CMAKE_SOURCE_DIR}/src/include/wex 
+    DESTINATION "include/wex")
+
+  install(DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets/include/wx 
+    DESTINATION "include/wex")
+
+  install(FILES ${CMAKE_SOURCE_DIR}/external/pugixml/src/pugiconfig.hpp 
+    DESTINATION "include/wex")
+
+  install(FILES ${CMAKE_SOURCE_DIR}/external/pugixml/src/pugixml.hpp 
+    DESTINATION "include/wex")
+
+  install(FILES ${wexSETUP_H} 
+    DESTINATION "include/wex/wx")
   
   # install libraries
+  # this should be the dir as in FindWEX.cmake
   file(GLOB_RECURSE wex_LIBS ${wex_BINARY_DIR}/*.a)
-  install(FILES ${wex_LIBS} DESTINATION "lib/wex")
+  install(FILES ${wex_LIBS} 
+    DESTINATION "lib/wex")
 
   if (NOT WIN32)
     install(CODE "EXECUTE_PROCESS(COMMAND chown -R ${user} ${CONFIG_INSTALL_DIR})")
@@ -91,12 +110,14 @@ function(process_po_files)
           set(locale "fr_FR")
         endif ()
           
-        gettext_process_po_files(${locale} ALL INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
+        gettext_process_po_files(${locale} ALL 
+          INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
           PO_FILES ${filename})
 
         if (${ARGC} GREATER 0)
           set(wxWidgets_ROOT_DIR ${CMAKE_SOURCE_DIR}/external/wxWidgets)
-          gettext_process_po_files(${locale} ALL INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
+          gettext_process_po_files(${locale} ALL 
+            INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
             PO_FILES ${wxWidgets_ROOT_DIR}/locale/${lang}.po)
         endif ()
       

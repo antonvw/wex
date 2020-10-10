@@ -29,7 +29,7 @@ else()
     COMMAND mkdir -p 
       ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.app/Contents/MacOS
     COMMAND cp 
-      ${CMAKE_CURRENT_BINARY_DIR}/../../../../src/app/${PROJECT_NAME}/${MACOSX_BUNDLE_ICON_FILE}
+      ${CMAKE_SOURCE_DIR}/src/app/${PROJECT_NAME}/${MACOSX_BUNDLE_ICON_FILE}
       ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.app/Contents/Resources/${MACOSX_BUNDLE_ICON_FILE}
    )
   add_dependencies( ${PROJECT_NAME} osx_bundle_dirs )
