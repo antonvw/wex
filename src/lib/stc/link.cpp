@@ -82,6 +82,12 @@ const wex::path wex::link::find_between(const std::string& text, stc* stc) const
   return trim(text);
 }
 
+void wex::link::config_get()
+{
+  m_paths.reset();
+  m_paths = std::make_unique<paths>();
+}
+
 const wex::path
 wex::link::find_filename(const std::string& text, data::control& data) const
 {
@@ -248,10 +254,4 @@ const wex::path wex::link::get_path(
   }
 
   return path();
-}
-
-void wex::link::set_from_config()
-{
-  m_paths.reset();
-  m_paths = std::make_unique<paths>();
 }

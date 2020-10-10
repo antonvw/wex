@@ -40,6 +40,10 @@ namespace wex
     /// Destructor.
     ~link();
 
+    /// Sets paths with info from config.
+    /// If there is no config, paths will be empty.
+    void config_get();
+
     /// Returns a path from text, using paths if necessary,
     /// returns empty path if no path could be found.
     const path get_path(
@@ -49,10 +53,6 @@ namespace wex
       data::control& data,
       /// stc component
       stc* stc = nullptr) const;
-
-    /// Sets paths with info from config.
-    /// If there is no config, paths will be empty.
-    void set_from_config();
 
   private:
     const path find_between(const std::string& text, stc* stc) const;

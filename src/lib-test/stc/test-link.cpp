@@ -114,7 +114,7 @@ TEST_CASE("wex::link")
     wex::link lnk;
     wex::config(_("stc.link.Include directory"))
       .set(std::list<std::string>{{"/usr/bin"}});
-    lnk.set_from_config();
+    lnk.config_get();
 
     wex::data::control data;
     data.line(wex::link::LINE_OPEN_URL);

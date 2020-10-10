@@ -1,3 +1,9 @@
+file(GLOB_RECURSE wexSETUP_H ${wex_BINARY_DIR}/*setup.h)
+# use only first element from list
+list(GET wexSETUP_H 0 wexSETUP_H) 
+get_filename_component(wexSETUP_DIR_H ${wexSETUP_H} DIRECTORY)
+get_filename_component(wexSETUP_DIR_H ${wexSETUP_DIR_H} DIRECTORY)
+
 function(pack)
   if (WIN32)
     set(CONFIG_INSTALL_DIR bin)
@@ -28,8 +34,11 @@ function(pack)
     install(FILES ${dlls} DESTINATION ${CONFIG_INSTALL_DIR})
   endif()
 
+  # install config elp file
   configure_file(../../data/wex-conf.elp.cmake conf.elp)
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/conf.elp DESTINATION ${CONFIG_INSTALL_DIR})
 
+  # install config files
   install(DIRECTORY ../data/ DESTINATION ${CONFIG_INSTALL_DIR} 
     FILES_MATCHING PATTERN "*.xml" )
   
@@ -38,9 +47,19 @@ function(pack)
   
   install(DIRECTORY ../data/ DESTINATION ${CONFIG_INSTALL_DIR} 
     FILES_MATCHING PATTERN "*.txt" )
+
+  # install include files
+  install(FILES ${CMAKE_SOURCE_DIR}/cmake/FindWEX.cmake DESTINATION Cellar/cmake/3.17.3/share/cmake/Modules)
+  install(DIRECTORY ${CMAKE_SOURCE_DIR}/src/include/wex DESTINATION "include")
+  install(DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets/include/wx DESTINATION "include")
+  install(FILES ${CMAKE_SOURCE_DIR}/external/pugixml/src/pugiconfig.hpp DESTINATION "include")
+  install(FILES ${CMAKE_SOURCE_DIR}/external/pugixml/src/pugixml.hpp DESTINATION "include")
+  install(FILES ${wexSETUP_H} DESTINATION "include/wx")
   
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/conf.elp DESTINATION ${CONFIG_INSTALL_DIR})
-          
+  # install libraries
+  file(GLOB_RECURSE wex_LIBS ${wex_BINARY_DIR}/*.a)
+  install(FILES ${wex_LIBS} DESTINATION "lib/wex")
+
   if (NOT WIN32)
     install(CODE "EXECUTE_PROCESS(COMMAND chown -R ${user} ${CONFIG_INSTALL_DIR})")
   endif()
@@ -176,14 +195,8 @@ else ()
     -Wno-deprecated-declarations -Wno-unused-result")
 endif ()
 
-file(GLOB_RECURSE wexSETUP_H ${wex_BINARY_DIR}/*setup.h)
-# use only first element from list
-list(GET wexSETUP_H 0 wexSETUP_H) 
-get_filename_component(wexSETUP_H ${wexSETUP_H} DIRECTORY)
-get_filename_component(wexSETUP_H ${wexSETUP_H} DIRECTORY)
-
 list(APPEND wxTOOLKIT_INCLUDE_DIRS 
-  ${wexSETUP_H}
+  ${wexSETUP_DIR_H}
   src/include 
   external/json/single_include 
   external/ctags/libreadtags 

@@ -9,8 +9,8 @@
 #include <wex/beautify.h>
 #include <wex/config.h>
 #include <wex/core.h>
-#include <wex/item-vector.h>
 #include <wex/item-dialog.h>
+#include <wex/item-vector.h>
 #include <wex/lexers.h>
 #include <wex/stc.h>
 #include <wx/settings.h>
@@ -312,7 +312,7 @@ void wex::stc::on_init()
           data::item()
             .label_type(data::item::LABEL_NONE)
             .apply([=](wxWindow* user, const std::any& value, bool save) {
-              m_link->set_from_config();
+              m_link->config_get();
             })},
          {_("<i>Matches:</i>")},
          {_("stc.link.Pairs"),

@@ -1,5 +1,4 @@
 # roadmap
-- port wex.cmake and install-lib to msw
 
 ## backlog
 - invest use wxTextCompleter

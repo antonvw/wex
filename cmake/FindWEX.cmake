@@ -1,3 +1,19 @@
+# Tries to find wex include dir and libraries
+#
+# Usage of this module as follows:
+#
+#     find_package(wex)
+#
+# Variables used by this module, they can change the default behaviour and need
+# to be set before calling find_package:
+#
+# Variables defined by this module:
+#
+#  wex_FOUND          System has wex libraries, include and library dirs found.
+#  wex_INCLUDE_DIR    The wex include directory.
+#  wex_LIB_DIR        The wex lib directory.
+#  wex_LIBRARIES      The wex libraries.
+
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
@@ -8,8 +24,6 @@ find_package(Boost 1.65.0 COMPONENTS
 if (NOT Boost_FOUND)
   message(FATAL_ERROR "boost is required")
 endif()
-
-link_directories("/usr/local/lib/wex")
 
 if (WIN32)
   add_definitions(-D__WXMSW__)
@@ -35,14 +49,14 @@ else()
   message(FATAL_ERROR "Unsupported platform")
 endif()
 
-include_directories("/usr/local/include/wex")
-  
 if (APPLE)
   set(CMAKE_EXE_LINKER_FLAGS "-framework AudioToolbox -framework WebKit /usr/lib/libz.dylib /usr/lib/libiconv.dylib -framework CoreFoundation -framework Security -framework Carbon -framework Cocoa -framework IOKit")
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -g")
 
+set(wex_INCLUDE_DIR "/usr/local/include/wex")
+set(wex_LIB_DIR "/usr/local/lib/wex")
 set(wex_LIBRARIES
   wex-reportd 
   wex-commond 
@@ -65,3 +79,5 @@ set(wex_LIBRARIES
   ${extra_LIBRARIES}
   ${Boost_LIBRARIES}
   ${cpp_LIBRARIES})
+      
+set(wex_FOUND ON)
