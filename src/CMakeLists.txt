@@ -6,7 +6,6 @@ if (wexBUILD_TESTS)
   add_subdirectory(lib-test)
 endif ()
 
-add_subdirectory(app)
 add_subdirectory(locale)
 
 if (CMAKE_BUILD_TYPE MATCHES "Coverage")

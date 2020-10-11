@@ -49,7 +49,7 @@ endif ()
 
 find_package(odbc)
 
-if (ODBC_FOUND)
+if (ODBC_FOUND AND NOT MSVC)
   add_definitions(-DwexUSE_OTL)
   
   include_directories(${ODBC_INCLUDE_DIR})

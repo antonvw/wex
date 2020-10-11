@@ -1,5 +1,4 @@
 # roadmap
-- move github syncped to gitlab
 
 ## backlog
 - invest use wxTextCompleter

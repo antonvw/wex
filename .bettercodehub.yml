@@ -7,7 +7,6 @@ languages:
     exclude:
       - /ci/.*
       - /external/.*
-      - /src/app/.*
       - /src/data/.*
       - /src/lib/lexers/.*
       - /src/lib-test/.*
@@ -15,5 +14,4 @@ languages:
       
   test:
     include:
-    - /src/app-test/.*
     - /src/lib-test/.*
