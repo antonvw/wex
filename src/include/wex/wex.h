@@ -75,7 +75,6 @@
 #include <wex/process.h>
 #include <wex/property.h>
 #include <wex/queue-thread.h>
-#include <wex/report>
 #include <wex/shell.h>
 #include <wex/stat.h>
 #include <wex/statistics.h>
@@ -114,6 +113,6 @@
 #include <wex/report/dir.h>
 #include <wex/report/dirctrl.h>
 #include <wex/report/frame.h>
-#include <wex/report/listview-file.h	>
+#include <wex/report/listview-file.h>
 #include <wex/report/listview.h>
 #include <wex/report/stream.h>

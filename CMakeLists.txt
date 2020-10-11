@@ -9,11 +9,6 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost 1.65.0 COMPONENTS 
   filesystem program_options date_time regex REQUIRED)
 
-if(NOT Boost_FOUND)
-  message(FATAL_ERROR "boost is required")
-endif()
-
-# See common.cmake and options.cmake, currently next is not done
 # to support older cmake versions that do not known 17.
 # set(CMAKE_CXX_STANDARD 17)
 
@@ -48,16 +43,17 @@ set(WEX_COPYRIGHT ${WEX_COPYRIGHT})
 
 add_definitions(-DELPP_NO_DEFAULT_LOG_FILE)
 
-if (${wexUSE_OTL} MATCHES ON)
-  add_definitions(-DwexUSE_OTL)
-endif ()
-
 if (ENABLE_GETTEXT)
   include(FindGettext)
 endif ()
 
-if (wexUSE_OTL)
-  include(cmake/otl.cmake)
+find_package(odbc)
+
+if (ODBC_FOUND)
+  add_definitions(-DwexUSE_OTL)
+  
+  include_directories(${ODBC_INCLUDE_DIR})
+  include_directories(external/otl)
 endif ()
 
 enable_testing()

@@ -70,6 +70,11 @@ function(pack)
   install(FILES ${CMAKE_SOURCE_DIR}/external/pugixml/src/pugixml.hpp 
     DESTINATION "include/wex")
 
+  if (ODBC_FOUND)
+    install(FILES ${CMAKE_SOURCE_DIR}/external/otl/otlv4.h
+      DESTINATION "include/wex")
+  endif ()
+  
   install(FILES ${wexSETUP_H} 
     DESTINATION "include/wex/wx")
   
