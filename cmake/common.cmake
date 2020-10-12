@@ -1,10 +1,10 @@
 file(GLOB_RECURSE wexSETUP_H ${wex_BINARY_DIR}/*setup.h)
 # use only first element from list
 list(GET wexSETUP_H 0 wexSETUP_H) 
-get_filename_component(wexSETUP_DIR_H ${wexSETUP_H} DIRECTORY)
-get_filename_component(wexSETUP_DIR_H ${wexSETUP_DIR_H} DIRECTORY)
 
-function(pack)
+# functions
+
+function(wex_config)
   if (WIN32)
     set(CONFIG_INSTALL_DIR bin)
   elseif (APPLE)
@@ -35,26 +35,38 @@ function(pack)
   endif()
 
   # install config elp file
-  configure_file(../../data/wex-conf.elp.cmake conf.elp)
+  configure_file(${CMAKE_SOURCE_DIR}/src/data/wex-conf.elp.cmake conf.elp)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/conf.elp 
     DESTINATION ${CONFIG_INSTALL_DIR})
 
   # install config files in ${CONFIG_INSTALL_DIR}
-  install(DIRECTORY ../data/ 
+  install(DIRECTORY ${CMAKE_SOURCE_DIR}/src/data/ 
     DESTINATION ${CONFIG_INSTALL_DIR} 
     FILES_MATCHING PATTERN "*.xml" )
   
-  install(DIRECTORY ../data/ 
+  install(DIRECTORY ${CMAKE_SOURCE_DIR}/src/data/ 
     DESTINATION ${CONFIG_INSTALL_DIR} 
     FILES_MATCHING PATTERN "*.xsl" )
   
-  install(DIRECTORY ../data/ 
+  install(DIRECTORY ${CMAKE_SOURCE_DIR}/src/data/ 
     DESTINATION ${CONFIG_INSTALL_DIR} 
     FILES_MATCHING PATTERN "*.txt" )
 
+  if (NOT WIN32)
+    install(CODE "EXECUTE_PROCESS(COMMAND chown -R ${user} ${CONFIG_INSTALL_DIR})")
+  endif()
+endfunction()  
+
+function(wex_install)
+  if (APPLE)
+    set(MODULE_INSTALL_DIR opt/cmake/share/cmake/Modules)
+  else ()
+    set(MODULE_INSTALL_DIR cmake/share/cmake/Modules)
+  endif ()
+
   # install FindWEX.cmake
   install(FILES ${CMAKE_SOURCE_DIR}/cmake/FindWEX.cmake 
-    DESTINATION Cellar/cmake/3.17.3/share/cmake/Modules)
+    DESTINATION ${MODULE_INSTALL_DIR})
   
   # install include files
   # this should be the dir as in FindWEX.cmake
@@ -83,15 +95,9 @@ function(pack)
   file(GLOB_RECURSE wex_LIBS ${wex_BINARY_DIR}/*.a)
   install(FILES ${wex_LIBS} 
     DESTINATION "lib/wex")
+endfunction()
 
-  if (NOT WIN32)
-    install(CODE "EXECUTE_PROCESS(COMMAND chown -R ${user} ${CONFIG_INSTALL_DIR})")
-  endif()
-
-  include(CPack)
-endfunction()  
-
-function(process_po_files)
+function(wex_process_po_files)
   # travis has problem with gettext
   if (GETTEXT_FOUND AND NOT DEFINED ENV{TRAVIS})
       file(GLOB files *.po)
@@ -130,7 +136,7 @@ function(process_po_files)
   endif()
 endfunction()  
 
-macro(target_link_all)
+macro(wex_target_link_all)
   set (extra_macro_args ${ARGN})
   set (wxWidgets_LIBRARIES wxaui wxadv wxstc wxhtml wxcore wxnet wxbase)
   set (wex_LIBRARIES 
@@ -171,21 +177,23 @@ macro(target_link_all)
   endif ()
 endmacro()  
 
-function(test_app)
+function(wex_test_app)
   add_executable(
     ${PROJECT_NAME} 
     ${SRCS})
 
   if (ODBC_FOUND)
-    target_link_all(${ODBC_LIBRARIES})
+    wex_target_link_all(${ODBC_LIBRARIES})
   else ()
-    target_link_all()
+    wex_target_link_all()
   endif()
   
   add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME}
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src)
 endfunction()
           
+# general setup
+    
 if (WIN32)
   set(LOCALE_INSTALL_DIR bin)
 else ()
@@ -220,6 +228,9 @@ else ()
     -std=c++17 -Wno-overloaded-virtual -Wno-reorder -Wno-write-strings \
     -Wno-deprecated-declarations -Wno-unused-result")
 endif ()
+
+get_filename_component(wexSETUP_DIR_H ${wexSETUP_H} DIRECTORY)
+get_filename_component(wexSETUP_DIR_H ${wexSETUP_DIR_H} DIRECTORY)
 
 list(APPEND wxTOOLKIT_INCLUDE_DIRS 
   ${wexSETUP_DIR_H}

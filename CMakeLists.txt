@@ -64,3 +64,6 @@ include(cmake/options-ex.cmake)
 include(cmake/common.cmake)
 
 add_subdirectory(src)
+
+wex_install()
+wex_config()

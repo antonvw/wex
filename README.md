@@ -1,10 +1,9 @@
 # wex library
 
-wex contains a library that offers c++ ex and vi functionality,
-and some applications that show how to use it.
+wex contains a library that offers c++ ex and vi functionality.
 
-The [syncped](http://sourceforge.net/projects/syncped) application is
-one of these applications, being a full featured source code text editor.
+The [syncped](http://sourceforge.net/projects/syncped) application
+shows a usage of this library, offering a full featured source code text editor.
 
 ## Requirements
 

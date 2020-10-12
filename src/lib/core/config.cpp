@@ -90,8 +90,12 @@ size_t wex::config::children() const
 
 const std::string wex::config::dir()
 {
-  if (path p({wxGetHomeDir(), ".config", wxTheApp->GetAppName().Lower()});
+  if (const path p({wxGetHomeDir(), ".config", wxTheApp->GetAppName().Lower()});
       p.dir_exists())
+  {
+    return p.data().string();
+  }
+  else if (const path p({wxGetHomeDir(), ".config", "wex"}); p.dir_exists())
   {
     return p.data().string();
   }
