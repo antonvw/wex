@@ -18,7 +18,7 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost 1.65.0 COMPONENTS 
   filesystem program_options date_time regex REQUIRED)
 
-find_package(odbc)
+find_package(ODBC QUIET)
 
 if (ODBC_FOUND)
   add_definitions(-DwexUSE_OTL)
