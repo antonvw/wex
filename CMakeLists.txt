@@ -47,7 +47,7 @@ if (ENABLE_GETTEXT)
   include(FindGettext)
 endif ()
 
-find_package(odbc)
+find_package(ODBC)
 
 if (ODBC_FOUND AND NOT MSVC)
   add_definitions(-DwexUSE_OTL)
