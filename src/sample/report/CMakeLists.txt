@@ -11,4 +11,4 @@ add_executable(
   WIN32 
   ${SRCS})
 
-target_link_all()
+wex_target_link_all()

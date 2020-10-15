@@ -35,20 +35,20 @@ function(wex_config)
   endif()
 
   # install config elp file
-  configure_file(${CMAKE_SOURCE_DIR}/src/data/wex-conf.elp.cmake conf.elp)
+  configure_file(${CMAKE_SOURCE_DIR}/data/wex-conf.elp.cmake conf.elp)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/conf.elp 
     DESTINATION ${CONFIG_INSTALL_DIR})
 
   # install config files in ${CONFIG_INSTALL_DIR}
-  install(DIRECTORY ${CMAKE_SOURCE_DIR}/src/data/ 
+  install(DIRECTORY ${CMAKE_SOURCE_DIR}/data/ 
     DESTINATION ${CONFIG_INSTALL_DIR} 
     FILES_MATCHING PATTERN "*.xml" )
   
-  install(DIRECTORY ${CMAKE_SOURCE_DIR}/src/data/ 
+  install(DIRECTORY ${CMAKE_SOURCE_DIR}/data/ 
     DESTINATION ${CONFIG_INSTALL_DIR} 
     FILES_MATCHING PATTERN "*.xsl" )
   
-  install(DIRECTORY ${CMAKE_SOURCE_DIR}/src/data/ 
+  install(DIRECTORY ${CMAKE_SOURCE_DIR}/data/ 
     DESTINATION ${CONFIG_INSTALL_DIR} 
     FILES_MATCHING PATTERN "*.txt" )
 
@@ -70,7 +70,7 @@ function(wex_install)
   
   # install include files
   # this should be the dir as in FindWEX.cmake
-  install(DIRECTORY ${CMAKE_SOURCE_DIR}/src/include/wex 
+  install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/wex 
     DESTINATION "include/wex")
 
   install(DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets/include/wx 

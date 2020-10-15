@@ -1,12 +1,6 @@
+project(wex-lib)
+
 include_directories(${Boost_INCLUDE_DIRS})
-
-add_subdirectory(lib)
-
-if (wexBUILD_TESTS)
-  add_subdirectory(lib-test)
-endif ()
-
-add_subdirectory(locale)
 
 if (CMAKE_BUILD_TYPE MATCHES "Coverage")
   add_custom_target(lcov-prep
@@ -29,4 +23,16 @@ if (CMAKE_BUILD_TYPE MATCHES "Coverage")
     COMMAND coveralls-lcov app.run
     # cleanup
     COMMAND rm -f app.base app.run)
+endif ()
+
+add_subdirectory(core)
+add_subdirectory(data)
+add_subdirectory(common)
+add_subdirectory(stc)
+add_subdirectory(ui)
+add_subdirectory(vi)
+add_subdirectory(report)
+
+if (wexBUILD_SAMPLES)
+  add_subdirectory(sample)
 endif ()

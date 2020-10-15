@@ -22,7 +22,7 @@ TEST_CASE("wex::report")
   wex::test::add_pane(report_frame(), report);
 
   const auto files = wex::get_all_files(
-    wex::path("../../../src/lib-test/report"),
+    wex::path("../../test/report"),
     wex::data::dir().file_spec("*.cpp"));
 
   REQUIRE(files.size() > 5);

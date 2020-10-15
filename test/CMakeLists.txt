@@ -1,7 +1,7 @@
 project(wex-test)
 
 include_directories(../include/)
-include_directories(../../external/doctest/doctest)
+include_directories(../external/doctest/doctest)
   
 add_subdirectory(core)
 add_subdirectory(ui)

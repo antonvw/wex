@@ -16,7 +16,7 @@ shows a usage of this library, offering a full featured source code text editor.
 ```bash
 git clone --recursive https://github.com/antonvw/wex.git
 mkdir build && cd build
-cmake .. && make
+cmake .. && make && make install
 ```
 
 For Visual Studio 2019 do

@@ -24,7 +24,7 @@ const std::string wex::test::add_pane(wex::managed_frame* frame, wxWindow* pane)
 {
   static int no = 0;
 
-  wxAuiPaneInfo info(
+  const auto& info(
     frame->panes() == 5 ? wxAuiPaneInfo().Center() : wxAuiPaneInfo().Bottom());
 
   const std::string name("PANE " + std::to_string(no++));
@@ -50,7 +50,7 @@ bool wex::test::app::OnInit()
   SetAppName("wex-test"); // as in CMakeLists
 
   m_path = path(path::current()).data().parent_path();
-  m_path.append("src").append("lib-test").append("data");
+  m_path.append("test").append("data");
   path::current(m_path.string());
 
   if (!wex::app::OnInit() || !m_path.dir_exists())
