@@ -234,7 +234,7 @@ get_filename_component(wexSETUP_DIR_H ${wexSETUP_DIR_H} DIRECTORY)
 
 list(APPEND wxTOOLKIT_INCLUDE_DIRS 
   ${wexSETUP_DIR_H}
-  src/include 
+  include 
   external/json/single_include 
   external/ctags/libreadtags 
   external/easyloggingpp/src 
