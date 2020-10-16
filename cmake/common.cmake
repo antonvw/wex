@@ -1,4 +1,4 @@
-file(GLOB_RECURSE wexSETUP_H ${wex_BINARY_DIR}/*setup.h)
+file(GLOB_RECURSE wexSETUP_H ${CMAKE_BINARY_DIR}/*setup.h)
 # use only first element from list
 list(GET wexSETUP_H 0 wexSETUP_H) 
 
@@ -92,7 +92,7 @@ function(wex_install)
   
   # install libraries
   # this should be the dir as in FindWEX.cmake
-  file(GLOB_RECURSE wex_LIBS ${wex_BINARY_DIR}/*.a)
+  file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.a)
   install(FILES ${wex_LIBS} 
     DESTINATION "lib/wex")
 endfunction()

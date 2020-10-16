@@ -634,7 +634,10 @@ bool wex::shell::set_prompt(const std::string& prompt, bool do_prompt)
 
   if (do_prompt)
   {
-    shell::prompt();
+    shell::prompt(
+      std::string(), 
+      // only add eol if text is present
+      GetTextLength() > 0);
   }
 
   return true;

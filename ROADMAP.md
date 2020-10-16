@@ -1,4 +1,9 @@
 # roadmap
+- improve find the osx libs
+- add code coverage repo
+- fix using new template
+- test cmake -P cmake_install.cmake
+- move to c++20
 
 ## backlog
 - invest use wxTextCompleter
