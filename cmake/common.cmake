@@ -58,11 +58,7 @@ function(wex_config)
 endfunction()  
 
 function(wex_install)
-  if (APPLE)
-    set(MODULE_INSTALL_DIR opt/cmake/share/cmake/Modules)
-  else ()
-    set(MODULE_INSTALL_DIR /usr/share/cmake3/Modules)
-  endif ()
+  set(MODULE_INSTALL_DIR ${CMAKE_ROOT}/Modules)
 
   # install FindWEX.cmake
   install(FILES ${CMAKE_SOURCE_DIR}/cmake/FindWEX.cmake 
