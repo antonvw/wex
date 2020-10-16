@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/frd.h>
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 #include "../test.h"
 
 TEST_CASE("wex::frd")

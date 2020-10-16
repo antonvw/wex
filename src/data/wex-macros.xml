@@ -3,7 +3,7 @@
 Name:      wex-macros.xml
 Purpose:   vi macros, variables, abbreviations and key maps for wex.
 Author:    Anton van Wezenbeek
-Copyright: (c) 2019, Anton van Wezenbeek
+Copyright: (c) 2020, Anton van Wezenbeek
 
 Both variables and macros have a "name" attribute, you call them
 from vi mode using @name@ (if name starts with an
@@ -116,7 +116,7 @@ Variables are expanded when playing back the macro.
   <macro name="Hdr">
     <command>gg</command>
     <command>O</command>
-    <command>"&#27;"</command>
+    <command>&#27;</command>
     <command>@Cl@</command>
     <command>o</command>
     <command>&#27;</command>
@@ -124,8 +124,6 @@ Variables are expanded when playing back the macro.
     <command>i Name:      </command>
     <command>&#27;</command>
     <command>@Fullname@</command>
-    <command>&#27;</command>
-    <command>i&#18;</command>
     <command>&#27;</command>
     <command>@Cc@</command>
     <command>o</command>

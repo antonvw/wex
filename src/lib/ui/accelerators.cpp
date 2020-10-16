@@ -8,7 +8,7 @@
 #include <wex/accelerators.h>
 #include <wex/debug.h>
 #include <wex/defs.h>
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 #include <wx/app.h>
 #include <wx/window.h>
 

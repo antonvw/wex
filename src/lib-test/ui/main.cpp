@@ -11,7 +11,7 @@
 #endif
 
 #include <wex/macros.h>
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 #include <wex/process.h>
 #include <wex/shell.h>
 

@@ -82,9 +82,12 @@ void wex::style::set(const pugi::xml_node& node, const std::string& macro)
 
       if (value.find("default-font") != std::string::npos)
       {
-        const auto font(
-          config(_("stc.Default font"))
-            .get(wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
+        const auto font(config(_("stc.Default font"))
+                          .get(wxFont(
+                            12,
+                            wxFONTFAMILY_DEFAULT,
+                            wxFONTSTYLE_NORMAL,
+                            wxFONTWEIGHT_NORMAL)));
 
         replace_all(
           value,

@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-itemtpldlg.cpp
+// Name:      test-item-template-dialog.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020 Anton van Wezenbeek
@@ -8,8 +8,8 @@
 #include "../test.h"
 #include <vector>
 #include <wex/item.h>
-#include <wex/itemtpldlg.h>
-#include <wex/managedframe.h>
+#include <wex/item-template-dialog.h>
+#include <wex/managed-frame.h>
 #include <wex/report/defs.h>
 
 namespace wex

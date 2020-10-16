@@ -1,12 +1,12 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-menucommand.cpp
+// Name:      test-menu-command.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
-#include <wex/menucommand.h>
+#include <wex/menu-command.h>
 
 TEST_CASE("wex::menu_command")
 {

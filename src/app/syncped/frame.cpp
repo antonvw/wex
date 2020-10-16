@@ -17,15 +17,15 @@
 #include <wex/config.h>
 #include <wex/ctags.h>
 #include <wex/debug.h>
-#include <wex/filedlg.h>
-#include <wex/itemdlg.h>
+#include <wex/file-dialog.h>
+#include <wex/item-dialog.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
 #include <wex/menu.h>
 #include <wex/menus.h>
-#include <wex/report/listviewfile.h>
+#include <wex/report/listview-file.h>
 #include <wex/shell.h>
 #include <wex/statusbar.h>
 #include <wex/stc-bind.h>
@@ -270,22 +270,22 @@ frame::frame(app* app)
     event.Skip();
   });
 
-  wex::bind(this).command({{[=](wxCommandEvent& event) {
-                              get_debug()->execute(
-                                event.GetId() - wex::ID_EDIT_DEBUG_FIRST);
-                            },
-                            wex::ID_EDIT_DEBUG_FIRST},
-                           {[=](wxCommandEvent& event) {
-                              m_editors->for_each<wex::stc>(event.GetId());
-                            },
-                            wex::ID_ALL_CLOSE},
-                           {[=](wxCommandEvent& event) {
-                              wex::vcs(
-                                std::vector<wex::path>(),
-                                event.GetId() - wex::ID_VCS_LOWEST - 1)
-                                .request();
-                            },
-                            wex::ID_VCS_LOWEST}});
+  wex::bind(this).command(
+    {{[=](wxCommandEvent& event) {
+        get_debug()->execute(event.GetId() - wex::ID_EDIT_DEBUG_FIRST);
+      },
+      wex::ID_EDIT_DEBUG_FIRST},
+     {[=](wxCommandEvent& event) {
+        m_editors->for_each<wex::stc>(event.GetId());
+      },
+      wex::ID_ALL_CLOSE},
+     {[=](wxCommandEvent& event) {
+        wex::vcs(
+          std::vector<wex::path>(),
+          event.GetId() - wex::ID_VCS_LOWEST - 1)
+          .request();
+      },
+      wex::ID_VCS_LOWEST}});
 
   Bind(wxEVT_SIZE, [=](wxSizeEvent& event) {
     event.Skip();

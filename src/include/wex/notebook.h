@@ -10,8 +10,8 @@
 #include <map>
 #include <wex/config.h>
 #include <wex/defs.h>
-#include <wex/filedlg.h>
-#include <wex/managedframe.h>
+#include <wex/file-dialog.h>
+#include <wex/managed-frame.h>
 #include <wex/notebook-data.h>
 #include <wex/stc.h>
 #include <wex/window-data.h>

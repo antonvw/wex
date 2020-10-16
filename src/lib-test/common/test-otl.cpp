@@ -12,7 +12,7 @@
 #include "../test.h"
 #include <wex/config.h>
 #include <wex/grid.h>
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 #include <wex/otl.h>
 #include <wex/stc.h>
 

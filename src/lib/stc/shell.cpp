@@ -11,7 +11,7 @@
 #include <wex/core.h>
 #include <wex/defs.h>
 #include <wex/log.h>
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 #include <wex/process.h>
 #include <wex/shell.h>
 #include <wex/tokenizer.h>

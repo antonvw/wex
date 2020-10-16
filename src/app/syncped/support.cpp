@@ -12,13 +12,13 @@
 #include <wex/beautify.h>
 #include <wex/config.h>
 #include <wex/debug.h>
-#include <wex/filedlg.h>
+#include <wex/file-dialog.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
 #include <wex/macros.h>
 #include <wex/menu.h>
 #include <wex/menubar.h>
-#include <wex/report/listviewfile.h>
+#include <wex/report/listview-file.h>
 #include <wex/shell.h>
 #include <wex/statusbar.h>
 #include <wex/stc.h>
@@ -136,14 +136,15 @@ decorated_frame::decorated_frame(app* app)
 #else
   const int lexer_size = 75;
 #endif
-  setup_statusbar({{"PaneFileType", 50},
-                   {"PaneInfo", 100},
-                   {"PaneLexer", lexer_size},
-                   {"PaneTheme", lexer_size},
-                   {"PaneVCS", -2},
-                   {"PaneDBG", 50, false},
-                   {"PaneMacro", -1, false},
-                   {"PaneMode", 100, false}});
+  setup_statusbar(
+    {{"PaneFileType", 50},
+     {"PaneInfo", 100},
+     {"PaneLexer", lexer_size},
+     {"PaneTheme", lexer_size},
+     {"PaneVCS", -2},
+     {"PaneDBG", 50, false},
+     {"PaneMacro", -1, false},
+     {"PaneMode", 100, false}});
 
   if (wex::vcs vcs; vcs.use() && wex::vcs::size() > 0)
   {
@@ -202,12 +203,13 @@ decorated_frame::decorated_frame(app* app)
 
   if (wex::ex::get_macros().get_filename().file_exists())
   {
-    menuMacro->append({{},
-                       {ID_EDIT_MACRO,
-                        wxGetStockLabel(wxID_EDIT),
-                        wex::data::menu().action([=](wxCommandEvent&) {
-                          open_file(wex::ex::get_macros().get_filename());
-                        })}});
+    menuMacro->append(
+      {{},
+       {ID_EDIT_MACRO,
+        wxGetStockLabel(wxID_EDIT),
+        wex::data::menu().action([=](wxCommandEvent&) {
+          open_file(wex::ex::get_macros().get_filename());
+        })}});
   }
 
   wex::menu* menuDebug = nullptr;
@@ -234,18 +236,19 @@ decorated_frame::decorated_frame(app* app)
 
   if (wex::vcs::size() > 0)
   {
-    menuOptions->append({{wxWindow::NewControlId(),
-                          wex::ellipsed(_("Set &VCS")),
-                          wex::data::menu().action([=](wxCommandEvent&) {
-                            if (wex::vcs().config_dialog() == wxID_OK)
-                            {
-                              wex::vcs vcs;
-                              vcs.set_entry_from_base(this);
-                              m_statusbar->pane_show("PaneVCS", vcs.use());
-                              statustext(vcs.name(), "PaneVCS");
-                            }
-                          })},
-                         {}});
+    menuOptions->append(
+      {{wxWindow::NewControlId(),
+        wex::ellipsed(_("Set &VCS")),
+        wex::data::menu().action([=](wxCommandEvent&) {
+          if (wex::vcs().config_dialog() == wxID_OK)
+          {
+            wex::vcs vcs;
+            vcs.set_entry_from_base(this);
+            m_statusbar->pane_show("PaneVCS", vcs.use());
+            statustext(vcs.name(), "PaneVCS");
+          }
+        })},
+       {}});
   }
 
   menuOptions->append({
@@ -535,7 +538,13 @@ decorated_frame::decorated_frame(app* app)
                    wex::config::dir()),
                 wxEmptyString,
                 m_project_wildcard,
+// osx asserts on GetPath with wxFD_MULTIPLE flag,
+// and the to_vector_path does not do anything
+#ifdef __WXOSX__
+                wxFD_OPEN);
+#else
                 wxFD_OPEN | wxFD_MULTIPLE);
+#endif
               if (dlg.ShowModal() == wxID_CANCEL)
                 return;
               const std::vector<wex::path> v(
@@ -765,31 +774,33 @@ editors::editors(const wex::data::window& data)
   Bind(wxEVT_AUINOTEBOOK_TAB_RIGHT_UP, [=](wxAuiNotebookEvent& event) {
     wex::menu menu(wex::menu::menu_t().set(wex::menu::IS_POPUP));
 
-    auto* split =
-      new wex::menu({{ID_SPLIT_VERTICALLY, _("Split Vertically")},
-                     {ID_SPLIT_HORIZONTALLY, _("Split Horizontally")},
-                     {},
-                     {ID_SPLIT, _("Split")}});
+    auto* split = new wex::menu(
+      {{ID_SPLIT_VERTICALLY, _("Split Vertically")},
+       {ID_SPLIT_HORIZONTALLY, _("Split Horizontally")},
+       {},
+       {ID_SPLIT, _("Split")}});
 
     if (GetPageCount() > 1)
     {
-      split->append({{},
-                     {wxWindow::NewControlId(),
-                      _("Rearrange Vertically"),
-                      wex::data::menu().action([=](wxCommandEvent&) {
-                        rearrange(wxLEFT);
-                      })},
-                     {wxWindow::NewControlId(),
-                      _("Rearrange Horizontally"),
-                      wex::data::menu().action([=](wxCommandEvent&) {
-                        rearrange(wxTOP);
-                      })}});
+      split->append(
+        {{},
+         {wxWindow::NewControlId(),
+          _("Rearrange Vertically"),
+          wex::data::menu().action([=](wxCommandEvent&) {
+            rearrange(wxLEFT);
+          })},
+         {wxWindow::NewControlId(),
+          _("Rearrange Horizontally"),
+          wex::data::menu().action([=](wxCommandEvent&) {
+            rearrange(wxTOP);
+          })}});
     }
 
-    menu.append({{split, _("Split"), wxWindow::NewControlId()},
-                 {},
-                 {wxID_CLOSE},
-                 {wex::ID_ALL_CLOSE, _("Close A&ll")}});
+    menu.append(
+      {{split, _("Split"), wxWindow::NewControlId()},
+       {},
+       {wxID_CLOSE},
+       {wex::ID_ALL_CLOSE, _("Close A&ll")}});
 
     if (GetPageCount() > 2)
     {

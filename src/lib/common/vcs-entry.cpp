@@ -13,7 +13,7 @@
 #include <wex/shell.h>
 #include <wex/tokenizer.h>
 #include <wex/util.h>
-#include <wex/vcsentry.h>
+#include <wex/vcs-entry.h>
 
 wex::vcs_entry::vcs_entry(const pugi::xml_node& node)
   : process()

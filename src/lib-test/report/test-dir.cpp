@@ -8,7 +8,7 @@
 #include "test.h"
 #include <wex/frd.h>
 #include <wex/report/dir.h>
-#include <wex/report/listviewfile.h>
+#include <wex/report/listview-file.h>
 #include <wex/report/stream.h>
 #include <wex/util.h>
 

@@ -8,9 +8,9 @@
 #pragma once
 
 #include <set>
-#include <wex/filehistory.h>
+#include <wex/file-history.h>
 #include <wex/listview.h>
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 
 namespace wex
 {
@@ -32,8 +32,8 @@ namespace wex::report
     /// So you should call use_file_history_list somewhere to set it up.
     /// Default it does not use a recent project file.
     frame(
-      size_t             maxFiles    = 9,
-      size_t             maxProjects = 0,
+      size_t              maxFiles    = 9,
+      size_t              maxProjects = 0,
       const data::window& data = data::window().style(wxDEFAULT_FRAME_STYLE));
 
     /// Virtual interface

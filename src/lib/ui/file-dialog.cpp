@@ -11,7 +11,7 @@
 #endif
 #include <wex/core.h>
 #include <wex/file.h>
-#include <wex/filedlg.h>
+#include <wex/file-dialog.h>
 #include <wex/lexers.h>
 #include <wx/checklst.h>
 
@@ -26,7 +26,6 @@ private:
   bool        m_checked{false};
   wxCheckBox* m_cb;
 };
-
 
 extra_panel::extra_panel(wxWindow* parent)
   : wxPanel(parent)
@@ -172,14 +171,16 @@ int wex::file_dialog::show_modal_if_changed(bool show_modal)
 
 int wex::file_dialog::ShowModal()
 {
-  SetExtraControlCreator(&create_extra_panel);
+  if (!(GetWindowStyle() & wxFD_SAVE) && (GetWindowStyle() & wxFD_HEX_MODE))
+  {
+    SetExtraControlCreator(&create_extra_panel);
+  }
 
   const auto id = wxFileDialog::ShowModal();
 
-  if (id == wxID_OK)
+  if (auto* extra = GetExtraControl(); id == wxID_OK && extra != nullptr)
   {
-    auto* extra = GetExtraControl();
-    m_hexmode   = static_cast<extra_panel*>(extra)->checked();
+    m_hexmode = static_cast<extra_panel*>(extra)->checked();
   }
 
   return id;

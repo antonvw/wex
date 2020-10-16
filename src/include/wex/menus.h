@@ -10,8 +10,8 @@
 #include <pugixml.hpp>
 #include <wex/config.h>
 #include <wex/core.h>
+#include <wex/menu-command.h>
 #include <wex/menu.h>
-#include <wex/menucommand.h>
 
 namespace wex
 {
@@ -94,13 +94,14 @@ namespace wex
           }
 
           wex::menu* usemenu = (submenu == nullptr ? menu : submenu);
-          usemenu->append({{base_id + i,
-                            ellipsed(
-                              it.text().empty() ?
-                                it.get_command(menu_command::INCLUDE_ACCELL) :
-                                it.text(),
-                              it.control(),
-                              it.type().test(menu_command::ELLIPSES))}});
+          usemenu->append(
+            {{base_id + i,
+              ellipsed(
+                it.text().empty() ?
+                  it.get_command(menu_command::INCLUDE_ACCELL) :
+                  it.text(),
+                it.control(),
+                it.type().test(menu_command::ELLIPSES))}});
 
           if (it.type().test(menu_command::SEPARATOR))
           {

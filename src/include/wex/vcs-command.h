@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      vcs_command.h
+// Name:      vcs-command.h
 // Purpose:   Declaration of wex::vcs_command class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
@@ -8,7 +8,7 @@
 #pragma once
 
 #include <string>
-#include <wex/menucommand.h>
+#include <wex/menu-command.h>
 
 namespace wex
 {

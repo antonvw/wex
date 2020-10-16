@@ -11,34 +11,33 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/aui/auibook.h>
+#include <wx/bookctrl.h>
 #include <wx/button.h>
 #include <wx/checklst.h>
+#include <wx/choicebk.h>
 #include <wx/clrpicker.h> // for wxColourPickerWidget
 #include <wx/commandlinkbutton.h>
 #include <wx/filepicker.h>
 #include <wx/fontpicker.h>
 #include <wx/hyperlink.h>
-#include <wx/spinctrl.h>
-#include <wx/statline.h>
-#include <wx/tglbtn.h>
-#include <wx/valnum.h>
-#include <wx/valtext.h>
-#include <wx/window.h>
-
-#include <wx/aui/auibook.h>
-#include <wx/bookctrl.h>
-#include <wx/choicebk.h>
 #include <wx/imaglist.h>
 #include <wx/listbook.h>
 #include <wx/notebook.h>
 #include <wx/persist/treebook.h>
 #include <wx/simplebook.h>
+#include <wx/spinctrl.h>
+#include <wx/statline.h>
+#include <wx/tglbtn.h>
 #include <wx/toolbook.h>
+#include <wx/valnum.h>
+#include <wx/valtext.h>
+#include <wx/window.h>
 
 #include <wex/core.h>
 #include <wex/grid.h>
+#include <wex/item-template-dialog.h>
 #include <wex/item.h>
-#include <wex/itemtpldlg.h>
 #include <wex/listview.h>
 #include <wex/log.h>
 #include <wex/notebook.h>

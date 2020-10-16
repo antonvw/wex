@@ -7,7 +7,7 @@
 
 #include "../test.h"
 #include <wex/stc.h>
-#include <wex/stcdlg.h>
+#include <wex/stc-entry-dialog.h>
 
 TEST_CASE("wex::stc_entry_dialog")
 {

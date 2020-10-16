@@ -15,7 +15,7 @@
 #include <wex/ex.h>
 #include <wex/frd.h>
 #include <wex/log.h>
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 #include <wex/path.h>
 #include <wex/stc.h>
 #include <wx/app.h>

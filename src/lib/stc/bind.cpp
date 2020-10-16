@@ -18,12 +18,12 @@
 #include <wex/lexer-props.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 #include <wex/menu.h>
 #include <wex/path.h>
 #include <wex/stc-bind.h>
+#include <wex/stc-entry-dialog.h>
 #include <wex/stc.h>
-#include <wex/stcdlg.h>
 #include <wex/tokenizer.h>
 #include <wex/util.h>
 #include <wex/vcs.h>
@@ -479,9 +479,10 @@ void wex::stc::build_popup_menu(menu& menu)
 
   if (GetEdgeMode() == wxSTC_EDGE_MULTILINE)
   {
-    menu.append({{},
-                 {id::stc::edge_set, _("Edge Column")},
-                 {id::stc::edge_clear, _("Edge Column Reset")}});
+    menu.append(
+      {{},
+       {id::stc::edge_set, _("Edge Column")},
+       {id::stc::edge_clear, _("Edge Column Reset")}});
   }
 
   if (m_data.menu().test(data::stc::MENU_OPEN_WWW) && !sel.empty())
@@ -569,10 +570,11 @@ void wex::stc::build_popup_menu(menu& menu)
     sel.empty() && GetProperty("fold") == "1" && m_lexer.is_ok() &&
     !m_lexer.scintilla_lexer().empty())
   {
-    menu.append({{},
-                 {id::stc::toggle_fold, _("&Toggle Fold\tCtrl+T")},
-                 {id::stc::fold_all, _("&Fold All Lines\tF9")},
-                 {id::stc::unfold_all, _("&Unfold All Lines\tF10")}});
+    menu.append(
+      {{},
+       {id::stc::toggle_fold, _("&Toggle Fold\tCtrl+T")},
+       {id::stc::fold_all, _("&Fold All Lines\tF9")},
+       {id::stc::unfold_all, _("&Unfold All Lines\tF10")}});
   }
 }
 
@@ -692,10 +694,11 @@ void wex::stc::filetype_menu()
 {
   // The order here should be the same as the defines for wxSTC_EOL_CRLF.
   // So the FindItemByPosition can work
-  auto* menu = new wex::menu({{id::stc::eol_dos, "&DOS", menu_item::CHECK},
-                              {id::stc::eol_mac, "&Mac", menu_item::CHECK},
-                              {id::stc::eol_unix, "&Unix", menu_item::CHECK},
-                              {}});
+  auto* menu = new wex::menu(
+    {{id::stc::eol_dos, "&DOS", menu_item::CHECK},
+     {id::stc::eol_mac, "&Mac", menu_item::CHECK},
+     {id::stc::eol_unix, "&Unix", menu_item::CHECK},
+     {}});
 
   auto* hex = menu->AppendCheckItem(id::stc::hex, "&Hex");
 

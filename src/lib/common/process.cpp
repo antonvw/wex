@@ -11,8 +11,8 @@
 #include <vector>
 #include <wex/config.h>
 #include <wex/core.h>
-#include <wex/itemdlg.h>
-#include <wex/managedframe.h>
+#include <wex/item-dialog.h>
+#include <wex/managed-frame.h>
 #include <wex/process.h>
 #include <wex/shell.h>
 #include <wx/valtext.h>

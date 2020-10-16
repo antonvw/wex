@@ -14,9 +14,9 @@
 #include "test-item.h"
 #include <wex/config.h>
 #include <wex/item.h>
-#include <wex/itemdlg.h>
+#include <wex/item-dialog.h>
 #include <wex/log.h>
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 #include <wx/artprov.h>
 #include <wx/imaglist.h>
 

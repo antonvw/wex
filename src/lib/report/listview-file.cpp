@@ -18,7 +18,7 @@
 #include <wex/report/defs.h>
 #include <wex/report/dir.h>
 #include <wex/report/frame.h>
-#include <wex/report/listviewfile.h>
+#include <wex/report/listview-file.h>
 #include <wex/util.h>
 
 wex::report::file::file(const std::string& file, const data::listview& data)
@@ -32,9 +32,10 @@ wex::report::file::file(const std::string& file, const data::listview& data)
         item::COMBOBOX_DIR,
         std::list<std::string>{wxGetHomeDir().ToStdString()},
         data::control().is_required(true)},
-       {std::set<std::string>{m_text_add_files,
-                              m_text_add_folders,
-                              m_text_add_recursive}}},
+       {std::set<std::string>{
+         m_text_add_files,
+         m_text_add_folders,
+         m_text_add_recursive}}},
       data::window()
         .title(_("Add Items"))
         .button(wxAPPLY | wxCANCEL)

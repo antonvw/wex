@@ -8,7 +8,7 @@
 #include "../test.h"
 #include <chrono>
 #include <wex/listitem.h>
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 
 TEST_CASE("wex::listitem")
 {

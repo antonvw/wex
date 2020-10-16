@@ -7,7 +7,7 @@
 
 #include "../test.h"
 #include <tuple>
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 #include <wex/stc.h>
 #include <wex/variable.h>
 

@@ -129,12 +129,13 @@ bool wex::file::file_load(bool synced)
 
 bool wex::file::file_load(const path& p)
 {
+  assign(p);
+
   if (!p.file_exists())
   {
     return false;
   }
 
-  assign(p);
   file_load(false);
 
   return true;

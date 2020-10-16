@@ -10,7 +10,7 @@
 #include <wex/ex.h>
 #include <wex/frd.h>
 #include <wex/macros.h>
-#include <wex/managedframe.h>
+#include <wex/managed-frame.h>
 #include <wex/stc.h>
 #include <wex/textctrl.h>
 #include <wx/control.h>
@@ -237,7 +237,7 @@ wex::textctrl_imp::textctrl_imp(
   Bind(wxEVT_TEXT, [=](wxCommandEvent& event) {
     event.Skip();
 
-    if (GetValue().size() == 0 && m_input == 0)
+    if (get_text().size() == 0 && m_input == 0)
     {
       m_command.reset();
     }
