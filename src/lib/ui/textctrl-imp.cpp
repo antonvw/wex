@@ -62,8 +62,8 @@ wex::textctrl_imp::textctrl_imp(
           path::current(m_tc->ex()->get_stc()->get_filename().get_path());
         }
 
-        if ([[maybe_unused]] const auto& [r, e, v] =
-              auto_complete_filename(m_command.command());
+        if (const auto& [r, e, v] = 
+            auto_complete_filename(m_command.command());
             r)
         {
           AppendText(e);
