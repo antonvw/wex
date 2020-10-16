@@ -28,7 +28,7 @@ matrix:
     - addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-8']
-          packages: ['clang-9, 'valgrind', 'libboost-all-dev']
+          packages: ['clang-9', 'valgrind', 'libboost-all-dev']
       os: osx
       osx_image: xcode11.6
       sudo: required
