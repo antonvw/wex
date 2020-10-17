@@ -53,8 +53,8 @@ script:
   - test/report/wex-test-report
   - sudo make install
   - cd ..
-  - git clone git@gitlab.kitware.com:antonvw/syncped.git
+  - git clone https://gitlab.kitware.com/antonvw/syncped.git
   - cd syncped
   - mkdir build && pushd build
-  - cmake .. && make
+  - cmake .. && make -j 4
   

@@ -9,7 +9,7 @@ shows a usage of this library, offering a full featured source code text editor.
 
 - [cmake](http://www.cmake.org/)
 - [boost](https://www.boost.org) (do not use version 1.72)
-- a `c++17` standard supporting compiler (clang-8 on osx)
+- a `c++17` standard supporting compiler
 
 ## Building
 
