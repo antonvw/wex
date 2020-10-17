@@ -51,3 +51,9 @@ script:
   - test/core/wex-test-core
   - test/ui/wex-test-ui -tce=wex::debug
   - test/report/wex-test-report
+  - sudo make install
+  - cd ..
+  - git clone https://gitlab.kitware.com/antonvw/syncped.git
+  - mkdir app && pushd app
+  - cmake .. && make
+  

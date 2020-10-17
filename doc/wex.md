@@ -1,4 +1,4 @@
-# syncped is a vi compatible source code editor written in the c++ language
+# wex library is written in the c++ language
 
 It benefits from the following c++ features:
 
@@ -16,7 +16,7 @@ It benefits from the following c++ features:
   std::all_of (c++11)
 ```
 
-  As syncped allows you to search in files or replace in files, this
+  As wex allows you to search in files or replace in files, this
   functionality is used.
 
   example:
