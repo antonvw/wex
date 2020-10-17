@@ -1,6 +1,6 @@
-project(wex)
-
 cmake_minimum_required(VERSION 3.6.3)
+
+project(wex)
 
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)

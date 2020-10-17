@@ -7,5 +7,3 @@ file(GLOB SRCS
 add_library(
   wex-core
   ${SRCS})
-
-set_target_properties(wex-core PROPERTIES DEBUG_POSTFIX "d")

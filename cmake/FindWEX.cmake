@@ -60,38 +60,42 @@ if (APPLE)
     -framework Cocoa \
     -framework IOKit")
 endif()
-
       
 if (MSVC)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
     /D_CRT_SECURE_NO_WARNINGS /D_CRT_SECURE_NO_DEPRECATE /D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS \
     /std:c++17 /Zc:__cplusplus")
 else()
+  set(SEPARATOR "_")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -g")
 endif()
+      
+if (CMAKE_BUILD_TYPE EQUAL "Debug")
+  set(USE_DEBUG "d")
+endif() 
 
 # these should be the same as in common.cmake
 set(wex_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include/wex")
 set(wex_LIB_DIR "${CMAKE_INSTALL_PREFIX}/lib/wex")
-
+      
 set(wex_LIBRARIES
-  wex-reportd 
-  wex-commond 
-  wex-stcd 
-  wex-uid 
-  wex-vid
-  wex-commond 
-  wex-stcd 
-  wex-uid 
-  wex-datad 
-  wex-cored 
-  wx_${PLATFORM}u_aui-3.1
-  wx_${PLATFORM}u_adv-3.1
-  wx_${PLATFORM}u_stc-3.1
-  wx_${PLATFORM}u_html-3.1
-  wx_${PLATFORM}u_core-3.1
-  wx_baseu-3.1 
-  wx_baseu_net-3.1 
+  wex-report${USE_DEBUG}
+  wex-common${USE_DEBUG}
+  wex-stc${USE_DEBUG}
+  wex-ui${USE_DEBUG}
+  wex-vi${USE_DEBUG}
+  wex-common${USE_DEBUG}
+  wex-stc${USE_DEBUG}
+  wex-ui${USE_DEBUG}
+  wex-data${USE_DEBUG}
+  wex-core${USE_DEBUG}
+  wx${SEPARATOR}${PLATFORM}u_aui-3.1
+  wx${SEPARATOR}${PLATFORM}u_adv-3.1
+  wx${SEPARATOR}${PLATFORM}u_stc-3.1
+  wx${SEPARATOR}${PLATFORM}u_html-3.1
+  wx${SEPARATOR}${PLATFORM}u_core-3.1
+  wx${SEPARATOR}baseu-3.1 
+  wx${SEPARATOR}baseu_net-3.1 
   wxscintilla-3.1
   ${extra_LIBRARIES}
   ${Boost_LIBRARIES}
