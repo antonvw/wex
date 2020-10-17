@@ -26,24 +26,59 @@ endif ()
 
 if (WIN32)
   add_definitions(-D__WXMSW__)
+
   set(PLATFORM "msw")
 elseif (APPLE AND IPHONE)
   add_definitions(-D__WXOSX_IPHONE__)
+
   set(PLATFORM "osx_iphone")
 elseif (APPLE)
   add_definitions(-D__WXOSX_COCOA__)
+
   set(PLATFORM "osx_cocoa")
-  set(cpp_LIBRARIES stdc++)
-  set(extra_LIBRARIES wx_${PLATFORM}u_media-3.1 wxjpeg-3.1 wxpng-3.1)
+
+  set(cpp_LIBRARIES 
+    stdc++)
+
+  set(extra_LIBRARIES 
+    wx_${PLATFORM}u_media-3.1 
+    wxjpeg-3.1 
+    wxpng-3.1)
 elseif (UNIX)
   add_definitions(-D__WXGTK3__ -D__WXGTK__)
+
   set(PLATFORM "gtk3")
-  set(cpp_LIBRARIES /usr/gnat/lib64/libstdc++.a /usr/gnat/lib64/libstdc++fs.a m 
-    pthread dl /usr/lib64/libjpeg.so /usr/lib64/libpng.so /usr/lib64/libz.so 
-    -lc -lpthread -ldl /usr/lib64/libSM.so /usr/lib64/libICE.so 
-    /usr/lib64/libX11.so /usr/lib64/libXext.so -lgtk-3 -lgdk-3 -latk-1.0 
-    -lgio-2.0 -lpangocairo-1.0 -lgdk_pixbuf-2.0 -lcairo-gobject -lpango-1.0 
-    -lcairo -lgobject-2.0 -lglib-2.0 /usr/lib64/libXtst.so)
+
+  set(cpp_LIBRARIES
+    if (CENTOS)
+      /usr/gnat/lib64/libstdc++.a 
+      /usr/gnat/lib64/libstdc++fs.a m 
+    else ()
+      stdc++
+      stdc++fs
+    endif ()
+    /usr/lib64/libjpeg.so 
+    /usr/lib64/libpng.so 
+    /usr/lib64/libz.so 
+    /usr/lib64/libSM.so 
+    /usr/lib64/libICE.so 
+    /usr/lib64/libX11.so 
+    /usr/lib64/libXext.so 
+    /usr/lib64/libXtst.so
+    -lpthread 
+    -ldl 
+    -lc 
+    -lgtk-3 
+    -lgdk-3 
+    -latk-1.0 
+    -lgio-2.0 
+    -lpangocairo-1.0 
+    -lgdk_pixbuf-2.0 
+    -lcairo-gobject 
+    -lpango-1.0 
+    -lcairo 
+    -lgobject-2.0 
+    -lglib-2.0)
 else()
   message(FATAL_ERROR "Unsupported platform")
 endif()

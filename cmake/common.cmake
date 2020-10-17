@@ -164,10 +164,13 @@ macro(wex_target_link_all)
       ${wxWidgets_LIBRARIES} 
       ${Boost_LIBRARIES}
       ${extra_macro_args}
-      stdc++
-      stdc++fs
-#      /usr/gnat/lib64/libstdc++.a
-#      /usr/gnat/lib64/libstdc++fs.a
+      if (CENTOS)
+        /usr/gnat/lib64/libstdc++.a
+        /usr/gnat/lib64/libstdc++fs.a
+      else ()
+        stdc++
+        stdc++fs
+      endif ()
       m
       )
   endif ()
