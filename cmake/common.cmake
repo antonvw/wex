@@ -134,6 +134,17 @@ endfunction()
 
 macro(wex_target_link_all)
   set (extra_macro_args ${ARGN})
+
+  if (CENTOS)
+    set (cpp_std_LIBRARIES 
+      /usr/gnat/lib64/libstdc++.a
+      /usr/gnat/lib64/libstdc++fs.a)
+  else ()
+    set (cpp_std_LIBRARIES 
+      stdc++
+      stdc++fs)
+  endif ()
+
   set (wxWidgets_LIBRARIES wxaui wxadv wxstc wxhtml wxcore wxnet wxbase)
   set (wex_LIBRARIES 
     wex-report wex-common 
@@ -164,13 +175,7 @@ macro(wex_target_link_all)
       ${wxWidgets_LIBRARIES} 
       ${Boost_LIBRARIES}
       ${extra_macro_args}
-      if (CENTOS)
-        /usr/gnat/lib64/libstdc++.a
-        /usr/gnat/lib64/libstdc++fs.a
-      else ()
-        stdc++
-        stdc++fs
-      endif ()
+      ${cpp_std_LIBRARIES}
       m
       )
   endif ()

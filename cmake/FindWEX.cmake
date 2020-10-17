@@ -49,14 +49,18 @@ elseif (UNIX)
 
   set(PLATFORM "gtk3")
 
-  set(cpp_LIBRARIES
-    if (CENTOS)
-      /usr/gnat/lib64/libstdc++.a 
-      /usr/gnat/lib64/libstdc++fs.a m 
-    else ()
+  if (CENTOS)
+    set (cpp_std_LIBRARIES 
+      /usr/gnat/lib64/libstdc++.a
+      /usr/gnat/lib64/libstdc++fs.a)
+  else ()
+    set (cpp_std_LIBRARIES 
       stdc++
-      stdc++fs
-    endif ()
+      stdc++fs)
+  endif ()
+
+  set(cpp_LIBRARIES
+    ${cpp_std_LIBRARIES}
     /usr/lib64/libjpeg.so 
     /usr/lib64/libpng.so 
     /usr/lib64/libz.so 
