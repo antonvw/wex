@@ -87,8 +87,8 @@ function(wex_install)
     DESTINATION "include/wex/wx")
   
   # install libraries
-  # this should be the dir as in FindWEX.cmake
-  file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.a)
+  # this should be the same dir as in FindWEX.cmake
+  file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.a ${CMAKE_BINARY_DIR}/*.lib)
   install(FILES ${wex_LIBS} 
     DESTINATION "lib/wex")
 endfunction()

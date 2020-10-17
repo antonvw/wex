@@ -2,7 +2,7 @@
 #
 # Usage of this module as follows:
 #
-#     find_package(wex)
+#     find_package(WEX)
 #
 # Variables defined by this module:
 #
@@ -61,7 +61,14 @@ if (APPLE)
     -framework IOKit")
 endif()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -g")
+      
+if (MSVC)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+    /D_CRT_SECURE_NO_WARNINGS /D_CRT_SECURE_NO_DEPRECATE /D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS \
+    /std:c++17 /Zc:__cplusplus")
+else()
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -g")
+endif()
 
 # these should be the same as in common.cmake
 set(wex_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include/wex")
