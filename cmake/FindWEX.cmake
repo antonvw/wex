@@ -18,6 +18,10 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost 1.65.0 COMPONENTS 
   filesystem program_options date_time regex REQUIRED)
 
+find_package(JPEG)
+find_package(PNG)
+find_package(ZLIB)
+
 find_package(ODBC QUIET)
 
 if (ODBC_FOUND)
@@ -61,9 +65,9 @@ elseif (UNIX)
 
   set(cpp_LIBRARIES
     ${cpp_std_LIBRARIES}
-    /usr/lib64/libjpeg.so 
-    /usr/lib64/libpng.so 
-    /usr/lib64/libz.so 
+    ${JPEG_LIBRARIES}
+    ${PNG_LIBRARIES}
+    ${ZLIB_LIBRARIES}
     /usr/lib64/libSM.so 
     /usr/lib64/libICE.so 
     /usr/lib64/libX11.so 
