@@ -21,6 +21,7 @@ find_package(Boost 1.65.0 COMPONENTS
 find_package(JPEG)
 find_package(PNG)
 find_package(ZLIB)
+find_package(X11)
 
 find_package(ODBC QUIET)
 
@@ -68,11 +69,7 @@ elseif (UNIX)
     ${JPEG_LIBRARIES}
     ${PNG_LIBRARIES}
     ${ZLIB_LIBRARIES}
-    /usr/lib64/libSM.so 
-    /usr/lib64/libICE.so 
-    /usr/lib64/libX11.so 
-    /usr/lib64/libXext.so 
-    /usr/lib64/libXtst.so
+    ${X11_LIBRARIES}
     -lpthread 
     -ldl 
     -lc 
