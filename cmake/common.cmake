@@ -92,6 +92,7 @@ function(wex_install)
     file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.lib)
   else ()
     file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.a)
+    message("wex libs: " ${wex_LIBS} " from: " ${CMAKE_BINARY_DIR})
   endif ()
   
   install(FILES ${wex_LIBS} 
