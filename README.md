@@ -31,7 +31,6 @@ do `find_package(WEX)` in your CMakeLists.txt. This will provide the
 
   [![Travis](https://travis-ci.org/antonvw/wex.png?branch=develop)](https://travis-ci.org/antonvw/wex)
   [![Appveyor](https://ci.appveyor.com/api/projects/status/a346d8537whyrjev?svg=true)](https://ci.appveyor.com/project/antonvw/wex)
-  [![Coveralls](https://coveralls.io/repos/antonvw/wex/badge.svg?branch=develop&service=github)](https://coveralls.io/github/antonvw/wex?branch=develop)
 
 ## Uses
 

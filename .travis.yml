@@ -29,6 +29,7 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['valgrind', 'libboost-all-dev']
+      env: CC=clang CXX=clang
       os: osx
       osx_image: xcode12.2
       sudo: required
@@ -45,7 +46,7 @@ before_script:
 script:
   - if [ $TRAVIS_OS_NAME = osx ]; then ./ci/codespell.sh; fi
   - mkdir build && pushd build
-  - cmake -DCMAKE_CXX_COMPILER=${CXX} -DCMAKE_BUILD_TYPE=Coverage -DwexBUILD_TESTS=ON ..
+  - cmake -DCMAKE_CXX_COMPILER=${CXX} -DwexBUILD_TESTS=ON ..
   - make -j 4
   - sudo make install
   - test/core/wex-test-core

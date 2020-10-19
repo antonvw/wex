@@ -73,6 +73,7 @@ elseif (UNIX)
     -lpthread 
     -ldl 
     -lc 
+    -lm 
     -lgtk-3 
     -lgdk-3 
     -latk-1.0 
