@@ -18,11 +18,6 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost 1.65.0 COMPONENTS 
   filesystem program_options date_time regex REQUIRED)
 
-find_package(JPEG)
-find_package(PNG)
-find_package(ZLIB)
-find_package(X11)
-
 find_package(ODBC QUIET)
 
 if (ODBC_FOUND)
@@ -63,6 +58,11 @@ elseif (UNIX)
       stdc++
       stdc++fs)
   endif ()
+
+  find_package(JPEG)
+  find_package(PNG)
+  find_package(ZLIB)
+  find_package(X11)
 
   set(cpp_LIBRARIES
     ${cpp_std_LIBRARIES}
