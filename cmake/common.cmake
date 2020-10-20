@@ -92,7 +92,6 @@ function(wex_install)
     file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.lib)
   else ()
     file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.a)
-    message("wex libs: " ${wex_LIBS} " from: " ${CMAKE_BINARY_DIR})
   endif ()
   
   install(FILES ${wex_LIBS} 
@@ -212,7 +211,8 @@ endif ()
 
 if (MSVC)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
-    /D_CRT_SECURE_NO_WARNINGS /D_CRT_SECURE_NO_DEPRECATE /D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS \
+    /D_CRT_SECURE_NO_WARNINGS /D_CRT_SECURE_NO_DEPRECATE \
+    /D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS \
     /std:c++17 /Zc:__cplusplus")
 
   if (CMAKE_BUILD_TYPE MATCHES "Debug")
