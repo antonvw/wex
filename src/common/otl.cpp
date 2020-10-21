@@ -24,7 +24,7 @@
 
 #if wexUSE_OTL
 
-wex::otl::otl(int threaded_mode, size_t buffer_size)
+wex::otl::otl(bool threaded_mode, size_t buffer_size)
   : m_buffer_size(buffer_size)
 {
   otl_connect::otl_initialize(threaded_mode);

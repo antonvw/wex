@@ -31,7 +31,7 @@ namespace wex
   public:
     /// Default constructor.
     /// Initializes the otl connection using specified threaded mode.
-    otl(int threaded_mode = 0, size_t buffer_size = 1024);
+    otl(bool threaded_mode = false, size_t buffer_size = 1024);
 
     /// Destructor.
     /// Logs off.
@@ -50,8 +50,8 @@ namespace wex
     /// Returns true if you were connected.
     bool logoff();
 
-    /// Logons to the datasource (shows a connection dialog if parent
-    /// is not nullptr).
+    /// Logons to the datasource (shows a connection dialog if 
+    /// a data::window button is specified.
     /// Returns false if dialog cancelled or logon fails.
     bool logon(const data::window& data = data::window());
 
