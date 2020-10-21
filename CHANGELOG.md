@@ -1,7 +1,7 @@
 # changes
 
 **v21.04**
-- added wex.cmake to assist using wex library using cmake projects
+- added FindWEX.cmake to assist using wex library using cmake projects
 
 **v20.10** *October 2, 2020*
 - clang-format support, and wex code follows these guidelines

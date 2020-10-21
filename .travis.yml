@@ -30,7 +30,7 @@ matrix:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-8']
           packages: ['clang-8', 'valgrind', 'libboost-all-dev']
       os: osx
-      osx_image: xcode11.6
+      osx_image: xcode12.2
       sudo: required
 
 before_install:
@@ -46,8 +46,16 @@ before_script:
 script:
   - if [ $TRAVIS_OS_NAME = osx ]; then ./ci/codespell.sh; fi
   - mkdir build && pushd build
-  - cmake -DCMAKE_CXX_COMPILER=${CXX} -DCMAKE_BUILD_TYPE=Coverage -DwexBUILD_TESTS=ON ..
-  - make -j 4
-  - src/lib-test/core/wex-test-core
-  - src/lib-test/ui/wex-test-ui -tce=wex::debug
-  - src/lib-test/report/wex-test-report
+  - cmake -DCMAKE_CXX_COMPILER=${CXX} -DwexBUILD_TESTS=ON ..
+  - make -j 2
+  - cmake ..
+  - sudo make install
+  - test/core/wex-test-core
+  - test/ui/wex-test-ui -tce=wex::debug
+  - test/report/wex-test-report
+  - cd ..
+  - git clone https://gitlab.kitware.com/antonvw/syncped.git
+  - cd syncped
+  - mkdir build && pushd build
+  - cmake .. && make -j 2
+

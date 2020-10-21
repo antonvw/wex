@@ -1,4 +1,10 @@
-function(pack)
+file(GLOB_RECURSE wexSETUP_H ${CMAKE_BINARY_DIR}/*setup.h)
+# use only first element from list
+list(GET wexSETUP_H 0 wexSETUP_H) 
+
+# functions
+
+function(wex_config)
   if (WIN32)
     set(CONFIG_INSTALL_DIR bin)
   elseif (APPLE)
@@ -28,27 +34,71 @@ function(pack)
     install(FILES ${dlls} DESTINATION ${CONFIG_INSTALL_DIR})
   endif()
 
-  configure_file(../../data/wex-conf.elp.cmake conf.elp)
+  # install config elp file
+  configure_file(${CMAKE_SOURCE_DIR}/data/wex-conf.elp.cmake conf.elp)
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/conf.elp 
+    DESTINATION ${CONFIG_INSTALL_DIR})
 
-  install(DIRECTORY ../data/ DESTINATION ${CONFIG_INSTALL_DIR} 
+  # install config files in ${CONFIG_INSTALL_DIR}
+  install(DIRECTORY ${CMAKE_SOURCE_DIR}/data/ 
+    DESTINATION ${CONFIG_INSTALL_DIR} 
     FILES_MATCHING PATTERN "*.xml" )
   
-  install(DIRECTORY ../data/ DESTINATION ${CONFIG_INSTALL_DIR} 
+  install(DIRECTORY ${CMAKE_SOURCE_DIR}/data/ 
+    DESTINATION ${CONFIG_INSTALL_DIR} 
     FILES_MATCHING PATTERN "*.xsl" )
   
-  install(DIRECTORY ../data/ DESTINATION ${CONFIG_INSTALL_DIR} 
+  install(DIRECTORY ${CMAKE_SOURCE_DIR}/data/ 
+    DESTINATION ${CONFIG_INSTALL_DIR} 
     FILES_MATCHING PATTERN "*.txt" )
-  
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/conf.elp DESTINATION ${CONFIG_INSTALL_DIR})
-          
+
   if (NOT WIN32)
     install(CODE "EXECUTE_PROCESS(COMMAND chown -R ${user} ${CONFIG_INSTALL_DIR})")
   endif()
-
-  include(CPack)
 endfunction()  
 
-function(process_po_files)
+function(wex_install)
+  set(MODULE_INSTALL_DIR ${CMAKE_ROOT}/Modules)
+
+  # install FindWEX.cmake
+  install(FILES ${CMAKE_SOURCE_DIR}/cmake/FindWEX.cmake 
+    DESTINATION ${MODULE_INSTALL_DIR})
+  
+  # install include files
+  # this should be the dir as in FindWEX.cmake
+  install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/wex 
+    DESTINATION "include/wex")
+
+  install(DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets/include/wx 
+    DESTINATION "include/wex")
+
+  install(FILES ${CMAKE_SOURCE_DIR}/external/pugixml/src/pugiconfig.hpp 
+    DESTINATION "include/wex")
+
+  install(FILES ${CMAKE_SOURCE_DIR}/external/pugixml/src/pugixml.hpp 
+    DESTINATION "include/wex")
+
+  if (ODBC_FOUND)
+    install(FILES ${CMAKE_SOURCE_DIR}/external/otl/otlv4.h
+      DESTINATION "include/wex")
+  endif ()
+  
+  install(FILES ${wexSETUP_H} 
+    DESTINATION "include/wex/wx")
+  
+  # install libraries
+  # this should be the same dir as in FindWEX.cmake
+  if (MSVC)
+    file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.lib)
+  else ()
+    file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.a)
+  endif ()
+  
+  install(FILES ${wex_LIBS} 
+    DESTINATION "lib/wex")
+endfunction()
+
+function(wex_process_po_files)
   # travis has problem with gettext
   if (GETTEXT_FOUND AND NOT DEFINED ENV{TRAVIS})
       file(GLOB files *.po)
@@ -72,12 +122,14 @@ function(process_po_files)
           set(locale "fr_FR")
         endif ()
           
-        gettext_process_po_files(${locale} ALL INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
+        gettext_process_po_files(${locale} ALL 
+          INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
           PO_FILES ${filename})
 
         if (${ARGC} GREATER 0)
           set(wxWidgets_ROOT_DIR ${CMAKE_SOURCE_DIR}/external/wxWidgets)
-          gettext_process_po_files(${locale} ALL INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
+          gettext_process_po_files(${locale} ALL 
+            INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
             PO_FILES ${wxWidgets_ROOT_DIR}/locale/${lang}.po)
         endif ()
       
@@ -85,8 +137,19 @@ function(process_po_files)
   endif()
 endfunction()  
 
-macro(target_link_all)
+macro(wex_target_link_all)
   set (extra_macro_args ${ARGN})
+
+  if (CENTOS)
+    set (cpp_std_LIBRARIES 
+      /usr/gnat/lib64/libstdc++.a
+      /usr/gnat/lib64/libstdc++fs.a)
+  else ()
+    set (cpp_std_LIBRARIES 
+      stdc++
+      stdc++fs)
+  endif ()
+
   set (wxWidgets_LIBRARIES wxaui wxadv wxstc wxhtml wxcore wxnet wxbase)
   set (wex_LIBRARIES 
     wex-report wex-common 
@@ -117,30 +180,29 @@ macro(target_link_all)
       ${wxWidgets_LIBRARIES} 
       ${Boost_LIBRARIES}
       ${extra_macro_args}
-      stdc++
-      stdc++fs
-#      /usr/gnat/lib64/libstdc++.a
-#      /usr/gnat/lib64/libstdc++fs.a
+      ${cpp_std_LIBRARIES}
       m
       )
   endif ()
 endmacro()  
 
-function(test_app)
+function(wex_test_app)
   add_executable(
     ${PROJECT_NAME} 
     ${SRCS})
 
   if (ODBC_FOUND)
-    target_link_all(${ODBC_LIBRARIES})
+    wex_target_link_all(${ODBC_LIBRARIES})
   else ()
-    target_link_all()
+    wex_target_link_all()
   endif()
   
   add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME}
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src)
 endfunction()
           
+# general setup
+    
 if (WIN32)
   set(LOCALE_INSTALL_DIR bin)
 else ()
@@ -149,7 +211,8 @@ endif ()
 
 if (MSVC)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
-    /D_CRT_SECURE_NO_WARNINGS /D_CRT_SECURE_NO_DEPRECATE /D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS \
+    /D_CRT_SECURE_NO_WARNINGS /D_CRT_SECURE_NO_DEPRECATE \
+    /D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS \
     /std:c++17 /Zc:__cplusplus")
 
   if (CMAKE_BUILD_TYPE MATCHES "Debug")
@@ -176,15 +239,12 @@ else ()
     -Wno-deprecated-declarations -Wno-unused-result")
 endif ()
 
-file(GLOB_RECURSE wexSETUP_H ${wex_BINARY_DIR}/*setup.h)
-# use only first element from list
-list(GET wexSETUP_H 0 wexSETUP_H) 
-get_filename_component(wexSETUP_H ${wexSETUP_H} DIRECTORY)
-get_filename_component(wexSETUP_H ${wexSETUP_H} DIRECTORY)
+get_filename_component(wexSETUP_DIR_H ${wexSETUP_H} DIRECTORY)
+get_filename_component(wexSETUP_DIR_H ${wexSETUP_DIR_H} DIRECTORY)
 
 list(APPEND wxTOOLKIT_INCLUDE_DIRS 
-  ${wexSETUP_H}
-  src/include 
+  ${wexSETUP_DIR_H}
+  include 
   external/json/single_include 
   external/ctags/libreadtags 
   external/easyloggingpp/src 
