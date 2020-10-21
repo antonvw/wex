@@ -106,8 +106,35 @@ if (MSVC)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
     /D_CRT_SECURE_NO_WARNINGS /D_CRT_SECURE_NO_DEPRECATE /D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS \
     /std:c++17 /Zc:__cplusplus")
+        
+  set(wx_LIBRARIES
+    wx${PLATFORM}31u_aui
+    wx${PLATFORM}31u_adv
+    wx${PLATFORM}31u_stc
+    wx${PLATFORM}31u_html
+    wx${PLATFORM}31u_core
+    wx${PLATFORM}31u_media
+    wx${PLATFORM}31u_qa
+    wx${PLATFORM}31u_gl
+    wxbase31u 
+    wxbase31u_net
+    wxjpeg
+    wxpng
+    wxzlib
+    wxscintilla
+    comctl32.lib
+    Rpcrt4.lib)
 else()
-  set(SEPARATOR "_")
+  set(wx_LIBRARIES
+    wx_${PLATFORM}u_aui-3.1
+    wx_${PLATFORM}u_adv-3.1
+    wx_${PLATFORM}u_stc-3.1
+    wx_${PLATFORM}u_html-3.1
+    wx_${PLATFORM}u_core-3.1
+    wx_baseu-3.1 
+    wx_baseu_net-3.1 
+    wxscintilla-3.1)
+        
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -g")
 endif()
       
@@ -130,14 +157,7 @@ set(wex_LIBRARIES
   wex-ui${USE_DEBUG}
   wex-data${USE_DEBUG}
   wex-core${USE_DEBUG}
-  wx${SEPARATOR}${PLATFORM}u_aui-3.1
-  wx${SEPARATOR}${PLATFORM}u_adv-3.1
-  wx${SEPARATOR}${PLATFORM}u_stc-3.1
-  wx${SEPARATOR}${PLATFORM}u_html-3.1
-  wx${SEPARATOR}${PLATFORM}u_core-3.1
-  wx${SEPARATOR}baseu-3.1 
-  wx${SEPARATOR}baseu_net-3.1 
-  wxscintilla-3.1
+  ${wx_LIBRARIES}
   ${extra_LIBRARIES}
   ${Boost_LIBRARIES}
   ${cpp_LIBRARIES})
