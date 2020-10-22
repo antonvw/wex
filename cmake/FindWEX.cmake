@@ -160,6 +160,7 @@ set(wex_LIBRARIES
   ${wx_LIBRARIES}
   ${extra_LIBRARIES}
   ${Boost_LIBRARIES}
+  ${ODBC_LIBRARIES}
   ${cpp_LIBRARIES})
       
 set(wex_FOUND ON)
