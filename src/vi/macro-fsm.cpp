@@ -107,11 +107,15 @@ bool wex::macro_fsm::expand_template(
 
       while (!completed && ifs.get(c))
       {
-        if (c != '@')
+        if (c == '\n' || c == '\r')
+        {
+          break;
+        }
+        else if (c != '@')
         {
           variable += c;
         }
-        else
+        else 
         {
           completed = true;
         }

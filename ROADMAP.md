@@ -1,6 +1,5 @@
 # roadmap
 - test cmake -P cmake_install.cmake: add to appveyor
-- fix using new template
 
 ## backlog
 - invest use wxTextCompleter
