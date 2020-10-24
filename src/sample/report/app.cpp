@@ -5,21 +5,8 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include "app.h"
-#include <wex/lexers.h>
-#include <wex/listitem.h>
-#include <wex/log.h>
-#include <wex/menubar.h>
-#include <wex/printing.h>
-#include <wex/report/dir.h>
-#include <wex/report/dirctrl.h>
-#include <wex/toolbar.h>
-#include <wex/util.h>
-#include <wex/version.h>
+#include <wex/wex.h>
 #include <wx/aboutdlg.h>
 #ifndef __WXMSW__
 #include "app.xpm"

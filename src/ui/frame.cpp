@@ -511,11 +511,11 @@ bool wex::frame::update_statusbar(stc* stc, const std::string& pane)
     }
     else
     {
-      int        start;
-      int        end;
       const auto line = stc->GetCurrentLine() + 1;
       const auto pos =
         stc->GetCurrentPos() + 1 - stc->PositionFromLine(line - 1);
+      int        start, end;
+      
       stc->GetSelection(&start, &end);
 
       if (const int len = end - start; len == 0)
@@ -551,15 +551,9 @@ bool wex::frame::update_statusbar(stc* stc, const std::string& pane)
   {
     switch (stc->GetEOLMode())
     {
-      case wxSTC_EOL_CRLF:
-        text << "DOS";
-        break;
-      case wxSTC_EOL_CR:
-        text << "Mac";
-        break;
-      case wxSTC_EOL_LF:
-        text << "Unix";
-        break;
+      case wxSTC_EOL_CRLF: text << "DOS"; break;
+      case wxSTC_EOL_CR: text << "Mac"; break;
+      case wxSTC_EOL_LF: text << "Unix"; break;
       default:
         assert(0);
     }
