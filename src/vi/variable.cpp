@@ -14,6 +14,7 @@
 #include <wex/log.h>
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
+#include <wex/process.h>
 #include <wex/stc.h>
 #include <wex/stc-entry-dialog.h>
 #include <wex/variable.h>
@@ -24,10 +25,11 @@ enum class wex::variable::input_t
 {
   BUILTIN,     // a builtin variable like "Created"
   ENVIRONMENT, // an environment variable like ENV
+  FIXED,       // fixed value from macros xml file
   INPUT,       // input from user
   INPUT_ONCE,  // input once from user, save value in xml file
   INPUT_SAVE,  // input from user, save value in xml file
-  READ,        // read value from macros xml file
+  PROCESS,     // value is output from contents as a runnable process
   TEMPLATE     // read value from a template file
 };
 
@@ -53,6 +55,10 @@ wex::variable::variable(const pugi::xml_node& node)
     {
       m_type = input_t::ENVIRONMENT;
     }
+    else if (type == "FIXED")
+    {
+      m_type = input_t::FIXED;
+    }
     else if (type == "INPUT")
     {
       m_type = input_t::INPUT;
@@ -65,13 +71,17 @@ wex::variable::variable(const pugi::xml_node& node)
     {
       m_type = input_t::INPUT_ONCE;
     }
+    else if (type == "PROCESS")
+    {
+      m_type = input_t::PROCESS;
+    }
     else if (type == "TEMPLATE")
     {
       m_type = input_t::TEMPLATE;
     }
     else
     {
-      log::verbose("variable type is not supported") << type;
+      log("variable type:") << type << "unknown";
     }
   }
 }
@@ -195,6 +205,14 @@ bool wex::variable::expand(std::string& value, ex* ex) const
       }
       break;
 
+    case input_t::FIXED:
+      if (m_value.empty())
+      {
+        return false;
+      }
+      value = m_value;
+      break;
+
     case input_t::INPUT:
     case input_t::INPUT_ONCE:
     case input_t::INPUT_SAVE:
@@ -203,13 +221,22 @@ bool wex::variable::expand(std::string& value, ex* ex) const
         return false;
       }
       break;
-
-    case input_t::READ:
+    
+    case input_t::PROCESS:
       if (m_value.empty())
       {
         return false;
       }
-      value = m_value;
+    
+      if (process p;
+        !p.execute(m_value, process::EXEC_WAIT))
+      {
+        return false;
+      }
+      else
+      {
+        value = p.get_stdout();
+      }
       break;
 
     case input_t::TEMPLATE:
@@ -403,6 +430,9 @@ void wex::variable::save(pugi::xml_node& node, const std::string* value)
       case input_t::ENVIRONMENT:
         type.set_value("ENVIRONMENT");
         break;
+      case input_t::FIXED:
+        type.set_value("FIXED");
+        break;
       case input_t::INPUT:
         type.set_value("INPUT");
         break;
@@ -412,7 +442,8 @@ void wex::variable::save(pugi::xml_node& node, const std::string* value)
       case input_t::INPUT_SAVE:
         type.set_value("INPUT-SAVE");
         break;
-      case input_t::READ:
+      case input_t::PROCESS:
+        type.set_value("PROCESS");
         break;
       case input_t::TEMPLATE:
         type.set_value("TEMPLATE");

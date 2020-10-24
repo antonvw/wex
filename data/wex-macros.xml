@@ -27,6 +27,8 @@ Variables are expanded when playing back the macro.
   - ENVIRONMENT: 
     Expansion is done using environment value, you can add your own,
     as long as they are part of the environment variables.
+  - FIXED:  
+    Expands to fixed value as specified in the contents of the node.
   - INPUT:       
     Expansion is done by asking value from user. You can add your own.
   - INPUT-ONCE:  
@@ -37,6 +39,9 @@ Variables are expanded when playing back the macro.
     Expansion is done by asking value from user, value is saved.
     You can add your own.
     This is the default value when you add your own variable from vi.
+  - PROCESS:       
+    Expansion is done by running the process, as specified in
+    the contents of the node.
   - TEMPLATE:
     Expansion is done by reading the value from a template file. This
     file is specified in the contents of the node. In the file you
@@ -95,6 +100,9 @@ Variables are expanded when playing back the macro.
   <!-- INPUT-SAVE type -->
   <variable name="Purpose"          type="INPUT-SAVE" prefix="WRAP"/>
   <variable name="Purpose:"         type="INPUT-SAVE" prefix="Purpose:   "/>
+  
+  <!-- PROCESS type -->
+  <variable name="Process"          type="PROCESS">echo simple process</variable>
   
   <!-- TEMPLATE type -->
   <!-- A C Header Template -->  

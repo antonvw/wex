@@ -223,10 +223,11 @@ TEST_CASE("wex::core" * doctest::may_fail())
   {
     std::vector<wex::property> properties;
     pugi::xml_document         doc;
+    
     REQUIRE(doc.load_string("<properties>"
                             "  <property name = \"fold.comment\">2</property>"
                             "</properties>"));
-    pugi::xml_node node = doc.document_element();
+    auto node = doc.document_element();
 
     wex::node_properties(&node, properties);
 
@@ -237,10 +238,12 @@ TEST_CASE("wex::core" * doctest::may_fail())
   {
     std::vector<wex::style> styles;
     pugi::xml_document      doc;
+    
     REQUIRE(doc.load_string("<styles>"
                             "  <style no = \"2\">string</style>"
                             "</styles>"));
-    pugi::xml_node node = doc.document_element();
+    
+    auto node = doc.document_element();
 
     wex::node_styles(&node, "cpp", styles);
 
