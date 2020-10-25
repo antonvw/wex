@@ -33,10 +33,6 @@ add_subdirectory(ui)
 add_subdirectory(vi)
 add_subdirectory(report)
 
-if (wexBUILD_SAMPLES)
-  add_subdirectory(sample)
-endif ()
-
 if (CMAKE_BUILD_TYPE EQUAL "Debug")
   set_target_properties(
     wex-common wex-core wex-data wex-ui wex-report wex-stc wex-vi

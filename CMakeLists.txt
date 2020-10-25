@@ -65,6 +65,10 @@ include(cmake/common.cmake)
 
 add_subdirectory(src)
 
+if (wexBUILD_SAMPLES)
+  add_subdirectory(sample)
+endif ()
+
 if (wexBUILD_TESTS)
   add_subdirectory(test)
 endif ()
