@@ -266,8 +266,7 @@ wxFlexGridSizer* wex::item::add_browse_button(wxSizer* sizer) const
 
 void wex::item::add_items(group_t& page, bool readonly)
 {
-  int   use_cols = 1;
-  auto* fgz      = new wxFlexGridSizer(use_cols);
+  int use_cols = 1;
   if (m_data.columns() != -1)
     use_cols = m_data.columns();
 
@@ -282,6 +281,8 @@ void wex::item::add_items(group_t& page, bool readonly)
       use_cols = std::stoi(m_page.substr(col + 1));
       m_page   = m_page.substr(0, col);
     }
+
+    auto* fgz = new wxFlexGridSizer(use_cols);
 
     if (m_data.image_list() != nullptr)
     {
@@ -312,6 +313,7 @@ void wex::item::add_items(group_t& page, bool readonly)
   }
   else if (auto* sb = dynamic_cast<wxStaticBox*>(m_window); sb != nullptr)
   {
+    auto* fgz = new wxFlexGridSizer(use_cols);
     add_items(sb, fgz, page.second, readonly);
     sb->SetSizerAndFit(fgz);
   }
@@ -640,21 +642,68 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
     break;
 
     case NOTEBOOK:
-    case NOTEBOOK_AUI:
-    case NOTEBOOK_CHOICE:
-    case NOTEBOOK_LIST:
-    case NOTEBOOK_SIMPLE:
-    case NOTEBOOK_TOOL:
-    case NOTEBOOK_TREE:
       bookctrl = new wxNotebook(
         parent,
         m_data.window().id(),
         m_data.window().pos(),
         m_data.window().size(),
-        m_data.window().style() == data::NUMBER_NOT_SET &&
-            m_type == NOTEBOOK_AUI ?
+        m_data.window().style());
+      break;
+
+    case NOTEBOOK_AUI:
+      bookctrl = new wxAuiNotebook(
+        parent,
+        m_data.window().id(),
+        m_data.window().pos(),
+        m_data.window().size(),
+        m_data.window().style() == data::NUMBER_NOT_SET ?
           wxAUI_NB_DEFAULT_STYLE :
           m_data.window().style());
+      break;
+
+    case NOTEBOOK_CHOICE:
+      bookctrl = new wxChoicebook(
+        parent,
+        m_data.window().id(),
+        m_data.window().pos(),
+        m_data.window().size(),
+        m_data.window().style());
+      break;
+
+    case NOTEBOOK_LIST:
+      bookctrl = new wxListbook(
+        parent,
+        m_data.window().id(),
+        m_data.window().pos(),
+        m_data.window().size(),
+        m_data.window().style());
+      break;
+
+    case NOTEBOOK_SIMPLE:
+      bookctrl = new wxSimplebook(
+        parent,
+        m_data.window().id(),
+        m_data.window().pos(),
+        m_data.window().size(),
+        m_data.window().style());
+      break;
+
+    case NOTEBOOK_TOOL:
+      bookctrl = new wxToolbook(
+        parent,
+        m_data.window().id(),
+        m_data.window().pos(),
+        m_data.window().size(),
+        m_data.window().style());
+      break;
+
+    case NOTEBOOK_TREE:
+      bookctrl = new wxTreebook(
+        parent,
+        m_data.window().id(),
+        m_data.window().pos(),
+        m_data.window().size(),
+        m_data.window().style());
       break;
 
     case NOTEBOOK_WEX:
@@ -884,6 +933,9 @@ const std::any wex::item::get_value() const
   {
     switch (m_type)
     {
+      case BUTTON:
+        break;
+
       case CHECKBOX:
         any = ((wxCheckBox*)m_window)->GetValue();
         break;
