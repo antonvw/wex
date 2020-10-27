@@ -92,6 +92,9 @@ namespace wex
     /// Shows dialog for the current vcs entry.
     int show_dialog(const data::window& data = data::window());
 
+    /// Returns toplevel dir.
+    path toplevel() const;
+
     /// Returns true if vcs usage is set in the config.
     bool use() const;
 
