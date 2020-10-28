@@ -20,6 +20,9 @@ namespace wex
   class variable
   {
   public:
+    /// Sets argument (for a PROCESS variable).
+    static void set_argument(const std::string& val);
+
     /// Default constructor.
     variable(const std::string& name = std::string());
 
@@ -70,7 +73,7 @@ namespace wex
 
     std::string m_name, m_prefix, m_value;
 
-    // The dialog used.
     static inline stc_entry_dialog* m_dialog{nullptr};
+    static inline std::string       m_argument;
   };
 }; // namespace wex

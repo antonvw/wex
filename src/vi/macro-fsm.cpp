@@ -5,7 +5,6 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "macro-fsm.h"
 #include <boost/mpl/list.hpp>
 #include <boost/statechart/custom_reaction.hpp>
 #include <boost/statechart/state.hpp>
@@ -21,6 +20,8 @@
 #include <wex/statusbar.h>
 #include <wex/stc.h>
 #include <wex/variable.h>
+
+#include "macro-fsm.h"
 
 namespace mpl = boost::mpl;
 
@@ -102,47 +103,9 @@ bool wex::macro_fsm::expand_template(
     }
     else
     {
-      std::string variable;
-      bool        completed = false;
-
-      while (!completed && ifs.get(c))
-      {
-        if (c == '\n' || c == '\r')
-        {
-          break;
-        }
-        else if (c != '@')
-        {
-          variable += c;
-        }
-        else 
-        {
-          completed = true;
-        }
-      }
-
-      if (!completed)
-      {
-        log() << "variable syntax error:" << variable;
-        error = true;
-      }
-      // Prevent recursion.
-      else if (variable == var.get_name())
-      {
-        log() << "recursive variable:" << variable;
-        error = true;
-      }
-      else
-      {
-        if (std::string value; !expanding_variable(ex, variable, &value))
-        {
-          error = true;
-        }
-        else
-        {
-          expanded += value;
-        }
-      }
+      const std::string exp(read_variable(ifs, '@', ex, var));
+      expanded += exp;
+      error = exp.empty();
     }
   }
 
@@ -274,6 +237,69 @@ void wex::macro_fsm::playback(const std::string& macro, ex* ex, int repeat)
   }
 
   m_playback = false;
+}
+
+std::string wex::macro_fsm::read_variable(
+  std::ifstream&  ifs,
+  const char      separator,
+  ex*             ex,
+  const variable& current)
+{
+  char        c;
+  std::string variable;
+  bool        completed = false;
+
+  while (!completed && ifs.get(c))
+  {
+    switch (c)
+    {
+      case '\n':
+      case '\r':
+        break;
+
+      default:
+        if (c == separator)
+        {
+          completed = true;
+        }
+        // other separator
+        else if (c == '\'')
+        {
+          if (const std::string exp(read_variable(ifs, c, ex, current));
+              !exp.empty())
+          {
+            variable::set_argument(exp);
+          }
+          else
+          {
+            return std::string();
+          }
+        }
+        else
+        {
+          variable += c;
+        }
+    }
+  }
+
+  if (!completed)
+  {
+    log() << "variable syntax error:" << variable;
+  }
+  // Prevent recursion.
+  else if (variable == current.get_name())
+  {
+    log() << "recursive variable:" << variable;
+  }
+  else
+  {
+    if (std::string value; expanding_variable(ex, variable, &value))
+    {
+      return value;
+    }
+  }
+
+  return std::string();
 }
 
 void wex::macro_fsm::record(const std::string& macro, ex* ex)

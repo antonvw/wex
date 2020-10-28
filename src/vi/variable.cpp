@@ -15,8 +15,8 @@
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
 #include <wex/process.h>
-#include <wex/stc.h>
 #include <wex/stc-entry-dialog.h>
+#include <wex/stc.h>
 #include <wex/variable.h>
 
 // Several types of variables are supported.
@@ -221,21 +221,21 @@ bool wex::variable::expand(std::string& value, ex* ex) const
         return false;
       }
       break;
-    
+
     case input_t::PROCESS:
       if (m_value.empty())
       {
         return false;
       }
-    
-      if (process p;
-        !p.execute(m_value, process::EXEC_WAIT))
+
+      if (process p; !p.execute(m_value + m_argument, process::EXEC_WAIT))
       {
         return false;
       }
       else
       {
         value = p.get_stdout();
+        m_argument.clear();
       }
       break;
 
@@ -465,10 +465,18 @@ void wex::variable::save(pugi::xml_node& node, const std::string* value)
     m_value = *value;
   }
 
-  if (!m_value.empty() && m_type != input_t::INPUT)
+  if (
+    !m_value.empty() && m_type != input_t::INPUT && m_type != input_t::PROCESS)
   {
     node.text().set(m_value.c_str());
   }
+}
+
+void wex::variable::set_argument(const std::string& val)
+{
+  m_argument = val;
+
+  log::verbose("variable:") << "argument:" << m_argument;
 }
 
 void wex::variable::set_ask_for_input(bool value)

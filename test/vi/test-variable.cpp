@@ -5,11 +5,11 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include "../test.h"
 #include <tuple>
-#include <wex/variable.h>
 #include <wex/managed-frame.h>
 #include <wex/stc.h>
-#include "../test.h"
+#include <wex/variable.h>
 
 TEST_CASE("wex::variable")
 {
@@ -18,96 +18,94 @@ TEST_CASE("wex::variable")
   SUBCASE("constructor")
   {
     std::string value;
-    REQUIRE( wex::variable("test").get_name() == "test");
-    REQUIRE( wex::variable("test").get_value().empty());
+    REQUIRE(wex::variable("test").get_name() == "test");
+    REQUIRE(wex::variable("test").get_value().empty());
     REQUIRE(!wex::variable("test").is_builtin());
     REQUIRE(!wex::variable("test").is_template());
 
     wex::variable var("test");
     var.set_ask_for_input(false);
 
-    REQUIRE( var.expand(nullptr));
-    REQUIRE( var.expand(ex));
-    REQUIRE( var.expand(value));
+    REQUIRE(var.expand(nullptr));
+    REQUIRE(var.expand(ex));
+    REQUIRE(var.expand(value));
   }
 
   pugi::xml_document doc;
 
   SUBCASE("XML")
   {
-    for (const auto& it : std::vector<std::tuple<
-      std::string, std::string, std::string, std::string>> {
-      {"Created", "BUILTIN", "", ""},     
+    for (const auto& it : std::vector<
+           std::tuple<std::string, std::string, std::string, std::string>>{
+           {"Created", "BUILTIN", "", ""},
 #ifdef __UNIX__
-      {"HOME", "ENVIRONMENT", "", ""}, 
+           {"HOME", "ENVIRONMENT", "", ""},
 #endif
-      {"aa", "OTHER", "", ""},
-      {"template", "TEMPLATE", "xxx.txt", "xxx.txt"},
-      {"fix", "FIXED", "constant value", "constant value"},
-      {"cc", "INPUT", "one", "one"},       
-      {"dd", "INPUT-ONCE", "@Year@", "2020"},
-      {"ee", "INPUT-SAVE", "three", "three"},
-      {"process", "PROCESS", "echo hoi", "echo hoi"}})
+           {"aa", "OTHER", "", ""},
+           {"template", "TEMPLATE", "xxx.txt", "xxx.txt"},
+           {"fix", "FIXED", "constant value", "constant value"},
+           {"cc", "INPUT", "one", "one"},
+           {"dd", "INPUT-ONCE", "@Year@", "2020"},
+           {"ee", "INPUT-SAVE", "three", "three"},
+           {"process", "PROCESS", "echo hoi", "echo hoi"}})
     {
       const std::string text(
-        "<variable name=\"" + std::get<0>(it) +
-        "\" type=\"" + std::get<1>(it) +
-        "\">" + std::get<2>(it) +
-        "</variable>");
+        "<variable name=\"" + std::get<0>(it) + "\" type=\"" + std::get<1>(it) +
+        "\">" + std::get<2>(it) + "</variable>");
 
-      CAPTURE( text );
-      REQUIRE( doc.load_string(text.c_str()));
+      CAPTURE(text);
+      REQUIRE(doc.load_string(text.c_str()));
       auto node = doc.document_element();
 
       wex::variable var(node);
       var.set_ask_for_input(false);
 
-      REQUIRE( var.get_name() == std::get<0>(it));
-      
+      REQUIRE(var.get_name() == std::get<0>(it));
+
       if (var.get_name() != "process")
       {
-        REQUIRE( var.get_value() == std::get<2>(it));
+        REQUIRE(var.get_value() == std::get<2>(it));
       }
-      
+
       if (var.get_name() == "template")
         REQUIRE(!var.expand(ex));
       else
-        REQUIRE( var.expand(ex));
-      
-      REQUIRE( var.get_value() == std::get<3>(it));
+        REQUIRE(var.expand(ex));
+
+      REQUIRE(var.get_value() == std::get<3>(it));
 
       var.save(doc);
 
       node.remove_attribute("name");
     }
   }
-  
+
   SUBCASE("builtin")
   {
     for (const auto& it : get_builtin_variables())
     {
       const std::string text(
-        "<variable name =\"" + it + 
-        "\" type=\"BUILTIN\"></variable>");
-      CAPTURE( text );
-      REQUIRE( doc.load_string(text.c_str()));
+        "<variable name =\"" + it + "\" type=\"BUILTIN\"></variable>");
+
+      CAPTURE(text);
+      REQUIRE(doc.load_string(text.c_str()));
       auto node = doc.document_element();
 
       wex::variable var(node);
 
-      REQUIRE( var.get_name() == it);
-      REQUIRE( var.get_value().empty());
-      REQUIRE( var.is_builtin());
-      REQUIRE( var.expand(ex));
+      REQUIRE(var.get_name() == it);
+      REQUIRE(var.get_value().empty());
+      REQUIRE(var.is_builtin());
+      REQUIRE(var.expand(ex));
 
       std::string content;
-      REQUIRE( var.expand(content, ex));
+      REQUIRE(var.expand(content, ex));
 
       if (it == "Year")
       {
-        REQUIRE( content.find("20") == 0); // start of year
+        REQUIRE(content.find("20") == 0); // start of year
       }
-      
+
       node.remove_attribute("name");
     }
   }
