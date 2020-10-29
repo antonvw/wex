@@ -75,5 +75,7 @@ endif ()
 
 add_subdirectory(locale)
 
+set(CMAKE_INSTALL_MESSAGE LAZY)
+
 wex_install()
 wex_config()

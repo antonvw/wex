@@ -42,6 +42,10 @@ Variables are expanded when playing back the macro.
   - PROCESS:       
     Expansion is done by running the process, as specified in
     the contents of the node.
+    You can add an argument for a variable that can be used as stdin 
+    for the process by adding it between quotes when calling the process.
+    E.g. @Process'HW'@ adds the value of variable @HW@ as argument to
+    the process.
   - TEMPLATE:
     Expansion is done by reading the value from a template file. This
     file is specified in the contents of the node. In the file you
