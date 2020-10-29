@@ -76,6 +76,7 @@ bool wex::macro_fsm::expand_template(
     ex == nullptr || var.get_name().empty() || var.get_value().empty() ||
     !var.is_template())
   {
+    log("template syntax error") << var.get_name();
     return false;
   }
 
@@ -87,7 +88,7 @@ bool wex::macro_fsm::expand_template(
 
   if (!ifs.is_open())
   {
-    log::verbose("could not open template file") << filename;
+    log("could not open template file") << filename;
     return false;
   }
 
@@ -103,9 +104,14 @@ bool wex::macro_fsm::expand_template(
     }
     else
     {
-      const std::string exp(read_variable(ifs, '@', ex, var));
-      expanded += exp;
-      error = exp.empty();
+      if (const std::string exp(read_variable(ifs, '@', ex, var)); !exp.empty())
+      {
+        expanded += exp;
+      }
+      else
+      {
+        error = true;
+      }
     }
   }
 
@@ -295,6 +301,11 @@ std::string wex::macro_fsm::read_variable(
   {
     if (std::string value; expanding_variable(ex, variable, &value))
     {
+      if (value.empty())
+      {
+        log(variable) << "is empty";
+      }
+
       return value;
     }
   }

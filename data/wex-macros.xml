@@ -110,7 +110,8 @@ Variables are expanded when playing back the macro.
   
   <!-- TEMPLATE type -->
   <!-- A C Header Template -->  
-  <variable name="Cht"              type="TEMPLATE">wex-cht.txt</variable>
+  <variable name="Cht"              type="TEMPLATE">wex-c-header-template.txt</variable>
+  <variable name="Template-test"    type="TEMPLATE">wex-template-test.txt</variable>
   
   <!-- A macro to test coverage: run in a .h file,
        it finds corresponding method in a test.cpp file -->
