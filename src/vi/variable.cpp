@@ -267,15 +267,21 @@ bool wex::variable::expand_builtin(ex* ex, std::string& expanded) const
   }
   else if (m_name == "Datetime")
   {
-    expanded = wxDateTime::Now().FormatISOCombined(' ');
+    expanded =
+      (m_format.empty() ? wxDateTime::Now().FormatISOCombined(' ') :
+                          wxDateTime::Now().Format(m_format));
   }
   else if (m_name == "Time")
   {
-    expanded = wxDateTime::Now().FormatISOTime();
+    expanded =
+      (m_format.empty() ? wxDateTime::Now().FormatISOTime() :
+                          wxDateTime::Now().Format(m_format));
   }
   else if (m_name == "Year")
   {
-    expanded = wxDateTime::Now().Format("%Y");
+    expanded =
+      (m_format.empty() ? wxDateTime::Now().Format("%Y") :
+                          wxDateTime::Now().Format(m_format));
   }
   else if (ex != nullptr)
   {
@@ -304,11 +310,16 @@ bool wex::variable::expand_builtin(ex* ex, std::string& expanded) const
       if (path file(ex->get_stc()->get_filename());
           ex->get_stc()->get_filename().stat().is_ok())
       {
-        expanded = wxDateTime(file.stat().st_ctime).FormatISODate();
+        expanded =
+          (m_format.empty() ?
+             wxDateTime(file.stat().st_ctime).FormatISODate() :
+             wxDateTime(file.stat().st_ctime).Format(m_format));
       }
       else
       {
-        expanded = wxDateTime::Now().FormatISODate();
+        expanded =
+          (m_format.empty() ? wxDateTime::Now().FormatISODate() :
+                              wxDateTime::Now().Format(m_format));
       }
     }
     else if (m_name == "Filename")

@@ -10,6 +10,9 @@ from vi mode using @name@ (if name starts with an
 uppercase letter). If the name is a register c, you can call it
 using @c (lowercase). From vi you can record a register using q 
 followed by a letter, and ending with a q as well.
+
+For date variables you can also specify a format attribute to 
+format your own date. Default the ISO date is used as format.
   
 An abbreviation is expanded during insertion when you enter
 the text. From vi you can enter an abbreviation using :ab.
@@ -73,10 +76,7 @@ Variables are expanded when playing back the macro.
   <variable name="Cl"               type="BUILTIN"/>
   <!-- Expands to creation date current filename -->
   <variable name="Created"          type="BUILTIN"/>
-  <!-- Expands to current date 
-       You can add a format attribute to format your own date.
-       Default ISO date %Y-%m-%d is used as format.
-    -->
+  <!-- Expands to current date     -->
   <variable name="Date"             type="BUILTIN"/>
   <!-- Expands to current datetime -->
   <variable name="Datetime"         type="BUILTIN"/>
