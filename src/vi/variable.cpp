@@ -228,7 +228,9 @@ bool wex::variable::expand(std::string& value, ex* ex) const
         return false;
       }
 
-      if (process p; !p.execute(m_value + m_argument, process::EXEC_WAIT))
+      if (process p; !p.execute(
+            m_value + (!m_argument.empty() ? " " + m_argument : std::string()),
+            process::EXEC_WAIT))
       {
         return false;
       }
