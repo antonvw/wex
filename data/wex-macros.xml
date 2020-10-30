@@ -73,7 +73,10 @@ Variables are expanded when playing back the macro.
   <variable name="Cl"               type="BUILTIN"/>
   <!-- Expands to creation date current filename -->
   <variable name="Created"          type="BUILTIN"/>
-  <!-- Expands to current date -->
+  <!-- Expands to current date 
+       You can add a format attribute to format your own date.
+       Default ISO date %Y-%m-%d is used as format.
+    -->
   <variable name="Date"             type="BUILTIN"/>
   <!-- Expands to current datetime -->
   <variable name="Datetime"         type="BUILTIN"/>

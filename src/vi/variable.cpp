@@ -43,6 +43,7 @@ wex::variable::variable(const pugi::xml_node& node)
   : m_name(node.attribute("name").value())
   , m_type(input_t::INPUT_SAVE)
   , m_value(node.text().get())
+  , m_format(node.attribute("format").value())
   , m_prefix(node.attribute("prefix").value())
 {
   if (const std::string type = node.attribute("type").value(); !type.empty())
@@ -260,7 +261,9 @@ bool wex::variable::expand_builtin(ex* ex, std::string& expanded) const
 {
   if (m_name == "Date")
   {
-    expanded = wxDateTime::Now().FormatISODate();
+    expanded =
+      (m_format.empty() ? wxDateTime::Now().FormatISODate() :
+                          wxDateTime::Now().Format(m_format));
   }
   else if (m_name == "Datetime")
   {

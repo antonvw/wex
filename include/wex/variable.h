@@ -71,7 +71,7 @@ namespace wex
     // no const members because of assignment in macro_fsm
     input_t m_type;
 
-    std::string m_name, m_prefix, m_value;
+    std::string m_format, m_name, m_prefix, m_value;
 
     static inline stc_entry_dialog* m_dialog{nullptr};
     static inline std::string       m_argument;
