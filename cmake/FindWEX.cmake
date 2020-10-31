@@ -22,6 +22,8 @@ find_package(ODBC QUIET)
 
 if (ODBC_FOUND)
   add_definitions(-DwexUSE_OTL)
+else ()
+  set(ODBC_LIBRARIES "")
 endif ()
 
 if (WIN32)
