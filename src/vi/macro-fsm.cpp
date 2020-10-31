@@ -76,7 +76,11 @@ bool wex::macro_fsm::expand_template(
     ex == nullptr || var.get_name().empty() || var.get_value().empty() ||
     !var.is_template())
   {
-    log("template syntax error") << var.get_name();
+    if (!var.is_template() && !var.get_name().empty())
+    {
+      log("variable") << var.get_name() << "is not a template";
+    }
+
     return false;
   }
 
@@ -164,7 +168,7 @@ bool wex::macro_fsm::expanding_variable(
       }
       else
       {
-        log() << "xml query failed:" << query;
+        log("xml query failed") << query;
         return false;
       }
     }
@@ -290,12 +294,12 @@ std::string wex::macro_fsm::read_variable(
 
   if (!completed)
   {
-    log() << "variable syntax error:" << variable;
+    log("variable syntax error") << variable;
   }
   // Prevent recursion.
   else if (variable == current.get_name())
   {
-    log() << "recursive variable:" << variable;
+    log("recursive variable") << variable;
   }
   else
   {
@@ -347,7 +351,7 @@ void wex::macro_fsm::recorded()
   }
   else
   {
-    log::verbose("Macro") << m_macro << "not recorded";
+    log::verbose("macro") << m_macro << "not recorded";
     m_mode->get_macros()->erase();
     m_macro.clear();
     log::status(std::string());

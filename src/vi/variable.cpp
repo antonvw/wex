@@ -82,7 +82,7 @@ wex::variable::variable(const pugi::xml_node& node)
     }
     else
     {
-      log("variable type:") << type << "unknown";
+      log("variable") << m_name << "type:" << type << "unknown";
     }
   }
 }
@@ -98,8 +98,7 @@ bool wex::variable::check_link(std::string& value) const
       {
         if (!is_input())
         {
-          log() << "variable:" << m_name << "(" << v[0]
-                << ") could not be expanded";
+          log("variable") << m_name << "(" << v[0] << ") could not be expanded";
         }
       }
       else
@@ -114,7 +113,7 @@ bool wex::variable::check_link(std::string& value) const
     }
     else
     {
-      log() << "variable:" << m_name << "(" << v[0] << ") is not found";
+      log("variable") << m_name << "(" << v[0] << ") is not found";
     }
   }
 
@@ -482,7 +481,8 @@ void wex::variable::save(pugi::xml_node& node, const std::string* value)
   }
 
   if (
-    !m_value.empty() && m_type != input_t::INPUT && m_type != input_t::PROCESS)
+    !m_value.empty() && m_type != input_t::BUILTIN &&
+    m_type != input_t::INPUT && m_type != input_t::PROCESS)
   {
     node.text().set(m_value.c_str());
   }
@@ -492,7 +492,7 @@ void wex::variable::set_argument(const std::string& val)
 {
   m_argument = val;
 
-  log::verbose("variable:") << "argument:" << m_argument;
+  log::verbose("variable") << "argument:" << m_argument;
 }
 
 void wex::variable::set_ask_for_input(bool value)
