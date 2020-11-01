@@ -55,7 +55,8 @@ TEST_CASE("wex::variable")
 
       CAPTURE(text);
       REQUIRE(doc.load_string(text.c_str()));
-      auto node = doc.document_element();
+
+      auto node(doc.document_element());
 
       wex::variable var(node);
       var.set_ask_for_input(false);
@@ -89,7 +90,8 @@ TEST_CASE("wex::variable")
 
       CAPTURE(text);
       REQUIRE(doc.load_string(text.c_str()));
-      auto node = doc.document_element();
+
+      auto node(doc.document_element());
 
       wex::variable var(node);
 
@@ -107,6 +109,34 @@ TEST_CASE("wex::variable")
       }
 
       node.remove_attribute("name");
+    }
+  }
+
+  SUBCASE("format")
+  {
+    for (const auto& it : std::vector<
+           std::tuple<std::string, std::string, std::string, std::string>>{
+           {"Year", "BUILTIN", "%Y", "2020"},
+           {"Date", "BUILTIN", "%Y", "2020"}})
+    {
+      const std::string text(
+        "<variable name=\"" + std::get<0>(it) + "\" type=\"" + std::get<1>(it) +
+        "\" format=\"" + std::get<2>(it) + "\">" + "</variable>");
+
+      CAPTURE(text);
+      REQUIRE(doc.load_string(text.c_str()));
+
+      const auto node(doc.document_element());
+
+      wex::variable var(node);
+
+      REQUIRE(var.get_name() == std::get<0>(it));
+      REQUIRE(var.get_value().empty());
+      REQUIRE(var.is_builtin());
+
+      std::string content;
+      REQUIRE(var.expand(content, ex));
+      REQUIRE(content == std::get<3>(it));
     }
   }
 }
