@@ -1,5 +1,4 @@
 # roadmap
-- example from vimacros.html does not work: add it as a test
 - test cmake -P cmake_install.cmake: add to appveyor
 
 ## backlog

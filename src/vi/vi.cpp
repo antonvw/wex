@@ -1019,7 +1019,7 @@ char wex::vi::convert_key_event(const wxKeyEvent& event) const
     return 'j';
   else if (event.GetModifiers() & wxMOD_RAW_CONTROL)
     return event.GetKeyCode();
-  
+
   char c = event.GetUnicodeKey();
 
   if (c == WXK_NONE)
@@ -1164,7 +1164,7 @@ bool wex::vi::insert_mode(const std::string& command)
     get_stc()->add_text(std::string(1, command[0]));
     return true;
   }
-  
+
   if (command.find(_s(WXK_CONTROL_R) + "=") == 0)
   {
     command_reg(command);
