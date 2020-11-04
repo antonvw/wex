@@ -18,6 +18,8 @@
 #include <wx/utils.h>
 #include <wx/versioninfo.h>
 
+#include <ctags/main/ctags.h>
+
 namespace wex
 {
   const std::string skip_quotes(const std::string& text)
@@ -77,6 +79,9 @@ const std::stringstream wex::version_info::external_libraries() const
      << PUGIXML_VERSION % 1000 / 10 << "."                   // minor version
      << PUGIXML_VERSION % 10                                 // patch level
      << "\n"
+
+     // ctags
+     << PROGRAM_NAME << ": " << PROGRAM_VERSION << "\n"
 
 #ifndef __WXMSW__
      << "easylogging++ library: " << el::VersionInfo::version() << "\n"
