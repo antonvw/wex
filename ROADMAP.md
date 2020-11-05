@@ -1,5 +1,4 @@
 # roadmap
-- close issue automatic download (or move to gitlab)
 - test cmake -P cmake_install.cmake: add to appveyor
 
 ## backlog
