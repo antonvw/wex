@@ -1,6 +1,6 @@
 // =================================================================================
-// ORACLE, ODBC and DB2/CLI Template Library, Version 4.0.436,
-// Copyright (C) 1996-2018, Sergei Kuchin (skuchin@gmail.com)
+// ORACLE, ODBC and DB2/CLI Template Library, Version 4.0.459,
+// Copyright (C) 1996-2020, Sergei Kuchin (skuchin@gmail.com)
 //
 // This library is free software. Permission to use, copy, modify,
 // and/or distribute this software for any purpose with or without fee
@@ -25,7 +25,7 @@
 #include "otl_include_0.h"
 #endif
 
-#define OTL_VERSION_NUMBER (0x0401B4L)
+#define OTL_VERSION_NUMBER (0x0401CBL)
 
 #if defined(OTL_THIRD_PARTY_STRING_VIEW_CLASS)
 #define OTL_STD_STRING_VIEW_CLASS OTL_THIRD_PARTY_STRING_VIEW_CLASS
@@ -44,8 +44,10 @@
 #define OTL_CPP_14_ON
 #endif
 
-#if defined(_MSC_VER) && (_MSC_VER==1600)
+#if defined(OTL_CPP_20_ON)
 #define OTL_CPP_11_ON
+#define OTL_CPP_14_ON
+#define OTL_CPP_17_ON
 #endif
 
 #if defined(_MSC_VER) && (_MSC_VER==1700)
@@ -74,6 +76,11 @@
 #if defined(__clang__) && (__clang_major__*100+__clang_minor__ >= 306)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wimplicit-fallthrough"
+#endif
+
+#if defined(__clang__) && (__clang_major__*100+__clang_minor__ >= 800)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wextra-semi-stmt"
 #endif
 
 
@@ -269,6 +276,7 @@
 #endif
 
 #endif
+
 
 #if defined(OTL_STREAM_WITH_STD_TUPLE_ON) && defined(OTL_ANSI_CPP_11_TUPLE_IS_SUPPORTED)
 #include <tuple>
@@ -499,6 +507,12 @@ inline int otl_sprintf_s(char* dest, size_t /* dest_sz */, const char* fmt, ...)
 #endif
 #if defined(OTL_UNICODE)
 #define OTL_ORA_UNICODE_LONG_LENGTH_IN_BYTES
+#endif
+#endif
+
+#if defined(OTL_ORA19C)
+#if !defined(OTL_ORA18C)
+#define OTL_ORA18C
 #endif
 #endif
 
@@ -2440,10 +2454,27 @@ inline void convert_date(otl_oracle_date &t, const otl_datetime &s) {
 
 class otl_null {
 public:
+#if defined(OTL_CPP_11_ON)
+  otl_null() = default;
+  ~otl_null() = default;
+  otl_null(const otl_null&) = default;
+  otl_null(otl_null&&) = default;
+  otl_null& operator=(const otl_null&) = default;
+  otl_null& operator=(otl_null&&) = default;
+#else
   otl_null() {}
   ~otl_null() {}
   otl_null(const otl_null&){}
+#endif
 };
+
+#if defined(OTL_CPP_11_ON)
+#define OTL_NULL_PARM otl_null
+#else
+#define OTL_NULL_PARM const otl_null &
+#endif
+
+
 #if defined(OTL_ORA_SDO_GEOMETRY)
 struct OCIType;
 #endif
@@ -4251,7 +4282,7 @@ public:
 
   otl_value(const TData &var) : v(var), ind(false) {}
 
-  otl_value(const otl_null &) : v(), ind(true) {}
+  otl_value(OTL_NULL_PARM ) : v(), ind(true) {}
 
   otl_value<TData> &operator=(const otl_value<TData> &var) {
     v = var.v;
@@ -4265,7 +4296,7 @@ public:
     return *this;
   }
 
-  otl_value<TData> &operator=(const otl_null) {
+  otl_value<TData> &operator=(OTL_NULL_PARM ) {
     ind = true;
     return *this;
   }
@@ -4289,7 +4320,7 @@ public:
 
   otl_compact_value(const TData &var) : v(var) {}
 
-  otl_compact_value(const otl_null) : v(null_value) {}
+  otl_compact_value(OTL_NULL_PARM ) : v(null_value) {}
 
   otl_compact_value<TData,null_value> &operator=(const otl_compact_value<TData,null_value> &var) {
     v = var.v;
@@ -4301,7 +4332,7 @@ public:
     return *this;
   }
 
-  otl_compact_value<TData,null_value> &operator=(const otl_null) {
+  otl_compact_value<TData,null_value> &operator=(OTL_NULL_PARM ) {
     v=null_value;
     return *this;
   }
@@ -5614,7 +5645,7 @@ public:
 
   virtual ~otl_tmpl_cursor() OTL_THROWS_OTL_EXCEPTION2 {
     in_destructor = 1;
-    close();
+    otl_tmpl_cursor::close();
     delete[] stm_label;
     stm_label = nullptr;
     delete[] stm_text;
@@ -7127,6 +7158,27 @@ private:
 #endif
 
 #endif
+
+#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
+#define OTL_OPERATOR_1(strp,var,T,T_type,oper) (*strp)->operator oper(var);
+#else
+#define OTL_OPERATOR_1(strp,var,T,T_type,oper) (*strp)->operator oper<T, T_type>(var);
+#endif
+
+#if defined(OTL_PARANOID_EOF)
+#define OTL_PARANOID_EOF_THROW(T) throw_if_eof_was_already_reached(last_eof_rc, T);
+#else
+#define OTL_PARANOID_EOF_THROW(T)
+#endif
+
+#if defined(OTL_DEFAULT_NUMERIC_NULL_TO_VAL)
+#define OTL_DEFAULT_NULL_ASSIGN(T,v)                            \
+    if ((*this).is_null())                                      \
+      v = OTL_SCAST(T, OTL_DEFAULT_NUMERIC_NULL_TO_VAL);
+#else
+#define OTL_DEFAULT_NULL_ASSIGN(T,v)
+#endif
+
 #if defined(OTL_ORA_SDO_GEOMETRY)
 struct oci_spatial_geometry;
 #endif
@@ -7189,6 +7241,11 @@ public:
         cur_in(0), executed(0), eof_status(0), var_info(), override_(nullptr),
         delay_next(0), lob_stream_mode(false), _rfc(0), rewind_calls(0) {
     int i;
+#if defined(OTL_ODBC_USES_SQL_FETCH_SCROLL_WHEN_SPECIFIED_IN_OTL_CONNECT)
+    if (pdb.get_fetch_scroll_mode()) 
+      this->select_cursor_struct.set_fetch_scroll_flag(); 
+    // set fetch scroll flag as soon as possible
+#endif
     this->select_cursor_struct.set_select_type(implicit_select);
     sl = nullptr;
     sl_len = 0;
@@ -8207,7 +8264,7 @@ public:
     }
   }
 
-  OTL_TMPL_SELECT_STREAM &operator<<(const otl_null & /* n */) {
+  OTL_TMPL_SELECT_STREAM &operator<<(OTL_NULL_PARM /* n */) {
     check_in_var();
     this->vl[cur_in]->set_null(0);
     get_in_next();
@@ -8762,12 +8819,12 @@ public:
       return;
     }
 
-#if defined(OTL_STL) && defined(OTL_INTERNAL_UNCAUGHT_EXCEPTION_ON)
+#if defined(OTL_STL) && defined(OTL_INTERNAL_UNCAUGHT_EXCEPTION_ON) && !defined(OTL_DESTRUCTORS_DO_NOT_THROW)
     if (otl_uncaught_exception()) {
       clean();
       return;
     }
-#elif defined(OTL_INTERNAL_UNCAUGHT_EXCEPTION_ON)
+#elif defined(OTL_INTERNAL_UNCAUGHT_EXCEPTION_ON) && !defined(OTL_DESTRUCTORS_DO_NOT_THROW)
     if (otl_uncaught_exception()) {
       clean();
       return;
@@ -9713,7 +9770,7 @@ public:
   }
 #endif
 
-  OTL_TMPL_OUT_STREAM &operator<<(const otl_null & /* n */) {
+  OTL_TMPL_OUT_STREAM &operator<<(OTL_NULL_PARM /* n */) {
     if (this->vl_len > 0) {
       get_next();
       this->vl[cur_x]->set_null(cur_y);
@@ -10069,8 +10126,10 @@ public:
                      otl_tmpl_ext_hv_decl<TVariableStruct, TTimestampStruct,
                                           TExceptionStruct, TConnectStruct,
                                           TCursorStruct>::out) {
-            ++iv_len;
-            in_vl[iv_len - 1] = v;
+            if (in_vl != nullptr){
+              ++iv_len;
+              in_vl[iv_len - 1] = v;
+            }
             v->set_param_type(otl_output_param);
           } else if (hvd.get_inout(j) ==
                      otl_tmpl_ext_hv_decl<TVariableStruct, TTimestampStruct,
@@ -10082,6 +10141,22 @@ public:
             if (in_vl != nullptr)
               in_vl[iv_len - 1] = v;
             v->set_param_type(otl_inout_param);
+          }else{
+            delete v;
+#if !defined(__BORLANDC__)
+            v = nullptr;
+#endif
+            if (avl != nullptr)
+              for (int k = 0; k < j; ++k) {
+                delete avl[k];
+                avl[k] = nullptr;
+              }
+            delete[] avl;
+            avl = nullptr;
+            this->vl_len = 0;
+            OTL_THROW((OTL_TMPL_EXCEPTION(
+                         otl_error_msg_12, otl_error_code_12,
+                         hvd.stm_label() ? hvd.stm_label() : hvd.stm_text(), hvd[j])));
           }
         }
       }
@@ -10837,8 +10912,8 @@ private:
 #define OTL_SQL_TIME SQL_TIME
 #endif
 
-#if defined(OTL_ODBC_USES_SQL_FETCH_SCROLL_WHEN_SPECIFIED_IN_OTL_CONNECT) &&   \
-    !defined(OTL_ODBC_SQL_EXTENDED_FETCH_ON)
+#if (defined(OTL_ODBC_USES_SQL_FETCH_SCROLL_WHEN_SPECIFIED_IN_OTL_CONNECT) && \
+  !defined(OTL_ODBC_SQL_EXTENDED_FETCH_ON))
 #error OTL_ODBC_USES_SQL_FETCH_SCROLL_WHEN_SPECIFIED_IN_OTL_CONNECT can only be used when \
 OTL_ODBC_SQL_EXTENDED_FETCH_ON is defined
 #endif
@@ -11594,6 +11669,10 @@ public:
 #endif
   };
 
+#if defined(__GNUC__) && defined(__GNUC_MINOR__) && (__GNUC__*100+__GNUC_MINOR__==408)
+#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
+#endif
+
   void cleanup(void) {}
 
   OTL_NODISCARD OTL_HENV &get_henv() { return henv; }
@@ -11655,7 +11734,10 @@ public:
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
 #endif
-      SQLPOINTER temp = SQL_AUTOCOMMIT_OFF;
+#if defined(__GNUC__) && defined(__GNUC_MINOR__) && (__GNUC__*100+__GNUC_MINOR__>=705)
+#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
+#endif
+      SQLPOINTER temp = OTL_SCAST(SQLPOINTER,SQL_AUTOCOMMIT_OFF);
 #if defined(__clang__) && (__clang_major__*100+__clang_minor__ >= 500)
 #pragma clang diagnostic pop
 #endif
@@ -13860,6 +13942,17 @@ public:
         return 0;
 #endif
 
+      if(status == SQL_ERROR)
+        return 0;
+
+      // iterate over potentially more than one result set that the
+      // batch executed by SQLExecDirect() may generate.
+#if (ODBCVER >= 0x0300)
+      while ((status = SQLMoreResults(cda)) != SQL_NO_DATA);
+#else
+      while ((status = SQLMoreResults(cda)) != SQL_NO_DATA_FOUND);
+#endif
+
       if (status != SQL_SUCCESS && status != SQL_SUCCESS_WITH_INFO &&
 #if (ODBCVER >= 0x0300)
           status != SQL_NO_DATA
@@ -15483,7 +15576,7 @@ public:
     written_to_flag(false),
     closed_flag(false),
     last_read_lob_len(0) {
-    init(nullptr, nullptr, nullptr, 0, OTL_SCAST(int,OTL_LOB_STREAM_MODE_ENUM otl_lob_stream_zero_mode));
+    otl_tmpl_lob_stream::init(nullptr, nullptr, nullptr, 0, OTL_SCAST(int,OTL_LOB_STREAM_MODE_ENUM otl_lob_stream_zero_mode));
   }
 
   ~otl_tmpl_lob_stream()
@@ -15505,13 +15598,13 @@ public:
 #if defined(OTL_DESTRUCTORS_DO_NOT_THROW)
     try {
       if (!closed_flag)
-        close();
+        otl_tmpl_lob_stream::close();
     }
     catch (OTL_CONST_EXCEPTION otl_exception &) {
     }
 #else
     if (!closed_flag)
-      close();
+      otl_tmpl_lob_stream::close();
 #endif
   }
 
@@ -15806,6 +15899,10 @@ public:
 #include <optional>
 #endif
 
+#if defined(OTL_STREAM_WITH_STD_SPAN_ON) && defined(OTL_CPP_20_ON)
+#include <span>
+#endif
+
 class otl_stream {
 private:
   otl_stream_shell *shell;
@@ -15848,6 +15945,17 @@ public:
     return (*this);
   }
 
+#endif
+
+#if defined(OTL_STREAM_WITH_STD_SPAN_ON) && defined(OTL_CPP_20_ON)
+public:
+  template<typename T>
+  otl_stream& operator<<(std::span<T> v){
+    for(const auto& e: v){
+      (*this)<<e;
+    }
+    return *this;
+  }
 #endif
 
 #if defined(OTL_STREAM_WITH_STD_VARIANT_ON) && defined(OTL_CPP_17_ON)
@@ -16715,11 +16823,6 @@ OTL_THROWS_OTL_EXCEPTION:
       (*io)->set_commit((*auto_commit_flag));
     create_var_desc();
     connected = 1;
-#if defined(OTL_ODBC_USES_SQL_FETCH_SCROLL_WHEN_SPECIFIED_IN_OTL_CONNECT)
-    if ((*ss) && db.get_fetch_scroll_mode()) {
-      (*ss)->get_select_cursor_struct().set_fetch_scroll_flag();
-    }
-#endif
   }
 
   void intern_cleanup(void) {
@@ -17488,153 +17591,41 @@ OTL_THROWS_OTL_EXCEPTION:
 
 #endif
 
-  otl_stream &operator>>(int &n) OTL_THROWS_OTL_EXCEPTION {
-    last_oper_was_read_op = true;
-    switch (shell->stream_type) {
-    case otl_odbc_no_stream:
-      break;
-    case otl_odbc_io_stream:
-      last_eof_rc = (*io)->eof();
-#if defined(OTL_PARANOID_EOF)
-      throw_if_eof_was_already_reached(last_eof_rc, "int&");
-#endif
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*io)->operator>>(n);
-#else
-      (*io)->operator>><int, otl_var_int>(n);
-#endif
-      break;
-    case otl_odbc_select_stream:
-      last_eof_rc = (*ss)->eof();
-#if defined(OTL_PARANOID_EOF)
-      throw_if_eof_was_already_reached(last_eof_rc, "int&");
-#endif
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ss)->operator>>(n);
-#else
-      (*ss)->operator>><int, otl_var_int>(n);
-#endif
-      break;
-    }
-#if defined(OTL_DEFAULT_NUMERIC_NULL_TO_VAL)
-    if ((*this).is_null())
-      n = OTL_SCAST(int, OTL_DEFAULT_NUMERIC_NULL_TO_VAL);
-#endif
-    OTL_TRACE_WRITE(n, "operator >>", "int&")
-    inc_next_ov();
-    return *this;
+#define OTL_GTGT_OPERATOR_2(T,T_type)                           \
+  otl_stream &operator>>(T& v) OTL_THROWS_OTL_EXCEPTION {       \
+    last_oper_was_read_op = true;                               \
+    switch (shell->stream_type) {                               \
+    case otl_odbc_no_stream:                                    \
+      break;                                                    \
+    case otl_odbc_io_stream:                                    \
+      last_eof_rc = (*io)->eof();                               \
+      OTL_PARANOID_EOF_THROW(#T "&");                           \
+      OTL_OPERATOR_1(io,v,T,T_type,>>);                         \
+      break;                                                    \
+    case otl_odbc_select_stream:                                \
+      last_eof_rc = (*ss)->eof();                               \
+      OTL_PARANOID_EOF_THROW(#T "&");                           \
+      OTL_OPERATOR_1(ss,v,T,T_type,>>);                         \
+      break;                                                    \
+    }                                                           \
+    OTL_DEFAULT_NULL_ASSIGN(T,v);                               \
+    OTL_TRACE_WRITE(v, "operator >>", #T "&");                  \
+    inc_next_ov();                                              \
+    return *this;                                               \
   }
 
-  otl_stream &operator>>(unsigned &u) OTL_THROWS_OTL_EXCEPTION {
-    last_oper_was_read_op = true;
-    switch (shell->stream_type) {
-    case otl_odbc_no_stream:
-      break;
-    case otl_odbc_io_stream:
-      last_eof_rc = (*io)->eof();
-#if defined(OTL_PARANOID_EOF)
-      throw_if_eof_was_already_reached(last_eof_rc, "unsigned int&");
+#if defined(__clang__) && (__clang_major__*100+__clang_minor__ >= 305)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wextra-semi"
 #endif
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*io)->operator>>(u);
-#else
-      (*io)->operator>><unsigned, otl_var_unsigned_int>(u);
-#endif
-      break;
-    case otl_odbc_select_stream:
-      last_eof_rc = (*ss)->eof();
-#if defined(OTL_PARANOID_EOF)
-      throw_if_eof_was_already_reached(last_eof_rc, "unsigned int&");
-#endif
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ss)->operator>>(u);
-#else
-      (*ss)->operator>><unsigned, otl_var_unsigned_int>(u);
-#endif
-      break;
-    }
-#if defined(OTL_DEFAULT_NUMERIC_NULL_TO_VAL)
-    if ((*this).is_null())
-      u = OTL_SCAST(unsigned int, OTL_DEFAULT_NUMERIC_NULL_TO_VAL);
-#endif
-    OTL_TRACE_WRITE(u, "operator >>", "unsigned&")
-    inc_next_ov();
-    return *this;
-  }
 
-  otl_stream &operator>>(short &sh) OTL_THROWS_OTL_EXCEPTION {
-    last_oper_was_read_op = true;
-    switch (shell->stream_type) {
-    case otl_odbc_no_stream:
-      break;
-    case otl_odbc_io_stream:
-      last_eof_rc = (*io)->eof();
-#if defined(OTL_PARANOID_EOF)
-      throw_if_eof_was_already_reached(last_eof_rc, "short int&");
-#endif
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*io)->operator>>(sh);
-#else
-      (*io)->operator>><short, otl_var_short>(sh);
-#endif
-      break;
-    case otl_odbc_select_stream:
-      last_eof_rc = (*ss)->eof();
-#if defined(OTL_PARANOID_EOF)
-      throw_if_eof_was_already_reached(last_eof_rc, "short int&");
-#endif
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ss)->operator>>(sh);
-#else
-      (*ss)->operator>><short, otl_var_short>(sh);
-#endif
-      break;
-    }
-#if defined(OTL_DEFAULT_NUMERIC_NULL_TO_VAL)
-    if ((*this).is_null())
-      sh = OTL_SCAST(short int, OTL_DEFAULT_NUMERIC_NULL_TO_VAL);
-#endif
-    OTL_TRACE_WRITE(sh, "operator >>", "short int&")
-    inc_next_ov();
-    return *this;
-  }
+  OTL_GTGT_OPERATOR_2(int,otl_var_int);
 
-  otl_stream &operator>>(long int &l) OTL_THROWS_OTL_EXCEPTION {
-    last_oper_was_read_op = true;
-    switch (shell->stream_type) {
-    case otl_odbc_no_stream:
-      break;
-    case otl_odbc_io_stream:
-      last_eof_rc = (*io)->eof();
-#if defined(OTL_PARANOID_EOF)
-      throw_if_eof_was_already_reached(last_eof_rc, "long int&");
-#endif
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*io)->operator>>(l);
-#else
-      (*io)->operator>><long, otl_var_long_int>(l);
-#endif
-      break;
-    case otl_odbc_select_stream:
-      last_eof_rc = (*ss)->eof();
-#if defined(OTL_PARANOID_EOF)
-      throw_if_eof_was_already_reached(last_eof_rc, "long int&");
-#endif
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ss)->operator>>(l);
-#else
-      (*ss)->operator>><long, otl_var_long_int>(l);
-#endif
-      break;
-    }
-#if defined(OTL_DEFAULT_NUMERIC_NULL_TO_VAL)
-    if ((*this).is_null())
-      l = OTL_SCAST(long int, OTL_DEFAULT_NUMERIC_NULL_TO_VAL);
-#endif
-    OTL_TRACE_WRITE(l, "operator >>", "long int&")
-    inc_next_ov();
-    return *this;
-  }
+  OTL_GTGT_OPERATOR_2(unsigned int,otl_var_unsigned_int);
+
+  OTL_GTGT_OPERATOR_2(short int,otl_var_short);
+
+  OTL_GTGT_OPERATOR_2(long int,otl_var_long_int);
 
 #if defined(OTL_NUMERIC_TYPE_1) && defined(OTL_STR_TO_NUMERIC_TYPE_1) &&       \
     defined(OTL_NUMERIC_TYPE_1_TO_STR) && defined(OTL_NUMERIC_TYPE_1_ID)
@@ -17655,6 +17646,7 @@ OTL_THROWS_OTL_EXCEPTION:
           if (var_desc->ftype == otl_var_char) {
             char temp_val[otl_numeric_type_1_str_size];
 #if defined(OTL_UNICODE)
+
             OTL_CHAR unitemp_val[otl_numeric_type_1_str_size];
             (*ss)->operator>>(OTL_RCAST(unsigned char *, unitemp_val));
             OTL_CHAR *uc = unitemp_val;
@@ -18175,79 +18167,9 @@ OTL_THROWS_OTL_EXCEPTION:
   }
 #endif
 
-  otl_stream &operator>>(float &f) OTL_THROWS_OTL_EXCEPTION {
-    last_oper_was_read_op = true;
-    switch (shell->stream_type) {
-    case otl_odbc_no_stream:
-      break;
-    case otl_odbc_io_stream:
-      last_eof_rc = (*io)->eof();
-#if defined(OTL_PARANOID_EOF)
-      throw_if_eof_was_already_reached(last_eof_rc, "float&");
-#endif
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*io)->operator>>(f);
-#else
-      (*io)->operator>><float, otl_var_float>(f);
-#endif
-      break;
-    case otl_odbc_select_stream:
-      last_eof_rc = (*ss)->eof();
-#if defined(OTL_PARANOID_EOF)
-      throw_if_eof_was_already_reached(last_eof_rc, "float&");
-#endif
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ss)->operator>>(f);
-#else
-      (*ss)->operator>><float, otl_var_float>(f);
-#endif
-      break;
-    }
-#if defined(OTL_DEFAULT_NUMERIC_NULL_TO_VAL)
-    if ((*this).is_null())
-      f = OTL_SCAST(float, OTL_DEFAULT_NUMERIC_NULL_TO_VAL);
-#endif
-    OTL_TRACE_WRITE(f, "operator >>", "float&")
-    inc_next_ov();
-    return *this;
-  }
+  OTL_GTGT_OPERATOR_2(float,otl_var_float);
 
-  otl_stream &operator>>(double &d) OTL_THROWS_OTL_EXCEPTION {
-    last_oper_was_read_op = true;
-    switch (shell->stream_type) {
-    case otl_odbc_no_stream:
-      break;
-    case otl_odbc_io_stream:
-      last_eof_rc = (*io)->eof();
-#if defined(OTL_PARANOID_EOF)
-      throw_if_eof_was_already_reached(last_eof_rc, "double&");
-#endif
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*io)->operator>>(d);
-#else
-      (*io)->operator>><double, otl_var_double>(d);
-#endif
-      break;
-    case otl_odbc_select_stream:
-      last_eof_rc = (*ss)->eof();
-#if defined(OTL_PARANOID_EOF)
-      throw_if_eof_was_already_reached(last_eof_rc, "double&");
-#endif
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ss)->operator>>(d);
-#else
-      (*ss)->operator>><double, otl_var_double>(d);
-#endif
-      break;
-    }
-#if defined(OTL_DEFAULT_NUMERIC_NULL_TO_VAL)
-    if ((*this).is_null())
-      d = OTL_SCAST(double, OTL_DEFAULT_NUMERIC_NULL_TO_VAL);
-#endif
-    OTL_TRACE_WRITE(d, "operator >>", "double&")
-    inc_next_ov();
-    return *this;
-  }
+  OTL_GTGT_OPERATOR_2(double,otl_var_double);
 
   otl_stream &operator>>(otl_long_string &s) OTL_THROWS_OTL_EXCEPTION {
     last_oper_was_read_op = true;
@@ -18275,6 +18197,9 @@ OTL_THROWS_OTL_EXCEPTION:
     return *this;
   }
 
+#if defined(OTL_STREAM_CUSTOM_CHAR_LTLT_OPERATORS)
+    OTL_STREAM_CUSTOM_CHAR_LTLT_OPERATORS
+#else
   otl_stream &operator<<(const char c) OTL_THROWS_OTL_EXCEPTION {
     last_oper_was_read_op = false;
     reset_end_marker();
@@ -18314,6 +18239,7 @@ OTL_THROWS_OTL_EXCEPTION:
     inc_next_iov();
     return *this;
   }
+#endif
 
 #if defined(OTL_UNICODE)
 
@@ -18547,33 +18473,28 @@ OTL_THROWS_OTL_EXCEPTION:
     return *this;
   }
 
-  otl_stream &operator<<(const int n) OTL_THROWS_OTL_EXCEPTION {
-    last_oper_was_read_op = false;
-    reset_end_marker();
-    OTL_TRACE_READ(n, "operator <<", "int");
-    switch (shell->stream_type) {
-    case otl_odbc_no_stream:
-      break;
-    case otl_odbc_io_stream:
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*io)->operator<<(n);
-#else
-      (*io)->operator<<<int, otl_var_int>(n);
-#endif
-      break;
-    case otl_odbc_select_stream:
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ss)->operator<<(n);
-#else
-      (*ss)->operator<<<int, otl_var_int>(n);
-#endif
-      if (!(*ov) && (*ss)->get_sl())
-        create_var_desc();
-      break;
-    }
-    inc_next_iov();
-    return *this;
+#define OTL_LTLT_OPERATOR_2(T,T_type)                           \
+  otl_stream &operator<<(const T v) OTL_THROWS_OTL_EXCEPTION {  \
+    last_oper_was_read_op = false;                              \
+    reset_end_marker();                                         \
+    OTL_TRACE_READ(v, "operator <<", #T);                       \
+    switch (shell->stream_type) {                               \
+    case otl_odbc_no_stream:                                    \
+      break;                                                    \
+    case otl_odbc_io_stream:                                    \
+      OTL_OPERATOR_1(io,v,T,T_type,<<);                         \
+      break;                                                    \
+    case otl_odbc_select_stream:                                \
+      OTL_OPERATOR_1(ss,v,T,T_type,<<);                         \
+      if (!(*ov) && (*ss)->get_sl())                            \
+        create_var_desc();                                      \
+      break;                                                    \
+    }                                                           \
+    inc_next_iov();                                             \
+    return *this;                                               \
   }
+
+  OTL_LTLT_OPERATOR_2(int,otl_var_int);
 
 #if defined(OTL_NUMERIC_TYPE_1) && defined(OTL_STR_TO_NUMERIC_TYPE_1) &&       \
     defined(OTL_NUMERIC_TYPE_1_TO_STR) && defined(OTL_NUMERIC_TYPE_1_ID)
@@ -18977,147 +18898,17 @@ OTL_THROWS_OTL_EXCEPTION:
   }
 #endif
 
-  otl_stream &operator<<(const unsigned u) OTL_THROWS_OTL_EXCEPTION {
-    last_oper_was_read_op = false;
-    reset_end_marker();
-    OTL_TRACE_READ(u, "operator <<", "unsigned int");
-    switch (shell->stream_type) {
-    case otl_odbc_no_stream:
-      break;
-    case otl_odbc_io_stream:
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*io)->operator<<(u);
-#else
-      (*io)->operator<<<unsigned, otl_var_unsigned_int>(u);
-#endif
-      break;
-    case otl_odbc_select_stream:
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ss)->operator<<(u);
-#else
-      (*ss)->operator<<<unsigned, otl_var_unsigned_int>(u);
-#endif
-      if (!(*ov) && (*ss)->get_sl())
-        create_var_desc();
-      break;
-    }
-    inc_next_iov();
-    return *this;
-  }
+  OTL_LTLT_OPERATOR_2(unsigned int,otl_var_unsigned_int);
 
-  otl_stream &operator<<(const short sh) OTL_THROWS_OTL_EXCEPTION {
-    last_oper_was_read_op = false;
-    reset_end_marker();
-    OTL_TRACE_READ(sh, "operator <<", "short int");
-    switch (shell->stream_type) {
-    case otl_odbc_no_stream:
-      break;
-    case otl_odbc_io_stream:
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*io)->operator<<(sh);
-#else
-      (*io)->operator<<<short, otl_var_short>(sh);
-#endif
-      break;
-    case otl_odbc_select_stream:
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ss)->operator<<(sh);
-#else
-      (*ss)->operator<<<short, otl_var_short>(sh);
-#endif
-      if (!(*ov) && (*ss)->get_sl())
-        create_var_desc();
-      break;
-    }
-    inc_next_iov();
-    return *this;
-  }
+  OTL_LTLT_OPERATOR_2(short int,otl_var_short);
 
-  otl_stream &operator<<(const long int l) OTL_THROWS_OTL_EXCEPTION {
-    last_oper_was_read_op = false;
-    reset_end_marker();
-    OTL_TRACE_READ(l, "operator <<", "long int");
-    switch (shell->stream_type) {
-    case otl_odbc_no_stream:
-      break;
-    case otl_odbc_io_stream:
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*io)->operator<<(l);
-#else
-      (*io)->operator<<<long, otl_var_long_int>(l);
-#endif
-      break;
-    case otl_odbc_select_stream:
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ss)->operator<<(l);
-#else
-      (*ss)->operator<<<long, otl_var_long_int>(l);
-#endif
-      if (!(*ov) && (*ss)->get_sl())
-        create_var_desc();
-      break;
-    }
-    inc_next_iov();
-    return *this;
-  }
+  OTL_LTLT_OPERATOR_2(long int,otl_var_long_int);
 
-  otl_stream &operator<<(const float f) OTL_THROWS_OTL_EXCEPTION {
-    last_oper_was_read_op = false;
-    reset_end_marker();
-    OTL_TRACE_READ(f, "operator <<", "float");
-    switch (shell->stream_type) {
-    case otl_odbc_no_stream:
-      break;
-    case otl_odbc_io_stream:
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*io)->operator<<(f);
-#else
-      (*io)->operator<<<float, otl_var_float>(f);
-#endif
-      break;
-    case otl_odbc_select_stream:
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ss)->operator<<(f);
-#else
-      (*ss)->operator<<<float, otl_var_float>(f);
-#endif
-      if (!(*ov) && (*ss)->get_sl())
-        create_var_desc();
-      break;
-    }
-    inc_next_iov();
-    return *this;
-  }
+  OTL_LTLT_OPERATOR_2(float,otl_var_float);
 
-  otl_stream &operator<<(const double d) OTL_THROWS_OTL_EXCEPTION {
-    last_oper_was_read_op = false;
-    reset_end_marker();
-    OTL_TRACE_READ(d, "operator <<", "double");
-    switch (shell->stream_type) {
-    case otl_odbc_no_stream:
-      break;
-    case otl_odbc_io_stream:
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*io)->operator<<(d);
-#else
-      (*io)->operator<<<double, otl_var_double>(d);
-#endif
-      break;
-    case otl_odbc_select_stream:
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ss)->operator<<(d);
-#else
-      (*ss)->operator<<<double, otl_var_double>(d);
-#endif
-      if (!(*ov) && (*ss)->get_sl())
-        create_var_desc();
-      break;
-    }
-    inc_next_iov();
-    return *this;
-  }
+  OTL_LTLT_OPERATOR_2(double,otl_var_double);
 
-  otl_stream &operator<<(const otl_null &n) OTL_THROWS_OTL_EXCEPTION {
+  otl_stream &operator<<(OTL_NULL_PARM n) OTL_THROWS_OTL_EXCEPTION {
     last_oper_was_read_op = false;
     reset_end_marker();
     OTL_TRACE_READ("NULL", "operator <<", "otl_null&");
@@ -19200,7 +18991,7 @@ private:
 #if defined(OTL_ANSI_CPP_11_RVAL_REF_SUPPORT)
 inline bool operator!=(const otl_for_range_loop_odbc_stream_adapter& a1,
                        const otl_for_range_loop_odbc_stream_adapter& /*a2*/){
-  return !a1.str_->eof();
+  return a1.str_!=nullptr && !a1.str_->eof();
 }
 #endif
 
@@ -19558,7 +19349,13 @@ public:
 
   OTL_NODISCARD OCIEnv *get_envhp() { return envhp; }
 
-  OTL_NODISCARD OCIError *get_errhp() { return errhp; }
+  OTL_NODISCARD OCIError* get_errhp() { return errhp; }
+
+  void set_svchp(OCISvcCtx* x) {  svchp = x; }
+
+  void set_srvhp(OCIServer* x) {  srvhp = x; }
+
+  void set_authp(OCISession* x) { authp = x; }
 
   OTL_NODISCARD OCISvcCtx *get_svchp() { return svchp; }
 
@@ -19810,11 +19607,17 @@ public:
     return 1;
   }
 
+
+
   OTL_NODISCARD int session_begin(const char *userid, const char *password,
                                   const int aauto_commit,
-                                  const int session_mode = OCI_DEFAULT) {
+                                  const int session_mode = OCI_DEFAULT,
+                                  OCISession* authp2 = nullptr) {
     int &status = last_status;
     int cred_type;
+    OCISession* authp1 = authp;
+    if (authp2)
+        authp1 = authp2;
 
     if (!attached)
       return 0;
@@ -19825,14 +19628,14 @@ public:
     } else {
       ext_cred = 0;
       cred_type = OCI_CRED_RDBMS;
-      status = OCIAttrSet(OTL_RCAST(dvoid *, authp),
+      status = OCIAttrSet(OTL_RCAST(dvoid *, authp1),
                           OTL_SCAST(ub4, OCI_HTYPE_SESSION),
                           OTL_RCAST(dvoid *, OTL_CCAST(char *, userid)),
                           OTL_SCAST(ub4, strlen(OTL_CCAST(char *, userid))),
                           OTL_SCAST(ub4, OCI_ATTR_USERNAME), errhp);
       if (status)
         return 0;
-      status = OCIAttrSet(OTL_RCAST(dvoid *, authp),
+      status = OCIAttrSet(OTL_RCAST(dvoid *, authp1),
                           OTL_SCAST(ub4, OCI_HTYPE_SESSION),
                           OTL_RCAST(dvoid *, OTL_CCAST(char *, password)),
                           OTL_SCAST(ub4, strlen(OTL_CCAST(char *, password))),
@@ -19842,13 +19645,13 @@ public:
     }
     session_mode_ = session_mode;
     status =
-        OCISessionBegin(svchp, errhp, authp, OTL_SCAST(unsigned, cred_type),
+        OCISessionBegin(svchp, errhp, authp1, OTL_SCAST(unsigned, cred_type),
                         OTL_SCAST(ub4, session_mode_));
     if (status != OCI_SUCCESS && status != OCI_SUCCESS_WITH_INFO)
       return 0;
     status = OCIAttrSet(
         OTL_RCAST(dvoid *, svchp), OTL_SCAST(ub4, OCI_HTYPE_SVCCTX),
-        OTL_RCAST(dvoid *, authp), 0, OTL_SCAST(ub4, OCI_ATTR_SESSION), errhp);
+        OTL_RCAST(dvoid *, authp1), 0, OTL_SCAST(ub4, OCI_ATTR_SESSION), errhp);
     if (status)return 0;
 #if defined(OTL_ORA_SDO_GEOMETRY)
     OCIParam *paramp = nullptr;
@@ -20527,6 +20330,11 @@ public:
 #endif
   }
 
+#if defined(__clang__) && (__clang_major__*100+__clang_minor__ >= 1000)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wmisleading-indentation"
+#endif
+
   OTL_NODISCARD int actual_elem_size(void) { return act_elem_size; }
 
   void init(const bool aselect_stm_flag, const int aftype, int &aelem_size,
@@ -21191,13 +20999,9 @@ public:
       geometry.isNull = true;
       return 0;
     }
-    int nDims = (geometry.gtype / 1000) % 10;
     int iType = geometry.gtype % 100;
     if(iType == 0){
       geometry.isNull = true;
-      return 0;
-    }
-    if((geometry.gtype / 100) % 10 != 0){
       return 0;
     }
 #if defined(__clang__)
@@ -21220,17 +21024,6 @@ public:
 #pragma GCC diagnostic pop
 #endif
     }
-    int nElems;
-    if(!getArraySize(sdoobj[ndx]->elem_info, nElems)){
-      geometry.isNull = true;
-      return 0;
-    }
-    int nOrds;
-    if(!getArraySize(sdoobj[ndx]->ordinates, nOrds)){
-      geometry.isNull = true;
-      return 0;
-    }
-    if(iType == 1 && nElems == 0){
 #if defined(__clang__)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wold-style-cast"
@@ -21239,62 +21032,27 @@ public:
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"
 #endif
-      if(sdoind[ndx]->_atomic != OCI_IND_NOTNULL ||
-         sdoind[ndx]->point.x != OCI_IND_NOTNULL ||
-         sdoind[ndx]->point.y != OCI_IND_NOTNULL){
-        geometry.isNull = true;
-        return 0;
-      }
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#endif
-#if defined(__GNUC__) && defined(__GNUC_MINOR__) && (__GNUC__*100+__GNUC_MINOR__>=407)
-#pragma GCC diagnostic pop
-#endif
+    if(sdoind[ndx]->point.x == OCI_IND_NOTNULL){
       if(!getValue(&sdoobj[ndx]->point.x, geometry.x)){
         geometry.isNull = true;
         return 0;
       }
+    }
+    if(sdoind[ndx]->point.y == OCI_IND_NOTNULL){
       if(!getValue(&sdoobj[ndx]->point.y, geometry.y)){
         geometry.isNull = true;
         return 0;
       }
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wold-style-cast"
-#endif
-#if defined(__GNUC__) && defined(__GNUC_MINOR__) && (__GNUC__*100+__GNUC_MINOR__>=407)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wold-style-cast"
-#endif
-      if(nDims > 2){
-        if(sdoind[ndx]->point.z != OCI_IND_NOTNULL){
-          geometry.isNull = true;
-          return 0;
-        }
-        if(!getValue(&sdoobj[ndx]->point.z, geometry.z)){
-          geometry.isNull = true;
-          return 0;
-        }
+    }
+    if(sdoind[ndx]->point.z == OCI_IND_NOTNULL){
+      if(!getValue(&sdoobj[ndx]->point.z, geometry.z)){
+        geometry.isNull = true;
+        return 0;
       }
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#endif
-#if defined(__GNUC__) && defined(__GNUC_MINOR__) && (__GNUC__*100+__GNUC_MINOR__>=407)
-#pragma GCC diagnostic pop
-#endif
-      geometry.isNull = false;
-      return 1;
-    }else{
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wold-style-cast"
-#endif
-#if defined(__GNUC__) && defined(__GNUC_MINOR__) && (__GNUC__*100+__GNUC_MINOR__>=407)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wold-style-cast"
-#endif
-      if(sdoind[ndx]->_atomic != OCI_IND_NOTNULL){
+    }
+    if(sdoind[ndx]->elem_info == OCI_IND_NOTNULL){
+      int nElems;
+      if(!getArraySize(sdoobj[ndx]->elem_info, nElems)){
         geometry.isNull = true;
         return 0;
       }
@@ -21304,13 +21062,12 @@ public:
 #if defined(__GNUC__) && defined(__GNUC_MINOR__) && (__GNUC__*100+__GNUC_MINOR__>=407)
 #pragma GCC diagnostic pop
 #endif
-
-      geometry.eleminfo.resize(OTL_SCAST(size_t,nElems));
+      geometry.eleminfo.resize(OTL_SCAST(size_t, nElems));
 #if defined(OTL_ORA10G_R2)
       {
-        uword nelems = OTL_SCAST(uword,nElems);
-        std::vector<boolean> exists(OTL_SCAST(size_t,nElems));
-        std::vector<OCINumber*> numbers(OTL_SCAST(size_t,nElems));
+        uword nelems = OTL_SCAST(uword, nElems);
+        std::vector<boolean> exists(OTL_SCAST(size_t, nElems));
+        std::vector<OCINumber*> numbers(OTL_SCAST(size_t, nElems));
         int result = OCICollGetElemArray(connect->get_envhp(), connect->get_errhp(),
                                          sdoobj[ndx]->elem_info,
                                          OTL_SCAST(sb4, 0),
@@ -21331,11 +21088,11 @@ public:
       for(int i = 0; i < nElems;i++){
         boolean exists(true);
         OCINumber* numbers;
-        int result = OCICollGetElem(connect->get_envhp(), 
-                                    connect->get_errhp(), 
-                                    sdoobj[ndx]->elem_info, 
-                                    i, 
-                                    &exists, (void**)&numbers, 
+        int result = OCICollGetElem(connect->get_envhp(),
+                                    connect->get_errhp(),
+                                    sdoobj[ndx]->elem_info,
+                                    i,
+                                    &exists, (void**)&numbers,
                                     0);
         if(result || !exists){
           geometry.isNull = true;
@@ -21347,7 +21104,28 @@ public:
         }
       }
 #endif
+    }
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wold-style-cast"
+#endif
+#if defined(__GNUC__) && defined(__GNUC_MINOR__) && (__GNUC__*100+__GNUC_MINOR__>=407)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#endif
+    if(sdoind[ndx]->ordinates == OCI_IND_NOTNULL){
+      int nOrds;
+      if(!getArraySize(sdoobj[ndx]->ordinates, nOrds)){
+        geometry.isNull = true;
+        return 0;
+      }
       geometry.ordinates.resize(OTL_SCAST(size_t,nOrds));
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif
+#if defined(__GNUC__) && defined(__GNUC_MINOR__) && (__GNUC__*100+__GNUC_MINOR__>=407)
+#pragma GCC diagnostic pop
+#endif
 #if defined(OTL_ORA10G_R2)
       {
         std::vector<boolean> exists(OTL_SCAST(size_t,nOrds));
@@ -23181,7 +22959,7 @@ public:
                                        cursor(nullptr),
                                        temp_buf(nullptr),
                                        temp_char_buf(nullptr) {
-    init(nullptr, nullptr, nullptr, 0, OTL_SCAST(int,OTL_LOB_STREAM_MODE_ENUM otl_lob_stream_zero_mode));
+    otl_tmpl_lob_stream::init(nullptr, nullptr, nullptr, 0, OTL_SCAST(int,OTL_LOB_STREAM_MODE_ENUM otl_lob_stream_zero_mode));
   }
 
   virtual ~otl_tmpl_lob_stream()
@@ -23202,12 +22980,12 @@ public:
     }
 #if defined(OTL_DESTRUCTORS_DO_NOT_THROW)
     try {
-      close();
+      otl_tmpl_lob_stream::close();
     }
     catch (OTL_CONST_EXCEPTION otl_exception &) {
     }
 #else
-    close();
+    otl_tmpl_lob_stream::close();
 #endif
   }
 
@@ -23873,18 +23651,19 @@ OTL_THROWS_OTL_EXCEPTION:
 
   void session_begin(
       const char *username, const char *password, const int auto_commit = 0,
-      const int session_mode = OCI_DEFAULT
+      const int session_mode = OCI_DEFAULT,      
       // OCI_SYSDBA -- in this mode, the user is authenticated for SYSDBA
       // access.
       // OCI_SYSOPER -- in this mode, the user is authenticated
       // for SYSOPER access.
+      OCISession* authp1 = nullptr
       ) OTL_THROWS_OTL_EXCEPTION {
     if (cmd_) {
       delete[] cmd_;
       cmd_ = nullptr;
     }
     retcode = connect_struct.session_begin(username, password, auto_commit,
-                                           session_mode);
+                                           session_mode, authp1);
     if (retcode)
       connected = 1;
     else {
@@ -24351,7 +24130,7 @@ OTL_THROWS_OTL_EXCEPTION:
 
   virtual ~otl_refcur_stream() OTL_THROWS_OTL_EXCEPTION {
     cleanup();
-    close();
+    otl_refcur_stream::close();
   }
 
   OTL_NODISCARD int is_null(void) OTL_NO_THROW { return null_fetched; }
@@ -24464,6 +24243,22 @@ OTL_THROWS_OTL_EXCEPTION:
 #endif
     inc_next_ov();
     return *this;
+  }
+#endif
+
+#if defined(OTL_ORA_SDO_GEOMETRY)
+  OTL_ORA_REFCUR_COMMON_READ_STREAM &
+	  operator>>(oci_spatial_geometry &s) OTL_THROWS_OTL_EXCEPTION{
+	  check_if_executed();
+	  if (eof_intern())
+		  return *this;
+	  get_next();
+	  if ((sl[cur_col].get_ftype() == otl_var_sdo_geometry) && !eof_intern()){
+            (void)sl[cur_col].get_var_struct().read_geometry(s, this->cur_row);
+            look_ahead();
+	  }
+	  inc_next_ov();
+	  return *this;
   }
 #endif
 
@@ -25344,7 +25139,11 @@ protected:
 #endif
       sl[j].init(true, ftype, elem_size,
                  OTL_SCAST(otl_stream_buffer_size_type, array_size),
-                 &adb->get_connect_struct());
+                 &adb->get_connect_struct()
+#if defined(OTL_ORA_SDO_GEOMETRY)
+		  , 0, sl_desc_tmp[j].colOCIType
+#endif
+	  );
     }
     if (sl_desc) {
       delete[] sl_desc;
@@ -25453,7 +25252,7 @@ public:
 
 #endif
 
-  otl_inout_stream &operator<<(const otl_null &n) {
+  otl_inout_stream &operator<<(OTL_NULL_PARM n) {
     otl_ora8_inout_stream::operator<<(n);
     return *this;
   }
@@ -26719,7 +26518,7 @@ public:
   }
 #endif
 
-  otl_ref_select_stream &operator<<(const otl_null & /*n*/) {
+  otl_ref_select_stream &operator<<(OTL_NULL_PARM /*n*/) {
     check_in_var();
     this->vl[cur_in]->set_null(0);
     get_in_next();
@@ -27551,6 +27350,10 @@ public:
 
 #if defined(OTL_STREAM_WITH_STD_OPTIONAL_ON) && defined(OTL_COMPILER_HAS_STD_OPTIONAL)
 #include <optional>
+#endif
+
+#if defined(OTL_STREAM_WITH_STD_SPAN_ON) && defined(OTL_CPP_20_ON)
+#include <span>
 #endif
 
 class otl_stream
@@ -29347,6 +29150,17 @@ public:
 
 #endif
 
+#if defined(OTL_STREAM_WITH_STD_SPAN_ON) && defined(OTL_CPP_20_ON)
+public:
+  template<typename T>
+  otl_stream& operator<<(std::span<T> v){
+    for(const auto& e: v){
+      (*this)<<e;
+    }
+    return *this;
+  }
+#endif
+
 #if defined(OTL_STREAM_WITH_STD_VARIANT_ON) && defined(OTL_CPP_17_ON)
 
 public:
@@ -30615,269 +30429,50 @@ public:
 
 #endif
 
-  OTL_ORA_COMMON_READ_STREAM &operator>>(int &n) OTL_THROWS_OTL_EXCEPTION {
-    last_oper_was_read_op = true;
-    switch (shell->stream_type) {
-    case otl_no_stream_type:
-      break;
-    case otl_inout_stream_type:
-      last_eof_rc = (*io)->eof();
-#if defined(OTL_PARANOID_EOF)
-      throw_if_eof_was_already_reached(last_eof_rc, "int&");
-#endif
-      (*io)->operator>>(n);
-      break;
-    case otl_select_stream_type:
-      last_eof_rc = (*ss)->eof();
-#if defined(OTL_PARANOID_EOF)
-      throw_if_eof_was_already_reached(last_eof_rc, "int&");
-#endif
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ss)->operator>>(n);
-#else
-      (*ss)->operator>><int, otl_var_int>(n);
-#endif
-      break;
-    case otl_refcur_stream_type:
-      last_eof_rc = (*ref_ss)->eof();
-#if defined(OTL_PARANOID_EOF)
-      throw_if_eof_was_already_reached(last_eof_rc, "int&");
-#endif
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ref_ss)->operator>>(n);
-#else
-      (*ref_ss)->operator>><int, otl_var_int>(n);
-#endif
-      break;
-    }
-#if defined(OTL_DEFAULT_NUMERIC_NULL_TO_VAL)
-    if ((*this).is_null())
-      n = OTL_SCAST(int, OTL_DEFAULT_NUMERIC_NULL_TO_VAL);
-#endif
-    OTL_TRACE_WRITE(n, "operator >>", "int&")
-    inc_next_ov();
-    return *this;
+#define OTL_GTGT_OPERATOR_3(T,T_type)                                   \
+  OTL_ORA_COMMON_READ_STREAM &operator>>(T& n) OTL_THROWS_OTL_EXCEPTION{\
+    last_oper_was_read_op = true;                                       \
+    switch (shell->stream_type) {                                       \
+    case otl_no_stream_type:                                            \
+      break;                                                            \
+    case otl_inout_stream_type:                                         \
+      last_eof_rc = (*io)->eof();                                       \
+      OTL_PARANOID_EOF_THROW(#T "&");                                   \
+      (*io)->operator>>(n);                                             \
+      break;                                                            \
+    case otl_select_stream_type:                                        \
+      last_eof_rc = (*ss)->eof();                                       \
+      OTL_PARANOID_EOF_THROW(#T "&");                                   \
+      OTL_OPERATOR_1(ss,n,T,T_type,>>);                                 \
+      break;                                                            \
+    case otl_refcur_stream_type:                                        \
+      last_eof_rc = (*ref_ss)->eof();                                   \
+      OTL_PARANOID_EOF_THROW(#T "&");                                   \
+      OTL_OPERATOR_1(ref_ss,n,T,T_type,>>);                             \
+      break;                                                            \
+    }                                                                   \
+    OTL_DEFAULT_NULL_ASSIGN(T,n);                                       \
+    OTL_TRACE_WRITE(n, "operator >>", #T "&");                          \
+    inc_next_ov();                                                      \
+    return *this;                                                       \
   }
 
-  OTL_ORA_COMMON_READ_STREAM &operator>>(unsigned &u) OTL_THROWS_OTL_EXCEPTION {
-    last_oper_was_read_op = true;
-    switch (shell->stream_type) {
-    case otl_no_stream_type:
-      break;
-    case otl_inout_stream_type:
-      last_eof_rc = (*io)->eof();
-#if defined(OTL_PARANOID_EOF)
-      throw_if_eof_was_already_reached(last_eof_rc, "unsigned int&");
+#if defined(__clang__) && (__clang_major__*100+__clang_minor__ >= 305)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wextra-semi"
 #endif
-      (*io)->operator>>(u);
-      break;
-    case otl_select_stream_type:
-      last_eof_rc = (*ss)->eof();
-#if defined(OTL_PARANOID_EOF)
-      throw_if_eof_was_already_reached(last_eof_rc, "unsigned int&");
-#endif
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ss)->operator>>(u);
-#else
-      (*ss)->operator>><unsigned, otl_var_unsigned_int>(u);
-#endif
-      break;
-    case otl_refcur_stream_type:
-      last_eof_rc = (*ref_ss)->eof();
-#if defined(OTL_PARANOID_EOF)
-      throw_if_eof_was_already_reached(last_eof_rc, "unsigned int&");
-#endif
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ref_ss)->operator>>(u);
-#else
-      (*ref_ss)->operator>><unsigned, otl_var_unsigned_int>(u);
-#endif
-      break;
-    }
-#if defined(OTL_DEFAULT_NUMERIC_NULL_TO_VAL)
-    if ((*this).is_null())
-      u = OTL_SCAST(unsigned int, OTL_DEFAULT_NUMERIC_NULL_TO_VAL);
-#endif
-    OTL_TRACE_WRITE(u, "operator >>", "unsigned&")
-    inc_next_ov();
-    return *this;
-  }
 
-  OTL_ORA_COMMON_READ_STREAM &operator>>(short &sh) OTL_THROWS_OTL_EXCEPTION {
-    last_oper_was_read_op = true;
-    switch (shell->stream_type) {
-    case otl_no_stream_type:
-      break;
-    case otl_inout_stream_type:
-      last_eof_rc = (*io)->eof();
-#if defined(OTL_PARANOID_EOF)
-      throw_if_eof_was_already_reached(last_eof_rc, "short int&");
-#endif
-      (*io)->operator>>(sh);
-      break;
-    case otl_select_stream_type:
-      last_eof_rc = (*ss)->eof();
-#if defined(OTL_PARANOID_EOF)
-      throw_if_eof_was_already_reached(last_eof_rc, "short int&");
-#endif
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ss)->operator>>(sh);
-#else
-      (*ss)->operator>><short, otl_var_short>(sh);
-#endif
-      break;
-    case otl_refcur_stream_type:
-      last_eof_rc = (*ref_ss)->eof();
-#if defined(OTL_PARANOID_EOF)
-      throw_if_eof_was_already_reached(last_eof_rc, "short int&");
-#endif
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ref_ss)->operator>>(sh);
-#else
-      (*ref_ss)->operator>><short, otl_var_short>(sh);
-#endif
-      break;
-    }
-#if defined(OTL_DEFAULT_NUMERIC_NULL_TO_VAL)
-    if ((*this).is_null())
-      sh = OTL_SCAST(short int, OTL_DEFAULT_NUMERIC_NULL_TO_VAL);
-#endif
-    OTL_TRACE_WRITE(sh, "operator >>", "short int&")
-    inc_next_ov();
-    return *this;
-  }
+  OTL_GTGT_OPERATOR_3(int,otl_var_int);
 
-  OTL_ORA_COMMON_READ_STREAM &operator>>(long int &l) OTL_THROWS_OTL_EXCEPTION {
-    last_oper_was_read_op = true;
-    switch (shell->stream_type) {
-    case otl_no_stream_type:
-      break;
-    case otl_inout_stream_type:
-      last_eof_rc = (*io)->eof();
-#if defined(OTL_PARANOID_EOF)
-      throw_if_eof_was_already_reached(last_eof_rc, "long int&");
-#endif
-      (*io)->operator>>(l);
-      break;
-    case otl_select_stream_type:
-      last_eof_rc = (*ss)->eof();
-#if defined(OTL_PARANOID_EOF)
-      throw_if_eof_was_already_reached(last_eof_rc, "long int&");
-#endif
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ss)->operator>>(l);
-#else
-      (*ss)->operator>><long, otl_var_long_int>(l);
-#endif
-      break;
-    case otl_refcur_stream_type:
-      last_eof_rc = (*ref_ss)->eof();
-#if defined(OTL_PARANOID_EOF)
-      throw_if_eof_was_already_reached(last_eof_rc, "long int&");
-#endif
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ref_ss)->operator>>(l);
-#else
-      (*ref_ss)->operator>><long, otl_var_long_int>(l);
-#endif
-      break;
-    }
-#if defined(OTL_DEFAULT_NUMERIC_NULL_TO_VAL)
-    if ((*this).is_null())
-      l = OTL_SCAST(long int, OTL_DEFAULT_NUMERIC_NULL_TO_VAL);
-#endif
-    OTL_TRACE_WRITE(l, "operator >>", "long int&")
-    inc_next_ov();
-    return *this;
-  }
+  OTL_GTGT_OPERATOR_3(unsigned int,otl_var_unsigned_int);
 
-  OTL_ORA_COMMON_READ_STREAM &operator>>(float &f) OTL_THROWS_OTL_EXCEPTION {
-    last_oper_was_read_op = true;
-    switch (shell->stream_type) {
-    case otl_no_stream_type:
-      break;
-    case otl_inout_stream_type:
-      last_eof_rc = (*io)->eof();
-#if defined(OTL_PARANOID_EOF)
-      throw_if_eof_was_already_reached(last_eof_rc, "float&");
-#endif
-      (*io)->operator>>(f);
-      break;
-    case otl_select_stream_type:
-      last_eof_rc = (*ss)->eof();
-#if defined(OTL_PARANOID_EOF)
-      throw_if_eof_was_already_reached(last_eof_rc, "float&");
-#endif
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ss)->operator>>(f);
-#else
-      (*ss)->operator>><float, otl_var_float>(f);
-#endif
-      break;
-    case otl_refcur_stream_type:
-      last_eof_rc = (*ref_ss)->eof();
-#if defined(OTL_PARANOID_EOF)
-      throw_if_eof_was_already_reached(last_eof_rc, "float&");
-#endif
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ref_ss)->operator>>(f);
-#else
-      (*ref_ss)->operator>><float, otl_var_float>(f);
-#endif
-      break;
-    }
-#if defined(OTL_DEFAULT_NUMERIC_NULL_TO_VAL)
-    if ((*this).is_null())
-      f = OTL_SCAST(float, OTL_DEFAULT_NUMERIC_NULL_TO_VAL);
-#endif
-    OTL_TRACE_WRITE(f, "operator >>", "float&")
-    inc_next_ov();
-    return *this;
-  }
+  OTL_GTGT_OPERATOR_3(short int,otl_var_short);
 
-  OTL_ORA_COMMON_READ_STREAM &operator>>(double &d) OTL_THROWS_OTL_EXCEPTION {
-    last_oper_was_read_op = true;
-    switch (shell->stream_type) {
-    case otl_no_stream_type:
-      break;
-    case otl_inout_stream_type:
-      last_eof_rc = (*io)->eof();
-#if defined(OTL_PARANOID_EOF)
-      throw_if_eof_was_already_reached(last_eof_rc, "double&");
-#endif
-      (*io)->operator>>(d);
-      break;
-    case otl_select_stream_type:
-      last_eof_rc = (*ss)->eof();
-#if defined(OTL_PARANOID_EOF)
-      throw_if_eof_was_already_reached(last_eof_rc, "double&");
-#endif
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ss)->operator>>(d);
-#else
-      (*ss)->operator>><double, otl_var_double>(d);
-#endif
-      break;
-    case otl_refcur_stream_type:
-      last_eof_rc = (*ref_ss)->eof();
-#if defined(OTL_PARANOID_EOF)
-      throw_if_eof_was_already_reached(last_eof_rc, "double&");
-#endif
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ref_ss)->operator>>(d);
-#else
-      (*ref_ss)->operator>><double, otl_var_double>(d);
-#endif
-      break;
-    }
-#if defined(OTL_DEFAULT_NUMERIC_NULL_TO_VAL)
-    if ((*this).is_null())
-      d = OTL_SCAST(double, OTL_DEFAULT_NUMERIC_NULL_TO_VAL);
-#endif
-    OTL_TRACE_WRITE(d, "operator >>", "double&")
-    inc_next_ov();
-    return *this;
-  }
+  OTL_GTGT_OPERATOR_3(long int,otl_var_long_int);
+
+  OTL_GTGT_OPERATOR_3(float,otl_var_float);
+
+  OTL_GTGT_OPERATOR_3(double,otl_var_double);
 
   OTL_ORA_COMMON_READ_STREAM &
   operator>>(otl_long_string &s) OTL_THROWS_OTL_EXCEPTION {
@@ -30968,6 +30563,10 @@ public:
     return *this;
   }
 #endif
+
+#if defined(OTL_STREAM_CUSTOM_CHAR_LTLT_OPERATORS)
+    OTL_STREAM_CUSTOM_CHAR_LTLT_OPERATORS
+#else
 #if !defined(OTL_UNICODE)
   otl_stream &operator<<(const char c) OTL_THROWS_OTL_EXCEPTION {
     last_oper_was_read_op = false;
@@ -31015,6 +30614,8 @@ public:
     inc_next_iov();
     return *this;
   }
+
+#endif
 
 #if defined(OTL_STD_STRING_VIEW_CLASS) && (defined(OTL_CPP_14_ON) || defined(OTL_THIRD_PARTY_STRING_VIEW_CLASS))
   otl_stream &operator<<(OTL_STD_STRING_VIEW_CLASS s)
@@ -31231,193 +30832,43 @@ public:
   }
 #endif
 
-  otl_stream &operator<<(const int n) OTL_THROWS_OTL_EXCEPTION {
-    last_oper_was_read_op = false;
-    reset_end_marker();
-    OTL_TRACE_READ(n, "operator <<", "int");
-    switch (shell->stream_type) {
-    case otl_no_stream_type:
-      break;
-    case otl_inout_stream_type:
-      (*io)->operator<<(n);
-      break;
-    case otl_select_stream_type:
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ss)->operator<<(n);
-#else
-      (*ss)->operator<<<int, otl_var_int>(n);
-#endif
-      break;
-    case otl_refcur_stream_type:
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ref_ss)->operator<<(n);
-#else
-      (*ref_ss)->operator<<<int, otl_var_int>(n);
-#endif
-      if (!(*ov) && (*ref_ss)->get_sl())
-        create_var_desc();
-      break;
-    }
-    inc_next_iov();
-    return *this;
+#define OTL_LTLT_OPERATOR_3(T,T_type)                           \
+  otl_stream &operator<<(const T n) OTL_THROWS_OTL_EXCEPTION {  \
+    last_oper_was_read_op = false;                              \
+    reset_end_marker();                                         \
+    OTL_TRACE_READ(n, "operator <<", #T);                       \
+    switch (shell->stream_type) {                               \
+    case otl_no_stream_type:                                    \
+      break;                                                    \
+    case otl_inout_stream_type:                                 \
+      (*io)->operator<<(n);                                     \
+      break;                                                    \
+    case otl_select_stream_type:                                \
+      OTL_OPERATOR_1(ss,n,T,T_type,<<);                         \
+      break;                                                    \
+    case otl_refcur_stream_type:                                \
+      OTL_OPERATOR_1(ref_ss,n,T,T_type,<<);                     \
+      if (!(*ov) && (*ref_ss)->get_sl())                        \
+        create_var_desc();                                      \
+      break;                                                    \
+    }                                                           \
+    inc_next_iov();                                             \
+    return *this;                                               \
   }
 
-  otl_stream &operator<<(const unsigned u) OTL_THROWS_OTL_EXCEPTION {
-    last_oper_was_read_op = false;
-    reset_end_marker();
-    OTL_TRACE_READ(u, "operator <<", "unsigned");
-    switch (shell->stream_type) {
-    case otl_no_stream_type:
-      break;
-    case otl_inout_stream_type:
-      (*io)->operator<<(u);
-      break;
-    case otl_select_stream_type:
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ss)->operator<<(u);
-#else
-      (*ss)->operator<<<unsigned, otl_var_unsigned_int>(u);
-#endif
-      break;
-    case otl_refcur_stream_type:
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ref_ss)->operator<<(u);
-#else
-      (*ref_ss)->operator<<<unsigned, otl_var_unsigned_int>(u);
-#endif
-      if (!(*ov) && (*ref_ss)->get_sl())
-        create_var_desc();
-      break;
-    }
-    inc_next_iov();
-    return *this;
-  }
+  OTL_LTLT_OPERATOR_3(int,otl_var_int);
 
-  otl_stream &operator<<(const short sh) OTL_THROWS_OTL_EXCEPTION {
-    last_oper_was_read_op = false;
-    reset_end_marker();
-    OTL_TRACE_READ(sh, "operator <<", "short int");
-    switch (shell->stream_type) {
-    case otl_no_stream_type:
-      break;
-    case otl_inout_stream_type:
-      (*io)->operator<<(sh);
-      break;
-    case otl_select_stream_type:
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ss)->operator<<(sh);
-#else
-      (*ss)->operator<<<short, otl_var_short>(sh);
-#endif
-      break;
-    case otl_refcur_stream_type:
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ref_ss)->operator<<(sh);
-#else
-      (*ref_ss)->operator<<<short, otl_var_short>(sh);
-#endif
-      if (!(*ov) && (*ref_ss)->get_sl())
-        create_var_desc();
-      break;
-    }
-    inc_next_iov();
-    return *this;
-  }
+  OTL_LTLT_OPERATOR_3(unsigned int,otl_var_unsigned_int);
 
-  otl_stream &operator<<(const long int l) OTL_THROWS_OTL_EXCEPTION {
-    last_oper_was_read_op = false;
-    reset_end_marker();
-    OTL_TRACE_READ(l, "operator <<", "long int");
-    switch (shell->stream_type) {
-    case otl_no_stream_type:
-      break;
-    case otl_inout_stream_type:
-      (*io)->operator<<(l);
-      break;
-    case otl_select_stream_type:
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ss)->operator<<(l);
-#else
-      (*ss)->operator<<<long, otl_var_long_int>(l);
-#endif
-      break;
-    case otl_refcur_stream_type:
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ref_ss)->operator<<(l);
-#else
-      (*ref_ss)->operator<<<long, otl_var_long_int>(l);
-#endif
-      if (!(*ov) && (*ref_ss)->get_sl())
-        create_var_desc();
-      break;
-    }
-    inc_next_iov();
-    return *this;
-  }
+  OTL_LTLT_OPERATOR_3(short int,otl_var_short);
 
-  otl_stream &operator<<(const float f) OTL_THROWS_OTL_EXCEPTION {
-    last_oper_was_read_op = false;
-    reset_end_marker();
-    OTL_TRACE_READ(f, "operator <<", "float");
-    switch (shell->stream_type) {
-    case otl_no_stream_type:
-      break;
-    case otl_inout_stream_type:
-      (*io)->operator<<(f);
-      break;
-    case otl_select_stream_type:
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ss)->operator<<(f);
-#else
-      (*ss)->operator<<<float, otl_var_float>(f);
-#endif
-      break;
-    case otl_refcur_stream_type:
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ref_ss)->operator<<(f);
-#else
-      (*ref_ss)->operator<<<float, otl_var_float>(f);
-#endif
-      if (!(*ov) && (*ref_ss)->get_sl())
-        create_var_desc();
-      break;
-    }
-    inc_next_iov();
-    return *this;
-  }
+  OTL_LTLT_OPERATOR_3(long int,otl_var_long_int);
 
-  otl_stream &operator<<(const double d) OTL_THROWS_OTL_EXCEPTION {
-    last_oper_was_read_op = false;
-    reset_end_marker();
-    OTL_TRACE_READ(d, "operator <<", "double");
-    switch (shell->stream_type) {
-    case otl_no_stream_type:
-      break;
-    case otl_inout_stream_type:
-      (*io)->operator<<(d);
-      break;
-    case otl_select_stream_type:
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ss)->operator<<(d);
-#else
-      (*ss)->operator<<<double, otl_var_double>(d);
-#endif
-      break;
-    case otl_refcur_stream_type:
-#if defined(OTL_NO_TMPL_MEMBER_FUNC_SUPPORT)
-      (*ref_ss)->operator<<(d);
-#else
-      (*ref_ss)->operator<<<double, otl_var_double>(d);
-#endif
-      if (!(*ov) && (*ref_ss)->get_sl())
-        create_var_desc();
-      break;
-    }
-    inc_next_iov();
-    return *this;
-  }
+  OTL_LTLT_OPERATOR_3(float,otl_var_float);
 
-  otl_stream &operator<<(const otl_null &n) OTL_THROWS_OTL_EXCEPTION {
+  OTL_LTLT_OPERATOR_3(double,otl_var_double);
+
+  otl_stream &operator<<(OTL_NULL_PARM n) OTL_THROWS_OTL_EXCEPTION {
     last_oper_was_read_op = false;
     reset_end_marker();
     OTL_TRACE_READ("NULL", "operator <<", "otl_null&");
@@ -31558,7 +31009,7 @@ private:
 #if defined(OTL_ANSI_CPP_11_RVAL_REF_SUPPORT)
 inline bool operator!=(const otl_for_range_loop_ora_stream_adapter& a1,
                        const otl_for_range_loop_ora_stream_adapter& /*a2*/){
-  return !a1.str_->eof();
+  return a1.str_!=nullptr && !a1.str_->eof();
 }
 #endif
 
@@ -32240,7 +31691,7 @@ public:
   otl_for_range_loop_adapter():iter_(nullptr) {}
 
   bool operator!=(const otl_for_range_loop_adapter& /*that*/){
-    return !iter_->get_last_eof();
+    return iter_!=nullptr && !iter_->get_last_eof();
   }
 
   read_iter_type& operator*(){

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      wex.h
-// Purpose:   General include file
+// Purpose:   General wex include file
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -68,7 +68,7 @@
 #include <wex/menus.h>
 #include <wex/notebook-data.h>
 #include <wex/notebook.h>
-#include <wex/otl.h>
+#include <wex/odbc.h>
 #include <wex/path.h>
 #include <wex/presentation.h>
 #include <wex/printing.h>

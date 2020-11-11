@@ -21,7 +21,7 @@ find_package(Boost 1.65.0 COMPONENTS
 find_package(ODBC QUIET)
 
 if (ODBC_FOUND)
-  add_definitions(-DwexUSE_OTL)
+  add_definitions(-DwexUSE_ODBC)
 else ()
   set(ODBC_LIBRARIES "")
 endif ()

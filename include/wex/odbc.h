@@ -1,22 +1,15 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      otl.h
-// Purpose:   Declaration of wex::otl class
+// Name:      odbc.h
+// Purpose:   Declaration of wex::odbc class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#if wexUSE_OTL
-#define OTL_ODBC
-#define OTL_STL
-#define OTL_DESTRUCTORS_DO_NOT_THROW
-//#define OTL_UNICODE
-#if __UNIX__
-#define OTL_ODBC_UNIX
-#endif
-#include <otlv4.h>
+#if wexUSE_ODBC
 
+#include <memory>
 #include <wex/version.h>
 #include <wex/window-data.h>
 
@@ -25,37 +18,40 @@ class wxStyledTextCtrl;
 
 namespace wex
 {
-  /// Offers methods to the otl connection.
-  class otl
+  class odbc_imp;
+
+  /// Offers methods for a odbc connection.
+  class odbc
   {
   public:
+    /// Returns the odbc version.
+    static const version_info get_version_info();
+
     /// Default constructor.
-    /// Initializes the otl connection using specified threaded mode.
-    otl(bool threaded_mode = false, size_t buffer_size = 1024);
+    /// Initializes the eodbc connection using specified threaded mode.
+    odbc(bool threaded_mode = false, size_t buffer_size = 1024);
 
     /// Destructor.
     /// Logs off.
-    ~otl();
+    virtual ~odbc();
 
     /// Returns the datasource connected to or to connect to.
     const std::string datasource() const;
 
-    /// Returns the OTL version.
-    static const version_info get_version_info();
-
     /// Returns true if we are connected.
-    bool is_connected() const { return m_connect.connected > 0; };
+    bool is_connected() const;
 
     /// Logs off.
     /// Returns true if you were connected.
     bool logoff();
 
-    /// Logons to the datasource (shows a connection dialog if 
-    /// a data::window button is specified.
+    /// Logons to the datasource (shows a connection dialog if
+    /// a data::window button is specified).
     /// Returns false if dialog cancelled or logon fails.
     bool logon(const data::window& data = data::window());
 
-    /// Runs the query using direct_exec and returns result.
+    /// Runs the query and retuns the rows processed count.
+    /// Or -1 in case there was an error.
     long query(const std::string& query);
 
     /// Runs the query and puts results on the grid.
@@ -72,11 +68,7 @@ namespace wex
     long query(const std::string& query, wxStyledTextCtrl* stc, bool& stopped);
 
   private:
-    void
-    handle_error(const otl_exception& e, const otl_column_desc& desc) const;
-
-    otl_connect  m_connect;
-    const size_t m_buffer_size;
+    std::unique_ptr<odbc_imp> m_odbc;
   };
 }; // namespace wex
 #endif

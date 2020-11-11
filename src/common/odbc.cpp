@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      otl.cpp
-// Purpose:   Implementation of wex::otl class
+// Name:      odbc.cpp
+// Purpose:   Implementation of wex::odbc class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -17,60 +17,113 @@
 #include <wex/core.h>
 #include <wex/item-dialog.h>
 #include <wex/log.h>
-#include <wex/otl.h>
+#include <wex/odbc.h>
 #include <wex/stc-entry-dialog.h>
 #include <wx/grid.h>
 #include <wx/stc/stc.h>
 
-#if wexUSE_OTL
+#if wexUSE_ODBC
 
-wex::otl::otl(bool threaded_mode, size_t buffer_size)
-  : m_buffer_size(buffer_size)
+#define OTL_CPP_17_ON
+#define OTL_DESTRUCTORS_DO_NOT_THROW
+#define OTL_ODBC
+#define OTL_STL
+
+//#define OTL_UNICODE
+#if __UNIX__
+#define OTL_ODBC_UNIX
+#endif
+#include <otlv4.h>
+
+namespace wex
 {
-  otl_connect::otl_initialize(threaded_mode);
+  class odbc_imp
+  {
+  public:
+    odbc_imp(bool threaded_mode, size_t buffer_size)
+      : m_buffer_size(buffer_size)
+    {
+      otl_connect::otl_initialize(threaded_mode);
+    };
+
+    auto buffer_size() const { return m_buffer_size; };
+
+    auto& connect() { return m_connect; };
+
+  private:
+    otl_connect  m_connect;
+    const size_t m_buffer_size;
+  };
+
+  std::string query_error(const otl_exception& e)
+  {
+    const std::string query((const char*)e.stm_text);
+
+    if (const std::string str((const char*)e.msg); !str.empty())
+    {
+      return "OTL error: " + wex::quoted(str);
+    }
+    else if (const std::string ss((const char*)e.sqlstate); !ss.empty())
+    {
+      return "sqlstate: " + ss + " in: " + wex::quoted(query);
+    }
+    else
+    {
+      return "error, no more info";
+    }
+  }
+
+  void handle_error(const otl_exception& e, const otl_column_desc& desc)
+  {
+    wex::log::verbose() << query_error(e) << "skipped: (" << desc.otl_var_dbtype
+                        << "," << desc.dbsize << ")";
+  }
+}; // namespace wex
+
+wex::odbc::odbc(bool threaded_mode, size_t buffer_size)
+  : m_odbc(std::make_unique<odbc_imp>(threaded_mode, buffer_size))
+{
 }
 
-wex::otl::~otl()
+wex::odbc::~odbc()
 {
   logoff();
 }
 
-const std::string wex::otl::datasource() const
+const std::string wex::odbc::datasource() const
 {
   return wex::config(_("Datasource")).get_firstof();
 }
 
-bool wex::otl::logoff()
+bool wex::odbc::logoff()
 {
   if (!is_connected())
   {
     return false;
   }
 
-  m_connect.logoff();
+  m_odbc->connect().logoff();
 
   return true;
 }
 
-const wex::version_info wex::otl::get_version_info()
+const wex::version_info wex::odbc::get_version_info()
 {
   const long version = OTL_VERSION_NUMBER;
 
   return version_info({"OTL", version >> 16, 0, (version & 0xffff)});
 }
 
-void wex::otl::handle_error(const otl_exception& e, const otl_column_desc& desc)
-  const
+bool wex::odbc::is_connected() const
 {
-  log::verbose() << "OTL error: " << (const char*)e.msg << "skipped: ("
-                 << desc.otl_var_dbtype << "," << desc.dbsize << ")";
+  return m_odbc->connect().connected > 0;
 }
 
-bool wex::otl::logon(const wex::data::window& par)
+bool wex::odbc::logon(const wex::data::window& par)
 {
-  const data::window data(data::window(par).title(_("Open ODBC Connection")));
-
-  if (data.button() != 0)
+  if (const data::window data(
+        data::window(par).title(_("Open ODBC Connection")));
+      data.button() != 0)
   {
     if (
       item_dialog(
@@ -96,8 +149,8 @@ bool wex::otl::logon(const wex::data::window& par)
                                 config(_("Password")).get() + "@" +
                                 datasource();
 
-    m_connect.rlogon(connect.c_str(),
-                     1); // autocommit-flag
+    m_odbc->connect().rlogon(connect.c_str(),
+                             1); // autocommit-flag
   }
   catch (otl_exception& p)
   {
@@ -110,20 +163,29 @@ bool wex::otl::logon(const wex::data::window& par)
   return is_connected();
 }
 
-long wex::otl::query(const std::string& query)
+long wex::odbc::query(const std::string& query)
 {
   if (!is_connected())
   {
     return 0;
   }
 
-  const auto records(otl_cursor::direct_exec(m_connect, query.c_str()));
-  log::verbose("query") << query << "records: " << records;
-  return records;
+  try
+  {
+    const auto rpc(otl_cursor::direct_exec(m_odbc->connect(), query.c_str()));
+    log::verbose("query") << query << "records:" << rpc;
+    return rpc;
+  }
+  catch (const otl_exception& e)
+  {
+    log("query") << query_error(e);
+  }
+
+  return -1;
 }
 
 // Cannot be const because of open call.
-long wex::otl::query(
+long wex::odbc::query(
   const std::string& query,
   wxGrid*            grid,
   bool&              stopped,
@@ -138,14 +200,27 @@ long wex::otl::query(
 
   otl_stream i;
   i.set_all_column_types(otl_all_num2str | otl_all_date2str);
-  i.open(m_buffer_size, query.c_str(), m_connect, otl_implicit_select);
+  i.open(
+    m_odbc->buffer_size(),
+    query.c_str(),
+    m_odbc->connect(),
+    otl_implicit_select);
 
   long             rows = 0;
   otl_column_desc* desc;
 
   // Get column names.
   int desc_len;
-  desc = i.describe_select(desc_len);
+
+  try
+  {
+    desc = i.describe_select(desc_len);
+  }
+  catch (otl_exception& e)
+  {
+    log("query") << query_error(e);
+    return -1;
+  }
 
   if (empty_results)
   {
@@ -211,13 +286,13 @@ long wex::otl::query(
   grid->EndBatch();
   grid->AutoSizeColumns(false); // not set as minimum width
 
-  log::verbose("query grid") << query << "records: " << rows;
+  log::verbose("query grid") << query << "records:" << rows;
 
   return rows;
 }
 
 // Cannot be const because of open call.
-long wex::otl::query(
+long wex::odbc::query(
   const std::string& query,
   wxStyledTextCtrl*  stc,
   bool&              stopped)
@@ -229,27 +304,40 @@ long wex::otl::query(
 
   assert(stc != nullptr);
 
-  otl_stream i;
-  i.set_all_column_types(otl_all_num2str | otl_all_date2str);
-  i.open(m_buffer_size, query.c_str(), m_connect, otl_implicit_select);
-
-  stc->NewLine();
-
-  long             rows = 0;
   otl_column_desc* desc;
+  otl_stream       i;
+  int              desc_len;
 
-  // Get column names.
-  int desc_len;
-  desc = i.describe_select(desc_len);
-
-  for (auto n = 0; n < desc_len; n++)
+  try
   {
-    stc->AppendText(desc[n].name);
-    if (n < desc_len - 1)
-      stc->AppendText('\t');
+    i.set_all_column_types(otl_all_num2str | otl_all_date2str);
+    i.open(
+      m_odbc->buffer_size(),
+      query.c_str(),
+      m_odbc->connect(),
+      otl_implicit_select);
+
+    stc->NewLine();
+
+    // Get column names.
+    desc = i.describe_select(desc_len);
+
+    for (auto n = 0; n < desc_len; n++)
+    {
+      stc->AppendText(desc[n].name);
+      if (n < desc_len - 1)
+        stc->AppendText('\t');
+    }
+  }
+  catch (otl_exception& e)
+  {
+    log("query") << query_error(e);
+    return -1;
   }
 
   stc->NewLine();
+
+  long rows = 0;
 
   // Get all rows.
   while (!i.eof() && !stopped)
@@ -293,8 +381,8 @@ long wex::otl::query(
     rows++;
   }
 
-  log::verbose("query stc") << query << "records: " << rows;
+  log::verbose("query stc") << query << "records:" << rows;
 
   return rows;
 }
-#endif // wex::use_OTL
+#endif // wexUSE_ODBC
