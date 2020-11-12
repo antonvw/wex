@@ -1377,7 +1377,7 @@ void wex::vi::insert_mode_normal(const std::string& text)
 
 bool wex::vi::motion_command(motion_t type, std::string& command)
 {
-  if (!get_stc()->get_selected_text().empty())
+  if (!get_stc()->get_selected_text().empty() && command.size() <= 1)
   {
     if (type == motion_t::MOTION_YANK)
     {

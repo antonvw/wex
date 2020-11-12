@@ -1,5 +1,5 @@
 # roadmap
-- ce and . not ok, an extra e is prefixed
+- debug not ok
 - test cmake -P cmake_install.cmake: add to appveyor
 
 ## backlog
