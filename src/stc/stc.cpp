@@ -16,8 +16,8 @@
 #include <wex/managed-frame.h>
 #include <wex/path.h>
 #include <wex/printing.h>
-#include <wex/stc.h>
 #include <wex/stc-entry-dialog.h>
+#include <wex/stc.h>
 #include <wex/tokenizer.h>
 #include <wex/vcs.h>
 #include <wx/app.h>

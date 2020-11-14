@@ -80,11 +80,7 @@ namespace wex
 
 wex::process_imp::process_imp(process* process)
   : m_process(process)
-#if BOOST_VERSION / 100 % 1000 <= 65
-  , m_io(std::make_shared<boost::asio::io_service>())
-#else
   , m_io(std::make_shared<boost::asio::io_context>())
-#endif
   , m_queue(std::make_shared<std::queue<std::string>>())
 {
 }
@@ -114,7 +110,7 @@ bool wex::process_imp::async(const std::string& path)
     return false;
   }
 
-  log::verbose("bp::async_system", 2) << m_process->get_exec();
+  log::verbose("async", 2) << m_process->get_exec();
 
   m_debug.store(
     m_process->get_frame()->get_debug()->debug_entry().name() ==
@@ -197,13 +193,20 @@ bool wex::process_imp::async(const std::string& path)
         const std::string text(queue->front());
         queue->pop();
 
-        log::verbose("async", 2) << "write:" << text;
-
-        os << text << std::endl;
-
-        if (debug && process->get_frame() != nullptr)
+        if (os.good() && !io->stopped())
         {
-          WEX_POST(ID_DEBUG_STDIN, text, process->get_frame()->get_debug())
+          log::verbose("async", 2) << "write:" << text;
+
+          os << text << std::endl;
+
+          if (debug && process->get_frame() != nullptr)
+          {
+            WEX_POST(ID_DEBUG_STDIN, text, process->get_frame()->get_debug())
+          }
+        }
+        else
+        {
+          log::verbose("async", 2) << "skip:" << text;
         }
       }
     }
@@ -258,7 +261,7 @@ bool wex::process_imp::write(const std::string& text)
 {
   assert(!text.empty());
 
-  if (m_process == nullptr || m_queue == nullptr || !is_running())
+  if (m_process == nullptr || m_queue == nullptr || m_io->stopped())
   {
     return false;
   }
