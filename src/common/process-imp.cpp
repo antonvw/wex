@@ -80,7 +80,11 @@ namespace wex
 
 wex::process_imp::process_imp(process* process)
   : m_process(process)
+#if BOOST_VERSION / 100 % 1000 <= 65
+  , m_io(std::make_shared<boost::asio::io_service>())
+#else
   , m_io(std::make_shared<boost::asio::io_context>())
+#endif
   , m_queue(std::make_shared<std::queue<std::string>>())
 {
 }
