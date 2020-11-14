@@ -24,7 +24,7 @@
 
 #if wexUSE_ODBC
 
-#define OTL_CPP_17_ON
+#define OTL_CPP_20_ON
 #define OTL_DESTRUCTORS_DO_NOT_THROW
 #define OTL_ODBC
 #define OTL_STL
