@@ -56,7 +56,7 @@ wex::log::~log()
 void wex::log::flush()
 {
   const std::string topic =
-    !m_topic.empty() && !(m_ss.str().empty() || m_wss.str().empty()) ?
+    !m_topic.empty() && (!m_ss.str().empty() || !m_wss.str().empty()) ?
       m_topic + ":" :
       m_topic;
 

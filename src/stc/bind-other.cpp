@@ -324,7 +324,7 @@ void wex::stc::mouse_action(wxMouseEvent& event)
           get_filename().extension(),
           m_frame->get_debug()->debug_entry().extensions()))
       {
-        const auto word =
+        const auto& word =
           (!GetSelectedText().empty() ? GetSelectedText().ToStdString() :
                                         get_word_at_pos(GetCurrentPos()));
 

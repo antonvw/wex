@@ -342,17 +342,18 @@ bool wex::vcs::set_entry_from_base(wxWindow* parent)
 
   if (
     // See also vcs_entry, same item is used there.
-    const std::vector<item> v{{_("vcs.Base folder"),
-                               item::COMBOBOX_DIR,
-                               std::any(),
-                               data::control().is_required(true)}};
+    const std::vector<item> v{
+      {_("vcs.Base folder"),
+       item::COMBOBOX_DIR,
+       std::any(),
+       data::control().is_required(true)}};
 
     config(_("vcs.Base folder")).get_firstof().empty())
   {
     if (
       parent != nullptr &&
-      item_dialog(v, data::window().parent(parent).title(message)).ShowModal() ==
-        wxID_CANCEL)
+      item_dialog(v, data::window().parent(parent).title(message))
+          .ShowModal() == wxID_CANCEL)
     {
       return false;
     }
@@ -388,7 +389,7 @@ int wex::vcs::show_dialog(const data::window& arg)
   }
 
   data::window data(data::window(arg).title(m_title));
-  const bool  add_folder(m_files.empty());
+  const bool   add_folder(m_files.empty());
 
   if (m_entry.get_command().ask_flags())
   {
@@ -463,6 +464,14 @@ int wex::vcs::show_dialog(const data::window& arg)
 
   return (data.button() & wxAPPLY) ? m_item_dialog->Show() :
                                      m_item_dialog->ShowModal();
+}
+
+wex::path wex::vcs::toplevel() const
+{
+  return vcs_admin(
+           m_entry.admin_dir(),
+           m_files.empty() ? std::string() : m_files[0])
+    .toplevel();
 }
 
 bool wex::vcs::use() const

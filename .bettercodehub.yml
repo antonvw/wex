@@ -9,6 +9,7 @@ languages:
       - /data/.*
       - /external/.*
       - /locale/.*
+      - /sample/.*
       - /src/lexers/.*
       - /test/.*
       

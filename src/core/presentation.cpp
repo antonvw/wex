@@ -45,7 +45,7 @@ wex::presentation::presentation(presentation_t type, const pugi::xml_node& node)
 
     if (!is_ok())
     {
-      log("illegal " + name() + " number:") << m_no << node;
+      log("illegal " + name() + " number") << m_no << node;
     }
   }
   catch (std::exception& e)

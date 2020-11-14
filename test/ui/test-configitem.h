@@ -33,16 +33,20 @@ const auto test_config_items(int rows = 0, int cols = 0)
            .apply([=](wxWindow* user, const std::any& value, bool save) {
              wex::log::status("Click on lambda");
            })}}},
+
       {"checkboxes",
        {{"checkbox", wex::item::CHECKBOX},
         {"group checkbox1", wex::item::CHECKBOX},
         {"group checkbox2", wex::item::CHECKBOX}}},
+
       {"checkbox lists",
        {{"bin choices",
          {{1, "bit one"}, {2, "bit two"}, {4, "bit three"}, {8, "bit four"}},
          false},
         {{"This", "Or", "Other", "a", "b", "c", "d", "e", "f", "g", "h"}}}},
+
       {"colours", {{"colour1", wex::item::COLOURPICKERWIDGET}}},
+
       {"comboboxes",
        {{"combobox", wex::item::COMBOBOX},
         {"combobox no label", wex::item::COMBOBOX},
@@ -52,21 +56,29 @@ const auto test_config_items(int rows = 0, int cols = 0)
          wex::data::item(wex::data::control().is_required(true))},
         {"combobox dir", wex::item::COMBOBOX_DIR},
         {"combobox file", wex::item::COMBOBOX_FILE}}},
+
       {"command link buttons",
        {{"Command Link Button\tThis text describes what the button does",
          wex::item::COMMANDLINKBUTTON}}},
+
       {"floats", {{"float", wex::item::TEXTCTRL_FLOAT}}},
+
       {"grids", {{"grid", wex::item::GRID}}},
+
       {"hyperlinks",
        {{"hyper link 1", "www.wxwidgets.org", wex::item::HYPERLINKCTRL},
         {"hyper link 2", "www.scintilla.org", wex::item::HYPERLINKCTRL}}},
+
       {"integers", {{"integer", wex::item::TEXTCTRL_INT}}},
+
       {"listviews", {{"listview", wex::data::listview()}}},
+
       {"pickers",
        {{10},
         {"dir picker", wex::item::DIRPICKERCTRL},
         {"file picker", wex::item::FILEPICKERCTRL},
         {"font picker", wex::item::FONTPICKERCTRL}}},
+
       {"radioboxes",
        {{"radio box",
          {{0, "Zero"},
@@ -76,14 +88,19 @@ const auto test_config_items(int rows = 0, int cols = 0)
           {4, "Four"},
           {5, "Five"}},
          true}}},
+
       {"spin controls",
        {{"slider", 1, 3, 2, wex::item::SLIDER},
         {"spin control", 1, 2},
         {"spin control double", 1.0, 3.0, 1.0, wex::data::item().inc(0.01)}}},
+
       {"static text",
        {{"static text", "this is my static text", wex::item::STATICTEXT}}},
+
       {"static line", {{wxHORIZONTAL}, {wxVERTICAL}}},
+
       {"stc", {{"stc", "cpp", wex::item::STC}}},
+
       {"strings",
        {{"string"},
         {"string validator",
@@ -94,7 +111,9 @@ const auto test_config_items(int rows = 0, int cols = 0)
          std::string(),
          wex::item::TEXTCTRL,
          wex::data::item().window(wex::data::window().style(wxTE_MULTILINE))}}},
+
       {"toggle buttons", {{"toggle button", wex::item::TOGGLEBUTTON}}},
+
       {"user controls",
        {{"wxHtmlWindow",
          new wxHtmlWindow(),

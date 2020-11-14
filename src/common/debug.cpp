@@ -106,8 +106,11 @@ wex::debug::debug(wex::managed_frame* frame, wex::process* debug)
                     it != m_breakpoints.end() &&
                     m_frame->is_open(std::get<0>(it->second)))
                 {
-                  auto* stc = m_frame->open_file(std::get<0>(it->second));
-                  stc->MarkerDeleteHandle(std::get<1>(it->second));
+                  if (auto* stc = m_frame->open_file(std::get<0>(it->second));
+                      stc != nullptr)
+                  {
+                    stc->MarkerDeleteHandle(std::get<1>(it->second));
+                  }
                 }
               }
               break;
@@ -294,7 +297,7 @@ bool wex::debug::clear_breakpoints(const std::string& text)
 
 bool wex::debug::execute(const std::string& action, wex::stc* stc)
 {
-  const std::string exe(
+  const auto& exe(
     m_entry.name() + (!m_entry.flags().empty() ?
                         std::string(1, ' ') + m_entry.flags() :
                         std::string()));
@@ -440,6 +443,8 @@ void wex::debug::is_finished()
 {
   m_active = false;
 
+  log::verbose("debug") << m_entry.name() << "finished";
+
   if (!m_frame->is_closing() && allow_open(m_path_execution_point))
   {
     if (auto* stc = m_frame->open_file(m_path_execution_point); stc != nullptr)
@@ -458,9 +463,7 @@ bool wex::debug::print(const std::string& variable) const
 
 void wex::debug::set_entry(const std::string& debugger)
 {
-  std::vector<wex::debug_entry> v;
-
-  if (menus::load("debug", v))
+  if (std::vector<wex::debug_entry> v; menus::load("debug", v))
   {
     if (debugger.empty())
     {
@@ -485,10 +488,7 @@ void wex::debug::set_entry(const std::string& debugger)
         log("unknown debugger") << debugger;
       }
     }
-  }
 
-  if (!v.empty())
-  {
     log::verbose("debug entries") << v.size() << "debugger:" << m_entry.name();
   }
 }
@@ -499,21 +499,22 @@ bool wex::debug::show_dialog(frame* parent)
   std::vector<wex::debug_entry> v;
   menus::load("debug", v);
 
-  auto debugger = m_entry.name();
-
   for (const auto& it : v)
   {
     s.Add(it.name());
   }
 
-  if (!single_choice_dialog(parent, _("Enter Debugger"), s, debugger))
+  if (auto debugger = m_entry.name();
+      !single_choice_dialog(parent, _("Enter Debugger"), s, debugger))
+  {
     return false;
-
-  config("debug.debugger").set(debugger);
-
-  set_entry(debugger);
-
-  return true;
+  }
+  else
+  {
+    config("debug.debugger").set(debugger);
+    set_entry(debugger);
+    return true;
+  }
 }
 
 bool wex::debug::toggle_breakpoint(int line, stc* stc)

@@ -112,28 +112,30 @@ frame::frame()
   SetIcon(wxICON(app));
 
   SetMenuBar(new wex::menubar(
-    {{new wex::menu({{wxID_OPEN},
-                     {ID_RECENTFILE_MENU, file_history()},
-                     {},
-                     {ID_SHOW_VCS, "Show VCS"},
-                     {wex::menu_item::PRINT},
-                     {},
-                     {wxID_EXECUTE},
-                     {wxID_STOP},
-                     {},
-                     {wxID_EXIT}}),
+    {{new wex::menu(
+        {{wxID_OPEN},
+         {ID_RECENTFILE_MENU, file_history()},
+         {},
+         {ID_SHOW_VCS, "Show VCS"},
+         {wex::menu_item::PRINT},
+         {},
+         {wxID_EXECUTE},
+         {wxID_STOP},
+         {},
+         {wxID_EXIT}}),
       "&File"},
-     {new wex::menu({{wxID_UNDO},
-                     {wxID_REDO},
-                     {},
-                     {wxID_CUT},
-                     {wxID_COPY},
-                     {wxID_PASTE},
-                     {},
-                     {wxID_JUMP_TO},
-                     {},
-                     {new wex::menu({{wxID_FIND, ""}, {wxID_REPLACE}}),
-                      _("&Find And Replace")}}),
+     {new wex::menu(
+        {{wxID_UNDO},
+         {wxID_REDO},
+         {},
+         {wxID_CUT},
+         {wxID_COPY},
+         {wxID_PASTE},
+         {},
+         {wxID_JUMP_TO},
+         {},
+         {new wex::menu({{wxID_FIND, ""}, {wxID_REPLACE}}),
+          _("&Find And Replace")}}),
       "&Edit"},
      {new wex::menu({{this}, {ID_STATISTICS_SHOW, "Statistics"}}), "&View"},
      {new wex::menu(
@@ -150,9 +152,10 @@ frame::frame()
          {},
          {ID_DLG_VCS, wex::ellipsed("VCS Dialog")}}),
       "&Dialog"},
-     {new wex::menu({{ID_STC_FLAGS, wex::ellipsed("Open Flag")},
-                     {},
-                     {ID_STC_SPLIT, "Split"}}),
+     {new wex::menu(
+        {{ID_STC_FLAGS, wex::ellipsed("Open Flag")},
+         {},
+         {ID_STC_SPLIT, "Split"}}),
       "&STC"},
      {new wex::menu({{wxID_ABOUT, ""}}), "&Help"}}));
 
@@ -183,10 +186,11 @@ frame::frame()
   dir.find_files();
   m_grid->AutoSizeColumns();
 
-  m_listview->append_columns({{"String", wex::column::STRING},
-                              {"Number", wex::column::INT},
-                              {"Float", wex::column::FLOAT},
-                              {"Date", wex::column::DATE}});
+  m_listview->append_columns(
+    {{"String", wex::column::STRING},
+     {"Number", wex::column::INT},
+     {"Float", wex::column::FLOAT},
+     {"Date", wex::column::DATE}});
 
   const int items = 50;
 
@@ -196,10 +200,11 @@ frame::frame()
     std::stringstream ss;
     ss << std::put_time(std::localtime(&tm), "%c");
 
-    m_listview->insert_item({"item " + std::to_string(i),
-                             std::to_string(i),
-                             std::to_string((float)i / 2.0),
-                             ss.str()});
+    m_listview->insert_item(
+      {"item " + std::to_string(i),
+       std::to_string(i),
+       std::to_string((float)i / 2.0),
+       ss.str()});
 
     // Set some images.
     if (i == 0)
@@ -245,7 +250,7 @@ frame::frame()
       },
       wxID_ABOUT},
      {[=](wxCommandEvent& event) {
-        const long val = wxGetNumberFromUser(
+        const auto val = wxGetNumberFromUser(
           "Input columns:",
           wxEmptyString,
           _("Columns"),

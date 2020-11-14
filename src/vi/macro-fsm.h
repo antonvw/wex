@@ -85,6 +85,11 @@ namespace wex
   private:
     bool expanding_variable(ex* ex, const std::string& name, std::string* value)
       const;
+    std::string read_variable(
+      std::ifstream&  ifs,
+      const char      separator,
+      ex*             ex,
+      const variable& current);
     void set_ask_for_input() const;
 
     bool        m_playback{false};

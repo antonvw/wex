@@ -41,19 +41,24 @@ TEST_CASE("wex::vi")
   SUBCASE("calc")
   {
     stc->set_text("this text contains xx");
-    vi->command("i");
-    vi->command("=5+5");
-    vi->command("");
+    REQUIRE(vi->command("i"));
+    REQUIRE(vi->command("=5+5"));
+    REQUIRE(vi->command(""));
     REQUIRE(stc->get_text().find("10") != std::string::npos);
 
     change_mode(vi, ESC, wex::vi_mode::state_t::NORMAL);
-    vi->command("=5+5");
+    REQUIRE(vi->command("=5+5"));
     REQUIRE(
       wex::ex::get_macros().get_register('0').find("10") != std::string::npos);
 
-    vi->command("=5+5+5");
+    REQUIRE(!vi->command("=5+5+5"));
     REQUIRE(
       wex::ex::get_macros().get_register('0').find("15") == std::string::npos);
+
+    REQUIRE(vi->command("i"));
+    REQUIRE(!vi->command(""));
+    REQUIRE(vi->command("="));
+    REQUIRE(vi->command(""));
   }
 
   SUBCASE("change")
@@ -101,24 +106,24 @@ TEST_CASE("wex::vi")
     stc->set_text("aaaaa\nbbbbb\nccccc\naaaaa\ne\nf\ng\nh\ni\nj\nk\n");
     REQUIRE(stc->GetLineCount() == 12);
     stc->GotoLine(2);
-    for (const auto& go :
-         std::vector<std::pair<std::string, int>>{{"gg", 0},
-                                                  {"G", 11},
-                                                  {"1G", 0},
-                                                  {"10G", 9},
-                                                  {"10000G", 11},
-                                                  {":$", 11},
-                                                  {":100", 11},
-                                                  {"/bbbbb", 1},
-                                                  {"/d", 1},
-                                                  {"/a", 3},
-                                                  {"n", 3},
-                                                  {"N", 3},
-                                                  {"?bbbbb", 1},
-                                                  {"?d", 1},
-                                                  {"?a", 0},
-                                                  {"n", 0},
-                                                  {"N", 0}})
+    for (const auto& go : std::vector<std::pair<std::string, int>>{
+           {"gg", 0},
+           {"G", 11},
+           {"1G", 0},
+           {"10G", 9},
+           {"10000G", 11},
+           {":$", 11},
+           {":100", 11},
+           {"/bbbbb", 1},
+           {"/d", 1},
+           {"/a", 3},
+           {"n", 3},
+           {"N", 3},
+           {"?bbbbb", 1},
+           {"?d", 1},
+           {"?a", 0},
+           {"n", 0},
+           {"N", 0}})
     {
       CAPTURE(go.first);
 
@@ -265,13 +270,13 @@ TEST_CASE("wex::vi")
   {
     // First load macros.
     REQUIRE(wex::ex::get_macros().load_document());
-    for (const auto& macro :
-         std::vector<std::vector<std::string>>{{"10w"},
-                                               {"dw"},
-                                               {"de"},
-                                               {"yw"},
-                                               {"yk"},
-                                               {"/xx", "rz"}})
+    for (const auto& macro : std::vector<std::vector<std::string>>{
+           {"10w"},
+           {"dw"},
+           {"de"},
+           {"yw"},
+           {"yk"},
+           {"/xx", "rz"}})
     {
       stc->set_text("this text contains xx");
 
@@ -547,7 +552,7 @@ TEST_CASE("wex::vi")
     stc->set_text("123456789");
     vi->command("v");
     REQUIRE(vi->mode().visual());
-    
+
     vi->visual_extend(0, 10);
     REQUIRE(vi->get_stc()->get_selected_text() == "123456789");
     vi->mode().escape();
@@ -592,13 +597,14 @@ TEST_CASE("wex::vi")
       REQUIRE(!vi->on_char(event));
 
     // Test control keys.
-    for (const auto& control_key : std::vector<int>{WXK_CONTROL_B,
-                                                    WXK_CONTROL_E,
-                                                    WXK_CONTROL_F,
-                                                    WXK_CONTROL_G,
-                                                    WXK_CONTROL_J,
-                                                    WXK_CONTROL_P,
-                                                    WXK_CONTROL_Q})
+    for (const auto& control_key : std::vector<int>{
+           WXK_CONTROL_B,
+           WXK_CONTROL_E,
+           WXK_CONTROL_F,
+           WXK_CONTROL_G,
+           WXK_CONTROL_J,
+           WXK_CONTROL_P,
+           WXK_CONTROL_Q})
     {
       event.m_uniChar = control_key;
       REQUIRE(vi->on_key_down(event));
@@ -621,15 +627,16 @@ TEST_CASE("wex::vi")
     }
 
     // Test navigate command keys.
-    for (const auto& nav_key : std::vector<int>{WXK_BACK,
-                                                WXK_RETURN,
-                                                WXK_LEFT,
-                                                WXK_DOWN,
-                                                WXK_UP,
-                                                WXK_RIGHT,
-                                                WXK_PAGEUP,
-                                                WXK_PAGEDOWN,
-                                                WXK_TAB})
+    for (const auto& nav_key : std::vector<int>{
+           WXK_BACK,
+           WXK_RETURN,
+           WXK_LEFT,
+           WXK_DOWN,
+           WXK_UP,
+           WXK_RIGHT,
+           WXK_PAGEUP,
+           WXK_PAGEDOWN,
+           WXK_TAB})
     {
       event.m_keyCode = nav_key;
       CAPTURE(nav_key);

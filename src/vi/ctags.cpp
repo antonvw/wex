@@ -7,8 +7,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
-#include <readtags.h>
 #include <vector>
+
+#include <ctags/libreadtags/readtags.h>
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/ctags.h>

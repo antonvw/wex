@@ -1,0 +1,29 @@
+////////////////////////////////////////////////////////////////////////////////
+// Name:      wex-template-test.txt
+// Purpose:   Test template file to test wex macro's
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
+
+// We test only macros that do not ask for user input, to
+// allow automatic testing using robot framework.
+// And, as this is a .txt file the Cc etc. macro's cannot
+// be tested as well, as empty expansion terminates template processing.
+
+// builtin
+created:  @Created@
+date:     @Date@
+datetime: @Datetime@
+filename: @Filename@
+fullname: @Fullname@
+fullpath: @Fullpath@
+path:     @Path@
+time:     @Time@
+year:     @Year@
+
+// environment
+home: @HOME@
+pwd: @PWD@
+
+// process
+process: @Process'Date'@
