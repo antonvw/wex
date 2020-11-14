@@ -10,6 +10,9 @@ from vi mode using @name@ (if name starts with an
 uppercase letter). If the name is a register c, you can call it
 using @c (lowercase). From vi you can record a register using q 
 followed by a letter, and ending with a q as well.
+
+For date variables you can also specify a format attribute to 
+format your own date. Default the ISO date is used as format.
   
 An abbreviation is expanded during insertion when you enter
 the text. From vi you can enter an abbreviation using :ab.
@@ -27,6 +30,8 @@ Variables are expanded when playing back the macro.
   - ENVIRONMENT: 
     Expansion is done using environment value, you can add your own,
     as long as they are part of the environment variables.
+  - FIXED:  
+    Expands to fixed value as specified in the contents of the node.
   - INPUT:       
     Expansion is done by asking value from user. You can add your own.
   - INPUT-ONCE:  
@@ -37,6 +42,13 @@ Variables are expanded when playing back the macro.
     Expansion is done by asking value from user, value is saved.
     You can add your own.
     This is the default value when you add your own variable from vi.
+  - PROCESS:       
+    Expansion is done by running the process, as specified in
+    the contents of the node.
+    You can add an argument for a variable that can be used as stdin 
+    for the process by adding it between quotes when calling the process.
+    E.g. @Process'HW'@ adds the value of variable @HW@ as argument to
+    the process.
   - TEMPLATE:
     Expansion is done by reading the value from a template file. This
     file is specified in the contents of the node. In the file you
@@ -64,7 +76,7 @@ Variables are expanded when playing back the macro.
   <variable name="Cl"               type="BUILTIN"/>
   <!-- Expands to creation date current filename -->
   <variable name="Created"          type="BUILTIN"/>
-  <!-- Expands to current date -->
+  <!-- Expands to current date     -->
   <variable name="Date"             type="BUILTIN"/>
   <!-- Expands to current datetime -->
   <variable name="Datetime"         type="BUILTIN"/>
@@ -96,9 +108,13 @@ Variables are expanded when playing back the macro.
   <variable name="Purpose"          type="INPUT-SAVE" prefix="WRAP"/>
   <variable name="Purpose:"         type="INPUT-SAVE" prefix="Purpose:   "/>
   
+  <!-- PROCESS type -->
+  <variable name="Process"          type="PROCESS">echo simple process</variable>
+  
   <!-- TEMPLATE type -->
   <!-- A C Header Template -->  
-  <variable name="Cht"              type="TEMPLATE">wex-cht.txt</variable>
+  <variable name="Cht"              type="TEMPLATE">wex-c-header-template.txt</variable>
+  <variable name="Template-test"    type="TEMPLATE">wex-template-test.txt</variable>
   
   <!-- A macro to test coverage: run in a .h file,
        it finds corresponding method in a test.cpp file -->

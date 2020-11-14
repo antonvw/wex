@@ -43,26 +43,36 @@ TEST_CASE("wex::variable")
 #endif
            {"aa", "OTHER", "", ""},
            {"template", "TEMPLATE", "xxx.txt", "xxx.txt"},
+           {"fix", "FIXED", "constant value", "constant value"},
            {"cc", "INPUT", "one", "one"},
            {"dd", "INPUT-ONCE", "@Year@", "2020"},
-           {"ee", "INPUT-SAVE", "three", "three"}})
+           {"ee", "INPUT-SAVE", "three", "three"},
+           {"process", "PROCESS", "echo hoi", "echo hoi"}})
     {
       const std::string text(
         "<variable name=\"" + std::get<0>(it) + "\" type=\"" + std::get<1>(it) +
         "\">" + std::get<2>(it) + "</variable>");
+
       CAPTURE(text);
       REQUIRE(doc.load_string(text.c_str()));
-      pugi::xml_node node = doc.document_element();
+
+      auto node(doc.document_element());
 
       wex::variable var(node);
       var.set_ask_for_input(false);
 
       REQUIRE(var.get_name() == std::get<0>(it));
-      REQUIRE(var.get_value() == std::get<2>(it));
+
+      if (var.get_name() != "process")
+      {
+        REQUIRE(var.get_value() == std::get<2>(it));
+      }
+
       if (var.get_name() == "template")
         REQUIRE(!var.expand(ex));
       else
         REQUIRE(var.expand(ex));
+
       REQUIRE(var.get_value() == std::get<3>(it));
 
       var.save(doc);
@@ -77,9 +87,11 @@ TEST_CASE("wex::variable")
     {
       const std::string text(
         "<variable name =\"" + it + "\" type=\"BUILTIN\"></variable>");
+
       CAPTURE(text);
       REQUIRE(doc.load_string(text.c_str()));
-      pugi::xml_node node = doc.document_element();
+
+      auto node(doc.document_element());
 
       wex::variable var(node);
 
@@ -97,6 +109,34 @@ TEST_CASE("wex::variable")
       }
 
       node.remove_attribute("name");
+    }
+  }
+
+  SUBCASE("format")
+  {
+    for (const auto& it : std::vector<
+           std::tuple<std::string, std::string, std::string, std::string>>{
+           {"Year", "BUILTIN", "%Y", "2020"},
+           {"Date", "BUILTIN", "%Y", "2020"}})
+    {
+      const std::string text(
+        "<variable name=\"" + std::get<0>(it) + "\" type=\"" + std::get<1>(it) +
+        "\" format=\"" + std::get<2>(it) + "\">" + "</variable>");
+
+      CAPTURE(text);
+      REQUIRE(doc.load_string(text.c_str()));
+
+      const auto node(doc.document_element());
+
+      wex::variable var(node);
+
+      REQUIRE(var.get_name() == std::get<0>(it));
+      REQUIRE(var.get_value().empty());
+      REQUIRE(var.is_builtin());
+
+      std::string content;
+      REQUIRE(var.expand(content, ex));
+      REQUIRE(content == std::get<3>(it));
     }
   }
 }

@@ -79,7 +79,7 @@ Copyright: (c) 2020 Anton van Wezenbeek
     extensions="*.cpp;*.h"
     flags="-X"
     regex-at-path-line="at ([a-zA-Z0-9_\-\.\+/]*):([0-9]+)"
-    regex-exit="Process [0-9]+ (stopped)|(exited)"
+    regex-exit="Process [0-9]+ exited"
     regex-no-file-line="Breakpoint ([0-9]+): .* at ([a-zA-Z0-9_\./]*):([0-9]+)"
     regex-path="Current executable set to '(.*)'"
     regex-variable="\$[0-9]+ = ([^{](.*))"

@@ -50,7 +50,7 @@ endif ()
 find_package(ODBC)
 
 if (ODBC_FOUND AND NOT MSVC)
-  add_definitions(-DwexUSE_OTL)
+  add_definitions(-DwexUSE_ODBC)
   
   include_directories(${ODBC_INCLUDE_DIR})
   include_directories(external/otl)
@@ -65,11 +65,17 @@ include(cmake/common.cmake)
 
 add_subdirectory(src)
 
+if (wexBUILD_SAMPLES)
+  add_subdirectory(sample)
+endif ()
+
 if (wexBUILD_TESTS)
   add_subdirectory(test)
 endif ()
 
 add_subdirectory(locale)
+
+set(CMAKE_INSTALL_MESSAGE LAZY)
 
 wex_install()
 wex_config()

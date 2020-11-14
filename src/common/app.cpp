@@ -46,7 +46,7 @@ int wex::app::OnExit()
 
     config::on_exit();
 
-    log::verbose(1) << "exit";
+    log::verbose("exit", 1);
   }
   catch (std::exception& e)
   {
@@ -59,8 +59,8 @@ int wex::app::OnExit()
 bool wex::app::OnInit()
 {
   log::init(argc, argv);
-  log::verbose(1) << "started:" << GetAppName().ToStdString()
-                  << get_version_info().get();
+  log::verbose("started", 1)
+    << GetAppName().ToStdString() << get_version_info().get();
 
   config::on_init();
 
@@ -70,7 +70,7 @@ bool wex::app::OnInit()
   {
     if ((info = wxLocale::FindLanguageInfo(config("LANG").get())) == nullptr)
     {
-      log() << "unknown language:" << config("LANG").get();
+      log("unknown language") << config("LANG").get();
     }
   }
 
@@ -108,7 +108,7 @@ bool wex::app::OnInit()
         {
           if (!m_locale.AddCatalog(p.path().stem().string()))
           {
-            log() << "could not add catalog:" << p.path().stem().string();
+            log("could not add catalog") << p.path().stem().string();
           }
         }
       }
@@ -123,7 +123,7 @@ bool wex::app::OnInit()
   wxInitAllImageHandlers();
 
   wxTheClipboard->UsePrimarySelection(true);
-  
+
   stc::on_init();
   vcs::load_document();
   ex::get_macros().load_document();

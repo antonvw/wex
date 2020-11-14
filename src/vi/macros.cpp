@@ -234,8 +234,8 @@ void wex::macros::parse_node(
   if (const S value = type_to_value<S>(node.attribute("name").value()).get();
       container.find(value) != container.end())
   {
-    log() << "duplicate" << name << ":" << value
-          << "from:" << node.attribute("name").value() << node;
+    log("duplicate macro") << name << ":" << value
+                           << "from:" << node.attribute("name").value() << node;
   }
   else
   {
@@ -255,7 +255,7 @@ void wex::macros::parse_node_macro(const pugi::xml_node& node)
   if (const auto& it = m_macros.find(node.attribute("name").value());
       it != m_macros.end())
   {
-    log() << "duplicate macro:" << node.attribute("name").value() << node;
+    log("duplicate macro") << node.attribute("name").value() << node;
   }
   else
   {
@@ -267,12 +267,12 @@ void wex::macros::parse_node_variable(const pugi::xml_node& node)
 {
   if (const variable variable(node); variable.get_name().empty())
   {
-    log() << "empty variable:" << node;
+    log("empty variable") << node;
   }
   else if (const auto& it = m_variables.find(variable.get_name());
            it != m_variables.end())
   {
-    log() << "duplicate variable:" << variable.get_name() << node;
+    log("duplicate variable") << variable.get_name() << node;
   }
   else
   {
@@ -389,8 +389,7 @@ void wex::macros::set(
     }
     else
     {
-      auto child =
-        m_doc.document_element().append_child(xpath.c_str());
+      auto child = m_doc.document_element().append_child(xpath.c_str());
       child.append_attribute("name") = name.c_str();
       child.text().set(value.c_str());
 

@@ -162,7 +162,11 @@ bool wex::file::file_save(const path& p)
 
   if (!save_as && !m_is_loaded)
   {
-    log("file") << "not loaded" << p;
+    if (!p.empty())
+    {
+      log("file not loaded") << p;
+    }
+
     return false;
   }
 

@@ -1015,8 +1015,10 @@ char wex::vi::convert_key_event(const wxKeyEvent& event) const
 {
   if (event.GetKeyCode() == WXK_BACK)
     return WXK_BACK;
-  if (event.GetKeyCode() == WXK_RETURN && !m_mode.insert())
+  else if (event.GetKeyCode() == WXK_RETURN && !m_mode.insert())
     return 'j';
+  else if (event.GetModifiers() & wxMOD_RAW_CONTROL)
+    return event.GetKeyCode();
 
   char c = event.GetUnicodeKey();
 
@@ -1375,7 +1377,7 @@ void wex::vi::insert_mode_normal(const std::string& text)
 
 bool wex::vi::motion_command(motion_t type, std::string& command)
 {
-  if (!get_stc()->get_selected_text().empty())
+  if (!get_stc()->get_selected_text().empty() && command.size() <= 1)
   {
     if (type == motion_t::MOTION_YANK)
     {

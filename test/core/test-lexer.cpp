@@ -37,8 +37,10 @@ TEST_CASE("wex::lexer")
   SUBCASE("constructor using xml")
   {
     pugi::xml_document doc;
+    
     REQUIRE(doc.load_string("<lexer name=\"xyz\" tabwidth=\"12\"></lexer>"));
-    pugi::xml_node node = doc.document_element();
+    
+    auto node = doc.document_element();
     wex::lexer     lexer(&node);
     REQUIRE(lexer.is_ok());
     REQUIRE(lexer.scintilla_lexer() == "xyz");

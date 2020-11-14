@@ -246,10 +246,10 @@ list(APPEND wxTOOLKIT_INCLUDE_DIRS
   ${wexSETUP_DIR_H}
   include
   external/json/single_include 
-  external/ctags/libreadtags 
   external/easyloggingpp/src 
   external/pugixml/src
-  external/wxWidgets/include)
+  external/wxWidgets/include
+  external)
 
 foreach(arg ${wxTOOLKIT_INCLUDE_DIRS})
   include_directories(${arg})

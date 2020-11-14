@@ -28,6 +28,10 @@ TEST_CASE("wex::debug")
     stc->SetSavePoint();
   }
 
+#ifdef __WXOSX__
+  wex::config("debug.debugger").set("lldb");
+#endif
+
   SUBCASE("constructor")
   {
     REQUIRE(!wex::debug(frame()).is_active());
@@ -45,13 +49,8 @@ TEST_CASE("wex::debug")
 
 #ifndef __WXMSW__
     REQUIRE(dbg.execute(item - wex::ID_EDIT_DEBUG_FIRST));
-#endif
-
-#ifndef __WXGTK__
     REQUIRE(!dbg.execute(item));
 #endif
-
-    process.stop();
   }
 
   SUBCASE("execute")
