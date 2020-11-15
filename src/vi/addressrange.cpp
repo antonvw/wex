@@ -199,7 +199,7 @@ wex::addressrange::build_replacement(const std::string& text) const
 
   bool backslash = false;
 
-  for (const auto c : text)
+  for (const auto& c : text)
   {
     switch (c)
     {
