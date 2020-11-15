@@ -40,14 +40,14 @@ TEST_CASE("wex::variable")
            {"Created", "BUILTIN", "", ""},
 #ifdef __UNIX__
            {"HOME", "ENVIRONMENT", "", ""},
+           {"process", "PROCESS", "echo hoi", "echo hoi"},
 #endif
            {"aa", "OTHER", "", ""},
            {"template", "TEMPLATE", "xxx.txt", "xxx.txt"},
            {"fix", "FIXED", "constant value", "constant value"},
            {"cc", "INPUT", "one", "one"},
            {"dd", "INPUT-ONCE", "@Year@", "2020"},
-           {"ee", "INPUT-SAVE", "three", "three"},
-           {"process", "PROCESS", "echo hoi", "echo hoi"}})
+           {"ee", "INPUT-SAVE", "three", "three"}})
     {
       const std::string text(
         "<variable name=\"" + std::get<0>(it) + "\" type=\"" + std::get<1>(it) +
