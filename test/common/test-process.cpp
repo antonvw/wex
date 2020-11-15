@@ -75,7 +75,7 @@ TEST_CASE("wex::process")
   SUBCASE("invalid no wait")
   {
     REQUIRE(process->execute("xxxx"));
-    wxMilliSleep(10);
+    wxMilliSleep(1000);
     REQUIRE(!process->is_running());
   }
 
