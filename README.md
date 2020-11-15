@@ -23,8 +23,9 @@ For Visual Studio 2019 do
   `devenv wex.sln /build Release`,
 for mingw add `-G "MinGW Makefiles"` and do `mingw32-make`.
 
-To use wex lib in your own application do `make install` and
-do `find_package(WEX)` in your CMakeLists.txt. This will provide the
+To use wex lib in your own application do `make install` 
+(on windows as administrator `cmake.exe -P cmake_install.cmake`)
+and do `find_package(WEX)` in your CMakeLists.txt. This will provide the
 `wex_FOUND`, `wex_INCLUDE_DIR`, `wex_LIB_DIR` and `wex_LIBRARIES` variables.
 
 ## Build process

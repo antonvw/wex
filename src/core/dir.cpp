@@ -169,6 +169,10 @@ int wex::dir::find_files()
   {
     log(e) << "filesystem";
   }
+  catch (std::exception& e)
+  {
+    log(e) << "exception";
+  }
 
   stop();
 

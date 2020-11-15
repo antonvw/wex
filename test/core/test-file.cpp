@@ -2,7 +2,7 @@
 // Name:      test-file.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <chrono>
@@ -64,18 +64,19 @@ TEST_CASE( "wex::file" )
 
   SUBCASE( "timing" ) 
   {
-    wex::file file(wex::test::get_path("test.h"));
-  
-    const int max = 10000;
+    const int max = 1000;
     const auto ex_start = std::chrono::system_clock::now();
     
     for (int i = 0; i < max; i++)
     {
+      wex::file file(wex::test::get_path("test.h"));
+  
       REQUIRE(file.read()->length() > 0);
     }
 
-    const auto ex_milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - ex_start);
+    const auto ex_milli = std::chrono::duration_cast<std::chrono::milliseconds>(
+      std::chrono::system_clock::now() - ex_start);
     
-    CHECK(ex_milli.count() < 2000);
+    CHECK(ex_milli.count() < 5000);
   }
 }

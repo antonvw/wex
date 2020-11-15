@@ -53,8 +53,14 @@ bool wex::test::app::OnInit()
   m_path.append("test").append("data");
   path::current(m_path.string());
 
-  if (!wex::app::OnInit() || !m_path.dir_exists())
+  if (!wex::app::OnInit())
   {
+    return false;
+  }
+
+  if (!m_path.dir_exists())
+  {
+    log("no such dir") << m_path;
     return false;
   }
 
