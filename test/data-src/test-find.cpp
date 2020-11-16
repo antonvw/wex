@@ -24,7 +24,7 @@ TEST_CASE("wex::data::find")
     wex::data::find::recursive(false);
     REQUIRE(!wex::data::find::recursive());
 
-    wex::data::find f(stc);
+    wex::data::find f(stc, std::string());
 
     REQUIRE(f.start_pos() == 0);
     REQUIRE(f.end_pos() == stc->GetTextLength());
@@ -38,13 +38,12 @@ TEST_CASE("wex::data::find")
     stc->MarginSetText(1, "hello world");
     stc->MarginSetText(2, "hello world");
 
-    wex::data::find f(stc);
-    int             line = 10;
+    int line = 10;
 
-    REQUIRE(!f.find_margin("xxx", line));
+    REQUIRE(!wex::data::find(stc, "xxx").find_margin(line));
     REQUIRE(line == 10);
 
-    REQUIRE(f.find_margin("hello", line));
+    REQUIRE(wex::data::find(stc, "hello").find_margin(line));
     REQUIRE(line == 1);
   }
 }
