@@ -15,7 +15,7 @@
 
 namespace wex
 {
-  bool find_margin(const std::string& text, data::find& f)
+  bool find_margin(const std::string& text, data::find& f, frame* frame)
   {
     if (int line = 0; f.find_margin(text, line))
     {
@@ -25,10 +25,13 @@ namespace wex
       return true;
     }
 
+    frame->statustext(get_find_result(text, f.forward(), true), std::string());
+
     return false;
   }
-  
-  bool find_other(const std::string& text, const vi& vi, data::find& f, frame* frame)
+
+  bool
+  find_other(const std::string& text, const vi& vi, data::find& f, frame* frame)
   {
     f.stc()->SetTargetRange(f.start_pos(), f.end_pos());
 
@@ -78,17 +81,24 @@ namespace wex
 
       if (vi.mode().normal() || vi.mode().insert())
       {
-        f.stc()->SetSelection(f.stc()->GetTargetStart(), f.stc()->GetTargetEnd());
+        f.stc()->SetSelection(
+          f.stc()->GetTargetStart(),
+          f.stc()->GetTargetEnd());
       }
       else if (vi.mode().visual())
       {
         if (f.forward())
-          vi.visual_extend(f.stc()->GetSelectionStart(), f.stc()->GetTargetEnd());
+          vi.visual_extend(
+            f.stc()->GetSelectionStart(),
+            f.stc()->GetTargetEnd());
         else
-          vi.visual_extend(f.stc()->GetTargetStart(), f.stc()->GetSelectionEnd());
+          vi.visual_extend(
+            f.stc()->GetTargetStart(),
+            f.stc()->GetSelectionEnd());
       }
 
-      f.stc()->EnsureVisible(f.stc()->LineFromPosition(f.stc()->GetTargetStart()));
+      f.stc()->EnsureVisible(
+        f.stc()->LineFromPosition(f.stc()->GetTargetStart()));
       f.stc()->EnsureCaretVisible();
 
       log::verbose(f.stc()->get_filename().fullname()) << "found text:" << text;
@@ -96,7 +106,7 @@ namespace wex
       return true;
     }
   }
-}
+} // namespace wex
 
 bool wex::stc::find_next(bool stc_find_string)
 {
@@ -120,7 +130,7 @@ bool wex::stc::find_next(const std::string& text, int find_flags, bool forward)
 
   if (m_margin_text_click >= 0)
   {
-    return find_margin(text, f);
+    return find_margin(text, f, m_frame);
   }
   else
   {

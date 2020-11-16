@@ -317,6 +317,7 @@ const std::string wex::get_find_result(
   {
     const auto where =
       (find_next) ? _("bottom").ToStdString() : _("top").ToStdString();
+
     return _("Searching for").ToStdString() + " " + quoted(trim(find_text)) +
            " " + _("hit").ToStdString() + " " + where;
   }
@@ -326,6 +327,7 @@ const std::string wex::get_find_result(
     {
       wxBell();
     }
+
     return quoted(trim(find_text)) + " " + _("not found").ToStdString();
   }
 }
