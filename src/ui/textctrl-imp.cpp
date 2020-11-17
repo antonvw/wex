@@ -9,6 +9,7 @@
 #include <wex/core.h>
 #include <wex/ex.h>
 #include <wex/frd.h>
+#include <wex/log.h>
 #include <wex/macros.h>
 #include <wex/managed-frame.h>
 #include <wex/stc.h>
@@ -94,6 +95,11 @@ wex::textctrl_imp::textctrl_imp(
 
           if (!event.GetString().empty())
           {
+            m_command.insert(
+              GetInsertionPoint(),
+              std::string(1, WXK_CONTROL_R));
+            m_command.insert(GetInsertionPoint() + 1, std::string(1, c));
+
             wxPostEvent(this, event);
           }
         }
@@ -122,7 +128,6 @@ wex::textctrl_imp::textctrl_imp(
         if (event.GetModifiers() & wxMOD_CONTROL)
 #endif
         {
-          m_command.append(WXK_CONTROL_R);
           m_user_input = true;
           m_control_r  = true;
         }
@@ -141,7 +146,7 @@ wex::textctrl_imp::textctrl_imp(
       case WXK_RIGHT:
       case WXK_UP:
         switch (event.GetKeyCode())
-        { 
+        {
           case WXK_LEFT:
             if (m_all_selected)
             {
@@ -175,7 +180,7 @@ wex::textctrl_imp::textctrl_imp(
 
             m_all_selected = false;
             break;
-          
+
           default:
             if (m_command.type() == ex_command::type_t::FIND)
             {
@@ -334,7 +339,7 @@ wex::textctrl_imp::textctrl_imp(
       {
         m_command.handle(this, wxID_CUT);
       }
-      
+
       m_command.insert(GetInsertionPoint(), text);
       event.Skip();
     }
