@@ -149,7 +149,7 @@ TEST_CASE("wex::ex_command")
     REQUIRE(command.command() == "/50xyza123456789");
     command.insert(100, 'X');
     REQUIRE(command.command() == "/50xyza123456789X");
-  
+
     command = wex::ex_command("/");
     command.insert(0, 'x');
     REQUIRE(command.command() == "/x");
