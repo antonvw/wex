@@ -8,7 +8,7 @@ shows a usage of this library, offering a full featured source code text editor.
 ## Requirements
 
 - [cmake](http://www.cmake.org/)
-- [boost](https://www.boost.org) (do not use version 1.72)
+- [boost](https://www.boost.org)
 - a `c++17` standard supporting compiler
 
 ## Building

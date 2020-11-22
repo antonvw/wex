@@ -58,9 +58,12 @@ TEST_CASE("wex::path")
   SUBCASE("mime")
   {
     REQUIRE(!wex::path("XXXXX").open_mime());
+
+#ifndef __WXMSW__
     REQUIRE(wex::path("test.md").open_mime());
+#endif
   }
-  
+
   SUBCASE("timing")
   {
     const int       max = 1000;

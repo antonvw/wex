@@ -64,6 +64,10 @@ function(wex_install)
   install(FILES ${CMAKE_SOURCE_DIR}/cmake/FindWEX.cmake 
     DESTINATION ${MODULE_INSTALL_DIR})
   
+  # install some wxWidgets cmake files
+  install(FILES ${CMAKE_SOURCE_DIR}/external/wxWidgets/build/cmake/modules/FindICONV.cmake
+    DESTINATION ${MODULE_INSTALL_DIR})
+
   # install include files
   # this should be the dir as in FindWEX.cmake
   install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/wex 

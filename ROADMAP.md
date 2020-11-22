@@ -1,5 +1,8 @@
 # roadmap
 - fix, enable all msw tests
+    in test-source.txt no pwd, bash for msw -> use other, generic
+- msw shows scrollbar for textctrl (set wxTE_NO_VSCROLL?)
+- FindFiles shows C: as folder, without rest of path
 
 ## backlog
 - check github actions for ubuntu-latest upgrade ->
