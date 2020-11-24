@@ -369,7 +369,7 @@ bool wex::report::frame::grep(const std::string& arg, bool sed)
 
   if (arg1.empty() || arg2.empty())
   {
-    log("empty arguments") << arg1 << arg2;
+    log::status("empty arguments") << arg1 << "or" << arg2;
     return false;
   }
 
