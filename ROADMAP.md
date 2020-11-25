@@ -1,4 +1,5 @@
 # roadmap
+- check Control_L on wex sample gtk
 - fix, enable all msw tests
     in test-source.txt no pwd, bash for msw -> use other, generic
 - msw shows scrollbar for textctrl (set wxTE_NO_VSCROLL?)
