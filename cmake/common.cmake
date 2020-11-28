@@ -69,7 +69,7 @@ function(wex_install)
     DESTINATION ${MODULE_INSTALL_DIR})
 
   # install include files
-  # this should be the dir as in FindWEX.cmake
+  # this should be the same dir as in FindWEX.cmake
   install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/wex 
     DESTINATION "include/wex")
 

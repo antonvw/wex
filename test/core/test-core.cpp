@@ -67,9 +67,11 @@ TEST_CASE("wex::core" * doctest::may_fail())
     // REQUIRE( wex::browser_search("test"));
   }
 
-  SUBCASE("clipboard_add") { REQUIRE(wex::clipboard_add("test")); }
-
-  SUBCASE("clipboard_get") { REQUIRE(wex::clipboard_get() == "test"); }
+  SUBCASE("clipboard")
+  {
+    REQUIRE(wex::clipboard_add("test"));
+    REQUIRE(wex::clipboard_get() == "test");
+  }
 
   SUBCASE("ellipsed")
   {

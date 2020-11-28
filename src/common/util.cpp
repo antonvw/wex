@@ -237,15 +237,18 @@ bool wex::shell_expansion(std::string& command)
 
   while (match(re_str, command, v) > 0)
   {
-    process process;
-    if (!process.execute(v[0], process::EXEC_WAIT))
+    if (process process; !process.execute(v[0], process::EXEC_WAIT))
+    {
       return false;
-
-    command = std::regex_replace(
-      command,
-      re,
-      process.get_stdout(),
-      std::regex_constants::format_sed);
+    }
+    else
+    {
+      command = std::regex_replace(
+        command,
+        re,
+        process.get_stdout(),
+        std::regex_constants::format_sed);
+    }
   }
 
   return true;
@@ -254,17 +257,23 @@ bool wex::shell_expansion(std::string& command)
 bool wex::lexers_dialog(stc* stc)
 {
   wxArrayString s;
+
   for (const auto& it : lexers::get()->get_lexers())
+  {
     s.Add(it.display_lexer());
+  }
 
-  auto lexer = stc->get_lexer().display_lexer();
-  if (!single_choice_dialog(stc, _("Enter Lexer"), s, lexer))
+  if (auto lexer = stc->get_lexer().display_lexer();
+      !single_choice_dialog(stc, _("Enter Lexer"), s, lexer))
+  {
     return false;
-
-  lexer.empty() ? stc->get_lexer().clear() :
-                  (void)stc->get_lexer().set(lexer, true);
-
-  return true;
+  }
+  else
+  {
+    lexer.empty() ? stc->get_lexer().clear() :
+                    (void)stc->get_lexer().set(lexer, true);
+    return true;
+  }
 }
 
 void wex::vcs_command_stc(
