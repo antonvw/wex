@@ -58,13 +58,13 @@ TEST_CASE("wex::file_history")
   {
     wex::file_history history;
     history.clear();
-    
+
     // file should be closed before remove (at least for windows)
     {
       wex::file file(std::string("test-history.txt"), std::ios_base::out);
       REQUIRE(file.write(std::string("test")));
     }
-    
+
     history.append("test-history.txt");
     REQUIRE(history.get_history_file(0) == "test-history.txt");
     REQUIRE(remove("test-history.txt") == 0);

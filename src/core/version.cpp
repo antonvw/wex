@@ -61,7 +61,7 @@ const std::string wex::version_info::description() const
 
 const std::stringstream wex::version_info::external_libraries() const
 {
-  auto json(nlohmann::json::meta());
+  const auto& json(nlohmann::json::meta());
 
   std::stringstream ss;
 
