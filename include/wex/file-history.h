@@ -23,10 +23,10 @@ namespace wex
     /// Default constructor.
     /// Fills the file history with items available from the config.
     file_history(
-      /// number of files to use
-      size_t maxFiles = 9,
+      /// max number of files to use
+      size_t max_files = 9,
       /// base for menu id
-      wxWindowID idBase = wxID_FILE1,
+      wxWindowID id_base = wxID_FILE1,
       /// if key is empty string, files
       /// are loaded / saved to default keys, otherwise to specified key.
       const std::string& key = std::string());
@@ -34,8 +34,9 @@ namespace wex
     /// Destructor.
     ~file_history();
 
-    /// Appends a file to the file history list.
-    void append(const path& p);
+    /// Appends a file (if file exists) to the file history list.
+    /// Returns true if file is appended.
+    bool append(const path& p);
 
     /// Clears history.
     void clear();
@@ -50,7 +51,7 @@ namespace wex
     std::vector<path> get_history_files(size_t max) const;
 
     /// Returns max files.
-    int get_max_files() const;
+    size_t get_max_files() const;
 
     /// Shows popup menu containing all recent opened files.
     void popup_menu(

@@ -44,14 +44,18 @@ namespace wex
     void     AddFileToHistory(const wxString& file) override;
     wxString GetHistoryFile(size_t index = 0) const override;
 
-    void append(const path& p)
+    bool append(const path& p)
     {
-      if (p.file_exists())
+      if (!p.file_exists())
       {
-        m_contents.remove(p.string());
-        m_contents.push_front(p.string());
-        AddFileToHistory(p.string());
+        return false;
       }
+
+      m_contents.remove(p.string());
+      m_contents.push_front(p.string());
+      AddFileToHistory(p.string());
+
+      return true;
     }
 
     void save() { config(m_key).set(m_contents); };
@@ -75,9 +79,9 @@ wex::file_history::~file_history()
   delete m_history;
 }
 
-void wex::file_history::append(const path& p)
+bool wex::file_history::append(const path& p)
 {
-  m_history->append(p);
+  return m_history->append(p);
 }
 
 void wex::file_history::clear()
@@ -96,9 +100,9 @@ wxWindowID wex::file_history::get_base_id() const
   return m_history->GetBaseId();
 }
 
-int wex::file_history::get_max_files() const
+size_t wex::file_history::get_max_files() const
 {
-  return m_history->GetMaxFiles();
+  return (size_t)m_history->GetMaxFiles();
 }
 
 wex::path wex::file_history::get_history_file(size_t index) const
@@ -175,6 +179,7 @@ void wex::file_history::use_menu(wxWindowID id, wex::menu* menu)
 {
   auto* submenu = new wex::menu;
   menu->Append(id, _("Open &Recent"), submenu);
+
   m_history->UseMenu(submenu);
   m_history->AddFilesToMenu();
 }

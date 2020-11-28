@@ -59,7 +59,7 @@ TEST_CASE("wex::path")
   {
     REQUIRE(!wex::path("XXXXX").open_mime());
 
-#ifndef __WXMSW__
+#ifdef __WXOSX__
     REQUIRE(wex::path("test.md").open_mime());
 #endif
   }
