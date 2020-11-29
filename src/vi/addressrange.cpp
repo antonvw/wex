@@ -436,7 +436,7 @@ bool wex::addressrange::global(const std::string& text, bool inverse) const
 
   next.get_next_token(); // skip empty token
 
-  const auto  pattern = next.get_next_token();
+  const auto& pattern = next.get_next_token();
   std::string rest;
 
   if (next.has_more_tokens())

@@ -377,7 +377,7 @@ void wex::macros::set(
 {
   try
   {
-    if (auto node = m_doc.document_element().select_node(
+    if (const auto& node = m_doc.document_element().select_node(
           std::string("//" + xpath + "[@name='" + name + "']").c_str());
         node && node.node())
     {

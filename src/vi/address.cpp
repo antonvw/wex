@@ -36,8 +36,8 @@ bool wex::address::adjust_window(const std::string& text) const
     return false;
   }
 
-  const auto count = (v[1].empty() ? 2 : std::stoi(v[1]));
-  const auto flags(v[2]);
+  const auto  count = (v[1].empty() ? 2 : std::stoi(v[1]));
+  const auto& flags(v[2]);
 
   if (!flags_supported(flags))
   {
