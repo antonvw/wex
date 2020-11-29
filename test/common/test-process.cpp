@@ -20,7 +20,7 @@ TEST_CASE("wex::process")
 {
   wex::path cwd;
   auto*     process = new wex::process;
-  process->get_shell()->SetText(std::string());
+  process->get_shell()->set_text(std::string());
 
   SUBCASE("constructor")
   {
@@ -75,7 +75,7 @@ TEST_CASE("wex::process")
   SUBCASE("invalid no wait")
   {
     REQUIRE(process->execute("xxxx"));
-    wxMilliSleep(10);
+    wxMilliSleep(2000);
     REQUIRE(!process->is_running());
   }
 
@@ -83,8 +83,7 @@ TEST_CASE("wex::process")
   {
     REQUIRE(process->execute("bash"));
     REQUIRE(process->is_running());
-    wex::shell* shell = process->get_shell();
-    REQUIRE(shell != nullptr);
+    REQUIRE(process->get_shell() != nullptr);
     REQUIRE(process->stop());
     REQUIRE(!process->is_running());
   }

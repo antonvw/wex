@@ -21,6 +21,13 @@ wex::data::dir& wex::data::dir::file_spec(const std::string& rhs)
   return *this;
 }
 
+wex::data::dir& wex::data::dir::max_matches(int rhs)
+{
+  m_max_matches = rhs;
+
+  return *this;
+}
+
 wex::data::dir& wex::data::dir::type(type_t rhs)
 {
   m_flags = rhs;

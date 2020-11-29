@@ -12,7 +12,7 @@
 
 TEST_CASE("wex::path")
 {
-  SUBCASE("Constructor")
+  SUBCASE("constructor")
   {
     REQUIRE(wex::path().empty());
     REQUIRE(wex::path("xxx").string() == "xxx");
@@ -28,7 +28,7 @@ TEST_CASE("wex::path")
     REQUIRE(!wex::path().current().empty());
   }
 
-  SUBCASE("Basic")
+  SUBCASE("basic")
   {
     wex::path path(wex::test::get_path("test.h"));
 
@@ -50,13 +50,21 @@ TEST_CASE("wex::path")
     path.replace_filename("xxx");
 
     REQUIRE(!wex::path("XXXXX").stat().is_ok());
-    REQUIRE(!wex::path("XXXXX").open_mime());
 
     REQUIRE(wex::path("XXXXX").make_absolute().fullname() == "XXXXX");
     REQUIRE(wex::path("XXXXX").make_absolute().string() != "XXXXX");
   }
 
-  SUBCASE("Timing")
+  SUBCASE("mime")
+  {
+    REQUIRE(!wex::path("XXXXX").open_mime());
+
+#ifdef __WXOSX__
+    REQUIRE(wex::path("test.md").open_mime());
+#endif
+  }
+
+  SUBCASE("timing")
   {
     const int       max = 1000;
     const wex::path exfile(wex::test::get_path("test.h"));

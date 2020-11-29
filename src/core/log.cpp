@@ -147,11 +147,11 @@ wex::log& wex::log::operator<<(const wchar_t* r)
 
 wex::log& wex::log::operator<<(const std::string& r)
 {
-  m_ss << S();
+  m_ss << S() << "\"";
 
   for (const auto& c : r)
   {
-    if (isprint(c) || isspace(c))
+    if (isprint(c))
     {
       m_ss << c;
     }
@@ -164,6 +164,8 @@ wex::log& wex::log::operator<<(const std::string& r)
            << std::setfill(f) << std::setw(w);
     }
   }
+
+  m_ss << "\"";
 
   return *this;
 }

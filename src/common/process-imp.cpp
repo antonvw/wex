@@ -27,6 +27,8 @@ namespace wex
     std::string&       output,
     std::string&       error)
   {
+    const std::string show_cwd(!cwd.empty() ? "cwd: " + cwd : std::string());
+
     try
     {
 #if BOOST_VERSION / 100 % 1000 == 72
@@ -49,19 +51,19 @@ namespace wex
 
       if (!ec)
       {
-        log::verbose("system", 2) << command << "cwd:" << cwd;
+        log::verbose("system", 2) << command << show_cwd;
       }
       else
       {
         const std::string text(!error.empty() ? ":" + error : std::string());
-        log("system") << command << "cwd:" << cwd << "ec:" << ec << text;
+        log("system") << command << show_cwd << "ec:" << ec << text;
       }
 
       return ec;
     }
     catch (std::exception& e)
     {
-      log(e) << command << "cwd:" << cwd;
+      log(e) << command << show_cwd;
 
       output.clear();
       error = e.what();

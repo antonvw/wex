@@ -92,6 +92,11 @@ namespace wex
       }
     }
 
+    if (dir->data().max_matches() != -1 && matches >= dir->data().max_matches())
+    {
+      return false;
+    }
+
     return !interruptible::is_cancelled();
   }
 }; // namespace wex
@@ -132,7 +137,8 @@ int wex::dir::find_files()
     return -1;
   }
 
-  int matches = 0;
+  int  matches = 0;
+  bool all_off = false;
 
   try
   {
@@ -147,21 +153,21 @@ int wex::dir::find_files()
         fs::directory_options::skip_permission_denied),
         end;
 #endif
-      if (!std::all_of(rdi, end, [&](const fs::directory_entry& p) {
+      if (std::all_of(rdi, end, [&](const fs::directory_entry& p) {
             return traverse(p, this, matches);
           }))
       {
-        log("recursive_directory_iterator") << m_dir;
+        all_off = true;
       }
     }
     else
     {
       fs::directory_iterator di(m_dir.data()), end;
-      if (!std::all_of(di, end, [&](const fs::directory_entry& p) {
+      if (std::all_of(di, end, [&](const fs::directory_entry& p) {
             return traverse(p, this, matches);
           }))
       {
-        log("directory_iterator") << m_dir;
+        all_off = true;
       }
     }
   }
@@ -169,13 +175,17 @@ int wex::dir::find_files()
   {
     log(e) << "filesystem";
   }
+  catch (std::exception& e)
+  {
+    log(e) << "exception";
+  }
 
   stop();
 
   log::verbose("iterating")
     << m_dir << "on files:" << m_data.file_spec()
     << "on dirs:" << m_data.dir_spec() << "flags:" << m_data.type()
-    << "matches:" << matches;
+    << "matches:" << matches << "all_off:" << all_off;
 
   return matches;
 }

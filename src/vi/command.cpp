@@ -134,6 +134,10 @@ void wex::ex_command::insert(size_t pos, char c)
     {
       m_text.insert(str().size() + pos, 1, c);
     }
+    else
+    {
+      append(c);
+    }
   }
 }
 
@@ -144,6 +148,10 @@ void wex::ex_command::insert(size_t pos, const std::string& s)
     if (pos < m_text.size())
     {
       m_text.insert(str().size() + pos, s);
+    }
+    else
+    {
+      append(s);
     }
   }
 }

@@ -870,14 +870,7 @@ bool wex::vi::command(const std::string& command)
 
   if (command.front() != ':' && command.front() != '!')
   {
-    if (!isprint(command[0]))
-    {
-      log::verbose("vi control command") << (int)command[0];
-    }
-    else
-    {
-      log::verbose("vi command") << command;
-    }
+    log::verbose("vi command") << command;
   }
 
   if (

@@ -1,8 +1,11 @@
 # roadmap
-- test cmake -P cmake_install.cmake: add to appveyor
+- check Control_L on wex sample gtk
+- fix, enable all msw tests
+    in test-source.txt no pwd, bash for msw -> use other, generic
+- msw shows scrollbar for textctrl (set wxTE_NO_VSCROLL?)
+- FindFiles shows C: as folder, without rest of path
 
 ## backlog
-- merge develop into c++20, update OTL_20
 - check github actions for ubuntu-latest upgrade ->
     new boost if available and remove from process_imp
     also update for c++20

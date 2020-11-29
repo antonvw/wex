@@ -57,19 +57,20 @@ wex::shell::shell(
     }
   });
 
-  bind(this).command({{[=](wxCommandEvent& event) {
-                         AppendText(event.GetString());
-                         get_frame()->output(event.GetString());
-                       },
-                       ID_SHELL_APPEND},
-                      {[=](wxCommandEvent& event) {
-                         AppendText(event.GetString());
-                       },
-                       ID_SHELL_APPEND_ERROR},
-                      {[=](wxCommandEvent& event) {
-                         AppendText(event.GetString());
-                       },
-                       ID_SHELL_COMMAND}});
+  bind(this).command(
+    {{[=](wxCommandEvent& event) {
+        AppendText(event.GetString());
+        get_frame()->output(event.GetString());
+      },
+      ID_SHELL_APPEND},
+     {[=](wxCommandEvent& event) {
+        AppendText(event.GetString());
+      },
+      ID_SHELL_APPEND_ERROR},
+     {[=](wxCommandEvent& event) {
+        AppendText(event.GetString());
+      },
+      ID_SHELL_COMMAND}});
 
   Bind(wxEVT_MIDDLE_UP, [=](wxMouseEvent& event) {
     if (event.MiddleUp())
@@ -635,7 +636,7 @@ bool wex::shell::set_prompt(const std::string& prompt, bool do_prompt)
   if (do_prompt)
   {
     shell::prompt(
-      std::string(), 
+      std::string(),
       // only add eol if text is present
       GetTextLength() > 0);
   }

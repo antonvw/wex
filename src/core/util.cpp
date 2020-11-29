@@ -213,6 +213,8 @@ bool wex::browser_search(const std::string& text)
 
 bool wex::clipboard_add(const std::string& text)
 {
+  wxTheClipboard->UsePrimarySelection();
+
   if (text.empty())
   {
     log("clipboard text empty");
@@ -226,7 +228,7 @@ bool wex::clipboard_add(const std::string& text)
   }
   else
   {
-    if (wxTheClipboard->AddData(new wxTextDataObject(text)))
+    if (wxTheClipboard->SetData(new wxTextDataObject(text)))
     {
       // Take care that clipboard data remain after exiting
       // This is a boolean method as well, we don't check it, as
@@ -317,6 +319,7 @@ const std::string wex::get_find_result(
   {
     const auto where =
       (find_next) ? _("bottom").ToStdString() : _("top").ToStdString();
+
     return _("Searching for").ToStdString() + " " + quoted(trim(find_text)) +
            " " + _("hit").ToStdString() + " " + where;
   }
@@ -326,6 +329,7 @@ const std::string wex::get_find_result(
     {
       wxBell();
     }
+
     return quoted(trim(find_text)) + " " + _("not found").ToStdString();
   }
 }
@@ -542,7 +546,9 @@ const std::string wex::quoted(const std::string& text)
 
 bool wex::regafter(const std::string& text, const std::string& letter)
 {
-  return std::regex_match(letter, std::regex("^" + text + "[0-9=\"a-z%._]$"));
+  return std::regex_match(
+    letter,
+    std::regex("^" + text + "[0-9=\"a-z%._\\*]$"));
 }
 
 int wex::replace_all(

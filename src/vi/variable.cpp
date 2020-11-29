@@ -391,7 +391,7 @@ bool wex::variable::expand_input(std::string& expanded) const
       return false;
     }
 
-    const std::string value(m_dialog->get_stc()->get_text());
+    const auto& value(m_dialog->get_stc()->get_text());
 
     if (value.empty())
     {

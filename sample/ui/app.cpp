@@ -245,6 +245,7 @@ frame::frame()
         wxAboutDialogInfo info;
         info.SetIcon(GetIcon());
         info.SetVersion(wex::get_version_info().get());
+        info.SetDescription(wex::get_version_info().external_libraries().str());
         info.SetCopyright(wex::get_version_info().copyright());
         wxAboutBox(info);
       },

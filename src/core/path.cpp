@@ -197,8 +197,8 @@ bool wex::path::open_mime() const
   }
   else
   {
-    // TODO: process, boost::process::system, std::system
-    //  all do not work
+    // wex:: process, boost::process::system, std::system all do not work
+    // so use wx
     if (wxExecute(command) == -1)
     {
       wex::log("open_mime execute") << command;
