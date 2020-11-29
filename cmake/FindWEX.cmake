@@ -45,7 +45,6 @@ elseif (APPLE)
     stdc++)
 
   set(apple_LIBRARIES 
-    wx_${PLATFORM}u_media-3.1 
     wxjpeg-3.1 
     wxpng-3.1
     ${ICONV_LIBRARIES}
