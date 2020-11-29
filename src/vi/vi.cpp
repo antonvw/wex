@@ -723,7 +723,7 @@ wex::vi::vi(wex::stc* arg)
            return 0;
          REPEAT_WITH_UNDO(
            if (get_stc()->GetCurrentPos() == get_stc()->GetLength()) return 0;
-           wxString text(get_stc()->GetTextRange(
+           auto text(get_stc()->GetTextRange(
              get_stc()->GetCurrentPos(),
              get_stc()->GetCurrentPos() + 1));
            if (text.empty()) return 0;
