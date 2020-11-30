@@ -69,6 +69,11 @@ namespace wex
       error = e.what();
       return 1;
     }
+    catch (...)
+    {
+      log("process_run_and_collect_output unknown exception") << command;
+      return 1;
+    }
   }
 }; // namespace wex
 
