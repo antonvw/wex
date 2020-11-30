@@ -42,6 +42,7 @@ TEST_CASE("wex::macros" * doctest::may_fail())
 
   SUBCASE("record and playback")
   {
+    vi->get_stc()->get_vi().mode().escape();
     vi->get_stc()->set_text("hello");
     REQUIRE(vi->get_stc()->get_vi().mode().normal());
     REQUIRE(macros.mode().transition("qa") == 2);

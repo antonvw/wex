@@ -47,6 +47,7 @@ TEST_CASE("wex::file_history")
   SUBCASE("constructor")
   {
     wex::file_history history(4, 1000, "MY-KEY");
+    REQUIRE(history.size() == 0);
     REQUIRE(history.append(wex::test::get_path("test.h")));
     REQUIRE(history.size() == 1);
     REQUIRE(history.get_base_id() == 1000);
