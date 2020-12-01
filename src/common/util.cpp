@@ -18,6 +18,7 @@
 #include <wex/file-dialog.h>
 #include <wex/lexer.h>
 #include <wex/lexers.h>
+#include <wex/link.h>
 #include <wex/log.h>
 #include <wex/macros.h>
 #include <wex/managed-frame.h>

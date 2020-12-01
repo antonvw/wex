@@ -12,6 +12,7 @@
 #include <wex/indicator.h>
 #include <wex/item-vector.h>
 #include <wex/lexers.h>
+#include <wex/link.h>
 #include <wex/macros.h>
 #include <wex/managed-frame.h>
 #include <wex/path.h>
@@ -462,16 +463,28 @@ bool wex::stc::link_open(link_t mode, std::string* filename)
 
   if (mode[LINK_OPEN_MIME])
   {
-    const path path(m_link->get_path(
-      text,
-      data::control().line(link::LINE_OPEN_URL_AND_MIME),
-      this));
-
-    if (!path.string().empty())
+    if (const path path(m_link->get_path(
+          text,
+          data::control().line(link::LINE_OPEN_URL),
+          this));
+        !path.string().empty())
     {
       if (!mode[LINK_CHECK])
       {
-        return path.open_mime();
+        wxLaunchDefaultBrowser(path.string());
+      }
+
+      return true;
+    }
+    else if (const wex::path mime(m_link->get_path(
+               text,
+               data::control().line(link::LINE_OPEN_MIME),
+               this));
+             !mime.string().empty())
+    {
+      if (!mode[LINK_CHECK])
+      {
+        return mime.open_mime();
       }
 
       return true;
