@@ -44,7 +44,7 @@ namespace wex
     {                                                                     \
       switch (m_mode.get())                                               \
       {                                                                   \
-        case wex::vi_mode::state_t::NORMAL:                               \
+        case wex::vi_mode::state_t::COMMAND:                              \
         case wex::vi_mode::state_t::INSERT:                               \
           if (WRAP && c_strcmp((#SCOPE), "Line") == 0)                    \
           {                                                               \
@@ -75,7 +75,7 @@ namespace wex
     {                                                                     \
       switch (m_mode.get())                                               \
       {                                                                   \
-        case wex::vi_mode::state_t::NORMAL:                               \
+        case wex::vi_mode::state_t::COMMAND:                              \
         case wex::vi_mode::state_t::INSERT:                               \
           if (                                                            \
             (COND) &&                                                     \
@@ -134,7 +134,7 @@ wex::vi::vi(wex::stc* arg)
         get_stc()->auto_complete().sync();
         get_stc()->BeginUndoAction();
       },
-      // back to normal mode process
+      // back to command mode process
       [=]() {
         if (!m_dot)
         {
@@ -279,7 +279,7 @@ wex::vi::vi(wex::stc* arg)
                        [&](const std::string& command) {
                          if (m_count == 1 && !m_count_present)
                          {
-                           m_mode.visual() ? get_stc()->DocumentEndExtend() :
+                           m_mode.is_visual() ? get_stc()->DocumentEndExtend() :
                                              get_stc()->DocumentEnd();
                          }
                          else
@@ -353,7 +353,7 @@ wex::vi::vi(wex::stc* arg)
                            return frame()->show_ex_command(
                                     this,
                                     command +
-                                      (m_mode.visual() ? "'<,'>" : "")) ?
+                                      (m_mode.is_visual() ? "'<,'>" : "")) ?
                                     command.size() :
                                     (size_t)0;
                          }
@@ -641,7 +641,7 @@ wex::vi::vi(wex::stc* arg)
        }},
       {"gg",
        [&](const std::string& command) {
-         m_mode.visual() ? get_stc()->DocumentStartExtend() :
+         m_mode.is_visual() ? get_stc()->DocumentStartExtend() :
                            get_stc()->DocumentStart();
          return 2;
        }},
@@ -739,7 +739,7 @@ wex::vi::vi(wex::stc* arg)
        [&](const std::string& command) {
          switch (m_mode.get())
          {
-           case vi_mode::state_t::NORMAL:
+           case vi_mode::state_t::COMMAND:
              command == ">" ? addressrange(this, m_count).shift_right() :
                               addressrange(this, m_count).shift_left();
              break;
@@ -874,12 +874,12 @@ bool wex::vi::command(const std::string& command)
   }
 
   if (
-    m_mode.visual() && command.find("'<,'>") == std::string::npos &&
+    m_mode.is_visual() && command.find("'<,'>") == std::string::npos &&
     ex::command(command + "'<,'>"))
   {
     return auto_write();
   }
-  else if (m_mode.insert())
+  else if (m_mode.is_insert())
   {
     return insert_mode(command);
   }
@@ -904,7 +904,7 @@ bool wex::vi::command(const std::string& command)
     }
 
     if (
-      !m_mode.insert() && command[0] != 'q' && command[0] != ':' &&
+      !m_mode.is_insert() && command[0] != 'q' && command[0] != ':' &&
       command[0] != '!' && command != "/" && command != "?" &&
       command != _s(WXK_CONTROL_R) + "=")
     {
@@ -935,7 +935,7 @@ void wex::vi::command_reg(const std::string& reg)
         {
           const auto sum = calculator(reg.substr(2));
 
-          if (m_mode.insert())
+          if (m_mode.is_insert())
           {
             if (m_last_command.find('c') != std::string::npos)
             {
@@ -961,7 +961,7 @@ void wex::vi::command_reg(const std::string& reg)
 
     // clipboard register
     case '*':
-      if (m_mode.insert())
+      if (m_mode.is_insert())
       {
         put(true);
       }
@@ -969,7 +969,7 @@ void wex::vi::command_reg(const std::string& reg)
 
     // filename register
     case '%':
-      if (m_mode.insert())
+      if (m_mode.is_insert())
       {
         get_stc()->add_text(get_stc()->get_filename().fullname());
       }
@@ -983,7 +983,7 @@ void wex::vi::command_reg(const std::string& reg)
     default:
       if (!get_macros().get_register(reg[0]).empty())
       {
-        if (m_mode.insert())
+        if (m_mode.is_insert())
         {
           get_stc()->add_text(get_macros().get_register(reg[0]));
 
@@ -1008,7 +1008,7 @@ char wex::vi::convert_key_event(const wxKeyEvent& event) const
 {
   if (event.GetKeyCode() == WXK_BACK)
     return WXK_BACK;
-  else if (event.GetKeyCode() == WXK_RETURN && !m_mode.insert())
+  else if (event.GetKeyCode() == WXK_RETURN && !m_mode.is_insert())
     return 'j';
   else if (event.GetModifiers() & wxMOD_RAW_CONTROL)
     return event.GetKeyCode();
@@ -1446,7 +1446,7 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
       break;
 
     case motion_t::MOTION_YANK:
-      if (!m_mode.visual())
+      if (!m_mode.is_visual())
       {
         std::string visual("v");
         m_mode.transition(visual);
@@ -1511,7 +1511,7 @@ bool wex::vi::on_char(const wxKeyEvent& event)
   {
     return true;
   }
-  else if (m_mode.insert())
+  else if (m_mode.is_insert())
   {
     if (
       get_stc()->SelectionIsRectangle() ||
@@ -1605,8 +1605,8 @@ bool wex::vi::on_key_down(const wxKeyEvent& event)
     (event.GetKeyCode() == WXK_ESCAPE || event.GetKeyCode() == WXK_BACK ||
      event.GetKeyCode() == WXK_RETURN ||
      event.GetKeyCode() == WXK_NUMPAD_ENTER ||
-     (!m_mode.visual() && event.GetKeyCode() == WXK_TAB) ||
-     (!m_mode.insert() &&
+     (!m_mode.is_visual() && event.GetKeyCode() == WXK_TAB) ||
+     (!m_mode.is_insert() &&
       (event.GetKeyCode() == WXK_LEFT || event.GetKeyCode() == WXK_DELETE ||
        event.GetKeyCode() == WXK_DOWN || event.GetKeyCode() == WXK_UP ||
        event.GetKeyCode() == WXK_RIGHT || event.GetKeyCode() == WXK_PAGEUP ||
@@ -1623,7 +1623,7 @@ bool wex::vi::on_key_down(const wxKeyEvent& event)
     {
       m_command.clear();
 
-      if (!m_mode.insert())
+      if (!m_mode.is_insert())
       {
         m_insert_command.clear();
       }
@@ -1649,7 +1649,7 @@ bool wex::vi::on_key_down(const wxKeyEvent& event)
   }
   else if ((event.GetModifiers() & wxMOD_ALT) && event.GetKeyCode() != WXK_NONE)
   {
-    if (!m_mode.normal())
+    if (!m_mode.is_command())
     {
       command("\x1b");
     }
@@ -1755,7 +1755,7 @@ bool wex::vi::parse_command(std::string& command)
   {
     case 1:
       if (
-        m_mode.visual() &&
+        m_mode.is_visual() &&
         (motion == motion_t::MOTION_CHANGE ||
          motion == motion_t::MOTION_DELETE || motion == motion_t::MOTION_YANK))
       {
@@ -1823,7 +1823,7 @@ bool wex::vi::parse_command(std::string& command)
 
   if (!command.empty())
   {
-    if (m_mode.insert())
+    if (m_mode.is_insert())
     {
       return insert_mode(command);
     }

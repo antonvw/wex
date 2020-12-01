@@ -80,22 +80,19 @@ namespace wex
 
       f.recursive(false);
 
-      if (vi.mode().normal() || vi.mode().insert())
+      if (vi.mode().is_command() || vi.mode().is_insert())
       {
         f.stc()->SetSelection(
           f.stc()->GetTargetStart(),
           f.stc()->GetTargetEnd());
       }
-      else if (vi.mode().visual())
+      else if (f.forward())
       {
-        if (f.forward())
-          vi.visual_extend(
-            f.stc()->GetSelectionStart(),
-            f.stc()->GetTargetEnd());
-        else
-          vi.visual_extend(
-            f.stc()->GetTargetStart(),
-            f.stc()->GetSelectionEnd());
+        vi.visual_extend(f.stc()->GetSelectionStart(), f.stc()->GetTargetEnd());
+      }
+      else
+      {
+        vi.visual_extend(f.stc()->GetTargetStart(), f.stc()->GetSelectionEnd());
       }
 
       f.stc()->EnsureVisible(

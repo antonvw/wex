@@ -158,13 +158,13 @@ TEST_CASE("wex::util" * doctest::may_fail())
     get_stc()->set_text(rect);
 
     // make a block selection, invoke sort, and check result
-    REQUIRE(get_stc()->get_vi().mode().normal());
+    REQUIRE(get_stc()->get_vi().mode().is_command());
     REQUIRE(get_stc()->get_vi().command("3 "));
     REQUIRE(get_stc()->get_vi().command("K"));
-    REQUIRE(get_stc()->get_vi().mode().visual());
+    REQUIRE(get_stc()->get_vi().mode().is_visual());
     REQUIRE(get_stc()->get_vi().command("4j"));
     REQUIRE(get_stc()->get_vi().command("5l"));
-    REQUIRE(get_stc()->get_vi().mode().visual());
+    REQUIRE(get_stc()->get_vi().mode().is_visual());
 
     REQUIRE(wex::sort_selection(get_stc(), 0, 3, 5));
     REQUIRE(wex::trim(get_stc()->get_text()) == wex::trim(sorted));

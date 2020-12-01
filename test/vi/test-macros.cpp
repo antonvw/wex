@@ -44,7 +44,7 @@ TEST_CASE("wex::macros" * doctest::may_fail())
   {
     vi->get_stc()->get_vi().mode().escape();
     vi->get_stc()->set_text("hello");
-    REQUIRE(vi->get_stc()->get_vi().mode().normal());
+    REQUIRE(vi->get_stc()->get_vi().mode().is_command());
     REQUIRE(macros.mode().transition("qa") == 2);
     REQUIRE(!macros.is_modified());
     REQUIRE(macros.mode().is_recording());
@@ -73,7 +73,7 @@ TEST_CASE("wex::macros" * doctest::may_fail())
     REQUIRE(!macros.is_recorded_macro("d"));
 
     vi->get_stc()->set_text("");
-    REQUIRE(vi->get_stc()->get_vi().mode().normal());
+    REQUIRE(vi->get_stc()->get_vi().mode().is_command());
     REQUIRE(macros.mode().transition("@a", vi) == 2);
     REQUIRE(vi->get_stc()->get_text() == "test");
 

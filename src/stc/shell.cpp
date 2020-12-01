@@ -90,7 +90,7 @@ wex::shell::shell(
   Bind(wxEVT_KEY_DOWN, [=](wxKeyEvent& event) {
     if (!m_enabled)
     {
-      if (get_vi().mode().insert())
+      if (get_vi().mode().is_insert())
       {
         DocumentEnd();
         get_vi().mode().escape();

@@ -621,7 +621,7 @@ void wex::stc::Paste()
 
 bool wex::stc::position_restore()
 {
-  if (m_vi.mode().visual())
+  if (m_vi.mode().is_visual())
   {
     SetCurrentPos(m_saved_pos);
   }
@@ -649,7 +649,7 @@ void wex::stc::position_save()
 {
   m_saved_pos = GetCurrentPos();
 
-  if (!m_vi.mode().visual())
+  if (!m_vi.mode().is_visual())
   {
     m_saved_selection_start = GetSelectionStart();
     m_saved_selection_end   = GetSelectionEnd();

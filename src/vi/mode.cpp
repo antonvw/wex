@@ -36,10 +36,10 @@ namespace wex
     vi_fsm(
       stc*                                            stc,
       std::function<void(const std::string& command)> insert,
-      std::function<void()>                           normal)
+      std::function<void()>                           command)
       : m_stc(stc)
-      , m_insert(insert)
-      , m_normal(normal)
+      , m_f_insert(insert)
+      , m_f_command(command)
     {
       ;
     };
@@ -48,17 +48,17 @@ namespace wex
 
     void insert_mode()
     {
-      if (m_insert != nullptr)
+      if (m_f_insert != nullptr)
       {
-        m_insert(m_command);
+        m_f_insert(m_command);
       }
     };
 
-    void normal_mode()
+    void command_mode()
     {
-      if (m_normal != nullptr)
+      if (m_f_command != nullptr)
       {
-        m_normal();
+        m_f_command();
       }
     };
 
@@ -98,9 +98,9 @@ namespace wex
 
   private:
     std::string                                     m_command;
-    std::function<void(const std::string& command)> m_insert{nullptr};
-    std::function<void()>                           m_normal{nullptr};
-    vi_mode::state_t                                m_state{vi_mode::NORMAL};
+    std::function<void(const std::string& command)> m_f_insert{nullptr};
+    std::function<void()>                           m_f_command{nullptr};
+    vi_mode::state_t                                m_state{vi_mode::COMMAND};
     stc*                                            m_stc;
   };
 
@@ -148,8 +148,8 @@ namespace wex
     explicit ssCOMMAND(my_context ctx)
       : my_base(ctx)
     {
-      log::verbose("vi mode") << "normal";
-      context<vi_fsm>().state(vi_mode::NORMAL);
+      log::verbose("vi mode") << "command";
+      context<vi_fsm>().state(vi_mode::COMMAND);
     };
 
     sc::result react(const evINSERT&)
@@ -174,7 +174,7 @@ namespace wex
 
     sc::result react(const evESCAPE&)
     {
-      context<vi_fsm>().normal_mode();
+      context<vi_fsm>().command_mode();
       return transit<ssCOMMAND>();
     };
   };
@@ -241,48 +241,49 @@ namespace wex
 wex::vi_mode::vi_mode(
   vi*                                     vi,
   std::function<void(const std::string&)> insert,
-  std::function<void()>                   normal)
+  std::function<void()>                   command)
   : m_vi(vi)
-  , m_fsm(std::make_unique<vi_fsm>(vi->get_stc(), insert, normal))
-  , m_insert_commands{{'a',
-                       [&]() {
-                         NAVIGATE(Char, Right);
-                       }},
-                      {'c',
-                       [&]() {
-                         ;
-                       }},
-                      {'i',
-                       [&]() {
-                         ;
-                       }},
-                      {'o',
-                       [&]() {
-                         NAVIGATE(Line, End);
-                         m_vi->get_stc()->NewLine();
-                       }},
-                      {'A',
-                       [&]() {
-                         NAVIGATE(Line, End);
-                       }},
-                      {'C',
-                       [&]() {
-                         m_vi->get_stc()->LineEndExtend();
-                         m_vi->cut();
-                       }},
-                      {'I',
-                       [&]() {
-                         NAVIGATE(Line, Home);
-                       }},
-                      {'O',
-                       [&]() {
-                         NAVIGATE(Line, Home);
-                         m_vi->get_stc()->NewLine();
-                         NAVIGATE(Line, Up);
-                       }},
-                      {'R', [&]() {
-                         m_vi->get_stc()->SetOvertype(true);
-                       }}}
+  , m_fsm(std::make_unique<vi_fsm>(vi->get_stc(), insert, command))
+  , m_insert_commands{
+      {'a',
+       [&]() {
+         NAVIGATE(Char, Right);
+       }},
+      {'c',
+       [&]() {
+         ;
+       }},
+      {'i',
+       [&]() {
+         ;
+       }},
+      {'o',
+       [&]() {
+         NAVIGATE(Line, End);
+         m_vi->get_stc()->NewLine();
+       }},
+      {'A',
+       [&]() {
+         NAVIGATE(Line, End);
+       }},
+      {'C',
+       [&]() {
+         m_vi->get_stc()->LineEndExtend();
+         m_vi->cut();
+       }},
+      {'I',
+       [&]() {
+         NAVIGATE(Line, Home);
+       }},
+      {'O',
+       [&]() {
+         NAVIGATE(Line, Home);
+         m_vi->get_stc()->NewLine();
+         NAVIGATE(Line, Up);
+       }},
+      {'R', [&]() {
+         m_vi->get_stc()->SetOvertype(true);
+       }}}
 {
   m_fsm->initiate();
 }
@@ -300,14 +301,14 @@ wex::vi_mode::state_t wex::vi_mode::get() const
   return m_fsm->state();
 }
 
-const std::string wex::vi_mode::str() const
-{
-  return m_fsm->state_string();
-}
-
-bool wex::vi_mode::insert() const
+bool wex::vi_mode::is_insert() const
 {
   return get() == INSERT || get() == INSERT_BLOCK;
+}
+
+bool wex::vi_mode::is_visual() const
+{
+  return get() == VISUAL || get() == VISUAL_LINE || get() == VISUAL_BLOCK;
 }
 
 bool wex::vi_mode::transition(std::string& command)
@@ -415,7 +416,7 @@ bool wex::vi_mode::transition(std::string& command)
 
   m_vi->frame()->get_statusbar()->pane_show(
     "PaneMode",
-    (!normal() || ex::get_macros().mode().is_recording()) &&
+    (!is_command() || ex::get_macros().mode().is_recording()) &&
       config(_("stc.Show mode")).get(true));
   m_vi->frame()->statustext(str(), "PaneMode");
 
@@ -424,7 +425,7 @@ bool wex::vi_mode::transition(std::string& command)
   return true;
 }
 
-bool wex::vi_mode::visual() const
+const std::string wex::vi_mode::str() const
 {
-  return get() == VISUAL || get() == VISUAL_LINE || get() == VISUAL_BLOCK;
+  return m_fsm->state_string();
 }

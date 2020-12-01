@@ -24,7 +24,7 @@ namespace wex
     /// The possible vi mode states.
     enum state_t
     {
-      NORMAL,       ///< normal (command or navigation) mode
+      COMMAND,      ///< command (or navigation) mode
       INSERT,       ///< pressing key inserts key
       INSERT_BLOCK, ///< as insert, while in visual rect mode
       VISUAL,       ///< navigation keys extend selection
@@ -38,8 +38,8 @@ namespace wex
       vi* vi,
       /// method to be called when going into insert mode
       std::function<void(const std::string& command)> insert = nullptr,
-      /// method to be called when going back to normal mode
-      std::function<void()> normal = nullptr);
+      /// method to be called when going back to command mode
+      std::function<void()> f = nullptr);
 
     /// Destructor.
     ~vi_mode();
@@ -50,14 +50,17 @@ namespace wex
     /// Returns the state we are in.
     state_t get() const;
 
+    /// Returns true if in command mode.
+    bool is_command() const { return get() == COMMAND; };
+
     /// Returns true if in insert mode.
-    bool insert() const;
+    bool is_insert() const;
+
+    /// Returns true if in visual mode.
+    bool is_visual() const;
 
     /// Returns insert commands.
     const auto& insert_commands() const { return m_insert_commands; };
-
-    /// Returns true if in normal mode.
-    bool normal() const { return get() == NORMAL; };
 
     /// Returns mode as a string.
     const std::string str() const;
@@ -67,9 +70,6 @@ namespace wex
     /// If true is returned, it does not mean that mode was changed, in case
     /// of readonly doc.
     bool transition(std::string& command);
-
-    /// Returns true if in visual mode.
-    bool visual() const;
 
   private:
     vi*                                                      m_vi;
