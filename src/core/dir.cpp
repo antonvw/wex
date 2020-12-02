@@ -182,7 +182,7 @@ int wex::dir::find_files()
 
   stop();
 
-  log::verbose("iterating")
+  log::trace("iterating")
     << m_dir << "on files:" << m_data.file_spec()
     << "on dirs:" << m_data.dir_spec() << "flags:" << m_data.type()
     << "matches:" << matches << "all_off:" << all_off;

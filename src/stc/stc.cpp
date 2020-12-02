@@ -908,7 +908,7 @@ bool wex::stc::show_blame(const vcs_entry* vcs)
 
   if (vcs->get_stdout().empty())
   {
-    log::verbose("no vcs output");
+    log::trace("no vcs output");
     return false;
   }
 

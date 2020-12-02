@@ -105,7 +105,7 @@ bool wex::variable::check_link(std::string& value) const
       {
         if (!value.empty())
         {
-          log::verbose("variable")
+          log::trace("variable")
             << m_name << "(" << v[0] << ") expanded:" << value;
           return true;
         }
@@ -166,11 +166,11 @@ bool wex::variable::expand(ex* ex)
   {
     m_value = value;
 
-    log::verbose("variable") << m_name << "expanded and saved:" << m_value;
+    log::trace("variable") << m_name << "expanded and saved:" << m_value;
   }
   else
   {
-    log::verbose("variable") << m_name << "expanded to:" << value;
+    log::trace("variable") << m_name << "expanded to:" << value;
   }
 
   if (m_type == input_t::INPUT_ONCE && !m_value.empty())
@@ -492,7 +492,7 @@ void wex::variable::set_argument(const std::string& val)
 {
   m_argument = val;
 
-  log::verbose("variable") << "argument:" << m_argument;
+  log::trace("variable") << "argument:" << m_argument;
 }
 
 void wex::variable::set_ask_for_input(bool value)

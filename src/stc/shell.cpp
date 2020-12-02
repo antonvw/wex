@@ -560,7 +560,7 @@ void wex::shell::send_command()
   }
   else
   {
-    log::verbose("posted") << m_command;
+    log::trace("posted") << m_command;
     wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND);
     event.SetString(m_command);
     GetParent()->GetEventHandler()->AddPendingEvent(event);

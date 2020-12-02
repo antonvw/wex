@@ -29,7 +29,7 @@ bool wex::scope::check_levels(check_t type)
     m_filters.erase(m_filters.begin() + m_level + 1, m_filters.end());
     changed = true;
 
-    log::verbose("scope erased", 2)
+    log::trace("scope erased")
       << size - m_filters.size() << "current:" << m_level
       << "size:" << m_filters.size();
   }
@@ -42,7 +42,7 @@ bool wex::scope::check_levels(check_t type)
     m_filters.insert(m_filters.end(), m_level - size + 1, m);
     changed = true;
 
-    log::verbose("scope inserted", 2)
+    log::trace("scope inserted")
       << m_filters.size() - size << "current:" << m_level
       << "size:" << m_filters.size();
   }

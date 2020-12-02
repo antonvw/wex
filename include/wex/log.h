@@ -20,94 +20,41 @@ namespace wex
   class log
   {
   public:
-    /// The log level.
-    enum level_t
-    {
-      DEBUG,   ///< debug
-      ERROR,   ///< error
-      FATAL,   ///< fatal
-      STATUS,  ///< status message
-      VERBOSE, ///< verbose
-      WARNING, ///< warning
-    };
-
     /// Static methods.
 
     /// Initializes logging.
     /// Should be called before constructing a log object.
     static void init(int arc, char** argv);
 
+    /// Builds a debug logger.
+    static log debug(const std::string& topic = std::string());
+
+    /// Builds a info logger.
+    static log info(const std::string& topic = std::string());
+
     /// Builds a status logger.
-    static log status() { return log(std::string(), STATUS); };
+    static log status(const std::string& topic = std::string());
 
-    /// Builds a status logger for an exception.
-    static log status(std::exception& e) { return log(e, STATUS); };
-
-    /// Builds a status logger using topic and status.
-    static log status(const std::string& topic) { return log(topic, STATUS); };
-
-    /// Builds a verbose logger.
-    static log verbose(int verbosity = 9)
-    {
-      m_verbosity = verbosity;
-      return log(VERBOSE);
-    };
-
-    /// Builds a verbose logger from a topic.
-    static log verbose(const std::string& topic, int verbosity = 9)
-    {
-      m_verbosity = verbosity;
-      return log(topic, VERBOSE);
-    };
-
-    /// Builds a verbose logger for an exception.
-    static log verbose(std::exception& e, int verbosity = 9)
-    {
-      m_verbosity = verbosity;
-      return log(e, VERBOSE);
-    };
+    /// Builds a trace logger.
+    static log trace(const std::string& topic = std::string());
 
     /// Builds a warning logger.
-    static log warning(int verbosity = 9)
-    {
-      m_verbosity = verbosity;
-      return log(WARNING);
-    };
-
-    /// Builds a warning logger from a topic.
-    static log warning(const std::string& topic, int verbosity = 9)
-    {
-      m_verbosity = verbosity;
-      return log(topic, WARNING);
-    };
-
-    /// Builds a warning logger for an exception.
-    static log warning(std::exception& e, int verbosity = 9)
-    {
-      m_verbosity = verbosity;
-      return log(e, WARNING);
-    };
+    static log warning(const std::string& topic = std::string());
 
     /// Other methods.
 
     /// Default constructor.
-    /// This prepares a logging with default level error.
-    log(const std::string& topic = std::string(), level_t level = ERROR);
+    /// This prepares a logging error.
+    log(const std::string& topic = std::string());
 
     /// Constructor for level error from a std exception.
-    log(const std::exception&, level_t = ERROR);
+    log(const std::exception&);
 
     /// Constructor for level error from a pugi parse result.
-    log(const pugi::xml_parse_result&, level_t = ERROR);
-
-    /// Constructor for specified log level.
-    log(level_t level);
+    log(const pugi::xml_parse_result&);
 
     /// Destructor, flushes stringstream to logging.
     ~log();
-
-    /// Returns topic and current logging.
-    const std::string get() const;
 
     /// Supported loggers.
 
@@ -159,7 +106,16 @@ namespace wex
       return *this;
     };
 
+    /// Returns topic and current logging.
+    const std::string get() const;
+
   private:
+    /// The log level.
+    enum class level_t;
+
+    /// Constructor for topic and specified log level.
+    log(const std::string& topic, level_t level);
+
     void              flush();
     const std::string S(); // separator
 
@@ -167,7 +123,6 @@ namespace wex
     std::stringstream  m_ss;
     std::wstringstream m_wss;
     bool               m_separator{true};
-    level_t            m_level{ERROR};
-    inline static int  m_verbosity{1};
+    level_t            m_level;
   };
 }; // namespace wex

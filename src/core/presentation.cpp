@@ -50,7 +50,7 @@ wex::presentation::presentation(presentation_t type, const pugi::xml_node& node)
   }
   catch (std::exception& e)
   {
-    log::verbose(e) << name();
+    log(e) << name();
   }
 }
 

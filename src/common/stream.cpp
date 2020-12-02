@@ -177,7 +177,7 @@ bool wex::stream::run_tool()
     int         line_no = 0;
     std::string s;
 
-    log::verbose("run_tool") << m_path;
+    log::trace("run_tool") << m_path;
 
     for (std::string line; std::getline(fs, line);)
     {

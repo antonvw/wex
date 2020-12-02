@@ -147,7 +147,7 @@ wex::debug::debug(wex::managed_frame* frame, wex::process* debug)
         {
           if (path(v[0]).is_absolute())
           {
-            log::verbose("debug path") << v[0];
+            log::trace("debug path") << v[0];
 
             if (m_path.string() == v[0] && m_process != nullptr)
             {
@@ -171,7 +171,7 @@ wex::debug::debug(wex::managed_frame* frame, wex::process* debug)
           {
             m_path                 = path(m_path.get_path(), v[0]);
             m_path_execution_point = m_path;
-            log::verbose("debug path and exec") << m_path.string();
+            log::trace("debug path and exec") << m_path.string();
           }
           data.indicator_no(data::stc::IND_DEBUG);
           data.control().line(std::stoi(v.back()));
@@ -208,7 +208,7 @@ wex::debug::debug(wex::managed_frame* frame, wex::process* debug)
           if (wex::path filename(v[0]); allow_open(filename))
           {
             m_path = v[0];
-            log::verbose("debug path") << v[0];
+            log::trace("debug path") << v[0];
           }
           m_stdout.clear();
         }
@@ -443,7 +443,7 @@ void wex::debug::is_finished()
 {
   m_active = false;
 
-  log::verbose("debug") << m_entry.name() << "finished";
+  log::trace("debug") << m_entry.name() << "finished";
 
   if (!m_frame->is_closing() && allow_open(m_path_execution_point))
   {
@@ -489,7 +489,7 @@ void wex::debug::set_entry(const std::string& debugger)
       }
     }
 
-    log::verbose("debug entries") << v.size() << "debugger:" << m_entry.name();
+    log::trace("debug entries") << v.size() << "debugger:" << m_entry.name();
   }
 }
 

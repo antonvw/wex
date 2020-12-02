@@ -652,7 +652,7 @@ void wex::stc::file_action(const wxCommandEvent& event)
 
       guess_type_and_modeline();
       log::status(_("Opened")) << get_filename();
-      log::verbose("opened", 1) << get_filename();
+      log::info("opened") << get_filename();
       fold();
       [[fallthrough]];
 
@@ -675,7 +675,7 @@ void wex::stc::file_action(const wxCommandEvent& event)
       SetReadOnly(get_filename().is_readonly());
       marker_delete_all_change();
       log::status(_("Saved")) << get_filename();
-      log::verbose("saved", 1) << get_filename();
+      log::info("saved") << get_filename();
       break;
   }
 

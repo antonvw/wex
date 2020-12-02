@@ -51,7 +51,7 @@ namespace wex
 
       if (!ec)
       {
-        log::verbose("system", 2) << command << show_cwd;
+        log::trace("system") << command << show_cwd;
       }
       else
       {
@@ -103,7 +103,7 @@ bool wex::process_imp::async(const std::string& path)
     bp::async_system(
       *m_io.get(),
       [&](boost::system::error_code error, int i) {
-        log::verbose("async", 2) << "exit:" << error.message();
+        log::trace("async") << "exit:" << error.message();
         if (m_debug.load())
         {
           WEX_POST(ID_DEBUG_EXIT, "", m_process->get_frame()->get_debug())
@@ -121,7 +121,7 @@ bool wex::process_imp::async(const std::string& path)
     return false;
   }
 
-  log::verbose("async", 2) << m_process->get_exec();
+  log::info("async") << m_process->get_exec();
 
   m_debug.store(
     m_process->get_frame()->get_debug()->debug_entry().name() ==
@@ -206,7 +206,7 @@ bool wex::process_imp::async(const std::string& path)
 
         if (os.good() && !io->stopped())
         {
-          log::verbose("async", 2) << "write:" << text;
+          log::debug("async") << "write:" << text;
 
           os << text << std::endl;
 
@@ -217,7 +217,7 @@ bool wex::process_imp::async(const std::string& path)
         }
         else
         {
-          log::verbose("async", 2) << "skip:" << text;
+          log::debug("async") << "skip:" << text;
         }
       }
     }
@@ -250,7 +250,7 @@ bool wex::process_imp::stop()
     return false;
   }
 
-  log::verbose("stop") << m_process->get_exec();
+  log::trace("stop") << m_process->get_exec();
 
   try
   {

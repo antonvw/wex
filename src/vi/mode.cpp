@@ -148,7 +148,7 @@ namespace wex
     explicit ssCOMMAND(my_context ctx)
       : my_base(ctx)
     {
-      log::verbose("vi mode") << "command";
+      log::trace("vi mode") << "command";
       context<vi_fsm>().state(vi_mode::COMMAND);
     };
 
@@ -167,7 +167,7 @@ namespace wex
     explicit ssTEXTINPUT(my_context ctx)
       : my_base(ctx)
     {
-      log::verbose("vi mode") << "insert";
+      log::trace("vi mode") << "insert";
       context<vi_fsm>().state(vi_mode::INSERT);
       context<vi_fsm>().insert_mode();
     };
@@ -194,7 +194,7 @@ namespace wex
     explicit ssVISUAL(my_context ctx)
       : my_base(ctx)
     {
-      log::verbose("vi mode") << "visual";
+      log::trace("vi mode") << "visual";
       context<vi_fsm>().state(vi_mode::VISUAL);
     };
   };
@@ -204,7 +204,7 @@ namespace wex
     explicit ssVISUAL_LINE(my_context ctx)
       : my_base(ctx)
     {
-      log::verbose("vi mode") << "visual line";
+      log::trace("vi mode") << "visual line";
       context<vi_fsm>().state(vi_mode::VISUAL_LINE);
     };
   };
@@ -216,7 +216,7 @@ namespace wex
     explicit ssVISUAL_BLOCK(my_context ctx)
       : my_base(ctx)
     {
-      log::verbose("vi mode") << "visual block";
+      log::trace("vi mode") << "visual block";
       context<vi_fsm>().state(vi_mode::VISUAL_BLOCK);
     };
   };
@@ -229,7 +229,7 @@ namespace wex
     explicit ssVISUAL_BLOCK_TEXTINPUT(my_context ctx)
       : my_base(ctx)
     {
-      log::verbose("vi mode") << "visual block insert";
+      log::trace("vi mode") << "visual block insert";
       context<vi_fsm>().state(vi_mode::INSERT_BLOCK);
       context<vi_fsm>().insert_mode();
     };

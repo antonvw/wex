@@ -280,7 +280,7 @@ bool wex::vcs::load_document()
   if (!menus::load("vcs", m_entries))
     return false;
 
-  log::verbose("vcs entries") << m_entries.size();
+  log::trace("vcs entries") << m_entries.size();
 
   if (old_entries == 0)
   {

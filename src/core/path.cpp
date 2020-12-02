@@ -109,7 +109,7 @@ void wex::path::current(const std::string& path)
     try
     {
       fs::current_path(path);
-      log::verbose("path current") << path;
+      log::trace("path current") << path;
     }
     catch (const std::exception& e)
     {

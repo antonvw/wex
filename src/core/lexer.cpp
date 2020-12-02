@@ -739,7 +739,7 @@ bool wex::lexer::set(const std::string& lexer, bool fold)
     !lexer.empty() && !lexers::get()->get_lexers().empty() &&
     !set(lexers::get()->find(lexer), fold))
   {
-    log::verbose("lexer is not known") << lexer;
+    log::trace("lexer is not known") << lexer;
   }
   else if (lexer.empty())
   {
@@ -770,7 +770,7 @@ bool wex::lexer::set(const lexer& lexer, bool fold)
 
   if (!m_scintilla_lexer.empty() && !ok)
   {
-    log::verbose("lexer is not set") << lexer.display_lexer();
+    log::trace("lexer is not set") << lexer.display_lexer();
   }
 
   if (fold)

@@ -851,14 +851,14 @@ wex::vi::vi(wex::stc* arg)
 void wex::vi::append_insert_command(const std::string& s)
 {
   m_insert_command.append(s);
-  log::verbose("insert command") << m_insert_command;
+  log::trace("insert command") << m_insert_command;
 }
 
 void wex::vi::append_insert_text(const std::string& s)
 {
   m_insert_text.append(s);
   set_register_insert(m_insert_text);
-  log::verbose("insert text") << m_insert_text;
+  log::trace("insert text") << m_insert_text;
 }
 
 bool wex::vi::command(const std::string& command)
@@ -870,7 +870,7 @@ bool wex::vi::command(const std::string& command)
 
   if (command.front() != ':' && command.front() != '!')
   {
-    log::verbose("vi command") << command;
+    log::trace("vi command") << command;
   }
 
   if (
@@ -1891,7 +1891,7 @@ void wex::vi::set_last_command(const std::string& command)
       it != m_last_commands.end())
   {
     m_last_command = command;
-    log::verbose("last command") << m_last_command;
+    log::trace("last command") << m_last_command;
   }
 }
 

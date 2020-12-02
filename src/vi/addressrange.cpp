@@ -338,7 +338,7 @@ bool wex::addressrange::escape(const std::string& command)
     }
     else if (m_process->is_running())
     {
-      log::verbose("escape")
+      log::trace("escape")
         << command << "while running" << m_process->get_exec();
     }
 

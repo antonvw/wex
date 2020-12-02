@@ -39,7 +39,7 @@ TEST_CASE("wex::dir")
 
   SUBCASE("match folders")
   {
-    wex::log::verbose() << wex::path::current();
+    wex::log::trace() << wex::path::current();
     wex::dir dir(
       "../../",
       wex::data::dir().dir_spec("data").type(

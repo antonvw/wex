@@ -166,7 +166,7 @@ int wex::open_files(
 
         if (!fn.file_exists())
         {
-          log::verbose("open file") << fn;
+          log::trace("open file") << fn;
         }
       }
       catch (std::exception& e)
@@ -327,7 +327,7 @@ void wex::vcs_execute(frame* frame, int id, const std::vector<path>& files)
           else
           {
             log::status("No output");
-            log::verbose("no output from") << vcs.entry().get_exec();
+            log::trace("no output from") << vcs.entry().get_exec();
           }
         }
       }

@@ -14,21 +14,60 @@
 
 INITIALIZE_EASYLOGGINGPP
 
-wex::log::log(const std::string& topic, level_t level)
-  : m_level(level)
-  , m_separator(!topic.empty())
-  , m_topic(topic)
+namespace wex
+{
+  enum class log::level_t
+  {
+    // boost
+    TRACE,   ///< trace
+    DEBUG,   ///< debug
+    INFO,    ///< info
+    WARNING, ///< warning
+    ERROR,   ///< error
+    FATAL,   ///< fatal
+           // other levels
+    STATUS, ///< status message
+  };
+};
+
+wex::log wex::log::debug(const std::string& topic)
+{
+  return log(topic, level_t::DEBUG);
+}
+
+wex::log wex::log::info(const std::string& topic)
+{
+  return log(topic, level_t::INFO);
+}
+
+wex::log wex::log::status(const std::string& topic)
+{
+  return log(topic, level_t::STATUS);
+}
+
+wex::log wex::log::trace(const std::string& topic)
+{
+  return log(topic, level_t::TRACE);
+}
+
+wex::log wex::log::warning(const std::string& topic)
+{
+  return log(topic, level_t::WARNING);
+}
+
+wex::log::log(const std::string& topic)
+  : log(topic, level_t::ERROR)
 {
 }
 
-wex::log::log(const std::exception& e, level_t level)
-  : m_level(level)
+wex::log::log(const std::exception& e)
+  : log(std::string(), level_t::ERROR)
 {
   m_ss << "std::exception:" << S() << e.what();
 }
 
-wex::log::log(const pugi::xml_parse_result& r, level_t level)
-  : m_level(level)
+wex::log::log(const pugi::xml_parse_result& r)
+  : log(std::string(), level_t::ERROR)
 {
   if (r.status != pugi::xml_parse_status::status_ok)
   {
@@ -37,14 +76,15 @@ wex::log::log(const pugi::xml_parse_result& r, level_t level)
   }
   else
   {
-    m_level     = VERBOSE;
+    m_level     = level_t::INFO;
     m_separator = false;
   }
 }
 
-wex::log::log(level_t level)
+wex::log::log(const std::string& topic, level_t level)
   : m_level(level)
-  , m_separator(false)
+  , m_topic(topic)
+  , m_separator(!topic.empty())
 {
 }
 
@@ -62,31 +102,40 @@ void wex::log::flush()
 
   const std::string text(topic + m_ss.str() + m_wss.str());
 
-  if (!text.empty() || m_level == STATUS)
+  if (!text.empty() || m_level == level_t::STATUS)
   {
     switch (m_level)
     {
-      case DEBUG:
-        LOG(DEBUG) << text;
+      case level_t::DEBUG:
+        VLOG(3) << text;
         break;
-      case ERROR:
+
+      case level_t::ERROR:
         LOG(ERROR) << text;
         break;
-      case FATAL:
+
+      case level_t::FATAL:
         LOG(FATAL) << text;
         break;
-      case STATUS:
+
+      case level_t::INFO:
+        VLOG(2) << text;
+        break;
+
+      case level_t::STATUS:
         // this is a wxMSW bug, crash in test -tc=wex::stc -sc=find
         if (text.find("%") == std::string::npos)
         {
           wxLogStatus(text.c_str());
         }
         break;
-      case VERBOSE:
-        VLOG(m_verbosity) << text;
+
+      case level_t::TRACE:
+        VLOG(4) << text;
         break;
-      case WARNING:
-        LOG(WARNING) << text;
+
+      case level_t::WARNING:
+        VLOG(1) << text;
         break;
     }
   }
@@ -239,10 +288,8 @@ void wex::log::init(int argc, char** argv)
 
   START_EASYLOGGINGPP(w.size() - 1, w.data());
 
-  m_verbosity = el::Loggers::verboseLevel();
-
-  verbose(2) << "verbosity:" << (int)el::Loggers::verboseLevel();
-  verbose(9) << "log setup:" << elp.string();
+  info("verbosity") << (int)el::Loggers::verboseLevel();
+  trace("log setup") << elp.string();
 }
 
 const std::string wex::log::S()

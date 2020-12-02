@@ -159,7 +159,7 @@ void wex::report::file::build_popup_menu(wex::menu& menu)
 bool wex::report::file::do_file_load(bool synced)
 {
   pugi::xml_document doc;
-  
+
   const auto result = doc.load_file(
     get_filename().string().c_str(),
     pugi::parse_default | pugi::parse_comments);
@@ -206,7 +206,7 @@ bool wex::report::file::do_file_load(bool synced)
     t.join();
 #endif
 
-  log::verbose("opened", 1) << get_filename();
+  log::info("opened") << get_filename();
 
   return true;
 }
@@ -249,7 +249,7 @@ void wex::report::file::do_file_save(bool save_as)
 
   if (doc.save_file(get_filename().string().c_str()))
   {
-    log::verbose("saved", 1) << get_filename();
+    log::info("saved") << get_filename();
   }
   else
   {

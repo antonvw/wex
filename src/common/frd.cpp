@@ -196,12 +196,12 @@ void wex::find_replace_data::set_use_regex(bool value)
     m_regex     = std::regex(get_find_string(), flags);
     m_use_regex = true;
 
-    log::verbose("frd regex")
+    log::trace("frd regex")
       << "find" << get_find_string() << "replace" << get_replace_string();
   }
   catch (std::regex_error& e)
   {
     m_use_regex = false;
-    log::status(e) << "regex" << get_find_string();
+    log::status(e.what()) << "regex" << get_find_string();
   }
 }

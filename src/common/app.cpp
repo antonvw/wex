@@ -46,7 +46,7 @@ int wex::app::OnExit()
 
     config::on_exit();
 
-    log::verbose("exit", 1);
+    log::info("exit");
   }
   catch (std::exception& e)
   {
@@ -59,8 +59,8 @@ int wex::app::OnExit()
 bool wex::app::OnInit()
 {
   log::init(argc, argv);
-  log::verbose("started", 1)
-    << GetAppName().ToStdString() << get_version_info().get();
+  log::info("started") << GetAppName().ToStdString()
+                       << get_version_info().get();
 
   config::on_init();
 
@@ -80,7 +80,7 @@ bool wex::app::OnInit()
   if (const auto lang = (info != nullptr ? info->Language : wxLANGUAGE_DEFAULT);
       !m_locale.Init(lang, wxLOCALE_DONT_LOAD_DEFAULT))
   {
-    log::verbose("could not init locale for")
+    log::trace("could not init locale for")
       << (!wxLocale::GetLanguageName(lang).empty() ?
             wxLocale::GetLanguageName(lang).ToStdString() :
             std::to_string(lang));

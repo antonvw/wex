@@ -217,7 +217,7 @@ bool wex::macros::load_document()
     }
   }
 
-  log::verbose("macros info")
+  log::trace("macros info")
     << "abbreviations:" << m_abbreviations.size() << "maps:" << m_map.size()
     << "macros:" << m_macros.size() << "variables:" << m_variables.size();
 
@@ -302,7 +302,7 @@ bool wex::macros::record(const std::string& text, bool new_command)
     return false;
   }
 
-  log::verbose("recorded") << "macro:" << m_mode.get_macro() << "->" << text;
+  log::trace("recorded") << "macro:" << m_mode.get_macro() << "->" << text;
 
   if (new_command)
   {
