@@ -51,7 +51,7 @@ namespace wex
 
       if (!ec)
       {
-        log::info("system") << command << show_cwd;
+        log::debug("system") << command << show_cwd;
       }
       else
       {
@@ -103,7 +103,7 @@ bool wex::process_imp::async(const std::string& path)
     bp::async_system(
       *m_io.get(),
       [&](boost::system::error_code error, int i) {
-        log::info("async") << "exit" << m_process->get_exec();
+        log::debug("async") << "exit" << m_process->get_exec();
         if (m_debug.load())
         {
           WEX_POST(ID_DEBUG_EXIT, "", m_process->get_frame()->get_debug())
@@ -121,7 +121,7 @@ bool wex::process_imp::async(const std::string& path)
     return false;
   }
 
-  log::info("async") << m_process->get_exec();
+  log::debug("async") << m_process->get_exec();
 
   m_debug.store(
     m_process->get_frame()->get_debug()->debug_entry().name() ==
