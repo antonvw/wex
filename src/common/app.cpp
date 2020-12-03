@@ -80,7 +80,7 @@ bool wex::app::OnInit()
   if (const auto lang = (info != nullptr ? info->Language : wxLANGUAGE_DEFAULT);
       !m_locale.Init(lang, wxLOCALE_DONT_LOAD_DEFAULT))
   {
-    log::trace("could not init locale for")
+    log::debug("could not init locale for")
       << (!wxLocale::GetLanguageName(lang).empty() ?
             wxLocale::GetLanguageName(lang).ToStdString() :
             std::to_string(lang));

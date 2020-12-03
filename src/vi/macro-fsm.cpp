@@ -351,7 +351,7 @@ void wex::macro_fsm::recorded()
   }
   else
   {
-    log::trace("macro") << m_macro << "not recorded";
+    log::debug("macro") << m_macro << "not recorded";
     m_mode->get_macros()->erase();
     m_macro.clear();
     log::status(std::string());

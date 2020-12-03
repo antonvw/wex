@@ -14,60 +14,63 @@
 
 INITIALIZE_EASYLOGGINGPP
 
-namespace wex
+enum level_t
 {
-  enum class log::level_t
-  {
-    // boost
-    TRACE,   ///< trace
-    DEBUG,   ///< debug
-    INFO,    ///< info
-    WARNING, ///< warning
-    ERROR,   ///< error
-    FATAL,   ///< fatal
-           // other levels
-    STATUS, ///< status message
-  };
+  // boost
+  LEVEL_FATAL = 1,
+  LEVEL_WARNING,
+  LEVEL_INFO,
+  LEVEL_DEBUG,
+  LEVEL_TRACE,
+
+  LEVEL_ERROR,
+  // other levels
+  LEVEL_STATUS,
 };
 
 wex::log wex::log::debug(const std::string& topic)
 {
-  return log(topic, level_t::DEBUG);
+  return log(topic, LEVEL_DEBUG);
+}
+
+wex::log wex::log::fatal(const std::string& topic)
+{
+  return log(topic, LEVEL_FATAL);
 }
 
 wex::log wex::log::info(const std::string& topic)
 {
-  return log(topic, level_t::INFO);
+  return log(topic, LEVEL_INFO);
 }
 
 wex::log wex::log::status(const std::string& topic)
 {
-  return log(topic, level_t::STATUS);
+  return log(topic, LEVEL_STATUS);
 }
 
 wex::log wex::log::trace(const std::string& topic)
 {
-  return log(topic, level_t::TRACE);
+  return log(topic, LEVEL_TRACE);
 }
 
 wex::log wex::log::warning(const std::string& topic)
 {
-  return log(topic, level_t::WARNING);
+  return log(topic, LEVEL_WARNING);
 }
 
 wex::log::log(const std::string& topic)
-  : log(topic, level_t::ERROR)
+  : log(topic, LEVEL_ERROR)
 {
 }
 
 wex::log::log(const std::exception& e)
-  : log(std::string(), level_t::ERROR)
+  : log(std::string(), LEVEL_ERROR)
 {
   m_ss << "std::exception:" << S() << e.what();
 }
 
 wex::log::log(const pugi::xml_parse_result& r)
-  : log(std::string(), level_t::ERROR)
+  : log(std::string(), LEVEL_ERROR)
 {
   if (r.status != pugi::xml_parse_status::status_ok)
   {
@@ -76,12 +79,12 @@ wex::log::log(const pugi::xml_parse_result& r)
   }
   else
   {
-    m_level     = level_t::INFO;
+    m_level     = LEVEL_INFO;
     m_separator = false;
   }
 }
 
-wex::log::log(const std::string& topic, level_t level)
+wex::log::log(const std::string& topic, int level)
   : m_level(level)
   , m_topic(topic)
   , m_separator(!topic.empty())
@@ -95,34 +98,15 @@ wex::log::~log()
 
 void wex::log::flush()
 {
-  const std::string topic =
-    !m_topic.empty() && (!m_ss.str().empty() || !m_wss.str().empty()) ?
-      m_topic + ":" :
-      m_topic;
-
-  const std::string text(topic + m_ss.str() + m_wss.str());
-
-  if (!text.empty() || m_level == level_t::STATUS)
+  if (const std::string text(get()); !text.empty() || m_level == LEVEL_STATUS)
   {
     switch (m_level)
     {
-      case level_t::DEBUG:
-        VLOG(3) << text;
-        break;
-
-      case level_t::ERROR:
+      case LEVEL_ERROR:
         LOG(ERROR) << text;
         break;
 
-      case level_t::FATAL:
-        LOG(FATAL) << text;
-        break;
-
-      case level_t::INFO:
-        VLOG(2) << text;
-        break;
-
-      case level_t::STATUS:
+      case LEVEL_STATUS:
         // this is a wxMSW bug, crash in test -tc=wex::stc -sc=find
         if (text.find("%") == std::string::npos)
         {
@@ -130,20 +114,18 @@ void wex::log::flush()
         }
         break;
 
-      case level_t::TRACE:
-        VLOG(4) << text;
-        break;
-
-      case level_t::WARNING:
-        VLOG(1) << text;
-        break;
+      default:
+        VLOG(m_level) << text;
     }
   }
 }
 
 const std::string wex::log::get() const
 {
-  return (!m_topic.empty() ? m_topic + ":" : std::string()) + m_ss.str();
+  return (!m_topic.empty() && (!m_ss.str().empty() || !m_wss.str().empty()) ?
+            m_topic + ":" :
+            std::string()) +
+         m_ss.str() + m_wss.str();
 }
 
 wex::log& wex::log::operator<<(char r)

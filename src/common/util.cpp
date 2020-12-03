@@ -327,7 +327,7 @@ void wex::vcs_execute(frame* frame, int id, const std::vector<path>& files)
           else
           {
             log::status("No output");
-            log::trace("no output from") << vcs.entry().get_exec();
+            log::debug("no output from") << vcs.entry().get_exec();
           }
         }
       }

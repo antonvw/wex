@@ -26,31 +26,34 @@ namespace wex
     /// Should be called before constructing a log object.
     static void init(int arc, char** argv);
 
-    /// Builds a debug logger.
+    /// Builds a debug level logger.
     static log debug(const std::string& topic = std::string());
 
-    /// Builds a info logger.
+    /// Builds a fatal level logger.
+    static log fatal(const std::string& topic = std::string());
+
+    /// Builds a info level logger.
     static log info(const std::string& topic = std::string());
 
-    /// Builds a status logger.
+    /// Builds a status level logger.
     static log status(const std::string& topic = std::string());
 
-    /// Builds a trace logger.
+    /// Builds a trace level logger.
     static log trace(const std::string& topic = std::string());
 
-    /// Builds a warning logger.
+    /// Builds a warning level logger.
     static log warning(const std::string& topic = std::string());
 
     /// Other methods.
 
     /// Default constructor.
-    /// This prepares a logging error.
+    /// This prepares a error level logging.
     log(const std::string& topic = std::string());
 
-    /// Constructor for level error from a std exception.
+    /// Constructor for error level from a std exception.
     log(const std::exception&);
 
-    /// Constructor for level error from a pugi parse result.
+    /// Constructor for error level from a pugi parse result.
     log(const pugi::xml_parse_result&);
 
     /// Destructor, flushes stringstream to logging.
@@ -110,11 +113,8 @@ namespace wex
     const std::string get() const;
 
   private:
-    /// The log level.
-    enum class level_t;
-
-    /// Constructor for topic and specified log level.
-    log(const std::string& topic, level_t level);
+    /// Delegate constructor.
+    log(const std::string& topic, int level);
 
     void              flush();
     const std::string S(); // separator
@@ -123,6 +123,6 @@ namespace wex
     std::stringstream  m_ss;
     std::wstringstream m_wss;
     bool               m_separator{true};
-    level_t            m_level;
+    int                m_level;
   };
 }; // namespace wex

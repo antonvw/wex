@@ -126,7 +126,7 @@ void wex::config_imp::read()
   }
   else
   {
-    log::trace("could not read") << m_file;
+    log::debug("could not read") << m_file;
   }
 }
 
