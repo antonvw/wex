@@ -19,7 +19,7 @@ TEST_CASE("wex::lexer")
   {
     REQUIRE(!lexer.is_ok());
     REQUIRE(!lexer.apply());
-    REQUIRE(!lexer.previewable());
+    REQUIRE(!lexer.is_previewable());
     REQUIRE(lexer.styles().empty());
     REQUIRE(lexer.display_lexer().empty());
     REQUIRE(lexer.scintilla_lexer().empty());
@@ -37,11 +37,11 @@ TEST_CASE("wex::lexer")
   SUBCASE("constructor using xml")
   {
     pugi::xml_document doc;
-    
+
     REQUIRE(doc.load_string("<lexer name=\"xyz\" tabwidth=\"12\"></lexer>"));
-    
-    auto node = doc.document_element();
-    wex::lexer     lexer(&node);
+
+    auto       node = doc.document_element();
+    wex::lexer lexer(&node);
     REQUIRE(lexer.is_ok());
     REQUIRE(lexer.scintilla_lexer() == "xyz");
     REQUIRE(lexer.display_lexer() == "xyz");
@@ -76,7 +76,7 @@ TEST_CASE("wex::lexer")
     REQUIRE(lexer.is_ok());
     REQUIRE(lexer.scintilla_lexer() == "hypertext");
     REQUIRE(lexer.display_lexer() == "hypertext");
-    REQUIRE(lexer.previewable());
+    REQUIRE(lexer.is_previewable());
     REQUIRE(lexer.set(
       wex::lexers::get()->find_by_text("// this is a cpp comment text")));
     REQUIRE(lexer.is_ok());

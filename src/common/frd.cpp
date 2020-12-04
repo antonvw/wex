@@ -25,7 +25,7 @@ wex::find_replace_data::find_replace_data()
   m_frd->SetFlags(flags);
 
   // Start with this one, as it is used by set_find_string.
-  set_use_regex(config(m_text_regex).get(m_use_regex));
+  set_regex(config(m_text_regex).get(m_use_regex));
   set_find_strings(config(m_text_find).get(std::list<std::string>{}));
   set_replace_strings(
     config(m_text_replace_with).get(std::list<std::string>{}));
@@ -118,7 +118,7 @@ void wex::find_replace_data::set_find_string(const std::string& value)
 {
   m_find_strings.set(value);
   m_frd->SetFindString(value);
-  set_use_regex(m_use_regex);
+  set_regex(m_use_regex);
 }
 
 void wex::find_replace_data::set_find_strings(
@@ -126,7 +126,7 @@ void wex::find_replace_data::set_find_strings(
 {
   m_find_strings.set(values);
   m_frd->SetFindString(m_find_strings.get());
-  set_use_regex(m_use_regex);
+  set_regex(m_use_regex);
 }
 
 void wex::find_replace_data::set_match_case(bool value)
@@ -153,33 +153,7 @@ void wex::find_replace_data::set_match_word(bool value)
   m_frd->SetFlags(flags);
 }
 
-void wex::find_replace_data::set_replace_string(const std::string& value)
-{
-  // value is allowed to be empty
-  m_replace_strings.set(value);
-  m_frd->SetReplaceString(value);
-}
-
-void wex::find_replace_data::set_replace_strings(
-  const std::list<std::string>& value)
-{
-  m_replace_strings.set(value);
-  m_frd->SetReplaceString(m_replace_strings.get());
-}
-
-void wex::find_replace_data::set_search_down(bool value)
-{
-  auto flags = m_frd->GetFlags();
-
-  if (value)
-    flags |= wxFR_DOWN;
-  else
-    flags &= ~wxFR_DOWN;
-
-  m_frd->SetFlags(flags);
-}
-
-void wex::find_replace_data::set_use_regex(bool value)
+void wex::find_replace_data::set_regex(bool value)
 {
   if (!value)
   {
@@ -204,4 +178,30 @@ void wex::find_replace_data::set_use_regex(bool value)
     m_use_regex = false;
     log::status(e.what()) << "regex" << get_find_string();
   }
+}
+
+void wex::find_replace_data::set_replace_string(const std::string& value)
+{
+  // value is allowed to be empty
+  m_replace_strings.set(value);
+  m_frd->SetReplaceString(value);
+}
+
+void wex::find_replace_data::set_replace_strings(
+  const std::list<std::string>& value)
+{
+  m_replace_strings.set(value);
+  m_frd->SetReplaceString(m_replace_strings.get());
+}
+
+void wex::find_replace_data::set_search_down(bool value)
+{
+  auto flags = m_frd->GetFlags();
+
+  if (value)
+    flags |= wxFR_DOWN;
+  else
+    flags &= ~wxFR_DOWN;
+
+  m_frd->SetFlags(flags);
 }

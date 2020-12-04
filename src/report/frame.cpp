@@ -196,7 +196,7 @@ void wex::report::frame::find_in_files(wxWindowID dialogid)
       type.set(data::dir::RECURSIVE);
     }
 
-    find_replace_data::get()->set_use_regex(
+    find_replace_data::get()->set_regex(
       config(find_replace_data::get()->text_regex()).get(true));
 
     if (tool_dir dir(
@@ -385,7 +385,7 @@ bool wex::report::frame::grep(const std::string& arg, bool sed)
 #endif
     if (auto* stc = get_stc(); stc != nullptr)
       path::current(stc->get_filename().get_path());
-    find_replace_data::get()->set_use_regex(true);
+    find_replace_data::get()->set_regex(true);
     log::status(find_replace_string(false));
     Unbind(wxEVT_IDLE, &frame::on_idle, this);
 
@@ -470,8 +470,8 @@ void wex::report::frame::on_idle(wxIdleEvent& event)
   auto* project = get_project();
 
   if (const size_t pos = title.size() - indicator.size();
-      (project != nullptr && project->get_contents_changed()) ||
-      // using get_contents_changed gives assert in vcs dialog
+      (project != nullptr && project->is_contents_changed()) ||
+      // using is_contents_changed gives assert in vcs dialog
       (stc != nullptr && stc->GetModify() &&
        !stc->data().flags().test(data::stc::WIN_NO_INDICATOR)))
   {

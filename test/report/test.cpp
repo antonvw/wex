@@ -30,7 +30,7 @@ TEST_CASE("wex::report")
   wex::find_replace_data* frd = wex::find_replace_data::get();
 
   // This string should occur only once, that is here!
-  frd->set_use_regex(false);
+  frd->set_regex(false);
   frd->set_find_string("@@@@@@@@@@@@@@@@@@@");
 
   REQUIRE(report_frame()

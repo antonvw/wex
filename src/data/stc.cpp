@@ -164,11 +164,11 @@ bool wex::data::stc::inject() const
     injected = true;
   }
 
-  if (m_event_data.synced())
+  if (m_event_data.is_synced())
   {
     injected = true;
 
-    if (m_event_data.pos_at_end())
+    if (m_event_data.is_pos_at_end())
     {
       m_stc->DocumentEnd();
     }
@@ -183,10 +183,10 @@ bool wex::data::stc::inject() const
   if (injected)
   {
     m_stc->properties_message(
-      m_event_data.synced() ? path::status_t().set(path::STAT_SYNC) :
-                              path::status_t());
+      m_event_data.is_synced() ? path::status_t().set(path::STAT_SYNC) :
+                                 path::status_t());
 
-    if (!m_event_data.synced())
+    if (!m_event_data.is_synced())
     {
       m_stc->SetFocus();
     }

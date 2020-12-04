@@ -58,11 +58,11 @@ namespace wex
       {
       public:
         /// Access.
-        bool pos_at_end() const { return m_pos_at_end; };
         auto pos_end() const { return m_pos_end; };
         auto pos_start() const { return m_pos_start; };
-        bool synced() const { return m_synced; };
-        bool synced_log() const { return m_synced_log; };
+        bool is_pos_at_end() const { return m_pos_at_end; };
+        bool is_synced() const { return m_synced; };
+        bool is_synced_log() const { return m_synced_log; };
 
         /// Fill the members.
         void set(core::stc* s, bool synced);

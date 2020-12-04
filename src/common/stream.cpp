@@ -36,7 +36,7 @@ bool wex::stream::process(std::string& text, size_t line_no)
   int  count = 1;
   int  pos   = -1;
 
-  if (m_frd->use_regex())
+  if (m_frd->is_regex())
   {
     pos   = m_frd->regex_search(text);
     match = (pos >= 0);
@@ -144,7 +144,7 @@ bool wex::stream::process_begin()
   m_prev  = m_stats.get(_("Actions Completed").ToStdString());
   m_write = (m_tool.id() == ID_TOOL_REPLACE);
 
-  if (!m_frd->use_regex())
+  if (!m_frd->is_regex())
   {
     m_find_string = m_frd->get_find_string();
 

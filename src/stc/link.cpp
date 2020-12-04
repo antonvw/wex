@@ -171,7 +171,7 @@ const wex::path wex::link::find_url_or_mime(
   }
 
   // previewable (MIME) file
-  if (stc != nullptr && stc->get_lexer().previewable())
+  if (stc != nullptr && stc->get_lexer().is_previewable())
   {
     return stc->get_filename();
   }

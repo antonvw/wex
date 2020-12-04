@@ -770,8 +770,8 @@ int wex::stc::replace_all(
       }
       else
       {
-        find_replace_data::get()->use_regex() ? ReplaceTargetRE(replace_text) :
-                                                ReplaceTarget(replace_text);
+        find_replace_data::get()->is_regex() ? ReplaceTargetRE(replace_text) :
+                                               ReplaceTarget(replace_text);
       }
 
       nr_replacements++;
@@ -826,8 +826,8 @@ bool wex::stc::replace_next(
   }
   else
   {
-    find_replace_data::get()->use_regex() ? ReplaceTargetRE(replace_text) :
-                                            ReplaceTarget(replace_text);
+    find_replace_data::get()->is_regex() ? ReplaceTargetRE(replace_text) :
+                                           ReplaceTarget(replace_text);
   }
 
   find_next(find_text, find_flags);
@@ -874,10 +874,10 @@ void wex::stc::set_search_flags(int flags)
 
     auto* frd = find_replace_data::get();
 
-    if (frd->use_regex())
+    if (frd->is_regex())
       flags |= wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX;
 
-    if (frd->match_word() && !frd->use_regex())
+    if (frd->match_word() && !frd->is_regex())
       flags |= wxSTC_FIND_WHOLEWORD;
 
     if (frd->match_case())

@@ -90,7 +90,7 @@ namespace wex
 
   public:
     /// Returns whether contents have been changed.
-    virtual bool get_contents_changed() const { return false; };
+    virtual bool is_contents_changed() const { return false; };
 
     /// Resets contents changed.
     virtual void reset_contents_changed() { ; };

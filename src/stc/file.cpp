@@ -54,7 +54,7 @@ bool wex::stc_file::do_file_load(bool synced)
 {
   file_dialog dlg(this);
 
-  if (get_contents_changed() && dlg.show_modal_if_changed() == wxID_CANCEL)
+  if (is_contents_changed() && dlg.show_modal_if_changed() == wxID_CANCEL)
   {
     return false;
   }
@@ -63,11 +63,11 @@ bool wex::stc_file::do_file_load(bool synced)
   m_stc->keep_event_data(synced);
 
   const bool hexmode =
-    dlg.hexmode() || m_stc->data().flags().test(data::stc::WIN_HEX);
+    dlg.is_hexmode() || m_stc->data().flags().test(data::stc::WIN_HEX);
 
   const std::streampos offset =
     m_previous_size < m_stc->get_filename().stat().st_size &&
-        m_stc->data().event().synced_log() ?
+        m_stc->data().event().is_synced_log() ?
       m_previous_size :
       std::streampos(0);
 
@@ -107,7 +107,7 @@ bool wex::stc_file::do_file_load(bool synced)
     }
 
     const int action =
-      m_stc->data().event().synced() ? FILE_LOAD_SYNC : FILE_LOAD;
+      m_stc->data().event().is_synced() ? FILE_LOAD_SYNC : FILE_LOAD;
     FILE_POST(action);
 #ifdef USE_THREAD
   });
@@ -164,7 +164,7 @@ void wex::stc_file::do_file_save(bool save_as)
   }
 }
 
-bool wex::stc_file::get_contents_changed() const
+bool wex::stc_file::is_contents_changed() const
 {
   return m_stc->GetModify();
 }

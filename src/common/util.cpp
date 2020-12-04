@@ -207,7 +207,7 @@ void wex::open_files_dialog(
     }
 
     dlg.GetPaths(paths);
-    hexmode = dlg.hexmode();
+    hexmode = dlg.is_hexmode();
   }
   else
   {
@@ -217,7 +217,7 @@ void wex::open_files_dialog(
       return;
 
     dlg.GetPaths(paths);
-    hexmode = dlg.hexmode();
+    hexmode = dlg.is_hexmode();
   }
 
   open_files(

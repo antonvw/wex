@@ -55,6 +55,9 @@ namespace wex
     /// Returns true if this presentation is valid.
     bool is_ok() const;
 
+    /// Returns underlined.
+    bool is_underlined() const { return m_under; };
+
     /// Returns name of presentation.
     const std::string name() const;
 
@@ -63,9 +66,6 @@ namespace wex
 
     /// Returns the style.
     int style() const { return m_style; };
-
-    /// Returns underlined.
-    bool underlined() const { return m_under; };
 
   private:
     std::string m_background_colour, m_foreground_colour;

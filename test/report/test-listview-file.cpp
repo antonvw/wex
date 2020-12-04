@@ -35,9 +35,9 @@ TEST_CASE("wex::report::file")
 
   REQUIRE(listView->item_from_text("test1\ntest2\n"));
 
-  REQUIRE(listView->get_contents_changed());
+  REQUIRE(listView->is_contents_changed());
   listView->reset_contents_changed();
-  REQUIRE(!listView->get_contents_changed());
+  REQUIRE(!listView->is_contents_changed());
   listView->after_sorting();
 
 #ifdef __UNIX__

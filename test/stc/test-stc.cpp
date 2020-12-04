@@ -47,7 +47,7 @@ TEST_CASE("wex::stc")
     REQUIRE(!stc->find_next(std::string("HELLO"), wxSTC_FIND_MATCHCASE));
     REQUIRE((stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE) > 0);
 
-    wex::find_replace_data::get()->set_use_regex(false);
+    wex::find_replace_data::get()->set_regex(false);
     wex::find_replace_data::get()->set_match_case(false);
     REQUIRE(stc->find_next(std::string("HELLO"))); // uses flags from frd
     REQUIRE(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
@@ -148,9 +148,9 @@ TEST_CASE("wex::stc")
   {
     stc->SetText("added text");
     REQUIRE(stc->get_text().find("added text") != std::string::npos);
-    REQUIRE(stc->get_file().get_contents_changed());
+    REQUIRE(stc->get_file().is_contents_changed());
     stc->get_file().reset_contents_changed();
-    REQUIRE(!stc->get_file().get_contents_changed());
+    REQUIRE(!stc->get_file().is_contents_changed());
 
     stc->AppendText("more text");
     REQUIRE(stc->get_text() != "hello stc");

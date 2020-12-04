@@ -26,7 +26,7 @@ namespace wex
     }
 
     frame->statustext(
-      get_find_result(f.text(), f.forward(), true),
+      get_find_result(f.text(), f.is_forward(), true),
       std::string());
 
     return false;
@@ -51,7 +51,7 @@ namespace wex
     if (f.stc()->SearchInTarget(stext) == -1)
     {
       frame->statustext(
-        get_find_result(f.text(), f.forward(), f.recursive()),
+        get_find_result(f.text(), f.is_forward(), f.recursive()),
         std::string());
 
       bool found = false;
@@ -59,7 +59,7 @@ namespace wex
       if (!f.recursive() && wrapscan)
       {
         f.recursive(true);
-        found = f.stc()->find_next(f.text(), f.flags(), f.forward());
+        found = f.stc()->find_next(f.text(), f.flags(), f.is_forward());
         f.recursive(false);
 
         if (!found)
@@ -86,7 +86,7 @@ namespace wex
           f.stc()->GetTargetStart(),
           f.stc()->GetTargetEnd());
       }
-      else if (f.forward())
+      else if (f.is_forward())
       {
         vi.visual_extend(f.stc()->GetSelectionStart(), f.stc()->GetTargetEnd());
       }

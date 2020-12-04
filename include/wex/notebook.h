@@ -98,7 +98,7 @@ namespace wex
             break;
 
           case ID_ALL_SAVE:
-            if (win->get_file().get_contents_changed())
+            if (win->get_file().is_contents_changed())
             {
               win->get_file().file_save();
             }
