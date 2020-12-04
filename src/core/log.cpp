@@ -28,6 +28,29 @@ enum level_t
   LEVEL_STATUS,
 };
 
+const std::string level_string(int level)
+{
+  switch (level)
+  {
+    case LEVEL_DEBUG:
+      return "debug";
+    case LEVEL_ERROR:
+      return "error";
+    case LEVEL_FATAL:
+      return "fatal";
+    case LEVEL_INFO:
+      return "info";
+    case LEVEL_STATUS:
+      return "status";
+    case LEVEL_TRACE:
+      return "trace";
+    case LEVEL_WARNING:
+      return "warning";
+    default:
+      return std::to_string(level);
+  }
+}
+
 wex::log wex::log::debug(const std::string& topic)
 {
   return log(topic, LEVEL_DEBUG);
@@ -270,7 +293,7 @@ void wex::log::init(int argc, char** argv)
 
   START_EASYLOGGINGPP(w.size() - 1, w.data());
 
-  info("verbosity") << (int)el::Loggers::verboseLevel();
+  info("verbosity") << level_string(el::Loggers::verboseLevel());
   trace("log setup") << elp.string();
 }
 

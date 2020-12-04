@@ -5,7 +5,6 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <boost/program_options.hpp>
 #include <sstream>
 #include <wex/cmdline.h>
 #include <wex/config.h>
@@ -55,8 +54,7 @@ wex::cmdline_imp::cmdline_imp(bool add_standard_options, config& cfg)
     m_desc.add_options()("version", "displays version information and exits")(
       "level,V",
       po::value<int>()->default_value(1),
-      "activates "
-      "verbosity up to verbose level (valid range: 1-9)")(
+      "activates verbosity up to verbose level (valid range: 1-9)")(
       "verbose,v",
       "activates maximum verbosity")(
       "logfile,D",
