@@ -48,7 +48,7 @@ namespace wex::data
     find& flags(int rhs);
 
     /// Returns if forward search is true.
-    bool forward() const { return m_forward; };
+    bool is_forward() const { return m_forward; };
 
     /// Returns start pos.
     int start_pos() const { return m_start_pos; };

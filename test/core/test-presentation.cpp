@@ -56,7 +56,7 @@ TEST_CASE("wex::presentation")
     REQUIRE(p.foreground_colour() == "green");
     REQUIRE(p.number() == 5);
     REQUIRE(p.style() == 6);
-    REQUIRE(!p.underlined());
+    REQUIRE(!p.is_underlined());
     REQUIRE(p.is_ok());
 
     wxStyledTextCtrl s;

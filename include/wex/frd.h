@@ -75,6 +75,9 @@ namespace wex
       return m_replace_strings.values();
     };
 
+    /// Returns true if find text is used as a regular expression.
+    bool is_regex() const { return m_use_regex; };
+
     /// Returns true if the flags have match case set.
     bool match_case() const;
 
@@ -112,6 +115,11 @@ namespace wex
     /// Sets flags for match word.
     void set_match_word(bool value);
 
+    /// Sets using regular expression for find text.
+    /// If get_find_string does not contain a valid regular expression
+    /// the use member is not set.
+    void set_regex(bool value);
+
     /// Sets the replace string.
     /// Also moves the replace string to the beginning of the replace
     /// strings list.
@@ -124,14 +132,6 @@ namespace wex
 
     /// Sets flags for search down.
     void set_search_down(bool value);
-
-    /// Sets using regular expression for find text.
-    /// If get_find_string does not contain a valid regular expression
-    /// the use member is not set.
-    void set_use_regex(bool value);
-
-    /// Returns true if find text is used as a regular expression.
-    bool use_regex() const { return m_use_regex; };
 
   private:
     find_replace_data();

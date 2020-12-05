@@ -29,9 +29,8 @@ namespace wex
     /// Afterwards line and col from data are filled in if possible.
     enum
     {
-      LINE_OPEN_URL          = -2,
-      LINE_OPEN_MIME         = -3,
-      LINE_OPEN_URL_AND_MIME = -4,
+      LINE_OPEN_URL  = -2,
+      LINE_OPEN_MIME = -3,
     };
 
     /// Default constructor.

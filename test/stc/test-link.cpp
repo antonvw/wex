@@ -140,12 +140,12 @@ TEST_CASE("wex::link")
     REQUIRE(lnk.get_path("httpd = new httpd", data).empty());
 
     // MIME file
-    data.line(wex::link::LINE_OPEN_URL_AND_MIME);
+    data.line(wex::link::LINE_OPEN_MIME);
     stc->get_file().file_new("test.html");
-    REQUIRE(
-      lnk.get_path("www.wxwidgets.org", data).data() == "www.wxwidgets.org");
+    REQUIRE(lnk.get_path("www.wxwidgets.org", data).data().empty());
     REQUIRE(lnk.get_path("xxx.wxwidgets.org", data, stc) == "test.html");
     REQUIRE(lnk.get_path("xx", data, stc).data() == "test.html");
+
     data.line(-99);
     REQUIRE(lnk.get_path("xx", data, stc).empty());
   }

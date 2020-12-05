@@ -90,7 +90,7 @@ wex::shell::shell(
   Bind(wxEVT_KEY_DOWN, [=](wxKeyEvent& event) {
     if (!m_enabled)
     {
-      if (get_vi().mode().insert())
+      if (get_vi().mode().is_insert())
       {
         DocumentEnd();
         get_vi().mode().escape();
@@ -560,7 +560,7 @@ void wex::shell::send_command()
   }
   else
   {
-    log::verbose("posted") << m_command;
+    log::trace("posted") << m_command;
     wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND);
     event.SetString(m_command);
     GetParent()->GetEventHandler()->AddPendingEvent(event);

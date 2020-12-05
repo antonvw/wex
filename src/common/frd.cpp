@@ -25,7 +25,7 @@ wex::find_replace_data::find_replace_data()
   m_frd->SetFlags(flags);
 
   // Start with this one, as it is used by set_find_string.
-  set_use_regex(config(m_text_regex).get(m_use_regex));
+  set_regex(config(m_text_regex).get(m_use_regex));
   set_find_strings(config(m_text_find).get(std::list<std::string>{}));
   set_replace_strings(
     config(m_text_replace_with).get(std::list<std::string>{}));
@@ -118,7 +118,7 @@ void wex::find_replace_data::set_find_string(const std::string& value)
 {
   m_find_strings.set(value);
   m_frd->SetFindString(value);
-  set_use_regex(m_use_regex);
+  set_regex(m_use_regex);
 }
 
 void wex::find_replace_data::set_find_strings(
@@ -126,7 +126,7 @@ void wex::find_replace_data::set_find_strings(
 {
   m_find_strings.set(values);
   m_frd->SetFindString(m_find_strings.get());
-  set_use_regex(m_use_regex);
+  set_regex(m_use_regex);
 }
 
 void wex::find_replace_data::set_match_case(bool value)
@@ -153,6 +153,33 @@ void wex::find_replace_data::set_match_word(bool value)
   m_frd->SetFlags(flags);
 }
 
+void wex::find_replace_data::set_regex(bool value)
+{
+  if (!value)
+  {
+    m_use_regex = false;
+    return;
+  }
+
+  try
+  {
+    std::regex::flag_type flags = std::regex::ECMAScript;
+    if (!match_case())
+      flags |= std::regex::icase;
+
+    m_regex     = std::regex(get_find_string(), flags);
+    m_use_regex = true;
+
+    log::trace("frd regex")
+      << "find" << get_find_string() << "replace" << get_replace_string();
+  }
+  catch (std::regex_error& e)
+  {
+    m_use_regex = false;
+    log::status(e.what()) << "regex" << get_find_string();
+  }
+}
+
 void wex::find_replace_data::set_replace_string(const std::string& value)
 {
   // value is allowed to be empty
@@ -177,31 +204,4 @@ void wex::find_replace_data::set_search_down(bool value)
     flags &= ~wxFR_DOWN;
 
   m_frd->SetFlags(flags);
-}
-
-void wex::find_replace_data::set_use_regex(bool value)
-{
-  if (!value)
-  {
-    m_use_regex = false;
-    return;
-  }
-
-  try
-  {
-    std::regex::flag_type flags = std::regex::ECMAScript;
-    if (!match_case())
-      flags |= std::regex::icase;
-
-    m_regex     = std::regex(get_find_string(), flags);
-    m_use_regex = true;
-
-    log::verbose("frd regex")
-      << "find" << get_find_string() << "replace" << get_replace_string();
-  }
-  catch (std::regex_error& e)
-  {
-    m_use_regex = false;
-    log::status(e) << "regex" << get_find_string();
-  }
 }

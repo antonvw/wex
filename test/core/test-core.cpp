@@ -318,6 +318,7 @@ TEST_CASE("wex::core" * doctest::may_fail())
   SUBCASE("trim")
   {
     REQUIRE(wex::trim("\n\tt \n    es   t\n", wex::skip_t().set()) == "t es t");
+#ifndef __WXMSW__
     REQUIRE(
       wex::trim("\n\tt \n    es   t\n", wex::skip_t().set(wex::TRIM_LEFT)) ==
       "t \n    es   t\n");
@@ -329,5 +330,6 @@ TEST_CASE("wex::core" * doctest::may_fail())
         "\n\tt \n    es   t\n",
         wex::skip_t().set(wex::TRIM_LEFT).set(wex::TRIM_RIGHT)) ==
       "t \n    es   t");
+#endif
   }
 }

@@ -20,7 +20,7 @@ TEST_CASE("wex::file")
       std::ios_base::in | std::ios_base::out);
 
     REQUIRE(!file.check_sync());
-    REQUIRE(!file.get_contents_changed());
+    REQUIRE(!file.is_contents_changed());
     REQUIRE(file.is_open());
 
     file.reset_contents_changed();

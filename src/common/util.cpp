@@ -18,6 +18,7 @@
 #include <wex/file-dialog.h>
 #include <wex/lexer.h>
 #include <wex/lexers.h>
+#include <wex/link.h>
 #include <wex/log.h>
 #include <wex/macros.h>
 #include <wex/managed-frame.h>
@@ -165,7 +166,7 @@ int wex::open_files(
 
         if (!fn.file_exists())
         {
-          log::verbose("open file") << fn;
+          log::debug("open file") << fn;
         }
       }
       catch (std::exception& e)
@@ -206,7 +207,7 @@ void wex::open_files_dialog(
     }
 
     dlg.GetPaths(paths);
-    hexmode = dlg.hexmode();
+    hexmode = dlg.is_hexmode();
   }
   else
   {
@@ -216,7 +217,7 @@ void wex::open_files_dialog(
       return;
 
     dlg.GetPaths(paths);
-    hexmode = dlg.hexmode();
+    hexmode = dlg.is_hexmode();
   }
 
   open_files(
@@ -326,7 +327,7 @@ void wex::vcs_execute(frame* frame, int id, const std::vector<path>& files)
           else
           {
             log::status("No output");
-            log::verbose("no output from") << vcs.entry().get_exec();
+            log::debug("no output from") << vcs.entry().get_exec();
           }
         }
       }

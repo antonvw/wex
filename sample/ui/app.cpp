@@ -437,7 +437,7 @@ void frame::on_command(wxCommandEvent& event)
         wex::lexers::get()->get_filename().data())
       {
         wex::lexers::get()->load_document();
-        wex::log::verbose("file contains")
+        wex::log::trace("file contains")
           << wex::lexers::get()->get_lexers().size() << "lexers";
         // As the lexer might have changed, update status bar field as well.
         update_statusbar(m_stc, "PaneLexer");
@@ -498,7 +498,7 @@ void frame::on_command_item_dialog(
   }
   else if (event.GetId() >= 1000 && event.GetId() < 1050)
   {
-    wex::log::verbose("button")
+    wex::log::trace("button")
       << event.GetId() << "checked:" << event.IsChecked();
   }
   else

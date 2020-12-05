@@ -109,7 +109,7 @@ void wex::path::current(const std::string& path)
     try
     {
       fs::current_path(path);
-      log::verbose("path current") << path;
+      log::trace("path current") << path;
     }
     catch (const std::exception& e)
     {
@@ -177,7 +177,7 @@ bool wex::path::open_mime() const
   {
     if (wxURL(m_path.string()).IsOk() || m_path.string().substr(0, 4) == "http")
     {
-      return wxLaunchDefaultBrowser(m_path.string());
+      return browser(m_path.string());
     }
     else
     {

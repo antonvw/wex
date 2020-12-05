@@ -34,7 +34,7 @@ namespace wex
       /// the filename to be assigned if not empty
       const std::string& filename = std::string());
 
-    bool get_contents_changed() const override;
+    bool is_contents_changed() const override;
     void reset_contents_changed() override;
 
   private:

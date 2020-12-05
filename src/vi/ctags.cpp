@@ -256,7 +256,7 @@ wex::ctags::auto_complete(const std::string& text, const ctags_entry& filter)
       (text.empty() ? tagsNext(m_file, &entry) : tagsFindNext(m_file, &entry));
   } while (result == TagSuccess && count < max);
 
-  log::verbose("ctags::auto_complete count") << count;
+  log::trace("ctags::auto_complete count") << count;
 
   return s;
 }
@@ -295,7 +295,7 @@ bool wex::ctags::do_open(const std::string& path)
 {
   if (tagFileInfo info; (m_file = tagsOpen(path.c_str(), &info)) != nullptr)
   {
-    log::verbose("ctags file") << path;
+    log::trace("ctags file") << path;
     return true;
   }
 
@@ -311,7 +311,7 @@ bool wex::ctags::find(const std::string& tag, ex* ex)
 
   if (tag.empty())
   {
-    log::verbose("ctags::find empty tag") << m_matches.size();
+    log::trace("ctags::find empty tag") << m_matches.size();
     return next();
   }
 
@@ -336,7 +336,7 @@ bool wex::ctags::find(const std::string& tag, ex* ex)
 
   m_iterator = m_matches.begin();
 
-  log::verbose("ctags::find matches") << m_matches.size();
+  log::trace("ctags::find matches") << m_matches.size();
 
   switch (m_matches.size())
   {
@@ -434,7 +434,7 @@ bool wex::ctags::next()
 {
   if (m_matches.size() <= 1)
   {
-    log::verbose("ctags::next no next match") << m_matches.size();
+    log::trace("ctags::next no next match") << m_matches.size();
     return false;
   }
 
@@ -482,7 +482,7 @@ bool wex::ctags::previous()
 {
   if (m_matches.size() <= 1)
   {
-    log::verbose("ctags::previous no previous match") << m_matches.size();
+    log::trace("ctags::previous no previous match") << m_matches.size();
     return false;
   }
 

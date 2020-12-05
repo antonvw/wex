@@ -634,47 +634,48 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
 
   if (const std::string a(node->attribute("edgemode").value()); !a.empty())
   {
-    m_attribs.push_back({_("Edge line"),
-                         convert_attrib(
-                           {{"none", wxSTC_EDGE_NONE},
-                            {"line", wxSTC_EDGE_LINE},
-                            {"background", wxSTC_EDGE_BACKGROUND}},
-                           a),
-                         [&](core::stc* stc, int attrib) {
-                           switch (attrib)
-                           {
-                             case -1:
-                               break;
+    m_attribs.push_back(
+      {_("Edge line"),
+       convert_attrib(
+         {{"none", wxSTC_EDGE_NONE},
+          {"line", wxSTC_EDGE_LINE},
+          {"background", wxSTC_EDGE_BACKGROUND}},
+         a),
+       [&](core::stc* stc, int attrib) {
+         switch (attrib)
+         {
+           case -1:
+             break;
 
-                             case wxSTC_EDGE_LINE:
-                               stc->SetEdgeMode(
-                                 m_edge_columns.size() <= 1 ?
-                                   wxSTC_EDGE_LINE :
-                                   wxSTC_EDGE_MULTILINE);
-                               break;
+           case wxSTC_EDGE_LINE:
+             stc->SetEdgeMode(
+               m_edge_columns.size() <= 1 ? wxSTC_EDGE_LINE :
+                                            wxSTC_EDGE_MULTILINE);
+             break;
 
-                             default:
-                               stc->SetEdgeMode(attrib);
-                               break;
-                           }
-                         }});
+           default:
+             stc->SetEdgeMode(attrib);
+             break;
+         }
+       }});
   }
 
   if (const std::string a(node->attribute("spacevisible").value()); !a.empty())
   {
-    m_attribs.push_back({_("Whitespace visible"),
-                         convert_attrib(
-                           {{"invisible", wxSTC_WS_INVISIBLE},
-                            {"always", wxSTC_WS_VISIBLEALWAYS},
-                            {"afterindent", wxSTC_WS_VISIBLEAFTERINDENT},
-                            {"onlyindent", wxSTC_WS_VISIBLEONLYININDENT}},
-                           a),
-                         [&](core::stc* stc, int attrib) {
-                           if (attrib >= 0)
-                           {
-                             stc->SetViewWhiteSpace(attrib);
-                           }
-                         }});
+    m_attribs.push_back(
+      {_("Whitespace visible"),
+       convert_attrib(
+         {{"invisible", wxSTC_WS_INVISIBLE},
+          {"always", wxSTC_WS_VISIBLEALWAYS},
+          {"afterindent", wxSTC_WS_VISIBLEAFTERINDENT},
+          {"onlyindent", wxSTC_WS_VISIBLEONLYININDENT}},
+         a),
+       [&](core::stc* stc, int attrib) {
+         if (attrib >= 0)
+         {
+           stc->SetViewWhiteSpace(attrib);
+         }
+       }});
   }
 
   if (const std::string a(node->attribute("tabdrawmode").value()); !a.empty())
@@ -694,14 +695,15 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
 
   if (const std::string a(node->attribute("tabmode").value()); !a.empty())
   {
-    m_attribs.push_back({_("Use tabs"),
-                         convert_attrib({{"use", 1}, {"off", 0}}, a),
-                         [&](core::stc* stc, int attrib) {
-                           if (attrib >= 0)
-                           {
-                             stc->SetUseTabs(true);
-                           }
-                         }});
+    m_attribs.push_back(
+      {_("Use tabs"),
+       convert_attrib({{"use", 1}, {"off", 0}}, a),
+       [&](core::stc* stc, int attrib) {
+         if (attrib >= 0)
+         {
+           stc->SetUseTabs(true);
+         }
+       }});
   }
 
   if (const auto a(node->attribute("tabwidth").as_int(0)); a > 0)
@@ -717,19 +719,20 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
 
   if (const std::string a(node->attribute("wrapline").value()); !a.empty())
   {
-    m_attribs.push_back({_("Wrap line"),
-                         convert_attrib(
-                           {{"none", wxSTC_WRAP_NONE},
-                            {"word", wxSTC_WRAP_WORD},
-                            {"char", wxSTC_WRAP_CHAR},
-                            {"whitespace", wxSTC_WRAP_WHITESPACE}},
-                           a),
-                         [&](core::stc* stc, int attrib) {
-                           if (attrib >= 0)
-                           {
-                             stc->SetWrapMode(attrib);
-                           }
-                         }});
+    m_attribs.push_back(
+      {_("Wrap line"),
+       convert_attrib(
+         {{"none", wxSTC_WRAP_NONE},
+          {"word", wxSTC_WRAP_WORD},
+          {"char", wxSTC_WRAP_CHAR},
+          {"whitespace", wxSTC_WRAP_WHITESPACE}},
+         a),
+       [&](core::stc* stc, int attrib) {
+         if (attrib >= 0)
+         {
+           stc->SetWrapMode(attrib);
+         }
+       }});
   }
 }
 
@@ -739,7 +742,7 @@ bool wex::lexer::set(const std::string& lexer, bool fold)
     !lexer.empty() && !lexers::get()->get_lexers().empty() &&
     !set(lexers::get()->find(lexer), fold))
   {
-    log::verbose("lexer is not known") << lexer;
+    log::debug("lexer is not known") << lexer;
   }
   else if (lexer.empty())
   {
@@ -770,7 +773,7 @@ bool wex::lexer::set(const lexer& lexer, bool fold)
 
   if (!m_scintilla_lexer.empty() && !ok)
   {
-    log::verbose("lexer is not set") << lexer.display_lexer();
+    log::debug("lexer is not set") << lexer.display_lexer();
   }
 
   if (fold)

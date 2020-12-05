@@ -12,6 +12,7 @@
 #include <wex/item-dialog.h>
 #include <wex/item-vector.h>
 #include <wex/lexers.h>
+#include <wex/link.h>
 #include <wex/stc.h>
 #include <wx/settings.h>
 #include <wx/stockitem.h>

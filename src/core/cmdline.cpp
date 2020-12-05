@@ -5,7 +5,6 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <boost/program_options.hpp>
 #include <wex/cmdline.h>
 #include <wex/config.h>
 #include <wex/core.h>

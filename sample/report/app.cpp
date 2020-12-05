@@ -41,9 +41,10 @@ frame::frame()
     {{new wex::menu(
         {{wxID_OPEN}, {}, {wex::menu_item::PRINT}, {}, {wex::menu_item::EXIT}}),
       "&File"},
-     {new wex::menu({{}, // fix  compile error
-                     {this},
-                     {}}),
+     {new wex::menu(
+        {{}, // fix  compile error
+         {this},
+         {}}),
       "&View"},
      {new wex::menu(
         {{wxID_ABOUT, "", wex::data::menu().action([=](wxCommandEvent& event) {
@@ -120,7 +121,7 @@ frame::activate(wex::data::listview::type_t type, const wex::lexer* lexer)
           {
             if (!lexer->display_lexer().empty())
             {
-              wex::log::verbose(lexer->display_lexer())
+              wex::log::trace(lexer->display_lexer())
                 << ", only cpp for the sample";
             }
 

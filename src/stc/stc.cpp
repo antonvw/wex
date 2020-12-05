@@ -12,6 +12,7 @@
 #include <wex/indicator.h>
 #include <wex/item-vector.h>
 #include <wex/lexers.h>
+#include <wex/link.h>
 #include <wex/macros.h>
 #include <wex/managed-frame.h>
 #include <wex/path.h>
@@ -462,16 +463,28 @@ bool wex::stc::link_open(link_t mode, std::string* filename)
 
   if (mode[LINK_OPEN_MIME])
   {
-    const path path(m_link->get_path(
-      text,
-      data::control().line(link::LINE_OPEN_URL_AND_MIME),
-      this));
-
-    if (!path.string().empty())
+    if (const path path(m_link->get_path(
+          text,
+          data::control().line(link::LINE_OPEN_URL),
+          this));
+        !path.string().empty())
     {
       if (!mode[LINK_CHECK])
       {
-        return path.open_mime();
+        browser(path.string());
+      }
+
+      return true;
+    }
+    else if (const wex::path mime(m_link->get_path(
+               text,
+               data::control().line(link::LINE_OPEN_MIME),
+               this));
+             !mime.string().empty())
+    {
+      if (!mode[LINK_CHECK])
+      {
+        return mime.open_mime();
       }
 
       return true;
@@ -621,7 +634,7 @@ void wex::stc::Paste()
 
 bool wex::stc::position_restore()
 {
-  if (m_vi.mode().visual())
+  if (m_vi.mode().is_visual())
   {
     SetCurrentPos(m_saved_pos);
   }
@@ -649,7 +662,7 @@ void wex::stc::position_save()
 {
   m_saved_pos = GetCurrentPos();
 
-  if (!m_vi.mode().visual())
+  if (!m_vi.mode().is_visual())
   {
     m_saved_selection_start = GetSelectionStart();
     m_saved_selection_end   = GetSelectionEnd();
@@ -757,8 +770,8 @@ int wex::stc::replace_all(
       }
       else
       {
-        find_replace_data::get()->use_regex() ? ReplaceTargetRE(replace_text) :
-                                                ReplaceTarget(replace_text);
+        find_replace_data::get()->is_regex() ? ReplaceTargetRE(replace_text) :
+                                               ReplaceTarget(replace_text);
       }
 
       nr_replacements++;
@@ -813,8 +826,8 @@ bool wex::stc::replace_next(
   }
   else
   {
-    find_replace_data::get()->use_regex() ? ReplaceTargetRE(replace_text) :
-                                            ReplaceTarget(replace_text);
+    find_replace_data::get()->is_regex() ? ReplaceTargetRE(replace_text) :
+                                           ReplaceTarget(replace_text);
   }
 
   find_next(find_text, find_flags);
@@ -861,10 +874,10 @@ void wex::stc::set_search_flags(int flags)
 
     auto* frd = find_replace_data::get();
 
-    if (frd->use_regex())
+    if (frd->is_regex())
       flags |= wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX;
 
-    if (frd->match_word() && !frd->use_regex())
+    if (frd->match_word() && !frd->is_regex())
       flags |= wxSTC_FIND_WHOLEWORD;
 
     if (frd->match_case())
@@ -895,7 +908,7 @@ bool wex::stc::show_blame(const vcs_entry* vcs)
 
   if (vcs->get_stdout().empty())
   {
-    log::verbose("no vcs output");
+    log::debug("no vcs output");
     return false;
   }
 

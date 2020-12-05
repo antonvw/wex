@@ -251,7 +251,7 @@ void wex::config::on_init()
   m_store = new config_imp();
   m_store->read();
 
-  log::verbose("config") << "top size:" << size()
+  log::trace("config") << "top size:" << size()
                          << "elements:" << m_store->elements();
 }
 

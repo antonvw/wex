@@ -10,8 +10,8 @@
 #include <wx/wx.h>
 #endif
 #include <wex/core.h>
-#include <wex/file.h>
 #include <wex/file-dialog.h>
+#include <wex/file.h>
 #include <wex/lexers.h>
 #include <wx/checklst.h>
 
@@ -117,7 +117,7 @@ int wex::file_dialog::show_modal_if_changed(bool show_modal)
 
   bool reset = false;
 
-  if (m_file->get_contents_changed())
+  if (m_file->is_contents_changed())
   {
     if (!m_file->get_filename().stat().is_ok())
     {

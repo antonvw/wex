@@ -347,11 +347,11 @@ void wex::macro_fsm::recorded()
   {
     m_mode->get_macros()->save_macro(m_macro);
     log::status("Macro") << m_macro << "is recorded";
-    log::verbose("macro") << m_macro << "is recorded";
+    log::trace("macro") << m_macro << "is recorded";
   }
   else
   {
-    log::verbose("macro") << m_macro << "not recorded";
+    log::debug("macro") << m_macro << "not recorded";
     m_mode->get_macros()->erase();
     m_macro.clear();
     log::status(std::string());
@@ -372,7 +372,7 @@ void wex::macro_fsm::state(state_t s)
 
   if (s == RECORDING)
   {
-    log::verbose("vi macro") << "recording" << m_macro;
+    log::trace("vi macro") << "recording" << m_macro;
     log::status(_("Macro recording"));
 
     if (m_macro.size() == 1)
