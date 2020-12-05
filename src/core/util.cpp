@@ -197,17 +197,28 @@ const std::string wex::before(const std::string& text, char c, bool first)
   }
 }
 
-bool wex::browser_search(const std::string& text)
+bool wex::browser(const std::string& url)
 {
-  if (const auto& search_engine(config(_("stc.Search engine")).get_firstof());
-      search_engine.empty())
+  if (!wxLaunchDefaultBrowser(url))
   {
     return false;
   }
+
+  log::info("browse") << url;
+
+  return true;
+}
+
+bool wex::browser_search(const std::string& text)
+{
+  if (const auto& search_engine(config(_("stc.Search engine")).get_firstof());
+      !search_engine.empty())
+  {
+    return browser(search_engine + "?q=" + text);
+  }
   else
   {
-    wxLaunchDefaultBrowser(search_engine + "?q=" + text);
-    return true;
+    return false;
   }
 }
 

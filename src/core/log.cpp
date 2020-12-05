@@ -51,36 +51,6 @@ const std::string level_string(int level)
   }
 }
 
-wex::log wex::log::debug(const std::string& topic)
-{
-  return log(topic, LEVEL_DEBUG);
-}
-
-wex::log wex::log::fatal(const std::string& topic)
-{
-  return log(topic, LEVEL_FATAL);
-}
-
-wex::log wex::log::info(const std::string& topic)
-{
-  return log(topic, LEVEL_INFO);
-}
-
-wex::log wex::log::status(const std::string& topic)
-{
-  return log(topic, LEVEL_STATUS);
-}
-
-wex::log wex::log::trace(const std::string& topic)
-{
-  return log(topic, LEVEL_TRACE);
-}
-
-wex::log wex::log::warning(const std::string& topic)
-{
-  return log(topic, LEVEL_WARNING);
-}
-
 wex::log::log(const std::string& topic)
   : log(topic, LEVEL_ERROR)
 {
@@ -117,38 +87,6 @@ wex::log::log(const std::string& topic, int level)
 wex::log::~log()
 {
   flush();
-}
-
-void wex::log::flush()
-{
-  if (const std::string text(get()); !text.empty() || m_level == LEVEL_STATUS)
-  {
-    switch (m_level)
-    {
-      case LEVEL_ERROR:
-        LOG(ERROR) << text;
-        break;
-
-      case LEVEL_STATUS:
-        // this is a wxMSW bug, crash in test -tc=wex::stc -sc=find
-        if (text.find("%") == std::string::npos)
-        {
-          wxLogStatus(text.c_str());
-        }
-        break;
-
-      default:
-        VLOG(m_level) << text;
-    }
-  }
-}
-
-const std::string wex::log::get() const
-{
-  return (!m_topic.empty() && (!m_ss.str().empty() || !m_wss.str().empty()) ?
-            m_topic + ":" :
-            std::string()) +
-         m_ss.str() + m_wss.str();
 }
 
 wex::log& wex::log::operator<<(char r)
@@ -236,6 +174,53 @@ wex::log& wex::log::operator<<(const pugi::xml_node& r)
   return *this;
 }
 
+wex::log wex::log::debug(const std::string& topic)
+{
+  return log(topic, LEVEL_DEBUG);
+}
+
+wex::log wex::log::fatal(const std::string& topic)
+{
+  return log(topic, LEVEL_FATAL);
+}
+
+void wex::log::flush()
+{
+  if (const std::string text(get()); !text.empty() || m_level == LEVEL_STATUS)
+  {
+    switch (m_level)
+    {
+      case LEVEL_ERROR:
+        LOG(ERROR) << text;
+        break;
+
+      case LEVEL_STATUS:
+        // this is a wxMSW bug, crash in test -tc=wex::stc -sc=find
+        if (text.find("%") == std::string::npos)
+        {
+          wxLogStatus(text.c_str());
+        }
+        break;
+
+      default:
+        VLOG(m_level) << text;
+    }
+  }
+}
+
+const std::string wex::log::get() const
+{
+  return (!m_topic.empty() && (!m_ss.str().empty() || !m_wss.str().empty()) ?
+            m_topic + ":" :
+            m_topic) +
+         m_ss.str() + m_wss.str();
+}
+
+wex::log wex::log::info(const std::string& topic)
+{
+  return log(topic, LEVEL_INFO);
+}
+
 void wex::log::init(int argc, char** argv)
 {
   // Load elp configuration from file.
@@ -295,6 +280,21 @@ void wex::log::init(int argc, char** argv)
 
   info("verbosity") << level_string(el::Loggers::verboseLevel());
   trace("log setup") << elp.string();
+}
+
+wex::log wex::log::status(const std::string& topic)
+{
+  return log(topic, LEVEL_STATUS);
+}
+
+wex::log wex::log::trace(const std::string& topic)
+{
+  return log(topic, LEVEL_TRACE);
+}
+
+wex::log wex::log::warning(const std::string& topic)
+{
+  return log(topic, LEVEL_WARNING);
 }
 
 const std::string wex::log::S()

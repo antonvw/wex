@@ -10,10 +10,12 @@
 
 TEST_CASE("wex::log")
 {
-  SUBCASE("default constructor")
+  SUBCASE("constructor")
   {
     REQUIRE(wex::log().get().empty());
     wex::log() << "default constructor";
+
+    REQUIRE(wex::log("hello world").get() == "hello world");
   }
 
   SUBCASE("debug")

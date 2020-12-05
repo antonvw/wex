@@ -66,7 +66,11 @@ namespace wex
   /// Returns the whole string if c is not found.
   const std::string before(const std::string& text, char c, bool first = true);
 
-  /// Launch default browser and search for text.
+  /// Launch default browser.
+  /// Returns false if no browser configured.
+  bool browser(const std::string& url);
+
+  /// Browse and search for text.
   /// Returns false if search engine is empty.
   bool browser_search(const std::string& text);
 

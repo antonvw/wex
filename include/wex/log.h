@@ -15,16 +15,16 @@
 namespace wex
 {
   /// This class offers logging.
-  /// You should give at least one << following one of the
-  /// constructors.
   class log
   {
   public:
     /// Static methods.
 
-    /// Initializes logging.
+    /// Initializes logging, and sets log level
+    /// depending on specified arguments.
     /// Should be called before constructing a log object.
-    static void init(int arc, char** argv);
+    /// The default wex::app::OnInit takes care of this.
+    static void init(int argc, char** argv);
 
     /// Builds a debug level logger.
     static log debug(const std::string& topic = std::string());

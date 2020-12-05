@@ -471,7 +471,7 @@ bool wex::stc::link_open(link_t mode, std::string* filename)
     {
       if (!mode[LINK_CHECK])
       {
-        wxLaunchDefaultBrowser(path.string());
+        browser(path.string());
       }
 
       return true;
