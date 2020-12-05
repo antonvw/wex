@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-cmake -DCMAKE_CXX_COMPILER=${CXX} -DwexBUILD_TESTS=ON ..
+cmake -DCMAKE_CXX_COMPILER="${CXX}" -DwexBUILD_TESTS=ON ..
 make -j 4
 cmake ..
 sudo make install
@@ -10,6 +10,6 @@ test/report/wex-test-report
 
 cd ..
 git clone https://gitlab.kitware.com/antonvw/syncped.git
-cd syncped
-mkdir build && pushd build
+cd syncped || exit
+mkdir build && cd build || exit
 cmake .. && make -j 2
