@@ -7,13 +7,10 @@
 
 #include <boost/version.hpp>
 #include <iomanip>
-#include <regex>
-#include <sstream>
-#ifndef __WXMSW__
-#include <easylogging++.h>
-#endif
 #include <nlohmann/json.hpp>
 #include <pugixml.hpp>
+#include <regex>
+#include <sstream>
 #include <wex/version.h>
 #include <wx/utils.h>
 #include <wx/versioninfo.h>
@@ -82,10 +79,6 @@ const std::stringstream wex::version_info::external_libraries() const
 
      // ctags
      << PROGRAM_NAME << ": " << PROGRAM_VERSION << "\n"
-
-#ifndef __WXMSW__
-     << "easylogging++ library: " << el::VersionInfo::version() << "\n"
-#endif
 
      << wxGetLibraryVersionInfo().GetDescription().c_str();
 

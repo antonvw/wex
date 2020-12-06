@@ -36,7 +36,6 @@ and do `find_package(WEX)` in your CMakeLists.txt. This will provide the
 ## Uses
 
 - [doctest lib](https://github.com/onqtam/doctest)
-- [easylogging++ lib](https://github.com/amrayn/easyloggingpp)
 - [json lib](https://github.com/nlohmann/json)
 - [OTL database lib](http://otl.sourceforge.net/)
 - [pugixml lib](https://github.com/zeux/pugixml)

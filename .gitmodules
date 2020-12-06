@@ -4,9 +4,6 @@
 [submodule "external/pugixml"]
 	path = external/pugixml
 	url = https://github.com/zeux/pugixml.git
-[submodule "external/easyloggingpp"]
-	path = external/easyloggingpp
-	url = https://github.com/muflihun/easyloggingpp.git
 [submodule "external/wxWidgets"]
 	path = external/wxWidgets
 	url = https://github.com/wxWidgets/wxWidgets.git

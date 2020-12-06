@@ -13,6 +13,7 @@
 #include <wx/wx.h>
 #endif
 #include "test.h"
+#include <wex/cmdline.h>
 #include <wex/config.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
@@ -49,14 +50,14 @@ bool wex::test::app::OnInit()
 {
   SetAppName("wex-test"); // as in CMakeLists
 
-  m_path = path(path::current()).data().parent_path();
-  m_path.append("test").append("data");
-  path::current(m_path.string());
-
   if (!wex::app::OnInit())
   {
     return false;
   }
+
+  m_path = path(path::current()).data().parent_path();
+  m_path.append("test").append("data");
+  path::current(m_path.string());
 
   if (!m_path.dir_exists())
   {
@@ -164,6 +165,25 @@ int wex::test::main(int argc, char* argv[], wex::test::app* app)
     context.setOption("exit", true);
     context.applyCommandLine(argc, argv);
     app->set_context(&context);
+
+    std::string text;
+
+    const std::string level{"-V"};
+
+    for (int i = 0; i < argc; i++)
+    {
+      if (strcmp(argv[i], level.c_str()) == 0 && i + 1 < argc)
+      {
+        const std::string value(argv[i + 1]);
+        text = " " + level + " " + value;
+        break;
+      }
+    }
+
+    if (wex::data::cmdline c(text); !wex::cmdline().parse(c))
+    {
+      return false;
+    }
 
     return app->OnInit() && app->OnRun();
   }

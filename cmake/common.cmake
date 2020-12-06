@@ -34,11 +34,6 @@ function(wex_config)
     install(FILES ${dlls} DESTINATION ${CONFIG_INSTALL_DIR})
   endif()
 
-  # install config elp file
-  configure_file(${CMAKE_SOURCE_DIR}/data/wex-conf.elp.cmake conf.elp)
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/conf.elp 
-    DESTINATION ${CONFIG_INSTALL_DIR})
-
   # install config files in ${CONFIG_INSTALL_DIR}
   install(DIRECTORY ${CMAKE_SOURCE_DIR}/data/ 
     DESTINATION ${CONFIG_INSTALL_DIR} 
@@ -250,7 +245,6 @@ list(APPEND wxTOOLKIT_INCLUDE_DIRS
   ${wexSETUP_DIR_H}
   include 
   external/json/single_include 
-  external/easyloggingpp/src 
   external/pugixml/src
   external/wxWidgets/include
   external)
