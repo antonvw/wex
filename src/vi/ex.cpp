@@ -125,8 +125,8 @@ namespace wex
           }
 
           if (
-            line.find(":a") == 0 || line.find(":i") == 0 ||
-            line.find(":c") == 0)
+            line.starts_with(":a") || line.starts_with(":i") ||
+            line.starts_with(":c"))
           {
             if (!ex->command(line + tkz.last_delimiter()))
             {
@@ -328,14 +328,14 @@ wex::ex::ex(wex::stc* stc)
                 }},
                {":syntax",
                 [&](const std::string& command) {
-                  if (wxString(command).EndsWith("on"))
+                  if (command.ends_with("on"))
                   {
                     wex::lexers::get()->restore_theme();
                     get_stc()->get_lexer().set(
                       get_stc()->get_filename().lexer().display_lexer(),
                       true); // allow folding
                   }
-                  else if (wxString(command).EndsWith("off"))
+                  else if (command.ends_with("off"))
                   {
                     get_stc()->get_lexer().clear();
                     wex::lexers::get()->clear_theme();

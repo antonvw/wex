@@ -310,7 +310,7 @@ bool wex::address::read(const std::string& arg) const
     return false;
   }
 
-  if (arg.find("!") == 0)
+  if (arg.starts_with("!"))
   {
     process process;
 

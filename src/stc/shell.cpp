@@ -431,8 +431,7 @@ bool wex::shell::process_char(int key)
       {
         send_command();
       }
-      else if (
-        m_command_end == eol() || wxString(m_command).EndsWith(m_command_end))
+      else if (m_command_end == eol() || m_command.ends_with(m_command_end))
       {
         // We have a command.
         EmptyUndoBuffer();

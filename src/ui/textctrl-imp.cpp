@@ -63,8 +63,8 @@ wex::textctrl_imp::textctrl_imp(
           path::current(m_tc->ex()->get_stc()->get_filename().get_path());
         }
 
-        if ([[maybe_unused]] const auto& [r, e, v] =
-              auto_complete_filename(m_command.command());
+        if (const auto& [r, e, v] = 
+            auto_complete_filename(m_command.command());
             r)
         {
           AppendText(e);
@@ -310,11 +310,11 @@ wex::textctrl_imp::textctrl_imp(
         {
           if (
             get_text() == "gt" || get_text() == "n" || get_text() == "prev" ||
-            get_text().find("ta") == 0)
+            get_text().starts_with("ta"))
           {
             focus = managed_frame::HIDE_BAR_FORCE;
           }
-          else if (get_text().find("!") == 0)
+          else if (get_text().starts_with("!"))
           {
             focus = managed_frame::HIDE_BAR;
           }

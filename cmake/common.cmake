@@ -34,11 +34,6 @@ function(wex_config)
     install(FILES ${dlls} DESTINATION ${CONFIG_INSTALL_DIR})
   endif()
 
-  # install config elp file
-  configure_file(${CMAKE_SOURCE_DIR}/data/wex-conf.elp.cmake conf.elp)
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/conf.elp 
-    DESTINATION ${CONFIG_INSTALL_DIR})
-
   # install config files in ${CONFIG_INSTALL_DIR}
   install(DIRECTORY ${CMAKE_SOURCE_DIR}/data/ 
     DESTINATION ${CONFIG_INSTALL_DIR} 
@@ -215,9 +210,9 @@ endif ()
 
 if (MSVC)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
-    /D_CRT_SECURE_NO_WARNINGS /D_CRT_SECURE_NO_DEPRECATE \
+    /D_CRT_SECURE_NO_WARNINGS /D_CRT_SECURE_NO_DEPRECATE
     /D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS \
-    /std:c++17 /Zc:__cplusplus")
+    /std:c++latest /Zc:__cplusplus")
 
   if (CMAKE_BUILD_TYPE MATCHES "Debug")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D__WXDEBUG__")
@@ -239,7 +234,7 @@ else ()
   endif ()
   
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
-    -std=c++17 -Wno-overloaded-virtual -Wno-reorder -Wno-write-strings \
+    -std=c++2a -Wno-overloaded-virtual -Wno-reorder -Wno-write-strings \
     -Wno-deprecated-declarations -Wno-unused-result")
 endif ()
 
@@ -249,8 +244,7 @@ get_filename_component(wexSETUP_DIR_H ${wexSETUP_DIR_H} DIRECTORY)
 list(APPEND wxTOOLKIT_INCLUDE_DIRS 
   ${wexSETUP_DIR_H}
   include 
-  external/json/single_include 
-  external/easyloggingpp/src 
+  external/json/single_include
   external/pugixml/src
   external/wxWidgets/include
   external)

@@ -1158,7 +1158,7 @@ bool wex::vi::insert_mode(const std::string& command)
     return true;
   }
 
-  if (command.find(_s(WXK_CONTROL_R) + "=") == 0)
+  if (command.starts_with(_s(WXK_CONTROL_R) + "="))
   {
     command_reg(command);
     return true;

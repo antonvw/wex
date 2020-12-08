@@ -174,7 +174,7 @@ bool wex::auto_complete_text(
 
   for (const auto& it : v)
   {
-    if (it.find(text) == 0)
+    if (it.starts_with(text))
     {
       s = it;
       matches++;
@@ -381,7 +381,7 @@ const std::string wex::get_string_set(
     kset.end(),
     std::string{},
     [&](const std::string& a, const std::string& b) {
-      return (b.size() >= min_size && b.find(prefix) == 0) ? a + b + ' ' : a;
+      return (b.size() >= min_size && b.starts_with(prefix)) ? a + b + ' ' : a;
     });
 }
 

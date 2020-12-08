@@ -23,7 +23,7 @@ TEST_CASE("wex::ctags")
     REQUIRE(!wex::ctags::find("xest_app"));
 
     // default auto_complete
-    REQUIRE(wex::ctags(ex).auto_complete("test_").find("test_app") == 0);
+    REQUIRE(wex::ctags(ex).auto_complete("test_").starts_with("test_app"));
 
     // setup a filter using find
     wex::ctags_entry filter;
@@ -32,7 +32,7 @@ TEST_CASE("wex::ctags")
     REQUIRE(filter.kind() == "f");
 
     // auto_complete using filter should now return member functions
-    REQUIRE(wex::ctags(ex).auto_complete("me", filter).find("method") == 0);
+    REQUIRE(wex::ctags(ex).auto_complete("me", filter).starts_with("method"));
     REQUIRE(wex::ctags(ex).auto_complete("he", filter).empty());
   }
 

@@ -105,7 +105,7 @@ TEST_CASE("wex::variable")
 
       if (it == "Year")
       {
-        REQUIRE(content.find("20") == 0); // start of year
+        REQUIRE(content.starts_with("20")); // start of year
       }
 
       node.remove_attribute("name");
