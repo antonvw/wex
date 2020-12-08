@@ -58,7 +58,7 @@ int wex::app::OnExit()
 
 bool wex::app::OnInit()
 {
-  log::init(argc, argv);
+  log::init();
   log::info("started") << GetAppName().ToStdString()
                        << get_version_info().get();
 

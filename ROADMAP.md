@@ -1,6 +1,7 @@
 # roadmap
 - msw shows scrollbar for textctrl (set wxTE_NO_VSCROLL?)
 - FindFiles shows C: as folder, without rest of path
+- process-imp should be in core
 
 ## backlog
 - check github actions for ubuntu-latest upgrade ->
