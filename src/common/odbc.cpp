@@ -75,7 +75,7 @@ namespace wex
 
   void handle_error(const otl_exception& e, const otl_column_desc& desc)
   {
-    wex::log::verbose() << query_error(e) << "skipped: (" << desc.otl_var_dbtype
+    wex::log::trace() << query_error(e) << "skipped: (" << desc.otl_var_dbtype
                         << "," << desc.dbsize << ")";
   }
 }; // namespace wex
@@ -173,7 +173,7 @@ long wex::odbc::query(const std::string& query)
   try
   {
     const auto rpc(otl_cursor::direct_exec(m_odbc->connect(), query.c_str()));
-    log::verbose("query") << query << "records:" << rpc;
+    log::trace("query") << query << "records:" << rpc;
     return rpc;
   }
   catch (const otl_exception& e)
@@ -286,7 +286,7 @@ long wex::odbc::query(
   grid->EndBatch();
   grid->AutoSizeColumns(false); // not set as minimum width
 
-  log::verbose("query grid") << query << "records:" << rows;
+  log::trace("query grid") << query << "records:" << rows;
 
   return rows;
 }
@@ -381,7 +381,7 @@ long wex::odbc::query(
     rows++;
   }
 
-  log::verbose("query stc") << query << "records:" << rows;
+  log::trace("query stc") << query << "records:" << rows;
 
   return rows;
 }

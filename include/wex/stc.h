@@ -12,8 +12,8 @@
 #include <wex/auto-complete.h>
 #include <wex/hexmode.h>
 #include <wex/item.h>
-#include <wex/link.h>
 #include <wex/marker.h>
+#include <wex/path.h>
 #include <wex/stc-core.h>
 #include <wex/stc-data.h>
 #include <wex/stc-file.h>
@@ -26,6 +26,7 @@ namespace wex
   class item;
   class item_dialog;
   class lexer;
+  class link;
   class managed_frame;
   class menu;
   class path;

@@ -341,7 +341,7 @@ bool wex::report::stream::setup_tool(
     {
       if ((m_report = m_frame->activate(listview::type_tool(tool))) == nullptr)
       {
-        log::verbose("activate failed");
+        log::debug("activate failed");
         return false;
       }
     }
@@ -353,7 +353,7 @@ bool wex::report::stream::setup_tool(
 
   if (m_report != nullptr && m_report->data().type() != data::listview::FIND)
   {
-    log::verbose("report list type is not data::listview::FIND");
+    log::debug("report list type is not data::listview::FIND");
     return false;
   }
 

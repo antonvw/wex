@@ -106,6 +106,7 @@ const std::string wex::macros::get_register(char name) const
     case '*':
     case '\"':
       return clipboard_get();
+
     default:
     {
       const auto& it = m_macros.find(std::string(1, name));
@@ -134,7 +135,7 @@ const std::vector<std::string> wex::macros::get_registers() const
     }
   }
 
-  if (const std::string clipboard(trim(clipboard_get())); !clipboard.empty())
+  if (const auto& clipboard(trim(clipboard_get())); !clipboard.empty())
   {
     r.emplace_back(l.make_key("*", clipboard));
   }
@@ -216,7 +217,7 @@ bool wex::macros::load_document()
     }
   }
 
-  log::verbose("macros info")
+  log::trace("macros info")
     << "abbreviations:" << m_abbreviations.size() << "maps:" << m_map.size()
     << "macros:" << m_macros.size() << "variables:" << m_variables.size();
 
@@ -301,7 +302,7 @@ bool wex::macros::record(const std::string& text, bool new_command)
     return false;
   }
 
-  log::verbose("recorded") << "macro:" << m_mode.get_macro() << "->" << text;
+  log::trace("recorded") << "macro:" << m_mode.get_macro() << "->" << text;
 
   if (new_command)
   {
@@ -376,7 +377,7 @@ void wex::macros::set(
 {
   try
   {
-    if (auto node = m_doc.document_element().select_node(
+    if (const auto& node = m_doc.document_element().select_node(
           std::string("//" + xpath + "[@name='" + name + "']").c_str());
         node && node.node())
     {

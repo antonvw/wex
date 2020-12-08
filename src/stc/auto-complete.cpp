@@ -40,7 +40,7 @@ bool wex::auto_complete::activate(const std::string& text)
 
   if (ce.is_active())
   {
-    log::verbose("activated filter", 2) << text << ce;
+    log::trace("activated filter") << text << ce;
     m_active = text;
   }
 
@@ -174,13 +174,13 @@ bool wex::auto_complete::show_ctags(bool show)
     if (!m_scope->end())
     {
       as_variable = true;
-      log::verbose("variable", 2) << word << m_scope->iter()->second;
+      log::trace("variable") << word << m_scope->iter()->second;
     }
   }
 
   if (!m_scope->end() && !as_variable)
   {
-    log::verbose("use filter", 2)
+    log::trace("use filter")
       << m_scope->iter()->first << m_scope->iter()->second
       << "from:" << use_filter;
   }
@@ -210,7 +210,7 @@ bool wex::auto_complete::show_inserts(bool show) const
         !comp.empty())
     {
       m_stc->AutoCompShow(m_text.length() - 1, comp);
-      log::verbose("auto_complete::show_inserts chars") << comp.size();
+      log::trace("auto_complete::show_inserts chars") << comp.size();
       return true;
     }
   }
@@ -227,7 +227,7 @@ bool wex::auto_complete::show_keywords(bool show) const
         !comp.empty())
     {
       m_stc->AutoCompShow(m_text.length() - 1, comp);
-      log::verbose("auto_complete::show_keywords chars") << comp.size();
+      log::trace("auto_complete::show_keywords chars") << comp.size();
       return true;
     }
   }

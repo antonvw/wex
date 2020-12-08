@@ -18,9 +18,9 @@
 #include <wex/frame.h>
 #include <wex/frd.h>
 #include <wex/interruptible.h>
+#include <wex/item-dialog.h>
 #include <wex/item-vector.h>
 #include <wex/item.h>
-#include <wex/item-dialog.h>
 #include <wex/lexers.h>
 #include <wex/listitem.h>
 #include <wex/listview.h>
@@ -845,7 +845,7 @@ bool wex::listview::insert_item(
     }
     catch (std::exception& e)
     {
-      log::verbose(e) << "insert_item exception:" << col;
+      log(e) << "insert_item exception:" << col;
       return false;
     }
   }

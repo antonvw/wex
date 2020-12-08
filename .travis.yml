@@ -45,17 +45,5 @@ before_script:
 
 script:
   - if [ $TRAVIS_OS_NAME = osx ]; then ./ci/codespell.sh; fi
-  - mkdir build && pushd build
-  - cmake -DCMAKE_CXX_COMPILER=${CXX} -DwexBUILD_TESTS=ON ..
-  - make -j 2
-  - cmake ..
-  - sudo make install
-  - test/core/wex-test-core
-  - test/ui/wex-test-ui -tce=wex::debug
-  - test/report/wex-test-report
-  - cd ..
-  - git clone https://gitlab.kitware.com/antonvw/syncped.git
-  - cd syncped
-  - mkdir build && pushd build
-  - cmake .. && make -j 2
-
+  - mkdir -p build_$TRAVIS_OS_NAME && pushd build_$TRAVIS_OS_NAME
+  - ../ci/$TRAVIS_OS_NAME-script.sh

@@ -130,13 +130,13 @@ namespace wex
           {
             if (!ex->command(line + tkz.last_delimiter()))
             {
-              log::verbose("command insert failed line") << i + 1 << line;
+              log::trace("command insert failed line") << i + 1 << line;
               result = false;
             }
           }
           else if (!ex->command(line))
           {
-            log::verbose("command failed line") << i + 1 << line;
+            log::trace("command failed line") << i + 1 << line;
             result = false;
           }
         }
@@ -562,7 +562,7 @@ bool wex::ex::command(const std::string& cmd)
   if (!m_is_active || command.empty() || command.front() != ':')
     return false;
 
-  log::verbose("ex command") << cmd;
+  log::trace("ex command") << cmd;
 
   const auto& it = m_macros.get_map().find(command);
   command        = (it != m_macros.get_map().end() ? it->second : command);
@@ -809,7 +809,7 @@ bool wex::ex::command_set(const std::string& command)
 
   if (found)
   {
-    log::verbose(":set") << command;
+    log::trace(":set") << command;
   }
 
   return found;

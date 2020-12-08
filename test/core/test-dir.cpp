@@ -32,11 +32,14 @@ TEST_CASE("wex::dir")
     REQUIRE(dir.get_path().dir_exists());
     REQUIRE(dir.data().file_spec() == "*.h");
     REQUIRE(dir.find_files() > 50);
+
+    wex::dir limit("../../", wex::data::dir().file_spec("*.h").max_matches(25));
+    REQUIRE(limit.find_files() == 25);
   }
 
   SUBCASE("match folders")
   {
-    wex::log::verbose() << wex::path::current();
+    wex::log::trace() << wex::path::current();
     wex::dir dir(
       "../../",
       wex::data::dir().dir_spec("data").type(

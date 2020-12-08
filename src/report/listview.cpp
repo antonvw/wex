@@ -46,7 +46,7 @@ wex::report::listview::listview(const data::listview& data)
   bind(this).command(
     {{[=](wxCommandEvent& event) {
         bool           first = true;
-        wxString       file1, file2;
+        std::string    file1, file2;
         wex::listview* list = nullptr;
         for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
         {
@@ -186,8 +186,8 @@ void wex::report::listview::build_popup_menu(wex::menu& menu)
       if (auto* list = m_frame->activate(data::listview::FILE);
           list != nullptr && list->GetSelectedItemCount() == 1)
       {
-        listitem       thislist(this, GetFirstSelected());
-        const wxString current_file = thislist.get_filename().string();
+        listitem   thislist(this, GetFirstSelected());
+        const auto current_file = thislist.get_filename().string();
 
         listitem otherlist(list, list->GetFirstSelected());
 
@@ -197,7 +197,8 @@ void wex::report::listview::build_popup_menu(wex::menu& menu)
           menu.append(
             {{},
              {ID_LIST_COMPARE,
-              _("&Compare With") + " " + wxString(get_endoftext(with_file))}});
+              _("&Compare With").ToStdString() + " " +
+                get_endoftext(with_file)}});
         }
       }
     }

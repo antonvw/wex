@@ -49,8 +49,8 @@ namespace wex
     }
     else if (field == frd->text_regex())
     {
-      !save ? clb->Check(item, frd->use_regex()) :
-              frd->set_use_regex(clb->IsChecked(item));
+      !save ? clb->Check(item, frd->is_regex()) :
+              frd->set_regex(clb->IsChecked(item));
     }
     else if (field == frd->text_search_down())
     {

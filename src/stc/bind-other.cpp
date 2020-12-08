@@ -203,7 +203,7 @@ void wex::stc::key_action(wxKeyEvent& event)
       m_adding_chars = true;
     }
   }
-  else if (m_vi.mode().insert())
+  else if (m_vi.mode().is_insert())
   {
     if (isalnum(event.GetUnicodeKey()))
     {

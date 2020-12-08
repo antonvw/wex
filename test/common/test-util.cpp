@@ -102,15 +102,19 @@ TEST_CASE("wex::util" * doctest::may_fail())
   SUBCASE("marker_and_register_expansion")
   {
     get_stc()->set_text("this is some text");
-    auto*       ex = new wex::ex(get_stc());
+    auto* ex = new wex::ex(get_stc());
+
     std::string command("xxx");
     REQUIRE(!wex::marker_and_register_expansion(nullptr, command));
     REQUIRE(wex::marker_and_register_expansion(ex, command));
+
     command = "'yxxx";
     REQUIRE(!wex::marker_and_register_expansion(ex, command));
-    wex::clipboard_add("yanked");
+
+    REQUIRE(wex::clipboard_add("yanked"));
     command = "this is * end";
     REQUIRE(wex::marker_and_register_expansion(ex, command));
+
 #ifndef __WXMSW__
     REQUIRE(command == "this is yanked end");
 #endif
@@ -122,9 +126,11 @@ TEST_CASE("wex::util" * doctest::may_fail())
     std::string command("xxx `pwd` `pwd`");
     REQUIRE(wex::shell_expansion(command));
     REQUIRE(command.find("`") == std::string::npos);
+
     command = "no quotes";
     REQUIRE(wex::shell_expansion(command));
     REQUIRE(command == "no quotes");
+
     command = "illegal process `xyz`";
     REQUIRE(!wex::shell_expansion(command));
     REQUIRE(command == "illegal process `xyz`");
@@ -152,13 +158,13 @@ TEST_CASE("wex::util" * doctest::may_fail())
     get_stc()->set_text(rect);
 
     // make a block selection, invoke sort, and check result
-    REQUIRE(get_stc()->get_vi().mode().normal());
+    REQUIRE(get_stc()->get_vi().mode().is_command());
     REQUIRE(get_stc()->get_vi().command("3 "));
     REQUIRE(get_stc()->get_vi().command("K"));
-    REQUIRE(get_stc()->get_vi().mode().visual());
+    REQUIRE(get_stc()->get_vi().mode().is_visual());
     REQUIRE(get_stc()->get_vi().command("4j"));
     REQUIRE(get_stc()->get_vi().command("5l"));
-    REQUIRE(get_stc()->get_vi().mode().visual());
+    REQUIRE(get_stc()->get_vi().mode().is_visual());
 
     REQUIRE(wex::sort_selection(get_stc(), 0, 3, 5));
     REQUIRE(wex::trim(get_stc()->get_text()) == wex::trim(sorted));

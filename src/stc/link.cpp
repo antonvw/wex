@@ -132,12 +132,9 @@ wex::link::find_filename(const std::string& text, data::control& data) const
     {
       return p.make_absolute();
     }
-    else
+    else if (const path r(m_paths->find(q.string())); !r.empty())
     {
-      if (const path r(m_paths->find(q.string())); !r.empty())
-      {
-        return r;
-      }
+      return r;
     }
   }
 
@@ -153,7 +150,7 @@ const wex::path wex::link::find_url_or_mime(
   {
     // hypertext link
     if (std::vector<std::string> v;
-        (data.line() == LINE_OPEN_URL || LINE_OPEN_URL_AND_MIME) &&
+        (data.line() == LINE_OPEN_URL) &&
         (match("(https?:.*)", text, v) > 0 || match("(www.*)", text, v) > 0))
     {
       // with a possible delimiter
@@ -174,7 +171,7 @@ const wex::path wex::link::find_url_or_mime(
   }
 
   // previewable (MIME) file
-  if (stc != nullptr && stc->get_lexer().previewable())
+  if (stc != nullptr && stc->get_lexer().is_previewable())
   {
     return stc->get_filename();
   }
@@ -191,9 +188,7 @@ const wex::path wex::link::get_path(
   stc*               stc) const
 {
   // mime or url
-  if (
-    data.line() == LINE_OPEN_MIME || data.line() == LINE_OPEN_URL ||
-    data.line() == LINE_OPEN_URL_AND_MIME)
+  if (data.line() == LINE_OPEN_MIME || data.line() == LINE_OPEN_URL)
   {
     return find_url_or_mime(text, data, stc);
   }
@@ -235,11 +230,12 @@ const wex::path wex::link::get_path(
   }
 
   // if last word is a file
-  const auto pos  = between.string().find_last_of(' ');
-  wex::path  word = trim(
-    (pos != std::string::npos ? between.string().substr(pos) : std::string()));
+  const auto pos = between.string().find_last_of(' ');
 
-  if (!word.empty())
+  if (wex::path word(trim(
+        (pos != std::string::npos ? between.string().substr(pos) :
+                                    std::string())));
+      !word.empty())
   {
     if (word.file_exists())
     {

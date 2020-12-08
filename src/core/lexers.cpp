@@ -363,7 +363,7 @@ bool wex::lexers::load_document()
     }
   }
 
-  log::verbose("lexers info")
+  log::trace("lexers info")
     << "default colors:" << m_default_colours.size()
     << "global properties:" << m_global_properties.size()
     << "indicators:" << m_indicators.size() << "keywords:" << m_keywords.size()

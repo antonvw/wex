@@ -57,19 +57,20 @@ wex::shell::shell(
     }
   });
 
-  bind(this).command({{[=](wxCommandEvent& event) {
-                         AppendText(event.GetString());
-                         get_frame()->output(event.GetString());
-                       },
-                       ID_SHELL_APPEND},
-                      {[=](wxCommandEvent& event) {
-                         AppendText(event.GetString());
-                       },
-                       ID_SHELL_APPEND_ERROR},
-                      {[=](wxCommandEvent& event) {
-                         AppendText(event.GetString());
-                       },
-                       ID_SHELL_COMMAND}});
+  bind(this).command(
+    {{[=](wxCommandEvent& event) {
+        AppendText(event.GetString());
+        get_frame()->output(event.GetString());
+      },
+      ID_SHELL_APPEND},
+     {[=](wxCommandEvent& event) {
+        AppendText(event.GetString());
+      },
+      ID_SHELL_APPEND_ERROR},
+     {[=](wxCommandEvent& event) {
+        AppendText(event.GetString());
+      },
+      ID_SHELL_COMMAND}});
 
   Bind(wxEVT_MIDDLE_UP, [=](wxMouseEvent& event) {
     if (event.MiddleUp())
@@ -89,7 +90,7 @@ wex::shell::shell(
   Bind(wxEVT_KEY_DOWN, [=](wxKeyEvent& event) {
     if (!m_enabled)
     {
-      if (get_vi().mode().insert())
+      if (get_vi().mode().is_insert())
       {
         DocumentEnd();
         get_vi().mode().escape();
@@ -558,7 +559,7 @@ void wex::shell::send_command()
   }
   else
   {
-    log::verbose("posted") << m_command;
+    log::trace("posted") << m_command;
     wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND);
     event.SetString(m_command);
     GetParent()->GetEventHandler()->AddPendingEvent(event);
@@ -634,7 +635,7 @@ bool wex::shell::set_prompt(const std::string& prompt, bool do_prompt)
   if (do_prompt)
   {
     shell::prompt(
-      std::string(), 
+      std::string(),
       // only add eol if text is present
       GetTextLength() > 0);
   }

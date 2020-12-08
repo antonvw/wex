@@ -44,12 +44,10 @@ TEST_CASE("wex::core" * doctest::may_fail())
     REQUIRE(!std::get<0>(wex::auto_complete_filename("XX")));
 
 #ifdef __UNIX__
-#ifndef __WXOSX__
-    REQUIRE(std::get<0>(wex::auto_complete_filename("/usr/include/s")));
-    REQUIRE(std::get<0>(wex::auto_complete_filename("../../../src/lib/v")));
-    // It is not clear whether ~ is relative or absolute...
-    // REQUIRE( wex::auto_complete_filename("~/", expansion, v));
-#endif
+    REQUIRE(std::get<0>(wex::auto_complete_filename("/usr/local/l")));
+
+    // we are in wex/test/data
+    REQUIRE(std::get<0>(wex::auto_complete_filename("../../src/v")));
 #endif
   }
 
@@ -69,9 +67,11 @@ TEST_CASE("wex::core" * doctest::may_fail())
     // REQUIRE( wex::browser_search("test"));
   }
 
-  SUBCASE("clipboard_add") { REQUIRE(wex::clipboard_add("test")); }
-
-  SUBCASE("clipboard_get") { REQUIRE(wex::clipboard_get() == "test"); }
+  SUBCASE("clipboard")
+  {
+    REQUIRE(wex::clipboard_add("test"));
+    REQUIRE(wex::clipboard_get() == "test");
+  }
 
   SUBCASE("ellipsed")
   {
@@ -223,7 +223,7 @@ TEST_CASE("wex::core" * doctest::may_fail())
   {
     std::vector<wex::property> properties;
     pugi::xml_document         doc;
-    
+
     REQUIRE(doc.load_string("<properties>"
                             "  <property name = \"fold.comment\">2</property>"
                             "</properties>"));
@@ -238,11 +238,11 @@ TEST_CASE("wex::core" * doctest::may_fail())
   {
     std::vector<wex::style> styles;
     pugi::xml_document      doc;
-    
+
     REQUIRE(doc.load_string("<styles>"
                             "  <style no = \"2\">string</style>"
                             "</styles>"));
-    
+
     auto node = doc.document_element();
 
     wex::node_styles(&node, "cpp", styles);
@@ -318,6 +318,7 @@ TEST_CASE("wex::core" * doctest::may_fail())
   SUBCASE("trim")
   {
     REQUIRE(wex::trim("\n\tt \n    es   t\n", wex::skip_t().set()) == "t es t");
+#ifndef __WXMSW__
     REQUIRE(
       wex::trim("\n\tt \n    es   t\n", wex::skip_t().set(wex::TRIM_LEFT)) ==
       "t \n    es   t\n");
@@ -329,5 +330,6 @@ TEST_CASE("wex::core" * doctest::may_fail())
         "\n\tt \n    es   t\n",
         wex::skip_t().set(wex::TRIM_LEFT).set(wex::TRIM_RIGHT)) ==
       "t \n    es   t");
+#endif
   }
 }

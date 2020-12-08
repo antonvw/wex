@@ -19,17 +19,15 @@ TEST_CASE("wex::file_history")
     history.clear();
     REQUIRE(history.size() == 0);
 
-    auto* menu = new wex::menu();
-    menu->Append(1, "x");
-    menu->Append(2, "y");
+    auto* menu = new wex::menu({{1, "x"}, {2, "y"}});
 
     history.use_menu(100, menu);
-    history.append("xxx.cpp");
-    history.append("");
+    REQUIRE(!history.append("xxx.cpp"));
+    REQUIRE(!history.append(""));
     REQUIRE(history.size() == 0);
     REQUIRE(history.get_history_file().empty());
 
-    history.append(wex::test::get_path("test.h"));
+    REQUIRE(history.append(wex::test::get_path("test.h")));
     REQUIRE(history.size() == 1);
     REQUIRE(history.get_history_files(0).size() == 0);
     REQUIRE(history.get_history_files(5).size() == 1);
@@ -49,7 +47,8 @@ TEST_CASE("wex::file_history")
   SUBCASE("constructor")
   {
     wex::file_history history(4, 1000, "MY-KEY");
-    history.append(wex::test::get_path("test.h"));
+    REQUIRE(history.size() == 0);
+    REQUIRE(history.append(wex::test::get_path("test.h")));
     REQUIRE(history.size() == 1);
     REQUIRE(history.get_base_id() == 1000);
     REQUIRE(history.get_max_files() == 4);
@@ -60,11 +59,13 @@ TEST_CASE("wex::file_history")
   {
     wex::file_history history;
     history.clear();
+
     // file should be closed before remove (at least for windows)
     {
       wex::file file(std::string("test-history.txt"), std::ios_base::out);
       REQUIRE(file.write(std::string("test")));
     }
+
     history.append("test-history.txt");
     REQUIRE(history.get_history_file(0) == "test-history.txt");
     REQUIRE(remove("test-history.txt") == 0);

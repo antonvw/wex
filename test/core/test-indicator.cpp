@@ -42,7 +42,7 @@ TEST_CASE("wex::indicator")
     REQUIRE(ind.foreground_colour() == "green");
     REQUIRE(ind.number() == 5);
     REQUIRE(ind.style() == 6);
-    REQUIRE(!ind.underlined());
+    REQUIRE(!ind.is_underlined());
     REQUIRE(ind.is_ok());
 
     wxStyledTextCtrl s;

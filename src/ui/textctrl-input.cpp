@@ -41,7 +41,7 @@ wex::textctrl_input::textctrl_input(ex_command::type_t type)
   , m_values(config(m_name).get(std::list<std::string>{}))
   , m_iterator(m_values.cbegin())
 {
-  log::verbose("TCI") << m_name << "size:" << m_values.size();
+  log::trace("TCI") << m_name << "size:" << m_values.size();
 }
 
 wex::textctrl_input::~textctrl_input()

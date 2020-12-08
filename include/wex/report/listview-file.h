@@ -31,7 +31,7 @@ namespace wex::report
 
     /// Virtual interface
     void after_sorting() override;
-    bool get_contents_changed() const override { return m_contents_changed; };
+    bool is_contents_changed() const override { return m_contents_changed; };
     bool item_from_text(const std::string& text) override;
     void reset_contents_changed() override { m_contents_changed = false; };
 

@@ -15,31 +15,35 @@
 
 namespace wex
 {
-  bool find_margin(const std::string& text, data::find& f)
+  bool find_margin(data::find& f, frame* frame)
   {
-    if (int line = 0; f.find_margin(text, line))
+    if (int line = 0; f.find_margin(line))
     {
       data::stc(data::control().line(line + 1), f.stc()).inject();
-      log::verbose(f.stc()->get_filename().fullname())
-        << "found margin text:" << text << "on line:" << line + 1;
+      log::trace(f.stc()->get_filename().fullname())
+        << "found margin text:" << f.text() << "on line:" << line + 1;
       return true;
     }
 
+    frame->statustext(
+      get_find_result(f.text(), f.is_forward(), true),
+      std::string());
+
     return false;
   }
-  
-  bool find_other(const std::string& text, const vi& vi, data::find& f, frame* frame)
+
+  bool find_other(const vi& vi, data::find& f, frame* frame)
   {
     f.stc()->SetTargetRange(f.start_pos(), f.end_pos());
 
-    std::string stext(text);
+    std::string stext(f.text());
 
     // match word related to regex ECMAScript
     if (
       f.flags() != -1 && (f.flags() & wxSTC_FIND_CXX11REGEX) &&
       (f.flags() & wxSTC_FIND_WHOLEWORD))
     {
-      stext = "\\b" + text + "\\b";
+      stext = "\\b" + f.text() + "\\b";
     }
 
     const bool wrapscan(config(_("stc.Wrap scan")).get(true));
@@ -47,7 +51,7 @@ namespace wex
     if (f.stc()->SearchInTarget(stext) == -1)
     {
       frame->statustext(
-        get_find_result(text, f.forward(), f.recursive()),
+        get_find_result(f.text(), f.is_forward(), f.recursive()),
         std::string());
 
       bool found = false;
@@ -55,13 +59,13 @@ namespace wex
       if (!f.recursive() && wrapscan)
       {
         f.recursive(true);
-        found = f.stc()->find_next(text, f.flags(), f.forward());
+        found = f.stc()->find_next(f.text(), f.flags(), f.is_forward());
         f.recursive(false);
 
         if (!found)
         {
-          log::verbose(f.stc()->get_filename().fullname())
-            << "text:" << text << "not found";
+          log::trace(f.stc()->get_filename().fullname())
+            << "text:" << f.text() << "not found";
         }
       }
 
@@ -76,27 +80,32 @@ namespace wex
 
       f.recursive(false);
 
-      if (vi.mode().normal() || vi.mode().insert())
+      if (vi.mode().is_command() || vi.mode().is_insert())
       {
-        f.stc()->SetSelection(f.stc()->GetTargetStart(), f.stc()->GetTargetEnd());
+        f.stc()->SetSelection(
+          f.stc()->GetTargetStart(),
+          f.stc()->GetTargetEnd());
       }
-      else if (vi.mode().visual())
+      else if (f.is_forward())
       {
-        if (f.forward())
-          vi.visual_extend(f.stc()->GetSelectionStart(), f.stc()->GetTargetEnd());
-        else
-          vi.visual_extend(f.stc()->GetTargetStart(), f.stc()->GetSelectionEnd());
+        vi.visual_extend(f.stc()->GetSelectionStart(), f.stc()->GetTargetEnd());
+      }
+      else
+      {
+        vi.visual_extend(f.stc()->GetTargetStart(), f.stc()->GetSelectionEnd());
       }
 
-      f.stc()->EnsureVisible(f.stc()->LineFromPosition(f.stc()->GetTargetStart()));
+      f.stc()->EnsureVisible(
+        f.stc()->LineFromPosition(f.stc()->GetTargetStart()));
       f.stc()->EnsureCaretVisible();
 
-      log::verbose(f.stc()->get_filename().fullname()) << "found text:" << text;
+      log::trace(f.stc()->get_filename().fullname())
+        << "found text:" << f.text();
 
       return true;
     }
   }
-}
+} // namespace wex
 
 bool wex::stc::find_next(bool stc_find_string)
 {
@@ -115,16 +124,18 @@ bool wex::stc::find_next(const std::string& text, int find_flags, bool forward)
 
   wex::data::find f(
     this,
+    text,
     forward || (find_flags == -1 && find_replace_data::get()->search_down()));
+
   f.flags(find_flags);
 
   if (m_margin_text_click >= 0)
   {
-    return find_margin(text, f);
+    return find_margin(f, m_frame);
   }
   else
   {
     set_search_flags(find_flags);
-    return find_other(text, m_vi, f, m_frame);
+    return find_other(m_vi, f, m_frame);
   }
 }

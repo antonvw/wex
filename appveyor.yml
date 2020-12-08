@@ -32,6 +32,9 @@ build_script:
   - test\report\%configuration%\wex-test-report.exe
   # does not work with Debug, but Release gives invalid return after ui test
   # - ..\ci\pack.bat
+  # As administrator:
+  # cmake.exe -P cmake_install.cmake
+  # and in syncped do a build
 
 test: OFF
 

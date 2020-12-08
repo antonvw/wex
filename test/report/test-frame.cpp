@@ -56,7 +56,7 @@ TEST_CASE("wex::report::frame")
 
   REQUIRE(report_frame()->get_project() == nullptr);
 
-  wex::log::verbose(9) << "pwd:" << wex::path::current();
+  wex::log::trace("pwd") << wex::path::current();
 
   REQUIRE(!report_frame()->grep("xxxxxxx *.xyz ./"));
   REQUIRE(!report_frame()->grep("xxxxxxx yyy"));
@@ -71,10 +71,11 @@ TEST_CASE("wex::report::frame")
 
   report_frame()->set_recent_file(wex::test::get_path("test.h"));
 
-  for (auto id : std::vector<int>{wex::ID_CLEAR_PROJECTS,
-                                  wex::ID_TOOL_REPORT_FIND,
-                                  wex::ID_TOOL_REPLACE,
-                                  wex::report::ID_PROJECT_SAVE})
+  for (auto id : std::vector<int>{
+         wex::ID_CLEAR_PROJECTS,
+         wex::ID_TOOL_REPORT_FIND,
+         wex::ID_TOOL_REPLACE,
+         wex::report::ID_PROJECT_SAVE})
   {
     auto* event = new wxCommandEvent(wxEVT_MENU, id);
     wxQueueEvent(report_frame(), event);

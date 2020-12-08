@@ -32,7 +32,7 @@ void wex::ctags_entry::clear()
   m_kind.clear();
   m_signature.clear();
 
-  log::verbose("filter") << log() << " cleared";
+  log::trace("filter") << log() << " cleared";
 }
 
 bool wex::ctags_entry::is_active() const

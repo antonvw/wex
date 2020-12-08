@@ -41,6 +41,12 @@ namespace wex::data
     /// Sets file specs.
     dir& file_spec(const std::string& rhs);
 
+    /// Returns max matches to find, or -1 if no max.
+    int max_matches() const { return m_max_matches; };
+
+    /// Sets max matches.
+    dir& max_matches(int rhs);
+
     /// Returns type.
     auto type() const { return m_flags; };
 
@@ -48,6 +54,7 @@ namespace wex::data
     dir& type(type_t rhs);
 
   private:
+    int         m_max_matches{-1};
     std::string m_dir_spec, m_file_spec;
     type_t      m_flags{type_t().set()};
   };

@@ -1,8 +1,8 @@
 # roadmap
-- test cmake -P cmake_install.cmake: add to appveyor
+- msw shows scrollbar for textctrl (set wxTE_NO_VSCROLL?)
+- FindFiles shows C: as folder, without rest of path
 
 ## backlog
-- merge develop into c++20, update OTL_20
 - check github actions for ubuntu-latest upgrade ->
     new boost if available and remove from process_imp
     also update for c++20

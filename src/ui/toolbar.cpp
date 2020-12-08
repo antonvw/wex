@@ -182,12 +182,13 @@ void wex::toolbar::add_find(bool realize)
 
   AddControl(findCtrl->control());
 
-  add_tool({data::toolbar_item(wxID_DOWN)
-              .bitmap(wxArtProvider::GetBitmap(wxART_GO_DOWN, wxART_TOOLBAR))
-              .help(_("Find next")),
-            data::toolbar_item(wxID_UP)
-              .bitmap(wxArtProvider::GetBitmap(wxART_GO_UP, wxART_TOOLBAR))
-              .help(_("Find previous"))});
+  add_tool(
+    {data::toolbar_item(wxID_DOWN)
+       .bitmap(wxArtProvider::GetBitmap(wxART_GO_DOWN, wxART_TOOLBAR))
+       .help(_("Find next")),
+     data::toolbar_item(wxID_UP)
+       .bitmap(wxArtProvider::GetBitmap(wxART_GO_UP, wxART_TOOLBAR))
+       .help(_("Find previous"))});
 
   add_checkboxes(
     {{NewControlId(),
@@ -213,9 +214,9 @@ void wex::toolbar::add_find(bool realize)
       "",
       "",
       _("Search using regular expressions"),
-      find_replace_data::get()->use_regex(),
+      find_replace_data::get()->is_regex(),
       [](wxCheckBox* cb) {
-        find_replace_data::get()->set_use_regex(cb->GetValue());
+        find_replace_data::get()->set_regex(cb->GetValue());
       }}},
     false);
 
@@ -224,23 +225,25 @@ void wex::toolbar::add_find(bool realize)
     Realize();
   }
 
-  bind(this).command({{[=](wxCommandEvent& event) {
-                         findCtrl->find(true);
-                       },
-                       wxID_DOWN},
-                      {[=](wxCommandEvent& event) {
-                         findCtrl->find(false);
-                       },
-                       wxID_UP}});
+  bind(this).command(
+    {{[=](wxCommandEvent& event) {
+        findCtrl->find(true);
+      },
+      wxID_DOWN},
+     {[=](wxCommandEvent& event) {
+        findCtrl->find(false);
+      },
+      wxID_UP}});
 
-  bind(this).ui({{[=](wxUpdateUIEvent& event) {
-                    event.Enable(!findCtrl->get_text().empty());
-                  },
-                  wxID_DOWN},
-                 {[=](wxUpdateUIEvent& event) {
-                    event.Enable(!findCtrl->get_text().empty());
-                  },
-                  wxID_UP}});
+  bind(this).ui(
+    {{[=](wxUpdateUIEvent& event) {
+        event.Enable(!findCtrl->get_text().empty());
+      },
+      wxID_DOWN},
+     {[=](wxUpdateUIEvent& event) {
+        event.Enable(!findCtrl->get_text().empty());
+      },
+      wxID_UP}});
 }
 
 void wex::toolbar::add_standard(bool realize)

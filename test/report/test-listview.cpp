@@ -18,8 +18,8 @@ TEST_CASE("wex::report::listview")
       wex::report::listview::type_tool(wex::tool(wex::ID_TOOL_REPORT_FIND)) ==
       wex::data::listview::FIND);
     REQUIRE(
-      wex::report::listview::type_tool(
-        wex::tool(wex::ID_TOOL_REPORT_KEYWORD)) == wex::data::listview::KEYWORD);
+      wex::report::listview::type_tool(wex::tool(
+        wex::ID_TOOL_REPORT_KEYWORD)) == wex::data::listview::KEYWORD);
   }
 
   SUBCASE("flow")
@@ -37,10 +37,11 @@ TEST_CASE("wex::report::listview")
     lv->Select(1);
 
 #ifndef __WXMSW__
-    for (auto id : std::vector<int>{wex::ID_EDIT_OPEN,
-                                    wex::ID_EDIT_VCS_LOWEST,
-                                    wex::report::ID_LIST_COMPARE,
-                                    wex::report::ID_LIST_RUN_MAKE})
+    for (auto id : std::vector<int>{
+           wex::ID_EDIT_OPEN,
+           wex::ID_EDIT_VCS_LOWEST,
+           wex::report::ID_LIST_COMPARE,
+           wex::report::ID_LIST_RUN_MAKE})
     {
       auto* event = new wxCommandEvent(wxEVT_MENU, id);
       wxQueueEvent(lv, event);

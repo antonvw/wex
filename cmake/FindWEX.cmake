@@ -19,7 +19,7 @@ find_package(Boost 1.65.0 COMPONENTS
   filesystem program_options date_time regex REQUIRED)
 
 find_package(ODBC QUIET)
-
+      
 if (ODBC_FOUND)
   add_definitions(-DwexUSE_ODBC)
 else ()
@@ -35,6 +35,8 @@ elseif (APPLE AND IPHONE)
 
   set(PLATFORM "osx_iphone")
 elseif (APPLE)
+  find_package(ICONV)
+  find_package(ZLIB)
   add_definitions(-D__WXOSX_COCOA__)
 
   set(PLATFORM "osx_cocoa")
@@ -42,10 +44,11 @@ elseif (APPLE)
   set(cpp_LIBRARIES 
     stdc++)
 
-  set(extra_LIBRARIES 
-    wx_${PLATFORM}u_media-3.1 
+  set(apple_LIBRARIES 
     wxjpeg-3.1 
-    wxpng-3.1)
+    wxpng-3.1
+    ${ICONV_LIBRARIES}
+    ${ZLIB_LIBRARIES})
 elseif (UNIX)
   add_definitions(-D__WXGTK3__ -D__WXGTK__)
 
@@ -63,15 +66,15 @@ elseif (UNIX)
 
   find_package(JPEG)
   find_package(PNG)
-  find_package(ZLIB)
   find_package(X11)
+  find_package(ZLIB)
 
   set(cpp_LIBRARIES
     ${cpp_std_LIBRARIES}
     ${JPEG_LIBRARIES}
     ${PNG_LIBRARIES}
-    ${ZLIB_LIBRARIES}
     ${X11_LIBRARIES}
+    ${ZLIB_LIBRARIES}
     -lpthread 
     -ldl 
     -lc 
@@ -95,8 +98,6 @@ if (APPLE)
   set(CMAKE_EXE_LINKER_FLAGS "\
     -framework AudioToolbox \
     -framework WebKit \
-    /usr/lib/libz.dylib \
-    /usr/lib/libiconv.dylib \
     -framework CoreFoundation \
     -framework Security \
     -framework Carbon \
@@ -160,9 +161,9 @@ set(wex_LIBRARIES
   wex-data${USE_DEBUG}
   wex-core${USE_DEBUG}
   ${wx_LIBRARIES}
-  ${extra_LIBRARIES}
+  ${apple_LIBRARIES}
   ${Boost_LIBRARIES}
-  ${ODBC_LIBRARIES}
-  ${cpp_LIBRARIES})
+  ${cpp_LIBRARIES}
+  ${ODBC_LIBRARIES})
       
 set(wex_FOUND ON)

@@ -27,6 +27,8 @@ namespace wex
     std::string&       output,
     std::string&       error)
   {
+    const std::string show_cwd(!cwd.empty() ? "cwd: " + cwd : std::string());
+
     try
     {
 #if BOOST_VERSION / 100 % 1000 == 72
@@ -49,22 +51,27 @@ namespace wex
 
       if (!ec)
       {
-        log::verbose("system", 2) << command << "cwd:" << cwd;
+        log::debug("system") << command << show_cwd;
       }
       else
       {
         const std::string text(!error.empty() ? ":" + error : std::string());
-        log("system") << command << "cwd:" << cwd << "ec:" << ec << text;
+        log("system") << command << show_cwd << "ec:" << ec << text;
       }
 
       return ec;
     }
     catch (std::exception& e)
     {
-      log(e) << command << "cwd:" << cwd;
+      log(e) << command << show_cwd;
 
       output.clear();
       error = e.what();
+      return 1;
+    }
+    catch (...)
+    {
+      log("process_run_and_collect_output unknown exception") << command;
       return 1;
     }
   }
@@ -96,7 +103,7 @@ bool wex::process_imp::async(const std::string& path)
     bp::async_system(
       *m_io.get(),
       [&](boost::system::error_code error, int i) {
-        log::verbose("async", 2) << "exit:" << error.message();
+        log::debug("async") << "exit" << m_process->get_exec();
         if (m_debug.load())
         {
           WEX_POST(ID_DEBUG_EXIT, "", m_process->get_frame()->get_debug())
@@ -114,7 +121,7 @@ bool wex::process_imp::async(const std::string& path)
     return false;
   }
 
-  log::verbose("async", 2) << m_process->get_exec();
+  log::debug("async") << m_process->get_exec();
 
   m_debug.store(
     m_process->get_frame()->get_debug()->debug_entry().name() ==
@@ -199,7 +206,7 @@ bool wex::process_imp::async(const std::string& path)
 
         if (os.good() && !io->stopped())
         {
-          log::verbose("async", 2) << "write:" << text;
+          log::debug("async") << "write:" << text;
 
           os << text << std::endl;
 
@@ -210,7 +217,7 @@ bool wex::process_imp::async(const std::string& path)
         }
         else
         {
-          log::verbose("async", 2) << "skip:" << text;
+          log::debug("async") << "skip:" << text;
         }
       }
     }
@@ -243,7 +250,7 @@ bool wex::process_imp::stop()
     return false;
   }
 
-  log::verbose("stop") << m_process->get_exec();
+  log::trace("stop") << m_process->get_exec();
 
   try
   {

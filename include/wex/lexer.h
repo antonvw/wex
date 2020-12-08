@@ -152,7 +152,7 @@ namespace wex
 
     /// Returns true if the stc component
     /// associated with this lexer can be previewed.
-    bool previewable() const { return m_previewable; };
+    bool is_previewable() const { return m_previewable; };
 
     /// Returns the properties.
     const auto& properties() const { return m_properties; };
