@@ -24,5 +24,3 @@ foreach(p ${pattern_files})
 endforeach()
 
 file(COPY data/.odbc.ini DESTINATION ${CONFIG_INSTALL_DIR})
-
-configure_file(../data/wex-conf.elp.cmake ${CONFIG_INSTALL_DIR}/conf.elp)

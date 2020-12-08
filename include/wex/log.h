@@ -10,7 +10,6 @@
 #include <bitset>
 #include <pugixml.hpp>
 #include <sstream>
-#undef ERROR
 
 namespace wex
 {
@@ -20,11 +19,10 @@ namespace wex
   public:
     /// Static methods.
 
-    /// Initializes logging, and sets log level
-    /// depending on specified arguments.
+    /// Initializes logging, and optionally sets logfile.
     /// Should be called before constructing a log object.
-    /// The default wex::app::OnInit takes care of this.
-    static void init(int argc, char** argv);
+    /// The wex::cmdline or wex::app::OnInit takes care of this.
+    static void init(const std::string& logfile = std::string());
 
     /// Builds a debug level logger.
     static log debug(const std::string& topic = std::string());
@@ -124,5 +122,7 @@ namespace wex
     std::wstringstream m_wss;
     bool               m_separator{true};
     int                m_level;
+
+    static inline bool m_initialized{false};
   };
 }; // namespace wex

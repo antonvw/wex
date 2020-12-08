@@ -60,7 +60,7 @@ bool app::OnInit()
   SetAppName("wex-sample-ui");
 
   if (wex::data::cmdline c(argc, argv);
-      !wex::app::OnInit() || !wex::cmdline().parse(c))
+      !wex::cmdline().parse(c) || !wex::app::OnInit())
   {
     return false;
   }

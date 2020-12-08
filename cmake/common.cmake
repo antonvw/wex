@@ -1,6 +1,6 @@
 file(GLOB_RECURSE wexSETUP_H ${CMAKE_BINARY_DIR}/*setup.h)
 # use only first element from list
-list(GET wexSETUP_H 0 wexSETUP_H)
+list(GET wexSETUP_H 0 wexSETUP_H) 
 
 # functions
 
@@ -34,58 +34,57 @@ function(wex_config)
     install(FILES ${dlls} DESTINATION ${CONFIG_INSTALL_DIR})
   endif()
 
-  # install config elp file
-  configure_file(${CMAKE_SOURCE_DIR}/data/wex-conf.elp.cmake conf.elp)
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/conf.elp
-    DESTINATION ${CONFIG_INSTALL_DIR})
-
   # install config files in ${CONFIG_INSTALL_DIR}
-  install(DIRECTORY ${CMAKE_SOURCE_DIR}/data/
-    DESTINATION ${CONFIG_INSTALL_DIR}
+  install(DIRECTORY ${CMAKE_SOURCE_DIR}/data/ 
+    DESTINATION ${CONFIG_INSTALL_DIR} 
     FILES_MATCHING PATTERN "*.xml" )
   
-  install(DIRECTORY ${CMAKE_SOURCE_DIR}/data/
-    DESTINATION ${CONFIG_INSTALL_DIR}
+  install(DIRECTORY ${CMAKE_SOURCE_DIR}/data/ 
+    DESTINATION ${CONFIG_INSTALL_DIR} 
     FILES_MATCHING PATTERN "*.xsl" )
   
-  install(DIRECTORY ${CMAKE_SOURCE_DIR}/data/
-    DESTINATION ${CONFIG_INSTALL_DIR}
+  install(DIRECTORY ${CMAKE_SOURCE_DIR}/data/ 
+    DESTINATION ${CONFIG_INSTALL_DIR} 
     FILES_MATCHING PATTERN "*.txt" )
 
   if (NOT WIN32)
     install(CODE "EXECUTE_PROCESS(COMMAND chown -R ${user} ${CONFIG_INSTALL_DIR})")
   endif()
-endfunction()
+endfunction()  
 
 function(wex_install)
   set(MODULE_INSTALL_DIR ${CMAKE_ROOT}/Modules)
 
   # install FindWEX.cmake
-  install(FILES ${CMAKE_SOURCE_DIR}/cmake/FindWEX.cmake
+  install(FILES ${CMAKE_SOURCE_DIR}/cmake/FindWEX.cmake 
+    DESTINATION ${MODULE_INSTALL_DIR})
+  
+  # install some wxWidgets cmake files
+  install(FILES ${CMAKE_SOURCE_DIR}/external/wxWidgets/build/cmake/modules/FindICONV.cmake
     DESTINATION ${MODULE_INSTALL_DIR})
 
   # install include files
-  # this should be the dir as in FindWEX.cmake
-  install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/wex
+  # this should be the same dir as in FindWEX.cmake
+  install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/wex 
     DESTINATION "include/wex")
 
-  install(DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets/include/wx
+  install(DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets/include/wx 
     DESTINATION "include/wex")
 
-  install(FILES ${CMAKE_SOURCE_DIR}/external/pugixml/src/pugiconfig.hpp
+  install(FILES ${CMAKE_SOURCE_DIR}/external/pugixml/src/pugiconfig.hpp 
     DESTINATION "include/wex")
 
-  install(FILES ${CMAKE_SOURCE_DIR}/external/pugixml/src/pugixml.hpp
+  install(FILES ${CMAKE_SOURCE_DIR}/external/pugixml/src/pugixml.hpp 
     DESTINATION "include/wex")
 
   if (ODBC_FOUND)
     install(FILES ${CMAKE_SOURCE_DIR}/external/otl/otlv4.h
       DESTINATION "include/wex")
   endif ()
-
-  install(FILES ${wexSETUP_H}
+  
+  install(FILES ${wexSETUP_H} 
     DESTINATION "include/wex/wx")
-
+  
   # install libraries
   # this should be the same dir as in FindWEX.cmake
   if (MSVC)
@@ -93,8 +92,8 @@ function(wex_install)
   else ()
     file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.a)
   endif ()
-
-  install(FILES ${wex_LIBS}
+  
+  install(FILES ${wex_LIBS} 
     DESTINATION "lib/wex")
 endfunction()
 
@@ -122,13 +121,13 @@ function(wex_process_po_files)
           set(locale "fr_FR")
         endif ()
           
-        gettext_process_po_files(${locale} ALL
+        gettext_process_po_files(${locale} ALL 
           INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
           PO_FILES ${filename})
 
         if (${ARGC} GREATER 0)
           set(wxWidgets_ROOT_DIR ${CMAKE_SOURCE_DIR}/external/wxWidgets)
-          gettext_process_po_files(${locale} ALL
+          gettext_process_po_files(${locale} ALL 
             INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
             PO_FILES ${wxWidgets_ROOT_DIR}/locale/${lang}.po)
         endif ()
@@ -141,11 +140,11 @@ macro(wex_target_link_all)
   set (extra_macro_args ${ARGN})
 
   if (CENTOS)
-    set (cpp_std_LIBRARIES
+    set (cpp_std_LIBRARIES 
       /usr/gnat/lib64/libstdc++.a
       /usr/gnat/lib64/libstdc++fs.a)
   else ()
-    set (cpp_std_LIBRARIES
+    set (cpp_std_LIBRARIES 
       stdc++
       stdc++fs)
   endif ()
@@ -202,7 +201,7 @@ function(wex_test_app)
 endfunction()
           
 # general setup
-
+    
 if (WIN32)
   set(LOCALE_INSTALL_DIR bin)
 else ()
@@ -244,9 +243,8 @@ get_filename_component(wexSETUP_DIR_H ${wexSETUP_DIR_H} DIRECTORY)
 
 list(APPEND wxTOOLKIT_INCLUDE_DIRS 
   ${wexSETUP_DIR_H}
-  include
-  external/json/single_include 
-  external/easyloggingpp/src 
+  include 
+  external/json/single_include
   external/pugixml/src
   external/wxWidgets/include
   external)
