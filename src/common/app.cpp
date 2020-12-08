@@ -28,8 +28,6 @@
 #include <wex/version.h>
 #include <wx/stdpaths.h>
 
-#define NO_ASSERT 1
-
 namespace fs = std::filesystem;
 
 int wex::app::OnExit()

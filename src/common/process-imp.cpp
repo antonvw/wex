@@ -201,8 +201,7 @@ bool wex::process_imp::async(const std::string& path)
 
       if (!queue->empty())
       {
-        const std::string text(queue->front());
-        queue->pop();
+        const auto& text(queue->front());
 
         if (os.good() && !io->stopped())
         {
@@ -219,6 +218,8 @@ bool wex::process_imp::async(const std::string& path)
         {
           log::debug("async") << "skip:" << text;
         }
+          
+        queue->pop();
       }
     }
   });
