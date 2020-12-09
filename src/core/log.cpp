@@ -237,6 +237,7 @@ void wex::log::init(const std::string& default_logfile)
   logging::add_file_log(
     logging::keywords::file_name =
       default_logfile.empty() ? logfile.string() : default_logfile,
+    logging::keywords::open_mode     = std::ios_base::app,
     logging::keywords::rotation_size = 10 * 1024 * 1024,
     logging::keywords::format        = "%TimeStamp% [%Severity%] %Message%");
 
