@@ -83,7 +83,7 @@ int wex::test::app::OnRun()
 
   Bind(
     wxEVT_TIMER,
-    [=](wxTimerEvent& event) {
+    [=, this](wxTimerEvent& event) {
       m_context->run();
 
       config("AllowSync").set(false);

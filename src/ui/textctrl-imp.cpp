@@ -38,7 +38,7 @@ wex::textctrl_imp::textctrl_imp(
   SetFont(config(_("stc.Text font"))
             .get(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
 
-  Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
+  Bind(wxEVT_CHAR, [=, this](wxKeyEvent& event) {
     if (event.GetUnicodeKey() == WXK_NONE)
     {
       return;
@@ -63,8 +63,7 @@ wex::textctrl_imp::textctrl_imp(
           path::current(m_tc->ex()->get_stc()->get_filename().get_path());
         }
 
-        if (const auto& [r, e, v] = 
-            auto_complete_filename(m_command.command());
+        if (const auto& [r, e, v] = auto_complete_filename(m_command.command());
             r)
         {
           AppendText(e);
@@ -115,7 +114,7 @@ wex::textctrl_imp::textctrl_imp(
     }
   });
 
-  Bind(wxEVT_KEY_DOWN, [=](wxKeyEvent& event) {
+  Bind(wxEVT_KEY_DOWN, [=, this](wxKeyEvent& event) {
     switch (event.GetKeyCode())
     {
       case 'r':
@@ -225,12 +224,12 @@ wex::textctrl_imp::textctrl_imp(
 
   Bind(
     wxEVT_MENU,
-    [=](wxCommandEvent& event) {
+    [=, this](wxCommandEvent& event) {
       WriteText(event.GetString());
     },
     m_id_register);
 
-  Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
+  Bind(wxEVT_SET_FOCUS, [=, this](wxFocusEvent& event) {
     event.Skip();
 
     if (m_tc->ex() != nullptr)
@@ -239,7 +238,7 @@ wex::textctrl_imp::textctrl_imp(
     }
   });
 
-  Bind(wxEVT_TEXT, [=](wxCommandEvent& event) {
+  Bind(wxEVT_TEXT, [=, this](wxCommandEvent& event) {
     event.Skip();
 
     if (get_text().size() == 0 && m_input == 0)
@@ -259,7 +258,7 @@ wex::textctrl_imp::textctrl_imp(
     }
   });
 
-  Bind(wxEVT_TEXT_ENTER, [=](wxCommandEvent& event) {
+  Bind(wxEVT_TEXT_ENTER, [=, this](wxCommandEvent& event) {
     if (m_tc->ex() == nullptr || get_text().empty())
     {
       m_tc->frame()->hide_ex_bar(managed_frame::HIDE_BAR_FORCE_FOCUS_STC);
@@ -328,11 +327,11 @@ wex::textctrl_imp::textctrl_imp(
     }
   });
 
-  Bind(wxEVT_TEXT_CUT, [=](wxClipboardTextEvent& event) {
+  Bind(wxEVT_TEXT_CUT, [=, this](wxClipboardTextEvent& event) {
     // prevent cut
   });
 
-  Bind(wxEVT_TEXT_PASTE, [=](wxClipboardTextEvent& event) {
+  Bind(wxEVT_TEXT_PASTE, [=, this](wxClipboardTextEvent& event) {
     if (const std::string text(clipboard_get()); !text.empty())
     {
       if (!GetStringSelection().empty())
@@ -371,7 +370,7 @@ wex::textctrl_imp::textctrl_imp(
 
 void wex::textctrl_imp::bind()
 {
-  Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
+  Bind(wxEVT_TIMER, [=, this](wxTimerEvent& event) {
     wxTextCtrl::SelectAll();
     m_all_selected = true;
   });

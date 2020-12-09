@@ -57,28 +57,28 @@ namespace wex
 
 void wex::stc::bind_other()
 {
-  Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
+  Bind(wxEVT_CHAR, [=, this](wxKeyEvent& event) {
     key_action(event);
   });
 
-  Bind(wxEVT_FIND, [=](wxFindDialogEvent& event) {
+  Bind(wxEVT_FIND, [=, this](wxFindDialogEvent& event) {
     find_next(false);
   });
 
-  Bind(wxEVT_FIND_NEXT, [=](wxFindDialogEvent& event) {
+  Bind(wxEVT_FIND_NEXT, [=, this](wxFindDialogEvent& event) {
     find_next(false);
   });
 
-  Bind(wxEVT_FIND_REPLACE, [=](wxFindDialogEvent& event) {
+  Bind(wxEVT_FIND_REPLACE, [=, this](wxFindDialogEvent& event) {
     replace_next(false);
   });
 
-  Bind(wxEVT_FIND_REPLACE_ALL, [=](wxFindDialogEvent& event) {
+  Bind(wxEVT_FIND_REPLACE_ALL, [=, this](wxFindDialogEvent& event) {
     auto* frd = find_replace_data::get();
     replace_all(frd->get_find_string(), frd->get_replace_string());
   });
 
-  Bind(wxEVT_KEY_DOWN, [=](wxKeyEvent& event) {
+  Bind(wxEVT_KEY_DOWN, [=, this](wxKeyEvent& event) {
     if (is_hexmode())
     {
       if (event.GetKeyCode() == WXK_LEFT || event.GetKeyCode() == WXK_RIGHT)
@@ -98,42 +98,42 @@ void wex::stc::bind_other()
     }
   });
 
-  Bind(wxEVT_KEY_UP, [=](wxKeyEvent& event) {
+  Bind(wxEVT_KEY_UP, [=, this](wxKeyEvent& event) {
     event.Skip();
     check_brace();
     m_fold_level = get_fold_level();
   });
 
-  Bind(wxEVT_LEFT_DCLICK, [=](wxMouseEvent& event) {
+  Bind(wxEVT_LEFT_DCLICK, [=, this](wxMouseEvent& event) {
     mouse_action(event);
   });
 
-  Bind(wxEVT_LEFT_UP, [=](wxMouseEvent& event) {
+  Bind(wxEVT_LEFT_UP, [=, this](wxMouseEvent& event) {
     mouse_action(event);
   });
 
   if (m_data.menu().any())
   {
-    Bind(wxEVT_RIGHT_UP, [=](wxMouseEvent& event) {
+    Bind(wxEVT_RIGHT_UP, [=, this](wxMouseEvent& event) {
       mouse_action(event);
     });
   }
 
-  Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
+  Bind(wxEVT_SET_FOCUS, [=, this](wxFocusEvent& event) {
     m_frame->set_find_focus(this);
     event.Skip();
   });
 
-  Bind(wxEVT_STC_AUTOCOMP_COMPLETED, [=](wxStyledTextEvent& event) {
+  Bind(wxEVT_STC_AUTOCOMP_COMPLETED, [=, this](wxStyledTextEvent& event) {
     m_auto_complete.activate(event.GetText().ToStdString());
   });
 
-  Bind(wxEVT_STC_CHARADDED, [=](wxStyledTextEvent& event) {
+  Bind(wxEVT_STC_CHARADDED, [=, this](wxStyledTextEvent& event) {
     event.Skip();
     auto_indentation(event.GetKey());
   });
 
-  Bind(wxEVT_STC_DO_DROP, [=](wxStyledTextEvent& event) {
+  Bind(wxEVT_STC_DO_DROP, [=, this](wxStyledTextEvent& event) {
     if (is_hexmode() || GetReadOnly())
     {
       event.SetDragResult(wxDragNone);
@@ -141,7 +141,7 @@ void wex::stc::bind_other()
     event.Skip();
   });
 
-  Bind(wxEVT_STC_START_DRAG, [=](wxStyledTextEvent& event) {
+  Bind(wxEVT_STC_START_DRAG, [=, this](wxStyledTextEvent& event) {
     if (is_hexmode() || GetReadOnly())
     {
       event.SetDragAllowMove(false);
@@ -149,7 +149,7 @@ void wex::stc::bind_other()
     event.Skip();
   });
 
-  Bind(wxEVT_STC_DWELLEND, [=](wxStyledTextEvent& event) {
+  Bind(wxEVT_STC_DWELLEND, [=, this](wxStyledTextEvent& event) {
     if (CallTipActive())
     {
       CallTipCancel();
@@ -159,11 +159,11 @@ void wex::stc::bind_other()
   // if we support automatic fold, this can be removed,
   // not yet possible for wx3.0. And add wxSTC_AUTOMATICFOLD_CLICK
   // to config_dialog, and SetAutomaticFold.
-  Bind(wxEVT_STC_MARGINCLICK, [=](wxStyledTextEvent& event) {
+  Bind(wxEVT_STC_MARGINCLICK, [=, this](wxStyledTextEvent& event) {
     margin_action(event);
   });
 
-  Bind(wxEVT_STC_MARGIN_RIGHT_CLICK, [=](wxStyledTextEvent& event) {
+  Bind(wxEVT_STC_MARGIN_RIGHT_CLICK, [=, this](wxStyledTextEvent& event) {
     if (event.GetMargin() == m_margin_text_number)
     {
       auto* menu = new wex::menu({{id::stc::margin_text_hide, "&Hide"}, {}});
@@ -185,7 +185,7 @@ void wex::stc::bind_other()
     }
   });
 
-  Bind(wxEVT_STC_UPDATEUI, [=](wxStyledTextEvent& event) {
+  Bind(wxEVT_STC_UPDATEUI, [=, this](wxStyledTextEvent& event) {
     event.Skip();
     if (event.GetUpdated() & wxSTC_UPDATE_SELECTION)
     {

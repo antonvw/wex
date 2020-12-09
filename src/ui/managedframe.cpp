@@ -30,10 +30,11 @@ wex::managed_frame::managed_frame(size_t maxFiles, const data::window& data)
   , m_findbar(new toolbar(this))
   , m_optionsbar(new toolbar(this))
   , m_toolbar(new toolbar(this))
-  , m_toggled_panes({{{"FINDBAR", _("&Findbar")}, ID_VIEW_LOWEST + 1},
-                     {{"OPTIONSBAR", _("&Optionsbar")}, ID_VIEW_LOWEST + 2},
-                     {{"TOOLBAR", _("&Toolbar")}, ID_VIEW_LOWEST + 3},
-                     {{"PROCESS", _("&Process")}, ID_VIEW_LOWEST + 4}})
+  , m_toggled_panes(
+      {{{"FINDBAR", _("&Findbar")}, ID_VIEW_LOWEST + 1},
+       {{"OPTIONSBAR", _("&Optionsbar")}, ID_VIEW_LOWEST + 2},
+       {{"TOOLBAR", _("&Toolbar")}, ID_VIEW_LOWEST + 3},
+       {{"PROCESS", _("&Process")}, ID_VIEW_LOWEST + 4}})
 {
   m_manager.SetManagedWindow(this);
 
@@ -46,7 +47,7 @@ wex::managed_frame::managed_frame(size_t maxFiles, const data::window& data)
 
   hide_ex_bar();
 
-  Bind(wxEVT_AUI_PANE_CLOSE, [=](wxAuiManagerEvent& event) {
+  Bind(wxEVT_AUI_PANE_CLOSE, [=, this](wxAuiManagerEvent& event) {
     auto* info = event.GetPane();
     info->BestSize(info->window->GetSize()).Fixed().Resizable();
     m_manager.Update();
@@ -55,7 +56,7 @@ wex::managed_frame::managed_frame(size_t maxFiles, const data::window& data)
     m_optionsbar->set_checkbox(info->name, false);
   });
 
-  Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
+  Bind(wxEVT_CLOSE_WINDOW, [=, this](wxCloseEvent& event) {
     m_file_history.save();
 
     if (!m_perspective.empty())
@@ -70,13 +71,13 @@ wex::managed_frame::managed_frame(size_t maxFiles, const data::window& data)
   {
     Bind(
       wxEVT_UPDATE_UI,
-      [=](wxUpdateUIEvent& event) {
+      [=, this](wxUpdateUIEvent& event) {
         event.Check(m_manager.GetPane(it.first.first).IsShown());
       },
       it.second);
     Bind(
       wxEVT_MENU,
-      [=](wxCommandEvent& event) {
+      [=, this](wxCommandEvent& event) {
         pane_toggle(it.first.first);
       },
       it.second);
@@ -84,7 +85,7 @@ wex::managed_frame::managed_frame(size_t maxFiles, const data::window& data)
 
   Bind(
     wxEVT_MENU,
-    [=](wxCommandEvent& event) {
+    [=, this](wxCommandEvent& event) {
       on_menu_history(
         m_file_history,
         event.GetId() - m_file_history.get_base_id());
@@ -93,11 +94,11 @@ wex::managed_frame::managed_frame(size_t maxFiles, const data::window& data)
     m_file_history.get_base_id() + m_file_history.get_max_files());
 
   bind(this).command(
-    {{[=](wxCommandEvent& event) {
+    {{[=, this](wxCommandEvent& event) {
         find_replace_data::get()->set_find_strings(std::list<std::string>{});
       },
       ID_CLEAR_FINDS},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         stc::config_dialog(data::window()
                              .id(wxID_PREFERENCES)
                              .parent(this)
@@ -105,11 +106,11 @@ wex::managed_frame::managed_frame(size_t maxFiles, const data::window& data)
                              .button(wxAPPLY | wxOK | wxCANCEL));
       },
       wxID_PREFERENCES},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         m_file_history.clear();
       },
       ID_CLEAR_FILES},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         if (auto* stc = get_stc(); stc != nullptr)
         {
           auto it = find_replace_data::get()->get_find_strings().begin();
@@ -403,12 +404,12 @@ void wex::managed_frame::statusbar_clicked_right(const std::string& pane)
   {
     if (auto* stc = get_stc(); stc != nullptr)
     {
-      PopupMenu(
-        new wex::menu({{wxWindow::NewControlId(),
-                        stc->is_shown_line_numbers() ? "&Hide" : "&Show",
-                        data::menu().action([=](wxCommandEvent&) {
-                          stc->show_line_numbers(!stc->is_shown_line_numbers());
-                        })}}));
+      PopupMenu(new wex::menu(
+        {{wxWindow::NewControlId(),
+          stc->is_shown_line_numbers() ? "&Hide" : "&Show",
+          data::menu().action([=, this](wxCommandEvent&) {
+            stc->show_line_numbers(!stc->is_shown_line_numbers());
+          })}}));
     }
   }
   else if (pane == "PaneLexer" || pane == "PaneTheme")

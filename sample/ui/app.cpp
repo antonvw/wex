@@ -241,7 +241,7 @@ frame::frame()
   Bind(wxEVT_MENU, &frame::on_command, this, ID_STC_SPLIT);
 
   wex::bind(this).command(
-    {{[=](wxCommandEvent& event) {
+    {{[=, this](wxCommandEvent& event) {
         wxAboutDialogInfo info;
         info.SetIcon(GetIcon());
         info.SetVersion(wex::get_version_info().get());
@@ -250,7 +250,7 @@ frame::frame()
         wxAboutBox(info);
       },
       wxID_ABOUT},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         const auto val = wxGetNumberFromUser(
           "Input columns:",
           wxEmptyString,
@@ -269,7 +269,7 @@ frame::frame()
         }
       },
       ID_DLG_CONFIG_ITEM_COL},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         auto* dlg = new wex::item_dialog(
           test_config_items(0, 1),
           wex::data::window()
@@ -284,7 +284,7 @@ frame::frame()
         dlg->Show();
       },
       ID_DLG_CONFIG_ITEM},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         wex::item_dialog(
           test_config_items(0, 1),
           wex::data::window().button(wxCANCEL).title("Config Dialog Readonly"),
@@ -293,19 +293,19 @@ frame::frame()
           .ShowModal();
       },
       ID_DLG_CONFIG_ITEM_READONLY},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         wex::item_dialog(test_items()).ShowModal();
       },
       ID_DLG_ITEM},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         m_listview->config_dialog();
       },
       ID_DLG_LISTVIEW},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         wex::stc::config_dialog(wex::data::window().button(wxAPPLY | wxCANCEL));
       },
       ID_DLG_STC_CONFIG},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         std::string text;
         for (auto i = 0; i < 100; i++)
         {
@@ -318,16 +318,16 @@ frame::frame()
           .ShowModal();
       },
       ID_DLG_STC_ENTRY},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         wex::vcs().config_dialog();
       },
       ID_DLG_VCS},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         m_shell->prompt(
           "\nHello '" + event.GetString().ToStdString() + "' from the shell");
       },
       wex::ID_SHELL_COMMAND},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         wxFileDialog dlg(
           this,
           _("Open File"),
@@ -341,7 +341,7 @@ frame::frame()
         wex::stc_entry_dialog(vcs.name()).ShowModal();
       },
       ID_SHOW_VCS},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         if (m_notebook->set_selection("Statistics") == nullptr)
         {
           m_notebook->add_page(wex::data::notebook()
@@ -350,7 +350,7 @@ frame::frame()
         }
       },
       ID_STATISTICS_SHOW},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         const long value = wxGetNumberFromUser(
           "Input:",
           wxEmptyString,
@@ -364,14 +364,14 @@ frame::frame()
         }
       },
       ID_STC_FLAGS},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         m_process->execute();
       },
       wxID_EXECUTE}});
 
   Bind(
     wxEVT_UPDATE_UI,
-    [=](wxUpdateUIEvent& event) {
+    [=, this](wxUpdateUIEvent& event) {
       event.Enable(
         (get_listview() != nullptr && get_listview()->GetItemCount() > 0) ||
         (get_stc() != nullptr && get_stc()->GetLength() > 0));
@@ -380,7 +380,7 @@ frame::frame()
 
   Bind(
     wxEVT_UPDATE_UI,
-    [=](wxUpdateUIEvent& event) {
+    [=, this](wxUpdateUIEvent& event) {
       event.Enable(
         (get_listview() != nullptr && get_listview()->GetItemCount() > 0) ||
         (get_stc() != nullptr && get_stc()->GetLength() > 0));

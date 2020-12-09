@@ -100,10 +100,10 @@ TEST_CASE("wex::ex")
   SUBCASE("test commands")
   {
     // Most commands are tested using the :so command.
-    for (const auto& command :
-         std::vector<std::pair<std::string, bool>>{{":ab", true},
-                                                   {":ve", false},
-                                                   {":1,$s/s/w/", true}})
+    for (const auto& command : std::vector<std::pair<std::string, bool>>{
+           {":ab", true},
+           {":ve", false},
+           {":1,$s/s/w/", true}})
     {
       CAPTURE(command);
       REQUIRE(ex->command(command.first));
@@ -280,12 +280,12 @@ TEST_CASE("wex::ex")
     REQUIRE(stc->GetLineCount() == 12);
     stc->GotoLine(2);
 
-    for (const auto& go :
-         std::vector<std::pair<std::string, int>>{{":1", 0},
-                                                  {":-10", 0},
-                                                  {":10", 9},
-                                                  {":/c/", 2},
-                                                  {":10000", 11}})
+    for (const auto& go : std::vector<std::pair<std::string, int>>{
+           {":1", 0},
+           {":-10", 0},
+           {":10", 9},
+           {":/c/", 2},
+           {":10000", 11}})
     {
       REQUIRE(ex->command(go.first));
       REQUIRE(stc->GetCurrentLine() == go.second);

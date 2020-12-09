@@ -47,7 +47,7 @@ frame::frame()
          {}}),
       "&View"},
      {new wex::menu(
-        {{wxID_ABOUT, "", wex::data::menu().action([=](wxCommandEvent& event) {
+        {{wxID_ABOUT, "", wex::data::menu().action([=, this](wxCommandEvent& event) {
             wxAboutDialogInfo info;
             info.SetIcon(GetIcon());
             info.SetVersion(wex::get_version_info().get());
@@ -98,7 +98,7 @@ frame::frame()
 
   Bind(
     wxEVT_MENU,
-    [=](wxCommandEvent& event) {
+    [=, this](wxCommandEvent& event) {
       m_stc->get_file().file_new(wex::path());
     },
     wxID_NEW);

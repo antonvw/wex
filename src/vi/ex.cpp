@@ -167,7 +167,7 @@ wex::ex::ex(wex::stc* stc)
                     "Abbreviations",
                     command,
                     &m_macros.get_abbreviations(),
-                    [=](const std::string& name, const std::string& value) {
+                    [=, this](const std::string& name, const std::string& value) {
                       m_macros.set_abbreviation(name, value);
                       return true;
                     });
@@ -240,7 +240,7 @@ wex::ex::ex(wex::stc* stc)
                         "Map",
                         command,
                         nullptr,
-                        [=](const std::string& name, const std::string& value) {
+                        [=, this](const std::string& name, const std::string& value) {
                           m_macros.set_key_map(name, value);
                           return true;
                         });
@@ -270,7 +270,7 @@ wex::ex::ex(wex::stc* stc)
                         "Map",
                         command,
                         nullptr,
-                        [=](const std::string& name, const std::string& value) {
+                        [=, this](const std::string& name, const std::string& value) {
                           m_macros.set_map(name, value);
                           return true;
                         });
