@@ -230,13 +230,13 @@ wex::listview::listview(const data::listview& data)
 
   m_frame->update_statusbar(this);
 
-  Bind(wxEVT_FIND, [=](wxFindDialogEvent& event) {
+  Bind(wxEVT_FIND, [=, this](wxFindDialogEvent& event) {
     find_next(
       find_replace_data::get()->get_find_string(),
       find_replace_data::get()->search_down());
   });
 
-  Bind(wxEVT_FIND_NEXT, [=](wxFindDialogEvent& event) {
+  Bind(wxEVT_FIND_NEXT, [=, this](wxFindDialogEvent& event) {
     find_next(
       find_replace_data::get()->get_find_string(),
       find_replace_data::get()->search_down());
@@ -246,7 +246,7 @@ wex::listview::listview(const data::listview& data)
     m_data.type() != data::listview::NONE &&
     m_data.type() != data::listview::TSV)
   {
-    Bind(wxEVT_IDLE, [=](wxIdleEvent& event) {
+    Bind(wxEVT_IDLE, [=, this](wxIdleEvent& event) {
       event.Skip();
       if (
         !IsShown() || interruptible::is_running() || GetItemCount() == 0 ||
@@ -291,7 +291,7 @@ wex::listview::listview(const data::listview& data)
     });
   }
 
-  Bind(wxEVT_LIST_BEGIN_DRAG, [=](wxListEvent& event) {
+  Bind(wxEVT_LIST_BEGIN_DRAG, [=, this](wxListEvent& event) {
     // Start drag operation.
     std::string text;
     for (auto i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
@@ -304,15 +304,15 @@ wex::listview::listview(const data::listview& data)
     }
   });
 
-  Bind(wxEVT_LIST_ITEM_ACTIVATED, [=](wxListEvent& event) {
+  Bind(wxEVT_LIST_ITEM_ACTIVATED, [=, this](wxListEvent& event) {
     item_activated(event.GetIndex());
   });
 
-  Bind(wxEVT_LIST_ITEM_DESELECTED, [=](wxListEvent& event) {
+  Bind(wxEVT_LIST_ITEM_DESELECTED, [=, this](wxListEvent& event) {
     m_frame->update_statusbar(this);
   });
 
-  Bind(wxEVT_LIST_ITEM_SELECTED, [=](wxListEvent& event) {
+  Bind(wxEVT_LIST_ITEM_SELECTED, [=, this](wxListEvent& event) {
     if (m_data.type() != data::listview::NONE && GetSelectedItemCount() == 1)
     {
       if (const wex::path fn(listitem(this, event.GetIndex()).get_filename());
@@ -329,13 +329,13 @@ wex::listview::listview(const data::listview& data)
     m_frame->update_statusbar(this);
   });
 
-  Bind(wxEVT_LIST_COL_CLICK, [=](wxListEvent& event) {
+  Bind(wxEVT_LIST_COL_CLICK, [=, this](wxListEvent& event) {
     sort_column(
       event.GetColumn(),
       (sort_t)config(_("list.Sort method")).get(SORT_TOGGLE));
   });
 
-  Bind(wxEVT_LIST_COL_RIGHT_CLICK, [=](wxListEvent& event) {
+  Bind(wxEVT_LIST_COL_RIGHT_CLICK, [=, this](wxListEvent& event) {
     m_to_be_sorted_column_no = event.GetColumn();
 
     menu menu(GetSelectedItemCount() > 0 ? menu::IS_SELECTED : menu::DEFAULT);
@@ -346,68 +346,68 @@ wex::listview::listview(const data::listview& data)
   });
 
   bind(this).command(
-    {{[=](wxCommandEvent& event) {
+    {{[=, this](wxCommandEvent& event) {
         clear();
       },
       wxID_CLEAR},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         copy_selection_to_clipboard();
       },
       wxID_COPY},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         edit_delete();
       },
       wxID_DELETE},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         item_from_text(clipboard_get());
       },
       wxID_PASTE},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         SetItemState(-1, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
       },
       wxID_SELECTALL},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         sort_column(m_to_be_sorted_column_no, SORT_ASCENDING);
       },
       wxID_SORT_ASCENDING},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         sort_column(m_to_be_sorted_column_no, SORT_DESCENDING);
       },
       wxID_SORT_DESCENDING},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         copy_selection_to_clipboard();
         edit_delete();
       },
       wxID_CUT},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         for (auto i = 0; i < GetItemCount(); i++)
         {
           Select(i, !IsSelected(i));
         }
       },
       ID_EDIT_SELECT_INVERT},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         for (auto i = 0; i < GetItemCount(); i++)
         {
           Select(i, false);
         }
       },
       ID_EDIT_SELECT_NONE},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         if (on_command(this, event))
         {
           m_frame->update_statusbar(this);
         }
       },
       wxID_ADD},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         for (auto i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
         {
           item_activated(i);
         }
       },
       ID_EDIT_OPEN},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         if (!IsShown() || GetItemCount() == 0)
           return;
         if (const auto val(wxGetNumberFromUser(
@@ -424,7 +424,7 @@ wex::listview::listview(const data::listview& data)
       },
       wxID_JUMP_TO}});
 
-  Bind(wxEVT_RIGHT_DOWN, [=](wxMouseEvent& event) {
+  Bind(wxEVT_RIGHT_DOWN, [=, this](wxMouseEvent& event) {
     menu::menu_t style(menu::menu_t().set(menu::IS_POPUP));
     if (GetSelectedItemCount() > 0)
       style.set(menu::IS_SELECTED);
@@ -444,12 +444,12 @@ wex::listview::listview(const data::listview& data)
     }
   });
 
-  Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
+  Bind(wxEVT_SET_FOCUS, [=, this](wxFocusEvent& event) {
     m_frame->set_find_focus(this);
     event.Skip();
   });
 
-  Bind(wxEVT_SHOW, [=](wxShowEvent& event) {
+  Bind(wxEVT_SHOW, [=, this](wxShowEvent& event) {
     event.Skip();
     m_frame->update_statusbar(this);
   });
@@ -475,7 +475,7 @@ bool wex::listview::append_columns(const std::vector<column>& cols)
 
     Bind(
       wxEVT_MENU,
-      [=](wxCommandEvent& event) {
+      [=, this](wxCommandEvent& event) {
         sort_column(event.GetId() - m_col_event_id, SORT_TOGGLE);
       },
       m_col_event_id + GetColumnCount() - 1);
@@ -583,7 +583,7 @@ void wex::listview::config_get()
   const auto&        ci(config_items());
   const item_vector& iv(&ci);
 
-  lexers::get()->apply_default_style([=](const std::string& back) {
+  lexers::get()->apply_default_style([=, this](const std::string& back) {
     SetBackgroundColour(wxColour(back));
   });
 

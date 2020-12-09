@@ -44,7 +44,7 @@ wex::report::listview::listview(const data::listview& data)
     .set(this);
 
   bind(this).command(
-    {{[=](wxCommandEvent& event) {
+    {{[=, this](wxCommandEvent& event) {
         bool           first = true;
         std::string    file1, file2;
         wex::listview* list = nullptr;
@@ -89,11 +89,11 @@ wex::report::listview::listview(const data::listview& data)
         }
       },
       ID_LIST_COMPARE},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         make(listitem(this, GetFirstSelected()).get_filename());
       },
       ID_LIST_RUN_MAKE},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         const wex::tool& tool(event.GetId());
         if (
           tool.id() == ID_TOOL_REPORT_KEYWORD &&
@@ -107,7 +107,7 @@ wex::report::listview::listview(const data::listview& data)
           return;
 
 #ifdef __WXMSW__
-        std::thread t([=] {
+        std::thread t([=, this] {
 #endif
           statistics<int> stats;
 
@@ -138,7 +138,7 @@ wex::report::listview::listview(const data::listview& data)
 #endif
       },
       ID_TOOL_LOWEST},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         std::vector<path> files;
         for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
         {

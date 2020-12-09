@@ -124,7 +124,7 @@ wex::vi::vi(wex::stc* arg)
   , m_mode(
       this,
       // insert mode process
-      [=](const std::string& command) {
+      [=, this](const std::string& command) {
         if (!m_dot)
         {
           m_insert_text.clear();
@@ -134,7 +134,7 @@ wex::vi::vi(wex::stc* arg)
         get_stc()->BeginUndoAction();
       },
       // back to command mode process
-      [=]() {
+      [=, this]() {
         if (!m_dot)
         {
           const std::string c(m_insert_command + register_insert());

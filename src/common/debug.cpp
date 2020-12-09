@@ -83,11 +83,11 @@ wex::debug::debug(wex::managed_frame* frame, wex::process* debug)
   set_entry(config("debug.debugger").get());
 
   bind(this).command(
-    {{[=](wxCommandEvent& event) {
+    {{[=, this](wxCommandEvent& event) {
         is_finished();
       },
       ID_DEBUG_EXIT},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         const std::string text(event.GetString());
         // parse delete a breakpoint with text, numbers
         if (std::vector<std::string> v;
@@ -118,7 +118,7 @@ wex::debug::debug(wex::managed_frame* frame, wex::process* debug)
         }
       },
       ID_DEBUG_STDIN},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         m_stdout += event.GetString();
         data::stc data;
 

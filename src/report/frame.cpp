@@ -82,24 +82,24 @@ wex::report::frame::frame(
 
   Bind(wxEVT_IDLE, &frame::on_idle, this);
 
-  Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
+  Bind(wxEVT_CLOSE_WINDOW, [=, this](wxCloseEvent& event) {
     m_project_history.save();
     event.Skip();
   });
 
   bind(this).command(
-    {{[=](wxCommandEvent& event) {
+    {{[=, this](wxCommandEvent& event) {
         m_project_history.clear();
       },
       ID_CLEAR_PROJECTS},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         if (auto* project = get_project(); project != nullptr)
         {
           project->file_save();
         }
       },
       ID_PROJECT_SAVE},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         if (!event.GetString().empty())
         {
           grep(event.GetString());
@@ -114,7 +114,7 @@ wex::report::frame::frame(
         }
       },
       ID_TOOL_REPORT_FIND},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         if (!event.GetString().empty())
         {
           sed(event.GetString());
@@ -132,7 +132,7 @@ wex::report::frame::frame(
 
   Bind(
     wxEVT_MENU,
-    [=](wxCommandEvent& event) {
+    [=, this](wxCommandEvent& event) {
       on_menu_history(
         m_project_history,
         event.GetId() - m_project_history.get_base_id(),
@@ -182,7 +182,7 @@ void wex::report::frame::find_in_files(wxWindowID dialogid)
     return;
 
 #ifdef __WXMSW__
-  std::thread t([=] {
+  std::thread t([=, this] {
 #endif
     log::status(find_replace_string(replace));
 
@@ -247,7 +247,7 @@ bool wex::report::frame::find_in_files(
   }
 
 #ifdef __WXMSW__
-  std::thread t([=] {
+  std::thread t([=, this] {
 #endif
     statistics<int> stats;
 
@@ -381,7 +381,7 @@ bool wex::report::frame::grep(const std::string& arg, bool sed)
   }
 
 #ifdef __WXMSW__
-  std::thread t([=] {
+  std::thread t([=, this] {
 #endif
     if (auto* stc = get_stc(); stc != nullptr)
       path::current(stc->get_filename().get_path());
