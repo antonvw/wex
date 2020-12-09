@@ -29,10 +29,9 @@ namespace wex
 {
   constexpr int c_strcmp(char const* lhs, char const* rhs)
   {
-    return (('\0' == lhs[0]) && ('\0' == rhs[0])) ?
-             0 :
-             (lhs[0] != rhs[0]) ? (lhs[0] - rhs[0]) :
-                                  c_strcmp(lhs + 1, rhs + 1);
+    return (('\0' == lhs[0]) && ('\0' == rhs[0])) ? 0 :
+           (lhs[0] != rhs[0])                     ? (lhs[0] - rhs[0]) :
+                                                    c_strcmp(lhs + 1, rhs + 1);
   };
 
   const std::string _s(wxKeyCode key) { return std::string(1, key); }
