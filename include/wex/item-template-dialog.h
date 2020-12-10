@@ -77,7 +77,7 @@ namespace wex
         case item::COMMANDLINKBUTTON:
           Bind(
             wxEVT_BUTTON,
-            [=, this](wxCommandEvent& event) {
+            [=](wxCommandEvent& event) {
               if (!item.apply())
                 click(event);
             },
@@ -86,7 +86,7 @@ namespace wex
         case item::COMBOBOX_DIR:
           Bind(
             wxEVT_BUTTON,
-            [=, this](wxCommandEvent& event) {
+            [=](wxCommandEvent& event) {
               wxComboBox* browse = (wxComboBox*)item.window();
               wxDirDialog dlg(
                 this,
@@ -106,7 +106,7 @@ namespace wex
         case item::COMBOBOX_FILE:
           Bind(
             wxEVT_BUTTON,
-            [=, this](wxCommandEvent& event) {
+            [=](wxCommandEvent& event) {
               wxComboBox*  browse = (wxComboBox*)item.window();
               const path   path(browse->GetValue());
               wxFileDialog dlg(
@@ -129,7 +129,7 @@ namespace wex
         case item::TOGGLEBUTTON:
           Bind(
             wxEVT_TOGGLEBUTTON,
-            [=, this](wxCommandEvent& event) {
+            [=](wxCommandEvent& event) {
               if (!item.apply())
                 click(event);
             },

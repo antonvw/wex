@@ -302,16 +302,24 @@ bool wex::debug::execute(const std::string& action, wex::stc* stc)
                         std::string(1, ' ') + m_entry.flags() :
                         std::string()));
 
-  if (const auto& [r, args] = get_args(action, stc);
-      !r || (m_process == nullptr &&
-             (m_process = m_frame->get_process(exe)) == nullptr))
+  if (const auto& [r, args] = get_args(action, stc); !r)
   {
+    log::debug("debug") << m_entry.name() << "failed args";
     return false;
   }
   else
   {
+    if (
+      m_process == nullptr &&
+      ((m_process = m_frame->get_process(exe)) == nullptr))
+    {
+      log::debug("debug") << m_entry.name() << "no process";
+      return false;
+    }
+
     if (!m_process->is_running() && !m_process->execute(exe))
     {
+      log::debug("debug") << m_entry.name() << "process no execute" << exe;
       return false;
     }
 

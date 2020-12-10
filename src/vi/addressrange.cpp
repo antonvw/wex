@@ -338,8 +338,8 @@ bool wex::addressrange::escape(const std::string& command)
     }
     else if (m_process->is_running())
     {
-      log::trace("escape")
-        << command << "while running" << m_process->get_exec();
+      log::trace("escape") << command << "while running"
+                           << m_process->get_exec();
     }
 
     return m_process->execute(
@@ -721,7 +721,7 @@ bool wex::addressrange::parse(
     }
     else
     {
-      log::status("Internal char exists");
+      log::debug("internal char exists") << command;
       return false;
     }
   }
@@ -868,24 +868,26 @@ bool wex::addressrange::substitute(const std::string& text, char cmd)
       break;
 
     case '&':
-      repl    = m_replacement;
       pattern = m_pattern;
+      repl    = m_replacement;
       options = text;
       break;
 
     case '~':
-      repl    = m_replacement;
       pattern = find_replace_data::get()->get_find_string();
+      repl    = m_replacement;
       options = text;
       break;
 
     default:
+      log::debug("substitute unhandled command") << cmd;
       return false;
   }
 
   if (pattern.empty())
   {
     log::status("Pattern is empty");
+    log::debug("substitute empty pattern") << cmd;
     return false;
   }
 
@@ -903,6 +905,7 @@ bool wex::addressrange::substitute(const std::string& text, char cmd)
 
   if (!m_ex->marker_add('#', m_begin.get_line() - 1))
   {
+    log::debug("substitute could not add marker");
     return false;
   }
 
@@ -922,6 +925,7 @@ bool wex::addressrange::substitute(const std::string& text, char cmd)
 
   if (!m_ex->marker_add('$', end_line))
   {
+    log::debug("substitute could not add marker");
     return false;
   }
 

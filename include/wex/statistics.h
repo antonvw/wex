@@ -30,7 +30,7 @@ namespace wex
     {
       Bind(
         wxEVT_MENU,
-        [=, this](wxCommandEvent& event) {
+        [=](wxCommandEvent& event) {
           m_statistics->clear();
         },
         wxID_CLEAR);

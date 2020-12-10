@@ -17,6 +17,10 @@ TEST_SUITE_BEGIN("wex::process");
 
 TEST_CASE("wex::debug")
 {
+#ifdef __WXOSX__
+  wex::config("debug.debugger").set("lldb");
+#endif
+
   wex::process process;
   wex::debug   dbg(frame(), &process);
   wex::menu    menu;
@@ -27,10 +31,6 @@ TEST_CASE("wex::debug")
     stc->EmptyUndoBuffer();
     stc->SetSavePoint();
   }
-
-#ifdef __WXOSX__
-  wex::config("debug.debugger").set("lldb");
-#endif
 
   SUBCASE("constructor")
   {
@@ -62,8 +62,6 @@ TEST_CASE("wex::debug")
     REQUIRE(dbg.is_active());
 #endif
     REQUIRE(dbg.breakpoints().empty()); // no file loaded
-#ifndef __WXMSW__
-#endif
 
     process.stop();
 

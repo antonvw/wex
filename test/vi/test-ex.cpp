@@ -97,7 +97,7 @@ TEST_CASE("wex::ex")
     REQUIRE((ex->search_flags() & wxSTC_FIND_REGEXP) > 0);
   }
 
-  SUBCASE("test commands")
+  SUBCASE("commands")
   {
     // Most commands are tested using the :so command.
     for (const auto& command : std::vector<std::pair<std::string, bool>>{
@@ -139,7 +139,6 @@ TEST_CASE("wex::ex")
 
   SUBCASE("map")
   {
-    stc->set_text("123456789");
     REQUIRE(ex->command(":map :xx :%d"));
     REQUIRE(ex->command(":xx"));
     REQUIRE(stc->get_text().empty());
@@ -160,7 +159,6 @@ TEST_CASE("wex::ex")
 
   SUBCASE("abbreviations")
   {
-    stc->set_text("xx\n");
     REQUIRE(ex->command(":ab t TTTT"));
     const auto& it1 = ex->get_macros().get_abbreviations().find("t");
     REQUIRE(it1 != ex->get_macros().get_abbreviations().end());
@@ -173,19 +171,22 @@ TEST_CASE("wex::ex")
 
   SUBCASE("range")
   {
-    stc->set_text("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
     REQUIRE(ex->command(":1,2>"));
+
     stc->SelectNone();
     REQUIRE(!ex->command(":'<,'>>"));
+
     stc->GotoLine(2);
     stc->LineDownExtend();
     REQUIRE(ex->command(":'<,'>m1"));
+
     stc->GotoLine(2);
     stc->LineDownExtend();
     stc->LineDownExtend();
     stc->LineDownExtend();
     REQUIRE(ex->command(":'<,'>w test-ex.txt"));
     REQUIRE(ex->command(":'<,'><"));
+
     ex->command(":'<,'>>");
 
 #ifndef __WXMSW__
@@ -197,23 +198,30 @@ TEST_CASE("wex::ex")
     REQUIRE(!ex->command(":'<,'>x"));
   }
 
-  SUBCASE("source")
+  SUBCASE("read")
   {
 #ifdef __UNIX__
-    stc->set_text("xx\nxx\nyy\nzz\n");
-    REQUIRE(ex->command(":so test-source.txt"));
-    stc->set_text("xx\nxx\nyy\nzz\n");
-    REQUIRE(ex->command(":source test-source.txt"));
-    stc->set_text("xx\nxx\nyy\nzz\n");
-    REQUIRE(!ex->command(":so test-surce.txt"));
-    stc->set_text("xx\nxx\nyy\nzz\n");
-    REQUIRE(!ex->command(":so test-source-2.txt"));
-    REQUIRE(ex->command(":d"));
-
     REQUIRE(ex->command(":r !echo qwerty"));
     REQUIRE(stc->get_text().find("qwerty") != std::string::npos);
 #endif
   }
+
+#ifdef __UNIX__
+  SUBCASE("source")
+  {
+    SUBCASE("so")
+    {
+      REQUIRE(stc->find_next(std::string("xx")));
+      REQUIRE(ex->command(":so test-source.txt"));
+    }
+
+    SUBCASE("full") { REQUIRE(ex->command(":source test-source.txt")); }
+
+    SUBCASE("not-existing") { REQUIRE(!ex->command(":so test-surce.txt")); }
+
+    SUBCASE("illegal") { REQUIRE(!ex->command(":so test-source-2.txt")); }
+  }
+#endif
 
   SUBCASE("markers")
   {

@@ -13,6 +13,17 @@
 #include <wex/managed-frame.h>
 #include <wex/shell.h>
 
+/// Processes string on shell.
+void process(const std::string& str, wex::shell* shell);
+
+void process(const std::string& str, wex::shell* shell)
+{
+  for (unsigned i = 0; i < str.length(); ++i)
+  {
+    shell->process_char(str.at(i));
+  }
+}
+
 TEST_CASE("wex::shell")
 {
   auto* shell = new wex::shell();

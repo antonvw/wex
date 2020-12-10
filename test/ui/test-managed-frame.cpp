@@ -84,21 +84,21 @@ TEST_CASE("wex::managed_frame")
   REQUIRE(frame()->pane_show("TOOLBAR"));
   REQUIRE(frame()->pane_toggle("VIBAR"));
   REQUIRE(frame()->pane_is_shown("VIBAR"));
-
   REQUIRE(!frame()->pane_toggle("XXXXBAR"));
 
   frame()->on_notebook(100, get_stc());
 
 #ifndef __WXMSW__
-  for (auto id : std::vector<int>{wxID_PREFERENCES,
-                                  wex::ID_FIND_FIRST,
-                                  wex::ID_FIND_LAST,
-                                  wex::ID_CLEAR_FILES,
-                                  wex::ID_CLEAR_FINDS,
-                                  wex::ID_VIEW_LOWEST + 1,
-                                  wex::ID_VIEW_LOWEST + 2,
-                                  wex::ID_VIEW_LOWEST + 3,
-                                  wex::ID_VIEW_LOWEST + 4})
+  for (auto id : std::vector<int>{
+         wxID_PREFERENCES,
+         wex::ID_FIND_FIRST,
+         wex::ID_FIND_LAST,
+         wex::ID_CLEAR_FILES,
+         wex::ID_CLEAR_FINDS,
+         wex::ID_VIEW_LOWEST + 1,
+         wex::ID_VIEW_LOWEST + 2,
+         wex::ID_VIEW_LOWEST + 3,
+         wex::ID_VIEW_LOWEST + 4})
   {
     auto* event = new wxCommandEvent(wxEVT_MENU, id);
     wxQueueEvent(frame(), event);
