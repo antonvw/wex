@@ -4,6 +4,7 @@
 - FindFiles shows C: as folder, without rest of path
 - wxDateTime replace by c++20 methods date and time utilities
 - process-imp should be in core
+- prepare_output at one place in test
   
 ## backlog
 - check github actions for ubuntu-latest upgrade ->

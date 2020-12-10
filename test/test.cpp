@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #define DOCTEST_CONFIG_IMPLEMENT
-#define ELPP_NO_CHECK_MACROS
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP

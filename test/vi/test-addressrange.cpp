@@ -10,12 +10,15 @@
 #include <wex/frd.h>
 #include <wex/macros.h>
 #include <wex/managed-frame.h>
+#include <wex/process.h>
 #include <wex/stc.h>
 
 TEST_SUITE_BEGIN("wex::ex");
 
 TEST_CASE("wex::addressrange")
 {
+  REQUIRE(wex::process::prepare_output(frame()) != nullptr);
+
   const std::string contents("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
 
   auto* stc = get_stc();

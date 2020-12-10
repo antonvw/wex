@@ -22,7 +22,6 @@ TEST_CASE("wex::process")
 
   SUBCASE("static")
   {
-    REQUIRE(wex::process::get_shell() == nullptr);
     REQUIRE(wex::process::prepare_output(frame()) != nullptr);
     REQUIRE(wex::process::get_shell() != nullptr);
 

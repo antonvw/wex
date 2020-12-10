@@ -119,6 +119,8 @@ void wex::find_replace_data::set_find_string(const std::string& value)
   m_find_strings.set(value);
   m_frd->SetFindString(value);
   set_regex(m_use_regex);
+
+  log::trace("frd set_find_string") << get_find_string();
 }
 
 void wex::find_replace_data::set_find_strings(
@@ -127,6 +129,8 @@ void wex::find_replace_data::set_find_strings(
   m_find_strings.set(values);
   m_frd->SetFindString(m_find_strings.get());
   set_regex(m_use_regex);
+
+  log::trace("frd set_find_strings") << get_find_string();
 }
 
 void wex::find_replace_data::set_match_case(bool value)
@@ -170,8 +174,7 @@ void wex::find_replace_data::set_regex(bool value)
     m_regex     = std::regex(get_find_string(), flags);
     m_use_regex = true;
 
-    log::trace("frd regex")
-      << "find" << get_find_string() << "replace" << get_replace_string();
+    log::trace("frd set_regex") << get_find_string();
   }
   catch (std::regex_error& e)
   {
@@ -185,6 +188,8 @@ void wex::find_replace_data::set_replace_string(const std::string& value)
   // value is allowed to be empty
   m_replace_strings.set(value);
   m_frd->SetReplaceString(value);
+
+  log::trace("frd set_replace_string") << get_replace_string();
 }
 
 void wex::find_replace_data::set_replace_strings(
@@ -192,6 +197,8 @@ void wex::find_replace_data::set_replace_strings(
 {
   m_replace_strings.set(value);
   m_frd->SetReplaceString(m_replace_strings.get());
+
+  log::trace("frd set_replace_strings") << get_replace_string();
 }
 
 void wex::find_replace_data::set_search_down(bool value)

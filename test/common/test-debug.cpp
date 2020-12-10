@@ -32,6 +32,8 @@ TEST_CASE("wex::debug")
     stc->SetSavePoint();
   }
 
+  REQUIRE(wex::process::prepare_output(frame()) != nullptr);
+
   SUBCASE("constructor")
   {
     REQUIRE(!wex::debug(frame()).is_active());
