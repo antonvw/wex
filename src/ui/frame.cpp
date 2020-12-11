@@ -216,7 +216,7 @@ wex::frame::frame(const data::window& data)
           if (auto* stc = get_stc(); stc != nullptr)
           {
             wex::path::current(stc->get_filename().get_path());
-            if (!marker_and_register_expansion(&stc->get_vi(), text))
+            if (!marker_and_register_expansion(&stc->get_ex(), text))
               return;
           }
 

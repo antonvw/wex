@@ -87,7 +87,7 @@ void wex::stc::bind_other()
       }
     }
 
-    if (m_vi.on_key_down(event))
+    if (m_vi->on_key_down(event))
     {
       event.Skip();
     }
@@ -196,14 +196,14 @@ void wex::stc::bind_other()
 
 void wex::stc::key_action(wxKeyEvent& event)
 {
-  if (!m_vi.is_active())
+  if (!m_vi->is_active())
   {
     if (isalnum(event.GetUnicodeKey()))
     {
       m_adding_chars = true;
     }
   }
-  else if (m_vi.mode().is_insert())
+  else if (m_vi->mode().is_insert())
   {
     if (isalnum(event.GetUnicodeKey()))
     {
@@ -217,7 +217,11 @@ void wex::stc::key_action(wxKeyEvent& event)
     m_adding_chars = false;
   }
 
-  if (m_vi.on_char(event))
+  if (m_ex->is_active())
+  {
+    // prevent skip
+  }
+  else if (m_vi->on_char(event))
   {
     if (GetReadOnly() && isalnum(event.GetUnicodeKey()))
     {
@@ -237,7 +241,7 @@ void wex::stc::key_action(wxKeyEvent& event)
       return;
     }
 
-    if (!m_vi.is_active())
+    if (!m_vi->is_active())
     {
       m_auto_complete.on_char(event.GetUnicodeKey());
     }

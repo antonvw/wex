@@ -174,7 +174,7 @@ void wex::stc::config_get()
     SetFoldFlags(iv.find<long>(_("stc.Fold flags")));
   }
 
-  m_vi.use(iv.find<bool>(_("stc.vi mode")));
+  get_ex().use(iv.find<bool>(_("stc.vi mode")));
 
   show_line_numbers(iv.find<bool>(_("stc.Line numbers")));
 

@@ -29,7 +29,7 @@ wex::textctrl_imp::textctrl_imp(
       wxEmptyString,
       data.pos(),
       data.size(),
-      // msw shows scrollbar, wxTE_NO_VSCROLL hides that, but then :i 
+      // msw shows scrollbar, wxTE_NO_VSCROLL hides that, but then :i
       // no longer is ok
       data.style() | wxTE_PROCESS_ENTER | wxTE_MULTILINE)
   , m_id_register(NewControlId())
@@ -401,17 +401,20 @@ bool wex::textctrl_imp::handle(const std::string& command)
 {
   const std::string range(command.substr(1));
 
-  m_user_input  = false;
-  m_command     = ex_command(m_tc->ex()->get_command()).set(command);
+  m_user_input = false;
+
+  if (m_tc->ex() != nullptr)
+  {
+    m_command = ex_command(m_tc->ex()->get_command()).set(command);
+  }
+
   m_input       = 0;
   m_mode_visual = !range.empty();
   m_control_r   = false;
-  
+
   m_tc->frame()->pane_set(
     "VIBAR",
-    wxAuiPaneInfo().BestSize(
-      -1, 
-      GetFont().GetPixelSize().GetHeight() + 10));
+    wxAuiPaneInfo().BestSize(-1, GetFont().GetPixelSize().GetHeight() + 10));
 
   if (m_prefix != nullptr)
   {

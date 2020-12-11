@@ -203,7 +203,8 @@ void wex::stc::bind_all()
       wxID_COPY},
 
      {[=, this](wxCommandEvent& event) {
-        m_vi.command(event.GetString());
+        m_ex->is_active() ? m_ex->command(event.GetString()) :
+                            m_vi->command(event.GetString());
       },
       id::stc::vi_command},
 
@@ -506,7 +507,7 @@ void wex::stc::build_popup_menu(menu& menu)
     menu.append({{}, {get_filename()}});
   }
 
-  if (!m_vi.is_active() && GetTextLength() > 0)
+  if (!get_ex().is_active() && GetTextLength() > 0)
   {
     menu.append({{}, {wxID_FIND}});
 

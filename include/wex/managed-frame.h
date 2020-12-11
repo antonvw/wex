@@ -185,6 +185,10 @@ namespace wex
     /// Returns number of panes.
     size_t panes() { return m_manager.GetAllPanes().GetCount(); };
 
+    /// Shows the ex bar forever.
+    /// If invoked, if never hides the bar afterwards.
+    void show_ex_bar();
+
     /// Returns a command line ex command.
     /// Shows the ex bar, sets the label and sets focus to it, allowing
     /// you to enter a command.
@@ -229,6 +233,8 @@ namespace wex
     debug* m_debug{nullptr};
 
     toolbar *m_findbar, *m_optionsbar, *m_toolbar;
+
+    bool m_always_show_ex_bar{false};
 
     wxAuiManager       m_manager;
     class file_history m_file_history;

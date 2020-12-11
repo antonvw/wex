@@ -39,13 +39,24 @@ wex::stc::stc(const std::string& text, const data::stc& data)
 wex::stc::stc(const path& p, const data::stc& data)
   : m_data(this, data)
   , m_auto_complete(this)
-  , m_vi(this)
+  , m_ex(new ex(this))
+  , m_vi(new vi(this))
   , m_file(this, data.window().name())
   , m_hexmode(hexmode(this))
   , m_frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
   , m_lexer(this)
 {
   assert(m_frame != nullptr);
+
+  if (data.flags().test(data::stc::WIN_EX))
+  {
+    m_ex->use(true);
+    m_vi->use(false);
+  }
+  else
+  {
+    m_ex->use(false);
+  }
 
   Create(
     data.window().parent(),
@@ -117,6 +128,12 @@ wex::stc::stc(const path& p, const data::stc& data)
     m_file.file_new(p);
     m_data.inject();
   }
+}
+
+wex::stc::~stc()
+{
+  delete m_ex;
+  delete m_vi;
 }
 
 void wex::stc::add_text(const std::string& text)
@@ -222,8 +239,8 @@ bool wex::stc::CanPaste() const
 
 void wex::stc::Clear()
 {
-  m_vi.is_active() && GetSelectedText().empty() ?
-    (void)m_vi.command(std::string(1, WXK_DELETE)) :
+  m_vi->is_active() && GetSelectedText().empty() ?
+    (void)m_vi->command(std::string(1, WXK_DELETE)) :
     core::stc::Clear();
 }
 
@@ -252,10 +269,10 @@ void wex::stc::Cut()
 {
   if (CanCut())
   {
-    if (m_vi.is_active())
+    if (get_ex().is_active())
     {
-      m_vi.set_registers_delete(get_selected_text());
-      m_vi.set_register_yank(get_selected_text());
+      get_ex().set_registers_delete(get_selected_text());
+      get_ex().set_register_yank(get_selected_text());
     }
 
     core::stc::Cut();
@@ -334,6 +351,16 @@ const std::string wex::stc::eol() const
   return "\r\n";
 }
 
+const wex::ex& wex::stc::get_ex() const
+{
+  return m_ex->is_active() ? *m_ex : *m_vi;
+}
+
+wex::ex& wex::stc::get_ex()
+{
+  return m_ex->is_active() ? *m_ex : *m_vi;
+}
+
 // Cannot be const because of GetSelectedText (not const in 2.9.4).
 const std::string wex::stc::get_find_string()
 {
@@ -385,6 +412,16 @@ const std::string wex::stc::get_text() const
   return std::string(b.data(), b.length());
 }
 
+const wex::vi& wex::stc::get_vi() const
+{
+  return *m_vi;
+}
+
+wex::vi& wex::stc::get_vi()
+{
+  return *m_vi;
+}
+
 const std::string wex::stc::get_word_at_pos(int pos) const
 {
   const auto word_start = const_cast<stc*>(this)->WordStartPosition(pos, true);
@@ -424,10 +461,10 @@ void wex::stc::guess_type_and_modeline()
 
   // If we have a modeline comment.
   if (const std::string modeline("\\s+vim?:\\s*(set [a-z0-9:= ]+)");
-      m_vi.is_active() &&
+      get_ex().is_active() &&
       (match(modeline, head, v) > 0 || match(modeline, tail, v) > 0))
   {
-    if (!m_vi.command(":" + v[0] + "*")) // add * to indicate modeline
+    if (!get_ex().command(":" + v[0] + "*")) // add * to indicate modeline
     {
       log::status("Could not apply vi settings");
     }
@@ -634,7 +671,7 @@ void wex::stc::Paste()
 
 bool wex::stc::position_restore()
 {
-  if (m_vi.mode().is_visual())
+  if (m_vi->mode().is_visual())
   {
     SetCurrentPos(m_saved_pos);
   }
@@ -662,7 +699,7 @@ void wex::stc::position_save()
 {
   m_saved_pos = GetCurrentPos();
 
-  if (!m_vi.mode().is_visual())
+  if (m_vi->mode().is_visual())
   {
     m_saved_selection_start = GetSelectionStart();
     m_saved_selection_end   = GetSelectionEnd();
@@ -988,6 +1025,11 @@ void wex::stc::use_modification_markers(bool use)
 {
   use ? Bind(wxEVT_STC_MODIFIED, &stc::on_styled_text, this) :
         (void)Unbind(wxEVT_STC_MODIFIED, &stc::on_styled_text, this);
+}
+
+bool wex::stc::vi_command(const std::string& command)
+{
+  return m_ex->is_active() ? m_ex->command(command) : m_vi->command(command);
 }
 
 void wex::stc::WordLeftRectExtend()

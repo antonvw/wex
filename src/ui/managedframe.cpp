@@ -117,7 +117,7 @@ wex::managed_frame::managed_frame(size_t maxFiles, const data::window& data)
           std::advance(it, event.GetId() - ID_FIND_FIRST);
           if (const std::string text(*it); stc->find_next(
                 text,
-                stc->get_vi().is_active() ? stc->get_vi().search_flags() : -1))
+                stc->get_ex().is_active() ? stc->get_ex().search_flags() : -1))
           {
             find_replace_data::get()->set_find_string(text);
           }
@@ -200,7 +200,7 @@ wxPanel* wex::managed_frame::create_ex_panel()
 
 void wex::managed_frame::hide_ex_bar(int hide)
 {
-  if (m_manager.GetPane("VIBAR").IsShown())
+  if (!m_always_show_ex_bar && m_manager.GetPane("VIBAR").IsShown())
   {
     if (
       hide == HIDE_BAR_FORCE || hide == HIDE_BAR_FORCE_FOCUS_STC ||
@@ -360,6 +360,15 @@ void wex::managed_frame::print_ex(ex* ex, const std::string& text)
 void wex::managed_frame::set_recent_file(const path& path)
 {
   m_file_history.append(path);
+}
+
+void wex::managed_frame::show_ex_bar()
+{
+  pane_show("VIBAR");
+
+  m_textctrl->set_ex(nullptr, ":");
+
+  m_always_show_ex_bar = true;
 }
 
 bool wex::managed_frame::show_ex_command(ex* ex, const std::string& command)

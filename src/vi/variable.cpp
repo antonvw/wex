@@ -363,7 +363,7 @@ bool wex::variable::expand_input(std::string& expanded) const
         std::string(),
         data::window().title(m_name + ":"));
 
-      m_dialog->get_stc()->get_vi().use(false);
+      m_dialog->get_stc()->get_ex().use(false);
       m_dialog->get_stc()->SetWrapMode(wxSTC_WRAP_WORD);
     }
 

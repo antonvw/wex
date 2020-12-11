@@ -1,10 +1,8 @@
 # roadmap
-- use :1 bit for several bools
-- msw shows scrollbar for textctrl (set wxTE_NO_VSCROLL?)
-- FindFiles shows C: as folder, without rest of path
 - wxDateTime replace by c++20 methods date and time utilities
 - process-imp should be in core
 - prepare_output at one place in test
+- use :1 bit for several bools
   
 ## backlog
 - check github actions for ubuntu-latest upgrade ->
