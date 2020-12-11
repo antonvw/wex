@@ -74,7 +74,7 @@ TEST_CASE("wex::process")
   SUBCASE("invalid")
   {
     REQUIRE(!process.execute("xxxx", wex::process::EXEC_WAIT));
-    wxMilliSleep(10);
+    wxMilliSleep(100);
     REQUIRE(!process.is_running());
     REQUIRE(!process.get_stderr().empty());
     REQUIRE(process.get_stdout().empty());

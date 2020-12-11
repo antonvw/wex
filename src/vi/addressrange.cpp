@@ -393,6 +393,7 @@ bool wex::addressrange::escape(const std::string& command)
     else if (!process.get_stderr().empty())
     {
       m_ex->frame()->show_ex_message(process.get_stderr());
+      log("escape") << process.get_stderr();
     }
   }
 
