@@ -407,6 +407,10 @@ bool wex::textctrl_imp::handle(const std::string& command)
   {
     m_command = ex_command(m_tc->ex()->get_command()).set(command);
   }
+  else
+  {
+    m_command = ex_command(command);
+  }
 
   m_input       = 0;
   m_mode_visual = !range.empty();

@@ -72,7 +72,7 @@ void wex::ex_command::erase(size_t pos, size_t len)
 
 bool wex::ex_command::exec() const
 {
-  return m_stc != nullptr && m_stc->get_vi().command(command());
+  return m_stc != nullptr && m_stc->get_ex().command(command());
 }
 
 void wex::ex_command::handle(const wxTextEntry* te, int keycode)

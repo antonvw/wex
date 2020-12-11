@@ -187,7 +187,7 @@ namespace wex
 
     /// Shows the ex bar forever.
     /// If invoked, if never hides the bar afterwards.
-    void show_ex_bar();
+    void show_ex_bar(ex* ex);
 
     /// Returns a command line ex command.
     /// Shows the ex bar, sets the label and sets focus to it, allowing

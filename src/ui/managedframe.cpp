@@ -362,11 +362,11 @@ void wex::managed_frame::set_recent_file(const path& path)
   m_file_history.append(path);
 }
 
-void wex::managed_frame::show_ex_bar()
+void wex::managed_frame::show_ex_bar(ex* ex)
 {
   pane_show("VIBAR");
 
-  m_textctrl->set_ex(nullptr, ":");
+  m_textctrl->set_ex(ex, ":");
 
   m_always_show_ex_bar = true;
 }
