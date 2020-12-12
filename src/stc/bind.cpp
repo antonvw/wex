@@ -665,6 +665,11 @@ void wex::stc::file_action(const wxCommandEvent& event)
       {
         properties_message();
       }
+
+      if (m_data.flags().test(data::stc::WIN_EX))
+      {
+        SetReadOnly(true);
+      }
       break;
 
     case stc_file::FILE_SAVE_AS:

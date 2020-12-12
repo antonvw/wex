@@ -200,7 +200,11 @@ wxPanel* wex::managed_frame::create_ex_panel()
 
 void wex::managed_frame::hide_ex_bar(int hide)
 {
-  if (!m_always_show_ex_bar && m_manager.GetPane("VIBAR").IsShown())
+  if (m_always_show_ex_bar)
+  {
+     m_textctrl->control()->SetFocus();
+  }
+  else if (m_manager.GetPane("VIBAR").IsShown())
   {
     if (
       hide == HIDE_BAR_FORCE || hide == HIDE_BAR_FORCE_FOCUS_STC ||

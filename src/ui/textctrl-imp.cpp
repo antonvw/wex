@@ -260,10 +260,26 @@ wex::textctrl_imp::textctrl_imp(
     }
   });
 
+  Bind(wxEVT_TEXT_CUT, [=, this](wxClipboardTextEvent& event) {
+    // prevent cut
+  });
+
   Bind(wxEVT_TEXT_ENTER, [=, this](wxCommandEvent& event) {
-    if (m_tc->ex() == nullptr || get_text().empty())
+    const bool is_ex(
+      m_tc->ex()->get_stc()->data().flags().test(data::stc::WIN_EX));
+
+    if (get_text().empty())
     {
-      m_tc->frame()->hide_ex_bar(managed_frame::HIDE_BAR_FORCE_FOCUS_STC);
+      if (is_ex)
+      {
+        m_command.reset();
+        m_tc->ex()->command(":.+1");
+        SetFocus();
+      }
+      else
+      {
+        m_tc->frame()->hide_ex_bar(managed_frame::HIDE_BAR_FORCE_FOCUS_STC);
+      }
       return;
     }
 
@@ -322,15 +338,18 @@ wex::textctrl_imp::textctrl_imp(
         }
       }
 
-      if (m_input == 0)
+      if (is_ex)
+      {
+        Clear();
+        m_command.reset();
+        SetFocus();
+      }
+        
+      if (m_input == 0 && !is_ex)
       {
         m_tc->frame()->hide_ex_bar(focus);
       }
     }
-  });
-
-  Bind(wxEVT_TEXT_CUT, [=, this](wxClipboardTextEvent& event) {
-    // prevent cut
   });
 
   Bind(wxEVT_TEXT_PASTE, [=, this](wxClipboardTextEvent& event) {
