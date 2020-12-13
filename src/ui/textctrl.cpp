@@ -6,6 +6,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ex.h>
+#include <wex/managed-frame.h>
+#include <wex/stc.h>
 #include <wex/textctrl.h>
 
 #include "textctrl-imp.h"
@@ -50,12 +52,17 @@ void wex::textctrl::select_all() const
 
 bool wex::textctrl::set_ex(wex::ex* ex, const std::string& command)
 {
-  if (command.empty())
+  if (ex == nullptr)
   {
-    return false;
+    if (auto* stc = m_frame->get_stc(); stc != nullptr)
+    {
+      m_ex = &stc->get_ex();
+    }
   }
-
-  m_ex = ex;
+  else
+  {
+    m_ex = ex;
+  }
 
   return m_imp->handle(command);
 }

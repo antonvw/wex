@@ -234,8 +234,6 @@ namespace wex
 
     toolbar *m_findbar, *m_optionsbar, *m_toolbar;
 
-    bool m_always_show_ex_bar{false};
-
     wxAuiManager       m_manager;
     class file_history m_file_history;
     textctrl*          m_textctrl;

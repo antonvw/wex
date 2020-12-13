@@ -29,8 +29,8 @@
 #include <wex/macros.h>
 #include <wex/managed-frame.h>
 #include <wex/statusbar.h>
-#include <wex/stc.h>
 #include <wex/stc-entry-dialog.h>
+#include <wex/stc.h>
 #include <wex/tokenizer.h>
 #include <wex/type-to-value.h>
 #include <wex/version.h>
@@ -443,6 +443,7 @@ bool wex::ex::address_parse(
                                  "mark|ma|"
                                  "pu|"
                                  "read|"
+                                 "visual|vi|"
                                  "[aikrz=])([\\s\\S]*)");
 
     // 2addr commands

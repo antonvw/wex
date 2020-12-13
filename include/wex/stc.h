@@ -279,6 +279,9 @@ namespace wex
     /// If you open a file, the modification markers are used.
     void use_modification_markers(bool use);
 
+    /// Sets using visual vi (on) or ex mode (!on).
+    void visual(bool on);
+
     /// Virtual methods from core.
 
     const std::string eol() const override;

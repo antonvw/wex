@@ -210,6 +210,7 @@ wex::textctrl_imp::textctrl_imp(
         {
           m_tc->ex()->get_stc()->position_restore();
         }
+
         m_tc->frame()->hide_ex_bar(managed_frame::HIDE_BAR_FORCE_FOCUS_STC);
         m_control_r  = false;
         m_user_input = false;
@@ -265,12 +266,15 @@ wex::textctrl_imp::textctrl_imp(
   });
 
   Bind(wxEVT_TEXT_ENTER, [=, this](wxCommandEvent& event) {
-    const bool is_ex(
-      m_tc->ex()->get_stc()->data().flags().test(data::stc::WIN_EX));
-
     if (get_text().empty())
     {
-      if (is_ex)
+      if (m_tc->ex() == nullptr)
+      {
+        log::debug("no ex");
+        return;
+      }
+
+      if (is_ex_mode())
       {
         m_command.reset();
         m_tc->ex()->command(":.+1");
@@ -338,14 +342,14 @@ wex::textctrl_imp::textctrl_imp(
         }
       }
 
-      if (is_ex)
+      if (is_ex_mode())
       {
         Clear();
         m_command.reset();
         SetFocus();
       }
-        
-      if (m_input == 0 && !is_ex)
+
+      if (m_input == 0 && !is_ex_mode())
       {
         m_tc->frame()->hide_ex_bar(focus);
       }
@@ -418,7 +422,7 @@ const std::string wex::textctrl_imp::get_text() const
 
 bool wex::textctrl_imp::handle(const std::string& command)
 {
-  const std::string range(command.substr(1));
+  const std::string range(!command.empty() ? command.substr(1): std::string());
 
   m_user_input = false;
 
@@ -519,6 +523,13 @@ bool wex::textctrl_imp::input_mode_finish() const
     m_command.command().substr(m_command.size() - 2, 2));
 
   return m_command.command() == ":." || last_two == ".\n" || last_two == ".\r";
+}
+
+bool wex::textctrl_imp::is_ex_mode() const
+{
+  return m_tc->ex() != nullptr &&
+         m_tc->ex()->get_stc() != nullptr &&
+         m_tc->ex()->get_stc()->data().flags().test(data::stc::WIN_EX);
 }
 
 void wex::textctrl_imp::set_text(const std::string& text)

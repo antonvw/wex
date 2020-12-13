@@ -1032,6 +1032,21 @@ bool wex::stc::vi_command(const std::string& command)
   return m_ex->is_active() ? m_ex->command(command) : m_vi->command(command);
 }
 
+void wex::stc::visual(bool on)
+{
+  m_ex->use(!on);
+  m_vi->use(on);
+
+  SetReadOnly(!on);
+
+  m_data.flags(data::stc::WIN_EX, data::control::INV);
+
+  if (on)
+  {
+    m_frame->hide_ex_bar();
+  }
+}
+
 void wex::stc::WordLeftRectExtend()
 {
   const auto repeat =

@@ -23,6 +23,15 @@
 #include <wx/panel.h>
 #include <wx/stattext.h>
 
+namespace wex
+{
+  bool is_ex(textctrl* tc)
+  {
+    return tc != nullptr && tc->ex() != nullptr &&
+           tc->ex()->get_stc()->data().flags().test(data::stc::WIN_EX);
+  }
+} // namespace wex
+
 wex::managed_frame::managed_frame(size_t maxFiles, const data::window& data)
   : frame(data)
   , m_debug(new debug(this))
@@ -75,6 +84,7 @@ wex::managed_frame::managed_frame(size_t maxFiles, const data::window& data)
         event.Check(m_manager.GetPane(it.first.first).IsShown());
       },
       it.second);
+
     Bind(
       wxEVT_MENU,
       [=, this](wxCommandEvent& event) {
@@ -177,6 +187,12 @@ bool wex::managed_frame::allow_close(wxWindowID id, wxWindow* page)
 {
   // The page will be closed, so do not update find focus now.
   set_find_focus(nullptr);
+
+  if (is_ex(m_textctrl))
+  {
+    m_textctrl->set_ex(nullptr, std::string());
+  }
+
   return true;
 }
 
@@ -200,11 +216,13 @@ wxPanel* wex::managed_frame::create_ex_panel()
 
 void wex::managed_frame::hide_ex_bar(int hide)
 {
-  if (m_always_show_ex_bar)
+  if (is_ex(m_textctrl))
   {
-     m_textctrl->control()->SetFocus();
+    m_textctrl->set_ex(nullptr, ":");
+    return;
   }
-  else if (m_manager.GetPane("VIBAR").IsShown())
+
+  if (m_manager.GetPane("VIBAR").IsShown())
   {
     if (
       hide == HIDE_BAR_FORCE || hide == HIDE_BAR_FORCE_FOCUS_STC ||
@@ -237,6 +255,11 @@ void wex::managed_frame::on_notebook(wxWindowID id, wxWindow* page)
 {
   if (auto* stc = dynamic_cast<wex::stc*>(page); stc != nullptr)
   {
+    if (is_ex(m_textctrl))
+    {
+      m_textctrl->set_ex(&stc->get_ex(), ":");
+    }
+
     set_recent_file(stc->get_filename());
 
     const vcs v({stc->get_filename()});
@@ -371,8 +394,6 @@ void wex::managed_frame::show_ex_bar(ex* ex)
   pane_show("VIBAR");
 
   m_textctrl->set_ex(ex, ":");
-
-  m_always_show_ex_bar = true;
 }
 
 bool wex::managed_frame::show_ex_command(ex* ex, const std::string& command)

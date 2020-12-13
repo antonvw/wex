@@ -273,6 +273,10 @@ bool wex::address::parse(const std::string& command, const std::string& text)
     case 'r':
       return read(text);
 
+    case 'v':
+      m_ex->get_stc()->visual(true);
+      return true;
+
     case 'z':
       return adjust_window(text);
 
