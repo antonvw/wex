@@ -238,7 +238,7 @@ bool wex::address::parse(const std::string& command, const std::string& text)
     case 'a':
       if (text.find('|') != std::string::npos)
       {
-        m_ex->frame()->hide_ex_bar();
+        m_ex->frame()->show_ex_bar();
         return append(after(text, '|'));
       }
       else
@@ -249,7 +249,7 @@ bool wex::address::parse(const std::string& command, const std::string& text)
     case 'i':
       if (text.find('|') != std::string::npos)
       {
-        m_ex->frame()->hide_ex_bar();
+        m_ex->frame()->show_ex_bar();
         return insert(after(text, '|'));
       }
       else

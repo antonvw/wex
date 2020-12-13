@@ -211,7 +211,7 @@ wex::textctrl_imp::textctrl_imp(
           m_tc->ex()->get_stc()->position_restore();
         }
 
-        m_tc->frame()->hide_ex_bar(managed_frame::HIDE_BAR_FORCE_FOCUS_STC);
+        m_tc->frame()->show_ex_bar(managed_frame::HIDE_BAR_FORCE_FOCUS_STC);
         m_control_r  = false;
         m_user_input = false;
         break;
@@ -282,7 +282,7 @@ wex::textctrl_imp::textctrl_imp(
       }
       else
       {
-        m_tc->frame()->hide_ex_bar(managed_frame::HIDE_BAR_FORCE_FOCUS_STC);
+        m_tc->frame()->show_ex_bar(managed_frame::HIDE_BAR_FORCE_FOCUS_STC);
       }
       return;
     }
@@ -304,7 +304,7 @@ wex::textctrl_imp::textctrl_imp(
           m_tc->ex()->get_stc()->eol());
       }
 
-      m_tc->frame()->hide_ex_bar();
+      m_tc->frame()->show_ex_bar();
     }
     else if (m_input != 0)
     {
@@ -351,7 +351,7 @@ wex::textctrl_imp::textctrl_imp(
 
       if (m_input == 0 && !is_ex_mode())
       {
-        m_tc->frame()->hide_ex_bar(focus);
+        m_tc->frame()->show_ex_bar(focus);
       }
     }
   });

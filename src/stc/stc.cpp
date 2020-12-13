@@ -1045,7 +1045,7 @@ void wex::stc::visual(bool on)
     data::stc::window_t().set(data::stc::WIN_EX),
     on ? data::control::NOT : data::control::SET);
 
-  m_frame->hide_ex_bar();
+  m_frame->show_ex_bar();
 }
 
 void wex::stc::WordLeftRectExtend()

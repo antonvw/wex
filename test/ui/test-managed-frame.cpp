@@ -39,10 +39,10 @@ TEST_CASE("wex::managed_frame")
   REQUIRE(!frame()->save_current_page("key"));
   REQUIRE(frame()->restore_page("key") == nullptr);
 
-  frame()->hide_ex_bar(wex::managed_frame::HIDE_BAR);
-  frame()->hide_ex_bar(wex::managed_frame::HIDE_BAR_FOCUS_STC);
-  frame()->hide_ex_bar(wex::managed_frame::HIDE_BAR_FORCE);
-  frame()->hide_ex_bar(wex::managed_frame::HIDE_BAR_FORCE_FOCUS_STC);
+  frame()->show_ex_bar(wex::managed_frame::HIDE_BAR);
+  frame()->show_ex_bar(wex::managed_frame::HIDE_BAR_FOCUS_STC);
+  frame()->show_ex_bar(wex::managed_frame::HIDE_BAR_FORCE);
+  frame()->show_ex_bar(wex::managed_frame::HIDE_BAR_FORCE_FOCUS_STC);
 
   REQUIRE(!frame()->pane_is_shown("VIBAR"));
 

@@ -622,7 +622,7 @@ bool wex::addressrange::parse(
     case 'c':
       if (text.find('|') != std::string::npos)
       {
-        m_ex->frame()->hide_ex_bar();
+        m_ex->frame()->show_ex_bar();
         return change(after(text, '|'));
       }
       else

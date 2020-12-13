@@ -54,7 +54,7 @@ wex::managed_frame::managed_frame(size_t maxFiles, const data::window& data)
       wxAuiPaneInfo().Name("OPTIONSBAR").Caption(_("Optionsbar"))},
      {create_ex_panel(), wxAuiPaneInfo().Name("VIBAR")}});
 
-  hide_ex_bar();
+  show_ex_bar();
 
   Bind(wxEVT_AUI_PANE_CLOSE, [=, this](wxAuiManagerEvent& event) {
     auto* info = event.GetPane();
@@ -214,33 +214,6 @@ wxPanel* wex::managed_frame::create_ex_panel()
   return panel;
 }
 
-void wex::managed_frame::hide_ex_bar(int hide)
-{
-  if (is_ex(m_textctrl))
-  {
-    m_textctrl->set_ex(nullptr, ":");
-    pane_show("VIBAR", true);
-    return;
-  }
-
-  if (m_manager.GetPane("VIBAR").IsShown())
-  {
-    if (
-      hide == HIDE_BAR_FORCE || hide == HIDE_BAR_FORCE_FOCUS_STC ||
-      (GetStatusBar() != nullptr && GetStatusBar()->IsShown()))
-    {
-      pane_show("VIBAR", false);
-    }
-
-    if (
-      (hide == HIDE_BAR_FOCUS_STC || hide == HIDE_BAR_FORCE_FOCUS_STC) &&
-      m_textctrl != nullptr && m_textctrl->ex() != nullptr)
-    {
-      m_textctrl->ex()->get_stc()->SetFocus();
-    }
-  }
-}
-
 void wex::managed_frame::on_menu_history(
   const class file_history& history,
   size_t                    index,
@@ -380,6 +353,11 @@ bool wex::managed_frame::pane_show(const std::string& pane, bool show)
   }
 }
 
+size_t wex::managed_frame::panes() const
+{ 
+  return const_cast<managed_frame*>(this)->m_manager.GetAllPanes().GetCount(); 
+}
+
 void wex::managed_frame::print_ex(ex* ex, const std::string& text)
 {
   ex->print(text);
@@ -390,11 +368,31 @@ void wex::managed_frame::set_recent_file(const path& path)
   m_file_history.append(path);
 }
 
-void wex::managed_frame::show_ex_bar(ex* ex)
+void wex::managed_frame::show_ex_bar(int hide)
 {
-  pane_show("VIBAR");
+  if (is_ex(m_textctrl))
+  {
+    m_textctrl->set_ex(nullptr, ":");
+    pane_show("VIBAR", true);
+    return;
+  }
 
-  m_textctrl->set_ex(ex, ":");
+  if (m_manager.GetPane("VIBAR").IsShown())
+  {
+    if (
+      hide == HIDE_BAR_FORCE || hide == HIDE_BAR_FORCE_FOCUS_STC ||
+      (GetStatusBar() != nullptr && GetStatusBar()->IsShown()))
+    {
+      pane_show("VIBAR", false);
+    }
+
+    if (
+      (hide == HIDE_BAR_FOCUS_STC || hide == HIDE_BAR_FORCE_FOCUS_STC) &&
+      m_textctrl != nullptr && m_textctrl->ex() != nullptr)
+    {
+      m_textctrl->ex()->get_stc()->SetFocus();
+    }
+  }
 }
 
 bool wex::managed_frame::show_ex_command(ex* ex, const std::string& command)
@@ -409,7 +407,7 @@ bool wex::managed_frame::show_ex_input(ex* ex, char cmd)
 
 void wex::managed_frame::show_ex_message(const std::string& text)
 {
-  hide_ex_bar();
+  show_ex_bar();
   statustext(text, std::string());
 }
 

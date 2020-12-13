@@ -101,17 +101,17 @@ TEST_CASE("wex::ex")
     ex->get_stc()->visual(true);
     REQUIRE(!ex->get_stc()->data().flags().test(wex::data::stc::WIN_EX));
     REQUIRE(ex->is_active()); // vi
-    
+
     ex->get_stc()->visual(false);
     CAPTURE(ex->get_stc()->data().flags());
     REQUIRE(ex->get_stc()->data().flags().test(wex::data::stc::WIN_EX));
     REQUIRE(!ex->is_active()); // vi
-    
+
     ex->get_stc()->visual(true);
     REQUIRE(!ex->get_stc()->data().flags().test(wex::data::stc::WIN_EX));
     REQUIRE(ex->is_active()); // vi
   }
-  
+
   SUBCASE("search_flags")
   {
     REQUIRE((ex->search_flags() & wxSTC_FIND_REGEXP) > 0);

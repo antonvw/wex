@@ -68,7 +68,7 @@ wex::notebook::notebook(const data::window& data)
         {
           if (m_keys.empty())
             m_frame->sync_close_all(GetId());
-          m_frame->hide_ex_bar();
+          m_frame->show_ex_bar();
         }
       }
     }

@@ -37,7 +37,7 @@ namespace wex
   class managed_frame : public frame
   {
   public:
-    /// Enums for hide_ex_bar.
+    /// Enums for show_ex_bar.
     enum
     {
       HIDE_BAR,                 ///< hide bar, unless there is no statusbar
@@ -135,10 +135,6 @@ namespace wex
     /// Returns the toolbar.
     auto* get_toolbar() { return m_toolbar; };
 
-    /// Hides the ex bar.
-    /// Default it sets focus back to stc component associated with current ex.
-    void hide_ex_bar(int hide = HIDE_BAR_FOCUS_STC);
-
     /// Add panes to the manager.
     /// Returns false if one of the panes could not be added.
     bool pane_add(
@@ -183,11 +179,13 @@ namespace wex
     };
 
     /// Returns number of panes.
-    size_t panes() { return m_manager.GetAllPanes().GetCount(); };
+    size_t panes() const;
 
-    /// Shows the ex bar forever.
-    /// If invoked, if never hides the bar afterwards.
-    void show_ex_bar(ex* ex);
+    /// Shows or hides the ex bar.
+    /// Default it hides the ex bar and
+    /// sets focus back to stc component associated with current ex.
+    /// If current ex has ex mode enabled, the ex bar is always shown.
+    void show_ex_bar(int hide = HIDE_BAR_FOCUS_STC);
 
     /// Returns a command line ex command.
     /// Shows the ex bar, sets the label and sets focus to it, allowing
