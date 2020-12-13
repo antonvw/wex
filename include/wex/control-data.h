@@ -25,9 +25,10 @@ namespace wex::data
     /// Determine how flags value are set.
     enum action_t
     {
-      SET, /// set value
+      INV, /// sets value and flips result
+      NOT, /// remove this flag
       OR,  /// add this flag
-      INV, /// remove this flag
+      SET, /// set value
       XOR, /// xor this flag
     };
 
@@ -75,14 +76,21 @@ namespace wex::data
           result = flags;
           result.flip();
           break;
+
+        case NOT:
+          result &= ~flags;
+          break;
+
         case OR:
           result |= flags;
           break;
-        case XOR:
-          result ^= flags;
-          break;
+
         case SET:
           result = flags;
+          break;
+
+        case XOR:
+          result ^= flags;
           break;
       }
       return *this;

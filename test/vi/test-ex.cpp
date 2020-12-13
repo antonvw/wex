@@ -64,7 +64,7 @@ TEST_CASE("wex::ex")
   }
 
   wex::stc* stc = get_stc();
-  wex::ex*  ex  = &stc->get_vi();
+  wex::ex*  ex  = &stc->get_ex();
   stc->set_text("xx\nxx\nyy\nzz\n");
   stc->DocumentStart();
 
@@ -88,6 +88,7 @@ TEST_CASE("wex::ex")
 
   SUBCASE("is_active")
   {
+    // currently the get_ex returns the get_vi
     REQUIRE(ex->is_active());
     ex->use(false);
     REQUIRE(!ex->is_active());
@@ -95,6 +96,22 @@ TEST_CASE("wex::ex")
     REQUIRE(ex->is_active());
   }
 
+  SUBCASE("visual mode")
+  {
+    ex->get_stc()->visual(true);
+    REQUIRE(!ex->get_stc()->data().flags().test(wex::data::stc::WIN_EX));
+    REQUIRE(ex->is_active()); // vi
+    
+    ex->get_stc()->visual(false);
+    CAPTURE(ex->get_stc()->data().flags());
+    REQUIRE(ex->get_stc()->data().flags().test(wex::data::stc::WIN_EX));
+    REQUIRE(!ex->is_active()); // vi
+    
+    ex->get_stc()->visual(true);
+    REQUIRE(!ex->get_stc()->data().flags().test(wex::data::stc::WIN_EX));
+    REQUIRE(ex->is_active()); // vi
+  }
+  
   SUBCASE("search_flags")
   {
     REQUIRE((ex->search_flags() & wxSTC_FIND_REGEXP) > 0);

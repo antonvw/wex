@@ -301,13 +301,21 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->command("10@t"));
   }
 
+  SUBCASE("is_active")
+  {
+    REQUIRE(vi->is_active());
+    vi->use(false);
+    REQUIRE(!vi->is_active());
+    vi->use(true);
+    REQUIRE(vi->is_active());
+  }
+
   SUBCASE("modeline")
   {
     auto* stc = new wex::stc(std::string("// 	vim: set ts=120 "
                                          "// this is a modeline"));
     wex::test::add_pane(frame(), stc);
     REQUIRE(stc->GetTabWidth() == 120);
-    REQUIRE(vi->is_active());
     REQUIRE(vi->mode().is_command());
   }
 

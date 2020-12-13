@@ -1034,17 +1034,18 @@ bool wex::stc::vi_command(const std::string& command)
 
 void wex::stc::visual(bool on)
 {
+  log::info("enter visual mode") << on;
+
   m_ex->use(!on);
   m_vi->use(on);
 
   SetReadOnly(!on);
 
-  m_data.flags(data::stc::WIN_EX, data::control::INV);
+  m_data.flags(
+    data::stc::window_t().set(data::stc::WIN_EX),
+    on ? data::control::NOT : data::control::SET);
 
-  if (on)
-  {
-    m_frame->hide_ex_bar();
-  }
+  m_frame->hide_ex_bar();
 }
 
 void wex::stc::WordLeftRectExtend()

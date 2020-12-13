@@ -422,7 +422,7 @@ const std::string wex::textctrl_imp::get_text() const
 
 bool wex::textctrl_imp::handle(const std::string& command)
 {
-  const std::string range(!command.empty() ? command.substr(1): std::string());
+  const std::string range(!command.empty() ? command.substr(1) : std::string());
 
   m_user_input = false;
 
@@ -527,8 +527,7 @@ bool wex::textctrl_imp::input_mode_finish() const
 
 bool wex::textctrl_imp::is_ex_mode() const
 {
-  return m_tc->ex() != nullptr &&
-         m_tc->ex()->get_stc() != nullptr &&
+  return m_tc->ex() != nullptr && m_tc->ex()->get_stc() != nullptr &&
          m_tc->ex()->get_stc()->data().flags().test(data::stc::WIN_EX);
 }
 

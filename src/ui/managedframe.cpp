@@ -219,6 +219,7 @@ void wex::managed_frame::hide_ex_bar(int hide)
   if (is_ex(m_textctrl))
   {
     m_textctrl->set_ex(nullptr, ":");
+    pane_show("VIBAR", true);
     return;
   }
 
