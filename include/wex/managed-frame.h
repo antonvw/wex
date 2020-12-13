@@ -44,6 +44,7 @@ namespace wex
       HIDE_BAR_FOCUS_STC,       ///< as previous, and focus to stc
       HIDE_BAR_FORCE,           ///< hide bar, even if there is no statusbar
       HIDE_BAR_FORCE_FOCUS_STC, ///< as previous, and focus to stc
+      SHOW_BAR,                 ///< shows bar
     };
 
     /// Panes vector with a pair of panes
@@ -185,7 +186,11 @@ namespace wex
     /// Default it hides the ex bar and
     /// sets focus back to stc component associated with current ex.
     /// If current ex has ex mode enabled, the ex bar is always shown.
-    void show_ex_bar(int hide = HIDE_BAR_FOCUS_STC);
+    void show_ex_bar(
+      /// action
+      int action = HIDE_BAR_FOCUS_STC,
+      /// component to use for showing ex bar
+      ex* ex = nullptr);
 
     /// Returns a command line ex command.
     /// Shows the ex bar, sets the label and sets focus to it, allowing

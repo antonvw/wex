@@ -48,16 +48,6 @@ wex::stc::stc(const path& p, const data::stc& data)
 {
   assert(m_frame != nullptr);
 
-  if (data.flags().test(data::stc::WIN_EX))
-  {
-    m_ex->use(true);
-    m_vi->use(false);
-  }
-  else
-  {
-    m_ex->use(false);
-  }
-
   Create(
     data.window().parent(),
     data.window().id(),
@@ -128,6 +118,8 @@ wex::stc::stc(const path& p, const data::stc& data)
     m_file.file_new(p);
     m_data.inject();
   }
+
+  visual(!data.flags().test(data::stc::WIN_EX));
 }
 
 wex::stc::~stc()
@@ -1045,7 +1037,9 @@ void wex::stc::visual(bool on)
     data::stc::window_t().set(data::stc::WIN_EX),
     on ? data::control::NOT : data::control::SET);
 
-  m_frame->show_ex_bar();
+  m_frame->show_ex_bar(
+    !on ? managed_frame::SHOW_BAR : managed_frame::HIDE_BAR_FOCUS_STC,
+    m_ex);
 }
 
 void wex::stc::WordLeftRectExtend()

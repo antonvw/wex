@@ -368,11 +368,11 @@ void wex::managed_frame::set_recent_file(const path& path)
   m_file_history.append(path);
 }
 
-void wex::managed_frame::show_ex_bar(int hide)
+void wex::managed_frame::show_ex_bar(int action, ex* ex)
 {
-  if (is_ex(m_textctrl))
+  if (action == SHOW_BAR || is_ex(m_textctrl))
   {
-    m_textctrl->set_ex(nullptr, ":");
+    m_textctrl->set_ex(ex, ":");
     pane_show("VIBAR", true);
     return;
   }
@@ -380,14 +380,14 @@ void wex::managed_frame::show_ex_bar(int hide)
   if (m_manager.GetPane("VIBAR").IsShown())
   {
     if (
-      hide == HIDE_BAR_FORCE || hide == HIDE_BAR_FORCE_FOCUS_STC ||
+      action == HIDE_BAR_FORCE || action == HIDE_BAR_FORCE_FOCUS_STC ||
       (GetStatusBar() != nullptr && GetStatusBar()->IsShown()))
     {
       pane_show("VIBAR", false);
     }
 
     if (
-      (hide == HIDE_BAR_FOCUS_STC || hide == HIDE_BAR_FORCE_FOCUS_STC) &&
+      (action == HIDE_BAR_FOCUS_STC || action == HIDE_BAR_FORCE_FOCUS_STC) &&
       m_textctrl != nullptr && m_textctrl->ex() != nullptr)
     {
       m_textctrl->ex()->get_stc()->SetFocus();
