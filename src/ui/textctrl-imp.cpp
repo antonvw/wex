@@ -209,9 +209,9 @@ wex::textctrl_imp::textctrl_imp(
         if (m_tc->ex() != nullptr)
         {
           m_tc->ex()->get_stc()->position_restore();
+          m_tc->frame()->show_ex_bar(managed_frame::HIDE_BAR_FORCE_FOCUS_STC);
         }
 
-        m_tc->frame()->show_ex_bar(managed_frame::HIDE_BAR_FORCE_FOCUS_STC);
         m_control_r  = false;
         m_user_input = false;
         break;

@@ -1,4 +1,6 @@
 # roadmap
+- vix should not enter visual mode
+- mode addrres reg ex to address, and to range
 - when :i, . is empty, do not add empty line
 - wxDateTime replace by c++20 methods date and time utilities
 - process-imp should be in core

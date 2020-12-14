@@ -354,8 +354,8 @@ bool wex::managed_frame::pane_show(const std::string& pane, bool show)
 }
 
 size_t wex::managed_frame::panes() const
-{ 
-  return const_cast<managed_frame*>(this)->m_manager.GetAllPanes().GetCount(); 
+{
+  return const_cast<managed_frame*>(this)->m_manager.GetAllPanes().GetCount();
 }
 
 void wex::managed_frame::print_ex(ex* ex, const std::string& text)
