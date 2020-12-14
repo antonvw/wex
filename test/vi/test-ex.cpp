@@ -107,7 +107,7 @@ TEST_CASE("wex::ex")
     REQUIRE(ex->get_stc()->data().flags().test(wex::data::stc::WIN_EX));
     REQUIRE(!ex->is_active()); // vi
 
-    ex->get_stc()->visual(true);
+    REQUIRE(ex->get_stc()->get_ex().command(":vi"));
     REQUIRE(!ex->get_stc()->data().flags().test(wex::data::stc::WIN_EX));
     REQUIRE(ex->is_active()); // vi
   }
@@ -143,6 +143,7 @@ TEST_CASE("wex::ex")
            ":.pk",
            ":so",
            ":so xxx",
+           ":vix",
            ":xxx",
            ":zzz",
            ":%/test//",

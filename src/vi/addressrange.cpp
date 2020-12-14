@@ -776,18 +776,18 @@ bool wex::addressrange::print(const std::string& flags) const
 const std::string wex::addressrange::regex_commands() const
 {
   // 2addr commands
-  return std::string("(change|"
-                     "copy|co|"
-                     "delete|"
-                     "global|"
-                     "join|"
-                     "list|"
-                     "move|"
-                     "number|nu|"
-                     "print|"
-                     "substitute|"
-                     "write|"
-                     "yank|ya|"
+  return std::string("(change\\b|"
+                     "copy\\b|co\\b|"
+                     "delete\\b|"
+                     "global\\b|"
+                     "join\\b|"
+                     "list\\b|"
+                     "move\\b|"
+                     "number\\b|nu\\b|"
+                     "print\\b|"
+                     "substitute\\b|"
+                     "write\\b|"
+                     "yank\\b|ya\\b|"
                      "[cdgjlmpsStvwy<>\\!&~@#])([\\s\\S]*)");
 }
 

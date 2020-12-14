@@ -360,12 +360,12 @@ const std::string wex::address::regex_commands() const
 {
   // Command Descriptions in ex.
   // 1addr commands
-  return std::string("(append|"
-                     "insert|"
-                     "mark|ma|"
-                     "pu|"
-                     "read|"
-                     "visual|vi|"
+  return std::string("(append\\b|"
+                     "insert\\b|"
+                     "mark\\b|ma\\b|"
+                     "pu\\b|"
+                     "read\\b|"
+                     "visual\\b|vi\\b|"
                      "[aikrz=])([\\s\\S]*)");
 }
 
