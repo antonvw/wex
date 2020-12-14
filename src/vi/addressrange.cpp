@@ -773,6 +773,24 @@ bool wex::addressrange::print(const std::string& flags) const
   return true;
 }
 
+const std::string wex::addressrange::regex_commands() const
+{
+  // 2addr commands
+  return std::string("(change|"
+                     "copy|co|"
+                     "delete|"
+                     "global|"
+                     "join|"
+                     "list|"
+                     "move|"
+                     "number|nu|"
+                     "print|"
+                     "substitute|"
+                     "write|"
+                     "yank|ya|"
+                     "[cdgjlmpsStvwy<>\\!&~@#])([\\s\\S]*)");
+}
+
 void wex::addressrange::set(address& begin, address& end, int lines) const
 {
   begin.set_line(m_stc->LineFromPosition(m_stc->GetCurrentPos()) + 1);

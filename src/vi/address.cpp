@@ -356,6 +356,19 @@ bool wex::address::read(const std::string& arg) const
   }
 }
 
+const std::string wex::address::regex_commands() const
+{
+  // Command Descriptions in ex.
+  // 1addr commands
+  return std::string("(append|"
+                     "insert|"
+                     "mark|ma|"
+                     "pu|"
+                     "read|"
+                     "visual|vi|"
+                     "[aikrz=])([\\s\\S]*)");
+}
+
 void wex::address::set_line(int line)
 {
   if (line > m_ex->get_stc()->GetLineCount())

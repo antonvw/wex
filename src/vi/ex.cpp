@@ -438,28 +438,10 @@ bool wex::ex::address_parse(
 
     // Command Descriptions in ex.
     // 1addr commands
-    const std::string cmds_1addr("(append|"
-                                 "insert|"
-                                 "mark|ma|"
-                                 "pu|"
-                                 "read|"
-                                 "visual|vi|"
-                                 "[aikrz=])([\\s\\S]*)");
+    const auto& cmds_1addr(address(this).regex_commands());
 
     // 2addr commands
-    const std::string cmds_2addr("(change|"
-                                 "copy|co|"
-                                 "delete|"
-                                 "global|"
-                                 "join|"
-                                 "list|"
-                                 "move|"
-                                 "number|nu|"
-                                 "print|"
-                                 "substitute|"
-                                 "write|"
-                                 "yank|ya|"
-                                 "[cdgjlmpsStvwy<>\\!&~@#])([\\s\\S]*)");
+    const auto& cmds_2addr(addressrange(this).regex_commands());
 
     if (std::vector<std::string> v;
         // 2addr % range

@@ -110,6 +110,9 @@ namespace wex
     /// Prints range to print file.
     bool print(const std::string& flags = std::string()) const;
 
+    /// Supported 2addr commands.
+    const std::string regex_commands() const;
+
     /// Shifts the specified lines to the start of the line.
     bool shift_left() const { return indent(false); };
 

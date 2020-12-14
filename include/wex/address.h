@@ -75,6 +75,9 @@ namespace wex
     /// Read file at this address.
     bool read(const std::string& arg) const;
 
+    /// Supported 1addr commands.
+    const std::string regex_commands() const;
+
     /// Shows this address in the ex bar.
     bool write_line_number() const;
 
