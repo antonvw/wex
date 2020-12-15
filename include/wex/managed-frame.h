@@ -45,6 +45,7 @@ namespace wex
       HIDE_BAR_FORCE,           ///< hide bar, even if there is no statusbar
       HIDE_BAR_FORCE_FOCUS_STC, ///< as previous, and focus to stc
       SHOW_BAR,                 ///< shows bar
+      SHOW_BAR_SYNC_CLOSE_ALL,  ///< shows bar, but all components are closed
     };
 
     /// Panes vector with a pair of panes
@@ -189,7 +190,7 @@ namespace wex
     void show_ex_bar(
       /// action
       int action = HIDE_BAR_FOCUS_STC,
-      /// component to use for showing ex bar
+      /// component to use for showing ex bar (for SHOW_ actions)
       ex* ex = nullptr);
 
     /// Returns a command line ex command.

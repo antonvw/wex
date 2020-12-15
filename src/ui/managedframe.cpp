@@ -189,11 +189,6 @@ bool wex::managed_frame::allow_close(wxWindowID id, wxWindow* page)
   // The page will be closed, so do not update find focus now.
   set_find_focus(nullptr);
 
-  if (is_ex(m_textctrl))
-  {
-    m_textctrl->set_ex(nullptr, std::string());
-  }
-
   return true;
 }
 
@@ -232,7 +227,7 @@ void wex::managed_frame::on_notebook(wxWindowID id, wxWindow* page)
   {
     if (is_ex(m_textctrl))
     {
-      m_textctrl->set_ex(&stc->get_ex(), ":");
+      show_ex_bar(SHOW_BAR, &stc->get_ex());
     }
 
     set_recent_file(stc->get_filename());
@@ -371,10 +366,21 @@ void wex::managed_frame::set_recent_file(const path& path)
 
 void wex::managed_frame::show_ex_bar(int action, ex* ex)
 {
-  if (action == SHOW_BAR || is_ex(m_textctrl))
+  if (
+    action == SHOW_BAR || (is_ex(m_textctrl)) ||
+    (action == SHOW_BAR && ex == nullptr))
+  {
+    if (action == SHOW_BAR)
+    {
+      m_textctrl->set_ex(ex, ":");
+    }
+    pane_show("VIBAR", true);
+    return;
+  }
+  else if (action == SHOW_BAR_SYNC_CLOSE_ALL)
   {
     m_textctrl->set_ex(ex, ":");
-    pane_show("VIBAR", true);
+    pane_show("VIBAR", false);
     return;
   }
 
@@ -536,4 +542,6 @@ void wex::managed_frame::sync_all()
 void wex::managed_frame::sync_close_all(wxWindowID id)
 {
   set_find_focus(nullptr);
+
+  show_ex_bar(SHOW_BAR_SYNC_CLOSE_ALL);
 }

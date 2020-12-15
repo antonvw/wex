@@ -1,4 +1,5 @@
 # roadmap
+- make a switch from show_ex_bar
 - when :i, . is empty, do not add empty line
 - wxDateTime replace by c++20 methods date and time utilities
 - process-imp should be in core
@@ -16,5 +17,4 @@
   and modules
 - code cov
 - use abstract factory design pattern
-- use gcc-9 (check on linux)
 - enable lcov

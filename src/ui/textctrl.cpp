@@ -52,17 +52,7 @@ void wex::textctrl::select_all() const
 
 bool wex::textctrl::set_ex(wex::ex* ex, const std::string& command)
 {
-  if (ex == nullptr)
-  {
-    if (auto* stc = m_frame->get_stc(); stc != nullptr)
-    {
-      m_ex = &stc->get_ex();
-    }
-  }
-  else
-  {
-    m_ex = ex;
-  }
+  m_ex = ex;
 
   return m_imp->handle(command);
 }
