@@ -1,5 +1,4 @@
 # roadmap
-- make a switch from show_ex_bar, check close all
 - .i in ex mode not yet ok, it is readonly
 - wxDateTime replace by c++20 methods date and time utilities
 - process-imp should be in core

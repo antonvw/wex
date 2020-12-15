@@ -370,21 +370,14 @@ void wex::managed_frame::show_ex_bar(int action, ex* ex)
     action == SHOW_BAR || (is_ex(m_textctrl)) ||
     (action == SHOW_BAR && ex == nullptr))
   {
-    if (action == SHOW_BAR)
+    if (action >= SHOW_BAR)
     {
       m_textctrl->set_ex(ex, ":");
     }
-    pane_show("VIBAR", true);
-    return;
+    
+    pane_show("VIBAR", action != SHOW_BAR_SYNC_CLOSE_ALL);
   }
-  else if (action == SHOW_BAR_SYNC_CLOSE_ALL)
-  {
-    m_textctrl->set_ex(ex, ":");
-    pane_show("VIBAR", false);
-    return;
-  }
-
-  if (m_manager.GetPane("VIBAR").IsShown())
+  else
   {
     if (
       action == HIDE_BAR_FORCE || action == HIDE_BAR_FORCE_FOCUS_STC ||
