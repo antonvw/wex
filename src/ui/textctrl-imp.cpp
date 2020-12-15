@@ -297,11 +297,12 @@ wex::textctrl_imp::textctrl_imp(
 
     if (input_mode_finish())
     {
-      if (m_command.command() != ":.")
+      if (const std::string text(
+            m_command.command().substr(1, m_command.size() - 3));
+          m_command.command() != ":." && !text.empty())
       {
         m_tc->ex()->command(
-          ":" + std::string(1, m_input) + "|" +
-          m_command.command().substr(1, m_command.size() - 3) +
+          ":" + std::string(1, m_input) + "|" + text +
           m_tc->ex()->get_stc()->eol());
       }
 

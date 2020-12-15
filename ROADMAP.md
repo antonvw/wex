@@ -1,6 +1,6 @@
 # roadmap
-- make a switch from show_ex_bar
-- when :i, . is empty, do not add empty line
+- make a switch from show_ex_bar, check close all
+- .i in ex mode not yet ok, it is readonly
 - wxDateTime replace by c++20 methods date and time utilities
 - process-imp should be in core
 - prepare_output at one place in test
