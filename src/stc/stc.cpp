@@ -1021,7 +1021,8 @@ void wex::stc::use_modification_markers(bool use)
 
 bool wex::stc::vi_command(const std::string& command)
 {
-  return m_ex->is_active() ? m_ex->command(command) : m_vi->command(command);
+  // TODO: this should depend on the mode, if not visual mode, use m_ex.
+  return m_vi->command(command);
 }
 
 void wex::stc::visual(bool on)
