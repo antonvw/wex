@@ -27,8 +27,8 @@
 #include <wex/stc.h>
 #include <wex/tostring.h>
 #include <wex/util.h>
-#include <wex/vcs.h>
 #include <wex/vcs-entry.h>
+#include <wex/vcs.h>
 #include <wx/fdrepdlg.h> // for wxFindDialogDialog and Event
 #include <wx/filedlg.h>  // for wxFD_OPEN etc.
 
@@ -144,24 +144,24 @@ wex::frame::frame(const data::window& data)
 
   printing::get()->get_html_printer()->SetParentWindow(this);
 
-  Bind(wxEVT_FIND, [=](wxFindDialogEvent& event) {
+  Bind(wxEVT_FIND, [=, this](wxFindDialogEvent& event) {
     if (m_find_focus != nullptr)
       wxPostEvent(m_find_focus, event);
   });
-  Bind(wxEVT_FIND_NEXT, [=](wxFindDialogEvent& event) {
+  Bind(wxEVT_FIND_NEXT, [=, this](wxFindDialogEvent& event) {
     if (m_find_focus != nullptr)
       wxPostEvent(m_find_focus, event);
   });
-  Bind(wxEVT_FIND_REPLACE, [=](wxFindDialogEvent& event) {
+  Bind(wxEVT_FIND_REPLACE, [=, this](wxFindDialogEvent& event) {
     if (m_find_focus != nullptr)
       wxPostEvent(m_find_focus, event);
   });
-  Bind(wxEVT_FIND_REPLACE_ALL, [=](wxFindDialogEvent& event) {
+  Bind(wxEVT_FIND_REPLACE_ALL, [=, this](wxFindDialogEvent& event) {
     if (m_find_focus != nullptr)
       wxPostEvent(m_find_focus, event);
   });
 
-  Bind(wxEVT_FIND_CLOSE, [=](wxFindDialogEvent& event) {
+  Bind(wxEVT_FIND_CLOSE, [=, this](wxFindDialogEvent& event) {
     assert(m_find_replace_dialog != nullptr);
     // Hiding instead of destroying, does not
     // show the dialog next time.
@@ -170,26 +170,26 @@ wex::frame::frame(const data::window& data)
   });
 
   bind(this).ui(
-    {{[=](wxUpdateUIEvent& event) {
+    {{[=, this](wxUpdateUIEvent& event) {
         (GetStatusBar() != nullptr ? event.Check(GetStatusBar()->IsShown()) :
                                      event.Check(false));
       },
       ID_VIEW_STATUSBAR},
-     {[=](wxUpdateUIEvent& event) {
+     {[=, this](wxUpdateUIEvent& event) {
         if (auto* lv = get_listview(); lv != nullptr && lv->HasFocus())
         {
           update_statusbar(lv);
         }
       },
       ID_UPDATE_STATUS_BAR},
-     {[=](wxUpdateUIEvent& event) {
+     {[=, this](wxUpdateUIEvent& event) {
         (GetMenuBar() != nullptr ? event.Check(GetMenuBar()->IsShown()) :
                                    event.Check(false));
       },
       ID_VIEW_MENUBAR}});
 
   bind(this).command(
-    {{[=](wxCommandEvent& event) {
+    {{[=, this](wxCommandEvent& event) {
         if (GetStatusBar() != nullptr)
         {
           GetStatusBar()->Show(!GetStatusBar()->IsShown());
@@ -197,15 +197,15 @@ wex::frame::frame(const data::window& data)
         }
       },
       ID_VIEW_STATUSBAR},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         FIND_REPLACE(_("Find"), 0);
       },
       wxID_FIND},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         FIND_REPLACE(_("Replace"), wxFR_REPLACEDIALOG);
       },
       wxID_REPLACE},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         m_is_command = true;
 
         // :e [+command] [file]
@@ -216,7 +216,7 @@ wex::frame::frame(const data::window& data)
           if (auto* stc = get_stc(); stc != nullptr)
           {
             wex::path::current(stc->get_filename().get_path());
-            if (!marker_and_register_expansion(&stc->get_vi(), text))
+            if (!marker_and_register_expansion(&stc->get_ex(), text))
               return;
           }
 
@@ -245,11 +245,11 @@ wex::frame::frame(const data::window& data)
         }
       },
       wxID_OPEN},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         SetMenuBar(GetMenuBar() != nullptr ? nullptr : m_menubar);
       },
       ID_VIEW_MENUBAR},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         SetWindowStyleFlag(
           !(GetWindowStyleFlag() & wxCAPTION) ?
             wxDEFAULT_FRAME_STYLE :
@@ -258,7 +258,7 @@ wex::frame::frame(const data::window& data)
       },
       ID_VIEW_TITLEBAR}});
 
-  Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
+  Bind(wxEVT_CLOSE_WINDOW, [=, this](wxCloseEvent& event) {
     if (IsMaximized())
     {
       config(win_max).set(true);
@@ -514,8 +514,8 @@ bool wex::frame::update_statusbar(stc* stc, const std::string& pane)
       const auto line = stc->GetCurrentLine() + 1;
       const auto pos =
         stc->GetCurrentPos() + 1 - stc->PositionFromLine(line - 1);
-      int        start, end;
-      
+      int start, end;
+
       stc->GetSelection(&start, &end);
 
       if (const int len = end - start; len == 0)
@@ -551,9 +551,15 @@ bool wex::frame::update_statusbar(stc* stc, const std::string& pane)
   {
     switch (stc->GetEOLMode())
     {
-      case wxSTC_EOL_CRLF: text << "DOS"; break;
-      case wxSTC_EOL_CR: text << "Mac"; break;
-      case wxSTC_EOL_LF: text << "Unix"; break;
+      case wxSTC_EOL_CRLF:
+        text << "DOS";
+        break;
+      case wxSTC_EOL_CR:
+        text << "Mac";
+        break;
+      case wxSTC_EOL_LF:
+        text << "Unix";
+        break;
       default:
         assert(0);
     }

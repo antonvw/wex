@@ -14,12 +14,15 @@
 #include <wex/macros.h>
 #include <wex/managed-frame.h>
 #include <wex/path.h>
+#include <wex/process.h>
 #include <wex/stc.h>
 
 TEST_SUITE_BEGIN("wex::ex");
 
 TEST_CASE("wex::ex")
 {
+  REQUIRE(wex::process::prepare_output(frame()) != nullptr);
+
   SUBCASE("modeline")
   {
     SUBCASE("text")
@@ -61,7 +64,7 @@ TEST_CASE("wex::ex")
   }
 
   wex::stc* stc = get_stc();
-  wex::ex*  ex  = &stc->get_vi();
+  wex::ex*  ex  = &stc->get_ex();
   stc->set_text("xx\nxx\nyy\nzz\n");
   stc->DocumentStart();
 
@@ -85,6 +88,7 @@ TEST_CASE("wex::ex")
 
   SUBCASE("is_active")
   {
+    // currently the get_ex returns the get_vi
     REQUIRE(ex->is_active());
     ex->use(false);
     REQUIRE(!ex->is_active());
@@ -92,18 +96,34 @@ TEST_CASE("wex::ex")
     REQUIRE(ex->is_active());
   }
 
+  SUBCASE("visual mode")
+  {
+    ex->get_stc()->visual(true);
+    REQUIRE(!ex->get_stc()->data().flags().test(wex::data::stc::WIN_EX));
+    REQUIRE(ex->is_active()); // vi
+
+    ex->get_stc()->visual(false);
+    CAPTURE(ex->get_stc()->data().flags());
+    REQUIRE(ex->get_stc()->data().flags().test(wex::data::stc::WIN_EX));
+    REQUIRE(!ex->is_active()); // vi
+
+    REQUIRE(ex->get_stc()->get_ex().command(":vi"));
+    REQUIRE(!ex->get_stc()->data().flags().test(wex::data::stc::WIN_EX));
+    REQUIRE(ex->is_active()); // vi
+  }
+
   SUBCASE("search_flags")
   {
     REQUIRE((ex->search_flags() & wxSTC_FIND_REGEXP) > 0);
   }
 
-  SUBCASE("test commands")
+  SUBCASE("commands")
   {
     // Most commands are tested using the :so command.
-    for (const auto& command :
-         std::vector<std::pair<std::string, bool>>{{":ab", true},
-                                                   {":ve", false},
-                                                   {":1,$s/s/w/", true}})
+    for (const auto& command : std::vector<std::pair<std::string, bool>>{
+           {":ab", true},
+           {":ve", false},
+           {":1,$s/s/w/", true}})
     {
       CAPTURE(command);
       REQUIRE(ex->command(command.first));
@@ -123,6 +143,7 @@ TEST_CASE("wex::ex")
            ":.pk",
            ":so",
            ":so xxx",
+           ":vix",
            ":xxx",
            ":zzz",
            ":%/test//",
@@ -139,7 +160,6 @@ TEST_CASE("wex::ex")
 
   SUBCASE("map")
   {
-    stc->set_text("123456789");
     REQUIRE(ex->command(":map :xx :%d"));
     REQUIRE(ex->command(":xx"));
     REQUIRE(stc->get_text().empty());
@@ -160,7 +180,6 @@ TEST_CASE("wex::ex")
 
   SUBCASE("abbreviations")
   {
-    stc->set_text("xx\n");
     REQUIRE(ex->command(":ab t TTTT"));
     const auto& it1 = ex->get_macros().get_abbreviations().find("t");
     REQUIRE(it1 != ex->get_macros().get_abbreviations().end());
@@ -173,19 +192,22 @@ TEST_CASE("wex::ex")
 
   SUBCASE("range")
   {
-    stc->set_text("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
     REQUIRE(ex->command(":1,2>"));
+
     stc->SelectNone();
     REQUIRE(!ex->command(":'<,'>>"));
+
     stc->GotoLine(2);
     stc->LineDownExtend();
     REQUIRE(ex->command(":'<,'>m1"));
+
     stc->GotoLine(2);
     stc->LineDownExtend();
     stc->LineDownExtend();
     stc->LineDownExtend();
     REQUIRE(ex->command(":'<,'>w test-ex.txt"));
     REQUIRE(ex->command(":'<,'><"));
+
     ex->command(":'<,'>>");
 
 #ifndef __WXMSW__
@@ -197,23 +219,32 @@ TEST_CASE("wex::ex")
     REQUIRE(!ex->command(":'<,'>x"));
   }
 
-  SUBCASE("source")
+  SUBCASE("read")
   {
 #ifdef __UNIX__
-    stc->set_text("xx\nxx\nyy\nzz\n");
-    REQUIRE(ex->command(":so test-source.txt"));
-    stc->set_text("xx\nxx\nyy\nzz\n");
-    REQUIRE(ex->command(":source test-source.txt"));
-    stc->set_text("xx\nxx\nyy\nzz\n");
-    REQUIRE(!ex->command(":so test-surce.txt"));
-    stc->set_text("xx\nxx\nyy\nzz\n");
-    REQUIRE(!ex->command(":so test-source-2.txt"));
-    REQUIRE(ex->command(":d"));
-
     REQUIRE(ex->command(":r !echo qwerty"));
     REQUIRE(stc->get_text().find("qwerty") != std::string::npos);
 #endif
   }
+
+#ifdef __UNIX__
+  SUBCASE("source")
+  {
+    SUBCASE("so")
+    {
+      REQUIRE(stc->find_next(std::string("xx")));
+      REQUIRE(
+        stc->get_find_string() == "xx"); // necesary for the ~ in test-source
+      REQUIRE(ex->command(":so test-source.txt"));
+    }
+
+    SUBCASE("full") { REQUIRE(ex->command(":source test-source.txt")); }
+
+    SUBCASE("not-existing") { REQUIRE(!ex->command(":so test-surce.txt")); }
+
+    SUBCASE("illegal") { REQUIRE(!ex->command(":so test-source-2.txt")); }
+  }
+#endif
 
   SUBCASE("markers")
   {
@@ -280,12 +311,12 @@ TEST_CASE("wex::ex")
     REQUIRE(stc->GetLineCount() == 12);
     stc->GotoLine(2);
 
-    for (const auto& go :
-         std::vector<std::pair<std::string, int>>{{":1", 0},
-                                                  {":-10", 0},
-                                                  {":10", 9},
-                                                  {":/c/", 2},
-                                                  {":10000", 11}})
+    for (const auto& go : std::vector<std::pair<std::string, int>>{
+           {":1", 0},
+           {":-10", 0},
+           {":10", 9},
+           {":/c/", 2},
+           {":10000", 11}})
     {
       REQUIRE(ex->command(go.first));
       REQUIRE(stc->GetCurrentLine() == go.second);

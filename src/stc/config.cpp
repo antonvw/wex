@@ -158,7 +158,16 @@ void wex::stc::config_get()
   SetTabWidth(iv.find<int>(_("stc.Tab width")));
   SetUseHorizontalScrollBar(iv.find<bool>(_("stc.Scroll bars")));
   SetUseTabs(iv.find<bool>(_("stc.Use tabs")));
-  SetUseVerticalScrollBar(iv.find<bool>(_("stc.Scroll bars")));
+
+  if (m_data.flags().test(data::stc::WIN_EX))
+  {
+    SetUseVerticalScrollBar(false);
+  }
+  else
+  {
+    SetUseVerticalScrollBar(iv.find<bool>(_("stc.Scroll bars")));
+  }
+
   SetViewEOL(iv.find<bool>(_("stc.End of line")));
   SetViewWhiteSpace(iv.find<long>(_("stc.Whitespace visible")));
   SetWrapMode(iv.find<long>(_("stc.Wrap line")));
@@ -174,7 +183,7 @@ void wex::stc::config_get()
     SetFoldFlags(iv.find<long>(_("stc.Fold flags")));
   }
 
-  m_vi.use(iv.find<bool>(_("stc.vi mode")));
+  get_ex().use(iv.find<bool>(_("stc.vi mode")));
 
   show_line_numbers(iv.find<bool>(_("stc.Line numbers")));
 

@@ -23,6 +23,16 @@
 #include <wx/panel.h>
 #include <wx/stattext.h>
 
+namespace wex
+{
+  bool is_ex(textctrl* tc)
+  {
+    return tc != nullptr && tc->ex() != nullptr &&
+           tc->ex()->get_stc() != nullptr &&
+           tc->ex()->get_stc()->data().flags().test(data::stc::WIN_EX);
+  }
+} // namespace wex
+
 wex::managed_frame::managed_frame(size_t maxFiles, const data::window& data)
   : frame(data)
   , m_debug(new debug(this))
@@ -30,10 +40,11 @@ wex::managed_frame::managed_frame(size_t maxFiles, const data::window& data)
   , m_findbar(new toolbar(this))
   , m_optionsbar(new toolbar(this))
   , m_toolbar(new toolbar(this))
-  , m_toggled_panes({{{"FINDBAR", _("&Findbar")}, ID_VIEW_LOWEST + 1},
-                     {{"OPTIONSBAR", _("&Optionsbar")}, ID_VIEW_LOWEST + 2},
-                     {{"TOOLBAR", _("&Toolbar")}, ID_VIEW_LOWEST + 3},
-                     {{"PROCESS", _("&Process")}, ID_VIEW_LOWEST + 4}})
+  , m_toggled_panes(
+      {{{"FINDBAR", _("&Findbar")}, ID_VIEW_LOWEST + 1},
+       {{"OPTIONSBAR", _("&Optionsbar")}, ID_VIEW_LOWEST + 2},
+       {{"TOOLBAR", _("&Toolbar")}, ID_VIEW_LOWEST + 3},
+       {{"PROCESS", _("&Process")}, ID_VIEW_LOWEST + 4}})
 {
   m_manager.SetManagedWindow(this);
 
@@ -44,9 +55,9 @@ wex::managed_frame::managed_frame(size_t maxFiles, const data::window& data)
       wxAuiPaneInfo().Name("OPTIONSBAR").Caption(_("Optionsbar"))},
      {create_ex_panel(), wxAuiPaneInfo().Name("VIBAR")}});
 
-  hide_ex_bar();
+  show_ex_bar();
 
-  Bind(wxEVT_AUI_PANE_CLOSE, [=](wxAuiManagerEvent& event) {
+  Bind(wxEVT_AUI_PANE_CLOSE, [=, this](wxAuiManagerEvent& event) {
     auto* info = event.GetPane();
     info->BestSize(info->window->GetSize()).Fixed().Resizable();
     m_manager.Update();
@@ -55,7 +66,7 @@ wex::managed_frame::managed_frame(size_t maxFiles, const data::window& data)
     m_optionsbar->set_checkbox(info->name, false);
   });
 
-  Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
+  Bind(wxEVT_CLOSE_WINDOW, [=, this](wxCloseEvent& event) {
     m_file_history.save();
 
     if (!m_perspective.empty())
@@ -70,13 +81,14 @@ wex::managed_frame::managed_frame(size_t maxFiles, const data::window& data)
   {
     Bind(
       wxEVT_UPDATE_UI,
-      [=](wxUpdateUIEvent& event) {
+      [=, this](wxUpdateUIEvent& event) {
         event.Check(m_manager.GetPane(it.first.first).IsShown());
       },
       it.second);
+
     Bind(
       wxEVT_MENU,
-      [=](wxCommandEvent& event) {
+      [=, this](wxCommandEvent& event) {
         pane_toggle(it.first.first);
       },
       it.second);
@@ -84,7 +96,7 @@ wex::managed_frame::managed_frame(size_t maxFiles, const data::window& data)
 
   Bind(
     wxEVT_MENU,
-    [=](wxCommandEvent& event) {
+    [=, this](wxCommandEvent& event) {
       on_menu_history(
         m_file_history,
         event.GetId() - m_file_history.get_base_id());
@@ -93,11 +105,11 @@ wex::managed_frame::managed_frame(size_t maxFiles, const data::window& data)
     m_file_history.get_base_id() + m_file_history.get_max_files());
 
   bind(this).command(
-    {{[=](wxCommandEvent& event) {
+    {{[=, this](wxCommandEvent& event) {
         find_replace_data::get()->set_find_strings(std::list<std::string>{});
       },
       ID_CLEAR_FINDS},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         stc::config_dialog(data::window()
                              .id(wxID_PREFERENCES)
                              .parent(this)
@@ -105,18 +117,18 @@ wex::managed_frame::managed_frame(size_t maxFiles, const data::window& data)
                              .button(wxAPPLY | wxOK | wxCANCEL));
       },
       wxID_PREFERENCES},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         m_file_history.clear();
       },
       ID_CLEAR_FILES},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         if (auto* stc = get_stc(); stc != nullptr)
         {
           auto it = find_replace_data::get()->get_find_strings().begin();
           std::advance(it, event.GetId() - ID_FIND_FIRST);
           if (const std::string text(*it); stc->find_next(
                 text,
-                stc->get_vi().is_active() ? stc->get_vi().search_flags() : -1))
+                stc->get_ex().is_active() ? stc->get_ex().search_flags() : -1))
           {
             find_replace_data::get()->set_find_string(text);
           }
@@ -176,6 +188,7 @@ bool wex::managed_frame::allow_close(wxWindowID id, wxWindow* page)
 {
   // The page will be closed, so do not update find focus now.
   set_find_focus(nullptr);
+
   return true;
 }
 
@@ -197,26 +210,6 @@ wxPanel* wex::managed_frame::create_ex_panel()
   return panel;
 }
 
-void wex::managed_frame::hide_ex_bar(int hide)
-{
-  if (m_manager.GetPane("VIBAR").IsShown())
-  {
-    if (
-      hide == HIDE_BAR_FORCE || hide == HIDE_BAR_FORCE_FOCUS_STC ||
-      (GetStatusBar() != nullptr && GetStatusBar()->IsShown()))
-    {
-      pane_show("VIBAR", false);
-    }
-
-    if (
-      (hide == HIDE_BAR_FOCUS_STC || hide == HIDE_BAR_FORCE_FOCUS_STC) &&
-      m_textctrl != nullptr && m_textctrl->ex() != nullptr)
-    {
-      m_textctrl->ex()->get_stc()->SetFocus();
-    }
-  }
-}
-
 void wex::managed_frame::on_menu_history(
   const class file_history& history,
   size_t                    index,
@@ -232,6 +225,11 @@ void wex::managed_frame::on_notebook(wxWindowID id, wxWindow* page)
 {
   if (auto* stc = dynamic_cast<wex::stc*>(page); stc != nullptr)
   {
+    if (is_ex(m_textctrl))
+    {
+      show_ex_bar(SHOW_BAR, &stc->get_ex());
+    }
+
     set_recent_file(stc->get_filename());
 
     const vcs v({stc->get_filename()});
@@ -351,6 +349,11 @@ bool wex::managed_frame::pane_show(const std::string& pane, bool show)
   }
 }
 
+size_t wex::managed_frame::panes() const
+{
+  return const_cast<managed_frame*>(this)->m_manager.GetAllPanes().GetCount();
+}
+
 void wex::managed_frame::print_ex(ex* ex, const std::string& text)
 {
   ex->print(text);
@@ -359,6 +362,37 @@ void wex::managed_frame::print_ex(ex* ex, const std::string& text)
 void wex::managed_frame::set_recent_file(const path& path)
 {
   m_file_history.append(path);
+}
+
+void wex::managed_frame::show_ex_bar(int action, ex* ex)
+{
+  if (
+    action == SHOW_BAR || (is_ex(m_textctrl)) ||
+    (action == SHOW_BAR && ex == nullptr))
+  {
+    if (action >= SHOW_BAR)
+    {
+      m_textctrl->set_ex(ex, ":");
+    }
+    
+    pane_show("VIBAR", action != SHOW_BAR_SYNC_CLOSE_ALL);
+  }
+  else
+  {
+    if (
+      action == HIDE_BAR_FORCE || action == HIDE_BAR_FORCE_FOCUS_STC ||
+      (GetStatusBar() != nullptr && GetStatusBar()->IsShown()))
+    {
+      pane_show("VIBAR", false);
+    }
+
+    if (
+      (action == HIDE_BAR_FOCUS_STC || action == HIDE_BAR_FORCE_FOCUS_STC) &&
+      m_textctrl != nullptr && m_textctrl->ex() != nullptr)
+    {
+      m_textctrl->ex()->get_stc()->SetFocus();
+    }
+  }
 }
 
 bool wex::managed_frame::show_ex_command(ex* ex, const std::string& command)
@@ -373,7 +407,7 @@ bool wex::managed_frame::show_ex_input(ex* ex, char cmd)
 
 void wex::managed_frame::show_ex_message(const std::string& text)
 {
-  hide_ex_bar();
+  show_ex_bar();
   statustext(text, std::string());
 }
 
@@ -403,12 +437,12 @@ void wex::managed_frame::statusbar_clicked_right(const std::string& pane)
   {
     if (auto* stc = get_stc(); stc != nullptr)
     {
-      PopupMenu(
-        new wex::menu({{wxWindow::NewControlId(),
-                        stc->is_shown_line_numbers() ? "&Hide" : "&Show",
-                        data::menu().action([=](wxCommandEvent&) {
-                          stc->show_line_numbers(!stc->is_shown_line_numbers());
-                        })}}));
+      PopupMenu(new wex::menu(
+        {{wxWindow::NewControlId(),
+          stc->is_shown_line_numbers() ? "&Hide" : "&Show",
+          data::menu().action([=, this](wxCommandEvent&) {
+            stc->show_line_numbers(!stc->is_shown_line_numbers());
+          })}}));
     }
   }
   else if (pane == "PaneLexer" || pane == "PaneTheme")
@@ -501,4 +535,6 @@ void wex::managed_frame::sync_all()
 void wex::managed_frame::sync_close_all(wxWindowID id)
 {
   set_find_focus(nullptr);
+
+  show_ex_bar(SHOW_BAR_SYNC_CLOSE_ALL);
 }

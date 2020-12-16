@@ -34,7 +34,7 @@ namespace wex
 
   /// Offers a styled text ctrl with:
   /// - lexer support (syntax colouring, folding)
-  /// - vi support (default vi mode is off)
+  /// - ex or vi support (default vi mode is on)
   /// - find/replace
   /// - popup menu
   /// - printing
@@ -71,6 +71,9 @@ namespace wex
 
     /// Constructor, opens the file if it exists.
     stc(const path& file, const data::stc& data = data::stc());
+
+    /// Destructor.
+    virtual ~stc();
 
     /// Virtual override methods.
 
@@ -135,6 +138,16 @@ namespace wex
     /// Returns associated data.
     const auto& data() const { return m_data; };
 
+    /// Returns vi component.
+    const ex& get_ex() const;
+
+    /// Returns writable ex component.
+    /// This allows you to do ex like editing:
+    /// - get_ex().Command(":1,$s/xx/yy/g")
+    /// - get_ex().Command(":w")
+    /// to replace all xx by yy, and save the file.
+    ex& get_ex();
+
     /// Shows a menu with current line type checked,
     /// and allows you to change it.
     void filetype_menu();
@@ -176,14 +189,10 @@ namespace wex
     const std::string get_text() const;
 
     /// Returns vi component.
-    const auto& get_vi() const { return m_vi; };
+    const vi& get_vi() const;
 
     /// Returns writable vi component.
-    /// This allows you to do vi like editing:
-    /// - get_vi().Command(":1,$s/xx/yy/g")
-    /// - get_vi().Command(":w")
-    /// to replace all xx by yy, and save the file.
-    auto& get_vi() { return m_vi; };
+    vi& get_vi();
 
     /// Returns word at position.
     const std::string get_word_at_pos(int pos) const;
@@ -270,6 +279,9 @@ namespace wex
     /// If you open a file, the modification markers are used.
     void use_modification_markers(bool use);
 
+    /// Sets using visual vi (on) or ex mode (!on).
+    void visual(bool on);
+
     /// Virtual methods from core.
 
     const std::string eol() const override;
@@ -286,10 +298,7 @@ namespace wex
     bool set_hexmode(bool on) override { return get_hexmode().set(on); };
     bool set_indicator(const indicator& indicator, int start, int end) override;
     void set_search_flags(int flags) override;
-    bool vi_command(const std::string& command) override
-    {
-      return m_vi.command(command);
-    };
+    bool vi_command(const std::string& command) override;
 
     // These methods are not yet available in scintilla, create stubs
     // (for the vi MOTION macro).
@@ -366,13 +375,18 @@ namespace wex
 
     class auto_complete m_auto_complete;
     hexmode             m_hexmode;
+
     // We use a separate lexer here as well
     // (though stc_file offers one), as you can manually override
     // the lexer.
-    lexer     m_lexer;
+    lexer m_lexer;
+
     data::stc m_data;
     stc_file  m_file;
-    vi        m_vi;
+
+    // The ex or vi components, only one of them is active (see stc data).
+    ex* m_ex{nullptr};
+    vi* m_vi{nullptr};
 
     // All objects share the following:
     static inline item_dialog*       m_config_dialog = nullptr;

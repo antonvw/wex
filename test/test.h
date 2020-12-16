@@ -12,8 +12,6 @@
 #include <wex/app.h>
 #include <wex/managed-frame.h>
 #include <wex/path.h>
-#include <wex/process.h>
-#include <wex/shell.h>
 #include <wex/stc.h>
 
 namespace doctest
@@ -23,8 +21,6 @@ namespace doctest
 
 namespace wex
 {
-  class managed_frame;
-
   namespace test
   {
     /// Adds managed pane.
@@ -61,25 +57,6 @@ namespace wex
       static inline path m_path;
     };
 
-    class managed_frame : public wex::managed_frame
-    {
-    public:
-      managed_frame()
-        : wex::managed_frame()
-        , m_process(new process())
-      {
-        ;
-      };
-      process* get_process(const std::string& command) override
-      {
-        m_process->execute(command);
-        return m_process;
-      };
-
-    private:
-      process* m_process;
-    };
-
     class gui_app : public app
     {
     public:
@@ -90,26 +67,22 @@ namespace wex
           return false;
         }
 
-        m_frame = new managed_frame();
-        m_statusbar =
-          m_frame->setup_statusbar({{"Pane0"}, // the order of panes is tested
-                                    {"Pane1"},
-                                    {"Pane2"},
-                                    {"Pane3"},
-                                    {"Pane4"},
-                                    {"PaneInfo"},
-                                    {"PaneLexer"},
-                                    {"PaneMode"},
-                                    {"PaneFileType"},
-                                    {"LastPane"}});
+        m_frame     = new managed_frame();
+        m_statusbar = m_frame->setup_statusbar(
+          {{"Pane0"}, // the order of panes is tested
+           {"Pane1"},
+           {"Pane2"},
+           {"Pane3"},
+           {"Pane4"},
+           {"PaneInfo"},
+           {"PaneLexer"},
+           {"PaneMode"},
+           {"PaneFileType"},
+           {"LastPane"}});
         m_stc = new stc();
-
         m_frame->Show();
 
-        process::prepare_output(m_frame); // before adding pane
-
         add_pane(m_frame, m_stc);
-        add_pane(m_frame, process::get_shell());
 
         return true;
       }
@@ -150,6 +123,3 @@ wex::statusbar* get_statusbar();
 
 /// Returns an stc.
 wex::stc* get_stc();
-
-/// Processes string on shell.
-void process(const std::string& str, wex::shell* shell);

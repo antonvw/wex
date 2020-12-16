@@ -125,7 +125,7 @@ void wex::toolbar::add_checkboxes(const checkboxes_t& v, bool realize)
 
     Bind(
       wxEVT_CHECKBOX,
-      [=](wxCommandEvent& event) {
+      [=, this](wxCommandEvent& event) {
         if (std::get<6>(it) == nullptr)
         {
           config(std::get<3>(it)).set(cb->GetValue());
@@ -226,21 +226,21 @@ void wex::toolbar::add_find(bool realize)
   }
 
   bind(this).command(
-    {{[=](wxCommandEvent& event) {
+    {{[=, this](wxCommandEvent& event) {
         findCtrl->find(true);
       },
       wxID_DOWN},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         findCtrl->find(false);
       },
       wxID_UP}});
 
   bind(this).ui(
-    {{[=](wxUpdateUIEvent& event) {
+    {{[=, this](wxUpdateUIEvent& event) {
         event.Enable(!findCtrl->get_text().empty());
       },
       wxID_DOWN},
-     {[=](wxUpdateUIEvent& event) {
+     {[=, this](wxUpdateUIEvent& event) {
         event.Enable(!findCtrl->get_text().empty());
       },
       wxID_UP}});
@@ -268,7 +268,7 @@ void wex::toolbar::add_standard(bool realize)
 
   Bind(
     wxEVT_AUITOOLBAR_TOOL_DROPDOWN,
-    [=](wxAuiToolBarEvent& event) {
+    [=, this](wxAuiToolBarEvent& event) {
       if (!prep_dropdown(this, event))
         return;
 
@@ -283,7 +283,7 @@ void wex::toolbar::add_standard(bool realize)
 
   Bind(
     wxEVT_AUITOOLBAR_TOOL_DROPDOWN,
-    [=](wxAuiToolBarEvent& event) {
+    [=, this](wxAuiToolBarEvent& event) {
       if (!prep_dropdown(this, event))
         return;
 
@@ -363,14 +363,14 @@ wex::find_textctrl::find_textctrl(managed_frame* mng, const data::window& data)
   accelerators({{wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE, nullptr}})
     .set(control());
 
-  control()->Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
+  control()->Bind(wxEVT_CHAR, [=, this](wxKeyEvent& event) {
     if (!find_replace_data::get()->m_find_strings.set(event.GetKeyCode(), this))
     {
       event.Skip();
     }
   });
 
-  control()->Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
+  control()->Bind(wxEVT_SET_FOCUS, [=, this](wxFocusEvent& event) {
     if (auto* stc = frame()->get_stc(); stc != nullptr)
     {
       stc->position_save();
@@ -378,12 +378,12 @@ wex::find_textctrl::find_textctrl(managed_frame* mng, const data::window& data)
     event.Skip();
   });
 
-  control()->Bind(wxEVT_TEXT, [=](wxCommandEvent& event) {
+  control()->Bind(wxEVT_TEXT, [=, this](wxCommandEvent& event) {
     event.Skip();
     find(true, true);
   });
 
-  control()->Bind(wxEVT_TEXT_ENTER, [=](wxCommandEvent& event) {
+  control()->Bind(wxEVT_TEXT_ENTER, [=, this](wxCommandEvent& event) {
     event.Skip();
     if (!get_text().empty())
     {

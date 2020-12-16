@@ -74,52 +74,53 @@ wex::grid::grid(const data::window& data)
   SetDropTarget(new text_droptarget(this));
 
   lexers::get()->apply_default_style(
-    [=](const std::string& back) {
+    [=, this](const std::string& back) {
       SetDefaultCellBackgroundColour(wxColour(back));
     },
-    [=](const std::string& fore) {
+    [=, this](const std::string& fore) {
       SetDefaultCellTextColour(wxColour(fore));
     });
 
-  bind(this).command({{[=](wxCommandEvent& event) {
-                         empty_selection();
-                       },
-                       wxID_DELETE},
-                      {[=](wxCommandEvent& event) {
-                         SelectAll();
-                       },
-                       wxID_SELECTALL},
-                      {[=](wxCommandEvent& event) {
-                         ClearSelection();
-                       },
-                       ID_EDIT_SELECT_NONE},
-                      {[=](wxCommandEvent& event) {
-                         copy_selected_cells_to_clipboard();
-                       },
-                       wxID_COPY},
-                      {[=](wxCommandEvent& event) {
-                         copy_selected_cells_to_clipboard();
-                         empty_selection();
-                       },
-                       wxID_CUT},
-                      {[=](wxCommandEvent& event) {
-                         paste_cells_from_clipboard();
-                       },
-                       wxID_PASTE}});
+  bind(this).command(
+    {{[=, this](wxCommandEvent& event) {
+        empty_selection();
+      },
+      wxID_DELETE},
+     {[=, this](wxCommandEvent& event) {
+        SelectAll();
+      },
+      wxID_SELECTALL},
+     {[=, this](wxCommandEvent& event) {
+        ClearSelection();
+      },
+      ID_EDIT_SELECT_NONE},
+     {[=, this](wxCommandEvent& event) {
+        copy_selected_cells_to_clipboard();
+      },
+      wxID_COPY},
+     {[=, this](wxCommandEvent& event) {
+        copy_selected_cells_to_clipboard();
+        empty_selection();
+      },
+      wxID_CUT},
+     {[=, this](wxCommandEvent& event) {
+        paste_cells_from_clipboard();
+      },
+      wxID_PASTE}});
 
-  Bind(wxEVT_FIND, [=](wxFindDialogEvent& event) {
+  Bind(wxEVT_FIND, [=, this](wxFindDialogEvent& event) {
     find_next(
       find_replace_data::get()->get_find_string(),
       find_replace_data::get()->search_down());
   });
 
-  Bind(wxEVT_FIND_NEXT, [=](wxFindDialogEvent& event) {
+  Bind(wxEVT_FIND_NEXT, [=, this](wxFindDialogEvent& event) {
     find_next(
       find_replace_data::get()->get_find_string(),
       find_replace_data::get()->search_down());
   });
 
-  Bind(wxEVT_GRID_CELL_LEFT_CLICK, [=](wxGridEvent& event) {
+  Bind(wxEVT_GRID_CELL_LEFT_CLICK, [=, this](wxGridEvent& event) {
     // Removed extra check for !IsEditable(),
     // drag/drop is different from editing, so allow that.
     if (!IsSelection())
@@ -175,7 +176,7 @@ wex::grid::grid(const data::window& data)
     }
   });
 
-  Bind(wxEVT_GRID_CELL_RIGHT_CLICK, [=](wxGridEvent& event) {
+  Bind(wxEVT_GRID_CELL_RIGHT_CLICK, [=, this](wxGridEvent& event) {
     menu::menu_t style(menu::menu_t().set(menu::IS_POPUP));
 
     if (!IsEditable())
@@ -188,7 +189,7 @@ wex::grid::grid(const data::window& data)
     PopupMenu(&menu);
   });
 
-  Bind(wxEVT_GRID_SELECT_CELL, [=](wxGridEvent& event) {
+  Bind(wxEVT_GRID_SELECT_CELL, [=, this](wxGridEvent& event) {
     auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
     frame->statustext(
       std::to_string(1 + event.GetCol()) + "," +
@@ -197,7 +198,7 @@ wex::grid::grid(const data::window& data)
     event.Skip();
   });
 
-  Bind(wxEVT_GRID_RANGE_SELECT, [=](wxGridRangeSelectEvent& event) {
+  Bind(wxEVT_GRID_RANGE_SELECT, [=, this](wxGridRangeSelectEvent& event) {
     event.Skip();
     auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
     frame->statustext(
@@ -205,7 +206,7 @@ wex::grid::grid(const data::window& data)
       "PaneInfo");
   });
 
-  Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
+  Bind(wxEVT_SET_FOCUS, [=, this](wxFocusEvent& event) {
     auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
     if (frame != nullptr)
     {

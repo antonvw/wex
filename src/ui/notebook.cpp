@@ -41,7 +41,7 @@ wex::notebook::notebook(const data::window& data)
 {
   config_get();
 
-  Bind(wxEVT_AUINOTEBOOK_PAGE_CHANGED, [=](wxAuiNotebookEvent& event) {
+  Bind(wxEVT_AUINOTEBOOK_PAGE_CHANGED, [=, this](wxAuiNotebookEvent& event) {
     event.Skip(); // call base
     if (m_frame != nullptr)
     {
@@ -49,7 +49,7 @@ wex::notebook::notebook(const data::window& data)
     }
   });
 
-  Bind(wxEVT_AUINOTEBOOK_PAGE_CLOSE, [=](wxAuiNotebookEvent& event) {
+  Bind(wxEVT_AUINOTEBOOK_PAGE_CLOSE, [=, this](wxAuiNotebookEvent& event) {
     if (const auto sel = event.GetSelection(); sel != wxNOT_FOUND)
     {
       if (m_frame != nullptr && !m_frame->allow_close(GetId(), GetPage(sel)))
@@ -68,7 +68,7 @@ wex::notebook::notebook(const data::window& data)
         {
           if (m_keys.empty())
             m_frame->sync_close_all(GetId());
-          m_frame->hide_ex_bar();
+          m_frame->show_ex_bar();
         }
       }
     }

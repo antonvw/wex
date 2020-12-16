@@ -6,13 +6,15 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ex.h>
+#include <wex/managed-frame.h>
+#include <wex/stc.h>
 #include <wex/textctrl.h>
 
 #include "textctrl-imp.h"
 
 wex::textctrl::textctrl(
-  managed_frame*     frame,
-  wxControl*         prefix,
+  managed_frame*      frame,
+  wxControl*          prefix,
   const data::window& data)
   : m_imp(new textctrl_imp(this, prefix, data))
   , m_frame(frame)
@@ -20,8 +22,8 @@ wex::textctrl::textctrl(
 }
 
 wex::textctrl::textctrl(
-  managed_frame*     frame,
-  const std::string& value,
+  managed_frame*      frame,
+  const std::string&  value,
   const data::window& data)
   : m_imp(new textctrl_imp(this, value, data))
   , m_frame(frame)
@@ -50,11 +52,6 @@ void wex::textctrl::select_all() const
 
 bool wex::textctrl::set_ex(wex::ex* ex, const std::string& command)
 {
-  if (command.empty())
-  {
-    return false;
-  }
-
   m_ex = ex;
 
   return m_imp->handle(command);
@@ -63,6 +60,7 @@ bool wex::textctrl::set_ex(wex::ex* ex, const std::string& command)
 bool wex::textctrl::set_ex(wex::ex* ex, char command)
 {
   m_ex = ex;
+
   return m_imp->handle(command);
 }
 

@@ -104,7 +104,11 @@ namespace wex
     void pop_back() { m_text.pop_back(); };
 
     /// Resets command to text (but keeps type).
-    ex_command& reset(const std::string& text = std::string());
+    ex_command& reset(
+      // new text
+      const std::string& text = std::string(),
+      // a full resets also reset stc components
+      bool full = false);
 
     /// Restores values, if possible from original stc.
     void restore(const ex_command& c);

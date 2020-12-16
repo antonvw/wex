@@ -160,7 +160,7 @@ It benefits from the following c++ features:
 
   used in listview
 ```cpp
-      lexers::get()->apply_default_style([=](const std::string& back) {
+      lexers::get()->apply_default_style([=, this](const std::string& back) {
         SetBackgroundColour(wxColour(back));
       });
 ```

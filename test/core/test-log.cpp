@@ -27,7 +27,7 @@ TEST_CASE("wex::log")
     log << ss << "is white";
     log << std::stringstream("is hungry") << "eats" << 25 << "fish";
 
-    REQUIRE(log.get().find("debug") == 0);
+    REQUIRE(log.get().starts_with("debug"));
     REQUIRE(log.get().find("is hungry") != std::string::npos);
     REQUIRE(log.get().find(" eats ") != std::string::npos);
     REQUIRE(log.get().find("25") != std::string::npos);

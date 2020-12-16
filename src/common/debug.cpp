@@ -83,11 +83,11 @@ wex::debug::debug(wex::managed_frame* frame, wex::process* debug)
   set_entry(config("debug.debugger").get());
 
   bind(this).command(
-    {{[=](wxCommandEvent& event) {
+    {{[=, this](wxCommandEvent& event) {
         is_finished();
       },
       ID_DEBUG_EXIT},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         const std::string text(event.GetString());
         // parse delete a breakpoint with text, numbers
         if (std::vector<std::string> v;
@@ -118,7 +118,7 @@ wex::debug::debug(wex::managed_frame* frame, wex::process* debug)
         }
       },
       ID_DEBUG_STDIN},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         m_stdout += event.GetString();
         data::stc data;
 
@@ -302,16 +302,24 @@ bool wex::debug::execute(const std::string& action, wex::stc* stc)
                         std::string(1, ' ') + m_entry.flags() :
                         std::string()));
 
-  if (const auto& [r, args] = get_args(action, stc);
-      !r || (m_process == nullptr &&
-             (m_process = m_frame->get_process(exe)) == nullptr))
+  if (const auto& [r, args] = get_args(action, stc); !r)
   {
+    log::debug("debug") << m_entry.name() << "failed args";
     return false;
   }
   else
   {
+    if (
+      m_process == nullptr &&
+      ((m_process = m_frame->get_process(exe)) == nullptr))
+    {
+      log::debug("debug") << m_entry.name() << "no process";
+      return false;
+    }
+
     if (!m_process->is_running() && !m_process->execute(exe))
     {
+      log::debug("debug") << m_entry.name() << "process no execute" << exe;
       return false;
     }
 

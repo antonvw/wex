@@ -29,10 +29,9 @@ namespace wex
 {
   constexpr int c_strcmp(char const* lhs, char const* rhs)
   {
-    return (('\0' == lhs[0]) && ('\0' == rhs[0])) ?
-             0 :
-             (lhs[0] != rhs[0]) ? (lhs[0] - rhs[0]) :
-                                  c_strcmp(lhs + 1, rhs + 1);
+    return (('\0' == lhs[0]) && ('\0' == rhs[0])) ? 0 :
+           (lhs[0] != rhs[0])                     ? (lhs[0] - rhs[0]) :
+                                                    c_strcmp(lhs + 1, rhs + 1);
   };
 
   const std::string _s(wxKeyCode key) { return std::string(1, key); }
@@ -125,7 +124,7 @@ wex::vi::vi(wex::stc* arg)
   , m_mode(
       this,
       // insert mode process
-      [=](const std::string& command) {
+      [=, this](const std::string& command) {
         if (!m_dot)
         {
           m_insert_text.clear();
@@ -135,7 +134,7 @@ wex::vi::vi(wex::stc* arg)
         get_stc()->BeginUndoAction();
       },
       // back to command mode process
-      [=]() {
+      [=, this]() {
         if (!m_dot)
         {
           const std::string c(m_insert_command + register_insert());

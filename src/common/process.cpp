@@ -12,6 +12,7 @@
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/item-dialog.h>
+#include <wex/log.h>
 #include <wex/managed-frame.h>
 #include <wex/process.h>
 #include <wex/shell.h>
@@ -134,7 +135,10 @@ bool wex::process::execute(
     case EXEC_NO_WAIT:
       // We need a shell for output.
       if (m_shell == nullptr)
+      {
+        log("execute") << "no shell";
         return false;
+      }
 
       m_shell->enable(true);
       m_shell->set_process(this);

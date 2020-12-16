@@ -114,7 +114,7 @@ void wex::listitem::set_readonly(bool readonly)
 {
   if (!readonly)
   {
-    lexers::get()->apply_default_style(nullptr, [=](const std::string& fore) {
+    lexers::get()->apply_default_style(nullptr, [=, this](const std::string& fore) {
       SetTextColour(wxColour(fore));
     });
   }

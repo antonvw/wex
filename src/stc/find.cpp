@@ -136,6 +136,6 @@ bool wex::stc::find_next(const std::string& text, int find_flags, bool forward)
   else
   {
     set_search_flags(find_flags);
-    return find_other(m_vi, f, m_frame);
+    return m_vi->is_active() && find_other(*m_vi, f, m_frame);
   }
 }

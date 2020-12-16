@@ -13,8 +13,8 @@
 #include "test-configitem.h"
 #include "test-item.h"
 #include <wex/config.h>
-#include <wex/item.h>
 #include <wex/item-dialog.h>
+#include <wex/item.h>
 #include <wex/log.h>
 #include <wex/managed-frame.h>
 #include <wx/artprov.h>
@@ -127,12 +127,13 @@ TEST_CASE("wex::item")
       std::any_cast<std::string>(item_picker.get_value()) == "/usr/bin/git");
 #endif
 
-    std::vector<wex::item> items{item,
-                                 item_int,
-                                 item_spin
+    std::vector<wex::item> items{
+      item,
+      item_int,
+      item_spin
 #ifdef __UNIX__
-                                 ,
-                                 item_picker
+      ,
+      item_picker
 #endif
     };
 
@@ -167,7 +168,8 @@ TEST_CASE("wex::item")
     const wex::item ci_cb("ci-cb", wex::item::COMBOBOX);
     const wex::item ci_cb_dir("ci-cb-dir", wex::item::COMBOBOX_DIR);
     const wex::item ci_sp("ci-sp", 1, 5);
-    const wex::item ci_sp_d("ci-sp-d", 1.0, 5.0, 1.0, wex::data::item().inc((double)1.0));
+    const wex::item
+      ci_sp_d("ci-sp-d", 1.0, 5.0, 1.0, wex::data::item().inc((double)1.0));
     const wex::item ci_sl("ci-sl", 1, 5, 2, wex::item::SLIDER);
     const wex::item ci_vl(wxLI_HORIZONTAL);
     wex::item       ci_str("ci-string", std::string());
@@ -224,23 +226,24 @@ TEST_CASE("wex::item")
     REQUIRE(ci_cl_n.type() == wex::item::CHECKLISTBOX_BOOL);
     REQUIRE(ci_user.type() == wex::item::USER);
 
-    std::vector<wex::item> items{ci_empty,
-                                 ci_spacer,
-                                 ci_cb,
-                                 ci_cb_dir,
-                                 ci_sl,
-                                 ci_vl,
-                                 ci_sp,
-                                 ci_sp_d,
-                                 ci_str,
-                                 ci_hl,
-                                 ci_st,
-                                 ci_int,
-                                 ci_rb,
-                                 ci_bc,
-                                 ci_cl_n,
-                                 ci_grid,
-                                 ci_user};
+    std::vector<wex::item> items{
+      ci_empty,
+      ci_spacer,
+      ci_cb,
+      ci_cb_dir,
+      ci_sl,
+      ci_vl,
+      ci_sp,
+      ci_sp_d,
+      ci_str,
+      ci_hl,
+      ci_st,
+      ci_int,
+      ci_rb,
+      ci_bc,
+      ci_cl_n,
+      ci_grid,
+      ci_user};
 
     const auto more(test_config_items(0, 1));
     items.insert(items.end(), more.begin(), more.end());
@@ -337,14 +340,15 @@ TEST_CASE("wex::item")
 
   SUBCASE("notebooks")
   {
-    const std::vector<std::string> titles{"item::NOTEBOOK",
-                                          "item::NOTEBOOK_AUI",
-                                          "item::NOTEBOOK_CHOICE",
-                                          "item::NOTEBOOK_LIST",
-                                          "item::NOTEBOOK_SIMPLE",
-                                          "item::NOTEBOOK_TOOL",
-                                          "item::NOTEBOOK_TREE",
-                                          "item::NOTEBOOK_WEX"};
+    const std::vector<std::string> titles{
+      "item::NOTEBOOK",
+      "item::NOTEBOOK_AUI",
+      "item::NOTEBOOK_CHOICE",
+      "item::NOTEBOOK_LIST",
+      "item::NOTEBOOK_SIMPLE",
+      "item::NOTEBOOK_TOOL",
+      "item::NOTEBOOK_TREE",
+      "item::NOTEBOOK_WEX"};
 
     REQUIRE(titles.size() == wex::item::NOTEBOOK_WEX - wex::item::NOTEBOOK + 1);
 

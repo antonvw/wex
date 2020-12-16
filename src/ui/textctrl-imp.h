@@ -51,6 +51,7 @@ namespace wex
     void bind();
     void cut();
     bool input_mode_finish() const;
+    bool is_ex_mode() const;
 
     textctrl_input& TCI();
 

@@ -45,7 +45,7 @@ wex::report::file::file(const std::string& file, const data::listview& data)
 
   Bind(wxEVT_IDLE, &report::file::on_idle, this);
 
-  Bind(wxEVT_LEFT_DOWN, [=](wxMouseEvent& event) {
+  Bind(wxEVT_LEFT_DOWN, [=, this](wxMouseEvent& event) {
     event.Skip();
 
     // If no item has been selected, then show
@@ -61,7 +61,7 @@ wex::report::file::file(const std::string& file, const data::listview& data)
 
   Bind(
     wxEVT_MENU,
-    [=](wxCommandEvent& event) {
+    [=, this](wxCommandEvent& event) {
       // Force at least one of the checkboxes to be checked.
       m_add_items_dialog->force_checkbox_checked(_("Add"));
       if (GetSelectedItemCount() > 0)
@@ -77,7 +77,7 @@ wex::report::file::file(const std::string& file, const data::listview& data)
 
   Bind(
     wxEVT_MENU,
-    [=](wxCommandEvent& event) {
+    [=, this](wxCommandEvent& event) {
       event.Skip();
       if (!get_filename().file_exists() || !get_filename().is_readonly())
       {
@@ -102,7 +102,7 @@ void wex::report::file::add_items(
   Unbind(wxEVT_IDLE, &file::on_idle, this);
 
 #ifdef __WXMSW__
-  std::thread t([=] {
+  std::thread t([=, this] {
 #endif
     const int   old_count = GetItemCount();
     report::dir dir(this, folder, data::dir().file_spec(files).type(flags));
@@ -173,7 +173,7 @@ bool wex::report::file::do_file_load(bool synced)
   clear();
 
 #ifdef FIX__WXMSW__
-  std::thread t([=] {
+  std::thread t([=, this] {
 #endif
     for (const auto& child : doc.document_element().children())
     {

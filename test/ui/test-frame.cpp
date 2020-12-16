@@ -19,7 +19,6 @@ TEST_CASE("wex::frame")
 {
   get_stc()->SetFocus();
   get_stc()->get_file().reset_contents_changed();
-  auto* stc = new wex::stc();
 
   REQUIRE(((wex::frame*)frame())->open_file(wex::test::get_path("test.h")));
   REQUIRE(((wex::frame*)frame())
@@ -29,6 +28,7 @@ TEST_CASE("wex::frame")
 
   REQUIRE(frame()->get_grid() == nullptr);
   REQUIRE(frame()->get_listview() == nullptr);
+  REQUIRE(frame()->get_process("xxx") == nullptr);
   REQUIRE(frame()->get_stc() != nullptr);
   get_stc()->get_file().reset_contents_changed();
 
@@ -62,6 +62,7 @@ TEST_CASE("wex::frame")
   REQUIRE(!frame()->update_statusbar(frame()->get_stc(), "Pane1"));
   REQUIRE(!frame()->update_statusbar(frame()->get_stc(), "Pane2"));
 
+  auto* stc = new wex::stc();
   wex::test::add_pane(frame(), stc);
   stc->SetFocus();
 
@@ -79,11 +80,12 @@ TEST_CASE("wex::frame")
   }
 
 #ifndef __WXMSW__
-  for (const auto& id : std::vector<int>{wxID_FIND,
-                                         wxID_REPLACE,
-                                         wex::ID_VIEW_MENUBAR,
-                                         wex::ID_VIEW_STATUSBAR,
-                                         wex::ID_VIEW_TITLEBAR})
+  for (const auto& id : std::vector<int>{
+         wxID_FIND,
+         wxID_REPLACE,
+         wex::ID_VIEW_MENUBAR,
+         wex::ID_VIEW_STATUSBAR,
+         wex::ID_VIEW_TITLEBAR})
   {
     auto* event = new wxCommandEvent(wxEVT_MENU, id);
     wxQueueEvent(frame(), event);

@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #define DOCTEST_CONFIG_IMPLEMENT
-#define ELPP_NO_CHECK_MACROS
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -19,6 +18,7 @@
 #include <wex/log.h>
 #include <wex/macros.h>
 #include <wex/managed-frame.h>
+#include <wex/shell.h>
 #include <wx/timer.h>
 
 const std::string wex::test::add_pane(wex::managed_frame* frame, wxWindow* pane)
@@ -83,7 +83,7 @@ int wex::test::app::OnRun()
 
   Bind(
     wxEVT_TIMER,
-    [=](wxTimerEvent& event) {
+    [=, this](wxTimerEvent& event) {
       m_context->run();
 
       config("AllowSync").set(false);
@@ -140,14 +140,6 @@ wex::statusbar* get_statusbar()
 wex::stc* get_stc()
 {
   return wex::test::gui_app::get_stc();
-}
-
-void process(const std::string& str, wex::shell* shell)
-{
-  for (unsigned i = 0; i < str.length(); ++i)
-  {
-    shell->process_char(str.at(i));
-  }
 }
 
 int wex::test::main(int argc, char* argv[], wex::test::app* app)

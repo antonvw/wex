@@ -2,7 +2,7 @@
 // Name:      statistics.h
 // Purpose:   Include file for statistics classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -30,7 +30,7 @@ namespace wex
     {
       Bind(
         wxEVT_MENU,
-        [=](wxCommandEvent& event) {
+        [&, this](wxCommandEvent& event) {
           m_statistics->clear();
         },
         wxID_CLEAR);

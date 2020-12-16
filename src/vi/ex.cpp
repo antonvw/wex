@@ -29,8 +29,8 @@
 #include <wex/macros.h>
 #include <wex/managed-frame.h>
 #include <wex/statusbar.h>
-#include <wex/stc.h>
 #include <wex/stc-entry-dialog.h>
+#include <wex/stc.h>
 #include <wex/tokenizer.h>
 #include <wex/type-to-value.h>
 #include <wex/version.h>
@@ -167,7 +167,7 @@ wex::ex::ex(wex::stc* stc)
                     "Abbreviations",
                     command,
                     &m_macros.get_abbreviations(),
-                    [=](const std::string& name, const std::string& value) {
+                    [=, this](const std::string& name, const std::string& value) {
                       m_macros.set_abbreviation(name, value);
                       return true;
                     });
@@ -240,7 +240,7 @@ wex::ex::ex(wex::stc* stc)
                         "Map",
                         command,
                         nullptr,
-                        [=](const std::string& name, const std::string& value) {
+                        [=, this](const std::string& name, const std::string& value) {
                           m_macros.set_key_map(name, value);
                           return true;
                         });
@@ -270,7 +270,7 @@ wex::ex::ex(wex::stc* stc)
                         "Map",
                         command,
                         nullptr,
-                        [=](const std::string& name, const std::string& value) {
+                        [=, this](const std::string& name, const std::string& value) {
                           m_macros.set_map(name, value);
                           return true;
                         });
@@ -438,27 +438,10 @@ bool wex::ex::address_parse(
 
     // Command Descriptions in ex.
     // 1addr commands
-    const std::string cmds_1addr("(append|"
-                                 "insert|"
-                                 "mark|ma|"
-                                 "pu|"
-                                 "read|"
-                                 "[aikrz=])([\\s\\S]*)");
+    const auto& cmds_1addr(address(this).regex_commands());
 
     // 2addr commands
-    const std::string cmds_2addr("(change|"
-                                 "copy|co|"
-                                 "delete|"
-                                 "global|"
-                                 "join|"
-                                 "list|"
-                                 "move|"
-                                 "number|nu|"
-                                 "print|"
-                                 "substitute|"
-                                 "write|"
-                                 "yank|ya|"
-                                 "[cdgjlmpsStvwy<>\\!&~@#])([\\s\\S]*)");
+    const auto& cmds_2addr(addressrange(this).regex_commands());
 
     if (std::vector<std::string> v;
         // 2addr % range

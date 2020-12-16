@@ -72,7 +72,7 @@ void wex::ex_command::erase(size_t pos, size_t len)
 
 bool wex::ex_command::exec() const
 {
-  return m_stc != nullptr && m_stc->get_vi().command(command());
+  return m_stc != nullptr && m_stc->get_ex().command(command());
 }
 
 void wex::ex_command::handle(const wxTextEntry* te, int keycode)
@@ -161,9 +161,15 @@ void wex::ex_command::no_type()
   m_has_type = false;
 }
 
-wex::ex_command& wex::ex_command::reset(const std::string& text)
+wex::ex_command& wex::ex_command::reset(const std::string& text, bool full)
 {
   m_text = m_has_type ? m_text.substr(0, str().size()) + text : text;
+
+  if (full)
+  {
+    m_stc          = nullptr;
+    m_stc_original = nullptr;
+  }
 
   return *this;
 }

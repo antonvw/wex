@@ -46,7 +46,7 @@ wex::shell::shell(
 
   auto_complete().use(false); // we have our own auto_complete
 
-  Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
+  Bind(wxEVT_CHAR, [=, this](wxKeyEvent& event) {
     if (m_enabled)
     {
       process_char(event.GetKeyCode());
@@ -58,21 +58,21 @@ wex::shell::shell(
   });
 
   bind(this).command(
-    {{[=](wxCommandEvent& event) {
+    {{[=, this](wxCommandEvent& event) {
         AppendText(event.GetString());
         get_frame()->output(event.GetString());
       },
       ID_SHELL_APPEND},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         AppendText(event.GetString());
       },
       ID_SHELL_APPEND_ERROR},
-     {[=](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event) {
         AppendText(event.GetString());
       },
       ID_SHELL_COMMAND}});
 
-  Bind(wxEVT_MIDDLE_UP, [=](wxMouseEvent& event) {
+  Bind(wxEVT_MIDDLE_UP, [=, this](wxMouseEvent& event) {
     if (event.MiddleUp())
     {
       if (CanCopy())
@@ -87,7 +87,7 @@ wex::shell::shell(
     }
   });
 
-  Bind(wxEVT_KEY_DOWN, [=](wxKeyEvent& event) {
+  Bind(wxEVT_KEY_DOWN, [=, this](wxKeyEvent& event) {
     if (!m_enabled)
     {
       if (get_vi().mode().is_insert())
@@ -236,7 +236,7 @@ wex::shell::shell(
     }
   });
 
-  Bind(wxEVT_STC_CHARADDED, [=](wxStyledTextEvent& event) {
+  Bind(wxEVT_STC_CHARADDED, [=, this](wxStyledTextEvent& event) {
     if (!m_enabled)
     {
       event.Skip();
@@ -244,7 +244,7 @@ wex::shell::shell(
     // do nothing, keep event from sent to stc.
   });
 
-  Bind(wxEVT_STC_DO_DROP, [=](wxStyledTextEvent& event) {
+  Bind(wxEVT_STC_DO_DROP, [=, this](wxStyledTextEvent& event) {
     if (!m_enabled)
     {
       event.Skip();
@@ -253,7 +253,7 @@ wex::shell::shell(
     event.Skip();
   });
 
-  Bind(wxEVT_STC_START_DRAG, [=](wxStyledTextEvent& event) {
+  Bind(wxEVT_STC_START_DRAG, [=, this](wxStyledTextEvent& event) {
     if (!m_enabled)
     {
       event.Skip();

@@ -138,7 +138,7 @@ const std::string wex::vcs_entry::get_branch(const std::string& wd) const
     {
       for (tokenizer tkz(p.get_stdout(), "\r\n"); tkz.has_more_tokens();)
       {
-        if (const auto token(tkz.get_next_token()); token.find('*') == 0)
+        if (const auto token(tkz.get_next_token()); token.starts_with('*'))
         {
           return trim(token.substr(1));
         }

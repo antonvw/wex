@@ -53,7 +53,7 @@ size_t wex::menu::append(const std::vector<menu_item>& items)
         break;
 
       case menu_item::EXIT:
-        append({{wxID_EXIT, "", data::menu().action([=](wxCommandEvent& event) {
+        append({{wxID_EXIT, "", data::menu().action([=, this](wxCommandEvent& event) {
                    auto* frame =
                      dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
                    frame->Close(true);
@@ -129,10 +129,10 @@ void wex::menu::append_print()
 {
   append({{wxID_PRINT_SETUP,
            ellipsed(_("Page &Setup")),
-           data::menu().action([=](wxCommandEvent& event) {
+           data::menu().action([=, this](wxCommandEvent& event) {
              wex::printing::get()->get_html_printer()->PageSetup();
            })},
-          {wxID_PREVIEW, "", data::menu().action([=](wxCommandEvent& event) {
+          {wxID_PREVIEW, "", data::menu().action([=, this](wxCommandEvent& event) {
              auto* frame =
                dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
              if (frame->get_stc() != nullptr)
@@ -144,7 +144,7 @@ void wex::menu::append_print()
                frame->get_listview()->print_preview();
              }
            })},
-          {wxID_PRINT, "", data::menu().action([=](wxCommandEvent& event) {
+          {wxID_PRINT, "", data::menu().action([=, this](wxCommandEvent& event) {
              auto* frame =
                dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
              if (frame->get_stc() != nullptr)

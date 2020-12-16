@@ -26,32 +26,34 @@ namespace wex
       /// Menu and tooltip flags.
       enum
       {
-        MENU_CONTEXT   = 0, ///< context menu
-        MENU_OPEN_LINK = 1, ///< for adding link open menu
-        MENU_OPEN_WWW  = 2, ///< for adding search on www open menu
-        MENU_VCS       = 3, ///< for adding vcs menu
-        MENU_DEBUG     = 4, ///< for adding debug menu
+        MENU_CONTEXT = 0, ///< context menu
+        MENU_OPEN_LINK,   ///< for adding link open menu
+        MENU_OPEN_WWW,    ///< for adding search on www open menu
+        MENU_VCS,         ///< for adding vcs menu
+        MENU_DEBUG,       ///< for adding debug menu
       };
+
+      typedef std::bitset<5> menu_t;
 
       /// Window flags.
       enum
       {
-        WIN_READ_ONLY = 0,    ///< window is readonly,
-                              ///<   overrides real mode from disk
-        WIN_HEX          = 1, ///< window in hex mode
-        WIN_NO_INDICATOR = 2, ///< a change indicator is not used
-        WIN_IS_PROJECT   = 3  ///< open as project
+        WIN_READ_ONLY = 0, ///< window is readonly,
+                           ///<   overrides real mode from disk
+        WIN_HEX,           ///< window in hex mode
+        WIN_NO_INDICATOR,  ///< a change indicator is not used
+        WIN_IS_PROJECT,    ///< open as project
+        WIN_EX             ///< window in ex mode, instead of vi
       };
+
+      typedef std::bitset<5> window_t;
 
       enum indicator_t
       {
-        IND_LINE  = 0,
-        IND_ERR   = 1,
-        IND_DEBUG = 2,
+        IND_LINE = 0,
+        IND_ERR,
+        IND_DEBUG
       };
-
-      typedef std::bitset<5> menu_t;
-      typedef std::bitset<4> window_t;
 
       /// Support class for client data stored at the event.
       class event_data

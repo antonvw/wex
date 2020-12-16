@@ -433,7 +433,7 @@ int wex::vcs::show_dialog(const data::window& arg)
          item::TEXTCTRL,
          data::item()
            .label_type(data::item::LABEL_LEFT)
-           .apply([=](wxWindow* user, const std::any& value, bool save) {
+           .apply([=, this](wxWindow* user, const std::any& value, bool save) {
              config(m_entry.flags_key()).set(m_entry.get_flags());
            })) :
        item(),
