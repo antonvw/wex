@@ -206,7 +206,12 @@ wex::textctrl_imp::textctrl_imp(
         break;
 
       case WXK_ESCAPE:
-        if (m_tc->ex() != nullptr)
+        if (is_ex_mode())
+        {
+          Clear();
+          m_command.reset();
+        }
+        else if (m_tc->ex() != nullptr)
         {
           m_tc->ex()->get_stc()->position_restore();
         }
