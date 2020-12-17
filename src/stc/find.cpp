@@ -7,6 +7,7 @@
 
 #include <wex/config.h>
 #include <wex/core.h>
+#include <wex/ex-stream.h>
 #include <wex/find-data.h>
 #include <wex/frd.h>
 #include <wex/log.h>
@@ -129,7 +130,11 @@ bool wex::stc::find_next(const std::string& text, int find_flags, bool forward)
 
   f.flags(find_flags);
 
-  if (m_margin_text_click >= 0)
+  if (!m_visual)
+  {
+    return m_file.ex_stream()->find(text, find_flags, forward);
+  }
+  else if (m_margin_text_click >= 0)
   {
     return find_margin(f, m_frame);
   }

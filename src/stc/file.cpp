@@ -90,6 +90,7 @@ bool wex::stc_file::do_file_load(bool synced)
 #endif
     if (!m_stc->is_visual())
     {
+      use_stream();
       m_ex_stream->stream(stream());
     }
     else if (const auto buffer(read(offset)); buffer != nullptr)

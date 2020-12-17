@@ -120,7 +120,11 @@ bool wex::file::file_load(bool synced)
     return false;
   }
 
-  m_file->close();
+  if (!m_use_stream)
+  {
+    m_file->close();
+  }
+
   m_is_loaded = true;
   reset_contents_changed();
 
@@ -171,7 +175,12 @@ bool wex::file::file_save(const path& p)
   }
 
   do_file_save(save_as);
-  m_file->close();
+
+  if (!m_use_stream)
+  {
+    m_file->close();
+  }
+
   reset_contents_changed();
 
   return m_file->path().m_stat.sync() && m_file->stat().sync();
@@ -210,6 +219,11 @@ const std::string* wex::file::read(std::streampos seek_position)
 std::fstream& wex::file::stream()
 {
   return m_file->stream();
+}
+
+void wex::file::use_stream()
+{
+  m_use_stream = true;
 }
 
 bool wex::file::write(const char* s, size_t n)

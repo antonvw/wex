@@ -8,6 +8,7 @@
 #include <wex/blame.h>
 #include <wex/config.h>
 #include <wex/core.h>
+#include <wex/ex-stream.h>
 #include <wex/frd.h>
 #include <wex/indicator.h>
 #include <wex/item-vector.h>
@@ -394,7 +395,14 @@ int wex::stc::get_fold_level()
 
 int wex::stc::get_line_count()
 {
-  return GetLineCount();
+  if (!m_visual)
+  {
+    return m_file.ex_stream()->line_count();
+  }
+  else
+  {
+    return GetLineCount();
+  }
 }
 
 const std::string wex::stc::get_selected_text() const
@@ -443,9 +451,16 @@ const std::string wex::stc::get_word_at_pos(int pos) const
 
 void wex::stc::goto_line(int line)
 {
-  GotoLine(line);
-  EnsureVisible(line);
-  EnsureCaretVisible();
+  if (!m_visual)
+  {
+    m_file.ex_stream()->line(line);
+  }
+  else
+  {
+    GotoLine(line);
+    EnsureVisible(line);
+    EnsureCaretVisible();
+  }
 }
 
 void wex::stc::guess_type_and_modeline()
@@ -631,6 +646,7 @@ void wex::stc::on_idle(wxIdleEvent& event)
   event.Skip();
 
   if (
+    m_visual &&
     m_file.check_sync() &&
     // the readonly flags bit of course can differ from file actual readonly
     // mode, therefore add this check

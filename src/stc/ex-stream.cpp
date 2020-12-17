@@ -10,6 +10,7 @@
 
 wex::ex_stream::ex_stream(wex::stc* stc)
   : m_stc(stc)
+  , m_max_line(1000)
 {
 }
 
@@ -21,29 +22,49 @@ bool wex::ex_stream::find(
   return false;
 }
 
-std::string wex::ex_stream::get_line() const
+bool wex::ex_stream::get_next_line()
 {
-  return std::string();
+  if (!std::getline(*m_stream, m_current_line))
+  {
+    return false;
+  }
+
+  m_line++;
+  
+  if (m_line > m_max_line)
+  {
+    m_max_line = m_line;
+  }
+  
+  return true;
 }
 
 void wex::ex_stream::line(int no)
 {
-  m_line = no;
+  while (no >= m_line - 1)
+  {
+    if (!get_next_line())
+    { 
+      return;
+    }
+  }
+  
+  set_text();
 }
 
-void wex::ex_stream::line_next()
+void wex::ex_stream::set_text()
 {
-  m_line++;
-  
-  std::string line;
-  std::getline(*m_stream, line);
-
-  m_stc->SetText(line);
+  m_stc->SetReadOnly(false);
+  m_stc->SetText(m_current_line);
+  m_stc->SetReadOnly(true);
 }
 
 void wex::ex_stream::stream(std::fstream& fs)
 {
   m_stream = &fs;
 
-  line_next();
+  if (get_next_line())
+  {
+    set_text();
+  }
 }

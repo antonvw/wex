@@ -42,18 +42,21 @@ namespace wex
     /// Gets specified line, and puts on stc.
     void line(int no);
 
-    /// Gets next line, and puts on stc.
-    void line_next();
+    /// Returns number of lines.
+    int line_count() const { return m_max_line;};
 
     /// Sets stream. Puts first line on stc.
     void stream(std::fstream& fs);
 
   private:
-    std::string get_line() const;
+    bool get_next_line();
+    void set_text();
 
     std::fstream* m_stream{nullptr};
 
-    int m_line{0};
+    int m_line{0},m_max_line{0};
+    
+    std::string m_current_line;
 
     stc* m_stc;
   };
