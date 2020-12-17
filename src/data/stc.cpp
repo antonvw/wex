@@ -78,13 +78,12 @@ bool wex::data::stc::inject() const
       if (m_data.line() > 0)
       {
         const auto line =
-          (m_data.line() - 1 >= m_stc->GetLineCount() ?
-             m_stc->GetLineCount() - 1 :
+          (m_data.line() - 1 >= m_stc->get_line_count() ?
+             m_stc->get_line_count() - 1 :
              m_data.line() - 1);
 
-        m_stc->GotoLine(line);
-        m_stc->EnsureVisible(line);
-        m_stc->EnsureCaretVisible();
+        m_stc->goto_line(line);
+
         m_stc->SetIndicatorCurrent(m_indicator_no);
         m_stc->IndicatorClearRange(0, m_stc->GetTextLength() - 1);
 

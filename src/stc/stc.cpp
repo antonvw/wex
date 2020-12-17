@@ -24,18 +24,6 @@
 #include <wx/app.h>
 #include <wx/settings.h>
 
-wex::stc::stc(const std::string& text, const data::stc& data)
-  : stc(path(), data)
-{
-  if (!text.empty())
-  {
-    is_hexmode() ? m_hexmode.append_text(text) : set_text(text);
-    guess_type_and_modeline();
-  }
-
-  m_data.inject();
-}
-
 wex::stc::stc(const path& p, const data::stc& data)
   : m_data(this, data)
   , m_auto_complete(this)
@@ -45,6 +33,7 @@ wex::stc::stc(const path& p, const data::stc& data)
   , m_hexmode(hexmode(this))
   , m_frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
   , m_lexer(this)
+  , m_visual(!data.flags().test(data::stc::WIN_EX))
 {
   assert(m_frame != nullptr);
 
@@ -120,6 +109,18 @@ wex::stc::stc(const path& p, const data::stc& data)
   }
 
   visual(!data.flags().test(data::stc::WIN_EX));
+}
+
+wex::stc::stc(const std::string& text, const data::stc& data)
+  : stc(path(), data)
+{
+  if (!text.empty())
+  {
+    is_hexmode() ? m_hexmode.append_text(text) : set_text(text);
+    guess_type_and_modeline();
+  }
+
+  m_data.inject();
 }
 
 wex::stc::~stc()
@@ -282,7 +283,7 @@ bool wex::stc::file_readonly_attribute_changed()
 void wex::stc::fold(bool all)
 {
   if (const item_vector & iv(m_config_items);
-      all || GetLineCount() > iv.find<int>(_("stc.Auto fold")))
+      all || get_line_count() > iv.find<int>(_("stc.Auto fold")))
   {
     fold_all();
   }
@@ -299,7 +300,7 @@ void wex::stc::fold_all()
 
   int line = (json ? 1 : 0);
 
-  while (line < GetLineCount())
+  while (line < get_line_count())
   {
     if (const auto level = GetFoldLevel(line);
         xml && (level == wxSTC_FOLDLEVELBASE + wxSTC_FOLDLEVELHEADERFLAG))
@@ -322,7 +323,7 @@ void wex::stc::fold_all()
     }
   }
 
-  GotoLine(current_line);
+  goto_line(current_line);
 }
 
 const std::string wex::stc::eol() const
@@ -391,6 +392,11 @@ int wex::stc::get_fold_level()
          wxSTC_FOLDLEVELBASE;
 }
 
+int wex::stc::get_line_count()
+{
+  return GetLineCount();
+}
+
 const std::string wex::stc::get_selected_text() const
 {
   const wxCharBuffer& b(const_cast<stc*>(this)->GetSelectedTextRaw());
@@ -435,6 +441,13 @@ const std::string wex::stc::get_word_at_pos(int pos) const
   }
 }
 
+void wex::stc::goto_line(int line)
+{
+  GotoLine(line);
+  EnsureVisible(line);
+  EnsureCaretVisible();
+}
+
 void wex::stc::guess_type_and_modeline()
 {
   // Get a small sample from this document to detect the file mode.
@@ -472,6 +485,11 @@ void wex::stc::guess_type_and_modeline()
     return; // do nothing
 
   m_frame->update_statusbar(this, "PaneFileType");
+}
+
+void wex::stc::insert_text(int pos, const std::string& text) 
+{
+  InsertText(pos, text);
 }
 
 bool wex::stc::link_open()
@@ -1031,6 +1049,8 @@ void wex::stc::visual(bool on)
 
   m_ex->use(!on);
   m_vi->use(on);
+
+  m_visual = on;
 
   SetReadOnly(!on);
 

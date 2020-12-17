@@ -225,13 +225,13 @@ TEST_CASE("wex::stc")
     stc->DocumentEnd();
     REQUIRE(!stc->auto_indentation('x'));
     REQUIRE(stc->get_text() == "  \n  line with indentation");
-    REQUIRE(stc->GetLineCount() == 2);
+    REQUIRE(stc->get_line_count() == 2);
     stc->SetEOLMode(wxSTC_EOL_CR);
     REQUIRE(stc->auto_indentation(stc->eol().front()));
 
     // the \n is not added, but indentation does
     REQUIRE(stc->get_text() == "  \n  line with indentation");
-    REQUIRE(stc->GetLineCount() == 2);
+    REQUIRE(stc->get_line_count() == 2);
     // test auto indentation for level change
     REQUIRE(stc->get_lexer().set("cpp"));
     stc->set_text("\nif ()\n{\n");

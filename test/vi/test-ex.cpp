@@ -273,9 +273,9 @@ TEST_CASE("wex::ex")
     const int max = 10;
     for (int i = 0; i < max; i++)
       stc->AppendText("line xxxx added\n");
-    const int lines = stc->GetLineCount();
+    const int lines = stc->get_line_count();
     REQUIRE(ex->command(":g/xxxx/d"));
-    REQUIRE(stc->GetLineCount() == lines - max);
+    REQUIRE(stc->get_line_count() == lines - max);
 
     stc->AppendText("line xxxx 6 added\n");
     stc->AppendText("line xxxx 7 added\n");
@@ -308,7 +308,7 @@ TEST_CASE("wex::ex")
   SUBCASE("goto")
   {
     stc->set_text("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
-    REQUIRE(stc->GetLineCount() == 12);
+    REQUIRE(stc->get_line_count() == 12);
     stc->GotoLine(2);
 
     for (const auto& go : std::vector<std::pair<std::string, int>>{

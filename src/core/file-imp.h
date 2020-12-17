@@ -50,7 +50,7 @@ namespace wex
     auto& stat() { return m_stat; };
 
     /// Returns stream.
-    auto& stream() const { return m_fs; };
+    auto& stream() { return m_fs; };
 
     /// Writes file.
     bool write(const char* s, size_t n);

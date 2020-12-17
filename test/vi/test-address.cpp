@@ -18,7 +18,7 @@ TEST_CASE("wex::address")
   auto* stc = get_stc();
   stc->set_text("hello0\nhello1\nhello2\nhello3\nhello4\nhello5");
 
-  const int lines = stc->GetLineCount();
+  const int lines = stc->get_line_count();
   auto*     ex    = new wex::ex(stc);
   wex::data::stc(stc).control(wex::data::control().line(1)).inject();
   ex->marker_add('a');

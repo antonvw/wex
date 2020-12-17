@@ -507,7 +507,7 @@ bool wex::frame::update_statusbar(stc* stc, const std::string& pane)
   {
     if (stc->GetCurrentPos() == 0)
     {
-      text << stc->GetLineCount();
+      text << stc->get_line_count();
     }
     else
     {

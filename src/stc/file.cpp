@@ -11,6 +11,7 @@
 #include <wx/wx.h>
 #endif
 #include <wex/defs.h>
+#include <wex/ex-stream.h>
 #include <wex/file-dialog.h>
 #include <wex/stc-file.h>
 #include <wex/stc.h>
@@ -47,7 +48,13 @@ namespace wex
 wex::stc_file::stc_file(stc* stc, const std::string& filename)
   : file(filename)
   , m_stc(stc)
+  , m_ex_stream(new wex::ex_stream(stc))
 {
+}
+
+wex::stc_file::~stc_file()
+{
+  delete m_ex_stream;
 }
 
 bool wex::stc_file::do_file_load(bool synced)
@@ -81,7 +88,11 @@ bool wex::stc_file::do_file_load(bool synced)
 #ifdef USE_THREAD
   std::thread t([&] {
 #endif
-    if (const auto buffer(read(offset)); buffer != nullptr)
+    if (!m_stc->is_visual())
+    {
+      m_ex_stream->stream(stream());
+    }
+    else if (const auto buffer(read(offset)); buffer != nullptr)
     {
       if (!m_stc->get_hexmode().is_active() && !hexmode)
       {
@@ -153,7 +164,8 @@ void wex::stc_file::do_file_save(bool save_as)
 #ifdef USE_THREAD
     std::thread t([&] {
 #endif
-      if (write(m_stc->get_text()))
+      if (m_stc->is_visual() && write(m_stc->get_text()))
+      //        (!m_stc->is_visual() && write(m_ex_stream->text())))
       {
         FILE_POST(save_as ? FILE_SAVE_AS : FILE_SAVE);
       }

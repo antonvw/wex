@@ -197,11 +197,17 @@ namespace wex
     /// Returns word at position.
     const std::string get_word_at_pos(int pos) const;
 
+    // Inserts text at pos.
+    void insert_text(int pos, const std::string& text);
+
     /// Returns true if line numbers are shown.
     bool is_shown_line_numbers() const
     {
       return GetMarginWidth(m_margin_line_number) > 0;
     };
+
+    /// Returns the visual mode.
+    bool is_visual() const { return m_visual; };
 
     /// Keeps event data.
     void keep_event_data(bool synced) { m_data.event(synced); };
@@ -291,7 +297,9 @@ namespace wex
                    bool               find_next  = true) override;
     void        fold(bool fold_all = false) override;
     const path& get_filename() const override { return m_file.get_filename(); };
+    int         get_line_count() override;
     const std::string get_selected_text() const override;
+    void              goto_line(int line) override;
     bool is_hexmode() const override { return m_hexmode.is_active(); };
     void properties_message(path::status_t flags = 0) override;
     void reset_margins(margin_t type = margin_t().set()) override;
@@ -369,7 +377,7 @@ namespace wex
     int m_fold_level{0}, m_margin_text_click{-1}, m_saved_pos{-1},
       m_saved_selection_start{-1}, m_saved_selection_end{-1};
 
-    bool m_adding_chars{false}, m_skip{false};
+    bool m_adding_chars{false}, m_skip{false}, m_visual{true};
 
     managed_frame* m_frame;
 

@@ -86,7 +86,7 @@ namespace wex
         if (e.token == ".")
           return m_ex->get_command().get_stc()->GetCurrentLine() + 1;
         else if (e.token == "$")
-          return m_ex->get_command().get_stc()->GetLineCount();
+          return m_ex->get_command().get_stc()->get_line_count();
         else if (e.token[0] == '\'' && e.token.size() == 2)
         {
           const int line = m_ex->marker_line(e.token[1]);

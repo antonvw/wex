@@ -94,9 +94,9 @@ TEST_CASE("wex::addressrange")
   SUBCASE("copy")
   {
     stc->set_text(contents);
-    REQUIRE(stc->GetLineCount() == 8);
+    REQUIRE(stc->get_line_count() == 8);
     REQUIRE(wex::addressrange(ex, "1,2").copy(wex::address(ex, "$")));
-    REQUIRE(stc->GetLineCount() == 10);
+    REQUIRE(stc->get_line_count() == 10);
   }
 
   SUBCASE("erase")
@@ -107,13 +107,13 @@ TEST_CASE("wex::addressrange")
     stc->set_text("a\nb\nc\nd\ne\nf\ng\n");
     stc->GotoLine(1);
     REQUIRE(wex::addressrange(ex, 5).erase());
-    REQUIRE(stc->GetLineCount() == 3);
+    REQUIRE(stc->get_line_count() == 3);
     REQUIRE(!wex::addressrange(ex, 0).erase());
-    REQUIRE(stc->GetLineCount() == 3);
+    REQUIRE(stc->get_line_count() == 3);
     stc->set_text("a\nb\nc\nd\ne\nf\ng\n");
     stc->SelectAll();
     REQUIRE(wex::addressrange(ex, "'<,'>").erase());
-    REQUIRE(stc->GetLineCount() == 1);
+    REQUIRE(stc->get_line_count() == 1);
     stc->SelectNone();
   }
 
@@ -121,9 +121,9 @@ TEST_CASE("wex::addressrange")
   {
 #ifdef __UNIX__
     stc->set_text(contents);
-    REQUIRE(stc->GetLineCount() == 8);
+    REQUIRE(stc->get_line_count() == 8);
     REQUIRE(wex::addressrange(ex, "%").escape("uniq"));
-    REQUIRE(stc->GetLineCount() == 5);
+    REQUIRE(stc->get_line_count() == 5);
     REQUIRE(wex::addressrange(ex).escape("ls -l"));
     REQUIRE(wex::addressrange(ex).escape("ls `pwd`"));
     REQUIRE(wex::addressrange(ex).escape("ls \x12*"));
@@ -167,15 +167,15 @@ TEST_CASE("wex::addressrange")
     stc->set_text("a\nb\nc\nd\ne\nf\ng\n");
     REQUIRE(wex::addressrange(ex, "%").join());
     REQUIRE(stc->get_text().find("a") != std::string::npos);
-    REQUIRE(stc->GetLineCount() == 1);
+    REQUIRE(stc->get_line_count() == 1);
   }
 
   SUBCASE("move")
   {
     stc->set_text(contents);
-    REQUIRE(stc->GetLineCount() == 8);
+    REQUIRE(stc->get_line_count() == 8);
     REQUIRE(wex::addressrange(ex, "1,2").move(wex::address(ex, "$")));
-    REQUIRE(stc->GetLineCount() == 8);
+    REQUIRE(stc->get_line_count() == 8);
   }
 
   SUBCASE("parse")
@@ -281,7 +281,7 @@ TEST_CASE("wex::addressrange")
     REQUIRE(wex::addressrange(ex, 2).yank());
     stc->SelectNone();
     stc->add_text(stc->get_vi().get_macros().get_register('0'));
-    REQUIRE(stc->GetLineCount() == 10);
+    REQUIRE(stc->get_line_count() == 10);
     REQUIRE(wex::addressrange(ex, -2).erase());
     stc->GotoLine(0);
     REQUIRE(wex::addressrange(ex, -2).erase());

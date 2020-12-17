@@ -8,6 +8,7 @@
 #pragma once
 
 #include <istream>
+#include <sstream>
 #include <memory>
 #include <wex/path.h>
 
@@ -81,6 +82,9 @@ namespace wex
 
     /// Reads this file into a buffer.
     const std::string* read(std::streampos seek_position = 0);
+
+    /// Returns stream.
+    std::fstream& stream();
 
     /// Writes file from buffer.
     bool write(const char* s, size_t n);

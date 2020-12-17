@@ -10,8 +10,8 @@
 #include <wx/wx.h>
 #endif
 #include <wex/core.h>
-#include <wex/item-vector.h>
 #include <wex/item-dialog.h>
+#include <wex/item-vector.h>
 #include <wex/notebook.h>
 
 namespace wex
@@ -58,18 +58,18 @@ wex::notebook::notebook(const data::window& data)
       }
       else
       {
-        auto*      page = GetPage(sel);
-        const auto key  = m_windows[page];
-        m_windows.erase(page);
-        m_keys.erase(key);
-        event.Skip(); // call base
-
         if (m_frame != nullptr)
         {
           if (m_keys.empty())
             m_frame->sync_close_all(GetId());
           m_frame->show_ex_bar();
         }
+
+        auto*      page = GetPage(sel);
+        const auto key  = m_windows[page];
+        m_windows.erase(page);
+        m_keys.erase(key);
+        event.Skip(); // call base
       }
     }
   });

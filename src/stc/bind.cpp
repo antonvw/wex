@@ -333,7 +333,7 @@ void wex::stc::bind_all()
       id::stc::beautify},
 
      {[=, this](wxCommandEvent& event) {
-        for (int i = 0; i < GetLineCount(); i++)
+        for (int i = 0; i < get_line_count(); i++)
           EnsureVisible(i);
       },
       id::stc::unfold_all},
@@ -427,7 +427,7 @@ void wex::stc::bind_all()
         }
         if (line != -1)
         {
-          GotoLine(line);
+          goto_line(line);
         }
         else
         {
@@ -440,11 +440,11 @@ void wex::stc::bind_all()
         auto line = MarkerPrevious(GetCurrentLine() - 1, 0xFFFF);
         if (line == -1)
         {
-          line = MarkerPrevious(GetLineCount() - 1, 0xFFFF);
+          line = MarkerPrevious(get_line_count() - 1, 0xFFFF);
         }
         if (line != -1)
         {
-          GotoLine(line);
+          goto_line(line);
         }
         else
         {
@@ -723,12 +723,12 @@ void wex::stc::jump_action()
   }
   else if (static long val;
            (val = wxGetNumberFromUser(
-              _("Input") + " 1 - " + std::to_string(GetLineCount()) + ":",
+              _("Input") + " 1 - " + std::to_string(get_line_count()) + ":",
               wxEmptyString,
               _("Enter Line Number"),
               m_data.control().line(), // initial value
               1,
-              GetLineCount(),
+              get_line_count(),
               this)) > 0)
   {
     m_data.control().line(val);

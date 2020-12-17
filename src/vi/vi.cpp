@@ -291,19 +291,19 @@ wex::vi::vi(wex::stc* arg)
                        }},
                       {"H",
                        [&](const std::string& command) {
-                         get_stc()->GotoLine(get_stc()->GetFirstVisibleLine());
+                         get_stc()->goto_line(get_stc()->GetFirstVisibleLine());
                          return 1;
                        }},
                       {"L",
                        [&](const std::string& command) {
-                         get_stc()->GotoLine(
+                         get_stc()->goto_line(
                            get_stc()->GetFirstVisibleLine() +
                            get_stc()->LinesOnScreen() - 1);
                          return 1;
                        }},
                       {"M",
                        [&](const std::string& command) {
-                         get_stc()->GotoLine(
+                         get_stc()->goto_line(
                            get_stc()->GetFirstVisibleLine() +
                            get_stc()->LinesOnScreen() / 2);
                          return 1;
@@ -697,7 +697,7 @@ wex::vi::vi(wex::stc* arg)
              get_stc()->fold(true);
              break;
            case 'R':
-             for (int i = 0; i < get_stc()->GetLineCount(); i++)
+             for (int i = 0; i < get_stc()->get_line_count(); i++)
                get_stc()->EnsureVisible(i);
              break;
          };

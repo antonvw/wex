@@ -207,6 +207,11 @@ const std::string* wex::file::read(std::streampos seek_position)
   return m_file->read(seek_position);
 }
 
+std::fstream& wex::file::stream()
+{
+  return m_file->stream();
+}
+
 bool wex::file::write(const char* s, size_t n)
 {
   return m_file->write(s, n);

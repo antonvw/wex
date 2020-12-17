@@ -88,7 +88,7 @@ namespace wex
     {
       if (start < end)
       {
-        for (int i = start; i < end && i < m_ex->get_stc()->GetLineCount() - 1;)
+        for (int i = start; i < end && i < m_ex->get_stc()->get_line_count() - 1;)
         {
           if (commands())
           {
@@ -272,8 +272,7 @@ int wex::addressrange::confirm(
   msgDialog.SetExtendedMessage(
     "Line " + std::to_string(line + 1) + ": " + m_stc->GetLineText(line));
 
-  m_stc->GotoLine(line);
-  m_stc->EnsureVisible(line);
+  m_stc->goto_line(line);
   m_stc->set_indicator(
     m_find_indicator,
     m_stc->GetTargetStart(),
@@ -297,7 +296,7 @@ bool wex::addressrange::copy(const wex::address& destination) const
 
   if (yank())
   {
-    m_stc->GotoLine(dest_line - 1);
+    m_stc->goto_line(dest_line - 1);
     m_stc->add_text(m_ex->register_text());
   }
 
@@ -521,7 +520,7 @@ bool wex::addressrange::global(const std::string& text, bool inverse) const
 
   if (inverse)
   {
-    if (auto match = m_stc->GetLineCount(); !g.for_each(start, match, hits))
+    if (auto match = m_stc->get_line_count(); !g.for_each(start, match, hits))
     {
       return false;
     }
@@ -593,7 +592,7 @@ bool wex::addressrange::move(const address& destination) const
 
   if (erase())
   {
-    m_stc->GotoLine(dest_line - 1);
+    m_stc->goto_line(dest_line - 1);
     m_stc->add_text(m_ex->register_text());
   }
 

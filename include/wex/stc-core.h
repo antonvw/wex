@@ -64,6 +64,12 @@ namespace wex
       /// Returns the filename, as used by the file.
       virtual const path& get_filename() const = 0;
 
+      /// Returns number of lines.
+      virtual int get_line_count() = 0;
+
+      /// Goes to specified line.
+      virtual void goto_line(int line) = 0;
+
       /// Returns selected text as a string.
       virtual const std::string get_selected_text() const = 0;
 

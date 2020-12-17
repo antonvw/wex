@@ -100,9 +100,8 @@ bool wex::address::append(const std::string& text) const
   }
   else
   {
-    m_ex->get_stc()->InsertText(m_ex->get_stc()->PositionFromLine(line), text);
-
-    m_ex->get_stc()->GotoLine(line + get_number_of_lines(text) - 1);
+    m_ex->get_stc()->insert_text(m_ex->get_stc()->PositionFromLine(line), text);
+    m_ex->get_stc()->goto_line(line + get_number_of_lines(text) - 1);
 
     return true;
   }
@@ -190,9 +189,9 @@ int wex::address::get_line() const
   {
     return 1;
   }
-  else if (sum > m_ex->get_stc()->GetLineCount())
+  else if (sum > m_ex->get_stc()->get_line_count())
   {
-    return m_ex->get_stc()->GetLineCount();
+    return m_ex->get_stc()->get_line_count();
   }
   else
   {
@@ -209,7 +208,7 @@ bool wex::address::insert(const std::string& text) const
   }
   else
   {
-    m_ex->get_stc()->InsertText(
+    m_ex->get_stc()->insert_text(
       m_ex->get_stc()->PositionFromLine(line - 1),
       text);
     return true;
@@ -298,7 +297,7 @@ bool wex::address::put(char name) const
   }
   else
   {
-    m_ex->get_stc()->InsertText(
+    m_ex->get_stc()->insert_text(
       m_ex->get_stc()->PositionFromLine(get_line()),
       m_ex->get_macros().get_register(name));
     return true;
@@ -342,8 +341,7 @@ bool wex::address::read(const std::string& arg) const
       }
       else
       {
-        // README: InsertTextRaw does not have length argument.
-        m_ex->get_stc()->InsertTextRaw(
+        m_ex->get_stc()->insert_text(
           m_ex->get_stc()->PositionFromLine(get_line()),
           buffer->data());
       }
@@ -371,9 +369,9 @@ const std::string wex::address::regex_commands() const
 
 void wex::address::set_line(int line)
 {
-  if (line > m_ex->get_stc()->GetLineCount())
+  if (line > m_ex->get_stc()->get_line_count())
   {
-    m_line = m_ex->get_stc()->GetLineCount();
+    m_line = m_ex->get_stc()->get_line_count();
   }
   else if (line < 1)
   {

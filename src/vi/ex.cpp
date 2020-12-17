@@ -211,9 +211,9 @@ wex::ex::ex(wex::stc* stc)
                   std::stringstream text;
                   text << get_stc()->get_filename().fullname() << " line "
                        << get_stc()->GetCurrentLine() + 1 << " of "
-                       << get_stc()->GetLineCount() << " --"
+                       << get_stc()->get_line_count() << " --"
                        << 100 * (get_stc()->GetCurrentLine() + 1) /
-                            get_stc()->GetLineCount()
+                            get_stc()->get_line_count()
                        << "--%"
                        << " level " << get_stc()->get_fold_level();
                   m_frame->show_ex_message(text.str());

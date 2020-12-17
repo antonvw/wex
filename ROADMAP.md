@@ -1,5 +1,7 @@
 # roadmap
 - .i in ex mode not yet ok, it is readonly
+- scroll bar is not reenabled after :vi
+- without theme no indicator line in ex mode
 - wxDateTime replace by c++20 methods date and time utilities
 - process-imp should be in core
 - prepare_output at one place in test

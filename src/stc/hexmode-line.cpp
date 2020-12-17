@@ -45,7 +45,7 @@ wex::hexmode_line::hexmode_line(
   }
   else
   {
-    m_hex->get_stc()->GotoLine(pos_or_offset >> 4);
+    m_hex->get_stc()->goto_line(pos_or_offset >> 4);
     m_hex->get_stc()->SelectNone();
     m_column_no = (pos_or_offset & 0x0f);
     m_line_no   = m_hex->get_stc()->GetCurrentLine();

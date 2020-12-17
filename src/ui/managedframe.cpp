@@ -374,7 +374,7 @@ void wex::managed_frame::show_ex_bar(int action, ex* ex)
     {
       m_textctrl->set_ex(ex, ":");
     }
-    
+
     pane_show("VIBAR", action != SHOW_BAR_SYNC_CLOSE_ALL);
   }
   else
@@ -388,7 +388,8 @@ void wex::managed_frame::show_ex_bar(int action, ex* ex)
 
     if (
       (action == HIDE_BAR_FOCUS_STC || action == HIDE_BAR_FORCE_FOCUS_STC) &&
-      m_textctrl != nullptr && m_textctrl->ex() != nullptr)
+      m_textctrl != nullptr && m_textctrl->ex() != nullptr &&
+      m_textctrl->ex()->get_stc() != nullptr)
     {
       m_textctrl->ex()->get_stc()->SetFocus();
     }
