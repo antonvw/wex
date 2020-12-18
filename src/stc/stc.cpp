@@ -132,7 +132,11 @@ wex::stc::~stc()
 
 void wex::stc::add_text(const std::string& text)
 {
-  if (!GetOvertype())
+  if (!m_visual)
+  {
+    m_file.ex_stream()->add_text(text);
+  }
+  else if (!GetOvertype())
   {
     Allocate(GetTextLength() + text.size());
     AddTextRaw(text.data(), text.size());
@@ -516,7 +520,14 @@ void wex::stc::guess_type_and_modeline()
 
 void wex::stc::insert_text(int pos, const std::string& text)
 {
-  InsertText(pos, text);
+  if (!m_visual)
+  {
+    m_file.ex_stream()->insert_text(LineFromPosition(pos), text);
+  }
+  else
+  {
+    InsertText(pos, text);
+  }
 }
 
 bool wex::stc::link_open()
@@ -674,7 +685,7 @@ void wex::stc::on_styled_text(wxStyledTextEvent& event)
   {
     mark_modified(event);
   }
-  
+
   event.Skip();
 }
 

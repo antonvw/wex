@@ -94,8 +94,16 @@ bool wex::address::adjust_window(const std::string& text) const
 
 bool wex::address::append(const std::string& text) const
 {
-  if (const auto line = get_line(); m_ex->get_stc()->GetReadOnly() ||
-                                    m_ex->get_stc()->is_hexmode() || line <= 0)
+  if (const auto line = get_line(); line <= 0)
+  {
+    return false;
+  }
+  else if (!m_ex->get_stc()->is_visual())
+  {
+    m_ex->get_stc()->get_file().ex_stream()->insert_text(line, text);
+    return true;
+  }
+  else if (m_ex->get_stc()->GetReadOnly() || m_ex->get_stc()->is_hexmode())
   {
     return false;
   }
@@ -103,7 +111,6 @@ bool wex::address::append(const std::string& text) const
   {
     m_ex->get_stc()->insert_text(m_ex->get_stc()->PositionFromLine(line), text);
     m_ex->get_stc()->goto_line(line + get_number_of_lines(text) - 1);
-
     return true;
   }
 }
@@ -218,8 +225,18 @@ int wex::address::get_line() const
 
 bool wex::address::insert(const std::string& text) const
 {
-  if (const auto line = get_line(); m_ex->get_stc()->GetReadOnly() ||
-                                    m_ex->get_stc()->is_hexmode() || line <= 0)
+  if (const auto line = get_line(); line <= 0)
+  {
+    return false;
+  }
+  else if (!m_ex->get_stc()->is_visual())
+  {
+    m_ex->get_stc()->get_file().ex_stream()->insert_text(line - 1, text);
+    return true;
+  }
+  else if (
+    m_ex->get_stc()->GetReadOnly() || m_ex->get_stc()->is_hexmode() ||
+    line <= 0)
   {
     return false;
   }

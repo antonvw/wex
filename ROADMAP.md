@@ -1,5 +1,4 @@
 # roadmap
-- .i in ex mode not yet ok, it is readonly
 - scroll bar is not reenabled after :vi
 - without theme no indicator line in ex mode
 - the stc-core should be transformed into text_control

@@ -15,6 +15,8 @@ wex::ex_stream::ex_stream(wex::stc* stc)
 {
 }
 
+void wex::ex_stream::add_text(const std::string& text) {}
+
 bool wex::ex_stream::find(
   const std::string& text,
   int                find_flags,
@@ -22,9 +24,10 @@ bool wex::ex_stream::find(
 {
   log::trace("stream find") << text;
 
-  auto                                            line_no = m_line_no;
-  auto                                            pos     = m_stream->tellg();
-  bool                                            found   = false;
+  auto line_no = m_line_no;
+  auto pos     = m_stream->tellg();
+  bool found   = false;
+
   std::match_results<std::string::const_iterator> m;
 
   while (!found && get_next_line())
@@ -116,6 +119,8 @@ void wex::ex_stream::goto_line(int no)
 
   set_text();
 }
+
+void wex::ex_stream::insert_text(int line, const std::string& text) {}
 
 void wex::ex_stream::set_text()
 {

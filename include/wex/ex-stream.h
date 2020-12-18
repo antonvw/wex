@@ -22,6 +22,9 @@ namespace wex
     /// Constructor.
     ex_stream(wex::stc* stc);
 
+    /// Adds text.
+    void add_text(const std::string& text);
+    
     /// Finds line containing text and puts on stc.
     bool find(
       /// text to find
@@ -46,6 +49,9 @@ namespace wex
     /// Gets specified line, and puts on stc.
     void goto_line(int no);
 
+    /// Insert text.
+    void insert_text(int line, const std::string& text);
+    
     /// Sets stream. Puts first line on stc.
     void stream(std::fstream& fs);
 
