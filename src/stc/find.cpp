@@ -132,7 +132,7 @@ bool wex::stc::find_next(const std::string& text, int find_flags, bool forward)
 
   if (!m_visual)
   {
-    return m_file.ex_stream()->find(text, find_flags, forward);
+    return false;
   }
   else if (m_margin_text_click >= 0)
   {
