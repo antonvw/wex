@@ -22,6 +22,11 @@ bool wex::ex_stream::find(
   return false;
 }
 
+int wex::ex_stream::get_current_line() const 
+{ 
+  return m_line_no;
+}
+
 int wex::ex_stream::get_line_count() const 
 {
   return m_last_line_no; 
@@ -31,15 +36,15 @@ bool wex::ex_stream::get_next_line()
 {
   if (!std::getline(*m_stream, m_current_line))
   {
-    log::debug("no next line") << m_last_line_no << m_line_no;
+    log::debug("no next line") << m_line_no << m_last_line_no;
     return false;
   }
 
   m_line_no++;
   
-  if (m_line_no > m_last_line_no)
+  if (m_line_no >= m_last_line_no - 1)
   {
-    m_last_line_no = m_line_no + 10;
+    m_last_line_no = m_line_no + 2;
   }
   
   return true;
@@ -47,7 +52,9 @@ bool wex::ex_stream::get_next_line()
 
 void wex::ex_stream::goto_line(int no)
 {
-  if (no < 0 || no < m_line_no)
+  log::trace("stream goto") << no << m_line_no << m_last_line_no;
+  
+  if (no <= 0 || no < m_line_no)
   {
     if (no < 0)
     {
@@ -55,10 +62,13 @@ void wex::ex_stream::goto_line(int no)
     }
     else
     {
-      no = 1;
+      no = 0;
+
       // currently reset.
-      m_line_no = 0;
+      m_line_no = -1;
+      m_stream->clear();
       m_stream->seekg(0);
+      log::trace("stream reset");
     }
   }
   
@@ -86,9 +96,6 @@ void wex::ex_stream::set_text()
 void wex::ex_stream::stream(std::fstream& fs)
 {
   m_stream = &fs;
-
-  if (get_next_line())
-  {
-    set_text();
-  }
+  
+  goto_line(0);
 }

@@ -15,6 +15,7 @@ namespace wex
   class stc;
 
   /// Uses a stream for ex mode processing.
+  /// Line numbers are stc line numbers, so start at line 0.
   class ex_stream
   {
   public:
@@ -37,7 +38,7 @@ namespace wex
       bool find_next = true);
 
     /// Returns current line no
-    auto get_current_line() const { return m_line_no; };
+    int get_current_line() const;
 
     /// Returns number of lines, or -1 if not yet known.
     int get_line_count() const;
@@ -54,7 +55,7 @@ namespace wex
 
     std::fstream* m_stream{nullptr};
 
-    int m_line_no{0}, m_last_line_no{-1};
+    int m_line_no{-1}, m_last_line_no{-1};
 
     std::string m_current_line;
 
