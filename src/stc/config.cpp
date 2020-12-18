@@ -54,7 +54,7 @@ bool wex::stc::auto_indentation(int c)
       break;
   }
 
-  const auto currentLine = GetCurrentLine();
+  const auto currentLine = get_current_line();
 
   if (!is_nl || currentLine == 0)
   {

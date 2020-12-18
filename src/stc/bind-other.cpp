@@ -23,7 +23,7 @@ namespace wex
   {
     if (const auto match_pos = stc->FindText(
           stc->GetCurrentPos() - 1,
-          stc->PositionFromLine(stc->GetCurrentLine()),
+          stc->PositionFromLine(stc->get_current_line()),
           "<");
         match_pos != wxSTC_INVALID_POSITION &&
         stc->GetCharAt(match_pos + 1) != '!')

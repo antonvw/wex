@@ -121,8 +121,8 @@ bool wex::process::execute(
           replace_all(
             m_command,
             "%LINES",
-            std::to_string(stc->GetCurrentLine() + 1) + "," +
-              std::to_string(stc->GetCurrentLine() + 1));
+            std::to_string(stc->get_current_line() + 1) + "," +
+              std::to_string(stc->get_current_line() + 1));
         }
       }
     }

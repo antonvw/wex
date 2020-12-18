@@ -31,6 +31,7 @@
 #include <wex/dir.h>
 #include <wex/ex-command.h>
 #include <wex/ex.h>
+#include <wex/ex-stream.h>
 #include <wex/file-dialog.h>
 #include <wex/file-history.h>
 #include <wex/file.h>

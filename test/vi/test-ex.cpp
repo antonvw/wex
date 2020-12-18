@@ -319,7 +319,7 @@ TEST_CASE("wex::ex")
            {":10000", 11}})
     {
       REQUIRE(ex->command(go.first));
-      REQUIRE(stc->GetCurrentLine() == go.second);
+      REQUIRE(stc->get_current_line() == go.second);
     }
   }
 

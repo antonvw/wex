@@ -511,7 +511,7 @@ bool wex::frame::update_statusbar(stc* stc, const std::string& pane)
     }
     else
     {
-      const auto line = stc->GetCurrentLine() + 1;
+      const auto line = stc->get_current_line() + 1;
       const auto pos =
         stc->GetCurrentPos() + 1 - stc->PositionFromLine(line - 1);
       int start, end;

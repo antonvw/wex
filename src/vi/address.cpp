@@ -189,6 +189,10 @@ int wex::address::get_line() const
   {
     return 1;
   }
+  else if (m_ex->get_stc()->get_line_count() == -1)
+  {
+    return sum;
+  }
   else if (sum > m_ex->get_stc()->get_line_count())
   {
     return m_ex->get_stc()->get_line_count();

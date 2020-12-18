@@ -10,7 +10,7 @@
 
 wex::hexmode_line::hexmode_line(hexmode* hex)
   : m_line(hex->get_stc()->GetCurLine())
-  , m_line_no(hex->get_stc()->GetCurrentLine())
+  , m_line_no(hex->get_stc()->get_current_line())
   , m_column_no(hex->get_stc()->GetColumn(hex->get_stc()->GetCurrentPos()))
   , m_hex(hex)
   , m_start_ascii_field(hex->m_each_hex_field * hex->m_bytes_per_line)
@@ -48,7 +48,7 @@ wex::hexmode_line::hexmode_line(
     m_hex->get_stc()->goto_line(pos_or_offset >> 4);
     m_hex->get_stc()->SelectNone();
     m_column_no = (pos_or_offset & 0x0f);
-    m_line_no   = m_hex->get_stc()->GetCurrentLine();
+    m_line_no   = m_hex->get_stc()->get_current_line();
     m_line      = m_hex->get_stc()->GetLine(m_line_no);
   }
 }

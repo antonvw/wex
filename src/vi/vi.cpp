@@ -79,7 +79,7 @@ namespace wex
           if (                                                            \
             (COND) &&                                                     \
             get_stc()->GetColumn(get_stc()->GetCurrentPos()) !=           \
-              get_stc()->GetLineIndentation(get_stc()->GetCurrentLine())) \
+              get_stc()->GetLineIndentation(get_stc()->get_current_line())) \
             get_stc()->VCHome();                                          \
           break;                                                          \
         case wex::vi_mode::state_t::VISUAL:                               \
@@ -170,7 +170,7 @@ wex::vi::vi(wex::stc* arg)
                          if (
                            command == "l" && get_stc()->GetCurrentPos() >=
                                                get_stc()->GetLineEndPosition(
-                                                 get_stc()->GetCurrentLine()))
+                                                 get_stc()->get_current_line()))
                            return 1;
                          MOTION(Char, Right, false, false);
                        }},
@@ -404,7 +404,7 @@ wex::vi::vi(wex::stc* arg)
                        [&](const std::string& command) {
                          get_stc()->GotoPos(
                            get_stc()->PositionFromLine(
-                             get_stc()->GetCurrentLine()) +
+                             get_stc()->get_current_line()) +
                            m_count - 1);
                          return 1;
                        }},
@@ -635,7 +635,7 @@ wex::vi::vi(wex::stc* arg)
        [&](const std::string& command) {
          delete_range(
            0,
-           get_stc()->PositionFromLine(get_stc()->GetCurrentLine()));
+           get_stc()->PositionFromLine(get_stc()->get_current_line()));
          return 3;
        }},
       {"gg",
@@ -664,11 +664,11 @@ wex::vi::vi(wex::stc* arg)
          if (command.size() <= 1)
            return (size_t)0;
          const auto level =
-           get_stc()->GetFoldLevel(get_stc()->GetCurrentLine());
+           get_stc()->GetFoldLevel(get_stc()->get_current_line());
          const auto line_to_fold =
            (level & wxSTC_FOLDLEVELHEADERFLAG) ?
-             get_stc()->GetCurrentLine() :
-             get_stc()->GetFoldParent(get_stc()->GetCurrentLine());
+             get_stc()->get_current_line() :
+             get_stc()->GetFoldParent(get_stc()->get_current_line());
 
          switch (command[1])
          {
@@ -1324,7 +1324,7 @@ void wex::vi::insert_mode_normal(const std::string& text)
               const auto pos       = get_stc()->GetCurrentPos();
               const auto match_pos = get_stc()->FindText(
                 pos,
-                get_stc()->PositionFromLine(get_stc()->GetCurrentLine()),
+                get_stc()->PositionFromLine(get_stc()->get_current_line()),
                 it->first);
 
               if (match_pos != wxSTC_INVALID_POSITION)

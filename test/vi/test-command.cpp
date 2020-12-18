@@ -26,7 +26,7 @@ TEST_CASE("wex::ex_command")
     REQUIRE(command.type() == wex::ex_command::type_t::VI);
 
     REQUIRE(!command.exec());
-    REQUIRE(stc->GetCurrentLine() == 0);
+    REQUIRE(stc->get_current_line() == 0);
   }
 
   SUBCASE("constructor stc")
@@ -88,9 +88,9 @@ TEST_CASE("wex::ex_command")
   {
     command.set("G");
     REQUIRE(command.command() == "G");
-    REQUIRE(stc->GetCurrentLine() == 0);
+    REQUIRE(stc->get_current_line() == 0);
     REQUIRE(command.exec());
-    REQUIRE(stc->GetCurrentLine() == 2);
+    REQUIRE(stc->get_current_line() == 2);
   }
 
   SUBCASE("change")
@@ -105,7 +105,7 @@ TEST_CASE("wex::ex_command")
     command.pop_back();
     REQUIRE(command.size() == 1);
     REQUIRE(command.append_exec('g'));
-    REQUIRE(stc->GetCurrentLine() == 0);
+    REQUIRE(stc->get_current_line() == 0);
 
     command.set(wex::ex_command("dd"));
     REQUIRE(command.command() == "dd");

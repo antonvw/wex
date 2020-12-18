@@ -138,7 +138,7 @@ TEST_CASE("wex::vi")
         REQUIRE(vi->last_command()[0] != go.first[0]);
       }
 
-      REQUIRE(stc->GetCurrentLine() == go.second);
+      REQUIRE(stc->get_current_line() == go.second);
     }
   }
 

@@ -21,7 +21,7 @@ namespace wex
     /// Constructor.
     ex_stream(wex::stc* stc);
 
-    /// Finds text and puts on stc.
+    /// Finds line containing text and puts on stc.
     bool find(
       /// text to find
       const std::string& text,
@@ -37,13 +37,13 @@ namespace wex
       bool find_next = true);
 
     /// Returns current line no
-    auto line() const { return m_line; };
+    auto get_current_line() const { return m_line_no; };
+
+    /// Returns number of lines, or -1 if not yet known.
+    int get_line_count() const;
 
     /// Gets specified line, and puts on stc.
-    void line(int no);
-
-    /// Returns number of lines.
-    int line_count() const { return m_max_line;};
+    void goto_line(int no);
 
     /// Sets stream. Puts first line on stc.
     void stream(std::fstream& fs);
@@ -54,8 +54,8 @@ namespace wex
 
     std::fstream* m_stream{nullptr};
 
-    int m_line{0},m_max_line{0};
-    
+    int m_line_no{0}, m_last_line_no{-1};
+
     std::string m_current_line;
 
     stc* m_stc;

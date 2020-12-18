@@ -294,7 +294,7 @@ void wex::stc::bind_all()
       ID_EDIT_CONTROL_CHAR},
 
      {[=, this](wxCommandEvent& event) {
-        AnnotationSetText(GetCurrentLine(), event.GetString());
+        AnnotationSetText(get_current_line(), event.GetString());
       },
       ID_EDIT_DEBUG_VARIABLE},
 
@@ -398,10 +398,10 @@ void wex::stc::bind_all()
       id::stc::open_mime},
 
      {[=, this](wxCommandEvent& event) {
-        const auto level        = GetFoldLevel(GetCurrentLine());
+        const auto level        = GetFoldLevel(get_current_line());
         const auto line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?
-                                    GetCurrentLine() :
-                                    GetFoldParent(GetCurrentLine());
+                                    get_current_line() :
+                                    GetFoldParent(get_current_line());
         ToggleFold(line_to_fold);
       },
       id::stc::toggle_fold},
@@ -420,7 +420,7 @@ void wex::stc::bind_all()
       id::stc::eol_dos},
 
      {[=, this](wxCommandEvent& event) {
-        auto line = MarkerNext(GetCurrentLine() + 1, 0xFFFF);
+        auto line = MarkerNext(get_current_line() + 1, 0xFFFF);
         if (line == -1)
         {
           line = MarkerNext(0, 0xFFFF);
@@ -437,7 +437,7 @@ void wex::stc::bind_all()
       id::stc::marker_next},
 
      {[=, this](wxCommandEvent& event) {
-        auto line = MarkerPrevious(GetCurrentLine() - 1, 0xFFFF);
+        auto line = MarkerPrevious(get_current_line() - 1, 0xFFFF);
         if (line == -1)
         {
           line = MarkerPrevious(get_line_count() - 1, 0xFFFF);
@@ -460,7 +460,7 @@ void wex::stc::build_popup_menu(menu& menu)
 {
   const auto sel(GetSelectedText().ToStdString());
 
-  if (GetCurrentLine() == 0 && !lexers::get()->get_lexers().empty())
+  if (get_current_line() == 0 && !lexers::get()->get_lexers().empty())
   {
     menu.append({{id::stc::show_properties, _("Properties")}});
   }
@@ -796,9 +796,9 @@ void wex::stc::sort_action(const wxCommandEvent& event)
              _("Input") + ":",
              wxEmptyString,
              _("Enter Sort Position"),
-             GetCurrentPos() + 1 - PositionFromLine(GetCurrentLine()),
+             GetCurrentPos() + 1 - PositionFromLine(get_current_line()),
              1,
-             GetLineEndPosition(GetCurrentLine()),
+             GetLineEndPosition(get_current_line()),
              this));
            pos > 0)
   {

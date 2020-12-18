@@ -58,7 +58,7 @@ TEST_CASE("wex::data::stc")
     REQUIRE(wex::data::stc(stc)
               .control(wex::data::control().line(1).col(5))
               .inject());
-    REQUIRE(stc->GetCurrentLine() == 0);
+    REQUIRE(stc->get_current_line() == 0);
     REQUIRE(stc->GetCurrentPos() == 4);
     REQUIRE(wex::data::stc(stc, wex::data::control().line(1).col(5)).inject());
     REQUIRE(

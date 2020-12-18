@@ -138,6 +138,9 @@ namespace wex
     /// Returns associated data.
     const auto& data() const { return m_data; };
 
+    /// Returns current line number.
+    int get_current_line() const;
+
     /// Returns vi component.
     const ex& get_ex() const;
 

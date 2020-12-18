@@ -210,9 +210,9 @@ wex::ex::ex(wex::stc* stc)
                 [&](const std::string& command) {
                   std::stringstream text;
                   text << get_stc()->get_filename().fullname() << " line "
-                       << get_stc()->GetCurrentLine() + 1 << " of "
+                       << get_stc()->get_current_line() + 1 << " of "
                        << get_stc()->get_line_count() << " --"
-                       << 100 * (get_stc()->GetCurrentLine() + 1) /
+                       << 100 * (get_stc()->get_current_line() + 1) /
                             get_stc()->get_line_count()
                        << "--%"
                        << " level " << get_stc()->get_fold_level();
@@ -891,7 +891,7 @@ bool wex::ex::marker_add(char marker, int line)
   marker_delete(marker);
 
   int       id;
-  const int lin = (line == -1 ? get_stc()->GetCurrentLine() : line);
+  const int lin = (line == -1 ? get_stc()->get_current_line() : line);
 
   if (lm.symbol() == wxSTC_MARK_CHARACTER)
   {

@@ -295,7 +295,7 @@ void wex::stc::fold_all()
   if (GetProperty("fold") != "1")
     return;
 
-  const auto current_line = GetCurrentLine();
+  const auto current_line = get_current_line();
   const bool json         = (m_lexer.scintilla_lexer() == "json");
   const bool xml          = (m_lexer.language() == "xml");
 
@@ -345,6 +345,18 @@ const std::string wex::stc::eol() const
   return "\r\n";
 }
 
+int wex::stc::get_current_line() const
+{
+  if (!m_visual)
+  {
+    return m_file.ex_stream()->get_current_line();
+  }
+  else
+  {
+    return const_cast<stc*>(this)->GetCurrentLine();
+  }
+}
+
 const wex::ex& wex::stc::get_ex() const
 {
   return m_ex->is_active() ? *m_ex : *m_vi;
@@ -389,7 +401,7 @@ const std::string wex::stc::get_find_string()
 
 int wex::stc::get_fold_level()
 {
-  return (GetFoldLevel(GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK) -
+  return (GetFoldLevel(get_current_line()) & wxSTC_FOLDLEVELNUMBERMASK) -
          wxSTC_FOLDLEVELBASE;
 }
 
@@ -397,7 +409,7 @@ int wex::stc::get_line_count()
 {
   if (!m_visual)
   {
-    return m_file.ex_stream()->line_count();
+    return m_file.ex_stream()->get_line_count();
   }
   else
   {
@@ -453,7 +465,7 @@ void wex::stc::goto_line(int line)
 {
   if (!m_visual)
   {
-    m_file.ex_stream()->line(line);
+    m_file.ex_stream()->goto_line(line);
   }
   else
   {
@@ -502,7 +514,7 @@ void wex::stc::guess_type_and_modeline()
   m_frame->update_statusbar(this, "PaneFileType");
 }
 
-void wex::stc::insert_text(int pos, const std::string& text) 
+void wex::stc::insert_text(int pos, const std::string& text)
 {
   InsertText(pos, text);
 }
@@ -646,8 +658,7 @@ void wex::stc::on_idle(wxIdleEvent& event)
   event.Skip();
 
   if (
-    m_visual &&
-    m_file.check_sync() &&
+    m_visual && m_file.check_sync() &&
     // the readonly flags bit of course can differ from file actual readonly
     // mode, therefore add this check
     !m_data.flags().test(data::stc::WIN_READ_ONLY) &&
@@ -659,7 +670,11 @@ void wex::stc::on_idle(wxIdleEvent& event)
 
 void wex::stc::on_styled_text(wxStyledTextEvent& event)
 {
-  mark_modified(event);
+  if (m_visual)
+  {
+    mark_modified(event);
+  }
+  
   event.Skip();
 }
 

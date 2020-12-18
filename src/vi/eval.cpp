@@ -84,7 +84,7 @@ namespace wex
       auto operator()(ex const& e) const
       {
         if (e.token == ".")
-          return m_ex->get_command().get_stc()->GetCurrentLine() + 1;
+          return m_ex->get_command().get_stc()->get_current_line() + 1;
         else if (e.token == "$")
           return m_ex->get_command().get_stc()->get_line_count();
         else if (e.token[0] == '\'' && e.token.size() == 2)
