@@ -505,7 +505,11 @@ bool wex::frame::update_statusbar(stc* stc, const std::string& pane)
 
   if (pane == "PaneInfo")
   {
-    if (stc->GetCurrentPos() == 0)
+    if (!stc->is_visual())
+    {
+      text << stc->get_current_line() + 1 << "," << stc->get_line_count();
+    }
+    else if (stc->GetCurrentPos() == 0)
     {
       text << stc->get_line_count();
     }

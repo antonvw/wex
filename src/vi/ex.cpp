@@ -496,11 +496,7 @@ bool wex::ex::address_parse(
     {
       type = address_t::NONE;
       const auto line(address(this, text).get_line());
-
-      if (line > 0)
-        data::stc(get_stc()).control(data::control().line(line)).inject();
-
-      return line > 0;
+      return data::stc(get_stc()).control(data::control().line(line)).inject();
     }
 
     if (range.empty() && cmd != '!')

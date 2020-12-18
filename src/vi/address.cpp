@@ -207,11 +207,7 @@ int wex::address::get_line() const
   // Try address calculation.
   if (const auto sum = m_ex->calculator(m_address); sum < 0)
   {
-    return 1;
-  }
-  else if (m_ex->get_stc()->get_line_count() == -1)
-  {
-    return sum;
+    return m_ex->get_stc()->is_visual() ? 1 : sum;
   }
   else if (sum > m_ex->get_stc()->get_line_count())
   {
