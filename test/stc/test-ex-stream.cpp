@@ -35,6 +35,12 @@ TEST_CASE("wex::ex_stream")
     exs.stream(ifs);
     REQUIRE(stc->get_text() == "# markdown");
     REQUIRE(exs.get_current_line() == 0);
+
+    exs.goto_line(3);
+    REQUIRE(exs.get_current_line() == 3);
+
+    exs.goto_line(4);
+    REQUIRE(exs.get_current_line() == 4);
   }
 
   SUBCASE("find")

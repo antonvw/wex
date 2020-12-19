@@ -25,23 +25,12 @@ namespace wex
     /// Constructor.
     ex_stream(wex::stc* stc);
 
-    /// Adds text.
+    /// Adds text at current line.
     void add_text(const std::string& text);
 
     /// Finds line containing text and puts on stc.
-    bool find(
-      /// text to find
-      const std::string& text,
-      /// search flags to be used:
-      /// - wxSTC_FIND_WHOLEWORD
-      /// - wxSTC_FIND_MATCHCASE
-      /// - wxSTC_FIND_WORDSTART
-      /// - wxSTC_FIND_REGEXP
-      /// - wxSTC_FIND_POSIX
-      /// - if -1, use flags from find replace data
-      int find_flags = -1,
-      /// finds next or previous
-      bool find_next = true);
+    /// The text is interpreted as regex, and search is forward.
+    bool find(const std::string& text);
 
     /// Returns current line no
     int get_current_line() const;
@@ -55,7 +44,7 @@ namespace wex
     /// Gets specified line, and puts on stc.
     void goto_line(int no);
 
-    /// Insert text.
+    /// Inserts text at specified line.
     void insert_text(int line, const std::string& text);
 
     /// Sets stream. Puts first line on stc.

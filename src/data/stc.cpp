@@ -79,7 +79,7 @@ bool wex::data::stc::inject() const
       {
         if (m_stc->get_line_count() == LINE_COUNT_UNKNOWN)
         {
-          m_stc->goto_line(m_data.line());
+          m_stc->goto_line(m_data.line() - 1);
           return true;
         }
         
@@ -102,10 +102,6 @@ bool wex::data::stc::inject() const
       else if (m_data.line() == NUMBER_NOT_SET)
       {
         return false;
-      }
-      else if (m_data.line() == -1)
-      {
-        m_stc->goto_line(m_data.line());
       }
       else
       {
