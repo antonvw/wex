@@ -599,7 +599,7 @@ bool wex::stc::link_open(link_t mode, std::string* filename)
       {
         *filename = path.fullname();
       }
-      else if (m_frame != nullptr && !mode[LINK_CHECK])
+      else if (!mode[LINK_CHECK])
       {
         m_frame->open_file(path, data);
       }
@@ -717,10 +717,7 @@ bool wex::stc::open(const path& p, const data::stc& data)
     m_data.inject();
   }
 
-  if (m_frame != nullptr)
-  {
-    m_frame->set_recent_file(p.string());
-  }
+  m_frame->set_recent_file(p.string());
 
   return true;
 }
@@ -810,7 +807,7 @@ void wex::stc::properties_message(path::status_t flags)
 
   m_frame->update_statusbar(this, "PaneInfo");
 
-  if (!flags[path::STAT_SYNC] && m_frame != nullptr)
+  if (!flags[path::STAT_SYNC])
   {
     const wxString file =
       GetName() + (GetReadOnly() ? " [" + _("Readonly") + "]" : wxString());
