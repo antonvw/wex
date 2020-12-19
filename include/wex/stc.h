@@ -301,6 +301,7 @@ namespace wex
     void        fold(bool fold_all = false) override;
     const path& get_filename() const override { return m_file.get_filename(); };
     int         get_line_count() override;
+    int         get_line_count_request() override;
     const std::string get_selected_text() const override;
     void              goto_line(int line) override;
     bool is_hexmode() const override { return m_hexmode.is_active(); };

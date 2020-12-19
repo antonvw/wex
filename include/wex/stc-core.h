@@ -10,6 +10,8 @@
 #include <bitset>
 #include <wx/stc/stc.h>
 
+#define LINE_COUNT_UNKNOWN -1
+
 namespace wex
 {
   class indicator;
@@ -66,6 +68,9 @@ namespace wex
 
       /// Returns number of lines.
       virtual int get_line_count() = 0;
+
+      /// Request for number of lines.
+      virtual int get_line_count_request() = 0;
 
       /// Goes to specified line.
       virtual void goto_line(int line) = 0;

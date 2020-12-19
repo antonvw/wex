@@ -421,6 +421,18 @@ int wex::stc::get_line_count()
   }
 }
 
+int wex::stc::get_line_count_request()
+{
+  if (!m_visual)
+  {
+    return m_file.ex_stream()->get_line_count_request();
+  }
+  else
+  {
+    return GetLineCount();
+  }
+}
+  
 const std::string wex::stc::get_selected_text() const
 {
   const wxCharBuffer& b(const_cast<stc*>(this)->GetSelectedTextRaw());

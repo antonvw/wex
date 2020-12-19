@@ -16,12 +16,14 @@ TEST_CASE("wex::ex_stream")
   SUBCASE("constructor")
   {
     wex::ex_stream exs(stc);
-    REQUIRE(exs.get_current_line() == -1);
-    REQUIRE(exs.get_line_count() == -1);
+    REQUIRE(exs.get_current_line() == LINE_COUNT_UNKNOWN);
+    REQUIRE(exs.get_line_count() == LINE_COUNT_UNKNOWN);
+    REQUIRE(exs.get_line_count_request() == LINE_COUNT_UNKNOWN);
 
     exs.goto_line(5);
-    REQUIRE(exs.get_current_line() == -1);
-    REQUIRE(exs.get_line_count() == -1);
+    REQUIRE(exs.get_current_line() == LINE_COUNT_UNKNOWN);
+    REQUIRE(exs.get_line_count() == LINE_COUNT_UNKNOWN);
+    REQUIRE(exs.get_line_count_request() == LINE_COUNT_UNKNOWN);
   }
 
   SUBCASE("stream")
@@ -41,12 +43,26 @@ TEST_CASE("wex::ex_stream")
     REQUIRE(ifs.is_open());
 
     wex::ex_stream exs(stc);
+    REQUIRE(!exs.find(std::string("one")));
+    
     exs.stream(ifs);
-
     REQUIRE(exs.find(std::string("one")));
     REQUIRE(exs.get_current_line() == 3);
 
     REQUIRE(!exs.find(std::string("xxxone")));
     REQUIRE(exs.get_current_line() == 3);
+  }
+  
+  SUBCASE("request")
+  {
+    std::fstream ifs("test.md");
+    REQUIRE(ifs.is_open());
+
+    wex::ex_stream exs(stc);
+    exs.stream(ifs);
+
+    REQUIRE(exs.get_line_count_request() == 8);
+    REQUIRE(exs.get_line_count() == 8);
+    REQUIRE(exs.get_line_count_request() == 8);
   }
 }

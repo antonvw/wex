@@ -10,6 +10,9 @@
 #include <fstream>
 #include <string>
 
+#include <wex/path.h>
+#include <wex/stc-core.h>
+
 namespace wex
 {
   class stc;
@@ -24,7 +27,7 @@ namespace wex
 
     /// Adds text.
     void add_text(const std::string& text);
-    
+
     /// Finds line containing text and puts on stc.
     bool find(
       /// text to find
@@ -43,15 +46,18 @@ namespace wex
     /// Returns current line no
     int get_current_line() const;
 
-    /// Returns number of lines, or -1 if not yet known.
+    /// Returns number of lines, or LINE_COUNT_UNKNOWN if not yet known.
     int get_line_count() const;
+
+    /// Returns number of lines.
+    int get_line_count_request();
 
     /// Gets specified line, and puts on stc.
     void goto_line(int no);
 
     /// Insert text.
     void insert_text(int line, const std::string& text);
-    
+
     /// Sets stream. Puts first line on stc.
     void stream(std::fstream& fs);
 
@@ -61,7 +67,7 @@ namespace wex
 
     std::fstream* m_stream{nullptr};
 
-    int m_line_no{-1}, m_last_line_no{-1};
+    int m_line_no{LINE_COUNT_UNKNOWN}, m_last_line_no{LINE_COUNT_UNKNOWN};
 
     std::string m_current_line;
 
