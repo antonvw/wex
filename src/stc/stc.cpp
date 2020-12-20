@@ -953,7 +953,7 @@ void wex::stc::SelectNone()
 
 bool wex::stc::set_indicator(const indicator& indicator, int start, int end)
 {
-  if (!lexers::get()->indicator_is_loaded(indicator))
+  if (!lexers::get()->indicator_is_loaded(indicator) || start == -1 || end == -1)
   {
     return false;
   }

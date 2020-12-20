@@ -25,6 +25,9 @@ namespace wex
     /// Constructor.
     ex_stream(wex::stc* stc);
 
+    /// Destructor.
+    ~ex_stream();
+    
     /// Adds text at current line.
     void add_text(const std::string& text);
 
@@ -52,13 +55,17 @@ namespace wex
 
   private:
     bool get_next_line();
+    void set_context();
     void set_text();
+
+    const int m_context_size, m_line_size;
 
     std::fstream* m_stream{nullptr};
 
     int m_line_no{LINE_COUNT_UNKNOWN}, m_last_line_no{LINE_COUNT_UNKNOWN};
 
-    std::string m_current_line;
+    std::string m_context;
+    char* m_current_line;
 
     stc* m_stc;
   };

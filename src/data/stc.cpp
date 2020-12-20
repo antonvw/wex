@@ -77,14 +77,9 @@ bool wex::data::stc::inject() const
       // line
       if (m_data.line() > 0)
       {
-        if (m_stc->get_line_count() == LINE_COUNT_UNKNOWN)
-        {
-          m_stc->goto_line(m_data.line() - 1);
-          return true;
-        }
-        
         const auto line =
-          (m_data.line() - 1 >= m_stc->get_line_count() ?
+          (m_data.line() - 1 >= m_stc->get_line_count() &&
+               m_stc->get_line_count() != LINE_COUNT_UNKNOWN ?
              m_stc->get_line_count() - 1 :
              m_data.line() - 1);
 

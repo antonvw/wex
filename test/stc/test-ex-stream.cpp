@@ -67,8 +67,8 @@ TEST_CASE("wex::ex_stream")
     wex::ex_stream exs(stc);
     exs.stream(ifs);
 
-    REQUIRE(exs.get_line_count_request() == 8);
-    REQUIRE(exs.get_line_count() == 8);
-    REQUIRE(exs.get_line_count_request() == 8);
+    REQUIRE(exs.get_line_count_request() == 9);
+    REQUIRE(exs.get_line_count() == 9);
+    REQUIRE(exs.get_line_count_request() == 9);
   }
 }
