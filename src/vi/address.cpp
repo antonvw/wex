@@ -100,7 +100,10 @@ bool wex::address::append(const std::string& text) const
   }
   else if (!m_ex->get_stc()->is_visual())
   {
-    m_ex->get_stc()->get_file().ex_stream()->insert_text(line, text);
+    m_ex->get_stc()->get_file().ex_stream()->insert_text(
+      line,
+      text,
+      ex_stream::INSERT_AFTER);
     return true;
   }
   else if (m_ex->get_stc()->GetReadOnly() || m_ex->get_stc()->is_hexmode())
@@ -274,7 +277,6 @@ bool wex::address::parse(const std::string& command, const std::string& text)
     case 'a':
       if (text.find('|') != std::string::npos)
       {
-        m_ex->frame()->show_ex_bar();
         return append(after(text, '|'));
       }
       else
@@ -285,7 +287,6 @@ bool wex::address::parse(const std::string& command, const std::string& text)
     case 'i':
       if (text.find('|') != std::string::npos)
       {
-        m_ex->frame()->show_ex_bar();
         return insert(after(text, '|'));
       }
       else

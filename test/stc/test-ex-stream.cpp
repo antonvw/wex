@@ -59,6 +59,30 @@ TEST_CASE("wex::ex_stream")
     REQUIRE(exs.get_current_line() == 3);
   }
   
+  SUBCASE("insert")
+  {
+    {
+      const std::string text("test1\ntest2\ntest3\ntest4\n\n");
+      std::fstream ifs("insert.txt", std::ios_base::out);
+      REQUIRE(ifs.write(text.c_str(), text.size()));
+    }
+  
+    std::fstream ifs("insert.txt");
+    REQUIRE(ifs.is_open());
+
+    wex::ex_stream exs(stc);
+    exs.stream(ifs);
+    
+    REQUIRE(exs.insert_text(0, "TEXT_BEFORE"));
+    REQUIRE(exs.insert_text(3, "TEXT_AFTER", wex::ex_stream::INSERT_AFTER));
+//#define DEBUG 1
+#ifdef DEBUG
+    system("cat insert.txt");
+#endif
+    
+    remove("insert.txt");
+  }
+  
   SUBCASE("request")
   {
     std::fstream ifs("test.md");

@@ -367,7 +367,7 @@ void wex::managed_frame::set_recent_file(const path& path)
 void wex::managed_frame::show_ex_bar(int action, ex* ex)
 {
   if (
-    action == SHOW_BAR || (is_ex(m_textctrl)) ||
+    action == SHOW_BAR || (ex != nullptr && is_ex(m_textctrl)) ||
     (action == SHOW_BAR && ex == nullptr))
   {
     if (action >= SHOW_BAR)
@@ -408,7 +408,11 @@ bool wex::managed_frame::show_ex_input(ex* ex, char cmd)
 
 void wex::managed_frame::show_ex_message(const std::string& text)
 {
-  show_ex_bar();
+  if (!is_ex(m_textctrl))
+  {
+    show_ex_bar();
+  }
+
   statustext(text, std::string());
 }
 

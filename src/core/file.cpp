@@ -109,7 +109,7 @@ bool wex::file::close()
 
 bool wex::file::file_load(bool synced)
 {
-  if (synced && !open())
+  if (synced && !open(std::ios_base::in | std::ios_base::out))
   {
     return false;
   }

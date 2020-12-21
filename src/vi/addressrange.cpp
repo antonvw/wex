@@ -88,7 +88,8 @@ namespace wex
     {
       if (start < end)
       {
-        for (int i = start; i < end && i < m_ex->get_stc()->get_line_count() - 1;)
+        for (int i = start;
+             i < end && i < m_ex->get_stc()->get_line_count() - 1;)
         {
           if (commands())
           {
@@ -621,7 +622,6 @@ bool wex::addressrange::parse(
     case 'c':
       if (text.find('|') != std::string::npos)
       {
-        m_ex->frame()->show_ex_bar();
         return change(after(text, '|'));
       }
       else

@@ -166,7 +166,6 @@ void wex::stc_file::do_file_save(bool save_as)
     std::thread t([&] {
 #endif
       if (m_stc->is_visual() && write(m_stc->get_text()))
-      //        (!m_stc->is_visual() && write(m_ex_stream->text())))
       {
         FILE_POST(save_as ? FILE_SAVE_AS : FILE_SAVE);
       }

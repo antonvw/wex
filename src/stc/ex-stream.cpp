@@ -6,8 +6,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <regex>
+#include <stdio.h>
+#include <string.h>
 #include <wex/core.h>
 #include <wex/ex-stream.h>
+#include <wex/frd.h>
 #include <wex/log.h>
 #include <wex/managed-frame.h>
 #include <wex/stc.h>
@@ -24,8 +27,6 @@ wex::ex_stream::~ex_stream()
 {
   delete[] m_current_line;
 }
-  
-void wex::ex_stream::add_text(const std::string& text) {}
 
 bool wex::ex_stream::find(const std::string& text)
 {
@@ -41,10 +42,13 @@ bool wex::ex_stream::find(const std::string& text)
   bool found   = false;
 
   const std::regex r(text);
+  const bool       use_regex(find_replace_data::get()->is_regex());
 
   while (!found && get_next_line())
   {
-    if (std::regex_search(m_current_line, r))
+    if (
+      (use_regex && std::regex_search(m_current_line, r)) ||
+      (!use_regex && strstr(m_current_line, text.c_str()) != nullptr))
     {
       found = true;
     }
@@ -91,7 +95,7 @@ int wex::ex_stream::get_line_count_request()
   m_stream->clear();
   m_stream->seekg(0);
   m_last_line_no = 0;
-  
+
   char c;
   while (m_stream->get(c))
   {
@@ -122,7 +126,7 @@ bool wex::ex_stream::get_next_line()
 
 void wex::ex_stream::goto_line(int no)
 {
-  if (m_stream == nullptr)
+  if (m_stream == nullptr || no == m_line_no)
   {
     return;
   }
@@ -153,7 +157,89 @@ void wex::ex_stream::goto_line(int no)
   set_text();
 }
 
-void wex::ex_stream::insert_text(int line, const std::string& text) {}
+bool wex::ex_stream::insert_text(
+  int line, 
+  const std::string& text,
+  loc_t loc)
+{
+  if (m_stream == nullptr)
+  {
+    return false;
+  }
+  
+  const auto pos = m_stream->tellg();
+
+  m_stream->seekg(0);
+  m_stream->seekp(0);
+  
+  char tmp_filename[L_tmpnam];
+  tmpnam(tmp_filename);
+  
+  {
+    std::fstream tfs(tmp_filename, std::ios_base::out);
+
+    char c;
+    int current = 0;
+    bool done = false;
+    
+    if (line == 0 && loc == INSERT_BEFORE)
+    {
+      if (!tfs.write(text.c_str(), text.size()))
+      {
+        return false;
+      }
+  
+      done = true;
+    }      
+    
+    while (m_stream->get(c))
+    {
+      if (c != '\n')
+      {
+        if (!tfs.put(c))
+        {
+          return false;
+        }
+      }
+      else 
+      {
+        if (current++ == line && !done)
+        {
+          switch (loc)
+          {
+            case INSERT_AFTER: 
+              tfs.put(c);
+              tfs.write(text.c_str(), text.size());
+              break;
+
+            case INSERT_BEFORE: 
+              tfs.write(text.c_str(), text.size());
+              tfs.put(c);
+              break;
+          }
+          done = true;
+        }
+        else
+        {
+          tfs.put(c);
+        }
+      }
+    }
+  }  
+  
+  m_stream->clear();
+  m_stream->seekg(0);
+  
+  std::fstream tfs(tmp_filename);
+  *m_stream << tfs.rdbuf();
+
+  std::remove(tmp_filename);
+
+  m_stream->clear();
+  m_stream->seekg(pos);
+  
+  return true;
+}
 
 void wex::ex_stream::set_context()
 {

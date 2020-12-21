@@ -134,7 +134,10 @@ void wex::stc::add_text(const std::string& text)
 {
   if (!m_visual)
   {
-    m_file.ex_stream()->add_text(text);
+    m_file.ex_stream()->insert_text(
+      m_file.ex_stream()->get_current_line(),
+      text,
+      ex_stream::INSERT_AFTER);
   }
   else if (!GetOvertype())
   {
@@ -432,7 +435,7 @@ int wex::stc::get_line_count_request()
     return GetLineCount();
   }
 }
-  
+
 const std::string wex::stc::get_selected_text() const
 {
   const wxCharBuffer& b(const_cast<stc*>(this)->GetSelectedTextRaw());
@@ -953,7 +956,8 @@ void wex::stc::SelectNone()
 
 bool wex::stc::set_indicator(const indicator& indicator, int start, int end)
 {
-  if (!lexers::get()->indicator_is_loaded(indicator) || start == -1 || end == -1)
+  if (
+    !lexers::get()->indicator_is_loaded(indicator) || start == -1 || end == -1)
   {
     return false;
   }

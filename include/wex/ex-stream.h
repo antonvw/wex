@@ -22,14 +22,17 @@ namespace wex
   class ex_stream
   {
   public:
+    enum loc_t
+    {
+      INSERT_BEFORE,
+      INSERT_AFTER
+    };
+
     /// Constructor.
     ex_stream(wex::stc* stc);
 
     /// Destructor.
     ~ex_stream();
-    
-    /// Adds text at current line.
-    void add_text(const std::string& text);
 
     /// Finds line containing text and puts on stc.
     /// The text is interpreted as regex, and search is forward.
@@ -48,7 +51,8 @@ namespace wex
     void goto_line(int no);
 
     /// Inserts text at specified line.
-    void insert_text(int line, const std::string& text);
+    bool
+    insert_text(int line, const std::string& text, loc_t loc = INSERT_BEFORE);
 
     /// Sets stream. Puts first line on stc.
     void stream(std::fstream& fs);
@@ -65,7 +69,7 @@ namespace wex
     int m_line_no{LINE_COUNT_UNKNOWN}, m_last_line_no{LINE_COUNT_UNKNOWN};
 
     std::string m_context;
-    char* m_current_line;
+    char*       m_current_line;
 
     stc* m_stc;
   };
