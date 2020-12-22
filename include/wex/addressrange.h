@@ -80,6 +80,12 @@ namespace wex
     /// Executes register on this range.
     bool execute(const std::string& reg) const;
 
+    /// Returns begin address.
+    auto& get_begin() const { return m_begin; };
+
+    /// Returns end address.
+    auto& get_end() const { return m_end; };
+
     /// Performs the global command on this range.
     bool global(
       /// command

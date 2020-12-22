@@ -11,6 +11,7 @@
 #endif
 #include <wex/addressrange.h>
 #include <wex/core.h>
+#include <wex/ex-stream.h>
 #include <wex/ex.h>
 #include <wex/frd.h>
 #include <wex/log.h>
@@ -308,6 +309,11 @@ bool wex::addressrange::copy(const wex::address& destination) const
 
 bool wex::addressrange::erase() const
 {
+  if (m_stc->is_visual())
+  {
+    return m_stc->get_file().ex_stream()->erase(*this);
+  }
+
   if (m_stc->GetReadOnly() || m_stc->is_hexmode() || !set_selection())
   {
     return false;
@@ -869,7 +875,7 @@ bool wex::addressrange::sort(const std::string& parameters) const
 
 bool wex::addressrange::substitute(const std::string& text, char cmd)
 {
-  if (m_stc->GetReadOnly() || !is_ok())
+  if ((m_stc->is_visual() && m_stc->GetReadOnly()) || !is_ok())
   {
     return false;
   }
@@ -919,6 +925,11 @@ bool wex::addressrange::substitute(const std::string& text, char cmd)
   {
     log::status("Replacement leads to infinite loop");
     return false;
+  }
+
+  if (!m_stc->is_visual())
+  {
+    return m_stc->get_file().ex_stream()->substitute(*this, pattern, repl);
   }
 
   if (!m_ex->marker_add('#', m_begin.get_line() - 1))

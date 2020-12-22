@@ -77,6 +77,9 @@ namespace wex
     /// Logs char according to level.
     log& operator<<(char);
 
+    /// Logs char* according to level.
+    log& operator<<(char*);
+
     /// Logs stringstream according to level.
     log& operator<<(const std::stringstream& ss);
 

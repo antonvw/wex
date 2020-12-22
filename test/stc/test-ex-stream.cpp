@@ -6,7 +6,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
+#include <wex/addressrange.h>
 #include <wex/ex-stream.h>
+#include <wex/frd.h>
 #include <wex/stc.h>
 
 TEST_CASE("wex::ex_stream")
@@ -94,5 +96,31 @@ TEST_CASE("wex::ex_stream")
     REQUIRE(exs.get_line_count_request() == 9);
     REQUIRE(exs.get_line_count() == 9);
     REQUIRE(exs.get_line_count_request() == 9);
+  }
+  
+  SUBCASE("substitute")
+  {
+    {
+      const std::string text("test1 xx\ntest2 yy\ntest3 zz\nxx test4\n\n");
+      std::fstream ifs("substitute.txt", std::ios_base::out);
+      REQUIRE(ifs.write(text.c_str(), text.size()));
+    }
+  
+    std::fstream ifs("substitute.txt");
+    REQUIRE(ifs.is_open());
+
+    wex::ex_stream exs(stc);
+    exs.stream(ifs);
+    wex::find_replace_data::get()->set_regex(false);
+    
+    wex::addressrange ar(&stc->get_ex(), "%");
+    
+    REQUIRE(exs.substitute(ar, "test", "1234"));
+//#define DEBUG 1
+#ifdef DEBUG
+    system("cat substitute.txt");
+#endif
+    
+    remove("substitute.txt");
   }
 }

@@ -109,6 +109,12 @@ wex::log& wex::log::operator<<(long long r)
   return *this;
 }
 
+wex::log& wex::log::operator<<(char* r)
+{
+  m_ss << S() << r;
+  return *this;
+}
+
 wex::log& wex::log::operator<<(const char* r)
 {
   m_ss << S() << r;

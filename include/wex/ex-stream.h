@@ -15,6 +15,7 @@
 
 namespace wex
 {
+  class addressrange;
   class stc;
 
   /// Uses a stream for ex mode processing.
@@ -33,6 +34,9 @@ namespace wex
 
     /// Destructor.
     ~ex_stream();
+
+    /// Deletes range.
+    bool erase(const addressrange& range);
 
     /// Finds line containing text and puts on stc.
     /// The text is interpreted as regex, and search is forward.
@@ -56,6 +60,12 @@ namespace wex
 
     /// Sets stream. Puts first line on stc.
     void stream(std::fstream& fs);
+
+    /// Substitutes wihtin range find by replace.
+    bool substitute(
+      const addressrange& range,
+      const std::string&  find,
+      const std::string&  replace);
 
   private:
     bool get_next_line();

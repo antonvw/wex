@@ -8,6 +8,7 @@
 #include <regex>
 #include <stdio.h>
 #include <string.h>
+#include <wex/addressrange.h>
 #include <wex/core.h>
 #include <wex/ex-stream.h>
 #include <wex/frd.h>
@@ -28,6 +29,11 @@ wex::ex_stream::~ex_stream()
   delete[] m_current_line;
 }
 
+bool wex::ex_stream::erase(const addressrange& range)
+{
+  return false;
+}
+  
 bool wex::ex_stream::find(const std::string& text)
 {
   if (m_stream == nullptr)
@@ -35,7 +41,7 @@ bool wex::ex_stream::find(const std::string& text)
     return false;
   }
 
-  log::trace("stream find") << text;
+  log::trace("ex stream find") << text;
 
   auto line_no = m_line_no;
   auto pos     = m_stream->tellg();
@@ -66,7 +72,7 @@ bool wex::ex_stream::find(const std::string& text)
   }
   else
   {
-    log::trace("stream found") << text << m_line_no;
+    log::trace("ex stream found") << text << m_line_no;
     m_context = m_current_line;
     set_text();
   }
@@ -131,7 +137,7 @@ void wex::ex_stream::goto_line(int no)
     return;
   }
 
-  log::trace("stream goto_line") << no << m_line_no;
+  log::trace("ex stream goto_line") << no << m_line_no;
 
   if (no < m_line_no)
   {
@@ -139,7 +145,7 @@ void wex::ex_stream::goto_line(int no)
     m_line_no = -1;
     m_stream->clear();
     m_stream->seekg(0);
-    log::trace("stream reset");
+    log::trace("ex stream reset");
     m_context.clear();
 
     while ((m_line_no < no) && get_next_line())
@@ -157,41 +163,35 @@ void wex::ex_stream::goto_line(int no)
   set_text();
 }
 
-bool wex::ex_stream::insert_text(
-  int line, 
-  const std::string& text,
-  loc_t loc)
+bool wex::ex_stream::insert_text(int line, const std::string& text, loc_t loc)
 {
   if (m_stream == nullptr)
   {
     return false;
   }
-  
-  const auto pos = m_stream->tellg();
 
   m_stream->seekg(0);
-  m_stream->seekp(0);
-  
+
   char tmp_filename[L_tmpnam];
   tmpnam(tmp_filename);
-  
+
   {
     std::fstream tfs(tmp_filename, std::ios_base::out);
 
     char c;
-    int current = 0;
-    bool done = false;
-    
+    int  current = 0;
+    bool done    = false;
+
     if (line == 0 && loc == INSERT_BEFORE)
     {
       if (!tfs.write(text.c_str(), text.size()))
       {
         return false;
       }
-  
+
       done = true;
-    }      
-    
+    }
+
     while (m_stream->get(c))
     {
       if (c != '\n')
@@ -201,18 +201,18 @@ bool wex::ex_stream::insert_text(
           return false;
         }
       }
-      else 
+      else
       {
         if (current++ == line && !done)
         {
           switch (loc)
           {
-            case INSERT_AFTER: 
+            case INSERT_AFTER:
               tfs.put(c);
               tfs.write(text.c_str(), text.size());
               break;
 
-            case INSERT_BEFORE: 
+            case INSERT_BEFORE:
               tfs.write(text.c_str(), text.size());
               tfs.put(c);
               break;
@@ -225,19 +225,18 @@ bool wex::ex_stream::insert_text(
         }
       }
     }
-  }  
-  
+  }
+
   m_stream->clear();
   m_stream->seekg(0);
-  
+
   std::fstream tfs(tmp_filename);
   *m_stream << tfs.rdbuf();
 
   std::remove(tmp_filename);
 
-  m_stream->clear();
-  m_stream->seekg(pos);
-  
+  goto_line(line);
+
   return true;
 }
 
@@ -267,4 +266,101 @@ void wex::ex_stream::stream(std::fstream& fs)
   m_stream = &fs;
 
   goto_line(0);
+}
+
+bool wex::ex_stream::substitute(
+  const addressrange& range,
+  const std::string&  find,
+  const std::string&  replace)
+{
+  if (m_stream == nullptr)
+  {
+    return false;
+  }
+
+  log::trace("ex stream substitute")
+    << range.get_begin().get_line() << range.get_end().get_line() << find
+    << replace;
+
+  m_stream->seekg(0);
+
+  char tmp_filename[L_tmpnam];
+  tmpnam(tmp_filename);
+  int nr_replacements = 0;
+
+  {
+    std::fstream tfs(tmp_filename, std::ios_base::out);
+    int  current = 0, i = 0;
+    const std::regex r(find);
+    const bool       use_regex(find_replace_data::get()->is_regex());
+    char* pch;
+    char c;
+    std::smatch m;
+
+    while (m_stream->get(c))
+    {
+      m_current_line[i++] = c;
+      
+      if (c == '\n')
+      {
+        if (current >= range.get_begin().get_line() -1 &&
+            current <= range.get_end().get_line() -1)
+        {
+          if (use_regex)
+          { 
+            std::string text(m_current_line, i); 
+            
+            if (std::regex_search(text, m, r))
+            {
+              text = std::regex_replace(text, r, replace);
+              nr_replacements++;
+            }
+            
+            tfs.write(text.c_str(), text.size());
+          }
+          else if ((pch = strstr(m_current_line, find.c_str())) != nullptr)
+          {
+            strncpy(pch, replace.c_str(), replace.size());
+
+            if (!tfs.write(m_current_line, strlen(m_current_line)))
+            {
+              log("ex stream substitute") << "line" << m_current_line;
+              return false;
+            }
+
+            nr_replacements++;
+          }
+          else
+          {
+            tfs.write(m_current_line, i);
+          }
+        }
+        else
+        {
+          tfs.write(m_current_line, i);
+        }
+        
+        i = 0;
+        current++;
+      }
+    }
+  }
+    
+  m_stream->clear();
+  m_stream->seekg(0);
+
+  std::fstream tfs(tmp_filename);
+  *m_stream << tfs.rdbuf();
+
+  std::remove(tmp_filename);
+
+  log::trace("ex stream substitute") << nr_replacements;
+  
+  m_stc->get_frame()->show_ex_message(
+    "Replaced: " + std::to_string(nr_replacements) +
+    " occurrences of: " + find);
+  
+  goto_line(0);
+
+  return true;
 }
