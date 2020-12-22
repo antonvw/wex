@@ -11,6 +11,8 @@
 #include <wex/frd.h>
 #include <wex/stc.h>
 
+//#define DEBUG 1
+
 TEST_CASE("wex::ex_stream")
 {
   auto* stc = get_stc();
@@ -30,7 +32,7 @@ TEST_CASE("wex::ex_stream")
 
   SUBCASE("stream")
   {
-    std::fstream ifs("test.md");
+    wex::file ifs("test.md", std::ios_base::in);
     REQUIRE(ifs.is_open());
 
     wex::ex_stream exs(stc);
@@ -45,9 +47,37 @@ TEST_CASE("wex::ex_stream")
     REQUIRE(exs.get_current_line() == 4);
   }
 
+  SUBCASE("erase")
+  {
+    {
+      const std::string text("test1\ntest2\ntest3\ntest4\n\n");
+      std::fstream ifs("erase.txt", std::ios_base::out);
+      REQUIRE(ifs.write(text.c_str(), text.size()));
+    }
+  
+    {
+      wex::file ifs("erase.txt", std::ios_base::in | std::ios_base::out);
+      REQUIRE(ifs.is_open());
+
+      wex::ex_stream exs(stc);
+      exs.stream(ifs);
+      
+      wex::addressrange ar(&stc->get_ex(), "1,2");
+      
+      REQUIRE(exs.erase(ar));
+      REQUIRE(exs.get_line_count_request() == 4);
+    }
+
+#ifdef DEBUG
+    system("cat erase.txt");
+#endif
+
+    remove("erase.txt");
+  }
+  
   SUBCASE("find")
   {
-    std::fstream ifs("test.md");
+    wex::file ifs("test.md", std::ios_base::in);
     REQUIRE(ifs.is_open());
 
     wex::ex_stream exs(stc);
@@ -69,7 +99,7 @@ TEST_CASE("wex::ex_stream")
       REQUIRE(ifs.write(text.c_str(), text.size()));
     }
   
-    std::fstream ifs("insert.txt");
+    wex::file ifs("insert.txt", std::ios_base::out);
     REQUIRE(ifs.is_open());
 
     wex::ex_stream exs(stc);
@@ -77,7 +107,7 @@ TEST_CASE("wex::ex_stream")
     
     REQUIRE(exs.insert_text(0, "TEXT_BEFORE"));
     REQUIRE(exs.insert_text(3, "TEXT_AFTER", wex::ex_stream::INSERT_AFTER));
-//#define DEBUG 1
+
 #ifdef DEBUG
     system("cat insert.txt");
 #endif
@@ -87,7 +117,7 @@ TEST_CASE("wex::ex_stream")
   
   SUBCASE("request")
   {
-    std::fstream ifs("test.md");
+    wex::file ifs("test.md", std::ios_base::in);
     REQUIRE(ifs.is_open());
 
     wex::ex_stream exs(stc);
@@ -106,7 +136,7 @@ TEST_CASE("wex::ex_stream")
       REQUIRE(ifs.write(text.c_str(), text.size()));
     }
   
-    std::fstream ifs("substitute.txt");
+    wex::file ifs("substitute.txt", std::ios_base::in);
     REQUIRE(ifs.is_open());
 
     wex::ex_stream exs(stc);
@@ -116,7 +146,7 @@ TEST_CASE("wex::ex_stream")
     wex::addressrange ar(&stc->get_ex(), "%");
     
     REQUIRE(exs.substitute(ar, "test", "1234"));
-//#define DEBUG 1
+
 #ifdef DEBUG
     system("cat substitute.txt");
 #endif

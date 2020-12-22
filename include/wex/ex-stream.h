@@ -16,6 +16,7 @@
 namespace wex
 {
   class addressrange;
+  class file;
   class stc;
 
   /// Uses a stream for ex mode processing.
@@ -59,7 +60,7 @@ namespace wex
     insert_text(int line, const std::string& text, loc_t loc = INSERT_BEFORE);
 
     /// Sets stream. Puts first line on stc.
-    void stream(std::fstream& fs);
+    void stream(file& f);
 
     /// Substitutes wihtin range find by replace.
     bool substitute(
@@ -75,6 +76,7 @@ namespace wex
     const int m_context_size, m_line_size;
 
     std::fstream* m_stream{nullptr};
+    file*         m_file;
 
     int m_line_no{LINE_COUNT_UNKNOWN}, m_last_line_no{LINE_COUNT_UNKNOWN};
 

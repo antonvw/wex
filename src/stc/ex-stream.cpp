@@ -31,8 +31,67 @@ wex::ex_stream::~ex_stream()
 
 bool wex::ex_stream::erase(const addressrange& range)
 {
-  return false;
+  if (m_stream == nullptr)
+  {
+    return false;
+  }
+
+  log::trace("ex stream erase")
+    << range.get_begin().get_line() << range.get_end().get_line();
+
+  m_stream->seekg(0);
+
+  char tmp_filename[L_tmpnam];
+  tmpnam(tmp_filename);
+  int nr_deletes = 0, current = 0;
+
+  {
+    std::fstream tfs(tmp_filename, std::ios_base::out);
+    int  i = 0;
+    char c;
+
+    while (m_stream->get(c))
+    {
+      m_current_line[i++] = c;
+      
+      if (c == '\n')
+      {
+        if (current >= range.get_begin().get_line() - 1 &&
+            current <= range.get_end().get_line() - 1)
+        {
+          nr_deletes++;
+        }
+        else
+        {
+          tfs.write(m_current_line, i);
+        }
+        
+        i = 0;
+        current++;
+      }
+    }
+  }
+  
+  m_last_line_no = current - nr_deletes;
+
+  m_file->close();
+  m_file->open(std::ios_base::out);
+  std::fstream tfs(tmp_filename);
+  *m_stream << tfs.rdbuf();
+  m_file->close();
+  std::remove(tmp_filename);
+
+  log::trace("ex stream deletes") << nr_deletes;
+  
+  m_stc->get_frame()->show_ex_message(
+    std::to_string(nr_deletes) +     " fewer lines");
+  
+  m_file->open();
+  goto_line(0);
+
+  return true;
 }
+
   
 bool wex::ex_stream::find(const std::string& text)
 {
@@ -227,14 +286,14 @@ bool wex::ex_stream::insert_text(int line, const std::string& text, loc_t loc)
     }
   }
 
-  m_stream->clear();
-  m_stream->seekg(0);
-
+  m_file->close();
+  m_file->open(std::ios_base::out);
   std::fstream tfs(tmp_filename);
   *m_stream << tfs.rdbuf();
-
+  m_file->close();
   std::remove(tmp_filename);
-
+  
+  m_file->open();
   goto_line(line);
 
   return true;
@@ -261,9 +320,11 @@ void wex::ex_stream::set_text()
   m_stc->use_modification_markers(false);
 }
 
-void wex::ex_stream::stream(std::fstream& fs)
+void wex::ex_stream::stream(file& f)
 {
-  m_stream = &fs;
+  m_file = &f;
+  m_stream = &f.stream();
+  f.use_stream();
 
   goto_line(0);
 }
@@ -346,20 +407,20 @@ bool wex::ex_stream::substitute(
     }
   }
     
-  m_stream->clear();
-  m_stream->seekg(0);
-
+  m_file->close();
+  m_file->open(std::ios_base::out);
   std::fstream tfs(tmp_filename);
   *m_stream << tfs.rdbuf();
-
+  m_file->close();
   std::remove(tmp_filename);
-
+  
   log::trace("ex stream substitute") << nr_replacements;
   
   m_stc->get_frame()->show_ex_message(
     "Replaced: " + std::to_string(nr_replacements) +
     " occurrences of: " + find);
-  
+
+  m_file->open();
   goto_line(0);
 
   return true;

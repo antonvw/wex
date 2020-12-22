@@ -309,7 +309,7 @@ bool wex::addressrange::copy(const wex::address& destination) const
 
 bool wex::addressrange::erase() const
 {
-  if (m_stc->is_visual())
+  if (!m_stc->is_visual())
   {
     return m_stc->get_file().ex_stream()->erase(*this);
   }

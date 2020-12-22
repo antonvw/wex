@@ -1,6 +1,8 @@
 # roadmap
 - scroll bar is not reenabled after :vi
 - without theme no indicator line in ex mode
+- light theme should not contain face for blame
+- when clicking back from blame margin in normal margin, the blame search is still active
 - the stc-core should be transformed into text_control
 - wxDateTime replace by c++20 methods date and time utilities
 - process-imp should be in core
