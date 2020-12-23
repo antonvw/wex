@@ -43,6 +43,9 @@ namespace wex
     /// Returns path.
     auto& path() { return m_path; };
 
+    // Puts char.
+    void put(char c) { m_fs.put(c); };
+
     /// Reads from file into string.
     const std::string* read(std::streampos seek_position);
 

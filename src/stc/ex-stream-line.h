@@ -44,10 +44,10 @@ namespace wex
     int lines() const { return m_line; };
 
   private:
-    file*               m_file;
-    action_t            m_action;
-    int                 m_actions = 0, m_line = 0;
+    const action_t      m_action;
     const addressrange& m_range;
     const std::string   m_find, m_replace;
+    file*               m_file;
+    int                 m_actions = 0, m_line = 0;
   };
 }; // namespace wex

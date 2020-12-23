@@ -269,10 +269,7 @@ bool wex::ex_stream::insert_text(int line, const std::string& text, loc_t loc)
   {
     if (c != '\n')
     {
-      if (!m_work->stream().put(c))
-      {
-        return false;
-      }
+      m_work->put(c);
     }
     else
     {
@@ -281,20 +278,20 @@ bool wex::ex_stream::insert_text(int line, const std::string& text, loc_t loc)
         switch (loc)
         {
           case INSERT_AFTER:
-            m_work->stream().put(c);
+            m_work->put(c);
             m_work->write(text.c_str(), text.size());
             break;
 
           case INSERT_BEFORE:
             m_work->write(text.c_str(), text.size());
-            m_work->stream().put(c);
+            m_work->put(c);
             break;
         }
         done = true;
       }
       else
       {
-        m_work->stream().put(c);
+        m_work->put(c);
       }
     }
   }

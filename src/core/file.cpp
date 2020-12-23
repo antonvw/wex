@@ -211,6 +211,11 @@ bool wex::file::open(const path& p, std::ios_base::openmode mode)
   return m_file->open(p, mode);
 }
 
+void wex::file::put(char c)
+{
+  m_file->put(c);
+}
+
 const std::string* wex::file::read(std::streampos seek_position)
 {
   return m_file->read(seek_position);

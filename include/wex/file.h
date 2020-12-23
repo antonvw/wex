@@ -81,6 +81,9 @@ namespace wex
     /// Opens specified path.
     bool open(const path& p, std::ios_base::openmode mode = std::ios_base::in);
 
+    /// Writes char.
+    void put(char c);
+
     /// Reads this file into a buffer.
     const std::string* read(std::streampos seek_position = 0);
 
