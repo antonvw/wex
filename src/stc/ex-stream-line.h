@@ -48,6 +48,6 @@ namespace wex
     action_t            m_action;
     int                 m_actions = 0, m_line = 0;
     const addressrange& m_range;
-    std::string         m_find, m_replace;
+    const std::string   m_find, m_replace;
   };
 }; // namespace wex

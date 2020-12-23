@@ -27,13 +27,13 @@ namespace wex
       log("ex stream copy") << from->stream().bad() << to->stream().bad();
       return false;
     }
-  
+
     to->close();
     to->open(std::ios_base::out);
 
     from->close();
     from->open(std::ios_base::in);
-    
+
     to->stream() << from->stream().rdbuf();
 
     to->close();
@@ -42,17 +42,17 @@ namespace wex
     from->close();
     std::remove(from->get_filename().string().c_str());
     from->open(std::ios_base::out);
-  
+
     return true;
   };
-  
+
   const std::string tmp_filename()
   {
     char _tmp_filename[L_tmpnam];
     tmpnam(_tmp_filename);
     return std::string(_tmp_filename);
   }
-};
+}; // namespace wex
 
 wex::ex_stream::ex_stream(wex::stc* stc)
   : m_context_size(500)
@@ -81,39 +81,38 @@ bool wex::ex_stream::erase(const addressrange& range)
   m_stream->seekg(0);
 
   ex_stream_line sl(ex_stream_line::ACTION_ERASE, range, m_work);
-  int i = 0;
-  char c;
+  int            i = 0;
+  char           c;
 
   while (m_stream->get(c))
   {
     m_current_line[i++] = c;
-    
+
     if (c == '\n')
     {
       sl.handle(m_current_line, i);
     }
   }
-  
+
   sl.handle(m_current_line, i);
-  
+
   m_last_line_no = sl.lines() - sl.actions();
-  
+
   if (!copy(m_work, m_file))
   {
     return false;
   }
 
-  log::trace("ex stream deletes") << sl.actions();
-  
+  log::trace("ex stream erase") << sl.actions();
+
   m_stc->get_frame()->show_ex_message(
-    std::to_string(sl.actions()) +     " fewer lines");
-  
+    std::to_string(sl.actions()) + " fewer lines");
+
   goto_line(0);
 
   return true;
 }
 
-  
 bool wex::ex_stream::find(const std::string& text)
 {
   if (m_stream == nullptr)
@@ -304,7 +303,7 @@ bool wex::ex_stream::insert_text(int line, const std::string& text, loc_t loc)
   {
     return false;
   }
-  
+
   goto_line(line);
 
   return true;
@@ -323,33 +322,33 @@ bool wex::ex_stream::join(const addressrange& range)
   m_stream->seekg(0);
 
   ex_stream_line sl(ex_stream_line::ACTION_JOIN, range, m_work);
-  char c;
-  int i = 0;
+  char           c;
+  int            i = 0;
 
   while (m_stream->get(c))
   {
     m_current_line[i++] = c;
-    
+
     if (c == '\n')
     {
-      sl.handle(m_current_line , i);
+      sl.handle(m_current_line, i);
     }
   }
-  
+
   sl.handle(m_current_line, i);
-  
+
   m_last_line_no = sl.lines() - sl.actions();
-  
+
   if (!copy(m_work, m_file))
   {
     return false;
   }
 
   log::trace("ex stream joins") << sl.actions();
-  
+
   m_stc->get_frame()->show_ex_message(
-    std::to_string(sl.actions()) +     " fewer lines");
-  
+    std::to_string(sl.actions()) + " fewer lines");
+
   goto_line(0);
 
   return true;
@@ -382,11 +381,11 @@ void wex::ex_stream::stream(file& f)
   {
     return;
   }
-  
-  m_file = &f;
+
+  m_file   = &f;
   m_stream = &f.stream();
   f.use_stream();
-  
+
   m_work = new file(tmp_filename(), std::ios_base::out);
   m_work->use_stream();
 
@@ -409,32 +408,31 @@ bool wex::ex_stream::substitute(
 
   m_stream->seekg(0);
 
-  char c;
-  int  i = 0;
+  char           c;
+  int            i = 0;
   ex_stream_line sl(range, m_work, find, replace);
 
   while (m_stream->get(c))
   {
     m_current_line[i++] = c;
-    
+
     if (c == '\n')
     {
       sl.handle(m_current_line, i);
     }
   }
-  
+
   sl.handle(m_current_line, i);
-    
+
   if (!copy(m_work, m_file))
   {
     return false;
   }
-  
+
   log::trace("ex stream substitute") << sl.actions();
-  
+
   m_stc->get_frame()->show_ex_message(
-    "Replaced: " + std::to_string(sl.actions()) +
-    " occurrences of: " + find);
+    "Replaced: " + std::to_string(sl.actions()) + " occurrences of: " + find);
 
   goto_line(0);
 

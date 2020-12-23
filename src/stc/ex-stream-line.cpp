@@ -16,71 +16,78 @@
 #include "ex-stream-line.h"
 
 wex::ex_stream_line::ex_stream_line(
-  action_t type, const addressrange& range, file* work)
+  action_t            type,
+  const addressrange& range,
+  file*               work)
   : m_action(type)
   , m_range(range)
-  , m_file(work) 
+  , m_file(work)
 {
 }
 
 wex::ex_stream_line::ex_stream_line(
-  const addressrange& range, 
-  file* work, 
-  const std::string& find,
-  const std::string& replace)
+  const addressrange& range,
+  file*               work,
+  const std::string&  find,
+  const std::string&  replace)
   : m_action(ACTION_SUBSTITUTE)
   , m_range(range)
   , m_file(work)
   , m_find(find)
-  , m_replace(replace) 
+  , m_replace(replace)
 {
 }
 
 void wex::ex_stream_line::handle(char* line, int& pos)
 {
-  if (m_line >= m_range.get_begin().get_line() - 1 &&
-      m_line <= m_range.get_end().get_line() - 1)
+  if (
+    m_line >= m_range.get_begin().get_line() - 1 &&
+    m_line <= m_range.get_end().get_line() - 1)
   {
     switch (m_action)
     {
-      case ACTION_ERASE: 
+      case ACTION_ERASE:
+        // skip this line: no write at all
         m_actions++;
         break;
-      
-      case ACTION_JOIN: 
+
+      case ACTION_JOIN:
+        // join: do not write last char, that is \n
+        m_actions++;
+        m_file->write(line, pos - 1);
         break;
-      
+
       case ACTION_SUBSTITUTE:
       {
+        // if match writes modified line, else write original line
         const std::regex r(m_find);
-        char* pch;
-        std::smatch m;
-        
+        char*            pch;
+        std::smatch      m;
+
         if (find_replace_data::get()->is_regex())
-        { 
-          std::string text(line, pos); 
-          
+        {
+          std::string text(line, pos);
+
           if (std::regex_search(text, m, r))
           {
             text = std::regex_replace(text, r, m_replace);
             m_actions++;
           }
-          
+
           m_file->write(text.c_str(), text.size());
         }
         else if ((pch = strstr(line, m_find.c_str())) != nullptr)
         {
           strncpy(pch, m_replace.c_str(), m_replace.size());
-
-          if (!m_file->write(line, strlen(line)))
-          {
-            log("ex stream substitute") << "line" << line;
-            return;
-          }
-
+          m_file->write(line, pos - m_find.size() + m_replace.size());
           m_actions++;
         }
+        else
+        {
+          m_file->write(line, pos);
+        }
       }
+
       break;
     }
   }
@@ -88,7 +95,7 @@ void wex::ex_stream_line::handle(char* line, int& pos)
   {
     m_file->write(line, pos);
   }
-  
-  m_line++;
+
   pos = 0;
+  m_line++;
 }

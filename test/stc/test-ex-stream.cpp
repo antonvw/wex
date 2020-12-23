@@ -16,6 +16,7 @@
 TEST_CASE("wex::ex_stream")
 {
   auto* stc = get_stc();
+  stc->visual(false);
 
   SUBCASE("constructor")
   {
@@ -65,7 +66,7 @@ TEST_CASE("wex::ex_stream")
       wex::addressrange ar(&stc->get_ex(), "1,2");
       
       REQUIRE(exs.erase(ar));
-      REQUIRE(exs.get_line_count_request() == 4);
+      REQUIRE(exs.get_line_count_request() == 3);
     }
 
 #ifdef DEBUG
@@ -115,6 +116,34 @@ TEST_CASE("wex::ex_stream")
     remove("insert.txt");
   }
   
+  SUBCASE("join")
+  {
+    {
+      const std::string text("test1\ntest2\ntest3\ntest4\n\n");
+      std::fstream ifs("join.txt", std::ios_base::out);
+      REQUIRE(ifs.write(text.c_str(), text.size()));
+    }
+  
+    {
+      wex::file ifs("join.txt", std::ios_base::in | std::ios_base::out);
+      REQUIRE(ifs.is_open());
+
+      wex::ex_stream exs(stc);
+      exs.stream(ifs);
+      
+      wex::addressrange ar(&stc->get_ex(), "%");
+      
+      REQUIRE(exs.join(ar));
+      REQUIRE(exs.get_line_count_request() == 4);
+    }
+
+#ifdef DEBUG
+    system("cat join.txt");
+#endif
+
+    remove("join.txt");
+  }
+
   SUBCASE("request")
   {
     wex::file ifs("test.md", std::ios_base::in);

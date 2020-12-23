@@ -569,6 +569,11 @@ bool wex::addressrange::is_ok() const
 
 bool wex::addressrange::join() const
 {
+  if (!m_stc->is_visual())
+  {
+    return m_stc->get_file().ex_stream()->join(*this);
+  }
+
   if (m_stc->GetReadOnly() || m_stc->is_hexmode() || !is_ok())
   {
     return false;
