@@ -10,8 +10,6 @@
 #include <string.h>
 #include <wex/addressrange.h>
 #include <wex/frd.h>
-#include <wex/log.h>
-#include <wex/stc.h>
 
 #include "ex-stream-line.h"
 
@@ -89,6 +87,10 @@ void wex::ex_stream_line::handle(char* line, int& pos)
       }
 
       break;
+
+      default:
+        assert(0);
+        break;
     }
   }
   else

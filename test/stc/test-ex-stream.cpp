@@ -15,6 +15,7 @@
 
 TEST_CASE("wex::ex_stream")
 {
+  const std::string text("test1\ntest2\ntest3\ntest4\n\n");
   auto* stc = get_stc();
   stc->visual(false);
 
@@ -51,13 +52,12 @@ TEST_CASE("wex::ex_stream")
   SUBCASE("erase")
   {
     {
-      const std::string text("test1\ntest2\ntest3\ntest4\n\n");
-      std::fstream ifs("erase.txt", std::ios_base::out);
+      std::fstream ifs("ex-mode.txt", std::ios_base::out);
       REQUIRE(ifs.write(text.c_str(), text.size()));
     }
   
     {
-      wex::file ifs("erase.txt", std::ios_base::in | std::ios_base::out);
+      wex::file ifs("ex-mode.txt", std::ios_base::in | std::ios_base::out);
       REQUIRE(ifs.is_open());
 
       wex::ex_stream exs(stc);
@@ -68,12 +68,6 @@ TEST_CASE("wex::ex_stream")
       REQUIRE(exs.erase(ar));
       REQUIRE(exs.get_line_count_request() == 3);
     }
-
-#ifdef DEBUG
-    system("cat erase.txt");
-#endif
-
-    remove("erase.txt");
   }
   
   SUBCASE("find")
@@ -95,12 +89,11 @@ TEST_CASE("wex::ex_stream")
   SUBCASE("insert")
   {
     {
-      const std::string text("test1\ntest2\ntest3\ntest4\n\n");
-      std::fstream ifs("insert.txt", std::ios_base::out);
+      std::fstream ifs("ex-mode.txt", std::ios_base::out);
       REQUIRE(ifs.write(text.c_str(), text.size()));
     }
   
-    wex::file ifs("insert.txt", std::ios_base::out);
+    wex::file ifs("ex-mode.txt", std::ios_base::out);
     REQUIRE(ifs.is_open());
 
     wex::ex_stream exs(stc);
@@ -108,24 +101,17 @@ TEST_CASE("wex::ex_stream")
     
     REQUIRE(exs.insert_text(0, "TEXT_BEFORE"));
     REQUIRE(exs.insert_text(3, "TEXT_AFTER", wex::ex_stream::INSERT_AFTER));
-
-#ifdef DEBUG
-    system("cat insert.txt");
-#endif
-    
-    remove("insert.txt");
   }
   
   SUBCASE("join")
   {
     {
-      const std::string text("test1\ntest2\ntest3\ntest4\n\n");
-      std::fstream ifs("join.txt", std::ios_base::out);
+      std::fstream ifs("ex-mode.txt", std::ios_base::out);
       REQUIRE(ifs.write(text.c_str(), text.size()));
     }
   
     {
-      wex::file ifs("join.txt", std::ios_base::in | std::ios_base::out);
+      wex::file ifs("ex-mode.txt", std::ios_base::in | std::ios_base::out);
       REQUIRE(ifs.is_open());
 
       wex::ex_stream exs(stc);
@@ -136,12 +122,6 @@ TEST_CASE("wex::ex_stream")
       REQUIRE(exs.join(ar));
       REQUIRE(exs.get_line_count_request() == 4);
     }
-
-#ifdef DEBUG
-    system("cat join.txt");
-#endif
-
-    remove("join.txt");
   }
 
   SUBCASE("request")
@@ -160,12 +140,11 @@ TEST_CASE("wex::ex_stream")
   SUBCASE("substitute")
   {
     {
-      const std::string text("test1 xx\ntest2 yy\ntest3 zz\nxx test4\n\n");
-      std::fstream ifs("substitute.txt", std::ios_base::out);
+      std::fstream ifs("ex-mode.txt", std::ios_base::out);
       REQUIRE(ifs.write(text.c_str(), text.size()));
     }
   
-    wex::file ifs("substitute.txt", std::ios_base::in);
+    wex::file ifs("ex-mode.txt", std::ios_base::in);
     REQUIRE(ifs.is_open());
 
     wex::ex_stream exs(stc);
@@ -175,11 +154,13 @@ TEST_CASE("wex::ex_stream")
     wex::addressrange ar(&stc->get_ex(), "%");
     
     REQUIRE(exs.substitute(ar, "test", "1234"));
+  }
 
 #ifdef DEBUG
-    system("cat substitute.txt");
+  system("cat ex-mode.txt");
 #endif
-    
-    remove("substitute.txt");
-  }
+
+  remove("ex-mode.txt");
+  
+  stc->visual(true);
 }
