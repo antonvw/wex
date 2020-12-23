@@ -8,7 +8,7 @@
 - process-imp should be in core
 - prepare_output at one place in test
 - use :1 bit for several bools
-  
+
 ## backlog
 - allow dynamic libs
 - invest use wxTextCompleter
@@ -17,4 +17,3 @@
 - use spaceship operator
   and modules
 - use abstract factory design pattern
-#

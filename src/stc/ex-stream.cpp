@@ -16,6 +16,44 @@
 #include <wex/managed-frame.h>
 #include <wex/stc.h>
 
+#include "ex-stream-line.h"
+
+namespace wex
+{
+  bool copy(file* from, file* to)
+  {
+    if (from->stream().bad() || to->stream().bad())
+    {
+      log("ex stream copy") << from->stream().bad() << to->stream().bad();
+      return false;
+    }
+  
+    to->close();
+    to->open(std::ios_base::out);
+
+    from->close();
+    from->open(std::ios_base::in);
+    
+    to->stream() << from->stream().rdbuf();
+
+    to->close();
+    to->open();
+
+    from->close();
+    std::remove(from->get_filename().string().c_str());
+    from->open(std::ios_base::out);
+  
+    return true;
+  };
+  
+  const std::string tmp_filename()
+  {
+    char _tmp_filename[L_tmpnam];
+    tmpnam(_tmp_filename);
+    return std::string(_tmp_filename);
+  }
+};
+
 wex::ex_stream::ex_stream(wex::stc* stc)
   : m_context_size(500)
   , m_line_size(500)
@@ -27,6 +65,7 @@ wex::ex_stream::ex_stream(wex::stc* stc)
 wex::ex_stream::~ex_stream()
 {
   delete[] m_current_line;
+  delete m_work;
 }
 
 bool wex::ex_stream::erase(const addressrange& range)
@@ -41,52 +80,34 @@ bool wex::ex_stream::erase(const addressrange& range)
 
   m_stream->seekg(0);
 
-  char tmp_filename[L_tmpnam];
-  tmpnam(tmp_filename);
-  int nr_deletes = 0, current = 0;
+  ex_stream_line sl(ex_stream_line::ACTION_ERASE, range, m_work);
+  int i = 0;
+  char c;
 
+  while (m_stream->get(c))
   {
-    std::fstream tfs(tmp_filename, std::ios_base::out);
-    int  i = 0;
-    char c;
-
-    while (m_stream->get(c))
+    m_current_line[i++] = c;
+    
+    if (c == '\n')
     {
-      m_current_line[i++] = c;
-      
-      if (c == '\n')
-      {
-        if (current >= range.get_begin().get_line() - 1 &&
-            current <= range.get_end().get_line() - 1)
-        {
-          nr_deletes++;
-        }
-        else
-        {
-          tfs.write(m_current_line, i);
-        }
-        
-        i = 0;
-        current++;
-      }
+      sl.handle(m_current_line, i);
     }
   }
   
-  m_last_line_no = current - nr_deletes;
+  sl.handle(m_current_line, i);
+  
+  m_last_line_no = sl.lines() - sl.actions();
+  
+  if (!copy(m_work, m_file))
+  {
+    return false;
+  }
 
-  m_file->close();
-  m_file->open(std::ios_base::out);
-  std::fstream tfs(tmp_filename);
-  *m_stream << tfs.rdbuf();
-  m_file->close();
-  std::remove(tmp_filename);
-
-  log::trace("ex stream deletes") << nr_deletes;
+  log::trace("ex stream deletes") << sl.actions();
   
   m_stc->get_frame()->show_ex_message(
-    std::to_string(nr_deletes) +     " fewer lines");
+    std::to_string(sl.actions()) +     " fewer lines");
   
-  m_file->open();
   goto_line(0);
 
   return true;
@@ -231,70 +252,105 @@ bool wex::ex_stream::insert_text(int line, const std::string& text, loc_t loc)
 
   m_stream->seekg(0);
 
-  char tmp_filename[L_tmpnam];
-  tmpnam(tmp_filename);
+  char c;
+  int  current = 0;
+  bool done    = false;
 
+  if (line == 0 && loc == INSERT_BEFORE)
   {
-    std::fstream tfs(tmp_filename, std::ios_base::out);
-
-    char c;
-    int  current = 0;
-    bool done    = false;
-
-    if (line == 0 && loc == INSERT_BEFORE)
+    if (!m_work->write(text.c_str(), text.size()))
     {
-      if (!tfs.write(text.c_str(), text.size()))
+      return false;
+    }
+
+    done = true;
+  }
+
+  while (m_stream->get(c))
+  {
+    if (c != '\n')
+    {
+      if (!m_work->stream().put(c))
       {
         return false;
       }
-
-      done = true;
     }
-
-    while (m_stream->get(c))
+    else
     {
-      if (c != '\n')
+      if (current++ == line && !done)
       {
-        if (!tfs.put(c))
+        switch (loc)
         {
-          return false;
+          case INSERT_AFTER:
+            m_work->stream().put(c);
+            m_work->write(text.c_str(), text.size());
+            break;
+
+          case INSERT_BEFORE:
+            m_work->write(text.c_str(), text.size());
+            m_work->stream().put(c);
+            break;
         }
+        done = true;
       }
       else
       {
-        if (current++ == line && !done)
-        {
-          switch (loc)
-          {
-            case INSERT_AFTER:
-              tfs.put(c);
-              tfs.write(text.c_str(), text.size());
-              break;
-
-            case INSERT_BEFORE:
-              tfs.write(text.c_str(), text.size());
-              tfs.put(c);
-              break;
-          }
-          done = true;
-        }
-        else
-        {
-          tfs.put(c);
-        }
+        m_work->stream().put(c);
       }
     }
   }
 
-  m_file->close();
-  m_file->open(std::ios_base::out);
-  std::fstream tfs(tmp_filename);
-  *m_stream << tfs.rdbuf();
-  m_file->close();
-  std::remove(tmp_filename);
+  if (!copy(m_work, m_file))
+  {
+    return false;
+  }
   
-  m_file->open();
   goto_line(line);
+
+  return true;
+}
+
+bool wex::ex_stream::join(const addressrange& range)
+{
+  if (m_stream == nullptr)
+  {
+    return false;
+  }
+
+  log::trace("ex stream join")
+    << range.get_begin().get_line() << range.get_end().get_line();
+
+  m_stream->seekg(0);
+
+  ex_stream_line sl(ex_stream_line::ACTION_JOIN, range, m_work);
+  char c;
+  int i = 0;
+
+  while (m_stream->get(c))
+  {
+    m_current_line[i++] = c;
+    
+    if (c == '\n')
+    {
+      sl.handle(m_current_line , i);
+    }
+  }
+  
+  sl.handle(m_current_line, i);
+  
+  m_last_line_no = sl.lines() - sl.actions();
+  
+  if (!copy(m_work, m_file))
+  {
+    return false;
+  }
+
+  log::trace("ex stream joins") << sl.actions();
+  
+  m_stc->get_frame()->show_ex_message(
+    std::to_string(sl.actions()) +     " fewer lines");
+  
+  goto_line(0);
 
   return true;
 }
@@ -322,9 +378,17 @@ void wex::ex_stream::set_text()
 
 void wex::ex_stream::stream(file& f)
 {
+  if (!f.is_open())
+  {
+    return;
+  }
+  
   m_file = &f;
   m_stream = &f.stream();
   f.use_stream();
+  
+  m_work = new file(tmp_filename(), std::ios_base::out);
+  m_work->use_stream();
 
   goto_line(0);
 }
@@ -345,82 +409,33 @@ bool wex::ex_stream::substitute(
 
   m_stream->seekg(0);
 
-  char tmp_filename[L_tmpnam];
-  tmpnam(tmp_filename);
-  int nr_replacements = 0;
+  char c;
+  int  i = 0;
+  ex_stream_line sl(range, m_work, find, replace);
 
+  while (m_stream->get(c))
   {
-    std::fstream tfs(tmp_filename, std::ios_base::out);
-    int  current = 0, i = 0;
-    const std::regex r(find);
-    const bool       use_regex(find_replace_data::get()->is_regex());
-    char* pch;
-    char c;
-    std::smatch m;
-
-    while (m_stream->get(c))
+    m_current_line[i++] = c;
+    
+    if (c == '\n')
     {
-      m_current_line[i++] = c;
-      
-      if (c == '\n')
-      {
-        if (current >= range.get_begin().get_line() -1 &&
-            current <= range.get_end().get_line() -1)
-        {
-          if (use_regex)
-          { 
-            std::string text(m_current_line, i); 
-            
-            if (std::regex_search(text, m, r))
-            {
-              text = std::regex_replace(text, r, replace);
-              nr_replacements++;
-            }
-            
-            tfs.write(text.c_str(), text.size());
-          }
-          else if ((pch = strstr(m_current_line, find.c_str())) != nullptr)
-          {
-            strncpy(pch, replace.c_str(), replace.size());
-
-            if (!tfs.write(m_current_line, strlen(m_current_line)))
-            {
-              log("ex stream substitute") << "line" << m_current_line;
-              return false;
-            }
-
-            nr_replacements++;
-          }
-          else
-          {
-            tfs.write(m_current_line, i);
-          }
-        }
-        else
-        {
-          tfs.write(m_current_line, i);
-        }
-        
-        i = 0;
-        current++;
-      }
+      sl.handle(m_current_line, i);
     }
   }
-    
-  m_file->close();
-  m_file->open(std::ios_base::out);
-  std::fstream tfs(tmp_filename);
-  *m_stream << tfs.rdbuf();
-  m_file->close();
-  std::remove(tmp_filename);
   
-  log::trace("ex stream substitute") << nr_replacements;
+  sl.handle(m_current_line, i);
+    
+  if (!copy(m_work, m_file))
+  {
+    return false;
+  }
+  
+  log::trace("ex stream substitute") << sl.actions();
   
   m_stc->get_frame()->show_ex_message(
-    "Replaced: " + std::to_string(nr_replacements) +
+    "Replaced: " + std::to_string(sl.actions()) +
     " occurrences of: " + find);
 
-  m_file->open();
   goto_line(0);
 
   return true;
