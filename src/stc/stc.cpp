@@ -109,7 +109,7 @@ wex::stc::stc(const path& p, const data::stc& data)
     m_data.inject();
   }
 
-  visual(!data.flags().test(data::stc::WIN_EX));
+  visual(m_visual);
 }
 
 wex::stc::stc(const std::string& text, const data::stc& data)
@@ -1100,7 +1100,7 @@ bool wex::stc::vi_command(const std::string& command)
 
 void wex::stc::visual(bool on)
 {
-  log::info("enter visual mode") << on;
+  log::info("enter visual mode") << on << get_filename().string();
 
   m_ex->use(!on);
   m_vi->use(on);

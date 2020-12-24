@@ -28,8 +28,7 @@ namespace wex
   bool is_ex(textctrl* tc)
   {
     return tc != nullptr && tc->ex() != nullptr &&
-           tc->ex()->get_stc() != nullptr &&
-           tc->ex()->get_stc()->data().flags().test(data::stc::WIN_EX);
+           tc->ex()->get_stc() != nullptr && !tc->ex()->get_stc()->is_visual();
   }
 } // namespace wex
 

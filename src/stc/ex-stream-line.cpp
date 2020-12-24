@@ -72,7 +72,7 @@ void wex::ex_stream_line::handle(char* line, int& pos)
             m_actions++;
           }
 
-          m_file->write(text.c_str(), text.size());
+          m_file->write(text);
         }
         else if ((pch = strstr(line, m_find.c_str())) != nullptr)
         {

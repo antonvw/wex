@@ -10,6 +10,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wex/config.h>
 #include <wex/defs.h>
 #include <wex/ex-stream.h>
 #include <wex/file-dialog.h>
@@ -85,6 +86,12 @@ bool wex::stc_file::do_file_load(bool synced)
 
   m_previous_size = m_stc->get_filename().stat().st_size;
 
+  if (m_stc->get_filename().stat().st_size > 
+    config("stc.max.Size visual").get(10000000))
+  {
+    m_stc->visual(false);
+  }
+  
 #ifdef USE_THREAD
   std::thread t([&] {
 #endif

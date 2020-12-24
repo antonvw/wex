@@ -200,7 +200,7 @@ bool wex::ex_stream::get_next_line()
 {
   if (!m_stream->getline(m_current_line, m_line_size))
   {
-    log::debug("no next line") << m_line_no;
+    m_last_line_no = m_line_no + 1;
     return false;
   }
 
@@ -257,7 +257,7 @@ bool wex::ex_stream::insert_text(int line, const std::string& text, loc_t loc)
 
   if (line == 0 && loc == INSERT_BEFORE)
   {
-    if (!m_work->write(text.c_str(), text.size()))
+    if (!m_work->write(text))
     {
       return false;
     }
@@ -278,13 +278,11 @@ bool wex::ex_stream::insert_text(int line, const std::string& text, loc_t loc)
         switch (loc)
         {
           case INSERT_AFTER:
-            m_work->put(c);
-            m_work->write(text.c_str(), text.size());
+            m_work->write(c + text);
             break;
 
           case INSERT_BEFORE:
-            m_work->write(text.c_str(), text.size());
-            m_work->put(c);
+            m_work->write(text + c);
             break;
         }
         done = true;

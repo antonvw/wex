@@ -538,7 +538,7 @@ bool wex::textctrl_imp::input_mode_finish() const
 bool wex::textctrl_imp::is_ex_mode() const
 {
   return m_tc->ex() != nullptr && m_tc->ex()->get_stc() != nullptr &&
-         m_tc->ex()->get_stc()->data().flags().test(data::stc::WIN_EX);
+         !m_tc->ex()->get_stc()->is_visual();
 }
 
 void wex::textctrl_imp::set_text(const std::string& text)

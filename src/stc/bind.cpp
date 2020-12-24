@@ -645,7 +645,7 @@ void wex::stc::file_action(const wxCommandEvent& event)
     case stc_file::FILE_LOAD:
       if (
         get_lexer().scintilla_lexer().empty() &&
-        GetLength() < config("max-lines-lexer").get(10000000))
+        GetLength() < config("stc.max.Size lexer").get(10000000))
       {
         get_lexer().set(get_filename().lexer());
         config_get();
