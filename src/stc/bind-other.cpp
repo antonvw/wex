@@ -187,6 +187,7 @@ void wex::stc::bind_other()
 
   Bind(wxEVT_STC_UPDATEUI, [=, this](wxStyledTextEvent& event) {
     event.Skip();
+      
     if (event.GetUpdated() & wxSTC_UPDATE_SELECTION)
     {
       m_frame->update_statusbar(this, "PaneInfo");
