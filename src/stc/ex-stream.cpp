@@ -96,7 +96,7 @@ bool wex::ex_stream::erase(const addressrange& range)
 
   sl.handle(m_current_line, i);
 
-  m_last_line_no = sl.lines() - sl.actions();
+  m_last_line_no = sl.lines() - sl.actions() - 1;
 
   if (!copy(m_work, m_file))
   {
@@ -332,7 +332,7 @@ bool wex::ex_stream::join(const addressrange& range)
 
   sl.handle(m_current_line, i);
 
-  m_last_line_no = sl.lines() - sl.actions();
+  m_last_line_no = sl.lines() - sl.actions() - 1;
 
   if (!copy(m_work, m_file))
   {
