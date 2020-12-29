@@ -187,6 +187,7 @@ bool wex::managed_frame::allow_close(wxWindowID id, wxWindow* page)
 {
   // The page will be closed, so do not update find focus now.
   set_find_focus(nullptr);
+  m_textctrl->set_ex(nullptr, std::string());
 
   return true;
 }
@@ -224,10 +225,9 @@ void wex::managed_frame::on_notebook(wxWindowID id, wxWindow* page)
 {
   if (auto* stc = dynamic_cast<wex::stc*>(page); stc != nullptr)
   {
-    if (is_ex(m_textctrl))
-    {
-      show_ex_bar(SHOW_BAR, &stc->get_ex());
-    }
+    show_ex_bar(
+      !stc->is_visual() ? SHOW_BAR : HIDE_BAR_FOCUS_STC,
+      &stc->get_ex());
 
     set_recent_file(stc->get_filename());
 
@@ -365,16 +365,14 @@ void wex::managed_frame::set_recent_file(const path& path)
 
 void wex::managed_frame::show_ex_bar(int action, ex* ex)
 {
-  if (
-    action == SHOW_BAR || (ex != nullptr && is_ex(m_textctrl)) ||
-    (action == SHOW_BAR && ex == nullptr))
+  if (action == SHOW_BAR || ex != nullptr)
   {
     if (action >= SHOW_BAR)
     {
       m_textctrl->set_ex(ex, ":");
     }
 
-    pane_show("VIBAR", action != SHOW_BAR_SYNC_CLOSE_ALL);
+    pane_show("VIBAR", action >= SHOW_BAR);
   }
   else
   {
@@ -387,7 +385,7 @@ void wex::managed_frame::show_ex_bar(int action, ex* ex)
 
     if (
       (action == HIDE_BAR_FOCUS_STC || action == HIDE_BAR_FORCE_FOCUS_STC) &&
-      m_textctrl != nullptr && m_textctrl->ex() != nullptr &&
+      m_textctrl->ex() != nullptr &&
       m_textctrl->ex()->get_stc() != nullptr)
     {
       m_textctrl->ex()->get_stc()->SetFocus();

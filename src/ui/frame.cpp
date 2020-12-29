@@ -176,13 +176,6 @@ wex::frame::frame(const data::window& data)
       },
       ID_VIEW_STATUSBAR},
      {[=, this](wxUpdateUIEvent& event) {
-        if (auto* lv = get_listview(); lv != nullptr && lv->HasFocus())
-        {
-          update_statusbar(lv);
-        }
-      },
-      ID_UPDATE_STATUS_BAR},
-     {[=, this](wxUpdateUIEvent& event) {
         (GetMenuBar() != nullptr ? event.Check(GetMenuBar()->IsShown()) :
                                    event.Check(false));
       },

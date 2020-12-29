@@ -488,9 +488,17 @@ bool wex::textctrl_imp::handle(const std::string& command)
       break;
 
     case ex_command::type_t::FIND:
-      set_text(
-        !m_mode_visual ? m_tc->ex()->get_stc()->get_find_string() :
-                         std::string());
+      if (m_tc->ex() != nullptr)
+      {
+        set_text(
+          !m_mode_visual ? m_tc->ex()->get_stc()->get_find_string() :
+                           std::string());
+      }
+      else
+      {
+        set_text(std::string());
+      }
+
       SelectAll();
       break;
 

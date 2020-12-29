@@ -211,7 +211,7 @@ TEST_CASE("wex::stc")
 
   SUBCASE("position")
   {
-    REQUIRE(!stc->position_restore());
+    stc->position_restore();
     stc->position_save();
     REQUIRE(stc->position_restore());
   }
