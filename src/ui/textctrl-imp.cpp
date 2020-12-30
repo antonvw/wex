@@ -263,7 +263,7 @@ wex::textctrl_imp::textctrl_imp(
       m_command.type() == ex_command::type_t::FIND)
     {
       m_tc->ex()->get_stc()->position_restore();
-      m_tc->ex()->get_stc()->find_next(
+      m_tc->ex()->get_stc()->find(
         get_text(),
         m_tc->ex()->search_flags(),
         m_command.str() == "/");

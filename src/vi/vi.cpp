@@ -37,60 +37,60 @@ namespace wex
   const std::string _s(wxKeyCode key) { return std::string(1, key); }
 } // namespace wex
 
-#define MOTION(SCOPE, DIRECTION, COND, WRAP)                              \
-  {                                                                       \
-    for (auto i = 0; i < m_count; i++)                                    \
-    {                                                                     \
-      switch (m_mode.get())                                               \
-      {                                                                   \
-        case wex::vi_mode::state_t::COMMAND:                              \
-        case wex::vi_mode::state_t::INSERT:                               \
-          if (WRAP && c_strcmp((#SCOPE), "Line") == 0)                    \
-          {                                                               \
-            if (c_strcmp((#DIRECTION), "Down") == 0)                      \
-              get_stc()->LineEnd();                                       \
-            else                                                          \
-              get_stc()->Home();                                          \
-          }                                                               \
-          get_stc()->SCOPE##DIRECTION();                                  \
-          break;                                                          \
-        case wex::vi_mode::state_t::VISUAL:                               \
-          get_stc()->SCOPE##DIRECTION##Extend();                          \
-          break;                                                          \
-        case wex::vi_mode::state_t::VISUAL_LINE:                          \
-          if (                                                            \
-            c_strcmp((#SCOPE), "Char") != 0 &&                            \
-            c_strcmp((#SCOPE), "Word") != 0)                              \
-            get_stc()->SCOPE##DIRECTION##Extend();                        \
-          break;                                                          \
-        case wex::vi_mode::state_t::VISUAL_BLOCK:                         \
-          get_stc()->SCOPE##DIRECTION##RectExtend();                      \
-          break;                                                          \
-        default:                                                          \
-          break;                                                          \
-      }                                                                   \
-    }                                                                     \
-    if (c_strcmp((#SCOPE), "Line") == 0)                                  \
-    {                                                                     \
-      switch (m_mode.get())                                               \
-      {                                                                   \
-        case wex::vi_mode::state_t::COMMAND:                              \
-        case wex::vi_mode::state_t::INSERT:                               \
-          if (                                                            \
-            (COND) &&                                                     \
-            get_stc()->GetColumn(get_stc()->GetCurrentPos()) !=           \
+#define MOTION(SCOPE, DIRECTION, COND, WRAP)                                \
+  {                                                                         \
+    for (auto i = 0; i < m_count; i++)                                      \
+    {                                                                       \
+      switch (m_mode.get())                                                 \
+      {                                                                     \
+        case wex::vi_mode::state_t::COMMAND:                                \
+        case wex::vi_mode::state_t::INSERT:                                 \
+          if (WRAP && c_strcmp((#SCOPE), "Line") == 0)                      \
+          {                                                                 \
+            if (c_strcmp((#DIRECTION), "Down") == 0)                        \
+              get_stc()->LineEnd();                                         \
+            else                                                            \
+              get_stc()->Home();                                            \
+          }                                                                 \
+          get_stc()->SCOPE##DIRECTION();                                    \
+          break;                                                            \
+        case wex::vi_mode::state_t::VISUAL:                                 \
+          get_stc()->SCOPE##DIRECTION##Extend();                            \
+          break;                                                            \
+        case wex::vi_mode::state_t::VISUAL_LINE:                            \
+          if (                                                              \
+            c_strcmp((#SCOPE), "Char") != 0 &&                              \
+            c_strcmp((#SCOPE), "Word") != 0)                                \
+            get_stc()->SCOPE##DIRECTION##Extend();                          \
+          break;                                                            \
+        case wex::vi_mode::state_t::VISUAL_BLOCK:                           \
+          get_stc()->SCOPE##DIRECTION##RectExtend();                        \
+          break;                                                            \
+        default:                                                            \
+          break;                                                            \
+      }                                                                     \
+    }                                                                       \
+    if (c_strcmp((#SCOPE), "Line") == 0)                                    \
+    {                                                                       \
+      switch (m_mode.get())                                                 \
+      {                                                                     \
+        case wex::vi_mode::state_t::COMMAND:                                \
+        case wex::vi_mode::state_t::INSERT:                                 \
+          if (                                                              \
+            (COND) &&                                                       \
+            get_stc()->GetColumn(get_stc()->GetCurrentPos()) !=             \
               get_stc()->GetLineIndentation(get_stc()->get_current_line())) \
-            get_stc()->VCHome();                                          \
-          break;                                                          \
-        case wex::vi_mode::state_t::VISUAL:                               \
-          if (COND)                                                       \
-            get_stc()->VCHomeExtend();                                    \
-          break;                                                          \
-        default:                                                          \
-          break;                                                          \
-      }                                                                   \
-    }                                                                     \
-    return 1;                                                             \
+            get_stc()->VCHome();                                            \
+          break;                                                            \
+        case wex::vi_mode::state_t::VISUAL:                                 \
+          if (COND)                                                         \
+            get_stc()->VCHomeExtend();                                      \
+          break;                                                            \
+        default:                                                            \
+          break;                                                            \
+      }                                                                     \
+    }                                                                       \
+    return 1;                                                               \
   }
 
 #define REPEAT(TEXT)                   \
@@ -239,7 +239,7 @@ wex::vi::vi(wex::stc* arg)
                              else
                                d = m_last_find_char_command.front();
                          }
-                         REPEAT(if (!get_stc()->find_next(
+                         REPEAT(if (!get_stc()->find(
                                       std::string(1, c),
                                       0,
                                       islower(d) > 0)) {
@@ -265,7 +265,7 @@ wex::vi::vi(wex::stc* arg)
                                      .get(std::list<std::string>{})
                                      .front() :
                                    find_replace_data::get()->get_find_string());
-                               !get_stc()->find_next(
+                               !get_stc()->find(
                                  find,
                                  search_flags(),
                                  command == "n" == m_search_forward)) {
@@ -321,7 +321,7 @@ wex::vi::vi(wex::stc* arg)
                                return (size_t)0;
                              }
 
-                             if (!get_stc()->find_next(
+                             if (!get_stc()->find(
                                    get_macros().get_register(command[2]),
                                    search_flags(),
                                    m_search_forward))
@@ -338,7 +338,7 @@ wex::vi::vi(wex::stc* arg)
                              command.back() != '\n' ? command.substr(1) :
                                                       trim(command.substr(1)));
 
-                           if (!get_stc()->find_next(
+                           if (!get_stc()->find(
                                  text,
                                  search_flags(),
                                  m_search_forward))
@@ -379,7 +379,7 @@ wex::vi::vi(wex::stc* arg)
                       {"[]",
                        [&](const std::string& command) {
                          // related to regex ECMAScript
-                         REPEAT(if (!get_stc()->find_next(
+                         REPEAT(if (!get_stc()->find(
                                       "\\{",
                                       search_flags(),
                                       command == "]")) {
@@ -433,7 +433,7 @@ wex::vi::vi(wex::stc* arg)
                          }
                          else
                          {
-                           get_stc()->find_next(
+                           get_stc()->find(
                              "[(\\[{\\])}]",
                              wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX);
                          }
@@ -773,7 +773,7 @@ wex::vi::vi(wex::stc* arg)
            else
            {
              find_replace_data::get()->set_find_string(word);
-             get_stc()->find_next(
+             get_stc()->find(
                find_replace_data::get()->get_find_string(),
                search_flags() | wxSTC_FIND_WHOLEWORD,
                command == "*");

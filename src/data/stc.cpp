@@ -133,11 +133,11 @@ bool wex::data::stc::inject() const
       }
       else if (m_data.line() == NUMBER_NOT_SET)
       {
-        m_stc->find_next(m_data.find(), m_data.find_flags());
+        m_stc->find(m_data.find(), m_data.find_flags());
       }
       else
       {
-        m_stc->find_next(m_data.find(), m_data.find_flags(), false);
+        m_stc->find(m_data.find(), m_data.find_flags(), false);
       }
       return true;
     },

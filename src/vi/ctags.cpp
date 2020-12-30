@@ -343,7 +343,7 @@ bool wex::ctags::find(const std::string& tag, ex* ex)
     case 0:
       if (ex != nullptr)
       {
-        ex->get_stc()->find_next(tag);
+        ex->get_stc()->find(tag);
       }
       break;
 

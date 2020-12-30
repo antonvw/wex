@@ -10,8 +10,7 @@
 #include <fstream>
 #include <string>
 
-#include <wex/path.h>
-#include <wex/stc-core.h>
+#include <wex/text-window.h>
 
 namespace wex
 {
@@ -24,7 +23,7 @@ namespace wex
   /// All modifications are done in the temp file, and copied to
   /// the work file upon changing. If you ask for a write,
   /// the work file is copied to the original file.
-  class ex_stream
+  class ex_stream : public core::text_window
   {
   public:
     enum loc_t
@@ -44,19 +43,22 @@ namespace wex
 
     /// Finds line containing text and puts on stc.
     /// The text is interpreted as regex, and search is forward.
-    bool find(const std::string& text);
+    bool find(
+      const std::string& text,
+      int                find_flags = -1,
+      bool               find_next  = true) override;
 
     /// Returns current line no
     int get_current_line() const;
 
     /// Returns number of lines, or LINE_COUNT_UNKNOWN if not yet known.
-    int get_line_count() const;
+    int get_line_count() const override;
 
     /// Returns number of lines.
-    int get_line_count_request();
+    int get_line_count_request() override;
 
     /// Gets specified line, and puts on stc.
-    void goto_line(int no);
+    void goto_line(int no) override;
 
     /// Inserts text at specified line.
     bool

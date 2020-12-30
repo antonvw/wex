@@ -408,7 +408,7 @@ int wex::stc::get_fold_level()
          wxSTC_FOLDLEVELBASE;
 }
 
-int wex::stc::get_line_count()
+int wex::stc::get_line_count() const
 {
   if (!m_visual)
   {
@@ -543,9 +543,9 @@ void wex::stc::insert_text(int pos, const std::string& text)
 
 bool wex::stc::IsModified() const
 {
-  return m_visual ? GetModify(): m_file.ex_stream()->is_modified();
+  return m_visual ? GetModify() : m_file.ex_stream()->is_modified();
 }
-  
+
 bool wex::stc::link_open()
 {
   return link_open(link_t().set(LINK_OPEN).set(LINK_OPEN_MIME));
@@ -928,7 +928,7 @@ bool wex::stc::replace_next(
                                            ReplaceTarget(replace_text);
   }
 
-  find_next(find_text, find_flags);
+  find(find_text, find_flags);
 
   return true;
 }

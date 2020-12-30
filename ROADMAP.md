@@ -1,5 +1,4 @@
 # roadmap
-- the stc-core should be transformed into text_control
 - wxDateTime replace by c++20 methods date and time utilities
 - process-imp should be in core
 - prepare_output at one place in test

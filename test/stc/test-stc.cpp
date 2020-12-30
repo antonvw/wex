@@ -36,20 +36,20 @@ TEST_CASE("wex::stc")
   SUBCASE("find")
   {
     stc->set_text("hello stc and more text");
-    REQUIRE(stc->find_next(std::string("hello")));
+    REQUIRE(stc->find(std::string("hello")));
     REQUIRE(stc->get_word_at_pos(0) == "hello");
 
-    REQUIRE(!stc->find_next(std::string("%d")));
-    REQUIRE(!stc->find_next(std::string("%ld")));
-    REQUIRE(!stc->find_next(std::string("%q")));
+    REQUIRE(!stc->find(std::string("%d")));
+    REQUIRE(!stc->find(std::string("%ld")));
+    REQUIRE(!stc->find(std::string("%q")));
 
-    REQUIRE(stc->find_next(std::string("hello"), wxSTC_FIND_WHOLEWORD));
-    REQUIRE(!stc->find_next(std::string("HELLO"), wxSTC_FIND_MATCHCASE));
+    REQUIRE(stc->find(std::string("hello"), wxSTC_FIND_WHOLEWORD));
+    REQUIRE(!stc->find(std::string("HELLO"), wxSTC_FIND_MATCHCASE));
     REQUIRE((stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE) > 0);
 
     wex::find_replace_data::get()->set_regex(false);
     wex::find_replace_data::get()->set_match_case(false);
-    REQUIRE(stc->find_next(std::string("HELLO"))); // uses flags from frd
+    REQUIRE(stc->find(std::string("HELLO"))); // uses flags from frd
     REQUIRE(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
 
     REQUIRE(!stc->set_indicator(wex::indicator(4, 5), 100, 200));
@@ -63,17 +63,17 @@ TEST_CASE("wex::stc")
 
     stc->DocumentStart();
     wex::find_replace_data::get()->set_match_word(false);
-    REQUIRE(stc->find_next(std::string("more text")));
+    REQUIRE(stc->find(std::string("more text")));
     REQUIRE(stc->get_find_string() == "more text");
     REQUIRE(stc->replace_all("more", "less") == 1);
     REQUIRE(stc->replace_all("more", "less") == 0);
-    REQUIRE(!stc->find_next(std::string("more text")));
+    REQUIRE(!stc->find(std::string("more text")));
     stc->SelectNone();
     REQUIRE(!stc->find_next());
-    REQUIRE(stc->find_next(std::string("less text")));
+    REQUIRE(stc->find(std::string("less text")));
     REQUIRE(stc->replace_next("less text", ""));
     REQUIRE(!stc->replace_next());
-    REQUIRE(!stc->find_next(std::string("less text")));
+    REQUIRE(!stc->find(std::string("less text")));
     REQUIRE(stc->get_find_string() != "less text");
     REQUIRE(stc->replace_all("%", "percent") == 0);
   }

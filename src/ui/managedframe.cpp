@@ -125,7 +125,7 @@ wex::managed_frame::managed_frame(size_t maxFiles, const data::window& data)
         {
           auto it = find_replace_data::get()->get_find_strings().begin();
           std::advance(it, event.GetId() - ID_FIND_FIRST);
-          if (const std::string text(*it); stc->find_next(
+          if (const std::string text(*it); stc->find(
                 text,
                 stc->get_ex().is_active() ? stc->get_ex().search_flags() : -1))
           {
@@ -385,8 +385,7 @@ void wex::managed_frame::show_ex_bar(int action, ex* ex)
 
     if (
       (action == HIDE_BAR_FOCUS_STC || action == HIDE_BAR_FORCE_FOCUS_STC) &&
-      m_textctrl->ex() != nullptr &&
-      m_textctrl->ex()->get_stc() != nullptr)
+      m_textctrl->ex() != nullptr && m_textctrl->ex()->get_stc() != nullptr)
     {
       m_textctrl->ex()->get_stc()->SetFocus();
     }

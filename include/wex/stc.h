@@ -297,13 +297,13 @@ namespace wex
     /// Virtual methods from core.
 
     const std::string eol() const override;
-    bool              find_next(
+    bool              find(
                    const std::string& text,
                    int                find_flags = -1,
                    bool               find_next  = true) override;
     void        fold(bool fold_all = false) override;
     const path& get_filename() const override { return m_file.get_filename(); };
-    int         get_line_count() override;
+    int         get_line_count() const override;
     int         get_line_count_request() override;
     const std::string get_selected_text() const override;
     void              goto_line(int line) override;

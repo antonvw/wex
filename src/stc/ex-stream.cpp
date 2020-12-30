@@ -117,7 +117,10 @@ bool wex::ex_stream::erase(const addressrange& range)
   return true;
 }
 
-bool wex::ex_stream::find(const std::string& text)
+bool wex::ex_stream::find(
+  const std::string& text,
+  int                find_flags,
+  bool               find_next)
 {
   if (m_stream == nullptr)
   {
@@ -304,7 +307,7 @@ bool wex::ex_stream::insert_text(int line, const std::string& text, loc_t loc)
   }
 
   goto_line(line);
-  
+
   m_is_modified = true;
 
   return true;

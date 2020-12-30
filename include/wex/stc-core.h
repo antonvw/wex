@@ -8,9 +8,8 @@
 #pragma once
 
 #include <bitset>
+#include <wex/text-window.h>
 #include <wx/stc/stc.h>
-
-#define LINE_COUNT_UNKNOWN -1
 
 namespace wex
 {
@@ -20,7 +19,9 @@ namespace wex
   namespace core
   {
     /// Offers a styled text ctrl.
-    class stc : public wxStyledTextCtrl
+    class stc
+      : public wxStyledTextCtrl
+      , public text_window
     {
     public:
       /// Margin flags.
@@ -41,21 +42,6 @@ namespace wex
       /// (from wxStyledTextCtrl).
       virtual const std::string eol() const = 0;
 
-      /// Finds next.
-      virtual bool find_next(
-        /// text to find
-        const std::string& text,
-        /// search flags to be used:
-        /// - wxSTC_FIND_WHOLEWORD
-        /// - wxSTC_FIND_MATCHCASE
-        /// - wxSTC_FIND_WORDSTART
-        /// - wxSTC_FIND_REGEXP
-        /// - wxSTC_FIND_POSIX
-        /// - if -1, use flags from find replace data
-        int find_flags = -1,
-        /// finds next or previous
-        bool find_next = true) = 0;
-
       /// Enables or disables folding depending on fold property.
       virtual void fold(
         /// if document contains more than 'Auto fold' lines,
@@ -65,15 +51,6 @@ namespace wex
 
       /// Returns the filename, as used by the file.
       virtual const path& get_filename() const = 0;
-
-      /// Returns number of lines.
-      virtual int get_line_count() = 0;
-
-      /// Request for number of lines.
-      virtual int get_line_count_request() = 0;
-
-      /// Goes to specified line.
-      virtual void goto_line(int line) = 0;
 
       /// Returns selected text as a string.
       virtual const std::string get_selected_text() const = 0;
