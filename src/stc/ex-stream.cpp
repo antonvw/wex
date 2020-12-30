@@ -304,6 +304,8 @@ bool wex::ex_stream::insert_text(int line, const std::string& text, loc_t loc)
   }
 
   goto_line(line);
+  
+  m_is_modified = true;
 
   return true;
 }
@@ -442,7 +444,7 @@ bool wex::ex_stream::substitute(
   goto_line(0);
 
   m_is_modified = true;
-  
+
   return true;
 }
 
@@ -454,8 +456,8 @@ bool wex::ex_stream::write()
   {
     return false;
   }
-  
+
   m_is_modified = false;
-  
+
   return true;
 }

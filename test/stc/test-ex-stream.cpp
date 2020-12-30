@@ -66,10 +66,12 @@ TEST_CASE("wex::ex_stream")
       wex::addressrange ar(&stc->get_ex(), "1,2");
 
       REQUIRE(exs.erase(ar));
+      REQUIRE(exs.is_modified());
       REQUIRE(exs.get_line_count_request() == 5);
 
       REQUIRE(exs.write());
       REQUIRE(exs.get_line_count_request() == 3);
+      REQUIRE(!exs.is_modified());
     }
   }
 
@@ -83,6 +85,7 @@ TEST_CASE("wex::ex_stream")
 
     exs.stream(ifs);
     REQUIRE(exs.find(std::string("one")));
+    REQUIRE(!exs.is_modified());
     REQUIRE(exs.get_current_line() == 3);
 
     REQUIRE(!exs.find(std::string("xxxone")));
@@ -104,6 +107,7 @@ TEST_CASE("wex::ex_stream")
 
     REQUIRE(exs.insert_text(0, "TEXT_BEFORE"));
     REQUIRE(exs.insert_text(3, "TEXT_AFTER", wex::ex_stream::INSERT_AFTER));
+    REQUIRE(exs.is_modified());
   }
 
   SUBCASE("join")
@@ -124,8 +128,10 @@ TEST_CASE("wex::ex_stream")
 
       REQUIRE(exs.join(ar));
       REQUIRE(exs.get_line_count_request() == 5);
+      REQUIRE(exs.is_modified());
 
       REQUIRE(exs.write());
+      REQUIRE(!exs.is_modified());
       REQUIRE(exs.get_line_count_request() == 4);
     }
   }
@@ -160,6 +166,7 @@ TEST_CASE("wex::ex_stream")
     wex::addressrange ar(&stc->get_ex(), "%");
 
     REQUIRE(exs.substitute(ar, "test", "1234"));
+    REQUIRE(exs.is_modified());
   }
 
 #ifdef DEBUG
