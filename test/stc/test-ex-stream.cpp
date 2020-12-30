@@ -66,6 +66,9 @@ TEST_CASE("wex::ex_stream")
       wex::addressrange ar(&stc->get_ex(), "1,2");
 
       REQUIRE(exs.erase(ar));
+      REQUIRE(exs.get_line_count_request() == 5);
+
+      REQUIRE(exs.write());
       REQUIRE(exs.get_line_count_request() == 3);
     }
   }
@@ -120,6 +123,9 @@ TEST_CASE("wex::ex_stream")
       wex::addressrange ar(&stc->get_ex(), "%");
 
       REQUIRE(exs.join(ar));
+      REQUIRE(exs.get_line_count_request() == 5);
+
+      REQUIRE(exs.write());
       REQUIRE(exs.get_line_count_request() == 4);
     }
   }

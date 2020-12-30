@@ -92,6 +92,9 @@ namespace wex
     /// Cuts text to clipboard.
     void Cut() override;
 
+    /// Is doc modified.
+    bool IsModified() const override;
+
     /// Paste text from clipboard.
     void Paste() override;
 

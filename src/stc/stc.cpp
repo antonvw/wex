@@ -96,14 +96,10 @@ wex::stc::stc(const path& p, const data::stc& data)
 
   if (p.stat().is_ok())
   {
-    // not really necessary, as this is done after FILE_LOAD,
-    // but this eliminates flicker
-    config_get();
     open(p, data);
   }
   else
   {
-    config_get();
     m_lexer.set(p.lexer(), true);
     m_file.file_new(p);
     m_data.inject();
@@ -545,6 +541,11 @@ void wex::stc::insert_text(int pos, const std::string& text)
   }
 }
 
+bool wex::stc::IsModified() const
+{
+  return m_visual ? GetModify(): m_file.ex_stream()->is_modified();
+}
+  
 bool wex::stc::link_open()
 {
   return link_open(link_t().set(LINK_OPEN).set(LINK_OPEN_MIME));
@@ -1096,8 +1097,6 @@ bool wex::stc::vi_command(const std::string& command)
 
 void wex::stc::visual(bool on)
 {
-  log::info("enter visual mode") << on << get_filename().string();
-
   m_ex->use(!on);
   m_vi->use(on);
 
@@ -1109,6 +1108,8 @@ void wex::stc::visual(bool on)
 
   if (on && !m_visual)
   {
+    log::info("enter visual mode") << on << get_filename().string();
+
     m_visual = on; // needed in do_file_load
     m_file.close();
     m_file.use_stream(false);
@@ -1118,6 +1119,8 @@ void wex::stc::visual(bool on)
   {
     m_visual = on;
   }
+
+  config_get();
 
   m_frame->show_ex_bar(
     !on ? managed_frame::SHOW_BAR : managed_frame::HIDE_BAR_FOCUS_STC,

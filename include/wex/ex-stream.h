@@ -21,8 +21,9 @@ namespace wex
 
   /// Uses a stream for ex mode processing.
   /// Line numbers are stc line numbers, so start at line 0.
-  /// All modifications are done in the work file, and copied to
-  /// the original file upon writing.
+  /// All modifications are done in the temp file, and copied to
+  /// the work file upon changing. If you ask for a write,
+  /// the work file is copied to the original file.
   class ex_stream
   {
   public:
@@ -61,6 +62,9 @@ namespace wex
     bool
     insert_text(int line, const std::string& text, loc_t loc = INSERT_BEFORE);
 
+    /// Returns true if stream is modified;
+    bool is_modified() const { return m_is_modified; };
+
     /// Joins all lines in range.
     bool join(const addressrange& range);
 
@@ -74,15 +78,20 @@ namespace wex
       const std::string&  find,
       const std::string&  replace);
 
+    /// Writes working stream to file.
+    bool write();
+
   private:
     bool get_next_line();
     void set_context();
     void set_text();
 
+    bool m_is_modified{false};
+
     const int m_context_size, m_line_size;
 
-    std::fstream* m_stream{nullptr};
-    file *        m_file, *m_work{nullptr};
+    std::fstream* m_stream{nullptr}; // pointer in m_file to actual stream
+    file *        m_file{nullptr}, *m_temp{nullptr}, *m_work{nullptr};
 
     int m_line_no{LINE_COUNT_UNKNOWN}, m_last_line_no{LINE_COUNT_UNKNOWN};
 
