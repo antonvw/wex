@@ -1116,7 +1116,7 @@ void wex::stc::visual(bool on)
   }
   else
   {
-    m_visual = false;
+    m_visual = on;
   }
 
   m_frame->show_ex_bar(
