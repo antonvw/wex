@@ -8,8 +8,8 @@
 #pragma once
 
 #include <istream>
-#include <sstream>
 #include <memory>
+#include <sstream>
 #include <wex/path.h>
 
 namespace wex
@@ -89,10 +89,10 @@ namespace wex
 
     /// Returns stream.
     std::fstream& stream();
-    
-    /// Default file is closed after loading, if you 
+
+    /// Default file is closed after loading, if you
     /// call this method, stream remains open.
-    void use_stream();
+    void use_stream(bool use = true);
 
     /// Writes file from buffer.
     bool write(const char* s, size_t n);
@@ -125,7 +125,7 @@ namespace wex
     void assign(const path& p);
     bool file_load(bool synced);
 
-    bool m_is_loaded{false}, m_use_stream {false};
+    bool m_is_loaded{false}, m_use_stream{false};
 
     std::unique_ptr<file_imp> m_file;
   };

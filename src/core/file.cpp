@@ -226,9 +226,9 @@ std::fstream& wex::file::stream()
   return m_file->stream();
 }
 
-void wex::file::use_stream()
+void wex::file::use_stream(bool use)
 {
-  m_use_stream = true;
+  m_use_stream = use;
 }
 
 bool wex::file::write(const char* s, size_t n)

@@ -1101,13 +1101,23 @@ void wex::stc::visual(bool on)
   m_ex->use(!on);
   m_vi->use(on);
 
-  m_visual = on;
-
   SetReadOnly(!on);
 
   m_data.flags(
     data::stc::window_t().set(data::stc::WIN_EX),
     on ? data::control::NOT : data::control::SET);
+
+  if (on && !m_visual)
+  {
+    m_visual = on; // needed in do_file_load
+    m_file.close();
+    m_file.use_stream(false);
+    m_file.file_load(get_filename());
+  }
+  else
+  {
+    m_visual = false;
+  }
 
   m_frame->show_ex_bar(
     !on ? managed_frame::SHOW_BAR : managed_frame::HIDE_BAR_FOCUS_STC,
