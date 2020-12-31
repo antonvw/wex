@@ -20,32 +20,6 @@
 
 namespace wex
 {
-  bool copy(file* from, file* to)
-  {
-    if (from->stream().bad() || to->stream().bad())
-    {
-      log("ex stream copy") << from->stream().bad() << to->stream().bad();
-      return false;
-    }
-
-    to->close();
-    to->open(std::ios_base::out);
-
-    from->close();
-    from->open(std::ios_base::in);
-
-    to->stream() << from->stream().rdbuf();
-
-    to->close();
-    to->open();
-
-    from->close();
-    std::remove(from->get_filename().string().c_str());
-    from->open(std::ios_base::out);
-
-    return true;
-  };
-
   const std::string tmp_filename()
   {
     char _tmp_filename[L_tmpnam];
@@ -70,15 +44,41 @@ wex::ex_stream::~ex_stream()
   delete m_work;
 }
 
+bool wex::ex_stream::copy(file* from, file* to)
+{
+  if (from->stream().bad() || to->stream().bad())
+  {
+    log("ex stream copy") << from->stream().bad() << to->stream().bad();
+    return false;
+  }
+
+  to->close();
+  to->open(std::ios_base::out);
+
+  from->close();
+  from->open(std::ios_base::in);
+
+  to->stream() << from->stream().rdbuf();
+
+  to->close();
+  to->open();
+
+  from->close();
+  std::remove(from->get_filename().string().c_str());
+  from->open(std::ios_base::out);
+
+  m_stream = &to->stream();
+  m_is_modified = true;
+
+  return true;
+}
+
 bool wex::ex_stream::erase(const addressrange& range)
 {
   if (m_stream == nullptr)
   {
     return false;
   }
-
-  log::trace("ex stream erase")
-    << range.get_begin().get_line() << range.get_end().get_line();
 
   m_stream->seekg(0);
 
@@ -105,14 +105,10 @@ bool wex::ex_stream::erase(const addressrange& range)
     return false;
   }
 
-  log::trace("ex stream erase") << sl.actions();
-
   m_stc->get_frame()->show_ex_message(
     std::to_string(sl.actions()) + " fewer lines");
 
   goto_line(0);
-
-  m_is_modified = true;
 
   return true;
 }
@@ -126,8 +122,6 @@ bool wex::ex_stream::find(
   {
     return false;
   }
-
-  log::trace("ex stream find") << text;
 
   auto line_no = m_line_no;
   auto pos     = m_stream->tellg();
@@ -308,8 +302,6 @@ bool wex::ex_stream::insert_text(int line, const std::string& text, loc_t loc)
 
   goto_line(line);
 
-  m_is_modified = true;
-
   return true;
 }
 
@@ -319,9 +311,6 @@ bool wex::ex_stream::join(const addressrange& range)
   {
     return false;
   }
-
-  log::trace("ex stream join")
-    << range.get_begin().get_line() << range.get_end().get_line();
 
   m_stream->seekg(0);
 
@@ -348,14 +337,10 @@ bool wex::ex_stream::join(const addressrange& range)
     return false;
   }
 
-  log::trace("ex stream joins") << sl.actions();
-
   m_stc->get_frame()->show_ex_message(
     std::to_string(sl.actions()) + " fewer lines");
 
   goto_line(0);
-
-  m_is_modified = true;
 
   return true;
 }
@@ -397,7 +382,6 @@ void wex::ex_stream::stream(file& f)
 
   m_work = new file(tmp_filename(), std::ios_base::out);
   m_work->use_stream();
-  m_stream = &f.stream();
 
   goto_line(0);
 }
@@ -411,10 +395,6 @@ bool wex::ex_stream::substitute(
   {
     return false;
   }
-
-  log::trace("ex stream substitute")
-    << range.get_begin().get_line() << range.get_end().get_line() << find
-    << replace;
 
   m_stream->seekg(0);
 
@@ -439,14 +419,10 @@ bool wex::ex_stream::substitute(
     return false;
   }
 
-  log::trace("ex stream substitute") << sl.actions();
-
   m_stc->get_frame()->show_ex_message(
     "Replaced: " + std::to_string(sl.actions()) + " occurrences of: " + find);
 
   goto_line(0);
-
-  m_is_modified = true;
 
   return true;
 }

@@ -10,8 +10,25 @@
 #include <string.h>
 #include <wex/addressrange.h>
 #include <wex/frd.h>
+#include <wex/log.h>
 
 #include "ex-stream-line.h"
+
+namespace wex
+{
+  std::string action_name(ex_stream_line::action_t type)
+  {
+    switch (type)
+    {
+      case ex_stream_line::ACTION_ERASE:
+        return "erased";
+      case ex_stream_line::ACTION_JOIN:
+        return "joined";
+      case ex_stream_line::ACTION_SUBSTITUTE:
+        return "substituted";
+    };
+  };
+}; // namespace wex
 
 wex::ex_stream_line::ex_stream_line(
   action_t            type,
@@ -34,6 +51,14 @@ wex::ex_stream_line::ex_stream_line(
   , m_find(find)
   , m_replace(replace)
 {
+}
+
+wex::ex_stream_line::~ex_stream_line()
+{
+  log::trace("ex stream") << action_name(m_action) << m_actions
+                          << m_range.get_begin().get_line()
+                          << m_range.get_end().get_line() << m_find
+                          << m_replace;
 }
 
 void wex::ex_stream_line::handle(char* line, int& pos)

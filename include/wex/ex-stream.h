@@ -84,6 +84,7 @@ namespace wex
     bool write();
 
   private:
+    bool copy(file* from, file* to);
     bool get_next_line();
     void set_context();
     void set_text();

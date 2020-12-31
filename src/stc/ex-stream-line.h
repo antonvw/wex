@@ -24,15 +24,18 @@ namespace wex
       ACTION_SUBSTITUTE,
     };
 
-    /// Constructor.
+    /// Constructor for specified action.
     ex_stream_line(action_t type, const addressrange& range, file* work);
 
-    /// Constructor for substitute.
+    /// Constructor for substitute action.
     ex_stream_line(
       const addressrange& range,
       file*               work,
       const std::string&  find,
       const std::string&  replace);
+
+    /// Destructor.
+    ~ex_stream_line();
 
     /// Returns actions.
     int actions() const { return m_actions; };
