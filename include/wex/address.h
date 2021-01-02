@@ -2,7 +2,7 @@
 // Name:      address.h
 // Purpose:   Declaration of class wex::address
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -20,6 +20,13 @@ namespace wex
     friend addressrange;
 
   public:
+    /// Constructor for an address from a line.
+    address(
+      /// the ex (or vi) component
+      ex* ex,
+      /// the address
+      int line);
+
     /// Constructor for an address.
     address(
       /// the ex (or vi) component

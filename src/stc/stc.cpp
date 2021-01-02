@@ -2,9 +2,10 @@
 // Name:      stc.cpp
 // Purpose:   Implementation of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/address.h>
 #include <wex/blame.h>
 #include <wex/config.h>
 #include <wex/core.h>
@@ -131,7 +132,7 @@ void wex::stc::add_text(const std::string& text)
   if (!m_visual)
   {
     m_file.ex_stream()->insert_text(
-      m_file.ex_stream()->get_current_line(),
+      address(m_ex, m_file.ex_stream()->get_current_line()),
       text,
       ex_stream::INSERT_AFTER);
   }
@@ -533,7 +534,7 @@ void wex::stc::insert_text(int pos, const std::string& text)
 {
   if (!m_visual)
   {
-    m_file.ex_stream()->insert_text(LineFromPosition(pos), text);
+    m_file.ex_stream()->insert_text(address(m_ex, LineFromPosition(pos)), text);
   }
   else
   {

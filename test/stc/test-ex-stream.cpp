@@ -2,10 +2,11 @@
 // Name:      test-ex-stream.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
+#include <wex/address.h>
 #include <wex/addressrange.h>
 #include <wex/ex-stream.h>
 #include <wex/frd.h>
@@ -105,8 +106,8 @@ TEST_CASE("wex::ex_stream")
     wex::ex_stream exs(stc);
     exs.stream(ifs);
 
-    REQUIRE(exs.insert_text(0, "TEXT_BEFORE"));
-    REQUIRE(exs.insert_text(3, "TEXT_AFTER", wex::ex_stream::INSERT_AFTER));
+    REQUIRE(exs.insert_text(wex::address(&stc->get_ex(), 0), "TEXT_BEFORE"));
+    REQUIRE(exs.insert_text(wex::address(&stc->get_ex(), 3), "TEXT_AFTER", wex::ex_stream::INSERT_AFTER));
     REQUIRE(exs.is_modified());
   }
 

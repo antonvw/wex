@@ -1,6 +1,8 @@
 # roadmap
-- add support for markers in ex mode, improve inserting (speed up?),
-  added check on lin buffer size, add blame on virtual line
+- use travis.com
+- add support for markers in ex mode,
+  added check on line buffer size, add blame on virtual line
+- support /g option in substitute
 - wxDateTime replace by c++20 methods date and time utilities
 - process-imp should be in core
 - prepare_output at one place in test

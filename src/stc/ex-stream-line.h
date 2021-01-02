@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      stc/ex-stream-line.cpp
-// Purpose:   Implementation of class wex::ex_stream_lne
+// Purpose:   Implementation of class wex::ex_stream_line
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -20,19 +20,26 @@ namespace wex
     enum action_t
     {
       ACTION_ERASE,
+      ACTION_INSERT,
       ACTION_JOIN,
       ACTION_SUBSTITUTE,
     };
 
-    /// Constructor for specified action.
-    ex_stream_line(action_t type, const addressrange& range, file* work);
+    /// Constructor for erase or join action.
+    ex_stream_line(action_t type, file* work, const addressrange& range);
 
     /// Constructor for substitute action.
     ex_stream_line(
-      const addressrange& range,
       file*               work,
+      const addressrange& range,
       const std::string&  find,
       const std::string&  replace);
+
+    /// Constructor for insert action.
+    ex_stream_line(
+      file*               work,
+      const addressrange& range,
+      const std::string&  text);
 
     /// Destructor.
     ~ex_stream_line();
@@ -49,7 +56,7 @@ namespace wex
   private:
     const action_t      m_action;
     const addressrange& m_range;
-    const std::string   m_find, m_replace;
+    const std::string   m_find, m_replace, m_text;
     file*               m_file;
     int                 m_actions = 0, m_line = 0;
   };

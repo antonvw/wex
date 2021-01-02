@@ -14,6 +14,7 @@
 
 namespace wex
 {
+  class address;
   class addressrange;
   class file;
   class stc;
@@ -38,7 +39,7 @@ namespace wex
     /// Destructor.
     ~ex_stream();
 
-    /// Deletes range.
+    /// Deletes the range.
     bool erase(const addressrange& range);
 
     /// Finds line containing text and puts on stc.
@@ -60,21 +61,23 @@ namespace wex
     /// Gets specified line, and puts on stc.
     void goto_line(int no) override;
 
-    /// Inserts text at specified line.
-    bool
-    insert_text(int line, const std::string& text, loc_t loc = INSERT_BEFORE);
+    /// Inserts text at specified address.
+    bool insert_text(
+      const address&     address,
+      const std::string& text,
+      loc_t              loc = INSERT_BEFORE);
 
     /// Returns true if stream is modified;
     bool is_modified() const { return m_is_modified; };
 
-    /// Joins all lines in range.
+    /// Joins all lines in the range.
     bool join(const addressrange& range);
 
     /// Sets the streams. Puts first line on stc.
     /// This must be called before the other methods.
     void stream(file& f);
 
-    /// Substitutes wihtin range find by replace.
+    /// Substitutes within the range find by replace.
     bool substitute(
       const addressrange& range,
       const std::string&  find,

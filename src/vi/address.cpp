@@ -2,7 +2,7 @@
 // Name:      address.cpp
 // Purpose:   Implementation of class wex::address
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <memory>
@@ -21,6 +21,12 @@
   {                                                          \
     output += std::string(40, '-') + m_ex->get_stc()->eol(); \
   }
+
+wex::address::address(ex* ex, int line)
+  : m_ex(ex)
+  , m_line(line)
+{
+}
 
 wex::address::address(ex* ex, const std::string& address)
   : m_address(address)
@@ -101,7 +107,7 @@ bool wex::address::append(const std::string& text) const
   else if (!m_ex->get_stc()->is_visual())
   {
     m_ex->get_stc()->get_file().ex_stream()->insert_text(
-      line,
+      *this,
       text,
       ex_stream::INSERT_AFTER);
     return true;
@@ -237,12 +243,10 @@ bool wex::address::insert(const std::string& text) const
   }
   else if (!m_ex->get_stc()->is_visual())
   {
-    m_ex->get_stc()->get_file().ex_stream()->insert_text(line - 1, text);
+    m_ex->get_stc()->get_file().ex_stream()->insert_text(*this, text);
     return true;
   }
-  else if (
-    m_ex->get_stc()->GetReadOnly() || m_ex->get_stc()->is_hexmode() ||
-    line <= 0)
+  else if (m_ex->get_stc()->GetReadOnly() || m_ex->get_stc()->is_hexmode())
   {
     return false;
   }

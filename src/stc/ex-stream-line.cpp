@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      stc/ex-stream-line.cpp
-// Purpose:   Implementation of class wex::ex_stream_lne
+// Purpose:   Implementation of class wex::ex_stream_line
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <regex>
@@ -22,6 +22,8 @@ namespace wex
     {
       case ex_stream_line::ACTION_ERASE:
         return "erased";
+      case ex_stream_line::ACTION_INSERT:
+        return "inserted";
       case ex_stream_line::ACTION_JOIN:
         return "joined";
       case ex_stream_line::ACTION_SUBSTITUTE:
@@ -32,8 +34,8 @@ namespace wex
 
 wex::ex_stream_line::ex_stream_line(
   action_t            type,
-  const addressrange& range,
-  file*               work)
+  file*               work,
+  const addressrange& range)
   : m_action(type)
   , m_range(range)
   , m_file(work)
@@ -41,8 +43,8 @@ wex::ex_stream_line::ex_stream_line(
 }
 
 wex::ex_stream_line::ex_stream_line(
-  const addressrange& range,
   file*               work,
+  const addressrange& range,
   const std::string&  find,
   const std::string&  replace)
   : m_action(ACTION_SUBSTITUTE)
@@ -50,6 +52,17 @@ wex::ex_stream_line::ex_stream_line(
   , m_file(work)
   , m_find(find)
   , m_replace(replace)
+{
+}
+
+wex::ex_stream_line::ex_stream_line(
+  file*               work,
+  const addressrange& range,
+  const std::string&  text)
+  : m_action(ACTION_INSERT)
+  , m_range(range)
+  , m_file(work)
+  , m_text(text)
 {
 }
 
@@ -72,6 +85,12 @@ void wex::ex_stream_line::handle(char* line, int& pos)
       case ACTION_ERASE:
         // skip this line: no write at all
         m_actions++;
+        break;
+
+      case ACTION_INSERT:
+        m_actions++;
+        m_file->write(m_text);
+        m_file->write(line, pos);
         break;
 
       case ACTION_JOIN:

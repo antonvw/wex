@@ -2,7 +2,7 @@
 // Name:      stc/ex-stream.cpp
 // Purpose:   Implementation of class wex::ex_stream
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <regex>
@@ -17,6 +17,31 @@
 #include <wex/stc.h>
 
 #include "ex-stream-line.h"
+
+#define STREAM_LINE_ON_CHAR()         \
+  {                                   \
+    m_stream->seekg(0);               \
+                                      \
+    int  i = 0;                       \
+    char c;                           \
+                                      \
+    while (m_stream->get(c))          \
+    {                                 \
+      m_current_line[i++] = c;        \
+                                      \
+      if (c == '\n')                  \
+      {                               \
+        sl.handle(m_current_line, i); \
+      }                               \
+    }                                 \
+                                      \
+    sl.handle(m_current_line, i);     \
+                                      \
+    if (!copy(m_temp, m_work))        \
+    {                                 \
+      return false;                   \
+    }                                 \
+  }
 
 namespace wex
 {
@@ -67,7 +92,7 @@ bool wex::ex_stream::copy(file* from, file* to)
   std::remove(from->get_filename().string().c_str());
   from->open(std::ios_base::out);
 
-  m_stream = &to->stream();
+  m_stream      = &to->stream();
   m_is_modified = true;
 
   return true;
@@ -80,30 +105,11 @@ bool wex::ex_stream::erase(const addressrange& range)
     return false;
   }
 
-  m_stream->seekg(0);
+  ex_stream_line sl(ex_stream_line::ACTION_ERASE, m_temp, range);
 
-  ex_stream_line sl(ex_stream_line::ACTION_ERASE, range, m_temp);
-  int            i = 0;
-  char           c;
-
-  while (m_stream->get(c))
-  {
-    m_current_line[i++] = c;
-
-    if (c == '\n')
-    {
-      sl.handle(m_current_line, i);
-    }
-  }
-
-  sl.handle(m_current_line, i);
+  STREAM_LINE_ON_CHAR();
 
   m_last_line_no = sl.lines() - sl.actions() - 1;
-
-  if (!copy(m_temp, m_work))
-  {
-    return false;
-  }
 
   m_stc->get_frame()->show_ex_message(
     std::to_string(sl.actions()) + " fewer lines");
@@ -243,62 +249,24 @@ void wex::ex_stream::goto_line(int no)
   set_text();
 }
 
-bool wex::ex_stream::insert_text(int line, const std::string& text, loc_t loc)
+bool wex::ex_stream::insert_text(
+  const address&     a,
+  const std::string& text,
+  loc_t              loc)
 {
   if (m_stream == nullptr)
   {
     return false;
   }
 
-  m_stream->seekg(0);
+  const auto line(loc == INSERT_BEFORE ? a.get_line() - 1 : a.get_line());
+  const addressrange range(
+    &m_stc->get_ex(),
+    std::to_string(line) + "," + std::to_string(line + 1));
 
-  char c;
-  int  current = 0;
-  bool done    = false;
+  ex_stream_line sl(m_temp, range, text);
 
-  if (line == 0 && loc == INSERT_BEFORE)
-  {
-    if (!m_temp->write(text))
-    {
-      return false;
-    }
-
-    done = true;
-  }
-
-  while (m_stream->get(c))
-  {
-    if (c != '\n')
-    {
-      m_temp->put(c);
-    }
-    else
-    {
-      if (current++ == line && !done)
-      {
-        switch (loc)
-        {
-          case INSERT_AFTER:
-            m_temp->write(c + text);
-            break;
-
-          case INSERT_BEFORE:
-            m_temp->write(text + c);
-            break;
-        }
-        done = true;
-      }
-      else
-      {
-        m_temp->put(c);
-      }
-    }
-  }
-
-  if (!copy(m_temp, m_work))
-  {
-    return false;
-  }
+  STREAM_LINE_ON_CHAR();
 
   goto_line(line);
 
@@ -312,30 +280,11 @@ bool wex::ex_stream::join(const addressrange& range)
     return false;
   }
 
-  m_stream->seekg(0);
+  ex_stream_line sl(ex_stream_line::ACTION_JOIN, m_temp, range);
 
-  ex_stream_line sl(ex_stream_line::ACTION_JOIN, range, m_temp);
-  char           c;
-  int            i = 0;
-
-  while (m_stream->get(c))
-  {
-    m_current_line[i++] = c;
-
-    if (c == '\n')
-    {
-      sl.handle(m_current_line, i);
-    }
-  }
-
-  sl.handle(m_current_line, i);
+  STREAM_LINE_ON_CHAR();
 
   m_last_line_no = sl.lines() - sl.actions() - 1;
-
-  if (!copy(m_temp, m_work))
-  {
-    return false;
-  }
 
   m_stc->get_frame()->show_ex_message(
     std::to_string(sl.actions()) + " fewer lines");
@@ -396,28 +345,9 @@ bool wex::ex_stream::substitute(
     return false;
   }
 
-  m_stream->seekg(0);
+  ex_stream_line sl(m_temp, range, find, replace);
 
-  char           c;
-  int            i = 0;
-  ex_stream_line sl(range, m_temp, find, replace);
-
-  while (m_stream->get(c))
-  {
-    m_current_line[i++] = c;
-
-    if (c == '\n')
-    {
-      sl.handle(m_current_line, i);
-    }
-  }
-
-  sl.handle(m_current_line, i);
-
-  if (!copy(m_temp, m_work))
-  {
-    return false;
-  }
+  STREAM_LINE_ON_CHAR();
 
   m_stc->get_frame()->show_ex_message(
     "Replaced: " + std::to_string(sl.actions()) + " occurrences of: " + find);
