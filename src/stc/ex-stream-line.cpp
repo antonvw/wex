@@ -28,6 +28,9 @@ namespace wex
         return "joined";
       case ex_stream_line::ACTION_SUBSTITUTE:
         return "substituted";
+
+      default:
+        assert(0);
     };
   };
 }; // namespace wex

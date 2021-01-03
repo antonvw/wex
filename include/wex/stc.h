@@ -2,7 +2,7 @@
 // Name:      stc.h
 // Purpose:   Declaration of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -212,9 +212,6 @@ namespace wex
       return GetMarginWidth(m_margin_line_number) > 0;
     };
 
-    /// Returns the visual mode.
-    bool is_visual() const { return m_visual; };
-
     /// Keeps event data.
     void keep_event_data(bool synced) { m_data.event(synced); };
 
@@ -308,6 +305,7 @@ namespace wex
     const std::string get_selected_text() const override;
     void              goto_line(int line) override;
     bool is_hexmode() const override { return m_hexmode.is_active(); };
+    bool is_visual() const override { return m_visual; };
     void properties_message(path::status_t flags = 0) override;
     void reset_margins(margin_t type = margin_t().set()) override;
     bool set_hexmode(bool on) override { return get_hexmode().set(on); };

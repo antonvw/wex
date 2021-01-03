@@ -54,7 +54,7 @@ namespace wex
 }; // namespace wex
 
 wex::ex_stream::ex_stream(wex::stc* stc)
-  : m_context_size(500)
+  : m_context_lines(50)
   , m_line_size(500)
   , m_current_line(new char[m_line_size])
   , m_stc(stc)
@@ -159,7 +159,6 @@ bool wex::ex_stream::find(
   else
   {
     log::trace("ex stream found") << text << m_line_no;
-    m_context = m_current_line;
     set_text();
   }
 
@@ -231,8 +230,10 @@ void wex::ex_stream::goto_line(int no)
     m_line_no = -1;
     m_stream->clear();
     m_stream->seekg(0);
-    log::trace("ex stream reset");
-    m_context.clear();
+
+    m_stc->SetReadOnly(false);
+    m_stc->ClearAll();
+    m_stc->SetReadOnly(true);
 
     while ((m_line_no < no) && get_next_line())
     {
@@ -245,7 +246,6 @@ void wex::ex_stream::goto_line(int no)
     }
   }
 
-  set_context();
   set_text();
 }
 
@@ -294,20 +294,18 @@ bool wex::ex_stream::join(const addressrange& range)
   return true;
 }
 
-void wex::ex_stream::set_context()
-{
-  m_context += (!m_context.empty() ? "\n" : std::string()) + m_current_line;
-
-  if (m_context.size() > m_context_size)
-  {
-    m_context = m_context.substr(strlen(m_current_line));
-  }
-}
-
 void wex::ex_stream::set_text()
 {
   m_stc->SetReadOnly(false);
-  m_stc->SetText(m_context);
+
+  m_stc->AppendText(m_current_line);
+  m_stc->AppendText("\n");
+
+  if (m_stc->GetLineCount() > m_context_lines)
+  {
+    m_stc->DeleteRange(0, m_stc->PositionFromLine(1));
+  }
+
   m_stc->DocumentEnd();
   m_stc->EmptyUndoBuffer();
   m_stc->SetSavePoint();

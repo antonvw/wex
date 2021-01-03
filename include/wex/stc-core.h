@@ -2,7 +2,7 @@
 // Name:      stc-core.h
 // Purpose:   Declaration of class wex::core::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -57,6 +57,9 @@ namespace wex
 
       /// Returns true if we are in hex mode.
       virtual bool is_hexmode() const = 0;
+
+      /// Returns true if we are in visual mode.
+      virtual bool is_visual() const = 0;
 
       /// Shows properties on the statusbar using specified flags.
       virtual void properties_message(path::status_t flags = 0) = 0;

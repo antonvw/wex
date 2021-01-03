@@ -2,7 +2,7 @@
 // Name:      ex-stream.h
 // Purpose:   Declaration of class wex::ex_stream
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -89,20 +89,18 @@ namespace wex
   private:
     bool copy(file* from, file* to);
     bool get_next_line();
-    void set_context();
     void set_text();
 
     bool m_is_modified{false};
 
-    const int m_context_size, m_line_size;
+    const int m_context_lines, m_line_size;
 
     std::fstream* m_stream{nullptr}; // pointer in m_file to actual stream
     file *        m_file{nullptr}, *m_temp{nullptr}, *m_work{nullptr};
 
     int m_line_no{LINE_COUNT_UNKNOWN}, m_last_line_no{LINE_COUNT_UNKNOWN};
 
-    std::string m_context;
-    char*       m_current_line;
+    char* m_current_line;
 
     stc* m_stc;
   };

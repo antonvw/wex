@@ -955,13 +955,22 @@ void wex::stc::SelectNone()
 bool wex::stc::set_indicator(const indicator& indicator, int start, int end)
 {
   if (
-    !lexers::get()->indicator_is_loaded(indicator) || start == -1 || end == -1)
+    !lexers::get()->indicator_is_loaded(indicator) || start == -1 ||
+    end == -1 || end < start)
   {
+    log("set_indicator") << start << end;
     return false;
   }
 
   SetIndicatorCurrent(indicator.number());
-  IndicatorFillRange(start, end - start);
+
+  if (end - start > 0)
+  {
+    IndicatorFillRange(start, end - start);
+  }
+  else if (end - start == 0)
+  {
+  }
 
   return true;
 }

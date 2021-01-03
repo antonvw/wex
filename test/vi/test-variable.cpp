@@ -2,7 +2,7 @@
 // Name:      test-variable.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
@@ -46,7 +46,7 @@ TEST_CASE("wex::variable")
            {"template", "TEMPLATE", "xxx.txt", "xxx.txt"},
            {"fix", "FIXED", "constant value", "constant value"},
            {"cc", "INPUT", "one", "one"},
-           {"dd", "INPUT-ONCE", "@Year@", "2020"},
+           {"dd", "INPUT-ONCE", "@Year@", "2021"},
            {"ee", "INPUT-SAVE", "three", "three"}})
     {
       const std::string text(
@@ -116,8 +116,8 @@ TEST_CASE("wex::variable")
   {
     for (const auto& it : std::vector<
            std::tuple<std::string, std::string, std::string, std::string>>{
-           {"Year", "BUILTIN", "%Y", "2020"},
-           {"Date", "BUILTIN", "%Y", "2020"}})
+           {"Year", "BUILTIN", "%Y", "2021"},
+           {"Date", "BUILTIN", "%Y", "2021"}})
     {
       const std::string text(
         "<variable name=\"" + std::get<0>(it) + "\" type=\"" + std::get<1>(it) +

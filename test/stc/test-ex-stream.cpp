@@ -40,7 +40,7 @@ TEST_CASE("wex::ex_stream")
 
     wex::ex_stream exs(stc);
     exs.stream(ifs);
-    REQUIRE(stc->get_text() == "# markdown");
+    REQUIRE(stc->get_text() == "# markdown\n");
     REQUIRE(exs.get_current_line() == 0);
 
     exs.goto_line(3);
@@ -107,7 +107,10 @@ TEST_CASE("wex::ex_stream")
     exs.stream(ifs);
 
     REQUIRE(exs.insert_text(wex::address(&stc->get_ex(), 0), "TEXT_BEFORE"));
-    REQUIRE(exs.insert_text(wex::address(&stc->get_ex(), 3), "TEXT_AFTER", wex::ex_stream::INSERT_AFTER));
+    REQUIRE(exs.insert_text(
+      wex::address(&stc->get_ex(), 3),
+      "TEXT_AFTER",
+      wex::ex_stream::INSERT_AFTER));
     REQUIRE(exs.is_modified());
   }
 
