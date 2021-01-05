@@ -2,7 +2,7 @@
 // Name:      test-menu-command.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
@@ -17,6 +17,7 @@ TEST_CASE("wex::menu_command")
     const wex::menu_command none;
     REQUIRE(none.type().test(wex::menu_command::IS_MAIN));
     REQUIRE(none.type().test(wex::menu_command::IS_POPUP));
+    REQUIRE(!none.type().test(wex::menu_command::IS_VISUAL));
   }
 
   SUBCASE("control")
@@ -81,11 +82,13 @@ TEST_CASE("wex::menu_command")
 
   SUBCASE("type")
   {
-    doc.load_string("<command type=\"main is-selected\"> commit </command>");
+    doc.load_string(
+      "<command type=\"main is-selected is-visual\"> commit </command>");
     const wex::menu_command cmd(doc.document_element());
     REQUIRE(cmd.type().test(wex::menu_command::IS_MAIN));
     REQUIRE(!cmd.type().test(wex::menu_command::IS_POPUP));
     REQUIRE(cmd.type().test(wex::menu_command::IS_SELECTED));
+    REQUIRE(cmd.type().test(wex::menu_command::IS_VISUAL));
   }
 
   SUBCASE("type and submenu")

@@ -1055,7 +1055,14 @@ bool wex::stc::show_blame(const vcs_entry* vcs)
         first = false;
       }
 
-      lexers::get()->apply_margin_text_style(this, l >= 0 ? l : line, t, bl);
+      const int real_line(
+        m_visual ? l : l - get_current_line() + GetLineCount() - 2);
+
+      lexers::get()->apply_margin_text_style(
+        this,
+        real_line >= 0 ? real_line : line,
+        t,
+        bl);
       prev = bl;
     }
     else

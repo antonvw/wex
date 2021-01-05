@@ -2,7 +2,7 @@
 // Name:      menu-command.cpp
 // Purpose:   Implementation of wex::menu_command class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -35,6 +35,8 @@ wex::menu_command::menu_command(const pugi::xml_node& node)
       id.set(ELLIPSES);
     if (text.find("is-selected") != std::string::npos)
       id.set(IS_SELECTED);
+    if (text.find("is-visual") != std::string::npos)
+      id.set(IS_VISUAL);
 
     return id;
   }(node))

@@ -49,6 +49,9 @@ namespace wex
       int                find_flags = -1,
       bool               find_next  = true) override;
 
+    /// Returns context lines.
+    int get_context_lines() const { return m_context_lines; };
+
     /// Returns current line no
     int get_current_line() const;
 

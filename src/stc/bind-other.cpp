@@ -187,7 +187,7 @@ void wex::stc::bind_other()
 
   Bind(wxEVT_STC_UPDATEUI, [=, this](wxStyledTextEvent& event) {
     event.Skip();
-      
+
     if (event.GetUpdated() & wxSTC_UPDATE_SELECTION)
     {
       m_frame->update_statusbar(this, "PaneInfo");
@@ -351,6 +351,8 @@ void wex::stc::mouse_action(wxMouseEvent& event)
         style.set(menu::IS_SELECTED);
       if (GetTextLength() == 0)
         style.set(menu::IS_EMPTY);
+      if (m_visual)
+        style.set(menu::IS_VISUAL);
       if (CanPaste())
         style.set(menu::CAN_PASTE);
 
