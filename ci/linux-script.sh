@@ -9,7 +9,7 @@ test/ui/wex-test-ui -tce=wex::debug,wex::file_history
 test/report/wex-test-report
 
 cd ..
-git clone https://gitlab.kitware.com/antonvw/syncped.git
+git clone --branch c++17 https://gitlab.kitware.com/antonvw/syncped.git
 cd syncped || exit
 mkdir build && cd build || exit
 cmake .. && make -j 2
