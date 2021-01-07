@@ -19,6 +19,11 @@ namespace wex
   class file;
   class stc;
 
+  namespace data
+  {
+    class substitute;
+  };
+
   /// Uses a stream for ex mode processing.
   /// Line numbers are stc line numbers, so start at line 0.
   /// All modifications are done in the temp file, and copied to
@@ -81,10 +86,7 @@ namespace wex
     void stream(file& f);
 
     /// Substitutes within the range find by replace.
-    bool substitute(
-      const addressrange& range,
-      const std::string&  find,
-      const std::string&  replace);
+    bool substitute(const addressrange& range, const data::substitute& data);
 
     /// Writes working stream to file.
     bool write();

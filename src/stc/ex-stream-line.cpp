@@ -40,21 +40,21 @@ wex::ex_stream_line::ex_stream_line(
   file*               work,
   const addressrange& range)
   : m_action(type)
-  , m_range(range)
   , m_file(work)
+  , m_begin(range.get_begin().get_line() - 1)
+  , m_end(range.get_end().get_line() - 1)
 {
 }
 
 wex::ex_stream_line::ex_stream_line(
-  file*               work,
-  const addressrange& range,
-  const std::string&  find,
-  const std::string&  replace)
+  file*                   work,
+  const addressrange&     range,
+  const data::substitute& data)
   : m_action(ACTION_SUBSTITUTE)
-  , m_range(range)
   , m_file(work)
-  , m_find(find)
-  , m_replace(replace)
+  , m_data(data)
+  , m_begin(range.get_begin().get_line() - 1)
+  , m_end(range.get_end().get_line() - 1)
 {
 }
 
@@ -63,25 +63,22 @@ wex::ex_stream_line::ex_stream_line(
   const addressrange& range,
   const std::string&  text)
   : m_action(ACTION_INSERT)
-  , m_range(range)
   , m_file(work)
   , m_text(text)
+  , m_begin(range.get_begin().get_line() - 1)
+  , m_end(range.get_end().get_line() - 1)
 {
 }
 
 wex::ex_stream_line::~ex_stream_line()
 {
-  log::trace("ex stream") << action_name(m_action) << m_actions
-                          << m_range.get_begin().get_line()
-                          << m_range.get_end().get_line() << m_find
-                          << m_replace;
+  log::trace("ex stream") << action_name(m_action) << m_actions << m_begin
+                          << m_end << m_data.pattern() << m_data.replacement();
 }
 
 void wex::ex_stream_line::handle(char* line, int& pos)
 {
-  if (
-    m_line >= m_range.get_begin().get_line() - 1 &&
-    m_line <= m_range.get_end().get_line() - 1)
+  if (m_line >= m_begin && m_line <= m_end)
   {
     switch (m_action)
     {
@@ -105,8 +102,8 @@ void wex::ex_stream_line::handle(char* line, int& pos)
       case ACTION_SUBSTITUTE:
       {
         // if match writes modified line, else write original line
-        const std::regex r(m_find);
-        char*            pch;
+        const std::regex r(m_data.pattern());
+        char*            pch = line;
         std::smatch      m;
 
         if (find_replace_data::get()->is_regex())
@@ -115,17 +112,32 @@ void wex::ex_stream_line::handle(char* line, int& pos)
 
           if (std::regex_search(text, m, r))
           {
-            text = std::regex_replace(text, r, m_replace);
+            text = std::regex_replace(
+              text,
+              r,
+              m_data.replacement(),
+              std::regex_constants::format_sed);
             m_actions++;
           }
 
           m_file->write(text);
         }
-        else if ((pch = strstr(line, m_find.c_str())) != nullptr)
+        else if ((pch = strstr(pch, m_data.pattern().c_str())) != nullptr)
         {
-          strncpy(pch, m_replace.c_str(), m_replace.size());
-          m_file->write(line, pos - m_find.size() + m_replace.size());
-          m_actions++;
+          do
+          {
+            strncpy(
+              pch,
+              m_data.replacement().c_str(),
+              m_data.replacement().size());
+
+            pch++;
+            m_actions++;
+            pos += m_data.replacement().size() - m_data.pattern().size();
+          } while (m_data.is_global() &&
+                   (pch = strstr(pch, m_data.pattern().c_str())) != nullptr);
+
+          m_file->write(line, pos);
         }
         else
         {

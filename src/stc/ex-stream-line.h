@@ -11,6 +11,7 @@
 #include <wex/addressrange.h>
 #include <wex/ex-stream.h>
 #include <wex/file.h>
+#include <wex/substitute-data.h>
 
 namespace wex
 {
@@ -30,10 +31,9 @@ namespace wex
 
     /// Constructor for substitute action.
     ex_stream_line(
-      file*               work,
-      const addressrange& range,
-      const std::string&  find,
-      const std::string&  replace);
+      file*                   work,
+      const addressrange&     range,
+      const data::substitute& data);
 
     /// Constructor for insert action.
     ex_stream_line(
@@ -54,10 +54,11 @@ namespace wex
     int lines() const { return m_line; };
 
   private:
-    const action_t      m_action;
-    const addressrange& m_range;
-    const std::string   m_find, m_replace, m_text;
-    file*               m_file;
-    int                 m_actions = 0, m_line = 0;
+    const action_t         m_action;
+    const data::substitute m_data;
+    const std::string      m_text;
+    file*                  m_file;
+    const int              m_begin, m_end;
+    int                    m_actions = 0, m_line = 0;
   };
 }; // namespace wex

@@ -2,7 +2,7 @@
 // Name:      addressrange.h
 // Purpose:   Declaration of class wex::addressrange
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -168,12 +168,6 @@ namespace wex
     confirm(const std::string& pattern, const std::string& replacement) const;
 
     bool indent(bool forward = true) const;
-
-    bool parse(
-      const std::string& command,
-      std::string&       pattern,
-      std::string&       replacement,
-      std::string&       options) const;
 
     void set(const std::string& begin, const std::string& end)
     {

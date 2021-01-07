@@ -18,29 +18,29 @@
 
 #include "ex-stream-line.h"
 
-#define STREAM_LINE_ON_CHAR()         \
-  {                                   \
-    m_stream->seekg(0);               \
-                                      \
-    int  i = 0;                       \
-    char c;                           \
-                                      \
-    while (m_stream->get(c))          \
-    {                                 \
-      m_current_line[i++] = c;        \
-                                      \
-      if (c == '\n')                  \
-      {                               \
-        sl.handle(m_current_line, i); \
-      }                               \
-    }                                 \
-                                      \
-    sl.handle(m_current_line, i);     \
-                                      \
-    if (!copy(m_temp, m_work))        \
-    {                                 \
-      return false;                   \
-    }                                 \
+#define STREAM_LINE_ON_CHAR()            \
+  {                                      \
+    m_stream->seekg(0);                  \
+                                         \
+    int  i = 0;                          \
+    char c;                              \
+                                         \
+    while (m_stream->get(c))             \
+    {                                    \
+      m_current_line[i++] = c;           \
+                                         \
+      if (c == '\n' || i == m_line_size) \
+      {                                  \
+        sl.handle(m_current_line, i);    \
+      }                                  \
+    }                                    \
+                                         \
+    sl.handle(m_current_line, i);        \
+                                         \
+    if (!copy(m_temp, m_work))           \
+    {                                    \
+      return false;                      \
+    }                                    \
   }
 
 namespace wex
@@ -139,8 +139,8 @@ bool wex::ex_stream::find(
   while (!found && get_next_line())
   {
     if (
-      (use_regex && std::regex_search(m_current_line, r)) ||
-      (!use_regex && strstr(m_current_line, text.c_str()) != nullptr))
+      (!use_regex && strstr(m_current_line, text.c_str()) != nullptr) ||
+      (use_regex && std::regex_search(m_current_line, r)))
     {
       found = true;
     }
@@ -182,22 +182,18 @@ int wex::ex_stream::get_line_count_request()
     return LINE_COUNT_UNKNOWN;
   }
 
-  auto pos = m_stream->tellg();
+  const auto pos     = m_stream->tellg();
+  const auto line_no = m_line_no;
   m_stream->clear();
   m_stream->seekg(0);
-  m_last_line_no = 0;
+  m_line_no = 0;
 
-  char c;
-  while (m_stream->get(c))
-  {
-    if (c == '\n')
-    {
-      m_last_line_no++;
-    }
-  }
+  while (get_next_line())
+    ;
 
   m_stream->clear();
   m_stream->seekg(pos);
+  m_line_no = line_no;
 
   return m_last_line_no;
 }
@@ -206,8 +202,15 @@ bool wex::ex_stream::get_next_line()
 {
   if (!m_stream->getline(m_current_line, m_line_size))
   {
-    m_last_line_no = m_line_no + 1;
-    return false;
+    if (m_stream->gcount() >= m_line_size - 1)
+    {
+      m_stream->clear();
+    }
+    else
+    {
+      m_last_line_no = m_line_no;
+      return false;
+    }
   }
 
   m_line_no++;
@@ -259,10 +262,10 @@ bool wex::ex_stream::insert_text(
     return false;
   }
 
-  const auto line(loc == INSERT_BEFORE ? a.get_line() - 1 : a.get_line());
+  const auto line(loc == INSERT_BEFORE ? a.get_line() : a.get_line() + 1);
   const addressrange range(
     &m_stc->get_ex(),
-    std::to_string(line) + "," + std::to_string(line + 1));
+    std::to_string(line) + "," + std::to_string(line));
 
   ex_stream_line sl(m_temp, range, text);
 
@@ -334,21 +337,21 @@ void wex::ex_stream::stream(file& f)
 }
 
 bool wex::ex_stream::substitute(
-  const addressrange& range,
-  const std::string&  find,
-  const std::string&  replace)
+  const addressrange&     range,
+  const data::substitute& data)
 {
   if (m_stream == nullptr)
   {
     return false;
   }
 
-  ex_stream_line sl(m_temp, range, find, replace);
+  ex_stream_line sl(m_temp, range, data);
 
   STREAM_LINE_ON_CHAR();
 
   m_stc->get_frame()->show_ex_message(
-    "Replaced: " + std::to_string(sl.actions()) + " occurrences of: " + find);
+    "Replaced: " + std::to_string(sl.actions()) +
+    " occurrences of: " + data.pattern());
 
   goto_line(0);
 

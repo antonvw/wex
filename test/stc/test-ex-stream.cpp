@@ -11,6 +11,7 @@
 #include <wex/ex-stream.h>
 #include <wex/frd.h>
 #include <wex/stc.h>
+#include <wex/substitute-data.h>
 
 //#define DEBUG 1
 
@@ -169,7 +170,7 @@ TEST_CASE("wex::ex_stream")
 
     wex::addressrange ar(&stc->get_ex(), "%");
 
-    REQUIRE(exs.substitute(ar, "test", "1234"));
+    REQUIRE(exs.substitute(ar, wex::data::substitute("test", "1234")));
     REQUIRE(exs.is_modified());
   }
 
