@@ -1,7 +1,6 @@
 # roadmap
 - add support for markers in ex mode,
 - wxDateTime replace by c++20 methods date and time utilities
-- process-imp should be in core
 - prepare_output at one place in test
 
 ## backlog
@@ -11,4 +10,5 @@
   -> windows appear
 - use spaceship operator
   and modules
+- process-imp should be in core
 - use abstract factory design pattern

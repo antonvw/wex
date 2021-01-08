@@ -2,7 +2,7 @@
 // Name:      eval.cpp
 // Purpose:   Implementation of class wex::evaluator
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
@@ -16,7 +16,6 @@
 
 #include "eval.h"
 #include <wex/ex.h>
-#include <wex/log.h>
 #include <wex/stc.h>
 
 namespace x3 = boost::spirit::x3;

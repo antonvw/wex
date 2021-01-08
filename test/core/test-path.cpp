@@ -2,12 +2,11 @@
 // Name:      test-path.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
 #include <chrono>
-#include <wex/log.h>
 #include <wex/path.h>
 
 TEST_CASE("wex::path")
