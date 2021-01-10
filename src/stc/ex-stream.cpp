@@ -18,29 +18,34 @@
 
 #include "ex-stream-line.h"
 
-#define STREAM_LINE_ON_CHAR()                    \
-  {                                              \
-    m_stream->seekg(0);                          \
-                                                 \
-    int  i = 0;                                  \
-    char c;                                      \
-                                                 \
-    while (m_stream->get(c))                     \
-    {                                            \
-      m_current_line[i++] = c;                   \
-                                                 \
-      if (c == '\n' || i == m_current_line_size) \
-      {                                          \
-        sl.handle(m_current_line, i);            \
-      }                                          \
-    }                                            \
-                                                 \
-    sl.handle(m_current_line, i);                \
-                                                 \
-    if (!copy(m_temp, m_work))                   \
-    {                                            \
-      return false;                              \
-    }                                            \
+#define STREAM_LINE_ON_CHAR()                      \
+  {                                                \
+    if (!range.is_ok())                            \
+    {                                              \
+      return false;                                \
+    }                                              \
+                                                   \
+    m_stream->seekg(0);                            \
+                                                   \
+    int  i = 0;                                    \
+    char c;                                        \
+                                                   \
+    while (m_stream->get(c))                       \
+    {                                              \
+      m_current_line[i++] = c;                     \
+                                                   \
+      if (c == '\n' || i == m_current_line_size)   \
+      {                                            \
+        sl.handle(m_current_line, i);              \
+      }                                            \
+    }                                              \
+                                                   \
+    sl.handle(m_current_line, i);                  \
+                                                   \
+    if (sl.actions() > 0 && !copy(m_temp, m_work)) \
+    {                                              \
+      return false;                                \
+    }                                              \
   }
 
 namespace wex
@@ -238,7 +243,7 @@ bool wex::ex_stream::get_next_line()
 
 bool wex::ex_stream::get_previous_line()
 {
-  auto pos (m_stream->tellg());
+  auto pos(m_stream->tellg());
 
   if ((int)pos - (int)m_current_line_size > 0)
   {
@@ -250,23 +255,23 @@ bool wex::ex_stream::get_previous_line()
     pos = 0;
     m_stream->seekg(0);
   }
-  
+
   m_stream->read(m_buffer, m_current_line_size);
-  
+
   if (m_stream->gcount() > 0)
   {
-    // We have filled the m_buffer, now from end of m_buffer before \n search backwards
-    // for newline, this is the m_current_line to handle,
-    // and set the stream pointer to position before that newline.
-    bool current = true;
-    int current_end = 0;
-    for (int i = m_stream->gcount() - 2; i >=0 ; i--)
+    // We have filled the m_buffer, now from end of m_buffer before \n search
+    // backwards for newline, this is the m_current_line to handle, and set the
+    // stream pointer to position before that newline.
+    bool current     = true;
+    int  current_end = 0;
+    for (int i = m_stream->gcount() - 2; i >= 0; i--)
     {
       if (m_buffer[i] == '\n')
       {
         if (current)
         {
-          current = false;
+          current     = false;
           current_end = i - 1;
         }
         else
@@ -281,7 +286,7 @@ bool wex::ex_stream::get_previous_line()
       }
     }
   }
-  
+
   return false;
 }
 
@@ -304,15 +309,18 @@ void wex::ex_stream::goto_line(int no)
     m_stc->ClearAll();
     m_stc->SetReadOnly(true);
 
-    while ((m_line_no < no) && get_next_line());
+    while ((m_line_no < no) && get_next_line())
+      ;
   }
   else if (no < m_line_no)
   {
-    while ((no < m_line_no) && get_previous_line());
+    while ((no < m_line_no) && get_previous_line())
+      ;
   }
   else
   {
-    while ((no > m_line_no) && get_next_line());
+    while ((no > m_line_no) && get_next_line())
+      ;
   }
 
   set_text();

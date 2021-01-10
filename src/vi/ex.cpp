@@ -1001,6 +1001,14 @@ int wex::ex::marker_line(char marker) const
   return -1;
 }
 
+void wex::ex::on_init()
+{
+  m_dialog = new stc_entry_dialog(
+    "tmp",
+    std::string(),
+    data::window().button(wxOK).title("tmp").size({450, 450}));
+}
+
 void wex::ex::print(const std::string& text)
 {
   show_dialog("Print", text);
@@ -1082,37 +1090,28 @@ void wex::ex::show_dialog(
   const std::string& text,
   const std::string& lexer)
 {
-  if (m_dialog == nullptr)
+  if (title == "Print")
   {
-    m_dialog = new stc_entry_dialog(
-      text,
-      std::string(),
-      data::window().button(wxOK).title(title).size({450, 450}));
-  }
-  else
-  {
-    if (title == "Print")
-    {
-      if (title != m_dialog->GetTitle())
-      {
-        m_dialog->get_stc()->set_text(text);
-      }
-      else
-      {
-        m_dialog->get_stc()->AppendText(text);
-        m_dialog->get_stc()->DocumentEnd();
-      }
-    }
-    else
+    if (title != m_dialog->GetTitle())
     {
       m_dialog->get_stc()->set_text(text);
     }
-
-    m_dialog->SetTitle(title);
+    else
+    {
+      m_dialog->get_stc()->AppendText(text);
+      m_dialog->get_stc()->DocumentEnd();
+    }
   }
+  else
+  {
+    m_dialog->get_stc()->set_text(text);
+  }
+
+  m_dialog->SetTitle(title);
 
   m_dialog->get_stc()->get_lexer().set(
     !lexer.empty() ? wex::lexer(lexer) : get_stc()->get_lexer());
+
   m_dialog->Show();
 }
 

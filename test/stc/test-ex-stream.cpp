@@ -49,7 +49,7 @@ TEST_CASE("wex::ex_stream")
 
     exs.goto_line(4);
     REQUIRE(exs.get_current_line() == 4);
-    
+
     exs.goto_line(3);
     REQUIRE(exs.get_current_line() == 3);
   }
@@ -110,7 +110,9 @@ TEST_CASE("wex::ex_stream")
     wex::ex_stream exs(stc);
     exs.stream(ifs);
 
-    REQUIRE(exs.insert_text(wex::address(&stc->get_ex(), 0), "TEXT_BEFORE"));
+    REQUIRE(!exs.insert_text(wex::address(&stc->get_ex(), 0), "TEXT_BEFORE"));
+
+    REQUIRE(exs.insert_text(wex::address(&stc->get_ex(), 1), "TEXT_BEFORE"));
     REQUIRE(exs.insert_text(
       wex::address(&stc->get_ex(), 3),
       "TEXT_AFTER",

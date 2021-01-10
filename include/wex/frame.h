@@ -126,6 +126,7 @@ namespace wex
     void set_find_focus(wxWindow* focus) { m_find_focus = focus; };
 
     /// Sets up the status bar if you want to use statustext.
+    /// And intializes other static data.
     statusbar* setup_statusbar(
       const std::vector<statusbar_pane>& panes,
       long                               style = wxST_SIZEGRIP,

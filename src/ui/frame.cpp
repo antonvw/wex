@@ -372,6 +372,8 @@ wex::statusbar* wex::frame::setup_statusbar(
   long                               style,
   const std::string&                 name)
 {
+  ex::on_init();
+
   return statusbar::setup(this, panes, style, name);
 }
 
