@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      stc/find.cpp
-// Purpose:   Implementation of class wex::stc find methods
+// Name:      data/find.cpp
+// Purpose:   Implementation of class wex::data::find
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <regex>

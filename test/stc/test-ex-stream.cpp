@@ -49,6 +49,9 @@ TEST_CASE("wex::ex_stream")
 
     exs.goto_line(4);
     REQUIRE(exs.get_current_line() == 4);
+    
+    exs.goto_line(3);
+    REQUIRE(exs.get_current_line() == 3);
   }
 
   SUBCASE("erase")

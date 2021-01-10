@@ -18,29 +18,29 @@
 
 #include "ex-stream-line.h"
 
-#define STREAM_LINE_ON_CHAR()            \
-  {                                      \
-    m_stream->seekg(0);                  \
-                                         \
-    int  i = 0;                          \
-    char c;                              \
-                                         \
-    while (m_stream->get(c))             \
-    {                                    \
-      m_current_line[i++] = c;           \
-                                         \
-      if (c == '\n' || i == m_line_size) \
-      {                                  \
-        sl.handle(m_current_line, i);    \
-      }                                  \
-    }                                    \
-                                         \
-    sl.handle(m_current_line, i);        \
-                                         \
-    if (!copy(m_temp, m_work))           \
-    {                                    \
-      return false;                      \
-    }                                    \
+#define STREAM_LINE_ON_CHAR()                    \
+  {                                              \
+    m_stream->seekg(0);                          \
+                                                 \
+    int  i = 0;                                  \
+    char c;                                      \
+                                                 \
+    while (m_stream->get(c))                     \
+    {                                            \
+      m_current_line[i++] = c;                   \
+                                                 \
+      if (c == '\n' || i == m_current_line_size) \
+      {                                          \
+        sl.handle(m_current_line, i);            \
+      }                                          \
+    }                                            \
+                                                 \
+    sl.handle(m_current_line, i);                \
+                                                 \
+    if (!copy(m_temp, m_work))                   \
+    {                                            \
+      return false;                              \
+    }                                            \
   }
 
 namespace wex
@@ -55,14 +55,17 @@ namespace wex
 
 wex::ex_stream::ex_stream(wex::stc* stc)
   : m_context_lines(50)
-  , m_line_size(500)
-  , m_current_line(new char[m_line_size])
+  , m_buffer_size(1000000)
+  , m_buffer(new char[m_buffer_size])
+  , m_current_line_size(500)
+  , m_current_line(new char[m_current_line_size])
   , m_stc(stc)
 {
 }
 
 wex::ex_stream::~ex_stream()
 {
+  delete[] m_buffer;
   delete[] m_current_line;
 
   delete m_temp;
@@ -129,14 +132,14 @@ bool wex::ex_stream::find(
     return false;
   }
 
-  auto line_no = m_line_no;
-  auto pos     = m_stream->tellg();
-  bool found   = false;
-
+  const auto       line_no = m_line_no;
+  const auto       pos     = m_stream->tellg();
   const std::regex r(text);
   const bool       use_regex(find_replace_data::get()->is_regex());
+  bool             found = false;
 
-  while (!found && get_next_line())
+  while (!found && ((find_next && get_next_line()) ||
+                    (!find_next && get_previous_line())))
   {
     if (
       (!use_regex && strstr(m_current_line, text.c_str()) != nullptr) ||
@@ -182,27 +185,42 @@ int wex::ex_stream::get_line_count_request()
     return LINE_COUNT_UNKNOWN;
   }
 
-  const auto pos     = m_stream->tellg();
-  const auto line_no = m_line_no;
+  const auto pos = m_stream->tellg();
   m_stream->clear();
   m_stream->seekg(0);
-  m_line_no = 0;
 
-  while (get_next_line())
-    ;
+  int line_no = 0;
+
+  while (m_stream->read(m_buffer, m_buffer_size))
+  {
+    const int count = m_stream->gcount();
+    for (int i = 0; i < count; i++)
+    {
+      if (m_buffer[i] == '\n')
+        line_no++;
+    }
+  }
+
+  const int count = m_stream->gcount();
+  for (int i = 0; i < count; i++)
+  {
+    if (m_buffer[i] == '\n')
+      line_no++;
+  }
+
+  m_last_line_no = line_no;
 
   m_stream->clear();
   m_stream->seekg(pos);
-  m_line_no = line_no;
 
   return m_last_line_no;
 }
 
 bool wex::ex_stream::get_next_line()
 {
-  if (!m_stream->getline(m_current_line, m_line_size))
+  if (!m_stream->getline(m_current_line, m_current_line_size))
   {
-    if (m_stream->gcount() >= m_line_size - 1)
+    if (m_stream->gcount() >= m_current_line_size - 1)
     {
       m_stream->clear();
     }
@@ -218,6 +236,55 @@ bool wex::ex_stream::get_next_line()
   return true;
 }
 
+bool wex::ex_stream::get_previous_line()
+{
+  auto pos (m_stream->tellg());
+
+  if ((int)pos - (int)m_current_line_size > 0)
+  {
+    m_stream->seekg((size_t)pos - m_current_line_size);
+    pos = m_stream->tellg();
+  }
+  else if (pos > 0)
+  {
+    pos = 0;
+    m_stream->seekg(0);
+  }
+  
+  m_stream->read(m_buffer, m_current_line_size);
+  
+  if (m_stream->gcount() > 0)
+  {
+    // We have filled the m_buffer, now from end of m_buffer before \n search backwards
+    // for newline, this is the m_current_line to handle,
+    // and set the stream pointer to position before that newline.
+    bool current = true;
+    int current_end = 0;
+    for (int i = m_stream->gcount() - 2; i >=0 ; i--)
+    {
+      if (m_buffer[i] == '\n')
+      {
+        if (current)
+        {
+          current = false;
+          current_end = i - 1;
+        }
+        else
+        {
+          const size_t sz(current_end - i);
+          strncpy(m_current_line, m_buffer + i + 1, sz);
+          m_current_line[sz] = 0;
+          m_stream->seekg((size_t)pos + current_end + 2);
+          m_line_no--;
+          return true;
+        }
+      }
+    }
+  }
+  
+  return false;
+}
+
 void wex::ex_stream::goto_line(int no)
 {
   if (m_stream == nullptr || no == m_line_no)
@@ -227,10 +294,9 @@ void wex::ex_stream::goto_line(int no)
 
   log::trace("ex stream goto_line") << no << m_line_no;
 
-  if (no < m_line_no)
+  if (no == 0 || (no < 100 && no < m_line_no) || no < m_line_no - 1000)
   {
-    // currently reset.
-    m_line_no = -1;
+    m_line_no = LINE_COUNT_UNKNOWN;
     m_stream->clear();
     m_stream->seekg(0);
 
@@ -238,15 +304,15 @@ void wex::ex_stream::goto_line(int no)
     m_stc->ClearAll();
     m_stc->SetReadOnly(true);
 
-    while ((m_line_no < no) && get_next_line())
-    {
-    }
+    while ((m_line_no < no) && get_next_line());
+  }
+  else if (no < m_line_no)
+  {
+    while ((no < m_line_no) && get_previous_line());
   }
   else
   {
-    while ((no > m_line_no) && get_next_line())
-    {
-    }
+    while ((no > m_line_no) && get_next_line());
   }
 
   set_text();

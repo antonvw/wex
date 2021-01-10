@@ -94,17 +94,19 @@ namespace wex
   private:
     bool copy(file* from, file* to);
     bool get_next_line();
+    bool get_previous_line();
     void set_text();
 
     bool m_is_modified{false};
 
-    const int m_context_lines, m_line_size;
+    const size_t m_buffer_size, m_context_lines, m_current_line_size;
 
     std::fstream* m_stream{nullptr}; // pointer in m_file to actual stream
     file *        m_file{nullptr}, *m_temp{nullptr}, *m_work{nullptr};
 
     int m_line_no{LINE_COUNT_UNKNOWN}, m_last_line_no{LINE_COUNT_UNKNOWN};
 
+    char* m_buffer;
     char* m_current_line;
 
     stc* m_stc;

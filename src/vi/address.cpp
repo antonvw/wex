@@ -190,6 +190,18 @@ int wex::address::get_line() const
   // If this is a ?? address, return line with first backward match.
   else if (match("\\?(.*)\\?", m_address, v) > 0)
   {
+    if (!m_ex->get_stc()->is_visual())
+    {
+      if (m_ex->get_stc()->get_file().ex_stream()->find(v[0], -1, false))
+      {
+        return m_ex->get_stc()->get_file().ex_stream()->get_current_line() + 1;
+      }
+      else
+      {
+        return 0;
+      }
+    }
+
     m_ex->get_stc()->SetTargetRange(m_ex->get_stc()->GetCurrentPos(), 0);
 
     if (m_ex->get_stc()->SearchInTarget(v[0]) != -1)

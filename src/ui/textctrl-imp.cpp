@@ -209,7 +209,7 @@ wex::textctrl_imp::textctrl_imp(
         if (is_ex_mode())
         {
           Clear();
-          m_command.reset();
+          m_command = ex_command(":");
         }
         else if (m_tc->ex() != nullptr)
         {
@@ -355,7 +355,7 @@ wex::textctrl_imp::textctrl_imp(
       if (is_ex_mode())
       {
         Clear();
-        m_command.reset();
+        m_command = ex_command(":");
         SetFocus();
       }
 
