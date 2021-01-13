@@ -2,12 +2,11 @@
 // Name:      test-property.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
 #include <wex/property.h>
-#include <wx/stc/stc.h>
 
 TEST_CASE("wex::property")
 {

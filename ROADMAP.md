@@ -1,6 +1,5 @@
 # roadmap
 - wxDateTime replace by c++20 methods date and time utilities
-- prepare_output at one place in test
 
 ## backlog
 - allow dynamic libs
