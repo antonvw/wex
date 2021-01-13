@@ -1,5 +1,4 @@
 # roadmap
-- add support for markers in ex mode,
 - wxDateTime replace by c++20 methods date and time utilities
 - prepare_output at one place in test
 

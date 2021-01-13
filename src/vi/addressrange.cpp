@@ -1010,12 +1010,22 @@ bool wex::addressrange::write(const std::string& text) const
   }
 #endif
 
-  return wex::file(
-           filename,
-           text.find(">>") != std::string::npos ?
-             std::ios::out | std::ios_base::app :
-             std::ios::out)
-    .write(m_stc->get_selected_text());
+  if (!m_stc->is_visual())
+  {
+    return m_stc->get_file().ex_stream()->write(
+      *this,
+      filename,
+      text.find(">>") != std::string::npos);
+  }
+  else
+  {
+    return wex::file(
+             filename,
+             text.find(">>") != std::string::npos ?
+               std::ios::out | std::ios_base::app :
+               std::ios::out)
+      .write(m_stc->get_selected_text());
+  }
 }
 
 bool wex::addressrange::yank(char name) const

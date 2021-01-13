@@ -28,6 +28,8 @@ namespace wex
         return "joined";
       case ex_stream_line::ACTION_SUBSTITUTE:
         return "substituted";
+      case ex_stream_line::ACTION_WRITE:
+        return "written";
 
       default:
         assert(0);
@@ -147,12 +149,17 @@ void wex::ex_stream_line::handle(char* line, int& pos)
 
       break;
 
+      case ACTION_WRITE:
+        m_actions++;
+        m_file->write(line, pos);
+        break;
+
       default:
         assert(0);
         break;
     }
   }
-  else
+  else if (m_action != ACTION_WRITE)
   {
     m_file->write(line, pos);
   }

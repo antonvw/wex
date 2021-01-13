@@ -3,7 +3,7 @@
 // Purpose:   Implementation of class wex::ex
 //            http://pubs.opengroup.org/onlinepubs/9699919799/utilities/ex.html
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <regex>
@@ -21,6 +21,7 @@
 #include <wex/ctags.h>
 #include <wex/debug.h>
 #include <wex/defs.h>
+#include <wex/ex-stream.h>
 #include <wex/ex.h>
 #include <wex/frd.h>
 #include <wex/lexer-props.h>
@@ -875,6 +876,11 @@ bool wex::ex::marker_add(char marker, int line)
   if (m_copy)
     return false;
 
+  if (!get_stc()->is_visual())
+  {
+    return get_stc()->get_file().ex_stream()->marker_add(marker, line);
+  }
+
   const wex::marker lm(wex::lexers::get()->get_marker(m_marker_symbol));
 
   if (!lm.is_ok())
@@ -934,6 +940,11 @@ bool wex::ex::marker_add(char marker, int line)
 
 bool wex::ex::marker_delete(char marker)
 {
+  if (!get_stc()->is_visual())
+  {
+    return get_stc()->get_file().ex_stream()->marker_delete(marker);
+  }
+
   if (const auto& it = m_marker_identifiers.find(marker);
       it != m_marker_identifiers.end())
   {
@@ -958,6 +969,11 @@ bool wex::ex::marker_goto(char marker)
 
 int wex::ex::marker_line(char marker) const
 {
+  if (!get_stc()->is_visual())
+  {
+    return get_stc()->get_file().ex_stream()->marker_line(marker);
+  }
+
   if (marker == '<')
   {
     if (!get_stc()->get_selected_text().empty())

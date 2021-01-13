@@ -10,10 +10,9 @@
 #include <wex/addressrange.h>
 #include <wex/ex-stream.h>
 #include <wex/frd.h>
+#include <wex/log.h>
 #include <wex/stc.h>
 #include <wex/substitute-data.h>
-
-//#define DEBUG 1
 
 TEST_CASE("wex::ex_stream")
 {
@@ -146,6 +145,29 @@ TEST_CASE("wex::ex_stream")
     }
   }
 
+  SUBCASE("markers")
+  {
+    {
+      std::fstream ifs("ex-mode.txt", std::ios_base::out);
+      REQUIRE(ifs.write(text.c_str(), text.size()));
+    }
+
+    {
+      wex::file ifs("ex-mode.txt", std::ios_base::in | std::ios_base::out);
+      REQUIRE(ifs.is_open());
+
+      wex::ex_stream exs(stc);
+      exs.stream(ifs);
+
+      REQUIRE(exs.marker_add('x', 4));
+      REQUIRE(exs.marker_line('x') == 4);
+      REQUIRE(!exs.marker_delete('y'));
+      REQUIRE(exs.marker_delete('x'));
+      REQUIRE(!exs.marker_delete('x'));
+      REQUIRE(exs.marker_line('x') == -1);
+    }
+  }
+
   SUBCASE("request")
   {
     wex::file ifs("test.md", std::ios_base::in);
@@ -179,11 +201,35 @@ TEST_CASE("wex::ex_stream")
     REQUIRE(exs.is_modified());
   }
 
-#ifdef DEBUG
-  system("cat ex-mode.txt");
-#endif
+  SUBCASE("write")
+  {
+    {
+      std::fstream ifs("ex-mode.txt", std::ios_base::out);
+      REQUIRE(ifs.write(text.c_str(), text.size()));
+    }
+
+    {
+      wex::file ifs("ex-mode.txt", std::ios_base::in | std::ios_base::out);
+      REQUIRE(ifs.is_open());
+
+      wex::ex_stream exs(stc);
+      exs.stream(ifs);
+
+      wex::addressrange ar(&stc->get_ex(), "%");
+      REQUIRE(exs.write(ar, "tmp.txt"));
+    }
+  }
+
+  if (wex::file info("ex-mode.txt"); info.is_open())
+  {
+    if (const auto buffer(info.read()); buffer != nullptr)
+    {
+      wex::log::trace("ex-mode.txt") << "\n" << *buffer;
+    }
+  }
 
   remove("ex-mode.txt");
+  remove("tmp.txt");
 
   stc->visual(true);
 }

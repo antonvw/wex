@@ -361,8 +361,9 @@ bool wex::address::put(char name) const
 bool wex::address::read(const std::string& arg) const
 {
   if (
-    m_ex->get_stc()->GetReadOnly() || m_ex->get_stc()->is_hexmode() ||
-    get_line() <= 0)
+    m_ex->get_stc()->is_visual() &&
+    (m_ex->get_stc()->GetReadOnly() || m_ex->get_stc()->is_hexmode() ||
+     get_line() <= 0))
   {
     return false;
   }
@@ -389,7 +390,11 @@ bool wex::address::read(const std::string& arg) const
     }
     else if (const auto buffer(file.read()); buffer != nullptr)
     {
-      if (m_address == ".")
+      if (!m_ex->get_stc()->is_visual())
+      {
+        m_ex->get_stc()->get_file().ex_stream()->insert_text(*this, *buffer);
+      }
+      else if (m_address == ".")
       {
         m_ex->get_stc()->add_text(*buffer);
       }

@@ -1125,7 +1125,14 @@ void wex::stc::visual(bool on)
 
   if (on && !m_visual)
   {
-    log::info("enter visual mode") << on << get_filename().string();
+    std::stringstream info;
+
+    if (!get_filename().string().empty())
+    {
+      info << get_filename().string();
+    }
+
+    log::info("enter visual mode") << on << info;
 
     m_visual = on; // needed in do_file_load
     m_file.close();

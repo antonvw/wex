@@ -24,9 +24,10 @@ namespace wex
       ACTION_INSERT,
       ACTION_JOIN,
       ACTION_SUBSTITUTE,
+      ACTION_WRITE,
     };
 
-    /// Constructor for erase or join action.
+    /// Constructor for other action.
     ex_stream_line(action_t type, file* work, const addressrange& range);
 
     /// Constructor for substitute action.
@@ -43,6 +44,9 @@ namespace wex
 
     /// Destructor.
     ~ex_stream_line();
+
+    /// Returns current action.
+    auto action() const { return m_action; };
 
     /// Returns actions.
     int actions() const { return m_actions; };

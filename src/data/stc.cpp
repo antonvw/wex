@@ -191,7 +191,7 @@ bool wex::data::stc::inject() const
       m_event_data.is_synced() ? path::status_t().set(path::STAT_SYNC) :
                                  path::status_t());
 
-    if (!m_event_data.is_synced())
+    if (!m_event_data.is_synced() && m_stc->is_visual())
     {
       m_stc->SetFocus();
     }

@@ -8,6 +8,7 @@
 #pragma once
 
 #include <fstream>
+#include <map>
 #include <string>
 
 #include <wex/text-window.h>
@@ -81,6 +82,15 @@ namespace wex
     /// Joins all lines in the range.
     bool join(const addressrange& range);
 
+    /// Sets marker.
+    bool marker_add(char marker, int line);
+
+    /// Deletes marker.
+    bool marker_delete(char marker);
+
+    /// Returns line for marker.
+    int marker_line(char marker) const;
+
     /// Sets the streams. Puts first line on stc.
     /// This must be called before the other methods.
     void stream(file& f);
@@ -90,6 +100,12 @@ namespace wex
 
     /// Writes working stream to file.
     bool write();
+
+    /// Writes range to file.
+    bool write(
+      const addressrange& range, 
+      const std::string& file,
+      bool append = false);
 
   private:
     bool copy(file* from, file* to);
@@ -105,6 +121,8 @@ namespace wex
     file *        m_file{nullptr}, *m_temp{nullptr}, *m_work{nullptr};
 
     int m_line_no{LINE_COUNT_UNKNOWN}, m_last_line_no{LINE_COUNT_UNKNOWN};
+
+    std::map<char, int> m_markers;
 
     char* m_buffer;
     char* m_current_line;
