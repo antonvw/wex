@@ -134,7 +134,7 @@ TEST_CASE("wex::listview")
       wxQueueEvent(lv, event);
     }
   }
-  
+
   SUBCASE("TSV")
   {
     auto* lv =
