@@ -9,7 +9,7 @@ shows a usage of this library, offering a full featured source code text editor.
 
 - [cmake](http://www.cmake.org/)
 - [boost](https://www.boost.org)
-- a `c++20` standard supporting compiler (clang-9 on osx)
+- a `c++20` standard supporting compiler
 
 ## Building
 
