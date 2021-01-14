@@ -2,7 +2,7 @@
 // Name:      core/util.cpp
 // Purpose:   Implementation of wex core utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -389,13 +389,6 @@ const std::string wex::get_string_set(
 std::tuple<bool, time_t>
 wex::get_time(const std::string& text, const std::string& format)
 {
-  time_t t;
-#ifdef __WXMSW__
-  wxDateTime dt;
-  if (!dt.ParseFormat(text, format))
-    return {false, 0};
-  t = dt.GetTicks();
-#else
   std::tm           tm = {0};
   std::stringstream ss(text);
   ss >> std::get_time(&tm, format.c_str());
@@ -406,9 +399,10 @@ wex::get_time(const std::string& text, const std::string& format)
     return {false, 0};
   }
 
+  time_t t;
+
   if ((t = mktime(&tm)) == -1)
     return {false, 0};
-#endif
 
   return {true, t};
 }
