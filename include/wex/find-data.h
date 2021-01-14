@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      stc/find.cpp
-// Purpose:   Implementation of class wex::stc find methods
+// Name:      find-data.h
+// Purpose:   Declaration of class wex::data::find
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -16,7 +16,7 @@ namespace wex::core
 
 namespace wex::data
 {
-  /// Offers a class to find data inside an stc component.
+  /// Offers a class to find data inside a core stc component.
   class find
   {
   public:
@@ -62,7 +62,7 @@ namespace wex::data
   private:
     void set_pos();
 
-    core::stc* m_stc;
+    core::stc* m_stc{nullptr};
 
     int m_end_pos{wxSTC_INVALID_POSITION}, m_flags{-1},
       m_start_pos{wxSTC_INVALID_POSITION};

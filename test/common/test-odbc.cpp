@@ -2,7 +2,7 @@
 // Name:      test-odbc.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -13,7 +13,6 @@
 
 #include <wex/config.h>
 #include <wex/grid.h>
-#include <wex/log.h>
 #include <wex/managed-frame.h>
 #include <wex/odbc.h>
 #include <wex/stc.h>

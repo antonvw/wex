@@ -30,6 +30,7 @@
 #include <wex/dir-data.h>
 #include <wex/dir.h>
 #include <wex/ex-command.h>
+#include <wex/ex-stream.h>
 #include <wex/ex.h>
 #include <wex/file-dialog.h>
 #include <wex/file-history.h>
@@ -89,6 +90,7 @@
 #include <wex/stream-statistics.h>
 #include <wex/stream.h>
 #include <wex/style.h>
+#include <wex/text-window.h>
 #include <wex/textctrl-input.h>
 #include <wex/textctrl.h>
 #include <wex/tocontainer.h>

@@ -2,7 +2,7 @@
 // Name:      test-listview.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -23,7 +23,8 @@ TEST_CASE("wex::listview")
   {
     REQUIRE(lv->data().type() == wex::data::listview::NONE);
 
-    wex::listview::config_dialog(wex::data::window().button(wxAPPLY | wxCANCEL));
+    wex::listview::config_dialog(
+      wex::data::window().button(wxAPPLY | wxCANCEL));
 
     REQUIRE(lv->data().image() == wex::data::listview::IMAGE_ART);
 
@@ -35,9 +36,10 @@ TEST_CASE("wex::listview")
     REQUIRE(intcol.is_sorted_ascending());
 
     REQUIRE(lv->append_columns({{intcol}}));
-    REQUIRE(lv->append_columns({{"Date", wex::column::DATE},
-                                {"Float", wex::column::FLOAT},
-                                {"String", wex::column::STRING}}));
+    REQUIRE(lv->append_columns(
+      {{"Date", wex::column::DATE},
+       {"Float", wex::column::FLOAT},
+       {"String", wex::column::STRING}}));
 
     REQUIRE(lv->find_column("Int") == 0);
     REQUIRE(lv->find_column("Date") == 1);
@@ -69,10 +71,11 @@ TEST_CASE("wex::listview")
 
   SUBCASE("sorting")
   {
-    REQUIRE(lv->append_columns({{"Int", wex::column::INT},
-                                {"Date", wex::column::DATE},
-                                {"Float", wex::column::FLOAT},
-                                {"String", wex::column::STRING}}));
+    REQUIRE(lv->append_columns(
+      {{"Int", wex::column::INT},
+       {"Date", wex::column::DATE},
+       {"Float", wex::column::FLOAT},
+       {"String", wex::column::STRING}}));
 
     for (int i = 0; i < 10; i++)
     {
@@ -131,41 +134,17 @@ TEST_CASE("wex::listview")
       wxQueueEvent(lv, event);
     }
   }
-}
 
-TEST_CASE("wex::listview::TSV")
-{
-  auto* lv =
-    new wex::listview(wex::data::listview().type(wex::data::listview::TSV));
-  wex::test::add_pane(frame(), lv);
-
-  SUBCASE("general")
+  SUBCASE("TSV")
   {
+    auto* lv =
+      new wex::listview(wex::data::listview().type(wex::data::listview::TSV));
+    wex::test::add_pane(frame(), lv);
+
     REQUIRE(lv->GetColumnCount() == 0);
     REQUIRE(lv->data().type() == wex::data::listview::TSV);
     REQUIRE(lv->load({"x\ty\tz", "v\tw\tx", "a\tb\tc", "f\tg\th"}));
     REQUIRE(lv->GetColumnCount() == 3);
     REQUIRE(lv->GetItemCount() == 4);
-  }
-}
-
-TEST_CASE("wex::column")
-{
-  SUBCASE("default constructor")
-  {
-    wex::column c;
-    REQUIRE(c.GetText().empty());
-    REQUIRE(c.type() == wex::column::INVALID);
-    REQUIRE(!c.is_sorted_ascending());
-
-    c.set_is_sorted_ascending(wex::SORT_ASCENDING);
-    REQUIRE(c.is_sorted_ascending());
-  }
-
-  SUBCASE("constructor")
-  {
-    wex::column c("hello");
-    REQUIRE(c.GetText() == "hello");
-    REQUIRE(c.type() == wex::column::INT);
   }
 }

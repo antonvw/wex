@@ -2,7 +2,7 @@
 // Name:      addressrange.cpp
 // Purpose:   Implementation of class wex::addressrange
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -11,6 +11,7 @@
 #endif
 #include <wex/addressrange.h>
 #include <wex/core.h>
+#include <wex/ex-stream.h>
 #include <wex/ex.h>
 #include <wex/frd.h>
 #include <wex/log.h>
@@ -18,6 +19,7 @@
 #include <wex/managed-frame.h>
 #include <wex/process.h>
 #include <wex/stc.h>
+#include <wex/substitute-data.h>
 #include <wex/tokenizer.h>
 #include <wex/util.h>
 
@@ -88,7 +90,8 @@ namespace wex
     {
       if (start < end)
       {
-        for (int i = start; i < end && i < m_ex->get_stc()->GetLineCount() - 1;)
+        for (int i = start;
+             i < end && i < m_ex->get_stc()->get_line_count() - 1;)
         {
           if (commands())
           {
@@ -272,8 +275,7 @@ int wex::addressrange::confirm(
   msgDialog.SetExtendedMessage(
     "Line " + std::to_string(line + 1) + ": " + m_stc->GetLineText(line));
 
-  m_stc->GotoLine(line);
-  m_stc->EnsureVisible(line);
+  m_stc->goto_line(line);
   m_stc->set_indicator(
     m_find_indicator,
     m_stc->GetTargetStart(),
@@ -297,7 +299,7 @@ bool wex::addressrange::copy(const wex::address& destination) const
 
   if (yank())
   {
-    m_stc->GotoLine(dest_line - 1);
+    m_stc->goto_line(dest_line - 1);
     m_stc->add_text(m_ex->register_text());
   }
 
@@ -308,6 +310,11 @@ bool wex::addressrange::copy(const wex::address& destination) const
 
 bool wex::addressrange::erase() const
 {
+  if (!m_stc->is_visual())
+  {
+    return m_stc->get_file().ex_stream()->erase(*this);
+  }
+
   if (m_stc->GetReadOnly() || m_stc->is_hexmode() || !set_selection())
   {
     return false;
@@ -521,7 +528,7 @@ bool wex::addressrange::global(const std::string& text, bool inverse) const
 
   if (inverse)
   {
-    if (auto match = m_stc->GetLineCount(); !g.for_each(start, match, hits))
+    if (auto match = m_stc->get_line_count(); !g.for_each(start, match, hits))
     {
       return false;
     }
@@ -563,6 +570,11 @@ bool wex::addressrange::is_ok() const
 
 bool wex::addressrange::join() const
 {
+  if (!m_stc->is_visual())
+  {
+    return m_stc->get_file().ex_stream()->join(*this);
+  }
+
   if (m_stc->GetReadOnly() || m_stc->is_hexmode() || !is_ok())
   {
     return false;
@@ -593,7 +605,7 @@ bool wex::addressrange::move(const address& destination) const
 
   if (erase())
   {
-    m_stc->GotoLine(dest_line - 1);
+    m_stc->goto_line(dest_line - 1);
     m_stc->add_text(m_ex->register_text());
   }
 
@@ -622,7 +634,6 @@ bool wex::addressrange::parse(
     case 'c':
       if (text.find('|') != std::string::npos)
       {
-        m_ex->frame()->show_ex_bar();
         return change(after(text, '|'));
       }
       else
@@ -696,58 +707,6 @@ bool wex::addressrange::parse(
       log::status("Unknown range command") << command;
       return false;
   }
-}
-
-bool wex::addressrange::parse(
-  const std::string& command_org,
-  std::string&       pattern,
-  std::string&       replacement,
-  std::string&       options) const
-{
-  // If there are escaped / chars in the text,
-  // temporarily replace them to an unused char, so
-  // we can use string tokenizer with / as separator.
-  bool escaped = false;
-
-  auto command(command_org);
-
-  if (
-    command.find("\\\\/") == std::string::npos &&
-    command.find("\\/") != std::string::npos)
-  {
-    if (command.find(char(1)) == std::string::npos)
-    {
-      replace_all(command, "\\/", "\x01");
-      escaped = true;
-    }
-    else
-    {
-      log::debug("internal char exists") << command;
-      return false;
-    }
-  }
-
-  if (std::vector<std::string> v;
-      match("/(.*)/(.*)/([cgi]*)", command, v) == 3 ||
-      match("/(.*)/(.*)", command, v) == 2 || match("/(.*)", command, v) == 1)
-  {
-    pattern = v[0];
-    if (v.size() >= 2)
-      replacement = v[1];
-    if (v.size() >= 3)
-      options = v[2];
-
-    // Restore a / for all occurrences of the special char.
-    if (escaped)
-    {
-      std::replace(pattern.begin(), pattern.end(), '\x01', '/');
-      std::replace(replacement.begin(), replacement.end(), '\x01', '/');
-    }
-
-    return true;
-  }
-
-  return false;
 }
 
 bool wex::addressrange::print(const std::string& flags) const
@@ -870,32 +829,31 @@ bool wex::addressrange::sort(const std::string& parameters) const
 
 bool wex::addressrange::substitute(const std::string& text, char cmd)
 {
-  if (m_stc->GetReadOnly() || !is_ok())
+  if ((m_stc->is_visual() && m_stc->GetReadOnly()) || !is_ok())
   {
     return false;
   }
 
-  std::string pattern, repl, options;
+  data::substitute data;
 
   switch (cmd)
   {
     case 's':
-      if (!parse(text, pattern, repl, options))
+      if (!data.set(text))
       {
         return false;
       }
       break;
 
     case '&':
-      pattern = m_pattern;
-      repl    = m_replacement;
-      options = text;
+      data = data::substitute(m_pattern, m_replacement, text);
       break;
 
     case '~':
-      pattern = find_replace_data::get()->get_find_string();
-      repl    = m_replacement;
-      options = text;
+      data = data::substitute(
+        find_replace_data::get()->get_find_string(),
+        m_replacement,
+        text);
       break;
 
     default:
@@ -903,7 +861,7 @@ bool wex::addressrange::substitute(const std::string& text, char cmd)
       return false;
   }
 
-  if (pattern.empty())
+  if (data.pattern().empty())
   {
     log::status("Pattern is empty");
     log::debug("substitute empty pattern") << cmd;
@@ -911,15 +869,20 @@ bool wex::addressrange::substitute(const std::string& text, char cmd)
   }
 
   auto searchFlags = m_ex->search_flags();
-  if (options.find("i") != std::string::npos)
+  if (data.is_ignore_case())
     searchFlags &= ~wxSTC_FIND_MATCHCASE;
 
   if (
-    (searchFlags & wxSTC_FIND_REGEXP) && pattern.size() == 2 &&
-    pattern.back() == '*' && repl.empty())
+    (searchFlags & wxSTC_FIND_REGEXP) && data.pattern().size() == 2 &&
+    data.pattern().back() == '*' && data.replacement().empty())
   {
     log::status("Replacement leads to infinite loop");
     return false;
+  }
+
+  if (!m_stc->is_visual())
+  {
+    return m_stc->get_file().ex_stream()->substitute(*this, data);
   }
 
   if (!m_ex->marker_add('#', m_begin.get_line() - 1))
@@ -948,8 +911,8 @@ bool wex::addressrange::substitute(const std::string& text, char cmd)
     return false;
   }
 
-  m_pattern     = pattern;
-  m_replacement = repl;
+  m_pattern     = data.pattern();
+  m_replacement = data.replacement();
 
   m_stc->set_search_flags(searchFlags);
   m_stc->BeginUndoAction();
@@ -959,21 +922,20 @@ bool wex::addressrange::substitute(const std::string& text, char cmd)
 
   int        nr_replacements = 0;
   int        result          = wxID_YES;
-  const bool build     = (repl.find_first_of("&0LU\\") != std::string::npos);
-  const bool confirmed = (options.find("c") != std::string::npos);
-  const bool global    = (options.find("g") != std::string::npos);
-  auto       replacement(repl);
+  const bool build =
+    (data.replacement().find_first_of("&0LU\\") != std::string::npos);
+  auto replacement(data.replacement());
 
-  while (m_stc->SearchInTarget(pattern) != -1 && result != wxID_CANCEL)
+  while (m_stc->SearchInTarget(data.pattern()) != -1 && result != wxID_CANCEL)
   {
     if (build)
     {
-      replacement = build_replacement(repl);
+      replacement = build_replacement(data.replacement());
     }
 
-    if (confirmed)
+    if (data.is_confirmed())
     {
-      result = confirm(pattern, replacement);
+      result = confirm(data.pattern(), replacement);
     }
 
     if (result == wxID_YES)
@@ -993,9 +955,9 @@ bool wex::addressrange::substitute(const std::string& text, char cmd)
     }
 
     m_stc->SetTargetRange(
-      global ? m_stc->GetTargetEnd() :
-               m_stc->GetLineEndPosition(
-                 m_stc->LineFromPosition(m_stc->GetTargetEnd())),
+      data.is_global() ? m_stc->GetTargetEnd() :
+                         m_stc->GetLineEndPosition(
+                           m_stc->LineFromPosition(m_stc->GetTargetEnd())),
       m_stc->GetLineEndPosition(m_ex->marker_line('$')));
 
     if (m_stc->GetTargetStart() >= m_stc->GetTargetEnd())
@@ -1023,7 +985,7 @@ bool wex::addressrange::substitute(const std::string& text, char cmd)
 
   m_ex->frame()->show_ex_message(
     "Replaced: " + std::to_string(nr_replacements) +
-    " occurrences of: " + pattern);
+    " occurrences of: " + data.pattern());
 
   m_stc->IndicatorClearRange(0, m_stc->GetTextLength() - 1);
 
@@ -1048,12 +1010,22 @@ bool wex::addressrange::write(const std::string& text) const
   }
 #endif
 
-  return wex::file(
-           filename,
-           text.find(">>") != std::string::npos ?
-             std::ios::out | std::ios_base::app :
-             std::ios::out)
-    .write(m_stc->get_selected_text());
+  if (!m_stc->is_visual())
+  {
+    return m_stc->get_file().ex_stream()->write(
+      *this,
+      filename,
+      text.find(">>") != std::string::npos);
+  }
+  else
+  {
+    return wex::file(
+             filename,
+             text.find(">>") != std::string::npos ?
+               std::ios::out | std::ios_base::app :
+               std::ios::out)
+      .write(m_stc->get_selected_text());
+  }
 }
 
 bool wex::addressrange::yank(char name) const

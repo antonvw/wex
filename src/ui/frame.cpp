@@ -176,13 +176,6 @@ wex::frame::frame(const data::window& data)
       },
       ID_VIEW_STATUSBAR},
      {[=, this](wxUpdateUIEvent& event) {
-        if (auto* lv = get_listview(); lv != nullptr && lv->HasFocus())
-        {
-          update_statusbar(lv);
-        }
-      },
-      ID_UPDATE_STATUS_BAR},
-     {[=, this](wxUpdateUIEvent& event) {
         (GetMenuBar() != nullptr ? event.Check(GetMenuBar()->IsShown()) :
                                    event.Check(false));
       },
@@ -379,6 +372,8 @@ wex::statusbar* wex::frame::setup_statusbar(
   long                               style,
   const std::string&                 name)
 {
+  ex::on_init();
+
   return statusbar::setup(this, panes, style, name);
 }
 
@@ -505,13 +500,17 @@ bool wex::frame::update_statusbar(stc* stc, const std::string& pane)
 
   if (pane == "PaneInfo")
   {
-    if (stc->GetCurrentPos() == 0)
+    if (!stc->is_visual())
     {
-      text << stc->GetLineCount();
+      text << stc->get_current_line() + 1 << "," << stc->get_line_count();
+    }
+    else if (stc->GetCurrentPos() == 0)
+    {
+      text << stc->get_line_count();
     }
     else
     {
-      const auto line = stc->GetCurrentLine() + 1;
+      const auto line = stc->get_current_line() + 1;
       const auto pos =
         stc->GetCurrentPos() + 1 - stc->PositionFromLine(line - 1);
       int start, end;

@@ -2,7 +2,7 @@
 // Name:      addressrange.h
 // Purpose:   Declaration of class wex::addressrange
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -79,6 +79,12 @@ namespace wex
 
     /// Executes register on this range.
     bool execute(const std::string& reg) const;
+
+    /// Returns begin address.
+    auto& get_begin() const { return m_begin; };
+
+    /// Returns end address.
+    auto& get_end() const { return m_end; };
 
     /// Performs the global command on this range.
     bool global(
@@ -162,12 +168,6 @@ namespace wex
     confirm(const std::string& pattern, const std::string& replacement) const;
 
     bool indent(bool forward = true) const;
-
-    bool parse(
-      const std::string& command,
-      std::string&       pattern,
-      std::string&       replacement,
-      std::string&       options) const;
 
     void set(const std::string& begin, const std::string& end)
     {

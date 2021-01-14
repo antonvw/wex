@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-managed_frame.cpp
+// Name:      test-managed-frame.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>

@@ -390,7 +390,7 @@ wex::debug::get_args(const std::string& command, stc* stc)
   else if ((match("^(b|break)", command, v) == 1) && stc != nullptr)
   {
     args += " " + stc->get_filename().string() + ":" +
-            std::to_string(stc->GetCurrentLine() + 1);
+            std::to_string(stc->get_current_line() + 1);
   }
   else if (
     (match("^(d|del|delete) (br|breakpoint)", command, v) > 0) &&
@@ -400,7 +400,7 @@ wex::debug::get_args(const std::string& command, stc* stc)
     {
       if (
         stc->get_filename() == std::get<0>(it.second) &&
-        stc->GetCurrentLine() == std::get<2>(it.second))
+        stc->get_current_line() == std::get<2>(it.second))
       {
         args += " " + it.first;
         stc->MarkerDeleteHandle(std::get<1>(it.second));
@@ -436,7 +436,7 @@ wex::debug::get_args(const std::string& command, stc* stc)
   else if (
     (match("^(u|until|thread until)", command, v) == 1) && stc != nullptr)
   {
-    args += " " + std::to_string(stc->GetCurrentLine());
+    args += " " + std::to_string(stc->get_current_line());
   }
 
   return {true, args};

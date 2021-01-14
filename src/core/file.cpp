@@ -109,7 +109,7 @@ bool wex::file::close()
 
 bool wex::file::file_load(bool synced)
 {
-  if (synced && !open())
+  if (synced && !open(std::ios_base::in | std::ios_base::out))
   {
     return false;
   }
@@ -120,7 +120,11 @@ bool wex::file::file_load(bool synced)
     return false;
   }
 
-  m_file->close();
+  if (!m_use_stream)
+  {
+    m_file->close();
+  }
+
   m_is_loaded = true;
   reset_contents_changed();
 
@@ -171,7 +175,12 @@ bool wex::file::file_save(const path& p)
   }
 
   do_file_save(save_as);
-  m_file->close();
+
+  if (!m_use_stream)
+  {
+    m_file->close();
+  }
+
   reset_contents_changed();
 
   return m_file->path().m_stat.sync() && m_file->stat().sync();
@@ -202,9 +211,24 @@ bool wex::file::open(const path& p, std::ios_base::openmode mode)
   return m_file->open(p, mode);
 }
 
+void wex::file::put(char c)
+{
+  m_file->put(c);
+}
+
 const std::string* wex::file::read(std::streampos seek_position)
 {
   return m_file->read(seek_position);
+}
+
+std::fstream& wex::file::stream()
+{
+  return m_file->stream();
+}
+
+void wex::file::use_stream(bool use)
+{
+  m_use_stream = use;
 }
 
 bool wex::file::write(const char* s, size_t n)

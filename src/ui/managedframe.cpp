@@ -28,8 +28,7 @@ namespace wex
   bool is_ex(textctrl* tc)
   {
     return tc != nullptr && tc->ex() != nullptr &&
-           tc->ex()->get_stc() != nullptr &&
-           tc->ex()->get_stc()->data().flags().test(data::stc::WIN_EX);
+           tc->ex()->get_stc() != nullptr && !tc->ex()->get_stc()->is_visual();
   }
 } // namespace wex
 
@@ -126,7 +125,7 @@ wex::managed_frame::managed_frame(size_t maxFiles, const data::window& data)
         {
           auto it = find_replace_data::get()->get_find_strings().begin();
           std::advance(it, event.GetId() - ID_FIND_FIRST);
-          if (const std::string text(*it); stc->find_next(
+          if (const std::string text(*it); stc->find(
                 text,
                 stc->get_ex().is_active() ? stc->get_ex().search_flags() : -1))
           {
@@ -188,6 +187,7 @@ bool wex::managed_frame::allow_close(wxWindowID id, wxWindow* page)
 {
   // The page will be closed, so do not update find focus now.
   set_find_focus(nullptr);
+  m_textctrl->set_ex(nullptr, std::string());
 
   return true;
 }
@@ -225,10 +225,9 @@ void wex::managed_frame::on_notebook(wxWindowID id, wxWindow* page)
 {
   if (auto* stc = dynamic_cast<wex::stc*>(page); stc != nullptr)
   {
-    if (is_ex(m_textctrl))
-    {
-      show_ex_bar(SHOW_BAR, &stc->get_ex());
-    }
+    show_ex_bar(
+      !stc->is_visual() ? SHOW_BAR : HIDE_BAR_FOCUS_STC,
+      &stc->get_ex());
 
     set_recent_file(stc->get_filename());
 
@@ -366,16 +365,14 @@ void wex::managed_frame::set_recent_file(const path& path)
 
 void wex::managed_frame::show_ex_bar(int action, ex* ex)
 {
-  if (
-    action == SHOW_BAR || (is_ex(m_textctrl)) ||
-    (action == SHOW_BAR && ex == nullptr))
+  if (action == SHOW_BAR || ex != nullptr)
   {
     if (action >= SHOW_BAR)
     {
       m_textctrl->set_ex(ex, ":");
     }
-    
-    pane_show("VIBAR", action != SHOW_BAR_SYNC_CLOSE_ALL);
+
+    pane_show("VIBAR", action >= SHOW_BAR);
   }
   else
   {
@@ -388,7 +385,7 @@ void wex::managed_frame::show_ex_bar(int action, ex* ex)
 
     if (
       (action == HIDE_BAR_FOCUS_STC || action == HIDE_BAR_FORCE_FOCUS_STC) &&
-      m_textctrl != nullptr && m_textctrl->ex() != nullptr)
+      m_textctrl->ex() != nullptr && m_textctrl->ex()->get_stc() != nullptr)
     {
       m_textctrl->ex()->get_stc()->SetFocus();
     }
@@ -407,7 +404,11 @@ bool wex::managed_frame::show_ex_input(ex* ex, char cmd)
 
 void wex::managed_frame::show_ex_message(const std::string& text)
 {
-  show_ex_bar();
+  if (!is_ex(m_textctrl))
+  {
+    show_ex_bar();
+  }
+
   statustext(text, std::string());
 }
 

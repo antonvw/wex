@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/indicator.h>
+#include <wex/log.h>
 #include <wex/path.h>
 #include <wex/stc-core.h>
 #include <wex/stc-data.h>
@@ -78,21 +79,25 @@ bool wex::data::stc::inject() const
       if (m_data.line() > 0)
       {
         const auto line =
-          (m_data.line() - 1 >= m_stc->GetLineCount() ?
-             m_stc->GetLineCount() - 1 :
+          (m_data.line() - 1 >= m_stc->get_line_count() &&
+               m_stc->get_line_count() != LINE_COUNT_UNKNOWN ?
+             m_stc->get_line_count() - 1 :
              m_data.line() - 1);
 
-        m_stc->GotoLine(line);
-        m_stc->EnsureVisible(line);
-        m_stc->EnsureCaretVisible();
+        m_stc->goto_line(line);
+
+        const auto gotoline(
+          m_stc->is_visual() ? line : m_stc->GetLineCount() - 2);
+
         m_stc->SetIndicatorCurrent(m_indicator_no);
         m_stc->IndicatorClearRange(0, m_stc->GetTextLength() - 1);
 
         m_stc->set_indicator(
           indicator(m_indicator_no),
-          m_stc->PositionFromLine(line),
-          m_data.col() > 0 ? m_stc->PositionFromLine(line) + m_data.col() - 1 :
-                             m_stc->GetLineEndPosition(line));
+          m_stc->PositionFromLine(gotoline),
+          m_data.col() > 0 ?
+            m_stc->PositionFromLine(gotoline) + m_data.col() - 1 :
+            m_stc->GetLineEndPosition(gotoline));
       }
       else if (m_data.line() == NUMBER_NOT_SET)
       {
@@ -133,11 +138,11 @@ bool wex::data::stc::inject() const
       }
       else if (m_data.line() == NUMBER_NOT_SET)
       {
-        m_stc->find_next(m_data.find(), m_data.find_flags());
+        m_stc->find(m_data.find(), m_data.find_flags());
       }
       else
       {
-        m_stc->find_next(m_data.find(), m_data.find_flags(), false);
+        m_stc->find(m_data.find(), m_data.find_flags(), false);
       }
       return true;
     },
@@ -186,7 +191,7 @@ bool wex::data::stc::inject() const
       m_event_data.is_synced() ? path::status_t().set(path::STAT_SYNC) :
                                  path::status_t());
 
-    if (!m_event_data.is_synced())
+    if (!m_event_data.is_synced() && m_stc->is_visual())
     {
       m_stc->SetFocus();
     }

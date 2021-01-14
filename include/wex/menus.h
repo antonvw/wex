@@ -2,7 +2,7 @@
 // Name:      menus.h
 // Purpose:   Declaration of wex::menus class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -71,6 +71,13 @@ namespace wex
            !it.type().test(menu_command::IS_SELECTED)) ||
           (!menu->style().test(menu::IS_SELECTED) &&
            it.type().test(menu_command::IS_SELECTED)))
+        {
+          add = false;
+        }
+
+        if (
+          !menu->style().test(menu::IS_VISUAL) &&
+          it.type().test(menu_command::IS_VISUAL))
         {
           add = false;
         }

@@ -2,7 +2,7 @@
 // Name:      config_item.cpp
 // Purpose:   Implementation of wex::item class config methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <filesystem>
@@ -14,7 +14,6 @@
 #include <wex/core.h>
 #include <wex/frd.h>
 #include <wex/item.h>
-#include <wex/log.h>
 #include <wex/tostring.h>
 #include <wex/util.h>
 #include <wx/checklst.h>

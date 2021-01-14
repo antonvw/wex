@@ -2,7 +2,7 @@
 // Name:      test-debug.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
@@ -11,7 +11,6 @@
 #include <wex/managed-frame.h>
 #include <wex/menu.h>
 #include <wex/process.h>
-#include <wex/stc.h>
 
 TEST_SUITE_BEGIN("wex::process");
 
@@ -31,8 +30,6 @@ TEST_CASE("wex::debug")
     stc->EmptyUndoBuffer();
     stc->SetSavePoint();
   }
-
-  REQUIRE(wex::process::prepare_output(frame()) != nullptr);
 
   SUBCASE("constructor")
   {

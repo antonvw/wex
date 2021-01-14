@@ -3,7 +3,7 @@
 // Purpose:   Implementation of class wex::ex
 //            http://pubs.opengroup.org/onlinepubs/9699919799/utilities/ex.html
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <regex>
@@ -21,6 +21,7 @@
 #include <wex/ctags.h>
 #include <wex/debug.h>
 #include <wex/defs.h>
+#include <wex/ex-stream.h>
 #include <wex/ex.h>
 #include <wex/frd.h>
 #include <wex/lexer-props.h>
@@ -210,10 +211,10 @@ wex::ex::ex(wex::stc* stc)
                 [&](const std::string& command) {
                   std::stringstream text;
                   text << get_stc()->get_filename().fullname() << " line "
-                       << get_stc()->GetCurrentLine() + 1 << " of "
-                       << get_stc()->GetLineCount() << " --"
-                       << 100 * (get_stc()->GetCurrentLine() + 1) /
-                            get_stc()->GetLineCount()
+                       << get_stc()->get_current_line() + 1 << " of "
+                       << get_stc()->get_line_count() << " --"
+                       << 100 * (get_stc()->get_current_line() + 1) /
+                            get_stc()->get_line_count()
                        << "--%"
                        << " level " << get_stc()->get_fold_level();
                   m_frame->show_ex_message(text.str());
@@ -496,11 +497,7 @@ bool wex::ex::address_parse(
     {
       type = address_t::NONE;
       const auto line(address(this, text).get_line());
-
-      if (line > 0)
-        data::stc(get_stc()).control(data::control().line(line)).inject();
-
-      return line > 0;
+      return data::stc(get_stc()).control(data::control().line(line)).inject();
     }
 
     if (range.empty() && cmd != '!')
@@ -879,6 +876,11 @@ bool wex::ex::marker_add(char marker, int line)
   if (m_copy)
     return false;
 
+  if (!get_stc()->is_visual())
+  {
+    return get_stc()->get_file().ex_stream()->marker_add(marker, line);
+  }
+
   const wex::marker lm(wex::lexers::get()->get_marker(m_marker_symbol));
 
   if (!lm.is_ok())
@@ -891,7 +893,7 @@ bool wex::ex::marker_add(char marker, int line)
   marker_delete(marker);
 
   int       id;
-  const int lin = (line == -1 ? get_stc()->GetCurrentLine() : line);
+  const int lin = (line == -1 ? get_stc()->get_current_line() : line);
 
   if (lm.symbol() == wxSTC_MARK_CHARACTER)
   {
@@ -938,6 +940,11 @@ bool wex::ex::marker_add(char marker, int line)
 
 bool wex::ex::marker_delete(char marker)
 {
+  if (!get_stc()->is_visual())
+  {
+    return get_stc()->get_file().ex_stream()->marker_delete(marker);
+  }
+
   if (const auto& it = m_marker_identifiers.find(marker);
       it != m_marker_identifiers.end())
   {
@@ -962,6 +969,11 @@ bool wex::ex::marker_goto(char marker)
 
 int wex::ex::marker_line(char marker) const
 {
+  if (!get_stc()->is_visual())
+  {
+    return get_stc()->get_file().ex_stream()->marker_line(marker);
+  }
+
   if (marker == '<')
   {
     if (!get_stc()->get_selected_text().empty())
@@ -1003,6 +1015,14 @@ int wex::ex::marker_line(char marker) const
   }
 
   return -1;
+}
+
+void wex::ex::on_init()
+{
+  m_dialog = new stc_entry_dialog(
+    "tmp",
+    std::string(),
+    data::window().button(wxOK).title("tmp").size({450, 450}));
 }
 
 void wex::ex::print(const std::string& text)
@@ -1086,37 +1106,28 @@ void wex::ex::show_dialog(
   const std::string& text,
   const std::string& lexer)
 {
-  if (m_dialog == nullptr)
+  if (title == "Print")
   {
-    m_dialog = new stc_entry_dialog(
-      text,
-      std::string(),
-      data::window().button(wxOK).title(title).size({450, 450}));
-  }
-  else
-  {
-    if (title == "Print")
-    {
-      if (title != m_dialog->GetTitle())
-      {
-        m_dialog->get_stc()->set_text(text);
-      }
-      else
-      {
-        m_dialog->get_stc()->AppendText(text);
-        m_dialog->get_stc()->DocumentEnd();
-      }
-    }
-    else
+    if (title != m_dialog->GetTitle())
     {
       m_dialog->get_stc()->set_text(text);
     }
-
-    m_dialog->SetTitle(title);
+    else
+    {
+      m_dialog->get_stc()->AppendText(text);
+      m_dialog->get_stc()->DocumentEnd();
+    }
   }
+  else
+  {
+    m_dialog->get_stc()->set_text(text);
+  }
+
+  m_dialog->SetTitle(title);
 
   m_dialog->get_stc()->get_lexer().set(
     !lexer.empty() ? wex::lexer(lexer) : get_stc()->get_lexer());
+
   m_dialog->Show();
 }
 

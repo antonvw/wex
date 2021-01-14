@@ -290,7 +290,7 @@ bool wex::variable::expand_builtin(ex* ex, std::string& expanded) const
     }
     else if (m_name == "Cc")
     {
-      const int line     = ex->get_stc()->GetCurrentLine();
+      const int line     = ex->get_stc()->get_current_line();
       const int startPos = ex->get_stc()->PositionFromLine(line);
       const int endPos   = ex->get_stc()->GetLineEndPosition(line);
       expanded           = ex->get_stc()->get_lexer().comment_complete(

@@ -2142,11 +2142,11 @@ Copyright: (c) 2020, Anton van Wezenbeek
         <def style ="styledefault"> default-font,back:white,fore:black </def>
         <def style ="styledefault-back"> default-font,back:gray 95,fore:green,eol </def>
         <def style ="stylelinenumber"> back:white,fore:blue </def>
-        <def style ="styletextmargin-day"> back:blue,face:Monospace,size:8 </def>
-        <def style ="styletextmargin-week"> back:lightsteelblue,face:Monospace,size:8 </def>
-        <def style ="styletextmargin-month"> back:lightblue,face:Monospace,size:8 </def>
-        <def style ="styletextmargin-year"> back:gray 97,face:Monospace,size:8 </def>
-        <def style ="styletextmargin"> back:white,face:Monospace,size:8 </def>
+        <def style ="styletextmargin-day"> back:blue </def>
+        <def style ="styletextmargin-week"> back:lightsteelblue </def>
+        <def style ="styletextmargin-month"> back:lightblue </def>
+        <def style ="styletextmargin-year"> back:gray 97 </def>
+        <def style ="styletextmargin"> back:white </def>
         <def style ="styleindicatordebug"> blue </def>
         <def style ="styleindicatorfind"> red </def>
         <def style ="tag"> fore:dark slate blue </def>

@@ -2,7 +2,7 @@
 // Name:      log.cpp
 // Purpose:   Implementation of class wex::log
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/log/core.hpp>
@@ -109,6 +109,12 @@ wex::log& wex::log::operator<<(long long r)
   return *this;
 }
 
+wex::log& wex::log::operator<<(char* r)
+{
+  m_ss << S() << r;
+  return *this;
+}
+
 wex::log& wex::log::operator<<(const char* r)
 {
   m_ss << S() << r;
@@ -148,7 +154,11 @@ wex::log& wex::log::operator<<(const std::string& r)
 
 wex::log& wex::log::operator<<(const std::stringstream& r)
 {
-  m_ss << S() << r.str();
+  if (!r.str().empty())
+  {
+    m_ss << S() << r.str();
+  }
+
   return *this;
 }
 

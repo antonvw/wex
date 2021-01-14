@@ -2,7 +2,7 @@
 // Name:      stc.h
 // Purpose:   Declaration of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -92,6 +92,9 @@ namespace wex
     /// Cuts text to clipboard.
     void Cut() override;
 
+    /// Is doc modified.
+    bool IsModified() const override;
+
     /// Paste text from clipboard.
     void Paste() override;
 
@@ -137,6 +140,9 @@ namespace wex
 
     /// Returns associated data.
     const auto& data() const { return m_data; };
+
+    /// Returns current line number.
+    int get_current_line() const;
 
     /// Returns vi component.
     const ex& get_ex() const;
@@ -196,6 +202,9 @@ namespace wex
 
     /// Returns word at position.
     const std::string get_word_at_pos(int pos) const;
+
+    // Inserts text at pos.
+    void insert_text(int pos, const std::string& text);
 
     /// Returns true if line numbers are shown.
     bool is_shown_line_numbers() const
@@ -285,14 +294,18 @@ namespace wex
     /// Virtual methods from core.
 
     const std::string eol() const override;
-    bool              find_next(
+    bool              find(
                    const std::string& text,
                    int                find_flags = -1,
                    bool               find_next  = true) override;
     void        fold(bool fold_all = false) override;
     const path& get_filename() const override { return m_file.get_filename(); };
+    int         get_line_count() const override;
+    int         get_line_count_request() override;
     const std::string get_selected_text() const override;
+    void              goto_line(int line) override;
     bool is_hexmode() const override { return m_hexmode.is_active(); };
+    bool is_visual() const override { return m_visual; };
     void properties_message(path::status_t flags = 0) override;
     void reset_margins(margin_t type = margin_t().set()) override;
     bool set_hexmode(bool on) override { return get_hexmode().set(on); };
@@ -369,7 +382,7 @@ namespace wex
     int m_fold_level{0}, m_margin_text_click{-1}, m_saved_pos{-1},
       m_saved_selection_start{-1}, m_saved_selection_end{-1};
 
-    bool m_adding_chars{false}, m_skip{false};
+    bool m_adding_chars{false}, m_skip{false}, m_visual{true};
 
     managed_frame* m_frame;
 

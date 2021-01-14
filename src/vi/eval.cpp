@@ -2,7 +2,7 @@
 // Name:      eval.cpp
 // Purpose:   Implementation of class wex::evaluator
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
@@ -16,7 +16,6 @@
 
 #include "eval.h"
 #include <wex/ex.h>
-#include <wex/log.h>
 #include <wex/stc.h>
 
 namespace x3 = boost::spirit::x3;
@@ -84,9 +83,13 @@ namespace wex
       auto operator()(ex const& e) const
       {
         if (e.token == ".")
-          return m_ex->get_command().get_stc()->GetCurrentLine() + 1;
+        {
+          return m_ex->get_command().get_stc()->get_current_line() + 1;
+        }
         else if (e.token == "$")
-          return m_ex->get_command().get_stc()->GetLineCount();
+        {
+          return m_ex->get_command().get_stc()->get_line_count_request();
+        }
         else if (e.token[0] == '\'' && e.token.size() == 2)
         {
           const int line = m_ex->marker_line(e.token[1]);

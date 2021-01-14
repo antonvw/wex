@@ -2,7 +2,7 @@
 // Name:      test-ex.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -14,15 +14,12 @@
 #include <wex/macros.h>
 #include <wex/managed-frame.h>
 #include <wex/path.h>
-#include <wex/process.h>
 #include <wex/stc.h>
 
 TEST_SUITE_BEGIN("wex::ex");
 
 TEST_CASE("wex::ex")
 {
-  REQUIRE(wex::process::prepare_output(frame()) != nullptr);
-
   SUBCASE("modeline")
   {
     SUBCASE("text")
@@ -232,7 +229,7 @@ TEST_CASE("wex::ex")
   {
     SUBCASE("so")
     {
-      REQUIRE(stc->find_next(std::string("xx")));
+      REQUIRE(stc->find(std::string("xx")));
       REQUIRE(
         stc->get_find_string() == "xx"); // necesary for the ~ in test-source
       REQUIRE(ex->command(":so test-source.txt"));
@@ -273,9 +270,9 @@ TEST_CASE("wex::ex")
     const int max = 10;
     for (int i = 0; i < max; i++)
       stc->AppendText("line xxxx added\n");
-    const int lines = stc->GetLineCount();
+    const int lines = stc->get_line_count();
     REQUIRE(ex->command(":g/xxxx/d"));
-    REQUIRE(stc->GetLineCount() == lines - max);
+    REQUIRE(stc->get_line_count() == lines - max);
 
     stc->AppendText("line xxxx 6 added\n");
     stc->AppendText("line xxxx 7 added\n");
@@ -308,7 +305,7 @@ TEST_CASE("wex::ex")
   SUBCASE("goto")
   {
     stc->set_text("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
-    REQUIRE(stc->GetLineCount() == 12);
+    REQUIRE(stc->get_line_count() == 12);
     stc->GotoLine(2);
 
     for (const auto& go : std::vector<std::pair<std::string, int>>{
@@ -319,7 +316,7 @@ TEST_CASE("wex::ex")
            {":10000", 11}})
     {
       REQUIRE(ex->command(go.first));
-      REQUIRE(stc->GetCurrentLine() == go.second);
+      REQUIRE(stc->get_current_line() == go.second);
     }
   }
 

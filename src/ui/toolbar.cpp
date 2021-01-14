@@ -402,7 +402,7 @@ void wex::find_textctrl::find(bool find_next, bool restore_position)
       stc->position_restore();
     }
 
-    stc->find_next(get_text(), -1, find_next);
+    stc->find(get_text(), -1, find_next);
   }
   else if (auto* grid = frame()->get_grid(); grid != nullptr)
   {

@@ -2,7 +2,7 @@
 // Name:      test.cpp
 // Purpose:   Implementation of general test functions.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #define DOCTEST_CONFIG_IMPLEMENT
@@ -18,6 +18,7 @@
 #include <wex/log.h>
 #include <wex/macros.h>
 #include <wex/managed-frame.h>
+#include <wex/process.h>
 #include <wex/shell.h>
 #include <wx/timer.h>
 
@@ -102,6 +103,35 @@ int wex::test::app::OnRun()
 void wex::test::app::set_context(doctest::Context* context)
 {
   m_context = context;
+}
+
+bool wex::test::gui_app::OnInit()
+{
+  if (!test::app::OnInit())
+  {
+    return false;
+  }
+
+  m_frame     = new managed_frame();
+  m_statusbar = m_frame->setup_statusbar(
+    {{"Pane0"}, // the order of panes is tested
+     {"Pane1"},
+     {"Pane2"},
+     {"Pane3"},
+     {"Pane4"},
+     {"PaneInfo"},
+     {"PaneLexer"},
+     {"PaneMode"},
+     {"PaneFileType"},
+     {"LastPane"}});
+  m_stc = new stc();
+  m_frame->Show();
+
+  process::prepare_output(m_frame);
+
+  add_pane(m_frame, m_stc);
+
+  return true;
 }
 
 std::vector<std::pair<std::string, std::string>> get_abbreviations()

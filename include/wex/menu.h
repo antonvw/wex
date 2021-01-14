@@ -2,7 +2,7 @@
 // Name:      menu.h
 // Purpose:   Declaration of wex::menu class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -25,6 +25,7 @@ namespace wex
       IS_POPUP,     ///< menu should appear as popup, instead of main menu
       IS_READ_ONLY, ///< readonly control
       IS_SELECTED,  ///< text is selected somewhere on the control
+      IS_VISUAL,    ///< the control has visual mode
 
       ALLOW_CLEAR, ///< add clear item in menu
       CAN_PASTE,   ///< add paste item in menu
@@ -32,7 +33,7 @@ namespace wex
       DEFAULT = CAN_PASTE ///< default
     };
 
-    typedef std::bitset<6> menu_t;
+    typedef std::bitset<7> menu_t;
 
     /// Default constructor.
     menu(

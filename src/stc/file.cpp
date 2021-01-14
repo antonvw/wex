@@ -10,7 +10,9 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wex/config.h>
 #include <wex/defs.h>
+#include <wex/ex-stream.h>
 #include <wex/file-dialog.h>
 #include <wex/stc-file.h>
 #include <wex/stc.h>
@@ -47,7 +49,13 @@ namespace wex
 wex::stc_file::stc_file(stc* stc, const std::string& filename)
   : file(filename)
   , m_stc(stc)
+  , m_ex_stream(new wex::ex_stream(stc))
 {
+}
+
+wex::stc_file::~stc_file()
+{
+  delete m_ex_stream;
 }
 
 bool wex::stc_file::do_file_load(bool synced)
@@ -78,10 +86,21 @@ bool wex::stc_file::do_file_load(bool synced)
 
   m_previous_size = m_stc->get_filename().stat().st_size;
 
+  if (
+    m_stc->get_filename().stat().st_size >
+    config("stc.max.Size visual").get(10000000))
+  {
+    m_stc->visual(false);
+  }
+
 #ifdef USE_THREAD
   std::thread t([&] {
 #endif
-    if (const auto buffer(read(offset)); buffer != nullptr)
+    if (!m_stc->is_visual())
+    {
+      m_ex_stream->stream(*this);
+    }
+    else if (const auto buffer(read(offset)); buffer != nullptr)
     {
       if (!m_stc->get_hexmode().is_active() && !hexmode)
       {
@@ -134,7 +153,14 @@ void wex::stc_file::do_file_save(bool save_as)
 {
   m_stc->SetReadOnly(true); // prevent changes during saving
 
-  if (m_stc->get_hexmode().is_active())
+  if (!m_stc->is_visual())
+  {
+    if (m_ex_stream->write())
+    {
+      FILE_POST(save_as ? FILE_SAVE_AS : FILE_SAVE);
+    }
+  }
+  else if (m_stc->get_hexmode().is_active())
   {
 #ifdef USE_THREAD
     std::thread t([&] {
@@ -166,7 +192,7 @@ void wex::stc_file::do_file_save(bool save_as)
 
 bool wex::stc_file::is_contents_changed() const
 {
-  return m_stc->GetModify();
+  return m_stc->IsModified();
 }
 
 void wex::stc_file::reset_contents_changed()

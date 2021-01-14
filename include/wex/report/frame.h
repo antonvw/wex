@@ -111,6 +111,10 @@ namespace wex::report
       return grep(line, true);
     };
 
+    /// Starts or stops syncing.
+    /// Default syncing is started during construction.
+    void sync(bool start = true);
+
     /// Updates project history.
     void set_recent_project(const path& path)
     {

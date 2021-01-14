@@ -40,6 +40,9 @@ namespace wex
     friend class macro_mode;
 
   public:
+    /// Initializes static data.
+    static void on_init();
+
     /// Constructor.
     /// Sets ex mode.
     ex(stc* stc);

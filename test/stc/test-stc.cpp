@@ -36,20 +36,20 @@ TEST_CASE("wex::stc")
   SUBCASE("find")
   {
     stc->set_text("hello stc and more text");
-    REQUIRE(stc->find_next(std::string("hello")));
+    REQUIRE(stc->find(std::string("hello")));
     REQUIRE(stc->get_word_at_pos(0) == "hello");
 
-    REQUIRE(!stc->find_next(std::string("%d")));
-    REQUIRE(!stc->find_next(std::string("%ld")));
-    REQUIRE(!stc->find_next(std::string("%q")));
+    REQUIRE(!stc->find(std::string("%d")));
+    REQUIRE(!stc->find(std::string("%ld")));
+    REQUIRE(!stc->find(std::string("%q")));
 
-    REQUIRE(stc->find_next(std::string("hello"), wxSTC_FIND_WHOLEWORD));
-    REQUIRE(!stc->find_next(std::string("HELLO"), wxSTC_FIND_MATCHCASE));
+    REQUIRE(stc->find(std::string("hello"), wxSTC_FIND_WHOLEWORD));
+    REQUIRE(!stc->find(std::string("HELLO"), wxSTC_FIND_MATCHCASE));
     REQUIRE((stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE) > 0);
 
     wex::find_replace_data::get()->set_regex(false);
     wex::find_replace_data::get()->set_match_case(false);
-    REQUIRE(stc->find_next(std::string("HELLO"))); // uses flags from frd
+    REQUIRE(stc->find(std::string("HELLO"))); // uses flags from frd
     REQUIRE(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
 
     REQUIRE(!stc->set_indicator(wex::indicator(4, 5), 100, 200));
@@ -63,17 +63,17 @@ TEST_CASE("wex::stc")
 
     stc->DocumentStart();
     wex::find_replace_data::get()->set_match_word(false);
-    REQUIRE(stc->find_next(std::string("more text")));
+    REQUIRE(stc->find(std::string("more text")));
     REQUIRE(stc->get_find_string() == "more text");
     REQUIRE(stc->replace_all("more", "less") == 1);
     REQUIRE(stc->replace_all("more", "less") == 0);
-    REQUIRE(!stc->find_next(std::string("more text")));
+    REQUIRE(!stc->find(std::string("more text")));
     stc->SelectNone();
     REQUIRE(!stc->find_next());
-    REQUIRE(stc->find_next(std::string("less text")));
+    REQUIRE(stc->find(std::string("less text")));
     REQUIRE(stc->replace_next("less text", ""));
     REQUIRE(!stc->replace_next());
-    REQUIRE(!stc->find_next(std::string("less text")));
+    REQUIRE(!stc->find(std::string("less text")));
     REQUIRE(stc->get_find_string() != "less text");
     REQUIRE(stc->replace_all("%", "percent") == 0);
   }
@@ -211,7 +211,7 @@ TEST_CASE("wex::stc")
 
   SUBCASE("position")
   {
-    REQUIRE(!stc->position_restore());
+    stc->position_restore();
     stc->position_save();
     REQUIRE(stc->position_restore());
   }
@@ -225,13 +225,13 @@ TEST_CASE("wex::stc")
     stc->DocumentEnd();
     REQUIRE(!stc->auto_indentation('x'));
     REQUIRE(stc->get_text() == "  \n  line with indentation");
-    REQUIRE(stc->GetLineCount() == 2);
+    REQUIRE(stc->get_line_count() == 2);
     stc->SetEOLMode(wxSTC_EOL_CR);
     REQUIRE(stc->auto_indentation(stc->eol().front()));
 
     // the \n is not added, but indentation does
     REQUIRE(stc->get_text() == "  \n  line with indentation");
-    REQUIRE(stc->GetLineCount() == 2);
+    REQUIRE(stc->get_line_count() == 2);
     // test auto indentation for level change
     REQUIRE(stc->get_lexer().set("cpp"));
     stc->set_text("\nif ()\n{\n");

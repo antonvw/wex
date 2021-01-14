@@ -7,6 +7,7 @@
 
 #include <wex/config.h>
 #include <wex/core.h>
+#include <wex/ex-stream.h>
 #include <wex/find-data.h>
 #include <wex/frd.h>
 #include <wex/log.h>
@@ -59,7 +60,7 @@ namespace wex
       if (!f.recursive() && wrapscan)
       {
         f.recursive(true);
-        found = f.stc()->find_next(f.text(), f.flags(), f.is_forward());
+        found = f.stc()->find(f.text(), f.flags(), f.is_forward());
         f.recursive(false);
 
         if (!found)
@@ -109,13 +110,13 @@ namespace wex
 
 bool wex::stc::find_next(bool stc_find_string)
 {
-  return find_next(
+  return find(
     stc_find_string ? get_find_string() :
                       find_replace_data::get()->get_find_string(),
     -1);
 }
 
-bool wex::stc::find_next(const std::string& text, int find_flags, bool forward)
+bool wex::stc::find(const std::string& text, int find_flags, bool forward)
 {
   if (text.empty())
   {
@@ -129,7 +130,11 @@ bool wex::stc::find_next(const std::string& text, int find_flags, bool forward)
 
   f.flags(find_flags);
 
-  if (m_margin_text_click >= 0)
+  if (!m_visual)
+  {
+    return false;
+  }
+  else if (m_margin_text_click >= 0)
   {
     return find_margin(f, m_frame);
   }

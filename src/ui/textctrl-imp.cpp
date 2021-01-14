@@ -206,12 +206,20 @@ wex::textctrl_imp::textctrl_imp(
         break;
 
       case WXK_ESCAPE:
-        if (m_tc->ex() != nullptr)
+        if (is_ex_mode())
+        {
+          Clear();
+          m_command = ex_command(":");
+        }
+        else if (m_tc->ex() != nullptr)
         {
           m_tc->ex()->get_stc()->position_restore();
         }
 
-        m_tc->frame()->show_ex_bar(managed_frame::HIDE_BAR_FORCE_FOCUS_STC);
+        if (!is_ex_mode())
+        {
+          m_tc->frame()->show_ex_bar(managed_frame::HIDE_BAR_FORCE_FOCUS_STC);
+        }
 
         m_control_r  = false;
         m_user_input = false;
@@ -255,7 +263,7 @@ wex::textctrl_imp::textctrl_imp(
       m_command.type() == ex_command::type_t::FIND)
     {
       m_tc->ex()->get_stc()->position_restore();
-      m_tc->ex()->get_stc()->find_next(
+      m_tc->ex()->get_stc()->find(
         get_text(),
         m_tc->ex()->search_flags(),
         m_command.str() == "/");
@@ -347,7 +355,7 @@ wex::textctrl_imp::textctrl_imp(
       if (is_ex_mode())
       {
         Clear();
-        m_command.reset();
+        m_command = ex_command(":");
         SetFocus();
       }
 
@@ -480,9 +488,17 @@ bool wex::textctrl_imp::handle(const std::string& command)
       break;
 
     case ex_command::type_t::FIND:
-      set_text(
-        !m_mode_visual ? m_tc->ex()->get_stc()->get_find_string() :
-                         std::string());
+      if (m_tc->ex() != nullptr)
+      {
+        set_text(
+          !m_mode_visual ? m_tc->ex()->get_stc()->get_find_string() :
+                           std::string());
+      }
+      else
+      {
+        set_text(std::string());
+      }
+
       SelectAll();
       break;
 
@@ -530,7 +546,7 @@ bool wex::textctrl_imp::input_mode_finish() const
 bool wex::textctrl_imp::is_ex_mode() const
 {
   return m_tc->ex() != nullptr && m_tc->ex()->get_stc() != nullptr &&
-         m_tc->ex()->get_stc()->data().flags().test(data::stc::WIN_EX);
+         !m_tc->ex()->get_stc()->is_visual();
 }
 
 void wex::textctrl_imp::set_text(const std::string& text)

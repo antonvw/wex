@@ -11,6 +11,7 @@
 
 namespace wex
 {
+  class ex_stream;
   class stc;
 
   /// Adds file read and write to stc.
@@ -34,6 +35,13 @@ namespace wex
       /// the filename to be assigned if not empty
       const std::string& filename = std::string());
 
+    /// Destructor.
+    ~stc_file();
+
+    /// The ex stream (used if in ex mode).
+    auto       ex_stream() { return m_ex_stream; };
+    const auto ex_stream() const { return m_ex_stream; };
+
     bool is_contents_changed() const override;
     void reset_contents_changed() override;
 
@@ -42,7 +50,8 @@ namespace wex
     void do_file_new() override;
     void do_file_save(bool save_as = false) override;
 
-    stc*           m_stc;
-    std::streampos m_previous_size{0};
+    class ex_stream* m_ex_stream{nullptr};
+    stc*             m_stc;
+    std::streampos   m_previous_size{0};
   };
 }; // namespace wex

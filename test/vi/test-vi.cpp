@@ -64,13 +64,13 @@ TEST_CASE("wex::vi")
   SUBCASE("change")
   {
     stc->set_text("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
-    REQUIRE(stc->GetLineCount() == 4);
+    REQUIRE(stc->get_line_count() == 4);
     REQUIRE(vi->command(":1"));
     REQUIRE(vi->command("cw"));
     REQUIRE(vi->mode().is_insert());
     REQUIRE(vi->command("zzz"));
     change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
-    REQUIRE(stc->GetLineCount() == 4);
+    REQUIRE(stc->get_line_count() == 4);
     REQUIRE(stc->GetLineText(0) == "zzzsecond");
     stc->set_text("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
     REQUIRE(vi->command(":1"));
@@ -78,7 +78,7 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->mode().is_insert());
     REQUIRE(vi->command("zzz"));
     change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
-    REQUIRE(stc->GetLineCount() == 4);
+    REQUIRE(stc->get_line_count() == 4);
     REQUIRE(stc->GetLineText(0) == "zzz second");
     stc->set_text("xxxxxxxxxx second third\nxxxxxxxx\naaaaaaaaaa\n");
     REQUIRE(vi->command(":1"));
@@ -86,7 +86,7 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->mode().is_insert());
     REQUIRE(vi->command("zzz"));
     change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
-    REQUIRE(stc->GetLineCount() == 4);
+    REQUIRE(stc->get_line_count() == 4);
     REQUIRE(stc->GetLineText(0) == "zzz third");
   }
 
@@ -104,7 +104,7 @@ TEST_CASE("wex::vi")
   SUBCASE("goto") // goto, /, ?, n and N.
   {
     stc->set_text("aaaaa\nbbbbb\nccccc\naaaaa\ne\nf\ng\nh\ni\nj\nk\n");
-    REQUIRE(stc->GetLineCount() == 12);
+    REQUIRE(stc->get_line_count() == 12);
     stc->GotoLine(2);
     for (const auto& go : std::vector<std::pair<std::string, int>>{
            {"gg", 0},
@@ -138,7 +138,7 @@ TEST_CASE("wex::vi")
         REQUIRE(vi->last_command()[0] != go.first[0]);
       }
 
-      REQUIRE(stc->GetCurrentLine() == go.second);
+      REQUIRE(stc->get_current_line() == go.second);
     }
   }
 

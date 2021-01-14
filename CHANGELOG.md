@@ -4,6 +4,7 @@
 - added FindWEX.cmake to assist using wex library using cmake projects
 - boost::log lib instead of easylogging++ lib
 - c++20 standard used, c++17 available as branch
+- support of ex mode handling of files
 
 **v20.10** *October 2, 2020*
 - clang-format support, and wex code follows these guidelines
@@ -35,7 +36,7 @@
 - tiny-process-library lib
 
 **v18.10** *October 1, 2018*
-- c++17
+- c++17 standard
 - wxWidgets used as submodule
 - osx fixes
 
@@ -59,7 +60,7 @@
 - osx support
 
 **v3.1.0** *March 11, 2016*
-- c++14
+- c++14 standard
 - wxWidgets 3.1.0
 - catch lib instead of cppunit lib
 - cmake build system
@@ -67,7 +68,7 @@
 - The Open Group Base Specifications Issue 7, 2013 edition
 
 **v3.0.2** *October 10, 2014*
-- c++11
+- c++11 standard
 - wxWidgets 3.0.2
 
 **v3.0.1** *June 19, 2014*

@@ -42,7 +42,8 @@ elseif (APPLE)
   set(PLATFORM "osx_cocoa")
 
   set(cpp_LIBRARIES 
-    stdc++)
+    stdc++
+    c++fs)
 
   set(apple_LIBRARIES 
     wxjpeg-3.1 
@@ -95,7 +96,7 @@ else()
 endif()
 
 if (APPLE)
-  set(CMAKE_EXE_LINKER_FLAGS "\
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} \
     -framework AudioToolbox \
     -framework WebKit \
     -framework CoreFoundation \
@@ -108,7 +109,7 @@ endif()
 if (MSVC)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
     /D_CRT_SECURE_NO_WARNINGS /D_CRT_SECURE_NO_DEPRECATE /D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS \
-    /std:c++17 /Zc:__cplusplus")
+    /std:c++latest /Zc:__cplusplus")
         
   set(wx_LIBRARIES
     wx${PLATFORM}31u_aui
@@ -138,7 +139,7 @@ else()
     wx_baseu_net-3.1 
     wxscintilla-3.1)
         
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -g")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2a -g")
 endif()
       
 if (CMAKE_BUILD_TYPE EQUAL "Debug")

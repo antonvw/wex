@@ -80,7 +80,7 @@ wex::report::frame::frame(
       .title(_("Replace In Files"))
       .style(wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxSTAY_ON_TOP));
 
-  Bind(wxEVT_IDLE, &frame::on_idle, this);
+  sync();
 
   Bind(wxEVT_CLOSE_WINDOW, [=, this](wxCloseEvent& event) {
     m_project_history.save();
@@ -186,7 +186,7 @@ void wex::report::frame::find_in_files(wxWindowID dialogid)
 #endif
     log::status(find_replace_string(replace));
 
-    Unbind(wxEVT_IDLE, &frame::on_idle, this);
+    sync(false);
 
     data::dir::type_t type;
     type.set(data::dir::FILES);
@@ -211,7 +211,7 @@ void wex::report::frame::find_in_files(wxWindowID dialogid)
       log::status(tool.info(&dir.get_statistics().get_elements()));
     }
 
-    Bind(wxEVT_IDLE, &frame::on_idle, this);
+    sync();
 
 #ifdef __WXMSW__
   });
@@ -387,13 +387,13 @@ bool wex::report::frame::grep(const std::string& arg, bool sed)
       path::current(stc->get_filename().get_path());
     find_replace_data::get()->set_regex(true);
     log::status(find_replace_string(false));
-    Unbind(wxEVT_IDLE, &frame::on_idle, this);
+    sync(false);
 
     tool_dir dir(tool, arg1, data::dir().file_spec(arg2).type(arg3));
     dir.find_files();
 
     log::status(tool.info(&dir.get_statistics().get_elements()));
-    Bind(wxEVT_IDLE, &frame::on_idle, this);
+    sync(true);
 
 #ifdef __WXMSW__
   });
@@ -513,6 +513,12 @@ void wex::report::frame::set_recent_file(const wex::path& path)
   }
 }
 
+void wex::report::frame::sync(bool start)
+{
+  start ? Bind(wxEVT_IDLE, &frame::on_idle, this) :
+          (void)Unbind(wxEVT_IDLE, &frame::on_idle, this);
+}
+  
 void wex::report::frame::use_file_history_list(wex::listview* list)
 {
   assert(list->data().type() == data::listview::HISTORY);

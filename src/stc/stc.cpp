@@ -2,12 +2,14 @@
 // Name:      stc.cpp
 // Purpose:   Implementation of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/address.h>
 #include <wex/blame.h>
 #include <wex/config.h>
 #include <wex/core.h>
+#include <wex/ex-stream.h>
 #include <wex/frd.h>
 #include <wex/indicator.h>
 #include <wex/item-vector.h>
@@ -24,18 +26,6 @@
 #include <wx/app.h>
 #include <wx/settings.h>
 
-wex::stc::stc(const std::string& text, const data::stc& data)
-  : stc(path(), data)
-{
-  if (!text.empty())
-  {
-    is_hexmode() ? m_hexmode.append_text(text) : set_text(text);
-    guess_type_and_modeline();
-  }
-
-  m_data.inject();
-}
-
 wex::stc::stc(const path& p, const data::stc& data)
   : m_data(this, data)
   , m_auto_complete(this)
@@ -45,6 +35,7 @@ wex::stc::stc(const path& p, const data::stc& data)
   , m_hexmode(hexmode(this))
   , m_frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
   , m_lexer(this)
+  , m_visual(!data.flags().test(data::stc::WIN_EX))
 {
   assert(m_frame != nullptr);
 
@@ -106,20 +97,28 @@ wex::stc::stc(const path& p, const data::stc& data)
 
   if (p.stat().is_ok())
   {
-    // not really necessary, as this is done after FILE_LOAD,
-    // but this eliminates flicker
-    config_get();
     open(p, data);
   }
   else
   {
-    config_get();
     m_lexer.set(p.lexer(), true);
     m_file.file_new(p);
     m_data.inject();
   }
 
-  visual(!data.flags().test(data::stc::WIN_EX));
+  visual(m_visual);
+}
+
+wex::stc::stc(const std::string& text, const data::stc& data)
+  : stc(path(), data)
+{
+  if (!text.empty())
+  {
+    is_hexmode() ? m_hexmode.append_text(text) : set_text(text);
+    guess_type_and_modeline();
+  }
+
+  m_data.inject();
 }
 
 wex::stc::~stc()
@@ -130,7 +129,14 @@ wex::stc::~stc()
 
 void wex::stc::add_text(const std::string& text)
 {
-  if (!GetOvertype())
+  if (!m_visual)
+  {
+    m_file.ex_stream()->insert_text(
+      address(m_ex, m_file.ex_stream()->get_current_line()),
+      text,
+      ex_stream::INSERT_AFTER);
+  }
+  else if (!GetOvertype())
   {
     Allocate(GetTextLength() + text.size());
     AddTextRaw(text.data(), text.size());
@@ -282,7 +288,7 @@ bool wex::stc::file_readonly_attribute_changed()
 void wex::stc::fold(bool all)
 {
   if (const item_vector & iv(m_config_items);
-      all || GetLineCount() > iv.find<int>(_("stc.Auto fold")))
+      all || get_line_count() > iv.find<int>(_("stc.Auto fold")))
   {
     fold_all();
   }
@@ -293,13 +299,13 @@ void wex::stc::fold_all()
   if (GetProperty("fold") != "1")
     return;
 
-  const auto current_line = GetCurrentLine();
+  const auto current_line = get_current_line();
   const bool json         = (m_lexer.scintilla_lexer() == "json");
   const bool xml          = (m_lexer.language() == "xml");
 
   int line = (json ? 1 : 0);
 
-  while (line < GetLineCount())
+  while (line < get_line_count())
   {
     if (const auto level = GetFoldLevel(line);
         xml && (level == wxSTC_FOLDLEVELBASE + wxSTC_FOLDLEVELHEADERFLAG))
@@ -322,7 +328,7 @@ void wex::stc::fold_all()
     }
   }
 
-  GotoLine(current_line);
+  goto_line(current_line);
 }
 
 const std::string wex::stc::eol() const
@@ -341,6 +347,18 @@ const std::string wex::stc::eol() const
   }
 
   return "\r\n";
+}
+
+int wex::stc::get_current_line() const
+{
+  if (!m_visual)
+  {
+    return m_file.ex_stream()->get_current_line();
+  }
+  else
+  {
+    return const_cast<stc*>(this)->GetCurrentLine();
+  }
 }
 
 const wex::ex& wex::stc::get_ex() const
@@ -387,8 +405,32 @@ const std::string wex::stc::get_find_string()
 
 int wex::stc::get_fold_level()
 {
-  return (GetFoldLevel(GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK) -
+  return (GetFoldLevel(get_current_line()) & wxSTC_FOLDLEVELNUMBERMASK) -
          wxSTC_FOLDLEVELBASE;
+}
+
+int wex::stc::get_line_count() const
+{
+  if (!m_visual)
+  {
+    return m_file.ex_stream()->get_line_count();
+  }
+  else
+  {
+    return GetLineCount();
+  }
+}
+
+int wex::stc::get_line_count_request()
+{
+  if (!m_visual)
+  {
+    return m_file.ex_stream()->get_line_count_request();
+  }
+  else
+  {
+    return GetLineCount();
+  }
 }
 
 const std::string wex::stc::get_selected_text() const
@@ -435,6 +477,20 @@ const std::string wex::stc::get_word_at_pos(int pos) const
   }
 }
 
+void wex::stc::goto_line(int line)
+{
+  if (!m_visual)
+  {
+    m_file.ex_stream()->goto_line(line);
+  }
+  else
+  {
+    GotoLine(line);
+    EnsureVisible(line);
+    EnsureCaretVisible();
+  }
+}
+
 void wex::stc::guess_type_and_modeline()
 {
   // Get a small sample from this document to detect the file mode.
@@ -472,6 +528,23 @@ void wex::stc::guess_type_and_modeline()
     return; // do nothing
 
   m_frame->update_statusbar(this, "PaneFileType");
+}
+
+void wex::stc::insert_text(int pos, const std::string& text)
+{
+  if (!m_visual)
+  {
+    m_file.ex_stream()->insert_text(address(m_ex, LineFromPosition(pos)), text);
+  }
+  else
+  {
+    InsertText(pos, text);
+  }
+}
+
+bool wex::stc::IsModified() const
+{
+  return m_visual ? GetModify() : m_file.ex_stream()->is_modified();
 }
 
 bool wex::stc::link_open()
@@ -531,7 +604,7 @@ bool wex::stc::link_open(link_t mode, std::string* filename)
       {
         *filename = path.fullname();
       }
-      else if (m_frame != nullptr && !mode[LINK_CHECK])
+      else if (!mode[LINK_CHECK])
       {
         m_frame->open_file(path, data);
       }
@@ -613,7 +686,7 @@ void wex::stc::on_idle(wxIdleEvent& event)
   event.Skip();
 
   if (
-    m_file.check_sync() &&
+    m_visual && m_file.check_sync() &&
     // the readonly flags bit of course can differ from file actual readonly
     // mode, therefore add this check
     !m_data.flags().test(data::stc::WIN_READ_ONLY) &&
@@ -625,7 +698,11 @@ void wex::stc::on_idle(wxIdleEvent& event)
 
 void wex::stc::on_styled_text(wxStyledTextEvent& event)
 {
-  mark_modified(event);
+  if (m_visual)
+  {
+    mark_modified(event);
+  }
+
   event.Skip();
 }
 
@@ -645,10 +722,7 @@ bool wex::stc::open(const path& p, const data::stc& data)
     m_data.inject();
   }
 
-  if (m_frame != nullptr)
-  {
-    m_frame->set_recent_file(p.string());
-  }
+  m_frame->set_recent_file(p.string());
 
   return true;
 }
@@ -663,11 +737,7 @@ void wex::stc::Paste()
 
 bool wex::stc::position_restore()
 {
-  if (m_vi->mode().is_visual())
-  {
-    SetCurrentPos(m_saved_pos);
-  }
-  else if (m_saved_selection_start != -1 && m_saved_selection_end != -1)
+  if (m_saved_selection_start != -1 && m_saved_selection_end != -1)
   {
     SetSelection(m_saved_selection_start, m_saved_selection_end);
     SetCurrentPos(m_saved_selection_start);
@@ -738,7 +808,7 @@ void wex::stc::properties_message(path::status_t flags)
 
   m_frame->update_statusbar(this, "PaneInfo");
 
-  if (!flags[path::STAT_SYNC] && m_frame != nullptr)
+  if (!flags[path::STAT_SYNC])
   {
     const wxString file =
       GetName() + (GetReadOnly() ? " [" + _("Readonly") + "]" : wxString());
@@ -859,7 +929,7 @@ bool wex::stc::replace_next(
                                            ReplaceTarget(replace_text);
   }
 
-  find_next(find_text, find_flags);
+  find(find_text, find_flags);
 
   return true;
 }
@@ -884,13 +954,23 @@ void wex::stc::SelectNone()
 
 bool wex::stc::set_indicator(const indicator& indicator, int start, int end)
 {
-  if (!lexers::get()->indicator_is_loaded(indicator))
+  if (
+    !lexers::get()->indicator_is_loaded(indicator) || start == -1 ||
+    end == -1 || end < start)
   {
+    log("set_indicator") << start << end;
     return false;
   }
 
   SetIndicatorCurrent(indicator.number());
-  IndicatorFillRange(start, end - start);
+
+  if (end - start > 0)
+  {
+    IndicatorFillRange(start, end - start);
+  }
+  else if (end - start == 0)
+  {
+  }
 
   return true;
 }
@@ -975,7 +1055,14 @@ bool wex::stc::show_blame(const vcs_entry* vcs)
         first = false;
       }
 
-      lexers::get()->apply_margin_text_style(this, l >= 0 ? l : line, t, bl);
+      const int real_line(
+        m_visual ? l : l - get_current_line() + GetLineCount() - 2);
+
+      lexers::get()->apply_margin_text_style(
+        this,
+        real_line >= 0 ? real_line : line,
+        t,
+        bl);
       prev = bl;
     }
     else
@@ -1027,8 +1114,6 @@ bool wex::stc::vi_command(const std::string& command)
 
 void wex::stc::visual(bool on)
 {
-  log::info("enter visual mode") << on;
-
   m_ex->use(!on);
   m_vi->use(on);
 
@@ -1037,6 +1122,29 @@ void wex::stc::visual(bool on)
   m_data.flags(
     data::stc::window_t().set(data::stc::WIN_EX),
     on ? data::control::NOT : data::control::SET);
+
+  if (on && !m_visual)
+  {
+    std::stringstream info;
+
+    if (!get_filename().string().empty())
+    {
+      info << get_filename().string();
+    }
+
+    log::info("enter visual mode") << on << info;
+
+    m_visual = on; // needed in do_file_load
+    m_file.close();
+    m_file.use_stream(false);
+    m_file.file_load(get_filename());
+  }
+  else
+  {
+    m_visual = on;
+  }
+
+  config_get();
 
   m_frame->show_ex_bar(
     !on ? managed_frame::SHOW_BAR : managed_frame::HIDE_BAR_FOCUS_STC,

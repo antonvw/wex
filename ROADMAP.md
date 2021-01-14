@@ -1,19 +1,12 @@
 # roadmap
-- .i in ex mode not yet ok, it is readonly
 - wxDateTime replace by c++20 methods date and time utilities
-- process-imp should be in core
-- prepare_output at one place in test
-- use :1 bit for several bools
-  
+
 ## backlog
-- check github actions for ubuntu-latest upgrade ->
-    new boost if available and remove from process_imp
 - allow dynamic libs
 - invest use wxTextCompleter
 - start up with recent project, close project
   -> windows appear
 - use spaceship operator
   and modules
-- code cov
+- process-imp should be in core
 - use abstract factory design pattern
-- enable lcov

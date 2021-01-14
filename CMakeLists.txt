@@ -41,8 +41,6 @@ string(REGEX MATCH "[0-9]+-[0-9]+"
   WEX_COPYRIGHT ${WEX_VERSION_CONTENTS})
 set(WEX_COPYRIGHT ${WEX_COPYRIGHT})
 
-add_definitions(-DELPP_NO_DEFAULT_LOG_FILE)
-
 if (ENABLE_GETTEXT)
   include(FindGettext)
 endif ()

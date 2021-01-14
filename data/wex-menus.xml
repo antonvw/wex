@@ -4,7 +4,7 @@ Name:      wex-menus.xml
 Purpose:   setup of dynamic menus, like debuggers 
            and version control systems
 Author:    Anton van Wezenbeek
-Copyright: (c) 2020 Anton van Wezenbeek
+Copyright: (c) 2021 Anton van Wezenbeek
 -->
 
 <menus>
@@ -36,6 +36,8 @@ Copyright: (c) 2020 Anton van Wezenbeek
       if type contains 'ellipses' then '...' is appended after the item.
       if type contains 'is-selected' then item is only added if the component
       has text selected
+      if type contains 'is-visual' then item is only added if the component
+      has visual mode
    - 'submenu': is shown as a submenu using the name as specified
    - 'subcommand': is handled the same, but also used as command to execute
    - 'control': control key (character)
@@ -167,9 +169,9 @@ Copyright: (c) 2020 Anton van Wezenbeek
     date-print="10">
 
     <commands>
-      <command type="popup" flags="-w"> &amp;blame </command>
+      <command type="popup is-visual" flags="-w"> &amp;blame </command>
       <command type="popup separator" flags="-L %LINES" menu="&amp;blame line"> blame</command>
-      <command type="popup is-selected" flags="-L %LINES" menu="&amp;blame selection"> blame</command>
+      <command type="popup is-selected is-visual" flags="-L %LINES" menu="&amp;blame selection"> blame</command>
       <command type="main ellipses"> &amp;add </command>
       <command type="ellipses"> &amp;checkout </command>
       <command type="ellipses"> &amp;commit </command>

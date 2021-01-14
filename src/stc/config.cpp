@@ -54,7 +54,7 @@ bool wex::stc::auto_indentation(int c)
       break;
   }
 
-  const auto currentLine = GetCurrentLine();
+  const auto currentLine = get_current_line();
 
   if (!is_nl || currentLine == 0)
   {
@@ -299,7 +299,14 @@ void wex::stc::on_init()
          {_("stc.margin.Divider"), 0, 40, 16},
          {_("stc.margin.Folding"), 0, 40, 16},
          {_("stc.margin.Line number"), 0, 100, 60},
-         {_("stc.margin.Text"), -1, 500, -1}}},
+         {_("stc.margin.Text"), -1, 500, -1},
+         {_("<i>Max:</i>")},
+         {_("stc.max.Size visual"),
+          item::TEXTCTRL_INT,
+          std::string("10000000")},
+         {_("stc.max.Size lexer"),
+          item::TEXTCTRL_INT,
+          std::string("10000000")}}},
        {_("Folding"),
         {{_("stc.Indentation guide"), item::CHECKBOX},
          {_("stc.Auto fold"), 0, INT_MAX, 1500},

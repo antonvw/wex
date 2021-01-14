@@ -145,7 +145,7 @@ wex::shell::shell(
 
       case WXK_HOME:
         Home();
-        if (GetLine(GetCurrentLine()).StartsWith(m_prompt))
+        if (GetLine(get_current_line()).StartsWith(m_prompt))
         {
           GotoPos(GetCurrentPos() + m_prompt.length());
         }

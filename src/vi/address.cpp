@@ -2,12 +2,13 @@
 // Name:      address.cpp
 // Purpose:   Implementation of class wex::address
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <memory>
 #include <wex/address.h>
 #include <wex/core.h>
+#include <wex/ex-stream.h>
 #include <wex/ex.h>
 #include <wex/log.h>
 #include <wex/macros.h>
@@ -20,6 +21,12 @@
   {                                                          \
     output += std::string(40, '-') + m_ex->get_stc()->eol(); \
   }
+
+wex::address::address(ex* ex, int line)
+  : m_ex(ex)
+  , m_line(line)
+{
+}
 
 wex::address::address(ex* ex, const std::string& address)
   : m_address(address)
@@ -93,17 +100,26 @@ bool wex::address::adjust_window(const std::string& text) const
 
 bool wex::address::append(const std::string& text) const
 {
-  if (const auto line = get_line(); m_ex->get_stc()->GetReadOnly() ||
-                                    m_ex->get_stc()->is_hexmode() || line <= 0)
+  if (const auto line = get_line(); line <= 0)
+  {
+    return false;
+  }
+  else if (!m_ex->get_stc()->is_visual())
+  {
+    m_ex->get_stc()->get_file().ex_stream()->insert_text(
+      *this,
+      text,
+      ex_stream::INSERT_AFTER);
+    return true;
+  }
+  else if (m_ex->get_stc()->GetReadOnly() || m_ex->get_stc()->is_hexmode())
   {
     return false;
   }
   else
   {
-    m_ex->get_stc()->InsertText(m_ex->get_stc()->PositionFromLine(line), text);
-
-    m_ex->get_stc()->GotoLine(line + get_number_of_lines(text) - 1);
-
+    m_ex->get_stc()->insert_text(m_ex->get_stc()->PositionFromLine(line), text);
+    m_ex->get_stc()->goto_line(line + get_number_of_lines(text) - 1);
     return true;
   }
 }
@@ -137,6 +153,18 @@ int wex::address::get_line() const
   // If this is a // address, return line with first forward match.
   if (std::vector<std::string> v; match("/(.*)/$", m_address, v) > 0)
   {
+    if (!m_ex->get_stc()->is_visual())
+    {
+      if (m_ex->get_stc()->get_file().ex_stream()->find(v[0]))
+      {
+        return m_ex->get_stc()->get_file().ex_stream()->get_current_line() + 1;
+      }
+      else
+      {
+        return 0;
+      }
+    }
+
     m_ex->get_stc()->SetTargetRange(
       m_ex->get_stc()->GetCurrentPos(),
       m_ex->get_stc()->GetTextLength());
@@ -162,6 +190,18 @@ int wex::address::get_line() const
   // If this is a ?? address, return line with first backward match.
   else if (match("\\?(.*)\\?", m_address, v) > 0)
   {
+    if (!m_ex->get_stc()->is_visual())
+    {
+      if (m_ex->get_stc()->get_file().ex_stream()->find(v[0], -1, false))
+      {
+        return m_ex->get_stc()->get_file().ex_stream()->get_current_line() + 1;
+      }
+      else
+      {
+        return 0;
+      }
+    }
+
     m_ex->get_stc()->SetTargetRange(m_ex->get_stc()->GetCurrentPos(), 0);
 
     if (m_ex->get_stc()->SearchInTarget(v[0]) != -1)
@@ -190,9 +230,16 @@ int wex::address::get_line() const
   {
     return 1;
   }
-  else if (sum > m_ex->get_stc()->GetLineCount())
+  else if (sum > m_ex->get_stc()->get_line_count())
   {
-    return m_ex->get_stc()->GetLineCount();
+    if (m_ex->get_stc()->get_line_count() == LINE_COUNT_UNKNOWN)
+    {
+      return sum;
+    }
+    else
+    {
+      return m_ex->get_stc()->get_line_count();
+    }
   }
   else
   {
@@ -202,14 +249,22 @@ int wex::address::get_line() const
 
 bool wex::address::insert(const std::string& text) const
 {
-  if (const auto line = get_line(); m_ex->get_stc()->GetReadOnly() ||
-                                    m_ex->get_stc()->is_hexmode() || line <= 0)
+  if (const auto line = get_line(); line <= 0)
+  {
+    return false;
+  }
+  else if (!m_ex->get_stc()->is_visual())
+  {
+    m_ex->get_stc()->get_file().ex_stream()->insert_text(*this, text);
+    return true;
+  }
+  else if (m_ex->get_stc()->GetReadOnly() || m_ex->get_stc()->is_hexmode())
   {
     return false;
   }
   else
   {
-    m_ex->get_stc()->InsertText(
+    m_ex->get_stc()->insert_text(
       m_ex->get_stc()->PositionFromLine(line - 1),
       text);
     return true;
@@ -238,7 +293,6 @@ bool wex::address::parse(const std::string& command, const std::string& text)
     case 'a':
       if (text.find('|') != std::string::npos)
       {
-        m_ex->frame()->show_ex_bar();
         return append(after(text, '|'));
       }
       else
@@ -249,7 +303,6 @@ bool wex::address::parse(const std::string& command, const std::string& text)
     case 'i':
       if (text.find('|') != std::string::npos)
       {
-        m_ex->frame()->show_ex_bar();
         return insert(after(text, '|'));
       }
       else
@@ -298,7 +351,7 @@ bool wex::address::put(char name) const
   }
   else
   {
-    m_ex->get_stc()->InsertText(
+    m_ex->get_stc()->insert_text(
       m_ex->get_stc()->PositionFromLine(get_line()),
       m_ex->get_macros().get_register(name));
     return true;
@@ -308,8 +361,9 @@ bool wex::address::put(char name) const
 bool wex::address::read(const std::string& arg) const
 {
   if (
-    m_ex->get_stc()->GetReadOnly() || m_ex->get_stc()->is_hexmode() ||
-    get_line() <= 0)
+    m_ex->get_stc()->is_visual() &&
+    (m_ex->get_stc()->GetReadOnly() || m_ex->get_stc()->is_hexmode() ||
+     get_line() <= 0))
   {
     return false;
   }
@@ -336,14 +390,17 @@ bool wex::address::read(const std::string& arg) const
     }
     else if (const auto buffer(file.read()); buffer != nullptr)
     {
-      if (m_address == ".")
+      if (!m_ex->get_stc()->is_visual())
+      {
+        m_ex->get_stc()->get_file().ex_stream()->insert_text(*this, *buffer);
+      }
+      else if (m_address == ".")
       {
         m_ex->get_stc()->add_text(*buffer);
       }
       else
       {
-        // README: InsertTextRaw does not have length argument.
-        m_ex->get_stc()->InsertTextRaw(
+        m_ex->get_stc()->insert_text(
           m_ex->get_stc()->PositionFromLine(get_line()),
           buffer->data());
       }
@@ -371,9 +428,9 @@ const std::string wex::address::regex_commands() const
 
 void wex::address::set_line(int line)
 {
-  if (line > m_ex->get_stc()->GetLineCount())
+  if (line > m_ex->get_stc()->get_line_count())
   {
-    m_line = m_ex->get_stc()->GetLineCount();
+    m_line = m_ex->get_stc()->get_line_count();
   }
   else if (line < 1)
   {

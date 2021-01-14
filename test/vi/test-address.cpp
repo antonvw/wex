@@ -2,7 +2,7 @@
 // Name:      test-address.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
@@ -18,7 +18,7 @@ TEST_CASE("wex::address")
   auto* stc = get_stc();
   stc->set_text("hello0\nhello1\nhello2\nhello3\nhello4\nhello5");
 
-  const int lines = stc->GetLineCount();
+  const int lines = stc->get_line_count();
   auto*     ex    = new wex::ex(stc);
   wex::data::stc(stc).control(wex::data::control().line(1)).inject();
   ex->marker_add('a');
@@ -27,8 +27,10 @@ TEST_CASE("wex::address")
 
   REQUIRE(wex::address(ex).get_line() == 0);
 
-  SUBCASE("get_line")
+  SUBCASE("constructor")
   {
+    REQUIRE(wex::address(ex, 5).get_line() == 5);
+
     for (const auto& it : std::vector<std::pair<std::string, int>>{
            {"30", lines},      {"40", lines},    {"-40", 1},   {"3-3", 0},
            {"3-1", 2},         {".", 2},         {".+1", 3},   {"$", lines},

@@ -2,7 +2,7 @@
 // Name:      test.h
 // Purpose:   Declaration of classes for unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -60,32 +60,7 @@ namespace wex
     class gui_app : public app
     {
     public:
-      bool OnInit() override
-      {
-        if (!test::app::OnInit())
-        {
-          return false;
-        }
-
-        m_frame     = new managed_frame();
-        m_statusbar = m_frame->setup_statusbar(
-          {{"Pane0"}, // the order of panes is tested
-           {"Pane1"},
-           {"Pane2"},
-           {"Pane3"},
-           {"Pane4"},
-           {"PaneInfo"},
-           {"PaneLexer"},
-           {"PaneMode"},
-           {"PaneFileType"},
-           {"LastPane"}});
-        m_stc = new stc();
-        m_frame->Show();
-
-        add_pane(m_frame, m_stc);
-
-        return true;
-      }
+      bool OnInit() override;
 
       static auto* frame() { return m_frame; };
       static auto* get_statusbar() { return m_statusbar; };

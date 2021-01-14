@@ -2,7 +2,7 @@
 // Name:      menu-command.h
 // Purpose:   Declaration of wex::menu_command class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -34,11 +34,12 @@ namespace wex
       IS_POPUP = 0, ///< command in popup menu
       IS_MAIN,      ///< command in main menu
       IS_SELECTED,  ///< command only shown if text selected
+      IS_VISUAL,    ///< command only shown if visual mode
       SEPARATOR,    ///< command is followed by a separator
       ELLIPSES,     ///< command is followed by an ellipses
     };
 
-    typedef std::bitset<5> type_t;
+    typedef std::bitset<6> type_t;
 
     /// Default constructor using xml node.
     menu_command(const pugi::xml_node& node = pugi::xml_node());
