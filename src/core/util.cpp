@@ -543,11 +543,7 @@ const std::string wex::print_header(const path& filename)
   }
   else
   {
-    std::time_t       tm = std::time(nullptr);
-    std::stringstream ss;
-    ss << std::put_time(std::localtime(&tm), "%c");
-
-    return _("Printed").ToStdString() + ": " + ss.str();
+    return _("Printed").ToStdString() + ": " + now();
   }
 }
 
