@@ -2,13 +2,9 @@
 // Name:      variable.cpp
 // Purpose:   Implementation of class wex::variable
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wex/core.h>
 #include <wex/ex.h>
 #include <wex/log.h>
@@ -260,27 +256,19 @@ bool wex::variable::expand_builtin(ex* ex, std::string& expanded) const
 {
   if (m_name == "Date")
   {
-    expanded =
-      (m_format.empty() ? wxDateTime::Now().FormatISODate() :
-                          wxDateTime::Now().Format(m_format));
+    expanded = (m_format.empty() ? now("%Y-%m-%d") : now(m_format));
   }
   else if (m_name == "Datetime")
   {
-    expanded =
-      (m_format.empty() ? wxDateTime::Now().FormatISOCombined(' ') :
-                          wxDateTime::Now().Format(m_format));
+    expanded = (m_format.empty() ? now("%Y-%m-%d %H:%M:%S") : now(m_format));
   }
   else if (m_name == "Time")
   {
-    expanded =
-      (m_format.empty() ? wxDateTime::Now().FormatISOTime() :
-                          wxDateTime::Now().Format(m_format));
+    expanded = (m_format.empty() ? now("%H:%M:%S") : now(m_format));
   }
   else if (m_name == "Year")
   {
-    expanded =
-      (m_format.empty() ? wxDateTime::Now().Format("%Y") :
-                          wxDateTime::Now().Format(m_format));
+    expanded = (m_format.empty() ? now("%Y") : now(m_format));
   }
   else if (ex != nullptr)
   {
@@ -310,15 +298,12 @@ bool wex::variable::expand_builtin(ex* ex, std::string& expanded) const
           ex->get_stc()->get_filename().stat().is_ok())
       {
         expanded =
-          (m_format.empty() ?
-             wxDateTime(file.stat().st_ctime).FormatISODate() :
-             wxDateTime(file.stat().st_ctime).Format(m_format));
+          (m_format.empty() ? file.stat().get_creation_time() :
+                              file.stat().get_creation_time(m_format));
       }
       else
       {
-        expanded =
-          (m_format.empty() ? wxDateTime::Now().FormatISODate() :
-                              wxDateTime::Now().Format(m_format));
+        expanded = (m_format.empty() ? now("%Y-%m-%d") : now(m_format));
       }
     }
     else if (m_name == "Filename")

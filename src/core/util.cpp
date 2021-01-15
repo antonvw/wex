@@ -399,12 +399,9 @@ wex::get_time(const std::string& text, const std::string& format)
     return {false, 0};
   }
 
-  time_t t;
+  const time_t t(mktime(&tm));
 
-  if ((t = mktime(&tm)) == -1)
-    return {false, 0};
-
-  return {true, t};
+  return {t != -1, t};
 }
 
 const std::string wex::get_word(std::string& text)
@@ -499,6 +496,14 @@ void wex::node_properties(
   }
 }
 
+const std::string wex::now(const std::string& format)
+{
+  std::time_t       tm = std::time(nullptr);
+  std::stringstream ss;
+  ss << std::put_time(std::localtime(&tm), format.c_str());
+  return ss.str();
+}
+
 bool wex::one_letter_after(const std::string& text, const std::string& letter)
 {
   return std::regex_match(letter, std::regex("^" + text + "[a-zA-Z]$"));
@@ -533,14 +538,16 @@ const std::string wex::print_header(const path& filename)
   if (filename.file_exists())
   {
     return get_endoftext(
-      filename.string() + " " +
-        wxDateTime(filename.stat().st_mtime).Format().ToStdString(),
+      filename.string() + " " + filename.stat().get_modification_time(),
       filename.lexer().line_size());
   }
   else
   {
-    return _("Printed").ToStdString() + ": " +
-           wxDateTime::Now().Format().ToStdString();
+    std::time_t       tm = std::time(nullptr);
+    std::stringstream ss;
+    ss << std::put_time(std::localtime(&tm), "%c");
+
+    return _("Printed").ToStdString() + ": " + ss.str();
   }
 }
 

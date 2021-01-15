@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of wex sample classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <chrono>
@@ -196,15 +196,11 @@ frame::frame()
 
   for (auto i = 0; i < items; i++)
   {
-    std::time_t       tm = std::time(nullptr);
-    std::stringstream ss;
-    ss << std::put_time(std::localtime(&tm), "%c");
-
     m_listview->insert_item(
       {"item " + std::to_string(i),
        std::to_string(i),
        std::to_string((float)i / 2.0),
-       ss.str()});
+       wex::now()});
 
     // Set some images.
     if (i == 0)

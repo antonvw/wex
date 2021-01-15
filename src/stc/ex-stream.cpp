@@ -227,7 +227,7 @@ bool wex::ex_stream::get_next_line()
 {
   if (!m_stream->getline(m_current_line, m_current_line_size))
   {
-    if (m_stream->gcount() >= m_current_line_size - 1)
+    if (m_stream->gcount() > m_current_line_size)
     {
       m_stream->clear();
     }

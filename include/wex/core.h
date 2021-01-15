@@ -2,7 +2,7 @@
 // Name:      core.h
 // Purpose:   Include file for wex core utility functions
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -183,6 +183,9 @@ namespace wex
     const pugi::xml_node* node,
     const std::string&    lexer,
     std::vector<style>&   styles);
+
+  /// Returns now as a string.
+  const std::string now(const std::string& format = "%c");
 
   /// Returns whether there is one letter after.
   bool one_letter_after(const std::string& text, const std::string& letter);

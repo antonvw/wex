@@ -1,5 +1,4 @@
 # roadmap
-- wxDateTime replace by c++20 methods date and time utilities
 
 ## backlog
 - allow dynamic libs

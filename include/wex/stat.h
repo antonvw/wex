@@ -2,13 +2,13 @@
 // Name:      stat.h
 // Purpose:   Declaration of wex::file_stat class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <string>
-#include <sys/stat.h> // for stat
+#include <sys/stat.h>
 
 namespace wex
 {
@@ -21,8 +21,12 @@ namespace wex
     static inline const std::string MOD_TIME_FORMAT = "%c";
 
     /// Default constructor. Calls sync.
-    file_stat(const std::string& path = std::string()) {
-      sync(path);};
+    file_stat(const std::string& path = std::string()) { sync(path); };
+
+    /// Returns the creation time.
+    const std::string get_creation_time(
+      /// the format as used by std::put_time
+      const std::string& format = MOD_TIME_FORMAT) const;
 
     /// Returns the modification time.
     const std::string get_modification_time(
@@ -30,23 +34,26 @@ namespace wex
       const std::string& format = MOD_TIME_FORMAT) const;
 
     /// Returns true if the stat is okay (last sync was okay).
-    bool is_ok() const {return m_is_ok;};
+    bool is_ok() const { return m_is_ok; };
 
     /// Returns true if this stat is readonly.
     bool is_readonly() const;
-    
+
     /// Returns path.
-    const auto& path() const {return m_fullpath;};
+    const auto& path() const { return m_fullpath; };
 
     /// Sets (syncs) this stat, returns result and keeps it in is_ok.
     bool sync();
 
     /// Sets the path member, then syncs.
-    bool sync(const std::string& path) {
+    bool sync(const std::string& path)
+    {
       m_fullpath = path;
-      return sync();}
+      return sync();
+    }
+
   private:
     std::string m_fullpath;
-    bool m_is_ok;
+    bool        m_is_ok;
   };
-};
+}; // namespace wex
