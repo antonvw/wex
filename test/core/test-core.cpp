@@ -159,17 +159,6 @@ TEST_CASE("wex::core" * doctest::may_fail())
     REQUIRE(wex::get_string_set({"one", "two", "three"}, 4) == "three ");
   }
 
-  SUBCASE("get_time")
-  {
-    const auto& [r, t] =
-      wex::get_time("2019-02-01 12:20:06", "%Y-%m-%d %H:%M:%S");
-    REQUIRE(r);
-
-    const auto& [r2, t2] =
-      wex::get_time("201902-01 12:20:06", "%Y-%m-%d %H:%M:%S");
-    REQUIRE(!r2);
-  }
-
   SUBCASE("get_word")
   {
     std::string word("this is a test");

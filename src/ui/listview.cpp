@@ -2,7 +2,7 @@
 // Name:      listview.cpp
 // Purpose:   Implementation of wex::listview and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cctype>
@@ -12,6 +12,7 @@
 #endif
 #include <wex/accelerators.h>
 #include <wex/bind.h>
+#include <wex/chrono.h>
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/defs.h>
@@ -659,7 +660,7 @@ bool wex::listview::find_next(const std::string& text, bool forward)
   {
     start_item = recursive ? GetItemCount() - 1 :
                              (firstselected != -1 ? firstselected - 1 : 0);
-    end_item = -1;
+    end_item   = -1;
   }
 
   int match = -1;
@@ -792,7 +793,7 @@ bool wex::listview::insert_item(
         switch (m_columns[no].type())
         {
           case column::DATE:
-            if (const auto& [r, t] = get_time(col); !r)
+            if (const auto& [r, t] = chrono().get_time(col); !r)
               return false;
             break;
 
@@ -900,10 +901,10 @@ void wex::listview::item_activated(long item_number)
         const auto no(get_item_text(item_number, _("Line No")));
         auto       data(
           (m_data.type() == data::listview::FIND && !no.empty() ?
-             data::control()
+                   data::control()
                .line(std::stoi(no))
                .find(get_item_text(item_number, _("Match"))) :
-             data::control()));
+                   data::control()));
 
         m_frame->open_file(item.get_filename(), data);
       }
@@ -1153,8 +1154,8 @@ int wxCALLBACK compare_cb(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortData)
   {
     case wex::column::DATE:
     {
-      const auto& [r1, t1] = wex::get_time(str1);
-      const auto& [r2, t2] = wex::get_time(str2);
+      const auto& [r1, t1] = wex::chrono().get_time(str1);
+      const auto& [r2, t2] = wex::chrono().get_time(str2);
       if (!r1 || !r2)
         return 0;
       if (ascending)
@@ -1216,7 +1217,7 @@ bool wex::listview::set_item(
     switch (m_columns[column].type())
     {
       case column::DATE:
-        if (const auto& [r, t] = get_time(text); !r)
+        if (const auto& [r, t] = chrono().get_time(text); !r)
           return false;
         break;
 

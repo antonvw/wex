@@ -5,6 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/chrono.h>
 #include <wex/core.h>
 #include <wex/ex.h>
 #include <wex/log.h>

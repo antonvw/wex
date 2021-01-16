@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
-#include <iomanip> // for get_time
 #include <numeric>
 #include <pugixml.hpp>
 #include <regex>
@@ -14,6 +13,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wex/chrono.h>
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/dir.h>
@@ -385,25 +385,6 @@ const std::string wex::get_string_set(
     });
 }
 
-// See also get_modification_time in stat.cpp
-std::tuple<bool, time_t>
-wex::get_time(const std::string& text, const std::string& format)
-{
-  std::tm           tm = {0};
-  std::stringstream ss(text);
-  ss >> std::get_time(&tm, format.c_str());
-
-  if (ss.fail())
-  {
-    wex::log("get_time") << ss << "format:" << format;
-    return {false, 0};
-  }
-
-  const time_t t(mktime(&tm));
-
-  return {t != -1, t};
-}
-
 const std::string wex::get_word(std::string& text)
 {
   std::string field_separators = " \t";
@@ -494,14 +475,6 @@ void wex::node_properties(
       properties.emplace_back(child);
     }
   }
-}
-
-const std::string wex::now(const std::string& format)
-{
-  std::time_t       tm = std::time(nullptr);
-  std::stringstream ss;
-  ss << std::put_time(std::localtime(&tm), format.c_str());
-  return ss.str();
 }
 
 bool wex::one_letter_after(const std::string& text, const std::string& letter)

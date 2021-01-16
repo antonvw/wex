@@ -11,7 +11,6 @@
 #include <set>
 #include <vector>
 #include <wex/lexer.h>
-#include <wex/stat.h>
 #include <wex/style.h>
 
 namespace pugi
@@ -134,19 +133,6 @@ namespace wex
     size_t                       min_size = 0,
     const std::string&           prefix   = std::string());
 
-  /// Converts time string into time_t.
-  /// The result is stored in the tuple.
-  std::tuple<
-    /// true if text could be converted into time_t
-    bool,
-    /// the converted time
-    time_t>
-  get_time(
-    /// text to be converted
-    const std::string& text,
-    /// format to be used for conversion
-    const std::string& format = file_stat::MOD_TIME_FORMAT);
-
   /// Returns a word from a string.
   const std::string get_word(std::string& text);
 
@@ -183,9 +169,6 @@ namespace wex
     const pugi::xml_node* node,
     const std::string&    lexer,
     std::vector<style>&   styles);
-
-  /// Returns now as a string.
-  const std::string now(const std::string& format = "%c");
 
   /// Returns whether there is one letter after.
   bool one_letter_after(const std::string& text, const std::string& letter);

@@ -9,7 +9,7 @@
 #include <io.h>
 #endif
 #include <iomanip>
-#include <sstream>
+#include <wex/chrono.h>
 #include <wex/stat.h>
 #include <wx/filefn.h>
 #ifdef __UNIX__
@@ -19,19 +19,13 @@
 const std::string
 wex::file_stat::get_creation_time(const std::string& format) const
 {
-  std::tm*          tm = std::localtime(&st_ctime);
-  std::stringstream ss;
-  ss << std::put_time(tm, format.c_str());
-  return ss.str();
+  return chrono(format).get_time(st_ctime);
 }
 
 const std::string
 wex::file_stat::get_modification_time(const std::string& format) const
 {
-  std::tm*          tm = std::localtime(&st_mtime);
-  std::stringstream ss;
-  ss << std::put_time(tm, format.c_str());
-  return ss.str();
+  return chrono(format).get_time(st_mtime);
 }
 
 bool wex::file_stat::is_readonly() const

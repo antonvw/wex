@@ -2,10 +2,11 @@
 // Name:      blame.cpp
 // Purpose:   Implementation of class wex::blame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/blame.h>
+#include <wex/chrono.h>
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/log.h>
@@ -71,7 +72,7 @@ wex::lexers::margin_style_t wex::blame::get_style(const std::string& text) const
     return style;
   }
 
-  if (const auto& [r, t] = get_time(text, m_date_format); r)
+  if (const auto& [r, t] = chrono(m_date_format).get_time(text); r)
   {
     const time_t now               = time(nullptr);
     const auto   dt                = difftime(now, t);
@@ -103,10 +104,6 @@ wex::lexers::margin_style_t wex::blame::get_style(const std::string& text) const
     {
       style = lexers::margin_style_t::OTHER;
     }
-  }
-  else
-  {
-    log("date") << text << "format:" << m_date_format;
   }
 
   return style;

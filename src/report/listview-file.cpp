@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      listviewfile.cpp
+// Name:      listview-file.cpp
 // Purpose:   Implementation of class wex::report::file
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021 Anton van Wezenbeek
@@ -7,8 +7,8 @@
 
 #include <pugixml.hpp>
 #include <thread>
+#include <wex/chrono.h>
 #include <wex/config.h>
-#include <wex/core.h>
 #include <wex/frame.h>
 #include <wex/listitem.h>
 #include <wex/log.h>
