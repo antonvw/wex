@@ -30,11 +30,11 @@
   - To add translation files add -DENABLE_GETTEXT=ON to cmake.
 
 ## Test it
-- add a test and update sample
+- add a test (and update sample)
 
 ```bash
 mkdir build && cd build
-cmake -DwexBUILD_TESTS=ON ..
+cmake -DwexBUILD_TESTS=ON -DwexBUILD_SAMPLES=ON ..
 make
 make test
 ```

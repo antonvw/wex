@@ -15,8 +15,8 @@
 #endif
 #include "app.h"
 #include <wex/bind.h>
+#include <wex/chrono.h>
 #include <wex/cmdline.h>
-#include <wex/core.h>
 #include <wex/defs.h>
 #include <wex/file-dialog.h>
 #include <wex/item-dialog.h>
