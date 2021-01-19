@@ -21,7 +21,7 @@ time_point_to_timespec(time_point<system_clock, nanoseconds> tp)
     time_point_cast<nanoseconds>(tp) - time_point_cast<nanoseconds>(secs);
 
   return timespec{
-    secs.time_since_epoch().count(), 
+    secs.time_since_epoch().count(),
     static_cast<long>(ns.count())};
 }
 
@@ -54,7 +54,6 @@ wex::chrono::chrono(const std::string& format, precision_t precision)
 std::string wex::chrono::get_time(time_t tt) const
 {
   std::stringstream ss;
-  struct tm         buf;
 
   ss << std::put_time(std::localtime(&tt), m_format.c_str());
 
