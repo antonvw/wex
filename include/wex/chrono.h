@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <chrono>
 #include <string>
 #include <tuple>
 
@@ -18,15 +19,33 @@ namespace wex
   public:
     static inline const std::string TIME_FORMAT = "%c";
 
-    /// Default constructor.
-    chrono(const std::string& format = chrono::TIME_FORMAT);
+    /// Precision used for outputting time.
+    enum precision_t
+    {
+      PRECISION_DEFAULT, ///< default
+      PRECISION_MILLI,   ///< millisecond
+      PRECISION_MICRO,   ///< microsecond
+      PRECISION_NANO,    ///< nanosecond
+    };
 
-    /// Returns time string for a time_t.
+    /// Default constructor.
+    chrono(
+      const std::string& format    = chrono::TIME_FORMAT,
+      precision_t        precision = PRECISION_DEFAULT);
+
+    /// Returns time string for a time_t. Precision is not used.
     std::string get_time(time_t tt) const;
+
+    /// Returns time string for a timespec, using precision.
+    std::string get_time(const timespec& ts) const;
+
+    /// Returns time string for a time_point, using precision.
+    std::string get_time(
+      const std::chrono::time_point<std::chrono::system_clock>& tp) const;
 
     /// Returns time_t for a time string.
     std::tuple<
-      /// true if text could be converted into time_t
+      /// true if time string could be converted into time_t
       bool,
       /// the converted time
       time_t>
@@ -34,8 +53,11 @@ namespace wex
 
   private:
     const std::string m_format;
+    const precision_t m_precision;
   };
 
   /// Returns now as a string.
-  const std::string now(const std::string& format = chrono::TIME_FORMAT);
+  const std::string now(
+    const std::string&  format    = chrono::TIME_FORMAT,
+    chrono::precision_t precision = chrono::PRECISION_DEFAULT);
 }; // namespace wex
