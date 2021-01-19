@@ -20,7 +20,9 @@ time_point_to_timespec(time_point<system_clock, nanoseconds> tp)
   auto ns =
     time_point_cast<nanoseconds>(tp) - time_point_cast<nanoseconds>(secs);
 
-  return timespec{secs.time_since_epoch().count(), ns.count()};
+  return timespec{
+    secs.time_since_epoch().count(), 
+    static_cast<long>(ns.count())};
 }
 
 constexpr nanoseconds timespec_to_duration(timespec ts)

@@ -51,19 +51,7 @@ make test
 make lcov
 ```
 
-- And, if you want to upload results to coveralls.
-  `make lcov-coveralls`
-
 - Do a pull request from the feature branch to the develop branch
-
-## ctags osx
-- see external/ctags/docs/osx.rst:
-
-```bash
-brew tap universal-ctags/universal-ctags
-brew install --HEAD universal-ctags
-brew reinstall universal-ctags
-```
 
 ## Boost build
 

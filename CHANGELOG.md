@@ -5,6 +5,7 @@
 - boost::log lib instead of easylogging++ lib
 - c++20 standard used, c++17 available as branch
 - support of ex mode handling of files
+- moved apps folder to gitlab
 
 **v20.10** *October 2, 2020*
 - clang-format support, and wex code follows these guidelines
