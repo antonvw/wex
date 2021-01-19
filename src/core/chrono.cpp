@@ -5,6 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <iomanip>
 #include <sstream>
 #include <wex/chrono.h>
@@ -53,9 +54,7 @@ std::string wex::chrono::get_time(time_t tt) const
   std::stringstream ss;
   struct tm         buf;
 
-  localtime_r(&tt, &buf);
-
-  ss << std::put_time(&buf, m_format.c_str());
+  ss << std::put_time(std::localtime(&tt), m_format.c_str());
 
   return ss.str();
 }
