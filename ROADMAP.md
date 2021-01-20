@@ -5,6 +5,7 @@
 - invest use wxTextCompleter
 - start up with recent project, close project
   -> windows appear
+- add more README.md to libs
 - use spaceship operator
   and modules
 - process-imp should be in core

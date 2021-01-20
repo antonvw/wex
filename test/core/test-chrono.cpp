@@ -33,5 +33,8 @@ TEST_CASE("wex::chrono")
         .find(".123") != std::string::npos);
   }
 
-  SUBCASE("now") { REQUIRE(wex::now().find("202") != std::string::npos); }
+  SUBCASE("now")
+  {
+    REQUIRE(wex::now("%Y-%m-%d %H:%M:%S").find("202") != std::string::npos);
+  }
 }
