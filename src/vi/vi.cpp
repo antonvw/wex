@@ -3,7 +3,7 @@
 // Purpose:   Implementation of class wex::vi
 //            http://pubs.opengroup.org/onlinepubs/9699919799/utilities/vi.html
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <functional>

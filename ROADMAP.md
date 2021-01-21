@@ -3,11 +3,13 @@
 
 ## backlog
 - allow dynamic libs
-- invest use wxTextCompleter
 - start up with recent project, close project
   -> windows appear
+- use boost string algo lib to replace trim, replace_all, 
+    toupper, etc.
 - add more README.md to libs
 - use spaceship operator
   and modules
 - process-imp should be in core
+- invest use wxTextCompleter
 - use abstract factory design pattern
