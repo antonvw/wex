@@ -1,4 +1,5 @@
 # roadmap
+- macro sample is not ok: after escape
 
 ## backlog
 - allow dynamic libs
