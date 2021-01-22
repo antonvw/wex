@@ -2,7 +2,7 @@
 // Name:      macros.cpp
 // Purpose:   Implementation of class wex::macros
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <numeric>
@@ -232,7 +232,7 @@ void wex::macros::parse_node(
   const std::string&    name,
   T&                    container)
 {
-  if (const S value = type_to_value<S>(node.attribute("name").value()).get();
+  if (const S& value = type_to_value<S>(node.attribute("name").value()).get();
       container.find(value) != container.end())
   {
     log("duplicate macro") << name << ":" << value
@@ -266,7 +266,7 @@ void wex::macros::parse_node_macro(const pugi::xml_node& node)
 
 void wex::macros::parse_node_variable(const pugi::xml_node& node)
 {
-  if (const variable variable(node); variable.get_name().empty())
+  if (const variable& variable(node); variable.get_name().empty())
   {
     log("empty variable") << node;
   }
@@ -302,8 +302,6 @@ bool wex::macros::record(const std::string& text, bool new_command)
     return false;
   }
 
-  log::trace("recorded") << "macro:" << m_mode.get_macro() << "->" << text;
-
   if (new_command)
   {
     m_macros[m_mode.get_macro()].emplace_back(text == " " ? "l" : text);
@@ -317,6 +315,13 @@ bool wex::macros::record(const std::string& text, bool new_command)
     }
 
     m_macros[m_mode.get_macro()].back() += text;
+  }
+
+  if (const auto& it = m_macros.find(m_mode.get_macro());
+    it != m_macros.end())
+  {
+    log::trace("macro recorded") << m_mode.get_macro() << "->" << 
+      std::accumulate(it->second.begin(), it->second.end(), std::string());
   }
 
   return true;

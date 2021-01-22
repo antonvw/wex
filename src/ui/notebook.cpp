@@ -2,14 +2,13 @@
 // Name:      notebook.cpp
 // Purpose:   Implementation of class wex::notebook
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wex/core.h>
 #include <wex/item-dialog.h>
 #include <wex/item-vector.h>
 #include <wex/notebook.h>
@@ -24,7 +23,7 @@ namespace wex
         wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
        {_("tab.Art provider"),
         item::COMBOBOX,
-        std::list<std::string>{"simple", "default"},
+        std::list<std::string>{"default", "simple"},
         data::control().window(data::window().style(wxCB_READONLY))}});
   };
 } // namespace wex
