@@ -1080,21 +1080,11 @@ void wex::ex::set_registers_delete(const std::string& value) const
 
 void wex::ex::set_register_insert(const std::string& value) const
 {
-  if (value.empty())
-  {
-    return;
-  }
-
   m_macros.set_register('.', value);
 }
 
 void wex::ex::set_register_yank(const std::string& value) const
 {
-  if (value.empty())
-  {
-    return;
-  }
-
   m_macros.set_register('0', value);
 }
 
