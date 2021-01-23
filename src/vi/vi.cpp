@@ -1102,8 +1102,9 @@ void wex::vi::filter_count(std::string& command)
     }
     catch (std::exception& e)
     {
-      m_count_present = true;
+      m_count_present = false;
       log(e) << command;
+      command = v[1];
     }
   }
 }
