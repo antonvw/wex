@@ -1,7 +1,7 @@
 # roadmap
 
 ## backlog
-- use boost string algo lib 
+- use boost string algo lib
   - to replace functions trim, replace_all, toupper, etc.
   - class tokenizer implement using split
     the tokenize for int should anyway be implemented using template<int>
