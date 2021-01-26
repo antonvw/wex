@@ -326,7 +326,7 @@ bool wex::report::frame::grep(const std::string& arg, bool sed)
 {
   static std::string       arg1 = config(m_text_in_folder).get_firstof();
   static std::string       arg2 = config(m_text_in_files).get_firstof();
-  static data::dir::type_t arg3 = data::dir::FILES;
+  static data::dir::type_t arg3 = data::dir::type_t().set(data::dir::FILES);
 
   if (get_stc() != nullptr)
   {
