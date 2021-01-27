@@ -1,6 +1,6 @@
 # changes
 
-**v21.04**
+**v21.04** *March 7, 2021*
 - added FindWEX.cmake to assist using wex library using cmake projects
 - boost::log lib instead of easylogging++ lib
 - c++20 standard used, c++17 available as branch
