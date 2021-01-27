@@ -2,13 +2,14 @@
 // Name:      path.h
 // Purpose:   Declaration of class wex::path
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <bitset>
 #include <filesystem>
+#include <sstream>
 #include <string>
 #include <vector>
 #include <wex/lexer.h>

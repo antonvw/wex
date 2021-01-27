@@ -1,16 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      listviewfile.cpp
+// Name:      listview-file.cpp
 // Purpose:   Implementation of class wex::report::file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <thread>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <pugixml.hpp>
+#include <thread>
+#include <wex/chrono.h>
 #include <wex/config.h>
 #include <wex/frame.h>
 #include <wex/listitem.h>
@@ -66,8 +63,8 @@ wex::report::file::file(const std::string& file, const data::listview& data)
       m_add_items_dialog->force_checkbox_checked(_("Add"));
       if (GetSelectedItemCount() > 0)
       {
-        wex::item   item(m_add_items_dialog->find(m_text_in_folder));
-        wxComboBox* cb = (wxComboBox*)item.window();
+        wex::item item(m_add_items_dialog->find(m_text_in_folder));
+        auto*     cb = (wxComboBox*)item.window();
         cb->SetValue(
           listitem(this, GetFirstSelected()).get_filename().get_path());
       }
@@ -226,8 +223,7 @@ void wex::report::file::do_file_save(bool save_as)
     <files>\n\
     <!-- " +
       wxTheApp->GetAppDisplayName().ToStdString() + " project " +
-      get_filename().fullname() + " " +
-      wxDateTime::Now().Format().ToStdString().c_str() + "-->\n\
+      get_filename().fullname() + " " + now() + "-->\n\
     </files>\n")
       .c_str(),
     pugi::parse_default | pugi::parse_comments);

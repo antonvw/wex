@@ -2,7 +2,7 @@
 // Name:      managed_frame.cpp
 // Purpose:   Implementation of wex::managed_frame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
@@ -153,10 +153,14 @@ bool wex::managed_frame::add_toolbar_panes(const panes_t& panes)
 
     pane.LeftDockable(false).RightDockable(false);
 
-    // If the toolbar has a caption, it is at the top,
+    // If the toolbar has a caption.
     if (!pane.caption.empty())
     {
+#ifndef __WXOSX__
       pane.Top().ToolbarPane().MinSize(-1, 30);
+#else
+      pane.Bottom().ToolbarPane().MinSize(-1, 30);
+#endif
 
       // Initially hide special bars.
       if (pane.name == "FINDBAR" || pane.name == "OPTIONSBAR")

@@ -2,11 +2,10 @@
 // Name:      core/util.cpp
 // Purpose:   Implementation of wex core utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
-#include <iomanip> // for get_time
 #include <numeric>
 #include <pugixml.hpp>
 #include <regex>
@@ -14,6 +13,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wex/chrono.h>
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/dir.h>
@@ -271,7 +271,8 @@ const std::string wex::clipboard_get()
     }
   }
 
-  log("clipboard empty");
+  log::info("clipboard empty");
+
   return std::string();
 }
 
@@ -383,34 +384,6 @@ const std::string wex::get_string_set(
     [&](const std::string& a, const std::string& b) {
       return (b.size() >= min_size && b.starts_with(prefix)) ? a + b + ' ' : a;
     });
-}
-
-// See also get_modification_time in stat.cpp
-std::tuple<bool, time_t>
-wex::get_time(const std::string& text, const std::string& format)
-{
-  time_t t;
-#ifdef __WXMSW__
-  wxDateTime dt;
-  if (!dt.ParseFormat(text, format))
-    return {false, 0};
-  t = dt.GetTicks();
-#else
-  std::tm           tm = {0};
-  std::stringstream ss(text);
-  ss >> std::get_time(&tm, format.c_str());
-
-  if (ss.fail())
-  {
-    wex::log("get_time") << ss << "format:" << format;
-    return {false, 0};
-  }
-
-  if ((t = mktime(&tm)) == -1)
-    return {false, 0};
-#endif
-
-  return {true, t};
 }
 
 const std::string wex::get_word(std::string& text)
@@ -539,14 +512,12 @@ const std::string wex::print_header(const path& filename)
   if (filename.file_exists())
   {
     return get_endoftext(
-      filename.string() + " " +
-        wxDateTime(filename.stat().st_mtime).Format().ToStdString(),
+      filename.string() + " " + filename.stat().get_modification_time(),
       filename.lexer().line_size());
   }
   else
   {
-    return _("Printed").ToStdString() + ": " +
-           wxDateTime::Now().Format().ToStdString();
+    return _("Printed").ToStdString() + ": " + now();
   }
 }
 

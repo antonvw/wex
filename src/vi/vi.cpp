@@ -3,7 +3,7 @@
 // Purpose:   Implementation of class wex::vi
 //            http://pubs.opengroup.org/onlinepubs/9699919799/utilities/vi.html
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <functional>
@@ -34,6 +34,8 @@ namespace wex
                                                     c_strcmp(lhs + 1, rhs + 1);
   };
 
+  const std::string esc() { return std::string("\x1b"); }
+  
   const std::string _s(wxKeyCode key) { return std::string(1, key); }
 } // namespace wex
 
@@ -138,9 +140,9 @@ wex::vi::vi(wex::stc* arg)
         if (!m_dot)
         {
           const std::string c(m_insert_command + register_insert());
-          set_last_command(c + "\x1b");
+          set_last_command(c + esc());
           get_macros().record(c);
-          get_macros().record("\x1b", true);
+          get_macros().record(esc(), true);
         }
         m_command.clear();
         m_insert_command.clear();
@@ -1101,8 +1103,9 @@ void wex::vi::filter_count(std::string& command)
     }
     catch (std::exception& e)
     {
-      m_count_present = true;
+      m_count_present = false;
       log(e) << command;
+      command = v[1];
     }
   }
 }
@@ -1650,7 +1653,7 @@ bool wex::vi::on_key_down(const wxKeyEvent& event)
   {
     if (!m_mode.is_command())
     {
-      command("\x1b");
+      command(esc());
     }
 
     if (const auto& it = get_macros()

@@ -33,6 +33,7 @@ namespace wex
 
       default:
         assert(0);
+        return std::string();
     };
   };
 }; // namespace wex
