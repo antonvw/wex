@@ -2,15 +2,15 @@
 // Name:      process.cpp
 // Purpose:   Implementation of class wex::process
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "process-imp.h"
 
 #include <algorithm>
+#include <boost/algorithm/string.hpp>
 #include <vector>
 #include <wex/config.h>
-#include <wex/core.h>
 #include <wex/ex-stream.h>
 #include <wex/item-dialog.h>
 #include <wex/log.h>
@@ -108,7 +108,7 @@ bool wex::process::execute(
       {
         if (!stc->is_visual())
         {
-          replace_all(
+          boost::algorithm::replace_all(
             m_command,
             "%LINES",
             std::to_string(std::max(
@@ -121,7 +121,7 @@ bool wex::process::execute(
         }
         else if (const std::string sel(stc->GetSelectedText()); !sel.empty())
         {
-          replace_all(
+          boost::algorithm::replace_all(
             m_command,
             "%LINES",
             std::to_string(
@@ -132,7 +132,7 @@ bool wex::process::execute(
         }
         else
         {
-          replace_all(
+          boost::algorithm::replace_all(
             m_command,
             "%LINES",
             std::to_string(stc->get_current_line() + 1) + "," +

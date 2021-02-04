@@ -142,7 +142,7 @@ TEST_CASE("wex::addressrange")
       stc->set_text(contents);
       REQUIRE(!wex::addressrange(ex, 5).global(std::string(), b));
       REQUIRE(!wex::addressrange(ex, 5).global("XXX", b));
-      REQUIRE(wex::addressrange(ex, 5).global("/", b));
+      REQUIRE(!wex::addressrange(ex, 5).global("/", b));
       REQUIRE(wex::addressrange(ex, 5).global("/xx/p", b));
       REQUIRE(wex::addressrange(ex, 5).global("/xx/p#", b));
       REQUIRE(wex::addressrange(ex, 5).global("/xx/g", b));
@@ -252,7 +252,7 @@ TEST_CASE("wex::addressrange")
 
   SUBCASE("substitute and flags")
   {
-    REQUIRE(!wex::addressrange(ex, "1").substitute("//y"));
+    REQUIRE(wex::addressrange(ex, "1").substitute("//y"));
     REQUIRE(!wex::addressrange(ex, "0").substitute("/x/y"));
     REQUIRE(wex::addressrange(ex, "2").substitute("/x/y/f"));
     REQUIRE(wex::addressrange(ex, "1,2").substitute("/x/y"));

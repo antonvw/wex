@@ -10,6 +10,8 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <boost/algorithm/string.hpp>
+#include <boost/tokenizer.hpp>
 #include <wex/accelerators.h>
 #include <wex/bind.h>
 #include <wex/chrono.h>
@@ -86,8 +88,7 @@ namespace wex
 
     if (!wex::find_replace_data::get()->match_case())
     {
-      for (auto& c : output)
-        c = std::toupper(c);
+      boost::algorithm::to_upper(output);
     }
 
     return output;
@@ -132,8 +133,9 @@ namespace wex
             dlg.ShowModal() == wxID_OK)
         {
           lv->insert_item(
-            tokenizer(dlg.GetValue(), std::string(1, lv->field_separator()))
-              .tokenize<std::vector<std::string>>(),
+            tokenize<std::vector<std::string>>(
+              dlg.GetValue().ToStdString(),
+              std::string(1, lv->field_separator()).c_str()),
             new_index);
         }
         break;
@@ -882,13 +884,17 @@ void wex::listview::item_activated(long item_number)
             dlg(this, _("Input") + ":", _("Item"), item_to_text(item_number));
           dlg.ShowModal() == wxID_OK)
       {
-        tokenizer tkz(dlg.GetValue(), std::string(1, m_field_separator));
-        int       col = 0;
+        int col = 0;
 
-        while (tkz.has_more_tokens() && col < GetColumnCount())
+        boost::tokenizer<boost::char_separator<char>> tok(
+          dlg.GetValue().ToStdString(),
+          boost::char_separator<char>(
+            std::string(1, m_field_separator).c_str()));
+
+        for (auto it = tok.begin(); it != tok.end() && col < GetColumnCount();
+             ++it)
         {
-          const auto value = tkz.get_next_token();
-          set_item(item_number, col++, value);
+          set_item(item_number, col++, *it);
         }
       }
     }
@@ -933,15 +939,17 @@ bool wex::listview::item_from_text(const std::string& text)
 
   bool modified = false;
 
-  for (tokenizer tkz(text, "\n"); tkz.has_more_tokens();)
+  for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
+         text,
+         boost::char_separator<char>("\n")))
   {
     switch (m_data.type())
     {
       case data::listview::NONE:
       case data::listview::TSV:
-        if (const auto line = tkz.get_next_token();
-            insert_item(tokenizer(line, std::string(1, m_field_separator))
-                          .tokenize<std::vector<std::string>>()))
+        if (insert_item(tokenize<std::vector<std::string>>(
+              it,
+              std::string(1, m_field_separator).c_str())))
         {
           modified = true;
         }
@@ -952,18 +960,18 @@ bool wex::listview::item_from_text(const std::string& text)
 
         if (!InReportView())
         {
-          listitem(this, tkz.get_next_token()).insert();
+          listitem(this, it).insert();
         }
         else
         {
-          const auto token(tkz.get_next_token());
+          boost::tokenizer<boost::char_separator<char>> tok(
+            it,
+            boost::char_separator<char>(
+              std::string(1, m_field_separator).c_str()));
 
-          if (tokenizer tk(token, std::string(1, field_separator()));
-              tk.has_more_tokens())
+          if (auto tt = tok.begin(); tt != tok.end())
           {
-            const auto value = tk.get_next_token();
-
-            if (path fn(value); fn.file_exists())
+            if (path fn(*tt); fn.file_exists())
             {
               listitem item(this, fn);
               item.insert();
@@ -971,17 +979,15 @@ bool wex::listview::item_from_text(const std::string& text)
               // And try to set the rest of the columns
               // (that are not already set by inserting).
               int col = 1;
-              while (tk.has_more_tokens() && col < GetColumnCount() - 1)
+              while (++tt != tok.end() && col < GetColumnCount() - 1)
               {
-                const auto value = tk.get_next_token();
-
                 if (
                   col != find_column(_("Type")) &&
                   col != find_column(_("In Folder")) &&
                   col != find_column(_("Size")) &&
                   col != find_column(_("Modified")))
                 {
-                  if (!set_item(item.GetId(), col, value))
+                  if (!set_item(item.GetId(), col, *tt))
                     return false;
                 }
 
@@ -993,14 +999,13 @@ bool wex::listview::item_from_text(const std::string& text)
               // Now we need only the first column (containing findfiles). If
               // more columns are present, these are ignored.
               const auto findfiles =
-                (tk.has_more_tokens() ? tk.get_next_token() : tk.get_string());
-
-              listitem(this, value, findfiles).insert();
+                (std::next(tt) != tok.end() ? *(std::next(tt)) : it);
+              listitem(this, *tt, findfiles).insert();
             }
           }
           else
           {
-            listitem(this, token).insert();
+            listitem(this, it).insert();
           }
         }
     }
@@ -1085,7 +1090,11 @@ bool wex::listview::load(const std::list<std::string>& l)
 
   if (m_data.type() == data::listview::TSV && GetColumnCount() == 0)
   {
-    const auto cols = tokenizer(l.front(), "\t").count_tokens();
+    boost::tokenizer<boost::char_separator<char>> tok(
+      l.front(),
+      boost::char_separator<char>("\t"));
+
+    const auto cols = std::distance(tok.begin(), tok.end());
 
     for (size_t i = 0; i < cols; i++)
     {

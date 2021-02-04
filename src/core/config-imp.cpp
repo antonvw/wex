@@ -44,9 +44,8 @@ wex::config_imp::config_imp(const config_imp* c, const std::string& item)
 
 json& wex::config_imp::accessor(const std::string& item)
 {
-  switch (
-    const auto& v(tokenizer(item, ".").tokenize<std::vector<std::string>>());
-    v.size())
+  switch (const auto& v(tokenize<std::vector<std::string>>(item, "."));
+          v.size())
   {
     case 0:
       return m_json;

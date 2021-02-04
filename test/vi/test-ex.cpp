@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "../test.h"
+#include <wex/core.h>
 #include <wex/ex.h>
 #include <wex/frd.h>
 #include <wex/macro-mode.h>
@@ -91,6 +92,32 @@ TEST_CASE("wex::ex")
     REQUIRE(!ex->is_active());
     ex->use(true);
     REQUIRE(ex->is_active());
+  }
+
+  SUBCASE("marker_and_register_expansion")
+  {
+    stc->set_text("this is some text");
+    REQUIRE(ex->command(":ky"));
+
+    std::string command("xxx");
+    REQUIRE(!wex::marker_and_register_expansion(nullptr, command));
+    REQUIRE(wex::marker_and_register_expansion(ex, command));
+
+    command = "'yxxx";
+    REQUIRE(wex::marker_and_register_expansion(ex, command));
+    REQUIRE(command == "1xxx");
+
+    command = "yxxx'";
+    REQUIRE(wex::marker_and_register_expansion(ex, command));
+    REQUIRE(command == "yxxx'");
+
+    REQUIRE(wex::clipboard_add("yanked"));
+    command = "this is * end";
+    REQUIRE(wex::marker_and_register_expansion(ex, command));
+
+#ifndef __WXMSW__
+    REQUIRE(command == "this is yanked end");
+#endif
   }
 
   SUBCASE("visual mode")

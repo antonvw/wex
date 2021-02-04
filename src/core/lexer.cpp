@@ -2,10 +2,11 @@
 // Name:      lexer.cpp
 // Purpose:   Implementation of wex::lexer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
+#include <boost/tokenizer.hpp>
 #include <functional>
 #include <numeric>
 #include <pugixml.hpp>
@@ -15,27 +16,42 @@
 #include <wex/lexers.h>
 #include <wex/log.h>
 #include <wex/stc-core.h>
-#include <wex/tokenizer.h>
 #include <wx/platinfo.h>
 
 namespace wex
 {
-  int convert_attrib(
+  int convert_int_attrib(
     const std::vector<std::pair<std::string, int>>& v,
-    const std::string&                              attrib)
+    const std::string&                              text)
   {
     for (const auto& e : v)
     {
-      if (attrib == e.first)
+      if (text == e.first)
       {
         return e.second;
       }
     }
 
-    log("unsupported attrib") << attrib;
+    log("unsupported attrib") << text;
 
     return -1;
   }
+
+  /// Tokenizes the complete string into a vector of integers (size_t).
+  /// Returns the filled in vector.
+  auto tokenize_int(const std::string& text, const char* sep = " \t\r\n")
+  {
+    std::vector<size_t> tokens;
+
+    for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
+           text,
+           boost::char_separator<char>(sep)))
+    {
+      tokens.emplace_back(std::stoi(it));
+    }
+
+    return tokens;
+  };
 } // namespace wex
 
 wex::lexer::lexer(const std::string& lexer)
@@ -85,10 +101,11 @@ wex::lexer::lexer(const pugi::xml_node* node)
       else if (strcmp(child.name(), "keywords") == 0)
       {
         // Add all direct keywords
-        if (const std::string & direct(child.text().get());
+        if (const std::string direct(child.text().get());
             !direct.empty() && !add_keywords(direct))
         {
-          wex::log("keywords could not be set") << child;
+          wex::log("keywords")
+            << direct << " could not be set" << child << m_scintilla_lexer;
         }
 
         // Add all keywords that point to a keyword set.
@@ -184,18 +201,20 @@ bool wex::lexer::add_keywords(const std::string& value, int setno)
 
   std::set<std::string> keywords_set;
 
-  for (tokenizer tkz(value, "\r\n "); tkz.has_more_tokens();)
+  for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
+         value,
+         boost::char_separator<char>("\r\n ")))
   {
-    const auto  line(tkz.get_next_token());
+    const auto& line(it);
     std::string keyword;
 
-    if (tokenizer fields(line, ":"); fields.count_tokens() > 1)
+    if (line.find(":") != std::string::npos)
     {
-      keyword = fields.get_next_token();
+      keyword = before(line, ':');
 
       try
       {
-        if (const auto new_setno = std::stoi(fields.get_next_token());
+        if (const auto new_setno = std::stoi(after(line, ':'));
             new_setno <= 0 || new_setno >= wxSTC_KEYWORDSET_MAX)
         {
           wex::log("invalid keyword set") << new_setno;
@@ -620,27 +639,27 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
     return;
   }
 
-  if (const std::string a(node->attribute("edgecolumns").value()); !a.empty())
+  if (const std::string v(node->attribute("edgecolumns").value()); !v.empty())
   {
     try
     {
-      m_edge_columns = tokenizer(a).tokenize();
+      m_edge_columns = tokenize_int(v);
     }
     catch (std::exception& e)
     {
-      wex::log(e) << "edgecolumns:" << a;
+      wex::log(e) << "edgecolumns:" << v;
     }
   }
 
-  if (const std::string a(node->attribute("edgemode").value()); !a.empty())
+  if (const std::string v(node->attribute("edgemode").value()); !v.empty())
   {
     m_attribs.push_back(
       {_("Edge line"),
-       convert_attrib(
+       convert_int_attrib(
          {{"none", wxSTC_EDGE_NONE},
           {"line", wxSTC_EDGE_LINE},
           {"background", wxSTC_EDGE_BACKGROUND}},
-         a),
+         v),
        [&](core::stc* stc, int attrib) {
          switch (attrib)
          {
@@ -660,16 +679,16 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
        }});
   }
 
-  if (const std::string a(node->attribute("spacevisible").value()); !a.empty())
+  if (const std::string v(node->attribute("spacevisible").value()); !v.empty())
   {
     m_attribs.push_back(
       {_("Whitespace visible"),
-       convert_attrib(
+       convert_int_attrib(
          {{"invisible", wxSTC_WS_INVISIBLE},
           {"always", wxSTC_WS_VISIBLEALWAYS},
           {"afterindent", wxSTC_WS_VISIBLEAFTERINDENT},
           {"onlyindent", wxSTC_WS_VISIBLEONLYININDENT}},
-         a),
+         v),
        [&](core::stc* stc, int attrib) {
          if (attrib >= 0)
          {
@@ -678,13 +697,13 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
        }});
   }
 
-  if (const std::string a(node->attribute("tabdrawmode").value()); !a.empty())
+  if (const std::string v(node->attribute("tabdrawmode").value()); !v.empty())
   {
     m_attribs.push_back(
       {_("Tab draw mode"),
-       convert_attrib(
+       convert_int_attrib(
          {{"arrow", wxSTC_TD_LONGARROW}, {"strike", wxSTC_TD_STRIKEOUT}},
-         a),
+         v),
        [&](core::stc* stc, int attrib) {
          if (attrib >= 0)
          {
@@ -693,11 +712,11 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
        }});
   }
 
-  if (const std::string a(node->attribute("tabmode").value()); !a.empty())
+  if (const std::string v(node->attribute("tabmode").value()); !v.empty())
   {
     m_attribs.push_back(
       {_("Use tabs"),
-       convert_attrib({{"use", 1}, {"off", 0}}, a),
+       convert_int_attrib({{"use", 1}, {"off", 0}}, v),
        [&](core::stc* stc, int attrib) {
          if (attrib >= 0)
          {
@@ -706,9 +725,9 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
        }});
   }
 
-  if (const auto a(node->attribute("tabwidth").as_int(0)); a > 0)
+  if (const auto v(node->attribute("tabwidth").as_int(0)); v > 0)
   {
-    m_attribs.push_back({_("Tab width"), a, [&](core::stc* stc, int attrib) {
+    m_attribs.push_back({_("Tab width"), v, [&](core::stc* stc, int attrib) {
                            if (attrib >= 0)
                            {
                              stc->SetIndent(attrib);
@@ -717,16 +736,16 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
                          }});
   }
 
-  if (const std::string a(node->attribute("wrapline").value()); !a.empty())
+  if (const std::string v(node->attribute("wrapline").value()); !v.empty())
   {
     m_attribs.push_back(
       {_("Wrap line"),
-       convert_attrib(
+       convert_int_attrib(
          {{"none", wxSTC_WRAP_NONE},
           {"word", wxSTC_WRAP_WORD},
           {"char", wxSTC_WRAP_CHAR},
           {"whitespace", wxSTC_WRAP_WHITESPACE}},
-         a),
+         v),
        [&](core::stc* stc, int attrib) {
          if (attrib >= 0)
          {

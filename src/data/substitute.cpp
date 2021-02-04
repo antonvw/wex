@@ -5,6 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/algorithm/string.hpp>
 #include <wex/core.h>
 #include <wex/log.h>
 #include <wex/substitute-data.h>
@@ -34,11 +35,13 @@ bool wex::data::substitute::is_ignore_case() const
   return m_options.find("i") != std::string::npos;
 }
 
-bool wex::data::substitute::set(const std::string& command_org)
+bool wex::data::substitute::set(
+  const std::string& command_org,
+  const std::string& pattern)
 {
   // If there are escaped / chars in the text,
   // temporarily replace them to an unused char, so
-  // we can use string tokenizer with / as separator.
+  // we can use regex with / as search character.
   bool escaped = false;
 
   auto command(command_org);
@@ -49,7 +52,7 @@ bool wex::data::substitute::set(const std::string& command_org)
   {
     if (command.find(char(1)) == std::string::npos)
     {
-      replace_all(command, "\\/", "\x01");
+      boost::algorithm::replace_all(command, "\\/", "\x01");
       escaped = true;
     }
     else
@@ -75,6 +78,11 @@ bool wex::data::substitute::set(const std::string& command_org)
     {
       std::replace(m_pattern.begin(), m_pattern.end(), '\x01', '/');
       std::replace(m_replacement.begin(), m_replacement.end(), '\x01', '/');
+    }
+
+    if (m_pattern.empty())
+    {
+      m_pattern = pattern;
     }
 
     return true;

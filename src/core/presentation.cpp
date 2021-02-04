@@ -2,13 +2,13 @@
 // Name:      presentation.cpp
 // Purpose:   Implementation of class wex::presentation
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/tokenizer.hpp>
 #include <wex/lexers.h>
 #include <wex/log.h>
 #include <wex/presentation.h>
-#include <wex/tokenizer.h>
 #include <wx/stc/stc.h>
 
 wex::presentation::presentation(presentation_t type, const pugi::xml_node& node)
@@ -22,24 +22,29 @@ wex::presentation::presentation(presentation_t type, const pugi::xml_node& node)
     const auto single =
       lexers::get()->apply_macro(node.attribute("no").value());
 
-    tokenizer fields(node.text().get(), ",");
+    boost::tokenizer<boost::char_separator<char>> tok(
+      std::string(node.text().get()),
+      boost::char_separator<char>(","));
 
-    m_no    = std::stoi(single);
-    m_style = std::stoi(lexers::get()->apply_macro(fields.get_next_token()));
+    m_no = std::stoi(single);
 
-    if (fields.has_more_tokens())
+    if (auto it = tok.begin(); it != tok.end())
     {
-      m_foreground_colour = lexers::get()->apply_macro(fields.get_next_token());
+      m_style = std::stoi(lexers::get()->apply_macro(*it));
 
-      if (m_type == INDICATOR && fields.has_more_tokens())
+      if (++it != tok.end())
       {
-        m_under = (fields.get_next_token() == "true");
-      }
+        m_foreground_colour = lexers::get()->apply_macro(*it);
 
-      if (m_type == MARKER && fields.has_more_tokens())
-      {
-        m_background_colour =
-          lexers::get()->apply_macro(fields.get_next_token());
+        if (m_type == INDICATOR && ++it != tok.end())
+        {
+          m_under = (*it == "true");
+        }
+
+        if (m_type == MARKER && ++it != tok.end())
+        {
+          m_background_colour = lexers::get()->apply_macro(*it);
+        }
       }
     }
 

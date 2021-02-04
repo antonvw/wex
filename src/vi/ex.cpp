@@ -13,6 +13,8 @@
 #include <wx/wx.h>
 #endif
 #include "eval.h"
+#include <boost/algorithm/string.hpp>
+#include <boost/tokenizer.hpp>
 #include <wex/address.h>
 #include <wex/addressrange.h>
 #include <wex/cmdline.h>
@@ -32,7 +34,6 @@
 #include <wex/statusbar.h>
 #include <wex/stc-entry-dialog.h>
 #include <wex/stc.h>
-#include <wex/tokenizer.h>
 #include <wex/type-to-value.h>
 #include <wex/version.h>
 
@@ -112,12 +113,13 @@ namespace wex
 
     if (const auto buffer(script.read()); buffer != nullptr)
     {
-      wex::tokenizer tkz(*buffer, "\r\n");
-      int            i = 0;
-
-      while (tkz.has_more_tokens())
+      for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
+             *buffer,
+             boost::char_separator<char>("\r\n")))
       {
-        if (const std::string line(tkz.get_next_token()); !line.empty())
+        int i = 0;
+
+        if (const std::string line(it); !line.empty())
         {
           if (line == cmd)
           {
@@ -129,7 +131,7 @@ namespace wex
             line.starts_with(":a") || line.starts_with(":i") ||
             line.starts_with(":c"))
           {
-            if (!ex->command(line + tkz.last_delimiter()))
+            if (!ex->command(line + "\n"))
             {
               log::trace("command insert failed line") << i + 1 << line;
               result = false;
@@ -355,27 +357,25 @@ wex::ex::ex(wex::stc* stc)
                 }},
                {":una",
                 [&](const std::string& command) {
-                  if (wex::tokenizer tkz(command); tkz.count_tokens() >= 1)
+                  if (command.find(" ") != std::string::npos)
                   {
-                    tkz.get_next_token(); // skip :una
-                    m_macros.set_abbreviation(tkz.get_next_token(), "");
+                    m_macros.set_abbreviation(after(command, ' '), "");
                   }
                   return true;
                 }},
                {":unm",
                 [&](const std::string& command) {
-                  if (wex::tokenizer tkz(command); tkz.count_tokens() >= 1)
+                  if (command.find(" ") != std::string::npos)
                   {
-                    tkz.get_next_token(); // skip :unm
                     switch (get_command_arg(command))
                     {
                       case wex::command_arg_t::INT:
-                        m_macros.set_key_map(tkz.get_next_token(), "");
+                        m_macros.set_key_map(after(command, ' '), "");
                         break;
                       case wex::command_arg_t::NONE:
                         break;
                       case wex::command_arg_t::OTHER:
-                        m_macros.set_map(tkz.get_next_token(), "");
+                        m_macros.set_map(after(command, ' '), "");
                         break;
                     }
                   }
@@ -465,7 +465,7 @@ bool wex::ex::address_parse(
           type  = address_t::ONE;
           range = v[0];
           cmd   = (v[1] == "mark" ? "k" : v[1]);
-          text  = trim(v[2], skip_t().set(TRIM_LEFT));
+          text  = boost::algorithm::trim_left_copy(v[2]);
           break;
 
         case 4:
@@ -821,11 +821,12 @@ bool wex::ex::handle_container(
   const T*                                                    container,
   std::function<bool(const std::string&, const std::string&)> cb)
 {
-  if (tokenizer tkz(command); tkz.count_tokens() >= 2)
+  // command is like:
+  // :map 7 :%d
+  if (std::vector<std::string> v;
+      match("(\\S+) +(\\S+) +(\\S+)", command, v) == 3)
   {
-    tkz.get_next_token(); // skip
-    const auto name(tkz.get_next_token());
-    cb(name, tkz.get_string());
+    cb(v[1], v[2]);
   }
   else if (container != nullptr)
   {

@@ -37,7 +37,8 @@ namespace wex::data
     auto& replacement() const { return m_replacement; };
 
     /// Sets data from text.
-    bool set(const std::string& text);
+    bool
+    set(const std::string& text, const std::string& pattern = std::string());
 
   private:
     std::string m_pattern, m_replacement, m_options;

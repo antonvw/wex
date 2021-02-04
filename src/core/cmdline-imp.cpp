@@ -2,14 +2,15 @@
 // Name:      cmdline-imp.cpp
 // Purpose:   Implementation of wex::cmdline_imp class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
+
+#include <iostream>
+#include <sstream>
 
 #include <boost/log/core.hpp>
 #include <boost/log/expressions.hpp>
 #include <boost/log/trivial.hpp>
-
-#include <sstream>
 #include <wex/cmdline.h>
 #include <wex/config.h>
 #include <wex/core.h>
@@ -86,8 +87,7 @@ bool wex::cmdline_imp::parse(data::cmdline& data)
         .run(),
       m_vm) :
     po::store(
-      po::command_line_parser(
-        tokenizer(data.string()).tokenize<std::vector<std::string>>())
+      po::command_line_parser(tokenize<std::vector<std::string>>(data.string()))
         .options(m_desc)
         .positional(m_pos_desc)
         .run(),

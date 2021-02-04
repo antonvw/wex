@@ -2,7 +2,7 @@
 // Name:      macro-mode.cpp
 // Purpose:   Implementation of class wex::macro_mode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -10,6 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include "macro-fsm.h"
+#include <boost/algorithm/string.hpp>
 #include <wex/core.h>
 #include <wex/ex.h>
 #include <wex/macro-mode.h>
@@ -100,7 +101,7 @@ int wex::macro_mode::transition(
 
   wxWindow* parent = (ex != nullptr ? ex->get_stc() : wxTheApp->GetTopWindow());
 
-  std::string      macro(trim(command));
+  std::string      macro(boost::algorithm::trim_copy(command));
   const ex_command cmd(ex != nullptr ? ex->get_command() : ex_command());
 
   if (ex != nullptr)

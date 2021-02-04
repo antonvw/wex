@@ -1,5 +1,9 @@
 # changes
 
+**v21.10**
+- boost::algorithm lib used
+- boost::tokenizer lib used
+
 **v21.04** *March 7, 2021*
 - added FindWEX.cmake to assist using wex library using cmake projects
 - boost::log lib instead of easylogging++ lib

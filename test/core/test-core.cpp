@@ -261,21 +261,6 @@ TEST_CASE("wex::core" * doctest::may_fail())
   {
     REQUIRE(wex::quoted("test") == "'test'");
     REQUIRE(wex::quoted("%d") == "'%d'");
-    REQUIRE(wex::quoted(wex::trim(" %d ")) == "'%d'");
-  }
-
-  SUBCASE("replace_all")
-  {
-    int               match_pos;
-    const std::string org("test x y z x y z");
-    std::string       text(org);
-
-    REQUIRE(wex::replace_all(text, "x", "aha", &match_pos) == 2);
-    REQUIRE(match_pos == 5);
-
-    text = org;
-    REQUIRE(wex::replace_all(text, "xy", "aha", &match_pos) == 0);
-    REQUIRE(match_pos == 5);
   }
 
   SUBCASE("sort")
@@ -302,23 +287,5 @@ TEST_CASE("wex::core" * doctest::may_fail())
     REQUIRE(
       wex::translate("hello @PAGENUM@ from @PAGESCNT@", 1, 2).find("@") ==
       std::string::npos);
-  }
-
-  SUBCASE("trim")
-  {
-    REQUIRE(wex::trim("\n\tt \n    es   t\n", wex::skip_t().set()) == "t es t");
-#ifndef __WXMSW__
-    REQUIRE(
-      wex::trim("\n\tt \n    es   t\n", wex::skip_t().set(wex::TRIM_LEFT)) ==
-      "t \n    es   t\n");
-    REQUIRE(
-      wex::trim("\n\tt \n    es   t\n", wex::skip_t().set(wex::TRIM_RIGHT)) ==
-      "\n\tt \n    es   t");
-    REQUIRE(
-      wex::trim(
-        "\n\tt \n    es   t\n",
-        wex::skip_t().set(wex::TRIM_LEFT).set(wex::TRIM_RIGHT)) ==
-      "t \n    es   t");
-#endif
   }
 }
