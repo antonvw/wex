@@ -18,11 +18,12 @@ wex::presentation::presentation(presentation_t type, const pugi::xml_node& node)
     return;
 
   const auto single = lexers::get()->apply_macro(node.attribute("no").value());
+  const std::string text(node.text().get());
 
   try
   {
     boost::tokenizer<boost::char_separator<char>> tok(
-      std::string(node.text().get()),
+      text,
       boost::char_separator<char>(","));
 
     m_no = std::stoi(single);
@@ -54,7 +55,7 @@ wex::presentation::presentation(presentation_t type, const pugi::xml_node& node)
   }
   catch (std::exception& e)
   {
-    log(e) << name() << single << node.text().get();
+    log(e) << name() << single << text;
   }
 }
 

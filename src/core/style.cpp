@@ -68,10 +68,12 @@ void wex::style::set(const pugi::xml_node& node, const std::string& macro)
 
   set_no(lexers::get()->apply_macro(m_define, macro), macro, node);
 
+  const std::string text(std::string(node.text().get()));
+
   // The style is parsed using the themed macros, and
   // you can specify several styles separated by a + sign.
   for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
-         std::string(node.text().get()),
+         text,
          boost::char_separator<char>("+")))
   {
     // Collect each single field style.
