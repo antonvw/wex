@@ -886,8 +886,8 @@ bool wex::ex::marker_add(char marker, int line)
 
   if (!lm.is_ok())
   {
-    wex::log("could not find marker symbol")
-      << m_marker_symbol.number() << " in lexers";
+    wex::log("could not find marker")
+      << marker << "symbol" << m_marker_symbol.number();
     return false;
   }
 

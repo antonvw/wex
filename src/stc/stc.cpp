@@ -959,11 +959,11 @@ bool wex::stc::set_indicator(const indicator& indicator, int start, int end)
   {
     if (!loaded)
     {
-      log("indicator not loaded");
+      log("indicator") << indicator.number() << " not loaded";
     }
     else
     {
-      log("set_indicator") << start << end;
+      log("set_indicator") << indicator.number() << start << end;
     }
     return false;
   }

@@ -56,7 +56,7 @@ namespace wex
       bool               find_next  = true) override;
 
     /// Returns context lines.
-    int get_context_lines() const { return m_context_lines; };
+    size_t get_context_lines() const { return m_context_lines; };
 
     /// Returns current line no
     int get_current_line() const;
@@ -103,9 +103,9 @@ namespace wex
 
     /// Writes range to file.
     bool write(
-      const addressrange& range, 
-      const std::string& file,
-      bool append = false);
+      const addressrange& range,
+      const std::string&  file,
+      bool                append = false);
 
   private:
     bool copy(file* from, file* to);

@@ -112,10 +112,10 @@ bool wex::process::execute(
             m_command,
             "%LINES",
             std::to_string(std::max(
-              1,
-              stc->get_current_line() + 1 -
+              (size_t)1,
+              (size_t)stc->get_current_line() + 1 -
                 std::min(
-                  stc->GetLineCount(),
+                  (size_t)stc->GetLineCount(),
                   stc->get_file().ex_stream()->get_context_lines()))) +
               "," + std::to_string(stc->get_current_line() + 1));
         }
