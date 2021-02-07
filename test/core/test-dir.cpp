@@ -2,7 +2,7 @@
 // Name:      test-dir.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
@@ -68,11 +68,5 @@ TEST_CASE("wex::dir")
         wex::data::dir().file_spec("*.txt").type(
           wex::data::dir::type_t().set(wex::data::dir::FILES)))
         .size() == 4);
-
-    REQUIRE(wex::get_all_files(
-              wex::path("./"),
-              wex::data::dir().file_spec("*.txt").type(
-                wex::data::dir::type_t().set(wex::data::dir::DIRS)))
-              .empty());
   }
 }

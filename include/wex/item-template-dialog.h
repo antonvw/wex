@@ -20,6 +20,14 @@
 #include <wx/textctrl.h>
 #include <wx/tglbtn.h> // for wxEVT_TOGGLEBUTTON
 
+#define DO_DIALOG                                                             \
+  if (dlg.ShowModal() == wxID_OK)                                             \
+  {                                                                           \
+    const auto value = dlg.GetPath();                                         \
+    const int  item  = browse->FindString(value);                             \
+    browse->SetSelection(item == wxNOT_FOUND ? browse->Append(value) : item); \
+  }
+
 namespace wex
 {
   /// Offers a dialog template to set several items.
@@ -93,13 +101,7 @@ namespace wex
                 _(wxDirSelectorPromptStr),
                 browse->GetValue(),
                 wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
-              if (dlg.ShowModal() == wxID_OK)
-              {
-                const auto value = dlg.GetPath();
-                const int  item  = browse->FindString(value);
-                browse->SetSelection(
-                  item == wxNOT_FOUND ? browse->Append(value) : item);
-              }
+              DO_DIALOG;
             },
             item.window()->GetId());
           break;
@@ -116,13 +118,7 @@ namespace wex
                 path.fullname(),
                 wxFileSelectorDefaultWildcardStr,
                 wxFD_DEFAULT_STYLE | wxFD_FILE_MUST_EXIST);
-              if (dlg.ShowModal() == wxID_OK)
-              {
-                const auto value = dlg.GetPath();
-                const int  item  = browse->FindString(value);
-                browse->SetSelection(
-                  item == wxNOT_FOUND ? browse->Append(value) : item);
-              }
+              DO_DIALOG;
             },
             item.window()->GetId());
           break;

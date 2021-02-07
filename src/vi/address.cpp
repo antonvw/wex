@@ -140,6 +140,14 @@ bool wex::address::flags_supported(const std::string& flags) const
   return true;
 }
 
+#define SEARCH_TARGET                              \
+  if (m_ex->get_stc()->SearchInTarget(v[0]) != -1) \
+  {                                                \
+    return m_ex->get_stc()->LineFromPosition(      \
+             m_ex->get_stc()->GetTargetStart()) +  \
+           1;                                      \
+  }
+
 int wex::address::get_line() const
 {
   // We already have a line number, return that one.
@@ -169,21 +177,11 @@ int wex::address::get_line() const
       m_ex->get_stc()->GetCurrentPos(),
       m_ex->get_stc()->GetTextLength());
 
-    if (m_ex->get_stc()->SearchInTarget(v[0]) != -1)
-    {
-      return m_ex->get_stc()->LineFromPosition(
-               m_ex->get_stc()->GetTargetStart()) +
-             1;
-    }
+    SEARCH_TARGET;
 
     m_ex->get_stc()->SetTargetRange(0, m_ex->get_stc()->GetCurrentPos());
 
-    if (m_ex->get_stc()->SearchInTarget(v[0]) != -1)
-    {
-      return m_ex->get_stc()->LineFromPosition(
-               m_ex->get_stc()->GetTargetStart()) +
-             1;
-    }
+    SEARCH_TARGET;
 
     return 0;
   }
@@ -204,23 +202,13 @@ int wex::address::get_line() const
 
     m_ex->get_stc()->SetTargetRange(m_ex->get_stc()->GetCurrentPos(), 0);
 
-    if (m_ex->get_stc()->SearchInTarget(v[0]) != -1)
-    {
-      return m_ex->get_stc()->LineFromPosition(
-               m_ex->get_stc()->GetTargetStart()) +
-             1;
-    }
+    SEARCH_TARGET;
 
     m_ex->get_stc()->SetTargetRange(
       m_ex->get_stc()->GetTextLength(),
       m_ex->get_stc()->GetCurrentPos());
 
-    if (m_ex->get_stc()->SearchInTarget(v[0]) != -1)
-    {
-      return m_ex->get_stc()->LineFromPosition(
-               m_ex->get_stc()->GetTargetStart()) +
-             1;
-    }
+    SEARCH_TARGET;
 
     return 0;
   }

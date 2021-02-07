@@ -14,10 +14,16 @@
 #include <wex/stc.h>
 #include <wex/substitute-data.h>
 
-TEST_CASE("wex::ex_stream")
+void create_file()
 {
   const std::string text("test1\ntest2\ntest3\ntest4\n\n");
-  auto*             stc = get_stc();
+  std::fstream      ifs("ex-mode.txt", std::ios_base::out);
+  REQUIRE(ifs.write(text.c_str(), text.size()));
+}
+
+TEST_CASE("wex::ex_stream")
+{
+  auto* stc = get_stc();
   stc->visual(false);
 
   SUBCASE("constructor")
@@ -55,28 +61,23 @@ TEST_CASE("wex::ex_stream")
 
   SUBCASE("erase")
   {
-    {
-      std::fstream ifs("ex-mode.txt", std::ios_base::out);
-      REQUIRE(ifs.write(text.c_str(), text.size()));
-    }
+    create_file();
 
-    {
-      wex::file ifs("ex-mode.txt", std::ios_base::in | std::ios_base::out);
-      REQUIRE(ifs.is_open());
+    wex::file ifs("ex-mode.txt", std::ios_base::in | std::ios_base::out);
+    REQUIRE(ifs.is_open());
 
-      wex::ex_stream exs(stc);
-      exs.stream(ifs);
+    wex::ex_stream exs(stc);
+    exs.stream(ifs);
 
-      wex::addressrange ar(&stc->get_ex(), "1,2");
+    wex::addressrange ar(&stc->get_ex(), "1,2");
 
-      REQUIRE(exs.erase(ar));
-      REQUIRE(exs.is_modified());
-      REQUIRE(exs.get_line_count_request() == 3);
+    REQUIRE(exs.erase(ar));
+    REQUIRE(exs.is_modified());
+    REQUIRE(exs.get_line_count_request() == 3);
 
-      REQUIRE(exs.write());
-      REQUIRE(exs.get_line_count_request() == 3);
-      REQUIRE(!exs.is_modified());
-    }
+    REQUIRE(exs.write());
+    REQUIRE(exs.get_line_count_request() == 3);
+    REQUIRE(!exs.is_modified());
   }
 
   SUBCASE("find")
@@ -98,10 +99,7 @@ TEST_CASE("wex::ex_stream")
 
   SUBCASE("insert")
   {
-    {
-      std::fstream ifs("ex-mode.txt", std::ios_base::out);
-      REQUIRE(ifs.write(text.c_str(), text.size()));
-    }
+    create_file();
 
     wex::file ifs("ex-mode.txt", std::ios_base::out);
     REQUIRE(ifs.is_open());
@@ -121,51 +119,41 @@ TEST_CASE("wex::ex_stream")
 
   SUBCASE("join")
   {
-    {
-      std::fstream ifs("ex-mode.txt", std::ios_base::out);
-      REQUIRE(ifs.write(text.c_str(), text.size()));
-    }
+    create_file();
 
-    {
-      wex::file ifs("ex-mode.txt", std::ios_base::in | std::ios_base::out);
-      REQUIRE(ifs.is_open());
+    wex::file ifs("ex-mode.txt", std::ios_base::in | std::ios_base::out);
+    REQUIRE(ifs.is_open());
 
-      wex::ex_stream exs(stc);
-      exs.stream(ifs);
+    wex::ex_stream exs(stc);
+    exs.stream(ifs);
 
-      wex::addressrange ar(&stc->get_ex(), "%");
+    wex::addressrange ar(&stc->get_ex(), "%");
 
-      REQUIRE(exs.join(ar));
-      REQUIRE(exs.get_line_count_request() == 4);
-      REQUIRE(exs.is_modified());
+    REQUIRE(exs.join(ar));
+    REQUIRE(exs.get_line_count_request() == 4);
+    REQUIRE(exs.is_modified());
 
-      REQUIRE(exs.write());
-      REQUIRE(!exs.is_modified());
-      REQUIRE(exs.get_line_count_request() == 4);
-    }
+    REQUIRE(exs.write());
+    REQUIRE(!exs.is_modified());
+    REQUIRE(exs.get_line_count_request() == 4);
   }
 
   SUBCASE("markers")
   {
-    {
-      std::fstream ifs("ex-mode.txt", std::ios_base::out);
-      REQUIRE(ifs.write(text.c_str(), text.size()));
-    }
+    create_file();
 
-    {
-      wex::file ifs("ex-mode.txt", std::ios_base::in | std::ios_base::out);
-      REQUIRE(ifs.is_open());
+    wex::file ifs("ex-mode.txt", std::ios_base::in | std::ios_base::out);
+    REQUIRE(ifs.is_open());
 
-      wex::ex_stream exs(stc);
-      exs.stream(ifs);
+    wex::ex_stream exs(stc);
+    exs.stream(ifs);
 
-      REQUIRE(exs.marker_add('x', 4));
-      REQUIRE(exs.marker_line('x') == 4);
-      REQUIRE(!exs.marker_delete('y'));
-      REQUIRE(exs.marker_delete('x'));
-      REQUIRE(!exs.marker_delete('x'));
-      REQUIRE(exs.marker_line('x') == -1);
-    }
+    REQUIRE(exs.marker_add('x', 4));
+    REQUIRE(exs.marker_line('x') == 4);
+    REQUIRE(!exs.marker_delete('y'));
+    REQUIRE(exs.marker_delete('x'));
+    REQUIRE(!exs.marker_delete('x'));
+    REQUIRE(exs.marker_line('x') == -1);
   }
 
   SUBCASE("request")
@@ -183,10 +171,7 @@ TEST_CASE("wex::ex_stream")
 
   SUBCASE("substitute")
   {
-    {
-      std::fstream ifs("ex-mode.txt", std::ios_base::out);
-      REQUIRE(ifs.write(text.c_str(), text.size()));
-    }
+    create_file();
 
     wex::file ifs("ex-mode.txt", std::ios_base::in);
     REQUIRE(ifs.is_open());
@@ -203,21 +188,16 @@ TEST_CASE("wex::ex_stream")
 
   SUBCASE("write")
   {
-    {
-      std::fstream ifs("ex-mode.txt", std::ios_base::out);
-      REQUIRE(ifs.write(text.c_str(), text.size()));
-    }
+    create_file();
 
-    {
-      wex::file ifs("ex-mode.txt", std::ios_base::in | std::ios_base::out);
-      REQUIRE(ifs.is_open());
+    wex::file ifs("ex-mode.txt", std::ios_base::in | std::ios_base::out);
+    REQUIRE(ifs.is_open());
 
-      wex::ex_stream exs(stc);
-      exs.stream(ifs);
+    wex::ex_stream exs(stc);
+    exs.stream(ifs);
 
-      wex::addressrange ar(&stc->get_ex(), "%");
-      REQUIRE(exs.write(ar, "tmp.txt"));
-    }
+    wex::addressrange ar(&stc->get_ex(), "%");
+    REQUIRE(exs.write(ar, "tmp.txt"));
   }
 
   if (wex::file info("ex-mode.txt"); info.is_open())

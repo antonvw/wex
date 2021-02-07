@@ -26,6 +26,15 @@ namespace wex
   template <class T> class to_container
   {
   public:
+    /// Constructor, using std::string.
+    to_container(const std::vector<std::string>& in)
+    {
+      for (const auto& it : in)
+      {
+        m_container.emplace_back(it);
+      }
+    };
+
     /// Constructor, using array string.
     to_container(const wxArrayString& in) { FromArrayString(in); };
 
