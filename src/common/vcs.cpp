@@ -2,7 +2,7 @@
 // Name:      vcs.cpp
 // Purpose:   Implementation of wex::vcs class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <map>
@@ -16,6 +16,17 @@
 #include <wex/path.h>
 #include <wex/util.h>
 #include <wex/vcs.h>
+
+#define SET_ENTRY                                                \
+  if (                                                           \
+    parent != nullptr &&                                         \
+    item_dialog(v, data::window().parent(parent).title(message)) \
+        .ShowModal() == wxID_CANCEL)                             \
+  {                                                              \
+    return false;                                                \
+  }                                                              \
+                                                                 \
+  m_entry = find_entry(m_entries);
 
 namespace wex
 {
@@ -350,32 +361,12 @@ bool wex::vcs::set_entry_from_base(wxWindow* parent)
 
     config(_("vcs.Base folder")).get_firstof().empty())
   {
-    if (
-      parent != nullptr &&
-      item_dialog(v, data::window().parent(parent).title(message))
-          .ShowModal() == wxID_CANCEL)
-    {
-      return false;
-    }
-
-    m_entry = find_entry(m_entries);
+    SET_ENTRY;
   }
   else
   {
     m_entry = find_entry(m_entries);
-
-    if (m_entry.name().empty())
-    {
-      if (
-        parent != nullptr &&
-        item_dialog(v, data::window().parent(parent).title(message))
-            .ShowModal() == wxID_CANCEL)
-      {
-        return false;
-      }
-
-      m_entry = find_entry(m_entries);
-    }
+    SET_ENTRY;
   }
 
   return !m_entry.name().empty();

@@ -16,3 +16,6 @@ jobs:
       env:
         # we use escape sequence in wex-macros.xml
         VALIDATE_XML: false
+
+        # exclude xsl
+        FILTER_REGEX_EXCLUDE: .*data/*.xsl

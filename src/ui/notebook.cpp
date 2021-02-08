@@ -13,6 +13,10 @@
 #include <wex/item-vector.h>
 #include <wex/notebook.h>
 
+#define PAGE_DATA                                                      \
+  data.page(), (data.caption().empty() ? data.key() : data.caption()), \
+    data.select(), data.bitmap()
+
 namespace wex
 {
   const std::vector<item> notebook_config_items()
@@ -75,11 +79,7 @@ wex::notebook::notebook(const data::window& data)
 
 wxWindow* wex::notebook::add_page(const data::notebook& data)
 {
-  if (!AddPage(
-        data.page(),
-        (data.caption().empty() ? data.key() : data.caption()),
-        data.select(),
-        data.bitmap()))
+  if (!AddPage(PAGE_DATA))
   {
     return nullptr;
   }
@@ -176,12 +176,7 @@ const std::string wex::notebook::current_page_key()
 
 wxWindow* wex::notebook::insert_page(const data::notebook& data)
 {
-  if (!InsertPage(
-        data.index(),
-        data.page(),
-        (data.caption().empty() ? data.key() : data.caption()),
-        data.select(),
-        data.bitmap()))
+  if (!InsertPage(data.index(), PAGE_DATA))
   {
     return nullptr;
   }

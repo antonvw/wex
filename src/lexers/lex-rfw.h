@@ -2,7 +2,7 @@
 // Name:      lex-rfw.h
 // Purpose:   Declaration of wex::lex_rfw class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -93,6 +93,8 @@ namespace wex
     int m_up{0}, m_down{0};
 
   private:
+    bool get_line_pos_eol(int offset, char i) const;
+
     Sci_Position m_line;
     Accessor&    m_styler;
   };
@@ -153,6 +155,23 @@ namespace wex
 
 // inline implementation
 
+bool wex::lex_rfw::get_line_pos_eol(int offset, char c) const
+{
+  Sci_Position pos = m_styler.LineStart(m_line + offset);
+  Sci_Position eol = m_styler.LineStart(m_line + 1 + offset) - 1;
+
+  for (Sci_Position i = pos; i < eol; i++)
+  {
+    char ch = m_styler[i];
+    if (ch == c)
+      return true;
+    else if (c != '\t' && ch != ' ' && ch != '\t')
+      return false;
+  }
+
+  return false;
+}
+
 inline int wex::lex_rfw::glob_scan(StyleContext& sc) const
 {
   // forward scan for a glob-like (...), no whitespace allowed
@@ -193,50 +212,17 @@ inline Sci_Position wex::lex_rfw::init(Sci_PositionU startPos) const
 
 inline bool wex::lex_rfw::is_comment_line(int offset) const
 {
-  Sci_Position pos     = m_styler.LineStart(m_line + offset);
-  Sci_Position eol_pos = m_styler.LineStart(m_line + 1 + offset) - 1;
-
-  for (Sci_Position i = pos; i < eol_pos; i++)
-  {
-    char ch = m_styler[i];
-    if (ch == '#')
-      return true;
-    else if (ch != ' ' && ch != '\t')
-      return false;
-  }
-  return false;
+  return get_line_pos_eol(offset, '#');
 }
 
 inline bool wex::lex_rfw::is_pipe_line(int offset) const
 {
-  Sci_Position pos     = m_styler.LineStart(m_line + offset);
-  Sci_Position eol_pos = m_styler.LineStart(m_line + 1 + offset) - 1;
-
-  for (Sci_Position i = pos; i < eol_pos; i++)
-  {
-    char ch = m_styler[i];
-    if (ch == '|')
-      return true;
-    else if (ch != ' ' && ch != '\t')
-      return false;
-  }
-
-  return false;
+  return get_line_pos_eol(offset, '|');
 }
 
 inline bool wex::lex_rfw::is_tab_line(int offset) const
 {
-  Sci_Position pos     = m_styler.LineStart(m_line + offset);
-  Sci_Position eol_pos = m_styler.LineStart(m_line + 1 + offset) - 1;
-
-  for (Sci_Position i = pos; i < eol_pos; i++)
-  {
-    char ch = m_styler[i];
-    if (ch == '\t')
-      return true;
-  }
-
-  return false;
+  return get_line_pos_eol(offset, '\t');
 }
 
 inline int wex::lex_rfw::number_base(char* s) const
