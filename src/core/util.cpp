@@ -140,7 +140,7 @@ bool wex::browser(const std::string& url)
 
 bool wex::browser_search(const std::string& text)
 {
-  if (const auto& search_engine(config(_("stc.Search engine")).get_firstof());
+  if (const auto& search_engine(config(_("stc.Search engine")).get_first_of());
       !search_engine.empty())
   {
     return browser(search_engine + "?q=" + text);
@@ -212,11 +212,11 @@ wex::ellipsed(const std::string& text, const std::string& control, bool ellipse)
          (!control.empty() ? "\tCtrl+" + control : std::string());
 }
 
-const std::string wex::firstof(
+const std::string wex::first_of(
   const std::string& text,
   const std::string& chars,
   size_t             start_pos,
-  firstof_t          flags)
+  first_of_t          flags)
 {
   const auto pos = !flags[FIRST_OF_FROM_END] ?
                      text.find_first_of(chars, start_pos) :

@@ -27,7 +27,7 @@ namespace wex::data
     /// Returns whether options indicate global.
     bool is_global() const;
 
-    /// Returns whether options indicate ingore case.
+    /// Returns whether options indicate ignore case.
     bool is_ignore_case() const;
 
     /// Returns pattern.
@@ -43,4 +43,4 @@ namespace wex::data
   private:
     std::string m_pattern, m_replacement, m_options;
   };
-}; // namespace wex::data
+} // namespace wex::data

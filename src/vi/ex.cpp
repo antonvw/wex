@@ -96,7 +96,7 @@ namespace wex
       return false;
     }
 
-    wex::path path(wex::firstof(cmd, " "));
+    wex::path path(wex::first_of(cmd, " "));
 
     if (path.is_relative())
     {
@@ -191,7 +191,7 @@ wex::ex::ex(wex::stc* stc)
                 [&](const std::string& command) {
                   if (command.find(" ") == std::string::npos)
                     return true;
-                  wex::path::current(wex::firstof(command, " "));
+                  wex::path::current(wex::first_of(command, " "));
                   return true;
                 }},
                {":close",
@@ -201,7 +201,7 @@ wex::ex::ex(wex::stc* stc)
                {":de",
                 [&](const std::string& command) {
                   m_frame->get_debug()->execute(
-                    wex::firstof(command, " "),
+                    wex::first_of(command, " "),
                     get_stc());
                   return true;
                 }},
@@ -352,7 +352,7 @@ wex::ex::ex(wex::stc* stc)
                 }},
                {":ta",
                 [&](const std::string& command) {
-                  ctags::find(wex::firstof(command, " "));
+                  ctags::find(wex::first_of(command, " "));
                   return true;
                 }},
                {":una",

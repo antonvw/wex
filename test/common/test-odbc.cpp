@@ -27,7 +27,7 @@ TEST_CASE("wex::odbc")
     return;
   }
 
-  wex::config(_("Datasource")).set_firstof("Test");
+  wex::config(_("Datasource")).set_first_of("Test");
   wex::config(_("User")).set();
   wex::config(_("Password")).set();
 

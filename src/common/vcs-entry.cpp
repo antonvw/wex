@@ -95,7 +95,7 @@ bool wex::vcs_entry::execute(
 
   if (get_command().is_commit())
   {
-    comment = "-m \"" + config(_("vcs.Revision comment")).get_firstof() + "\" ";
+    comment = "-m \"" + config(_("vcs.Revision comment")).get_first_of() + "\" ";
   }
 
   std::string my_args(args);

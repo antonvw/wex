@@ -78,29 +78,29 @@ TEST_CASE("wex::core" * doctest::may_fail())
     REQUIRE(wex::ellipsed("xxx").find("...") != std::string::npos);
   }
 
-  SUBCASE("firstof")
+  SUBCASE("first_of")
   {
-    REQUIRE(wex::firstof("this is ok", "x") == std::string());
-    REQUIRE(wex::firstof("this is ok", " ;,") == "is ok");
-    REQUIRE(wex::firstof("this is ok", " ;,i") == "s is ok");
+    REQUIRE(wex::first_of("this is ok", "x") == std::string());
+    REQUIRE(wex::first_of("this is ok", " ;,") == "is ok");
+    REQUIRE(wex::first_of("this is ok", " ;,i") == "s is ok");
     REQUIRE(
-      wex::firstof(
+      wex::first_of(
         "this is ok",
         " ;,i",
         std::string::npos,
-        wex::firstof_t().set(wex::FIRST_OF_FROM_END)) == "ok");
+        wex::first_of_t().set(wex::FIRST_OF_FROM_END)) == "ok");
     REQUIRE(
-      wex::firstof(
+      wex::first_of(
         "this is ok",
         " ",
         0,
-        wex::firstof_t().set(wex::FIRST_OF_BEFORE)) == "this");
+        wex::first_of_t().set(wex::FIRST_OF_BEFORE)) == "this");
     REQUIRE(
-      wex::firstof(
+      wex::first_of(
         "this is ok",
         "x",
         0,
-        wex::firstof_t().set(wex::FIRST_OF_BEFORE)) == "this is ok");
+        wex::first_of_t().set(wex::FIRST_OF_BEFORE)) == "this is ok");
   }
 
   SUBCASE("get_endoftext")

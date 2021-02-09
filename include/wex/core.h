@@ -95,11 +95,11 @@ namespace wex
     FIRST_OF_FROM_END         = 2, ///< substring from end
   };
 
-  typedef std::bitset<3> firstof_t;
+  typedef std::bitset<3> first_of_t;
 
   /// Returns substring after (or before) first occurrence of one of specified
   /// chars.
-  const std::string firstof(
+  const std::string first_of(
     /// text to be searched
     const std::string& text,
     /// chars to be found
@@ -107,7 +107,7 @@ namespace wex
     /// start pos (from start or end of text, depending on flags)
     const size_t start_pos = 0,
     /// start searching at begin, or at end
-    firstof_t flags = firstof_t().set(FIRST_OF_AFTER_FROM_BEGIN));
+    first_of_t flags = first_of_t().set(FIRST_OF_AFTER_FROM_BEGIN));
 
   /// If text length exceeds max_chars,
   /// returns an ellipse prefix followed by the last max_chars from the text,

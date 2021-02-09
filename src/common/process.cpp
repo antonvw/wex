@@ -22,7 +22,7 @@
 std::string wex::process::m_working_dir_key = _("Process folder");
 
 wex::process::process()
-  : m_command(config(_("Process")).get_firstof())
+  : m_command(config(_("Process")).get_first_of())
   , m_frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
 {
 }
@@ -87,7 +87,7 @@ bool wex::process::execute(
 
   if (command.empty())
   {
-    if (config(_("Process")).get_firstof().empty())
+    if (config(_("Process")).get_first_of().empty())
     {
       if (config_dialog() == wxID_CANCEL)
       {
@@ -95,8 +95,8 @@ bool wex::process::execute(
       }
     }
 
-    m_command = config(_("Process")).get_firstof();
-    cwd       = config(m_working_dir_key).get_firstof();
+    m_command = config(_("Process")).get_first_of();
+    cwd       = config(m_working_dir_key).get_first_of();
   }
   else
   {
