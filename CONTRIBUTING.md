@@ -4,24 +4,11 @@
 
 - create a feature branch from the develop branch to base your work
 
-- when using otl
-    `sudo apt-get install unixODBC unixODBC-dev` or
-    `yum install unixODBC unixODBC-devel`
-
 ## Adding functionality
 
 - use style as indicated by .clang-format
 
 - use STL whenever possible
-
-- icons and bitmaps
-  - menu and toolbar bitmaps are from wxWidgets, using wxArtProvider
-
-  - application icons from:
-  [IconFinder](https://www.iconfinder.com/icons/1495216/article_circle_edit_paper_pencil_icon#size=128),
-  [converted to ico](http://www.convertico.com/),
-  [converted to xpm using GIMP](http://www.gimp.org/),
-  [convert to mac icns (first make 128 by 128 icon)](http://iconverticons.com/)
 
 - doxy document sources
   API documentation is generated from the sources
@@ -43,11 +30,11 @@
   - To add translation files add -DENABLE_GETTEXT=ON to cmake.
 
 ## Test it
-- add a test and update sample
+- add a test (and update sample)
 
 ```bash
 mkdir build && cd build
-cmake -DwexBUILD_TESTS=ON ..
+cmake -DwexBUILD_TESTS=ON -DwexBUILD_SAMPLES=ON ..
 make
 make test
 ```
@@ -64,19 +51,7 @@ make test
 make lcov
 ```
 
-- And, if you want to upload results to coveralls.
-  `make lcov-coveralls`
-
 - Do a pull request from the feature branch to the develop branch
-
-## ctags osx
-- see ctgs/docs/osx.rst:
-
-```bash
-brew tap universal-ctags/universal-ctags
-brew install --HEAD universal-ctags
-brew reinstall universal-ctags
-```
 
 ## Boost build
 

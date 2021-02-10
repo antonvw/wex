@@ -1,13 +1,6 @@
+project(wex-lib)
+
 include_directories(${Boost_INCLUDE_DIRS})
-
-add_subdirectory(lib)
-
-if (wexBUILD_TESTS)
-  add_subdirectory(lib-test)
-endif ()
-
-add_subdirectory(app)
-add_subdirectory(locale)
 
 if (CMAKE_BUILD_TYPE MATCHES "Coverage")
   add_custom_target(lcov-prep
@@ -20,7 +13,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Coverage")
     # combine tracefiles
     COMMAND lcov --gcov-tool gcov --add-tracefile app.base --add-tracefile app.run --output-file app.run
     # remove output that we are not interested in
-    COMMAND lcov --gcov-tool gcov --remove app.run "*/usr/*" "*sample*" "*external/*" "*/syncped/*" "*/test/*" --output-file app.run
+    COMMAND lcov --gcov-tool gcov --remove app.run "*/usr/*" "*sample*" "*external/*" "*/test/*" --output-file app.run
     # generate local files
     COMMAND genhtml --no-branch-coverage --title "${PROJECT_NAME}" app.run
     COMMENT "Running lcov" VERBATIM)    
@@ -30,4 +23,18 @@ if (CMAKE_BUILD_TYPE MATCHES "Coverage")
     COMMAND coveralls-lcov app.run
     # cleanup
     COMMAND rm -f app.base app.run)
+endif ()
+
+add_subdirectory(core)
+add_subdirectory(data)
+add_subdirectory(common)
+add_subdirectory(stc)
+add_subdirectory(ui)
+add_subdirectory(vi)
+add_subdirectory(report)
+
+if (CMAKE_BUILD_TYPE EQUAL "Debug")
+  set_target_properties(
+    wex-common wex-core wex-data wex-ui wex-report wex-stc wex-vi
+    PROPERTIES DEBUG_POSTFIX "d")
 endif ()

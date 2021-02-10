@@ -1,0 +1,249 @@
+<?xml version="1.0" ?>
+<!--
+Name:      wex-menus.xml
+Purpose:   setup of dynamic menus, like debuggers 
+           and version control systems
+Author:    Anton van Wezenbeek
+Copyright: (c) 2021 Anton van Wezenbeek
+-->
+
+<menus>
+  <!--
+   Each <debug> has a name attribute (name of debugger used).
+   It can have a 
+   - 'break-del': command to delete breakpoint
+   - 'break-set': command to set breakpoint
+   - 'extensions': filename extensions for source code files
+   - 'flags': additional flags added to execute debugger
+   - 'regex-at-line'': regex to set line (1 group)
+   - 'regex-at-path-line'': regex to set path line (2 groups)
+   - 'regex-exit'': regex to determine whether program has exited (ignores group)
+   - 'regex-no-file-line': regex to set no file line (3 groups)
+   - 'regex-path'': regex to set path (1 group)
+   - 'regex-variable'': regex to set variable (1 group)
+   - 'regex-variable-m'': regex to set variable over several lines (first group)
+   followed by a number of <commands>. 
+
+   Each <command> will be a menu item. It can have a
+   - 'menu': if you want different internal command than what is shown
+      on the menu
+   - 'type': indicates how this item will be used:
+      if type contains 'popup' the item is only on the popup menu, 
+      if type contains 'main', the item is only on the main menu, 
+      if not given, both on popup and main menu. 
+      if type contains an extra 'separator' text, then the command
+      will be followed by a separator on the menu.
+      if type contains 'ellipses' then '...' is appended after the item.
+      if type contains 'is-selected' then item is only added if the component
+      has text selected
+      if type contains 'is-visual' then item is only added if the component
+      has visual mode
+   - 'submenu': is shown as a submenu using the name as specified
+   - 'subcommand': is handled the same, but also used as command to execute
+   - 'control': control key (character)
+
+   You can set an accelerator everywhere using an & char (&amp;).
+   -->
+  <debug 
+    name="gdb" 
+    break-set="br"
+    extensions="*.cpp;*.h"
+    regex-at-line="(?:(?:\(gdb\) )|(?:^))([0-9]+)\s"
+    regex-at-path-line="at ([a-zA-Z0-9_\-\.\+/]*):([0-9]+)"
+    regex-exit="(exited normally)|(Program terminated)"
+    regex-no-file-line="Breakpoint ([0-9]+) at 0x[0-9a-f]+: file (.*), line ([0-9]+)"
+    regex-path="Reading symbols from (.*)\.\.\.done"
+    regex-variable="\$[0-9]+ = ([^{](.*))"
+    regex-variable-m="\$[0-9]+ = \{((\n|.)*)\}[^,]">
+    <commands>
+      <command type="main ellipses" > file </command>
+      <command type="main ellipses" > attach </command>
+      <command type="main separator" > detach </command>
+      <command type="main" control="R"> run </command>
+      <command type="main" > interrupt </command>
+      <command type="main separator" control="4"> continue </command>
+      <command type="main" > info sources </command>
+      <command type="popup" control="1"> next </command>
+      <command type="popup" control="2"> step </command>
+      <command type="popup separator" control="3"> until </command>
+      <command type="popup separator" > print </command>
+      <command type="popup" submenu = "break"> break </command>
+      <command type="popup separator" submenu = "break"> del breakpoint </command>
+      <command type="popup" submenu = "break"> del breakpoints </command>
+      <command type="popup" submenu = "break"> info breakpoints </command>
+    </commands>
+  </debug>
+
+  <debug 
+    name="lldb" 
+    break-del="breakpoint delete" 
+    break-set="b"
+    extensions="*.cpp;*.h"
+    flags="-X"
+    regex-at-path-line="at ([a-zA-Z0-9_\-\.\+/]*):([0-9]+)"
+    regex-exit="Process [0-9]+ exited"
+    regex-no-file-line="Breakpoint ([0-9]+): .* at ([a-zA-Z0-9_\./\-]*):([0-9]+)"
+    regex-path="Current executable set to '(.*)'"
+    regex-variable="\$[0-9]+ = ([^{](.*))"
+    regex-variable-m="\$[0-9]+ = (?:size=[0-9]+ )?\{((\n|.)*)\^\}">
+    <commands>
+      <command type="main ellipses" > file </command>
+      <command type="main ellipses" > attach </command>
+      <command type="main separator" > detach </command>
+      <command type="main" control="R"> run </command>
+      <command type="main" > interrupt </command>
+      <command type="main separator" control="4"> continue </command>
+      <command type="popup" control="1"> next </command>
+      <command type="popup" control="2"> step </command>
+      <command type="popup separator" control="3"> thread until </command>
+      <command type="popup separator" > print </command>
+      <command type="popup" submenu = "break"> b </command>
+      <command type="popup separator" submenu = "break"> breakpoint delete</command>
+      <command type="popup" submenu = "break"> breakpoint clear</command>
+      <command type="popup" submenu = "break"> breakpoint list</command>
+    </commands>
+  </debug>
+  
+  <!--
+   Each <vcs> has a name attribute (name of vcs used),
+   an admin-dir attribute (where admin dir is located),
+   and a flags-location attribute (default 'postfix'), 
+   followed by a number of <commands>. 
+   
+   The flags-location
+   configures how this vcs expects the flags argument, if 'postfix'
+   the flags will be put after the command, if 'prefix' the flags
+   will be put before the command. 
+
+   You can also configure the text margin for blame info. 
+   Default blame is shown in a separate window, but when 
+   supplying a blame-format it is shown on the text margin.
+   It can have:
+   - 'blame-format': should contain at least 3 regex groups to 
+      parse the id, author, date, and possibly a line number as 4th regex.
+   - 'date-format': allows you to specify
+      the date-time info in the blame info.
+   - 'date-print': determines how many chars of the date-format
+      are shown in the margin.
+   - 'log-flags' are used to show vcs log info of the
+      current revision line as a tooltip.
+   -->
+  <vcs
+    name="bazaar" 
+    admin-dir=".bzr">
+    
+    <commands>
+      <command type="main"> &amp;add </command>
+      <command> &amp;cat </command>
+      <command> &amp;commit </command>
+      <command> &amp;diff </command>
+      <command type="main"> &amp;help </command>
+      <command> &amp;info </command>
+      <command> &amp;log </command>
+      <command> &amp;status </command>
+    </commands>
+  </vcs>
+
+  <vcs 
+    name="cvs"
+    admin-dir=".cvs">
+
+    <commands>
+      <command type="main"> &amp;add </command>
+      <command> &amp;co </command>
+      <command> &amp;commit </command>
+      <command> &amp;diff </command>
+      <command type="main"> &amp;help </command>
+      <command> &amp;log </command>
+      <command> &amp;status </command>
+      <command> &amp;update </command>
+    </commands>
+  </vcs>
+  
+  <vcs 
+    name="git"
+    admin-dir=".git"
+    log-flags="-n 1"
+    blame-format="(^[a-zA-Z0-9^]+) .*\(([a-zA-Z .]+)\s+([0-9]{2,4}.[0-9]{2}.[0-9]{2}.[0-9:]{8}) .[0-9]+\s+([0-9]+)"
+    date-format="%Y-%m-%d %H:%M:%S"
+    date-print="10">
+
+    <commands>
+      <command type="popup is-visual" flags="-w"> &amp;blame </command>
+      <command type="popup separator" flags="-L %LINES" menu="&amp;blame line"> blame</command>
+      <command type="popup is-selected is-visual" flags="-L %LINES" menu="&amp;blame selection"> blame</command>
+      <command type="main ellipses"> &amp;add </command>
+      <command type="ellipses"> &amp;checkout </command>
+      <command type="ellipses"> &amp;commit </command>
+      <command type="ellipses"> &amp;diff </command>
+      <command type="ellipses main"> &amp;help </command>
+      <command type="ellipses"> &amp;log </command>
+      <!-- pull and push ask for password (should be asyc, not yet)
+      <command type="main"> &amp;pull </command>
+      <command type="main"> &amp;push </command>
+      -->
+      <command type="ellipses"> &amp;show </command>
+      <command type="ellipses"> &amp;status </command>
+    </commands>
+  </vcs>
+
+  <vcs
+    name="mercurial"
+    admin-dir=".hg">
+    
+    <commands>
+      <command type="main"> &amp;add </command>
+      <command> &amp;annotate </command>
+      <command> &amp;commit </command>
+      <command> &amp;diff </command>
+      <command type="main"> &amp;help </command>
+      <command> &amp;log </command>
+      <command> &amp;parents </command>
+      <command> &amp;push </command>
+      <command> &amp;pull </command>
+      <command> &amp;status </command>
+      <command> &amp;update </command>
+    </commands>
+  </vcs>
+
+  <vcs
+    name="sccs"
+    admin-dir=".SCCS"
+    flags-location="prefix">
+
+    <commands>
+      <command type="ellipses"> &amp;get </command>
+      <!-- print shows blame info -->
+      <command type="ellipses"> &amp;print </command>
+      <command type="ellipses"> &amp;prs </command>
+      <command type="ellipses"> &amp;prt </command>
+      <command type="ellipses"> &amp;sccsdiff </command>
+    </commands>
+  </vcs>
+
+  <vcs 
+    name="svn"
+    admin-dir=".svn"
+    log-flags="-r"
+    blame-format="(^\s*[0-9]+)\s*([a-zA-Z .]+)\s+([0-9]{2,4}.[0-9]{2}.[0-9]{2}.[0-9:]{8})"
+    date-format="%Y-%m-%d %H:%M:%S"
+    date-print="10">
+
+    <commands>
+      <command type="main"> &amp;add </command>
+      <command flags="-v --force" type="popup"> &amp;blame </command>
+      <command flags="none" type="separator"> &amp;stat </command>
+      <command type="ellipses popup"> &amp;cat </command>
+      <command type="ellipses main"> &amp;cleanup </command>
+      <command type="ellipses"> &amp;commit </command>
+      <command type="ellipses"> &amp;diff </command>
+      <command type="main"> &amp;help </command>
+      <command type="ellipses"> &amp;info </command>
+      <command type="ellipses"> &amp;log </command>
+      <command type="main"> &amp;ls </command>
+      <command type="ellipses popup"> &amp;proplist </command>
+      <command type="ellipses popup"> prop&amp;set </command>
+      <command type="ellipses"> &amp;update </command>
+    </commands>
+  </vcs>
+</menus>
