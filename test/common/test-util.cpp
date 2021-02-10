@@ -2,7 +2,7 @@
 // Name:      test-util.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -11,6 +11,7 @@
 #include <wx/wx.h>
 #endif
 #include "../test.h"
+#include <boost/algorithm/string.hpp>
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/ex.h>
@@ -99,27 +100,6 @@ TEST_CASE("wex::util" * doctest::may_fail())
 
   SUBCASE("open_files_dialog") {}
 
-  SUBCASE("marker_and_register_expansion")
-  {
-    get_stc()->set_text("this is some text");
-    auto* ex = new wex::ex(get_stc());
-
-    std::string command("xxx");
-    REQUIRE(!wex::marker_and_register_expansion(nullptr, command));
-    REQUIRE(wex::marker_and_register_expansion(ex, command));
-
-    command = "'yxxx";
-    REQUIRE(!wex::marker_and_register_expansion(ex, command));
-
-    REQUIRE(wex::clipboard_add("yanked"));
-    command = "this is * end";
-    REQUIRE(wex::marker_and_register_expansion(ex, command));
-
-#ifndef __WXMSW__
-    REQUIRE(command == "this is yanked end");
-#endif
-  }
-
 #ifdef __UNIX__
   SUBCASE("shell_expansion")
   {
@@ -167,7 +147,9 @@ TEST_CASE("wex::util" * doctest::may_fail())
     REQUIRE(get_stc()->get_vi().mode().is_visual());
 
     REQUIRE(wex::sort_selection(get_stc(), 0, 3, 5));
-    REQUIRE(wex::trim(get_stc()->get_text()) == wex::trim(sorted));
+    REQUIRE(
+      boost::algorithm::trim_copy(get_stc()->get_text()) ==
+      boost::algorithm::trim_copy(sorted));
     REQUIRE(wex::sort_selection(
       get_stc(),
       wex::string_sort_t().set(wex::STRING_SORT_DESCENDING),

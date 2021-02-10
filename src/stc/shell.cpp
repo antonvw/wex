@@ -2,9 +2,10 @@
 // Name:      shell.cpp
 // Purpose:   Implementation of class wex::shell
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/algorithm/string.hpp>
 #include <numeric>
 #include <wex/bind.h>
 #include <wex/config.h>
@@ -14,7 +15,6 @@
 #include <wex/managed-frame.h>
 #include <wex/process.h>
 #include <wex/shell.h>
-#include <wex/tokenizer.h>
 
 wex::shell::shell(
   const data::stc&   data,
@@ -384,7 +384,7 @@ void wex::shell::keep_command()
   // Prevent large commands, in case command end is not eol.
   if (m_command_end != eol())
   {
-    m_command = trim(m_command);
+    boost::algorithm::trim(m_command);
   }
 
   m_commands.emplace_back(m_command);

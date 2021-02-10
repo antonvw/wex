@@ -6,11 +6,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
-#include <wex/core.h>
+#include <boost/algorithm/string.hpp>
 #include <wex/menu-command.h>
 
 wex::menu_command::menu_command(const pugi::xml_node& node)
-  : m_command(trim(node.text().get()))
+  : m_command(boost::algorithm::trim_copy(std::string(node.text().get())))
   , m_control(node.attribute("control").value())
   , m_flags(node.attribute("flags").value())
   , m_submenu(

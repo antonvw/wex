@@ -2,7 +2,7 @@
 // Name:      dir.h
 // Purpose:   Declaration of class wex::dir
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -60,13 +60,6 @@ namespace wex
     const path      m_dir;
     const data::dir m_data;
   };
-
-  /// Returns all matching files into a vector of paths.
-  std::vector<path> get_all_files(
-    /// the dir to start finding
-    const path& path,
-    /// the dir data
-    const data::dir& data = data::dir());
 
   /// Returns all matching files into a vector of strings (without paths).
   std::vector<std::string> get_all_files(

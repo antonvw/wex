@@ -2,7 +2,7 @@
 // Name:      hexmode.cpp
 // Purpose:   Implementation of class wex::hexmode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <regex>
@@ -13,8 +13,8 @@
 #include "hexmode-line.h"
 #include <wex/config.h>
 #include <wex/hexmode.h>
-#include <wex/item.h>
 #include <wex/item-dialog.h>
+#include <wex/item.h>
 #include <wex/lexers.h>
 #include <wex/stc.h>
 #include <wx/numdlg.h>
@@ -22,8 +22,14 @@
 
 namespace wex
 {
-  int get_hex_number(const std::string& message, const data::item& data)
+  int get_hex_number(const std::string& caption, wex::stc* stc, int value)
   {
+    const std::string message(_("Input") + " 00 - FF");
+    const data::item  data(wex::data::item(
+      data::item().min(0).max(255).window(
+        data::window().title(caption).parent(stc)),
+      value));
+
     item::use_config(false);
     item_dialog dlg({{message, item::SPINCTRL, data}}, data.window());
     item::use_config(true);
@@ -91,11 +97,9 @@ void wex::hexmode::control_char_dialog(const std::string& caption)
       ml.is_ascii_field() && m_stc->GetSelectedText().size() == 1)
   {
     if (const auto new_value(get_hex_number(
-          _("Input") + " 00 - FF",
-          data::item(
-            data::item().min(0).max(255).window(
-              data::window().title(caption).parent(m_stc)),
-            (int)m_stc->GetSelectedText().GetChar(0))));
+          caption,
+          m_stc,
+          (int)m_stc->GetSelectedText().GetChar(0)));
         new_value >= 0)
     {
       ml.replace(new_value);
@@ -105,12 +109,7 @@ void wex::hexmode::control_char_dialog(const std::string& caption)
   {
     if (long value; m_stc->GetSelectedText().ToLong(&value, 16))
     {
-      if (const auto new_value(get_hex_number(
-            _("Input") + " 00 - FF",
-            data::item(
-              data::item().min(0).max(255).window(
-                data::window().title(caption).parent(m_stc)),
-              (int)value)));
+      if (const auto new_value(get_hex_number(caption, m_stc, (int)value));
           new_value >= 0)
       {
         ml.replace_hex(new_value);

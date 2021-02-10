@@ -2,7 +2,7 @@
 // Name:      dir.cpp
 // Purpose:   Implementation of class wex::dir
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <filesystem>
@@ -14,33 +14,6 @@ namespace fs = std::filesystem;
 
 namespace wex
 {
-  /// Collects files into container.
-  template <class T> class container_dir : public dir
-  {
-  public:
-    container_dir(const T& path, const wex::data::dir& data)
-      : dir(path, data)
-    {
-      ;
-    };
-
-    const auto& get() const { return m_container; };
-
-  private:
-    bool on_dir(const path& p) override
-    {
-      m_container.emplace_back(p);
-      return true;
-    };
-    bool on_file(const path& p) override
-    {
-      m_container.emplace_back(p);
-      return true;
-    };
-
-    std::vector<T> m_container;
-  };
-
   class string_dir : public dir
   {
   public:
@@ -55,12 +28,14 @@ namespace wex
   private:
     bool on_dir(const path& p) override
     {
-      m_container.emplace_back(p.fullname());
+      m_container.emplace_back(
+        data().type().test(data::dir::RECURSIVE) ? p.string(): p.fullname());
       return true;
     };
     bool on_file(const path& p) override
     {
-      m_container.emplace_back(p.fullname());
+      m_container.emplace_back(
+        data().type().test(data::dir::RECURSIVE) ? p.string(): p.fullname());
       return true;
     };
 
@@ -100,14 +75,6 @@ namespace wex
     return !interruptible::is_cancelled();
   }
 }; // namespace wex
-
-std::vector<wex::path>
-wex::get_all_files(const wex::path& path, const wex::data::dir& data)
-{
-  container_dir<wex::path> dir(path, data);
-  dir.find_files();
-  return dir.get();
-}
 
 std::vector<std::string>
 wex::get_all_files(const std::string& path, const wex::data::dir& data)

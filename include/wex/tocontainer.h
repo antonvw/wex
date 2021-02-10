@@ -2,12 +2,12 @@
 // Name:      to_container.h
 // Purpose:   Declaration of wex::to_container class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wex/tokenizer.h>
+#include <boost/tokenizer.hpp>
 #include <wx/arrstr.h>
 #include <wx/combobox.h>
 #include <wx/filedlg.h>
@@ -26,6 +26,15 @@ namespace wex
   template <class T> class to_container
   {
   public:
+    /// Constructor, using std::string.
+    to_container(const std::vector<std::string>& in)
+    {
+      for (const auto& it : in)
+      {
+        m_container.emplace_back(it);
+      }
+    };
+
     /// Constructor, using array string.
     to_container(const wxArrayString& in) { FromArrayString(in); };
 
@@ -44,15 +53,17 @@ namespace wex
       /// delimiter for elements
       const std::string& delims = " \t\r\n")
     {
-      tokenizer tkz(in, delims);
-      while (tkz.has_more_tokens())
+      boost::tokenizer<boost::char_separator<char>> tok(
+        in,
+        boost::char_separator<char>(delims.c_str()));
+
+      for (auto it = tok.begin(); it != tok.end(); ++it)
       {
-        std::string token(tkz.get_next_token());
+        std::string token(*it);
         // if escape space, add next token
         if (token.back() == '\\')
         {
-          token =
-            token.substr(0, token.size() - 1) + " " + tkz.get_next_token();
+          token = token.substr(0, token.size() - 1) + " " + *++it;
         }
         m_container.emplace_back(token);
       }

@@ -201,9 +201,9 @@ void wex::report::frame::find_in_files(wxWindowID dialogid)
 
     if (tool_dir dir(
           tool,
-          config(m_text_in_folder).get_firstof(),
+          config(m_text_in_folder).get_first_of(),
           data::dir()
-            .file_spec(config(m_text_in_files).get_firstof())
+            .file_spec(config(m_text_in_files).get_first_of())
             .type(type));
 
         dir.find_files() >= 0)
@@ -265,7 +265,7 @@ bool wex::report::frame::find_in_files(
         tool_dir dir(
           tool,
           it,
-          data::dir().file_spec(config(m_text_in_files).get_firstof()));
+          data::dir().file_spec(config(m_text_in_files).get_first_of()));
 
         dir.find_files();
         stats += dir.get_statistics().get_elements();
@@ -324,8 +324,8 @@ const std::string wex::report::frame::find_in_files_title(int id) const
 
 bool wex::report::frame::grep(const std::string& arg, bool sed)
 {
-  static std::string       arg1 = config(m_text_in_folder).get_firstof();
-  static std::string       arg2 = config(m_text_in_files).get_firstof();
+  static std::string       arg1 = config(m_text_in_folder).get_first_of();
+  static std::string       arg2 = config(m_text_in_files).get_first_of();
   static data::dir::type_t arg3 = data::dir::type_t().set(data::dir::FILES);
 
   if (get_stc() != nullptr)
@@ -353,11 +353,11 @@ bool wex::report::frame::grep(const std::string& arg, bool sed)
               find_replace_data::get()->set_replace_string(v[i++]);
             }
             arg2 =
-              (v.size() > i ? config(m_text_in_files).set_firstof(v[i++]) :
-                              config(m_text_in_files).get_firstof());
+              (v.size() > i ? config(m_text_in_files).set_first_of(v[i++]) :
+                              config(m_text_in_files).get_first_of());
             arg1 =
-              (v.size() > i ? config(m_text_in_folder).set_firstof(v[i++]) :
-                              config(m_text_in_folder).get_firstof());
+              (v.size() > i ? config(m_text_in_folder).set_first_of(v[i++]) :
+                              config(m_text_in_folder).get_first_of());
           }},
          false,
          "grep")
@@ -433,8 +433,8 @@ void wex::report::frame::on_command_item_dialog(
               flags.set(data::dir::DIRS);
 
             get_project()->add_items(
-              config(get_project()->text_infolder()).get_firstof(),
-              config(get_project()->text_addwhat()).get_firstof(),
+              config(get_project()->text_infolder()).get_first_of(),
+              config(get_project()->text_addwhat()).get_first_of(),
               flags);
           }
           break;

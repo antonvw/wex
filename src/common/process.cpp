@@ -2,15 +2,15 @@
 // Name:      process.cpp
 // Purpose:   Implementation of class wex::process
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "process-imp.h"
 
 #include <algorithm>
+#include <boost/algorithm/string.hpp>
 #include <vector>
 #include <wex/config.h>
-#include <wex/core.h>
 #include <wex/ex-stream.h>
 #include <wex/item-dialog.h>
 #include <wex/log.h>
@@ -22,7 +22,7 @@
 std::string wex::process::m_working_dir_key = _("Process folder");
 
 wex::process::process()
-  : m_command(config(_("Process")).get_firstof())
+  : m_command(config(_("Process")).get_first_of())
   , m_frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
 {
 }
@@ -87,7 +87,7 @@ bool wex::process::execute(
 
   if (command.empty())
   {
-    if (config(_("Process")).get_firstof().empty())
+    if (config(_("Process")).get_first_of().empty())
     {
       if (config_dialog() == wxID_CANCEL)
       {
@@ -95,8 +95,8 @@ bool wex::process::execute(
       }
     }
 
-    m_command = config(_("Process")).get_firstof();
-    cwd       = config(m_working_dir_key).get_firstof();
+    m_command = config(_("Process")).get_first_of();
+    cwd       = config(m_working_dir_key).get_first_of();
   }
   else
   {
@@ -108,20 +108,20 @@ bool wex::process::execute(
       {
         if (!stc->is_visual())
         {
-          replace_all(
+          boost::algorithm::replace_all(
             m_command,
             "%LINES",
             std::to_string(std::max(
-              1,
-              stc->get_current_line() + 1 -
+              (size_t)1,
+              (size_t)stc->get_current_line() + 1 -
                 std::min(
-                  stc->GetLineCount(),
+                  (size_t)stc->GetLineCount(),
                   stc->get_file().ex_stream()->get_context_lines()))) +
               "," + std::to_string(stc->get_current_line() + 1));
         }
         else if (const std::string sel(stc->GetSelectedText()); !sel.empty())
         {
-          replace_all(
+          boost::algorithm::replace_all(
             m_command,
             "%LINES",
             std::to_string(
@@ -132,7 +132,7 @@ bool wex::process::execute(
         }
         else
         {
-          replace_all(
+          boost::algorithm::replace_all(
             m_command,
             "%LINES",
             std::to_string(stc->get_current_line() + 1) + "," +

@@ -2,7 +2,7 @@
 // Name:      test.cpp
 // Purpose:   Implementation for wex report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "test.h"
@@ -11,6 +11,15 @@
 #include <wex/frd.h>
 #include <wex/tool.h>
 #include <wex/tostring.h>
+
+void find_in_files(const std::vector<std::string>& files, wex::listview* lv)
+{
+  REQUIRE(report_frame()->find_in_files(
+    wex::to_vector_path(files).get(),
+    wex::ID_TOOL_REPORT_FIND,
+    false,
+    lv));
+}
 
 TEST_CASE("wex::report")
 {
@@ -22,7 +31,7 @@ TEST_CASE("wex::report")
   wex::test::add_pane(report_frame(), report);
 
   const auto files = wex::get_all_files(
-    wex::path("../../test/report"),
+    std::string("../../test/report"),
     wex::data::dir().file_spec("*.cpp"));
 
   REQUIRE(files.size() > 5);
@@ -33,8 +42,7 @@ TEST_CASE("wex::report")
   frd->set_regex(false);
   frd->set_find_string("@@@@@@@@@@@@@@@@@@@");
 
-  REQUIRE(report_frame()
-            ->find_in_files(files, wex::ID_TOOL_REPORT_FIND, false, report));
+  find_in_files(files, report);
 
 #ifdef __UNIX__
   REQUIRE(report->GetItemCount() == 1);
@@ -44,8 +52,7 @@ TEST_CASE("wex::report")
 
   const auto start = std::chrono::system_clock::now();
 
-  REQUIRE(report_frame()
-            ->find_in_files(files, wex::ID_TOOL_REPORT_FIND, false, report));
+  find_in_files(files, report);
 
   const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(
     std::chrono::system_clock::now() - start);

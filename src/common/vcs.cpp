@@ -2,7 +2,7 @@
 // Name:      vcs.cpp
 // Purpose:   Implementation of wex::vcs class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <map>
@@ -16,6 +16,17 @@
 #include <wex/path.h>
 #include <wex/util.h>
 #include <wex/vcs.h>
+
+#define SET_ENTRY                                                \
+  if (                                                           \
+    parent != nullptr &&                                         \
+    item_dialog(v, data::window().parent(parent).title(message)) \
+        .ShowModal() == wxID_CANCEL)                             \
+  {                                                              \
+    return false;                                                \
+  }                                                              \
+                                                                 \
+  m_entry = find_entry(m_entries);
 
 namespace wex
 {
@@ -107,7 +118,7 @@ namespace wex
   {
     return find_entry(
       entries,
-      path(config(_("vcs.Base folder")).get_firstof()));
+      path(config(_("vcs.Base folder")).get_first_of()));
   }
 }; // namespace wex
 
@@ -122,7 +133,7 @@ wex::vcs::vcs(const std::vector<path>& files, int command_no)
     if (m_files.size() == 1 && !m_files[0].file_exists())
     {
       config(_("vcs.Base folder"))
-        .set_firstof(
+        .set_first_of(
           vcs_admin(m_entry.admin_dir(), m_files[0]).toplevel().string());
     }
 
@@ -217,10 +228,10 @@ bool wex::vcs::execute()
   if (get_file().empty())
   {
     return m_entry.execute(
-      m_entry.get_command().is_add() ? config(_("vcs.data")).get_firstof() :
+      m_entry.get_command().is_add() ? config(_("vcs.data")).get_first_of() :
                                        std::string(),
       lexer(),
-      config(_("vcs.Base folder")).get_firstof());
+      config(_("vcs.Base folder")).get_first_of());
   }
   else
   {
@@ -269,7 +280,7 @@ const std::string wex::vcs::get_branch() const
 
 const wex::path wex::vcs::get_file() const
 {
-  return m_files.empty() ? config(_("vcs.Base folder")).get_firstof() :
+  return m_files.empty() ? config(_("vcs.Base folder")).get_first_of() :
                            m_files[0];
 }
 
@@ -348,34 +359,14 @@ bool wex::vcs::set_entry_from_base(wxWindow* parent)
        std::any(),
        data::control().is_required(true)}};
 
-    config(_("vcs.Base folder")).get_firstof().empty())
+    config(_("vcs.Base folder")).get_first_of().empty())
   {
-    if (
-      parent != nullptr &&
-      item_dialog(v, data::window().parent(parent).title(message))
-          .ShowModal() == wxID_CANCEL)
-    {
-      return false;
-    }
-
-    m_entry = find_entry(m_entries);
+    SET_ENTRY;
   }
   else
   {
     m_entry = find_entry(m_entries);
-
-    if (m_entry.name().empty())
-    {
-      if (
-        parent != nullptr &&
-        item_dialog(v, data::window().parent(parent).title(message))
-            .ShowModal() == wxID_CANCEL)
-      {
-        return false;
-      }
-
-      m_entry = find_entry(m_entries);
-    }
+    SET_ENTRY;
   }
 
   return !m_entry.name().empty();

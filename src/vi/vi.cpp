@@ -6,6 +6,8 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/algorithm/string.hpp>
+#include <boost/tokenizer.hpp>
 #include <functional>
 #include <regex>
 #include <sstream>
@@ -22,7 +24,6 @@
 #include <wex/macros.h>
 #include <wex/managed-frame.h>
 #include <wex/stc.h>
-#include <wex/tokenizer.h>
 #include <wex/vi.h>
 
 namespace wex
@@ -35,7 +36,7 @@ namespace wex
   };
 
   const std::string esc() { return std::string("\x1b"); }
-  
+
   const std::string _s(wxKeyCode key) { return std::string(1, key); }
 } // namespace wex
 
@@ -338,7 +339,7 @@ wex::vi::vi(wex::stc* arg)
                            // syncped.
                            const auto text(
                              command.back() != '\n' ? command.substr(1) :
-                                                      trim(command.substr(1)));
+                                                      boost::algorithm::trim_copy(command.substr(1)));
 
                            if (!get_stc()->find(
                                  text,
@@ -678,11 +679,11 @@ wex::vi::vi(wex::stc* arg)
            case 'o':
              if (
                get_stc()->GetFoldExpanded(line_to_fold) &&
-               trim(command) == "zc")
+               boost::algorithm::trim_copy(command) == "zc")
                get_stc()->ToggleFold(line_to_fold);
              else if (
                !get_stc()->GetFoldExpanded(line_to_fold) &&
-               trim(command) == "zo")
+               boost::algorithm::trim_copy(command) == "zo")
                get_stc()->ToggleFold(line_to_fold);
              break;
            case 'f':
@@ -1172,20 +1173,10 @@ bool wex::vi::insert_mode(const std::string& command)
       return false;
     }
 
-    for (tokenizer tkz(command, _s(WXK_CONTROL_R), false);
-         tkz.has_more_tokens();)
-    {
-      const auto token = tkz.get_next_token();
-      const auto rest(tkz.get_string());
-
-      if (regafter(_s(WXK_CONTROL_R), _s(WXK_CONTROL_R) + rest.substr(0, 1)))
-      {
-        insert_mode(token);
-        command_reg(std::string(1, rest[0]));
-        insert_mode(rest.substr(1));
-        return true;
-      }
-    }
+    std::string text(command);
+    marker_and_register_expansion(this, text);
+    insert_mode(text);
+    return true;
   }
 
   switch ((int)command.back())
@@ -1305,12 +1296,15 @@ bool wex::vi::insert_mode(const std::string& command)
 
 void wex::vi::insert_mode_normal(const std::string& text)
 {
-  if (tokenizer tkz(text, "\r\n", false);
-      text.find('\0') == std::string::npos && tkz.has_more_tokens())
+  if (boost::tokenizer<boost::char_separator<char>> tok(
+        text,
+        boost::char_separator<char>("", "\r\n", boost::keep_empty_tokens));
+      text.find('\0') == std::string::npos &&
+      std::distance(tok.begin(), tok.end()) >= 1)
   {
-    while (tkz.has_more_tokens())
+    for (auto it = tok.begin(); it != tok.end(); ++it)
     {
-      if (auto token(tkz.get_next_token()); !token.empty())
+      if (auto token(*it); !token.empty())
       {
         if (token.back() == ' ' || token.back() == '\t' || token.back() == ';')
         {
@@ -1355,12 +1349,11 @@ void wex::vi::insert_mode_normal(const std::string& text)
         }
 
         get_stc()->add_text(token);
-      }
 
-      if (tkz.last_delimiter() != 0)
-      {
-        get_stc()->add_text(std::string(1, tkz.last_delimiter()));
-        get_stc()->auto_indentation(tkz.last_delimiter());
+        if (token == "\n")
+        {
+          get_stc()->auto_indentation(token[0]);
+        }
       }
     }
   }

@@ -2,7 +2,7 @@
 // Name:      lexers.cpp
 // Purpose:   Implementation of wex::lexers class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -18,7 +18,6 @@
 #include <wex/lexers.h>
 #include <wex/log.h>
 #include <wex/stc-core.h>
-#include <wex/tokenizer.h>
 
 // Constructor for lexers from specified filename.
 // This must be an existing xml file containing all lexers.
@@ -380,10 +379,8 @@ bool wex::lexers::load_document()
 
 void wex::lexers::parse_node_folding(const pugi::xml_node& node)
 {
-  tokenizer fields(node.text().get(), ",");
-
-  m_folding_background_colour = apply_macro(fields.get_next_token());
-  m_folding_foreground_colour = apply_macro(fields.get_next_token());
+  m_folding_background_colour = apply_macro(before(node.text().get(), ','));
+  m_folding_foreground_colour = apply_macro(after(node.text().get(), ','));
 }
 
 void wex::lexers::parse_node_global(const pugi::xml_node& node)

@@ -2,9 +2,11 @@
 // Name:      cmdline.cpp
 // Purpose:   Implementation of wex::cmdline class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/algorithm/string.hpp>
+#include <iostream>
 #include <wex/cmdline.h>
 #include <wex/config.h>
 #include <wex/core.h>
@@ -264,7 +266,7 @@ bool wex::cmdline::parse_set(data::cmdline& data) const
     or more <blank> characters.
     */
   std::vector<std::string> v;
-  std::string              line(trim(data.string()));
+  std::string              line(boost::algorithm::trim_copy(data.string()));
   bool                     found = false;
   std::string              help;
 

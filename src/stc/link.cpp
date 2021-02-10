@@ -2,12 +2,12 @@
 // Name:      link.cpp
 // Purpose:   Implementation of class wex::link
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
+#include <boost/algorithm/string.hpp>
 #include <wex/config.h>
-#include <wex/core.h>
 #include <wex/item-vector.h>
 #include <wex/lexer.h>
 #include <wex/link.h>
@@ -75,11 +75,12 @@ const wex::path wex::link::find_between(const std::string& text, stc* stc) const
     if (pos1 != std::string::npos && pos2 != std::string::npos && pos2 > pos1)
     {
       // Okay, get everything in between, and make sure we skip white space.
-      return trim(text.substr(pos1 + 1, pos2 - pos1 - 1));
+      return boost::algorithm::trim_copy(
+        text.substr(pos1 + 1, pos2 - pos1 - 1));
     }
   }
 
-  return trim(text);
+  return boost::algorithm::trim_copy(text);
 }
 
 void wex::link::config_get()
@@ -126,7 +127,7 @@ wex::link::find_filename(const std::string& text, data::control& data) const
       }
     }
 
-    path p(trim(prefix + link));
+    path p(boost::algorithm::trim_copy(prefix + link));
 
     if (const path q(before(p.string(), ':')); q.file_exists())
     {
@@ -232,7 +233,7 @@ const wex::path wex::link::get_path(
   // if last word is a file
   const auto pos = between.string().find_last_of(' ');
 
-  if (wex::path word(trim(
+  if (wex::path word(boost::algorithm::trim_copy(
         (pos != std::string::npos ? between.string().substr(pos) :
                                     std::string())));
       !word.empty())

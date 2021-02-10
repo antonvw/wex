@@ -3818,7 +3818,7 @@ Copyright: (c) 2020, Anton van Wezenbeek
   </lexer>
   <lexer display="log" extensions="*.log" edgemode="none" spacevisible="invisible" name="bash">
     <keywords> 
-      error error: warning:
+      error warning
     </keywords>
   </lexer>
   <lexer name="lot"/>

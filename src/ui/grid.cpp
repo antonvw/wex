@@ -2,7 +2,7 @@
 // Name:      grid.cpp
 // Purpose:   Implementation of wex::grid class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
@@ -10,6 +10,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <boost/tokenizer.hpp>
 #include <wex/bind.h>
 #include <wex/core.h>
 #include <wex/defs.h>
@@ -18,7 +19,6 @@
 #include <wex/grid.h>
 #include <wex/lexers.h>
 #include <wex/printing.h>
-#include <wex/tokenizer.h>
 #include <wx/dnd.h>
 #include <wx/fdrepdlg.h>
 
@@ -456,14 +456,13 @@ const std::string wex::grid::get_find_string() const
 {
   if (IsSelection())
   {
-    // This does not work (if single cell selected, array count is 0!
-    // const wxGridCellCoordsArray cells(GetSelectedCells());
-    tokenizer tkz(get_selected_cells_value(), "\n");
-
     // Only if we have one cell, so one EOL.
-    if (tkz.count_tokens() == 1)
+    if (boost::tokenizer<boost::char_separator<char>> tok(
+          get_selected_cells_value(),
+          boost::char_separator<char>("\n"));
+        std::distance(tok.begin(), tok.end()) == 1)
     {
-      find_replace_data::get()->set_find_string(tkz.get_next_token());
+      find_replace_data::get()->set_find_string(*tok.begin());
     }
   }
   else
@@ -525,21 +524,21 @@ bool wex::grid::is_allowed_drop_selection(
   const wxGridCellCoords& drop_coords,
   const std::string&      data)
 {
-  tokenizer tkz(data, "\n");
-
   auto start_at_row = drop_coords.GetRow();
 
-  while (tkz.has_more_tokens())
+  for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
+         data,
+         boost::char_separator<char>("\n")))
   {
-    const auto line(tkz.get_next_token());
-
-    tokenizer tkz(line, "\t");
-
     int next_col = drop_coords.GetCol();
-    while (tkz.has_more_tokens() && next_col < GetNumberCols())
-    {
-      tkz.get_next_token(); // skip the value
 
+    boost::tokenizer<boost::char_separator<char>> tok(
+      it,
+      boost::char_separator<char>("\t"));
+
+    for (auto tt = tok.begin(); tt != tok.end() && next_col < GetNumberCols();
+         ++tt)
+    {
       // If readonly, or this cell is part of the current selection, or outside
       // grid do not allow. Otherwise when dropping and clearing old selection
       // afterwards, we also cleared the new cells. If moving is really
@@ -591,25 +590,23 @@ void wex::grid::set_cells_value(
   const wxGridCellCoords& start_coords,
   const std::string&      data)
 {
-  tokenizer tkz(data, "\n");
-
   auto start_at_row = start_coords.GetRow();
 
-  while (tkz.has_more_tokens())
+  for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
+         data,
+         boost::char_separator<char>("\n")))
   {
-    const auto line(tkz.get_next_token());
-
-    tokenizer tkz(line, "\t");
+    boost::tokenizer<boost::char_separator<char>> tok(
+      it,
+      boost::char_separator<char>("\t"));
 
     auto next_col = start_coords.GetCol();
 
-    while (tkz.has_more_tokens() && next_col < GetNumberCols())
+    for (auto it = tok.begin(); it != tok.end(); ++it)
     {
-      const std::string value = tkz.get_next_token();
-
       if (!IsReadOnly(start_at_row, next_col))
       {
-        set_cell_value(wxGridCellCoords(start_at_row, next_col), value);
+        set_cell_value(wxGridCellCoords(start_at_row, next_col), *it);
       }
 
       next_col++;

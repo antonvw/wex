@@ -208,7 +208,7 @@ wxFont wex::config::get(const wxFont& def) const
   return wx;
 }
 
-const std::string wex::config::get_firstof() const
+const std::string wex::config::get_first_of() const
 {
   const auto& l(get(std::list<std::string>{}));
   return l.empty() ? std::string() : l.front();
@@ -334,7 +334,7 @@ void wex::config::set_file(const std::string& file)
   config_imp::set_file(file);
 }
 
-const std::string wex::config::set_firstof(const std::string& v, size_t max)
+const std::string wex::config::set_first_of(const std::string& v, size_t max)
 {
   auto l(get(std::list<std::string>{}));
 
