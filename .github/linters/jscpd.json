@@ -1,11 +1,11 @@
 {
-  "threshold": 5,
+  "threshold": 3,
   "reporters": [
     "consoleFull"
   ],
   "ignore": [
-    "**/__snapshots__/**"
-    "**/*.xml"
+    "**/__snapshots__/**",
+    "**/*.xml",
     "**/*.xsl"
   ],
   "absolute": true

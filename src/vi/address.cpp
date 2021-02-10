@@ -31,9 +31,9 @@
 
 namespace wex
 {
-  int find_stc(ex* ex, const std::string& text, bool forward)
+  int find_stc(ex* ex, const std::string& text)
   {
-    if (forward)
+    if (text[0] == '/')
     {
       ex->get_stc()->SetTargetRange(
         ex->get_stc()->GetCurrentPos(),
@@ -46,7 +46,7 @@ namespace wex
 
     SEARCH_TARGET;
 
-    if (forward)
+    if (text[0] == '/')
     {
       ex->get_stc()->SetTargetRange(0, ex->get_stc()->GetCurrentPos());
     }
@@ -62,9 +62,9 @@ namespace wex
     return 0;
   }
 
-  int find_stream(ex* ex, const std::string& text, bool forward)
+  int find_stream(ex* ex, const std::string& text)
   {
-    if (ex->get_stc()->get_file().ex_stream()->find(text, -1, forward))
+    if (ex->get_stc()->get_file().ex_stream()->find(text, -1, text[0] == '/'))
     {
       return ex->get_stc()->get_file().ex_stream()->get_current_line() + 1;
     }
@@ -203,17 +203,13 @@ int wex::address::get_line() const
 
   m_ex->get_stc()->set_search_flags(m_ex->search_flags());
 
-  // If this is a // address, return line with first forward match.
-  if (std::vector<std::string> v; match("/(.*)/$", m_address, v) > 0)
+  // If this is a //, ?? address, return line with first forward, backward
+  // match.
+  if (std::vector<std::string> v; match("/(.*)/$", m_address, v) > 0 ||
+                                  match("\\?(.*)\\?$", m_address, v) > 0)
   {
-    return !m_ex->get_stc()->is_visual() ? find_stream(m_ex, v[0], true) :
-                                           find_stc(m_ex, v[0], true);
-  }
-  // If this is a ?? address, return line with first backward match.
-  else if (match("\\?(.*)\\?", m_address, v) > 0)
-  {
-    return !m_ex->get_stc()->is_visual() ? find_stream(m_ex, v[0], false) :
-                                           find_stc(m_ex, v[0], false);
+    return !m_ex->get_stc()->is_visual() ? find_stream(m_ex, v[0]) :
+                                           find_stc(m_ex, v[0]);
   }
 
   // Try address calculation.
