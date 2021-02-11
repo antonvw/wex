@@ -16,7 +16,7 @@ TEST_SUITE_BEGIN("wex::ex");
 TEST_CASE("wex::address")
 {
   auto* stc = get_stc();
-  stc->set_text("hello0\nhello1\nhello2\nhello3\nhello4\nhello5");
+  stc->set_text("hello0\nhello1\nhello2\nhello3\nhello4\nhello5\nhello2");
 
   const int lines = stc->get_line_count();
   auto*     ex    = new wex::ex(stc);
@@ -35,10 +35,11 @@ TEST_CASE("wex::address")
            {"30", lines},      {"40", lines},    {"-40", 1},   {"3-3", 0},
            {"3-1", 2},         {".", 2},         {".+1", 3},   {"$", lines},
            {"$-2", lines - 2}, {"x", 0},         {"'x", 0},    {"1,3s/x/y", 0},
-           {"/2/", 3},         {"?2?", 3},       {"'a", 1},    {"'b", 2},
+           {"/2/", 3},         {"?2?", 7},       {"'a", 1},    {"'b", 2},
            {"'b+10", lines},   {"10+'b", lines}, {"'a+'b", 3}, {"'b+'a", 3},
            {"'b-'a", 1}})
     {
+      CAPTURE(it.first);
       REQUIRE(wex::address(ex, it.first).get_line() == it.second);
     }
   }

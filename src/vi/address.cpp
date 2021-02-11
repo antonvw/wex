@@ -31,9 +31,9 @@
 
 namespace wex
 {
-  int find_stc(ex* ex, const std::string& text)
+  int find_stc(ex* ex, const std::string& text, bool forward)
   {
-    if (text[0] == '/')
+    if (forward)
     {
       ex->get_stc()->SetTargetRange(
         ex->get_stc()->GetCurrentPos(),
@@ -46,7 +46,7 @@ namespace wex
 
     SEARCH_TARGET;
 
-    if (text[0] == '/')
+    if (forward)
     {
       ex->get_stc()->SetTargetRange(0, ex->get_stc()->GetCurrentPos());
     }
@@ -62,9 +62,9 @@ namespace wex
     return 0;
   }
 
-  int find_stream(ex* ex, const std::string& text)
+  int find_stream(ex* ex, const std::string& text, bool forward)
   {
-    if (ex->get_stc()->get_file().ex_stream()->find(text, -1, text[0] == '/'))
+    if (ex->get_stc()->get_file().ex_stream()->find(text, -1, forward))
     {
       return ex->get_stc()->get_file().ex_stream()->get_current_line() + 1;
     }
@@ -208,8 +208,8 @@ int wex::address::get_line() const
   if (std::vector<std::string> v; match("/(.*)/$", m_address, v) > 0 ||
                                   match("\\?(.*)\\?$", m_address, v) > 0)
   {
-    return !m_ex->get_stc()->is_visual() ? find_stream(m_ex, v[0]) :
-                                           find_stc(m_ex, v[0]);
+    return !m_ex->get_stc()->is_visual() ? find_stream(m_ex, v[0], m_address[0] == '/') :
+                                           find_stc(m_ex, v[0], m_address[0] == '/');
   }
 
   // Try address calculation.
