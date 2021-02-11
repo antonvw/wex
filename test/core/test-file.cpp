@@ -20,6 +20,7 @@ TEST_CASE("wex::file")
       std::ios_base::in | std::ios_base::out);
 
     REQUIRE(!file.check_sync());
+    REQUIRE(!file.is_written());
     REQUIRE(!file.is_contents_changed());
     REQUIRE(file.is_open());
 
@@ -56,6 +57,7 @@ TEST_CASE("wex::file")
       std::ios_base::out | std::ios_base::app);
     REQUIRE(f.is_open());
     REQUIRE(f.write("extra text"));
+    REQUIRE(f.is_written());
   }
 
   // file should be closed before remove (at least for windows)

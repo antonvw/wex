@@ -1,10 +1,10 @@
 # roadmap
+- no MSW specific read in file
+- is_written and contents_changed?
 - global with empty pattern
+- add more README.md to libs
 
 ## backlog
-- add more README.md to libs
-- move some impl, e.g. file -> stream
-  and current stream should be renamed
 - allow dynamic libs
 - start up with recent project, close project
   -> windows appear
