@@ -1,5 +1,4 @@
 # roadmap
-- no MSW specific read in file
 - is_written and contents_changed?
 - global with empty pattern
 - add more README.md to libs

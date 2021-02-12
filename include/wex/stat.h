@@ -9,6 +9,7 @@
 
 #include <string>
 #include <sys/stat.h>
+#include <wex/chrono.h>
 
 namespace wex
 {
@@ -18,20 +19,18 @@ namespace wex
   class file_stat : public stat
   {
   public:
-    static inline const std::string MOD_TIME_FORMAT = "%c";
-
     /// Default constructor. Calls sync.
     file_stat(const std::string& path = std::string()) { sync(path); };
 
     /// Returns the creation time.
     const std::string get_creation_time(
       /// the format as used by std::put_time
-      const std::string& format = MOD_TIME_FORMAT) const;
+      const std::string& format = chrono::TIME_FORMAT) const;
 
     /// Returns the modification time.
     const std::string get_modification_time(
       /// the format as used by std::put_time
-      const std::string& format = MOD_TIME_FORMAT) const;
+      const std::string& format = chrono::TIME_FORMAT) const;
 
     /// Returns true if the stat is okay (last sync was okay).
     bool is_ok() const { return m_is_ok; };
@@ -56,4 +55,4 @@ namespace wex
     std::string m_fullpath;
     bool        m_is_ok;
   };
-}; // namespace wex
+} // namespace wex

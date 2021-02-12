@@ -45,10 +45,10 @@ wex::file& wex::file::operator=(const file& f)
 {
   if (this != &f)
   {
-    m_is_loaded = f.m_is_loaded;
+    m_is_loaded  = f.m_is_loaded;
     m_is_written = f.m_is_written;
-    m_path = f.m_path;
-    m_stat = f.m_stat;
+    m_path       = f.m_path;
+    m_stat       = f.m_stat;
     m_use_stream = f.m_use_stream;
   }
 
@@ -65,7 +65,7 @@ void wex::file::assign(const path& p)
 
 bool wex::file::check_sync()
 {
-  if (is_open() || !m_path.stat().is_ok() || !config("AllowSync").get(true))
+  if (is_open() || !m_path.m_stat.is_ok() || !config("AllowSync").get(true))
   {
     return false;
   }
@@ -107,7 +107,7 @@ bool wex::file::close()
 {
   if (!m_fs.is_open())
     return true;
-  
+
   m_fs.close();
 
   return !m_fs.is_open();
@@ -236,17 +236,9 @@ const std::string* wex::file::read(std::streampos seek_position)
   }
 
   m_buffer = std::make_unique<std::string>();
+  m_buffer->resize(m_path.m_stat.st_size - seek_position);
 
-#ifndef __WXMSW__
-  m_buffer->resize(m_path.stat().st_size - seek_position);
   m_fs.read(m_buffer->data(), m_buffer->size());
-#else
-  char c;
-  while (m_fs.get(c))
-  {
-    m_buffer->push_back(c);
-  }
-#endif
 
   if (m_fs.bad())
   {
