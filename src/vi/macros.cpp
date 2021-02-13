@@ -231,14 +231,16 @@ bool wex::macros::load_document()
 template <typename S, typename T>
 void wex::macros::parse_node(
   const pugi::xml_node& node,
-  const std::string&    name,
+  const std::string&    container_name,
   T&                    container)
 {
-  if (const S& value = type_to_value<S>(node.attribute("name").value()).get();
+  const std::string name(node.attribute("name").value());
+
+  if (const S& value = type_to_value<S>(name).get();
       container.find(value) != container.end())
   {
-    log("duplicate macro") << name << ":" << value
-                           << "from:" << node.attribute("name").value() << node;
+    log("duplicate " + container_name) << name << "current:" << container[value]
+                                       << "upate:" << node.text().get() << node;
   }
   else
   {
@@ -248,20 +250,21 @@ void wex::macros::parse_node(
 
 void wex::macros::parse_node_macro(const pugi::xml_node& node)
 {
-  std::vector<std::string> v;
+  const std::string name(node.attribute("name").value());
 
-  for (const auto& command : node.children())
+  if (const auto& it = m_macros.find(name); it != m_macros.end())
   {
-    v.emplace_back(command.text().get());
-  }
-
-  if (const auto& it = m_macros.find(node.attribute("name").value());
-      it != m_macros.end())
-  {
-    log("duplicate macro") << node.attribute("name").value() << node;
+    log("duplicate macro") << name << node;
   }
   else
   {
+    std::vector<std::string> v;
+
+    for (const auto& command : node.children())
+    {
+      v.emplace_back(command.text().get());
+    }
+
     m_macros.insert({node.attribute("name").value(), v});
   }
 }
