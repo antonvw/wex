@@ -20,6 +20,7 @@
 #include <wex/macros.h>
 #include <wex/managed-frame.h>
 #include <wex/process.h>
+#include <wex/sort.h>
 #include <wex/stc.h>
 #include <wex/substitute-data.h>
 #include <wex/util.h>
@@ -758,7 +759,7 @@ bool wex::addressrange::sort(const std::string& parameters) const
     return false;
   }
 
-  string_sort_t sort_t = 0;
+  sort::sort_t sort_t = 0;
 
   size_t pos = 0, len = std::string::npos;
 
@@ -779,9 +780,9 @@ bool wex::addressrange::sort(const std::string& parameters) const
     }
 
     if (parameters.find("r") != std::string::npos)
-      sort_t.set(STRING_SORT_DESCENDING);
+      sort_t.set(sort::SORT_DESCENDING);
     if (parameters.find("u") != std::string::npos)
-      sort_t.set(STRING_SORT_UNIQUE);
+      sort_t.set(sort::SORT_UNIQUE);
 
     if (isdigit(parameters[0]))
     {
@@ -801,7 +802,7 @@ bool wex::addressrange::sort(const std::string& parameters) const
     }
   }
 
-  return sort_selection(m_stc, sort_t, pos, len);
+  return wex::sort(sort_t, pos, len).selection(m_stc);
 }
 
 bool wex::addressrange::substitute(const std::string& text, char cmd)

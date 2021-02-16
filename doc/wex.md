@@ -119,6 +119,12 @@ It benefits from the following c++ features:
   These functions are used heavily, the advice is to be sure that
   you should be aware that a std::exception might be raised.
 
+```cpp
+  starts_with (c++20)
+```
+
+  A recent added function.
+  
 - Thread support library (c++17)
 ```cpp
   std::thread
@@ -241,3 +247,17 @@ It benefits from the following c++ features:
 - lambda expressions (c++11)
 
 - nested namespaces (c++17)
+```cpp
+  namespace wex::core
+  {
+    class stc;
+  }
+```
+  as forward declaration
+
+- override or final specifier (c++11)
+  vi.h:
+```cpp
+    bool command(const std::string& command) final;
+```
+  this ensures that the function is kept in sync with base class

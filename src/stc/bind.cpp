@@ -11,7 +11,6 @@
 #include <wex/beautify.h>
 #include <wex/bind.h>
 #include <wex/config.h>
-#include <wex/core.h>
 #include <wex/debug.h>
 #include <wex/defs.h>
 #include <wex/frd.h>
@@ -22,6 +21,7 @@
 #include <wex/managed-frame.h>
 #include <wex/menu.h>
 #include <wex/path.h>
+#include <wex/sort.h>
 #include <wex/stc-bind.h>
 #include <wex/stc-entry-dialog.h>
 #include <wex/stc.h>
@@ -787,11 +787,11 @@ void wex::stc::sort_action(const wxCommandEvent& event)
 {
   if (SelectionIsRectangle())
   {
-    sort_selection(
-      this,
+    sort(
       event.GetId() == wxID_SORT_ASCENDING ?
-        string_sort_t() :
-        string_sort_t().set(STRING_SORT_DESCENDING));
+        sort::sort_t() :
+        sort::sort_t().set(sort::SORT_DESCENDING))
+      .selection(this);
   }
   else if (const auto pos(wxGetNumberFromUser(
              _("Input") + ":",
@@ -803,11 +803,11 @@ void wex::stc::sort_action(const wxCommandEvent& event)
              this));
            pos > 0)
   {
-    sort_selection(
-      this,
+    sort(
       event.GetId() == wxID_SORT_ASCENDING ?
-        string_sort_t() :
-        string_sort_t().set(STRING_SORT_DESCENDING),
-      pos - 1);
+        sort::sort_t() :
+        sort::sort_t().set(sort::SORT_DESCENDING),
+      pos - 1)
+      .selection(this);
   }
 }

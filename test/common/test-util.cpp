@@ -11,9 +11,7 @@
 #include <wx/wx.h>
 #endif
 #include "../test.h"
-#include <boost/algorithm/string.hpp>
 #include <wex/config.h>
-#include <wex/core.h>
 #include <wex/ex.h>
 #include <wex/managed-frame.h>
 #include <wex/stc.h>
@@ -23,18 +21,6 @@
 TEST_CASE("wex::util" * doctest::may_fail())
 {
   std::list<std::string> l{"x", "y", "z"};
-
-  const std::string rect("012z45678901234567890\n"
-                         "123y56789012345678901\n"
-                         "234x67890123456789012\n"
-                         "345a78901234567890123\n"
-                         "456b89012345678901234\n");
-
-  const std::string sorted("012a78908901234567890\n"
-                           "123b89019012345678901\n"
-                           "234x67890123456789012\n"
-                           "345y56781234567890123\n"
-                           "456z45672345678901234\n");
 
   SUBCASE("combobox_as")
   {
@@ -116,47 +102,6 @@ TEST_CASE("wex::util" * doctest::may_fail())
     REQUIRE(command == "illegal process `xyz`");
   }
 #endif
-
-  SUBCASE("sort_selection")
-  {
-    get_stc()->SelectNone();
-    REQUIRE(!wex::sort_selection(get_stc()));
-    get_stc()->set_text("aaaaa\nbbbbb\nccccc\n");
-    get_stc()->SelectAll();
-    wxMilliSleep(10);
-    REQUIRE(wex::sort_selection(get_stc()));
-    wxMilliSleep(10);
-    REQUIRE(wex::sort_selection(get_stc(), 0, 3, 10));
-    wxMilliSleep(10);
-    REQUIRE(!wex::sort_selection(get_stc(), 0, 20, 10));
-  }
-
-  SUBCASE("sort_selection block")
-  {
-    get_stc()->get_vi().command("\x1b");
-    get_stc()->SelectNone();
-    get_stc()->set_text(rect);
-
-    // make a block selection, invoke sort, and check result
-    REQUIRE(get_stc()->get_vi().mode().is_command());
-    REQUIRE(get_stc()->get_vi().command("3 "));
-    REQUIRE(get_stc()->get_vi().command("K"));
-    REQUIRE(get_stc()->get_vi().mode().is_visual());
-    REQUIRE(get_stc()->get_vi().command("4j"));
-    REQUIRE(get_stc()->get_vi().command("5l"));
-    REQUIRE(get_stc()->get_vi().mode().is_visual());
-
-    REQUIRE(wex::sort_selection(get_stc(), 0, 3, 5));
-    REQUIRE(
-      boost::algorithm::trim_copy(get_stc()->get_text()) ==
-      boost::algorithm::trim_copy(sorted));
-    REQUIRE(wex::sort_selection(
-      get_stc(),
-      wex::string_sort_t().set(wex::STRING_SORT_DESCENDING),
-      3,
-      5));
-    REQUIRE(get_stc()->get_text() != sorted);
-  }
 
   SUBCASE("vcs_command_stc")
   {
