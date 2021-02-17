@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      core/sort.cpp
-// Purpose:   Implementation of wex sort class
+// Name:      sort.cpp
+// Purpose:   Implementation of wex::sort class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -78,9 +78,6 @@ bool wex::sort::selection_block(core::stc* stc)
   }
 
   std::string selection;
-  // the block selection overwrites pos, len, and 0 is needed for str
-  m_pos = 0;
-  m_len = std::string::npos;
 
   for (int i = 0; i < stc->GetSelections(); i++)
   {
@@ -102,8 +99,7 @@ bool wex::sort::selection_block(core::stc* stc)
     stc->GetColumn(stc->GetSelectionEnd()) - stc->GetColumn(start_pos);
   const auto nr_lines = stc->LineFromPosition(stc->GetSelectionEnd()) -
                         stc->LineFromPosition(start_pos);
-
-  const std::string text(str(selection, "\n"));
+  const auto& text(sort(m_sort_t).string(selection, "\n"));
 
   boost::tokenizer<boost::char_separator<char>> tok(
     text,
@@ -144,7 +140,7 @@ bool wex::sort::selection_other(core::stc* stc)
     return false;
   }
 
-  const auto& text(str(stc->get_selected_text(), stc->eol()));
+  const auto& text(sort(m_sort_t).string(stc->get_selected_text(), stc->eol()));
 
   stc->BeginUndoAction();
   stc->ReplaceSelection(text);
@@ -154,8 +150,14 @@ bool wex::sort::selection_other(core::stc* stc)
 }
 
 const std::string
-wex::sort::str(const std::string& input, const std::string& eol)
+wex::sort::string(const std::string& input, const std::string& sep)
 {
+  if (!std::all_of(sep.begin(), sep.end(), isspace))
+  {
+    log("sort::string separator should contain whitespace only") << sep;
+    return input;
+  }
+
   // Empty lines are not kept after sorting, as they are used as separator.
   std::map<std::string, std::string>      m;
   std::multimap<std::string, std::string> mm;
@@ -164,9 +166,9 @@ wex::sort::str(const std::string& input, const std::string& eol)
 
   for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
          input,
-         boost::char_separator<char>(eol.c_str())))
+         boost::char_separator<char>(sep.c_str())))
   {
-    const std::string line = it + eol;
+    const std::string line = it + sep;
 
     // Use an empty key if line is to short.
     std::string key;

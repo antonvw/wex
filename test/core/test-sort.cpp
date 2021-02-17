@@ -49,7 +49,7 @@ private:
   wex::path m_path;
 };
 
-TEST_CASE("wex::sort" * doctest::may_fail())
+TEST_CASE("wex::sort")
 {
   const std::string rect("012z45678901234567890\n"
                          "123y56789012345678901\n"
@@ -63,17 +63,17 @@ TEST_CASE("wex::sort" * doctest::may_fail())
                            "345y56781234567890123\n"
                            "456z45672345678901234\n");
 
-  SUBCASE("str")
+  SUBCASE("string")
   {
-    REQUIRE(wex::sort().str("z\ny\nx\n", "\n") == "x\ny\nz\n");
+    REQUIRE(wex::sort().string("z\ny\nx\n", "\n") == "x\ny\nz\n");
     REQUIRE(
       wex::sort(wex::sort::sort_t().set(wex::sort::SORT_DESCENDING))
-        .str("z\ny\nx\n", "\n") == "z\ny\nx\n");
-    REQUIRE(wex::sort().str("z\nz\ny\nx\n", "\n") == "x\ny\nz\nz\n");
+        .string("z\ny\nx\n", "\n") == "z\ny\nx\n");
+    REQUIRE(wex::sort().string("z\nz\ny\nx\n", "\n") == "x\ny\nz\nz\n");
     REQUIRE(
       wex::sort(wex::sort::sort_t().set(wex::sort::SORT_UNIQUE))
-        .str("z\nz\ny\nx\n", "\n") == "x\ny\nz\n");
-    REQUIRE(wex::sort(0, 3, 5).str(rect, "\n") == sorted);
+        .string("z\nz\ny\nx\n", "\n") == "x\ny\nz\n");
+    REQUIRE(wex::sort(0, 3, 5).string(rect, "\n") == sorted);
   }
 
   static wxFrame* frame = nullptr;

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      sort.h
-// Purpose:   Include file for wex core utility functions
+// Purpose:   Declaration of wex::sort class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -16,6 +16,7 @@ namespace wex
     class stc;
   };
 
+  /// Offers a sort class to sort text blocks, from strings or stc component.
   class sort
   {
   public:
@@ -29,10 +30,11 @@ namespace wex
 
     /// Default constructor.
     sort(
+      /// sort type
       sort_t sort_t = 0,
-      /// position of the first character to be replaced
+      /// position of the first character to be sorted
       size_t pos = 0,
-      /// number of characters to replace
+      /// number of characters to sort
       /// string::npos indicates all characters until eol
       size_t len = std::string::npos);
 
@@ -40,11 +42,11 @@ namespace wex
     bool selection(core::stc* stc);
 
     /// Sorts specified input, returns string with sorted text.
-    const std::string str(
+    const std::string string(
       /// text to sort
       const std::string& input,
-      /// eol to split lines
-      const std::string& eol);
+      /// characters to split lines
+      const std::string& separators);
 
   private:
     template <typename T> const std::string get_column(T first, T last);
