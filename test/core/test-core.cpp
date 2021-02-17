@@ -12,21 +12,9 @@
 #include <wex/property.h>
 #include <wex/style.h>
 
-TEST_CASE("wex::core" * doctest::may_fail())
+TEST_CASE("wex::core")
 {
   std::vector<int> cs{'(', ')', '{', '<', '>'};
-
-  const std::string rect("012z45678901234567890\n"
-                         "123y56789012345678901\n"
-                         "234x67890123456789012\n"
-                         "345a78901234567890123\n"
-                         "456b89012345678901234\n");
-
-  const std::string sorted("012a78908901234567890\n"
-                           "123b89019012345678901\n"
-                           "234x67890123456789012\n"
-                           "345y56781234567890123\n"
-                           "456z45672345678901234\n");
 
   SUBCASE("after")
   {
@@ -261,25 +249,6 @@ TEST_CASE("wex::core" * doctest::may_fail())
   {
     REQUIRE(wex::quoted("test") == "'test'");
     REQUIRE(wex::quoted("%d") == "'%d'");
-  }
-
-  SUBCASE("sort")
-  {
-    REQUIRE(wex::sort("z\ny\nx\n", 0, 0, "\n") == "x\ny\nz\n");
-    REQUIRE(
-      wex::sort(
-        "z\ny\nx\n",
-        wex::string_sort_t().set(wex::STRING_SORT_DESCENDING),
-        0,
-        "\n") == "z\ny\nx\n");
-    REQUIRE(wex::sort("z\nz\ny\nx\n", 0, 0, "\n") == "x\ny\nz\nz\n");
-    REQUIRE(
-      wex::sort(
-        "z\nz\ny\nx\n",
-        wex::string_sort_t().set(wex::STRING_SORT_UNIQUE),
-        0,
-        "\n") == "x\ny\nz\n");
-    REQUIRE(wex::sort(rect, 0, 3, "\n", 5) == sorted);
   }
 
   SUBCASE("translate")

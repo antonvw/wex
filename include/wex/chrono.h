@@ -17,7 +17,7 @@ namespace wex
   class chrono
   {
   public:
-    static inline const std::string TIME_FORMAT = "%c";
+    static inline const std::string TIME_FORMAT = "%Y-%m-%d %H:%M:%S";
 
     /// Precision used for outputting time.
     enum precision_t
@@ -60,4 +60,4 @@ namespace wex
   const std::string now(
     const std::string&  format    = chrono::TIME_FORMAT,
     chrono::precision_t precision = chrono::PRECISION_DEFAULT);
-}; // namespace wex
+} // namespace wex

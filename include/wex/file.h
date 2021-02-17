@@ -7,9 +7,11 @@
 
 #pragma once
 
+#include <fstream>
 #include <istream>
 #include <memory>
 #include <wex/path.h>
+#include <wex/stat.h>
 
 namespace wex
 {
@@ -66,38 +68,41 @@ namespace wex
     bool file_save(const path& p = path());
 
     /// Returns the path.
-    const path& get_filename() const;
+    const path& get_filename() const { return m_path; };
 
     /// Returns true if file is open.
-    bool is_open() const;
+    bool is_open() const { return m_fs.is_open(); };
 
     /// Returns true if file has been written.
-    bool is_written() const;
+    bool is_written() const { return m_is_written; };
 
     /// Opens current path.
-    bool open(std::ios_base::openmode mode = std::ios_base::in);
+    bool open(std::ios_base::openmode mode = std::ios_base::in)
+    {
+      return open(m_path, mode);
+    };
 
     /// Opens specified path.
     bool open(const path& p, std::ios_base::openmode mode = std::ios_base::in);
 
     /// Writes char.
-    void put(char c);
+    void put(char c) { m_fs.put(c); };
 
     /// Reads this file into a buffer.
     const std::string* read(std::streampos seek_position = 0);
 
     /// Returns stream.
-    std::fstream& stream();
+    std::fstream& stream() { return m_fs; }
 
     /// Default file is closed after loading, if you
     /// call this method, stream remains open.
-    void use_stream(bool use = true);
+    void use_stream(bool use = true) { m_use_stream = use; };
 
     /// Writes file from buffer.
     bool write(const char* s, size_t n);
 
     /// Writes file from string.
-    bool write(const std::string& s);
+    bool write(const std::string& s) { return write(s.c_str(), s.size()); };
 
   public:
     /// Returns whether contents have been changed.
@@ -123,9 +128,13 @@ namespace wex
   private:
     void assign(const path& p);
     bool file_load(bool synced);
+    void log_stream_info(const std::string& info, size_t s);
 
-    bool m_is_loaded{false}, m_use_stream{false};
+    bool m_is_loaded{false}, m_is_written{false}, m_use_stream{false};
 
-    std::unique_ptr<file_imp> m_file;
+    wex::path                    m_path;
+    file_stat                    m_stat; // used to check for sync
+    std::fstream                 m_fs;
+    std::unique_ptr<std::string> m_buffer;
   };
-}; // namespace wex
+} // namespace wex

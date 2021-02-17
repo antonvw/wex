@@ -36,6 +36,11 @@ namespace wex
     class app : public wex::app
     {
     public:
+      /// Static methods
+
+      /// Returns the test path.
+      static path get_path(const std::string& file = std::string());
+
       /// Virtual interface
 
       /// Prepare environment.
@@ -45,9 +50,6 @@ namespace wex
       int OnRun() override;
 
       /// Other methods
-
-      /// Returns the test path.
-      static path get_path(const std::string& file = std::string());
 
       /// Sets context.
       void set_context(doctest::Context* context);
@@ -60,11 +62,14 @@ namespace wex
     class gui_app : public app
     {
     public:
-      bool OnInit() override;
+      /// Static methods
 
       static auto* frame() { return m_frame; };
       static auto* get_statusbar() { return m_statusbar; };
       static auto* get_stc() { return m_stc; };
+
+      /// Virtual interface
+      bool OnInit() override;
 
     private:
       inline static managed_frame* m_frame     = nullptr;

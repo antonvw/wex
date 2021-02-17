@@ -1096,7 +1096,7 @@ bool wex::listview::load(const std::list<std::string>& l)
 
     const auto cols = std::distance(tok.begin(), tok.end());
 
-    for (size_t i = 0; i < cols; i++)
+    for (auto i = std::distance(tok.begin(), tok.begin()); i < cols; i++)
     {
       append_columns({{std::to_string(i + 1), column::STRING, 50}});
     }

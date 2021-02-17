@@ -10,7 +10,6 @@
 #include <boost/tokenizer.hpp>
 #include <functional>
 #include <string>
-#include <vector>
 
 namespace wex
 {
@@ -31,4 +30,4 @@ namespace wex
 
     return tokens;
   };
-}; // namespace wex
+} // namespace wex

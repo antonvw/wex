@@ -26,11 +26,6 @@ namespace wex
   class path;
   class property;
 
-  namespace core
-  {
-    class stc;
-  };
-
   /*! \file */
 
   /// Returns string after first or last occurrence of c
@@ -192,14 +187,6 @@ namespace wex
   /// Returns true if a register is specified after letter in text.
   bool regafter(const std::string& text, const std::string& letter);
 
-  enum
-  {
-    STRING_SORT_DESCENDING = 0, ///< sort descending order
-    STRING_SORT_UNIQUE     = 1, ///< flag to remove doubles
-  };
-
-  typedef std::bitset<2> string_sort_t;
-
   /// Presents a dialog to choose one string out of an array.
   bool single_choice_dialog(
     wxWindow*            parent,
@@ -207,33 +194,7 @@ namespace wex
     const wxArrayString& s,
     std::string&         selection);
 
-  /// Sorts specified text, returns string with sorted text.
-  const std::string sort(
-    /// text to sort
-    const std::string& input,
-    /// sort type
-    string_sort_t sort_t,
-    /// position of the first character to be replaced
-    size_t pos,
-    /// eol to split lines
-    const std::string& eol,
-    /// number of characters to replace
-    /// string::npos indicates all characters until eol
-    size_t len = std::string::npos);
-
-  /// Sorts specified component, returns true if sorted ok.
-  bool sort_selection(
-    /// Component with selected text to be sorted
-    core::stc* stc,
-    /// sort type
-    string_sort_t sort_t = 0,
-    /// position of the first character to be replaced
-    size_t pos = 0,
-    /// number of characters to replace
-    /// string::npos indicates all characters until eol
-    size_t len = std::string::npos);
-
   /// This takes care of the translation.
   const std::string
   translate(const std::string& text, int pageNum, int numPages);
-}; // namespace wex
+} // namespace wex

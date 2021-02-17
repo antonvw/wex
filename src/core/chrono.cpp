@@ -122,7 +122,7 @@ std::tuple<bool, time_t> wex::chrono::get_time(const std::string& text) const
 
   if (ss.fail())
   {
-    wex::log("get_time") << ss << "format:" << m_format;
+    wex::log("get_time") << ss.str() << "format:" << m_format;
     return {false, 0};
   }
 

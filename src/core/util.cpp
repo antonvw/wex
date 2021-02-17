@@ -11,18 +11,13 @@
 #include <numeric>
 #include <pugixml.hpp>
 #include <regex>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wex/chrono.h>
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/dir.h>
 #include <wex/lexer.h>
 #include <wex/log.h>
 #include <wex/path.h>
-#include <wex/stc-core.h>
+#include <wx/choicdlg.h>
 #include <wx/clipbrd.h>
 #include <wx/generic/dirctrlg.h> // for wxFileIconsTable
 
@@ -216,7 +211,7 @@ const std::string wex::first_of(
   const std::string& text,
   const std::string& chars,
   size_t             start_pos,
-  first_of_t          flags)
+  first_of_t         flags)
 {
   const auto pos = !flags[FIRST_OF_FROM_END] ?
                      text.find_first_of(chars, start_pos) :
@@ -472,37 +467,6 @@ bool wex::regafter(const std::string& text, const std::string& letter)
     std::regex("^" + text + "[0-9=\"a-z%._\\*]$"));
 }
 
-template <typename InputIterator>
-const std::string GetColumn(InputIterator first, InputIterator last)
-{
-  std::string text;
-
-  for (InputIterator it = first; it != last; ++it)
-  {
-    text += it->second;
-  }
-
-  return text;
-}
-
-template <typename InputIterator>
-const std::string get_lines(
-  std::vector<std::string>& lines,
-  size_t                    pos,
-  size_t                    len,
-  InputIterator             ii)
-{
-  std::string text;
-
-  for (auto& it : lines)
-  {
-    text += it.replace(pos, len, *ii);
-    ++ii;
-  }
-
-  return text;
-}
-
 bool wex::single_choice_dialog(
   wxWindow*            parent,
   const std::string&   title,
@@ -519,175 +483,6 @@ bool wex::single_choice_dialog(
   selection = dlg.GetStringSelection();
 
   return true;
-}
-
-const std::string wex::sort(
-  const std::string& input,
-  string_sort_t      sort_t,
-  size_t             pos,
-  const std::string& eol,
-  size_t             len)
-{
-  // Empty lines are not kept after sorting, as they are used as separator.
-  std::map<std::string, std::string>      m;
-  std::multimap<std::string, std::string> mm;
-  std::multiset<std::string>              ms;
-  std::vector<std::string>                lines;
-
-  for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
-         input,
-         boost::char_separator<char>(eol.c_str())))
-  {
-    const std::string line = it + eol;
-
-    // Use an empty key if line is to short.
-    std::string key;
-
-    if (pos < line.length())
-    {
-      key = line.substr(pos, len);
-    }
-
-    if (len == std::string::npos)
-    {
-      if (sort_t[STRING_SORT_UNIQUE])
-        m.insert({key, line});
-      else
-        mm.insert({key, line});
-    }
-    else
-    {
-      lines.emplace_back(line);
-      ms.insert(key);
-    }
-  }
-
-  std::string text;
-
-  if (len == std::string::npos)
-  {
-    if (sort_t[STRING_SORT_DESCENDING])
-    {
-      text =
-        (sort_t[STRING_SORT_UNIQUE] ? GetColumn(m.rbegin(), m.rend()) :
-                                      GetColumn(mm.rbegin(), mm.rend()));
-    }
-    else
-    {
-      text =
-        (sort_t[STRING_SORT_UNIQUE] ? GetColumn(m.begin(), m.end()) :
-                                      GetColumn(mm.begin(), mm.end()));
-    }
-  }
-  else
-  {
-    text =
-      (sort_t[STRING_SORT_DESCENDING] ?
-         get_lines(lines, pos, len, ms.rbegin()) :
-         get_lines(lines, pos, len, ms.begin()));
-  }
-
-  return text;
-}
-
-bool wex::sort_selection(
-  core::stc*    stc,
-  string_sort_t sort_t,
-  size_t        pos,
-  size_t        len)
-{
-  bool error = false;
-
-  try
-  {
-    if (stc->SelectionIsRectangle())
-    {
-      const auto start_pos = stc->GetSelectionNStart(0);
-
-      if (start_pos == -1)
-      {
-        log("sort_selection rectangle start_pos") << start_pos;
-        return false;
-      }
-
-      std::string selection;
-
-      for (int i = 0; i < stc->GetSelections(); i++)
-      {
-        auto start = stc->GetSelectionNStart(i);
-        auto end   = stc->GetSelectionNEnd(i);
-
-        if (start == end)
-        {
-          log("sort_selection rectangle start equals end") << start;
-          return false;
-        }
-
-        selection += stc->GetTextRange(start, end) + "\n";
-      }
-
-      stc->BeginUndoAction();
-
-      const auto nr_cols =
-        stc->GetColumn(stc->GetSelectionEnd()) - stc->GetColumn(start_pos);
-      const auto nr_lines = stc->LineFromPosition(stc->GetSelectionEnd()) -
-                            stc->LineFromPosition(start_pos);
-
-      const auto& text(sort(selection, sort_t, 0, "\n"));
-
-      boost::tokenizer<boost::char_separator<char>> tok(
-        text,
-        boost::char_separator<char>("\n"));
-      auto it = tok.begin();
-
-      for (int i = 0; i < stc->GetSelections() && it != tok.end(); i++)
-      {
-        auto start = stc->GetSelectionNStart(i);
-        auto end   = stc->GetSelectionNEnd(i);
-        stc->Replace(start, end, *it++);
-      }
-
-      stc->SelectNone();
-      stc->SetCurrentPos(start_pos);
-
-      for (int j = 0; j < nr_cols; j++)
-      {
-        stc->CharRightRectExtend();
-      }
-      for (int i = 0; i < nr_lines; i++)
-      {
-        stc->LineDownRectExtend();
-      }
-    }
-    else
-    {
-      const auto start_pos = stc->GetSelectionStart();
-
-      if (
-        start_pos == -1 || pos > (size_t)stc->GetSelectionEnd() ||
-        pos == std::string::npos || stc->GetSelectionEmpty())
-      {
-        log("sort_selection") << start_pos << pos << stc->GetSelectionEnd();
-        return false;
-      }
-
-      const auto text(
-        sort(stc->get_selected_text(), sort_t, pos, stc->eol(), len));
-
-      stc->BeginUndoAction();
-      stc->ReplaceSelection(text);
-      stc->SetSelection(start_pos, start_pos + text.size());
-    }
-  }
-  catch (std::exception& e)
-  {
-    log(e) << "during sort";
-    error = true;
-  }
-
-  stc->EndUndoAction();
-
-  return !error;
 }
 
 const std::string
