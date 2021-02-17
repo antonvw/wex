@@ -1,5 +1,4 @@
 # roadmap
-- stc-core should not contain that much pure virtual functions
 
 ## backlog
 - add class regex
