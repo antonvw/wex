@@ -1,6 +1,8 @@
 # roadmap
 - .,'xd -> incorrect last line
 - .,$d -> no action
+- improve cmdline
+- add vector test to regex
 
 ## backlog
 - 10 times incorrect date during unittest

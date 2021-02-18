@@ -825,11 +825,8 @@ bool wex::listview::insert_item(
             return false;
           }
 
-          if (std::vector<std::string> v;
-              match(
-                ",fore:(.*)",
-                lexers::get()->get_default_style().value(),
-                v) > 0)
+          if (regex v(",fore:(.*)");
+              v.match(lexers::get()->get_default_style().value()) > 0)
           {
             SetItemTextColour(index, wxColour(v[0]));
           }

@@ -1084,16 +1084,13 @@ bool wex::vi::delete_range(int start, int end)
 
 void wex::vi::filter_count(std::string& command)
 {
-  std::vector<std::string> v;
-
   /*
    command: 3w
    -> v has 2 elements
    -> m_count 3
    -> command w
    */
-  if (const auto matches = match("^([1-9][0-9]*)(.*)", command, v);
-      matches == 2)
+  if (regex v("^([1-9][0-9]*)(.*)"); v.match(command) == 2)
   {
     try
     {
@@ -1875,7 +1872,7 @@ void wex::vi::set_last_command(const std::string& command)
 {
   size_t first = 0;
 
-  if (std::vector<std::string> v; match("^([1-9][0-9]*)(.*)", command, v) == 2)
+  if (regex v("^([1-9][0-9]*)(.*)"); v.match(command) == 2)
   {
     first = v[0].size(); // skip a possible leading count
   }

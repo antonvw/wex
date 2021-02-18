@@ -481,9 +481,8 @@ void wex::stc::guess_type_and_modeline()
   std::vector<std::string> v;
 
   // If we have a modeline comment.
-  if (const std::string modeline("\\s+vim?:\\s*(set [a-z0-9:= ]+)");
-      get_ex().is_active() &&
-      (match(modeline, head, v) > 0 || match(modeline, tail, v) > 0))
+  if (regex v("\\s+vim?:\\s*(set [a-z0-9:= ]+)");
+      get_ex().is_active() && (v.match(head) > 0 || v.match(tail) > 0))
   {
     if (!get_ex().command(":" + v[0] + "*")) // add * to indicate modeline
     {

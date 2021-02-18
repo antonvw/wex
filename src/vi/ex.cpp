@@ -445,13 +445,13 @@ bool wex::ex::address_parse(
     // 2addr commands
     const auto& cmds_2addr(addressrange(this).regex_commands());
 
-    if (std::vector<std::string> v;
-        // 2addr % range
-        match("^%" + cmds_2addr, text, v) == 2 ||
-        // 1addr (or none)
-        match("^(" + addr + ")?" + cmds_1addr, text, v) == 3 ||
-        // 2addr
-        match("^(" + addr + ")?(," + addr + ")?" + cmds_2addr, text, v) == 4)
+    if (regex v({// 2addr % range
+                 "^%" + cmds_2addr,
+                 // 1addr (or none)
+                 "^(" + addr + ")?" + cmds_1addr,
+                 // 2addr
+                 "^(" + addr + ")?(," + addr + ")?" + cmds_2addr});
+        v.match(text) > 1)
     {
       switch (v.size())
       {
@@ -824,8 +824,7 @@ bool wex::ex::handle_container(
 {
   // command is like:
   // :map 7 :%d
-  if (std::vector<std::string> v;
-      match("(\\S+) +(\\S+) +(\\S+)", command, v) == 3)
+  if (regex v("(\\S+) +(\\S+) +(\\S+)"); v.match(command) == 3)
   {
     cb(v[1], v[2]);
   }

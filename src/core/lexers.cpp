@@ -52,16 +52,16 @@ void wex::lexers::apply_default_style(
   std::function<void(const std::string&)> back,
   std::function<void(const std::string&)> fore) const
 {
-  if (std::vector<std::string> v;
-      back != nullptr && match(",back:(.*),", m_default_style.value(), v) > 0)
+  if (regex r(",back:(.*),");
+      back != nullptr && r.match(m_default_style.value()) > 0)
   {
-    back(v[0]);
+    back(r[0]);
   }
 
-  if (std::vector<std::string> v;
-      fore != nullptr && match(",fore:(.*)", m_default_style.value(), v) > 0)
+  if (regex r(",fore:(.*)");
+      fore != nullptr && r.match(m_default_style.value()) > 0)
   {
-    fore(v[0]);
+    fore(r[0]);
   }
 }
 

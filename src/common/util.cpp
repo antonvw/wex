@@ -232,13 +232,13 @@ void wex::open_files_dialog(
 
 bool wex::shell_expansion(std::string& command)
 {
-  std::vector<std::string> v;
-  const std::string        re_str("`(.*?)`"); // non-greedy
-  const std::regex         re(re_str);
+  const std::string re_str("`(.*?)`"); // non-greedy
+  const std::regex  re(re_str);
+  regex             r(re_str);
 
-  while (match(re_str, command, v) > 0)
+  while (r.match(command) > 0)
   {
-    if (process process; !process.execute(v[0], process::EXEC_WAIT))
+    if (process process; !process.execute(r[0], process::EXEC_WAIT))
     {
       return false;
     }

@@ -178,7 +178,7 @@ int wex::macro_mode::transition(
       }
       else
       {
-        if (std::vector<std::string> v; match("@([a-zA-Z].+)@", macro, v) > 0)
+        if (regex v("@([a-zA-Z].+)@"); v.match(macro) > 0)
         {
           macro = v[0];
         }

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      core/regex.cpp
-// Purpose:   Implementation of wex regex methods
+// Purpose:   Implementation of class wex::regex
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -9,32 +9,44 @@
 #include <wex/log.h>
 #include <wex/regex.h>
 
-int wex::match(
-  const std::string&        reg,
-  const std::string&        text,
-  std::vector<std::string>& v)
+wex::regex::regex(const std::string& regex)
+  : m_regex({regex})
 {
-  if (reg.empty())
-    return -1;
+}
 
-  try
-  {
-    if (std::match_results<std::string::const_iterator> m;
-        !std::regex_search(text, m, std::regex(reg)))
-    {
-      return -1;
-    }
-    else if (m.size() > 1)
-    {
-      v.clear();
-      std::copy(++m.begin(), m.end(), std::back_inserter(v));
-    }
+wex::regex::regex(const std::vector<std::string>& regex)
+  : m_regex(regex)
+{
+}
 
-    return v.size();
-  }
-  catch (std::regex_error& e)
+int wex::regex::match(const std::string& text)
+{
+  if (m_regex.empty())
   {
-    log(e) << reg << "code:" << (int)e.code();
     return -1;
   }
+
+  for (const auto& reg : m_regex)
+  {
+    try
+    {
+      if (std::match_results<std::string::const_iterator> m;
+          std::regex_search(text, m, std::regex(reg)))
+      {
+        if (m.size() > 1)
+        {
+          m_matches.clear();
+          std::copy(++m.begin(), m.end(), std::back_inserter(m_matches));
+        }
+
+        return m_matches.size();
+      }
+    }
+    catch (std::regex_error& e)
+    {
+      log(e) << reg << "code:" << (int)e.code();
+    }
+  }
+
+  return -1;
 }

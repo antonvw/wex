@@ -266,48 +266,48 @@ bool wex::cmdline::parse_set(data::cmdline& data) const
     by specifying multiple arguments, each separated from the next by one
     or more <blank> characters.
     */
-  std::vector<std::string> v;
-  std::string              line(boost::algorithm::trim_copy(data.string()));
-  bool                     found = false;
-  std::string              help;
+  std::string line(boost::algorithm::trim_copy(data.string()));
+  bool        found = false;
+  std::string help;
 
   while (!line.empty())
   {
     // [all]
-    if (match("all", line, v) == 0)
+    if (regex("all").match(line) == 0)
     {
       get_all(help);
       data.help(help);
       return true;
     }
     // [nooption ...]
-    else if (match("no([a-z0-9]+)(.*)", line, v) > 0)
+    else if (regex r("no([a-z0-9]+)(.*)"); r.match(line) > 0)
     {
-      if (set_no_option(v, data.save()))
+      if (set_no_option(r.matches(), data.save()))
         found = true;
+      line = r.matches().back();
     }
     // [option? ...]
-    else if (match("([a-z0-9]+)[ \t]*\\?(.*)", line, v) > 0)
+    else if (regex r("([a-z0-9]+)[ \t]*\\?(.*)"); r.match(line) > 0)
     {
-      if (get_single(v, help))
+      if (get_single(r.matches(), help))
       {
         data.help(help);
         found = true;
       }
+      line = r.matches().back();
     }
     // [option[=[value]] ...]
-    else if (match("([a-z0-9]+)(=[a-z0-9]+)?(.*)", line, v) > 0)
+    else if (regex r("([a-z0-9]+)(=[a-z0-9]+)?(.*)"); r.match(line) > 0)
     {
-      if (set_option(v, data.save()))
+      if (set_option(r.matches(), data.save()))
         found = true;
+      line = r.matches().back();
     }
     else
     {
       data.help("unmatched cmdline: " + line);
       return false;
     }
-
-    line = v.back();
   }
 
   return found;

@@ -217,8 +217,7 @@ wex::frame::frame(const data::window& data)
             return;
 
           std::string cmd;
-          if (std::vector<std::string> v;
-              match("\\+([^ \t]+)* *(.*)", text, v) > 1)
+          if (regex v("\\+([^ \t]+)* *(.*)"); v.match(text) > 1)
           {
             cmd  = v[0];
             text = v[1];

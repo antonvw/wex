@@ -118,8 +118,7 @@ namespace wex
   {
     if (text.empty())
       return std::string();
-    else if (std::vector<std::string> v;
-             wex::match("(.*) *const$", text, v) == 1)
+    else if (regex v("(.*) *const$"); v.match(text) == 1)
       return v[0];
     else
       return text;
