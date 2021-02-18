@@ -12,7 +12,6 @@
 #include <wex/accelerators.h>
 #include <wex/bind.h>
 #include <wex/config.h>
-#include <wex/core.h>
 #include <wex/defs.h>
 #include <wex/file-dialog.h>
 #include <wex/frame.h>
@@ -23,6 +22,7 @@
 #include <wex/macros.h>
 #include <wex/path.h>
 #include <wex/printing.h>
+#include <wex/regex.h>
 #include <wex/statusbar.h>
 #include <wex/stc.h>
 #include <wex/tostring.h>

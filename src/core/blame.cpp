@@ -8,8 +8,8 @@
 #include <wex/blame.h>
 #include <wex/chrono.h>
 #include <wex/config.h>
-#include <wex/core.h>
 #include <wex/log.h>
+#include <wex/regex.h>
 
 namespace wex
 {

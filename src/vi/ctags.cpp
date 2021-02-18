@@ -7,8 +7,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
-#include <vector>
 #include <boost/algorithm/string.hpp>
+#include <vector>
 
 #include <ctags/libreadtags/readtags.h>
 #include <wex/config.h>
@@ -19,6 +19,7 @@
 #include <wex/log.h>
 #include <wex/managed-frame.h>
 #include <wex/path.h>
+#include <wex/regex.h>
 #include <wex/stc.h>
 #include <wx/app.h>
 #include <wx/artprov.h>

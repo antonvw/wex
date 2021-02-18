@@ -177,18 +177,6 @@ TEST_CASE("wex::core")
     REQUIRE(!wex::is_codeword_separator('x'));
   }
 
-  SUBCASE("match")
-  {
-    std::vector<std::string> v;
-    REQUIRE(wex::match("hllo", "hello world", v) == -1);
-    REQUIRE(wex::match("hello", "hello world", v) == 0);
-    REQUIRE(wex::match("([0-9]+)ok([0-9]+)nice", "19999ok245nice", v) == 2);
-    REQUIRE(wex::match("(\\d+)ok(\\d+)nice", "19999ok245nice", v) == 2);
-    REQUIRE(wex::match(" ([\\d\\w]+)", " 19999ok245nice ", v) == 1);
-    REQUIRE(
-      wex::match("([?/].*[?/])(,[?/].*[?/])([msy])", "/xx/,/yy/y", v) == 3);
-  }
-
   SUBCASE("matches_one_of")
   {
     REQUIRE(!wex::matches_one_of("test.txt", "*.cpp"));

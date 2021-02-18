@@ -6,8 +6,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
-#include <wex/core.h>
 #include <wex/log.h>
+#include <wex/regex.h>
 #include <wex/substitute-data.h>
 
 wex::data::substitute::substitute(

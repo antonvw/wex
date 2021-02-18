@@ -12,6 +12,7 @@
 #include <wex/lexer.h>
 #include <wex/link.h>
 #include <wex/path.h>
+#include <wex/regex.h>
 #include <wex/stc.h>
 
 namespace wex

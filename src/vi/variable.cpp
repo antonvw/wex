@@ -6,12 +6,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/chrono.h>
-#include <wex/core.h>
 #include <wex/ex.h>
 #include <wex/log.h>
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
 #include <wex/process.h>
+#include <wex/regex.h>
 #include <wex/stc-entry-dialog.h>
 #include <wex/stc.h>
 #include <wex/variable.h>

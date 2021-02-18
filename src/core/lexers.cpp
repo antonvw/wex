@@ -17,6 +17,7 @@
 #include <wex/core.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
+#include <wex/regex.h>
 #include <wex/stc-core.h>
 
 // Constructor for lexers from specified filename.

@@ -16,6 +16,7 @@
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
 #include <wex/managed-frame.h>
+#include <wex/regex.h>
 #include <wex/statusbar.h>
 #include <wex/stc.h>
 

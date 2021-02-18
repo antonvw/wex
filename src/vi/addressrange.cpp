@@ -20,6 +20,7 @@
 #include <wex/macros.h>
 #include <wex/managed-frame.h>
 #include <wex/process.h>
+#include <wex/regex.h>
 #include <wex/sort.h>
 #include <wex/stc.h>
 #include <wex/substitute-data.h>

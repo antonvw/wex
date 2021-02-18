@@ -13,7 +13,6 @@
 #include <boost/tokenizer.hpp>
 #include <wex/bind.h>
 #include <wex/config.h>
-#include <wex/core.h>
 #include <wex/debug.h>
 #include <wex/defs.h>
 #include <wex/dir.h>
@@ -23,6 +22,7 @@
 #include <wex/menu.h>
 #include <wex/menus.h>
 #include <wex/process.h>
+#include <wex/regex.h>
 #include <wex/shell.h>
 #include <wex/stc.h>
 

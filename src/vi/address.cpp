@@ -14,6 +14,7 @@
 #include <wex/macros.h>
 #include <wex/managed-frame.h>
 #include <wex/process.h>
+#include <wex/regex.h>
 #include <wex/stc.h>
 
 #define SEARCH_TARGET                                                         \
@@ -208,8 +209,9 @@ int wex::address::get_line() const
   if (std::vector<std::string> v; match("/(.*)/$", m_address, v) > 0 ||
                                   match("\\?(.*)\\?$", m_address, v) > 0)
   {
-    return !m_ex->get_stc()->is_visual() ? find_stream(m_ex, v[0], m_address[0] == '/') :
-                                           find_stc(m_ex, v[0], m_address[0] == '/');
+    return !m_ex->get_stc()->is_visual() ?
+             find_stream(m_ex, v[0], m_address[0] == '/') :
+             find_stc(m_ex, v[0], m_address[0] == '/');
   }
 
   // Try address calculation.

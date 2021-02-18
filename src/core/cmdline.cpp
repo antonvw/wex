@@ -11,6 +11,7 @@
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/log.h>
+#include <wex/regex.h>
 
 #include "cmdline-imp.h"
 

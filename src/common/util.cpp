@@ -2,7 +2,7 @@
 // Name:      common/util.cpp
 // Purpose:   Implementation of wex common utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <pugixml.hpp>
@@ -12,7 +12,6 @@
 #include <wx/wx.h>
 #endif
 #include <wex/config.h>
-#include <wex/core.h>
 #include <wex/dir.h>
 #include <wex/ex.h>
 #include <wex/file-dialog.h>
@@ -24,6 +23,7 @@
 #include <wex/managed-frame.h>
 #include <wex/path.h>
 #include <wex/process.h>
+#include <wex/regex.h>
 #include <wex/stc.h>
 #include <wex/tostring.h>
 #include <wex/util.h>
