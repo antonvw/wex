@@ -331,24 +331,6 @@ void wex::stc::fold_all()
   goto_line(current_line);
 }
 
-const std::string wex::stc::eol() const
-{
-  switch (GetEOLMode())
-  {
-    case wxSTC_EOL_CR:
-      return "\r";
-    case wxSTC_EOL_CRLF:
-      return "\r\n";
-    case wxSTC_EOL_LF:
-      return "\n";
-    default:
-      assert(0);
-      break;
-  }
-
-  return "\r\n";
-}
-
 int wex::stc::get_current_line() const
 {
   if (!m_visual)
@@ -433,13 +415,6 @@ int wex::stc::get_line_count_request()
   }
 }
 
-const std::string wex::stc::get_selected_text() const
-{
-  const wxCharBuffer& b(const_cast<stc*>(this)->GetSelectedTextRaw());
-  return b.length() == 0 ? std::string() :
-                           std::string(b.data(), b.length() - 1);
-}
-
 const std::string wex::stc::get_text() const
 {
   const wxCharBuffer& b(const_cast<stc*>(this)->GetTextRaw());
@@ -485,9 +460,7 @@ void wex::stc::goto_line(int line)
   }
   else
   {
-    GotoLine(line);
-    EnsureVisible(line);
-    EnsureCaretVisible();
+    core::stc::goto_line(line);
   }
 }
 

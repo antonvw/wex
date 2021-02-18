@@ -293,22 +293,20 @@ namespace wex
 
     /// Virtual methods from core.
 
-    const std::string eol() const override;
-    bool              find(
-                   const std::string& text,
-                   int                find_flags = -1,
-                   bool               find_next  = true) override;
+    bool find(
+      const std::string& text,
+      int                find_flags = -1,
+      bool               find_next  = true) override;
     void        fold(bool fold_all = false) override;
     const path& get_filename() const override { return m_file.get_filename(); };
     int         get_line_count() const override;
     int         get_line_count_request() override;
-    const std::string get_selected_text() const override;
-    void              goto_line(int line) override;
-    bool is_hexmode() const override { return m_hexmode.is_active(); };
-    bool is_visual() const override { return m_visual; };
-    void properties_message(path::status_t flags = 0) override;
-    void reset_margins(margin_t type = margin_t().set()) override;
-    bool set_hexmode(bool on) override { return get_hexmode().set(on); };
+    void        goto_line(int line) override;
+    bool        is_hexmode() const override { return m_hexmode.is_active(); };
+    bool        is_visual() const override { return m_visual; };
+    void        properties_message(path::status_t flags = 0) override;
+    void        reset_margins(margin_t type = margin_t().set()) override;
+    bool        set_hexmode(bool on) override { return get_hexmode().set(on); };
     bool set_indicator(const indicator& indicator, int start, int end) override;
     void set_search_flags(int flags) override;
     bool vi_command(const std::string& command) override;

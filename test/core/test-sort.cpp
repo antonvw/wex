@@ -16,34 +16,8 @@ class stc : public wex::core::stc
 {
 public:
   stc() { Create(wxTheApp->GetTopWindow(), -1); };
-  const std::string eol() const { return std::string(); };
-  void              fold(bool fold_all = false) { ; };
 
-  const wex::path&  get_filename() const { return m_path; };
-  const std::string get_selected_text() const
-  {
-    return const_cast<stc*>(this)->GetSelectedText();
-  };
-  bool is_hexmode() const { return false; };
-  bool is_visual() const { return false; };
-  void properties_message(wex::path::status_t flags = 0) { ; };
-  void reset_margins(margin_t type = margin_t().set()) { ; };
-  bool set_hexmode(bool on) { return false; };
-  bool set_indicator(const wex::indicator& indicator, int start, int end)
-  {
-    return false;
-  };
-  void set_search_flags(int flags) { ; };
-  bool vi_command(const std::string& command) { return false; };
-
-  bool find(const std::string& text, int find_flags = -1, bool find_next = true)
-  {
-    return false;
-  };
-
-  int  get_line_count() const { return 0; };
-  int  get_line_count_request() { return 0; };
-  void goto_line(int line) { ; };
+  const wex::path& get_filename() const override { return m_path; };
 
 private:
   wex::path m_path;
