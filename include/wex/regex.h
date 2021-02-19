@@ -54,7 +54,7 @@ namespace wex
     typedef std::vector<std::pair<std::regex, std::string>> regex_t;
 
     const regex_t m_regex;
-    int           m_which_no;
+    int           m_which_no{-1};
 
     std::vector<std::string>           m_matches;
     std::pair<std::regex, std::string> m_which;

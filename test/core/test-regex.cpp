@@ -16,6 +16,7 @@ TEST_CASE("wex::regex")
     REQUIRE(wex::regex({"", "", ""}).match("") == 0);
     REQUIRE(wex::regex({"", "", ""}).matches().empty());
     REQUIRE(wex::regex({"", "", ""}).size() == 0);
+    REQUIRE(wex::regex("").which_no() == -1);
   }
 
   SUBCASE("operator")
