@@ -232,9 +232,7 @@ void wex::open_files_dialog(
 
 bool wex::shell_expansion(std::string& command)
 {
-  const std::string re_str("`(.*?)`"); // non-greedy
-  const std::regex  re(re_str);
-  regex             r(re_str);
+  regex r("`(.*?)`"); // non-greedy
 
   while (r.match(command) > 0)
   {
@@ -246,7 +244,7 @@ bool wex::shell_expansion(std::string& command)
     {
       command = std::regex_replace(
         command,
-        re,
+        r.which().first,
         process.get_stdout(),
         std::regex_constants::format_sed);
     }

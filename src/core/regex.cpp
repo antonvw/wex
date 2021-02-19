@@ -5,17 +5,28 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <regex>
 #include <wex/log.h>
 #include <wex/regex.h>
 
-wex::regex::regex(const std::string& regex)
-  : m_regex({regex})
+wex::regex::regex(const std::string& str, std::regex::flag_type flags)
+  : m_regex({{std::regex(str.c_str(), flags), str}})
 {
 }
 
-wex::regex::regex(const std::vector<std::string>& regex)
-  : m_regex(regex)
+wex::regex::regex(
+  const std::vector<std::string>& regex,
+  std::regex::flag_type           flags)
+  : m_regex(
+      [](const std::vector<std::string>& reg_str, std::regex::flag_type flags) {
+        regex_t v;
+
+        for (const auto& r : reg_str)
+        {
+          v.emplace_back(std::regex(r, flags), r);
+        }
+
+        return v;
+      }(regex, flags))
 {
 }
 
@@ -31,7 +42,7 @@ int wex::regex::match(const std::string& text)
     try
     {
       if (std::match_results<std::string::const_iterator> m;
-          std::regex_search(text, m, std::regex(reg)))
+          std::regex_search(text, m, reg.first))
       {
         if (m.size() > 1)
         {
@@ -39,12 +50,14 @@ int wex::regex::match(const std::string& text)
           std::copy(++m.begin(), m.end(), std::back_inserter(m_matches));
         }
 
+        m_which = reg;
+
         return m_matches.size();
       }
     }
     catch (std::regex_error& e)
     {
-      log(e) << reg << "code:" << (int)e.code();
+      log(e) << reg.second << "code:" << (int)e.code();
     }
   }
 

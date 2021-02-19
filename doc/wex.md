@@ -245,6 +245,28 @@ It benefits from the following c++ features:
 - initializer_list (c++11)
 
 - lambda expressions (c++11)
+  used of lof, e.g. useful to assign result of expression to a constant class
+  member in a constructor.
+  core/regex.cpp:
+
+```cpp
+wex::regex::regex(
+  const std::vector<std::string>& regex,
+  std::regex::flag_type           flags)
+  : m_regex(
+      [](const std::vector<std::string>& reg_str, std::regex::flag_type flags) {
+        regex_t v;
+
+        for (const auto& r : reg_str)
+        {
+          v.emplace_back(std::regex(r, flags), r);
+        }
+
+        return v;
+      }(regex, flags))
+{
+}
+```
 
 - nested namespaces (c++17)
 ```cpp

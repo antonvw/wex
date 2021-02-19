@@ -2,10 +2,8 @@
 - .,'xd -> incorrect last line
 - .,$d -> no action
 - improve cmdline
-- add vector test to regex
 
 ## backlog
-- 10 times incorrect date during unittest
 - allow dynamic libs
 - global with empty pattern
 - use clang-tidy, modernize-use-override and others

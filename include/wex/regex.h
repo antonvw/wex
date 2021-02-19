@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <regex>
 #include <string>
 #include <vector>
 
@@ -17,10 +18,14 @@ namespace wex
   {
   public:
     /// Constructor, provide single regular expression.
-    explicit regex(const std::string& regex);
+    explicit regex(
+      const std::string&    regex,
+      std::regex::flag_type flags = std::regex::ECMAScript);
 
     /// Constructor, provide vector with regular expressions.
-    explicit regex(const std::vector<std::string>& regex);
+    explicit regex(
+      const std::vector<std::string>& regex,
+      std::regex::flag_type           flags = std::regex::ECMAScript);
 
     /// Regular expression match.
     /// Returns:
@@ -38,8 +43,15 @@ namespace wex
     /// Returns number of submatches.
     auto size() const { return m_matches.size(); };
 
+    /// Returns the regex pair that matched.
+    const auto& which() const { return m_which; };
+
   private:
-    const std::vector<std::string> m_regex;
-    std::vector<std::string>       m_matches;
+    /// vector of pair regex, regex string
+    typedef std::vector<std::pair<std::regex, std::string>> regex_t;
+
+    const regex_t                      m_regex;
+    std::vector<std::string>           m_matches;
+    std::pair<std::regex, std::string> m_which;
   };
 } // namespace wex

@@ -18,6 +18,16 @@ TEST_CASE("wex::regex")
     REQUIRE(wex::regex({"", "", ""}).size() == 0);
   }
 
+  SUBCASE("operator")
+  {
+    wex::regex r("([?/].*[?/])(,[?/].*[?/])([msy])");
+
+    REQUIRE(r.match("/xx/,/yy/y") == 3);
+    REQUIRE(r[0] == "/xx/");
+    REQUIRE(r[1] == ",/yy/");
+    REQUIRE(r[2] == "y");
+  }
+
   SUBCASE("match")
   {
     REQUIRE(wex::regex("hllo").match("hello world") == -1);
@@ -31,11 +41,9 @@ TEST_CASE("wex::regex")
 
   SUBCASE("matches")
   {
-    wex::regex r("([?/].*[?/])(,[?/].*[?/])([msy])");
+    wex::regex r({std::string("99xx77"), "([0-9]+)([a-z]+)([0-9]+)"});
 
-    REQUIRE(r.match("/xx/,/yy/y") == 3);
-    REQUIRE(r[0] == "/xx/");
-    REQUIRE(r[1] == ",/yy/");
-    REQUIRE(r[2] == "y");
+    REQUIRE(r.match("99xx88") == 3);
+    REQUIRE(r.which().second == "([0-9]+)([a-z]+)([0-9]+)");
   }
 }
