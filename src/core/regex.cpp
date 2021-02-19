@@ -32,10 +32,14 @@ wex::regex::regex(
 
 int wex::regex::match(const std::string& text)
 {
+  m_which_no = -1;
+
   if (m_regex.empty())
   {
     return -1;
   }
+
+  int index = 0;
 
   for (const auto& reg : m_regex)
   {
@@ -50,10 +54,13 @@ int wex::regex::match(const std::string& text)
           std::copy(++m.begin(), m.end(), std::back_inserter(m_matches));
         }
 
-        m_which = reg;
+        m_which    = reg;
+        m_which_no = index;
 
         return m_matches.size();
       }
+
+      index++;
     }
     catch (std::regex_error& e)
     {

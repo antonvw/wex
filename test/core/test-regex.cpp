@@ -45,5 +45,6 @@ TEST_CASE("wex::regex")
 
     REQUIRE(r.match("99xx88") == 3);
     REQUIRE(r.which().second == "([0-9]+)([a-z]+)([0-9]+)");
+    REQUIRE(r.which_no() == 1);
   }
 }

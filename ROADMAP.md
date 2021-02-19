@@ -1,7 +1,6 @@
 # roadmap
 - .,'xd -> incorrect last line
 - .,$d -> no action
-- improve cmdline
 
 ## backlog
 - allow dynamic libs

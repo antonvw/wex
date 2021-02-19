@@ -46,11 +46,16 @@ namespace wex
     /// Returns the regex pair that matched.
     const auto& which() const { return m_which; };
 
+    /// Returns the regex pair no that matched, or -1 if no match was found.
+    auto which_no() const { return m_which_no; };
+
   private:
     /// vector of pair regex, regex string
     typedef std::vector<std::pair<std::regex, std::string>> regex_t;
 
-    const regex_t                      m_regex;
+    const regex_t m_regex;
+    int           m_which_no;
+
     std::vector<std::string>           m_matches;
     std::pair<std::regex, std::string> m_which;
   };

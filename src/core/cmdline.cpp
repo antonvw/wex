@@ -266,47 +266,51 @@ bool wex::cmdline::parse_set(data::cmdline& data) const
     by specifying multiple arguments, each separated from the next by one
     or more <blank> characters.
     */
-  std::string line(boost::algorithm::trim_copy(data.string()));
-  bool        found = false;
-  std::string help;
+  regex r(
+    {"all",
+     // [nooption ...]
+     "no([a-z0-9]+)(.*)",
+     // [option? ...]
+     "([a-z0-9]+)[ \t]*\\?(.*)",
+     // [option[=[value]] ...]
+     "([a-z0-9]+)(=[a-z0-9]+)?(.*)"});
 
-  while (!line.empty())
+  std::string help;
+  bool        found = false;
+
+  for (auto line(boost::algorithm::trim_copy(data.string())); !line.empty();)
   {
-    // [all]
-    if (regex("all").match(line) == 0)
+    switch (r.match(line); r.which_no())
     {
-      get_all(help);
-      data.help(help);
-      return true;
-    }
-    // [nooption ...]
-    else if (regex r("no([a-z0-9]+)(.*)"); r.match(line) > 0)
-    {
-      if (set_no_option(r.matches(), data.save()))
-        found = true;
-      line = r.matches().back();
-    }
-    // [option? ...]
-    else if (regex r("([a-z0-9]+)[ \t]*\\?(.*)"); r.match(line) > 0)
-    {
-      if (get_single(r.matches(), help))
-      {
+      case 0:
+        get_all(help);
         data.help(help);
-        found = true;
-      }
-      line = r.matches().back();
-    }
-    // [option[=[value]] ...]
-    else if (regex r("([a-z0-9]+)(=[a-z0-9]+)?(.*)"); r.match(line) > 0)
-    {
-      if (set_option(r.matches(), data.save()))
-        found = true;
-      line = r.matches().back();
-    }
-    else
-    {
-      data.help("unmatched cmdline: " + line);
-      return false;
+        return true;
+
+      case 1:
+        if (set_no_option(r.matches(), data.save()))
+          found = true;
+        line = r.matches().back();
+        break;
+
+      case 2:
+        if (get_single(r.matches(), help))
+        {
+          data.help(help);
+          found = true;
+        }
+        line = r.matches().back();
+        break;
+
+      case 3:
+        if (set_option(r.matches(), data.save()))
+          found = true;
+        line = r.matches().back();
+        break;
+
+      default:
+        data.help("unmatched cmdline: " + line);
+        return false;
     }
   }
 
