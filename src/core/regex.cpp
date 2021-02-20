@@ -58,7 +58,7 @@ int wex::regex::find(const std::string& text, find_t how)
         m_which    = reg;
         m_which_no = index;
 
-        return m_matches.size();
+        return (int)m_matches.size();
       }
 
       index++;
