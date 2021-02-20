@@ -7,8 +7,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
-#include <vector>
 #include <boost/algorithm/string.hpp>
+#include <vector>
 
 #include <ctags/libreadtags/readtags.h>
 #include <wex/config.h>
@@ -19,6 +19,7 @@
 #include <wex/log.h>
 #include <wex/managed-frame.h>
 #include <wex/path.h>
+#include <wex/regex.h>
 #include <wex/stc.h>
 #include <wx/app.h>
 #include <wx/artprov.h>
@@ -117,8 +118,7 @@ namespace wex
   {
     if (text.empty())
       return std::string();
-    else if (std::vector<std::string> v;
-             wex::match("(.*) *const$", text, v) == 1)
+    else if (regex v("(.*) *const$"); v.match(text) == 1)
       return v[0];
     else
       return text;

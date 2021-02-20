@@ -1,8 +1,9 @@
 # roadmap
+- .,'xd -> incorrect last line
+- .,$d -> no action
+- update doc, add boost etc.
 
 ## backlog
-- add class regex
-- 10 times incorrect date during unittest
 - allow dynamic libs
 - global with empty pattern
 - use clang-tidy, modernize-use-override and others

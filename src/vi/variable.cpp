@@ -6,12 +6,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/chrono.h>
-#include <wex/core.h>
 #include <wex/ex.h>
 #include <wex/log.h>
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
 #include <wex/process.h>
+#include <wex/regex.h>
 #include <wex/stc-entry-dialog.h>
 #include <wex/stc.h>
 #include <wex/variable.h>
@@ -86,7 +86,7 @@ wex::variable::variable(const pugi::xml_node& node)
 
 bool wex::variable::check_link(std::string& value) const
 {
-  if (std::vector<std::string> v; match("@([a-zA-Z].+)@", m_value, v) > 0)
+  if (regex v("@([a-zA-Z].+)@"); v.match(m_value) > 0)
   {
     if (const auto& it = ex::get_macros().get_variables().find(v[0]);
         it != ex::get_macros().get_variables().end())

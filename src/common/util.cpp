@@ -2,7 +2,7 @@
 // Name:      common/util.cpp
 // Purpose:   Implementation of wex common utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <pugixml.hpp>
@@ -12,7 +12,6 @@
 #include <wx/wx.h>
 #endif
 #include <wex/config.h>
-#include <wex/core.h>
 #include <wex/dir.h>
 #include <wex/ex.h>
 #include <wex/file-dialog.h>
@@ -24,6 +23,7 @@
 #include <wex/managed-frame.h>
 #include <wex/path.h>
 #include <wex/process.h>
+#include <wex/regex.h>
 #include <wex/stc.h>
 #include <wex/tostring.h>
 #include <wex/util.h>
@@ -232,13 +232,11 @@ void wex::open_files_dialog(
 
 bool wex::shell_expansion(std::string& command)
 {
-  std::vector<std::string> v;
-  const std::string        re_str("`(.*?)`"); // non-greedy
-  const std::regex         re(re_str);
+  regex r("`(.*?)`"); // non-greedy
 
-  while (match(re_str, command, v) > 0)
+  while (r.search(command) > 0)
   {
-    if (process process; !process.execute(v[0], process::EXEC_WAIT))
+    if (process process; !process.execute(r[0], process::EXEC_WAIT))
     {
       return false;
     }
@@ -246,7 +244,7 @@ bool wex::shell_expansion(std::string& command)
     {
       command = std::regex_replace(
         command,
-        re,
+        r.which().first,
         process.get_stdout(),
         std::regex_constants::format_sed);
     }

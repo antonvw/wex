@@ -16,7 +16,6 @@
 #include <wex/bind.h>
 #include <wex/chrono.h>
 #include <wex/config.h>
-#include <wex/core.h>
 #include <wex/defs.h>
 #include <wex/frame.h>
 #include <wex/frd.h>
@@ -30,6 +29,7 @@
 #include <wex/log.h>
 #include <wex/menu.h>
 #include <wex/printing.h>
+#include <wex/regex.h>
 #include <wex/tokenizer.h>
 #include <wx/dnd.h>
 #include <wx/fdrepdlg.h>         // for wxFindDialogEvent
@@ -825,11 +825,8 @@ bool wex::listview::insert_item(
             return false;
           }
 
-          if (std::vector<std::string> v;
-              match(
-                ",fore:(.*)",
-                lexers::get()->get_default_style().value(),
-                v) > 0)
+          if (regex v(",fore:(.*)");
+              v.match(lexers::get()->get_default_style().value()) > 0)
           {
             SetItemTextColour(index, wxColour(v[0]));
           }

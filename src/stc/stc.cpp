@@ -9,7 +9,6 @@
 #include <wex/address.h>
 #include <wex/blame.h>
 #include <wex/config.h>
-#include <wex/core.h>
 #include <wex/ex-stream.h>
 #include <wex/frd.h>
 #include <wex/indicator.h>
@@ -20,6 +19,7 @@
 #include <wex/managed-frame.h>
 #include <wex/path.h>
 #include <wex/printing.h>
+#include <wex/regex.h>
 #include <wex/stc-entry-dialog.h>
 #include <wex/stc.h>
 #include <wex/vcs.h>
@@ -478,12 +478,9 @@ void wex::stc::guess_type_and_modeline()
        GetTextRange(length - sample_size, length).ToStdString() :
        m_hexmode.buffer().substr(length - sample_size, sample_size)));
 
-  std::vector<std::string> v;
-
   // If we have a modeline comment.
-  if (const std::string modeline("\\s+vim?:\\s*(set [a-z0-9:= ]+)");
-      get_ex().is_active() &&
-      (match(modeline, head, v) > 0 || match(modeline, tail, v) > 0))
+  if (regex v("\\s+vim?:\\s*(set [a-z0-9:= ]+)");
+      get_ex().is_active() && (v.search(head) > 0 || v.search(tail) > 0))
   {
     if (!get_ex().command(":" + v[0] + "*")) // add * to indicate modeline
     {

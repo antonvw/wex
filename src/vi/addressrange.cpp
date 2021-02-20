@@ -20,6 +20,7 @@
 #include <wex/macros.h>
 #include <wex/managed-frame.h>
 #include <wex/process.h>
+#include <wex/regex.h>
 #include <wex/sort.h>
 #include <wex/stc.h>
 #include <wex/substitute-data.h>
@@ -433,12 +434,12 @@ bool wex::addressrange::execute(const std::string& reg) const
 
 bool wex::addressrange::global(const std::string& text, bool inverse) const
 {
-  std::vector<std::string> v;
+  regex v("^(\\s*)/(.*?)/(.*)");
 
   // [2addr] g[lobal] /pattern/ [commands]
   // [2addr] v /pattern/ [commands]
   // the g or v part is already parsed, and not present, v[0] is empty, or ws
-  if (match("^(\\s*)/(.*?)/(.*)", text, v) < 3)
+  if (v.match(text) < 3)
   {
     return false;
   }

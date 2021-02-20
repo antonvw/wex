@@ -14,6 +14,7 @@
 #include <wex/macros.h>
 #include <wex/managed-frame.h>
 #include <wex/process.h>
+#include <wex/regex.h>
 #include <wex/stc.h>
 
 #define SEARCH_TARGET                                                         \
@@ -89,9 +90,9 @@ wex::address::address(ex* ex, const std::string& address)
 
 bool wex::address::adjust_window(const std::string& text) const
 {
-  std::vector<std::string> v;
+  regex v("([-+=.^]*)([0-9]+)?(.*)");
 
-  if (match("([-+=.^]*)([0-9]+)?(.*)", text, v) != 3)
+  if (v.match(text) != 3)
   {
     return false;
   }
@@ -184,7 +185,7 @@ bool wex::address::flags_supported(const std::string& flags) const
     return true;
   }
 
-  if (std::vector<std::string> v; match("([-+#pl])", flags, v) < 0)
+  if (regex("([-+#pl])").match(flags) < 0)
   {
     log::status("Unsupported flags") << flags;
     return false;
@@ -205,11 +206,11 @@ int wex::address::get_line() const
 
   // If this is a //, ?? address, return line with first forward, backward
   // match.
-  if (std::vector<std::string> v; match("/(.*)/$", m_address, v) > 0 ||
-                                  match("\\?(.*)\\?$", m_address, v) > 0)
+  if (regex v({std::string("/(.*)/$"), "\\?(.*)\\?$"}); v.match(m_address) > 0)
   {
-    return !m_ex->get_stc()->is_visual() ? find_stream(m_ex, v[0], m_address[0] == '/') :
-                                           find_stc(m_ex, v[0], m_address[0] == '/');
+    return !m_ex->get_stc()->is_visual() ?
+             find_stream(m_ex, v[0], m_address[0] == '/') :
+             find_stc(m_ex, v[0], m_address[0] == '/');
   }
 
   // Try address calculation.

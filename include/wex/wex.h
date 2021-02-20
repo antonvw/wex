@@ -77,7 +77,9 @@
 #include <wex/process.h>
 #include <wex/property.h>
 #include <wex/queue-thread.h>
+#include <wex/regex.h>
 #include <wex/shell.h>
+#include <wex/sort.h>
 #include <wex/stat.h>
 #include <wex/statistics.h>
 #include <wex/statusbar-pane.h>
@@ -91,6 +93,7 @@
 #include <wex/stream-statistics.h>
 #include <wex/stream.h>
 #include <wex/style.h>
+#include <wex/substitute-data.h>
 #include <wex/text-window.h>
 #include <wex/textctrl-input.h>
 #include <wex/textctrl.h>
@@ -109,7 +112,6 @@
 #include <wex/version.h>
 #include <wex/vi-mode.h>
 #include <wex/vi.h>
-#include <wex/wex.h>
 #include <wex/window-data.h>
 
 #include <wex/report/defs.h>

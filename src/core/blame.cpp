@@ -8,8 +8,8 @@
 #include <wex/blame.h>
 #include <wex/chrono.h>
 #include <wex/config.h>
-#include <wex/core.h>
 #include <wex/log.h>
+#include <wex/regex.h>
 
 namespace wex
 {
@@ -44,15 +44,15 @@ wex::blame::get(const std::string& text) const
 {
   try
   {
-    if (std::vector<std::string> v; match(m_blame_format, text, v) >= 3)
+    if (regex r(m_blame_format); r.search(text) >= 3)
     {
       const std::string info(
-        build("id", v[0], true) + build("author", v[1]) +
-        build("date", v[2].substr(0, m_date_print)));
+        build("id", r[0], true) + build("author", r[1]) +
+        build("date", r[2].substr(0, m_date_print)));
 
-      const auto line(v.size() == 4 ? std::stoi(v[3]) - 1 : -1);
+      const auto line(r.size() == 4 ? std::stoi(r[3]) - 1 : -1);
 
-      return {true, info.empty() ? " " : info, get_style(v[2]), line};
+      return {true, info.empty() ? " " : info, get_style(r[2]), line};
     }
   }
   catch (std::exception& e)

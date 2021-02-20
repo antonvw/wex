@@ -6,8 +6,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
-#include <wex/core.h>
 #include <wex/log.h>
+#include <wex/regex.h>
 #include <wex/substitute-data.h>
 
 wex::data::substitute::substitute(
@@ -62,16 +62,15 @@ bool wex::data::substitute::set(
     }
   }
 
-  if (std::vector<std::string> v;
-      match("/(.*)/(.*)/([cgi]*)", command, v) == 3 ||
-      match("/(.*)/(.*)", command, v) == 2 || match("/(.*)", command, v) == 1)
+  if (regex r({"/(.*)/(.*)/([cgi]*)", "/(.*)/(.*)", "/(.*)"});
+      r.search(command) > 0)
   {
-    m_pattern = v[0];
+    m_pattern = r[0];
 
-    if (v.size() >= 2)
-      m_replacement = v[1];
-    if (v.size() >= 3)
-      m_options = v[2];
+    if (r.size() >= 2)
+      m_replacement = r[1];
+    if (r.size() >= 3)
+      m_options = r[2];
 
     // Restore a / for all occurrences of the special char.
     if (escaped)

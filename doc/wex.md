@@ -67,48 +67,54 @@ It benefits from the following c++ features:
 
   example:
 ```cpp
-   std::vector<std::string> v;
-   std::string              line(trim(cmdline));
-   bool                     found = false;
-
-   while (!line.empty())
-   {
-     ...
+  regex r(
+    {"all",
+     // [nooption ...]
+     "no([a-z0-9]+)(.*)",
+     // [option? ...]
+     "([a-z0-9]+)[ \t]*\\?(.*)",
      // [option[=[value]] ...]
-     else if (match("([a-z0-9]+)(=[a-z0-9]+)?(.*)", line, v) > 0)
+     "([a-z0-9]+)(=[a-z0-9]+)?(.*)"});
+
+  std::string help;
+  bool        found = false;
+
+  for (auto line(boost::algorithm::trim_copy(data.string())); !line.empty();)
+  {
+    switch (r.search(line); r.which_no())
 ```
 
-  and match:
+  and search:
 ```cpp
-    int wex::match(
-      const std::string&        reg,
-      const std::string&        text,
-      std::vector<std::string>& v)
+  int wex::regex::find(const std::string& text, find_t how)
+  ...
+  for (const auto& reg : m_regex)
+  {
+    try
     {
-      if (reg.empty())
-        return -1;
-
-      try
+      if (std::match_results<std::string::const_iterator> m;
+          ((how == REGEX_MATCH && std::regex_match(text, m, reg.first)) ||
+           (how == REGEX_SEARCH && std::regex_search(text, m, reg.first))))
       {
-        if (std::match_results<std::string::const_iterator> m;
-            !std::regex_search(text, m, std::regex(reg)))
+        if (m.size() > 1)
         {
-          return -1;
-        }
-        else if (m.size() > 1)
-        {
-          v.clear();
-          std::copy(++m.begin(), m.end(), std::back_inserter(v));
+          m_matches.clear();
+          std::copy(++m.begin(), m.end(), std::back_inserter(m_matches));
         }
 
-        return v.size();
+        m_which    = reg;
+        m_which_no = index;
+
+        return m_matches.size();
       }
-      catch (std::regex_error& e)
-      {
-        log(e) << reg << "code:" << (int)e.code();
-        return -1;
-      }
+
+      index++;
     }
+    catch (std::regex_error& e)
+    {
+      log(e) << reg.second << "code:" << (int)e.code();
+    }
+  }
 ```
 
 - Strings library
@@ -245,6 +251,28 @@ It benefits from the following c++ features:
 - initializer_list (c++11)
 
 - lambda expressions (c++11)
+  used of lof, e.g. useful to assign result of expression to a constant class
+  member in a constructor.
+  core/regex.cpp:
+
+```cpp
+wex::regex::regex(
+  const std::vector<std::string>& regex,
+  std::regex::flag_type           flags)
+  : m_regex(
+      [](const std::vector<std::string>& reg_str, std::regex::flag_type flags) {
+        regex_t v;
+
+        for (const auto& r : reg_str)
+        {
+          v.emplace_back(std::regex(r, flags), r);
+        }
+
+        return v;
+      }(regex, flags))
+{
+}
+```
 
 - nested namespaces (c++17)
 ```cpp

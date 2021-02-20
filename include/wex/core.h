@@ -139,19 +139,6 @@ namespace wex
   /// Returns true if char is a code word separator.
   bool is_codeword_separator(int c);
 
-  /// Regular expression match.
-  /// Returns:
-  /// - -1 if text does not match or there is an error
-  /// - 0 if text matches, but no submatches present, v is untouched
-  /// - submatches, it fills v with the submatches
-  int match(
-    /// regular expression
-    const std::string& regex,
-    /// text to match
-    const std::string& text,
-    /// vector is filled with submatches
-    std::vector<std::string>& v);
-
   /// Returns true if filename (fullname) matches one of the
   /// fields in specified pattern (fields separated by ; sign).
   bool matches_one_of(const std::string& fullname, const std::string& patterns);
