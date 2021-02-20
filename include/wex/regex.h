@@ -40,6 +40,13 @@ namespace wex
     /// Returns reference to the requested submatch element.
     const std::string& operator[](size_t pos) const { return m_matches[pos]; };
 
+    /// Regular expression search.
+    /// Returns:
+    /// - -1: if text does not match or there is an error
+    /// -  0: if text matches, but no submatches present.
+    /// - >0: it fills submatches.
+    int search(const std::string& text);
+
     /// Returns number of submatches.
     auto size() const { return m_matches.size(); };
 
@@ -50,8 +57,16 @@ namespace wex
     auto which_no() const { return m_which_no; };
 
   private:
+    enum find_t
+    {
+      REGEX_SEARCH,
+      REGEX_MATCH,
+    };
+
     /// vector of pair regex, regex string
     typedef std::vector<std::pair<std::regex, std::string>> regex_t;
+
+    int find(const std::string& text, find_t);
 
     const regex_t m_regex;
     int           m_which_no{-1};

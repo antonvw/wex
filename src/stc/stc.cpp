@@ -478,11 +478,9 @@ void wex::stc::guess_type_and_modeline()
        GetTextRange(length - sample_size, length).ToStdString() :
        m_hexmode.buffer().substr(length - sample_size, sample_size)));
 
-  std::vector<std::string> v;
-
   // If we have a modeline comment.
   if (regex v("\\s+vim?:\\s*(set [a-z0-9:= ]+)");
-      get_ex().is_active() && (v.match(head) > 0 || v.match(tail) > 0))
+      get_ex().is_active() && (v.search(head) > 0 || v.search(tail) > 0))
   {
     if (!get_ex().command(":" + v[0] + "*")) // add * to indicate modeline
     {

@@ -1,6 +1,7 @@
 # roadmap
 - .,'xd -> incorrect last line
 - .,$d -> no action
+- update doc, add boost etc.
 
 ## backlog
 - allow dynamic libs

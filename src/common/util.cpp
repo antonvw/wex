@@ -234,7 +234,7 @@ bool wex::shell_expansion(std::string& command)
 {
   regex r("`(.*?)`"); // non-greedy
 
-  while (r.match(command) > 0)
+  while (r.search(command) > 0)
   {
     if (process process; !process.execute(r[0], process::EXEC_WAIT))
     {

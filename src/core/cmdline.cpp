@@ -280,7 +280,7 @@ bool wex::cmdline::parse_set(data::cmdline& data) const
 
   for (auto line(boost::algorithm::trim_copy(data.string())); !line.empty();)
   {
-    switch (r.match(line); r.which_no())
+    switch (r.search(line); r.which_no())
     {
       case 0:
         get_all(help);

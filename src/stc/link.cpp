@@ -112,7 +112,7 @@ wex::link::find_filename(const std::string& text, data::control& data) const
 #endif
 
   // file[:line[:column]]
-  if (regex v("^([0-9A-Za-z _/.-]+):([0-9]*):?([0-9]*)"); v.match(link) > 0)
+  if (regex v("^([0-9A-Za-z _/.-]+):([0-9]*):?([0-9]*)"); v.search(link) > 0)
   {
     link = v[0];
     data.reset();
@@ -151,7 +151,7 @@ const wex::path wex::link::find_url_or_mime(
   {
     // hypertext link
     if (regex v({std::string("(https?:.*)"), "(www.*)"});
-        data.line() == LINE_OPEN_URL && v.match(text) > 0)
+        data.line() == LINE_OPEN_URL && v.search(text) > 0)
     {
       // with a possible delimiter
       const auto        match(v[0]);

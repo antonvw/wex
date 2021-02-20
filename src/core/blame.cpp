@@ -44,7 +44,7 @@ wex::blame::get(const std::string& text) const
 {
   try
   {
-    if (regex r(m_blame_format); r.match(text) >= 3)
+    if (regex r(m_blame_format); r.search(text) >= 3)
     {
       const std::string info(
         build("id", r[0], true) + build("author", r[1]) +

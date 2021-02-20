@@ -30,7 +30,7 @@ wex::regex::regex(
 {
 }
 
-int wex::regex::match(const std::string& text)
+int wex::regex::find(const std::string& text, find_t how)
 {
   m_which_no = -1;
 
@@ -46,7 +46,8 @@ int wex::regex::match(const std::string& text)
     try
     {
       if (std::match_results<std::string::const_iterator> m;
-          std::regex_search(text, m, reg.first))
+          ((how == REGEX_MATCH && std::regex_match(text, m, reg.first)) ||
+           (how == REGEX_SEARCH && std::regex_search(text, m, reg.first))))
       {
         if (m.size() > 1)
         {
@@ -69,4 +70,14 @@ int wex::regex::match(const std::string& text)
   }
 
   return -1;
+}
+
+int wex::regex::match(const std::string& text)
+{
+  return find(text, REGEX_MATCH);
+}
+
+int wex::regex::search(const std::string& text)
+{
+  return find(text, REGEX_SEARCH);
 }

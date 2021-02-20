@@ -6,7 +6,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <regex>
 #include <sstream>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP

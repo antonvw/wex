@@ -63,7 +63,7 @@ bool wex::data::substitute::set(
   }
 
   if (regex r({"/(.*)/(.*)/([cgi]*)", "/(.*)/(.*)", "/(.*)"});
-      r.match(command) > 0)
+      r.search(command) > 0)
   {
     m_pattern = r[0];
 
