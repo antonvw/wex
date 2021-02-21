@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <map>
+#include <numeric>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -241,10 +242,13 @@ bool wex::vcs::execute()
 
     if (m_files.size() > 1)
     {
-      for (const auto& it : m_files)
-      {
-        args += "\"" + it.string() + "\" ";
-      }
+      args = clipboard_add(std::accumulate(
+        m_files.begin(),
+        m_files.end(),
+        std::string(),
+        [](const std::string& a, const path& b) {
+          return a + "\"" + b.string() + "\" ";
+        }));
     }
     else if (m_entry.name() == "git")
     {
@@ -436,17 +440,9 @@ int wex::vcs::show_dialog(const data::window& arg)
        item(_("vcs.Subcommand"), std::string()) :
        item()});
 
-  bool all_empty = true;
-
-  for (const auto& i : v)
-  {
-    if (i.type() != item::EMPTY)
-    {
-      all_empty = false;
-    }
-  }
-
-  if (all_empty)
+  if (std::all_of(v.begin(), v.end(), [](const auto& i) {
+        return i.type() == item::EMPTY;
+      }))
   {
     return wxID_OK;
   }

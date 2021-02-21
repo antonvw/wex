@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
+#include <numeric>
 #include <vector>
 #include <wex/accelerators.h>
 #include <wex/beautify.h>
@@ -742,18 +743,23 @@ void wex::stc::show_properties()
   const lexer_props l;
 
   std::string properties =
-    (!propnames.empty() ? l.make_section("Current properties") : std::string());
-
-  // Add current (global and lexer) properties.
-  for (const auto& it : lexers::get()->properties())
-  {
-    properties += l.make_key(it.name(), GetProperty(it.name()));
-  }
-
-  for (const auto& it : m_lexer.properties())
-  {
-    properties += l.make_key(it.name(), GetProperty(it.name()));
-  }
+    (!propnames.empty() ? l.make_section("Current properties") :
+                          std::string()) +
+    // Add current (global and lexer) properties.
+    std::accumulate(
+      lexers::get()->properties().begin(),
+      lexers::get()->properties().end(),
+      std::string(),
+      [this, l](const std::string& a, const property& b) {
+        return a + l.make_key(b.name(), GetProperty(b.name()));
+      }) +
+    std::accumulate(
+      m_lexer.properties().begin(),
+      m_lexer.properties().end(),
+      std::string(),
+      [this, l](const std::string& a, const property& b) {
+        return a + l.make_key(b.name(), GetProperty(b.name()));
+      });
 
   // Add available properties.
   if (!propnames.empty())

@@ -491,21 +491,14 @@ bool wex::macros::starts_with(const std::string_view& text)
     return false;
   }
 
-  for (const auto& it : m_macros)
-  {
-    if (it.first.substr(0, text.size()) == text)
-    {
-      return true;
-    }
-  }
-
-  for (const auto& it : m_variables)
-  {
-    if (it.first.substr(0, text.size()) == text)
-    {
-      return true;
-    }
-  }
-
-  return false;
+  return (
+    std::any_of(
+      m_macros.begin(),
+      m_macros.end(),
+      [text](const auto& p) {
+        return p.first.substr(0, text.size()) == text;
+      }) ||
+    std::any_of(m_variables.begin(), m_variables.end(), [text](const auto& p) {
+      return p.first.substr(0, text.size()) == text;
+    }));
 }
