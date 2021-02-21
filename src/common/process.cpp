@@ -45,6 +45,7 @@ wex::process& wex::process::operator=(const process& p)
   if (this != &p)
   {
     m_command = p.m_command;
+    m_frame   = p.m_frame;
     m_stderr  = p.m_stderr;
     m_stdout  = p.m_stdout;
   }

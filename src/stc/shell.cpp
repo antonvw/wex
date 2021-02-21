@@ -651,14 +651,14 @@ void wex::shell::show_command(int key)
   {
     if (m_commands_iterator != m_commands.begin())
     {
-      m_commands_iterator--;
+      --m_commands_iterator;
     }
   }
   else
   {
     if (m_commands_iterator != m_commands.end())
     {
-      m_commands_iterator++;
+      ++m_commands_iterator;
     }
   }
 

@@ -2,7 +2,7 @@
 // Name:      listview-data.h
 // Purpose:   Declaration of wex::data::listview
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -74,7 +74,7 @@ namespace wex
       const auto& control() const { return m_data; };
 
       /// Sets control data.
-      listview& control(data::control& data)
+      listview& control(const data::control& data)
       {
         m_data = data;
         return *this;
@@ -115,7 +115,7 @@ namespace wex
       const auto& window() const { return m_data.window(); };
 
       /// Sets window data.
-      listview& window(data::window& data)
+      listview& window(const data::window& data)
       {
         m_data.window(data);
         return *this;

@@ -774,9 +774,11 @@ bool wex::addressrange::sort(const std::string& parameters) const
 
   if (!parameters.empty())
   {
+    /// -u to sort unique lines
+    /// -r to sort reversed (descending)
     if (
       (parameters[0] == '0') ||
-      (parameters.find("u") != 0 && parameters.find("r") != 0 &&
+      (!parameters.starts_with("u") && !parameters.starts_with("r") &&
        !isdigit(parameters[0])))
     {
       return false;

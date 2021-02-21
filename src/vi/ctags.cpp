@@ -489,7 +489,7 @@ bool wex::ctags::previous()
     m_iterator = m_matches.end();
   }
 
-  m_iterator--;
+  --m_iterator;
   m_iterator->second.open_file(get_frame());
 
   return true;

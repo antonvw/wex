@@ -17,7 +17,6 @@
 #include <wex/core.h>
 #include <wex/ctags.h>
 #include <wex/frd.h>
-#include <wex/hexmode.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
 #include <wex/macro-mode.h>

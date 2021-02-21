@@ -2,7 +2,7 @@
 // Name:      item-template-dialog.h
 // Purpose:   Declaration of wex::item_template_dialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -85,7 +85,7 @@ namespace wex
         case item::COMMANDLINKBUTTON:
           Bind(
             wxEVT_BUTTON,
-            [&, this](wxCommandEvent& event) {
+            [&, this](const wxCommandEvent& event) {
               if (!item.apply())
                 click(event);
             },
@@ -94,7 +94,7 @@ namespace wex
         case item::COMBOBOX_DIR:
           Bind(
             wxEVT_BUTTON,
-            [&, this](wxCommandEvent& event) {
+            [&, this](const wxCommandEvent& event) {
               wxComboBox* browse = (wxComboBox*)item.window();
               wxDirDialog dlg(
                 this,
@@ -108,7 +108,7 @@ namespace wex
         case item::COMBOBOX_FILE:
           Bind(
             wxEVT_BUTTON,
-            [&, this](wxCommandEvent& event) {
+            [&, this](const wxCommandEvent& event) {
               wxComboBox*  browse = (wxComboBox*)item.window();
               const path   path(browse->GetValue());
               wxFileDialog dlg(
@@ -125,7 +125,7 @@ namespace wex
         case item::TOGGLEBUTTON:
           Bind(
             wxEVT_TOGGLEBUTTON,
-            [&, this](wxCommandEvent& event) {
+            [&, this](const wxCommandEvent& event) {
               if (!item.apply())
                 click(event);
             },

@@ -2,7 +2,7 @@
 // Name:      stc-data.h
 // Purpose:   Declaration of wex::data::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -97,7 +97,7 @@ namespace wex
       auto& control() { return m_data; };
 
       /// Sets control data.
-      stc& control(data::control& data)
+      stc& control(const data::control& data)
       {
         m_data = data;
         return *this;
@@ -141,7 +141,7 @@ namespace wex
       const auto& window() const { return m_data.window(); };
 
       /// Sets window data.
-      stc& window(data::window& data)
+      stc& window(const data::window& data)
       {
         m_data.window(data);
         return *this;
