@@ -141,13 +141,16 @@ namespace wex
     /// or empty item if item does not exist.
     const T find(const std::string& label) const
     {
-      for (const auto& item : m_items)
+      if (const auto& it = std::find_if(
+            m_items.begin(),
+            m_items.end(),
+            [label](const auto& p) {
+              return label == p.label();
+            });
+          it != m_items.end())
       {
-        if (item.label() == label)
-        {
-          return item;
-        }
-      };
+        return *it;
+      }
       return T();
     };
 

@@ -421,20 +421,20 @@ void wex::report::frame::on_command_item_dialog(
       switch (dialogid)
       {
         case wxID_ADD:
-          if (get_project() != nullptr)
+          if (auto* p = get_project(); p != nullptr)
           {
             data::dir::type_t flags = 0;
 
-            if (config(get_project()->text_addfiles()).get(true))
+            if (config(p->text_addfiles()).get(true))
               flags.set(data::dir::FILES);
-            if (config(get_project()->text_addrecursive()).get(true))
+            if (config(p->text_addrecursive()).get(true))
               flags.set(data::dir::RECURSIVE);
-            if (config(get_project()->text_addfolders()).get(true))
+            if (config(p->text_addfolders()).get(true))
               flags.set(data::dir::DIRS);
 
-            get_project()->add_items(
-              config(get_project()->text_infolder()).get_first_of(),
-              config(get_project()->text_addwhat()).get_first_of(),
+            p->add_items(
+              config(p->text_infolder()).get_first_of(),
+              config(p->text_addwhat()).get_first_of(),
               flags);
           }
           break;
@@ -518,7 +518,7 @@ void wex::report::frame::sync(bool start)
   start ? Bind(wxEVT_IDLE, &frame::on_idle, this) :
           (void)Unbind(wxEVT_IDLE, &frame::on_idle, this);
 }
-  
+
 void wex::report::frame::use_file_history_list(wex::listview* list)
 {
   assert(list->data().type() == data::listview::HISTORY);

@@ -213,12 +213,7 @@ bool wex::path::open_mime() const
 const std::vector<wex::path> wex::path::paths() const
 {
   std::vector<path> v;
-
-  for (const auto& e : m_path)
-  {
-    v.emplace_back(e);
-  }
-
+  std::copy(m_path.begin(), m_path.end(), back_inserter(v));
   return v;
 }
 

@@ -13,11 +13,15 @@ sudo make install
 # cppcheck
 cppcheck --quiet --enable=all \
   --suppress=constStatement \
+  --suppress=cppcheckError \
+  --suppress=cstyleCast \
+  --suppress=noCopyConstructor \
   --suppress=noExplicitConstructor \
+  --suppress=noOperatorEq \
   --suppress=ignoredReturnValue \
   --suppress=unusedScopedObject \
   --suppress=unusedFunction\
-  ../src -I ../include 
+  ../src -i LexAda.cxx -I ../include 
 #  2> err.txt
 
 # test

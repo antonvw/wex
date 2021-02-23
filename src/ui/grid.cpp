@@ -10,6 +10,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
 #include <wex/bind.h>
 #include <wex/core.h>
@@ -310,12 +311,10 @@ bool wex::grid::find_next(const std::string& text, bool forward)
   static int  start_col;
   static int  end_col;
 
-  wxString text_use = text;
-
-  if (!find_replace_data::get()->match_case())
-  {
-    text_use.MakeUpper();
-  }
+  const std::string text_use(
+    !find_replace_data::get()->match_case() ?
+      boost::algorithm::to_upper_copy(text) :
+      text);
 
   wxGridCellCoords grid_cursor(GetGridCursorRow(), GetGridCursorCol());
 
@@ -374,23 +373,23 @@ bool wex::grid::find_next(const std::string& text, bool forward)
          i != end_row && !match;
          (forward ? i++ : i--))
     {
-      wxString text = GetCellValue(i, j);
+      std::string cv = GetCellValue(i, j);
 
       if (!find_replace_data::get()->match_case())
       {
-        text.MakeUpper();
+        boost::algorithm::to_upper(cv);
       }
 
       if (find_replace_data::get()->match_word())
       {
-        if (text == text_use)
+        if (cv == text_use)
         {
           match = wxGridCellCoords(i, j);
         }
       }
       else
       {
-        if (text.Contains(text_use))
+        if (cv.find(text_use) != std::string::npos)
         {
           match = wxGridCellCoords(i, j);
         }

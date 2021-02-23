@@ -24,17 +24,21 @@ namespace wex
     const std::vector<std::pair<std::string, int>>& v,
     const std::string&                              text)
   {
-    for (const auto& e : v)
+    if (const auto& it = std::find_if(
+          v.begin(),
+          v.end(),
+          [text](const auto& p) {
+            return text == p.first;
+          });
+        it != v.end())
     {
-      if (text == e.first)
-      {
-        return e.second;
-      }
+      return it->second;
     }
-
-    log("unsupported attrib") << text;
-
-    return -1;
+    else
+    {
+      log("unsupported attrib") << text;
+      return -1;
+    }
   }
 
   /// Tokenizes the complete string into a vector of integers (size_t).
@@ -169,7 +173,6 @@ wex::lexer& wex::lexer::operator=(const wex::lexer& l)
     m_edge_columns    = l.m_edge_columns;
     m_extensions      = l.m_extensions;
     m_is_ok           = l.m_is_ok;
-    m_previewable     = l.m_previewable;
     m_keywords        = l.m_keywords;
     m_keywords_set    = l.m_keywords_set;
     m_language        = l.m_language;

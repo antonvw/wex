@@ -260,10 +260,13 @@ void wex::macros::parse_node_macro(const pugi::xml_node& node)
   {
     std::vector<std::string> v;
 
-    for (const auto& command : node.children())
-    {
-      v.emplace_back(command.text().get());
-    }
+    std::transform(
+      node.children().begin(),
+      node.children().end(),
+      std::back_inserter(v),
+      [](const auto& t) {
+        return t.text().get();
+      });
 
     m_macros.insert({node.attribute("name").value(), v});
   }
@@ -294,9 +297,7 @@ bool wex::macros::record(const std::string& text, bool new_command)
     f->record(text);
   }
 
-  if (
-    !m_mode.is_recording() || (m_mode.is_recording() && m_mode.is_playback()) ||
-    text.empty())
+  if (!m_mode.is_recording() || m_mode.is_playback() || text.empty())
   {
     return false;
   }

@@ -276,7 +276,11 @@ namespace wex
       /// item data
       const data::item& data =
         data::item().window(data::window().style(wxSP_ARROW_KEYS)))
-      : item(SPINCTRLDOUBLE, label, value, data::item(data).min(min).max(max)){};
+      : item(
+          SPINCTRLDOUBLE,
+          label,
+          value,
+          data::item(data).min(min).max(max)){};
 
     /// Constructor for a CHECKLISTBOX_BOOL item.
     /// This checklistbox can be used to get/set several boolean values.
@@ -504,7 +508,7 @@ namespace wex
       type_t             type,
       const std::string& label = std::string(),
       const std::any&    value = std::string(),
-      const data::item&         = data::item());
+      const data::item&        = data::item());
 
     wxFlexGridSizer* add(wxSizer* sizer, wxFlexGridSizer* current) const;
     wxFlexGridSizer* add_browse_button(wxSizer* sizer) const;
@@ -527,7 +531,7 @@ namespace wex
 
     std::string m_label, m_label_window, m_page;
 
-    data::item      m_data;
+    data::item     m_data;
     data::listview m_data_listview;
 
     wxSizerFlags m_sizer_flags;
