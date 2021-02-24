@@ -2,7 +2,7 @@
 // Name:      grid.h
 // Purpose:   Declaration of wex::grid class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -21,13 +21,13 @@ namespace wex
     /// Default constructor.
     grid(const data::window& data = data::window().style(wxWANTS_CHARS));
 
+    /// Destructor.
+    virtual ~grid() { ; };
+
     /// Copy from selected cells.
     bool copy_selected_cells_to_clipboard() const;
 
-    /// This one is invoked after IsAllowedDropSelection, and drops the data.
-    /// Default it calls set_cells_value.
-    /// If you return true, the selection is correctly dropped,
-    /// and the (old) selection is emptied and cleared to simulate dragging.
+    /// This one is invoked after is_allowed_drop_selection, and drops the data.
     bool drop_selection(
       const wxGridCellCoords& drop_coords,
       const std::string&      data);
@@ -47,13 +47,8 @@ namespace wex
     /// Get text from selected cells.
     const std::string get_selected_cells_value() const;
 
-    /// This one is invoked before dragging, and you can indicate
-    /// whether you like the current selection to be dragged elsewhere.
-    /// Default it is allowed.
-    bool is_allowed_drag_selection();
-
     /// This is invoked after dragging and before anything is really dropped.
-    /// Default it checks for each cell whether it is read-only, etc.
+    /// It checks for each cell whether it is read-only, etc.
     bool is_allowed_drop_selection(
       const wxGridCellCoords& drop_coords,
       const std::string&      data);
@@ -68,9 +63,9 @@ namespace wex
     void print_preview();
 
     /// This one is called by empty_selection, set_cells_value,
-    /// and so during drag/drop as well, and allows you to
-    /// override default here (which simply calls SetCellValue).
-    /// So it is on a cell basis, whereas the DropSelection is on a range basis.
+    /// and so during drag/drop as well.
+    /// So it is on a cell basis, whereas the drop_selection is on a range
+    /// basis.
     void
     set_cell_value(const wxGridCellCoords& coords, const std::string& data);
 

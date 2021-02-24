@@ -29,13 +29,13 @@ namespace wex
     bool on_dir(const path& p) override
     {
       m_container.emplace_back(
-        data().type().test(data::dir::RECURSIVE) ? p.string(): p.fullname());
+        data().type().test(data::dir::RECURSIVE) ? p.string() : p.fullname());
       return true;
     };
     bool on_file(const path& p) override
     {
       m_container.emplace_back(
-        data().type().test(data::dir::RECURSIVE) ? p.string(): p.fullname());
+        data().type().test(data::dir::RECURSIVE) ? p.string() : p.fullname());
       return true;
     };
 
@@ -149,10 +149,10 @@ int wex::dir::find_files()
 
   stop();
 
-  log::trace("iterating")
-    << m_dir << "on files:" << m_data.file_spec()
-    << "on dirs:" << m_data.dir_spec() << "flags:" << m_data.type()
-    << "matches:" << matches << "all_off:" << all_off;
+  log::trace("iterating") << m_dir << "on files:" << m_data.file_spec()
+                          << "on dirs:" << m_data.dir_spec()
+                          << "flags:" << m_data.type() << "matches:" << matches
+                          << "all_off:" << all_off;
 
   return matches;
 }

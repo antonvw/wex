@@ -193,10 +193,13 @@ int wex::vcs::config_dialog(const data::window& par) const
   // use a radiobox
   std::vector<item> v{{"vcs.VCS", choices, true, data::item().columns(cols)}};
 
-  for (const auto& it : m_entries)
-  {
-    v.push_back({"vcs." + it.name(), item::FILEPICKERCTRL});
-  }
+  std::transform(
+    m_entries.begin(),
+    m_entries.end(),
+    std::back_inserter(v),
+    [](const auto& t) {
+      return item("vcs." + t.name(), item::FILEPICKERCTRL);
+    });
 
   if (const data::window data(
         data::window(par).title(_("Set VCS").ToStdString()));

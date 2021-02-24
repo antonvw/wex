@@ -2,7 +2,7 @@
 // Name:      listview-file.h
 // Purpose:   Declaration of class wex::report::file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -27,7 +27,7 @@ namespace wex::report
       const data::listview& data = data::listview());
 
     /// Destructor.
-    virtual ~file();
+    ~file() override;
 
     /// Virtual interface
     void after_sorting() override;

@@ -228,14 +228,16 @@ void wex::macro_fsm::playback(const std::string& macro, ex* ex, int repeat)
 
   for (int i = 0; i < repeat && !error; i++)
   {
-    for (const auto& it : commands)
+    if (!std::all_of(commands.begin(), commands.end(), [ex](const auto& i) {
+          if (!ex->command(i))
+          {
+            log::status(_("Macro aborted at")) << i;
+            return false;
+          }
+          return true;
+        }))
     {
-      if (!ex->command(it))
-      {
-        error = true;
-        log::status(_("Macro aborted at")) << it;
-        break;
-      }
+      error = true;
     }
   }
 

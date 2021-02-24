@@ -1,8 +1,8 @@
 # roadmap
-- cppcheck err file double click line, and add to travis
 - .,'xd -> incorrect last line
 - .,$d -> no action
 - update doc, add boost etc.
+- add replace to regex
 
 ## backlog
 - allow dynamic libs

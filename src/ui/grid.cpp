@@ -143,13 +143,6 @@ wex::grid::grid(const data::window& data)
         return;
       }
 
-      // Is it allowed to drag current selection??
-      if (!is_allowed_drag_selection())
-      {
-        event.Skip();
-        return;
-      }
-
       // Start drag operation.
       wxTextDataObject textData(get_selected_cells_value());
       wxDropSource     source(textData, this);
@@ -514,11 +507,6 @@ const std::string wex::grid::get_selected_cells_value() const
   return text.str();
 }
 
-bool wex::grid::is_allowed_drag_selection()
-{
-  return true;
-}
-
 bool wex::grid::is_allowed_drop_selection(
   const wxGridCellCoords& drop_coords,
   const std::string&      data)
@@ -601,11 +589,11 @@ void wex::grid::set_cells_value(
 
     auto next_col = start_coords.GetCol();
 
-    for (auto it = tok.begin(); it != tok.end(); ++it)
+    for (auto t = tok.begin(); t != tok.end(); ++t)
     {
       if (!IsReadOnly(start_at_row, next_col))
       {
-        set_cell_value(wxGridCellCoords(start_at_row, next_col), *it);
+        set_cell_value(wxGridCellCoords(start_at_row, next_col), *t);
       }
 
       next_col++;

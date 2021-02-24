@@ -48,6 +48,11 @@ wex::process& wex::process::operator=(const process& p)
     m_frame   = p.m_frame;
     m_stderr  = p.m_stderr;
     m_stdout  = p.m_stdout;
+
+    if (m_frame == nullptr)
+    {
+      m_frame = dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
+    }
   }
 
   return *this;
