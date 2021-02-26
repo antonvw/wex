@@ -43,7 +43,7 @@ namespace wex
     ex_stream(wex::stc* stc);
 
     /// Destructor.
-    ~ex_stream();
+    ~ex_stream() override;
 
     /// Deletes the range.
     bool erase(const addressrange& range);

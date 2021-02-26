@@ -73,7 +73,7 @@ namespace wex
     stc(const path& file, const data::stc& data = data::stc());
 
     /// Destructor.
-    virtual ~stc();
+    ~stc() override;
 
     /// Virtual override methods.
 

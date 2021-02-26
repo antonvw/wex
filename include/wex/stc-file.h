@@ -36,7 +36,7 @@ namespace wex
       const std::string& filename = std::string());
 
     /// Destructor.
-    ~stc_file();
+    ~stc_file() override;
 
     /// The ex stream (used if in ex mode).
     auto       ex_stream() { return m_ex_stream; };

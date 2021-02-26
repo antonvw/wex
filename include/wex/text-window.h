@@ -2,7 +2,7 @@
 // Name:      text-window.h
 // Purpose:   Declaration of class wex::core::text_window
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -42,6 +42,9 @@ namespace wex
 
       /// Goes to specified line.
       virtual void goto_line(int line) = 0;
+
+      /// Destructor.
+      virtual ~text_window() { ; };
     };
   }; // namespace core
 };   // namespace wex

@@ -8,6 +8,7 @@
 #include <boost/algorithm/string.hpp>
 #include <wex/statistics.h>
 #include <wex/tool.h>
+#include <wx/translation.h>
 
 std::map<int, wex::tool_info> wex::tool::m_tool_info{
   {ID_TOOL_REPORT_FIND, {_("Found %d matches in")}},
@@ -27,7 +28,10 @@ const std::string wex::tool::info(const wex::statistics<int>* stat) const
 {
   std::string logtext(info());
 
-  boost::algorithm::replace_all(logtext, "%d", std::to_string(stat->get(_("Actions Completed"))));
+  boost::algorithm::replace_all(
+    logtext,
+    "%d",
+    std::to_string(stat->get(_("Actions Completed"))));
 
   logtext.append(" ");
   logtext.append(std::to_string(stat->get(_("Files"))));

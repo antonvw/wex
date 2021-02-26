@@ -1,7 +1,6 @@
 # roadmap
 - .,'xd -> incorrect last line
 - .,$d -> no action
-- update doc, add boost etc.
 - add replace to regex
 
 ## backlog

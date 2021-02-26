@@ -15,7 +15,6 @@
 #endif
 #include "app.h"
 #include <wex/bind.h>
-#include <wex/chrono.h>
 #include <wex/cmdline.h>
 #include <wex/defs.h>
 #include <wex/file-dialog.h>
@@ -349,8 +348,10 @@ frame::frame()
      {[=, this](wxCommandEvent& event) {
         if (m_notebook->set_selection("Statistics") == nullptr)
         {
+          wex::data::window data;
+          data.parent(m_notebook);
           m_notebook->add_page(wex::data::notebook()
-                                 .page(m_statistics.show(m_notebook))
+                                 .page(m_statistics.show(&data))
                                  .caption("Statistics"));
         }
       },

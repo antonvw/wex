@@ -61,7 +61,7 @@ namespace wex
       const data::window& data = data::window().style(wxDEFAULT_FRAME_STYLE));
 
     /// Destructor, uninits the aui manager.
-    virtual ~managed_frame();
+    ~managed_frame() override;
 
     /// Virtual interface
 

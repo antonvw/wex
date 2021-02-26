@@ -11,6 +11,7 @@ cmake ..
 sudo make install
 
 # cppcheck
+cppcheck --version
 cppcheck --quiet --enable=all \
   --suppress=constStatement \
   --suppress=cppcheckError \
