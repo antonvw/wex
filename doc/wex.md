@@ -290,7 +290,7 @@ wex::regex::regex(
 ```
   this ensures that the function is kept in sync with base class
 
-# boost c++ libraries
+## boost c++ libraries
 - boost::algorithm lib
   uses replace_all, to_upper, trim
 
@@ -311,6 +311,6 @@ wex::regex::regex(
   
 - boost::tokenizer lib
   to tokenize expressions
-  
-# wxWidgets libraries
+
+## wxWidgets libraries
 - almost all gui classes are derived from wxWidgets base classes
