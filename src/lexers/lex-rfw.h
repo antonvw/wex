@@ -159,7 +159,7 @@ namespace wex
 
 // inline implementation
 
-bool wex::lex_rfw::get_line_pos_eol(int offset, char c) const
+inline bool wex::lex_rfw::get_line_pos_eol(int offset, char c) const
 {
   Sci_Position pos = m_styler.LineStart(m_line + offset);
   Sci_Position eol = m_styler.LineStart(m_line + 1 + offset) - 1;

@@ -113,6 +113,7 @@ frame::frame()
   , m_process(new wex::process())
   , m_shell(new wex::shell(wex::data::stc(), ">"))
   , m_stc(new wex::stc())
+  , m_statistics(new wex::grid_statistics<int>(wex::data::window().parent(m_notebook)))
   , m_stc_lexers(new wex::stc(wex::lexers::get()->get_filename()))
 {
   wex::process::prepare_output(this);
@@ -351,7 +352,7 @@ frame::frame()
           wex::data::window data;
           data.parent(m_notebook);
           m_notebook->add_page(wex::data::notebook()
-                                 .page(m_statistics.show(&data))
+                                 .page(m_statistics->show())
                                  .caption("Statistics"));
         }
       },
@@ -395,7 +396,7 @@ bool frame::allow_close(wxWindowID id, wxWindow* page)
 
 void frame::on_command(wxCommandEvent& event)
 {
-  m_statistics.inc(std::to_string(event.GetId()));
+  m_statistics->inc(std::to_string(event.GetId()));
 
   auto* editor   = get_stc();
   auto* grid     = get_grid();
