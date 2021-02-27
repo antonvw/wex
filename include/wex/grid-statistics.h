@@ -86,7 +86,7 @@ namespace wex
       /// show row labels (i.e. row numbers)
       bool hide_row_labels = true,
       /// show col labels (Item, Value)
-      bool hide_col_labels = true) override
+      bool hide_col_labels = true)
     {
       if (hide_row_labels)
       {

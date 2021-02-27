@@ -15,16 +15,10 @@
 
 namespace wex
 {
-  class grid;
-
-  namespace data
-  {
-    class window;
-  };
-
   /// Offers base statistics. All statistics involve a key value pair,
   /// where the key is a string, and the value a template.
-  /// The statistics can be shown on a grid, that is automatically
+  /// There are some virtual methods you can use in a base class e.g. to show
+  /// the statistics on a grid, that is automatically
   /// updated whenever statistics change.
   template <class T> class statistics
   {
@@ -101,16 +95,6 @@ namespace wex
     {
       m_items[key] = value;
       return value;
-    };
-
-    /// Shows statistics on a grid.
-    virtual grid* show(
-      /// show row labels (i.e. row numbers)
-      bool hide_row_labels = true,
-      /// show col labels (Item, Value)
-      bool hide_col_labels = true)
-    {
-      return nullptr;
     };
 
   private:
