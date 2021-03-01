@@ -2,7 +2,7 @@
 // Name:      test-grid.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -38,8 +38,6 @@ TEST_CASE("wex::grid")
   REQUIRE(!grid->find_next("text1"));
 
   grid->paste_cells_from_clipboard();
-
   grid->use_drag_and_drop(true);
-  REQUIRE(grid->is_allowed_drag_selection());
   grid->use_drag_and_drop(false);
 }

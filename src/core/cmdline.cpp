@@ -7,6 +7,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <iostream>
+#include <numeric>
 #include <wex/cmdline.h>
 #include <wex/config.h>
 #include <wex/core.h>
@@ -131,15 +132,20 @@ wex::cmdline::~cmdline()
 
 void wex::cmdline::get_all(std::string& help) const
 {
-  for (const auto& it : m_options)
-  {
-    help += get_option(it, m_cfg);
-  }
-
-  for (const auto& it : m_switches)
-  {
-    help += get_switch(it, m_cfg);
-  }
+  help += std::accumulate(
+            m_options.begin(),
+            m_options.end(),
+            std::string(),
+            [this](const std::string& a, const auto& b) {
+              return a + get_option(b, m_cfg);
+            }) +
+          std::accumulate(
+            m_switches.begin(),
+            m_switches.end(),
+            std::string(),
+            [this](const std::string& a, const auto& b) {
+              return a + get_switch(b, m_cfg);
+            });
 }
 
 bool wex::cmdline::get_single(

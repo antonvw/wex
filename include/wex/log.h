@@ -2,7 +2,7 @@
 // Name:      log.h
 // Purpose:   Declaration of wex::log class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -22,7 +22,11 @@ namespace wex
     /// Initializes logging, and optionally sets logfile.
     /// Should be called before constructing a log object.
     /// The wex::cmdline or wex::app::OnInit takes care of this.
-    static void init(const std::string& logfile = std::string());
+    static void init(
+      /// loglevel, -1 denotes default level
+      size_t loglevel = 0,
+      /// logfile, empty string is default logfile
+      const std::string& logfile = std::string());
 
     /// Builds a debug level logger.
     static log debug(const std::string& topic = std::string());
@@ -124,7 +128,7 @@ namespace wex
     std::stringstream  m_ss;
     std::wstringstream m_wss;
     bool               m_separator{true};
-    int                m_level;
+    size_t             m_level;
 
     static inline bool m_initialized{false};
   };

@@ -289,3 +289,28 @@ wex::regex::regex(
     bool command(const std::string& command) final;
 ```
   this ensures that the function is kept in sync with base class
+
+## boost c++ libraries
+- boost::algorithm lib
+  uses replace_all, to_upper, trim
+
+- boost::log lib
+  to implement wex::log
+
+- boost::process lib
+  to implement wex::process
+
+- boost::program_options lib
+  to implement wex::cmdline
+
+- boost::spirit lib
+  to implement the wex::evaluator
+
+- boost::statechart lib
+  to implement the statemachine for vi mode and macro mode
+  
+- boost::tokenizer lib
+  to tokenize expressions
+
+## wxWidgets libraries
+- almost all gui classes are derived from wxWidgets base classes

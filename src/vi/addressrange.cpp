@@ -73,21 +73,23 @@ namespace wex
           m_ar->m_find_indicator,
           m_ex->get_stc()->GetTargetStart(),
           m_ex->get_stc()->GetTargetEnd());
+        return true;
       }
       else
       {
-        for (const auto& it : m_commands)
-        {
-          if (!m_ex->command(":" + std::to_string(line + 1) + it))
-          {
-            m_ex->frame()->show_ex_message(
-              m_ex->get_command().command() + " failed");
-            return false;
-          }
-        }
+        return std::all_of(
+          m_commands.begin(),
+          m_commands.end(),
+          [this, line](const std::string& it) {
+            if (!m_ex->command(":" + std::to_string(line + 1) + it))
+            {
+              m_ex->frame()->show_ex_message(
+                m_ex->get_command().command() + " failed");
+              return false;
+            }
+            return true;
+          });
       }
-
-      return true;
     }
 
     bool for_each(int start, int& end, int& hits) const
@@ -772,9 +774,11 @@ bool wex::addressrange::sort(const std::string& parameters) const
 
   if (!parameters.empty())
   {
+    /// -u to sort unique lines
+    /// -r to sort reversed (descending)
     if (
       (parameters[0] == '0') ||
-      (parameters.find("u") != 0 && parameters.find("r") != 0 &&
+      (!parameters.starts_with("u") && !parameters.starts_with("r") &&
        !isdigit(parameters[0])))
     {
       return false;

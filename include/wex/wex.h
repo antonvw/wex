@@ -39,6 +39,7 @@
 #include <wex/find-data.h>
 #include <wex/frame.h>
 #include <wex/frd.h>
+#include <wex/grid-statistics.h>
 #include <wex/grid.h>
 #include <wex/hexmode.h>
 #include <wex/indicator.h>

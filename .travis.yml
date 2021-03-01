@@ -18,7 +18,7 @@ matrix:
     - addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['libboost-all-dev']
+          packages: ['libboost-all-dev', cppcheck]
       os: linux
       env: CC=gcc CXX=g++
       dist: focal

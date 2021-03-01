@@ -2,7 +2,7 @@
 // Name:      shell.h
 // Purpose:   Declaration of class wex::shell
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -42,7 +42,7 @@ namespace wex
       const std::string& command_end = std::string());
 
     /// Destructor, keeps the commands in the config, if required.
-    virtual ~shell();
+    ~shell() override;
 
     /// Virtual interface
 

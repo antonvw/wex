@@ -2,11 +2,10 @@
 // Name:      app.cpp
 // Purpose:   Implementation of wex report sample classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "app.h"
-#include <wex/wex.h>
 #include <wx/aboutdlg.h>
 #ifndef __WXMSW__
 #include "app.xpm"
@@ -30,8 +29,7 @@ bool app::OnInit()
 }
 
 frame::frame()
-  : wex::report::frame()
-  , m_notebook(new wex::notebook(wex::data::window().style(
+  : m_notebook(new wex::notebook(wex::data::window().style(
       wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_WINDOWLIST_BUTTON)))
   , m_stc(new wex::stc())
 {
@@ -47,7 +45,9 @@ frame::frame()
          {}}),
       "&View"},
      {new wex::menu(
-        {{wxID_ABOUT, "", wex::data::menu().action([=, this](wxCommandEvent& event) {
+        {{wxID_ABOUT,
+          "",
+          wex::data::menu().action([=, this](wxCommandEvent& event) {
             wxAboutDialogInfo info;
             info.SetIcon(GetIcon());
             info.SetVersion(wex::get_version_info().get());
@@ -55,6 +55,20 @@ frame::frame()
             wxAboutBox(info);
           })}}),
       "&Help"}}));
+
+  pane_add(
+    {{m_stc,
+      wxAuiPaneInfo()
+        .CenterPane()
+        .Caption("STC")
+        .CloseButton(false)
+        .MaximizeButton(true)},
+     {m_notebook,
+      wxAuiPaneInfo().CloseButton(false).Bottom().MinSize(wxSize(250, 250))},
+     {new wex::report::dirctrl(this),
+      wxAuiPaneInfo().Caption("DirCtrl").Left().MinSize(wxSize(250, 250))}},
+    // a perspective gives problems
+    std::string());
 
   get_toolbar()->add_standard();
 
@@ -72,14 +86,6 @@ frame::frame()
                            .key(vw->data().type_description())
                            .select());
   }
-
-  pane_add(
-    {{m_stc,
-      wxAuiPaneInfo().CenterPane().CloseButton(false).MaximizeButton(true)},
-     {m_notebook,
-      wxAuiPaneInfo().CloseButton(false).Bottom().MinSize(wxSize(250, 250))},
-     {new wex::report::dirctrl(this),
-      wxAuiPaneInfo().Caption("DirCtrl").Left().MinSize(wxSize(250, 250))}});
 
   wex::report::dir dir(
     (wex::listview*)m_notebook->page_by_key(

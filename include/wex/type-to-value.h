@@ -2,7 +2,7 @@
 // Name:      type-to-value.h
 // Purpose:   Declaration of class wex::type_to_value
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -13,37 +13,49 @@
 namespace wex
 {
   /// Convert a general type to string, for int or string type.
-  template <typename T>
-  class type_to_value
+  template <typename T> class type_to_value
   {
   public:
     /// Constructor, using string argument.
-    type_to_value(const std::string& v): m_v(v) {;};
+    type_to_value(const std::string& v)
+      : m_v(v)
+    {
+      ;
+    };
 
     /// Returns value as a string.
-    const auto & get() const {return m_v;};
+    const auto& get() const { return m_v; };
 
     /// Returns value as a string.
-    const auto & get_string() const {return m_v;};
+    const auto& get_string() const { return m_v; };
+
   private:
     const std::string& m_v;
   };
 
   /// Convert a general type to int.
-  template <>
-  class type_to_value< int >
+  template <> class type_to_value<int>
   {
   public:
     /// Constructor, using int argument.
-    type_to_value(int v): m_i(v) {;}; 
+    type_to_value(int v)
+      : m_i(v)
+    {
+      ;
+    };
 
     /// Constructor, using string argument.
-    type_to_value(const std::string& v): m_s(v) {;};
+    type_to_value(const std::string& v)
+      : m_s(v)
+    {
+      ;
+    };
 
     /// Returns value as an integer.
-    int get() const 
+    int get() const
     {
-      if (m_i != 0) return m_i;
+      if (m_i != 0)
+        return m_i;
 
       try
       {
@@ -66,9 +78,10 @@ namespace wex
     };
 
     /// Returns value a string.
-    const auto get_string() const 
+    const auto get_string() const
     {
-      if (!m_s.empty()) return m_s;
+      if (!m_s.empty())
+        return m_s;
 
       try
       {
@@ -91,8 +104,9 @@ namespace wex
         return m_s;
       }
     };
+
   private:
-    const int m_i = 0;
-    const std::string m_s = std::string();
+    const int         m_i{0};
+    const std::string m_s{std::string()};
   };
-};
+}; // namespace wex

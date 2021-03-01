@@ -12,6 +12,7 @@
 #include <wex/frame.h>
 #include <wex/listitem.h>
 #include <wex/log.h>
+#include <wex/menu.h>
 #include <wex/report/defs.h>
 #include <wex/report/dir.h>
 #include <wex/report/frame.h>

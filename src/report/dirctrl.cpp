@@ -2,11 +2,11 @@
 // Name:      dirctrl.cpp
 // Purpose:   Implementation of class wex::report::dirctrl
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <numeric>
 #include <wex/bind.h>
-#include <wex/core.h>
 #include <wex/lexers.h>
 #include <wex/path.h>
 #include <wex/report/defs.h>
@@ -61,13 +61,14 @@ wex::report::dirctrl::dirctrl(frame* frame, const data::window& data)
       },
       ID_EDIT_VCS_LOWEST + 1},
      {[=, this](wxCommandEvent& event) {
-        std::string clipboard;
-        const auto  v(to_vector_string(*this).get());
-        for (const auto& it : v)
-        {
-          clipboard += it + "\n";
-        }
-        clipboard_add(clipboard);
+        const auto v(to_vector_string(*this).get());
+        clipboard_add(std::accumulate(
+          v.begin(),
+          v.end(),
+          std::string(),
+          [](const std::string& a, const std::string& b) {
+            return a + b + "\n";
+          }));
       },
       ID_TREE_COPY},
      {[=, this](wxCommandEvent& event) {
@@ -132,9 +133,10 @@ wex::report::dirctrl::dirctrl(frame* frame, const data::window& data)
       menu.append({{ID_EDIT_OPEN, _("&Open")}, {}});
     }
 
-    menu.append({{ID_TREE_COPY,
-                  wxGetStockLabel(wxID_COPY),
-                  data::menu().art(wxART_COPY)}});
+    menu.append(
+      {{ID_TREE_COPY,
+        wxGetStockLabel(wxID_COPY),
+        data::menu().art(wxART_COPY)}});
 
     if (vcs::dir_exists(filename))
     {

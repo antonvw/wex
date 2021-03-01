@@ -17,7 +17,6 @@
 #include <wex/core.h>
 #include <wex/ctags.h>
 #include <wex/frd.h>
-#include <wex/hexmode.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
 #include <wex/macro-mode.h>
@@ -1386,12 +1385,12 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
     m_motion_commands.begin(),
     m_motion_commands.end(),
     [&](auto const& e) {
-      for (const auto& r : e.first)
-      {
-        if (r == command[0])
-          return true;
-      }
-      return false;
+      return std::any_of(
+        e.first.begin(),
+        e.first.end(),
+        [command](const auto& p) {
+          return p == command[0];
+        });
     });
 
   if (it == m_motion_commands.end())
@@ -1679,15 +1678,12 @@ bool wex::vi::other_command(std::string& command)
         [command](auto const& e) {
           if (!isalpha(e.first.front()))
           {
-            for (const auto& r : e.first)
-            {
-              if (r == command.front())
-              {
-                return true;
-              }
-            }
-
-            return false;
+            return std::any_of(
+              e.first.begin(),
+              e.first.end(),
+              [command](const auto& p) {
+                return p == command.front();
+              });
           }
           else
           {

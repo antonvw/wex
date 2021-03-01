@@ -2,7 +2,7 @@
 // Name:      odbc.h
 // Purpose:   Declaration of wex::odbc class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -33,7 +33,7 @@ namespace wex
 
     /// Destructor.
     /// Logs off.
-    virtual ~odbc();
+    ~odbc();
 
     /// Returns the datasource connected to or to connect to.
     const std::string datasource() const;

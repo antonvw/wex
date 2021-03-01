@@ -260,10 +260,13 @@ void wex::macros::parse_node_macro(const pugi::xml_node& node)
   {
     std::vector<std::string> v;
 
-    for (const auto& command : node.children())
-    {
-      v.emplace_back(command.text().get());
-    }
+    std::transform(
+      node.children().begin(),
+      node.children().end(),
+      std::back_inserter(v),
+      [](const auto& t) {
+        return t.text().get();
+      });
 
     m_macros.insert({node.attribute("name").value(), v});
   }
@@ -294,9 +297,7 @@ bool wex::macros::record(const std::string& text, bool new_command)
     f->record(text);
   }
 
-  if (
-    !m_mode.is_recording() || (m_mode.is_recording() && m_mode.is_playback()) ||
-    text.empty())
+  if (!m_mode.is_recording() || m_mode.is_playback() || text.empty())
   {
     return false;
   }
@@ -491,21 +492,14 @@ bool wex::macros::starts_with(const std::string_view& text)
     return false;
   }
 
-  for (const auto& it : m_macros)
-  {
-    if (it.first.substr(0, text.size()) == text)
-    {
-      return true;
-    }
-  }
-
-  for (const auto& it : m_variables)
-  {
-    if (it.first.substr(0, text.size()) == text)
-    {
-      return true;
-    }
-  }
-
-  return false;
+  return (
+    std::any_of(
+      m_macros.begin(),
+      m_macros.end(),
+      [text](const auto& p) {
+        return p.first.substr(0, text.size()) == text;
+      }) ||
+    std::any_of(m_variables.begin(), m_variables.end(), [text](const auto& p) {
+      return p.first.substr(0, text.size()) == text;
+    }));
 }

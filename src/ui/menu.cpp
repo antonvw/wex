@@ -41,8 +41,8 @@ wex::menu::menu(menu_t style, const std::vector<menu_item>& items)
 }
 
 wex::menu::menu(const std::vector<menu_item>& items)
+  : m_style(menu_t().set(DEFAULT))
 {
-  m_style = menu_t().set(DEFAULT);
   append(items);
 }
 

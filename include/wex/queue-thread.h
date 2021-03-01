@@ -2,7 +2,7 @@
 // Name:      queue-thread.h
 // Purpose:   Declaration of class wex::queue_thread
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -46,7 +46,7 @@ namespace wex
       , m_timeout(timeout_ms){};
 
     /// Destructor.
-    virtual ~queue_thread(){};
+    ~queue_thread(){};
 
     /// Emplaces event on the queue.
     /// The thread pool takes care of reading and clearing

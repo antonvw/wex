@@ -18,7 +18,7 @@
     return;                      \
   wxArrayString paths;           \
   in.GetPaths(paths);            \
-  FromArrayString(paths);
+  from_array_string(paths);
 
 namespace wex
 {
@@ -29,14 +29,11 @@ namespace wex
     /// Constructor, using std::string.
     to_container(const std::vector<std::string>& in)
     {
-      for (const auto& it : in)
-      {
-        m_container.emplace_back(it);
-      }
+      std::copy(in.begin(), in.end(), back_inserter(m_container));
     };
 
     /// Constructor, using array string.
-    to_container(const wxArrayString& in) { FromArrayString(in); };
+    to_container(const wxArrayString& in) { from_array_string(in); };
 
     /// Constructor, using file dialog.
     /// Fills the container with the full paths of the files chosen.
@@ -63,7 +60,11 @@ namespace wex
         // if escape space, add next token
         if (token.back() == '\\')
         {
-          token = token.substr(0, token.size() - 1) + " " + *++it;
+          ++it;
+          if (it != tok.end())
+          {
+            token = token.substr(0, token.size() - 1) + " " + *it;
+          }
         }
         m_container.emplace_back(token);
       }
@@ -108,7 +109,7 @@ namespace wex
     const auto& get() const { return m_container; };
 
   private:
-    void FromArrayString(const wxArrayString& in)
+    void from_array_string(const wxArrayString& in)
     {
       for (const auto& it : in)
       {

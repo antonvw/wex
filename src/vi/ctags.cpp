@@ -3,7 +3,7 @@
 // Purpose:   Implementation of class wex::ctags
 //            https://github.com/universal-ctags/ctags
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -462,15 +462,12 @@ void wex::ctags::open(const std::string& filename)
   {
     do_open(filename);
   }
-  else
+  else if (const std::vector<std::string> v{"./", config::dir() + "/"};
+           std::any_of(v.begin(), v.end(), [filename](const auto& p) {
+             return do_open(p + filename);
+           }))
   {
-    for (const auto& it : std::vector<std::string>{"./", config::dir() + "/"})
-    {
-      if (do_open(it + filename))
-      {
-        return; // finish, we found a file
-      }
-    }
+    return;
   }
 
   if (filename != DEFAULT_TAGFILE && m_file == nullptr)
@@ -492,7 +489,7 @@ bool wex::ctags::previous()
     m_iterator = m_matches.end();
   }
 
-  m_iterator--;
+  --m_iterator;
   m_iterator->second.open_file(get_frame());
 
   return true;

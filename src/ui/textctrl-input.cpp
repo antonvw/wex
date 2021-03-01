@@ -2,7 +2,7 @@
 // Name:      textctrl.cpp
 // Purpose:   Implementation of wex::textctrl_input class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/config.h>
@@ -91,12 +91,12 @@ bool wex::textctrl_input::set(int key, textctrl* tc)
   {
     case WXK_DOWN:
       if (m_iterator != m_values.cbegin())
-        m_iterator--;
+        --m_iterator;
       break;
 
     case WXK_END:
       m_iterator = m_values.cend();
-      m_iterator--;
+      --m_iterator;
       break;
 
     case WXK_HOME:
@@ -105,7 +105,7 @@ bool wex::textctrl_input::set(int key, textctrl* tc)
 
     case WXK_UP:
       if (m_iterator != m_values.cend())
-        m_iterator++;
+        ++m_iterator;
       break;
 
     case WXK_PAGEDOWN:
@@ -121,7 +121,7 @@ bool wex::textctrl_input::set(int key, textctrl* tc)
       else
       {
         m_iterator = m_values.cend();
-        m_iterator--;
+        --m_iterator;
       }
       break;
 

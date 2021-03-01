@@ -10,6 +10,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
 #include <wex/bind.h>
 #include <wex/core.h>
@@ -137,13 +138,6 @@ wex::grid::grid(const data::window& data)
       // your selection and move mouse and drop elsewhere.
       // So, if not clicked in the selection, do nothing, this was no drag.
       if (!IsInSelection(event.GetRow(), event.GetCol()))
-      {
-        event.Skip();
-        return;
-      }
-
-      // Is it allowed to drag current selection??
-      if (!is_allowed_drag_selection())
       {
         event.Skip();
         return;
@@ -310,12 +304,10 @@ bool wex::grid::find_next(const std::string& text, bool forward)
   static int  start_col;
   static int  end_col;
 
-  wxString text_use = text;
-
-  if (!find_replace_data::get()->match_case())
-  {
-    text_use.MakeUpper();
-  }
+  const std::string text_use(
+    !find_replace_data::get()->match_case() ?
+      boost::algorithm::to_upper_copy(text) :
+      text);
 
   wxGridCellCoords grid_cursor(GetGridCursorRow(), GetGridCursorCol());
 
@@ -374,23 +366,23 @@ bool wex::grid::find_next(const std::string& text, bool forward)
          i != end_row && !match;
          (forward ? i++ : i--))
     {
-      wxString text = GetCellValue(i, j);
+      std::string cv = GetCellValue(i, j);
 
       if (!find_replace_data::get()->match_case())
       {
-        text.MakeUpper();
+        boost::algorithm::to_upper(cv);
       }
 
       if (find_replace_data::get()->match_word())
       {
-        if (text == text_use)
+        if (cv == text_use)
         {
           match = wxGridCellCoords(i, j);
         }
       }
       else
       {
-        if (text.Contains(text_use))
+        if (cv.find(text_use) != std::string::npos)
         {
           match = wxGridCellCoords(i, j);
         }
@@ -515,11 +507,6 @@ const std::string wex::grid::get_selected_cells_value() const
   return text.str();
 }
 
-bool wex::grid::is_allowed_drag_selection()
-{
-  return true;
-}
-
 bool wex::grid::is_allowed_drop_selection(
   const wxGridCellCoords& drop_coords,
   const std::string&      data)
@@ -602,11 +589,11 @@ void wex::grid::set_cells_value(
 
     auto next_col = start_coords.GetCol();
 
-    for (auto it = tok.begin(); it != tok.end(); ++it)
+    for (auto t = tok.begin(); t != tok.end(); ++t)
     {
       if (!IsReadOnly(start_at_row, next_col))
       {
-        set_cell_value(wxGridCellCoords(start_at_row, next_col), *it);
+        set_cell_value(wxGridCellCoords(start_at_row, next_col), *t);
       }
 
       next_col++;

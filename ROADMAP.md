@@ -1,12 +1,11 @@
 # roadmap
 - .,'xd -> incorrect last line
 - .,$d -> no action
-- update doc, add boost etc.
+- add replace to regex
 
 ## backlog
 - allow dynamic libs
 - global with empty pattern
-- use clang-tidy, modernize-use-override and others
 - avoid tmpnam
 - start up with recent project, close project
   -> windows appear
