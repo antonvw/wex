@@ -8,9 +8,6 @@
 #include <iostream>
 #include <sstream>
 
-#include <boost/log/core.hpp>
-#include <boost/log/expressions.hpp>
-#include <boost/log/trivial.hpp>
 #include <wex/cmdline.h>
 #include <wex/config.h>
 #include <wex/core.h>
@@ -25,8 +22,6 @@
   v->second.FIELD(it.second.as<TYPE>()); \
   if (data.save())                       \
     m_cfg.item(before(it.first, ',')).set(it.second.as<TYPE>());
-
-namespace logging = boost::log;
 
 wex::cmdline_imp::function_t::function_t(
   std::function<void(const std::any&)> f,
@@ -60,10 +55,9 @@ wex::cmdline_imp::cmdline_imp(bool add_standard_options, config& cfg)
   {
     m_desc.add_options()("version", "displays version information and exits")(
       "level,V",
-      po::value<int>()->default_value(4),
-      "activates verbosity down to verbose level (valid range: 1-6)")(
-      "verbose,v",
-      "activates maximum (trace) verbosity")(
+      po::value<int>()->default_value(5),
+      "activates verbosity down to verbose level (valid range: 1-6),\
+      1 trace, .. 6 fatal")("verbose,v", "activates maximum (trace) verbosity")(
       "logfile,D",
       po::value<std::string>(),
       "sets log file");
@@ -95,10 +89,10 @@ bool wex::cmdline_imp::parse(data::cmdline& data)
 
   po::notify(m_vm);
 
+  int loglevel = m_vm.count("level") ? m_vm["level"].as<int>() : 0;
+
   if (m_vm.count("help") || m_vm.count("version"))
   {
-    std::stringstream ss;
-
     if (data.av() != nullptr)
     {
       if (m_vm.count("help"))
@@ -111,6 +105,7 @@ bool wex::cmdline_imp::parse(data::cmdline& data)
     {
       if (m_vm.count("help"))
       {
+        std::stringstream ss;
         ss << m_desc;
         data.help(ss.str());
       }
@@ -124,44 +119,7 @@ bool wex::cmdline_imp::parse(data::cmdline& data)
   }
   else if (m_vm.count("verbose"))
   {
-    logging::core::get()->set_filter(
-      logging::trivial::severity >= logging::trivial::trace);
-  }
-  else if (m_vm.count("level"))
-  {
-    if (const int level = m_vm["level"].as<int>(); level < 1 || level > 6)
-    {
-      std::cout << "unsupported level\n";
-      return false;
-    }
-    else
-      switch (level)
-      {
-        case 1:
-          logging::core::get()->set_filter(
-            logging::trivial::severity >= logging::trivial::trace);
-          break;
-        case 2:
-          logging::core::get()->set_filter(
-            logging::trivial::severity >= logging::trivial::debug);
-          break;
-        case 3:
-          logging::core::get()->set_filter(
-            logging::trivial::severity >= logging::trivial::info);
-          break;
-        case 4:
-          logging::core::get()->set_filter(
-            logging::trivial::severity >= logging::trivial::warning);
-          break;
-        case 5:
-          logging::core::get()->set_filter(
-            logging::trivial::severity >= logging::trivial::error);
-          break;
-        case 6:
-          logging::core::get()->set_filter(
-            logging::trivial::severity >= logging::trivial::fatal);
-          break;
-      }
+    loglevel = 1;
   }
 
   for (const auto& it : m_vm)
@@ -217,6 +175,7 @@ bool wex::cmdline_imp::parse(data::cmdline& data)
   }
 
   log::init(
+    loglevel,
     m_vm.count("logfile") ? m_vm["logfile"].as<std::string>() : std::string());
 
   return true;

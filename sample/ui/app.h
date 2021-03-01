@@ -19,9 +19,6 @@
 /// Derive your application from wex::app.
 class app : public wex::app
 {
-public:
-  app() {}
-
 private:
   bool OnInit() override;
 };

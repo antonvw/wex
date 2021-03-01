@@ -24,15 +24,14 @@ namespace logging = boost::log;
 
 enum level_t
 {
-  // follow boost
-  LEVEL_TRACE,
+  LEVEL_DEFAULT = 0, // part of API, default loglevel, do not change
+  LEVEL_TRACE,       // should follow boost::log
   LEVEL_DEBUG,
   LEVEL_INFO,
   LEVEL_WARNING,
   LEVEL_ERROR,
   LEVEL_FATAL,
-  // wxLog
-  LEVEL_STATUS,
+  LEVEL_STATUS,      // from wxLog
 };
 
 wex::log::log(const std::string& topic)
@@ -184,6 +183,23 @@ void wex::log::flush()
   {
     switch (m_level)
     {
+      case LEVEL_DEBUG:
+        BOOST_LOG_TRIVIAL(debug) << text;
+        break;
+
+      case LEVEL_DEFAULT:
+      case LEVEL_ERROR:
+        BOOST_LOG_TRIVIAL(error) << text;
+        break;
+
+      case LEVEL_FATAL:
+        BOOST_LOG_TRIVIAL(fatal) << text;
+        break;
+
+      case LEVEL_INFO:
+        BOOST_LOG_TRIVIAL(info) << text;
+        break;
+
       case LEVEL_STATUS:
         // this is a wxMSW bug, crash in test -tc=wex::stc -sc=find
         if (text.find("%") == std::string::npos)
@@ -192,24 +208,16 @@ void wex::log::flush()
         }
         break;
 
-      case LEVEL_DEBUG:
-        BOOST_LOG_TRIVIAL(debug) << text;
-        break;
-      case LEVEL_ERROR:
-        BOOST_LOG_TRIVIAL(error) << text;
-        break;
-      case LEVEL_FATAL:
-        BOOST_LOG_TRIVIAL(fatal) << text;
-        break;
-      case LEVEL_INFO:
-        BOOST_LOG_TRIVIAL(info) << text;
-        break;
       case LEVEL_TRACE:
         BOOST_LOG_TRIVIAL(trace) << text;
         break;
+
       case LEVEL_WARNING:
         BOOST_LOG_TRIVIAL(warning) << text;
         break;
+
+      default:
+        assert(0);
     }
   }
 }
@@ -227,12 +235,54 @@ wex::log wex::log::info(const std::string& topic)
   return log(topic, LEVEL_INFO);
 }
 
-void wex::log::init(const std::string& default_logfile)
+void wex::log::init(size_t loglevel, const std::string& default_logfile)
 {
   if (m_initialized)
   {
     return;
   }
+
+  if (loglevel > 6)
+  {
+    std::cout << "unsupported level\n";
+  }
+  else
+    switch (loglevel)
+    {
+      case LEVEL_DEBUG:
+        logging::core::get()->set_filter(
+          logging::trivial::severity >= logging::trivial::debug);
+        break;
+
+      case LEVEL_DEFAULT:
+      case LEVEL_ERROR:
+        logging::core::get()->set_filter(
+          logging::trivial::severity >= logging::trivial::error);
+        break;
+
+      case LEVEL_FATAL:
+        logging::core::get()->set_filter(
+          logging::trivial::severity >= logging::trivial::fatal);
+        break;
+
+      case LEVEL_INFO:
+        logging::core::get()->set_filter(
+          logging::trivial::severity >= logging::trivial::info);
+        break;
+
+      case LEVEL_TRACE:
+        logging::core::get()->set_filter(
+          logging::trivial::severity >= logging::trivial::trace);
+        break;
+
+      case LEVEL_WARNING:
+        logging::core::get()->set_filter(
+          logging::trivial::severity >= logging::trivial::warning);
+        break;
+
+      default:
+        assert(0);
+    }
 
   logging::add_common_attributes();
 

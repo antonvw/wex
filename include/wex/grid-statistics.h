@@ -12,8 +12,7 @@
 
 namespace wex
 {
-  /// Helper class for adding clear menu to the grid, and
-  /// calling clear for the statistics.
+  /// Offers a class to show statistics on a grid.
   template <class T>
   class grid_statistics
     : public grid
@@ -38,25 +37,29 @@ namespace wex
       use_drag_and_drop(false);
     };
 
+    /// Clears statistics and grid.
     void clear() override
     {
       statistics<T>::clear();
-      m_rows.clear();
+      m_keys.clear();
 
       ClearGrid();
+
       if (GetNumberRows() > 0)
       {
         DeleteRows(0, GetNumberRows());
       };
     };
 
+    /// Returns keys.
+    const auto& get_keys() const { return m_keys; };
+
+    /// Sets key to value, and refreshes grid.
     const T set(const std::string& key, T value) override
     {
       statistics<T>::set(key, value);
 
-      const auto& it = m_rows.find(key);
-
-      if (it != m_rows.end())
+      if (const auto& it = m_keys.find(key); it != m_keys.end())
       {
         SetCellValue(it->second, 1, std::to_string(value));
       }
@@ -65,7 +68,7 @@ namespace wex
         AppendRows(1);
 
         const auto row = GetNumberRows() - 1;
-        m_rows.insert({key, row});
+        m_keys.insert({key, row});
 
         SetCellValue(row, 0, key);
         SetCellValue(row, 1, std::to_string(value));
@@ -88,6 +91,11 @@ namespace wex
       /// show col labels (Item, Value)
       bool hide_col_labels = true)
     {
+      if (GetNumberRows() > 0)
+      {
+        DeleteRows(0, GetNumberRows());
+      }
+
       if (hide_row_labels)
       {
         HideRowLabels();
@@ -109,7 +117,7 @@ namespace wex
         const auto row = GetNumberRows() - 1;
         SetCellValue(row, 0, it.first);
         SetCellValue(row, 1, std::to_string(it.second));
-        m_rows[it.first] = row;
+        m_keys[it.first] = row;
       }
 
       AutoSizeColumn(0);
@@ -128,6 +136,6 @@ namespace wex
     };
 
   private:
-    std::map<std::string, int> m_rows;
+    std::map<std::string, int> m_keys;
   };
 }; // namespace wex

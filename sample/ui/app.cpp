@@ -113,7 +113,8 @@ frame::frame()
   , m_process(new wex::process())
   , m_shell(new wex::shell(wex::data::stc(), ">"))
   , m_stc(new wex::stc())
-  , m_statistics(new wex::grid_statistics<int>(wex::data::window().parent(m_notebook)))
+  , m_statistics(
+      new wex::grid_statistics<int>(wex::data::window().parent(m_notebook)))
   , m_stc_lexers(new wex::stc(wex::lexers::get()->get_filename()))
 {
   wex::process::prepare_output(this);
@@ -247,6 +248,7 @@ frame::frame()
 
   wex::bind(this).command(
     {{[=, this](wxCommandEvent& event) {
+        m_statistics->inc(std::to_string(event.GetId()));
         wxAboutDialogInfo info;
         info.SetIcon(GetIcon());
         info.SetVersion(wex::get_version_info().get());
@@ -353,7 +355,8 @@ frame::frame()
           data.parent(m_notebook);
           m_notebook->add_page(wex::data::notebook()
                                  .page(m_statistics->show())
-                                 .caption("Statistics"));
+                                 .caption("Statistics")
+                                 .key("Statistics"));
         }
       },
       ID_STATISTICS_SHOW},
@@ -383,15 +386,10 @@ frame::frame()
 
 bool frame::allow_close(wxWindowID id, wxWindow* page)
 {
-  if (page == get_listview())
-  {
-    // prevent possible crash
-    return false;
-  }
-  else
-  {
-    return wex::managed_frame::allow_close(id, page);
-  }
+  return page == get_listview() ?
+           // prevent possible crash
+           false :
+           wex::managed_frame::allow_close(id, page);
 }
 
 void frame::on_command(wxCommandEvent& event)
