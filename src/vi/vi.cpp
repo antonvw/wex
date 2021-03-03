@@ -9,7 +9,6 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
 #include <functional>
-#include <regex>
 #include <sstream>
 #include <wex/addressrange.h>
 #include <wex/app.h>

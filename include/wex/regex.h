@@ -9,6 +9,7 @@
 
 #include <regex>
 #include <string>
+#include <tuple>
 #include <vector>
 
 namespace wex
@@ -17,15 +18,21 @@ namespace wex
   class regex
   {
   public:
-    /// Constructor, provide single regular expression.
-    explicit regex(
+    /// Constructor, provide single regular expression, and optional callback.
+    regex(
       const std::string&    regex,
+      std::function<void()> f     = nullptr,
       std::regex::flag_type flags = std::regex::ECMAScript);
 
     /// Constructor, provide vector with regular expressions.
-    explicit regex(
+    regex(
       const std::vector<std::string>& regex,
       std::regex::flag_type           flags = std::regex::ECMAScript);
+
+    /// Constructor, provide vector with regular expressions and callbacks.
+    regex(
+      const std::vector<std::pair<std::string, std::function<void()>>>& regex,
+      std::regex::flag_type flags = std::regex::ECMAScript);
 
     /// Regular expression match.
     /// Returns:
@@ -40,6 +47,14 @@ namespace wex
     /// Returns reference to the requested submatch element.
     const std::string& operator[](size_t pos) const { return m_matches[pos]; };
 
+    /// After match or search, replace text with replacement.
+    /// Returns true if a regex is available, and regex_replace was invoked.
+    bool replace(
+      std::string&       text,
+      const std::string& replacement,
+      std::regex_constants::match_flag_type =
+        std::regex_constants::format_sed) const;
+
     /// Regular expression search.
     /// Returns:
     /// - -1: if text does not match or there is an error
@@ -50,28 +65,28 @@ namespace wex
     /// Returns number of submatches.
     auto size() const { return m_matches.size(); };
 
-    /// Returns the regex pair that matched.
+    /// Returns the tuple element that matched.
     const auto& which() const { return m_which; };
 
-    /// Returns the regex pair no that matched, or -1 if no match was found.
+    /// Returns the regex tuple no that matched, or -1 if no match was found.
     auto which_no() const { return m_which_no; };
 
   private:
-    enum find_t
-    {
-      REGEX_SEARCH,
-      REGEX_MATCH,
-    };
+    enum class find_t;
 
-    /// vector of pair regex, regex string
-    typedef std::vector<std::pair<std::regex, std::string>> regex_t;
+    /// a regex element: tuple regex, callback, regex string
+    typedef std::tuple<std::regex, std::function<void()>, std::string>
+      regex_e_t;
+
+    /// vector of regex elements
+    typedef std::vector<regex_e_t> regex_t;
 
     int find(const std::string& text, find_t);
 
     const regex_t m_regex;
     int           m_which_no{-1};
 
-    std::vector<std::string>           m_matches;
-    std::pair<std::regex, std::string> m_which;
+    std::vector<std::string> m_matches;
+    regex_e_t                m_which;
   };
 } // namespace wex

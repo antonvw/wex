@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <pugixml.hpp>
-#include <regex>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -242,11 +241,7 @@ bool wex::shell_expansion(std::string& command)
     }
     else
     {
-      command = std::regex_replace(
-        command,
-        r.which().first,
-        process.get_stdout(),
-        std::regex_constants::format_sed);
+      r.replace(command, process.get_stdout());
     }
   }
 
