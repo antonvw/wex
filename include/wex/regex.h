@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <functional>
 #include <regex>
 #include <string>
 #include <tuple>
@@ -18,10 +19,15 @@ namespace wex
   class regex
   {
   public:
-    /// Constructor, provide single regular expression, and optional callback.
+    /// Type that specifies the matches.
+    typedef std::vector<std::string> match_t;
+
+    /// Callback type.
+    typedef std::function<void(const match_t&)> function_t;
+
     regex(
       const std::string&    regex,
-      std::function<void()> f     = nullptr,
+      function_t            f     = nullptr,
       std::regex::flag_type flags = std::regex::ECMAScript);
 
     /// Constructor, provide vector with regular expressions.
@@ -31,7 +37,7 @@ namespace wex
 
     /// Constructor, provide vector with regular expressions and callbacks.
     regex(
-      const std::vector<std::pair<std::string, std::function<void()>>>& regex,
+      const std::vector<std::pair<std::string, function_t>>& regex,
       std::regex::flag_type flags = std::regex::ECMAScript);
 
     /// Regular expression match.
@@ -75,8 +81,7 @@ namespace wex
     enum class find_t;
 
     /// a regex element: tuple regex, callback, regex string
-    typedef std::tuple<std::regex, std::function<void()>, std::string>
-      regex_e_t;
+    typedef std::tuple<std::regex, function_t, std::string> regex_e_t;
 
     /// vector of regex elements
     typedef std::vector<regex_e_t> regex_t;
@@ -86,7 +91,7 @@ namespace wex
     const regex_t m_regex;
     int           m_which_no{-1};
 
-    std::vector<std::string> m_matches;
-    regex_e_t                m_which;
+    match_t   m_matches;
+    regex_e_t m_which;
   };
 } // namespace wex

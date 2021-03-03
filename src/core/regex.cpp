@@ -16,7 +16,7 @@ enum class wex::regex::find_t
 
 wex::regex::regex(
   const std::string&    str,
-  std::function<void()> f,
+  function_t            f,
   std::regex::flag_type flags)
   : m_regex({{std::regex(str.c_str(), flags), f, str}})
 {
@@ -40,12 +40,11 @@ wex::regex::regex(
 }
 
 wex::regex::regex(
-  const std::vector<std::pair<std::string, std::function<void()>>>& regex,
-  std::regex::flag_type                                             flags)
+  const std::vector<std::pair<std::string, function_t>>& regex,
+  std::regex::flag_type                                  flags)
   : m_regex([](
-              const std::vector<std::pair<std::string, std::function<void()>>>&
-                                    reg_str,
-              std::regex::flag_type flags) {
+              const std::vector<std::pair<std::string, function_t>>& reg_str,
+              std::regex::flag_type                                  flags) {
     regex_t v;
 
     for (const auto& r : reg_str)
@@ -90,7 +89,7 @@ int wex::regex::find(const std::string& text, find_t how)
 
         if (std::get<1>(reg) != nullptr)
         {
-          std::get<1>(reg)();
+          std::get<1>(reg)(m_matches);
         }
 
         return (int)m_matches.size();

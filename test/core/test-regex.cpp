@@ -36,10 +36,10 @@ TEST_CASE("wex::regex")
   {
     wex::regex r(
       {{"99xx77",
-        []() {
+        [](const wex::regex::match_t&) {
           wex::log::trace("1");
         }},
-       {"([0-9]+)([a-z]+)([0-9]+)", []() {
+       {"([0-9]+)([a-z]+)([0-9]+)", [](const wex::regex::match_t&) {
           wex::log::trace("2");
         }}});
 

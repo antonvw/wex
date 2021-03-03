@@ -275,30 +275,30 @@ bool wex::cmdline::parse_set(data::cmdline& data) const
   bool  found = false;
   regex r(
     {{"all",
-      [&, this]() {
+      [&, this](const regex::match_t& m) {
         std::string help;
         get_all(help);
         data.help(help);
       }},
      // [nooption ...]
      {"no([a-z0-9]+)(.*)",
-      [&, this]() {
-        if (set_no_option(r.matches(), data.save()))
+      [&, this](const regex::match_t& m) {
+        if (set_no_option(m, data.save()))
           found = true;
       }},
      // [option? ...]
      {"([a-z0-9]+)[ \t]*\\?(.*)",
-      [&, this]() {
+      [&, this](const regex::match_t& m) {
         std::string help;
-        if (get_single(r.matches(), help))
+        if (get_single(m, help))
         {
           data.help(help);
           found = true;
         }
       }},
      // [option[=[value]] ...]
-     {"([a-z0-9]+)(=[a-z0-9]+)?(.*)", [&, this]() {
-        if (set_option(r.matches(), data.save()))
+     {"([a-z0-9]+)(=[a-z0-9]+)?(.*)", [&, this](const regex::match_t& m) {
+        if (set_option(m, data.save()))
           found = true;
       }}});
 

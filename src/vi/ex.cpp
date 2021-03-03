@@ -446,40 +446,40 @@ bool wex::ex::address_parse(
 
     if (regex v({// 2addr % range
                  {"^%" + cmds_2addr,
-                  [&]() {
+                  [&](const regex::match_t& m) {
                     type  = address_t::RANGE;
                     range = "%";
-                    cmd   = v[0];
-                    text  = v[1];
+                    cmd   = m[0];
+                    text  = m[1];
                   }},
                  // 1addr (or none)
                  {"^(" + addr + ")?" + cmds_1addr,
-                  [&]() {
+                  [&](const regex::match_t& m) {
                     type  = address_t::ONE;
-                    range = v[0];
-                    cmd   = (v[1] == "mark" ? "k" : v[1]);
-                    text  = boost::algorithm::trim_left_copy(v[2]);
+                    range = m[0];
+                    cmd   = (m[1] == "mark" ? "k" : m[1]);
+                    text  = boost::algorithm::trim_left_copy(m[2]);
                   }},
                  // 2addr
                  {"^(" + addr + ")?(," + addr + ")?" + cmds_2addr,
-                  [&]() {
+                  [&](const regex::match_t& m) {
                     type  = address_t::RANGE;
-                    range = v[0] + v[1];
+                    range = m[0] + m[1];
 
-                    if (v[2].substr(0, 2) == "co")
+                    if (m[2].substr(0, 2) == "co")
                     {
                       cmd = "t";
                     }
-                    else if (v[2].substr(0, 2) == "nu")
+                    else if (m[2].substr(0, 2) == "nu")
                     {
                       cmd = "#";
                     }
                     else
                     {
-                      cmd = v[2];
+                      cmd = m[2];
                     }
 
-                    text = v[3];
+                    text = m[3];
                   }}});
         v.match(text) <= 1)
     {
