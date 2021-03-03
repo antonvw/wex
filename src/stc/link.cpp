@@ -150,7 +150,7 @@ const wex::path wex::link::find_url_or_mime(
   if (!text.empty())
   {
     // hypertext link
-    if (regex v({std::string("(https?:.*)"), "(www.*)"});
+    if (regex v({{"(https?:.*)"}, {"(www.*)"}});
         data.line() == LINE_OPEN_URL && v.search(text) > 0)
     {
       // with a possible delimiter

@@ -169,8 +169,10 @@ wex::debug::debug(wex::managed_frame* frame, wex::process* debug)
           m_stdout.clear();
         }
         else if (regex v(
-                   {m_entry.regex_stdout(debug_entry::regex_t::AT_LINE).c_str(),
-                    m_entry.regex_stdout(debug_entry::regex_t::AT_PATH_LINE)});
+                   {{m_entry.regex_stdout(debug_entry::regex_t::AT_LINE),
+                     nullptr},
+                    {m_entry.regex_stdout(debug_entry::regex_t::AT_PATH_LINE),
+                     nullptr}});
                  v.match(m_stdout) > 0)
         {
           if (v.size() == 2)
@@ -184,9 +186,10 @@ wex::debug::debug(wex::managed_frame* frame, wex::process* debug)
           m_stdout.clear();
         }
         else if (regex v(
-                   {m_entry.regex_stdout(debug_entry::regex_t::VARIABLE_MULTI)
-                      .c_str(),
-                    m_entry.regex_stdout(debug_entry::regex_t::VARIABLE)});
+                   {{m_entry.regex_stdout(debug_entry::regex_t::VARIABLE_MULTI),
+                     nullptr},
+                    {m_entry.regex_stdout(debug_entry::regex_t::VARIABLE),
+                     nullptr}});
                  v.match(m_stdout) > 0)
         {
           m_stdout.clear();

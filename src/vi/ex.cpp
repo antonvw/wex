@@ -445,55 +445,43 @@ bool wex::ex::address_parse(
     const auto& cmds_2addr(addressrange(this).regex_commands());
 
     if (regex v({// 2addr % range
-                 "^%" + cmds_2addr,
+                 {"^%" + cmds_2addr,
+                  [&](const regex::match_t& m) {
+                    type  = address_t::RANGE;
+                    range = "%";
+                    cmd   = m[0];
+                    text  = m[1];
+                  }},
                  // 1addr (or none)
-                 "^(" + addr + ")?" + cmds_1addr,
+                 {"^(" + addr + ")?" + cmds_1addr,
+                  [&](const regex::match_t& m) {
+                    type  = address_t::ONE;
+                    range = m[0];
+                    cmd   = (m[1] == "mark" ? "k" : m[1]);
+                    text  = boost::algorithm::trim_left_copy(m[2]);
+                  }},
                  // 2addr
-                 "^(" + addr + ")?(," + addr + ")?" + cmds_2addr});
-        v.match(text) > 1)
-    {
-      switch (v.size())
-      {
-        case 2:
-          type  = address_t::RANGE;
-          range = "%";
-          cmd   = v[0];
-          text  = v[1];
-          break;
+                 {"^(" + addr + ")?(," + addr + ")?" + cmds_2addr,
+                  [&](const regex::match_t& m) {
+                    type  = address_t::RANGE;
+                    range = m[0] + m[1];
 
-        case 3:
-          type  = address_t::ONE;
-          range = v[0];
-          cmd   = (v[1] == "mark" ? "k" : v[1]);
-          text  = boost::algorithm::trim_left_copy(v[2]);
-          break;
+                    if (m[2].substr(0, 2) == "co")
+                    {
+                      cmd = "t";
+                    }
+                    else if (m[2].substr(0, 2) == "nu")
+                    {
+                      cmd = "#";
+                    }
+                    else
+                    {
+                      cmd = m[2];
+                    }
 
-        case 4:
-          type  = address_t::RANGE;
-          range = v[0] + v[1];
-
-          if (v[2].substr(0, 2) == "co")
-          {
-            cmd = "t";
-          }
-          else if (v[2].substr(0, 2) == "nu")
-          {
-            cmd = "#";
-          }
-          else
-          {
-            cmd = v[2];
-          }
-
-          text = v[3];
-          break;
-
-        default:
-          assert(0);
-          break;
-      }
-    }
-    else
+                    text = m[3];
+                  }}});
+        v.match(text) <= 1)
     {
       type = address_t::NONE;
       const auto line(address(this, text).get_line());

@@ -272,51 +272,47 @@ bool wex::cmdline::parse_set(data::cmdline& data) const
     by specifying multiple arguments, each separated from the next by one
     or more <blank> characters.
     */
+  bool  found = false;
   regex r(
-    {"all",
-     // [nooption ...]
-     "no([a-z0-9]+)(.*)",
-     // [option? ...]
-     "([a-z0-9]+)[ \t]*\\?(.*)",
-     // [option[=[value]] ...]
-     "([a-z0-9]+)(=[a-z0-9]+)?(.*)"});
-
-  std::string help;
-  bool        found = false;
-
-  for (auto line(boost::algorithm::trim_copy(data.string())); !line.empty();)
-  {
-    switch (r.search(line); r.which_no())
-    {
-      case 0:
+    {{"all",
+      [&, this](const regex::match_t& m) {
+        std::string help;
         get_all(help);
         data.help(help);
-        return true;
-
-      case 1:
-        if (set_no_option(r.matches(), data.save()))
+      }},
+     // [nooption ...]
+     {"no([a-z0-9]+)(.*)",
+      [&, this](const regex::match_t& m) {
+        if (set_no_option(m, data.save()))
           found = true;
-        line = r.matches().back();
-        break;
-
-      case 2:
-        if (get_single(r.matches(), help))
+      }},
+     // [option? ...]
+     {"([a-z0-9]+)[ \t]*\\?(.*)",
+      [&, this](const regex::match_t& m) {
+        std::string help;
+        if (get_single(m, help))
         {
           data.help(help);
           found = true;
         }
-        line = r.matches().back();
-        break;
-
-      case 3:
-        if (set_option(r.matches(), data.save()))
+      }},
+     // [option[=[value]] ...]
+     {"([a-z0-9]+)(=[a-z0-9]+)?(.*)", [&, this](const regex::match_t& m) {
+        if (set_option(m, data.save()))
           found = true;
-        line = r.matches().back();
-        break;
+      }}});
 
-      default:
+  for (auto line(boost::algorithm::trim_copy(data.string())); !line.empty();
+       line = r.matches().back())
+  {
+    switch (r.search(line); r.which_no())
+    {
+      case -1:
         data.help("unmatched cmdline: " + line);
         return false;
+
+      case 0:
+        return true;
     }
   }
 

@@ -5,12 +5,12 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <regex>
 #include <stdio.h>
 #include <string.h>
 #include <wex/addressrange.h>
 #include <wex/frd.h>
 #include <wex/log.h>
+#include <wex/regex.h>
 
 #include "ex-stream-line.h"
 
@@ -104,22 +104,16 @@ void wex::ex_stream_line::handle(char* line, int& pos)
 
       case ACTION_SUBSTITUTE:
       {
-        // if match writes modified line, else write original line
-        const std::regex r(m_data.pattern());
-        char*            pch = line;
-        std::smatch      m;
+        char* pch = line;
 
         if (find_replace_data::get()->is_regex())
         {
+          // if match writes modified line, else write original line
           std::string text(line, pos);
 
-          if (std::regex_search(text, m, r))
+          if (regex r(m_data.pattern()); r.search(text))
           {
-            text = std::regex_replace(
-              text,
-              r,
-              m_data.replacement(),
-              std::regex_constants::format_sed);
+            r.replace(text, m_data.replacement());
             m_actions++;
           }
 
