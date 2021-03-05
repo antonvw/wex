@@ -23,7 +23,6 @@
 #include <wex/menus.h>
 #include <wex/process.h>
 #include <wex/regex.h>
-#include <wex/shell.h>
 #include <wex/stc.h>
 
 #ifdef __WXGTK__
@@ -170,10 +169,8 @@ wex::debug::debug(wex::managed_frame* frame, wex::process* debug)
           m_stdout.clear();
         }
         else if (regex v(
-                   {{m_entry.regex_stdout(debug_entry::regex_t::AT_LINE),
-                     nullptr},
-                    {m_entry.regex_stdout(debug_entry::regex_t::AT_PATH_LINE),
-                     nullptr}});
+                   {{m_entry.regex_stdout(debug_entry::regex_t::AT_PATH_LINE)},
+                    {m_entry.regex_stdout(debug_entry::regex_t::AT_LINE)}});
                  v.search(m_stdout) > 0)
         {
           if (v.size() == 2)
@@ -187,10 +184,9 @@ wex::debug::debug(wex::managed_frame* frame, wex::process* debug)
           m_stdout.clear();
         }
         else if (regex v(
-                   {{m_entry.regex_stdout(debug_entry::regex_t::VARIABLE_MULTI),
-                     nullptr},
-                    {m_entry.regex_stdout(debug_entry::regex_t::VARIABLE),
-                     nullptr}});
+                   {{m_entry.regex_stdout(
+                      debug_entry::regex_t::VARIABLE_MULTI)},
+                    {m_entry.regex_stdout(debug_entry::regex_t::VARIABLE)}});
                  v.search(m_stdout) > 0)
         {
           m_stdout.clear();

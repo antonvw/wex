@@ -201,10 +201,6 @@ bool wex::core::process::stop()
     }
 
     m_io->stop();
-
-    m_es.close();
-    m_is.close();
-    m_os.close();
   }
   catch (std::exception& e)
   {
