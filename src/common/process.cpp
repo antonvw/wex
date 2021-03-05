@@ -5,12 +5,11 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "process-imp.h"
-
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
 #include <vector>
 #include <wex/config.h>
+#include <wex/debug.h>
 #include <wex/ex-stream.h>
 #include <wex/item-dialog.h>
 #include <wex/log.h>
@@ -22,18 +21,12 @@
 std::string wex::process::m_working_dir_key = _("Process folder");
 
 wex::process::process()
-  : m_command(config(_("Process")).get_first_of())
-  , m_frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
+  : m_frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
 {
+  m_exe = config(_("Process")).get_first_of();
 }
 
-wex::process::~process()
-{
-  if (m_process != nullptr)
-  {
-    m_process->stop();
-  }
-}
+wex::process::~process() {}
 
 wex::process::process(const process& process)
 {
@@ -44,10 +37,7 @@ wex::process& wex::process::operator=(const process& p)
 {
   if (this != &p)
   {
-    m_command = p.m_command;
-    m_frame   = p.m_frame;
-    m_stderr  = p.m_stderr;
-    m_stdout  = p.m_stdout;
+    m_frame = p.m_frame;
 
     if (m_frame == nullptr)
     {
@@ -85,13 +75,13 @@ int wex::process::config_dialog(const data::window& par)
 }
 
 bool wex::process::execute(
-  const std::string& command,
+  const std::string& exe,
   exec_t             type,
-  const std::string& wd)
+  const std::string& start_dir)
 {
-  auto cwd(wd);
+  auto cwd(start_dir);
 
-  if (command.empty())
+  if (exe.empty())
   {
     if (config(_("Process")).get_first_of().empty())
     {
@@ -101,21 +91,21 @@ bool wex::process::execute(
       }
     }
 
-    m_command = config(_("Process")).get_first_of();
-    cwd       = config(m_working_dir_key).get_first_of();
+    m_exe = config(_("Process")).get_first_of();
+    cwd   = config(m_working_dir_key).get_first_of();
   }
   else
   {
-    m_command = command;
+    m_exe = exe;
 
     if (auto* stc = m_frame->get_stc(); stc != nullptr)
     {
-      if (command.find("%LINES") != std::string::npos)
+      if (exe.find("%LINES") != std::string::npos)
       {
         if (!stc->is_visual())
         {
           boost::algorithm::replace_all(
-            m_command,
+            m_exe,
             "%LINES",
             std::to_string(std::max(
               (size_t)1,
@@ -128,7 +118,7 @@ bool wex::process::execute(
         else if (const std::string sel(stc->GetSelectedText()); !sel.empty())
         {
           boost::algorithm::replace_all(
-            m_command,
+            m_exe,
             "%LINES",
             std::to_string(
               stc->LineFromPosition(stc->GetSelectionStart()) + 1) +
@@ -139,7 +129,7 @@ bool wex::process::execute(
         else
         {
           boost::algorithm::replace_all(
-            m_command,
+            m_exe,
             "%LINES",
             std::to_string(stc->get_current_line() + 1) + "," +
               std::to_string(stc->get_current_line() + 1));
@@ -160,38 +150,31 @@ bool wex::process::execute(
         return false;
       }
 
-      m_shell->enable(true);
       m_shell->set_process(this);
-      m_shell->SetName(m_command);
       path::current(cwd);
 
-      m_process = std::make_unique<process_imp>(this);
-
-      if (!m_process->async(cwd))
+      if (
+        m_frame->get_debug() != nullptr &&
+        (m_frame->get_debug()->debug_entry().name() == before(get_exe(), ' ')))
       {
-        m_process.reset();
-        error = true;
+        set_handler_dbg(m_frame->get_debug());
+        m_shell->get_lexer().set(m_frame->get_debug()->debug_entry().name());
       }
+      else
+      {
+        m_shell->SetFocus();
+        m_frame->show_process(true);
+      }
+
+      error = !async(m_exe, cwd);
       break;
 
     case EXEC_WAIT:
-      error =
-        (process_run_and_collect_output(m_command, cwd, m_stdout, m_stderr) !=
-         0);
+      error = (system(m_exe, cwd) != 0);
       break;
   }
 
   return !error;
-}
-
-bool wex::process::is_debug() const
-{
-  return m_process != nullptr && m_process->is_debug();
-}
-
-bool wex::process::is_running() const
-{
-  return m_process != nullptr && m_process->is_running();
 }
 
 wex::shell* wex::process::prepare_output(wxWindow* parent)
@@ -208,19 +191,19 @@ wex::shell* wex::process::prepare_output(wxWindow* parent)
 
 void wex::process::show_output(const std::string& caption) const
 {
-  if ((!m_stdout.empty() || !m_stderr.empty()) && m_shell != nullptr)
+  if ((get_stdout().empty() || !get_stderr().empty()) && m_shell != nullptr)
   {
     m_frame->show_process(true);
-    m_shell->AppendText(!m_stdout.empty() ? m_stdout : m_stderr);
+    m_shell->AppendText(!get_stdout().empty() ? get_stdout() : get_stderr());
   }
-}
-
-bool wex::process::stop()
-{
-  return m_process != nullptr && m_process->stop();
 }
 
 bool wex::process::write(const std::string& text)
 {
-  return m_process != nullptr && m_process->write(text);
+  if (!is_debug())
+  {
+    m_frame->show_process(true);
+  }
+
+  return core::process::write(text);
 }

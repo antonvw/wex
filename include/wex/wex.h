@@ -75,6 +75,7 @@
 #include <wex/path.h>
 #include <wex/presentation.h>
 #include <wex/printing.h>
+#include <wex/process-core.h>
 #include <wex/process.h>
 #include <wex/property.h>
 #include <wex/queue-thread.h>

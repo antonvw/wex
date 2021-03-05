@@ -342,15 +342,17 @@ bool wex::addressrange::escape(const std::string& command)
       !shell_expansion(expanded))
       return false;
 
-    if (m_process == nullptr)
+    if (m_process != nullptr)
     {
-      m_process = new wex::process();
+      if (m_process->is_running())
+      {
+        log::trace("escape") << command << "stops" << m_process->get_exe();
+      }
+
+      delete m_process;
     }
-    else if (m_process->is_running())
-    {
-      log::trace("escape") << command << "while running"
-                           << m_process->get_exec();
-    }
+
+    m_process = new wex::process();
 
     return m_process->execute(
       expanded,

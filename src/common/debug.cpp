@@ -75,7 +75,7 @@ namespace wex
 
 #define MATCH(REGEX)                                          \
   regex v(m_entry.regex_stdout(debug_entry::regex_t::REGEX)); \
-  v.match(m_stdout)
+  v.search(m_stdout)
 
 wex::debug::debug(wex::managed_frame* frame, wex::process* debug)
   : m_frame(frame)
@@ -91,7 +91,7 @@ wex::debug::debug(wex::managed_frame* frame, wex::process* debug)
      {[=, this](wxCommandEvent& event) {
         const std::string text(event.GetString());
         // parse delete a breakpoint with text, numbers
-        if (regex v("(d|del|delete) +([0-9 ]*)"); v.match(text) > 0)
+        if (regex v("(d|del|delete) +([0-9 ]*)"); v.search(text) > 0)
         {
           switch (v.size())
           {
@@ -123,6 +123,7 @@ wex::debug::debug(wex::managed_frame* frame, wex::process* debug)
       ID_DEBUG_STDIN},
      {[=, this](wxCommandEvent& event) {
         m_stdout += event.GetString();
+        log::trace("debug stdout") << m_stdout;
         data::stc data;
 
         if (MATCH(NO_FILE_LINE) == 3)
@@ -173,7 +174,7 @@ wex::debug::debug(wex::managed_frame* frame, wex::process* debug)
                      nullptr},
                     {m_entry.regex_stdout(debug_entry::regex_t::AT_PATH_LINE),
                      nullptr}});
-                 v.match(m_stdout) > 0)
+                 v.search(m_stdout) > 0)
         {
           if (v.size() == 2)
           {
@@ -190,7 +191,7 @@ wex::debug::debug(wex::managed_frame* frame, wex::process* debug)
                      nullptr},
                     {m_entry.regex_stdout(debug_entry::regex_t::VARIABLE),
                      nullptr}});
-                 v.match(m_stdout) > 0)
+                 v.search(m_stdout) > 0)
         {
           m_stdout.clear();
 
@@ -216,7 +217,7 @@ wex::debug::debug(wex::managed_frame* frame, wex::process* debug)
         {
           m_stdout.clear();
         }
-        else if (regex v("'(.*)'"); v.match(m_stdout) == 1)
+        else if (regex v("'(.*)'"); v.search(m_stdout) == 1)
         {
           if (wex::path filename(v[0]); allow_open(filename))
           {
@@ -288,7 +289,7 @@ bool wex::debug::apply_breakpoints(stc* stc) const
 
 bool wex::debug::clear_breakpoints(const std::string& text)
 {
-  if (regex v("(d|del|delete|Delete) (all )?breakpoints"); v.match(text) >= 1)
+  if (regex v("(d|del|delete|Delete) (all )?breakpoints"); v.search(text) >= 1)
   {
     for (const auto& it : m_breakpoints)
     {
@@ -353,7 +354,7 @@ wex::debug::get_args(const std::string& command, stc* stc)
 {
   std::string args;
 
-  if (regex v("^(at|attach)"); v.match(command) == 1)
+  if (regex v("^(at|attach)"); v.search(command) == 1)
   {
     static listview* lv   = nullptr;
     bool             init = false;
@@ -399,13 +400,13 @@ wex::debug::get_args(const std::string& command, stc* stc)
 
     return {m_dialog->ShowModal() != wxID_CANCEL, args};
   }
-  else if (regex r("^(b|break)"); r.match(command) == 1 && stc != nullptr)
+  else if (regex r("^(b|break)"); r.search(command) == 1 && stc != nullptr)
   {
     args += " " + stc->get_filename().string() + ":" +
             std::to_string(stc->get_current_line() + 1);
   }
   else if (regex r("^(d|del|delete) (br|breakpoint)");
-           r.match(command) > 0 && stc != nullptr)
+           r.search(command) > 0 && stc != nullptr)
   {
     for (auto& it : m_breakpoints)
     {
@@ -440,12 +441,12 @@ wex::debug::get_args(const std::string& command, stc* stc)
           .ShowModal() != wxID_CANCEL,
       args};
   }
-  else if (regex r("^(p|print)"); r.match(command) == 1 && stc != nullptr)
+  else if (regex r("^(p|print)"); r.search(command) == 1 && stc != nullptr)
   {
     args += " " + stc->GetSelectedText();
   }
   else if (regex r("^(u|until|thread until)");
-           r.match(command) == 1 && stc != nullptr)
+           r.search(command) == 1 && stc != nullptr)
   {
     args += " " + std::to_string(stc->get_current_line());
   }
