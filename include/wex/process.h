@@ -20,17 +20,6 @@ namespace wex
   class process : public core::process
   {
   public:
-    /// process execute type
-    /// - EXEC_NO_WAIT this call immediately returns.
-    ///   The stc component will be filled with output from the process.
-    /// - EXEC_WAIT this call returns after execute ends,
-    ///   and the output is available using get_stdout.
-    enum exec_t
-    {
-      EXEC_NO_WAIT, ///< do not wait
-      EXEC_WAIT,    ///< wait for process finish
-    };
-
     /// Static interface.
 
     /// Shows a config dialog, allowing you to set the command and folder.
@@ -61,14 +50,9 @@ namespace wex
     /// Executes the process.
     /// Return value is false if process could not execute,
     /// or if config dialog was invoked and cancelled.
-    bool execute(
-      /// command to be executed, if empty
-      /// last given command is used
+    bool async(
       const std::string& exe = std::string(),
-      /// process execute type
-      exec_t type = EXEC_NO_WAIT,
-      /// start dir, if empty last start dir is used
-      const std::string& start_dir = std::string());
+      const std::string& start_dir = std::string()) override;
 
     /// Returns the frame.
     auto* get_frame() { return m_frame; };

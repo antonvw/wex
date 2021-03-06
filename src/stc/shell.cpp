@@ -619,9 +619,13 @@ bool wex::shell::set_command_from_history(const std::string& short_command)
 void wex::shell::set_process(process* process)
 {
   m_process = process;
-  process->set_handler_out(this);
-  enable(true);
-  SetName(process->get_exe());
+  
+  if (process != nullptr)
+  {
+    enable(true);
+    process->set_handler_out(this);
+    SetName(process->get_exe());
+  }
 }
 
 bool wex::shell::set_prompt(const std::string& prompt, bool do_prompt)

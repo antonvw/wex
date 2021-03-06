@@ -1,21 +1,20 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      lexer-props.cpp
+// Name:      beautify.cpp
 // Purpose:   Implementation of wex::beautify class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/addressrange.h>
 #include <wex/beautify.h>
 #include <wex/config.h>
-#include <wex/process.h>
+#include <wex/process-core.h>
 
 bool wex::beautify::file(const path& p) const
 {
   return is_auto() && is_active() && is_supported(p.lexer()) &&
-         process().execute(
-           name() + " -i " + p.string() + " --style=file --fallback-style=none",
-           process::EXEC_WAIT);
+         core::process().system(
+           name() + " -i " + p.string() + " --style=file --fallback-style=none") == 0;
 }
 
 bool wex::beautify::is_active() const

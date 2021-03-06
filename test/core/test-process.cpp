@@ -60,14 +60,6 @@ TEST_CASE("wex::core::process")
     wex::path cwd;
 
 #ifdef __UNIX__
-    SUBCASE("exe")
-    {
-      REQUIRE(process.system("ls -l") == 0);
-      REQUIRE(!process.get_stdout().empty());
-      REQUIRE(process.get_stderr().empty());
-      REQUIRE(!process.write("xx"));
-    }
-
     SUBCASE("start_dir")
     {
       REQUIRE(process.system("ls -l", "/") == 0);

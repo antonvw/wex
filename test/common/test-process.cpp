@@ -42,7 +42,7 @@ TEST_CASE("wex::process")
   {
     SUBCASE("exe")
     {
-      REQUIRE(process.execute("bash"));
+      REQUIRE(process.async("bash"));
       REQUIRE(process.is_running());
       REQUIRE(process.stop());
       REQUIRE(!process.is_running());
@@ -50,7 +50,7 @@ TEST_CASE("wex::process")
 
     SUBCASE("invalid")
     {
-      REQUIRE(process.execute("xxxx"));
+      REQUIRE(process.async("xxxx"));
       REQUIRE(process.stop());
       REQUIRE(!process.is_running());
     }
@@ -61,9 +61,10 @@ TEST_CASE("wex::process")
   {
     SUBCASE("exe")
     {
-      REQUIRE(process.execute("ls -l", wex::process::EXEC_WAIT));
+      REQUIRE(process.system("ls -l"));
       REQUIRE(!process.write("hello world"));
       REQUIRE(!process.get_stdout().empty());
+      REQUIRE(process.get_stderr().empty());
       REQUIRE(!process.is_running());
       REQUIRE(!process.get_exe().empty());
       process.show_output();
@@ -71,14 +72,14 @@ TEST_CASE("wex::process")
 
     SUBCASE("repeat")
     {
-      REQUIRE(process.execute("ls -l", wex::process::EXEC_WAIT));
+      REQUIRE(process.system("ls -l"));
       REQUIRE(!process.is_running());
       REQUIRE(!process.get_stdout().empty());
     }
 
     SUBCASE("working directory")
     {
-      REQUIRE(process.execute("ls -l", wex::process::EXEC_WAIT, "/"));
+      REQUIRE(process.system("ls -l", "/"));
       REQUIRE(!process.get_stdout().empty());
       REQUIRE(wxGetCwd().Contains("data"));
     }
@@ -86,7 +87,7 @@ TEST_CASE("wex::process")
 #ifndef __WXGTK__
     SUBCASE("invalid")
     {
-      REQUIRE(!process.execute("xxxx", wex::process::EXEC_WAIT));
+      REQUIRE(!process.system("xxxx"));
       REQUIRE(!process.is_running());
       REQUIRE(!process.get_stderr().empty());
       REQUIRE(process.get_stdout().empty());
@@ -95,7 +96,7 @@ TEST_CASE("wex::process")
 
     SUBCASE("working directory")
     {
-      REQUIRE(process.execute("ls -l", wex::process::EXEC_WAIT, "/"));
+      REQUIRE(process.system("ls -l", "/"));
       wex::path::current(cwd.original());
     }
   }

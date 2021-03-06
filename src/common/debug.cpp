@@ -326,7 +326,7 @@ bool wex::debug::execute(const std::string& action, wex::stc* stc)
       return false;
     }
 
-    if (!m_process->is_running() && !m_process->execute(exe))
+    if (!m_process->is_running() && !m_process->async(exe))
     {
       log::debug("debug") << m_entry.name() << "process no execute" << exe;
       return false;

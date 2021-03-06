@@ -35,7 +35,7 @@ namespace wex
       /// The output streams of the executing process are sent to these
       /// event handlers using wxPostEvent.
       /// Returns true if the async process is started.
-      bool async(
+      virtual bool async(
         const std::string& exe,
         const std::string& start_dir = std::string());
 
