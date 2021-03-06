@@ -98,8 +98,8 @@ TEST_CASE("wex::process")
       REQUIRE(process.execute("ls -l", wex::process::EXEC_WAIT, "/"));
       wex::path::current(cwd.original());
     }
-#endif
   }
+#endif
 }
 
 TEST_SUITE_END();

@@ -7,9 +7,7 @@
 
 #pragma once
 
-#include <atomic>
 #include <memory>
-#include <queue>
 
 class wxEvtHandler;
 
@@ -51,10 +49,10 @@ namespace wex
       const auto& get_stdout() const { return m_stdout; };
 
       /// Is this a debug process.
-      bool is_debug() const { return m_debug.load(); };
+      bool is_debug() const;
 
       /// Is this process running.
-      bool is_running() const { return m_is_running; };
+      bool is_running() const;
 
       /// Sets debug event handler.
       void set_handler_dbg(wxEvtHandler* eh);
@@ -79,13 +77,11 @@ namespace wex
       std::string m_exe;
 
     private:
-      bool        m_is_running{false};
       std::string m_stderr, m_stdout;
 
       wxEvtHandler* m_eh_debug{nullptr};
       wxEvtHandler* m_eh_out{nullptr};
 
-      std::atomic_bool             m_debug{false};
       std::unique_ptr<process_imp> m_imp;
     };
   } // namespace core
