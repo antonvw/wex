@@ -7,14 +7,9 @@
 
 #pragma once
 
-#include <algorithm>
 #include <atomic>
-#include <boost/version.hpp>
+#include <memory>
 #include <queue>
-#if BOOST_VERSION / 100 % 1000 <= 65
-#include <boost/asio.hpp>
-#endif
-#include <boost/process.hpp>
 
 class wxEvtHandler;
 
@@ -22,9 +17,13 @@ namespace wex
 {
   namespace core
   {
+    class process_imp;
+
     /// This class offers core process.
     class process
     {
+      friend class process_imp;
+
     public:
       /// Default constructor.
       process();
@@ -63,7 +62,7 @@ namespace wex
       /// Sets out event handler.
       void set_handler_out(wxEvtHandler* eh);
 
-      // Stops the process.
+      // Stops the async process.
       bool stop();
 
       /// Runs the sync process, collecting output in stdout and stderr.
@@ -73,7 +72,7 @@ namespace wex
         const std::string& exe,
         const std::string& start_dir = std::string());
 
-      // Writes data to the input of the process.
+      // Writes data to the input of the async process.
       virtual bool write(const std::string& text);
 
     protected:
@@ -83,21 +82,11 @@ namespace wex
       bool        m_is_running{false};
       std::string m_stderr, m_stdout;
 
-      std::atomic_bool m_debug{false};
-#if BOOST_VERSION / 100 % 1000 <= 65
-      std::shared_ptr<boost::asio::io_service> m_io;
-#else
-      std::shared_ptr<boost::asio::io_context> m_io;
-#endif
-      std::shared_ptr<std::queue<std::string>> m_queue;
-
       wxEvtHandler* m_eh_debug{nullptr};
       wxEvtHandler* m_eh_out{nullptr};
 
-      boost::process::ipstream m_es, m_is;
-      boost::process::opstream m_os;
-      boost::process::group    m_group;
+      std::atomic_bool             m_debug{false};
+      std::unique_ptr<process_imp> m_imp;
     };
-
   } // namespace core
 } // namespace wex
