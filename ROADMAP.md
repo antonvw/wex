@@ -1,5 +1,4 @@
 # roadmap
-- show_output copy to process-core, and vcs_entry derive from core
 - .,'xd -> incorrect last line
 - .,$d -> no action
 

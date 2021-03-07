@@ -47,9 +47,10 @@ namespace wex
     /// Assignment operator.
     process& operator=(const process& p);
 
-    /// Executes the process.
+    /// See core::process.
     /// Return value is false if process could not execute,
-    /// or if config dialog was invoked and cancelled.
+    /// or if config dialog was invoked and cancelled, or prepare_output
+    /// not yet invoked.
     bool async_system(
       const std::string& exe = std::string(),
       const std::string& start_dir = std::string()) override;
@@ -57,7 +58,7 @@ namespace wex
     /// Returns the frame.
     auto* get_frame() { return m_frame; };
 
-    /// Shows stdout or stderr from execute on the shell component.
+    /// Shows stdout or stderr from system on the shell component.
     /// You can override this method to e.g. prepare a lexer on get_shell
     /// before calling this base method.
     virtual void show_output(const std::string& caption = std::string()) const;
