@@ -106,11 +106,9 @@ bool wex::vcs_entry::execute(
     my_args.clear();
   }
 
-  return process::execute(
+  return process::system(
     bin() + " " + prefix + get_command().get_command() + " " + subcommand +
-      flags + comment + my_args,
-    process::EXEC_WAIT,
-    wd);
+      flags + comment + my_args, wd) == 0;
 }
 
 bool wex::vcs_entry::execute(const std::string& command, const std::string& wd)
@@ -124,17 +122,14 @@ bool wex::vcs_entry::execute(const std::string& command, const std::string& wd)
     flags = " " + vc.flags();
   }
 
-  return process::execute(
-    bin() + " " + command + flags,
-    process::EXEC_WAIT,
-    wd);
+  return process::system(bin() + " " + command + flags, wd) == 0;
 }
 
 const std::string wex::vcs_entry::get_branch(const std::string& wd) const
 {
   if (name() == "git")
   {
-    if (process p; p.execute(bin() + " branch", process::EXEC_WAIT, wd))
+    if (process p; p.system(bin() + " branch", wd) == 0)
     {
       for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
              p.get_stdout(),
@@ -169,7 +164,7 @@ bool wex::vcs_entry::log(const path& p, const std::string& id)
       bin() + " log " + m_log_flags + " " + id :
       bin() + " log " + id + " " + m_log_flags;
 
-  return process::execute(command, process::EXEC_WAIT, p.get_path());
+  return process::system(command, p.get_path()) == 0;
 }
 
 void wex::vcs_entry::show_output(const std::string& caption) const

@@ -2,13 +2,12 @@
 // Name:      vcs-entry.h
 // Purpose:   Declaration of wex::vcs_entry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <pugixml.hpp>
-#include <vector>
 #include <wex/blame.h>
 #include <wex/lexer.h>
 #include <wex/menu-commands.h>

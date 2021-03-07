@@ -342,19 +342,20 @@ bool wex::addressrange::escape(const std::string& command)
       !shell_expansion(expanded))
       return false;
 
-    if (m_process == nullptr)
+    if (m_process != nullptr)
     {
-      m_process = new wex::process();
-    }
-    else if (m_process->is_running())
-    {
-      log::trace("escape") << command << "while running"
-                           << m_process->get_exec();
+      if (m_process->is_running())
+      {
+        log::trace("escape") << command << "stops" << m_process->get_exe();
+      }
+
+      delete m_process;
     }
 
-    return m_process->execute(
+    m_process = new wex::process();
+
+    return m_process->async_system(
       expanded,
-      process::EXEC_NO_WAIT,
       m_stc->get_filename().get_path());
   }
 
@@ -375,10 +376,9 @@ bool wex::addressrange::escape(const std::string& command)
     return false;
   }
 
-  wex::process process;
+  core::process process;
 
-  const bool ok =
-    process.execute(command + " " + tmp_filename, process::EXEC_WAIT);
+  const bool ok = (process.system(command + " " + tmp_filename) == 0);
 
   if (remove(tmp_filename.c_str()) != 0)
   {

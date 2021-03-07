@@ -21,7 +21,7 @@
 #include <wex/macros.h>
 #include <wex/managed-frame.h>
 #include <wex/path.h>
-#include <wex/process.h>
+#include <wex/process-core.h>
 #include <wex/regex.h>
 #include <wex/stc.h>
 #include <wex/tostring.h>
@@ -91,9 +91,8 @@ bool wex::compare_file(const path& file1, const path& file2)
         (file1.stat().st_mtime < file2.stat().st_mtime) ?
           "\"" + file1.string() + "\" \"" + file2.string() + "\"" :
           "\"" + file2.string() + "\" \"" + file1.string() + "\"";
-      !process().execute(
-        config(_("list.Comparator")).get() + " " + arguments,
-        process::EXEC_WAIT))
+      core::process().system(
+        config(_("list.Comparator")).get() + " " + arguments) != 0)
   {
     return false;
   }
@@ -108,10 +107,9 @@ bool wex::make(const path& makefile)
 {
   auto* process = new wex::process;
 
-  return process->execute(
+  return process->async_system(
     config("Make").get("make") + " " + config("MakeSwitch").get("-f") + " " +
       makefile.string(),
-    process::EXEC_NO_WAIT,
     makefile.get_path());
 }
 
@@ -235,7 +233,7 @@ bool wex::shell_expansion(std::string& command)
 
   while (r.search(command) > 0)
   {
-    if (process process; !process.execute(r[0], process::EXEC_WAIT))
+    if (process process; process.system(r[0]) != 0)
     {
       return false;
     }
@@ -320,7 +318,7 @@ void wex::vcs_execute(frame* frame, int id, const std::vector<path>& files)
           else
           {
             log::status("No output");
-            log::debug("no output from") << vcs.entry().get_exec();
+            log::debug("no output from") << vcs.entry().get_exe();
           }
         }
       }

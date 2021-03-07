@@ -13,7 +13,7 @@
 #include <wex/log.h>
 #include <wex/macros.h>
 #include <wex/managed-frame.h>
-#include <wex/process.h>
+#include <wex/process-core.h>
 #include <wex/regex.h>
 #include <wex/stc.h>
 
@@ -353,9 +353,9 @@ bool wex::address::read(const std::string& arg) const
 
   if (arg.starts_with("!"))
   {
-    process process;
+    core::process process;
 
-    if (!process.execute(arg.substr(1), process::EXEC_WAIT))
+    if (process.system(arg.substr(1)) != 0)
     {
       return false;
     }

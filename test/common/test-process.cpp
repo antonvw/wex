@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-process.cpp
+// Name:      common/test-process.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -31,75 +31,74 @@ TEST_CASE("wex::process")
 
   wex::process process;
 
-  SUBCASE("constructor")
-  {
-    REQUIRE(process.get_frame() != nullptr);
-    REQUIRE(process.get_stdout().empty());
-    REQUIRE(process.get_stderr().empty());
-    REQUIRE(!process.is_debug());
-    REQUIRE(!process.is_running());
-  }
+  SUBCASE("constructor") { REQUIRE(process.get_frame() != nullptr); }
 
   SUBCASE("dialog")
   {
     process.config_dialog(wex::data::window().button(wxAPPLY | wxCANCEL));
   }
 
+  SUBCASE("async_system")
+  {
+    SUBCASE("exe")
+    {
+      REQUIRE(process.async_system("bash"));
+      REQUIRE(process.is_running());
+      REQUIRE(process.stop());
+      REQUIRE(!process.is_running());
+    }
+
+    SUBCASE("invalid")
+    {
+      REQUIRE(process.async_system("xxxx"));
+      REQUIRE(process.stop());
+      REQUIRE(!process.is_running());
+    }
+  }
+
 #ifdef __UNIX__
-  SUBCASE("wait")
+  SUBCASE("system")
   {
-    REQUIRE(process.execute("ls -l", wex::process::EXEC_WAIT));
-    REQUIRE(!process.write("hello world"));
-    REQUIRE(!process.get_stdout().empty());
-    REQUIRE(!process.is_running());
-    REQUIRE(!process.get_exec().empty());
-    process.show_output();
-  }
+    SUBCASE("exe")
+    {
+      REQUIRE(process.system("ls -l") == 0);
+      REQUIRE(!process.write("hello world"));
+      REQUIRE(!process.get_stdout().empty());
+      REQUIRE(process.get_stderr().empty());
+      REQUIRE(!process.is_running());
+      REQUIRE(!process.get_exe().empty());
+      process.show_output();
+    }
 
-  SUBCASE("repeat")
-  {
-    REQUIRE(process.execute("ls -l", wex::process::EXEC_WAIT));
-    REQUIRE(!process.is_running());
-    REQUIRE(!process.get_stdout().empty());
-  }
+    SUBCASE("repeat")
+    {
+      REQUIRE(process.system("ls -l") == 0);
+      REQUIRE(!process.is_running());
+      REQUIRE(!process.get_stdout().empty());
+    }
 
-  SUBCASE("working directory")
-  {
-    REQUIRE(process.execute("ls -l", wex::process::EXEC_WAIT, "/"));
-    REQUIRE(!process.get_stdout().empty());
-    REQUIRE(wxGetCwd().Contains("data"));
-  }
+    SUBCASE("working directory")
+    {
+      REQUIRE(process.system("ls -l", "/") == 0);
+      REQUIRE(!process.get_stdout().empty());
+      REQUIRE(wxGetCwd().Contains("data"));
+    }
 
 #ifndef __WXGTK__
-  SUBCASE("invalid")
-  {
-    REQUIRE(!process.execute("xxxx", wex::process::EXEC_WAIT));
-    wxMilliSleep(100);
-    REQUIRE(!process.is_running());
-    REQUIRE(!process.get_stderr().empty());
-    REQUIRE(process.get_stdout().empty());
-  }
+    SUBCASE("invalid")
+    {
+      REQUIRE(process.system("xxxx") != 0);
+      REQUIRE(!process.is_running());
+      REQUIRE(!process.get_stderr().empty());
+      REQUIRE(process.get_stdout().empty());
+    }
 #endif
 
-  SUBCASE("invalid no wait")
-  {
-    REQUIRE(process.execute("xxxx"));
-    wxMilliSleep(2000);
-    REQUIRE(!process.is_running());
-  }
-
-  SUBCASE("no wait")
-  {
-    REQUIRE(process.execute("bash"));
-    REQUIRE(process.is_running());
-    REQUIRE(process.stop());
-    REQUIRE(!process.is_running());
-  }
-
-  SUBCASE("working directory")
-  {
-    REQUIRE(process.execute("ls -l", wex::process::EXEC_WAIT, "/"));
-    wex::path::current(cwd.original());
+    SUBCASE("working directory")
+    {
+      REQUIRE(process.system("ls -l", "/") == 0);
+      wex::path::current(cwd.original());
+    }
   }
 #endif
 }

@@ -10,7 +10,7 @@
 #include <wex/log.h>
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
-#include <wex/process.h>
+#include <wex/process-core.h>
 #include <wex/regex.h>
 #include <wex/stc-entry-dialog.h>
 #include <wex/stc.h>
@@ -225,9 +225,8 @@ bool wex::variable::expand(std::string& value, ex* ex) const
         return false;
       }
 
-      if (process p; !p.execute(
-            m_value + (!m_argument.empty() ? " " + m_argument : std::string()),
-            process::EXEC_WAIT))
+      if (core::process p; p.system(
+            m_value + (!m_argument.empty() ? " " + m_argument : std::string())) != 0)
       {
         return false;
       }
