@@ -96,6 +96,7 @@
 #include <wex/stream.h>
 #include <wex/style.h>
 #include <wex/substitute-data.h>
+#include <wex/temp-filename.h>
 #include <wex/text-window.h>
 #include <wex/textctrl-input.h>
 #include <wex/textctrl.h>

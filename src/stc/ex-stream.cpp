@@ -15,6 +15,7 @@
 #include <wex/log.h>
 #include <wex/managed-frame.h>
 #include <wex/stc.h>
+#include <wex/temp-filename.h>
 
 #include "ex-stream-line.h"
 
@@ -49,16 +50,6 @@
       return false;                                                      \
     }                                                                    \
   }
-
-namespace wex
-{
-  const std::string tmp_filename()
-  {
-    char _tmp_filename[L_tmpnam];
-    tmpnam(_tmp_filename);
-    return std::string(_tmp_filename);
-  }
-}; // namespace wex
 
 wex::ex_stream::ex_stream(wex::stc* stc)
   : m_context_lines(50)
@@ -436,10 +427,10 @@ void wex::ex_stream::stream(file& f)
   m_stream = &f.stream();
   f.use_stream();
 
-  m_temp = new file(tmp_filename(), std::ios_base::out);
+  m_temp = new file(temp_filename().name(), std::ios_base::out);
   m_temp->use_stream();
 
-  m_work = new file(tmp_filename(), std::ios_base::out);
+  m_work = new file(temp_filename().name(), std::ios_base::out);
   m_work->use_stream();
 
   goto_line(0);

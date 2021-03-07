@@ -24,6 +24,7 @@
 #include <wex/sort.h>
 #include <wex/stc.h>
 #include <wex/substitute-data.h>
+#include <wex/temp-filename.h>
 #include <wex/util.h>
 
 namespace wex
@@ -363,29 +364,13 @@ bool wex::addressrange::escape(const std::string& command)
   {
     return false;
   }
-
-  const std::string tmp_filename(
-    path(
-      std::filesystem::temp_directory_path().string(),
-      std::to_string(std::time(nullptr)))
-      .data()
-      .string());
-
-  if (m_stc->GetReadOnly() || m_stc->is_hexmode() || !write(tmp_filename))
+  
+  if (temp_filename tmp(true); m_stc->GetReadOnly() || m_stc->is_hexmode() || !write(tmp.name()))
   {
     return false;
   }
-
-  core::process process;
-
-  const bool ok = (process.system(command + " " + tmp_filename) == 0);
-
-  if (remove(tmp_filename.c_str()) != 0)
-  {
-    log::status("Could not remove file");
-  }
-
-  if (ok)
+  else if (core::process process;
+    process.system(command + " " + tmp.name()) == 0)
   {
     if (!process.get_stdout().empty())
     {
