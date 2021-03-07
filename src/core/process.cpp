@@ -39,7 +39,7 @@ namespace wex::core
     }
 
     void
-    async(const std::string& exe, const std::string& start_dir, process* p);
+    async_system(const std::string& exe, const std::string& start_dir, process* p);
 
     bool is_debug() const {return m_debug;};
 
@@ -97,7 +97,7 @@ wex::core::process::~process()
   stop();
 }
 
-bool wex::core::process::async(
+bool wex::core::process::async_system(
   const std::string& exe,
   const std::string& start_dir)
 {
@@ -108,7 +108,7 @@ bool wex::core::process::async(
 
   try
   {
-    m_imp->async(exe, start_dir, this);
+    m_imp->async_system(exe, start_dir, this);
     return true;
   }
   catch (std::exception& e)
@@ -219,7 +219,7 @@ bool wex::core::process::write(const std::string& text)
   event.SetString(TEXT);                                 \
   wxPostEvent(DEST, event);
 
-void wex::core::process_imp::async(
+void wex::core::process_imp::async_system(
   const std::string& exe,
   const std::string& start_dir,
   process*           p)
@@ -231,7 +231,7 @@ void wex::core::process_imp::async(
     [&](boost::system::error_code error, int i) {
       m_is_running.store(false);
       
-      log::debug("async") << "exit" << exe;
+      log::debug("async_system") << "exit" << exe;
       
       if (m_debug.load())
       {
@@ -245,7 +245,7 @@ void wex::core::process_imp::async(
     bp::std_in<m_os, bp::std_err> m_es,
     m_group);
 
-  log::debug("async") << exe;
+  log::debug("async_system") << exe;
 
   p->m_exe        = exe;
   m_is_running.store(true);
@@ -315,7 +315,7 @@ void wex::core::process_imp::async(
 
         if (os.good() && !io->stopped())
         {
-          log::debug("async") << "write:" << text;
+          log::debug("async_system") << "write:" << text;
 
           os << text << std::endl;
 
@@ -326,7 +326,7 @@ void wex::core::process_imp::async(
         }
         else
         {
-          log::debug("async") << "skip:" << text;
+          log::debug("async_system") << "skip:" << text;
         }
 
         queue->pop();

@@ -28,16 +28,16 @@ TEST_CASE("wex::core::process")
     REQUIRE(!process.write("xx"));
   }
 
-  SUBCASE("async")
+  SUBCASE("async_system")
   {
-    SUBCASE("no handler") { REQUIRE(!process.async("bash")); }
+    SUBCASE("no handler") { REQUIRE(!process.async_system("bash")); }
 
     wxEvtHandler out;
     process.set_handler_out(&out);
 
     SUBCASE("exe")
     {
-      REQUIRE(process.async("bash"));
+      REQUIRE(process.async_system("bash"));
       REQUIRE(process.get_exe() == "bash");
       REQUIRE(process.is_running());
       REQUIRE(process.write("xx"));
@@ -49,7 +49,7 @@ TEST_CASE("wex::core::process")
 
     SUBCASE("invalid")
     {
-      REQUIRE(process.async("xxxx"));
+      REQUIRE(process.async_system("xxxx"));
       REQUIRE(process.stop());
       REQUIRE(!process.is_running());
     }

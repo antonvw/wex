@@ -48,7 +48,7 @@ wex::process& wex::process::operator=(const process& p)
   return *this;
 }
 
-bool wex::process::async(
+bool wex::process::async_system(
   const std::string& exe,
   const std::string& start_dir)
 {
@@ -134,7 +134,7 @@ bool wex::process::async(
     m_frame->show_process(true);
   }
 
-  return core::process::async(m_exe, cwd);
+  return core::process::async_system(m_exe, cwd);
 }
 
 int wex::process::config_dialog(const data::window& par)

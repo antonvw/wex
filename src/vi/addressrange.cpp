@@ -354,7 +354,7 @@ bool wex::addressrange::escape(const std::string& command)
 
     m_process = new wex::process();
 
-    return m_process->async(
+    return m_process->async_system(
       expanded,
       m_stc->get_filename().get_path());
   }
@@ -378,7 +378,7 @@ bool wex::addressrange::escape(const std::string& command)
 
   core::process process;
 
-  const bool ok = (process.system(command + " " + tmp_filename) != 0);
+  const bool ok = (process.system(command + " " + tmp_filename) == 0);
 
   if (remove(tmp_filename.c_str()) != 0)
   {

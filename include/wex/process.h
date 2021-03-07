@@ -50,7 +50,7 @@ namespace wex
     /// Executes the process.
     /// Return value is false if process could not execute,
     /// or if config dialog was invoked and cancelled.
-    bool async(
+    bool async_system(
       const std::string& exe = std::string(),
       const std::string& start_dir = std::string()) override;
 

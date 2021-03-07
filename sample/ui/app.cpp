@@ -375,7 +375,7 @@ frame::frame()
       },
       ID_STC_FLAGS},
      {[=, this](wxCommandEvent& event) {
-        m_process->async();
+        m_process->async_system();
       },
       wxID_EXECUTE}});
 

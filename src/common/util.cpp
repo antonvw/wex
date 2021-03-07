@@ -107,7 +107,7 @@ bool wex::make(const path& makefile)
 {
   auto* process = new wex::process;
 
-  return process->async(
+  return process->async_system(
     config("Make").get("make") + " " + config("MakeSwitch").get("-f") + " " +
       makefile.string(),
     makefile.get_path());

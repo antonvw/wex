@@ -38,11 +38,11 @@ TEST_CASE("wex::process")
     process.config_dialog(wex::data::window().button(wxAPPLY | wxCANCEL));
   }
 
-  SUBCASE("async")
+  SUBCASE("async_system")
   {
     SUBCASE("exe")
     {
-      REQUIRE(process.async("bash"));
+      REQUIRE(process.async_system("bash"));
       REQUIRE(process.is_running());
       REQUIRE(process.stop());
       REQUIRE(!process.is_running());
@@ -50,7 +50,7 @@ TEST_CASE("wex::process")
 
     SUBCASE("invalid")
     {
-      REQUIRE(process.async("xxxx"));
+      REQUIRE(process.async_system("xxxx"));
       REQUIRE(process.stop());
       REQUIRE(!process.is_running());
     }
@@ -61,7 +61,7 @@ TEST_CASE("wex::process")
   {
     SUBCASE("exe")
     {
-      REQUIRE(process.system("ls -l"));
+      REQUIRE(process.system("ls -l") == 0);
       REQUIRE(!process.write("hello world"));
       REQUIRE(!process.get_stdout().empty());
       REQUIRE(process.get_stderr().empty());
@@ -72,14 +72,14 @@ TEST_CASE("wex::process")
 
     SUBCASE("repeat")
     {
-      REQUIRE(process.system("ls -l"));
+      REQUIRE(process.system("ls -l") == 0);
       REQUIRE(!process.is_running());
       REQUIRE(!process.get_stdout().empty());
     }
 
     SUBCASE("working directory")
     {
-      REQUIRE(process.system("ls -l", "/"));
+      REQUIRE(process.system("ls -l", "/") == 0);
       REQUIRE(!process.get_stdout().empty());
       REQUIRE(wxGetCwd().Contains("data"));
     }
@@ -87,7 +87,7 @@ TEST_CASE("wex::process")
 #ifndef __WXGTK__
     SUBCASE("invalid")
     {
-      REQUIRE(!process.system("xxxx"));
+      REQUIRE(process.system("xxxx") != 0);
       REQUIRE(!process.is_running());
       REQUIRE(!process.get_stderr().empty());
       REQUIRE(process.get_stdout().empty());
@@ -96,7 +96,7 @@ TEST_CASE("wex::process")
 
     SUBCASE("working directory")
     {
-      REQUIRE(process.system("ls -l", "/"));
+      REQUIRE(process.system("ls -l", "/") == 0);
       wex::path::current(cwd.original());
     }
   }
