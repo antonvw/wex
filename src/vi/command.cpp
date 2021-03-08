@@ -2,12 +2,11 @@
 // Name:      ex/command.cpp
 // Purpose:   Implementation of class wex::ex_command
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ex-command.h>
 #include <wex/stc.h>
-#include <wex/vi.h>
 #include <wx/textentry.h>
 
 wex::ex_command::ex_command() {}
@@ -239,10 +238,12 @@ wex::ex_command::type_t wex::ex_command::type() const
                                                        type_t::NONE;
 
       case ':':
-        return type_t::COMMAND;
+        return m_stc != nullptr && !m_stc->is_visual() ?
+          type_t::COMMAND_EX:
+          type_t::COMMAND;
 
       case '!':
-        return type_t::EXEC;
+        return type_t::ESCAPE;
 
       case '/':
       case '?':

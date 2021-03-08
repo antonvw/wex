@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      textctrl.cpp
+// Name:      textctrl-input.cpp
 // Purpose:   Implementation of wex::textctrl_input class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021 Anton van Wezenbeek
@@ -22,8 +22,11 @@ wex::textctrl_input::textctrl_input(ex_command::type_t type)
       case ex_command::type_t::COMMAND:
         return std::string("ex-cmd.command");
 
-      case ex_command::type_t::EXEC:
-        return std::string("ex-cmd.exec");
+      case ex_command::type_t::COMMAND_EX:
+        return std::string("ex-cmd.command-ex");
+
+      case ex_command::type_t::ESCAPE:
+        return std::string("ex-cmd.escape");
 
       case ex_command::type_t::FIND:
         return find_replace_data::text_find();

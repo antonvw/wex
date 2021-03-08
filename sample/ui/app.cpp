@@ -114,7 +114,7 @@ frame::frame()
   , m_shell(new wex::shell(wex::data::stc(), ">"))
   , m_stc(new wex::stc())
   , m_statistics(
-      new wex::grid_statistics<int>(wex::data::window().parent(m_notebook)))
+      new wex::grid_statistics<int>({}, wex::data::window().parent(m_notebook)))
   , m_stc_lexers(new wex::stc(wex::lexers::get()->get_filename()))
 {
   wex::process::prepare_output(this);

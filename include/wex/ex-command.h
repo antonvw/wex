@@ -23,12 +23,13 @@ namespace wex
     enum class type_t
     {
       CALC,        ///< a calculation command (control-r =)
-      COMMAND,     ///< a normal command (:)
-      EXEC,        ///< an exec command (!)
+      COMMAND,     ///< a normal (ex) command (:)
+      COMMAND_EX,  ///< a normal (ex) command, entered in explicit ex mode (:)
+      ESCAPE,      ///< an escape command (!)
       FIND,        ///< a find command (/ or ?)
       FIND_MARGIN, ///< a find command (/ or ?) entered on text margin
       NONE,        ///< an empty command
-      REPLACE,     ///< a replace command
+      REPLACE,     ///< a replace command (no ex command)
       VI,          ///< a vi command (no ex command)
     };
 

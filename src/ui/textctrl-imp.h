@@ -2,7 +2,7 @@
 // Name:      textctrl-imp.h
 // Purpose:   Declaration of wex::textctrl_imp class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -66,9 +66,11 @@ namespace wex
     bool m_all_selected{false}, m_control_r{false}, m_mode_visual{false},
       m_user_input{false};
 
-    textctrl_input m_calcs{ex_command::type_t::CALC},
+    textctrl_input 
+      m_calcs{ex_command::type_t::CALC},
       m_commands{ex_command::type_t::COMMAND},
-      m_execs{ex_command::type_t::EXEC},
+      m_commands_ex{ex_command::type_t::COMMAND_EX},
+      m_escapes{ex_command::type_t::ESCAPE},
       m_find_margins{ex_command::type_t::FIND_MARGIN};
 
     ex_command m_command;

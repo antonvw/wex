@@ -2,7 +2,7 @@
 // Name:      test-ex-command.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
@@ -63,7 +63,7 @@ TEST_CASE("wex::ex_command")
     REQUIRE(command.type() == wex::ex_command::type_t::CALC);
 
     command.set("!");
-    REQUIRE(command.type() == wex::ex_command::type_t::EXEC);
+    REQUIRE(command.type() == wex::ex_command::type_t::ESCAPE);
 
     command.set("/");
     REQUIRE(command.type() == wex::ex_command::type_t::FIND);
