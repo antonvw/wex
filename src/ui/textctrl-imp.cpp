@@ -191,7 +191,15 @@ wex::textctrl_imp::textctrl_imp(
             }
             else if (m_input == 0)
             {
-              TCI().set(event.GetKeyCode(), m_tc);
+              if (GetValue().empty())
+              {
+                set_text(TCI().get());
+                SelectAll();
+              }
+              else
+              {
+                TCI().set(event.GetKeyCode(), m_tc);
+              }
             }
             else
             {
