@@ -44,7 +44,7 @@ namespace wex
       virtual void goto_line(int line) = 0;
 
       /// Destructor.
-      virtual ~text_window() { ; };
+      virtual ~text_window() = default;
     };
   }; // namespace core
 };   // namespace wex

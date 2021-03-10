@@ -13,7 +13,10 @@
 
 namespace wex
 {
-  class process;
+  namespace core
+  {
+    class process;
+  }
 
   /// This class offers a stc with support for commands.
   /// The commands are entered at the last line, and kept in a list of commands,
@@ -90,7 +93,7 @@ namespace wex
 
     /// Sets the process to which commands are sent.
     /// If you do not set this, commands are sent to the parent.
-    void set_process(process* process);
+    void set_process(core::process* process);
 
     /// Sets the prompt, and prompts if asked for.
     /// Returns false and does not set the prompt if the shell is not enabled.
@@ -124,6 +127,6 @@ namespace wex
       0; /// position after the prompt from where commands can be inserted
     bool m_enabled = true;
 
-    process* m_process = nullptr;
+    core::process* m_process {nullptr};
   };
 }; // namespace wex

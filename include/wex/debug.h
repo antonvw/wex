@@ -2,7 +2,7 @@
 // Name:      debug.h
 // Purpose:   Declaration of class wex::debug
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -16,11 +16,14 @@
 
 namespace wex
 {
+  namespace core
+  {
+    class process;
+  }
   class frame;
   class item_dialog;
   class managed_frame;
   class menu;
-  class process;
   class stc;
 
   /// Offers a debug that allows you to use an stc component as
@@ -29,7 +32,7 @@ namespace wex
   {
   public:
     /// Constructor.
-    debug(managed_frame* frame, process* process = nullptr);
+    debug(managed_frame* frame, core::process* process = nullptr);
 
     /// Adds debug menu items to specified menu, default as no popup menu.
     /// These menus allow you to interact with the debug process.
@@ -95,7 +98,7 @@ namespace wex
 
     managed_frame*   m_frame;
     wex::debug_entry m_entry;
-    wex::process*    m_process{nullptr};
+    wex::core::process* m_process{nullptr};
     bool             m_active{false};
     std::string      m_stdout;
   };

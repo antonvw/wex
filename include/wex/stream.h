@@ -23,7 +23,7 @@ namespace wex
     stream(const path& filename, const tool& tool);
 
     /// Destructor.
-    virtual ~stream() { ; };
+    virtual ~stream() = default;
 
     /// Returns the filename.
     const auto& get_filename() const { return m_path; };

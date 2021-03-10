@@ -2,12 +2,11 @@
 // Name:      textctrl.cpp
 // Purpose:   Implementation of wex::textctrl class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ex.h>
 #include <wex/managed-frame.h>
-#include <wex/stc.h>
 #include <wex/textctrl.h>
 
 #include "textctrl-imp.h"

@@ -2,7 +2,7 @@
 // Name:      toolbar.cpp
 // Purpose:   Implementation of wex::toolbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
@@ -21,7 +21,6 @@
 #include <wex/listview.h>
 #include <wex/managed-frame.h>
 #include <wex/menu.h>
-#include <wex/process.h>
 #include <wex/stc.h>
 #include <wex/textctrl.h>
 #include <wex/toolbar.h>
@@ -108,11 +107,6 @@ void wex::toolbar::add_checkboxes(const checkboxes_t& v, bool realize)
   // id, label, name, config, tooltip, default, lambda
   for (const auto& it : v)
   {
-    if (std::get<0>(it) == ID_VIEW_PROCESS && process::get_shell() == nullptr)
-    {
-      continue;
-    }
-
     auto* cb = new wxCheckBox(this, std::get<0>(it), std::get<1>(it));
 
     cb->SetToolTip(std::get<4>(it));
@@ -255,13 +249,9 @@ void wex::toolbar::add_standard(bool realize)
      {wxID_PRINT},
      {wxID_UNDO},
      {wxID_REDO},
-     {wxID_FIND}},
+     {wxID_FIND},
+     {wxID_EXECUTE}},
     false);
-
-  if (process::get_shell() != nullptr)
-  {
-    add_tool({{wxID_EXECUTE}}, false);
-  }
 
   SetToolDropDown(wxID_FIND, true);
   SetToolDropDown(wxID_OPEN, true);

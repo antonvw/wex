@@ -13,7 +13,7 @@
 #include <wex/defs.h>
 #include <wex/log.h>
 #include <wex/managed-frame.h>
-#include <wex/process.h>
+#include <wex/process-core.h>
 #include <wex/shell.h>
 
 wex::shell::shell(
@@ -616,7 +616,7 @@ bool wex::shell::set_command_from_history(const std::string& short_command)
   return false;
 }
 
-void wex::shell::set_process(process* process)
+void wex::shell::set_process(core::process* process)
 {
   m_process = process;
   

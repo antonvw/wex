@@ -18,11 +18,15 @@ class wxListView;
 
 namespace wex
 {
+  namespace core
+  {
+    class process;
+  }
+
   class grid;
   class listview;
   class path;
   class path;
-  class process;
   class statusbar;
   class stc;
   class vcs_entry;
@@ -58,7 +62,7 @@ namespace wex
 
     /// Allows you to e.g. add debugging.
     /// Default returns nullptr.
-    virtual process* get_process(const std::string& command)
+    virtual core::process* get_process(const std::string& command)
     {
       return nullptr;
     };

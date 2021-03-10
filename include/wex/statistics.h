@@ -34,7 +34,7 @@ namespace wex
     };
 
     /// Destructor.
-    virtual ~statistics() { ; };
+    virtual ~statistics() = default;
 
     /// Adds other statistics.
     statistics& operator+=(const statistics& s)

@@ -2,7 +2,7 @@
 // Name:      printing.cpp
 // Purpose:   Implementation of wex::printing class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -12,7 +12,6 @@
 #include <wex/core.h>
 #include <wex/path.h>
 #include <wex/printing.h>
-#include <wx/stc/stc.h>
 
 wex::printing* wex::printing::m_self = nullptr;
 

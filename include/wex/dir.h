@@ -29,7 +29,7 @@ namespace wex
       const data::dir& data = data::dir());
 
     /// Destructor.
-    virtual ~dir() { ; };
+    virtual ~dir() = default;
 
     /// Virtual interface.
 

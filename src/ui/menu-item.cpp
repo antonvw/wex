@@ -2,7 +2,7 @@
 // Name:      menu.cpp
 // Purpose:   Implementation of wex::menu_item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -14,7 +14,6 @@
 #include <wex/managed-frame.h>
 #include <wex/menu-item.h>
 #include <wex/menu.h>
-#include <wex/process.h>
 #include <wex/vcs.h>
 #include <wx/menu.h>
 
@@ -166,11 +165,6 @@ void wex::menu_item::append_panes(wex::menu* menu) const
 
   for (const auto& it : m_frame->toggled_panes())
   {
-    if (it.first.first == "PROCESS" && process::get_shell() == nullptr)
-    {
-      continue;
-    }
-
     menu->append({{it.second, it.first.second, CHECK}});
   }
 }

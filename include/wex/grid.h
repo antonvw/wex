@@ -22,7 +22,7 @@ namespace wex
     grid(const data::window& data = data::window().style(wxWANTS_CHARS));
 
     /// Destructor.
-    virtual ~grid() { ; };
+    virtual ~grid() = default;
 
     /// Copy from selected cells.
     bool copy_selected_cells_to_clipboard() const;

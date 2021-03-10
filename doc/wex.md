@@ -313,4 +313,23 @@ wex::regex::regex(
   to tokenize expressions
 
 ## wxWidgets libraries
-- almost all gui classes are derived from wxWidgets base classes
+- all gui classes are derived from / use wxWidgets base classes
+  wxpng
+  wxjpeg
+  wxbase
+  wxnet
+  wxcore
+  wxadv
+  wxaui
+  wxhtml
+  wxscintilla
+  wxstc
+  wxgl
+  wxqa
+
+## wex c++ libraries
+
+                          <-  wex-ui     
+  wex-core  <-  wex-data  <-  wex-stc     <-  wex-report
+                          <-  wex-common
+                          <-  wex-vi
