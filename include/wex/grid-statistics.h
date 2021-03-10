@@ -21,8 +21,10 @@ namespace wex
   public:
     /// Constructor.
     grid_statistics(
+      const std::vector<std::pair<const std::string, T>>& v = {},
       const data::window& data = data::window().style(wxWANTS_CHARS))
-      : grid(data)
+      : statistics<T>(v)
+      , grid(data)
     {
       Bind(
         wxEVT_MENU,

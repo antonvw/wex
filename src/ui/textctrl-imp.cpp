@@ -2,7 +2,7 @@
 // Name:      textctrl-imp.cpp
 // Purpose:   Implementation of wex::textctrl_imp class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/config.h>
@@ -191,7 +191,15 @@ wex::textctrl_imp::textctrl_imp(
             }
             else if (m_input == 0)
             {
-              TCI().set(event.GetKeyCode(), m_tc);
+              if (GetValue().empty())
+              {
+                set_text(TCI().get());
+                SelectAll();
+              }
+              else
+              {
+                TCI().set(event.GetKeyCode(), m_tc);
+              }
             }
             else
             {
@@ -337,7 +345,8 @@ wex::textctrl_imp::textctrl_imp(
       {
         TCI().set(m_tc);
 
-        if (m_command.type() == ex_command::type_t::COMMAND)
+        if (m_command.type() == ex_command::type_t::COMMAND ||
+          m_command.type() == ex_command::type_t::COMMAND_EX)
         {
           if (
             get_text() == "gt" || get_text() == "n" || get_text() == "prev" ||
@@ -461,13 +470,14 @@ bool wex::textctrl_imp::handle(const std::string& command)
   switch (m_command.type())
   {
     case ex_command::type_t::CALC:
-    case ex_command::type_t::EXEC:
+    case ex_command::type_t::ESCAPE:
     case ex_command::type_t::FIND_MARGIN:
       set_text(TCI().get());
       SelectAll();
       break;
 
     case ex_command::type_t::COMMAND:
+    case ex_command::type_t::COMMAND_EX:
       if (command == ":!")
       {
         set_text("!");
@@ -577,8 +587,11 @@ wex::textctrl_input& wex::textctrl_imp::TCI()
     case ex_command::type_t::CALC:
       return m_calcs;
 
-    case ex_command::type_t::EXEC:
-      return m_execs;
+    case ex_command::type_t::COMMAND_EX:
+      return m_commands_ex;
+
+    case ex_command::type_t::ESCAPE:
+      return m_escapes;
 
     case ex_command::type_t::FIND_MARGIN:
       return m_find_margins;
