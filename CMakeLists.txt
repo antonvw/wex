@@ -6,7 +6,7 @@ set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 
-find_package(Boost 1.65.0 COMPONENTS 
+find_package(Boost 1.69.0 COMPONENTS 
   log_setup log filesystem program_options date_time regex REQUIRED)
 
 # to support older cmake versions that do not known 17.

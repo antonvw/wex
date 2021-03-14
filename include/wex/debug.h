@@ -16,10 +16,11 @@
 
 namespace wex
 {
-  namespace core
+  namespace factory
   {
     class process;
   }
+
   class frame;
   class item_dialog;
   class managed_frame;
@@ -32,7 +33,7 @@ namespace wex
   {
   public:
     /// Constructor.
-    debug(managed_frame* frame, core::process* process = nullptr);
+    debug(managed_frame* frame, factory::process* process = nullptr);
 
     /// Adds debug menu items to specified menu, default as no popup menu.
     /// These menus allow you to interact with the debug process.
@@ -68,7 +69,7 @@ namespace wex
     bool print(const std::string& variable) const;
 
     /// Shows dialog to select debug entry.
-    bool show_dialog(frame* parent);
+    bool show_dialog(wxWindow* parent);
 
     /// Toggles breakpoint on line.
     /// Returns false if no debug process is available.
@@ -96,10 +97,10 @@ namespace wex
 
     path m_path, m_path_execution_point;
 
-    managed_frame*   m_frame;
-    wex::debug_entry m_entry;
-    wex::core::process* m_process{nullptr};
-    bool             m_active{false};
-    std::string      m_stdout;
+    managed_frame*         m_frame;
+    wex::debug_entry       m_entry;
+    wex::factory::process* m_process{nullptr};
+    bool                   m_active{false};
+    std::string            m_stdout;
   };
 }; // namespace wex

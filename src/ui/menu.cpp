@@ -10,12 +10,12 @@
 #include <wx/wx.h>
 #endif
 #include <wex/core.h>
+#include <wex/factory/listview.h>
+#include <wex/factory/stc.h>
 #include <wex/lexers.h>
-#include <wex/listview.h>
 #include <wex/managed-frame.h>
 #include <wex/menu.h>
 #include <wex/printing.h>
-#include <wex/stc.h>
 #include <wex/tool.h>
 
 #define PRINT_COMPONENT(ID, ACTION)                                 \

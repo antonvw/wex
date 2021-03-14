@@ -7,10 +7,10 @@
 
 #include <wex/chrono.h>
 #include <wex/ex.h>
+#include <wex/factory/process.h>
 #include <wex/log.h>
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
-#include <wex/process-core.h>
 #include <wex/regex.h>
 #include <wex/stc-entry-dialog.h>
 #include <wex/stc.h>
@@ -142,7 +142,7 @@ bool wex::variable::expand(ex* ex)
   // If there is a prefix, make a comment out of it.
   auto commented(value);
 
-  if (ex != nullptr)
+  if (ex != nullptr && ex->get_stc() != nullptr)
   {
     if (ex->get_stc()->GetReadOnly() || ex->get_stc()->is_hexmode())
     {
@@ -225,8 +225,10 @@ bool wex::variable::expand(std::string& value, ex* ex) const
         return false;
       }
 
-      if (core::process p; p.system(
-            m_value + (!m_argument.empty() ? " " + m_argument : std::string())) != 0)
+      if (factory::process p;
+          p.system(
+            m_value +
+            (!m_argument.empty() ? " " + m_argument : std::string())) != 0)
       {
         return false;
       }

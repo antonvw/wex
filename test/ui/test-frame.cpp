@@ -2,7 +2,7 @@
 // Name:      test-frame.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -20,11 +20,10 @@ TEST_CASE("wex::frame")
   get_stc()->SetFocus();
   get_stc()->get_file().reset_contents_changed();
 
-  REQUIRE(((wex::frame*)frame())->open_file(wex::test::get_path("test.h")));
-  REQUIRE(((wex::frame*)frame())
-            ->open_file(wex::test::get_path("test.h"), "contents"));
-  REQUIRE(((wex::frame*)frame())->is_open(wex::test::get_path("test.h")));
-  REQUIRE(!((wex::frame*)frame())->is_open(wex::path("xxx")));
+  REQUIRE(frame()->open_file(wex::test::get_path("test.h")));
+  //  REQUIRE(frame()->open_file(wex::test::get_path("test.h"), "contents"));
+  REQUIRE(frame()->is_open(wex::test::get_path("test.h")));
+  REQUIRE(!frame()->is_open(wex::path("xxx")));
 
   REQUIRE(frame()->get_grid() == nullptr);
   REQUIRE(frame()->get_listview() == nullptr);

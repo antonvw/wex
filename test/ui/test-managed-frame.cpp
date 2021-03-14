@@ -29,12 +29,13 @@ TEST_CASE("wex::managed_frame")
   wex::ex_command command(":n");
   REQUIRE(!frame()->exec_ex_command(command));
 
-  REQUIRE(!frame()->show_ex_command(vi, ""));
-  REQUIRE(!frame()->show_ex_command(vi, "x"));
-  REQUIRE(!frame()->show_ex_command(vi, "xx"));
-  REQUIRE(frame()->show_ex_command(vi, "/"));
-  REQUIRE(frame()->show_ex_command(vi, "?"));
-  REQUIRE(frame()->show_ex_command(vi, std::string(1, WXK_CONTROL_R) + "="));
+  REQUIRE(!frame()->show_ex_command(get_stc(), ""));
+  REQUIRE(!frame()->show_ex_command(get_stc(), "x"));
+  REQUIRE(!frame()->show_ex_command(get_stc(), "xx"));
+  REQUIRE(frame()->show_ex_command(get_stc(), "/"));
+  REQUIRE(frame()->show_ex_command(get_stc(), "?"));
+  REQUIRE(
+    frame()->show_ex_command(get_stc(), std::string(1, WXK_CONTROL_R) + "="));
 
   REQUIRE(!frame()->save_current_page("key"));
   REQUIRE(frame()->restore_page("key") == nullptr);

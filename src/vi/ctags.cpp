@@ -90,7 +90,7 @@ namespace wex
     return entry.name;
   }
 
-  frame* get_frame()
+  auto* get_frame()
   {
     return dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
   }
@@ -156,7 +156,7 @@ namespace wex
     const std::string name() const { return tag_name(m_path); };
 
     // Opens file in specified frame.
-    auto open_file(frame* frame) const
+    auto open_file(factory::frame* frame) const
     {
       return frame->open_file(
         m_path,

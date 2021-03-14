@@ -9,7 +9,7 @@
 
 #include <vector>
 #include <wex/dialog.h>
-#include <wex/frame.h>
+#include <wex/factory/frame.h>
 #include <wex/item.h>
 #include <wex/path.h>
 #include <wx/app.h>
@@ -194,7 +194,8 @@ namespace wex
   private:
     void click(const wxCommandEvent& event) const
     {
-      if (auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
+      if (auto* frame =
+            dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
           frame != nullptr)
       {
         frame->on_command_item_dialog(GetId(), event);

@@ -9,7 +9,7 @@
 
 #include <wx/stc/stc.h>
 
-namespace wex::core
+namespace wex::factory
 {
   class stc;
 }
@@ -29,7 +29,7 @@ namespace wex::data
     /// Constructor. Sets positions.
     find(
       /// component
-      wex::core::stc* stc,
+      wex::factory::stc* stc,
       /// text to find
       const std::string& text,
       /// forward
@@ -54,7 +54,7 @@ namespace wex::data
     int start_pos() const { return m_start_pos; };
 
     /// Returns stc member.
-    core::stc* stc() { return m_stc; };
+    factory::stc* stc() { return m_stc; };
 
     /// Returns text.
     const auto& text() { return m_text; };
@@ -62,7 +62,7 @@ namespace wex::data
   private:
     void set_pos();
 
-    core::stc* m_stc{nullptr};
+    factory::stc* m_stc{nullptr};
 
     int m_end_pos{wxSTC_INVALID_POSITION}, m_flags{-1},
       m_start_pos{wxSTC_INVALID_POSITION};

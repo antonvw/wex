@@ -13,7 +13,7 @@
 
 namespace wex
 {
-  namespace core
+  namespace factory
   {
     class process;
   }
@@ -93,7 +93,7 @@ namespace wex
 
     /// Sets the process to which commands are sent.
     /// If you do not set this, commands are sent to the parent.
-    void set_process(core::process* process);
+    void set_process(factory::process* process);
 
     /// Sets the prompt, and prompts if asked for.
     /// Returns false and does not set the prompt if the shell is not enabled.
@@ -127,6 +127,6 @@ namespace wex
       0; /// position after the prompt from where commands can be inserted
     bool m_enabled = true;
 
-    core::process* m_process {nullptr};
+    factory::process* m_process {nullptr};
   };
 }; // namespace wex

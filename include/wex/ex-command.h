@@ -13,7 +13,10 @@ class wxTextEntry;
 
 namespace wex
 {
-  class stc;
+  namespace factory
+  {
+    class stc;
+  };
 
   /// Offers a command to be used by ex command.
   class ex_command
@@ -37,7 +40,7 @@ namespace wex
     ex_command();
 
     /// Constructor, sets stc component.
-    ex_command(stc* stc);
+    ex_command(factory::stc* stc);
 
     /// Constructor, sets command text.
     ex_command(const std::string& text);
@@ -137,6 +140,6 @@ namespace wex
 
     bool m_has_type{true};
 
-    wex::stc *m_stc{nullptr}, *m_stc_original{nullptr};
+    wex::factory::stc *m_stc{nullptr}, *m_stc_original{nullptr};
   };
 } // namespace wex

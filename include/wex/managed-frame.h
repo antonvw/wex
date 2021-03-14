@@ -9,16 +9,21 @@
 
 #include <utility>
 #include <vector>
+#include <wex/factory/frame.h>
 #include <wex/file-history.h>
-#include <wex/frame.h>
 #include <wex/path.h>
-#include <wx/aui/framemanager.h> // for wxAuiManager
+#include <wex/statusbar-pane.h>
+#include <wex/statusbar.h>
+#include <wex/stc-data.h>
+#include <wex/window-data.h>
+#include <wx/aui/framemanager.h>
 
+class wxFindReplaceDialog;
 class wxPanel;
 
 namespace wex
 {
-  class debug;
+  class debug_entry;
   class ex;
   class ex_command;
   class textctrl;
@@ -34,7 +39,7 @@ namespace wex
   /// - PROCESS
   /// - TOOLBAR
   /// - VIBAR (same as the ex bar)
-  class managed_frame : public frame
+  class managed_frame : public factory::frame
   {
   public:
     /// Enums for show_ex_bar.
@@ -73,6 +78,30 @@ namespace wex
       /// page
       wxWindow* page);
 
+    /// Adds debug menu.
+    virtual void debug_add_menu(const menu&, bool) { ; };
+
+    /// Runs debug action.
+    virtual void debug_exe(int id, factory::stc* stc) { ; };
+
+    /// Runs debug command.
+    virtual void debug_exe(const std::string& exe, factory::stc* stc) { ; };
+
+    /// Sets a debug handler.
+    virtual wxEvtHandler* debug_handler() { return nullptr; };
+
+    /// Runs true if we are debugging.
+    virtual bool debug_is_active() const { return false; };
+
+    /// Returns current debugger.
+    virtual debug_entry& debug_entry() const { return debug_entry(); };
+
+    /// Prints a debug variable.
+    virtual void debug_print(const std::string& text) { ; };
+
+    /// Toggles a breakpoint on line.
+    virtual void debug_toggle_breakpoint(int line, factory::stc* stc) { ; };
+
     /// Executes a ex command. Returns true if
     /// this command is handled. This method is invoked
     /// at the beginning of the ex command handling,
@@ -81,14 +110,17 @@ namespace wex
 
     /// Called if the notebook changed page.
     /// Default sets the focus to page and adds page as recently used.
-    virtual void on_notebook(wxWindowID id, wxWindow* page);
+    virtual void on_notebook(wxWindowID id, wxWindow* page) { ; };
 
     /// Prints text in ex dialog.
     virtual void print_ex(
       /// the ex for the dialog
       ex* ex,
       /// the text to be printed
-      const std::string& text);
+      const std::string& text)
+    {
+      ;
+    };
 
     /// Allows you to perform action for a (vi) command.
     /// This method is invoked after command is executed.
@@ -96,43 +128,50 @@ namespace wex
 
     /// Restores a previous saved current page.
     /// Returns restored page (default returns nullptr).
-    virtual stc* restore_page(const std::string& key) { return nullptr; };
+    virtual factory::stc* restore_page(const std::string& key)
+    {
+      return nullptr;
+    };
 
     /// Saves the current page, to restore later on.
     virtual bool save_current_page(const std::string& key) { return false; };
 
+    /// Shows or hides the ex bar.
+    /// Default it hides the ex bar and
+    /// sets focus back to stc component associated with current ex.
+    /// If current ex has ex mode enabled, the ex bar is always shown.
+    virtual void show_ex_bar(
+      /// action
+      int action = HIDE_BAR_FOCUS_STC,
+      /// component to use for showing ex bar (for SHOW_ actions)
+      ex* ex = nullptr)
+    {
+      ;
+    };
+
+    /// Shows text in ex bar.
+    virtual void show_ex_message(const std::string& text) { ; };
+
     /// Called after you checked the Sync checkbox on the options toolbar.
-    /// Default syncs current stc.
-    virtual void sync_all();
+    virtual void sync_all() { ; };
 
     /// Called after all pages from the notebooks are deleted.
     /// Default resets the find focus.
     virtual void sync_close_all(wxWindowID id);
-
-    /// overridden methods
-
-    stc* open_file(const path& filename, const data::stc& data = data::stc())
-      override;
-
-    void set_recent_file(const path& path) override;
-
-    void statusbar_clicked(const std::string&) override;
-
-    void statusbar_clicked_right(const std::string&) override;
 
     /// Other methods
 
     /// Returns file history.
     auto& file_history() { return m_file_history; };
 
-    /// Debugging interface.
-    auto* get_debug() { return m_debug; };
-
     /// Returns the find toolbar.
     auto* get_find_toolbar() { return m_findbar; };
 
     /// Returns the options toolbar.
     auto* get_options_toolbar() { return m_optionsbar; };
+
+    /// Returns statusbar.
+    auto* get_statusbar() { return m_statusbar; };
 
     /// Returns the toolbar.
     auto* get_toolbar() { return m_toolbar; };
@@ -187,15 +226,12 @@ namespace wex
     /// Returns number of panes.
     size_t panes() const;
 
-    /// Shows or hides the ex bar.
-    /// Default it hides the ex bar and
-    /// sets focus back to stc component associated with current ex.
-    /// If current ex has ex mode enabled, the ex bar is always shown.
-    void show_ex_bar(
-      /// action
-      int action = HIDE_BAR_FOCUS_STC,
-      /// component to use for showing ex bar (for SHOW_ actions)
-      ex* ex = nullptr);
+    /// Sets up the status bar if you want to use statustext.
+    /// And initializes other static data.
+    statusbar* setup_statusbar(
+      const std::vector<statusbar_pane>& panes,
+      long                               style = wxST_SIZEGRIP,
+      const std::string&                 name  = "statusBar");
 
     /// Returns a command line ex command.
     /// Shows the ex bar, sets the label and sets focus to it, allowing
@@ -203,7 +239,7 @@ namespace wex
     /// Returns false if label is not supported.
     bool show_ex_command(
       /// the ex on which command is to be done
-      ex* ex,
+      factory::stc* stc,
       /// label for the ex bar (/, ?, :, =)
       const std::string& label);
 
@@ -211,12 +247,9 @@ namespace wex
     /// Returns false if command is not supported.
     bool show_ex_input(
       /// the ex on which command is to be done
-      ex* ex,
+      factory::stc* stc,
       /// the command (a, c, or i)
       char command);
-
-    /// Shows text in ex bar.
-    void show_ex_message(const std::string& text);
 
     /// Shows or hide process pane.
     void show_process(bool show);
@@ -224,11 +257,31 @@ namespace wex
     /// Returns the toggled panes.
     const auto& toggled_panes() const { return m_toggled_panes; };
 
+    /// overridden methods
+
+    std::string   get_statustext(const std::string& pane) const override;
+    factory::stc* open_file(
+      const path&      filename,
+      const data::stc& data = data::stc()) override;
+    void set_recent_file(const path& path) override;
+    void statusbar_clicked_right(const std::string&) override;
+    bool
+    statustext(const std::string& text, const std::string& pane) const override;
+    bool         Show(bool show = true) override;
+    wxStatusBar* OnCreateStatusBar(
+      int             number,
+      long            style,
+      wxWindowID      id,
+      const wxString& name) override;
+
   protected:
     void on_menu_history(
       const class file_history& history,
       size_t                    index,
       data::stc::window_t       flags = 0);
+
+    statusbar* m_statusbar{nullptr};
+    textctrl*  m_textctrl;
 
   private:
     bool     add_toolbar_panes(const panes_t& panes);
@@ -238,12 +291,11 @@ namespace wex
 
     const toggled_panes_t m_toggled_panes;
 
-    debug* m_debug{nullptr};
+    wxFindReplaceDialog* m_find_replace_dialog{nullptr};
 
     toolbar *m_findbar, *m_optionsbar, *m_toolbar;
 
     wxAuiManager       m_manager;
     class file_history m_file_history;
-    textctrl*          m_textctrl;
   };
 }; // namespace wex

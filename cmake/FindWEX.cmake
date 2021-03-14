@@ -15,7 +15,7 @@ set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 
-find_package(Boost 1.65.0 COMPONENTS 
+find_package(Boost 1.69.0 COMPONENTS 
   log_setup log filesystem program_options date_time regex REQUIRED)
 
 find_package(ODBC QUIET)
@@ -151,15 +151,15 @@ set(wex_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include/wex")
 set(wex_LIB_DIR "${CMAKE_INSTALL_PREFIX}/lib/wex")
       
 set(wex_LIBRARIES
-  wex-report${USE_DEBUG}
+  wex-del${USE_DEBUG}
   wex-common${USE_DEBUG}
   wex-stc${USE_DEBUG}
   wex-ui${USE_DEBUG}
   wex-vi${USE_DEBUG}
-  wex-common${USE_DEBUG}
-  wex-stc${USE_DEBUG}
   wex-ui${USE_DEBUG}
+  wex-common${USE_DEBUG}
   wex-data${USE_DEBUG}
+  wex-factory${USE_DEBUG}
   wex-core${USE_DEBUG}
   ${wx_LIBRARIES}
   ${apple_LIBRARIES}

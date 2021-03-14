@@ -12,7 +12,6 @@
 #endif
 #include "../test.h"
 #include <wex/config.h>
-#include <wex/ex.h>
 #include <wex/managed-frame.h>
 #include <wex/stc.h>
 #include <wex/util.h>

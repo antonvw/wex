@@ -16,12 +16,12 @@
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/defs.h>
+#include <wex/factory/stc.h>
 #include <wex/frd.h>
 #include <wex/grid.h>
 #include <wex/listview.h>
 #include <wex/managed-frame.h>
 #include <wex/menu.h>
-#include <wex/stc.h>
 #include <wex/textctrl.h>
 #include <wex/toolbar.h>
 

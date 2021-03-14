@@ -20,8 +20,8 @@ some functions are not tested:
 - wex-test-core
   tests wex-core classes
 
-- wex-test-report
-  test wex-report classes
+- wex-test-del
+  test wex-del classes
 
 - wex-test-ui
   tests other classes

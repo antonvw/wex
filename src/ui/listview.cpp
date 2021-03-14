@@ -17,7 +17,7 @@
 #include <wex/chrono.h>
 #include <wex/config.h>
 #include <wex/defs.h>
-#include <wex/frame.h>
+#include <wex/factory/frame.h>
 #include <wex/frd.h>
 #include <wex/interruptible.h>
 #include <wex/item-dialog.h>
@@ -30,6 +30,7 @@
 #include <wex/menu.h>
 #include <wex/printing.h>
 #include <wex/regex.h>
+#include <wex/stc-data.h>
 #include <wex/tokenizer.h>
 #include <wx/dnd.h>
 #include <wx/fdrepdlg.h>         // for wxFindDialogEvent
@@ -39,7 +40,7 @@
 
 namespace wex
 {
-  // file_droptarget is already used by wex::frame.
+  // file_droptarget is already used
   class droptarget : public wxFileDropTarget
   {
   public:
@@ -182,7 +183,7 @@ wex::listview::listview(const data::listview& data)
         data.type() == data::listview::NONE || data::listview::TSV ?
           data.image() :
           data::listview::IMAGE_FILE_ICON))
-  , m_frame(dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow()))
+  , m_frame(dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow()))
 {
   Create(
     data.window().parent(),
@@ -901,13 +902,13 @@ void wex::listview::item_activated(long item_number)
       // Cannot be const because of SetItem later on.
       if (listitem item(this, item_number); item.get_filename().file_exists())
       {
-        const auto no(get_item_text(item_number, _("Line No")));
-        auto       data(
+        const auto    no(get_item_text(item_number, _("Line No")));
+        data::control data(
           (m_data.type() == data::listview::FIND && !no.empty() ?
-                   data::control()
+             data::control()
                .line(std::stoi(no))
                .find(get_item_text(item_number, _("Match"))) :
-                   data::control()));
+             data::control()));
 
         m_frame->open_file(item.get_filename(), data);
       }

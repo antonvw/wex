@@ -130,7 +130,7 @@ It benefits from the following c++ features:
 ```
 
   A recent added function.
-  
+
 - Thread support library (c++17)
 ```cpp
   std::thread
@@ -308,7 +308,7 @@ wex::regex::regex(
 
 - boost::statechart lib
   to implement the statemachine for vi mode and macro mode
-  
+
 - boost::tokenizer lib
   to tokenize expressions
 
@@ -329,7 +329,5 @@ wex::regex::regex(
 
 ## wex c++ libraries
 
-                          <-  wex-ui     
-  wex-core  <-  wex-data  <-  wex-stc     <-  wex-report
-                          <-  wex-common
-                          <-  wex-vi
+  wex-core <- wex-factory <- wex-data   <-  wex-ui <- wex-vi  <- wex-del
+                          <- wex-common            <- wex-stc

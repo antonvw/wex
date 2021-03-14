@@ -2,7 +2,7 @@
 // Name:      stc/config.cpp
 // Purpose:   Implementation of config related methods of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -126,7 +126,7 @@ void wex::stc::config_get()
 
   SetEdgeColumn(iv.find<int>(_("stc.Edge column")));
 
-  if (!m_lexer.is_ok())
+  if (!get_lexer().is_ok())
   {
     SetEdgeMode(wxSTC_EDGE_NONE);
   }
@@ -174,8 +174,8 @@ void wex::stc::config_get()
   SetWrapVisualFlags(iv.find<long>(_("stc.Wrap visual flags")));
 
   if (
-    GetProperty("fold") == "1" && m_lexer.is_ok() &&
-    !m_lexer.scintilla_lexer().empty())
+    GetProperty("fold") == "1" && get_lexer().is_ok() &&
+    !get_lexer().scintilla_lexer().empty())
   {
     SetMarginWidth(
       m_margin_folding_number,
@@ -187,7 +187,7 @@ void wex::stc::config_get()
 
   show_line_numbers(iv.find<bool>(_("stc.Line numbers")));
 
-  m_lexer.apply(); // at end, to prioritize local xml config
+  get_lexer().apply(); // at end, to prioritize local xml config
 }
 
 void wex::stc::on_exit()

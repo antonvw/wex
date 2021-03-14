@@ -23,11 +23,15 @@ namespace pugi
 namespace wex
 {
   class ex;
-  class frame;
   class lexer;
   class path;
-  class stc;
   class vcs_command;
+
+  namespace factory
+  {
+    class frame;
+    class stc;
+  }; // namespace factory
 
   /*! \file */
 
@@ -56,7 +60,7 @@ namespace wex
   /// Shows a dialog with all lexers, allowing you to choose one.
   /// Returns true and sets the lexer on the stc component if you selected
   /// one.
-  bool lexers_dialog(stc* stc);
+  bool lexers_dialog(factory::stc* stc);
 
   /// Runs make on specified makefile.
   /// Returns value from executing the make process.
@@ -69,21 +73,9 @@ namespace wex
   int open_files(
     /// frame on which open_file for each file is called,
     /// and open_file_dir for each dir
-    frame* frame,
+    factory::frame* frame,
     /// array with files
     const std::vector<path>& files,
-    /// data to be used with open_file
-    const data::stc& data = data::stc(),
-    /// flags to be used with open_file_dir
-    data::dir::type_t type = data::dir::type_t().set());
-
-  /// Shows a dialog and opens selected files
-  /// (calls open_files).
-  void open_files_dialog(
-    /// frame
-    frame* frame,
-    /// flags to be used with file_dialog
-    bool ask_for_continue = false,
     /// data to be used with open_file
     const data::stc& data = data::stc(),
     /// flags to be used with open_file_dir
@@ -101,17 +93,7 @@ namespace wex
     /// lexer to be used
     const lexer& lexer,
     /// stc on which lexer is set
-    stc* stc);
-
-  /// Executes VCS command id for specified files
-  /// and opens component if necessary.
-  void vcs_execute(
-    /// frame on which open_file is called
-    frame* frame,
-    /// VCS menu id to execute
-    int id,
-    /// files on which to operate
-    const std::vector<path>& files);
+    factory::stc* stc);
 
   /// Shows xml error.
   void xml_error(
@@ -120,5 +102,5 @@ namespace wex
     /// result of parsing describing the error
     const pugi::xml_parse_result* result,
     /// stc component containing the filename
-    stc* stc = nullptr);
+    factory::stc* stc = nullptr);
 }; // namespace wex

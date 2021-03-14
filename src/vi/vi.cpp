@@ -352,7 +352,7 @@ wex::vi::vi(wex::stc* arg)
                          else
                          {
                            return frame()->show_ex_command(
-                                    this,
+                                    get_stc(),
                                     command +
                                       (m_mode.is_visual() ? "'<,'>" : "")) ?
                                     command.size() :
@@ -450,7 +450,7 @@ wex::vi::vi(wex::stc* arg)
                          }
                          else
                          {
-                           frame()->show_ex_command(this, command);
+                           frame()->show_ex_command(get_stc(), command);
                            return (size_t)1;
                          }
                        }},
@@ -930,7 +930,7 @@ void wex::vi::command_reg(const std::string& reg)
         if (reg.size() == 2)
         {
           set_register_insert(std::string());
-          frame()->show_ex_command(this, reg);
+          frame()->show_ex_command(get_stc(), reg);
         }
         else
         {

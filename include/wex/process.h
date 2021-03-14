@@ -8,7 +8,7 @@
 #pragma once
 
 #include <memory>
-#include <wex/process-core.h>
+#include <wex/factory/process.h>
 #include <wex/window-data.h>
 
 namespace wex
@@ -17,7 +17,7 @@ namespace wex
   class shell;
 
   /// Offers a process, capturing execution output.
-  class process : public core::process
+  class process : public factory::process
   {
   public:
     /// Static interface.
@@ -47,7 +47,7 @@ namespace wex
     /// Assignment operator.
     process& operator=(const process& p);
 
-    /// See core::process.
+    /// See factory::process.
     /// Return value is false if process could not execute,
     /// or if config dialog was invoked and cancelled, or prepare_output
     /// not yet invoked.

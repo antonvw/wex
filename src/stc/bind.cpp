@@ -12,7 +12,7 @@
 #include <wex/beautify.h>
 #include <wex/bind.h>
 #include <wex/config.h>
-#include <wex/debug.h>
+#include <wex/debug-entry.h>
 #include <wex/defs.h>
 #include <wex/frd.h>
 #include <wex/item-vector.h>
@@ -263,9 +263,7 @@ void wex::stc::bind_all()
       wxID_SORT_ASCENDING},
 
      {[=, this](wxCommandEvent& event) {
-        m_frame->get_debug()->execute(
-          event.GetId() - ID_EDIT_DEBUG_FIRST,
-          this);
+        m_frame->debug_exe(event.GetId() - ID_EDIT_DEBUG_FIRST, this);
       },
       ID_EDIT_DEBUG_FIRST},
 
@@ -496,9 +494,9 @@ void wex::stc::build_popup_menu(menu& menu)
     m_data.menu().test(data::stc::MENU_DEBUG) &&
     matches_one_of(
       get_filename().extension(),
-      m_frame->get_debug()->debug_entry().extensions()))
+      m_frame->debug_entry().extensions()))
   {
-    m_frame->get_debug()->add_menu(&menu, true);
+    m_frame->debug_add_menu(menu, true);
   }
 
   if (
@@ -561,7 +559,7 @@ void wex::stc::build_popup_menu(menu& menu)
 
   if (
     !GetReadOnly() && sel.empty() && beautify_add &&
-    beautify().is_supported(m_lexer))
+    beautify().is_supported(get_lexer()))
   {
     menu.append({{}, {id::stc::beautify, _("&Beautify")}});
   }
@@ -569,8 +567,8 @@ void wex::stc::build_popup_menu(menu& menu)
   // Folding if nothing selected, property is set,
   // and we have a lexer.
   if (
-    sel.empty() && GetProperty("fold") == "1" && m_lexer.is_ok() &&
-    !m_lexer.scintilla_lexer().empty())
+    sel.empty() && GetProperty("fold") == "1" && get_lexer().is_ok() &&
+    !get_lexer().scintilla_lexer().empty())
   {
     menu.append(
       {{},
@@ -754,8 +752,8 @@ void wex::stc::show_properties()
         return a + l.make_key(b.name(), GetProperty(b.name()));
       }) +
     std::accumulate(
-      m_lexer.properties().begin(),
-      m_lexer.properties().end(),
+      get_lexer().properties().begin(),
+      get_lexer().properties().end(),
       std::string(),
       [this, l](const std::string& a, const property& b) {
         return a + l.make_key(b.name(), GetProperty(b.name()));

@@ -5,7 +5,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/ex.h>
 #include <wex/managed-frame.h>
 #include <wex/textctrl.h>
 
@@ -49,16 +48,16 @@ void wex::textctrl::select_all() const
   return m_imp->SelectAll();
 }
 
-bool wex::textctrl::set_ex(wex::ex* ex, const std::string& command)
+bool wex::textctrl::set_stc(wex::factory::stc* stc, const std::string& command)
 {
-  m_ex = ex;
+  m_stc = stc;
 
   return m_imp->handle(command);
 }
 
-bool wex::textctrl::set_ex(wex::ex* ex, char command)
+bool wex::textctrl::set_stc(wex::factory::stc* stc, char command)
 {
-  m_ex = ex;
+  m_stc = stc;
 
   return m_imp->handle(command);
 }

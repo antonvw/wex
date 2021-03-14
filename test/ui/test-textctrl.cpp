@@ -2,7 +2,7 @@
 // Name:      test-textctrl.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
@@ -14,7 +14,7 @@ TEST_CASE("wex::textctrl")
   auto* tc = new wex::textctrl(frame());
   wex::test::add_pane(frame(), tc->control());
 
-  REQUIRE(tc->ex() == nullptr);
+  REQUIRE(tc->stc() == nullptr);
 
   REQUIRE(tc->frame() == frame());
 
@@ -29,6 +29,6 @@ TEST_CASE("wex::textctrl")
   wex::stc* stc = get_stc();
   wex::ex*  ex  = &stc->get_vi();
 
-  REQUIRE(!tc->set_ex(ex, "xxx"));
-  REQUIRE(tc->set_ex(ex, "/abc"));
+  REQUIRE(!tc->set_stc(stc, "xxx"));
+  REQUIRE(tc->set_stc(stc, "/abc"));
 }

@@ -2,7 +2,7 @@
 // Name:      textctrl.h
 // Purpose:   Declaration of wex::textctrl class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -13,7 +13,11 @@ class wxControl;
 
 namespace wex
 {
-  class ex;
+  namespace factory
+  {
+    class stc;
+  };
+
   class managed_frame;
   class textctrl_imp;
 
@@ -26,8 +30,8 @@ namespace wex
 
     /// Constructor. Skips prefix.
     textctrl(
-      managed_frame*     frame,
-      const std::string& value = std::string(),
+      managed_frame*      frame,
+      const std::string&  value = std::string(),
       const data::window& data  = data::window());
 
     /// Destructor.
@@ -36,8 +40,8 @@ namespace wex
     /// Returns the control window for the component.
     wxControl* control();
 
-    /// Returns ex component.
-    wex::ex* ex() { return m_ex; };
+    /// Returns stc component.
+    auto* stc() { return m_stc; };
 
     /// Returns frame.
     managed_frame* frame() { return m_frame; };
@@ -48,20 +52,20 @@ namespace wex
     /// Selects all text.
     void select_all() const;
 
-    /// Sets ex component using string command.
+    /// Sets stc component using string command.
     /// Returns false if command not supported.
-    bool set_ex(wex::ex* ex, const std::string& command);
+    bool set_stc(wex::factory::stc* stc, const std::string& command);
 
     /// Sets ex component using char command.
     /// Returns false if command not supported.
-    bool set_ex(wex::ex* ex, char command);
+    bool set_stc(wex::factory::stc* stc, char command);
 
     /// Sets text.
     void set_text(const std::string& text);
 
   private:
-    wex::ex*       m_ex{nullptr};
-    managed_frame* m_frame;
-    textctrl_imp*  m_imp;
+    wex::factory::stc* m_stc{nullptr};
+    managed_frame*     m_frame;
+    textctrl_imp*      m_imp;
   };
 }; // namespace wex

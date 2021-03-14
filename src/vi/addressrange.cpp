@@ -355,22 +355,21 @@ bool wex::addressrange::escape(const std::string& command)
 
     m_process = new wex::process();
 
-    return m_process->async_system(
-      expanded,
-      m_stc->get_filename().get_path());
+    return m_process->async_system(expanded, m_stc->get_filename().get_path());
   }
 
   if (!is_ok())
   {
     return false;
   }
-  
-  if (temp_filename tmp(true); m_stc->GetReadOnly() || m_stc->is_hexmode() || !write(tmp.name()))
+
+  if (temp_filename tmp(true);
+      m_stc->GetReadOnly() || m_stc->is_hexmode() || !write(tmp.name()))
   {
     return false;
   }
-  else if (core::process process;
-    process.system(command + " " + tmp.name()) == 0)
+  else if (factory::process process;
+           process.system(command + " " + tmp.name()) == 0)
   {
     if (!process.get_stdout().empty())
     {
@@ -604,7 +603,7 @@ bool wex::addressrange::parse(
       }
       else
       {
-        return m_ex->frame()->show_ex_input(m_ex, command[0]);
+        return m_ex->frame()->show_ex_input(m_ex->get_stc(), command[0]);
       }
 
     case 'd':

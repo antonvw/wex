@@ -5,7 +5,7 @@ include_directories(../external/doctest/doctest)
   
 add_subdirectory(core)
 add_subdirectory(ui)
-add_subdirectory(report)
+add_subdirectory(del)
 
 if (WIN32)
   set(CONFIG_INSTALL_DIR /Users/$ENV{USERNAME}/.config/${PROJECT_NAME})
