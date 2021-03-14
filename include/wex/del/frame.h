@@ -38,6 +38,7 @@ namespace wex::del
       size_t              maxProjects = 0,
       const data::window& data = data::window().style(wxDEFAULT_FRAME_STYLE));
 
+    /// Destructor, cleans up static data.
     ~frame() override;
 
     /// Virtual interface
@@ -125,6 +126,14 @@ namespace wex::del
     void use_file_history_list(wex::listview* list);
 
     /// Overridden methods.
+
+    void          debug_add_menu(menu& m, bool b) override;
+    void          debug_exe(int id, factory::stc* stc) override;
+    void          debug_exe(const std::string& exe, factory::stc* stc) override;
+    wxEvtHandler* debug_handler() override;
+    bool          debug_is_active() const override;
+    bool          debug_print(const std::string& text) override;
+    bool          debug_toggle_breakpoint(int line, factory::stc* stc) override;
 
     void on_command_item_dialog(
       wxWindowID            dialogid,

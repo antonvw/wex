@@ -330,7 +330,7 @@ void wex::stc::mouse_action(wxMouseEvent& event)
         !m_skip && m_frame->debug_is_active() &&
         matches_one_of(
           get_filename().extension(),
-          m_frame->debug_entry().extensions()))
+          m_frame->debug_entry()->extensions()))
       {
         const auto& word =
           (!GetSelectedText().empty() ? GetSelectedText().ToStdString() :

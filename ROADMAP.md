@@ -1,15 +1,14 @@
 # roadmap
 - item, menu_item still use stc
+- rename managed_frame into frame
 - add test-scope.cpp
-- wxExecute
 - combine samples
 - no more Replace Results after replace in files
 - imprive FiF, do not use intermediate container
 - invest use wxTextCompleter
-- .,'xd -> incorrect last line
-- .,$d -> no action
 
 ## backlog
+- wxExecute
 - allow dynamic libs
 - use spaceship operator
   and modules (wait for gcc-11)

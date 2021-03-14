@@ -1,3 +1,3 @@
 # common library
 
-This library contains common classes for wex. 
+This library contains common classes for wex.

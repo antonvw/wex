@@ -2,29 +2,11 @@
 // Name:      listview.cpp
 // Purpose:   Implementation of class wex::del::listview
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wex/accelerators.h>
-#include <wex/bind.h>
-#include <wex/config.h>
-#include <wex/core.h>
-#include <wex/interruptible.h>
-#include <wex/item-dialog.h>
-#include <wex/lexers.h>
-#include <wex/listitem.h>
-#include <wex/del/defs.h>
-#include <wex/del/dir.h>
-#include <wex/del/frame.h>
-#include <wex/del/listview.h>
-#include <wex/del/stream.h>
-#include <wex/util.h>
-#include <wex/vcs.h>
+#include <wex/wex.h>
 
 wex::del::listview::listview(const data::listview& data)
   : wex::listview(data)

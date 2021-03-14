@@ -79,7 +79,7 @@ namespace wex
       wxWindow* page);
 
     /// Adds debug menu.
-    virtual void debug_add_menu(const menu&, bool) { ; };
+    virtual void debug_add_menu(menu&, bool) { ; };
 
     /// Runs debug action.
     virtual void debug_exe(int id, factory::stc* stc) { ; };
@@ -93,14 +93,14 @@ namespace wex
     /// Runs true if we are debugging.
     virtual bool debug_is_active() const { return false; };
 
-    /// Returns current debugger.
-    virtual debug_entry& debug_entry() const { return debug_entry(); };
-
     /// Prints a debug variable.
-    virtual void debug_print(const std::string& text) { ; };
+    virtual bool debug_print(const std::string& text) { return false; };
 
     /// Toggles a breakpoint on line.
-    virtual void debug_toggle_breakpoint(int line, factory::stc* stc) { ; };
+    virtual bool debug_toggle_breakpoint(int line, factory::stc* stc)
+    {
+      return false;
+    };
 
     /// Executes a ex command. Returns true if
     /// this command is handled. This method is invoked
@@ -160,6 +160,9 @@ namespace wex
     virtual void sync_close_all(wxWindowID id);
 
     /// Other methods
+
+    /// Returns current debugger.
+    const auto* debug_entry() const { return m_debug_entry; };
 
     /// Returns file history.
     auto& file_history() { return m_file_history; };
@@ -226,6 +229,9 @@ namespace wex
     /// Returns number of panes.
     size_t panes() const;
 
+    /// Sets debug entry.
+    void set_debug_entry(wex::debug_entry* de) { m_debug_entry = de; };
+
     /// Sets up the status bar if you want to use statustext.
     /// And initializes other static data.
     statusbar* setup_statusbar(
@@ -280,8 +286,9 @@ namespace wex
       size_t                    index,
       data::stc::window_t       flags = 0);
 
-    statusbar* m_statusbar{nullptr};
-    textctrl*  m_textctrl;
+    class debug_entry* m_debug_entry{nullptr};
+    statusbar*         m_statusbar{nullptr};
+    textctrl*          m_textctrl;
 
   private:
     bool     add_toolbar_panes(const panes_t& panes);

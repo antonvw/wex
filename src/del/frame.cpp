@@ -6,36 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wex/accelerators.h>
-#include <wex/addressrange.h>
-#include <wex/bind.h>
-#include <wex/cmdline.h>
-#include <wex/config.h>
-#include <wex/ctags.h>
-#include <wex/debug.h>
-#include <wex/file-dialog.h>
-#include <wex/frd.h>
-#include <wex/item-dialog.h>
-#include <wex/lexers.h>
-#include <wex/listitem.h>
-#include <wex/log.h>
-#include <wex/macros.h>
-#include <wex/regex.h>
-#include <wex/del/defs.h>
-#include <wex/del/dir.h>
-#include <wex/del/frame.h>
-#include <wex/del/listview-file.h>
-#include <wex/del/stream.h>
-#include <wex/stc-entry-dialog.h>
-#include <wex/stc.h>
-#include <wex/textctrl.h>
-#include <wex/tostring.h>
-#include <wex/util.h>
-#include <wex/vcs.h>
+#include <wex/wex.h>
 
 namespace wex
 {
@@ -274,18 +245,47 @@ wex::del::frame::~frame()
 
 const std::string find_replace_string(bool replace)
 {
-  std::string log;
+  return std::string(_("Searching for") + ": ") +
+         wex::find_replace_data::get()->get_find_string() +
+         (replace ? std::string(
+                      " " + _("replacing with") + ": " +
+                      wex::find_replace_data::get()->get_replace_string()) :
+                    std::string());
+}
 
-  log = _("Searching for") + ": " +
-        wex::find_replace_data::get()->get_find_string();
+void wex::del::frame::debug_add_menu(menu& m, bool b)
+{
+  m_debug->add_menu(&m, b);
+}
 
-  if (replace)
-  {
-    log += " " + _("replacing with") + ": " +
-           wex::find_replace_data::get()->get_replace_string();
-  }
+void wex::del::frame::debug_exe(int id, factory::stc* stc)
+{
+  m_debug->execute(id, dynamic_cast<wex::stc*>(stc));
+}
 
-  return log;
+void wex::del::frame::debug_exe(const std::string& exe, factory::stc* stc)
+{
+  m_debug->execute(exe, dynamic_cast<wex::stc*>(stc));
+}
+
+wxEvtHandler* wex::del::frame::debug_handler()
+{
+  return m_debug;
+}
+
+bool wex::del::frame::debug_is_active() const
+{
+  return m_debug->is_active();
+}
+
+bool wex::del::frame::debug_print(const std::string& text)
+{
+  return m_debug->print(text);
+}
+
+bool wex::del::frame::debug_toggle_breakpoint(int line, factory::stc* stc)
+{
+  return m_debug->toggle_breakpoint(line, dynamic_cast<wex::stc*>(stc));
 }
 
 std::list<std::string> wex::del::frame::default_extensions() const

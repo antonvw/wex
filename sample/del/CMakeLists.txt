@@ -1,4 +1,4 @@
-project(wex-sample-report)
+project(wex-sample-del)
 
 file(GLOB SRCS "*.cpp")
   

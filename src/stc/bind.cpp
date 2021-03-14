@@ -494,7 +494,7 @@ void wex::stc::build_popup_menu(menu& menu)
     m_data.menu().test(data::stc::MENU_DEBUG) &&
     matches_one_of(
       get_filename().extension(),
-      m_frame->debug_entry().extensions()))
+      m_frame->debug_entry()->extensions()))
   {
     m_frame->debug_add_menu(menu, true);
   }
