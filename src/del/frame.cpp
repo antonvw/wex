@@ -253,6 +253,47 @@ const std::string find_replace_string(bool replace)
                     std::string());
 }
 
+void wex::del::frame::append_vcs(wex::menu* menu, const menu_item* item) const
+{
+  if (!item->path().file_exists())
+  {
+    if (item->path().dir_exists())
+    {
+      const wex::vcs vcs({item->path().string()});
+
+      vcs.entry().build_menu(ID_VCS_LOWEST + 1, menu);
+    }
+    else
+    {
+      wex::vcs vcs;
+
+      if (vcs.set_entry_from_base(
+            item->is_modal() ? wxTheApp->GetTopWindow() : nullptr))
+      {
+        vcs.entry().build_menu(ID_VCS_LOWEST + 1, menu);
+      }
+    }
+  }
+  else
+  {
+    auto* vcsmenu = new wex::menu(menu->style());
+
+    if (const wex::vcs vcs({item->path().string()});
+        vcs.entry().build_menu(ID_EDIT_VCS_LOWEST + 1, vcsmenu))
+    {
+      menu->append({{vcsmenu, vcs.entry().name()}});
+    }
+  }
+}
+
+void wex::del::frame::bind_accelerators(
+  wxWindow*                              parent,
+  const std::vector<wxAcceleratorEntry>& v,
+  bool                                   debug)
+{
+  accelerators(v, debug).set(parent);
+}
+
 void wex::del::frame::debug_add_menu(menu& m, bool b)
 {
   m_debug->add_menu(&m, b);
@@ -742,12 +783,12 @@ void wex::del::frame::statusbar_clicked(const std::string& pane)
 
       if (stc != nullptr)
       {
-        if (menu->append({{stc->get_filename().get_path()}}))
+        if (menu->append({{stc->get_filename().get_path(), this}}))
         {
           PopupMenu(menu);
         }
       }
-      else if (menu->append({{wex::path()}}))
+      else if (menu->append({{wex::path(), this}}))
       {
         PopupMenu(menu);
       }

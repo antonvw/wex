@@ -13,7 +13,6 @@ class wxListView;
 
 namespace wex
 {
-  class grid;
   class path;
   class vcs_entry;
 
@@ -24,6 +23,7 @@ namespace wex
 
   namespace factory
   {
+    class grid;
     class listview;
     class process;
     class stc;
@@ -41,7 +41,7 @@ namespace wex
       /// Virtual interface
 
       /// Returns a grid.
-      virtual grid* get_grid();
+      virtual factory::grid* get_grid();
 
       /// Returns a listview.
       virtual factory::listview* get_listview();

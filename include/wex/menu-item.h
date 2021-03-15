@@ -2,7 +2,7 @@
 // Name:      menu-item.h
 // Purpose:   Declaration of wex::menu_item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -106,6 +106,8 @@ namespace wex
       /// if a filename is specified the menu is built as a submenu,
       /// otherwise as menu items.
       const path& p,
+      /// frame
+      managed_frame* frame,
       /// shows modal dialog if necessary
       bool show_modal = true,
       /// menu data
@@ -134,8 +136,14 @@ namespace wex
     /// Returns menu item id.
     auto id() const { return m_id; };
 
+    /// Returns modality.
+    bool is_modal() const { return m_modal; };
+
     /// Returns menu item name.
     auto& name() const { return m_name; };
+
+    /// Returns path.
+    const auto& path() const { return m_path; };
 
     /// Returns menu item type.
     auto type() const { return m_type; };

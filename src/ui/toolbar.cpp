@@ -10,7 +10,6 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wex/accelerators.h>
 #include <wex/art.h>
 #include <wex/bind.h>
 #include <wex/config.h>
@@ -350,8 +349,9 @@ bool wex::toolbar::set_checkbox(const std::string& name, bool show) const
 wex::find_textctrl::find_textctrl(managed_frame* mng, const data::window& data)
   : textctrl(mng, find_replace_data::get()->get_find_string(), data)
 {
-  accelerators({{wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE, nullptr}})
-    .set(control());
+  mng->bind_accelerators(
+    control(),
+    {{wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE}});
 
   control()->Bind(wxEVT_CHAR, [=, this](wxKeyEvent& event) {
     if (!find_replace_data::get()->m_find_strings.set(event.GetKeyCode(), this))
@@ -394,7 +394,8 @@ void wex::find_textctrl::find(bool find_next, bool restore_position)
 
     stc->find(get_text(), -1, find_next);
   }
-  else if (auto* grid = frame()->get_grid(); grid != nullptr)
+  else if (auto* grid = dynamic_cast<wex::grid*>(frame()->get_grid());
+           grid != nullptr)
   {
     grid->find_next(get_text(), find_next);
   }

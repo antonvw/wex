@@ -12,7 +12,6 @@
 #endif
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
-#include <wex/accelerators.h>
 #include <wex/bind.h>
 #include <wex/chrono.h>
 #include <wex/config.h>
@@ -203,12 +202,6 @@ wex::listview::listview(const data::listview& data)
   // We can only have one drop target, we use file drop target,
   // as list items can also be copied and pasted.
   SetDropTarget(new droptarget(this));
-
-  accelerators({{wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE},
-                {wxACCEL_CTRL, WXK_INSERT, wxID_COPY},
-                {wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE},
-                {wxACCEL_SHIFT, WXK_DELETE, wxID_CUT}})
-    .set(this);
 
   switch (m_data.image())
   {

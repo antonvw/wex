@@ -127,6 +127,11 @@ namespace wex::del
 
     /// Overridden methods.
 
+    void append_vcs(menu*, const menu_item* i) const override;
+    void bind_accelerators(
+      wxWindow*                              parent,
+      const std::vector<wxAcceleratorEntry>& v,
+      bool                                   debug = false) override;
     void          debug_add_menu(menu& m, bool b) override;
     void          debug_exe(int id, factory::stc* stc) override;
     void          debug_exe(const std::string& exe, factory::stc* stc) override;

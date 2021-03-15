@@ -8,7 +8,6 @@
 #include <boost/tokenizer.hpp>
 #include <numeric>
 #include <vector>
-#include <wex/accelerators.h>
 #include <wex/beautify.h>
 #include <wex/bind.h>
 #include <wex/config.h>
@@ -28,6 +27,7 @@
 #include <wex/stc.h>
 #include <wex/util.h>
 #include <wex/vcs.h>
+#include <wx/accel.h>
 #include <wx/msgdlg.h>
 #include <wx/numdlg.h>
 
@@ -173,7 +173,8 @@ namespace wex
 
 void wex::stc::bind_all()
 {
-  accelerators(
+  m_frame->bind_accelerators(
+    this,
     {{wxACCEL_CTRL, 'D', id::stc::hex_dec_calltip},
      {wxACCEL_CTRL, 'K', ID_EDIT_CONTROL_CHAR},
      {wxACCEL_CTRL, 'Y', wxID_REDO},
@@ -194,8 +195,7 @@ void wex::stc::bind_all()
      {wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE},
      {wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE},
      {wxACCEL_SHIFT, WXK_DELETE, wxID_CUT}},
-    m_data.menu().test(data::stc::MENU_DEBUG))
-    .set(this);
+    m_data.menu().test(data::stc::MENU_DEBUG));
 
   bind(this).command(
     {{[=, this](wxCommandEvent& event) {
@@ -503,7 +503,7 @@ void wex::stc::build_popup_menu(menu& menu)
     m_data.menu().test(data::stc::MENU_VCS) && get_filename().file_exists() &&
     vcs::dir_exists(get_filename()))
   {
-    menu.append({{}, {get_filename()}});
+    menu.append({{}, {get_filename(), m_frame}});
   }
 
   if (!get_ex().is_active() && GetTextLength() > 0)

@@ -202,7 +202,8 @@ void wex::del::listview::build_popup_menu(wex::menu& menu)
           restore = true;
         }
 
-        menu.append({{}, {listitem(this, GetFirstSelected()).get_filename()}});
+        menu.append(
+          {{}, {listitem(this, GetFirstSelected()).get_filename(), m_frame}});
 
         if (restore)
         {

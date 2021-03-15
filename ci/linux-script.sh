@@ -30,7 +30,7 @@ cppcheck --quiet --enable=all \
 # test
 test/core/wex-test-core
 test/ui/wex-test-ui -tce=wex::debug,wex::file_history
-test/report/wex-test-report
+test/del/wex-test-del
 
 # build syncped
 cd ..

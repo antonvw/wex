@@ -2,7 +2,7 @@
 // Name:      item.h
 // Purpose:   Declaration of wex::item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -136,9 +136,6 @@ namespace wex
 
       /// wxStaticText item
       STATICTEXT,
-
-      /// wex::stc item
-      STC,
 
       /// wxTextCtrl item
       TEXTCTRL,

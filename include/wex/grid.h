@@ -7,15 +7,15 @@
 
 #pragma once
 
+#include <wex/factory/grid.h>
 #include <wex/menu.h>
 #include <wex/window-data.h>
-#include <wx/grid.h>
 
 namespace wex
 {
   /// Offers popup menu with copy/paste, printing.
   /// It also offers drag/drop functionality.
-  class grid : public wxGrid
+  class grid : public factory::grid
   {
   public:
     /// Default constructor.

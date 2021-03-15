@@ -1,5 +1,4 @@
 # roadmap
-- item, menu_item still use stc
 - rename managed_frame into frame
 - add test-scope.cpp
 - combine samples

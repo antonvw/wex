@@ -7,11 +7,11 @@
 
 #include <numeric>
 #include <wex/bind.h>
-#include <wex/lexers.h>
-#include <wex/path.h>
 #include <wex/del/defs.h>
 #include <wex/del/dirctrl.h>
 #include <wex/del/frame.h>
+#include <wex/lexers.h>
+#include <wex/path.h>
 #include <wex/tostring.h>
 #include <wex/util.h>
 #include <wex/vcs.h>
@@ -140,7 +140,7 @@ wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
 
     if (vcs::dir_exists(filename))
     {
-      menu.append({{}, {filename}});
+      menu.append({{}, {filename, frame}});
     }
 
     if (filename.lexer().scintilla_lexer() == "makefile")

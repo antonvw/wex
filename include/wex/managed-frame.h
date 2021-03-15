@@ -26,6 +26,7 @@ namespace wex
   class debug_entry;
   class ex;
   class ex_command;
+  class menu_item;
   class textctrl;
   class toolbar;
 
@@ -77,6 +78,18 @@ namespace wex
       wxWindowID id,
       /// page
       wxWindow* page);
+
+    /// Appends vcs menu.
+    virtual void append_vcs(menu*, const menu_item* i) const { ; };
+
+    /// Binds accelerators.
+    virtual void bind_accelerators(
+      wxWindow*                              parent,
+      const std::vector<wxAcceleratorEntry>& v,
+      bool                                   debug = false)
+    {
+      ;
+    };
 
     /// Adds debug menu.
     virtual void debug_add_menu(menu&, bool) { ; };

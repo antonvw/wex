@@ -64,14 +64,15 @@ namespace wex
 }; // namespace wex
 
 wex::grid::grid(const data::window& data)
-  : wxGrid(
-      data.parent(),
-      data.id(),
-      data.pos(),
-      data.size(),
-      data.style(),
-      data.name())
 {
+  Create(
+    data.parent(),
+    data.id(),
+    data.pos(),
+    data.size(),
+    data.style(),
+    data.name());
+
   SetDropTarget(new text_droptarget(this));
 
   lexers::get()->apply_default_style(
