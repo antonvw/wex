@@ -16,7 +16,7 @@
 #include <wex/item-dialog.h>
 #include <wex/item.h>
 #include <wex/log.h>
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 #include <wx/artprov.h>
 #include <wx/imaglist.h>
 

@@ -11,7 +11,7 @@
 #include <wx/wx.h>
 #endif
 #include <wex/item-dialog.h>
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 #include "../test.h"
 
 TEST_SUITE_BEGIN("wex::item");

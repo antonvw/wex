@@ -7,10 +7,10 @@
 
 #include <wex/app.h>
 #include <wex/dir.h>
+#include <wex/frame.h>
 #include <wex/grid-statistics.h>
 #include <wex/grid.h>
 #include <wex/listview.h>
-#include <wex/managed-frame.h>
 #include <wex/notebook.h>
 #include <wex/process.h>
 #include <wex/shell.h>
@@ -36,7 +36,7 @@ private:
   wex::grid* m_grid;
 };
 
-class frame : public wex::managed_frame
+class frame : public wex::frame
 {
 public:
   frame();

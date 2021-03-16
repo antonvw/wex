@@ -13,7 +13,7 @@
 #include <wex/factory/process.h>
 #include <wex/log.h>
 #include <wex/macros.h>
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 #include <wex/regex.h>
 #include <wex/stc.h>
 

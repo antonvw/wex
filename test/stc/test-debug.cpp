@@ -8,7 +8,7 @@
 #include "../test.h"
 #include <wex/debug.h>
 #include <wex/defs.h>
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 #include <wex/menu.h>
 #include <wex/process.h>
 

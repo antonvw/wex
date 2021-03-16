@@ -11,7 +11,7 @@
 #endif
 #include "../test.h"
 #include <wex/grid.h>
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 
 TEST_CASE("wex::grid")
 {

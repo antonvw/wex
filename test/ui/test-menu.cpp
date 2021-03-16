@@ -11,7 +11,7 @@
 #endif
 #include "../test.h"
 #include <wex/config.h>
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 #include <wex/menu.h>
 
 TEST_CASE("wex::menu")

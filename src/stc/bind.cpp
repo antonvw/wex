@@ -18,7 +18,7 @@
 #include <wex/lexer-props.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 #include <wex/menu.h>
 #include <wex/path.h>
 #include <wex/sort.h>

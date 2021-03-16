@@ -10,7 +10,7 @@
 #include <wex/del/defs.h>
 #include <wex/item-template-dialog.h>
 #include <wex/item.h>
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 
 namespace wex
 {

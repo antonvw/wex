@@ -12,7 +12,7 @@
 #endif
 #include "../test.h"
 #include <wex/config.h>
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 #include <wex/stc.h>
 #include <wex/util.h>
 #include <wex/vcs-command.h>

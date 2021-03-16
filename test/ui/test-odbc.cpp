@@ -13,7 +13,7 @@
 
 #include <wex/config.h>
 #include <wex/grid.h>
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 #include <wex/odbc.h>
 #include <wex/stc.h>
 

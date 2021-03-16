@@ -16,10 +16,10 @@
 #include <wex/core.h>
 #include <wex/defs.h>
 #include <wex/factory/stc.h>
+#include <wex/frame.h>
 #include <wex/frd.h>
 #include <wex/grid.h>
 #include <wex/listview.h>
-#include <wex/managed-frame.h>
 #include <wex/menu.h>
 #include <wex/textctrl.h>
 #include <wex/toolbar.h>
@@ -37,7 +37,7 @@ namespace wex
   public:
     /// Constructor. Fills the textctrl with value
     /// from find_replace_data.
-    find_textctrl(managed_frame* frame, const data::window& data);
+    find_textctrl(wex::frame* frame, const data::window& data);
 
     /// Finds current value in control.
     void find(bool find_next = true, bool restore_position = false);
@@ -94,7 +94,7 @@ namespace wex
   const wxWindowID ID_VIEW_PROCESS = wxWindowBase::NewControlId();
 }; // namespace wex
 
-wex::toolbar::toolbar(managed_frame* frame, const data::window& data)
+wex::toolbar::toolbar(wex::frame* frame, const data::window& data)
   : wxAuiToolBar(frame, data.id(), data.pos(), data.size(), data.style())
   , m_frame(frame)
 {
@@ -346,7 +346,7 @@ bool wex::toolbar::set_checkbox(const std::string& name, bool show) const
 
 // Implementation of support class.
 
-wex::find_textctrl::find_textctrl(managed_frame* mng, const data::window& data)
+wex::find_textctrl::find_textctrl(wex::frame* mng, const data::window& data)
   : textctrl(mng, find_replace_data::get()->get_find_string(), data)
 {
   mng->bind_accelerators(

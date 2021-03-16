@@ -9,8 +9,8 @@
 
 #include <set>
 #include <wex/file-history.h>
+#include <wex/frame.h>
 #include <wex/listview.h>
-#include <wex/managed-frame.h>
 
 namespace wex
 {
@@ -23,10 +23,10 @@ namespace wex::del
 {
   class file;
 
-  /// Adds file and project history support to managed_frame.
+  /// Adds file and project history support to frame.
   /// It also sets a change indicator in the title of the frame if applicable.
   /// Finally it adds find in files and selection dialogs.
-  class frame : public managed_frame
+  class frame : public wex::frame
   {
   public:
     /// Default constructor.

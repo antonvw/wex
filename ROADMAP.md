@@ -1,9 +1,6 @@
 # roadmap
-- rename managed_frame into frame
-- add test-scope.cpp
-- combine samples
-- no more Replace Results after replace in files
 - imprive FiF, do not use intermediate container
+- combine samples
 - invest use wxTextCompleter
 
 ## backlog

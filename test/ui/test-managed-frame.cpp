@@ -11,14 +11,14 @@
 #endif
 #include "../test.h"
 #include <wex/defs.h>
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 #include <wex/menu.h>
 #include <wex/stc.h>
 #include <wex/toolbar.h>
 #include <wex/vi.h>
 
 // Also test the toolbar (wex::toolbar).
-TEST_CASE("wex::managed_frame")
+TEST_CASE("wex::frame")
 {
   REQUIRE(frame()->allow_close(100, nullptr));
 
@@ -40,10 +40,10 @@ TEST_CASE("wex::managed_frame")
   REQUIRE(!frame()->save_current_page("key"));
   REQUIRE(frame()->restore_page("key") == nullptr);
 
-  frame()->show_ex_bar(wex::managed_frame::HIDE_BAR);
-  frame()->show_ex_bar(wex::managed_frame::HIDE_BAR_FOCUS_STC);
-  frame()->show_ex_bar(wex::managed_frame::HIDE_BAR_FORCE);
-  frame()->show_ex_bar(wex::managed_frame::HIDE_BAR_FORCE_FOCUS_STC);
+  frame()->show_ex_bar(wex::frame::HIDE_BAR);
+  frame()->show_ex_bar(wex::frame::HIDE_BAR_FOCUS_STC);
+  frame()->show_ex_bar(wex::frame::HIDE_BAR_FORCE);
+  frame()->show_ex_bar(wex::frame::HIDE_BAR_FORCE_FOCUS_STC);
 
   REQUIRE(!frame()->pane_is_shown("VIBAR"));
 

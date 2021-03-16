@@ -18,7 +18,7 @@ namespace wex
     class stc;
   };
 
-  class managed_frame;
+  class frame;
   class textctrl_imp;
 
   /// Offers a text ctrl related to a ex object.
@@ -26,11 +26,11 @@ namespace wex
   {
   public:
     /// Constructor. Creates empty control.
-    textctrl(managed_frame* frame, wxControl* prefix, const data::window& data);
+    textctrl(frame* frame, wxControl* prefix, const data::window& data);
 
     /// Constructor. Skips prefix.
     textctrl(
-      managed_frame*      frame,
+      frame*              frame,
       const std::string&  value = std::string(),
       const data::window& data  = data::window());
 
@@ -40,11 +40,11 @@ namespace wex
     /// Returns the control window for the component.
     wxControl* control();
 
+    /// Returns frame.
+    frame* frame() { return m_frame; };
+
     /// Returns stc component.
     auto* stc() { return m_stc; };
-
-    /// Returns frame.
-    managed_frame* frame() { return m_frame; };
 
     /// Get string value.
     const std::string get_text() const;
@@ -65,7 +65,7 @@ namespace wex
 
   private:
     wex::factory::stc* m_stc{nullptr};
-    managed_frame*     m_frame;
+    class frame*       m_frame;
     textctrl_imp*      m_imp;
   };
 }; // namespace wex

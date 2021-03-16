@@ -14,15 +14,15 @@
 #include "test.h"
 #include <wex/cmdline.h>
 #include <wex/config.h>
+#include <wex/frame.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
 #include <wex/macros.h>
-#include <wex/managed-frame.h>
 #include <wex/process.h>
 #include <wex/shell.h>
 #include <wx/timer.h>
 
-const std::string wex::test::add_pane(wex::managed_frame* frame, wxWindow* pane)
+const std::string wex::test::add_pane(wex::frame* frame, wxWindow* pane)
 {
   static int no = 0;
 
@@ -112,7 +112,7 @@ bool wex::test::gui_app::OnInit()
     return false;
   }
 
-  m_frame     = new managed_frame();
+  m_frame     = new wex::frame();
   m_statusbar = m_frame->setup_statusbar(
     {{"Pane0"}, // the order of panes is tested
      {"Pane1"},
@@ -157,7 +157,7 @@ std::vector<std::string> get_builtin_variables()
   return v;
 }
 
-wex::managed_frame* frame()
+wex::frame* frame()
 {
   return wex::test::gui_app::frame();
 }

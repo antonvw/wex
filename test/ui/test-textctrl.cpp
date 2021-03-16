@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 #include <wex/textctrl.h>
 
 TEST_CASE("wex::textctrl")

@@ -10,7 +10,7 @@
 #include <wex/factory/stc.h>
 #include <wex/frd.h>
 #include <wex/log.h>
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 #include <wex/textctrl.h>
 #include <wx/control.h>
 #include <wx/settings.h>
@@ -222,7 +222,7 @@ wex::textctrl_imp::textctrl_imp(
 
         if (!is_ex_mode())
         {
-          m_tc->frame()->show_ex_bar(managed_frame::HIDE_BAR_FORCE_FOCUS_STC);
+          m_tc->frame()->show_ex_bar(frame::HIDE_BAR_FORCE_FOCUS_STC);
         }
 
         m_control_r  = false;
@@ -295,7 +295,7 @@ wex::textctrl_imp::textctrl_imp(
       }
       else
       {
-        m_tc->frame()->show_ex_bar(managed_frame::HIDE_BAR_FORCE_FOCUS_STC);
+        m_tc->frame()->show_ex_bar(frame::HIDE_BAR_FORCE_FOCUS_STC);
       }
       return;
     }
@@ -329,8 +329,8 @@ wex::textctrl_imp::textctrl_imp(
     {
       int focus =
         (m_command.type() == ex_command::type_t::FIND ?
-           managed_frame::HIDE_BAR_FORCE_FOCUS_STC :
-           managed_frame::HIDE_BAR_FOCUS_STC);
+           frame::HIDE_BAR_FORCE_FOCUS_STC :
+           frame::HIDE_BAR_FOCUS_STC);
 
       if (m_command.type() == ex_command::type_t::FIND)
       {
@@ -348,11 +348,11 @@ wex::textctrl_imp::textctrl_imp(
             get_text() == "gt" || get_text() == "n" || get_text() == "prev" ||
             get_text().starts_with("ta"))
           {
-            focus = managed_frame::HIDE_BAR_FORCE;
+            focus = frame::HIDE_BAR_FORCE;
           }
           else if (get_text().starts_with("!"))
           {
-            focus = managed_frame::HIDE_BAR;
+            focus = frame::HIDE_BAR;
           }
         }
       }

@@ -7,7 +7,7 @@
 
 #include "../test.h"
 #include <wex/file-history.h>
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 #include <wex/menu-item.h>
 #include <wex/menu.h>
 

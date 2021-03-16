@@ -54,11 +54,9 @@
 #include <wex/link.h>
 #include <wex/listitem.h>
 #include <wex/listview-data.h>
-#include <wex/listview.h>
 #include <wex/log.h>
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
-#include <wex/managed-frame.h>
 #include <wex/marker.h>
 #include <wex/menu-command.h>
 #include <wex/menu-commands.h>

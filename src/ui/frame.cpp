@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      managed_frame.cpp
-// Purpose:   Implementation of wex::managed_frame class.
+// Name:      frame.cpp
+// Purpose:   Implementation of wex::frame class.
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -10,10 +10,10 @@
 #include <wex/defs.h>
 #include <wex/factory/listview.h>
 #include <wex/factory/stc.h>
+#include <wex/frame.h>
 #include <wex/frd.h>
 #include <wex/grid.h>
 #include <wex/lexers.h>
-#include <wex/managed-frame.h>
 #include <wex/printing.h>
 #include <wex/textctrl.h>
 #include <wex/toolbar.h>
@@ -95,7 +95,7 @@ namespace wex
   const std::string win_frame = "window.frame", win_max = "window.maximized";
 } // namespace wex
 
-wex::managed_frame::managed_frame(size_t maxFiles, const data::window& data)
+wex::frame::frame(size_t maxFiles, const data::window& data)
   : m_file_history(maxFiles, wxID_FILE1)
   , m_toggled_panes(
       {{{"FINDBAR", _("&Findbar")}, ID_VIEW_LOWEST + 1},
@@ -260,7 +260,7 @@ wex::managed_frame::managed_frame(size_t maxFiles, const data::window& data)
     m_file_history.get_base_id() + m_file_history.get_max_files());
 }
 
-wex::managed_frame::~managed_frame()
+wex::frame::~frame()
 {
   if (m_find_replace_dialog != nullptr)
   {
@@ -270,7 +270,7 @@ wex::managed_frame::~managed_frame()
   m_manager.UnInit();
 }
 
-bool wex::managed_frame::add_toolbar_panes(const panes_t& panes)
+bool wex::frame::add_toolbar_panes(const panes_t& panes)
 {
   panes_t pns;
 
@@ -314,7 +314,7 @@ bool wex::managed_frame::add_toolbar_panes(const panes_t& panes)
   return pane_add(pns);
 }
 
-bool wex::managed_frame::allow_close(wxWindowID id, wxWindow* page)
+bool wex::frame::allow_close(wxWindowID id, wxWindow* page)
 {
   // The page will be closed, so do not update find focus now.
   set_find_focus(nullptr);
@@ -323,7 +323,7 @@ bool wex::managed_frame::allow_close(wxWindowID id, wxWindow* page)
   return true;
 }
 
-wxPanel* wex::managed_frame::create_ex_panel()
+wxPanel* wex::frame::create_ex_panel()
 {
   // An ex panel starts with small static text for : or /, then
   // comes the ex textctrl for getting user input.
@@ -341,13 +341,13 @@ wxPanel* wex::managed_frame::create_ex_panel()
   return panel;
 }
 
-std::string wex::managed_frame::get_statustext(const std::string& pane) const
+std::string wex::frame::get_statustext(const std::string& pane) const
 {
   return (
     m_statusbar == nullptr ? std::string() : m_statusbar->get_statustext(pane));
 }
 
-wxStatusBar* wex::managed_frame::OnCreateStatusBar(
+wxStatusBar* wex::frame::OnCreateStatusBar(
   int             number,
   long            style,
   wxWindowID      id,
@@ -362,7 +362,7 @@ wxStatusBar* wex::managed_frame::OnCreateStatusBar(
   return m_statusbar;
 }
 
-void wex::managed_frame::on_menu_history(
+void wex::frame::on_menu_history(
   const class file_history& history,
   size_t                    index,
   data::stc::window_t       flags)
@@ -374,9 +374,9 @@ void wex::managed_frame::on_menu_history(
 }
 
 wex::factory::stc*
-wex::managed_frame::open_file(const path& file, const data::stc& data)
+wex::frame::open_file(const path& file, const data::stc& data)
 {
-  if (auto* stc = frame::open_file(file, data); stc != nullptr)
+  if (auto* stc = factory::frame::open_file(file, data); stc != nullptr)
   {
     set_recent_file(file);
     return stc;
@@ -385,9 +385,7 @@ wex::managed_frame::open_file(const path& file, const data::stc& data)
   return nullptr;
 }
 
-bool wex::managed_frame::pane_add(
-  const panes_t&     panes,
-  const std::string& perspective)
+bool wex::frame::pane_add(const panes_t& panes, const std::string& perspective)
 {
   for (const auto& it : panes)
   {
@@ -412,12 +410,12 @@ bool wex::managed_frame::pane_add(
   return true;
 }
 
-wxWindow* wex::managed_frame::pane_get(const std::string& pane)
+wxWindow* wex::frame::pane_get(const std::string& pane)
 {
   return m_manager.GetPane(pane).window;
 }
 
-bool wex::managed_frame::pane_maximize(const std::string& pane)
+bool wex::frame::pane_maximize(const std::string& pane)
 {
   if (auto& info = m_manager.GetPane(pane); !info.IsOk())
   {
@@ -431,7 +429,7 @@ bool wex::managed_frame::pane_maximize(const std::string& pane)
   }
 }
 
-bool wex::managed_frame::pane_restore(const std::string& pane)
+bool wex::frame::pane_restore(const std::string& pane)
 {
   if (auto& info = m_manager.GetPane(pane); !info.IsOk())
   {
@@ -445,9 +443,7 @@ bool wex::managed_frame::pane_restore(const std::string& pane)
   }
 }
 
-bool wex::managed_frame::pane_set(
-  const std::string&   pane,
-  const wxAuiPaneInfo& info)
+bool wex::frame::pane_set(const std::string& pane, const wxAuiPaneInfo& info)
 {
   if (auto& current = m_manager.GetPane(pane); !current.IsOk())
   {
@@ -465,7 +461,7 @@ bool wex::managed_frame::pane_set(
   }
 }
 
-bool wex::managed_frame::pane_show(const std::string& pane, bool show)
+bool wex::frame::pane_show(const std::string& pane, bool show)
 {
   if (auto& info = m_manager.GetPane(pane); !info.IsOk())
   {
@@ -483,17 +479,17 @@ bool wex::managed_frame::pane_show(const std::string& pane, bool show)
   }
 }
 
-size_t wex::managed_frame::panes() const
+size_t wex::frame::panes() const
 {
-  return const_cast<managed_frame*>(this)->m_manager.GetAllPanes().GetCount();
+  return const_cast<frame*>(this)->m_manager.GetAllPanes().GetCount();
 }
 
-void wex::managed_frame::set_recent_file(const path& path)
+void wex::frame::set_recent_file(const path& path)
 {
   m_file_history.append(path);
 }
 
-wex::statusbar* wex::managed_frame::setup_statusbar(
+wex::statusbar* wex::frame::setup_statusbar(
   const std::vector<statusbar_pane>& panes,
   long                               style,
   const std::string&                 name)
@@ -501,9 +497,8 @@ wex::statusbar* wex::managed_frame::setup_statusbar(
   return statusbar::setup(this, panes, style, name);
 }
 
-bool wex::managed_frame::statustext(
-  const std::string& text,
-  const std::string& pane) const
+bool wex::frame::statustext(const std::string& text, const std::string& pane)
+  const
 {
   return (
     m_is_closing || m_statusbar == nullptr ?
@@ -511,19 +506,17 @@ bool wex::managed_frame::statustext(
       m_statusbar->set_statustext(text, pane));
 }
 
-bool wex::managed_frame::show_ex_command(
-  factory::stc*      stc,
-  const std::string& command)
+bool wex::frame::show_ex_command(factory::stc* stc, const std::string& command)
 {
   return pane_show("VIBAR") && m_textctrl->set_stc(stc, command);
 }
 
-bool wex::managed_frame::show_ex_input(factory::stc* stc, char cmd)
+bool wex::frame::show_ex_input(factory::stc* stc, char cmd)
 {
   return pane_show("VIBAR") && m_textctrl->set_stc(stc, cmd);
 }
 
-void wex::managed_frame::statusbar_clicked_right(const std::string& pane)
+void wex::frame::statusbar_clicked_right(const std::string& pane)
 {
   if (pane == "PaneLexer" || pane == "PaneTheme")
   {
@@ -574,16 +567,16 @@ void wex::managed_frame::statusbar_clicked_right(const std::string& pane)
   }
   else
   {
-    frame::statusbar_clicked_right(pane);
+    factory::frame::statusbar_clicked_right(pane);
   }
 }
 
-void wex::managed_frame::show_process(bool show)
+void wex::frame::show_process(bool show)
 {
   pane_show("PROCESS", show);
 }
 
-bool wex::managed_frame::Show(bool show)
+bool wex::frame::Show(bool show)
 {
   if (show && !win_shown)
   {
@@ -601,7 +594,7 @@ bool wex::managed_frame::Show(bool show)
   return wxFrame::Show(show);
 }
 
-void wex::managed_frame::sync_close_all(wxWindowID id)
+void wex::frame::sync_close_all(wxWindowID id)
 {
   set_find_focus(nullptr);
 

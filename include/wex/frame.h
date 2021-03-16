@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      managed-frame.h
-// Purpose:   Declaration of wex::managed_frame class.
+// Name:      frame.h
+// Purpose:   Declaration of wex::frame class.
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -40,7 +40,7 @@ namespace wex
   /// - PROCESS
   /// - TOOLBAR
   /// - VIBAR (same as the ex bar)
-  class managed_frame : public factory::frame
+  class frame : public factory::frame
   {
   public:
     /// Enums for show_ex_bar.
@@ -62,12 +62,12 @@ namespace wex
       toggled_panes_t;
 
     /// Default constructor, registers the aui manager, and creates the bars.
-    managed_frame(
+    frame(
       size_t              maxFiles = 9,
       const data::window& data = data::window().style(wxDEFAULT_FRAME_STYLE));
 
     /// Destructor, uninits the aui manager.
-    ~managed_frame() override;
+    ~frame() override;
 
     /// Virtual interface
 

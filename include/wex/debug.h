@@ -23,7 +23,7 @@ namespace wex
 
   class frame;
   class item_dialog;
-  class managed_frame;
+  class frame;
   class menu;
   class stc;
 
@@ -33,7 +33,7 @@ namespace wex
   {
   public:
     /// Constructor.
-    debug(managed_frame* frame, factory::process* process = nullptr);
+    debug(frame* frame, factory::process* process = nullptr);
 
     /// Adds debug menu items to specified menu, default as no popup menu.
     /// These menus allow you to interact with the debug process.
@@ -97,7 +97,7 @@ namespace wex
 
     path m_path, m_path_execution_point;
 
-    managed_frame*         m_frame;
+    frame*         m_frame;
     wex::debug_entry       m_entry;
     wex::factory::process* m_process{nullptr};
     bool                   m_active{false};

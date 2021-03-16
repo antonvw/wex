@@ -17,7 +17,7 @@
 #include <wex/ex.h>
 #include <wex/frd.h>
 #include <wex/log.h>
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 #include <wex/path.h>
 #include <wex/regex.h>
 #include <wex/stc.h>
@@ -92,7 +92,7 @@ namespace wex
 
   auto* get_frame()
   {
-    return dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
+    return dynamic_cast<frame*>(wxTheApp->GetTopWindow());
   }
 
   void set_image(const tagEntry& entry, wex::image_access_t& image)

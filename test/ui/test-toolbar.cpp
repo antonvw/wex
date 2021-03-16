@@ -10,7 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include "../test.h"
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 #include <wex/toolbar.h>
 
 TEST_CASE("wex::toolbar")

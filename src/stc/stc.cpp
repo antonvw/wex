@@ -16,7 +16,7 @@
 #include <wex/lexers.h>
 #include <wex/link.h>
 #include <wex/macros.h>
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 #include <wex/path.h>
 #include <wex/printing.h>
 #include <wex/regex.h>
@@ -33,7 +33,7 @@ wex::stc::stc(const path& p, const data::stc& data)
   , m_vi(new vi(this))
   , m_file(this, data.window().name())
   , m_hexmode(hexmode(this))
-  , m_frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
+  , m_frame(dynamic_cast<frame*>(wxTheApp->GetTopWindow()))
   , m_visual(!data.flags().test(data::stc::WIN_EX))
 {
   assert(m_frame != nullptr);
@@ -1146,7 +1146,7 @@ void wex::stc::visual(bool on)
   config_get();
 
   m_frame->show_ex_bar(
-    !on ? managed_frame::SHOW_BAR : managed_frame::HIDE_BAR_FOCUS_STC,
+    !on ? frame::SHOW_BAR : frame::HIDE_BAR_FOCUS_STC,
     m_ex);
 }
 

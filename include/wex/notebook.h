@@ -12,7 +12,7 @@
 #include <wex/defs.h>
 #include <wex/factory/stc.h>
 #include <wex/file-dialog.h>
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 #include <wex/notebook-data.h>
 #include <wex/window-data.h>
 #include <wx/aui/auibook.h>
@@ -23,7 +23,7 @@ namespace wex
   class item_dialog;
 
   /// Offers a notebook with page access using keys,
-  /// and that interfaces with wex::managed_frame.
+  /// and that interfaces with wex::frame.
   class notebook : public wxAuiNotebook
   {
   public:
@@ -205,7 +205,7 @@ namespace wex
       int direction);
 
   private:
-    managed_frame* m_frame;
+    frame* m_frame;
     // In bookctrl.h: m_pages
     std::map<std::string, wxWindow*> m_keys;
     std::map<wxWindow*, std::string> m_windows;

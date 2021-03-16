@@ -13,7 +13,7 @@
 #include <wex/defs.h>
 #include <wex/factory/process.h>
 #include <wex/log.h>
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 #include <wex/shell.h>
 
 wex::shell::shell(

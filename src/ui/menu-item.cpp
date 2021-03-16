@@ -11,7 +11,7 @@
 #endif
 #include <wex/art.h>
 #include <wex/defs.h>
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 #include <wex/menu-item.h>
 #include <wex/menu.h>
 #include <wx/menu.h>
@@ -62,7 +62,7 @@ wex::menu_item::menu_item(
 
 wex::menu_item::menu_item(
   const wex::path&  p,
-  managed_frame*    frame,
+  frame*    frame,
   bool              show_modal,
   const data::menu& data)
   : m_type(VCS)
@@ -82,7 +82,7 @@ wex::menu_item::menu_item(int id, file_history& history, const data::menu& data)
   m_data.bind(m_id);
 }
 
-wex::menu_item::menu_item(const managed_frame* frame)
+wex::menu_item::menu_item(const frame* frame)
   : m_frame(frame)
   , m_type(PANES)
 {

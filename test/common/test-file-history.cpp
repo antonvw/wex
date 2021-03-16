@@ -8,7 +8,7 @@
 #include "../test.h"
 #include <wex/file-history.h>
 #include <wex/file.h>
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 #include <wex/menu.h>
 
 TEST_CASE("wex::file_history")

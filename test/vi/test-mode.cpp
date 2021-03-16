@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 #include <wex/stc.h>
 #include <wex/vi-mode.h>
 #include <wex/vi.h>

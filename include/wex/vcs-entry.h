@@ -85,6 +85,8 @@ namespace wex
       /// id to be retrieved
       const std::string& id);
 
+    /// Virtual interface
+
     void show_output(const std::string& caption = std::string()) const override;
 
   private:

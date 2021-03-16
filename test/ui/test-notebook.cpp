@@ -11,7 +11,7 @@
 #endif
 #include "../test.h"
 #include <wex/defs.h>
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 #include <wex/notebook.h>
 #include <wex/stc.h>
 

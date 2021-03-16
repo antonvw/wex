@@ -17,7 +17,7 @@ class wxCheckBox;
 
 namespace wex
 {
-  class managed_frame;
+  class frame;
 
   /// Offers a toolbar together with stock art.
   /// Default no controls are added, you have to call
@@ -40,7 +40,7 @@ namespace wex
 
     /// Constructor.
     toolbar(
-      managed_frame*      frame,
+      frame*      frame,
       const data::window& data = data::window().style(wxAUI_TB_DEFAULT_STYLE));
 
     /// Adds a vector of checkbox controls to this toolbar.
@@ -73,7 +73,7 @@ namespace wex
       bool value) const;
 
   private:
-    managed_frame*           m_frame;
+    frame*           m_frame;
     std::vector<wxCheckBox*> m_checkboxes;
   };
 }; // namespace wex

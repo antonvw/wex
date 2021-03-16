@@ -12,7 +12,7 @@
 #include "../test.h"
 #include <wex/defs.h>
 #include <wex/listview.h>
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 
 TEST_CASE("wex::listview")
 {

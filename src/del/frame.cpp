@@ -20,7 +20,7 @@ wex::del::frame::frame(
   size_t              maxFiles,
   size_t              maxProjects,
   const data::window& data)
-  : managed_frame(maxFiles, data)
+  : wex::frame(maxFiles, data)
   , m_debug(new debug(this))
   , m_project_history(maxProjects, ID_RECENT_PROJECT_LOWEST, "recent.Projects")
   , m_info(
@@ -687,7 +687,7 @@ void wex::del::frame::on_notebook(wxWindowID id, wxWindow* page)
 
 void wex::del::frame::set_recent_file(const wex::path& path)
 {
-  managed_frame::set_recent_file(path);
+  wex::frame::set_recent_file(path);
 
   if (m_file_history_listview != nullptr && path.file_exists())
   {
@@ -815,7 +815,7 @@ void wex::del::frame::statusbar_clicked(const std::string& pane)
   }
   else
   {
-    managed_frame::statusbar_clicked(pane);
+    wex::frame::statusbar_clicked(pane);
   }
 }
 
@@ -837,7 +837,7 @@ void wex::del::frame::statusbar_clicked_right(const std::string& pane)
   {
     if (wex::ex::get_macros().get_filename().file_exists())
     {
-      managed_frame::open_file(
+      wex::frame::open_file(
         wex::ex::get_macros().get_filename(),
         wex::data::control().find(
           !get_statustext(pane).empty() ?
@@ -857,13 +857,13 @@ void wex::del::frame::statusbar_clicked_right(const std::string& pane)
            wex::debug(this).debug_entry().name());
     }
 
-    managed_frame::open_file(
+    wex::frame::open_file(
       wex::menus::get_filename(),
       wex::data::control().find(match));
   }
   else
   {
-    managed_frame::statusbar_clicked_right(pane);
+    wex::frame::statusbar_clicked_right(pane);
   }
 }
 

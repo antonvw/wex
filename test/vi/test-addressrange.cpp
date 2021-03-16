@@ -9,7 +9,7 @@
 #include <wex/addressrange.h>
 #include <wex/frd.h>
 #include <wex/macros.h>
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 #include <wex/stc.h>
 
 TEST_SUITE_BEGIN("wex::ex");

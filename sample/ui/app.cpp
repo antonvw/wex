@@ -106,7 +106,7 @@ bool dir::on_file(const wex::path& file)
 }
 
 frame::frame()
-  : wex::managed_frame(4)
+  : wex::frame(4)
   , m_notebook(new wex::notebook()) // first!
   , m_grid(new wex::grid(wex::data::window().parent(m_notebook)))
   , m_listview(new wex::listview(wex::data::window().parent(m_notebook)))
@@ -390,7 +390,7 @@ bool frame::allow_close(wxWindowID id, wxWindow* page)
   return page == get_listview() ?
            // prevent possible crash
            false :
-           wex::managed_frame::allow_close(id, page);
+           wex::frame::allow_close(id, page);
 }
 
 void frame::on_command(wxCommandEvent& event)
@@ -495,6 +495,6 @@ void frame::on_command_item_dialog(
   }
   else
   {
-    wex::managed_frame::on_command_item_dialog(dialogid, event);
+    wex::frame::on_command_item_dialog(dialogid, event);
   }
 }

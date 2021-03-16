@@ -28,7 +28,7 @@ namespace wex
   class item_dialog;
   class lexer;
   class link;
-  class managed_frame;
+  class frame;
   class menu;
   class path;
   class vcs_entry;
@@ -363,7 +363,7 @@ namespace wex
 
     bool m_adding_chars{false}, m_skip{false}, m_visual{true};
 
-    managed_frame* m_frame;
+    frame* m_frame;
 
     class auto_complete m_auto_complete;
     hexmode             m_hexmode;

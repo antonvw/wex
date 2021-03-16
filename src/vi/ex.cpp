@@ -23,12 +23,12 @@
 #include <wex/defs.h>
 #include <wex/ex-stream.h>
 #include <wex/ex.h>
+#include <wex/frame.h>
 #include <wex/frd.h>
 #include <wex/lexer-props.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
 #include <wex/macros.h>
-#include <wex/managed-frame.h>
 #include <wex/regex.h>
 #include <wex/statusbar.h>
 #include <wex/stc-entry-dialog.h>
@@ -162,7 +162,7 @@ wex::macros wex::ex::m_macros;
 
 wex::ex::ex(wex::stc* stc)
   : m_command(ex_command(stc))
-  , m_frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
+  , m_frame(dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow()))
   , m_commands{{":ab",
                 [&](const std::string& command) {
                   return handle_container<std::string, macros::strings_map_t>(

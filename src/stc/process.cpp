@@ -11,9 +11,9 @@
 #include <wex/config.h>
 #include <wex/debug-entry.h>
 #include <wex/ex-stream.h>
+#include <wex/frame.h>
 #include <wex/item-dialog.h>
 #include <wex/log.h>
-#include <wex/managed-frame.h>
 #include <wex/process.h>
 #include <wex/shell.h>
 #include <wx/valtext.h>
@@ -21,7 +21,7 @@
 std::string wex::process::m_working_dir_key = _("Process folder");
 
 wex::process::process()
-  : m_frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
+  : m_frame(dynamic_cast<frame*>(wxTheApp->GetTopWindow()))
 {
   m_exe = config(_("Process")).get_first_of();
 }
@@ -41,7 +41,7 @@ wex::process& wex::process::operator=(const process& p)
 
     if (m_frame == nullptr)
     {
-      m_frame = dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
+      m_frame = dynamic_cast<frame*>(wxTheApp->GetTopWindow());
     }
   }
 
@@ -177,7 +177,7 @@ wex::shell* wex::process::prepare_output(wxWindow* parent)
 
 void wex::process::show_output(const std::string& caption) const
 {
-  if ((get_stdout().empty() || !get_stderr().empty()) && m_shell != nullptr)
+  if ((!get_stdout().empty() || !get_stderr().empty()) && m_shell != nullptr)
   {
     m_frame->show_process(true);
     m_shell->AppendText(!get_stdout().empty() ? get_stdout() : get_stderr());

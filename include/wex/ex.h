@@ -20,7 +20,7 @@ namespace wex
   class ctags;
   class macros;
   class macro_mode;
-  class managed_frame;
+  class frame;
   class stc;
   class stc_entry_dialog;
 
@@ -196,8 +196,8 @@ namespace wex
 
     char m_register{0};
 
-    wex::ctags*    m_ctags;
-    managed_frame* m_frame;
+    wex::ctags* m_ctags;
+    wex::frame* m_frame;
 
     std::map<char, int>
       // relate a marker to identifier

@@ -13,7 +13,7 @@
 
 namespace wex
 {
-  class managed_frame;
+  class frame;
   class menu;
 
   /// Offers a single menu item.
@@ -107,7 +107,7 @@ namespace wex
       /// otherwise as menu items.
       const path& p,
       /// frame
-      managed_frame* frame,
+      frame* frame,
       /// shows modal dialog if necessary
       bool show_modal = true,
       /// menu data
@@ -125,7 +125,7 @@ namespace wex
     /// Constructor for PANES menu items.
     menu_item(
       /// frame to supply toggled panes
-      const managed_frame* frame);
+      const frame* frame);
 
     /// Appends this item(s) to menu.
     void append(wex::menu* menu) const;
@@ -152,7 +152,7 @@ namespace wex
     void append_panes(wex::menu* menu) const;
     void append_vcs(wex::menu* menu) const;
 
-    const managed_frame* m_frame{nullptr};
+    const frame* m_frame{nullptr};
     file_history*        m_history{nullptr};
     wex::menu*           m_menu{nullptr};
     const bool           m_modal{false};

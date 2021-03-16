@@ -13,7 +13,7 @@
 #include <wex/lexer-props.h>
 #include <wex/log.h>
 #include <wex/macros.h>
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 #include <wex/path.h>
 #include <wex/type-to-value.h>
 #include <wex/util.h>
@@ -291,7 +291,7 @@ void wex::macros::parse_node_variable(const pugi::xml_node& node)
 
 bool wex::macros::record(const std::string& text, bool new_command)
 {
-  if (auto* f = (dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()));
+  if (auto* f = (dynamic_cast<frame*>(wxTheApp->GetTopWindow()));
       f != nullptr)
   {
     f->record(text);

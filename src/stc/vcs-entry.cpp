@@ -95,7 +95,8 @@ bool wex::vcs_entry::execute(
 
   if (get_command().is_commit())
   {
-    comment = "-m \"" + config(_("vcs.Revision comment")).get_first_of() + "\" ";
+    comment =
+      "-m \"" + config(_("vcs.Revision comment")).get_first_of() + "\" ";
   }
 
   std::string my_args(args);
@@ -107,8 +108,9 @@ bool wex::vcs_entry::execute(
   }
 
   return process::system(
-    bin() + " " + prefix + get_command().get_command() + " " + subcommand +
-      flags + comment + my_args, wd) == 0;
+           bin() + " " + prefix + get_command().get_command() + " " +
+             subcommand + flags + comment + my_args,
+           wd) == 0;
 }
 
 bool wex::vcs_entry::execute(const std::string& command, const std::string& wd)

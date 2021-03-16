@@ -10,7 +10,7 @@
 #include <doctest.h>
 #include <string>
 #include <wex/app.h>
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 #include <wex/path.h>
 #include <wex/stc.h>
 
@@ -25,7 +25,7 @@ namespace wex
   {
     /// Adds managed pane.
     /// Returns name of pane.
-    const std::string add_pane(wex::managed_frame* frame, wxWindow* pane);
+    const std::string add_pane(wex::frame* frame, wxWindow* pane);
 
     /// Returns the test path or file in the dir if specified.
     const wex::path get_path(const std::string& file = std::string());
@@ -72,9 +72,9 @@ namespace wex
       bool OnInit() override;
 
     private:
-      inline static managed_frame* m_frame     = nullptr;
-      inline static statusbar*     m_statusbar = nullptr;
-      inline static stc*           m_stc       = nullptr;
+      inline static wex::frame* m_frame     = nullptr;
+      inline static statusbar*  m_statusbar = nullptr;
+      inline static stc*        m_stc       = nullptr;
     };
 
     /// Connects main proc and test app. All doctests will start.
@@ -96,7 +96,7 @@ std::vector<std::pair<std::string, std::string>> get_abbreviations();
 std::vector<std::string> get_builtin_variables();
 
 /// Returns the frame.
-wex::managed_frame* frame();
+wex::frame* frame();
 
 /// Returns the statusbar.
 wex::statusbar* get_statusbar();

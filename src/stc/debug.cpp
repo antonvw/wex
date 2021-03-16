@@ -20,7 +20,7 @@
 #include <wex/factory/process.h>
 #include <wex/item-dialog.h>
 #include <wex/listview.h>
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 #include <wex/menu.h>
 #include <wex/menus.h>
 #include <wex/regex.h>
@@ -77,7 +77,7 @@ namespace wex
   regex v(m_entry.regex_stdout(debug_entry::regex_t::REGEX)); \
   v.search(m_stdout)
 
-wex::debug::debug(wex::managed_frame* frame, wex::factory::process* debug)
+wex::debug::debug(wex::frame* frame, wex::factory::process* debug)
   : m_frame(frame)
   , m_process(debug)
 {

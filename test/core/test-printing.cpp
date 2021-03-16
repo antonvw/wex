@@ -2,13 +2,11 @@
 // Name:      test-printing.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
-#include <wex/managed-frame.h>
 #include <wex/printing.h>
-#include <wex/stc.h>
 
 TEST_CASE("wex::printing")
 {
@@ -20,7 +18,9 @@ TEST_CASE("wex::printing")
   REQUIRE(wex::printing::get(false) == nullptr);
   REQUIRE(wex::printing::get(true) != nullptr);
 
-  auto* printout = new wex::printout(get_stc());
+  auto* frame    = new wxFrame(nullptr, wxID_ANY, "test");
+  auto* stc      = new wxStyledTextCtrl(frame);
+  auto* printout = new wex::printout(stc);
 
   printout->OnPreparePrinting();
   int min, max, from, to;
