@@ -41,7 +41,7 @@ namespace wex
     wxControl* control();
 
     /// Returns frame.
-    frame* frame() { return m_frame; };
+    auto* frame() { return m_frame; };
 
     /// Returns stc component.
     auto* stc() { return m_stc; };
@@ -65,7 +65,7 @@ namespace wex
 
   private:
     wex::factory::stc* m_stc{nullptr};
-    class frame*       m_frame;
+    wex::frame*        m_frame;
     textctrl_imp*      m_imp;
   };
 }; // namespace wex
