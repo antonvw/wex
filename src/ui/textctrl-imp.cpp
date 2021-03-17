@@ -222,7 +222,7 @@ wex::textctrl_imp::textctrl_imp(
 
         if (!is_ex_mode())
         {
-          m_tc->frame()->show_ex_bar(frame::HIDE_BAR_FORCE_FOCUS_STC);
+          m_tc->get_frame()->show_ex_bar(frame::HIDE_BAR_FORCE_FOCUS_STC);
         }
 
         m_control_r  = false;
@@ -295,7 +295,7 @@ wex::textctrl_imp::textctrl_imp(
       }
       else
       {
-        m_tc->frame()->show_ex_bar(frame::HIDE_BAR_FORCE_FOCUS_STC);
+        m_tc->get_frame()->show_ex_bar(frame::HIDE_BAR_FORCE_FOCUS_STC);
       }
       return;
     }
@@ -317,7 +317,7 @@ wex::textctrl_imp::textctrl_imp(
           ":" + std::string(1, m_input) + "|" + text + m_tc->stc()->eol());
       }
 
-      m_tc->frame()->show_ex_bar();
+      m_tc->get_frame()->show_ex_bar();
     }
     else if (m_input != 0)
     {
@@ -366,7 +366,7 @@ wex::textctrl_imp::textctrl_imp(
 
       if (m_input == 0 && !is_ex_mode())
       {
-        m_tc->frame()->show_ex_bar(focus);
+        m_tc->get_frame()->show_ex_bar(focus);
       }
     }
   });
@@ -454,7 +454,7 @@ bool wex::textctrl_imp::handle(const std::string& command)
   m_mode_visual = !range.empty();
   m_control_r   = false;
 
-  m_tc->frame()->pane_set(
+  m_tc->get_frame()->pane_set(
     "VIBAR",
     wxAuiPaneInfo().BestSize(-1, GetFont().GetPixelSize().GetHeight() + 10));
 
@@ -526,7 +526,7 @@ bool wex::textctrl_imp::handle(char command)
 
   m_command.reset();
 
-  m_tc->frame()->pane_set(
+  m_tc->get_frame()->pane_set(
     "VIBAR",
     wxAuiPaneInfo().BestSize(
       -1,

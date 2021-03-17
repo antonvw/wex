@@ -361,7 +361,7 @@ wex::find_textctrl::find_textctrl(wex::frame* mng, const data::window& data)
   });
 
   control()->Bind(wxEVT_SET_FOCUS, [=, this](wxFocusEvent& event) {
-    if (auto* stc = frame()->get_stc(); stc != nullptr)
+    if (auto* stc = get_frame()->get_stc(); stc != nullptr)
     {
       stc->position_save();
     }
@@ -385,7 +385,7 @@ wex::find_textctrl::find_textctrl(wex::frame* mng, const data::window& data)
 
 void wex::find_textctrl::find(bool find_next, bool restore_position)
 {
-  if (auto* stc = frame()->get_stc(); stc != nullptr)
+  if (auto* stc = get_frame()->get_stc(); stc != nullptr)
   {
     if (restore_position)
     {
@@ -394,12 +394,12 @@ void wex::find_textctrl::find(bool find_next, bool restore_position)
 
     stc->find(get_text(), -1, find_next);
   }
-  else if (auto* grid = dynamic_cast<wex::grid*>(frame()->get_grid());
+  else if (auto* grid = dynamic_cast<wex::grid*>(get_frame()->get_grid());
            grid != nullptr)
   {
     grid->find_next(get_text(), find_next);
   }
-  else if (auto* lv = frame()->get_listview(); lv != nullptr)
+  else if (auto* lv = get_frame()->get_listview(); lv != nullptr)
   {
     lv->find_next(get_text(), find_next);
   }
