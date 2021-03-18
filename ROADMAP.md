@@ -1,9 +1,9 @@
 # roadmap
-- imprive FiF, do not use intermediate container
-- combine samples
-- invest use wxTextCompleter
+- doxy digraph
 
 ## backlog
+- imprive FiF, do not use intermediate container
+- invest use wxTextCompleter
 - wxExecute
 - allow dynamic libs
 - use spaceship operator

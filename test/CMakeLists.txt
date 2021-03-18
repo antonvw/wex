@@ -4,7 +4,12 @@ include_directories(../include/)
 include_directories(../external/doctest/doctest)
   
 add_subdirectory(core)
+add_subdirectory(factory)
+add_subdirectory(data-src)
+add_subdirectory(common)
 add_subdirectory(ui)
+add_subdirectory(stc)
+add_subdirectory(vi)
 add_subdirectory(del)
 
 if (WIN32)

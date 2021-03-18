@@ -2,20 +2,19 @@
 // Name:      test-stc_file.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
-#include <wex/frame.h>
 #include <wex/stc-file.h>
-#include <wex/stc.h>
+
+#include "test.h"
 
 TEST_CASE("wex::stc_file")
 {
   auto* stc = new wex::stc(wex::test::get_path("test.h"));
   stc->set_text("and still they came");
 
-  wex::test::add_pane(frame(), stc);
+  add_pane(frame(), stc);
 
   wex::stc_file file(stc);
 

@@ -5,19 +5,19 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "test.h"
+#include <wex/del/defs.h>
 #include <wex/frd.h>
 #include <wex/log.h>
 #include <wex/menu.h>
-#include <wex/del/defs.h>
-#include <wx/menu.h>
+
+#include "test.h"
 
 TEST_CASE("wex::del::frame")
 {
   auto* list =
     new wex::listview(wex::data::listview().type(wex::data::listview::HISTORY));
 
-  wex::test::add_pane(del_frame(), list);
+  add_pane(del_frame(), list);
 
   auto* menu = new wex::menu();
   del_frame()->use_file_history_list(list);
@@ -27,8 +27,8 @@ TEST_CASE("wex::del::frame")
   //  REQUIRE(!del_frame()->open_file(
   //    wex::test::get_path("test.h"))); // as we have no focused stc
   REQUIRE(
-    del_frame()->file_history().get_history_file().string().find(
-      "../test.h") == std::string::npos);
+    del_frame()->file_history().get_history_file().string().find("../test.h") ==
+    std::string::npos);
 
   //  REQUIRE(!del_frame()->open_file(
   //    wex::path(get_project()),
@@ -46,8 +46,7 @@ TEST_CASE("wex::del::frame")
     wex::ID_TOOL_REPORT_FIND,
     false));
 
-  REQUIRE(
-    !del_frame()->find_in_files_title(wex::ID_TOOL_REPORT_FIND).empty());
+  REQUIRE(!del_frame()->find_in_files_title(wex::ID_TOOL_REPORT_FIND).empty());
 
   // It does not open, next should fail.
   REQUIRE(
@@ -70,6 +69,16 @@ TEST_CASE("wex::del::frame")
   REQUIRE(del_frame()->get_project_history().get_history_file().empty());
 
   del_frame()->set_recent_file(wex::test::get_path("test.h"));
+
+  del_frame()->show_ex_bar(wex::frame::HIDE_BAR);
+  del_frame()->show_ex_bar(wex::frame::HIDE_BAR_FOCUS_STC);
+  del_frame()->show_ex_bar(wex::frame::HIDE_BAR_FORCE);
+  del_frame()->show_ex_bar(wex::frame::HIDE_BAR_FORCE_FOCUS_STC);
+
+  auto* vi = &get_stc()->get_vi();
+  del_frame()->print_ex(vi, "hello vi");
+
+  REQUIRE(!del_frame()->pane_is_shown("VIBAR"));
 
   for (auto id : std::vector<int>{
          wex::ID_CLEAR_PROJECTS,

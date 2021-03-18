@@ -5,10 +5,9 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/ctags.h>
-#include <wex/frame.h>
-#include <wex/stc.h>
+
+#include "test.h"
 
 TEST_CASE("wex::ctags")
 {
@@ -43,7 +42,7 @@ TEST_CASE("wex::ctags")
     REQUIRE(!wex::ctags::close());
 
     wex::ctags::open("xxx");
-    wex::test::add_pane(frame(), stc);
+    add_pane(frame(), stc);
     wex::ex* ex = &stc->get_vi();
 
     REQUIRE(!wex::ctags::find("test_app"));
@@ -55,7 +54,7 @@ TEST_CASE("wex::ctags")
     REQUIRE(wex::ctags::close());
 
     wex::ctags::open("test-ctags");
-    wex::test::add_pane(frame(), stc);
+    add_pane(frame(), stc);
     wex::ex* ex = &stc->get_vi();
 
     REQUIRE(!wex::ctags::find(""));

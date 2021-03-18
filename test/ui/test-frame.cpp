@@ -5,20 +5,15 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include "../test.h"
 #include <wex/defs.h>
-#include <wex/frame.h>
 #include <wex/menu.h>
-#include <wex/stc.h>
+#include <wex/toolbar.h>
+
+#include "test.h"
 
 TEST_CASE("wex::frame")
 {
   get_stc()->SetFocus();
-  get_stc()->get_file().reset_contents_changed();
 
   REQUIRE(frame()->open_file(wex::test::get_path("test.h")));
   //  REQUIRE(frame()->open_file(wex::test::get_path("test.h"), "contents"));
@@ -29,7 +24,6 @@ TEST_CASE("wex::frame")
   REQUIRE(frame()->get_listview() == nullptr);
   REQUIRE(frame()->get_process("xxx") == nullptr);
   REQUIRE(frame()->get_stc() != nullptr);
-  get_stc()->get_file().reset_contents_changed();
 
   frame()->set_find_focus(frame()->get_stc());
   frame()->set_find_focus(nullptr);
@@ -61,16 +55,8 @@ TEST_CASE("wex::frame")
   REQUIRE(!frame()->update_statusbar(frame()->get_stc(), "Pane1"));
   REQUIRE(!frame()->update_statusbar(frame()->get_stc(), "Pane2"));
 
-  auto* stc = new wex::stc();
-  wex::test::add_pane(frame(), stc);
-  stc->SetFocus();
-
-  REQUIRE(frame()->update_statusbar(stc, "PaneInfo"));
-  REQUIRE(frame()->update_statusbar(stc, "PaneLexer"));
-  REQUIRE(frame()->update_statusbar(stc, "PaneFileType"));
-
   wxCommandEvent event(wxEVT_MENU, wxID_OPEN);
-  stc->get_vi().set_register_yank("test.h");
+
   for (const auto& str :
        std::vector<std::string>{"xxx", "+10 test", "`pwd`", "0"})
   {
@@ -88,6 +74,85 @@ TEST_CASE("wex::frame")
   {
     auto* event = new wxCommandEvent(wxEVT_MENU, id);
     wxQueueEvent(frame(), event);
+    wxQueueEvent(frame(), event);
+  }
+#endif
+}
+
+// Also test the toolbar (wex::toolbar).
+TEST_CASE("wex::frame::bars")
+{
+  REQUIRE(frame()->allow_close(100, nullptr));
+
+  get_stc()->SetFocus();
+  get_stc()->Show();
+
+  wex::ex_command command(":n");
+  REQUIRE(!frame()->exec_ex_command(command));
+
+  REQUIRE(!frame()->show_ex_command(get_stc(), ""));
+  REQUIRE(!frame()->show_ex_command(get_stc(), "x"));
+  REQUIRE(!frame()->show_ex_command(get_stc(), "xx"));
+  REQUIRE(frame()->show_ex_command(get_stc(), "/"));
+  REQUIRE(frame()->show_ex_command(get_stc(), "?"));
+  REQUIRE(
+    frame()->show_ex_command(get_stc(), std::string(1, WXK_CONTROL_R) + "="));
+
+  REQUIRE(!frame()->save_current_page("key"));
+  REQUIRE(frame()->restore_page("key") == nullptr);
+
+  frame()->file_history().clear();
+
+  auto* menu = new wex::menu();
+  frame()->file_history().use_menu(1000, menu);
+  frame()->set_find_focus(frame()->get_stc());
+  frame()->open_file(wex::test::get_path("test.h"));
+
+  frame()->set_recent_file(wex::test::get_path("test.h"));
+  frame()->set_recent_file("testing");
+
+  REQUIRE(
+    frame()->file_history().get_history_file().string().find("test.h") !=
+    std::string::npos);
+  REQUIRE(frame()->file_history().size() > 0);
+  REQUIRE(!frame()->file_history().get_history_files(5).empty());
+
+  frame()->show_ex_message("hello from frame()");
+  REQUIRE(!frame()->pane_show("xxxx"));
+  REQUIRE(!frame()->pane_show("xxxx", false));
+
+  frame()->sync_all();
+  frame()->sync_close_all(0);
+
+  REQUIRE(frame()->get_find_toolbar() != nullptr);
+  REQUIRE(frame()->get_options_toolbar() != nullptr);
+  REQUIRE(frame()->get_toolbar() != nullptr);
+
+  frame()->get_toolbar()->add_standard();
+  REQUIRE(frame()->pane_toggle("FINDBAR"));
+  REQUIRE(frame()->pane_is_shown("FINDBAR"));
+  REQUIRE(frame()->pane_toggle("OPTIONSBAR"));
+  REQUIRE(frame()->pane_is_shown("OPTIONSBAR"));
+  REQUIRE(frame()->pane_toggle("TOOLBAR"));
+  REQUIRE(!frame()->pane_is_shown("TOOLBAR"));
+  REQUIRE(frame()->pane_show("TOOLBAR"));
+  REQUIRE(!frame()->pane_toggle("XXXXBAR"));
+
+  frame()->on_notebook(100, get_stc());
+
+#ifndef __WXMSW__
+  for (auto id : std::vector<int>{
+         wxID_PREFERENCES,
+         wex::ID_FIND_FIRST,
+         wex::ID_FIND_LAST,
+         wex::ID_CLEAR_FILES,
+         wex::ID_CLEAR_FINDS,
+         wex::ID_VIEW_LOWEST + 1,
+         wex::ID_VIEW_LOWEST + 2,
+         wex::ID_VIEW_LOWEST + 3,
+         wex::ID_VIEW_LOWEST + 4})
+  {
+    auto* event = new wxCommandEvent(wxEVT_MENU, id);
     wxQueueEvent(frame(), event);
   }
 #endif

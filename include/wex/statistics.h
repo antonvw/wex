@@ -27,10 +27,14 @@ namespace wex
     /// You can specify a vector of values to initialize the statistics.
     statistics(const std::vector<std::pair<const std::string, T>>& v = {})
     {
-      std::all_of(v.begin(), v.end(), [this](const auto& it) {
-        set(it.first, it.second);
-        return true;
-      });
+      if (!std::all_of(v.begin(), v.end(), [this](const auto& it) {
+            set(it.first, it.second);
+            return true;
+          }))
+      {
+        // ignore.
+        ;
+      }
     };
 
     /// Destructor.

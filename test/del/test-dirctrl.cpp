@@ -12,7 +12,7 @@
 TEST_CASE("wex::del::dirctrl")
 {
   auto* ctrl = new wex::del::dirctrl(del_frame());
-  wex::test::add_pane(del_frame(), ctrl);
+  add_pane(del_frame(), ctrl);
 
   SUBCASE("Select directory") { ctrl->expand_and_select_path("./"); }
 

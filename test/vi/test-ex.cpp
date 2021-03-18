@@ -7,22 +7,21 @@
 
 #include <vector>
 
-#include "../test.h"
 #include <wex/core.h>
 #include <wex/ex.h>
 #include <wex/frd.h>
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
-#include <wex/frame.h>
 #include <wex/path.h>
-#include <wex/stc.h>
+
+#include "test.h"
 
 TEST_SUITE_BEGIN("wex::ex");
 
 void modeline_from_file(const std::string& name)
 {
   auto*             stc = new wex::stc(wex::path(name));
-  const std::string pane(wex::test::add_pane(frame(), stc));
+  const std::string pane(add_pane(frame(), stc));
 
   const int id_start = wxWindow::NewControlId();
   auto*     timer    = new wxTimer(frame(), id_start);
@@ -48,7 +47,7 @@ TEST_CASE("wex::ex")
     {
       const std::string modeline("set ts=120 ec=40 sy=sql sw=4 nu el");
       auto*             stc = new wex::stc(std::string("-- vi: " + modeline));
-      wex::test::add_pane(frame(), stc);
+      add_pane(frame(), stc);
 
       REQUIRE(stc->get_vi().is_active());
       REQUIRE(stc->GetTabWidth() == 120);

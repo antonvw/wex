@@ -1,18 +1,14 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      common/test-process.cpp
+// Name:      test-process.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include "../test.h"
-#include <wex/frame.h>
 #include <wex/process.h>
 #include <wex/shell.h>
+
+#include "test.h"
 
 TEST_SUITE_BEGIN("wex::process");
 
@@ -25,7 +21,7 @@ TEST_CASE("wex::process")
     REQUIRE(wex::process::prepare_output(frame()) != nullptr);
     REQUIRE(wex::process::get_shell() != nullptr);
 
-    wex::test::add_pane(frame(), wex::process::get_shell());
+    add_pane(frame(), wex::process::get_shell());
     wex::process::get_shell()->set_text(std::string());
   }
 
@@ -51,7 +47,7 @@ TEST_CASE("wex::process")
     SUBCASE("invalid")
     {
       REQUIRE(process.async_system("xxxx"));
-      REQUIRE(process.stop());
+      wxSleep(1);
       REQUIRE(!process.is_running());
     }
   }

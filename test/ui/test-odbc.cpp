@@ -5,17 +5,12 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include "../test.h"
-
 #include <wex/config.h>
 #include <wex/grid.h>
-#include <wex/frame.h>
 #include <wex/odbc.h>
 #include <wex/stc.h>
+
+#include "test.h"
 
 TEST_CASE("wex::odbc")
 {
@@ -39,7 +34,7 @@ TEST_CASE("wex::odbc")
   odbc.logon(wex::data::window().button(0));
 
   auto* grid = new wex::grid();
-  wex::test::add_pane(frame(), grid);
+  add_pane(frame(), grid);
 
   if (!odbc.is_connected())
   {

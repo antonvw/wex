@@ -5,35 +5,16 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <chrono>
-#include <functional>
-#include <iomanip>
-#include <numeric>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include "app.h"
-#include <wex/bind.h>
-#include <wex/cmdline.h>
-#include <wex/defs.h>
-#include <wex/file-dialog.h>
-#include <wex/item-dialog.h>
-#include <wex/lexers.h>
-#include <wex/menubar.h>
-#include <wex/printing.h>
-#include <wex/stc-entry-dialog.h>
-#include <wex/toolbar.h>
-#include <wex/vcs.h>
-#include <wex/version.h>
 #include <wx/aboutdlg.h>
-#include <wx/numdlg.h>
+#include <wx/generic/numdlgg.h>
+
 #ifndef __WXMSW__
 #include "app.xpm"
 #endif
 
-#include "../../test/ui/test-configitem.h"
-#include "../../test/ui/test-item.h"
+#include "../test/ui/test-configitem.h"
+#include "../test/ui/test-item.h"
+#include "app.h"
 
 #define PRINT_COMPONENT(ID)                                                  \
   wxEVT_UPDATE_UI,                                                           \
@@ -46,7 +27,7 @@
 
 enum
 {
-  ID_DLG_CONFIG_ITEM = wex::ID_HIGHEST + 1,
+  ID_DLG_CONFIG_ITEM = wex::del::ID_HIGHEST + 1,
   ID_DLG_CONFIG_ITEM_COL,
   ID_DLG_CONFIG_ITEM_READONLY,
   ID_DLG_ITEM,
@@ -65,7 +46,7 @@ wxIMPLEMENT_APP(app);
 
 bool app::OnInit()
 {
-  SetAppName("wex-sample-ui");
+  SetAppName("wex-sample");
 
   if (wex::data::cmdline c(argc, argv);
       !wex::cmdline().parse(c) || !wex::app::OnInit())
@@ -82,42 +63,18 @@ bool app::OnInit()
   return true;
 }
 
-dir::dir(
-  const std::string& fullpath,
-  const std::string& findfiles,
-  wex::grid*         grid)
-  : wex::dir(fullpath, wex::data::dir().file_spec(findfiles))
-  , m_grid(grid)
-{
-}
-
-bool dir::on_file(const wex::path& file)
-{
-  m_grid->AppendRows(1);
-  const auto no = m_grid->GetNumberRows() - 1;
-  m_grid->SetCellValue(no, 0, wxString::Format("cell%d", no));
-  m_grid->SetCellValue(no, 1, file.string());
-
-  // Let's make these cells readonly and colour them, so we can test
-  // things like cutting and dropping is forbidden.
-  m_grid->SetReadOnly(no, 1);
-  m_grid->SetCellBackgroundColour(no, 1, *wxLIGHT_GREY);
-  return true;
-}
-
 frame::frame()
-  : wex::frame(4)
-  , m_notebook(new wex::notebook()) // first!
+  : m_notebook(new wex::notebook(wex::data::window().style(
+      wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_WINDOWLIST_BUTTON)))
   , m_grid(new wex::grid(wex::data::window().parent(m_notebook)))
   , m_listview(new wex::listview(wex::data::window().parent(m_notebook)))
   , m_process(new wex::process())
   , m_statistics(
       new wex::grid_statistics<int>({}, wex::data::window().parent(m_notebook)))
+  , m_shell(new wex::shell(wex::data::stc(), ">"))
+  , m_stc(new wex::stc())
+  , m_stc_lexers(new wex::stc())
 {
-  m_shell      = new wex::shell(wex::data::stc(), ">");
-  m_stc        = new wex::stc();
-  m_stc_lexers = new wex::stc(wex::lexers::get()->get_filename());
-
   wex::process::prepare_output(this);
 
   SetIcon(wxICON(app));
@@ -232,20 +189,42 @@ frame::frame()
       m_listview->set_item_image(i, wxART_TICK_MARK);
   }
 
-  setup_statusbar({{"PaneFileType", 50}, {"PaneInfo", 100}, {"PaneLexer", 60}});
-
   get_toolbar()->add_standard();
   get_options_toolbar()->add_checkboxes_standard();
 
-  // The on_command keeps statistics.
-  Bind(wxEVT_MENU, &frame::on_command, this, wxID_COPY);
-  Bind(wxEVT_MENU, &frame::on_command, this, wxID_CUT);
-  Bind(wxEVT_MENU, &frame::on_command, this, wxID_EXECUTE);
-  Bind(wxEVT_MENU, &frame::on_command, this, wxID_JUMP_TO);
-  Bind(wxEVT_MENU, &frame::on_command, this, wxID_PASTE);
-  Bind(wxEVT_MENU, &frame::on_command, this, wxID_OPEN, wxID_SAVEAS);
-  Bind(wxEVT_MENU, &frame::on_command, this, wxID_UNDO, wxID_REDO);
-  Bind(wxEVT_MENU, &frame::on_command, this, ID_STC_SPLIT);
+  setup_statusbar({{"PaneFileType", 50}, {"PaneInfo", 100}, {"PaneLexer", 60}});
+
+  const wex::lexer lexer(wex::lexers::get()->find("cpp"));
+
+  for (int i = wex::data::listview::FOLDER; i <= wex::data::listview::FILE; i++)
+  {
+    auto* vw = new wex::del::listview(
+      wex::data::listview().type((wex::data::listview::type_t)i).lexer(&lexer));
+
+    m_notebook->add_page(wex::data::notebook()
+                           .page(vw)
+                           .key(vw->data().type_description())
+                           .select());
+  }
+
+  {
+    wex::del::dir dir(
+      (wex::listview*)m_notebook->page_by_key(wex::data::listview()
+                                                .type(wex::data::listview::FILE)
+                                                .type_description()),
+      wex::path::current(),
+      wex::data::dir().file_spec("*.cpp;*.h"));
+
+    dir.find_files();
+
+    wex::listitem item(
+      (wex::listview*)m_notebook->page_by_key(wex::data::listview()
+                                                .type(wex::data::listview::FILE)
+                                                .type_description()),
+      wex::path("NOT EXISTING ITEM"));
+
+    item.insert();
+  }
 
   wex::bind(this).command(
     {{[=, this](wxCommandEvent& event) {
@@ -385,12 +364,61 @@ frame::frame()
   Bind(PRINT_COMPONENT(wxID_PREVIEW));
 }
 
+wex::del::listview*
+frame::activate(wex::data::listview::type_t type, const wex::lexer* lexer)
+{
+  for (size_t i = 0; i < m_notebook->GetPageCount(); i++)
+  {
+    wex::del::listview* vw = (wex::del::listview*)m_notebook->GetPage(i);
+
+    if (vw->data().type() == type)
+    {
+      if (type == wex::data::listview::KEYWORD)
+      {
+        if (lexer != nullptr)
+        {
+          if (lexer->scintilla_lexer() != "cpp")
+          {
+            if (!lexer->display_lexer().empty())
+            {
+              wex::log::trace(lexer->display_lexer())
+                << ", only cpp for the sample";
+            }
+
+            return nullptr;
+          }
+        }
+      }
+
+      return vw;
+    }
+  }
+
+  return nullptr;
+}
+
 bool frame::allow_close(wxWindowID id, wxWindow* page)
 {
-  return page == get_listview() ?
-           // prevent possible crash
-           false :
-           wex::frame::allow_close(id, page);
+  if (page == file_history_list() || page == get_listview())
+  {
+    // prevent possible crash, if set_recent_file tries
+    // to add listitem to deleted history list.
+    return false;
+  }
+  else
+  {
+    return wex::del::frame::allow_close(id, page);
+  }
+}
+
+wex::listview* frame::get_listview()
+{
+  return (wex::listview*)m_notebook->GetPage(m_notebook->GetSelection());
+}
+
+wex::stc* frame::get_stc()
+{
+  return m_stc;
 }
 
 void frame::on_command(wxCommandEvent& event)
@@ -497,4 +525,35 @@ void frame::on_command_item_dialog(
   {
     wex::frame::on_command_item_dialog(dialogid, event);
   }
+}
+
+wex::stc* frame::open_file(const wex::path& file, const wex::data::stc& data)
+{
+  m_stc->get_lexer().clear();
+  m_stc->open(file, wex::data::stc(data).flags(0));
+
+  return m_stc;
+}
+
+dir::dir(
+  const std::string& fullpath,
+  const std::string& findfiles,
+  wex::grid*         grid)
+  : wex::dir(fullpath, wex::data::dir().file_spec(findfiles))
+  , m_grid(grid)
+{
+}
+
+bool dir::on_file(const wex::path& file)
+{
+  m_grid->AppendRows(1);
+  const auto no = m_grid->GetNumberRows() - 1;
+  m_grid->SetCellValue(no, 0, wxString::Format("cell%d", no));
+  m_grid->SetCellValue(no, 1, file.string());
+
+  // Let's make these cells readonly and colour them, so we can test
+  // things like cutting and dropping is forbidden.
+  m_grid->SetReadOnly(no, 1);
+  m_grid->SetCellBackgroundColour(no, 1, *wxLIGHT_GREY);
+  return true;
 }

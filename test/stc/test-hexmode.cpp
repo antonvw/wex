@@ -5,15 +5,10 @@
 // Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include "../test.h"
 #include <wex/hexmode.h>
 #include <wex/lexers.h>
-#include <wex/frame.h>
-#include <wex/stc.h>
+
+#include "test.h"
 
 TEST_CASE("wex::hexmode")
 {
@@ -25,7 +20,7 @@ TEST_CASE("wex::hexmode")
     wex::data::stc().flags(
       wex::data::stc::window_t().set(wex::data::stc::WIN_HEX)));
 
-  wex::test::add_pane(frame(), stc);
+  add_pane(frame(), stc);
   REQUIRE(stc->get_text() != "0123456789");
 
   stc->SetCurrentPos(48); // 0 <-

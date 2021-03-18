@@ -13,9 +13,3 @@ int main(int argc, char* argv[])
 {
   return wex::test::main(argc, argv, new wex::test::app());
 }
-
-TEST_CASE("wex::test::app")
-{
-  wxGetApp().get_catalog_dir();
-  wxGetApp().get_locale().IsOk();
-}

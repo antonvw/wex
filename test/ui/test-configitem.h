@@ -10,7 +10,10 @@
 #include <wex/config.h>
 #include <wex/item.h>
 #include <wex/log.h>
+
 #include <wx/html/htmlwin.h>
+#include <wx/textctrl.h>
+#include <wx/valtext.h>
 
 /// Returns a vector with all config items available.
 /// The first item is a notebook, containing the other items,

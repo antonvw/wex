@@ -27,9 +27,8 @@ build_script:
   - devenv wex.sln /build %configuration%
   # extra line wit arg /project RUN_TESTS is simpler,
   # but does not give details
-  - test\core\%configuration%\wex-test-core.exe
-  - test\ui\%configuration%\wex-test-ui.exe -tse=wex::process -tce=wex::stc,wex::vcs_entry,wex::ex,wex::managed_frame
-  - test\del\%configuration%\wex-test-del.exe
+  - ctest -V
+
   # does not work with Debug, but Release gives invalid return after ui test
   # - ..\ci\pack.bat
   # As administrator:

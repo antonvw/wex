@@ -10,12 +10,11 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include "../test.h"
 #include <wex/config.h>
-#include <wex/frame.h>
-#include <wex/stc.h>
 #include <wex/util.h>
 #include <wex/vcs-command.h>
+
+#include "test.h"
 
 TEST_CASE("wex::util" * doctest::may_fail())
 {
@@ -23,15 +22,13 @@ TEST_CASE("wex::util" * doctest::may_fail())
 
   SUBCASE("combobox_as")
   {
-    auto* cb = new wxComboBox(frame(), wxID_ANY);
-    wex::test::add_pane(frame(), cb);
+    auto* cb = new wxComboBox(get_frame(), wxID_ANY);
     wex::combobox_as<const std::list<std::string>>(cb, l);
   }
 
   SUBCASE("combobox_from_list")
   {
-    auto* cb = new wxComboBox(frame(), wxID_ANY);
-    wex::test::add_pane(frame(), cb);
+    auto* cb = new wxComboBox(get_frame(), wxID_ANY);
 
     wex::combobox_from_list(cb, l);
     REQUIRE(cb->GetCount() == 3);
@@ -65,21 +62,21 @@ TEST_CASE("wex::util" * doctest::may_fail())
     get_stc()->SetFocus();
     get_stc()->DiscardEdits();
 
-    REQUIRE(wex::open_files(frame(), std::vector<wex::path>()) == 0);
+    REQUIRE(wex::open_files(get_frame(), std::vector<wex::path>()) == 0);
     REQUIRE(
       wex::open_files(
-        frame(),
+        get_frame(),
         std::vector<wex::path>{
           wex::test::get_path("test.h").data(),
           "test.cpp",
           "*xxxxxx*.cpp"}) == 2);
     REQUIRE(
       wex::open_files(
-        frame(),
+        get_frame(),
         std::vector<wex::path>{wex::test::get_path("test.h").data()}) == 1);
     REQUIRE(
       wex::open_files(
-        frame(),
+        get_frame(),
         std::vector<wex::path>{"../../data/wex-menus.xml"}) == 1);
   }
 
@@ -112,7 +109,7 @@ TEST_CASE("wex::util" * doctest::may_fail())
 
   SUBCASE("vcs_execute")
   {
-    // wex::vcs_execute(frame(), 0, std::vector< std::string > {}); // calls
+    // wex::vcs_execute(get_frame(), 0, std::vector< std::string > {}); // calls
     // dialog
   }
 

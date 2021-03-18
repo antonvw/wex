@@ -12,7 +12,7 @@
 TEST_CASE("wex::del::file")
 {
   auto* listView = new wex::del::file(get_project());
-  wex::test::add_pane(del_frame(), listView);
+  add_pane(del_frame(), listView);
 
   REQUIRE(listView->get_file().get_filename().fullname() == get_project());
 

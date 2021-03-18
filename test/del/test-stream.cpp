@@ -16,7 +16,7 @@ TEST_CASE("wex::del::stream")
   auto* report =
     new wex::listview(wex::data::listview().type(wex::data::listview::FIND));
 
-  wex::test::add_pane(del_frame(), report);
+  add_pane(del_frame(), report);
 
   wex::find_replace_data::get()->set_find_string("xx");
 

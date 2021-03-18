@@ -73,21 +73,26 @@ namespace wex
       /// Destructor.
       ~listview() override { ; };
 
-      /// Pure virtual interface.
+      /// Virtual interface.
 
       /// Appends new columns.
       /// Returns false if appending a column failed.
-      virtual bool append_columns(const std::vector<column>& cols) = 0;
+      virtual bool append_columns(const std::vector<column>& cols)
+      {
+        return false;
+      };
 
       /// Finds next.
-      virtual bool
-      find_next(const std::string& text, bool find_next = true) = 0;
+      virtual bool find_next(const std::string& text, bool find_next = true)
+      {
+        return false;
+      };
 
       /// Prints the list.
-      virtual void print() = 0;
+      virtual void print() { ; };
 
       /// Previews the list.
-      virtual void print_preview() = 0;
+      virtual void print_preview() { ; };
     };
   }; // namespace factory
 };   // namespace wex

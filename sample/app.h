@@ -5,16 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/app.h>
-#include <wex/dir.h>
-#include <wex/frame.h>
-#include <wex/grid-statistics.h>
-#include <wex/grid.h>
-#include <wex/listview.h>
-#include <wex/notebook.h>
-#include <wex/process.h>
-#include <wex/shell.h>
-#include <wex/stc.h>
+#include <wex/wex.h>
 
 /// Derive your application from wex::app.
 class app : public wex::app
@@ -36,26 +27,34 @@ private:
   wex::grid* m_grid;
 };
 
-class frame : public wex::frame
+/// Derive your application from wex::del::frame.
+class frame : public wex::del::frame
 {
 public:
   frame();
 
 private:
-  bool           allow_close(wxWindowID id, wxWindow* page) override;
-  wex::listview* get_listview() override { return m_listview; };
-  void
-  on_command_item_dialog(wxWindowID id, const wxCommandEvent& event) override;
-
   void on_command(wxCommandEvent& event);
 
+  wex::del::listview* activate(
+    wex::data::listview::type_t type,
+    const wex::lexer*           lexer = nullptr) override;
+  bool           allow_close(wxWindowID id, wxWindow* page) override;
+  wex::listview* get_listview() override;
+  wex::stc*      get_stc() override;
+  void
+  on_command_item_dialog(wxWindowID id, const wxCommandEvent& event) override;
+  wex::stc* open_file(
+    const wex::path&      file,
+    const wex::data::stc& data = wex::data::stc()) override;
+
   wex::notebook*             m_notebook;
+  wex::stc *                 m_stc, *m_stc_lexers;
   wex::grid*                 m_grid;
   wex::listview*             m_listview;
   wex::process*              m_process;
   wex::shell*                m_shell;
   wex::grid_statistics<int>* m_statistics;
-  wex::stc *                 m_stc, *m_stc_lexers;
 
   long m_flags_stc = 0;
 };

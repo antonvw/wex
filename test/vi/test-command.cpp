@@ -5,10 +5,10 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/ex-command.h>
-#include <wex/stc.h>
 #include <wx/textctrl.h>
+
+#include "test.h"
 
 TEST_SUITE_BEGIN("wex::ex");
 
@@ -158,7 +158,7 @@ TEST_CASE("wex::ex_command")
   SUBCASE("handle")
   {
     auto* tc = new wxTextCtrl(frame(), wxID_ANY);
-    wex::test::add_pane(frame(), tc);
+    add_pane(frame(), tc);
 
     tc->SetValue("hello");
     tc->SetInsertionPointEnd();

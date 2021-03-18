@@ -26,7 +26,7 @@ TEST_CASE("wex::del::listview")
   {
     auto* lv = new wex::del::listview(
       wex::data::listview().type(wex::data::listview::FIND));
-    wex::test::add_pane(del_frame(), lv);
+    add_pane(del_frame(), lv);
 
     wex::listitem item(lv, wex::test::get_path("test.h"));
     item.insert();

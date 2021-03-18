@@ -9,14 +9,14 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include "../test.h"
 #include <wex/grid.h>
-#include <wex/frame.h>
+
+#include "test.h"
 
 TEST_CASE("wex::grid")
 {
   auto* grid = new wex::grid();
-  wex::test::add_pane(frame(), grid);
+  add_pane(frame(), grid);
 
   REQUIRE(grid->CreateGrid(5, 5));
 

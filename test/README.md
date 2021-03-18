@@ -15,13 +15,4 @@ some functions are not tested:
   for grid, listview, stc
   this shows a dialog, not correctly destroyed when application exits.
 
-## There are 3 test binaries
-
-- wex-test-core
-  tests wex-core classes
-
-- wex-test-del
-  test wex-del classes
-
-- wex-test-ui
-  tests other classes
+## Each component in a subdir wil have get a separate binary, except for data.

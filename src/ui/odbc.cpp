@@ -9,10 +9,6 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/item-dialog.h>

@@ -28,9 +28,7 @@ cppcheck --quiet --enable=all \
 #  2> err.txt
 
 # test
-test/core/wex-test-core
-test/ui/wex-test-ui -tce=wex::debug,wex::file_history
-test/del/wex-test-del
+ctest -V
 
 # build syncped
 cd ..

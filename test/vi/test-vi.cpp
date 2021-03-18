@@ -10,15 +10,15 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include "../test.h"
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/frd.h>
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
-#include <wex/frame.h>
 #include <wex/stc.h>
 #include <wex/vi.h>
+
+#include "test.h"
 
 #define ESC "\x1b"
 
@@ -312,7 +312,7 @@ TEST_CASE("wex::vi")
   {
     auto* stc = new wex::stc(std::string("// 	vim: set ts=120 "
                                          "// this is a modeline"));
-    wex::test::add_pane(frame(), stc);
+    add_pane(frame(), stc);
     REQUIRE(stc->GetTabWidth() == 120);
     REQUIRE(vi->mode().is_command());
   }

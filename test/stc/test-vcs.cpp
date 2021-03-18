@@ -2,15 +2,15 @@
 // Name:      test-vcs.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <vector>
 #include <wex/config.h>
-#include <wex/frame.h>
 #include <wex/menu.h>
 #include <wex/vcs.h>
+
+#include "../test.h"
 
 TEST_SUITE_BEGIN("wex::vcs");
 
@@ -21,8 +21,8 @@ TEST_CASE("wex::vcs")
 
   SUBCASE("statics")
   {
-    REQUIRE(wex::vcs::dir_exists(file));
     REQUIRE(wex::vcs::load_document());
+    REQUIRE(wex::vcs::dir_exists(file));
     REQUIRE(wex::vcs::size() > 0);
   }
 

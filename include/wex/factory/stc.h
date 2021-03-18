@@ -138,7 +138,7 @@ namespace wex
       virtual void set_search_flags(int flags) { SetSearchFlags(flags); };
 
       /// Sets the text.
-      virtual void set_text(const std::string& value) { ; };
+      virtual void set_text(const std::string& value) { SetText(value); };
 
       /// Starts or stops syncing.
       /// Default syncing is started during construction.

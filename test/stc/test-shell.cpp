@@ -2,16 +2,12 @@
 // Name:      test-shell.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include "../test.h"
-#include <wex/frame.h>
 #include <wex/shell.h>
+
+#include "test.h"
 
 /// Processes string on shell.
 void process(const std::string& str, wex::shell* shell);
@@ -27,7 +23,7 @@ void process(const std::string& str, wex::shell* shell)
 TEST_CASE("wex::shell")
 {
   auto* shell = new wex::shell();
-  wex::test::add_pane(frame(), shell);
+  add_pane(frame(), shell);
 
   REQUIRE(shell->is_enabled());
 

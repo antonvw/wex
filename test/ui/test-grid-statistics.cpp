@@ -5,9 +5,9 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/grid-statistics.h>
-#include <wex/frame.h>
+
+#include "test.h"
 
 TEST_CASE("wex::grid_statistics")
 {
@@ -44,11 +44,11 @@ TEST_CASE("wex::grid_statistics")
   REQUIRE(statistics1->GetNumberRows() == 2);
   REQUIRE(statistics1->get_keys().size() == 2);
   REQUIRE(grid1 != nullptr);
-  wex::test::add_pane(frame(), grid1);
+  add_pane(frame(), grid1);
 
   auto* grid2 = statistics2->show();
   REQUIRE(statistics2->get_keys().size() == 2);
-  wex::test::add_pane(frame(), grid2);
+  add_pane(frame(), grid2);
 
   REQUIRE(statistics1->show() == grid1);
   REQUIRE(statistics2->set("xx", 10) == 10);

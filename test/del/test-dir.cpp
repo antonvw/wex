@@ -15,7 +15,7 @@
 TEST_CASE("wex::del::dir")
 {
   auto* file = new wex::del::file(get_project());
-  wex::test::add_pane(del_frame(), file);
+  add_pane(del_frame(), file);
   auto* dir = new wex::del::dir(file, wex::test::get_path());
   REQUIRE(dir->find_files() == 0);
 }
@@ -30,7 +30,7 @@ TEST_CASE("wex::del::tool_dir")
   REQUIRE(tool.id() == wex::ID_TOOL_REPORT_FIND);
   REQUIRE(wex::del::stream::setup_tool(tool, del_frame(), lv));
 
-  wex::test::add_pane(del_frame(), lv);
+  add_pane(del_frame(), lv);
   wex::find_replace_data::get()->set_find_string("test");
   wex::del::tool_dir dir(
     tool,

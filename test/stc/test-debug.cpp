@@ -5,12 +5,12 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/debug.h>
 #include <wex/defs.h>
-#include <wex/frame.h>
 #include <wex/menu.h>
 #include <wex/process.h>
+
+#include "test.h"
 
 TEST_SUITE_BEGIN("wex::process");
 

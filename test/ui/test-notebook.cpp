@@ -2,23 +2,23 @@
 // Name:      test-notebook.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include "../test.h"
 #include <wex/defs.h>
-#include <wex/frame.h>
 #include <wex/notebook.h>
 #include <wex/stc.h>
+
+#include "test.h"
 
 TEST_CASE("wex::notebook")
 {
   auto* notebook = new wex::notebook();
-  wex::test::add_pane(frame(), notebook);
+  add_pane(frame(), notebook);
 
   auto* page1 = new wxWindow(frame(), wxID_ANY);
   auto* page2 = new wxWindow(frame(), wxID_ANY);

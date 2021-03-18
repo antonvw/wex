@@ -20,7 +20,7 @@ namespace wex
         lexer lexer("cpp");
         m_report = new listview(
           data::listview().type(data::listview::KEYWORD).lexer(&lexer));
-        wex::test::add_pane(this, m_report);
+        add_pane(this, m_report);
       };
 
       listview* activate(
@@ -38,7 +38,7 @@ namespace wex
       listview* m_report;
     };
 
-    class del_app : public app
+    class del : public app
     {
     public:
       bool OnInit() override
@@ -51,23 +51,26 @@ namespace wex
         m_frame = new test::frame();
         m_frame->more_coverage();
         m_frame->Show();
+        m_stc = new wex::stc();
 
         return true;
       }
 
+      static auto* stc() { return m_stc; };
       static auto* frame() { return m_frame; };
 
     private:
+      inline static wex::stc*    m_stc   = nullptr;
       inline static test::frame* m_frame = nullptr;
     };
   }; // namespace test
 };   // namespace wex
 
-IMPLEMENT_APP_NO_MAIN(wex::test::del_app);
+IMPLEMENT_APP_NO_MAIN(wex::test::del);
 
 wex::del::frame* del_frame()
 {
-  return wex::test::del_app::frame();
+  return wex::test::del::frame();
 }
 
 const std::string get_project()
@@ -77,5 +80,10 @@ const std::string get_project()
 
 int main(int argc, char* argv[])
 {
-  return wex::test::main(argc, argv, new wex::test::del_app());
+  return wex::test::main(argc, argv, new wex::test::del());
+}
+
+wex::stc* get_stc()
+{
+  return wex::test::del::stc();
 }

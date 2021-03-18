@@ -5,10 +5,10 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/factory/stc.h>
 #include <wex/indicator.h>
 #include <wex/log.h>
 #include <wex/path.h>
-#include <wex/factory/stc.h>
 #include <wex/stc-data.h>
 
 wex::data::stc::stc(wex::factory::stc* stc)
@@ -117,8 +117,6 @@ bool wex::data::stc::inject() const
 
       m_stc->SetCurrentPos(asked < max ? asked : max);
 
-      // Reset selection, seems necessary.
-      m_stc->SelectNone();
       return true;
     },
     [&]() {

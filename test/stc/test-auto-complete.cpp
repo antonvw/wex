@@ -2,18 +2,18 @@
 // Name:      test-auto_complete.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/auto-complete.h>
-#include <wex/stc.h>
+
+#include "test.h"
 
 TEST_CASE("wex::auto_complete" * doctest::may_fail())
 {
   auto* stc = new wex::stc(wex::test::get_path("test.h"));
   stc->SetFocus();
-  wex::test::add_pane(frame(), stc);
+  add_pane(frame(), stc);
   wex::auto_complete ac(stc);
 
   ac.use(true);
