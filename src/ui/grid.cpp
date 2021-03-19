@@ -21,7 +21,6 @@
 #include <wex/lexers.h>
 #include <wex/printing.h>
 #include <wx/dnd.h>
-#include <wx/fdrepdlg.h>
 
 namespace wex
 {
@@ -110,17 +109,11 @@ wex::grid::grid(const data::window& data)
       },
       wxID_PASTE}});
 
-  Bind(wxEVT_FIND, [=, this](wxFindDialogEvent& event) {
-    find_next(
-      find_replace_data::get()->get_find_string(),
-      find_replace_data::get()->search_down());
-  });
-
-  Bind(wxEVT_FIND_NEXT, [=, this](wxFindDialogEvent& event) {
-    find_next(
-      find_replace_data::get()->get_find_string(),
-      find_replace_data::get()->search_down());
-  });
+  bind(this).frd(
+    find_replace_data::get()->wx(),
+    [=, this](const std::string& s, bool b) {
+      find_next(s, b);
+    });
 
   Bind(wxEVT_GRID_CELL_LEFT_CLICK, [=, this](wxGridEvent& event) {
     // Removed extra check for !IsEditable(),

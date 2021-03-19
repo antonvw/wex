@@ -93,9 +93,9 @@ TEST_CASE("wex::util" * doctest::may_fail())
     REQUIRE(wex::shell_expansion(command));
     REQUIRE(command == "no quotes");
 
-    command = "illegal process `xyz`";
-    REQUIRE(!wex::shell_expansion(command));
-    REQUIRE(command == "illegal process `xyz`");
+    command = "echo 'xyz'";
+    REQUIRE(wex::shell_expansion(command));
+    REQUIRE(command == "echo 'xyz'");
   }
 #endif
 

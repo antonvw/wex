@@ -19,16 +19,14 @@ namespace wex
       /// Static methods
 
       static auto* frame() { return m_frame; };
-      static auto* get_statusbar() { return m_statusbar; };
       static auto* get_stc() { return m_stc; };
 
       /// Virtual interface
       bool OnInit() override;
 
     private:
-      inline static wex::frame* m_frame     = nullptr;
-      inline static statusbar*  m_statusbar = nullptr;
-      inline static wex::stc*   m_stc       = nullptr;
+      inline static wex::frame* m_frame = nullptr;
+      inline static wex::stc*   m_stc   = nullptr;
     };
   }; // namespace test
 };   // namespace wex
@@ -47,19 +45,8 @@ bool wex::test::stc::OnInit()
     return false;
   }
 
-  m_frame     = new wex::frame();
-  m_statusbar = m_frame->setup_statusbar(
-    {{"Pane0"}, // the order of panes is tested
-     {"Pane1"},
-     {"Pane2"},
-     {"Pane3"},
-     {"Pane4"},
-     {"PaneInfo"},
-     {"PaneLexer"},
-     {"PaneMode"},
-     {"PaneFileType"},
-     {"LastPane"}});
-  m_stc = new wex::stc();
+  m_frame = new wex::frame();
+  m_stc   = new wex::stc();
   m_frame->Show();
 
   process::prepare_output(m_frame);
@@ -72,11 +59,6 @@ bool wex::test::stc::OnInit()
 wex::frame* frame()
 {
   return wex::test::stc::frame();
-}
-
-wex::statusbar* get_statusbar()
-{
-  return wex::test::stc::get_statusbar();
 }
 
 wex::stc* get_stc()

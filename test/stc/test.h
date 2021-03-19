@@ -20,8 +20,5 @@ const std::string add_pane(wex::frame* frame, wxWindow* pane);
 /// Returns the frame.
 wex::frame* frame();
 
-/// Returns the statusbar.
-wex::statusbar* get_statusbar();
-
 /// Returns an stc.
 wex::stc* get_stc();

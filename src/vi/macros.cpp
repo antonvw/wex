@@ -10,10 +10,10 @@
 #include <wex/app.h>
 #include <wex/config.h>
 #include <wex/core.h>
+#include <wex/frame.h>
 #include <wex/lexer-props.h>
 #include <wex/log.h>
 #include <wex/macros.h>
-#include <wex/frame.h>
 #include <wex/path.h>
 #include <wex/type-to-value.h>
 #include <wex/util.h>
@@ -291,8 +291,7 @@ void wex::macros::parse_node_variable(const pugi::xml_node& node)
 
 bool wex::macros::record(const std::string& text, bool new_command)
 {
-  if (auto* f = (dynamic_cast<frame*>(wxTheApp->GetTopWindow()));
-      f != nullptr)
+  if (auto* f = (dynamic_cast<frame*>(wxTheApp->GetTopWindow())); f != nullptr)
   {
     f->record(text);
   }
@@ -335,7 +334,9 @@ bool wex::macros::record(const std::string& text, bool new_command)
 
 bool wex::macros::save_document(bool only_if_modified)
 {
-  if (!get_filename().file_exists() || (!m_is_modified && only_if_modified))
+  if (
+    !m_is_loaded || !get_filename().file_exists() ||
+    (!m_is_modified && only_if_modified))
   {
     return false;
   }

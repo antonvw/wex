@@ -3,6 +3,7 @@
 
 ## backlog
 - imprive FiF, do not use intermediate container
+  - open recursively
 - invest use wxTextCompleter
 - wxExecute
 - allow dynamic libs

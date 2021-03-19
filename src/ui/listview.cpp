@@ -32,7 +32,6 @@
 #include <wex/stc-data.h>
 #include <wex/tokenizer.h>
 #include <wx/dnd.h>
-#include <wx/fdrepdlg.h>         // for wxFindDialogEvent
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/imaglist.h>
 #include <wx/numdlg.h> // for wxGetNumberFromUser
@@ -227,18 +226,6 @@ wex::listview::listview(const data::listview& data)
 
   m_frame->update_statusbar(this);
 
-  Bind(wxEVT_FIND, [=, this](wxFindDialogEvent& event) {
-    find_next(
-      find_replace_data::get()->get_find_string(),
-      find_replace_data::get()->search_down());
-  });
-
-  Bind(wxEVT_FIND_NEXT, [=, this](wxFindDialogEvent& event) {
-    find_next(
-      find_replace_data::get()->get_find_string(),
-      find_replace_data::get()->search_down());
-  });
-
   if (
     m_data.type() != data::listview::NONE &&
     m_data.type() != data::listview::TSV)
@@ -341,6 +328,12 @@ wex::listview::listview(const data::listview& data)
 
     PopupMenu(&menu);
   });
+
+  bind(this).frd(
+    find_replace_data::get()->wx(),
+    [=, this](const std::string& s, bool b) {
+      find_next(s, b);
+    });
 
   bind(this).command(
     {{[=, this](wxCommandEvent& event) {
