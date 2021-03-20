@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <functional>
 #include <string>
 #include <wex/address.h>
 #include <wex/indicator.h>
