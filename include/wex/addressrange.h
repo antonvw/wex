@@ -167,6 +167,8 @@ namespace wex
     int
     confirm(const std::string& pattern, const std::string& replacement) const;
 
+    bool general(const address& destination, std::function<bool()> f) const;
+
     bool indent(bool forward = true) const;
 
     void set(const std::string& begin, const std::string& end)

@@ -88,14 +88,6 @@ wex::del::frame::frame(
 
   bind(this).command(
     {{[=, this](wxCommandEvent& event) {
-        if (GetStatusBar() != nullptr)
-        {
-          GetStatusBar()->Show(!GetStatusBar()->IsShown());
-          SendSizeEvent();
-        }
-      },
-      ID_VIEW_STATUSBAR},
-     {[=, this](wxCommandEvent& event) {
         m_is_command = true;
 
         // :e [+command] [file]
