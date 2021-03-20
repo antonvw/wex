@@ -329,5 +329,5 @@ wex::regex::regex(
 
 ## wex c++ libraries
 
-  wex-core <- wex-factory <- wex-data   <-  wex-ui <- wex-vi  <- wex-del
-                          <- wex-common            <- wex-stc
+wex-core <- wex-factory <- wex-data <- wex-common <- wex-ui <- wex-vi  <- wex-del
+                                                            <- wex-stc

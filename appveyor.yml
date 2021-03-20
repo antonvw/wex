@@ -27,7 +27,7 @@ build_script:
   - devenv wex.sln /build %configuration%
   # extra line wit arg /project RUN_TESTS is simpler,
   # but does not give details
-  - ctest -V
+  - ctest -C %configuration% -V
 
   # does not work with Debug, but Release gives invalid return after ui test
   # - ..\ci\pack.bat

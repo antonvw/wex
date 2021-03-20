@@ -129,7 +129,7 @@ namespace wex
     };
 
     /// Returns depth.
-    int depth() const { return m_stack.size(); };
+    size_t depth() const { return m_stack.size(); };
 
     /// Pops.
     void pop(void);

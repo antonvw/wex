@@ -145,6 +145,8 @@ macro(wex_target_link_all)
       /usr/gnat/lib64/libstdc++fs.a)
   else ()
     set (cpp_std_LIBRARIES 
+      X11
+      pthread
       stdc++
       stdc++fs)
   endif ()

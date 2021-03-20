@@ -2,7 +2,7 @@
 // Name:      vi-mode.h
 // Purpose:   Declaration of class wex::vi_mode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -18,6 +18,24 @@ namespace wex
   class vi_fsm;
 
   /// Offers vi mode.
+  /// \dot
+  /// digraph mode {
+  ///   insert_block [label="insert block"]
+  ///   visual_block [label="visual block"]
+  ///   visual_line  [label="visual line"]
+  ///   init         -> command [style=dotted,label="start"];
+  ///   command      -> insert [label="[acioACIOR]"];
+  ///   command      -> visual [label="v"];
+  ///   command      -> visual_line [label="V"];
+  ///   command      -> visual_block [label="K|control-V"];
+  ///   insert       -> command [label="escape"];
+  ///   insert_block -> visual_block [label="escape"];
+  ///   visual       -> command [label="escape"];
+  ///   visual_block -> command [label="escape"];
+  ///   visual_block -> insert_block [label="[acioACIOR]"];
+  ///   visual_line  -> command [label="escape"];
+  ///  }
+  /// \enddot
   class vi_mode
   {
   public:
@@ -28,8 +46,8 @@ namespace wex
       INSERT,       ///< pressing key inserts key
       INSERT_BLOCK, ///< as insert, while in visual rect mode
       VISUAL,       ///< navigation keys extend selection
-      VISUAL_LINE,  ///< complete lines are selected
       VISUAL_BLOCK, ///< navigation keys extend rectangular selection
+      VISUAL_LINE,  ///< complete lines are selected
     };
 
     /// Constructor,

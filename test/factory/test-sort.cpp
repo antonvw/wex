@@ -5,10 +5,11 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <boost/algorithm/string.hpp>
 #include <wex/factory/stc.h>
 #include <wex/sort.h>
+
+#include "../test.h"
 
 class stc : public wex::factory::stc
 {
@@ -51,7 +52,7 @@ TEST_CASE("wex::sort")
 
   if (frame == nullptr)
   {
-    frame = new wxFrame(nullptr, -1, "core test");
+    frame = new wxFrame(nullptr, -1, "sort test");
     frame->Show();
   }
 

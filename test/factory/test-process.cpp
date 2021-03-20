@@ -1,16 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      core/test-process.cpp
+// Name:      test-process.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include "../test.h"
 #include <wex/factory/process.h>
+
+#include "../test.h"
 
 TEST_SUITE_BEGIN("wex::process");
 
@@ -28,6 +25,7 @@ TEST_CASE("wex::factory::process")
     REQUIRE(!process.write("xx"));
   }
 
+#ifdef __WXMSW__
   SUBCASE("async_system")
   {
     SUBCASE("no handler") { REQUIRE(!process.async_system("bash")); }
@@ -54,6 +52,7 @@ TEST_CASE("wex::factory::process")
       REQUIRE(!process.is_running());
     }
   }
+#endif
 
   SUBCASE("system")
   {
@@ -69,7 +68,7 @@ TEST_CASE("wex::factory::process")
     }
 #endif
 
-#ifndef __WXGTK__
+#ifndef __WXMSW__
     SUBCASE("invalid")
     {
       REQUIRE(process.system("xxxx") != 0);
