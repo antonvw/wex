@@ -25,7 +25,7 @@ TEST_CASE("wex::factory::process")
     REQUIRE(!process.write("xx"));
   }
 
-#ifdef __WXMSW__
+#ifndef __WXMSW__
   SUBCASE("async_system")
   {
     SUBCASE("no handler") { REQUIRE(!process.async_system("bash")); }

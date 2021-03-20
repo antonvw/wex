@@ -35,6 +35,7 @@ TEST_CASE("wex::sort")
                            "345y56781234567890123\n"
                            "456z45672345678901234\n");
 
+#ifndef __WXMSW__
   SUBCASE("string")
   {
     REQUIRE(wex::sort().string("z\ny\nx\n", "\n") == "x\ny\nz\n");
@@ -47,6 +48,7 @@ TEST_CASE("wex::sort")
         .string("z\nz\ny\nx\n", "\n") == "x\ny\nz\n");
     REQUIRE(wex::sort(0, 3, 5).string(rect, "\n") == sorted);
   }
+#endif
 
   static wxFrame* frame = nullptr;
 
