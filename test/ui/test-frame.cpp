@@ -15,68 +15,84 @@ TEST_CASE("wex::frame")
 {
   get_stc()->SetFocus();
 
-  REQUIRE(frame()->open_file(wex::test::get_path("test.h")));
-  //  REQUIRE(frame()->open_file(wex::test::get_path("test.h"), "contents"));
-  REQUIRE(frame()->is_open(wex::test::get_path("test.h")));
-  REQUIRE(!frame()->is_open(wex::path("xxx")));
-
-  REQUIRE(frame()->get_grid() == nullptr);
-  REQUIRE(frame()->get_listview() == nullptr);
-  REQUIRE(frame()->get_process("xxx") == nullptr);
-  REQUIRE(frame()->get_stc() != nullptr);
-
-  frame()->set_find_focus(frame()->get_stc());
-  frame()->set_find_focus(nullptr);
-  frame()->set_find_focus(frame());
-
-  auto* bar  = new wxMenuBar();
-  auto* menu = new wex::menu();
-  menu->append({{wex::menu_item::EDIT}});
-  bar->Append(menu, "Edit");
-  frame()->SetMenuBar(bar);
-
-  frame()->statusbar_clicked("test");
-  frame()->statusbar_clicked("Pane1");
-  frame()->statusbar_clicked("Pane2");
-
-  frame()->statusbar_clicked_right("test");
-  frame()->statusbar_clicked_right("Pane1");
-  frame()->statusbar_clicked_right("Pane2");
-
-  frame()->set_recent_file("testing");
-
-  REQUIRE(!frame()->statustext("hello", "test"));
-  REQUIRE(frame()->statustext("hello1", "Pane1"));
-  REQUIRE(frame()->statustext("hello2", "Pane2"));
-  REQUIRE(frame()->get_statustext("Pane1") == "hello1");
-  REQUIRE(frame()->get_statustext("Pane2") == "hello2");
-
-  REQUIRE(!frame()->update_statusbar(frame()->get_stc(), "test"));
-  REQUIRE(!frame()->update_statusbar(frame()->get_stc(), "Pane1"));
-  REQUIRE(!frame()->update_statusbar(frame()->get_stc(), "Pane2"));
-
-  wxCommandEvent event(wxEVT_MENU, wxID_OPEN);
-
-  for (const auto& str :
-       std::vector<std::string>{"xxx", "+10 test", "`pwd`", "0"})
+  SUBCASE("open_file")
   {
-    event.SetString(str);
-    wxPostEvent(frame(), event);
+    // the factory stc does not open the file
+    frame()->set_find_focus(get_stc());
+    REQUIRE(frame()->open_file(wex::test::get_path("test.h")) != nullptr);
+    REQUIRE(!frame()->is_open(wex::test::get_path("test.h")));
+    REQUIRE(!frame()->is_open(wex::path("xxx")));
   }
+
+  SUBCASE("get")
+  {
+    REQUIRE(frame()->get_grid() == nullptr);
+    REQUIRE(frame()->get_listview() == nullptr);
+    REQUIRE(frame()->get_process("xxx") == nullptr);
+    REQUIRE(frame()->get_stc() != nullptr);
+  }
+
+  SUBCASE("focus")
+  {
+    frame()->set_find_focus(frame()->get_stc());
+    frame()->set_find_focus(nullptr);
+    frame()->set_find_focus(frame());
+  }
+
+  SUBCASE("bars")
+  {
+    auto* bar  = new wxMenuBar();
+    auto* menu = new wex::menu();
+    menu->append({{wex::menu_item::EDIT}});
+    bar->Append(menu, "Edit");
+    frame()->SetMenuBar(bar);
+
+    frame()->statusbar_clicked("test");
+    frame()->statusbar_clicked("Pane1");
+    frame()->statusbar_clicked("Pane2");
+
+    frame()->statusbar_clicked_right("test");
+    frame()->statusbar_clicked_right("Pane1");
+    frame()->statusbar_clicked_right("Pane2");
+
+    frame()->set_recent_file("testing");
+
+    REQUIRE(!frame()->statustext("hello", "test"));
+    REQUIRE(frame()->statustext("hello1", "Pane1"));
+    REQUIRE(frame()->statustext("hello2", "Pane2"));
+    REQUIRE(frame()->get_statustext("Pane1") == "hello1");
+    REQUIRE(frame()->get_statustext("Pane2") == "hello2");
+
+    REQUIRE(!frame()->update_statusbar(frame()->get_stc(), "test"));
+    REQUIRE(!frame()->update_statusbar(frame()->get_stc(), "Pane1"));
+    REQUIRE(!frame()->update_statusbar(frame()->get_stc(), "Pane2"));
+  }
+
+  SUBCASE("events")
+  {
+    wxCommandEvent event(wxEVT_MENU, wxID_OPEN);
+
+    for (const auto& str :
+         std::vector<std::string>{"xxx", "+10 test", "`pwd`", "0"})
+    {
+      event.SetString(str);
+      wxPostEvent(frame(), event);
+    }
 
 #ifndef __WXMSW__
-  for (const auto& id : std::vector<int>{
-         wxID_FIND,
-         wxID_REPLACE,
-         wex::ID_VIEW_MENUBAR,
-         wex::ID_VIEW_STATUSBAR,
-         wex::ID_VIEW_TITLEBAR})
-  {
-    auto* event = new wxCommandEvent(wxEVT_MENU, id);
-    wxQueueEvent(frame(), event);
-    wxQueueEvent(frame(), event);
-  }
+    for (const auto& id : std::vector<int>{
+           wxID_FIND,
+           wxID_REPLACE,
+           wex::ID_VIEW_MENUBAR,
+           wex::ID_VIEW_STATUSBAR,
+           wex::ID_VIEW_TITLEBAR})
+    {
+      auto* event = new wxCommandEvent(wxEVT_MENU, id);
+      wxQueueEvent(frame(), event);
+      wxQueueEvent(frame(), event);
+    }
 #endif
+  }
 }
 
 // Also test the toolbar (wex::toolbar).

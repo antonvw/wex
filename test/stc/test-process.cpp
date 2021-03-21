@@ -34,6 +34,7 @@ TEST_CASE("wex::process")
     process.config_dialog(wex::data::window().button(wxAPPLY | wxCANCEL));
   }
 
+#ifdef __UNIX__
   SUBCASE("async_system")
   {
     SUBCASE("exe")
@@ -51,6 +52,7 @@ TEST_CASE("wex::process")
       REQUIRE(!process.is_running());
     }
   }
+#endif
 
 #ifdef __UNIX__
   SUBCASE("system")

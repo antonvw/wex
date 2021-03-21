@@ -24,8 +24,9 @@ TEST_CASE("wex::del::frame")
   del_frame()->get_project_history().use_menu(1000, menu);
   list->Show();
 
-  //  REQUIRE(!del_frame()->open_file(
-  //    wex::test::get_path("test.h"))); // as we have no focused stc
+  del_frame()->set_find_focus(get_stc());
+  
+  REQUIRE(((wex::frame*)del_frame())->open_file(wex::test::get_path("test.h")));
   REQUIRE(
     del_frame()->file_history().get_history_file().string().find("../test.h") ==
     std::string::npos);
