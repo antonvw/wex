@@ -145,14 +145,16 @@ macro(wex_target_link_all)
       /usr/gnat/lib64/libstdc++fs.a)
   else ()
     set (cpp_std_LIBRARIES 
+      X11
+      pthread
       stdc++
       stdc++fs)
   endif ()
 
   set (wxWidgets_LIBRARIES wxaui wxadv wxstc wxhtml wxcore wxnet wxbase)
   set (wex_LIBRARIES 
-    wex-report wex-common 
-    wex-stc wex-ui wex-vi wex-common wex-stc wex-ui wex-data wex-core)
+    wex-del wex-common 
+    wex-stc wex-ui wex-vi wex-common wex-stc wex-ui wex-factory wex-data wex-core)
           
   if (WIN32)
     target_link_libraries(

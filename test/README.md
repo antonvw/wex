@@ -4,7 +4,7 @@ This directory contains the tests for the wex libraries.
 
 ## Organization
 
-- the directories reflect the wex libraries tests
+- the test directories reflect the wex libraries
 
 some functions are not tested:
 
@@ -15,13 +15,11 @@ some functions are not tested:
   for grid, listview, stc
   this shows a dialog, not correctly destroyed when application exits.
 
-## There are 3 test binaries
+## Components
 
-- wex-test-core
-  tests wex-core classes
+- Each lib test component in a subdir
 
-- wex-test-report
-  test wex-report classes
+  - has a main.cpp, that either directly calls wex::test::app
+    or an instance of a class derived from it
 
-- wex-test-ui
-  tests other classes
+  - has a separate binary

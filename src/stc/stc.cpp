@@ -16,13 +16,13 @@
 #include <wex/lexers.h>
 #include <wex/link.h>
 #include <wex/macros.h>
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 #include <wex/path.h>
 #include <wex/printing.h>
 #include <wex/regex.h>
 #include <wex/stc-entry-dialog.h>
 #include <wex/stc.h>
-#include <wex/vcs.h>
+#include <wex/vcs-entry.h>
 #include <wx/app.h>
 #include <wx/settings.h>
 
@@ -33,8 +33,7 @@ wex::stc::stc(const path& p, const data::stc& data)
   , m_vi(new vi(this))
   , m_file(this, data.window().name())
   , m_hexmode(hexmode(this))
-  , m_frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
-  , m_lexer(this)
+  , m_frame(dynamic_cast<frame*>(wxTheApp->GetTopWindow()))
   , m_visual(!data.flags().test(data::stc::WIN_EX))
 {
   assert(m_frame != nullptr);
@@ -46,6 +45,13 @@ wex::stc::stc(const path& p, const data::stc& data)
     data.window().size(),
     data.window().style(),
     data.window().name());
+
+  if (m_config_items == nullptr)
+  {
+    on_init();
+  }
+
+  get_lexer().set(lexer(this));
 
   if (
     config("AllowSync").get(true) && p != wex::ex::get_macros().get_filename())
@@ -101,7 +107,8 @@ wex::stc::stc(const path& p, const data::stc& data)
   }
   else
   {
-    m_lexer.set(p.lexer(), true);
+    get_lexer().set(p.lexer(), true);
+
     m_file.file_new(p);
     m_data.inject();
   }
@@ -227,19 +234,19 @@ void wex::stc::PageScrollUp()
 
 bool wex::stc::CanCut() const
 {
-  return core::stc::CanCut() && !GetReadOnly() && !is_hexmode();
+  return factory::stc::CanCut() && !GetReadOnly() && !is_hexmode();
 }
 
 bool wex::stc::CanPaste() const
 {
-  return core::stc::CanPaste() && !GetReadOnly() && !is_hexmode();
+  return factory::stc::CanPaste() && !GetReadOnly() && !is_hexmode();
 }
 
 void wex::stc::Clear()
 {
   m_vi->is_active() && GetSelectedText().empty() ?
     (void)m_vi->command(std::string(1, WXK_DELETE)) :
-    core::stc::Clear();
+    factory::stc::Clear();
 }
 
 void wex::stc::clear(bool set_savepoint)
@@ -259,7 +266,7 @@ void wex::stc::Copy()
 {
   if (CanCopy())
   {
-    core::stc::Copy();
+    factory::stc::Copy();
   }
 }
 
@@ -273,7 +280,7 @@ void wex::stc::Cut()
       get_ex().set_register_yank(get_selected_text());
     }
 
-    core::stc::Cut();
+    factory::stc::Cut();
   }
 }
 
@@ -300,8 +307,8 @@ void wex::stc::fold_all()
     return;
 
   const auto current_line = get_current_line();
-  const bool json         = (m_lexer.scintilla_lexer() == "json");
-  const bool xml          = (m_lexer.language() == "xml");
+  const bool json         = (get_lexer().scintilla_lexer() == "json");
+  const bool xml          = (get_lexer().language() == "xml");
 
   int line = (json ? 1 : 0);
 
@@ -460,7 +467,7 @@ void wex::stc::goto_line(int line)
   }
   else
   {
-    core::stc::goto_line(line);
+    factory::stc::goto_line(line);
   }
 }
 
@@ -701,7 +708,7 @@ void wex::stc::Paste()
 {
   if (CanPaste())
   {
-    core::stc::Paste();
+    factory::stc::Paste();
   }
 }
 
@@ -1073,7 +1080,7 @@ void wex::stc::sync(bool start)
 
 void wex::stc::Undo()
 {
-  core::stc::Undo();
+  factory::stc::Undo();
   m_hexmode.undo();
 }
 
@@ -1087,6 +1094,21 @@ bool wex::stc::vi_command(const std::string& command)
 {
   // TODO: this should depend on the mode, if not visual mode, use m_ex.
   return m_vi->command(command);
+}
+
+const std::string wex::stc::vi_mode() const
+{
+  return m_vi->mode().str();
+}
+
+void wex::stc::vi_record(const std::string& command)
+{
+  ex::get_macros().record(command);
+}
+
+std::string wex::stc::vi_register(char c) const
+{
+  return ex::get_macros().get_register(c);
 }
 
 void wex::stc::visual(bool on)
@@ -1124,7 +1146,7 @@ void wex::stc::visual(bool on)
   config_get();
 
   m_frame->show_ex_bar(
-    !on ? managed_frame::SHOW_BAR : managed_frame::HIDE_BAR_FOCUS_STC,
+    !on ? frame::SHOW_BAR : frame::HIDE_BAR_FOCUS_STC,
     m_ex);
 }
 

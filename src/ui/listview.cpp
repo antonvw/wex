@@ -12,12 +12,11 @@
 #endif
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
-#include <wex/accelerators.h>
 #include <wex/bind.h>
 #include <wex/chrono.h>
 #include <wex/config.h>
 #include <wex/defs.h>
-#include <wex/frame.h>
+#include <wex/factory/frame.h>
 #include <wex/frd.h>
 #include <wex/interruptible.h>
 #include <wex/item-dialog.h>
@@ -30,16 +29,16 @@
 #include <wex/menu.h>
 #include <wex/printing.h>
 #include <wex/regex.h>
+#include <wex/stc-data.h>
 #include <wex/tokenizer.h>
 #include <wx/dnd.h>
-#include <wx/fdrepdlg.h>         // for wxFindDialogEvent
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/imaglist.h>
 #include <wx/numdlg.h> // for wxGetNumberFromUser
 
 namespace wex
 {
-  // file_droptarget is already used by wex::frame.
+  // file_droptarget is already used
   class droptarget : public wxFileDropTarget
   {
   public:
@@ -182,7 +181,7 @@ wex::listview::listview(const data::listview& data)
         data.type() == data::listview::NONE || data::listview::TSV ?
           data.image() :
           data::listview::IMAGE_FILE_ICON))
-  , m_frame(dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow()))
+  , m_frame(dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow()))
 {
   Create(
     data.window().parent(),
@@ -202,12 +201,6 @@ wex::listview::listview(const data::listview& data)
   // We can only have one drop target, we use file drop target,
   // as list items can also be copied and pasted.
   SetDropTarget(new droptarget(this));
-
-  accelerators({{wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE},
-                {wxACCEL_CTRL, WXK_INSERT, wxID_COPY},
-                {wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE},
-                {wxACCEL_SHIFT, WXK_DELETE, wxID_CUT}})
-    .set(this);
 
   switch (m_data.image())
   {
@@ -232,18 +225,6 @@ wex::listview::listview(const data::listview& data)
   }
 
   m_frame->update_statusbar(this);
-
-  Bind(wxEVT_FIND, [=, this](wxFindDialogEvent& event) {
-    find_next(
-      find_replace_data::get()->get_find_string(),
-      find_replace_data::get()->search_down());
-  });
-
-  Bind(wxEVT_FIND_NEXT, [=, this](wxFindDialogEvent& event) {
-    find_next(
-      find_replace_data::get()->get_find_string(),
-      find_replace_data::get()->search_down());
-  });
 
   if (
     m_data.type() != data::listview::NONE &&
@@ -347,6 +328,12 @@ wex::listview::listview(const data::listview& data)
 
     PopupMenu(&menu);
   });
+
+  bind(this).frd(
+    find_replace_data::get()->wx(),
+    [=, this](const std::string& s, bool b) {
+      find_next(s, b);
+    });
 
   bind(this).command(
     {{[=, this](wxCommandEvent& event) {
@@ -901,13 +888,13 @@ void wex::listview::item_activated(long item_number)
       // Cannot be const because of SetItem later on.
       if (listitem item(this, item_number); item.get_filename().file_exists())
       {
-        const auto no(get_item_text(item_number, _("Line No")));
-        auto       data(
+        const auto    no(get_item_text(item_number, _("Line No")));
+        data::control data(
           (m_data.type() == data::listview::FIND && !no.empty() ?
-                   data::control()
+             data::control()
                .line(std::stoi(no))
                .find(get_item_text(item_number, _("Match"))) :
-                   data::control()));
+             data::control()));
 
         m_frame->open_file(item.get_filename(), data);
       }

@@ -20,16 +20,15 @@
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/ctags.h>
-#include <wex/debug.h>
 #include <wex/defs.h>
 #include <wex/ex-stream.h>
 #include <wex/ex.h>
+#include <wex/frame.h>
 #include <wex/frd.h>
 #include <wex/lexer-props.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
 #include <wex/macros.h>
-#include <wex/managed-frame.h>
 #include <wex/regex.h>
 #include <wex/statusbar.h>
 #include <wex/stc-entry-dialog.h>
@@ -163,7 +162,7 @@ wex::macros wex::ex::m_macros;
 
 wex::ex::ex(wex::stc* stc)
   : m_command(ex_command(stc))
-  , m_frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
+  , m_frame(dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow()))
   , m_commands{{":ab",
                 [&](const std::string& command) {
                   return handle_container<std::string, macros::strings_map_t>(
@@ -200,7 +199,7 @@ wex::ex::ex(wex::stc* stc)
                 }},
                {":de",
                 [&](const std::string& command) {
-                  m_frame->get_debug()->execute(
+                  m_frame->debug_exe(
                     wex::first_of(command, " "),
                     get_stc());
                   return true;
@@ -398,6 +397,7 @@ wex::ex::ex(wex::stc* stc)
   , m_auto_write(config(_("stc.Auto write")).get(false))
 {
   assert(m_frame != nullptr);
+
   reset_search_flags();
 }
 
@@ -543,7 +543,7 @@ bool wex::ex::command(const std::string& cmd)
   }
   else if (command == ":" || command == ":'<,'>" || command == ":!")
   {
-    return m_frame->show_ex_command(this, command);
+    return m_frame->show_ex_command(get_stc(), command);
   }
   else if (!command_handle(command) && !command_address(command.substr(1)))
   {
@@ -802,6 +802,11 @@ void wex::ex::cut()
   info_message(sel, wex::info_message_t::DEL);
 }
 
+wex::stc* wex::ex::get_stc() const
+{
+  return dynamic_cast<wex::stc*>(m_command.get_stc());
+}
+
 template <typename S, typename T>
 bool wex::ex::handle_container(
   const std::string&                                          kind,
@@ -1005,14 +1010,6 @@ int wex::ex::marker_line(char marker) const
   return -1;
 }
 
-void wex::ex::on_init()
-{
-  m_dialog = new stc_entry_dialog(
-    "tmp",
-    std::string(),
-    data::window().button(wxOK).title("tmp").size({450, 450}));
-}
-
 void wex::ex::print(const std::string& text)
 {
   show_dialog("Print", text);
@@ -1084,6 +1081,14 @@ void wex::ex::show_dialog(
   const std::string& text,
   const std::string& lexer)
 {
+  if (m_dialog == nullptr)
+  {
+    m_dialog = new stc_entry_dialog(
+      "tmp",
+      std::string(),
+      data::window().button(wxOK).title("tmp").size({450, 450}));
+  }
+
   if (title == "Print")
   {
     if (title != m_dialog->GetTitle())

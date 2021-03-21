@@ -2,16 +2,16 @@
 // Name:      test-stc.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/config.h>
 #include <wex/defs.h>
 #include <wex/frd.h>
 #include <wex/indicator.h>
 #include <wex/lexers.h>
-#include <wex/stc.h>
+
+#include "test.h"
 
 TEST_CASE("wex::stc")
 {

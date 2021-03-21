@@ -5,11 +5,10 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <tuple>
-#include <wex/managed-frame.h>
-#include <wex/stc.h>
 #include <wex/variable.h>
+
+#include "test.h"
 
 TEST_CASE("wex::variable")
 {

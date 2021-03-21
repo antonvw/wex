@@ -2,7 +2,7 @@
 // Name:      menu-item.h
 // Purpose:   Declaration of wex::menu_item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -13,7 +13,7 @@
 
 namespace wex
 {
-  class managed_frame;
+  class frame;
   class menu;
 
   /// Offers a single menu item.
@@ -106,6 +106,8 @@ namespace wex
       /// if a filename is specified the menu is built as a submenu,
       /// otherwise as menu items.
       const path& p,
+      /// frame
+      frame* frame,
       /// shows modal dialog if necessary
       bool show_modal = true,
       /// menu data
@@ -123,7 +125,7 @@ namespace wex
     /// Constructor for PANES menu items.
     menu_item(
       /// frame to supply toggled panes
-      const managed_frame* frame);
+      const frame* frame);
 
     /// Appends this item(s) to menu.
     void append(wex::menu* menu) const;
@@ -134,8 +136,14 @@ namespace wex
     /// Returns menu item id.
     auto id() const { return m_id; };
 
+    /// Returns modality.
+    bool is_modal() const { return m_modal; };
+
     /// Returns menu item name.
     auto& name() const { return m_name; };
+
+    /// Returns path.
+    const auto& path() const { return m_path; };
 
     /// Returns menu item type.
     auto type() const { return m_type; };
@@ -144,7 +152,7 @@ namespace wex
     void append_panes(wex::menu* menu) const;
     void append_vcs(wex::menu* menu) const;
 
-    const managed_frame* m_frame{nullptr};
+    const frame* m_frame{nullptr};
     file_history*        m_history{nullptr};
     wex::menu*           m_menu{nullptr};
     const bool           m_modal{false};

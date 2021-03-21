@@ -7,10 +7,10 @@
 
 #include "../test.h"
 #include <vector>
-#include <wex/item.h>
+#include <wex/del/defs.h>
 #include <wex/item-template-dialog.h>
-#include <wex/managed-frame.h>
-#include <wex/report/defs.h>
+#include <wex/item.h>
+#include <wex/frame.h>
 
 namespace wex
 {
@@ -55,11 +55,12 @@ TEST_CASE("wex::item_template_dialog")
   {
     wex::item_template_dialog<wex::testitem>* dlg =
       new wex::item_template_dialog<wex::testitem>(
-        std::vector<wex::testitem>{{"fruit", "apple"},
-                                   {"button", wex::item::BUTTON},
-                                   {"string1"},
-                                   {"string2"},
-                                   {"more fruit", "citron"}},
+        std::vector<wex::testitem>{
+          {"fruit", "apple"},
+          {"button", wex::item::BUTTON},
+          {"string1"},
+          {"string2"},
+          {"more fruit", "citron"}},
         wex::data::window().title("3 columns"),
         0,
         3);

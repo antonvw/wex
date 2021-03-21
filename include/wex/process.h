@@ -8,16 +8,16 @@
 #pragma once
 
 #include <memory>
-#include <wex/process-core.h>
+#include <wex/factory/process.h>
 #include <wex/window-data.h>
 
 namespace wex
 {
-  class managed_frame;
+  class frame;
   class shell;
 
   /// Offers a process, capturing execution output.
-  class process : public core::process
+  class process : public factory::process
   {
   public:
     /// Static interface.
@@ -47,30 +47,34 @@ namespace wex
     /// Assignment operator.
     process& operator=(const process& p);
 
-    /// See core::process.
-    /// Return value is false if process could not execute,
-    /// or if config dialog was invoked and cancelled, or prepare_output
-    /// not yet invoked.
-    bool async_system(
-      const std::string& exe = std::string(),
-      const std::string& start_dir = std::string()) override;
-
-    /// Returns the frame.
-    auto* get_frame() { return m_frame; };
+    /// Virtual interface
 
     /// Shows stdout or stderr from system on the shell component.
     /// You can override this method to e.g. prepare a lexer on get_shell
     /// before calling this base method.
     virtual void show_output(const std::string& caption = std::string()) const;
 
+    /// Returns the frame.
+    auto* get_frame() { return m_frame; };
+
+    /// Override methods.
+
+    /// See factory::process.
+    /// Return value is false if process could not execute,
+    /// or if config dialog was invoked and cancelled, or prepare_output
+    /// not yet invoked.
+    bool async_system(
+      const std::string& exe       = std::string(),
+      const std::string& start_dir = std::string()) override;
+
     /// Writes text to stdin of process.
-    /// Default the response stdout is collected in the shell,
+    /// The response stdout is collected in the shell.
     bool write(const std::string& text) override;
 
   private:
     static std::string   m_working_dir_key;
     static inline shell* m_shell = nullptr;
 
-    managed_frame* m_frame;
+    frame* m_frame;
   };
 }; // namespace wex

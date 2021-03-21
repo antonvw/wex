@@ -1,12 +1,12 @@
 # roadmap
-- invest use wxTextCompleter
-- .,'xd -> incorrect last line
-- .,$d -> no action
 
 ## backlog
+- imprive FiF, do not use intermediate container
+  - open recursively
+- vi should be independant of stc lib
 - allow dynamic libs
-- start up with recent project, close project
-  -> windows appear
+- invest use wxTextCompleter
 - use spaceship operator
   and modules (wait for gcc-11)
-- use abstract factory design pattern
+- start up with recent project, close project
+  -> windows appear

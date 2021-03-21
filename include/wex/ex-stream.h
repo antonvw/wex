@@ -11,7 +11,7 @@
 #include <map>
 #include <string>
 
-#include <wex/text-window.h>
+#include <wex/factory/text-window.h>
 
 namespace wex
 {
@@ -30,7 +30,7 @@ namespace wex
   /// All modifications are done in the temp file, and copied to
   /// the work file upon changing. If you ask for a write,
   /// the work file is copied to the original file.
-  class ex_stream : public core::text_window
+  class ex_stream : public factory::text_window
   {
   public:
     enum loc_t

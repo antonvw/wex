@@ -130,7 +130,7 @@ It benefits from the following c++ features:
 ```
 
   A recent added function.
-  
+
 - Thread support library (c++17)
 ```cpp
   std::thread
@@ -308,9 +308,26 @@ wex::regex::regex(
 
 - boost::statechart lib
   to implement the statemachine for vi mode and macro mode
-  
+
 - boost::tokenizer lib
   to tokenize expressions
 
 ## wxWidgets libraries
-- almost all gui classes are derived from wxWidgets base classes
+- all gui classes are derived from / use wxWidgets base classes
+  wxpng
+  wxjpeg
+  wxbase
+  wxnet
+  wxcore
+  wxadv
+  wxaui
+  wxhtml
+  wxscintilla
+  wxstc
+  wxgl
+  wxqa
+
+## wex c++ libraries
+
+wex-core <- wex-factory <- wex-data <- wex-common <- wex-ui <- wex-vi  <- wex-del
+                                                            <- wex-stc

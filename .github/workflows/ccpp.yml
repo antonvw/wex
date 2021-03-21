@@ -13,7 +13,7 @@ jobs:
         submodules: recursive
         
     - name: boost and gtk3
-      run: sudo apt-get update && sudo apt-get install -yq libboost1.65-all-dev liblzma5 libjbig0 libgtk-3-dev
+      run: sudo apt-get update && sudo apt-get install -yq libboost-all-dev liblzma5 libjbig0 libgtk-3-dev
             
     - name: configure
       run: export CC=gcc-9 && export CXX=g++-9 && mkdir build && cd build && cmake ..

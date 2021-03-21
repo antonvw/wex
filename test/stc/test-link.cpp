@@ -5,11 +5,10 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/config.h>
 #include <wex/link.h>
-#include <wex/managed-frame.h>
-#include <wex/stc.h>
+
+#include "test.h"
 
 void link(
   const wex::link&   link,

@@ -15,13 +15,12 @@
 #include <wex/bind.h>
 #include <wex/core.h>
 #include <wex/defs.h>
-#include <wex/frame.h>
+#include <wex/factory/frame.h>
 #include <wex/frd.h>
 #include <wex/grid.h>
 #include <wex/lexers.h>
 #include <wex/printing.h>
 #include <wx/dnd.h>
-#include <wx/fdrepdlg.h>
 
 namespace wex
 {
@@ -64,14 +63,15 @@ namespace wex
 }; // namespace wex
 
 wex::grid::grid(const data::window& data)
-  : wxGrid(
-      data.parent(),
-      data.id(),
-      data.pos(),
-      data.size(),
-      data.style(),
-      data.name())
 {
+  Create(
+    data.parent(),
+    data.id(),
+    data.pos(),
+    data.size(),
+    data.style(),
+    data.name());
+
   SetDropTarget(new text_droptarget(this));
 
   lexers::get()->apply_default_style(
@@ -109,17 +109,11 @@ wex::grid::grid(const data::window& data)
       },
       wxID_PASTE}});
 
-  Bind(wxEVT_FIND, [=, this](wxFindDialogEvent& event) {
-    find_next(
-      find_replace_data::get()->get_find_string(),
-      find_replace_data::get()->search_down());
-  });
-
-  Bind(wxEVT_FIND_NEXT, [=, this](wxFindDialogEvent& event) {
-    find_next(
-      find_replace_data::get()->get_find_string(),
-      find_replace_data::get()->search_down());
-  });
+  bind(this).frd(
+    find_replace_data::get()->wx(),
+    [=, this](const std::string& s, bool b) {
+      find_next(s, b);
+    });
 
   Bind(wxEVT_GRID_CELL_LEFT_CLICK, [=, this](wxGridEvent& event) {
     // Removed extra check for !IsEditable(),
@@ -184,7 +178,7 @@ wex::grid::grid(const data::window& data)
   });
 
   Bind(wxEVT_GRID_SELECT_CELL, [=, this](wxGridEvent& event) {
-    auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
+    auto* frame = dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
     frame->statustext(
       std::to_string(1 + event.GetCol()) + "," +
         std::to_string(1 + event.GetRow()),
@@ -194,14 +188,14 @@ wex::grid::grid(const data::window& data)
 
   Bind(wxEVT_GRID_RANGE_SELECT, [=, this](wxGridRangeSelectEvent& event) {
     event.Skip();
-    auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
+    auto* frame = dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
     frame->statustext(
       std::to_string(GetSelectedCells().GetCount()),
       "PaneInfo");
   });
 
   Bind(wxEVT_SET_FOCUS, [=, this](wxFocusEvent& event) {
-    auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
+    auto* frame = dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
     if (frame != nullptr)
     {
       frame->set_find_focus(this);
@@ -394,7 +388,7 @@ bool wex::grid::find_next(const std::string& text, bool forward)
   {
     bool result = false;
 
-    auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
+    auto* frame = dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
     frame->statustext(get_find_result(text, forward, recursive), std::string());
 
     if (!recursive)

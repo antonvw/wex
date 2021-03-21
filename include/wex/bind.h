@@ -2,13 +2,15 @@
 // Name:      bind.h
 // Purpose:   Declaration of class wex::bind
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <vector>
 #include <wx/event.h>
+
+class wxFindReplaceData;
 
 namespace wex
 {
@@ -25,6 +27,11 @@ namespace wex
                    std::function<void(wxCommandEvent&)>,
                    /// the window id, or first for a range of id's (see defs.h)
                    int>>);
+
+    /// Binds find replace data to handler.
+    void frd(
+      wxFindReplaceData*                            frd,
+      std::function<void(const std::string&, bool)> f);
 
     /// Binds update events to handler.
     void ui(std::vector<std::pair<

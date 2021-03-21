@@ -5,9 +5,10 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <chrono>
 #include <wex/path.h>
+
+#include "../test.h"
 
 TEST_CASE("wex::path")
 {

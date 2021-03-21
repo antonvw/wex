@@ -3,6 +3,7 @@
 **v21.10**
 - boost::algorithm lib used
 - boost::tokenizer lib used
+- added wex::factory namespace, renamed report namespace into del
 
 **v21.04** *March 7, 2021*
 - added FindWEX.cmake to assist using wex library using cmake projects

@@ -15,10 +15,10 @@
 #include <wex/core.h>
 #include <wex/ex-stream.h>
 #include <wex/ex.h>
+#include <wex/frame.h>
 #include <wex/frd.h>
 #include <wex/log.h>
 #include <wex/macros.h>
-#include <wex/managed-frame.h>
 #include <wex/process.h>
 #include <wex/regex.h>
 #include <wex/sort.h>
@@ -290,26 +290,9 @@ int wex::addressrange::confirm(
 
 bool wex::addressrange::copy(const wex::address& destination) const
 {
-  const auto dest_line = destination.get_line();
-
-  if (
-    m_stc->GetReadOnly() || m_stc->is_hexmode() || !is_ok() || dest_line == 0 ||
-    (dest_line >= m_begin.get_line() && dest_line <= m_end.get_line()))
-  {
-    return false;
-  }
-
-  m_stc->BeginUndoAction();
-
-  if (yank())
-  {
-    m_stc->goto_line(dest_line - 1);
-    m_stc->add_text(m_ex->register_text());
-  }
-
-  m_stc->EndUndoAction();
-
-  return true;
+  return general(destination, [=, this]() {
+    return yank();
+  });
 }
 
 bool wex::addressrange::erase() const
@@ -355,22 +338,21 @@ bool wex::addressrange::escape(const std::string& command)
 
     m_process = new wex::process();
 
-    return m_process->async_system(
-      expanded,
-      m_stc->get_filename().get_path());
+    return m_process->async_system(expanded, m_stc->get_filename().get_path());
   }
 
   if (!is_ok())
   {
     return false;
   }
-  
-  if (temp_filename tmp(true); m_stc->GetReadOnly() || m_stc->is_hexmode() || !write(tmp.name()))
+
+  if (temp_filename tmp(true);
+      m_stc->GetReadOnly() || m_stc->is_hexmode() || !write(tmp.name()))
   {
     return false;
   }
-  else if (core::process process;
-    process.system(command + " " + tmp.name()) == 0)
+  else if (factory::process process;
+           process.system(command + " " + tmp.name()) == 0)
   {
     if (!process.get_stdout().empty())
     {
@@ -417,6 +399,32 @@ bool wex::addressrange::execute(const std::string& reg) const
   m_stc->EndUndoAction();
 
   return !error;
+}
+
+bool wex::addressrange::general(
+  const address&        destination,
+  std::function<bool()> f) const
+{
+  const auto dest_line = destination.get_line();
+
+  if (
+    m_stc->GetReadOnly() || m_stc->is_hexmode() || !is_ok() || dest_line == 0 ||
+    (dest_line >= m_begin.get_line() && dest_line <= m_end.get_line()))
+  {
+    return false;
+  }
+
+  m_stc->BeginUndoAction();
+
+  if (f())
+  {
+    m_stc->goto_line(dest_line - 1);
+    m_stc->add_text(m_ex->register_text());
+  }
+
+  m_stc->EndUndoAction();
+
+  return true;
 }
 
 bool wex::addressrange::global(const std::string& text, bool inverse) const
@@ -558,26 +566,9 @@ bool wex::addressrange::join() const
 
 bool wex::addressrange::move(const address& destination) const
 {
-  const auto dest_line = destination.get_line();
-
-  if (
-    m_stc->GetReadOnly() || m_stc->is_hexmode() || !is_ok() || dest_line == 0 ||
-    (dest_line >= m_begin.get_line() && dest_line <= m_end.get_line()))
-  {
-    return false;
-  }
-
-  m_stc->BeginUndoAction();
-
-  if (erase())
-  {
-    m_stc->goto_line(dest_line - 1);
-    m_stc->add_text(m_ex->register_text());
-  }
-
-  m_stc->EndUndoAction();
-
-  return true;
+  return general(destination, [=, this]() {
+    return erase();
+  });
 }
 
 void wex::addressrange::on_exit()
@@ -604,7 +595,7 @@ bool wex::addressrange::parse(
       }
       else
       {
-        return m_ex->frame()->show_ex_input(m_ex, command[0]);
+        return m_ex->frame()->show_ex_input(m_ex->get_stc(), command[0]);
       }
 
     case 'd':

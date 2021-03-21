@@ -9,15 +9,15 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include "../test.h"
 #include <wex/defs.h>
 #include <wex/listview.h>
-#include <wex/managed-frame.h>
+
+#include "test.h"
 
 TEST_CASE("wex::listview")
 {
   auto* lv = new wex::listview();
-  wex::test::add_pane(frame(), lv);
+  add_pane(frame(), lv);
 
   SUBCASE("general")
   {
@@ -139,7 +139,7 @@ TEST_CASE("wex::listview")
   {
     auto* lv =
       new wex::listview(wex::data::listview().type(wex::data::listview::TSV));
-    wex::test::add_pane(frame(), lv);
+    add_pane(frame(), lv);
 
     REQUIRE(lv->GetColumnCount() == 0);
     REQUIRE(lv->data().type() == wex::data::listview::TSV);

@@ -2,31 +2,31 @@
 // Name:      data/listview.cpp
 // Purpose:   Implementation of wex::data::listview
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/lexer.h>
-#include <wex/listview-core.h>
+#include <wex/factory/listview.h>
 #include <wex/listview-data.h>
 
-wex::data::listview::listview(core::listview* lv)
+wex::data::listview::listview(factory::listview* lv)
   : m_listview(lv)
 {
 }
 
-wex::data::listview::listview(core::listview* lv, const data::listview& r)
+wex::data::listview::listview(factory::listview* lv, const data::listview& r)
   : m_listview(lv)
 {
   *this = r;
 }
 
-wex::data::listview::listview(data::control& data, core::listview* lv)
+wex::data::listview::listview(data::control& data, factory::listview* lv)
   : m_data(data)
   , m_listview(lv)
 {
 }
 
-wex::data::listview::listview(data::window& data, core::listview* lv)
+wex::data::listview::listview(data::window& data, factory::listview* lv)
   : m_data(data::control().window(data))
   , m_listview(lv)
 {

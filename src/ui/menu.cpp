@@ -10,28 +10,27 @@
 #include <wx/wx.h>
 #endif
 #include <wex/core.h>
+#include <wex/factory/listview.h>
+#include <wex/factory/stc.h>
+#include <wex/frame.h>
 #include <wex/lexers.h>
-#include <wex/listview.h>
-#include <wex/managed-frame.h>
 #include <wex/menu.h>
 #include <wex/printing.h>
-#include <wex/stc.h>
 #include <wex/tool.h>
 
-#define PRINT_COMPONENT(ID, ACTION)                                 \
-  {                                                                 \
-    ID, "", data::menu().action([=, this](wxCommandEvent& event) {  \
-      if (auto* frame =                                             \
-            dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()); \
-          frame->get_stc() != nullptr)                              \
-      {                                                             \
-        frame->get_stc()->ACTION();                                 \
-      }                                                             \
-      else if (frame->get_listview() != nullptr)                    \
-      {                                                             \
-        frame->get_listview()->ACTION();                            \
-      }                                                             \
-    })                                                              \
+#define PRINT_COMPONENT(ID, ACTION)                                          \
+  {                                                                          \
+    ID, "", data::menu().action([=, this](wxCommandEvent& event) {           \
+      if (auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow()); \
+          frame->get_stc() != nullptr)                                       \
+      {                                                                      \
+        frame->get_stc()->ACTION();                                          \
+      }                                                                      \
+      else if (frame->get_listview() != nullptr)                             \
+      {                                                                      \
+        frame->get_listview()->ACTION();                                     \
+      }                                                                      \
+    })                                                                       \
   }
 
 wex::menu::menu(menu_t style, const std::vector<menu_item>& items)
@@ -73,8 +72,7 @@ size_t wex::menu::append(const std::vector<menu_item>& items)
           {{wxID_EXIT,
             "",
             data::menu().action([=, this](wxCommandEvent& event) {
-              auto* frame =
-                dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
+              auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
               frame->Close(true);
             })}});
         break;

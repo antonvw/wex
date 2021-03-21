@@ -12,7 +12,7 @@
 
 namespace wex
 {
-  namespace core
+  namespace factory
   {
     class stc;
   };
@@ -67,7 +67,7 @@ namespace wex
         bool is_synced_log() const { return m_synced_log; };
 
         /// Fill the members.
-        void set(core::stc* s, bool synced);
+        void set(factory::stc* s, bool synced);
 
       private:
         bool m_pos_at_end{false}, m_synced{false}, m_synced_log{false};
@@ -76,16 +76,16 @@ namespace wex
       };
 
       /// Default constructor.
-      stc(core::stc* stc = nullptr);
+      stc(factory::stc* stc = nullptr);
 
       /// Constructor from control data.
-      stc(data::control& data, core::stc* stc = nullptr);
+      stc(data::control& data, factory::stc* stc = nullptr);
 
       /// Constructor from window data.
-      stc(data::window& data, core::stc* stc = nullptr);
+      stc(data::window& data, factory::stc* stc = nullptr);
 
       /// Copy constructor.
-      stc(core::stc* stc, const data::stc& r);
+      stc(factory::stc* stc, const data::stc& r);
 
       /// Assignment operator.
       stc& operator=(const data::stc& r);
@@ -148,7 +148,7 @@ namespace wex
       };
 
     private:
-      core::stc* m_stc{nullptr};
+      factory::stc* m_stc{nullptr};
 
       data::control m_data;
       indicator_t   m_indicator_no{IND_LINE};

@@ -2,30 +2,30 @@
 // Name:      test-item.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include "../test.h"
-#include "test-configitem.h"
-#include "test-item.h"
 #include <wex/config.h>
 #include <wex/item-dialog.h>
 #include <wex/item.h>
 #include <wex/log.h>
-#include <wex/managed-frame.h>
 #include <wx/artprov.h>
 #include <wx/imaglist.h>
+
+#include "test-configitem.h"
+#include "test-item.h"
+#include "test.h"
 
 TEST_SUITE_BEGIN("wex::item");
 
 TEST_CASE("wex::item")
 {
   auto* panel = new wxScrolledWindow(frame());
-  wex::test::add_pane(frame(), panel);
+  add_pane(frame(), panel);
   auto* sizer = new wxFlexGridSizer(4);
   panel->SetSizer(sizer);
   panel->SetScrollbars(20, 20, 50, 50);

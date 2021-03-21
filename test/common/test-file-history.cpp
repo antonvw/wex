@@ -2,14 +2,14 @@
 // Name:      test-filehistory.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/file-history.h>
 #include <wex/file.h>
-#include <wex/managed-frame.h>
 #include <wex/menu.h>
+
+#include "test.h"
 
 TEST_CASE("wex::file_history")
 {
@@ -33,14 +33,14 @@ TEST_CASE("wex::file_history")
     REQUIRE(history.get_history_files(5).size() == 1);
 
     // next shows a popupmenu, but remains active
-    // history.PopupMenu(frame(), 5);
+    // history.PopupMenu(get_frame(), 5);
 
     history.clear();
     REQUIRE(history.size() == 0);
     REQUIRE(history.get_history_file().empty());
     REQUIRE(history.get_history_file(100).empty());
 
-    history.popup_menu(frame(), 5);
+    history.popup_menu(get_frame(), 5);
     history.save();
   }
 

@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <functional>
 #include <string>
 #include <wex/address.h>
 #include <wex/indicator.h>
@@ -166,6 +167,8 @@ namespace wex
 
     int
     confirm(const std::string& pattern, const std::string& replacement) const;
+
+    bool general(const address& destination, std::function<bool()> f) const;
 
     bool indent(bool forward = true) const;
 

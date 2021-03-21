@@ -10,10 +10,10 @@
 #include <wex/core.h>
 #include <wex/ex-stream.h>
 #include <wex/ex.h>
+#include <wex/factory/process.h>
 #include <wex/log.h>
 #include <wex/macros.h>
-#include <wex/managed-frame.h>
-#include <wex/process-core.h>
+#include <wex/frame.h>
 #include <wex/regex.h>
 #include <wex/stc.h>
 
@@ -280,7 +280,7 @@ bool wex::address::parse(const std::string& command, const std::string& text)
       }
       else
       {
-        return m_ex->frame()->show_ex_input(m_ex, command[0]);
+        return m_ex->frame()->show_ex_input(m_ex->get_stc(), command[0]);
       }
 
     case 'i':
@@ -290,7 +290,7 @@ bool wex::address::parse(const std::string& command, const std::string& text)
       }
       else
       {
-        return m_ex->frame()->show_ex_input(m_ex, command[0]);
+        return m_ex->frame()->show_ex_input(m_ex->get_stc(), command[0]);
       }
 
     case 'k':
@@ -353,7 +353,7 @@ bool wex::address::read(const std::string& arg) const
 
   if (arg.starts_with("!"))
   {
-    core::process process;
+    factory::process process;
 
     if (process.system(arg.substr(1)) != 0)
     {

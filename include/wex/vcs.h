@@ -2,7 +2,7 @@
 // Name:      vcs.h
 // Purpose:   Declaration of wex::vcs class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -14,6 +14,11 @@ namespace wex
 {
   class item_dialog;
   class path;
+
+  namespace factory
+  {
+    class frame;
+  };
 
   /// This class collects all vcs handling.
   /// The VCS entries are loaded from menus.xml, this is done
@@ -109,4 +114,14 @@ namespace wex
     static inline std::vector<vcs_entry> m_entries;
     static inline item_dialog*           m_item_dialog = nullptr;
   };
+
+  /// Executes VCS command id for specified files
+  /// and opens component if necessary.
+  void vcs_execute(
+    /// frame on which open_file is called
+    factory::frame* frame,
+    /// VCS menu id to execute
+    int id,
+    /// files on which to operate
+    const std::vector<path>& files);
 }; // namespace wex

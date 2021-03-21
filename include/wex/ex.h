@@ -20,7 +20,7 @@ namespace wex
   class ctags;
   class macros;
   class macro_mode;
-  class managed_frame;
+  class frame;
   class stc;
   class stc_entry_dialog;
 
@@ -40,8 +40,8 @@ namespace wex
     friend class macro_mode;
 
   public:
-    /// Initializes static data.
-    static void on_init();
+    /// Returns the macros.
+    static auto& get_macros() { return m_macros; };
 
     /// Constructor.
     /// Sets ex mode.
@@ -50,13 +50,17 @@ namespace wex
     /// Destructor.
     virtual ~ex();
 
-    /// Returns calculated value of text.
-    int calculator(const std::string& text);
+    /// Virtual interface.
 
     /// Executes ex: command that was entered on the command line,
     /// or present as modeline command inside a file.
     /// Returns true if the command was executed.
     virtual bool command(const std::string& command);
+
+    /// Other methods.
+
+    /// Returns calculated value of text.
+    int calculator(const std::string& text);
 
     /// Copies data from other component.
     void copy(const ex* ex);
@@ -74,11 +78,8 @@ namespace wex
     /// Returns command.
     const auto& get_command() const { return m_command; };
 
-    /// Returns the macros.
-    static auto& get_macros() { return m_macros; };
-
     /// Returns stc component.
-    auto* get_stc() const { return m_command.get_stc(); };
+    stc* get_stc() const;
 
     /// Returns whether ex is active.
     auto is_active() const { return m_is_active; };
@@ -195,8 +196,8 @@ namespace wex
 
     char m_register{0};
 
-    wex::ctags*    m_ctags;
-    managed_frame* m_frame;
+    wex::ctags* m_ctags;
+    wex::frame* m_frame;
 
     std::map<char, int>
       // relate a marker to identifier

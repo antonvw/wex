@@ -6,19 +6,15 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include "../test.h"
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/frd.h>
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
-#include <wex/managed-frame.h>
 #include <wex/stc.h>
 #include <wex/vi.h>
+
+#include "test.h"
 
 #define ESC "\x1b"
 
@@ -52,6 +48,9 @@ TEST_CASE("wex::vi")
 {
   auto* stc = get_stc();
   auto* vi  = &stc->get_vi();
+
+  // First load macros.
+  REQUIRE(wex::ex::get_macros().load_document());
 
   SUBCASE("calc")
   {
@@ -266,8 +265,6 @@ TEST_CASE("wex::vi")
 
   SUBCASE("macro")
   {
-    // First load macros.
-    REQUIRE(wex::ex::get_macros().load_document());
     for (const auto& macro : std::vector<std::vector<std::string>>{
            {"10w"},
            {"dw"},
@@ -312,7 +309,7 @@ TEST_CASE("wex::vi")
   {
     auto* stc = new wex::stc(std::string("// 	vim: set ts=120 "
                                          "// this is a modeline"));
-    wex::test::add_pane(frame(), stc);
+    add_pane(frame(), stc);
     REQUIRE(stc->GetTabWidth() == 120);
     REQUIRE(vi->mode().is_command());
   }
@@ -516,14 +513,17 @@ TEST_CASE("wex::vi")
     stc->set_text("");
     REQUIRE(vi->command("@Date@"));
     REQUIRE(stc->get_text().find("Date") == std::string::npos);
+
     stc->set_text("");
     REQUIRE(vi->command("@Year@"));
     REQUIRE(stc->get_text().find("20") != std::string::npos);
     REQUIRE(stc->get_lexer().set("cpp"));
+
     stc->set_text("");
     REQUIRE(vi->command("@Cb@"));
     REQUIRE(vi->command("@Ce@"));
     REQUIRE(stc->get_text().find("//") != std::string::npos);
+
     stc->set_text("");
     REQUIRE(vi->command("@Cl@"));
     REQUIRE(stc->get_text().find("//") != std::string::npos);

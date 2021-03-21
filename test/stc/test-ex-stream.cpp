@@ -5,14 +5,15 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/address.h>
 #include <wex/addressrange.h>
 #include <wex/ex-stream.h>
+#include <wex/file.h>
 #include <wex/frd.h>
 #include <wex/log.h>
-#include <wex/stc.h>
 #include <wex/substitute-data.h>
+
+#include "test.h"
 
 void create_file()
 {

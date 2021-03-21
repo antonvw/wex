@@ -2,7 +2,7 @@
 // Name:      test-config_item.h
 // Purpose:   Declaration and implementation of test_config_item
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,7 +10,10 @@
 #include <wex/config.h>
 #include <wex/item.h>
 #include <wex/log.h>
+
 #include <wx/html/htmlwin.h>
+#include <wx/textctrl.h>
+#include <wx/valtext.h>
 
 /// Returns a vector with all config items available.
 /// The first item is a notebook, containing the other items,
@@ -98,8 +101,6 @@ const auto test_config_items(int rows = 0, int cols = 0)
        {{"static text", "this is my static text", wex::item::STATICTEXT}}},
 
       {"static line", {{wxHORIZONTAL}, {wxVERTICAL}}},
-
-      {"stc", {{"stc", "cpp", wex::item::STC}}},
 
       {"strings",
        {{"string"},

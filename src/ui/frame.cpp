@@ -1,50 +1,28 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      frame.cpp
-// Purpose:   Implementation of wex::frame class
+// Purpose:   Implementation of wex::frame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wex/accelerators.h>
 #include <wex/bind.h>
 #include <wex/config.h>
 #include <wex/defs.h>
-#include <wex/file-dialog.h>
+#include <wex/factory/listview.h>
+#include <wex/factory/stc.h>
 #include <wex/frame.h>
 #include <wex/frd.h>
 #include <wex/grid.h>
 #include <wex/lexers.h>
-#include <wex/listview.h>
-#include <wex/macros.h>
-#include <wex/path.h>
 #include <wex/printing.h>
-#include <wex/regex.h>
-#include <wex/statusbar.h>
-#include <wex/stc.h>
+#include <wex/textctrl.h>
+#include <wex/toolbar.h>
 #include <wex/tostring.h>
 #include <wex/util.h>
-#include <wex/vcs-entry.h>
-#include <wex/vcs.h>
-#include <wx/fdrepdlg.h> // for wxFindDialogDialog and Event
-#include <wx/filedlg.h>  // for wxFD_OPEN etc.
-
-#define wxCAST_TO(classname)                                     \
-  if (m_find_focus != nullptr && m_find_focus->IsShown())        \
-  {                                                              \
-    if (classname* win = dynamic_cast<classname*>(m_find_focus); \
-        win != nullptr)                                          \
-    {                                                            \
-      return win;                                                \
-    }                                                            \
-  }                                                              \
-                                                                 \
-  wxWindow*  win = wxWindow::FindFocus();                        \
-  classname* cl  = dynamic_cast<classname*>(win);                \
-  return cl;
+#include <wx/app.h>
+#include <wx/fdrepdlg.h>
+#include <wx/panel.h>
+#include <wx/stattext.h>
 
 #define FIND_REPLACE(text, dlg)                                          \
   {                                                                      \
@@ -55,13 +33,14 @@
                                                                          \
     auto* win = wxWindow::FindFocus();                                   \
                                                                          \
-    if (auto* cl = dynamic_cast<wex::stc*>(win); cl != nullptr)          \
+    if (auto* cl = dynamic_cast<wex::factory::stc*>(win); cl != nullptr) \
     {                                                                    \
       m_find_focus = cl;                                                 \
     }                                                                    \
     else                                                                 \
     {                                                                    \
-      if (auto* cl = dynamic_cast<wex::listview*>(win); cl != nullptr)   \
+      if (auto* cl = dynamic_cast<wex::factory::listview*>(win);         \
+          cl != nullptr)                                                 \
       {                                                                  \
         m_find_focus = cl;                                               \
       }                                                                  \
@@ -92,7 +71,7 @@ namespace wex
   class file_droptarget : public wxFileDropTarget
   {
   public:
-    explicit file_droptarget(frame* frame)
+    explicit file_droptarget(factory::frame* frame)
       : m_frame(frame)
     {
       ;
@@ -106,41 +85,45 @@ namespace wex
     }
 
   private:
-    frame* m_frame;
+    factory::frame* m_frame;
   };
-
-  const std::string win_frame = "window.frame", win_max = "window.maximized";
 
   std::vector<int> win_data;
 
   bool win_shown = false;
-}; // namespace wex
 
-wex::frame::frame(const data::window& data)
-  : wxFrame(
-      data.parent(),
-      data.id(),
-      data.title().empty() ? std::string(wxTheApp->GetAppDisplayName()) :
-                             data.title(),
-      data.pos(),
-      data.size(),
-      data.style() == data::NUMBER_NOT_SET ? wxDEFAULT_FRAME_STYLE :
-                                             data.style(),
-      data.name().empty() ? "frame" : data.name())
+  const std::string win_frame = "window.frame", win_max = "window.maximized";
+} // namespace wex
+
+wex::frame::frame(size_t maxFiles, const data::window& data)
+  : m_file_history(maxFiles, wxID_FILE1)
+  , m_toggled_panes(
+      {{{"FINDBAR", _("&Findbar")}, ID_VIEW_LOWEST + 1},
+       {{"OPTIONSBAR", _("&Optionsbar")}, ID_VIEW_LOWEST + 2},
+       {{"TOOLBAR", _("&Toolbar")}, ID_VIEW_LOWEST + 3},
+       {{"PROCESS", _("&Process")}, ID_VIEW_LOWEST + 4}})
 {
-  SetDropTarget(new file_droptarget(this));
+  Create(
+    data.parent(),
+    data.id(),
+    data.title().empty() ? std::string(wxTheApp->GetAppDisplayName()) :
+                           data.title(),
+    data.pos(),
+    data.size(),
+    data.style() == data::NUMBER_NOT_SET ? wxDEFAULT_FRAME_STYLE : data.style(),
+    data.name().empty() ? "frame" : data.name());
+
+  m_findbar    = new toolbar(this);
+  m_optionsbar = new toolbar(this);
+  m_toolbar    = new toolbar(this);
+
+  m_manager.SetManagedWindow(this);
 
   win_data = config(win_frame).get(std::vector<int>{
     data.size().GetWidth(),
     data.size().GetHeight(),
     data.pos().x,
     data.pos().y});
-
-  accelerators({{wxACCEL_NORMAL, WXK_F5, wxID_FIND},
-                {wxACCEL_NORMAL, WXK_F6, wxID_REPLACE},
-                {wxACCEL_CTRL, 'I', ID_VIEW_MENUBAR},
-                {wxACCEL_CTRL, 'T', ID_VIEW_TITLEBAR}})
-    .set(this);
 
   printing::get()->get_html_printer()->SetParentWindow(this);
 
@@ -169,18 +152,6 @@ wex::frame::frame(const data::window& data)
     m_find_replace_dialog = nullptr;
   });
 
-  bind(this).ui(
-    {{[=, this](wxUpdateUIEvent& event) {
-        (GetStatusBar() != nullptr ? event.Check(GetStatusBar()->IsShown()) :
-                                     event.Check(false));
-      },
-      ID_VIEW_STATUSBAR},
-     {[=, this](wxUpdateUIEvent& event) {
-        (GetMenuBar() != nullptr ? event.Check(GetMenuBar()->IsShown()) :
-                                   event.Check(false));
-      },
-      ID_VIEW_MENUBAR}});
-
   bind(this).command(
     {{[=, this](wxCommandEvent& event) {
         if (GetStatusBar() != nullptr)
@@ -197,58 +168,19 @@ wex::frame::frame(const data::window& data)
      {[=, this](wxCommandEvent& event) {
         FIND_REPLACE(_("Replace"), wxFR_REPLACEDIALOG);
       },
-      wxID_REPLACE},
-     {[=, this](wxCommandEvent& event) {
-        m_is_command = true;
+      wxID_REPLACE}});
 
-        // :e [+command] [file]
-        if (!event.GetString().empty())
-        {
-          std::string text(event.GetString());
-
-          if (auto* stc = get_stc(); stc != nullptr)
-          {
-            wex::path::current(stc->get_filename().get_path());
-            if (!marker_and_register_expansion(&stc->get_ex(), text))
-              return;
-          }
-
-          if (!shell_expansion(text))
-            return;
-
-          std::string cmd;
-          if (regex v("\\+([^ \t]+)* *(.*)"); v.match(text) > 1)
-          {
-            cmd  = v[0];
-            text = v[1];
-          }
-
-          open_files(
-            this,
-            to_vector_path(text).get(),
-            data::control().command(cmd));
-        }
-        else
-        {
-          data::window data;
-          data.style(
-            wxFD_OPEN | wxFD_MULTIPLE | wxFD_CHANGE_DIR | wxFD_HEX_MODE);
-          open_files_dialog(this, false, data::stc(data));
-        }
+  bind(this).ui(
+    {{[=, this](wxUpdateUIEvent& event) {
+        (GetStatusBar() != nullptr ? event.Check(GetStatusBar()->IsShown()) :
+                                     event.Check(false));
       },
-      wxID_OPEN},
-     {[=, this](wxCommandEvent& event) {
-        SetMenuBar(GetMenuBar() != nullptr ? nullptr : m_menubar);
+      ID_VIEW_STATUSBAR},
+     {[=, this](wxUpdateUIEvent& event) {
+        (GetMenuBar() != nullptr ? event.Check(GetMenuBar()->IsShown()) :
+                                   event.Check(false));
       },
-      ID_VIEW_MENUBAR},
-     {[=, this](wxCommandEvent& event) {
-        SetWindowStyleFlag(
-          !(GetWindowStyleFlag() & wxCAPTION) ?
-            wxDEFAULT_FRAME_STYLE :
-            GetWindowStyleFlag() & ~wxCAPTION);
-        Refresh();
-      },
-      ID_VIEW_TITLEBAR}});
+      ID_VIEW_MENUBAR}});
 
   Bind(wxEVT_CLOSE_WINDOW, [=, this](wxCloseEvent& event) {
     if (IsMaximized())
@@ -268,6 +200,64 @@ wex::frame::frame(const data::window& data)
     m_is_closing = true;
     event.Skip();
   });
+
+  SetDropTarget(new file_droptarget(this));
+
+  add_toolbar_panes(
+    {{m_toolbar, wxAuiPaneInfo().Name("TOOLBAR").Caption(_("Toolbar"))},
+     {m_findbar, wxAuiPaneInfo().Name("FINDBAR").Caption(_("Findbar"))},
+     {m_optionsbar,
+      wxAuiPaneInfo().Name("OPTIONSBAR").Caption(_("Optionsbar"))},
+     {create_ex_panel(), wxAuiPaneInfo().Name("VIBAR")}});
+
+  show_ex_bar();
+
+  Bind(wxEVT_AUI_PANE_CLOSE, [=, this](wxAuiManagerEvent& event) {
+    auto* info = event.GetPane();
+    info->BestSize(info->window->GetSize()).Fixed().Resizable();
+    m_manager.Update();
+    // If this pane is a toolbar pane, it might have a checkbox,
+    // update that as well.
+    m_optionsbar->set_checkbox(info->name, false);
+  });
+
+  Bind(wxEVT_CLOSE_WINDOW, [=, this](wxCloseEvent& event) {
+    m_file_history.save();
+
+    if (!m_perspective.empty())
+    {
+      wex::config(m_perspective).set(m_manager.SavePerspective().ToStdString());
+    }
+
+    event.Skip();
+  });
+
+  for (const auto& it : m_toggled_panes)
+  {
+    Bind(
+      wxEVT_UPDATE_UI,
+      [=, this](wxUpdateUIEvent& event) {
+        event.Check(m_manager.GetPane(it.first.first).IsShown());
+      },
+      it.second);
+
+    Bind(
+      wxEVT_MENU,
+      [=, this](wxCommandEvent& event) {
+        pane_toggle(it.first.first);
+      },
+      it.second);
+  }
+
+  Bind(
+    wxEVT_MENU,
+    [=, this](wxCommandEvent& event) {
+      on_menu_history(
+        m_file_history,
+        event.GetId() - m_file_history.get_base_id());
+    },
+    m_file_history.get_base_id(),
+    m_file_history.get_base_id() + m_file_history.get_max_files());
 }
 
 wex::frame::~frame()
@@ -277,39 +267,84 @@ wex::frame::~frame()
     m_find_replace_dialog->Destroy();
   }
 
-  config("show.MenuBar")
-    .set(GetMenuBar() != nullptr && GetMenuBar()->IsShown());
+  m_manager.UnInit();
 }
 
-wex::grid* wex::frame::get_grid()
+bool wex::frame::add_toolbar_panes(const panes_t& panes)
 {
-  wxCAST_TO(wex::grid);
+  panes_t pns;
+
+  for (const auto& it : panes)
+  {
+    wxAuiPaneInfo pane(it.second);
+
+    pane.LeftDockable(false).RightDockable(false);
+
+    // If the toolbar has a caption.
+    if (!pane.caption.empty())
+    {
+#ifndef __WXOSX__
+      pane.Top().ToolbarPane().MinSize(-1, 30);
+#else
+      pane.Bottom().ToolbarPane().MinSize(-1, 30);
+#endif
+
+      // Initially hide special bars.
+      if (pane.name == "FINDBAR" || pane.name == "OPTIONSBAR")
+      {
+        pane.Hide();
+      }
+    }
+    // otherwise (vi) fixed at the bottom and initially hidden.
+    else
+    {
+      pane.Bottom()
+        .CloseButton(false)
+        .Hide()
+        .DockFixed(true)
+        .Movable(false)
+        .Resizable()
+        .Row(10)
+        .CaptionVisible(false);
+    }
+
+    pns.push_back({it.first, pane});
+  }
+
+  return pane_add(pns);
 }
 
-wex::listview* wex::frame::get_listview()
+bool wex::frame::allow_close(wxWindowID id, wxWindow* page)
 {
-  wxCAST_TO(wex::listview);
+  // The page will be closed, so do not update find focus now.
+  set_find_focus(nullptr);
+  m_textctrl->set_stc(nullptr, std::string());
+
+  return true;
+}
+
+wxPanel* wex::frame::create_ex_panel()
+{
+  // An ex panel starts with small static text for : or /, then
+  // comes the ex textctrl for getting user input.
+  auto* panel = new wxPanel(this);
+  auto* text  = new wxStaticText(panel, wxID_ANY, " ");
+  m_textctrl  = new textctrl(this, text, data::window().parent(panel));
+
+  auto* sizer = new wxFlexGridSizer(2);
+  sizer->AddGrowableCol(1);
+  sizer->Add(text, wxSizerFlags().Center());
+  sizer->Add(m_textctrl->control(), wxSizerFlags().Expand());
+
+  panel->SetSizerAndFit(sizer);
+
+  return panel;
 }
 
 std::string wex::frame::get_statustext(const std::string& pane) const
 {
   return (
     m_statusbar == nullptr ? std::string() : m_statusbar->get_statustext(pane));
-}
-
-wex::stc* wex::frame::get_stc()
-{
-  wxCAST_TO(wex::stc);
-}
-
-bool wex::frame::is_open(const wex::path& filename)
-{
-  if (auto* stc = get_stc(); stc != nullptr)
-  {
-    return stc->get_filename() == filename;
-  }
-
-  return false;
 }
 
 wxStatusBar* wex::frame::OnCreateStatusBar(
@@ -321,49 +356,137 @@ wxStatusBar* wex::frame::OnCreateStatusBar(
   m_statusbar = new wex::statusbar(
     this,
     wex::data::window().id(id).style(style).name(name));
+
   m_statusbar->SetFieldsCount(number);
+
   return m_statusbar;
 }
 
-wex::stc*
-wex::frame::open_file(const wex::path& filename, const wex::data::stc& data)
+void wex::frame::on_menu_history(
+  const class file_history& history,
+  size_t                    index,
+  data::stc::window_t       flags)
 {
-  if (auto* stc = get_stc(); stc != nullptr)
+  if (const auto& file(history.get_history_file(index)); !file.empty())
   {
-    stc->open(filename, data);
+    open_file(file, data::stc().flags(flags));
+  }
+}
+
+wex::factory::stc*
+wex::frame::open_file(const path& file, const data::stc& data)
+{
+  if (auto* stc = factory::frame::open_file(file, data); stc != nullptr)
+  {
+    set_recent_file(file);
     return stc;
   }
 
   return nullptr;
 }
 
-wex::stc* wex::frame::open_file(
-  const wex::path& filename,
-  const vcs_entry& vcs,
-  const data::stc& data)
+bool wex::frame::pane_add(const panes_t& panes, const std::string& perspective)
 {
-  if (auto* stc = get_stc(); stc != nullptr)
+  for (const auto& it : panes)
   {
-    stc->set_text(vcs.get_stdout());
-    vcs_command_stc(vcs.get_command(), filename.lexer(), stc);
-    return stc;
+    if (!m_manager.AddPane(it.first, it.second))
+    {
+      return false;
+    }
   }
 
-  return nullptr;
+  if (!perspective.empty())
+  {
+    m_perspective = "perspective." + perspective;
+
+    if (const auto& val(wex::config(m_perspective).get()); !val.empty())
+    {
+      m_manager.LoadPerspective(val);
+    }
+  }
+
+  m_manager.Update();
+
+  return true;
 }
 
-wex::stc* wex::frame::open_file(
-  const path&        filename,
-  const std::string& text,
-  const data::stc&   data)
+wxWindow* wex::frame::pane_get(const std::string& pane)
 {
-  if (auto* stc = get_stc(); stc != nullptr)
-  {
-    stc->set_text(text);
-    return stc;
-  }
+  return m_manager.GetPane(pane).window;
+}
 
-  return nullptr;
+bool wex::frame::pane_maximize(const std::string& pane)
+{
+  if (auto& info = m_manager.GetPane(pane); !info.IsOk())
+  {
+    return false;
+  }
+  else
+  {
+    info.Maximize();
+    m_manager.Update();
+    return true;
+  }
+}
+
+bool wex::frame::pane_restore(const std::string& pane)
+{
+  if (auto& info = m_manager.GetPane(pane); !info.IsOk())
+  {
+    return false;
+  }
+  else
+  {
+    info.Restore();
+    m_manager.Update();
+    return true;
+  }
+}
+
+bool wex::frame::pane_set(const std::string& pane, const wxAuiPaneInfo& info)
+{
+  if (auto& current = m_manager.GetPane(pane); !current.IsOk())
+  {
+    return false;
+  }
+  else
+  {
+    if (info.best_size != wxDefaultSize)
+    {
+      current.BestSize(info.best_size);
+    }
+
+    m_manager.Update();
+    return true;
+  }
+}
+
+bool wex::frame::pane_show(const std::string& pane, bool show)
+{
+  if (auto& info = m_manager.GetPane(pane); !info.IsOk())
+  {
+    return false;
+  }
+  else
+  {
+    show ? info.Show() : info.Hide();
+
+    // ignore result, e.g. VIBAR
+    m_optionsbar->set_checkbox(pane, show);
+
+    m_manager.Update();
+    return true;
+  }
+}
+
+size_t wex::frame::panes() const
+{
+  return const_cast<frame*>(this)->m_manager.GetAllPanes().GetCount();
+}
+
+void wex::frame::set_recent_file(const path& path)
+{
+  m_file_history.append(path);
 }
 
 wex::statusbar* wex::frame::setup_statusbar(
@@ -371,20 +494,86 @@ wex::statusbar* wex::frame::setup_statusbar(
   long                               style,
   const std::string&                 name)
 {
-  ex::on_init();
-
   return statusbar::setup(this, panes, style, name);
 }
 
-void wex::frame::SetMenuBar(wxMenuBar* bar)
+bool wex::frame::statustext(const std::string& text, const std::string& pane)
+  const
 {
-  if (bar != nullptr)
-  {
-    m_menubar = bar;
-  }
+  return (
+    m_is_closing || m_statusbar == nullptr ?
+      false :
+      m_statusbar->set_statustext(text, pane));
+}
 
-  wxFrame::SetMenuBar(
-    !m_is_command && !config("show.MenuBar").get(true) ? nullptr : bar);
+bool wex::frame::show_ex_command(factory::stc* stc, const std::string& command)
+{
+  return pane_show("VIBAR") && m_textctrl->set_stc(stc, command);
+}
+
+bool wex::frame::show_ex_input(factory::stc* stc, char cmd)
+{
+  return pane_show("VIBAR") && m_textctrl->set_stc(stc, cmd);
+}
+
+void wex::frame::statusbar_clicked_right(const std::string& pane)
+{
+  if (pane == "PaneLexer" || pane == "PaneTheme")
+  {
+    std::string match;
+
+    if (pane == "PaneLexer")
+    {
+      if (auto* stc = get_stc(); stc != nullptr)
+      {
+        if (
+          !stc->get_lexer().scintilla_lexer().empty() &&
+          stc->get_lexer().scintilla_lexer() ==
+            stc->get_lexer().display_lexer())
+        {
+          match =
+            "lexer *name *= *\"" + stc->get_lexer().scintilla_lexer() + "\"";
+        }
+        else if (!stc->get_lexer().display_lexer().empty())
+        {
+          match = "display *= *\"" + stc->get_lexer().display_lexer() + "\"";
+        }
+        else
+        {
+          return;
+        }
+      }
+    }
+    else
+    {
+      if (wex::lexers::get()->theme().empty())
+      {
+        return;
+      }
+
+      match = "theme *name *= *\"" + wex::lexers::get()->theme() + "\"";
+    }
+
+    open_file(
+      wex::lexers::get()->get_filename(),
+      wex::data::control().find(
+        match,
+        wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX));
+  }
+  else if (pane == "PaneText")
+  {
+    wex::config::save();
+    open_file(wex::config::file());
+  }
+  else
+  {
+    factory::frame::statusbar_clicked_right(pane);
+  }
+}
+
+void wex::frame::show_process(bool show)
+{
+  pane_show("PROCESS", show);
 }
 
 bool wex::frame::Show(bool show)
@@ -405,171 +594,9 @@ bool wex::frame::Show(bool show)
   return wxFrame::Show(show);
 }
 
-void wex::frame::statusbar_clicked(const std::string& pane)
+void wex::frame::sync_close_all(wxWindowID id)
 {
-  if (auto* stc = get_stc(); pane == "PaneInfo")
-  {
-    if (stc != nullptr)
-    {
-      wxPostEvent(stc, wxCommandEvent(wxEVT_MENU, wxID_JUMP_TO));
-    }
-    else
-    {
-      if (auto* lv = get_listview(); lv != nullptr)
-        wxPostEvent(lv, wxCommandEvent(wxEVT_MENU, wxID_JUMP_TO));
-    }
-  }
-  else if (pane == "PaneFileType")
-  {
-    if (stc != nullptr)
-      stc->filetype_menu();
-  }
-  else if (pane == "PaneLexer")
-  {
-    if (stc != nullptr && lexers_dialog(stc))
-    {
-      statustext(stc->get_lexer().display_lexer(), "PaneLexer");
-    }
-  }
-  else if (pane == "PaneMacro")
-  {
-    if (stc != nullptr)
-      stc->get_vi().get_macros().mode().transition("@", &stc->get_vi(), true);
-  }
-  else if (pane == "PaneVCS")
-  {
-    if (wex::vcs::size() > 0)
-    {
-      auto* menu = new wex::menu;
+  set_find_focus(nullptr);
 
-      if (stc != nullptr)
-      {
-        if (menu->append({{stc->get_filename().get_path()}}))
-        {
-          PopupMenu(menu);
-        }
-      }
-      else if (menu->append({{wex::path()}}))
-      {
-        PopupMenu(menu);
-      }
-
-      delete menu;
-    }
-  }
-  else
-  {
-    // Clicking on another field, do nothing.
-  }
-}
-
-bool wex::frame::statustext(const std::string& text, const std::string& pane)
-  const
-{
-  return (
-    m_is_closing || m_statusbar == nullptr ?
-      false :
-      m_statusbar->set_statustext(text, pane));
-}
-
-bool wex::frame::update_statusbar(const wxListView* lv)
-{
-  if (!m_is_closing && lv->IsShown())
-  {
-    const auto text = std::to_string(lv->GetItemCount()) +
-                      (lv->GetSelectedItemCount() > 0 ?
-                         "," + std::to_string(lv->GetSelectedItemCount()) :
-                         std::string());
-
-    return statustext(text, "PaneInfo");
-  }
-
-  return false;
-}
-
-// Do not make it const, too many const_casts needed,
-bool wex::frame::update_statusbar(stc* stc, const std::string& pane)
-{
-  if (stc == nullptr || m_is_closing)
-  {
-    return false;
-  }
-
-  std::stringstream text;
-
-  if (pane == "PaneInfo")
-  {
-    if (!stc->is_visual())
-    {
-      text << stc->get_current_line() + 1 << "," << stc->get_line_count();
-    }
-    else if (stc->GetCurrentPos() == 0)
-    {
-      text << stc->get_line_count();
-    }
-    else
-    {
-      const auto line = stc->get_current_line() + 1;
-      const auto pos =
-        stc->GetCurrentPos() + 1 - stc->PositionFromLine(line - 1);
-      int start, end;
-
-      stc->GetSelection(&start, &end);
-
-      if (const int len = end - start; len == 0)
-      {
-        text << line << "," << pos;
-      }
-      else
-      {
-        if (stc->SelectionIsRectangle())
-        {
-          text << line << "," << pos << "," << stc->GetSelectedText().length();
-        }
-        else
-        {
-          if (const auto number_of_lines =
-                get_number_of_lines(stc->get_selected_text());
-              number_of_lines <= 1)
-            text << line << "," << pos << "," << len;
-          else
-            text << line << "," << number_of_lines << "," << len;
-        }
-      }
-    }
-  }
-  else if (pane == "PaneLexer")
-  {
-    if (!lexers::get()->theme().empty())
-    {
-      text << stc->get_lexer().display_lexer();
-    }
-  }
-  else if (pane == "PaneFileType")
-  {
-    switch (stc->GetEOLMode())
-    {
-      case wxSTC_EOL_CRLF:
-        text << "DOS";
-        break;
-      case wxSTC_EOL_CR:
-        text << "Mac";
-        break;
-      case wxSTC_EOL_LF:
-        text << "Unix";
-        break;
-      default:
-        assert(0);
-    }
-  }
-  else if (pane == "PaneMode")
-  {
-    text << stc->get_vi().mode().str();
-  }
-  else
-  {
-    return false;
-  }
-
-  return statustext(text.str(), pane);
+  show_ex_bar(SHOW_BAR_SYNC_CLOSE_ALL);
 }

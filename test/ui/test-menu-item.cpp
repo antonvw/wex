@@ -2,14 +2,14 @@
 // Name:      test-menu-item.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/file-history.h>
-#include <wex/managed-frame.h>
 #include <wex/menu-item.h>
 #include <wex/menu.h>
+
+#include "test.h"
 
 TEST_CASE("wex::menu_item")
 {
@@ -46,7 +46,7 @@ TEST_CASE("wex::menu_item")
 
   SUBCASE("constructor VCS")
   {
-    REQUIRE(wex::menu_item(wex::path()).type() == wex::menu_item::VCS);
+    REQUIRE(wex::menu_item(wex::path(), frame()).type() == wex::menu_item::VCS);
   }
 
   SUBCASE("constructor HISTORY")

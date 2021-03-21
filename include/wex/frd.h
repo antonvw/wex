@@ -133,6 +133,9 @@ namespace wex
     /// Sets flags for search down.
     void set_search_down(bool value);
 
+    /// Returns wx frd.
+    auto* wx() const { return m_frd; };
+
   private:
     find_replace_data();
 

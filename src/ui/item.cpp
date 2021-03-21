@@ -2,7 +2,7 @@
 // Name:      item.cpp
 // Purpose:   Implementation of wex::item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
@@ -41,7 +41,6 @@
 #include <wex/listview.h>
 #include <wex/log.h>
 #include <wex/notebook.h>
-#include <wex/stc.h>
 #include <wex/tocontainer.h>
 #include <wex/util.h>
 
@@ -160,7 +159,6 @@ wex::item::item(
     case NOTEBOOK_WEX:
     case RADIOBOX:
     case STATICBOX:
-    case STC:
       m_is_row_growable = true;
       m_sizer_flags.Expand();
       break;
@@ -790,28 +788,6 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
       ((wxStaticText*)m_window)->SetLabelMarkup(m_label_window);
       break;
 
-    case STC:
-      m_window = new stc(
-        std::string(),
-        data::stc()
-          .menu(data::stc::menu_t()
-                  .set(data::stc::MENU_CONTEXT)
-                  .set(data::stc::MENU_OPEN_LINK)
-                  .set(data::stc::MENU_VCS))
-          .window(data::window(m_data.window()).parent(parent)));
-
-      // Do not use vi mode, as ESC should cancel the dialog,
-      // and would not be interpreted by vi.
-      ((stc*)m_window)->get_vi().use(false);
-
-      if (m_data.initial().has_value())
-      {
-        ((stc*)m_window)
-          ->get_lexer()
-          .set(std::any_cast<std::string>(m_data.initial()));
-      }
-      break;
-
     case TEXTCTRL:
     case TEXTCTRL_FLOAT:
     case TEXTCTRL_INT:
@@ -1015,10 +991,6 @@ const std::any wex::item::get_value() const
       case STATICBOX:
       case STATICLINE:
       case STATICTEXT:
-        break;
-
-      case STC:
-        any = ((wxStyledTextCtrl*)m_window)->GetValue().ToStdString();
         break;
 
       case TEXTCTRL:
@@ -1254,11 +1226,6 @@ bool wex::item::set_value(const std::any& value) const
 
       case SPINCTRLDOUBLE:
         ((wxSpinCtrlDouble*)m_window)->SetValue(std::any_cast<double>(value));
-        break;
-
-      case STC:
-        ((wxStyledTextCtrl*)m_window)
-          ->SetValue(std::any_cast<std::string>(value));
         break;
 
       case TEXTCTRL:

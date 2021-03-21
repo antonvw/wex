@@ -11,7 +11,7 @@
 
 namespace wex
 {
-  namespace core
+  namespace factory
   {
     class stc;
   };
@@ -39,7 +39,7 @@ namespace wex
       size_t len = std::string::npos);
 
     /// Sorts selected text on specified component, returns true if sorted ok.
-    bool selection(core::stc* stc);
+    bool selection(factory::stc* stc);
 
     /// Sorts specified input, returns string with sorted text.
     const std::string string(
@@ -53,8 +53,8 @@ namespace wex
     template <typename T>
     const std::string get_lines(std::vector<std::string>& lines, T it);
 
-    bool selection_block(core::stc* stc);
-    bool selection_other(core::stc* stc);
+    bool selection_block(factory::stc* stc);
+    bool selection_other(factory::stc* stc);
 
     const sort_t m_sort_t{0};
     size_t       m_len, m_pos;

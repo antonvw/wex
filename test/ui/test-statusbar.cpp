@@ -2,16 +2,12 @@
 // Name:      test-statusbar.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include "../test.h"
-#include <wex/managed-frame.h>
 #include <wex/statusbar.h>
+
+#include "test.h"
 
 TEST_CASE("wex::statusbar")
 {

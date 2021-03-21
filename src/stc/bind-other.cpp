@@ -8,10 +8,10 @@
 #include <boost/algorithm/string.hpp>
 #include <vector>
 #include <wex/config.h>
-#include <wex/debug.h>
+#include <wex/debug-entry.h>
 #include <wex/frd.h>
 #include <wex/log.h>
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 #include <wex/menu.h>
 #include <wex/stc-bind.h>
 #include <wex/stc.h>
@@ -251,7 +251,9 @@ void wex::stc::key_action(wxKeyEvent& event)
     event.Skip();
   }
 
-  if (event.GetUnicodeKey() == '>' && m_lexer.scintilla_lexer() == "hypertext")
+  if (
+    event.GetUnicodeKey() == '>' &&
+    get_lexer().scintilla_lexer() == "hypertext")
   {
     hypertext(this);
   }
@@ -295,9 +297,9 @@ void wex::stc::margin_action(wxStyledTextEvent& event)
   }
   else if (event.GetMargin() == m_margin_divider_number)
   {
-    if (m_frame->get_debug() != nullptr && m_frame->get_debug()->is_active())
+    if (m_frame->debug_is_active())
     {
-      m_frame->get_debug()->toggle_breakpoint(line, this);
+      m_frame->debug_toggle_breakpoint(line, this);
       m_skip = true;
     }
     else
@@ -325,11 +327,10 @@ void wex::stc::mouse_action(wxMouseEvent& event)
       m_fold_level   = get_fold_level();
 
       if (
-        !m_skip && m_frame->get_debug() != nullptr &&
-        m_frame->get_debug()->is_active() &&
+        !m_skip && m_frame->debug_is_active() &&
         matches_one_of(
           get_filename().extension(),
-          m_frame->get_debug()->debug_entry().extensions()))
+          m_frame->debug_entry()->extensions()))
       {
         const auto& word =
           (!GetSelectedText().empty() ? GetSelectedText().ToStdString() :
@@ -337,7 +338,7 @@ void wex::stc::mouse_action(wxMouseEvent& event)
 
         if (!word.empty() && isalnum(word[0]))
         {
-          m_frame->get_debug()->print(word);
+          m_frame->debug_print(word);
         }
       }
 

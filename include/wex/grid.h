@@ -7,22 +7,22 @@
 
 #pragma once
 
+#include <wex/factory/grid.h>
 #include <wex/menu.h>
 #include <wex/window-data.h>
-#include <wx/grid.h>
 
 namespace wex
 {
   /// Offers popup menu with copy/paste, printing.
   /// It also offers drag/drop functionality.
-  class grid : public wxGrid
+  class grid : public factory::grid
   {
   public:
     /// Default constructor.
     grid(const data::window& data = data::window().style(wxWANTS_CHARS));
 
     /// Destructor.
-    virtual ~grid() { ; };
+    virtual ~grid() = default;
 
     /// Copy from selected cells.
     bool copy_selected_cells_to_clipboard() const;

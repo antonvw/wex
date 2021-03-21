@@ -17,7 +17,7 @@
 #include <wex/ex.h>
 #include <wex/frd.h>
 #include <wex/log.h>
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 #include <wex/path.h>
 #include <wex/regex.h>
 #include <wex/stc.h>
@@ -90,9 +90,9 @@ namespace wex
     return entry.name;
   }
 
-  frame* get_frame()
+  auto* get_frame()
   {
-    return dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
+    return dynamic_cast<frame*>(wxTheApp->GetTopWindow());
   }
 
   void set_image(const tagEntry& entry, wex::image_access_t& image)
@@ -156,7 +156,7 @@ namespace wex
     const std::string name() const { return tag_name(m_path); };
 
     // Opens file in specified frame.
-    auto open_file(frame* frame) const
+    auto open_file(factory::frame* frame) const
     {
       return frame->open_file(
         m_path,

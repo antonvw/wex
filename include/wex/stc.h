@@ -10,11 +10,12 @@
 #include <bitset>
 #include <vector>
 #include <wex/auto-complete.h>
+#include <wex/dir-data.h>
+#include <wex/factory/stc.h>
 #include <wex/hexmode.h>
 #include <wex/item.h>
 #include <wex/marker.h>
 #include <wex/path.h>
-#include <wex/stc-core.h>
 #include <wex/stc-data.h>
 #include <wex/stc-file.h>
 #include <wex/vi.h>
@@ -27,10 +28,15 @@ namespace wex
   class item_dialog;
   class lexer;
   class link;
-  class managed_frame;
+  class frame;
   class menu;
   class path;
   class vcs_entry;
+
+  namespace factory
+  {
+    class frame;
+  };
 
   /// Offers a styled text ctrl with:
   /// - lexer support (syntax colouring, folding)
@@ -38,7 +44,7 @@ namespace wex
   /// - find/replace
   /// - popup menu
   /// - printing
-  class stc : public core::stc
+  class stc : public factory::stc
   {
   public:
     /// Static interface
@@ -141,9 +147,6 @@ namespace wex
     /// Returns associated data.
     const auto& data() const { return m_data; };
 
-    /// Returns current line number.
-    int get_current_line() const;
-
     /// Returns vi component.
     const ex& get_ex() const;
 
@@ -164,11 +167,6 @@ namespace wex
     /// Returns the file.
     auto& get_file() { return m_file; };
 
-    /// Returns find string, from selected text or from config.
-    /// The search flags are taken from frd.
-    /// If text is selected, it also sets the find string.
-    const std::string get_find_string();
-
     /// Returns current line fold level.
     int get_fold_level();
 
@@ -181,16 +179,6 @@ namespace wex
     /// Returns writable hex mode component.
     auto& get_hexmode() { return m_hexmode; };
 
-    /// Returns the lexer.
-    const auto& get_lexer() const { return m_lexer; };
-
-    /// Returns the lexer.
-    auto& get_lexer() { return m_lexer; };
-
-    /// Returns line on which text margin was clicked,
-    /// or -1 if not.
-    auto get_margin_text_click() const { return m_margin_text_click; };
-
     /// Returns text.
     const std::string get_text() const;
 
@@ -202,9 +190,6 @@ namespace wex
 
     /// Returns word at position.
     const std::string get_word_at_pos(int pos) const;
-
-    // Inserts text at pos.
-    void insert_text(int pos, const std::string& text);
 
     /// Returns true if line numbers are shown.
     bool is_shown_line_numbers() const
@@ -221,24 +206,6 @@ namespace wex
     /// Deletes all change markers.
     /// Returns false if marker change is not loaded.
     bool marker_delete_all_change();
-
-    /// Opens the file, reads the content into the window,
-    /// then closes the file and sets the lexer.
-    bool open(const path& filename, const data::stc& data = data::stc());
-
-    /// Restores saved position.
-    /// Returns true if position was saved before.
-    bool position_restore();
-
-    /// Saves position.
-    void position_save();
-
-    /// Prints the document.
-    void print(bool prompt = true);
-
-    /// Shows a print preview.
-    void
-    print_preview(wxPreviewFrameModalityKind kind = wxPreviewFrame_AppModal);
 
     /// Replaces all text.
     /// It there is a selection, it replaces in the selection, otherwise
@@ -270,19 +237,12 @@ namespace wex
       /// argument passed on to find_next
       bool stc_find_string = true);
 
-    /// Sets the text.
-    void set_text(const std::string& value);
-
     /// Shows blame info for vcs in the text margin.
     /// Returns true if info was added.
     bool show_blame(const vcs_entry* vcs);
 
     /// Shows or hides line numbers.
     void show_line_numbers(bool show);
-
-    /// Starts or stops syncing.
-    /// Default syncing is started during construction.
-    void sync(bool start = true);
 
     /// Use and show modification markers in the margin.
     /// If you open a file, the modification markers are used.
@@ -291,25 +251,46 @@ namespace wex
     /// Sets using visual vi (on) or ex mode (!on).
     void visual(bool on);
 
-    /// Virtual methods from core.
+    /// Virtual methods from factory.
 
     bool find(
       const std::string& text,
       int                find_flags = -1,
       bool               find_next  = true) override;
-    void        fold(bool fold_all = false) override;
+    void              fold(bool fold_all = false) override;
+    int               get_current_line() const override;
+    const ex_command& get_ex_command() const override
+    {
+      return m_vi->get_command();
+    };
     const path& get_filename() const override { return m_file.get_filename(); };
-    int         get_line_count() const override;
-    int         get_line_count_request() override;
-    void        goto_line(int line) override;
-    bool        is_hexmode() const override { return m_hexmode.is_active(); };
-    bool        is_visual() const override { return m_visual; };
-    void        properties_message(path::status_t flags = 0) override;
-    void        reset_margins(margin_t type = margin_t().set()) override;
-    bool        set_hexmode(bool on) override { return get_hexmode().set(on); };
+    const std::string get_find_string() override;
+    int               get_line_count() const override;
+    int               get_line_count_request() override;
+    int  get_margin_text_click() const override { return m_margin_text_click; };
+    void goto_line(int line) override;
+    void insert_text(int pos, const std::string& text) override;
+    bool is_hexmode() const override { return m_hexmode.is_active(); };
+    bool is_visual() const override { return m_visual; };
+    bool
+    open(const path& filename, const data::stc& data = data::stc()) override;
+    bool position_restore() override;
+    void position_save() override;
+    void print(bool prompt = true) override;
+    void print_preview(
+      wxPreviewFrameModalityKind kind = wxPreviewFrame_AppModal) override;
+    void properties_message(path::status_t flags = 0) override;
+    void reset_margins(margin_t type = margin_t().set()) override;
+    bool set_hexmode(bool on) override { return get_hexmode().set(on); };
     bool set_indicator(const indicator& indicator, int start, int end) override;
     void set_search_flags(int flags) override;
+    void set_text(const std::string& value) override;
+    void sync(bool start = true) override;
     bool vi_command(const std::string& command) override;
+    void vi_record(const std::string& command) override;
+    std::string vi_register(char c) const override;
+    int vi_search_flags() const override { return m_vi->search_flags(); };
+    const std::string vi_mode() const override;
 
     // These methods are not yet available in scintilla, create stubs
     // (for the vi MOTION macro).
@@ -382,15 +363,10 @@ namespace wex
 
     bool m_adding_chars{false}, m_skip{false}, m_visual{true};
 
-    managed_frame* m_frame;
+    frame* m_frame;
 
     class auto_complete m_auto_complete;
     hexmode             m_hexmode;
-
-    // We use a separate lexer here as well
-    // (though stc_file offers one), as you can manually override
-    // the lexer.
-    lexer m_lexer;
 
     data::stc m_data;
     stc_file  m_file;
@@ -406,4 +382,16 @@ namespace wex
     static inline int                m_zoom          = -1;
     static inline std::vector<item>* m_config_items  = nullptr;
   };
+
+  /// Shows a dialog and opens selected files
+  /// (calls open_files).
+  void open_files_dialog(
+    /// frame
+    factory::frame* frame,
+    /// flags to be used with file_dialog
+    bool ask_for_continue = false,
+    /// data to be used with open_file
+    const data::stc& data = data::stc(),
+    /// flags to be used with open_file_dir
+    data::dir::type_t type = data::dir::type_t().set());
 }; // namespace wex

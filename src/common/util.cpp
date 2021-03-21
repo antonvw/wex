@@ -10,23 +10,23 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wex/blame.h>
 #include <wex/config.h>
+#include <wex/core.h>
 #include <wex/dir.h>
-#include <wex/ex.h>
+#include <wex/factory/frame.h>
+#include <wex/factory/process.h>
+#include <wex/factory/stc.h>
 #include <wex/file-dialog.h>
 #include <wex/lexer.h>
 #include <wex/lexers.h>
 #include <wex/link.h>
 #include <wex/log.h>
-#include <wex/macros.h>
-#include <wex/managed-frame.h>
 #include <wex/path.h>
-#include <wex/process-core.h>
 #include <wex/regex.h>
-#include <wex/stc.h>
 #include <wex/tostring.h>
 #include <wex/util.h>
-#include <wex/vcs.h>
+#include <wex/vcs-command.h>
 #include <wx/app.h>
 #include <wx/wupdlock.h>
 
@@ -41,7 +41,7 @@ namespace wex
     /// Constructor.
     open_file_dir(const path& path, const data::dir& data);
 
-    static void set(frame* fr, data::stc::window_t ft)
+    static void set(factory::frame* fr, data::stc::window_t ft)
     {
       m_flags = ft;
       m_frame = fr;
@@ -52,7 +52,7 @@ namespace wex
     bool on_file(const path& file) override;
 
   private:
-    static inline frame*              m_frame = nullptr;
+    static inline factory::frame*     m_frame = nullptr;
     static inline data::stc::window_t m_flags{0};
   };
 }; // namespace wex
@@ -91,7 +91,7 @@ bool wex::compare_file(const path& file1, const path& file2)
         (file1.stat().st_mtime < file2.stat().st_mtime) ?
           "\"" + file1.string() + "\" \"" + file2.string() + "\"" :
           "\"" + file2.string() + "\" \"" + file1.string() + "\"";
-      core::process().system(
+      factory::process().system(
         config(_("list.Comparator")).get() + " " + arguments) != 0)
   {
     return false;
@@ -105,7 +105,7 @@ bool wex::compare_file(const path& file1, const path& file2)
 
 bool wex::make(const path& makefile)
 {
-  auto* process = new wex::process;
+  auto* process = new wex::factory::process;
 
   return process->async_system(
     config("Make").get("make") + " " + config("MakeSwitch").get("-f") + " " +
@@ -114,7 +114,7 @@ bool wex::make(const path& makefile)
 }
 
 int wex::open_files(
-  frame*                   frame,
+  factory::frame*          frame,
   const std::vector<path>& files,
   const data::stc&         stc,
   data::dir::type_t        type)
@@ -176,64 +176,13 @@ int wex::open_files(
   return count;
 }
 
-void wex::open_files_dialog(
-  frame*            frame,
-  bool              ask_for_continue,
-  const data::stc&  data,
-  data::dir::type_t type)
-{
-  wxArrayString     paths;
-  const std::string caption(_("Select Files"));
-  bool              hexmode;
-
-  if (auto* stc = frame->get_stc(); stc != nullptr)
-  {
-    file_dialog dlg(
-      &stc->get_file(),
-      data::window(data.window()).title(caption));
-
-    if (ask_for_continue)
-    {
-      if (dlg.show_modal_if_changed(true) == wxID_CANCEL)
-        return;
-    }
-    else
-    {
-      if (dlg.ShowModal() == wxID_CANCEL)
-        return;
-    }
-
-    dlg.GetPaths(paths);
-    hexmode = dlg.is_hexmode();
-  }
-  else
-  {
-    file_dialog dlg(data::window(data.window()).title(caption));
-
-    if (dlg.ShowModal() == wxID_CANCEL)
-      return;
-
-    dlg.GetPaths(paths);
-    hexmode = dlg.is_hexmode();
-  }
-
-  open_files(
-    frame,
-    to_vector_path(paths).get(),
-    hexmode ? data::stc(data).flags(
-                data::stc::window_t().set(data::stc::WIN_HEX),
-                data::control::OR) :
-              data,
-    type);
-}
-
 bool wex::shell_expansion(std::string& command)
 {
   regex r("`(.*?)`"); // non-greedy
 
   while (r.search(command) > 0)
   {
-    if (process process; process.system(r[0]) != 0)
+    if (factory::process process; process.system(r[0]) != 0)
     {
       return false;
     }
@@ -246,7 +195,7 @@ bool wex::shell_expansion(std::string& command)
   return true;
 }
 
-bool wex::lexers_dialog(stc* stc)
+bool wex::lexers_dialog(factory::stc* stc)
 {
   wxArrayString s;
 
@@ -271,7 +220,7 @@ bool wex::lexers_dialog(stc* stc)
 void wex::vcs_command_stc(
   const vcs_command& command,
   const lexer&       lexer,
-  stc*               stc)
+  factory::stc*      stc)
 {
   if (command.is_blame())
   {
@@ -294,46 +243,10 @@ void wex::vcs_command_stc(
   }
 }
 
-void wex::vcs_execute(frame* frame, int id, const std::vector<path>& files)
-{
-  if (files.empty())
-    return;
-
-  if (vcs vcs(files, id); vcs.entry().get_command().is_open())
-  {
-    if (vcs.show_dialog() == wxID_OK)
-    {
-      for (const auto& it : files)
-      {
-        if (wex::vcs vcs({it}, id); vcs.execute())
-        {
-          if (!vcs.entry().get_stdout().empty())
-          {
-            frame->open_file(it, vcs.entry());
-          }
-          else if (!vcs.entry().get_stderr().empty())
-          {
-            log() << vcs.entry().get_stderr();
-          }
-          else
-          {
-            log::status("No output");
-            log::debug("no output from") << vcs.entry().get_exe();
-          }
-        }
-      }
-    }
-  }
-  else
-  {
-    vcs.request();
-  }
-}
-
 void wex::xml_error(
   const path&                   filename,
   const pugi::xml_parse_result* result,
-  stc*                          stc)
+  factory::stc*                 stc)
 {
   log::status("Xml error") << result->description();
   log(*result) << filename.name();
@@ -341,16 +254,17 @@ void wex::xml_error(
   // prevent recursion
   if (stc == nullptr && filename != lexers::get()->get_filename())
   {
-    if (auto* frame = dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
+    if (auto* frame =
+          dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
         frame != nullptr)
     {
-      stc = frame->open_file(filename);
+      stc = frame->open_file(filename, data::stc());
     }
   }
 
   if (stc != nullptr && result->offset != 0)
   {
-    stc->get_vi().command("gg");
-    stc->get_vi().command(std::to_string(result->offset) + "|");
+    stc->vi_command("gg");
+    stc->vi_command(std::to_string(result->offset) + "|");
   }
 }

@@ -2,7 +2,7 @@
 // Name:      dir.h
 // Purpose:   Declaration of class wex::data::dir
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -33,25 +33,41 @@ namespace wex::data
     const auto& dir_spec() const { return m_dir_spec; };
 
     /// Sets dir specs.
-    dir& dir_spec(const std::string& rhs);
+    dir& dir_spec(const std::string& rhs)
+    {
+      m_dir_spec = rhs;
+      return *this;
+    }
 
     /// Returns the file spec.
     const auto& file_spec() const { return m_file_spec; };
 
     /// Sets file specs.
-    dir& file_spec(const std::string& rhs);
+    dir& file_spec(const std::string& rhs)
+    {
+      m_file_spec = rhs;
+      return *this;
+    }
 
     /// Returns max matches to find, or -1 if no max.
     int max_matches() const { return m_max_matches; };
 
     /// Sets max matches.
-    dir& max_matches(int rhs);
+    dir& max_matches(int rhs)
+    {
+      m_max_matches = rhs;
+      return *this;
+    }
 
     /// Returns type.
     auto type() const { return m_flags; };
 
     /// Sets type.
-    dir& type(type_t rhs);
+    dir& type(type_t rhs)
+    {
+      m_flags = rhs;
+      return *this;
+    }
 
   private:
     int         m_max_matches{-1};

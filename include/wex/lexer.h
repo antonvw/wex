@@ -20,7 +20,7 @@ namespace pugi
 
 namespace wex
 {
-  namespace core
+  namespace factory
   {
     class stc;
   };
@@ -35,8 +35,8 @@ namespace wex
     /// Default constructor.
     lexer(const std::string& lexer = std::string());
 
-    /// Constructor using core stc.
-    lexer(core::stc* stc);
+    /// Constructor using factory stc.
+    lexer(factory::stc* stc);
 
     /// Constructor using xml node.
     lexer(const pugi::xml_node* node);
@@ -204,11 +204,11 @@ namespace wex
     std::vector<std::tuple<
       std::string,
       int,
-      std::function<void(core::stc* stc, int attrib)>>>
+      std::function<void(factory::stc* stc, int attrib)>>>
       m_attribs;
 
     bool m_is_ok{false}, m_previewable{false};
 
-    core::stc* m_stc{nullptr};
+    factory::stc* m_stc{nullptr};
   };
 }; // namespace wex

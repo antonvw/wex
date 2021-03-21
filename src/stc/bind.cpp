@@ -8,18 +8,17 @@
 #include <boost/tokenizer.hpp>
 #include <numeric>
 #include <vector>
-#include <wex/accelerators.h>
 #include <wex/beautify.h>
 #include <wex/bind.h>
 #include <wex/config.h>
-#include <wex/debug.h>
+#include <wex/debug-entry.h>
 #include <wex/defs.h>
 #include <wex/frd.h>
 #include <wex/item-vector.h>
 #include <wex/lexer-props.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 #include <wex/menu.h>
 #include <wex/path.h>
 #include <wex/sort.h>
@@ -28,6 +27,7 @@
 #include <wex/stc.h>
 #include <wex/util.h>
 #include <wex/vcs.h>
+#include <wx/accel.h>
 #include <wx/msgdlg.h>
 #include <wx/numdlg.h>
 
@@ -173,7 +173,8 @@ namespace wex
 
 void wex::stc::bind_all()
 {
-  accelerators(
+  m_frame->bind_accelerators(
+    this,
     {{wxACCEL_CTRL, 'D', id::stc::hex_dec_calltip},
      {wxACCEL_CTRL, 'K', ID_EDIT_CONTROL_CHAR},
      {wxACCEL_CTRL, 'Y', wxID_REDO},
@@ -194,8 +195,7 @@ void wex::stc::bind_all()
      {wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE},
      {wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE},
      {wxACCEL_SHIFT, WXK_DELETE, wxID_CUT}},
-    m_data.menu().test(data::stc::MENU_DEBUG))
-    .set(this);
+    m_data.menu().test(data::stc::MENU_DEBUG));
 
   bind(this).command(
     {{[=, this](wxCommandEvent& event) {
@@ -263,9 +263,7 @@ void wex::stc::bind_all()
       wxID_SORT_ASCENDING},
 
      {[=, this](wxCommandEvent& event) {
-        m_frame->get_debug()->execute(
-          event.GetId() - ID_EDIT_DEBUG_FIRST,
-          this);
+        m_frame->debug_exe(event.GetId() - ID_EDIT_DEBUG_FIRST, this);
       },
       ID_EDIT_DEBUG_FIRST},
 
@@ -496,16 +494,16 @@ void wex::stc::build_popup_menu(menu& menu)
     m_data.menu().test(data::stc::MENU_DEBUG) &&
     matches_one_of(
       get_filename().extension(),
-      m_frame->get_debug()->debug_entry().extensions()))
+      m_frame->debug_entry()->extensions()))
   {
-    m_frame->get_debug()->add_menu(&menu, true);
+    m_frame->debug_add_menu(menu, true);
   }
 
   if (
     m_data.menu().test(data::stc::MENU_VCS) && get_filename().file_exists() &&
     vcs::dir_exists(get_filename()))
   {
-    menu.append({{}, {get_filename()}});
+    menu.append({{}, {get_filename(), m_frame}});
   }
 
   if (!get_ex().is_active() && GetTextLength() > 0)
@@ -561,7 +559,7 @@ void wex::stc::build_popup_menu(menu& menu)
 
   if (
     !GetReadOnly() && sel.empty() && beautify_add &&
-    beautify().is_supported(m_lexer))
+    beautify().is_supported(get_lexer()))
   {
     menu.append({{}, {id::stc::beautify, _("&Beautify")}});
   }
@@ -569,8 +567,8 @@ void wex::stc::build_popup_menu(menu& menu)
   // Folding if nothing selected, property is set,
   // and we have a lexer.
   if (
-    sel.empty() && GetProperty("fold") == "1" && m_lexer.is_ok() &&
-    !m_lexer.scintilla_lexer().empty())
+    sel.empty() && GetProperty("fold") == "1" && get_lexer().is_ok() &&
+    !get_lexer().scintilla_lexer().empty())
   {
     menu.append(
       {{},
@@ -754,8 +752,8 @@ void wex::stc::show_properties()
         return a + l.make_key(b.name(), GetProperty(b.name()));
       }) +
     std::accumulate(
-      m_lexer.properties().begin(),
-      m_lexer.properties().end(),
+      get_lexer().properties().begin(),
+      get_lexer().properties().end(),
       std::string(),
       [this, l](const std::string& a, const property& b) {
         return a + l.make_key(b.name(), GetProperty(b.name()));

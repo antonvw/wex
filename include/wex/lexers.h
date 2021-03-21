@@ -22,7 +22,7 @@ class wxWindow;
 
 namespace wex
 {
-  namespace core
+  namespace factory
   {
     class stc;
   };
@@ -62,7 +62,7 @@ namespace wex
     /// other methods
 
     /// Applies containers (except global styles) to specified component.
-    void apply(core::stc* stc) const;
+    void apply(factory::stc* stc) const;
 
     /// Applies default style to functions for back and foreground colours.
     void apply_default_style(
@@ -71,7 +71,7 @@ namespace wex
 
     /// Sets global styles (and colours and indicators)
     /// for current theme for specified component.
-    void apply_global_styles(core::stc* stc);
+    void apply_global_styles(factory::stc* stc);
 
     /// Applies macro to text:
     /// if text is referring to a macro, text is replaced by the macro value.
@@ -84,7 +84,7 @@ namespace wex
     /// If text is supplied also sets margin text.
     void apply_margin_text_style(
       /// stc component
-      core::stc* stc,
+      factory::stc* stc,
       /// line no
       int line,
       /// style type

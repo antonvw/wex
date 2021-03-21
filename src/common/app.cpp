@@ -12,19 +12,13 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wex/addressrange.h>
 #include <wex/app.h>
 #include <wex/config.h>
 #include <wex/core.h>
-#include <wex/ctags.h>
-#include <wex/ex.h>
 #include <wex/frd.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
-#include <wex/macros.h>
 #include <wex/printing.h>
-#include <wex/stc.h>
-#include <wex/vcs.h>
 #include <wex/version.h>
 #include <wx/stdpaths.h>
 
@@ -38,10 +32,6 @@ int wex::app::OnExit()
 
   try
   {
-    addressrange::on_exit();
-    ctags::close();
-    stc::on_exit();
-
     config::on_exit();
 
     log::info("exit");
@@ -121,10 +111,6 @@ bool wex::app::OnInit()
   wxInitAllImageHandlers();
 
   wxTheClipboard->UsePrimarySelection(true);
-
-  stc::on_init();
-  vcs::load_document();
-  ex::get_macros().load_document();
 
   return true; // do not call base class: we have our own cmd line processing
 }

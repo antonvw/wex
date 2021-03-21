@@ -5,30 +5,30 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/factory/stc.h>
 #include <wex/indicator.h>
 #include <wex/log.h>
 #include <wex/path.h>
-#include <wex/stc-core.h>
 #include <wex/stc-data.h>
 
-wex::data::stc::stc(wex::core::stc* stc)
+wex::data::stc::stc(wex::factory::stc* stc)
   : m_stc(stc)
 {
 }
 
-wex::data::stc::stc(wex::core::stc* stc, const data::stc& r)
+wex::data::stc::stc(wex::factory::stc* stc, const data::stc& r)
   : m_stc(stc)
 {
   *this = r;
 }
 
-wex::data::stc::stc(data::control& data, wex::core::stc* stc)
+wex::data::stc::stc(data::control& data, wex::factory::stc* stc)
   : m_data(data)
   , m_stc(stc)
 {
 }
 
-wex::data::stc::stc(data::window& data, wex::core::stc* stc)
+wex::data::stc::stc(data::window& data, wex::factory::stc* stc)
   : m_data(data::control().window(data))
   , m_stc(stc)
 {
@@ -117,8 +117,6 @@ bool wex::data::stc::inject() const
 
       m_stc->SetCurrentPos(asked < max ? asked : max);
 
-      // Reset selection, seems necessary.
-      m_stc->SelectNone();
       return true;
     },
     [&]() {
@@ -208,7 +206,7 @@ wex::data::stc::menu(menu_t flags, data::control::action_t action)
   return *this;
 }
 
-void wex::data::stc::event_data::set(core::stc* s, bool synced)
+void wex::data::stc::event_data::set(factory::stc* s, bool synced)
 {
   if (s == nullptr)
   {

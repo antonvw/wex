@@ -12,7 +12,7 @@
 
 namespace wex
 {
-  namespace core
+  namespace factory
   {
     class listview;
   };
@@ -56,16 +56,16 @@ namespace wex
       typedef std::bitset<2> menu_t;
 
       /// Default constructor.
-      listview(core::listview* lv = nullptr);
+      listview(factory::listview* lv = nullptr);
 
       /// Copy constructor.
-      listview(core::listview* lv, const data::listview& r);
+      listview(factory::listview* lv, const data::listview& r);
 
       /// Constructor from control data.
-      listview(data::control& data, core::listview* lv = nullptr);
+      listview(data::control& data, factory::listview* lv = nullptr);
 
       /// Constructor from window data.
-      listview(data::window& data, core::listview* lv = nullptr);
+      listview(data::window& data, factory::listview* lv = nullptr);
 
       /// Assignment operator.
       listview& operator=(const data::listview& r);
@@ -129,7 +129,7 @@ namespace wex
       menu_t m_menu_flags = menu_t().set();
 
       const wex::lexer* m_lexer    = nullptr;
-      core::listview*   m_listview = nullptr;
+      factory::listview*   m_listview = nullptr;
 
       image_t m_image_type = IMAGE_ART;
       type_t  m_type       = NONE;

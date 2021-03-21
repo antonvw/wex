@@ -40,7 +40,7 @@ wex::notebook::notebook(const data::window& data)
       data.size(),
       data.style() == data::NUMBER_NOT_SET ? wxAUI_NB_DEFAULT_STYLE :
                                              data.style())
-  , m_frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
+  , m_frame(dynamic_cast<frame*>(wxTheApp->GetTopWindow()))
 {
   config_get();
 

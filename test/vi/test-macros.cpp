@@ -5,10 +5,10 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
-#include <wex/stc.h>
+
+#include "test.h"
 
 #define ESC "\x1b"
 

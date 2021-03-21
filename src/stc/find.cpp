@@ -11,12 +11,12 @@
 #include <wex/find-data.h>
 #include <wex/frd.h>
 #include <wex/log.h>
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 #include <wex/stc.h>
 
 namespace wex
 {
-  bool find_margin(data::find& f, frame* frame)
+  bool find_margin(data::find& f, factory::frame* frame)
   {
     if (int line = 0; f.find_margin(line))
     {
@@ -33,7 +33,7 @@ namespace wex
     return false;
   }
 
-  bool find_other(const vi& vi, data::find& f, frame* frame)
+  bool find_other(const vi& vi, data::find& f, factory::frame* frame)
   {
     f.stc()->SetTargetRange(f.start_pos(), f.end_pos());
 

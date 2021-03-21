@@ -7,12 +7,10 @@
 
 #include <wex/config.h>
 #include <wex/core.h>
-#include <wex/ex.h>
+#include <wex/factory/stc.h>
 #include <wex/frd.h>
 #include <wex/log.h>
-#include <wex/macros.h>
-#include <wex/managed-frame.h>
-#include <wex/stc.h>
+#include <wex/frame.h>
 #include <wex/textctrl.h>
 #include <wx/control.h>
 #include <wx/settings.h>
@@ -58,11 +56,9 @@ wex::textctrl_imp::textctrl_imp(
         break;
 
       case WXK_TAB:
-        if (
-          m_tc->ex() != nullptr &&
-          m_tc->ex()->get_stc()->get_filename().file_exists())
+        if (m_tc->stc() != nullptr && m_tc->stc()->get_filename().file_exists())
         {
-          path::current(m_tc->ex()->get_stc()->get_filename().get_path());
+          path::current(m_tc->stc()->get_filename().get_path());
         }
 
         if (const auto& [r, e, v] = auto_complete_filename(m_command.command());
@@ -84,14 +80,14 @@ wex::textctrl_imp::textctrl_imp(
 
           if (c == '%')
           {
-            if (m_tc->ex() != nullptr)
+            if (m_tc->stc() != nullptr)
             {
-              event.SetString(m_tc->ex()->get_stc()->get_filename().fullname());
+              event.SetString(m_tc->stc()->get_filename().fullname());
             }
           }
           else
           {
-            event.SetString(ex::get_macros().get_register(c));
+            event.SetString(m_tc->stc()->vi_register(c));
           }
 
           if (!event.GetString().empty())
@@ -219,14 +215,14 @@ wex::textctrl_imp::textctrl_imp(
           Clear();
           m_command = ex_command(":");
         }
-        else if (m_tc->ex() != nullptr)
+        else if (m_tc->stc() != nullptr)
         {
-          m_tc->ex()->get_stc()->position_restore();
+          m_tc->stc()->position_restore();
         }
 
         if (!is_ex_mode())
         {
-          m_tc->frame()->show_ex_bar(managed_frame::HIDE_BAR_FORCE_FOCUS_STC);
+          m_tc->get_frame()->show_ex_bar(frame::HIDE_BAR_FORCE_FOCUS_STC);
         }
 
         m_control_r  = false;
@@ -252,9 +248,9 @@ wex::textctrl_imp::textctrl_imp(
   Bind(wxEVT_SET_FOCUS, [=, this](wxFocusEvent& event) {
     event.Skip();
 
-    if (m_tc->ex() != nullptr)
+    if (m_tc->stc() != nullptr)
     {
-      m_tc->ex()->get_stc()->position_save();
+      m_tc->stc()->position_save();
     }
   });
 
@@ -267,13 +263,13 @@ wex::textctrl_imp::textctrl_imp(
     }
 
     if (
-      m_user_input && m_tc->ex() != nullptr &&
+      m_user_input && m_tc->stc() != nullptr &&
       m_command.type() == ex_command::type_t::FIND)
     {
-      m_tc->ex()->get_stc()->position_restore();
-      m_tc->ex()->get_stc()->find(
+      m_tc->stc()->position_restore();
+      m_tc->stc()->find(
         get_text(),
-        m_tc->ex()->search_flags(),
+        m_tc->stc()->vi_search_flags(),
         m_command.str() == "/");
     }
   });
@@ -285,30 +281,30 @@ wex::textctrl_imp::textctrl_imp(
   Bind(wxEVT_TEXT_ENTER, [=, this](wxCommandEvent& event) {
     if (get_text().empty())
     {
-      if (m_tc->ex() == nullptr)
+      if (m_tc->stc() == nullptr)
       {
-        log::debug("no ex");
+        log::debug("no stc");
         return;
       }
 
       if (is_ex_mode())
       {
         m_command.reset();
-        m_tc->ex()->command(":.+1");
+        m_tc->stc()->vi_command(":.+1");
         SetFocus();
       }
       else
       {
-        m_tc->frame()->show_ex_bar(managed_frame::HIDE_BAR_FORCE_FOCUS_STC);
+        m_tc->get_frame()->show_ex_bar(frame::HIDE_BAR_FORCE_FOCUS_STC);
       }
       return;
     }
 
     if (
       m_user_input && m_command.type() == ex_command::type_t::FIND &&
-      m_tc->ex() != nullptr)
+      m_tc->stc() != nullptr)
     {
-      m_tc->ex()->get_macros().record(m_command.str() + get_text());
+      m_tc->stc()->vi_record(m_command.str() + get_text());
     }
 
     if (input_mode_finish())
@@ -317,12 +313,11 @@ wex::textctrl_imp::textctrl_imp(
             m_command.command().substr(1, m_command.size() - 3));
           m_command.command() != ":." && !text.empty())
       {
-        m_tc->ex()->command(
-          ":" + std::string(1, m_input) + "|" + text +
-          m_tc->ex()->get_stc()->eol());
+        m_tc->stc()->vi_command(
+          ":" + std::string(1, m_input) + "|" + text + m_tc->stc()->eol());
       }
 
-      m_tc->frame()->show_ex_bar();
+      m_tc->get_frame()->show_ex_bar();
     }
     else if (m_input != 0)
     {
@@ -334,8 +329,8 @@ wex::textctrl_imp::textctrl_imp(
     {
       int focus =
         (m_command.type() == ex_command::type_t::FIND ?
-           managed_frame::HIDE_BAR_FORCE_FOCUS_STC :
-           managed_frame::HIDE_BAR_FOCUS_STC);
+           frame::HIDE_BAR_FORCE_FOCUS_STC :
+           frame::HIDE_BAR_FOCUS_STC);
 
       if (m_command.type() == ex_command::type_t::FIND)
       {
@@ -345,18 +340,19 @@ wex::textctrl_imp::textctrl_imp(
       {
         TCI().set(m_tc);
 
-        if (m_command.type() == ex_command::type_t::COMMAND ||
+        if (
+          m_command.type() == ex_command::type_t::COMMAND ||
           m_command.type() == ex_command::type_t::COMMAND_EX)
         {
           if (
             get_text() == "gt" || get_text() == "n" || get_text() == "prev" ||
             get_text().starts_with("ta"))
           {
-            focus = managed_frame::HIDE_BAR_FORCE;
+            focus = frame::HIDE_BAR_FORCE;
           }
           else if (get_text().starts_with("!"))
           {
-            focus = managed_frame::HIDE_BAR;
+            focus = frame::HIDE_BAR;
           }
         }
       }
@@ -370,7 +366,7 @@ wex::textctrl_imp::textctrl_imp(
 
       if (m_input == 0 && !is_ex_mode())
       {
-        m_tc->frame()->show_ex_bar(focus);
+        m_tc->get_frame()->show_ex_bar(focus);
       }
     }
   });
@@ -445,9 +441,9 @@ bool wex::textctrl_imp::handle(const std::string& command)
 
   m_user_input = false;
 
-  if (m_tc->ex() != nullptr)
+  if (m_tc->stc() != nullptr)
   {
-    m_command = ex_command(m_tc->ex()->get_command()).set(command);
+    m_command = ex_command(m_tc->stc()->get_ex_command()).set(command);
   }
   else
   {
@@ -458,7 +454,7 @@ bool wex::textctrl_imp::handle(const std::string& command)
   m_mode_visual = !range.empty();
   m_control_r   = false;
 
-  m_tc->frame()->pane_set(
+  m_tc->get_frame()->pane_set(
     "VIBAR",
     wxAuiPaneInfo().BestSize(-1, GetFont().GetPixelSize().GetHeight() + 10));
 
@@ -498,11 +494,10 @@ bool wex::textctrl_imp::handle(const std::string& command)
       break;
 
     case ex_command::type_t::FIND:
-      if (m_tc->ex() != nullptr)
+      if (m_tc->stc() != nullptr)
       {
         set_text(
-          !m_mode_visual ? m_tc->ex()->get_stc()->get_find_string() :
-                           std::string());
+          !m_mode_visual ? m_tc->stc()->get_find_string() : std::string());
       }
       else
       {
@@ -531,7 +526,7 @@ bool wex::textctrl_imp::handle(char command)
 
   m_command.reset();
 
-  m_tc->frame()->pane_set(
+  m_tc->get_frame()->pane_set(
     "VIBAR",
     wxAuiPaneInfo().BestSize(
       -1,
@@ -555,8 +550,8 @@ bool wex::textctrl_imp::input_mode_finish() const
 
 bool wex::textctrl_imp::is_ex_mode() const
 {
-  return m_tc->ex() != nullptr && m_tc->ex()->get_stc() != nullptr &&
-         !m_tc->ex()->get_stc()->is_visual();
+  return m_tc->stc() != nullptr && m_tc->stc() != nullptr &&
+         !m_tc->stc()->is_visual();
 }
 
 void wex::textctrl_imp::set_text(const std::string& text)

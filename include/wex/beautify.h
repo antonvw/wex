@@ -37,7 +37,7 @@ namespace wex
 
     /// Beautifies the specified stc component.
     /// Return false if it did not succeed.
-    bool stc(stc& s) const;
+    bool stc(wex::stc& s) const;
 
   private:
     /// Returns the actual beautifier, or empty string if none

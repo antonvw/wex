@@ -9,7 +9,7 @@
 
 #include <list>
 #include <map>
-#include <wex/listview-core.h>
+#include <wex/factory/listview.h>
 #include <wex/listview-data.h>
 #include <wx/artprov.h> // for wxArtID
 
@@ -19,13 +19,23 @@ namespace wex
   class item_dialog;
   class menu;
 
+  namespace factory
+  {
+    class frame;
+  };
+
   /// Adds printing, popup menu, images, columns and items to wxListView.
   /// Allows for sorting on any column.
   /// Adds some standard lists, all these lists
   /// have items associated with files or folders.
-  class listview : public core::listview
+  class listview : public factory::listview
   {
   public:
+    /// Shows a dialog with options, returns dialog return code.
+    /// If used modeless, it uses the dialog id as specified,
+    /// so you can use that id in frame::on_command_item_dialog.
+    static int config_dialog(const data::window& data = data::window());
+
     /// Default constructor.
     listview(const data::listview& data = data::listview());
 
@@ -48,11 +58,6 @@ namespace wex
 
     /// Clears all items.
     void clear();
-
-    /// Shows a dialog with options, returns dialog return code.
-    /// If used modeless, it uses the dialog id as specified,
-    /// so you can use that id in frame::on_command_item_dialog.
-    static int config_dialog(const data::window& data = data::window());
 
     /// Sets the configurable parameters to values currently in config.
     void config_get();
@@ -86,12 +91,6 @@ namespace wex
 
     /// Loads listview from list.
     bool load(const std::list<std::string>& l);
-
-    /// Prints the list.
-    void print();
-
-    /// Previews the list.
-    void print_preview();
 
     /// Saves listview to list.
     const std::list<std::string> save() const;
@@ -133,10 +132,12 @@ namespace wex
     /// Returns current sorted column no.
     int sorted_column_no() const { return m_sorted_column_no; };
 
-    /// Virtual methods from core.
+    /// Virtual methods.
 
     bool append_columns(const std::vector<column>& cols) override;
     bool find_next(const std::string& text, bool find_next = true) override;
+    void print() override;
+    void print_preview() override;
 
   protected:
     /// Virtual interface
@@ -180,7 +181,7 @@ namespace wex
     std::map<wxArtID, unsigned int> m_art_ids;
     std::vector<column>             m_columns;
 
-    class frame* m_frame;
+    factory::frame* m_frame;
 
     static inline item_dialog* m_config_dialog = nullptr;
   };

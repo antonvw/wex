@@ -2,18 +2,18 @@
 // Name:      test-textctrl-input.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
-#include <wex/managed-frame.h>
 #include <wex/textctrl-input.h>
 #include <wex/textctrl.h>
+
+#include "test.h"
 
 TEST_CASE("wex::textctrl_input")
 {
   auto* tc = new wex::textctrl(frame());
-  wex::test::add_pane(frame(), tc->control());
+  add_pane(frame(), tc->control());
 
   REQUIRE(wex::textctrl_input(wex::ex_command::type_t::NONE).get().empty());
   REQUIRE(wex::textctrl_input(wex::ex_command::type_t::NONE).values().empty());
@@ -49,25 +49,22 @@ TEST_CASE("wex::textctrl_input")
 
   REQUIRE(!tci.set(WXK_NONE, tc));
 
-  tci.set(std::list<std::string>{"1",
-                                 "2",
-                                 "3",
-                                 "4",
-                                 "5",
-                                 "6",
-                                 "7",
-                                 "8",
-                                 "9",
-                                 "10",
-                                 "11",
-                                 "12"});
+  tci.set(std::list<std::string>{
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12"});
 
-  for (auto key : std::vector<int>{WXK_UP,
-                                   WXK_DOWN,
-                                   WXK_HOME,
-                                   WXK_END,
-                                   WXK_PAGEUP,
-                                   WXK_PAGEDOWN})
+  for (auto key : std::vector<
+         int>{WXK_UP, WXK_DOWN, WXK_HOME, WXK_END, WXK_PAGEUP, WXK_PAGEDOWN})
   {
     REQUIRE(tci.set(key, tc));
   }
