@@ -11,6 +11,7 @@
 #include <string>
 #include <wex/app.h>
 #include <wex/path.h>
+#include <wx/platform.h>
 
 namespace wex
 {

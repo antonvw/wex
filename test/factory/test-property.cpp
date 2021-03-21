@@ -5,12 +5,13 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/property.h>
+
+#include "../test.h"
 
 TEST_CASE("wex::property")
 {
-  SUBCASE("Constructor xml")
+  SUBCASE("constructor")
   {
     REQUIRE(!wex::property().is_ok());
 
@@ -23,7 +24,7 @@ TEST_CASE("wex::property")
     REQUIRE(p.is_ok());
   }
 
-  SUBCASE("Constructor name, value")
+  SUBCASE("constructor-2")
   {
     wex::property p("man", "ugly");
 

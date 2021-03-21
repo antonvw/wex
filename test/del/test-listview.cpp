@@ -2,13 +2,14 @@
 // Name:      test-listview.cpp
 // Purpose:   Implementation for wex del unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "test.h"
-#include <wex/listitem.h>
 #include <wex/del/defs.h>
 #include <wex/del/listview.h>
+#include <wex/listitem.h>
+
+#include "test.h"
 
 TEST_CASE("wex::del::listview")
 {
@@ -18,8 +19,8 @@ TEST_CASE("wex::del::listview")
       wex::del::listview::type_tool(wex::tool(wex::ID_TOOL_REPORT_FIND)) ==
       wex::data::listview::FIND);
     REQUIRE(
-      wex::del::listview::type_tool(wex::tool(
-        wex::ID_TOOL_REPORT_KEYWORD)) == wex::data::listview::KEYWORD);
+      wex::del::listview::type_tool(wex::tool(wex::ID_TOOL_REPORT_KEYWORD)) ==
+      wex::data::listview::KEYWORD);
   }
 
   SUBCASE("flow")

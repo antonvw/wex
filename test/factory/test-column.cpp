@@ -5,12 +5,13 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/factory/listview.h>
+
+#include "../test.h"
 
 TEST_CASE("wex::column")
 {
-  SUBCASE("default constructor")
+  SUBCASE("constructor")
   {
     wex::column c;
     REQUIRE(c.GetText().empty());
@@ -21,7 +22,7 @@ TEST_CASE("wex::column")
     REQUIRE(c.is_sorted_ascending());
   }
 
-  SUBCASE("constructor")
+  SUBCASE("constructor-2")
   {
     wex::column c("hello");
     REQUIRE(c.GetText() == "hello");

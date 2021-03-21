@@ -2,12 +2,13 @@
 // Name:      test-vcsentry.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/defs.h>
 #include <wex/vcs-entry.h>
+
+#include "../test.h"
 
 TEST_SUITE_BEGIN("wex::vcs");
 

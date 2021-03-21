@@ -1,13 +1,14 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-del::file.cpp
+// Name:      test-listview-file.cpp
 // Purpose:   Implementation for wex del unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "test.h"
-#include <wex/dir.h>
 #include <wex/del/listview-file.h>
+#include <wex/dir.h>
+
+#include "test.h"
 
 TEST_CASE("wex::del::file")
 {

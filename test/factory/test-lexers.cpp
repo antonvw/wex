@@ -2,22 +2,22 @@
 // Name:      test-lexers.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/lexers.h>
-#include <wex/path.h>
+
+#include "../test.h"
 
 TEST_CASE("wex::lexers")
 {
-  SUBCASE("Get")
+  SUBCASE("get")
   {
     REQUIRE(wex::lexers::get() != nullptr);
     REQUIRE(!wex::lexers::get()->get_lexers().empty());
   }
 
-  SUBCASE("lexer and global macros")
+  SUBCASE("apply_macro")
   {
     for (const auto& macro : std::vector<
            std::pair<std::pair<std::string, std::string>, std::string>>{
@@ -35,9 +35,9 @@ TEST_CASE("wex::lexers")
     }
   }
 
-  SUBCASE("Properties") { REQUIRE(wex::lexers::get()->properties().empty()); }
+  SUBCASE("properties") { REQUIRE(wex::lexers::get()->properties().empty()); }
 
-  SUBCASE("FindBy")
+  SUBCASE("findBy")
   {
     REQUIRE(
       wex::lexers::get()
@@ -70,7 +70,7 @@ TEST_CASE("wex::lexers")
     }
   }
 
-  SUBCASE("Rest")
+  SUBCASE("rest")
   {
     REQUIRE(!wex::lexers::get()->get_filename().empty());
 

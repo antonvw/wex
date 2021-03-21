@@ -5,14 +5,15 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/indicator.h>
+
+#include "../test.h"
 
 TEST_CASE("wex::indicator")
 {
-  SUBCASE("Default constructor") { REQUIRE(!wex::indicator().is_ok()); }
+  SUBCASE("constructor") { REQUIRE(!wex::indicator().is_ok()); }
 
-  SUBCASE("Constructor using no, symbol")
+  SUBCASE("constructor-2")
   {
     wex::indicator indx(5, 2);
     wex::indicator indy(7, 5);
@@ -30,7 +31,7 @@ TEST_CASE("wex::indicator")
     REQUIRE(wex::indicator(5, 1) != wex::indicator(5, 2));
   }
 
-  SUBCASE("Constructor xml")
+  SUBCASE("constructor-3")
   {
     pugi::xml_document     doc;
     pugi::xml_parse_result result =
@@ -50,7 +51,7 @@ TEST_CASE("wex::indicator")
     REQUIRE(ind.is_ok());
   }
 
-  SUBCASE("Constructor xml invalid no")
+  SUBCASE("constructor-4")
   {
     pugi::xml_document doc;
     REQUIRE(doc.load_string("<indicator no = \"x\"></indicator>"));

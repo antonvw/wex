@@ -5,8 +5,9 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/config.h>
+
+#include "../test.h"
 
 TEST_CASE("wex::config")
 {
@@ -29,8 +30,9 @@ TEST_CASE("wex::config")
 
   SUBCASE("getters")
   {
-    const wex::config::statusbar_t sb{{"one", {"normal"}, 2},
-                                      {"two", {"flat"}, 4}};
+    const wex::config::statusbar_t sb{
+      {"one", {"normal"}, 2},
+      {"two", {"flat"}, 4}};
 
     REQUIRE(wex::config("x").get(4) == 4);
     REQUIRE(wex::config("xcvb").get(4) == 4);
@@ -76,8 +78,9 @@ TEST_CASE("wex::config")
     wex::config("y").erase();
     REQUIRE(!wex::config("y").exists());
 
-    const wex::config::statusbar_t sb{{"three", {"normal"}, 2},
-                                      {"four", {"flat"}, 4}};
+    const wex::config::statusbar_t sb{
+      {"three", {"normal"}, 2},
+      {"four", {"flat"}, 4}};
 
     REQUIRE(!std::get<0>(wex::config("sbs").get(sb)[0]).empty());
     wex::config("sbs").set(sb);
