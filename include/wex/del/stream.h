@@ -78,10 +78,9 @@ namespace wex::del
     };
 
     /// Check whether specified text result in a comment.
-    comment_t   check_for_comment(const std::string& text);
-    void        comment_statement_end();
-    void        comment_statement_start();
-    std::string context(const std::string& line, int pos) const;
+    comment_t check_for_comment(const std::string& text);
+    void      comment_statement_end();
+    void      comment_statement_start();
 
     // Overridden methods from stream.
 
@@ -92,11 +91,9 @@ namespace wex::del
     process_match(const std::string& line, size_t line_no, int pos) override;
 
     static inline wex::listview* m_report = nullptr;
-    static inline del::frame* m_frame  = nullptr;
+    static inline del::frame*    m_frame  = nullptr;
 
     bool m_is_comment_statement{false}, m_is_string{false};
-
-    int m_context_size;
 
     syntax_t m_last_syntax_type{SYNTAX_NONE}, m_syntax_type{SYNTAX_NONE};
   };

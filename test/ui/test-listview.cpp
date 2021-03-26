@@ -17,7 +17,7 @@
 TEST_CASE("wex::listview")
 {
   auto* lv = new wex::listview();
-  add_pane(frame(), lv);
+  frame()->pane_add(lv);
 
   SUBCASE("general")
   {
@@ -139,7 +139,7 @@ TEST_CASE("wex::listview")
   {
     auto* lv =
       new wex::listview(wex::data::listview().type(wex::data::listview::TSV));
-    add_pane(frame(), lv);
+    frame()->pane_add(lv);
 
     REQUIRE(lv->GetColumnCount() == 0);
     REQUIRE(lv->data().type() == wex::data::listview::TSV);

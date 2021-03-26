@@ -36,7 +36,7 @@ namespace wex
     {
     public:
       /// Destructor.
-      ~frame() override;
+      virtual ~frame() = default;
 
       /// Virtual interface
 

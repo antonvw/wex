@@ -44,11 +44,11 @@ TEST_CASE("wex::grid_statistics")
   REQUIRE(statistics1->GetNumberRows() == 2);
   REQUIRE(statistics1->get_keys().size() == 2);
   REQUIRE(grid1 != nullptr);
-  add_pane(frame(), grid1);
+  frame()->pane_add(grid1);
 
   auto* grid2 = statistics2->show();
   REQUIRE(statistics2->get_keys().size() == 2);
-  add_pane(frame(), grid2);
+  frame()->pane_add(grid2);
 
   REQUIRE(statistics1->show() == grid1);
   REQUIRE(statistics2->set("xx", 10) == 10);

@@ -108,7 +108,7 @@ TEST_CASE("wex::link")
     link(lnk, "test-special.h:10:2", special, 10, 2);
   }
 
-  SUBCASE("http link")
+  SUBCASE("http")
   {
     wex::link lnk;
     wex::config(_("stc.link.Include directory"))
@@ -137,8 +137,13 @@ TEST_CASE("wex::link")
       lnk.get_path("some text [https://github.com/wxWidgets]", data).data() ==
       "https://github.com/wxWidgets");
     REQUIRE(lnk.get_path("httpd = new httpd", data).empty());
+  }
 
-    // MIME file
+  SUBCASE("mime")
+  {
+    wex::link lnk;
+
+    wex::data::control data;
     data.line(wex::link::LINE_OPEN_MIME);
     stc->get_file().file_new("test.html");
     REQUIRE(lnk.get_path("www.wxwidgets.org", data).data().empty());
@@ -147,6 +152,18 @@ TEST_CASE("wex::link")
 
     data.line(-99);
     REQUIRE(lnk.get_path("xx", data, stc).empty());
+  }
+
+  SUBCASE("shell")
+  {
+    wex::link lnk;
+    wex::config(_("stc.link.Include directory"))
+      .set(std::list<std::string>{{"/usr/bin"}});
+
+    wex::data::control data;
+    stc->get_file().file_new("test.sh");
+    REQUIRE(
+      lnk.get_path("source whoami", data, stc).data() == "/usr/bin/whoami");
   }
 }
 #endif

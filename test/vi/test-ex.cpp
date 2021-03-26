@@ -21,7 +21,7 @@ TEST_SUITE_BEGIN("wex::ex");
 void modeline_from_file(const std::string& name)
 {
   auto*             stc = new wex::stc(wex::path(name));
-  const std::string pane(add_pane(frame(), stc));
+  const std::string pane(frame()->pane_add(stc));
 
   const int id_start = wxWindow::NewControlId();
   auto*     timer    = new wxTimer(frame(), id_start);
@@ -47,7 +47,7 @@ TEST_CASE("wex::ex")
     {
       const std::string modeline("set ts=120 ec=40 sy=sql sw=4 nu el");
       auto*             stc = new wex::stc(std::string("-- vi: " + modeline));
-      add_pane(frame(), stc);
+      frame()->pane_add(stc);
 
       REQUIRE(stc->get_vi().is_active());
       REQUIRE(stc->GetTabWidth() == 120);

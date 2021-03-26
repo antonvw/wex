@@ -34,9 +34,6 @@ namespace wex
       const std::string&  value = std::string(),
       const data::window& data  = data::window());
 
-    /// Destructor.
-    ~textctrl();
-
     /// Returns the control window for the component.
     wxControl* control();
 
@@ -48,6 +45,9 @@ namespace wex
 
     /// Get string value.
     const std::string get_text() const;
+
+    /// Destroys the implementation.
+    void on_exit();
 
     /// Selects all text.
     void select_all() const;
@@ -65,7 +65,7 @@ namespace wex
 
   private:
     wex::factory::stc* m_stc{nullptr};
-    frame*  m_frame;
+    frame*             m_frame;
     textctrl_imp*      m_imp;
   };
 }; // namespace wex

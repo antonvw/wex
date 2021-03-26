@@ -17,7 +17,7 @@ TEST_CASE("wex::del::frame")
   auto* list =
     new wex::listview(wex::data::listview().type(wex::data::listview::HISTORY));
 
-  add_pane(del_frame(), list);
+  del_frame()->pane_add(list);
 
   auto* menu = new wex::menu();
   del_frame()->use_file_history_list(list);
@@ -25,7 +25,7 @@ TEST_CASE("wex::del::frame")
   list->Show();
 
   del_frame()->set_find_focus(get_stc());
-  
+
   REQUIRE(((wex::frame*)del_frame())->open_file(wex::test::get_path("test.h")));
   REQUIRE(
     del_frame()->file_history().get_history_file().string().find("../test.h") ==

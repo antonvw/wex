@@ -13,10 +13,6 @@
 
 #include "../test.h"
 
-/// Adds managed pane.
-/// Returns name of pane.
-const std::string add_pane(wex::frame* frame, wxWindow* pane);
-
 std::vector<std::string> get_builtin_variables();
 
 /// Returns the frame.

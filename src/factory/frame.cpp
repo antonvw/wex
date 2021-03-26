@@ -32,12 +32,6 @@
   classname* cl  = dynamic_cast<classname*>(win);                \
   return cl;
 
-wex::factory::frame::~frame()
-{
-  config("show.MenuBar")
-    .set(GetMenuBar() != nullptr && GetMenuBar()->IsShown());
-}
-
 wex::factory::grid* wex::factory::frame::get_grid()
 {
   wxCAST_TO(wex::factory::grid);

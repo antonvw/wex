@@ -13,7 +13,7 @@
 TEST_CASE("wex::textctrl_input")
 {
   auto* tc = new wex::textctrl(frame());
-  add_pane(frame(), tc->control());
+  frame()->pane_add(tc->control());
 
   REQUIRE(wex::textctrl_input(wex::ex_command::type_t::NONE).get().empty());
   REQUIRE(wex::textctrl_input(wex::ex_command::type_t::NONE).values().empty());

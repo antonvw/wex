@@ -13,7 +13,7 @@ TEST_CASE("wex::auto_complete" * doctest::may_fail())
 {
   auto* stc = new wex::stc(wex::test::get_path("test.h"));
   stc->SetFocus();
-  add_pane(frame(), stc);
+  frame()->pane_add(stc);
   wex::auto_complete ac(stc);
 
   ac.use(true);

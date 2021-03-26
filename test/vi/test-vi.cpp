@@ -309,7 +309,7 @@ TEST_CASE("wex::vi")
   {
     auto* stc = new wex::stc(std::string("// 	vim: set ts=120 "
                                          "// this is a modeline"));
-    add_pane(frame(), stc);
+    frame()->pane_add(stc);
     REQUIRE(stc->GetTabWidth() == 120);
     REQUIRE(vi->mode().is_command());
   }

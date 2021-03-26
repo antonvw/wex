@@ -158,7 +158,7 @@ TEST_CASE("wex::ex_command")
   SUBCASE("handle")
   {
     auto* tc = new wxTextCtrl(frame(), wxID_ANY);
-    add_pane(frame(), tc);
+    frame()->pane_add(tc);
 
     tc->SetValue("hello");
     tc->SetInsertionPointEnd();

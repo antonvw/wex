@@ -20,7 +20,7 @@ TEST_CASE("wex::hexmode")
     wex::data::stc().flags(
       wex::data::stc::window_t().set(wex::data::stc::WIN_HEX)));
 
-  add_pane(frame(), stc);
+  frame()->pane_add(stc);
   REQUIRE(stc->get_text() != "0123456789");
 
   stc->SetCurrentPos(48); // 0 <-

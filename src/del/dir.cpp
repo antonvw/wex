@@ -6,9 +6,9 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/listitem.h>
 #include <wex/del/dir.h>
 #include <wex/del/stream.h>
+#include <wex/listitem.h>
 
 wex::del::dir::dir(
   wex::listview*   listview,

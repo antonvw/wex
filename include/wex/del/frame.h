@@ -8,6 +8,7 @@
 #pragma once
 
 #include <set>
+#include <wex/del/defs.h>
 #include <wex/file-history.h>
 #include <wex/frame.h>
 #include <wex/listview.h>
@@ -37,9 +38,6 @@ namespace wex::del
       size_t              maxFiles    = 9,
       size_t              maxProjects = 0,
       const data::window& data = data::window().style(wxDEFAULT_FRAME_STYLE));
-
-    /// Destructor, cleans up static data.
-    ~frame() override;
 
     /// Virtual interface
 
@@ -113,7 +111,7 @@ namespace wex::del
 
     /// Starts or stops syncing.
     /// Default syncing is started during construction.
-    void sync(bool start = true);
+    void sync(bool start);
 
     /// Updates project history.
     void set_recent_project(const path& path)
@@ -172,6 +170,9 @@ namespace wex::del
 
     listview*          m_file_history_listview{nullptr};
     class file_history m_project_history;
+
+    static inline constexpr int id_find_in_files    = ID_FREE_LOWEST;
+    static inline constexpr int id_replace_in_files = ID_FREE_LOWEST + 1;
 
     const std::string m_text_in_files{_("fif.In files")},
       m_text_in_folder{_("fif.In folder")},

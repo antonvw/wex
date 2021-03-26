@@ -51,7 +51,7 @@ bool wex::test::stc::OnInit()
 
   process::prepare_output(m_frame);
 
-  add_pane(m_frame, m_stc);
+  m_frame->pane_add(m_stc);
 
   return true;
 }

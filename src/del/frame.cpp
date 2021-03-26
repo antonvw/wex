@@ -7,6 +7,7 @@
 
 #include <thread>
 #include <wex/wex.h>
+#include <wx/window.h>
 
 namespace wex
 {
@@ -59,7 +60,7 @@ wex::del::frame::frame(
     f,
     data::window()
       .button(wxAPPLY | wxCANCEL)
-      .id(ID_FIND_IN_FILES)
+      .id(id_find_in_files)
       .title(_("Find In Files"))
       .style(wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxSTAY_ON_TOP));
 
@@ -75,14 +76,21 @@ wex::del::frame::frame(
        m_text_recursive}}},
     data::window()
       .button(wxAPPLY | wxCANCEL)
-      .id(ID_REPLACE_IN_FILES)
+      .id(id_replace_in_files)
       .title(_("Replace In Files"))
       .style(wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxSTAY_ON_TOP));
 
-  sync();
+  sync(true);
 
   Bind(wxEVT_CLOSE_WINDOW, [=, this](wxCloseEvent& event) {
     m_project_history.save();
+    stc::on_exit();
+    addressrange::on_exit();
+    ctags::close();
+    config("show.MenuBar")
+      .set(GetMenuBar() != nullptr && GetMenuBar()->IsShown());
+    delete m_debug;
+
     event.Skip();
   });
 
@@ -91,10 +99,8 @@ wex::del::frame::frame(
         m_is_command = true;
 
         // :e [+command] [file]
-        if (!event.GetString().empty())
+        if (std::string text(event.GetString()); !text.empty())
         {
-          std::string text(event.GetString());
-
           if (auto* stc = dynamic_cast<wex::stc*>(get_stc()); stc != nullptr)
           {
             wex::path::current(stc->get_filename().get_path());
@@ -126,24 +132,7 @@ wex::del::frame::frame(
         }
       },
       wxID_OPEN},
-     {[=, this](wxCommandEvent& event) {
-        SetMenuBar(GetMenuBar() != nullptr ? nullptr : m_menubar);
-      },
-      ID_VIEW_MENUBAR},
-     {[=, this](wxCommandEvent& event) {
-        SetWindowStyleFlag(
-          !(GetWindowStyleFlag() & wxCAPTION) ?
-            wxDEFAULT_FRAME_STYLE :
-            GetWindowStyleFlag() & ~wxCAPTION);
-        Refresh();
-      },
-      ID_VIEW_TITLEBAR}});
 
-  bind(this).command(
-    {{[=, this](wxCommandEvent& event) {
-        find_replace_data::get()->set_find_strings(std::list<std::string>{});
-      },
-      ID_CLEAR_FINDS},
      {[=, this](wxCommandEvent& event) {
         stc::config_dialog(data::window()
                              .id(wxID_PREFERENCES)
@@ -152,10 +141,22 @@ wex::del::frame::frame(
                              .button(wxAPPLY | wxOK | wxCANCEL));
       },
       wxID_PREFERENCES},
+
+     {[=, this](wxCommandEvent& event) {
+        find_replace_data::get()->set_find_strings(std::list<std::string>{});
+      },
+      ID_CLEAR_FINDS},
+
      {[=, this](wxCommandEvent& event) {
         file_history().clear();
       },
       ID_CLEAR_FILES},
+
+     {[=, this](wxCommandEvent& event) {
+        m_project_history.clear();
+      },
+      ID_CLEAR_PROJECTS},
+
      {[=, this](wxCommandEvent& event) {
         if (auto* stc = dynamic_cast<wex::stc*>(get_stc()); stc != nullptr)
         {
@@ -169,13 +170,8 @@ wex::del::frame::frame(
           }
         }
       },
-      ID_FIND_FIRST}});
+      ID_FIND_FIRST},
 
-  bind(this).command(
-    {{[=, this](wxCommandEvent& event) {
-        m_project_history.clear();
-      },
-      ID_CLEAR_PROJECTS},
      {[=, this](wxCommandEvent& event) {
         if (auto* project = get_project(); project != nullptr)
         {
@@ -183,27 +179,13 @@ wex::del::frame::frame(
         }
       },
       ID_PROJECT_SAVE},
-     {[=, this](wxCommandEvent& event) {
-        if (!event.GetString().empty())
-        {
-          grep(event.GetString());
-        }
-        else if (m_fif_dialog != nullptr)
-        {
-          if (get_stc() != nullptr && !get_stc()->get_find_string().empty())
-          {
-            m_fif_dialog->reload();
-          }
-          m_fif_dialog->Show();
-        }
-      },
-      ID_TOOL_REPORT_FIND},
+
      {[=, this](wxCommandEvent& event) {
         if (!event.GetString().empty())
         {
           sed(event.GetString());
         }
-        else if (m_rif_dialog != nullptr)
+        else
         {
           if (get_stc() != nullptr && !get_stc()->get_find_string().empty())
           {
@@ -212,7 +194,38 @@ wex::del::frame::frame(
           m_rif_dialog->Show();
         }
       },
-      ID_TOOL_REPLACE}});
+      ID_TOOL_REPLACE},
+
+     {[=, this](wxCommandEvent& event) {
+        if (!event.GetString().empty())
+        {
+          grep(event.GetString());
+        }
+        else
+        {
+          if (get_stc() != nullptr && !get_stc()->get_find_string().empty())
+          {
+            m_fif_dialog->reload();
+          }
+
+          m_fif_dialog->Show();
+        }
+      },
+      ID_TOOL_REPORT_FIND},
+
+     {[=, this](wxCommandEvent& event) {
+        SetMenuBar(GetMenuBar() != nullptr ? nullptr : m_menubar);
+      },
+      ID_VIEW_MENUBAR},
+
+     {[=, this](wxCommandEvent& event) {
+        SetWindowStyleFlag(
+          !(GetWindowStyleFlag() & wxCAPTION) ?
+            wxDEFAULT_FRAME_STYLE :
+            GetWindowStyleFlag() & ~wxCAPTION);
+        Refresh();
+      },
+      ID_VIEW_TITLEBAR}});
 
   Bind(
     wxEVT_MENU,
@@ -224,15 +237,6 @@ wex::del::frame::frame(
     },
     m_project_history.get_base_id(),
     m_project_history.get_base_id() + m_project_history.get_max_files());
-}
-
-wex::del::frame::~frame()
-{
-  stc::on_exit();
-  addressrange::on_exit();
-  ctags::close();
-
-  delete m_debug;
 }
 
 const std::string find_replace_string(bool replace)
@@ -338,48 +342,40 @@ std::list<std::string> wex::del::frame::default_extensions() const
 
 void wex::del::frame::find_in_files(wxWindowID dialogid)
 {
-  const bool      replace = (dialogid == ID_REPLACE_IN_FILES);
+  const bool      replace = (dialogid == id_replace_in_files);
   const wex::tool tool    = (replace ? ID_TOOL_REPLACE : ID_TOOL_REPORT_FIND);
 
   if (!stream::setup_tool(tool, this))
     return;
 
-#ifdef __WXMSW__
-  std::thread t([=, this] {
-#endif
-    log::status(find_replace_string(replace));
+  log::status(find_replace_string(replace));
 
-    sync(false);
+  sync(false);
 
-    data::dir::type_t type;
-    type.set(data::dir::FILES);
+  data::dir::type_t type;
+  type.set(data::dir::FILES);
 
-    if (config(m_text_recursive).get(true))
-    {
-      type.set(data::dir::RECURSIVE);
-    }
+  if (config(m_text_recursive).get(true))
+  {
+    type.set(data::dir::RECURSIVE);
+  }
 
-    find_replace_data::get()->set_regex(
-      config(find_replace_data::get()->text_regex()).get(true));
+  find_replace_data::get()->set_regex(
+    config(find_replace_data::get()->text_regex()).get(true));
 
-    if (tool_dir dir(
-          tool,
-          config(m_text_in_folder).get_first_of(),
-          data::dir()
-            .file_spec(config(m_text_in_files).get_first_of())
-            .type(type));
+  if (tool_dir dir(
+        tool,
+        config(m_text_in_folder).get_first_of(),
+        data::dir()
+          .file_spec(config(m_text_in_files).get_first_of())
+          .type(type));
 
-        dir.find_files() >= 0)
-    {
-      log::status(tool.info(&dir.get_statistics().get_elements()));
-    }
+      dir.find_files() >= 0)
+  {
+    log::status(tool.info(&dir.get_statistics().get_elements()));
+  }
 
-    sync();
-
-#ifdef __WXMSW__
-  });
-  t.detach();
-#endif
+  sync(true);
 }
 
 bool wex::del::frame::find_in_files(
@@ -602,8 +598,8 @@ void wex::del::frame::on_command_item_dialog(
           }
           break;
 
-        case ID_FIND_IN_FILES:
-        case ID_REPLACE_IN_FILES:
+        case id_find_in_files:
+        case id_replace_in_files:
           find_in_files(dialogid);
           break;
 

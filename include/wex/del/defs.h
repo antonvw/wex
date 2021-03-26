@@ -11,13 +11,12 @@
 
 namespace wex::del
 {
+  const int FREE_MAX = 30;
+
   // Window event ID's supported by wex report.
   enum
   {
     ID_LOWEST = wex::ID_HIGHEST + 1,
-
-    ID_FIND_IN_FILES,
-    ID_REPLACE_IN_FILES,
 
     ID_LIST_COMPARE,
     ID_LIST_RUN_MAKE,
@@ -28,6 +27,9 @@ namespace wex::del
     ID_TREE_FIND,
     ID_TREE_REPLACE,
     ID_TREE_RUN_MAKE,
+
+    ID_FREE_LOWEST,
+    ID_FREE_HIGHEST = ID_FREE_LOWEST + FREE_MAX,
 
     ID_HIGHEST
   };

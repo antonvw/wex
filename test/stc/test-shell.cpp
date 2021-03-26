@@ -23,7 +23,7 @@ void process(const std::string& str, wex::shell* shell)
 TEST_CASE("wex::shell")
 {
   auto* shell = new wex::shell();
-  add_pane(frame(), shell);
+  frame()->pane_add(shell);
 
   REQUIRE(shell->is_enabled());
 

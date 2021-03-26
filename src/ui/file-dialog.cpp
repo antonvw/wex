@@ -2,7 +2,7 @@
 // Name:      file-dialog.cpp
 // Purpose:   Implementation of wex::file_dialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -77,10 +77,8 @@ wex::file_dialog::file_dialog(wex::file* file, const data::window& data)
       data.wildcard(),
       data.style(),
       data.pos(),
-      data.size())
-  // when compiling under x11 the name is not used as argument,
-  // so outcommented it here.
-  //      name)
+      data.size(),
+      data.name())
   , m_file(file)
 {
   if (

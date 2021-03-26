@@ -2,12 +2,13 @@
 // Name:      test-stream.cpp
 // Purpose:   Implementation for wex del unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "test.h"
-#include <wex/frd.h>
 #include <wex/del/stream.h>
+#include <wex/frd.h>
+
+#include "test.h"
 
 TEST_CASE("wex::del::stream")
 {
@@ -16,7 +17,7 @@ TEST_CASE("wex::del::stream")
   auto* report =
     new wex::listview(wex::data::listview().type(wex::data::listview::FIND));
 
-  add_pane(del_frame(), report);
+  del_frame()->pane_add(report);
 
   wex::find_replace_data::get()->set_find_string("xx");
 

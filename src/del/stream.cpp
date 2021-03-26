@@ -8,13 +8,13 @@
 #include <cctype> // for isspace
 #include <wex/config.h>
 #include <wex/core.h>
-#include <wex/frd.h>
-#include <wex/listitem.h>
-#include <wex/log.h>
 #include <wex/del/defs.h>
 #include <wex/del/frame.h>
 #include <wex/del/listview.h>
 #include <wex/del/stream.h>
+#include <wex/frd.h>
+#include <wex/listitem.h>
+#include <wex/log.h>
 
 wex::del::stream::stream(const path& filename, const tool& tool)
   : wex::stream(filename, tool)
@@ -135,16 +135,6 @@ void wex::del::stream::comment_statement_start()
   m_is_comment_statement = true;
 }
 
-std::string wex::del::stream::context(const std::string& line, int pos) const
-{
-  if (pos == -1 || m_context_size <= 0)
-    return line;
-
-  return (m_context_size > pos ? std::string(m_context_size - pos, ' ') :
-                                 std::string()) +
-         line.substr(m_context_size < pos ? pos - m_context_size : 0);
-}
-
 bool wex::del::stream::process(std::string& line, size_t line_no)
 {
   if (get_tool().id() != ID_TOOL_REPORT_KEYWORD)
@@ -252,8 +242,6 @@ bool wex::del::stream::process(std::string& line, size_t line_no)
 
 bool wex::del::stream::process_begin()
 {
-  m_context_size = config(_("list.Context size")).get(10);
-
   if (get_tool().id() != ID_TOOL_REPORT_KEYWORD)
   {
     return wex::stream::process_begin();
@@ -317,7 +305,7 @@ void wex::del::stream::process_match(
   item.insert();
 
   item.set_item(_("Line No"), std::to_string(line_no + 1));
-  item.set_item(_("Line"), context(line, pos));
+  item.set_item(_("Line"), m_report->context(line, pos));
   item.set_item(_("Match"), find_replace_data::get()->get_find_string());
 }
 

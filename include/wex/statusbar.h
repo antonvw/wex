@@ -53,9 +53,6 @@ namespace wex
       /// - wxSTB_SIZEGRIP
       const data::window& data = data::window().style(wxSTB_DEFAULT_STYLE));
 
-    /// Destructor.
-    ~statusbar();
-
     /// Returns the statusbar_pane representing the n-th pane.
     const statusbar_pane& get_pane(int n) const { return m_panes[n]; }
 

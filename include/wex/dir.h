@@ -50,15 +50,24 @@ namespace wex
 
     /// Finds matching files.
     /// This results in recursive calls for on_dir and on_file.
-    /// Returns number of files matching, or -1 if error.
     int find_files();
 
     /// Returns the path.
     const auto& get_path() const { return m_dir; };
 
+    /// Increments the matches.
+    void match() { m_matches++; };
+
+    /// Returns matches.
+    auto matches() const { return m_matches; };
+
   private:
+    void run();
+
     const path      m_dir;
     const data::dir m_data;
+
+    int m_matches{0};
   };
 
   /// Returns all matching files into a vector of strings (without paths).
