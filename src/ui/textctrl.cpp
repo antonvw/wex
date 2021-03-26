@@ -28,11 +28,6 @@ wex::textctrl::textctrl(
 {
 }
 
-wex::textctrl::~textctrl()
-{
-  delete m_imp;
-}
-
 wxControl* wex::textctrl::control()
 {
   return m_imp;
@@ -41,6 +36,11 @@ wxControl* wex::textctrl::control()
 const std::string wex::textctrl::get_text() const
 {
   return m_imp->get_text();
+}
+
+void wex::textctrl::on_exit()
+{
+  m_imp->Destroy();
 }
 
 void wex::textctrl::select_all() const

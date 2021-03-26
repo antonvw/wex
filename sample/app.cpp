@@ -90,7 +90,7 @@ frame::frame()
          {wxID_EXECUTE},
          {wxID_STOP},
          {},
-         {wxID_EXIT}}),
+         {wex::menu_item::EXIT}}),
       "&File"},
      {new wex::menu(
         {{wxID_UNDO},
@@ -102,7 +102,12 @@ frame::frame()
          {},
          {wxID_JUMP_TO},
          {},
-         {new wex::menu({{wxID_FIND, ""}, {wxID_REPLACE}}),
+         {new wex::menu(
+            {{wxID_FIND},
+             {wxID_REPLACE},
+             {},
+             {wex::ID_TOOL_REPORT_FIND, "Find In Files"},
+             {wex::ID_TOOL_REPLACE, "Replace In Files"}}),
           _("&Find And Replace")}}),
       "&Edit"},
      {new wex::menu({{this}, {ID_STATISTICS_SHOW, "Statistics"}}), "&View"},
@@ -523,7 +528,7 @@ void frame::on_command_item_dialog(
   }
   else
   {
-    wex::frame::on_command_item_dialog(dialogid, event);
+    wex::del::frame::on_command_item_dialog(dialogid, event);
   }
 }
 

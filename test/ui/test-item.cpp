@@ -25,7 +25,7 @@ TEST_SUITE_BEGIN("wex::item");
 TEST_CASE("wex::item")
 {
   auto* panel = new wxScrolledWindow(frame());
-  add_pane(frame(), panel);
+  frame()->pane_add(panel);
   auto* sizer = new wxFlexGridSizer(4);
   panel->SetSizer(sizer);
   panel->SetScrollbars(20, 20, 50, 50);

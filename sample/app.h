@@ -11,7 +11,7 @@
 class app : public wex::app
 {
 private:
-  bool OnInit() override;
+  bool OnInit() final;
 };
 
 class dir : public wex::dir
@@ -23,7 +23,7 @@ public:
     wex::grid*         grid);
 
 private:
-  bool       on_file(const wex::path& file) override;
+  bool       on_file(const wex::path& file) final;
   wex::grid* m_grid;
 };
 
@@ -38,15 +38,14 @@ private:
 
   wex::del::listview* activate(
     wex::data::listview::type_t type,
-    const wex::lexer*           lexer = nullptr) override;
-  bool           allow_close(wxWindowID id, wxWindow* page) override;
-  wex::listview* get_listview() override;
-  wex::stc*      get_stc() override;
-  void
-  on_command_item_dialog(wxWindowID id, const wxCommandEvent& event) override;
+    const wex::lexer*           lexer = nullptr) final;
+  bool           allow_close(wxWindowID id, wxWindow* page) final;
+  wex::listview* get_listview() final;
+  wex::stc*      get_stc() final;
+  void on_command_item_dialog(wxWindowID id, const wxCommandEvent& event) final;
   wex::stc* open_file(
     const wex::path&      file,
-    const wex::data::stc& data = wex::data::stc()) override;
+    const wex::data::stc& data = wex::data::stc()) final;
 
   wex::notebook*             m_notebook;
   wex::stc *                 m_stc, *m_stc_lexers;

@@ -82,11 +82,11 @@ wex::statusbar::statusbar(factory::frame* parent, const data::window& data)
 {
   // The statusbar is not managed by Aui, so show/hide it explicitly.
   Show(config("show.StatusBar").get(true));
-}
 
-wex::statusbar::~statusbar()
-{
-  config("show.StatusBar").set(IsShown());
+  Bind(wxEVT_CLOSE_WINDOW, [=, this](wxCloseEvent& event) {
+    config("show.StatusBar").set(IsShown());
+    event.Skip();
+  });
 }
 
 const std::string wex::statusbar::get_statustext(const std::string& pane) const

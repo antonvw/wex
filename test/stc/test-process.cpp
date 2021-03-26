@@ -21,7 +21,7 @@ TEST_CASE("wex::process")
     REQUIRE(wex::process::prepare_output(frame()) != nullptr);
     REQUIRE(wex::process::get_shell() != nullptr);
 
-    add_pane(frame(), wex::process::get_shell());
+    frame()->pane_add(wex::process::get_shell());
     wex::process::get_shell()->set_text(std::string());
   }
 

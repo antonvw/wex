@@ -14,7 +14,7 @@ TEST_CASE("wex::stc_file")
   auto* stc = new wex::stc(wex::test::get_path("test.h"));
   stc->set_text("and still they came");
 
-  add_pane(frame(), stc);
+  frame()->pane_add(stc);
 
   wex::stc_file file(stc);
 

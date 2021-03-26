@@ -20,7 +20,7 @@
 TEST_CASE("wex::to_container")
 {
   auto* cb = new wxComboBox(frame(), wxID_ANY);
-  add_pane(frame(), cb);
+  frame()->pane_add(cb);
 
   wxArrayString a;
   a.Add("x");

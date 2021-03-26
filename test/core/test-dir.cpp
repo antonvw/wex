@@ -5,9 +5,12 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
+#include <wex/bind.h>
+#include <wex/defs.h>
 #include <wex/dir.h>
 #include <wex/log.h>
+
+#include "../test.h"
 
 TEST_CASE("wex::dir")
 {

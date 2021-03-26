@@ -192,6 +192,10 @@ namespace wex
     /// Returns the toolbar.
     auto* get_toolbar() { return m_toolbar; };
 
+    /// Adds a window as a pane, generating a unique name.
+    /// Return the name of the pane.
+    const std::string pane_add(wxWindow* pane);
+
     /// Add panes to the manager.
     /// Returns false if one of the panes could not be added.
     bool pane_add(

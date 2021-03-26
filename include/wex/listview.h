@@ -2,7 +2,7 @@
 // Name:      listview.h
 // Purpose:   Declaration of wex::listview and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -61,6 +61,9 @@ namespace wex
 
     /// Sets the configurable parameters to values currently in config.
     void config_get();
+
+    /// Returns context for a line.
+    std::string context(const std::string& line, int pos) const;
 
     /// Returns associated data.
     const auto& data() const { return m_data; };

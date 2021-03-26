@@ -42,7 +42,7 @@ TEST_CASE("wex::ctags")
     REQUIRE(!wex::ctags::close());
 
     wex::ctags::open("xxx");
-    add_pane(frame(), stc);
+    frame()->pane_add(stc);
     wex::ex* ex = &stc->get_vi();
 
     REQUIRE(!wex::ctags::find("test_app"));
@@ -54,7 +54,7 @@ TEST_CASE("wex::ctags")
     REQUIRE(wex::ctags::close());
 
     wex::ctags::open("test-ctags");
-    add_pane(frame(), stc);
+    frame()->pane_add(stc);
     wex::ex* ex = &stc->get_vi();
 
     REQUIRE(!wex::ctags::find(""));

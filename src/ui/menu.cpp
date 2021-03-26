@@ -72,8 +72,7 @@ size_t wex::menu::append(const std::vector<menu_item>& items)
           {{wxID_EXIT,
             "",
             data::menu().action([=, this](wxCommandEvent& event) {
-              auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
-              frame->Close(true);
+              wxTheApp->GetTopWindow()->Close(true);
             })}});
         break;
 

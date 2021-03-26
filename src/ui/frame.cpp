@@ -183,6 +183,14 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
       ID_VIEW_MENUBAR}});
 
   Bind(wxEVT_CLOSE_WINDOW, [=, this](wxCloseEvent& event) {
+    m_file_history.save();
+    m_textctrl->on_exit();
+
+    if (!m_perspective.empty())
+    {
+      wex::config(m_perspective).set(m_manager.SavePerspective().ToStdString());
+    }
+
     if (IsMaximized())
     {
       config(win_max).set(true);
@@ -198,6 +206,7 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
     }
 
     m_is_closing = true;
+
     event.Skip();
   });
 
@@ -219,17 +228,6 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
     // If this pane is a toolbar pane, it might have a checkbox,
     // update that as well.
     m_optionsbar->set_checkbox(info->name, false);
-  });
-
-  Bind(wxEVT_CLOSE_WINDOW, [=, this](wxCloseEvent& event) {
-    m_file_history.save();
-
-    if (!m_perspective.empty())
-    {
-      wex::config(m_perspective).set(m_manager.SavePerspective().ToStdString());
-    }
-
-    event.Skip();
   });
 
   for (const auto& it : m_toggled_panes)
@@ -383,6 +381,21 @@ wex::frame::open_file(const path& file, const data::stc& data)
   }
 
   return nullptr;
+}
+
+const std::string wex::frame::pane_add(wxWindow* pane)
+{
+  static int no = 0;
+
+  const auto& info(
+    panes() == 5 ? wxAuiPaneInfo().Center() : wxAuiPaneInfo().Bottom());
+
+  const std::string name("PANE " + std::to_string(no++));
+
+  pane_add(
+    {{pane, wxAuiPaneInfo(info).Name(name).MinSize(250, 200).Caption(name)}});
+
+  return name;
 }
 
 bool wex::frame::pane_add(const panes_t& panes, const std::string& perspective)

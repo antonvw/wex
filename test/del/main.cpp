@@ -20,7 +20,7 @@ namespace wex
         lexer lexer("cpp");
         m_report = new listview(
           data::listview().type(data::listview::KEYWORD).lexer(&lexer));
-        add_pane(this, m_report);
+        pane_add(m_report);
       };
 
       listview* activate(

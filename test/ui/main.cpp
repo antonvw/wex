@@ -73,8 +73,7 @@ bool wex::test::ui::OnInit()
      {"LastPane"}});
   m_stc = new ui_stc(m_frame);
   m_frame->Show();
-
-  add_pane(m_frame, m_stc);
+  m_frame->pane_add(m_stc);
 
   return true;
 }

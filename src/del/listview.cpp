@@ -71,10 +71,12 @@ wex::del::listview::listview(const data::listview& data)
         }
       },
       ID_LIST_COMPARE},
+
      {[=, this](wxCommandEvent& event) {
         make(listitem(this, GetFirstSelected()).get_filename());
       },
       ID_LIST_RUN_MAKE},
+
      {[=, this](wxCommandEvent& event) {
         const wex::tool& tool(event.GetId());
         if (
@@ -120,6 +122,7 @@ wex::del::listview::listview(const data::listview& data)
 #endif
       },
       ID_TOOL_LOWEST},
+
      {[=, this](wxCommandEvent& event) {
         std::vector<path> files;
         for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))

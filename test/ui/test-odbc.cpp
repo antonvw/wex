@@ -34,7 +34,7 @@ TEST_CASE("wex::odbc")
   odbc.logon(wex::data::window().button(0));
 
   auto* grid = new wex::grid();
-  add_pane(frame(), grid);
+  frame()->pane_add(grid);
 
   if (!odbc.is_connected())
   {

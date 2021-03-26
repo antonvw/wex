@@ -14,7 +14,7 @@ TEST_CASE("wex::listitem")
 {
   auto* lv =
     new wex::listview(wex::data::listview().type(wex::data::listview::FILE));
-  add_pane(frame(), lv);
+  frame()->pane_add(lv);
 
   const auto start = std::chrono::system_clock::now();
 

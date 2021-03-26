@@ -12,7 +12,7 @@
 TEST_CASE("wex::textctrl")
 {
   auto* tc = new wex::textctrl(frame());
-  add_pane(frame(), tc->control());
+  frame()->pane_add(tc->control());
 
   REQUIRE(tc->stc() == nullptr);
   REQUIRE(tc->get_frame() == frame());

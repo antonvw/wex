@@ -47,11 +47,10 @@ namespace wex
       m_frame = fr;
     }
 
-  protected:
+  private:
     /// Opens each found file.
     bool on_file(const path& file) override;
 
-  private:
     static inline factory::frame*     m_frame = nullptr;
     static inline data::stc::window_t m_flags{0};
   };

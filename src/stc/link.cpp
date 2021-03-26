@@ -52,6 +52,12 @@ wex::link::link()
 
 wex::link::~link() {}
 
+void wex::link::config_get()
+{
+  m_paths.reset();
+  m_paths = std::make_unique<paths>();
+}
+
 const wex::path wex::link::find_between(const std::string& text, stc* stc) const
 {
   if (text.empty())
@@ -59,12 +65,20 @@ const wex::path wex::link::find_between(const std::string& text, stc* stc) const
     return path();
   }
 
-  // Path in .po files.
-  if (
-    stc != nullptr && stc->get_lexer().scintilla_lexer() == "po" &&
-    text.substr(0, 3) == "#: ")
+  // Path in po files.
+  if (regex v("#: "); stc != nullptr &&
+                      stc->get_lexer().scintilla_lexer() == "po" &&
+                      v.search(text) > 0)
   {
-    return text.substr(3);
+    return v[0];
+  }
+
+  // Path in bash files.
+  if (regex v("^source (.*)"); stc != nullptr &&
+                               stc->get_lexer().scintilla_lexer() == "bash" &&
+                               v.search(text) > 0)
+  {
+    return v[0];
   }
 
   for (const auto& p : item_vector(stc::config_items())
@@ -82,12 +96,6 @@ const wex::path wex::link::find_between(const std::string& text, stc* stc) const
   }
 
   return boost::algorithm::trim_copy(text);
-}
-
-void wex::link::config_get()
-{
-  m_paths.reset();
-  m_paths = std::make_unique<paths>();
 }
 
 const wex::path
