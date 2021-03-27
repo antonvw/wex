@@ -244,10 +244,34 @@ void wex::del::listview::build_popup_menu(wex::menu& menu)
   }
 }
 
+std::string wex::del::listview::context(const std::string& line, int pos) const
+{
+  int context_size = config(_("list.Context size")).get(10);
+
+  if (pos == -1 || context_size <= 0)
+    return line;
+
+  return (context_size > pos ? std::string(context_size - pos, ' ') :
+                               std::string()) +
+         line.substr(context_size < pos ? pos - context_size : 0);
+}
+
 bool wex::del::listview::Destroy()
 {
   interruptible::cancel();
   return wex::listview::Destroy();
+}
+
+void wex::del::listview::process(std::unique_ptr<path_match>& input)
+{
+  std::unique_ptr<path_match> event(input.release());
+
+  listitem item(this, event.get()->path());
+  item.insert();
+
+  item.set_item(_("Line No"), std::to_string(event.get()->line_no() + 1));
+  item.set_item(_("Line"), context(event.get()->line(), event.get()->pos()));
+  item.set_item(_("Match"), find_replace_data::get()->get_find_string());
 }
 
 wex::data::listview::type_t wex::del::listview::type_tool(const tool& tool)

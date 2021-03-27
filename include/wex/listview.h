@@ -62,9 +62,6 @@ namespace wex
     /// Sets the configurable parameters to values currently in config.
     void config_get();
 
-    /// Returns context for a line.
-    std::string context(const std::string& line, int pos) const;
-
     /// Returns associated data.
     const auto& data() const { return m_data; };
 

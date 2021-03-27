@@ -242,6 +242,10 @@ bool wex::del::stream::process(std::string& line, size_t line_no)
 
 bool wex::del::stream::process_begin()
 {
+  m_queue_thread = new queue_thread<path_match>(
+    dynamic_cast<listview::event_handler&>(*m_report));
+  m_queue_thread->start();
+
   if (get_tool().id() != ID_TOOL_REPORT_KEYWORD)
   {
     return wex::stream::process_begin();
@@ -294,19 +298,11 @@ void wex::del::stream::process_end()
   }
 }
 
-void wex::del::stream::process_match(
-  const std::string& line,
-  size_t             line_no,
-  int                pos)
+void wex::del::stream::process_match(const path_match& m)
 {
-  assert(m_report != nullptr);
+  std::unique_ptr<path_match> match(new path_match(m));
 
-  listitem item(m_report, get_filename());
-  item.insert();
-
-  item.set_item(_("Line No"), std::to_string(line_no + 1));
-  item.set_item(_("Line"), m_report->context(line, pos));
-  item.set_item(_("Match"), find_replace_data::get()->get_find_string());
+  m_queue_thread->emplace(match);
 }
 
 bool wex::del::stream::setup_tool(

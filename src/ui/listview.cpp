@@ -592,18 +592,6 @@ void wex::listview::config_get()
   items_update();
 }
 
-std::string wex::listview::context(const std::string& line, int pos) const
-{
-  int context_size = config(_("list.Context size")).get(10);
-
-  if (pos == -1 || context_size <= 0)
-    return line;
-
-  return (context_size > pos ? std::string(context_size - pos, ' ') :
-                               std::string()) +
-         line.substr(context_size < pos ? pos - context_size : 0);
-}
-
 void wex::listview::copy_selection_to_clipboard()
 {
   if (GetSelectedItemCount() == 0)

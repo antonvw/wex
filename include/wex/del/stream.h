@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <wex/path_match.h>
+#include <wex/queue-thread.h>
 #include <wex/stream.h>
 
 namespace wex
@@ -87,13 +89,14 @@ namespace wex::del
     bool process(std::string& line, size_t line_no) override;
     bool process_begin() override;
     void process_end() override;
-    void
-    process_match(const std::string& line, size_t line_no, int pos) override;
+    void process_match(const path_match& m) override;
 
     static inline wex::listview* m_report = nullptr;
     static inline del::frame*    m_frame  = nullptr;
 
     bool m_is_comment_statement{false}, m_is_string{false};
+
+    queue_thread<path_match>* m_queue_thread;
 
     syntax_t m_last_syntax_type{SYNTAX_NONE}, m_syntax_type{SYNTAX_NONE};
   };

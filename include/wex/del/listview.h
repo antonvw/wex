@@ -8,6 +8,8 @@
 #pragma once
 
 #include <wex/listview.h>
+#include <wex/path_match.h>
+#include <wex/queue-thread.h>
 #include <wex/tool.h>
 
 namespace wex::del
@@ -16,7 +18,9 @@ namespace wex::del
 
   /// Adds a del::frame to listview.
   /// It also adds a tool menu if appropriate.
-  class listview : public wex::listview
+  class listview
+    : public queue_thread<path_match>::event_handler
+    , public wex::listview
   {
   public:
     /// Default constructor.
@@ -33,6 +37,10 @@ namespace wex::del
     auto* get_frame() { return m_frame; };
 
   private:
+    std::string context(const std::string& line, int pos) const;
+
+    void process(std::unique_ptr<path_match>& input) override;
+
     const data::listview::menu_t m_menu_flags;
     class frame*                 m_frame;
   };

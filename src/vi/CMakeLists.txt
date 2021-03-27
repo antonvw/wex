@@ -1,4 +1,6 @@
-file(GLOB SRCS "*.cpp")
+file(GLOB SRCS 
+  "../../external/ctags/libreadtags/*.c"
+  "*.cpp")
 
 add_library(
   wex-vi

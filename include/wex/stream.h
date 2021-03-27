@@ -8,6 +8,7 @@
 #pragma once
 
 #include <wex/path.h>
+#include <wex/path_match.h>
 #include <wex/stream-statistics.h>
 #include <wex/tool.h>
 
@@ -58,16 +59,7 @@ namespace wex
 
     /// Override to do action for a match.
     /// Data is available in find replace data.
-    virtual void process_match(
-      /// matching line
-      const std::string& line,
-      /// line number containing match
-      size_t line_no,
-      /// pos on line where match starts, -1 not known
-      int pos)
-    {
-      ;
-    };
+    virtual void process_match(const path_match& m) { ; };
 
   protected:
     /// Increments the actions completed.

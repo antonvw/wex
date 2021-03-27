@@ -1,8 +1,6 @@
 # roadmap
-- use queue-thread for communication between stream and listview
-  - and process
-- c++17 should be a tag
-- add other libs to overview in wex.doc
+- doc the dataflow for match
+- use queue-thread for communication in process
 
 ## backlog
 - vi should be independant of stc lib
