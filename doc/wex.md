@@ -329,7 +329,7 @@ wex::regex::regex(
 
 ## wex c++ libraries
 
-![Alt text](https://g.gravizo.com/svg?
+<img src='https://g.gravizo.com/svg?
   digraph G {
   del [shape="box"];
   stc [shape="box"];
@@ -339,7 +339,7 @@ wex::regex::regex(
   data [shape="box"];
   factory [shape="box"];
   core [shape="box"];
-  
+
   del     -> stc;
   del     -> vi;
   stc     -> ui;
@@ -357,4 +357,4 @@ wex::regex::regex(
   core    -> json;
   core    -> pugixml;
   }
-)
+'/>

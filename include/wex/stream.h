@@ -7,8 +7,8 @@
 
 #pragma once
 
+#include <wex/path-match.h>
 #include <wex/path.h>
-#include <wex/path_match.h>
 #include <wex/stream-statistics.h>
 #include <wex/tool.h>
 

@@ -8,7 +8,7 @@
 #pragma once
 
 #include <wex/listview.h>
-#include <wex/path_match.h>
+#include <wex/path-match.h>
 #include <wex/queue-thread.h>
 #include <wex/tool.h>
 

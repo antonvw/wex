@@ -2,12 +2,11 @@
 // Name:      stream.h
 // Purpose:   Declaration of class 'wex::del::stream'
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wex/path_match.h>
 #include <wex/queue-thread.h>
 #include <wex/stream.h>
 
