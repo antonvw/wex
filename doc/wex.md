@@ -329,32 +329,5 @@ wex::regex::regex(
 
 ## wex c++ libraries
 
-<img src='https://g.gravizo.com/svg?
-  digraph G {
-  del [shape="box"];
-  stc [shape="box"];
-  vi [shape="box"];
-  ui [shape="box"];
-  common [shape="box"];
-  data [shape="box"];
-  factory [shape="box"];
-  core [shape="box"];
-
-  del     -> stc;
-  del     -> vi;
-  stc     -> ui;
-  stc     -> vi;
-  vi      -> stc;
-  vi      -> ctags;
-  vi      -> ui;
-  ui      -> common;
-  ui      -> otl;
-  common  -> data;
-  data    -> factory;
-  factory -> core;
-  core    -> wxWidgets;
-  core    -> Boost;
-  core    -> json;
-  core    -> pugixml;
-  }
-'/>
+wex-core <- wex-factory <- wex-data <- wex-common <- wex-ui <- wex-vi  <- wex-del
+                                                            <- wex-stc

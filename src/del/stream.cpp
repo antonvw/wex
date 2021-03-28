@@ -2,7 +2,7 @@
 // Name:      stream.cpp
 // Purpose:   Implementation of class wex::del::stream
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cctype> // for isspace
@@ -21,6 +21,15 @@ wex::del::stream::stream(const path& filename, const tool& tool)
 {
 }
 
+wex::del::stream::~stream()
+{
+  if (m_queue_thread != nullptr)
+  {
+    m_queue_thread->stop();
+    delete m_queue_thread;
+  }
+}
+  
 wex::del::stream::comment_t wex::del::stream::check_comment_syntax(
   const std::string& syntax_begin,
   const std::string& syntax_end,
@@ -242,9 +251,23 @@ bool wex::del::stream::process(std::string& line, size_t line_no)
 
 bool wex::del::stream::process_begin()
 {
-  m_queue_thread = new queue_thread<path_match>(
-    dynamic_cast<listview::event_handler&>(*m_report));
-  m_queue_thread->start();
+  if (m_queue_thread != nullptr)
+  {
+    m_queue_thread->stop();
+    delete m_queue_thread;
+  }
+
+  try
+  {
+    m_queue_thread = new queue_thread<path_match>(
+      dynamic_cast<listview::event_handler&>(*m_report));
+    m_queue_thread->start();
+  }
+  catch (std::exception& e)
+  {
+    log(e) << "while creating the queue";
+    return false;
+  }
 
   if (get_tool().id() != ID_TOOL_REPORT_KEYWORD)
   {

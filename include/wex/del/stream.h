@@ -25,6 +25,9 @@ namespace wex::del
   public:
     /// Constructor.
     stream(const path& filename, const tool& tool);
+    
+    /// Destructor.
+    ~stream();
 
     /// Sets up the tool.
     static bool setup_tool(
@@ -95,7 +98,7 @@ namespace wex::del
 
     bool m_is_comment_statement{false}, m_is_string{false};
 
-    queue_thread<path_match>* m_queue_thread;
+    queue_thread<path_match>* m_queue_thread {nullptr};
 
     syntax_t m_last_syntax_type{SYNTAX_NONE}, m_syntax_type{SYNTAX_NONE};
   };
