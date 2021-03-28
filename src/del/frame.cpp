@@ -382,7 +382,7 @@ bool wex::del::frame::find_in_files(
   const std::vector<path>& files,
   int                      id,
   bool                     show_dialog,
-  wex::listview*           report)
+  listview*                report)
 {
   if (files.empty())
   {
@@ -861,7 +861,7 @@ void wex::del::frame::sync(bool start)
           (void)Unbind(wxEVT_IDLE, &frame::on_idle, this);
 }
 
-void wex::del::frame::use_file_history_list(wex::listview* list)
+void wex::del::frame::use_file_history_list(listview* list)
 {
   assert(list->data().type() == data::listview::HISTORY);
 

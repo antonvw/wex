@@ -18,12 +18,12 @@ namespace wex
         : del::frame()
       {
         lexer lexer("cpp");
-        m_report = new listview(
+        m_report = new del::listview(
           data::listview().type(data::listview::KEYWORD).lexer(&lexer));
         pane_add(m_report);
       };
 
-      listview* activate(
+      del::listview* activate(
         data::listview::type_t listview_type,
         const lexer*           lexer) override
       {
@@ -35,7 +35,7 @@ namespace wex
       void more_coverage() { file_history_list(); };
 
     private:
-      listview* m_report;
+      del::listview* m_report;
     };
 
     class del : public app

@@ -9,9 +9,9 @@
 
 #include <set>
 #include <wex/del/defs.h>
+#include <wex/del/listview.h>
 #include <wex/file-history.h>
 #include <wex/frame.h>
-#include <wex/listview.h>
 
 namespace wex
 {
@@ -69,7 +69,7 @@ namespace wex::del
       /// Default shows a dialog.
       bool show_dialog = true,
       /// report for output
-      wex::listview* report = nullptr);
+      listview* report = nullptr);
 
     /// Shows a modal find (or replace) in files dialog.
     /// Returns result from ShowModal.
@@ -121,7 +121,7 @@ namespace wex::del
 
     /// Uses specified history list, and adds all elements from file history
     /// to the list.
-    void use_file_history_list(wex::listview* list);
+    void use_file_history_list(listview* list);
 
     /// Overridden methods.
 

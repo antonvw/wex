@@ -14,8 +14,8 @@
 
 TEST_CASE("wex::del::frame")
 {
-  auto* list =
-    new wex::listview(wex::data::listview().type(wex::data::listview::HISTORY));
+  auto* list = new wex::del::listview(
+    wex::data::listview().type(wex::data::listview::HISTORY));
 
   del_frame()->pane_add(list);
 

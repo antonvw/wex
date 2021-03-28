@@ -29,7 +29,7 @@ wex::del::stream::~stream()
     delete m_queue_thread;
   }
 }
-  
+
 wex::del::stream::comment_t wex::del::stream::check_comment_syntax(
   const std::string& syntax_begin,
   const std::string& syntax_end,
@@ -259,8 +259,7 @@ bool wex::del::stream::process_begin()
 
   try
   {
-    m_queue_thread = new queue_thread<path_match>(
-      dynamic_cast<listview::event_handler&>(*m_report));
+    m_queue_thread = new queue_thread<path_match>(*m_report);
     m_queue_thread->start();
   }
   catch (std::exception& e)
@@ -329,9 +328,9 @@ void wex::del::stream::process_match(const path_match& m)
 }
 
 bool wex::del::stream::setup_tool(
-  const tool&    tool,
-  frame*         frame,
-  wex::listview* report)
+  const tool& tool,
+  frame*      frame,
+  listview*   report)
 {
   if (tool.id() == ID_TOOL_REPLACE)
   {

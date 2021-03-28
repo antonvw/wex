@@ -10,14 +10,10 @@
 #include <wex/queue-thread.h>
 #include <wex/stream.h>
 
-namespace wex
-{
-  class listview;
-};
-
 namespace wex::del
 {
   class frame;
+  class listview;
 
   /// Offers a stream with reporting to a listview.
   class stream : public wex::stream
@@ -25,7 +21,7 @@ namespace wex::del
   public:
     /// Constructor.
     stream(const path& filename, const tool& tool);
-    
+
     /// Destructor.
     ~stream();
 
@@ -37,7 +33,7 @@ namespace wex::del
       del::frame* frame,
       /// listview to which is reported, if nullptr,
       /// calls activate on frame to find report
-      wex::listview* report = nullptr);
+      listview* report = nullptr);
 
   private:
     /// The comment type.
@@ -93,12 +89,12 @@ namespace wex::del
     void process_end() override;
     void process_match(const path_match& m) override;
 
-    static inline wex::listview* m_report = nullptr;
-    static inline del::frame*    m_frame  = nullptr;
+    static inline listview* m_report = nullptr;
+    static inline frame*    m_frame  = nullptr;
 
     bool m_is_comment_statement{false}, m_is_string{false};
 
-    queue_thread<path_match>* m_queue_thread {nullptr};
+    queue_thread<path_match>* m_queue_thread{nullptr};
 
     syntax_t m_last_syntax_type{SYNTAX_NONE}, m_syntax_type{SYNTAX_NONE};
   };

@@ -1,6 +1,5 @@
 # roadmap
 - doc the dataflow for match
-- use queue-thread for communication in process
 
 ## backlog
 - vi should be independant of stc lib
