@@ -104,7 +104,7 @@ bool wex::stream::process(std::string& text, size_t line_no)
   {
     if (m_tool.id() == ID_TOOL_REPORT_FIND)
     {
-      process_match(text, line_no, pos);
+      process_match(path_match(get_filename(), text, line_no, pos));
     }
 
     if (const auto ac = inc_actions_completed(count);
@@ -156,11 +156,11 @@ bool wex::stream::process_begin()
 
 int wex::stream::replace_all(std::string& text, int* match_pos)
 {
-  int  count  = 0;
-  bool update = false;
+  int               count  = 0;
+  bool              update = false;
   const std::string search(m_frd->get_find_string());
   const std::string replace(m_frd->get_replace_string());
-  
+
   for (size_t pos = 0; (pos = text.find(search, pos)) != std::string::npos;)
   {
     if (!update)

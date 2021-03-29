@@ -7,10 +7,10 @@
 
 #pragma once
 
+#include <wex/del/listview.h>
 #include <wex/dir.h>
 #include <wex/file.h>
 #include <wex/item-dialog.h>
-#include <wex/del/listview.h>
 
 namespace wex::del
 {
@@ -28,12 +28,6 @@ namespace wex::del
 
     /// Destructor.
     ~file() override;
-
-    /// Virtual interface
-    void after_sorting() override;
-    bool is_contents_changed() const override { return m_contents_changed; };
-    bool item_from_text(const std::string& text) override;
-    void reset_contents_changed() override { m_contents_changed = false; };
 
     /// Other methods
 
@@ -53,11 +47,18 @@ namespace wex::del
     const auto& text_addwhat() const { return m_text_add_what; };
     const auto& text_infolder() const { return m_text_in_folder; };
 
+    /// Virtual interface
+    bool is_contents_changed() const final { return m_contents_changed; };
+    bool item_from_text(const std::string& text) final;
+    void reset_contents_changed() final { m_contents_changed = false; };
+
   private:
-    void build_popup_menu(menu& menu) override;
-    bool do_file_load(bool synced = false) override;
-    void do_file_new() override;
-    void do_file_save(bool save_as = false) override;
+    void after_sorting() final;
+    void build_popup_menu(menu& menu) final;
+    bool do_file_load(bool synced = false) final;
+    void do_file_new() final;
+    void do_file_save(bool save_as = false) final;
+
     void on_idle(wxIdleEvent& event);
 
     bool m_contents_changed = false;

@@ -14,8 +14,8 @@ TEST_CASE("wex::del::stream")
 {
   wex::tool tool(wex::ID_TOOL_REPORT_FIND);
 
-  auto* report =
-    new wex::listview(wex::data::listview().type(wex::data::listview::FIND));
+  auto* report = new wex::del::listview(
+    wex::data::listview().type(wex::data::listview::FIND));
 
   del_frame()->pane_add(report);
 

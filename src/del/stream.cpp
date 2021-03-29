@@ -2,7 +2,7 @@
 // Name:      stream.cpp
 // Purpose:   Implementation of class wex::del::stream
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cctype> // for isspace
@@ -19,6 +19,15 @@
 wex::del::stream::stream(const path& filename, const tool& tool)
   : wex::stream(filename, tool)
 {
+}
+
+wex::del::stream::~stream()
+{
+  if (m_queue_thread != nullptr)
+  {
+    m_queue_thread->stop();
+    delete m_queue_thread;
+  }
 }
 
 wex::del::stream::comment_t wex::del::stream::check_comment_syntax(
@@ -242,6 +251,23 @@ bool wex::del::stream::process(std::string& line, size_t line_no)
 
 bool wex::del::stream::process_begin()
 {
+  if (m_queue_thread != nullptr)
+  {
+    m_queue_thread->stop();
+    delete m_queue_thread;
+  }
+
+  try
+  {
+    m_queue_thread = new queue_thread<path_match>(*m_report);
+    m_queue_thread->start();
+  }
+  catch (std::exception& e)
+  {
+    log(e) << "while creating the queue";
+    return false;
+  }
+
   if (get_tool().id() != ID_TOOL_REPORT_KEYWORD)
   {
     return wex::stream::process_begin();
@@ -294,25 +320,17 @@ void wex::del::stream::process_end()
   }
 }
 
-void wex::del::stream::process_match(
-  const std::string& line,
-  size_t             line_no,
-  int                pos)
+void wex::del::stream::process_match(const path_match& m)
 {
-  assert(m_report != nullptr);
+  std::unique_ptr<path_match> match(new path_match(m));
 
-  listitem item(m_report, get_filename());
-  item.insert();
-
-  item.set_item(_("Line No"), std::to_string(line_no + 1));
-  item.set_item(_("Line"), m_report->context(line, pos));
-  item.set_item(_("Match"), find_replace_data::get()->get_find_string());
+  m_queue_thread->emplace(match);
 }
 
 bool wex::del::stream::setup_tool(
-  const tool&    tool,
-  frame*         frame,
-  wex::listview* report)
+  const tool& tool,
+  frame*      frame,
+  listview*   report)
 {
   if (tool.id() == ID_TOOL_REPLACE)
   {
