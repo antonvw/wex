@@ -1,5 +1,4 @@
 # roadmap
-- doc the dataflow for match
 
 ## backlog
 - vi should be independant of stc lib

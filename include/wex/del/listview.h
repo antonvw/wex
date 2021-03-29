@@ -39,7 +39,7 @@ namespace wex::del
   private:
     std::string context(const std::string& line, int pos) const;
 
-    void process(std::unique_ptr<path_match>& input) override;
+    void process(std::unique_ptr<path_match>& input) final;
 
     const data::listview::menu_t m_menu_flags;
     class frame*                 m_frame;
