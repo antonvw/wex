@@ -2,7 +2,7 @@
 // Name:      marker.h
 // Purpose:   Declaration of class wex::marker
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -11,8 +11,6 @@
 
 namespace wex
 {
-  class stc;
-
   /// This class defines our scintilla markers.
   class marker : public presentation
   {
@@ -25,6 +23,6 @@ namespace wex
     marker(int no, int symbol = -1);
 
     /// Returns symbol no.
-    int symbol() const {return style();};
+    int symbol() const { return style(); };
   };
-};
+}; // namespace wex

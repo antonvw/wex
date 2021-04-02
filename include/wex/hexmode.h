@@ -2,7 +2,7 @@
 // Name:      hexmode.h
 // Purpose:   Declaration of class wex::hexmode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2011-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -102,6 +102,9 @@ namespace wex
     /// Sets text, if hex mode is on.
     /// The text should be normal ascii text, it is encoded while appending.
     void set_text(const std::string text);
+
+    /// Sync, set text with buffer.
+    bool sync();
 
     /// Undo change, sets the buffer to the original buffer.
     void undo();

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      stc/dialog.cpp
-// Purpose:   Implementation of class wex::stc_entry_dialog
+// Name:      dialog.cpp
+// Purpose:   Implementation of class stc_entry_dialog
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////

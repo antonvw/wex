@@ -18,11 +18,10 @@
 namespace wex
 {
   class ctags;
+  class ex_stream;
   class macros;
   class macro_mode;
   class frame;
-  class stc;
-  class stc_entry_dialog;
 
   enum class info_message_t
   {
@@ -34,7 +33,7 @@ namespace wex
     YANK,
   };
 
-  /// Offers a class that adds ex editor to wex::stc.
+  /// Offers a class that adds ex editor to wex::factory::stc.
   class ex
   {
     friend class macro_mode;
@@ -43,9 +42,17 @@ namespace wex
     /// Returns the macros.
     static auto& get_macros() { return m_macros; };
 
+    /// The visual modes.
+    enum mode_t
+    {
+      OFF,    // off, not using ex or vi mode
+      EX,     // ex mode, without vi keys, for reading large files
+      VISUAL, // vi mode
+    };
+
     /// Constructor.
     /// Sets ex mode.
-    ex(stc* stc);
+    ex(factory::stc* stc);
 
     /// Destructor.
     virtual ~ex();
@@ -72,6 +79,10 @@ namespace wex
     /// and updates delete registers.
     void cut();
 
+    /// The ex stream (used if in ex mode).
+    auto       ex_stream() { return m_ex_stream; };
+    const auto ex_stream() const { return m_ex_stream; };
+
     /// Returns the frame.
     auto* frame() { return m_frame; };
 
@@ -79,10 +90,10 @@ namespace wex
     const auto& get_command() const { return m_command; };
 
     /// Returns stc component.
-    stc* get_stc() const;
+    factory::stc* get_stc() const;
 
     /// Returns whether ex is active.
-    auto is_active() const { return m_is_active; };
+    auto is_active() const { return m_mode != OFF; };
 
     /// Adds marker at the specified line.
     /// Returns true if marker could be added.
@@ -132,8 +143,11 @@ namespace wex
     /// Sets yank register (if value not empty).
     void set_register_yank(const std::string& value) const;
 
-    /// Set using ex mode.
-    void use(bool mode) { m_is_active = mode; };
+    /// Set mode.
+    void use(mode_t mode) { m_mode = mode; };
+
+    /// Returns current visual mode.
+    mode_t visual() const { return m_mode; };
 
     /// Yanks selected text to yank register, default to yank register.
     /// Returns false if no text was selected.
@@ -186,11 +200,9 @@ namespace wex
       std::function<bool(const std::string& command)>>>
       m_commands;
 
-    static inline stc_entry_dialog* m_dialog = nullptr;
-    static macros                   m_macros;
+    static macros m_macros;
 
-    bool m_auto_write{false}, m_copy{false}, // this is a copy, result of split
-      m_is_active{true};                     // are we actively using ex mode?
+    bool m_auto_write{false}, m_copy{false}; // this is a copy, result of split
 
     int m_search_flags;
 
@@ -198,6 +210,10 @@ namespace wex
 
     wex::ctags* m_ctags;
     wex::frame* m_frame;
+
+    class ex_stream* m_ex_stream{nullptr};
+
+    mode_t m_mode{VISUAL};
 
     std::map<char, int>
       // relate a marker to identifier

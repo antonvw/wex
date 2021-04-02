@@ -49,14 +49,10 @@ namespace wex
 wex::stc_file::stc_file(stc* stc, const std::string& filename)
   : file(filename)
   , m_stc(stc)
-  , m_ex_stream(new wex::ex_stream(stc))
 {
 }
 
-wex::stc_file::~stc_file()
-{
-  delete m_ex_stream;
-}
+wex::stc_file::~stc_file() {}
 
 bool wex::stc_file::do_file_load(bool synced)
 {
@@ -98,7 +94,7 @@ bool wex::stc_file::do_file_load(bool synced)
 #endif
     if (!m_stc->is_visual())
     {
-      m_ex_stream->stream(*this);
+      ex_stream()->stream(*this);
     }
     else if (const auto buffer(read(offset)); buffer != nullptr)
     {
@@ -155,7 +151,7 @@ void wex::stc_file::do_file_save(bool save_as)
 
   if (!m_stc->is_visual())
   {
-    if (m_ex_stream->write())
+    if (ex_stream()->write())
     {
       FILE_POST(save_as ? FILE_SAVE_AS : FILE_SAVE);
     }
@@ -188,6 +184,16 @@ void wex::stc_file::do_file_save(bool save_as)
     t.detach();
 #endif
   }
+}
+
+wex::ex_stream* wex::stc_file::ex_stream()
+{
+  return m_stc->get_vi().ex_stream();
+}
+
+const wex::ex_stream* wex::stc_file::ex_stream() const
+{
+  return m_stc->get_vi().ex_stream();
 }
 
 bool wex::stc_file::is_contents_changed() const

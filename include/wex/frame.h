@@ -165,6 +165,24 @@ namespace wex
     /// Shows text in ex bar.
     virtual void show_ex_message(const std::string& text) { ; };
 
+    /// Shows or updates stc entry dialog.
+    virtual int show_stc_entry_dialog_show(bool modal = false)
+    {
+      return wxID_CANCEL;
+    };
+
+    /// Returns stc component for stc entry dialog.
+    virtual factory::stc* stc_entry_dialog_component() { return nullptr; };
+
+    /// Returns stc entry dialog title.
+    virtual std::string stc_entry_dialog_title() const
+    {
+      return std::string();
+    };
+
+    /// Sets stc entry dialog title.
+    virtual void stc_entry_dialog_title(const std::string& title) { ; };
+
     /// Called after you checked the Sync checkbox on the options toolbar.
     virtual void sync_all() { ; };
 

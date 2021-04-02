@@ -17,8 +17,13 @@ namespace wex
 {
   class address;
   class addressrange;
+  class ex;
   class file;
-  class stc;
+
+  namespace factory
+  {
+    class stc;
+  }
 
   namespace data
   {
@@ -40,7 +45,7 @@ namespace wex
     };
 
     /// Constructor.
-    ex_stream(wex::stc* stc);
+    ex_stream(wex::ex* ex);
 
     /// Destructor.
     ~ex_stream() override;
@@ -48,27 +53,8 @@ namespace wex
     /// Deletes the range.
     bool erase(const addressrange& range);
 
-    /// Finds line containing text and puts on stc.
-    /// The text is interpreted as regex, and search is forward.
-    bool find(
-      const std::string& text,
-      int                find_flags = -1,
-      bool               find_next  = true) override;
-
     /// Returns context lines.
     size_t get_context_lines() const { return m_context_lines; };
-
-    /// Returns current line no
-    int get_current_line() const;
-
-    /// Returns number of lines, or LINE_COUNT_UNKNOWN if not yet known.
-    int get_line_count() const override;
-
-    /// Returns number of lines.
-    int get_line_count_request() override;
-
-    /// Gets specified line, and puts on stc.
-    void goto_line(int no) override;
 
     /// Inserts text at specified address.
     bool insert_text(
@@ -107,6 +93,21 @@ namespace wex
       const std::string&  file,
       bool                append = false);
 
+    /// Virtual methods from text_window.
+
+    /// Finds line containing text and puts on stc.
+    /// The text is interpreted as regex, and search is forward.
+    bool find(
+      const std::string& text,
+      int                find_flags = -1,
+      bool               find_next  = true) override;
+
+    int get_current_line() const override;
+    int get_line_count() const override;
+    int get_line_count_request() override;
+
+    void goto_line(int no) override;
+
   private:
     bool copy(file* from, file* to);
     bool get_next_line();
@@ -127,6 +128,7 @@ namespace wex
     char* m_buffer;
     char* m_current_line;
 
-    stc* m_stc;
+    factory::stc* m_stc;
+    wex::ex*      m_ex;
   };
 }; // namespace wex

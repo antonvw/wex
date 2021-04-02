@@ -17,6 +17,7 @@
 namespace wex
 {
   class indicator;
+  class lexer;
 
   namespace data
   {
@@ -25,7 +26,8 @@ namespace wex
 
   namespace factory
   {
-    /// Offers a styled text ctrl.
+    /// Offers a styled text ctrl with:
+    /// - lexer support (syntax colouring, folding)
     class stc
       : public wxStyledTextCtrl
       , public text_window
@@ -44,6 +46,19 @@ namespace wex
 
       /// Virtual interface.
 
+      /// Adds text.
+      virtual void add_text(const std::string& text) { AddText(text); }
+
+      /// Clears auto complete.
+      virtual void auto_complete_clear() { ; };
+
+      /// Syncs auto complete.
+      virtual void auto_complete_sync() { ; };
+
+      /// After pressing enter, starts new line at same place
+      /// as previous line.
+      virtual bool auto_indentation(int c) { return false; };
+
       /// Enables or disables folding depending on fold property
       /// (default not implemented).
       virtual void fold(
@@ -58,33 +73,59 @@ namespace wex
       /// Returns a ex command.
       virtual const ex_command& get_ex_command() const { return m_command; };
 
-      /// Returns current line number.
-      virtual int get_current_line() const
-      {
-        return const_cast<stc*>(this)->GetCurrentLine();
-      };
-
       /// Returns the filename, as used by the file.
       /// Pure virtual, must be overridden.
       virtual const path& get_filename() const = 0;
 
-      /// Returns find string, from selected text or from config.
-      /// The search flags are taken from frd.
-      /// If text is selected, it also sets the find string.
-      virtual const std::string get_find_string() { return std::string(); };
+      /// Returns current line fold level.
+      virtual int get_fold_level() const { return 0; };
+
+      /// Hex erase.
+      virtual bool get_hexmode_erase(int begin, int end) { return false; };
+
+      /// Hex insert.
+      virtual bool get_hexmode_insert(const std::string& command, int pos)
+      {
+        return false;
+      };
+
+      /// Hex replace.
+      virtual bool get_hexmode_replace(char) { return false; };
+
+      /// Hex replace target.
+      virtual bool
+      get_hexmode_replace_target(const std::string& replacement, bool set_text)
+      {
+        return false;
+      };
+
+      /// Hex sync.
+      virtual bool get_hexmode_sync() { return false; };
 
       /// Returns line on which text margin was clicked,
       /// or -1 if not.
       virtual int get_margin_text_click() const { return -1; };
 
+      /// Returns word at position.
+      virtual const std::string get_word_at_pos(int pos) const
+      {
+        return std::string();
+      };
+
       // Inserts text at pos.
-      virtual void insert_text(int pos, const std::string& text) { ; };
+      virtual void insert_text(int pos, const std::string& text)
+      {
+        InsertText(pos, text);
+      };
 
       /// Returns true if we are in hex mode (default false).
       virtual bool is_hexmode() const { return false; };
 
       /// Returns true if we are in visual mode (default true).
       virtual bool is_visual() const { return true; };
+
+      /// If selected text is a link, opens the link.
+      virtual bool link_open() { return false; };
 
       /// Opens the file, reads the content into the window,
       /// then closes the file and sets the lexer.
@@ -140,9 +181,16 @@ namespace wex
       /// Sets the text.
       virtual void set_text(const std::string& value) { SetText(value); };
 
+      /// Shows or hides line numbers.
+      virtual void show_line_numbers(bool show) { ; };
+
       /// Starts or stops syncing.
       /// Default syncing is started during construction.
       virtual void sync(bool start = true) { ; };
+
+      /// Use and show modification markers in the margin.
+      /// If you open a file, the modification markers are used.
+      virtual void use_modification_markers(bool use) { ; };
 
       /// Runs a vi command on this stc (default false).
       virtual bool vi_command(const std::string& command) { return false; };
@@ -159,7 +207,20 @@ namespace wex
       /// Returns vi search flags.
       virtual int vi_search_flags() const { return 0; };
 
+      /// Sets using visual vi (on) or ex mode (!on).
+      virtual void visual(bool on) { ; };
+
       /// Other methods.
+
+      /// Returns EOL string.
+      /// If you only want to insert a newline, use NewLine()
+      /// (from wxStyledTextCtrl).
+      const std::string eol() const;
+
+      /// Returns find string, from selected text or from config.
+      /// The search flags are taken from frd.
+      /// If text is selected, it also sets the find string.
+      const std::string get_find_string();
 
       /// Returns the lexer.
       const auto& get_lexer() const { return m_lexer; };
@@ -167,69 +228,64 @@ namespace wex
       /// Returns the lexer.
       auto& get_lexer() { return m_lexer; };
 
-      /// Goes to specified line.
-      void goto_line(int line) override
-      {
-        GotoLine(line);
-        EnsureVisible(line);
-        EnsureCaretVisible();
-      };
-
-      /// Other, normal methods.
-
-      /// Returns EOL string.
-      /// If you only want to insert a newline, use NewLine()
-      /// (from wxStyledTextCtrl).
-      const std::string eol() const;
-
       /// Returns selected text as a string.
       const std::string get_selected_text() const;
+
+      /// Returns the text.
+      const std::string get_text() const
+      {
+        const wxCharBuffer& b(const_cast<factory::stc*>(this)->GetTextRaw());
+        return std::string(b.data(), b.length());
+      }
+
+      // These methods are not yet available in scintilla, create stubs
+      // (for the vi MOTION macro).
+      void BigWordLeft();
+      void BigWordLeftExtend();
+      void BigWordLeftRectExtend();
+      void BigWordRight();
+      void BigWordRightEnd();
+      void BigWordRightEndExtend();
+      void BigWordRightEndRectExtend();
+      void BigWordRightExtend();
+      void BigWordRightRectExtend();
+      void LineHome() { Home(); };
+      void LineHomeExtend() { HomeExtend(); };
+      void LineHomeRectExtend() { HomeRectExtend(); };
+      void LineScrollDownExtend() { ; };
+      void LineScrollDownRectExtend() { ; };
+      void LineScrollUpExtend() { ; };
+      void LineScrollUpRectExtend() { ; };
+      void PageScrollDown();
+      void PageScrollDownExtend() { ; };
+      void PageScrollDownRectExtend() { ; };
+      void PageScrollUp();
+      void PageScrollUpExtend() { ; };
+      void PageScrollUpRectExtend() { ; };
+      void ParaUpRectExtend() { ; };
+      void ParaDownRectExtend() { ; };
+      void WordLeftRectExtend();
+      void WordRightRectExtend();
+      void WordRightEndRectExtend() { ; };
 
       /// Override methods from text_window.
 
       bool find(
         const std::string& text,
         int                find_flags = -1,
-        bool               find_next  = true) override
+        bool               find_next  = true) override;
+      int get_current_line() const override
       {
-        return FindText(0, GetTextLength(), text, find_flags) !=
-               wxSTC_INVALID_POSITION;
+        return const_cast<stc*>(this)->GetCurrentLine();
       };
-      int get_line_count() const override { return GetLineCount(); };
-      int get_line_count_request() override { return GetLineCount(); };
+      int  get_line_count() const override { return GetLineCount(); };
+      int  get_line_count_request() override { return GetLineCount(); };
+      void goto_line(int line) override;
 
     private:
-      // We use a separate lexer here as well
-      // (though stc_file offers one), as you can manually override
-      // the lexer.
       lexer m_lexer;
 
       ex_command m_command;
     };
   }; // namespace factory
 };   // namespace wex
-
-inline const std::string wex::factory::stc::eol() const
-{
-  switch (GetEOLMode())
-  {
-    case wxSTC_EOL_CR:
-      return "\r";
-    case wxSTC_EOL_CRLF:
-      return "\r\n";
-    case wxSTC_EOL_LF:
-      return "\n";
-    default:
-      assert(0);
-      break;
-  }
-
-  return "\r\n";
-}
-
-inline const std::string wex::factory::stc::get_selected_text() const
-{
-  const wxCharBuffer& b(const_cast<stc*>(this)->GetSelectedTextRaw());
-  return b.length() == 0 ? std::string() :
-                           std::string(b.data(), b.length() - 1);
-}

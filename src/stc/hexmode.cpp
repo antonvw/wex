@@ -135,8 +135,8 @@ void wex::hexmode::deactivate()
 
 bool wex::hexmode::erase(int count, int pos)
 {
-  return pos == -1 ? hexmode_line(this).erase(count) :
-                     hexmode_line(this, pos).erase(count);
+  return pos == wxSTC_INVALID_POSITION ? hexmode_line(this).erase(count) :
+                                         hexmode_line(this, pos).erase(count);
 }
 
 const std::string wex::hexmode::get_info()
@@ -198,14 +198,14 @@ bool wex::hexmode::highlight_other(int pos)
 
 bool wex::hexmode::insert(const std::string& text, int pos)
 {
-  return pos == -1 ? hexmode_line(this).insert(text) :
-                     hexmode_line(this, pos).insert(text);
+  return pos == wxSTC_INVALID_POSITION ? hexmode_line(this).insert(text) :
+                                         hexmode_line(this, pos).insert(text);
 }
 
 bool wex::hexmode::replace(char c, int pos)
 {
-  return pos == -1 ? hexmode_line(this).replace(c) :
-                     hexmode_line(this, pos).replace(c);
+  return pos == wxSTC_INVALID_POSITION ? hexmode_line(this).replace(c) :
+                                         hexmode_line(this, pos).replace(c);
 }
 
 const std::string
@@ -327,6 +327,18 @@ void wex::hexmode::set_text(const std::string text)
   append_text(text);
 
   m_stc->position_restore();
+}
+
+bool wex::hexmode::sync()
+{
+  if (!m_active)
+  {
+    return false;
+  }
+
+  set_text(m_buffer);
+
+  return true;
 }
 
 void wex::hexmode::undo()

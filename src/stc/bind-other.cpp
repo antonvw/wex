@@ -9,9 +9,9 @@
 #include <vector>
 #include <wex/config.h>
 #include <wex/debug-entry.h>
+#include <wex/frame.h>
 #include <wex/frd.h>
 #include <wex/log.h>
-#include <wex/frame.h>
 #include <wex/menu.h>
 #include <wex/stc-bind.h>
 #include <wex/stc.h>
@@ -219,7 +219,7 @@ void wex::stc::key_action(wxKeyEvent& event)
     m_adding_chars = false;
   }
 
-  if (m_ex->is_active())
+  if (m_vi->visual() != ex::VISUAL)
   {
     // prevent skip
   }
@@ -354,7 +354,7 @@ void wex::stc::mouse_action(wxMouseEvent& event)
         style.set(menu::IS_SELECTED);
       if (GetTextLength() == 0)
         style.set(menu::IS_EMPTY);
-      if (m_visual)
+      if (m_vi->visual() == ex::VISUAL)
         style.set(menu::IS_VISUAL);
       if (CanPaste())
         style.set(menu::CAN_PASTE);

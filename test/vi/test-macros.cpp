@@ -7,6 +7,7 @@
 
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
+#include <wex/vi.h>
 
 #include "test.h"
 
@@ -16,7 +17,8 @@ TEST_SUITE_BEGIN("wex::vi");
 
 TEST_CASE("wex::macros" * doctest::may_fail())
 {
-  auto* vi = &get_stc()->get_vi();
+  auto* stc = get_stc();
+  auto* vi  = new wex::vi(stc);
 
   SUBCASE("constructor")
   {
@@ -42,9 +44,9 @@ TEST_CASE("wex::macros" * doctest::may_fail())
 
   SUBCASE("record and playback")
   {
-    vi->get_stc()->get_vi().mode().escape();
+    vi->mode().escape();
     vi->get_stc()->set_text("hello");
-    REQUIRE(vi->get_stc()->get_vi().mode().is_command());
+    REQUIRE(vi->mode().is_command());
     REQUIRE(macros.mode().transition("qa") == 2);
     REQUIRE(!macros.is_modified());
     REQUIRE(macros.mode().is_recording());
@@ -73,7 +75,7 @@ TEST_CASE("wex::macros" * doctest::may_fail())
     REQUIRE(!macros.is_recorded_macro("d"));
 
     vi->get_stc()->set_text("");
-    REQUIRE(vi->get_stc()->get_vi().mode().is_command());
+    REQUIRE(vi->mode().is_command());
     REQUIRE(macros.mode().transition("@a", vi) == 2);
     REQUIRE(vi->get_stc()->get_text() == "test");
 

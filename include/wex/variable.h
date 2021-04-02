@@ -12,7 +12,6 @@
 namespace wex
 {
   class ex;
-  class stc_entry_dialog;
 
   /// Offers variable support to be used in macros.
   /// Variables are assigned from an xml node, and
@@ -73,7 +72,6 @@ namespace wex
 
     std::string m_format, m_name, m_prefix, m_value;
 
-    static inline stc_entry_dialog* m_dialog{nullptr};
-    static inline std::string       m_argument;
+    static inline std::string m_argument;
   };
 }; // namespace wex

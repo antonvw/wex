@@ -2,7 +2,7 @@
 // Name:      stc-file.h
 // Purpose:   Declaration of class wex::stc_file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -39,8 +39,8 @@ namespace wex
     ~stc_file() override;
 
     /// The ex stream (used if in ex mode).
-    auto       ex_stream() { return m_ex_stream; };
-    const auto ex_stream() const { return m_ex_stream; };
+    class ex_stream*       ex_stream();
+    const class ex_stream* ex_stream() const;
 
     bool is_contents_changed() const override;
     void reset_contents_changed() override;
@@ -50,8 +50,7 @@ namespace wex
     void do_file_new() override;
     void do_file_save(bool save_as = false) override;
 
-    class ex_stream* m_ex_stream{nullptr};
-    stc*             m_stc;
-    std::streampos   m_previous_size{0};
+    stc*           m_stc;
+    std::streampos m_previous_size{0};
   };
 }; // namespace wex

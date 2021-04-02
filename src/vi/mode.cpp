@@ -12,12 +12,12 @@
 #include <boost/statechart/state_machine.hpp>
 #include <boost/statechart/transition.hpp>
 #include <wex/config.h>
+#include <wex/factory/stc.h>
+#include <wex/frame.h>
 #include <wex/log.h>
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
-#include <wex/frame.h>
 #include <wex/statusbar.h>
-#include <wex/stc.h>
 #include <wex/vi-mode.h>
 #include <wex/vi.h>
 
@@ -34,7 +34,7 @@ namespace wex
   {
   public:
     vi_fsm(
-      stc*                                            stc,
+      factory::stc*                                   stc,
       std::function<void(const std::string& command)> insert,
       std::function<void()>                           command)
       : m_stc(stc)
@@ -44,7 +44,7 @@ namespace wex
       ;
     };
 
-    stc* get_stc() { return m_stc; };
+    auto* get_stc() { return m_stc; };
 
     void insert_mode()
     {
@@ -68,7 +68,7 @@ namespace wex
       process_event(ev);
     };
 
-    const vi_mode::state_t state() const { return m_state; };
+    const auto state() const { return m_state; };
 
     void state(vi_mode::state_t s) { m_state = s; };
 
@@ -101,7 +101,7 @@ namespace wex
     std::function<void(const std::string& command)> m_f_insert{nullptr};
     std::function<void()>                           m_f_command{nullptr};
     vi_mode::state_t                                m_state{vi_mode::COMMAND};
-    stc*                                            m_stc;
+    factory::stc*                                   m_stc;
   };
 
   // All events.

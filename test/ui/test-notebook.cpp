@@ -11,7 +11,6 @@
 #endif
 #include <wex/defs.h>
 #include <wex/notebook.h>
-#include <wex/stc.h>
 
 #include "test.h"
 
@@ -95,9 +94,9 @@ TEST_CASE("wex::notebook")
   {
     REQUIRE(notebook->DeleteAllPages());
 
-    auto* stc_x = new wex::stc(std::string("hello stc"));
-    auto* stc_y = new wex::stc(std::string("hello stc"));
-    auto* stc_z = new wex::stc(std::string("hello stc"));
+    auto* stc_x = new ui_stc();
+    auto* stc_y = new ui_stc();
+    auto* stc_z = new ui_stc();
 
     REQUIRE(
       notebook->add_page(wex::data::notebook().page(stc_x).key("key1")) !=
@@ -109,14 +108,14 @@ TEST_CASE("wex::notebook")
       notebook->add_page(wex::data::notebook().page(stc_z).key("key3")) !=
       nullptr);
 
-    REQUIRE(notebook->for_each<wex::stc>(wex::ID_ALL_STC_SET_LEXER));
-    REQUIRE(notebook->for_each<wex::stc>(wex::ID_ALL_STC_SET_LEXER_THEME));
-    REQUIRE(notebook->for_each<wex::stc>(wex::ID_ALL_STC_SYNC));
-    REQUIRE(notebook->for_each<wex::stc>(wex::ID_ALL_CONFIG_GET));
-    REQUIRE(notebook->for_each<wex::stc>(wex::ID_ALL_SAVE));
-    REQUIRE(notebook->for_each<wex::stc>(wex::ID_ALL_CLOSE_OTHERS));
+    REQUIRE(notebook->for_each<ui_stc>(wex::ID_ALL_STC_SET_LEXER));
+    REQUIRE(notebook->for_each<ui_stc>(wex::ID_ALL_STC_SET_LEXER_THEME));
+    REQUIRE(notebook->for_each<ui_stc>(wex::ID_ALL_STC_SYNC));
+    REQUIRE(notebook->for_each<ui_stc>(wex::ID_ALL_CONFIG_GET));
+    REQUIRE(notebook->for_each<ui_stc>(wex::ID_ALL_SAVE));
+    REQUIRE(notebook->for_each<ui_stc>(wex::ID_ALL_CLOSE_OTHERS));
     REQUIRE(notebook->GetPageCount() == 1);
-    REQUIRE(notebook->for_each<wex::stc>(wex::ID_ALL_CLOSE));
+    REQUIRE(notebook->for_each<ui_stc>(wex::ID_ALL_CLOSE));
     REQUIRE(notebook->GetPageCount() == 0);
   }
 

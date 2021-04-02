@@ -13,12 +13,12 @@
 #include <wex/config.h>
 #include <wex/debug-entry.h>
 #include <wex/defs.h>
+#include <wex/frame.h>
 #include <wex/frd.h>
 #include <wex/item-vector.h>
 #include <wex/lexer-props.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
-#include <wex/frame.h>
 #include <wex/menu.h>
 #include <wex/path.h>
 #include <wex/sort.h>
@@ -204,8 +204,7 @@ void wex::stc::bind_all()
       wxID_COPY},
 
      {[=, this](wxCommandEvent& event) {
-        m_ex->is_active() ? m_ex->command(event.GetString()) :
-                            m_vi->command(event.GetString());
+        m_vi->command(event.GetString());
       },
       id::stc::vi_command},
 
@@ -506,7 +505,7 @@ void wex::stc::build_popup_menu(menu& menu)
     menu.append({{}, {get_filename(), m_frame}});
   }
 
-  if (!get_ex().is_active() && GetTextLength() > 0)
+  if (!get_vi().is_active() && GetTextLength() > 0)
   {
     menu.append({{}, {wxID_FIND}});
 
@@ -772,19 +771,20 @@ void wex::stc::show_properties()
     }
   }
 
-  if (m_entry_dialog == nullptr)
+  if (m_prop_dialog == nullptr)
   {
-    m_entry_dialog = new stc_entry_dialog(
+    m_prop_dialog = new stc_entry_dialog(
       properties,
       std::string(),
       data::window().size({300, 450}).button(wxOK).title(_("Properties")));
-    m_entry_dialog->get_stc()->get_lexer().set(l);
+    m_prop_dialog->get_stc()->get_lexer().set(l);
   }
   else
   {
-    m_entry_dialog->get_stc()->set_text(properties);
+    m_prop_dialog->get_stc()->set_text(properties);
   }
-  m_entry_dialog->Show();
+
+  m_prop_dialog->Show();
 }
 
 void wex::stc::sort_action(const wxCommandEvent& event)

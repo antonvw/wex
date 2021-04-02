@@ -18,6 +18,7 @@ namespace wex
   class debug;
   class ex;
   class item_dialog;
+  class stc_entry_dialog;
 }; // namespace wex
 
 namespace wex::del
@@ -154,17 +155,23 @@ namespace wex::del
     void statusbar_clicked(const std::string&) override;
     void statusbar_clicked_right(const std::string&) override;
 
+    int           show_stc_entry_dialog_show(bool modal = false) override;
+    factory::stc* stc_entry_dialog_component() override;
+    std::string   stc_entry_dialog_title() const override;
+    void          stc_entry_dialog_title(const std::string& title) override;
+
   protected:
     /// Access to file history list,
     /// if you use this as a page in a notebook,
     /// you might want prevent closing it.
-    listview* file_history_list() { return m_file_history_listview; };
+    auto* file_history_list() { return m_file_history_listview; };
 
   private:
     void find_in_files(wxWindowID dialogid);
     void on_idle(wxIdleEvent& event);
 
-    item_dialog *m_fif_dialog{nullptr}, *m_rif_dialog{nullptr};
+    item_dialog *     m_fif_dialog{nullptr}, *m_rif_dialog{nullptr};
+    stc_entry_dialog* m_entry_dialog{nullptr};
 
     debug* m_debug{nullptr};
 
@@ -178,7 +185,7 @@ namespace wex::del
       m_text_in_folder{_("fif.In folder")},
       m_text_recursive{_("fif.Recursive")};
 
-    // This set determines what fields are placed on the Find Files dialogs
+    // This set determines what fields are placed on the find_in_files dialogs
     // as a list of checkboxes.
     const std::set<std::string> m_info;
   };

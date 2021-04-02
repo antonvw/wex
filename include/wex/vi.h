@@ -16,12 +16,12 @@
 
 namespace wex
 {
-  /// Offers a class that extends stc with vi behaviour.
+  /// Offers a class that extends factory::stc with vi behaviour.
   class vi : public ex
   {
   public:
     /// Constructor.
-    vi(wex::stc* stc);
+    vi(wex::factory::stc* stc);
 
     /// Appends string to executed insert command.
     void append_insert_command(const std::string& s);

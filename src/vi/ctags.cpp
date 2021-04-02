@@ -15,12 +15,12 @@
 #include <wex/core.h>
 #include <wex/ctags.h>
 #include <wex/ex.h>
+#include <wex/factory/stc.h>
+#include <wex/frame.h>
 #include <wex/frd.h>
 #include <wex/log.h>
-#include <wex/frame.h>
 #include <wex/path.h>
 #include <wex/regex.h>
-#include <wex/stc.h>
 #include <wx/app.h>
 #include <wx/artprov.h>
 #include <wx/choicdlg.h>
@@ -90,10 +90,7 @@ namespace wex
     return entry.name;
   }
 
-  auto* get_frame()
-  {
-    return dynamic_cast<frame*>(wxTheApp->GetTopWindow());
-  }
+  auto* get_frame() { return dynamic_cast<frame*>(wxTheApp->GetTopWindow()); }
 
   void set_image(const tagEntry& entry, wex::image_access_t& image)
   {

@@ -7,19 +7,16 @@
 
 #include "test.h"
 
-class ui_stc : public wex::factory::stc
+ui_stc::ui_stc(const wex::data::stc& data)
 {
-public:
-  ui_stc(wxFrame* parent)
-  {
-    Create(parent, -1);
-    Show();
-  };
+  Create(data.window().parent(), -1);
+  Show();
+}
 
-private:
-  const wex::path& get_filename() const override { return m_path; };
-  wex::path        m_path;
-};
+wex::file& ui_stc::get_file()
+{
+  return m_file;
+}
 
 namespace wex
 {
@@ -71,7 +68,7 @@ bool wex::test::ui::OnInit()
      {"PaneMode"},
      {"PaneFileType"},
      {"LastPane"}});
-  m_stc = new ui_stc(m_frame);
+  m_stc = new ui_stc();
   m_frame->Show();
   m_frame->pane_add(m_stc);
 

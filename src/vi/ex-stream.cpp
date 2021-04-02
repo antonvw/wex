@@ -11,10 +11,11 @@
 #include <wex/addressrange.h>
 #include <wex/core.h>
 #include <wex/ex-stream.h>
+#include <wex/ex.h>
+#include <wex/factory/stc.h>
+#include <wex/frame.h>
 #include <wex/frd.h>
 #include <wex/log.h>
-#include <wex/frame.h>
-#include <wex/stc.h>
 #include <wex/temp-filename.h>
 
 #include "ex-stream-line.h"
@@ -51,13 +52,14 @@
     }                                                                    \
   }
 
-wex::ex_stream::ex_stream(wex::stc* stc)
+wex::ex_stream::ex_stream(wex::ex* ex)
   : m_context_lines(50)
   , m_buffer_size(1000000)
   , m_buffer(new char[m_buffer_size])
   , m_current_line_size(500)
   , m_current_line(new char[m_current_line_size])
-  , m_stc(stc)
+  , m_ex(ex)
+  , m_stc(ex->get_stc())
 {
 }
 
@@ -112,8 +114,7 @@ bool wex::ex_stream::erase(const addressrange& range)
 
   m_last_line_no = sl.lines() - sl.actions() - 1;
 
-  m_stc->get_frame()->show_ex_message(
-    std::to_string(sl.actions()) + " fewer lines");
+  m_ex->frame()->show_ex_message(std::to_string(sl.actions()) + " fewer lines");
 
   goto_line(0);
 
@@ -153,9 +154,7 @@ bool wex::ex_stream::find(
     m_stream->clear();
     m_stream->seekg(pos);
 
-    m_stc->get_frame()->statustext(
-      get_find_result(text, true, true),
-      std::string());
+    m_ex->frame()->statustext(get_find_result(text, true, true), std::string());
   }
   else
   {
@@ -331,7 +330,7 @@ bool wex::ex_stream::insert_text(
 
   const auto line(loc == INSERT_BEFORE ? a.get_line() : a.get_line() + 1);
   const addressrange range(
-    &m_stc->get_ex(),
+    m_ex,
     std::to_string(line) + "," + std::to_string(line));
 
   ex_stream_line sl(m_temp, range, text);
@@ -356,8 +355,7 @@ bool wex::ex_stream::join(const addressrange& range)
 
   m_last_line_no = sl.lines() - sl.actions() - 1;
 
-  m_stc->get_frame()->show_ex_message(
-    std::to_string(sl.actions()) + " fewer lines");
+  m_ex->frame()->show_ex_message(std::to_string(sl.actions()) + " fewer lines");
 
   goto_line(0);
 
@@ -420,6 +418,7 @@ void wex::ex_stream::stream(file& f)
 {
   if (!f.is_open())
   {
+    log("file is not open") << f.get_filename();
     return;
   }
 
@@ -449,7 +448,7 @@ bool wex::ex_stream::substitute(
 
   STREAM_LINE_ON_CHAR();
 
-  m_stc->get_frame()->show_ex_message(
+  m_ex->frame()->show_ex_message(
     "Replaced: " + std::to_string(sl.actions()) +
     " occurrences of: " + data.pattern());
 

@@ -11,11 +11,12 @@
 #include <wex/ex-stream.h>
 #include <wex/ex.h>
 #include <wex/factory/process.h>
+#include <wex/factory/stc.h>
+#include <wex/file.h>
+#include <wex/frame.h>
 #include <wex/log.h>
 #include <wex/macros.h>
-#include <wex/frame.h>
 #include <wex/regex.h>
-#include <wex/stc.h>
 
 #define SEARCH_TARGET                                                         \
   if (ex->get_stc()->SearchInTarget(text) != -1)                              \
@@ -65,9 +66,9 @@ namespace wex
 
   int find_stream(ex* ex, const std::string& text, bool forward)
   {
-    if (ex->get_stc()->get_file().ex_stream()->find(text, -1, forward))
+    if (ex->ex_stream()->find(text, -1, forward))
     {
-      return ex->get_stc()->get_file().ex_stream()->get_current_line() + 1;
+      return ex->ex_stream()->get_current_line() + 1;
     }
     else
     {
@@ -160,10 +161,7 @@ bool wex::address::append(const std::string& text) const
   }
   else if (!m_ex->get_stc()->is_visual())
   {
-    m_ex->get_stc()->get_file().ex_stream()->insert_text(
-      *this,
-      text,
-      ex_stream::INSERT_AFTER);
+    m_ex->ex_stream()->insert_text(*this, text, ex_stream::INSERT_AFTER);
     return true;
   }
   else if (m_ex->get_stc()->GetReadOnly() || m_ex->get_stc()->is_hexmode())
@@ -238,7 +236,7 @@ bool wex::address::insert(const std::string& text) const
   }
   else if (!m_ex->get_stc()->is_visual())
   {
-    m_ex->get_stc()->get_file().ex_stream()->insert_text(*this, text);
+    m_ex->ex_stream()->insert_text(*this, text);
     return true;
   }
   else if (m_ex->get_stc()->GetReadOnly() || m_ex->get_stc()->is_hexmode())
@@ -375,7 +373,7 @@ bool wex::address::read(const std::string& arg) const
     {
       if (!m_ex->get_stc()->is_visual())
       {
-        m_ex->get_stc()->get_file().ex_stream()->insert_text(*this, *buffer);
+        m_ex->ex_stream()->insert_text(*this, *buffer);
       }
       else if (m_address == ".")
       {

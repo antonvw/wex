@@ -58,5 +58,5 @@ bool wex::beautify::stc(wex::stc& s) const
         std::to_string(s.LineFromPosition(s.GetSelectionStart()) + 1) + ":" +
         std::to_string(s.LineFromPosition(s.GetSelectionEnd()) + 1));
 
-  return addressrange(&s.get_ex(), "%").escape(name() + lines);
+  return addressrange(&s.get_vi(), "%").escape(name() + lines);
 }

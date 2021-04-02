@@ -2,7 +2,7 @@
 // Name:      stc-entry-dialog.h
 // Purpose:   Declaration of class wex::stc_entry_dialog
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -12,7 +12,10 @@
 
 namespace wex
 {
-  class stc;
+  namespace factory
+  {
+    class stc;
+  }
 
   /// Offers an stc as a dialog (like wxTextEntryDialog).
   /// The prompt (if not empty) is first added as a text sizer to the user
@@ -33,6 +36,6 @@ namespace wex
     auto* get_stc() { return m_stc; };
 
   private:
-    wex::stc* m_stc;
+    wex::factory::stc* m_stc;
   };
 }; // namespace wex

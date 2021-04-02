@@ -15,6 +15,8 @@
 #include <wex/core.h>
 #include <wex/ex-stream.h>
 #include <wex/ex.h>
+#include <wex/factory/stc.h>
+#include <wex/file.h>
 #include <wex/frame.h>
 #include <wex/frd.h>
 #include <wex/log.h>
@@ -22,7 +24,6 @@
 #include <wex/process.h>
 #include <wex/regex.h>
 #include <wex/sort.h>
-#include <wex/stc.h>
 #include <wex/substitute-data.h>
 #include <wex/temp-filename.h>
 #include <wex/util.h>
@@ -140,7 +141,7 @@ namespace wex
     ex*                      m_ex;
   };
 
-  void toggle_case(stc* stc, std::string& target, char c)
+  void toggle_case(factory::stc* stc, std::string& target, char c)
   {
     c == 'U' ? boost::algorithm::to_upper(target) :
                boost::algorithm::to_lower(target);
@@ -299,7 +300,7 @@ bool wex::addressrange::erase() const
 {
   if (!m_stc->is_visual())
   {
-    return m_stc->get_file().ex_stream()->erase(*this);
+    return m_ex->ex_stream()->erase(*this);
   }
 
   if (m_stc->GetReadOnly() || m_stc->is_hexmode() || !set_selection())
@@ -546,7 +547,7 @@ bool wex::addressrange::join() const
 {
   if (!m_stc->is_visual())
   {
-    return m_stc->get_file().ex_stream()->join(*this);
+    return m_ex->ex_stream()->join(*this);
   }
 
   if (m_stc->GetReadOnly() || m_stc->is_hexmode() || !is_ok())
@@ -841,7 +842,7 @@ bool wex::addressrange::substitute(const std::string& text, char cmd)
 
   if (!m_stc->is_visual())
   {
-    return m_stc->get_file().ex_stream()->substitute(*this, data);
+    return m_ex->ex_stream()->substitute(*this, data);
   }
 
   if (!m_ex->marker_add('#', m_begin.get_line() - 1))
@@ -901,7 +902,7 @@ bool wex::addressrange::substitute(const std::string& text, char cmd)
     {
       if (m_stc->is_hexmode())
       {
-        m_stc->get_hexmode().replace_target(replacement, false);
+        m_stc->get_hexmode_replace_target(replacement, false);
       }
       else
       {
@@ -927,7 +928,7 @@ bool wex::addressrange::substitute(const std::string& text, char cmd)
 
   if (m_stc->is_hexmode())
   {
-    m_stc->get_hexmode().set_text(m_stc->get_hexmode().buffer());
+    m_stc->get_hexmode_sync();
   }
 
   m_stc->EndUndoAction();
@@ -971,7 +972,7 @@ bool wex::addressrange::write(const std::string& text) const
 
   if (!m_stc->is_visual())
   {
-    return m_stc->get_file().ex_stream()->write(
+    return m_ex->ex_stream()->write(
       *this,
       filename,
       text.find(">>") != std::string::npos);

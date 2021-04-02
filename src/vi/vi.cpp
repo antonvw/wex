@@ -15,14 +15,14 @@
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/ctags.h>
+#include <wex/factory/stc.h>
+#include <wex/frame.h>
 #include <wex/frd.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
-#include <wex/frame.h>
 #include <wex/regex.h>
-#include <wex/stc.h>
 #include <wex/vi.h>
 
 namespace wex
@@ -121,7 +121,7 @@ namespace wex
   };
 };
 
-wex::vi::vi(wex::stc* arg)
+wex::vi::vi(wex::factory::stc* arg)
   : ex(arg)
   , m_mode(
       this,
@@ -132,7 +132,7 @@ wex::vi::vi(wex::stc* arg)
           m_insert_text.clear();
         }
 
-        get_stc()->auto_complete().sync();
+        get_stc()->auto_complete_sync();
         get_stc()->BeginUndoAction();
       },
       // back to command mode process
@@ -146,7 +146,7 @@ wex::vi::vi(wex::stc* arg)
         }
         m_command.clear();
         m_insert_command.clear();
-        get_stc()->auto_complete().clear();
+        get_stc()->auto_complete_clear();
         get_stc()->EndUndoAction();
       })
   , m_last_commands{{"!", "<", ">", "A", "C", "D", "I", "J", "O",
@@ -522,7 +522,7 @@ wex::vi::vi(wex::stc* arg)
          {
            if (get_stc()->is_hexmode())
            {
-             if (!get_stc()->get_hexmode().replace(command.back()))
+             if (!get_stc()->get_hexmode_replace(command.back()))
              {
                m_command.clear();
                return 0;
@@ -1074,7 +1074,7 @@ bool wex::vi::delete_range(int start, int end)
   }
   else
   {
-    get_stc()->get_hexmode().erase(last - first, first);
+    get_stc()->get_hexmode_erase(last - first, first);
   }
 
   return true;
@@ -1144,9 +1144,7 @@ bool wex::vi::insert_mode(const std::string& command)
     }
     else
     {
-      return get_stc()->get_hexmode().insert(
-        command,
-        get_stc()->GetCurrentPos());
+      return get_stc()->get_hexmode_insert(command, get_stc()->GetCurrentPos());
     }
   }
   // add control chars

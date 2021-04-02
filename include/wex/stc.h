@@ -26,11 +26,11 @@ namespace wex
   class indicator;
   class item;
   class item_dialog;
-  class lexer;
   class link;
   class frame;
   class menu;
   class path;
+  class stc_entry_dialog;
   class vcs_entry;
 
   namespace factory
@@ -39,7 +39,6 @@ namespace wex
   };
 
   /// Offers a styled text ctrl with:
-  /// - lexer support (syntax colouring, folding)
   /// - ex or vi support (default vi mode is on)
   /// - find/replace
   /// - popup menu
@@ -81,38 +80,6 @@ namespace wex
     /// Destructor.
     ~stc() override;
 
-    /// Virtual override methods.
-
-    /// Will a cut succeed?
-    bool CanCut() const override;
-
-    /// Will a paste succeed?
-    bool CanPaste() const override;
-
-    /// Clear the selection.
-    void Clear() override;
-
-    /// Copies text to clipboard.
-    void Copy() override;
-
-    /// Cuts text to clipboard.
-    void Cut() override;
-
-    /// Is doc modified.
-    bool IsModified() const override;
-
-    /// Paste text from clipboard.
-    void Paste() override;
-
-    /// Deselects selected text in the control.
-    // Reimplemented, since scintilla version sets
-    // empty sel at 0, and sets caret on pos 0.
-    void SelectNone() override;
-
-    /// If there is an undo facility and the last operation can be undone,
-    /// undoes the last operation.
-    void Undo() override;
-
     /// Virtual interface
 
     /// Processes specified char.
@@ -123,18 +90,11 @@ namespace wex
 
     /// Other methods.
 
-    /// Adds text.
-    void add_text(const std::string& text);
-
     /// Appends text (to end).
     void append_text(const std::string& text);
 
     /// Returns auto_complete.
     auto& auto_complete() { return m_auto_complete; };
-
-    /// After pressing enter, starts new line at same place
-    /// as previous line.
-    bool auto_indentation(int c);
 
     // Clears the component: all text is cleared and all styles are reset.
     // Invoked by Open and do_file_new.
@@ -147,16 +107,6 @@ namespace wex
     /// Returns associated data.
     const auto& data() const { return m_data; };
 
-    /// Returns vi component.
-    const ex& get_ex() const;
-
-    /// Returns writable ex component.
-    /// This allows you to do ex like editing:
-    /// - get_ex().Command(":1,$s/xx/yy/g")
-    /// - get_ex().Command(":w")
-    /// to replace all xx by yy, and save the file.
-    ex& get_ex();
-
     /// Shows a menu with current line type checked,
     /// and allows you to change it.
     void filetype_menu();
@@ -167,9 +117,6 @@ namespace wex
     /// Returns the file.
     auto& get_file() { return m_file; };
 
-    /// Returns current line fold level.
-    int get_fold_level();
-
     /// Returns frame.
     auto get_frame() { return m_frame; };
 
@@ -179,17 +126,15 @@ namespace wex
     /// Returns writable hex mode component.
     auto& get_hexmode() { return m_hexmode; };
 
-    /// Returns text.
-    const std::string get_text() const;
-
     /// Returns vi component.
     const vi& get_vi() const;
 
     /// Returns writable vi component.
+    /// This allows you to do ex like editing:
+    /// - get_vi().Command(":1,$s/xx/yy/g")
+    /// - get_vi().Command(":w")
+    /// to replace all xx by yy, and save the file.
     vi& get_vi();
-
-    /// Returns word at position.
-    const std::string get_word_at_pos(int pos) const;
 
     /// Returns true if line numbers are shown.
     bool is_shown_line_numbers() const
@@ -199,9 +144,6 @@ namespace wex
 
     /// Keeps event data.
     void keep_event_data(bool synced) { m_data.event(synced); };
-
-    /// If selected text is a link, opens the link.
-    bool link_open();
 
     /// Deletes all change markers.
     /// Returns false if marker change is not loaded.
@@ -241,37 +183,61 @@ namespace wex
     /// Returns true if info was added.
     bool show_blame(const vcs_entry* vcs);
 
-    /// Shows or hides line numbers.
-    void show_line_numbers(bool show);
+    /// Virtual methods from wxWidgets.
 
-    /// Use and show modification markers in the margin.
-    /// If you open a file, the modification markers are used.
-    void use_modification_markers(bool use);
-
-    /// Sets using visual vi (on) or ex mode (!on).
-    void visual(bool on);
+    bool CanCut() const override;
+    bool CanPaste() const override;
+    void Clear() override;
+    void Copy() override;
+    void Cut() override;
+    bool IsModified() const override;
+    void Paste() override;
+    // Reimplemented, since scintilla version sets
+    // empty sel at 0, and sets caret on pos 0.
+    void SelectNone() override;
+    void Undo() override;
 
     /// Virtual methods from factory.
+
+    void add_text(const std::string& text) override;
+
+    void auto_complete_clear() override;
+    void auto_complete_sync() override;
+    bool auto_indentation(int c) override;
 
     bool find(
       const std::string& text,
       int                find_flags = -1,
       bool               find_next  = true) override;
-    void              fold(bool fold_all = false) override;
-    int               get_current_line() const override;
+
+    void fold(bool fold_all = false) override;
+
     const ex_command& get_ex_command() const override
     {
       return m_vi->get_command();
     };
     const path& get_filename() const override { return m_file.get_filename(); };
-    const std::string get_find_string() override;
-    int               get_line_count() const override;
-    int               get_line_count_request() override;
-    int  get_margin_text_click() const override { return m_margin_text_click; };
+    int         get_fold_level() const override;
+
+    bool get_hexmode_erase(int begin, int end) override;
+    bool get_hexmode_insert(const std::string& command, int pos) override;
+    bool get_hexmode_replace(char) override;
+    bool get_hexmode_replace_target(
+      const std::string& replacement,
+      bool               set_text) override;
+    bool get_hexmode_sync() override;
+
+    int get_current_line() const override;
+    int get_line_count() const override;
+    int get_line_count_request() override;
+    int get_margin_text_click() const override { return m_margin_text_click; };
+    const std::string get_word_at_pos(int pos) const override;
+
     void goto_line(int line) override;
     void insert_text(int pos, const std::string& text) override;
     bool is_hexmode() const override { return m_hexmode.is_active(); };
-    bool is_visual() const override { return m_visual; };
+    bool is_visual() const override;
+    bool link_open() override;
     bool
     open(const path& filename, const data::stc& data = data::stc()) override;
     bool position_restore() override;
@@ -285,42 +251,16 @@ namespace wex
     bool set_indicator(const indicator& indicator, int start, int end) override;
     void set_search_flags(int flags) override;
     void set_text(const std::string& value) override;
+    void show_line_numbers(bool show) override;
     void sync(bool start = true) override;
-    bool vi_command(const std::string& command) override;
-    void vi_record(const std::string& command) override;
+    void use_modification_markers(bool use) override;
+
+    bool        vi_command(const std::string& command) override;
+    void        vi_record(const std::string& command) override;
     std::string vi_register(char c) const override;
     int vi_search_flags() const override { return m_vi->search_flags(); };
     const std::string vi_mode() const override;
-
-    // These methods are not yet available in scintilla, create stubs
-    // (for the vi MOTION macro).
-    void BigWordLeft();
-    void BigWordLeftExtend();
-    void BigWordLeftRectExtend();
-    void BigWordRight();
-    void BigWordRightEnd();
-    void BigWordRightEndExtend();
-    void BigWordRightEndRectExtend();
-    void BigWordRightExtend();
-    void BigWordRightRectExtend();
-    void LineHome() { Home(); };
-    void LineHomeExtend() { HomeExtend(); };
-    void LineHomeRectExtend() { HomeRectExtend(); };
-    void LineScrollDownExtend() { ; };
-    void LineScrollDownRectExtend() { ; };
-    void LineScrollUpExtend() { ; };
-    void LineScrollUpRectExtend() { ; };
-    void PageScrollDown();
-    void PageScrollDownExtend() { ; };
-    void PageScrollDownRectExtend() { ; };
-    void PageScrollUp();
-    void PageScrollUpExtend() { ; };
-    void PageScrollUpRectExtend() { ; };
-    void ParaUpRectExtend() { ; };
-    void ParaDownRectExtend() { ; };
-    void WordLeftRectExtend();
-    void WordRightRectExtend();
-    void WordRightEndRectExtend() { ; };
+    void              visual(bool on) override;
 
   private:
     enum
@@ -361,7 +301,7 @@ namespace wex
     int m_fold_level{0}, m_margin_text_click{-1}, m_saved_pos{-1},
       m_saved_selection_start{-1}, m_saved_selection_end{-1};
 
-    bool m_adding_chars{false}, m_skip{false}, m_visual{true};
+    bool m_adding_chars{false}, m_skip{false};
 
     frame* m_frame;
 
@@ -371,13 +311,12 @@ namespace wex
     data::stc m_data;
     stc_file  m_file;
 
-    // The ex or vi components, only one of them is active (see stc data).
-    ex* m_ex{nullptr};
+    // The ex or vi component.
     vi* m_vi{nullptr};
 
     // All objects share the following:
     static inline item_dialog*       m_config_dialog = nullptr;
-    static inline stc_entry_dialog*  m_entry_dialog  = nullptr;
+    static inline stc_entry_dialog*  m_prop_dialog   = nullptr;
     static inline link*              m_link          = nullptr;
     static inline int                m_zoom          = -1;
     static inline std::vector<item>* m_config_items  = nullptr;

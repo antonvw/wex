@@ -7,12 +7,11 @@
 
 #include <regex>
 #include <wex/config.h>
-#include <wex/find-data.h>
-#include <wex/path.h>
 #include <wex/factory/stc.h>
+#include <wex/find-data.h>
 
 wex::data::find::find(
-  wex::factory::stc*    stc,
+  wex::factory::stc* stc,
   const std::string& text,
   bool               forward)
   : m_stc(stc)

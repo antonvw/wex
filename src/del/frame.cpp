@@ -7,7 +7,6 @@
 
 #include <thread>
 #include <wex/wex.h>
-#include <wx/window.h>
 
 namespace wex
 {
@@ -28,6 +27,10 @@ wex::del::frame::frame(
       {find_replace_data::get()->text_match_word(),
        find_replace_data::get()->text_match_case(),
        find_replace_data::get()->text_regex()})
+  , m_entry_dialog(new stc_entry_dialog(
+      "tmp",
+      std::string(),
+      data::window().button(wxOK).title("tmp").size({450, 450})))
 {
   std::set<std::string> t(m_info);
   t.insert(m_text_recursive + ",1");
@@ -104,7 +107,7 @@ wex::del::frame::frame(
           if (auto* stc = dynamic_cast<wex::stc*>(get_stc()); stc != nullptr)
           {
             wex::path::current(stc->get_filename().get_path());
-            if (!marker_and_register_expansion(&stc->get_ex(), text))
+            if (!marker_and_register_expansion(&stc->get_vi(), text))
               return;
           }
 
@@ -164,7 +167,7 @@ wex::del::frame::frame(
           std::advance(it, event.GetId() - ID_FIND_FIRST);
           if (const std::string text(*it); stc->find(
                 text,
-                stc->get_ex().is_active() ? stc->get_ex().search_flags() : -1))
+                stc->get_vi().is_active() ? stc->get_vi().search_flags() : -1))
           {
             find_replace_data::get()->set_find_string(text);
           }
@@ -656,7 +659,7 @@ void wex::del::frame::on_notebook(wxWindowID id, wxWindow* page)
   {
     show_ex_bar(
       !stc->is_visual() ? SHOW_BAR : HIDE_BAR_FOCUS_STC,
-      &stc->get_ex());
+      &stc->get_vi());
 
     set_recent_file(stc->get_filename());
 
@@ -853,6 +856,26 @@ void wex::del::frame::statusbar_clicked_right(const std::string& pane)
   {
     wex::frame::statusbar_clicked_right(pane);
   }
+}
+
+int wex::del::frame::show_stc_entry_dialog_show(bool modal)
+{
+  return modal ? m_entry_dialog->ShowModal() : m_entry_dialog->Show();
+}
+
+wex::factory::stc* wex::del::frame::stc_entry_dialog_component()
+{
+  return m_entry_dialog->get_stc();
+}
+
+std::string wex::del::frame::stc_entry_dialog_title() const
+{
+  return m_entry_dialog->GetTitle();
+}
+
+void wex::del::frame::stc_entry_dialog_title(const std::string& title)
+{
+  m_entry_dialog->SetTitle(title);
 }
 
 void wex::del::frame::sync(bool start)
