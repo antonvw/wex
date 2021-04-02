@@ -216,8 +216,8 @@ namespace wex
     {
       return m_vi->get_command();
     };
+
     const path& get_filename() const override { return m_file.get_filename(); };
-    int         get_fold_level() const override;
 
     bool get_hexmode_erase(int begin, int end) override;
     bool get_hexmode_insert(const std::string& command, int pos) override;

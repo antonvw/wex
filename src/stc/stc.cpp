@@ -285,12 +285,6 @@ int wex::stc::get_current_line() const
   }
 }
 
-int wex::stc::get_fold_level() const
-{
-  return (GetFoldLevel(get_current_line()) & wxSTC_FOLDLEVELNUMBERMASK) -
-         wxSTC_FOLDLEVELBASE;
-}
-
 bool wex::stc::get_hexmode_erase(int begin, int end)
 {
   return m_hexmode.erase(begin, end);

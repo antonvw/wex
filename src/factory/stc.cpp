@@ -101,6 +101,12 @@ const std::string wex::factory::stc::get_find_string()
   return find_replace_data::get()->get_find_string();
 }
 
+int wex::factory::stc::get_fold_level() const
+{
+  return (GetFoldLevel(get_current_line()) & wxSTC_FOLDLEVELNUMBERMASK) -
+         wxSTC_FOLDLEVELBASE;
+}
+
 const std::string wex::factory::stc::get_selected_text() const
 {
   const wxCharBuffer& b(const_cast<stc*>(this)->GetSelectedTextRaw());

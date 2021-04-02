@@ -77,9 +77,6 @@ namespace wex
       /// Pure virtual, must be overridden.
       virtual const path& get_filename() const = 0;
 
-      /// Returns current line fold level.
-      virtual int get_fold_level() const { return 0; };
-
       /// Hex erase.
       virtual bool get_hexmode_erase(int begin, int end) { return false; };
 
@@ -221,6 +218,9 @@ namespace wex
       /// The search flags are taken from frd.
       /// If text is selected, it also sets the find string.
       const std::string get_find_string();
+
+      /// Returns current line fold level.
+      int get_fold_level() const;
 
       /// Returns the lexer.
       const auto& get_lexer() const { return m_lexer; };
