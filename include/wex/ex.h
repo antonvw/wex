@@ -51,8 +51,8 @@ namespace wex
     };
 
     /// Constructor.
-    /// Sets ex mode.
-    ex(factory::stc* stc);
+    /// Provide stc cpomponent and ex mode.
+    ex(factory::stc* stc, mode_t mode = VISUAL);
 
     /// Destructor.
     virtual ~ex();
@@ -144,7 +144,7 @@ namespace wex
     void set_register_yank(const std::string& value) const;
 
     /// Set mode.
-    void use(mode_t mode) { m_mode = mode; };
+    void use(mode_t mode);
 
     /// Returns current visual mode.
     mode_t visual() const { return m_mode; };
@@ -213,7 +213,7 @@ namespace wex
 
     class ex_stream* m_ex_stream{nullptr};
 
-    mode_t m_mode{VISUAL};
+    mode_t m_mode;
 
     std::map<char, int>
       // relate a marker to identifier

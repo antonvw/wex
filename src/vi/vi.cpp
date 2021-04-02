@@ -121,8 +121,8 @@ namespace wex
   };
 };
 
-wex::vi::vi(wex::factory::stc* arg)
-  : ex(arg)
+wex::vi::vi(wex::factory::stc* arg, mode_t ex_mode)
+  : ex(arg, ex_mode)
   , m_mode(
       this,
       // insert mode process

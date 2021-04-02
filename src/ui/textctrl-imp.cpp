@@ -8,9 +8,9 @@
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/factory/stc.h>
+#include <wex/frame.h>
 #include <wex/frd.h>
 #include <wex/log.h>
-#include <wex/frame.h>
 #include <wex/textctrl.h>
 #include <wx/control.h>
 #include <wx/settings.h>
@@ -550,8 +550,7 @@ bool wex::textctrl_imp::input_mode_finish() const
 
 bool wex::textctrl_imp::is_ex_mode() const
 {
-  return m_tc->stc() != nullptr && m_tc->stc() != nullptr &&
-         !m_tc->stc()->is_visual();
+  return m_tc->stc() != nullptr && !m_tc->stc()->is_visual();
 }
 
 void wex::textctrl_imp::set_text(const std::string& text)

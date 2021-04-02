@@ -160,10 +160,11 @@ enum class wex::ex::address_t
 
 wex::macros wex::ex::m_macros;
 
-wex::ex::ex(wex::factory::stc* stc)
+wex::ex::ex(wex::factory::stc* stc, mode_t mode)
   : m_command(ex_command(stc))
   , m_frame(dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow()))
   , m_ex_stream(new wex::ex_stream(this))
+  , m_mode(mode)
   , m_commands{{":ab",
                 [&](const std::string& command) {
                   return handle_container<std::string, macros::strings_map_t>(
@@ -1110,6 +1111,13 @@ void wex::ex::show_dialog(
     !lexer.empty() ? wex::lexer(lexer) : get_stc()->get_lexer());
 
   m_frame->show_stc_entry_dialog_show();
+}
+
+void wex::ex::use(mode_t mode)
+{
+  m_mode = mode;
+
+  log::trace("ex mode") << (int)m_mode;
 }
 
 bool wex::ex::yank(char name) const

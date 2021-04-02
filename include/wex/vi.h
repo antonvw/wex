@@ -21,7 +21,7 @@ namespace wex
   {
   public:
     /// Constructor.
-    vi(wex::factory::stc* stc);
+    vi(wex::factory::stc* stc, mode_t mode = VISUAL);
 
     /// Appends string to executed insert command.
     void append_insert_command(const std::string& s);

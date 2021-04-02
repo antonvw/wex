@@ -29,7 +29,8 @@
 wex::stc::stc(const path& p, const data::stc& data)
   : m_data(this, data)
   , m_auto_complete(this)
-  , m_vi(new vi(this))
+  , m_vi(
+      new vi(this, data.flags().test(data::stc::WIN_EX) ? ex::EX : ex::VISUAL))
   , m_file(this, data.window().name())
   , m_hexmode(hexmode(this))
   , m_frame(dynamic_cast<frame*>(wxTheApp->GetTopWindow()))
@@ -110,8 +111,6 @@ wex::stc::stc(const path& p, const data::stc& data)
     m_file.file_new(p);
     m_data.inject();
   }
-
-  visual(!data.flags().test(data::stc::WIN_EX));
 }
 
 wex::stc::stc(const std::string& text, const data::stc& data)
@@ -282,7 +281,7 @@ int wex::stc::get_current_line() const
   }
   else
   {
-    return const_cast<stc*>(this)->GetCurrentLine();
+    return factory::stc::get_current_line();
   }
 }
 
@@ -327,7 +326,7 @@ int wex::stc::get_line_count() const
   }
   else
   {
-    return GetLineCount();
+    return factory::stc::get_line_count();
   }
 }
 
@@ -339,7 +338,7 @@ int wex::stc::get_line_count_request()
   }
   else
   {
-    return GetLineCount();
+    return factory::stc::get_line_count_request();
   }
 }
 
@@ -436,8 +435,7 @@ void wex::stc::insert_text(int pos, const std::string& text)
 
 bool wex::stc::IsModified() const
 {
-  return m_vi->visual() == ex::VISUAL ? GetModify() :
-                                        m_file.ex_stream()->is_modified();
+  return is_visual() ? GetModify() : m_file.ex_stream()->is_modified();
 }
 
 bool wex::stc::is_visual() const
@@ -961,9 +959,7 @@ bool wex::stc::show_blame(const vcs_entry* vcs)
       }
 
       const int real_line(
-        m_vi->visual() == ex::VISUAL ?
-          l :
-          l - get_current_line() + GetLineCount() - 2);
+        is_visual() ? l : l - get_current_line() + GetLineCount() - 2);
 
       lexers::get()->apply_margin_text_style(
         this,
@@ -1041,16 +1037,19 @@ void wex::stc::visual(bool on)
     data::stc::window_t().set(data::stc::WIN_EX),
     on ? data::control::NOT : data::control::SET);
 
-  if (on && m_vi->visual() != ex::VISUAL)
+  if (on)
   {
-    std::stringstream info;
-
-    if (!get_filename().string().empty())
+    if (m_vi->visual() != ex::VISUAL)
     {
-      info << get_filename().string();
-    }
+      std::stringstream info;
 
-    log::info("enter visual mode") << on << info;
+      if (!get_filename().string().empty())
+      {
+        info << get_filename().string();
+      }
+
+      log::info("enter visual mode") << on << info;
+    }
 
     m_vi->use(ex::VISUAL); // needed in do_file_load
     m_file.close();
