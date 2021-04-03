@@ -148,7 +148,7 @@ bool wex::address::adjust_window(const std::string& text) const
   }
   SEPARATE;
 
-  m_ex->frame()->print_ex(m_ex, output);
+  m_ex->print(output);
 
   return true;
 }

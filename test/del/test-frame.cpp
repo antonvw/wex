@@ -91,7 +91,6 @@ TEST_CASE("wex::del::frame")
   SUBCASE("visual")
   {
     auto* vi = &get_stc()->get_vi();
-    del_frame()->print_ex(vi, "hello vi");
 
     vi->get_stc()->visual(true);
     REQUIRE(!get_stc()->data().flags().test(wex::data::stc::WIN_EX));

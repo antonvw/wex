@@ -147,7 +147,6 @@ namespace wex::del
       const path&      filename,
       const vcs_entry& vcs,
       const data::stc& data) override;
-    void print_ex(wex::ex* ex, const std::string& text) override;
     void set_recent_file(const path& path) override;
     void show_ex_bar(int action = HIDE_BAR_FOCUS_STC, wex::ex* ex = nullptr)
       override;

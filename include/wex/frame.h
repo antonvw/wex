@@ -125,16 +125,6 @@ namespace wex
     /// Default sets the focus to page and adds page as recently used.
     virtual void on_notebook(wxWindowID id, wxWindow* page) { ; };
 
-    /// Prints text in ex dialog.
-    virtual void print_ex(
-      /// the ex for the dialog
-      ex* ex,
-      /// the text to be printed
-      const std::string& text)
-    {
-      ;
-    };
-
     /// Allows you to perform action for a (vi) command.
     /// This method is invoked after command is executed.
     virtual void record(const std::string& command) { ; };

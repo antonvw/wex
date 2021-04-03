@@ -685,7 +685,7 @@ bool wex::addressrange::print(const std::string& flags) const
             m_stc->GetLine(i);
   }
 
-  m_ex->frame()->print_ex(m_ex, text);
+  m_ex->print(text);
 
   return true;
 }

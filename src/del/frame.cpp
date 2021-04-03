@@ -713,11 +713,6 @@ wex::factory::stc* wex::del::frame::open_file(
   return nullptr;
 }
 
-void wex::del::frame::print_ex(ex* ex, const std::string& text)
-{
-  ex->print(text);
-}
-
 void wex::del::frame::show_ex_bar(int action, ex* ex)
 {
   if (action == SHOW_BAR || ex != nullptr)
