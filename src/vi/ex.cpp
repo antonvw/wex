@@ -1015,7 +1015,10 @@ int wex::ex::marker_line(char marker) const
 
 void wex::ex::print(const std::string& text)
 {
-  show_dialog("Print", text);
+  if (!m_frame->print_ex(get_stc(), text))
+  {
+    show_dialog("Print", text);
+  }
 }
 
 const std::string wex::ex::register_insert() const

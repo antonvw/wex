@@ -124,6 +124,12 @@ namespace wex
     /// Default sets the focus to page and adds page as recently used.
     virtual void on_notebook(wxWindowID id, wxWindow* page) { ; };
 
+    /// Allows you to override print ex.
+    virtual bool print_ex(factory::stc* stc, const std::string& text)
+    {
+      return false;
+    };
+
     /// Allows you to perform action for a (vi) command.
     /// This method is invoked after command is executed.
     virtual void record(const std::string& command) { ; };
