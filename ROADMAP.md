@@ -5,7 +5,8 @@
 - ex_stream join and %
 
 ## backlog
-- ex_command should be part of vi lib
+- ex_command should be part of vi lib, and testing is now done in stc
+  because of exec
 - allow dynamic libs
 - clang asan build using LeakSanitizer
 

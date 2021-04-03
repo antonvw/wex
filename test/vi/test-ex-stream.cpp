@@ -42,8 +42,7 @@ void write_file(wex::ex_stream& exs, int lines)
 TEST_CASE("wex::ex_stream")
 {
   auto* stc = get_stc();
-  auto* ex  = new wex::ex(stc);
-  ex->use(wex::ex::EX);
+  auto* ex  = new wex::ex(stc, wex::ex::EX);
 
   SUBCASE("constructor")
   {
