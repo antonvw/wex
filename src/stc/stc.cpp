@@ -1057,5 +1057,5 @@ void wex::stc::visual(bool on)
 
   config_get();
 
-  m_frame->show_ex_bar(!on ? frame::SHOW_BAR : frame::HIDE_BAR_FOCUS_STC, m_vi);
+  m_frame->show_ex_bar(!on ? frame::SHOW_BAR : frame::HIDE_BAR_FOCUS_STC, this);
 }

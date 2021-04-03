@@ -16,7 +16,6 @@
 namespace wex
 {
   class debug;
-  class ex;
   class item_dialog;
   class stc_entry_dialog;
 }; // namespace wex
@@ -148,8 +147,9 @@ namespace wex::del
       const vcs_entry& vcs,
       const data::stc& data) override;
     void set_recent_file(const path& path) override;
-    void show_ex_bar(int action = HIDE_BAR_FOCUS_STC, wex::ex* ex = nullptr)
-      override;
+    void show_ex_bar(
+      int           action = HIDE_BAR_FOCUS_STC,
+      factory::stc* stc    = nullptr) override;
     void show_ex_message(const std::string& text) override;
     void statusbar_clicked(const std::string&) override;
     void statusbar_clicked_right(const std::string&) override;

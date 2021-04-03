@@ -24,7 +24,6 @@ class wxPanel;
 namespace wex
 {
   class debug_entry;
-  class ex;
   class ex_command;
   class menu_item;
   class textctrl;
@@ -146,8 +145,8 @@ namespace wex
     virtual void show_ex_bar(
       /// action
       int action = HIDE_BAR_FOCUS_STC,
-      /// component to use for showing ex bar (for SHOW_ actions)
-      ex* ex = nullptr)
+      /// stc component to use for showing ex bar (for SHOW_ actions)
+      factory::stc* stc = nullptr)
     {
       ;
     };

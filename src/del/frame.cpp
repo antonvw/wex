@@ -12,7 +12,7 @@ namespace wex
 {
   bool is_ex(textctrl* tc)
   {
-    return tc != nullptr && tc->stc() != nullptr && !tc->stc()->is_visual();
+    return tc->stc() != nullptr && !tc->stc()->is_visual();
   }
 } // namespace wex
 
@@ -657,9 +657,7 @@ void wex::del::frame::on_notebook(wxWindowID id, wxWindow* page)
 {
   if (auto* stc = dynamic_cast<wex::stc*>(page); stc != nullptr)
   {
-    show_ex_bar(
-      !stc->is_visual() ? SHOW_BAR : HIDE_BAR_FOCUS_STC,
-      &stc->get_vi());
+    show_ex_bar(!stc->is_visual() ? SHOW_BAR : HIDE_BAR_FOCUS_STC, stc);
 
     set_recent_file(stc->get_filename());
 
@@ -713,13 +711,13 @@ wex::factory::stc* wex::del::frame::open_file(
   return nullptr;
 }
 
-void wex::del::frame::show_ex_bar(int action, ex* ex)
+void wex::del::frame::show_ex_bar(int action, factory::stc* stc)
 {
-  if (action == SHOW_BAR || ex != nullptr)
+  if (action == SHOW_BAR || stc != nullptr)
   {
     if (action >= SHOW_BAR)
     {
-      m_textctrl->set_stc(ex->get_stc(), ":");
+      m_textctrl->set_stc(stc, ":");
     }
 
     pane_show("VIBAR", action >= SHOW_BAR);
