@@ -137,6 +137,20 @@ TEST_CASE("wex::ex_stream")
     REQUIRE(exs.marker_line('x') == -1);
   }
 
+  SUBCASE("previous")
+  {
+    wex::file ifs("test.md", std::ios_base::in);
+    wex::ex_stream exs(ex);
+    exs.stream(ifs);
+    exs.goto_line(10);
+
+    REQUIRE(exs.find(std::string("markdown"), -1, false));
+    REQUIRE(!exs.is_modified());
+    REQUIRE(exs.get_current_line() == 1);
+    REQUIRE(exs.find(std::string("one")));
+    REQUIRE(exs.get_current_line() == 5); // ??
+  }
+
   SUBCASE("request")
   {
     wex::file ifs("test.md", std::ios_base::in);

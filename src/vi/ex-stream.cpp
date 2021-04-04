@@ -147,6 +147,8 @@ bool wex::ex_stream::find(
       found = true;
     }
   }
+  
+  m_current_line_size = 500;
 
   if (!found)
   {
@@ -217,15 +219,14 @@ bool wex::ex_stream::get_next_line()
 {
   if (!m_stream->getline(m_current_line, m_current_line_size))
   {
-    if (m_stream->gcount() > (int)m_current_line_size)
+    if (m_stream->gcount() < (int)m_current_line_size)
     {
       m_stream->clear();
     }
-    else
-    {
-      m_last_line_no = m_line_no;
-      return false;
-    }
+
+    m_last_line_no = m_line_no;
+    
+    return false;
   }
 
   m_line_no++;
@@ -252,31 +253,42 @@ bool wex::ex_stream::get_previous_line()
 
   if (m_stream->gcount() > 0)
   {
-    // We have filled the m_buffer, now from end of m_buffer before \n search
+    // We have filled the m_buffer, now from end of m_buffer search
     // backwards for newline, this is the m_current_line to handle, and set the
     // stream pointer to position before that newline.
-    bool current     = true;
-    int  current_end = 0;
-    for (int i = m_stream->gcount() - 2; i >= 0; i--)
+    for (int i = m_stream->gcount() - 1; i >= 0; i--)
     {
       if (m_buffer[i] == '\n')
       {
-        if (current)
+        const size_t sz(m_stream->gcount() - i - 1);
+        strncpy(m_current_line, m_buffer + i + 1, sz);
+        m_current_line[sz] = 0;
+
+        m_stream->clear();
+
+        if (pos == 0)
         {
-          current     = false;
-          current_end = i - 1;
+          m_current_line_size = i - 1;
+          m_stream->clear();
+          m_stream->seekg(0);
         }
         else
         {
-          const size_t sz(current_end - i);
-          strncpy(m_current_line, m_buffer + i + 1, sz);
-          m_current_line[sz] = 0;
-          m_stream->seekg((size_t)pos + current_end + 2);
-          m_line_no--;
-          return true;
+          m_stream->seekg((size_t)pos + i - 1);
         }
+
+        m_line_no--;
+
+        return true;
       }
     }
+
+    // There was no newline.
+    strncpy(m_current_line, m_buffer, m_stream->gcount());
+    m_current_line[m_stream->gcount()] = 0;
+    m_stream->clear();
+    m_stream->seekg((size_t)pos);
+    return pos != 0;
   }
 
   return false;

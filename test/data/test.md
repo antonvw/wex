@@ -1,5 +1,5 @@
 # markdown
-- test for opening a mardown document
+- test for opening a markdown document
 
 ## one
 - x

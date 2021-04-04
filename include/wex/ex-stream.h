@@ -116,7 +116,9 @@ namespace wex
 
     bool m_is_modified{false};
 
-    const size_t m_buffer_size, m_context_lines, m_current_line_size;
+    const size_t m_buffer_size, m_context_lines;
+
+    size_t m_current_line_size;
 
     std::fstream* m_stream{nullptr}; // pointer in m_file to actual stream
     file *        m_file{nullptr}, *m_temp{nullptr}, *m_work{nullptr};
