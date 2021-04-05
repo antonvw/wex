@@ -27,10 +27,6 @@ wex::del::frame::frame(
       {find_replace_data::get()->text_match_word(),
        find_replace_data::get()->text_match_case(),
        find_replace_data::get()->text_regex()})
-  , m_entry_dialog(new stc_entry_dialog(
-      "tmp",
-      std::string(),
-      data::window().button(wxOK).title("tmp").size({450, 450})))
 {
   std::set<std::string> t(m_info);
   t.insert(m_text_recursive + ",1");
@@ -858,6 +854,14 @@ int wex::del::frame::show_stc_entry_dialog_show(bool modal)
 
 wex::factory::stc* wex::del::frame::stc_entry_dialog_component()
 {
+  if (m_entry_dialog == nullptr)
+  {
+    m_entry_dialog = new stc_entry_dialog(
+      "tmp",
+      std::string(),
+      data::window().button(wxOK).title("tmp").size({450, 450}));
+  }
+
   return m_entry_dialog->get_stc();
 }
 

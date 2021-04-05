@@ -72,6 +72,8 @@ bool wex::test::ui::OnInit()
   m_frame->Show();
   m_frame->pane_add(m_stc);
 
+  SetTopWindow(m_frame);
+
   return true;
 }
 

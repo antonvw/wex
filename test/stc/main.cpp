@@ -46,7 +46,9 @@ bool wex::test::stc::OnInit()
   }
 
   m_frame = new wex::frame();
-  m_stc   = new wex::stc();
+  SetTopWindow(m_frame);
+
+  m_stc = new wex::stc();
   m_frame->Show();
 
   process::prepare_output(m_frame);

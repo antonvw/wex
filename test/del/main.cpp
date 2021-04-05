@@ -15,13 +15,7 @@ namespace wex
     {
     public:
       frame()
-        : del::frame()
-      {
-        lexer lexer("cpp");
-        m_report = new del::listview(
-          data::listview().type(data::listview::KEYWORD).lexer(&lexer));
-        pane_add(m_report);
-      };
+        : del::frame(){};
 
       del::listview* activate(
         data::listview::type_t listview_type,
@@ -29,13 +23,22 @@ namespace wex
       {
         // only for coverage
         del::frame::activate(listview_type, lexer);
-        return m_report;
+
+        if (m_lv == nullptr)
+        {
+          wex::lexer l("cpp");
+          m_lv = new del::listview(
+            data::listview().type(data::listview::KEYWORD).lexer(&l));
+          pane_add(m_lv);
+        }
+
+        return m_lv;
       };
 
       void more_coverage() { file_history_list(); };
 
     private:
-      del::listview* m_report;
+      del::listview* m_lv;
     };
 
     class del : public app
@@ -51,6 +54,9 @@ namespace wex
         m_frame = new test::frame();
         m_frame->more_coverage();
         m_frame->Show();
+
+        SetTopWindow(m_frame);
+
         m_stc = new wex::stc();
 
         return true;

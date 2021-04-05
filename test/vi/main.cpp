@@ -60,8 +60,9 @@ bool wex::test::vi::OnInit()
   m_frame = new wex::frame();
   m_stc   = new vi_stc(m_frame);
   m_frame->Show();
-
   m_frame->pane_add(m_stc);
+
+  SetTopWindow(m_frame);
 
   return true;
 }
