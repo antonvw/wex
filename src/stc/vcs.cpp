@@ -14,7 +14,7 @@
 #include <wex/config.h>
 #include <wex/item-dialog.h>
 #include <wex/menus.h>
-#include <wex/path.h>
+#include <wex/path-lexer.h>
 #include <wex/util.h>
 #include <wex/vcs.h>
 
@@ -239,9 +239,9 @@ bool wex::vcs::execute()
   }
   else
   {
-    const path  filename(get_file());
-    std::string args;
-    path        wd;
+    const path_lexer filename(get_file());
+    std::string      args;
+    path             wd;
 
     if (m_files.size() > 1)
     {

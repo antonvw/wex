@@ -18,51 +18,12 @@
 
 TEST_SUITE_BEGIN("wex::ex");
 
-void modeline_from_file(const std::string& name)
-{
-  auto*             stc = new wex::stc(wex::path(name));
-  const std::string pane(frame()->pane_add(stc));
-
-  const int id_start = wxWindow::NewControlId();
-  auto*     timer    = new wxTimer(frame(), id_start);
-  timer->StartOnce(10);
-  frame()->Bind(
-    wxEVT_TIMER,
-    [=](wxTimerEvent& event) {
-      if (auto* stc(dynamic_cast<wex::stc*>(frame()->pane_get(pane)));
-          stc != nullptr)
-      {
-        // next gives segmentation fault
-        // REQUIRE(stc->get_lexer().scintilla_lexer() == "sql");
-      }
-    },
-    id_start);
-}
-
 TEST_CASE("wex::ex")
 {
-  SUBCASE("modeline")
-  {
-    SUBCASE("text")
-    {
-      const std::string modeline("set ts=120 ec=40 sy=sql sw=4 nu el");
-      auto*             stc = new wex::stc(std::string("-- vi: " + modeline));
-      frame()->pane_add(stc);
-
-      REQUIRE(stc->get_vi().is_active());
-      REQUIRE(stc->GetTabWidth() == 120);
-      REQUIRE(stc->GetEdgeColumn() == 40);
-      REQUIRE(stc->GetIndent() == 4);
-      REQUIRE(stc->get_lexer().scintilla_lexer() == "sql");
-    }
-
-    modeline_from_file("test-modeline.txt");
-
-    modeline_from_file("test-modeline2.txt");
-  }
-
-  wex::stc* stc = get_stc();
-  wex::ex*  ex  = &stc->get_ex();
+  auto* stc = get_stc();
+  stc->visual(true);
+  auto* ex = new wex::ex(stc);
+  stc->SetReadOnly(false);
   stc->set_text("xx\nxx\nyy\nzz\n");
   stc->DocumentStart();
 
@@ -86,11 +47,10 @@ TEST_CASE("wex::ex")
 
   SUBCASE("is_active")
   {
-    // currently the get_ex returns the get_vi
     REQUIRE(ex->is_active());
-    ex->use(false);
+    ex->use(wex::ex::OFF);
     REQUIRE(!ex->is_active());
-    ex->use(true);
+    ex->use(wex::ex::VISUAL);
     REQUIRE(ex->is_active());
   }
 
@@ -118,22 +78,6 @@ TEST_CASE("wex::ex")
 #ifndef __WXMSW__
     REQUIRE(command == "this is yanked end");
 #endif
-  }
-
-  SUBCASE("visual mode")
-  {
-    ex->get_stc()->visual(true);
-    REQUIRE(!ex->get_stc()->data().flags().test(wex::data::stc::WIN_EX));
-    REQUIRE(ex->is_active()); // vi
-
-    ex->get_stc()->visual(false);
-    CAPTURE(ex->get_stc()->data().flags());
-    REQUIRE(ex->get_stc()->data().flags().test(wex::data::stc::WIN_EX));
-    REQUIRE(!ex->is_active()); // vi
-
-    REQUIRE(ex->get_stc()->get_ex().command(":vi"));
-    REQUIRE(!ex->get_stc()->data().flags().test(wex::data::stc::WIN_EX));
-    REQUIRE(ex->is_active()); // vi
   }
 
   SUBCASE("search_flags")

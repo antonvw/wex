@@ -18,7 +18,6 @@ TEST_CASE("wex::path")
     REQUIRE(wex::path("xxx").string() == "xxx");
     REQUIRE(wex::path(wex::path("yyy")).string() == "yyy");
     wex::path fn = wex::test::get_path("test.h");
-    REQUIRE(fn.lexer().scintilla_lexer() == "cpp");
     REQUIRE(wex::path(fn).fullname() == "test.h");
     REQUIRE(wex::path("..").is_relative());
     REQUIRE(!wex::path("..").is_absolute());
@@ -37,7 +36,6 @@ TEST_CASE("wex::path")
     REQUIRE(path.extension() == ".h");
     REQUIRE(path.fullname() == "test.h");
     REQUIRE(!path.empty());
-    REQUIRE(path.lexer().scintilla_lexer() == "cpp");
     REQUIRE(path.log().str().find("test.h") != std::string::npos);
     REQUIRE(path.name() == "test");
     REQUIRE(!path.get_path().empty());

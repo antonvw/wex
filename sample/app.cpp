@@ -139,12 +139,15 @@ frame::frame()
         .CloseButton(false)
         .CenterPane()
         .MinSize(wxSize(250, 250))},
-     {m_stc, wxAuiPaneInfo().Bottom().Caption("STC")},
-     {m_shell,
-      wxAuiPaneInfo().Bottom().Caption("Shell").MinSize(wxSize(250, 250))},
      {m_process->get_shell(),
-      wxAuiPaneInfo().Bottom().Name("PROCESS").MinSize(250, 100).Caption(
-        _("Process"))}});
+      wxAuiPaneInfo()
+        .Bottom()
+        .Name("PROCESS")
+        .MinSize(250, 100)
+        .Caption(_("Process"))
+        .CloseButton(false)}});
+
+  m_stc_lexers->open(wex::lexers::get()->get_filename());
 
   m_notebook->add_page(wex::data::notebook()
                          .page(m_stc_lexers)
@@ -152,6 +155,8 @@ frame::frame()
   m_notebook->add_page(
     wex::data::notebook().page(m_listview).key("wex::listview"));
   m_notebook->add_page(wex::data::notebook().page(m_grid).key("wex::grid"));
+  m_notebook->add_page(wex::data::notebook().page(m_stc).key("wex::stc"));
+  m_notebook->add_page(wex::data::notebook().page(m_shell).key("wex::shell"));
 
   m_grid->CreateGrid(0, 0);
   m_grid->AppendCols(2);

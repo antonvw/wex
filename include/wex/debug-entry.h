@@ -2,11 +2,12 @@
 // Name:      debug-entry.h
 // Purpose:   Declaration of wex::debug_entry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
+#include <map>
 #include <pugixml.hpp>
 #include <wex/menu-command.h>
 #include <wex/menu-commands.h>

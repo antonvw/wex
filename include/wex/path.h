@@ -12,7 +12,6 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include <wex/lexer.h>
 #include <wex/stat.h>
 
 namespace wex
@@ -116,9 +115,6 @@ namespace wex
     /// Returns true if this path is relative.
     bool is_relative() const { return m_path.is_relative(); };
 
-    /// Returns the lexer.
-    const auto& lexer() const { return m_lexer; };
-
     /// Logs info about this class.
     std::stringstream log() const;
 
@@ -150,7 +146,6 @@ namespace wex
   private:
     std::filesystem::path m_path;
     std::string           m_path_original;
-    wex::lexer            m_lexer;
     file_stat             m_stat;
     status_t              m_status{0};
   };

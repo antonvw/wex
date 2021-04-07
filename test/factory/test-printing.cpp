@@ -27,4 +27,22 @@ TEST_CASE("wex::printing")
   printout->GetPageInfo(&min, &max, &from, &to);
   REQUIRE(!printout->HasPage(5));
   REQUIRE(!printout->OnPrintPage(5));
+
+  SUBCASE("print_caption")
+  {
+    REQUIRE(
+      wex::print_caption(wex::path("test")).find("test") != std::string::npos);
+  }
+
+  SUBCASE("print_footer")
+  {
+    REQUIRE(wex::print_footer().find("@") != std::string::npos);
+  }
+
+  SUBCASE("print_header")
+  {
+    REQUIRE(
+      wex::print_header(wex::test::get_path("test.h")).find("test") !=
+      std::string::npos);
+  }
 }

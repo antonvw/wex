@@ -11,10 +11,11 @@
 #include <wex/addressrange.h>
 #include <wex/core.h>
 #include <wex/ex-stream.h>
+#include <wex/ex.h>
+#include <wex/factory/stc.h>
+#include <wex/frame.h>
 #include <wex/frd.h>
 #include <wex/log.h>
-#include <wex/frame.h>
-#include <wex/stc.h>
 #include <wex/temp-filename.h>
 
 #include "ex-stream-line.h"
@@ -51,13 +52,14 @@
     }                                                                    \
   }
 
-wex::ex_stream::ex_stream(wex::stc* stc)
+wex::ex_stream::ex_stream(wex::ex* ex)
   : m_context_lines(50)
   , m_buffer_size(1000000)
   , m_buffer(new char[m_buffer_size])
   , m_current_line_size(500)
   , m_current_line(new char[m_current_line_size])
-  , m_stc(stc)
+  , m_ex(ex)
+  , m_stc(ex->get_stc())
 {
 }
 
@@ -112,8 +114,7 @@ bool wex::ex_stream::erase(const addressrange& range)
 
   m_last_line_no = sl.lines() - sl.actions() - 1;
 
-  m_stc->get_frame()->show_ex_message(
-    std::to_string(sl.actions()) + " fewer lines");
+  m_ex->frame()->show_ex_message(std::to_string(sl.actions()) + " fewer lines");
 
   goto_line(0);
 
@@ -146,6 +147,8 @@ bool wex::ex_stream::find(
       found = true;
     }
   }
+  
+  m_current_line_size = 500;
 
   if (!found)
   {
@@ -153,9 +156,7 @@ bool wex::ex_stream::find(
     m_stream->clear();
     m_stream->seekg(pos);
 
-    m_stc->get_frame()->statustext(
-      get_find_result(text, true, true),
-      std::string());
+    m_ex->frame()->statustext(get_find_result(text, true, true), std::string());
   }
   else
   {
@@ -218,15 +219,14 @@ bool wex::ex_stream::get_next_line()
 {
   if (!m_stream->getline(m_current_line, m_current_line_size))
   {
-    if (m_stream->gcount() > (int)m_current_line_size)
+    if (m_stream->gcount() < (int)m_current_line_size)
     {
       m_stream->clear();
     }
-    else
-    {
-      m_last_line_no = m_line_no;
-      return false;
-    }
+
+    m_last_line_no = m_line_no;
+    
+    return false;
   }
 
   m_line_no++;
@@ -253,31 +253,42 @@ bool wex::ex_stream::get_previous_line()
 
   if (m_stream->gcount() > 0)
   {
-    // We have filled the m_buffer, now from end of m_buffer before \n search
+    // We have filled the m_buffer, now from end of m_buffer search
     // backwards for newline, this is the m_current_line to handle, and set the
     // stream pointer to position before that newline.
-    bool current     = true;
-    int  current_end = 0;
-    for (int i = m_stream->gcount() - 2; i >= 0; i--)
+    for (int i = m_stream->gcount() - 1; i >= 0; i--)
     {
       if (m_buffer[i] == '\n')
       {
-        if (current)
+        const size_t sz(m_stream->gcount() - i - 1);
+        strncpy(m_current_line, m_buffer + i + 1, sz);
+        m_current_line[sz] = 0;
+
+        m_stream->clear();
+
+        if (pos == 0)
         {
-          current     = false;
-          current_end = i - 1;
+          m_current_line_size = i - 1;
+          m_stream->clear();
+          m_stream->seekg(0);
         }
         else
         {
-          const size_t sz(current_end - i);
-          strncpy(m_current_line, m_buffer + i + 1, sz);
-          m_current_line[sz] = 0;
-          m_stream->seekg((size_t)pos + current_end + 2);
-          m_line_no--;
-          return true;
+          m_stream->seekg((size_t)pos + i - 1);
         }
+
+        m_line_no--;
+
+        return true;
       }
     }
+
+    // There was no newline.
+    strncpy(m_current_line, m_buffer, m_stream->gcount());
+    m_current_line[m_stream->gcount()] = 0;
+    m_stream->clear();
+    m_stream->seekg((size_t)pos);
+    return pos != 0;
   }
 
   return false;
@@ -331,7 +342,7 @@ bool wex::ex_stream::insert_text(
 
   const auto line(loc == INSERT_BEFORE ? a.get_line() : a.get_line() + 1);
   const addressrange range(
-    &m_stc->get_ex(),
+    m_ex,
     std::to_string(line) + "," + std::to_string(line));
 
   ex_stream_line sl(m_temp, range, text);
@@ -356,8 +367,7 @@ bool wex::ex_stream::join(const addressrange& range)
 
   m_last_line_no = sl.lines() - sl.actions() - 1;
 
-  m_stc->get_frame()->show_ex_message(
-    std::to_string(sl.actions()) + " fewer lines");
+  m_ex->frame()->show_ex_message(std::to_string(sl.actions()) + " fewer lines");
 
   goto_line(0);
 
@@ -420,6 +430,7 @@ void wex::ex_stream::stream(file& f)
 {
   if (!f.is_open())
   {
+    log("file is not open") << f.get_filename();
     return;
   }
 
@@ -449,7 +460,7 @@ bool wex::ex_stream::substitute(
 
   STREAM_LINE_ON_CHAR();
 
-  m_stc->get_frame()->show_ex_message(
+  m_ex->frame()->show_ex_message(
     "Replaced: " + std::to_string(sl.actions()) +
     " occurrences of: " + data.pattern());
 

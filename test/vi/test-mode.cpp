@@ -14,7 +14,8 @@ TEST_SUITE_BEGIN("wex::vi");
 
 TEST_CASE("wex::vi_mode")
 {
-  wex::vi_mode mode(&get_stc()->get_vi());
+  auto*        vi = new wex::vi(get_stc());
+  wex::vi_mode mode(vi);
 
   REQUIRE(!mode.insert_commands().empty());
 

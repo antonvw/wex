@@ -12,8 +12,8 @@
 #include <wex/core.h>
 #include <wex/defs.h>
 #include <wex/factory/process.h>
-#include <wex/log.h>
 #include <wex/frame.h>
+#include <wex/log.h>
 #include <wex/shell.h>
 
 wex::shell::shell(
@@ -297,12 +297,12 @@ void wex::shell::enable(bool enabled)
   if (!m_enabled)
   {
     // A disabled shell follows vi mode.
-    get_vi().use(config(_("stc.vi mode")).get(true));
+    get_vi().use(config(_("stc.vi mode")).get(true) ? ex::VISUAL : ex::OFF);
   }
   else
   {
     // An enabled shell does not use vi mode.
-    get_vi().use(false);
+    get_vi().use(ex::OFF);
   }
 }
 

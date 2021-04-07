@@ -17,7 +17,11 @@ namespace wex
   enum class info_message_t;
   class global_env;
   class process;
-  class stc;
+
+  namespace factory
+  {
+    class stc;
+  }
 
   /// Offers an address range for vi (ex).
   /// - The range is derived from a number of lines,
@@ -202,7 +206,7 @@ namespace wex
 
     address m_begin, m_end;
 
-    ex*  m_ex;
-    stc* m_stc; // shortcut for m_ex->get_stc()
+    ex*           m_ex;
+    factory::stc* m_stc; // shortcut for m_ex->get_stc()
   };
 }; // namespace wex

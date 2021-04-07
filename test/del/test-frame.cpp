@@ -71,13 +71,40 @@ TEST_CASE("wex::del::frame")
 
   del_frame()->set_recent_file(wex::test::get_path("test.h"));
 
-  del_frame()->show_ex_bar(wex::frame::HIDE_BAR);
-  del_frame()->show_ex_bar(wex::frame::HIDE_BAR_FOCUS_STC);
-  del_frame()->show_ex_bar(wex::frame::HIDE_BAR_FORCE);
-  del_frame()->show_ex_bar(wex::frame::HIDE_BAR_FORCE_FOCUS_STC);
+  SUBCASE("show_ex_bar")
+  {
+    del_frame()->show_ex_bar(wex::frame::HIDE_BAR);
+    del_frame()->show_ex_bar(wex::frame::HIDE_BAR_FOCUS_STC);
+    del_frame()->show_ex_bar(wex::frame::HIDE_BAR_FORCE);
+    del_frame()->show_ex_bar(wex::frame::HIDE_BAR_FORCE_FOCUS_STC);
+  }
 
-  auto* vi = &get_stc()->get_vi();
-  del_frame()->print_ex(vi, "hello vi");
+  SUBCASE("stc") { auto* stc = get_stc(); }
+
+  SUBCASE("stc_entry_dialog")
+  {
+    REQUIRE(del_frame()->stc_entry_dialog_component() != nullptr);
+    del_frame()->stc_entry_dialog_title("hello world");
+    REQUIRE(del_frame()->stc_entry_dialog_title() == "hello world");
+  }
+
+  SUBCASE("visual")
+  {
+    auto* vi = &get_stc()->get_vi();
+
+    vi->get_stc()->visual(true);
+    REQUIRE(!get_stc()->data().flags().test(wex::data::stc::WIN_EX));
+    REQUIRE(vi->is_active());
+
+    vi->get_stc()->visual(false);
+    CAPTURE(get_stc()->data().flags());
+    REQUIRE(get_stc()->data().flags().test(wex::data::stc::WIN_EX));
+    REQUIRE(vi->is_active());
+
+    REQUIRE(vi->command(":vi"));
+    REQUIRE(!get_stc()->data().flags().test(wex::data::stc::WIN_EX));
+    REQUIRE(vi->is_active());
+  }
 
   REQUIRE(!del_frame()->pane_is_shown("VIBAR"));
 

@@ -24,7 +24,6 @@ class wxPanel;
 namespace wex
 {
   class debug_entry;
-  class ex;
   class ex_command;
   class menu_item;
   class textctrl;
@@ -125,14 +124,10 @@ namespace wex
     /// Default sets the focus to page and adds page as recently used.
     virtual void on_notebook(wxWindowID id, wxWindow* page) { ; };
 
-    /// Prints text in ex dialog.
-    virtual void print_ex(
-      /// the ex for the dialog
-      ex* ex,
-      /// the text to be printed
-      const std::string& text)
+    /// Allows you to override print ex.
+    virtual bool print_ex(factory::stc* stc, const std::string& text)
     {
-      ;
+      return false;
     };
 
     /// Allows you to perform action for a (vi) command.
@@ -156,14 +151,32 @@ namespace wex
     virtual void show_ex_bar(
       /// action
       int action = HIDE_BAR_FOCUS_STC,
-      /// component to use for showing ex bar (for SHOW_ actions)
-      ex* ex = nullptr)
+      /// stc component to use for showing ex bar (for SHOW_ actions)
+      factory::stc* stc = nullptr)
     {
       ;
     };
 
     /// Shows text in ex bar.
     virtual void show_ex_message(const std::string& text) { ; };
+
+    /// Shows or updates stc entry dialog.
+    virtual int show_stc_entry_dialog_show(bool modal = false)
+    {
+      return wxID_CANCEL;
+    };
+
+    /// Returns stc component for stc entry dialog.
+    virtual factory::stc* stc_entry_dialog_component() { return nullptr; };
+
+    /// Returns stc entry dialog title.
+    virtual std::string stc_entry_dialog_title() const
+    {
+      return std::string();
+    };
+
+    /// Sets stc entry dialog title.
+    virtual void stc_entry_dialog_title(const std::string& title) { ; };
 
     /// Called after you checked the Sync checkbox on the options toolbar.
     virtual void sync_all() { ; };

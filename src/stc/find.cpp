@@ -9,9 +9,9 @@
 #include <wex/core.h>
 #include <wex/ex-stream.h>
 #include <wex/find-data.h>
+#include <wex/frame.h>
 #include <wex/frd.h>
 #include <wex/log.h>
-#include <wex/frame.h>
 #include <wex/stc.h>
 
 namespace wex
@@ -108,14 +108,6 @@ namespace wex
   }
 } // namespace wex
 
-bool wex::stc::find_next(bool stc_find_string)
-{
-  return find(
-    stc_find_string ? get_find_string() :
-                      find_replace_data::get()->get_find_string(),
-    -1);
-}
-
 bool wex::stc::find(const std::string& text, int find_flags, bool forward)
 {
   if (text.empty())
@@ -130,7 +122,7 @@ bool wex::stc::find(const std::string& text, int find_flags, bool forward)
 
   f.flags(find_flags);
 
-  if (!m_visual)
+  if (!is_visual())
   {
     return false;
   }
@@ -143,4 +135,12 @@ bool wex::stc::find(const std::string& text, int find_flags, bool forward)
     set_search_flags(find_flags);
     return m_vi->is_active() && find_other(*m_vi, f, m_frame);
   }
+}
+
+bool wex::stc::find_next(bool stc_find_string)
+{
+  return find(
+    stc_find_string ? get_find_string() :
+                      find_replace_data::get()->get_find_string(),
+    -1);
 }

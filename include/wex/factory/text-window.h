@@ -37,6 +37,9 @@ namespace wex
         /// finds next or previous
         bool find_next = true) = 0;
 
+      /// Returns current line no
+      virtual int get_current_line() const = 0;
+
       /// Returns number of lines.
       virtual int get_line_count() const = 0;
 

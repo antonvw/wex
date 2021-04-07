@@ -11,7 +11,7 @@
 #include <wex/del/dirctrl.h>
 #include <wex/del/frame.h>
 #include <wex/lexers.h>
-#include <wex/path.h>
+#include <wex/path-lexer.h>
 #include <wex/tostring.h>
 #include <wex/util.h>
 #include <wex/vcs.h>
@@ -124,7 +124,7 @@ wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
 
   Bind(wxEVT_TREE_ITEM_MENU, [=, this](wxTreeEvent& event) {
     GET_VECTOR_FILES
-    const wex::path filename(files[0]);
+    const wex::path_lexer filename(files[0]);
 
     wex::menu menu(menu::menu_t().set(menu::IS_POPUP));
 

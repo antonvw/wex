@@ -9,12 +9,10 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
 #include <numeric>
-#include <pugixml.hpp>
 #include <regex>
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/dir.h>
-#include <wex/lexer.h>
 #include <wex/log.h>
 #include <wex/path.h>
 #include <wx/choicdlg.h>
@@ -369,60 +367,9 @@ bool wex::matches_one_of(
   return false;
 }
 
-void wex::node_properties(
-  const pugi::xml_node*  node,
-  std::vector<property>& properties)
-{
-  for (const auto& child : node->children())
-  {
-    if (strcmp(child.name(), "property") == 0)
-    {
-      properties.emplace_back(child);
-    }
-  }
-}
-
 bool wex::one_letter_after(const std::string& text, const std::string& letter)
 {
   return std::regex_match(letter, std::regex("^" + text + "[a-zA-Z]$"));
-}
-
-void wex::node_styles(
-  const pugi::xml_node* node,
-  const std::string&    lexer,
-  std::vector<style>&   styles)
-{
-  for (const auto& child : node->children())
-  {
-    if (strcmp(child.name(), "style") == 0)
-    {
-      styles.emplace_back(child, lexer);
-    }
-  }
-}
-
-const std::string wex::print_caption(const path& filename)
-{
-  return filename.string();
-}
-
-const std::string wex::print_footer()
-{
-  return _("Page @PAGENUM@ of @PAGESCNT@").ToStdString();
-}
-
-const std::string wex::print_header(const path& filename)
-{
-  if (filename.file_exists())
-  {
-    return get_endoftext(
-      filename.string() + " " + filename.stat().get_modification_time(),
-      filename.lexer().line_size());
-  }
-  else
-  {
-    return _("Printed").ToStdString() + ": " + now();
-  }
 }
 
 const std::string wex::quoted(const std::string& text)

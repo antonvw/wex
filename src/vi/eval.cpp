@@ -14,9 +14,11 @@
 #include <boost/spirit/home/x3.hpp>
 #include <boost/spirit/home/x3/support/ast/variant.hpp>
 
-#include "eval.h"
+#include <wex/ex-stream.h>
 #include <wex/ex.h>
-#include <wex/stc.h>
+#include <wex/factory/stc.h>
+
+#include "eval.h"
 
 namespace x3 = boost::spirit::x3;
 
@@ -88,7 +90,14 @@ namespace wex
         }
         else if (e.token == "$")
         {
-          return m_ex->get_command().get_stc()->get_line_count_request();
+          if (m_ex->visual() == wex::ex::EX)
+          {
+            return m_ex->ex_stream()->get_line_count_request();
+          }
+          else
+          {
+            return m_ex->get_command().get_stc()->get_line_count_request();
+          }
         }
         else if (e.token[0] == '\'' && e.token.size() == 2)
         {

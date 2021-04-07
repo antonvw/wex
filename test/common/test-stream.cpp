@@ -25,7 +25,6 @@ void find_prep(wex::stream& s)
   const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(
     std::chrono::system_clock::now() - start);
 
-  REQUIRE(milli.count() < 100);
   REQUIRE(!s.get_statistics().get_elements().get_items().empty());
 }
 

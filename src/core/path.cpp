@@ -7,10 +7,10 @@
 
 #include <boost/algorithm/string.hpp>
 #include <wex/core.h>
-#include <wex/lexers.h>
 #include <wex/log.h>
 #include <wex/path.h>
 #include <wx/mimetype.h>
+#include <wx/translation.h>
 #include <wx/url.h>
 
 namespace fs = std::filesystem;
@@ -23,20 +23,11 @@ namespace wex
     boost::algorithm::replace_all(out, "~", wxGetHomeDir());
     return out;
   }
-
-  const std::string lexer_string(const std::string& filename)
-  {
-    lexers* l = lexers::get(false);
-    return l != nullptr && !l->get_lexers().empty() ?
-             l->find_by_filename(filename).display_lexer() :
-             std::string();
-  }
 }; // namespace wex
 
 wex::path::path(const fs::path& p, status_t t)
   : m_path(p)
   , m_stat(p.string())
-  , m_lexer(lexer_string(p.filename().string()))
   , m_status(t)
 {
   if (p.empty())
@@ -88,7 +79,6 @@ wex::path& wex::path::operator=(const wex::path& r)
   {
     m_path          = r.data();
     m_path_original = r.m_path_original;
-    m_lexer         = r.m_lexer;
     m_stat          = r.m_stat;
     m_status        = r.m_status;
   }

@@ -9,6 +9,7 @@
 
 #include <wex/cmdline.h>
 #include <wex/config.h>
+#include <wex/frame.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
 #include <wx/timer.h>
@@ -49,6 +50,9 @@ bool wex::test::app::OnInit()
   config(_("stc.vi mode")).set(true);
   config(_("stc.Auto complete")).set(true);
   config(_("locale")).set(get_locale().GetName().ToStdString()); // for coverage
+
+  auto* frame = new wxFrame(nullptr, -1, "test");
+  frame->Show();
 
   return true;
 }

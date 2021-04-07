@@ -6,8 +6,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ex.h>
+#include <wex/factory/stc.h>
 #include <wex/macros.h>
-#include <wex/stc.h>
 #include <wx/defs.h>
 
 bool wex::marker_and_register_expansion(const ex* ex, std::string& text)
@@ -48,13 +48,13 @@ bool wex::marker_and_register_expansion(const ex* ex, std::string& text)
         {
           output += ex->get_stc()->get_filename().fullname();
         }
-        else 
+        else
         {
           const std::string reg(
-                   ex->get_macros().get_register(*(std::next(it))));
+            ex->get_macros().get_register(*(std::next(it))));
           output += reg;
         }
-      
+
         ++it;
         changed = true;
         break;

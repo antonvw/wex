@@ -1,7 +1,9 @@
 # roadmap
 
 ## backlog
-- vi should be independant of stc lib
+- ex mode bar is not saved, and focus not ok
+  ex_stream join and % and find when no \n was present
+  improve ex stream previous test
 - allow dynamic libs
 - clang asan build using LeakSanitizer
 

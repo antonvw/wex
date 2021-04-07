@@ -7,13 +7,12 @@
 
 #include <thread>
 #include <wex/wex.h>
-#include <wx/window.h>
 
 namespace wex
 {
   bool is_ex(textctrl* tc)
   {
-    return tc != nullptr && tc->stc() != nullptr && !tc->stc()->is_visual();
+    return tc->stc() != nullptr && !tc->stc()->is_visual();
   }
 } // namespace wex
 
@@ -104,7 +103,7 @@ wex::del::frame::frame(
           if (auto* stc = dynamic_cast<wex::stc*>(get_stc()); stc != nullptr)
           {
             wex::path::current(stc->get_filename().get_path());
-            if (!marker_and_register_expansion(&stc->get_ex(), text))
+            if (!marker_and_register_expansion(&stc->get_vi(), text))
               return;
           }
 
@@ -164,7 +163,7 @@ wex::del::frame::frame(
           std::advance(it, event.GetId() - ID_FIND_FIRST);
           if (const std::string text(*it); stc->find(
                 text,
-                stc->get_ex().is_active() ? stc->get_ex().search_flags() : -1))
+                stc->get_vi().is_active() ? stc->get_vi().search_flags() : -1))
           {
             find_replace_data::get()->set_find_string(text);
           }
@@ -654,9 +653,7 @@ void wex::del::frame::on_notebook(wxWindowID id, wxWindow* page)
 {
   if (auto* stc = dynamic_cast<wex::stc*>(page); stc != nullptr)
   {
-    show_ex_bar(
-      !stc->is_visual() ? SHOW_BAR : HIDE_BAR_FOCUS_STC,
-      &stc->get_ex());
+    show_ex_bar(!stc->is_visual() ? SHOW_BAR : HIDE_BAR_FOCUS_STC, stc);
 
     set_recent_file(stc->get_filename());
 
@@ -703,25 +700,20 @@ wex::factory::stc* wex::del::frame::open_file(
   if (auto* stc = get_stc(); stc != nullptr)
   {
     stc->set_text(vcs.get_stdout());
-    vcs_command_stc(vcs.get_command(), filename.lexer(), stc);
+    vcs_command_stc(vcs.get_command(), path_lexer(filename).lexer(), stc);
     return stc;
   }
 
   return nullptr;
 }
 
-void wex::del::frame::print_ex(ex* ex, const std::string& text)
+void wex::del::frame::show_ex_bar(int action, factory::stc* stc)
 {
-  ex->print(text);
-}
-
-void wex::del::frame::show_ex_bar(int action, ex* ex)
-{
-  if (action == SHOW_BAR || ex != nullptr)
+  if (action == SHOW_BAR || stc != nullptr)
   {
-    if (action >= SHOW_BAR)
+    if (action >= SHOW_BAR && stc != nullptr)
     {
-      m_textctrl->set_stc(ex->get_stc(), ":");
+      m_textctrl->set_stc(stc, ":");
     }
 
     pane_show("VIBAR", action >= SHOW_BAR);
@@ -853,6 +845,34 @@ void wex::del::frame::statusbar_clicked_right(const std::string& pane)
   {
     wex::frame::statusbar_clicked_right(pane);
   }
+}
+
+int wex::del::frame::show_stc_entry_dialog_show(bool modal)
+{
+  return modal ? m_entry_dialog->ShowModal() : m_entry_dialog->Show();
+}
+
+wex::factory::stc* wex::del::frame::stc_entry_dialog_component()
+{
+  if (m_entry_dialog == nullptr)
+  {
+    m_entry_dialog = new stc_entry_dialog(
+      "tmp",
+      std::string(),
+      data::window().button(wxOK).title("tmp").size({450, 450}));
+  }
+
+  return m_entry_dialog->get_stc();
+}
+
+std::string wex::del::frame::stc_entry_dialog_title() const
+{
+  return m_entry_dialog->GetTitle();
+}
+
+void wex::del::frame::stc_entry_dialog_title(const std::string& title)
+{
+  m_entry_dialog->SetTitle(title);
 }
 
 void wex::del::frame::sync(bool start)

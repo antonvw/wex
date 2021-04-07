@@ -8,8 +8,8 @@
 #pragma once
 
 #include <string>
+#include <wex/factory/stc.h>
 #include <wex/frame.h>
-#include <wex/stc.h>
 
 #include "../test.h"
 
@@ -19,4 +19,4 @@ std::vector<std::string> get_builtin_variables();
 wex::frame* frame();
 
 /// Returns an stc.
-wex::stc* get_stc();
+wex::factory::stc* get_stc();

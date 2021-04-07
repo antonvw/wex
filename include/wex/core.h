@@ -10,7 +10,6 @@
 #include <bitset>
 #include <set>
 #include <vector>
-#include <wex/style.h>
 
 class wxArrayString;
 class wxWindow;
@@ -143,30 +142,8 @@ namespace wex
   /// fields in specified pattern (fields separated by ; sign).
   bool matches_one_of(const std::string& fullname, const std::string& patterns);
 
-  /// Parses properties node.
-  void node_properties(
-    const pugi::xml_node*  node,
-    std::vector<property>& properties);
-
-  /// Parses style node.
-  void node_styles(
-    const pugi::xml_node* node,
-    const std::string&    lexer,
-    std::vector<style>&   styles);
-
   /// Returns whether there is one letter after.
   bool one_letter_after(const std::string& text, const std::string& letter);
-
-  /// Adds a caption.
-  const std::string print_caption(const path& filename);
-
-  /// You can use macros in PrintFooter and in PrintHeader:
-  ///   \@PAGENUM\@ is replaced by page number
-  ///   \@PAGESCNT\@ is replaced by total number of pages
-  const std::string print_footer();
-
-  /// Adds a header.
-  const std::string print_header(const path& filename);
 
   /// Returns quotes around the text.
   const std::string quoted(const std::string& text);

@@ -2,7 +2,7 @@
 // Name:      macro-fsm.cpp
 // Purpose:   Implementation of class wex::macro_fsm
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/mpl/list.hpp>
@@ -13,12 +13,12 @@
 #include <pugixml.hpp>
 #include <wex/config.h>
 #include <wex/ex.h>
+#include <wex/factory/stc.h>
+#include <wex/frame.h>
 #include <wex/log.h>
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
-#include <wex/frame.h>
 #include <wex/statusbar.h>
-#include <wex/stc.h>
 #include <wex/variable.h>
 
 #include "macro-fsm.h"

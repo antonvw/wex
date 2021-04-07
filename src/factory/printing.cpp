@@ -10,8 +10,32 @@
 #include <wx/wx.h>
 #endif
 #include <wex/core.h>
-#include <wex/path.h>
 #include <wex/printing.h>
+#include <wx/stc/stc.h>
+
+const std::string wex::print_caption(const path& filename)
+{
+  return filename.string();
+}
+
+const std::string wex::print_footer()
+{
+  return _("Page @PAGENUM@ of @PAGESCNT@").ToStdString();
+}
+
+const std::string wex::print_header(const path_lexer& filename)
+{
+  if (filename.file_exists())
+  {
+    return get_endoftext(
+      filename.string() + " " + filename.stat().get_modification_time(),
+      filename.lexer().line_size());
+  }
+  else
+  {
+    return _("Printed").ToStdString() + ": " + now();
+  }
+}
 
 wex::printing* wex::printing::m_self = nullptr;
 
@@ -23,7 +47,7 @@ wex::printing::printing()
   m_html_printer->GetPageSetupData()->SetMarginBottomRight(wxPoint(15, 5));
   m_html_printer->GetPageSetupData()->SetMarginTopLeft(wxPoint(15, 5));
 
-  m_html_printer->SetHeader(print_header(path()));
+  m_html_printer->SetHeader(print_header(path_lexer()));
   m_html_printer->SetFooter(print_footer());
 }
 

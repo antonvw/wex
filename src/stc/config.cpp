@@ -13,6 +13,7 @@
 #include <wex/item-vector.h>
 #include <wex/lexers.h>
 #include <wex/link.h>
+#include <wex/stc-entry-dialog.h>
 #include <wex/stc.h>
 #include <wx/settings.h>
 #include <wx/stockitem.h>
@@ -183,7 +184,10 @@ void wex::stc::config_get()
     SetFoldFlags(iv.find<long>(_("stc.Fold flags")));
   }
 
-  get_ex().use(iv.find<bool>(_("stc.vi mode")));
+  if (!iv.find<bool>(_("stc.vi mode")))
+  {
+    get_vi().use(ex::OFF);
+  }
 
   show_line_numbers(iv.find<bool>(_("stc.Line numbers")));
 

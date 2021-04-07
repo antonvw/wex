@@ -8,13 +8,14 @@
 #include <wex/chrono.h>
 #include <wex/ex.h>
 #include <wex/factory/process.h>
+#include <wex/factory/stc.h>
+#include <wex/frame.h>
 #include <wex/log.h>
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
 #include <wex/regex.h>
-#include <wex/stc-entry-dialog.h>
-#include <wex/stc.h>
 #include <wex/variable.h>
+#include <wx/app.h>
 
 // Several types of variables are supported.
 // See xml file.
@@ -339,24 +340,22 @@ bool wex::variable::expand_builtin(ex* ex, std::string& expanded) const
 
 bool wex::variable::expand_input(std::string& expanded) const
 {
+  auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
+
+  if (frame->stc_entry_dialog_component() == nullptr)
+  {
+    expanded = m_value;
+    return true;
+  }
+
   if (m_ask_for_input)
   {
     const auto use(!expanded.empty() ? expanded : m_value);
 
-    if (m_dialog == nullptr)
-    {
-      m_dialog = new stc_entry_dialog(
-        use,
-        std::string(),
-        data::window().title(m_name + ":"));
-
-      m_dialog->get_stc()->get_ex().use(false);
-      m_dialog->get_stc()->SetWrapMode(wxSTC_WRAP_WORD);
-    }
-
-    m_dialog->SetTitle(m_name);
-    m_dialog->get_stc()->set_text(use);
-    m_dialog->get_stc()->SetFocus();
+    frame->stc_entry_dialog_title(m_name);
+    frame->stc_entry_dialog_component()->SetWrapMode(wxSTC_WRAP_WORD);
+    frame->stc_entry_dialog_component()->set_text(use);
+    frame->stc_entry_dialog_component()->SetFocus();
 
     bool ended = false;
 
@@ -366,7 +365,7 @@ bool wex::variable::expand_input(std::string& expanded) const
       wxEndBusyCursor();
     }
 
-    const int result = m_dialog->ShowModal();
+    const int result = frame->show_stc_entry_dialog_show(true);
 
     if (ended)
     {
@@ -378,7 +377,7 @@ bool wex::variable::expand_input(std::string& expanded) const
       return false;
     }
 
-    const auto& value(m_dialog->get_stc()->get_text());
+    const auto& value(frame->stc_entry_dialog_component()->get_text());
 
     if (value.empty())
     {
