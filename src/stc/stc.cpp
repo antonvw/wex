@@ -106,7 +106,7 @@ wex::stc::stc(const path& p, const data::stc& data)
   }
   else
   {
-    get_lexer().set(p.lexer(), true);
+    get_lexer().set(path_lexer(p).lexer(), true);
 
     m_file.file_new(p);
     m_data.inject();

@@ -9,10 +9,11 @@
 #include <wex/beautify.h>
 #include <wex/config.h>
 #include <wex/factory/process.h>
+#include <wex/path-lexer.h>
 
 bool wex::beautify::file(const path& p) const
 {
-  return is_auto() && is_active() && is_supported(p.lexer()) &&
+  return is_auto() && is_active() && is_supported(path_lexer(p).lexer()) &&
          factory::process().system(
            name() + " -i " + p.string() +
            " --style=file --fallback-style=none") == 0;

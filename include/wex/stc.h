@@ -15,7 +15,6 @@
 #include <wex/hexmode.h>
 #include <wex/item.h>
 #include <wex/marker.h>
-#include <wex/path.h>
 #include <wex/stc-data.h>
 #include <wex/stc-file.h>
 #include <wex/vi.h>

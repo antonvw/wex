@@ -5,8 +5,10 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/presentation.h>
+#include <wx/stc/stc.h>
+
+#include "../test.h"
 
 TEST_CASE("wex::presentation")
 {

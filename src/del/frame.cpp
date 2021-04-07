@@ -700,7 +700,7 @@ wex::factory::stc* wex::del::frame::open_file(
   if (auto* stc = get_stc(); stc != nullptr)
   {
     stc->set_text(vcs.get_stdout());
-    vcs_command_stc(vcs.get_command(), filename.lexer(), stc);
+    vcs_command_stc(vcs.get_command(), path_lexer(filename).lexer(), stc);
     return stc;
   }
 
@@ -711,7 +711,7 @@ void wex::del::frame::show_ex_bar(int action, factory::stc* stc)
 {
   if (action == SHOW_BAR || stc != nullptr)
   {
-    if (action >= SHOW_BAR)
+    if (action >= SHOW_BAR && stc != nullptr)
     {
       m_textctrl->set_stc(stc, ":");
     }

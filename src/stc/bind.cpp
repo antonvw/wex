@@ -20,7 +20,7 @@
 #include <wex/lexers.h>
 #include <wex/log.h>
 #include <wex/menu.h>
-#include <wex/path.h>
+#include <wex/path-lexer.h>
 #include <wex/sort.h>
 #include <wex/stc-bind.h>
 #include <wex/stc-entry-dialog.h>
@@ -645,7 +645,7 @@ void wex::stc::file_action(const wxCommandEvent& event)
         get_lexer().scintilla_lexer().empty() &&
         GetLength() < config("stc.max.Size lexer").get(10000000))
       {
-        get_lexer().set(get_filename().lexer());
+        get_lexer().set(path_lexer(get_filename()).lexer());
         config_get();
       }
 
@@ -666,7 +666,7 @@ void wex::stc::file_action(const wxCommandEvent& event)
       break;
 
     case stc_file::FILE_SAVE_AS:
-      get_lexer().set(get_filename().lexer());
+      get_lexer().set(path_lexer(get_filename()).lexer());
       SetName(get_filename().string());
       [[fallthrough]];
 
@@ -678,7 +678,7 @@ void wex::stc::file_action(const wxCommandEvent& event)
       break;
   }
 
-  if (get_filename().lexer().language() == "xml")
+  if (path_lexer(get_filename()).lexer().language() == "xml")
   {
     if (const pugi::xml_parse_result result =
           pugi::xml_document().load_file(get_filename().string().c_str());

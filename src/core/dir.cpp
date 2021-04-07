@@ -10,6 +10,7 @@
 #include <wex/core.h>
 #include <wex/dir.h>
 #include <wex/log.h>
+#include <wx/translation.h>
 
 namespace fs = std::filesystem;
 

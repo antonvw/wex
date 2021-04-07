@@ -9,8 +9,6 @@
 
 #include "../test.h"
 #include <wex/core.h>
-#include <wex/property.h>
-#include <wex/style.h>
 
 TEST_CASE("wex::core")
 {
@@ -182,55 +180,6 @@ TEST_CASE("wex::core")
     REQUIRE(!wex::matches_one_of("test.txt", "*.cpp"));
     REQUIRE(wex::matches_one_of("test.txt", "*.txt"));
     REQUIRE(wex::matches_one_of("test.txt", "*.cpp;*.txt"));
-  }
-
-  SUBCASE("node_properties")
-  {
-    std::vector<wex::property> properties;
-    pugi::xml_document         doc;
-
-    REQUIRE(doc.load_string("<properties>"
-                            "  <property name = \"fold.comment\">2</property>"
-                            "</properties>"));
-    auto node = doc.document_element();
-
-    wex::node_properties(&node, properties);
-
-    REQUIRE(properties.size() == 1);
-  }
-
-  SUBCASE("node_styles")
-  {
-    std::vector<wex::style> styles;
-    pugi::xml_document      doc;
-
-    REQUIRE(doc.load_string("<styles>"
-                            "  <style no = \"2\">string</style>"
-                            "</styles>"));
-
-    auto node = doc.document_element();
-
-    wex::node_styles(&node, "cpp", styles);
-
-    REQUIRE(styles.size() == 1);
-  }
-
-  SUBCASE("print_caption")
-  {
-    REQUIRE(
-      wex::print_caption(wex::path("test")).find("test") != std::string::npos);
-  }
-
-  SUBCASE("print_footer")
-  {
-    REQUIRE(wex::print_footer().find("@") != std::string::npos);
-  }
-
-  SUBCASE("print_header")
-  {
-    REQUIRE(
-      wex::print_header(wex::test::get_path("test.h")).find("test") !=
-      std::string::npos);
   }
 
   SUBCASE("quoted")

@@ -145,7 +145,8 @@ void wex::del::listview::build_popup_menu(wex::menu& menu)
     exists    = item.get_filename().stat().is_ok();
     is_folder = item.get_filename().dir_exists();
     readonly  = item.get_filename().stat().is_readonly();
-    is_make   = item.get_filename().lexer().scintilla_lexer() == "makefile";
+    is_make =
+      path_lexer(item.get_filename()).lexer().scintilla_lexer() == "makefile";
   }
 
   wex::listview::build_popup_menu(menu);

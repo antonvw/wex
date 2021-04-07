@@ -1,5 +1,4 @@
 # roadmap
-- blame and path (core) have relation with lexer or lexers (factory)
 
 ## backlog
 - ex mode bar is not saved, and focus not ok

@@ -14,6 +14,7 @@
 #include <wex/defs.h>
 #include <wex/ex-stream.h>
 #include <wex/file-dialog.h>
+#include <wex/path-lexer.h>
 #include <wex/stc-file.h>
 #include <wex/stc.h>
 
@@ -142,7 +143,9 @@ void wex::stc_file::do_file_new()
     m_stc->clear();
   }
 
-  m_stc->get_lexer().set(get_filename().lexer(), true); // allow fold
+  m_stc->get_lexer().set(
+    path_lexer(get_filename()).lexer(),
+    true); // allow fold
 }
 
 void wex::stc_file::do_file_save(bool save_as)

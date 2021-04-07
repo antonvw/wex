@@ -68,6 +68,7 @@
 #include <wex/notebook-data.h>
 #include <wex/notebook.h>
 #include <wex/odbc.h>
+#include <wex/path-lexer.h>
 #include <wex/path.h>
 #include <wex/presentation.h>
 #include <wex/printing.h>

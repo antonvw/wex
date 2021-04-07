@@ -7,8 +7,8 @@
 
 #pragma once
 
+#include <wex/path-lexer.h>
 #include <wex/path-match.h>
-#include <wex/path.h>
 #include <wex/stream-statistics.h>
 #include <wex/tool.h>
 
@@ -80,9 +80,9 @@ namespace wex
     bool is_word_character(int c) const { return isalnum(c) || c == '_'; };
     int  replace_all(std::string& text, int* match_pos);
 
-    const path m_path;
-    const tool m_tool;
-    const int  m_threshold;
+    const path_lexer m_path;
+    const tool       m_tool;
+    const int        m_threshold;
 
     stream_statistics m_stats;
     int               m_prev{0};

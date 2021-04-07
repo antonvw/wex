@@ -336,7 +336,7 @@ wex::ex::ex(wex::factory::stc* stc, mode_t mode)
                   {
                     wex::lexers::get()->restore_theme();
                     get_stc()->get_lexer().set(
-                      get_stc()->get_filename().lexer().display_lexer(),
+                      get_stc()->get_lexer().display_lexer(),
                       true); // allow folding
                   }
                   else if (command.ends_with("off"))
