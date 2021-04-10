@@ -6,6 +6,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
+#include <wex/addressrange.h>
+#include <wex/ex-stream.h>
 #include <wex/vi.h>
 
 #include "test.h"
@@ -19,6 +21,22 @@ void change_mode(
 {
   REQUIRE(vi->command(command));
   REQUIRE(vi->mode().get() == mode);
+}
+
+void create_file()
+{
+  const std::string text("test1\ntest2\ntest3\ntest4\n\n");
+  std::fstream      ifs("ex-mode.txt", std::ios_base::out);
+  REQUIRE(ifs.write(text.c_str(), text.size()));
+}
+
+wex::file open_file()
+{
+  create_file();
+
+  wex::file ifs("ex-mode.txt", std::ios_base::in | std::ios_base::out);
+  REQUIRE(ifs.is_open());
+  return ifs;
 }
 
 TEST_CASE("wex::vi")
@@ -67,6 +85,29 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->command(ctrl_r + "0"));
     change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
     REQUIRE(stc->get_text() == "test.h");
+  }
+
+  SUBCASE("stream")
+  {
+    stc->set_text("\n\n\n\n\n\n");
+    stc->visual(false);
+    auto* vi = &stc->get_vi();
+
+    wex::file       ifs(open_file());
+    wex::ex_stream* exs(vi->ex_stream());
+    ifs.open();
+    exs->stream(ifs);
+
+    wex::addressrange ar(vi, "%");
+    REQUIRE(exs->get_line_count_request() == 5);
+    REQUIRE(ar.get_begin().get_line() == 1);
+    REQUIRE(ar.get_end().get_line() == 5);
+
+    REQUIRE(exs->join(ar));
+    REQUIRE(exs->is_modified());
+    REQUIRE(exs->get_line_count() == 1);
+
+    stc->visual(wex::vi::VISUAL);
   }
 
   SUBCASE("visual")
@@ -173,4 +214,6 @@ TEST_CASE("wex::vi")
     event.m_uniChar = ']';
     REQUIRE(!vi->on_char(event));
   }
+
+  remove("ex-mode.txt");
 }

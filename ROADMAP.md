@@ -1,11 +1,9 @@
 # roadmap
+- line no and find previous
 
 ## backlog
-- ex mode bar is not saved, and focus not ok
-  ex_stream join and % and find when no \n was present
-  improve ex stream previous test
-- allow dynamic libs
 - clang asan build using LeakSanitizer
+- allow dynamic libs
 
 - invest use wxTextCompleter
 - use spaceship operator

@@ -11,6 +11,7 @@
 #include <wex/frame.h>
 #include <wex/frd.h>
 #include <wex/log.h>
+#include <wex/textctrl-input.h>
 #include <wex/textctrl.h>
 #include <wx/control.h>
 #include <wx/settings.h>
@@ -34,6 +35,11 @@ wex::textctrl_imp::textctrl_imp(
   , m_prefix(prefix)
   , m_tc(tc)
   , m_timer(this)
+  , m_calcs(new textctrl_input(ex_command::type_t::CALC))
+  , m_commands(new textctrl_input(ex_command::type_t::COMMAND))
+  , m_commands_ex(new textctrl_input(ex_command::type_t::COMMAND_EX))
+  , m_escapes(new textctrl_input(ex_command::type_t::ESCAPE))
+  , m_find_margins(new textctrl_input(ex_command::type_t::FIND_MARGIN))
 {
   SetFont(config(_("stc.Text font"))
             .get(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
@@ -189,12 +195,12 @@ wex::textctrl_imp::textctrl_imp(
             {
               if (GetValue().empty())
               {
-                set_text(TCI().get());
+                set_text(tci()->get());
                 SelectAll();
               }
               else
               {
-                TCI().set(event.GetKeyCode(), m_tc);
+                tci()->set(event.GetKeyCode(), m_tc);
               }
             }
             else
@@ -338,7 +344,7 @@ wex::textctrl_imp::textctrl_imp(
       }
       else
       {
-        TCI().set(m_tc);
+        tci()->set(m_tc);
 
         if (
           m_command.type() == ex_command::type_t::COMMAND ||
@@ -408,6 +414,17 @@ wex::textctrl_imp::textctrl_imp(
   bind();
 }
 
+bool wex::textctrl_imp::Destroy()
+{
+  delete m_calcs;
+  delete m_commands;
+  delete m_commands_ex;
+  delete m_escapes;
+  delete m_find_margins;
+
+  return wxTextCtrl::Destroy();
+}
+
 void wex::textctrl_imp::bind()
 {
   Bind(wxEVT_TIMER, [=, this](wxTimerEvent& event) {
@@ -428,8 +445,16 @@ void wex::textctrl_imp::cut()
 
 // A GetValue().ToStdString() should suffice, but that
 // corrupts a " character.
-const std::string wex::textctrl_imp::get_text() const
+const std::string wex::textctrl_imp::get_text()
 {
+  if (is_ex_mode())
+  {
+    if (!m_command.empty() && m_command.front() != ':')
+    {
+      m_command = ex_command(":");
+    }
+  }
+
   return m_prefix == nullptr ?
            GetValue().ToStdString() :
            m_command.command().substr(m_command.str().size());
@@ -468,7 +493,7 @@ bool wex::textctrl_imp::handle(const std::string& command)
     case ex_command::type_t::CALC:
     case ex_command::type_t::ESCAPE:
     case ex_command::type_t::FIND_MARGIN:
-      set_text(TCI().get());
+      set_text(tci()->get());
       SelectAll();
       break;
 
@@ -479,11 +504,12 @@ bool wex::textctrl_imp::handle(const std::string& command)
         set_text("!");
         SetInsertionPointEnd();
       }
-      else if (!TCI().get().empty())
+      else if (!tci()->get().empty())
       {
         set_text(
-          m_mode_visual && TCI().get().find(range) != 0 ? range + TCI().get() :
-                                                          TCI().get());
+          m_mode_visual && tci()->get().find(range) != 0 ?
+            range + tci()->get() :
+            tci()->get());
         SelectAll();
       }
       else
@@ -574,7 +600,7 @@ void wex::textctrl_imp::SelectAll()
   }
 }
 
-wex::textctrl_input& wex::textctrl_imp::TCI()
+wex::textctrl_input* wex::textctrl_imp::tci()
 {
   switch (m_command.type())
   {

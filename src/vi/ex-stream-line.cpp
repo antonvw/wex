@@ -45,7 +45,9 @@ wex::ex_stream_line::ex_stream_line(
   : m_action(type)
   , m_file(work)
   , m_begin(range.get_begin().get_line() - 1)
-  , m_end(range.get_end().get_line() - 1)
+  , m_end(
+      type != ACTION_JOIN ? range.get_end().get_line() - 1 :
+                            range.get_end().get_line() - 2)
 {
 }
 

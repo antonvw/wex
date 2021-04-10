@@ -29,6 +29,6 @@ wex::path_lexer::path_lexer(const std::string& p)
 
 wex::path_lexer::path_lexer(const path& p)
   : path(p)
-  , m_lexer(lexer_string(p.string()))
+  , m_lexer(lexer_string(p.fullname()))
 {
 }

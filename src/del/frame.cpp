@@ -651,6 +651,11 @@ void wex::del::frame::on_idle(wxIdleEvent& event)
 
 void wex::del::frame::on_notebook(wxWindowID id, wxWindow* page)
 {
+  if (is_closing())
+  {
+    return;
+  }
+  
   if (auto* stc = dynamic_cast<wex::stc*>(page); stc != nullptr)
   {
     show_ex_bar(!stc->is_visual() ? SHOW_BAR : HIDE_BAR_FOCUS_STC, stc);
