@@ -222,15 +222,25 @@ TEST_CASE("wex::vi")
     REQUIRE(!vi->mode().is_insert());
   }
 
-  SUBCASE("maps")
+  SUBCASE("is_active")
   {
-    stc->set_text("this text is not needed");
-    vi->command(":map 7 :%d");
-    int ctrl_g = 7;
-    vi->command(std::string(1, ctrl_g));
-    REQUIRE(stc->get_text().empty());
+    REQUIRE(vi->is_active());
+    vi->use(wex::ex::OFF);
+    REQUIRE(!vi->is_active());
+    vi->use(wex::ex::VISUAL);
+    REQUIRE(vi->is_active());
   }
 
+  SUBCASE("join")
+  {
+    stc->set_text("this text contains xx\nand yy");
+    REQUIRE(stc->get_line_count() == 2);
+    REQUIRE(stc->get_current_line() == 0);
+    
+    REQUIRE(vi->command("J"));
+    REQUIRE(stc->get_line_count() == 1);
+  }
+  
   SUBCASE("macro")
   {
     for (const auto& macro : std::vector<std::vector<std::string>>{
@@ -264,15 +274,15 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->command("10@t"));
   }
 
-  SUBCASE("is_active")
+  SUBCASE("maps")
   {
-    REQUIRE(vi->is_active());
-    vi->use(wex::ex::OFF);
-    REQUIRE(!vi->is_active());
-    vi->use(wex::ex::VISUAL);
-    REQUIRE(vi->is_active());
+    stc->set_text("this text is not needed");
+    vi->command(":map 7 :%d");
+    int ctrl_g = 7;
+    vi->command(std::string(1, ctrl_g));
+    REQUIRE(stc->get_text().empty());
   }
-
+  
   // Test motion commands: navigate, yank, delete, and change.
   SUBCASE("motion")
   {
@@ -383,7 +393,7 @@ TEST_CASE("wex::vi")
       100 * sizeof("the chances of anything coming from mars"));
   }
 
-  SUBCASE("put special")
+  SUBCASE("put-special")
   {
     // Put should not put text within a line, but after it, or before it.
     stc->set_text("the chances of anything coming from mars\n");

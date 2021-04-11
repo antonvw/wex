@@ -189,26 +189,36 @@ int wex::ex_stream::get_line_count_request()
   }
 
   const auto pos = m_stream->tellg();
+
   m_stream->clear();
   m_stream->seekg(0);
 
   int line_no = 0;
 
-  while (m_stream->read(m_buffer, m_buffer_size))
+  while (!m_stream->eof())
   {
-    const int count = m_stream->gcount();
-    for (int i = 0; i < count; i++)
-    {
-      if (m_buffer[i] == '\n')
-        line_no++;
-    }
-  }
+    m_stream->read(m_buffer, m_buffer_size);
 
-  const int count = m_stream->gcount();
-  for (int i = 0; i < count; i++)
-  {
-    if (m_buffer[i] == '\n')
-      line_no++;
+    const int count = m_stream->gcount();
+
+    if (!m_block_mode)
+    {
+      for (int i = 0; i < count; i++)
+      {
+        if (m_buffer[i] == '\n')
+          line_no++;
+      }
+
+      if (line_no == 0)
+      {
+        m_block_mode = true;
+      }
+    }
+
+    if (m_block_mode)
+    {
+      line_no += m_buffer_size / default_line_size;
+    }
   }
 
   m_last_line_no = line_no;
@@ -286,13 +296,15 @@ bool wex::ex_stream::get_previous_line()
           m_stream->seekg((size_t)pos + i - 1);
         }
 
-        m_line_no--;
+        if (m_line_no > 0)
+        {
+          m_line_no--;
+        }
 
         return true;
       }
     }
 
-    // There was no newline, this implies block mode.
     strncpy(m_current_line, m_buffer, m_stream->gcount());
     m_current_line[m_stream->gcount()] = 0;
     m_stream->clear();
@@ -303,9 +315,16 @@ bool wex::ex_stream::get_previous_line()
       m_line_no--;
     }
 
-    m_block_mode = true;
-
-    return (int)m_stream->gcount() > m_current_line_size - 1;
+    // There was no newline, this implies block mode.
+    if (m_current_line_size == default_line_size)
+    {
+      m_block_mode = true;
+      return (int)m_stream->gcount() > m_current_line_size - 1;
+    }
+    else
+    {
+      return (int)m_stream->gcount() > m_current_line_size;
+    }
   }
 
   return false;

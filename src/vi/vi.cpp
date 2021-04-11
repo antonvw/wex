@@ -568,7 +568,7 @@ wex::vi::vi(wex::factory::stc* arg, mode_t ex_mode)
        }},
       {"J",
        [&](const std::string& command) {
-         addressrange(this, m_count).join();
+         addressrange(this, m_count + 1).join();
          return 1;
        }},
       {"P",

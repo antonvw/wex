@@ -142,39 +142,44 @@ bool wex::factory::frame::update_statusbar(stc* stc, const std::string& pane)
 
   if (pane == "PaneInfo")
   {
-    if (!stc->is_visual())
-    {
-      text << stc->get_current_line() + 1 << "," << stc->get_line_count();
-    }
-    else if (stc->GetCurrentPos() == 0)
+    if (
+      stc->GetCurrentPos() == 0 && stc->get_line_count() != LINE_COUNT_UNKNOWN)
     {
       text << stc->get_line_count();
     }
     else
     {
       const auto line = stc->get_current_line() + 1;
-      const auto pos =
-        stc->GetCurrentPos() + 1 - stc->PositionFromLine(line - 1);
+
+      std::string show_pos;
+
+      if (const auto pos = stc->GetCurrentPos() + 1 -
+                           stc->PositionFromLine(stc->GetCurrentLine());
+          pos > 0)
+      {
+        show_pos = "," + std::to_string(pos);
+      }
+
       int start, end;
 
       stc->GetSelection(&start, &end);
 
       if (const int len = end - start; len == 0)
       {
-        text << line << "," << pos;
+        text << line << show_pos;
       }
       else
       {
         if (stc->SelectionIsRectangle())
         {
-          text << line << "," << pos << "," << stc->GetSelectedText().length();
+          text << line << show_pos << "," << stc->GetSelectedText().length();
         }
         else
         {
           if (const auto number_of_lines =
                 get_number_of_lines(stc->get_selected_text());
               number_of_lines <= 1)
-            text << line << "," << pos << "," << len;
+            text << line << show_pos << "," << len;
           else
             text << line << "," << number_of_lines << "," << len;
         }

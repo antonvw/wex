@@ -700,10 +700,33 @@ void wex::stc::properties_message(path::status_t flags)
 
   if (!flags[path::STAT_SYNC])
   {
-    const wxString file =
-      GetName() + (GetReadOnly() ? " [" + _("Readonly") + "]" : wxString());
+    std::string title;
 
-    m_frame->SetTitle(!file.empty() ? file : wxTheApp->GetAppName());
+    if (m_vi->visual() == ex::EX)
+    {
+      std::string readonly;
+
+      if (get_filename().is_readonly())
+      {
+        readonly = " [" + _("Readonly") + "]";
+      }
+
+      title = GetName() + readonly + " [ex]";
+    }
+    else
+    {
+      std::string readonly;
+
+      if (GetReadOnly())
+      {
+        readonly = " [" + _("Readonly") + "]";
+      }
+
+      title = GetName() + readonly;
+    }
+
+    m_frame->SetTitle(
+      !title.empty() ? title : wxTheApp->GetAppName().ToStdString());
   }
 }
 
