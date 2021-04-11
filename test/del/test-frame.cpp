@@ -42,6 +42,7 @@ TEST_CASE("wex::del::frame")
 
   REQUIRE(!del_frame()->find_in_files({}, wex::ID_TOOL_REPORT_FIND, false));
 
+#ifndef __WXMSW__
   REQUIRE(!del_frame()->find_in_files(
     {wex::test::get_path("test.h").string()},
     wex::ID_TOOL_REPORT_FIND,
@@ -62,7 +63,6 @@ TEST_CASE("wex::del::frame")
   REQUIRE(!del_frame()->grep("xxxxxxx yyy"));
   REQUIRE(!del_frame()->grep("xxxxxxx"));
 
-#ifndef __WXMSW__
   REQUIRE(del_frame()->sed("xxxxxxx yyy *.xyz"));
 #endif
 

@@ -107,7 +107,7 @@ TEST_CASE("wex::vi")
     REQUIRE(exs->is_modified());
     REQUIRE(exs->get_line_count() == 1);
 
-    stc->visual(wex::vi::VISUAL);
+    stc->visual(true);
   }
 
   SUBCASE("visual")

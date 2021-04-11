@@ -264,7 +264,11 @@ TEST_CASE("wex::stc")
     stc->get_file().reset_contents_changed();
   }
 
-  SUBCASE("link") { REQUIRE(!stc->link_open()); }
+  SUBCASE("link") 
+  { 
+    stc->SetText("no link");
+    REQUIRE(!stc->link_open()); 
+  }
 
   SUBCASE("margin")
   {

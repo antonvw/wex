@@ -305,7 +305,7 @@ bool wex::ex_stream::get_previous_line()
 
     m_block_mode = true;
 
-    return m_stream->gcount() > m_current_line_size - 1;
+    return (int)m_stream->gcount() > m_current_line_size - 1;
   }
 
   return false;
