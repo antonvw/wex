@@ -35,9 +35,11 @@ TEST_CASE("wex::del::stream")
   REQUIRE(textFile2.run_tool());
   REQUIRE(!textFile2.get_statistics().get_elements().get_items().empty());
 
+#ifndef __WXMSW__
   wex::tool tool3(wex::ID_TOOL_REPORT_KEYWORD);
   REQUIRE(wex::del::stream::setup_tool(tool3, del_frame()));
   wex::del::stream textFile3(wex::test::get_path("test.h"), tool3);
   REQUIRE(textFile3.run_tool());
   REQUIRE(!textFile3.get_statistics().get_elements().get_items().empty());
+#endif
 }

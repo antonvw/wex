@@ -219,7 +219,7 @@ void wex::stc::key_action(wxKeyEvent& event)
     m_adding_chars = false;
   }
 
-  if (m_vi->visual() != ex::VISUAL)
+  if (m_vi->visual() == ex::OFF)
   {
     // prevent skip
   }

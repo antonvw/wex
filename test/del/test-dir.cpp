@@ -35,6 +35,8 @@ TEST_CASE("wex::del::tool_dir")
   wex::del::tool_dir dir(tool, "./", wex::data::dir().file_spec("*.cpp;*.h"));
 
   REQUIRE(dir.get_statistics().get_elements().get_items().empty());
+#ifndef __WXMSW__
   REQUIRE(dir.find_files() > 0);
   REQUIRE(!dir.get_statistics().get_elements().get_items().empty());
+#endif
 }

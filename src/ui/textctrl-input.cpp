@@ -44,12 +44,19 @@ wex::textctrl_input::textctrl_input(ex_command::type_t type)
   , m_values(config(m_name).get(std::list<std::string>{}))
   , m_iterator(m_values.cbegin())
 {
-  log::trace("TCI") << m_name << "size:" << m_values.size();
+  if (m_values.size() > 0)
+  {
+    log::trace("load") << m_name << "size:" << m_values.size();
+  }
 }
 
 wex::textctrl_input::~textctrl_input()
 {
-  wex::config(m_name).set(m_values);
+  if (m_values.size() > 0)
+  {
+    wex::config(m_name).set(m_values);
+    log::trace("save") << m_name << "size:" << m_values.size();
+  }
 }
 
 const std::string wex::textctrl_input::get() const
@@ -60,7 +67,7 @@ const std::string wex::textctrl_input::get() const
   }
   catch (std::exception& e)
   {
-    log(e) << "TCI:" << m_name;
+    log(e) << m_name;
     return std::string();
   }
 }
@@ -72,6 +79,7 @@ void wex::textctrl_input::set(const std::string& value)
   m_values.remove(value);
   m_values.push_front(value);
   m_iterator = m_values.cbegin();
+
   config(m_name).set(m_values);
 }
 

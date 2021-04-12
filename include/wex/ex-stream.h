@@ -62,6 +62,11 @@ namespace wex
       const std::string& text,
       loc_t              loc = INSERT_BEFORE);
 
+    /// Returns true if we are in block mode.
+    /// Block mode implies that no eols were found when
+    // reading lines with max size.
+    bool is_block_mode() const { return m_block_mode; };
+
     /// Returns true if stream is modified;
     bool is_modified() const { return m_is_modified; };
 
@@ -114,7 +119,7 @@ namespace wex
     bool get_previous_line();
     void set_text();
 
-    bool m_is_modified{false};
+    bool m_block_mode{false}, m_is_modified{false};
 
     const size_t m_buffer_size, m_context_lines;
 
@@ -123,7 +128,10 @@ namespace wex
     std::fstream* m_stream{nullptr}; // pointer in m_file to actual stream
     file *        m_file{nullptr}, *m_temp{nullptr}, *m_work{nullptr};
 
-    int m_line_no{LINE_COUNT_UNKNOWN}, m_last_line_no{LINE_COUNT_UNKNOWN};
+    int
+      // this is line or block no, in case no eols are present
+      m_line_no{LINE_COUNT_UNKNOWN},
+      m_last_line_no{LINE_COUNT_UNKNOWN};
 
     std::map<char, int> m_markers;
 

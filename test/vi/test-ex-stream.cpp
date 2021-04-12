@@ -16,16 +16,33 @@
 
 #include "test.h"
 
+// See also stc/test-vi.cpp, for testing a % range
+
 void create_file()
 {
   const std::string text("test1\ntest2\ntest3\ntest4\n\n");
   std::fstream      ifs("ex-mode.txt", std::ios_base::out);
+
   REQUIRE(ifs.write(text.c_str(), text.size()));
 }
 
-wex::file open_file()
+void create_file_noeol()
 {
-  create_file();
+  std::string text;
+
+  for (int i = 0; i < 1000; i++)
+  {
+    text += "this is test" + std::to_string(i) + " and the story never ends ";
+  }
+
+  std::fstream ifs("ex-mode.txt", std::ios_base::out);
+
+  REQUIRE(ifs.write(text.c_str(), text.size()));
+}
+
+wex::file open_file(bool with_newline = true)
+{
+  with_newline ? create_file() : create_file_noeol();
 
   wex::file ifs("ex-mode.txt", std::ios_base::in | std::ios_base::out);
   REQUIRE(ifs.is_open());
@@ -42,7 +59,8 @@ void write_file(wex::ex_stream& exs, int lines)
 TEST_CASE("wex::ex_stream")
 {
   auto* stc = get_stc();
-  auto* ex  = new wex::ex(stc, wex::ex::EX);
+  stc->set_text("\n\n\n\n\n\n");
+  auto* ex = new wex::ex(stc, wex::ex::EX);
 
   SUBCASE("constructor")
   {
@@ -87,6 +105,23 @@ TEST_CASE("wex::ex_stream")
 
     REQUIRE(!exs.find(std::string("xxxone")));
     REQUIRE(exs.get_current_line() == 3);
+    REQUIRE(!exs.is_block_mode());
+  }
+
+  SUBCASE("find-noeol")
+  {
+    wex::file      ifs(open_file(false));
+    wex::ex_stream exs(ex);
+    exs.stream(ifs);
+
+    REQUIRE(exs.find(std::string("test1")));
+    REQUIRE(exs.is_block_mode());
+    REQUIRE(exs.get_current_line() == 1);
+    REQUIRE(exs.find(std::string("test199")));
+    REQUIRE(exs.find(std::string("test999")));
+    REQUIRE(!exs.is_modified());
+
+    REQUIRE(!exs.find(std::string("xxxone")));
   }
 
   SUBCASE("insert")
@@ -107,20 +142,21 @@ TEST_CASE("wex::ex_stream")
 
   SUBCASE("join")
   {
-    wex::file      ifs(open_file());
-    wex::ex_stream exs(ex);
+    wex::addressrange ar(ex, "2,3");
+    REQUIRE(ar.get_begin().get_line() == 2);
+    REQUIRE(ar.get_end().get_line() == 3);
+
+    wex::file       ifs(open_file());
+    wex::ex_stream* exs(ex->ex_stream());
     ifs.open();
-    exs.stream(ifs);
+    exs->stream(ifs);
 
-    wex::addressrange ar(ex, "%");
-    REQUIRE(ar.get_begin().get_line() == 1);
+    REQUIRE(exs->get_line_count_request() == 5);
+    REQUIRE(exs->get_line_count() == 5);
 
-    REQUIRE(exs.get_line_count_request() == 5);
-    REQUIRE(exs.join(ar));
-    REQUIRE(exs.is_modified());
-
-    // write_file(exs, 4);
-    // REQUIRE(exs.get_line_count_request() == 1);
+    REQUIRE(exs->join(ar));
+    REQUIRE(exs->is_modified());
+    REQUIRE(exs->get_line_count() == 4);
   }
 
   SUBCASE("markers")
@@ -139,16 +175,29 @@ TEST_CASE("wex::ex_stream")
 
   SUBCASE("previous")
   {
-    wex::file ifs("test.md", std::ios_base::in);
+    wex::file      ifs("test.md", std::ios_base::in);
     wex::ex_stream exs(ex);
     exs.stream(ifs);
     exs.goto_line(10);
 
-    REQUIRE(exs.find(std::string("markdown"), -1, false));
+    REQUIRE(exs.find(std::string("markdown document"), -1, false));
     REQUIRE(!exs.is_modified());
     REQUIRE(exs.get_current_line() == 1);
     REQUIRE(exs.find(std::string("one")));
-    REQUIRE(exs.get_current_line() == 5); // ??
+    REQUIRE(exs.get_current_line() == 5);
+    REQUIRE(!exs.is_block_mode());
+  }
+
+  SUBCASE("previous-noeol")
+  {
+    wex::file      ifs(open_file(false));
+    wex::ex_stream exs(ex);
+    exs.stream(ifs);
+    exs.goto_line(100);
+
+    REQUIRE(exs.find(std::string("test1 "), -1, false));
+    REQUIRE(!exs.is_modified());
+    REQUIRE(exs.is_block_mode());
   }
 
   SUBCASE("request")
@@ -191,7 +240,7 @@ TEST_CASE("wex::ex_stream")
     exs.stream(ifs);
     wex::find_replace_data::get()->set_regex(false);
 
-    wex::addressrange ar(ex, "%");
+    wex::addressrange ar(ex, "1,2");
 
     REQUIRE(exs.substitute(ar, wex::data::substitute("test", "1234")));
     REQUIRE(exs.is_modified());
@@ -207,6 +256,7 @@ TEST_CASE("wex::ex_stream")
     REQUIRE(exs.write(ar, "tmp.txt"));
   }
 
+  // Show the ex-mode file if we are in verbose mode.
   if (wex::file info("ex-mode.txt"); info.is_open())
   {
     if (const auto buffer(info.read()); buffer != nullptr)

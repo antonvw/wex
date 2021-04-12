@@ -168,34 +168,13 @@ namespace wex
 
   private:
     const std::string build_replacement(const std::string& text) const;
-
     int
     confirm(const std::string& pattern, const std::string& replacement) const;
-
     bool general(const address& destination, std::function<bool()> f) const;
-
     bool indent(bool forward = true) const;
-
-    void set(const std::string& begin, const std::string& end)
-    {
-      m_begin.m_address    = begin;
-      const int begin_line = m_begin.get_line();
-      if (begin_line > 0)
-        m_begin.set_line(begin_line);
-      m_end.m_address    = end;
-      const int end_line = m_end.get_line();
-      if (end_line > 0)
-        m_end.set_line(end_line);
-    };
-
-    void set(int begin, int end)
-    {
-      m_begin.set_line(begin);
-      m_end.set_line(end);
-    };
-
+    void set(const std::string& begin, const std::string& end);
+    void set(int begin, int end);
     void set(address& begin, address& end, int lines) const;
-
     bool set_selection() const;
 
     static inline std::string m_pattern, m_replacement;

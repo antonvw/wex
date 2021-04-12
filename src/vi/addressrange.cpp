@@ -556,10 +556,12 @@ bool wex::addressrange::join() const
   }
 
   m_stc->BeginUndoAction();
+
   m_stc->SetTargetRange(
     m_stc->PositionFromLine(m_begin.get_line() - 1),
-    m_stc->PositionFromLine(m_end.get_line()));
+    m_stc->PositionFromLine(m_end.get_line() - 1));
   m_stc->LinesJoin();
+
   m_stc->EndUndoAction();
 
   return true;
@@ -706,6 +708,29 @@ const std::string wex::addressrange::regex_commands() const
                      "write\\b|"
                      "yank\\b|ya\\b|"
                      "[cdgjlmpsStvwy<>\\!&~@#])([\\s\\S]*)");
+}
+
+void wex::addressrange::set(int begin, int end)
+{
+  m_begin.set_line(begin);
+  m_end.set_line(end);
+}
+
+void wex::addressrange::set(const std::string& begin, const std::string& end)
+{
+  m_begin.m_address = begin;
+
+  if (const auto begin_line = m_begin.get_line(); begin_line > 0)
+  {
+    m_begin.set_line(begin_line);
+  }
+
+  m_end.m_address = end;
+
+  if (const auto end_line = m_end.get_line(); end_line > 0)
+  {
+    m_end.set_line(end_line);
+  }
 }
 
 void wex::addressrange::set(address& begin, address& end, int lines) const
