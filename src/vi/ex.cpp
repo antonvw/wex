@@ -1113,7 +1113,7 @@ void wex::ex::show_dialog(
   m_frame->stc_entry_dialog_component()->get_lexer().set(
     !lexer.empty() ? wex::lexer(lexer) : get_stc()->get_lexer());
 
-  m_frame->show_stc_entry_dialog_show();
+  m_frame->show_stc_entry_dialog();
 }
 
 void wex::ex::use(mode_t mode)

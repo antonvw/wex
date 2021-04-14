@@ -365,7 +365,7 @@ bool wex::variable::expand_input(std::string& expanded) const
       wxEndBusyCursor();
     }
 
-    const int result = frame->show_stc_entry_dialog_show(true);
+    const int result = frame->show_stc_entry_dialog(true);
 
     if (ended)
     {

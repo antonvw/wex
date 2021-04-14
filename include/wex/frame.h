@@ -161,7 +161,7 @@ namespace wex
     virtual void show_ex_message(const std::string& text) { ; };
 
     /// Shows or updates stc entry dialog.
-    virtual int show_stc_entry_dialog_show(bool modal = false)
+    virtual int show_stc_entry_dialog(bool modal = false)
     {
       return wxID_CANCEL;
     };

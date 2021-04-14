@@ -263,15 +263,22 @@ bool wex::del::listview::Destroy()
   return wex::listview::Destroy();
 }
 
+#ifdef USE_QUEUE
 void wex::del::listview::process(std::unique_ptr<path_match>& input)
 {
   std::unique_ptr<path_match> event(input.release());
 
-  listitem item(this, event.get()->path());
+  process_match(event);
+}
+#endif
+
+void wex::del::listview::process_match(const path_match& m)
+{
+  listitem item(this, m.path());
   item.insert();
 
-  item.set_item(_("Line No"), std::to_string(event.get()->line_no() + 1));
-  item.set_item(_("Line"), context(event.get()->line(), event.get()->pos()));
+  item.set_item(_("Line No"), std::to_string(m.line_no() + 1));
+  item.set_item(_("Line"), context(m.line(), m.pos()));
   item.set_item(_("Match"), find_replace_data::get()->get_find_string());
 }
 

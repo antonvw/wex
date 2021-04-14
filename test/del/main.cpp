@@ -81,7 +81,7 @@ wex::del::frame* del_frame()
 
 const std::string get_project()
 {
-  return "test-rep.prj";
+  return "test-del.prj";
 }
 
 int main(int argc, char* argv[])

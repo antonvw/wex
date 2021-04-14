@@ -28,10 +28,10 @@ TEST_CASE("wex::del")
 {
   wex::tool tool(wex::ID_TOOL_REPORT_FIND);
 
-  auto* report = new wex::del::listview(
+  auto* lv = new wex::del::listview(
     wex::data::listview().type(wex::data::listview::FIND));
 
-  del_frame()->pane_add(report);
+  del_frame()->pane_add(lv);
 
   const auto files = wex::get_all_files(
     std::string("../../test/del"),
@@ -45,17 +45,17 @@ TEST_CASE("wex::del")
   frd->set_regex(false);
   frd->set_find_string("@@@@@@@@@@@@@@@@@@@");
 
-  find_in_files(files, report);
+  find_in_files(files, lv);
 
 #ifdef __UNIX__
-  REQUIRE(report->GetItemCount() == 1);
+  REQUIRE(lv->GetItemCount() == 1);
 #endif
 
   frd->set_find_string("Author:");
 
   const auto start = std::chrono::system_clock::now();
 
-  find_in_files(files, report);
+  find_in_files(files, lv);
 
   const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(
     std::chrono::system_clock::now() - start);
@@ -65,6 +65,6 @@ TEST_CASE("wex::del")
 #ifdef __UNIX__
   // Each other file has one author (files.GetCount()), and the one that is
   // already present on the list because of the first find_in_files.
-  REQUIRE(report->GetItemCount() == files.size() + 2);
+  REQUIRE(lv->GetItemCount() == files.size() + 2);
 #endif
 }
