@@ -29,7 +29,11 @@ wex::listitem::listitem(listview* lv, long itemnumber)
   , m_file_spec(lv->get_item_text(itemnumber, _("Type")))
 {
   SetId(itemnumber);
-  m_is_readonly = (m_listview->GetItemData(GetId()) > 0);
+  
+  if (itemnumber >= 0)
+  {
+    m_is_readonly = (m_listview->GetItemData(GetId()) > 0);
+  }
 }
 
 wex::listitem::listitem(

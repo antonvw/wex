@@ -704,6 +704,11 @@ const std::string wex::listview::get_item_text(
   long               item_number,
   const std::string& col_name) const
 {
+  if (item_number < 0 || item_number >= GetItemCount())
+  {
+    return std::string();
+  }
+  
   if (col_name.empty())
   {
     return GetItemText(item_number);

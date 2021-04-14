@@ -8,13 +8,13 @@
 #include <pugixml.hpp>
 #include <thread>
 #include <wex/config.h>
-#include <wex/listitem.h>
-#include <wex/log.h>
-#include <wex/menu.h>
 #include <wex/del/defs.h>
 #include <wex/del/dir.h>
 #include <wex/del/frame.h>
 #include <wex/del/listview-file.h>
+#include <wex/listitem.h>
+#include <wex/log.h>
+#include <wex/menu.h>
 #include <wex/util.h>
 
 wex::del::file::file(const std::string& file, const data::listview& data)
@@ -100,8 +100,8 @@ void wex::del::file::add_items(
 #ifdef __WXMSW__
   std::thread t([=, this] {
 #endif
-    const int   old_count = GetItemCount();
-    del::dir dir(this, folder, data::dir().file_spec(files).type(flags));
+    const int old_count = GetItemCount();
+    del::dir  dir(this, folder, data::dir().file_spec(files).type(flags));
 
     dir.find_files();
 
@@ -156,14 +156,20 @@ bool wex::del::file::do_file_load(bool synced)
 {
   pugi::xml_document doc;
 
-  const auto result = doc.load_file(
-    get_filename().string().c_str(),
-    pugi::parse_default | pugi::parse_comments);
-
-  if (!result)
+  if (const auto result = doc.load_file(
+        get_filename().string().c_str(),
+        pugi::parse_default | pugi::parse_comments); !result)
   {
-    xml_error(get_filename(), &result);
-    return false;
+    if (get_filename().stat().st_size == 0)
+    {
+      clear();
+      return true;
+    }
+    else
+    {
+      xml_error(get_filename(), &result);
+      return false;
+    }
   }
 
   clear();
