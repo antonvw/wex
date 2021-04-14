@@ -2,7 +2,7 @@
 // Name:      odbc.cpp
 // Purpose:   Implementation of wex::odbc class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2008-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -11,11 +11,12 @@
 #endif
 #include <wex/config.h>
 #include <wex/core.h>
+#include <wex/factory/stc.h>
+#include <wex/frame.h>
 #include <wex/item-dialog.h>
 #include <wex/log.h>
 #include <wex/odbc.h>
 #include <wx/grid.h>
-#include <wx/stc/stc.h>
 
 #if wexUSE_ODBC
 
@@ -149,11 +150,12 @@ bool wex::odbc::logon(const wex::data::window& par)
   }
   catch (otl_exception& p)
   {
-    wxTextEntryDialog dlg(
-      wxTheApp->GetTopWindow(),
-      "Cannot logon to " + datasource() +
-        " because of: " + std::string((const char*)p.msg));
-    dlg.ShowModal();
+    auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
+
+    frame->stc_entry_dialog_title("Cannot logon to " + datasource());
+    frame->stc_entry_dialog_component()->set_text(
+      std::string((const char*)p.msg));
+    frame->show_stc_entry_dialog(true);
   }
 
   return is_connected();

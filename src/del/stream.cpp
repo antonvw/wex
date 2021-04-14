@@ -25,6 +25,11 @@ wex::del::stream::~stream()
 {
   if (m_queue_thread != nullptr)
   {
+    if (!m_queue_thread->empty())
+    {
+      log("stream") << "skipped";
+    }
+
     m_queue_thread->stop();
     delete m_queue_thread;
   }
@@ -257,6 +262,7 @@ bool wex::del::stream::process_begin()
     delete m_queue_thread;
   }
 
+#ifdef USE_QUEUE
   try
   {
     m_queue_thread = new queue_thread<path_match>(*m_report);
@@ -267,6 +273,7 @@ bool wex::del::stream::process_begin()
     log(e) << "while creating the queue";
     return false;
   }
+#endif
 
   if (get_tool().id() != ID_TOOL_REPORT_KEYWORD)
   {
@@ -322,9 +329,12 @@ void wex::del::stream::process_end()
 
 void wex::del::stream::process_match(const path_match& m)
 {
+#ifdef USE_QUEUE
   std::unique_ptr<path_match> match(new path_match(m));
-
   m_queue_thread->emplace(match);
+#else
+  m_report->process_match(m);
+#endif
 }
 
 bool wex::del::stream::setup_tool(

@@ -16,7 +16,8 @@
 #include <wex/chrono.h>
 #include <wex/config.h>
 #include <wex/defs.h>
-#include <wex/factory/frame.h>
+#include <wex/factory/stc.h>
+#include <wex/frame.h>
 #include <wex/frd.h>
 #include <wex/interruptible.h>
 #include <wex/item-dialog.h>
@@ -120,55 +121,6 @@ namespace wex
             *wxLIGHT_GREY}}}}}});
   }
 
-  bool on_command(listview* lv, wxCommandEvent& event)
-  {
-    switch (const long new_index =
-              lv->GetSelectedItemCount() > 0 ? lv->GetFirstSelected() : -1;
-            lv->data().type())
-    {
-      case data::listview::TSV:
-        if (wxTextEntryDialog
-              dlg(lv, _("Input") + ":", _("Item"), lv->item_to_text(new_index));
-            dlg.ShowModal() == wxID_OK)
-        {
-          lv->insert_item(
-            tokenize<std::vector<std::string>>(
-              dlg.GetValue().ToStdString(),
-              std::string(1, lv->field_separator()).c_str()),
-            new_index);
-        }
-        break;
-
-      default:
-      {
-        std::string defaultPath;
-
-        if (lv->GetSelectedItemCount() > 0)
-        {
-          defaultPath =
-            listitem(lv, lv->GetFirstSelected()).get_filename().string();
-        }
-
-        wxDirDialog dir_dlg(
-          lv,
-          _(wxDirSelectorPromptStr),
-          defaultPath,
-          wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
-
-        if (dir_dlg.ShowModal() == wxID_OK)
-        {
-          const auto no =
-            (lv->GetSelectedItemCount() > 0 ? lv->GetFirstSelected() :
-                                              lv->GetItemCount());
-
-          listitem(lv, dir_dlg.GetPath().ToStdString()).insert(no);
-          return true;
-        }
-      }
-    }
-
-    return false;
-  }
 }; // namespace wex
 
 wex::listview::listview(const data::listview& data)
@@ -181,7 +133,7 @@ wex::listview::listview(const data::listview& data)
         data.type() == data::listview::NONE || data::listview::TSV ?
           data.image() :
           data::listview::IMAGE_FILE_ICON))
-  , m_frame(dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow()))
+  , m_frame(dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow()))
 {
   Create(
     data.window().parent(),
@@ -384,7 +336,7 @@ wex::listview::listview(const data::listview& data)
       },
       ID_EDIT_SELECT_NONE},
      {[=, this](wxCommandEvent& event) {
-        if (on_command(this, event))
+        if (on_command(event))
         {
           m_frame->update_statusbar(this);
         }
@@ -864,14 +816,16 @@ void wex::listview::item_activated(long item_number)
 
     case data::listview::TSV:
     {
-      if (wxTextEntryDialog
-            dlg(this, _("Input") + ":", _("Item"), item_to_text(item_number));
-          dlg.ShowModal() == wxID_OK)
+      m_frame->stc_entry_dialog_title(_("Item"));
+      m_frame->stc_entry_dialog_component()->set_text(
+        item_to_text(item_number));
+
+      if (m_frame->show_stc_entry_dialog(true) == wxID_OK)
       {
         int col = 0;
 
         boost::tokenizer<boost::char_separator<char>> tok(
-          dlg.GetValue().ToStdString(),
+          m_frame->stc_entry_dialog_component()->get_text(),
           boost::char_separator<char>(
             std::string(1, m_field_separator).c_str()));
 
@@ -900,15 +854,15 @@ void wex::listview::item_activated(long item_number)
       }
       else if (item.get_filename().dir_exists())
       {
-        wxTextEntryDialog dlg(
-          this,
-          _("Input") + ":",
-          _("Folder Type"),
+        m_frame->stc_entry_dialog_title(_("Folder Type"));
+        m_frame->stc_entry_dialog_component()->set_text(
           get_item_text(item_number, _("Type")));
 
-        if (dlg.ShowModal() == wxID_OK)
+        if (m_frame->show_stc_entry_dialog(true) == wxID_OK)
         {
-          item.set_item(_("Type"), dlg.GetValue());
+          item.set_item(
+            _("Type"),
+            m_frame->stc_entry_dialog_component()->get_text());
         }
       }
   }
@@ -1092,6 +1046,56 @@ bool wex::listview::load(const std::list<std::string>& l)
   }
 
   return true;
+}
+
+bool wex::listview::on_command(wxCommandEvent& event)
+{
+  switch (const long new_index =
+            GetSelectedItemCount() > 0 ? GetFirstSelected() : -1;
+          data().type())
+  {
+    case data::listview::TSV:
+      m_frame->stc_entry_dialog_title(_("Item"));
+      m_frame->stc_entry_dialog_component()->set_text(item_to_text(new_index));
+
+      if (m_frame->show_stc_entry_dialog(true) == wxID_OK)
+      {
+        insert_item(
+          tokenize<std::vector<std::string>>(
+            m_frame->stc_entry_dialog_component()->get_text(),
+            std::string(1, field_separator()).c_str()),
+          new_index);
+      }
+      break;
+
+    default:
+    {
+      std::string defaultPath;
+
+      if (GetSelectedItemCount() > 0)
+      {
+        defaultPath =
+          listitem(this, GetFirstSelected()).get_filename().string();
+      }
+
+      wxDirDialog dir_dlg(
+        this,
+        _(wxDirSelectorPromptStr),
+        defaultPath,
+        wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
+
+      if (dir_dlg.ShowModal() == wxID_OK)
+      {
+        const auto no =
+          (GetSelectedItemCount() > 0 ? GetFirstSelected() : GetItemCount());
+
+        listitem(this, dir_dlg.GetPath().ToStdString()).insert(no);
+        return true;
+      }
+    }
+  }
+
+  return false;
 }
 
 void wex::listview::print()

@@ -19,11 +19,6 @@ namespace wex
   class item_dialog;
   class menu;
 
-  namespace factory
-  {
-    class frame;
-  };
-
   /// Adds printing, popup menu, images, columns and items to wxListView.
   /// Allows for sorting on any column.
   /// Adds some standard lists, all these lists
@@ -158,6 +153,7 @@ namespace wex
     unsigned int get_art_id(const wxArtID& artid);
     column       get_column(const std::string& name) const;
     void         item_activated(long item_number);
+    bool         on_command(wxCommandEvent& event);
     bool         set_item_image(long item_number, int iconid)
     {
       return (
@@ -181,7 +177,7 @@ namespace wex
     std::map<wxArtID, unsigned int> m_art_ids;
     std::vector<column>             m_columns;
 
-    factory::frame* m_frame;
+    frame* m_frame;
 
     static inline item_dialog* m_config_dialog = nullptr;
   };

@@ -36,6 +36,8 @@ wex::stc_entry_dialog::stc_entry_dialog(
   m_stc->reset_margins();
   m_stc->SetViewEOL(false);
   m_stc->SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
+  m_stc->SetWrapMode(wxSTC_WRAP_WORD);
+  m_stc->get_vi().use(ex::OFF);
 
   add_user_sizer(m_stc);
 

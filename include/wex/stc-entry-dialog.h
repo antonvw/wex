@@ -12,10 +12,7 @@
 
 namespace wex
 {
-  namespace factory
-  {
-    class stc;
-  }
+  class stc;
 
   /// Offers an stc as a dialog (like wxTextEntryDialog).
   /// The prompt (if not empty) is first added as a text sizer to the user
@@ -36,6 +33,6 @@ namespace wex
     auto* get_stc() { return m_stc; };
 
   private:
-    wex::factory::stc* m_stc;
+    wex::stc* m_stc;
   };
 }; // namespace wex

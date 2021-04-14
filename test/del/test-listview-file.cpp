@@ -30,8 +30,8 @@ TEST_CASE("wex::del::file")
   REQUIRE(lv->find_column("Number") > 1);
 
   REQUIRE(lv->file_load(get_project()));
-  REQUIRE(lv->file_save("test-rep.prj.bck"));
-  REQUIRE(remove("test-rep.prj.bck") == 0);
+  REQUIRE(lv->file_save("test-del.prj.bck"));
+  REQUIRE(remove("test-del.prj.bck") == 0);
 
   REQUIRE(lv->item_from_text("test1\ntest2\n"));
 

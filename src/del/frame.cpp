@@ -339,6 +339,19 @@ std::list<std::string> wex::del::frame::default_extensions() const
   return l;
 }
 
+wex::stc_entry_dialog* wex::del::frame::entry_dialog(const std::string& title)
+{
+  if (m_entry_dialog == nullptr)
+  {
+    m_entry_dialog = new stc_entry_dialog(
+      std::string(),
+      std::string(),
+      data::window().button(wxOK).title(title).size({450, 450}));
+  }
+
+  return m_entry_dialog;
+}
+
 void wex::del::frame::find_in_files(wxWindowID dialogid)
 {
   const bool      replace = (dialogid == id_replace_in_files);
@@ -655,7 +668,7 @@ void wex::del::frame::on_notebook(wxWindowID id, wxWindow* page)
   {
     return;
   }
-  
+
   if (auto* stc = dynamic_cast<wex::stc*>(page); stc != nullptr)
   {
     show_ex_bar(!stc->is_visual() ? SHOW_BAR : HIDE_BAR_FOCUS_STC, stc);
@@ -852,32 +865,25 @@ void wex::del::frame::statusbar_clicked_right(const std::string& pane)
   }
 }
 
-int wex::del::frame::show_stc_entry_dialog_show(bool modal)
+int wex::del::frame::show_stc_entry_dialog(bool modal)
 {
-  return modal ? m_entry_dialog->ShowModal() : m_entry_dialog->Show();
+  return modal ? entry_dialog()->ShowModal() : entry_dialog()->Show();
 }
 
 wex::factory::stc* wex::del::frame::stc_entry_dialog_component()
 {
-  if (m_entry_dialog == nullptr)
-  {
-    m_entry_dialog = new stc_entry_dialog(
-      "tmp",
-      std::string(),
-      data::window().button(wxOK).title("tmp").size({450, 450}));
-  }
-
-  return m_entry_dialog->get_stc();
+  return entry_dialog()->get_stc();
 }
 
 std::string wex::del::frame::stc_entry_dialog_title() const
 {
-  return m_entry_dialog->GetTitle();
+  return m_entry_dialog == nullptr ? std::string() :
+                                     m_entry_dialog->GetTitle().ToStdString();
 }
 
 void wex::del::frame::stc_entry_dialog_title(const std::string& title)
 {
-  m_entry_dialog->SetTitle(title);
+  entry_dialog(title)->SetTitle(title);
 }
 
 void wex::del::frame::sync(bool start)

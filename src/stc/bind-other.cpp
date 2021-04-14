@@ -221,7 +221,7 @@ void wex::stc::key_action(wxKeyEvent& event)
 
   if (m_vi->visual() == ex::OFF)
   {
-    // prevent skip
+    event.Skip();
   }
   else if (m_vi->on_char(event))
   {
