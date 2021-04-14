@@ -1,5 +1,4 @@
 # roadmap
-- save and opening project file / text file
 
 ## backlog
 - msw improve (tests, find in files)

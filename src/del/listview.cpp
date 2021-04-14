@@ -138,9 +138,9 @@ void wex::del::listview::build_popup_menu(wex::menu& menu)
 {
   bool exists = true, is_folder = false, is_make = false, readonly = false;
 
-  if (GetSelectedItemCount() >= 1)
+  if (const auto index = GetFirstSelected(); index != -1)
   {
-    const listitem item(this, GetFirstSelected());
+    const listitem item(this, index);
 
     exists    = item.get_filename().stat().is_ok();
     is_folder = item.get_filename().dir_exists();
