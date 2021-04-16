@@ -2,7 +2,19 @@ cmake_minimum_required(VERSION 3.6.3)
 
 project(wex)
 
-set(Boost_USE_STATIC_LIBS ON)
+if (wexBUILD_SHARED)
+  set(BUILD_SHARED_LIBS YES)
+  set(wxBUILD_SHARED ON)
+  add_definitions(-DBOOST_LOG_DYN_LINK)
+  
+  if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    set(CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS 
+      "${CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS} -undefined dynamic_lookup")
+  endif()
+else ()
+  set(Boost_USE_STATIC_LIBS ON)
+endif ()
+  
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 
@@ -14,7 +26,7 @@ find_package(Boost 1.69.0 COMPONENTS
 
 set(user $ENV{USER} CACHE INTERNAL "keep user")
 
-include(cmake/options.cmake)
+include(cmake/options-wx.cmake)
 
 execute_process(
   COMMAND git apply ../wxWidgets.patch
@@ -41,7 +53,7 @@ string(REGEX MATCH "[0-9]+-[0-9]+"
   WEX_COPYRIGHT ${WEX_VERSION_CONTENTS})
 set(WEX_COPYRIGHT ${WEX_COPYRIGHT})
 
-if (ENABLE_GETTEXT)
+if (wexENABLE_GETTEXT)
   include(FindGettext)
 endif ()
 
@@ -60,7 +72,7 @@ set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/external/wxWidgets/build/cmake/modul
 
 include_directories(${Boost_INCLUDE_DIRS})
 
-include(cmake/options-ex.cmake)
+include(cmake/options.cmake)
 include(cmake/common.cmake)
 
 add_subdirectory(src)

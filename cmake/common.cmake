@@ -90,11 +90,15 @@ function(wex_install)
   if (MSVC)
     file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.lib)
   else ()
-    file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.a)
+    if (wexBUILD_SHARED)
+      file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.dylib)
+    else ()
+      file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.a)
+    endif ()
   endif ()
   
   install(FILES ${wex_LIBS} 
-    DESTINATION "lib/wex")
+    DESTINATION "lib")
 endfunction()
 
 function(wex_process_po_files)

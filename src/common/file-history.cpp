@@ -41,9 +41,6 @@ namespace wex
       }
     }
 
-    void     AddFileToHistory(const wxString& file) override;
-    wxString GetHistoryFile(size_t index = 0) const override;
-
     bool append(const path& p)
     {
       if (!p.file_exists())
@@ -60,7 +57,11 @@ namespace wex
 
     void save() { config(m_key).set(m_contents); };
 
+    wxString GetHistoryFile(size_t index = 0) const override;
+
   private:
+    void AddFileToHistory(const wxString& file) override;
+
     const std::string      m_key;
     std::list<std::string> m_contents;
   };

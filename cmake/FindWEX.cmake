@@ -11,7 +11,17 @@
 #  wex_LIB_DIR        The wex lib directory.
 #  wex_LIBRARIES      The wex libraries.
 
-set(Boost_USE_STATIC_LIBS ON)
+if (wexBUILD_SHARED)
+  add_definitions(-DBOOST_LOG_DYN_LINK)
+  
+  if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    set(CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS 
+      "${CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS} -undefined dynamic_lookup")
+  endif()
+else ()
+  set(Boost_USE_STATIC_LIBS ON)
+endif ()
+
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 
@@ -148,7 +158,7 @@ endif()
 
 # these should be the same as in common.cmake
 set(wex_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include/wex")
-set(wex_LIB_DIR "${CMAKE_INSTALL_PREFIX}/lib/wex")
+set(wex_LIB_DIR "${CMAKE_INSTALL_PREFIX}/lib")
       
 set(wex_LIBRARIES
   wex-del${USE_DEBUG}

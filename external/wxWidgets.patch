@@ -47,3 +47,15 @@ index af8507d7de..4a804678bd 100644
  #ifdef SCI_NAMESPACE
  using namespace Scintilla;
  #endif
+diff --git a/build/cmake/lib/qa/CMakeLists.txt b/build/cmake/lib/qa/CMakeLists.txt
+index 050287205e..bdacfb2a85 100644
+--- a/build/cmake/lib/qa/CMakeLists.txt
++++ b/build/cmake/lib/qa/CMakeLists.txt
+@@ -12,6 +12,6 @@ include(../../source_groups.cmake)
+ wx_append_sources(QA_FILES QA)
+ 
+ wx_add_library(wxqa ${QA_FILES})
+-wx_lib_link_libraries(wxqa PUBLIC wxxml)
++wx_lib_link_libraries(wxqa PUBLIC)
+ 
+ wx_finalize_lib(wxqa)

@@ -3,7 +3,6 @@
 ## backlog
 - msw improve (tests, find in files)
 - clang asan build using LeakSanitizer
-- allow dynamic libs
 
 - invest use wxTextCompleter
 - use spaceship operator
