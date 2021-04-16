@@ -44,6 +44,5 @@ before_script:
   - if [ $TRAVIS_OS_NAME = osx ]; then . ./ci/use-clang.sh; fi
 
 script:
-  - if [ $TRAVIS_OS_NAME = osx ]; then ./ci/codespell.sh; fi
   - mkdir -p build_$TRAVIS_OS_NAME && pushd build_$TRAVIS_OS_NAME
   - ../ci/$TRAVIS_OS_NAME-script.sh

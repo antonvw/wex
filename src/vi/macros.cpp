@@ -239,8 +239,9 @@ void wex::macros::parse_node(
   if (const S& value = type_to_value<S>(name).get();
       container.find(value) != container.end())
   {
-    log("duplicate " + container_name) << name << "current:" << container[value]
-                                       << "upate:" << node.text().get() << node;
+    log("duplicate " + container_name)
+      << name << "current:" << container[value]
+      << "update:" << node.text().get() << node;
   }
   else
   {
