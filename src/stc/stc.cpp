@@ -285,6 +285,38 @@ int wex::stc::get_current_line() const
   }
 }
 
+const std::string wex::stc::get_find_string() const
+{
+  if (const auto selection =
+        const_cast<stc*>(this)->GetSelectedText().ToStdString();
+      !selection.empty() && get_number_of_lines(selection) == 1)
+  {
+    bool alnum = true;
+
+    // If regexp is true, then only use selected text if text does not
+    // contain special regexp characters.
+    if (GetSearchFlags() & wxSTC_FIND_REGEXP)
+    {
+      for (size_t i = 0; i < selection.size() && alnum; i++)
+      {
+        if (
+          !isalnum(selection[i]) && selection[i] != ' ' &&
+          selection[i] != '.' && selection[i] != '-' && selection[i] != '_')
+        {
+          alnum = false;
+        }
+      }
+    }
+
+    if (alnum)
+    {
+      find_replace_data::get()->set_find_string(selection);
+    }
+  }
+
+  return find_replace_data::get()->get_find_string();
+}
+
 bool wex::stc::get_hexmode_erase(int begin, int end)
 {
   return m_hexmode.erase(begin, end);

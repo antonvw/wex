@@ -24,12 +24,6 @@ namespace wex
     friend class textctrl_imp;
 
   public:
-    /// Destructor, writes data to config.
-    ~find_replace_data();
-
-    /// Access to data.
-    wxFindReplaceData* data();
-
     /// Static interface.
 
     /// Returns the find replace data.
@@ -59,6 +53,15 @@ namespace wex
     static const auto& text_search_down() { return m_text_search_down; };
 
     /// Other methods.
+
+    /// Default constructor.
+    find_replace_data();
+
+    /// Destructor, writes data to config.
+    ~find_replace_data();
+
+    /// Access to data.
+    wxFindReplaceData* data();
 
     /// Returns the find string.
     const std::string get_find_string() const;
@@ -137,8 +140,6 @@ namespace wex
     auto* wx() const { return m_frd; };
 
   private:
-    find_replace_data();
-
     static inline find_replace_data* m_self = nullptr;
 
     static inline std::string m_text_find         = _("fif.Find what"),

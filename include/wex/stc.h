@@ -218,7 +218,8 @@ namespace wex
 
     const path& get_filename() const override { return m_file.get_filename(); };
 
-    bool get_hexmode_erase(int begin, int end) override;
+    const std::string get_find_string() const override;
+    bool              get_hexmode_erase(int begin, int end) override;
     bool get_hexmode_insert(const std::string& command, int pos) override;
     bool get_hexmode_replace(char) override;
     bool get_hexmode_replace_target(

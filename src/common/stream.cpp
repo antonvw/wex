@@ -23,10 +23,10 @@
 #include <wex/log.h>
 #include <wex/stream.h>
 
-wex::stream::stream(const path& filename, const tool& tool)
+wex::stream::stream(find_replace_data* frd, const path& filename, const tool& tool)
   : m_path(filename)
   , m_tool(tool)
-  , m_frd(find_replace_data::get())
+  , m_frd(frd)
   , m_threshold(config(_("fif.Max replacements")).get(-1))
 {
 }

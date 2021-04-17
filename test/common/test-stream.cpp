@@ -45,9 +45,14 @@ TEST_CASE("wex::stream_statistics")
 
 TEST_CASE("wex::stream")
 {
+  wex::find_replace_data frd;
+
   SUBCASE("find")
   {
-    wex::stream s(wex::test::get_path("test.h"), wex::ID_TOOL_REPORT_FIND);
+    wex::stream s(
+      &frd,
+      wex::test::get_path("test.h"),
+      wex::ID_TOOL_REPORT_FIND);
     REQUIRE(s.get_tool().id() == wex::ID_TOOL_REPORT_FIND);
 
     find_prep(s);
@@ -57,7 +62,7 @@ TEST_CASE("wex::stream")
 
   SUBCASE("replace")
   {
-    wex::stream s(wex::test::get_path("test.h"), wex::ID_TOOL_REPLACE);
+    wex::stream s(&frd, wex::test::get_path("test.h"), wex::ID_TOOL_REPLACE);
     REQUIRE(s.get_tool().id() == wex::ID_TOOL_REPLACE);
 
     find_prep(s);

@@ -21,7 +21,7 @@ namespace wex
   {
   public:
     /// Constructor.
-    stream(const path& filename, const tool& tool);
+    stream(find_replace_data* frd, const path& filename, const tool& tool);
 
     /// Destructor.
     virtual ~stream() = default;

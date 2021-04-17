@@ -314,18 +314,12 @@ wex::regex::regex(
 
 ## wxWidgets libraries
 - all gui classes are derived from / use wxWidgets base classes
-  wxpng
-  wxjpeg
   wxbase
-  wxnet
   wxcore
-  wxadv
   wxaui
   wxhtml
   wxscintilla
   wxstc
-  wxgl
-  wxqa
 
 ## wex c++ libraries
 
