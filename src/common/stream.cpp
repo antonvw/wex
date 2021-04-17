@@ -23,7 +23,10 @@
 #include <wex/log.h>
 #include <wex/stream.h>
 
-wex::stream::stream(find_replace_data* frd, const path& filename, const tool& tool)
+wex::stream::stream(
+  factory::find_replace_data* frd,
+  const path&                 filename,
+  const tool&                 tool)
   : m_path(filename)
   , m_tool(tool)
   , m_frd(frd)

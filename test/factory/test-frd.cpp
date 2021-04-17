@@ -2,16 +2,17 @@
 // Name:      test-frd.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
-#include <wex/frd.h>
-#include <wex/frame.h>
+#include <wex/factory/frd.h>
 
-TEST_CASE("wex::frd")
+#include "../test.h"
+
+TEST_CASE("wex::factory::frd")
 {
-  wex::find_replace_data* frd = wex::find_replace_data::get();
+  wex::factory::find_replace_data find_replace_data;
+  auto*                           frd = &find_replace_data;
 
   REQUIRE(frd != nullptr);
 
@@ -28,20 +29,14 @@ TEST_CASE("wex::frd")
   frd->set_find_string("find2");
   frd->set_find_string("find[0-9]");
   REQUIRE(frd->is_regex());
-  REQUIRE(!frd->get_find_strings().empty());
   REQUIRE(frd->get_find_string() == "find[0-9]");
 
   REQUIRE(frd->regex_search("some text find9 other text") == 10);
   REQUIRE(frd->regex_search("some text finda other text") < 0);
 
-  const std::list<std::string> l{"find3", "find4", "find5"};
-  frd->set_find_strings(l);
-  REQUIRE(frd->get_find_string() == "find3");
-
   frd->set_replace_string("replace1");
   frd->set_replace_string("replace2");
   frd->set_replace_string("replace[0-9]");
-  REQUIRE(!frd->get_replace_strings().empty());
   REQUIRE(frd->get_replace_string() == "replace[0-9]");
 
   REQUIRE(!frd->text_find().empty());
@@ -50,18 +45,6 @@ TEST_CASE("wex::frd")
   REQUIRE(!frd->text_regex().empty());
   REQUIRE(!frd->text_replace_with().empty());
   REQUIRE(!frd->text_search_down().empty());
-
-  frd->set_replace_strings(l);
-  REQUIRE(frd->get_find_string() == "find3");
-  REQUIRE(frd->get_replace_string() == "find3");
-
-  const std::list<std::string> e;
-  frd->set_find_strings(e);
-  frd->set_replace_strings(e);
-  REQUIRE(frd->get_find_strings().empty());
-  REQUIRE(frd->get_find_string().empty());
-  REQUIRE(frd->get_replace_strings().empty());
-  REQUIRE(frd->get_replace_string().empty());
 
   frd->set_find_string("find[0-9]");
   frd->set_replace_string("xxx");
