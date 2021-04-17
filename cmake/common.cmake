@@ -159,7 +159,7 @@ macro(wex_target_link_all)
       stdc++fs)
   endif ()
 
-  set (wxWidgets_LIBRARIES wxaui wxadv wxstc wxhtml wxcore wxnet wxbase)
+  set (wxWidgets_LIBRARIES wxaui wxstc wxhtml wxcore wxnet wxbase)
   set (wex_LIBRARIES wex-del wex-stc wex-vi wex-ui wex-common wex-data wex-factory wex-core)
           
   if (WIN32)

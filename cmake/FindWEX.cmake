@@ -123,7 +123,6 @@ if (MSVC)
         
   set(wx_LIBRARIES
     wx${PLATFORM}31u_aui
-    wx${PLATFORM}31u_adv
     wx${PLATFORM}31u_stc
     wx${PLATFORM}31u_html
     wx${PLATFORM}31u_core
@@ -141,7 +140,6 @@ if (MSVC)
 else()
   set(wx_LIBRARIES
     wx_${PLATFORM}u_aui-3.1
-    wx_${PLATFORM}u_adv-3.1
     wx_${PLATFORM}u_stc-3.1
     wx_${PLATFORM}u_html-3.1
     wx_${PLATFORM}u_core-3.1
