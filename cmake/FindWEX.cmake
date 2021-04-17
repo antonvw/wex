@@ -146,8 +146,7 @@ else()
     wx_${PLATFORM}u_html-3.1
     wx_${PLATFORM}u_core-3.1
     wx_baseu-3.1 
-    wx_baseu_net-3.1 
-    wxscintilla-3.1)
+    wx_baseu_net-3.1)
         
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2a -g")
 endif()
@@ -162,9 +161,7 @@ set(wex_LIB_DIR "${CMAKE_INSTALL_PREFIX}/lib")
       
 set(wex_LIBRARIES
   wex-del${USE_DEBUG}
-  wex-common${USE_DEBUG}
   wex-stc${USE_DEBUG}
-  wex-ui${USE_DEBUG}
   wex-vi${USE_DEBUG}
   wex-ui${USE_DEBUG}
   wex-common${USE_DEBUG}
