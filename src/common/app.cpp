@@ -15,7 +15,6 @@
 #include <wex/app.h>
 #include <wex/config.h>
 #include <wex/core.h>
-#include <wex/frd.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
 #include <wex/printing.h>
@@ -26,7 +25,6 @@ namespace fs = std::filesystem;
 
 int wex::app::OnExit()
 {
-  delete find_replace_data::set(nullptr);
   delete lexers::set(nullptr);
   delete printing::set(nullptr);
 

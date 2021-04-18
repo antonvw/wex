@@ -186,6 +186,8 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
     m_file_history.save();
     m_textctrl->on_exit();
 
+    delete find_replace_data::set(nullptr);
+
     if (!m_perspective.empty())
     {
       wex::config(m_perspective).set(m_manager.SavePerspective().ToStdString());

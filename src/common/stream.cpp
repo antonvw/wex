@@ -19,7 +19,7 @@
 #include <fstream>
 #include <wex/config.h>
 #include <wex/core.h>
-#include <wex/frd.h>
+#include <wex/factory/frd.h>
 #include <wex/log.h>
 #include <wex/stream.h>
 
