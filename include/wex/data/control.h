@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      control-data.h
+// Name:      data/control.h
 // Purpose:   Declaration of wex::data::control
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,7 +10,8 @@
 #include <bitset>
 #include <functional>
 #include <string>
-#include <wex/window-data.h>
+#include <wex/data/window.h>
+#include <wex/line-data.h>
 #include <wx/validate.h>
 
 namespace wex::data
@@ -19,7 +20,7 @@ namespace wex::data
   /// First you can set the data using Col, Line, Find etc.,
   /// then call inject to perform the action.
   /// You can set several items, inject prioritizes the actions.
-  class control
+  class control : public line_data
   {
   public:
     /// Determine how flags value are set.
@@ -32,12 +33,15 @@ namespace wex::data
       XOR, /// xor this flag
     };
 
-    /// Returns column.
-    const auto& col() const { return m_col; };
+    /// Returns col.
+    const auto col() const { return line_data::col(); };
 
     /// Sets column.
-    /// Goes to column if col_number > 0
-    control& col(int col);
+    control& col(int col)
+    {
+      line_data::col(col);
+      return *this;
+    };
 
     /// Returns command.
     const auto& command() const { return m_command; };
@@ -124,15 +128,16 @@ namespace wex::data
       return *this;
     };
 
-    /// Returns line number.
-    const auto line() const { return m_line; };
+    /// Returns line.
+    const auto line() const { return line_data::line(); };
 
     /// Sets line number.
     /// Goes to the line if > 0, if -1 goes to end of file
-    control& line(int line, std::function<int(int)> valid = nullptr);
-
-    /// Resets members to default state.
-    void reset();
+    control& line(int line, std::function<int(int)> f = nullptr)
+    {
+      line_data::line(line, f);
+      return *this;
+    };
 
     /// Returns validator.
     const auto validator() const { return m_validator; };
@@ -150,13 +155,16 @@ namespace wex::data
       return *this;
     };
 
+    /// Virtual overrides.
+
+    void reset() override;
+
   private:
     data::window m_data;
 
     bool m_is_required{false};
 
-    int m_col{NUMBER_NOT_SET}, m_find_flags{NUMBER_NOT_SET},
-      m_line{NUMBER_NOT_SET};
+    int m_find_flags{NUMBER_NOT_SET};
 
     std::string m_find, m_command;
 

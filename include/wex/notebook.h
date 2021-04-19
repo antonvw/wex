@@ -9,12 +9,12 @@
 
 #include <map>
 #include <wex/config.h>
+#include <wex/data/notebook.h>
+#include <wex/data/window.h>
 #include <wex/defs.h>
 #include <wex/factory/stc.h>
 #include <wex/file-dialog.h>
 #include <wex/frame.h>
-#include <wex/notebook-data.h>
-#include <wex/window-data.h>
 #include <wx/aui/auibook.h>
 #include <wx/wupdlock.h>
 

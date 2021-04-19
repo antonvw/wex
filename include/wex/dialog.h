@@ -2,12 +2,12 @@
 // Name:      dialog.h
 // Purpose:   Declaration of wex::dialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wex/window-data.h>
+#include <wex/data/window.h>
 #include <wx/dialog.h>
 #include <wx/sizer.h>
 

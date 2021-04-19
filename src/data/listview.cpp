@@ -5,9 +5,9 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/lexer.h>
+#include <wex/data/listview.h>
 #include <wex/factory/listview.h>
-#include <wex/listview-data.h>
+#include <wex/lexer.h>
 
 wex::data::listview::listview(factory::listview* lv)
   : m_listview(lv)
@@ -59,9 +59,10 @@ void wex::data::listview::add_columns()
   switch (m_type)
   {
     case FIND:
-      m_listview->append_columns({{_("Line"), column::STRING, 250},
-                                  {_("Match"), column::STRING},
-                                  {_("Line No")}});
+      m_listview->append_columns(
+        {{_("Line"), column::STRING, 250},
+         {_("Match"), column::STRING},
+         {_("Line No")}});
       break;
     case KEYWORD:
       for (const auto& it : m_lexer->keywords())
@@ -75,10 +76,11 @@ void wex::data::listview::add_columns()
       break; // to prevent warnings
   }
 
-  m_listview->append_columns({{_("Modified"), column::DATE},
-                              {_("In Folder"), column::STRING, 175},
-                              {_("Type"), column::STRING},
-                              {_("Size")}});
+  m_listview->append_columns(
+    {{_("Modified"), column::DATE},
+     {_("In Folder"), column::STRING, 175},
+     {_("Type"), column::STRING},
+     {_("Size")}});
 }
 
 wex::data::listview& wex::data::listview::image(image_t type)

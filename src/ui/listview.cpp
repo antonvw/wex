@@ -15,6 +15,7 @@
 #include <wex/bind.h>
 #include <wex/chrono.h>
 #include <wex/config.h>
+#include <wex/data/stc.h>
 #include <wex/defs.h>
 #include <wex/factory/stc.h>
 #include <wex/frame.h>
@@ -30,7 +31,6 @@
 #include <wex/menu.h>
 #include <wex/printing.h>
 #include <wex/regex.h>
-#include <wex/stc-data.h>
 #include <wex/tokenizer.h>
 #include <wx/dnd.h>
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
@@ -708,7 +708,7 @@ const std::string wex::listview::get_item_text(
   {
     return std::string();
   }
-  
+
   if (col_name.empty())
   {
     return GetItemText(item_number);

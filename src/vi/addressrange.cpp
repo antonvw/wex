@@ -13,6 +13,7 @@
 #include <boost/tokenizer.hpp>
 #include <wex/addressrange.h>
 #include <wex/core.h>
+#include <wex/data/substitute.h>
 #include <wex/ex-stream.h>
 #include <wex/ex.h>
 #include <wex/factory/stc.h>
@@ -24,7 +25,6 @@
 #include <wex/process.h>
 #include <wex/regex.h>
 #include <wex/sort.h>
-#include <wex/substitute-data.h>
 #include <wex/temp-filename.h>
 #include <wex/util.h>
 

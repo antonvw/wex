@@ -15,12 +15,12 @@
 #include <wex/core.h>
 #include <wex/dir.h>
 #include <wex/factory/frame.h>
+#include <wex/factory/link.h>
 #include <wex/factory/process.h>
 #include <wex/factory/stc.h>
 #include <wex/file-dialog.h>
 #include <wex/lexer.h>
 #include <wex/lexers.h>
-#include <wex/link.h>
 #include <wex/log.h>
 #include <wex/path.h>
 #include <wex/regex.h>
@@ -148,7 +148,8 @@ int wex::open_files(
 
         if (!it.file_exists() && it.string().find(":") != std::string::npos)
         {
-          if (const path & val(link().get_path(it.string(), data.control()));
+          if (const path &
+                val(wex::factory::link().get_path(it.string(), data.control()));
               !val.empty())
           {
             fn = val;

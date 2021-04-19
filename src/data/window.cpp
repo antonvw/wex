@@ -5,7 +5,7 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/window-data.h>
+#include <wex/data/window.h>
 #include <wx/app.h>
 #include <wx/window.h>
 

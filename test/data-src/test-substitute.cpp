@@ -5,8 +5,9 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/data/substitute.h>
+
 #include "../test.h"
-#include <wex/substitute-data.h>
 
 TEST_CASE("wex::data::substitute")
 {

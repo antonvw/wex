@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      menu-data.h
+// Name:      data/menu.h
 // Purpose:   Declaration of wex::data::menu class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020 Anton van Wezenbeek

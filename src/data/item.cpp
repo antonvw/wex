@@ -5,7 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/item-data.h>
+#include <wex/data/item.h>
 
 wex::data::item::item(const data::control& data)
   : m_data(data)

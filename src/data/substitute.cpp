@@ -1,14 +1,14 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      substitute-data.cpp
+// Name:      data/substitute.cpp
 // Purpose:   Implementation of class wex::data::substitute
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
+#include <wex/data/substitute.h>
 #include <wex/log.h>
 #include <wex/regex.h>
-#include <wex/substitute-data.h>
 
 wex::data::substitute::substitute(
   const std::string& pattern,

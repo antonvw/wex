@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      substitute-data.h
+// Name:      data/substitute.h
 // Purpose:   Declaration of class wex::data::substitute
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021 Anton van Wezenbeek

@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      item-data.h
+// Name:      data/item.h
 // Purpose:   Declaration of wex::data::item class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020 Anton van Wezenbeek
@@ -9,7 +9,7 @@
 
 #include <any>
 #include <functional>
-#include <wex/control-data.h>
+#include <wex/data/control.h>
 #include <wx/imaglist.h>
 
 namespace wex::data

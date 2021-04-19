@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <wex/window-data.h>
+#include <wex/data/window.h>
 
 class wxControl;
 

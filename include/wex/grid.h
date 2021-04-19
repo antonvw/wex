@@ -7,9 +7,9 @@
 
 #pragma once
 
+#include <wex/data/window.h>
 #include <wex/factory/grid.h>
 #include <wex/menu.h>
-#include <wex/window-data.h>
 
 namespace wex
 {
