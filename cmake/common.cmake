@@ -90,11 +90,19 @@ function(wex_install)
   if (MSVC)
     file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.lib)
   else ()
-    file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.a)
+    if (wexBUILD_SHARED)
+      if (APPLE)
+        file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.dylib)
+      else ()
+        file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.so)
+      endif ()
+    else ()
+      file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.a)
+    endif ()
   endif ()
   
   install(FILES ${wex_LIBS} 
-    DESTINATION "lib/wex")
+    DESTINATION "lib")
 endfunction()
 
 function(wex_process_po_files)
@@ -151,10 +159,8 @@ macro(wex_target_link_all)
       stdc++fs)
   endif ()
 
-  set (wxWidgets_LIBRARIES wxaui wxadv wxstc wxhtml wxcore wxnet wxbase)
-  set (wex_LIBRARIES 
-    wex-del wex-common 
-    wex-stc wex-ui wex-vi wex-common wex-stc wex-ui wex-factory wex-data wex-core)
+  set (wxWidgets_LIBRARIES wxaui wxstc wxhtml wxcore wxnet wxbase)
+  set (wex_LIBRARIES wex-del wex-stc wex-vi wex-ui wex-common wex-data wex-factory wex-core)
           
   if (WIN32)
     target_link_libraries(

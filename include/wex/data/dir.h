@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      dir.h
+// Name:      data/dir.h
 // Purpose:   Declaration of class wex::data::dir
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021 Anton van Wezenbeek

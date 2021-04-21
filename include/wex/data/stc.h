@@ -1,14 +1,14 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      stc-data.h
+// Name:      data/stc.h
 // Purpose:   Declaration of wex::data::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2017-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <bitset>
-#include <wex/control-data.h>
+#include <wex/data/control.h>
 
 namespace wex
 {

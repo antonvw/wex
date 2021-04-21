@@ -41,14 +41,14 @@ TEST_CASE("wex::factory::process")
       REQUIRE(process.write("xx"));
       REQUIRE(process.stop());
       REQUIRE(!process.is_running());
-      REQUIRE(!process.stop());
+      process.stop();
       REQUIRE(!process.write("xx"));
     }
 
     SUBCASE("invalid")
     {
       REQUIRE(process.async_system("xxxx"));
-      REQUIRE(process.stop());
+      process.stop();
       REQUIRE(!process.is_running());
     }
   }

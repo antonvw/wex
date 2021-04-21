@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      toolbar.h
+// Name:      data/toolbar.h
 // Purpose:   Declaration of wex::data::toolbar_item
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020 Anton van Wezenbeek

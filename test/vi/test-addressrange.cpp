@@ -12,8 +12,6 @@
 
 #include "test.h"
 
-TEST_SUITE_BEGIN("wex::ex");
-
 TEST_CASE("wex::addressrange")
 {
   const std::string contents("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
@@ -117,6 +115,7 @@ TEST_CASE("wex::addressrange")
 
   SUBCASE("escape")
   {
+    // See also del/test-frame.cpp
 #ifdef __UNIX__
     stc->set_text(contents);
     REQUIRE(stc->get_line_count() == 8);
@@ -150,13 +149,6 @@ TEST_CASE("wex::addressrange")
   }
 #endif
 
-  SUBCASE("shift")
-  {
-    stc->set_text(contents);
-    REQUIRE(wex::addressrange(ex, 5).shift_right());
-    REQUIRE(wex::addressrange(ex, 5).shift_left());
-  }
-
   SUBCASE("join")
   {
     stc->set_text("a\nb\nc\nd\ne\nf\ng\n");
@@ -188,6 +180,13 @@ TEST_CASE("wex::addressrange")
   {
     stc->set_text(contents);
     REQUIRE(wex::addressrange(ex, 5).print());
+  }
+
+  SUBCASE("shift")
+  {
+    stc->set_text(contents);
+    REQUIRE(wex::addressrange(ex, 5).shift_right());
+    REQUIRE(wex::addressrange(ex, 5).shift_left());
   }
 
   SUBCASE("sort")
@@ -282,5 +281,3 @@ TEST_CASE("wex::addressrange")
     REQUIRE(wex::addressrange(ex, -2).erase());
   }
 }
-
-TEST_SUITE_END();

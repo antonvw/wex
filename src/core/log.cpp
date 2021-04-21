@@ -13,7 +13,6 @@
 #include <boost/log/utility/setup/file.hpp>
 
 #include <iomanip>
-#include <wex/cmdline.h>
 #include <wex/config.h>
 #include <wex/log.h>
 #include <wex/path.h>
@@ -31,7 +30,7 @@ enum level_t
   LEVEL_WARNING,
   LEVEL_ERROR,
   LEVEL_FATAL,
-  LEVEL_STATUS,      // from wxLog
+  LEVEL_STATUS, // from wxLog
 };
 
 wex::log::log(const std::string& topic)

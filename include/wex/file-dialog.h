@@ -2,12 +2,12 @@
 // Name:      file-dialog.h
 // Purpose:   Declaration of wex::file_dialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2009-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wex/window-data.h>
+#include <wex/data/window.h>
 #include <wx/filedlg.h>
 
 /// Extra flag to show hex mode button on dialog.

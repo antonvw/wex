@@ -7,8 +7,8 @@
 
 #pragma once
 
+#include <wex/data/window.h>
 #include <wex/dialog.h>
-#include <wex/window-data.h>
 
 namespace wex
 {

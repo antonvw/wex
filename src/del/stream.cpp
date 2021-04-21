@@ -17,7 +17,7 @@
 #include <wex/log.h>
 
 wex::del::stream::stream(const path& filename, const tool& tool)
-  : wex::stream(filename, tool)
+  : wex::stream(find_replace_data::get(), filename, tool)
 {
 }
 

@@ -9,13 +9,13 @@
 
 #include <utility>
 #include <vector>
+#include <wex/data/stc.h>
+#include <wex/data/window.h>
 #include <wex/factory/frame.h>
 #include <wex/file-history.h>
 #include <wex/path.h>
 #include <wex/statusbar-pane.h>
 #include <wex/statusbar.h>
-#include <wex/stc-data.h>
-#include <wex/window-data.h>
 #include <wx/aui/framemanager.h>
 
 class wxFindReplaceDialog;
@@ -126,6 +126,14 @@ namespace wex
 
     /// Allows you to override print ex.
     virtual bool print_ex(factory::stc* stc, const std::string& text)
+    {
+      return false;
+    };
+
+    /// Runs async process.
+    virtual bool process_async_system(
+      const std::string& command,
+      const std::string& start_dir = std::string())
     {
       return false;
     };

@@ -27,7 +27,7 @@
     the list of all locales (/usr/share/i18n/SUPPORTED).
     Then you do export LANG=..., or change the /etc/default/locale.
 
-  - To add translation files add -DENABLE_GETTEXT=ON to cmake.
+  - To add translation files add -DwexENABLE_GETTEXT=ON to cmake.
 
 ## Test it
 - add a test (and update sample)

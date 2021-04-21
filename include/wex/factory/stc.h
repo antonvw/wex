@@ -78,6 +78,14 @@ namespace wex
       /// Pure virtual, must be overridden.
       virtual const path& get_filename() const = 0;
 
+      /// Returns find string, from selected text or from config.
+      /// The search flags are taken from frd.
+      /// If text is selected, it also sets the find string.
+      virtual const std::string get_find_string() const
+      {
+        return std::string();
+      };
+
       /// Hex erase.
       virtual bool get_hexmode_erase(int begin, int end) { return false; };
 
@@ -214,11 +222,6 @@ namespace wex
       /// If you only want to insert a newline, use NewLine()
       /// (from wxStyledTextCtrl).
       const std::string eol() const;
-
-      /// Returns find string, from selected text or from config.
-      /// The search flags are taken from frd.
-      /// If text is selected, it also sets the find string.
-      const std::string get_find_string();
 
       /// Returns current line fold level.
       int get_fold_level() const;

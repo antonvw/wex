@@ -7,8 +7,8 @@
 
 #pragma once
 
+#include <wex/data/menu.h>
 #include <wex/file-history.h>
-#include <wex/menu-data.h>
 #include <wex/path.h>
 
 namespace wex
@@ -152,14 +152,14 @@ namespace wex
     void append_panes(wex::menu* menu) const;
     void append_vcs(wex::menu* menu) const;
 
-    const frame* m_frame{nullptr};
-    file_history*        m_history{nullptr};
-    wex::menu*           m_menu{nullptr};
-    const bool           m_modal{false};
-    const wex::path      m_path;
-    const wxWindowID     m_id{wxID_ANY};
-    const type_t         m_type{SEPARATOR};
-    const std::string    m_name;
-    data::menu           m_data;
+    const frame*      m_frame{nullptr};
+    file_history*     m_history{nullptr};
+    wex::menu*        m_menu{nullptr};
+    const bool        m_modal{false};
+    const wex::path   m_path;
+    const wxWindowID  m_id{wxID_ANY};
+    const type_t      m_type{SEPARATOR};
+    const std::string m_name;
+    data::menu        m_data;
   };
 }; // namespace wex

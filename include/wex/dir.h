@@ -9,7 +9,7 @@
 
 #include <memory>
 #include <string>
-#include <wex/dir-data.h>
+#include <wex/data/dir.h>
 #include <wex/interruptible.h>
 #include <wex/path.h>
 

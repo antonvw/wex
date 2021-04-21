@@ -9,8 +9,8 @@
 
 #include <list>
 #include <map>
+#include <wex/data/listview.h>
 #include <wex/factory/listview.h>
-#include <wex/listview-data.h>
 #include <wx/artprov.h> // for wxArtID
 
 namespace wex

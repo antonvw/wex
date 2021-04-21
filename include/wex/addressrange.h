@@ -2,7 +2,7 @@
 // Name:      addressrange.h
 // Purpose:   Declaration of class wex::addressrange
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2015-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -16,12 +16,12 @@ namespace wex
 {
   enum class info_message_t;
   class global_env;
-  class process;
 
   namespace factory
   {
+    class process;
     class stc;
-  }
+  } // namespace factory
 
   /// Offers an address range for vi (ex).
   /// - The range is derived from a number of lines,
@@ -33,13 +33,6 @@ namespace wex
     friend class global_env;
 
   public:
-    /// Static interface.
-
-    /// Cleans up (process).
-    static void on_exit();
-
-    /// Other methods.
-
     /// Constructor for a range from current position
     /// extending with number of lines.
     addressrange(
@@ -178,8 +171,6 @@ namespace wex
     bool set_selection() const;
 
     static inline std::string m_pattern, m_replacement;
-
-    static inline wex::process* m_process{nullptr};
 
     const indicator m_find_indicator{indicator(0)};
 

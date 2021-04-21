@@ -5,20 +5,21 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <chrono>
-#include <wex/frd.h>
+#include <wex/factory/frd.h>
 #include <wex/stream.h>
 
-void find_prep(wex::stream& s)
+#include "../test.h"
+
+void find_prep(wex::stream& s, wex::factory::find_replace_data* frd)
 {
   REQUIRE(s.get_filename() == wex::test::get_path("test.h"));
 
-  wex::find_replace_data::get()->set_find_string("test");
-  wex::find_replace_data::get()->set_match_case(true);
-  wex::find_replace_data::get()->set_match_word(true);
-  wex::find_replace_data::get()->set_regex(false);
-  wex::find_replace_data::get()->set_replace_string("test");
+  frd->set_find_string("test");
+  frd->set_match_case(true);
+  frd->set_match_word(true);
+  frd->set_regex(false);
+  frd->set_replace_string("test");
 
   const auto start = std::chrono::system_clock::now();
   REQUIRE(s.run_tool());
@@ -45,22 +46,27 @@ TEST_CASE("wex::stream_statistics")
 
 TEST_CASE("wex::stream")
 {
+  wex::factory::find_replace_data frd;
+
   SUBCASE("find")
   {
-    wex::stream s(wex::test::get_path("test.h"), wex::ID_TOOL_REPORT_FIND);
+    wex::stream s(
+      &frd,
+      wex::test::get_path("test.h"),
+      wex::ID_TOOL_REPORT_FIND);
     REQUIRE(s.get_tool().id() == wex::ID_TOOL_REPORT_FIND);
 
-    find_prep(s);
+    find_prep(s, &frd);
 
     REQUIRE(s.get_statistics().get("Actions Completed") == 193);
   }
 
   SUBCASE("replace")
   {
-    wex::stream s(wex::test::get_path("test.h"), wex::ID_TOOL_REPLACE);
+    wex::stream s(&frd, wex::test::get_path("test.h"), wex::ID_TOOL_REPLACE);
     REQUIRE(s.get_tool().id() == wex::ID_TOOL_REPLACE);
 
-    find_prep(s);
+    find_prep(s, &frd);
 
     REQUIRE(s.get_statistics().get("Actions Completed") == 196);
   }

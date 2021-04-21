@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      notebook-data.h
+// Name:      data/notebook.h
 // Purpose:   Declaration of wex::data::notebook
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020 Anton van Wezenbeek

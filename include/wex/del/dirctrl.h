@@ -2,13 +2,13 @@
 // Name:      dirctrl.h
 // Purpose:   Declaration of class wex::del::dirctrl
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
+#include <wex/data/window.h>
 #include <wex/path.h>
-#include <wex/window-data.h>
 #include <wx/generic/dirctrlg.h>
 
 namespace wex::del
@@ -22,7 +22,7 @@ namespace wex::del
   public:
     /// Default constructor.
     dirctrl(
-      del::frame*      frame,
+      del::frame*         frame,
       const data::window& data =
         data::window().style(wxDIRCTRL_3D_INTERNAL | wxDIRCTRL_MULTIPLE));
 

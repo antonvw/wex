@@ -14,14 +14,20 @@
 
 namespace wex
 {
-  class find_replace_data;
+  namespace factory
+  {
+    class find_replace_data;
+  };
 
   /// Adds run_tool methods and statistics to a file stream.
   class stream
   {
   public:
     /// Constructor.
-    stream(const path& filename, const tool& tool);
+    stream(
+      wex::factory::find_replace_data* frd,
+      const path&                      filename,
+      const tool&                      tool);
 
     /// Destructor.
     virtual ~stream() = default;
@@ -89,8 +95,8 @@ namespace wex
 
     bool m_modified{false}, m_write{false};
 
-    find_replace_data* m_frd;
-    std::string        m_find_string;
-    static inline bool m_asked{false};
+    wex::factory::find_replace_data* m_frd;
+    std::string                      m_find_string;
+    static inline bool               m_asked{false};
   };
 }; // namespace wex

@@ -5,7 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/find-data.h>
+#include <wex/data/find.h>
 
 #include "test.h"
 

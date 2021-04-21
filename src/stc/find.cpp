@@ -7,8 +7,8 @@
 
 #include <wex/config.h>
 #include <wex/core.h>
+#include <wex/data/find.h>
 #include <wex/ex-stream.h>
-#include <wex/find-data.h>
 #include <wex/frame.h>
 #include <wex/frd.h>
 #include <wex/log.h>

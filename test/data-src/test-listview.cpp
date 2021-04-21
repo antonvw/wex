@@ -2,10 +2,10 @@
 // Name:      data/test-listview.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/listview-data.h>
+#include <wex/data/listview.h>
 
 #include "test.h"
 

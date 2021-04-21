@@ -7,8 +7,8 @@
 
 #include <regex>
 #include <wex/config.h>
+#include <wex/data/find.h>
 #include <wex/factory/stc.h>
-#include <wex/find-data.h>
 
 wex::data::find::find(
   wex::factory::stc* stc,

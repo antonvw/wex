@@ -7,7 +7,6 @@
 
 #include <wex/core.h>
 #include <wex/factory/stc.h>
-#include <wex/frd.h>
 
 const std::string wex::factory::stc::eol() const
 {
@@ -67,38 +66,6 @@ bool wex::factory::stc::find(
   }
 
   return false;
-}
-
-// Cannot be const because of GetSelectedText (not const in 2.9.4).
-const std::string wex::factory::stc::get_find_string()
-{
-  if (const auto selection = GetSelectedText().ToStdString();
-      !selection.empty() && get_number_of_lines(selection) == 1)
-  {
-    bool alnum = true;
-
-    // If regexp is true, then only use selected text if text does not
-    // contain special regexp characters.
-    if (GetSearchFlags() & wxSTC_FIND_REGEXP)
-    {
-      for (size_t i = 0; i < selection.size() && alnum; i++)
-      {
-        if (
-          !isalnum(selection[i]) && selection[i] != ' ' &&
-          selection[i] != '.' && selection[i] != '-' && selection[i] != '_')
-        {
-          alnum = false;
-        }
-      }
-    }
-
-    if (alnum)
-    {
-      find_replace_data::get()->set_find_string(selection);
-    }
-  }
-
-  return find_replace_data::get()->get_find_string();
 }
 
 int wex::factory::stc::get_fold_level() const

@@ -22,7 +22,7 @@ before_build:
 
 build_script:
   - call "C:\Program Files (x86)\Microsoft Visual Studio\%YEAR%\Community\VC\Auxiliary\Build\vcvars32.bat"
-  - cmake -DBOOST_ROOT=C:\Libraries\boost_1_%BOOST%_0 -DCMAKE_BUILD_TYPE=%configuration% -DwexBUILD_TESTS=ON -DENABLE_GETTEXT=ON ..
+  - cmake -DBOOST_ROOT=C:\Libraries\boost_1_%BOOST%_0 -DCMAKE_BUILD_TYPE=%configuration% -DwexBUILD_TESTS=ON -DwexENABLE_GETTEXT=ON ..
   - echo %configuration%
   - devenv wex.sln /build %configuration%
   # extra line wit arg /project RUN_TESTS is simpler,

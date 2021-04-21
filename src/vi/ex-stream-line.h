@@ -9,9 +9,9 @@
 
 #include <string.h>
 #include <wex/addressrange.h>
+#include <wex/data/substitute.h>
 #include <wex/ex-stream.h>
 #include <wex/file.h>
-#include <wex/substitute-data.h>
 
 namespace wex
 {

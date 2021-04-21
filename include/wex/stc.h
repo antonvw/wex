@@ -2,7 +2,7 @@
 // Name:      stc.h
 // Purpose:   Declaration of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2008-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,12 +10,12 @@
 #include <bitset>
 #include <vector>
 #include <wex/auto-complete.h>
-#include <wex/dir-data.h>
+#include <wex/data/dir.h>
+#include <wex/data/stc.h>
 #include <wex/factory/stc.h>
 #include <wex/hexmode.h>
 #include <wex/item.h>
 #include <wex/marker.h>
-#include <wex/stc-data.h>
 #include <wex/stc-file.h>
 #include <wex/vi.h>
 #include <wx/prntbase.h>
@@ -218,7 +218,8 @@ namespace wex
 
     const path& get_filename() const override { return m_file.get_filename(); };
 
-    bool get_hexmode_erase(int begin, int end) override;
+    const std::string get_find_string() const override;
+    bool              get_hexmode_erase(int begin, int end) override;
     bool get_hexmode_insert(const std::string& command, int pos) override;
     bool get_hexmode_replace(char) override;
     bool get_hexmode_replace_target(

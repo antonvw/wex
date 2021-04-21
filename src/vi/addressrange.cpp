@@ -2,7 +2,7 @@
 // Name:      addressrange.cpp
 // Purpose:   Implementation of class wex::addressrange
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2015-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -13,18 +13,18 @@
 #include <boost/tokenizer.hpp>
 #include <wex/addressrange.h>
 #include <wex/core.h>
+#include <wex/data/substitute.h>
 #include <wex/ex-stream.h>
 #include <wex/ex.h>
+#include <wex/factory/process.h>
 #include <wex/factory/stc.h>
 #include <wex/file.h>
 #include <wex/frame.h>
 #include <wex/frd.h>
 #include <wex/log.h>
 #include <wex/macros.h>
-#include <wex/process.h>
 #include <wex/regex.h>
 #include <wex/sort.h>
-#include <wex/substitute-data.h>
 #include <wex/temp-filename.h>
 #include <wex/util.h>
 
@@ -320,26 +320,18 @@ bool wex::addressrange::escape(const std::string& command)
 {
   if (m_begin.m_address.empty() && m_end.m_address.empty())
   {
-    auto expanded(command);
-
-    if (
-      !marker_and_register_expansion(m_ex, expanded) ||
-      !shell_expansion(expanded))
-      return false;
-
-    if (m_process != nullptr)
+    if (auto expanded(command);
+        !marker_and_register_expansion(m_ex, expanded) ||
+        !shell_expansion(expanded))
     {
-      if (m_process->is_running())
-      {
-        log::trace("escape") << command << "stops" << m_process->get_exe();
-      }
-
-      delete m_process;
+      return false;
     }
-
-    m_process = new wex::process();
-
-    return m_process->async_system(expanded, m_stc->get_filename().get_path());
+    else
+    {
+      return m_ex->frame()->process_async_system(
+        expanded,
+        m_stc->get_filename().get_path());
+    }
   }
 
   if (!is_ok())
@@ -572,11 +564,6 @@ bool wex::addressrange::move(const address& destination) const
   return general(destination, [=, this]() {
     return erase();
   });
-}
-
-void wex::addressrange::on_exit()
-{
-  delete m_process;
 }
 
 bool wex::addressrange::parse(

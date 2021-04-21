@@ -9,8 +9,8 @@
 
 #include <tuple>
 #include <vector>
+#include <wex/data/window.h>
 #include <wex/statusbar-pane.h>
-#include <wex/window-data.h>
 #include <wx/statusbr.h>
 
 namespace wex

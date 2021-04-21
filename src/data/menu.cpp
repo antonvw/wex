@@ -5,7 +5,7 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/menu-data.h>
+#include <wex/data/menu.h>
 #include <wx/app.h>
 #include <wx/frame.h>
 

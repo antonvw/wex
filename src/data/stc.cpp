@@ -5,11 +5,11 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/data/stc.h>
 #include <wex/factory/stc.h>
 #include <wex/indicator.h>
 #include <wex/log.h>
 #include <wex/path.h>
-#include <wex/stc-data.h>
 
 wex::data::stc::stc(wex::factory::stc* stc)
   : m_stc(stc)

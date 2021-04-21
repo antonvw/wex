@@ -10,8 +10,8 @@
 #if wexUSE_ODBC
 
 #include <memory>
+#include <wex/data/window.h>
 #include <wex/version.h>
-#include <wex/window-data.h>
 
 class wxGrid;
 class wxStyledTextCtrl;

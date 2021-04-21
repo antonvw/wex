@@ -13,7 +13,7 @@
 #include <utility>
 #include <vector>
 
-#include <wex/cmdline-data.h>
+#include <wex/data/cmdline.h>
 
 namespace wex
 {

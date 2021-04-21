@@ -12,8 +12,8 @@
 #include <set>
 #include <utility>
 #include <vector>
-#include <wex/item-data.h>
-#include <wex/listview-data.h>
+#include <wex/data/item.h>
+#include <wex/data/listview.h>
 #include <wx/sizer.h> // for wxSizer, and wxSizerFlags
 #include <wx/slider.h>
 

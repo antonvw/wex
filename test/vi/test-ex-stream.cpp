@@ -7,12 +7,12 @@
 
 #include <wex/address.h>
 #include <wex/addressrange.h>
+#include <wex/data/substitute.h>
 #include <wex/ex-stream.h>
 #include <wex/ex.h>
 #include <wex/file.h>
 #include <wex/frd.h>
 #include <wex/log.h>
-#include <wex/substitute-data.h>
 
 #include "test.h"
 

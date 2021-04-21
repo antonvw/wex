@@ -13,9 +13,9 @@
 
 TEST_CASE("wex::style")
 {
-  SUBCASE("Default constructor") { REQUIRE(!wex::style().is_ok()); }
+  SUBCASE("constructor") { REQUIRE(!wex::style().is_ok()); }
 
-  SUBCASE("Constructor using no and value")
+  SUBCASE("constructor-other")
   {
     for (const auto& style : std::vector<std::pair<
            std::pair<std::string, std::string>,
@@ -47,7 +47,7 @@ TEST_CASE("wex::style")
     }
   }
 
-  SUBCASE("Constructor using xml node")
+  SUBCASE("constructor-xml")
   {
     pugi::xml_document doc;
     REQUIRE(doc.load_string("<style no = \"2\">string</style>"));

@@ -1,14 +1,14 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      listview-data.h
+// Name:      data/listview.h
 // Purpose:   Declaration of wex::data::listview
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2017-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <bitset>
-#include <wex/control-data.h>
+#include <wex/data/control.h>
 
 namespace wex
 {
@@ -128,8 +128,8 @@ namespace wex
 
       menu_t m_menu_flags = menu_t().set();
 
-      const wex::lexer* m_lexer    = nullptr;
-      factory::listview*   m_listview = nullptr;
+      const wex::lexer*  m_lexer    = nullptr;
+      factory::listview* m_listview = nullptr;
 
       image_t m_image_type = IMAGE_ART;
       type_t  m_type       = NONE;

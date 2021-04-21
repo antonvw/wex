@@ -9,8 +9,8 @@
 
 #include <list>
 #include <vector>
-#include <wex/dir-data.h>
-#include <wex/stc-data.h>
+#include <wex/data/dir.h>
+#include <wex/data/stc.h>
 #include <wx/combobox.h>
 
 class wxArrayString;

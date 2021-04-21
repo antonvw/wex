@@ -1,19 +1,20 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      window-data.h
+// Name:      data/window.h
 // Purpose:   Declaration of wex::data::window
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2009-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <string>
+#include <wex/data.h>
 #include <wx/filedlg.h>
 #include <wx/window.h>
 
 namespace wex::data
 {
-  const long NUMBER_NOT_SET = 0;
+  const long NUMBER_NOT_SET = wex::NUMBER_NOT_SET;
 
   /// Offers window data to be used by windows or (file) dialogs.
   class window
