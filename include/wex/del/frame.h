@@ -17,6 +17,7 @@ namespace wex
 {
   class debug;
   class item_dialog;
+  class process;
   class stc_entry_dialog;
 }; // namespace wex
 
@@ -147,6 +148,11 @@ namespace wex::del
       const vcs_entry& vcs,
       const data::stc& data) override;
     void set_recent_file(const path& path) override;
+
+    virtual bool process_async_system(
+      const std::string& command,
+      const std::string& start_dir = std::string()) override;
+
     void show_ex_bar(
       int           action = HIDE_BAR_FOCUS_STC,
       factory::stc* stc    = nullptr) override;
@@ -173,7 +179,8 @@ namespace wex::del
     item_dialog *     m_fif_dialog{nullptr}, *m_rif_dialog{nullptr};
     stc_entry_dialog* m_entry_dialog{nullptr};
 
-    debug* m_debug{nullptr};
+    debug*   m_debug{nullptr};
+    process* m_process{nullptr};
 
     listview*          m_file_history_listview{nullptr};
     class file_history m_project_history;

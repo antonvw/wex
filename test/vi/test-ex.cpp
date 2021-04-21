@@ -16,8 +16,6 @@
 
 #include "test.h"
 
-TEST_SUITE_BEGIN("wex::ex");
-
 TEST_CASE("wex::ex")
 {
   auto* stc = get_stc();
@@ -27,62 +25,41 @@ TEST_CASE("wex::ex")
   stc->set_text("xx\nxx\nyy\nzz\n");
   stc->DocumentStart();
 
-  SUBCASE("general")
+  SUBCASE("abbreviations")
   {
-    REQUIRE(ex->frame() == frame());
-    REQUIRE(!ex->get_macros().mode().is_recording());
+    REQUIRE(ex->command(":ab t TTTT"));
+    const auto& it1 = ex->get_macros().get_abbreviations().find("t");
+    REQUIRE(it1 != ex->get_macros().get_abbreviations().end());
+    REQUIRE(it1->second == "TTTT");
+    REQUIRE(ex->command(":una t"));
+    REQUIRE(
+      ex->get_macros().get_abbreviations().find("t") ==
+      ex->get_macros().get_abbreviations().end());
   }
 
-  SUBCASE("input mode")
+  SUBCASE("calculator")
   {
-    REQUIRE(ex->command(":a|added"));
-    REQUIRE(stc->get_text().find("added") != std::string::npos);
+    stc->set_text("aaaaa\nbbbbb\nccccc\n");
 
-    REQUIRE(ex->command(":i|inserted"));
-    REQUIRE(stc->get_text().find("inserted") != std::string::npos);
+    REQUIRE(ex->marker_add('a', 1));
+    REQUIRE(ex->marker_add('t', 1));
+    REQUIRE(ex->marker_add('u', 2));
 
-    REQUIRE(ex->command(":c|changed"));
-    REQUIRE(stc->get_text().find("changed") != std::string::npos);
-  }
+    std::vector<std::pair<std::string, std::pair<double, int>>> calcs{
+      {"", {0, 0}},      {"  ", {0, 0}},    {"1 + 1", {2, 0}},
+      {"5+5", {10, 0}},  {"1 * 1", {1, 0}}, {"1 - 1", {0, 0}},
+      {"2 / 1", {2, 0}}, {"2 / 0", {0, 0}}, {"2 < 2", {8, 0}},
+      {"2 > 1", {1, 0}}, {"2 | 1", {3, 0}}, {"2 & 1", {0, 0}},
+      {"~0", {-1, 0}},   {"4 % 3", {1, 0}}, {".", {1, 0}},
+      {"xxx", {0, 0}},   {"%s", {0, 0}},    {"%s/xx/", {0, 0}},
+      {"'a", {2, 0}},    {"'t", {2, 0}},    {"'u", {3, 0}},
+      {"$", {4, 0}}};
 
-  SUBCASE("is_active")
-  {
-    REQUIRE(ex->is_active());
-    ex->use(wex::ex::OFF);
-    REQUIRE(!ex->is_active());
-    ex->use(wex::ex::VISUAL);
-    REQUIRE(ex->is_active());
-  }
-
-  SUBCASE("marker_and_register_expansion")
-  {
-    stc->set_text("this is some text");
-    REQUIRE(ex->command(":ky"));
-
-    std::string command("xxx");
-    REQUIRE(!wex::marker_and_register_expansion(nullptr, command));
-    REQUIRE(wex::marker_and_register_expansion(ex, command));
-
-    command = "'yxxx";
-    REQUIRE(wex::marker_and_register_expansion(ex, command));
-    REQUIRE(command == "1xxx");
-
-    command = "yxxx'";
-    REQUIRE(wex::marker_and_register_expansion(ex, command));
-    REQUIRE(command == "yxxx'");
-
-    REQUIRE(wex::clipboard_add("yanked"));
-    command = "this is * end";
-    REQUIRE(wex::marker_and_register_expansion(ex, command));
-
-#ifndef __WXMSW__
-    REQUIRE(command == "this is yanked end");
-#endif
-  }
-
-  SUBCASE("search_flags")
-  {
-    REQUIRE((ex->search_flags() & wxSTC_FIND_REGEXP) > 0);
+    for (const auto& calc : calcs)
+    {
+      const auto val = ex->calculator(calc.first);
+      REQUIRE(val == calc.second.first);
+    }
   }
 
   SUBCASE("commands")
@@ -96,6 +73,64 @@ TEST_CASE("wex::ex")
       CAPTURE(command);
       REQUIRE(ex->command(command.first));
     }
+  }
+
+  SUBCASE("general")
+  {
+    REQUIRE(ex->frame() == frame());
+    REQUIRE(!ex->get_macros().mode().is_recording());
+  }
+
+  SUBCASE("global")
+  {
+    // Test global delete (previous delete was on found text).
+    const int max = 10;
+    for (int i = 0; i < max; i++)
+      stc->AppendText("line xxxx added\n");
+    const int lines = stc->get_line_count();
+    REQUIRE(ex->command(":g/xxxx/d"));
+    REQUIRE(stc->get_line_count() == lines - max);
+
+    stc->AppendText("line xxxx 6 added\n");
+    stc->AppendText("line xxxx 7 added\n");
+    REQUIRE(ex->command(":g/xxxx/s//yyyy"));
+    REQUIRE(stc->get_text().find("yyyy") != std::string::npos);
+    REQUIRE(ex->command(":g//"));
+
+    // Test global move.
+    stc->set_text("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
+    REQUIRE(!ex->command(":g/d/m$")); // possible infinite loop
+    REQUIRE(stc->get_text().find("d") != std::string::npos);
+  }
+
+  SUBCASE("goto")
+  {
+    stc->set_text("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
+    REQUIRE(stc->get_line_count() == 12);
+    stc->GotoLine(2);
+
+    for (const auto& go : std::vector<std::pair<std::string, int>>{
+           {":1", 0},
+           {":-10", 0},
+           {":10", 9},
+           {":/c/", 2},
+           {":10000", 11}})
+    {
+      REQUIRE(ex->command(go.first));
+      REQUIRE(stc->get_current_line() == go.second);
+    }
+  }
+
+  SUBCASE("input mode")
+  {
+    REQUIRE(ex->command(":a|added"));
+    REQUIRE(stc->get_text().find("added") != std::string::npos);
+
+    REQUIRE(ex->command(":i|inserted"));
+    REQUIRE(stc->get_text().find("inserted") != std::string::npos);
+
+    REQUIRE(ex->command(":c|changed"));
+    REQUIRE(stc->get_text().find("changed") != std::string::npos);
   }
 
   SUBCASE("invalid commands")
@@ -126,6 +161,15 @@ TEST_CASE("wex::ex")
     }
   }
 
+  SUBCASE("is_active")
+  {
+    REQUIRE(ex->is_active());
+    ex->use(wex::ex::OFF);
+    REQUIRE(!ex->is_active());
+    ex->use(wex::ex::VISUAL);
+    REQUIRE(ex->is_active());
+  }
+
   SUBCASE("map")
   {
     REQUIRE(ex->command(":map :xx :%d"));
@@ -134,29 +178,52 @@ TEST_CASE("wex::ex")
     REQUIRE(ex->command(":unm xx"));
   }
 
-  SUBCASE("text input")
+  SUBCASE("marker_and_register_expansion")
   {
-    stc->set_text("xyz\n");
-    REQUIRE(ex->command(":append|extra"));
-    REQUIRE(stc->get_text() == "xyz\nextra");
-    REQUIRE(ex->command(":insert|before\n"));
-    REQUIRE(stc->get_text() == "xyz\nbefore\nextra");
-    stc->set_text("xyz\n");
-    REQUIRE(ex->command(":c|new\n"));
-    REQUIRE(stc->get_text() == "new\n");
+    stc->set_text("this is some text");
+    REQUIRE(ex->command(":ky"));
+
+    std::string command("xxx");
+    REQUIRE(!wex::marker_and_register_expansion(nullptr, command));
+    REQUIRE(wex::marker_and_register_expansion(ex, command));
+
+    command = "'yxxx";
+    REQUIRE(wex::marker_and_register_expansion(ex, command));
+    REQUIRE(command == "1xxx");
+
+    command = "yxxx'";
+    REQUIRE(wex::marker_and_register_expansion(ex, command));
+    REQUIRE(command == "yxxx'");
+
+    REQUIRE(wex::clipboard_add("yanked"));
+    command = "this is * end";
+    REQUIRE(wex::marker_and_register_expansion(ex, command));
+
+#ifndef __WXMSW__
+    REQUIRE(command == "this is yanked end");
+#endif
   }
 
-  SUBCASE("abbreviations")
+  SUBCASE("markers")
   {
-    REQUIRE(ex->command(":ab t TTTT"));
-    const auto& it1 = ex->get_macros().get_abbreviations().find("t");
-    REQUIRE(it1 != ex->get_macros().get_abbreviations().end());
-    REQUIRE(it1->second == "TTTT");
-    REQUIRE(ex->command(":una t"));
-    REQUIRE(
-      ex->get_macros().get_abbreviations().find("t") ==
-      ex->get_macros().get_abbreviations().end());
+    REQUIRE(ex->marker_add('a'));
+    REQUIRE(ex->marker_line('a') != -1);
+    REQUIRE(ex->marker_goto('a'));
+    REQUIRE(ex->marker_delete('a'));
+    REQUIRE(!ex->marker_delete('b'));
+    REQUIRE(!ex->marker_goto('a'));
+    REQUIRE(!ex->marker_delete('a'));
+    stc->set_text("xx\nyy\nzz\n");
+    REQUIRE(ex->command(":1"));
+    REQUIRE(ex->marker_add('t'));
+    REQUIRE(ex->command(":$"));
+    REQUIRE(ex->marker_add('u'));
+    REQUIRE(ex->command(":'t,'us/s/w/"));
+    REQUIRE(ex->command(":'t,$s/s/w/"));
+    REQUIRE(ex->command(":1,'us/s/w/"));
   }
+
+  SUBCASE("print") { ex->print("This is printed"); }
 
   SUBCASE("range")
   {
@@ -195,102 +262,6 @@ TEST_CASE("wex::ex")
 #endif
   }
 
-#ifdef __UNIX__
-  SUBCASE("source")
-  {
-    SUBCASE("so")
-    {
-      REQUIRE(stc->find(std::string("xx")));
-      REQUIRE(
-        stc->get_find_string() == "xx"); // necesary for the ~ in test-source
-      REQUIRE(ex->command(":so test-source.txt"));
-    }
-
-    SUBCASE("full") { REQUIRE(ex->command(":source test-source.txt")); }
-
-    SUBCASE("not-existing") { REQUIRE(!ex->command(":so test-surce.txt")); }
-
-    SUBCASE("illegal") { REQUIRE(!ex->command(":so test-source-2.txt")); }
-  }
-#endif
-
-  SUBCASE("markers")
-  {
-    REQUIRE(ex->marker_add('a'));
-    REQUIRE(ex->marker_line('a') != -1);
-    REQUIRE(ex->marker_goto('a'));
-    REQUIRE(ex->marker_delete('a'));
-    REQUIRE(!ex->marker_delete('b'));
-    REQUIRE(!ex->marker_goto('a'));
-    REQUIRE(!ex->marker_delete('a'));
-    stc->set_text("xx\nyy\nzz\n");
-    REQUIRE(ex->command(":1"));
-    REQUIRE(ex->marker_add('t'));
-    REQUIRE(ex->command(":$"));
-    REQUIRE(ex->marker_add('u'));
-    REQUIRE(ex->command(":'t,'us/s/w/"));
-    REQUIRE(ex->command(":'t,$s/s/w/"));
-    REQUIRE(ex->command(":1,'us/s/w/"));
-  }
-
-  SUBCASE("print") { ex->print("This is printed"); }
-
-  SUBCASE("global")
-  {
-    // Test global delete (previous delete was on found text).
-    const int max = 10;
-    for (int i = 0; i < max; i++)
-      stc->AppendText("line xxxx added\n");
-    const int lines = stc->get_line_count();
-    REQUIRE(ex->command(":g/xxxx/d"));
-    REQUIRE(stc->get_line_count() == lines - max);
-
-    stc->AppendText("line xxxx 6 added\n");
-    stc->AppendText("line xxxx 7 added\n");
-    REQUIRE(ex->command(":g/xxxx/s//yyyy"));
-    REQUIRE(stc->get_text().find("yyyy") != std::string::npos);
-    REQUIRE(ex->command(":g//"));
-
-    // Test global move.
-    stc->set_text("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
-    REQUIRE(!ex->command(":g/d/m$")); // possible infinite loop
-    REQUIRE(stc->get_text().find("d") != std::string::npos);
-  }
-
-  SUBCASE("substitute")
-  {
-    stc->set_text("we have ccccc yyyy zzzz");
-    REQUIRE(ex->command(":%s/ccccc/ddd"));
-    REQUIRE(stc->get_text() == "we have ddd yyyy zzzz");
-    stc->set_text("we have xxxx yyyy zzzz");
-    ex->reset_search_flags();
-    REQUIRE(ex->command(":%s/(x+) *(y+)/\\\\2 \\\\1"));
-    REQUIRE(stc->get_text() == "we have yyyy xxxx zzzz");
-    stc->set_text("we have xxxx 'zzzz'");
-    REQUIRE(ex->command(":%s/'//g"));
-    REQUIRE(stc->get_text() == "we have xxxx zzzz");
-    REQUIRE(!ex->command(":.s/x*//g"));
-    REQUIRE(!ex->command(":.s/ *//g"));
-  }
-
-  SUBCASE("goto")
-  {
-    stc->set_text("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
-    REQUIRE(stc->get_line_count() == 12);
-    stc->GotoLine(2);
-
-    for (const auto& go : std::vector<std::pair<std::string, int>>{
-           {":1", 0},
-           {":-10", 0},
-           {":10", 9},
-           {":/c/", 2},
-           {":10000", 11}})
-    {
-      REQUIRE(ex->command(go.first));
-      REQUIRE(stc->get_current_line() == go.second);
-    }
-  }
-
   SUBCASE("registers")
   {
     ex->set_registers_delete("x");
@@ -314,30 +285,55 @@ TEST_CASE("wex::ex")
     REQUIRE(ex->get_stc()->get_selected_text().empty());
   }
 
-  SUBCASE("calculator")
+  SUBCASE("search_flags")
   {
-    stc->set_text("aaaaa\nbbbbb\nccccc\n");
+    REQUIRE((ex->search_flags() & wxSTC_FIND_REGEXP) > 0);
+  }
 
-    REQUIRE(ex->marker_add('a', 1));
-    REQUIRE(ex->marker_add('t', 1));
-    REQUIRE(ex->marker_add('u', 2));
-
-    std::vector<std::pair<std::string, std::pair<double, int>>> calcs{
-      {"", {0, 0}},      {"  ", {0, 0}},    {"1 + 1", {2, 0}},
-      {"5+5", {10, 0}},  {"1 * 1", {1, 0}}, {"1 - 1", {0, 0}},
-      {"2 / 1", {2, 0}}, {"2 / 0", {0, 0}}, {"2 < 2", {8, 0}},
-      {"2 > 1", {1, 0}}, {"2 | 1", {3, 0}}, {"2 & 1", {0, 0}},
-      {"~0", {-1, 0}},   {"4 % 3", {1, 0}}, {".", {1, 0}},
-      {"xxx", {0, 0}},   {"%s", {0, 0}},    {"%s/xx/", {0, 0}},
-      {"'a", {2, 0}},    {"'t", {2, 0}},    {"'u", {3, 0}},
-      {"$", {4, 0}}};
-
-    for (const auto& calc : calcs)
+#ifdef __UNIX__
+  SUBCASE("source")
+  {
+    SUBCASE("so")
     {
-      const auto val = ex->calculator(calc.first);
-      REQUIRE(val == calc.second.first);
+      // necesary for the ~ in test-source
+      wex::find_replace_data::get()->set_find_string("xx");
+
+      REQUIRE(ex->command(":so test-source.txt"));
     }
+
+    SUBCASE("full") { REQUIRE(ex->command(":source test-source.txt")); }
+
+    SUBCASE("not-existing") { REQUIRE(!ex->command(":so test-surce.txt")); }
+
+    SUBCASE("illegal") { REQUIRE(!ex->command(":so test-source-2.txt")); }
+  }
+#endif
+
+  SUBCASE("substitute")
+  {
+    stc->set_text("we have ccccc yyyy zzzz");
+    REQUIRE(ex->command(":%s/ccccc/ddd"));
+    REQUIRE(stc->get_text() == "we have ddd yyyy zzzz");
+    stc->set_text("we have xxxx yyyy zzzz");
+    ex->reset_search_flags();
+    REQUIRE(ex->command(":%s/(x+) *(y+)/\\\\2 \\\\1"));
+    REQUIRE(stc->get_text() == "we have yyyy xxxx zzzz");
+    stc->set_text("we have xxxx 'zzzz'");
+    REQUIRE(ex->command(":%s/'//g"));
+    REQUIRE(stc->get_text() == "we have xxxx zzzz");
+    REQUIRE(!ex->command(":.s/x*//g"));
+    REQUIRE(!ex->command(":.s/ *//g"));
+  }
+
+  SUBCASE("text input")
+  {
+    stc->set_text("xyz\n");
+    REQUIRE(ex->command(":append|extra"));
+    REQUIRE(stc->get_text() == "xyz\nextra");
+    REQUIRE(ex->command(":insert|before\n"));
+    REQUIRE(stc->get_text() == "xyz\nbefore\nextra");
+    stc->set_text("xyz\n");
+    REQUIRE(ex->command(":c|new\n"));
+    REQUIRE(stc->get_text() == "new\n");
   }
 }
-
-TEST_SUITE_END();

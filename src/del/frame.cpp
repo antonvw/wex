@@ -84,7 +84,6 @@ wex::del::frame::frame(
   Bind(wxEVT_CLOSE_WINDOW, [=, this](wxCloseEvent& event) {
     m_project_history.save();
     stc::on_exit();
-    addressrange::on_exit();
     ctags::close();
     config("show.MenuBar")
       .set(GetMenuBar() != nullptr && GetMenuBar()->IsShown());
@@ -686,6 +685,25 @@ void wex::del::frame::on_notebook(wxWindowID id, wxWindow* page)
       statustext(v.name(), "PaneVCS");
     }
   }
+}
+
+bool wex::del::frame::process_async_system(
+  const std::string& command,
+  const std::string& start_dir)
+{
+  if (m_process != nullptr)
+  {
+    if (m_process->is_running())
+    {
+      log::trace("escape") << command << "stops" << m_process->get_exe();
+    }
+
+    delete m_process;
+  }
+
+  m_process = new wex::process();
+
+  return m_process->async_system(command, start_dir);
 }
 
 void wex::del::frame::set_recent_file(const wex::path& path)
