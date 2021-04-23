@@ -242,7 +242,7 @@ TEST_CASE("wex::ex_stream")
 
     wex::addressrange ar(ex, "1,2");
 
-    REQUIRE(exs.substitute(ar, wex::data::substitute("test", "1234")));
+    REQUIRE(exs.substitute(ar, wex::data::substitute("s/test/1234")));
     REQUIRE(exs.is_modified());
   }
 

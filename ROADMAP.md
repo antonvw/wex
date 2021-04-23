@@ -1,6 +1,6 @@
 # roadmap
-- :.,.+5!ls
-- substitute ~ check specs
+- rfw testcase section
+- And colour IF, ELSE
 
 ## backlog
 - msw improve (tests, find in files)
@@ -14,5 +14,6 @@
 - update po files
 - no longer use wxTimer
 - allow text entry validator for stc_entry_dialog, see macro mode
+- use  boost JSON
 - del listview, stream when using queue, test case fails, as
   not all events are processed (move the queue from stream to del frame)

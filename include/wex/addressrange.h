@@ -10,6 +10,7 @@
 #include <functional>
 #include <string>
 #include <wex/address.h>
+#include <wex/data/substitute.h>
 #include <wex/indicator.h>
 
 namespace wex
@@ -33,6 +34,11 @@ namespace wex
     friend class global_env;
 
   public:
+    /// Static methods.
+
+    /// Returns substitute data.
+    static auto& data() { return m_substitute; };
+
     /// Constructor for a range from current position
     /// extending with number of lines.
     addressrange(
@@ -170,7 +176,7 @@ namespace wex
     void set(address& begin, address& end, int lines) const;
     bool set_selection() const;
 
-    static inline std::string m_pattern, m_replacement;
+    static inline data::substitute m_substitute;
 
     const indicator m_find_indicator{indicator(0)};
 

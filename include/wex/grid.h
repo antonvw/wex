@@ -21,9 +21,6 @@ namespace wex
     /// Default constructor.
     grid(const data::window& data = data::window().style(wxWANTS_CHARS));
 
-    /// Destructor.
-    virtual ~grid() = default;
-
     /// Copy from selected cells.
     bool copy_selected_cells_to_clipboard() const;
 

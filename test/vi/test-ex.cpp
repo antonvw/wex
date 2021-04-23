@@ -325,6 +325,28 @@ TEST_CASE("wex::ex")
     REQUIRE(!ex->command(":.s/ *//g"));
   }
 
+  SUBCASE("tilde")
+  {
+    stc->set_text("we have xxxxx yyyyy zzzzz");
+    REQUIRE(ex->command(":%s/x+/vvvvv/"));
+    REQUIRE(stc->get_text() == "we have vvvvv yyyyy zzzzz");
+
+    // tilde for replacement
+    stc->set_text("we have xxxxx yyyyy zzzzz");
+    REQUIRE(ex->command(":%s/y+/~"));
+    REQUIRE(stc->get_text() == "we have xxxxx vvvvv zzzzz");
+
+    // tilde for target and replacement
+    stc->set_text("we have xxxxx yyyyy zzzzz");
+    REQUIRE(ex->command(":%s/~"));
+    REQUIRE(stc->get_text() == "we have xxxxx vvvvv zzzzz");
+
+    // tilde for complete last subtitute
+    stc->set_text("we have xxxxx yyyyy zzzzz");
+    REQUIRE(ex->command(":~"));
+    REQUIRE(stc->get_text() == "we have xxxxx vvvvv zzzzz");
+  }
+
   SUBCASE("text input")
   {
     stc->set_text("xyz\n");
