@@ -10,9 +10,6 @@ make -j 4
 cmake ..
 sudo make install
 
-# cppcheck
-./cppcheck.sh
-
 # test
 ctest -V
 
