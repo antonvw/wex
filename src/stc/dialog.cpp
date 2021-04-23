@@ -45,10 +45,10 @@ wex::stc_entry_dialog::stc_entry_dialog(
 }
 
 void wex::open_files_dialog(
-  factory::frame*   frame,
-  bool              ask_for_continue,
-  const data::stc&  data,
-  data::dir::type_t type)
+  factory::frame*          frame,
+  bool                     ask_for_continue,
+  const data::stc&         data,
+  const data::dir::type_t& type)
 {
   wxArrayString     paths;
   const std::string caption(_("Select Files"));

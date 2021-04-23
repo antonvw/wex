@@ -23,7 +23,7 @@ namespace wex::del
     stream(const path& filename, const tool& tool);
 
     /// Destructor.
-    ~stream();
+    ~stream() override;
 
     /// Sets up the tool.
     static bool setup_tool(

@@ -63,7 +63,7 @@ namespace wex::data
     auto type() const { return m_flags; };
 
     /// Sets type.
-    dir& type(type_t rhs)
+    dir& type(const type_t& rhs)
     {
       m_flags = rhs;
       return *this;

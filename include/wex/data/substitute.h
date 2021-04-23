@@ -15,11 +15,8 @@ namespace wex::data
   class substitute
   {
   public:
-    /// Default constructor.
-    substitute(
-      const std::string& pattern     = std::string(),
-      const std::string& replacement = std::string(),
-      const std::string& options     = std::string());
+    /// Default constructor, calls set.
+    substitute(const std::string& text = std::string());
 
     /// Returns whether options indicate confirmed.
     bool is_confirmed() const;
@@ -30,17 +27,26 @@ namespace wex::data
     /// Returns whether options indicate ignore case.
     bool is_ignore_case() const;
 
+    /// Returns commands.
+    auto& commands() const { return m_commands; };
+
     /// Returns pattern.
     auto& pattern() const { return m_pattern; };
 
     /// Returns replacement.
     auto& replacement() const { return m_replacement; };
 
-    /// Sets data from text.
-    bool
-    set(const std::string& text, const std::string& pattern = std::string());
+    /// Sets pattern, replacement, options from text:
+    /// s/pattern/text/options
+    bool set(const std::string& text);
+
+    /// Sets pattern, commands from text (for global substitute).
+    bool set_global(const std::string& text);
+
+    /// Sets options only.
+    void set_options(const std::string& text);
 
   private:
-    std::string m_pattern, m_replacement, m_options;
+    std::string m_commands, m_options, m_pattern, m_replacement;
   };
 } // namespace wex::data

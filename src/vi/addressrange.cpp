@@ -13,7 +13,6 @@
 #include <boost/tokenizer.hpp>
 #include <wex/addressrange.h>
 #include <wex/core.h>
-#include <wex/data/substitute.h>
 #include <wex/ex-stream.h>
 #include <wex/ex.h>
 #include <wex/factory/process.h>
@@ -33,7 +32,7 @@ namespace wex
   class global_env
   {
   public:
-    global_env(const addressrange* ar, const std::string& commands)
+    global_env(const addressrange* ar)
       : m_ex(ar->m_ex)
       , m_ar(ar)
     {
@@ -41,7 +40,7 @@ namespace wex
       m_ex->get_stc()->BeginUndoAction();
 
       for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
-             commands,
+             addressrange::data().commands(),
              boost::char_separator<char>("|")))
       {
         // Prevent recursive global.
@@ -141,7 +140,7 @@ namespace wex
     ex*                      m_ex;
   };
 
-  void toggle_case(factory::stc* stc, std::string& target, char c)
+  void convert_case(factory::stc* stc, std::string& target, char c)
   {
     c == 'U' ? boost::algorithm::to_upper(target) :
                boost::algorithm::to_lower(target);
@@ -231,7 +230,7 @@ wex::addressrange::build_replacement(const std::string& text) const
       case 'U':
         if (backslash)
         {
-          toggle_case(m_stc, target, c);
+          convert_case(m_stc, target, c);
         }
         else
           replacement += c;
@@ -422,33 +421,21 @@ bool wex::addressrange::general(
 
 bool wex::addressrange::global(const std::string& text, bool inverse) const
 {
-  regex v("^(\\s*)/(.*?)/(.*)");
-
-  // [2addr] g[lobal] /pattern/ [commands]
-  // [2addr] v /pattern/ [commands]
-  // the g or v part is already parsed, and not present, v[0] is empty, or ws
-  if (v.match(text) < 3)
+  if (!m_substitute.set_global(text))
   {
     return false;
   }
 
-  m_pattern = v[1];
-  const auto& commands(v[2]);
-
-  if (m_pattern.empty())
+  if (m_substitute.pattern().empty())
   {
-    if (!commands.empty())
-    {
-      log::status("Pattern is empty");
-      return false;
-    }
-
     return true;
   }
 
+  const std::string& commands(m_substitute.commands());
+
   m_stc->IndicatorClearRange(0, m_stc->GetTextLength() - 1);
 
-  const global_env g(this, commands);
+  const global_env g(this);
   m_ex->marker_add('%', m_end.get_line() - 1);
   m_stc->SetTargetRange(
     m_stc->PositionFromLine(m_begin.get_line() - 1),
@@ -459,7 +446,7 @@ bool wex::addressrange::global(const std::string& text, bool inverse) const
   int hits  = 0;
   int start = 0;
 
-  while (m_stc->SearchInTarget(m_pattern) != -1)
+  while (m_stc->SearchInTarget(m_substitute.pattern()) != -1)
   {
     auto match = m_stc->LineFromPosition(m_stc->GetTargetStart());
 
@@ -806,26 +793,20 @@ bool wex::addressrange::substitute(const std::string& text, char cmd)
     return false;
   }
 
-  data::substitute data;
+  data::substitute data(m_substitute);
 
   switch (cmd)
   {
     case 's':
-      if (!data.set(text, m_pattern))
+      if (!data.set(text))
       {
         return false;
       }
       break;
 
     case '&':
-      data = data::substitute(m_pattern, m_replacement, text);
-      break;
-
     case '~':
-      data = data::substitute(
-        find_replace_data::get()->get_find_string(),
-        m_replacement,
-        text);
+      data.set_options(text);
       break;
 
     default:
@@ -836,11 +817,12 @@ bool wex::addressrange::substitute(const std::string& text, char cmd)
   if (data.pattern().empty())
   {
     log::status("Pattern is empty");
-    log::debug("substitute empty pattern") << cmd;
+    log::debug("substitute") << cmd << "empty pattern" << text;
     return false;
   }
 
   auto searchFlags = m_ex->search_flags();
+  
   if (data.is_ignore_case())
     searchFlags &= ~wxSTC_FIND_MATCHCASE;
 
@@ -883,8 +865,7 @@ bool wex::addressrange::substitute(const std::string& text, char cmd)
     return false;
   }
 
-  m_pattern     = data.pattern();
-  m_replacement = data.replacement();
+  m_substitute = data;
 
   m_stc->set_search_flags(searchFlags);
   m_stc->BeginUndoAction();

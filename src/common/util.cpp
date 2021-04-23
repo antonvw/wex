@@ -116,7 +116,7 @@ int wex::open_files(
   factory::frame*          frame,
   const std::vector<path>& files,
   const data::stc&         stc,
-  data::dir::type_t        type)
+  const data::dir::type_t& type)
 {
   wxWindowUpdateLocker locker(frame);
 

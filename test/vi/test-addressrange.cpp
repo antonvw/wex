@@ -228,11 +228,10 @@ TEST_CASE("wex::addressrange")
     REQUIRE(wex::addressrange(ex, "%").substitute("", '&'));
     REQUIRE(stc->get_text().find("lion") != std::string::npos);
 
-    wex::find_replace_data::get()->set_find_string("MORE");
     stc->set_text(contents + " MORE");
     REQUIRE(wex::addressrange(ex, "%").substitute("", '~'));
     REQUIRE(stc->get_text().find("lion") != std::string::npos);
-    REQUIRE(stc->get_text().find("MORE") == std::string::npos);
+    REQUIRE(stc->get_text().find("tiger") == std::string::npos);
 
     stc->set_text("special char \\ present");
     REQUIRE(wex::addressrange(ex, "%").substitute("/\\\\//"));
