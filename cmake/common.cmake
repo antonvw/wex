@@ -178,7 +178,6 @@ macro(wex_target_link_all)
       ${Boost_LIBRARIES}
       ${extra_macro_args}
       stdc++
-      c++fs
       )
   else ()
     target_link_libraries(

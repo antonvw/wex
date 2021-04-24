@@ -142,11 +142,7 @@ namespace wex::del
     void on_command_item_dialog(
       wxWindowID            dialogid,
       const wxCommandEvent& event) override;
-    void          on_notebook(wxWindowID id, wxWindow* page) override;
-    factory::stc* open_file(
-      const path&      filename,
-      const vcs_entry& vcs,
-      const data::stc& data) override;
+    void on_notebook(wxWindowID id, wxWindow* page) override;
     void set_recent_file(const path& path) override;
 
     virtual bool process_async_system(
