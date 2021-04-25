@@ -81,19 +81,23 @@ wex::del::frame::frame(
 
   sync(true);
 
-  Bind(wxEVT_CLOSE_WINDOW, [=, this](wxCloseEvent& event) {
-    m_project_history.save();
-    stc::on_exit();
-    ctags::close();
-    config("show.MenuBar")
-      .set(GetMenuBar() != nullptr && GetMenuBar()->IsShown());
-    delete m_debug;
+  Bind(
+    wxEVT_CLOSE_WINDOW,
+    [=, this](wxCloseEvent& event)
+    {
+      m_project_history.save();
+      stc::on_exit();
+      ctags::close();
+      config("show.MenuBar")
+        .set(GetMenuBar() != nullptr && GetMenuBar()->IsShown());
+      delete m_debug;
 
-    event.Skip();
-  });
+      event.Skip();
+    });
 
   bind(this).command(
-    {{[=, this](wxCommandEvent& event) {
+    {{[=, this](wxCommandEvent& event)
+      {
         m_is_command = true;
 
         // :e [+command] [file]
@@ -131,7 +135,8 @@ wex::del::frame::frame(
       },
       wxID_OPEN},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         stc::config_dialog(data::window()
                              .id(wxID_PREFERENCES)
                              .parent(this)
@@ -140,22 +145,26 @@ wex::del::frame::frame(
       },
       wxID_PREFERENCES},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         find_replace_data::get()->set_find_strings(std::list<std::string>{});
       },
       ID_CLEAR_FINDS},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         file_history().clear();
       },
       ID_CLEAR_FILES},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         m_project_history.clear();
       },
       ID_CLEAR_PROJECTS},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         if (auto* stc = dynamic_cast<wex::stc*>(get_stc()); stc != nullptr)
         {
           auto it = find_replace_data::get()->get_find_strings().begin();
@@ -170,7 +179,8 @@ wex::del::frame::frame(
       },
       ID_FIND_FIRST},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         if (auto* project = get_project(); project != nullptr)
         {
           project->file_save();
@@ -178,7 +188,8 @@ wex::del::frame::frame(
       },
       ID_PROJECT_SAVE},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         if (!event.GetString().empty())
         {
           sed(event.GetString());
@@ -194,7 +205,8 @@ wex::del::frame::frame(
       },
       ID_TOOL_REPLACE},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         if (!event.GetString().empty())
         {
           grep(event.GetString());
@@ -211,12 +223,14 @@ wex::del::frame::frame(
       },
       ID_TOOL_REPORT_FIND},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         SetMenuBar(GetMenuBar() != nullptr ? nullptr : m_menubar);
       },
       ID_VIEW_MENUBAR},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         SetWindowStyleFlag(
           !(GetWindowStyleFlag() & wxCAPTION) ?
             wxDEFAULT_FRAME_STYLE :
@@ -227,7 +241,8 @@ wex::del::frame::frame(
 
   Bind(
     wxEVT_MENU,
-    [=, this](wxCommandEvent& event) {
+    [=, this](wxCommandEvent& event)
+    {
       on_menu_history(
         m_project_history,
         event.GetId() - m_project_history.get_base_id(),
@@ -417,35 +432,37 @@ bool wex::del::frame::find_in_files(
   }
 
 #ifdef __WXMSW__
-  std::thread t([=, this] {
-#endif
-    statistics<int> stats;
-
-    for (const auto& it : files)
+  std::thread t(
+    [=, this]
     {
-      if (it.file_exists())
+#endif
+      statistics<int> stats;
+
+      for (const auto& it : files)
       {
-        if (stream file(it, tool); file.run_tool())
+        if (it.file_exists())
         {
-          stats += file.get_statistics().get_elements();
+          if (stream file(it, tool); file.run_tool())
+          {
+            stats += file.get_statistics().get_elements();
+          }
+        }
+        else if (it.dir_exists())
+        {
+          tool_dir dir(
+            tool,
+            it,
+            data::dir().file_spec(config(m_text_in_files).get_first_of()));
+
+          dir.find_files();
+          stats += dir.get_statistics().get_elements();
         }
       }
-      else if (it.dir_exists())
-      {
-        tool_dir dir(
-          tool,
-          it,
-          data::dir().file_spec(config(m_text_in_files).get_first_of()));
 
-        dir.find_files();
-        stats += dir.get_statistics().get_elements();
-      }
-    }
-
-    log::status(tool.info(&stats));
+      log::status(tool.info(&stats));
 
 #ifdef __WXMSW__
-  });
+    });
   t.detach();
 #endif
 
@@ -506,14 +523,16 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
   if (data::cmdline cmdl(arg);
       !cmdline(
          {{{"recursive,r", "recursive"},
-           [&](bool on) {
+           [&](bool on)
+           {
              arg3.set(data::dir::RECURSIVE, on);
            }}},
          {},
          {{"rest",
            "match " + std::string(sed ? "replace" : "") +
              " [extension] [folder]"},
-          [&](const std::vector<std::string>& v) {
+          [&](const std::vector<std::string>& v)
+          {
             size_t i = 0;
             find_replace_data::get()->set_find_string(v[i++]);
             if (sed)
@@ -551,22 +570,24 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
   }
 
 #ifdef __WXMSW__
-  std::thread t([=, this] {
+  std::thread t(
+    [=, this]
+    {
 #endif
-    if (auto* stc = dynamic_cast<wex::stc*>(get_stc()); stc != nullptr)
-      path::current(stc->get_filename().get_path());
-    find_replace_data::get()->set_regex(true);
-    log::status(find_replace_string(false));
-    sync(false);
+      if (auto* stc = dynamic_cast<wex::stc*>(get_stc()); stc != nullptr)
+        path::current(stc->get_filename().get_path());
+      find_replace_data::get()->set_regex(true);
+      log::status(find_replace_string(false));
+      sync(false);
 
-    tool_dir dir(tool, arg1, data::dir().file_spec(arg2).type(arg3));
-    dir.find_files();
+      tool_dir dir(tool, arg1, data::dir().file_spec(arg2).type(arg3));
+      dir.find_files();
 
-    log::status(tool.info(&dir.get_statistics().get_elements()));
-    sync(true);
+      log::status(tool.info(&dir.get_statistics().get_elements()));
+      sync(true);
 
 #ifdef __WXMSW__
-  });
+    });
   t.detach();
 #endif
 
@@ -728,21 +749,6 @@ void wex::del::frame::set_recent_file(const wex::path& path)
   }
 }
 
-wex::factory::stc* wex::del::frame::open_file(
-  const wex::path& filename,
-  const vcs_entry& vcs,
-  const data::stc& data)
-{
-  if (auto* stc = get_stc(); stc != nullptr)
-  {
-    stc->set_text(vcs.get_stdout());
-    vcs_command_stc(vcs.get_command(), path_lexer(filename).lexer(), stc);
-    return stc;
-  }
-
-  return nullptr;
-}
-
 void wex::del::frame::show_ex_bar(int action, factory::stc* stc)
 {
   if (action == SHOW_BAR || stc != nullptr)
@@ -816,7 +822,7 @@ void wex::del::frame::statusbar_clicked(const std::string& pane)
   {
     if (stc != nullptr && lexers_dialog(stc))
     {
-      statustext(stc->get_lexer().display_lexer(), "PaneLexer");
+      statustext(stc->get_lexer().display_lexer(), pane);
     }
   }
   else if (pane == "PaneFileType")
@@ -844,16 +850,18 @@ void wex::del::frame::statusbar_clicked_right(const std::string& pane)
       PopupMenu(new wex::menu(
         {{wxWindow::NewControlId(),
           stc->is_shown_line_numbers() ? "&Hide" : "&Show",
-          data::menu().action([=, this](wxCommandEvent&) {
-            stc->show_line_numbers(!stc->is_shown_line_numbers());
-          })}}));
+          data::menu().action(
+            [=, this](wxCommandEvent&)
+            {
+              stc->show_line_numbers(!stc->is_shown_line_numbers());
+            })}}));
     }
   }
   else if (pane == "PaneMacro")
   {
     if (wex::ex::get_macros().get_filename().file_exists())
     {
-      wex::frame::open_file(
+      open_file(
         wex::ex::get_macros().get_filename(),
         wex::data::control().find(
           !get_statustext(pane).empty() ?
@@ -873,9 +881,7 @@ void wex::del::frame::statusbar_clicked_right(const std::string& pane)
            wex::debug(this).debug_entry().name());
     }
 
-    wex::frame::open_file(
-      wex::menus::get_filename(),
-      wex::data::control().find(match));
+    open_file(wex::menus::get_filename(), wex::data::control().find(match));
   }
   else
   {

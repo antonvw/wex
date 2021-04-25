@@ -3233,10 +3233,6 @@ Copyright: (c) 2020, Anton van Wezenbeek
       Suite_Setup
       Suite_Teardown 
       Test_Setup 
-      *Keywords* *_Keywords_* **_Keywords_** ***_Keywords_*** 
-      *Settings* *_Settings_* **_Settings_** ***_Settings_***
-      *Test_Cases* *_Test_Cases_* **_Test_Cases_** ***_Test_Cases_***
-      *Variables* *_Variables_* **_Variables_** ***_Variables_***
     </set>
     <set name="sgml">
       ELEMENT DOCTYPE ATTLIST ENTITY NOTATION
@@ -4017,9 +4013,10 @@ Copyright: (c) 2020, Anton van Wezenbeek
       <property name="fold.tabs"> 1 </property>
     </properties>
     <keywords set-1="rfw-core"> 
-      [Arguments] [Documentation] [Return] [Tags] [Teardown]
+      [Arguments] Documentation [Documentation] Return [Tags]
       Default Force Library Metadata Postcondition Precondition Resource 
-      Template Timeout END 
+      Template Timeout 
+      IF ELSE END 
     </keywords>
   </lexer>
   <lexer name="ruby" extensions="*.rb" exclude="Macintosh">

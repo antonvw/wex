@@ -2,7 +2,7 @@
 // Name:      lex-rfw.h
 // Purpose:   Declaration of wex::lex_rfw class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -157,7 +157,7 @@ namespace wex
   };
 }; // namespace wex
 
-// inline implementation
+// inline implementation lex_rfw
 
 inline bool wex::lex_rfw::get_line_pos_eol(int offset, char c) const
 {
@@ -191,6 +191,7 @@ inline int wex::lex_rfw::glob_scan(StyleContext& sc) const
       return sLen;
     }
   }
+  
   return 0;
 }
 
@@ -233,15 +234,18 @@ inline int wex::lex_rfw::number_base(char* s) const
 {
   int i    = 0;
   int base = 0;
+  
   while (*s)
   {
     base = base * 10 + (*s++ - '0');
     i++;
   }
+  
   if (base > 64 || i > 2)
   {
     return RFW_BASE_ERROR;
   }
+
   return base;
 }
 
@@ -284,8 +288,11 @@ inline int wex::lex_rfw::translate_digit(int ch) const
   {
     return 63;
   }
+  
   return RFW_BASE_ERROR;
 }
+
+// inline implementation quote
 
 inline void wex::quote::open(int u)
 {
@@ -300,6 +307,8 @@ inline void wex::quote::start(int u)
   m_count = 0;
   open(u);
 }
+
+// inline implementation quote_stack
 
 inline void wex::quote_stack::pop(void)
 {

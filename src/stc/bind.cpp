@@ -198,145 +198,173 @@ void wex::stc::bind_all()
     m_data.menu().test(data::stc::MENU_DEBUG));
 
   bind(this).command(
-    {{[=, this](wxCommandEvent& event) {
+    {{[=, this](wxCommandEvent& event)
+      {
         Copy();
       },
       wxID_COPY},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         m_vi->command(event.GetString());
       },
       id::stc::vi_command},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         Cut();
       },
       wxID_CUT},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         Paste();
       },
       wxID_PASTE},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         Undo();
       },
       wxID_UNDO},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         Redo();
       },
       wxID_REDO},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         SelectAll();
       },
       wxID_SELECTALL},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         if (!GetReadOnly() && !is_hexmode())
           Clear();
       },
       wxID_DELETE},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         jump_action();
       },
       wxID_JUMP_TO},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         get_find_string();
         event.Skip();
       },
       wxID_FIND},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         get_find_string();
         event.Skip();
       },
       wxID_REPLACE},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         sort_action(event);
       },
       wxID_SORT_ASCENDING},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         m_frame->debug_exe(event.GetId() - ID_EDIT_DEBUG_FIRST, this);
       },
       ID_EDIT_DEBUG_FIRST},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         file_action(event);
       },
       ID_EDIT_FILE_ACTION},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         browser_search(GetSelectedText().ToStdString());
       },
       id::stc::open_www},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         link_open(link_t().set(LINK_OPEN));
       },
       id::stc::open_link},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         show_properties();
       },
       id::stc::show_properties},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         edit_control_char(this);
       },
       ID_EDIT_CONTROL_CHAR},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         AnnotationSetText(get_current_line(), event.GetString());
       },
       ID_EDIT_DEBUG_VARIABLE},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         show_calltip(this);
       },
       id::stc::hex_dec_calltip},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         MultiEdgeClearAll();
       },
       id::stc::edge_clear},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         MultiEdgeAddLine(GetColumn(GetCurrentPos()), GetEdgeColour());
       },
       id::stc::edge_set},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         LowerCase();
       },
       id::stc::lowercase},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         UpperCase();
       },
       id::stc::uppercase},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         fold_all();
       },
       id::stc::fold_all},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         beautify().stc(*this);
       },
       id::stc::beautify},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         for (int i = 0; i < get_line_count(); i++)
           EnsureVisible(i);
       },
       id::stc::unfold_all},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         m_data
           .flags(
             data::stc::window_t().set(data::stc::WIN_HEX),
@@ -345,22 +373,26 @@ void wex::stc::bind_all()
       },
       id::stc::hex},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         config("blame.author").toggle(true);
       },
       id::stc::margin_text_author},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         config("blame.date").toggle(true);
       },
       id::stc::margin_text_date},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         config("blame.id").toggle(false);
       },
       id::stc::margin_text_id},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         reset_margins(margin_t().set(MARGIN_TEXT));
         m_margin_text_click = -1;
         const item_vector& iv(m_config_items);
@@ -368,34 +400,40 @@ void wex::stc::bind_all()
       },
       id::stc::margin_text_hide},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         SetZoom(++m_zoom);
       },
       id::stc::zoom_in},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         SetZoom(--m_zoom);
       },
       id::stc::zoom_out},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         find_replace_data::get()->set_search_down(true);
         find_next();
       },
       ID_EDIT_FIND_NEXT},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         find_replace_data::get()->set_search_down(false);
         find_next();
       },
       ID_EDIT_FIND_PREVIOUS},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         link_open(link_t().set(LINK_OPEN_MIME));
       },
       id::stc::open_mime},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         const auto level        = GetFoldLevel(get_current_line());
         const auto line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?
                                     get_current_line() :
@@ -404,7 +442,8 @@ void wex::stc::bind_all()
       },
       id::stc::toggle_fold},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         vcs_execute(
           m_frame,
           event.GetId() - ID_EDIT_VCS_LOWEST - 1,
@@ -412,12 +451,14 @@ void wex::stc::bind_all()
       },
       ID_EDIT_VCS_LOWEST},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         eol_action(event);
       },
       id::stc::eol_dos},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         auto line = MarkerNext(get_current_line() + 1, 0xFFFF);
         if (line == -1)
         {
@@ -434,7 +475,8 @@ void wex::stc::bind_all()
       },
       id::stc::marker_next},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         auto line = MarkerPrevious(get_current_line() - 1, 0xFFFF);
         if (line == -1)
         {
@@ -645,7 +687,15 @@ void wex::stc::file_action(const wxCommandEvent& event)
         get_lexer().scintilla_lexer().empty() &&
         GetLength() < config("stc.max.Size lexer").get(10000000))
       {
-        get_lexer().set(path_lexer(get_filename()).lexer());
+        auto l(path_lexer(get_filename()).lexer());
+
+        // If not in visual mode, inform the rfw lexer.
+        if (l.scintilla_lexer() == "rfw" && !is_visual())
+        {
+          l.add_keywords("EX", 1);
+        }
+
+        get_lexer().set(l);
         config_get();
       }
 
@@ -747,14 +797,16 @@ void wex::stc::show_properties()
       lexers::get()->properties().begin(),
       lexers::get()->properties().end(),
       std::string(),
-      [this, l](const std::string& a, const property& b) {
+      [this, l](const std::string& a, const property& b)
+      {
         return a + l.make_key(b.name(), GetProperty(b.name()));
       }) +
     std::accumulate(
       get_lexer().properties().begin(),
       get_lexer().properties().end(),
       std::string(),
-      [this, l](const std::string& a, const property& b) {
+      [this, l](const std::string& a, const property& b)
+      {
         return a + l.make_key(b.name(), GetProperty(b.name()));
       });
 
