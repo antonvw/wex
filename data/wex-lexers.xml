@@ -4013,7 +4013,7 @@ Copyright: (c) 2020, Anton van Wezenbeek
       <property name="fold.tabs"> 1 </property>
     </properties>
     <keywords set-1="rfw-core"> 
-      Arguments Documentation Return [Tags]
+      [Arguments] Documentation [Documentation] Return [Tags]
       Default Force Library Metadata Postcondition Precondition Resource 
       Template Timeout 
       IF ELSE END 

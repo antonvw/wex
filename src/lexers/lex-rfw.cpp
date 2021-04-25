@@ -5,7 +5,6 @@
 // Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
 #include <regex>
 #include <string>
 #include <vector>
@@ -116,6 +115,8 @@ static void colourise(
   }
   
   const WordList& keywords2 = *keywordlists[1];
+  
+  bool visual_mode = true;
 
   for (int i = 0; i < keywords2.Length(); i++)
   {
@@ -129,7 +130,14 @@ static void colourise(
       }
     }
     
-    special_keywords.push_back(keyword);
+    if (keyword != "EX")
+    {
+      special_keywords.push_back(keyword);
+    }
+    else
+    {
+      visual_mode = false;
+    }
   }
 
   const CharacterSet setWordStart(CharacterSet::setAlpha, ":_[*");
@@ -373,7 +381,7 @@ static void colourise(
         break;
 
       case SCE_SH_COMMENTLINE:
-        if (sc.atLineEnd && sc.chPrev != '\\' && sc.currentPos < commentsSectionPos)
+        if (visual_mode && sc.atLineEnd && sc.chPrev != '\\' && sc.currentPos < commentsSectionPos)
         {
           sc.SetState(SCE_SH_DEFAULT);
         }
@@ -522,6 +530,7 @@ static void colourise(
       }
     }
     else if (
+      visual_mode &&
       !pipes && sc.ch != '#' && !isspace(sc.ch) && sc.atLineStart &&
       sc.currentPos > testCaseSectionPos)
     {
