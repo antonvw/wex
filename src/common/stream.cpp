@@ -12,11 +12,8 @@
 #endif
 #include <algorithm>
 #include <cctype>
-#ifndef __WXMSW__
-#include <algorithm>
-#include <functional>
-#endif
 #include <fstream>
+#include <functional>
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/factory/frd.h>
@@ -62,10 +59,11 @@ bool wex::stream::process(std::string& text, size_t line_no)
                                       text.end(),
                                       m_find_string.begin(),
                                       m_find_string.end(),
-                                      [](char ch1, char ch2) {
+                                      [](char ch1, char ch2)
+                                      {
                                         return std::toupper(ch1) == ch2;
                                       }) :
-#ifdef __WXGTK__
+#ifndef __WXOSX__
                                     std::search(
                                       text.begin(),
                                       text.end(),

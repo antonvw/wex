@@ -460,16 +460,18 @@ void wex::ctags::open(const std::string& filename)
     do_open(filename);
   }
   else if (const std::vector<std::string> v{"./", config::dir() + "/"};
-           std::any_of(v.begin(), v.end(), [filename](const auto& p) {
-             return do_open(p + filename);
-           }))
+           !std::any_of(
+             v.begin(),
+             v.end(),
+             [filename](const auto& p)
+             {
+               return do_open(p + filename);
+             }))
   {
-    return;
-  }
-
-  if (filename != DEFAULT_TAGFILE && m_file == nullptr)
-  {
-    log("could not locate ctags file") << filename;
+    if (filename != DEFAULT_TAGFILE && m_file == nullptr)
+    {
+      log("could not locate ctags file") << filename;
+    }
   }
 }
 
@@ -487,6 +489,7 @@ bool wex::ctags::previous()
   }
 
   --m_iterator;
+
   m_iterator->second.open_file(get_frame());
 
   return true;

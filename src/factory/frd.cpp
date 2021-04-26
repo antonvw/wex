@@ -133,8 +133,11 @@ void wex::factory::find_replace_data::set_regex(bool value)
   try
   {
     std::regex::flag_type flags = std::regex::ECMAScript;
+
     if (!match_case())
+    {
       flags |= std::regex::icase;
+    }
 
     m_regex     = std::regex(get_find_string(), flags);
     m_use_regex = true;

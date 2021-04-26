@@ -25,19 +25,34 @@ namespace wex
     /// Callback type.
     typedef std::function<void(const match_t&)> function_t;
 
+    /// Type that specifies a vector with regular expressions.
+    typedef std::vector<std::string> regex_v_t;
+
+    /// Type that specifies a vector with regular expressions and callbacks.
+    typedef std::vector<std::pair<std::string, function_t>> regex_v_c_t;
+
+    /// Constructor, provide regular expression string and regex flags.
     regex(
       const std::string&    regex,
-      function_t            f     = nullptr,
       std::regex::flag_type flags = std::regex::ECMAScript);
 
-    /// Constructor, provide vector with regular expressions.
+    /// Constructor, provide regular expression string, callback and
+    /// regex flags.
     regex(
-      const std::vector<std::string>& regex,
-      std::regex::flag_type           flags = std::regex::ECMAScript);
+      const std::string&    regex,
+      function_t            f,
+      std::regex::flag_type flags = std::regex::ECMAScript);
 
-    /// Constructor, provide vector with regular expressions and callbacks.
+    /// Constructor, provide vector with regular expressions and
+    /// regex flags.
     regex(
-      const std::vector<std::pair<std::string, function_t>>& regex,
+      const regex_v_t&      regex,
+      std::regex::flag_type flags = std::regex::ECMAScript);
+
+    /// Constructor, provide vector with regular expressions, callbacks
+    /// and regex flags.
+    regex(
+      const regex_v_c_t&    regex,
       std::regex::flag_type flags = std::regex::ECMAScript);
 
     /// Regular expression match.

@@ -18,7 +18,6 @@
 #include <wex/factory/link.h>
 #include <wex/factory/process.h>
 #include <wex/factory/stc.h>
-#include <wex/file-dialog.h>
 #include <wex/lexer.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
@@ -98,6 +97,28 @@ bool wex::compare_file(const path& file1, const path& file2)
   else
   {
     log::status(_("Compared")) << arguments;
+    return true;
+  }
+}
+
+bool wex::lexers_dialog(factory::stc* stc)
+{
+  wxArrayString s;
+
+  for (const auto& it : lexers::get()->get_lexers())
+  {
+    s.Add(it.display_lexer());
+  }
+
+  if (auto lexer = stc->get_lexer().display_lexer();
+      !single_choice_dialog(stc, _("Enter Lexer"), s, lexer))
+  {
+    return false;
+  }
+  else
+  {
+    lexer.empty() ? stc->get_lexer().clear() :
+                    (void)stc->get_lexer().set(lexer, true);
     return true;
   }
 }
@@ -193,28 +214,6 @@ bool wex::shell_expansion(std::string& command)
   }
 
   return true;
-}
-
-bool wex::lexers_dialog(factory::stc* stc)
-{
-  wxArrayString s;
-
-  for (const auto& it : lexers::get()->get_lexers())
-  {
-    s.Add(it.display_lexer());
-  }
-
-  if (auto lexer = stc->get_lexer().display_lexer();
-      !single_choice_dialog(stc, _("Enter Lexer"), s, lexer))
-  {
-    return false;
-  }
-  else
-  {
-    lexer.empty() ? stc->get_lexer().clear() :
-                    (void)stc->get_lexer().set(lexer, true);
-    return true;
-  }
 }
 
 void wex::vcs_command_stc(
