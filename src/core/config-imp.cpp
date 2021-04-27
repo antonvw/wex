@@ -13,7 +13,7 @@
 #include <wex/core.h>
 #include <wex/log.h>
 #include <wex/path.h>
-#include <wex/tokenizer.h>
+#include <wex/tokenize.h>
 #include <wx/app.h>
 
 #include "config-imp.h"

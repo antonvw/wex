@@ -85,7 +85,7 @@
 #include <wex/textctrl-input.h>
 #include <wex/textctrl.h>
 #include <wex/tocontainer.h>
-#include <wex/tokenizer.h>
+#include <wex/tokenize.h>
 #include <wex/tool.h>
 #include <wex/toolbar.h>
 #include <wex/tostring.h>

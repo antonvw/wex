@@ -14,6 +14,11 @@ enum class wex::regex::find_t
   MATCH,
 };
 
+wex::regex::regex(const std::string& str, std::regex::flag_type flags)
+  : m_regex({{std::regex(str.c_str(), flags), nullptr, str}})
+{
+}
+
 wex::regex::regex(
   const std::string&    str,
   function_t            f,
@@ -22,11 +27,10 @@ wex::regex::regex(
 {
 }
 
-wex::regex::regex(
-  const std::vector<std::string>& regex,
-  std::regex::flag_type           flags)
+wex::regex::regex(const regex_v_t& regex, std::regex::flag_type flags)
   : m_regex(
-      [](const std::vector<std::string>& reg_str, std::regex::flag_type flags) {
+      [](const regex_v_t& reg_str, std::regex::flag_type flags)
+      {
         regex_t v;
 
         for (const auto& r : reg_str)
@@ -39,21 +43,19 @@ wex::regex::regex(
 {
 }
 
-wex::regex::regex(
-  const std::vector<std::pair<std::string, function_t>>& regex,
-  std::regex::flag_type                                  flags)
-  : m_regex([](
-              const std::vector<std::pair<std::string, function_t>>& reg_str,
-              std::regex::flag_type                                  flags) {
-    regex_t v;
+wex::regex::regex(const regex_v_c_t& regex, std::regex::flag_type flags)
+  : m_regex(
+      [](const regex_v_c_t& reg_str, std::regex::flag_type flags)
+      {
+        regex_t v;
 
-    for (const auto& r : reg_str)
-    {
-      v.emplace_back(std::regex(r.first, flags), r.second, r.first);
-    }
+        for (const auto& r : reg_str)
+        {
+          v.emplace_back(std::regex(r.first, flags), r.second, r.first);
+        }
 
-    return v;
-  }(regex, flags))
+        return v;
+      }(regex, flags))
 {
 }
 

@@ -1,8 +1,6 @@
 # roadmap
 
 ## backlog
-- regex icase support
-- msw improve (tests, find in files)
 - clang asan build using LeakSanitizer
 
 - invest use wxTextCompleter
