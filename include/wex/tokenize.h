@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      tokenizer.h
-// Purpose:   Declaration of wex::tokenizer methods
+// Name:      tokenize.h
+// Purpose:   Declaration of wex::tokenize method
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -8,7 +8,6 @@
 #pragma once
 
 #include <boost/tokenizer.hpp>
-#include <functional>
 #include <string>
 
 namespace wex

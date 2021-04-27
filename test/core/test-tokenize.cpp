@@ -1,14 +1,15 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-tokenizer.cpp
+// Name:      test-tokenize.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <list>
 #include <vector>
-#include <wex/tokenizer.h>
+#include <wex/tokenize.h>
+
+#include "../test.h"
 
 TEST_CASE("wex::tokenizer")
 {

@@ -12,7 +12,7 @@
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/log.h>
-#include <wex/tokenizer.h>
+#include <wex/tokenize.h>
 #include <wex/version.h>
 #include <wx/app.h>
 
@@ -53,14 +53,16 @@ wex::cmdline_imp::cmdline_imp(bool add_standard_options, config& cfg)
 
   if (add_standard_options)
   {
-    m_desc.add_options()("version", "displays version information and exits")(
-      "level,V",
-      po::value<int>()->default_value(5),
-      "activates verbosity down to verbose level (valid range: 1-6),\
-      1 trace, .. 6 fatal")("verbose,v", "activates maximum (trace) verbosity")(
-      "logfile,D",
-      po::value<std::string>(),
-      "sets log file");
+    // clang-format off
+    m_desc.add_options()
+      ("version", "displays version information and exits")
+      ("level,V", po::value<int>()->default_value(5),
+       "activates verbosity down from verbose level\n"
+       "valid ranges: 1-6:\n"
+       "1 trace\n2 debug\n3 info\n4 warning\n5 error (default)\n6 fatal")
+      ("verbose,v", "activates maximum (trace) verbosity")
+      ("logfile,D", po::value<std::string>(), "sets log file");
+    // clang-format on
   }
 }
 
