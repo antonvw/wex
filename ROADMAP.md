@@ -1,7 +1,6 @@
 # roadmap
 
 ## backlog
-- msw improve (tests, find in files)
 - clang asan build using LeakSanitizer
 
 - invest use wxTextCompleter

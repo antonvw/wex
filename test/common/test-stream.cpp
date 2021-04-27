@@ -26,6 +26,22 @@ void find_prep(wex::stream& s, wex::factory::find_replace_data* frd)
   REQUIRE(!s.get_statistics().get_elements().get_items().empty());
 }
 
+#define STREAM_FIND(RE, FIND, MC, AC)                     \
+  frd.set_regex(RE);                                      \
+  frd.set_find_string(FIND);                              \
+  frd.set_match_case(MC);                                 \
+                                                          \
+  wex::stream s(                                          \
+    &frd,                                                 \
+    wex::test::get_path("test.h"),                        \
+    wex::ID_TOOL_REPORT_FIND);                            \
+                                                          \
+  REQUIRE(s.get_tool().id() == wex::ID_TOOL_REPORT_FIND); \
+                                                          \
+  find_prep(s, &frd);                                     \
+                                                          \
+  REQUIRE(s.get_statistics().get("Actions Completed") == AC);
+
 TEST_CASE("wex::stream_statistics")
 {
   wex::stream_statistics ss;
@@ -45,74 +61,17 @@ TEST_CASE("wex::stream")
 {
   wex::factory::find_replace_data frd;
 
-  SUBCASE("find")
-  {
-    wex::stream s(
-      &frd,
-      wex::test::get_path("test.h"),
-      wex::ID_TOOL_REPORT_FIND);
-    REQUIRE(s.get_tool().id() == wex::ID_TOOL_REPORT_FIND);
+  // to verify: git grep "\btest\b" test.h | wc
 
-    frd.set_regex(false);
-    frd.set_find_string("test");
-    frd.set_match_case(true);
+  SUBCASE("find") { STREAM_FIND(false, "test", true, 193); }
 
-    find_prep(s, &frd);
+  SUBCASE("find-regex") { STREAM_FIND(true, "\\btest\\b", true, 193); }
 
-    // to verify: git grep "\btest\b" test.h | wc
-    REQUIRE(s.get_statistics().get("Actions Completed") == 193);
-  }
-
-  SUBCASE("find-regex")
-  {
-    wex::stream s(
-      &frd,
-      wex::test::get_path("test.h"),
-      wex::ID_TOOL_REPORT_FIND);
-    REQUIRE(s.get_tool().id() == wex::ID_TOOL_REPORT_FIND);
-
-    frd.set_regex(true);
-    frd.set_find_string("\\btest\\b");
-    frd.set_match_case(true);
-
-    find_prep(s, &frd);
-
-    // to verify: git grep "\btest\b" test.h | wc
-    REQUIRE(s.get_statistics().get("Actions Completed") == 193);
-  }
-
-  SUBCASE("find-ignore-case")
-  {
-    wex::stream s(
-      &frd,
-      wex::test::get_path("test.h"),
-      wex::ID_TOOL_REPORT_FIND);
-    REQUIRE(s.get_tool().id() == wex::ID_TOOL_REPORT_FIND);
-
-    frd.set_regex(false);
-    frd.set_find_string("tESt");
-    frd.set_match_case(false);
-    find_prep(s, &frd);
-
-    // to verify: git grep -i "\btest\b" test.h | wc
-    REQUIRE(s.get_statistics().get("Actions Completed") == 194);
-  }
+  SUBCASE("find-ignore-case") { STREAM_FIND(false, "tESt", false, 194); }
 
   SUBCASE("find-regex-ignore-case")
   {
-    wex::stream s(
-      &frd,
-      wex::test::get_path("test.h"),
-      wex::ID_TOOL_REPORT_FIND);
-    REQUIRE(s.get_tool().id() == wex::ID_TOOL_REPORT_FIND);
-
-    frd.set_regex(true);
-    frd.set_find_string("\\btESt\\b");
-    frd.set_match_case(false);
-    find_prep(s, &frd);
-
-    // to verify: git grep -i "\btest\b" test.h | wc
-    REQUIRE(s.get_statistics().get("Actions Completed") == 194);
+    STREAM_FIND(true, "\\btESt\\b", false, 194);
   }
 
   SUBCASE("replace")
