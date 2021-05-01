@@ -5,6 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/auto-complete.h>
 #include <wex/config.h>
 #include <wex/defs.h>
 #include <wex/frd.h>
@@ -28,8 +29,8 @@ TEST_CASE("wex::stc")
   {
     stc->auto_complete_clear();
     stc->auto_complete_sync();
-    stc->auto_complete().use(true);
-    stc->auto_complete().use(false);
+    stc->auto_complete()->use(true);
+    stc->auto_complete()->use(false);
 
     REQUIRE(stc->get_lexer().set("xml"));
     stc->get_vi().command("i<xxxx>");
@@ -264,10 +265,10 @@ TEST_CASE("wex::stc")
     stc->get_file().reset_contents_changed();
   }
 
-  SUBCASE("link") 
-  { 
+  SUBCASE("link")
+  {
     stc->SetText("no link");
-    REQUIRE(!stc->link_open()); 
+    REQUIRE(!stc->link_open());
   }
 
   SUBCASE("margin")

@@ -6,7 +6,30 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
-#include <wex/wex.h>
+#include <wex/accelerators.h>
+#include <wex/bind.h>
+#include <wex/cmdline.h>
+#include <wex/ctags.h>
+#include <wex/debug.h>
+#include <wex/del/dir.h>
+#include <wex/del/frame.h>
+#include <wex/del/listview-file.h>
+#include <wex/del/stream.h>
+#include <wex/file-dialog.h>
+#include <wex/frd.h>
+#include <wex/item-dialog.h>
+#include <wex/lexers.h>
+#include <wex/listitem.h>
+#include <wex/macros.h>
+#include <wex/process.h>
+#include <wex/regex.h>
+#include <wex/stc-entry-dialog.h>
+#include <wex/stc.h>
+#include <wex/stream.h>
+#include <wex/textctrl.h>
+#include <wex/tostring.h>
+#include <wex/util.h>
+#include <wex/vcs.h>
 
 namespace wex
 {

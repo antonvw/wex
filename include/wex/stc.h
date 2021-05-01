@@ -9,7 +9,6 @@
 
 #include <bitset>
 #include <vector>
-#include <wex/auto-complete.h>
 #include <wex/data/dir.h>
 #include <wex/data/stc.h>
 #include <wex/factory/stc.h>
@@ -22,6 +21,7 @@
 
 namespace wex
 {
+  class auto_complete;
   class indicator;
   class item;
   class item_dialog;
@@ -93,7 +93,7 @@ namespace wex
     void append_text(const std::string& text);
 
     /// Returns auto_complete.
-    auto& auto_complete() { return m_auto_complete; };
+    auto* auto_complete() { return m_auto_complete; };
 
     // Clears the component: all text is cleared and all styles are reset.
     // Invoked by Open and do_file_new.
@@ -305,8 +305,8 @@ namespace wex
 
     frame* m_frame;
 
-    class auto_complete m_auto_complete;
-    hexmode             m_hexmode;
+    class auto_complete* m_auto_complete;
+    hexmode              m_hexmode;
 
     data::stc m_data;
     stc_file  m_file;

@@ -2,14 +2,13 @@
 // Name:      auto_complete.h
 // Purpose:   Declaration of class wex::auto_complete
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <set>
 #include <string>
-#include <wex/ctags-entry.h>
 
 namespace wex
 {
@@ -20,19 +19,29 @@ namespace wex
   class auto_complete
   {
   public:
-    /// Constructor.
-    auto_complete(stc* stc);
+    /// Constructor, provide stc and min size to trigger completion.
+    auto_complete(stc* stc, size_t min_size = 3);
 
     /// Destructor.
     ~auto_complete();
 
-    /// Activates the auto completed text.
+    /// Clears data.
+    void clear();
+
+    /// Completes the auto completed text.
     /// This might setup a filter for next
     /// auto complete list.
-    bool activate(const std::string& text);
+    bool complete(const std::string& text);
 
-    /// Clears filter and text.
-    void clear();
+    /// Returns current level.
+    size_t current_level();
+
+    /// Returns current insert.
+    /// (e.g. a variable or a class name)
+    const auto& insert() const { return m_insert; };
+
+    /// Returns all inserts (independant of scope)
+    const auto& inserts() const { return m_inserts; };
 
     /// Builds and shows auto complete lists on the
     /// stc component. This can be a list
@@ -51,16 +60,20 @@ namespace wex
     /// Sets auto completion on or off.
     void use(bool on) { m_use = on; };
 
+    /// Returns the class name of variable for current level (scope).
+    const std::string variable(const std::string& name) const;
+
   private:
-    bool show_ctags(bool show);
+    bool show_ctags();
     bool show_inserts(bool show) const;
     bool show_keywords(bool show) const;
 
     const size_t m_min_size;
 
-    bool m_get_members{false}, m_use{true};
+    bool m_use{true};
 
-    std::string           m_active, m_text;
+    std::string m_active, m_insert, m_request_members;
+
     std::set<std::string> m_inserts;
 
     scope* m_scope;

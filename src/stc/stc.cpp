@@ -7,6 +7,7 @@
 
 #include <boost/tokenizer.hpp>
 #include <wex/address.h>
+#include <wex/auto-complete.h>
 #include <wex/blame.h>
 #include <wex/config.h>
 #include <wex/ex-stream.h>
@@ -28,7 +29,7 @@
 
 wex::stc::stc(const path& p, const data::stc& data)
   : m_data(this, data)
-  , m_auto_complete(this)
+  , m_auto_complete(new wex::auto_complete(this))
   , m_vi(
       new vi(this, data.flags().test(data::stc::WIN_EX) ? ex::EX : ex::VISUAL))
   , m_file(this, data.window().name())
@@ -127,6 +128,7 @@ wex::stc::stc(const std::string& text, const data::stc& data)
 
 wex::stc::~stc()
 {
+  delete m_auto_complete;
   delete m_vi;
 }
 
@@ -159,12 +161,12 @@ void wex::stc::append_text(const std::string& text)
 
 void wex::stc::auto_complete_clear()
 {
-  m_auto_complete.clear();
+  m_auto_complete->clear();
 }
 
 void wex::stc::auto_complete_sync()
 {
-  m_auto_complete.sync();
+  m_auto_complete->sync();
 }
 
 bool wex::stc::CanCut() const

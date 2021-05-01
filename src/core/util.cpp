@@ -305,7 +305,8 @@ const std::string wex::get_string_set(
     kset.begin(),
     kset.end(),
     std::string{},
-    [&](const std::string& a, const std::string& b) {
+    [&](const std::string& a, const std::string& b)
+    {
       return (b.size() >= min_size && b.starts_with(prefix)) ? a + b + ' ' : a;
     });
 }
@@ -338,7 +339,7 @@ bool wex::is_brace(int c)
 bool wex::is_codeword_separator(int c)
 {
   return isspace(c) || is_brace(c) || c == ',' || c == ';' || c == ':' ||
-         c == '@';
+         c == '+' || c == '-' || c == '@';
 }
 
 bool wex::matches_one_of(

@@ -2,7 +2,7 @@
 // Name:      scope.h
 // Purpose:   Implementation of class wex::scope
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -29,16 +29,22 @@ namespace wex
     /// Constructor.
     scope(stc* s);
 
+    /// Returns class name for variable.
+    const std::string class_name(const std::string& name) const;
+
     /// Returns true if iterator is at end of filters.
     bool end() const;
 
-    /// Finds text in scope (from current up), returns true if found.
+    /// Finds text in scope (from current down), returns true if found.
     /// Sets the iterator if found.
     bool find(const std::string& text);
 
-    /// Returns active filter entry for text, might add entry
+    /// Returns active filter entry for text, might add empty entry
     /// if text is not yet present.
     ctags_entry& get(const std::string& text);
+
+    /// Returns current level.
+    size_t get_current_level() const;
 
     /// Inserts entry in the filters map, and sets iterator.
     void insert(const std::string& text, const ctags_entry& ce);
@@ -62,11 +68,9 @@ namespace wex
 
     bool check_levels(check_t type = check_t().set());
 
-    size_t get_current_level() const;
-
     stc*                  m_stc;
-    std::vector<map_t>    m_filters;
+    std::vector<map_t>    m_filters; // filters at a level
     map_t::const_iterator m_it;
-    size_t                m_level{0};
+    size_t                m_level{0}; // current level
   };
 }; // namespace wex

@@ -1,9 +1,12 @@
 # roadmap
+- add variable scope tests
+- fix variable scope etc.
+- improve stc autocomplete test
+- level test not yet ok
 
 ## backlog
 - clang asan build using LeakSanitizer
 
-- invest use wxTextCompleter
 - use spaceship operator
   and modules (wait for gcc-11)
 - start up with recent project, close project

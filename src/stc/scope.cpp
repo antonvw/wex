@@ -2,14 +2,15 @@
 // Name:      scope.cpp
 // Purpose:   Implementation of class wex::scope
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
 
-#include "scope.h"
 #include <wex/log.h>
 #include <wex/stc.h>
+
+#include "scope.h"
 
 wex::scope::scope(stc* s)
   : m_stc(s)
@@ -29,7 +30,7 @@ bool wex::scope::check_levels(check_t type)
     m_filters.erase(m_filters.begin() + m_level + 1, m_filters.end());
     changed = true;
 
-    log::trace("scope erased")
+    log::trace("scope::erased")
       << size - m_filters.size() << "current:" << m_level
       << "size:" << m_filters.size();
   }
@@ -42,12 +43,23 @@ bool wex::scope::check_levels(check_t type)
     m_filters.insert(m_filters.end(), m_level - size + 1, m);
     changed = true;
 
-    log::trace("scope inserted")
+    log::trace("scope::inserted")
       << m_filters.size() - size << "current:" << m_level
       << "size:" << m_filters.size();
   }
 
   return changed;
+}
+
+const std::string wex::scope::class_name(const std::string& name) const
+{
+  if (const auto& it = m_filters[get_current_level()].find(name);
+      it != m_filters[get_current_level()].end())
+  {
+    return it->second.class_name();
+  }
+
+  return std::string();
 }
 
 bool wex::scope::end() const

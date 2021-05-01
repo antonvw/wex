@@ -8,7 +8,6 @@
 #include <wex/config.h>
 #include <wex/grid.h>
 #include <wex/odbc.h>
-#include <wex/stc.h>
 
 #include "test.h"
 
@@ -18,7 +17,7 @@ TEST_CASE("wex::odbc")
   // Ensure we have a database and a table.
   if (system("mysql test < odbc-create.sql") != 0)
   {
-    // if no mysql just quit
+    // if no mysql or error just quit
     return;
   }
 
