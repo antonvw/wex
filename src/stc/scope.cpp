@@ -71,6 +71,7 @@ bool wex::scope::find(const std::string& text)
 {
   if (text.empty())
   {
+    m_it = m_filters[get_current_level()].end();
     return false;
   }
 
@@ -82,6 +83,8 @@ bool wex::scope::find(const std::string& text)
       return true;
     }
   }
+
+  m_it = m_filters[get_current_level()].end();
 
   return false;
 }

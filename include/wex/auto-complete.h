@@ -20,7 +20,7 @@ namespace wex
   {
   public:
     /// Constructor, provide stc and min size to trigger completion.
-    auto_complete(stc* stc, size_t min_size = 3);
+    auto_complete(stc* stc, size_t min_size = 2);
 
     /// Destructor.
     ~auto_complete();
@@ -64,6 +64,7 @@ namespace wex
     const std::string variable(const std::string& name) const;
 
   private:
+    void clear_insert();
     bool show_ctags();
     bool show_inserts(bool show) const;
     bool show_keywords(bool show) const;

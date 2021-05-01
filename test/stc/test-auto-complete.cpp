@@ -26,9 +26,9 @@ TEST_CASE("wex::auto_complete")
 
   SUBCASE("clear")
   {
-    REQUIRE(ac.on_char('x'));
-    REQUIRE(ac.on_char('y'));
-    REQUIRE(ac.on_char('z'));
+    REQUIRE(!ac.on_char('x'));
+    REQUIRE(!ac.on_char('y'));
+    REQUIRE(!ac.on_char('z'));
     REQUIRE(ac.insert() == "xyz");
     ac.clear();
     REQUIRE(ac.insert().empty());
@@ -42,23 +42,23 @@ TEST_CASE("wex::auto_complete")
 
     REQUIRE(!ac.on_char(WXK_BACK));
 
-    REQUIRE(ac.on_char('x'));
-    REQUIRE(ac.on_char(WXK_BACK));
+    ac.on_char('x');
     REQUIRE(!ac.on_char(WXK_BACK));
-
-    REQUIRE(ac.on_char('x'));
-    REQUIRE(ac.on_char('y'));
-    REQUIRE(ac.on_char('z'));
+    REQUIRE(!ac.on_char(WXK_BACK));
+    ac.on_char('x');
+    ac.on_char('y');
+    ac.on_char('z');
     REQUIRE(ac.insert() == "xyz");
-    REQUIRE(!ac.on_char(';'));
+    
+    ac.on_char(';');
     REQUIRE(ac.insert().empty());
     REQUIRE(ac.inserts().find("xyz") != ac.inserts().end());
 
-    REQUIRE(ac.on_char('a'));
-    REQUIRE(ac.on_char('b'));
-    REQUIRE(ac.on_char('c'));
+    ac.on_char('a');
+    ac.on_char('b');
+    ac.on_char('c');
     REQUIRE(ac.insert() == "abc");
-    REQUIRE(!ac.on_char(';'));
+    ac.on_char(';');
     REQUIRE(ac.inserts().find("xyz") != ac.inserts().end());
     REQUIRE(ac.inserts().find("abc") != ac.inserts().end());
     REQUIRE(ac.inserts().size() == 2);

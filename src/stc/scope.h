@@ -36,7 +36,7 @@ namespace wex
     bool end() const;
 
     /// Finds text in scope (from current down), returns true if found.
-    /// Sets the iterator if found.
+    /// Sets the iterator if found, or invalidates iterator if not found.
     bool find(const std::string& text);
 
     /// Returns active filter entry for text, might add empty entry
