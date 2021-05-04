@@ -200,8 +200,6 @@ namespace wex
 
     void add_text(const std::string& text) override;
 
-    void auto_complete_clear() override;
-    void auto_complete_sync() override;
     bool auto_indentation(int c) override;
 
     bool find(

@@ -132,7 +132,6 @@ wex::vi::vi(wex::factory::stc* arg, mode_t ex_mode)
           m_insert_text.clear();
         }
 
-        get_stc()->auto_complete_sync();
         get_stc()->BeginUndoAction();
       },
       // back to command mode process
@@ -146,7 +145,6 @@ wex::vi::vi(wex::factory::stc* arg, mode_t ex_mode)
         }
         m_command.clear();
         m_insert_command.clear();
-        get_stc()->auto_complete_clear();
         get_stc()->EndUndoAction();
       })
   , m_last_commands{{"!", "<", ">", "A", "C", "D", "I", "J", "O",
@@ -1381,11 +1379,13 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
   const auto& it = std::find_if(
     m_motion_commands.begin(),
     m_motion_commands.end(),
-    [&](auto const& e) {
+    [&](auto const& e)
+    {
       return std::any_of(
         e.first.begin(),
         e.first.end(),
-        [command](const auto& p) {
+        [command](const auto& p)
+        {
           return p == command[0];
         });
     });
@@ -1672,13 +1672,15 @@ bool wex::vi::other_command(std::string& command)
   if (const auto& it = std::find_if(
         m_other_commands.begin(),
         m_other_commands.end(),
-        [command](auto const& e) {
+        [command](auto const& e)
+        {
           if (!isalpha(e.first.front()))
           {
             return std::any_of(
               e.first.begin(),
               e.first.end(),
-              [command](const auto& p) {
+              [command](const auto& p)
+              {
                 return p == command.front();
               });
           }

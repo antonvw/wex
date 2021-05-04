@@ -43,9 +43,6 @@ namespace wex
     /// if text is not yet present.
     ctags_entry& get(const std::string& text);
 
-    /// Returns current level.
-    size_t get_current_level() const;
-
     /// Inserts entry in the filters map, and sets iterator.
     void insert(const std::string& text, const ctags_entry& ce);
 
@@ -66,11 +63,13 @@ namespace wex
 
     typedef std::bitset<2> check_t;
 
-    bool check_levels(check_t type = check_t().set());
+    void check_levels(check_t type = check_t().set());
+
+    /// Finds text in scope (from current down), returns iterator.
+    map_t::const_iterator iterator(const std::string& text) const;
 
     stc*                  m_stc;
     std::vector<map_t>    m_filters; // filters at a level
     map_t::const_iterator m_it;
-    size_t                m_level{0}; // current level
   };
 }; // namespace wex

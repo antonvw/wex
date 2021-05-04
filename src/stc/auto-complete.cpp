@@ -41,7 +41,7 @@ void wex::auto_complete::clear_insert()
     m_inserts.emplace(m_insert);
     log::debug("auto_complete::clear inserts") << m_insert;
   }
-  
+
   m_insert.clear();
 }
 
@@ -74,11 +74,6 @@ bool wex::auto_complete::complete(const std::string& text)
   return true;
 }
 
-size_t wex::auto_complete::current_level()
-{
-  return m_scope->get_current_level();
-}
-
 bool wex::auto_complete::on_char(char c)
 {
   if (!use() || m_stc->SelectionIsRectangle())
@@ -89,82 +84,87 @@ bool wex::auto_complete::on_char(char c)
   bool shw_inserts  = true;
   bool shw_keywords = true;
 
-  if (
-    c == '.' ||
-    (c == '>' && m_stc->GetCharAt(m_stc->GetCurrentPos() - 1) == '-'))
+  m_scope->sync();
+
+  switch (c)
   {
-    if (!m_insert.empty())
-    {
-      m_request_members = (c == '>' ? "->" : ".");
-      
-      clear_insert();
-    }
-    
-    shw_inserts  = false;
-    shw_keywords = false;
-  }
-  else if (c == WXK_BACK)
-  {
-    switch (m_insert.size())
-    {
-      case 0:
+    case '.':
+    case '>':
+      if (
+        c == '.' ||
+        (c == '>' && m_stc->GetCharAt(m_stc->GetCurrentPos() - 1) == '-'))
+      {
+        if (!m_insert.empty())
+        {
+          m_request_members = (c == '>' ? "->" : ".");
+
+          if (!m_active.empty())
+          {
+            clear_insert();
+          }
+        }
+
+        shw_inserts  = false;
+        shw_keywords = false;
+      }
+      break;
+
+    case WXK_BACK:
+      switch (m_insert.size())
+      {
+        case 0:
+          return false;
+
+        case 1:
+          m_insert.pop_back();
+          return false;
+
+        default:
+          m_insert.pop_back();
+      }
+      break;
+
+    case WXK_RETURN:
+      return false;
+
+    case ',':
+      store_variable();
+      return false;
+
+    case ';':
+      store_variable();
+
+      // active end
+      clear();
+      m_active.clear();
+      return false;
+
+    case '{':
+      // scope start
+      clear();
+      m_request_members.clear();
+      return false;
+
+    default:
+      if (is_codeword_separator(c) || iscntrl(c))
+      {
+        clear_insert();
+        clear();
         return false;
+      }
+      else
+      {
+        m_request_members.clear();
 
-      case 1:
-        m_insert.pop_back();
-        return false;
-
-      default:
-        m_insert.pop_back();
-    }
-  }
-  else if (c == WXK_RETURN)
-  {
-    m_scope->sync();
-    return false;
-  }
-  else if (isspace(c))
-  {
-    if (m_insert.size() > m_min_size)
-    {
-      m_inserts.emplace(m_insert);
-    }
-
-    clear();
-    return false;
-  }
-  else if (iscntrl(c) || c == '+')
-  {
-    return false;
-  }
-  else if (c == ';')
-  {
-    // active end
-    clear();
-    m_active.clear();
-    return false;
-  }
-  else if (c == '}')
-  {
-    // scope end
-    clear();
-    m_scope->sync();
-    m_active.clear();
-    m_request_members.clear();
-    return false;
-  }
-  else
-  {
-    m_request_members.clear();
-
-    if (is_codeword_separator(m_stc->GetCharAt(m_stc->GetCurrentPos() - 1)))
-    {
-      m_insert = c;
-    }
-    else
-    {
-      m_insert += c;
-    }
+        if (is_codeword_separator(m_stc->GetCharAt(m_stc->GetCurrentPos() - 1)))
+        {
+          m_insert = c;
+        }
+        else
+        {
+          m_insert += c;
+        }
+      }
   }
 
   if (const auto wsp = m_stc->WordStartPosition(m_stc->GetCurrentPos(), true);
@@ -187,9 +187,6 @@ bool wex::auto_complete::on_char(char c)
 
 bool wex::auto_complete::show_ctags()
 {
-  log::debug("auto_complete::show_ctags")
-    << m_insert << m_active << m_request_members;
-
   // If members are requested, and class is active, save it in the filters.
   if (const auto& use_filter = (!m_insert.empty() ? m_insert : m_active);
       !m_request_members.empty() && m_scope->find(use_filter))
@@ -200,10 +197,11 @@ bool wex::auto_complete::show_ctags()
       true));
     const std::string word(m_stc->GetTextRange(wsp, m_stc->GetCurrentPos()));
 
+    clear_insert();
+
     if (!m_active.empty() && !m_scope->find(word))
     {
       m_scope->insert(word, ce);
-      log::debug("auto_complete::show_ctags insert") << word << ce;
     }
   }
 
@@ -218,6 +216,7 @@ bool wex::auto_complete::show_ctags()
     m_stc->AutoCompSetSeparator(m_stc->get_vi().ctags()->separator());
     m_stc->AutoCompShow(m_insert.length() - 1, comp);
     m_stc->AutoCompSetSeparator(' ');
+    log::debug("auto_complete::show_ctags chars") << m_insert << comp.size();
     return true;
   }
 
@@ -257,6 +256,15 @@ bool wex::auto_complete::show_keywords(bool show) const
   }
 
   return false;
+}
+
+void wex::auto_complete::store_variable()
+{
+  if (!m_active.empty() && !m_insert.empty())
+  {
+    const ctags_entry& ce = m_scope->get(m_active);
+    m_scope->insert(m_insert, ce);
+  }
 }
 
 void wex::auto_complete::sync() const

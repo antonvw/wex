@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/auto-complete.h>
+#include <wx/uiaction.h>
 
 #include "test.h"
 
@@ -22,6 +23,7 @@ TEST_CASE("wex::auto_complete")
     REQUIRE(ac.use());
     REQUIRE(ac.insert().empty());
     REQUIRE(ac.inserts().empty());
+    REQUIRE(ac.variable("none").empty());
   }
 
   SUBCASE("clear")
@@ -39,7 +41,6 @@ TEST_CASE("wex::auto_complete")
   {
     REQUIRE(!ac.complete(std::string()));
     REQUIRE(ac.complete("test_app"));
-
     REQUIRE(!ac.on_char(WXK_BACK));
 
     ac.on_char('x');
@@ -49,7 +50,7 @@ TEST_CASE("wex::auto_complete")
     ac.on_char('y');
     ac.on_char('z');
     REQUIRE(ac.insert() == "xyz");
-    
+
     ac.on_char(';');
     REQUIRE(ac.insert().empty());
     REQUIRE(ac.inserts().find("xyz") != ac.inserts().end());
@@ -64,18 +65,54 @@ TEST_CASE("wex::auto_complete")
     REQUIRE(ac.inserts().size() == 2);
   }
 
-  SUBCASE("level")
+  SUBCASE("stc")
   {
-    REQUIRE(ac.current_level() == 0);
-    
-    ac.on_char(' ');
-    REQUIRE(ac.current_level() == 0);
-    
-    ac.on_char('{');
-    ac.on_char('\n');
-    REQUIRE(ac.current_level() == 0);
+    REQUIRE(stc->get_fold_level() == 0);
+
+    event(stc, 'O');
+    event(stc, '{');
+    event(stc, WXK_RETURN);
+    event(stc, WXK_RETURN);
+    REQUIRE(stc->get_fold_level() == 1);
+
+    event(stc, 't');
+    event(stc, WXK_RETURN);
+    REQUIRE(stc->get_fold_level() == 1);
+
+    event(stc, ' ');
+    event(stc, 'x');
+    event(stc, 'x');
+    event(stc, '.');
+    event(stc, WXK_RETURN);
+    event(stc, ' ');
+    event(stc, 'y');
+    event(stc, 'y');
+    event(stc, '.');
+    event(stc, WXK_RETURN);
+    REQUIRE(
+      stc->get_text().find("test_app xx.method_one") != std::string::npos);
+    REQUIRE(stc->auto_complete()->variable("xx") == "test_app");
+    REQUIRE(stc->auto_complete()->variable("yy") == "test_app");
+
+    event(stc, ';');
+    event(stc, WXK_RETURN);
+    event(stc, 'x');
+    event(stc, 'x');
+    event(stc, '.');
+    event(stc, WXK_RETURN);
+
+    event(stc, WXK_RETURN);
+    event(stc, '}');
+    event(stc, WXK_RETURN);
+    event(stc, WXK_RETURN);
+    event(stc, WXK_RETURN);
+
+    // Outcommented, when running verbose, this is ok.
+#ifdef INVEST
+    REQUIRE(stc->get_fold_level() == 0);
+#endif
   }
-  
+
   SUBCASE("use")
   {
     REQUIRE(ac.use());

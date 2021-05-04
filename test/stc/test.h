@@ -17,3 +17,12 @@ wex::frame* frame();
 
 /// Returns an stc.
 wex::stc* get_stc();
+
+/// Sends char event to window.
+void event(wxWindow* win, char id);
+
+/// Sends char events to window (each char is a separate event).
+void event(wxWindow* win, const std::string& ids);
+
+/// Sends key event to window.
+void event(wxWindow* win, int id);

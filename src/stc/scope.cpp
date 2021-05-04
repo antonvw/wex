@@ -15,105 +15,123 @@
 wex::scope::scope(stc* s)
   : m_stc(s)
 {
-  check_levels(check_t().set(LEVEL_UP));
-
-  m_it = m_filters[m_level].end();
 }
 
-bool wex::scope::check_levels(check_t type)
+void wex::scope::check_levels(check_t type)
 {
-  const auto size(m_filters.size());
   bool       changed = false;
+  const auto level(m_stc->get_fold_level());
+  const auto size(m_filters.size());
 
-  if (type[LEVEL_DOWN] && m_level < size - 1)
+  if (type[LEVEL_DOWN] && size >= 1 && level < size - 1)
   {
-    m_filters.erase(m_filters.begin() + m_level + 1, m_filters.end());
+    m_filters.erase(m_filters.begin() + level + 1, m_filters.end());
     changed = true;
 
-    log::trace("scope::erased")
-      << size - m_filters.size() << "current:" << m_level
+    log::debug("scope::check_levels erased level")
+      << size - m_filters.size() << "current:" << level
       << "size:" << m_filters.size();
   }
 
-  if (!changed && type[LEVEL_UP] && m_level >= size)
+  if (!changed && type[LEVEL_UP] && level >= size)
   {
     map_t m;
     m[std::string()] = ctags_entry();
 
-    m_filters.insert(m_filters.end(), m_level - size + 1, m);
+    m_filters.insert(m_filters.end(), level - size + 1, m);
     changed = true;
 
-    log::trace("scope::inserted")
-      << m_filters.size() - size << "current:" << m_level
+    log::debug("scope::check_levels inserted level")
+      << m_filters.size() - size << "current:" << level
       << "size:" << m_filters.size();
   }
 
-  return changed;
+  if (changed)
+  {
+    m_it = m_filters[level].end();
+  }
 }
 
 const std::string wex::scope::class_name(const std::string& name) const
 {
-  if (const auto& it = m_filters[get_current_level()].find(name);
-      it != m_filters[get_current_level()].end())
+  const auto level(m_stc->get_fold_level());
+
+  if (m_filters.empty() || level > m_filters.size())
+  {
+    return std::string();
+  }
+
+  log::debug("scope::class_name") << name << level << m_filters[level].size();
+
+  if (const auto& it = iterator(name); !end())
   {
     return it->second.class_name();
   }
-
-  return std::string();
+  else
+  {
+    return std::string();
+  }
 }
 
 bool wex::scope::end() const
 {
-  return m_level >= m_filters.size() || m_it == m_filters[m_level].end();
+  const auto level(m_stc->get_fold_level());
+  return level >= m_filters.size() || m_it == m_filters[level].end();
 }
 
 bool wex::scope::find(const std::string& text)
 {
-  if (text.empty())
-  {
-    m_it = m_filters[get_current_level()].end();
-    return false;
-  }
-
-  for (int i = std::min(m_level, m_filters.size() - 1); i >= 0; i--)
-  {
-    if (const auto& it = m_filters[i].find(text); it != m_filters[i].end())
-    {
-      m_it = it;
-      return true;
-    }
-  }
-
-  m_it = m_filters[get_current_level()].end();
-
-  return false;
+  m_it = iterator(text);
+  return !end();
 }
 
 wex::ctags_entry& wex::scope::get(const std::string& text)
 {
-  return m_filters[m_level][text];
-}
+  if (m_filters.empty())
+  {
+    sync();
+  }
 
-size_t wex::scope::get_current_level() const
-{
-  return std::max(0, m_stc->get_fold_level());
+  const auto level(m_stc->get_fold_level());
+  return m_filters[level][text];
 }
 
 void wex::scope::insert(const std::string& text, const ctags_entry& ce)
 {
   assert(!text.empty());
 
-  m_filters[m_level].insert({text, ce});
+  const auto level(m_stc->get_fold_level());
+
+  m_filters[level].insert({text, ce});
 
   find(text);
+
+  log::debug("scope::insert") << text << level << ce;
+}
+
+wex::scope::map_t::const_iterator
+wex::scope::iterator(const std::string& text) const
+{
+  const auto level(m_stc->get_fold_level());
+
+  if (text.empty())
+  {
+    return m_filters[level].end();
+  }
+
+  for (int i = std::min(level, m_filters.size() - 1); i >= 0; i--)
+  {
+    if (const auto& it = m_filters[i].find(text); it != m_filters[i].end())
+    {
+      return it;
+    }
+  }
+
+  return m_filters[level].end();
 }
 
 void wex::scope::sync()
 {
-  m_level = get_current_level();
-
-  if (check_levels())
-  {
-    m_it = m_filters[m_level].end();
-  }
+  log::debug("scope::sync");
+  check_levels();
 }

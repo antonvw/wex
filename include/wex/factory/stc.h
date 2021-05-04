@@ -50,12 +50,6 @@ namespace wex
       /// Adds text.
       virtual void add_text(const std::string& text) { AddText(text); }
 
-      /// Clears auto complete.
-      virtual void auto_complete_clear() { ; };
-
-      /// Syncs auto complete.
-      virtual void auto_complete_sync() { ; };
-
       /// After pressing enter, starts new line at same place
       /// as previous line.
       virtual bool auto_indentation(int c) { return false; };
@@ -224,7 +218,7 @@ namespace wex
       const std::string eol() const;
 
       /// Returns current line fold level.
-      int get_fold_level() const;
+      size_t get_fold_level() const;
 
       /// Returns the lexer.
       const auto& get_lexer() const { return m_lexer; };

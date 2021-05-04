@@ -159,16 +159,6 @@ void wex::stc::append_text(const std::string& text)
   AppendTextRaw(text.data(), text.size());
 }
 
-void wex::stc::auto_complete_clear()
-{
-  m_auto_complete->clear();
-}
-
-void wex::stc::auto_complete_sync()
-{
-  m_auto_complete->sync();
-}
-
 bool wex::stc::CanCut() const
 {
   return factory::stc::CanCut() && !GetReadOnly() && !is_hexmode();

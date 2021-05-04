@@ -52,6 +52,7 @@ TEST_CASE("wex::vi")
     REQUIRE(!vi->on_char(event));
     CAPTURE(vi->mode().get());
     CAPTURE(vi->mode().str());
+    CAPTURE(vi->inserted_text());
     REQUIRE(vi->mode().is_insert());
     REQUIRE(vi->inserted_text().empty());
     REQUIRE(vi->mode().is_insert());

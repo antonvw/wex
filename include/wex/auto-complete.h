@@ -33,9 +33,6 @@ namespace wex
     /// auto complete list.
     bool complete(const std::string& text);
 
-    /// Returns current level.
-    size_t current_level();
-
     /// Returns current insert.
     /// (e.g. a variable or a class name)
     const auto& insert() const { return m_insert; };
@@ -68,6 +65,7 @@ namespace wex
     bool show_ctags();
     bool show_inserts(bool show) const;
     bool show_keywords(bool show) const;
+    void store_variable();
 
     const size_t m_min_size;
 

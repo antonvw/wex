@@ -27,14 +27,8 @@ TEST_CASE("wex::stc")
 
   SUBCASE("auto_complete")
   {
-    stc->auto_complete_clear();
-    stc->auto_complete_sync();
     stc->auto_complete()->use(true);
     stc->auto_complete()->use(false);
-
-    REQUIRE(stc->get_lexer().set("xml"));
-    stc->get_vi().command("i<xxxx>");
-    stc->get_vi().command("\x1b");
   }
 
   SUBCASE("auto_indentation")
@@ -206,6 +200,18 @@ TEST_CASE("wex::stc")
     REQUIRE(!stc->GetModify());
 
     stc->SetReadOnly(false);
+  }
+
+  SUBCASE("hypertext")
+  {
+    stc->set_text("");
+    REQUIRE(stc->get_lexer().set("xml"));
+
+    event(stc, "i<xxxxx>\x1b");
+#ifdef TEST
+    // Due to queueing ? only ok i tested separately.
+    REQUIRE(stc->get_text() == "<xxxxx></xxxxx>");
+#endif
   }
 
   SUBCASE("lexer")
