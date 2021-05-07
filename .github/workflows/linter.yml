@@ -25,4 +25,4 @@ jobs:
         # cpplint
         C_CPPLINT_ARGUMENTS: --quiet --filter=-build,-readability/fn_size,-readability/multiline_string,-runtime/explicit,-runtime/indentation_namespace,-runtime/int,-runtime/references,-whitespace
         C_CPPLINT_FILTER_REGEX_INCLUDE: (src|include|test)
-        C_CPPLINT_FILTER_REGEX_EXCLUDE: (src/lexers)
+        C_CPPLINT_FILTER_REGEX_EXCLUDE: (src/lexers|external)
