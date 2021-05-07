@@ -26,7 +26,7 @@ namespace wex::data
     menu& action(const action_t rhs);
 
     /// Returns art.
-    auto& art() const { return m_artid; };
+    auto& art() const { return m_artid; }
 
     /// Sets art.
     menu& art(const wxArtID& rhs);
@@ -35,7 +35,7 @@ namespace wex::data
     void bind(int id) const;
 
     /// Returns help text.
-    auto& help_text() const { return m_help_text; };
+    auto& help_text() const { return m_help_text; }
 
     /// Sets help text.
     menu& help_text(const std::string& rhs);

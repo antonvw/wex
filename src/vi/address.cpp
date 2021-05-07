@@ -33,48 +33,48 @@
 
 namespace wex
 {
-  int find_stc(ex* ex, const std::string& text, bool forward)
+int find_stc(ex* ex, const std::string& text, bool forward)
+{
+  if (forward)
   {
-    if (forward)
-    {
-      ex->get_stc()->SetTargetRange(
-        ex->get_stc()->GetCurrentPos(),
-        ex->get_stc()->GetTextLength());
-    }
-    else
-    {
-      ex->get_stc()->SetTargetRange(ex->get_stc()->GetCurrentPos(), 0);
-    }
+    ex->get_stc()->SetTargetRange(
+      ex->get_stc()->GetCurrentPos(),
+      ex->get_stc()->GetTextLength());
+  }
+  else
+  {
+    ex->get_stc()->SetTargetRange(ex->get_stc()->GetCurrentPos(), 0);
+  }
 
-    SEARCH_TARGET;
+  SEARCH_TARGET;
 
-    if (forward)
-    {
-      ex->get_stc()->SetTargetRange(0, ex->get_stc()->GetCurrentPos());
-    }
-    else
-    {
-      ex->get_stc()->SetTargetRange(
-        ex->get_stc()->GetTextLength(),
-        ex->get_stc()->GetCurrentPos());
-    }
+  if (forward)
+  {
+    ex->get_stc()->SetTargetRange(0, ex->get_stc()->GetCurrentPos());
+  }
+  else
+  {
+    ex->get_stc()->SetTargetRange(
+      ex->get_stc()->GetTextLength(),
+      ex->get_stc()->GetCurrentPos());
+  }
 
-    SEARCH_TARGET;
+  SEARCH_TARGET;
 
+  return 0;
+}
+
+int find_stream(ex* ex, const std::string& text, bool forward)
+{
+  if (ex->ex_stream()->find(text, -1, forward))
+  {
+    return ex->ex_stream()->get_current_line() + 1;
+  }
+  else
+  {
     return 0;
   }
-
-  int find_stream(ex* ex, const std::string& text, bool forward)
-  {
-    if (ex->ex_stream()->find(text, -1, forward))
-    {
-      return ex->ex_stream()->get_current_line() + 1;
-    }
-    else
-    {
-      return 0;
-    }
-  }
+}
 }; // namespace wex
 
 wex::address::address(ex* ex, int line)
@@ -111,7 +111,7 @@ bool wex::address::adjust_window(const std::string& text) const
 
   if (const auto type(v[0]); !type.empty())
   {
-    switch ((int)type.at(0))
+    switch (static_cast<int>(type.at(0)))
     {
       case '-':
         begin -= ((type.length() * count) - 1);
@@ -141,7 +141,7 @@ bool wex::address::adjust_window(const std::string& text) const
   for (int i = begin; i < begin + count; i++)
   {
     char buffer[8];
-    sprintf(buffer, "%6d ", i);
+    snprintf(buffer, sizeof(buffer), "%6d ", i);
 
     output += (flags.find("#") != std::string::npos ? buffer : "") +
               m_ex->get_stc()->GetLine(i - 1);
@@ -364,7 +364,7 @@ bool wex::address::read(const std::string& arg) const
   {
     path::current(m_ex->get_stc()->get_filename().get_path());
 
-    if (file file(arg, std::ios_base::in); !file.is_open())
+    if (file file(path(arg), std::ios_base::in); !file.is_open())
     {
       log::status(_("File")) << file.get_filename() << "open error";
       return false;

@@ -9,20 +9,20 @@
 
 namespace wex::test
 {
-  class common : public app
-  {
-  public:
-    static auto* get_frame() { return m_frame; };
-    static auto* get_listview() { return m_listview; };
-    static auto* get_stc() { return m_stc; };
+class common : public app
+{
+public:
+  static auto* get_frame() { return m_frame; }
+  static auto* get_listview() { return m_listview; }
+  static auto* get_stc() { return m_stc; }
 
-  private:
-    bool OnInit() override;
+private:
+  bool OnInit() override;
 
-    static inline wex::factory::frame*    m_frame    = {nullptr};
-    static inline wex::factory::listview* m_listview = nullptr;
-    static inline wex::factory::stc*      m_stc      = nullptr;
-  };
+  static inline wex::factory::frame*    m_frame    = {nullptr};
+  static inline wex::factory::listview* m_listview = nullptr;
+  static inline wex::factory::stc*      m_stc      = nullptr;
+};
 }; // namespace wex::test
 
 IMPLEMENT_APP_NO_MAIN(wex::test::app);

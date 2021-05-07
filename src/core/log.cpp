@@ -140,8 +140,8 @@ wex::log& wex::log::operator<<(const std::string& r)
       const char f(m_ss.fill());
       const auto w(m_ss.width());
 
-      m_ss << "\\x" << std::setfill('0') << std::setw(2) << std::hex << (int)c
-           << std::setfill(f) << std::setw(w);
+      m_ss << "\\x" << std::setfill('0') << std::setw(2) << std::hex
+           << static_cast<int>(c) << std::setfill(f) << std::setw(w);
     }
   }
 
@@ -246,6 +246,7 @@ void wex::log::init(size_t loglevel, const std::string& default_logfile)
     std::cout << "unsupported level\n";
   }
   else
+  {
     switch (loglevel)
     {
       case LEVEL_DEBUG:
@@ -282,6 +283,7 @@ void wex::log::init(size_t loglevel, const std::string& default_logfile)
       default:
         assert(0);
     }
+  }
 
   logging::add_common_attributes();
 

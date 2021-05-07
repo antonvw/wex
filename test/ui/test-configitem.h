@@ -33,9 +33,11 @@ const auto test_config_items(int rows = 0, int cols = 0)
          std::any(),
          wex::data::item()
            .label_type(wex::data::item::LABEL_LEFT)
-           .apply([=](wxWindow* user, const std::any& value, bool save) {
-             wex::log::status("Click on lambda");
-           })}}},
+           .apply(
+             [=](wxWindow* user, const std::any& value, bool save)
+             {
+               wex::log::status("Click on lambda");
+             })}}},
 
       {"checkboxes",
        {{"checkbox", wex::item::CHECKBOX},
@@ -119,10 +121,11 @@ const auto test_config_items(int rows = 0, int cols = 0)
        {{"wxHtmlWindow",
          new wxHtmlWindow(),
          wex::data::item().user_window_create(
-           [=](wxWindow* user, wxWindow* parent, bool readonly) {
-             ((wxHtmlWindow*)user)
+           [=](wxWindow* user, wxWindow* parent, bool readonly)
+           {
+             (reinterpret_cast<wxHtmlWindow*>(user))
                ->Create(parent, 100, wxDefaultPosition, wxSize(200, 200));
-             ((wxHtmlWindow*)user)
+             (reinterpret_cast<wxHtmlWindow*>(user))
                ->SetPage(
                  "<html><body><b>Hello</b>, <i>world!</i></body></html>");
            })},
@@ -130,19 +133,27 @@ const auto test_config_items(int rows = 0, int cols = 0)
          new wxTextCtrl(),
          wex::data::item()
            .user_window_create(
-             [=](wxWindow* user, wxWindow* parent, bool readonly) {
-               ((wxTextCtrl*)user)->Create(parent, 100, "Hello world");
+             [=](wxWindow* user, wxWindow* parent, bool readonly)
+             {
+               (reinterpret_cast<wxTextCtrl*>(user))
+                 ->Create(parent, 100, "Hello world");
              })
            .label_type(wex::data::item::LABEL_LEFT)
-           .user_window_to_config([=](wxWindow* user, bool save) {
-             if (save)
-               wex::config("mytext").set(
-                 ((wxTextCtrl*)user)->GetValue().ToStdString());
-             return true;
-           })
-           .apply([=](wxWindow* user, const std::any& value, bool save) {
-             wex::log::status(((wxTextCtrl*)user)->GetValue());
-           })}}}},
+           .user_window_to_config(
+             [=](wxWindow* user, bool save)
+             {
+               if (save)
+                 wex::config("mytext").set((reinterpret_cast<wxTextCtrl*>(user))
+                                             ->GetValue()
+                                             .ToStdString());
+               return true;
+             })
+           .apply(
+             [=](wxWindow* user, const std::any& value, bool save)
+             {
+               wex::log::status(
+                 (reinterpret_cast<wxTextCtrl*>(user))->GetValue());
+             })}}}},
      wex::item::NOTEBOOK_LIST,
      wex::data::item().columns(cols)}};
 }

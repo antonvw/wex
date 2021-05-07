@@ -28,7 +28,7 @@ namespace wex
 
     /// Returns the shell component
     /// (might be nullptr if prepare_output is not yet invoked).
-    static auto* get_shell() { return m_shell; };
+    static auto* get_shell() { return m_shell; }
 
     /// Construct the shell component, and returns it.
     static shell* prepare_output(wxWindow* parent);
@@ -55,7 +55,7 @@ namespace wex
     virtual void show_output(const std::string& caption = std::string()) const;
 
     /// Returns the frame.
-    auto* get_frame() { return m_frame; };
+    auto* get_frame() { return m_frame; }
 
     /// Override methods.
 

@@ -134,8 +134,10 @@ wex::textctrl_imp::textctrl_imp(
           cut();
 
 #ifdef __WXMAC__
+          /* NOLINTNEXTLINE */
           if (event.GetModifiers() & wxMOD_RAW_CONTROL)
 #else
+          /* NOLINTNEXTLINE */
           if (event.GetModifiers() & wxMOD_CONTROL)
 #endif
           {

@@ -14,9 +14,9 @@ TEST_CASE("wex::del::dirctrl")
   auto* ctrl = new wex::del::dirctrl(del_frame());
   del_frame()->pane_add(ctrl);
 
-  SUBCASE("Select directory") { ctrl->expand_and_select_path("./"); }
+  SUBCASE("directory") { ctrl->expand_and_select_path(wex::path("./")); }
 
 #ifdef __UNIX__
-  SUBCASE("Select file") { ctrl->expand_and_select_path("./"); }
+  SUBCASE("file") { ctrl->expand_and_select_path(wex::path("./")); }
 #endif
 }

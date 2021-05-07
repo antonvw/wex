@@ -22,24 +22,24 @@
 
 namespace wex
 {
-  int get_hex_number(const std::string& caption, wex::stc* stc, int value)
-  {
-    const std::string message(_("Input") + " 00 - FF");
-    const data::item  data(wex::data::item(
-      data::item().min(0).max(255).window(
-        data::window().title(caption).parent(stc)),
-      value));
+int get_hex_number(const std::string& caption, wex::stc* stc, int value)
+{
+  const std::string message(_("Input") + " 00 - FF");
+  const data::item  data(wex::data::item(
+    data::item().min(0).max(255).window(
+      data::window().title(caption).parent(stc)),
+    value));
 
-    item::use_config(false);
-    item_dialog dlg({{message, item::SPINCTRL, data}}, data.window());
-    item::use_config(true);
+  item::use_config(false);
+  item_dialog dlg({{message, item::SPINCTRL, data}}, data.window());
+  item::use_config(true);
 
-    ((wxSpinCtrl*)dlg.find(message).window())->SetBase(16);
+  (reinterpret_cast<wxSpinCtrl*>(dlg.find(message).window()))->SetBase(16);
 
-    return dlg.ShowModal() == wxID_CANCEL ?
-             -1 :
-             std::any_cast<int>(dlg.get_item_value(message));
-  }
+  return dlg.ShowModal() == wxID_CANCEL ?
+           -1 :
+           std::any_cast<int>(dlg.get_item_value(message));
+}
 
 } // namespace wex
 
@@ -99,7 +99,7 @@ void wex::hexmode::control_char_dialog(const std::string& caption)
     if (const auto new_value(get_hex_number(
           caption,
           m_stc,
-          (int)m_stc->GetSelectedText().GetChar(0)));
+          static_cast<int>(m_stc->GetSelectedText().GetChar(0))));
         new_value >= 0)
     {
       ml.replace(new_value);
@@ -109,7 +109,8 @@ void wex::hexmode::control_char_dialog(const std::string& caption)
   {
     if (long value; m_stc->GetSelectedText().ToLong(&value, 16))
     {
-      if (const auto new_value(get_hex_number(caption, m_stc, (int)value));
+      if (const auto new_value(
+            get_hex_number(caption, m_stc, static_cast<int>(value)));
           new_value >= 0)
       {
         ml.replace_hex(new_value);
@@ -221,7 +222,7 @@ wex::hexmode::make_line(const std::string& buffer, size_t offset) const
     const unsigned char c = buffer[offset + byte];
 
     char buff[4];
-    sprintf(buff, "%02X ", c);
+    snprintf(buff, sizeof(buff), "%02X ", c);
     field_hex += buff;
     field_ascii += printable(c, m_stc);
   }
@@ -256,7 +257,7 @@ bool wex::hexmode::replace_target(const std::string& replacement, bool settext)
   //     30 39 39 39 33 34 35 (insert)
   auto start = m_stc->GetTargetStart();
 
-  for (int i = 0; i < (int)replacement.size();
+  for (int i = 0; i < static_cast<int>(replacement.size());
        i = i + 2, start = start + m_each_hex_field)
   {
     // replace

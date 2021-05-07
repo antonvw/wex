@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <string>
+
 #include <wex/factory/link.h>
 
 namespace wex

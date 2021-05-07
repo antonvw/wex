@@ -69,7 +69,7 @@ wex::printing* wex::printing::set(printing* printing)
 }
 
 wex::printout::printout(wxStyledTextCtrl* owner)
-  : wxPrintout(print_caption(owner->GetName().ToStdString()))
+  : wxPrintout(print_caption(path(owner->GetName().ToStdString())))
   , m_page_rect()
   , m_print_rect()
   , m_page_breaks()
@@ -120,7 +120,8 @@ void wex::printout::GetPageInfo(
 void wex::printout::OnPreparePrinting()
 {
   const double factor = 22.4;
-  const auto   ppiScr = [&] {
+  const auto   ppiScr = [&]
+  {
     wxSize s;
     GetPPIScreen(&s.x, &s.y);
     return s;
@@ -135,15 +136,19 @@ void wex::printout::OnPreparePrinting()
     page = dlg_data->GetPaperSize();
   }
 
-  page.x = (int)(page.x * ppiScr.x / factor);
-  page.y = (int)(page.y * ppiScr.y / factor);
+  page.x = static_cast<int>(page.x * ppiScr.x / factor);
+  page.y = static_cast<int>(page.y * ppiScr.y / factor);
 
   m_page_rect = wxRect(0, 0, page.x, page.y);
 
-  int left   = (int)(dlg_data->GetMarginTopLeft().x * ppiScr.x / factor);
-  int top    = (int)(dlg_data->GetMarginTopLeft().y * ppiScr.y / factor);
-  int right  = (int)(dlg_data->GetMarginBottomRight().x * ppiScr.x / factor);
-  int bottom = (int)(dlg_data->GetMarginBottomRight().y * ppiScr.y / factor);
+  int left =
+    static_cast<int>(dlg_data->GetMarginTopLeft().x * ppiScr.x / factor);
+  int top =
+    static_cast<int>(dlg_data->GetMarginTopLeft().y * ppiScr.y / factor);
+  int right =
+    static_cast<int>(dlg_data->GetMarginBottomRight().x * ppiScr.x / factor);
+  int bottom =
+    static_cast<int>(dlg_data->GetMarginBottomRight().y * ppiScr.y / factor);
 
   m_print_rect =
     wxRect(left, top, page.x - (left + right), page.y - (top + bottom));
@@ -156,7 +161,7 @@ bool wex::printout::OnPrintPage(int pageNum)
   if (GetDC() == nullptr)
     return false;
 
-  if (pageNum > (int)m_page_breaks.size())
+  if (pageNum > static_cast<int>(m_page_breaks.size()))
   {
     assert(0);
     return false;
@@ -181,7 +186,8 @@ bool wex::printout::OnPrintPage(int pageNum)
   GetDC()->SetPen(*wxBLACK_PEN);
 
   // Print a header.
-  const std::string header = print_header(m_owner->GetName().ToStdString());
+  const std::string header =
+    print_header(path_lexer(m_owner->GetName().ToStdString()));
   if (!header.empty())
   {
     const int text_from_top = 23;
@@ -246,11 +252,11 @@ void wex::printout::set_scale()
   wxSize       pageSize;
   GetPageSizePixels(&pageSize.x, &pageSize.y);
 
-  const double factor = 0.8;
-  const float  scale_x =
-    (float)(factor * ppiPrt.x * dcSize.x) / (float)(ppiScr.x * pageSize.x);
-  const float scale_y =
-    (float)(factor * ppiPrt.y * dcSize.y) / (float)(ppiScr.y * pageSize.y);
+  const double factor  = 0.8;
+  const float  scale_x = static_cast<float>(factor * ppiPrt.x * dcSize.x) /
+                        static_cast<float>(ppiScr.x * pageSize.x);
+  const float scale_y = static_cast<float>(factor * ppiPrt.y * dcSize.y) /
+                        static_cast<float>(ppiScr.y * pageSize.y);
 
   GetDC()->SetUserScale(scale_x, scale_y);
 }

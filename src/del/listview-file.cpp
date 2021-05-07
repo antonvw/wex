@@ -37,33 +37,37 @@ wex::del::file::file(const std::string& file, const data::listview& data)
         .button(wxAPPLY | wxCANCEL)
         .id(wxID_ADD)))
 {
-  file_load(file);
+  file_load(path(file));
 
   Bind(wxEVT_IDLE, &del::file::on_idle, this);
 
-  Bind(wxEVT_LEFT_DOWN, [=, this](wxMouseEvent& event) {
-    event.Skip();
-
-    // If no item has been selected, then show
-    // filename mod time in the statusbar.
-    int flags = wxLIST_HITTEST_ONITEM;
-
-    if (const int index = HitTest(wxPoint(event.GetX(), event.GetY()), flags);
-        index < 0)
+  Bind(
+    wxEVT_LEFT_DOWN,
+    [=, this](wxMouseEvent& event)
     {
-      log::status() << get_filename();
-    }
-  });
+      event.Skip();
+
+      // If no item has been selected, then show
+      // filename mod time in the statusbar.
+      int flags = wxLIST_HITTEST_ONITEM;
+
+      if (const int index = HitTest(wxPoint(event.GetX(), event.GetY()), flags);
+          index < 0)
+      {
+        log::status() << get_filename();
+      }
+    });
 
   Bind(
     wxEVT_MENU,
-    [=, this](wxCommandEvent& event) {
+    [=, this](wxCommandEvent& event)
+    {
       // Force at least one of the checkboxes to be checked.
       m_add_items_dialog->force_checkbox_checked(_("Add"));
       if (GetSelectedItemCount() > 0)
       {
         wex::item item(m_add_items_dialog->find(m_text_in_folder));
-        auto*     cb = (wxComboBox*)item.window();
+        auto*     cb = reinterpret_cast<wxComboBox*>(item.window());
         cb->SetValue(
           listitem(this, GetFirstSelected()).get_filename().get_path());
       }
@@ -73,7 +77,8 @@ wex::del::file::file(const std::string& file, const data::listview& data)
 
   Bind(
     wxEVT_MENU,
-    [=, this](wxCommandEvent& event) {
+    [=, this](wxCommandEvent& event)
+    {
       event.Skip();
       if (!get_filename().file_exists() || !get_filename().is_readonly())
       {
@@ -98,30 +103,35 @@ void wex::del::file::add_items(
   Unbind(wxEVT_IDLE, &file::on_idle, this);
 
 #ifdef __WXMSW__
-  std::thread t([=, this] {
-#endif
-    const int old_count = GetItemCount();
-    del::dir  dir(this, folder, data::dir().file_spec(files).type(flags));
-
-    dir.find_files();
-
-    const int added = GetItemCount() - old_count;
-
-    if (added > 0)
+  std::thread t(
+    [=, this]
     {
-      m_contents_changed = true;
+#endif
+      const int old_count = GetItemCount();
+      del::dir  dir(
+        this,
+        path(folder),
+        data::dir().file_spec(files).type(flags));
 
-      if (config("list.SortSync").get(true))
+      dir.find_files();
+
+      const int added = GetItemCount() - old_count;
+
+      if (added > 0)
       {
-        sort_column(sorted_column_no(), SORT_KEEP);
+        m_contents_changed = true;
+
+        if (config("list.SortSync").get(true))
+        {
+          sort_column(sorted_column_no(), SORT_KEEP);
+        }
       }
-    }
 
-    log::status("Added") << added << "file(s)";
+      log::status("Added") << added << "file(s)";
 
-    Bind(wxEVT_IDLE, &file::on_idle, this);
+      Bind(wxEVT_IDLE, &file::on_idle, this);
 #ifdef __WXMSW__
-  });
+    });
   t.detach();
 #endif
 }
@@ -158,7 +168,8 @@ bool wex::del::file::do_file_load(bool synced)
 
   if (const auto result = doc.load_file(
         get_filename().string().c_str(),
-        pugi::parse_default | pugi::parse_comments); !result)
+        pugi::parse_default | pugi::parse_comments);
+      !result)
   {
     if (get_filename().stat().st_size == 0)
     {
@@ -175,33 +186,36 @@ bool wex::del::file::do_file_load(bool synced)
   clear();
 
 #ifdef FIX__WXMSW__
-  std::thread t([=, this] {
+  std::thread t(
+    [=, this]
+    {
 #endif
-    for (const auto& child : doc.document_element().children())
-    {
-      if (const std::string value = child.text().get();
-          strcmp(child.name(), "file") == 0)
+      for (const auto& child : doc.document_element().children())
       {
-        listitem(this, value).insert();
+        if (const std::string value = child.text().get();
+            strcmp(child.name(), "file") == 0)
+        {
+          listitem(this, path(value)).insert();
+        }
+        else if (strcmp(child.name(), "folder") == 0)
+        {
+          listitem(this, path(value), child.attribute("extensions").value())
+            .insert();
+        }
+
+        if (interruptible::is_cancelled())
+          break;
       }
-      else if (strcmp(child.name(), "folder") == 0)
+
+      if (synced)
       {
-        listitem(this, value, child.attribute("extensions").value()).insert();
+        log::status() << get_filename();
       }
 
-      if (interruptible::is_cancelled())
-        break;
-    }
-
-    if (synced)
-    {
-      log::status() << get_filename();
-    }
-
-    get_frame()->set_recent_project(get_filename());
+      get_frame()->set_recent_project(get_filename());
 
 #ifdef FIX__WXMSW__
-  });
+    });
   if (detached)
     t.detach();
   else
@@ -223,14 +237,15 @@ void wex::del::file::do_file_save(bool save_as)
   pugi::xml_document doc;
 
   doc.load_string(
+    // clang-format off
     std::string(
-      "\
-    <files>\n\
-    <!-- " +
-      wxTheApp->GetAppDisplayName().ToStdString() + " project " +
-      get_filename().fullname() + " " + now() + "-->\n\
-    </files>\n")
+      "<files>\n"
+      "<!-- " + wxTheApp->GetAppDisplayName().ToStdString() + 
+      " project " + get_filename().fullname() + " " + now() + 
+      "-->\n"
+      "</files>\n")
       .c_str(),
+    // clang-format on
     pugi::parse_default | pugi::parse_comments);
 
   auto root = doc.document_element();

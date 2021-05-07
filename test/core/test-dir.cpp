@@ -30,13 +30,15 @@ TEST_CASE("wex::dir")
 
   SUBCASE("recursive")
   {
-    wex::dir dir("../../", wex::data::dir().file_spec("*.h"));
+    wex::dir dir(wex::path("../../"), wex::data::dir().file_spec("*.h"));
 
     REQUIRE(dir.get_path().dir_exists());
     REQUIRE(dir.data().file_spec() == "*.h");
     REQUIRE(dir.find_files() > 50);
 
-    wex::dir limit("../../", wex::data::dir().file_spec("*.h").max_matches(25));
+    wex::dir limit(
+      wex::path("../../"),
+      wex::data::dir().file_spec("*.h").max_matches(25));
     REQUIRE(limit.find_files() == 25);
   }
 
@@ -44,7 +46,7 @@ TEST_CASE("wex::dir")
   {
     wex::log::trace() << wex::path::current();
     wex::dir dir(
-      "../../",
+      wex::path("../../"),
       wex::data::dir().dir_spec("data").type(
         wex::data::dir::type_t().set(wex::data::dir::DIRS)));
 
@@ -57,7 +59,7 @@ TEST_CASE("wex::dir")
   SUBCASE("invalid")
   {
     wex::dir dir(
-      "xxxx",
+      wex::path("xxxx"),
       wex::data::dir().file_spec("*.h").type(wex::data::dir::FILES));
 
     REQUIRE(!dir.get_path().dir_exists());

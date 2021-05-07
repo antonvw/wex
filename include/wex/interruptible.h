@@ -18,10 +18,10 @@ namespace wex
     static bool cancel();
 
     /// Check whether process was cancelled.
-    static bool is_cancelled() { return m_cancelled; };
+    static bool is_cancelled() { return m_cancelled; }
 
     /// Is process running.
-    static bool is_running() { return m_running; };
+    static bool is_running() { return m_running; }
 
     /// Starts interruptible process.
     /// Returns false if process is already running.

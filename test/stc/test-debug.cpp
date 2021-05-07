@@ -76,7 +76,7 @@ TEST_CASE("wex::debug")
                   "  printf(\"hello world\");\n"
                   "}\n");
 
-    stc->get_file().file_save("example.cc");
+    stc->get_file().file_save(wex::path("example.cc"));
     system("cc -g example.cc");
 
     const int item = menu.FindItem("run");

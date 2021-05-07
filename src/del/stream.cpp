@@ -295,6 +295,11 @@ bool wex::del::stream::process_begin()
 
 void wex::del::stream::process_end()
 {
+  if (m_frame->is_closing())
+  {
+    return;
+  }
+
   if (get_tool().id() == ID_TOOL_REPORT_KEYWORD)
   {
     if (!get_filename().lexer().keywords_string().empty())

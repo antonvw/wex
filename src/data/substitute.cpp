@@ -43,7 +43,7 @@ bool wex::data::substitute::set(const std::string& command_org)
     command.find("\\\\/") == std::string::npos &&
     command.find("\\/") != std::string::npos)
   {
-    if (command.find(char(1)) == std::string::npos)
+    if (command.find(static_cast<char>(1)) == std::string::npos)
     {
       boost::algorithm::replace_all(command, "\\/", "\x01");
       escaped = true;

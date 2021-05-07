@@ -63,10 +63,10 @@ namespace wex
     int match(const std::string& text);
 
     /// Returns the (sub)matches.
-    const auto& matches() const { return m_matches; };
+    const auto& matches() const { return m_matches; }
 
     /// Returns reference to the requested submatch element.
-    const std::string& operator[](size_t pos) const { return m_matches[pos]; };
+    const std::string& operator[](size_t pos) const { return m_matches[pos]; }
 
     /// After match or search, replace text with replacement.
     /// Returns true if a regex is available, and regex_replace was invoked.
@@ -84,13 +84,13 @@ namespace wex
     int search(const std::string& text);
 
     /// Returns number of submatches.
-    auto size() const { return m_matches.size(); };
+    auto size() const { return m_matches.size(); }
 
     /// Returns the tuple element that matched.
-    const auto& which() const { return m_which; };
+    const auto& which() const { return m_which; }
 
     /// Returns the regex tuple no that matched, or -1 if no match was found.
-    auto which_no() const { return m_which_no; };
+    auto which_no() const { return m_which_no; }
 
   private:
     enum class find_t;

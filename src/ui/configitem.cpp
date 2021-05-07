@@ -31,38 +31,38 @@
 
 namespace wex
 {
-  bool update(wxCheckListBox* clb, int item, bool save)
+bool update(wxCheckListBox* clb, int item, bool save)
+{
+  find_replace_data* frd = find_replace_data::get();
+
+  if (const std::string field(clb->GetString(item));
+      field == frd->text_match_word())
   {
-    find_replace_data* frd = find_replace_data::get();
-
-    if (const std::string field(clb->GetString(item));
-        field == frd->text_match_word())
-    {
-      !save ? clb->Check(item, frd->match_word()) :
-              frd->set_match_word(clb->IsChecked(item));
-    }
-    else if (field == frd->text_match_case())
-    {
-      !save ? clb->Check(item, frd->match_case()) :
-              frd->set_match_case(clb->IsChecked(item));
-    }
-    else if (field == frd->text_regex())
-    {
-      !save ? clb->Check(item, frd->is_regex()) :
-              frd->set_regex(clb->IsChecked(item));
-    }
-    else if (field == frd->text_search_down())
-    {
-      !save ? clb->Check(item, frd->search_down()) :
-              frd->set_search_down(clb->IsChecked(item));
-    }
-    else
-    {
-      return false;
-    }
-
-    return true;
+    !save ? clb->Check(item, frd->match_word()) :
+            frd->set_match_word(clb->IsChecked(item));
   }
+  else if (field == frd->text_match_case())
+  {
+    !save ? clb->Check(item, frd->match_case()) :
+            frd->set_match_case(clb->IsChecked(item));
+  }
+  else if (field == frd->text_regex())
+  {
+    !save ? clb->Check(item, frd->is_regex()) :
+            frd->set_regex(clb->IsChecked(item));
+  }
+  else if (field == frd->text_search_down())
+  {
+    !save ? clb->Check(item, frd->search_down()) :
+            frd->set_search_down(clb->IsChecked(item));
+  }
+  else
+  {
+    return false;
+  }
+
+  return true;
+}
 } // namespace wex
 
 bool wex::item::to_config(bool save) const
@@ -75,7 +75,7 @@ bool wex::item::to_config(bool save) const
   switch (type())
   {
     case CHECKBOX:
-      PERSISTENT(bool, ((wxCheckBox*)m_window)->GetValue());
+      PERSISTENT(bool, (reinterpret_cast<wxCheckBox*>(m_window))->GetValue());
       break;
 
     case CHECKLISTBOX_BIT:
@@ -83,7 +83,8 @@ bool wex::item::to_config(bool save) const
       break;
 
     case CHECKLISTBOX_BOOL:
-      if (auto* clb = (wxCheckListBox*)m_window; clb != nullptr)
+      if (auto* clb = reinterpret_cast<wxCheckListBox*>(m_window);
+          clb != nullptr)
       {
         size_t i = 0;
 
@@ -103,13 +104,15 @@ bool wex::item::to_config(bool save) const
       break;
 
     case COLOURPICKERWIDGET:
-      PERSISTENT(wxColour, ((wxColourPickerWidget*)m_window)->GetColour());
+      PERSISTENT(
+        wxColour,
+        (reinterpret_cast<wxColourPickerWidget*>(m_window))->GetColour());
       break;
 
     case COMBOBOX:
     case COMBOBOX_DIR:
     case COMBOBOX_FILE:
-      if (auto* cb = (wxComboBox*)m_window; save)
+      if (auto* cb = reinterpret_cast<wxComboBox*>(m_window); save)
       {
         if (const auto l = to_list_string(cb, m_max_items).get();
             m_label == find_replace_data::get()->text_find())
@@ -183,7 +186,7 @@ bool wex::item::to_config(bool save) const
       break;
 
     case RADIOBOX:
-      if (auto* rb = (wxRadioBox*)m_window; save)
+      if (auto* rb = reinterpret_cast<wxRadioBox*>(m_window); save)
       {
         for (const auto& b : std::any_cast<choices_t>(m_data.initial()))
         {
@@ -207,15 +210,17 @@ bool wex::item::to_config(bool save) const
       break;
 
     case SLIDER:
-      PERSISTENT(int, ((wxSlider*)m_window)->GetValue());
+      PERSISTENT(int, (reinterpret_cast<wxSlider*>(m_window))->GetValue());
       break;
 
     case SPINCTRL:
-      PERSISTENT(int, ((wxSpinCtrl*)m_window)->GetValue());
+      PERSISTENT(int, (reinterpret_cast<wxSpinCtrl*>(m_window))->GetValue());
       break;
 
     case SPINCTRLDOUBLE:
-      PERSISTENT(double, ((wxSpinCtrlDouble*)m_window)->GetValue());
+      PERSISTENT(
+        double,
+        (reinterpret_cast<wxSpinCtrlDouble*>(m_window))->GetValue());
       break;
 
     case TEXTCTRL:

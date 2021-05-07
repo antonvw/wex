@@ -29,7 +29,7 @@ wex::listitem::listitem(listview* lv, long itemnumber)
   , m_file_spec(lv->get_item_text(itemnumber, _("Type")))
 {
   SetId(itemnumber);
-  
+
   if (itemnumber >= 0)
   {
     m_is_readonly = (m_listview->GetItemData(GetId()) > 0);
@@ -118,16 +118,19 @@ void wex::listitem::set_readonly(bool readonly)
 {
   if (!readonly)
   {
-    lexers::get()->apply_default_style(nullptr, [=, this](const std::string& fore) {
-      SetTextColour(wxColour(fore));
-    });
+    lexers::get()->apply_default_style(
+      nullptr,
+      [=, this](const std::string& fore)
+      {
+        SetTextColour(wxColour(fore));
+      });
   }
   else
   {
     SetTextColour(config(_("list.Readonly colour")).get(*wxLIGHT_GREY));
   }
 
-  ((wxListView*)m_listview)->SetItem(*this);
+  (reinterpret_cast<wxListView*>(m_listview))->SetItem(*this);
 
   // Using GetTextColour did not work, so keep state in boolean.
   m_is_readonly = readonly;
@@ -144,7 +147,7 @@ void wex::listitem::update()
 
   set_readonly(m_path.stat().is_readonly());
 
-  ((wxListView*)m_listview)->SetItem(*this);
+  (reinterpret_cast<wxListView*>(m_listview))->SetItem(*this);
 
   if (m_listview->InReportView() && m_path.stat().is_ok())
   {

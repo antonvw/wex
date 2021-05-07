@@ -36,30 +36,30 @@ namespace wex
     /// Do something with the dir.
     /// Not made pure virtual, to allow this
     /// class to be tested by calling find_files.
-    virtual bool on_dir(const path&) { return true; };
+    virtual bool on_dir(const path&) { return true; }
 
     /// Do something with the file.
     /// Not made pure virtual, to allow this
     /// class to be tested by calling find_files.
-    virtual bool on_file(const path&) { return true; };
+    virtual bool on_file(const path&) { return true; }
 
     /// Other methods.
 
     /// Returns the data.
-    const auto& data() const { return m_data; };
+    const auto& data() const { return m_data; }
 
     /// Finds matching files.
     /// This results in recursive calls for on_dir and on_file.
     int find_files();
 
     /// Returns the path.
-    const auto& get_path() const { return m_dir; };
+    const auto& get_path() const { return m_dir; }
 
     /// Increments the matches.
-    void match() { m_matches++; };
+    void match() { m_matches++; }
 
     /// Returns matches.
-    auto matches() const { return m_matches; };
+    auto matches() const { return m_matches; }
 
   private:
     void run();

@@ -325,7 +325,7 @@ TEST_CASE("wex::stc")
     wex::stc stc(wex::test::get_path("test.h"));
     REQUIRE(stc.get_filename().string().find("test.h") != std::string::npos);
     REQUIRE(stc.open(wex::test::get_path("test.h")));
-    REQUIRE(!stc.open("XXX"));
+    REQUIRE(!stc.open(wex::path("XXX")));
   }
 
   SUBCASE("popup") { REQUIRE(stc->get_lexer().set("cpp")); }

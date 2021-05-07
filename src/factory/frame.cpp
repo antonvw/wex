@@ -19,6 +19,7 @@
 #include <wex/path.h>
 
 #define wxCAST_TO(classname)                                     \
+  /* NOLINTNEXTLINE */                                           \
   if (m_find_focus != nullptr && m_find_focus->IsShown())        \
   {                                                              \
     if (classname* win = dynamic_cast<classname*>(m_find_focus); \

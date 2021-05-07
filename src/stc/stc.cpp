@@ -221,7 +221,7 @@ bool wex::stc::file_readonly_attribute_changed()
 
 void wex::stc::fold(bool all)
 {
-  if (const item_vector & iv(m_config_items);
+  if (const item_vector iv(m_config_items);
       all || get_line_count() > iv.find<int>(_("stc.Auto fold")))
   {
     fold_all();
@@ -636,7 +636,7 @@ bool wex::stc::open(const path& p, const data::stc& data)
     m_data.inject();
   }
 
-  m_frame->set_recent_file(p.string());
+  m_frame->set_recent_file(p);
 
   return true;
 }
@@ -702,8 +702,10 @@ void wex::stc::print_preview(wxPreviewFrameModalityKind kind)
     return;
   }
 
-  auto* frame =
-    new wxPreviewFrame(preview, this, print_caption(GetName().ToStdString()));
+  auto* frame = new wxPreviewFrame(
+    preview,
+    this,
+    print_caption(path(GetName().ToStdString())));
 
   frame->InitializeWithModality(kind);
   frame->Show();
@@ -969,8 +971,8 @@ bool wex::stc::show_blame(const vcs_entry* vcs)
   int         line  = 0;
 
   SetWrapMode(wxSTC_WRAP_NONE);
-  const item_vector& iv(m_config_items);
-  const int          margin_blame(iv.find<int>(_("stc.margin.Text")));
+  const item_vector iv(m_config_items);
+  const int         margin_blame(iv.find<int>(_("stc.margin.Text")));
 
   for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
          vcs->get_stdout(),
@@ -1025,7 +1027,7 @@ bool wex::stc::show_blame(const vcs_entry* vcs)
 
 void wex::stc::show_line_numbers(bool show)
 {
-  const item_vector& iv(m_config_items);
+  const item_vector iv(m_config_items);
 
   SetMarginWidth(
     m_margin_line_number,

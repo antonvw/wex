@@ -34,7 +34,7 @@ TEST_CASE("wex::menu")
        {wex::menu_item::PRINT},
        {wex::menu_item::TOOLS},
        {wex::path(), frame(), false},
-       {wex::path::current(), frame(), false},
+       {wex::path(wex::path::current()), frame(), false},
        {wxID_SAVE, "mysave"},
        {new wex::menu("submenu", 0), "submenu"}});
 

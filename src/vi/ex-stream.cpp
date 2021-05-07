@@ -257,7 +257,7 @@ bool wex::ex_stream::get_previous_line()
 {
   auto pos(m_stream->tellg());
 
-  if ((int)pos - (int)m_current_line_size > 0)
+  if (static_cast<int>(pos) - static_cast<int>(m_current_line_size) > 0)
   {
     m_stream->seekg((size_t)pos - m_current_line_size);
     pos = m_stream->tellg();
@@ -319,11 +319,11 @@ bool wex::ex_stream::get_previous_line()
     if (m_current_line_size == default_line_size)
     {
       m_block_mode = true;
-      return (int)m_stream->gcount() > m_current_line_size - 1;
+      return static_cast<int>(m_stream->gcount()) > m_current_line_size - 1;
     }
     else
     {
-      return (int)m_stream->gcount() > m_current_line_size;
+      return static_cast<int>(m_stream->gcount()) > m_current_line_size;
     }
   }
 
@@ -474,10 +474,10 @@ void wex::ex_stream::stream(file& f)
   m_stream = &f.stream();
   f.use_stream();
 
-  m_temp = new file(temp_filename().name(), std::ios_base::out);
+  m_temp = new file(path(temp_filename().name()), std::ios_base::out);
   m_temp->use_stream();
 
-  m_work = new file(temp_filename().name(), std::ios_base::out);
+  m_work = new file(path(temp_filename().name()), std::ios_base::out);
   m_work->use_stream();
 
   goto_line(0);
@@ -530,7 +530,7 @@ bool wex::ex_stream::write(
   }
 
   wex::file file(
-    filename,
+    path(filename),
     append ? std::ios::out | std::ios_base::app : std::ios::out);
 
   ex_stream_line sl(ex_stream_line::ACTION_WRITE, &file, range);

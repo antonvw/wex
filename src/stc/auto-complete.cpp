@@ -69,7 +69,8 @@ bool wex::auto_complete::complete(const std::string& text)
     m_stc->get_vi().append_insert_text(text.substr(m_insert.size()));
   }
 
-  clear_insert();
+  // do not add current insert
+  m_insert.clear();
 
   return true;
 }

@@ -42,7 +42,7 @@ TEST_CASE("wex::printing")
   SUBCASE("print_header")
   {
     REQUIRE(
-      wex::print_header(wex::test::get_path("test.h")).find("test") !=
-      std::string::npos);
+      wex::print_header(wex::path_lexer(wex::test::get_path("test.h")))
+        .find("test") != std::string::npos);
   }
 }

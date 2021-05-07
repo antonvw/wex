@@ -25,28 +25,28 @@ namespace wex::data
     };
 
     /// Returns bitmap.
-    const wxBitmap& bitmap() const { return m_bitmap; };
+    const wxBitmap& bitmap() const { return m_bitmap; }
 
     /// Sets bitmap.
     toolbar_item& bitmap(const wxBitmap& rhs);
 
     /// Returns id.
-    int id() const { return m_id; };
+    int id() const { return m_id; }
 
     /// Returns kind.
-    wxItemKind kind() const { return m_kind; };
+    wxItemKind kind() const { return m_kind; }
 
     /// Sets kind.
     toolbar_item& kind(wxItemKind rhs);
 
     /// Returns label.
-    const std::string& label() const { return m_label; };
+    const std::string& label() const { return m_label; }
 
     /// Sets label.
     toolbar_item& label(const std::string& rhs);
 
     /// Returns help.
-    const std::string& help() const { return m_short_help; };
+    const std::string& help() const { return m_short_help; }
 
     /// Sets help.
     toolbar_item& help(const std::string& rhs);

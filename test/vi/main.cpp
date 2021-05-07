@@ -23,25 +23,25 @@ private:
 
 namespace wex
 {
-  namespace test
-  {
-    class vi : public app
-    {
-    public:
-      /// Static methods
+namespace test
+{
+class vi : public app
+{
+public:
+  /// Static methods
 
-      static auto* frame() { return m_frame; };
-      static auto* get_stc() { return m_stc; };
+  static auto* frame() { return m_frame; }
+  static auto* get_stc() { return m_stc; }
 
-      /// Virtual interface
-      bool OnInit() override;
+  /// Virtual interface
+  bool OnInit() override;
 
-    private:
-      inline static wex::frame* m_frame = nullptr;
-      inline static vi_stc*     m_stc   = nullptr;
-    };
-  }; // namespace test
-};   // namespace wex
+private:
+  inline static wex::frame* m_frame = nullptr;
+  inline static vi_stc*     m_stc   = nullptr;
+};
+}; // namespace test
+}; // namespace wex
 
 IMPLEMENT_APP_NO_MAIN(wex::test::vi);
 

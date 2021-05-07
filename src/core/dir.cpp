@@ -16,68 +16,68 @@ namespace fs = std::filesystem;
 
 namespace wex
 {
-  class string_dir : public dir
+class string_dir : public dir
+{
+public:
+  string_dir(const std::string& path, const wex::data::dir& data)
+    : dir(wex::path(path), data)
   {
-  public:
-    string_dir(const std::string& path, const wex::data::dir& data)
-      : dir(path, data)
-    {
-      ;
-    };
-
-    const auto& get() const { return m_container; };
-
-  private:
-    bool on_dir(const path& p) override
-    {
-      m_container.emplace_back(
-        data().type().test(data::dir::RECURSIVE) ? p.string() : p.fullname());
-      return true;
-    };
-    bool on_file(const path& p) override
-    {
-      m_container.emplace_back(
-        data().type().test(data::dir::RECURSIVE) ? p.string() : p.fullname());
-      return true;
-    };
-
-    std::vector<std::string> m_container;
+    ;
   };
 
-  bool traverse(const fs::directory_entry& e, wex::dir* dir)
+  const auto& get() const { return m_container; }
+
+private:
+  bool on_dir(const path& p) override
   {
-    if (fs::is_regular_file(e.path()))
-    {
-      if (
-        dir->data().type().test(data::dir::FILES) &&
-        matches_one_of(e.path().filename().string(), dir->data().file_spec()))
-      {
-        dir->on_file(e.path());
-        dir->match();
-      }
-    }
-    else if (
-      dir->data().type().test(data::dir::DIRS) && fs::is_directory(e.path()) &&
-      (dir->data().dir_spec().empty() ||
-       matches_one_of(e.path().filename().string(), dir->data().dir_spec())))
-    {
-      dir->on_dir(e.path());
+    m_container.emplace_back(
+      data().type().test(data::dir::RECURSIVE) ? p.string() : p.fullname());
+    return true;
+  };
+  bool on_file(const path& p) override
+  {
+    m_container.emplace_back(
+      data().type().test(data::dir::RECURSIVE) ? p.string() : p.fullname());
+    return true;
+  };
 
-      if (!dir->data().dir_spec().empty())
-      {
-        dir->match();
-      }
-    }
+  std::vector<std::string> m_container;
+};
 
+bool traverse(const fs::directory_entry& e, wex::dir* dir)
+{
+  if (fs::is_regular_file(e.path()))
+  {
     if (
-      dir->data().max_matches() != -1 &&
-      dir->matches() >= dir->data().max_matches())
+      dir->data().type().test(data::dir::FILES) &&
+      matches_one_of(e.path().filename().string(), dir->data().file_spec()))
     {
-      return false;
+      dir->on_file(e.path());
+      dir->match();
     }
-
-    return !interruptible::is_cancelled();
   }
+  else if (
+    dir->data().type().test(data::dir::DIRS) && fs::is_directory(e.path()) &&
+    (dir->data().dir_spec().empty() ||
+     matches_one_of(e.path().filename().string(), dir->data().dir_spec())))
+  {
+    dir->on_dir(e.path());
+
+    if (!dir->data().dir_spec().empty())
+    {
+      dir->match();
+    }
+  }
+
+  if (
+    dir->data().max_matches() != -1 &&
+    dir->matches() >= dir->data().max_matches())
+  {
+    return false;
+  }
+
+  return !interruptible::is_cancelled();
+}
 }; // namespace wex
 
 std::vector<std::string>
@@ -110,9 +110,11 @@ int wex::dir::find_files()
 
   m_matches = 0;
 
-  std::thread t([=, this] {
-    run();
-  });
+  std::thread t(
+    [=, this]
+    {
+      run();
+    });
 
   t.join();
 
@@ -131,22 +133,29 @@ void wex::dir::run()
             fs::directory_options::none),
           end;
 #else
-          fs::directory_options::skip_permission_denied),
+            fs::directory_options::skip_permission_denied),
           end;
 #endif
-          !std::all_of(rdi, end, [&](const fs::directory_entry& p) {
-            return traverse(p, this);
-          }))
+          !std::all_of(
+            rdi,
+            end,
+            [&](const fs::directory_entry& p)
+            {
+              return traverse(p, this);
+            }))
       {
         log("iterating cancelled");
       }
     }
     else
     {
-      if (fs::directory_iterator di(m_dir.data()), end;
-          !std::all_of(di, end, [&](const fs::directory_entry& p) {
-            return traverse(p, this);
-          }))
+      if (fs::directory_iterator di(m_dir.data()), end; !std::all_of(
+            di,
+            end,
+            [&](const fs::directory_entry& p)
+            {
+              return traverse(p, this);
+            }))
       {
         log("iterating cancelled");
       }

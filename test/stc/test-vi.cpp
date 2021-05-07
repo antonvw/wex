@@ -68,7 +68,7 @@ TEST_CASE("wex::vi")
 
   SUBCASE("registers")
   {
-    stc->get_file().file_new("test.h");
+    stc->get_file().file_new(wex::path("test.h"));
     const std::string ctrl_r = "\x12";
     REQUIRE(vi->command("i"));
     REQUIRE(vi->command(ctrl_r + "_"));

@@ -71,7 +71,7 @@ namespace wex
     {
     public:
       /// Destructor.
-      ~listview() override { ; };
+      ~listview() override { ; }
 
       /// Virtual interface.
 
@@ -89,10 +89,10 @@ namespace wex
       };
 
       /// Prints the list.
-      virtual void print() { ; };
+      virtual void print() { ; }
 
       /// Previews the list.
-      virtual void print_preview() { ; };
+      virtual void print_preview() { ; }
     };
   }; // namespace factory
 };   // namespace wex

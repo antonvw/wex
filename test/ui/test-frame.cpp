@@ -55,7 +55,7 @@ TEST_CASE("wex::frame")
     frame()->statusbar_clicked_right("Pane1");
     frame()->statusbar_clicked_right("Pane2");
 
-    frame()->set_recent_file("testing");
+    frame()->set_recent_file(wex::path("testing"));
 
     REQUIRE(!frame()->statustext("hello", "test"));
     REQUIRE(frame()->statustext("hello1", "Pane1"));
@@ -124,8 +124,8 @@ TEST_CASE("wex::frame::bars")
   frame()->set_find_focus(frame()->get_stc());
   frame()->open_file(wex::test::get_path("test.h"));
 
-  frame()->set_recent_file(wex::test::get_path("test.h"));
-  frame()->set_recent_file("testing");
+  frame()->set_recent_file(wex::path(wex::test::get_path("test.h")));
+  frame()->set_recent_file(wex::path("testing"));
 
   REQUIRE(
     frame()->file_history().get_history_file().string().find("test.h") !=

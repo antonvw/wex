@@ -46,91 +46,91 @@
 
 namespace wex
 {
-  template <typename S, typename T>
-  T* create_spinctrl(wxWindow* parent, const data::item& data, bool readonly)
-  {
-    T* window = new T(
-      parent,
-      data.window().id(),
-      wxEmptyString,
-      data.window().pos(),
-      data.window().size(),
-      data.window().style() | (readonly ? wxTE_READONLY : 0),
-      std::any_cast<S>(data.min()),
-      std::any_cast<S>(data.max()),
-      !data.initial().has_value() ? std::any_cast<S>(data.min()) :
-                                    std::any_cast<S>(data.initial()));
+template <typename S, typename T>
+T* create_spinctrl(wxWindow* parent, const data::item& data, bool readonly)
+{
+  T* window = new T(
+    parent,
+    data.window().id(),
+    wxEmptyString,
+    data.window().pos(),
+    data.window().size(),
+    data.window().style() | (readonly ? wxTE_READONLY : 0),
+    std::any_cast<S>(data.min()),
+    std::any_cast<S>(data.max()),
+    !data.initial().has_value() ? std::any_cast<S>(data.min()) :
+                                  std::any_cast<S>(data.initial()));
 
 #ifndef __WXMSW__
-    window->SetIncrement(std::any_cast<S>(data.inc()));
+  window->SetIncrement(std::any_cast<S>(data.inc()));
 #endif
 
-    return window;
+  return window;
+}
+
+wxArrayString
+initial(const data::item& data, std::function<void(wxArrayString& as)> f)
+{
+  wxArrayString as;
+
+  if (data.initial().has_value())
+  {
+    f(as);
   }
 
-  wxArrayString
-  initial(const data::item& data, std::function<void(wxArrayString& as)> f)
-  {
-    wxArrayString as;
+  return as;
+}
 
-    if (data.initial().has_value())
+const item::type_t use_type(const std::string& label, item::type_t t)
+{
+  return label.find(':') != std::string::npos ? item::STATICTEXT : t;
+}
+
+const std::string str(const std::string& name, const std::any& any)
+{
+  std::stringstream s;
+
+  s << name << "{internal type: " << any.type().name() << ", value: ";
+
+  if (any.has_value())
+  {
+    try
     {
-      f(as);
-    }
-
-    return as;
-  }
-
-  const item::type_t use_type(const std::string& label, item::type_t t)
-  {
-    return label.find(':') != std::string::npos ? item::STATICTEXT : t;
-  }
-
-  const std::string str(const std::string& name, const std::any& any)
-  {
-    std::stringstream s;
-
-    s << name << "{internal type: " << any.type().name() << ", value: ";
-
-    if (any.has_value())
-    {
-      try
+      if (any.type() == typeid(int))
       {
-        if (any.type() == typeid(int))
-        {
-          s << std::any_cast<int>(any);
-        }
-        else if (any.type() == typeid(long))
-        {
-          s << std::any_cast<long>(any);
-        }
-        else if (any.type() == typeid(double))
-        {
-          s << std::any_cast<double>(any);
-        }
-        else if (any.type() == typeid(std::string))
-        {
-          s << std::any_cast<std::string>(any);
-        }
-        else
-        {
-          s << "<no cast available>";
-        }
+        s << std::any_cast<int>(any);
       }
-      catch (std::bad_cast& e)
+      else if (any.type() == typeid(long))
       {
-        s << "<log bad cast: " << e.what() << ">";
+        s << std::any_cast<long>(any);
+      }
+      else if (any.type() == typeid(double))
+      {
+        s << std::any_cast<double>(any);
+      }
+      else if (any.type() == typeid(std::string))
+      {
+        s << std::any_cast<std::string>(any);
+      }
+      else
+      {
+        s << "<no cast available>";
       }
     }
-    else
+    catch (std::bad_cast& e)
     {
-      s << "<no value>";
+      s << "<log bad cast: " << e.what() << ">";
     }
-
-    s << "} ";
-
-    return s.str();
   }
+  else
+  {
+    s << "<no value>";
+  }
+
+  s << "} ";
+
+  return s.str();
+}
 } // namespace wex
 
 wex::item::item(
@@ -284,7 +284,9 @@ void wex::item::add_items(group_t& page, bool readonly)
 
     if (m_data.image_list() != nullptr)
     {
-      if ((int)bookctrl->GetPageCount() < m_data.image_list()->GetImageCount())
+      if (
+        static_cast<int>(bookctrl->GetPageCount()) <
+        m_data.image_list()->GetImageCount())
       {
         imageId = bookctrl->GetPageCount();
       }
@@ -395,7 +397,7 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
         m_data.window().pos(),
         m_data.window().size(),
         m_data.window().style());
-      ((wxButton*)m_window)->SetLabelMarkup(m_label_window);
+      (reinterpret_cast<wxButton*>(m_window))->SetLabelMarkup(m_label_window);
       break;
 
     case CHECKBOX:
@@ -409,7 +411,7 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
 
       if (m_data.initial().has_value())
       {
-        ((wxCheckBox*)m_window)
+        (reinterpret_cast<wxCheckBox*>(m_window))
           ->SetValue(std::any_cast<bool>(m_data.initial()));
       }
       break;
@@ -423,7 +425,8 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
         m_data.window().size(),
         initial(
           m_data,
-          [&](wxArrayString& as) {
+          [&](wxArrayString& as)
+          {
             for (const auto& it : std::any_cast<choices_t>(m_data.initial()))
             {
               as.Add(after(before(it.second, ','), '.', false));
@@ -455,7 +458,8 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
         m_data.window().size(),
         initial(
           m_data,
-          [&](wxArrayString& as) {
+          [&](wxArrayString& as)
+          {
             for (const auto& it :
                  std::any_cast<choices_bool_t>(m_data.initial()))
             {
@@ -504,7 +508,8 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
         m_data.window().size(),
         initial(
           m_data,
-          [&](wxArrayString& as) {
+          [&](wxArrayString& as)
+          {
             for (const auto& it :
                  std::any_cast<std::list<std::string>>(m_data.initial()))
             {
@@ -719,7 +724,8 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
         m_data.window().size(),
         initial(
           m_data,
-          [&](wxArrayString& as) {
+          [&](wxArrayString& as)
+          {
             for (const auto& it : std::any_cast<choices_t>(m_data.initial()))
             {
               as.Add(before(it.second, ','));
@@ -785,7 +791,8 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
         m_data.window().pos(),
         m_data.window().size(),
         m_data.window().style());
-      ((wxStaticText*)m_window)->SetLabelMarkup(m_label_window);
+      (reinterpret_cast<wxStaticText*>(m_window))
+        ->SetLabelMarkup(m_label_window);
       break;
 
     case TEXTCTRL:
@@ -913,12 +920,12 @@ const std::any wex::item::get_value() const
         break;
 
       case CHECKBOX:
-        any = ((wxCheckBox*)m_window)->GetValue();
+        any = (reinterpret_cast<wxCheckBox*>(m_window))->GetValue();
         break;
 
       case CHECKLISTBOX_BIT:
       {
-        auto* clb   = (wxCheckListBox*)window();
+        auto* clb   = reinterpret_cast<wxCheckListBox*>(m_window);
         long  value = 0;
         int   item  = 0;
 
@@ -937,25 +944,32 @@ const std::any wex::item::get_value() const
       break;
 
       case COLOURPICKERWIDGET:
-        any = ((wxColourPickerWidget*)m_window)->GetColour();
+        any = (reinterpret_cast<wxColourPickerWidget*>(m_window))->GetColour();
         break;
 
       case COMBOBOX:
       case COMBOBOX_DIR:
       case COMBOBOX_FILE:
-        any = to_container<wxArrayString>((wxComboBox*)m_window).get();
+        any =
+          to_container<wxArrayString>(reinterpret_cast<wxComboBox*>(m_window))
+            .get();
         break;
 
       case DIRPICKERCTRL:
-        any = ((wxDirPickerCtrl*)m_window)->GetPath().ToStdString();
+        any = (reinterpret_cast<wxDirPickerCtrl*>(m_window))
+                ->GetPath()
+                .ToStdString();
         break;
 
       case FILEPICKERCTRL:
-        any = ((wxFilePickerCtrl*)m_window)->GetPath().ToStdString();
+        any = (reinterpret_cast<wxFilePickerCtrl*>(m_window))
+                ->GetPath()
+                .ToStdString();
         break;
 
       case FONTPICKERCTRL:
-        any = ((wxFontPickerCtrl*)m_window)->GetSelectedFont();
+        any =
+          (reinterpret_cast<wxFontPickerCtrl*>(m_window))->GetSelectedFont();
         break;
 
       case GRID:
@@ -963,7 +977,9 @@ const std::any wex::item::get_value() const
         break;
 
       case HYPERLINKCTRL:
-        any = ((wxHyperlinkCtrl*)m_window)->GetURL().ToStdString();
+        any = (reinterpret_cast<wxHyperlinkCtrl*>(m_window))
+                ->GetURL()
+                .ToStdString();
         break;
 
       case LISTVIEW:
@@ -977,15 +993,15 @@ const std::any wex::item::get_value() const
         break;
 
       case SLIDER:
-        any = ((wxSlider*)m_window)->GetValue();
+        any = (reinterpret_cast<wxSlider*>(m_window))->GetValue();
         break;
 
       case SPINCTRL:
-        any = ((wxSpinCtrl*)m_window)->GetValue();
+        any = (reinterpret_cast<wxSpinCtrl*>(m_window))->GetValue();
         break;
 
       case SPINCTRLDOUBLE:
-        any = ((wxSpinCtrlDouble*)m_window)->GetValue();
+        any = (reinterpret_cast<wxSpinCtrlDouble*>(m_window))->GetValue();
         break;
 
       case STATICBOX:
@@ -994,11 +1010,14 @@ const std::any wex::item::get_value() const
         break;
 
       case TEXTCTRL:
-        any = ((wxTextCtrl*)m_window)->GetValue().ToStdString();
+        any =
+          (reinterpret_cast<wxTextCtrl*>(m_window))->GetValue().ToStdString();
         break;
 
       case TEXTCTRL_FLOAT:
-        if (const auto v = ((wxTextCtrl*)m_window)->GetValue().ToStdString();
+        if (const auto v = (reinterpret_cast<wxTextCtrl*>(m_window))
+                             ->GetValue()
+                             .ToStdString();
             !v.empty())
         {
           any = std::stod(v);
@@ -1010,10 +1029,14 @@ const std::any wex::item::get_value() const
         break;
 
       case TEXTCTRL_INT:
-        if (const auto v = ((wxTextCtrl*)m_window)->GetValue().ToStdString();
+        if (const auto v = (reinterpret_cast<wxTextCtrl*>(m_window))
+                             ->GetValue()
+                             .ToStdString();
             !v.empty())
         {
-          any = std::stol(((wxTextCtrl*)m_window)->GetValue().ToStdString());
+          any = std::stol((reinterpret_cast<wxTextCtrl*>(m_window))
+                            ->GetValue()
+                            .ToStdString());
         }
         else
         {
@@ -1023,7 +1046,7 @@ const std::any wex::item::get_value() const
         break;
 
       case TOGGLEBUTTON:
-        any = ((wxToggleButton*)m_window)->GetValue();
+        any = (reinterpret_cast<wxToggleButton*>(m_window))->GetValue();
         break;
 
       default:
@@ -1091,7 +1114,7 @@ wxFlexGridSizer* wex::item::layout(
             return nullptr;
           }
 
-          auto* bookctrl = (wxBookCtrlBase*)m_window;
+          auto* bookctrl = reinterpret_cast<wxBookCtrlBase*>(m_window);
           bookctrl->SetName("book-" + m_label_window);
 
           return_sizer = add(sizer, fgz);
@@ -1162,12 +1185,13 @@ bool wex::item::set_value(const std::any& value) const
     switch (m_type)
     {
       case CHECKBOX:
-        ((wxCheckBox*)m_window)->SetValue(std::any_cast<bool>(value));
+        (reinterpret_cast<wxCheckBox*>(m_window))
+          ->SetValue(std::any_cast<bool>(value));
         break;
 
       case CHECKLISTBOX_BIT:
       {
-        auto* clb  = (wxCheckListBox*)m_window;
+        auto* clb  = reinterpret_cast<wxCheckListBox*>(m_window);
         int   item = 0;
 
         for (const auto& b : std::any_cast<choices_t>(m_data.initial()))
@@ -1179,71 +1203,78 @@ bool wex::item::set_value(const std::any& value) const
       break;
 
       case COLOURPICKERWIDGET:
-        ((wxColourPickerWidget*)m_window)
+        (reinterpret_cast<wxColourPickerWidget*>(m_window))
           ->SetColour(std::any_cast<wxColour>(value));
         break;
 
       case COMBOBOX:
-        combobox_as((wxComboBox*)m_window, std::any_cast<wxArrayString>(value));
+        combobox_as(
+          reinterpret_cast<wxComboBox*>(m_window),
+          std::any_cast<wxArrayString>(value));
         break;
 
       case DIRPICKERCTRL:
-        ((wxDirPickerCtrl*)m_window)
+        (reinterpret_cast<wxDirPickerCtrl*>(m_window))
           ->SetPath(std::any_cast<std::string>(value));
         break;
 
       case FILEPICKERCTRL:
-        ((wxFilePickerCtrl*)m_window)
+        (reinterpret_cast<wxFilePickerCtrl*>(m_window))
           ->SetPath(std::any_cast<std::string>(value));
         break;
 
       case FONTPICKERCTRL:
-        ((wxFontPickerCtrl*)m_window)
+        (reinterpret_cast<wxFontPickerCtrl*>(m_window))
           ->SetSelectedFont(std::any_cast<wxFont>(value));
         break;
 
       case GRID:
       {
-        auto* win = (grid*)window();
+        auto* win = reinterpret_cast<grid*>(m_window);
         win->set_cells_value({0, 0}, std::any_cast<std::string>(value));
       }
       break;
 
       case LISTVIEW:
       {
-        auto* win = (listview*)window();
+        auto* win = reinterpret_cast<listview*>(m_window);
         win->load(std::any_cast<std::list<std::string>>(value));
       }
       break;
 
       case SLIDER:
-        ((wxSlider*)m_window)->SetValue(std::any_cast<int>(value));
+        (reinterpret_cast<wxSlider*>(m_window))
+          ->SetValue(std::any_cast<int>(value));
         break;
 
       case SPINCTRL:
-        ((wxSpinCtrl*)m_window)->SetValue(std::any_cast<int>(value));
+        (reinterpret_cast<wxSpinCtrl*>(m_window))
+          ->SetValue(std::any_cast<int>(value));
         break;
 
       case SPINCTRLDOUBLE:
-        ((wxSpinCtrlDouble*)m_window)->SetValue(std::any_cast<double>(value));
+        (reinterpret_cast<wxSpinCtrlDouble*>(m_window))
+          ->SetValue(std::any_cast<double>(value));
         break;
 
       case TEXTCTRL:
-        ((wxTextCtrl*)m_window)->SetValue(std::any_cast<std::string>(value));
+        (reinterpret_cast<wxTextCtrl*>(m_window))
+          ->SetValue(std::any_cast<std::string>(value));
         break;
 
       case TEXTCTRL_FLOAT:
-        ((wxTextCtrl*)m_window)
+        (reinterpret_cast<wxTextCtrl*>(m_window))
           ->SetValue(std::to_string(std::any_cast<double>(value)));
         break;
 
       case TEXTCTRL_INT:
-        ((wxTextCtrl*)m_window)
+        (reinterpret_cast<wxTextCtrl*>(m_window))
           ->SetValue(std::to_string(std::any_cast<long>(value)));
         break;
 
       case TOGGLEBUTTON:
-        ((wxToggleButton*)m_window)->SetValue(std::any_cast<bool>(value));
+        (reinterpret_cast<wxToggleButton*>(m_window))
+          ->SetValue(std::any_cast<bool>(value));
         break;
 
       default:

@@ -28,13 +28,13 @@ namespace wex::data
     bool is_ignore_case() const;
 
     /// Returns commands.
-    auto& commands() const { return m_commands; };
+    auto& commands() const { return m_commands; }
 
     /// Returns pattern.
-    auto& pattern() const { return m_pattern; };
+    auto& pattern() const { return m_pattern; }
 
     /// Returns replacement.
-    auto& replacement() const { return m_replacement; };
+    auto& replacement() const { return m_replacement; }
 
     /// Sets pattern, replacement, options from text:
     /// s/pattern/text/options

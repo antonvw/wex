@@ -2,38 +2,39 @@
 // Name:      accelerators.h
 // Purpose:   Declaration of class wex::accelerators
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
-////////////////////////////////////////////////////////////////////////////////
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 #pragma once
 
 #include <vector>
 #include <wx/accel.h>
 
 class wxWindow;
-  
+
 namespace wex
 {
   /// Offers accelerators for a window.
   class accelerators
   {
-  public: 
+  public:
     /// Constructor.
     accelerators(
       /// vector with accelerator entries
-      const std::vector < wxAcceleratorEntry > & v, 
+      const std::vector<wxAcceleratorEntry>& v,
       /// add debug menu accelerators
       bool debug = false);
 
     /// Destructor, deletes the entries.
-   ~accelerators();
+    ~accelerators();
 
     /// Sets the accelerator entries for the specified window.
     void set(wxWindow* parent);
 
     /// Returns number of accelerators.
-    auto size() const {return m_size;};
+    auto size() const { return m_size; }
+
   private:
-    size_t m_size;
+    size_t              m_size;
     wxAcceleratorEntry* m_entries;
   };
-};
+}; // namespace wex

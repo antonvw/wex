@@ -17,212 +17,212 @@
 
 namespace wex
 {
-  class ctags;
-  class ex_stream;
-  class macros;
-  class macro_mode;
-  class frame;
+class ctags;
+class ex_stream;
+class macros;
+class macro_mode;
+class frame;
 
-  enum class info_message_t
+enum class info_message_t
+{
+  ADD,
+  COPY,
+  DEL,
+  MOVE,
+  NONE,
+  YANK,
+};
+
+/// Offers a class that adds ex editor to wex::factory::stc.
+class ex
+{
+  friend class macro_mode;
+
+public:
+  /// Returns the macros.
+  static auto& get_macros() { return m_macros; }
+
+  /// The visual modes.
+  enum mode_t
   {
-    ADD,
-    COPY,
-    DEL,
-    MOVE,
-    NONE,
-    YANK,
+    OFF,    // off, not using ex or vi mode
+    EX,     // ex mode, without vi keys, for reading large files
+    VISUAL, // vi mode
   };
 
-  /// Offers a class that adds ex editor to wex::factory::stc.
-  class ex
-  {
-    friend class macro_mode;
+  /// Constructor.
+  /// Provide stc cpomponent and ex mode.
+  explicit ex(factory::stc* stc, mode_t mode = VISUAL);
 
-  public:
-    /// Returns the macros.
-    static auto& get_macros() { return m_macros; };
+  /// Destructor.
+  virtual ~ex();
 
-    /// The visual modes.
-    enum mode_t
-    {
-      OFF,    // off, not using ex or vi mode
-      EX,     // ex mode, without vi keys, for reading large files
-      VISUAL, // vi mode
-    };
+  /// Virtual interface.
 
-    /// Constructor.
-    /// Provide stc cpomponent and ex mode.
-    ex(factory::stc* stc, mode_t mode = VISUAL);
+  /// Executes ex: command that was entered on the command line,
+  /// or present as modeline command inside a file.
+  /// Returns true if the command was executed.
+  virtual bool command(const std::string& command);
 
-    /// Destructor.
-    virtual ~ex();
+  /// Other methods.
 
-    /// Virtual interface.
+  /// Returns calculated value of text.
+  int calculator(const std::string& text);
 
-    /// Executes ex: command that was entered on the command line,
-    /// or present as modeline command inside a file.
-    /// Returns true if the command was executed.
-    virtual bool command(const std::string& command);
+  /// Copies data from other component.
+  void copy(const ex* ex);
 
-    /// Other methods.
+  /// Returns the ctags.
+  auto& ctags() { return m_ctags; }
 
-    /// Returns calculated value of text.
-    int calculator(const std::string& text);
+  /// Cuts selected text to yank register,
+  /// and updates delete registers.
+  void cut();
 
-    /// Copies data from other component.
-    void copy(const ex* ex);
+  /// The ex stream (used if in ex mode).
+  auto       ex_stream() { return m_ex_stream; }
+  const auto ex_stream() const { return m_ex_stream; }
 
-    /// Returns the ctags.
-    auto& ctags() { return m_ctags; };
+  /// Returns the frame.
+  auto* frame() { return m_frame; }
 
-    /// Cuts selected text to yank register,
-    /// and updates delete registers.
-    void cut();
+  /// Returns command.
+  const auto& get_command() const { return m_command; }
 
-    /// The ex stream (used if in ex mode).
-    auto       ex_stream() { return m_ex_stream; };
-    const auto ex_stream() const { return m_ex_stream; };
+  /// Returns stc component.
+  factory::stc* get_stc() const;
 
-    /// Returns the frame.
-    auto* frame() { return m_frame; };
+  /// Returns whether ex is active.
+  auto is_active() const { return m_mode != OFF; }
 
-    /// Returns command.
-    const auto& get_command() const { return m_command; };
+  /// Adds marker at the specified line.
+  /// Returns true if marker could be added.
+  bool marker_add(
+    /// marker
+    char marker,
+    /// line to add marker, default current line
+    int line = -1);
 
-    /// Returns stc component.
-    factory::stc* get_stc() const;
+  /// Deletes specified marker.
+  /// Returns true if marker was deleted.
+  bool marker_delete(char marker);
 
-    /// Returns whether ex is active.
-    auto is_active() const { return m_mode != OFF; };
+  /// Goes to specified marker.
+  /// Returns true if marker exists.
+  bool marker_goto(char marker);
 
-    /// Adds marker at the specified line.
-    /// Returns true if marker could be added.
-    bool marker_add(
-      /// marker
-      char marker,
-      /// line to add marker, default current line
-      int line = -1);
+  /// Returns line for specified marker.
+  /// Returns -1 if marker does not exist.
+  int marker_line(char marker) const;
 
-    /// Deletes specified marker.
-    /// Returns true if marker was deleted.
-    bool marker_delete(char marker);
+  /// Prints text in the dialog.
+  void print(const std::string& text);
 
-    /// Goes to specified marker.
-    /// Returns true if marker exists.
-    bool marker_goto(char marker);
+  /// Returns text to be inserted.
+  const std::string register_insert() const;
 
-    /// Returns line for specified marker.
-    /// Returns -1 if marker does not exist.
-    int marker_line(char marker) const;
+  /// Returns current register name.
+  auto register_name() const { return m_register; }
 
-    /// Prints text in the dialog.
-    void print(const std::string& text);
+  /// Returns text from current register (or yank register if no register
+  /// active).
+  const std::string register_text() const;
 
-    /// Returns text to be inserted.
-    const std::string register_insert() const;
+  /// Resets search flags.
+  void reset_search_flags();
 
-    /// Returns current register name.
-    auto register_name() const { return m_register; };
+  /// Returns search flags.
+  auto search_flags() const { return m_search_flags; }
 
-    /// Returns text from current register (or yank register if no register
-    /// active).
-    const std::string register_text() const;
+  /// Sets delete registers 1 - 9 (if value not empty).
+  void set_registers_delete(const std::string& value) const;
 
-    /// Resets search flags.
-    void reset_search_flags();
+  /// Sets insert register (if value not empty).
+  void set_register_insert(const std::string& value) const;
 
-    /// Returns search flags.
-    auto search_flags() const { return m_search_flags; };
+  /// Sets yank register (if value not empty).
+  void set_register_yank(const std::string& value) const;
 
-    /// Sets delete registers 1 - 9 (if value not empty).
-    void set_registers_delete(const std::string& value) const;
+  /// Set mode.
+  void use(mode_t mode);
 
-    /// Sets insert register (if value not empty).
-    void set_register_insert(const std::string& value) const;
+  /// Returns current visual mode.
+  mode_t visual() const { return m_mode; }
 
-    /// Sets yank register (if value not empty).
-    void set_register_yank(const std::string& value) const;
+  /// Yanks selected text to yank register, default to yank register.
+  /// Returns false if no text was selected.
+  bool yank(char name = '0') const;
 
-    /// Set mode.
-    void use(mode_t mode);
+protected:
+  /// If autowrite is on and document is modified,
+  /// save the document.
+  bool auto_write();
 
-    /// Returns current visual mode.
-    mode_t visual() const { return m_mode; };
+  /// Sets register name.
+  /// Setting register 0 results in
+  /// disabling current register.
+  void set_register(char name) { m_register = name; }
 
-    /// Yanks selected text to yank register, default to yank register.
-    /// Returns false if no text was selected.
-    bool yank(char name = '0') const;
+  ex_command m_command;
 
-  protected:
-    /// If autowrite is on and document is modified,
-    /// save the document.
-    bool auto_write();
+private:
+  enum class address_t;
 
-    /// Sets register name.
-    /// Setting register 0 results in
-    /// disabling current register.
-    void set_register(char name) { m_register = name; };
+  bool address_parse(
+    std::string& command,
+    std::string& range,
+    std::string& cmd,
+    address_t&   type);
+  bool command_address(const std::string& command);
+  bool command_handle(const std::string& command) const;
+  bool command_set(const std::string& command);
 
-    ex_command m_command;
+  template <typename S, typename T>
+  bool handle_container(
+    const std::string&                                          kind,
+    const std::string&                                          command,
+    const T*                                                    container,
+    std::function<bool(const std::string&, const std::string&)> cb);
 
-  private:
-    enum class address_t;
+  void info_message(const std::string& text, info_message_t type) const;
 
-    bool address_parse(
-      std::string& command,
-      std::string& range,
-      std::string& cmd,
-      address_t&   type);
-    bool command_address(const std::string& command);
-    bool command_handle(const std::string& command) const;
-    bool command_set(const std::string& command);
+  template <typename S, typename T>
+  std::string report_container(const T& container) const;
 
-    template <typename S, typename T>
-    bool handle_container(
-      const std::string&                                          kind,
-      const std::string&                                          command,
-      const T*                                                    container,
-      std::function<bool(const std::string&, const std::string&)> cb);
+  void show_dialog(
+    const std::string& title,
+    const std::string& text,
+    const std::string& lexer = std::string());
 
-    void info_message(const std::string& text, info_message_t type) const;
+  const marker m_marker_symbol = marker(0);
+  const std::vector<std::pair<
+    const std::string,
+    std::function<bool(const std::string& command)>>>
+    m_commands;
 
-    template <typename S, typename T>
-    std::string report_container(const T& container) const;
+  static macros m_macros;
 
-    void show_dialog(
-      const std::string& title,
-      const std::string& text,
-      const std::string& lexer = std::string());
+  bool m_auto_write{false}, m_copy{false}; // this is a copy, result of split
 
-    const marker m_marker_symbol = marker(0);
-    const std::vector<std::pair<
-      const std::string,
-      std::function<bool(const std::string& command)>>>
-      m_commands;
+  int m_search_flags;
 
-    static macros m_macros;
+  char m_register{0};
 
-    bool m_auto_write{false}, m_copy{false}; // this is a copy, result of split
+  wex::ctags* m_ctags;
+  wex::frame* m_frame;
 
-    int m_search_flags;
+  class ex_stream* m_ex_stream{nullptr};
 
-    char m_register{0};
+  mode_t m_mode;
 
-    wex::ctags* m_ctags;
-    wex::frame* m_frame;
+  std::map<char, int>
+    // relate a marker to identifier
+    m_marker_identifiers,
+    // relate a marker to mark number
+    m_marker_numbers;
+};
 
-    class ex_stream* m_ex_stream{nullptr};
-
-    mode_t m_mode;
-
-    std::map<char, int>
-      // relate a marker to identifier
-      m_marker_identifiers,
-      // relate a marker to mark number
-      m_marker_numbers;
-  };
-
-  /// Expands all markers and registers in command.
-  /// Returns false if an error occurred.
-  bool marker_and_register_expansion(const ex* ex, std::string& command);
+/// Expands all markers and registers in command.
+/// Returns false if an error occurred.
+bool marker_and_register_expansion(const ex* ex, std::string& command);
 }; // namespace wex

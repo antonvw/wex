@@ -67,7 +67,7 @@ namespace wex
       virtual bool is_open(const path& filename);
 
       /// Called when an item dialog command event is triggered.
-      virtual void on_command_item_dialog(wxWindowID, const wxCommandEvent&){};
+      virtual void on_command_item_dialog(wxWindowID, const wxCommandEvent&){}
 
       /// Default opens the file using get_stc.
       /// Returns stc component opened, or nullptr.
@@ -94,16 +94,16 @@ namespace wex
       /// Allows you to handle output text, .e.g. from a process.
       /// Default no action is taken, and false is returned,
       /// and some methods default send output to stdout.
-      virtual bool output(const std::string& text) const { return false; };
+      virtual bool output(const std::string& text) const { return false; }
 
       /// Allows derived class to update file history.
-      virtual void set_recent_file(const path& path) { ; };
+      virtual void set_recent_file(const path& path) { ; }
 
       /// When (left) clicked, uses the get_stc() for some dialogs.
       virtual void statusbar_clicked(const std::string& pane);
 
       /// Do something when statusbar is (right) clicked.
-      virtual void statusbar_clicked_right(const std::string&){};
+      virtual void statusbar_clicked_right(const std::string&){}
 
       /// Sets text on specified pane.
       /// Don't forget to call setup_statusbar first.
@@ -116,10 +116,10 @@ namespace wex
       /// Other methods
 
       /// Are we closing?
-      bool is_closing() const { return m_is_closing; };
+      bool is_closing() const { return m_is_closing; }
 
       /// Sets the find focus to specified window.
-      void set_find_focus(wxWindow* focus) { m_find_focus = focus; };
+      void set_find_focus(wxWindow* focus) { m_find_focus = focus; }
 
       /// Updates statusbar pane items pane with values from specified listview.
       bool update_statusbar(const wxListView* lv);

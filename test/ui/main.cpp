@@ -20,27 +20,27 @@ wex::file& ui_stc::get_file()
 
 namespace wex
 {
-  namespace test
-  {
-    class ui : public app
-    {
-    public:
-      /// Static methods
+namespace test
+{
+class ui : public app
+{
+public:
+  /// Static methods
 
-      static auto* frame() { return m_frame; };
-      static auto* get_statusbar() { return m_statusbar; };
-      static auto* get_stc() { return m_stc; };
+  static auto* frame() { return m_frame; }
+  static auto* get_statusbar() { return m_statusbar; }
+  static auto* get_stc() { return m_stc; }
 
-      /// Virtual interface
-      bool OnInit() override;
+  /// Virtual interface
+  bool OnInit() override;
 
-    private:
-      inline static wex::frame*   m_frame     = nullptr;
-      inline static statusbar*    m_statusbar = nullptr;
-      inline static factory::stc* m_stc       = nullptr;
-    };
-  }; // namespace test
-};   // namespace wex
+private:
+  inline static wex::frame*   m_frame     = nullptr;
+  inline static statusbar*    m_statusbar = nullptr;
+  inline static factory::stc* m_stc       = nullptr;
+};
+}; // namespace test
+}; // namespace wex
 
 IMPLEMENT_APP_NO_MAIN(wex::test::ui);
 

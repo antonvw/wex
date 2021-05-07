@@ -18,6 +18,7 @@
 #include <wex/shell.h>
 #include <wx/valtext.h>
 
+/* NOLINTNEXTLINE */
 std::string wex::process::m_working_dir_key = _("Process folder");
 
 wex::process::process()

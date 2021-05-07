@@ -19,59 +19,59 @@ const int FIELD_NOT_SHOWN = -1;
 
 namespace wex
 {
-  /// This class contains all pane styles and some methods
-  /// to convert between lists and styles.
-  class pane_styles
+/// This class contains all pane styles and some methods
+/// to convert between lists and styles.
+class pane_styles
+{
+public:
+  /// Default constructor.
+  pane_styles()
+    : m_styles(
+        {{wxSB_NORMAL, "normal"},
+         {wxSB_FLAT, "flat"},
+         {wxSB_RAISED, "raised"},
+         {wxSB_SUNKEN, "sunken"}})
   {
-  public:
-    /// Default constructor.
-    pane_styles()
-      : m_styles(
-          {{wxSB_NORMAL, "normal"},
-           {wxSB_FLAT, "flat"},
-           {wxSB_RAISED, "raised"},
-           {wxSB_SUNKEN, "sunken"}})
-    {
-      ;
-    }
+    ;
+  }
 
-    /// Returns the list with this style at the front.
-    std::list<std::string> find(int style) const
-    {
-      std::list<std::string> l;
+  /// Returns the list with this style at the front.
+  std::list<std::string> find(int style) const
+  {
+    std::list<std::string> l;
 
-      for (const auto& it : m_styles)
+    for (const auto& it : m_styles)
+    {
+      if (it.first == style)
       {
-        if (it.first == style)
-        {
-          l.push_front(it.second);
-        }
-        else
-        {
-          l.push_back(it.second);
-        }
+        l.push_front(it.second);
       }
-
-      return l;
-    }
-
-    /// Returns the style for the first element on the list.
-    int style(const std::list<std::string>& styles) const
-    {
-      for (const auto& it : m_styles)
+      else
       {
-        if (it.second == styles.front())
-        {
-          return it.first;
-        }
+        l.push_back(it.second);
       }
-
-      return wxSB_NORMAL;
     }
 
-  private:
-    const std::map<int, std::string> m_styles;
-  };
+    return l;
+  }
+
+  /// Returns the style for the first element on the list.
+  int style(const std::list<std::string>& styles) const
+  {
+    for (const auto& it : m_styles)
+    {
+      if (it.second == styles.front())
+      {
+        return it.first;
+      }
+    }
+
+    return wxSB_NORMAL;
+  }
+
+private:
+  const std::map<int, std::string> m_styles;
+};
 } // namespace wex
 
 std::vector<wex::statusbar_pane> wex::statusbar::m_panes = {{}};
@@ -83,10 +83,13 @@ wex::statusbar::statusbar(factory::frame* parent, const data::window& data)
   // The statusbar is not managed by Aui, so show/hide it explicitly.
   Show(config("show.StatusBar").get(true));
 
-  Bind(wxEVT_CLOSE_WINDOW, [=, this](wxCloseEvent& event) {
-    config("show.StatusBar").set(IsShown());
-    event.Skip();
-  });
+  Bind(
+    wxEVT_CLOSE_WINDOW,
+    [=, this](wxCloseEvent& event)
+    {
+      config("show.StatusBar").set(IsShown());
+      event.Skip();
+    });
 }
 
 const std::string wex::statusbar::get_statustext(const std::string& pane) const
@@ -371,9 +374,12 @@ wex::statusbar* wex::statusbar::setup(
 
   statusbar* sb =
     (frame->GetStatusBar() == nullptr ?
-       (statusbar*)frame
-         ->CreateStatusBar(m_panes.size(), style, ID_UPDATE_STATUS_BAR, name) :
-       (statusbar*)frame->GetStatusBar());
+       reinterpret_cast<statusbar*>(frame->CreateStatusBar(
+         m_panes.size(),
+         style,
+         ID_UPDATE_STATUS_BAR,
+         name)) :
+       reinterpret_cast<statusbar*>(frame->GetStatusBar()));
 
   config::statusbar_t sb_def;
 

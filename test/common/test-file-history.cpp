@@ -22,8 +22,8 @@ TEST_CASE("wex::file_history")
     auto* menu = new wex::menu({{1, "x"}, {2, "y"}});
 
     history.use_menu(100, menu);
-    REQUIRE(!history.append("xxx.cpp"));
-    REQUIRE(!history.append(""));
+    REQUIRE(!history.append(wex::path("xxx.cpp")));
+    REQUIRE(!history.append(wex::path()));
     REQUIRE(history.size() == 0);
     REQUIRE(history.get_history_file().empty());
 
@@ -62,12 +62,12 @@ TEST_CASE("wex::file_history")
 
     // file should be closed before remove (at least for windows)
     {
-      wex::file file(std::string("test-history.txt"), std::ios_base::out);
+      wex::file file("test-history.txt", std::ios_base::out);
       REQUIRE(file.write(std::string("test")));
     }
 
-    history.append("test-history.txt");
-    REQUIRE(history.get_history_file(0) == "test-history.txt");
+    history.append(wex::path("test-history.txt"));
+    REQUIRE(history.get_history_file(0) == wex::path("test-history.txt"));
     REQUIRE(remove("test-history.txt") == 0);
     REQUIRE(history.get_history_file(0).empty());
   }

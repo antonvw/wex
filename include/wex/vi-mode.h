@@ -69,7 +69,7 @@ namespace wex
     state_t get() const;
 
     /// Returns true if in command mode.
-    bool is_command() const { return get() == COMMAND; };
+    bool is_command() const { return get() == COMMAND; }
 
     /// Returns true if in insert mode.
     bool is_insert() const;
@@ -78,7 +78,7 @@ namespace wex
     bool is_visual() const;
 
     /// Returns insert commands.
-    const auto& insert_commands() const { return m_insert_commands; };
+    const auto& insert_commands() const { return m_insert_commands; }
 
     /// Returns mode as a string.
     const std::string str() const;

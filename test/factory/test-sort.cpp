@@ -14,7 +14,7 @@
 class stc : public wex::factory::stc
 {
 public:
-  stc() { Create(wxTheApp->GetTopWindow(), -1); };
+  stc() { Create(wxTheApp->GetTopWindow(), -1); }
 
 private:
   const wex::path& get_filename() const override { return m_path; };

@@ -352,7 +352,7 @@ void wex::shell::expand()
   if (const auto prefix(path.fullname()); AutoCompActive())
   {
     if (const auto index = AutoCompGetCurrent();
-        index >= 0 && index < (int)m_auto_complete_list.size())
+        index >= 0 && index < static_cast<int>(m_auto_complete_list.size()))
     {
       expansion = m_auto_complete_list[index].substr(prefix.length());
     }
@@ -372,7 +372,9 @@ void wex::shell::expand()
           std::string(),
           [&](const std::string& a, const std::string& b)
           {
-            return a.empty() ? b : a + (char)AutoCompGetSeparator() + b;
+            return a.empty() ?
+                     b :
+                     a + static_cast<char>(AutoCompGetSeparator()) + b;
           }));
     }
     else
@@ -501,7 +503,8 @@ bool wex::shell::process_char(int key)
       // Delete the key at current position.
       if (const int offset = (key == WXK_BACK ? 1 : 0),
           index            = GetCurrentPos() - m_command_start_pos - offset;
-          !m_command.empty() && index >= 0 && index < (int)m_command.length())
+          !m_command.empty() && index >= 0 &&
+          index < static_cast<int>(m_command.length()))
       {
         m_command.erase(index, 1);
       }
@@ -524,13 +527,13 @@ void wex::shell::process_char_default(int key)
   // Insert the key at current position.
   if (const int index = GetCurrentPos() - m_command_start_pos;
       GetCurrentPos() < GetLength() && index >= 0 &&
-      index < (int)m_command.size())
+      index < static_cast<int>(m_command.size()))
   {
-    m_command.insert(index, 1, char(key));
+    m_command.insert(index, 1, static_cast<char>(key));
   }
   else
   {
-    m_command.append(1, char(key));
+    m_command.append(1, static_cast<char>(key));
   }
 }
 

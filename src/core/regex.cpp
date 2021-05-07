@@ -94,14 +94,14 @@ int wex::regex::find(const std::string& text, find_t how)
           std::get<1>(reg)(m_matches);
         }
 
-        return (int)m_matches.size();
+        return static_cast<int>(m_matches.size());
       }
 
       index++;
     }
     catch (std::regex_error& e)
     {
-      log(e) << std::get<2>(reg) << "code:" << (int)e.code();
+      log(e) << std::get<2>(reg) << "code:" << static_cast<int>(e.code());
     }
   }
 

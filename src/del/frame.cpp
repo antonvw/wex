@@ -33,10 +33,10 @@
 
 namespace wex
 {
-  bool is_ex(textctrl* tc)
-  {
-    return tc->stc() != nullptr && !tc->stc()->is_visual();
-  }
+bool is_ex(textctrl* tc)
+{
+  return tc->stc() != nullptr && !tc->stc()->is_visual();
+}
 } // namespace wex
 
 wex::del::frame::frame(
@@ -291,7 +291,7 @@ void wex::del::frame::append_vcs(wex::menu* menu, const menu_item* item) const
   {
     if (item->path().dir_exists())
     {
-      const wex::vcs vcs({item->path().string()});
+      const wex::vcs vcs({item->path()});
 
       vcs.entry().build_menu(ID_VCS_LOWEST + 1, menu);
     }
@@ -310,7 +310,7 @@ void wex::del::frame::append_vcs(wex::menu* menu, const menu_item* item) const
   {
     auto* vcsmenu = new wex::menu(menu->style());
 
-    if (const wex::vcs vcs({item->path().string()});
+    if (const wex::vcs vcs({item->path()});
         vcs.entry().build_menu(ID_EDIT_VCS_LOWEST + 1, vcsmenu))
     {
       menu->append({{vcsmenu, vcs.entry().name()}});
@@ -389,10 +389,10 @@ wex::stc_entry_dialog* wex::del::frame::entry_dialog(const std::string& title)
   return m_entry_dialog;
 }
 
-void wex::del::frame::find_in_files(wxWindowID dialogid)
+void wex::del::frame::find_in_files(window_id dialogid)
 {
   const bool      replace = (dialogid == id_replace_in_files);
-  const wex::tool tool    = (replace ? ID_TOOL_REPLACE : ID_TOOL_REPORT_FIND);
+  const wex::tool tool(replace ? ID_TOOL_REPLACE : ID_TOOL_REPORT_FIND);
 
   if (!stream::setup_tool(tool, this))
     return;
@@ -414,7 +414,7 @@ void wex::del::frame::find_in_files(wxWindowID dialogid)
 
   if (tool_dir dir(
         tool,
-        config(m_text_in_folder).get_first_of(),
+        path(config(m_text_in_folder).get_first_of()),
         data::dir()
           .file_spec(config(m_text_in_files).get_first_of())
           .type(type));
@@ -429,7 +429,7 @@ void wex::del::frame::find_in_files(wxWindowID dialogid)
 
 bool wex::del::frame::find_in_files(
   const std::vector<path>& files,
-  int                      id,
+  window_id                id,
   bool                     show_dialog,
   listview*                report)
 {
@@ -492,7 +492,7 @@ bool wex::del::frame::find_in_files(
   return true;
 }
 
-int wex::del::frame::find_in_files_dialog(int id, bool add_in_files)
+int wex::del::frame::find_in_files_dialog(window_id id, bool add_in_files)
 {
   if (get_stc() != nullptr)
   {
@@ -526,7 +526,7 @@ int wex::del::frame::find_in_files_dialog(int id, bool add_in_files)
   return wxID_OK;
 }
 
-const std::string wex::del::frame::find_in_files_title(int id) const
+const std::string wex::del::frame::find_in_files_title(window_id id) const
 {
   return (
     id == ID_TOOL_REPLACE ? _("Replace In Selection") : _("Find In Selection"));
@@ -585,7 +585,7 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
     return false;
   }
 
-  const wex::tool tool = (sed ? ID_TOOL_REPLACE : ID_TOOL_REPORT_FIND);
+  const wex::tool tool(sed ? ID_TOOL_REPLACE : ID_TOOL_REPORT_FIND);
 
   if (!stream::setup_tool(tool, this))
   {
@@ -603,7 +603,7 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
       log::status(find_replace_string(false));
       sync(false);
 
-      tool_dir dir(tool, arg1, data::dir().file_spec(arg2).type(arg3));
+      tool_dir dir(tool, path(arg1), data::dir().file_spec(arg2).type(arg3));
       dir.find_files();
 
       log::status(tool.info(&dir.get_statistics().get_elements()));
@@ -655,7 +655,7 @@ void wex::del::frame::on_command_item_dialog(
 
         case id_find_in_files:
         case id_replace_in_files:
-          find_in_files(dialogid);
+          find_in_files((window_id)dialogid);
           break;
 
         default:
@@ -828,7 +828,7 @@ void wex::del::frame::statusbar_clicked(const std::string& pane)
 
       if (stc != nullptr)
       {
-        if (menu->append({{stc->get_filename().get_path(), this}}))
+        if (menu->append({{path(stc->get_filename().get_path()), this}}))
         {
           PopupMenu(menu);
         }
@@ -899,9 +899,8 @@ void wex::del::frame::statusbar_clicked_right(const std::string& pane)
     if (stc != nullptr)
     {
       match =
-        (pane == "PaneVCS" ?
-           wex::vcs({stc->get_filename().string()}).entry().name() :
-           wex::debug(this).debug_entry().name());
+        (pane == "PaneVCS" ? wex::vcs({stc->get_filename()}).entry().name() :
+                             wex::debug(this).debug_entry().name());
     }
 
     open_file(wex::menus::get_filename(), wex::data::control().find(match));

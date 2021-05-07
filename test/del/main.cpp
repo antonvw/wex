@@ -9,68 +9,69 @@
 
 namespace wex
 {
-  namespace test
+namespace test
+{
+class frame : public del::frame
+{
+public:
+  frame()
+    : del::frame()
   {
-    class frame : public del::frame
+  }
+
+  del::listview*
+  activate(data::listview::type_t listview_type, const lexer* lexer) override
+  {
+    // only for coverage
+    del::frame::activate(listview_type, lexer);
+
+    if (m_lv == nullptr)
     {
-    public:
-      frame()
-        : del::frame(){};
+      wex::lexer l("cpp");
+      m_lv = new del::listview(
+        data::listview().type(data::listview::KEYWORD).lexer(&l));
+      pane_add(m_lv);
+    }
 
-      del::listview* activate(
-        data::listview::type_t listview_type,
-        const lexer*           lexer) override
-      {
-        // only for coverage
-        del::frame::activate(listview_type, lexer);
+    return m_lv;
+  };
 
-        if (m_lv == nullptr)
-        {
-          wex::lexer l("cpp");
-          m_lv = new del::listview(
-            data::listview().type(data::listview::KEYWORD).lexer(&l));
-          pane_add(m_lv);
-        }
+  void more_coverage() { file_history_list(); }
 
-        return m_lv;
-      };
+private:
+  del::listview* m_lv;
+};
 
-      void more_coverage() { file_history_list(); };
-
-    private:
-      del::listview* m_lv;
-    };
-
-    class del : public app
+class del : public app
+{
+public:
+  bool OnInit() override
+  {
+    if (!test::app::OnInit())
     {
-    public:
-      bool OnInit() override
-      {
-        if (!test::app::OnInit())
-        {
-          return false;
-        }
+      return false;
+    }
 
-        m_frame = new test::frame();
-        m_frame->more_coverage();
-        m_frame->Show();
+    m_frame = new test::frame();
+    m_frame->more_coverage();
+    m_frame->Show();
 
-        SetTopWindow(m_frame);
+    SetTopWindow(m_frame);
 
-        m_stc = new wex::stc();
+    m_stc = new wex::stc();
 
-        return true;
-      }
+    return true;
+  }
 
-      static auto* stc() { return m_stc; };
-      static auto* frame() { return m_frame; };
+  static auto* stc() { return m_stc; }
+  static auto* frame() { return m_frame; }
 
-    private:
-      inline static wex::stc*    m_stc   = nullptr;
-      inline static test::frame* m_frame = nullptr;
-    };
-  }; // namespace test
-};   // namespace wex
+private:
+  inline static wex::stc*    m_stc   = nullptr;
+  inline static test::frame* m_frame = nullptr;
+};
+}; // namespace test
+}; // namespace wex
 
 IMPLEMENT_APP_NO_MAIN(wex::test::del);
 

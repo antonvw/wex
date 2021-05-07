@@ -91,7 +91,7 @@ wex::del::listview::listview(const data::listview& data)
 
      {[=, this](wxCommandEvent& event)
       {
-        const wex::tool& tool(event.GetId());
+        const wex::tool tool((window_id)event.GetId());
         if (
           tool.id() == ID_TOOL_REPORT_KEYWORD &&
           data.type() == data::listview::KEYWORD)
@@ -124,7 +124,7 @@ wex::del::listview::listview(const data::listview& data)
               {
                 tool_dir dir(
                   tool,
-                  item.get_filename().string(),
+                  item.get_filename(),
                   data::dir().file_spec(item.file_spec()));
                 dir.find_files();
                 stats += dir.get_statistics().get_elements();

@@ -39,7 +39,7 @@ namespace wex::del
 
   protected:
     void  build_popup_menu(menu& menu) override;
-    auto* get_frame() { return m_frame; };
+    auto* get_frame() { return m_frame; }
 
   private:
     std::string context(const std::string& line, int pos) const;

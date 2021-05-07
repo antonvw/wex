@@ -17,12 +17,12 @@ namespace fs = std::filesystem;
 
 namespace wex
 {
-  const std::string substitute_tilde(const std::string& text)
-  {
-    auto out(text);
-    boost::algorithm::replace_all(out, "~", wxGetHomeDir());
-    return out;
-  }
+const std::string substitute_tilde(const std::string& text)
+{
+  auto out(text);
+  boost::algorithm::replace_all(out, "~", wxGetHomeDir());
+  return out;
+}
 }; // namespace wex
 
 wex::path::path(const fs::path& p, status_t t)
@@ -61,7 +61,7 @@ wex::path::path(const std::vector<std::string>& v)
 {
   for (const auto& it : v)
   {
-    append(it);
+    append(path(it));
   }
 }
 

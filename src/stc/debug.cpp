@@ -18,9 +18,9 @@
 #include <wex/defs.h>
 #include <wex/dir.h>
 #include <wex/factory/process.h>
+#include <wex/frame.h>
 #include <wex/item-dialog.h>
 #include <wex/listview.h>
-#include <wex/frame.h>
 #include <wex/menu.h>
 #include <wex/menus.h>
 #include <wex/regex.h>
@@ -29,47 +29,47 @@
 #ifdef __WXGTK__
 namespace wex
 {
-  // This class adds name and pid of running processes to
-  // a listview. Each process has an entry in /proc,
-  // with a subdir of the pid as name. In this dir there is
-  // a file comm that contains the name of that process.
-  class process_dir : public dir
+// This class adds name and pid of running processes to
+// a listview. Each process has an entry in /proc,
+// with a subdir of the pid as name. In this dir there is
+// a file comm that contains the name of that process.
+class process_dir : public dir
+{
+public:
+  process_dir(listview* lv, bool init)
+    : dir(
+        "/proc",
+        data::dir().file_spec("[0-9]+").type(
+          data::dir::type_t().set(data::dir::DIRS)))
+    , m_listview(lv)
   {
-  public:
-    process_dir(listview* lv, bool init)
-      : dir(
-          "/proc",
-          data::dir().file_spec("[0-9]+").type(
-            data::dir::type_t().set(data::dir::DIRS)))
-      , m_listview(lv)
+    if (init)
     {
-      if (init)
-      {
-        m_listview->append_columns({{"Name", column::STRING, 200}, {"Pid"}});
-      }
-      else
-      {
-        m_listview->clear();
-      }
-    };
-    ~process_dir() { m_listview->sort_column("Name", SORT_ASCENDING); };
-
-  private:
-    bool on_dir(const path& p) override
+      m_listview->append_columns({{"Name", column::STRING, 200}, {"Pid"}});
+    }
+    else
     {
-      if (!std::filesystem::is_symlink(p.data()))
-      {
-        std::ifstream ifs(wex::path(p.data(), "comm").data());
-        if (std::string line; ifs.is_open() && std::getline(ifs, line))
-        {
-          m_listview->insert_item({line, p.name()});
-        }
-      }
-      return true;
-    };
-
-    listview* m_listview;
+      m_listview->clear();
+    }
   };
+  ~process_dir() { m_listview->sort_column("Name", SORT_ASCENDING); }
+
+private:
+  bool on_dir(const path& p) override
+  {
+    if (!std::filesystem::is_symlink(p.data()))
+    {
+      std::ifstream ifs(wex::path(p.data(), "comm").data());
+      if (std::string line; ifs.is_open() && std::getline(ifs, line))
+      {
+        m_listview->insert_item({line, p.name()});
+      }
+    }
+    return true;
+  };
+
+  listview* m_listview;
+};
 }; // namespace wex
 #endif
 
@@ -84,11 +84,13 @@ wex::debug::debug(wex::frame* frame, wex::factory::process* debug)
   set_entry(config("debug.debugger").get());
 
   bind(this).command(
-    {{[=, this](wxCommandEvent& event) {
+    {{[=, this](wxCommandEvent& event)
+      {
         is_finished();
       },
       ID_DEBUG_EXIT},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         const std::string text(event.GetString());
         // parse delete a breakpoint with text, numbers
         if (regex v("(d|del|delete) +([0-9 ]*)"); v.search(text) > 0)
@@ -121,7 +123,8 @@ wex::debug::debug(wex::frame* frame, wex::factory::process* debug)
         }
       },
       ID_DEBUG_STDIN},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         m_stdout += event.GetString();
         log::trace("debug stdout") << m_stdout;
         data::stc data;
@@ -218,7 +221,7 @@ wex::debug::debug(wex::frame* frame, wex::factory::process* debug)
         {
           if (wex::path filename(v[0]); allow_open(filename))
           {
-            m_path = v[0];
+            m_path = path(v[0]);
             log::trace("debug path") << v[0];
           }
           m_stdout.clear();
@@ -342,7 +345,7 @@ bool wex::debug::execute(const std::string& action, wex::stc* stc)
 
 bool wex::debug::execute(int item, stc* stc)
 {
-  return item >= 0 && item < (int)m_entry.get_commands().size() &&
+  return item >= 0 && item < static_cast<int>(m_entry.get_commands().size()) &&
          execute(m_entry.get_commands().at(item).get_command(), stc);
 };
 
@@ -367,23 +370,28 @@ wex::debug::get_args(const std::string& command, stc* stc)
            std::any(),
            data::item()
              .label_type(data::item::LABEL_NONE)
-             .apply([&](wxWindow* user, const std::any& value, bool save) {
-               lv = ((wex::listview*)user);
-               if (save && lv->GetFirstSelected() != -1)
+             .apply(
+               [&](wxWindow* user, const std::any& value, bool save)
                {
-                 args = " " + lv->get_item_text(lv->GetFirstSelected(), "Pid");
-               }
-             })}},
+                 lv = ((wex::listview*)user);
+                 if (save && lv->GetFirstSelected() != -1)
+                 {
+                   args =
+                     " " + lv->get_item_text(lv->GetFirstSelected(), "Pid");
+                 }
+               })}},
 #else
           {"debug.pid",
            item::TEXTCTRL_INT,
            std::any(),
            data::item(data::control().is_required(true))
              .label_type(data::item::LABEL_LEFT)
-             .apply([&](wxWindow* user, const std::any& value, bool save) {
-               if (save)
-                 args += " " + std::to_string(std::any_cast<long>(value));
-             })}},
+             .apply(
+               [&](wxWindow* user, const std::any& value, bool save)
+               {
+                 if (save)
+                   args += " " + std::to_string(std::any_cast<long>(value));
+               })}},
 #endif
         data::window().title("Attach").size({400, 400}).parent(m_frame));
     }
@@ -429,10 +437,12 @@ wex::debug::get_args(const std::string& command, stc* stc)
           item::COMBOBOX_FILE,
           std::any(),
           data::item(data::control().is_required(true))
-            .apply([&](wxWindow* user, const std::any& value, bool save) {
-              if (save)
-                args += " " + std::any_cast<wxArrayString>(value)[0];
-            })},
+            .apply(
+              [&](wxWindow* user, const std::any& value, bool save)
+              {
+                if (save)
+                  args += " " + std::any_cast<wxArrayString>(value)[0];
+              })},
          {"debug." + m_entry.name(), item::FILEPICKERCTRL}},
         data::window().title("Debug").parent(m_frame))
           .ShowModal() != wxID_CANCEL,
@@ -547,7 +557,7 @@ bool wex::debug::toggle_breakpoint(int line, stc* stc)
   {
     if (
       line == std::get<2>(it.second) &&
-      std::get<0>(it.second) == stc->get_filename().string())
+      std::get<0>(it.second) == stc->get_filename())
     {
       stc->MarkerDeleteHandle(std::get<1>(it.second));
       m_breakpoints.erase(it.first);

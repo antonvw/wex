@@ -18,37 +18,37 @@ namespace wex::data
   {
   public:
     /// Returns bitmap for the page
-    const auto& bitmap() const { return m_bitmap; };
+    const auto& bitmap() const { return m_bitmap; }
 
     /// Sets bitmap.
     notebook& bitmap(const wxBitmap& rhs);
 
     /// Returns caption for the page, if empty uses key as caption.
-    const auto& caption() const { return m_caption; };
+    const auto& caption() const { return m_caption; }
 
     /// Sets caption.
     notebook& caption(const std::string& rhs);
 
     /// Returns index for the page.
-    size_t index() const { return m_page_index; };
+    size_t index() const { return m_page_index; }
 
     /// Sets index.
     notebook& index(size_t rhs);
 
     /// Returns key for the page.
-    const auto& key() const { return m_key; };
+    const auto& key() const { return m_key; }
 
     /// Sets key.
     notebook& key(const std::string& rhs);
 
     /// Returns page to add.
-    wxWindow* page() const { return m_page; };
+    wxWindow* page() const { return m_page; }
 
     /// Sets page.
     notebook& page(wxWindow* rhs);
 
     /// Returns select the page after it is inserted.
-    bool select() const { return m_select; };
+    bool select() const { return m_select; }
 
     /// Sets select.
     /// Default not selected.

@@ -32,7 +32,7 @@ namespace wex
     /// Other methods.
 
     /// Returns the find strings.
-    const auto& get_find_strings() const { return m_find_strings.values(); };
+    const auto& get_find_strings() const { return m_find_strings.values(); }
 
     /// Returns the replace strings.
     const auto& get_replace_strings() const

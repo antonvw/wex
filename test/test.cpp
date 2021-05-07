@@ -36,7 +36,7 @@ bool wex::test::app::OnInit()
   }
 
   m_path = path(path::current()).data().parent_path();
-  m_path.append("test").append("data");
+  m_path.append(wex::path("test")).append(wex::path("data"));
   path::current(m_path.string());
 
   if (!m_path.dir_exists())
@@ -66,7 +66,8 @@ int wex::test::app::OnRun()
 
   Bind(
     wxEVT_TIMER,
-    [=, this](wxTimerEvent& event) {
+    [=, this](wxTimerEvent& event)
+    {
       m_context->run();
 
       config("AllowSync").set(false);

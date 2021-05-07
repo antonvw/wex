@@ -12,20 +12,20 @@
 
 namespace wex
 {
-  /// Adds a lexer to a path.
-  class path_lexer : public path
-  {
-  public:
-    /// Default constructor using string path.
-    path_lexer(const std::string& path = std::string());
+/// Adds a lexer to a path.
+class path_lexer : public path
+{
+public:
+  /// Default constructor using string path.
+  explicit path_lexer(const std::string& path = std::string());
 
-    /// Constructor using path.
-    path_lexer(const path& p);
+  /// Constructor using path.
+  explicit path_lexer(const path& p);
 
-    /// Returns the lexer.
-    const auto& lexer() const { return m_lexer; };
+  /// Returns the lexer.
+  const auto& lexer() const { return m_lexer; }
 
-  private:
-    const wex::lexer m_lexer;
-  };
+private:
+  const wex::lexer m_lexer;
+};
 }; // namespace wex

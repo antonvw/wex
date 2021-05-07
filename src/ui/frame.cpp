@@ -37,6 +37,7 @@
     {                                                                    \
       m_find_focus = cl;                                                 \
     }                                                                    \
+    /* NOLINTNEXTLINE */                                                 \
     else                                                                 \
     {                                                                    \
       if (auto* cl = dynamic_cast<wex::factory::listview*>(win);         \
@@ -44,6 +45,7 @@
       {                                                                  \
         m_find_focus = cl;                                               \
       }                                                                  \
+      /* NOLINTNEXTLINE */                                               \
       else                                                               \
       {                                                                  \
         if (auto* grid = dynamic_cast<wex::grid*>(win); grid != nullptr) \
@@ -68,31 +70,32 @@
 
 namespace wex
 {
-  class file_droptarget : public wxFileDropTarget
+class file_droptarget : public wxFileDropTarget
+{
+public:
+  explicit file_droptarget(factory::frame* frame)
+    : m_frame(frame)
   {
-  public:
-    explicit file_droptarget(factory::frame* frame)
-      : m_frame(frame)
-    {
-      ;
-    };
-
-    bool
-    OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames) override
-    {
-      open_files(m_frame, to_vector_path(filenames).get());
-      return true;
-    }
-
-  private:
-    factory::frame* m_frame;
+    ;
   };
 
-  std::vector<int> win_data;
+  bool
+  OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames) override
+  {
+    open_files(m_frame, to_vector_path(filenames).get());
+    return true;
+  }
 
-  bool win_shown = false;
+private:
+  factory::frame* m_frame;
+};
 
-  const std::string win_frame = "window.frame", win_max = "window.maximized";
+std::vector<int> win_data;
+
+bool win_shown = false;
+
+/* NOLINTNEXTLINE */
+const std::string win_frame = "window.frame", win_max = "window.maximized";
 } // namespace wex
 
 wex::frame::frame(size_t maxFiles, const data::window& data)
@@ -127,33 +130,49 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
 
   printing::get()->get_html_printer()->SetParentWindow(this);
 
-  Bind(wxEVT_FIND, [=, this](wxFindDialogEvent& event) {
-    if (m_find_focus != nullptr)
-      wxPostEvent(m_find_focus, event);
-  });
-  Bind(wxEVT_FIND_NEXT, [=, this](wxFindDialogEvent& event) {
-    if (m_find_focus != nullptr)
-      wxPostEvent(m_find_focus, event);
-  });
-  Bind(wxEVT_FIND_REPLACE, [=, this](wxFindDialogEvent& event) {
-    if (m_find_focus != nullptr)
-      wxPostEvent(m_find_focus, event);
-  });
-  Bind(wxEVT_FIND_REPLACE_ALL, [=, this](wxFindDialogEvent& event) {
-    if (m_find_focus != nullptr)
-      wxPostEvent(m_find_focus, event);
-  });
+  Bind(
+    wxEVT_FIND,
+    [=, this](wxFindDialogEvent& event)
+    {
+      if (m_find_focus != nullptr)
+        wxPostEvent(m_find_focus, event);
+    });
+  Bind(
+    wxEVT_FIND_NEXT,
+    [=, this](wxFindDialogEvent& event)
+    {
+      if (m_find_focus != nullptr)
+        wxPostEvent(m_find_focus, event);
+    });
+  Bind(
+    wxEVT_FIND_REPLACE,
+    [=, this](wxFindDialogEvent& event)
+    {
+      if (m_find_focus != nullptr)
+        wxPostEvent(m_find_focus, event);
+    });
+  Bind(
+    wxEVT_FIND_REPLACE_ALL,
+    [=, this](wxFindDialogEvent& event)
+    {
+      if (m_find_focus != nullptr)
+        wxPostEvent(m_find_focus, event);
+    });
 
-  Bind(wxEVT_FIND_CLOSE, [=, this](wxFindDialogEvent& event) {
-    assert(m_find_replace_dialog != nullptr);
-    // Hiding instead of destroying, does not
-    // show the dialog next time.
-    m_find_replace_dialog->Destroy();
-    m_find_replace_dialog = nullptr;
-  });
+  Bind(
+    wxEVT_FIND_CLOSE,
+    [=, this](wxFindDialogEvent& event)
+    {
+      assert(m_find_replace_dialog != nullptr);
+      // Hiding instead of destroying, does not
+      // show the dialog next time.
+      m_find_replace_dialog->Destroy();
+      m_find_replace_dialog = nullptr;
+    });
 
   bind(this).command(
-    {{[=, this](wxCommandEvent& event) {
+    {{[=, this](wxCommandEvent& event)
+      {
         if (GetStatusBar() != nullptr)
         {
           GetStatusBar()->Show(!GetStatusBar()->IsShown());
@@ -161,56 +180,64 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
         }
       },
       ID_VIEW_STATUSBAR},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         FIND_REPLACE(_("Find"), 0);
       },
       wxID_FIND},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         FIND_REPLACE(_("Replace"), wxFR_REPLACEDIALOG);
       },
       wxID_REPLACE}});
 
   bind(this).ui(
-    {{[=, this](wxUpdateUIEvent& event) {
+    {{[=, this](wxUpdateUIEvent& event)
+      {
         (GetStatusBar() != nullptr ? event.Check(GetStatusBar()->IsShown()) :
                                      event.Check(false));
       },
       ID_VIEW_STATUSBAR},
-     {[=, this](wxUpdateUIEvent& event) {
+     {[=, this](wxUpdateUIEvent& event)
+      {
         (GetMenuBar() != nullptr ? event.Check(GetMenuBar()->IsShown()) :
                                    event.Check(false));
       },
       ID_VIEW_MENUBAR}});
 
-  Bind(wxEVT_CLOSE_WINDOW, [=, this](wxCloseEvent& event) {
-    m_file_history.save();
-    m_textctrl->on_exit();
-
-    delete find_replace_data::set(nullptr);
-
-    if (!m_perspective.empty())
+  Bind(
+    wxEVT_CLOSE_WINDOW,
+    [=, this](wxCloseEvent& event)
     {
-      wex::config(m_perspective).set(m_manager.SavePerspective().ToStdString());
-    }
+      m_file_history.save();
+      m_textctrl->on_exit();
 
-    if (IsMaximized())
-    {
-      config(win_max).set(true);
-    }
-    else
-    {
-      config(win_max).set(false);
-      config(win_frame).set(std::vector<int>{
-        GetSize().GetWidth(),
-        GetSize().GetHeight(),
-        GetPosition().x,
-        GetPosition().y});
-    }
+      delete find_replace_data::set(nullptr);
 
-    m_is_closing = true;
+      if (!m_perspective.empty())
+      {
+        wex::config(m_perspective)
+          .set(m_manager.SavePerspective().ToStdString());
+      }
 
-    event.Skip();
-  });
+      if (IsMaximized())
+      {
+        config(win_max).set(true);
+      }
+      else
+      {
+        config(win_max).set(false);
+        config(win_frame).set(std::vector<int>{
+          GetSize().GetWidth(),
+          GetSize().GetHeight(),
+          GetPosition().x,
+          GetPosition().y});
+      }
+
+      m_is_closing = true;
+
+      event.Skip();
+    });
 
   SetDropTarget(new file_droptarget(this));
 
@@ -223,27 +250,32 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
 
   show_ex_bar();
 
-  Bind(wxEVT_AUI_PANE_CLOSE, [=, this](wxAuiManagerEvent& event) {
-    auto* info = event.GetPane();
-    info->BestSize(info->window->GetSize()).Fixed().Resizable();
-    m_manager.Update();
-    // If this pane is a toolbar pane, it might have a checkbox,
-    // update that as well.
-    m_optionsbar->set_checkbox(info->name, false);
-  });
+  Bind(
+    wxEVT_AUI_PANE_CLOSE,
+    [=, this](wxAuiManagerEvent& event)
+    {
+      auto* info = event.GetPane();
+      info->BestSize(info->window->GetSize()).Fixed().Resizable();
+      m_manager.Update();
+      // If this pane is a toolbar pane, it might have a checkbox,
+      // update that as well.
+      m_optionsbar->set_checkbox(info->name, false);
+    });
 
   for (const auto& it : m_toggled_panes)
   {
     Bind(
       wxEVT_UPDATE_UI,
-      [=, this](wxUpdateUIEvent& event) {
+      [=, this](wxUpdateUIEvent& event)
+      {
         event.Check(m_manager.GetPane(it.first.first).IsShown());
       },
       it.second);
 
     Bind(
       wxEVT_MENU,
-      [=, this](wxCommandEvent& event) {
+      [=, this](wxCommandEvent& event)
+      {
         pane_toggle(it.first.first);
       },
       it.second);
@@ -251,7 +283,8 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
 
   Bind(
     wxEVT_MENU,
-    [=, this](wxCommandEvent& event) {
+    [=, this](wxCommandEvent& event)
+    {
       on_menu_history(
         m_file_history,
         event.GetId() - m_file_history.get_base_id());
@@ -578,7 +611,7 @@ void wex::frame::statusbar_clicked_right(const std::string& pane)
   else if (pane == "PaneText")
   {
     wex::config::save();
-    open_file(wex::config::file());
+    open_file(path(wex::config::file()));
   }
   else
   {

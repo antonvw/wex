@@ -79,7 +79,7 @@ namespace wex
       wxWindow* page);
 
     /// Appends vcs menu.
-    virtual void append_vcs(menu*, const menu_item* i) const { ; };
+    virtual void append_vcs(menu*, const menu_item* i) const { ; }
 
     /// Binds accelerators.
     virtual void bind_accelerators(
@@ -91,22 +91,22 @@ namespace wex
     };
 
     /// Adds debug menu.
-    virtual void debug_add_menu(menu&, bool) { ; };
+    virtual void debug_add_menu(menu&, bool) { ; }
 
     /// Runs debug action.
-    virtual void debug_exe(int id, factory::stc* stc) { ; };
+    virtual void debug_exe(int id, factory::stc* stc) { ; }
 
     /// Runs debug command.
-    virtual void debug_exe(const std::string& exe, factory::stc* stc) { ; };
+    virtual void debug_exe(const std::string& exe, factory::stc* stc) { ; }
 
     /// Sets a debug handler.
-    virtual wxEvtHandler* debug_handler() { return nullptr; };
+    virtual wxEvtHandler* debug_handler() { return nullptr; }
 
     /// Runs true if we are debugging.
-    virtual bool debug_is_active() const { return false; };
+    virtual bool debug_is_active() const { return false; }
 
     /// Prints a debug variable.
-    virtual bool debug_print(const std::string& text) { return false; };
+    virtual bool debug_print(const std::string& text) { return false; }
 
     /// Toggles a breakpoint on line.
     virtual bool debug_toggle_breakpoint(int line, factory::stc* stc)
@@ -118,11 +118,11 @@ namespace wex
     /// this command is handled. This method is invoked
     /// at the beginning of the ex command handling,
     /// allowing you to override any command.
-    virtual bool exec_ex_command(ex_command& command) { return false; };
+    virtual bool exec_ex_command(ex_command& command) { return false; }
 
     /// Called if the notebook changed page.
     /// Default sets the focus to page and adds page as recently used.
-    virtual void on_notebook(wxWindowID id, wxWindow* page) { ; };
+    virtual void on_notebook(wxWindowID id, wxWindow* page) { ; }
 
     /// Allows you to override print ex.
     virtual bool print_ex(factory::stc* stc, const std::string& text)
@@ -140,7 +140,7 @@ namespace wex
 
     /// Allows you to perform action for a (vi) command.
     /// This method is invoked after command is executed.
-    virtual void record(const std::string& command) { ; };
+    virtual void record(const std::string& command) { ; }
 
     /// Restores a previous saved current page.
     /// Returns restored page (default returns nullptr).
@@ -150,7 +150,7 @@ namespace wex
     };
 
     /// Saves the current page, to restore later on.
-    virtual bool save_current_page(const std::string& key) { return false; };
+    virtual bool save_current_page(const std::string& key) { return false; }
 
     /// Shows or hides the ex bar.
     /// Default it hides the ex bar and
@@ -166,7 +166,7 @@ namespace wex
     };
 
     /// Shows text in ex bar.
-    virtual void show_ex_message(const std::string& text) { ; };
+    virtual void show_ex_message(const std::string& text) { ; }
 
     /// Shows or updates stc entry dialog.
     virtual int show_stc_entry_dialog(bool modal = false)
@@ -175,7 +175,7 @@ namespace wex
     };
 
     /// Returns stc component for stc entry dialog.
-    virtual factory::stc* stc_entry_dialog_component() { return nullptr; };
+    virtual factory::stc* stc_entry_dialog_component() { return nullptr; }
 
     /// Returns stc entry dialog title.
     virtual std::string stc_entry_dialog_title() const
@@ -184,10 +184,10 @@ namespace wex
     };
 
     /// Sets stc entry dialog title.
-    virtual void stc_entry_dialog_title(const std::string& title) { ; };
+    virtual void stc_entry_dialog_title(const std::string& title) { ; }
 
     /// Called after you checked the Sync checkbox on the options toolbar.
-    virtual void sync_all() { ; };
+    virtual void sync_all() { ; }
 
     /// Called after all pages from the notebooks are deleted.
     /// Default resets the find focus.
@@ -196,22 +196,22 @@ namespace wex
     /// Other methods
 
     /// Returns current debugger.
-    const auto* debug_entry() const { return m_debug_entry; };
+    const auto* debug_entry() const { return m_debug_entry; }
 
     /// Returns file history.
-    auto& file_history() { return m_file_history; };
+    auto& file_history() { return m_file_history; }
 
     /// Returns the find toolbar.
-    auto* get_find_toolbar() { return m_findbar; };
+    auto* get_find_toolbar() { return m_findbar; }
 
     /// Returns the options toolbar.
-    auto* get_options_toolbar() { return m_optionsbar; };
+    auto* get_options_toolbar() { return m_optionsbar; }
 
     /// Returns statusbar.
-    auto* get_statusbar() { return m_statusbar; };
+    auto* get_statusbar() { return m_statusbar; }
 
     /// Returns the toolbar.
-    auto* get_toolbar() { return m_toolbar; };
+    auto* get_toolbar() { return m_toolbar; }
 
     /// Adds a window as a pane, generating a unique name.
     /// Return the name of the pane.
@@ -268,7 +268,7 @@ namespace wex
     size_t panes() const;
 
     /// Sets debug entry.
-    void set_debug_entry(wex::debug_entry* de) { m_debug_entry = de; };
+    void set_debug_entry(wex::debug_entry* de) { m_debug_entry = de; }
 
     /// Sets up the status bar if you want to use statustext.
     /// And initializes other static data.
@@ -299,7 +299,7 @@ namespace wex
     void show_process(bool show);
 
     /// Returns the toggled panes.
-    const auto& toggled_panes() const { return m_toggled_panes; };
+    const auto& toggled_panes() const { return m_toggled_panes; }
 
     /// overridden methods
 

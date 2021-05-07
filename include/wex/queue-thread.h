@@ -30,7 +30,7 @@ namespace wex
     {
     public:
       /// Default constructor.
-      event_handler(){};
+      event_handler(){}
 
       /// Destructor.
       virtual ~event_handler() = default;
@@ -48,7 +48,7 @@ namespace wex
       unsigned int timeout_ms = 500);
 
     /// Destructor.
-    ~queue_thread(){};
+    ~queue_thread(){}
 
     /// Emplaces event on the queue.
     /// The thread pool takes care of reading and clearing
@@ -60,7 +60,7 @@ namespace wex
     bool empty();
 
     /// Returns true if event loop is started.
-    bool is_running() const { return m_running.load(); };
+    bool is_running() const { return m_running.load(); }
 
     // Starts the threads.
     void start(unsigned int pool_size = 1);

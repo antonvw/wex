@@ -30,7 +30,7 @@ namespace wex
       const data::window& data = data::window());
 
     /// Returns stc component.
-    auto* get_stc() { return m_stc; };
+    auto* get_stc() { return m_stc; }
 
   private:
     wex::stc* m_stc;

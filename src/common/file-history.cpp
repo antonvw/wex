@@ -22,49 +22,49 @@
 
 namespace wex
 {
-  class file_history_imp : public wxFileHistory
+class file_history_imp : public wxFileHistory
+{
+public:
+  file_history_imp(
+    size_t             maxFiles = 9,
+    wxWindowID         idBase   = wxID_FILE1,
+    const std::string& key      = std::string())
+    : wxFileHistory(maxFiles, idBase)
+    , m_key(key.empty() ? "recent.Files" : key)
+    , m_contents(config(m_key).get(std::list<std::string>{}))
   {
-  public:
-    file_history_imp(
-      size_t             maxFiles = 9,
-      wxWindowID         idBase   = wxID_FILE1,
-      const std::string& key      = std::string())
-      : wxFileHistory(maxFiles, idBase)
-      , m_key(key.empty() ? "recent.Files" : key)
-      , m_contents(config(m_key).get(std::list<std::string>{}))
+    // The order should be inverted, as the last one added is the most recent
+    // used.
+    for (auto it = m_contents.rbegin(); it != m_contents.rend(); ++it)
     {
-      // The order should be inverted, as the last one added is the most recent
-      // used.
-      for (auto it = m_contents.rbegin(); it != m_contents.rend(); ++it)
-      {
-        AddFileToHistory(*it);
-      }
+      AddFileToHistory(*it);
+    }
+  }
+
+  bool append(const path& p)
+  {
+    if (!p.file_exists())
+    {
+      return false;
     }
 
-    bool append(const path& p)
-    {
-      if (!p.file_exists())
-      {
-        return false;
-      }
+    m_contents.remove(p.string());
+    m_contents.push_front(p.string());
+    AddFileToHistory(p.string());
 
-      m_contents.remove(p.string());
-      m_contents.push_front(p.string());
-      AddFileToHistory(p.string());
+    return true;
+  }
 
-      return true;
-    }
+  void save() { config(m_key).set(m_contents); }
 
-    void save() { config(m_key).set(m_contents); };
+  wxString GetHistoryFile(size_t index = 0) const override;
 
-    wxString GetHistoryFile(size_t index = 0) const override;
+private:
+  void AddFileToHistory(const wxString& file) override;
 
-  private:
-    void AddFileToHistory(const wxString& file) override;
-
-    const std::string      m_key;
-    std::list<std::string> m_contents;
-  };
+  const std::string      m_key;
+  std::list<std::string> m_contents;
+};
 }; // namespace wex
 
 wex::file_history::file_history(
@@ -197,7 +197,7 @@ void wex::file_history_imp::AddFileToHistory(const wxString& file)
 
 wxString wex::file_history_imp::GetHistoryFile(size_t index) const
 {
-  if (GetCount() > 0 && (int)index < GetMaxFiles())
+  if (GetCount() > 0 && static_cast<int>(index) < GetMaxFiles())
   {
     bool        error = false;
     std::string file;

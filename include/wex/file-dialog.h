@@ -41,7 +41,7 @@ namespace wex
     /// Other methods.
 
     /// Returns true if hexmode checkbox is (was) checked.
-    bool is_hexmode() const { return m_hexmode; };
+    bool is_hexmode() const { return m_hexmode; }
 
     /// Shows the dialog depending on the changes on the file.
     /// If you specify show_modal then dialog is always shown.
