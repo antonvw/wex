@@ -5,6 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/auto-complete.h>
 #include <wex/config.h>
 #include <wex/defs.h>
 #include <wex/frd.h>
@@ -26,14 +27,8 @@ TEST_CASE("wex::stc")
 
   SUBCASE("auto_complete")
   {
-    stc->auto_complete_clear();
-    stc->auto_complete_sync();
-    stc->auto_complete().use(true);
-    stc->auto_complete().use(false);
-
-    REQUIRE(stc->get_lexer().set("xml"));
-    stc->get_vi().command("i<xxxx>");
-    stc->get_vi().command("\x1b");
+    stc->auto_complete()->use(true);
+    stc->auto_complete()->use(false);
   }
 
   SUBCASE("auto_indentation")
@@ -207,6 +202,18 @@ TEST_CASE("wex::stc")
     stc->SetReadOnly(false);
   }
 
+  SUBCASE("hypertext")
+  {
+    stc->set_text("");
+    REQUIRE(stc->get_lexer().set("xml"));
+
+    event(stc, "i<xxxxx>\x1b");
+#ifdef TEST
+    // Due to queueing ? only ok i tested separately.
+    REQUIRE(stc->get_text() == "<xxxxx></xxxxx>");
+#endif
+  }
+
   SUBCASE("lexer")
   {
     stc->set_text("new text");
@@ -264,10 +271,10 @@ TEST_CASE("wex::stc")
     stc->get_file().reset_contents_changed();
   }
 
-  SUBCASE("link") 
-  { 
+  SUBCASE("link")
+  {
     stc->SetText("no link");
-    REQUIRE(!stc->link_open()); 
+    REQUIRE(!stc->link_open());
   }
 
   SUBCASE("margin")
@@ -318,7 +325,7 @@ TEST_CASE("wex::stc")
     wex::stc stc(wex::test::get_path("test.h"));
     REQUIRE(stc.get_filename().string().find("test.h") != std::string::npos);
     REQUIRE(stc.open(wex::test::get_path("test.h")));
-    REQUIRE(!stc.open("XXX"));
+    REQUIRE(!stc.open(wex::path("XXX")));
   }
 
   SUBCASE("popup") { REQUIRE(stc->get_lexer().set("cpp")); }

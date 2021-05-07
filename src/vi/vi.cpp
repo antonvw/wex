@@ -27,16 +27,22 @@
 
 namespace wex
 {
-  constexpr int c_strcmp(char const* lhs, char const* rhs)
-  {
-    return (('\0' == lhs[0]) && ('\0' == rhs[0])) ? 0 :
-           (lhs[0] != rhs[0])                     ? (lhs[0] - rhs[0]) :
-                                                    c_strcmp(lhs + 1, rhs + 1);
-  };
+constexpr int c_strcmp(char const* lhs, char const* rhs)
+{
+  return (('\0' == lhs[0]) && ('\0' == rhs[0])) ? 0 :
+         (lhs[0] != rhs[0])                     ? (lhs[0] - rhs[0]) :
+                                                  c_strcmp(lhs + 1, rhs + 1);
+};
 
-  const std::string esc() { return std::string("\x1b"); }
+const std::string esc()
+{
+  return std::string("\x1b");
+}
 
-  const std::string _s(wxKeyCode key) { return std::string(1, key); }
+const std::string _s(wxKeyCode key)
+{
+  return std::string(1, key);
+}
 } // namespace wex
 
 #define MOTION(SCOPE, DIRECTION, COND, WRAP)                                \
@@ -47,6 +53,7 @@ namespace wex
       {                                                                     \
         case wex::vi_mode::state_t::COMMAND:                                \
         case wex::vi_mode::state_t::INSERT:                                 \
+          /* NOLINTNEXTLINE */                                              \
           if (WRAP && c_strcmp((#SCOPE), "Line") == 0)                      \
           {                                                                 \
             if (c_strcmp((#DIRECTION), "Down") == 0)                        \
@@ -72,6 +79,7 @@ namespace wex
           break;                                                            \
       }                                                                     \
     }                                                                       \
+    /* NOLINTNEXTLINE */                                                    \
     if (c_strcmp((#SCOPE), "Line") == 0)                                    \
     {                                                                       \
       switch (m_mode.get())                                                 \
@@ -112,13 +120,13 @@ namespace wex
 
 namespace wex
 {
-  enum class vi::motion_t
-  {
-    MOTION_CHANGE,
-    MOTION_DELETE,
-    MOTION_NAVIGATE,
-    MOTION_YANK,
-  };
+enum class vi::motion_t
+{
+  MOTION_CHANGE,
+  MOTION_DELETE,
+  MOTION_NAVIGATE,
+  MOTION_YANK,
+};
 };
 
 wex::vi::vi(wex::factory::stc* arg, mode_t ex_mode)
@@ -132,7 +140,6 @@ wex::vi::vi(wex::factory::stc* arg, mode_t ex_mode)
           m_insert_text.clear();
         }
 
-        get_stc()->auto_complete_sync();
         get_stc()->BeginUndoAction();
       },
       // back to command mode process
@@ -146,7 +153,6 @@ wex::vi::vi(wex::factory::stc* arg, mode_t ex_mode)
         }
         m_command.clear();
         m_insert_command.clear();
-        get_stc()->auto_complete_clear();
         get_stc()->EndUndoAction();
       })
   , m_last_commands{{"!", "<", ">", "A", "C", "D", "I", "J", "O",
@@ -801,6 +807,7 @@ wex::vi::vi(wex::factory::stc* arg, mode_t ex_mode)
        }},
       {_s(WXK_CONTROL_J) + _s(WXK_CONTROL_L),
        [&](const std::string& command) {
+         /* NOLINTNEXTLINE */
          REPEAT_WITH_UNDO(if (get_stc()->is_hexmode()) return 1; try {
            const auto start =
              get_stc()->WordStartPosition(get_stc()->GetCurrentPos(), true);
@@ -1133,7 +1140,7 @@ bool wex::vi::insert_mode(const std::string& command)
   }
   else if (get_stc()->is_hexmode())
   {
-    if ((int)command.back() == WXK_ESCAPE)
+    if (static_cast<int>(command.back()) == WXK_ESCAPE)
     {
       if (m_mode.escape())
       {
@@ -1173,7 +1180,7 @@ bool wex::vi::insert_mode(const std::string& command)
     return true;
   }
 
-  switch ((int)command.back())
+  switch (command.back())
   {
     case WXK_BACK:
       if (!m_insert_text.empty())
@@ -1260,8 +1267,9 @@ bool wex::vi::insert_mode(const std::string& command)
       else
       {
         if (
-          command.size() == 1 && ((int)command.back() == WXK_RETURN ||
-                                  (int)command.back() == WXK_NUMPAD_ENTER))
+          command.size() == 1 &&
+          (static_cast<int>(command.back()) == WXK_RETURN ||
+           static_cast<int>(command.back()) == WXK_NUMPAD_ENTER))
         {
           get_stc()->NewLine();
 
@@ -1381,11 +1389,13 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
   const auto& it = std::find_if(
     m_motion_commands.begin(),
     m_motion_commands.end(),
-    [&](auto const& e) {
+    [&](auto const& e)
+    {
       return std::any_of(
         e.first.begin(),
         e.first.end(),
-        [command](const auto& p) {
+        [command](const auto& p)
+        {
           return p == command[0];
         });
     });
@@ -1672,13 +1682,15 @@ bool wex::vi::other_command(std::string& command)
   if (const auto& it = std::find_if(
         m_other_commands.begin(),
         m_other_commands.end(),
-        [command](auto const& e) {
+        [command](auto const& e)
+        {
           if (!isalpha(e.first.front()))
           {
             return std::any_of(
               e.first.begin(),
               e.first.end(),
-              [command](const auto& p) {
+              [command](const auto& p)
+              {
                 return p == command.front();
               });
           }

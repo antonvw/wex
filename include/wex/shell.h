@@ -80,10 +80,10 @@ namespace wex
     const std::string get_history() const;
 
     /// Returns the prompt.
-    const auto& get_prompt() const { return m_prompt; };
+    const auto& get_prompt() const { return m_prompt; }
 
     /// Returns whether shell processing is enabled.
-    bool is_enabled() const { return m_enabled; };
+    bool is_enabled() const { return m_enabled; }
 
     /// Puts the text (if not empty) and a prompt at the end, goes to the end,
     /// and empties the undo buffer.

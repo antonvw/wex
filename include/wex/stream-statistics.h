@@ -11,31 +11,37 @@
 
 namespace wex
 {
-  class stream;
+class stream;
 
-  /// Offers stream_statistics.
-  /// Used by stream to keep statistics.
-  class stream_statistics
+/// Offers stream_statistics.
+/// Used by stream to keep statistics.
+class stream_statistics
+{
+  friend class stream;
+
+public:
+  /// Adds other statistics.
+  stream_statistics& operator+=(const stream_statistics& s)
   {
-    friend class stream;
-  public:
-    /// Adds other statistics.
-    stream_statistics& operator+=(const stream_statistics& s) {
-      m_elements += s.m_elements;
-      return *this;}
+    m_elements += s.m_elements;
+    return *this;
+  }
 
-    /// Returns all items as a string. All items are returned as a string,
-    /// with newlines separating items.
-    const std::string get() const {return m_elements.get();};
+  /// Returns all items as a string. All items are returned as a string,
+  /// with newlines separating items.
+  const std::string get() const { return m_elements.get(); }
 
-    /// Returns the key, if not present 0 is returned.
-    int get(const std::string& key) const {
-      const auto it = m_elements.get_items().find(key);
-      return (it != m_elements.get_items().end() ? it->second: 0);};
+  /// Returns the key, if not present 0 is returned.
+  int get(const std::string& key) const
+  {
+    const auto it = m_elements.get_items().find(key);
+    return (it != m_elements.get_items().end() ? it->second : 0);
+  }
 
-    /// Returns the elements.
-    const auto & get_elements() const {return m_elements;};
-  private:
-    statistics<int> m_elements;
-  };
+  /// Returns the elements.
+  const auto& get_elements() const { return m_elements; }
+
+private:
+  statistics<int> m_elements;
 };
+}; // namespace wex

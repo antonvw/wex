@@ -19,7 +19,7 @@ class extra_panel : public wxPanel
 {
 public:
   extra_panel(wxWindow* parent);
-  bool checked() const { return m_checked; };
+  bool checked() const { return m_checked; }
 
 private:
   const int   m_id_checkbox;
@@ -34,7 +34,8 @@ extra_panel::extra_panel(wxWindow* parent)
 {
   Bind(
     wxEVT_CHECKBOX,
-    [&](wxCommandEvent& event) {
+    [&](wxCommandEvent& event)
+    {
       m_checked = !m_checked;
     },
     m_id_checkbox);

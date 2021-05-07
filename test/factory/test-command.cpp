@@ -13,7 +13,7 @@
 class c_stc : public wex::factory::stc
 {
 public:
-  c_stc() { Create(wxTheApp->GetTopWindow(), -1); };
+  c_stc() { Create(wxTheApp->GetTopWindow(), -1); }
 
 private:
   const wex::path& get_filename() const override { return m_path; };

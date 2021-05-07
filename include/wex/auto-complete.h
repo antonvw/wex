@@ -2,68 +2,80 @@
 // Name:      auto_complete.h
 // Purpose:   Declaration of class wex::auto_complete
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <set>
 #include <string>
-#include <wex/ctags-entry.h>
 
 namespace wex
 {
-  class scope;
-  class stc;
+class scope;
+class stc;
 
-  /// Offers a class for auto completion on wex::stc.
-  class auto_complete
-  {
-  public:
-    /// Constructor.
-    auto_complete(stc* stc);
+/// Offers a class for auto completion on wex::stc.
+class auto_complete
+{
+public:
+  /// Constructor, provide stc and min size to trigger completion.
+  explicit auto_complete(stc* stc, size_t min_size = 2);
 
-    /// Destructor.
-    ~auto_complete();
+  /// Destructor.
+  ~auto_complete();
 
-    /// Activates the auto completed text.
-    /// This might setup a filter for next
-    /// auto complete list.
-    bool activate(const std::string& text);
+  /// Clears data.
+  void clear();
 
-    /// Clears filter and text.
-    void clear();
+  /// Completes the auto completed text.
+  /// This might setup a filter for next
+  /// auto complete list.
+  bool complete(const std::string& text);
 
-    /// Builds and shows auto complete lists on the
-    /// stc component. This can be a list
-    /// according to CTags, previously inserted text,
-    /// or keywords for current lexer.
-    /// Returns true if show was invoked.
-    bool on_char(char c);
+  /// Returns current insert.
+  /// (e.g. a variable or a class name)
+  const auto& insert() const { return m_insert; }
 
-    /// Takes care that auto complete scope is updated
-    /// with level information on current stc position.
-    void sync() const;
+  /// Returns all inserts (independant of scope)
+  const auto& inserts() const { return m_inserts; }
 
-    /// Returns true if active.
-    bool use() const;
+  /// Builds and shows auto complete lists on the
+  /// stc component. This can be a list
+  /// according to CTags, previously inserted text,
+  /// or keywords for current lexer.
+  /// Returns true if show was invoked.
+  bool on_char(char c);
 
-    /// Sets auto completion on or off.
-    void use(bool on) { m_use = on; };
+  /// Takes care that auto complete scope is updated
+  /// with level information on current stc position.
+  void sync() const;
 
-  private:
-    bool show_ctags(bool show);
-    bool show_inserts(bool show) const;
-    bool show_keywords(bool show) const;
+  /// Returns true if active.
+  bool use() const;
 
-    const size_t m_min_size;
+  /// Sets auto completion on or off.
+  void use(bool on) { m_use = on; }
 
-    bool m_get_members{false}, m_use{true};
+  /// Returns the class name of variable for current level (scope).
+  const std::string variable(const std::string& name) const;
 
-    std::string           m_active, m_text;
-    std::set<std::string> m_inserts;
+private:
+  void clear_insert();
+  bool show_ctags();
+  bool show_inserts(bool show) const;
+  bool show_keywords(bool show) const;
+  void store_variable();
 
-    scope* m_scope;
-    stc*   m_stc;
-  };
+  const size_t m_min_size;
+
+  bool m_use{true};
+
+  std::string m_active, m_insert, m_request_members;
+
+  std::set<std::string> m_inserts;
+
+  scope* m_scope;
+  stc*   m_stc;
+};
 }; // namespace wex

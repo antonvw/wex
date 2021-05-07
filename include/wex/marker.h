@@ -11,18 +11,18 @@
 
 namespace wex
 {
-  /// This class defines our scintilla markers.
-  class marker : public presentation
-  {
-  public:
-    /// Default constructor.
-    marker(const pugi::xml_node& node = pugi::xml_node());
+/// This class defines our scintilla markers.
+class marker : public presentation
+{
+public:
+  /// Default constructor.
+  explicit marker(const pugi::xml_node& node = pugi::xml_node());
 
-    /// Constructor.
-    /// Only sets no and symbol, and not the colours.
-    marker(int no, int symbol = -1);
+  /// Constructor.
+  /// Only sets no and symbol, and not the colours.
+  explicit marker(int no, int symbol = -1);
 
-    /// Returns symbol no.
-    int symbol() const { return style(); };
-  };
+  /// Returns symbol no.
+  int symbol() const { return style(); }
+};
 }; // namespace wex

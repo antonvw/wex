@@ -43,7 +43,9 @@ TEST_CASE("wex::path")
     REQUIRE(path.stat().is_ok());
     REQUIRE(!path.is_readonly());
 
-    REQUIRE(path.append("error").string().find("error") != std::string::npos);
+    REQUIRE(
+      path.append(wex::path("error")).string().find("error") !=
+      std::string::npos);
 
     path.replace_filename("xxx");
 
@@ -86,7 +88,7 @@ TEST_CASE("wex::path")
     const auto wx_milli = std::chrono::duration_cast<std::chrono::milliseconds>(
       std::chrono::system_clock::now() - wx_start);
 
-    CHECK(ex_milli.count() < 1000);
-    CHECK(wx_milli.count() < 1000);
+    CHECK_LT(ex_milli.count(), 1000);
+    CHECK_LT(wx_milli.count(), 1000);
   }
 }

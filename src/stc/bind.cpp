@@ -33,142 +33,142 @@
 
 namespace wex
 {
-  void edit_control_char(stc* stc)
+void edit_control_char(stc* stc)
+{
+  if (stc->GetSelectedText().length() > 2)
+    return;
+
+  const wxString& caption = _("Enter Control Character");
+  if (stc->is_hexmode())
+    return stc->get_hexmode().control_char_dialog(caption);
+
+  if (stc->GetReadOnly())
   {
-    if (stc->GetSelectedText().length() > 2)
-      return;
-
-    const wxString& caption = _("Enter Control Character");
-    if (stc->is_hexmode())
-      return stc->get_hexmode().control_char_dialog(caption);
-
-    if (stc->GetReadOnly())
+    if (stc->GetSelectedText().length() == 1)
     {
-      if (stc->GetSelectedText().length() == 1)
-      {
-        const char value = stc->GetSelectedText().GetChar(0);
-        wxMessageBox(
-          wxString::Format("hex: %x dec: %d", value, value),
-          _("Control Character"));
-      }
-      return;
+      const char value = stc->GetSelectedText().GetChar(0);
+      wxMessageBox(
+        wxString::Format("hex: %x dec: %d", value, value),
+        _("Control Character"));
+    }
+    return;
+  }
+
+  static int value = ' '; // don't use 0 as default as nullptr is not handled
+  if (stc->GetSelectedText().length() == 1)
+    value = stc->GetSelectedText().GetChar(0);
+  int new_value;
+  if (
+    (new_value = static_cast<int>(wxGetNumberFromUser(
+       _("Input") + " 0 - 255:",
+       wxEmptyString,
+       caption,
+       value,
+       0,
+       255,
+       stc))) < 0)
+    return;
+
+  if (stc->GetSelectedText().length() == 1)
+  {
+    if (value != new_value)
+    {
+      stc->ReplaceSelection(std::to_string(static_cast<char>(new_value)));
     }
 
-    static int value = ' '; // don't use 0 as default as nullptr is not handled
-    if (stc->GetSelectedText().length() == 1)
-      value = stc->GetSelectedText().GetChar(0);
-    int new_value;
-    if (
-      (new_value = (int)wxGetNumberFromUser(
-         _("Input") + " 0 - 255:",
-         wxEmptyString,
-         caption,
-         value,
-         0,
-         255,
-         stc)) < 0)
-      return;
+    stc->SetSelection(stc->GetCurrentPos(), stc->GetCurrentPos() + 1);
+  }
+  else
+  {
+    char buffer[2];
+    buffer[0] = static_cast<char>(new_value);
+    buffer[1] = 0;
 
-    if (stc->GetSelectedText().length() == 1)
+    if (stc->get_vi().is_active())
     {
-      if (value != new_value)
-      {
-        stc->ReplaceSelection(std::to_string((char)new_value));
-      }
-
-      stc->SetSelection(stc->GetCurrentPos(), stc->GetCurrentPos() + 1);
+      stc->get_vi().command(std::string(buffer, 2));
     }
     else
     {
-      char buffer[2];
-      buffer[0] = (char)new_value;
-      buffer[1] = 0;
-
-      if (stc->get_vi().is_active())
-      {
-        stc->get_vi().command(std::string(buffer, 2));
-      }
-      else
-      {
-        stc->AddTextRaw(buffer, 1);
-      }
-
-      stc->process_char(new_value);
+      stc->AddTextRaw(buffer, 1);
     }
 
-    value = new_value;
+    stc->process_char(new_value);
   }
 
-  void show_calltip(stc* stc)
+  value = new_value;
+}
+
+void show_calltip(stc* stc)
+{
+  if (stc->CallTipActive())
+    stc->CallTipCancel();
+
+  const auto pos = stc->GetCurrentPos();
+
+  if (stc->is_hexmode())
   {
-    if (stc->CallTipActive())
-      stc->CallTipCancel();
+    stc->CallTipShow(pos, stc->get_hexmode().get_info());
+    return;
+  }
 
-    const auto pos = stc->GetCurrentPos();
+  const auto word =
+    (!stc->GetSelectedText().empty() ? stc->GetSelectedText().ToStdString() :
+                                       stc->get_word_at_pos(pos));
 
-    if (stc->is_hexmode())
+  if (word.empty())
+  {
+    return;
+  }
+
+  std::stringstream stream;
+
+  if (const int c = word[0]; c < 32 || c > 125)
+  {
+    stream << "bin: " << c;
+  }
+  else
+  {
+    long base10_val, base16_val;
+    bool base10_ok = true;
+    bool base16_ok = true;
+
+    try
     {
-      stc->CallTipShow(pos, stc->get_hexmode().get_info());
-      return;
+      base10_val = std::stol(word);
+      base10_ok  = (base10_val != 0);
+    }
+    catch (std::exception&)
+    {
+      base10_ok = false;
     }
 
-    const auto word =
-      (!stc->GetSelectedText().empty() ? stc->GetSelectedText().ToStdString() :
-                                         stc->get_word_at_pos(pos));
-
-    if (word.empty())
+    try
     {
-      return;
+      base16_val = std::stol(word, nullptr, 16);
+    }
+    catch (std::exception&)
+    {
+      base16_ok = false;
     }
 
-    std::stringstream stream;
-
-    if (const int c = word[0]; c < 32 || c > 125)
+    if (base10_ok || base16_ok)
     {
-      stream << "bin: " << c;
-    }
-    else
-    {
-      long base10_val, base16_val;
-      bool base10_ok = true;
-      bool base16_ok = true;
-
-      try
-      {
-        base10_val = std::stol(word);
-        base10_ok  = (base10_val != 0);
-      }
-      catch (std::exception&)
-      {
-        base10_ok = false;
-      }
-
-      try
-      {
-        base16_val = std::stol(word, nullptr, 16);
-      }
-      catch (std::exception&)
-      {
-        base16_ok = false;
-      }
-
-      if (base10_ok || base16_ok)
-      {
-        if (base10_ok && !base16_ok)
-          stream << "hex: " << std::hex << base10_val;
-        else if (!base10_ok && base16_ok)
-          stream << "dec: " << base16_val;
-        else if (base10_ok && base16_ok)
-          stream << "dec: " << base16_val << " hex: " << std::hex << base10_val;
-      }
-    }
-
-    if (!stream.str().empty())
-    {
-      stc->CallTipShow(pos, stream.str());
-      clipboard_add(stream.str());
+      if (base10_ok && !base16_ok)
+        stream << "hex: " << std::hex << base10_val;
+      else if (!base10_ok && base16_ok)
+        stream << "dec: " << base16_val;
+      else if (base10_ok && base16_ok)
+        stream << "dec: " << base16_val << " hex: " << std::hex << base10_val;
     }
   }
+
+  if (!stream.str().empty())
+  {
+    stc->CallTipShow(pos, stream.str());
+    clipboard_add(stream.str());
+  }
+}
 } // namespace wex
 
 void wex::stc::bind_all()
@@ -395,7 +395,7 @@ void wex::stc::bind_all()
       {
         reset_margins(margin_t().set(MARGIN_TEXT));
         m_margin_text_click = -1;
-        const item_vector& iv(m_config_items);
+        const item_vector iv(m_config_items);
         SetWrapMode(iv.find<long>(_("stc.Wrap line")));
       },
       id::stc::margin_text_hide},

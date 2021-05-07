@@ -135,7 +135,7 @@ const std::string wex::lexers::apply_macro(
 }
 
 void wex::lexers::apply_margin_text_style(
-  factory::stc*         stc,
+  factory::stc*      stc,
   int                line,
   margin_style_t     style,
   const std::string& text) const
@@ -185,8 +185,11 @@ const wex::lexer& wex::lexers::find(const std::string& name) const
 {
   assert(!m_lexers.empty());
 
-  const auto& it =
-    std::find_if(m_lexers.begin(), m_lexers.end(), [name](auto const& e) {
+  const auto& it = std::find_if(
+    m_lexers.begin(),
+    m_lexers.end(),
+    [name](auto const& e)
+    {
       return e.display_lexer() == name;
     });
 
@@ -198,8 +201,11 @@ wex::lexers::find_by_filename(const std::string& fullname) const
 {
   assert(!m_lexers.empty());
 
-  const auto& it =
-    std::find_if(m_lexers.begin(), m_lexers.end(), [fullname](auto const& e) {
+  const auto& it = std::find_if(
+    m_lexers.begin(),
+    m_lexers.end(),
+    [fullname](auto const& e)
+    {
       return !e.extensions().empty() &&
              matches_one_of(fullname, e.extensions());
     });
@@ -301,7 +307,7 @@ bool wex::lexers::load_document()
 
   m_indicators.insert(indicator());
   m_keywords[std::string()] = std::string();
-  m_lexers.push_back(std::string());
+  m_lexers.push_back(lexer());
   m_macros[std::string()] = name_values_t{};
   m_markers.insert(marker());
   m_theme_colours[std::string()] = m_default_colours;

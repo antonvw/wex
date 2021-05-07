@@ -16,13 +16,14 @@
 #include "../test/ui/test-item.h"
 #include "app.h"
 
-#define PRINT_COMPONENT(ID)                                                  \
-  wxEVT_UPDATE_UI,                                                           \
-    [=, this](wxUpdateUIEvent& event) {                                      \
-      event.Enable(                                                          \
-        (get_listview() != nullptr && get_listview()->GetItemCount() > 0) || \
-        (get_stc() != nullptr && get_stc()->GetLength() > 0));               \
-    },                                                                       \
+#define PRINT_COMPONENT(ID)                                                \
+  wxEVT_UPDATE_UI,                                                         \
+    [=, this](wxUpdateUIEvent& event)                                      \
+  {                                                                        \
+    event.Enable(                                                          \
+      (get_listview() != nullptr && get_listview()->GetItemCount() > 0) || \
+      (get_stc() != nullptr && get_stc()->GetLength() > 0));               \
+  },                                                                       \
     ID
 
 enum
@@ -222,7 +223,7 @@ frame::frame()
       (wex::listview*)m_notebook->page_by_key(wex::data::listview()
                                                 .type(wex::data::listview::FILE)
                                                 .type_description()),
-      wex::path::current(),
+      wex::path(wex::path::current()),
       wex::data::dir().file_spec("*.cpp;*.h"));
 
     dir.find_files();
@@ -237,7 +238,8 @@ frame::frame()
   }
 
   wex::bind(this).command(
-    {{[=, this](wxCommandEvent& event) {
+    {{[=, this](wxCommandEvent& event)
+      {
         m_statistics->inc(std::to_string(event.GetId()));
         wxAboutDialogInfo info;
         info.SetIcon(GetIcon());
@@ -247,7 +249,8 @@ frame::frame()
         wxAboutBox(info);
       },
       wxID_ABOUT},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         const auto val = wxGetNumberFromUser(
           "Input columns:",
           wxEmptyString,
@@ -266,7 +269,8 @@ frame::frame()
         }
       },
       ID_DLG_CONFIG_ITEM_COL},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         auto* dlg = new wex::item_dialog(
           test_config_items(0, 1),
           wex::data::window()
@@ -281,7 +285,8 @@ frame::frame()
         dlg->Show();
       },
       ID_DLG_CONFIG_ITEM},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         wex::item_dialog(
           test_config_items(0, 1),
           wex::data::window().button(wxCANCEL).title("Config Dialog Readonly"),
@@ -290,19 +295,23 @@ frame::frame()
           .ShowModal();
       },
       ID_DLG_CONFIG_ITEM_READONLY},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         wex::item_dialog(test_items()).ShowModal();
       },
       ID_DLG_ITEM},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         m_listview->config_dialog();
       },
       ID_DLG_LISTVIEW},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         wex::stc::config_dialog(wex::data::window().button(wxAPPLY | wxCANCEL));
       },
       ID_DLG_STC_CONFIG},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         std::string text;
         for (auto i = 0; i < 100; i++)
         {
@@ -315,16 +324,19 @@ frame::frame()
           .ShowModal();
       },
       ID_DLG_STC_ENTRY},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         wex::vcs().config_dialog();
       },
       ID_DLG_VCS},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         m_shell->prompt(
           "\nHello '" + event.GetString().ToStdString() + "' from the shell");
       },
       wex::ID_SHELL_COMMAND},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         wxFileDialog dlg(
           this,
           _("Open File"),
@@ -334,11 +346,13 @@ frame::frame()
           wxFD_OPEN | wxFD_FILE_MUST_EXIST);
         if (dlg.ShowModal() == wxID_CANCEL)
           return;
-        const wex::vcs vcs(std::vector<wex::path>{dlg.GetPath().ToStdString()});
+        const wex::vcs vcs(
+          std::vector<wex::path>{wex::path(dlg.GetPath().ToStdString())});
         wex::stc_entry_dialog(vcs.name()).ShowModal();
       },
       ID_SHOW_VCS},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         if (m_notebook->set_selection("Statistics") == nullptr)
         {
           wex::data::window data;
@@ -350,7 +364,8 @@ frame::frame()
         }
       },
       ID_STATISTICS_SHOW},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         const long value = wxGetNumberFromUser(
           "Input:",
           wxEmptyString,
@@ -364,7 +379,8 @@ frame::frame()
         }
       },
       ID_STC_FLAGS},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         m_process->async_system();
       },
       wxID_EXECUTE}});
@@ -451,7 +467,7 @@ void frame::on_command(wxCommandEvent& event)
         return;
       const auto start = std::chrono::system_clock::now();
       m_stc->open(
-        dlg.GetPath().ToStdString(),
+        wex::path(dlg.GetPath().ToStdString()),
         wex::data::stc().flags((wex::data::stc::window_t)m_flags_stc));
       const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(
         std::chrono::system_clock::now() - start);
@@ -549,7 +565,7 @@ dir::dir(
   const std::string& fullpath,
   const std::string& findfiles,
   wex::grid*         grid)
-  : wex::dir(fullpath, wex::data::dir().file_spec(findfiles))
+  : wex::dir(wex::path(fullpath), wex::data::dir().file_spec(findfiles))
   , m_grid(grid)
 {
 }

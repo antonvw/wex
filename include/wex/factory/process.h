@@ -48,13 +48,13 @@ namespace wex
       /// Other methods
 
       /// Returns last or current exe.
-      const auto& get_exe() const { return m_exe; };
+      const auto& get_exe() const { return m_exe; }
 
       /// Returns the stderr.
-      const auto& get_stderr() const { return m_stderr; };
+      const auto& get_stderr() const { return m_stderr; }
 
       /// Returns the stdout.
-      const auto& get_stdout() const { return m_stdout; };
+      const auto& get_stdout() const { return m_stdout; }
 
       /// Is this a debug process.
       bool is_debug() const;

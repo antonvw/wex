@@ -25,7 +25,7 @@ namespace wex
       /// style (default, might be overridden in the config)
       int style = wxSB_NORMAL)
       : wxStatusBarPane(style, width)
-      , m_name("PaneText"){};
+      , m_name("PaneText"){}
 
     /// Constructor.
     statusbar_pane(
@@ -46,10 +46,10 @@ namespace wex
       bool show = true);
 
     /// Returns hidden text.
-    const auto& get_hidden_text() const { return m_hidden; };
+    const auto& get_hidden_text() const { return m_hidden; }
 
     /// Returns statusbar pane name.
-    const auto& get_name() const { return m_name; };
+    const auto& get_name() const { return m_name; }
 
     /// Sets helptext.
     /// helptext shown as a tooltip
@@ -58,13 +58,13 @@ namespace wex
     statusbar_pane& help(const std::string& rhs);
 
     /// Returns statusbar pane help text.
-    const auto& help_text() const { return m_help_text; };
+    const auto& help_text() const { return m_help_text; }
 
     /// Returns whether this pane is shown.
-    bool is_shown() const { return m_is_shown; };
+    bool is_shown() const { return m_is_shown; }
 
     /// Sets hidden text.
-    void set_hidden_text(const std::string& text) { m_hidden = text; };
+    void set_hidden_text(const std::string& text) { m_hidden = text; }
 
     /// Sets whether this pane is shown.
     /// Resets the hidden text if show is true.

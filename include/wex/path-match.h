@@ -34,16 +34,16 @@ namespace wex
     };
 
     /// Returns matching line.
-    auto& line() const { return m_line; };
+    auto& line() const { return m_line; }
 
     /// Returns matching line no.
-    auto line_no() const { return m_line_no; };
+    auto line_no() const { return m_line_no; }
 
     /// Returns path containing match.
-    auto& path() const { return m_path; };
+    auto& path() const { return m_path; }
 
     /// Returns start pos of match.
-    auto pos() const { return m_pos; };
+    auto pos() const { return m_pos; }
 
   private:
     const wex::path   m_path;

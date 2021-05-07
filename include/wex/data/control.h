@@ -34,7 +34,7 @@ namespace wex::data
     };
 
     /// Returns col.
-    const auto col() const { return line_data::col(); };
+    const auto col() const { return line_data::col(); }
 
     /// Sets column.
     control& col(int col)
@@ -44,14 +44,14 @@ namespace wex::data
     };
 
     /// Returns command.
-    const auto& command() const { return m_command; };
+    const auto& command() const { return m_command; }
 
     /// Sets command.
     /// This is a vi command to execute.
     control& command(const std::string& command);
 
     /// Returns find.
-    const auto& find() const { return m_find; };
+    const auto& find() const { return m_find; }
 
     /// Sets find.
     /// If not empty selects the text on that line (if line was specified)
@@ -63,7 +63,7 @@ namespace wex::data
       int find_flags = 0);
 
     /// Returns find flags.
-    const auto find_flags() const { return m_find_flags; };
+    const auto find_flags() const { return m_find_flags; }
 
     /// Sets specified flags.
     /// This is used by the other data classes as generic
@@ -119,7 +119,7 @@ namespace wex::data
       std::function<bool(void)> command = nullptr) const;
 
     /// Returns required.
-    const auto is_required() const { return m_is_required; };
+    const auto is_required() const { return m_is_required; }
 
     /// Sets required.
     control& is_required(bool required)
@@ -129,7 +129,7 @@ namespace wex::data
     };
 
     /// Returns line.
-    const auto line() const { return line_data::line(); };
+    const auto line() const { return line_data::line(); }
 
     /// Sets line number.
     /// Goes to the line if > 0, if -1 goes to end of file
@@ -140,13 +140,13 @@ namespace wex::data
     };
 
     /// Returns validator.
-    const auto validator() const { return m_validator; };
+    const auto validator() const { return m_validator; }
 
     /// Sets validator.
     control& validator(wxValidator* validator);
 
     /// Returns window data.
-    const auto& window() const { return m_data; };
+    const auto& window() const { return m_data; }
 
     /// Sets window data.
     control& window(const data::window& data)

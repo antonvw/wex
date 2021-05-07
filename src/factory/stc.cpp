@@ -68,10 +68,19 @@ bool wex::factory::stc::find(
   return false;
 }
 
-int wex::factory::stc::get_fold_level() const
+size_t wex::factory::stc::get_fold_level() const
 {
-  return (GetFoldLevel(get_current_line()) & wxSTC_FOLDLEVELNUMBERMASK) -
-         wxSTC_FOLDLEVELBASE;
+  if (const int level(
+        (GetFoldLevel(get_current_line()) & wxSTC_FOLDLEVELNUMBERMASK) -
+        wxSTC_FOLDLEVELBASE);
+      level > 0)
+  {
+    return level;
+  }
+  else
+  {
+    return 0;
+  }
 }
 
 const std::string wex::factory::stc::get_selected_text() const

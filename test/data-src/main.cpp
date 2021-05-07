@@ -9,20 +9,20 @@
 
 namespace wex::test
 {
-  class data : public app
-  {
-  public:
-    static auto* get_listview() { return m_listview; };
-    static auto* get_stc() { return m_stc; };
+class data : public app
+{
+public:
+  static auto* get_listview() { return m_listview; }
+  static auto* get_stc() { return m_stc; }
 
-  private:
-    bool OnInit() override;
+private:
+  bool OnInit() override;
 
-    wxFrame* m_frame{nullptr};
+  wxFrame* m_frame{nullptr};
 
-    static inline wex::factory::listview* m_listview = nullptr;
-    static inline wex::factory::stc*      m_stc      = nullptr;
-  };
+  static inline wex::factory::listview* m_listview = nullptr;
+  static inline wex::factory::stc*      m_stc      = nullptr;
+};
 }; // namespace wex::test
 
 class data_listview : public wex::factory::listview

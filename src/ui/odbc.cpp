@@ -33,47 +33,47 @@
 
 namespace wex
 {
-  class odbc_imp
+class odbc_imp
+{
+public:
+  odbc_imp(bool threaded_mode, size_t buffer_size)
+    : m_buffer_size(buffer_size)
   {
-  public:
-    odbc_imp(bool threaded_mode, size_t buffer_size)
-      : m_buffer_size(buffer_size)
-    {
-      otl_connect::otl_initialize(threaded_mode);
-    };
-
-    auto buffer_size() const { return m_buffer_size; };
-
-    auto& connect() { return m_connect; };
-
-  private:
-    otl_connect  m_connect;
-    const size_t m_buffer_size;
+    otl_connect::otl_initialize(threaded_mode);
   };
 
-  std::string query_error(const otl_exception& e)
-  {
-    const std::string query((const char*)e.stm_text);
+  auto buffer_size() const { return m_buffer_size; }
 
-    if (const std::string str((const char*)e.msg); !str.empty())
-    {
-      return "OTL error: " + wex::quoted(str);
-    }
-    else if (const std::string ss((const char*)e.sqlstate); !ss.empty())
-    {
-      return "sqlstate: " + ss + " in: " + wex::quoted(query);
-    }
-    else
-    {
-      return "error, no more info";
-    }
-  }
+  auto& connect() { return m_connect; }
 
-  void handle_error(const otl_exception& e, const otl_column_desc& desc)
+private:
+  otl_connect  m_connect;
+  const size_t m_buffer_size;
+};
+
+std::string query_error(const otl_exception& e)
+{
+  const std::string query((const char*)e.stm_text);
+
+  if (const std::string str((const char*)e.msg); !str.empty())
   {
-    wex::log::trace() << query_error(e) << "skipped: (" << desc.otl_var_dbtype
-                      << "," << desc.dbsize << ")";
+    return "OTL error: " + wex::quoted(str);
   }
+  else if (const std::string ss((const char*)e.sqlstate); !ss.empty())
+  {
+    return "sqlstate: " + ss + " in: " + wex::quoted(query);
+  }
+  else
+  {
+    return "error, no more info";
+  }
+}
+
+void handle_error(const otl_exception& e, const otl_column_desc& desc)
+{
+  wex::log::trace() << query_error(e) << "skipped: (" << desc.otl_var_dbtype
+                    << "," << desc.dbsize << ")";
+}
 }; // namespace wex
 
 wex::odbc::odbc(bool threaded_mode, size_t buffer_size)

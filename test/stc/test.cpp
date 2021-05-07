@@ -7,4 +7,28 @@
 
 #include "test.h"
 
-// empty for the momentA
+void event(wxWindow* win, char id)
+{
+  wxKeyEvent evt(wxEVT_CHAR);
+  evt.m_uniChar = id;
+  wxPostEvent(win, evt);
+}
+
+void event(wxWindow* win, const std::string& ids)
+{
+  for (const auto id : ids)
+  {
+    event(win, id);
+  }
+
+  wxYield();
+}
+
+void event(wxWindow* win, int id)
+{
+  wxKeyEvent keyd(wxEVT_KEY_DOWN);
+  keyd.m_keyCode = id;
+  wxPostEvent(win, keyd);
+
+  wxYield();
+}

@@ -20,15 +20,18 @@
 
 namespace wex
 {
-  enum
-  {
-    INDENT_NONE,
-    INDENT_WHITESPACE,
-    INDENT_LEVEL,
-    INDENT_ALL,
-  };
+enum
+{
+  INDENT_NONE,
+  INDENT_WHITESPACE,
+  INDENT_LEVEL,
+  INDENT_ALL,
+};
 
-  const std::string def(const wxString& v) { return std::string(v) + ",1"; }
+const std::string def(const wxString& v)
+{
+  return std::string(v) + ",1";
+}
 }; // namespace wex
 
 bool wex::stc::auto_indentation(int c)
@@ -123,7 +126,7 @@ int wex::stc::config_dialog(const data::window& par)
 
 void wex::stc::config_get()
 {
-  const item_vector& iv(m_config_items);
+  const item_vector iv(m_config_items);
 
   SetEdgeColumn(iv.find<int>(_("stc.Edge column")));
 
@@ -278,7 +281,8 @@ void wex::stc::on_init()
             wxFONTSTYLE_NORMAL,
             wxFONTWEIGHT_NORMAL),
           data::item().apply(
-            [=](wxWindow* user, const std::any& value, bool save) {
+            [=](wxWindow* user, const std::any& value, bool save)
+            {
               // Doing this once is enough, not yet possible.
               lexers::get()->load_document();
             })},
@@ -332,9 +336,11 @@ void wex::stc::on_init()
           std::any(),
           data::item()
             .label_type(data::item::LABEL_NONE)
-            .apply([=](wxWindow* user, const std::any& value, bool save) {
-              m_link->config_get();
-            })},
+            .apply(
+              [=](wxWindow* user, const std::any& value, bool save)
+              {
+                m_link->config_get();
+              })},
          {_("<i>Matches:</i>")},
          {_("stc.link.Pairs"),
           data::listview()

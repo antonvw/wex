@@ -47,14 +47,14 @@ namespace wex
 
     /// Returns the buffer.
     /// The buffer contains the normal text, without hex info.
-    const auto& buffer() const { return m_buffer; };
+    const auto& buffer() const { return m_buffer; }
 
     /// Returns info about current index,
     /// depending on which field is current.
     const std::string get_info();
 
     /// Returns stc component.
-    auto* get_stc() { return m_stc; };
+    auto* get_stc() { return m_stc; }
 
     /// Asks for a byte offset goes to that byte.
     bool goto_dialog();
@@ -73,7 +73,7 @@ namespace wex
     bool insert(const std::string& text, int pos = -1);
 
     /// Returns true if hex mode is on.
-    bool is_active() const { return m_active; };
+    bool is_active() const { return m_active; }
 
     /// Replaces current line at current index (if pos -1) with char for
     /// both ascii and hex field. Otherwise at specified pos.

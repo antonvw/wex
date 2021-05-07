@@ -28,27 +28,27 @@
 namespace wex
 {
 #ifdef USE_THREAD
-  // from wxWidgets/src/stc/scintilla/include/ILexer.h
-  class ILoader
-  {
-  public:
-    virtual int   Release()                       = 0;
-    virtual int   AddData(char* data, int length) = 0;
-    virtual void* ConvertToDocument()             = 0;
-  };
+// from wxWidgets/src/stc/scintilla/include/ILexer.h
+class ILoader
+{
+public:
+  virtual int   Release()                       = 0;
+  virtual int   AddData(char* data, int length) = 0;
+  virtual void* ConvertToDocument()             = 0;
+};
 
-  class loader : public ILoader
-  {
-  public:
-    int   Release() override { return 0; };
-    int   AddData(char* data, int length) override { return 0; };
-    void* ConvertToDocument() override { return nullptr; };
-  };
+class loader : public ILoader
+{
+public:
+  int   Release() override { return 0; };
+  int   AddData(char* data, int length) override { return 0; };
+  void* ConvertToDocument() override { return nullptr; };
+};
 #endif
 } // namespace wex
 
 wex::stc_file::stc_file(stc* stc, const std::string& filename)
-  : file(filename)
+  : file(path(filename))
   , m_stc(stc)
 {
 }
@@ -91,42 +91,45 @@ bool wex::stc_file::do_file_load(bool synced)
   }
 
 #ifdef USE_THREAD
-  std::thread t([&] {
+  std::thread t(
+    [&]
+    {
 #endif
-    if (!m_stc->is_visual())
-    {
-      ex_stream()->stream(*this);
-    }
-    else if (const auto buffer(read(offset)); buffer != nullptr)
-    {
-      if (!m_stc->get_hexmode().is_active() && !hexmode)
+      if (!m_stc->is_visual())
       {
+        ex_stream()->stream(*this);
+      }
+      else if (const auto buffer(read(offset)); buffer != nullptr)
+      {
+        if (!m_stc->get_hexmode().is_active() && !hexmode)
+        {
 #ifdef USE_THREAD
-        loader* load = (loader*)m_stc->CreateLoader(buffer->size());
+          loader* load =
+            reinterpret_cast<loader*>(m_stc->CreateLoader(buffer->size()));
 #endif
-        m_stc->append_text(*buffer);
-        m_stc->DocumentStart();
+          m_stc->append_text(*buffer);
+          m_stc->DocumentStart();
+        }
+        else
+        {
+          if (!m_stc->get_hexmode().is_active())
+          {
+            m_stc->get_hexmode().set(true, false);
+          }
+
+          m_stc->get_hexmode().append_text(*buffer);
+        }
       }
       else
       {
-        if (!m_stc->get_hexmode().is_active())
-        {
-          m_stc->get_hexmode().set(true, false);
-        }
-
-        m_stc->get_hexmode().append_text(*buffer);
+        m_stc->SetText("READ ERROR");
       }
-    }
-    else
-    {
-      m_stc->SetText("READ ERROR");
-    }
 
-    const int action =
-      m_stc->data().event().is_synced() ? FILE_LOAD_SYNC : FILE_LOAD;
-    FILE_POST(action);
+      const int action =
+        m_stc->data().event().is_synced() ? FILE_LOAD_SYNC : FILE_LOAD;
+      FILE_POST(action);
 #ifdef USE_THREAD
-  });
+    });
   t.detach();
 #endif
 
@@ -162,28 +165,32 @@ void wex::stc_file::do_file_save(bool save_as)
   else if (m_stc->get_hexmode().is_active())
   {
 #ifdef USE_THREAD
-    std::thread t([&] {
-#endif
-      if (write(m_stc->get_hexmode().buffer()))
+    std::thread t(
+      [&]
       {
-        FILE_POST(save_as ? FILE_SAVE_AS : FILE_SAVE);
-      }
+#endif
+        if (write(m_stc->get_hexmode().buffer()))
+        {
+          FILE_POST(save_as ? FILE_SAVE_AS : FILE_SAVE);
+        }
 #ifdef USE_THREAD
-    });
+      });
     t.detach();
 #endif
   }
   else
   {
 #ifdef USE_THREAD
-    std::thread t([&] {
-#endif
-      if (write(m_stc->get_text()))
+    std::thread t(
+      [&]
       {
-        FILE_POST(save_as ? FILE_SAVE_AS : FILE_SAVE);
-      }
+#endif
+        if (write(m_stc->get_text()))
+        {
+          FILE_POST(save_as ? FILE_SAVE_AS : FILE_SAVE);
+        }
 #ifdef USE_THREAD
-    });
+      });
     t.detach();
 #endif
   }

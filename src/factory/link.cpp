@@ -17,32 +17,32 @@
 
 namespace wex::factory
 {
-  class paths
+class paths
+{
+public:
+  paths()
+    : m_paths(
+        config(_("stc.link.Include directory")).get(std::list<std::string>()))
   {
-  public:
-    paths()
-      : m_paths(
-          config(_("stc.link.Include directory")).get(std::list<std::string>()))
-    {
-      ;
-    };
-
-    path find(const std::string& path) const
-    {
-      for (const auto& it : m_paths)
-      {
-        if (const wex::path valid(it, path); valid.file_exists())
-        {
-          return valid;
-        }
-      }
-
-      return wex::path();
-    };
-
-  private:
-    const std::list<std::string> m_paths;
+    ;
   };
+
+  path find(const std::string& path) const
+  {
+    for (const auto& it : m_paths)
+    {
+      if (const wex::path valid(it, path); valid.file_exists())
+      {
+        return valid;
+      }
+    }
+
+    return wex::path();
+  };
+
+private:
+  const std::list<std::string> m_paths;
+};
 }; // namespace wex::factory
 
 wex::factory::link::link()
@@ -72,7 +72,7 @@ const wex::path wex::factory::link::find_between(
                       stc->get_lexer().scintilla_lexer() == "po" &&
                       v.search(text) > 0)
   {
-    return v[0];
+    return path(v[0]);
   }
 
   // Path in bash files.
@@ -80,15 +80,15 @@ const wex::path wex::factory::link::find_between(
                                stc->get_lexer().scintilla_lexer() == "bash" &&
                                v.search(text) > 0)
   {
-    return v[0];
+    return path(v[0]);
   }
 
   if (const auto& lp = get_link_pairs(text); !lp.empty())
   {
-    return lp;
+    return path(lp);
   }
 
-  return boost::algorithm::trim_copy(text);
+  return path(boost::algorithm::trim_copy(text));
 }
 
 const wex::path wex::factory::link::find_filename(
@@ -163,12 +163,12 @@ const wex::path wex::factory::link::find_url_or_mime(
       {
         if (const auto pos = match.find(c); pos != std::string::npos)
         {
-          return match.substr(0, pos);
+          return path(match.substr(0, pos));
         }
       }
 
       // without delimiter
-      return match;
+      return path(match);
     }
   }
 

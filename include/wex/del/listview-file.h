@@ -38,19 +38,19 @@ namespace wex::del
       data::dir::type_t  flags);
 
     /// Returns the file.
-    file& get_file() { return *this; };
+    file& get_file() { return *this; }
 
     // Access to members.
-    const auto& text_addfiles() const { return m_text_add_files; };
-    const auto& text_addfolders() const { return m_text_add_folders; };
-    const auto& text_addrecursive() const { return m_text_add_recursive; };
-    const auto& text_addwhat() const { return m_text_add_what; };
-    const auto& text_infolder() const { return m_text_in_folder; };
+    const auto& text_addfiles() const { return m_text_add_files; }
+    const auto& text_addfolders() const { return m_text_add_folders; }
+    const auto& text_addrecursive() const { return m_text_add_recursive; }
+    const auto& text_addwhat() const { return m_text_add_what; }
+    const auto& text_infolder() const { return m_text_in_folder; }
 
     /// Virtual interface
-    bool is_contents_changed() const final { return m_contents_changed; };
+    bool is_contents_changed() const final { return m_contents_changed; }
     bool item_from_text(const std::string& text) final;
-    void reset_contents_changed() final { m_contents_changed = false; };
+    void reset_contents_changed() final { m_contents_changed = false; }
 
   private:
     void after_sorting() final;

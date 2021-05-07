@@ -10,7 +10,7 @@
 #include <wex/tool.h>
 #include <wx/translation.h>
 
-std::map<int, wex::tool_info> wex::tool::m_tool_info{
+std::map<wex::window_id, wex::tool_info> wex::tool::m_tool_info{
   {ID_TOOL_REPORT_FIND, {_("Found %d matches in")}},
   {ID_TOOL_REPLACE, {_("Replaced %d matches in")}},
   {ID_TOOL_REPORT_KEYWORD,

@@ -35,7 +35,9 @@ wex::hexmode_line::hexmode_line(
     m_column_no = m_hex->get_stc()->GetColumn(pos);
     m_line_no   = m_hex->get_stc()->LineFromPosition(pos);
 
-    if (m_column_no >= m_start_ascii_field + (int)m_hex->m_bytes_per_line)
+    if (
+      m_column_no >=
+      m_start_ascii_field + static_cast<int>(m_hex->m_bytes_per_line))
     {
       m_column_no = m_start_ascii_field;
       m_line_no++;
@@ -55,7 +57,9 @@ wex::hexmode_line::hexmode_line(
 
 int wex::hexmode_line::buffer_index() const
 {
-  if (m_column_no >= m_start_ascii_field + (int)m_hex->m_bytes_per_line)
+  if (
+    m_column_no >=
+    m_start_ascii_field + static_cast<int>(m_hex->m_bytes_per_line))
   {
     return wxSTC_INVALID_POSITION;
   }
@@ -178,7 +182,7 @@ bool wex::hexmode_line::replace(char c)
 
     // replace hex field with code
     char buffer[3];
-    sprintf(buffer, "%02X", c);
+    snprintf(buffer, sizeof(buffer), "%02X", c);
 
     m_hex->get_stc()->wxStyledTextCtrl::Replace(
       pos + other_field(),
@@ -254,8 +258,8 @@ void wex::hexmode_line::replace_hex(int value)
 
   const int pos = m_hex->get_stc()->PositionFromLine(m_line_no);
 
-  char buffer[2];
-  sprintf(buffer, "%X", value);
+  char buffer[3];
+  snprintf(buffer, sizeof(buffer), "%2X", value);
 
   // replace hex field with value
   m_hex->get_stc()->wxStyledTextCtrl::Replace(
@@ -319,7 +323,7 @@ void wex::hexmode_line::set_pos(const wxKeyEvent& event) const
 
     if (
       m_hex->get_stc()->GetCurrentPos() >=
-      start + m_start_ascii_field + (int)m_hex->m_bytes_per_line)
+      start + m_start_ascii_field + static_cast<int>(m_hex->m_bytes_per_line))
     {
       m_hex->get_stc()->SetCurrentPos(
         m_hex->get_stc()->PositionFromLine(m_line_no + 1) +

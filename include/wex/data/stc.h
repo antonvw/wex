@@ -60,11 +60,11 @@ namespace wex
       {
       public:
         /// Access.
-        auto pos_end() const { return m_pos_end; };
-        auto pos_start() const { return m_pos_start; };
-        bool is_pos_at_end() const { return m_pos_at_end; };
-        bool is_synced() const { return m_synced; };
-        bool is_synced_log() const { return m_synced_log; };
+        auto pos_end() const { return m_pos_end; }
+        auto pos_start() const { return m_pos_start; }
+        bool is_pos_at_end() const { return m_pos_at_end; }
+        bool is_synced() const { return m_synced; }
+        bool is_synced_log() const { return m_synced_log; }
 
         /// Fill the members.
         void set(factory::stc* s, bool synced);
@@ -91,10 +91,10 @@ namespace wex
       stc& operator=(const data::stc& r);
 
       /// Returns control data.
-      auto& control() const { return m_data; };
+      auto& control() const { return m_data; }
 
       /// Returns (or sets) control data.
-      auto& control() { return m_data; };
+      auto& control() { return m_data; }
 
       /// Sets control data.
       stc& control(const data::control& data)
@@ -104,7 +104,7 @@ namespace wex
       };
 
       /// Returns event data.
-      const auto& event() const { return m_event_data; };
+      const auto& event() const { return m_event_data; }
 
       /// Sets event data.
       stc& event(bool synced)
@@ -114,7 +114,7 @@ namespace wex
       };
 
       /// Returns window flags.
-      const auto& flags() const { return m_win_flags; };
+      const auto& flags() const { return m_win_flags; }
 
       /// Set window flags.
       stc& flags(
@@ -122,7 +122,7 @@ namespace wex
         data::control::action_t action = data::control::SET);
 
       /// Returns indicator type.
-      const auto indicator_no() const { return m_indicator_no; };
+      const auto indicator_no() const { return m_indicator_no; }
 
       /// Sets indicator type.
       stc& indicator_no(indicator_t t);
@@ -131,14 +131,14 @@ namespace wex
       bool inject() const;
 
       /// Returns menu flags.
-      const auto& menu() const { return m_menu_flags; };
+      const auto& menu() const { return m_menu_flags; }
 
       /// Sets menu flags.
       stc&
       menu(menu_t flags, data::control::action_t action = data::control::SET);
 
       /// Returns window data.
-      const auto& window() const { return m_data.window(); };
+      const auto& window() const { return m_data.window(); }
 
       /// Sets window data.
       stc& window(const data::window& data)

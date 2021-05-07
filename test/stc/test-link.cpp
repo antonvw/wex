@@ -20,9 +20,10 @@ TEST_CASE("wex::link")
   {
     wex::data::control data;
     data.line(wex::link::LINE_OPEN_MIME);
-    stc->get_file().file_new("test.html");
+    stc->get_file().file_new(wex::path("test.html"));
     REQUIRE(lnk.get_path("www.wxwidgets.org", data).data().empty());
-    REQUIRE(lnk.get_path("xxx.wxwidgets.org", data, stc) == "test.html");
+    REQUIRE(
+      lnk.get_path("xxx.wxwidgets.org", data, stc).string() == "test.html");
     REQUIRE(lnk.get_path("xx", data, stc).data() == "test.html");
   }
 
@@ -46,7 +47,7 @@ TEST_CASE("wex::link")
     lnk.config_get();
 
     wex::data::control data;
-    stc->get_file().file_new("test.sh");
+    stc->get_file().file_new(wex::path("test.sh"));
 
     REQUIRE(
       lnk.get_path("source whoami", data, stc).data() == "/usr/bin/whoami");

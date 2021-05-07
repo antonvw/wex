@@ -31,32 +31,34 @@
 
 namespace wex
 {
-  /// Allows you to easily open all files on specified path.
-  /// After constructing, invoke find_files which
-  /// causes all found files to be opened using open_file from frame.
-  class open_file_dir : public dir
+/// Allows you to easily open all files on specified path.
+/// After constructing, invoke find_files which
+/// causes all found files to be opened using open_file from frame.
+class open_file_dir : public dir
+{
+public:
+  /// Constructor.
+  open_file_dir(const std::string& path, const data::dir& data);
+
+  static void set(factory::frame* fr, data::stc::window_t ft)
   {
-  public:
-    /// Constructor.
-    open_file_dir(const path& path, const data::dir& data);
+    m_flags = ft;
+    m_frame = fr;
+  }
 
-    static void set(factory::frame* fr, data::stc::window_t ft)
-    {
-      m_flags = ft;
-      m_frame = fr;
-    }
+private:
+  /// Opens each found file.
+  bool on_file(const path& file) override;
 
-  private:
-    /// Opens each found file.
-    bool on_file(const path& file) override;
-
-    static inline factory::frame*     m_frame = nullptr;
-    static inline data::stc::window_t m_flags{0};
-  };
+  static inline factory::frame*     m_frame = nullptr;
+  static inline data::stc::window_t m_flags{0};
+};
 }; // namespace wex
 
-wex::open_file_dir::open_file_dir(const wex::path& path, const data::dir& data)
-  : dir(path, data)
+wex::open_file_dir::open_file_dir(
+  const std::string& path,
+  const data::dir&   data)
+  : dir(wex::path(path), data)
 {
 }
 

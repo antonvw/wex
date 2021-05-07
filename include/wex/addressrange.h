@@ -37,7 +37,7 @@ namespace wex
     /// Static methods.
 
     /// Returns substitute data.
-    static auto& data() { return m_substitute; };
+    static auto& data() { return m_substitute; }
 
     /// Constructor for a range from current position
     /// extending with number of lines.
@@ -85,10 +85,10 @@ namespace wex
     bool execute(const std::string& reg) const;
 
     /// Returns begin address.
-    auto& get_begin() const { return m_begin; };
+    auto& get_begin() const { return m_begin; }
 
     /// Returns end address.
-    auto& get_end() const { return m_end; };
+    auto& get_end() const { return m_end; }
 
     /// Performs the global command on this range.
     bool global(
@@ -124,10 +124,10 @@ namespace wex
     const std::string regex_commands() const;
 
     /// Shifts the specified lines to the start of the line.
-    bool shift_left() const { return indent(false); };
+    bool shift_left() const { return indent(false); }
 
     /// Shifts the specified lines away from the start of the line.
-    bool shift_right() const { return indent(true); };
+    bool shift_right() const { return indent(true); }
 
     /// Sorts range, with optional parameters:
     /// -u to sort unique lines

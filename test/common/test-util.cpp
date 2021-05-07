@@ -68,8 +68,8 @@ TEST_CASE("wex::util" * doctest::may_fail())
         get_frame(),
         std::vector<wex::path>{
           wex::test::get_path("test.h").data(),
-          "test.cpp",
-          "*xxxxxx*.cpp"}) == 2);
+          wex::path("test.cpp"),
+          wex::path("*xxxxxx*.cpp")}) == 2);
     REQUIRE(
       wex::open_files(
         get_frame(),
@@ -77,7 +77,7 @@ TEST_CASE("wex::util" * doctest::may_fail())
     REQUIRE(
       wex::open_files(
         get_frame(),
-        std::vector<wex::path>{"../../data/wex-menus.xml"}) == 1);
+        std::vector<wex::path>{wex::path("../../data/wex-menus.xml")}) == 1);
   }
 
   SUBCASE("open_files_dialog") {}

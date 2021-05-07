@@ -36,7 +36,7 @@ namespace wex
     static bool load_document();
 
     /// Returns the number of vcs entries.
-    static auto size() { return m_entries.size(); };
+    static auto size() { return m_entries.size(); }
 
     /// Other methods.
 
@@ -56,10 +56,10 @@ namespace wex
     int config_dialog(const data::window& data = data::window()) const;
 
     /// Returns the current vcs entry.
-    auto& entry() { return m_entry; };
+    auto& entry() { return m_entry; }
 
     /// Returns the current vcs entry.
-    const auto& entry() const { return m_entry; };
+    const auto& entry() const { return m_entry; }
 
     /// Executes the current vcs command for the current
     /// vcs entry, and collects the output.

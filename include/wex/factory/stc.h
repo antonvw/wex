@@ -50,15 +50,9 @@ namespace wex
       /// Adds text.
       virtual void add_text(const std::string& text) { AddText(text); }
 
-      /// Clears auto complete.
-      virtual void auto_complete_clear() { ; };
-
-      /// Syncs auto complete.
-      virtual void auto_complete_sync() { ; };
-
       /// After pressing enter, starts new line at same place
       /// as previous line.
-      virtual bool auto_indentation(int c) { return false; };
+      virtual bool auto_indentation(int c) { return false; }
 
       /// Enables or disables folding depending on fold property
       /// (default not implemented).
@@ -72,7 +66,7 @@ namespace wex
       };
 
       /// Returns a ex command.
-      virtual const ex_command& get_ex_command() const { return m_command; };
+      virtual const ex_command& get_ex_command() const { return m_command; }
 
       /// Returns the filename, as used by the file.
       /// Pure virtual, must be overridden.
@@ -87,7 +81,7 @@ namespace wex
       };
 
       /// Hex erase.
-      virtual bool get_hexmode_erase(int begin, int end) { return false; };
+      virtual bool get_hexmode_erase(int begin, int end) { return false; }
 
       /// Hex insert.
       virtual bool get_hexmode_insert(const std::string& command, int pos)
@@ -96,7 +90,7 @@ namespace wex
       };
 
       /// Hex replace.
-      virtual bool get_hexmode_replace(char) { return false; };
+      virtual bool get_hexmode_replace(char) { return false; }
 
       /// Hex replace target.
       virtual bool
@@ -106,11 +100,11 @@ namespace wex
       };
 
       /// Hex sync.
-      virtual bool get_hexmode_sync() { return false; };
+      virtual bool get_hexmode_sync() { return false; }
 
       /// Returns line on which text margin was clicked,
       /// or -1 if not.
-      virtual int get_margin_text_click() const { return -1; };
+      virtual int get_margin_text_click() const { return -1; }
 
       /// Returns word at position.
       virtual const std::string get_word_at_pos(int pos) const
@@ -125,13 +119,13 @@ namespace wex
       };
 
       /// Returns true if we are in hex mode (default false).
-      virtual bool is_hexmode() const { return false; };
+      virtual bool is_hexmode() const { return false; }
 
       /// Returns true if we are in visual mode (default true).
-      virtual bool is_visual() const { return true; };
+      virtual bool is_visual() const { return true; }
 
       /// If selected text is a link, opens the link.
-      virtual bool link_open() { return false; };
+      virtual bool link_open() { return false; }
 
       /// Opens the file, reads the content into the window,
       /// then closes the file and sets the lexer.
@@ -142,13 +136,13 @@ namespace wex
 
       /// Restores saved position.
       /// Returns true if position was saved before.
-      virtual bool position_restore() { return false; };
+      virtual bool position_restore() { return false; }
 
       /// Saves position.
-      virtual void position_save() { ; };
+      virtual void position_save() { ; }
 
       /// Prints the document.
-      virtual void print(bool prompt = true) { ; };
+      virtual void print(bool prompt = true) { ; }
 
       /// Shows a print preview.
       void virtual print_preview(
@@ -159,14 +153,14 @@ namespace wex
 
       /// Shows properties on the statusbar using specified flags.
       /// Default not implemented.
-      virtual void properties_message(path::status_t flags = 0) { ; };
+      virtual void properties_message(path::status_t flags = 0) { ; }
 
       /// Reset all margins.
       /// Default not implemented.
-      virtual void reset_margins(margin_t type = margin_t().set()) { ; };
+      virtual void reset_margins(margin_t type = margin_t().set()) { ; }
 
       /// Sets hex mode (default false).
-      virtual bool set_hexmode(bool on) { return false; };
+      virtual bool set_hexmode(bool on) { return false; }
 
       /// Sets an indicator at specified start and end pos.
       /// Default false, not implemented.
@@ -182,39 +176,39 @@ namespace wex
       /// - wxSTC_FIND_WORDSTART
       /// - wxSTC_FIND_REGEXP
       /// - wxSTC_FIND_POSIX
-      virtual void set_search_flags(int flags) { SetSearchFlags(flags); };
+      virtual void set_search_flags(int flags) { SetSearchFlags(flags); }
 
       /// Sets the text.
-      virtual void set_text(const std::string& value) { SetText(value); };
+      virtual void set_text(const std::string& value) { SetText(value); }
 
       /// Shows or hides line numbers.
-      virtual void show_line_numbers(bool show) { ; };
+      virtual void show_line_numbers(bool show) { ; }
 
       /// Starts or stops syncing.
       /// Default syncing is started during construction.
-      virtual void sync(bool start = true) { ; };
+      virtual void sync(bool start = true) { ; }
 
       /// Use and show modification markers in the margin.
       /// If you open a file, the modification markers are used.
-      virtual void use_modification_markers(bool use) { ; };
+      virtual void use_modification_markers(bool use) { ; }
 
       /// Runs a vi command on this stc (default false).
-      virtual bool vi_command(const std::string& command) { return false; };
+      virtual bool vi_command(const std::string& command) { return false; }
 
       /// Returns vi mode as a string.
-      virtual const std::string vi_mode() const { return std::string(); };
+      virtual const std::string vi_mode() const { return std::string(); }
 
       /// Records a macro.
-      virtual void vi_record(const std::string& command) { ; };
+      virtual void vi_record(const std::string& command) { ; }
 
       /// Returns vi register.
-      virtual std::string vi_register(char c) const { return std::string(); };
+      virtual std::string vi_register(char c) const { return std::string(); }
 
       /// Returns vi search flags.
-      virtual int vi_search_flags() const { return 0; };
+      virtual int vi_search_flags() const { return 0; }
 
       /// Sets using visual vi (on) or ex mode (!on).
-      virtual void visual(bool on) { ; };
+      virtual void visual(bool on) { ; }
 
       /// Other methods.
 
@@ -224,13 +218,13 @@ namespace wex
       const std::string eol() const;
 
       /// Returns current line fold level.
-      int get_fold_level() const;
+      size_t get_fold_level() const;
 
       /// Returns the lexer.
-      const auto& get_lexer() const { return m_lexer; };
+      const auto& get_lexer() const { return m_lexer; }
 
       /// Returns the lexer.
-      auto& get_lexer() { return m_lexer; };
+      auto& get_lexer() { return m_lexer; }
 
       /// Returns selected text as a string.
       const std::string get_selected_text() const;
@@ -253,24 +247,24 @@ namespace wex
       void BigWordRightEndRectExtend();
       void BigWordRightExtend();
       void BigWordRightRectExtend();
-      void LineHome() { Home(); };
-      void LineHomeExtend() { HomeExtend(); };
-      void LineHomeRectExtend() { HomeRectExtend(); };
-      void LineScrollDownExtend() { ; };
-      void LineScrollDownRectExtend() { ; };
-      void LineScrollUpExtend() { ; };
-      void LineScrollUpRectExtend() { ; };
+      void LineHome() { Home(); }
+      void LineHomeExtend() { HomeExtend(); }
+      void LineHomeRectExtend() { HomeRectExtend(); }
+      void LineScrollDownExtend() { ; }
+      void LineScrollDownRectExtend() { ; }
+      void LineScrollUpExtend() { ; }
+      void LineScrollUpRectExtend() { ; }
       void PageScrollDown();
-      void PageScrollDownExtend() { ; };
-      void PageScrollDownRectExtend() { ; };
+      void PageScrollDownExtend() { ; }
+      void PageScrollDownRectExtend() { ; }
       void PageScrollUp();
-      void PageScrollUpExtend() { ; };
-      void PageScrollUpRectExtend() { ; };
-      void ParaUpRectExtend() { ; };
-      void ParaDownRectExtend() { ; };
+      void PageScrollUpExtend() { ; }
+      void PageScrollUpRectExtend() { ; }
+      void ParaUpRectExtend() { ; }
+      void ParaDownRectExtend() { ; }
       void WordLeftRectExtend();
       void WordRightRectExtend();
-      void WordRightEndRectExtend() { ; };
+      void WordRightEndRectExtend() { ; }
 
       /// Override methods from text_window.
 
@@ -282,8 +276,8 @@ namespace wex
       {
         return const_cast<stc*>(this)->GetCurrentLine();
       };
-      int  get_line_count() const override { return GetLineCount(); };
-      int  get_line_count_request() override { return GetLineCount(); };
+      int  get_line_count() const override { return GetLineCount(); }
+      int  get_line_count_request() override { return GetLineCount(); }
       void goto_line(int line) override;
 
     private:

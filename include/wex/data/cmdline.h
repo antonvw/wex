@@ -33,13 +33,13 @@ namespace wex
       };
 
       /// Returns argument count.
-      int ac() const { return m_ac; };
+      int ac() const { return m_ac; }
 
       /// Returns arguments.
-      char** av() const { return m_av; };
+      char** av() const { return m_av; }
 
       /// Returns help.
-      const auto& help() const { return m_help; };
+      const auto& help() const { return m_help; }
 
       /// Sets help.
       cmdline& help(const std::string& rhs)
@@ -49,7 +49,7 @@ namespace wex
       };
 
       /// Returns save.
-      bool save() const { return m_save; };
+      bool save() const { return m_save; }
 
       /// Sets save.
       cmdline& save(bool rhs)
@@ -59,7 +59,7 @@ namespace wex
       };
 
       /// Returns command line string.
-      const auto& string() const { return m_string; };
+      const auto& string() const { return m_string; }
 
       /// Sets command line string.
       cmdline& string(const std::string& rhs)

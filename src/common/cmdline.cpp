@@ -18,80 +18,79 @@
 
 namespace wex
 {
-  const std::string def_option(const std::vector<std::string> v)
+const std::string def_option(const std::vector<std::string> v)
+{
+  return (v.size() > 2 ? v.back() : std::string());
+}
+
+const std::string def_switch(const std::vector<std::string> v)
+{
+  return (v.size() > 2 ? v.back() : std::string("0"));
+}
+
+std::string get_option(
+  const std::pair<
+    const std::vector<std::string>,
+    std::pair<cmdline::option_t, std::function<void(const std::any& any)>>>& p,
+  wex::config* cfg)
+{
+  const std::string name(before(p.first[0], ','));
+  const std::string key(p.first[1]);
+
+  try
   {
-    return (v.size() > 2 ? v.back() : std::string());
+    switch (p.second.first)
+    {
+      case cmdline::FLOAT:
+        return name + "=" +
+               std::to_string(cfg->item(key).get(
+                 static_cast<float>(std::stod(def_option(p.first))))) +
+               "\n";
+
+      case cmdline::INT:
+        return name + "=" +
+               std::to_string(
+                 cfg->item(key).get(std::stoi(def_option(p.first)))) +
+               "\n";
+
+      case cmdline::STRING:
+        return name + "=" + cfg->item(key).get(def_option(p.first)) + "\n";
+    }
+  }
+  catch (std::exception& e)
+  {
+    log(e) << "get_option:" << name << key;
   }
 
-  const std::string def_switch(const std::vector<std::string> v)
+  return std::string();
+}
+
+std::string get_switch(
+  const std::pair<const std::vector<std::string>, std::function<void(bool on)>>&
+               p,
+  wex::config* cfg)
+{
+  const std::string& name(before(p.first[0], ','));
+  const std::string& key(p.first[1]);
+
+  try
   {
-    return (v.size() > 2 ? v.back() : std::string("0"));
+    if (!cfg->item(key).get(static_cast<bool>(std::stoi(def_switch(p.first)))))
+    {
+      return "no" + name + "\n";
+    }
+    else
+    {
+      return name + "\n";
+    }
+  }
+  catch (std::exception& e)
+  {
+    log(e) << "get_switch:" << name << key;
   }
 
-  std::string get_option(
-    const std::pair<
-      const std::vector<std::string>,
-      std::pair<cmdline::option_t, std::function<void(const std::any& any)>>>&
-                 p,
-    wex::config* cfg)
-  {
-    const std::string name(before(p.first[0], ','));
-    const std::string key(p.first[1]);
-
-    try
-    {
-      switch (p.second.first)
-      {
-        case cmdline::FLOAT:
-          return name + "=" +
-                 std::to_string(
-                   cfg->item(key).get((float)std::stod(def_option(p.first)))) +
-                 "\n";
-
-        case cmdline::INT:
-          return name + "=" +
-                 std::to_string(
-                   cfg->item(key).get(std::stoi(def_option(p.first)))) +
-                 "\n";
-
-        case cmdline::STRING:
-          return name + "=" + cfg->item(key).get(def_option(p.first)) + "\n";
-      }
-    }
-    catch (std::exception& e)
-    {
-      log(e) << "get_option:" << name << key;
-    }
-
-    return std::string();
-  }
-
-  std::string get_switch(
-    const std::
-      pair<const std::vector<std::string>, std::function<void(bool on)>>& p,
-    wex::config*                                                          cfg)
-  {
-    const std::string& name(before(p.first[0], ','));
-    const std::string& key(p.first[1]);
-
-    try
-    {
-      if (!cfg->item(key).get((bool)std::stoi(def_switch(p.first))))
-      {
-        return "no" + name + "\n";
-      }
-      else
-      {
-        return name + "\n";
-      }
-    }
-    catch (std::exception& e)
-    {
-      log(e) << "get_switch:" << name << key;
-    }
-
-    return std::string();
-  }
+  return std::string();
+}
 }; // namespace wex
 
 #define ADD(TYPE, CONV)                        \
@@ -136,14 +135,16 @@ void wex::cmdline::get_all(std::string& help) const
             m_options.begin(),
             m_options.end(),
             std::string(),
-            [this](const std::string& a, const auto& b) {
+            [this](const std::string& a, const auto& b)
+            {
               return a + get_option(b, m_cfg);
             }) +
           std::accumulate(
             m_switches.begin(),
             m_switches.end(),
             std::string(),
-            [this](const std::string& a, const auto& b) {
+            [this](const std::string& a, const auto& b)
+            {
               return a + get_switch(b, m_cfg);
             });
 }
@@ -275,20 +276,23 @@ bool wex::cmdline::parse_set(data::cmdline& data) const
   bool  found = false;
   regex r(
     {{"all",
-      [&, this](const regex::match_t& m) {
+      [&, this](const regex::match_t& m)
+      {
         std::string help;
         get_all(help);
         data.help(help);
       }},
      // [nooption ...]
      {"no([a-z0-9]+)(.*)",
-      [&, this](const regex::match_t& m) {
+      [&, this](const regex::match_t& m)
+      {
         if (set_no_option(m, data.save()))
           found = true;
       }},
      // [option? ...]
      {"([a-z0-9]+)[ \t]*\\?(.*)",
-      [&, this](const regex::match_t& m) {
+      [&, this](const regex::match_t& m)
+      {
         std::string help;
         if (get_single(m, help))
         {
@@ -297,7 +301,9 @@ bool wex::cmdline::parse_set(data::cmdline& data) const
         }
       }},
      // [option[=[value]] ...]
-     {"([a-z0-9]+)(=[a-z0-9]+)?(.*)", [&, this](const regex::match_t& m) {
+     {"([a-z0-9]+)(=[a-z0-9]+)?(.*)",
+      [&, this](const regex::match_t& m)
+      {
         if (set_option(m, data.save()))
           found = true;
       }}});

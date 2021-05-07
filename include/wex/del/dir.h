@@ -49,7 +49,7 @@ namespace wex::del
       const data::dir& data = data::dir());
 
     /// Returns the statistics.
-    auto& get_statistics() const { return m_statistics; };
+    auto& get_statistics() const { return m_statistics; }
 
   private:
     bool on_file(const path& file) final;

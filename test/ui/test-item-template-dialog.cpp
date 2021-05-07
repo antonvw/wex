@@ -8,41 +8,41 @@
 #include "../test.h"
 #include <vector>
 #include <wex/del/defs.h>
+#include <wex/frame.h>
 #include <wex/item-template-dialog.h>
 #include <wex/item.h>
-#include <wex/frame.h>
 
 namespace wex
 {
-  class testitem : public item
+class testitem : public item
+{
+public:
+  static void set_dialog(item_template_dialog<testitem>* dlg) { ; }
+
+  testitem()
+    : item()
   {
-  public:
-    static void set_dialog(item_template_dialog<testitem>* dlg) { ; };
-
-    testitem()
-      : item()
-    {
-      ;
-    };
-
-    testitem(const std::string& label)
-      : item(label, std::string())
-    {
-      ;
-    };
-
-    testitem(const std::string& label, const std::string& value)
-      : item(label, value)
-    {
-      ;
-    };
-
-    testitem(const std::string& label, item::type_t type)
-      : item(label, type)
-    {
-      ;
-    };
+    ;
   };
+
+  testitem(const std::string& label)
+    : item(label, std::string())
+  {
+    ;
+  };
+
+  testitem(const std::string& label, const std::string& value)
+    : item(label, value)
+  {
+    ;
+  };
+
+  testitem(const std::string& label, item::type_t type)
+    : item(label, type)
+  {
+    ;
+  };
+};
 }; // namespace wex
 
 TEST_SUITE_BEGIN("wex::item");

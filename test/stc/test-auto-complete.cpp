@@ -6,30 +6,119 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/auto-complete.h>
+#include <wx/uiaction.h>
 
 #include "test.h"
 
-TEST_CASE("wex::auto_complete" * doctest::may_fail())
+TEST_CASE("wex::auto_complete")
 {
   auto* stc = new wex::stc(wex::test::get_path("test.h"));
   stc->SetFocus();
   frame()->pane_add(stc);
+
   wex::auto_complete ac(stc);
 
-  ac.use(true);
+  SUBCASE("constructor")
+  {
+    REQUIRE(ac.use());
+    REQUIRE(ac.insert().empty());
+    REQUIRE(ac.inserts().empty());
+    REQUIRE(ac.variable("none").empty());
+  }
 
-  REQUIRE(ac.use());
-  REQUIRE(!ac.activate(std::string()));
-  REQUIRE(ac.activate("test_app"));
-  REQUIRE(!ac.on_char(WXK_BACK));
-  REQUIRE(ac.on_char('x'));
-  REQUIRE(ac.on_char(WXK_BACK));
-  REQUIRE(!ac.on_char(WXK_BACK));
+  SUBCASE("clear")
+  {
+    REQUIRE(!ac.on_char('x'));
+    REQUIRE(!ac.on_char('y'));
+    REQUIRE(!ac.on_char('z'));
+    REQUIRE(ac.insert() == "xyz");
+    ac.clear();
+    REQUIRE(ac.insert().empty());
+    REQUIRE(ac.inserts().find("xyz") != ac.inserts().end());
+  }
 
-  ac.use(false);
+  SUBCASE("complete")
+  {
+    REQUIRE(!ac.complete(std::string()));
+    REQUIRE(ac.complete("test_app"));
+    REQUIRE(!ac.on_char(WXK_BACK));
 
-  REQUIRE(!ac.use());
-  REQUIRE(!ac.on_char('x'));
+    ac.on_char('x');
+    REQUIRE(!ac.on_char(WXK_BACK));
+    REQUIRE(!ac.on_char(WXK_BACK));
+    ac.on_char('x');
+    ac.on_char('y');
+    ac.on_char('z');
+    REQUIRE(ac.insert() == "xyz");
 
-  ac.clear();
+    ac.on_char(';');
+    REQUIRE(ac.insert().empty());
+    REQUIRE(ac.inserts().find("xyz") != ac.inserts().end());
+
+    ac.on_char('a');
+    ac.on_char('b');
+    ac.on_char('c');
+    REQUIRE(ac.insert() == "abc");
+    ac.on_char(';');
+    REQUIRE(ac.inserts().find("xyz") != ac.inserts().end());
+    REQUIRE(ac.inserts().find("abc") != ac.inserts().end());
+    REQUIRE(ac.inserts().size() == 2);
+  }
+
+  SUBCASE("stc")
+  {
+    REQUIRE(stc->get_fold_level() == 0);
+
+    event(stc, 'O');
+    event(stc, '{');
+    event(stc, WXK_RETURN);
+    event(stc, WXK_RETURN);
+    REQUIRE(stc->get_fold_level() == 1);
+
+    event(stc, 't');
+    event(stc, WXK_RETURN);
+    REQUIRE(stc->get_fold_level() == 1);
+
+    event(stc, ' ');
+    event(stc, 'x');
+    event(stc, 'x');
+    event(stc, '.');
+    event(stc, WXK_RETURN);
+    event(stc, ' ');
+    event(stc, 'y');
+    event(stc, 'y');
+    event(stc, '.');
+    event(stc, WXK_RETURN);
+    REQUIRE(
+      stc->get_text().find("test_app xx.method_one") != std::string::npos);
+    REQUIRE(stc->auto_complete()->variable("xx") == "test_app");
+    REQUIRE(stc->auto_complete()->variable("yy") == "test_app");
+
+    event(stc, ';');
+    event(stc, WXK_RETURN);
+    event(stc, 'x');
+    event(stc, 'x');
+    event(stc, '.');
+    event(stc, WXK_RETURN);
+
+    event(stc, WXK_RETURN);
+    event(stc, '}');
+    event(stc, WXK_RETURN);
+    event(stc, WXK_RETURN);
+    event(stc, WXK_RETURN);
+
+    // Outcommented, when running verbose, this is ok.
+#ifdef INVEST
+    REQUIRE(stc->get_fold_level() == 0);
+#endif
+  }
+
+  SUBCASE("use")
+  {
+    REQUIRE(ac.use());
+
+    ac.use(false);
+    REQUIRE(!ac.use());
+    REQUIRE(!ac.on_char('x'));
+  }
 }

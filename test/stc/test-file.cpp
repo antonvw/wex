@@ -22,7 +22,7 @@ TEST_CASE("wex::stc_file")
   REQUIRE(!file.get_filename().stat().is_ok());
   REQUIRE(!file.is_contents_changed());
 
-  REQUIRE(file.file_new("test-file.txt"));
+  REQUIRE(file.file_new(wex::path("test-file.txt")));
   REQUIRE(stc->get_text().empty());
   stc->set_text("No, the game never ends "
                 "when your whole world depends "

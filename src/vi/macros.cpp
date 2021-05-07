@@ -265,7 +265,8 @@ void wex::macros::parse_node_macro(const pugi::xml_node& node)
       node.children().begin(),
       node.children().end(),
       std::back_inserter(v),
-      [](const auto& t) {
+      [](const auto& t)
+      {
         return t.text().get();
       });
 
@@ -275,7 +276,7 @@ void wex::macros::parse_node_macro(const pugi::xml_node& node)
 
 void wex::macros::parse_node_variable(const pugi::xml_node& node)
 {
-  if (const variable & variable(node); variable.get_name().empty())
+  if (const variable variable(node); variable.get_name().empty())
   {
     log("empty variable") << node;
   }
@@ -481,8 +482,8 @@ bool wex::macros::set_register(char name, const std::string& value)
     }
   }
 
-  m_macros[std::string(1, (char)tolower(name))] = v;
-  save_macro(std::string(1, (char)tolower(name)));
+  m_macros[std::string(1, static_cast<char>(tolower(name)))] = v;
+  save_macro(std::string(1, static_cast<char>(tolower(name))));
 
   return true;
 }
@@ -498,10 +499,15 @@ bool wex::macros::starts_with(const std::string_view& text)
     std::any_of(
       m_macros.begin(),
       m_macros.end(),
-      [text](const auto& p) {
+      [text](const auto& p)
+      {
         return p.first.substr(0, text.size()) == text;
       }) ||
-    std::any_of(m_variables.begin(), m_variables.end(), [text](const auto& p) {
-      return p.first.substr(0, text.size()) == text;
-    }));
+    std::any_of(
+      m_variables.begin(),
+      m_variables.end(),
+      [text](const auto& p)
+      {
+        return p.first.substr(0, text.size()) == text;
+      }));
 }

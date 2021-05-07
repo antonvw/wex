@@ -30,7 +30,7 @@ namespace wex::data
     typedef std::bitset<4> type_t;
 
     /// Returns the dir spec.
-    const auto& dir_spec() const { return m_dir_spec; };
+    const auto& dir_spec() const { return m_dir_spec; }
 
     /// Sets dir specs.
     dir& dir_spec(const std::string& rhs)
@@ -40,7 +40,7 @@ namespace wex::data
     }
 
     /// Returns the file spec.
-    const auto& file_spec() const { return m_file_spec; };
+    const auto& file_spec() const { return m_file_spec; }
 
     /// Sets file specs.
     dir& file_spec(const std::string& rhs)
@@ -50,7 +50,7 @@ namespace wex::data
     }
 
     /// Returns max matches to find, or -1 if no max.
-    int max_matches() const { return m_max_matches; };
+    int max_matches() const { return m_max_matches; }
 
     /// Sets max matches.
     dir& max_matches(int rhs)
@@ -60,7 +60,7 @@ namespace wex::data
     }
 
     /// Returns type.
-    auto type() const { return m_flags; };
+    auto type() const { return m_flags; }
 
     /// Sets type.
     dir& type(const type_t& rhs)

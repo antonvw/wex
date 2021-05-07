@@ -62,10 +62,10 @@ namespace wex
     void set(const std::list<std::string>& values);
 
     /// Returns type.
-    auto type() const { return m_type; };
+    auto type() const { return m_type; }
 
     /// Gets all values.
-    const auto& values() const { return m_values; };
+    const auto& values() const { return m_values; }
 
   private:
     const ex_command::type_t               m_type;

@@ -16,7 +16,7 @@
 
 namespace wex
 {
-  class file;
+class file;
 };
 
 class ui_stc : public wex::factory::stc
@@ -26,7 +26,7 @@ public:
 
   wex::file& get_file();
 
-  void config_get() { ; };
+  void config_get() { ; }
 
 private:
   const wex::path& get_filename() const override { return m_path; };

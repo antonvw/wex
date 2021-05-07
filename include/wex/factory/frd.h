@@ -23,22 +23,22 @@ namespace wex::factory
     /// Static interface.
 
     /// Returns text.
-    static const auto& text_find() { return m_text_find; };
+    static const auto& text_find() { return m_text_find; }
 
     /// Returns text.
-    static const auto& text_match_case() { return m_text_match_case; };
+    static const auto& text_match_case() { return m_text_match_case; }
 
     /// Returns text.
-    static const auto& text_match_word() { return m_text_match_word; };
+    static const auto& text_match_word() { return m_text_match_word; }
 
     /// Returns text.
-    static const auto& text_regex() { return m_text_regex; };
+    static const auto& text_regex() { return m_text_regex; }
 
     /// Returns text.
-    static const auto& text_replace_with() { return m_text_replace_with; };
+    static const auto& text_replace_with() { return m_text_replace_with; }
 
     /// Returns text.
-    static const auto& text_search_down() { return m_text_search_down; };
+    static const auto& text_search_down() { return m_text_search_down; }
 
     /// Other methods.
 
@@ -74,7 +74,7 @@ namespace wex::factory
     const std::string get_replace_string() const;
 
     /// Returns true if find text is used as a regular expression.
-    bool is_regex() const { return m_use_regex; };
+    bool is_regex() const { return m_use_regex; }
 
     /// Returns true if the flags have match case set.
     bool match_case() const;
@@ -110,7 +110,7 @@ namespace wex::factory
     void set_search_down(bool value);
 
     /// Returns wx frd.
-    auto* wx() const { return m_frd; };
+    auto* wx() const { return m_frd; }
 
   private:
     static inline std::string m_text_find         = _("fif.Find what"),

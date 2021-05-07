@@ -33,13 +33,13 @@ namespace wex
     virtual ~stream() = default;
 
     /// Returns the filename.
-    const auto& get_filename() const { return m_path; };
+    const auto& get_filename() const { return m_path; }
 
     /// Returns the statistics.
     const auto& get_statistics() const { return m_stats; }
 
     /// Returns the tool.
-    const auto& get_tool() const { return m_tool; };
+    const auto& get_tool() const { return m_tool; }
 
     /// Runs the tool.
     bool run_tool();
@@ -61,11 +61,11 @@ namespace wex
     virtual bool process_begin();
 
     /// Override to do action after processing has ended.
-    virtual void process_end() { ; };
+    virtual void process_end() { ; }
 
     /// Override to do action for a match.
     /// Data is available in find replace data.
-    virtual void process_match(const path_match& m) { ; };
+    virtual void process_match(const path_match& m) { ; }
 
   protected:
     /// Increments the actions completed.
@@ -83,7 +83,7 @@ namespace wex
     };
 
   private:
-    bool is_word_character(int c) const { return isalnum(c) || c == '_'; };
+    bool is_word_character(int c) const { return isalnum(c) || c == '_'; }
     int  replace_all(std::string& text, int* match_pos);
 
     const path_lexer m_path;

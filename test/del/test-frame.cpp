@@ -5,8 +5,8 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/del/defs.h>
 #include <wex/addressrange.h>
+#include <wex/del/defs.h>
 #include <wex/frd.h>
 #include <wex/log.h>
 #include <wex/menu.h>
@@ -18,9 +18,9 @@ TEST_CASE("wex::del::frame")
 {
   auto* list = new wex::del::listview(
     wex::data::listview().type(wex::data::listview::HISTORY));
-  
+
   del_frame()->pane_add(list);
-  
+
   SUBCASE("find_in_files")
   {
     wex::find_replace_data::get()->set_find_string("wex::test_app");
@@ -32,11 +32,12 @@ TEST_CASE("wex::del::frame")
 
 #ifndef __WXMSW__
     REQUIRE(!del_frame()->find_in_files(
-      {wex::test::get_path("test.h").string()},
+      {wex::test::get_path("test.h")},
       wex::ID_TOOL_REPORT_FIND,
       false));
 
-    REQUIRE(!del_frame()->find_in_files_title(wex::ID_TOOL_REPORT_FIND).empty());
+    REQUIRE(
+      !del_frame()->find_in_files_title(wex::ID_TOOL_REPORT_FIND).empty());
 
     // It does not open, next should fail.
     REQUIRE(
@@ -44,7 +45,7 @@ TEST_CASE("wex::del::frame")
         get_project()) == std::string::npos);
 
     REQUIRE(del_frame()->get_project() == nullptr);
-    
+
     REQUIRE(!del_frame()->grep("xxxxxxx *.xyz ./"));
     REQUIRE(!del_frame()->grep("xxxxxxx yyy"));
     REQUIRE(!del_frame()->grep("xxxxxxx"));
@@ -60,21 +61,21 @@ TEST_CASE("wex::del::frame")
     list->Show();
   }
 
-
   SUBCASE("open_file")
   {
     del_frame()->set_find_focus(get_stc());
 
-    REQUIRE(((wex::frame*)del_frame())->open_file(wex::test::get_path("test.h")));
     REQUIRE(
-      del_frame()->file_history().get_history_file().string().find("../test.h") ==
-      std::string::npos);
+      ((wex::frame*)del_frame())->open_file(wex::test::get_path("test.h")));
+    REQUIRE(
+      del_frame()->file_history().get_history_file().string().find(
+        "../test.h") == std::string::npos);
 
     //  REQUIRE(!del_frame()->open_file(
     //    wex::path(get_project()),
     //    wex::data::stc().flags(wex::data::stc::WIN_IS_PROJECT)));
   }
-  
+
   SUBCASE("process_async_system")
   {
     wex::process::prepare_output(del_frame());
@@ -83,12 +84,12 @@ TEST_CASE("wex::del::frame")
 
   SUBCASE("set_recent")
   {
-    del_frame()->set_recent_project("xxx.prj");
+    del_frame()->set_recent_project(wex::path("xxx.prj"));
     REQUIRE(del_frame()->get_project_history().get_history_file().empty());
 
     del_frame()->set_recent_file(wex::test::get_path("test.h"));
   }
-  
+
   SUBCASE("show_ex_bar")
   {
     del_frame()->show_ex_bar(wex::frame::HIDE_BAR);
@@ -106,11 +107,8 @@ TEST_CASE("wex::del::frame")
     REQUIRE(del_frame()->stc_entry_dialog_title() == "hello world");
   }
 
-  SUBCASE("use_file_history")
-  {
-    del_frame()->use_file_history_list(list);
-  }
-  
+  SUBCASE("use_file_history") { del_frame()->use_file_history_list(list); }
+
   SUBCASE("visual")
   {
     auto* vi = &get_stc()->get_vi();
@@ -143,6 +141,6 @@ TEST_CASE("wex::del::frame")
       wxQueueEvent(del_frame(), event);
     }
   }
-  
+
   wex::log::trace("pwd") << wex::path::current();
 }

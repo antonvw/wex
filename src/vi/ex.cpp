@@ -57,98 +57,98 @@
 
 namespace wex
 {
-  enum class command_arg_t
-  {
-    INT,
-    NONE,
-    OTHER,
-  };
+enum class command_arg_t
+{
+  INT,
+  NONE,
+  OTHER,
+};
 
-  command_arg_t get_command_arg(const std::string& command)
+command_arg_t get_command_arg(const std::string& command)
+{
+  if (const auto post(wex::after(command, ' ')); post == command)
   {
-    if (const auto post(wex::after(command, ' ')); post == command)
+    return command_arg_t::NONE;
+  }
+  else
+  {
+    try
     {
-      return command_arg_t::NONE;
-    }
-    else
-    {
-      try
+      if (std::stoi(post) > 0)
       {
-        if (std::stoi(post) > 0)
-        {
-          return command_arg_t::INT;
-        }
-      }
-      catch (std::exception&)
-      {
-        return command_arg_t::OTHER;
+        return command_arg_t::INT;
       }
     }
-
-    return command_arg_t::OTHER;
+    catch (std::exception&)
+    {
+      return command_arg_t::OTHER;
+    }
   }
 
-  bool source(ex* ex, const std::string& cmd)
+  return command_arg_t::OTHER;
+}
+
+bool source(ex* ex, const std::string& cmd)
+{
+  if (cmd.find(" ") == std::string::npos)
   {
-    if (cmd.find(" ") == std::string::npos)
+    return false;
+  }
+
+  wex::path path(wex::first_of(cmd, " "));
+
+  if (path.is_relative())
+  {
+    path.make_absolute();
+  }
+
+  if (!path.file_exists())
+  {
+    return false;
+  }
+
+  wex::file script(path.data());
+  bool      result = true;
+
+  if (const auto buffer(script.read()); buffer != nullptr)
+  {
+    for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
+           *buffer,
+           boost::char_separator<char>("\r\n")))
     {
-      return false;
-    }
+      int i = 0;
 
-    wex::path path(wex::first_of(cmd, " "));
-
-    if (path.is_relative())
-    {
-      path.make_absolute();
-    }
-
-    if (!path.file_exists())
-    {
-      return false;
-    }
-
-    wex::file script(path.data());
-    bool      result = true;
-
-    if (const auto buffer(script.read()); buffer != nullptr)
-    {
-      for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
-             *buffer,
-             boost::char_separator<char>("\r\n")))
+      if (const std::string line(it); !line.empty())
       {
-        int i = 0;
-
-        if (const std::string line(it); !line.empty())
+        if (line == cmd)
         {
-          if (line == cmd)
-          {
-            log("recursive line") << i + 1 << line;
-            return false;
-          }
+          log("recursive line") << i + 1 << line;
+          return false;
+        }
 
-          if (
-            line.starts_with(":a") || line.starts_with(":i") ||
-            line.starts_with(":c"))
+        if (
+          line.starts_with(":a") || line.starts_with(":i") ||
+          line.starts_with(":c"))
+        {
+          if (!ex->command(line + "\n"))
           {
-            if (!ex->command(line + "\n"))
-            {
-              log::trace("command insert failed line") << i + 1 << line;
-              result = false;
-            }
-          }
-          else if (!ex->command(line))
-          {
-            log::trace("command failed line") << i + 1 << line;
+            log::trace("command insert failed line") << i + 1 << line;
             result = false;
           }
         }
-
-        i++;
+        else if (!ex->command(line))
+        {
+          log::trace("command failed line") << i + 1 << line;
+          result = false;
+        }
       }
-    }
 
-    return result;
-  };
+      i++;
+    }
+  }
+
+  return result;
+};
 }; // namespace wex
 
 enum class wex::ex::address_t
@@ -449,7 +449,8 @@ bool wex::ex::address_parse(
 
     if (regex v({// 2addr % range
                  {"^%" + cmds_2addr,
-                  [&](const regex::match_t& m) {
+                  [&](const regex::match_t& m)
+                  {
                     type  = address_t::RANGE;
                     range = "%";
                     cmd   = m[0];
@@ -457,7 +458,8 @@ bool wex::ex::address_parse(
                   }},
                  // 1addr (or none)
                  {"^(" + addr + ")?" + cmds_1addr,
-                  [&](const regex::match_t& m) {
+                  [&](const regex::match_t& m)
+                  {
                     type  = address_t::ONE;
                     range = m[0];
                     cmd   = (m[1] == "mark" ? "k" : m[1]);
@@ -465,7 +467,8 @@ bool wex::ex::address_parse(
                   }},
                  // 2addr
                  {"^(" + addr + ")?(," + addr + ")?" + cmds_2addr,
-                  [&](const regex::match_t& m) {
+                  [&](const regex::match_t& m)
+                  {
                     type  = address_t::RANGE;
                     range = m[0] + m[1];
 
@@ -616,7 +619,8 @@ bool wex::ex::command_handle(const std::string& command) const
   const auto& it = std::find_if(
     m_commands.begin(),
     m_commands.end(),
-    [command](auto const& e) {
+    [command](auto const& e)
+    {
       return e.first == command.substr(0, e.first.size());
     });
 
@@ -631,17 +635,20 @@ bool wex::ex::command_set(const std::string& command)
     // switches
     {{{"ac", _("Auto complete")}, nullptr},
      {{"ai", "ex-set.ai"},
-      [&](bool on) {
+      [&](bool on)
+      {
         if (!modeline)
           config("stc.Auto indent").set(on ? (long)2 : (long)0);
       }},
      {{"aw", _("stc.Auto write")},
-      [&](bool on) {
+      [&](bool on)
+      {
         m_auto_write = on;
       }},
      {{"eb", _("stc.Error bells")}, nullptr},
      {{"el", _("ex-set.el")},
-      [&](bool on) {
+      [&](bool on)
+      {
         if (!modeline)
           config(_("stc.Edge line"))
             .set(on ? (long)wxSTC_EDGE_LINE : (long)wxSTC_EDGE_NONE);
@@ -649,7 +656,8 @@ bool wex::ex::command_set(const std::string& command)
           get_stc()->SetEdgeMode(wxSTC_EDGE_LINE);
       }},
      {{"ic", "ex-set.ignorecase"},
-      [&](bool on) {
+      [&](bool on)
+      {
         if (!on)
           m_search_flags |= wxSTC_FIND_MATCHCASE;
         else
@@ -657,7 +665,8 @@ bool wex::ex::command_set(const std::string& command)
         wex::find_replace_data::get()->set_match_case(!on);
       }},
      {{"mw", "ex-set.matchwords"},
-      [&](bool on) {
+      [&](bool on)
+      {
         if (on)
           m_search_flags |= wxSTC_FIND_WHOLEWORD;
         else
@@ -665,21 +674,25 @@ bool wex::ex::command_set(const std::string& command)
         wex::find_replace_data::get()->set_match_word(on);
       }},
      {{"nu", _("stc.Line numbers")},
-      [&](bool on) {
+      [&](bool on)
+      {
         if (modeline)
           get_stc()->show_line_numbers(on);
       }},
      {{"readonly", "ex-set.readonly"},
-      [&](bool on) {
+      [&](bool on)
+      {
         get_stc()->SetReadOnly(on);
       }},
      {{"showmode", _("stc.Show mode")},
-      [&](bool on) {
+      [&](bool on)
+      {
         m_frame->get_statusbar()->pane_show("PaneMode", on);
       }},
      {{"sm", _("stc.Show match")}, nullptr},
      {{"sws", "ex-set.showwhitespace"},
-      [&](bool on) {
+      [&](bool on)
+      {
         if (!modeline)
         {
           config(_("stc.Whitespace visible"))
@@ -693,12 +706,14 @@ bool wex::ex::command_set(const std::string& command)
         }
       }},
      {{"ut", _("stc.Use tabs")},
-      [&](bool on) {
+      [&](bool on)
+      {
         if (modeline)
           get_stc()->SetUseTabs(on);
       }},
      {{"wm", _("ex-set.wm")},
-      [&](bool on) {
+      [&](bool on)
+      {
         if (!modeline)
           config(_("stc.Wrap line"))
             .set(on ? wxSTC_WRAP_CHAR : wxSTC_WRAP_NONE);
@@ -709,12 +724,14 @@ bool wex::ex::command_set(const std::string& command)
     // options
     {{{"dir", "ex-set.dir", wex::path::current()},
       {cmdline::STRING,
-       [&](const std::any& val) {
+       [&](const std::any& val)
+       {
          wex::path::current(std::any_cast<std::string>(val));
        }}},
      {{"ec", _("stc.Edge column"), std::to_string(get_stc()->GetEdgeColumn())},
       {cmdline::INT,
-       [&](const std::any& val) {
+       [&](const std::any& val)
+       {
          if (!modeline)
            config(_("stc.Edge column")).set(std::any_cast<int>(val));
          else
@@ -724,12 +741,14 @@ bool wex::ex::command_set(const std::string& command)
        "stc.Reported lines",
        std::to_string(config("stc.Reported lines").get(5))},
       {cmdline::INT,
-       [&](const std::any& val) {
+       [&](const std::any& val)
+       {
          config("stc.Reported lines").set(std::any_cast<int>(val));
        }}},
      {{"sw", _("stc.Indent"), std::to_string(get_stc()->GetIndent())},
       {cmdline::INT,
-       [&](const std::any& val) {
+       [&](const std::any& val)
+       {
          if (!modeline)
            config(_("stc.Indent")).set(std::any_cast<int>(val));
          else
@@ -737,7 +756,8 @@ bool wex::ex::command_set(const std::string& command)
        }}},
      {{"sy", "ex-set.syntax"},
       {cmdline::STRING,
-       [&](const std::any& val) {
+       [&](const std::any& val)
+       {
          if (std::any_cast<std::string>(val) != "off")
            get_stc()->get_lexer().set(
              std::any_cast<std::string>(val),
@@ -747,7 +767,8 @@ bool wex::ex::command_set(const std::string& command)
        }}},
      {{"ts", "stc.Tab width", std::to_string(get_stc()->GetTabWidth())},
       {cmdline::INT,
-       [&](const std::any& val) {
+       [&](const std::any& val)
+       {
          if (modeline)
            get_stc()->SetTabWidth(std::any_cast<int>(val));
        }}}},
@@ -1062,10 +1083,10 @@ void wex::ex::set_registers_delete(const std::string& value) const
 
   for (int i = 9; i >= 2; i--)
   {
-    if (const auto value(m_macros.get_register(char(48 + i - 1)));
+    if (const auto value(m_macros.get_register(static_cast<char>(48 + i - 1)));
         !value.empty())
     {
-      m_macros.set_register(char(48 + i), value);
+      m_macros.set_register(static_cast<char>(48 + i), value);
     }
   }
 
@@ -1120,7 +1141,7 @@ void wex::ex::use(mode_t mode)
 {
   m_mode = mode;
 
-  log::trace("ex mode") << (int)m_mode;
+  log::trace("ex mode") << static_cast<int>(m_mode);
 }
 
 bool wex::ex::yank(char name) const

@@ -71,7 +71,7 @@ namespace wex
       listview& operator=(const data::listview& r);
 
       /// Returns control data.
-      const auto& control() const { return m_data; };
+      const auto& control() const { return m_data; }
 
       /// Sets control data.
       listview& control(const data::control& data)
@@ -81,7 +81,7 @@ namespace wex
       };
 
       /// Returns image type.
-      const auto& image() const { return m_image_type; };
+      const auto& image() const { return m_image_type; }
 
       /// Sets image type.
       listview& image(image_t type);
@@ -90,20 +90,20 @@ namespace wex
       bool inject();
 
       /// Returns lexer.
-      const auto& lexer() const { return m_lexer; };
+      const auto& lexer() const { return m_lexer; }
 
       /// Sets lexer.
       listview& lexer(const wex::lexer* lexer);
 
       /// Returns menu flags.
-      const auto& menu() const { return m_menu_flags; };
+      const auto& menu() const { return m_menu_flags; }
 
       /// Sets menu flags.
       listview&
       menu(menu_t flags, data::control::action_t action = data::control::SET);
 
       /// Returns type.
-      const auto& type() const { return m_type; };
+      const auto& type() const { return m_type; }
 
       /// Sets type.
       listview& type(type_t type);
@@ -112,7 +112,7 @@ namespace wex
       const std::string type_description() const;
 
       /// Returns window data.
-      const auto& window() const { return m_data.window(); };
+      const auto& window() const { return m_data.window(); }
 
       /// Sets window data.
       listview& window(const data::window& data)

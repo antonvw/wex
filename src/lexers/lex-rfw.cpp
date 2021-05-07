@@ -103,9 +103,9 @@ static void colourise(
   sections.emplace_back("Tasks");
   sections.emplace_back("Keywords");
   sections.emplace_back("Comments");
-  
+
   std::vector<std::string> special_keywords;
-  
+
   for (const auto& section : sections)
   {
     special_keywords.emplace_back("*" + section + "*");
@@ -113,9 +113,9 @@ static void colourise(
     special_keywords.emplace_back("** " + section + " **");
     special_keywords.emplace_back("*** " + section + " ***");
   }
-  
+
   const WordList& keywords2 = *keywordlists[1];
-  
+
   bool visual_mode = true;
 
   for (int i = 0; i < keywords2.Length(); i++)
@@ -129,7 +129,7 @@ static void colourise(
         keyword[j] = ' ';
       }
     }
-    
+
     if (keyword != "EX")
     {
       special_keywords.push_back(keyword);
@@ -256,8 +256,10 @@ static void colourise(
             testCaseSectionEndPos =
               sc.currentPos - sc.LengthCurrent() - std::string(m[0]).size();
           }
-          else if (
-            std::regex_search(words, m, std::regex(re_comm, std::regex::icase)))
+          else if (std::regex_search(
+                     words,
+                     m,
+                     std::regex(re_comm, std::regex::icase)))
           {
             commentsSectionPos = sc.currentPos;
           }
@@ -381,7 +383,9 @@ static void colourise(
         break;
 
       case SCE_SH_COMMENTLINE:
-        if (visual_mode && sc.atLineEnd && sc.chPrev != '\\' && sc.currentPos < commentsSectionPos)
+        if (
+          visual_mode && sc.atLineEnd && sc.chPrev != '\\' &&
+          sc.currentPos < commentsSectionPos)
         {
           sc.SetState(SCE_SH_DEFAULT);
         }
@@ -530,15 +534,14 @@ static void colourise(
       }
     }
     else if (
-      visual_mode &&
-      !pipes && sc.ch != '#' && !isspace(sc.ch) && sc.atLineStart &&
-      sc.currentPos > testCaseSectionPos)
+      visual_mode && !pipes && sc.ch != '#' && !isspace(sc.ch) &&
+      sc.atLineStart && sc.currentPos > testCaseSectionPos)
     {
       if (testCaseSectionEndPos == -1 || sc.currentPos < testCaseSectionEndPos)
       {
         cmdState = RFW_CMD_TESTCASE;
       }
-      
+
       if (sc.currentPos > commentsSectionPos)
       {
         sc.SetState(SCE_SH_COMMENTLINE);
@@ -557,7 +560,7 @@ static void colourise(
       }
       else if (setWordStartTSV.Contains(sc.ch))
       {
-        // TODO: or set to SCE_SH_WORD2
+        // README: or set to SCE_SH_WORD2
         sc.SetState(
           cmdState == RFW_CMD_TESTCASE ? SCE_SH_TESTCASE : SCE_SH_WORD);
       }

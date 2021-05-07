@@ -7,6 +7,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <vector>
+#include <wex/auto-complete.h>
 #include <wex/config.h>
 #include <wex/debug-entry.h>
 #include <wex/frame.h>
@@ -58,142 +59,199 @@ namespace wex
 
 void wex::stc::bind_other()
 {
-  Bind(wxEVT_CHAR, [=, this](wxKeyEvent& event) {
-    key_action(event);
-  });
-
-  Bind(wxEVT_FIND, [=, this](wxFindDialogEvent& event) {
-    find_next(false);
-  });
-
-  Bind(wxEVT_FIND_NEXT, [=, this](wxFindDialogEvent& event) {
-    find_next(false);
-  });
-
-  Bind(wxEVT_FIND_REPLACE, [=, this](wxFindDialogEvent& event) {
-    replace_next(false);
-  });
-
-  Bind(wxEVT_FIND_REPLACE_ALL, [=, this](wxFindDialogEvent& event) {
-    auto* frd = find_replace_data::get();
-    replace_all(frd->get_find_string(), frd->get_replace_string());
-  });
-
-  Bind(wxEVT_KEY_DOWN, [=, this](wxKeyEvent& event) {
-    if (is_hexmode())
+  Bind(
+    wxEVT_CHAR,
+    [=, this](wxKeyEvent& event)
     {
-      if (event.GetKeyCode() == WXK_LEFT || event.GetKeyCode() == WXK_RIGHT)
-      {
-        m_hexmode.set_pos(event);
-      }
-    }
+      key_action(event);
+    });
 
-    if (m_vi->on_key_down(event))
+  Bind(
+    wxEVT_FIND,
+    [=, this](wxFindDialogEvent& event)
+    {
+      find_next(false);
+    });
+
+  Bind(
+    wxEVT_FIND_NEXT,
+    [=, this](wxFindDialogEvent& event)
+    {
+      find_next(false);
+    });
+
+  Bind(
+    wxEVT_FIND_REPLACE,
+    [=, this](wxFindDialogEvent& event)
+    {
+      replace_next(false);
+    });
+
+  Bind(
+    wxEVT_FIND_REPLACE_ALL,
+    [=, this](wxFindDialogEvent& event)
+    {
+      auto* frd = find_replace_data::get();
+      replace_all(frd->get_find_string(), frd->get_replace_string());
+    });
+
+  Bind(
+    wxEVT_KEY_DOWN,
+    [=, this](wxKeyEvent& event)
+    {
+      if (is_hexmode())
+      {
+        if (event.GetKeyCode() == WXK_LEFT || event.GetKeyCode() == WXK_RIGHT)
+        {
+          m_hexmode.set_pos(event);
+        }
+      }
+
+      if (m_vi->on_key_down(event))
+      {
+        event.Skip();
+      }
+
+      if (event.GetKeyCode() == WXK_BACK || event.GetKeyCode() == WXK_RETURN)
+      {
+        m_auto_complete->on_char(event.GetKeyCode());
+      }
+    });
+
+  Bind(
+    wxEVT_KEY_UP,
+    [=, this](wxKeyEvent& event)
     {
       event.Skip();
-    }
+      check_brace();
+      m_fold_level = get_fold_level();
+    });
 
-    if (event.GetKeyCode() == WXK_BACK || event.GetKeyCode() == WXK_RETURN)
+  Bind(
+    wxEVT_LEFT_DCLICK,
+    [=, this](wxMouseEvent& event)
     {
-      m_auto_complete.on_char(event.GetKeyCode());
-    }
-  });
+      mouse_action(event);
+    });
 
-  Bind(wxEVT_KEY_UP, [=, this](wxKeyEvent& event) {
-    event.Skip();
-    check_brace();
-    m_fold_level = get_fold_level();
-  });
-
-  Bind(wxEVT_LEFT_DCLICK, [=, this](wxMouseEvent& event) {
-    mouse_action(event);
-  });
-
-  Bind(wxEVT_LEFT_UP, [=, this](wxMouseEvent& event) {
-    mouse_action(event);
-  });
+  Bind(
+    wxEVT_LEFT_UP,
+    [=, this](wxMouseEvent& event)
+    {
+      mouse_action(event);
+    });
 
   if (m_data.menu().any())
   {
-    Bind(wxEVT_RIGHT_UP, [=, this](wxMouseEvent& event) {
-      mouse_action(event);
-    });
+    Bind(
+      wxEVT_RIGHT_UP,
+      [=, this](wxMouseEvent& event)
+      {
+        mouse_action(event);
+      });
   }
 
-  Bind(wxEVT_SET_FOCUS, [=, this](wxFocusEvent& event) {
-    m_frame->set_find_focus(this);
-    event.Skip();
-  });
-
-  Bind(wxEVT_STC_AUTOCOMP_COMPLETED, [=, this](wxStyledTextEvent& event) {
-    m_auto_complete.activate(event.GetText().ToStdString());
-  });
-
-  Bind(wxEVT_STC_CHARADDED, [=, this](wxStyledTextEvent& event) {
-    event.Skip();
-    auto_indentation(event.GetKey());
-  });
-
-  Bind(wxEVT_STC_DO_DROP, [=, this](wxStyledTextEvent& event) {
-    if (is_hexmode() || GetReadOnly())
+  Bind(
+    wxEVT_SET_FOCUS,
+    [=, this](wxFocusEvent& event)
     {
-      event.SetDragResult(wxDragNone);
-    }
-    event.Skip();
-  });
+      m_frame->set_find_focus(this);
+      event.Skip();
+    });
 
-  Bind(wxEVT_STC_START_DRAG, [=, this](wxStyledTextEvent& event) {
-    if (is_hexmode() || GetReadOnly())
+  Bind(
+    wxEVT_STC_AUTOCOMP_COMPLETED,
+    [=, this](wxStyledTextEvent& event)
     {
-      event.SetDragAllowMove(false);
-    }
-    event.Skip();
-  });
+      m_auto_complete->complete(event.GetText().ToStdString());
+    });
 
-  Bind(wxEVT_STC_DWELLEND, [=, this](wxStyledTextEvent& event) {
-    if (CallTipActive())
+  Bind(
+    wxEVT_STC_CHARADDED,
+    [=, this](wxStyledTextEvent& event)
     {
-      CallTipCancel();
-    }
-  });
+      event.Skip();
+      auto_indentation(event.GetKey());
+    });
+
+  Bind(
+    wxEVT_STC_DO_DROP,
+    [=, this](wxStyledTextEvent& event)
+    {
+      if (is_hexmode() || GetReadOnly())
+      {
+        event.SetDragResult(wxDragNone);
+      }
+      event.Skip();
+    });
+
+  Bind(
+    wxEVT_STC_START_DRAG,
+    [=, this](wxStyledTextEvent& event)
+    {
+      if (is_hexmode() || GetReadOnly())
+      {
+        event.SetDragAllowMove(false);
+      }
+      event.Skip();
+    });
+
+  Bind(
+    wxEVT_STC_DWELLEND,
+    [=, this](wxStyledTextEvent& event)
+    {
+      if (CallTipActive())
+      {
+        CallTipCancel();
+      }
+    });
 
   // if we support automatic fold, this can be removed,
   // not yet possible for wx3.0. And add wxSTC_AUTOMATICFOLD_CLICK
   // to config_dialog, and SetAutomaticFold.
-  Bind(wxEVT_STC_MARGINCLICK, [=, this](wxStyledTextEvent& event) {
-    margin_action(event);
-  });
-
-  Bind(wxEVT_STC_MARGIN_RIGHT_CLICK, [=, this](wxStyledTextEvent& event) {
-    if (event.GetMargin() == m_margin_text_number)
+  Bind(
+    wxEVT_STC_MARGINCLICK,
+    [=, this](wxStyledTextEvent& event)
     {
-      auto* menu = new wex::menu({{id::stc::margin_text_hide, "&Hide"}, {}});
-      auto* author =
-        menu->AppendCheckItem(id::stc::margin_text_author, "&Show Author");
-      auto* date =
-        menu->AppendCheckItem(id::stc::margin_text_date, "&Show Date");
-      auto* id = menu->AppendCheckItem(id::stc::margin_text_id, "&Show Id");
+      margin_action(event);
+    });
 
-      if (config("blame.author").get(true))
-        author->Check();
-      if (config("blame.date").get(true))
-        date->Check();
-      if (config("blame.id").get(true))
-        id->Check();
-
-      PopupMenu(menu);
-      delete menu;
-    }
-  });
-
-  Bind(wxEVT_STC_UPDATEUI, [=, this](wxStyledTextEvent& event) {
-    event.Skip();
-
-    if (event.GetUpdated() & wxSTC_UPDATE_SELECTION)
+  Bind(
+    wxEVT_STC_MARGIN_RIGHT_CLICK,
+    [=, this](wxStyledTextEvent& event)
     {
-      m_frame->update_statusbar(this, "PaneInfo");
-    }
-  });
+      if (event.GetMargin() == m_margin_text_number)
+      {
+        auto* menu = new wex::menu({{id::stc::margin_text_hide, "&Hide"}, {}});
+        auto* author =
+          menu->AppendCheckItem(id::stc::margin_text_author, "&Show Author");
+        auto* date =
+          menu->AppendCheckItem(id::stc::margin_text_date, "&Show Date");
+        auto* id = menu->AppendCheckItem(id::stc::margin_text_id, "&Show Id");
+
+        if (config("blame.author").get(true))
+          author->Check();
+        if (config("blame.date").get(true))
+          date->Check();
+        if (config("blame.id").get(true))
+          id->Check();
+
+        PopupMenu(menu);
+        delete menu;
+      }
+    });
+
+  Bind(
+    wxEVT_STC_UPDATEUI,
+    [=, this](wxStyledTextEvent& event)
+    {
+      event.Skip();
+
+      if (event.GetUpdated() & wxSTC_UPDATE_SELECTION)
+      {
+        m_frame->update_statusbar(this, "PaneInfo");
+      }
+    });
 }
 
 void wex::stc::key_action(wxKeyEvent& event)
@@ -212,7 +270,7 @@ void wex::stc::key_action(wxKeyEvent& event)
       m_adding_chars = true;
     }
 
-    m_auto_complete.on_char(event.GetUnicodeKey());
+    m_auto_complete->on_char(event.GetUnicodeKey());
   }
   else
   {
@@ -245,7 +303,7 @@ void wex::stc::key_action(wxKeyEvent& event)
 
     if (!m_vi->is_active())
     {
-      m_auto_complete.on_char(event.GetUnicodeKey());
+      m_auto_complete->on_char(event.GetUnicodeKey());
     }
 
     event.Skip();

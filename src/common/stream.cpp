@@ -166,7 +166,7 @@ int wex::stream::replace_all(std::string& text, int* match_pos)
   {
     if (!update)
     {
-      *match_pos = (int)pos;
+      *match_pos = static_cast<int>(pos);
       update     = true;
     }
 

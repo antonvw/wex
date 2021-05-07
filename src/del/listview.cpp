@@ -6,7 +6,17 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
-#include <wex/wex.h>
+#include <wex/accelerators.h>
+#include <wex/bind.h>
+#include <wex/del/dir.h>
+#include <wex/del/frame.h>
+#include <wex/del/listview.h>
+#include <wex/del/stream.h>
+#include <wex/frd.h>
+#include <wex/listitem.h>
+#include <wex/util.h>
+#include <wex/vcs.h>
+#include <wx/app.h>
 
 wex::del::listview::listview(const data::listview& data)
   : wex::listview(data)
@@ -26,7 +36,8 @@ wex::del::listview::listview(const data::listview& data)
     .set(this);
 
   bind(this).command(
-    {{[=, this](wxCommandEvent& event) {
+    {{[=, this](wxCommandEvent& event)
+      {
         bool           first = true;
         std::string    file1, file2;
         wex::listview* list = nullptr;
@@ -72,13 +83,15 @@ wex::del::listview::listview(const data::listview& data)
       },
       ID_LIST_COMPARE},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         make(listitem(this, GetFirstSelected()).get_filename());
       },
       ID_LIST_RUN_MAKE},
 
-     {[=, this](wxCommandEvent& event) {
-        const wex::tool& tool(event.GetId());
+     {[=, this](wxCommandEvent& event)
+      {
+        const wex::tool tool((window_id)event.GetId());
         if (
           tool.id() == ID_TOOL_REPORT_KEYWORD &&
           data.type() == data::listview::KEYWORD)
@@ -91,39 +104,42 @@ wex::del::listview::listview(const data::listview& data)
           return;
 
 #ifdef __WXMSW__
-        std::thread t([=, this] {
-#endif
-          statistics<int> stats;
-
-          for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+        std::thread t(
+          [=, this]
           {
-            const listitem item(this, i);
-            log::status() << item.get_filename();
-            if (item.get_filename().file_exists())
+#endif
+            statistics<int> stats;
+
+            for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
             {
-              stream file(item.get_filename(), tool);
-              file.run_tool();
-              stats += file.get_statistics().get_elements();
+              const listitem item(this, i);
+              log::status() << item.get_filename();
+              if (item.get_filename().file_exists())
+              {
+                stream file(item.get_filename(), tool);
+                file.run_tool();
+                stats += file.get_statistics().get_elements();
+              }
+              else
+              {
+                tool_dir dir(
+                  tool,
+                  item.get_filename(),
+                  data::dir().file_spec(item.file_spec()));
+                dir.find_files();
+                stats += dir.get_statistics().get_elements();
+              }
             }
-            else
-            {
-              tool_dir dir(
-                tool,
-                item.get_filename().string(),
-                data::dir().file_spec(item.file_spec()));
-              dir.find_files();
-              stats += dir.get_statistics().get_elements();
-            }
-          }
-          log::status(tool.info(&stats));
+            log::status(tool.info(&stats));
 #ifdef __WXMSW__
-        });
+          });
         t.detach();
 #endif
       },
       ID_TOOL_LOWEST},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         std::vector<path> files;
         for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
         {

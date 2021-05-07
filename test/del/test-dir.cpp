@@ -32,7 +32,10 @@ TEST_CASE("wex::del::tool_dir")
   REQUIRE(wex::del::stream::setup_tool(tool, del_frame(), lv));
 
   wex::find_replace_data::get()->set_find_string("test");
-  wex::del::tool_dir dir(tool, "./", wex::data::dir().file_spec("*.cpp;*.h"));
+  wex::del::tool_dir dir(
+    tool,
+    wex::path("./"),
+    wex::data::dir().file_spec("*.cpp;*.h"));
 
   REQUIRE(dir.get_statistics().get_elements().get_items().empty());
 #ifndef __WXMSW__

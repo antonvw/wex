@@ -39,87 +39,87 @@
 
 namespace wex
 {
-  // file_droptarget is already used
-  class droptarget : public wxFileDropTarget
+// file_droptarget is already used
+class droptarget : public wxFileDropTarget
+{
+public:
+  explicit droptarget(listview* lv)
+    : m_listview(lv)
   {
-  public:
-    explicit droptarget(listview* lv)
-      : m_listview(lv)
+    ;
+  }
+  bool
+  OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames) override
+  {
+    // Only drop text if nothing is selected,
+    // so dropping on your own selection is impossible.
+    if (m_listview->GetSelectedItemCount() == 0)
     {
-      ;
+      for (size_t i = 0; i < filenames.GetCount(); i++)
+      {
+        m_listview->item_from_text(filenames[i]);
+      }
+
+      return true;
     }
-    bool
-    OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames) override
-    {
-      // Only drop text if nothing is selected,
-      // so dropping on your own selection is impossible.
-      if (m_listview->GetSelectedItemCount() == 0)
-      {
-        for (size_t i = 0; i < filenames.GetCount(); i++)
-        {
-          m_listview->item_from_text(filenames[i]);
-        }
-
-        return true;
-      }
-      else
-      {
-        return false;
-      }
-    };
-
-  private:
-    listview* m_listview;
-  };
-
-  template <typename T> int compare(T x, T y)
-  {
-    if (x > y)
-      return 1;
-    else if (x < y)
-      return -1;
     else
-      return 0;
-  }
-
-  std::string ignore_case(const std::string& text)
-  {
-    std::string output(text);
-
-    if (!wex::find_replace_data::get()->match_case())
     {
-      boost::algorithm::to_upper(output);
+      return false;
     }
-
-    return output;
   };
 
-  const std::vector<item> config_items()
+private:
+  listview* m_listview;
+};
+
+template <typename T> int compare(T x, T y)
+{
+  if (x > y)
+    return 1;
+  else if (x < y)
+    return -1;
+  else
+    return 0;
+}
+
+std::string ignore_case(const std::string& text)
+{
+  std::string output(text);
+
+  if (!wex::find_replace_data::get()->match_case())
   {
-    return std::vector<item>(
-      {{"notebook",
-        {{_("General"),
-          {{_("list.Header"), item::CHECKBOX, std::any(true)},
-           {_("list.Single selection"), item::CHECKBOX},
-           {_("list.Comparator"), item::FILEPICKERCTRL},
-           {_("list.Sort method"),
-            {{SORT_ASCENDING, _("Sort ascending")},
-             {SORT_DESCENDING, _("Sort descending")},
-             {SORT_TOGGLE, _("Sort toggle")}}},
-           {_("list.Context size"), 0, 80, 10},
-           {_("list.Rulers"),
-            {{wxLC_HRULES, _("Horizontal rulers")},
-             {wxLC_VRULES, _("Vertical rulers")}},
-            false}}},
-         {_("Font"),
-          {{_("list.Font"),
-            item::FONTPICKERCTRL,
-            wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)}}},
-         {_("Colour"),
-          {{_("list.Readonly colour"),
-            item::COLOURPICKERWIDGET,
-            *wxLIGHT_GREY}}}}}});
+    boost::algorithm::to_upper(output);
   }
+
+  return output;
+};
+
+const std::vector<item> config_items()
+{
+  return std::vector<item>(
+    {{"notebook",
+      {{_("General"),
+        {{_("list.Header"), item::CHECKBOX, std::any(true)},
+         {_("list.Single selection"), item::CHECKBOX},
+         {_("list.Comparator"), item::FILEPICKERCTRL},
+         {_("list.Sort method"),
+          {{SORT_ASCENDING, _("Sort ascending")},
+           {SORT_DESCENDING, _("Sort descending")},
+           {SORT_TOGGLE, _("Sort toggle")}}},
+         {_("list.Context size"), 0, 80, 10},
+         {_("list.Rulers"),
+          {{wxLC_HRULES, _("Horizontal rulers")},
+           {wxLC_VRULES, _("Vertical rulers")}},
+          false}}},
+       {_("Font"),
+        {{_("list.Font"),
+          item::FONTPICKERCTRL,
+          wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)}}},
+       {_("Colour"),
+        {{_("list.Readonly colour"),
+          item::COLOURPICKERWIDGET,
+          *wxLIGHT_GREY}}}}}});
+}
 
 }; // namespace wex
 
@@ -567,8 +567,8 @@ int wex::listview::config_dialog(const data::window& par)
 
 void wex::listview::config_get()
 {
-  const auto&        ci(config_items());
-  const item_vector& iv(&ci);
+  const auto&       ci(config_items());
+  const item_vector iv(&ci);
 
   lexers::get()->apply_default_style(
     [=, this](const std::string& back)
@@ -950,7 +950,7 @@ bool wex::listview::item_from_text(const std::string& text)
 
         if (!InReportView())
         {
-          listitem(this, it).insert();
+          listitem(this, path(it)).insert();
         }
         else
         {
@@ -990,12 +990,12 @@ bool wex::listview::item_from_text(const std::string& text)
               // more columns are present, these are ignored.
               const auto findfiles =
                 (std::next(tt) != tok.end() ? *(std::next(tt)) : it);
-              listitem(this, *tt, findfiles).insert();
+              listitem(this, path(*tt), findfiles).insert();
             }
           }
           else
           {
-            listitem(this, it).insert();
+            listitem(this, path(it)).insert();
           }
         }
     }
@@ -1141,7 +1141,7 @@ bool wex::listview::on_command(wxCommandEvent& event)
         const auto no =
           (GetSelectedItemCount() > 0 ? GetFirstSelected() : GetItemCount());
 
-        listitem(this, dir_dlg.GetPath().ToStdString()).insert(no);
+        listitem(this, path(dir_dlg.GetPath().ToStdString())).insert(no);
         return true;
       }
     }
@@ -1309,7 +1309,7 @@ bool wex::listview::set_item_image(long item_number, const wxArtID& artid)
 
 bool wex::listview::sort_column(int column_no, sort_t sort_method)
 {
-  if (column_no == -1 || column_no >= (int)m_columns.size())
+  if (column_no == -1 || column_no >= static_cast<int>(m_columns.size()))
   {
     return false;
   }
@@ -1368,8 +1368,8 @@ bool wex::listview::sort_column(int column_no, sort_t sort_method)
 
 void wex::listview::sort_column_reset()
 {
-  if (m_sorted_column_no != -1 && !m_art_ids.empty()) // only if we are using
-                                                      // images
+  // only if we are using images
+  if (m_sorted_column_no != -1 && !m_art_ids.empty())
   {
     ClearColumnImage(m_sorted_column_no);
     m_sorted_column_no = -1;

@@ -34,7 +34,7 @@ void find_prep(wex::stream& s, wex::factory::find_replace_data* frd)
   wex::stream s(                                          \
     &frd,                                                 \
     wex::test::get_path("test.h"),                        \
-    wex::ID_TOOL_REPORT_FIND);                            \
+    wex::tool(wex::ID_TOOL_REPORT_FIND));                 \
                                                           \
   REQUIRE(s.get_tool().id() == wex::ID_TOOL_REPORT_FIND); \
                                                           \
@@ -76,7 +76,10 @@ TEST_CASE("wex::stream")
 
   SUBCASE("replace")
   {
-    wex::stream s(&frd, wex::test::get_path("test.h"), wex::ID_TOOL_REPLACE);
+    wex::stream s(
+      &frd,
+      wex::test::get_path("test.h"),
+      wex::tool(wex::ID_TOOL_REPLACE));
     REQUIRE(s.get_tool().id() == wex::ID_TOOL_REPLACE);
 
     frd.set_regex(false);
