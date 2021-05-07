@@ -10,4 +10,4 @@
 -runtime/int,\
 -runtime/references,\
 -whitespace\
- $*
+ "$*"

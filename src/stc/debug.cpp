@@ -38,7 +38,7 @@ class process_dir : public dir
 public:
   process_dir(listview* lv, bool init)
     : dir(
-        "/proc",
+        path("/proc"),
         data::dir().file_spec("[0-9]+").type(
           data::dir::type_t().set(data::dir::DIRS)))
     , m_listview(lv)
