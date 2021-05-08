@@ -13,49 +13,50 @@
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/factory/stc.h>
-#include <wex/log.h>
 #include <wex/lexer.h>
 #include <wex/lexers.h>
+#include <wex/log.h>
 #include <wx/platinfo.h>
 
 namespace wex
 {
-  int convert_int_attrib(
-    const std::vector<std::pair<std::string, int>>& v,
-    const std::string&                              text)
+int convert_int_attrib(
+  const std::vector<std::pair<std::string, int>>& v,
+  const std::string&                              text)
+{
+  if (const auto& it = std::find_if(
+        v.begin(),
+        v.end(),
+        [text](const auto& p)
+        {
+          return text == p.first;
+        });
+      it != v.end())
   {
-    if (const auto& it = std::find_if(
-          v.begin(),
-          v.end(),
-          [text](const auto& p) {
-            return text == p.first;
-          });
-        it != v.end())
-    {
-      return it->second;
-    }
-    else
-    {
-      log("unsupported attrib") << text;
-      return -1;
-    }
+    return it->second;
+  }
+  else
+  {
+    log("unsupported attrib") << text;
+    return -1;
+  }
+}
+
+/// Tokenizes the complete string into a vector of integers (size_t).
+/// Returns the filled in vector.
+auto tokenize_int(const std::string& text, const char* sep = " \t\r\n")
+{
+  std::vector<size_t> tokens;
+
+  for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
+         text,
+         boost::char_separator<char>(sep)))
+  {
+    tokens.emplace_back(std::stoi(it));
   }
 
-  /// Tokenizes the complete string into a vector of integers (size_t).
-  /// Returns the filled in vector.
-  auto tokenize_int(const std::string& text, const char* sep = " \t\r\n")
-  {
-    std::vector<size_t> tokens;
-
-    for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
-           text,
-           boost::char_separator<char>(sep)))
-    {
-      tokens.emplace_back(std::stoi(it));
-    }
-
-    return tokens;
-  };
+  return tokens;
+};
 } // namespace wex
 
 wex::lexer::lexer(const std::string& lexer)
@@ -401,7 +402,8 @@ void wex::lexer::auto_match(const std::string& lexer)
         if (const auto& style = std::find_if(
               lexers::get()->theme_macros().begin(),
               lexers::get()->theme_macros().end(),
-              [&](auto const& e) {
+              [&](auto const& e)
+              {
                 return it.first.find(e.first) != std::string::npos;
               });
             style != lexers::get()->theme_macros().end())
@@ -449,7 +451,8 @@ void wex::lexer::clear()
   {
     m_stc->SetLexer(wxSTC_LEX_NULL);
     apply();
-    m_stc->reset_margins(factory::stc::margin_t().set(factory::stc::MARGIN_FOLDING));
+    m_stc->reset_margins(
+      factory::stc::margin_t().set(factory::stc::MARGIN_FOLDING));
   }
 }
 
@@ -663,7 +666,8 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
           {"line", wxSTC_EDGE_LINE},
           {"background", wxSTC_EDGE_BACKGROUND}},
          v),
-       [&](factory::stc* stc, int attrib) {
+       [&](factory::stc* stc, int attrib)
+       {
          switch (attrib)
          {
            case -1:
@@ -692,7 +696,8 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
           {"afterindent", wxSTC_WS_VISIBLEAFTERINDENT},
           {"onlyindent", wxSTC_WS_VISIBLEONLYININDENT}},
          v),
-       [&](factory::stc* stc, int attrib) {
+       [&](factory::stc* stc, int attrib)
+       {
          if (attrib >= 0)
          {
            stc->SetViewWhiteSpace(attrib);
@@ -707,7 +712,8 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
        convert_int_attrib(
          {{"arrow", wxSTC_TD_LONGARROW}, {"strike", wxSTC_TD_STRIKEOUT}},
          v),
-       [&](factory::stc* stc, int attrib) {
+       [&](factory::stc* stc, int attrib)
+       {
          if (attrib >= 0)
          {
            stc->SetTabDrawMode(attrib);
@@ -720,7 +726,8 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
     m_attribs.push_back(
       {_("Use tabs"),
        convert_int_attrib({{"use", 1}, {"off", 0}}, v),
-       [&](factory::stc* stc, int attrib) {
+       [&](factory::stc* stc, int attrib)
+       {
          if (attrib >= 0)
          {
            stc->SetUseTabs(true);
@@ -730,13 +737,17 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
 
   if (const auto v(node->attribute("tabwidth").as_int(0)); v > 0)
   {
-    m_attribs.push_back({_("Tab width"), v, [&](factory::stc* stc, int attrib) {
-                           if (attrib >= 0)
-                           {
-                             stc->SetIndent(attrib);
-                             stc->SetTabWidth(attrib);
-                           }
-                         }});
+    m_attribs.push_back(
+      {_("Tab width"),
+       v,
+       [&](factory::stc* stc, int attrib)
+       {
+         if (attrib >= 0)
+         {
+           stc->SetIndent(attrib);
+           stc->SetTabWidth(attrib);
+         }
+       }});
   }
 
   if (const std::string v(node->attribute("wrapline").value()); !v.empty())
@@ -749,7 +760,8 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
           {"char", wxSTC_WRAP_CHAR},
           {"whitespace", wxSTC_WRAP_WHITESPACE}},
          v),
-       [&](factory::stc* stc, int attrib) {
+       [&](factory::stc* stc, int attrib)
+       {
          if (attrib >= 0)
          {
            stc->SetWrapMode(attrib);
@@ -788,6 +800,7 @@ bool wex::lexer::set(const lexer& lexer, bool fold)
   }
 
   m_stc->SetLexerLanguage(m_scintilla_lexer);
+  m_stc->SetIndent(config(_("stc.Indent")).get(2));
 
   apply();
 
@@ -811,7 +824,8 @@ void wex::lexer::set_property(const std::string& name, const std::string& value)
   if (const auto& it = std::find_if(
         m_properties.begin(),
         m_properties.end(),
-        [name](auto const& e) {
+        [name](auto const& e)
+        {
           return e.name() == name;
         });
       it != m_properties.end())

@@ -21,40 +21,39 @@
 
 namespace wex
 {
-  void hypertext(stc* stc)
+void hypertext(stc* stc)
+{
+  if (const auto match_pos = stc->FindText(
+        stc->GetCurrentPos() - 1,
+        stc->PositionFromLine(stc->get_current_line()),
+        "<");
+      match_pos != wxSTC_INVALID_POSITION &&
+      stc->GetCharAt(match_pos + 1) != '!')
   {
-    if (const auto match_pos = stc->FindText(
-          stc->GetCurrentPos() - 1,
-          stc->PositionFromLine(stc->get_current_line()),
-          "<");
-        match_pos != wxSTC_INVALID_POSITION &&
-        stc->GetCharAt(match_pos + 1) != '!')
+    if (const auto match(stc->get_word_at_pos(match_pos + 1));
+        match.find("/") != 0 &&
+        stc->GetCharAt(stc->GetCurrentPos() - 2) != '/' &&
+        (stc->get_lexer().language() == "xml" ||
+         stc->get_lexer().is_keyword(match)) &&
+        !stc->SelectionIsRectangle())
     {
-      if (const auto match(stc->get_word_at_pos(match_pos + 1));
-          match.find("/") != 0 &&
-          stc->GetCharAt(stc->GetCurrentPos() - 2) != '/' &&
-          (stc->get_lexer().language() == "xml" ||
-           stc->get_lexer().is_keyword(match)) &&
-          !stc->SelectionIsRectangle())
+      if (const std::string add("</" + match + ">"); stc->get_vi().is_active())
       {
-        if (const std::string add("</" + match + ">");
-            stc->get_vi().is_active())
+        if (
+          !stc->get_vi().command(add) ||
+          !stc->get_vi().command(std::string(1, WXK_ESCAPE)) ||
+          !stc->get_vi().command("%") || !stc->get_vi().command("i"))
         {
-          if (
-            !stc->get_vi().command(add) ||
-            !stc->get_vi().command(std::string(1, WXK_ESCAPE)) ||
-            !stc->get_vi().command("%") || !stc->get_vi().command("i"))
-          {
-            log::status("Autocomplete failed");
-          }
+          log::status("Autocomplete failed");
         }
-        else
-        {
-          stc->InsertText(stc->GetCurrentPos(), add);
-        }
+      }
+      else
+      {
+        stc->InsertText(stc->GetCurrentPos(), add);
       }
     }
   }
+}
 }; // namespace wex
 
 void wex::stc::bind_other()
@@ -124,7 +123,6 @@ void wex::stc::bind_other()
     {
       event.Skip();
       check_brace();
-      m_fold_level = get_fold_level();
     });
 
   Bind(
@@ -256,25 +254,9 @@ void wex::stc::bind_other()
 
 void wex::stc::key_action(wxKeyEvent& event)
 {
-  if (!m_vi->is_active())
+  if (m_vi->is_active() && m_vi->mode().is_insert())
   {
-    if (isalnum(event.GetUnicodeKey()))
-    {
-      m_adding_chars = true;
-    }
-  }
-  else if (m_vi->mode().is_insert())
-  {
-    if (isalnum(event.GetUnicodeKey()))
-    {
-      m_adding_chars = true;
-    }
-
     m_auto_complete->on_char(event.GetUnicodeKey());
-  }
-  else
-  {
-    m_adding_chars = false;
   }
 
   if (m_vi->visual() == ex::OFF)
@@ -381,8 +363,6 @@ void wex::stc::mouse_action(wxMouseEvent& event)
 
       event.Skip();
       check_brace();
-      m_adding_chars = false;
-      m_fold_level   = get_fold_level();
 
       if (
         !m_skip && m_frame->debug_is_active() &&

@@ -33,24 +33,29 @@ TEST_CASE("wex::stc")
 
   SUBCASE("auto_indentation")
   {
-    // first test auto indentation on next line
-    wex::config(_("stc.Auto indent")).set(3);
-    REQUIRE(wex::config(_("stc.Auto indent")).get(3) == 3);
+    wex::config(_("stc.Auto indent")).set(true);
+
+    // test indent with other character
     stc->set_text("  \n  line with indentation");
     stc->DocumentEnd();
     REQUIRE(!stc->auto_indentation('x'));
     REQUIRE(stc->get_text() == "  \n  line with indentation");
     REQUIRE(stc->get_line_count() == 2);
+
+    // test indent
     stc->SetEOLMode(wxSTC_EOL_CR);
     REQUIRE(stc->auto_indentation(stc->eol().front()));
-
     // the \n is not added, but indentation does
     REQUIRE(stc->get_text() == "  \n  line with indentation");
     REQUIRE(stc->get_line_count() == 2);
+
     // test auto indentation for level change
     REQUIRE(stc->get_lexer().set("cpp"));
-    stc->set_text("\nif ()\n{\n");
+    REQUIRE(stc->GetIndent() == 2);
+    stc->set_text("\nif ()\n{\n\n");
     stc->DocumentEnd();
+    // next returns false
+    stc->auto_indentation(stc->eol().front());
   }
 
   SUBCASE("binary")

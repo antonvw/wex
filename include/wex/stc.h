@@ -293,10 +293,10 @@ private:
 
   const marker m_marker_change = marker(1);
 
-  int m_fold_level{0}, m_margin_text_click{-1}, m_saved_pos{-1},
-    m_saved_selection_start{-1}, m_saved_selection_end{-1};
+  int m_margin_text_click{-1}, m_saved_pos{-1}, m_saved_selection_start{-1},
+    m_saved_selection_end{-1};
 
-  bool m_adding_chars{false}, m_skip{false};
+  bool m_skip{false};
 
   frame* m_frame;
 

@@ -1,7 +1,6 @@
 # roadmap
 
 ## backlog
-- improve auto_indentation
 - improve path, use less std::string
   - add const char* constructor
   - e.g. path::current

@@ -638,7 +638,7 @@ bool wex::ex::command_set(const std::string& command)
       [&](bool on)
       {
         if (!modeline)
-          config("stc.Auto indent").set(on ? (long)2 : (long)0);
+          config("stc.Auto indent").set(on);
       }},
      {{"aw", _("stc.Auto write")},
       [&](bool on)
