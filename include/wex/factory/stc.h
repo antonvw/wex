@@ -122,14 +122,14 @@ public:
 
   /// Opens the file, reads the content into the window,
   /// then closes the file and sets the lexer.
-  virtual bool open(const path& filename, const data::stc& data)
+  virtual bool open(const wex::path& path, const data::stc& data)
   {
     return false;
   };
 
-  /// Returns the filename, as used by the file.
+  /// Returns the path, as used by the file.
   /// Pure virtual, must be overridden.
-  virtual const path& path() const = 0;
+  virtual const wex::path& path() const = 0;
 
   /// Restores saved position.
   /// Returns true if position was saved before.

@@ -38,7 +38,7 @@ class open_file_dir : public dir
 {
 public:
   /// Constructor.
-  open_file_dir(const std::string& path, const data::dir& data);
+  open_file_dir(const wex::path& path, const data::dir& data);
 
   static void set(factory::frame* fr, data::stc::window_t ft)
   {
@@ -56,9 +56,9 @@ private:
 }; // namespace wex
 
 wex::open_file_dir::open_file_dir(
-  const std::string& path,
+  const wex::path& path,
   const data::dir&   data)
-  : dir(wex::path(path), data)
+  : dir(path, data)
 {
 }
 
