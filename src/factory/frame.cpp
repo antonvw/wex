@@ -52,7 +52,7 @@ bool wex::factory::frame::is_open(const wex::path& filename)
 {
   if (auto* stc = get_stc(); stc != nullptr)
   {
-    return stc->get_filename() == filename;
+    return stc->path() == filename;
   }
 
   return false;

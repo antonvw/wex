@@ -120,11 +120,11 @@ const vcs_entry find_entry(const std::vector<vcs_entry>& entries)
 }
 }; // namespace wex
 
-wex::vcs::vcs(const std::vector<path>& files, int command_no)
+wex::vcs::vcs(const std::vector<wex::path>& files, int command_no)
   : m_files(files)
   , m_title("VCS")
 {
-  m_entry = find_entry(m_entries, get_file());
+  m_entry = find_entry(m_entries, path());
 
   if (!m_entry.name().empty())
   {
@@ -141,7 +141,7 @@ wex::vcs::vcs(const std::vector<path>& files, int command_no)
 
       if (!m_entry.get_command().is_help() && m_files.size() == 1)
       {
-        m_title += " " + path(m_files[0]).fullname();
+        m_title += " " + wex::path(m_files[0]).filename();
       }
     }
   }
@@ -212,7 +212,7 @@ int wex::vcs::config_dialog(const data::window& par) const
   }
 }
 
-bool wex::vcs::dir_exists(const path& filename)
+bool wex::vcs::dir_exists(const wex::path& filename)
 {
   if (const vcs_entry entry(find_entry(m_entries, filename));
       vcs_admin(entry.admin_dir(), filename).is_toplevel())
@@ -227,7 +227,7 @@ bool wex::vcs::dir_exists(const path& filename)
 
 bool wex::vcs::execute()
 {
-  if (get_file().empty())
+  if (path().empty())
   {
     return m_entry.execute(
       m_entry.get_command().is_add() ? config(_("vcs.data")).get_first_of() :
@@ -237,8 +237,8 @@ bool wex::vcs::execute()
   }
   else
   {
-    const path_lexer filename(get_file());
-    path             wd(get_file());
+    const path_lexer filename(path());
+    wex::path        wd(path());
     std::string      args;
 
     if (m_files.size() > 1)
@@ -247,21 +247,21 @@ bool wex::vcs::execute()
         m_files.begin(),
         m_files.end(),
         std::string(),
-        [](const std::string& a, const path& b)
+        [](const std::string& a, const wex::path& b)
         {
           return a + "\"" + b.string() + "\" ";
         }));
     }
     else if (m_entry.name() == "git")
     {
-      if (filename.file_exists() && !filename.fullname().empty())
+      if (filename.file_exists() && !filename.filename().empty())
       {
-        args = "\"" + filename.fullname() + "\"";
+        args = "\"" + filename.filename() + "\"";
       }
 
       if (wd.file_exists())
       {
-        wd = path(wd.get_path());
+        wd = wex::path(wd.parent_path());
       }
     }
     else
@@ -275,7 +275,7 @@ bool wex::vcs::execute()
 
 bool wex::vcs::execute(const std::string& command)
 {
-  return m_entry.execute(command, get_file().get_path());
+  return m_entry.execute(command, path().parent_path());
 }
 
 const std::string wex::vcs::get_branch() const
@@ -283,20 +283,7 @@ const std::string wex::vcs::get_branch() const
   return config("vcs.VCS").get(VCS_AUTO) == VCS_NONE ?
            std::string() :
            m_entry.get_branch(
-             get_file().file_exists() ? get_file().get_path() :
-                                        get_file().string());
-}
-
-const wex::path wex::vcs::get_file() const
-{
-  if (m_files.empty())
-  {
-    return path(config(_("vcs.Base folder")).get_first_of());
-  }
-  else
-  {
-    return m_files[0];
-  }
+             path().file_exists() ? path().parent_path() : path().string());
 }
 
 bool wex::vcs::load_document()
@@ -337,6 +324,18 @@ const std::string wex::vcs::name() const
       return "Auto";
     default:
       return m_entry.name();
+  }
+}
+
+const wex::path wex::vcs::path() const
+{
+  if (m_files.empty())
+  {
+    return wex::path(config(_("vcs.Base folder")).get_first_of());
+  }
+  else
+  {
+    return m_files[0];
   }
 }
 

@@ -96,7 +96,7 @@ bool wex::ex_stream::copy(file* from, file* to)
   to->open();
 
   from->close();
-  std::remove(from->get_filename().string().c_str());
+  std::remove(from->path().string().c_str());
   from->open(std::ios_base::out);
 
   m_stream      = &to->stream();
@@ -466,7 +466,7 @@ void wex::ex_stream::stream(file& f)
 {
   if (!f.is_open())
   {
-    log("file is not open") << f.get_filename();
+    log("file is not open") << f.path();
     return;
   }
 

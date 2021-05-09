@@ -16,7 +16,7 @@
 wex::del::frame* del_frame();
 
 /// Returns the project.
-const std::string get_project();
+const wex::path get_project();
 
 /// Returns an stc.
 wex::stc* get_stc();

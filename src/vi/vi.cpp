@@ -979,12 +979,12 @@ void wex::vi::command_reg(const std::string& reg)
     case '%':
       if (m_mode.is_insert())
       {
-        get_stc()->add_text(get_stc()->get_filename().fullname());
+        get_stc()->add_text(get_stc()->path().filename());
       }
       else
       {
-        frame()->show_ex_message(get_stc()->get_filename().string());
-        clipboard_add(get_stc()->get_filename().string());
+        frame()->show_ex_message(get_stc()->path().string());
+        clipboard_add(get_stc()->path().string());
       }
       break;
 

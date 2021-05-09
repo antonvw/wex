@@ -67,13 +67,19 @@ void wex::bind::frd(
   wxFindReplaceData*                            frd,
   std::function<void(const std::string&, bool)> f)
 {
-  m_handler->Bind(wxEVT_FIND, [=, this](wxFindDialogEvent& event) {
-    f(frd->GetFindString(), (frd->GetFlags() & wxFR_DOWN) > 0);
-  });
+  m_handler->Bind(
+    wxEVT_FIND,
+    [=, this](wxFindDialogEvent& event)
+    {
+      f(frd->GetFindString(), (frd->GetFlags() & wxFR_DOWN) > 0);
+    });
 
-  m_handler->Bind(wxEVT_FIND_NEXT, [=, this](wxFindDialogEvent& event) {
-    f(frd->GetFindString(), (frd->GetFlags() & wxFR_DOWN) > 0);
-  });
+  m_handler->Bind(
+    wxEVT_FIND_NEXT,
+    [=, this](wxFindDialogEvent& event)
+    {
+      f(frd->GetFindString(), (frd->GetFlags() & wxFR_DOWN) > 0);
+    });
 }
 
 void wex::bind::ui(

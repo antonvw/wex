@@ -400,7 +400,7 @@ void wex::frame::on_menu_history(
   size_t                    index,
   data::stc::window_t       flags)
 {
-  if (const auto& file(history.get_history_file(index)); !file.empty())
+  if (const auto& file(history.path(index)); !file.empty())
   {
     open_file(file, data::stc().flags(flags));
   }
@@ -603,7 +603,7 @@ void wex::frame::statusbar_clicked_right(const std::string& pane)
     }
 
     open_file(
-      wex::lexers::get()->get_filename(),
+      wex::lexers::get()->path(),
       wex::data::control().find(
         match,
         wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX));
@@ -611,7 +611,7 @@ void wex::frame::statusbar_clicked_right(const std::string& pane)
   else if (pane == "PaneText")
   {
     wex::config::save();
-    open_file(path(wex::config::file()));
+    open_file(wex::config::path());
   }
   else
   {

@@ -11,6 +11,7 @@
 #include <string>
 
 #include <wex/core.h>
+#include <wex/path.h>
 
 using json = nlohmann::json;
 
@@ -21,12 +22,12 @@ class config_imp
 public:
   /// Static interface.
 
-  /// Returns config file.
-  static auto file() { return m_file; }
+  /// Returns config path.
+  static auto path() { return m_path; }
 
-  /// Sets config file to use. If not called,
+  /// Sets config path to use. If not called,
   /// the default is used.
-  static void set_file(const std::string& file) { m_file = file; }
+  static void set_path(const wex::path& p) { m_path = p; }
 
   /// Other methods.
 
@@ -86,8 +87,8 @@ private:
   json& accessor(const std::string& item);
   void  elements(const json& o, size_t& total) const;
 
-  json                      m_json;
-  static inline std::string m_file;
-  const std::string         m_item;
+  json                    m_json;
+  static inline wex::path m_path;
+  const std::string       m_item;
 };
 }; // namespace wex

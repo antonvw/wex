@@ -12,13 +12,13 @@ namespace fs = std::filesystem;
 
 namespace wex
 {
-  const std::string lexer_string(const std::string& filename)
-  {
-    lexers* l = lexers::get(false);
-    return l != nullptr && !l->get_lexers().empty() ?
-             l->find_by_filename(filename).display_lexer() :
-             std::string();
-  }
+const std::string lexer_string(const std::string& filename)
+{
+  lexers* l = lexers::get(false);
+  return l != nullptr && !l->get_lexers().empty() ?
+           l->find_by_filename(filename).display_lexer() :
+           std::string();
+}
 }; // namespace wex
 
 wex::path_lexer::path_lexer(const std::string& p)
@@ -29,6 +29,6 @@ wex::path_lexer::path_lexer(const std::string& p)
 
 wex::path_lexer::path_lexer(const path& p)
   : path(p)
-  , m_lexer(lexer_string(p.fullname()))
+  , m_lexer(lexer_string(p.filename()))
 {
 }

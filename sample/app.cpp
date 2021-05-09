@@ -148,11 +148,11 @@ frame::frame()
         .Caption(_("Process"))
         .CloseButton(false)}});
 
-  m_stc_lexers->open(wex::lexers::get()->get_filename());
+  m_stc_lexers->open(wex::lexers::get()->path());
 
   m_notebook->add_page(wex::data::notebook()
                          .page(m_stc_lexers)
-                         .key(wex::lexers::get()->get_filename().fullname()));
+                         .key(wex::lexers::get()->path().filename()));
   m_notebook->add_page(
     wex::data::notebook().page(m_listview).key("wex::listview"));
   m_notebook->add_page(wex::data::notebook().page(m_grid).key("wex::grid"));
@@ -478,9 +478,7 @@ void frame::on_command(wxCommandEvent& event)
     case wxID_SAVE:
       m_stc->get_file().file_save();
 
-      if (
-        m_stc->get_filename().data() ==
-        wex::lexers::get()->get_filename().data())
+      if (m_stc->path().data() == wex::lexers::get()->path().data())
       {
         wex::lexers::get()->load_document();
         wex::log::trace("file contains")
@@ -514,12 +512,12 @@ void frame::on_command(wxCommandEvent& event)
       if (editor != nullptr)
       {
         auto* stc = new wex::stc(
-          editor->get_filename(),
+          editor->path(),
           wex::data::stc().window(wex::data::window().parent(m_notebook)));
         m_notebook->add_page(wex::data::notebook()
                                .page(stc)
                                .key("stc" + std::to_string(stc->GetId()))
-                               .caption(m_stc->get_filename().fullname()));
+                               .caption(m_stc->path().filename()));
         stc->SetDocPointer(m_stc->GetDocPointer());
       }
       break;
@@ -561,11 +559,8 @@ wex::stc* frame::open_file(const wex::path& file, const wex::data::stc& data)
   return m_stc;
 }
 
-dir::dir(
-  const std::string& fullpath,
-  const std::string& findfiles,
-  wex::grid*         grid)
-  : wex::dir(wex::path(fullpath), wex::data::dir().file_spec(findfiles))
+dir::dir(const wex::path& path, const std::string& findfiles, wex::grid* grid)
+  : wex::dir(path, wex::data::dir().file_spec(findfiles))
   , m_grid(grid)
 {
 }

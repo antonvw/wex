@@ -13,10 +13,12 @@
 wex::temp_filename::temp_filename(bool cleanup)
   : m_cleanup(cleanup)
   , m_name(
-    path(std::filesystem::temp_directory_path().string(),
-      std::to_string(std::time(nullptr)))
-      .data()
-      .string() + std::to_string(m_no++))
+      path(
+        std::filesystem::temp_directory_path(),
+        std::to_string(std::time(nullptr)))
+        .data()
+        .string() +
+      std::to_string(m_no++))
 {
 }
 

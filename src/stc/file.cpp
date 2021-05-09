@@ -2,7 +2,7 @@
 // Name:      stc/file.cpp
 // Purpose:   Implementation of class wex::stc_file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -47,8 +47,8 @@ public:
 #endif
 } // namespace wex
 
-wex::stc_file::stc_file(stc* stc, const std::string& filename)
-  : file(path(filename))
+wex::stc_file::stc_file(stc* stc, const wex::path& path)
+  : file(path)
   , m_stc(stc)
 {
 }
@@ -71,7 +71,7 @@ bool wex::stc_file::do_file_load(bool synced)
     dlg.is_hexmode() || m_stc->data().flags().test(data::stc::WIN_HEX);
 
   const std::streampos offset =
-    m_previous_size < m_stc->get_filename().stat().st_size &&
+    m_previous_size < m_stc->path().stat().st_size &&
         m_stc->data().event().is_synced_log() ?
       m_previous_size :
       std::streampos(0);
@@ -81,11 +81,10 @@ bool wex::stc_file::do_file_load(bool synced)
     m_stc->clear();
   }
 
-  m_previous_size = m_stc->get_filename().stat().st_size;
+  m_previous_size = m_stc->path().stat().st_size;
 
   if (
-    m_stc->get_filename().stat().st_size >
-    config("stc.max.Size visual").get(10000000))
+    m_stc->path().stat().st_size > config("stc.max.Size visual").get(10000000))
   {
     m_stc->visual(false);
   }
@@ -138,7 +137,7 @@ bool wex::stc_file::do_file_load(bool synced)
 
 void wex::stc_file::do_file_new()
 {
-  m_stc->SetName(get_filename().string());
+  m_stc->SetName(path().string());
   m_stc->properties_message();
 
   if (m_stc->data().control().command().empty())
@@ -146,9 +145,8 @@ void wex::stc_file::do_file_new()
     m_stc->clear();
   }
 
-  m_stc->get_lexer().set(
-    path_lexer(get_filename()).lexer(),
-    true); // allow fold
+  m_stc->get_lexer().set(path_lexer(path()).lexer(),
+                         true); // allow fold
 }
 
 void wex::stc_file::do_file_save(bool save_as)

@@ -73,8 +73,8 @@ wex::file_dialog::file_dialog(wex::file* file, const data::window& data)
   : wxFileDialog(
       data.parent(),
       data.title(),
-      file->get_filename().get_path(),
-      file->get_filename().fullname(),
+      file->path().parent_path(),
+      file->path().filename(),
       data.wildcard(),
       data.style(),
       data.pos(),
@@ -84,7 +84,7 @@ wex::file_dialog::file_dialog(wex::file* file, const data::window& data)
 {
   if (
     data.wildcard() == wxFileSelectorDefaultWildcardStr &&
-    m_file->get_filename().stat().is_ok())
+    m_file->path().stat().is_ok())
   {
     std::string wildcards = _("All Files") + " (" +
                             wxFileSelectorDefaultWildcardStr + ") |" +
@@ -97,7 +97,7 @@ wex::file_dialog::file_dialog(wex::file* file, const data::window& data)
         const std::string wildcard =
           it.display_lexer() + " (" + it.extensions() + ") |" + it.extensions();
         wildcards =
-          (matches_one_of(file->get_filename().fullname(), it.extensions()) ?
+          (matches_one_of(file->path().filename(), it.extensions()) ?
              wildcard + "|" + wildcards :
              wildcards + "|" + wildcard);
       }
@@ -118,7 +118,7 @@ int wex::file_dialog::show_modal_if_changed(bool show_modal)
 
   if (m_file->is_contents_changed())
   {
-    if (!m_file->get_filename().stat().is_ok())
+    if (!m_file->path().stat().is_ok())
     {
       switch (wxMessageBox(
         _("Save changes") + "?",
@@ -137,7 +137,7 @@ int wex::file_dialog::show_modal_if_changed(bool show_modal)
     else
     {
       switch (wxMessageBox(
-        _("Save changes to") + ": " + m_file->get_filename().string() + "?",
+        _("Save changes to") + ": " + m_file->path().string() + "?",
         _("Confirm"),
         wxYES_NO | wxCANCEL | wxICON_QUESTION))
       {

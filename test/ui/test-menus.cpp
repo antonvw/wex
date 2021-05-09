@@ -27,7 +27,7 @@ TEST_CASE("wex::menus")
   std::vector<wex::menu_command> commands;
   REQUIRE(!wex::menus::add_commands(doc, commands));
 
-  REQUIRE(!wex::menus::get_filename().empty());
+  REQUIRE(!wex::menus::path().empty());
 
   std::vector<wex::menu_commands<wex::menu_command>> entries;
   REQUIRE(wex::menus::load("debug", entries));

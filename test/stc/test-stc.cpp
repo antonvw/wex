@@ -328,7 +328,7 @@ TEST_CASE("wex::stc")
   SUBCASE("open")
   {
     wex::stc stc(wex::test::get_path("test.h"));
-    REQUIRE(stc.get_filename().string().find("test.h") != std::string::npos);
+    REQUIRE(stc.path().string().find("test.h") != std::string::npos);
     REQUIRE(stc.open(wex::test::get_path("test.h")));
     REQUIRE(!stc.open(wex::path("XXX")));
   }

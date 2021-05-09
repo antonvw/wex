@@ -155,8 +155,8 @@ bool wex::data::stc::inject() const
   }
 
   if (
-    m_win_flags[WIN_READ_ONLY] || (m_stc->get_filename().file_exists() &&
-                                   m_stc->get_filename().is_readonly()))
+    m_win_flags[WIN_READ_ONLY] || (m_stc->path().file_exists() &&
+                                   m_stc->path().is_readonly()))
   {
     m_stc->SetReadOnly(true);
     injected = true;
@@ -229,7 +229,7 @@ void wex::data::stc::event_data::set(factory::stc* s, bool synced)
   // Other kind of files might get new data anywhere inside the file,
   // we cannot sync that by keeping pos.
   // Also only do it for reasonably large files.
-  const bool is_log = (s->get_filename().extension().starts_with(".log"));
+  const bool is_log = (s->path().extension().starts_with(".log"));
   m_synced          = synced;
   m_synced_log      = synced && is_log && s->GetTextLength() > 1024;
 }

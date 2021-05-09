@@ -31,7 +31,7 @@ public:
   {
     for (const auto& it : m_paths)
     {
-      if (const wex::path valid(it, path); valid.file_exists())
+      if (const wex::path valid(wex::path(it), path); valid.file_exists())
       {
         return valid;
       }
@@ -175,7 +175,7 @@ const wex::path wex::factory::link::find_url_or_mime(
   // previewable (MIME) file
   if (stc != nullptr && stc->get_lexer().is_previewable())
   {
-    return stc->get_filename();
+    return stc->path();
   }
   else
   {
@@ -221,10 +221,9 @@ const wex::path wex::factory::link::get_path(
   {
     return file.make_absolute();
   }
-  else if (
-    file.is_relative() && stc != nullptr && stc->get_filename().file_exists())
+  else if (file.is_relative() && stc != nullptr && stc->path().file_exists())
   {
-    if (wex::path path(stc->get_filename().get_path());
+    if (wex::path path(stc->path().parent_path());
         path.append(file).file_exists())
     {
       return path.make_absolute();

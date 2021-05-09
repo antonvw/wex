@@ -196,13 +196,13 @@ wex::listview::listview(const data::listview& data)
         if (m_item_number < GetItemCount())
         {
           if (listitem item(this, m_item_number);
-              item.get_filename().file_exists() &&
-              (item.get_filename().stat().get_modification_time() !=
+              item.path().file_exists() &&
+              (item.path().stat().get_modification_time() !=
                  get_item_text(m_item_number, _("Modified")) ||
-               item.get_filename().stat().is_readonly() != item.is_readonly()))
+               item.path().stat().is_readonly() != item.is_readonly()))
           {
             item.update();
-            log::status() << item.get_filename();
+            log::status() << item.path();
             m_item_updated = true;
           }
 
@@ -266,7 +266,7 @@ wex::listview::listview(const data::listview& data)
     {
       if (m_data.type() != data::listview::NONE && GetSelectedItemCount() == 1)
       {
-        if (const wex::path fn(listitem(this, event.GetIndex()).get_filename());
+        if (const wex::path fn(listitem(this, event.GetIndex()).path());
             fn.stat().is_ok())
         {
           log::status() << fn;
@@ -509,7 +509,7 @@ void wex::listview::build_popup_menu(wex::menu& menu)
 {
   if (
     GetSelectedItemCount() >= 1 &&
-    listitem(this, GetFirstSelected()).get_filename().stat().is_ok())
+    listitem(this, GetFirstSelected()).path().stat().is_ok())
   {
     menu.append(
       {{ID_EDIT_OPEN, _("&Open"), data::menu().art(wxART_FILE_OPEN)}, {}});
@@ -892,7 +892,7 @@ void wex::listview::item_activated(long item_number)
 
     default:
       // Cannot be const because of SetItem later on.
-      if (listitem item(this, item_number); item.get_filename().file_exists())
+      if (listitem item(this, item_number); item.path().file_exists())
       {
         const auto    no(get_item_text(item_number, _("Line No")));
         data::control data(
@@ -902,9 +902,9 @@ void wex::listview::item_activated(long item_number)
                .find(get_item_text(item_number, _("Match"))) :
              data::control()));
 
-        m_frame->open_file(item.get_filename(), data);
+        m_frame->open_file(item.path(), data);
       }
-      else if (item.get_filename().dir_exists())
+      else if (item.path().dir_exists())
       {
         m_frame->stc_entry_dialog_title(_("Folder Type"));
         m_frame->stc_entry_dialog_component()->set_text(
@@ -1027,11 +1027,10 @@ const std::string wex::listview::item_to_text(long item_number) const
     {
       const listitem item(const_cast<listview*>(this), item_number);
       text =
-        (item.get_filename().stat().is_ok() ? item.get_filename().string() :
-                                              item.get_filename().fullname());
+        (item.path().stat().is_ok() ? item.path().string() :
+                                      item.path().filename());
 
-      if (
-        item.get_filename().dir_exists() && !item.get_filename().file_exists())
+      if (item.path().dir_exists() && !item.path().file_exists())
       {
         text += field_separator() + get_item_text(item_number, _("Type"));
       }
@@ -1126,8 +1125,7 @@ bool wex::listview::on_command(wxCommandEvent& event)
 
       if (GetSelectedItemCount() > 0)
       {
-        defaultPath =
-          listitem(this, GetFirstSelected()).get_filename().string();
+        defaultPath = listitem(this, GetFirstSelected()).path().string();
       }
 
       wxDirDialog dir_dlg(

@@ -46,7 +46,7 @@ bool wex::marker_and_register_expansion(const ex* ex, std::string& text)
       case WXK_CONTROL_R:
         if (*std::next(it) == '%')
         {
-          output += ex->get_stc()->get_filename().fullname();
+          output += ex->get_stc()->path().filename();
         }
         else
         {

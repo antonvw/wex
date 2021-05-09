@@ -17,7 +17,7 @@
 #include <wex/menu.h>
 #include <wex/util.h>
 
-wex::del::file::file(const std::string& file, const data::listview& data)
+wex::del::file::file(const wex::path& p, const data::listview& data)
   : del::listview(data::listview(data).type(data::listview::FILE))
   , m_add_items_dialog(new item_dialog(
       {{m_text_add_what,
@@ -37,7 +37,7 @@ wex::del::file::file(const std::string& file, const data::listview& data)
         .button(wxAPPLY | wxCANCEL)
         .id(wxID_ADD)))
 {
-  file_load(path(file));
+  file_load(p);
 
   Bind(wxEVT_IDLE, &del::file::on_idle, this);
 
@@ -54,7 +54,7 @@ wex::del::file::file(const std::string& file, const data::listview& data)
       if (const int index = HitTest(wxPoint(event.GetX(), event.GetY()), flags);
           index < 0)
       {
-        log::status() << get_filename();
+        log::status() << path();
       }
     });
 
@@ -68,8 +68,7 @@ wex::del::file::file(const std::string& file, const data::listview& data)
       {
         wex::item item(m_add_items_dialog->find(m_text_in_folder));
         auto*     cb = reinterpret_cast<wxComboBox*>(item.window());
-        cb->SetValue(
-          listitem(this, GetFirstSelected()).get_filename().get_path());
+        cb->SetValue(listitem(this, GetFirstSelected()).path().parent_path());
       }
       m_add_items_dialog->Show();
     },
@@ -80,7 +79,7 @@ wex::del::file::file(const std::string& file, const data::listview& data)
     [=, this](wxCommandEvent& event)
     {
       event.Skip();
-      if (!get_filename().file_exists() || !get_filename().is_readonly())
+      if (!path().file_exists() || !path().is_readonly())
       {
         m_contents_changed = true;
         get_frame()->update_statusbar(this);
@@ -110,7 +109,7 @@ void wex::del::file::add_items(
       const int old_count = GetItemCount();
       del::dir  dir(
         this,
-        path(folder),
+        wex::path(folder),
         data::dir().file_spec(files).type(flags));
 
       dir.find_files();
@@ -147,7 +146,7 @@ void wex::del::file::after_sorting()
 
 void wex::del::file::build_popup_menu(wex::menu& menu)
 {
-  const bool ro(get_filename().file_exists() && get_filename().is_readonly());
+  const bool ro(path().file_exists() && path().is_readonly());
 
   if (ro)
   {
@@ -167,18 +166,18 @@ bool wex::del::file::do_file_load(bool synced)
   pugi::xml_document doc;
 
   if (const auto result = doc.load_file(
-        get_filename().string().c_str(),
+        path().string().c_str(),
         pugi::parse_default | pugi::parse_comments);
       !result)
   {
-    if (get_filename().stat().st_size == 0)
+    if (path().stat().st_size == 0)
     {
       clear();
       return true;
     }
     else
     {
-      xml_error(get_filename(), &result);
+      xml_error(path(), &result);
       return false;
     }
   }
@@ -195,11 +194,14 @@ bool wex::del::file::do_file_load(bool synced)
         if (const std::string value = child.text().get();
             strcmp(child.name(), "file") == 0)
         {
-          listitem(this, path(value)).insert();
+          listitem(this, wex::path(value)).insert();
         }
         else if (strcmp(child.name(), "folder") == 0)
         {
-          listitem(this, path(value), child.attribute("extensions").value())
+          listitem(
+            this,
+            wex::path(value),
+            child.attribute("extensions").value())
             .insert();
         }
 
@@ -209,10 +211,10 @@ bool wex::del::file::do_file_load(bool synced)
 
       if (synced)
       {
-        log::status() << get_filename();
+        log::status() << path();
       }
 
-      get_frame()->set_recent_project(get_filename());
+      get_frame()->set_recent_project(path());
 
 #ifdef FIX__WXMSW__
     });
@@ -222,7 +224,7 @@ bool wex::del::file::do_file_load(bool synced)
     t.join();
 #endif
 
-  log::info("opened") << get_filename();
+  log::info("opened") << path();
 
   return true;
 }
@@ -241,7 +243,7 @@ void wex::del::file::do_file_save(bool save_as)
     std::string(
       "<files>\n"
       "<!-- " + wxTheApp->GetAppDisplayName().ToStdString() + 
-      " project " + get_filename().fullname() + " " + now() + 
+      " project " + path().filename() + " " + now() + 
       "-->\n"
       "</files>\n")
       .c_str(),
@@ -252,7 +254,7 @@ void wex::del::file::do_file_save(bool save_as)
 
   for (int i = 0; i < GetItemCount(); i++)
   {
-    const wex::path fn = listitem(this, i).get_filename();
+    const wex::path fn = listitem(this, i).path();
 
     auto node = root.append_child(fn.file_exists() ? "file" : "folder");
     node.text().set(fn.string().c_str());
@@ -263,13 +265,13 @@ void wex::del::file::do_file_save(bool save_as)
     }
   }
 
-  if (doc.save_file(get_filename().string().c_str()))
+  if (doc.save_file(path().string().c_str()))
   {
-    log::info("saved") << get_filename();
+    log::info("saved") << path();
   }
   else
   {
-    log("xml save") << get_filename();
+    log("xml save") << path();
   }
 }
 

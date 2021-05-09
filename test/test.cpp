@@ -23,7 +23,7 @@ const wex::path wex::test::get_path(const std::string& file)
 
 wex::path wex::test::app::get_path(const std::string& file)
 {
-  return file.empty() ? m_path : path(m_path.string(), file);
+  return file.empty() ? m_path : path(m_path, file);
 }
 
 bool wex::test::app::OnInit()

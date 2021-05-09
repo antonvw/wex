@@ -65,10 +65,9 @@ wex::textctrl_imp::textctrl_imp(
           break;
 
         case WXK_TAB:
-          if (
-            m_tc->stc() != nullptr && m_tc->stc()->get_filename().file_exists())
+          if (m_tc->stc() != nullptr && m_tc->stc()->path().file_exists())
           {
-            path::current(m_tc->stc()->get_filename().get_path());
+            path::current(m_tc->stc()->path().parent_path());
           }
 
           if (const auto& [r, e, v] =
@@ -93,7 +92,7 @@ wex::textctrl_imp::textctrl_imp(
             {
               if (m_tc->stc() != nullptr)
               {
-                event.SetString(m_tc->stc()->get_filename().fullname());
+                event.SetString(m_tc->stc()->path().filename());
               }
             }
             else

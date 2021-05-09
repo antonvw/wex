@@ -24,7 +24,7 @@ TEST_CASE("wex::macros" * doctest::may_fail())
   {
     wex::macros macros;
     REQUIRE(macros.get_abbreviations().empty());
-    REQUIRE(!macros.get_filename().empty());
+    REQUIRE(!macros.path().empty());
     REQUIRE(macros.size() == 0);
     REQUIRE(!macros.is_modified());
     REQUIRE(!macros.is_recorded("a"));

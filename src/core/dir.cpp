@@ -23,7 +23,7 @@ public:
     : dir(wex::path(path), data)
   {
     ;
-  };
+  }
 
   const auto& get() const { return m_container; }
 
@@ -31,17 +31,45 @@ private:
   bool on_dir(const path& p) override
   {
     m_container.emplace_back(
-      data().type().test(data::dir::RECURSIVE) ? p.string() : p.fullname());
+      data().type().test(data::dir::RECURSIVE) ? p.string() : p.filename());
     return true;
   };
+
   bool on_file(const path& p) override
   {
     m_container.emplace_back(
-      data().type().test(data::dir::RECURSIVE) ? p.string() : p.fullname());
+      data().type().test(data::dir::RECURSIVE) ? p.string() : p.filename());
     return true;
   };
 
   std::vector<std::string> m_container;
+};
+
+class path_dir : public dir
+{
+public:
+  path_dir(const path& p, const wex::data::dir& data)
+    : dir(p, data)
+  {
+    ;
+  }
+
+  const auto& get() const { return m_container; }
+
+private:
+  bool on_dir(const path& p) override
+  {
+    m_container.emplace_back(p);
+    return true;
+  }
+
+  bool on_file(const path& p) override
+  {
+    m_container.emplace_back(p);
+    return true;
+  }
+
+  std::vector<path> m_container;
 };
 
 bool traverse(const fs::directory_entry& e, wex::dir* dir)
@@ -79,14 +107,6 @@ bool traverse(const fs::directory_entry& e, wex::dir* dir)
   return !interruptible::is_cancelled();
 }
 }; // namespace wex
-
-std::vector<std::string>
-wex::get_all_files(const std::string& path, const wex::data::dir& data)
-{
-  string_dir dir(path, data);
-  dir.find_files();
-  return dir.get();
-}
 
 wex::dir::dir(const wex::path& dir, const wex::data::dir& data)
   : m_dir(dir)
@@ -176,4 +196,20 @@ void wex::dir::run()
                           << "matches:" << m_matches;
 
   stop();
+}
+
+std::vector<std::string>
+wex::get_all_files(const std::string& path, const wex::data::dir& data)
+{
+  string_dir dir(path, data);
+  dir.find_files();
+  return dir.get();
+}
+
+std::vector<wex::path>
+wex::get_all_files(const path& p, const wex::data::dir& data)
+{
+  path_dir dir(p, data);
+  dir.find_files();
+  return dir.get();
 }

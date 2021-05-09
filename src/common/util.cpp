@@ -132,7 +132,7 @@ bool wex::make(const path& makefile)
   return process->async_system(
     config("Make").get("make") + " " + config("MakeSwitch").get("-f") + " " +
       makefile.string(),
-    makefile.get_path());
+    makefile.parent_path());
 }
 
 int wex::open_files(
@@ -253,7 +253,7 @@ void wex::xml_error(
   log(*result) << filename.name();
 
   // prevent recursion
-  if (stc == nullptr && filename != lexers::get()->get_filename())
+  if (stc == nullptr && filename != lexers::get()->path())
   {
     if (auto* frame =
           dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());

@@ -332,7 +332,7 @@ bool wex::addressrange::escape(const std::string& command)
     {
       return m_ex->frame()->process_async_system(
         expanded,
-        m_stc->get_filename().get_path());
+        m_stc->path().parent_path());
     }
   }
 

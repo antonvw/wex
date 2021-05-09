@@ -124,7 +124,7 @@ std::string skip_const(const std::string& text)
 const std::string tag_name(const path& p)
 {
   return config(_("stc.vi tag fullpath")).get(false) ? p.string() :
-                                                       p.fullname();
+                                                       p.filename();
 };
 
 // Support class.
@@ -326,7 +326,7 @@ bool wex::ctags::find(const std::string& tag, ex* ex)
   do
   {
     if (const ctags_info ct(entry);
-        ex == nullptr || (ct.name() != tag_name(ex->get_stc()->get_filename())))
+        ex == nullptr || (ct.name() != tag_name(ex->get_stc()->path())))
     {
       m_matches.insert({ct.name(), ct});
     }
@@ -459,7 +459,7 @@ void wex::ctags::open(const std::string& filename)
   {
     do_open(filename);
   }
-  else if (const std::vector<std::string> v{"./", config::dir() + "/"};
+  else if (const std::vector<std::string> v{"./", config::dir().string() + "/"};
            !std::any_of(
              v.begin(),
              v.end(),

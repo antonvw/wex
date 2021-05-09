@@ -45,9 +45,9 @@ wex::auto_complete_filename(const std::string& text)
     path.make_absolute();
   }
 
-  const auto                     prefix(path.fullname());
+  const auto                     prefix(path.filename());
   const std::vector<std::string> v(get_all_files(
-    path.get_path(),
+    path.parent_path(),
     data::dir()
       .file_spec(prefix + "*")
       .dir_spec(prefix + "*")
@@ -343,12 +343,12 @@ bool wex::is_codeword_separator(int c)
 }
 
 bool wex::matches_one_of(
-  const std::string& fullname,
+  const std::string& filename,
   const std::string& pattern)
 {
   if (pattern == "*")
     return true; // asterix matches always
-  if (fullname.empty())
+  if (filename.empty())
     return false; // empty string never matches
 
   // Make a regex of pattern matching chars.
@@ -361,7 +361,7 @@ bool wex::matches_one_of(
          re,
          boost::char_separator<char>(";")))
   {
-    if (std::regex_match(fullname, std::regex(it)))
+    if (std::regex_match(filename, std::regex(it)))
       return true;
   }
 

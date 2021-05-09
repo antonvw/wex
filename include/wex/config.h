@@ -12,6 +12,8 @@
 #include <tuple>
 #include <vector>
 
+#include <wex/path.h>
+
 class wxColour;
 class wxFont;
 
@@ -36,14 +38,11 @@ public:
 
   /// static interface
 
-  /// Returns the config dir for user data files.
-  static const std::string dir();
+  /// Returns the config path for user data files.
+  static const wex::path dir();
 
   /// Do not save current config file on exit.
   static void discard() { m_store_save = false; }
-
-  /// Returns the current config file.
-  static const std::string file();
 
   /// Saves changes to store (unless discard was invoked), and frees objects.
   /// This is done in app::OnExit.
@@ -54,15 +53,18 @@ public:
   /// and is done in app::OnInit.
   static void on_init();
 
+  /// Returns the current config path.
+  static const wex::path path();
+
   /// Reads current config file.
   static void read();
 
   /// Saves current config file.
   static void save();
 
-  /// Sets the config file to use.
-  /// If you do no use this, the default config file is used.
-  static void set_file(const std::string& file);
+  /// Sets the config path to use.
+  /// If you do no use this, the default config path is used.
+  static void set_path(const wex::path& p);
 
   /// Returns number of top level entries.
   static size_t size();
@@ -106,7 +108,7 @@ public:
 
   /// Saves changes to current config file, and sets
   /// and uses new file as config file.
-  bool change_file(const std::string& file);
+  bool change_path(const wex::path& p);
 
   /// Ends setting child values for this item,
   /// deletes a possible local store for a child item.

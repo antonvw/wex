@@ -24,7 +24,7 @@
 // This must be an existing xml file containing all lexers.
 // It does not do load_document, however if you use the static get,
 // it both constructs and loads the lexers.
-wex::lexers::lexers(const path& filename)
+wex::lexers::lexers(const wex::path& filename)
   : m_path(filename)
   , m_theme(config("theme").get())
 {
@@ -197,17 +197,17 @@ const wex::lexer& wex::lexers::find(const std::string& name) const
 }
 
 const wex::lexer&
-wex::lexers::find_by_filename(const std::string& fullname) const
+wex::lexers::find_by_filename(const std::string& filename) const
 {
   assert(!m_lexers.empty());
 
   const auto& it = std::find_if(
     m_lexers.begin(),
     m_lexers.end(),
-    [fullname](auto const& e)
+    [filename](auto const& e)
     {
       return !e.extensions().empty() &&
-             matches_one_of(fullname, e.extensions());
+             matches_one_of(filename, e.extensions());
     });
 
   return it != m_lexers.end() ? *it : m_lexers.front();
@@ -248,7 +248,7 @@ wex::lexers* wex::lexers::get(bool createOnDemand)
 {
   if (m_self == nullptr && createOnDemand)
   {
-    m_self = new lexers(path(config::dir(), "wex-lexers.xml"));
+    m_self = new lexers(wex::path(config::dir(), "wex-lexers.xml"));
     m_self->load_document();
   }
 

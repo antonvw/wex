@@ -29,11 +29,11 @@ public:
   /// Constructor taking a path.
   explicit file(const path& p);
 
-  /// Constructor taking a path, opens the file.
-  file(const path& p, std::ios_base::openmode mode);
-
   /// Constructor taking a filename.
   explicit file(const char* filename);
+
+  /// Constructor taking a path, opens the file.
+  file(const path& p, std::ios_base::openmode mode);
 
   /// Constructor taking a filename, opens the file.
   file(const char* filename, std::ios_base::openmode mode);
@@ -65,10 +65,7 @@ public:
 
   /// Sets the path if path is ok, opens the file if asked for,
   /// invokes do_file_save, and closes the file again.
-  bool file_save(const path& p = path());
-
-  /// Returns the path.
-  const path& get_filename() const { return m_path; }
+  bool file_save(const wex::path& p = wex::path());
 
   /// Returns true if file is open.
   bool is_open() const { return m_fs.is_open(); }
@@ -84,6 +81,9 @@ public:
 
   /// Opens specified path.
   bool open(const path& p, std::ios_base::openmode mode = std::ios_base::in);
+
+  /// Returns the path.
+  const auto& path() const { return m_path; }
 
   /// Writes char.
   void put(char c) { m_fs.put(c); }
@@ -126,7 +126,7 @@ protected:
   virtual void do_file_save(bool save_as = false) { ; }
 
 private:
-  void assign(const path& p);
+  void assign(const wex::path& p);
   bool file_load(bool synced);
   void log_stream_info(const std::string& info, size_t s);
 

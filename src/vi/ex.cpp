@@ -213,7 +213,7 @@ wex::ex::ex(wex::factory::stc* stc, mode_t mode)
                {":f",
                 [&](const std::string& command) {
                   std::stringstream text;
-                  text << get_stc()->get_filename().fullname() << " line "
+                  text << get_stc()->path().filename() << " line "
                        << get_stc()->get_current_line() + 1 << " of "
                        << get_stc()->get_line_count() << " --"
                        << 100 * (get_stc()->get_current_line() + 1) /
@@ -314,7 +314,7 @@ wex::ex::ex(wex::factory::stc* stc, mode_t mode)
                   output += l.make_section("Filename buffer");
                   output += l.make_key(
                     "%",
-                    get_command().get_stc()->get_filename().fullname());
+                    get_command().get_stc()->path().filename());
                   show_dialog("Registers", output, l.scintilla_lexer());
                   return true;
                 }},

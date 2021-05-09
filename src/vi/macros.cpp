@@ -75,9 +75,9 @@ const std::vector<std::string> wex::macros::get() const
   return v;
 }
 
-const wex::path wex::macros::get_filename() const
+const wex::path wex::macros::path() const
 {
-  return path(config::dir(), "wex-macros.xml");
+  return wex::path(config::dir(), "wex-macros.xml");
 }
 
 const wex::macros::keys_map_t& wex::macros::get_keys_map(key_t type) const
@@ -157,17 +157,17 @@ bool wex::macros::is_recorded_macro(const std::string& macro) const
 
 bool wex::macros::load_document()
 {
-  if (!get_filename().file_exists())
+  if (!path().file_exists())
   {
     return false;
   }
 
   if (const auto result = m_doc.load_file(
-        get_filename().string().c_str(),
+        path().string().c_str(),
         pugi::parse_default | pugi::parse_comments);
       !result)
   {
-    xml_error(get_filename(), &result);
+    xml_error(path(), &result);
     return false;
   }
 
@@ -337,13 +337,13 @@ bool wex::macros::record(const std::string& text, bool new_command)
 bool wex::macros::save_document(bool only_if_modified)
 {
   if (
-    !m_is_loaded || !get_filename().file_exists() ||
+    !m_is_loaded || !path().file_exists() ||
     (!m_is_modified && only_if_modified))
   {
     return false;
   }
 
-  const bool ok = m_doc.save_file(get_filename().string().c_str(), "  ");
+  const bool ok = m_doc.save_file(path().string().c_str(), "  ");
 
   if (ok)
   {

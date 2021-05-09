@@ -319,10 +319,10 @@ void wex::stc::margin_action(wxStyledTextEvent& event)
 
     if (config("blame.id").get(true))
     {
-      wex::vcs vcs{{get_filename()}};
+      wex::vcs vcs{{path()}};
 
       if (std::string margin(MarginGetText(line));
-          !margin.empty() && vcs.entry().log(get_filename(), get_word(margin)))
+          !margin.empty() && vcs.entry().log(path(), get_word(margin)))
       {
         AnnotationSetText(
           line,
@@ -367,7 +367,7 @@ void wex::stc::mouse_action(wxMouseEvent& event)
       if (
         !m_skip && m_frame->debug_is_active() &&
         matches_one_of(
-          get_filename().extension(),
+          path().extension(),
           m_frame->debug_entry()->extensions()))
       {
         const auto& word =
