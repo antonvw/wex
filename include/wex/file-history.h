@@ -8,13 +8,13 @@
 #pragma once
 
 #include <vector>
+#include <wex/path.h>
 #include <wx/window.h>
 
 namespace wex
 {
 class file_history_imp;
 class menu;
-class path;
 
 /// Offers file history methods.
 class file_history

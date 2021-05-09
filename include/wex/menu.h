@@ -9,7 +9,6 @@
 
 #include <bitset>
 #include <wex/menu-item.h>
-#include <wex/path.h>
 #include <wx/menu.h>
 
 namespace wex
