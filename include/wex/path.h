@@ -35,10 +35,10 @@ public:
   /// Static interface.
 
   /// Returns current path.
-  static std::filesystem::path current();
+  static wex::path current();
 
   /// Sets current path.
-  static void current(const std::filesystem::path& p);
+  static void current(const wex::path& p);
 
   /// Others.
 

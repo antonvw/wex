@@ -120,7 +120,7 @@ bool wex::process::async_system(
   }
 
   m_shell->set_process(this);
-  path::current(cwd);
+  path::current(path(cwd));
 
   if (
     m_frame->debug_is_active() &&

@@ -57,7 +57,7 @@ TEST_CASE("wex::util" * doctest::may_fail())
 
   SUBCASE("open_files")
   {
-    wex::path::current(wex::test::get_path().string());
+    wex::path::current(wex::test::get_path().data());
 
     get_stc()->SetFocus();
     get_stc()->DiscardEdits();

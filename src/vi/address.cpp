@@ -362,7 +362,7 @@ bool wex::address::read(const std::string& arg) const
   }
   else
   {
-    path::current(m_ex->get_stc()->path().parent_path());
+    path::current(m_ex->get_stc()->path().data().parent_path());
 
     if (file file(path(arg), std::ios_base::in); !file.is_open())
     {

@@ -45,7 +45,10 @@ public:
   template <typename T> static bool load(const std::string& name, T& entries);
 
   /// Returns the xml filename.
-  static const path path() { return wex::path(config::dir(), "wex-menus.xml"); }
+  static const wex::path path()
+  {
+    return wex::path(config::dir(), "wex-menus.xml");
+  }
 
 private:
   template <typename T>

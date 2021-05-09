@@ -192,7 +192,7 @@ wex::ex::ex(wex::factory::stc* stc, mode_t mode)
                 [&](const std::string& command) {
                   if (command.find(" ") == std::string::npos)
                     return true;
-                  wex::path::current(wex::first_of(command, " "));
+                  wex::path::current(path(wex::first_of(command, " ")));
                   return true;
                 }},
                {":close",
@@ -292,7 +292,7 @@ wex::ex::ex(wex::factory::stc* stc, mode_t mode)
                 }},
                {":pwd",
                 [&](const std::string& command) {
-                  wex::log::status(wex::path::current());
+                  wex::log::status(wex::path::current().string());
                   return true;
                 }},
                {":q!",
@@ -722,11 +722,11 @@ bool wex::ex::command_set(const std::string& command)
       }},
      {{"ws", _("stc.Wrap scan"), "1"}, nullptr}},
     // options
-    {{{"dir", "ex-set.dir", wex::path::current()},
+    {{{"dir", "ex-set.dir", wex::path::current().string()},
       {cmdline::STRING,
        [&](const std::any& val)
        {
-         wex::path::current(std::any_cast<std::string>(val));
+         wex::path::current(path(std::any_cast<std::string>(val)));
        }}},
      {{"ec", _("stc.Edge column"), std::to_string(get_stc()->GetEdgeColumn())},
       {cmdline::INT,

@@ -67,7 +67,7 @@ wex::textctrl_imp::textctrl_imp(
         case WXK_TAB:
           if (m_tc->stc() != nullptr && m_tc->stc()->path().file_exists())
           {
-            path::current(m_tc->stc()->path().parent_path());
+            path::current(m_tc->stc()->path().data().parent_path());
           }
 
           if (const auto& [r, e, v] =

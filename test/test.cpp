@@ -37,7 +37,7 @@ bool wex::test::app::OnInit()
 
   m_path = path(path::current()).data().parent_path();
   m_path.append(wex::path("test")).append(wex::path("data"));
-  path::current(m_path.string());
+  path::current(m_path.data());
 
   if (!m_path.dir_exists())
   {

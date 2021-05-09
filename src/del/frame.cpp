@@ -128,7 +128,7 @@ wex::del::frame::frame(
         {
           if (auto* stc = dynamic_cast<wex::stc*>(get_stc()); stc != nullptr)
           {
-            wex::path::current(stc->path().parent_path());
+            wex::path::current(stc->path().data().parent_path());
             if (!marker_and_register_expansion(&stc->get_vi(), text))
               return;
           }
@@ -598,7 +598,7 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
     {
 #endif
       if (auto* stc = dynamic_cast<wex::stc*>(get_stc()); stc != nullptr)
-        path::current(stc->path().parent_path());
+        path::current(stc->path().data().parent_path());
       find_replace_data::get()->set_regex(true);
       log::status(find_replace_string(false));
       sync(false);

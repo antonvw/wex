@@ -32,7 +32,7 @@ wex::path::path(const fs::path& p, status_t t)
 {
   if (p.empty())
   {
-    m_path_original = current();
+    m_path_original = current().data();
   }
 }
 
@@ -67,7 +67,7 @@ wex::path::path(const std::vector<std::string>& v)
 
 wex::path::~path()
 {
-  if (!m_path_original.empty() && m_path_original != current())
+  if (!m_path_original.empty() && m_path_original != current().data())
   {
     current(m_path_original);
   }
@@ -93,32 +93,32 @@ wex::path& wex::path::append(const wex::path& path)
   return *this;
 }
 
-void wex::path::current(const std::filesystem::path& p)
+void wex::path::current(const wex::path& p)
 {
   if (!p.empty())
   {
     try
     {
-      fs::current_path(p);
-      log::trace("path current") << path(p);
+      fs::current_path(p.data());
+      log::trace("path current") << p;
     }
     catch (const std::exception& e)
     {
-      wex::log(e) << "path:" << path(p);
+      wex::log(e) << "path:" << p;
     }
   }
 }
 
-std::filesystem::path wex::path::current()
+wex::path wex::path::current()
 {
   try
   {
-    return fs::current_path();
+    return path(fs::current_path());
   }
   catch (const std::exception& e)
   {
     wex::log(e) << "current";
-    return std::string();
+    return path();
   }
 }
 
