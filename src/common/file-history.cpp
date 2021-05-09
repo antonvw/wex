@@ -118,7 +118,7 @@ std::vector<wex::path> wex::file_history::get_history_files(size_t count) const
   return v;
 }
 
-wex::path wex::file_history::path(size_t index) const
+const wex::path wex::file_history::path(size_t index) const
 {
   try
   {
@@ -126,7 +126,7 @@ wex::path wex::file_history::path(size_t index) const
   }
   catch (const std::exception& e)
   {
-    wex::log(e) << "get_history_file:" << index;
+    wex::log(e) << "file_history::path:" << index;
     return path();
   }
 }

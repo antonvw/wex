@@ -51,7 +51,7 @@ public:
   size_t get_max_files() const;
 
   /// Returns the path at this index (zero-based).
-  wex::path path(size_t index = 0) const;
+  const wex::path path(size_t index = 0) const;
 
   /// Shows popup menu containing all recent opened files.
   void popup_menu(
