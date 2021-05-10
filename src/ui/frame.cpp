@@ -400,7 +400,7 @@ void wex::frame::on_menu_history(
   size_t                    index,
   data::stc::window_t       flags)
 {
-  if (const auto& file(history.path(index)); !file.empty())
+  if (const auto& file(history[index]); !file.empty())
   {
     open_file(file, data::stc().flags(flags));
   }

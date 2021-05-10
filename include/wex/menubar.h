@@ -16,7 +16,7 @@ class menubar : public wxMenuBar
 {
 public:
   /// Constructor.
-  menubar(const std::vector<std::pair<menu*, std::string>>& menus)
+  explicit menubar(const std::vector<std::pair<menu*, std::string>>& menus)
   {
     for (const auto& it : menus)
     {

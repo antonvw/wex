@@ -128,8 +128,7 @@ TEST_CASE("wex::frame::bars")
   frame()->set_recent_file(wex::path("testing"));
 
   REQUIRE(
-    frame()->file_history().path().string().find("test.h") !=
-    std::string::npos);
+    frame()->file_history()[0].string().find("test.h") != std::string::npos);
   REQUIRE(frame()->file_history().size() > 0);
   REQUIRE(!frame()->file_history().get_history_files(5).empty());
 

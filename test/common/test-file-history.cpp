@@ -25,7 +25,7 @@ TEST_CASE("wex::file_history")
     REQUIRE(!history.append(wex::path("xxx.cpp")));
     REQUIRE(!history.append(wex::path()));
     REQUIRE(history.size() == 0);
-    REQUIRE(history.path().empty());
+    REQUIRE(history[0].empty());
 
     REQUIRE(history.append(wex::test::get_path("test.h")));
     REQUIRE(history.size() == 1);
@@ -37,8 +37,8 @@ TEST_CASE("wex::file_history")
 
     history.clear();
     REQUIRE(history.size() == 0);
-    REQUIRE(history.path().empty());
-    REQUIRE(history.path(100).empty());
+    REQUIRE(history[0].empty());
+    REQUIRE(history[100].empty());
 
     history.popup_menu(get_frame(), 5);
     history.save();
@@ -67,8 +67,8 @@ TEST_CASE("wex::file_history")
     }
 
     history.append(wex::path("test-history.txt"));
-    REQUIRE(history.path(0) == wex::path("test-history.txt"));
+    REQUIRE(history[0] == wex::path("test-history.txt"));
     REQUIRE(remove("test-history.txt") == 0);
-    REQUIRE(history.path(0).empty());
+    REQUIRE(history[0].empty());
   }
 }

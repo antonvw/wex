@@ -34,6 +34,9 @@ public:
   /// Destructor.
   ~file_history();
 
+  /// Returns the path at this index (zero-based).
+  const path operator[](size_t index) const;
+
   /// Appends a file (if file exists) to the file history list.
   /// Returns true if file is appended.
   bool append(const path& p);
@@ -49,9 +52,6 @@ public:
 
   /// Returns max files.
   size_t get_max_files() const;
-
-  /// Returns the path at this index (zero-based).
-  const wex::path path(size_t index = 0) const;
 
   /// Shows popup menu containing all recent opened files.
   void popup_menu(

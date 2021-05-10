@@ -18,7 +18,7 @@
 class extra_panel : public wxPanel
 {
 public:
-  extra_panel(wxWindow* parent);
+  explicit extra_panel(wxWindow* parent);
   bool checked() const { return m_checked; }
 
 private:

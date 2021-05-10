@@ -10,7 +10,7 @@
 class vi_stc : public wex::factory::stc
 {
 public:
-  vi_stc(wxFrame* parent)
+  explicit vi_stc(wxFrame* parent)
   {
     Create(parent, -1);
     Show();

@@ -947,7 +947,7 @@ void wex::del::frame::use_file_history_list(listview* list)
   // Add all (existing) items from FileHistory.
   for (size_t i = 0; i < file_history().size(); i++)
   {
-    if (listitem item(m_file_history_listview, file_history().path(i));
+    if (listitem item(m_file_history_listview, file_history()[i]);
         item.path().stat().is_ok())
     {
       item.insert();

@@ -112,13 +112,13 @@ std::vector<wex::path> wex::file_history::get_history_files(size_t count) const
 
   for (size_t i = 0; i < count && i < size(); i++)
   {
-    v.emplace_back(path(i));
+    v.emplace_back(operator[](i));
   }
 
   return v;
 }
 
-const wex::path wex::file_history::path(size_t index) const
+const wex::path wex::file_history::operator[](size_t index) const
 {
   try
   {
@@ -140,7 +140,7 @@ void wex::file_history::popup_menu(
 
   for (size_t i = 0; i < size(); i++)
   {
-    if (const wex::path file(path(i)); file.file_exists())
+    if (const auto& file(operator[](i)); file.file_exists())
     {
       auto* item = new wxMenuItem(menu, get_base_id() + i, file.filename());
 

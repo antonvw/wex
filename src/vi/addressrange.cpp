@@ -32,7 +32,7 @@ namespace wex
 class global_env
 {
 public:
-  global_env(const addressrange* ar)
+  explicit global_env(const addressrange* ar)
     : m_ex(ar->m_ex)
     , m_ar(ar)
   {

@@ -1,11 +1,8 @@
 # roadmap
+- more cpplint
+  - stc-bind
 
 ## backlog
-- more cpplint
-  - config_items should not copy
-  - change wxWindowID into window_id if possible
-  - add more explicit constructors
-  - stc-bind
 - clang asan build using LeakSanitizer
 
 - use spaceship operator

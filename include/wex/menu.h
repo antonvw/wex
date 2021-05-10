@@ -40,7 +40,7 @@ public:
     const std::vector<menu_item>& items = {{}});
 
   /// Constructor with a vector of items.
-  menu(const std::vector<menu_item>& items);
+  explicit menu(const std::vector<menu_item>& items);
 
   /// Construct a menu with a title.
   menu(const std::string& title, menu_t style);
