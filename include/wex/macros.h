@@ -113,7 +113,7 @@ public:
   const auto& mode() const { return m_mode; }
 
   /// Returns the path with xml document.
-  const path path() const;
+  const wex::path path() const;
 
   /// Records text to current macro (or register) as a new command.
   /// The text to be recorded should be valid ex command,
