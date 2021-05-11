@@ -27,12 +27,12 @@
 #include <wx/app.h>
 #include <wx/settings.h>
 
-wex::stc::stc(const path& p, const data::stc& data)
+wex::stc::stc(const wex::path& p, const data::stc& data)
   : m_data(this, data)
   , m_auto_complete(new wex::auto_complete(this))
   , m_vi(
       new vi(this, data.flags().test(data::stc::WIN_EX) ? ex::EX : ex::VISUAL))
-  , m_file(this, data.window().name())
+  , m_file(this, wex::path(data.window().name()))
   , m_hexmode(hexmode(this))
   , m_frame(dynamic_cast<frame*>(wxTheApp->GetTopWindow()))
 {
@@ -53,8 +53,7 @@ wex::stc::stc(const path& p, const data::stc& data)
 
   get_lexer().set(lexer(this));
 
-  if (
-    config("AllowSync").get(true) && p != wex::ex::get_macros().get_filename())
+  if (config("AllowSync").get(true) && p != wex::ex::get_macros().path())
   {
     sync();
   }
@@ -115,7 +114,7 @@ wex::stc::stc(const path& p, const data::stc& data)
 }
 
 wex::stc::stc(const std::string& text, const data::stc& data)
-  : stc(path(), data)
+  : stc(wex::path(), data)
 {
   if (!text.empty())
   {
@@ -213,7 +212,7 @@ void wex::stc::Cut()
 
 bool wex::stc::file_readonly_attribute_changed()
 {
-  SetReadOnly(get_filename().is_readonly()); // does not return anything
+  SetReadOnly(path().is_readonly()); // does not return anything
   log::status(_("Readonly attribute changed"));
 
   return true;
@@ -479,7 +478,7 @@ bool wex::stc::link_open(link_t mode, std::string* filename)
 
   if (mode[LINK_OPEN_MIME])
   {
-    if (const path path(m_link->get_path(
+    if (const wex::path path(m_link->get_path(
           text,
           data::control().line(link::LINE_OPEN_URL),
           this));
@@ -516,7 +515,7 @@ bool wex::stc::link_open(link_t mode, std::string* filename)
     {
       if (filename != nullptr)
       {
-        *filename = path.fullname();
+        *filename = path.filename();
       }
       else if (!mode[LINK_CHECK])
       {
@@ -604,7 +603,7 @@ void wex::stc::on_idle(wxIdleEvent& event)
     // the readonly flags bit of course can differ from file actual readonly
     // mode, therefore add this check
     !m_data.flags().test(data::stc::WIN_READ_ONLY) &&
-    get_filename().stat().is_readonly() != GetReadOnly())
+    path().stat().is_readonly() != GetReadOnly())
   {
     file_readonly_attribute_changed();
   }
@@ -620,11 +619,11 @@ void wex::stc::on_styled_text(wxStyledTextEvent& event)
   event.Skip();
 }
 
-bool wex::stc::open(const path& p, const data::stc& data)
+bool wex::stc::open(const wex::path& p, const data::stc& data)
 {
   m_data = data::stc(data).window(data::window().name(p.string()));
 
-  if (get_filename() != p)
+  if (path() != p)
   {
     if (!m_file.file_load(p))
     {
@@ -705,7 +704,7 @@ void wex::stc::print_preview(wxPreviewFrameModalityKind kind)
   auto* frame = new wxPreviewFrame(
     preview,
     this,
-    print_caption(path(GetName().ToStdString())));
+    print_caption(wex::path(GetName().ToStdString())));
 
   frame->InitializeWithModality(kind);
   frame->Show();
@@ -713,7 +712,7 @@ void wex::stc::print_preview(wxPreviewFrameModalityKind kind)
 
 void wex::stc::properties_message(path::status_t flags)
 {
-  log::status() << path(get_filename(), flags);
+  log::status() << wex::path(path(), flags);
 
   if (!flags[path::STAT_SYNC])
   {
@@ -732,7 +731,7 @@ void wex::stc::properties_message(path::status_t flags)
     {
       std::string readonly;
 
-      if (get_filename().is_readonly())
+      if (path().is_readonly())
       {
         readonly = " [" + _("Readonly") + "]";
       }
@@ -1086,9 +1085,9 @@ void wex::stc::visual(bool on)
     {
       std::stringstream info;
 
-      if (!get_filename().string().empty())
+      if (!path().string().empty())
       {
-        info << get_filename().string();
+        info << path().string();
       }
 
       log::info("enter visual mode") << on << info;
@@ -1097,7 +1096,7 @@ void wex::stc::visual(bool on)
     m_vi->use(ex::VISUAL); // needed in do_file_load
     m_file.close();
     m_file.use_stream(false);
-    m_file.file_load(get_filename());
+    m_file.file_load(path());
   }
   else
   {

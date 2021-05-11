@@ -29,7 +29,7 @@ public:
   void config_get() { ; }
 
 private:
-  const wex::path& get_filename() const override { return m_path; };
+  const wex::path& path() const override { return m_path; };
 
   wex::path m_path;
   wex::file m_file;

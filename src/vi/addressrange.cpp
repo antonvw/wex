@@ -32,7 +32,7 @@ namespace wex
 class global_env
 {
 public:
-  global_env(const addressrange* ar)
+  explicit global_env(const addressrange* ar)
     : m_ex(ar->m_ex)
     , m_ar(ar)
   {
@@ -332,7 +332,7 @@ bool wex::addressrange::escape(const std::string& command)
     {
       return m_ex->frame()->process_async_system(
         expanded,
-        m_stc->get_filename().get_path());
+        m_stc->path().parent_path());
     }
   }
 

@@ -1,15 +1,6 @@
 # roadmap
 
 ## backlog
-- improve auto_indentation
-- improve path, use less std::string
-  - add const char* constructor
-  - e.g. path::current
-  - get_path -> get_parent
-- more cpplint
-  - config_items should not copy
-  - change wxWindowID into window_id if possible
-  - add more explicit constructors
 - clang asan build using LeakSanitizer
 
 - use spaceship operator

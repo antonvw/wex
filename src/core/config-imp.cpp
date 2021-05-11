@@ -12,7 +12,6 @@
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/log.h>
-#include <wex/path.h>
 #include <wex/tokenize.h>
 #include <wx/app.h>
 
@@ -106,13 +105,12 @@ bool wex::config_imp::exists(const std::string& item)
 
 void wex::config_imp::read()
 {
-  if (m_file.empty())
+  if (m_path.empty())
   {
-    m_file =
-      path(config::dir(), wxTheApp->GetAppName().Lower() + ".json").string();
+    m_path = wex::path(config::dir(), wxTheApp->GetAppName().Lower() + ".json");
   }
 
-  if (std::ifstream fs(m_file); fs.is_open())
+  if (std::ifstream fs(m_path.string()); fs.is_open())
   {
     try
     {
@@ -120,23 +118,23 @@ void wex::config_imp::read()
     }
     catch (std::exception& e)
     {
-      log(e) << m_file;
+      log(e) << m_path;
     }
   }
   else
   {
-    log::debug("could not read") << m_file;
+    log::debug("could not read") << m_path;
   }
 }
 
 void wex::config_imp::save() const
 {
-  if (std::ofstream fs(m_file); fs.is_open())
+  if (std::ofstream fs(m_path.string()); fs.is_open())
   {
     fs << std::setw(2) << m_json << std::endl;
   }
   else
   {
-    log("could not save") << m_file;
+    log("could not save") << m_path;
   }
 }

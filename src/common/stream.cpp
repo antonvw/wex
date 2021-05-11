@@ -22,7 +22,7 @@
 
 wex::stream::stream(
   factory::find_replace_data* frd,
-  const path&                 filename,
+  const wex::path&            filename,
   const tool&                 tool)
   : m_path(filename)
   , m_tool(tool)
@@ -105,7 +105,7 @@ bool wex::stream::process(std::string& text, size_t line_no)
   {
     if (m_tool.id() == ID_TOOL_REPORT_FIND)
     {
-      process_match(path_match(get_filename(), text, line_no, pos));
+      process_match(path_match(path(), text, line_no, pos));
     }
 
     if (const auto ac = inc_actions_completed(count);

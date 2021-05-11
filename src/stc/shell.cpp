@@ -349,7 +349,7 @@ void wex::shell::expand()
   wex::path   path(after(m_command, ' ', false));
   std::string expansion;
 
-  if (const auto prefix(path.fullname()); AutoCompActive())
+  if (const auto prefix(path.filename()); AutoCompActive())
   {
     if (const auto index = AutoCompGetCurrent();
         index >= 0 && index < static_cast<int>(m_auto_complete_list.size()))

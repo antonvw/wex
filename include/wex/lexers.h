@@ -109,9 +109,6 @@ public:
   /// Returns the default style.
   const style& get_default_style() const { return m_default_style; }
 
-  /// Returns the filename.
-  const auto& get_filename() const { return m_path; }
-
   /// Returns indicator from loaded indicators,
   /// based on the no of specified indicator.
   const indicator& get_indicator(const indicator& indicator) const;
@@ -149,6 +146,9 @@ public:
     return m_markers.find(marker) != m_markers.end();
   };
 
+  /// Returns the path.
+  const auto& path() const { return m_path; }
+
   /// Returns global properties.
   const auto& properties() const { return m_global_properties; }
 
@@ -166,7 +166,7 @@ public:
   const name_values_t& theme_macros() const;
 
 private:
-  explicit lexers(const path& filename);
+  explicit lexers(const wex::path& filename);
 
   void parse_node_folding(const pugi::xml_node& node);
   void parse_node_global(const pugi::xml_node& node);
@@ -191,7 +191,7 @@ private:
 
   style m_default_style;
 
-  const path m_path;
+  const wex::path m_path;
 
   std::string m_folding_background_colour, m_folding_foreground_colour, m_theme,
     m_theme_previous;

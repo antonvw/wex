@@ -70,7 +70,7 @@ struct program
 
 struct eval
 {
-  eval(const wex::ex* ex)
+  explicit eval(const wex::ex* ex)
     : m_ex(ex)
   {
     ;

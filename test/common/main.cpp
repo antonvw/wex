@@ -45,7 +45,7 @@ public:
 class common_listview : public wex::factory::listview
 {
 public:
-  common_listview(wxFrame* parent)
+  explicit common_listview(wxFrame* parent)
   {
     Create(parent, -1);
     Show();
@@ -55,14 +55,14 @@ public:
 class common_stc : public wex::factory::stc
 {
 public:
-  common_stc(wxFrame* parent)
+  explicit common_stc(wxFrame* parent)
   {
     Create(parent, -1);
     Show();
   };
 
 private:
-  const wex::path& get_filename() const override { return m_path; };
+  const wex::path& path() const override { return m_path; };
   wex::path        m_path;
 };
 

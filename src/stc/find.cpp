@@ -21,7 +21,7 @@ namespace wex
     if (int line = 0; f.find_margin(line))
     {
       data::stc(data::control().line(line + 1), f.stc()).inject();
-      log::trace(f.stc()->get_filename().fullname())
+      log::trace(f.stc()->path().filename())
         << "found margin text:" << f.text() << "on line:" << line + 1;
       return true;
     }
@@ -65,7 +65,7 @@ namespace wex
 
         if (!found)
         {
-          log::trace(f.stc()->get_filename().fullname())
+          log::trace(f.stc()->path().filename())
             << "text:" << f.text() << "not found";
         }
       }
@@ -100,7 +100,7 @@ namespace wex
         f.stc()->LineFromPosition(f.stc()->GetTargetStart()));
       f.stc()->EnsureCaretVisible();
 
-      log::trace(f.stc()->get_filename().fullname())
+      log::trace(f.stc()->path().filename())
         << "found text:" << f.text();
 
       return true;

@@ -48,7 +48,7 @@ TEST_CASE("wex::listitem")
 
   wex::listitem item(lv, wex::path("./test.h"));
   item.insert();
-  REQUIRE(item.get_filename().fullname() == "test.h");
+  REQUIRE(item.path().filename() == "test.h");
   REQUIRE(item.file_spec().empty());
   REQUIRE(
     wex::listitem(lv, wex::path("./test.h"), "*.txt").file_spec() == "*.txt");

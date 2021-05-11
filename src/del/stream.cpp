@@ -16,8 +16,8 @@
 #include <wex/listitem.h>
 #include <wex/log.h>
 
-wex::del::stream::stream(const path& filename, const tool& tool)
-  : wex::stream(find_replace_data::get(), filename, tool)
+wex::del::stream::stream(const wex::path& path, const tool& tool)
+  : wex::stream(find_replace_data::get(), path, tool)
 {
 }
 
@@ -70,11 +70,11 @@ wex::del::stream::comment_t wex::del::stream::check_comment_syntax(
 wex::del::stream::comment_t
 wex::del::stream::check_for_comment(const std::string& text)
 {
-  if (get_filename().lexer().comment_begin2().empty())
+  if (path().lexer().comment_begin2().empty())
   {
     return check_comment_syntax(
-      get_filename().lexer().comment_begin(),
-      get_filename().lexer().comment_end(),
+      path().lexer().comment_begin(),
+      path().lexer().comment_end(),
       text);
   }
 
@@ -84,8 +84,8 @@ wex::del::stream::check_for_comment(const std::string& text)
   {
     if (
       (comment_t1 = check_comment_syntax(
-         get_filename().lexer().comment_begin(),
-         get_filename().lexer().comment_end(),
+         path().lexer().comment_begin(),
+         path().lexer().comment_end(),
          text)) == COMMENT_BEGIN)
       m_syntax_type = SYNTAX_ONE;
   }
@@ -96,8 +96,8 @@ wex::del::stream::check_for_comment(const std::string& text)
   {
     if (
       (comment_t2 = check_comment_syntax(
-         get_filename().lexer().comment_begin2(),
-         get_filename().lexer().comment_end2(),
+         path().lexer().comment_begin2(),
+         path().lexer().comment_end2(),
          text)) == COMMENT_BEGIN)
       m_syntax_type = SYNTAX_TWO;
   }
@@ -185,7 +185,7 @@ bool wex::del::stream::process(std::string& line, size_t line_no)
         continue;
       }
 
-      const auto max_check_size = get_filename().lexer().comment_begin().size();
+      const auto max_check_size = path().lexer().comment_begin().size();
       const auto check_size     = (i > max_check_size ? max_check_size : i + 1);
       const auto text           = line.substr(i + 1 - check_size, check_size);
 
@@ -234,7 +234,7 @@ bool wex::del::stream::process(std::string& line, size_t line_no)
       {
         if (get_tool().id() == ID_TOOL_REPORT_KEYWORD)
         {
-          if (get_filename().lexer().is_keyword(codeword))
+          if (path().lexer().is_keyword(codeword))
           {
             inc_statistics(codeword);
           }
@@ -282,9 +282,10 @@ bool wex::del::stream::process_begin()
   else
   {
     if (
-      m_frame == nullptr || (m_report = m_frame->activate(
-                               listview::type_tool(get_tool()),
-                               &get_filename().lexer())) == nullptr)
+      m_frame == nullptr ||
+      (m_report =
+         m_frame->activate(listview::type_tool(get_tool()), &path().lexer())) ==
+        nullptr)
     {
       return false;
     }
@@ -295,25 +296,25 @@ bool wex::del::stream::process_begin()
 
 void wex::del::stream::process_end()
 {
-  if (m_frame->is_closing())
+  if (m_frame != nullptr && m_frame->is_closing())
   {
     return;
   }
 
   if (get_tool().id() == ID_TOOL_REPORT_KEYWORD)
   {
-    if (!get_filename().lexer().keywords_string().empty())
+    if (!path().lexer().keywords_string().empty())
     {
       inc_actions_completed();
     }
 
-    listitem item(m_report, get_filename());
+    listitem item(m_report, path());
     item.insert();
 
     int total = 0;
     int col   = 1;
 
-    for (const auto& setit : get_filename().lexer().keywords())
+    for (const auto& setit : path().lexer().keywords())
     {
       const statistics<int>& stat = get_statistics().get_elements();
 

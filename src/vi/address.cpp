@@ -362,11 +362,11 @@ bool wex::address::read(const std::string& arg) const
   }
   else
   {
-    path::current(m_ex->get_stc()->get_filename().get_path());
+    path::current(m_ex->get_stc()->path().data().parent_path());
 
     if (file file(path(arg), std::ios_base::in); !file.is_open())
     {
-      log::status(_("File")) << file.get_filename() << "open error";
+      log::status(_("File")) << file.path() << "open error";
       return false;
     }
     else if (const auto buffer(file.read()); buffer != nullptr)

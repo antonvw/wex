@@ -80,9 +80,9 @@ wex::del::frame* del_frame()
   return wex::test::del::frame();
 }
 
-const std::string get_project()
+const wex::path get_project()
 {
-  return "test-del.prj";
+  return wex::path("test-del.prj");
 }
 
 int main(int argc, char* argv[])

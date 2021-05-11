@@ -28,10 +28,10 @@ TEST_CASE("wex::file")
 
     REQUIRE(!file.file_save());
     REQUIRE(!file.file_save(wex::path("test-save")));
-    REQUIRE(!file.get_filename().stat().is_ok());
+    REQUIRE(!file.path().stat().is_ok());
     // The fullpath should be normalized, test it.
-    REQUIRE(file.get_filename().string() != "./test.h");
-    REQUIRE(!file.get_filename().stat().is_readonly());
+    REQUIRE(file.path().string() != "./test.h");
+    REQUIRE(!file.path().stat().is_readonly());
     REQUIRE(file.file_load(wex::test::get_path("test.bin")));
     REQUIRE(file.open(wex::test::get_path("test.bin")));
     REQUIRE(file.is_open());

@@ -134,8 +134,9 @@ wex::debug::debug(wex::frame* frame, wex::factory::process* debug)
           m_stdout.clear();
 
           if (const wex::path filename(
-                path(v[1]).is_absolute() ? path(v[1]) :
-                                           path(m_path.get_path(), v[1]));
+                path(v[1]).is_absolute() ?
+                  path(v[1]) :
+                  path(wex::path(m_path.parent_path()), v[1]));
               allow_open(filename))
           {
             if (auto* stc = m_frame->open_file(filename); stc != nullptr)
@@ -179,7 +180,7 @@ wex::debug::debug(wex::frame* frame, wex::factory::process* debug)
         {
           if (v.size() == 2)
           {
-            m_path                 = path(m_path.get_path(), v[0]);
+            m_path = path(wex::path(m_path.parent_path()), v[0]);
             m_path_execution_point = m_path;
             log::trace("debug path and exec") << m_path.string();
           }
@@ -277,7 +278,7 @@ bool wex::debug::apply_breakpoints(stc* stc) const
 
   for (const auto& it : m_breakpoints)
   {
-    if (std::get<0>(it.second) == stc->get_filename())
+    if (std::get<0>(it.second) == stc->path())
     {
       stc->MarkerAdd(std::get<2>(it.second), m_marker_breakpoint.number());
       found = true;
@@ -407,7 +408,7 @@ wex::debug::get_args(const std::string& command, stc* stc)
   }
   else if (regex r("^(b|break)"); r.search(command) == 1 && stc != nullptr)
   {
-    args += " " + stc->get_filename().string() + ":" +
+    args += " " + stc->path().string() + ":" +
             std::to_string(stc->get_current_line() + 1);
   }
   else if (regex r("^(d|del|delete) (br|breakpoint)");
@@ -416,7 +417,7 @@ wex::debug::get_args(const std::string& command, stc* stc)
     for (auto& it : m_breakpoints)
     {
       if (
-        stc->get_filename() == std::get<0>(it.second) &&
+        stc->path() == std::get<0>(it.second) &&
         stc->get_current_line() == std::get<2>(it.second))
       {
         args += " " + it.first;
@@ -555,9 +556,7 @@ bool wex::debug::toggle_breakpoint(int line, stc* stc)
 
   for (auto& it : m_breakpoints)
   {
-    if (
-      line == std::get<2>(it.second) &&
-      std::get<0>(it.second) == stc->get_filename())
+    if (line == std::get<2>(it.second) && std::get<0>(it.second) == stc->path())
     {
       stc->MarkerDeleteHandle(std::get<1>(it.second));
       m_breakpoints.erase(it.first);
@@ -565,9 +564,9 @@ bool wex::debug::toggle_breakpoint(int line, stc* stc)
     }
   }
 
-  m_path = stc->get_filename();
+  m_path = stc->path();
 
   return m_process->write(
-    m_entry.break_set() + " " + stc->get_filename().string() + ":" +
+    m_entry.break_set() + " " + stc->path().string() + ":" +
     std::to_string(line + 1));
 }

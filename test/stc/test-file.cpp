@@ -19,7 +19,7 @@ TEST_CASE("wex::stc_file")
   wex::stc_file file(stc);
 
   // The file itself is not assigned.
-  REQUIRE(!file.get_filename().stat().is_ok());
+  REQUIRE(!file.path().stat().is_ok());
   REQUIRE(!file.is_contents_changed());
 
   REQUIRE(file.file_new(wex::path("test-file.txt")));

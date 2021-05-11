@@ -17,10 +17,7 @@ private:
 class dir : public wex::dir
 {
 public:
-  dir(
-    const std::string& fullpath,
-    const std::string& findfiles,
-    wex::grid*         grid);
+  dir(const wex::path& path, const std::string& findfiles, wex::grid* grid);
 
 private:
   bool       on_file(const wex::path& file) final;

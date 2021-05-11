@@ -297,8 +297,8 @@ bool wex::variable::expand_builtin(ex* ex, std::string& expanded) const
     }
     else if (m_name == "Created")
     {
-      if (path file(ex->get_stc()->get_filename());
-          ex->get_stc()->get_filename().stat().is_ok())
+      if (path file(ex->get_stc()->path());
+          ex->get_stc()->path().stat().is_ok())
       {
         expanded =
           (m_format.empty() ? file.stat().get_creation_time() :
@@ -311,15 +311,15 @@ bool wex::variable::expand_builtin(ex* ex, std::string& expanded) const
     }
     else if (m_name == "Filename")
     {
-      expanded = ex->get_stc()->get_filename().name();
+      expanded = ex->get_stc()->path().name();
     }
     else if (m_name == "Fullname")
     {
-      expanded = ex->get_stc()->get_filename().fullname();
+      expanded = ex->get_stc()->path().filename();
     }
     else if (m_name == "Fullpath")
     {
-      expanded = ex->get_stc()->get_filename().string();
+      expanded = ex->get_stc()->path().string();
     }
     else if (m_name == "Nl")
     {
@@ -327,7 +327,7 @@ bool wex::variable::expand_builtin(ex* ex, std::string& expanded) const
     }
     else if (m_name == "Path")
     {
-      expanded = ex->get_stc()->get_filename().get_path();
+      expanded = ex->get_stc()->path().parent_path();
     }
     else
     {

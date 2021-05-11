@@ -24,7 +24,7 @@ TEST_CASE("wex::config")
 #ifdef __WXMSW__
     REQUIRE(!wex::config::dir().empty());
 #else
-    REQUIRE(wex::config::dir().find(".config") != std::string::npos);
+    REQUIRE(wex::config::dir().string().find(".config") != std::string::npos);
 #endif
   }
 

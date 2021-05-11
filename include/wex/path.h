@@ -26,8 +26,8 @@ public:
   /// Flags for path logging.
   enum
   {
-    STAT_SYNC     = 0, ///< shows 'synchronized' instead of 'modified'
-    STAT_FULLPATH = 1  ///< shows file 'fullpath' instead of 'fullname'
+    STAT_SYNC = 0, ///< shows 'synchronized' instead of 'modified'
+    STAT_PATH = 1  ///< shows file 'path' instead of 'filename'
   };
 
   typedef std::bitset<2> status_t;
@@ -35,14 +35,14 @@ public:
   /// Static interface.
 
   /// Returns current path.
-  static std::string current();
+  static wex::path current();
 
   /// Sets current path.
-  static void current(const std::string& path);
+  static void current(const wex::path& p);
 
   /// Others.
 
-  /// Default constructor taking a path.
+  /// Default constructor taking a std::filesystem::path.
   /// If path is empty, it saves the current path,
   /// and when destructed restores it to current.
   path(
@@ -54,14 +54,14 @@ public:
   /// Constructor using string path.
   explicit path(const std::string& path);
 
-  /// Constructor using a path and a name.
-  path(const std::string& path, const std::string& name);
-
   /// Constructor using a char array.
   explicit path(const char* path);
 
   /// Constructor from a vector of paths.
   explicit path(const std::vector<std::string>& v);
+
+  /// Constructor using a path and a name.
+  path(const path& p, const std::string& name);
 
   /// Copy constructor.
   path(const path& r, status_t t = 0);
@@ -97,11 +97,8 @@ public:
   /// Returns true if the file with this name exists.
   bool file_exists() const;
 
-  /// Returns path fullname (including extension) component.
-  const std::string fullname() const { return m_path.filename().string(); }
-
-  /// Returns path path component (without fullname).
-  const std::string get_path() const { return m_path.parent_path().string(); }
+  /// Returns path filename (including extension) component.
+  const std::string filename() const { return m_path.filename().string(); }
 
   /// Returns true if this path is absolute.
   bool is_absolute() const { return m_path.is_absolute(); }
@@ -128,6 +125,12 @@ public:
   /// Returns original path.
   const auto& original() { return m_path_original; }
 
+  /// Returns path path component.
+  const std::string parent_path() const
+  {
+    return m_path.parent_path().string();
+  }
+
   /// Returns path components.
   const std::vector<path> paths() const;
 
@@ -141,9 +144,9 @@ public:
   const auto string() const { return m_path.string(); }
 
 private:
-  std::filesystem::path m_path;
-  std::string           m_path_original;
-  file_stat             m_stat;
-  status_t              m_status{0};
+  std::filesystem::path m_path, m_path_original;
+
+  file_stat m_stat;
+  status_t  m_status{0};
 };
 }; // namespace wex

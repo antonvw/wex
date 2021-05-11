@@ -447,7 +447,7 @@ void wex::stc::bind_all()
         vcs_execute(
           m_frame,
           event.GetId() - ID_EDIT_VCS_LOWEST - 1,
-          std::vector<path>{get_filename().data()});
+          std::vector<wex::path>{path().data()});
       },
       ID_EDIT_VCS_LOWEST},
 
@@ -533,18 +533,16 @@ void wex::stc::build_popup_menu(menu& menu)
 
   if (
     m_data.menu().test(data::stc::MENU_DEBUG) &&
-    matches_one_of(
-      get_filename().extension(),
-      m_frame->debug_entry()->extensions()))
+    matches_one_of(path().extension(), m_frame->debug_entry()->extensions()))
   {
     m_frame->debug_add_menu(menu, true);
   }
 
   if (
-    m_data.menu().test(data::stc::MENU_VCS) && get_filename().file_exists() &&
-    vcs::dir_exists(get_filename()))
+    m_data.menu().test(data::stc::MENU_VCS) && path().file_exists() &&
+    vcs::dir_exists(path()))
   {
-    menu.append({{}, {get_filename(), m_frame}});
+    menu.append({{}, {path(), m_frame}});
   }
 
   if (!get_vi().is_active() && GetTextLength() > 0)
@@ -687,7 +685,7 @@ void wex::stc::file_action(const wxCommandEvent& event)
         get_lexer().scintilla_lexer().empty() &&
         GetLength() < config("stc.max.Size lexer").get(10000000))
       {
-        auto l(path_lexer(get_filename()).lexer());
+        auto l(path_lexer(path()).lexer());
 
         // If not in visual mode, inform the rfw lexer.
         if (l.scintilla_lexer() == "rfw" && !is_visual())
@@ -700,8 +698,8 @@ void wex::stc::file_action(const wxCommandEvent& event)
       }
 
       guess_type_and_modeline();
-      log::status(_("Opened")) << get_filename();
-      log::info("opened") << get_filename();
+      log::status(_("Opened")) << path();
+      log::info("opened") << path();
       fold();
       [[fallthrough]];
 
@@ -716,25 +714,25 @@ void wex::stc::file_action(const wxCommandEvent& event)
       break;
 
     case stc_file::FILE_SAVE_AS:
-      get_lexer().set(path_lexer(get_filename()).lexer());
-      SetName(get_filename().string());
+      get_lexer().set(path_lexer(path()).lexer());
+      SetName(path().string());
       [[fallthrough]];
 
     case stc_file::FILE_SAVE:
-      SetReadOnly(get_filename().is_readonly());
+      SetReadOnly(path().is_readonly());
       marker_delete_all_change();
-      log::status(_("Saved")) << get_filename();
-      log::info("saved") << get_filename();
+      log::status(_("Saved")) << path();
+      log::info("saved") << path();
       break;
   }
 
-  if (path_lexer(get_filename()).lexer().language() == "xml")
+  if (path_lexer(path()).lexer().language() == "xml")
   {
     if (const pugi::xml_parse_result result =
-          pugi::xml_document().load_file(get_filename().string().c_str());
+          pugi::xml_document().load_file(path().string().c_str());
         !result)
     {
-      xml_error(get_filename(), &result, this);
+      xml_error(path(), &result, this);
     }
   }
 }

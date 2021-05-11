@@ -44,7 +44,7 @@ wex::del::listview::listview(const data::listview& data)
         for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
         {
           listitem         li(this, i);
-          const wex::path* filename = &li.get_filename();
+          const wex::path* filename = &li.path();
           if (!filename->file_exists())
             continue;
           switch (event.GetId())
@@ -58,7 +58,7 @@ wex::del::listview::listview(const data::listview& data)
                   return;
                 const int main_selected = list->GetFirstSelected();
                 compare_file(
-                  listitem(list, main_selected).get_filename(),
+                  listitem(list, main_selected).path(),
                   *filename);
               }
               else
@@ -85,7 +85,7 @@ wex::del::listview::listview(const data::listview& data)
 
      {[=, this](wxCommandEvent& event)
       {
-        make(listitem(this, GetFirstSelected()).get_filename());
+        make(listitem(this, GetFirstSelected()).path());
       },
       ID_LIST_RUN_MAKE},
 
@@ -113,10 +113,10 @@ wex::del::listview::listview(const data::listview& data)
             for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
             {
               const listitem item(this, i);
-              log::status() << item.get_filename();
-              if (item.get_filename().file_exists())
+              log::status() << item.path();
+              if (item.path().file_exists())
               {
-                stream file(item.get_filename(), tool);
+                stream file(item.path(), tool);
                 file.run_tool();
                 stats += file.get_statistics().get_elements();
               }
@@ -124,7 +124,7 @@ wex::del::listview::listview(const data::listview& data)
               {
                 tool_dir dir(
                   tool,
-                  item.get_filename(),
+                  item.path(),
                   data::dir().file_spec(item.file_spec()));
                 dir.find_files();
                 stats += dir.get_statistics().get_elements();
@@ -143,7 +143,7 @@ wex::del::listview::listview(const data::listview& data)
         std::vector<path> files;
         for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
         {
-          files.emplace_back(listitem(this, i).get_filename().data());
+          files.emplace_back(listitem(this, i).path().data());
         }
         vcs_execute(m_frame, event.GetId() - ID_EDIT_VCS_LOWEST - 1, files);
       },
@@ -158,11 +158,11 @@ void wex::del::listview::build_popup_menu(wex::menu& menu)
   {
     const listitem item(this, index);
 
-    exists    = item.get_filename().stat().is_ok();
-    is_folder = item.get_filename().dir_exists();
-    readonly  = item.get_filename().stat().is_readonly();
+    exists    = item.path().stat().is_ok();
+    is_folder = item.path().dir_exists();
+    readonly  = item.path().stat().is_readonly();
     is_make =
-      path_lexer(item.get_filename()).lexer().scintilla_lexer() == "makefile";
+      path_lexer(item.path()).lexer().scintilla_lexer() == "makefile";
   }
 
   wex::listview::build_popup_menu(menu);
@@ -189,11 +189,11 @@ void wex::del::listview::build_popup_menu(wex::menu& menu)
           list != nullptr && list->GetSelectedItemCount() == 1)
       {
         listitem   thislist(this, GetFirstSelected());
-        const auto current_file = thislist.get_filename().string();
+        const auto current_file = thislist.path().string();
 
         listitem otherlist(list, list->GetFirstSelected());
 
-        if (const std::string with_file = otherlist.get_filename().string();
+        if (const std::string with_file = otherlist.path().string();
             current_file != with_file && !config(_("list.Comparator")).empty())
         {
           menu.append(
@@ -210,7 +210,7 @@ void wex::del::listview::build_popup_menu(wex::menu& menu)
   {
     if (exists && !is_folder)
     {
-      if (vcs::dir_exists(listitem(this, GetFirstSelected()).get_filename()))
+      if (vcs::dir_exists(listitem(this, GetFirstSelected()).path()))
       {
         bool restore = false;
 
@@ -223,7 +223,7 @@ void wex::del::listview::build_popup_menu(wex::menu& menu)
         }
 
         menu.append(
-          {{}, {listitem(this, GetFirstSelected()).get_filename(), m_frame}});
+          {{}, {listitem(this, GetFirstSelected()).path(), m_frame}});
 
         if (restore)
         {

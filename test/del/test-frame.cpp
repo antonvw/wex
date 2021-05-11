@@ -41,8 +41,8 @@ TEST_CASE("wex::del::frame")
 
     // It does not open, next should fail.
     REQUIRE(
-      del_frame()->get_project_history().get_history_file().string().find(
-        get_project()) == std::string::npos);
+      del_frame()->get_project_history()[0].string().find(
+        get_project().string()) == std::string::npos);
 
     REQUIRE(del_frame()->get_project() == nullptr);
 
@@ -68,8 +68,8 @@ TEST_CASE("wex::del::frame")
     REQUIRE(
       ((wex::frame*)del_frame())->open_file(wex::test::get_path("test.h")));
     REQUIRE(
-      del_frame()->file_history().get_history_file().string().find(
-        "../test.h") == std::string::npos);
+      del_frame()->file_history()[0].string().find("../test.h") ==
+      std::string::npos);
 
     //  REQUIRE(!del_frame()->open_file(
     //    wex::path(get_project()),
@@ -85,7 +85,7 @@ TEST_CASE("wex::del::frame")
   SUBCASE("set_recent")
   {
     del_frame()->set_recent_project(wex::path("xxx.prj"));
-    REQUIRE(del_frame()->get_project_history().get_history_file().empty());
+    REQUIRE(del_frame()->get_project_history()[0].empty());
 
     del_frame()->set_recent_file(wex::test::get_path("test.h"));
   }
@@ -141,6 +141,4 @@ TEST_CASE("wex::del::frame")
       wxQueueEvent(del_frame(), event);
     }
   }
-
-  wex::log::trace("pwd") << wex::path::current();
 }

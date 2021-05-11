@@ -192,7 +192,7 @@ wex::ex::ex(wex::factory::stc* stc, mode_t mode)
                 [&](const std::string& command) {
                   if (command.find(" ") == std::string::npos)
                     return true;
-                  wex::path::current(wex::first_of(command, " "));
+                  wex::path::current(path(wex::first_of(command, " ")));
                   return true;
                 }},
                {":close",
@@ -213,7 +213,7 @@ wex::ex::ex(wex::factory::stc* stc, mode_t mode)
                {":f",
                 [&](const std::string& command) {
                   std::stringstream text;
-                  text << get_stc()->get_filename().fullname() << " line "
+                  text << get_stc()->path().filename() << " line "
                        << get_stc()->get_current_line() + 1 << " of "
                        << get_stc()->get_line_count() << " --"
                        << 100 * (get_stc()->get_current_line() + 1) /
@@ -292,7 +292,7 @@ wex::ex::ex(wex::factory::stc* stc, mode_t mode)
                 }},
                {":pwd",
                 [&](const std::string& command) {
-                  wex::log::status(wex::path::current());
+                  wex::log::status(wex::path::current().string());
                   return true;
                 }},
                {":q!",
@@ -314,7 +314,7 @@ wex::ex::ex(wex::factory::stc* stc, mode_t mode)
                   output += l.make_section("Filename buffer");
                   output += l.make_key(
                     "%",
-                    get_command().get_stc()->get_filename().fullname());
+                    get_command().get_stc()->path().filename());
                   show_dialog("Registers", output, l.scintilla_lexer());
                   return true;
                 }},
@@ -638,7 +638,7 @@ bool wex::ex::command_set(const std::string& command)
       [&](bool on)
       {
         if (!modeline)
-          config("stc.Auto indent").set(on ? (long)2 : (long)0);
+          config("stc.Auto indent").set(on);
       }},
      {{"aw", _("stc.Auto write")},
       [&](bool on)
@@ -722,11 +722,11 @@ bool wex::ex::command_set(const std::string& command)
       }},
      {{"ws", _("stc.Wrap scan"), "1"}, nullptr}},
     // options
-    {{{"dir", "ex-set.dir", wex::path::current()},
+    {{{"dir", "ex-set.dir", wex::path::current().string()},
       {cmdline::STRING,
        [&](const std::any& val)
        {
-         wex::path::current(std::any_cast<std::string>(val));
+         wex::path::current(path(std::any_cast<std::string>(val)));
        }}},
      {{"ec", _("stc.Edge column"), std::to_string(get_stc()->GetEdgeColumn())},
       {cmdline::INT,

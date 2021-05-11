@@ -13,7 +13,7 @@
 
 void find_prep(wex::stream& s, wex::factory::find_replace_data* frd)
 {
-  REQUIRE(s.get_filename() == wex::test::get_path("test.h"));
+  REQUIRE(s.path() == wex::test::get_path("test.h"));
 
   frd->set_match_word(true);
   frd->set_replace_string("test");

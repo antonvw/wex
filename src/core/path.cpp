@@ -32,12 +32,12 @@ wex::path::path(const fs::path& p, status_t t)
 {
   if (p.empty())
   {
-    m_path_original = current();
+    m_path_original = current().data();
   }
 }
 
-wex::path::path(const std::string& p, const std::string& name)
-  : path(fs::path(substitute_tilde(p)).append(name).string())
+wex::path::path(const path& p, const std::string& name)
+  : path(fs::path(substitute_tilde(p.string())).append(name).string())
 {
 }
 
@@ -67,7 +67,7 @@ wex::path::path(const std::vector<std::string>& v)
 
 wex::path::~path()
 {
-  if (!m_path_original.empty() && m_path_original != current())
+  if (!m_path_original.empty() && m_path_original != current().data())
   {
     current(m_path_original);
   }
@@ -93,32 +93,32 @@ wex::path& wex::path::append(const wex::path& path)
   return *this;
 }
 
-void wex::path::current(const std::string& path)
+void wex::path::current(const wex::path& p)
 {
-  if (!path.empty())
+  if (!p.empty())
   {
     try
     {
-      fs::current_path(path);
-      log::trace("path current") << path;
+      fs::current_path(p.data());
+      log::trace("path current") << p;
     }
     catch (const std::exception& e)
     {
-      wex::log(e) << "path:" << path;
+      wex::log(e) << "path:" << p;
     }
   }
 }
 
-std::string wex::path::current()
+wex::path wex::path::current()
 {
   try
   {
-    return fs::current_path().string();
+    return path(fs::current_path());
   }
   catch (const std::exception& e)
   {
     wex::log(e) << "current";
-    return std::string();
+    return path();
   }
 }
 
@@ -129,14 +129,14 @@ bool wex::path::dir_exists() const
 
 bool wex::path::file_exists() const
 {
-  return fullname().size() < 255 && fs::is_regular_file(m_path);
+  return filename().size() < 255 && fs::is_regular_file(m_path);
 }
 
 std::stringstream wex::path::log() const
 {
   std::stringstream ss;
 
-  ss << (m_status[STAT_FULLPATH] || fullname().empty() ? string() : fullname());
+  ss << (m_status[STAT_PATH] || filename().empty() ? string() : filename());
 
   if (stat().is_ok())
   {

@@ -101,7 +101,7 @@ public:
           wxEVT_BUTTON,
           [&, this](const wxCommandEvent& event)
           {
-            wxComboBox* browse = reinterpret_cast<wxComboBox*>(item.window());
+            auto*       browse = reinterpret_cast<wxComboBox*>(item.window());
             wxDirDialog dlg(
               this,
               _(wxDirSelectorPromptStr),
@@ -116,13 +116,13 @@ public:
           wxEVT_BUTTON,
           [&, this](const wxCommandEvent& event)
           {
-            wxComboBox*  browse = reinterpret_cast<wxComboBox*>(item.window());
+            auto*        browse = reinterpret_cast<wxComboBox*>(item.window());
             const path   path(browse->GetValue());
             wxFileDialog dlg(
               this,
               _(wxFileSelectorPromptStr),
-              path.get_path(),
-              path.fullname(),
+              path.parent_path(),
+              path.filename(),
               wxFileSelectorDefaultWildcardStr,
               wxFD_DEFAULT_STYLE | wxFD_FILE_MUST_EXIST);
             DO_DIALOG;

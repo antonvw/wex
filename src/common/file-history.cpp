@@ -80,7 +80,7 @@ wex::file_history::~file_history()
   delete m_history;
 }
 
-bool wex::file_history::append(const path& p)
+bool wex::file_history::append(const wex::path& p)
 {
   return m_history->append(p);
 }
@@ -106,29 +106,29 @@ size_t wex::file_history::get_max_files() const
   return (size_t)m_history->GetMaxFiles();
 }
 
-wex::path wex::file_history::get_history_file(size_t index) const
-{
-  try
-  {
-    return path(m_history->GetHistoryFile(index).ToStdString());
-  }
-  catch (const std::exception& e)
-  {
-    wex::log(e) << "get_history_file:" << index;
-    return path();
-  }
-}
-
 std::vector<wex::path> wex::file_history::get_history_files(size_t count) const
 {
-  std::vector<path> v;
+  std::vector<wex::path> v;
 
   for (size_t i = 0; i < count && i < size(); i++)
   {
-    v.emplace_back(get_history_file(i));
+    v.emplace_back(operator[](i));
   }
 
   return v;
+}
+
+const wex::path wex::file_history::operator[](size_t index) const
+{
+  try
+  {
+    return wex::path(m_history->GetHistoryFile(index).ToStdString());
+  }
+  catch (const std::exception& e)
+  {
+    wex::log(e) << "file_history::path:" << index;
+    return path();
+  }
 }
 
 void wex::file_history::popup_menu(
@@ -140,9 +140,9 @@ void wex::file_history::popup_menu(
 
   for (size_t i = 0; i < size(); i++)
   {
-    if (const wex::path file(get_history_file(i)); file.file_exists())
+    if (const auto& file(operator[](i)); file.file_exists())
     {
-      auto* item = new wxMenuItem(menu, get_base_id() + i, file.fullname());
+      auto* item = new wxMenuItem(menu, get_base_id() + i, file.filename());
 
       item->SetBitmap(
         wxTheFileIconsTable->GetSmallImageList()->GetBitmap(get_iconid(file)));

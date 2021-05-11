@@ -14,7 +14,7 @@ TEST_CASE("wex::del::file")
   auto* lv = new wex::del::file(get_project());
   del_frame()->pane_add(lv);
 
-  REQUIRE(lv->get_file().get_filename().fullname() == get_project());
+  REQUIRE(lv->get_file().path() == get_project());
 
   REQUIRE(!lv->text_addfiles().empty());
   REQUIRE(!lv->text_addfolders().empty());
@@ -29,7 +29,7 @@ TEST_CASE("wex::del::file")
   REQUIRE(lv->find_column("String") > 1);
   REQUIRE(lv->find_column("Number") > 1);
 
-  REQUIRE(lv->file_load(wex::path(get_project())));
+  REQUIRE(lv->file_load(get_project()));
   REQUIRE(lv->file_save(wex::path("test-del.prj.bck")));
   REQUIRE(remove("test-del.prj.bck") == 0);
 

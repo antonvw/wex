@@ -16,7 +16,7 @@ public:
   c_stc() { Create(wxTheApp->GetTopWindow(), -1); }
 
 private:
-  const wex::path& get_filename() const override { return m_path; };
+  const wex::path& path() const override { return m_path; };
   wex::path        m_path;
 };
 

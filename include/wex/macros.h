@@ -71,9 +71,6 @@ public:
   /// Returns abbreviations.
   const auto& get_abbreviations() const { return m_abbreviations; }
 
-  /// Returns the filename with xml document.
-  const path get_filename() const;
-
   /// Returns keys map.
   const keys_map_t& get_keys_map(key_t type = KEY_NORMAL) const;
 
@@ -114,6 +111,9 @@ public:
 
   /// Returns the mode we are in.
   const auto& mode() const { return m_mode; }
+
+  /// Returns the path with xml document.
+  const wex::path path() const;
 
   /// Records text to current macro (or register) as a new command.
   /// The text to be recorded should be valid ex command,

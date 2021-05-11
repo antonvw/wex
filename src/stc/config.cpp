@@ -20,14 +20,6 @@
 
 namespace wex
 {
-enum
-{
-  INDENT_NONE,
-  INDENT_WHITESPACE,
-  INDENT_LEVEL,
-  INDENT_ALL,
-};
-
 const std::string def(const wxString& v)
 {
   return std::string(v) + ",1";
@@ -36,9 +28,7 @@ const std::string def(const wxString& v)
 
 bool wex::stc::auto_indentation(int c)
 {
-  if (const auto ai =
-        item_vector(m_config_items).find<long>(_("stc.Auto indent"));
-      ai == INDENT_NONE)
+  if (!item_vector(m_config_items).find<bool>(_("stc.Auto indent")))
   {
     return false;
   }
@@ -50,53 +40,57 @@ bool wex::stc::auto_indentation(int c)
     case wxSTC_EOL_CR:
       is_nl = (c == '\r');
       break;
+
     case wxSTC_EOL_CRLF:
       is_nl = (c == '\n');
       break; // so ignore first \r
+
     case wxSTC_EOL_LF:
       is_nl = (c == '\n');
       break;
   }
 
-  const auto currentLine = get_current_line();
+  const auto line = get_current_line();
 
-  if (!is_nl || currentLine == 0)
+  if (!is_nl || line == 0)
   {
     return false;
   }
 
-  const auto level  = get_fold_level();
-  int        indent = 0;
+  static size_t previous = 0;
+  const auto    level    = get_fold_level();
+  int           indent   = GetLineIndentation(line);
 
-  if (level <= 0)
+  if (indent == 0)
   {
     // the current line has yet no indents, so use previous line
-    indent = GetLineIndentation(currentLine - 1);
-
-    if (indent == 0)
-    {
-      return false;
-    }
+    indent = GetLineIndentation(line - 1);
   }
-  else
+
+  if (level > 0)
   {
     indent = GetIndent() * level;
   }
 
+  if (indent == 0)
+  {
+    return false;
+  }
+  
   BeginUndoAction();
 
-  SetLineIndentation(currentLine, indent);
+  SetLineIndentation(line, indent);
 
-  if (level < m_fold_level && m_adding_chars)
+  if (level < previous)
   {
-    SetLineIndentation(currentLine - 1, indent);
+    SetLineIndentation(line - 1, indent);
   }
+
+  previous = level;
 
   EndUndoAction();
 
-  m_fold_level = level;
-
-  GotoPos(GetLineIndentPosition(currentLine));
+  GotoPos(GetLineIndentPosition(line));
 
   return true;
 }
@@ -223,7 +217,7 @@ void wex::stc::on_init()
                _("stc.Auto beautify"),
                _("stc.Auto blame"),
                _("stc.Auto complete"),
-               def(_("stc.Keep zoom")),
+               def(_("stc.Auto indent")),
                def(_("stc.Keep zoom")),
                def(_("stc.vi mode")),
                _("stc.vi tag fullpath")}},
@@ -232,14 +226,7 @@ void wex::stc::on_init()
               item::COMBOBOX,
               std::list<std::string>{{"https://duckduckgo.com"}}}}},
            {_("Choices"),
-            {{_("stc.Auto indent"),
-              {{INDENT_NONE, _("None")},
-               {INDENT_WHITESPACE, _("Whitespace")},
-               {INDENT_LEVEL, _("Level")},
-               {INDENT_ALL, def(_("Both"))}},
-              true,
-              data::item().columns(4)},
-             {_("stc.Wrap visual flags"),
+            {{_("stc.Wrap visual flags"),
               {{wxSTC_WRAPVISUALFLAG_NONE, _("None")},
                {wxSTC_WRAPVISUALFLAG_END, _("End")},
                {wxSTC_WRAPVISUALFLAG_START, _("Start")},

@@ -11,13 +11,13 @@
 
 wex::file::file() {}
 
-wex::file::file(const path& p)
+wex::file::file(const wex::path& p)
   : m_path(p)
   , m_stat(m_path.string())
 {
 }
 
-wex::file::file(const path& p, std::ios_base::openmode mode)
+wex::file::file(const wex::path& p, std::ios_base::openmode mode)
   : m_path(p)
   , m_stat(m_path.string())
   , m_fs(m_path.data(), mode)
@@ -25,12 +25,12 @@ wex::file::file(const path& p, std::ios_base::openmode mode)
 }
 
 wex::file::file(const char* filename)
-  : wex::file(path(filename))
+  : wex::file(wex::path(filename))
 {
 }
 
 wex::file::file(const char* filename, std::ios_base::openmode mode)
-  : wex::file(path(filename), mode)
+  : wex::file(wex::path(filename), mode)
 {
 }
 
@@ -55,7 +55,7 @@ wex::file& wex::file::operator=(const file& f)
   return *this;
 }
 
-void wex::file::assign(const path& p)
+void wex::file::assign(const wex::path& p)
 {
   close();
   m_path = p;
@@ -137,7 +137,7 @@ bool wex::file::file_load(bool synced)
   return true;
 }
 
-bool wex::file::file_load(const path& p)
+bool wex::file::file_load(const wex::path& p)
 {
   assign(p);
 
@@ -151,7 +151,7 @@ bool wex::file::file_load(const path& p)
   return true;
 }
 
-bool wex::file::file_new(const path& p)
+bool wex::file::file_new(const wex::path& p)
 {
   assign(p);
   do_file_new();
@@ -160,7 +160,7 @@ bool wex::file::file_new(const path& p)
   return true;
 }
 
-bool wex::file::file_save(const path& p)
+bool wex::file::file_save(const wex::path& p)
 {
   bool save_as = false;
 
@@ -200,7 +200,7 @@ void wex::file::log_stream_info(const std::string& info, size_t s)
             << "size" << s;
 }
 
-bool wex::file::open(const path& p, std::ios_base::openmode mode)
+bool wex::file::open(const wex::path& p, std::ios_base::openmode mode)
 {
   if (m_fs.is_open())
   {

@@ -128,7 +128,7 @@ wex::del::frame::frame(
         {
           if (auto* stc = dynamic_cast<wex::stc*>(get_stc()); stc != nullptr)
           {
-            wex::path::current(stc->get_filename().get_path());
+            wex::path::current(stc->path().data().parent_path());
             if (!marker_and_register_expansion(&stc->get_vi(), text))
               return;
           }
@@ -598,7 +598,7 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
     {
 #endif
       if (auto* stc = dynamic_cast<wex::stc*>(get_stc()); stc != nullptr)
-        path::current(stc->get_filename().get_path());
+        path::current(stc->path().data().parent_path());
       find_replace_data::get()->set_regex(true);
       log::status(find_replace_string(false));
       sync(false);
@@ -716,9 +716,9 @@ void wex::del::frame::on_notebook(wxWindowID id, wxWindow* page)
   {
     show_ex_bar(!stc->is_visual() ? SHOW_BAR : HIDE_BAR_FOCUS_STC, stc);
 
-    set_recent_file(stc->get_filename());
+    set_recent_file(stc->path());
 
-    const vcs v({stc->get_filename()});
+    const vcs v({stc->path()});
 
     if (const auto& b(v.get_branch()); !b.empty())
     {
@@ -762,8 +762,7 @@ void wex::del::frame::set_recent_file(const wex::path& path)
     {
       for (auto i = m_file_history_listview->GetItemCount() - 1; i >= 1; i--)
       {
-        if (listitem item(m_file_history_listview, i);
-            item.get_filename() == path)
+        if (listitem item(m_file_history_listview, i); item.path() == path)
         {
           item.erase();
         }
@@ -828,7 +827,7 @@ void wex::del::frame::statusbar_clicked(const std::string& pane)
 
       if (stc != nullptr)
       {
-        if (menu->append({{path(stc->get_filename().get_path()), this}}))
+        if (menu->append({{path(stc->path().parent_path()), this}}))
         {
           PopupMenu(menu);
         }
@@ -882,10 +881,10 @@ void wex::del::frame::statusbar_clicked_right(const std::string& pane)
   }
   else if (pane == "PaneMacro")
   {
-    if (wex::ex::get_macros().get_filename().file_exists())
+    if (wex::ex::get_macros().path().file_exists())
     {
       open_file(
-        wex::ex::get_macros().get_filename(),
+        wex::ex::get_macros().path(),
         wex::data::control().find(
           !get_statustext(pane).empty() ?
             " name=\"" + get_statustext(pane) + "\"" :
@@ -899,11 +898,11 @@ void wex::del::frame::statusbar_clicked_right(const std::string& pane)
     if (stc != nullptr)
     {
       match =
-        (pane == "PaneVCS" ? wex::vcs({stc->get_filename()}).entry().name() :
+        (pane == "PaneVCS" ? wex::vcs({stc->path()}).entry().name() :
                              wex::debug(this).debug_entry().name());
     }
 
-    open_file(wex::menus::get_filename(), wex::data::control().find(match));
+    open_file(wex::menus::path(), wex::data::control().find(match));
   }
   else
   {
@@ -948,10 +947,8 @@ void wex::del::frame::use_file_history_list(listview* list)
   // Add all (existing) items from FileHistory.
   for (size_t i = 0; i < file_history().size(); i++)
   {
-    if (listitem item(
-          m_file_history_listview,
-          file_history().get_history_file(i));
-        item.get_filename().stat().is_ok())
+    if (listitem item(m_file_history_listview, file_history()[i]);
+        item.path().stat().is_ok())
     {
       item.insert();
     }

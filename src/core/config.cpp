@@ -2,12 +2,11 @@
 // Name:      config.cpp
 // Purpose:   Implementation of class wex::config
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/config.h>
 #include <wex/log.h>
-#include <wex/path.h>
 #include <wx/app.h>
 #include <wx/colour.h>
 #include <wx/font.h>
@@ -31,7 +30,7 @@ wex::config::~config()
   child_end();
 }
 
-bool wex::config::change_file(const std::string& file)
+bool wex::config::change_path(const wex::path& p)
 {
   if (!child_end())
   {
@@ -40,7 +39,7 @@ bool wex::config::change_file(const std::string& file)
 
   m_store->save();
 
-  config_imp::set_file(file);
+  config_imp::set_path(p);
 
   m_store->read();
 
@@ -88,20 +87,22 @@ size_t wex::config::children() const
   return m_local == nullptr ? 0 : m_local->get_json().size();
 }
 
-const std::string wex::config::dir()
+const wex::path wex::config::dir()
 {
-  if (const path p({wxGetHomeDir(), ".config", wxTheApp->GetAppName().Lower()});
+  if (const wex::path p(
+        {wxGetHomeDir(), ".config", wxTheApp->GetAppName().Lower()});
       p.dir_exists())
   {
-    return p.data().string();
+    return p;
   }
-  else if (const path p({wxGetHomeDir(), ".config", "wex"}); p.dir_exists())
+  else if (const wex::path p({wxGetHomeDir(), ".config", "wex"});
+           p.dir_exists())
   {
-    return p.data().string();
+    return p;
   }
   else
   {
-    return wxPathOnly(wxStandardPaths::Get().GetExecutablePath()).ToStdString();
+    return wex::path(wxPathOnly(wxStandardPaths::Get().GetExecutablePath()));
   }
 }
 
@@ -121,11 +122,6 @@ void wex::config::erase() const
 bool wex::config::exists() const
 {
   return !m_item.empty() ? get_store()->exists(m_item) : false;
-}
-
-const std::string wex::config::file()
-{
-  return config_imp::file();
 }
 
 const std::string wex::config::get(const char* def) const
@@ -252,7 +248,12 @@ void wex::config::on_init()
   m_store->read();
 
   log::trace("config") << "top size:" << size()
-                         << "elements:" << m_store->elements();
+                       << "elements:" << m_store->elements();
+}
+
+const wex::path wex::config::path()
+{
+  return config_imp::path();
 }
 
 void wex::config::read()
@@ -329,11 +330,6 @@ void wex::config::set(const wxFont& v)
   get_store()->set(m_item, wxToString(v).ToStdString());
 }
 
-void wex::config::set_file(const std::string& file)
-{
-  config_imp::set_file(file);
-}
-
 const std::string wex::config::set_first_of(const std::string& v, size_t max)
 {
   auto l(get(std::list<std::string>{}));
@@ -349,6 +345,11 @@ const std::string wex::config::set_first_of(const std::string& v, size_t max)
   set(l);
 
   return v;
+}
+
+void wex::config::set_path(const wex::path& p)
+{
+  config_imp::set_path(p);
 }
 
 size_t wex::config::size()

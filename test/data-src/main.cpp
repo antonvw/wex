@@ -28,7 +28,7 @@ private:
 class data_listview : public wex::factory::listview
 {
 public:
-  data_listview(wxFrame* parent)
+  explicit data_listview(wxFrame* parent)
   {
     Create(parent, -1);
     Show();
@@ -38,14 +38,14 @@ public:
 class data_stc : public wex::factory::stc
 {
 public:
-  data_stc(wxFrame* parent)
+  explicit data_stc(wxFrame* parent)
   {
     Create(parent, -1);
     Show();
   };
 
 private:
-  const wex::path& get_filename() const override { return m_path; };
+  const wex::path& path() const override { return m_path; };
   wex::path        m_path;
 
   static inline wxFrame* m_frame = nullptr;

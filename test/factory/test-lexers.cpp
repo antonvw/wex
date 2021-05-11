@@ -41,7 +41,7 @@ TEST_CASE("wex::lexers")
   {
     REQUIRE(
       wex::lexers::get()
-        ->find_by_filename(wex::test::get_path("test.h").fullname())
+        ->find_by_filename(wex::test::get_path("test.h").filename())
         .scintilla_lexer() == "cpp");
 
     REQUIRE(wex::lexers::get()->find("xxx").scintilla_lexer().empty());
@@ -72,7 +72,7 @@ TEST_CASE("wex::lexers")
 
   SUBCASE("rest")
   {
-    REQUIRE(!wex::lexers::get()->get_filename().empty());
+    REQUIRE(!wex::lexers::get()->path().empty());
 
     REQUIRE(!wex::lexers::get()->get_macros("global").empty());
     REQUIRE(!wex::lexers::get()->get_macros("cpp").empty());

@@ -13,16 +13,8 @@
 
 #include "test.h"
 
-void find_in_files(
-  const std::vector<std::string>& files,
-  wex::del::listview*             lv)
+void find_in_files(const std::vector<wex::path>& v, wex::del::listview* lv)
 {
-  std::vector<wex::path> v;
-  for (const auto& file : files)
-  {
-    v.emplace_back(wex::path(file));
-  }
-
   REQUIRE(del_frame()->find_in_files(v, wex::ID_TOOL_REPORT_FIND, false, lv));
 }
 
@@ -36,7 +28,7 @@ TEST_CASE("wex::del")
   del_frame()->pane_add(lv);
 
   const auto files = wex::get_all_files(
-    std::string("../../test/del"),
+    wex::path("../../test/del"),
     wex::data::dir().file_spec("*.cpp"));
 
   REQUIRE(files.size() > 5);

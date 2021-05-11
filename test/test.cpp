@@ -23,7 +23,7 @@ const wex::path wex::test::get_path(const std::string& file)
 
 wex::path wex::test::app::get_path(const std::string& file)
 {
-  return file.empty() ? m_path : path(m_path.string(), file);
+  return file.empty() ? m_path : path(m_path, file);
 }
 
 bool wex::test::app::OnInit()
@@ -37,7 +37,7 @@ bool wex::test::app::OnInit()
 
   m_path = path(path::current()).data().parent_path();
   m_path.append(wex::path("test")).append(wex::path("data"));
-  path::current(m_path.string());
+  path::current(m_path.data());
 
   if (!m_path.dir_exists())
   {

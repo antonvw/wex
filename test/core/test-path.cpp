@@ -18,7 +18,7 @@ TEST_CASE("wex::path")
     REQUIRE(wex::path("xxx").string() == "xxx");
     REQUIRE(wex::path(wex::path("yyy")).string() == "yyy");
     wex::path fn = wex::test::get_path("test.h");
-    REQUIRE(wex::path(fn).fullname() == "test.h");
+    REQUIRE(wex::path(fn).filename() == "test.h");
     REQUIRE(wex::path("..").is_relative());
     REQUIRE(!wex::path("..").is_absolute());
     REQUIRE(wex::path("xx") == wex::path("xx"));
@@ -34,11 +34,11 @@ TEST_CASE("wex::path")
     REQUIRE(!path.dir_exists());
     REQUIRE(path.file_exists());
     REQUIRE(path.extension() == ".h");
-    REQUIRE(path.fullname() == "test.h");
+    REQUIRE(path.filename() == "test.h");
     REQUIRE(!path.empty());
     REQUIRE(path.log().str().find("test.h") != std::string::npos);
     REQUIRE(path.name() == "test");
-    REQUIRE(!path.get_path().empty());
+    REQUIRE(!path.parent_path().empty());
     REQUIRE(!path.paths().empty());
     REQUIRE(path.stat().is_ok());
     REQUIRE(!path.is_readonly());
@@ -51,7 +51,7 @@ TEST_CASE("wex::path")
 
     REQUIRE(!wex::path("XXXXX").stat().is_ok());
 
-    REQUIRE(wex::path("XXXXX").make_absolute().fullname() == "XXXXX");
+    REQUIRE(wex::path("XXXXX").make_absolute().filename() == "XXXXX");
     REQUIRE(wex::path("XXXXX").make_absolute().string() != "XXXXX");
   }
 

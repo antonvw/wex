@@ -74,7 +74,7 @@ public:
     const data::stc&   data = data::stc());
 
   /// Constructor, opens the file if it exists.
-  explicit stc(const path& file, const data::stc& data = data::stc());
+  explicit stc(const wex::path& p, const data::stc& data = data::stc());
 
   /// Destructor.
   ~stc() override;
@@ -213,8 +213,6 @@ public:
     return m_vi->get_command();
   };
 
-  const path& get_filename() const override { return m_file.get_filename(); }
-
   const std::string get_find_string() const override;
   bool              get_hexmode_erase(int begin, int end) override;
   bool get_hexmode_insert(const std::string& command, int pos) override;
@@ -234,7 +232,10 @@ public:
   bool is_hexmode() const override { return m_hexmode.is_active(); }
   bool is_visual() const override;
   bool link_open() override;
-  bool open(const path& filename, const data::stc& data = data::stc()) override;
+  bool open(const wex::path& p, const data::stc& data = data::stc()) override;
+
+  const wex::path& path() const override { return m_file.path(); }
+
   bool position_restore() override;
   void position_save() override;
   void print(bool prompt = true) override;
@@ -293,10 +294,10 @@ private:
 
   const marker m_marker_change = marker(1);
 
-  int m_fold_level{0}, m_margin_text_click{-1}, m_saved_pos{-1},
-    m_saved_selection_start{-1}, m_saved_selection_end{-1};
+  int m_margin_text_click{-1}, m_saved_pos{-1}, m_saved_selection_start{-1},
+    m_saved_selection_end{-1};
 
-  bool m_adding_chars{false}, m_skip{false};
+  bool m_skip{false};
 
   frame* m_frame;
 

@@ -166,7 +166,7 @@ bool wex::vcs_entry::log(const path& p, const std::string& id)
       bin() + " log " + m_log_flags + " " + id :
       bin() + " log " + id + " " + m_log_flags;
 
-  return process::system(command, p.get_path()) == 0;
+  return process::system(command, p.parent_path()) == 0;
 }
 
 void wex::vcs_entry::show_output(const std::string& caption) const

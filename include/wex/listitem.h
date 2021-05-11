@@ -31,9 +31,6 @@ public:
   /// Returns the file spec.
   const auto file_spec() const { return m_file_spec; }
 
-  /// Returns the filename.
-  const auto& get_filename() const { return m_path; }
-
   /// Returns the listview.
   auto* get_listview() const { return m_listview; }
 
@@ -46,6 +43,9 @@ public:
 
   /// Logs info about this item.
   std::stringstream log() const;
+
+  /// Returns the path.
+  const auto& path() const { return m_path; }
 
   /// Sets the item text using column name.
   /// Returns false if text could not be set.
@@ -61,7 +61,7 @@ private:
   // and cannot be const, as it calls insert_item on the list.
   listview* m_listview;
 
-  const path        m_path;
+  const wex::path   m_path;
   const std::string m_file_spec;
   bool              m_is_readonly;
 };
