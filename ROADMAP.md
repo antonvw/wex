@@ -1,6 +1,4 @@
 # roadmap
-- more cpplint
-  - stc-bind
 
 ## backlog
 - clang asan build using LeakSanitizer
