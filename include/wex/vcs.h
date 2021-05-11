@@ -104,7 +104,7 @@ public:
   bool use() const;
 
 private:
-  const wex::path path() const;
+  const wex::path current_path() const;
 
   vcs_entry m_entry;
 

@@ -124,7 +124,7 @@ wex::vcs::vcs(const std::vector<wex::path>& files, int command_no)
   : m_files(files)
   , m_title("VCS")
 {
-  m_entry = find_entry(m_entries, path());
+  m_entry = find_entry(m_entries, current_path());
 
   if (!m_entry.name().empty())
   {
@@ -212,6 +212,18 @@ int wex::vcs::config_dialog(const data::window& par) const
   }
 }
 
+const wex::path wex::vcs::current_path() const
+{
+  if (m_files.empty())
+  {
+    return wex::path(config(_("vcs.Base folder")).get_first_of());
+  }
+  else
+  {
+    return m_files[0];
+  }
+}
+
 bool wex::vcs::dir_exists(const wex::path& filename)
 {
   if (const vcs_entry entry(find_entry(m_entries, filename));
@@ -227,7 +239,7 @@ bool wex::vcs::dir_exists(const wex::path& filename)
 
 bool wex::vcs::execute()
 {
-  if (path().empty())
+  if (current_path().empty())
   {
     return m_entry.execute(
       m_entry.get_command().is_add() ? config(_("vcs.data")).get_first_of() :
@@ -237,8 +249,8 @@ bool wex::vcs::execute()
   }
   else
   {
-    const path_lexer filename(path());
-    wex::path        wd(path());
+    const path_lexer filename(current_path());
+    wex::path        wd(current_path());
     std::string      args;
 
     if (m_files.size() > 1)
@@ -275,7 +287,7 @@ bool wex::vcs::execute()
 
 bool wex::vcs::execute(const std::string& command)
 {
-  return m_entry.execute(command, path().parent_path());
+  return m_entry.execute(command, current_path().parent_path());
 }
 
 const std::string wex::vcs::get_branch() const
@@ -283,7 +295,8 @@ const std::string wex::vcs::get_branch() const
   return config("vcs.VCS").get(VCS_AUTO) == VCS_NONE ?
            std::string() :
            m_entry.get_branch(
-             path().file_exists() ? path().parent_path() : path().string());
+             current_path().file_exists() ? current_path().parent_path() : 
+             current_path().string());
 }
 
 bool wex::vcs::load_document()
@@ -324,18 +337,6 @@ const std::string wex::vcs::name() const
       return "Auto";
     default:
       return m_entry.name();
-  }
-}
-
-const wex::path wex::vcs::path() const
-{
-  if (m_files.empty())
-  {
-    return wex::path(config(_("vcs.Base folder")).get_first_of());
-  }
-  else
-  {
-    return m_files[0];
   }
 }
 
@@ -471,7 +472,7 @@ int wex::vcs::show_dialog(const data::window& arg)
 
 wex::path wex::vcs::toplevel() const
 {
-  return vcs_admin(m_entry.admin_dir(), m_files.empty() ? path() : m_files[0])
+  return vcs_admin(m_entry.admin_dir(), m_files.empty() ? current_path() : m_files[0])
     .toplevel();
 }
 
