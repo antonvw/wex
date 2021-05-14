@@ -23,11 +23,13 @@
 wex::stream::stream(
   factory::find_replace_data* frd,
   const wex::path&            filename,
-  const tool&                 tool)
+  const tool&                 tool,
+  wxEvtHandler*               eh)
   : m_path(filename)
   , m_tool(tool)
   , m_frd(frd)
   , m_threshold(config(_("fif.Max replacements")).get(-1))
+  , m_eh(eh)
 {
 }
 
@@ -103,7 +105,7 @@ bool wex::stream::process(std::string& text, size_t line_no)
 
   if (match)
   {
-    if (m_tool.id() == ID_TOOL_REPORT_FIND)
+    if (m_tool.id() == ID_TOOL_REPORT_FIND && m_eh != nullptr)
     {
       process_match(path_match(path(), text, line_no, pos));
     }
@@ -133,7 +135,8 @@ bool wex::stream::process(std::string& text, size_t line_no)
 bool wex::stream::process_begin()
 {
   if (
-    m_frd->get_find_string().empty() || !m_tool.is_find_type() ||
+    m_frd == nullptr || m_frd->get_find_string().empty() ||
+    !m_tool.is_find_type() ||
     (m_tool.id() == ID_TOOL_REPLACE && m_path.stat().is_readonly()))
   {
     return false;
@@ -153,6 +156,13 @@ bool wex::stream::process_begin()
   }
 
   return true;
+}
+
+void wex::stream::process_match(const path_match& m)
+{
+  wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_LIST_MATCH);
+  event.SetClientData(new path_match(m));
+  wxPostEvent(m_eh, event);
 }
 
 int wex::stream::replace_all(std::string& text, int* match_pos)
@@ -193,17 +203,20 @@ bool wex::stream::run_tool()
   }
   else
   {
+    m_asked = false;
+
     m_stats.m_elements.set(_("Files").ToStdString(), 1);
 
     int         line_no = 0;
     std::string s;
 
-    log::trace("run_tool") << m_path;
-
     for (std::string line; std::getline(fs, line);)
     {
       if (!process(line, line_no++))
+      {
         return false;
+      }
+
       if (m_write)
       {
         s += line + "\n";
@@ -224,12 +237,6 @@ bool wex::stream::run_tool()
       fs.write(s.c_str(), s.size());
     }
 
-    process_end();
     return true;
   }
-}
-
-void wex::stream::reset()
-{
-  m_asked = false;
 }

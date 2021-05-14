@@ -27,6 +27,12 @@ public:
     return *this;
   }
 
+  /// Clears the statistics.
+  void clear() { m_elements.clear(); }
+
+  /// Returns true if statistics are empty.
+  bool empty() const { return m_elements.empty(); }
+
   /// Returns all items as a string. All items are returned as a string,
   /// with newlines separating items.
   const std::string get() const { return m_elements.get(); }

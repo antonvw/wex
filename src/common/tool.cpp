@@ -12,9 +12,7 @@
 
 std::map<wex::window_id, wex::tool_info> wex::tool::m_tool_info{
   {ID_TOOL_REPORT_FIND, {_("Found %d matches in")}},
-  {ID_TOOL_REPLACE, {_("Replaced %d matches in")}},
-  {ID_TOOL_REPORT_KEYWORD,
-   {_("Reported %d keywords in"), _("Report &Keyword")}}};
+  {ID_TOOL_REPLACE, {_("Replaced %d matches in")}}};
 
 const std::string wex::tool::info() const
 {

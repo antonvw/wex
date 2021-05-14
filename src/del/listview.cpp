@@ -11,9 +11,9 @@
 #include <wex/del/dir.h>
 #include <wex/del/frame.h>
 #include <wex/del/listview.h>
-#include <wex/del/stream.h>
 #include <wex/frd.h>
 #include <wex/listitem.h>
+#include <wex/stream.h>
 #include <wex/util.h>
 #include <wex/vcs.h>
 #include <wx/app.h>
@@ -57,9 +57,7 @@ wex::del::listview::listview(const data::listview& data)
                 if (list == nullptr)
                   return;
                 const int main_selected = list->GetFirstSelected();
-                compare_file(
-                  listitem(list, main_selected).path(),
-                  *filename);
+                compare_file(listitem(list, main_selected).path(), *filename);
               }
               else
               {
@@ -91,50 +89,53 @@ wex::del::listview::listview(const data::listview& data)
 
      {[=, this](wxCommandEvent& event)
       {
+        const auto* m = static_cast<path_match*>(event.GetClientData());
+        process_match(m);
+        delete m;
+      },
+      ID_LIST_MATCH},
+
+     {[=, this](wxCommandEvent& event)
+      {
         const wex::tool tool((window_id)event.GetId());
-        if (
-          tool.id() == ID_TOOL_REPORT_KEYWORD &&
-          data.type() == data::listview::KEYWORD)
-          return;
         if (
           tool.is_find_type() &&
           m_frame->find_in_files_dialog(tool.id()) == wxID_CANCEL)
+        {
           return;
-        if (!del::stream::setup_tool(tool, m_frame))
-          return;
+        }
+        del::listview* lv;
 
-#ifdef __WXMSW__
-        std::thread t(
-          [=, this]
+        if ((lv = m_frame->activate(listview::type_tool(tool))) == nullptr)
+        {
+          return;
+        }
+
+        statistics<int> stats;
+
+        for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+        {
+          const listitem item(this, i);
+          log::status() << item.path();
+
+          if (item.path().file_exists())
           {
-#endif
-            statistics<int> stats;
+            wex::stream file(find_replace_data::get(), item.path(), tool, lv);
+            file.run_tool();
+            stats += file.get_statistics().get_elements();
+          }
+          else
+          {
+            wex::dir dir(
+              item.path(),
+              data::dir().file_spec(item.file_spec()),
+              lv);
+            dir.find_files(tool);
+            stats += dir.get_statistics().get_elements();
+          }
+        }
 
-            for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
-            {
-              const listitem item(this, i);
-              log::status() << item.path();
-              if (item.path().file_exists())
-              {
-                stream file(item.path(), tool);
-                file.run_tool();
-                stats += file.get_statistics().get_elements();
-              }
-              else
-              {
-                tool_dir dir(
-                  tool,
-                  item.path(),
-                  data::dir().file_spec(item.file_spec()));
-                dir.find_files();
-                stats += dir.get_statistics().get_elements();
-              }
-            }
-            log::status(tool.info(&stats));
-#ifdef __WXMSW__
-          });
-        t.detach();
-#endif
+        log::status(tool.info(&stats));
       },
       ID_TOOL_LOWEST},
 
@@ -161,8 +162,7 @@ void wex::del::listview::build_popup_menu(wex::menu& menu)
     exists    = item.path().stat().is_ok();
     is_folder = item.path().dir_exists();
     readonly  = item.path().stat().is_readonly();
-    is_make =
-      path_lexer(item.path()).lexer().scintilla_lexer() == "makefile";
+    is_make   = path_lexer(item.path()).lexer().scintilla_lexer() == "makefile";
   }
 
   wex::listview::build_popup_menu(menu);
@@ -222,8 +222,7 @@ void wex::del::listview::build_popup_menu(wex::menu& menu)
           restore = true;
         }
 
-        menu.append(
-          {{}, {listitem(this, GetFirstSelected()).path(), m_frame}});
+        menu.append({{}, {listitem(this, GetFirstSelected()).path(), m_frame}});
 
         if (restore)
         {
@@ -279,22 +278,13 @@ bool wex::del::listview::Destroy()
   return wex::listview::Destroy();
 }
 
-#ifdef USE_QUEUE
-void wex::del::listview::process(std::unique_ptr<path_match>& input)
+void wex::del::listview::process_match(const path_match* m)
 {
-  std::unique_ptr<path_match> event(input.release());
-
-  process_match(event);
-}
-#endif
-
-void wex::del::listview::process_match(const path_match& m)
-{
-  listitem item(this, m.path());
+  listitem item(this, m->path());
   item.insert();
 
-  item.set_item(_("Line No"), std::to_string(m.line_no() + 1));
-  item.set_item(_("Line"), context(m.line(), m.pos()));
+  item.set_item(_("Line No"), std::to_string(m->line_no() + 1));
+  item.set_item(_("Line"), context(m->line(), m->pos()));
   item.set_item(_("Match"), find_replace_data::get()->get_find_string());
 }
 
@@ -305,9 +295,6 @@ wex::data::listview::type_t wex::del::listview::type_tool(const tool& tool)
     case ID_TOOL_REPLACE:
     case ID_TOOL_REPORT_FIND:
       return data::listview::FIND;
-
-    case ID_TOOL_REPORT_KEYWORD:
-      return data::listview::KEYWORD;
 
     default:
       return data::listview::NONE;

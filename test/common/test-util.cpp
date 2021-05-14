@@ -80,8 +80,6 @@ TEST_CASE("wex::util" * doctest::may_fail())
         std::vector<wex::path>{wex::path("../../data/wex-menus.xml")}) == 1);
   }
 
-  SUBCASE("open_files_dialog") {}
-
 #ifdef __UNIX__
   SUBCASE("shell_expansion")
   {

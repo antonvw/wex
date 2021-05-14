@@ -64,13 +64,6 @@ void wex::data::listview::add_columns()
          {_("Match"), column::STRING},
          {_("Line No")}});
       break;
-    case KEYWORD:
-      for (const auto& it : m_lexer->keywords())
-      {
-        m_listview->append_columns({{column(it)}});
-      }
-
-      m_listview->append_columns({{_("Keywords")}});
       break;
     default:
       break; // to prevent warnings
@@ -93,7 +86,8 @@ bool wex::data::listview::inject()
 {
   bool injected = m_listview != nullptr && m_listview->GetItemCount() > 0 &&
                   m_data.inject(
-                    [&]() {
+                    [&]()
+                    {
                       const int initial_value =
                         (m_listview->GetFirstSelected() == -1 ?
                            1 :
@@ -107,13 +101,16 @@ bool wex::data::listview::inject()
                       m_listview->EnsureVisible(m_data.line() - 1);
                       return true;
                     },
-                    [&]() {
+                    [&]()
+                    {
                       return false;
                     },
-                    [&]() {
+                    [&]()
+                    {
                       return m_listview->find_next(m_data.find());
                     },
-                    [&]() {
+                    [&]()
+                    {
                       return false;
                     });
 
@@ -131,12 +128,6 @@ bool wex::data::listview::inject()
         m_listview->SetSingleStyle(wxLC_LIST);
         break;
 
-      case KEYWORD:
-        if (m_lexer != nullptr)
-        {
-          name += " " + m_lexer->display_lexer();
-        }
-        // fall through
       default:
         m_listview->SetSingleStyle(wxLC_REPORT);
         add_columns();
@@ -183,9 +174,6 @@ const std::string wex::data::listview::type_description() const
       break;
     case HISTORY:
       value = _("History");
-      break;
-    case KEYWORD:
-      value = _("Keywords");
       break;
     case FILE:
       value = _("File");

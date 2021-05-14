@@ -12,7 +12,6 @@
 #include <regex>
 #include <wex/config.h>
 #include <wex/core.h>
-#include <wex/dir.h>
 #include <wex/log.h>
 #include <wex/path.h>
 #include <wx/choicdlg.h>
@@ -23,68 +22,6 @@ const std::string wex::after(const std::string& text, char c, bool first)
 {
   const auto pos = (first ? text.find(c) : text.rfind(c));
   return (pos == std::string::npos ? text : text.substr(pos + 1));
-}
-
-std::tuple<bool, const std::string, const std::vector<std::string>>
-wex::auto_complete_filename(const std::string& text)
-{
-  // E.g.:
-  // 1) text: src/vi
-  // -> should build vector with files in ./src starting with vi
-  // path:   src
-  // prefix: vi
-  // 2) text: /usr/include/s
-  // ->should build vector with files in /usr/include starting with s
-  // path:   /usr/include
-  // prefix: s
-  // And text might be prefixed by a command, e.g.: e src/vi
-  path path(after(text, ' ', false));
-
-  if (path.is_relative())
-  {
-    path.make_absolute();
-  }
-
-  const auto                     prefix(path.filename());
-  const std::vector<std::string> v(get_all_files(
-    path.parent_path(),
-    data::dir()
-      .file_spec(prefix + "*")
-      .dir_spec(prefix + "*")
-      .type(data::dir::type_t().set(data::dir::FILES).set(data::dir::DIRS))));
-
-  if (v.empty())
-  {
-    return {false, std::string(), v};
-  }
-
-  if (v.size() > 1)
-  {
-    auto rest_equal_size = 0;
-    bool all_ok          = true;
-
-    for (auto i = prefix.length(); i < v[0].size() && all_ok; i++)
-    {
-      for (size_t j = 1; j < v.size() && all_ok; j++)
-      {
-        if (i < v[j].size() && v[0][i] != v[j][i])
-        {
-          all_ok = false;
-        }
-      }
-
-      if (all_ok)
-      {
-        rest_equal_size++;
-      }
-    }
-
-    return {true, v[0].substr(prefix.size(), rest_equal_size), v};
-  }
-  else
-  {
-    return {true, v[0].substr(prefix.size()), v};
-  }
 }
 
 bool wex::auto_complete_text(

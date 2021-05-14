@@ -18,9 +18,6 @@ TEST_CASE("wex::del::listview")
     REQUIRE(
       wex::del::listview::type_tool(wex::tool(wex::ID_TOOL_REPORT_FIND)) ==
       wex::data::listview::FIND);
-    REQUIRE(
-      wex::del::listview::type_tool(wex::tool(wex::ID_TOOL_REPORT_KEYWORD)) ==
-      wex::data::listview::KEYWORD);
   }
 
   SUBCASE("flow")

@@ -19,6 +19,9 @@ public:
   {
   }
 
+  void more_coverage() { file_history_list(); }
+
+private:
   del::listview*
   activate(data::listview::type_t listview_type, const lexer* lexer) override
   {
@@ -27,16 +30,12 @@ public:
 
     if (m_lv == nullptr)
     {
-      wex::lexer l("cpp");
-      m_lv = new del::listview(
-        data::listview().type(data::listview::KEYWORD).lexer(&l));
+      m_lv = new del::listview(data::listview().type(data::listview::FIND));
       pane_add(m_lv);
     }
 
     return m_lv;
-  };
-
-  void more_coverage() { file_history_list(); }
+  }
 
 private:
   del::listview* m_lv;

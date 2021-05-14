@@ -97,7 +97,7 @@ public:
   }
 
 private:
-  const window_id m_id;
+  window_id m_id;
 
   static std::map<window_id, tool_info> m_tool_info;
 };
