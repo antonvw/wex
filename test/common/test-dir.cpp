@@ -22,6 +22,7 @@ TEST_CASE("wex::dir")
 
     REQUIRE(dir.data().dir_spec().empty());
     REQUIRE(dir.data().file_spec() == "*.h");
+    REQUIRE(dir.get_statistics().empty());
     REQUIRE(dir.data().type().test(wex::data::dir::FILES));
     REQUIRE(dir.get_path().dir_exists());
     REQUIRE(dir.handler() == nullptr);
@@ -36,7 +37,6 @@ TEST_CASE("wex::dir")
         wex::data::dir().dir_spec("data").type(
           wex::data::dir::type_t().set(wex::data::dir::DIRS)));
 
-      REQUIRE(dir.get_path().dir_exists());
       REQUIRE(dir.data().file_spec().empty());
       REQUIRE(dir.data().dir_spec() == "data");
       REQUIRE(dir.find_files() == 1);
@@ -57,8 +57,6 @@ TEST_CASE("wex::dir")
     {
       wex::dir dir(wex::path("../../"), wex::data::dir().file_spec("*.h"));
 
-      REQUIRE(dir.get_path().dir_exists());
-      REQUIRE(dir.data().file_spec() == "*.h");
       REQUIRE(dir.find_files() > 50);
 
       wex::dir limit(
@@ -75,8 +73,6 @@ TEST_CASE("wex::dir")
         wex::data::dir().file_spec("*.h"),
         get_listview());
 
-      REQUIRE(dir.get_path().dir_exists());
-      REQUIRE(dir.data().file_spec() == "*.h");
       REQUIRE(dir.find_files(wex::tool(wex::ID_TOOL_REPORT_FIND)));
 
       wex::interruptible::stop();

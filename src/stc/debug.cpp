@@ -51,11 +51,12 @@ public:
     {
       m_listview->clear();
     }
-  };
+  }
+
   ~process_dir() { m_listview->sort_column("Name", SORT_ASCENDING); }
 
 private:
-  bool on_dir(const path& p) override
+  bool on_dir(const path& p) const final
   {
     if (!std::filesystem::is_symlink(p.data()))
     {
@@ -66,7 +67,7 @@ private:
       }
     }
     return true;
-  };
+  }
 
   listview* m_listview;
 };
