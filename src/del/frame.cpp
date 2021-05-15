@@ -14,13 +14,13 @@
 #include <wex/del/dir.h>
 #include <wex/del/frame.h>
 #include <wex/del/listview-file.h>
-#include <wex/del/stream.h>
 #include <wex/file-dialog.h>
 #include <wex/frd.h>
 #include <wex/item-dialog.h>
 #include <wex/lexers.h>
 #include <wex/listitem.h>
 #include <wex/macros.h>
+#include <wex/open-files-dialog.h>
 #include <wex/process.h>
 #include <wex/regex.h>
 #include <wex/stc-entry-dialog.h>
@@ -394,9 +394,6 @@ void wex::del::frame::find_in_files(window_id dialogid)
   const bool      replace = (dialogid == id_replace_in_files);
   const wex::tool tool(replace ? ID_TOOL_REPLACE : ID_TOOL_REPORT_FIND);
 
-  if (!stream::setup_tool(tool, this))
-    return;
-
   log::status(find_replace_string(replace));
 
   sync(false);
@@ -412,17 +409,15 @@ void wex::del::frame::find_in_files(window_id dialogid)
   find_replace_data::get()->set_regex(
     config(find_replace_data::get()->text_regex()).get(true));
 
-  if (tool_dir dir(
-        tool,
-        path(config(m_text_in_folder).get_first_of()),
-        data::dir()
-          .file_spec(config(m_text_in_files).get_first_of())
-          .type(type));
+  wex::dir dir(
+    path(config(m_text_in_folder).get_first_of()),
+    data::dir()
+      .find_replace_data(find_replace_data::get())
+      .file_spec(config(m_text_in_files).get_first_of())
+      .type(type),
+    activate(listview::type_tool(tool)));
 
-      dir.find_files() >= 0)
-  {
-    log::status(tool.info(&dir.get_statistics().get_elements()));
-  }
+  dir.find_files(tool);
 
   sync(true);
 }
@@ -449,11 +444,6 @@ bool wex::del::frame::find_in_files(
     return false;
   }
 
-  if (!stream::setup_tool(tool, this, report))
-  {
-    return false;
-  }
-
 #ifdef __WXMSW__
   std::thread t(
     [=, this]
@@ -465,19 +455,19 @@ bool wex::del::frame::find_in_files(
       {
         if (it.file_exists())
         {
-          if (stream file(it, tool); file.run_tool())
+          if (wex::stream file(find_replace_data::get(), it, tool, report);
+              file.run_tool())
           {
             stats += file.get_statistics().get_elements();
           }
         }
         else if (it.dir_exists())
         {
-          tool_dir dir(
-            tool,
+          wex::dir dir(
             it,
             data::dir().file_spec(config(m_text_in_files).get_first_of()));
 
-          dir.find_files();
+          dir.find_files(tool);
           stats += dir.get_statistics().get_elements();
         }
       }
@@ -587,32 +577,23 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
 
   const wex::tool tool(sed ? ID_TOOL_REPLACE : ID_TOOL_REPORT_FIND);
 
-  if (!stream::setup_tool(tool, this))
-  {
-    return false;
-  }
+  if (auto* stc = dynamic_cast<wex::stc*>(get_stc()); stc != nullptr)
+    path::current(stc->path().data().parent_path());
 
-#ifdef __WXMSW__
-  std::thread t(
-    [=, this]
-    {
-#endif
-      if (auto* stc = dynamic_cast<wex::stc*>(get_stc()); stc != nullptr)
-        path::current(stc->path().data().parent_path());
-      find_replace_data::get()->set_regex(true);
-      log::status(find_replace_string(false));
-      sync(false);
+  find_replace_data::get()->set_regex(true);
+  log::status(find_replace_string(false));
 
-      tool_dir dir(tool, path(arg1), data::dir().file_spec(arg2).type(arg3));
-      dir.find_files();
+  sync(false);
 
-      log::status(tool.info(&dir.get_statistics().get_elements()));
-      sync(true);
+  wex::dir dir(
+    path(arg1),
+    data::dir().file_spec(arg2).type(arg3).find_replace_data(
+      find_replace_data::get()),
+    activate(listview::type_tool(tool)));
 
-#ifdef __WXMSW__
-    });
-  t.detach();
-#endif
+  dir.find_files(tool);
+
+  sync(true);
 
   return true;
 }
@@ -944,7 +925,7 @@ void wex::del::frame::use_file_history_list(listview* list)
   m_file_history_listview = list;
   m_file_history_listview->Hide();
 
-  // Add all (existing) items from FileHistory.
+  // Add all (existing) items from file_history.
   for (size_t i = 0; i < file_history().size(); i++)
   {
     if (listitem item(m_file_history_listview, file_history()[i]);

@@ -11,6 +11,7 @@
 #endif
 #include <wex/factory/frame.h>
 #include <wex/file-dialog.h>
+#include <wex/open-files-dialog.h>
 #include <wex/stc-entry-dialog.h>
 #include <wex/stc.h>
 #include <wex/tostring.h>

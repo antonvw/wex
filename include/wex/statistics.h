@@ -65,6 +65,9 @@ public:
     return set(key, get(key) - dec_value);
   };
 
+  /// Returns true if items are empty.
+  bool empty() const { return m_items.empty(); }
+
   /// Returns all items as a string. All items are returned as a string,
   /// with comma's separating items, and a : separating key and value.
   const std::string get() const

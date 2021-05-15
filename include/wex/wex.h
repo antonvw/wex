@@ -105,4 +105,3 @@
 #include <wex/del/frame.h>
 #include <wex/del/listview-file.h>
 #include <wex/del/listview.h>
-#include <wex/del/stream.h>

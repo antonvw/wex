@@ -1,6 +1,8 @@
 # roadmap
 
 ## backlog
+- auto_indent: use previous indent instead of level (e.g. namespace)
+  - auto_complete add function arguments and ()
 - clang asan build using LeakSanitizer
 
 - use spaceship operator
@@ -9,7 +11,4 @@
   -> windows appear
 - update po files
 - allow text entry validator for stc_entry_dialog, see macro mode
-- del listview, stream when using queue, test case fails, as
-  not all events are processed (move the queue from stream to del frame)
-  use wxEvtHandler
 - use boost JSON (requires boost 1.76)

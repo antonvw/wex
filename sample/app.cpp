@@ -399,23 +399,6 @@ frame::activate(wex::data::listview::type_t type, const wex::lexer* lexer)
 
     if (vw->data().type() == type)
     {
-      if (type == wex::data::listview::KEYWORD)
-      {
-        if (lexer != nullptr)
-        {
-          if (lexer->scintilla_lexer() != "cpp")
-          {
-            if (!lexer->display_lexer().empty())
-            {
-              wex::log::trace(lexer->display_lexer())
-                << ", only cpp for the sample";
-            }
-
-            return nullptr;
-          }
-        }
-      }
-
       return vw;
     }
   }
@@ -565,7 +548,7 @@ dir::dir(const wex::path& path, const std::string& findfiles, wex::grid* grid)
 {
 }
 
-bool dir::on_file(const wex::path& file)
+bool dir::on_file(const wex::path& file) const
 {
   m_grid->AppendRows(1);
   const auto no = m_grid->GetNumberRows() - 1;

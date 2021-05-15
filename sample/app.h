@@ -20,7 +20,7 @@ public:
   dir(const wex::path& path, const std::string& findfiles, wex::grid* grid);
 
 private:
-  bool       on_file(const wex::path& file) final;
+  bool       on_file(const wex::path& file) const final;
   wex::grid* m_grid;
 };
 

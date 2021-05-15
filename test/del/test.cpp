@@ -8,8 +8,6 @@
 #include <chrono>
 #include <wex/dir.h>
 #include <wex/frd.h>
-#include <wex/tool.h>
-#include <wex/tostring.h>
 
 #include "test.h"
 
@@ -20,8 +18,6 @@ void find_in_files(const std::vector<wex::path>& v, wex::del::listview* lv)
 
 TEST_CASE("wex::del")
 {
-  wex::tool tool(wex::ID_TOOL_REPORT_FIND);
-
   auto* lv = new wex::del::listview(
     wex::data::listview().type(wex::data::listview::FIND));
 
@@ -41,6 +37,8 @@ TEST_CASE("wex::del")
 
   find_in_files(files, lv);
 
+  wxYield();
+
 #ifdef __UNIX__
   REQUIRE(lv->GetItemCount() == 1);
 #endif
@@ -50,6 +48,8 @@ TEST_CASE("wex::del")
   const auto start = std::chrono::system_clock::now();
 
   find_in_files(files, lv);
+
+  wxYield();
 
   const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(
     std::chrono::system_clock::now() - start);

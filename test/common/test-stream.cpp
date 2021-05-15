@@ -20,9 +20,9 @@ void find_prep(wex::stream& s, wex::factory::find_replace_data* frd)
 
   const auto start = std::chrono::system_clock::now();
   REQUIRE(s.run_tool());
+
   const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(
     std::chrono::system_clock::now() - start);
-
   REQUIRE(!s.get_statistics().get_elements().get_items().empty());
 }
 
@@ -60,6 +60,7 @@ TEST_CASE("wex::stream_statistics")
 TEST_CASE("wex::stream")
 {
   wex::factory::find_replace_data frd;
+  REQUIRE(frd.data() != nullptr);
 
   // to verify: git grep "\btest\b" test.h | wc
 

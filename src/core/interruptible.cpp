@@ -2,7 +2,7 @@
 // Name:      interruptible.cpp
 // Purpose:   Implementation of class wex::interruptible
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/interruptible.h>
@@ -35,5 +35,6 @@ bool wex::interruptible::start()
 
 void wex::interruptible::stop()
 {
-  m_running = false;
+  m_cancelled = false;
+  m_running   = false;
 }
