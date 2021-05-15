@@ -32,11 +32,10 @@ TEST_CASE("wex::del::dir")
 
     wex::find_replace_data::get()->set_find_string("test");
     wex::dir dir(wex::path("./"), wex::data::dir().file_spec("*.cpp;*.h"));
-
     REQUIRE(dir.get_statistics().get_elements().get_items().empty());
-#ifndef __WXMSW__
-    REQUIRE(dir.find_files(tool) > 0);
-    REQUIRE(!dir.get_statistics().get_elements().get_items().empty());
-#endif
+
+    // we don't have set an event handler
+    REQUIRE(!dir.find_files(tool));
+    REQUIRE(dir.get_statistics().get_elements().get_items().empty());
   }
 }

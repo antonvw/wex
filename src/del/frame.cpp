@@ -590,6 +590,7 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
     data::dir().file_spec(arg2).type(arg3).find_replace_data(
       find_replace_data::get()),
     activate(listview::type_tool(tool)));
+
   dir.find_files(tool);
 
   sync(true);
@@ -924,7 +925,7 @@ void wex::del::frame::use_file_history_list(listview* list)
   m_file_history_listview = list;
   m_file_history_listview->Hide();
 
-  // Add all (existing) items from FileHistory.
+  // Add all (existing) items from file_history.
   for (size_t i = 0; i < file_history().size(); i++)
   {
     if (listitem item(m_file_history_listview, file_history()[i]);

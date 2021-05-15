@@ -25,13 +25,10 @@ TEST_CASE("wex::del::frame")
   {
     wex::find_replace_data::get()->set_find_string("wex::test_app");
 
-    // All find in files, grep fail, because there is no
-    // FIND list.
-
     REQUIRE(!del_frame()->find_in_files({}, wex::ID_TOOL_REPORT_FIND, false));
 
 #ifndef __WXMSW__
-    REQUIRE(!del_frame()->find_in_files(
+    REQUIRE(del_frame()->find_in_files(
       {wex::test::get_path("test.h")},
       wex::ID_TOOL_REPORT_FIND,
       false));
@@ -46,9 +43,9 @@ TEST_CASE("wex::del::frame")
 
     REQUIRE(del_frame()->get_project() == nullptr);
 
-    REQUIRE(!del_frame()->grep("xxxxxxx *.xyz ./"));
-    REQUIRE(!del_frame()->grep("xxxxxxx yyy"));
-    REQUIRE(!del_frame()->grep("xxxxxxx"));
+    REQUIRE(del_frame()->grep("xxxxxxx *.xyz ./"));
+    REQUIRE(del_frame()->grep("xxxxxxx yyy"));
+    REQUIRE(del_frame()->grep("xxxxxxx"));
 
     REQUIRE(del_frame()->sed("xxxxxxx yyy *.xyz"));
 #endif
