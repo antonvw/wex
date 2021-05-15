@@ -15,17 +15,17 @@ TEST_CASE("wex::dir")
 {
   SUBCASE("constructor")
   {
-    wex::dir dir(
-      wex::test::get_path(),
-      wex::data::dir().file_spec("*.h").type(
-        wex::data::dir::type_t().set(wex::data::dir::FILES)));
+    wex::dir dir(wex::test::get_path());
 
     REQUIRE(dir.data().dir_spec().empty());
-    REQUIRE(dir.data().file_spec() == "*.h");
+    REQUIRE(dir.data().file_spec().empty());
     REQUIRE(dir.get_statistics().empty());
     REQUIRE(dir.data().type().test(wex::data::dir::FILES));
     REQUIRE(dir.get_path().dir_exists());
     REQUIRE(dir.handler() == nullptr);
+
+    wex::dir dir2(wex::test::get_path(), wex::data::dir().file_spec("*.h"));
+    REQUIRE(dir2.data().file_spec() == "*.h");
   }
 
   SUBCASE("find_files")

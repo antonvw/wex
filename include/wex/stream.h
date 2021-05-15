@@ -45,18 +45,6 @@ public:
   bool run_tool();
 
 private:
-  auto inc_actions_completed(int inc_value = 1)
-  {
-    return m_stats.m_elements.inc(
-      _("Actions Completed").ToStdString(),
-      inc_value);
-  }
-
-  auto inc_statistics(const std::string& keyword)
-  {
-    return m_stats.m_elements.inc(keyword);
-  }
-
   bool is_word_character(int c) const { return isalnum(c) || c == '_'; }
 
   bool process(std::string& text, size_t line_no);

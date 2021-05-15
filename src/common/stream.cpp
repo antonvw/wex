@@ -110,7 +110,7 @@ bool wex::stream::process(std::string& text, size_t line_no)
       process_match(path_match(path(), text, line_no, pos));
     }
 
-    if (const auto ac = inc_actions_completed(count);
+    if (const auto ac = m_stats.inc_actions_completed(count);
         !m_asked && m_threshold != -1 && (ac - m_prev > m_threshold))
     {
       if (
@@ -205,7 +205,7 @@ bool wex::stream::run_tool()
   {
     m_asked = false;
 
-    m_stats.m_elements.set(_("Files").ToStdString(), 1);
+    m_stats.get_elements().set(_("Files").ToStdString(), 1);
 
     int         line_no = 0;
     std::string s;

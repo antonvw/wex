@@ -2,6 +2,7 @@
 
 ## backlog
 - auto_indent: use previous indent instead of level (e.g. namespace)
+  - auto_complete add function arguments and ()
 - clang asan build using LeakSanitizer
 
 - use spaceship operator

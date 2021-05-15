@@ -49,12 +49,10 @@ public:
   virtual void find_files_end() const;
 
   /// Do something with the dir.
-  /// Not made pure virtual, to allow this
-  /// class to be tested by calling find_files.
   virtual bool on_dir(const path&) const { return true; }
 
   /// Do something with the file.
-  /// Default does find and replace.
+  /// Default supports find and replace.
   virtual bool on_file(const path&) const;
 
   /// Other methods.
@@ -68,22 +66,23 @@ public:
   /// otherwise runs synchronized.
   /// Returns 1 if thread is started, or number of matches
   /// for synchronized runs.
+  /// You can set a limit on retrieving files by setting
+  /// max_matches in data::dir.
   int find_files();
 
   /// Finds matching files, and runs specified tool.
-  /// Returns true if thread is started.
+  /// Returns true if thread is started, the event handler
+  /// must have been set.
   bool find_files(const tool& tool);
 
   /// Returns the path.
   const auto& get_path() const { return m_dir; }
 
-  /// Returns event handler.
+  /// Returns the event handler.
   auto* handler() { return m_eh; }
 
-  /// Returns number of matches.
-  auto matches() const;
-
 private:
+  int  matches() const;
   int  run() const;
   bool traverse(const std::filesystem::directory_entry& e) const;
 

@@ -99,7 +99,7 @@ int wex::dir::find_files()
     log::status(_("Busy"));
     return 0;
   }
-  
+
   m_statistics.clear();
 
   if (m_eh != nullptr)
@@ -143,11 +143,11 @@ void wex::dir::find_files_end() const
   log::status(m_tool.info(&m_statistics.get_elements()));
 }
 
-auto wex::dir::matches() const
+int wex::dir::matches() const
 {
-  return m_statistics.get_elements().get("Actions Completed");
+  return m_statistics.get_elements().get(_("Files"));
 }
-  
+
 bool wex::dir::on_file(const path& p) const
 {
   if (m_eh != nullptr)
@@ -159,7 +159,7 @@ bool wex::dir::on_file(const path& p) const
       cancel();
       return false;
     }
-    
+
     m_statistics += s.get_statistics();
   }
 
@@ -217,7 +217,8 @@ int wex::dir::run() const
 
   log::trace("iterated") << m_dir << "on files:" << m_data.file_spec()
                          << "on dirs:" << m_data.dir_spec()
-                         << "flags:" << m_data.type() << "matches:" << matches();
+                         << "flags:" << m_data.type()
+                         << "matches:" << matches();
 
   stop();
 
@@ -234,7 +235,10 @@ bool wex::dir::traverse(const fs::directory_entry& e) const
       m_data.type().test(data::dir::FILES) &&
       matches_one_of(e.path().filename().string(), m_data.file_spec()))
     {
-      on_file(e.path());
+      if (on_file(e.path()))
+      {
+        dir::get_statistics().inc_actions();
+      }
     }
   }
   else if (
@@ -243,6 +247,11 @@ bool wex::dir::traverse(const fs::directory_entry& e) const
      matches_one_of(e.path().filename().string(), m_data.dir_spec())))
   {
     on_dir(e.path());
+
+    if (!m_data.dir_spec().empty())
+    {
+      dir::get_statistics().inc_actions();
+    }
   }
 
   if (m_data.max_matches() != -1 && matches() >= m_data.max_matches())
