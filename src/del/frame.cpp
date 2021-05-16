@@ -383,7 +383,7 @@ wex::stc_entry_dialog* wex::del::frame::entry_dialog(const std::string& title)
     m_entry_dialog = new stc_entry_dialog(
       std::string(),
       std::string(),
-      data::window().button(wxOK).title(title).size({450, 450}));
+      data::window().title(title).size({450, 450}));
   }
 
   return m_entry_dialog;
@@ -910,6 +910,11 @@ std::string wex::del::frame::stc_entry_dialog_title() const
 void wex::del::frame::stc_entry_dialog_title(const std::string& title)
 {
   entry_dialog(title)->SetTitle(title);
+}
+
+void wex::del::frame::stc_entry_dialog_validator(const std::string& regex)
+{
+  entry_dialog()->set_validator(regex);
 }
 
 void wex::del::frame::sync(bool start)

@@ -25,7 +25,7 @@ TEST_CASE("wex::file_history")
     REQUIRE(!history.append(wex::path("xxx.cpp")));
     REQUIRE(!history.append(wex::path()));
     REQUIRE(history.size() == 0);
-    REQUIRE(history[0].empty());
+    REQUIRE(history.empty());
 
     REQUIRE(history.append(wex::test::get_path("test.h")));
     REQUIRE(history.size() == 1);
@@ -36,8 +36,7 @@ TEST_CASE("wex::file_history")
     // history.PopupMenu(get_frame(), 5);
 
     history.clear();
-    REQUIRE(history.size() == 0);
-    REQUIRE(history[0].empty());
+    REQUIRE(history.empty());
     REQUIRE(history[100].empty());
 
     history.popup_menu(get_frame(), 5);
@@ -47,7 +46,7 @@ TEST_CASE("wex::file_history")
   SUBCASE("constructor")
   {
     wex::file_history history(4, 1000, "MY-KEY");
-    REQUIRE(history.size() == 0);
+    REQUIRE(history.empty());
     REQUIRE(history.append(wex::test::get_path("test.h")));
     REQUIRE(history.size() == 1);
     REQUIRE(history.get_base_id() == 1000);
@@ -55,7 +54,7 @@ TEST_CASE("wex::file_history")
     history.save();
   }
 
-  SUBCASE("delete file")
+  SUBCASE("delete")
   {
     wex::file_history history;
     history.clear();
@@ -69,6 +68,7 @@ TEST_CASE("wex::file_history")
     history.append(wex::path("test-history.txt"));
     REQUIRE(history[0] == wex::path("test-history.txt"));
     REQUIRE(remove("test-history.txt") == 0);
-    REQUIRE(history[0].empty());
+    REQUIRE(history[0].empty()); // this removes the entry
+    REQUIRE(history.empty());
   }
 }

@@ -11,6 +11,7 @@
 #endif
 #include <wex/factory/frame.h>
 #include <wex/file-dialog.h>
+#include <wex/log.h>
 #include <wex/open-files-dialog.h>
 #include <wex/stc-entry-dialog.h>
 #include <wex/stc.h>
@@ -43,6 +44,68 @@ wex::stc_entry_dialog::stc_entry_dialog(
   add_user_sizer(m_stc);
 
   layout_sizers();
+
+  Bind(
+    wxEVT_BUTTON,
+    [&, this](wxCommandEvent& event)
+    {
+      m_validator_string.clear();
+      event.Skip();
+    },
+    wxID_OK,
+    wxID_CANCEL);
+
+  Bind(
+    wxEVT_UPDATE_UI,
+    [=, this](wxUpdateUIEvent& event)
+    {
+      if (!m_validator_string.empty())
+      {
+        if (std::regex_match(m_stc->get_text(), m_validator))
+        {
+          log::status(std::string());
+          event.Enable(true);
+        }
+        else
+        {
+          log::status("no match") << m_validator_string;
+          event.Enable(false);
+        }
+      }
+      else
+      {
+        event.Enable(true);
+      }
+    },
+    wxID_OK);
+}
+
+bool wex::stc_entry_dialog::set_validator(const std::string& regex, bool ic)
+{
+  if (regex.empty())
+  {
+    return false;
+  }
+
+  std::regex::flag_type flags = std::regex::ECMAScript;
+
+  if (ic)
+  {
+    flags |= std::regex::icase;
+  }
+
+  try
+  {
+    m_validator        = std::regex(regex, flags);
+    m_validator_string = regex;
+    log::trace("validator") << regex;
+    return true;
+  }
+  catch (std::regex_error& e)
+  {
+    log("validator") << "errro"; // e.code();
+    return false;
+  }
 }
 
 void wex::open_files_dialog(

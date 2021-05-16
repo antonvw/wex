@@ -1,8 +1,9 @@
 # roadmap
-
-## backlog
+- test-process.cpp sometimes fails
 - auto_indent: use previous indent instead of level (e.g. namespace)
   - auto_complete add function arguments and ()
+
+## backlog
 - clang asan build using LeakSanitizer
 
 - use spaceship operator
@@ -10,5 +11,4 @@
 - start up with recent project, close project
   -> windows appear
 - update po files
-- allow text entry validator for stc_entry_dialog, see macro mode
 - use boost JSON (requires boost 1.76)

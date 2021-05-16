@@ -2,7 +2,7 @@
 // Name:      file-history.h
 // Purpose:   Include file for wex::file_history class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -43,6 +43,9 @@ public:
 
   /// Clears history.
   void clear();
+
+  /// Returns true if history is empty.
+  bool empty() const;
 
   /// Returns baseid.
   wxWindowID get_base_id() const;

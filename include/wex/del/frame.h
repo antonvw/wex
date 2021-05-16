@@ -155,6 +155,7 @@ public:
   factory::stc* stc_entry_dialog_component() override;
   std::string   stc_entry_dialog_title() const override;
   void          stc_entry_dialog_title(const std::string& title) override;
+  void          stc_entry_dialog_validator(const std::string& regex) override;
 
 protected:
   /// Access to file history list,

@@ -60,6 +60,7 @@
 #include <wex/menus.h>
 #include <wex/notebook.h>
 #include <wex/odbc.h>
+#include <wex/open-files-dialog.h>
 #include <wex/path-lexer.h>
 #include <wex/path.h>
 #include <wex/presentation.h>

@@ -117,8 +117,9 @@ int wex::macro_mode::transition(
       {
         if (macro.empty())
         {
-          frame->stc_entry_dialog_title(_("Enter Macro"));
           frame->stc_entry_dialog_component()->set_text(get_macro());
+          frame->stc_entry_dialog_title(_("Enter Macro"));
+          frame->stc_entry_dialog_validator("[A-Za-z0-9][a-z0-9]*");
 
           if (
             frame->show_stc_entry_dialog(true) != wxID_OK ||
