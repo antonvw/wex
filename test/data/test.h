@@ -5,7 +5,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // The actual contents do not matter. This file is not compiled.
-#include <wx/extension/extension.h>
+// However, it is used for testing matches and testing ctags.
+#include <wex/wex.h>
 
 namespace wex
 {
@@ -25,6 +26,9 @@ public:
 private:
   /// Override the OnInit.
   virtual bool OnInit();
+
+  auto_complete m_ac;
+  auto_indent   m_ai;
 };
 
 class helper

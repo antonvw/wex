@@ -1,9 +1,11 @@
 # roadmap
-- test-process.cpp sometimes fails
-- auto_indent: use previous indent instead of level (e.g. namespace)
-  - auto_complete add function arguments and ()
 
 ## backlog
+- auto_complete add function arguments and ()
+  - use more tagEntry
+- ^R= after iterating to front, cannot go back
+- gtk error -lwxscintilla-3.1
+- test-process.cpp sometimes fails
 - clang asan build using LeakSanitizer
 
 - use spaceship operator

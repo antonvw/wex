@@ -31,33 +31,6 @@ TEST_CASE("wex::stc")
     stc->auto_complete()->use(false);
   }
 
-  SUBCASE("auto_indentation")
-  {
-    wex::config(_("stc.Auto indent")).set(true);
-
-    // test indent with other character
-    stc->set_text("  \n  line with indentation");
-    stc->DocumentEnd();
-    REQUIRE(!stc->auto_indentation('x'));
-    REQUIRE(stc->get_text() == "  \n  line with indentation");
-    REQUIRE(stc->get_line_count() == 2);
-
-    // test indent
-    stc->SetEOLMode(wxSTC_EOL_CR);
-    REQUIRE(stc->auto_indentation(stc->eol().front()));
-    // the \n is not added, but indentation does
-    REQUIRE(stc->get_text() == "  \n  line with indentation");
-    REQUIRE(stc->get_line_count() == 2);
-
-    // test auto indentation for level change
-    REQUIRE(stc->get_lexer().set("cpp"));
-    REQUIRE(stc->GetIndent() == 2);
-    stc->set_text("\nif ()\n{\n\n");
-    stc->DocumentEnd();
-    // next returns false
-    stc->auto_indentation(stc->eol().front());
-  }
-
   SUBCASE("binary")
   {
     // do the same test as with wex::file in core for a binary file

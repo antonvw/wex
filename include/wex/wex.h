@@ -13,6 +13,7 @@
 #include <wex/app.h>
 #include <wex/art.h>
 #include <wex/auto-complete.h>
+#include <wex/auto-indent.h>
 #include <wex/beautify.h>
 #include <wex/bind.h>
 #include <wex/blame.h>

@@ -161,8 +161,10 @@ frame::frame()
 
   m_grid->CreateGrid(0, 0);
   m_grid->AppendCols(2);
+
   dir dir(wex::path::current(), "*.*", m_grid);
   dir.find_files();
+
   m_grid->AutoSizeColumns();
 
   m_listview->append_columns(
