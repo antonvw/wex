@@ -144,8 +144,7 @@ else()
     wx_${PLATFORM}u_html-3.1
     wx_${PLATFORM}u_core-3.1
     wx_baseu-3.1 
-    wx_baseu_net-3.1
-    wxscintilla-3.1)
+    wx_baseu_net-3.1)
 
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2a -g")
 endif()
