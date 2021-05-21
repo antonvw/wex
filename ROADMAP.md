@@ -3,7 +3,6 @@
 ## backlog
 - auto_complete add function arguments and ()
   - use more tagEntry
-- test-process.cpp sometimes fails
 - clang asan build using LeakSanitizer
 
 - use spaceship operator
