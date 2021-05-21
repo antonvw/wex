@@ -53,15 +53,19 @@ bool wex::auto_complete::complete(const std::string& text)
   }
 
   // Find suitable entry.
-  ctags_entry& ce = m_scope->get(text);
+  auto& ce = m_scope->get(text);
 
   // Fills the entry.
-  m_stc->get_vi().ctags()->find(text, ce);
+  bool result = ctags::find(text, ce);
 
   if (ce.is_active())
   {
     m_active = text;
     log::debug("auto_complete::complete active") << m_active << ce;
+  }
+  else
+  {
+    log::debug("auto_complete::complete") << text << result;
   }
 
   if (m_stc->get_vi().is_active())

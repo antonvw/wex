@@ -2,7 +2,7 @@
 // Name:      file-history.cpp
 // Purpose:   Implementation of wex::file_history class methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <filesystem>
@@ -80,6 +80,19 @@ wex::file_history::~file_history()
   delete m_history;
 }
 
+const wex::path wex::file_history::operator[](size_t index) const
+{
+  try
+  {
+    return wex::path(m_history->GetHistoryFile(index).ToStdString());
+  }
+  catch (const std::exception& e)
+  {
+    wex::log(e) << "file_history::path:" << index;
+    return path();
+  }
+}
+
 bool wex::file_history::append(const wex::path& p)
 {
   return m_history->append(p);
@@ -96,14 +109,14 @@ void wex::file_history::clear()
   }
 }
 
+bool wex::file_history::empty() const
+{
+  return size() == 0;
+}
+
 wxWindowID wex::file_history::get_base_id() const
 {
   return m_history->GetBaseId();
-}
-
-size_t wex::file_history::get_max_files() const
-{
-  return (size_t)m_history->GetMaxFiles();
 }
 
 std::vector<wex::path> wex::file_history::get_history_files(size_t count) const
@@ -118,17 +131,9 @@ std::vector<wex::path> wex::file_history::get_history_files(size_t count) const
   return v;
 }
 
-const wex::path wex::file_history::operator[](size_t index) const
+size_t wex::file_history::get_max_files() const
 {
-  try
-  {
-    return wex::path(m_history->GetHistoryFile(index).ToStdString());
-  }
-  catch (const std::exception& e)
-  {
-    wex::log(e) << "file_history::path:" << index;
-    return path();
-  }
+  return (size_t)m_history->GetMaxFiles();
 }
 
 void wex::file_history::popup_menu(

@@ -13,6 +13,7 @@
 #include <wex/app.h>
 #include <wex/art.h>
 #include <wex/auto-complete.h>
+#include <wex/auto-indent.h>
 #include <wex/beautify.h>
 #include <wex/bind.h>
 #include <wex/blame.h>
@@ -60,6 +61,7 @@
 #include <wex/menus.h>
 #include <wex/notebook.h>
 #include <wex/odbc.h>
+#include <wex/open-files-dialog.h>
 #include <wex/path-lexer.h>
 #include <wex/path.h>
 #include <wex/presentation.h>

@@ -203,9 +203,10 @@ wex::textctrl_imp::textctrl_imp(
               }
               else if (m_input == 0)
               {
-                if (GetValue().empty())
+                if (const auto& val = tci()->get();
+                    !val.empty() && GetValue().empty())
                 {
-                  set_text(tci()->get());
+                  set_text(val);
                   SelectAll();
                 }
                 else

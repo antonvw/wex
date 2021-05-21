@@ -1,13 +1,19 @@
 !_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
 !_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
 !_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
 !_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
 !_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
 !_TAG_PROGRAM_URL	https://ctags.io/	/official site/
-!_TAG_PROGRAM_VERSION	0.0.0	/c7d224bd/
-method_one	test.h	/^    void method_one() const {;};$/;"	f	class:wex::test_app	typeref:typename:void
-method_three	test.h	/^    bool method_three(const std::string& s1) {return 1;};$/;"	f	class:wex::test_app	typeref:typename:bool
-method_two	test.h	/^    bool method_two() const {return 1;};$/;"	f	class:wex::test_app	typeref:typename:bool
-test_app	test.h	/^    test_app() {;};$/;"	f	class:wex::test_app
-test_app	test.h	/^  class test_app: public app$/;"	c	namespace:wex
-wex	test.h	/^namespace wex$/;"	n
+!_TAG_PROGRAM_VERSION	0.0.0	/09103bb3/
+helper	../test/data/test.h	/^class helper$/;"	c	namespace:wex
+helper_method	../test/data/test.h	/^  void helper_method() { ; }$/;"	f	class:wex::helper	typeref:typename:void
+m_ac	../test/data/test.h	/^  auto_complete m_ac;$/;"	m	class:wex::test_app	typeref:typename:auto_complete
+m_ai	../test/data/test.h	/^  auto_indent m_ai;$/;"	m	class:wex::test_app	typeref:typename:auto_indent
+method_one	../test/data/test.h	/^  void method_one() const { ; }$/;"	f	class:wex::test_app	typeref:typename:void
+method_three	../test/data/test.h	/^  bool method_three(const std::string& s1) { return 1; }$/;"	f	class:wex::test_app	typeref:typename:bool
+method_two	../test/data/test.h	/^  bool method_two() const { return 1; }$/;"	f	class:wex::test_app	typeref:typename:bool
+test_app	../test/data/test.h	/^  test_app() { ; }$/;"	f	class:wex::test_app
+test_app	../test/data/test.h	/^class test_app : public app$/;"	c	namespace:wex
+wex	../test/data/test.h	/^namespace wex$/;"	n

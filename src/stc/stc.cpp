@@ -8,6 +8,7 @@
 #include <boost/tokenizer.hpp>
 #include <wex/address.h>
 #include <wex/auto-complete.h>
+#include <wex/auto-indent.h>
 #include <wex/blame.h>
 #include <wex/config.h>
 #include <wex/ex-stream.h>
@@ -156,6 +157,11 @@ void wex::stc::append_text(const std::string& text)
 {
   Allocate(GetTextLength() + text.size());
   AppendTextRaw(text.data(), text.size());
+}
+
+bool wex::stc::auto_indentation(int c)
+{
+  return auto_indent(this).on_char(c);
 }
 
 bool wex::stc::CanCut() const

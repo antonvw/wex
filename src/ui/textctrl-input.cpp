@@ -13,34 +13,36 @@
 
 wex::textctrl_input::textctrl_input(ex_command::type_t type)
   : m_type(type)
-  , m_name([](ex_command::type_t type) {
-    switch (type)
-    {
-      case ex_command::type_t::CALC:
-        return std::string("ex-cmd.calc");
+  , m_name(
+      [](ex_command::type_t type)
+      {
+        switch (type)
+        {
+          case ex_command::type_t::CALC:
+            return std::string("ex-cmd.calc");
 
-      case ex_command::type_t::COMMAND:
-        return std::string("ex-cmd.command");
+          case ex_command::type_t::COMMAND:
+            return std::string("ex-cmd.command");
 
-      case ex_command::type_t::COMMAND_EX:
-        return std::string("ex-cmd.command-ex");
+          case ex_command::type_t::COMMAND_EX:
+            return std::string("ex-cmd.command-ex");
 
-      case ex_command::type_t::ESCAPE:
-        return std::string("ex-cmd.escape");
+          case ex_command::type_t::ESCAPE:
+            return std::string("ex-cmd.escape");
 
-      case ex_command::type_t::FIND:
-        return find_replace_data::text_find();
+          case ex_command::type_t::FIND:
+            return find_replace_data::text_find();
 
-      case ex_command::type_t::FIND_MARGIN:
-        return std::string("ex-cmd.margin");
+          case ex_command::type_t::FIND_MARGIN:
+            return std::string("ex-cmd.margin");
 
-      case ex_command::type_t::REPLACE:
-        return find_replace_data::text_replace_with();
+          case ex_command::type_t::REPLACE:
+            return find_replace_data::text_replace_with();
 
-      default:
-        return std::string("ex-cmd.other");
-    }
-  }(type))
+          default:
+            return std::string("ex-cmd.other");
+        }
+      }(type))
   , m_values(config(m_name).get(std::list<std::string>{}))
   , m_iterator(m_values.cbegin())
 {
@@ -102,7 +104,16 @@ bool wex::textctrl_input::set(int key, textctrl* tc)
   {
     case WXK_DOWN:
       if (m_iterator != m_values.cbegin())
+      {
         --m_iterator;
+      }
+      break;
+
+    case WXK_UP:
+      if (m_iterator != m_values.cend())
+      {
+        ++m_iterator;
+      }
       break;
 
     case WXK_END:
@@ -114,21 +125,22 @@ bool wex::textctrl_input::set(int key, textctrl* tc)
       m_iterator = m_values.cbegin();
       break;
 
-    case WXK_UP:
-      if (m_iterator != m_values.cend())
-        ++m_iterator;
-      break;
-
     case WXK_PAGEDOWN:
       if (std::distance(m_values.cbegin(), m_iterator) > page)
+      {
         std::advance(m_iterator, -page);
+      }
       else
+      {
         m_iterator = m_values.cbegin();
+      }
       break;
 
     case WXK_PAGEUP:
       if (std::distance(m_iterator, m_values.cend()) > page)
+      {
         std::advance(m_iterator, page);
+      }
       else
       {
         m_iterator = m_values.cend();
