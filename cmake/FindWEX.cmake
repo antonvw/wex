@@ -147,7 +147,7 @@ else()
     wx_baseu_net-3.1)
     
   if (NOT APPLE AND NOT wexBUILD_SHARED)
-    set(wx_LIBRARIES ${wx_LIBRARIES} wx_scintilla-3.1)
+    set(wx_LIBRARIES ${wx_LIBRARIES} wxscintilla-3.1)
   endif()
 
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2a -g")
