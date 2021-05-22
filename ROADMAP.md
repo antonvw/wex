@@ -1,4 +1,5 @@
 # roadmap
+- fix doc log.h default loglevel
 - auto_complete add function arguments and ()
   - use more tagEntry
 
