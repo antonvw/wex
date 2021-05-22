@@ -20,15 +20,15 @@ matrix:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['libboost-all-dev', cppcheck]
       os: linux
-      env: CC=gcc CXX=g++
+      env: CC=gcc-11 CXX=g++-11
       dist: focal
       sudo: required
       services: xvfb
 
     - addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-9']
-          packages: ['clang-9', 'valgrind', 'libboost-all-dev']
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['valgrind', 'libboost-all-dev']
       os: osx
       osx_image: xcode12.4
       sudo: required
