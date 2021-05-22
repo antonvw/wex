@@ -17,7 +17,7 @@ matrix:
   include:
     - addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test']
+          update: true
           packages: ['libboost-all-dev', cppcheck]
       os: linux
       env: CC=gcc-11 CXX=g++-11
@@ -27,7 +27,6 @@ matrix:
 
     - addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test']
           packages: ['valgrind', 'libboost-all-dev']
       os: osx
       osx_image: xcode12.4
@@ -35,9 +34,9 @@ matrix:
 
 before_install:
   - eval "${MATRIX_EVAL}"
+  - ./ci/$TRAVIS_OS_NAME-install.sh
 
 install:
-  - ./ci/$TRAVIS_OS_NAME-install.sh
 
 before_script:
   - ./ci/$TRAVIS_OS_NAME-before-script.sh
