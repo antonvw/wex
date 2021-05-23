@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
+#include <boost/exception/diagnostic_information.hpp>
 #include <iostream>
 #include <numeric>
 #include <wex/cmdline.h>
@@ -247,8 +248,13 @@ bool wex::cmdline::parse(data::cmdline& data)
     {
       data.help(e.what());
     }
-    return false;
   }
+  catch (...)
+  {
+    log::trace("unknown exception");
+  }
+
+  return false;
 }
 
 bool wex::cmdline::parse_set(data::cmdline& data) const

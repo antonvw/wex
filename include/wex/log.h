@@ -18,14 +18,27 @@ namespace wex
 class log
 {
 public:
+  /// The log levels supported.
+  enum level_t
+  {
+    LEVEL_DEFAULT = 0, // part of API, default loglevel, do not change
+    LEVEL_TRACE,       // should follow boost::log
+    LEVEL_DEBUG,
+    LEVEL_INFO,
+    LEVEL_WARNING,
+    LEVEL_ERROR,
+    LEVEL_FATAL,
+    LEVEL_STATUS, // from wxLog
+  };
+
   /// Static methods.
 
   /// Initializes logging, and optionally sets logfile.
   /// Should be called before constructing a log object.
-  /// The wex::cmdline or wex::app::OnInit takes care of this.
+  /// The wex::cmdline_imp or wex::app::OnInit takes care of this.
   static void init(
-    /// loglevel, -1 denotes default level
-    size_t loglevel = 0,
+    /// loglevel
+    level_t loglevel = LEVEL_DEFAULT,
     /// logfile, empty string is default logfile
     const std::string& logfile = std::string());
 
@@ -120,7 +133,7 @@ public:
 
 private:
   /// Delegate constructor.
-  log(const std::string& topic, int level);
+  log(const std::string& topic, level_t level);
 
   void              flush();
   const std::string S(); // separator
@@ -129,7 +142,7 @@ private:
   std::stringstream  m_ss;
   std::wstringstream m_wss;
   bool               m_separator{true};
-  size_t             m_level;
+  level_t            m_level;
 
   static inline bool m_initialized{false};
 };

@@ -91,7 +91,8 @@ bool wex::cmdline_imp::parse(data::cmdline& data)
 
   po::notify(m_vm);
 
-  int loglevel = m_vm.count("level") ? m_vm["level"].as<int>() : 0;
+  auto loglevel =
+    m_vm.count("level") ? m_vm["level"].as<int>() : (int)log::LEVEL_DEFAULT;
 
   if (m_vm.count("help") || m_vm.count("version"))
   {
@@ -121,7 +122,7 @@ bool wex::cmdline_imp::parse(data::cmdline& data)
   }
   else if (m_vm.count("verbose"))
   {
-    loglevel = 1;
+    loglevel = log::LEVEL_TRACE;
   }
 
   for (const auto& it : m_vm)
@@ -177,7 +178,7 @@ bool wex::cmdline_imp::parse(data::cmdline& data)
   }
 
   log::init(
-    loglevel,
+    (log::level_t)loglevel,
     m_vm.count("logfile") ? m_vm["logfile"].as<std::string>() : std::string());
 
   return true;

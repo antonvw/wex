@@ -1,12 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-cmdlineparser.cpp
+// Name:      test-cmdline.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/cmdline.h>
+
+#include "../test.h"
 
 TEST_CASE("wex::cmdline")
 {
@@ -42,41 +43,51 @@ TEST_CASE("wex::cmdline")
 
     wex::cmdline cmdl(
       {{{"s1,s", "bool"},
-        [&](bool on) {
+        [&](bool on)
+        {
           s = on;
         }},
        {{"s2,t", "bool"},
-        [&](bool on) {
+        [&](bool on)
+        {
           t = on;
         }},
        {{"s3,u", "bool"},
-        [&](bool on) {
+        [&](bool on)
+        {
           u = true;
         }},
        {{"s4,w", "bool"},
-        [&](bool on) {
+        [&](bool on)
+        {
           w = on;
         }},
        {{"xx", "bool"},
-        [&](bool on) {
+        [&](bool on)
+        {
           x = on;
         }}},
       {{{"o1,a", "int"},
         {wex::cmdline::INT,
-         [&](const std::any& i) {
+         [&](const std::any& i)
+         {
            a = std::any_cast<int>(i);
          }}},
        {{"o2,b", "float"},
         {wex::cmdline::FLOAT,
-         [&](const std::any& f) {
+         [&](const std::any& f)
+         {
            b = std::any_cast<float>(f);
          }}},
        {{"o3,c", "string"},
         {wex::cmdline::STRING,
-         [&](const std::any& s) {
+         [&](const std::any& s)
+         {
            c = std::any_cast<std::string>(s);
          }}}},
-      {{"rest", "rest"}, [&](const std::vector<std::string>& v) {
+      {{"rest", "rest"},
+       [&](const std::vector<std::string>& v)
+       {
          p = v[0];
          q = v[1];
          r = v[2];
