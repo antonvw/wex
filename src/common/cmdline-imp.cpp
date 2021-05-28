@@ -91,8 +91,8 @@ bool wex::cmdline_imp::parse(data::cmdline& data)
 
   po::notify(m_vm);
 
-  auto loglevel =
-    m_vm.count("level") ? m_vm["level"].as<int>() : (int)log::LEVEL_DEFAULT;
+  auto loglevel = m_vm.count("level") ? m_vm["level"].as<int>() :
+                                        static_cast<int>(log::LEVEL_DEFAULT);
 
   if (m_vm.count("help") || m_vm.count("version"))
   {

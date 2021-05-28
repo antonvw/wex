@@ -5,14 +5,16 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/ctags-entry.h>
+
+#include "../test.h"
 
 TEST_CASE("wex::ctags_entry")
 {
   wex::ctags_entry filter;
 
   REQUIRE(!filter.is_active());
+  REQUIRE(filter.entry_string(0).empty());
 
   filter.access("xx");
   REQUIRE(filter.is_active());
@@ -22,6 +24,7 @@ TEST_CASE("wex::ctags_entry")
   REQUIRE(filter.class_name() == "yy");
 
   filter.kind("f");
+  REQUIRE(filter.is_function());
   REQUIRE(filter.kind() == "f");
 
   filter.signature("zz");

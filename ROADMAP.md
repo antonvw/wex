@@ -1,8 +1,8 @@
 # roadmap
-- auto_complete add function arguments and ()
-  - use more tagEntry
+- fix navigate in ex mode through tags file
 
 ## backlog
+- fix wex::vi duplicate macros during test
 - use modules
 - clang asan build using LeakSanitizer
 

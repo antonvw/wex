@@ -48,7 +48,7 @@ public:
   activate(wex::data::listview::type_t, const lexer* lexer = nullptr)
   {
     return nullptr;
-  };
+  }
 
   /// If there is a project somewhere,
   /// your implementation should return that one.
@@ -115,7 +115,7 @@ public:
   void sync(bool start);
 
   /// Updates project history.
-  void set_recent_project(const path& path) { m_project_history.append(path); };
+  void set_recent_project(const path& path) { m_project_history.append(path); }
 
   /// Uses specified history list, and adds all elements from file history
   /// to the list.
@@ -141,7 +141,7 @@ public:
   void on_notebook(wxWindowID id, wxWindow* page) override;
   void set_recent_file(const path& path) override;
 
-  virtual bool process_async_system(
+  bool process_async_system(
     const std::string& command,
     const std::string& start_dir = std::string()) override;
 

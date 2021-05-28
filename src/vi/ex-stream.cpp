@@ -165,6 +165,7 @@ bool wex::ex_stream::find(
   else
   {
     log::trace("ex stream found") << text << m_line_no;
+    find_replace_data::get()->set_find_string(text);
     set_text();
   }
 
