@@ -1,5 +1,4 @@
 # roadmap
-- fix wex::vi duplicate macros during test
 
 ## backlog
 - use modules
