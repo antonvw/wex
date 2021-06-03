@@ -56,10 +56,9 @@ wex::cmdline_imp::cmdline_imp(bool add_standard_options, config& cfg)
     // clang-format off
     m_desc.add_options()
       ("version", "displays version information and exits")
-      ("level,V", po::value<int>()->default_value(5),
-       "activates verbosity down from verbose level\n"
-       "valid ranges: 1-6:\n"
-       "1 trace\n2 debug\n3 info\n4 warning\n5 error (default)\n6 fatal")
+      ("level,V", po::value<int>()->default_value(log::get_default_level()),
+        std::string("activates verbosity down from verbose level\n" +
+          log::get_level_info()).c_str())
       ("verbose,v", "activates maximum (trace) verbosity")
       ("logfile,D", po::value<std::string>(), "sets log file");
     // clang-format on
@@ -91,8 +90,9 @@ bool wex::cmdline_imp::parse(data::cmdline& data)
 
   po::notify(m_vm);
 
-  auto loglevel = m_vm.count("level") ? m_vm["level"].as<int>() :
-                                        static_cast<int>(log::LEVEL_DEFAULT);
+  auto loglevel = m_vm.count("level") ?
+                    m_vm["level"].as<int>() :
+                    static_cast<int>(log::get_default_level());
 
   if (m_vm.count("help") || m_vm.count("version"))
   {

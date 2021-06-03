@@ -74,15 +74,25 @@ bool wex::data::stc::inject() const
     return false;
 
   bool injected = m_data.inject(
-    [&]() {
+    [&]()
+    {
       // line
       if (m_data.line() > 0)
       {
-        const auto line =
-          (m_data.line() - 1 >= m_stc->get_line_count() &&
-               m_stc->get_line_count() != LINE_COUNT_UNKNOWN ?
-             m_stc->get_line_count() - 1 :
-             m_data.line() - 1);
+        int line;
+
+        if (m_stc->get_line_count() == LINE_COUNT_UNKNOWN)
+        {
+          line = m_data.line() - 1;
+        }
+        else if (m_data.line() - 1 >= m_stc->get_line_count())
+        {
+          line = m_stc->get_line_count() - 1;
+        }
+        else
+        {
+          line = m_data.line() - 1;
+        }
 
         m_stc->goto_line(line);
 
@@ -109,7 +119,8 @@ bool wex::data::stc::inject() const
       }
       return true;
     },
-    [&]() {
+    [&]()
+    {
       // col
       const int max =
         (m_data.line() > 0) ? m_stc->GetLineEndPosition(m_data.line() - 1) : 0;
@@ -119,7 +130,8 @@ bool wex::data::stc::inject() const
 
       return true;
     },
-    [&]() {
+    [&]()
+    {
       // find
       if (m_data.line() > 0)
       {
@@ -144,7 +156,8 @@ bool wex::data::stc::inject() const
       }
       return true;
     },
-    [&]() {
+    [&]()
+    {
       // command
       return m_stc->vi_command(m_data.command());
     });
@@ -155,8 +168,8 @@ bool wex::data::stc::inject() const
   }
 
   if (
-    m_win_flags[WIN_READ_ONLY] || (m_stc->path().file_exists() &&
-                                   m_stc->path().is_readonly()))
+    m_win_flags[WIN_READ_ONLY] ||
+    (m_stc->path().file_exists() && m_stc->path().is_readonly()))
   {
     m_stc->SetReadOnly(true);
     injected = true;

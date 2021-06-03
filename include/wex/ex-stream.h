@@ -64,7 +64,7 @@ public:
 
   /// Returns true if we are in block mode.
   /// Block mode implies that no eols were found when
-  // reading lines with max size.
+  /// reading lines with max size.
   bool is_block_mode() const { return m_block_mode; }
 
   /// Returns true if stream is modified;
@@ -80,6 +80,7 @@ public:
   bool marker_delete(char marker);
 
   /// Returns line for marker.
+  /// Returns LINE_NUMBER_UNKNOWN if marker not known.
   int marker_line(char marker) const;
 
   /// Sets the streams. Puts first line on stc.
@@ -100,11 +101,8 @@ public:
 
   /// Virtual methods from text_window.
 
-  /// Finds line containing text and puts on stc.
-  /// The text is interpreted as regex, and search is forward.
   bool find(const std::string& text, int find_flags = -1, bool find_next = true)
     override;
-
   int get_current_line() const override;
   int get_line_count() const override;
   int get_line_count_request() override;
@@ -113,6 +111,7 @@ public:
 
 private:
   bool copy(file* from, file* to);
+  void filter_line(int start, int end, std::streampos spos);
   bool get_next_line();
   bool get_previous_line();
   void set_text();

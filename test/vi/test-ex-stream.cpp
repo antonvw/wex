@@ -106,6 +106,15 @@ TEST_CASE("wex::ex_stream")
     REQUIRE(!exs.find(std::string("xxxone")));
     REQUIRE(exs.get_current_line() == 3);
     REQUIRE(!exs.is_block_mode());
+
+    wex::find_replace_data::get()->set_regex(true);
+    exs.goto_line(0);
+    REQUIRE(exs.find(std::string("o.e")));
+    REQUIRE(!exs.find(std::string("o{e")));
+
+    wex::find_replace_data::get()->set_regex(false);
+    exs.goto_line(0);
+    REQUIRE(!exs.find(std::string("o.e")));
   }
 
   SUBCASE("find-noeol")
@@ -116,7 +125,7 @@ TEST_CASE("wex::ex_stream")
 
     REQUIRE(exs.find(std::string("test1")));
     REQUIRE(exs.is_block_mode());
-    REQUIRE(exs.get_current_line() == 1);
+    REQUIRE(exs.get_current_line() == 4);
     REQUIRE(exs.find(std::string("test199")));
     REQUIRE(exs.find(std::string("test999")));
     REQUIRE(!exs.is_modified());
@@ -167,10 +176,12 @@ TEST_CASE("wex::ex_stream")
 
     REQUIRE(exs.marker_add('x', 4));
     REQUIRE(exs.marker_line('x') == 4);
+    REQUIRE(!exs.marker_add('x', -4));
+    REQUIRE(exs.marker_line('x') == 4);
     REQUIRE(!exs.marker_delete('y'));
     REQUIRE(exs.marker_delete('x'));
     REQUIRE(!exs.marker_delete('x'));
-    REQUIRE(exs.marker_line('x') == -1);
+    REQUIRE(exs.marker_line('x') == LINE_NUMBER_UNKNOWN);
   }
 
   SUBCASE("previous")
@@ -228,9 +239,11 @@ TEST_CASE("wex::ex_stream")
 
     exs.goto_line(4);
     REQUIRE(exs.get_current_line() == 4);
+    REQUIRE(exs.get_line_count_request() == 9);
 
     exs.goto_line(3);
     REQUIRE(exs.get_current_line() == 3);
+    REQUIRE(exs.get_line_count_request() == 9);
   }
 
   SUBCASE("substitute")

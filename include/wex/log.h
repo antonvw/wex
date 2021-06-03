@@ -19,16 +19,17 @@ class log
 {
 public:
   /// The log levels supported.
+  /// The order should follow boost::log.
+  /// See <boost/log/trivial.hpp>
   enum level_t
   {
-    LEVEL_DEFAULT = 0, // part of API, default loglevel, do not change
-    LEVEL_TRACE,       // should follow boost::log
-    LEVEL_DEBUG,
-    LEVEL_INFO,
-    LEVEL_WARNING,
-    LEVEL_ERROR,
-    LEVEL_FATAL,
-    LEVEL_STATUS, // from wxLog
+    LEVEL_TRACE,   /// trace level logging (most verbose)
+    LEVEL_DEBUG,   /// debug level
+    LEVEL_INFO,    /// info level
+    LEVEL_WARNING, /// warning level
+    LEVEL_ERROR,   /// error level
+    LEVEL_FATAL,   /// fatal level
+    LEVEL_STATUS,  /// from wxLog
   };
 
   /// Static methods.
@@ -38,9 +39,21 @@ public:
   /// The wex::cmdline_imp or wex::app::OnInit takes care of this.
   static void init(
     /// loglevel
-    level_t loglevel = LEVEL_DEFAULT,
+    level_t loglevel = get_default_level(),
     /// logfile, empty string is default logfile
     const std::string& logfile = std::string());
+
+  /// Returns default log level.
+  static level_t get_default_level();
+
+  /// Return current filter log level.
+  static auto get_level() { return m_level_filter; }
+
+  /// Returns info for log levels.
+  static std::string get_level_info();
+
+  /// Sets filter log level.
+  static void set_level(level_t loglevel);
 
   /// Builds a debug level logger.
   static log debug(const std::string& topic = std::string());
@@ -144,6 +157,7 @@ private:
   bool               m_separator{true};
   level_t            m_level;
 
-  static inline bool m_initialized{false};
+  static inline bool    m_initialized{false};
+  static inline level_t m_level_filter;
 };
 }; // namespace wex

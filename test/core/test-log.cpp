@@ -2,11 +2,12 @@
 // Name:      test-log.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2019-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/log.h>
+
+#include "../test.h"
 
 TEST_CASE("wex::log")
 {
@@ -16,6 +17,7 @@ TEST_CASE("wex::log")
     wex::log() << "default constructor";
 
     REQUIRE(wex::log("hello world").get() == "hello world");
+    REQUIRE(wex::log::get_level() == wex::log::LEVEL_ERROR);
   }
 
   SUBCASE("debug")

@@ -1,8 +1,7 @@
 # roadmap
-- fix navigate in ex mode through tags file
+- fix wex::vi duplicate macros during test
 
 ## backlog
-- fix wex::vi duplicate macros during test
 - use modules
 - clang asan build using LeakSanitizer
 

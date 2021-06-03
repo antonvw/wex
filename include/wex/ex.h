@@ -112,7 +112,7 @@ public:
   bool marker_goto(char marker);
 
   /// Returns line for specified marker.
-  /// Returns -1 if marker does not exist.
+  /// Returns LINE_NUMBER_UNKNOWN if marker does not exist.
   int marker_line(char marker) const;
 
   /// Prints text in the dialog.

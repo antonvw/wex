@@ -5,13 +5,14 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iomanip>
+
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/log/utility/setup/file.hpp>
 
-#include <iomanip>
 #include <wex/config.h>
 #include <wex/log.h>
 #include <wex/path.h>
@@ -173,7 +174,6 @@ void wex::log::flush()
         BOOST_LOG_TRIVIAL(debug) << text;
         break;
 
-      case LEVEL_DEFAULT:
       case LEVEL_ERROR:
         BOOST_LOG_TRIVIAL(error) << text;
         break;
@@ -216,6 +216,26 @@ const std::string wex::log::get() const
          m_ss.str() + m_wss.str();
 }
 
+wex::log::level_t wex::log::get_default_level()
+{
+  return LEVEL_ERROR;
+}
+
+std::string wex::log::get_level_info()
+{
+  std::stringstream help;
+  help << "valid ranges: " << LEVEL_TRACE << "-" << LEVEL_FATAL;
+
+  for (int i = LEVEL_TRACE; i <= LEVEL_FATAL; i++)
+  {
+    help << "\n"
+         << i << " "
+         << logging::trivial::to_string((logging::trivial::severity_level)i);
+  }
+
+  return help.str();
+}
+
 wex::log wex::log::info(const std::string& topic)
 {
   return log(topic, LEVEL_INFO);
@@ -228,6 +248,30 @@ void wex::log::init(level_t loglevel, const std::string& default_logfile)
     return;
   }
 
+  set_level(loglevel);
+
+  logging::add_common_attributes();
+
+  logging::add_console_log(
+    std::cout,
+    logging::keywords::format = "%TimeStamp% [%Severity%] %Message%");
+
+  const path logfile(
+    config::dir(),
+    wxTheApp->GetAppName().ToStdString() + ".log");
+
+  logging::add_file_log(
+    logging::keywords::file_name =
+      default_logfile.empty() ? logfile.string() : default_logfile,
+    logging::keywords::open_mode     = std::ios_base::app,
+    logging::keywords::rotation_size = 10 * 1024 * 1024,
+    logging::keywords::format        = "%TimeStamp% [%Severity%] %Message%");
+
+  m_initialized = true;
+}
+
+void wex::log::set_level(level_t loglevel)
+{
   switch (loglevel)
   {
     case LEVEL_DEBUG:
@@ -235,7 +279,6 @@ void wex::log::init(level_t loglevel, const std::string& default_logfile)
         logging::trivial::severity >= logging::trivial::debug);
       break;
 
-    case LEVEL_DEFAULT:
     case LEVEL_ERROR:
       logging::core::get()->set_filter(
         logging::trivial::severity >= logging::trivial::error);
@@ -262,27 +305,12 @@ void wex::log::init(level_t loglevel, const std::string& default_logfile)
       break;
 
     default:
-      assert(0);
+      log("unsupported level, using error level");
+      set_level(LEVEL_ERROR);
+      return;
   }
 
-  logging::add_common_attributes();
-
-  logging::add_console_log(
-    std::cout,
-    logging::keywords::format = "%TimeStamp% [%Severity%] %Message%");
-
-  const path logfile(
-    config::dir(),
-    wxTheApp->GetAppName().ToStdString() + ".log");
-
-  logging::add_file_log(
-    logging::keywords::file_name =
-      default_logfile.empty() ? logfile.string() : default_logfile,
-    logging::keywords::open_mode     = std::ios_base::app,
-    logging::keywords::rotation_size = 10 * 1024 * 1024,
-    logging::keywords::format        = "%TimeStamp% [%Severity%] %Message%");
-
-  m_initialized = true;
+  m_level_filter = loglevel;
 }
 
 wex::log wex::log::status(const std::string& topic)
