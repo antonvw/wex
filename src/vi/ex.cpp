@@ -779,6 +779,7 @@ bool wex::ex::command_set(const std::string& command)
        [&](const std::any& val)
        {
          log::set_level((log::level_t)std::any_cast<int>(val));
+         config("ex-set.verbosity").set(static_cast<int>(log::get_level()));
        }}}},
     /// params
     {},

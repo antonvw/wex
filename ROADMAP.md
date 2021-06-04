@@ -1,4 +1,5 @@
 # roadmap
+- implement ex yank
 
 ## backlog
 - use modules

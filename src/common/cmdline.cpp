@@ -314,18 +314,25 @@ bool wex::cmdline::parse_set(data::cmdline& data) const
           found = true;
       }}});
 
-  for (auto line(boost::algorithm::trim_copy(data.string())); !line.empty();
-       line = r.matches().back())
+  try
   {
-    switch (r.search(line); r.which_no())
+    for (auto line(boost::algorithm::trim_copy(data.string())); !line.empty();
+         line = r.matches().back())
     {
-      case -1:
-        data.help("unmatched cmdline: " + line);
-        return false;
+      switch (r.search(line); r.which_no())
+      {
+        case -1:
+          data.help("unmatched cmdline: " + line);
+          return false;
 
-      case 0:
-        return true;
+        case 0:
+          return true;
+      }
     }
+  }
+  catch (std::exception& e)
+  {
+    data.help(e.what());
   }
 
   return found;
