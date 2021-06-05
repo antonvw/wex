@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ctags.h>
-#include <wex/vi.h>
+#include <wex/ex.h>
 
 #include "test.h"
 
@@ -14,7 +14,7 @@ TEST_CASE("wex::ctags")
 {
   wex::data::stc data;
 
-  auto* ex = new wex::vi(get_stc());
+  auto* ex = new wex::ex(get_stc());
 
   SUBCASE("default")
   {
@@ -58,7 +58,7 @@ TEST_CASE("wex::ctags")
     REQUIRE(!wex::ctags::find("xxxx"));
     REQUIRE(wex::ctags::find("test_app"));
     REQUIRE(!wex::ctags::next());
-    auto* ex = new wex::vi(get_stc());
+    auto* ex = new wex::ex(get_stc());
     REQUIRE(wex::ctags(ex).separator() != ' ');
   }
 }

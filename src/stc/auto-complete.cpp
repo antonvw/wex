@@ -56,7 +56,7 @@ bool wex::auto_complete::complete(const std::string& text)
   auto& ce = m_scope->get(text);
 
   // Fills the entry.
-  bool result = ctags::find(text, ce);
+  ctags::find(text, ce);
 
   if (ce.is_active())
   {
@@ -65,7 +65,7 @@ bool wex::auto_complete::complete(const std::string& text)
   }
   else
   {
-    log::debug("auto_complete::complete") << text << result;
+    log::debug("auto_complete::complete") << text;
   }
 
   if (m_stc->get_vi().is_active())
@@ -93,6 +93,24 @@ bool wex::auto_complete::on_char(char c)
 
   switch (c)
   {
+    case WXK_BACK:
+      switch (m_insert.size())
+      {
+        case 0:
+          return false;
+
+        case 1:
+          m_insert.pop_back();
+          return false;
+
+        default:
+          m_insert.pop_back();
+      }
+      break;
+
+    case WXK_RETURN:
+      return false;
+
     case '.':
     case '>':
       if (
@@ -113,24 +131,6 @@ bool wex::auto_complete::on_char(char c)
         shw_keywords = false;
       }
       break;
-
-    case WXK_BACK:
-      switch (m_insert.size())
-      {
-        case 0:
-          return false;
-
-        case 1:
-          m_insert.pop_back();
-          return false;
-
-        default:
-          m_insert.pop_back();
-      }
-      break;
-
-    case WXK_RETURN:
-      return false;
 
     case ',':
       store_variable();
@@ -267,7 +267,7 @@ void wex::auto_complete::store_variable()
 {
   if (!m_active.empty() && !m_insert.empty())
   {
-    const ctags_entry& ce = m_scope->get(m_active);
+    const auto& ce = m_scope->get(m_active);
     m_scope->insert(m_insert, ce);
   }
 }

@@ -49,7 +49,7 @@ public:
   }
 
   /// Returns frd.
-  auto* find_replace_data() const { return m_frd; };
+  auto* find_replace_data() const { return m_frd; }
 
   /// Sets frd.
   dir& find_replace_data(factory::find_replace_data* rhs)

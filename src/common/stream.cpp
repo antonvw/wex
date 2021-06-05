@@ -110,8 +110,9 @@ bool wex::stream::process(std::string& text, size_t line_no)
       process_match(path_match(path(), text, line_no, pos));
     }
 
-    if (const auto ac = m_stats.inc_actions_completed(count);
-        !m_asked && m_threshold != -1 && (ac - m_prev > m_threshold))
+    const auto ac = m_stats.inc_actions_completed(count);
+
+    if (!m_asked && m_threshold != -1 && (ac - m_prev > m_threshold))
     {
       if (
         wxMessageBox(

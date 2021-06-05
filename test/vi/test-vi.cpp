@@ -153,7 +153,7 @@ TEST_CASE("wex::vi")
     REQUIRE(stc->get_text().find("xxxxxxxx") != std::string::npos);
     REQUIRE(vi->last_command() == "i");
     change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
-    REQUIRE(vi->register_insert() == "xxxxxxxx");
+    REQUIRE(wex::ex::register_insert() == "xxxxxxxx");
     REQUIRE(vi->last_command() == std::string("ixxxxxxxx") + ESC);
     for (int i = 0; i < 10; i++)
       REQUIRE(vi->command("."));
@@ -236,11 +236,11 @@ TEST_CASE("wex::vi")
     stc->set_text("this text contains xx\nand yy");
     REQUIRE(stc->get_line_count() == 2);
     REQUIRE(stc->get_current_line() == 0);
-    
+
     REQUIRE(vi->command("J"));
     REQUIRE(stc->get_line_count() == 1);
   }
-  
+
   SUBCASE("macro")
   {
     for (const auto& macro : std::vector<std::vector<std::string>>{
@@ -282,7 +282,7 @@ TEST_CASE("wex::vi")
     vi->command(std::string(1, ctrl_g));
     REQUIRE(stc->get_text().empty());
   }
-  
+
   // Test motion commands: navigate, yank, delete, and change.
   SUBCASE("motion")
   {

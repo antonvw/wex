@@ -173,16 +173,13 @@ bool wex::macros::load_document()
 
   m_is_modified = false;
 
-  if (m_is_loaded)
-  {
-    m_abbreviations.clear();
-    m_macros.clear();
-    m_map.clear();
-    m_map_alt_keys.clear();
-    m_map_control_keys.clear();
-    m_map_keys.clear();
-    m_variables.clear();
-  }
+  m_abbreviations.clear();
+  m_macros.clear();
+  m_map.clear();
+  m_map_alt_keys.clear();
+  m_map_control_keys.clear();
+  m_map_keys.clear();
+  m_variables.clear();
 
   for (const auto& child : m_doc.document_element().children())
   {
@@ -255,7 +252,7 @@ void wex::macros::parse_node_macro(const pugi::xml_node& node)
 
   if (const auto& it = m_macros.find(name); it != m_macros.end())
   {
-    log("duplicate macro") << name << node;
+    log("duplicate macro") << name << node << it->second.front();
   }
   else
   {

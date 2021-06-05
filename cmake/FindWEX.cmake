@@ -51,9 +51,7 @@ elseif (APPLE)
 
   set(PLATFORM "osx_cocoa")
 
-  set(cpp_LIBRARIES 
-    stdc++
-    c++fs)
+  set(cpp_LIBRARIES stdc++)
 
   set(apple_LIBRARIES 
     wxjpeg-3.1 

@@ -77,6 +77,9 @@ function(wex_install)
   install(FILES ${CMAKE_SOURCE_DIR}/external/pugixml/src/pugixml.hpp 
     DESTINATION "include/wex")
 
+  install(FILES ${CMAKE_SOURCE_DIR}/external/ctags/libreadtags/readtags.h
+    DESTINATION "include/wex")
+
   if (ODBC_FOUND)
     install(FILES ${CMAKE_SOURCE_DIR}/external/otl/otlv4.h
       DESTINATION "include/wex")
@@ -253,6 +256,7 @@ list(APPEND wxTOOLKIT_INCLUDE_DIRS
   include 
   external/json/single_include
   external/pugixml/src
+  external/ctags/libreadtags/
   external/wxWidgets/include
   external)
 

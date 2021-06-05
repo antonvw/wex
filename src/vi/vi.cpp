@@ -357,7 +357,7 @@ wex::vi::vi(wex::factory::stc* arg, mode_t ex_mode)
                          }
                          else
                          {
-                           return frame()->show_ex_command(
+                           return get_stc()->is_visual() && frame()->show_ex_command(
                                     get_stc(),
                                     command +
                                       (m_mode.is_visual() ? "'<,'>" : "")) ?
@@ -454,9 +454,13 @@ wex::vi::vi(wex::factory::stc* arg, mode_t ex_mode)
                            ex::command(":" + command);
                            return command.size();
                          }
-                         else
+                         else if (get_stc()->is_visual())
                          {
                            frame()->show_ex_command(get_stc(), command);
+                           return (size_t)1;
+                         }
+                         else
+                         {
                            return (size_t)1;
                          }
                        }},
@@ -932,7 +936,7 @@ void wex::vi::command_reg(const std::string& reg)
 
     // calc register: control-R =
     case WXK_CONTROL_R:
-      if (reg.size() > 1 && reg[1] == '=')
+      if (reg.size() > 1 && reg[1] == '=' && get_stc()->is_visual())
       {
         if (reg.size() == 2)
         {

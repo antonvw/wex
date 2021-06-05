@@ -20,41 +20,50 @@
 
 #include "ex-stream-line.h"
 
-#define STREAM_LINE_ON_CHAR()                                            \
-  {                                                                      \
-    if (!range.is_ok())                                                  \
-    {                                                                    \
-      return false;                                                      \
-    }                                                                    \
-                                                                         \
-    m_stream->seekg(0);                                                  \
-                                                                         \
-    int  i = 0;                                                          \
-    char c;                                                              \
-                                                                         \
-    while (m_stream->get(c))                                             \
-    {                                                                    \
-      m_current_line[i++] = c;                                           \
-                                                                         \
-      if (c == '\n' || i == m_current_line_size)                         \
-      {                                                                  \
-        sl.handle(m_current_line, i);                                    \
-      }                                                                  \
-    }                                                                    \
-                                                                         \
-    sl.handle(m_current_line, i);                                        \
-                                                                         \
-    m_stream->clear();                                                   \
-                                                                         \
-    if (                                                                 \
-      sl.actions() > 0 && sl.action() != ex_stream_line::ACTION_WRITE && \
-      !copy(m_temp, m_work))                                             \
-    {                                                                    \
-      return false;                                                      \
-    }                                                                    \
+#define STREAM_LINE_ON_CHAR()                                                 \
+  {                                                                           \
+    if (!range.is_ok())                                                       \
+    {                                                                         \
+      return false;                                                           \
+    }                                                                         \
+                                                                              \
+    m_stream->clear();                                                        \
+    m_stream->seekg(0);                                                       \
+                                                                              \
+    int  i = 0;                                                               \
+    char c;                                                                   \
+                                                                              \
+    while (m_stream->get(c))                                                  \
+    {                                                                         \
+      m_current_line[i++] = c;                                                \
+                                                                              \
+      if (c == '\n' || i == m_current_line_size)                              \
+      {                                                                       \
+        if (sl.handle(m_current_line, i) == wex::ex_stream_line::HANDLE_STOP) \
+        {                                                                     \
+          break;                                                              \
+        }                                                                     \
+      }                                                                       \
+    }                                                                         \
+                                                                              \
+    sl.handle(m_current_line, i);                                             \
+                                                                              \
+    m_stream->clear();                                                        \
+                                                                              \
+    if (sl.action() == ex_stream_line::ACTION_YANK)                           \
+    {                                                                         \
+      return true;                                                            \
+    }                                                                         \
+                                                                              \
+    if (                                                                      \
+      sl.actions() > 0 && sl.action() != ex_stream_line::ACTION_WRITE &&      \
+      !copy(m_temp, m_work))                                                  \
+    {                                                                         \
+      return false;                                                           \
+    }                                                                         \
   }
 
-const int default_line_size = 500;
+const int default_line_size = 1000;
 
 wex::ex_stream::ex_stream(wex::ex* ex)
   : m_context_lines(50)
@@ -112,7 +121,7 @@ bool wex::ex_stream::erase(const addressrange& range)
     return false;
   }
 
-  ex_stream_line sl(ex_stream_line::ACTION_ERASE, m_temp, range);
+  ex_stream_line sl(m_temp, ex_stream_line::ACTION_ERASE, range);
 
   STREAM_LINE_ON_CHAR();
 
@@ -125,6 +134,34 @@ bool wex::ex_stream::erase(const addressrange& range)
   return true;
 }
 
+void wex::ex_stream::filter_line(int start, int end, std::streampos spos)
+{
+  // m_buffer , now from end of m_buffer search
+  // backwards for newline, this is the m_current_line to handle, and set the
+  // stream pointer to position before that newline.
+  const size_t sz(end - start);
+
+  strncpy(m_current_line, m_buffer + start + 1, sz);
+  m_current_line[sz] = 0;
+  m_stream->clear();
+
+  if (spos == 0)
+  {
+    m_current_line_size = start - 1;
+    m_stream->clear();
+    m_stream->seekg(0);
+  }
+  else
+  {
+    m_stream->seekg((size_t)spos + start);
+  }
+
+  if (m_line_no > 0)
+  {
+    m_line_no--;
+  }
+}
+
 bool wex::ex_stream::find(
   const std::string& text,
   int                find_flags,
@@ -135,12 +172,29 @@ bool wex::ex_stream::find(
     return false;
   }
 
-  const auto       line_no = m_line_no;
-  const auto       pos     = m_stream->tellg();
-  const std::regex r(text);
-  const bool       use_regex(find_replace_data::get()->is_regex());
-  bool             found = false;
+  const auto line_no = m_line_no;
+  const auto pos     = m_stream->tellg();
+  const bool use_regex(find_replace_data::get()->is_regex());
+  bool       found = false;
 
+  std::regex r;
+
+  try
+  {
+    if (use_regex)
+    {
+      r = std::regex(text);
+    }
+  }
+  catch (std::exception& e)
+  {
+    log(e) << "find";
+    return false;
+  }
+
+  m_stream->clear();
+
+  // Notice we start get..line, and not searching in the current line.
   while (!found && ((find_next && get_next_line()) ||
                     (!find_next && get_previous_line())))
   {
@@ -164,8 +218,8 @@ bool wex::ex_stream::find(
   }
   else
   {
-    log::trace("ex stream found") << text << m_line_no;
-    set_text();
+    log::trace("ex stream found") << text << "current" << m_line_no;
+    find_replace_data::get()->set_find_string(text);
   }
 
   return found;
@@ -221,6 +275,11 @@ int wex::ex_stream::get_line_count_request()
     }
   }
 
+  if (m_buffer[m_stream->gcount() - 1] != '\n')
+  {
+    line_no++;
+  }
+
   m_last_line_no = line_no;
 
   m_stream->clear();
@@ -235,9 +294,12 @@ bool wex::ex_stream::get_next_line()
   {
     if (m_stream->eof())
     {
-      m_stream->clear();
+      if (m_stream->gcount() > 0)
+      {
+        m_last_line_no = m_line_no + 1;
+      }
 
-      m_last_line_no = m_line_no;
+      log::trace("ex stream eof at") << m_last_line_no;
 
       return false;
     }
@@ -272,35 +334,13 @@ bool wex::ex_stream::get_previous_line()
 
   if (m_stream->gcount() > 0)
   {
-    // We have filled the m_buffer, now from end of m_buffer search
-    // backwards for newline, this is the m_current_line to handle, and set the
-    // stream pointer to position before that newline.
-    for (int i = m_stream->gcount() - 1; i >= 0; i--)
+    const int end = m_stream->gcount() - 1;
+
+    for (int i = end; i >= 0; i--)
     {
       if (m_buffer[i] == '\n')
       {
-        const size_t sz(m_stream->gcount() - i - 1);
-        strncpy(m_current_line, m_buffer + i + 1, sz);
-        m_current_line[sz] = 0;
-
-        m_stream->clear();
-
-        if (pos == 0)
-        {
-          m_current_line_size = i - 1;
-          m_stream->clear();
-          m_stream->seekg(0);
-        }
-        else
-        {
-          m_stream->seekg((size_t)pos + i - 1);
-        }
-
-        if (m_line_no > 0)
-        {
-          m_line_no--;
-        }
-
+        filter_line(i, end, pos);
         return true;
       }
     }
@@ -332,14 +372,17 @@ bool wex::ex_stream::get_previous_line()
 
 void wex::ex_stream::goto_line(int no)
 {
-  if (m_stream == nullptr || no == m_line_no)
+  if (m_stream == nullptr)
   {
     return;
   }
 
-  log::trace("ex stream goto_line") << no;
+  log::trace("ex stream goto_line") << no << "current" << m_line_no;
 
-  if (no == 0 || (no < 100 && no < m_line_no) || no < m_line_no - 1000)
+  if (no == m_line_no)
+  {
+  }
+  else if (no == 0 || (no < 100 && no < m_line_no) || no < m_line_no - 1000)
   {
     m_line_no = LINE_COUNT_UNKNOWN;
     m_stream->clear();
@@ -354,6 +397,8 @@ void wex::ex_stream::goto_line(int no)
   }
   else if (no < m_line_no)
   {
+    m_stream->clear();
+
     while ((no < m_line_no) && get_previous_line())
       ;
   }
@@ -363,7 +408,17 @@ void wex::ex_stream::goto_line(int no)
       ;
   }
 
-  set_text();
+  if (m_stream->gcount() > 0)
+  {
+    log::trace("ex stream goto_line last read")
+      << m_stream->gcount() << "current" << m_line_no;
+    set_text();
+  }
+
+  if (m_stream->eof())
+  {
+    log::trace("at end-of-file");
+  }
 }
 
 bool wex::ex_stream::insert_text(
@@ -397,7 +452,7 @@ bool wex::ex_stream::join(const addressrange& range)
     return false;
   }
 
-  ex_stream_line sl(ex_stream_line::ACTION_JOIN, m_temp, range);
+  ex_stream_line sl(m_temp, ex_stream_line::ACTION_JOIN, range);
 
   STREAM_LINE_ON_CHAR();
 
@@ -412,7 +467,7 @@ bool wex::ex_stream::join(const addressrange& range)
 
 bool wex::ex_stream::marker_add(char marker, int line)
 {
-  if (!isascii(marker))
+  if (!isascii(marker) || line < 0)
   {
     return false;
   }
@@ -440,7 +495,7 @@ int wex::ex_stream::marker_line(char marker) const
     return it->second;
   }
 
-  return -1;
+  return LINE_NUMBER_UNKNOWN;
 }
 
 void wex::ex_stream::set_text()
@@ -533,9 +588,25 @@ bool wex::ex_stream::write(
     path(filename),
     append ? std::ios::out | std::ios_base::app : std::ios::out);
 
-  ex_stream_line sl(ex_stream_line::ACTION_WRITE, &file, range);
+  ex_stream_line sl(&file, ex_stream_line::ACTION_WRITE, range);
 
   STREAM_LINE_ON_CHAR();
+
+  return true;
+}
+
+bool wex::ex_stream::yank(const addressrange& range, char name)
+{
+  if (m_stream == nullptr)
+  {
+    return false;
+  }
+
+  ex_stream_line sl(m_temp, range, name);
+
+  STREAM_LINE_ON_CHAR();
+
+  m_ex->frame()->show_ex_message(std::to_string(sl.actions()) + " yanked");
 
   return true;
 }

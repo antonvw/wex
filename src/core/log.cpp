@@ -5,14 +5,14 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iomanip>
+
 #include <boost/log/core.hpp>
-#include <boost/log/expressions.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/log/utility/setup/file.hpp>
 
-#include <iomanip>
 #include <wex/config.h>
 #include <wex/log.h>
 #include <wex/path.h>
@@ -20,18 +20,6 @@
 #include <wx/log.h>
 
 namespace logging = boost::log;
-
-enum level_t
-{
-  LEVEL_DEFAULT = 0, // part of API, default loglevel, do not change
-  LEVEL_TRACE,       // should follow boost::log
-  LEVEL_DEBUG,
-  LEVEL_INFO,
-  LEVEL_WARNING,
-  LEVEL_ERROR,
-  LEVEL_FATAL,
-  LEVEL_STATUS, // from wxLog
-};
 
 wex::log::log(const std::string& topic)
   : log(topic, LEVEL_ERROR)
@@ -59,7 +47,7 @@ wex::log::log(const pugi::xml_parse_result& r)
   }
 }
 
-wex::log::log(const std::string& topic, int level)
+wex::log::log(const std::string& topic, level_t level)
   : m_level(level)
   , m_topic(topic)
   , m_separator(!topic.empty())
@@ -186,7 +174,6 @@ void wex::log::flush()
         BOOST_LOG_TRIVIAL(debug) << text;
         break;
 
-      case LEVEL_DEFAULT:
       case LEVEL_ERROR:
         BOOST_LOG_TRIVIAL(error) << text;
         break;
@@ -229,61 +216,39 @@ const std::string wex::log::get() const
          m_ss.str() + m_wss.str();
 }
 
+wex::log::level_t wex::log::get_default_level()
+{
+  return LEVEL_ERROR;
+}
+
+std::string wex::log::get_level_info()
+{
+  std::stringstream help;
+  help << "valid ranges: " << LEVEL_TRACE << "-" << LEVEL_FATAL;
+
+  for (int i = LEVEL_TRACE; i <= LEVEL_FATAL; i++)
+  {
+    help << "\n"
+         << i << " "
+         << logging::trivial::to_string((logging::trivial::severity_level)i);
+  }
+
+  return help.str();
+}
+
 wex::log wex::log::info(const std::string& topic)
 {
   return log(topic, LEVEL_INFO);
 }
 
-void wex::log::init(size_t loglevel, const std::string& default_logfile)
+void wex::log::init(level_t loglevel, const std::string& default_logfile)
 {
   if (m_initialized)
   {
     return;
   }
 
-  if (loglevel > 6)
-  {
-    std::cout << "unsupported level\n";
-  }
-  else
-  {
-    switch (loglevel)
-    {
-      case LEVEL_DEBUG:
-        logging::core::get()->set_filter(
-          logging::trivial::severity >= logging::trivial::debug);
-        break;
-
-      case LEVEL_DEFAULT:
-      case LEVEL_ERROR:
-        logging::core::get()->set_filter(
-          logging::trivial::severity >= logging::trivial::error);
-        break;
-
-      case LEVEL_FATAL:
-        logging::core::get()->set_filter(
-          logging::trivial::severity >= logging::trivial::fatal);
-        break;
-
-      case LEVEL_INFO:
-        logging::core::get()->set_filter(
-          logging::trivial::severity >= logging::trivial::info);
-        break;
-
-      case LEVEL_TRACE:
-        logging::core::get()->set_filter(
-          logging::trivial::severity >= logging::trivial::trace);
-        break;
-
-      case LEVEL_WARNING:
-        logging::core::get()->set_filter(
-          logging::trivial::severity >= logging::trivial::warning);
-        break;
-
-      default:
-        assert(0);
-    }
-  }
+  set_level(loglevel);
 
   logging::add_common_attributes();
 
@@ -303,6 +268,49 @@ void wex::log::init(size_t loglevel, const std::string& default_logfile)
     logging::keywords::format        = "%TimeStamp% [%Severity%] %Message%");
 
   m_initialized = true;
+}
+
+void wex::log::set_level(level_t loglevel)
+{
+  switch (loglevel)
+  {
+    case LEVEL_DEBUG:
+      logging::core::get()->set_filter(
+        logging::trivial::severity >= logging::trivial::debug);
+      break;
+
+    case LEVEL_ERROR:
+      logging::core::get()->set_filter(
+        logging::trivial::severity >= logging::trivial::error);
+      break;
+
+    case LEVEL_FATAL:
+      logging::core::get()->set_filter(
+        logging::trivial::severity >= logging::trivial::fatal);
+      break;
+
+    case LEVEL_INFO:
+      logging::core::get()->set_filter(
+        logging::trivial::severity >= logging::trivial::info);
+      break;
+
+    case LEVEL_TRACE:
+      logging::core::get()->set_filter(
+        logging::trivial::severity >= logging::trivial::trace);
+      break;
+
+    case LEVEL_WARNING:
+      logging::core::get()->set_filter(
+        logging::trivial::severity >= logging::trivial::warning);
+      break;
+
+    default:
+      log("unsupported level, using error level");
+      set_level(LEVEL_ERROR);
+      return;
+  }
+
+  m_level_filter = loglevel;
 }
 
 wex::log wex::log::status(const std::string& topic)

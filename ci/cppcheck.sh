@@ -16,5 +16,4 @@ cppcheck --quiet --enable=all \
   --suppress=unknownMacro \
   --suppress=unusedScopedObject \
   --suppress=unusedFunction\
-  ../src -i LexAda.cxx -i odbc.cpp -I ../include \
-  2> err.txt
+  ../src -i LexAda.cxx -i odbc.cpp -I ../include

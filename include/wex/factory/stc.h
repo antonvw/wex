@@ -71,7 +71,7 @@ public:
   /// Returns find string, from selected text or from config.
   /// The search flags are taken from frd.
   /// If text is selected, it also sets the find string.
-  virtual const std::string get_find_string() const { return std::string(); };
+  virtual const std::string get_find_string() const { return std::string(); }
 
   /// Hex erase.
   virtual bool get_hexmode_erase(int begin, int end) { return false; }

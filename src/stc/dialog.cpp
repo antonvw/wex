@@ -103,7 +103,7 @@ bool wex::stc_entry_dialog::set_validator(const std::string& regex, bool ic)
   }
   catch (std::regex_error& e)
   {
-    log("validator") << "errro"; // e.code();
+    log(e) << "validator" << regex;
     return false;
   }
 }

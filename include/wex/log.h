@@ -18,16 +18,42 @@ namespace wex
 class log
 {
 public:
+  /// The log levels supported.
+  /// The order should follow boost::log.
+  /// See <boost/log/trivial.hpp>
+  enum level_t
+  {
+    LEVEL_TRACE,   /// trace level logging (most verbose)
+    LEVEL_DEBUG,   /// debug level
+    LEVEL_INFO,    /// info level
+    LEVEL_WARNING, /// warning level
+    LEVEL_ERROR,   /// error level
+    LEVEL_FATAL,   /// fatal level
+    LEVEL_STATUS,  /// from wxLog
+  };
+
   /// Static methods.
 
   /// Initializes logging, and optionally sets logfile.
   /// Should be called before constructing a log object.
-  /// The wex::cmdline or wex::app::OnInit takes care of this.
+  /// The wex::cmdline_imp or wex::app::OnInit takes care of this.
   static void init(
-    /// loglevel, -1 denotes default level
-    size_t loglevel = 0,
+    /// loglevel
+    level_t loglevel = get_default_level(),
     /// logfile, empty string is default logfile
     const std::string& logfile = std::string());
+
+  /// Returns default log level.
+  static level_t get_default_level();
+
+  /// Return current filter log level.
+  static auto get_level() { return m_level_filter; }
+
+  /// Returns info for log levels.
+  static std::string get_level_info();
+
+  /// Sets filter log level.
+  static void set_level(level_t loglevel);
 
   /// Builds a debug level logger.
   static log debug(const std::string& topic = std::string());
@@ -120,7 +146,7 @@ public:
 
 private:
   /// Delegate constructor.
-  log(const std::string& topic, int level);
+  log(const std::string& topic, level_t level);
 
   void              flush();
   const std::string S(); // separator
@@ -129,8 +155,9 @@ private:
   std::stringstream  m_ss;
   std::wstringstream m_wss;
   bool               m_separator{true};
-  size_t             m_level;
+  level_t            m_level;
 
-  static inline bool m_initialized{false};
+  static inline bool    m_initialized{false};
+  static inline level_t m_level_filter;
 };
 }; // namespace wex

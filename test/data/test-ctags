@@ -7,13 +7,14 @@
 !_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
 !_TAG_PROGRAM_URL	https://ctags.io/	/official site/
 !_TAG_PROGRAM_VERSION	0.0.0	/09103bb3/
-helper	../test/data/test.h	/^class helper$/;"	c	namespace:wex
-helper_method	../test/data/test.h	/^  void helper_method() { ; }$/;"	f	class:wex::helper	typeref:typename:void
-m_ac	../test/data/test.h	/^  auto_complete m_ac;$/;"	m	class:wex::test_app	typeref:typename:auto_complete
-m_ai	../test/data/test.h	/^  auto_indent m_ai;$/;"	m	class:wex::test_app	typeref:typename:auto_indent
-method_one	../test/data/test.h	/^  void method_one() const { ; }$/;"	f	class:wex::test_app	typeref:typename:void
-method_three	../test/data/test.h	/^  bool method_three(const std::string& s1) { return 1; }$/;"	f	class:wex::test_app	typeref:typename:bool
-method_two	../test/data/test.h	/^  bool method_two() const { return 1; }$/;"	f	class:wex::test_app	typeref:typename:bool
-test_app	../test/data/test.h	/^  test_app() { ; }$/;"	f	class:wex::test_app
-test_app	../test/data/test.h	/^class test_app : public app$/;"	c	namespace:wex
+OnInit	../test/data/test.h	/^  virtual bool OnInit();$/;"	p	access:private	signature:()
+helper	../test/data/test.h	/^class helper$/;"	c
+helper_method	../test/data/test.h	/^  void helper_method() { ; }$/;"	f	access:public	signature:()
+m_ac	../test/data/test.h	/^  auto_complete m_ac;$/;"	m	access:private
+m_ai	../test/data/test.h	/^  auto_indent   m_ai;$/;"	m	access:private
+method_one	../test/data/test.h	/^  void method_one() const { ; }$/;"	f	access:public	signature:() const
+method_three	../test/data/test.h	/^  bool method_three(const std::string& s1) { return 1; }$/;"	f	access:public	signature:(const std::string & s1)
+method_two	../test/data/test.h	/^  bool method_two() const { return 1; }$/;"	f	access:public	signature:() const
+test_app	../test/data/test.h	/^  test_app() { ; }$/;"	f	access:public	signature:()
+test_app	../test/data/test.h	/^class test_app : public app$/;"	c	inherits:app
 wex	../test/data/test.h	/^namespace wex$/;"	n

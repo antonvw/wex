@@ -208,8 +208,8 @@ void wex::stc::Cut()
   {
     if (get_vi().is_active())
     {
-      get_vi().set_registers_delete(get_selected_text());
-      get_vi().set_register_yank(get_selected_text());
+      ex::set_registers_delete(get_selected_text());
+      ex::set_register_yank(get_selected_text());
     }
 
     factory::stc::Cut();

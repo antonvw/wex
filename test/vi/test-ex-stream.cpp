@@ -13,6 +13,7 @@
 #include <wex/file.h>
 #include <wex/frd.h>
 #include <wex/log.h>
+#include <wex/macros.h>
 
 #include "test.h"
 
@@ -81,7 +82,7 @@ TEST_CASE("wex::ex_stream")
     wex::ex_stream exs(ex);
     exs.stream(ifs);
 
-    wex::addressrange ar(ex, "1,2");
+    const wex::addressrange ar(ex, "1,2");
 
     REQUIRE(exs.erase(ar));
     REQUIRE(exs.is_modified());
@@ -106,6 +107,15 @@ TEST_CASE("wex::ex_stream")
     REQUIRE(!exs.find(std::string("xxxone")));
     REQUIRE(exs.get_current_line() == 3);
     REQUIRE(!exs.is_block_mode());
+
+    wex::find_replace_data::get()->set_regex(true);
+    exs.goto_line(0);
+    REQUIRE(exs.find(std::string("o.e")));
+    REQUIRE(!exs.find(std::string("o{e")));
+
+    wex::find_replace_data::get()->set_regex(false);
+    exs.goto_line(0);
+    REQUIRE(!exs.find(std::string("o.e")));
   }
 
   SUBCASE("find-noeol")
@@ -116,7 +126,7 @@ TEST_CASE("wex::ex_stream")
 
     REQUIRE(exs.find(std::string("test1")));
     REQUIRE(exs.is_block_mode());
-    REQUIRE(exs.get_current_line() == 1);
+    REQUIRE(exs.get_current_line() == 4);
     REQUIRE(exs.find(std::string("test199")));
     REQUIRE(exs.find(std::string("test999")));
     REQUIRE(!exs.is_modified());
@@ -142,7 +152,7 @@ TEST_CASE("wex::ex_stream")
 
   SUBCASE("join")
   {
-    wex::addressrange ar(ex, "2,3");
+    const wex::addressrange ar(ex, "2,3");
     REQUIRE(ar.get_begin().get_line() == 2);
     REQUIRE(ar.get_end().get_line() == 3);
 
@@ -167,10 +177,12 @@ TEST_CASE("wex::ex_stream")
 
     REQUIRE(exs.marker_add('x', 4));
     REQUIRE(exs.marker_line('x') == 4);
+    REQUIRE(!exs.marker_add('x', -4));
+    REQUIRE(exs.marker_line('x') == 4);
     REQUIRE(!exs.marker_delete('y'));
     REQUIRE(exs.marker_delete('x'));
     REQUIRE(!exs.marker_delete('x'));
-    REQUIRE(exs.marker_line('x') == -1);
+    REQUIRE(exs.marker_line('x') == LINE_NUMBER_UNKNOWN);
   }
 
   SUBCASE("previous")
@@ -228,9 +240,11 @@ TEST_CASE("wex::ex_stream")
 
     exs.goto_line(4);
     REQUIRE(exs.get_current_line() == 4);
+    REQUIRE(exs.get_line_count_request() == 9);
 
     exs.goto_line(3);
     REQUIRE(exs.get_current_line() == 3);
+    REQUIRE(exs.get_line_count_request() == 9);
   }
 
   SUBCASE("substitute")
@@ -240,7 +254,7 @@ TEST_CASE("wex::ex_stream")
     exs.stream(ifs);
     wex::find_replace_data::get()->set_regex(false);
 
-    wex::addressrange ar(ex, "1,2");
+    const wex::addressrange ar(ex, "1,2");
 
     REQUIRE(exs.substitute(ar, wex::data::substitute("s/test/1234")));
     REQUIRE(exs.is_modified());
@@ -252,8 +266,23 @@ TEST_CASE("wex::ex_stream")
     wex::ex_stream exs(ex);
     exs.stream(ifs);
 
-    wex::addressrange ar(ex, "%");
+    const wex::addressrange ar(ex, "%");
     REQUIRE(exs.write(ar, "tmp.txt"));
+  }
+
+  SUBCASE("yank")
+  {
+    wex::file      ifs(open_file());
+    wex::ex_stream exs(ex);
+    exs.stream(ifs);
+
+    const wex::addressrange ar(ex, "1,2");
+
+    REQUIRE(exs.yank(ar));
+    REQUIRE(!exs.is_modified());
+    REQUIRE(exs.get_line_count_request() == 5);
+    CAPTURE(wex::ex::get_macros().get_register('0'));
+    REQUIRE(wex::ex::get_macros().get_register('0').find("test1") == 0);
   }
 
   // Show the ex-mode file if we are in verbose mode.

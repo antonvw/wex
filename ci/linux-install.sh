@@ -1,7 +1,12 @@
 #!/usr/bin/env sh
 
+sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+sudo apt-get -q update
+
 sudo apt-get install -y lcov ruby
 gem install coveralls-lcov
+
+sudo apt-get install -y gcc-11 g++-11
 
 # add dependencies for gtk3
 sudo apt-get install -y liblzma5 libjbig0 libgtk-3-dev

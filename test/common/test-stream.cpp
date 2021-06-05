@@ -88,6 +88,6 @@ TEST_CASE("wex::stream")
     frd.set_match_case(true);
     find_prep(s, &frd);
 
-    REQUIRE(s.get_statistics().get("Actions Completed") == 196);
+    REQUIRE(s.get_statistics().get("Actions Completed") == 198);
   }
 }

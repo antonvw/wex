@@ -771,7 +771,17 @@ bool wex::ex::command_set(const std::string& command)
        {
          if (modeline)
            get_stc()->SetTabWidth(std::any_cast<int>(val));
+       }}},
+     {{"ve",
+       "ex-set.verbosity",
+       std::to_string(static_cast<int>(log::get_level()))},
+      {cmdline::INT,
+       [&](const std::any& val)
+       {
+         log::set_level((log::level_t)std::any_cast<int>(val));
+         config("ex-set.verbosity").set(static_cast<int>(log::get_level()));
        }}}},
+    /// params
     {},
     // no standard options
     false);
@@ -910,7 +920,8 @@ bool wex::ex::marker_add(char marker, int line)
   marker_delete(marker);
 
   int       id;
-  const int lin = (line == -1 ? get_stc()->get_current_line() : line);
+  const int lin =
+    (line == LINE_NUMBER_UNKNOWN ? get_stc()->get_current_line() : line);
 
   if (lm.symbol() == wxSTC_MARK_CHARACTER)
   {
@@ -975,7 +986,7 @@ bool wex::ex::marker_delete(char marker)
 
 bool wex::ex::marker_goto(char marker)
 {
-  if (const auto line = marker_line(marker); line != -1)
+  if (const auto line = marker_line(marker); line != LINE_NUMBER_UNKNOWN)
   {
     data::stc(get_stc()).control(data::control().line(line + 1)).inject();
     return true;
@@ -1031,7 +1042,7 @@ int wex::ex::marker_line(char marker) const
     wxBell();
   }
 
-  return -1;
+  return LINE_NUMBER_UNKNOWN;
 }
 
 void wex::ex::print(const std::string& text)
@@ -1042,7 +1053,7 @@ void wex::ex::print(const std::string& text)
   }
 }
 
-const std::string wex::ex::register_insert() const
+const std::string wex::ex::register_insert()
 {
   return m_macros.get_register('.');
 }
@@ -1074,7 +1085,7 @@ void wex::ex::reset_search_flags()
      wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX);
 }
 
-void wex::ex::set_registers_delete(const std::string& value) const
+void wex::ex::set_registers_delete(const std::string& value)
 {
   if (value.empty())
   {
@@ -1093,12 +1104,12 @@ void wex::ex::set_registers_delete(const std::string& value) const
   m_macros.set_register('1', value);
 }
 
-void wex::ex::set_register_insert(const std::string& value) const
+void wex::ex::set_register_insert(const std::string& value)
 {
   m_macros.set_register('.', value);
 }
 
-void wex::ex::set_register_yank(const std::string& value) const
+void wex::ex::set_register_yank(const std::string& value)
 {
   m_macros.set_register('0', value);
 }

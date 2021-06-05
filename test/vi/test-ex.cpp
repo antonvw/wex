@@ -264,12 +264,12 @@ TEST_CASE("wex::ex")
 
   SUBCASE("registers")
   {
-    ex->set_registers_delete("x");
-    ex->set_register_yank("test");
+    wex::ex::set_registers_delete("x");
+    wex::ex::set_register_yank("test");
     REQUIRE(ex->get_macros().get_register('0') == "test");
     REQUIRE(ex->register_text() == "test");
-    ex->set_register_insert("insert");
-    REQUIRE(ex->register_insert() == "insert");
+    wex::ex::set_register_insert("insert");
+    REQUIRE(wex::ex::register_insert() == "insert");
 
     stc->set_text("the chances");
     stc->SelectAll();
