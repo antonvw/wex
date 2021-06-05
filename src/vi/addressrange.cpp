@@ -989,5 +989,12 @@ bool wex::addressrange::write(const std::string& text) const
 
 bool wex::addressrange::yank(char name) const
 {
-  return set_selection() && m_ex->yank(name);
+  if (!m_stc->is_visual())
+  {
+    return m_ex->ex_stream()->yank(*this, name);
+  }
+  else
+  {
+    return set_selection() && m_ex->yank(name);
+  }
 }

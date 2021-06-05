@@ -1053,7 +1053,7 @@ void wex::ex::print(const std::string& text)
   }
 }
 
-const std::string wex::ex::register_insert() const
+const std::string wex::ex::register_insert()
 {
   return m_macros.get_register('.');
 }
@@ -1085,7 +1085,7 @@ void wex::ex::reset_search_flags()
      wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX);
 }
 
-void wex::ex::set_registers_delete(const std::string& value) const
+void wex::ex::set_registers_delete(const std::string& value)
 {
   if (value.empty())
   {
@@ -1104,12 +1104,12 @@ void wex::ex::set_registers_delete(const std::string& value) const
   m_macros.set_register('1', value);
 }
 
-void wex::ex::set_register_insert(const std::string& value) const
+void wex::ex::set_register_insert(const std::string& value)
 {
   m_macros.set_register('.', value);
 }
 
-void wex::ex::set_register_yank(const std::string& value) const
+void wex::ex::set_register_yank(const std::string& value)
 {
   m_macros.set_register('0', value);
 }

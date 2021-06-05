@@ -99,6 +99,9 @@ public:
     const std::string&  file,
     bool                append = false);
 
+  /// Yanks range to register, default to yank register.
+  bool yank(const addressrange& range, char name = '0');
+
   /// Virtual methods from text_window.
 
   bool find(const std::string& text, int find_flags = -1, bool find_next = true)

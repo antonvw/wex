@@ -39,8 +39,24 @@ class ex
   friend class macro_mode;
 
 public:
+  /// Static interface.
+
   /// Returns the macros.
   static auto& get_macros() { return m_macros; }
+
+  /// Returns text to be inserted.
+  static const std::string register_insert();
+
+  /// Sets delete registers 1 - 9.
+  static void set_registers_delete(const std::string& value);
+
+  /// Sets insert register.
+  static void set_register_insert(const std::string& value);
+
+  /// Sets yank register.
+  static void set_register_yank(const std::string& value);
+
+  /// Other methods.
 
   /// The visual modes.
   enum mode_t
@@ -118,9 +134,6 @@ public:
   /// Prints text in the dialog.
   void print(const std::string& text);
 
-  /// Returns text to be inserted.
-  const std::string register_insert() const;
-
   /// Returns current register name.
   auto register_name() const { return m_register; }
 
@@ -133,15 +146,6 @@ public:
 
   /// Returns search flags.
   auto search_flags() const { return m_search_flags; }
-
-  /// Sets delete registers 1 - 9 (if value not empty).
-  void set_registers_delete(const std::string& value) const;
-
-  /// Sets insert register (if value not empty).
-  void set_register_insert(const std::string& value) const;
-
-  /// Sets yank register (if value not empty).
-  void set_register_yank(const std::string& value) const;
 
   /// Set mode.
   void use(mode_t mode);

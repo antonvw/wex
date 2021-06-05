@@ -8,39 +8,43 @@
 #include <stdio.h>
 #include <string.h>
 #include <wex/addressrange.h>
+#include <wex/ex.h>
 #include <wex/frd.h>
 #include <wex/log.h>
+#include <wex/macros.h>
 #include <wex/regex.h>
 
 #include "ex-stream-line.h"
 
 namespace wex
 {
-  std::string action_name(ex_stream_line::action_t type)
+std::string action_name(ex_stream_line::action_t type)
+{
+  switch (type)
   {
-    switch (type)
-    {
-      case ex_stream_line::ACTION_ERASE:
-        return "erased";
-      case ex_stream_line::ACTION_INSERT:
-        return "inserted";
-      case ex_stream_line::ACTION_JOIN:
-        return "joined";
-      case ex_stream_line::ACTION_SUBSTITUTE:
-        return "substituted";
-      case ex_stream_line::ACTION_WRITE:
-        return "written";
+    case ex_stream_line::ACTION_ERASE:
+      return "erased";
+    case ex_stream_line::ACTION_INSERT:
+      return "inserted";
+    case ex_stream_line::ACTION_JOIN:
+      return "joined";
+    case ex_stream_line::ACTION_SUBSTITUTE:
+      return "substituted";
+    case ex_stream_line::ACTION_WRITE:
+      return "written";
+    case ex_stream_line::ACTION_YANK:
+      return "yanked";
 
-      default:
-        assert(0);
-        return std::string();
-    };
+    default:
+      assert(0);
+      return std::string();
   };
+};
 }; // namespace wex
 
 wex::ex_stream_line::ex_stream_line(
-  action_t            type,
   file*               work,
+  action_t            type,
   const addressrange& range)
   : m_action(type)
   , m_file(work)
@@ -48,6 +52,18 @@ wex::ex_stream_line::ex_stream_line(
   , m_end(
       type != ACTION_JOIN ? range.get_end().get_line() - 1 :
                             range.get_end().get_line() - 2)
+{
+}
+
+wex::ex_stream_line::ex_stream_line(
+  file*               work,
+  const addressrange& range,
+  const std::string&  text)
+  : m_action(ACTION_INSERT)
+  , m_file(work)
+  , m_text(text)
+  , m_begin(range.get_begin().get_line() - 1)
+  , m_end(range.get_end().get_line() - 1)
 {
 }
 
@@ -66,22 +82,24 @@ wex::ex_stream_line::ex_stream_line(
 wex::ex_stream_line::ex_stream_line(
   file*               work,
   const addressrange& range,
-  const std::string&  text)
-  : m_action(ACTION_INSERT)
+  char                name)
+  : m_action(ACTION_YANK)
   , m_file(work)
-  , m_text(text)
   , m_begin(range.get_begin().get_line() - 1)
   , m_end(range.get_end().get_line() - 1)
+  , m_register(name)
 {
+  ex::get_macros().set_register(m_register, std::string());
 }
 
 wex::ex_stream_line::~ex_stream_line()
 {
-  log::trace("ex stream") << action_name(m_action) << m_actions << m_begin
-                          << m_end << m_data.pattern() << m_data.replacement();
+  log::trace("ex stream " + action_name(m_action))
+    << m_actions << m_begin << m_end << m_data.pattern()
+    << m_data.replacement();
 }
 
-void wex::ex_stream_line::handle(char* line, int& pos)
+wex::ex_stream_line::handle_t wex::ex_stream_line::handle(char* line, int& pos)
 {
   if (m_line >= m_begin && m_line <= m_end)
   {
@@ -151,16 +169,38 @@ void wex::ex_stream_line::handle(char* line, int& pos)
         m_file->write(line, pos);
         break;
 
+      case ACTION_YANK:
+        ex::get_macros().set_register(
+          m_register,
+          ex::get_macros().get_register(m_register) + std::string(line, pos));
+        m_actions++;
+        break;
+
       default:
         assert(0);
         break;
     }
   }
-  else if (m_action != ACTION_WRITE)
+  else
   {
-    m_file->write(line, pos);
+    switch (m_action)
+    {
+      case ACTION_WRITE:
+        break;
+
+      case ACTION_YANK:
+        if (m_line > m_end)
+        {
+          return HANDLE_STOP;
+        }
+
+      default:
+        m_file->write(line, pos);
+    }
   }
 
   pos = 0;
   m_line++;
+
+  return HANDLE_CONTINUE;
 }
