@@ -50,9 +50,17 @@ public:
   /// Adds text.
   virtual void add_text(const std::string& text) { AddText(text); }
 
+  /// Appends text (to end).
+  virtual void append_text(const std::string& text) { AppendText(text); }
+
   /// After pressing enter, starts new line at same place
   /// as previous line.
   virtual bool auto_indentation(int c) { return false; }
+
+  // Clears the component: all text is cleared and all styles are reset.
+  // Invoked by Open and do_file_new.
+  // (Clear is used by scintilla to clear the selection).
+  virtual void clear(bool set_savepoint = true) { ; }
 
   /// Enables or disables folding depending on fold property
   /// (default not implemented).
@@ -80,6 +88,12 @@ public:
   virtual bool get_hexmode_insert(const std::string& command, int pos)
   {
     return false;
+  };
+
+  /// Hex lines.
+  virtual std::string get_hexmode_lines(const std::string& text)
+  {
+    return std::string();
   };
 
   /// Hex replace.

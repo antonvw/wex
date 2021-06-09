@@ -88,16 +88,8 @@ public:
 
   /// Other methods.
 
-  /// Appends text (to end).
-  void append_text(const std::string& text);
-
   /// Returns auto_complete.
   auto* auto_complete() { return m_auto_complete; }
-
-  // Clears the component: all text is cleared and all styles are reset.
-  // Invoked by Open and do_file_new.
-  // (Clear is used by scintilla to clear the selection).
-  void clear(bool set_savepoint = true);
 
   /// Sets the configurable parameters to values currently in config.
   void config_get();
@@ -200,7 +192,11 @@ public:
 
   void add_text(const std::string& text) override;
 
+  void append_text(const std::string& text) override;
+
   bool auto_indentation(int c) override;
+
+  void clear(bool set_savepoint = true) override;
 
   bool find(const std::string& text, int find_flags = -1, bool find_next = true)
     override;
@@ -213,9 +209,11 @@ public:
   };
 
   const std::string get_find_string() const override;
-  bool              get_hexmode_erase(int begin, int end) override;
-  bool get_hexmode_insert(const std::string& command, int pos) override;
-  bool get_hexmode_replace(char) override;
+
+  bool        get_hexmode_erase(int begin, int end) override;
+  bool        get_hexmode_insert(const std::string& command, int pos) override;
+  std::string get_hexmode_lines(const std::string& text) override;
+  bool        get_hexmode_replace(char) override;
   bool get_hexmode_replace_target(const std::string& replacement, bool set_text)
     override;
   bool get_hexmode_sync() override;

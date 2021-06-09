@@ -2,7 +2,7 @@
 // Name:      stc/hexmode-line.h
 // Purpose:   Declaration of class hexmode_line
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/hexmode.h>
@@ -11,15 +11,13 @@
 
 namespace wex
 {
-class stc;
-
 /// Offers a hex mode line.
 class hexmode_line
 {
 public:
   /// Constructor.
   /// Uses current position and line.
-  hexmode_line(hexmode* hex);
+  hexmode_line(wex::hexmode* hex);
 
   /// Constructor.
   /// Specify position or byte offset.
@@ -36,7 +34,7 @@ public:
   {
     return m_column_no >= m_start_ascii_field &&
            m_column_no <
-             m_start_ascii_field + static_cast<int>(m_hex->m_bytes_per_line);
+             m_start_ascii_field + static_cast<int>(m_hex->bytes_per_line());
   };
 
   bool is_hex_field() const
@@ -90,7 +88,7 @@ private:
   {
     if (m_line[m_column_no] != ' ')
     {
-      const int offset = m_column_no / m_hex->m_each_hex_field;
+      const int offset = m_column_no / m_hex->each_hex_field();
       return m_start_ascii_field + offset;
     }
     return wxSTC_INVALID_POSITION;
@@ -99,7 +97,7 @@ private:
   int get_hex_field() const
   {
     const int offset = m_column_no - m_start_ascii_field;
-    return m_hex->m_each_hex_field * offset;
+    return m_hex->each_hex_field() * offset;
   };
 
   const int m_start_ascii_field;
@@ -108,8 +106,7 @@ private:
 
   int m_column_no, m_line_no;
 
-  hexmode* m_hex;
+  wex::hexmode* m_hex;
 };
 
-char printable(unsigned int c, stc* stc);
 }; // namespace wex

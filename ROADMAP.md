@@ -1,7 +1,6 @@
 # roadmap
 
 ## backlog
-- hex mode base on ex mode
 - use modules
 - clang asan build using LeakSanitizer
 

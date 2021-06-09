@@ -324,6 +324,11 @@ bool wex::stc::get_hexmode_insert(const std::string& command, int pos)
   return m_hexmode.insert(command, pos);
 }
 
+std::string wex::stc::get_hexmode_lines(const std::string& text)
+{
+  return m_hexmode.lines(text);
+}
+
 bool wex::stc::get_hexmode_replace(char c)
 {
   return m_hexmode.replace(c);
@@ -911,6 +916,8 @@ bool wex::stc::set_indicator(const indicator& indicator, int start, int end)
     }
     return false;
   }
+
+  IndicatorClearRange(0, GetTextLength() - 1);
 
   SetIndicatorCurrent(indicator.number());
 

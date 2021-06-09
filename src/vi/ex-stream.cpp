@@ -502,8 +502,16 @@ void wex::ex_stream::set_text()
 {
   m_stc->SetReadOnly(false);
 
-  m_stc->AppendText(m_current_line);
-  m_stc->AppendText("\n");
+  if (!m_stc->is_hexmode())
+  {
+    m_stc->AppendText(m_current_line);
+    m_stc->AppendText("\n");
+  }
+  else
+  {
+    m_stc->AppendText(m_stc->get_hexmode_lines(m_current_line));
+    m_stc->AppendText("\n");
+  }
 
   if (m_stc->GetLineCount() > m_context_lines)
   {

@@ -67,8 +67,16 @@ bool wex::stc_file::do_file_load(bool synced)
   m_stc->use_modification_markers(false);
   m_stc->keep_event_data(synced);
 
+  if (
+    m_stc->path().stat().st_size > config("stc.max.Size visual").get(10000000))
+  {
+    m_stc->visual(false);
+  }
+
   const bool hexmode =
-    dlg.is_hexmode() || m_stc->data().flags().test(data::stc::WIN_HEX);
+    dlg.is_hexmode() || 
+    m_stc->data().flags().test(data::stc::WIN_HEX) ||
+    (config(_("stc.Ex mode show hex")).get(false) && !m_stc->is_visual());
 
   const std::streampos offset =
     m_previous_size < m_stc->path().stat().st_size &&
@@ -83,12 +91,6 @@ bool wex::stc_file::do_file_load(bool synced)
 
   m_previous_size = m_stc->path().stat().st_size;
 
-  if (
-    m_stc->path().stat().st_size > config("stc.max.Size visual").get(10000000))
-  {
-    m_stc->visual(false);
-  }
-
 #ifdef USE_THREAD
   std::thread t(
     [&]
@@ -96,6 +98,11 @@ bool wex::stc_file::do_file_load(bool synced)
 #endif
       if (!m_stc->is_visual())
       {
+        if (hexmode && !m_stc->get_hexmode().is_active())
+        {
+          m_stc->get_hexmode().set(true, false);
+        }
+
         ex_stream()->stream(*this);
       }
       else if (const auto buffer(read(offset)); buffer != nullptr)
