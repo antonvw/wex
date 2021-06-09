@@ -2,18 +2,19 @@
 // Name:      stc/hexmode-line.cpp
 // Purpose:   Implementation of class hexmode_line
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "hexmode-line.h"
-#include <wex/stc.h>
+#include <wex/factory/stc.h>
 
-wex::hexmode_line::hexmode_line(hexmode* hex)
+#include "hexmode-line.h"
+
+wex::hexmode_line::hexmode_line(wex::hexmode* hex)
   : m_line(hex->get_stc()->GetCurLine())
   , m_line_no(hex->get_stc()->get_current_line())
   , m_column_no(hex->get_stc()->GetColumn(hex->get_stc()->GetCurrentPos()))
   , m_hex(hex)
-  , m_start_ascii_field(hex->m_each_hex_field * hex->m_bytes_per_line)
+  , m_start_ascii_field(hex->each_hex_field() * hex->bytes_per_line())
 {
   assert(m_hex->is_active());
 }
@@ -23,7 +24,7 @@ wex::hexmode_line::hexmode_line(
   int      pos_or_offset,
   bool     is_position)
   : m_hex(hex)
-  , m_start_ascii_field(hex->m_each_hex_field * hex->m_bytes_per_line)
+  , m_start_ascii_field(hex->each_hex_field() * hex->bytes_per_line())
 {
   assert(m_hex->is_active());
 
@@ -37,7 +38,7 @@ wex::hexmode_line::hexmode_line(
 
     if (
       m_column_no >=
-      m_start_ascii_field + static_cast<int>(m_hex->m_bytes_per_line))
+      m_start_ascii_field + static_cast<int>(m_hex->bytes_per_line()))
     {
       m_column_no = m_start_ascii_field;
       m_line_no++;
@@ -59,7 +60,7 @@ int wex::hexmode_line::buffer_index() const
 {
   if (
     m_column_no >=
-    m_start_ascii_field + static_cast<int>(m_hex->m_bytes_per_line))
+    m_start_ascii_field + static_cast<int>(m_hex->bytes_per_line()))
   {
     return wxSTC_INVALID_POSITION;
   }
@@ -71,7 +72,7 @@ int wex::hexmode_line::buffer_index() const
   {
     if (m_line[m_column_no] != ' ')
     {
-      return convert(m_column_no / m_hex->m_each_hex_field);
+      return convert(m_column_no / m_hex->each_hex_field());
     }
   }
 
@@ -132,7 +133,7 @@ bool wex::hexmode_line::insert(const std::string& text)
 
     if (
       m_column_no + text.size() >=
-      m_hex->m_bytes_per_line + m_start_ascii_field)
+      m_hex->bytes_per_line() + m_start_ascii_field)
     {
       int line_no =
         m_hex->get_stc()->LineFromPosition(m_hex->get_stc()->GetCurrentPos()) +
@@ -220,7 +221,7 @@ bool wex::hexmode_line::replace(char c)
     m_hex->get_stc()->wxStyledTextCtrl::Replace(
       pos + other_field(),
       pos + other_field() + 1,
-      wex::printable(code, m_hex->get_stc()));
+      m_hex->printable(code));
 
     c = code;
   }
@@ -271,7 +272,7 @@ void wex::hexmode_line::replace_hex(int value)
   m_hex->get_stc()->wxStyledTextCtrl::Replace(
     pos + other_field(),
     pos + other_field() + 1,
-    printable(value, m_hex->get_stc()));
+    m_hex->printable(value));
 
   m_hex->m_buffer[index] = value;
 }
@@ -312,7 +313,7 @@ void wex::hexmode_line::set_pos(const wxKeyEvent& event) const
       {
         m_hex->get_stc()->SetCurrentPos(
           m_hex->get_stc()->PositionFromLine(m_line_no - 1) +
-          m_start_ascii_field - m_hex->m_each_hex_field);
+          m_start_ascii_field - m_hex->each_hex_field());
       }
     }
   }
@@ -323,7 +324,7 @@ void wex::hexmode_line::set_pos(const wxKeyEvent& event) const
 
     if (
       m_hex->get_stc()->GetCurrentPos() >=
-      start + m_start_ascii_field + static_cast<int>(m_hex->m_bytes_per_line))
+      start + m_start_ascii_field + static_cast<int>(m_hex->bytes_per_line()))
     {
       m_hex->get_stc()->SetCurrentPos(
         m_hex->get_stc()->PositionFromLine(m_line_no + 1) +
@@ -337,22 +338,5 @@ void wex::hexmode_line::set_pos(const wxKeyEvent& event) const
           m_hex->get_stc()->GetLineEndPosition(m_line_no - 1) - 1);
       }
     }
-  }
-}
-
-char wex::printable(unsigned int c, wex::stc* stc)
-{
-  // We do not want control chars (\n etc.) to be printed,
-  // as that disturbs the hex view field.
-  if (isascii(c) && !iscntrl(c))
-  {
-    return c;
-  }
-  else
-  {
-    // If we already defined our own symbol, use that one,
-    // otherwise print an ordinary ascii char.
-    const int symbol = stc->GetControlCharSymbol();
-    return symbol == 0 ? '.' : symbol;
   }
 }

@@ -5,6 +5,7 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/config.h>
 #include <wex/data/stc.h>
 #include <wex/factory/stc.h>
 #include <wex/indicator.h>
@@ -94,17 +95,17 @@ bool wex::data::stc::inject() const
           line = m_data.line() - 1;
         }
 
+        const auto prev_line(
+          m_stc->is_visual() ? line: m_stc->GetLineCount() - 1);
+        
         m_stc->goto_line(line);
 
         const auto gotoline(
           m_stc->is_visual() ? line : m_stc->GetLineCount() - 2);
 
-        m_stc->SetIndicatorCurrent(m_indicator_no);
-        m_stc->IndicatorClearRange(0, m_stc->GetTextLength() - 1);
-
         m_stc->set_indicator(
           indicator(m_indicator_no),
-          m_stc->PositionFromLine(gotoline),
+          std::max(m_stc->PositionFromLine(prev_line), 0),
           m_data.col() > 0 ?
             m_stc->PositionFromLine(gotoline) + m_data.col() - 1 :
             m_stc->GetLineEndPosition(gotoline));
@@ -175,7 +176,14 @@ bool wex::data::stc::inject() const
     injected = true;
   }
 
-  if (m_stc->set_hexmode(m_win_flags[WIN_HEX]))
+  if (config(_("stc.Ex mode show hex")).get(false) && !m_stc->is_visual())
+  {
+    if (m_stc->set_hexmode(true))
+    {
+      injected = true;
+    }
+  }
+  else if (m_stc->set_hexmode(m_win_flags[WIN_HEX]))
   {
     injected = true;
   }

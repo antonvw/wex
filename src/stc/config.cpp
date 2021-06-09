@@ -143,6 +143,7 @@ void wex::stc::on_init()
             {{{_("stc.End of line"),
                _("stc.Line numbers"),
                _("stc.Use tabs"),
+               _("stc.Ex mode show hex"),
                def(_("stc.Caret line")),
                def(_("stc.Scroll bars")),
                _("stc.Auto beautify"),
