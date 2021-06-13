@@ -52,11 +52,11 @@ bool wex::app::OnInit()
 
   const wxLanguageInfo* info = nullptr;
 
-  if (config("LANG").exists())
+  if (const auto& lang(config("Language").get()); !lang.empty())
   {
-    if ((info = wxLocale::FindLanguageInfo(config("LANG").get())) == nullptr)
+    if ((info = wxLocale::FindLanguageInfo(lang)) == nullptr)
     {
-      log("unknown language") << config("LANG").get();
+      log("unknown language") << lang;
     }
   }
 
@@ -73,19 +73,24 @@ bool wex::app::OnInit()
   }
   else
   {
-    // If there are catalogs in the catalog_dir, then add them to the m_locale.
-    // README: We use the canonical name, also for windows, not sure whether
-    // that is the best.
-    m_catalog_dir = wxStandardPaths::Get().GetLocalizedResourcesDir(
-      m_locale.GetCanonicalName()
-#ifndef __WXMSW__
-        ,
-      wxStandardPaths::ResourceCat_Messages
+    m_catalog_dir = "/usr/local/share/locale/" +
+                    m_locale.GetName().ToStdString() + "/LC_MESSAGES";
+
+    if (!fs::is_directory(m_catalog_dir))
+    {
+      m_catalog_dir = wxStandardPaths::Get().GetLocalizedResourcesDir(
+        m_locale.GetCanonicalName()
+#ifdef __WXMSW__
+          ,
+        wxStandardPaths::ResourceCat_Messages
 #endif
-    );
+      );
+    }
 
     if (fs::is_directory(m_catalog_dir))
     {
+      // If there are catalogs in the catalog_dir, then add them to the
+      // m_locale.
       for (const auto& p : fs::recursive_directory_iterator(m_catalog_dir))
       {
         if (
@@ -101,7 +106,8 @@ bool wex::app::OnInit()
     }
     else if (info != nullptr)
     {
-      log("missing locale files for") << m_locale.GetName().ToStdString();
+      log("missing locale files for")
+        << m_locale.GetName().ToStdString() << m_catalog_dir;
     }
   }
 

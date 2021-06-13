@@ -19,7 +19,7 @@
     file, and fill in the translation.
 
   - The place where to put your po files can be found by adding -l command line switch.
-    You can also test other languages using the special LANG config item,
+    You can also test other languages using the special Language config item,
     e.g. setting it to french allows you to test french translation.
     Normally you check the current locale by running locale on the
     command line. Running locale -a shows all your available locales, if your

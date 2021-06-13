@@ -88,7 +88,11 @@ endif ()
 
 add_subdirectory(locale)
 
-set(CMAKE_INSTALL_MESSAGE LAZY)
+if (NOT DEFINED ENV{TRAVIS})
+  set(CMAKE_INSTALL_MESSAGE LAZY)
+else ()
+  set(CMAKE_INSTALL_MESSAGE NEVER)
+endif ()
 
 wex_install()
 wex_config()

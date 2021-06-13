@@ -2,12 +2,13 @@
 // Name:      stream-statistics.h
 // Purpose:   Declaration of wex::stream_statistics class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2019-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wex/statistics.h>
+#include <wx/translation.h>
 
 namespace wex
 {

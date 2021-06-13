@@ -114,7 +114,7 @@ const wex::path wex::factory::link::find_filename(
 #endif
 
   // file[:line[:column]]
-  if (regex v("^([0-9A-Za-z _/.-]+):([0-9]*):?([0-9]*)"); v.search(link) > 0)
+  if (regex v("^([\\0-9A-Za-z _/.-]+):([0-9]*):?([0-9]*)"); v.search(link) > 0)
   {
     link = v[0];
     data.reset();

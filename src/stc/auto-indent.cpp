@@ -137,5 +137,5 @@ bool wex::auto_indent::use()
 
 void wex::auto_indent::use(bool on)
 {
-  config("stc.Auto indent").set(on);
+  config(_("stc.Auto indent")).set(on);
 }

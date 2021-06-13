@@ -179,7 +179,7 @@ const std::string wex::data::listview::type_description() const
       value = _("File");
       break;
     case TSV:
-      value = _("tsv");
+      value = "tsv";
       break;
     case NONE:
       value = _("None");

@@ -9,10 +9,21 @@
 #include <wex/factory/frd.h>
 #include <wex/log.h>
 #include <wx/fdrepdlg.h>
+#include <wx/translation.h>
 
 wex::factory::find_replace_data::find_replace_data()
   : m_frd(new wxFindReplaceData)
 {
+  if (m_text_find.empty())
+  {
+    m_text_find         = _("fif.Find what");
+    m_text_match_case   = _("fif.Match case");
+    m_text_match_word   = _("fif.Match whole word");
+    m_text_regex        = _("fif.Regular expression");
+    m_text_replace_with = _("fif.Replace with");
+    m_text_search_down  = _("fif.Search down");
+  }
+
   int flags = 0;
   flags |= wxFR_DOWN * (config(m_text_search_down).get(true));
   flags |= wxFR_MATCHCASE * (config(m_text_match_case).get(false));

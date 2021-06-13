@@ -26,7 +26,7 @@ bool wex::beautify::is_active() const
 
 bool wex::beautify::is_auto() const
 {
-  return config("stc.Auto beautify").get(false);
+  return config(_("stc.Auto beautify")).get(false);
 }
 
 bool wex::beautify::is_supported(const lexer& l) const
@@ -42,7 +42,7 @@ std::list<std::string> wex::beautify::list() const
 
 const std::string wex::beautify::name() const
 {
-  return config("stc.Beautifier").get(list()).front();
+  return config(_("stc.Beautifier")).get(list()).front();
 }
 
 bool wex::beautify::stc(wex::stc& s) const
