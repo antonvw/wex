@@ -2,13 +2,11 @@
 
 function find_sed()
 {
-  gsed --h > /dev/null
-
-  if [ $? == 0 ]
+  if ! gsed --h > /dev/null;
   then
-    export _sed=gsed
-  else
     export _sed=sed
+  else
+    export _sed=gsed
   fi
 }
 

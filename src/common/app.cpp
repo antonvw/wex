@@ -80,7 +80,7 @@ bool wex::app::OnInit()
     {
       m_catalog_dir = wxStandardPaths::Get().GetLocalizedResourcesDir(
         m_locale.GetCanonicalName()
-#ifdef __WXMSW__
+#ifndef __WXMSW__
           ,
         wxStandardPaths::ResourceCat_Messages
 #endif
