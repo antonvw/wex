@@ -638,7 +638,7 @@ bool wex::ex::command_set(const std::string& command)
       [&](bool on)
       {
         if (!modeline)
-          config("stc.Auto indent").set(on);
+          config(_("stc.Auto indent")).set(on);
       }},
      {{"aw", _("stc.Auto write")},
       [&](bool on)
@@ -646,7 +646,7 @@ bool wex::ex::command_set(const std::string& command)
         m_auto_write = on;
       }},
      {{"eb", _("stc.Error bells")}, nullptr},
-     {{"el", _("ex-set.el")},
+     {{"el", "ex-set.el"},
       [&](bool on)
       {
         if (!modeline)
@@ -711,7 +711,7 @@ bool wex::ex::command_set(const std::string& command)
         if (modeline)
           get_stc()->SetUseTabs(on);
       }},
-     {{"wm", _("ex-set.wm")},
+     {{"wm", "ex-set.wm"},
       [&](bool on)
       {
         if (!modeline)
@@ -765,7 +765,7 @@ bool wex::ex::command_set(const std::string& command)
          else
            get_stc()->get_lexer().clear();
        }}},
-     {{"ts", "stc.Tab width", std::to_string(get_stc()->GetTabWidth())},
+     {{"ts", _("stc.Tab width"), std::to_string(get_stc()->GetTabWidth())},
       {cmdline::INT,
        [&](const std::any& val)
        {

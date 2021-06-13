@@ -13,6 +13,7 @@
 #include <sstream>
 #include <wex/version.h>
 #include <wx/utils.h>
+#include <wx/translation.h>
 #include <wx/versioninfo.h>
 
 #include <ctags/main/ctags.h>
@@ -36,8 +37,8 @@ const wex::version_info wex::get_version_info()
      21,
      10,
      0,
-     "wex library (a library that offers windows ex and vi components)",
-     "(c) 1998-2021, Anton van Wezenbeek. All rights reserved."});
+     _("wex library (a library that offers windows ex and vi components)"),
+     "(c) 1998-2021, Anton van Wezenbeek." + _("All rights reserved.")});
 }
 
 wex::version_info::version_info(const wxVersionInfo& info)

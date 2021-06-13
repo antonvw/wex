@@ -11,6 +11,7 @@
 #include <string>
 
 #include <wex/core.h>
+#include <wex/log.h>
 #include <wex/path.h>
 
 using json = nlohmann::json;
@@ -59,27 +60,42 @@ public:
   /// Sets value for item.
   template <typename T> void set(const std::string& item, const T& v)
   {
-    if (item.find('.') == std::string::npos)
+    try
     {
-      m_json[item] = v;
+      if (item.find('.') == std::string::npos)
+      {
+        m_json[item] = v;
+      }
+      else
+      {
+        accessor(before(item, '.', false))[after(item, '.', false)] = v;
+      }
     }
-    else
+    catch (std::exception& e)
     {
-      accessor(before(item, '.', false))[after(item, '.', false)] = v;
+      log(e) << "config::set" << item;
     }
   }
 
   /// Returns value for item.
   template <typename T> const T value(const std::string& item, const T& def)
   {
-    if (item.find('.') == std::string::npos)
+    try
     {
-      return m_json.value(item, def);
+      if (item.find('.') == std::string::npos)
+      {
+        return m_json.value(item, def);
+      }
+      else
+      {
+        auto& a(accessor(before(item, '.', false)));
+        return !a.is_null() ? a.value(after(item, '.', false), def) : def;
+      }
     }
-    else
+    catch (std::exception& e)
     {
-      auto& a(accessor(before(item, '.', false)));
-      return !a.is_null() ? a.value(after(item, '.', false), def) : def;
+      log(e) << "config::value" << item;
+      return def;
     }
   }
 

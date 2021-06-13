@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-27 20:56+0200\n"
+"POT-Creation-Date: 2021-06-13 09:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,1067 +17,831 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../include/wex/itemdlg.h:23
-msgid "Options"
+msgid "fif.In files"
 msgstr ""
 
-#: ../include/wex/report/frame.h:125 ../src/lexers.cpp:288
-msgid "In files"
+msgid "fif.In folder"
 msgstr ""
 
-#: ../include/wex/report/frame.h:126 ../include/wex/report/listviewfile.h:69
-#: ../src/lexers.cpp:289
-msgid "In folder"
+msgid "fif.Recursive"
 msgstr ""
 
-#: ../include/wex/report/frame.h:127 ../include/wex/report/listviewfile.h:67
-msgid "Recursive"
+msgid "list.Add files"
 msgstr ""
 
-#: ../include/wex/report/listviewfile.h:65
-msgid "Add files"
+msgid "list.Add folders"
 msgstr ""
 
-#: ../include/wex/report/listviewfile.h:66
-msgid "Add folders"
+msgid "list.Recursive"
 msgstr ""
 
-#: ../include/wex/report/listviewfile.h:68 ../src/lexers.cpp:287
-msgid "Add what"
+msgid "list.Add what"
 msgstr ""
 
-#: ../include/wex/statistics.h:172
+msgid "list.In folder"
+msgstr ""
+
 msgid "Item"
 msgstr ""
 
-#: ../include/wex/statistics.h:173
 msgid "Value"
 msgstr ""
 
-#: ../include/wex/stream.h:72 ../src/stream.cpp:129 ../src/tool.cpp:43
-msgid "Actions Completed"
+msgid "Options"
 msgstr ""
 
-#: ../src/address.cpp:243 ../src/address.cpp:261 ../src/listview-data.cpp:174
-msgid "File"
-msgstr ""
-
-#: ../src/addressrange.cpp:254 ../src/addressrange.cpp:255 ../src/frame.cpp:166
-msgid "Replace"
-msgstr ""
-
-#: ../src/addressrange.cpp:254
-msgid "with"
-msgstr ""
-
-#: ../src/addressrange.cpp:297
-#, c-format
-msgid "%d lines copied"
-msgstr ""
-
-#: ../src/addressrange.cpp:482
-#, c-format
-msgid "Executed: %d commands"
-msgstr ""
-
-#: ../src/addressrange.cpp:485
-#, c-format
-msgid "Found: %d matches"
-msgstr ""
-
-#: ../src/addressrange.cpp:554
-#, c-format
-msgid "%d lines moved"
-msgstr ""
-
-#: ../src/addressrange.cpp:853
-#, c-format
-msgid "Replaced: %d occurrences of: %s"
-msgstr ""
-
-#: ../src/autocomplete.cpp:196 ../src/ex.cpp:172 ../src/stc-config.cpp:140
-msgid "Auto complete"
-msgstr ""
-
-#: ../src/ctags.cpp:54 ../src/stc-config.cpp:54 ../src/stc-config.cpp:143
-msgid "vi tag fullpath"
-msgstr ""
-
-#: ../src/ctags.cpp:321 ../src/hexmode.cpp:123 ../src/hexmode.cpp:141
-#: ../src/hexmode.cpp:179 ../src/listview.cpp:379 ../src/listview.cpp:838
-#: ../src/stc-bind.cpp:438 ../src/stc-bind.cpp:458 ../src/stc-bind.cpp:549
-#: ../src/util.cpp:756 ../src/vi-macros-mode.cpp:29
-#: ../src/vi-macros-mode.cpp:103
-msgid "Input"
-msgstr ""
-
-#: ../src/ctags.cpp:322
-msgid "Select File"
-msgstr ""
-
-#: ../src/debug.cpp:433
-msgid "Enter Debugger"
-msgstr ""
-
-#: ../src/dir.cpp:137
-msgid "Busy"
-msgstr ""
-
-#: ../src/ex.cpp:176 ../src/ex.cpp:331
-msgid "Auto write"
-msgstr ""
-
-#: ../src/ex.cpp:179 ../src/ex.cpp:778 ../src/util.cpp:327 ../src/vi.cpp:427
-msgid "Error bells"
-msgstr ""
-
-#: ../src/ex.cpp:181 ../src/hexmode.cpp:155 ../src/lexer.cpp:605
-#: ../src/stc-config.cpp:39 ../src/stc-config.cpp:184 ../src/stc-config.cpp:254
-msgid "Edge line"
-msgstr ""
-
-#: ../src/ex.cpp:192 ../src/stc-config.cpp:135 ../src/stc-config.cpp:285
-msgid "Line numbers"
-msgstr ""
-
-#: ../src/ex.cpp:198 ../src/stc-config.cpp:48 ../src/vi-macros-fsm.cpp:350
-#: ../src/vi-mode.cpp:311
-msgid "Show mode"
-msgstr ""
-
-#: ../src/ex.cpp:200 ../src/stc-bind.cpp:863
-msgid "Show match"
-msgstr ""
-
-#: ../src/ex.cpp:202 ../src/hexmode.cpp:157 ../src/lexer.cpp:628
-#: ../src/stc-config.cpp:159 ../src/stc-config.cpp:279
-msgid "Whitespace visible"
-msgstr ""
-
-#: ../src/ex.cpp:203 ../src/hexmode.cpp:156 ../src/stc-config.cpp:134
-#: ../src/stc-config.cpp:278
-msgid "End of line"
-msgstr ""
-
-#: ../src/ex.cpp:205 ../src/lexer.cpp:656 ../src/stc-config.cpp:136
-#: ../src/stc-config.cpp:276
-msgid "Use tabs"
-msgstr ""
-
-#: ../src/ex.cpp:208 ../src/lexer.cpp:681 ../src/stc-config.cpp:169
-#: ../src/stc-config.cpp:280
-msgid "Wrap line"
-msgstr ""
-
-#: ../src/ex.cpp:210 ../src/stc-find.cpp:34
-msgid "Wrap scan"
-msgstr ""
-
-#: ../src/ex.cpp:216 ../src/lexer.cpp:462 ../src/stc-config.cpp:38
-#: ../src/stc-config.cpp:183 ../src/stc-config.cpp:246
-msgid "Edge column"
-msgstr ""
-
-#: ../src/ex.cpp:221 ../src/stc-config.cpp:42 ../src/stc-config.cpp:191
-#: ../src/stc-config.cpp:269
-msgid "Indent"
-msgstr ""
-
-#: ../src/ex.cpp:229 ../src/lexer.cpp:669 ../src/stc-config.cpp:51
-#: ../src/stc-config.cpp:190 ../src/stc-config.cpp:274
-msgid "Tab width"
-msgstr ""
-
-#: ../src/ex.cpp:653
-#, c-format
-msgid "%d lines added"
-msgstr ""
-
-#: ../src/ex.cpp:654
-#, c-format
-msgid "%d lines yanked"
-msgstr ""
-
-#: ../src/ex.cpp:655
-#, c-format
-msgid "%d fewer lines"
-msgstr ""
-
-#: ../src/filedlg.cpp:39
-msgid "All Files"
-msgstr ""
-
-#: ../src/filedlg.cpp:69
-msgid "Save changes"
-msgstr ""
-
-#: ../src/filedlg.cpp:70 ../src/filedlg.cpp:82
-msgid "Confirm"
-msgstr ""
-
-#: ../src/filedlg.cpp:81
-msgid "Save changes to"
-msgstr ""
-
-#: ../src/filehistory.cpp:169
-msgid "Open &Recent"
-msgstr ""
-
-#: ../src/filehistory.cpp:221
-msgid "Removed not existing file"
-msgstr ""
-
-#: ../src/frame.cpp:164
-msgid "Find"
-msgstr ""
-
-#: ../src/frd.cpp:15
-msgid "Find what"
-msgstr ""
-
-#: ../src/frd.cpp:16
-msgid "Match case"
-msgstr ""
-
-#: ../src/frd.cpp:17
-msgid "Match whole word"
-msgstr ""
-
-#: ../src/frd.cpp:18
-msgid "Regular expression"
-msgstr ""
-
-#: ../src/frd.cpp:19
-msgid "Replace with"
-msgstr ""
-
-#: ../src/frd.cpp:20
-msgid "Search down"
-msgstr ""
-
-#: ../src/hexmode.cpp:181
-msgid "Enter Byte Offset"
-msgstr ""
-
-#: ../src/lexer.cpp:643 ../src/stc-config.cpp:49 ../src/stc-config.cpp:156
-#: ../src/stc-config.cpp:273
-msgid "Tab draw mode"
-msgstr ""
-
-#: ../src/lexers.cpp:532
-msgid "Enter Lexer"
-msgstr ""
-
-#: ../src/lexers.cpp:544
-msgid "Enter Theme"
-msgstr ""
-
-#: ../src/link.cpp:23 ../src/stc-config.cpp:207
-msgid "Include directory"
-msgstr ""
-
-#: ../src/listitem.cpp:26 ../src/listitem.cpp:30 ../src/listitem.cpp:59
-#: ../src/listview-data.cpp:57
-msgid "File Name"
-msgstr ""
-
-#: ../src/listitem.cpp:27 ../src/listitem.cpp:29 ../src/listitem.cpp:152
-#: ../src/listview-data.cpp:80 ../src/listview.cpp:891
-msgid "In Folder"
-msgstr ""
-
-#: ../src/listitem.cpp:32 ../src/listitem.cpp:150 ../src/listview-data.cpp:81
-#: ../src/listview.cpp:840 ../src/listview.cpp:844 ../src/listview.cpp:890
-#: ../src/listview.cpp:956 ../src/report/listviewfile.cpp:233
-msgid "Type"
-msgstr ""
-
-#: ../src/listitem.cpp:126 ../src/listview.cpp:45 ../src/listview.cpp:548
-msgid "Readonly colour"
-msgstr ""
-
-#: ../src/listitem.cpp:153 ../src/listview-data.cpp:79 ../src/listview.cpp:236
-#: ../src/listview.cpp:257 ../src/listview.cpp:259 ../src/listview.cpp:893
-#: ../src/path.cpp:122
-msgid "Modified"
-msgstr ""
-
-#: ../src/listitem.cpp:157 ../src/listview-data.cpp:82 ../src/listview.cpp:892
-msgid "Size"
-msgstr ""
-
-#: ../src/listview-data.cpp:63 ../src/report/stream.cpp:310
-#: ../src/stc-config.cpp:186
-msgid "Line"
-msgstr ""
-
-#: ../src/listview-data.cpp:64 ../src/listview.cpp:829
-#: ../src/report/stream.cpp:311
-msgid "Match"
-msgstr ""
-
-#: ../src/listview-data.cpp:65 ../src/listview.cpp:824
-#: ../src/report/stream.cpp:309
-msgid "Line No"
-msgstr ""
-
-#: ../src/listview-data.cpp:73 ../src/listview-data.cpp:173
-msgid "Keywords"
-msgstr ""
-
-#: ../src/listview-data.cpp:170
-msgid "Folder"
-msgstr ""
-
-#: ../src/listview-data.cpp:171
-msgid "Find Results"
-msgstr ""
-
-#: ../src/listview-data.cpp:172
-msgid "History"
-msgstr ""
-
-#: ../src/listview-data.cpp:175 ../src/stc-config.cpp:147
-#: ../src/stc-config.cpp:152 ../src/stc-config.cpp:170
-#: ../src/stc-config.cpp:185 ../src/vcs.cpp:62
-msgid "None"
-msgstr ""
-
-#: ../src/listview.cpp:42 ../src/listview.cpp:540 ../src/report/stream.cpp:241
-msgid "Context size"
-msgstr ""
-
-#: ../src/listview.cpp:43 ../src/listview.cpp:545 ../src/listview.cpp:563
-msgid "List font"
-msgstr ""
-
-#: ../src/listview.cpp:44 ../src/listview.cpp:546 ../src/notebook.cpp:35
-msgid "List tab font"
-msgstr ""
-
-#: ../src/listview.cpp:46 ../src/listview.cpp:533 ../src/listview.cpp:566
-msgid "Header"
-msgstr ""
-
-#: ../src/listview.cpp:306 ../src/listview.cpp:536
-msgid "Sort method"
-msgstr ""
-
-#: ../src/listview.cpp:381
-msgid "Enter Item Number"
-msgstr ""
-
-#: ../src/listview.cpp:478 ../src/report/dirctrl.cpp:121
-msgid "&Open"
-msgstr ""
-
-#: ../src/listview.cpp:499
-msgid "Sort On"
-msgstr ""
-
-#: ../src/listview.cpp:525
-msgid "List Options"
-msgstr ""
-
-#: ../src/listview.cpp:532 ../src/stc-config.cpp:131
-msgid "General"
-msgstr ""
-
-#: ../src/listview.cpp:534 ../src/listview.cpp:567
-msgid "Single selection"
-msgstr ""
-
-#: ../src/listview.cpp:535 ../src/report/listview.cpp:153
-#: ../src/report/listview.cpp:181 ../src/util.cpp:241 ../src/util.cpp:252
-msgid "Comparator"
-msgstr ""
-
-#: ../src/listview.cpp:537
-msgid "Sort ascending"
-msgstr ""
-
-#: ../src/listview.cpp:538
-msgid "Sort descending"
-msgstr ""
-
-#: ../src/listview.cpp:539
-msgid "Sort toggle"
-msgstr ""
-
-#: ../src/listview.cpp:541 ../src/listview.cpp:564 ../src/listview.cpp:565
-msgid "Rulers"
-msgstr ""
-
-#: ../src/listview.cpp:542
-msgid "Horizontal rulers"
-msgstr ""
-
-#: ../src/listview.cpp:543
-msgid "Vertical rulers"
-msgstr ""
-
-#: ../src/listview.cpp:544 ../src/stc-config.cpp:178
-msgid "Font"
-msgstr ""
-
-#: ../src/listview.cpp:547
-msgid "Colour"
-msgstr ""
-
-#: ../src/listview.cpp:839
-msgid "Folder Type"
-msgstr ""
-
-#: ../src/listview.cpp:1154
-msgid "Sorted on"
-msgstr ""
-
-#: ../src/managedframe.cpp:80
-msgid "&Findbar"
-msgstr ""
-
-#: ../src/managedframe.cpp:81
-msgid "&Optionsbar"
-msgstr ""
-
-#: ../src/managedframe.cpp:82
-msgid "&Toolbar"
-msgstr ""
-
-#: ../src/managedframe.cpp:83
-msgid "&Process"
-msgstr ""
-
-#: ../src/managedframe.cpp:86
-msgid "Toolbar"
-msgstr ""
-
-#: ../src/managedframe.cpp:87
-msgid "Findbar"
-msgstr ""
-
-#: ../src/managedframe.cpp:88
-msgid "Optionsbar"
-msgstr ""
-
-#: ../src/managedframe.cpp:126 ../src/stc-config.cpp:124
-msgid "Editor Options"
-msgstr ""
-
-#: ../src/managedframe.cpp:205
-msgid "&Menubar\tCtrl+M"
-msgstr ""
-
-#: ../src/managedframe.cpp:208
-msgid "&Statusbar"
-msgstr ""
-
-#: ../src/managedframe.cpp:362 ../src/stc-config.cpp:52
-#: ../src/stc-config.cpp:181
-msgid "Text font"
-msgstr ""
-
-#: ../src/menu.cpp:84
-msgid "&Deselect All"
-msgstr ""
-
-#: ../src/menu.cpp:95
-msgid "&Invert"
-msgstr ""
-
-#: ../src/menu.cpp:108
-msgid "Page &Setup"
-msgstr ""
-
-#: ../src/menu.cpp:163
-msgid "&Tools"
-msgstr ""
-
-#: ../src/notebook.cpp:32 ../src/stc-config.cpp:50 ../src/stc-config.cpp:180
-msgid "Tab font"
-msgstr ""
-
-#: ../src/notebook.cpp:38
-msgid "Project tab font"
-msgstr ""
-
-#: ../src/otl.cpp:38 ../src/otl.cpp:72
-msgid "Datasource"
-msgstr ""
-
-#: ../src/otl.cpp:67
-msgid "Open ODBC Connection"
-msgstr ""
-
-#: ../src/otl.cpp:73 ../src/otl.cpp:84
-msgid "User"
-msgstr ""
-
-#: ../src/otl.cpp:74 ../src/otl.cpp:85
-msgid "Password"
-msgstr ""
-
-#: ../src/otl.cpp:190 ../src/otl.cpp:272
-msgid "<Skipped>"
-msgstr ""
-
-#: ../src/path.cpp:121
-msgid "Synchronized"
-msgstr ""
-
-#: ../src/process.cpp:114
-msgid "Process folder"
-msgstr ""
-
-#: ../src/process.cpp:117 ../src/process.cpp:154 ../src/process.cpp:179
-#: ../src/process.cpp:187 ../src/toolbar.cpp:246
-msgid "Process"
-msgstr ""
-
-#: ../src/process.cpp:152
-msgid "Select Process"
-msgstr ""
-
-#: ../src/report/dirctrl.cpp:44 ../src/report/dirctrl.cpp:90
-#: ../src/report/dirctrl.cpp:91 ../src/report/dirctrl.cpp:147
-#: ../src/report/dirctrl.cpp:148
-msgid "Show hidden"
-msgstr ""
-
-#: ../src/report/frame.cpp:60
-msgid "Find In Files"
-msgstr ""
-
-#: ../src/report/frame.cpp:68 ../src/stream.cpp:30
-msgid "Max replacements"
-msgstr ""
-
-#: ../src/report/frame.cpp:76
-msgid "Replace In Files"
-msgstr ""
-
-#: ../src/report/frame.cpp:133 ../src/util.cpp:321
-msgid "Searching for"
-msgstr ""
-
-#: ../src/report/frame.cpp:137
-msgid "replacing with"
-msgstr ""
-
-#: ../src/report/frame.cpp:269
-msgid "Replace In Selection"
-msgstr ""
-
-#: ../src/report/frame.cpp:270
-msgid "Find In Selection"
-msgstr ""
-
-#: ../src/report/frame.cpp:355
-msgid "Cancelled"
-msgstr ""
-
-#: ../src/report/listview.cpp:156
-msgid "C&ompare"
-msgstr ""
-
-#: ../src/report/listview.cpp:164
-msgid "&Make"
-msgstr ""
-
-#: ../src/report/listview.cpp:185
-msgid "&Compare With"
-msgstr ""
-
-#: ../src/report/listviewfile.cpp:36
-msgid "Add Items"
-msgstr ""
-
-#: ../src/report/listviewfile.cpp:59
-msgid "Add"
-msgstr ""
-
-#: ../src/shell.cpp:119 ../src/shell.cpp:311 ../src/stc-config.cpp:53
-#: ../src/stc-config.cpp:142 ../src/stc-config.cpp:283
-msgid "vi mode"
-msgstr ""
-
-#: ../src/stc-bind.cpp:133 ../src/stc-bind.cpp:704
-msgid "Document is readonly"
-msgstr ""
-
-#: ../src/stc-bind.cpp:440
-msgid "Enter Line Number"
-msgstr ""
-
-#: ../src/stc-bind.cpp:460
-msgid "Enter Sort Position"
-msgstr ""
-
-#: ../src/stc-bind.cpp:521 ../src/stc-bind.cpp:755
-msgid "Properties"
-msgstr ""
-
-#: ../src/stc-bind.cpp:532
-msgid "Enter Control Character"
-msgstr ""
-
-#: ../src/stc-bind.cpp:541
-msgid "Control Character"
-msgstr ""
-
-#: ../src/stc-bind.cpp:710
-msgid "Not allowed in hex mode"
-msgstr ""
-
-#: ../src/stc-bind.cpp:745
-msgid "No markers present"
-msgstr ""
-
-#: ../src/stc-bind.cpp:764
-msgid "&Preview"
-msgstr ""
-
-#: ../src/stc-bind.cpp:770
-msgid "Open"
-msgstr ""
-
-#: ../src/stc-bind.cpp:777
-msgid "Edge Column"
-msgstr ""
-
-#: ../src/stc-bind.cpp:778
-msgid "Edge Column Reset"
-msgstr ""
-
-#: ../src/stc-bind.cpp:784
-msgid "&Search"
-msgstr ""
-
-#: ../src/stc-bind.cpp:822
-msgid "&Uppercase\tF11"
-msgstr ""
-
-#: ../src/stc-bind.cpp:823
-msgid "&Lowercase\tF12"
-msgstr ""
-
-#: ../src/stc-bind.cpp:831
-msgid "&Sort"
-msgstr ""
-
-#: ../src/stc-bind.cpp:835
-msgid "&Selection"
-msgstr ""
-
-#: ../src/stc-bind.cpp:855
-msgid "&Toggle Fold\tCtrl+T"
-msgstr ""
-
-#: ../src/stc-bind.cpp:856
-msgid "&Fold All Lines\tF9"
-msgstr ""
-
-#: ../src/stc-bind.cpp:857
-msgid "&Unfold All Lines\tF10"
-msgstr ""
-
-#: ../src/stc-config.cpp:32 ../src/stc-config.cpp:164 ../src/stc-config.cpp:265
-msgid "Annotation style"
-msgstr ""
-
-#: ../src/stc-config.cpp:33 ../src/stc-config.cpp:198 ../src/stc.cpp:255
-msgid "Auto fold"
-msgstr ""
-
-#: ../src/stc-config.cpp:34 ../src/stc-config.cpp:60 ../src/stc-config.cpp:146
-msgid "Auto indent"
-msgstr ""
-
-#: ../src/stc-config.cpp:35 ../src/stc-config.cpp:137 ../src/stc-config.cpp:267
-msgid "Caret line"
-msgstr ""
-
-#: ../src/stc-config.cpp:36 ../src/stc-config.cpp:179 ../src/stc-config.cpp:233
-#: ../src/stc.cpp:59 ../src/style.cpp:70
-msgid "Default font"
-msgstr ""
-
-#: ../src/stc-config.cpp:37 ../src/stc-config.cpp:192 ../src/stc-config.cpp:271
-msgid "Divider"
-msgstr ""
-
-#: ../src/stc-config.cpp:40 ../src/stc-config.cpp:199 ../src/stc-config.cpp:268
-#: ../src/stc.cpp:249
-msgid "Fold flags"
-msgstr ""
-
-#: ../src/stc-config.cpp:41 ../src/stc-config.cpp:193 ../src/stc-config.cpp:196
-#: ../src/stc.cpp:248
-msgid "Folding"
-msgstr ""
-
-#: ../src/stc-config.cpp:43 ../src/stc-config.cpp:141 ../src/stc.cpp:532
-#: ../src/stc.cpp:540
-msgid "Keep zoom"
-msgstr ""
-
-#: ../src/stc-config.cpp:44 ../src/stc-config.cpp:194 ../src/stc.cpp:871
-msgid "Line number"
-msgstr ""
-
-#: ../src/stc-config.cpp:45 ../src/stc-config.cpp:210 ../src/stc-config.cpp:272
-msgid "Print flags"
-msgstr ""
-
-#: ../src/stc-config.cpp:46 ../src/stc-config.cpp:138 ../src/stc-config.cpp:275
-#: ../src/stc-config.cpp:277
-msgid "Scroll bars"
-msgstr ""
-
-#: ../src/stc-config.cpp:47 ../src/stc-config.cpp:144 ../src/util.cpp:178
-msgid "Search engine"
-msgstr ""
-
-#: ../src/stc-config.cpp:133
-msgid "Page1"
-msgstr ""
-
-#: ../src/stc-config.cpp:139
-msgid "Auto blame"
-msgstr ""
-
-#: ../src/stc-config.cpp:145
-msgid "Page2"
-msgstr ""
-
-#: ../src/stc-config.cpp:148 ../src/stc-config.cpp:173
-msgid "Whitespace"
-msgstr ""
-
-#: ../src/stc-config.cpp:149
-msgid "Level"
-msgstr ""
-
-#: ../src/stc-config.cpp:150
-msgid "Both"
-msgstr ""
-
-#: ../src/stc-config.cpp:151 ../src/stc-config.cpp:281
-msgid "Wrap visual flags"
-msgstr ""
-
-#: ../src/stc-config.cpp:153
-msgid "End"
-msgstr ""
-
-#: ../src/stc-config.cpp:154
-msgid "Start"
-msgstr ""
-
-#: ../src/stc-config.cpp:155 ../src/stc-config.cpp:189
-msgid "Margin"
-msgstr ""
-
-#: ../src/stc-config.cpp:157
-msgid "Longarrow"
-msgstr ""
-
-#: ../src/stc-config.cpp:158
-msgid "Strikeout"
-msgstr ""
-
-#: ../src/stc-config.cpp:160
-msgid "Off"
-msgstr ""
-
-#: ../src/stc-config.cpp:161
-msgid "After indent"
-msgstr ""
-
-#: ../src/stc-config.cpp:162
-msgid "Always"
-msgstr ""
-
-#: ../src/stc-config.cpp:163
-msgid "Only indent"
-msgstr ""
-
-#: ../src/stc-config.cpp:165
-msgid "Hidden"
-msgstr ""
-
-#: ../src/stc-config.cpp:166
-msgid "Standard"
-msgstr ""
-
-#: ../src/stc-config.cpp:167
-msgid "Boxed"
-msgstr ""
-
-#: ../src/stc-config.cpp:168
-msgid "indented"
-msgstr ""
-
-#: ../src/stc-config.cpp:171
-msgid "Word"
-msgstr ""
-
-#: ../src/stc-config.cpp:172
-msgid "Char"
-msgstr ""
-
-#: ../src/stc-config.cpp:182
-msgid "Edge"
-msgstr ""
-
-#: ../src/stc-config.cpp:187
-msgid "Background"
-msgstr ""
-
-#: ../src/stc-config.cpp:188
-msgid "Multiline"
-msgstr ""
-
-#: ../src/stc-config.cpp:195 ../src/stc-config.cpp:266
-msgid "Autocomplete maxwidth"
-msgstr ""
-
-#: ../src/stc-config.cpp:197 ../src/stc-config.cpp:270
-msgid "Indentation guide"
-msgstr ""
-
-#: ../src/stc-config.cpp:200
-msgid "Line before expanded"
-msgstr ""
-
-#: ../src/stc-config.cpp:201
-msgid "Line before contracted"
-msgstr ""
-
-#: ../src/stc-config.cpp:202
-msgid "Line after expanded"
-msgstr ""
-
-#: ../src/stc-config.cpp:203
-msgid "Line after contracted"
-msgstr ""
-
-#: ../src/stc-config.cpp:204
-msgid "Level numbers"
-msgstr ""
-
-#: ../src/stc-config.cpp:206
-msgid "Directory"
-msgstr ""
-
-#: ../src/stc-config.cpp:209
-msgid "Printer"
-msgstr ""
-
-#: ../src/stc-config.cpp:211
-msgid "Normal"
-msgstr ""
-
-#: ../src/stc-config.cpp:212
-msgid "Invert on white"
-msgstr ""
-
-#: ../src/stc-config.cpp:213
-msgid "Black on white"
-msgstr ""
-
-#: ../src/stc-config.cpp:214
-msgid "Colour on white"
-msgstr ""
-
-#: ../src/stc-config.cpp:215
-msgid "Colour on white normal"
-msgstr ""
-
-#: ../src/stc.cpp:236
-msgid "Readonly attribute changed"
-msgstr ""
-
-#: ../src/stc.cpp:680
-msgid "Readonly"
-msgstr ""
-
-#: ../src/stc.cpp:756
-msgid "Replaced"
-msgstr ""
-
-#: ../src/stcfile.cpp:70
-msgid "Opened"
-msgstr ""
-
-#: ../src/stcfile.cpp:111
-msgid "Saved"
-msgstr ""
-
-#: ../src/stream.cpp:104
-msgid "Continue"
-msgstr ""
-
-#: ../src/stream.cpp:154 ../src/tool.cpp:46
 msgid "Files"
 msgstr ""
 
-#: ../src/tool.cpp:22
+msgid "Actions Completed"
+msgstr ""
+
+msgid "Busy"
+msgstr ""
+
+msgid "Open &Recent"
+msgstr ""
+
+msgid "Removed not existing file"
+msgstr ""
+
+msgid "fif.Max replacements"
+msgstr ""
+
+msgid "Continue"
+msgstr ""
+
 #, c-format
 msgid "Found %d matches in"
 msgstr ""
 
-#: ../src/tool.cpp:23
 #, c-format
 msgid "Replaced %d matches in"
 msgstr ""
 
-#: ../src/tool.cpp:25
-msgid "Report &Keyword"
-msgstr ""
-
-#: ../src/tool.cpp:25
-#, c-format
-msgid "Reported %d keywords in"
-msgstr ""
-
-#: ../src/tool.cpp:46
 msgid "file(s)"
 msgstr ""
 
-#: ../src/toolbar.cpp:184
-msgid "Search case sensitive"
+msgid "list.Comparator"
 msgstr ""
 
-#: ../src/toolbar.cpp:185
-msgid "Search matching words"
-msgstr ""
-
-#: ../src/toolbar.cpp:186
-msgid "Search using regular expressions"
-msgstr ""
-
-#: ../src/toolbar.cpp:199
-msgid "Find next"
-msgstr ""
-
-#: ../src/toolbar.cpp:204
-msgid "Find previous"
-msgstr ""
-
-#: ../src/toolbar.cpp:246
-msgid "View process"
-msgstr ""
-
-#: ../src/toolbar.cpp:247
-msgid "Open in hex mode"
-msgstr ""
-
-#: ../src/toolbar.cpp:248
-msgid "Synchronize modified files"
-msgstr ""
-
-#: ../src/util.cpp:258
 msgid "Compared"
 msgstr ""
 
-#: ../src/util.cpp:319
+msgid "Enter Lexer"
+msgstr ""
+
+msgid "Modified"
+msgstr ""
+
+msgid "Synchronized"
+msgstr ""
+
+msgid "Debugger"
+msgstr ""
+
+msgid "File Type"
+msgstr ""
+
+msgid "Lines or Items"
+msgstr ""
+
+msgid "Theme"
+msgstr ""
+
+msgid "stc.Search engine"
+msgstr ""
+
 msgid "bottom"
 msgstr ""
 
-#: ../src/util.cpp:319
 msgid "top"
 msgstr ""
 
-#: ../src/util.cpp:323
+msgid "Searching for"
+msgstr ""
+
 msgid "hit"
 msgstr ""
 
-#: ../src/util.cpp:332
+msgid "Error bells"
+msgstr ""
+
 msgid "not found"
 msgstr ""
 
-#: ../src/util.cpp:606
-msgid "Select Files"
+msgid "Input"
 msgstr ""
 
-#: ../src/util.cpp:650
-msgid "Page @PAGENUM@ of @PAGESCNT@"
+msgid "wex library (a library that offers windows ex and vi components)"
 msgstr ""
 
-#: ../src/util.cpp:665
-msgid "Printed"
-msgstr ""
-
-#: ../src/variable.cpp:110
-msgid "Could not expand variable"
-msgstr ""
-
-#: ../src/vcs.cpp:104
-msgid "Set VCS"
-msgstr ""
-
-#: ../src/vcs.cpp:134
-msgid "data"
-msgstr ""
-
-#: ../src/vcs.cpp:137 ../src/vcs.cpp:221 ../src/vcs.cpp:351 ../src/vcs.cpp:352
-#: ../src/vcs.cpp:363 ../src/vcs.cpp:367 ../src/vcs.cpp:380 ../src/vcs.cpp:415
-msgid "Base folder"
-msgstr ""
-
-#: ../src/vcs.cpp:346
-msgid "Select VCS Folder"
-msgstr ""
-
-#: ../src/vcs.cpp:399 ../src/vcs.cpp:421 ../src/vcsentry.cpp:152
-msgid "Flags"
-msgstr ""
-
-#: ../src/vcs.cpp:412 ../src/vcsentry.cpp:93
-msgid "Revision comment"
-msgstr ""
-
-#: ../src/vcs.cpp:418
-msgid "Path"
-msgstr ""
-
-#: ../src/vcs.cpp:427 ../src/vcsentry.cpp:48
-msgid "Prefix flags"
-msgstr ""
-
-#: ../src/vcs.cpp:430 ../src/vcsentry.cpp:60
-msgid "Subcommand"
-msgstr ""
-
-#: ../src/version.cpp:22
 msgid "All rights reserved."
 msgstr ""
 
-#: ../src/vi-macros-fsm.cpp:133
-msgid "Macro recording"
+msgid "stc.Wrap scan"
 msgstr ""
 
-#: ../src/vi-macros-fsm.cpp:233
+msgid "File Name"
+msgstr ""
+
+msgid "Line"
+msgstr ""
+
+msgid "Match"
+msgstr ""
+
+msgid "Line No"
+msgstr ""
+
+msgid "In Folder"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid "Size"
+msgstr ""
+
+msgid "Folder"
+msgstr ""
+
+msgid "Find Results"
+msgstr ""
+
+msgid "History"
+msgstr ""
+
+msgid "File"
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid "stc.Ex mode show hex"
+msgstr ""
+
+msgid "Show hidden"
+msgstr ""
+
+msgid "&Open"
+msgstr ""
+
+msgid "Find In Files"
+msgstr ""
+
+msgid "Replace In Files"
+msgstr ""
+
+msgid "Editor Options"
+msgstr ""
+
+msgid "replacing with"
+msgstr ""
+
+msgid "Find In Selection"
+msgstr ""
+
+msgid "Replace In Selection"
+msgstr ""
+
+msgid "Cancelled"
+msgstr ""
+
+msgid "Add Items"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "C&ompare"
+msgstr ""
+
+msgid "&Make"
+msgstr ""
+
+msgid "&Compare With"
+msgstr ""
+
+msgid "list.Context size"
+msgstr ""
+
+msgid "fif.Find what"
+msgstr ""
+
+msgid "fif.Match case"
+msgstr ""
+
+msgid "fif.Match whole word"
+msgstr ""
+
+msgid "fif.Regular expression"
+msgstr ""
+
+msgid "fif.Replace with"
+msgstr ""
+
+msgid "fif.Search down"
+msgstr ""
+
+msgid "stc.Edge column"
+msgstr ""
+
+msgid "Edge line"
+msgstr ""
+
+msgid "Whitespace visible"
+msgstr ""
+
+msgid "Tab draw mode"
+msgstr ""
+
+msgid "Use tabs"
+msgstr ""
+
+msgid "Tab width"
+msgstr ""
+
+msgid "Wrap line"
+msgstr ""
+
+msgid "stc.Indent"
+msgstr ""
+
+msgid "Enter Theme"
+msgstr ""
+
+msgid "stc.link.Include directory"
+msgstr ""
+
+msgid "Page @PAGENUM@ of @PAGESCNT@"
+msgstr ""
+
+msgid "Printed"
+msgstr ""
+
+msgid "stc.Default font"
+msgstr ""
+
+msgid "stc.Auto complete"
+msgstr ""
+
+msgid "stc.Auto indent"
+msgstr ""
+
+msgid "stc.Auto beautify"
+msgstr ""
+
+msgid "stc.Beautifier"
+msgstr ""
+
+msgid "Document is readonly"
+msgstr ""
+
+msgid "Enter Control Character"
+msgstr ""
+
+msgid "Control Character"
+msgstr ""
+
+msgid "stc.Wrap line"
+msgstr ""
+
+msgid "No markers present"
+msgstr ""
+
+msgid "Properties"
+msgstr ""
+
+msgid "&Preview"
+msgstr ""
+
+msgid "Open"
+msgstr ""
+
+msgid "Edge Column"
+msgstr ""
+
+msgid "Edge Column Reset"
+msgstr ""
+
+msgid "&Search"
+msgstr ""
+
+msgid "&Uppercase\tF11"
+msgstr ""
+
+msgid "&Lowercase\tF12"
+msgstr ""
+
+msgid "&Beautify"
+msgstr ""
+
+msgid "&Sort"
+msgstr ""
+
+msgid "&Selection"
+msgstr ""
+
+msgid "&Toggle Fold\tCtrl+T"
+msgstr ""
+
+msgid "&Fold All Lines\tF9"
+msgstr ""
+
+msgid "&Unfold All Lines\tF10"
+msgstr ""
+
+msgid "stc.Show match"
+msgstr ""
+
+msgid "Not allowed in hex mode"
+msgstr ""
+
+msgid "Opened"
+msgstr ""
+
+msgid "Saved"
+msgstr ""
+
+msgid "Enter Line Number"
+msgstr ""
+
+msgid "Enter Sort Position"
+msgstr ""
+
+msgid "stc.Edge line"
+msgstr ""
+
+msgid "stc.Annotation style"
+msgstr ""
+
+msgid "stc.Autocomplete maxwidth"
+msgstr ""
+
+msgid "stc.Caret line"
+msgstr ""
+
+msgid "stc.Fold flags"
+msgstr ""
+
+msgid "stc.Indentation guide"
+msgstr ""
+
+msgid "stc.margin.Divider"
+msgstr ""
+
+msgid "stc.Print flags"
+msgstr ""
+
+msgid "stc.Tab draw mode"
+msgstr ""
+
+msgid "stc.Tab width"
+msgstr ""
+
+msgid "stc.Scroll bars"
+msgstr ""
+
+msgid "stc.Use tabs"
+msgstr ""
+
+msgid "stc.End of line"
+msgstr ""
+
+msgid "stc.Whitespace visible"
+msgstr ""
+
+msgid "stc.Wrap visual flags"
+msgstr ""
+
+msgid "stc.margin.Folding"
+msgstr ""
+
+msgid "stc.vi mode"
+msgstr ""
+
+msgid "stc.Line numbers"
+msgstr ""
+
+msgid "stc.Keep zoom"
+msgstr ""
+
+msgid "General"
+msgstr ""
+
+msgid "Switches"
+msgstr ""
+
+msgid "stc.Auto blame"
+msgstr ""
+
+msgid "stc.vi tag fullpath"
+msgstr ""
+
+msgid "Choices"
+msgstr ""
+
+msgid "End"
+msgstr ""
+
+msgid "Start"
+msgstr ""
+
+msgid "Margin"
+msgstr ""
+
+msgid "Longarrow"
+msgstr ""
+
+msgid "Strikeout"
+msgstr ""
+
+msgid "Off"
+msgstr ""
+
+msgid "After indent"
+msgstr ""
+
+msgid "Always"
+msgstr ""
+
+msgid "Only indent"
+msgstr ""
+
+msgid "Hidden"
+msgstr ""
+
+msgid "Standard"
+msgstr ""
+
+msgid "Boxed"
+msgstr ""
+
+msgid "indented"
+msgstr ""
+
+msgid "Word"
+msgstr ""
+
+msgid "Char"
+msgstr ""
+
+msgid "Whitespace"
+msgstr ""
+
+msgid "Font"
+msgstr ""
+
+msgid "stc.Text font"
+msgstr ""
+
+msgid "Edge"
+msgstr ""
+
+msgid "Background"
+msgstr ""
+
+msgid "Multiline"
+msgstr ""
+
+msgid "<i>Margins:</i>"
+msgstr ""
+
+msgid "<i>Line Margins:</i>"
+msgstr ""
+
+msgid "stc.margin.Line number"
+msgstr ""
+
+msgid "stc.margin.Text"
+msgstr ""
+
+msgid "<i>Max:</i>"
+msgstr ""
+
+msgid "stc.max.Size visual"
+msgstr ""
+
+msgid "stc.max.Size lexer"
+msgstr ""
+
+msgid "Folding"
+msgstr ""
+
+msgid "stc.Auto fold"
+msgstr ""
+
+msgid "Line before expanded"
+msgstr ""
+
+msgid "Line before contracted"
+msgstr ""
+
+msgid "Line after expanded"
+msgstr ""
+
+msgid "Line after contracted"
+msgstr ""
+
+msgid "Level numbers"
+msgstr ""
+
+msgid "Linking"
+msgstr ""
+
+msgid "<i>Includes:</i>"
+msgstr ""
+
+msgid "<i>Matches:</i>"
+msgstr ""
+
+msgid "stc.link.Pairs"
+msgstr ""
+
+msgid "Printer"
+msgstr ""
+
+msgid "Normal"
+msgstr ""
+
+msgid "Invert on white"
+msgstr ""
+
+msgid "Black on white"
+msgstr ""
+
+msgid "Colour on white"
+msgstr ""
+
+msgid "Colour on white normal"
+msgstr ""
+
+msgid "Enter Debugger"
+msgstr ""
+
+msgid "Select Files"
+msgstr ""
+
+msgid "Enter Byte Offset"
+msgstr ""
+
+msgid "Process folder"
+msgstr ""
+
+msgid "Process"
+msgstr ""
+
+msgid "Select Process"
+msgstr ""
+
+msgid "Readonly attribute changed"
+msgstr ""
+
+msgid "Readonly"
+msgstr ""
+
+msgid "Replaced"
+msgstr ""
+
+msgid "vcs.Prefix flags"
+msgstr ""
+
+msgid "vcs.Subcommand"
+msgstr ""
+
+msgid "vcs.Revision comment"
+msgstr ""
+
+msgid "vcs.Flags"
+msgstr ""
+
+msgid "vcs.Base folder"
+msgstr ""
+
+msgid "Set VCS"
+msgstr ""
+
+msgid "vcs.Path"
+msgstr ""
+
+msgid "Select VCS Folder"
+msgstr ""
+
+msgid "All Files"
+msgstr ""
+
+msgid "Save changes"
+msgstr ""
+
+msgid "Confirm"
+msgstr ""
+
+msgid "Save changes to"
+msgstr ""
+
+msgid "&Findbar"
+msgstr ""
+
+msgid "&Optionsbar"
+msgstr ""
+
+msgid "&Toolbar"
+msgstr ""
+
+msgid "&Process"
+msgstr ""
+
+msgid "Find"
+msgstr ""
+
+msgid "Replace"
+msgstr ""
+
+msgid "Toolbar"
+msgstr ""
+
+msgid "Findbar"
+msgstr ""
+
+msgid "Optionsbar"
+msgstr ""
+
+msgid "list.Readonly colour"
+msgstr ""
+
+msgid "list.Header"
+msgstr ""
+
+msgid "list.Single selection"
+msgstr ""
+
+msgid "list.Sort method"
+msgstr ""
+
+msgid "Sort ascending"
+msgstr ""
+
+msgid "Sort descending"
+msgstr ""
+
+msgid "Sort toggle"
+msgstr ""
+
+msgid "list.Rulers"
+msgstr ""
+
+msgid "Horizontal rulers"
+msgstr ""
+
+msgid "Vertical rulers"
+msgstr ""
+
+msgid "list.Font"
+msgstr ""
+
+msgid "Colour"
+msgstr ""
+
+msgid "Enter Item Number"
+msgstr ""
+
+msgid "Sort On"
+msgstr ""
+
+msgid "List Options"
+msgstr ""
+
+msgid "Folder Type"
+msgstr ""
+
+msgid "Sorted on"
+msgstr ""
+
+msgid "&Menubar\tCtrl+M"
+msgstr ""
+
+msgid "&Statusbar"
+msgstr ""
+
+msgid "&Deselect All"
+msgstr ""
+
+msgid "&Invert"
+msgstr ""
+
+msgid "Page &Setup"
+msgstr ""
+
+msgid "&Tools"
+msgstr ""
+
+msgid "tab.Font"
+msgstr ""
+
+msgid "tab.Art provider"
+msgstr ""
+
+msgid "Tab Options"
+msgstr ""
+
+msgid "Datasource"
+msgstr ""
+
+msgid "Open ODBC Connection"
+msgstr ""
+
+msgid "User"
+msgstr ""
+
+msgid "Password"
+msgstr ""
+
+msgid "<Skipped>"
+msgstr ""
+
+msgid "View process"
+msgstr ""
+
+msgid "Open in hex mode"
+msgstr ""
+
+msgid "Synchronize modified files"
+msgstr ""
+
+msgid "Find next"
+msgstr ""
+
+msgid "Find previous"
+msgstr ""
+
+msgid "Search matching words"
+msgstr ""
+
+msgid "Search case sensitive"
+msgstr ""
+
+msgid "Search using regular expressions"
+msgstr ""
+
+msgid "with"
+msgstr ""
+
+msgid "Select File"
+msgstr ""
+
+msgid "stc.Auto write"
+msgstr ""
+
+msgid "Auto complete"
+msgstr ""
+
+msgid "stc.Error bells"
+msgstr ""
+
+msgid "stc.Show mode"
+msgstr ""
+
+#, c-format
+msgid "%d lines added"
+msgstr ""
+
+#, c-format
+msgid "%d lines copied"
+msgstr ""
+
+#, c-format
+msgid "%d fewer lines"
+msgstr ""
+
+#, c-format
+msgid "%d lines moved"
+msgstr ""
+
+#, c-format
+msgid "%d lines yanked"
+msgstr ""
+
 msgid "Macro expanded"
 msgstr ""
 
-#: ../src/vi-macros-fsm.cpp:291
 msgid "Variable expanded"
 msgstr ""
 
-#: ../src/vi-macros-fsm.cpp:318
 msgid "Macro aborted at"
 msgstr ""
 
-#: ../src/vi-macros-fsm.cpp:329
 msgid "Macro played back"
 msgstr ""
 
-#: ../src/vi-macros-mode.cpp:30
+msgid "Macro recording"
+msgstr ""
+
 msgid "Select Macro"
 msgstr ""
 
-#: ../src/vi-macros-mode.cpp:104
 msgid "Enter Macro"
+msgstr ""
+
+msgid "Could not expand variable"
 msgstr ""

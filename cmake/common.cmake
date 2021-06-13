@@ -136,12 +136,10 @@ function(wex_process_po_files)
           INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
           PO_FILES ${filename})
 
-        if (${ARGC} GREATER 0)
-          set(wxWidgets_ROOT_DIR ${CMAKE_SOURCE_DIR}/external/wxWidgets)
-          gettext_process_po_files(${locale} ALL 
-            INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
-            PO_FILES ${wxWidgets_ROOT_DIR}/locale/${lang}.po)
-        endif ()
+        set(wxWidgets_ROOT_DIR ${CMAKE_SOURCE_DIR}/external/wxWidgets)
+        gettext_process_po_files(${locale} ALL 
+          INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
+          PO_FILES ${wxWidgets_ROOT_DIR}/locale/${lang}.po)
       
       endforeach()
   endif()

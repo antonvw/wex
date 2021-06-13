@@ -242,7 +242,7 @@ bool wex::vcs::execute()
   if (current_path().empty())
   {
     return m_entry.execute(
-      m_entry.get_command().is_add() ? config(_("vcs.data")).get_first_of() :
+      m_entry.get_command().is_add() ? config(_("vcs.Path")).get_first_of() :
                                        std::string(),
       lexer(),
       config(_("vcs.Base folder")).get_first_of());
@@ -295,8 +295,8 @@ const std::string wex::vcs::get_branch() const
   return config("vcs.VCS").get(VCS_AUTO) == VCS_NONE ?
            std::string() :
            m_entry.get_branch(
-             current_path().file_exists() ? current_path().parent_path() : 
-             current_path().string());
+             current_path().file_exists() ? current_path().parent_path() :
+                                            current_path().string());
 }
 
 bool wex::vcs::load_document()
@@ -472,7 +472,9 @@ int wex::vcs::show_dialog(const data::window& arg)
 
 wex::path wex::vcs::toplevel() const
 {
-  return vcs_admin(m_entry.admin_dir(), m_files.empty() ? current_path() : m_files[0])
+  return vcs_admin(
+           m_entry.admin_dir(),
+           m_files.empty() ? current_path() : m_files[0])
     .toplevel();
 }
 

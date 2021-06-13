@@ -5,6 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <stdlib.h>
 #include <wex/config.h>
 #include <wex/frd.h>
 #include <wex/log.h>
@@ -43,10 +44,10 @@ wex::textctrl_input::textctrl_input(ex_command::type_t type)
             return std::string("ex-cmd.other");
         }
       }(type))
-  , m_values(config(m_name).get(std::list<std::string>{}))
+  , m_values(config(m_name).get(values_t{}))
   , m_iterator(m_values.cbegin())
 {
-  if (m_values.size() > 0)
+  if (!m_values.empty())
   {
     log::trace("load") << m_name << "size:" << m_values.size();
   }
@@ -54,10 +55,36 @@ wex::textctrl_input::textctrl_input(ex_command::type_t type)
 
 wex::textctrl_input::~textctrl_input()
 {
-  if (m_values.size() > 0)
+  if (!m_values.empty())
   {
-    wex::config(m_name).set(m_values);
-    log::trace("save") << m_name << "size:" << m_values.size();
+    const int max_ints{5};
+    int       current{0};
+
+    values_t filtered;
+
+    for (const auto& v : m_values)
+    {
+      // If this value is an int, ignore value if we reached max
+      if (strtol(v.c_str(), nullptr, 0) != 0)
+      {
+        if (current++ >= max_ints)
+        {
+          continue;
+        }
+      }
+
+      filtered.emplace_back(v);
+    }
+
+    std::stringstream info;
+
+    if (const auto diff(m_values.size() - filtered.size()); diff > 0)
+    {
+      info << "filtered:" << diff;
+    }
+
+    wex::config(m_name).set(filtered);
+    log::trace("save") << m_name << "size:" << filtered.size() << info;
   }
 }
 
@@ -161,7 +188,7 @@ bool wex::textctrl_input::set(int key, textctrl* tc)
   return true;
 }
 
-void wex::textctrl_input::set(const std::list<std::string>& values)
+void wex::textctrl_input::set(const values_t& values)
 {
   m_values.assign(values.cbegin(), values.cend());
   m_iterator = m_values.cbegin();

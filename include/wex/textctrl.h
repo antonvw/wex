@@ -21,7 +21,7 @@ class stc;
 class frame;
 class textctrl_imp;
 
-/// Offers a text ctrl related to a ex object.
+/// Offers a text ctrl related to a factory::stc object.
 class textctrl
 {
 public:
@@ -40,9 +40,6 @@ public:
   /// Returns frame.
   auto* get_frame() { return m_frame; }
 
-  /// Returns stc component.
-  auto* stc() { return m_stc; }
-
   /// Get string value.
   const std::string get_text() const;
 
@@ -56,12 +53,15 @@ public:
   /// Returns false if command not supported.
   bool set_stc(wex::factory::stc* stc, const std::string& command);
 
-  /// Sets ex component using char command.
+  /// Sets stc component using char command.
   /// Returns false if command not supported.
   bool set_stc(wex::factory::stc* stc, char command);
 
   /// Sets text.
   void set_text(const std::string& text);
+
+  /// Returns stc component.
+  auto* stc() { return m_stc; }
 
 private:
   wex::factory::stc* m_stc{nullptr};

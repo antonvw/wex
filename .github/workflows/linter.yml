@@ -23,7 +23,7 @@ jobs:
         VALIDATE_XML: false
 
         # exclude xsl, all externals
-        FILTER_REGEX_EXCLUDE: .*data/*.xsl|external|src/lexers|external
+        FILTER_REGEX_EXCLUDE: .*data/*.xsl|external|src/lexers|locale/po-sync.sh
 
         # cpplint
         C_CPPLINT_ARGUMENTS: --quiet --filter=-build,-readability/fn_size,-readability/multiline_string,-runtime/explicit,-runtime/indentation_namespace,-runtime/int,-runtime/references,-whitespace

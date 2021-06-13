@@ -5,8 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <stdio.h>
-#include <string.h>
+#include <cassert>
 #include <wex/addressrange.h>
 #include <wex/ex.h>
 #include <wex/frd.h>
