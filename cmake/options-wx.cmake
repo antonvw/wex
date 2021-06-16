@@ -1,13 +1,12 @@
 # External options: turn off all we do not need 
 # (regex is needed by jsscriptwrapper.h)
 
-option(wxBUILD_INSTALL "Create install/uninstall target for wxWidgets" OFF)
-
 # option to change toolkit
 # set(wxBUILD_TOOLKIT "gtk3")
 
-# See comment in root CMakeLists.
-# set(wxBUILD_CXX_STANDARD 17 CACHE INTERNAL "WX_CXX_STANDARD")
+set(wxBUILD_CXX_STANDARD 20 CACHE INTERNAL "WX_CXX_STANDARD")
+
+option(wxBUILD_INSTALL "Create install/uninstall target for wxWidgets" OFF)
 
 option(wxUSE_CMDLINE_PARSER "Use cmdline parser" OFF)
 option(wxUSE_EXPAT "Use expat" OFF)

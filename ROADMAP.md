@@ -1,8 +1,8 @@
 # roadmap
+- use boost::algorithm::hex
 
 ## backlog
 - use modules
-- clang asan build using LeakSanitizer
 
 - start up with recent project, close project
   -> windows appear

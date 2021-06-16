@@ -76,6 +76,11 @@ include_directories(${Boost_INCLUDE_DIRS})
 include(cmake/options.cmake)
 include(cmake/common.cmake)
 
+if (wexENABLE_ASAN)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address")
+endif ()
+
 add_subdirectory(src)
 
 if (wexBUILD_SAMPLES)
