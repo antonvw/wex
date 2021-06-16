@@ -51,6 +51,15 @@ make test
 make lcov
 ```
 
+- asan Leak Sanitizer can be used by adding -DwexENABLE_ASAN=ON to cmake
+
+```bash
+cmake -DwexENABLE_ASAN=ON -DwexBUILD_TESTS=ON ..
+make
+export ASAN_OPTIONS=detect_leaks=1,detect_container_overflow=0
+./test/core/wex-test-core
+```
+
 - Do a pull request from the feature branch to the develop branch
 
 ## Boost build

@@ -26,11 +26,11 @@ namespace sc  = boost::statechart;
 
 namespace wex
 {
-struct ssACTIVE;
+struct ssvACTIVE;
 
 /// This class offers the vi mode state machine
 /// and initially enters the active mode.
-class vi_fsm : public sc::state_machine<vi_fsm, ssACTIVE>
+class vi_fsm : public sc::state_machine<vi_fsm, ssvACTIVE>
 {
 public:
   vi_fsm(
@@ -121,30 +121,30 @@ struct evVISUAL_BLOCK : sc::event<evVISUAL_BLOCK>
 };
 
 // Forward the simple states.
-struct ssCOMMAND;
-struct ssTEXTINPUT;
-struct ssVISUAL;
-struct ssVISUAL_LINE;
-struct ssVISUAL_MODE;
-struct ssVISUAL_BLOCK;
-struct ssVISUAL_BLOCK_TEXTINPUT;
+struct ssvCOMMAND;
+struct ssvTEXTINPUT;
+struct ssvVISUAL;
+struct ssvVISUAL_LINE;
+struct ssvVISUAL_MODE;
+struct ssvVISUAL_BLOCK;
+struct ssvVISUAL_BLOCK_TEXTINPUT;
 
 // Implement the simple states.
-struct ssACTIVE : sc::simple_state<ssACTIVE, vi_fsm, ssCOMMAND>
+struct ssvACTIVE : sc::simple_state<ssvACTIVE, vi_fsm, ssvCOMMAND>
 {
 };
 
-struct ssCOMMAND : sc::state<ssCOMMAND, ssACTIVE>
+struct ssvCOMMAND : sc::state<ssvCOMMAND, ssvACTIVE>
 {
   typedef mpl::list<
-    sc::transition<evESCAPE, ssCOMMAND>,
+    sc::transition<evESCAPE, ssvCOMMAND>,
     sc::custom_reaction<evINSERT>,
-    sc::transition<evVISUAL, ssVISUAL_MODE>,
-    sc::transition<evVISUAL_LINE, ssVISUAL_LINE>,
-    sc::transition<evVISUAL_BLOCK, ssVISUAL_BLOCK>>
+    sc::transition<evVISUAL, ssvVISUAL_MODE>,
+    sc::transition<evVISUAL_LINE, ssvVISUAL_LINE>,
+    sc::transition<evVISUAL_BLOCK, ssvVISUAL_BLOCK>>
     reactions;
 
-  explicit ssCOMMAND(my_context ctx)
+  explicit ssvCOMMAND(my_context ctx)
     : my_base(ctx)
   {
     log::trace("vi mode") << "command";
@@ -154,15 +154,15 @@ struct ssCOMMAND : sc::state<ssCOMMAND, ssACTIVE>
   sc::result react(const evINSERT&)
   {
     return context<vi_fsm>().get_stc()->GetReadOnly() ? forward_event() :
-                                                        transit<ssTEXTINPUT>();
+                                                        transit<ssvTEXTINPUT>();
   };
 };
 
-struct ssTEXTINPUT : sc::state<ssTEXTINPUT, ssACTIVE>
+struct ssvTEXTINPUT : sc::state<ssvTEXTINPUT, ssvACTIVE>
 {
   typedef sc::custom_reaction<evESCAPE> reactions;
 
-  explicit ssTEXTINPUT(my_context ctx)
+  explicit ssvTEXTINPUT(my_context ctx)
     : my_base(ctx)
   {
     log::trace("vi mode") << "insert";
@@ -173,23 +173,23 @@ struct ssTEXTINPUT : sc::state<ssTEXTINPUT, ssACTIVE>
   sc::result react(const evESCAPE&)
   {
     context<vi_fsm>().command_mode();
-    return transit<ssCOMMAND>();
+    return transit<ssvCOMMAND>();
   };
 };
 
-struct ssVISUAL_MODE : sc::simple_state<ssVISUAL_MODE, ssACTIVE, ssVISUAL>
+struct ssvVISUAL_MODE : sc::simple_state<ssvVISUAL_MODE, ssvACTIVE, ssvVISUAL>
 {
   typedef mpl::list<
-    sc::transition<evESCAPE, ssCOMMAND>,
-    sc::transition<evVISUAL, ssVISUAL>,
-    sc::transition<evVISUAL_LINE, ssVISUAL_LINE>,
-    sc::transition<evVISUAL_BLOCK, ssVISUAL_BLOCK>>
+    sc::transition<evESCAPE, ssvCOMMAND>,
+    sc::transition<evVISUAL, ssvVISUAL>,
+    sc::transition<evVISUAL_LINE, ssvVISUAL_LINE>,
+    sc::transition<evVISUAL_BLOCK, ssvVISUAL_BLOCK>>
     reactions;
 };
 
-struct ssVISUAL : sc::state<ssVISUAL, ssVISUAL_MODE>
+struct ssvVISUAL : sc::state<ssvVISUAL, ssvVISUAL_MODE>
 {
-  explicit ssVISUAL(my_context ctx)
+  explicit ssvVISUAL(my_context ctx)
     : my_base(ctx)
   {
     log::trace("vi mode") << "visual";
@@ -197,9 +197,9 @@ struct ssVISUAL : sc::state<ssVISUAL, ssVISUAL_MODE>
   };
 };
 
-struct ssVISUAL_LINE : sc::state<ssVISUAL_LINE, ssVISUAL_MODE>
+struct ssvVISUAL_LINE : sc::state<ssvVISUAL_LINE, ssvVISUAL_MODE>
 {
-  explicit ssVISUAL_LINE(my_context ctx)
+  explicit ssvVISUAL_LINE(my_context ctx)
     : my_base(ctx)
   {
     log::trace("vi mode") << "visual line";
@@ -207,11 +207,11 @@ struct ssVISUAL_LINE : sc::state<ssVISUAL_LINE, ssVISUAL_MODE>
   };
 };
 
-struct ssVISUAL_BLOCK : sc::state<ssVISUAL_BLOCK, ssVISUAL_MODE>
+struct ssvVISUAL_BLOCK : sc::state<ssvVISUAL_BLOCK, ssvVISUAL_MODE>
 {
-  typedef sc::transition<evINSERT, ssVISUAL_BLOCK_TEXTINPUT> reactions;
+  typedef sc::transition<evINSERT, ssvVISUAL_BLOCK_TEXTINPUT> reactions;
 
-  explicit ssVISUAL_BLOCK(my_context ctx)
+  explicit ssvVISUAL_BLOCK(my_context ctx)
     : my_base(ctx)
   {
     log::trace("vi mode") << "visual block";
@@ -219,12 +219,12 @@ struct ssVISUAL_BLOCK : sc::state<ssVISUAL_BLOCK, ssVISUAL_MODE>
   };
 };
 
-struct ssVISUAL_BLOCK_TEXTINPUT
-  : sc::state<ssVISUAL_BLOCK_TEXTINPUT, ssVISUAL_MODE>
+struct ssvVISUAL_BLOCK_TEXTINPUT
+  : sc::state<ssvVISUAL_BLOCK_TEXTINPUT, ssvVISUAL_MODE>
 {
-  typedef sc::transition<evESCAPE, ssVISUAL_BLOCK> reactions;
+  typedef sc::transition<evESCAPE, ssvVISUAL_BLOCK> reactions;
 
-  explicit ssVISUAL_BLOCK_TEXTINPUT(my_context ctx)
+  explicit ssvVISUAL_BLOCK_TEXTINPUT(my_context ctx)
     : my_base(ctx)
   {
     log::trace("vi mode") << "visual block insert";

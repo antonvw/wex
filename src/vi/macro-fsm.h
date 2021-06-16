@@ -17,13 +17,13 @@ class variable;
 class macro_mode;
 
 // Forward the simple states.
-struct ssACTIVE;
-struct ssIDLE;
-struct ssRECORDING;
+struct ssmACTIVE;
+struct ssmIDLE;
+struct ssmRECORDING;
 
 /// This class offers the state machine
 /// and initially enters the idle mode.
-class macro_fsm : public sc::state_machine<macro_fsm, ssACTIVE>
+class macro_fsm : public sc::state_machine<macro_fsm, ssmACTIVE>
 {
 public:
   enum state_t
