@@ -9,7 +9,6 @@
 #include <wex/data/stc.h>
 #include <wex/factory/stc.h>
 #include <wex/indicator.h>
-#include <wex/log.h>
 #include <wex/path.h>
 
 wex::data::stc::stc(wex::factory::stc* stc)
@@ -95,20 +94,17 @@ bool wex::data::stc::inject() const
           line = m_data.line() - 1;
         }
 
-        const auto prev_line(
-          m_stc->is_visual() ? line: m_stc->GetLineCount() - 1);
-        
         m_stc->goto_line(line);
 
-        const auto gotoline(
-          m_stc->is_visual() ? line : m_stc->GetLineCount() - 2);
-
-        m_stc->set_indicator(
-          indicator(m_indicator_no),
-          std::max(m_stc->PositionFromLine(prev_line), 0),
-          m_data.col() > 0 ?
-            m_stc->PositionFromLine(gotoline) + m_data.col() - 1 :
-            m_stc->GetLineEndPosition(gotoline));
+        if (m_stc->is_visual())
+        {
+          m_stc->set_indicator(
+            indicator(m_indicator_no),
+            std::max(m_stc->PositionFromLine(line), 0),
+            m_data.col() > 0 ?
+              m_stc->PositionFromLine(line) + m_data.col() - 1 :
+              m_stc->GetLineEndPosition(line));
+        }
       }
       else if (m_data.line() == NUMBER_NOT_SET)
       {

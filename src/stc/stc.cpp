@@ -449,6 +449,11 @@ void wex::stc::guess_type_and_modeline()
   m_frame->update_statusbar(this, "PaneFileType");
 }
 
+bool wex::stc::inject(const data::control& data)
+{
+  return m_data.control(data).inject();
+}
+
 void wex::stc::insert_text(int pos, const std::string& text)
 {
   if (m_vi->visual() == ex::EX)
@@ -927,6 +932,7 @@ bool wex::stc::set_indicator(const indicator& indicator, int start, int end)
   }
   else if (end - start == 0)
   {
+    log::trace("indicator") << start << end;
   }
 
   return true;

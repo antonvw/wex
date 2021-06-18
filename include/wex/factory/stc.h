@@ -22,8 +22,9 @@ class lexer;
 
 namespace data
 {
+class control;
 class stc;
-};
+}; // namespace data
 
 namespace factory
 {
@@ -118,6 +119,9 @@ public:
   {
     return std::string();
   };
+
+  /// Injects data.
+  virtual bool inject(const data::control& data) { return false; }
 
   // Inserts text at pos.
   virtual void insert_text(int pos, const std::string& text)

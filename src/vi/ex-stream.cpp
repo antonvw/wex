@@ -502,6 +502,8 @@ void wex::ex_stream::set_text()
 {
   m_stc->SetReadOnly(false);
 
+  int lines = 2;
+
   if (!m_stc->is_hexmode())
   {
     m_stc->AppendText(m_current_line);
@@ -509,7 +511,9 @@ void wex::ex_stream::set_text()
   }
   else
   {
-    m_stc->AppendText(m_stc->get_hexmode_lines(m_current_line));
+    const auto& text(m_stc->get_hexmode_lines(m_current_line));
+    lines = get_number_of_lines(text) + 1;
+    m_stc->AppendText(text);
     m_stc->AppendText("\n");
   }
 
@@ -523,6 +527,11 @@ void wex::ex_stream::set_text()
   m_stc->SetSavePoint();
   m_stc->SetReadOnly(true);
   m_stc->use_modification_markers(false);
+
+  m_stc->set_indicator(
+    indicator(wex::data::stc().indicator_no()),
+    std::max(m_stc->PositionFromLine(m_stc->GetLineCount() - lines), 0),
+    m_stc->GetLineEndPosition(m_stc->GetLineCount() - 1));
 }
 
 void wex::ex_stream::stream(file& f)

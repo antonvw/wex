@@ -28,6 +28,21 @@
     Then you do export LANG=..., or change the /etc/default/locale.
 
   - To add translation files add -DwexENABLE_GETTEXT=ON to cmake.
+  
+## Analyse it
+
+At github some code analysers will do this, it is also possible to do
+some local checks:
+
+- codespell.sh
+- cppcheck.sh
+- cpplint.bash
+
+```bash
+../ci/codespell.sh
+../ci/cppcheck.sh
+../ci/cpplint.bash ../src/core/*.cpp
+```
 
 ## Test it
 - add a test (and update sample)

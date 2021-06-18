@@ -491,7 +491,7 @@ bool wex::ex::address_parse(
     {
       type = address_t::NONE;
       const auto line(address(this, text).get_line());
-      return data::stc(get_stc()).control(data::control().line(line)).inject();
+      return get_stc()->inject(data::control().line(line));
     }
 
     if (range.empty() && cmd != '!')
@@ -988,7 +988,7 @@ bool wex::ex::marker_goto(char marker)
 {
   if (const auto line = marker_line(marker); line != LINE_NUMBER_UNKNOWN)
   {
-    data::stc(get_stc()).control(data::control().line(line + 1)).inject();
+    get_stc()->inject(data::control().line(line + 1));
     return true;
   }
 
