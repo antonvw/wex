@@ -5,6 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/algorithm/hex.hpp>
 #include <wex/factory/hexmode.h>
 #include <wex/factory/stc.h>
 
@@ -28,25 +29,22 @@ void wex::factory::hexmode::deactivate()
 const std::string
 wex::factory::hexmode::line(const std::string& text, size_t offset) const
 {
-  std::string field_hex, field_ascii;
+  std::stringstream field_hex, field_ascii;
 
   auto count = text.size() - offset;
   count      = (m_bytes_per_line < count ? m_bytes_per_line : count);
 
   for (size_t byte = 0; byte < count; byte++)
   {
-    const unsigned char c = text[offset + byte];
-
-    char buff[4];
-    snprintf(buff, sizeof(buff), "%02X ", c);
-    field_hex += buff;
-    field_ascii += printable(c);
+    field_hex << boost::algorithm::hex(std::string(1, text[offset + byte]))
+              << " ";
+    field_ascii << printable(text[offset + byte]);
   }
 
   const auto field_spaces =
     std::string((m_bytes_per_line - count) * m_each_hex_field, ' ');
 
-  return field_hex + field_spaces + field_ascii +
+  return field_hex.str() + field_spaces + field_ascii.str() +
          (text.size() - offset > m_bytes_per_line ? m_stc->eol() :
                                                     std::string());
 }

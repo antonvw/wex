@@ -225,6 +225,7 @@ public:
   const std::string get_word_at_pos(int pos) const override;
 
   void goto_line(int line) override;
+  bool inject(const data::control& data) override;
   void insert_text(int pos, const std::string& text) override;
   bool is_hexmode() const override { return m_hexmode.is_active(); }
   bool is_visual() const override;

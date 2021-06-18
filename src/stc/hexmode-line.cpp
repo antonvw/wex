@@ -5,6 +5,7 @@
 // Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/algorithm/hex.hpp>
 #include <wex/factory/stc.h>
 
 #include "hexmode-line.h"
@@ -81,7 +82,7 @@ int wex::hexmode_line::buffer_index() const
 
 bool wex::hexmode_line::erase(int count, bool settext)
 {
-  const int index = buffer_index();
+  const auto index = buffer_index();
 
   if (
     is_readonly() || index == wxSTC_INVALID_POSITION ||
@@ -121,7 +122,7 @@ const std::string wex::hexmode_line::info() const
 
 bool wex::hexmode_line::insert(const std::string& text)
 {
-  const int index = buffer_index();
+  const auto index = buffer_index();
 
   if (is_readonly() || index == wxSTC_INVALID_POSITION)
     return false;
@@ -163,12 +164,12 @@ bool wex::hexmode_line::insert(const std::string& text)
 
 bool wex::hexmode_line::replace(char c)
 {
-  const int index = buffer_index();
+  const auto index = buffer_index();
 
   if (is_readonly() || index == wxSTC_INVALID_POSITION)
     return false;
 
-  const int pos = m_hex->get_stc()->PositionFromLine(m_line_no);
+  const auto pos = m_hex->get_stc()->PositionFromLine(m_line_no);
 
   // Because m_buffer is changed, begin and end undo action
   // cannot be used, as these do not operate on the hex buffer.
@@ -182,13 +183,10 @@ bool wex::hexmode_line::replace(char c)
       c);
 
     // replace hex field with code
-    char buffer[3];
-    snprintf(buffer, sizeof(buffer), "%02X", c);
-
     m_hex->get_stc()->wxStyledTextCtrl::Replace(
       pos + other_field(),
       pos + other_field() + 2,
-      buffer);
+      boost::algorithm::hex(std::string(1, c)));
   }
   else if (is_hex_field())
   {
@@ -216,7 +214,7 @@ bool wex::hexmode_line::replace(char c)
       hex += m_line[m_column_no];
     }
 
-    const int code = std::stoi(hex, nullptr, 16);
+    const auto code = std::stoi(hex, nullptr, 16);
 
     m_hex->get_stc()->wxStyledTextCtrl::Replace(
       pos + other_field(),
@@ -237,7 +235,7 @@ bool wex::hexmode_line::replace(char c)
 
 void wex::hexmode_line::replace(const std::string& hex, bool settext)
 {
-  const int index = buffer_index();
+  const auto index = buffer_index();
 
   if (is_readonly() || index == wxSTC_INVALID_POSITION)
     return;
@@ -252,21 +250,18 @@ void wex::hexmode_line::replace(const std::string& hex, bool settext)
 
 void wex::hexmode_line::replace_hex(int value)
 {
-  const int index = buffer_index();
+  const auto index = buffer_index();
 
   if (is_readonly() || index == wxSTC_INVALID_POSITION)
     return;
 
-  const int pos = m_hex->get_stc()->PositionFromLine(m_line_no);
-
-  char buffer[3];
-  snprintf(buffer, sizeof(buffer), "%2X", value);
+  const auto pos = m_hex->get_stc()->PositionFromLine(m_line_no);
 
   // replace hex field with value
   m_hex->get_stc()->wxStyledTextCtrl::Replace(
     pos + m_column_no,
     pos + m_column_no + 2,
-    buffer);
+    boost::algorithm::hex(std::string(1, value)));
 
   // replace ascii field with code
   m_hex->get_stc()->wxStyledTextCtrl::Replace(

@@ -1,5 +1,4 @@
 # roadmap
-- use boost::algorithm::hex
 
 ## backlog
 - use modules

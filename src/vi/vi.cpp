@@ -291,9 +291,7 @@ wex::vi::vi(wex::factory::stc* arg, mode_t ex_mode)
                          }
                          else
                          {
-                           (void)data::stc(get_stc())
-                             .control(data::control().line(m_count))
-                             .inject();
+                           get_stc()->inject(data::control().line(m_count));
                          }
                          return 1;
                        }},

@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: wex 21.10\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-06-13 09:09+0200\n"
-"PO-Revision-Date: 2021-06-13 14:21+0200\n"
+"PO-Revision-Date: 2021-06-18 14:22+0200\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -774,10 +774,10 @@ msgid "Multiline"
 msgstr "Meerdere regels"
 
 msgid "<i>Margins:</i>"
-msgstr "<li>Breedtes:</li>"
+msgstr "<i>Breedtes:</i>"
 
 msgid "<i>Line Margins:</i>"
-msgstr "<li>Regel breedtes:</li>"
+msgstr "<i>Regel breedtes:</i>"
 
 msgid "stc.margin.Line number"
 msgstr "stc.margin.Regel nummer"
@@ -786,7 +786,7 @@ msgid "stc.margin.Text"
 msgstr "stc.margin.Tekst"
 
 msgid "<i>Max:</i>"
-msgstr "<i>Maximaal:</li>"
+msgstr "<i>Maximaal:</i>"
 
 msgid "stc.max.Size visual"
 msgstr "stc.max.Grootte visueel"
@@ -819,10 +819,10 @@ msgid "Linking"
 msgstr "Paden"
 
 msgid "<i>Includes:</i>"
-msgstr "<i>Paden:</li>"
+msgstr "<i>Paden:</i>"
 
 msgid "<i>Matches:</i>"
-msgstr "<i>Treffers:</li>"
+msgstr "<i>Treffers:</i>"
 
 msgid "stc.link.Pairs"
 msgstr "stc.Link paren"
