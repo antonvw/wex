@@ -36,7 +36,7 @@ public:
     const path& path,
     /// the dir data
     const data::dir& data = data::dir(),
-    /// event handler to use, results
+    /// event handler to use, this results
     /// in using a separate thread for find_files.
     wxEvtHandler* eh = nullptr);
 

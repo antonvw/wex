@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: wex 21.10\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-06-13 09:09+0200\n"
-"PO-Revision-Date: 2021-06-18 14:22+0200\n"
+"PO-Revision-Date: 2021-06-19 17:39+0200\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -357,7 +357,7 @@ msgid "Compared"
 msgstr "Vergeleken"
 
 msgid "Enter Lexer"
-msgstr "Geef Lexer"
+msgstr "Geef lexer"
 
 msgid "Modified"
 msgstr "Gewijzigd"
@@ -369,7 +369,7 @@ msgid "Debugger"
 msgstr "Debugger"
 
 msgid "File Type"
-msgstr "Bestands Type"
+msgstr "Bestands type"
 
 msgid "Lines or Items"
 msgstr "Regels of onderdelen"
@@ -411,7 +411,7 @@ msgid "stc.Wrap scan"
 msgstr "stc.Regel doorloop"
 
 msgid "File Name"
-msgstr "Bestands Naam"
+msgstr "Bestands naam"
 
 msgid "Line"
 msgstr "Regel"
@@ -456,7 +456,7 @@ msgid "&Open"
 msgstr "&Openen"
 
 msgid "Find In Files"
-msgstr "Zoeken In Bestanden"
+msgstr "Zoeken In bestanden"
 
 msgid "Replace In Files"
 msgstr "Vervangen in bestanden"
@@ -468,7 +468,7 @@ msgid "replacing with"
 msgstr "vervangen door"
 
 msgid "Find In Selection"
-msgstr "Zoeken In Selectie"
+msgstr "Zoeken In selectie"
 
 msgid "Replace In Selection"
 msgstr "Vervangen in selectie"
@@ -537,7 +537,7 @@ msgid "stc.Indent"
 msgstr "stc.Inspringen"
 
 msgid "Enter Theme"
-msgstr "Geef Thema"
+msgstr "Geef thema"
 
 msgid "stc.link.Include directory"
 msgstr "stc.Include map"
@@ -633,10 +633,10 @@ msgid "Saved"
 msgstr "Opgeslagen"
 
 msgid "Enter Line Number"
-msgstr "Geef Regel Nummer"
+msgstr "Geef regel nummer"
 
 msgid "Enter Sort Position"
-msgstr "Geef Sorteer Positie"
+msgstr "Geef sorteer positie"
 
 msgid "stc.Edge line"
 msgstr "stc.Kantlijn"
@@ -846,7 +846,7 @@ msgid "Colour on white normal"
 msgstr "Kleuren op wit normaal"
 
 msgid "Enter Debugger"
-msgstr "Geef Debugger"
+msgstr "Geef debugger"
 
 msgid "Select Files"
 msgstr "Bestanden selecteren"
@@ -972,7 +972,7 @@ msgid "Colour"
 msgstr "Kleur"
 
 msgid "Enter Item Number"
-msgstr "Geef Item Nummer"
+msgstr "Geef item nummer"
 
 msgid "Sort On"
 msgstr "Sorteren op"
@@ -1109,7 +1109,7 @@ msgid "Select Macro"
 msgstr "Macro selecteren"
 
 msgid "Enter Macro"
-msgstr "Geef Macro"
+msgstr "Geef macro"
 
 msgid "Could not expand variable"
 msgstr "Variabele kan niet worden geëxpandeerd"

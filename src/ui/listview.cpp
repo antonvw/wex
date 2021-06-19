@@ -375,6 +375,15 @@ wex::listview::listview(const data::listview& data)
         }
       },
       wxID_ADD},
+
+     {[=, this](wxCommandEvent& event)
+      {
+        const auto* m = static_cast<path_match*>(event.GetClientData());
+        process_match(m);
+        delete m;
+      },
+      ID_LIST_MATCH},
+
      {[=, this](wxCommandEvent& event)
       {
         for (auto i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
@@ -589,6 +598,18 @@ void wex::listview::config_get()
   SetSingleStyle(wxLC_SINGLE_SEL, iv.find<bool>(_("list.Single selection")));
 
   items_update();
+}
+
+const std::string wex::listview::context(const std::string& line, int pos) const
+{
+  int context_size = config(_("list.Context size")).get(10);
+
+  if (pos == -1 || context_size <= 0)
+    return line;
+
+  return (context_size > pos ? std::string(context_size - pos, ' ') :
+                               std::string()) +
+         line.substr(context_size < pos ? pos - context_size : 0);
 }
 
 void wex::listview::copy_selection_to_clipboard()
@@ -1158,6 +1179,16 @@ void wex::listview::print_preview()
 {
   wxBusyCursor wait;
   printing::get()->get_html_printer()->PreviewText(build_page());
+}
+
+void wex::listview::process_match(const path_match* m)
+{
+  listitem item(this, m->path());
+  item.insert();
+
+  item.set_item(_("Line No"), std::to_string(m->line_no() + 1));
+  item.set_item(_("Line"), context(m->line(), m->pos()));
+  item.set_item(_("Match"), find_replace_data::get()->get_find_string());
 }
 
 const std::list<std::string> wex::listview::save() const

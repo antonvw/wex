@@ -14,6 +14,7 @@
 
 #include <wex/data/listview.h>
 #include <wex/factory/listview.h>
+#include <wex/path-match.h>
 
 #include <wx/artprov.h> // for wxArtID
 
@@ -145,8 +146,10 @@ protected:
 
 private:
   const std::string build_page();
+  const std::string context(const std::string& line, int pos) const;
   void              copy_selection_to_clipboard();
   void              edit_delete();
+
   /// Returns the index of the bitmap in the image list used by this list
   /// view. If the artid is not yet on the image lists, it is added to the
   /// image list. Use only if you setup for IMAGE_ART.
@@ -154,6 +157,7 @@ private:
   column       get_column(const std::string& name) const;
   void         item_activated(long item_number);
   bool         on_command(wxCommandEvent& event);
+  void         process_match(const path_match* input);
   bool         set_item_image(long item_number, int iconid)
   {
     return (

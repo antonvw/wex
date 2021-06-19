@@ -89,14 +89,6 @@ wex::del::listview::listview(const data::listview& data)
 
      {[=, this](wxCommandEvent& event)
       {
-        const auto* m = static_cast<path_match*>(event.GetClientData());
-        process_match(m);
-        delete m;
-      },
-      ID_LIST_MATCH},
-
-     {[=, this](wxCommandEvent& event)
-      {
         const wex::tool tool((window_id)event.GetId());
         if (
           tool.is_find_type() &&
@@ -260,32 +252,10 @@ void wex::del::listview::build_popup_menu(wex::menu& menu)
   }
 }
 
-std::string wex::del::listview::context(const std::string& line, int pos) const
-{
-  int context_size = config(_("list.Context size")).get(10);
-
-  if (pos == -1 || context_size <= 0)
-    return line;
-
-  return (context_size > pos ? std::string(context_size - pos, ' ') :
-                               std::string()) +
-         line.substr(context_size < pos ? pos - context_size : 0);
-}
-
 bool wex::del::listview::Destroy()
 {
   interruptible::cancel();
   return wex::listview::Destroy();
-}
-
-void wex::del::listview::process_match(const path_match* m)
-{
-  listitem item(this, m->path());
-  item.insert();
-
-  item.set_item(_("Line No"), std::to_string(m->line_no() + 1));
-  item.set_item(_("Line"), context(m->line(), m->pos()));
-  item.set_item(_("Match"), find_replace_data::get()->get_find_string());
 }
 
 wex::data::listview::type_t wex::del::listview::type_tool(const tool& tool)

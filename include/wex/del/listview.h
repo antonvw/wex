@@ -8,7 +8,6 @@
 #pragma once
 
 #include <wex/listview.h>
-#include <wex/path-match.h>
 #include <wex/tool.h>
 
 namespace wex::del
@@ -34,9 +33,6 @@ protected:
   auto* get_frame() { return m_frame; }
 
 private:
-  std::string context(const std::string& line, int pos) const;
-  void        process_match(const path_match* input);
-
   const data::listview::menu_t m_menu_flags;
   class frame*                 m_frame;
 };
