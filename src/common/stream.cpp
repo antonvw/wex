@@ -140,6 +140,7 @@ bool wex::stream::process_begin()
     !m_tool.is_find_type() ||
     (m_tool.id() == ID_TOOL_REPLACE && m_path.stat().is_readonly()))
   {
+    log("stream::process_begin") << m_path;
     return false;
   }
 
@@ -194,12 +195,11 @@ bool wex::stream::run_tool()
 {
   if (std::fstream fs(m_path.data(), std::ios_base::in); !fs.is_open())
   {
-    log("open") << m_path;
+    log("stream::open") << m_path;
     return false;
   }
   else if (!process_begin())
   {
-    log("begin") << m_path;
     return false;
   }
   else

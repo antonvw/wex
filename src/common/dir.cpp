@@ -152,15 +152,24 @@ bool wex::dir::on_file(const path& p) const
 {
   if (m_eh != nullptr)
   {
-    stream s(m_data.find_replace_data(), p, m_tool, m_eh);
-
-    if (!s.run_tool())
+    if (m_tool.is_find_type())
     {
-      cancel();
-      return false;
-    }
+      stream s(m_data.find_replace_data(), p, m_tool, m_eh);
 
-    m_statistics += s.get_statistics();
+      if (!s.run_tool())
+      {
+        cancel();
+        return false;
+      }
+
+      m_statistics += s.get_statistics();
+    }
+    else
+    {
+      wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_LIST_MATCH);
+      event.SetClientData(new wex::path_match(p, "", 0, 0));
+      wxPostEvent(m_eh, event);
+    }
   }
 
   return true;
