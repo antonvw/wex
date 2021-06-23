@@ -156,7 +156,7 @@ void wex::stc::on_init()
              {_("stc.Beautifier"), item::COMBOBOX, beautify().list()},
              {_("stc.Search engine"),
               item::COMBOBOX,
-              std::list<std::string>{{"https://duckduckgo.com"}}}}},
+              config::strings_t{{"https://duckduckgo.com"}}}}},
            {_("Choices"),
             {{_("stc.Wrap visual flags"),
               {{wxSTC_WRAPVISUALFLAG_NONE, _("None")},
@@ -267,7 +267,7 @@ void wex::stc::on_init()
             .window(data::window().size({200, 200})),
           // First try to find "..", then <..>, as in next example:
           // <A HREF="http://www.scintilla.org">scintilla</A> component.
-          std::list<std::string>({"\"\t\"", "<\t>", "[\t]", "'\t'", "{\t}"})}}},
+          config::strings_t({"\"\t\"", "<\t>", "[\t]", "'\t'", "{\t}"})}}},
        {_("Printer"),
         {{_("stc.Print flags"),
           {{wxSTC_PRINT_NORMAL, _("Normal")},

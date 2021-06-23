@@ -25,13 +25,19 @@ class config_imp;
 class config
 {
 public:
+  /// Type for keeping the string values.
+  typedef std::list<std::string> strings_t;
+
+  /// Type for keeping the int values.
+  typedef std::vector<int> ints_t;
+
   /// Type to hold statusbar panes setup
   /// as a vector of tuples:
   typedef std::vector<std::tuple<
     /// pane name
     std::string,
     /// styles, first being actual used type
-    std::list<std::string>,
+    strings_t,
     /// width
     int>>
     statusbar_t;
@@ -160,11 +166,11 @@ public:
   /// Returns font config value for item.
   wxFont get(const wxFont& def) const;
 
-  /// Returns a list with strings for item.
-  const std::list<std::string> get(const std::list<std::string>& def) const;
+  /// Returns a strings type for item.
+  const strings_t get(const strings_t& def) const;
 
   /// Returns a vector with ints for item.
-  const std::vector<int> get(const std::vector<int>& def) const;
+  const ints_t get(const ints_t& def) const;
 
   /// Returns a statusbar_t for item.
   const statusbar_t get(const statusbar_t& def) const;
@@ -212,11 +218,11 @@ public:
   /// Sets value from a font.
   void set(const wxFont& v);
 
-  /// Sets value from a list with strings.
-  void set(const std::list<std::string>& v);
+  /// Sets value from a strings type.
+  void set(const strings_t& v);
 
-  /// Sets value from a vector with int.
-  void set(const std::vector<int>& v);
+  /// Sets value from a ints type.
+  void set(const ints_t& v);
 
   /// Sets value from a statusbar_t.
   void set(const statusbar_t& r);

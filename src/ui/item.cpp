@@ -511,7 +511,7 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
           [&](wxArrayString& as)
           {
             for (const auto& it :
-                 std::any_cast<std::list<std::string>>(m_data.initial()))
+                 std::any_cast<config::strings_t>(m_data.initial()))
             {
               as.Add(it);
             }
@@ -638,8 +638,8 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
         m_data_listview.window(data::window(m_data.window()).parent(parent)));
       lv->load(
         !m_data.initial().has_value() ?
-          std::list<std::string>() :
-          std::any_cast<std::list<std::string>>(m_data.initial()));
+          config::strings_t() :
+          std::any_cast<config::strings_t>(m_data.initial()));
       m_window = lv;
     }
     break;
@@ -1238,7 +1238,7 @@ bool wex::item::set_value(const std::any& value) const
       case LISTVIEW:
       {
         auto* win = reinterpret_cast<listview*>(m_window);
-        win->load(std::any_cast<std::list<std::string>>(value));
+        win->load(std::any_cast<config::strings_t>(value));
       }
       break;
 

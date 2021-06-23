@@ -15,9 +15,9 @@ wex::find_replace_data::find_replace_data()
   : m_find_strings(ex_command::type_t::FIND)
   , m_replace_strings(ex_command::type_t::REPLACE)
 {
-  set_find_strings(config(text_find()).get(std::list<std::string>{}));
+  set_find_strings(config(text_find()).get(textctrl_input::values_t{}));
   set_replace_strings(
-    config(text_replace_with()).get(std::list<std::string>{}));
+    config(text_replace_with()).get(textctrl_input::values_t{}));
 }
 
 wex::find_replace_data* wex::find_replace_data::get(bool createOnDemand)
@@ -45,7 +45,7 @@ void wex::find_replace_data::set_find_string(const std::string& value)
 }
 
 void wex::find_replace_data::set_find_strings(
-  const std::list<std::string>& values)
+  const textctrl_input::values_t& values)
 {
   m_find_strings.set(values);
   data()->SetFindString(m_find_strings.get());
@@ -63,7 +63,7 @@ void wex::find_replace_data::set_replace_string(const std::string& value)
 }
 
 void wex::find_replace_data::set_replace_strings(
-  const std::list<std::string>& value)
+  const textctrl_input::values_t& value)
 {
   m_replace_strings.set(value);
   data()->SetReplaceString(m_replace_strings.get());

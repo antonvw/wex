@@ -130,7 +130,8 @@ wex::listview::listview(const data::listview& data)
   , m_data(
       this,
       data::listview(data).image(
-        data.type() == data::listview::NONE || data::listview::TSV ?
+        data.type() == data::listview::NONE ||
+            data.type() == data::listview::TSV ?
           data.image() :
           data::listview::IMAGE_FILE_ICON))
   , m_frame(dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow()))
@@ -378,9 +379,7 @@ wex::listview::listview(const data::listview& data)
 
      {[=, this](wxCommandEvent& event)
       {
-        const auto* m = static_cast<path_match*>(event.GetClientData());
-        process_match(m);
-        delete m;
+        process_match(event);
       },
       ID_LIST_MATCH},
 
@@ -1181,14 +1180,18 @@ void wex::listview::print_preview()
   printing::get()->get_html_printer()->PreviewText(build_page());
 }
 
-void wex::listview::process_match(const path_match* m)
+void wex::listview::process_match(wxCommandEvent& event)
 {
-  listitem item(this, m->path());
-  item.insert();
+  const auto* m = static_cast<path_match*>(event.GetClientData());
+  listitem    item(this, m->path());
 
+  item.insert();
   item.set_item(_("Line No"), std::to_string(m->line_no() + 1));
   item.set_item(_("Line"), context(m->line(), m->pos()));
   item.set_item(_("Match"), find_replace_data::get()->get_find_string());
+  item.set_item(_("Type"), event.GetString());
+
+  delete m;
 }
 
 const std::list<std::string> wex::listview::save() const

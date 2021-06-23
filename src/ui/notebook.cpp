@@ -27,7 +27,7 @@ const std::vector<item> notebook_config_items()
       wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
      {_("tab.Art provider"),
       item::COMBOBOX,
-      std::list<std::string>{"default", "simple"},
+      config::strings_t{"default", "simple"},
       data::control().window(data::window().style(wxCB_READONLY))}});
 };
 } // namespace wex
@@ -131,7 +131,7 @@ void wex::notebook::config_get()
   const auto&       ci(notebook_config_items());
   const item_vector iv(&ci);
 
-  if (const auto& p(iv.find<std::list<std::string>>(_("tab.Art provider")));
+  if (const auto& p(iv.find<config::strings_t>(_("tab.Art provider")));
       p.empty())
   {
     log("no art provider");

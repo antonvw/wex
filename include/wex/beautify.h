@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include <list>
 #include <string>
+#include <wex/config.h>
 #include <wex/lexer.h>
 #include <wex/path.h>
 #include <wex/stc.h>
@@ -33,7 +33,7 @@ public:
   bool is_supported(const lexer& l) const;
 
   /// Returns default beautifiers.
-  std::list<std::string> list() const;
+  config::strings_t list() const;
 
   /// Beautifies the specified stc component.
   /// Return false if it did not succeed.

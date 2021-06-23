@@ -21,8 +21,7 @@ class paths
 {
 public:
   paths()
-    : m_paths(
-        config(_("stc.link.Include directory")).get(std::list<std::string>()))
+    : m_paths(config(_("stc.link.Include directory")).get(config::strings_t()))
   {
     ;
   };
@@ -41,7 +40,7 @@ public:
   };
 
 private:
-  const std::list<std::string> m_paths;
+  const config::strings_t m_paths;
 };
 }; // namespace wex::factory
 

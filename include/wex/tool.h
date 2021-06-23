@@ -63,17 +63,17 @@ public:
     m_tool_info[tool_id] = tool_info(info, text, helptext);
   };
 
+  /// Returns all the tool info.
+  static const auto& get_tool_info() { return m_tool_info; }
+
   /// Other methods.
 
   /// Default constructor, specify the toolid to use.
-  explicit tool(window_id id = ID_LOWEST)
+  explicit tool(window_id id)
     : m_id(id)
   {
     ;
   };
-
-  /// Returns all the tool info.
-  const auto& get_tool_info() const { return m_tool_info; }
 
   /// Returns the tool id.
   auto id() const { return m_id; }

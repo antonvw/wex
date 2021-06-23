@@ -61,6 +61,8 @@ private:
 
   bool m_contents_changed = false;
 
+  int m_old_count{0};
+
   const std::string m_text_add_files     = _("list.Add files"),
                     m_text_add_folders   = _("list.Add folders"),
                     m_text_add_recursive = _("list.Recursive"),

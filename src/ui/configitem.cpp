@@ -134,8 +134,8 @@ bool wex::item::to_config(bool save) const
           cb,
           config(m_label).get(
             !m_data.initial().has_value() ?
-              std::list<std::string>{} :
-              std::any_cast<std::list<std::string>>(m_data.initial())));
+              config::strings_t{} :
+              std::any_cast<config::strings_t>(m_data.initial())));
       }
       break;
 
@@ -177,12 +177,12 @@ bool wex::item::to_config(bool save) const
 
     case LISTVIEW:
       if (save)
-        config(m_label).set(std::any_cast<std::list<std::string>>(get_value()));
+        config(m_label).set(std::any_cast<config::strings_t>(get_value()));
       else
         set_value(config(m_label).get(
           !m_data.initial().has_value() ?
-            std::list<std::string>{} :
-            std::any_cast<std::list<std::string>>(m_data.initial())));
+            config::strings_t{} :
+            std::any_cast<config::strings_t>(m_data.initial())));
       break;
 
     case RADIOBOX:

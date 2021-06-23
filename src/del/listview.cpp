@@ -8,9 +8,9 @@
 #include <thread>
 #include <wex/accelerators.h>
 #include <wex/bind.h>
-#include <wex/del/dir.h>
 #include <wex/del/frame.h>
 #include <wex/del/listview.h>
+#include <wex/dir.h>
 #include <wex/frd.h>
 #include <wex/listitem.h>
 #include <wex/stream.h>

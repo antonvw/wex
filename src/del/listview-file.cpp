@@ -7,9 +7,9 @@
 
 #include <pugixml.hpp>
 #include <thread>
+#include <wex/bind.h>
 #include <wex/config.h>
 #include <wex/del/defs.h>
-#include <wex/del/dir.h>
 #include <wex/del/frame.h>
 #include <wex/del/listview-file.h>
 #include <wex/listitem.h>
@@ -87,6 +87,31 @@ wex::del::file::file(const wex::path& p, const data::listview& data)
     },
     wxID_EDIT,
     wxID_REPLACE_ALL);
+
+  bind(this).command(
+    {{[=, this](wxCommandEvent& event)
+      {
+        const int added = GetItemCount() - m_old_count;
+
+        if (added > 0)
+        {
+          m_contents_changed = true;
+
+          if (config("list.SortSync").get(true))
+          {
+            sort_column(sorted_column_no(), SORT_KEEP);
+          }
+        }
+
+        log::status("Added") << added << "file(s)";
+
+        Bind(wxEVT_IDLE, &file::on_idle, this);
+
+        get_frame()->sync(true);
+
+        event.Skip();
+      },
+      ID_LIST_MATCH_FINISH}});
 }
 
 wex::del::file::~file()
@@ -101,38 +126,14 @@ void wex::del::file::add_items(
 {
   Unbind(wxEVT_IDLE, &file::on_idle, this);
 
-#ifdef __WXMSW__
-  std::thread t(
-    [=, this]
-    {
-#endif
-      const int old_count = GetItemCount();
-      del::dir  dir(
-        this,
-        wex::path(folder),
-        data::dir().file_spec(files).type(flags));
+  m_old_count = GetItemCount();
 
-      dir.find_files();
+  wex::dir dir(
+    wex::path(folder),
+    data::dir().file_spec(files).type(flags),
+    this);
 
-      const int added = GetItemCount() - old_count;
-
-      if (added > 0)
-      {
-        m_contents_changed = true;
-
-        if (config("list.SortSync").get(true))
-        {
-          sort_column(sorted_column_no(), SORT_KEEP);
-        }
-      }
-
-      log::status("Added") << added << "file(s)";
-
-      Bind(wxEVT_IDLE, &file::on_idle, this);
-#ifdef __WXMSW__
-    });
-  t.detach();
-#endif
+  dir.find_files();
 }
 
 void wex::del::file::after_sorting()

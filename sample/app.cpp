@@ -221,12 +221,12 @@ frame::frame()
   }
 
   {
-    wex::del::dir dir(
+    wex::dir dir(
+      wex::path(wex::path::current()),
+      wex::data::dir().file_spec("*.cpp;*.h"),
       (wex::listview*)m_notebook->page_by_key(wex::data::listview()
                                                 .type(wex::data::listview::FILE)
-                                                .type_description()),
-      wex::path(wex::path::current()),
-      wex::data::dir().file_spec("*.cpp;*.h"));
+                                                .type_description()));
 
     dir.find_files();
 

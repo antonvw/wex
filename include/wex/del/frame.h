@@ -8,6 +8,7 @@
 #pragma once
 
 #include <set>
+#include <wex/config.h>
 #include <wex/del/defs.h>
 #include <wex/del/listview.h>
 #include <wex/file-history.h>
@@ -58,7 +59,7 @@ public:
   /// Other methods
 
   /// Returns a list with default file extensions.
-  std::list<std::string> default_extensions() const;
+  config::strings_t default_extensions() const;
 
   /// Finds (or replaces) in specified files.
   /// Returns true if process started.
@@ -164,9 +165,12 @@ protected:
   auto* file_history_list() { return m_file_history_listview; }
 
 private:
+  listview* activate_and_clear(const wex::tool& tool);
+
   stc_entry_dialog* entry_dialog(const std::string& title = std::string());
-  void              find_in_files(window_id id);
-  void              on_idle(wxIdleEvent& event);
+
+  void find_in_files(window_id id);
+  void on_idle(wxIdleEvent& event);
 
   item_dialog *     m_fif_dialog{nullptr}, *m_rif_dialog{nullptr};
   stc_entry_dialog* m_entry_dialog{nullptr};

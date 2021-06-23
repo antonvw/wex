@@ -49,10 +49,11 @@ public:
   virtual void find_files_end() const;
 
   /// Do something with the dir.
-  virtual bool on_dir(const path&) const { return true; }
+  /// Default supports find and replace, and adding items to handler.
+  virtual bool on_dir(const path&) const;
 
   /// Do something with the file.
-  /// Default supports find and replace.
+  /// Default supports find and replace, and adding items to handler.
   virtual bool on_file(const path&) const;
 
   /// Other methods.
@@ -83,6 +84,7 @@ public:
 
 private:
   int  matches() const;
+  void post_event(const path& p) const;
   int  run() const;
   bool traverse(const std::filesystem::directory_entry& e) const;
 

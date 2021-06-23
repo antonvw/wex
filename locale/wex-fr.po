@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wex 21.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-13 09:09+0200\n"
-"PO-Revision-Date: 2021-06-18 14:20+0200\n"
+"POT-Creation-Date: 2021-06-21 16:43+0200\n"
+"PO-Revision-Date: 2021-06-21 16:50+0200\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -30,9 +30,6 @@ msgstr "Ajouter des dossiers"
 
 msgid "Add what"
 msgstr "Ajouter quelque chose"
-
-msgid "Added"
-msgstr "Ajouté"
 
 msgid "Added variable"
 msgstr "Ajouter variabele"
@@ -339,6 +336,9 @@ msgstr "Actions Complétés"
 msgid "Busy"
 msgstr "Occupé"
 
+msgid "Folders"
+msgstr "Dossiers"
+
 msgid "Open &Recent"
 msgstr "Ouvrez&récents"
 
@@ -351,6 +351,9 @@ msgstr "fif.Max remplaçants"
 msgid "Continue"
 msgstr "Continuez"
 
+msgid "Added"
+msgstr "Ajouté"
+
 #, c-format
 msgid "Found %d matches in"
 msgstr "%d Correspondances trouvées dans"
@@ -361,6 +364,12 @@ msgstr "Remplacé: %d les occurrences"
 
 msgid "file(s)"
 msgstr "fichier(s)"
+
+msgid "and"
+msgstr "et"
+
+msgid "folders(s)"
+msgstr "dossier(s)"
 
 msgid "list.Comparator"
 msgstr "list.Comparateur"
@@ -467,6 +476,9 @@ msgstr "Montrer les fichiers cachés"
 msgid "&Open"
 msgstr "&Ouvrir"
 
+msgid "replacing with"
+msgstr "remplacer avec"
+
 msgid "Find In Files"
 msgstr "&Rechercher dans les fichiers"
 
@@ -475,9 +487,6 @@ msgstr "Remplacer dans les fichiers"
 
 msgid "Editor Options"
 msgstr "Options de l'éditeur"
-
-msgid "replacing with"
-msgstr "remplacer avec"
 
 msgid "Find In Selection"
 msgstr "Trouver en Sélection"
@@ -502,9 +511,6 @@ msgstr "&Faire"
 
 msgid "&Compare With"
 msgstr "&Comparer avec"
-
-msgid "list.Context size"
-msgstr "list.Taille du contexte"
 
 msgid "fif.Find what"
 msgstr "stc.Ajouter quoi"
@@ -967,6 +973,9 @@ msgstr "Trier par ordre décroissant"
 
 msgid "Sort toggle"
 msgstr "Bascule de tri"
+
+msgid "list.Context size"
+msgstr "list.Taille du contexte"
 
 msgid "list.Rulers"
 msgstr "list.Règles"

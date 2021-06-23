@@ -90,7 +90,7 @@ private:
   factory::frame* m_frame;
 };
 
-std::vector<int> win_data;
+wex::config::ints_t win_data;
 
 bool win_shown = false;
 
@@ -122,7 +122,7 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
 
   m_manager.SetManagedWindow(this);
 
-  win_data = config(win_frame).get(std::vector<int>{
+  win_data = config(win_frame).get(config::ints_t{
     data.size().GetWidth(),
     data.size().GetHeight(),
     data.pos().x,
@@ -227,7 +227,7 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
       else
       {
         config(win_max).set(false);
-        config(win_frame).set(std::vector<int>{
+        config(win_frame).set(config::ints_t{
           GetSize().GetWidth(),
           GetSize().GetHeight(),
           GetPosition().x,
