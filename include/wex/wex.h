@@ -102,7 +102,6 @@
 #include <wex/vi.h>
 
 #include <wex/del/defs.h>
-#include <wex/del/dir.h>
 #include <wex/del/dirctrl.h>
 #include <wex/del/frame.h>
 #include <wex/del/listview-file.h>

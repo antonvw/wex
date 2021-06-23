@@ -7,7 +7,6 @@
 
 #include <wex/addressrange.h>
 #include <wex/beautify.h>
-#include <wex/config.h>
 #include <wex/factory/process.h>
 #include <wex/path-lexer.h>
 
@@ -35,9 +34,9 @@ bool wex::beautify::is_supported(const lexer& l) const
          l.display_lexer() == "javascript";
 }
 
-std::list<std::string> wex::beautify::list() const
+wex::config::strings_t wex::beautify::list() const
 {
-  return std::list<std::string>{{""}, {"clang-format"}};
+  return config::strings_t{{""}, {"clang-format"}};
 }
 
 const std::string wex::beautify::name() const

@@ -36,9 +36,9 @@ public:
   }
 
   /// Returns the list with this style at the front.
-  std::list<std::string> find(int style) const
+  config::strings_t find(int style) const
   {
-    std::list<std::string> l;
+    config::strings_t l;
 
     for (const auto& it : m_styles)
     {
@@ -56,7 +56,7 @@ public:
   }
 
   /// Returns the style for the first element on the list.
-  int style(const std::list<std::string>& styles) const
+  int style(const config::strings_t& styles) const
   {
     for (const auto& it : m_styles)
     {

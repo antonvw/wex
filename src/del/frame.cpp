@@ -11,7 +11,6 @@
 #include <wex/cmdline.h>
 #include <wex/ctags.h>
 #include <wex/debug.h>
-#include <wex/del/dir.h>
 #include <wex/del/frame.h>
 #include <wex/del/listview-file.h>
 #include <wex/file-dialog.h>
@@ -33,6 +32,16 @@
 
 namespace wex
 {
+const std::string find_replace_string(bool replace)
+{
+  return std::string(_("Searching for") + ": ") +
+         wex::find_replace_data::get()->get_find_string() +
+         (replace ? std::string(
+                      " " + _("replacing with") + ": " +
+                      wex::find_replace_data::get()->get_replace_string()) :
+                    std::string());
+}
+
 bool is_ex(textctrl* tc)
 {
   return tc->stc() != nullptr && !tc->stc()->is_visual();
@@ -74,7 +83,7 @@ wex::del::frame::frame(
      data::control().is_required(true)},
     {m_text_in_folder,
      item::COMBOBOX_DIR,
-     std::list<std::string>{wxGetHomeDir().ToStdString()},
+     config::strings_t{wxGetHomeDir().ToStdString()},
      data::control().is_required(true)},
     {t}};
 
@@ -170,7 +179,7 @@ wex::del::frame::frame(
 
      {[=, this](wxCommandEvent& event)
       {
-        find_replace_data::get()->set_find_strings(std::list<std::string>{});
+        find_replace_data::get()->set_find_strings(config::strings_t{});
       },
       ID_CLEAR_FINDS},
 
@@ -275,14 +284,16 @@ wex::del::frame::frame(
     m_project_history.get_base_id() + m_project_history.get_max_files());
 }
 
-const std::string find_replace_string(bool replace)
+wex::del::listview* wex::del::frame::activate_and_clear(const wex::tool& tool)
 {
-  return std::string(_("Searching for") + ": ") +
-         wex::find_replace_data::get()->get_find_string() +
-         (replace ? std::string(
-                      " " + _("replacing with") + ": " +
-                      wex::find_replace_data::get()->get_replace_string()) :
-                    std::string());
+  auto* lv = activate(listview::type_tool(tool));
+
+  if (lv != nullptr)
+  {
+    lv->clear();
+  }
+
+  return lv;
 }
 
 void wex::del::frame::append_vcs(wex::menu* menu, const menu_item* item) const
@@ -361,9 +372,9 @@ bool wex::del::frame::debug_toggle_breakpoint(int line, factory::stc* stc)
   return m_debug->toggle_breakpoint(line, dynamic_cast<wex::stc*>(stc));
 }
 
-std::list<std::string> wex::del::frame::default_extensions() const
+wex::config::strings_t wex::del::frame::default_extensions() const
 {
-  std::list<std::string> l{std::string(wxFileSelectorDefaultWildcardStr)};
+  config::strings_t l{std::string(wxFileSelectorDefaultWildcardStr)};
 
   for (const auto& it : lexers::get()->get_lexers())
   {
@@ -415,11 +426,9 @@ void wex::del::frame::find_in_files(window_id dialogid)
       .find_replace_data(find_replace_data::get())
       .file_spec(config(m_text_in_files).get_first_of())
       .type(type),
-    activate(listview::type_tool(tool)));
+    activate_and_clear(tool));
 
   dir.find_files(tool);
-
-  sync(true);
 }
 
 bool wex::del::frame::find_in_files(
@@ -589,11 +598,9 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
     path(arg1),
     data::dir().file_spec(arg2).type(arg3).find_replace_data(
       find_replace_data::get()),
-    activate(listview::type_tool(tool)));
+    activate_and_clear(tool));
 
   dir.find_files(tool);
-
-  sync(true);
 
   return true;
 }

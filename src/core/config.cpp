@@ -159,13 +159,12 @@ double wex::config::get(double def) const
   return get_store()->value(m_item, def);
 }
 
-const std::list<std::string>
-wex::config::get(const std::list<std::string>& def) const
+const wex::config::strings_t wex::config::get(const strings_t& def) const
 {
   return get_store()->value(m_item, def);
 }
 
-const std::vector<int> wex::config::get(const std::vector<int>& def) const
+const wex::config::ints_t wex::config::get(const ints_t& def) const
 {
   return get_store()->value(m_item, def);
 }
@@ -206,7 +205,7 @@ wxFont wex::config::get(const wxFont& def) const
 
 const std::string wex::config::get_first_of() const
 {
-  const auto& l(get(std::list<std::string>{}));
+  const auto& l(get(strings_t{}));
   return l.empty() ? std::string() : l.front();
 }
 
@@ -301,12 +300,12 @@ void wex::config::set(double v)
   get_store()->set(m_item, v);
 }
 
-void wex::config::set(const std::list<std::string>& v)
+void wex::config::set(const strings_t& v)
 {
   get_store()->set(m_item, v);
 }
 
-void wex::config::set(const std::vector<int>& v)
+void wex::config::set(const ints_t& v)
 {
   get_store()->set(m_item, v);
 }
@@ -332,7 +331,7 @@ void wex::config::set(const wxFont& v)
 
 const std::string wex::config::set_first_of(const std::string& v, size_t max)
 {
-  auto l(get(std::list<std::string>{}));
+  auto l(get(strings_t{}));
 
   l.remove(v);
   l.push_front(v);

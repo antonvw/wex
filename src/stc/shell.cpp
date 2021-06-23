@@ -28,7 +28,7 @@ wex::shell::shell(
         data::control::OR))
   , m_command_end(command_end == std::string() ? eol() : command_end)
   , m_echo(true)
-  , m_commands(config("Shell").get(std::list<std::string>{}))
+  , m_commands(config("Shell").get(config::strings_t{}))
   // Take care that m_commands_iterator is valid.
   , m_commands_iterator(m_commands.end())
   , m_commands_save_in_config(100)

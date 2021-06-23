@@ -270,7 +270,7 @@ wex::vi::vi(wex::factory::stc* arg, mode_t ex_mode)
                            if (const std::string find(
                                  get_stc()->get_margin_text_click() > 0 ?
                                    config("ex-cmd.margin")
-                                     .get(std::list<std::string>{})
+                                     .get(config::strings_t{})
                                      .front() :
                                    find_replace_data::get()->get_find_string());
                                !get_stc()->find(

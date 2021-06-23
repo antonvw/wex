@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wex 21.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-13 09:09+0200\n"
-"PO-Revision-Date: 2021-06-19 17:39+0200\n"
+"POT-Creation-Date: 2021-06-21 16:43+0200\n"
+"PO-Revision-Date: 2021-06-21 16:56+0200\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -30,9 +30,6 @@ msgstr "Mappen toevoegen"
 
 msgid "Add what"
 msgstr "Toevoegen"
-
-msgid "Added"
-msgstr "Toegevoegd"
 
 msgid "Added variable"
 msgstr "Variabele toegevoegd"
@@ -327,6 +324,9 @@ msgstr "Acties uitgevoerd"
 msgid "Busy"
 msgstr "Bezig"
 
+msgid "Folders"
+msgstr "Mappen"
+
 msgid "Open &Recent"
 msgstr "&Laatste openen"
 
@@ -339,6 +339,9 @@ msgstr "fit.Max vervangingen"
 msgid "Continue"
 msgstr "Doorgaan"
 
+msgid "Added"
+msgstr "Toegevoegd"
+
 #, c-format
 msgid "Found %d matches in"
 msgstr "%d voorkomens gevonden in"
@@ -349,6 +352,12 @@ msgstr "Vervangen: %d voorkomens in"
 
 msgid "file(s)"
 msgstr "bestand(en)"
+
+msgid "and"
+msgstr "en"
+
+msgid "folders(s)"
+msgstr "mappen"
 
 msgid "list.Comparator"
 msgstr "list.Vergelijker"
@@ -455,6 +464,9 @@ msgstr "Zichtbaar maken wat verborgen is"
 msgid "&Open"
 msgstr "&Openen"
 
+msgid "replacing with"
+msgstr "vervangen door"
+
 msgid "Find In Files"
 msgstr "Zoeken In bestanden"
 
@@ -463,9 +475,6 @@ msgstr "Vervangen in bestanden"
 
 msgid "Editor Options"
 msgstr "Editor opties"
-
-msgid "replacing with"
-msgstr "vervangen door"
 
 msgid "Find In Selection"
 msgstr "Zoeken In selectie"
@@ -490,9 +499,6 @@ msgstr "&Maken"
 
 msgid "&Compare With"
 msgstr "Vergelijken &met"
-
-msgid "list.Context size"
-msgstr "list.Context grootte"
 
 msgid "fif.Find what"
 msgstr "fif.Zoeken"
@@ -885,7 +891,7 @@ msgid "vcs.Flags"
 msgstr "vcs.Vlaggen"
 
 msgid "vcs.Base folder"
-msgstr "vcs.Basis pad"
+msgstr "vcs.Basis map"
 
 msgid "Set VCS"
 msgstr "VCS instellen"
@@ -955,6 +961,9 @@ msgstr "Omhoog sorteren"
 
 msgid "Sort toggle"
 msgstr "Sorteren afwisselen"
+
+msgid "list.Context size"
+msgstr "list.Context grootte"
 
 msgid "list.Rulers"
 msgstr "list.Regels"

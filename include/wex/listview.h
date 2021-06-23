@@ -157,7 +157,7 @@ private:
   column       get_column(const std::string& name) const;
   void         item_activated(long item_number);
   bool         on_command(wxCommandEvent& event);
-  void         process_match(const path_match* input);
+  void         process_match(wxCommandEvent& event);
   bool         set_item_image(long item_number, int iconid)
   {
     return (

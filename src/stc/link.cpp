@@ -18,7 +18,7 @@ wex::link::link()
 std::string wex::link::get_link_pairs(const std::string& text) const
 {
   for (const auto& p : item_vector(stc::config_items())
-                         .find<std::list<std::string>>(_("stc.link.Pairs")))
+                         .find<config::strings_t>(_("stc.link.Pairs")))
   {
     const auto pos1 = text.find(before(p, '\t'));
     const auto pos2 = text.rfind(after(p, '\t'));

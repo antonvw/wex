@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-13 09:09+0200\n"
+"POT-Creation-Date: 2021-06-21 16:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -59,6 +59,9 @@ msgstr ""
 msgid "Busy"
 msgstr ""
 
+msgid "Folders"
+msgstr ""
+
 msgid "Open &Recent"
 msgstr ""
 
@@ -71,6 +74,9 @@ msgstr ""
 msgid "Continue"
 msgstr ""
 
+msgid "Added"
+msgstr ""
+
 #, c-format
 msgid "Found %d matches in"
 msgstr ""
@@ -80,6 +86,12 @@ msgid "Replaced %d matches in"
 msgstr ""
 
 msgid "file(s)"
+msgstr ""
+
+msgid "and"
+msgstr ""
+
+msgid "folders(s)"
 msgstr ""
 
 msgid "list.Comparator"
@@ -187,6 +199,9 @@ msgstr ""
 msgid "&Open"
 msgstr ""
 
+msgid "replacing with"
+msgstr ""
+
 msgid "Find In Files"
 msgstr ""
 
@@ -194,9 +209,6 @@ msgid "Replace In Files"
 msgstr ""
 
 msgid "Editor Options"
-msgstr ""
-
-msgid "replacing with"
 msgstr ""
 
 msgid "Find In Selection"
@@ -221,9 +233,6 @@ msgid "&Make"
 msgstr ""
 
 msgid "&Compare With"
-msgstr ""
-
-msgid "list.Context size"
 msgstr ""
 
 msgid "fif.Find what"
@@ -686,6 +695,9 @@ msgid "Sort descending"
 msgstr ""
 
 msgid "Sort toggle"
+msgstr ""
+
+msgid "list.Context size"
 msgstr ""
 
 msgid "list.Rulers"

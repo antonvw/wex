@@ -741,29 +741,18 @@ void wex::stc::properties_message(path::status_t flags)
 
   if (!flags[path::STAT_SYNC])
   {
-    std::string title;
+    const auto name(
+      GetName().empty() ? path().string() : GetName().ToStdString());
+
+    const auto readonly(
+      GetReadOnly() ? wxString(" [" + _("Readonly") + "]").ToStdString() :
+                      std::string());
+
+    std::string title = name + readonly;
 
     if (m_vi->visual() == ex::EX)
     {
-      std::string readonly;
-
-      if (path().is_readonly())
-      {
-        readonly = " [" + _("Readonly") + "]";
-      }
-
-      title = GetName() + readonly + " [ex]";
-    }
-    else
-    {
-      std::string readonly;
-
-      if (GetReadOnly())
-      {
-        readonly = " [" + _("Readonly") + "]";
-      }
-
-      title = GetName() + readonly;
+      title += " [ex]";
     }
 
     m_frame->SetTitle(

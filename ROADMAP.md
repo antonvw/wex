@@ -1,7 +1,7 @@
 # roadmap
-- po: Zoeken in bestanden etc.
 
 ## backlog
+- use from_chars
 - use modules
 
 - start up with recent project, close project

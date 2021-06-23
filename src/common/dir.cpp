@@ -82,6 +82,7 @@ wex::dir::dir(
   : m_dir(dir)
   , m_data(data)
   , m_eh(eh)
+  , m_tool(ID_TOOL_ADD)
 {
 }
 
@@ -141,11 +142,31 @@ bool wex::dir::find_files(const tool& tool)
 void wex::dir::find_files_end() const
 {
   log::status(m_tool.info(&m_statistics.get_elements()));
+
+  if (m_eh != nullptr)
+  {
+    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_LIST_MATCH_FINISH);
+    wxPostEvent(m_eh, event);
+  }
 }
 
 int wex::dir::matches() const
 {
   return m_statistics.get_elements().get(_("Files"));
+}
+
+bool wex::dir::on_dir(const path& p) const
+{
+  if (m_eh != nullptr)
+  {
+    if (!m_tool.is_find_type() && m_data.type().test(data::dir::DIRS))
+    {
+      m_statistics.get_elements().inc(_("Folders"));
+      post_event(p);
+    }
+  }
+
+  return true;
 }
 
 bool wex::dir::on_file(const path& p) const
@@ -166,13 +187,19 @@ bool wex::dir::on_file(const path& p) const
     }
     else
     {
-      wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_LIST_MATCH);
-      event.SetClientData(new wex::path_match(p, "", 0, 0));
-      wxPostEvent(m_eh, event);
+      post_event(p);
     }
   }
 
   return true;
+}
+
+void wex::dir::post_event(const path& p) const
+{
+  wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_LIST_MATCH);
+  event.SetString(m_data.file_spec());
+  event.SetClientData(new wex::path_match(p));
+  wxPostEvent(m_eh, event);
 }
 
 int wex::dir::run() const

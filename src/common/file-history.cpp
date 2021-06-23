@@ -31,7 +31,7 @@ public:
     const std::string& key      = std::string())
     : wxFileHistory(maxFiles, idBase)
     , m_key(key.empty() ? "recent.Files" : key)
-    , m_contents(config(m_key).get(std::list<std::string>{}))
+    , m_contents(config(m_key).get(config::strings_t{}))
   {
     // The order should be inverted, as the last one added is the most recent
     // used.
@@ -62,8 +62,8 @@ public:
 private:
   void AddFileToHistory(const wxString& file) override;
 
-  const std::string      m_key;
-  std::list<std::string> m_contents;
+  const std::string m_key;
+  config::strings_t m_contents;
 };
 }; // namespace wex
 
