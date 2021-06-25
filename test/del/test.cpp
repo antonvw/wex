@@ -13,7 +13,8 @@
 
 void find_in_files(const std::vector<wex::path>& v, wex::del::listview* lv)
 {
-  REQUIRE(del_frame()->find_in_files(v, wex::ID_TOOL_REPORT_FIND, false, lv));
+  REQUIRE(del_frame()
+            ->find_in_files(v, wex::tool(wex::ID_TOOL_REPORT_FIND), false, lv));
 }
 
 TEST_CASE("wex::del")

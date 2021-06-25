@@ -64,7 +64,6 @@ void wex::data::listview::add_columns()
          {_("Match"), column::STRING},
          {_("Line No")}});
       break;
-      break;
     default:
       break; // to prevent warnings
   }

@@ -58,7 +58,9 @@ public:
           boost::algorithm::replace_all(pattern, "(", "\\(");
           boost::algorithm::replace_all(pattern, ")", "\\)");
           return pattern;
-        }(entry)){};
+        }(entry))
+  {
+  }
 
   // Returns name, being fullpath or path name depending on
   // config settings.

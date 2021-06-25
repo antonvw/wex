@@ -67,7 +67,7 @@ public:
     /// the files
     const std::vector<path>& files,
     /// ID_TOOL_REPORT_FIND or ID_TOOL_REPLACE
-    window_id id,
+    const tool& tool,
     /// Default shows a dialog.
     bool show_dialog = true,
     /// report for output
@@ -77,7 +77,7 @@ public:
   /// Returns result from ShowModal.
   int find_in_files_dialog(
     /// ID_TOOL_REPORT_FIND or ID_TOOL_REPLACE
-    window_id id,
+    const tool& tool,
     /// add file types selection as well
     bool add_in_files = false);
 
@@ -184,8 +184,9 @@ private:
   static inline constexpr int id_find_in_files    = ID_FREE_LOWEST;
   static inline constexpr int id_replace_in_files = ID_FREE_LOWEST + 1;
 
-  const std::string m_text_in_files{_("fif.In files")},
-    m_text_in_folder{_("fif.In folder")}, m_text_recursive{_("fif.Recursive")};
+  const std::string m_text_hidden{_("fif.Hidden")},
+    m_text_in_files{_("fif.In files")}, m_text_in_folder{_("fif.In folder")},
+    m_text_recursive{_("fif.Recursive")};
 
   // This set determines what fields are placed on the find_in_files dialogs
   // as a list of checkboxes.

@@ -56,12 +56,14 @@ wex::del::frame::frame(
   , m_debug(new debug(this))
   , m_project_history(maxProjects, ID_RECENT_PROJECT_LOWEST, "recent.Projects")
   , m_info(
-      {find_replace_data::get()->text_match_word(),
-       find_replace_data::get()->text_match_case(),
-       find_replace_data::get()->text_regex()})
+      {find_replace_data::get()->text_match_case(),
+       find_replace_data::get()->text_regex(),
+       m_text_recursive + ",1",
+       m_text_hidden})
 {
-  std::set<std::string> t(m_info);
-  t.insert(m_text_recursive + ",1");
+  auto info(m_info);
+  // Match whole word does not work with replace.
+  info.insert(find_replace_data::get()->text_match_word());
 
   accelerators({{wxACCEL_NORMAL, WXK_F5, wxID_FIND},
                 {wxACCEL_NORMAL, WXK_F6, wxID_REPLACE},
@@ -85,7 +87,7 @@ wex::del::frame::frame(
      item::COMBOBOX_DIR,
      config::strings_t{wxGetHomeDir().ToStdString()},
      data::control().is_required(true)},
-    {t}};
+    {info}};
 
   m_fif_dialog = new item_dialog(
     f,
@@ -93,6 +95,9 @@ wex::del::frame::frame(
       .button(wxAPPLY | wxCANCEL)
       .id(id_find_in_files)
       .title(_("Find In Files"))
+#ifdef __WXOSX__
+      .size({375, 350})
+#endif
       .style(wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxSTAY_ON_TOP));
 
   m_rif_dialog = new item_dialog(
@@ -101,14 +106,14 @@ wex::del::frame::frame(
      f.at(1),
      f.at(2),
      {_("fif.Max replacements"), -1, INT_MAX},
-     // Match whole word does not work with replace.
-     {{find_replace_data::get()->text_match_case(),
-       find_replace_data::get()->text_regex(),
-       m_text_recursive}}},
+     m_info},
     data::window()
       .button(wxAPPLY | wxCANCEL)
       .id(id_replace_in_files)
       .title(_("Replace In Files"))
+#ifdef __WXOSX__
+      .size({375, 400})
+#endif
       .style(wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxSTAY_ON_TOP));
 
   sync(true);
@@ -417,6 +422,11 @@ void wex::del::frame::find_in_files(window_id dialogid)
     type.set(data::dir::RECURSIVE);
   }
 
+  if (config(m_text_hidden).get(false))
+  {
+    type.set(data::dir::HIDDEN);
+  }
+
   find_replace_data::get()->set_regex(
     config(find_replace_data::get()->text_regex()).get(true));
 
@@ -433,7 +443,7 @@ void wex::del::frame::find_in_files(window_id dialogid)
 
 bool wex::del::frame::find_in_files(
   const std::vector<path>& files,
-  window_id                id,
+  const tool&              tool,
   bool                     show_dialog,
   listview*                report)
 {
@@ -442,12 +452,10 @@ bool wex::del::frame::find_in_files(
     return false;
   }
 
-  const wex::tool tool(id);
-
   if (const wex::path filename(files[0]);
       show_dialog &&
       find_in_files_dialog(
-        tool.id(),
+        tool,
         filename.dir_exists() && !filename.file_exists()) == wxID_CANCEL)
   {
     return false;
@@ -491,7 +499,7 @@ bool wex::del::frame::find_in_files(
   return true;
 }
 
-int wex::del::frame::find_in_files_dialog(window_id id, bool add_in_files)
+int wex::del::frame::find_in_files_dialog(const tool& tool, bool add_in_files)
 {
   if (get_stc() != nullptr)
   {
@@ -510,17 +518,17 @@ int wex::del::frame::find_in_files_dialog(window_id id, bool add_in_files)
                          std::any(),
                          data::control().is_required(true)) :
                        item()),
-       (id == ID_TOOL_REPLACE ?
+       (tool.id() == ID_TOOL_REPLACE ?
           item(find_replace_data::get()->text_replace_with(), item::COMBOBOX) :
           item()),
        item(m_info)},
-      data::window().title(find_in_files_title(id)))
+      data::window().title(find_in_files_title(tool.id())))
       .ShowModal() == wxID_CANCEL)
   {
     return wxID_CANCEL;
   }
 
-  log::status(find_replace_string(id == ID_TOOL_REPLACE));
+  log::status(find_replace_string(tool.id() == ID_TOOL_REPLACE));
 
   return wxID_OK;
 }
@@ -533,9 +541,9 @@ const std::string wex::del::frame::find_in_files_title(window_id id) const
 
 bool wex::del::frame::grep(const std::string& arg, bool sed)
 {
-  static std::string       arg1 = config(m_text_in_folder).get_first_of();
-  static std::string       arg2 = config(m_text_in_files).get_first_of();
-  static data::dir::type_t arg3 = data::dir::type_t().set(data::dir::FILES);
+  static auto arg1 = config(m_text_in_folder).get_first_of();
+  static auto arg2 = config(m_text_in_files).get_first_of();
+  static auto arg3 = data::dir::type_t().set(data::dir::FILES);
 
   if (get_stc() != nullptr)
   {
@@ -544,7 +552,12 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
 
   if (data::cmdline cmdl(arg);
       !cmdline(
-         {{{"recursive,r", "recursive"},
+         {{{"hidden,h", "hidden"},
+           [&](bool on)
+           {
+             arg3.set(data::dir::HIDDEN, on);
+           }},
+          {{"recursive,r", "recursive"},
            [&](bool on)
            {
              arg3.set(data::dir::RECURSIVE, on);

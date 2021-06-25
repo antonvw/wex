@@ -73,6 +73,17 @@ private:
   std::vector<path>& m_container;
 };
 
+bool allow_hidden(const fs::directory_entry& e, const data::dir& data)
+{
+  // If this is not a hidden file, return true.
+  if (!e.path().filename().string().starts_with("."))
+  {
+    return true;
+  }
+
+  // This file is hidden, only allow if flag HIDDEN is set.
+  return data.type().test(data::dir::HIDDEN);
+}
 }; // namespace wex
 
 wex::dir::dir(
@@ -268,7 +279,7 @@ bool wex::dir::traverse(const fs::directory_entry& e) const
   if (fs::is_regular_file(e.path()))
   {
     if (
-      m_data.type().test(data::dir::FILES) &&
+      m_data.type().test(data::dir::FILES) && allow_hidden(e, m_data) &&
       matches_one_of(e.path().filename().string(), m_data.file_spec()))
     {
       if (on_file(e.path()))
@@ -279,6 +290,7 @@ bool wex::dir::traverse(const fs::directory_entry& e) const
   }
   else if (
     m_data.type().test(data::dir::DIRS) && fs::is_directory(e.path()) &&
+    allow_hidden(e, m_data) &&
     (m_data.dir_spec().empty() ||
      matches_one_of(e.path().filename().string(), m_data.dir_spec())))
   {

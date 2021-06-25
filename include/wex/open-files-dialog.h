@@ -24,5 +24,5 @@ void open_files_dialog(
   /// data to be used with open_file
   const data::stc& data = data::stc(),
   /// flags to be used with open_file_dir
-  const data::dir::type_t& type = data::dir::type_t().set());
+  const data::dir::type_t& type = data::dir::type_def());
 }; // namespace wex
