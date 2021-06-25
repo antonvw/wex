@@ -53,6 +53,18 @@ TEST_CASE("wex::dir")
       REQUIRE(!dir.get_statistics().empty());
     }
 
+    SUBCASE("hidden")
+    {
+      wex::dir dir(
+        wex::test::get_path(),
+        wex::data::dir().file_spec("*.h").type(wex::data::dir::type_t()
+                                                 .set(wex::data::dir::FILES)
+                                                 .set(wex::data::dir::HIDDEN)));
+
+      REQUIRE(dir.find_files() == 3);
+      REQUIRE(!dir.get_statistics().empty());
+    }
+
     SUBCASE("recursive")
     {
       wex::dir dir(wex::path("../../"), wex::data::dir().file_spec("*.h"));

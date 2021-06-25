@@ -5,7 +5,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <thread>
 #include <wex/accelerators.h>
 #include <wex/bind.h>
 #include <wex/del/frame.h>
@@ -92,7 +91,7 @@ wex::del::listview::listview(const data::listview& data)
         const wex::tool tool((window_id)event.GetId());
         if (
           tool.is_find_type() &&
-          m_frame->find_in_files_dialog(tool.id()) == wxID_CANCEL)
+          m_frame->find_in_files_dialog(tool) == wxID_CANCEL)
         {
           return;
         }

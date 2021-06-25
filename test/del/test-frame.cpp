@@ -25,12 +25,13 @@ TEST_CASE("wex::del::frame")
   {
     wex::find_replace_data::get()->set_find_string("wex::test_app");
 
-    REQUIRE(!del_frame()->find_in_files({}, wex::ID_TOOL_REPORT_FIND, false));
+    REQUIRE(!del_frame()
+               ->find_in_files({}, wex::tool(wex::ID_TOOL_REPORT_FIND), false));
 
 #ifndef __WXMSW__
     REQUIRE(del_frame()->find_in_files(
       {wex::test::get_path("test.h")},
-      wex::ID_TOOL_REPORT_FIND,
+      wex::tool(wex::ID_TOOL_REPORT_FIND),
       false));
 
     REQUIRE(

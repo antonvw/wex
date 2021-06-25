@@ -134,7 +134,7 @@ wex::debug::debug(wex::frame* frame, wex::factory::process* debug)
         {
           m_stdout.clear();
 
-          if (const wex::path filename(
+          if (const auto filename(
                 path(v[1]).is_absolute() ?
                   path(v[1]) :
                   path(wex::path(m_path.parent_path()), v[1]));
@@ -395,7 +395,7 @@ wex::debug::get_args(const std::string& command, stc* stc)
                    args += " " + std::to_string(std::any_cast<long>(value));
                })}},
 #endif
-        data::window().title("Attach").size({400, 400}).parent(m_frame));
+        data::window().title(_("Attach")).size({400, 400}).parent(m_frame));
     }
 
 #ifdef __WXGTK__
@@ -435,7 +435,7 @@ wex::debug::get_args(const std::string& command, stc* stc)
   {
     return {
       item_dialog(
-        {{"debug.File",
+        {{_("debug.File"),
           item::COMBOBOX_FILE,
           std::any(),
           data::item(data::control().is_required(true))
@@ -446,7 +446,7 @@ wex::debug::get_args(const std::string& command, stc* stc)
                   args += " " + std::any_cast<wxArrayString>(value)[0];
               })},
          {"debug." + m_entry.name(), item::FILEPICKERCTRL}},
-        data::window().title("Debug").parent(m_frame))
+        data::window().title(_("Debug")).parent(m_frame))
           .ShowModal() != wxID_CANCEL,
       args};
   }

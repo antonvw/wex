@@ -92,7 +92,7 @@ wex::auto_complete_filename(const std::string& text)
     data::dir()
       .file_spec(prefix + "*")
       .dir_spec(prefix + "*")
-      .type(data::dir::type_t().set(data::dir::FILES).set(data::dir::DIRS))));
+      .type(data::dir::type_t().set().set(data::dir::RECURSIVE, false))));
 
   if (v.empty())
   {
@@ -309,7 +309,7 @@ void wex::xml_error(
   const pugi::xml_parse_result* result,
   factory::stc*                 stc)
 {
-  log::status("Xml error") << result->description();
+  log::status("xml error") << result->description();
   log(*result) << filename.name();
 
   // prevent recursion

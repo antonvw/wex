@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wex 21.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-21 16:43+0200\n"
-"PO-Revision-Date: 2021-06-21 16:56+0200\n"
+"POT-Creation-Date: 2021-06-25 14:03+0200\n"
+"PO-Revision-Date: 2021-06-25 14:09+0200\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -281,6 +281,9 @@ msgstr "vi modus"
 
 msgid "vi tag fullpath"
 msgstr "vi tag volledig pad"
+
+msgid "fif.Hidden"
+msgstr "fit.Verborgen"
 
 msgid "fif.In files"
 msgstr "fif.In bestanden"
@@ -850,6 +853,15 @@ msgstr "Kleuren op wit"
 
 msgid "Colour on white normal"
 msgstr "Kleuren op wit normaal"
+
+msgid "Attach"
+msgstr "Attach"
+
+msgid "debug.File"
+msgstr "debug.Bestand"
+
+msgid "Debug"
+msgstr "Debuggen"
 
 msgid "Enter Debugger"
 msgstr "Geef debugger"
