@@ -586,11 +586,14 @@ wex::lexers* wex::lexers::set(wex::lexers* lexers)
 
 bool wex::lexers::show_theme_dialog(wxWindow* parent)
 {
-  wxArrayString s;
-  for (const auto& it : m_theme_macros)
-    s.Add(it.first);
+  std::vector<std::string> v;
 
-  if (!single_choice_dialog(parent, _("Enter Theme"), s, m_theme))
+  for (const auto& it : m_theme_macros)
+  {
+    v.emplace_back(it.first);
+  }
+
+  if (!single_choice_dialog(parent, _("Enter Theme"), v, m_theme))
     return false;
 
   config("theme").set(m_theme);

@@ -323,11 +323,18 @@ bool wex::regafter(const std::string& text, const std::string& letter)
 }
 
 bool wex::single_choice_dialog(
-  wxWindow*            parent,
-  const std::string&   title,
-  const wxArrayString& s,
-  std::string&         selection)
+  wxWindow*                       parent,
+  const std::string&              title,
+  const std::vector<std::string>& v,
+  std::string&                    selection)
 {
+  wxArrayString s;
+
+  for (const auto& it : v)
+  {
+    s.Add(it);
+  }
+
   wxSingleChoiceDialog dlg(parent, _("Input") + ":", title, s);
 
   if (const auto index = s.Index(selection); index != wxNOT_FOUND)

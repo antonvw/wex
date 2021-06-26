@@ -177,10 +177,10 @@ wex::path wex::debug::complete_path(const std::string& text) const
   {
     return p;
   }
-  
+
   return path(wex::path(m_path.parent_path()), text);
 }
-  
+
 bool wex::debug::execute(const std::string& action, wex::stc* stc)
 {
   const auto& exe(
@@ -196,7 +196,7 @@ bool wex::debug::execute(const std::string& action, wex::stc* stc)
   else
   {
     log::trace("debug exe") << exe << args;
-  
+
     if (
       m_process == nullptr &&
       ((m_process = m_frame->get_process(exe)) == nullptr))
@@ -215,7 +215,7 @@ bool wex::debug::execute(const std::string& action, wex::stc* stc)
     {
       m_path = path(v[0]);
     }
-      
+
     return m_process->write(
       action == "interrupt" ? std::string(1, 3) : action + args);
   }
@@ -409,8 +409,7 @@ void wex::debug::process_stdout(const std::string& text)
   {
     m_stdout.clear();
 
-    if (const auto& filename(complete_path(v[1]));
-        allow_open(filename))
+    if (const auto& filename(complete_path(v[1])); allow_open(filename))
     {
       if (auto* stc = m_frame->open_file(filename); stc != nullptr)
       {
@@ -544,13 +543,13 @@ void wex::debug::set_entry(const std::string& debugger)
 
 bool wex::debug::show_dialog(wxWindow* parent)
 {
-  wxArrayString                 s;
+  std::vector<std::string>      s;
   std::vector<wex::debug_entry> v;
   menus::load("debug", v);
 
   for (const auto& it : v)
   {
-    s.Add(it.name());
+    s.emplace_back(it.name());
   }
 
   if (auto debugger = m_entry.name();

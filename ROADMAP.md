@@ -1,5 +1,4 @@
 # roadmap
-- single_choice_dialog should not have wxArrayString as arg
 - path status is handled ok, and add a flag to disable showing sync or mod
   and add "path: '...'" to log()
 
