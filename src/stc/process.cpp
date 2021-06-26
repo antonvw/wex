@@ -123,8 +123,8 @@ bool wex::process::async_system(
   path::current(path(cwd));
 
   if (
-    m_frame->debug_is_active() &&
-    (m_frame->debug_entry()->name() == before(get_exe(), ' ')))
+    !m_frame->debug_entry()->name().empty() &&
+    m_frame->debug_entry()->name() == before(get_exe(), ' '))
   {
     set_handler_dbg(m_frame->debug_handler());
     m_shell->get_lexer().set(m_frame->debug_entry()->name());

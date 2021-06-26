@@ -21,13 +21,13 @@ public:
   /// The type of regex to match debugger stdout.
   enum class regex_t
   {
-    AT_LINE,        /// at a line number
-    AT_PATH_LINE,   /// at a path and a line number
-    EXIT,           /// an 'exit program'
-    NO_FILE_LINE,   /// a breakpoint no, file and line number
-    PATH,           /// a path
-    VARIABLE,       /// a variable e.g. to show in a tooltip
-    VARIABLE_MULTI, /// a variable split over several lines
+    AT_LINE,                 /// at a line number
+    AT_PATH_LINE,            /// at a path and a line number
+    EXIT,                    /// an 'exit program'
+    BREAKPOINT_NO_FILE_LINE, /// a breakpoint no, file and line number
+    PATH,                    /// a path
+    VARIABLE,                /// a variable e.g. to show in a tooltip
+    VARIABLE_MULTI,          /// a variable split over several lines
   };
 
   /// Default constructor using xml node.

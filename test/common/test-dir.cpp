@@ -11,6 +11,23 @@
 
 #include "test.h"
 
+void test_files(const std::string& spec, size_t count, bool hidden = false)
+{
+  auto type = wex::data::dir::type_t().set(wex::data::dir::FILES);
+
+  if (hidden)
+  {
+    type.set(wex::data::dir::HIDDEN);
+  }
+
+  wex::dir dir(
+    wex::test::get_path(),
+    wex::data::dir().file_spec(spec).type(type));
+
+  REQUIRE(dir.find_files() == count);
+  REQUIRE(!dir.get_statistics().empty());
+}
+
 TEST_CASE("wex::dir")
 {
   SUBCASE("constructor")
@@ -42,28 +59,9 @@ TEST_CASE("wex::dir")
       REQUIRE(dir.find_files() == 1);
     }
 
-    SUBCASE("flat")
-    {
-      wex::dir dir(
-        wex::test::get_path(),
-        wex::data::dir().file_spec("*.h").type(
-          wex::data::dir::type_t().set(wex::data::dir::FILES)));
+    SUBCASE("flat") { test_files("*.h", 2, false); }
 
-      REQUIRE(dir.find_files() == 2);
-      REQUIRE(!dir.get_statistics().empty());
-    }
-
-    SUBCASE("hidden")
-    {
-      wex::dir dir(
-        wex::test::get_path(),
-        wex::data::dir().file_spec("*.h").type(wex::data::dir::type_t()
-                                                 .set(wex::data::dir::FILES)
-                                                 .set(wex::data::dir::HIDDEN)));
-
-      REQUIRE(dir.find_files() == 3);
-      REQUIRE(!dir.get_statistics().empty());
-    }
+    SUBCASE("hidden") { test_files("*.h", 3, true); }
 
     SUBCASE("recursive")
     {

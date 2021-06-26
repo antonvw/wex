@@ -12,8 +12,6 @@
 
 #include "test.h"
 
-TEST_SUITE_BEGIN("wex::process");
-
 TEST_CASE("wex::debug")
 {
 #ifdef __WXOSX__
@@ -94,6 +92,7 @@ TEST_CASE("wex::debug")
 
     REQUIRE(dbg.print("i"));
     REQUIRE(dbg.is_active());
+    REQUIRE(!dbg.toggle_breakpoint(1, nullptr));
     REQUIRE(dbg.toggle_breakpoint(1, stc));
     REQUIRE(!dbg.apply_breakpoints(stc));
 
@@ -119,5 +118,3 @@ TEST_CASE("wex::debug")
   }
 #endif
 }
-
-TEST_SUITE_END();
