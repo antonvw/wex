@@ -16,14 +16,14 @@
 
 #include "test.h"
 
-const wex::path wex::test::get_path(const std::string& file)
+const wex::path wex::test::get_path(const std::string& file, path::log_t t)
 {
-  return wex::test::app::get_path(file);
+  return wex::test::app::get_path(file, t);
 }
 
-wex::path wex::test::app::get_path(const std::string& file)
+wex::path wex::test::app::get_path(const std::string& file, path::log_t t)
 {
-  return file.empty() ? m_path : path(m_path, file);
+  return file.empty() ? m_path : path(m_path, file, t);
 }
 
 bool wex::test::app::OnInit()

@@ -239,7 +239,8 @@ public:
   void print(bool prompt = true) override;
   void print_preview(
     wxPreviewFrameModalityKind kind = wxPreviewFrame_AppModal) override;
-  void properties_message(path::status_t flags = 0) override;
+  void
+  properties_message(path::log_t t = path::log_t().set(path::LOG_MOD)) override;
   void reset_margins(margin_t type = margin_t().set()) override;
   bool set_hexmode(bool on) override { return get_hexmode().set(on); }
   bool set_indicator(const indicator& indicator, int start, int end) override;

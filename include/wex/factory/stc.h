@@ -168,7 +168,11 @@ public:
 
   /// Shows properties on the statusbar using specified flags.
   /// Default not implemented.
-  virtual void properties_message(path::status_t flags = 0) { ; }
+  virtual void
+  properties_message(path::log_t flags = path::log_t().set(path::LOG_MOD))
+  {
+    ;
+  }
 
   /// Reset all margins.
   /// Default not implemented.

@@ -82,8 +82,10 @@ private:
 
   std::tuple<bool, std::string> get_args(const std::string& command, stc* stc);
 
+  path complete_path(const std::string& text) const;
   void is_finished();
-
+  void process_stdin(const std::string& text);
+  void process_stdout(const std::string& text);
   void set_entry(const std::string& debugger);
 
   const marker m_marker_breakpoint = wex::marker(2);
@@ -99,7 +101,6 @@ private:
   frame*                 m_frame;
   wex::debug_entry       m_entry;
   wex::factory::process* m_process{nullptr};
-  bool                   m_active{false};
   std::string            m_stdout;
 };
 }; // namespace wex

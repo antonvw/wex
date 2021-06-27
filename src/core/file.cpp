@@ -12,13 +12,13 @@
 wex::file::file() {}
 
 wex::file::file(const wex::path& p)
-  : m_path(p)
+  : m_path(p, path::log_t().set(path::LOG_PATH))
   , m_stat(m_path.string())
 {
 }
 
 wex::file::file(const wex::path& p, std::ios_base::openmode mode)
-  : m_path(p)
+  : m_path(p, path::log_t().set(path::LOG_PATH))
   , m_stat(m_path.string())
   , m_fs(m_path.data(), mode)
 {

@@ -239,7 +239,7 @@ void wex::factory::process_imp::async_system(
     bp::std_in<m_os, bp::std_err> m_es,
     m_group);
 
-  log::debug("async_system") << exe;
+  log::debug("async_system") << exe << m_debug.load();
 
   p->m_exe = exe;
   m_is_running.store(true);

@@ -165,11 +165,11 @@ bool wex::compare_file(const path& file1, const path& file2)
 
 bool wex::lexers_dialog(factory::stc* stc)
 {
-  wxArrayString s;
+  std::vector<std::string> s;
 
   for (const auto& it : lexers::get()->get_lexers())
   {
-    s.Add(it.display_lexer());
+    s.emplace_back(it.display_lexer());
   }
 
   if (auto lexer = stc->get_lexer().display_lexer();
