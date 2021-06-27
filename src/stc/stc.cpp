@@ -726,11 +726,11 @@ void wex::stc::print_preview(wxPreviewFrameModalityKind kind)
   frame->Show();
 }
 
-void wex::stc::properties_message(path::status_t flags)
+void wex::stc::properties_message(path::log_t flags)
 {
-  log::status() << wex::path(path(), flags);
+  log::status() << wex::path(path().string(), flags);
 
-  if (!flags[path::STAT_SYNC])
+  if (!flags[path::LOG_SYNC])
   {
     m_frame->update_statusbar(this, "PaneFileType");
     m_frame->update_statusbar(this, "PaneLexer");
@@ -739,7 +739,7 @@ void wex::stc::properties_message(path::status_t flags)
 
   m_frame->update_statusbar(this, "PaneInfo");
 
-  if (!flags[path::STAT_SYNC])
+  if (!flags[path::LOG_SYNC])
   {
     const auto name(
       GetName().empty() ? path().string() : GetName().ToStdString());

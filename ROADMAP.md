@@ -1,6 +1,4 @@
 # roadmap
-- path status is handled ok, and add a flag to disable showing sync or mod
-  and add "path: '...'" to log()
 
 ## backlog
 - use from_chars

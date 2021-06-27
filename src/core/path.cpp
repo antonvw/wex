@@ -25,10 +25,10 @@ const std::string substitute_tilde(const std::string& text)
 }
 }; // namespace wex
 
-wex::path::path(const fs::path& p, status_t t)
+wex::path::path(const fs::path& p, log_t t)
   : m_path(p)
   , m_stat(p.string())
-  , m_status(t)
+  , m_log(t)
 {
   if (p.empty())
   {
@@ -36,28 +36,28 @@ wex::path::path(const fs::path& p, status_t t)
   }
 }
 
-wex::path::path(const path& p, const std::string& name)
-  : path(fs::path(substitute_tilde(p.string())).append(name).string())
+wex::path::path(const path& p, const std::string& name, log_t t)
+  : path(fs::path(substitute_tilde(p.string())).append(name).string(), t)
 {
 }
 
-wex::path::path(const std::string& p)
-  : path(fs::path(substitute_tilde(p)))
+wex::path::path(const std::string& p, log_t t)
+  : path(fs::path(substitute_tilde(p)), t)
 {
 }
 
-wex::path::path(const char* p)
-  : path(fs::path(p))
+wex::path::path(const char* p, log_t t)
+  : path(fs::path(p), t)
 {
 }
 
-wex::path::path(const path& r, status_t t)
+wex::path::path(const path& r, log_t t)
   : path(r.data(), t)
 {
 }
 
-wex::path::path(const std::vector<std::string>& v)
-  : path()
+wex::path::path(const std::vector<std::string>& v, log_t t)
+  : path(std::filesystem::path(), t)
 {
   for (const auto& it : v)
   {
@@ -80,7 +80,6 @@ wex::path& wex::path::operator=(const wex::path& r)
     m_path          = r.data();
     m_path_original = r.m_path_original;
     m_stat          = r.m_stat;
-    m_status        = r.m_status;
   }
 
   return *this;
@@ -136,14 +135,24 @@ std::stringstream wex::path::log() const
 {
   std::stringstream ss;
 
-  ss << (m_status[STAT_PATH] || filename().empty() ? string() : filename());
-
-  if (stat().is_ok())
+  if (!m_log.test(LOG_PATH))
   {
-    const std::string what =
-      (m_status[STAT_SYNC] ? _("Synchronized") : _("Modified"));
+    ss << filename();
+  }
+  else
+  {
+    ss << m_path.string();
+  }
 
-    ss << " " << what << " " << stat().get_modification_time();
+  if (m_log.test(LOG_SYNC) || m_log.test(LOG_MOD))
+  {
+    if (stat().is_ok())
+    {
+      const std::string what =
+        (m_log.test(LOG_SYNC) ? _("Synchronized") : _("Modified"));
+
+      ss << " " << what << " " << stat().get_modification_time();
+    }
   }
 
   return ss;

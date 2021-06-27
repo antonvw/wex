@@ -24,13 +24,15 @@ class path
   friend class file; // it might update file_stat
 public:
   /// Flags for path logging.
+  /// Default only logs the filename (all flags are off).
   enum
   {
-    STAT_SYNC = 0, ///< shows 'synchronized' instead of 'modified'
-    STAT_PATH = 1  ///< shows file 'path' instead of 'filename'
+    LOG_MOD  = 0, ///< adds 'modified'
+    LOG_SYNC = 1, ///< adds 'synchronized'
+    LOG_PATH = 2  ///< uses 'path' instead of 'filename'
   };
 
-  typedef std::bitset<2> status_t;
+  typedef std::bitset<3> log_t;
 
   /// Static interface.
 
@@ -49,22 +51,22 @@ public:
     /// the path
     const std::filesystem::path& p = std::filesystem::path(),
     /// the status, used for log
-    status_t t = 0);
+    log_t t = 0);
 
   /// Constructor using string path.
-  explicit path(const std::string& path);
+  explicit path(const std::string& path, log_t t = 0);
 
   /// Constructor using a char array.
-  explicit path(const char* path);
+  explicit path(const char* path, log_t t = 0);
 
   /// Constructor from a vector of paths.
-  explicit path(const std::vector<std::string>& v);
+  explicit path(const std::vector<std::string>& v, log_t t = 0);
 
   /// Constructor using a path and a name.
-  path(const path& p, const std::string& name);
+  path(const path& p, const std::string& name, log_t = 0);
 
   /// Copy constructor.
-  path(const path& r, status_t t = 0);
+  path(const path& r, log_t = 0);
 
   /// Assignment operator.
   path& operator=(const path& r);
@@ -146,7 +148,7 @@ public:
 private:
   std::filesystem::path m_path, m_path_original;
 
-  file_stat m_stat;
-  status_t  m_status{0};
+  file_stat   m_stat;
+  const log_t m_log{0};
 };
 }; // namespace wex
