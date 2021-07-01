@@ -82,7 +82,13 @@ wex::debug::debug(wex::frame* frame, wex::factory::process* debug)
   : m_frame(frame)
   , m_process(debug)
 {
-  set_entry(config("debug.debugger").get());
+  set_entry(config("debug.debugger")
+              .get(
+#ifdef __WXOSX__
+                "lldb"));
+#else
+                "gdb"));
+#endif
 
   bind(this).command(
     {{[=, this](wxCommandEvent& event)
@@ -190,7 +196,6 @@ bool wex::debug::execute(const std::string& action, wex::stc* stc)
 
   if (const auto& [r, args] = get_args(action, stc); !r)
   {
-    log("debug") << m_entry.name() << "failed args";
     return false;
   }
   else
@@ -439,6 +444,7 @@ void wex::debug::process_stdout(const std::string& text)
       }
 
       m_path = path(v[0]);
+      m_frame->debug_exe(m_path);
     }
 
     m_stdout.clear();

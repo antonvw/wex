@@ -94,10 +94,13 @@ public:
   virtual void debug_add_menu(menu&, bool) { ; }
 
   /// Runs debug action.
-  virtual void debug_exe(int id, factory::stc* stc) { ; }
+  virtual void debug_exe(int menu_id, factory::stc* stc) { ; }
 
   /// Runs debug command.
-  virtual void debug_exe(const std::string& exe, factory::stc* stc) { ; }
+  virtual void debug_exe(const std::string& command, factory::stc* stc) { ; }
+
+  /// Invoked when a debug exe path is opened.
+  virtual void debug_exe(const path& p) { ; }
 
   /// Sets a debug handler.
   virtual wxEvtHandler* debug_handler() { return nullptr; }
