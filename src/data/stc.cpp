@@ -98,6 +98,7 @@ bool wex::data::stc::inject() const
 
         if (m_stc->is_visual())
         {
+          m_stc->IndicatorClearRange(0, m_stc->GetTextLength() - 1);
           m_stc->set_indicator(
             indicator(m_indicator_no),
             std::max(m_stc->PositionFromLine(line), 0),

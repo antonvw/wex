@@ -911,8 +911,6 @@ bool wex::stc::set_indicator(const indicator& indicator, int start, int end)
     return false;
   }
 
-  IndicatorClearRange(0, GetTextLength() - 1);
-
   SetIndicatorCurrent(indicator.number());
 
   if (end - start > 0)

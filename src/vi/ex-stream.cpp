@@ -528,6 +528,7 @@ void wex::ex_stream::set_text()
   m_stc->SetReadOnly(true);
   m_stc->use_modification_markers(false);
 
+  m_stc->IndicatorClearRange(0, m_stc->GetTextLength() - 1);
   m_stc->set_indicator(
     indicator(wex::data::stc().indicator_no()),
     std::max(m_stc->PositionFromLine(m_stc->GetLineCount() - lines), 0),
