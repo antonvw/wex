@@ -37,11 +37,6 @@ wex::factory::find_replace_data::find_replace_data()
 
 wex::factory::find_replace_data::~find_replace_data()
 {
-  config(m_text_match_case).set(match_case());
-  config(m_text_match_word).set(match_word());
-  config(m_text_regex).set(m_use_regex);
-  config(m_text_search_down).set(search_down());
-
   delete m_frd;
 }
 
@@ -119,6 +114,8 @@ void wex::factory::find_replace_data::set_match_case(bool value)
     flags &= ~wxFR_MATCHCASE;
 
   m_frd->SetFlags(flags);
+
+  config(m_text_match_case).set(match_case());
 }
 
 void wex::factory::find_replace_data::set_match_word(bool value)
@@ -131,6 +128,8 @@ void wex::factory::find_replace_data::set_match_word(bool value)
     flags &= ~wxFR_WHOLEWORD;
 
   m_frd->SetFlags(flags);
+
+  config(m_text_match_word).set(match_word());
 }
 
 void wex::factory::find_replace_data::set_regex(bool value)
@@ -138,6 +137,7 @@ void wex::factory::find_replace_data::set_regex(bool value)
   if (!value)
   {
     m_use_regex = false;
+    config(m_text_regex).set(m_use_regex);
     return;
   }
 
@@ -160,6 +160,8 @@ void wex::factory::find_replace_data::set_regex(bool value)
     m_use_regex = false;
     log::status(e.what()) << "regex" << get_find_string();
   }
+
+  config(m_text_regex).set(m_use_regex);
 }
 
 void wex::factory::find_replace_data::set_replace_string(
@@ -181,4 +183,6 @@ void wex::factory::find_replace_data::set_search_down(bool value)
     flags &= ~wxFR_DOWN;
 
   m_frd->SetFlags(flags);
+
+  config(m_text_search_down).set(search_down());
 }

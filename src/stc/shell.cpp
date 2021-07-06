@@ -287,13 +287,7 @@ wex::shell::shell(
     });
 }
 
-wex::shell::~shell()
-{
-  if (m_commands_save_in_config > 0)
-  {
-    config("Shell").set(m_commands);
-  }
-}
+wex::shell::~shell() {}
 
 void wex::shell::AppendText(const wxString& text)
 {
@@ -413,6 +407,11 @@ void wex::shell::keep_command()
   }
 
   m_commands.emplace_back(m_command);
+
+  if (m_commands_save_in_config > 0)
+  {
+    config("Shell").set(m_commands);
+  }
 }
 
 void wex::shell::Paste()

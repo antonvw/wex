@@ -295,11 +295,6 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
 
 wex::frame::~frame()
 {
-  if (m_find_replace_dialog != nullptr)
-  {
-    m_find_replace_dialog->Destroy();
-  }
-
   m_manager.UnInit();
 }
 
@@ -372,6 +367,16 @@ wxPanel* wex::frame::create_ex_panel()
   panel->SetSizerAndFit(sizer);
 
   return panel;
+}
+
+bool wex::frame::Destroy()
+{
+  if (m_find_replace_dialog != nullptr)
+  {
+    m_find_replace_dialog->Destroy();
+  }
+
+  return factory::frame::Destroy();
 }
 
 std::string wex::frame::get_statustext(const std::string& pane) const
