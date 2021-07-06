@@ -45,12 +45,10 @@ add_subdirectory(external)
 include(external/wxWidgets/build/cmake/toolkit.cmake)
 
 file(READ src/core/version.cpp WEX_VERSION_CONTENTS)
-string(REGEX MATCH "[ \t]+[0-9]+,[ \t\n]*[0-9]+,[ \t\n]*[0-9]+"
+string(REGEX MATCH "[ \t]+([0-9]+),[ \t\n]*([0-9]+),[ \t\n]*([0-9]+)"
   WEX_VERSION ${WEX_VERSION_CONTENTS})
-string(REGEX REPLACE "[ \t\n]+" "" WEX_VERSION "${WEX_VERSION}")
-string(REGEX REPLACE "," "." WEX_VERSION "${WEX_VERSION}")
-set(WEX_VERSION ${WEX_VERSION})
-string(REGEX MATCH "[0-9]+-[0-9]+"
+set(WEX_VERSION ${CMAKE_MATCH_1}.${CMAKE_MATCH_2}.${CMAKE_MATCH_3})
+string(REGEX MATCH "\".c.[ 0-9a-zA-Z,.\-]+\""
   WEX_COPYRIGHT ${WEX_VERSION_CONTENTS})
 set(WEX_COPYRIGHT ${WEX_COPYRIGHT})
 

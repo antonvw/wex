@@ -310,6 +310,8 @@ public:
   void statusbar_clicked_right(const std::string&) override;
   bool
   statustext(const std::string& text, const std::string& pane) const override;
+
+  bool Destroy() override;
   bool Show(bool show = true) override;
   wxStatusBar*
   OnCreateStatusBar(int number, long style, wxWindowID id, const wxString& name)

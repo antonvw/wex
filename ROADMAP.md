@@ -4,6 +4,7 @@
 - use from_chars
 - make del::app
 - use modules
+- add general validator
 
 - start up with recent project, close project
   -> windows appear

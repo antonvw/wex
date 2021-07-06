@@ -412,8 +412,6 @@ void wex::del::frame::find_in_files(window_id dialogid)
 
   log::status(find_replace_string(replace));
 
-  sync(false);
-
   data::dir::type_t type;
   type.set(data::dir::FILES);
 
@@ -604,8 +602,6 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
 
   find_replace_data::get()->set_regex(true);
   log::status(find_replace_string(false));
-
-  sync(false);
 
   wex::dir dir(
     path(arg1),
