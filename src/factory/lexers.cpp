@@ -5,11 +5,8 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <algorithm>
+#include <charconv>
 #include <functional>
 #include <numeric>
 #include <regex>
@@ -446,23 +443,23 @@ void wex::lexers::parse_node_global(const pugi::xml_node& node)
       {
         if (style.define() == "style_textmargin")
         {
-          m_style_no_text_margin = std::stoi(style.number());
+          m_style_no_text_margin = style.number();
         }
         else if (style.define() == "style_textmargin_day")
         {
-          m_style_no_text_margin_day = std::stoi(style.number());
+          m_style_no_text_margin_day = style.number();
         }
         else if (style.define() == "style_textmargin_week")
         {
-          m_style_no_text_margin_week = std::stoi(style.number());
+          m_style_no_text_margin_week = style.number();
         }
         else if (style.define() == "style_textmargin_month")
         {
-          m_style_no_text_margin_month = std::stoi(style.number());
+          m_style_no_text_margin_month = style.number();
         }
         else if (style.define() == "style_textmargin_year")
         {
-          m_style_no_text_margin_year = std::stoi(style.number());
+          m_style_no_text_margin_year = style.number();
         }
 
         m_styles.emplace_back(style);
@@ -487,11 +484,11 @@ void wex::lexers::parse_node_macro(const pugi::xml_node& node)
 {
   for (const auto& child : node.children())
   {
-    if (strcmp(child.name(), "def") == 0)
+    if (const std::string name = child.attribute("name").value();
+        strcmp(child.name(), "def") == 0)
     {
-      const std::string name = child.attribute("name").value();
-      name_values_t     macro_map;
-      int               val = 0;
+      name_values_t macro_map;
+      int           val = 0;
 
       for (const auto& macro : child.children())
       {
@@ -506,22 +503,35 @@ void wex::lexers::parse_node_macro(const pugi::xml_node& node)
             if (const std::string content = macro.text().get();
                 !content.empty())
             {
-              try
+              if (
+                std::from_chars(
+                  content.data(),
+                  content.data() + content.size(),
+                  val)
+                  .ec == std::errc())
               {
-                val           = std::stoi(content) + 1;
+                val++;
                 macro_map[no] = content;
               }
-              catch (std::exception& e)
+              else
               {
-                log(e) << "macro";
+                log("macro") << content << "not a number" << node;
               }
             }
             else
             {
-              macro_map[no] = std::to_string(val);
-              val++;
+              const auto [ptr, ec] = std::to_chars(
+                m_buffer.data(),
+                m_buffer.data() + m_buffer.size(),
+                val++);
+              macro_map[no] =
+                std::string_view(m_buffer.data(), ptr - m_buffer.data());
             }
           }
+        }
+        else
+        {
+          log("macro") << name << "attribute no is missing";
         }
       }
 
@@ -530,6 +540,10 @@ void wex::lexers::parse_node_macro(const pugi::xml_node& node)
     else if (strcmp(child.name(), "themes") == 0)
     {
       parse_node_themes(child);
+    }
+    else
+    {
+      log("unsupported macro node") << name;
     }
   }
 }

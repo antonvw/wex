@@ -7,11 +7,8 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <numeric>
+#include <charconv>
+
 #include <wex/config.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
@@ -51,15 +48,9 @@ bool wex::style::contains_default_style() const
   return (m_no.find(wxSTC_STYLE_DEFAULT) != m_no.end());
 }
 
-const std::string wex::style::number() const
+int wex::style::number() const
 {
-  return std::accumulate(
-    m_no.begin(),
-    m_no.end(),
-    std::string{},
-    [](const std::string& a, int b) {
-      return a + std::to_string(b) + ' ';
-    });
+  return m_no.empty() ? -1 : *m_no.begin();
 }
 
 void wex::style::set(const pugi::xml_node& node, const std::string& macro)
@@ -69,6 +60,13 @@ void wex::style::set(const pugi::xml_node& node, const std::string& macro)
   set_no(lexers::get()->apply_macro(m_define, macro), macro, node);
 
   const std::string text(std::string(node.text().get()));
+  const auto        font(config(_("stc.Default font"))
+                    .get(wxFont(
+                      12,
+                      wxFONTFAMILY_DEFAULT,
+                      wxFONTSTYLE_NORMAL,
+                      wxFONTWEIGHT_NORMAL)));
+  const auto        font_size(std::to_string(font.GetPointSize()));
 
   // The style is parsed using the themed macros, and
   // you can specify several styles separated by a + sign.
@@ -86,18 +84,10 @@ void wex::style::set(const pugi::xml_node& node, const std::string& macro)
 
       if (value.find("default-font") != std::string::npos)
       {
-        const auto font(config(_("stc.Default font"))
-                          .get(wxFont(
-                            12,
-                            wxFONTFAMILY_DEFAULT,
-                            wxFONTSTYLE_NORMAL,
-                            wxFONTWEIGHT_NORMAL)));
-
         boost::algorithm::replace_all(
           value,
           "default-font",
-          "face:" + font.GetFaceName() +
-            ",size:" + std::to_string(font.GetPointSize()));
+          "face:" + font.GetFaceName() + ",size:" + font_size);
 
         if (const auto style = font.GetStyle();
             style == wxFONTSTYLE_ITALIC || style == wxFONTSTYLE_SLANT)
@@ -146,8 +136,12 @@ void wex::style::set_no(
 
     try
     {
-      if (const auto style_no = std::stoi(single);
-          style_no >= 0 && style_no <= wxSTC_STYLE_MAX)
+      if (int style_no = 0; std::from_chars(
+                              single.data(),
+                              single.data() + single.size(),
+                              style_no)
+                                .ec == std::errc() &&
+                            style_no >= 0 && style_no <= wxSTC_STYLE_MAX)
       {
         m_no.insert(style_no);
       }

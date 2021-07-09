@@ -83,7 +83,7 @@ Copyright: (c) 2020, Anton van Wezenbeek
       <def no ="indic_textfore"/>
       <def no ="indic_point"/>
       <def no ="indic_pointcharacter"/>
-      <def no ="indic_ime"> 32 </def>>
+      <def no ="indic_ime"> 32 </def>
       <def no ="indic_ime_max"> 35 </def>
       <def no ="indic_container"> 8 </def>
       

@@ -274,7 +274,7 @@ void wex::item::add_items(group_t& page, bool readonly)
     m_page      = page.first;
     int imageId = wxWithImages::NO_IMAGE;
 
-    if (const size_t col = m_page.find(":"); col != std::string::npos)
+    if (const auto col = m_page.find(":"); col != std::string::npos)
     {
       use_cols = std::stoi(m_page.substr(col + 1));
       m_page   = m_page.substr(0, col);

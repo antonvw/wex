@@ -6,6 +6,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
+#include <charconv>
+
 #include <wex/lexers.h>
 #include <wex/log.h>
 #include <wex/presentation.h>
@@ -26,11 +28,26 @@ wex::presentation::presentation(presentation_t type, const pugi::xml_node& node)
       text,
       boost::char_separator<char>(","));
 
-    m_no = std::stoi(single);
+    if (
+      std::from_chars(single.data(), single.data() + single.size(), m_no).ec !=
+      std::errc())
+    {
+      log("illegal " + name() + " number") << m_no << node;
+    }
 
     if (auto it = tok.begin(); it != tok.end())
     {
-      m_style = std::stoi(lexers::get()->apply_macro(*it));
+      const auto& applied(lexers::get()->apply_macro(*it));
+
+      if (
+        std::from_chars(
+          applied.data(),
+          applied.data() + applied.size(),
+          m_style)
+          .ec != std::errc())
+      {
+        log("illegal " + name() + " style") << applied << node;
+      }
 
       if (++it != tok.end())
       {
@@ -46,11 +63,6 @@ wex::presentation::presentation(presentation_t type, const pugi::xml_node& node)
           m_background_colour = lexers::get()->apply_macro(*it);
         }
       }
-    }
-
-    if (!is_ok())
-    {
-      log("illegal " + name() + " number") << m_no << node;
     }
   }
   catch (std::exception& e)

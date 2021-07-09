@@ -124,6 +124,7 @@ It benefits from the following c++ features:
 ```
   These functions are used heavily, the advice is to be sure that
   you should be aware that a std::exception might be raised.
+  And, if performance is an issue prefer using from_chars.
 
 ```cpp
   starts_with (c++20)
@@ -215,6 +216,31 @@ It benefits from the following c++ features:
       u.detach();
 ```
 
+```cpp
+  std::from_chars (c++17)
+```
+
+  This method can be used as replacement for e.g. stol.
+  example used in textctrl-input.cpp:
+  
+```cpp
+    for (const auto& v : m_values)
+    {
+      // If this value is an int, ignore value if we reached max
+      if (int value = 0;
+          std::from_chars(v.data(), v.data() + v.size(), value).ec ==
+          std::errc())
+      {
+        if (current++ >= max_ints)
+        {
+          continue;
+        }
+      }
+
+      filtered.emplace_back(v);
+    }
+```
+  
 - Input/output library
 ```cpp
   std::fstream
