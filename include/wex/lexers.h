@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <array>
 #include <map>
 #include <set>
 #include <vector>
@@ -176,6 +177,10 @@ private:
   void parse_node_themes(const pugi::xml_node& node);
 
   name_values_t m_default_colours, m_keywords;
+
+  // Buffer used to keep textual representation of
+  // styles, with max wxSTC_STYLE_MAX.
+  std::array<char, 4> m_buffer;
 
   std::map<std::string, name_values_t> m_macros, m_theme_colours,
     m_theme_macros;

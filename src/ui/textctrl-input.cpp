@@ -5,6 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <charconv>
 #include <stdlib.h>
 #include <wex/config.h>
 #include <wex/frd.h>
@@ -65,7 +66,9 @@ wex::textctrl_input::~textctrl_input()
     for (const auto& v : m_values)
     {
       // If this value is an int, ignore value if we reached max
-      if (strtol(v.c_str(), nullptr, 0) != 0)
+      if (int value = 0;
+          std::from_chars(v.data(), v.data() + v.size(), value).ec ==
+          std::errc())
       {
         if (current++ >= max_ints)
         {

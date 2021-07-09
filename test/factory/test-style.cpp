@@ -52,9 +52,9 @@ TEST_CASE("wex::style")
     pugi::xml_document doc;
     REQUIRE(doc.load_string("<style no = \"2\">string</style>"));
 
-    REQUIRE(std::stoi(wex::style(doc.document_element(), "").number()) == 2);
+    REQUIRE(wex::style(doc.document_element(), "").number() == 2);
     REQUIRE(wex::style(doc.document_element(), "").value() == "fore:#ffab8f");
-    REQUIRE(std::stoi(wex::style(doc.document_element(), "cpp").number()) == 2);
+    REQUIRE(wex::style(doc.document_element(), "cpp").number() == 2);
     REQUIRE(wex::style(doc.document_element(), "").value() == "fore:#ffab8f");
 
     REQUIRE(doc.load_string("<style no = \"2\">styledefault+comment</style>"));

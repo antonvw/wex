@@ -977,7 +977,7 @@ bool wex::stc::show_blame(const vcs_entry* vcs)
 
   SetWrapMode(wxSTC_WRAP_NONE);
   const item_vector iv(m_config_items);
-  const int         margin_blame(iv.find<int>(_("stc.margin.Text")));
+  const auto        margin_blame(iv.find<int>(_("stc.margin.Text")));
 
   for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
          vcs->get_stdout(),

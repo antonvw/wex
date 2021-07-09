@@ -26,12 +26,14 @@ TEST_CASE("wex::lexers")
            {{"XXX", "global"}, "XXX"},
            {{"mark_lcorner", "global"}, "10"},
            {{"mark_circle", "global"}, "0"},
+           {{"style_textmargin", "global"}, "55"},
            {{"iv_none", "global"}, "0"}})
     {
-      REQUIRE(
-        wex::lexers::get()->apply_macro(
-          macro.first.first,
-          macro.first.second) == macro.second);
+      const auto& result(
+        wex::lexers::get()->apply_macro(macro.first.first, macro.first.second));
+
+      CAPTURE(result);
+      REQUIRE(result == macro.second);
     }
   }
 

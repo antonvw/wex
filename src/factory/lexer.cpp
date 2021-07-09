@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <boost/tokenizer.hpp>
+#include <charconv>
 #include <functional>
 #include <numeric>
 #include <pugixml.hpp>
@@ -52,7 +53,12 @@ auto tokenize_int(const std::string& text, const char* sep = " \t\r\n")
          text,
          boost::char_separator<char>(sep)))
   {
-    tokens.emplace_back(std::stoi(it));
+    if (int value = 0;
+        std::from_chars(it.data(), it.data() + it.size(), value).ec ==
+        std::errc())
+    {
+      tokens.emplace_back(value);
+    }
   }
 
   return tokens;
@@ -121,8 +127,14 @@ wex::lexer::lexer(const pugi::xml_node* node)
 
           try
           {
-            const auto setno =
-              (pos == std::string::npos ? 0 : std::stoi(nm.substr(pos + 1)));
+            int setno = 0;
+
+            if (pos != std::string::npos)
+            {
+              const auto subs(nm.substr(pos + 1));
+              std::from_chars(subs.data(), subs.data() + subs.size(), setno);
+            }
+
             const auto keywords = lexers::get()->keywords(att.value());
 
             if (keywords.empty())
@@ -215,13 +227,16 @@ bool wex::lexer::add_keywords(const std::string& value, int setno)
     if (line.find(":") != std::string::npos)
     {
       keyword = before(line, ':');
+      const auto a_l(after(line, ':'));
 
       try
       {
-        if (const auto new_setno = std::stoi(after(line, ':'));
+        if (int new_setno = 0;
+            std::from_chars(a_l.data(), a_l.data() + a_l.size(), new_setno)
+                .ec != std::errc() ||
             new_setno <= 0 || new_setno >= wxSTC_KEYWORDSET_MAX)
         {
-          wex::log("invalid keyword set") << new_setno;
+          wex::log("invalid keyword set") << new_setno << a_l;
           return false;
         }
         else if (new_setno != setno)
@@ -483,16 +498,16 @@ const std::string wex::lexer::formatted_text(
   std::string      out;
 
   // Process text between the carriage return line feeds.
-  for (size_t nCharIndex; (nCharIndex = text.find("\n")) != std::string::npos;)
+  for (size_t pos = 0; (pos = text.find("\n")) != std::string::npos;)
   {
     out += align_text(
-             text.substr(0, nCharIndex),
+             text.substr(0, pos),
              header_to_use,
              fill_out_with_space,
              fill_out) +
            "\n";
 
-    text          = text.substr(nCharIndex + 1);
+    text          = text.substr(pos + 1);
     header_to_use = std::string(header.size(), ' ');
   }
 

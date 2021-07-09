@@ -57,8 +57,12 @@ public:
   /// Returns true if this style is valid.
   bool is_ok() const { return !m_no.empty() && !m_value.empty(); }
 
-  /// Returns the numbers ('s).
-  const std::string number() const;
+  /// Returns a single lexer number (the first in the set),
+  /// or -1 if no number if present.
+  int number() const;
+
+  /// Returns the lexer numbers.
+  const auto& numbers() const;
 
   /// Returns the value.
   const auto& value() const { return m_value; }
