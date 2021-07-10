@@ -63,7 +63,7 @@ wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
           event.GetId() - ID_EDIT_VCS_LOWEST - 1,
           to_vector_path(*this).get());
       },
-      ID_EDIT_VCS_LOWEST + 1},
+      ID_EDIT_VCS_LOWEST},
      {[=, this](wxCommandEvent& event)
       {
         const auto v(to_vector_string(*this).get());
@@ -89,6 +89,7 @@ wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
      {[=, this](wxCommandEvent& event)
       {
         GET_VECTOR_FILES
+
         make(files[0]);
       },
       ID_TREE_RUN_MAKE},
@@ -119,15 +120,15 @@ wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
     {
       GET_VECTOR_FILES
 
-      if (const wex::path fn(files[0]); !fn.file_exists() && fn.dir_exists())
+      if (const auto& fn(files[0]); !fn.file_exists() && fn.dir_exists())
       {
         if (!GetTreeCtrl()->IsExpanded(event.GetItem()))
         {
-          expand_and_select_path(files[0]);
+          expand_and_select_path(fn);
         }
         else
         {
-          CollapsePath(files[0].string());
+          CollapsePath(fn.string());
         }
       }
       else
@@ -145,9 +146,10 @@ wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
     [=, this](wxTreeEvent& event)
     {
       GET_VECTOR_FILES
+
       const wex::path_lexer filename(files[0]);
 
-      wex::menu menu(menu::menu_t().set(menu::IS_POPUP));
+      wex::menu menu(menu::menu_t_def().set(menu::IS_POPUP));
 
       if (filename.file_exists())
       {
@@ -159,6 +161,7 @@ wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
           wxGetStockLabel(wxID_COPY),
           data::menu().art(wxART_COPY)}});
 
+      // If the filename is under vcs append vcs submenu.
       if (vcs::dir_exists(filename))
       {
         menu.append({{}, {filename, frame}});
@@ -177,9 +180,11 @@ wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
           ellipsed(frame->find_in_files_title(ID_TOOL_REPLACE))},
          {}});
 
-      auto* item = menu.AppendCheckItem(idShowHidden, _("Show hidden"));
-      if (config(_("Show hidden")).get(false))
+      if (auto* item = menu.AppendCheckItem(idShowHidden, _("Show hidden"));
+          config(_("Show hidden")).get(false))
+      {
         item->Check();
+      }
 
       PopupMenu(&menu);
     });

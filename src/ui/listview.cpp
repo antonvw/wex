@@ -296,7 +296,8 @@ wex::listview::listview(const data::listview& data)
     {
       m_to_be_sorted_column_no = event.GetColumn();
 
-      menu menu(GetSelectedItemCount() > 0 ? menu::IS_SELECTED : menu::DEFAULT);
+      menu menu(
+        GetSelectedItemCount() > 0 ? menu::IS_SELECTED : menu::menu_t_def());
 
       menu.append({{wxID_SORT_ASCENDING}, {wxID_SORT_DESCENDING}});
 

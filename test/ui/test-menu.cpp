@@ -49,7 +49,7 @@ TEST_CASE("wex::menu")
   SUBCASE("style")
   {
     auto* menu = new wex::menu;
-    REQUIRE(menu->style().test(wex::menu::DEFAULT));
+    REQUIRE(menu->style() == wex::menu::menu_t_def());
 
     menu->style().set(wex::menu::IS_READ_ONLY);
     REQUIRE(menu->style().test(wex::menu::IS_READ_ONLY));

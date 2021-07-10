@@ -1,5 +1,7 @@
 # roadmap
-- explorer git log etc. not ok
+- git blame line in explorer should be blame
+- default values, such as PRECISION_DEFAULT, as in data::dir
+  - at data::dir change name into t as well
 
 ## backlog
 - use modules

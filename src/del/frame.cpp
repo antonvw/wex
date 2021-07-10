@@ -301,15 +301,24 @@ wex::del::listview* wex::del::frame::activate_and_clear(const wex::tool& tool)
   return lv;
 }
 
+void append_submenu(const wex::menu_item* item, wex::menu* menu, wex::menu* submenu)
+{
+  if (const wex::vcs vcs({item->path()});
+    vcs.entry().build_menu(wex::ID_EDIT_VCS_LOWEST + 1, submenu))
+  {
+    menu->append({{submenu, vcs.entry().name()}});
+  }
+}
+    
 void wex::del::frame::append_vcs(wex::menu* menu, const menu_item* item) const
 {
+  auto* submenu = new wex::menu(menu->style());
+
   if (!item->path().file_exists())
   {
     if (item->path().dir_exists())
     {
-      const wex::vcs vcs({item->path()});
-
-      vcs.entry().build_menu(ID_VCS_LOWEST + 1, menu);
+      append_submenu(item, menu, submenu);
     }
     else
     {
@@ -318,19 +327,16 @@ void wex::del::frame::append_vcs(wex::menu* menu, const menu_item* item) const
       if (vcs.set_entry_from_base(
             item->is_modal() ? wxTheApp->GetTopWindow() : nullptr))
       {
-        vcs.entry().build_menu(ID_VCS_LOWEST + 1, menu);
+        if (vcs.entry().build_menu(ID_EDIT_VCS_LOWEST + 1, submenu))
+        {
+          menu->append({{submenu, vcs.entry().name()}});
+        }
       }
     }
   }
   else
   {
-    auto* vcsmenu = new wex::menu(menu->style());
-
-    if (const wex::vcs vcs({item->path()});
-        vcs.entry().build_menu(ID_EDIT_VCS_LOWEST + 1, vcsmenu))
-    {
-      menu->append({{vcsmenu, vcs.entry().name()}});
-    }
+    append_submenu(item, menu, submenu);
   }
 }
 

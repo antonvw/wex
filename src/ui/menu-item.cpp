@@ -22,7 +22,7 @@ wex::menu_item::menu_item(type_t type)
 }
 
 wex::menu_item::menu_item(
-  int                id,
+  wxWindowID         id,
   const std::string& name,
   const data::menu&  data)
   : m_id(id)
@@ -34,7 +34,7 @@ wex::menu_item::menu_item(
 }
 
 wex::menu_item::menu_item(
-  int                id,
+  wxWindowID         id,
   const std::string& name,
   type_t             type,
   const data::menu&  data)
@@ -49,7 +49,7 @@ wex::menu_item::menu_item(
 wex::menu_item::menu_item(
   wex::menu*         submenu,
   const std::string& name,
-  int                id,
+  wxWindowID         id,
   const data::menu&  data)
   : m_id(id)
   , m_type(SUBMENU)
@@ -62,7 +62,7 @@ wex::menu_item::menu_item(
 
 wex::menu_item::menu_item(
   const wex::path&  p,
-  frame*    frame,
+  frame*            frame,
   bool              show_modal,
   const data::menu& data)
   : m_type(VCS)
@@ -73,7 +73,10 @@ wex::menu_item::menu_item(
   m_data.bind(m_id);
 }
 
-wex::menu_item::menu_item(int id, file_history& history, const data::menu& data)
+wex::menu_item::menu_item(
+  wxWindowID        id,
+  file_history&     history,
+  const data::menu& data)
   : m_id(id)
   , m_type(HISTORY)
   , m_history(&history)

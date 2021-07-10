@@ -37,14 +37,14 @@
         })                                                           \
   }
 
-wex::menu::menu(menu_t style, const std::vector<menu_item>& items)
+wex::menu::menu(menu_t style, const menu_items_t& items)
   : m_style(style)
 {
   append(items);
 }
 
-wex::menu::menu(const std::vector<menu_item>& items)
-  : m_style(menu_t().set(DEFAULT))
+wex::menu::menu(const menu_items_t& items, menu_t style)
+  : m_style(style)
 {
   append(items);
 }
@@ -55,7 +55,7 @@ wex::menu::menu(const std::string& title, menu_t style)
 {
 }
 
-size_t wex::menu::append(const std::vector<menu_item>& items)
+size_t wex::menu::append(const menu_items_t& items)
 {
   const auto count(GetMenuItemCount());
 
