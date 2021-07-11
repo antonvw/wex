@@ -1,6 +1,7 @@
 # roadmap
-- default values, such as PRECISION_DEFAULT, as in data::dir
-  - at data::dir change name into t as well
+- git menu in statusbar improve (del::frame)
+  - should be main menu
+  - should contain blame
 
 ## backlog
 - use modules

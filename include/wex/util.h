@@ -79,7 +79,7 @@ int open_files(
   /// data to be used with open_file
   const data::stc& data = data::stc(),
   /// flags to be used with open_file_dir
-  const data::dir::type_t& type = data::dir::type_def());
+  const data::dir::type_t& type = data::dir::type_t_def());
 
 /// Executes all process between backquotes in command,
 /// and changes command with replaced match with output from process.

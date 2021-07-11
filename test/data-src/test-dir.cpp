@@ -24,9 +24,9 @@ TEST_CASE("wex::data::dir")
 
   SUBCASE("type")
   {
-    REQUIRE(wex::data::dir::type_def().test(wex::data::dir::FILES));
-    REQUIRE(wex::data::dir::type_def().test(wex::data::dir::DIRS));
-    REQUIRE(!wex::data::dir::type_def().test(wex::data::dir::HIDDEN));
-    REQUIRE(wex::data::dir::type_def().test(wex::data::dir::RECURSIVE));
+    REQUIRE(wex::data::dir::type_t_def().test(wex::data::dir::FILES));
+    REQUIRE(wex::data::dir::type_t_def().test(wex::data::dir::DIRS));
+    REQUIRE(!wex::data::dir::type_t_def().test(wex::data::dir::HIDDEN));
+    REQUIRE(wex::data::dir::type_t_def().test(wex::data::dir::RECURSIVE));
   }
 }

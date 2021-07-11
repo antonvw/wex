@@ -262,6 +262,16 @@ wex::del::frame::frame(
 
      {[=, this](wxCommandEvent& event)
       {
+        // this code handles the PaneVCS statusbar_clicked
+        wex::vcs(
+          std::vector<wex::path>(),
+          event.GetId() - wex::ID_EDIT_VCS_LOWEST - 1)
+          .request();
+      },
+      wex::ID_EDIT_VCS_LOWEST},
+
+     {[=, this](wxCommandEvent& event)
+      {
         SetMenuBar(GetMenuBar() != nullptr ? nullptr : m_menubar);
       },
       ID_VIEW_MENUBAR},
@@ -301,15 +311,18 @@ wex::del::listview* wex::del::frame::activate_and_clear(const wex::tool& tool)
   return lv;
 }
 
-void append_submenu(const wex::menu_item* item, wex::menu* menu, wex::menu* submenu)
+void append_submenu(
+  const wex::menu_item* item,
+  wex::menu*            menu,
+  wex::menu*            submenu)
 {
   if (const wex::vcs vcs({item->path()});
-    vcs.entry().build_menu(wex::ID_EDIT_VCS_LOWEST + 1, submenu))
+      vcs.entry().build_menu(wex::ID_EDIT_VCS_LOWEST + 1, submenu))
   {
     menu->append({{submenu, vcs.entry().name()}});
   }
 }
-    
+
 void wex::del::frame::append_vcs(wex::menu* menu, const menu_item* item) const
 {
   auto* submenu = new wex::menu(menu->style());

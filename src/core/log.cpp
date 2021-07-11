@@ -216,11 +216,6 @@ const std::string wex::log::get() const
          m_ss.str() + m_wss.str();
 }
 
-wex::log::level_t wex::log::get_default_level()
-{
-  return LEVEL_ERROR;
-}
-
 std::string wex::log::get_level_info()
 {
   std::stringstream help;
@@ -268,6 +263,11 @@ void wex::log::init(level_t loglevel, const std::string& default_logfile)
     logging::keywords::format        = "%TimeStamp% [%Severity%] %Message%");
 
   m_initialized = true;
+}
+
+wex::log::level_t wex::log::level_t_def()
+{
+  return LEVEL_ERROR;
 }
 
 void wex::log::set_level(level_t loglevel)
