@@ -414,7 +414,8 @@ wex::listview::listview(const data::listview& data)
     wxEVT_RIGHT_DOWN,
     [=, this](wxMouseEvent& event)
     {
-      menu::menu_t style(menu::menu_t().set(menu::IS_POPUP));
+      menu::menu_t style(
+        menu::menu_t().set(menu::IS_POPUP).set(menu::IS_VISUAL));
       if (GetSelectedItemCount() > 0)
         style.set(menu::IS_SELECTED);
       if (GetItemCount() == 0)

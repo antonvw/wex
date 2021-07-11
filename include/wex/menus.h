@@ -100,6 +100,13 @@ size_t wex::menus::build_menu(const T& commands, int base_id, menu* menu)
     }
 
     if (
+      !menu->style().test(menu::IS_LINES) &&
+      it.type().test(menu_command::IS_LINES))
+    {
+      add = false;
+    }
+
+    if (
       !menu->style().test(menu::IS_VISUAL) &&
       it.type().test(menu_command::IS_VISUAL))
     {

@@ -149,7 +149,8 @@ wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
 
       const wex::path_lexer filename(files[0]);
 
-      wex::menu menu(menu::menu_t_def().set(menu::IS_POPUP));
+      wex::menu menu(
+        menu::menu_t_def().set(menu::IS_POPUP).set(menu::IS_VISUAL));
 
       if (filename.file_exists())
       {

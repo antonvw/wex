@@ -24,7 +24,7 @@ public:
   enum include
   {
     INCLUDE_SUBCOMMAND = 0, ///< includes a possible subcommand
-    INCLUDE_ACCELL     = 1, ///< includes accelerator
+    INCLUDE_ACCELL,         ///< includes accelerator
   };
 
   typedef std::bitset<2> include_t;
@@ -32,7 +32,8 @@ public:
   /// The command type flags as read from xml file.
   enum
   {
-    IS_POPUP = 0, ///< command in popup menu
+    IS_LINES = 0, ///< command supports lines
+    IS_POPUP,     ///< command in popup menu
     IS_MAIN,      ///< command in main menu
     IS_SELECTED,  ///< command only shown if text selected
     IS_VISUAL,    ///< command only shown if visual mode
@@ -40,7 +41,7 @@ public:
     ELLIPSES,     ///< command is followed by an ellipses
   };
 
-  typedef std::bitset<6> type_t;
+  typedef std::bitset<7> type_t;
 
   /// Default constructor using xml node.
   menu_command(const pugi::xml_node& node = pugi::xml_node());

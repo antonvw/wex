@@ -21,6 +21,7 @@ public:
   enum
   {
     IS_EMPTY = 0, ///< control is empty
+    IS_LINES,     ///< the control supports lines
     IS_POPUP,     ///< menu should appear as popup, instead of main menu
     IS_READ_ONLY, ///< readonly control
     IS_SELECTED,  ///< text is selected somewhere on the control
@@ -30,7 +31,7 @@ public:
     CAN_PASTE,   ///< add paste item in menu
   };
 
-  typedef std::bitset<7> menu_t;
+  typedef std::bitset<8> menu_t;
 
   typedef std::vector<menu_item> menu_items_t;
 
