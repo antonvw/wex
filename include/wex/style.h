@@ -62,7 +62,7 @@ public:
   int number() const;
 
   /// Returns the lexer numbers.
-  const auto& numbers() const;
+  const auto& numbers() const { return m_no; }
 
   /// Returns the value.
   const auto& value() const { return m_value; }

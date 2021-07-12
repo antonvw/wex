@@ -31,6 +31,9 @@ public:
   /// Returns true if specified filename (a path) is a vcs directory.
   static bool dir_exists(const path& filename);
 
+  /// Returns vcs is empty.
+  static auto empty() { return m_entries.empty(); }
+
   /// Loads all entries (first clears them) from vcs document.
   /// Returns true if document is loaded.
   static bool load_document();

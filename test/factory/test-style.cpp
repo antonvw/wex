@@ -15,17 +15,17 @@ TEST_CASE("wex::style")
 {
   SUBCASE("constructor") { REQUIRE(!wex::style().is_ok()); }
 
-  SUBCASE("constructor-other")
+  SUBCASE("constructor-no-value")
   {
     for (const auto& style : std::vector<std::pair<
-           std::pair<std::string, std::string>,
+           std::pair<std::string, std::set<int>>,
            std::pair<std::string, std::string>>>{
-           {{"MARK_CIRCLE", ""}, {"ugly", "global"}},
-           {{"mark_circle", "0 "}, {"ugly", "global"}},
-           {{"512", ""}, {"ugly", "global"}},
-           {{"number,string,comment", "1 4 6 "}, {"fore:blue", "cpp"}},
-           {{"number,string,xxx", "4 6 "}, {"fore:black", "cpp"}},
-           {{"xxx", ""}, {"fore:black", "cpp"}}})
+           {{"MARK_CIRCLE", {}}, {"ugly", "global"}},
+           {{"mark_circle", {0}}, {"ugly", "global"}},
+           {{"512", {}}, {"ugly", "global"}},
+           {{"number,string,comment", {1, 4, 6}}, {"fore:blue", "cpp"}},
+           {{"number,string,xxx", {4, 6}}, {"fore:black", "cpp"}},
+           {{"xxx", {}}, {"fore:black", "cpp"}}})
     {
       // no, value, macro
       const wex::style test(
@@ -37,7 +37,8 @@ TEST_CASE("wex::style")
       {
         CAPTURE(style.first.first);
         REQUIRE(test.is_ok());
-        REQUIRE(test.number() == style.first.second);
+        REQUIRE(test.number() == *style.first.second.begin());
+        REQUIRE(test.numbers() == style.first.second);
         REQUIRE(test.value() == style.second.first);
       }
       else

@@ -311,27 +311,32 @@ wex::del::listview* wex::del::frame::activate_and_clear(const wex::tool& tool)
   return lv;
 }
 
-void append_submenu(
-  const wex::menu_item* item,
-  wex::menu*            menu,
-  wex::menu*            submenu)
+void append_submenu(const wex::menu_item* item, wex::menu* menu)
 {
+  wex::menu* submenu(menu);
+
+  if (menu->style().test(wex::menu::IS_POPUP))
+  {
+    submenu = new wex::menu(menu->style());
+  }
+
   if (const wex::vcs vcs({item->path()});
       vcs.entry().build_menu(wex::ID_EDIT_VCS_LOWEST + 1, submenu))
   {
-    menu->append({{submenu, vcs.entry().name()}});
+    if (menu->style().test(wex::menu::IS_POPUP))
+    {
+      menu->append({{submenu, vcs.entry().name()}});
+    }
   }
 }
 
 void wex::del::frame::append_vcs(wex::menu* menu, const menu_item* item) const
 {
-  auto* submenu = new wex::menu(menu->style());
-
   if (!item->path().file_exists())
   {
     if (item->path().dir_exists())
     {
-      append_submenu(item, menu, submenu);
+      append_submenu(item, menu);
     }
     else
     {
@@ -340,6 +345,8 @@ void wex::del::frame::append_vcs(wex::menu* menu, const menu_item* item) const
       if (vcs.set_entry_from_base(
             item->is_modal() ? wxTheApp->GetTopWindow() : nullptr))
       {
+        auto* submenu = new wex::menu(menu->style());
+
         if (vcs.entry().build_menu(ID_EDIT_VCS_LOWEST + 1, submenu))
         {
           menu->append({{submenu, vcs.entry().name()}});
@@ -349,7 +356,7 @@ void wex::del::frame::append_vcs(wex::menu* menu, const menu_item* item) const
   }
   else
   {
-    append_submenu(item, menu, submenu);
+    append_submenu(item, menu);
   }
 }
 
@@ -835,11 +842,32 @@ void wex::del::frame::statusbar_clicked(const std::string& pane)
       statustext(get_debug()->debug_entry().name(), pane);
     }
   }
+  else if (pane == "PaneLexer")
+  {
+    if (stc != nullptr && lexers_dialog(stc))
+    {
+      statustext(stc->get_lexer().display_lexer(), pane);
+    }
+  }
+  else if (pane == "PaneFileType")
+  {
+    if (stc != nullptr)
+    {
+      stc->filetype_menu();
+    }
+  }
+  else if (pane == "PaneMacro")
+  {
+    if (stc != nullptr)
+    {
+      stc->get_vi().get_macros().mode().transition("@", &stc->get_vi(), true);
+    }
+  }
   else if (pane == "PaneVCS")
   {
-    if (wex::vcs::size() > 0)
+    if (!wex::vcs::empty())
     {
-      auto* menu = new wex::menu;
+      auto* menu = new wex::menu(menu::menu_t_def().set(menu::IS_VISUAL));
 
       if (stc != nullptr)
       {
@@ -855,23 +883,6 @@ void wex::del::frame::statusbar_clicked(const std::string& pane)
 
       delete menu;
     }
-  }
-  else if (pane == "PaneLexer")
-  {
-    if (stc != nullptr && lexers_dialog(stc))
-    {
-      statustext(stc->get_lexer().display_lexer(), pane);
-    }
-  }
-  else if (pane == "PaneFileType")
-  {
-    if (stc != nullptr)
-      stc->filetype_menu();
-  }
-  else if (pane == "PaneMacro")
-  {
-    if (stc != nullptr)
-      stc->get_vi().get_macros().mode().transition("@", &stc->get_vi(), true);
   }
   else
   {
