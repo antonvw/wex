@@ -66,7 +66,7 @@ TEST_CASE("wex::factory::link")
       .set(std::list<std::string>{{"/usr/bin"}});
     wex::factory::link lnk;
 
-    // Test empty, or illegal paths.
+    // Test empty, or invalid paths.
     link(lnk, "");
     link(lnk, "xxxx");
     link(lnk, "1 othertest:");

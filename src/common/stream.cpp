@@ -169,10 +169,10 @@ void wex::stream::process_match(const path_match& m)
 
 int wex::stream::replace_all(std::string& text, int* match_pos)
 {
-  int               count  = 0;
-  bool              update = false;
-  const std::string search(m_frd->get_find_string());
-  const std::string replace(m_frd->get_replace_string());
+  int         count  = 0;
+  bool        update = false;
+  const auto& search(m_frd->get_find_string());
+  const auto& replace(m_frd->get_replace_string());
 
   for (size_t pos = 0; (pos = text.find(search, pos)) != std::string::npos;)
   {

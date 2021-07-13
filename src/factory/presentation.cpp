@@ -32,7 +32,7 @@ wex::presentation::presentation(presentation_t type, const pugi::xml_node& node)
       std::from_chars(single.data(), single.data() + single.size(), m_no).ec !=
       std::errc())
     {
-      log("illegal " + name() + " number") << m_no << node;
+      log("invalid " + name() + " number") << m_no << node;
     }
 
     if (auto it = tok.begin(); it != tok.end())
@@ -46,7 +46,7 @@ wex::presentation::presentation(presentation_t type, const pugi::xml_node& node)
           m_style)
           .ec != std::errc())
       {
-        log("illegal " + name() + " style") << applied << node;
+        log("invalid " + name() + " style") << applied << node;
       }
 
       if (++it != tok.end())

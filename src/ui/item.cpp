@@ -1110,7 +1110,7 @@ wxFlexGridSizer* wex::item::layout(
         {
           if (!m_data.initial().has_value())
           {
-            log() << "illegal notebook";
+            log() << "invalid notebook";
             return nullptr;
           }
 

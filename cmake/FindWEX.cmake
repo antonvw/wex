@@ -155,6 +155,8 @@ if (CMAKE_BUILD_TYPE EQUAL "Debug")
   set(USE_DEBUG "d")
 endif() 
 
+include_directories(${Boost_INCLUDE_DIRS})
+
 # these should be the same as in common.cmake
 set(wex_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include/wex")
 set(wex_LIB_DIR "${CMAKE_INSTALL_PREFIX}/lib")

@@ -305,7 +305,7 @@ TEST_CASE("wex::ex")
 
     SUBCASE("not-existing") { REQUIRE(!ex->command(":so test-surce.txt")); }
 
-    SUBCASE("illegal") { REQUIRE(!ex->command(":so test-source-2.txt")); }
+    SUBCASE("invalid") { REQUIRE(!ex->command(":so test-source-2.txt")); }
   }
 #endif
 
