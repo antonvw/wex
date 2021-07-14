@@ -124,7 +124,6 @@ if (MSVC)
     wx${PLATFORM}31u_stc
     wx${PLATFORM}31u_html
     wx${PLATFORM}31u_core
-    wx${PLATFORM}31u_media
     wx${PLATFORM}31u_qa
     wx${PLATFORM}31u_gl
     wxbase31u 
