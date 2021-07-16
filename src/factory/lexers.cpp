@@ -531,7 +531,7 @@ void wex::lexers::parse_node_macro(const pugi::xml_node& node)
         }
         else
         {
-          log("macro") << name << "attribute no is missing";
+          log("macro") << name << "attribute no is missing" << macro;
         }
       }
 

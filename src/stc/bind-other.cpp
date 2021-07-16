@@ -384,7 +384,8 @@ void wex::stc::mouse_action(wxMouseEvent& event)
     }
     else if (event.RightUp())
     {
-      menu::menu_t style(menu::menu_t().set(menu::IS_POPUP));
+      menu::menu_t style(
+        menu::menu_t().set(menu::IS_POPUP).set(menu::IS_LINES));
 
       if (GetReadOnly() || is_hexmode())
         style.set(menu::IS_READ_ONLY);

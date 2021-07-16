@@ -296,7 +296,8 @@ wex::listview::listview(const data::listview& data)
     {
       m_to_be_sorted_column_no = event.GetColumn();
 
-      menu menu(GetSelectedItemCount() > 0 ? menu::IS_SELECTED : menu::DEFAULT);
+      menu menu(
+        GetSelectedItemCount() > 0 ? menu::IS_SELECTED : menu::menu_t_def());
 
       menu.append({{wxID_SORT_ASCENDING}, {wxID_SORT_DESCENDING}});
 
@@ -413,7 +414,8 @@ wex::listview::listview(const data::listview& data)
     wxEVT_RIGHT_DOWN,
     [=, this](wxMouseEvent& event)
     {
-      menu::menu_t style(menu::menu_t().set(menu::IS_POPUP));
+      menu::menu_t style(
+        menu::menu_t().set(menu::IS_POPUP).set(menu::IS_VISUAL));
       if (GetSelectedItemCount() > 0)
         style.set(menu::IS_SELECTED);
       if (GetItemCount() == 0)

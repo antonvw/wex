@@ -147,7 +147,7 @@ void wex::style::set_no(
       }
       else
       {
-        log("style out of range") << single;
+        log("invalid style") << single;
       }
     }
     catch (std::exception& e)

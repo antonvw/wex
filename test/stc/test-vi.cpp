@@ -125,7 +125,7 @@ TEST_CASE("wex::vi")
       change_mode(vi, visual.first, visual.second);
       change_mode(vi, "jjj", visual.second);
       change_mode(vi, visual.first, visual.second); // second has no effect
-      // enter illegal command
+      // enter invalid command
       vi->command("g");
       vi->command("j");
       change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);

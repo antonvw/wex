@@ -170,8 +170,8 @@ Copyright: (c) 2021 Anton van Wezenbeek
 
     <commands>
       <command type="popup is-visual" flags="-w"> &amp;blame </command>
-      <command type="popup separator" flags="-L %LINES" menu="&amp;blame line"> blame</command>
-      <command type="popup is-selected is-visual" flags="-L %LINES" menu="&amp;blame selection"> blame</command>
+      <command type="popup is-lines separator" flags="-L %LINES" menu="&amp;blame line"> blame</command>
+      <command type="popup is-lines is-selected is-visual" flags="-L %LINES" menu="&amp;blame selection"> blame</command>
       <command type="main ellipses"> &amp;add </command>
       <command type="ellipses"> &amp;checkout </command>
       <command type="ellipses"> &amp;commit </command>

@@ -207,7 +207,7 @@ wex::lexer& wex::lexer::operator=(const wex::lexer& l)
 
 // Adds the specified keywords to the keywords map and the keywords set.
 // The text might contain the keyword set after a ':'.
-// Returns false if specified set is illegal or value is empty.
+// Returns false if specified set is invalid or value is empty.
 bool wex::lexer::add_keywords(const std::string& value, int setno)
 {
   if (value.empty() || setno < 0 || setno >= wxSTC_KEYWORDSET_MAX)

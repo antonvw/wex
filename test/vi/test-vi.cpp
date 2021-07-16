@@ -136,7 +136,7 @@ TEST_CASE("wex::vi")
     }
   }
 
-  SUBCASE("illegal command")
+  SUBCASE("invalid command")
   {
     REQUIRE(!vi->command(":xxx"));
     change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);

@@ -42,10 +42,6 @@ void wex::bind::command(
         m_handler->Bind(wxEVT_MENU, it.first, it.second, ID_TOOL_HIGHEST);
         break;
 
-      case ID_VCS_LOWEST:
-        m_handler->Bind(wxEVT_MENU, it.first, it.second, ID_VCS_HIGHEST);
-        break;
-
       case wxID_SORT_ASCENDING:
         m_handler->Bind(wxEVT_MENU, it.first, it.second, wxID_SORT_ASCENDING);
         break;

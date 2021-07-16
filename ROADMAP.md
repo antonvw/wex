@@ -1,9 +1,8 @@
 # roadmap
-- explorer git log etc. not ok
 
 ## backlog
 - use modules
-- add general validator
+- add general validator (e.g. use in tcpview)
 
 - supply process input if requested (as with svn password)
 - start up with recent project, close project

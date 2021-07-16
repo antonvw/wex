@@ -30,7 +30,7 @@ public:
 
   /// Returns default type flags.
   /// All flags, except HIDDEN are on.
-  static type_t type_def() { return type_t().set().set(HIDDEN, false); }
+  static type_t type_t_def() { return type_t().set().set(HIDDEN, false); }
 
   /// Returns the dir spec.
   const auto& dir_spec() const { return m_dir_spec; }
@@ -87,6 +87,6 @@ private:
 
   int         m_max_matches{-1};
   std::string m_dir_spec, m_file_spec;
-  type_t      m_flags{type_def()};
+  type_t      m_flags{type_t_def()};
 };
 }; // namespace wex::data

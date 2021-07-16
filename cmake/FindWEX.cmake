@@ -124,7 +124,6 @@ if (MSVC)
     wx${PLATFORM}31u_stc
     wx${PLATFORM}31u_html
     wx${PLATFORM}31u_core
-    wx${PLATFORM}31u_media
     wx${PLATFORM}31u_qa
     wx${PLATFORM}31u_gl
     wxbase31u 
@@ -154,6 +153,8 @@ endif()
 if (CMAKE_BUILD_TYPE EQUAL "Debug")
   set(USE_DEBUG "d")
 endif() 
+
+include_directories(${Boost_INCLUDE_DIRS})
 
 # these should be the same as in common.cmake
 set(wex_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include/wex")

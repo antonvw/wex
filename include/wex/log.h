@@ -39,18 +39,18 @@ public:
   /// The wex::cmdline_imp or wex::app::OnInit takes care of this.
   static void init(
     /// loglevel
-    level_t loglevel = get_default_level(),
+    level_t loglevel = level_t_def(),
     /// logfile, empty string is default logfile
     const std::string& logfile = std::string());
-
-  /// Returns default log level.
-  static level_t get_default_level();
 
   /// Return current filter log level.
   static auto get_level() { return m_level_filter; }
 
   /// Returns info for log levels.
   static std::string get_level_info();
+
+  /// Returns default log level.
+  static level_t level_t_def();
 
   /// Sets filter log level.
   static void set_level(level_t loglevel);
