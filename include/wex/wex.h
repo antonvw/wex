@@ -97,6 +97,7 @@
 #include <wex/vcs-command.h>
 #include <wex/vcs-entry.h>
 #include <wex/vcs.h>
+#include <wex/version-dialog.h>
 #include <wex/version.h>
 #include <wex/vi-mode.h>
 #include <wex/vi.h>

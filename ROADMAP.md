@@ -1,4 +1,6 @@
 # roadmap
+- open files and default extension
+- focus after write changes to other file
 
 ## backlog
 - use modules

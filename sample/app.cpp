@@ -243,12 +243,7 @@ frame::frame()
     {{[=, this](wxCommandEvent& event)
       {
         m_statistics->inc(std::to_string(event.GetId()));
-        wxAboutDialogInfo info;
-        info.SetIcon(GetIcon());
-        info.SetVersion(wex::get_version_info().get());
-        info.SetDescription(wex::get_version_info().external_libraries().str());
-        info.SetCopyright(wex::get_version_info().copyright());
-        wxAboutBox(info);
+        wex::version_info_dialog().show();
       },
       wxID_ABOUT},
      {[=, this](wxCommandEvent& event)
