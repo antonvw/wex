@@ -21,10 +21,16 @@ public:
   /// Constructor.
   about_info() { ; }
 
+  /// Sets description.
+  about_info& description(const std::string& rhs);
+
+  /// Adds a developer.
+  about_info& developer(const std::string& rhs);
+
   /// Sets icon.
   about_info& icon(const wxIcon& rhs);
 
-  /// Sets licesne.
+  /// Sets license.
   about_info& license(const std::string& rhs);
 
   /// Sets website.
