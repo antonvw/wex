@@ -26,9 +26,9 @@ wex::about_info& wex::about_info::developer(const std::string& rhs)
   return *this;
 }
 
-wex::about_info& wex::about_info::license(const std::string& rhs)
+wex::about_info& wex::about_info::licence(const std::string& rhs)
 {
-  SetLicense(rhs);
+  SetLicence(rhs);
   return *this;
 }
 
