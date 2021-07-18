@@ -30,8 +30,8 @@ public:
   /// Sets icon.
   about_info& icon(const wxIcon& rhs);
 
-  /// Sets license.
-  about_info& license(const std::string& rhs);
+  /// Sets licence.
+  about_info& licence(const std::string& rhs);
 
   /// Sets website.
   about_info& website(const std::string& rhs);
@@ -52,6 +52,9 @@ public:
     const version_info& info,
     /// about info
     const about_info& about = about_info());
+
+  /// Returns the about info.
+  const auto& about() const { return m_about; }
 
   /// Shows the dialog.
   void show();
