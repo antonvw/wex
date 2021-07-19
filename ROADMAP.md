@@ -1,6 +1,6 @@
 # roadmap
-- open files and default extension
-- focus after write changes to other file
+- focus after yank lines to other file
+- after Save As new file is readonly until click
 
 ## backlog
 - use modules

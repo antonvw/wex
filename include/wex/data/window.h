@@ -14,92 +14,102 @@
 
 namespace wex::data
 {
-  const long NUMBER_NOT_SET = wex::NUMBER_NOT_SET;
+const long NUMBER_NOT_SET = wex::NUMBER_NOT_SET;
 
-  /// Offers window data to be used by windows or (file) dialogs.
-  class window
-  {
-  public:
-    /// Default constructor.
-    window();
+/// Offers window data to be used by windows or (file) dialogs.
+class window
+{
+public:
+  /// Default constructor.
+  window();
 
-    /// Returns button flags.
-    const auto& button() const { return m_button; }
+  /// Sets move path extension.
+  /// This is used in file_dialog, to move a matching path extension to front.
+  /// Default extensions are not moved.
+  window& allow_move_path_extension(bool rhs);
 
-    /// Sets buttons flags.
-    /// This is a bit list of the following flags:
-    /// - wxOK
-    /// - wxYES
-    /// - wxAPPLY
-    /// - wxSAVE
-    /// - wxCLOSE
-    /// - wxNO
-    /// - wxCANCEL
-    /// - wxHELP
-    /// - wxNO_DEFAULT
-    /// The default buttons are wxOK and wxCANCEL
-    window& button(long button);
+  /// Returns move path extension.
+  bool allow_move_path_extension() const { return m_allow_move_path_extension; }
 
-    /// Returns window id.
-    const auto& id() const { return m_id; }
+  /// Returns button flags.
+  const auto& button() const { return m_button; }
 
-    /// Sets window id.
-    window& id(wxWindowID id);
+  /// Sets buttons flags.
+  /// This is a bit list of the following flags:
+  /// - wxOK
+  /// - wxYES
+  /// - wxAPPLY
+  /// - wxSAVE
+  /// - wxCLOSE
+  /// - wxNO
+  /// - wxCANCEL
+  /// - wxHELP
+  /// - wxNO_DEFAULT
+  /// The default buttons are wxOK and wxCANCEL
+  window& button(long button);
 
-    /// Returns name.
-    const auto& name() const { return m_name; }
+  /// Returns window id.
+  const auto& id() const { return m_id; }
 
-    /// Sets window name.
-    window& name(const std::string& name);
+  /// Sets window id.
+  window& id(wxWindowID id);
 
-    /// Returns parent.
-    auto parent() const { return m_parent; }
+  /// Returns name.
+  const auto& name() const { return m_name; }
 
-    /// Sets parent.
-    window& parent(wxWindow* parent);
+  /// Sets window name.
+  window& name(const std::string& name);
 
-    /// Returns window pos.
-    const auto& pos() const { return m_pos; }
+  /// Returns parent.
+  auto parent() const { return m_parent; }
 
-    /// Sets window pos.
-    window& pos(const wxPoint& point);
+  /// Sets parent.
+  window& parent(wxWindow* parent);
 
-    /// Returns window size.
-    const auto& size() const { return m_size; }
+  /// Returns window pos.
+  const auto& pos() const { return m_pos; }
 
-    /// Sets window size.
-    window& size(const wxSize& size);
+  /// Sets window pos.
+  window& pos(const wxPoint& point);
 
-    /// Returns window style.
-    const auto& style() const { return m_style; }
+  /// Returns window size.
+  const auto& size() const { return m_size; }
 
-    /// Sets window style.
-    /// The style bits available depend on the context.
-    /// Therefore default style is NUMBER_NOT_SET,
-    window& style(long style);
+  /// Sets window size.
+  window& size(const wxSize& size);
 
-    /// Returns window title.
-    const auto& title() const { return m_title; }
+  /// Returns window style.
+  const auto& style() const { return m_style; }
 
-    /// Sets window title.
-    window& title(const std::string& title);
+  /// Sets window style.
+  /// The style bits available depend on the context.
+  /// Therefore default style is NUMBER_NOT_SET,
+  window& style(long style);
 
-    /// Returns wildcard.
-    const auto& wildcard() const { return m_wildcard; }
+  /// Returns window title.
+  const auto& title() const { return m_title; }
 
-    /// Sets wildcard.
-    /// if wildcard is default and file is initialized,
-    /// the wildcard is taken from the file
-    window& wildcard(const std::string& rhs);
+  /// Sets window title.
+  window& title(const std::string& title);
 
-  private:
-    wxWindowID m_id{wxID_ANY};
-    wxPoint    m_pos{wxDefaultPosition};
-    wxSize     m_size{wxDefaultSize};
-    wxWindow*  m_parent{nullptr};
+  /// Returns wildcard.
+  const auto& wildcard() const { return m_wildcard; }
 
-    std::string m_name, m_title, m_wildcard{wxFileSelectorDefaultWildcardStr};
+  /// Sets wildcard.
+  /// if wildcard is default and file is initialized,
+  /// the wildcard is taken from the file
+  window& wildcard(const std::string& rhs);
 
-    long m_button{wxOK | wxCANCEL}, m_style{NUMBER_NOT_SET};
-  };
+private:
+  wxWindowID m_id{wxID_ANY};
+  wxPoint    m_pos{wxDefaultPosition};
+  wxSize     m_size{wxDefaultSize};
+  wxWindow*  m_parent{nullptr};
+
+  std::string m_name, m_title, m_wildcard{wxFileSelectorDefaultWildcardStr};
+
+  bool m_allow_move_path_extension{false};
+
+  long m_button{wxOK | wxCANCEL}, m_style{NUMBER_NOT_SET};
+};
 }; // namespace wex::data
