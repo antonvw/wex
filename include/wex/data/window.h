@@ -26,10 +26,14 @@ public:
   /// Sets move path extension.
   /// This is used in file_dialog, to move a matching path extension to front.
   /// Default extensions are not moved.
-  window& allow_move_path_extension(bool rhs);
+  window& allow_move_path_extension(const std::string& rhs);
 
-  /// Returns move path extension.
-  bool allow_move_path_extension() const { return m_allow_move_path_extension; }
+  /// Returns the extension for which it is alloed to
+  /// move path extension in a file dialog.
+  const auto& allow_move_path_extension() const
+  {
+    return m_allow_move_path_extension;
+  }
 
   /// Returns button flags.
   const auto& button() const { return m_button; }
@@ -106,9 +110,8 @@ private:
   wxSize     m_size{wxDefaultSize};
   wxWindow*  m_parent{nullptr};
 
-  std::string m_name, m_title, m_wildcard{wxFileSelectorDefaultWildcardStr};
-
-  bool m_allow_move_path_extension{false};
+  std::string m_allow_move_path_extension, m_name, m_title,
+    m_wildcard{wxFileSelectorDefaultWildcardStr};
 
   long m_button{wxOK | wxCANCEL}, m_style{NUMBER_NOT_SET};
 };
