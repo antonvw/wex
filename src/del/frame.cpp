@@ -136,39 +136,7 @@ wex::del::frame::frame(
     {{[=, this](wxCommandEvent& event)
       {
         m_is_command = true;
-
-        // :e [+command] [file]
-        if (std::string text(event.GetString()); !text.empty())
-        {
-          if (auto* stc = dynamic_cast<wex::stc*>(get_stc()); stc != nullptr)
-          {
-            wex::path::current(stc->path().data().parent_path());
-            if (!marker_and_register_expansion(&stc->get_vi(), text))
-              return;
-          }
-
-          if (!shell_expansion(text))
-            return;
-
-          std::string cmd;
-          if (regex v("\\+([^ \t]+)* *(.*)"); v.match(text) > 1)
-          {
-            cmd  = v[0];
-            text = v[1];
-          }
-
-          open_files(
-            this,
-            to_vector_path(text).get(),
-            data::control().command(cmd));
-        }
-        else
-        {
-          data::window data;
-          data.style(
-            wxFD_OPEN | wxFD_MULTIPLE | wxFD_CHANGE_DIR | wxFD_HEX_MODE);
-          open_files_dialog(this, false, data::stc(data));
-        }
+        open_from_event(event, std::string());
       },
       wxID_OPEN},
 
@@ -751,6 +719,41 @@ void wex::del::frame::on_notebook(wxWindowID id, wxWindow* page)
     {
       statustext(v.name(), "PaneVCS");
     }
+  }
+}
+
+void wex::del::frame::open_from_event(
+  const wxCommandEvent& event,
+  const std::string&    move_ext)
+{
+  // :e [+command] [file]
+  if (auto text(event.GetString().ToStdString()); !text.empty())
+  {
+    if (auto* stc = dynamic_cast<wex::stc*>(get_stc()); stc != nullptr)
+    {
+      wex::path::current(stc->path().data().parent_path());
+      if (!marker_and_register_expansion(&stc->get_vi(), text))
+        return;
+    }
+
+    if (!shell_expansion(text))
+      return;
+
+    std::string cmd;
+    if (regex v("\\+([^ \t]+)* *(.*)"); v.match(text) > 1)
+    {
+      cmd  = v[0];
+      text = v[1];
+    }
+
+    open_files(this, to_vector_path(text).get(), data::control().command(cmd));
+  }
+  else
+  {
+    data::window data;
+    data.style(wxFD_OPEN | wxFD_MULTIPLE | wxFD_CHANGE_DIR | wxFD_HEX_MODE)
+      .allow_move_path_extension(move_ext);
+    open_files_dialog(this, false, data::stc(data));
   }
 }
 

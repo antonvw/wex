@@ -164,6 +164,10 @@ protected:
   /// you might want prevent closing it.
   auto* file_history_list() { return m_file_history_listview; }
 
+  /// Opens from event with a possible extension to move.
+  void
+  open_from_event(const wxCommandEvent& event, const std::string& move_ext);
+
 private:
   listview* activate_and_clear(const wex::tool& tool);
 

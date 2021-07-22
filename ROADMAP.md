@@ -1,6 +1,5 @@
 # roadmap
 - focus after yank lines to other file
-- after Save As new file is readonly until click
 
 ## backlog
 - use modules
