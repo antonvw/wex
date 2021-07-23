@@ -17,6 +17,13 @@ wex::data::window::window()
   }
 }
 
+wex::data::window&
+wex::data::window::allow_move_path_extension(const std::string& rhs)
+{
+  m_allow_move_path_extension = rhs;
+  return *this;
+}
+
 wex::data::window& wex::data::window::button(long button)
 {
   m_button = button;

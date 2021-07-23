@@ -89,6 +89,7 @@ wex::file_dialog::file_dialog(wex::file* file, const data::window& data)
     std::string wildcards = _("All Files") + " (" +
                             wxFileSelectorDefaultWildcardStr + ") |" +
                             wxFileSelectorDefaultWildcardStr;
+    const auto& allow_ext(data.allow_move_path_extension());
 
     for (const auto& it : lexers::get()->get_lexers())
     {
@@ -97,7 +98,8 @@ wex::file_dialog::file_dialog(wex::file* file, const data::window& data)
         const std::string wildcard =
           it.display_lexer() + " (" + it.extensions() + ") |" + it.extensions();
         wildcards =
-          (matches_one_of(file->path().filename(), it.extensions()) ?
+          (allow_ext == file->path().extension() &&
+               matches_one_of(file->path().filename(), it.extensions()) ?
              wildcard + "|" + wildcards :
              wildcards + "|" + wildcard);
       }

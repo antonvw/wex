@@ -5,6 +5,8 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wx/app.h>
+
 #include <wex/frame.h>
 #include <wex/version-dialog.h>
 
@@ -63,5 +65,5 @@ wex::version_info_dialog::version_info_dialog(
 
 void wex::version_info_dialog::show()
 {
-  wxAboutBox(m_about);
+  wxAboutBox(m_about, wxTheApp->GetTopWindow());
 }
