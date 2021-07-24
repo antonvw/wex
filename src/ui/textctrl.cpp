@@ -50,15 +50,13 @@ void wex::textctrl::select_all() const
 
 bool wex::textctrl::set_stc(wex::factory::stc* stc, const std::string& command)
 {
-  m_stc = stc;
-
+  set_stc(stc);
   return m_imp->handle(command);
 }
 
 bool wex::textctrl::set_stc(wex::factory::stc* stc, char command)
 {
-  m_stc = stc;
-
+  set_stc(stc);
   return m_imp->handle(command);
 }
 

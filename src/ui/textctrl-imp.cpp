@@ -339,7 +339,7 @@ wex::textctrl_imp::textctrl_imp(
 
       if (input_mode_finish())
       {
-        if (const std::string text(
+        if (const auto text(
               m_command.command().substr(1, m_command.size() - 3));
             m_command.command() != ":." && !text.empty())
         {
@@ -405,7 +405,7 @@ wex::textctrl_imp::textctrl_imp(
     wxEVT_TEXT_PASTE,
     [=, this](wxClipboardTextEvent& event)
     {
-      if (const std::string text(clipboard_get()); !text.empty())
+      if (const auto text(clipboard_get()); !text.empty())
       {
         if (!GetStringSelection().empty())
         {
@@ -492,7 +492,7 @@ const std::string wex::textctrl_imp::get_text()
 
 bool wex::textctrl_imp::handle(const std::string& command)
 {
-  const std::string range(!command.empty() ? command.substr(1) : std::string());
+  const auto range(!command.empty() ? command.substr(1) : std::string());
 
   m_user_input = false;
 
@@ -598,8 +598,7 @@ bool wex::textctrl_imp::input_mode_finish() const
     return false;
   }
 
-  const std::string last_two(
-    m_command.command().substr(m_command.size() - 2, 2));
+  const auto last_two(m_command.command().substr(m_command.size() - 2, 2));
 
   return m_command.command() == ":." || last_two == ".\n" || last_two == ".\r";
 }

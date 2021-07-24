@@ -1,5 +1,6 @@
 # roadmap
-- focus after yank lines to other file
+- git log does not keep used dir
+  - add on_exit
 
 ## backlog
 - use modules

@@ -805,6 +805,10 @@ void wex::del::frame::show_ex_bar(int action, factory::stc* stc)
     {
       m_textctrl->set_stc(stc, ":");
     }
+    else if (stc != nullptr)
+    {
+      m_textctrl->set_stc(stc);
+    }
 
     pane_show("VIBAR", action >= SHOW_BAR);
   }
