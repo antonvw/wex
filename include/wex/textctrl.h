@@ -49,11 +49,14 @@ public:
   /// Selects all text.
   void select_all() const;
 
-  /// Sets stc component using string command.
+  /// Sets stc component.
+  void set_stc(wex::factory::stc* stc) { m_stc = stc; }
+
+  /// Sets stc component and handles string command.
   /// Returns false if command not supported.
   bool set_stc(wex::factory::stc* stc, const std::string& command);
 
-  /// Sets stc component using char command.
+  /// Sets stc component and handles char command.
   /// Returns false if command not supported.
   bool set_stc(wex::factory::stc* stc, char command);
 
