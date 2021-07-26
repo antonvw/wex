@@ -1,6 +1,4 @@
 # roadmap
-- git log does not keep used dir
-  - add on_exit
 
 ## backlog
 - use modules
