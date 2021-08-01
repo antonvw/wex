@@ -112,17 +112,17 @@ bool source(ex* ex, const std::string& cmd)
 
   if (const auto buffer(script.read()); buffer != nullptr)
   {
+    int i = 0;
+
     for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
            *buffer,
            boost::char_separator<char>("\r\n")))
     {
-      int i = 0;
-
       if (const std::string line(it); !line.empty())
       {
         if (line == cmd)
         {
-          log("recursive line") << i + 1 << line;
+          log(":so recursive line") << i + 1 << line;
           return false;
         }
 
@@ -132,13 +132,13 @@ bool source(ex* ex, const std::string& cmd)
         {
           if (!ex->command(line + "\n"))
           {
-            log::trace("command insert failed line") << i + 1 << line;
+            log(":so command insert failed line") << i + 1 << line;
             result = false;
           }
         }
-        else if (!ex->command(line))
+        else if (!ex->command(line) && !line.starts_with("\""))
         {
-          log::trace("command failed line") << i + 1 << line;
+          log(":so command failed line") << i + 1 << line;
           result = false;
         }
       }

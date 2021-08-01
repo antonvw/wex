@@ -32,11 +32,20 @@ constexpr int c_strcmp(char const* lhs, char const* rhs)
   return (('\0' == lhs[0]) && ('\0' == rhs[0])) ? 0 :
          (lhs[0] != rhs[0])                     ? (lhs[0] - rhs[0]) :
                                                   c_strcmp(lhs + 1, rhs + 1);
-};
+}
 
 const std::string esc()
 {
   return std::string("\x1b");
+}
+
+// without this code adding tab in block insert mode fails, it only
+// add one tab instead of a line of tabs
+bool is_block_insert(vi* vi)
+{
+  return vi->mode().is_insert() &&
+         (vi->get_stc()->SelectionIsRectangle() ||
+          vi->get_stc()->GetSelectionMode() == wxSTC_SEL_THIN);
 }
 
 const std::string _s(wxKeyCode key)
@@ -1454,7 +1463,10 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
       }
 
       if ((parsed = it->second(command)) == 0)
+      {
+        log("parse error") << command;
         return false;
+      }
 
       if (auto end = get_stc()->GetCurrentPos(); end - start > 0)
       {
@@ -1514,9 +1526,7 @@ bool wex::vi::on_char(const wxKeyEvent& event)
   }
   else if (m_mode.is_insert())
   {
-    if (
-      get_stc()->SelectionIsRectangle() ||
-      get_stc()->GetSelectionMode() == wxSTC_SEL_THIN)
+    if (is_block_insert(this))
     {
       return true;
     }
@@ -1599,6 +1609,11 @@ bool wex::vi::on_key_down(const wxKeyEvent& event)
       frame()->statustext(get_macros().mode().get_macro(), "PaneMacro");
     }
 
+    return true;
+  }
+  else if (is_block_insert(this) && event.GetKeyCode() != WXK_ESCAPE)
+  {
+    m_command.clear();
     return true;
   }
   else if (
@@ -1738,7 +1753,6 @@ bool wex::vi::parse_command(std::string& command)
   }
   else
   {
-    set_register(0);
     filter_count(command);
   }
 
@@ -1819,6 +1833,10 @@ bool wex::vi::parse_command(std::string& command)
     check_other && !motion_command(motion, command) && !other_command(command))
   {
     return false;
+  }
+  else
+  {
+    set_register(0);
   }
 
   if (!command.empty())
