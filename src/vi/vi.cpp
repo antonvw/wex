@@ -1745,6 +1745,7 @@ bool wex::vi::parse_command(std::string& command)
     if (command.size() < 2)
       return false;
     set_register(command[1]);
+    get_macros().record(command);
     command.erase(0, 2);
   }
   else if (command.front() == ':')
