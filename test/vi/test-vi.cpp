@@ -17,6 +17,8 @@
 
 #define ESC "\x1b"
 
+// See stc/test-vi.cpp for testing goto
+
 void change_mode(
   wex::vi*              vi,
   const std::string&    command,
@@ -32,7 +34,9 @@ void change_prep(const std::string& command, wex::factory::stc* stc)
   REQUIRE(stc->get_line_count() == 4);
 
   auto* vi = new wex::vi(get_stc());
-  REQUIRE(vi->command(":1"));
+  REQUIRE(vi->is_active());
+  // this is a factory stc, inject is not overriden to implement inject
+  REQUIRE(!vi->command(":1"));
   REQUIRE(vi->command(command));
   REQUIRE(vi->mode().is_insert());
   REQUIRE(vi->command("zzz"));
@@ -93,47 +97,6 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->command("yb"));
     REQUIRE(vi->mode().is_command());
     REQUIRE(!vi->command("/xfind"));
-  }
-
-  SUBCASE("goto") // goto, /, ?, n and N.
-  {
-    stc->set_text("aaaaa\nbbbbb\nccccc\naaaaa\ne\nf\ng\nh\ni\nj\nk\n");
-    REQUIRE(stc->get_line_count() == 12);
-    stc->GotoLine(2);
-    for (const auto& go : std::vector<std::pair<std::string, int>>{
-           {"gg", 0},
-           {"G", 11},
-           {"1G", 0},
-           {"10G", 9},
-           {"10000G", 11},
-           {":$", 11},
-           {":100", 11},
-           {"/bbbbb", 1},
-           {"/d", 1},
-           {"/a", 3},
-           {"n", 3},
-           {"N", 3},
-           {"?bbbbb", 1},
-           {"?d", 1},
-           {"?a", 0},
-           {"n", 0},
-           {"N", 3}})
-    {
-      CAPTURE(go.first);
-
-      if (go.first.back() != 'd')
-        REQUIRE(vi->command(go.first));
-      else
-        REQUIRE(!vi->command(go.first));
-
-      if (go.first[0] == '/' || go.first[0] == '?')
-      {
-        // A / or ? should not set a last command.
-        REQUIRE(vi->last_command()[0] != go.first[0]);
-      }
-
-      REQUIRE(stc->get_current_line() == go.second);
-    }
   }
 
   SUBCASE("invalid command")
@@ -507,7 +470,6 @@ TEST_CASE("wex::vi")
   SUBCASE("yank")
   {
     stc->set_text("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
-    REQUIRE(vi->command(":1"));
     REQUIRE(vi->command("yw"));
     REQUIRE(vi->get_stc()->get_selected_text() == "xxxxxxxxxx ");
     REQUIRE(vi->command("w"));

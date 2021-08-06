@@ -544,7 +544,7 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
 
   if (data::cmdline cmdl(arg);
       !cmdline(
-         {{{"hidden,h", "hidden"},
+         {{{"hidden,H", "hidden"},
            [&](bool on)
            {
              arg3.set(data::dir::HIDDEN, on);
@@ -579,6 +579,8 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
          "grep")
          .parse(cmdl))
   {
+    statustext(cmdl.help(), std::string());
+    statustext(std::string(), std::string());
     stc_entry_dialog(cmdl.help()).ShowModal();
     return false;
   }

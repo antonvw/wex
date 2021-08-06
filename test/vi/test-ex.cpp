@@ -16,6 +16,8 @@
 
 #include "test.h"
 
+// See stc/test-vi.cpp for testing goto
+
 TEST_CASE("wex::ex")
 {
   auto* stc = get_stc();
@@ -101,24 +103,6 @@ TEST_CASE("wex::ex")
     stc->set_text("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
     REQUIRE(!ex->command(":g/d/m$")); // possible infinite loop
     REQUIRE(stc->get_text().find("d") != std::string::npos);
-  }
-
-  SUBCASE("goto")
-  {
-    stc->set_text("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
-    REQUIRE(stc->get_line_count() == 12);
-    stc->GotoLine(2);
-
-    for (const auto& go : std::vector<std::pair<std::string, int>>{
-           {":1", 0},
-           {":-10", 0},
-           {":10", 9},
-           {":/c/", 2},
-           {":10000", 11}})
-    {
-      REQUIRE(ex->command(go.first));
-      REQUIRE(stc->get_current_line() == go.second);
-    }
   }
 
   SUBCASE("input mode")
@@ -214,9 +198,9 @@ TEST_CASE("wex::ex")
     REQUIRE(!ex->marker_goto('a'));
     REQUIRE(!ex->marker_delete('a'));
     stc->set_text("xx\nyy\nzz\n");
-    REQUIRE(ex->command(":1"));
+    stc->goto_line(0);
     REQUIRE(ex->marker_add('t'));
-    REQUIRE(ex->command(":$"));
+    stc->goto_line(stc->get_line_count() - 1);
     REQUIRE(ex->marker_add('u'));
     REQUIRE(ex->command(":'t,'us/s/w/"));
     REQUIRE(ex->command(":'t,$s/s/w/"));
@@ -298,10 +282,10 @@ TEST_CASE("wex::ex")
       // necesary for the ~ in test-source
       wex::find_replace_data::get()->set_find_string("xx");
 
-      REQUIRE(ex->command(":so test-source.txt"));
+      ex->command(":so test-source.txt");
     }
 
-    SUBCASE("full") { REQUIRE(ex->command(":source test-source.txt")); }
+    SUBCASE("full") { ex->command(":source test-source.txt"); }
 
     SUBCASE("not-existing") { REQUIRE(!ex->command(":so test-surce.txt")); }
 

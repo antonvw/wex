@@ -3998,7 +3998,7 @@ Copyright: (c) 2020, Anton van Wezenbeek
   <lexer name="rebol"/>
   <lexer name="registry"/>
   <lexer name="rfw" 
-    extensions="*.robot" 
+    extensions="*.robot;*.resource"
     edgemode="none"
     tabmode="use"
     tabwidth="8">

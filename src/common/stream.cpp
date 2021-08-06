@@ -5,20 +5,16 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <boost/algorithm/string.hpp>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <algorithm>
+#include <boost/algorithm/string.hpp>
 #include <cctype>
 #include <fstream>
 #include <functional>
 #include <wex/config.h>
-#include <wex/core.h>
 #include <wex/factory/frd.h>
 #include <wex/log.h>
 #include <wex/stream.h>
+#include <wx/msgdlg.h>
 
 wex::stream::stream(
   factory::find_replace_data* frd,
@@ -205,8 +201,6 @@ bool wex::stream::run_tool()
   else
   {
     m_asked = false;
-
-    m_stats.get_elements().set(_("Files").ToStdString(), 1);
 
     int         line_no = 0;
     std::string s;
