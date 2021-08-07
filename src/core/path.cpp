@@ -2,9 +2,10 @@
 // Name:      path.cpp
 // Purpose:   Implementation of class wex::path
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/algorithm/string.hpp>
 #include <wex/core.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
@@ -19,7 +20,7 @@ namespace wex
   const std::string substitute_tilde(const std::string& text)
   {
     auto out(text);
-    wex::replace_all(out, "~", wxGetHomeDir());
+    boost::algorithm::replace_all(out, "~", wxGetHomeDir());
     return out;
   }
 

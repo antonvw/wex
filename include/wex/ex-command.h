@@ -2,7 +2,7 @@
 // Name:      ex-command.h
 // Purpose:   Declaration of class wex::ex_command
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -88,7 +88,7 @@ namespace wex
     /// Returns stc component.
     auto* get_stc() const { return m_stc; };
 
-    /// Handles keycode from textntry component.
+    /// Handles keycode from textentry component.
     void handle(const wxTextEntry* te, int keycode);
 
     /// Inserts char at pos.
@@ -138,4 +138,4 @@ namespace wex
 
     wex::stc *m_stc{nullptr}, *m_stc_original{nullptr};
   };
-}; // namespace wex
+} // namespace wex

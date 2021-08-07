@@ -33,6 +33,7 @@ TEST_CASE("wex::style")
 
       if (!style.first.second.empty())
       {
+        CAPTURE(style.first.first);
         REQUIRE(test.is_ok());
         REQUIRE(test.number() == style.first.second);
         REQUIRE(test.value() == style.second.first);

@@ -39,7 +39,7 @@ TEST_CASE("wex::config")
     REQUIRE(wex::config("x").item() == "x");
     REQUIRE(wex::config("x").get("space") == "space");
     REQUIRE(wex::config("l").get(std::list<std::string>{}).empty());
-    REQUIRE(wex::config("l").get_firstof().empty());
+    REQUIRE(wex::config("l").get_first_of().empty());
     REQUIRE(wex::config("l").empty());
     REQUIRE(!wex::config("m").get(std::list<std::string>{"one"}).empty());
 
@@ -54,10 +54,10 @@ TEST_CASE("wex::config")
 
   SUBCASE("setters")
   {
-    REQUIRE(wex::config("m").set_firstof("one") == "one");
-    REQUIRE(wex::config("m").set_firstof("two") == "two");
+    REQUIRE(wex::config("m").set_first_of("one") == "one");
+    REQUIRE(wex::config("m").set_first_of("two") == "two");
     REQUIRE(wex::config("m").get(std::list<std::string>{}).size() == 2);
-    REQUIRE(wex::config("m").get_firstof() == "two");
+    REQUIRE(wex::config("m").get_first_of() == "two");
 
     wex::config("y").set(4);
     REQUIRE(wex::config("y").exists());

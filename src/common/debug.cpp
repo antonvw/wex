@@ -2,7 +2,7 @@
 // Name:      debug.cpp
 // Purpose:   Implementation of class wex::debug
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <fstream>
@@ -10,6 +10,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <boost/tokenizer.hpp>
 #include <wex/bind.h>
 #include <wex/config.h>
 #include <wex/core.h>
@@ -24,7 +25,6 @@
 #include <wex/process.h>
 #include <wex/shell.h>
 #include <wex/stc.h>
-#include <wex/tokenizer.h>
 
 #ifdef __WXGTK__
 namespace wex
@@ -100,9 +100,12 @@ wex::debug::debug(wex::managed_frame* frame, wex::process* debug)
               break;
 
             case 2:
-              for (tokenizer tkz(v[1], " "); tkz.has_more_tokens();)
+              for (const auto& token :
+                   boost::tokenizer<boost::char_separator<char>>(
+                     v[1],
+                     boost::char_separator<char>(" ")))
               {
-                if (const auto& it = m_breakpoints.find(tkz.get_next_token());
+                if (const auto& it = m_breakpoints.find(token);
                     it != m_breakpoints.end() &&
                     m_frame->is_open(std::get<0>(it->second)))
                 {

@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Declaration of wex::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -126,7 +126,7 @@ namespace wex
     void set_find_focus(wxWindow* focus) { m_find_focus = focus; };
 
     /// Sets up the status bar if you want to use statustext.
-    /// And intializes other static data.
+    /// And initializes other static data.
     statusbar* setup_statusbar(
       const std::vector<statusbar_pane>& panes,
       long                               style = wxST_SIZEGRIP,
@@ -156,4 +156,4 @@ namespace wex
     wxFindReplaceDialog* m_find_replace_dialog{nullptr};
     wxMenuBar*           m_menubar{nullptr};
   };
-}; // namespace wex
+} // namespace wex

@@ -2,7 +2,7 @@
 // Name:      managed-frame.h
 // Purpose:   Declaration of wex::managed_frame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -144,6 +144,10 @@ namespace wex
       const panes_t& panes,
       /// name of perspective to load / save
       const std::string& perspective = "managed frame");
+
+    /// Returns window related to window, or nullptr if pane
+    /// is not present.
+    wxWindow* pane_get(const std::string& pane);
 
     /// Returns true if the managed pane is maximized.
     bool pane_is_maximized(const std::string& pane)

@@ -2,16 +2,16 @@
 // Name:      vcs-entry.cpp
 // Purpose:   Implementation of wex::vcs_entry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/algorithm/string.hpp>
+#include <boost/tokenizer.hpp>
 #include <wex/config.h>
-#include <wex/core.h>
 #include <wex/log.h>
 #include <wex/menu.h>
 #include <wex/menus.h>
 #include <wex/shell.h>
-#include <wex/tokenizer.h>
 #include <wex/util.h>
 #include <wex/vcs-entry.h>
 
@@ -95,7 +95,7 @@ bool wex::vcs_entry::execute(
 
   if (get_command().is_commit())
   {
-    comment = "-m \"" + config(_("vcs.Revision comment")).get_firstof() + "\" ";
+    comment = "-m \"" + config(_("vcs.Revision comment")).get_first_of() + "\" ";
   }
 
   std::string my_args(args);
@@ -136,11 +136,13 @@ const std::string wex::vcs_entry::get_branch(const std::string& wd) const
   {
     if (process p; p.execute(bin() + " branch", process::EXEC_WAIT, wd))
     {
-      for (tokenizer tkz(p.get_stdout(), "\r\n"); tkz.has_more_tokens();)
+      for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
+             p.get_stdout(),
+             boost::char_separator<char>("\r\n")))
       {
-        if (const auto token(tkz.get_next_token()); token.starts_with('*'))
+        if (it.starts_with('*'))
         {
-          return trim(token.substr(1));
+          return boost::algorithm::trim_copy(it.substr(1));
         }
       }
     }

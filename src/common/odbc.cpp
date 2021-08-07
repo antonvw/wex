@@ -92,7 +92,7 @@ wex::odbc::~odbc()
 
 const std::string wex::odbc::datasource() const
 {
-  return wex::config(_("Datasource")).get_firstof();
+  return wex::config(_("Datasource")).get_first_of();
 }
 
 bool wex::odbc::logoff()

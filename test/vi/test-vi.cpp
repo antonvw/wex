@@ -2,7 +2,7 @@
 // Name:      test-vi.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -29,6 +29,21 @@ void change_mode(
 {
   REQUIRE(vi->command(command));
   REQUIRE(vi->mode().get() == mode);
+}
+
+void change_prep(const std::string& command, wex::stc* stc)
+{
+  stc->set_text("xxxxxxxxxx second third\nxxxxxxxx\naaaaaaaaaa\n");
+  REQUIRE(stc->get_line_count() == 4);
+
+  auto* vi = &stc->get_vi();
+  REQUIRE(vi->command(":1"));
+  REQUIRE(vi->command(command));
+  REQUIRE(vi->mode().is_insert());
+  REQUIRE(vi->command("zzz"));
+
+  change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+  REQUIRE(stc->get_line_count() == 4);
 }
 
 TEST_SUITE_BEGIN("wex::vi");
@@ -63,30 +78,13 @@ TEST_CASE("wex::vi")
 
   SUBCASE("change")
   {
-    stc->set_text("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
-    REQUIRE(stc->get_line_count() == 4);
-    REQUIRE(vi->command(":1"));
-    REQUIRE(vi->command("cw"));
-    REQUIRE(vi->mode().is_insert());
-    REQUIRE(vi->command("zzz"));
-    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
-    REQUIRE(stc->get_line_count() == 4);
-    REQUIRE(stc->GetLineText(0) == "zzzsecond");
-    stc->set_text("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
-    REQUIRE(vi->command(":1"));
-    REQUIRE(vi->command("ce"));
-    REQUIRE(vi->mode().is_insert());
-    REQUIRE(vi->command("zzz"));
-    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
-    REQUIRE(stc->get_line_count() == 4);
-    REQUIRE(stc->GetLineText(0) == "zzz second");
-    stc->set_text("xxxxxxxxxx second third\nxxxxxxxx\naaaaaaaaaa\n");
-    REQUIRE(vi->command(":1"));
-    REQUIRE(vi->command("2ce"));
-    REQUIRE(vi->mode().is_insert());
-    REQUIRE(vi->command("zzz"));
-    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
-    REQUIRE(stc->get_line_count() == 4);
+    change_prep("cw", stc);
+    REQUIRE(stc->GetLineText(0) == "zzzsecond third");
+
+    change_prep("ce", stc);
+    REQUIRE(stc->GetLineText(0) == "zzz second third");
+
+    change_prep("2ce", stc);
     REQUIRE(stc->GetLineText(0) == "zzz third");
   }
 

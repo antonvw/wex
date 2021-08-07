@@ -5,6 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/tokenizer.hpp>
 #include <wex/address.h>
 #include <wex/blame.h>
 #include <wex/config.h>
@@ -21,7 +22,6 @@
 #include <wex/printing.h>
 #include <wex/stc-entry-dialog.h>
 #include <wex/stc.h>
-#include <wex/tokenizer.h>
 #include <wex/vcs.h>
 #include <wx/app.h>
 #include <wx/settings.h>
@@ -954,11 +954,17 @@ void wex::stc::SelectNone()
 
 bool wex::stc::set_indicator(const indicator& indicator, int start, int end)
 {
-  if (
-    !lexers::get()->indicator_is_loaded(indicator) || start == -1 ||
-    end == -1 || end < start)
+  if (const bool loaded(lexers::get()->indicator_is_loaded(indicator));
+      !loaded || start == -1 || end == -1 || end < start)
   {
-    log("set_indicator") << start << end;
+    if (!loaded)
+    {
+      log("indicator") << indicator.number() << " not loaded";
+    }
+    else
+    {
+      log("set_indicator") << indicator.number() << start << end;
+    }
     return false;
   }
 
@@ -1029,10 +1035,11 @@ bool wex::stc::show_blame(const vcs_entry* vcs)
   const item_vector& iv(m_config_items);
   const int          margin_blame(iv.find<int>(_("stc.margin.Text")));
 
-  for (tokenizer tkz(vcs->get_stdout(), "\r\n"); tkz.has_more_tokens();)
+  for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
+         vcs->get_stdout(),
+         boost::char_separator<char>("\r\n")))
   {
-    if (const auto& [r, bl, t, l] = vcs->get_blame().get(tkz.get_next_token());
-        bl != prev && r)
+    if (const auto& [r, bl, t, l] = vcs->get_blame().get(it); bl != prev && r)
     {
       if (first)
       {

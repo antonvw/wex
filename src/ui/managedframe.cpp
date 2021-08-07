@@ -286,6 +286,11 @@ bool wex::managed_frame::pane_add(
   return true;
 }
 
+wxWindow* wex::managed_frame::pane_get(const std::string& pane)
+{
+  return m_manager.GetPane(pane).window;
+}
+
 bool wex::managed_frame::pane_maximize(const std::string& pane)
 {
   if (auto& info = m_manager.GetPane(pane); !info.IsOk())

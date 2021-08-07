@@ -9,6 +9,8 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <boost/algorithm/string.hpp>
+#include <boost/tokenizer.hpp>
 #include <wex/addressrange.h>
 #include <wex/core.h>
 #include <wex/ex-stream.h>
@@ -20,7 +22,6 @@
 #include <wex/process.h>
 #include <wex/stc.h>
 #include <wex/substitute-data.h>
-#include <wex/tokenizer.h>
 #include <wex/util.h>
 
 namespace wex
@@ -35,18 +36,19 @@ namespace wex
       m_ex->get_stc()->set_search_flags(m_ex->search_flags());
       m_ex->get_stc()->BeginUndoAction();
 
-      for (tokenizer tkz(commands, "|"); tkz.has_more_tokens();)
+      for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
+             commands,
+             boost::char_separator<char>("|")))
       {
         // Prevent recursive global.
-        if (const auto cmd(tkz.get_next_token());
-            cmd[0] != 'g' && cmd[0] != 'v')
+        if (it[0] != 'g' && it[0] != 'v')
         {
-          if (cmd[0] == 'd' || cmd[0] == 'm')
+          if (it[0] == 'd' || it[0] == 'm')
           {
             m_changes++;
           }
 
-          m_commands.emplace_back(cmd);
+          m_commands.emplace_back(it);
         }
       }
     }
@@ -135,11 +137,8 @@ namespace wex
 
   void toggle_case(stc* stc, std::string& target, char c)
   {
-    std::transform(
-      target.begin(),
-      target.end(),
-      target.begin(),
-      c == 'U' ? ::toupper : ::tolower);
+    c == 'U' ? boost::algorithm::to_upper(target) :
+               boost::algorithm::to_lower(target);
 
     stc->Replace(stc->GetTargetStart(), stc->GetTargetEnd(), target);
   }
@@ -433,46 +432,22 @@ bool wex::addressrange::execute(const std::string& reg) const
 
 bool wex::addressrange::global(const std::string& text, bool inverse) const
 {
-  m_stc->IndicatorClearRange(0, m_stc->GetTextLength() - 1);
+  std::vector<std::string> v;
 
-  tokenizer next(text, "/", false);
-
-  if (next.count_tokens() <= 1)
+  // [2addr] g[lobal] /pattern/ [commands]
+  // [2addr] v /pattern/ [commands]
+  // the g or v part is already parsed, and not present, v[0] is empty, or ws
+  if (match("^(\\s*)/(.*?)/(.*)", text, v) < 3)
   {
     return false;
   }
 
-  next.get_next_token(); // skip empty token
+  m_pattern = v[1];
+  const auto& commands(v[2]);
 
-  const auto& pattern = next.get_next_token();
-  std::string rest;
-
-  if (next.has_more_tokens())
+  if (m_pattern.empty())
   {
-    if (const auto token(next.get_next_token()); !token.empty())
-    {
-      const auto command = token[0];
-      auto       arg(token.size() > 1 ? token.substr(1) : std::string());
-
-      if (next.has_more_tokens())
-      {
-        auto subpattern = next.get_next_token();
-
-        if (subpattern.empty())
-        {
-          subpattern = pattern;
-        }
-
-        arg += "/" + subpattern + "/" + next.get_string();
-      }
-
-      rest = command + arg;
-    }
-  }
-
-  if (pattern.empty())
-  {
-    if (!rest.empty())
+    if (!commands.empty())
     {
       log::status("Pattern is empty");
       return false;
@@ -481,18 +456,20 @@ bool wex::addressrange::global(const std::string& text, bool inverse) const
     return true;
   }
 
-  const global_env g(this, rest);
+  m_stc->IndicatorClearRange(0, m_stc->GetTextLength() - 1);
+
+  const global_env g(this, commands);
   m_ex->marker_add('%', m_end.get_line() - 1);
   m_stc->SetTargetRange(
     m_stc->PositionFromLine(m_begin.get_line() - 1),
     m_stc->GetLineEndPosition(m_ex->marker_line('%')));
 
   const bool infinite =
-    (g.changes() > 0 && rest != "$" && rest != "1" && rest != "d");
+    (g.changes() > 0 && commands != "$" && commands != "1" && commands != "d");
   int hits  = 0;
   int start = 0;
 
-  while (m_stc->SearchInTarget(pattern) != -1)
+  while (m_stc->SearchInTarget(m_pattern) != -1)
   {
     auto match = m_stc->LineFromPosition(m_stc->GetTargetStart());
 
@@ -839,7 +816,7 @@ bool wex::addressrange::substitute(const std::string& text, char cmd)
   switch (cmd)
   {
     case 's':
-      if (!data.set(text))
+      if (!data.set(text, m_pattern))
       {
         return false;
       }
@@ -999,9 +976,9 @@ bool wex::addressrange::write(const std::string& text) const
     return false;
   }
 
-  auto filename(trim(
-    text.find(">>") != std::string::npos ? wex::after(text, '>', false) : text,
-    skip_t().set(TRIM_LEFT)));
+  auto filename(boost::algorithm::trim_left_copy(
+    text.find(">>") != std::string::npos ? wex::after(text, '>', false) :
+                                           text));
 
 #ifdef __UNIX__
   if (filename.find("~") != std::string::npos)

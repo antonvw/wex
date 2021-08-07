@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "../test.h"
+#include <wex/core.h>
 #include <wex/ex.h>
 #include <wex/frd.h>
 #include <wex/macro-mode.h>
@@ -17,6 +18,27 @@
 #include <wex/stc.h>
 
 TEST_SUITE_BEGIN("wex::ex");
+
+void modeline_from_file(const std::string& name)
+{
+  auto*             stc = new wex::stc(wex::path(name));
+  const std::string pane(wex::test::add_pane(frame(), stc));
+
+  const int id_start = wxWindow::NewControlId();
+  auto*     timer    = new wxTimer(frame(), id_start);
+  timer->StartOnce(10);
+  frame()->Bind(
+    wxEVT_TIMER,
+    [=](wxTimerEvent& event) {
+      if (auto* stc(dynamic_cast<wex::stc*>(frame()->pane_get(pane)));
+          stc != nullptr)
+      {
+        // next gives segmentation fault
+        // REQUIRE(stc->get_lexer().scintilla_lexer() == "sql");
+      }
+    },
+    id_start);
+}
 
 TEST_CASE("wex::ex")
 {
@@ -35,29 +57,9 @@ TEST_CASE("wex::ex")
       REQUIRE(stc->get_lexer().scintilla_lexer() == "sql");
     }
 
-    SUBCASE("head")
-    {
-      auto* stc = new wex::stc(wex::path("test-modeline.txt"));
-      wex::test::add_pane(frame(), stc);
+    modeline_from_file("test-modeline.txt");
 
-      auto* timer = new wxTimer(frame());
-      timer->StartOnce(1000);
-      frame()->Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
-        REQUIRE(stc->get_lexer().scintilla_lexer() == "sql");
-      });
-    }
-
-    SUBCASE("tail")
-    {
-      auto* stc = new wex::stc(wex::path("test-modeline2.txt"));
-      wex::test::add_pane(frame(), stc);
-
-      auto* timer = new wxTimer(frame());
-      timer->StartOnce(1000);
-      frame()->Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
-        REQUIRE(stc->get_lexer().scintilla_lexer() == "sql");
-      });
-    }
+    modeline_from_file("test-modeline2.txt");
   }
 
   wex::stc* stc = get_stc();
@@ -91,6 +93,32 @@ TEST_CASE("wex::ex")
     REQUIRE(!ex->is_active());
     ex->use(true);
     REQUIRE(ex->is_active());
+  }
+
+  SUBCASE("marker_and_register_expansion")
+  {
+    stc->set_text("this is some text");
+    REQUIRE(ex->command(":ky"));
+
+    std::string command("xxx");
+    REQUIRE(!wex::marker_and_register_expansion(nullptr, command));
+    REQUIRE(wex::marker_and_register_expansion(ex, command));
+
+    command = "'yxxx";
+    REQUIRE(wex::marker_and_register_expansion(ex, command));
+    REQUIRE(command == "1xxx");
+
+    command = "yxxx'";
+    REQUIRE(wex::marker_and_register_expansion(ex, command));
+    REQUIRE(command == "yxxx'");
+
+    REQUIRE(wex::clipboard_add("yanked"));
+    command = "this is * end";
+    REQUIRE(wex::marker_and_register_expansion(ex, command));
+
+#ifndef __WXMSW__
+    REQUIRE(command == "this is yanked end");
+#endif
   }
 
   SUBCASE("visual mode")

@@ -5,6 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/algorithm/string.hpp>
 #include <numeric>
 #include <wex/app.h>
 #include <wex/config.h>
@@ -130,12 +131,13 @@ const std::vector<std::string> wex::macros::get_registers() const
     {
       r.emplace_back(l.make_key(
         it.first,
-        trim(
+        boost::algorithm::trim_copy(
           std::accumulate(it.second.begin(), it.second.end(), std::string()))));
     }
   }
 
-  if (const auto& clipboard(trim(clipboard_get())); !clipboard.empty())
+  if (const auto& clipboard(boost::algorithm::trim_copy(clipboard_get()));
+      !clipboard.empty())
   {
     r.emplace_back(l.make_key("*", clipboard));
   }
@@ -266,7 +268,7 @@ void wex::macros::parse_node_macro(const pugi::xml_node& node)
 
 void wex::macros::parse_node_variable(const pugi::xml_node& node)
 {
-  if (const variable& variable(node); variable.get_name().empty())
+  if (const variable & variable(node); variable.get_name().empty())
   {
     log("empty variable") << node;
   }
@@ -317,11 +319,11 @@ bool wex::macros::record(const std::string& text, bool new_command)
     m_macros[m_mode.get_macro()].back() += text;
   }
 
-  if (const auto& it = m_macros.find(m_mode.get_macro());
-    it != m_macros.end())
+  if (const auto& it = m_macros.find(m_mode.get_macro()); it != m_macros.end())
   {
-    log::trace("macro recorded") << m_mode.get_macro() << "->" << 
-      std::accumulate(it->second.begin(), it->second.end(), std::string());
+    log::trace("macro recorded")
+      << m_mode.get_macro() << "->"
+      << std::accumulate(it->second.begin(), it->second.end(), std::string());
   }
 
   return true;

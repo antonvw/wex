@@ -34,7 +34,7 @@ const wex::version_info wex::get_version_info()
   return version_info(
     {"wex",
      21,
-     4,
+     10,
      0,
      "wex library (a library that offers windows ex and vi components)",
      "(c) 1998-2021, Anton van Wezenbeek. All rights reserved."});
@@ -61,24 +61,31 @@ const std::stringstream wex::version_info::external_libraries() const
 
   std::stringstream ss;
 
-  ss << wex::get_version_info().description() << ": " << get() << "\n"
+  ss << wex::get_version_info().description() << ": " << get()
+     << "\n"
 
+     // boost
      << "Boost library: " << BOOST_VERSION / 100000 << "." // major version
      << BOOST_VERSION / 100 % 1000 << "."                  // minor version
      << BOOST_VERSION % 100                                // patch level
      << "\n"
 
+     // json
      << skip_quotes(json.meta()["name"])
-     << " library: " << skip_quotes(json.meta()["version"]["string"]) << "\n"
+     << " library: " << skip_quotes(json.meta()["version"]["string"])
+     << "\n"
 
+     // pugi
      << "pugixml library: " << PUGIXML_VERSION / 1000 << "." // major version
      << PUGIXML_VERSION % 1000 / 10 << "."                   // minor version
      << PUGIXML_VERSION % 10                                 // patch level
      << "\n"
 
      // ctags
-     << PROGRAM_NAME << ": " << PROGRAM_VERSION << "\n"
+     << PROGRAM_NAME << ": " << PROGRAM_VERSION
+     << "\n"
 
+     // wxWidgets
      << wxGetLibraryVersionInfo().GetDescription().c_str();
 
   return ss;

@@ -16,11 +16,64 @@
 #include <wex/process.h>
 #include <wex/stc.h>
 
+#define SEARCH_TARGET                                                         \
+  if (ex->get_stc()->SearchInTarget(text) != -1)                              \
+  {                                                                           \
+    return ex->get_stc()->LineFromPosition(ex->get_stc()->GetTargetStart()) + \
+           1;                                                                 \
+  }
+
 #define SEPARATE                                             \
   if (separator)                                             \
   {                                                          \
     output += std::string(40, '-') + m_ex->get_stc()->eol(); \
   }
+
+namespace wex
+{
+  int find_stc(ex* ex, const std::string& text, bool forward)
+  {
+    if (forward)
+    {
+      ex->get_stc()->SetTargetRange(
+        ex->get_stc()->GetCurrentPos(),
+        ex->get_stc()->GetTextLength());
+    }
+    else
+    {
+      ex->get_stc()->SetTargetRange(ex->get_stc()->GetCurrentPos(), 0);
+    }
+
+    SEARCH_TARGET;
+
+    if (forward)
+    {
+      ex->get_stc()->SetTargetRange(0, ex->get_stc()->GetCurrentPos());
+    }
+    else
+    {
+      ex->get_stc()->SetTargetRange(
+        ex->get_stc()->GetTextLength(),
+        ex->get_stc()->GetCurrentPos());
+    }
+
+    SEARCH_TARGET;
+
+    return 0;
+  }
+
+  int find_stream(ex* ex, const std::string& text, bool forward)
+  {
+    if (ex->get_stc()->get_file().ex_stream()->find(text, -1, forward))
+    {
+      return ex->get_stc()->get_file().ex_stream()->get_current_line() + 1;
+    }
+    else
+    {
+      return 0;
+    }
+  }
+}; // namespace wex
 
 wex::address::address(ex* ex, int line)
   : m_ex(ex)
@@ -150,79 +203,13 @@ int wex::address::get_line() const
 
   m_ex->get_stc()->set_search_flags(m_ex->search_flags());
 
-  // If this is a // address, return line with first forward match.
-  if (std::vector<std::string> v; match("/(.*)/$", m_address, v) > 0)
+  // If this is a //, ?? address, return line with first forward, backward
+  // match.
+  if (std::vector<std::string> v; match("/(.*)/$", m_address, v) > 0 ||
+                                  match("\\?(.*)\\?$", m_address, v) > 0)
   {
-    if (!m_ex->get_stc()->is_visual())
-    {
-      if (m_ex->get_stc()->get_file().ex_stream()->find(v[0]))
-      {
-        return m_ex->get_stc()->get_file().ex_stream()->get_current_line() + 1;
-      }
-      else
-      {
-        return 0;
-      }
-    }
-
-    m_ex->get_stc()->SetTargetRange(
-      m_ex->get_stc()->GetCurrentPos(),
-      m_ex->get_stc()->GetTextLength());
-
-    if (m_ex->get_stc()->SearchInTarget(v[0]) != -1)
-    {
-      return m_ex->get_stc()->LineFromPosition(
-               m_ex->get_stc()->GetTargetStart()) +
-             1;
-    }
-
-    m_ex->get_stc()->SetTargetRange(0, m_ex->get_stc()->GetCurrentPos());
-
-    if (m_ex->get_stc()->SearchInTarget(v[0]) != -1)
-    {
-      return m_ex->get_stc()->LineFromPosition(
-               m_ex->get_stc()->GetTargetStart()) +
-             1;
-    }
-
-    return 0;
-  }
-  // If this is a ?? address, return line with first backward match.
-  else if (match("\\?(.*)\\?", m_address, v) > 0)
-  {
-    if (!m_ex->get_stc()->is_visual())
-    {
-      if (m_ex->get_stc()->get_file().ex_stream()->find(v[0], -1, false))
-      {
-        return m_ex->get_stc()->get_file().ex_stream()->get_current_line() + 1;
-      }
-      else
-      {
-        return 0;
-      }
-    }
-
-    m_ex->get_stc()->SetTargetRange(m_ex->get_stc()->GetCurrentPos(), 0);
-
-    if (m_ex->get_stc()->SearchInTarget(v[0]) != -1)
-    {
-      return m_ex->get_stc()->LineFromPosition(
-               m_ex->get_stc()->GetTargetStart()) +
-             1;
-    }
-
-    m_ex->get_stc()->SetTargetRange(
-      m_ex->get_stc()->GetTextLength(),
-      m_ex->get_stc()->GetCurrentPos());
-
-    if (m_ex->get_stc()->SearchInTarget(v[0]) != -1)
-    {
-      return m_ex->get_stc()->LineFromPosition(
-               m_ex->get_stc()->GetTargetStart()) +
-             1;
-    }
-
-    return 0;
+    return !m_ex->get_stc()->is_visual() ? find_stream(m_ex, v[0], m_address[0] == '/') :
+                                           find_stc(m_ex, v[0], m_address[0] == '/');
   }
 
   // Try address calculation.
@@ -232,14 +219,9 @@ int wex::address::get_line() const
   }
   else if (sum > m_ex->get_stc()->get_line_count())
   {
-    if (m_ex->get_stc()->get_line_count() == LINE_COUNT_UNKNOWN)
-    {
-      return sum;
-    }
-    else
-    {
-      return m_ex->get_stc()->get_line_count();
-    }
+    return m_ex->get_stc()->get_line_count() == LINE_COUNT_UNKNOWN ?
+             sum :
+             m_ex->get_stc()->get_line_count();
   }
   else
   {

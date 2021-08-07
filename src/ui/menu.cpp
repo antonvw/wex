@@ -2,7 +2,7 @@
 // Name:      menu.cpp
 // Purpose:   Implementation of wex::menu class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -17,6 +17,22 @@
 #include <wex/printing.h>
 #include <wex/stc.h>
 #include <wex/tool.h>
+
+#define PRINT_COMPONENT(ID, ACTION)                                 \
+  {                                                                 \
+    ID, "", data::menu().action([=, this](wxCommandEvent& event) {  \
+      if (auto* frame =                                             \
+            dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()); \
+          frame->get_stc() != nullptr)                              \
+      {                                                             \
+        frame->get_stc()->ACTION();                                 \
+      }                                                             \
+      else if (frame->get_listview() != nullptr)                    \
+      {                                                             \
+        frame->get_listview()->ACTION();                            \
+      }                                                             \
+    })                                                              \
+  }
 
 wex::menu::menu(menu_t style, const std::vector<menu_item>& items)
   : m_style(style)
@@ -53,11 +69,14 @@ size_t wex::menu::append(const std::vector<menu_item>& items)
         break;
 
       case menu_item::EXIT:
-        append({{wxID_EXIT, "", data::menu().action([=, this](wxCommandEvent& event) {
-                   auto* frame =
-                     dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
-                   frame->Close(true);
-                 })}});
+        append(
+          {{wxID_EXIT,
+            "",
+            data::menu().action([=, this](wxCommandEvent& event) {
+              auto* frame =
+                dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
+              frame->Close(true);
+            })}});
         break;
 
       case menu_item::PRINT:
@@ -127,35 +146,14 @@ void wex::menu::append_edit(bool add_invert)
 
 void wex::menu::append_print()
 {
-  append({{wxID_PRINT_SETUP,
-           ellipsed(_("Page &Setup")),
-           data::menu().action([=, this](wxCommandEvent& event) {
-             wex::printing::get()->get_html_printer()->PageSetup();
-           })},
-          {wxID_PREVIEW, "", data::menu().action([=, this](wxCommandEvent& event) {
-             auto* frame =
-               dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
-             if (frame->get_stc() != nullptr)
-             {
-               frame->get_stc()->print_preview();
-             }
-             else if (frame->get_listview() != nullptr)
-             {
-               frame->get_listview()->print_preview();
-             }
-           })},
-          {wxID_PRINT, "", data::menu().action([=, this](wxCommandEvent& event) {
-             auto* frame =
-               dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
-             if (frame->get_stc() != nullptr)
-             {
-               frame->get_stc()->print();
-             }
-             else if (frame->get_listview() != nullptr)
-             {
-               frame->get_listview()->print();
-             }
-           })}});
+  append(
+    {{wxID_PRINT_SETUP,
+      ellipsed(_("Page &Setup")),
+      data::menu().action([=, this](wxCommandEvent& event) {
+        wex::printing::get()->get_html_printer()->PageSetup();
+      })},
+     PRINT_COMPONENT(wxID_PREVIEW, print_preview),
+     PRINT_COMPONENT(wxID_PRINT, print)});
 }
 
 void wex::menu::append_separator()
@@ -183,9 +181,10 @@ void wex::menu::append_tools()
   {
     if (!it.second.text().empty())
     {
-      menuTool->append({{it.first,
-                         it.second.text(),
-                         data::menu().help_text(it.second.help_text())}});
+      menuTool->append(
+        {{it.first,
+          it.second.text(),
+          data::menu().help_text(it.second.help_text())}});
     }
   }
 

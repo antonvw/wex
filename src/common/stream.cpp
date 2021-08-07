@@ -2,9 +2,10 @@
 // Name:      stream.cpp
 // Purpose:   Implementation of wex::stream class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/algorithm/string.hpp>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -91,11 +92,7 @@ bool wex::stream::process(std::string& text, size_t line_no)
     }
     else
     {
-      count = replace_all(
-        text,
-        m_frd->get_find_string(),
-        m_frd->get_replace_string(),
-        &pos);
+      count = replace_all(text, &pos);
 
       match = (count > 0);
       if (!m_modified)
@@ -150,12 +147,35 @@ bool wex::stream::process_begin()
 
     if (!m_frd->match_case())
     {
-      for (auto& c : m_find_string)
-        c = std::toupper(c);
+      boost::algorithm::to_upper(m_find_string);
     }
   }
 
   return true;
+}
+
+int wex::stream::replace_all(std::string& text, int* match_pos)
+{
+  int  count  = 0;
+  bool update = false;
+  const std::string search(m_frd->get_find_string());
+  const std::string replace(m_frd->get_replace_string());
+  
+  for (size_t pos = 0; (pos = text.find(search, pos)) != std::string::npos;)
+  {
+    if (!update)
+    {
+      *match_pos = (int)pos;
+      update     = true;
+    }
+
+    text.replace(pos, search.length(), replace);
+    pos += replace.length();
+
+    count++;
+  }
+
+  return count;
 }
 
 bool wex::stream::run_tool()

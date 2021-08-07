@@ -2,9 +2,10 @@
 // Name:      stc/bind.cpp
 // Purpose:   Implementation of class wex::stc method bind_all
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/tokenizer.hpp>
 #include <vector>
 #include <wex/accelerators.h>
 #include <wex/beautify.h>
@@ -24,7 +25,6 @@
 #include <wex/stc-bind.h>
 #include <wex/stc-entry-dialog.h>
 #include <wex/stc.h>
-#include <wex/tokenizer.h>
 #include <wex/util.h>
 #include <wex/vcs.h>
 #include <wx/msgdlg.h>
@@ -760,10 +760,11 @@ void wex::stc::show_properties()
   {
     properties += "\n" + l.make_section("Available properties");
 
-    for (tokenizer tkz(propnames, "\n"); tkz.has_more_tokens();)
+    for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
+           propnames,
+           boost::char_separator<char>("\n")))
     {
-      const auto prop(tkz.get_next_token());
-      properties += l.make_key(prop, GetProperty(prop), DescribeProperty(prop));
+      properties += l.make_key(it, GetProperty(it), DescribeProperty(it));
     }
   }
 

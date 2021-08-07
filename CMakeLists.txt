@@ -58,6 +58,8 @@ enable_testing()
 
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/external/wxWidgets/build/cmake/modules")
 
+include_directories(${Boost_INCLUDE_DIRS})
+
 include(cmake/options-ex.cmake)
 include(cmake/common.cmake)
 

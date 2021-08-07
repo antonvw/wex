@@ -6,6 +6,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
+#include <boost/algorithm/string.hpp>
+#include <boost/tokenizer.hpp>
 #include <numeric>
 #include <pugixml.hpp>
 #include <regex>
@@ -18,84 +20,11 @@
 #include <wex/core.h>
 #include <wex/dir.h>
 #include <wex/lexer.h>
-#include <wex/listview-core.h>
 #include <wex/log.h>
 #include <wex/path.h>
 #include <wex/stc-core.h>
-#include <wex/tokenizer.h>
 #include <wx/clipbrd.h>
-#include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
-
-wex::column::column()
-{
-  SetColumn(-1);
-}
-
-wex::column::column(const std::string& name, type_t type, int width)
-  : m_type(type)
-{
-  wxListColumnFormat align;
-
-  switch (m_type)
-  {
-    case column::FLOAT:
-      align = wxLIST_FORMAT_RIGHT;
-      if (width == 0)
-        width = 80;
-      break;
-
-    case column::INT:
-      align = wxLIST_FORMAT_RIGHT;
-      if (width == 0)
-        width = 60;
-      break;
-
-    case column::STRING:
-      align = wxLIST_FORMAT_LEFT;
-      if (width == 0)
-        width = 100;
-      break;
-
-    case column::DATE:
-      align = wxLIST_FORMAT_LEFT;
-      if (width == 0)
-        width = 150;
-      break;
-
-    default:
-      assert(0);
-  }
-
-  SetColumn(-1); // default value, is set when inserting the col
-  SetText(name);
-  SetAlign(align);
-  SetWidth(width);
-}
-
-void wex::column::set_is_sorted_ascending(sort_t type)
-{
-  switch (type)
-  {
-    case SORT_ASCENDING:
-      m_is_sorted_ascending = true;
-      break;
-
-    case SORT_DESCENDING:
-      m_is_sorted_ascending = false;
-      break;
-
-    case SORT_KEEP:
-      break;
-
-    case SORT_TOGGLE:
-      m_is_sorted_ascending = !m_is_sorted_ascending;
-      break;
-
-    default:
-      assert(0);
-      break;
-  }
-}
+#include <wx/generic/dirctrlg.h> // for wxFileIconsTable
 
 const std::string wex::after(const std::string& text, char c, bool first)
 {
@@ -211,7 +140,7 @@ bool wex::browser(const std::string& url)
 
 bool wex::browser_search(const std::string& text)
 {
-  if (const auto& search_engine(config(_("stc.Search engine")).get_firstof());
+  if (const auto& search_engine(config(_("stc.Search engine")).get_first_of());
       !search_engine.empty())
   {
     return browser(search_engine + "?q=" + text);
@@ -283,11 +212,11 @@ wex::ellipsed(const std::string& text, const std::string& control, bool ellipse)
          (!control.empty() ? "\tCtrl+" + control : std::string());
 }
 
-const std::string wex::firstof(
+const std::string wex::first_of(
   const std::string& text,
   const std::string& chars,
   size_t             start_pos,
-  firstof_t          flags)
+  first_of_t          flags)
 {
   const auto pos = !flags[FIRST_OF_FROM_END] ?
                      text.find_first_of(chars, start_pos) :
@@ -332,8 +261,9 @@ const std::string wex::get_find_result(
     const auto where =
       (find_next) ? _("bottom").ToStdString() : _("top").ToStdString();
 
-    return _("Searching for").ToStdString() + " " + quoted(trim(find_text)) +
-           " " + _("hit").ToStdString() + " " + where;
+    return _("Searching for").ToStdString() + " " +
+           quoted(boost::algorithm::trim_copy(find_text)) + " " +
+           _("hit").ToStdString() + " " + where;
   }
   else
   {
@@ -342,7 +272,8 @@ const std::string wex::get_find_result(
       wxBell();
     }
 
-    return quoted(trim(find_text)) + " " + _("not found").ToStdString();
+    return quoted(boost::algorithm::trim_copy(find_text)) + " " +
+           _("not found").ToStdString();
   }
 }
 
@@ -361,7 +292,7 @@ int wex::get_number_of_lines(const std::string& text, bool trim)
     return 0;
   }
 
-  const auto trimmed = (trim ? wex::trim(text) : text);
+  const auto trimmed = (trim ? boost::algorithm::trim_copy(text) : text);
 
   if (const int c = std::count(trimmed.begin(), trimmed.end(), '\n') + 1;
       c != 1)
@@ -388,13 +319,19 @@ const std::string wex::get_string_set(
 
 const std::string wex::get_word(std::string& text)
 {
-  std::string field_separators = " \t";
+  boost::tokenizer<boost::char_separator<char>> tok(
+    text,
+    boost::char_separator<char>(" \t"));
+
   std::string token;
-  tokenizer   tkz(text, field_separators);
-  if (tkz.has_more_tokens())
-    token = tkz.get_next_token();
-  text = tkz.get_string();
-  text = trim(text, skip_t().set(TRIM_LEFT));
+
+  if (auto it = tok.begin(); it != tok.end())
+  {
+    token = *it;
+    text  = text.substr(token.size());
+  }
+
+  boost::algorithm::trim_left(text);
 
   return token;
 }
@@ -452,13 +389,15 @@ bool wex::matches_one_of(
 
   // Make a regex of pattern matching chars.
   auto re(pattern);
-  replace_all(re, ".", "\\.");
-  replace_all(re, "*", ".*");
-  replace_all(re, "?", ".?");
+  boost::algorithm::replace_all(re, ".", "\\.");
+  boost::algorithm::replace_all(re, "*", ".*");
+  boost::algorithm::replace_all(re, "?", ".?");
 
-  for (tokenizer tkz(re, ";"); tkz.has_more_tokens();)
+  for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
+         re,
+         boost::char_separator<char>(";")))
   {
-    if (std::regex_match(fullname, std::regex(tkz.get_next_token())))
+    if (std::regex_match(fullname, std::regex(it)))
       return true;
   }
 
@@ -533,32 +472,6 @@ bool wex::regafter(const std::string& text, const std::string& letter)
     std::regex("^" + text + "[0-9=\"a-z%._\\*]$"));
 }
 
-int wex::replace_all(
-  std::string&       text,
-  const std::string& search,
-  const std::string& replace,
-  int*               match_pos)
-{
-  int  count  = 0;
-  bool update = false;
-
-  for (size_t pos = 0; (pos = text.find(search, pos)) != std::string::npos;)
-  {
-    if (match_pos != nullptr && !update)
-    {
-      *match_pos = (int)pos;
-      update     = true;
-    }
-
-    text.replace(pos, search.length(), replace);
-    pos += replace.length();
-
-    count++;
-  }
-
-  return count;
-}
-
 template <typename InputIterator>
 const std::string GetColumn(InputIterator first, InputIterator last)
 {
@@ -621,9 +534,11 @@ const std::string wex::sort(
   std::multiset<std::string>              ms;
   std::vector<std::string>                lines;
 
-  for (tokenizer tkz(input, eol); tkz.has_more_tokens();)
+  for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
+         input,
+         boost::char_separator<char>(eol.c_str())))
   {
-    const std::string line = tkz.get_next_token() + eol;
+    const std::string line = it + eol;
 
     // Use an empty key if line is to short.
     std::string key;
@@ -720,13 +635,16 @@ bool wex::sort_selection(
 
       const auto& text(sort(selection, sort_t, 0, "\n"));
 
-      tokenizer tkz(text, "\n");
+      boost::tokenizer<boost::char_separator<char>> tok(
+        text,
+        boost::char_separator<char>("\n"));
+      auto it = tok.begin();
 
-      for (int i = 0; i < stc->GetSelections(); i++)
+      for (int i = 0; i < stc->GetSelections() && it != tok.end(); i++)
       {
         auto start = stc->GetSelectionNStart(i);
         auto end   = stc->GetSelectionNEnd(i);
-        stc->Replace(start, end, tkz.get_next_token());
+        stc->Replace(start, end, *it++);
       }
 
       stc->SelectNone();
@@ -775,45 +693,13 @@ bool wex::sort_selection(
 const std::string
 wex::translate(const std::string& text, int pageNum, int numPages)
 {
-  auto translation(text);
+  const auto& translation(boost::algorithm::replace_all_copy(
+    text,
+    "@PAGENUM@",
+    std::to_string(pageNum)));
 
-  replace_all(translation, "@PAGENUM@", std::to_string(pageNum));
-  replace_all(translation, "@PAGESCNT@", std::to_string(numPages));
-
-  return translation;
-}
-
-const std::string
-wex::trim(const std::string& text, skip_t type, const std::string& replace_with)
-{
-  auto output(text);
-
-  if (type[TRIM_MID])
-  {
-    output = std::regex_replace(
-      output,
-      std::regex("[ \t\n\v\f\r]+"),
-      replace_with,
-      std::regex_constants::format_sed);
-  }
-
-  if (type[TRIM_LEFT])
-  {
-    output = std::regex_replace(
-      output,
-      std::regex("^[ \t\n\v\f\r]+"),
-      "",
-      std::regex_constants::format_sed);
-  }
-
-  if (type[TRIM_RIGHT])
-  {
-    output = std::regex_replace(
-      output,
-      std::regex("[ \t\n\v\f\r]+$"),
-      "",
-      std::regex_constants::format_sed);
-  }
-
-  return output;
+  return boost::algorithm::replace_all_copy(
+    translation,
+    "@PAGESCNT@",
+    std::to_string(numPages));
 }

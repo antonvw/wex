@@ -10,8 +10,10 @@
 #include <bitset>
 #include <set>
 #include <vector>
-#include <wex/lexer.h>
 #include <wex/style.h>
+
+class wxArrayString;
+class wxWindow;
 
 namespace pugi
 {
@@ -93,11 +95,11 @@ namespace wex
     FIRST_OF_FROM_END         = 2, ///< substring from end
   };
 
-  typedef std::bitset<3> firstof_t;
+  typedef std::bitset<3> first_of_t;
 
   /// Returns substring after (or before) first occurrence of one of specified
   /// chars.
-  const std::string firstof(
+  const std::string first_of(
     /// text to be searched
     const std::string& text,
     /// chars to be found
@@ -105,7 +107,7 @@ namespace wex
     /// start pos (from start or end of text, depending on flags)
     const size_t start_pos = 0,
     /// start searching at begin, or at end
-    firstof_t flags = firstof_t().set(FIRST_OF_AFTER_FROM_BEGIN));
+    first_of_t flags = first_of_t().set(FIRST_OF_AFTER_FROM_BEGIN));
 
   /// If text length exceeds max_chars,
   /// returns an ellipse prefix followed by the last max_chars from the text,
@@ -190,18 +192,6 @@ namespace wex
   /// Returns true if a register is specified after letter in text.
   bool regafter(const std::string& text, const std::string& letter);
 
-  /// Replaces all substrings in text with replace.
-  /// Returns number of replacements.
-  int replace_all(
-    /// text to be replaced
-    std::string& text,
-    /// text to replace (no regex)
-    const std::string& search,
-    /// replacement
-    const std::string& replace,
-    /// if not nullptr, position of first match in text
-    int* match_pos = nullptr);
-
   enum
   {
     STRING_SORT_DESCENDING = 0, ///< sort descending order
@@ -246,22 +236,4 @@ namespace wex
   /// This takes care of the translation.
   const std::string
   translate(const std::string& text, int pageNum, int numPages);
-
-  enum
-  {
-    TRIM_LEFT  = 0, ///< skip space at left
-    TRIM_MID   = 1, ///< skip space at mid
-    TRIM_RIGHT = 2, ///< skip space at right
-  };
-
-  typedef std::bitset<3> skip_t;
-
-  /// Returns a string without all white space in specified input.
-  const std::string trim(
-    /// text with white space to be skipped
-    const std::string& text,
-    /// kind of skip
-    skip_t type_t = skip_t().set(TRIM_LEFT).set(TRIM_RIGHT),
-    /// replace with (only for TRIM_MID)
-    const std::string& replace_with = " ");
 }; // namespace wex

@@ -2,7 +2,7 @@
 // Name:      config.h
 // Purpose:   Declaration of class wex::config
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -168,7 +168,7 @@ namespace wex
     const statusbar_t get(const statusbar_t& def) const;
 
     /// Returns first of a list of strings from item.
-    const std::string get_firstof() const;
+    const std::string get_first_of() const;
 
     /// Returns true if this item is a child.
     bool is_child() const;
@@ -223,7 +223,7 @@ namespace wex
     /// deletes it if present at other places.
     /// If the list size would be greater than max, the last element is deleted.
     /// And returns the value.
-    const std::string set_firstof(const std::string& v, size_t max = 75);
+    const std::string set_first_of(const std::string& v, size_t max = 75);
 
     /// If this item is a bool, toggles value and returns new value.
     bool toggle(bool def = false);
@@ -236,4 +236,4 @@ namespace wex
     inline static config_imp* m_store = nullptr;
     inline static bool        m_store_save{true};
   };
-}; // namespace wex
+} // namespace wex

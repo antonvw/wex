@@ -36,6 +36,15 @@
 #include "../../test/ui/test-configitem.h"
 #include "../../test/ui/test-item.h"
 
+#define PRINT_COMPONENT(ID)                                                  \
+  wxEVT_UPDATE_UI,                                                           \
+    [=, this](wxUpdateUIEvent& event) {                                      \
+      event.Enable(                                                          \
+        (get_listview() != nullptr && get_listview()->GetItemCount() > 0) || \
+        (get_stc() != nullptr && get_stc()->GetLength() > 0));               \
+    },                                                                       \
+    ID
+
 enum
 {
   ID_DLG_CONFIG_ITEM = wex::ID_HIGHEST + 1,
@@ -365,23 +374,9 @@ frame::frame()
       },
       wxID_EXECUTE}});
 
-  Bind(
-    wxEVT_UPDATE_UI,
-    [=, this](wxUpdateUIEvent& event) {
-      event.Enable(
-        (get_listview() != nullptr && get_listview()->GetItemCount() > 0) ||
-        (get_stc() != nullptr && get_stc()->GetLength() > 0));
-    },
-    wxID_PRINT);
+  Bind(PRINT_COMPONENT(wxID_PRINT));
 
-  Bind(
-    wxEVT_UPDATE_UI,
-    [=, this](wxUpdateUIEvent& event) {
-      event.Enable(
-        (get_listview() != nullptr && get_listview()->GetItemCount() > 0) ||
-        (get_stc() != nullptr && get_stc()->GetLength() > 0));
-    },
-    wxID_PREVIEW);
+  Bind(PRINT_COMPONENT(wxID_PREVIEW));
 }
 
 bool frame::allow_close(wxWindowID id, wxWindow* page)

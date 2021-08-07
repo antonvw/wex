@@ -76,6 +76,7 @@ namespace wex
       m_stats.m_elements.inc(keyword);};
   private:
     bool is_word_character(int c) const {return isalnum(c) || c == '_';};
+    int replace_all(std::string& text, int* match_pos);
 
     const path m_path;
     const tool m_tool;

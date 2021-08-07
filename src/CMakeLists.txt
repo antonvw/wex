@@ -1,7 +1,5 @@
 project(wex-lib)
 
-include_directories(${Boost_INCLUDE_DIRS})
-
 if (CMAKE_BUILD_TYPE MATCHES "Coverage")
   add_custom_target(lcov-prep
     # prepare initial tracefile

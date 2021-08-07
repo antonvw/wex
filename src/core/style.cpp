@@ -2,20 +2,20 @@
 // Name:      style.cpp
 // Purpose:   Implementation of wex::style class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/algorithm/string.hpp>
+#include <boost/tokenizer.hpp>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 #include <numeric>
 #include <wex/config.h>
-#include <wex/core.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
 #include <wex/style.h>
-#include <wex/tokenizer.h>
 #include <wx/stc/stc.h>
 
 void wex::style::apply(wxStyledTextCtrl* stc) const
@@ -68,12 +68,16 @@ void wex::style::set(const pugi::xml_node& node, const std::string& macro)
 
   set_no(lexers::get()->apply_macro(m_define, macro), macro, node);
 
+  const std::string text(std::string(node.text().get()));
+
   // The style is parsed using the themed macros, and
   // you can specify several styles separated by a + sign.
-  for (tokenizer tkz(node.text().get(), "+"); tkz.has_more_tokens();)
+  for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
+         text,
+         boost::char_separator<char>("+")))
   {
     // Collect each single field style.
-    const auto& single = tkz.get_next_token();
+    const auto& single = it;
 
     if (const auto& it = lexers::get()->theme_macros().find(single);
         it != lexers::get()->theme_macros().end())
@@ -89,7 +93,7 @@ void wex::style::set(const pugi::xml_node& node, const std::string& macro)
                             wxFONTSTYLE_NORMAL,
                             wxFONTWEIGHT_NORMAL)));
 
-        replace_all(
+        boost::algorithm::replace_all(
           value,
           "default-font",
           "face:" + font.GetFaceName() +
@@ -134,10 +138,11 @@ void wex::style::set_no(
   m_no.clear();
 
   // Collect each single no in the vector.
-  for (tokenizer tkz(no, ","); tkz.has_more_tokens();)
+  for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
+         no,
+         boost::char_separator<char>(",")))
   {
-    const auto& single =
-      lexers::get()->apply_macro(tkz.get_next_token(), macro);
+    const auto& single = lexers::get()->apply_macro(it, macro);
 
     try
     {

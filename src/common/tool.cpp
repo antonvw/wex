@@ -2,10 +2,10 @@
 // Name:      tool.cpp
 // Purpose:   Implementation of wex::tool class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/core.h>
+#include <boost/algorithm/string.hpp>
 #include <wex/statistics.h>
 #include <wex/tool.h>
 
@@ -27,7 +27,7 @@ const std::string wex::tool::info(const wex::statistics<int>* stat) const
 {
   std::string logtext(info());
 
-  replace_all(logtext, "%d", std::to_string(stat->get(_("Actions Completed"))));
+  boost::algorithm::replace_all(logtext, "%d", std::to_string(stat->get(_("Actions Completed"))));
 
   logtext.append(" ");
   logtext.append(std::to_string(stat->get(_("Files"))));
