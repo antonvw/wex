@@ -9,7 +9,6 @@
 #include <iomanip>
 #include <sstream>
 #include <wex/chrono.h>
-#include <wex/log.h>
 
 using namespace ::std::chrono;
 
@@ -122,7 +121,6 @@ std::tuple<bool, time_t> wex::chrono::get_time(const std::string& text) const
 
   if (ss.fail())
   {
-    wex::log("get_time") << ss << "format:" << m_format;
     return {false, 0};
   }
 

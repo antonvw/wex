@@ -2,66 +2,73 @@
 // Name:      textctrl.h
 // Purpose:   Declaration of wex::textctrl class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wex/window-data.h>
+#include <wex/data/window.h>
 
 class wxControl;
 
 namespace wex
 {
-  class ex;
-  class managed_frame;
-  class textctrl_imp;
+namespace factory
+{
+class stc;
+};
 
-  /// Offers a text ctrl related to a ex object.
-  class textctrl
-  {
-  public:
-    /// Constructor. Creates empty control.
-    textctrl(managed_frame* frame, wxControl* prefix, const data::window& data);
+class frame;
+class textctrl_imp;
 
-    /// Constructor. Skips prefix.
-    textctrl(
-      managed_frame*     frame,
-      const std::string& value = std::string(),
-      const data::window& data  = data::window());
+/// Offers a text ctrl related to a factory::stc object.
+class textctrl
+{
+public:
+  /// Constructor. Creates empty control.
+  explicit textctrl(frame* frame, wxControl* prefix, const data::window& data);
 
-    /// Destructor.
-    ~textctrl();
+  /// Constructor. Skips prefix.
+  explicit textctrl(
+    frame*              frame,
+    const std::string&  value = std::string(),
+    const data::window& data  = data::window());
 
-    /// Returns the control window for the component.
-    wxControl* control();
+  /// Returns the control window for the component.
+  wxControl* control();
 
-    /// Returns ex component.
-    wex::ex* ex() { return m_ex; };
+  /// Returns frame.
+  auto* get_frame() { return m_frame; }
 
-    /// Returns frame.
-    managed_frame* frame() { return m_frame; };
+  /// Get string value.
+  const std::string get_text() const;
 
-    /// Get string value.
-    const std::string get_text() const;
+  /// Destroys the implementation.
+  void on_exit();
 
-    /// Selects all text.
-    void select_all() const;
+  /// Selects all text.
+  void select_all() const;
 
-    /// Sets ex component using string command.
-    /// Returns false if command not supported.
-    bool set_ex(wex::ex* ex, const std::string& command);
+  /// Sets stc component.
+  void set_stc(wex::factory::stc* stc) { m_stc = stc; }
 
-    /// Sets ex component using char command.
-    /// Returns false if command not supported.
-    bool set_ex(wex::ex* ex, char command);
+  /// Sets stc component and handles string command.
+  /// Returns false if command not supported.
+  bool set_stc(wex::factory::stc* stc, const std::string& command);
 
-    /// Sets text.
-    void set_text(const std::string& text);
+  /// Sets stc component and handles char command.
+  /// Returns false if command not supported.
+  bool set_stc(wex::factory::stc* stc, char command);
 
-  private:
-    wex::ex*       m_ex{nullptr};
-    managed_frame* m_frame;
-    textctrl_imp*  m_imp;
-  };
+  /// Sets text.
+  void set_text(const std::string& text);
+
+  /// Returns stc component.
+  auto* stc() { return m_stc; }
+
+private:
+  wex::factory::stc* m_stc{nullptr};
+  frame*             m_frame;
+  textctrl_imp*      m_imp;
+};
 }; // namespace wex

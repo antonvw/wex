@@ -5,11 +5,11 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <tuple>
-#include <wex/managed-frame.h>
-#include <wex/stc.h>
+#include <wex/ex.h>
 #include <wex/variable.h>
+
+#include "test.h"
 
 TEST_CASE("wex::variable")
 {
@@ -46,7 +46,6 @@ TEST_CASE("wex::variable")
            {"template", "TEMPLATE", "xxx.txt", "xxx.txt"},
            {"fix", "FIXED", "constant value", "constant value"},
            {"cc", "INPUT", "one", "one"},
-           {"dd", "INPUT-ONCE", "@Year@", "2021"},
            {"ee", "INPUT-SAVE", "three", "three"}})
     {
       const std::string text(

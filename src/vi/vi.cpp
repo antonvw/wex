@@ -9,35 +9,49 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
 #include <functional>
-#include <regex>
 #include <sstream>
 #include <wex/addressrange.h>
 #include <wex/app.h>
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/ctags.h>
+#include <wex/factory/stc.h>
+#include <wex/frame.h>
 #include <wex/frd.h>
-#include <wex/hexmode.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
-#include <wex/managed-frame.h>
-#include <wex/stc.h>
+#include <wex/regex.h>
 #include <wex/vi.h>
 
 namespace wex
 {
-  constexpr int c_strcmp(char const* lhs, char const* rhs)
-  {
-    return (('\0' == lhs[0]) && ('\0' == rhs[0])) ? 0 :
-           (lhs[0] != rhs[0])                     ? (lhs[0] - rhs[0]) :
-                                                    c_strcmp(lhs + 1, rhs + 1);
-  };
+constexpr int c_strcmp(char const* lhs, char const* rhs)
+{
+  return (('\0' == lhs[0]) && ('\0' == rhs[0])) ? 0 :
+         (lhs[0] != rhs[0])                     ? (lhs[0] - rhs[0]) :
+                                                  c_strcmp(lhs + 1, rhs + 1);
+}
 
-  const std::string esc() { return std::string("\x1b"); }
+const std::string esc()
+{
+  return std::string("\x1b");
+}
 
-  const std::string _s(wxKeyCode key) { return std::string(1, key); }
+// without this code adding tab in block insert mode fails, it only
+// add one tab instead of a line of tabs
+bool is_block_insert(vi* vi)
+{
+  return vi->mode().is_insert() &&
+         (vi->get_stc()->SelectionIsRectangle() ||
+          vi->get_stc()->GetSelectionMode() == wxSTC_SEL_THIN);
+}
+
+const std::string _s(wxKeyCode key)
+{
+  return std::string(1, key);
+}
 } // namespace wex
 
 #define MOTION(SCOPE, DIRECTION, COND, WRAP)                                \
@@ -48,6 +62,7 @@ namespace wex
       {                                                                     \
         case wex::vi_mode::state_t::COMMAND:                                \
         case wex::vi_mode::state_t::INSERT:                                 \
+          /* NOLINTNEXTLINE */                                              \
           if (WRAP && c_strcmp((#SCOPE), "Line") == 0)                      \
           {                                                                 \
             if (c_strcmp((#DIRECTION), "Down") == 0)                        \
@@ -73,6 +88,7 @@ namespace wex
           break;                                                            \
       }                                                                     \
     }                                                                       \
+    /* NOLINTNEXTLINE */                                                    \
     if (c_strcmp((#SCOPE), "Line") == 0)                                    \
     {                                                                       \
       switch (m_mode.get())                                                 \
@@ -113,17 +129,17 @@ namespace wex
 
 namespace wex
 {
-  enum class vi::motion_t
-  {
-    MOTION_CHANGE,
-    MOTION_DELETE,
-    MOTION_NAVIGATE,
-    MOTION_YANK,
-  };
+enum class vi::motion_t
+{
+  MOTION_CHANGE,
+  MOTION_DELETE,
+  MOTION_NAVIGATE,
+  MOTION_YANK,
+};
 };
 
-wex::vi::vi(wex::stc* arg)
-  : ex(arg)
+wex::vi::vi(wex::factory::stc* arg, mode_t ex_mode)
+  : ex(arg, ex_mode)
   , m_mode(
       this,
       // insert mode process
@@ -133,7 +149,6 @@ wex::vi::vi(wex::stc* arg)
           m_insert_text.clear();
         }
 
-        get_stc()->auto_complete().sync();
         get_stc()->BeginUndoAction();
       },
       // back to command mode process
@@ -147,7 +162,6 @@ wex::vi::vi(wex::stc* arg)
         }
         m_command.clear();
         m_insert_command.clear();
-        get_stc()->auto_complete().clear();
         get_stc()->EndUndoAction();
       })
   , m_last_commands{{"!", "<", ">", "A", "C", "D", "I", "J", "O",
@@ -265,7 +279,7 @@ wex::vi::vi(wex::stc* arg)
                            if (const std::string find(
                                  get_stc()->get_margin_text_click() > 0 ?
                                    config("ex-cmd.margin")
-                                     .get(std::list<std::string>{})
+                                     .get(config::strings_t{})
                                      .front() :
                                    find_replace_data::get()->get_find_string());
                                !get_stc()->find(
@@ -286,9 +300,7 @@ wex::vi::vi(wex::stc* arg)
                          }
                          else
                          {
-                           (void)data::stc(get_stc())
-                             .control(data::control().line(m_count))
-                             .inject();
+                           get_stc()->inject(data::control().line(m_count));
                          }
                          return 1;
                        }},
@@ -352,8 +364,8 @@ wex::vi::vi(wex::stc* arg)
                          }
                          else
                          {
-                           return frame()->show_ex_command(
-                                    this,
+                           return get_stc()->is_visual() && frame()->show_ex_command(
+                                    get_stc(),
                                     command +
                                       (m_mode.is_visual() ? "'<,'>" : "")) ?
                                     command.size() :
@@ -449,9 +461,13 @@ wex::vi::vi(wex::stc* arg)
                            ex::command(":" + command);
                            return command.size();
                          }
+                         else if (get_stc()->is_visual())
+                         {
+                           frame()->show_ex_command(get_stc(), command);
+                           return (size_t)1;
+                         }
                          else
                          {
-                           frame()->show_ex_command(this, command);
                            return (size_t)1;
                          }
                        }},
@@ -523,7 +539,7 @@ wex::vi::vi(wex::stc* arg)
          {
            if (get_stc()->is_hexmode())
            {
-             if (!get_stc()->get_hexmode().replace(command.back()))
+             if (!get_stc()->get_hexmode_replace(command.back()))
              {
                m_command.clear();
                return 0;
@@ -569,7 +585,7 @@ wex::vi::vi(wex::stc* arg)
        }},
       {"J",
        [&](const std::string& command) {
-         addressrange(this, m_count).join();
+         addressrange(this, m_count + 1).join();
          return 1;
        }},
       {"P",
@@ -802,6 +818,7 @@ wex::vi::vi(wex::stc* arg)
        }},
       {_s(WXK_CONTROL_J) + _s(WXK_CONTROL_L),
        [&](const std::string& command) {
+         /* NOLINTNEXTLINE */
          REPEAT_WITH_UNDO(if (get_stc()->is_hexmode()) return 1; try {
            const auto start =
              get_stc()->WordStartPosition(get_stc()->GetCurrentPos(), true);
@@ -926,12 +943,12 @@ void wex::vi::command_reg(const std::string& reg)
 
     // calc register: control-R =
     case WXK_CONTROL_R:
-      if (reg.size() > 1 && reg[1] == '=')
+      if (reg.size() > 1 && reg[1] == '=' && get_stc()->is_visual())
       {
         if (reg.size() == 2)
         {
           set_register_insert(std::string());
-          frame()->show_ex_command(this, reg);
+          frame()->show_ex_command(get_stc(), reg);
         }
         else
         {
@@ -973,12 +990,12 @@ void wex::vi::command_reg(const std::string& reg)
     case '%':
       if (m_mode.is_insert())
       {
-        get_stc()->add_text(get_stc()->get_filename().fullname());
+        get_stc()->add_text(get_stc()->path().filename());
       }
       else
       {
-        frame()->show_ex_message(get_stc()->get_filename().string());
-        clipboard_add(get_stc()->get_filename().string());
+        frame()->show_ex_message(get_stc()->path().string());
+        clipboard_add(get_stc()->path().string());
       }
       break;
 
@@ -1075,7 +1092,7 @@ bool wex::vi::delete_range(int start, int end)
   }
   else
   {
-    get_stc()->get_hexmode().erase(last - first, first);
+    get_stc()->get_hexmode_erase(last - first, first);
   }
 
   return true;
@@ -1083,16 +1100,13 @@ bool wex::vi::delete_range(int start, int end)
 
 void wex::vi::filter_count(std::string& command)
 {
-  std::vector<std::string> v;
-
   /*
    command: 3w
    -> v has 2 elements
    -> m_count 3
    -> command w
    */
-  if (const auto matches = match("^([1-9][0-9]*)(.*)", command, v);
-      matches == 2)
+  if (regex v("^([1-9][0-9]*)(.*)"); v.match(command) == 2)
   {
     try
     {
@@ -1137,7 +1151,7 @@ bool wex::vi::insert_mode(const std::string& command)
   }
   else if (get_stc()->is_hexmode())
   {
-    if ((int)command.back() == WXK_ESCAPE)
+    if (static_cast<int>(command.back()) == WXK_ESCAPE)
     {
       if (m_mode.escape())
       {
@@ -1148,9 +1162,7 @@ bool wex::vi::insert_mode(const std::string& command)
     }
     else
     {
-      return get_stc()->get_hexmode().insert(
-        command,
-        get_stc()->GetCurrentPos());
+      return get_stc()->get_hexmode_insert(command, get_stc()->GetCurrentPos());
     }
   }
   // add control chars
@@ -1179,7 +1191,7 @@ bool wex::vi::insert_mode(const std::string& command)
     return true;
   }
 
-  switch ((int)command.back())
+  switch (command.back())
   {
     case WXK_BACK:
       if (!m_insert_text.empty())
@@ -1266,8 +1278,9 @@ bool wex::vi::insert_mode(const std::string& command)
       else
       {
         if (
-          command.size() == 1 && ((int)command.back() == WXK_RETURN ||
-                                  (int)command.back() == WXK_NUMPAD_ENTER))
+          command.size() == 1 &&
+          (static_cast<int>(command.back()) == WXK_RETURN ||
+           static_cast<int>(command.back()) == WXK_NUMPAD_ENTER))
         {
           get_stc()->NewLine();
 
@@ -1387,13 +1400,15 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
   const auto& it = std::find_if(
     m_motion_commands.begin(),
     m_motion_commands.end(),
-    [&](auto const& e) {
-      for (const auto& r : e.first)
-      {
-        if (r == command[0])
-          return true;
-      }
-      return false;
+    [&](auto const& e)
+    {
+      return std::any_of(
+        e.first.begin(),
+        e.first.end(),
+        [command](const auto& p)
+        {
+          return p == command[0];
+        });
     });
 
   if (it == m_motion_commands.end())
@@ -1448,7 +1463,10 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
       }
 
       if ((parsed = it->second(command)) == 0)
+      {
+        log("parse error") << command;
         return false;
+      }
 
       if (auto end = get_stc()->GetCurrentPos(); end - start > 0)
       {
@@ -1508,9 +1526,7 @@ bool wex::vi::on_char(const wxKeyEvent& event)
   }
   else if (m_mode.is_insert())
   {
-    if (
-      get_stc()->SelectionIsRectangle() ||
-      get_stc()->GetSelectionMode() == wxSTC_SEL_THIN)
+    if (is_block_insert(this))
     {
       return true;
     }
@@ -1593,6 +1609,11 @@ bool wex::vi::on_key_down(const wxKeyEvent& event)
       frame()->statustext(get_macros().mode().get_macro(), "PaneMacro");
     }
 
+    return true;
+  }
+  else if (is_block_insert(this) && event.GetKeyCode() != WXK_ESCAPE)
+  {
+    m_command.clear();
     return true;
   }
   else if (
@@ -1678,18 +1699,17 @@ bool wex::vi::other_command(std::string& command)
   if (const auto& it = std::find_if(
         m_other_commands.begin(),
         m_other_commands.end(),
-        [command](auto const& e) {
+        [command](auto const& e)
+        {
           if (!isalpha(e.first.front()))
           {
-            for (const auto& r : e.first)
-            {
-              if (r == command.front())
+            return std::any_of(
+              e.first.begin(),
+              e.first.end(),
+              [command](const auto& p)
               {
-                return true;
-              }
-            }
-
-            return false;
+                return p == command.front();
+              });
           }
           else
           {
@@ -1725,6 +1745,7 @@ bool wex::vi::parse_command(std::string& command)
     if (command.size() < 2)
       return false;
     set_register(command[1]);
+    get_macros().record(command);
     command.erase(0, 2);
   }
   else if (command.front() == ':')
@@ -1733,7 +1754,6 @@ bool wex::vi::parse_command(std::string& command)
   }
   else
   {
-    set_register(0);
     filter_count(command);
   }
 
@@ -1815,6 +1835,10 @@ bool wex::vi::parse_command(std::string& command)
   {
     return false;
   }
+  else
+  {
+    set_register(0);
+  }
 
   if (!command.empty())
   {
@@ -1874,7 +1898,7 @@ void wex::vi::set_last_command(const std::string& command)
 {
   size_t first = 0;
 
-  if (std::vector<std::string> v; match("^([1-9][0-9]*)(.*)", command, v) == 2)
+  if (regex v("^([1-9][0-9]*)(.*)"); v.match(command) == 2)
   {
     first = v[0].size(); // skip a possible leading count
   }

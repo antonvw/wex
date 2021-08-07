@@ -10,39 +10,42 @@
 #include <wx/wx.h>
 #endif
 #include <wex/core.h>
+#include <wex/factory/listview.h>
+#include <wex/factory/stc.h>
+#include <wex/frame.h>
 #include <wex/lexers.h>
-#include <wex/listview.h>
-#include <wex/managed-frame.h>
 #include <wex/menu.h>
 #include <wex/printing.h>
-#include <wex/stc.h>
 #include <wex/tool.h>
 
-#define PRINT_COMPONENT(ID, ACTION)                                 \
-  {                                                                 \
-    ID, "", data::menu().action([=, this](wxCommandEvent& event) {  \
-      if (auto* frame =                                             \
-            dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()); \
-          frame->get_stc() != nullptr)                              \
-      {                                                             \
-        frame->get_stc()->ACTION();                                 \
-      }                                                             \
-      else if (frame->get_listview() != nullptr)                    \
-      {                                                             \
-        frame->get_listview()->ACTION();                            \
-      }                                                             \
-    })                                                              \
+#define PRINT_COMPONENT(ID, ACTION)                                  \
+  {                                                                  \
+    ID, "",                                                          \
+      data::menu().action(                                           \
+        [=, this](wxCommandEvent& event)                             \
+        {                                                            \
+          if (auto* frame =                                          \
+                dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow()); \
+              frame->get_stc() != nullptr)                           \
+          {                                                          \
+            frame->get_stc()->ACTION();                              \
+          }                                                          \
+          else if (frame->get_listview() != nullptr)                 \
+          {                                                          \
+            frame->get_listview()->ACTION();                         \
+          }                                                          \
+        })                                                           \
   }
 
-wex::menu::menu(menu_t style, const std::vector<menu_item>& items)
+wex::menu::menu(menu_t style, const menu_items_t& items)
   : m_style(style)
 {
   append(items);
 }
 
-wex::menu::menu(const std::vector<menu_item>& items)
+wex::menu::menu(const menu_items_t& items, menu_t style)
+  : m_style(style)
 {
-  m_style = menu_t().set(DEFAULT);
   append(items);
 }
 
@@ -52,7 +55,7 @@ wex::menu::menu(const std::string& title, menu_t style)
 {
 }
 
-size_t wex::menu::append(const std::vector<menu_item>& items)
+size_t wex::menu::append(const menu_items_t& items)
 {
   const auto count(GetMenuItemCount());
 
@@ -72,11 +75,11 @@ size_t wex::menu::append(const std::vector<menu_item>& items)
         append(
           {{wxID_EXIT,
             "",
-            data::menu().action([=, this](wxCommandEvent& event) {
-              auto* frame =
-                dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow());
-              frame->Close(true);
-            })}});
+            data::menu().action(
+              [=, this](wxCommandEvent& event)
+              {
+                wxTheApp->GetTopWindow()->Close(true);
+              })}});
         break;
 
       case menu_item::PRINT:
@@ -149,9 +152,11 @@ void wex::menu::append_print()
   append(
     {{wxID_PRINT_SETUP,
       ellipsed(_("Page &Setup")),
-      data::menu().action([=, this](wxCommandEvent& event) {
-        wex::printing::get()->get_html_printer()->PageSetup();
-      })},
+      data::menu().action(
+        [=, this](wxCommandEvent& event)
+        {
+          wex::printing::get()->get_html_printer()->PageSetup();
+        })},
      PRINT_COMPONENT(wxID_PREVIEW, print_preview),
      PRINT_COMPONENT(wxID_PRINT, print)});
 }
@@ -177,7 +182,7 @@ void wex::menu::append_tools()
 
   auto* menuTool = new wex::menu(m_style);
 
-  for (const auto& it : tool().get_tool_info())
+  for (const auto& it : tool::get_tool_info())
   {
     if (!it.second.text().empty())
     {

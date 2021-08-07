@@ -2,7 +2,7 @@
 // Name:      menu.cpp
 // Purpose:   Implementation of wex::menu_item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -11,11 +11,9 @@
 #endif
 #include <wex/art.h>
 #include <wex/defs.h>
-#include <wex/managed-frame.h>
+#include <wex/frame.h>
 #include <wex/menu-item.h>
 #include <wex/menu.h>
-#include <wex/process.h>
-#include <wex/vcs.h>
 #include <wx/menu.h>
 
 wex::menu_item::menu_item(type_t type)
@@ -24,7 +22,7 @@ wex::menu_item::menu_item(type_t type)
 }
 
 wex::menu_item::menu_item(
-  int                id,
+  wxWindowID         id,
   const std::string& name,
   const data::menu&  data)
   : m_id(id)
@@ -36,7 +34,7 @@ wex::menu_item::menu_item(
 }
 
 wex::menu_item::menu_item(
-  int                id,
+  wxWindowID         id,
   const std::string& name,
   type_t             type,
   const data::menu&  data)
@@ -51,7 +49,7 @@ wex::menu_item::menu_item(
 wex::menu_item::menu_item(
   wex::menu*         submenu,
   const std::string& name,
-  int                id,
+  wxWindowID         id,
   const data::menu&  data)
   : m_id(id)
   , m_type(SUBMENU)
@@ -64,16 +62,21 @@ wex::menu_item::menu_item(
 
 wex::menu_item::menu_item(
   const wex::path&  p,
+  frame*            frame,
   bool              show_modal,
   const data::menu& data)
   : m_type(VCS)
+  , m_frame(frame)
   , m_path(p)
   , m_modal(show_modal)
 {
   m_data.bind(m_id);
 }
 
-wex::menu_item::menu_item(int id, file_history& history, const data::menu& data)
+wex::menu_item::menu_item(
+  wxWindowID        id,
+  file_history&     history,
+  const data::menu& data)
   : m_id(id)
   , m_type(HISTORY)
   , m_history(&history)
@@ -82,7 +85,7 @@ wex::menu_item::menu_item(int id, file_history& history, const data::menu& data)
   m_data.bind(m_id);
 }
 
-wex::menu_item::menu_item(const managed_frame* frame)
+wex::menu_item::menu_item(const frame* frame)
   : m_frame(frame)
   , m_type(PANES)
 {
@@ -166,43 +169,11 @@ void wex::menu_item::append_panes(wex::menu* menu) const
 
   for (const auto& it : m_frame->toggled_panes())
   {
-    if (it.first.first == "PROCESS" && process::get_shell() == nullptr)
-    {
-      continue;
-    }
-
     menu->append({{it.second, it.first.second, CHECK}});
   }
 }
 
 void wex::menu_item::append_vcs(wex::menu* menu) const
 {
-  if (!m_path.file_exists())
-  {
-    if (m_path.dir_exists())
-    {
-      const wex::vcs vcs({m_path.string()});
-
-      vcs.entry().build_menu(ID_VCS_LOWEST + 1, menu);
-    }
-    else
-    {
-      wex::vcs vcs;
-
-      if (vcs.set_entry_from_base(m_modal ? wxTheApp->GetTopWindow() : nullptr))
-      {
-        vcs.entry().build_menu(ID_VCS_LOWEST + 1, menu);
-      }
-    }
-  }
-  else
-  {
-    auto* vcsmenu = new wex::menu(menu->style());
-
-    if (const wex::vcs vcs({m_path.string()});
-        vcs.entry().build_menu(ID_EDIT_VCS_LOWEST + 1, vcsmenu))
-    {
-      menu->append({{vcsmenu, vcs.entry().name()}});
-    }
-  }
+  m_frame->append_vcs(menu, this);
 }

@@ -3,11 +3,14 @@
 **v21.10**
 - boost::algorithm lib used
 - boost::tokenizer lib used
+- added wex::factory namespace, renamed wex::report namespace into wex::del
+- added option wexBUILD_SHARED to use dynamic libs
+- use std::thread for find and replace in files
 
 **v21.04** *March 7, 2021*
 - added FindWEX.cmake to assist using wex library using cmake projects
 - boost::log lib instead of easylogging++ lib
-- c++20 standard used, c++17 available as branch
+- c++20 standard, c++17 available as tag
 - support of ex mode handling of files
 - moved apps folder to gitlab
 

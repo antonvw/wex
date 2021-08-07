@@ -5,11 +5,11 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/address.h>
+#include <wex/ex.h>
 #include <wex/macros.h>
-#include <wex/managed-frame.h>
-#include <wex/stc.h>
+
+#include "test.h"
 
 TEST_SUITE_BEGIN("wex::ex");
 

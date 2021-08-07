@@ -41,31 +41,31 @@ namespace wex
     bool operator==(const presentation& i) const;
 
     /// != Operator.
-    bool operator!=(const presentation& i) const { return !operator==(i); };
+    bool operator!=(const presentation& i) const { return !operator==(i); }
 
     /// Applies this presentation to stc component.
     void apply(wxStyledTextCtrl* stc) const;
 
     /// Returns background colour.
-    const auto& background_colour() const { return m_background_colour; };
+    const auto& background_colour() const { return m_background_colour; }
 
     /// Returns foreground colour.
-    const auto& foreground_colour() const { return m_foreground_colour; };
+    const auto& foreground_colour() const { return m_foreground_colour; }
 
     /// Returns true if this presentation is valid.
     bool is_ok() const;
 
     /// Returns underlined.
-    bool is_underlined() const { return m_under; };
+    bool is_underlined() const { return m_under; }
 
     /// Returns name of presentation.
     const std::string name() const;
 
     /// Returns the no.
-    int number() const { return m_no; };
+    int number() const { return m_no; }
 
     /// Returns the style.
-    int style() const { return m_style; };
+    int style() const { return m_style; }
 
   private:
     std::string m_background_colour, m_foreground_colour;

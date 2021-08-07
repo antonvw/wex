@@ -2,18 +2,19 @@
 // Name:      textctrl-imp.h
 // Purpose:   Declaration of wex::textctrl_imp class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wex/textctrl-input.h>
+#include <wex/ex-command.h>
 #include <wx/textctrl.h>
 #include <wx/timer.h>
 
 namespace wex
 {
   class textctrl;
+  class textctrl_input;
 
   /// Offers textctrl implementation.
   class textctrl_imp : public wxTextCtrl
@@ -28,15 +29,10 @@ namespace wex
       const std::string&  value = std::string(),
       const data::window& data  = data::window());
 
-    /// virtual interface
-
-    /// Selects all.
-    void SelectAll() override;
-
     /// other methods
 
     /// Returns text.
-    const std::string get_text() const;
+    const std::string get_text();
 
     /// Handles string command.
     bool handle(const std::string& command);
@@ -47,13 +43,18 @@ namespace wex
     /// Sets text.
     void set_text(const std::string& text);
 
+    /// Virtual interface
+
+    bool Destroy() override;
+    void SelectAll() override;
+
   private:
     void bind();
     void cut();
     bool input_mode_finish() const;
     bool is_ex_mode() const;
 
-    textctrl_input& TCI();
+    textctrl_input* tci();
 
     const int m_id_register;
 
@@ -66,10 +67,8 @@ namespace wex
     bool m_all_selected{false}, m_control_r{false}, m_mode_visual{false},
       m_user_input{false};
 
-    textctrl_input m_calcs{ex_command::type_t::CALC},
-      m_commands{ex_command::type_t::COMMAND},
-      m_execs{ex_command::type_t::EXEC},
-      m_find_margins{ex_command::type_t::FIND_MARGIN};
+    textctrl_input *m_calcs{nullptr}, *m_commands{nullptr},
+      *m_commands_ex{nullptr}, *m_escapes{nullptr}, *m_find_margins{nullptr};
 
     ex_command m_command;
   };

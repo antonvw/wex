@@ -10,10 +10,10 @@
 #include <wex/app.h>
 #include <wex/config.h>
 #include <wex/core.h>
+#include <wex/frame.h>
 #include <wex/lexer-props.h>
 #include <wex/log.h>
 #include <wex/macros.h>
-#include <wex/managed-frame.h>
 #include <wex/path.h>
 #include <wex/type-to-value.h>
 #include <wex/util.h>
@@ -75,9 +75,9 @@ const std::vector<std::string> wex::macros::get() const
   return v;
 }
 
-const wex::path wex::macros::get_filename() const
+const wex::path wex::macros::path() const
 {
-  return path(config::dir(), "wex-macros.xml");
+  return wex::path(config::dir(), "wex-macros.xml");
 }
 
 const wex::macros::keys_map_t& wex::macros::get_keys_map(key_t type) const
@@ -157,32 +157,29 @@ bool wex::macros::is_recorded_macro(const std::string& macro) const
 
 bool wex::macros::load_document()
 {
-  if (!get_filename().file_exists())
+  if (!path().file_exists())
   {
     return false;
   }
 
   if (const auto result = m_doc.load_file(
-        get_filename().string().c_str(),
+        path().string().c_str(),
         pugi::parse_default | pugi::parse_comments);
       !result)
   {
-    xml_error(get_filename(), &result);
+    xml_error(path(), &result);
     return false;
   }
 
   m_is_modified = false;
 
-  if (m_is_loaded)
-  {
-    m_abbreviations.clear();
-    m_macros.clear();
-    m_map.clear();
-    m_map_alt_keys.clear();
-    m_map_control_keys.clear();
-    m_map_keys.clear();
-    m_variables.clear();
-  }
+  m_abbreviations.clear();
+  m_macros.clear();
+  m_map.clear();
+  m_map_alt_keys.clear();
+  m_map_control_keys.clear();
+  m_map_keys.clear();
+  m_variables.clear();
 
   for (const auto& child : m_doc.document_element().children())
   {
@@ -231,14 +228,17 @@ bool wex::macros::load_document()
 template <typename S, typename T>
 void wex::macros::parse_node(
   const pugi::xml_node& node,
-  const std::string&    name,
+  const std::string&    container_name,
   T&                    container)
 {
-  if (const S& value = type_to_value<S>(node.attribute("name").value()).get();
+  const std::string name(node.attribute("name").value());
+
+  if (const S& value = type_to_value<S>(name).get();
       container.find(value) != container.end())
   {
-    log("duplicate macro") << name << ":" << value
-                           << "from:" << node.attribute("name").value() << node;
+    log("duplicate " + container_name)
+      << name << "current:" << container[value]
+      << "update:" << node.text().get() << node;
   }
   else
   {
@@ -248,27 +248,32 @@ void wex::macros::parse_node(
 
 void wex::macros::parse_node_macro(const pugi::xml_node& node)
 {
-  std::vector<std::string> v;
+  const std::string name(node.attribute("name").value());
 
-  for (const auto& command : node.children())
+  if (const auto& it = m_macros.find(name); it != m_macros.end())
   {
-    v.emplace_back(command.text().get());
-  }
-
-  if (const auto& it = m_macros.find(node.attribute("name").value());
-      it != m_macros.end())
-  {
-    log("duplicate macro") << node.attribute("name").value() << node;
+    log("duplicate macro") << name << node << it->second.front();
   }
   else
   {
+    std::vector<std::string> v;
+
+    std::transform(
+      node.children().begin(),
+      node.children().end(),
+      std::back_inserter(v),
+      [](const auto& t)
+      {
+        return t.text().get();
+      });
+
     m_macros.insert({node.attribute("name").value(), v});
   }
 }
 
 void wex::macros::parse_node_variable(const pugi::xml_node& node)
 {
-  if (const variable & variable(node); variable.get_name().empty())
+  if (const variable variable(node); variable.get_name().empty())
   {
     log("empty variable") << node;
   }
@@ -285,15 +290,12 @@ void wex::macros::parse_node_variable(const pugi::xml_node& node)
 
 bool wex::macros::record(const std::string& text, bool new_command)
 {
-  if (auto* f = (dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()));
-      f != nullptr)
+  if (auto* f = (dynamic_cast<frame*>(wxTheApp->GetTopWindow())); f != nullptr)
   {
     f->record(text);
   }
 
-  if (
-    !m_mode.is_recording() || (m_mode.is_recording() && m_mode.is_playback()) ||
-    text.empty())
+  if (!m_mode.is_recording() || m_mode.is_playback() || text.empty())
   {
     return false;
   }
@@ -331,12 +333,14 @@ bool wex::macros::record(const std::string& text, bool new_command)
 
 bool wex::macros::save_document(bool only_if_modified)
 {
-  if (!get_filename().file_exists() || (!m_is_modified && only_if_modified))
+  if (
+    !m_is_loaded || !path().file_exists() ||
+    (!m_is_modified && only_if_modified))
   {
     return false;
   }
 
-  const bool ok = m_doc.save_file(get_filename().string().c_str(), "  ");
+  const bool ok = m_doc.save_file(path().string().c_str(), "  ");
 
   if (ok)
   {
@@ -475,8 +479,8 @@ bool wex::macros::set_register(char name, const std::string& value)
     }
   }
 
-  m_macros[std::string(1, (char)tolower(name))] = v;
-  save_macro(std::string(1, (char)tolower(name)));
+  m_macros[std::string(1, static_cast<char>(tolower(name)))] = v;
+  save_macro(std::string(1, static_cast<char>(tolower(name))));
 
   return true;
 }
@@ -488,21 +492,19 @@ bool wex::macros::starts_with(const std::string_view& text)
     return false;
   }
 
-  for (const auto& it : m_macros)
-  {
-    if (it.first.substr(0, text.size()) == text)
-    {
-      return true;
-    }
-  }
-
-  for (const auto& it : m_variables)
-  {
-    if (it.first.substr(0, text.size()) == text)
-    {
-      return true;
-    }
-  }
-
-  return false;
+  return (
+    std::any_of(
+      m_macros.begin(),
+      m_macros.end(),
+      [text](const auto& p)
+      {
+        return p.first.substr(0, text.size()) == text;
+      }) ||
+    std::any_of(
+      m_variables.begin(),
+      m_variables.end(),
+      [text](const auto& p)
+      {
+        return p.first.substr(0, text.size()) == text;
+      }));
 }

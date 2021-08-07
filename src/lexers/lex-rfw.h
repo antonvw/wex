@@ -2,10 +2,12 @@
 // Name:      lex-rfw.h
 // Purpose:   Declaration of wex::lex_rfw class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
+
+#include <stack>
 
 #define RFW_CMD_BODY 0
 #define RFW_CMD_START 1
@@ -24,7 +26,6 @@
 #define RFW_DELIM_LSTRING 3
 #define RFW_DELIM_COMMAND 4
 #define RFW_DELIM_BACKTICK 5
-#define RFW_DELIM_STACK_MAX 7
 
 #define RFW_BASE_ERROR 65
 #define RFW_BASE_DECIMAL 66
@@ -89,8 +90,7 @@ namespace wex
   protected:
     int opposite(int ch) const;
 
-    int m_count{0};
-    int m_up{0}, m_down{0};
+    int m_count{0}, m_down{0}, m_up{0};
 
   private:
     bool get_line_pos_eol(int offset, char i) const;
@@ -129,7 +129,7 @@ namespace wex
     };
 
     /// Returns depth.
-    int depth() const { return m_depth; };
+    size_t depth() const { return m_stack.size(); };
 
     /// Pops.
     void pop(void);
@@ -144,18 +144,22 @@ namespace wex
     int style() const { return m_style; };
 
   private:
-    int m_depth{0}; // levels pushed
     int m_style{0};
 
-    int m_count_stack[RFW_DELIM_STACK_MAX];
-    int m_style_stack[RFW_DELIM_STACK_MAX];
-    int m_up_stack[RFW_DELIM_STACK_MAX];
+    struct stack_t
+    {
+      int m_count;
+      int m_style;
+      int m_up;
+    };
+
+    std::stack<stack_t> m_stack;
   };
 }; // namespace wex
 
-// inline implementation
+// inline implementation lex_rfw
 
-bool wex::lex_rfw::get_line_pos_eol(int offset, char c) const
+inline bool wex::lex_rfw::get_line_pos_eol(int offset, char c) const
 {
   Sci_Position pos = m_styler.LineStart(m_line + offset);
   Sci_Position eol = m_styler.LineStart(m_line + 1 + offset) - 1;
@@ -187,6 +191,7 @@ inline int wex::lex_rfw::glob_scan(StyleContext& sc) const
       return sLen;
     }
   }
+  
   return 0;
 }
 
@@ -229,15 +234,18 @@ inline int wex::lex_rfw::number_base(char* s) const
 {
   int i    = 0;
   int base = 0;
+  
   while (*s)
   {
     base = base * 10 + (*s++ - '0');
     i++;
   }
+  
   if (base > 64 || i > 2)
   {
     return RFW_BASE_ERROR;
   }
+
   return base;
 }
 
@@ -280,8 +288,11 @@ inline int wex::lex_rfw::translate_digit(int ch) const
   {
     return 63;
   }
+  
   return RFW_BASE_ERROR;
 }
+
+// inline implementation quote
 
 inline void wex::quote::open(int u)
 {
@@ -297,32 +308,31 @@ inline void wex::quote::start(int u)
   open(u);
 }
 
+// inline implementation quote_stack
+
 inline void wex::quote_stack::pop(void)
 {
-  if (m_depth <= 0)
+  if (m_stack.empty())
     return;
 
-  m_depth--;
-  m_count = m_count_stack[m_depth];
-  m_up    = m_up_stack[m_depth];
-  m_style = m_style_stack[m_depth];
-  m_down  = opposite(m_up);
+  m_stack.pop();
+
+  m_count = m_stack.top().m_count;
+  m_up    = m_stack.top().m_up;
+  m_style = m_stack.top().m_style;
+
+  m_down = opposite(m_up);
 }
 
 inline void wex::quote_stack::push(int u, int s)
 {
-  if (m_depth >= RFW_DELIM_STACK_MAX)
-    return;
+  m_stack.push({m_count, m_style, m_up});
 
-  m_count_stack[m_depth] = m_count;
-  m_up_stack[m_depth]    = m_up;
-  m_style_stack[m_depth] = m_style;
-
-  m_depth++;
   m_count = 1;
   m_up    = u;
-  m_down  = opposite(m_up);
   m_style = s;
+
+  m_down = opposite(m_up);
 }
 
 inline void wex::quote_stack::start(int u, int s)

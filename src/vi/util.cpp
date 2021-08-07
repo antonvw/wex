@@ -6,8 +6,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ex.h>
+#include <wex/factory/stc.h>
+#include <wex/log.h>
 #include <wex/macros.h>
-#include <wex/stc.h>
 #include <wx/defs.h>
 
 bool wex::marker_and_register_expansion(const ex* ex, std::string& text)
@@ -24,44 +25,59 @@ bool wex::marker_and_register_expansion(const ex* ex, std::string& text)
   std::string output;
   bool        changed = false;
 
-  for (auto it = text.begin(); it != text.end(); ++it)
+  try
   {
-    switch (*it)
+    for (auto it = text.begin(); it != text.end(); ++it)
     {
-      // Replace marker.
-      case '\'':
-        if (const auto line = ex->marker_line(*(std::next(it))); line >= 0)
-        {
-          output += std::to_string(line + 1);
+      switch (*it)
+      {
+        // Replace marker.
+        case '\'':
+          if (const auto line = ex->marker_line(*(std::next(it))); line >= 0)
+          {
+            output += std::to_string(line + 1);
+            ++it;
+            changed = true;
+          }
+          else
+          {
+            output += *it;
+          }
+          break;
+
+        // Replace register.
+        case WXK_CONTROL_R:
+          if (*std::next(it) == '%')
+          {
+            output += ex->get_stc()->path().filename();
+          }
+          else
+          {
+            const auto next(std::next(it));
+
+            if (next == text.end())
+            {
+              log("missing register") << text;
+              return false;
+            }
+
+            const auto& reg(ex->get_macros().get_register(*(next)));
+            output += reg;
+          }
+
           ++it;
           changed = true;
-        }
-        else
-        {
+          break;
+
+        default:
           output += *it;
-        }
-        break;
-
-      // Replace register.
-      case WXK_CONTROL_R:
-        if (*std::next(it) == '%')
-        {
-          output += ex->get_stc()->get_filename().fullname();
-        }
-        else 
-        {
-          const std::string reg(
-                   ex->get_macros().get_register(*(std::next(it))));
-          output += reg;
-        }
-      
-        ++it;
-        changed = true;
-        break;
-
-      default:
-        output += *it;
+      }
     }
+  }
+  catch (std::exception& e)
+  {
+    log(e) << text;
+    return false;
   }
 
   if (changed)

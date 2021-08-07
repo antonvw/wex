@@ -19,7 +19,7 @@
     file, and fill in the translation.
 
   - The place where to put your po files can be found by adding -l command line switch.
-    You can also test other languages using the special LANG config item,
+    You can also test other languages using the special Language config item,
     e.g. setting it to french allows you to test french translation.
     Normally you check the current locale by running locale on the
     command line. Running locale -a shows all your available locales, if your
@@ -27,7 +27,22 @@
     the list of all locales (/usr/share/i18n/SUPPORTED).
     Then you do export LANG=..., or change the /etc/default/locale.
 
-  - To add translation files add -DENABLE_GETTEXT=ON to cmake.
+  - To add translation files add -DwexENABLE_GETTEXT=ON to cmake.
+  
+## Analyse it
+
+At github some code analysers will do this, it is also possible to do
+some local checks:
+
+- codespell.sh
+- cppcheck.sh
+- cpplint.bash
+
+```bash
+../ci/codespell.sh
+../ci/cppcheck.sh
+../ci/cpplint.bash ../src/core/*.cpp
+```
 
 ## Test it
 - add a test (and update sample)
@@ -49,6 +64,15 @@ make
 make lcov-prep
 make test
 make lcov
+```
+
+- asan Leak Sanitizer can be used by adding -DwexENABLE_ASAN=ON to cmake
+
+```bash
+cmake -DwexENABLE_ASAN=ON -DwexBUILD_TESTS=ON ..
+make
+export ASAN_OPTIONS=detect_leaks=1,detect_container_overflow=0
+./test/core/wex-test-core
 ```
 
 - Do a pull request from the feature branch to the develop branch

@@ -67,48 +67,54 @@ It benefits from the following c++ features:
 
   example:
 ```cpp
-   std::vector<std::string> v;
-   std::string              line(trim(cmdline));
-   bool                     found = false;
-
-   while (!line.empty())
-   {
-     ...
+  regex r(
+    {"all",
+     // [nooption ...]
+     "no([a-z0-9]+)(.*)",
+     // [option? ...]
+     "([a-z0-9]+)[ \t]*\\?(.*)",
      // [option[=[value]] ...]
-     else if (match("([a-z0-9]+)(=[a-z0-9]+)?(.*)", line, v) > 0)
+     "([a-z0-9]+)(=[a-z0-9]+)?(.*)"});
+
+  std::string help;
+  bool        found = false;
+
+  for (auto line(boost::algorithm::trim_copy(data.string())); !line.empty();)
+  {
+    switch (r.search(line); r.which_no())
 ```
 
-  and match:
+  and search:
 ```cpp
-    int wex::match(
-      const std::string&        reg,
-      const std::string&        text,
-      std::vector<std::string>& v)
+  int wex::regex::find(const std::string& text, find_t how)
+  ...
+  for (const auto& reg : m_regex)
+  {
+    try
     {
-      if (reg.empty())
-        return -1;
-
-      try
+      if (std::match_results<std::string::const_iterator> m;
+          ((how == REGEX_MATCH && std::regex_match(text, m, reg.first)) ||
+           (how == REGEX_SEARCH && std::regex_search(text, m, reg.first))))
       {
-        if (std::match_results<std::string::const_iterator> m;
-            !std::regex_search(text, m, std::regex(reg)))
+        if (m.size() > 1)
         {
-          return -1;
-        }
-        else if (m.size() > 1)
-        {
-          v.clear();
-          std::copy(++m.begin(), m.end(), std::back_inserter(v));
+          m_matches.clear();
+          std::copy(++m.begin(), m.end(), std::back_inserter(m_matches));
         }
 
-        return v.size();
+        m_which    = reg;
+        m_which_no = index;
+
+        return m_matches.size();
       }
-      catch (std::regex_error& e)
-      {
-        log(e) << reg << "code:" << (int)e.code();
-        return -1;
-      }
+
+      index++;
     }
+    catch (std::regex_error& e)
+    {
+      log(e) << reg.second << "code:" << (int)e.code();
+    }
+  }
 ```
 
 - Strings library
@@ -118,6 +124,13 @@ It benefits from the following c++ features:
 ```
   These functions are used heavily, the advice is to be sure that
   you should be aware that a std::exception might be raised.
+  And, if performance is an issue prefer using from_chars.
+
+```cpp
+  starts_with (c++20)
+```
+
+  A recent added function.
 
 - Thread support library (c++17)
 ```cpp
@@ -203,6 +216,31 @@ It benefits from the following c++ features:
       u.detach();
 ```
 
+```cpp
+  std::from_chars (c++17)
+```
+
+  This method can be used as replacement for e.g. stol.
+  example used in textctrl-input.cpp:
+  
+```cpp
+    for (const auto& v : m_values)
+    {
+      // If this value is an int, ignore value if we reached max
+      if (int value = 0;
+          std::from_chars(v.data(), v.data() + v.size(), value).ec ==
+          std::errc())
+      {
+        if (current++ >= max_ints)
+        {
+          continue;
+        }
+      }
+
+      filtered.emplace_back(v);
+    }
+```
+  
 - Input/output library
 ```cpp
   std::fstream
@@ -239,5 +277,76 @@ It benefits from the following c++ features:
 - initializer_list (c++11)
 
 - lambda expressions (c++11)
+  used of lof, e.g. useful to assign result of expression to a constant class
+  member in a constructor.
+  core/regex.cpp:
+
+```cpp
+wex::regex::regex(
+  const std::vector<std::string>& regex,
+  std::regex::flag_type           flags)
+  : m_regex(
+      [](const std::vector<std::string>& reg_str, std::regex::flag_type flags) {
+        regex_t v;
+
+        for (const auto& r : reg_str)
+        {
+          v.emplace_back(std::regex(r, flags), r);
+        }
+
+        return v;
+      }(regex, flags))
+{
+}
+```
 
 - nested namespaces (c++17)
+```cpp
+  namespace wex::core
+  {
+    class stc;
+  }
+```
+  as forward declaration
+
+- override or final specifier (c++11)
+  vi.h:
+```cpp
+    bool command(const std::string& command) final;
+```
+  this ensures that the function is kept in sync with base class
+
+## boost c++ libraries
+- boost::algorithm lib
+  uses replace_all, to_upper, trim
+
+- boost::log lib
+  to implement wex::log
+
+- boost::process lib
+  to implement wex::process
+
+- boost::program_options lib
+  to implement wex::cmdline
+
+- boost::spirit lib
+  to implement the wex::evaluator
+
+- boost::statechart lib
+  to implement the statemachine for vi mode and macro mode
+
+- boost::tokenizer lib
+  to tokenize expressions
+
+## wxWidgets libraries
+- all gui classes are derived from / use wxWidgets base classes
+  wxbase
+  wxcore
+  wxaui
+  wxhtml
+  wxscintilla
+  wxstc
+
+## wex c++ libraries
+
+wex-core <- wex-factory <- wex-data <- wex-common <- wex-ui <- wex-vi <- wex-stc <- wex-del

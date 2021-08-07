@@ -2,13 +2,14 @@
 // Name:      test-macros.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
-#include <wex/stc.h>
+#include <wex/vi.h>
+
+#include "test.h"
 
 #define ESC "\x1b"
 
@@ -16,13 +17,14 @@ TEST_SUITE_BEGIN("wex::vi");
 
 TEST_CASE("wex::macros" * doctest::may_fail())
 {
-  auto* vi = &get_stc()->get_vi();
+  auto* stc = get_stc();
+  auto* vi  = new wex::vi(stc);
 
   SUBCASE("constructor")
   {
     wex::macros macros;
     REQUIRE(macros.get_abbreviations().empty());
-    REQUIRE(!macros.get_filename().empty());
+    REQUIRE(!macros.path().empty());
     REQUIRE(macros.size() == 0);
     REQUIRE(!macros.is_modified());
     REQUIRE(!macros.is_recorded("a"));
@@ -42,9 +44,9 @@ TEST_CASE("wex::macros" * doctest::may_fail())
 
   SUBCASE("record and playback")
   {
-    vi->get_stc()->get_vi().mode().escape();
+    vi->mode().escape();
     vi->get_stc()->set_text("hello");
-    REQUIRE(vi->get_stc()->get_vi().mode().is_command());
+    REQUIRE(vi->mode().is_command());
     REQUIRE(macros.mode().transition("qa") == 2);
     REQUIRE(!macros.is_modified());
     REQUIRE(macros.mode().is_recording());
@@ -73,7 +75,7 @@ TEST_CASE("wex::macros" * doctest::may_fail())
     REQUIRE(!macros.is_recorded_macro("d"));
 
     vi->get_stc()->set_text("");
-    REQUIRE(vi->get_stc()->get_vi().mode().is_command());
+    REQUIRE(vi->mode().is_command());
     REQUIRE(macros.mode().transition("@a", vi) == 2);
     REQUIRE(vi->get_stc()->get_text() == "test");
 

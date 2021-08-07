@@ -1,1 +1,1 @@
-wex_process_po_files(add_wxWidgets)
+wex_process_po_files()

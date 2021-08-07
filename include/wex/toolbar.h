@@ -2,22 +2,22 @@
 // Name:      toolbar.h
 // Purpose:   Declaration of wex::toolbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <tuple>
 #include <vector>
-#include <wex/toolbar-item-data.h>
-#include <wex/window-data.h>
+#include <wex/data/toolbar-item.h>
+#include <wex/data/window.h>
 #include <wx/aui/auibar.h>
 
 class wxCheckBox;
 
 namespace wex
 {
-  class managed_frame;
+  class frame;
 
   /// Offers a toolbar together with stock art.
   /// Default no controls are added, you have to call
@@ -40,7 +40,7 @@ namespace wex
 
     /// Constructor.
     toolbar(
-      managed_frame*      frame,
+      frame*              frame,
       const data::window& data = data::window().style(wxAUI_TB_DEFAULT_STYLE));
 
     /// Adds a vector of checkbox controls to this toolbar.
@@ -73,7 +73,7 @@ namespace wex
       bool value) const;
 
   private:
-    managed_frame*           m_frame;
+    frame*                   m_frame;
     std::vector<wxCheckBox*> m_checkboxes;
   };
 }; // namespace wex

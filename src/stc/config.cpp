@@ -2,7 +2,7 @@
 // Name:      stc/config.cpp
 // Purpose:   Implementation of config related methods of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -13,89 +13,18 @@
 #include <wex/item-vector.h>
 #include <wex/lexers.h>
 #include <wex/link.h>
+#include <wex/stc-entry-dialog.h>
 #include <wex/stc.h>
 #include <wx/settings.h>
 #include <wx/stockitem.h>
 
 namespace wex
 {
-  enum
-  {
-    INDENT_NONE,
-    INDENT_WHITESPACE,
-    INDENT_LEVEL,
-    INDENT_ALL,
-  };
-
-  const std::string def(const wxString& v) { return std::string(v) + ",1"; }
-}; // namespace wex
-
-bool wex::stc::auto_indentation(int c)
+const std::string def(const wxString& v)
 {
-  if (const auto ai =
-        item_vector(m_config_items).find<long>(_("stc.Auto indent"));
-      ai == INDENT_NONE)
-  {
-    return false;
-  }
-
-  bool is_nl = false;
-
-  switch (GetEOLMode())
-  {
-    case wxSTC_EOL_CR:
-      is_nl = (c == '\r');
-      break;
-    case wxSTC_EOL_CRLF:
-      is_nl = (c == '\n');
-      break; // so ignore first \r
-    case wxSTC_EOL_LF:
-      is_nl = (c == '\n');
-      break;
-  }
-
-  const auto currentLine = get_current_line();
-
-  if (!is_nl || currentLine == 0)
-  {
-    return false;
-  }
-
-  const auto level  = get_fold_level();
-  int        indent = 0;
-
-  if (level <= 0)
-  {
-    // the current line has yet no indents, so use previous line
-    indent = GetLineIndentation(currentLine - 1);
-
-    if (indent == 0)
-    {
-      return false;
-    }
-  }
-  else
-  {
-    indent = GetIndent() * level;
-  }
-
-  BeginUndoAction();
-
-  SetLineIndentation(currentLine, indent);
-
-  if (level < m_fold_level && m_adding_chars)
-  {
-    SetLineIndentation(currentLine - 1, indent);
-  }
-
-  EndUndoAction();
-
-  m_fold_level = level;
-
-  GotoPos(GetLineIndentPosition(currentLine));
-
-  return true;
+  return std::string(v) + ",1";
 }
+}; // namespace wex
 
 int wex::stc::config_dialog(const data::window& par)
 {
@@ -122,11 +51,11 @@ int wex::stc::config_dialog(const data::window& par)
 
 void wex::stc::config_get()
 {
-  const item_vector& iv(m_config_items);
+  const item_vector iv(m_config_items);
 
   SetEdgeColumn(iv.find<int>(_("stc.Edge column")));
 
-  if (!m_lexer.is_ok())
+  if (!get_lexer().is_ok())
   {
     SetEdgeMode(wxSTC_EDGE_NONE);
   }
@@ -174,8 +103,8 @@ void wex::stc::config_get()
   SetWrapVisualFlags(iv.find<long>(_("stc.Wrap visual flags")));
 
   if (
-    GetProperty("fold") == "1" && m_lexer.is_ok() &&
-    !m_lexer.scintilla_lexer().empty())
+    GetProperty("fold") == "1" && get_lexer().is_ok() &&
+    !get_lexer().scintilla_lexer().empty())
   {
     SetMarginWidth(
       m_margin_folding_number,
@@ -183,11 +112,14 @@ void wex::stc::config_get()
     SetFoldFlags(iv.find<long>(_("stc.Fold flags")));
   }
 
-  get_ex().use(iv.find<bool>(_("stc.vi mode")));
+  if (!iv.find<bool>(_("stc.vi mode")))
+  {
+    get_vi().use(ex::OFF);
+  }
 
   show_line_numbers(iv.find<bool>(_("stc.Line numbers")));
 
-  m_lexer.apply(); // at end, to prioritize local xml config
+  get_lexer().apply(); // at end, to prioritize local xml config
 }
 
 void wex::stc::on_exit()
@@ -211,28 +143,22 @@ void wex::stc::on_init()
             {{{_("stc.End of line"),
                _("stc.Line numbers"),
                _("stc.Use tabs"),
+               _("stc.Ex mode show hex"),
                def(_("stc.Caret line")),
                def(_("stc.Scroll bars")),
                _("stc.Auto beautify"),
                _("stc.Auto blame"),
                _("stc.Auto complete"),
-               def(_("stc.Keep zoom")),
+               def(_("stc.Auto indent")),
                def(_("stc.Keep zoom")),
                def(_("stc.vi mode")),
                _("stc.vi tag fullpath")}},
              {_("stc.Beautifier"), item::COMBOBOX, beautify().list()},
              {_("stc.Search engine"),
               item::COMBOBOX,
-              std::list<std::string>{{"https://duckduckgo.com"}}}}},
+              config::strings_t{{"https://duckduckgo.com"}}}}},
            {_("Choices"),
-            {{_("stc.Auto indent"),
-              {{INDENT_NONE, _("None")},
-               {INDENT_WHITESPACE, _("Whitespace")},
-               {INDENT_LEVEL, _("Level")},
-               {INDENT_ALL, def(_("Both"))}},
-              true,
-              data::item().columns(4)},
-             {_("stc.Wrap visual flags"),
+            {{_("stc.Wrap visual flags"),
               {{wxSTC_WRAPVISUALFLAG_NONE, _("None")},
                {wxSTC_WRAPVISUALFLAG_END, _("End")},
                {wxSTC_WRAPVISUALFLAG_START, _("Start")},
@@ -274,7 +200,8 @@ void wex::stc::on_init()
             wxFONTSTYLE_NORMAL,
             wxFONTWEIGHT_NORMAL),
           data::item().apply(
-            [=](wxWindow* user, const std::any& value, bool save) {
+            [=](wxWindow* user, const std::any& value, bool save)
+            {
               // Doing this once is enough, not yet possible.
               lexers::get()->load_document();
             })},
@@ -328,9 +255,11 @@ void wex::stc::on_init()
           std::any(),
           data::item()
             .label_type(data::item::LABEL_NONE)
-            .apply([=](wxWindow* user, const std::any& value, bool save) {
-              m_link->config_get();
-            })},
+            .apply(
+              [=](wxWindow* user, const std::any& value, bool save)
+              {
+                m_link->config_get();
+              })},
          {_("<i>Matches:</i>")},
          {_("stc.link.Pairs"),
           data::listview()
@@ -338,7 +267,7 @@ void wex::stc::on_init()
             .window(data::window().size({200, 200})),
           // First try to find "..", then <..>, as in next example:
           // <A HREF="http://www.scintilla.org">scintilla</A> component.
-          std::list<std::string>({"\"\t\"", "<\t>", "[\t]", "'\t'", "{\t}"})}}},
+          config::strings_t({"\"\t\"", "<\t>", "[\t]", "'\t'", "{\t}"})}}},
        {_("Printer"),
         {{_("stc.Print flags"),
           {{wxSTC_PRINT_NORMAL, _("Normal")},

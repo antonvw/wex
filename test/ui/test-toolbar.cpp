@@ -2,16 +2,16 @@
 // Name:      test-toolbar.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include "../test.h"
-#include <wex/managed-frame.h>
 #include <wex/toolbar.h>
+
+#include "test.h"
 
 TEST_CASE("wex::toolbar")
 {
@@ -66,12 +66,8 @@ TEST_CASE("wex::toolbar")
     // Send events to the find toolbar.
     wxKeyEvent event(wxEVT_CHAR);
 
-    for (auto key : std::vector<int>{WXK_UP,
-                                     WXK_DOWN,
-                                     WXK_HOME,
-                                     WXK_END,
-                                     WXK_PAGEUP,
-                                     WXK_PAGEDOWN})
+    for (auto key : std::vector<
+           int>{WXK_UP, WXK_DOWN, WXK_HOME, WXK_END, WXK_PAGEUP, WXK_PAGEDOWN})
     {
       event.m_keyCode = key;
       wxPostEvent(frame()->get_find_toolbar(), event);

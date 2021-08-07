@@ -5,14 +5,12 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/addressrange.h>
 #include <wex/frd.h>
 #include <wex/macros.h>
-#include <wex/managed-frame.h>
-#include <wex/stc.h>
+#include <wex/vi.h>
 
-TEST_SUITE_BEGIN("wex::ex");
+#include "test.h"
 
 TEST_CASE("wex::addressrange")
 {
@@ -21,7 +19,8 @@ TEST_CASE("wex::addressrange")
   auto* stc = get_stc();
 
   stc->set_text("hello\nhello1\nhello2");
-  wex::ex* ex = &stc->get_vi();
+
+  auto* ex = new wex::vi(stc);
   ex->marker_add('x', 1);
   ex->marker_add('y', 2);
   ex->get_macros().set_register('*', "ls");
@@ -116,15 +115,13 @@ TEST_CASE("wex::addressrange")
 
   SUBCASE("escape")
   {
+    // See also del/test-frame.cpp
 #ifdef __UNIX__
     stc->set_text(contents);
     REQUIRE(stc->get_line_count() == 8);
     REQUIRE(wex::addressrange(ex, "%").escape("uniq"));
     REQUIRE(stc->get_line_count() == 5);
-    REQUIRE(wex::addressrange(ex).escape("ls -l"));
-    REQUIRE(wex::addressrange(ex).escape("ls `pwd`"));
-    REQUIRE(wex::addressrange(ex).escape("ls \x12*"));
-    REQUIRE(wex::addressrange(ex).escape("ls  `echo \x12*`"));
+    REQUIRE(wex::addressrange(ex, "%").escape("ls -l"));
 #endif
   }
 
@@ -151,13 +148,6 @@ TEST_CASE("wex::addressrange")
     }
   }
 #endif
-
-  SUBCASE("shift")
-  {
-    stc->set_text(contents);
-    REQUIRE(wex::addressrange(ex, 5).shift_right());
-    REQUIRE(wex::addressrange(ex, 5).shift_left());
-  }
 
   SUBCASE("join")
   {
@@ -190,6 +180,13 @@ TEST_CASE("wex::addressrange")
   {
     stc->set_text(contents);
     REQUIRE(wex::addressrange(ex, 5).print());
+  }
+
+  SUBCASE("shift")
+  {
+    stc->set_text(contents);
+    REQUIRE(wex::addressrange(ex, 5).shift_right());
+    REQUIRE(wex::addressrange(ex, 5).shift_left());
   }
 
   SUBCASE("sort")
@@ -231,11 +228,10 @@ TEST_CASE("wex::addressrange")
     REQUIRE(wex::addressrange(ex, "%").substitute("", '&'));
     REQUIRE(stc->get_text().find("lion") != std::string::npos);
 
-    wex::find_replace_data::get()->set_find_string("MORE");
     stc->set_text(contents + " MORE");
     REQUIRE(wex::addressrange(ex, "%").substitute("", '~'));
     REQUIRE(stc->get_text().find("lion") != std::string::npos);
-    REQUIRE(stc->get_text().find("MORE") == std::string::npos);
+    REQUIRE(stc->get_text().find("tiger") == std::string::npos);
 
     stc->set_text("special char \\ present");
     REQUIRE(wex::addressrange(ex, "%").substitute("/\\\\//"));
@@ -277,12 +273,10 @@ TEST_CASE("wex::addressrange")
     stc->GotoLine(0);
     REQUIRE(wex::addressrange(ex, 2).yank());
     stc->SelectNone();
-    stc->add_text(stc->get_vi().get_macros().get_register('0'));
+    stc->add_text(ex->get_macros().get_register('0'));
     REQUIRE(stc->get_line_count() == 10);
     REQUIRE(wex::addressrange(ex, -2).erase());
     stc->GotoLine(0);
     REQUIRE(wex::addressrange(ex, -2).erase());
   }
 }
-
-TEST_SUITE_END();

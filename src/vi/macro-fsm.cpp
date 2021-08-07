@@ -2,7 +2,7 @@
 // Name:      macro-fsm.cpp
 // Purpose:   Implementation of class wex::macro_fsm
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/mpl/list.hpp>
@@ -13,12 +13,12 @@
 #include <pugixml.hpp>
 #include <wex/config.h>
 #include <wex/ex.h>
+#include <wex/factory/stc.h>
+#include <wex/frame.h>
 #include <wex/log.h>
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
-#include <wex/managed-frame.h>
 #include <wex/statusbar.h>
-#include <wex/stc.h>
 #include <wex/variable.h>
 
 #include "macro-fsm.h"
@@ -27,38 +27,38 @@ namespace mpl = boost::mpl;
 
 namespace wex
 {
-  struct ssACTIVE : sc::simple_state<ssACTIVE, macro_fsm, ssIDLE>
+struct ssmACTIVE : sc::simple_state<ssmACTIVE, macro_fsm, ssmIDLE>
+{
+  ;
+};
+
+struct ssmIDLE : sc::state<ssmIDLE, ssmACTIVE>
+{
+  typedef sc::transition<macro_fsm::evRECORD, ssmRECORDING> reactions;
+
+  explicit ssmIDLE(my_context ctx)
+    : my_base(ctx)
   {
-    ;
+    context<macro_fsm>().state(macro_fsm::IDLE);
+  }
+};
+
+struct ssmRECORDING : sc::state<ssmRECORDING, ssmACTIVE>
+{
+  typedef sc::custom_reaction<macro_fsm::evRECORD> reactions;
+
+  explicit ssmRECORDING(my_context ctx)
+    : my_base(ctx)
+  {
+    context<macro_fsm>().state(macro_fsm::RECORDING);
   };
 
-  struct ssIDLE : sc::state<ssIDLE, ssACTIVE>
+  sc::result react(const macro_fsm::evRECORD&)
   {
-    typedef sc::transition<macro_fsm::evRECORD, ssRECORDING> reactions;
-
-    explicit ssIDLE(my_context ctx)
-      : my_base(ctx)
-    {
-      context<macro_fsm>().state(macro_fsm::IDLE);
-    }
+    context<macro_fsm>().recorded();
+    return transit<ssmIDLE>();
   };
-
-  struct ssRECORDING : sc::state<ssRECORDING, ssACTIVE>
-  {
-    typedef sc::custom_reaction<macro_fsm::evRECORD> reactions;
-
-    explicit ssRECORDING(my_context ctx)
-      : my_base(ctx)
-    {
-      context<macro_fsm>().state(macro_fsm::RECORDING);
-    };
-
-    sc::result react(const macro_fsm::evRECORD&)
-    {
-      context<macro_fsm>().recorded();
-      return transit<ssIDLE>();
-    };
-  };
+};
 } // namespace wex
 
 wex::macro_fsm::macro_fsm(macro_mode* mode)
@@ -228,14 +228,20 @@ void wex::macro_fsm::playback(const std::string& macro, ex* ex, int repeat)
 
   for (int i = 0; i < repeat && !error; i++)
   {
-    for (const auto& it : commands)
+    if (!std::all_of(
+          commands.begin(),
+          commands.end(),
+          [ex](const auto& i)
+          {
+            if (!ex->command(i))
+            {
+              log::status(_("Macro aborted at")) << i;
+              return false;
+            }
+            return true;
+          }))
     {
-      if (!ex->command(it))
-      {
-        error = true;
-        log::status(_("Macro aborted at")) << it;
-        break;
-      }
+      error = true;
     }
   }
 

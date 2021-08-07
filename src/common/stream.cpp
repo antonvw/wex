@@ -5,29 +5,27 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
 #include <boost/algorithm/string.hpp>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <algorithm>
 #include <cctype>
-#ifndef __WXMSW__
-#include <algorithm>
-#include <functional>
-#endif
 #include <fstream>
+#include <functional>
 #include <wex/config.h>
-#include <wex/core.h>
-#include <wex/frd.h>
+#include <wex/factory/frd.h>
 #include <wex/log.h>
 #include <wex/stream.h>
+#include <wx/msgdlg.h>
 
-wex::stream::stream(const path& filename, const tool& tool)
+wex::stream::stream(
+  factory::find_replace_data* frd,
+  const wex::path&            filename,
+  const tool&                 tool,
+  wxEvtHandler*               eh)
   : m_path(filename)
   , m_tool(tool)
-  , m_frd(find_replace_data::get())
+  , m_frd(frd)
   , m_threshold(config(_("fif.Max replacements")).get(-1))
+  , m_eh(eh)
 {
 }
 
@@ -59,10 +57,11 @@ bool wex::stream::process(std::string& text, size_t line_no)
                                       text.end(),
                                       m_find_string.begin(),
                                       m_find_string.end(),
-                                      [](char ch1, char ch2) {
+                                      [](char ch1, char ch2)
+                                      {
                                         return std::toupper(ch1) == ch2;
                                       }) :
-#ifdef __WXGTK__
+#ifndef __WXOSX__
                                     std::search(
                                       text.begin(),
                                       text.end(),
@@ -102,13 +101,14 @@ bool wex::stream::process(std::string& text, size_t line_no)
 
   if (match)
   {
-    if (m_tool.id() == ID_TOOL_REPORT_FIND)
+    if (m_tool.id() == ID_TOOL_REPORT_FIND && m_eh != nullptr)
     {
-      process_match(text, line_no, pos);
+      process_match(path_match(path(), text, line_no, pos));
     }
 
-    if (const auto ac = inc_actions_completed(count);
-        !m_asked && m_threshold != -1 && (ac - m_prev > m_threshold))
+    const auto ac = m_stats.inc_actions_completed(count);
+
+    if (!m_asked && m_threshold != -1 && (ac - m_prev > m_threshold))
     {
       if (
         wxMessageBox(
@@ -132,9 +132,11 @@ bool wex::stream::process(std::string& text, size_t line_no)
 bool wex::stream::process_begin()
 {
   if (
-    m_frd->get_find_string().empty() || !m_tool.is_find_type() ||
+    m_frd == nullptr || m_frd->get_find_string().empty() ||
+    !m_tool.is_find_type() ||
     (m_tool.id() == ID_TOOL_REPLACE && m_path.stat().is_readonly()))
   {
+    log("stream::process_begin") << m_path;
     return false;
   }
 
@@ -154,18 +156,25 @@ bool wex::stream::process_begin()
   return true;
 }
 
+void wex::stream::process_match(const path_match& m)
+{
+  wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_LIST_MATCH);
+  event.SetClientData(new path_match(m));
+  wxPostEvent(m_eh, event);
+}
+
 int wex::stream::replace_all(std::string& text, int* match_pos)
 {
-  int  count  = 0;
-  bool update = false;
-  const std::string search(m_frd->get_find_string());
-  const std::string replace(m_frd->get_replace_string());
-  
+  int         count  = 0;
+  bool        update = false;
+  const auto& search(m_frd->get_find_string());
+  const auto& replace(m_frd->get_replace_string());
+
   for (size_t pos = 0; (pos = text.find(search, pos)) != std::string::npos;)
   {
     if (!update)
     {
-      *match_pos = (int)pos;
+      *match_pos = static_cast<int>(pos);
       update     = true;
     }
 
@@ -182,27 +191,27 @@ bool wex::stream::run_tool()
 {
   if (std::fstream fs(m_path.data(), std::ios_base::in); !fs.is_open())
   {
-    log("open") << m_path;
+    log("stream::open") << m_path;
     return false;
   }
   else if (!process_begin())
   {
-    log("begin") << m_path;
     return false;
   }
   else
   {
-    m_stats.m_elements.set(_("Files").ToStdString(), 1);
+    m_asked = false;
 
     int         line_no = 0;
     std::string s;
 
-    log::trace("run_tool") << m_path;
-
     for (std::string line; std::getline(fs, line);)
     {
       if (!process(line, line_no++))
+      {
         return false;
+      }
+
       if (m_write)
       {
         s += line + "\n";
@@ -223,12 +232,6 @@ bool wex::stream::run_tool()
       fs.write(s.c_str(), s.size());
     }
 
-    process_end();
     return true;
   }
-}
-
-void wex::stream::reset()
-{
-  m_asked = false;
 }

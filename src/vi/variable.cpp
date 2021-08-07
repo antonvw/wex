@@ -6,15 +6,16 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/chrono.h>
-#include <wex/core.h>
 #include <wex/ex.h>
+#include <wex/factory/process.h>
+#include <wex/factory/stc.h>
+#include <wex/frame.h>
 #include <wex/log.h>
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
-#include <wex/process.h>
-#include <wex/stc-entry-dialog.h>
-#include <wex/stc.h>
+#include <wex/regex.h>
 #include <wex/variable.h>
+#include <wx/app.h>
 
 // Several types of variables are supported.
 // See xml file.
@@ -86,7 +87,7 @@ wex::variable::variable(const pugi::xml_node& node)
 
 bool wex::variable::check_link(std::string& value) const
 {
-  if (std::vector<std::string> v; match("@([a-zA-Z].+)@", m_value, v) > 0)
+  if (regex v("@([a-zA-Z].+)@"); v.match(m_value) > 0)
   {
     if (const auto& it = ex::get_macros().get_variables().find(v[0]);
         it != ex::get_macros().get_variables().end())
@@ -142,7 +143,7 @@ bool wex::variable::expand(ex* ex)
   // If there is a prefix, make a comment out of it.
   auto commented(value);
 
-  if (ex != nullptr)
+  if (ex != nullptr && ex->get_stc() != nullptr)
   {
     if (ex->get_stc()->GetReadOnly() || ex->get_stc()->is_hexmode())
     {
@@ -225,9 +226,10 @@ bool wex::variable::expand(std::string& value, ex* ex) const
         return false;
       }
 
-      if (process p; !p.execute(
-            m_value + (!m_argument.empty() ? " " + m_argument : std::string()),
-            process::EXEC_WAIT))
+      if (factory::process p;
+          p.system(
+            m_value +
+            (!m_argument.empty() ? " " + m_argument : std::string())) != 0)
       {
         return false;
       }
@@ -295,8 +297,8 @@ bool wex::variable::expand_builtin(ex* ex, std::string& expanded) const
     }
     else if (m_name == "Created")
     {
-      if (path file(ex->get_stc()->get_filename());
-          ex->get_stc()->get_filename().stat().is_ok())
+      if (path file(ex->get_stc()->path());
+          ex->get_stc()->path().stat().is_ok())
       {
         expanded =
           (m_format.empty() ? file.stat().get_creation_time() :
@@ -309,15 +311,15 @@ bool wex::variable::expand_builtin(ex* ex, std::string& expanded) const
     }
     else if (m_name == "Filename")
     {
-      expanded = ex->get_stc()->get_filename().name();
+      expanded = ex->get_stc()->path().name();
     }
     else if (m_name == "Fullname")
     {
-      expanded = ex->get_stc()->get_filename().fullname();
+      expanded = ex->get_stc()->path().filename();
     }
     else if (m_name == "Fullpath")
     {
-      expanded = ex->get_stc()->get_filename().string();
+      expanded = ex->get_stc()->path().string();
     }
     else if (m_name == "Nl")
     {
@@ -325,7 +327,7 @@ bool wex::variable::expand_builtin(ex* ex, std::string& expanded) const
     }
     else if (m_name == "Path")
     {
-      expanded = ex->get_stc()->get_filename().get_path();
+      expanded = ex->get_stc()->path().parent_path();
     }
     else
     {
@@ -338,24 +340,22 @@ bool wex::variable::expand_builtin(ex* ex, std::string& expanded) const
 
 bool wex::variable::expand_input(std::string& expanded) const
 {
+  auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
+
+  if (frame->stc_entry_dialog_component() == nullptr)
+  {
+    expanded = m_value;
+    return true;
+  }
+
   if (m_ask_for_input)
   {
     const auto use(!expanded.empty() ? expanded : m_value);
 
-    if (m_dialog == nullptr)
-    {
-      m_dialog = new stc_entry_dialog(
-        use,
-        std::string(),
-        data::window().title(m_name + ":"));
-
-      m_dialog->get_stc()->get_ex().use(false);
-      m_dialog->get_stc()->SetWrapMode(wxSTC_WRAP_WORD);
-    }
-
-    m_dialog->SetTitle(m_name);
-    m_dialog->get_stc()->set_text(use);
-    m_dialog->get_stc()->SetFocus();
+    frame->stc_entry_dialog_title(m_name);
+    frame->stc_entry_dialog_component()->SetWrapMode(wxSTC_WRAP_WORD);
+    frame->stc_entry_dialog_component()->set_text(use);
+    frame->stc_entry_dialog_component()->SetFocus();
 
     bool ended = false;
 
@@ -365,7 +365,7 @@ bool wex::variable::expand_input(std::string& expanded) const
       wxEndBusyCursor();
     }
 
-    const int result = m_dialog->ShowModal();
+    const int result = frame->show_stc_entry_dialog(true);
 
     if (ended)
     {
@@ -377,7 +377,7 @@ bool wex::variable::expand_input(std::string& expanded) const
       return false;
     }
 
-    const auto& value(m_dialog->get_stc()->get_text());
+    const auto& value(frame->stc_entry_dialog_component()->get_text());
 
     if (value.empty())
     {

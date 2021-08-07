@@ -2,16 +2,16 @@
 // Name:      data/test-stc.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
-#include <wex/stc-data.h>
-#include <wex/stc.h>
+#include <wex/data/stc.h>
+
+#include "test.h"
 
 TEST_CASE("wex::data::stc")
 {
-  SUBCASE("Default constructor")
+  SUBCASE("constructor")
   {
     REQUIRE(wex::data::stc().control().line() == 0);
     REQUIRE(!wex::data::stc().event(true).event().is_pos_at_end());
@@ -35,17 +35,16 @@ TEST_CASE("wex::data::stc")
     REQUIRE(wex::data::stc().menu().test(wex::data::stc::MENU_VCS));
   }
 
-  SUBCASE("Constructor from other data")
+  SUBCASE("constructor-2")
   {
     REQUIRE(wex::data::stc(wex::data::control().col(3)).control().col() == 3);
     REQUIRE(
       wex::data::stc(wex::data::window().name("XX")).window().name() == "XX");
   }
 
-  SUBCASE("Constructor from stc")
+  SUBCASE("constructor-3")
   {
     auto* stc = get_stc();
-    assert(stc != nullptr);
     stc->DocumentEnd();
     REQUIRE(wex::data::stc(stc).event(true).event().is_pos_at_end());
   }
@@ -53,7 +52,6 @@ TEST_CASE("wex::data::stc")
   SUBCASE("inject")
   {
     auto* stc = get_stc();
-    assert(stc != nullptr);
     stc->set_text("line 1\nline 2\nline 3\n");
     REQUIRE(wex::data::stc(stc)
               .control(wex::data::control().line(1).col(5))

@@ -122,7 +122,5 @@
 :$r test-ex.txt
 :e test-ex.txt
 :e +:10 test-ex.txt
-:!pwd
-:!bash
 
 :pu z

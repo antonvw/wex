@@ -2,12 +2,12 @@
 // Name:      data/test-listview.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
-#include <wex/listview-data.h>
-#include <wex/listview.h>
+#include <wex/data/listview.h>
+
+#include "test.h"
 
 TEST_CASE("wex::data::listview")
 {
@@ -28,8 +28,7 @@ TEST_CASE("wex::data::listview")
 
   SUBCASE("inject")
   {
-    auto* lv = new wex::listview();
-    wex::test::add_pane(frame(), lv);
+    auto* lv = get_listview();
     REQUIRE(wex::data::listview(lv).inject());
     REQUIRE(wex::data::listview(lv, wex::data::control().line(2)).inject());
   }

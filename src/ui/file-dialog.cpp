@@ -2,7 +2,7 @@
 // Name:      file-dialog.cpp
 // Purpose:   Implementation of wex::file_dialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -18,8 +18,8 @@
 class extra_panel : public wxPanel
 {
 public:
-  extra_panel(wxWindow* parent);
-  bool checked() const { return m_checked; };
+  explicit extra_panel(wxWindow* parent);
+  bool checked() const { return m_checked; }
 
 private:
   const int   m_id_checkbox;
@@ -34,7 +34,8 @@ extra_panel::extra_panel(wxWindow* parent)
 {
   Bind(
     wxEVT_CHECKBOX,
-    [&](wxCommandEvent& event) {
+    [&](wxCommandEvent& event)
+    {
       m_checked = !m_checked;
     },
     m_id_checkbox);
@@ -72,24 +73,23 @@ wex::file_dialog::file_dialog(wex::file* file, const data::window& data)
   : wxFileDialog(
       data.parent(),
       data.title(),
-      file->get_filename().get_path(),
-      file->get_filename().fullname(),
+      file->path().parent_path(),
+      file->path().filename(),
       data.wildcard(),
       data.style(),
       data.pos(),
-      data.size())
-  // when compiling under x11 the name is not used as argument,
-  // so outcommented it here.
-  //      name)
+      data.size(),
+      data.name())
   , m_file(file)
 {
   if (
     data.wildcard() == wxFileSelectorDefaultWildcardStr &&
-    m_file->get_filename().stat().is_ok())
+    m_file->path().stat().is_ok())
   {
     std::string wildcards = _("All Files") + " (" +
                             wxFileSelectorDefaultWildcardStr + ") |" +
                             wxFileSelectorDefaultWildcardStr;
+    const auto& allow_ext(data.allow_move_path_extension());
 
     for (const auto& it : lexers::get()->get_lexers())
     {
@@ -98,7 +98,8 @@ wex::file_dialog::file_dialog(wex::file* file, const data::window& data)
         const std::string wildcard =
           it.display_lexer() + " (" + it.extensions() + ") |" + it.extensions();
         wildcards =
-          (matches_one_of(file->get_filename().fullname(), it.extensions()) ?
+          (allow_ext == file->path().extension() &&
+               matches_one_of(file->path().filename(), it.extensions()) ?
              wildcard + "|" + wildcards :
              wildcards + "|" + wildcard);
       }
@@ -119,7 +120,7 @@ int wex::file_dialog::show_modal_if_changed(bool show_modal)
 
   if (m_file->is_contents_changed())
   {
-    if (!m_file->get_filename().stat().is_ok())
+    if (!m_file->path().stat().is_ok())
     {
       switch (wxMessageBox(
         _("Save changes") + "?",
@@ -138,7 +139,7 @@ int wex::file_dialog::show_modal_if_changed(bool show_modal)
     else
     {
       switch (wxMessageBox(
-        _("Save changes to") + ": " + m_file->get_filename().string() + "?",
+        _("Save changes to") + ": " + m_file->path().string() + "?",
         _("Confirm"),
         wxYES_NO | wxCANCEL | wxICON_QUESTION))
       {

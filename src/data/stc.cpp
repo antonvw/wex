@@ -5,30 +5,30 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/config.h>
+#include <wex/data/stc.h>
+#include <wex/factory/stc.h>
 #include <wex/indicator.h>
-#include <wex/log.h>
 #include <wex/path.h>
-#include <wex/stc-core.h>
-#include <wex/stc-data.h>
 
-wex::data::stc::stc(wex::core::stc* stc)
+wex::data::stc::stc(wex::factory::stc* stc)
   : m_stc(stc)
 {
 }
 
-wex::data::stc::stc(wex::core::stc* stc, const data::stc& r)
+wex::data::stc::stc(wex::factory::stc* stc, const data::stc& r)
   : m_stc(stc)
 {
   *this = r;
 }
 
-wex::data::stc::stc(data::control& data, wex::core::stc* stc)
+wex::data::stc::stc(data::control& data, wex::factory::stc* stc)
   : m_data(data)
   , m_stc(stc)
 {
 }
 
-wex::data::stc::stc(data::window& data, wex::core::stc* stc)
+wex::data::stc::stc(data::window& data, wex::factory::stc* stc)
   : m_data(data::control().window(data))
   , m_stc(stc)
 {
@@ -74,30 +74,38 @@ bool wex::data::stc::inject() const
     return false;
 
   bool injected = m_data.inject(
-    [&]() {
+    [&]()
+    {
       // line
       if (m_data.line() > 0)
       {
-        const auto line =
-          (m_data.line() - 1 >= m_stc->get_line_count() &&
-               m_stc->get_line_count() != LINE_COUNT_UNKNOWN ?
-             m_stc->get_line_count() - 1 :
-             m_data.line() - 1);
+        int line;
+
+        if (m_stc->get_line_count() == LINE_COUNT_UNKNOWN)
+        {
+          line = m_data.line() - 1;
+        }
+        else if (m_data.line() - 1 >= m_stc->get_line_count())
+        {
+          line = m_stc->get_line_count() - 1;
+        }
+        else
+        {
+          line = m_data.line() - 1;
+        }
 
         m_stc->goto_line(line);
 
-        const auto gotoline(
-          m_stc->is_visual() ? line : m_stc->GetLineCount() - 2);
-
-        m_stc->SetIndicatorCurrent(m_indicator_no);
-        m_stc->IndicatorClearRange(0, m_stc->GetTextLength() - 1);
-
-        m_stc->set_indicator(
-          indicator(m_indicator_no),
-          m_stc->PositionFromLine(gotoline),
-          m_data.col() > 0 ?
-            m_stc->PositionFromLine(gotoline) + m_data.col() - 1 :
-            m_stc->GetLineEndPosition(gotoline));
+        if (m_stc->is_visual())
+        {
+          m_stc->IndicatorClearRange(0, m_stc->GetTextLength() - 1);
+          m_stc->set_indicator(
+            indicator(m_indicator_no),
+            std::max(m_stc->PositionFromLine(line), 0),
+            m_data.col() > 0 ?
+              m_stc->PositionFromLine(line) + m_data.col() - 1 :
+              m_stc->GetLineEndPosition(line));
+        }
       }
       else if (m_data.line() == NUMBER_NOT_SET)
       {
@@ -109,7 +117,8 @@ bool wex::data::stc::inject() const
       }
       return true;
     },
-    [&]() {
+    [&]()
+    {
       // col
       const int max =
         (m_data.line() > 0) ? m_stc->GetLineEndPosition(m_data.line() - 1) : 0;
@@ -117,11 +126,10 @@ bool wex::data::stc::inject() const
 
       m_stc->SetCurrentPos(asked < max ? asked : max);
 
-      // Reset selection, seems necessary.
-      m_stc->SelectNone();
       return true;
     },
-    [&]() {
+    [&]()
+    {
       // find
       if (m_data.line() > 0)
       {
@@ -146,7 +154,8 @@ bool wex::data::stc::inject() const
       }
       return true;
     },
-    [&]() {
+    [&]()
+    {
       // command
       return m_stc->vi_command(m_data.command());
     });
@@ -157,14 +166,21 @@ bool wex::data::stc::inject() const
   }
 
   if (
-    m_win_flags[WIN_READ_ONLY] || (m_stc->get_filename().file_exists() &&
-                                   m_stc->get_filename().is_readonly()))
+    m_win_flags[WIN_READ_ONLY] ||
+    (m_stc->path().file_exists() && m_stc->path().is_readonly()))
   {
     m_stc->SetReadOnly(true);
     injected = true;
   }
 
-  if (m_stc->set_hexmode(m_win_flags[WIN_HEX]))
+  if (config(_("stc.Ex mode show hex")).get(false) && !m_stc->is_visual())
+  {
+    if (m_stc->set_hexmode(true))
+    {
+      injected = true;
+    }
+  }
+  else if (m_stc->set_hexmode(m_win_flags[WIN_HEX]))
   {
     injected = true;
   }
@@ -188,8 +204,8 @@ bool wex::data::stc::inject() const
   if (injected)
   {
     m_stc->properties_message(
-      m_event_data.is_synced() ? path::status_t().set(path::STAT_SYNC) :
-                                 path::status_t());
+      m_event_data.is_synced() ? path::log_t().set(path::LOG_SYNC) :
+                                 path::log_t());
 
     if (!m_event_data.is_synced() && m_stc->is_visual())
     {
@@ -208,7 +224,7 @@ wex::data::stc::menu(menu_t flags, data::control::action_t action)
   return *this;
 }
 
-void wex::data::stc::event_data::set(core::stc* s, bool synced)
+void wex::data::stc::event_data::set(factory::stc* s, bool synced)
 {
   if (s == nullptr)
   {
@@ -231,7 +247,7 @@ void wex::data::stc::event_data::set(core::stc* s, bool synced)
   // Other kind of files might get new data anywhere inside the file,
   // we cannot sync that by keeping pos.
   // Also only do it for reasonably large files.
-  const bool is_log = (s->get_filename().extension().starts_with(".log"));
+  const bool is_log = (s->path().extension().starts_with(".log"));
   m_synced          = synced;
   m_synced_log      = synced && is_log && s->GetTextLength() > 1024;
 }

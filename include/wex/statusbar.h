@@ -2,20 +2,23 @@
 // Name:      statusbar.h
 // Purpose:   Declaration of wex::statusbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <tuple>
 #include <vector>
+#include <wex/data/window.h>
 #include <wex/statusbar-pane.h>
-#include <wex/window-data.h>
 #include <wx/statusbr.h>
 
 namespace wex
 {
-  class frame;
+  namespace factory
+  {
+    class frame;
+  };
 
   /// Offers a status bar that calls virtual methods from wex::frame,
   /// and allows you to address panes by name instead of number.
@@ -31,7 +34,7 @@ namespace wex
     /// - PaneLexer, shows lexer
     /// Returns created statusbar.
     static statusbar* setup(
-      frame*                             frame,
+      factory::frame*                    frame,
       const std::vector<statusbar_pane>& panes,
       long                               style = wxST_SIZEGRIP,
       const std::string&                 name  = "statusBar");
@@ -39,7 +42,7 @@ namespace wex
     /// Constructor.
     statusbar(
       /// parent
-      frame* parent,
+      factory::frame* parent,
       /// style
       /// - wxSTB_DEFAULT_STYLE
       /// (wxSTB_SIZEGRIP|wxSTB_ELLIPSIZE_END|wxSTB_SHOW_TIPS|wxFULL_REPAINT_ON_RESIZE)
@@ -50,11 +53,8 @@ namespace wex
       /// - wxSTB_SIZEGRIP
       const data::window& data = data::window().style(wxSTB_DEFAULT_STYLE));
 
-    /// Destructor.
-    ~statusbar();
-
     /// Returns the statusbar_pane representing the n-th pane.
-    const statusbar_pane& get_pane(int n) const;
+    const statusbar_pane& get_pane(int n) const { return m_panes[n]; }
 
     /// Returns the status text on specified pane.
     /// Returns empty string if pane does not exist
@@ -74,11 +74,12 @@ namespace wex
       const std::string& pane = std::string());
 
   private:
-    std::tuple<bool, int, int> pane_info(const std::string& pane) const;
     void handle(wxMouseEvent& event, const statusbar_pane& statusbar_pane);
     void on_mouse(wxMouseEvent& event);
 
-    frame*                             m_frame;
+    std::tuple<bool, int, int> pane_info(const std::string& pane) const;
+
+    factory::frame*                    m_frame;
     static std::vector<statusbar_pane> m_panes;
   };
 }; // namespace wex

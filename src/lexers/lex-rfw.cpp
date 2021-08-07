@@ -2,7 +2,7 @@
 // Name:      lex-rfw.cpp
 // Purpose:   Implementation of lmRFW
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <regex>
@@ -96,20 +96,47 @@ static void colourise(
   WordList cmdDelimiter;
   cmdDelimiter.Set("| || |& & && ; ;; ( ) { }");
 
-  const WordList& keywords2 = *keywordlists[1];
+  std::vector<std::string> sections;
+  sections.emplace_back("Settings");
+  sections.emplace_back("Variables");
+  sections.emplace_back("Test Cases");
+  sections.emplace_back("Tasks");
+  sections.emplace_back("Keywords");
+  sections.emplace_back("Comments");
 
   std::vector<std::string> special_keywords;
 
+  for (const auto& section : sections)
+  {
+    special_keywords.emplace_back("*" + section + "*");
+    special_keywords.emplace_back("* " + section + " *");
+    special_keywords.emplace_back("** " + section + " **");
+    special_keywords.emplace_back("*** " + section + " ***");
+  }
+
+  const WordList& keywords2 = *keywordlists[1];
+
+  bool visual_mode = true;
+
   for (int i = 0; i < keywords2.Length(); i++)
   {
-    special_keywords.push_back(keywords2.WordAt(i));
+    std::string keyword(keywords2.WordAt(i));
 
-    for (int j = 0; j < special_keywords[i].size(); j++)
+    for (int j = 0; j < keyword.size(); j++)
     {
-      if (special_keywords[i][j] == '_')
+      if (keyword[j] == '_')
       {
-        special_keywords[i][j] = ' ';
+        keyword[j] = ' ';
       }
+    }
+
+    if (keyword != "EX")
+    {
+      special_keywords.push_back(keyword);
+    }
+    else
+    {
+      visual_mode = false;
     }
   }
 
@@ -133,7 +160,9 @@ static void colourise(
   bool pipes   = false;
   int  numBase = 0, digit, cmdState = RFW_CMD_START, testExprType = 0;
 
-  static Sci_PositionU testCaseSectionPos = -1;
+  static Sci_PositionU commentsSectionPos    = -1;
+  static Sci_PositionU testCaseSectionPos    = -1;
+  static Sci_PositionU testCaseSectionEndPos = -1;
 
   Sci_PositionU endPos = startPos + length;
   Sci_Position  ln     = wex::lex_rfw(styler).init(startPos);
@@ -202,13 +231,39 @@ static void colourise(
           sc.SetState(SCE_SH_WORD);
           cmdStateNew = RFW_CMD_START;
 
+          /* The recommended header format is *** Settings ***,
+             but the header is case-insensitive, surrounding spaces are
+             optional, and the number of asterisk characters can vary as long
+             as there is one asterisk in the beginning.
+             In addition to using the plural format, also singular variants
+             like Setting and Test Case are accepted.
+             In other words, also *setting would be recognized as a section
+             header.
+            */
           std::match_results<std::string::const_iterator> m;
-          std::string r("\\**Test Cases\\**");
+          std::string re_tc("\\*+ *Test Cases? *\\**");
+          std::string re_keyw("\\*+ *Keywords? *\\**");
+          std::string re_comm("\\*+ *Comments? *\\**");
 
-          if (std::regex_search(words, m, std::regex(r)))
+          if (std::regex_search(words, m, std::regex(re_tc, std::regex::icase)))
           {
             testCaseSectionPos = sc.currentPos;
           }
+          else if (
+            testCaseSectionPos != -1 && sc.currentPos > testCaseSectionPos &&
+            std::regex_search(words, m, std::regex(re_keyw, std::regex::icase)))
+          {
+            testCaseSectionEndPos =
+              sc.currentPos - sc.LengthCurrent() - std::string(m[0]).size();
+          }
+          else if (std::regex_search(
+                     words,
+                     m,
+                     std::regex(re_comm, std::regex::icase)))
+          {
+            commentsSectionPos = sc.currentPos;
+          }
+
           break;
         }
         else
@@ -239,6 +294,7 @@ static void colourise(
         else if (sc.chPrev == '\\') // propagate command state if line continued
           cmdStateNew = cmdState;
         break;
+
       case SCE_SH_TESTCASE:
         if (!setWord.Contains(sc.ch))
         {
@@ -327,7 +383,9 @@ static void colourise(
         break;
 
       case SCE_SH_COMMENTLINE:
-        if (sc.atLineEnd && sc.chPrev != '\\')
+        if (
+          visual_mode && sc.atLineEnd && sc.chPrev != '\\' &&
+          sc.currentPos < commentsSectionPos)
         {
           sc.SetState(SCE_SH_DEFAULT);
         }
@@ -466,13 +524,28 @@ static void colourise(
     }
     else if (pipes && sc.ch == '|' && sc.currentPos > testCaseSectionPos)
     {
-      cmdState = (sc.atLineStart ? RFW_CMD_TESTCASE : RFW_CMD_START);
+      if (testCaseSectionEndPos != -1 && sc.currentPos > testCaseSectionEndPos)
+      {
+        cmdState = RFW_CMD_START;
+      }
+      else
+      {
+        cmdState = (sc.atLineStart ? RFW_CMD_TESTCASE : RFW_CMD_START);
+      }
     }
     else if (
-      !pipes && sc.ch != '#' && !isspace(sc.ch) && sc.atLineStart &&
-      sc.currentPos > testCaseSectionPos)
+      visual_mode && !pipes && sc.ch != '#' && !isspace(sc.ch) &&
+      sc.atLineStart && sc.currentPos > testCaseSectionPos)
     {
-      cmdState = RFW_CMD_TESTCASE;
+      if (testCaseSectionEndPos == -1 || sc.currentPos < testCaseSectionEndPos)
+      {
+        cmdState = RFW_CMD_TESTCASE;
+      }
+
+      if (sc.currentPos > commentsSectionPos)
+      {
+        sc.SetState(SCE_SH_COMMENTLINE);
+      }
     }
 
     // Determine if a new state should be entered.
@@ -487,7 +560,7 @@ static void colourise(
       }
       else if (setWordStartTSV.Contains(sc.ch))
       {
-        // TODO: or set to SCE_SH_WORD2
+        // README: or set to SCE_SH_WORD2
         sc.SetState(
           cmdState == RFW_CMD_TESTCASE ? SCE_SH_TESTCASE : SCE_SH_WORD);
       }
@@ -779,8 +852,9 @@ static void fold(
   styler.SetLevel(lineCurrent, levelPrev | flagsNext);
 }
 
-static const char* const keywords[] = {"Primary Keywords",
-                                       "Secondary Keywords",
-                                       0};
+static const char* const keywords[] = {
+  "Primary Keywords",
+  "Secondary Keywords",
+  0};
 
 LexerModule lmRFW(SCLEX_AUTOMATIC, colourise, "rfw", fold, keywords);

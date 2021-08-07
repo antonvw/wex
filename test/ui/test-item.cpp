@@ -2,30 +2,30 @@
 // Name:      test-item.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include "../test.h"
-#include "test-configitem.h"
-#include "test-item.h"
 #include <wex/config.h>
 #include <wex/item-dialog.h>
 #include <wex/item.h>
 #include <wex/log.h>
-#include <wex/managed-frame.h>
 #include <wx/artprov.h>
 #include <wx/imaglist.h>
+
+#include "test-configitem.h"
+#include "test-item.h"
+#include "test.h"
 
 TEST_SUITE_BEGIN("wex::item");
 
 TEST_CASE("wex::item")
 {
   auto* panel = new wxScrolledWindow(frame());
-  wex::test::add_pane(frame(), panel);
+  frame()->pane_add(panel);
   auto* sizer = new wxFlexGridSizer(4);
   panel->SetSizer(sizer);
   panel->SetScrollbars(20, 20, 50, 50);
@@ -168,8 +168,12 @@ TEST_CASE("wex::item")
     const wex::item ci_cb("ci-cb", wex::item::COMBOBOX);
     const wex::item ci_cb_dir("ci-cb-dir", wex::item::COMBOBOX_DIR);
     const wex::item ci_sp("ci-sp", 1, 5);
-    const wex::item
-      ci_sp_d("ci-sp-d", 1.0, 5.0, 1.0, wex::data::item().inc((double)1.0));
+    const wex::item ci_sp_d(
+      "ci-sp-d",
+      1.0,
+      5.0,
+      1.0,
+      wex::data::item().inc(static_cast<double>(1.0)));
     const wex::item ci_sl("ci-sl", 1, 5, 2, wex::item::SLIDER);
     const wex::item ci_vl(wxLI_HORIZONTAL);
     wex::item       ci_str("ci-string", std::string());
@@ -191,18 +195,25 @@ TEST_CASE("wex::item")
       new wxTextCtrl(),
       wex::data::item()
         .user_window_create(
-          [=](wxWindow* user, wxWindow* parent, bool readonly) {
-            ((wxTextCtrl*)user)->Create(parent, 100);
+          [=](wxWindow* user, wxWindow* parent, bool readonly)
+          {
+            (reinterpret_cast<wxTextCtrl*>(user))->Create(parent, 100);
           })
-        .user_window_to_config([=](wxWindow* user, bool save) {
-          if (save)
-            wex::config("mytext").set(
-              ((wxTextCtrl*)user)->GetValue().ToStdString());
-          return true;
-        })
-        .apply([=](wxWindow* user, const std::any& value, bool save) {
-          wex::log::status(((wxTextCtrl*)user)->GetValue());
-        }));
+        .user_window_to_config(
+          [=](wxWindow* user, bool save)
+          {
+            if (save)
+              wex::config("mytext").set((reinterpret_cast<wxTextCtrl*>(user))
+                                          ->GetValue()
+                                          .ToStdString());
+            return true;
+          })
+        .apply(
+          [=](wxWindow* user, const std::any& value, bool save)
+          {
+            wex::log::status(
+              ((reinterpret_cast<wxTextCtrl*>(user))->GetValue()));
+          }));
 
     REQUIRE(ci_empty.type() == wex::item::EMPTY);
     REQUIRE(ci_empty.empty());

@@ -5,7 +5,7 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/window-data.h>
+#include <wex/data/window.h>
 #include <wx/app.h>
 #include <wx/window.h>
 
@@ -15,6 +15,13 @@ wex::data::window::window()
   {
     m_parent = dynamic_cast<wxWindow*>(wxTheApp->GetTopWindow());
   }
+}
+
+wex::data::window&
+wex::data::window::allow_move_path_extension(const std::string& rhs)
+{
+  m_allow_move_path_extension = rhs;
+  return *this;
 }
 
 wex::data::window& wex::data::window::button(long button)

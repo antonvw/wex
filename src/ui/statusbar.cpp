@@ -2,7 +2,7 @@
 // Name:      statusbar.cpp
 // Purpose:   Implementation of wex::statusbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -11,7 +11,7 @@
 #endif
 #include <wex/config.h>
 #include <wex/defs.h>
-#include <wex/frame.h>
+#include <wex/factory/frame.h>
 #include <wex/item-dialog.h>
 #include <wex/statusbar.h>
 
@@ -19,148 +19,77 @@ const int FIELD_NOT_SHOWN = -1;
 
 namespace wex
 {
-  /// This class contains all pane styles and some methods
-  /// to convert between lists and styles.
-  class pane_styles
+/// This class contains all pane styles and some methods
+/// to convert between lists and styles.
+class pane_styles
+{
+public:
+  /// Default constructor.
+  pane_styles()
+    : m_styles(
+        {{wxSB_NORMAL, "normal"},
+         {wxSB_FLAT, "flat"},
+         {wxSB_RAISED, "raised"},
+         {wxSB_SUNKEN, "sunken"}})
   {
-  public:
-    /// Default constructor.
-    pane_styles()
-      : m_styles({{wxSB_NORMAL, "normal"},
-                  {wxSB_FLAT, "flat"},
-                  {wxSB_RAISED, "raised"},
-                  {wxSB_SUNKEN, "sunken"}})
-    {
-      ;
-    }
-
-    /// Returns the list with this style at the front.
-    std::list<std::string> find(int style) const
-    {
-      std::list<std::string> l;
-
-      for (const auto& it : m_styles)
-      {
-        if (it.first == style)
-        {
-          l.push_front(it.second);
-        }
-        else
-        {
-          l.push_back(it.second);
-        }
-      }
-
-      return l;
-    }
-
-    /// Returns the style for the first element on the list.
-    int style(const std::list<std::string>& styles) const
-    {
-      for (const auto& it : m_styles)
-      {
-        if (it.second == styles.front())
-        {
-          return it.first;
-        }
-      }
-
-      return wxSB_NORMAL;
-    }
-
-  private:
-    const std::map<int, std::string> m_styles;
-  };
-
-  std::string
-  determine_help_text(const std::string& name, const std::string& text)
-  {
-    if (name == "PaneDBG")
-    {
-      return _("Debugger");
-    }
-    else if (name == "PaneFileType")
-    {
-      return _("File Type");
-    }
-    else if (name == "PaneInfo")
-    {
-      return _("Lines or Items");
-    }
-    else if (name == "PaneMode")
-    {
-      return "vi mode";
-    }
-    else if (name == "PaneTheme")
-    {
-      return _("Theme");
-    }
-    else
-    {
-      return text.empty() ? name.substr(name.find('e') + 1) : text;
-    }
+    ;
   }
+
+  /// Returns the list with this style at the front.
+  config::strings_t find(int style) const
+  {
+    config::strings_t l;
+
+    for (const auto& it : m_styles)
+    {
+      if (it.first == style)
+      {
+        l.push_front(it.second);
+      }
+      else
+      {
+        l.push_back(it.second);
+      }
+    }
+
+    return l;
+  }
+
+  /// Returns the style for the first element on the list.
+  int style(const config::strings_t& styles) const
+  {
+    for (const auto& it : m_styles)
+    {
+      if (it.second == styles.front())
+      {
+        return it.first;
+      }
+    }
+
+    return wxSB_NORMAL;
+  }
+
+private:
+  const std::map<int, std::string> m_styles;
+};
 } // namespace wex
-
-wex::statusbar_pane::statusbar_pane(
-  const std::string& name,
-  int                width,
-  bool               show)
-  : wxStatusBarPane(wxSB_NORMAL, width)
-  , m_help_text(determine_help_text(name, std::string()))
-  , m_is_shown(show)
-  , m_name(name)
-{
-}
-
-wex::statusbar_pane& wex::statusbar_pane::help(const std::string& rhs)
-{
-  m_help_text = rhs;
-
-  return *this;
-}
-
-wex::statusbar_pane& wex::statusbar_pane::show(bool show)
-{
-  m_is_shown = show;
-
-  if (show)
-  {
-    m_hidden.clear();
-  }
-  else
-  {
-    m_hidden = GetText();
-  }
-
-  return *this;
-}
-
-wex::statusbar_pane& wex::statusbar_pane::style(int rhs)
-{
-  SetStyle(rhs);
-
-  return *this;
-}
 
 std::vector<wex::statusbar_pane> wex::statusbar::m_panes = {{}};
 
-wex::statusbar::statusbar(frame* parent, const data::window& data)
+wex::statusbar::statusbar(factory::frame* parent, const data::window& data)
   : wxStatusBar(parent, data.id(), data.style(), data.name())
   , m_frame(parent)
 {
   // The statusbar is not managed by Aui, so show/hide it explicitly.
   Show(config("show.StatusBar").get(true));
-}
 
-wex::statusbar::~statusbar()
-{
-  config("show.StatusBar").set(IsShown());
-}
-
-const wex::statusbar_pane& wex::statusbar::get_pane(int n) const
-{
-  return m_panes[n];
+  Bind(
+    wxEVT_CLOSE_WINDOW,
+    [=, this](wxCloseEvent& event)
+    {
+      config("show.StatusBar").set(IsShown());
+      event.Skip();
+    });
 }
 
 const std::string wex::statusbar::get_statustext(const std::string& pane) const
@@ -193,16 +122,18 @@ void wex::statusbar::handle(wxMouseEvent& event, const statusbar_pane& pane)
       {
         if (it.is_shown())
         {
-          v_i.push_back({"statusbar.widths." + it.get_name(),
-                         item::TEXTCTRL_INT,
-                         std::to_string(it.GetWidth())});
+          v_i.push_back(
+            {"statusbar.widths." + it.get_name(),
+             item::TEXTCTRL_INT,
+             std::to_string(it.GetWidth())});
 
-          v_i.push_back({"statusbar.styles." + it.get_name(),
-                         item::COMBOBOX,
-                         pane_styles().find(it.GetStyle()),
-                         data::item(data::control().window(
-                                      data::window().style(wxCB_READONLY)))
-                           .label_type(data::item::LABEL_NONE)});
+          v_i.push_back(
+            {"statusbar.styles." + it.get_name(),
+             item::COMBOBOX,
+             pane_styles().find(it.GetStyle()),
+             data::item(
+               data::control().window(data::window().style(wxCB_READONLY)))
+               .label_type(data::item::LABEL_NONE)});
         }
       }
 
@@ -427,7 +358,7 @@ bool wex::statusbar::set_statustext(
 }
 
 wex::statusbar* wex::statusbar::setup(
-  frame*                             frame,
+  factory::frame*                    frame,
   const std::vector<statusbar_pane>& panes,
   long                               style,
   const std::string&                 name)
@@ -443,9 +374,12 @@ wex::statusbar* wex::statusbar::setup(
 
   statusbar* sb =
     (frame->GetStatusBar() == nullptr ?
-       (statusbar*)frame
-         ->CreateStatusBar(m_panes.size(), style, ID_UPDATE_STATUS_BAR, name) :
-       (statusbar*)frame->GetStatusBar());
+       reinterpret_cast<statusbar*>(frame->CreateStatusBar(
+         m_panes.size(),
+         style,
+         ID_UPDATE_STATUS_BAR,
+         name)) :
+       reinterpret_cast<statusbar*>(frame->GetStatusBar()));
 
   config::statusbar_t sb_def;
 

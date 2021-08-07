@@ -12,21 +12,21 @@
 #include <regex>
 #include <sstream>
 #include <wex/version.h>
+#include <wx/translation.h>
 #include <wx/utils.h>
-#include <wx/versioninfo.h>
 
 #include <ctags/main/ctags.h>
 
 namespace wex
 {
-  const std::string skip_quotes(const std::string& text)
-  {
-    return std::regex_replace(
-      text,
-      std::regex("\"+"),
-      "",
-      std::regex_constants::format_sed);
-  }
+const std::string skip_quotes(const std::string& text)
+{
+  return std::regex_replace(
+    text,
+    std::regex("\"+"),
+    "",
+    std::regex_constants::format_sed);
+}
 } // namespace wex
 
 const wex::version_info wex::get_version_info()
@@ -36,8 +36,8 @@ const wex::version_info wex::get_version_info()
      21,
      10,
      0,
-     "wex library (a library that offers windows ex and vi components)",
-     "(c) 1998-2021, Anton van Wezenbeek. All rights reserved."});
+     _("wex library (a library that offers windows ex and vi components)"),
+     "(c) 1998-2021, Anton van Wezenbeek." + _("All rights reserved.")});
 }
 
 wex::version_info::version_info(const wxVersionInfo& info)

@@ -2,19 +2,19 @@
 // Name:      test-listitem.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <chrono>
 #include <wex/listitem.h>
-#include <wex/managed-frame.h>
+
+#include "test.h"
 
 TEST_CASE("wex::listitem")
 {
   auto* lv =
     new wex::listview(wex::data::listview().type(wex::data::listview::FILE));
-  wex::test::add_pane(frame(), lv);
+  frame()->pane_add(lv);
 
   const auto start = std::chrono::system_clock::now();
 
@@ -48,7 +48,7 @@ TEST_CASE("wex::listitem")
 
   wex::listitem item(lv, wex::path("./test.h"));
   item.insert();
-  REQUIRE(item.get_filename().fullname() == "test.h");
+  REQUIRE(item.path().filename() == "test.h");
   REQUIRE(item.file_spec().empty());
   REQUIRE(
     wex::listitem(lv, wex::path("./test.h"), "*.txt").file_spec() == "*.txt");

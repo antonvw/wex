@@ -2,16 +2,12 @@
 // Name:      test-statusbar.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include "../test.h"
-#include <wex/managed-frame.h>
 #include <wex/statusbar.h>
+
+#include "test.h"
 
 TEST_CASE("wex::statusbar")
 {
@@ -28,21 +24,29 @@ TEST_CASE("wex::statusbar")
   REQUIRE(get_statusbar()->set_statustext("GoodBye", "LastPane"));
 
   REQUIRE(get_statusbar()->get_statustext("Pane0") == "hello0");
-  REQUIRE(((wxStatusBar*)get_statusbar())->GetStatusText(1) == "hello0");
+  REQUIRE(
+    (reinterpret_cast<wxStatusBar*>(get_statusbar()))->GetStatusText(1) ==
+    "hello0");
   REQUIRE(get_statusbar()->get_statustext("Pane1") == "hello1");
   REQUIRE(get_statusbar()->get_statustext("Pane2") == "hello2");
   REQUIRE(get_statusbar()->get_statustext("Panexxx").empty());
 
   REQUIRE(get_statusbar()->pane_show("Pane0", false));
   REQUIRE(get_statusbar()->get_pane(0).get_name() == "PaneText");
-  REQUIRE(((wxStatusBar*)get_statusbar())->GetStatusText(1) == "hello1");
+  REQUIRE(
+    (reinterpret_cast<wxStatusBar*>(get_statusbar()))->GetStatusText(1) ==
+    "hello1");
   REQUIRE(!get_statusbar()->pane_show("Pane0", false));
   REQUIRE(get_statusbar()->pane_show("Pane3", false));
   REQUIRE(get_statusbar()->get_pane(1).get_name() == "Pane0");
-  REQUIRE(((wxStatusBar*)get_statusbar())->GetStatusText(1) == "hello1");
+  REQUIRE(
+    (reinterpret_cast<wxStatusBar*>(get_statusbar()))->GetStatusText(1) ==
+    "hello1");
   REQUIRE(get_statusbar()->get_statustext("Pane0").empty());
   REQUIRE(get_statusbar()->pane_show("Pane0", true));
-  REQUIRE(((wxStatusBar*)get_statusbar())->GetStatusText(1) == "hello0");
+  REQUIRE(
+    (reinterpret_cast<wxStatusBar*>(get_statusbar()))->GetStatusText(1) ==
+    "hello0");
   REQUIRE(get_statusbar()->get_statustext("Pane0") == "hello0");
   REQUIRE(get_statusbar()->pane_show("LastPane", false));
   REQUIRE(get_statusbar()->get_statustext("LastPane").empty());

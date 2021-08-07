@@ -2,7 +2,7 @@
 // Name:      test-to_container.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
@@ -11,16 +11,16 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include "../test.h"
-#include <wex/managed-frame.h>
 #include <wex/tostring.h>
 #include <wex/util.h>
 #include <wx/generic/dirctrlg.h>
 
+#include "test.h"
+
 TEST_CASE("wex::to_container")
 {
   auto* cb = new wxComboBox(frame(), wxID_ANY);
-  wex::test::add_pane(frame(), cb);
+  frame()->pane_add(cb);
 
   wxArrayString a;
   a.Add("x");

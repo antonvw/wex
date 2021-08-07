@@ -6,173 +6,175 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
+#include <numeric>
 #include <vector>
-#include <wex/accelerators.h>
 #include <wex/beautify.h>
 #include <wex/bind.h>
 #include <wex/config.h>
-#include <wex/core.h>
-#include <wex/debug.h>
+#include <wex/debug-entry.h>
 #include <wex/defs.h>
+#include <wex/frame.h>
 #include <wex/frd.h>
 #include <wex/item-vector.h>
 #include <wex/lexer-props.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
-#include <wex/managed-frame.h>
 #include <wex/menu.h>
-#include <wex/path.h>
+#include <wex/path-lexer.h>
+#include <wex/sort.h>
 #include <wex/stc-bind.h>
 #include <wex/stc-entry-dialog.h>
 #include <wex/stc.h>
 #include <wex/util.h>
 #include <wex/vcs.h>
+#include <wx/accel.h>
 #include <wx/msgdlg.h>
 #include <wx/numdlg.h>
 
 namespace wex
 {
-  void edit_control_char(stc* stc)
+void edit_control_char(stc* stc)
+{
+  if (stc->GetSelectedText().length() > 2)
+    return;
+
+  const wxString& caption = _("Enter Control Character");
+  if (stc->is_hexmode())
+    return stc->get_hexmode().control_char_dialog(caption);
+
+  if (stc->GetReadOnly())
   {
-    if (stc->GetSelectedText().length() > 2)
-      return;
-
-    const wxString& caption = _("Enter Control Character");
-    if (stc->is_hexmode())
-      return stc->get_hexmode().control_char_dialog(caption);
-
-    if (stc->GetReadOnly())
+    if (stc->GetSelectedText().length() == 1)
     {
-      if (stc->GetSelectedText().length() == 1)
-      {
-        const char value = stc->GetSelectedText().GetChar(0);
-        wxMessageBox(
-          wxString::Format("hex: %x dec: %d", value, value),
-          _("Control Character"));
-      }
-      return;
+      const char value = stc->GetSelectedText().GetChar(0);
+      wxMessageBox(
+        wxString::Format("hex: %x dec: %d", value, value),
+        _("Control Character"));
+    }
+    return;
+  }
+
+  static int value = ' '; // don't use 0 as default as nullptr is not handled
+  if (stc->GetSelectedText().length() == 1)
+    value = stc->GetSelectedText().GetChar(0);
+  int new_value;
+  if (
+    (new_value = static_cast<int>(wxGetNumberFromUser(
+       _("Input") + " 0 - 255:",
+       wxEmptyString,
+       caption,
+       value,
+       0,
+       255,
+       stc))) < 0)
+    return;
+
+  if (stc->GetSelectedText().length() == 1)
+  {
+    if (value != new_value)
+    {
+      stc->ReplaceSelection(std::to_string(static_cast<char>(new_value)));
     }
 
-    static int value = ' '; // don't use 0 as default as nullptr is not handled
-    if (stc->GetSelectedText().length() == 1)
-      value = stc->GetSelectedText().GetChar(0);
-    int new_value;
-    if (
-      (new_value = (int)wxGetNumberFromUser(
-         _("Input") + " 0 - 255:",
-         wxEmptyString,
-         caption,
-         value,
-         0,
-         255,
-         stc)) < 0)
-      return;
+    stc->SetSelection(stc->GetCurrentPos(), stc->GetCurrentPos() + 1);
+  }
+  else
+  {
+    char buffer[2];
+    buffer[0] = static_cast<char>(new_value);
+    buffer[1] = 0;
 
-    if (stc->GetSelectedText().length() == 1)
+    if (stc->get_vi().is_active())
     {
-      if (value != new_value)
-      {
-        stc->ReplaceSelection(std::to_string((char)new_value));
-      }
-
-      stc->SetSelection(stc->GetCurrentPos(), stc->GetCurrentPos() + 1);
+      stc->get_vi().command(std::string(buffer, 2));
     }
     else
     {
-      char buffer[2];
-      buffer[0] = (char)new_value;
-      buffer[1] = 0;
-
-      if (stc->get_vi().is_active())
-      {
-        stc->get_vi().command(std::string(buffer, 2));
-      }
-      else
-      {
-        stc->AddTextRaw(buffer, 1);
-      }
-
-      stc->process_char(new_value);
+      stc->AddTextRaw(buffer, 1);
     }
 
-    value = new_value;
+    stc->process_char(new_value);
   }
 
-  void show_calltip(stc* stc)
+  value = new_value;
+}
+
+void show_calltip(stc* stc)
+{
+  if (stc->CallTipActive())
+    stc->CallTipCancel();
+
+  const auto pos = stc->GetCurrentPos();
+
+  if (stc->is_hexmode())
   {
-    if (stc->CallTipActive())
-      stc->CallTipCancel();
+    stc->CallTipShow(pos, stc->get_hexmode().get_info());
+    return;
+  }
 
-    const auto pos = stc->GetCurrentPos();
+  const auto word =
+    (!stc->GetSelectedText().empty() ? stc->GetSelectedText().ToStdString() :
+                                       stc->get_word_at_pos(pos));
 
-    if (stc->is_hexmode())
+  if (word.empty())
+  {
+    return;
+  }
+
+  std::stringstream stream;
+
+  if (const int c = word[0]; c < 32 || c > 125)
+  {
+    stream << "bin: " << c;
+  }
+  else
+  {
+    long base10_val, base16_val;
+    bool base10_ok = true;
+    bool base16_ok = true;
+
+    try
     {
-      stc->CallTipShow(pos, stc->get_hexmode().get_info());
-      return;
+      base10_val = std::stol(word);
+      base10_ok  = (base10_val != 0);
+    }
+    catch (std::exception&)
+    {
+      base10_ok = false;
     }
 
-    const auto word =
-      (!stc->GetSelectedText().empty() ? stc->GetSelectedText().ToStdString() :
-                                         stc->get_word_at_pos(pos));
-
-    if (word.empty())
+    try
     {
-      return;
+      base16_val = std::stol(word, nullptr, 16);
+    }
+    catch (std::exception&)
+    {
+      base16_ok = false;
     }
 
-    std::stringstream stream;
-
-    if (const int c = word[0]; c < 32 || c > 125)
+    if (base10_ok || base16_ok)
     {
-      stream << "bin: " << c;
-    }
-    else
-    {
-      long base10_val, base16_val;
-      bool base10_ok = true;
-      bool base16_ok = true;
-
-      try
-      {
-        base10_val = std::stol(word);
-        base10_ok  = (base10_val != 0);
-      }
-      catch (std::exception&)
-      {
-        base10_ok = false;
-      }
-
-      try
-      {
-        base16_val = std::stol(word, nullptr, 16);
-      }
-      catch (std::exception&)
-      {
-        base16_ok = false;
-      }
-
-      if (base10_ok || base16_ok)
-      {
-        if (base10_ok && !base16_ok)
-          stream << "hex: " << std::hex << base10_val;
-        else if (!base10_ok && base16_ok)
-          stream << "dec: " << base16_val;
-        else if (base10_ok && base16_ok)
-          stream << "dec: " << base16_val << " hex: " << std::hex << base10_val;
-      }
-    }
-
-    if (!stream.str().empty())
-    {
-      stc->CallTipShow(pos, stream.str());
-      clipboard_add(stream.str());
+      if (base10_ok && !base16_ok)
+        stream << "hex: " << std::hex << base10_val;
+      else if (!base10_ok && base16_ok)
+        stream << "dec: " << base16_val;
+      else if (base10_ok && base16_ok)
+        stream << "dec: " << base16_val << " hex: " << std::hex << base10_val;
     }
   }
+
+  if (!stream.str().empty())
+  {
+    stc->CallTipShow(pos, stream.str());
+    clipboard_add(stream.str());
+  }
+}
 } // namespace wex
 
 void wex::stc::bind_all()
 {
-  accelerators(
+  m_frame->bind_accelerators(
+    this,
     {{wxACCEL_CTRL, 'D', id::stc::hex_dec_calltip},
      {wxACCEL_CTRL, 'K', ID_EDIT_CONTROL_CHAR},
      {wxACCEL_CTRL, 'Y', wxID_REDO},
@@ -193,152 +195,176 @@ void wex::stc::bind_all()
      {wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE},
      {wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE},
      {wxACCEL_SHIFT, WXK_DELETE, wxID_CUT}},
-    m_data.menu().test(data::stc::MENU_DEBUG))
-    .set(this);
+    m_data.menu().test(data::stc::MENU_DEBUG));
 
   bind(this).command(
-    {{[=, this](wxCommandEvent& event) {
+    {{[=, this](wxCommandEvent& event)
+      {
         Copy();
       },
       wxID_COPY},
 
-     {[=, this](wxCommandEvent& event) {
-        m_ex->is_active() ? m_ex->command(event.GetString()) :
-                            m_vi->command(event.GetString());
+     {[=, this](wxCommandEvent& event)
+      {
+        m_vi->command(event.GetString());
       },
       id::stc::vi_command},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         Cut();
       },
       wxID_CUT},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         Paste();
       },
       wxID_PASTE},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         Undo();
       },
       wxID_UNDO},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         Redo();
       },
       wxID_REDO},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         SelectAll();
       },
       wxID_SELECTALL},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         if (!GetReadOnly() && !is_hexmode())
           Clear();
       },
       wxID_DELETE},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         jump_action();
       },
       wxID_JUMP_TO},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         get_find_string();
         event.Skip();
       },
       wxID_FIND},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         get_find_string();
         event.Skip();
       },
       wxID_REPLACE},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         sort_action(event);
       },
       wxID_SORT_ASCENDING},
 
-     {[=, this](wxCommandEvent& event) {
-        m_frame->get_debug()->execute(
-          event.GetId() - ID_EDIT_DEBUG_FIRST,
-          this);
+     {[=, this](wxCommandEvent& event)
+      {
+        m_frame->debug_exe(event.GetId() - ID_EDIT_DEBUG_FIRST, this);
       },
       ID_EDIT_DEBUG_FIRST},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         file_action(event);
       },
       ID_EDIT_FILE_ACTION},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         browser_search(GetSelectedText().ToStdString());
       },
       id::stc::open_www},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         link_open(link_t().set(LINK_OPEN));
       },
       id::stc::open_link},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         show_properties();
       },
       id::stc::show_properties},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         edit_control_char(this);
       },
       ID_EDIT_CONTROL_CHAR},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         AnnotationSetText(get_current_line(), event.GetString());
       },
       ID_EDIT_DEBUG_VARIABLE},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         show_calltip(this);
       },
       id::stc::hex_dec_calltip},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         MultiEdgeClearAll();
       },
       id::stc::edge_clear},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         MultiEdgeAddLine(GetColumn(GetCurrentPos()), GetEdgeColour());
       },
       id::stc::edge_set},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         LowerCase();
       },
       id::stc::lowercase},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         UpperCase();
       },
       id::stc::uppercase},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         fold_all();
       },
       id::stc::fold_all},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         beautify().stc(*this);
       },
       id::stc::beautify},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         for (int i = 0; i < get_line_count(); i++)
           EnsureVisible(i);
       },
       id::stc::unfold_all},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         m_data
           .flags(
             data::stc::window_t().set(data::stc::WIN_HEX),
@@ -347,57 +373,67 @@ void wex::stc::bind_all()
       },
       id::stc::hex},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         config("blame.author").toggle(true);
       },
       id::stc::margin_text_author},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         config("blame.date").toggle(true);
       },
       id::stc::margin_text_date},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         config("blame.id").toggle(false);
       },
       id::stc::margin_text_id},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         reset_margins(margin_t().set(MARGIN_TEXT));
         m_margin_text_click = -1;
-        const item_vector& iv(m_config_items);
+        const item_vector iv(m_config_items);
         SetWrapMode(iv.find<long>(_("stc.Wrap line")));
       },
       id::stc::margin_text_hide},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         SetZoom(++m_zoom);
       },
       id::stc::zoom_in},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         SetZoom(--m_zoom);
       },
       id::stc::zoom_out},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         find_replace_data::get()->set_search_down(true);
         find_next();
       },
       ID_EDIT_FIND_NEXT},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         find_replace_data::get()->set_search_down(false);
         find_next();
       },
       ID_EDIT_FIND_PREVIOUS},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         link_open(link_t().set(LINK_OPEN_MIME));
       },
       id::stc::open_mime},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         const auto level        = GetFoldLevel(get_current_line());
         const auto line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?
                                     get_current_line() :
@@ -406,20 +442,23 @@ void wex::stc::bind_all()
       },
       id::stc::toggle_fold},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         vcs_execute(
           m_frame,
           event.GetId() - ID_EDIT_VCS_LOWEST - 1,
-          std::vector<path>{get_filename().data()});
+          std::vector<wex::path>{path().data()});
       },
       ID_EDIT_VCS_LOWEST},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         eol_action(event);
       },
       id::stc::eol_dos},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         auto line = MarkerNext(get_current_line() + 1, 0xFFFF);
         if (line == -1)
         {
@@ -436,7 +475,8 @@ void wex::stc::bind_all()
       },
       id::stc::marker_next},
 
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         auto line = MarkerPrevious(get_current_line() - 1, 0xFFFF);
         if (line == -1)
         {
@@ -493,21 +533,19 @@ void wex::stc::build_popup_menu(menu& menu)
 
   if (
     m_data.menu().test(data::stc::MENU_DEBUG) &&
-    matches_one_of(
-      get_filename().extension(),
-      m_frame->get_debug()->debug_entry().extensions()))
+    matches_one_of(path().extension(), m_frame->debug_entry()->extensions()))
   {
-    m_frame->get_debug()->add_menu(&menu, true);
+    m_frame->debug_add_menu(menu, true);
   }
 
   if (
-    m_data.menu().test(data::stc::MENU_VCS) && get_filename().file_exists() &&
-    vcs::dir_exists(get_filename()))
+    m_data.menu().test(data::stc::MENU_VCS) && path().file_exists() &&
+    vcs::dir_exists(path()))
   {
-    menu.append({{}, {get_filename()}});
+    menu.append({{}, {path(), m_frame}});
   }
 
-  if (!get_ex().is_active() && GetTextLength() > 0)
+  if (!get_vi().is_active() && GetTextLength() > 0)
   {
     menu.append({{}, {wxID_FIND}});
 
@@ -560,7 +598,7 @@ void wex::stc::build_popup_menu(menu& menu)
 
   if (
     !GetReadOnly() && sel.empty() && beautify_add &&
-    beautify().is_supported(m_lexer))
+    beautify().is_supported(get_lexer()))
   {
     menu.append({{}, {id::stc::beautify, _("&Beautify")}});
   }
@@ -568,8 +606,8 @@ void wex::stc::build_popup_menu(menu& menu)
   // Folding if nothing selected, property is set,
   // and we have a lexer.
   if (
-    sel.empty() && GetProperty("fold") == "1" && m_lexer.is_ok() &&
-    !m_lexer.scintilla_lexer().empty())
+    sel.empty() && GetProperty("fold") == "1" && get_lexer().is_ok() &&
+    !get_lexer().scintilla_lexer().empty())
   {
     menu.append(
       {{},
@@ -647,13 +685,21 @@ void wex::stc::file_action(const wxCommandEvent& event)
         get_lexer().scintilla_lexer().empty() &&
         GetLength() < config("stc.max.Size lexer").get(10000000))
       {
-        get_lexer().set(get_filename().lexer());
+        auto l(path_lexer(path()).lexer());
+
+        // If not in visual mode, inform the rfw lexer.
+        if (l.scintilla_lexer() == "rfw" && !is_visual())
+        {
+          l.add_keywords("EX", 1);
+        }
+
+        get_lexer().set(l);
         config_get();
       }
 
       guess_type_and_modeline();
-      log::status(_("Opened")) << get_filename();
-      log::info("opened") << get_filename();
+      log::status(_("Opened")) << path();
+      log::info("opened") << path();
       fold();
       [[fallthrough]];
 
@@ -668,25 +714,25 @@ void wex::stc::file_action(const wxCommandEvent& event)
       break;
 
     case stc_file::FILE_SAVE_AS:
-      get_lexer().set(get_filename().lexer());
-      SetName(get_filename().string());
+      get_lexer().set(path_lexer(path()).lexer());
+      SetName(path().string());
       [[fallthrough]];
 
     case stc_file::FILE_SAVE:
-      SetReadOnly(get_filename().is_readonly());
+      SetReadOnly(path().is_readonly());
       marker_delete_all_change();
-      log::status(_("Saved")) << get_filename();
-      log::info("saved") << get_filename();
+      log::status(_("Saved")) << path();
+      log::info("saved") << path();
       break;
   }
 
-  if (get_filename().lexer().language() == "xml")
+  if (path_lexer(path()).lexer().language() == "xml")
   {
     if (const pugi::xml_parse_result result =
-          pugi::xml_document().load_file(get_filename().string().c_str());
+          pugi::xml_document().load_file(path().string().c_str());
         !result)
     {
-      xml_error(get_filename(), &result, this);
+      xml_error(path(), &result, this);
     }
   }
 }
@@ -742,18 +788,25 @@ void wex::stc::show_properties()
   const lexer_props l;
 
   std::string properties =
-    (!propnames.empty() ? l.make_section("Current properties") : std::string());
-
-  // Add current (global and lexer) properties.
-  for (const auto& it : lexers::get()->properties())
-  {
-    properties += l.make_key(it.name(), GetProperty(it.name()));
-  }
-
-  for (const auto& it : m_lexer.properties())
-  {
-    properties += l.make_key(it.name(), GetProperty(it.name()));
-  }
+    (!propnames.empty() ? l.make_section("Current properties") :
+                          std::string()) +
+    // Add current (global and lexer) properties.
+    std::accumulate(
+      lexers::get()->properties().begin(),
+      lexers::get()->properties().end(),
+      std::string(),
+      [this, l](const std::string& a, const property& b)
+      {
+        return a + l.make_key(b.name(), GetProperty(b.name()));
+      }) +
+    std::accumulate(
+      get_lexer().properties().begin(),
+      get_lexer().properties().end(),
+      std::string(),
+      [this, l](const std::string& a, const property& b)
+      {
+        return a + l.make_key(b.name(), GetProperty(b.name()));
+      });
 
   // Add available properties.
   if (!propnames.empty())
@@ -768,30 +821,31 @@ void wex::stc::show_properties()
     }
   }
 
-  if (m_entry_dialog == nullptr)
+  if (m_prop_dialog == nullptr)
   {
-    m_entry_dialog = new stc_entry_dialog(
+    m_prop_dialog = new stc_entry_dialog(
       properties,
       std::string(),
       data::window().size({300, 450}).button(wxOK).title(_("Properties")));
-    m_entry_dialog->get_stc()->get_lexer().set(l);
+    m_prop_dialog->get_stc()->get_lexer().set(l);
   }
   else
   {
-    m_entry_dialog->get_stc()->set_text(properties);
+    m_prop_dialog->get_stc()->set_text(properties);
   }
-  m_entry_dialog->Show();
+
+  m_prop_dialog->Show();
 }
 
 void wex::stc::sort_action(const wxCommandEvent& event)
 {
   if (SelectionIsRectangle())
   {
-    sort_selection(
-      this,
+    sort(
       event.GetId() == wxID_SORT_ASCENDING ?
-        string_sort_t() :
-        string_sort_t().set(STRING_SORT_DESCENDING));
+        sort::sort_t() :
+        sort::sort_t().set(sort::SORT_DESCENDING))
+      .selection(this);
   }
   else if (const auto pos(wxGetNumberFromUser(
              _("Input") + ":",
@@ -803,11 +857,11 @@ void wex::stc::sort_action(const wxCommandEvent& event)
              this));
            pos > 0)
   {
-    sort_selection(
-      this,
+    sort(
       event.GetId() == wxID_SORT_ASCENDING ?
-        string_sort_t() :
-        string_sort_t().set(STRING_SORT_DESCENDING),
-      pos - 1);
+        sort::sort_t() :
+        sort::sort_t().set(sort::SORT_DESCENDING),
+      pos - 1)
+      .selection(this);
   }
 }

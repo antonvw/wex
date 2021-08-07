@@ -23,6 +23,9 @@ For Visual Studio 2019 do
   `devenv wex.sln /build Release`,
 for mingw add `-G "MinGW Makefiles"` and do `mingw32-make`.
 
+If you would like to use shared libs for Boost, wxWidgets and wex add
+`-DwexBUILD_SHARED=ON`.
+
 To use wex lib in your own application do `make install`
 (on windows as administrator `cmake.exe -P cmake_install.cmake`)
 and do `find_package(WEX)` in your CMakeLists.txt. This will provide the

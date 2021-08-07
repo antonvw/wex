@@ -11,11 +11,21 @@
 #  wex_LIB_DIR        The wex lib directory.
 #  wex_LIBRARIES      The wex libraries.
 
-set(Boost_USE_STATIC_LIBS ON)
+if (wexBUILD_SHARED)
+  add_definitions(-DBOOST_LOG_DYN_LINK)
+  
+  if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    set(CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS 
+      "${CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS} -undefined dynamic_lookup")
+  endif()
+else ()
+  set(Boost_USE_STATIC_LIBS ON)
+endif ()
+
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 
-find_package(Boost 1.65.0 COMPONENTS 
+find_package(Boost 1.69.0 COMPONENTS 
   log_setup log filesystem program_options date_time regex REQUIRED)
 
 find_package(ODBC QUIET)
@@ -41,9 +51,7 @@ elseif (APPLE)
 
   set(PLATFORM "osx_cocoa")
 
-  set(cpp_LIBRARIES 
-    stdc++
-    c++fs)
+  set(cpp_LIBRARIES stdc++)
 
   set(apple_LIBRARIES 
     wxjpeg-3.1 
@@ -113,11 +121,9 @@ if (MSVC)
         
   set(wx_LIBRARIES
     wx${PLATFORM}31u_aui
-    wx${PLATFORM}31u_adv
     wx${PLATFORM}31u_stc
     wx${PLATFORM}31u_html
     wx${PLATFORM}31u_core
-    wx${PLATFORM}31u_media
     wx${PLATFORM}31u_qa
     wx${PLATFORM}31u_gl
     wxbase31u 
@@ -131,35 +137,37 @@ if (MSVC)
 else()
   set(wx_LIBRARIES
     wx_${PLATFORM}u_aui-3.1
-    wx_${PLATFORM}u_adv-3.1
     wx_${PLATFORM}u_stc-3.1
     wx_${PLATFORM}u_html-3.1
     wx_${PLATFORM}u_core-3.1
     wx_baseu-3.1 
-    wx_baseu_net-3.1 
-    wxscintilla-3.1)
-        
+    wx_baseu_net-3.1)
+    
+  if (NOT APPLE AND NOT wexBUILD_SHARED)
+    set(wx_LIBRARIES ${wx_LIBRARIES} wxscintilla-3.1)
+  endif()
+
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2a -g")
 endif()
-      
+
 if (CMAKE_BUILD_TYPE EQUAL "Debug")
   set(USE_DEBUG "d")
 endif() 
 
+include_directories(${Boost_INCLUDE_DIRS})
+
 # these should be the same as in common.cmake
 set(wex_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include/wex")
-set(wex_LIB_DIR "${CMAKE_INSTALL_PREFIX}/lib/wex")
+set(wex_LIB_DIR "${CMAKE_INSTALL_PREFIX}/lib")
       
 set(wex_LIBRARIES
-  wex-report${USE_DEBUG}
-  wex-common${USE_DEBUG}
+  wex-del${USE_DEBUG}
   wex-stc${USE_DEBUG}
-  wex-ui${USE_DEBUG}
   wex-vi${USE_DEBUG}
-  wex-common${USE_DEBUG}
-  wex-stc${USE_DEBUG}
   wex-ui${USE_DEBUG}
+  wex-common${USE_DEBUG}
   wex-data${USE_DEBUG}
+  wex-factory${USE_DEBUG}
   wex-core${USE_DEBUG}
   ${wx_LIBRARIES}
   ${apple_LIBRARIES}

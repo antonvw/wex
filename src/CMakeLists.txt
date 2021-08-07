@@ -24,15 +24,16 @@ if (CMAKE_BUILD_TYPE MATCHES "Coverage")
 endif ()
 
 add_subdirectory(core)
+add_subdirectory(factory)
 add_subdirectory(data)
 add_subdirectory(common)
-add_subdirectory(stc)
 add_subdirectory(ui)
 add_subdirectory(vi)
-add_subdirectory(report)
+add_subdirectory(stc)
+add_subdirectory(del)
 
 if (CMAKE_BUILD_TYPE EQUAL "Debug")
   set_target_properties(
-    wex-common wex-core wex-data wex-ui wex-report wex-stc wex-vi
+    wex-common wex-core wex-data wex-factory wex-ui wex-del wex-stc wex-vi
     PROPERTIES DEBUG_POSTFIX "d")
 endif ()

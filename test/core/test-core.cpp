@@ -9,24 +9,10 @@
 
 #include "../test.h"
 #include <wex/core.h>
-#include <wex/property.h>
-#include <wex/style.h>
 
-TEST_CASE("wex::core" * doctest::may_fail())
+TEST_CASE("wex::core")
 {
   std::vector<int> cs{'(', ')', '{', '<', '>'};
-
-  const std::string rect("012z45678901234567890\n"
-                         "123y56789012345678901\n"
-                         "234x67890123456789012\n"
-                         "345a78901234567890123\n"
-                         "456b89012345678901234\n");
-
-  const std::string sorted("012a78908901234567890\n"
-                           "123b89019012345678901\n"
-                           "234x67890123456789012\n"
-                           "345y56781234567890123\n"
-                           "456z45672345678901234\n");
 
   SUBCASE("after")
   {
@@ -189,18 +175,6 @@ TEST_CASE("wex::core" * doctest::may_fail())
     REQUIRE(!wex::is_codeword_separator('x'));
   }
 
-  SUBCASE("match")
-  {
-    std::vector<std::string> v;
-    REQUIRE(wex::match("hllo", "hello world", v) == -1);
-    REQUIRE(wex::match("hello", "hello world", v) == 0);
-    REQUIRE(wex::match("([0-9]+)ok([0-9]+)nice", "19999ok245nice", v) == 2);
-    REQUIRE(wex::match("(\\d+)ok(\\d+)nice", "19999ok245nice", v) == 2);
-    REQUIRE(wex::match(" ([\\d\\w]+)", " 19999ok245nice ", v) == 1);
-    REQUIRE(
-      wex::match("([?/].*[?/])(,[?/].*[?/])([msy])", "/xx/,/yy/y", v) == 3);
-  }
-
   SUBCASE("matches_one_of")
   {
     REQUIRE(!wex::matches_one_of("test.txt", "*.cpp"));
@@ -208,78 +182,10 @@ TEST_CASE("wex::core" * doctest::may_fail())
     REQUIRE(wex::matches_one_of("test.txt", "*.cpp;*.txt"));
   }
 
-  SUBCASE("node_properties")
-  {
-    std::vector<wex::property> properties;
-    pugi::xml_document         doc;
-
-    REQUIRE(doc.load_string("<properties>"
-                            "  <property name = \"fold.comment\">2</property>"
-                            "</properties>"));
-    auto node = doc.document_element();
-
-    wex::node_properties(&node, properties);
-
-    REQUIRE(properties.size() == 1);
-  }
-
-  SUBCASE("node_styles")
-  {
-    std::vector<wex::style> styles;
-    pugi::xml_document      doc;
-
-    REQUIRE(doc.load_string("<styles>"
-                            "  <style no = \"2\">string</style>"
-                            "</styles>"));
-
-    auto node = doc.document_element();
-
-    wex::node_styles(&node, "cpp", styles);
-
-    REQUIRE(styles.size() == 1);
-  }
-
-  SUBCASE("print_caption")
-  {
-    REQUIRE(
-      wex::print_caption(wex::path("test")).find("test") != std::string::npos);
-  }
-
-  SUBCASE("print_footer")
-  {
-    REQUIRE(wex::print_footer().find("@") != std::string::npos);
-  }
-
-  SUBCASE("print_header")
-  {
-    REQUIRE(
-      wex::print_header(wex::test::get_path("test.h")).find("test") !=
-      std::string::npos);
-  }
-
   SUBCASE("quoted")
   {
     REQUIRE(wex::quoted("test") == "'test'");
     REQUIRE(wex::quoted("%d") == "'%d'");
-  }
-
-  SUBCASE("sort")
-  {
-    REQUIRE(wex::sort("z\ny\nx\n", 0, 0, "\n") == "x\ny\nz\n");
-    REQUIRE(
-      wex::sort(
-        "z\ny\nx\n",
-        wex::string_sort_t().set(wex::STRING_SORT_DESCENDING),
-        0,
-        "\n") == "z\ny\nx\n");
-    REQUIRE(wex::sort("z\nz\ny\nx\n", 0, 0, "\n") == "x\ny\nz\nz\n");
-    REQUIRE(
-      wex::sort(
-        "z\nz\ny\nx\n",
-        wex::string_sort_t().set(wex::STRING_SORT_UNIQUE),
-        0,
-        "\n") == "x\ny\nz\n");
-    REQUIRE(wex::sort(rect, 0, 3, "\n", 5) == sorted);
   }
 
   SUBCASE("translate")

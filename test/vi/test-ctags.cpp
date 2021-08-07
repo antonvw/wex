@@ -2,22 +2,22 @@
 // Name:      test-ctags.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/ctags.h>
-#include <wex/managed-frame.h>
-#include <wex/stc.h>
+#include <wex/ex.h>
+
+#include "test.h"
 
 TEST_CASE("wex::ctags")
 {
   wex::data::stc data;
 
-  SUBCASE("tags default")
-  {
-    wex::ex* ex = &get_stc()->get_vi();
+  auto* ex = new wex::ex(get_stc());
 
+  SUBCASE("default")
+  {
     // default find
     REQUIRE(wex::ctags::find("test_app"));
     REQUIRE(!wex::ctags::find("xest_app"));
@@ -36,27 +36,21 @@ TEST_CASE("wex::ctags")
     REQUIRE(wex::ctags(ex).auto_complete("he", filter).empty());
   }
 
-  SUBCASE("tags non-existing file")
+  SUBCASE("non_existing_file")
   {
-    auto* stc = new wex::stc(std::string("test"), data);
     REQUIRE(wex::ctags::close());
     REQUIRE(!wex::ctags::close());
 
     wex::ctags::open("xxx");
-    wex::test::add_pane(frame(), stc);
-    wex::ex* ex = &stc->get_vi();
 
     REQUIRE(!wex::ctags::find("test_app"));
   }
 
-  SUBCASE("tags own file")
+  SUBCASE("own_file")
   {
-    auto* stc = new wex::stc(std::string("test"), data);
     REQUIRE(wex::ctags::close());
 
     wex::ctags::open("test-ctags");
-    wex::test::add_pane(frame(), stc);
-    wex::ex* ex = &stc->get_vi();
 
     REQUIRE(!wex::ctags::find(""));
     REQUIRE(!wex::ctags::next());
@@ -64,6 +58,7 @@ TEST_CASE("wex::ctags")
     REQUIRE(!wex::ctags::find("xxxx"));
     REQUIRE(wex::ctags::find("test_app"));
     REQUIRE(!wex::ctags::next());
+    auto* ex = new wex::ex(get_stc());
     REQUIRE(wex::ctags(ex).separator() != ' ');
   }
 }

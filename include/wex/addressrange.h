@@ -2,21 +2,27 @@
 // Name:      addressrange.h
 // Purpose:   Declaration of class wex::addressrange
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2015-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
+#include <functional>
 #include <string>
 #include <wex/address.h>
+#include <wex/data/substitute.h>
 #include <wex/indicator.h>
 
 namespace wex
 {
   enum class info_message_t;
   class global_env;
-  class process;
-  class stc;
+
+  namespace factory
+  {
+    class process;
+    class stc;
+  } // namespace factory
 
   /// Offers an address range for vi (ex).
   /// - The range is derived from a number of lines,
@@ -28,12 +34,10 @@ namespace wex
     friend class global_env;
 
   public:
-    /// Static interface.
+    /// Static methods.
 
-    /// Cleans up (process).
-    static void on_exit();
-
-    /// Other methods.
+    /// Returns substitute data.
+    static auto& data() { return m_substitute; }
 
     /// Constructor for a range from current position
     /// extending with number of lines.
@@ -81,10 +85,10 @@ namespace wex
     bool execute(const std::string& reg) const;
 
     /// Returns begin address.
-    auto& get_begin() const { return m_begin; };
+    auto& get_begin() const { return m_begin; }
 
     /// Returns end address.
-    auto& get_end() const { return m_end; };
+    auto& get_end() const { return m_end; }
 
     /// Performs the global command on this range.
     bool global(
@@ -120,10 +124,10 @@ namespace wex
     const std::string regex_commands() const;
 
     /// Shifts the specified lines to the start of the line.
-    bool shift_left() const { return indent(false); };
+    bool shift_left() const { return indent(false); }
 
     /// Shifts the specified lines away from the start of the line.
-    bool shift_right() const { return indent(true); };
+    bool shift_right() const { return indent(true); }
 
     /// Sorts range, with optional parameters:
     /// -u to sort unique lines
@@ -163,43 +167,22 @@ namespace wex
 
   private:
     const std::string build_replacement(const std::string& text) const;
-
     int
     confirm(const std::string& pattern, const std::string& replacement) const;
-
+    bool general(const address& destination, std::function<bool()> f) const;
     bool indent(bool forward = true) const;
-
-    void set(const std::string& begin, const std::string& end)
-    {
-      m_begin.m_address    = begin;
-      const int begin_line = m_begin.get_line();
-      if (begin_line > 0)
-        m_begin.set_line(begin_line);
-      m_end.m_address    = end;
-      const int end_line = m_end.get_line();
-      if (end_line > 0)
-        m_end.set_line(end_line);
-    };
-
-    void set(int begin, int end)
-    {
-      m_begin.set_line(begin);
-      m_end.set_line(end);
-    };
-
+    void set(const std::string& begin, const std::string& end);
+    void set(int begin, int end);
     void set(address& begin, address& end, int lines) const;
-
     bool set_selection() const;
 
-    static inline std::string m_pattern, m_replacement;
-
-    static inline wex::process* m_process{nullptr};
+    static inline data::substitute m_substitute;
 
     const indicator m_find_indicator{indicator(0)};
 
     address m_begin, m_end;
 
-    ex*  m_ex;
-    stc* m_stc; // shortcut for m_ex->get_stc()
+    ex*           m_ex;
+    factory::stc* m_stc; // shortcut for m_ex->get_stc()
   };
 }; // namespace wex

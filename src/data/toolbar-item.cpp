@@ -5,7 +5,7 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/toolbar-item-data.h>
+#include <wex/data/toolbar-item.h>
 
 wex::data::toolbar_item& wex::data::toolbar_item::bitmap(const wxBitmap& rhs)
 {

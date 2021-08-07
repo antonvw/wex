@@ -2,38 +2,41 @@
 // Name:      test-queue-thread.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2018-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include "../test.h"
 #include <chrono>
 #include <wex/queue-thread.h>
-#include "../test.h"
 
 namespace wex
 {
-  class event_handler : public queue_thread<std::string>::event_handler 
-  {
-  public:
-    event_handler() {};
-
-    const std::vector<std::string> &events() const { return m_events; };
-  private:
-    void process(std::unique_ptr<std::string> &input) override {
-      std::unique_ptr<std::string> event(input.release());
-      m_events.emplace_back(*event.get());};
-
-    std::vector<std::string> m_events;
-  };
-};
-
-TEST_CASE( "wex::queue_thread" )
+class event_handler : public queue_thread<std::string>::event_handler
 {
-  wex::event_handler event_handler;
+public:
+  event_handler() {}
+
+  const std::vector<std::string>& events() const { return m_events; }
+
+private:
+  void process(std::unique_ptr<std::string>& input) override
+  {
+    std::unique_ptr<std::string> event(input.release());
+    m_events.emplace_back(*event.get());
+  };
+
+  std::vector<std::string> m_events;
+};
+}; // namespace wex
+
+TEST_CASE("wex::queue_thread")
+{
+  wex::event_handler             event_handler;
   wex::queue_thread<std::string> queue_thread(event_handler);
   REQUIRE(!queue_thread.is_running());
 
   queue_thread.start();
-  REQUIRE( queue_thread.is_running());
+  REQUIRE(queue_thread.is_running());
 
   const int max_events = 100;
   for (int i = 0; i < max_events; i++)
@@ -44,8 +47,8 @@ TEST_CASE( "wex::queue_thread" )
   }
 
   std::this_thread::sleep_for(std::chrono::milliseconds(10));
-  REQUIRE( event_handler.events().size() == max_events);
-  REQUIRE( queue_thread.empty());
+  REQUIRE(event_handler.events().size() == max_events);
+  REQUIRE(queue_thread.empty());
 
   queue_thread.stop();
   REQUIRE(!queue_thread.is_running());

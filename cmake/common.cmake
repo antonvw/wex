@@ -77,6 +77,9 @@ function(wex_install)
   install(FILES ${CMAKE_SOURCE_DIR}/external/pugixml/src/pugixml.hpp 
     DESTINATION "include/wex")
 
+  install(FILES ${CMAKE_SOURCE_DIR}/external/ctags/libreadtags/readtags.h
+    DESTINATION "include/wex")
+
   if (ODBC_FOUND)
     install(FILES ${CMAKE_SOURCE_DIR}/external/otl/otlv4.h
       DESTINATION "include/wex")
@@ -90,11 +93,19 @@ function(wex_install)
   if (MSVC)
     file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.lib)
   else ()
-    file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.a)
+    if (wexBUILD_SHARED)
+      if (APPLE)
+        file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.dylib)
+      else ()
+        file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.so)
+      endif ()
+    else ()
+      file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.a)
+    endif ()
   endif ()
   
   install(FILES ${wex_LIBS} 
-    DESTINATION "lib/wex")
+    DESTINATION "lib")
 endfunction()
 
 function(wex_process_po_files)
@@ -125,12 +136,10 @@ function(wex_process_po_files)
           INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
           PO_FILES ${filename})
 
-        if (${ARGC} GREATER 0)
-          set(wxWidgets_ROOT_DIR ${CMAKE_SOURCE_DIR}/external/wxWidgets)
-          gettext_process_po_files(${locale} ALL 
-            INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
-            PO_FILES ${wxWidgets_ROOT_DIR}/locale/${lang}.po)
-        endif ()
+        set(wxWidgets_ROOT_DIR ${CMAKE_SOURCE_DIR}/external/wxWidgets)
+        gettext_process_po_files(${locale} ALL 
+          INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
+          PO_FILES ${wxWidgets_ROOT_DIR}/locale/${lang}.po)
       
       endforeach()
   endif()
@@ -145,20 +154,20 @@ macro(wex_target_link_all)
       /usr/gnat/lib64/libstdc++fs.a)
   else ()
     set (cpp_std_LIBRARIES 
+      X11
+      pthread
       stdc++
       stdc++fs)
   endif ()
 
-  set (wxWidgets_LIBRARIES wxaui wxadv wxstc wxhtml wxcore wxnet wxbase)
-  set (wex_LIBRARIES 
-    wex-report wex-common 
-    wex-stc wex-ui wex-vi wex-common wex-stc wex-ui wex-data wex-core)
+  set (wxWidgets_LIBRARIES wxaui wxstc wxhtml wxcore wxnet wxbase wxscintilla)
+  set (wex_LIBRARIES wex-del wex-stc wex-vi wex-ui wex-common wex-data wex-factory wex-core)
           
   if (WIN32)
     target_link_libraries(
       ${PROJECT_NAME}
       ${wex_LIBRARIES}
-      ${wxWidgets_LIBRARIES} wxscintilla
+      ${wxWidgets_LIBRARIES}
       ${Boost_LIBRARIES}
       ${extra_macro_args}
       )
@@ -170,7 +179,6 @@ macro(wex_target_link_all)
       ${Boost_LIBRARIES}
       ${extra_macro_args}
       stdc++
-      c++fs
       )
   else ()
     target_link_libraries(
@@ -246,6 +254,7 @@ list(APPEND wxTOOLKIT_INCLUDE_DIRS
   include 
   external/json/single_include
   external/pugixml/src
+  external/ctags/libreadtags/
   external/wxWidgets/include
   external)
 

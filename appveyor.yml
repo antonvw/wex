@@ -1,4 +1,4 @@
-version: 21.04.0.{build}
+version: 21.10.0.{build}
 
 clone_folder: c:\projects\wex
 
@@ -7,11 +7,9 @@ clone_depth: 250
 environment:
   matrix:
   - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-    BOOST: 73
-    YEAR: 2019
 
 configuration: 
-  - Debug
+  - Release
 
 install:
   - git config http.postBuffer 1048576000
@@ -21,20 +19,7 @@ before_build:
   - mkdir build && cd build
 
 build_script:
-  - call "C:\Program Files (x86)\Microsoft Visual Studio\%YEAR%\Community\VC\Auxiliary\Build\vcvars32.bat"
-  - cmake -DBOOST_ROOT=C:\Libraries\boost_1_%BOOST%_0 -DCMAKE_BUILD_TYPE=%configuration% -DwexBUILD_TESTS=ON -DENABLE_GETTEXT=ON ..
-  - echo %configuration%
-  - devenv wex.sln /build %configuration%
-  # extra line wit arg /project RUN_TESTS is simpler,
-  # but does not give details
-  - test\core\%configuration%\wex-test-core.exe
-  - test\ui\%configuration%\wex-test-ui.exe -tse=wex::process -tce=wex::stc,wex::vcs_entry,wex::ex,wex::managed_frame
-  - test\report\%configuration%\wex-test-report.exe
-  # does not work with Debug, but Release gives invalid return after ui test
-  # - ..\ci\pack.bat
-  # As administrator:
-  # cmake.exe -P cmake_install.cmake
-  # and in syncped do a build
+  - ..\ci\msw.bat
 
 test: OFF
 

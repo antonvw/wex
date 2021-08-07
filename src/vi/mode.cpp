@@ -12,12 +12,12 @@
 #include <boost/statechart/state_machine.hpp>
 #include <boost/statechart/transition.hpp>
 #include <wex/config.h>
+#include <wex/factory/stc.h>
+#include <wex/frame.h>
 #include <wex/log.h>
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
-#include <wex/managed-frame.h>
 #include <wex/statusbar.h>
-#include <wex/stc.h>
 #include <wex/vi-mode.h>
 #include <wex/vi.h>
 
@@ -26,214 +26,212 @@ namespace sc  = boost::statechart;
 
 namespace wex
 {
-  struct ssACTIVE;
+struct ssvACTIVE;
 
-  /// This class offers the vi mode state machine
-  /// and initially enters the active mode.
-  class vi_fsm : public sc::state_machine<vi_fsm, ssACTIVE>
+/// This class offers the vi mode state machine
+/// and initially enters the active mode.
+class vi_fsm : public sc::state_machine<vi_fsm, ssvACTIVE>
+{
+public:
+  vi_fsm(
+    factory::stc*                                   stc,
+    std::function<void(const std::string& command)> insert,
+    std::function<void()>                           command)
+    : m_stc(stc)
+    , m_f_insert(insert)
+    , m_f_command(command)
   {
-  public:
-    vi_fsm(
-      stc*                                            stc,
-      std::function<void(const std::string& command)> insert,
-      std::function<void()>                           command)
-      : m_stc(stc)
-      , m_f_insert(insert)
-      , m_f_command(command)
+    ;
+  };
+
+  auto* get_stc() { return m_stc; }
+
+  void insert_mode()
+  {
+    if (m_f_insert != nullptr)
     {
-      ;
-    };
+      m_f_insert(m_command);
+    }
+  };
 
-    stc* get_stc() { return m_stc; };
-
-    void insert_mode()
+  void command_mode()
+  {
+    if (m_f_command != nullptr)
     {
-      if (m_f_insert != nullptr)
-      {
-        m_f_insert(m_command);
-      }
-    };
+      m_f_command();
+    }
+  };
 
-    void command_mode()
+  void process(const std::string& command, const event_base_type& ev)
+  {
+    m_command = command;
+    process_event(ev);
+  };
+
+  const auto state() const { return m_state; }
+
+  void state(vi_mode::state_t s) { m_state = s; }
+
+  const std::string state_string() const
+  {
+    switch (state())
     {
-      if (m_f_command != nullptr)
-      {
-        m_f_command();
-      }
-    };
+      case vi_mode::state_t::INSERT:
+        return m_stc != nullptr && m_stc->GetOvertype() ? "replace" : "insert";
+      case vi_mode::state_t::INSERT_BLOCK:
+        return m_stc != nullptr && m_stc->GetOvertype() ? "replace block" :
+                                                          "insert block";
+      case vi_mode::state_t::VISUAL:
+        return "visual";
 
-    void process(const std::string& command, const event_base_type& ev)
-    {
-      m_command = command;
-      process_event(ev);
-    };
+      case vi_mode::state_t::VISUAL_LINE:
+        return "visual line";
 
-    const vi_mode::state_t state() const { return m_state; };
+      case vi_mode::state_t::VISUAL_BLOCK:
+        return "visual block";
 
-    void state(vi_mode::state_t s) { m_state = s; };
-
-    const std::string state_string() const
-    {
-      switch (state())
-      {
-        case vi_mode::state_t::INSERT:
-          return m_stc != nullptr && m_stc->GetOvertype() ? "replace" :
-                                                            "insert";
-        case vi_mode::state_t::INSERT_BLOCK:
-          return m_stc != nullptr && m_stc->GetOvertype() ? "replace block" :
-                                                            "insert block";
-        case vi_mode::state_t::VISUAL:
-          return "visual";
-
-        case vi_mode::state_t::VISUAL_LINE:
-          return "visual line";
-
-        case vi_mode::state_t::VISUAL_BLOCK:
-          return "visual block";
-
-        default:
-          return ex::get_macros().mode().str();
-      }
-    };
-
-  private:
-    std::string                                     m_command;
-    std::function<void(const std::string& command)> m_f_insert{nullptr};
-    std::function<void()>                           m_f_command{nullptr};
-    vi_mode::state_t                                m_state{vi_mode::COMMAND};
-    stc*                                            m_stc;
+      default:
+        return ex::get_macros().mode().str();
+    }
   };
 
-  // All events.
-  struct evESCAPE : sc::event<evESCAPE>
+private:
+  std::string                                     m_command;
+  std::function<void(const std::string& command)> m_f_insert{nullptr};
+  std::function<void()>                           m_f_command{nullptr};
+  vi_mode::state_t                                m_state{vi_mode::COMMAND};
+  factory::stc*                                   m_stc;
+};
+
+// All events.
+struct evESCAPE : sc::event<evESCAPE>
+{
+};
+struct evINSERT : sc::event<evINSERT>
+{
+};
+struct evVISUAL : sc::event<evVISUAL>
+{
+};
+struct evVISUAL_LINE : sc::event<evVISUAL_LINE>
+{
+};
+struct evVISUAL_BLOCK : sc::event<evVISUAL_BLOCK>
+{
+};
+
+// Forward the simple states.
+struct ssvCOMMAND;
+struct ssvTEXTINPUT;
+struct ssvVISUAL;
+struct ssvVISUAL_LINE;
+struct ssvVISUAL_MODE;
+struct ssvVISUAL_BLOCK;
+struct ssvVISUAL_BLOCK_TEXTINPUT;
+
+// Implement the simple states.
+struct ssvACTIVE : sc::simple_state<ssvACTIVE, vi_fsm, ssvCOMMAND>
+{
+};
+
+struct ssvCOMMAND : sc::state<ssvCOMMAND, ssvACTIVE>
+{
+  typedef mpl::list<
+    sc::transition<evESCAPE, ssvCOMMAND>,
+    sc::custom_reaction<evINSERT>,
+    sc::transition<evVISUAL, ssvVISUAL_MODE>,
+    sc::transition<evVISUAL_LINE, ssvVISUAL_LINE>,
+    sc::transition<evVISUAL_BLOCK, ssvVISUAL_BLOCK>>
+    reactions;
+
+  explicit ssvCOMMAND(my_context ctx)
+    : my_base(ctx)
   {
+    log::trace("vi mode") << "command";
+    context<vi_fsm>().state(vi_mode::COMMAND);
   };
-  struct evINSERT : sc::event<evINSERT>
+
+  sc::result react(const evINSERT&)
   {
+    return context<vi_fsm>().get_stc()->GetReadOnly() ? forward_event() :
+                                                        transit<ssvTEXTINPUT>();
   };
-  struct evVISUAL : sc::event<evVISUAL>
+};
+
+struct ssvTEXTINPUT : sc::state<ssvTEXTINPUT, ssvACTIVE>
+{
+  typedef sc::custom_reaction<evESCAPE> reactions;
+
+  explicit ssvTEXTINPUT(my_context ctx)
+    : my_base(ctx)
   {
+    log::trace("vi mode") << "insert";
+    context<vi_fsm>().state(vi_mode::INSERT);
+    context<vi_fsm>().insert_mode();
   };
-  struct evVISUAL_LINE : sc::event<evVISUAL_LINE>
+
+  sc::result react(const evESCAPE&)
   {
+    context<vi_fsm>().command_mode();
+    return transit<ssvCOMMAND>();
   };
-  struct evVISUAL_BLOCK : sc::event<evVISUAL_BLOCK>
+};
+
+struct ssvVISUAL_MODE : sc::simple_state<ssvVISUAL_MODE, ssvACTIVE, ssvVISUAL>
+{
+  typedef mpl::list<
+    sc::transition<evESCAPE, ssvCOMMAND>,
+    sc::transition<evVISUAL, ssvVISUAL>,
+    sc::transition<evVISUAL_LINE, ssvVISUAL_LINE>,
+    sc::transition<evVISUAL_BLOCK, ssvVISUAL_BLOCK>>
+    reactions;
+};
+
+struct ssvVISUAL : sc::state<ssvVISUAL, ssvVISUAL_MODE>
+{
+  explicit ssvVISUAL(my_context ctx)
+    : my_base(ctx)
   {
+    log::trace("vi mode") << "visual";
+    context<vi_fsm>().state(vi_mode::VISUAL);
   };
+};
 
-  // Forward the simple states.
-  struct ssCOMMAND;
-  struct ssTEXTINPUT;
-  struct ssVISUAL;
-  struct ssVISUAL_LINE;
-  struct ssVISUAL_MODE;
-  struct ssVISUAL_BLOCK;
-  struct ssVISUAL_BLOCK_TEXTINPUT;
-
-  // Implement the simple states.
-  struct ssACTIVE : sc::simple_state<ssACTIVE, vi_fsm, ssCOMMAND>
+struct ssvVISUAL_LINE : sc::state<ssvVISUAL_LINE, ssvVISUAL_MODE>
+{
+  explicit ssvVISUAL_LINE(my_context ctx)
+    : my_base(ctx)
   {
+    log::trace("vi mode") << "visual line";
+    context<vi_fsm>().state(vi_mode::VISUAL_LINE);
   };
+};
 
-  struct ssCOMMAND : sc::state<ssCOMMAND, ssACTIVE>
+struct ssvVISUAL_BLOCK : sc::state<ssvVISUAL_BLOCK, ssvVISUAL_MODE>
+{
+  typedef sc::transition<evINSERT, ssvVISUAL_BLOCK_TEXTINPUT> reactions;
+
+  explicit ssvVISUAL_BLOCK(my_context ctx)
+    : my_base(ctx)
   {
-    typedef mpl::list<
-      sc::transition<evESCAPE, ssCOMMAND>,
-      sc::custom_reaction<evINSERT>,
-      sc::transition<evVISUAL, ssVISUAL_MODE>,
-      sc::transition<evVISUAL_LINE, ssVISUAL_LINE>,
-      sc::transition<evVISUAL_BLOCK, ssVISUAL_BLOCK>>
-      reactions;
-
-    explicit ssCOMMAND(my_context ctx)
-      : my_base(ctx)
-    {
-      log::trace("vi mode") << "command";
-      context<vi_fsm>().state(vi_mode::COMMAND);
-    };
-
-    sc::result react(const evINSERT&)
-    {
-      return context<vi_fsm>().get_stc()->GetReadOnly() ?
-               forward_event() :
-               transit<ssTEXTINPUT>();
-    };
+    log::trace("vi mode") << "visual block";
+    context<vi_fsm>().state(vi_mode::VISUAL_BLOCK);
   };
+};
 
-  struct ssTEXTINPUT : sc::state<ssTEXTINPUT, ssACTIVE>
+struct ssvVISUAL_BLOCK_TEXTINPUT
+  : sc::state<ssvVISUAL_BLOCK_TEXTINPUT, ssvVISUAL_MODE>
+{
+  typedef sc::transition<evESCAPE, ssvVISUAL_BLOCK> reactions;
+
+  explicit ssvVISUAL_BLOCK_TEXTINPUT(my_context ctx)
+    : my_base(ctx)
   {
-    typedef sc::custom_reaction<evESCAPE> reactions;
-
-    explicit ssTEXTINPUT(my_context ctx)
-      : my_base(ctx)
-    {
-      log::trace("vi mode") << "insert";
-      context<vi_fsm>().state(vi_mode::INSERT);
-      context<vi_fsm>().insert_mode();
-    };
-
-    sc::result react(const evESCAPE&)
-    {
-      context<vi_fsm>().command_mode();
-      return transit<ssCOMMAND>();
-    };
+    log::trace("vi mode") << "visual block insert";
+    context<vi_fsm>().state(vi_mode::INSERT_BLOCK);
+    context<vi_fsm>().insert_mode();
   };
-
-  struct ssVISUAL_MODE : sc::simple_state<ssVISUAL_MODE, ssACTIVE, ssVISUAL>
-  {
-    typedef mpl::list<
-      sc::transition<evESCAPE, ssCOMMAND>,
-      sc::transition<evVISUAL, ssVISUAL>,
-      sc::transition<evVISUAL_LINE, ssVISUAL_LINE>,
-      sc::transition<evVISUAL_BLOCK, ssVISUAL_BLOCK>>
-      reactions;
-  };
-
-  struct ssVISUAL : sc::state<ssVISUAL, ssVISUAL_MODE>
-  {
-    explicit ssVISUAL(my_context ctx)
-      : my_base(ctx)
-    {
-      log::trace("vi mode") << "visual";
-      context<vi_fsm>().state(vi_mode::VISUAL);
-    };
-  };
-
-  struct ssVISUAL_LINE : sc::state<ssVISUAL_LINE, ssVISUAL_MODE>
-  {
-    explicit ssVISUAL_LINE(my_context ctx)
-      : my_base(ctx)
-    {
-      log::trace("vi mode") << "visual line";
-      context<vi_fsm>().state(vi_mode::VISUAL_LINE);
-    };
-  };
-
-  struct ssVISUAL_BLOCK : sc::state<ssVISUAL_BLOCK, ssVISUAL_MODE>
-  {
-    typedef sc::transition<evINSERT, ssVISUAL_BLOCK_TEXTINPUT> reactions;
-
-    explicit ssVISUAL_BLOCK(my_context ctx)
-      : my_base(ctx)
-    {
-      log::trace("vi mode") << "visual block";
-      context<vi_fsm>().state(vi_mode::VISUAL_BLOCK);
-    };
-  };
-
-  struct ssVISUAL_BLOCK_TEXTINPUT
-    : sc::state<ssVISUAL_BLOCK_TEXTINPUT, ssVISUAL_MODE>
-  {
-    typedef sc::transition<evESCAPE, ssVISUAL_BLOCK> reactions;
-
-    explicit ssVISUAL_BLOCK_TEXTINPUT(my_context ctx)
-      : my_base(ctx)
-    {
-      log::trace("vi mode") << "visual block insert";
-      context<vi_fsm>().state(vi_mode::INSERT_BLOCK);
-      context<vi_fsm>().insert_mode();
-    };
-  };
+};
 }; // namespace wex
 
 #define NAVIGATE(SCOPE, DIRECTION) m_vi->get_stc()->SCOPE##DIRECTION();
@@ -246,42 +244,52 @@ wex::vi_mode::vi_mode(
   , m_fsm(std::make_unique<vi_fsm>(vi->get_stc(), insert, command))
   , m_insert_commands{
       {'a',
-       [&]() {
+       [&]()
+       {
          NAVIGATE(Char, Right);
        }},
       {'c',
-       [&]() {
+       [&]()
+       {
          ;
        }},
       {'i',
-       [&]() {
+       [&]()
+       {
          ;
        }},
       {'o',
-       [&]() {
+       [&]()
+       {
          NAVIGATE(Line, End);
          m_vi->get_stc()->NewLine();
        }},
       {'A',
-       [&]() {
+       [&]()
+       {
          NAVIGATE(Line, End);
        }},
       {'C',
-       [&]() {
+       [&]()
+       {
          m_vi->get_stc()->LineEndExtend();
          m_vi->cut();
        }},
       {'I',
-       [&]() {
+       [&]()
+       {
          NAVIGATE(Line, Home);
        }},
       {'O',
-       [&]() {
+       [&]()
+       {
          NAVIGATE(Line, Home);
          m_vi->get_stc()->NewLine();
          NAVIGATE(Line, Up);
        }},
-      {'R', [&]() {
+      {'R',
+       [&]()
+       {
          m_vi->get_stc()->SetOvertype(true);
        }}}
 {
@@ -336,13 +344,15 @@ bool wex::vi_mode::transition(std::string& command)
     std::find_if(
       m_insert_commands.begin(),
       m_insert_commands.end(),
-      [command](auto const& e) {
+      [command](auto const& e)
+      {
         return e.first == command[0];
       }) != m_insert_commands.end())
   {
     m_fsm->process(command, evINSERT());
   }
   else
+  {
     switch (command[0])
     {
       case 'K':
@@ -365,6 +375,7 @@ bool wex::vi_mode::transition(std::string& command)
       default:
         return false;
     }
+  }
 
   switch (get())
   {
@@ -374,7 +385,8 @@ bool wex::vi_mode::transition(std::string& command)
         if (const auto& it = std::find_if(
               m_insert_commands.begin(),
               m_insert_commands.end(),
-              [command](auto const& e) {
+              [command](auto const& e)
+              {
                 return e.first == command[0];
               });
             it != m_insert_commands.end() && it->second != nullptr)

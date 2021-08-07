@@ -13,11 +13,12 @@
 #include <boost/algorithm/string.hpp>
 #include <wex/core.h>
 #include <wex/ex.h>
+#include <wex/factory/stc.h>
+#include <wex/frame.h>
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
-#include <wex/managed-frame.h>
+#include <wex/regex.h>
 #include <wex/statusbar.h>
-#include <wex/stc.h>
 
 bool show_dialog(
   wxWindow*          parent,
@@ -100,14 +101,12 @@ int wex::macro_mode::transition(
   }
 
   wxWindow* parent = (ex != nullptr ? ex->get_stc() : wxTheApp->GetTopWindow());
+  auto*     frame  = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
 
   std::string      macro(boost::algorithm::trim_copy(command));
   const ex_command cmd(ex != nullptr ? ex->get_command() : ex_command());
 
-  if (ex != nullptr)
-  {
-    ex->frame()->get_statusbar()->pane_show("PaneMacro", true);
-  }
+  frame->get_statusbar()->pane_show("PaneMacro", true);
 
   switch (macro[0])
   {
@@ -118,21 +117,17 @@ int wex::macro_mode::transition(
       {
         if (macro.empty())
         {
-          wxTextEntryDialog dlg(
-            parent,
-            _("Input") + ":",
-            _("Enter Macro"),
-            get_macro());
+          frame->stc_entry_dialog_component()->set_text(get_macro());
+          frame->stc_entry_dialog_title(_("Enter Macro"));
+          frame->stc_entry_dialog_validator("[A-Za-z0-9][a-z0-9]*");
 
-          wxTextValidator validator(wxFILTER_ALPHANUMERIC);
-          dlg.SetTextValidator(validator);
-
-          if (dlg.ShowModal() != wxID_OK)
+          if (
+            frame->show_stc_entry_dialog(true) != wxID_OK ||
+            (macro = frame->stc_entry_dialog_component()->get_text()) ==
+              std::string())
           {
             return 0;
           }
-
-          macro = dlg.GetValue();
         }
       }
       else if (m_fsm->get() == macro_fsm::state_t::IDLE && macro.empty())
@@ -177,7 +172,7 @@ int wex::macro_mode::transition(
       }
       else
       {
-        if (std::vector<std::string> v; match("@([a-zA-Z].+)@", macro, v) > 0)
+        if (regex v("@([a-zA-Z].+)@"); v.match(macro) > 0)
         {
           macro = v[0];
         }
@@ -186,18 +181,12 @@ int wex::macro_mode::transition(
           if (std::string s;
               auto_complete_text(macro.substr(1), ex::get_macros().get(), s))
           {
-            if (ex != nullptr)
-            {
-              ex->frame()->statustext(s, "PaneMacro");
-            }
+            frame->statustext(s, "PaneMacro");
             macro = s;
           }
           else
           {
-            if (ex != nullptr)
-            {
-              ex->frame()->statustext(macro.substr(1), "PaneMacro");
-            }
+            frame->statustext(macro.substr(1), "PaneMacro");
             return 0;
           }
         }
@@ -205,7 +194,7 @@ int wex::macro_mode::transition(
         {
           if (ex != nullptr)
           {
-            ex->frame()->statustext(get_macro(), "PaneMacro");
+            frame->statustext(get_macro(), "PaneMacro");
           }
           return macro.size();
         }

@@ -12,12 +12,12 @@
 #endif
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
-#include <wex/accelerators.h>
 #include <wex/bind.h>
 #include <wex/chrono.h>
 #include <wex/config.h>
-#include <wex/core.h>
+#include <wex/data/stc.h>
 #include <wex/defs.h>
+#include <wex/factory/stc.h>
 #include <wex/frame.h>
 #include <wex/frd.h>
 #include <wex/interruptible.h>
@@ -30,146 +30,97 @@
 #include <wex/log.h>
 #include <wex/menu.h>
 #include <wex/printing.h>
-#include <wex/tokenizer.h>
+#include <wex/regex.h>
+#include <wex/tokenize.h>
 #include <wx/dnd.h>
-#include <wx/fdrepdlg.h>         // for wxFindDialogEvent
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/imaglist.h>
 #include <wx/numdlg.h> // for wxGetNumberFromUser
 
 namespace wex
 {
-  // file_droptarget is already used by wex::frame.
-  class droptarget : public wxFileDropTarget
+// file_droptarget is already used
+class droptarget : public wxFileDropTarget
+{
+public:
+  explicit droptarget(listview* lv)
+    : m_listview(lv)
   {
-  public:
-    explicit droptarget(listview* lv)
-      : m_listview(lv)
+    ;
+  }
+  bool
+  OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames) override
+  {
+    // Only drop text if nothing is selected,
+    // so dropping on your own selection is impossible.
+    if (m_listview->GetSelectedItemCount() == 0)
     {
-      ;
+      for (size_t i = 0; i < filenames.GetCount(); i++)
+      {
+        m_listview->item_from_text(filenames[i]);
+      }
+
+      return true;
     }
-    bool
-    OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames) override
-    {
-      // Only drop text if nothing is selected,
-      // so dropping on your own selection is impossible.
-      if (m_listview->GetSelectedItemCount() == 0)
-      {
-        for (size_t i = 0; i < filenames.GetCount(); i++)
-        {
-          m_listview->item_from_text(filenames[i]);
-        }
-
-        return true;
-      }
-      else
-      {
-        return false;
-      }
-    };
-
-  private:
-    listview* m_listview;
-  };
-
-  template <typename T> int compare(T x, T y)
-  {
-    if (x > y)
-      return 1;
-    else if (x < y)
-      return -1;
     else
-      return 0;
-  }
-
-  std::string ignore_case(const std::string& text)
-  {
-    std::string output(text);
-
-    if (!wex::find_replace_data::get()->match_case())
     {
-      boost::algorithm::to_upper(output);
+      return false;
     }
-
-    return output;
   };
 
-  const std::vector<item> config_items()
+private:
+  listview* m_listview;
+};
+
+template <typename T> int compare(T x, T y)
+{
+  if (x > y)
+    return 1;
+  else if (x < y)
+    return -1;
+  else
+    return 0;
+}
+
+std::string ignore_case(const std::string& text)
+{
+  std::string output(text);
+
+  if (!wex::find_replace_data::get()->match_case())
   {
-    return std::vector<item>(
-      {{"notebook",
-        {{_("General"),
-          {{_("list.Header"), item::CHECKBOX, std::any(true)},
-           {_("list.Single selection"), item::CHECKBOX},
-           {_("list.Comparator"), item::FILEPICKERCTRL},
-           {_("list.Sort method"),
-            {{SORT_ASCENDING, _("Sort ascending")},
-             {SORT_DESCENDING, _("Sort descending")},
-             {SORT_TOGGLE, _("Sort toggle")}}},
-           {_("list.Context size"), 0, 80, 10},
-           {_("list.Rulers"),
-            {{wxLC_HRULES, _("Horizontal rulers")},
-             {wxLC_VRULES, _("Vertical rulers")}},
-            false}}},
-         {_("Font"),
-          {{_("list.Font"),
-            item::FONTPICKERCTRL,
-            wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)}}},
-         {_("Colour"),
-          {{_("list.Readonly colour"),
-            item::COLOURPICKERWIDGET,
-            *wxLIGHT_GREY}}}}}});
+    boost::algorithm::to_upper(output);
   }
 
-  bool on_command(listview* lv, wxCommandEvent& event)
-  {
-    switch (const long new_index =
-              lv->GetSelectedItemCount() > 0 ? lv->GetFirstSelected() : -1;
-            lv->data().type())
-    {
-      case data::listview::TSV:
-        if (wxTextEntryDialog
-              dlg(lv, _("Input") + ":", _("Item"), lv->item_to_text(new_index));
-            dlg.ShowModal() == wxID_OK)
-        {
-          lv->insert_item(
-            tokenize<std::vector<std::string>>(
-              dlg.GetValue().ToStdString(),
-              std::string(1, lv->field_separator()).c_str()),
-            new_index);
-        }
-        break;
+  return output;
+};
 
-      default:
-      {
-        std::string defaultPath;
+const std::vector<item> config_items()
+{
+  return std::vector<item>(
+    {{"notebook",
+      {{_("General"),
+        {{_("list.Header"), item::CHECKBOX, std::any(true)},
+         {_("list.Single selection"), item::CHECKBOX},
+         {_("list.Comparator"), item::FILEPICKERCTRL},
+         {_("list.Sort method"),
+          {{SORT_ASCENDING, _("Sort ascending")},
+           {SORT_DESCENDING, _("Sort descending")},
+           {SORT_TOGGLE, _("Sort toggle")}}},
+         {_("list.Context size"), 0, 80, 10},
+         {_("list.Rulers"),
+          {{wxLC_HRULES, _("Horizontal rulers")},
+           {wxLC_VRULES, _("Vertical rulers")}},
+          false}}},
+       {_("Font"),
+        {{_("list.Font"),
+          item::FONTPICKERCTRL,
+          wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)}}},
+       {_("Colour"),
+        {{_("list.Readonly colour"),
+          item::COLOURPICKERWIDGET,
+          *wxLIGHT_GREY}}}}}});
+}
 
-        if (lv->GetSelectedItemCount() > 0)
-        {
-          defaultPath =
-            listitem(lv, lv->GetFirstSelected()).get_filename().string();
-        }
-
-        wxDirDialog dir_dlg(
-          lv,
-          _(wxDirSelectorPromptStr),
-          defaultPath,
-          wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
-
-        if (dir_dlg.ShowModal() == wxID_OK)
-        {
-          const auto no =
-            (lv->GetSelectedItemCount() > 0 ? lv->GetFirstSelected() :
-                                              lv->GetItemCount());
-
-          listitem(lv, dir_dlg.GetPath().ToStdString()).insert(no);
-          return true;
-        }
-      }
-    }
-
-    return false;
-  }
 }; // namespace wex
 
 wex::listview::listview(const data::listview& data)
@@ -179,7 +130,8 @@ wex::listview::listview(const data::listview& data)
   , m_data(
       this,
       data::listview(data).image(
-        data.type() == data::listview::NONE || data::listview::TSV ?
+        data.type() == data::listview::NONE ||
+            data.type() == data::listview::TSV ?
           data.image() :
           data::listview::IMAGE_FILE_ICON))
   , m_frame(dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow()))
@@ -202,12 +154,6 @@ wex::listview::listview(const data::listview& data)
   // We can only have one drop target, we use file drop target,
   // as list items can also be copied and pasted.
   SetDropTarget(new droptarget(this));
-
-  accelerators({{wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE},
-                {wxACCEL_CTRL, WXK_INSERT, wxID_COPY},
-                {wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE},
-                {wxACCEL_SHIFT, WXK_DELETE, wxID_CUT}})
-    .set(this);
 
   switch (m_data.image())
   {
@@ -233,184 +179,221 @@ wex::listview::listview(const data::listview& data)
 
   m_frame->update_statusbar(this);
 
-  Bind(wxEVT_FIND, [=, this](wxFindDialogEvent& event) {
-    find_next(
-      find_replace_data::get()->get_find_string(),
-      find_replace_data::get()->search_down());
-  });
-
-  Bind(wxEVT_FIND_NEXT, [=, this](wxFindDialogEvent& event) {
-    find_next(
-      find_replace_data::get()->get_find_string(),
-      find_replace_data::get()->search_down());
-  });
-
   if (
     m_data.type() != data::listview::NONE &&
     m_data.type() != data::listview::TSV)
   {
-    Bind(wxEVT_IDLE, [=, this](wxIdleEvent& event) {
-      event.Skip();
-      if (
-        !IsShown() || interruptible::is_running() || GetItemCount() == 0 ||
-        !config("AllowSync").get(true))
+    Bind(
+      wxEVT_IDLE,
+      [=, this](wxIdleEvent& event)
       {
-        return;
-      }
-      if (m_item_number < GetItemCount())
-      {
-        if (listitem item(this, m_item_number);
-            item.get_filename().file_exists() &&
-            (item.get_filename().stat().get_modification_time() !=
-               get_item_text(m_item_number, _("Modified")) ||
-             item.get_filename().stat().is_readonly() != item.is_readonly()))
+        event.Skip();
+        if (
+          !IsShown() || interruptible::is_running() || GetItemCount() == 0 ||
+          !config("AllowSync").get(true))
         {
-          item.update();
-          log::status() << item.get_filename();
-          m_item_updated = true;
+          return;
         }
-
-        m_item_number++;
-      }
-      else
-      {
-        m_item_number = 0;
-
-        if (m_item_updated)
+        if (m_item_number < GetItemCount())
         {
-          if (m_data.type() == data::listview::FILE)
+          if (listitem item(this, m_item_number);
+              item.path().file_exists() &&
+              (item.path().stat().get_modification_time() !=
+                 get_item_text(m_item_number, _("Modified")) ||
+               item.path().stat().is_readonly() != item.is_readonly()))
           {
-            if (
-              config("list.SortSync").get(true) &&
-              sorted_column_no() == find_column(_("Modified")))
-            {
-              sort_column(_("Modified"), SORT_KEEP);
-            }
+            item.update();
+            log::status() << item.path();
+            m_item_updated = true;
           }
 
-          m_item_updated = false;
+          m_item_number++;
         }
-      }
-    });
+        else
+        {
+          m_item_number = 0;
+
+          if (m_item_updated)
+          {
+            if (m_data.type() == data::listview::FILE)
+            {
+              if (
+                config("list.SortSync").get(true) &&
+                sorted_column_no() == find_column(_("Modified")))
+              {
+                sort_column(_("Modified"), SORT_KEEP);
+              }
+            }
+
+            m_item_updated = false;
+          }
+        }
+      });
   }
 
-  Bind(wxEVT_LIST_BEGIN_DRAG, [=, this](wxListEvent& event) {
-    // Start drag operation.
-    std::string text;
-    for (auto i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
-      text += item_to_text(i) + "\n";
-    if (!text.empty())
+  Bind(
+    wxEVT_LIST_BEGIN_DRAG,
+    [=, this](wxListEvent& event)
     {
-      wxTextDataObject textData(text);
-      wxDropSource     source(textData, this);
-      source.DoDragDrop(wxDragCopy);
-    }
-  });
+      // Start drag operation.
+      std::string text;
+      for (auto i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+        text += item_to_text(i) + "\n";
+      if (!text.empty())
+      {
+        wxTextDataObject textData(text);
+        wxDropSource     source(textData, this);
+        source.DoDragDrop(wxDragCopy);
+      }
+    });
 
-  Bind(wxEVT_LIST_ITEM_ACTIVATED, [=, this](wxListEvent& event) {
-    item_activated(event.GetIndex());
-  });
-
-  Bind(wxEVT_LIST_ITEM_DESELECTED, [=, this](wxListEvent& event) {
-    m_frame->update_statusbar(this);
-  });
-
-  Bind(wxEVT_LIST_ITEM_SELECTED, [=, this](wxListEvent& event) {
-    if (m_data.type() != data::listview::NONE && GetSelectedItemCount() == 1)
+  Bind(
+    wxEVT_LIST_ITEM_ACTIVATED,
+    [=, this](wxListEvent& event)
     {
-      if (const wex::path fn(listitem(this, event.GetIndex()).get_filename());
-          fn.stat().is_ok())
+      item_activated(event.GetIndex());
+    });
+
+  Bind(
+    wxEVT_LIST_ITEM_DESELECTED,
+    [=, this](wxListEvent& event)
+    {
+      m_frame->update_statusbar(this);
+    });
+
+  Bind(
+    wxEVT_LIST_ITEM_SELECTED,
+    [=, this](wxListEvent& event)
+    {
+      if (m_data.type() != data::listview::NONE && GetSelectedItemCount() == 1)
       {
-        log::status() << fn;
+        if (const wex::path fn(listitem(this, event.GetIndex()).path());
+            fn.stat().is_ok())
+        {
+          log::status() << fn;
+        }
+        else
+        {
+          log::status(get_item_text(GetFirstSelected()));
+        }
       }
-      else
-      {
-        log::status(get_item_text(GetFirstSelected()));
-      }
-    }
 
-    m_frame->update_statusbar(this);
-  });
+      m_frame->update_statusbar(this);
+    });
 
-  Bind(wxEVT_LIST_COL_CLICK, [=, this](wxListEvent& event) {
-    sort_column(
-      event.GetColumn(),
-      (sort_t)config(_("list.Sort method")).get(SORT_TOGGLE));
-  });
+  Bind(
+    wxEVT_LIST_COL_CLICK,
+    [=, this](wxListEvent& event)
+    {
+      sort_column(
+        event.GetColumn(),
+        (sort_t)config(_("list.Sort method")).get(SORT_TOGGLE));
+    });
 
-  Bind(wxEVT_LIST_COL_RIGHT_CLICK, [=, this](wxListEvent& event) {
-    m_to_be_sorted_column_no = event.GetColumn();
+  Bind(
+    wxEVT_LIST_COL_RIGHT_CLICK,
+    [=, this](wxListEvent& event)
+    {
+      m_to_be_sorted_column_no = event.GetColumn();
 
-    menu menu(GetSelectedItemCount() > 0 ? menu::IS_SELECTED : menu::DEFAULT);
+      menu menu(
+        GetSelectedItemCount() > 0 ? menu::IS_SELECTED : menu::menu_t_def());
 
-    menu.append({{wxID_SORT_ASCENDING}, {wxID_SORT_DESCENDING}});
+      menu.append({{wxID_SORT_ASCENDING}, {wxID_SORT_DESCENDING}});
 
-    PopupMenu(&menu);
-  });
+      PopupMenu(&menu);
+    });
+
+  bind(this).frd(
+    find_replace_data::get()->wx(),
+    [=, this](const std::string& s, bool b)
+    {
+      find_next(s, b);
+    });
 
   bind(this).command(
-    {{[=, this](wxCommandEvent& event) {
+    {{[=, this](wxCommandEvent& event)
+      {
         clear();
       },
       wxID_CLEAR},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         copy_selection_to_clipboard();
       },
       wxID_COPY},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         edit_delete();
       },
       wxID_DELETE},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         item_from_text(clipboard_get());
       },
       wxID_PASTE},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         SetItemState(-1, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
       },
       wxID_SELECTALL},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         sort_column(m_to_be_sorted_column_no, SORT_ASCENDING);
       },
       wxID_SORT_ASCENDING},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         sort_column(m_to_be_sorted_column_no, SORT_DESCENDING);
       },
       wxID_SORT_DESCENDING},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         copy_selection_to_clipboard();
         edit_delete();
       },
       wxID_CUT},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         for (auto i = 0; i < GetItemCount(); i++)
         {
           Select(i, !IsSelected(i));
         }
       },
       ID_EDIT_SELECT_INVERT},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         for (auto i = 0; i < GetItemCount(); i++)
         {
           Select(i, false);
         }
       },
       ID_EDIT_SELECT_NONE},
-     {[=, this](wxCommandEvent& event) {
-        if (on_command(this, event))
+     {[=, this](wxCommandEvent& event)
+      {
+        if (on_command(event))
         {
           m_frame->update_statusbar(this);
         }
       },
       wxID_ADD},
-     {[=, this](wxCommandEvent& event) {
+
+     {[=, this](wxCommandEvent& event)
+      {
+        process_match(event);
+      },
+      ID_LIST_MATCH},
+
+     {[=, this](wxCommandEvent& event)
+      {
         for (auto i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
         {
           item_activated(i);
         }
       },
       ID_EDIT_OPEN},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         if (!IsShown() || GetItemCount() == 0)
           return;
         if (const auto val(wxGetNumberFromUser(
@@ -427,35 +410,45 @@ wex::listview::listview(const data::listview& data)
       },
       wxID_JUMP_TO}});
 
-  Bind(wxEVT_RIGHT_DOWN, [=, this](wxMouseEvent& event) {
-    menu::menu_t style(menu::menu_t().set(menu::IS_POPUP));
-    if (GetSelectedItemCount() > 0)
-      style.set(menu::IS_SELECTED);
-    if (GetItemCount() == 0)
-      style.set(menu::IS_EMPTY);
-    if (m_data.type() != data::listview::FIND)
-      style.set(menu::CAN_PASTE);
-    if (GetSelectedItemCount() == 0 && GetItemCount() > 0)
+  Bind(
+    wxEVT_RIGHT_DOWN,
+    [=, this](wxMouseEvent& event)
     {
-      style.set(menu::ALLOW_CLEAR);
-    }
-    wex::menu menu(style);
-    build_popup_menu(menu);
-    if (menu.GetMenuItemCount() > 0)
+      menu::menu_t style(
+        menu::menu_t().set(menu::IS_POPUP).set(menu::IS_VISUAL));
+      if (GetSelectedItemCount() > 0)
+        style.set(menu::IS_SELECTED);
+      if (GetItemCount() == 0)
+        style.set(menu::IS_EMPTY);
+      if (m_data.type() != data::listview::FIND)
+        style.set(menu::CAN_PASTE);
+      if (GetSelectedItemCount() == 0 && GetItemCount() > 0)
+      {
+        style.set(menu::ALLOW_CLEAR);
+      }
+      wex::menu menu(style);
+      build_popup_menu(menu);
+      if (menu.GetMenuItemCount() > 0)
+      {
+        PopupMenu(&menu);
+      }
+    });
+
+  Bind(
+    wxEVT_SET_FOCUS,
+    [=, this](wxFocusEvent& event)
     {
-      PopupMenu(&menu);
-    }
-  });
+      m_frame->set_find_focus(this);
+      event.Skip();
+    });
 
-  Bind(wxEVT_SET_FOCUS, [=, this](wxFocusEvent& event) {
-    m_frame->set_find_focus(this);
-    event.Skip();
-  });
-
-  Bind(wxEVT_SHOW, [=, this](wxShowEvent& event) {
-    event.Skip();
-    m_frame->update_statusbar(this);
-  });
+  Bind(
+    wxEVT_SHOW,
+    [=, this](wxShowEvent& event)
+    {
+      event.Skip();
+      m_frame->update_statusbar(this);
+    });
 }
 
 bool wex::listview::append_columns(const std::vector<column>& cols)
@@ -478,7 +471,8 @@ bool wex::listview::append_columns(const std::vector<column>& cols)
 
     Bind(
       wxEVT_MENU,
-      [=, this](wxCommandEvent& event) {
+      [=, this](wxCommandEvent& event)
+      {
         sort_column(event.GetId() - m_col_event_id, SORT_TOGGLE);
       },
       m_col_event_id + GetColumnCount() - 1);
@@ -525,7 +519,7 @@ void wex::listview::build_popup_menu(wex::menu& menu)
 {
   if (
     GetSelectedItemCount() >= 1 &&
-    listitem(this, GetFirstSelected()).get_filename().stat().is_ok())
+    listitem(this, GetFirstSelected()).path().stat().is_ok())
   {
     menu.append(
       {{ID_EDIT_OPEN, _("&Open"), data::menu().art(wxART_FILE_OPEN)}, {}});
@@ -583,12 +577,14 @@ int wex::listview::config_dialog(const data::window& par)
 
 void wex::listview::config_get()
 {
-  const auto&        ci(config_items());
-  const item_vector& iv(&ci);
+  const auto&       ci(config_items());
+  const item_vector iv(&ci);
 
-  lexers::get()->apply_default_style([=, this](const std::string& back) {
-    SetBackgroundColour(wxColour(back));
-  });
+  lexers::get()->apply_default_style(
+    [=, this](const std::string& back)
+    {
+      SetBackgroundColour(wxColour(back));
+    });
 
   SetFont(iv.find<wxFont>(_("list.Font")));
   SetSingleStyle(
@@ -603,6 +599,18 @@ void wex::listview::config_get()
   SetSingleStyle(wxLC_SINGLE_SEL, iv.find<bool>(_("list.Single selection")));
 
   items_update();
+}
+
+const std::string wex::listview::context(const std::string& line, int pos) const
+{
+  int context_size = config(_("list.Context size")).get(10);
+
+  if (pos == -1 || context_size <= 0)
+    return line;
+
+  return (context_size > pos ? std::string(context_size - pos, ' ') :
+                               std::string()) +
+         line.substr(context_size < pos ? pos - context_size : 0);
 }
 
 void wex::listview::copy_selection_to_clipboard()
@@ -765,6 +773,11 @@ const std::string wex::listview::get_item_text(
   long               item_number,
   const std::string& col_name) const
 {
+  if (item_number < 0 || item_number >= GetItemCount())
+  {
+    return std::string();
+  }
+
   if (col_name.empty())
   {
     return GetItemText(item_number);
@@ -825,11 +838,8 @@ bool wex::listview::insert_item(
             return false;
           }
 
-          if (std::vector<std::string> v;
-              match(
-                ",fore:(.*)",
-                lexers::get()->get_default_style().value(),
-                v) > 0)
+          if (regex v(",fore:(.*)");
+              v.match(lexers::get()->get_default_style().value()) > 0)
           {
             SetItemTextColour(index, wxColour(v[0]));
           }
@@ -880,14 +890,16 @@ void wex::listview::item_activated(long item_number)
 
     case data::listview::TSV:
     {
-      if (wxTextEntryDialog
-            dlg(this, _("Input") + ":", _("Item"), item_to_text(item_number));
-          dlg.ShowModal() == wxID_OK)
+      m_frame->stc_entry_dialog_title(_("Item"));
+      m_frame->stc_entry_dialog_component()->set_text(
+        item_to_text(item_number));
+
+      if (m_frame->show_stc_entry_dialog(true) == wxID_OK)
       {
         int col = 0;
 
         boost::tokenizer<boost::char_separator<char>> tok(
-          dlg.GetValue().ToStdString(),
+          m_frame->stc_entry_dialog_component()->get_text(),
           boost::char_separator<char>(
             std::string(1, m_field_separator).c_str()));
 
@@ -902,29 +914,29 @@ void wex::listview::item_activated(long item_number)
 
     default:
       // Cannot be const because of SetItem later on.
-      if (listitem item(this, item_number); item.get_filename().file_exists())
+      if (listitem item(this, item_number); item.path().file_exists())
       {
-        const auto no(get_item_text(item_number, _("Line No")));
-        auto       data(
+        const auto    no(get_item_text(item_number, _("Line No")));
+        data::control data(
           (m_data.type() == data::listview::FIND && !no.empty() ?
-                   data::control()
+             data::control()
                .line(std::stoi(no))
                .find(get_item_text(item_number, _("Match"))) :
-                   data::control()));
+             data::control()));
 
-        m_frame->open_file(item.get_filename(), data);
+        m_frame->open_file(item.path(), data);
       }
-      else if (item.get_filename().dir_exists())
+      else if (item.path().dir_exists())
       {
-        wxTextEntryDialog dlg(
-          this,
-          _("Input") + ":",
-          _("Folder Type"),
+        m_frame->stc_entry_dialog_title(_("Folder Type"));
+        m_frame->stc_entry_dialog_component()->set_text(
           get_item_text(item_number, _("Type")));
 
-        if (dlg.ShowModal() == wxID_OK)
+        if (m_frame->show_stc_entry_dialog(true) == wxID_OK)
         {
-          item.set_item(_("Type"), dlg.GetValue());
+          item.set_item(
+            _("Type"),
+            m_frame->stc_entry_dialog_component()->get_text());
         }
       }
   }
@@ -960,7 +972,7 @@ bool wex::listview::item_from_text(const std::string& text)
 
         if (!InReportView())
         {
-          listitem(this, it).insert();
+          listitem(this, path(it)).insert();
         }
         else
         {
@@ -1000,12 +1012,12 @@ bool wex::listview::item_from_text(const std::string& text)
               // more columns are present, these are ignored.
               const auto findfiles =
                 (std::next(tt) != tok.end() ? *(std::next(tt)) : it);
-              listitem(this, *tt, findfiles).insert();
+              listitem(this, path(*tt), findfiles).insert();
             }
           }
           else
           {
-            listitem(this, it).insert();
+            listitem(this, path(it)).insert();
           }
         }
     }
@@ -1037,11 +1049,10 @@ const std::string wex::listview::item_to_text(long item_number) const
     {
       const listitem item(const_cast<listview*>(this), item_number);
       text =
-        (item.get_filename().stat().is_ok() ? item.get_filename().string() :
-                                              item.get_filename().fullname());
+        (item.path().stat().is_ok() ? item.path().string() :
+                                      item.path().filename());
 
-      if (
-        item.get_filename().dir_exists() && !item.get_filename().file_exists())
+      if (item.path().dir_exists() && !item.path().file_exists())
       {
         text += field_separator() + get_item_text(item_number, _("Type"));
       }
@@ -1096,7 +1107,7 @@ bool wex::listview::load(const std::list<std::string>& l)
 
     const auto cols = std::distance(tok.begin(), tok.end());
 
-    for (size_t i = 0; i < cols; i++)
+    for (auto i = std::distance(tok.begin(), tok.begin()); i < cols; i++)
     {
       append_columns({{std::to_string(i + 1), column::STRING, 50}});
     }
@@ -1110,6 +1121,55 @@ bool wex::listview::load(const std::list<std::string>& l)
   return true;
 }
 
+bool wex::listview::on_command(wxCommandEvent& event)
+{
+  switch (const long new_index =
+            GetSelectedItemCount() > 0 ? GetFirstSelected() : -1;
+          data().type())
+  {
+    case data::listview::TSV:
+      m_frame->stc_entry_dialog_title(_("Item"));
+      m_frame->stc_entry_dialog_component()->set_text(item_to_text(new_index));
+
+      if (m_frame->show_stc_entry_dialog(true) == wxID_OK)
+      {
+        insert_item(
+          tokenize<std::vector<std::string>>(
+            m_frame->stc_entry_dialog_component()->get_text(),
+            std::string(1, field_separator()).c_str()),
+          new_index);
+      }
+      break;
+
+    default:
+    {
+      std::string defaultPath;
+
+      if (GetSelectedItemCount() > 0)
+      {
+        defaultPath = listitem(this, GetFirstSelected()).path().string();
+      }
+
+      wxDirDialog dir_dlg(
+        this,
+        _(wxDirSelectorPromptStr),
+        defaultPath,
+        wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
+
+      if (dir_dlg.ShowModal() == wxID_OK)
+      {
+        const auto no =
+          (GetSelectedItemCount() > 0 ? GetFirstSelected() : GetItemCount());
+
+        listitem(this, path(dir_dlg.GetPath().ToStdString())).insert(no);
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 void wex::listview::print()
 {
   wxBusyCursor wait;
@@ -1120,6 +1180,20 @@ void wex::listview::print_preview()
 {
   wxBusyCursor wait;
   printing::get()->get_html_printer()->PreviewText(build_page());
+}
+
+void wex::listview::process_match(wxCommandEvent& event)
+{
+  const auto* m = static_cast<path_match*>(event.GetClientData());
+  listitem    item(this, m->path());
+
+  item.insert();
+  item.set_item(_("Line No"), std::to_string(m->line_no() + 1));
+  item.set_item(_("Line"), context(m->line(), m->pos()));
+  item.set_item(_("Match"), find_replace_data::get()->get_find_string());
+  item.set_item(_("Type"), event.GetString());
+
+  delete m;
 }
 
 const std::list<std::string> wex::listview::save() const
@@ -1269,7 +1343,7 @@ bool wex::listview::set_item_image(long item_number, const wxArtID& artid)
 
 bool wex::listview::sort_column(int column_no, sort_t sort_method)
 {
-  if (column_no == -1 || column_no >= (int)m_columns.size())
+  if (column_no == -1 || column_no >= static_cast<int>(m_columns.size()))
   {
     return false;
   }
@@ -1328,8 +1402,8 @@ bool wex::listview::sort_column(int column_no, sort_t sort_method)
 
 void wex::listview::sort_column_reset()
 {
-  if (m_sorted_column_no != -1 && !m_art_ids.empty()) // only if we are using
-                                                      // images
+  // only if we are using images
+  if (m_sorted_column_no != -1 && !m_art_ids.empty())
   {
     ClearColumnImage(m_sorted_column_no);
     m_sorted_column_no = -1;

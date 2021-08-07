@@ -2,21 +2,21 @@
 // Name:      test-grid.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include "../test.h"
 #include <wex/grid.h>
-#include <wex/managed-frame.h>
+
+#include "test.h"
 
 TEST_CASE("wex::grid")
 {
   auto* grid = new wex::grid();
-  wex::test::add_pane(frame(), grid);
+  frame()->pane_add(grid);
 
   REQUIRE(grid->CreateGrid(5, 5));
 
@@ -38,8 +38,6 @@ TEST_CASE("wex::grid")
   REQUIRE(!grid->find_next("text1"));
 
   grid->paste_cells_from_clipboard();
-
   grid->use_drag_and_drop(true);
-  REQUIRE(grid->is_allowed_drag_selection());
   grid->use_drag_and_drop(false);
 }

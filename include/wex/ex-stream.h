@@ -11,122 +11,134 @@
 #include <map>
 #include <string>
 
-#include <wex/text-window.h>
+#include <wex/factory/text-window.h>
 
 namespace wex
 {
-  class address;
-  class addressrange;
-  class file;
-  class stc;
+class address;
+class addressrange;
+class ex;
+class file;
 
-  namespace data
+namespace factory
+{
+class stc;
+}
+
+namespace data
+{
+class substitute;
+};
+
+/// Uses a stream for ex mode processing.
+/// Line numbers are stc line numbers, so start at line 0.
+/// All modifications are done in the temp file, and copied to
+/// the work file upon changing. If you ask for a write,
+/// the work file is copied to the original file.
+class ex_stream : public factory::text_window
+{
+public:
+  enum loc_t
   {
-    class substitute;
+    INSERT_BEFORE,
+    INSERT_AFTER
   };
 
-  /// Uses a stream for ex mode processing.
-  /// Line numbers are stc line numbers, so start at line 0.
-  /// All modifications are done in the temp file, and copied to
-  /// the work file upon changing. If you ask for a write,
-  /// the work file is copied to the original file.
-  class ex_stream : public core::text_window
-  {
-  public:
-    enum loc_t
-    {
-      INSERT_BEFORE,
-      INSERT_AFTER
-    };
+  /// Constructor.
+  explicit ex_stream(wex::ex* ex);
 
-    /// Constructor.
-    ex_stream(wex::stc* stc);
+  /// Destructor.
+  ~ex_stream() override;
 
-    /// Destructor.
-    ~ex_stream();
+  /// Deletes the range.
+  bool erase(const addressrange& range);
 
-    /// Deletes the range.
-    bool erase(const addressrange& range);
+  /// Returns context lines.
+  size_t get_context_lines() const { return m_context_lines; }
 
-    /// Finds line containing text and puts on stc.
-    /// The text is interpreted as regex, and search is forward.
-    bool find(
-      const std::string& text,
-      int                find_flags = -1,
-      bool               find_next  = true) override;
+  /// Inserts text at specified address.
+  bool insert_text(
+    const address&     address,
+    const std::string& text,
+    loc_t              loc = INSERT_BEFORE);
 
-    /// Returns context lines.
-    size_t get_context_lines() const { return m_context_lines; };
+  /// Returns true if we are in block mode.
+  /// Block mode implies that no eols were found when
+  /// reading lines with max size.
+  bool is_block_mode() const { return m_block_mode; }
 
-    /// Returns current line no
-    int get_current_line() const;
+  /// Returns true if stream is modified;
+  bool is_modified() const { return m_is_modified; }
 
-    /// Returns number of lines, or LINE_COUNT_UNKNOWN if not yet known.
-    int get_line_count() const override;
+  /// Joins all lines in the range.
+  bool join(const addressrange& range);
 
-    /// Returns number of lines.
-    int get_line_count_request() override;
+  /// Sets marker.
+  bool marker_add(char marker, int line);
 
-    /// Gets specified line, and puts on stc.
-    void goto_line(int no) override;
+  /// Deletes marker.
+  bool marker_delete(char marker);
 
-    /// Inserts text at specified address.
-    bool insert_text(
-      const address&     address,
-      const std::string& text,
-      loc_t              loc = INSERT_BEFORE);
+  /// Returns line for marker.
+  /// Returns LINE_NUMBER_UNKNOWN if marker not known.
+  int marker_line(char marker) const;
 
-    /// Returns true if stream is modified;
-    bool is_modified() const { return m_is_modified; };
+  /// Sets the streams. Puts first line on stc.
+  /// This must be called before the other methods.
+  void stream(file& f);
 
-    /// Joins all lines in the range.
-    bool join(const addressrange& range);
+  /// Substitutes within the range find by replace.
+  bool substitute(const addressrange& range, const data::substitute& data);
 
-    /// Sets marker.
-    bool marker_add(char marker, int line);
+  /// Writes working stream to file.
+  bool write();
 
-    /// Deletes marker.
-    bool marker_delete(char marker);
+  /// Writes range to file.
+  bool write(
+    const addressrange& range,
+    const std::string&  file,
+    bool                append = false);
 
-    /// Returns line for marker.
-    int marker_line(char marker) const;
+  /// Yanks range to register, default to yank register.
+  bool yank(const addressrange& range, char name = '0');
 
-    /// Sets the streams. Puts first line on stc.
-    /// This must be called before the other methods.
-    void stream(file& f);
+  /// Virtual methods from text_window.
 
-    /// Substitutes within the range find by replace.
-    bool substitute(const addressrange& range, const data::substitute& data);
+  bool find(const std::string& text, int find_flags = -1, bool find_next = true)
+    override;
+  int get_current_line() const override;
+  int get_line_count() const override;
+  int get_line_count_request() override;
 
-    /// Writes working stream to file.
-    bool write();
+  void goto_line(int no) override;
 
-    /// Writes range to file.
-    bool write(
-      const addressrange& range,
-      const std::string&  file,
-      bool                append = false);
+private:
+  bool copy(file* from, file* to);
+  void filter_line(int start, int end, std::streampos spos);
+  bool get_next_line();
+  bool get_previous_line();
+  void set_text();
 
-  private:
-    bool copy(file* from, file* to);
-    bool get_next_line();
-    bool get_previous_line();
-    void set_text();
+  bool m_block_mode{false}, m_is_modified{false};
 
-    bool m_is_modified{false};
+  const size_t m_buffer_size, m_context_lines;
 
-    const size_t m_buffer_size, m_context_lines, m_current_line_size;
+  size_t m_current_line_size;
 
-    std::fstream* m_stream{nullptr}; // pointer in m_file to actual stream
-    file *        m_file{nullptr}, *m_temp{nullptr}, *m_work{nullptr};
+  std::fstream* m_stream{nullptr}; // pointer in m_file to actual stream
+  file *        m_file{nullptr}, *m_temp{nullptr}, *m_work{nullptr};
 
-    int m_line_no{LINE_COUNT_UNKNOWN}, m_last_line_no{LINE_COUNT_UNKNOWN};
+  int
+    // this is line or block no, in case no eols are present
+    m_line_no{LINE_COUNT_UNKNOWN},
+    m_last_line_no{LINE_COUNT_UNKNOWN};
 
-    std::map<char, int> m_markers;
+  std::map<char, int> m_markers;
 
-    char* m_buffer;
-    char* m_current_line;
+  char* m_buffer;
+  char* m_current_line;
 
-    stc* m_stc;
-  };
+  factory::stc* m_stc;
+  wex::ex*      m_ex;
+};
 }; // namespace wex

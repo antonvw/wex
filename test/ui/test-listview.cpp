@@ -9,15 +9,15 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include "../test.h"
 #include <wex/defs.h>
 #include <wex/listview.h>
-#include <wex/managed-frame.h>
+
+#include "test.h"
 
 TEST_CASE("wex::listview")
 {
   auto* lv = new wex::listview();
-  wex::test::add_pane(frame(), lv);
+  frame()->pane_add(lv);
 
   SUBCASE("general")
   {
@@ -82,7 +82,7 @@ TEST_CASE("wex::listview")
       REQUIRE(lv->insert_item(
         {std::to_string(i),
          wex::test::get_path("test.h").stat().get_modification_time(),
-         std::to_string((float)i / 2.0),
+         std::to_string(static_cast<float>(i) / 2.0),
          "hello " + std::to_string(i)}));
     }
 
@@ -139,7 +139,7 @@ TEST_CASE("wex::listview")
   {
     auto* lv =
       new wex::listview(wex::data::listview().type(wex::data::listview::TSV));
-    wex::test::add_pane(frame(), lv);
+    frame()->pane_add(lv);
 
     REQUIRE(lv->GetColumnCount() == 0);
     REQUIRE(lv->data().type() == wex::data::listview::TSV);

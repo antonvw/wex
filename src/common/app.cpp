@@ -12,19 +12,12 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wex/addressrange.h>
 #include <wex/app.h>
 #include <wex/config.h>
 #include <wex/core.h>
-#include <wex/ctags.h>
-#include <wex/ex.h>
-#include <wex/frd.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
-#include <wex/macros.h>
 #include <wex/printing.h>
-#include <wex/stc.h>
-#include <wex/vcs.h>
 #include <wex/version.h>
 #include <wx/stdpaths.h>
 
@@ -32,16 +25,11 @@ namespace fs = std::filesystem;
 
 int wex::app::OnExit()
 {
-  delete find_replace_data::set(nullptr);
   delete lexers::set(nullptr);
   delete printing::set(nullptr);
 
   try
   {
-    addressrange::on_exit();
-    ctags::close();
-    stc::on_exit();
-
     config::on_exit();
 
     log::info("exit");
@@ -64,11 +52,11 @@ bool wex::app::OnInit()
 
   const wxLanguageInfo* info = nullptr;
 
-  if (config("LANG").exists())
+  if (const auto& lang(config("Language").get()); !lang.empty())
   {
-    if ((info = wxLocale::FindLanguageInfo(config("LANG").get())) == nullptr)
+    if ((info = wxLocale::FindLanguageInfo(lang)) == nullptr)
     {
-      log("unknown language") << config("LANG").get();
+      log("unknown language") << lang;
     }
   }
 
@@ -85,19 +73,24 @@ bool wex::app::OnInit()
   }
   else
   {
-    // If there are catalogs in the catalog_dir, then add them to the m_locale.
-    // README: We use the canonical name, also for windows, not sure whether
-    // that is the best.
-    m_catalog_dir = wxStandardPaths::Get().GetLocalizedResourcesDir(
-      m_locale.GetCanonicalName()
+    m_catalog_dir = "/usr/local/share/locale/" +
+                    m_locale.GetName().ToStdString() + "/LC_MESSAGES";
+
+    if (!fs::is_directory(m_catalog_dir))
+    {
+      m_catalog_dir = wxStandardPaths::Get().GetLocalizedResourcesDir(
+        m_locale.GetCanonicalName()
 #ifndef __WXMSW__
-        ,
-      wxStandardPaths::ResourceCat_Messages
+          ,
+        wxStandardPaths::ResourceCat_Messages
 #endif
-    );
+      );
+    }
 
     if (fs::is_directory(m_catalog_dir))
     {
+      // If there are catalogs in the catalog_dir, then add them to the
+      // m_locale.
       for (const auto& p : fs::recursive_directory_iterator(m_catalog_dir))
       {
         if (
@@ -113,7 +106,8 @@ bool wex::app::OnInit()
     }
     else if (info != nullptr)
     {
-      log("missing locale files for") << m_locale.GetName().ToStdString();
+      log("missing locale files for")
+        << m_locale.GetName().ToStdString() << m_catalog_dir;
     }
   }
 
@@ -121,10 +115,6 @@ bool wex::app::OnInit()
   wxInitAllImageHandlers();
 
   wxTheClipboard->UsePrimarySelection(true);
-
-  stc::on_init();
-  vcs::load_document();
-  ex::get_macros().load_document();
 
   return true; // do not call base class: we have our own cmd line processing
 }

@@ -7,35 +7,35 @@
 
 #include <boost/tokenizer.hpp>
 #include <wex/address.h>
+#include <wex/auto-complete.h>
+#include <wex/auto-indent.h>
 #include <wex/blame.h>
 #include <wex/config.h>
-#include <wex/core.h>
 #include <wex/ex-stream.h>
+#include <wex/frame.h>
 #include <wex/frd.h>
 #include <wex/indicator.h>
 #include <wex/item-vector.h>
 #include <wex/lexers.h>
 #include <wex/link.h>
 #include <wex/macros.h>
-#include <wex/managed-frame.h>
 #include <wex/path.h>
 #include <wex/printing.h>
+#include <wex/regex.h>
 #include <wex/stc-entry-dialog.h>
 #include <wex/stc.h>
-#include <wex/vcs.h>
+#include <wex/vcs-entry.h>
 #include <wx/app.h>
 #include <wx/settings.h>
 
-wex::stc::stc(const path& p, const data::stc& data)
+wex::stc::stc(const wex::path& p, const data::stc& data)
   : m_data(this, data)
-  , m_auto_complete(this)
-  , m_ex(new ex(this))
-  , m_vi(new vi(this))
-  , m_file(this, data.window().name())
+  , m_auto_complete(new wex::auto_complete(this))
+  , m_vi(
+      new vi(this, data.flags().test(data::stc::WIN_EX) ? ex::EX : ex::VISUAL))
+  , m_file(this, wex::path(data.window().name()))
   , m_hexmode(hexmode(this))
-  , m_frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
-  , m_lexer(this)
-  , m_visual(!data.flags().test(data::stc::WIN_EX))
+  , m_frame(dynamic_cast<frame*>(wxTheApp->GetTopWindow()))
 {
   assert(m_frame != nullptr);
 
@@ -47,8 +47,14 @@ wex::stc::stc(const path& p, const data::stc& data)
     data.window().style(),
     data.window().name());
 
-  if (
-    config("AllowSync").get(true) && p != wex::ex::get_macros().get_filename())
+  if (m_config_items == nullptr)
+  {
+    on_init();
+  }
+
+  get_lexer().set(lexer(this));
+
+  if (config("AllowSync").get(true) && p != wex::ex::get_macros().path())
   {
     sync();
   }
@@ -101,16 +107,15 @@ wex::stc::stc(const path& p, const data::stc& data)
   }
   else
   {
-    m_lexer.set(p.lexer(), true);
+    get_lexer().set(path_lexer(p).lexer(), true);
+
     m_file.file_new(p);
     m_data.inject();
   }
-
-  visual(m_visual);
 }
 
 wex::stc::stc(const std::string& text, const data::stc& data)
-  : stc(path(), data)
+  : stc(wex::path(), data)
 {
   if (!text.empty())
   {
@@ -123,16 +128,16 @@ wex::stc::stc(const std::string& text, const data::stc& data)
 
 wex::stc::~stc()
 {
-  delete m_ex;
+  delete m_auto_complete;
   delete m_vi;
 }
 
 void wex::stc::add_text(const std::string& text)
 {
-  if (!m_visual)
+  if (m_vi->visual() == ex::EX)
   {
     m_file.ex_stream()->insert_text(
-      address(m_ex, m_file.ex_stream()->get_current_line()),
+      address(m_vi, m_file.ex_stream()->get_current_line()),
       text,
       ex_stream::INSERT_AFTER);
   }
@@ -154,92 +159,26 @@ void wex::stc::append_text(const std::string& text)
   AppendTextRaw(text.data(), text.size());
 }
 
-#define BIGWORD(DIRECTION)                                     \
-  int c      = GetCharAt(GetCurrentPos());                     \
-  int offset = strncmp((#DIRECTION), "Left", 4) == 0 ? -1 : 0; \
-  while (isspace(c) && GetCurrentPos() > 0 &&                  \
-         GetCurrentPos() < GetTextLength())                    \
-  {                                                            \
-    Char##DIRECTION();                                         \
-    c = GetCharAt(GetCurrentPos() + offset);                   \
-  }                                                            \
-  while (!isspace(c) && GetCurrentPos() > 0 &&                 \
-         GetCurrentPos() < GetTextLength())                    \
-  {                                                            \
-    Char##DIRECTION();                                         \
-    c = GetCharAt(GetCurrentPos() + offset);                   \
-  }
-
-void wex::stc::BigWordLeft()
+bool wex::stc::auto_indentation(int c)
 {
-  BIGWORD(Left);
-}
-
-void wex::stc::BigWordLeftExtend()
-{
-  BIGWORD(LeftExtend);
-}
-
-void wex::stc::BigWordLeftRectExtend()
-{
-  BIGWORD(LeftRectExtend);
-}
-
-void wex::stc::BigWordRight()
-{
-  BIGWORD(Right);
-}
-
-void wex::stc::BigWordRightEnd()
-{
-  BIGWORD(Right);
-}
-
-void wex::stc::BigWordRightEndExtend()
-{
-  BIGWORD(RightExtend);
-}
-
-void wex::stc::BigWordRightEndRectExtend()
-{
-  BIGWORD(RightRectExtend);
-}
-
-void wex::stc::BigWordRightExtend()
-{
-  BIGWORD(RightExtend);
-}
-
-void wex::stc::BigWordRightRectExtend()
-{
-  BIGWORD(RightRectExtend);
-}
-
-void wex::stc::PageScrollDown()
-{
-  LineScroll(0, 10);
-}
-
-void wex::stc::PageScrollUp()
-{
-  LineScroll(0, -10);
+  return auto_indent(this).on_char(c);
 }
 
 bool wex::stc::CanCut() const
 {
-  return core::stc::CanCut() && !GetReadOnly() && !is_hexmode();
+  return factory::stc::CanCut() && !GetReadOnly() && !is_hexmode();
 }
 
 bool wex::stc::CanPaste() const
 {
-  return core::stc::CanPaste() && !GetReadOnly() && !is_hexmode();
+  return factory::stc::CanPaste() && !GetReadOnly() && !is_hexmode();
 }
 
 void wex::stc::Clear()
 {
   m_vi->is_active() && GetSelectedText().empty() ?
     (void)m_vi->command(std::string(1, WXK_DELETE)) :
-    core::stc::Clear();
+    factory::stc::Clear();
 }
 
 void wex::stc::clear(bool set_savepoint)
@@ -259,7 +198,7 @@ void wex::stc::Copy()
 {
   if (CanCopy())
   {
-    core::stc::Copy();
+    factory::stc::Copy();
   }
 }
 
@@ -267,19 +206,19 @@ void wex::stc::Cut()
 {
   if (CanCut())
   {
-    if (get_ex().is_active())
+    if (get_vi().is_active())
     {
-      get_ex().set_registers_delete(get_selected_text());
-      get_ex().set_register_yank(get_selected_text());
+      ex::set_registers_delete(get_selected_text());
+      ex::set_register_yank(get_selected_text());
     }
 
-    core::stc::Cut();
+    factory::stc::Cut();
   }
 }
 
 bool wex::stc::file_readonly_attribute_changed()
 {
-  SetReadOnly(get_filename().is_readonly()); // does not return anything
+  SetReadOnly(path().is_readonly()); // does not return anything
   log::status(_("Readonly attribute changed"));
 
   return true;
@@ -287,7 +226,7 @@ bool wex::stc::file_readonly_attribute_changed()
 
 void wex::stc::fold(bool all)
 {
-  if (const item_vector & iv(m_config_items);
+  if (const item_vector iv(m_config_items);
       all || get_line_count() > iv.find<int>(_("stc.Auto fold")))
   {
     fold_all();
@@ -300,8 +239,8 @@ void wex::stc::fold_all()
     return;
 
   const auto current_line = get_current_line();
-  const bool json         = (m_lexer.scintilla_lexer() == "json");
-  const bool xml          = (m_lexer.language() == "xml");
+  const bool json         = (get_lexer().scintilla_lexer() == "json");
+  const bool xml          = (get_lexer().language() == "xml");
 
   int line = (json ? 1 : 0);
 
@@ -331,50 +270,22 @@ void wex::stc::fold_all()
   goto_line(current_line);
 }
 
-const std::string wex::stc::eol() const
-{
-  switch (GetEOLMode())
-  {
-    case wxSTC_EOL_CR:
-      return "\r";
-    case wxSTC_EOL_CRLF:
-      return "\r\n";
-    case wxSTC_EOL_LF:
-      return "\n";
-    default:
-      assert(0);
-      break;
-  }
-
-  return "\r\n";
-}
-
 int wex::stc::get_current_line() const
 {
-  if (!m_visual)
+  if (m_vi->visual() == ex::EX)
   {
     return m_file.ex_stream()->get_current_line();
   }
   else
   {
-    return const_cast<stc*>(this)->GetCurrentLine();
+    return factory::stc::get_current_line();
   }
 }
 
-const wex::ex& wex::stc::get_ex() const
+const std::string wex::stc::get_find_string() const
 {
-  return m_ex->is_active() ? *m_ex : *m_vi;
-}
-
-wex::ex& wex::stc::get_ex()
-{
-  return m_ex->is_active() ? *m_ex : *m_vi;
-}
-
-// Cannot be const because of GetSelectedText (not const in 2.9.4).
-const std::string wex::stc::get_find_string()
-{
-  if (const auto selection = GetSelectedText().ToStdString();
+  if (const auto selection =
+        const_cast<stc*>(this)->GetSelectedText().ToStdString();
       !selection.empty() && get_number_of_lines(selection) == 1)
   {
     bool alnum = true;
@@ -403,47 +314,60 @@ const std::string wex::stc::get_find_string()
   return find_replace_data::get()->get_find_string();
 }
 
-int wex::stc::get_fold_level()
+bool wex::stc::get_hexmode_erase(int begin, int end)
 {
-  return (GetFoldLevel(get_current_line()) & wxSTC_FOLDLEVELNUMBERMASK) -
-         wxSTC_FOLDLEVELBASE;
+  return m_hexmode.erase(begin, end);
+}
+
+bool wex::stc::get_hexmode_insert(const std::string& command, int pos)
+{
+  return m_hexmode.insert(command, pos);
+}
+
+std::string wex::stc::get_hexmode_lines(const std::string& text)
+{
+  return m_hexmode.lines(text);
+}
+
+bool wex::stc::get_hexmode_replace(char c)
+{
+  return m_hexmode.replace(c);
+}
+
+bool wex::stc::get_hexmode_replace_target(
+  const std::string& replacement,
+  bool               set_text)
+{
+  return m_hexmode.replace_target(replacement, set_text);
+}
+
+bool wex::stc::get_hexmode_sync()
+{
+  return m_hexmode.sync();
 }
 
 int wex::stc::get_line_count() const
 {
-  if (!m_visual)
+  if (m_vi->visual() == ex::EX)
   {
     return m_file.ex_stream()->get_line_count();
   }
   else
   {
-    return GetLineCount();
+    return factory::stc::get_line_count();
   }
 }
 
 int wex::stc::get_line_count_request()
 {
-  if (!m_visual)
+  if (m_vi->visual() == ex::EX)
   {
     return m_file.ex_stream()->get_line_count_request();
   }
   else
   {
-    return GetLineCount();
+    return factory::stc::get_line_count_request();
   }
-}
-
-const std::string wex::stc::get_selected_text() const
-{
-  const wxCharBuffer& b(const_cast<stc*>(this)->GetSelectedTextRaw());
-  return b.length() == 0 ? std::string() :
-                           std::string(b.data(), b.length() - 1);
-}
-
-const std::string wex::stc::get_text() const
-{
-  const wxCharBuffer& b(const_cast<stc*>(this)->GetTextRaw());
-  return std::string(b.data(), b.length());
 }
 
 const wex::vi& wex::stc::get_vi() const
@@ -479,15 +403,13 @@ const std::string wex::stc::get_word_at_pos(int pos) const
 
 void wex::stc::goto_line(int line)
 {
-  if (!m_visual)
+  if (m_vi->visual() == ex::EX)
   {
     m_file.ex_stream()->goto_line(line);
   }
   else
   {
-    GotoLine(line);
-    EnsureVisible(line);
-    EnsureCaretVisible();
+    factory::stc::goto_line(line);
   }
 }
 
@@ -505,14 +427,11 @@ void wex::stc::guess_type_and_modeline()
        GetTextRange(length - sample_size, length).ToStdString() :
        m_hexmode.buffer().substr(length - sample_size, sample_size)));
 
-  std::vector<std::string> v;
-
   // If we have a modeline comment.
-  if (const std::string modeline("\\s+vim?:\\s*(set [a-z0-9:= ]+)");
-      get_ex().is_active() &&
-      (match(modeline, head, v) > 0 || match(modeline, tail, v) > 0))
+  if (regex v("\\s+vim?:\\s*(set [a-z0-9:= ]+)");
+      get_vi().is_active() && (v.search(head) > 0 || v.search(tail) > 0))
   {
-    if (!get_ex().command(":" + v[0] + "*")) // add * to indicate modeline
+    if (!get_vi().command(":" + v[0] + "*")) // add * to indicate modeline
     {
       log::status("Could not apply vi settings");
     }
@@ -530,11 +449,16 @@ void wex::stc::guess_type_and_modeline()
   m_frame->update_statusbar(this, "PaneFileType");
 }
 
+bool wex::stc::inject(const data::control& data)
+{
+  return m_data.control(data).inject();
+}
+
 void wex::stc::insert_text(int pos, const std::string& text)
 {
-  if (!m_visual)
+  if (m_vi->visual() == ex::EX)
   {
-    m_file.ex_stream()->insert_text(address(m_ex, LineFromPosition(pos)), text);
+    m_file.ex_stream()->insert_text(address(m_vi, LineFromPosition(pos)), text);
   }
   else
   {
@@ -544,7 +468,12 @@ void wex::stc::insert_text(int pos, const std::string& text)
 
 bool wex::stc::IsModified() const
 {
-  return m_visual ? GetModify() : m_file.ex_stream()->is_modified();
+  return is_visual() ? GetModify() : m_file.ex_stream()->is_modified();
+}
+
+bool wex::stc::is_visual() const
+{
+  return m_vi->visual() == ex::VISUAL;
 }
 
 bool wex::stc::link_open()
@@ -565,7 +494,7 @@ bool wex::stc::link_open(link_t mode, std::string* filename)
 
   if (mode[LINK_OPEN_MIME])
   {
-    if (const path path(m_link->get_path(
+    if (const wex::path path(m_link->get_path(
           text,
           data::control().line(link::LINE_OPEN_URL),
           this));
@@ -602,7 +531,7 @@ bool wex::stc::link_open(link_t mode, std::string* filename)
     {
       if (filename != nullptr)
       {
-        *filename = path.fullname();
+        *filename = path.filename();
       }
       else if (!mode[LINK_CHECK])
       {
@@ -686,11 +615,11 @@ void wex::stc::on_idle(wxIdleEvent& event)
   event.Skip();
 
   if (
-    m_visual && m_file.check_sync() &&
+    is_visual() && m_file.check_sync() &&
     // the readonly flags bit of course can differ from file actual readonly
     // mode, therefore add this check
     !m_data.flags().test(data::stc::WIN_READ_ONLY) &&
-    get_filename().stat().is_readonly() != GetReadOnly())
+    path().stat().is_readonly() != GetReadOnly())
   {
     file_readonly_attribute_changed();
   }
@@ -698,7 +627,7 @@ void wex::stc::on_idle(wxIdleEvent& event)
 
 void wex::stc::on_styled_text(wxStyledTextEvent& event)
 {
-  if (m_visual)
+  if (is_visual())
   {
     mark_modified(event);
   }
@@ -706,11 +635,11 @@ void wex::stc::on_styled_text(wxStyledTextEvent& event)
   event.Skip();
 }
 
-bool wex::stc::open(const path& p, const data::stc& data)
+bool wex::stc::open(const wex::path& p, const data::stc& data)
 {
   m_data = data::stc(data).window(data::window().name(p.string()));
 
-  if (get_filename() != p)
+  if (path() != p)
   {
     if (!m_file.file_load(p))
     {
@@ -722,7 +651,7 @@ bool wex::stc::open(const path& p, const data::stc& data)
     m_data.inject();
   }
 
-  m_frame->set_recent_file(p.string());
+  m_frame->set_recent_file(p);
 
   return true;
 }
@@ -731,7 +660,7 @@ void wex::stc::Paste()
 {
   if (CanPaste())
   {
-    core::stc::Paste();
+    factory::stc::Paste();
   }
 }
 
@@ -788,18 +717,20 @@ void wex::stc::print_preview(wxPreviewFrameModalityKind kind)
     return;
   }
 
-  auto* frame =
-    new wxPreviewFrame(preview, this, print_caption(GetName().ToStdString()));
+  auto* frame = new wxPreviewFrame(
+    preview,
+    this,
+    print_caption(wex::path(GetName().ToStdString())));
 
   frame->InitializeWithModality(kind);
   frame->Show();
 }
 
-void wex::stc::properties_message(path::status_t flags)
+void wex::stc::properties_message(path::log_t flags)
 {
-  log::status() << path(get_filename(), flags);
+  log::status() << wex::path(path().string(), flags);
 
-  if (!flags[path::STAT_SYNC])
+  if (!flags[path::LOG_SYNC])
   {
     m_frame->update_statusbar(this, "PaneFileType");
     m_frame->update_statusbar(this, "PaneLexer");
@@ -808,12 +739,24 @@ void wex::stc::properties_message(path::status_t flags)
 
   m_frame->update_statusbar(this, "PaneInfo");
 
-  if (!flags[path::STAT_SYNC])
+  if (!flags[path::LOG_SYNC])
   {
-    const wxString file =
-      GetName() + (GetReadOnly() ? " [" + _("Readonly") + "]" : wxString());
+    const auto name(
+      GetName().empty() ? path().string() : GetName().ToStdString());
 
-    m_frame->SetTitle(!file.empty() ? file : wxTheApp->GetAppName());
+    const auto readonly(
+      GetReadOnly() ? wxString(" [" + _("Readonly") + "]").ToStdString() :
+                      std::string());
+
+    std::string title = name + readonly;
+
+    if (m_vi->visual() == ex::EX)
+    {
+      title += " [ex]";
+    }
+
+    m_frame->SetTitle(
+      !title.empty() ? title : wxTheApp->GetAppName().ToStdString());
   }
 }
 
@@ -976,6 +919,7 @@ bool wex::stc::set_indicator(const indicator& indicator, int start, int end)
   }
   else if (end - start == 0)
   {
+    log::trace("indicator") << start << end;
   }
 
   return true;
@@ -1032,8 +976,8 @@ bool wex::stc::show_blame(const vcs_entry* vcs)
   int         line  = 0;
 
   SetWrapMode(wxSTC_WRAP_NONE);
-  const item_vector& iv(m_config_items);
-  const int          margin_blame(iv.find<int>(_("stc.margin.Text")));
+  const item_vector iv(m_config_items);
+  const auto        margin_blame(iv.find<int>(_("stc.margin.Text")));
 
   for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
          vcs->get_stdout(),
@@ -1063,7 +1007,7 @@ bool wex::stc::show_blame(const vcs_entry* vcs)
       }
 
       const int real_line(
-        m_visual ? l : l - get_current_line() + GetLineCount() - 2);
+        is_visual() ? l : l - get_current_line() + GetLineCount() - 2);
 
       lexers::get()->apply_margin_text_style(
         this,
@@ -1088,7 +1032,7 @@ bool wex::stc::show_blame(const vcs_entry* vcs)
 
 void wex::stc::show_line_numbers(bool show)
 {
-  const item_vector& iv(m_config_items);
+  const item_vector iv(m_config_items);
 
   SetMarginWidth(
     m_margin_line_number,
@@ -1103,7 +1047,7 @@ void wex::stc::sync(bool start)
 
 void wex::stc::Undo()
 {
-  core::stc::Undo();
+  factory::stc::Undo();
   m_hexmode.undo();
 }
 
@@ -1115,66 +1059,57 @@ void wex::stc::use_modification_markers(bool use)
 
 bool wex::stc::vi_command(const std::string& command)
 {
-  // TODO: this should depend on the mode, if not visual mode, use m_ex.
   return m_vi->command(command);
+}
+
+const std::string wex::stc::vi_mode() const
+{
+  return m_vi->mode().str();
+}
+
+void wex::stc::vi_record(const std::string& command)
+{
+  ex::get_macros().record(command);
+}
+
+std::string wex::stc::vi_register(char c) const
+{
+  return ex::get_macros().get_register(c);
 }
 
 void wex::stc::visual(bool on)
 {
-  m_ex->use(!on);
-  m_vi->use(on);
-
   SetReadOnly(!on);
 
   m_data.flags(
     data::stc::window_t().set(data::stc::WIN_EX),
     on ? data::control::NOT : data::control::SET);
 
-  if (on && !m_visual)
+  if (on)
   {
-    std::stringstream info;
-
-    if (!get_filename().string().empty())
+    if (m_vi->visual() != ex::VISUAL)
     {
-      info << get_filename().string();
+      std::stringstream info;
+
+      if (!path().string().empty())
+      {
+        info << path().string();
+      }
+
+      log::info("enter visual mode") << on << info;
     }
 
-    log::info("enter visual mode") << on << info;
-
-    m_visual = on; // needed in do_file_load
+    m_vi->use(ex::VISUAL); // needed in do_file_load
     m_file.close();
     m_file.use_stream(false);
-    m_file.file_load(get_filename());
+    m_file.file_load(path());
   }
   else
   {
-    m_visual = on;
+    m_vi->use(ex::EX);
   }
 
   config_get();
 
-  m_frame->show_ex_bar(
-    !on ? managed_frame::SHOW_BAR : managed_frame::HIDE_BAR_FOCUS_STC,
-    m_ex);
-}
-
-void wex::stc::WordLeftRectExtend()
-{
-  const auto repeat =
-    GetCurrentPos() - WordStartPosition(GetCurrentPos(), false);
-
-  for (auto i = 0; i < repeat; i++)
-  {
-    CharLeftRectExtend();
-  }
-}
-
-void wex::stc::WordRightRectExtend()
-{
-  const auto repeat = WordEndPosition(GetCurrentPos(), false) - GetCurrentPos();
-
-  for (auto i = 0; i < repeat; i++)
-  {
-    CharRightRectExtend();
-  }
+  m_frame->show_ex_bar(!on ? frame::SHOW_BAR : frame::HIDE_BAR_FOCUS_STC, this);
 }

@@ -10,11 +10,13 @@
 #include <wex/core.h>
 #include <wex/ex-stream.h>
 #include <wex/ex.h>
+#include <wex/factory/process.h>
+#include <wex/factory/stc.h>
+#include <wex/file.h>
+#include <wex/frame.h>
 #include <wex/log.h>
 #include <wex/macros.h>
-#include <wex/managed-frame.h>
-#include <wex/process.h>
-#include <wex/stc.h>
+#include <wex/regex.h>
 
 #define SEARCH_TARGET                                                         \
   if (ex->get_stc()->SearchInTarget(text) != -1)                              \
@@ -31,48 +33,48 @@
 
 namespace wex
 {
-  int find_stc(ex* ex, const std::string& text, bool forward)
+int find_stc(ex* ex, const std::string& text, bool forward)
+{
+  if (forward)
   {
-    if (forward)
-    {
-      ex->get_stc()->SetTargetRange(
-        ex->get_stc()->GetCurrentPos(),
-        ex->get_stc()->GetTextLength());
-    }
-    else
-    {
-      ex->get_stc()->SetTargetRange(ex->get_stc()->GetCurrentPos(), 0);
-    }
+    ex->get_stc()->SetTargetRange(
+      ex->get_stc()->GetCurrentPos(),
+      ex->get_stc()->GetTextLength());
+  }
+  else
+  {
+    ex->get_stc()->SetTargetRange(ex->get_stc()->GetCurrentPos(), 0);
+  }
 
-    SEARCH_TARGET;
+  SEARCH_TARGET;
 
-    if (forward)
-    {
-      ex->get_stc()->SetTargetRange(0, ex->get_stc()->GetCurrentPos());
-    }
-    else
-    {
-      ex->get_stc()->SetTargetRange(
-        ex->get_stc()->GetTextLength(),
-        ex->get_stc()->GetCurrentPos());
-    }
+  if (forward)
+  {
+    ex->get_stc()->SetTargetRange(0, ex->get_stc()->GetCurrentPos());
+  }
+  else
+  {
+    ex->get_stc()->SetTargetRange(
+      ex->get_stc()->GetTextLength(),
+      ex->get_stc()->GetCurrentPos());
+  }
 
-    SEARCH_TARGET;
+  SEARCH_TARGET;
 
+  return 0;
+}
+
+int find_stream(ex* ex, const std::string& text, bool forward)
+{
+  if (ex->ex_stream()->find(text, -1, forward))
+  {
+    return ex->ex_stream()->get_current_line() + 1;
+  }
+  else
+  {
     return 0;
   }
-
-  int find_stream(ex* ex, const std::string& text, bool forward)
-  {
-    if (ex->get_stc()->get_file().ex_stream()->find(text, -1, forward))
-    {
-      return ex->get_stc()->get_file().ex_stream()->get_current_line() + 1;
-    }
-    else
-    {
-      return 0;
-    }
-  }
+}
 }; // namespace wex
 
 wex::address::address(ex* ex, int line)
@@ -89,9 +91,9 @@ wex::address::address(ex* ex, const std::string& address)
 
 bool wex::address::adjust_window(const std::string& text) const
 {
-  std::vector<std::string> v;
+  regex v("([-+=.^]*)([0-9]+)?(.*)");
 
-  if (match("([-+=.^]*)([0-9]+)?(.*)", text, v) != 3)
+  if (v.match(text) != 3)
   {
     return false;
   }
@@ -109,7 +111,7 @@ bool wex::address::adjust_window(const std::string& text) const
 
   if (const auto type(v[0]); !type.empty())
   {
-    switch ((int)type.at(0))
+    switch (static_cast<int>(type.at(0)))
     {
       case '-':
         begin -= ((type.length() * count) - 1);
@@ -139,14 +141,14 @@ bool wex::address::adjust_window(const std::string& text) const
   for (int i = begin; i < begin + count; i++)
   {
     char buffer[8];
-    sprintf(buffer, "%6d ", i);
+    snprintf(buffer, sizeof(buffer), "%6d ", i);
 
     output += (flags.find("#") != std::string::npos ? buffer : "") +
               m_ex->get_stc()->GetLine(i - 1);
   }
   SEPARATE;
 
-  m_ex->frame()->print_ex(m_ex, output);
+  m_ex->print(output);
 
   return true;
 }
@@ -159,10 +161,7 @@ bool wex::address::append(const std::string& text) const
   }
   else if (!m_ex->get_stc()->is_visual())
   {
-    m_ex->get_stc()->get_file().ex_stream()->insert_text(
-      *this,
-      text,
-      ex_stream::INSERT_AFTER);
+    m_ex->ex_stream()->insert_text(*this, text, ex_stream::INSERT_AFTER);
     return true;
   }
   else if (m_ex->get_stc()->GetReadOnly() || m_ex->get_stc()->is_hexmode())
@@ -184,7 +183,7 @@ bool wex::address::flags_supported(const std::string& flags) const
     return true;
   }
 
-  if (std::vector<std::string> v; match("([-+#pl])", flags, v) < 0)
+  if (regex("([-+#pl])").match(flags) < 0)
   {
     log::status("Unsupported flags") << flags;
     return false;
@@ -205,11 +204,11 @@ int wex::address::get_line() const
 
   // If this is a //, ?? address, return line with first forward, backward
   // match.
-  if (std::vector<std::string> v; match("/(.*)/$", m_address, v) > 0 ||
-                                  match("\\?(.*)\\?$", m_address, v) > 0)
+  if (regex v({std::string("/(.*)/$"), "\\?(.*)\\?$"}); v.match(m_address) > 0)
   {
-    return !m_ex->get_stc()->is_visual() ? find_stream(m_ex, v[0], m_address[0] == '/') :
-                                           find_stc(m_ex, v[0], m_address[0] == '/');
+    return !m_ex->get_stc()->is_visual() ?
+             find_stream(m_ex, v[0], m_address[0] == '/') :
+             find_stc(m_ex, v[0], m_address[0] == '/');
   }
 
   // Try address calculation.
@@ -237,7 +236,7 @@ bool wex::address::insert(const std::string& text) const
   }
   else if (!m_ex->get_stc()->is_visual())
   {
-    m_ex->get_stc()->get_file().ex_stream()->insert_text(*this, text);
+    m_ex->ex_stream()->insert_text(*this, text);
     return true;
   }
   else if (m_ex->get_stc()->GetReadOnly() || m_ex->get_stc()->is_hexmode())
@@ -279,7 +278,7 @@ bool wex::address::parse(const std::string& command, const std::string& text)
       }
       else
       {
-        return m_ex->frame()->show_ex_input(m_ex, command[0]);
+        return m_ex->frame()->show_ex_input(m_ex->get_stc(), command[0]);
       }
 
     case 'i':
@@ -289,7 +288,7 @@ bool wex::address::parse(const std::string& command, const std::string& text)
       }
       else
       {
-        return m_ex->frame()->show_ex_input(m_ex, command[0]);
+        return m_ex->frame()->show_ex_input(m_ex->get_stc(), command[0]);
       }
 
     case 'k':
@@ -352,9 +351,9 @@ bool wex::address::read(const std::string& arg) const
 
   if (arg.starts_with("!"))
   {
-    process process;
+    factory::process process;
 
-    if (!process.execute(arg.substr(1), process::EXEC_WAIT))
+    if (process.system(arg.substr(1)) != 0)
     {
       return false;
     }
@@ -363,18 +362,18 @@ bool wex::address::read(const std::string& arg) const
   }
   else
   {
-    path::current(m_ex->get_stc()->get_filename().get_path());
+    path::current(m_ex->get_stc()->path().data().parent_path());
 
-    if (file file(arg, std::ios_base::in); !file.is_open())
+    if (file file(path(arg), std::ios_base::in); !file.is_open())
     {
-      log::status(_("File")) << file.get_filename() << "open error";
+      log::status(_("File")) << file.path() << "open error";
       return false;
     }
     else if (const auto buffer(file.read()); buffer != nullptr)
     {
       if (!m_ex->get_stc()->is_visual())
       {
-        m_ex->get_stc()->get_file().ex_stream()->insert_text(*this, *buffer);
+        m_ex->ex_stream()->insert_text(*this, *buffer);
       }
       else if (m_address == ".")
       {

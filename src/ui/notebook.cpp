@@ -19,17 +19,17 @@
 
 namespace wex
 {
-  const std::vector<item> notebook_config_items()
-  {
-    return std::vector<item>(
-      {{_("tab.Font"),
-        item::FONTPICKERCTRL,
-        wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
-       {_("tab.Art provider"),
-        item::COMBOBOX,
-        std::list<std::string>{"default", "simple"},
-        data::control().window(data::window().style(wxCB_READONLY))}});
-  };
+const std::vector<item> notebook_config_items()
+{
+  return std::vector<item>(
+    {{_("tab.Font"),
+      item::FONTPICKERCTRL,
+      wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
+     {_("tab.Art provider"),
+      item::COMBOBOX,
+      config::strings_t{"default", "simple"},
+      data::control().window(data::window().style(wxCB_READONLY))}});
+};
 } // namespace wex
 
 wex::notebook::notebook(const data::window& data)
@@ -40,41 +40,47 @@ wex::notebook::notebook(const data::window& data)
       data.size(),
       data.style() == data::NUMBER_NOT_SET ? wxAUI_NB_DEFAULT_STYLE :
                                              data.style())
-  , m_frame(dynamic_cast<managed_frame*>(wxTheApp->GetTopWindow()))
+  , m_frame(dynamic_cast<frame*>(wxTheApp->GetTopWindow()))
 {
   config_get();
 
-  Bind(wxEVT_AUINOTEBOOK_PAGE_CHANGED, [=, this](wxAuiNotebookEvent& event) {
-    event.Skip(); // call base
-    if (m_frame != nullptr)
+  Bind(
+    wxEVT_AUINOTEBOOK_PAGE_CHANGED,
+    [=, this](wxAuiNotebookEvent& event)
     {
-      m_frame->on_notebook(GetId(), GetPage(event.GetSelection()));
-    }
-  });
-
-  Bind(wxEVT_AUINOTEBOOK_PAGE_CLOSE, [=, this](wxAuiNotebookEvent& event) {
-    if (const auto sel = event.GetSelection(); sel != wxNOT_FOUND)
-    {
-      if (m_frame != nullptr && !m_frame->allow_close(GetId(), GetPage(sel)))
+      event.Skip(); // call base
+      if (m_frame != nullptr)
       {
-        event.Veto();
+        m_frame->on_notebook(GetId(), GetPage(event.GetSelection()));
       }
-      else
+    });
+
+  Bind(
+    wxEVT_AUINOTEBOOK_PAGE_CLOSE,
+    [=, this](wxAuiNotebookEvent& event)
+    {
+      if (const auto sel = event.GetSelection(); sel != wxNOT_FOUND)
       {
-        if (m_frame != nullptr)
+        if (m_frame != nullptr && !m_frame->allow_close(GetId(), GetPage(sel)))
         {
-          if (m_keys.empty())
-            m_frame->sync_close_all(GetId());
+          event.Veto();
         }
+        else
+        {
+          if (m_frame != nullptr)
+          {
+            if (m_keys.empty())
+              m_frame->sync_close_all(GetId());
+          }
 
-        auto*      page = GetPage(sel);
-        const auto key  = m_windows[page];
-        m_windows.erase(page);
-        m_keys.erase(key);
-        event.Skip(); // call base
+          auto*      page = GetPage(sel);
+          const auto key  = m_windows[page];
+          m_windows.erase(page);
+          m_keys.erase(key);
+          event.Skip(); // call base
+        }
       }
-    }
-  });
+    });
 }
 
 wxWindow* wex::notebook::add_page(const data::notebook& data)
@@ -122,10 +128,10 @@ int wex::notebook::config_dialog(const data::window& par)
 
 void wex::notebook::config_get()
 {
-  const auto&        ci(notebook_config_items());
-  const item_vector& iv(&ci);
+  const auto&       ci(notebook_config_items());
+  const item_vector iv(&ci);
 
-  if (const auto& p(iv.find<std::list<std::string>>(_("tab.Art provider")));
+  if (const auto& p(iv.find<config::strings_t>(_("tab.Art provider")));
       p.empty())
   {
     log("no art provider");

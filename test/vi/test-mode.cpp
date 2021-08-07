@@ -2,20 +2,20 @@
 // Name:      test-vi-mode.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
-#include <wex/managed-frame.h>
-#include <wex/stc.h>
 #include <wex/vi-mode.h>
 #include <wex/vi.h>
+
+#include "test.h"
 
 TEST_SUITE_BEGIN("wex::vi");
 
 TEST_CASE("wex::vi_mode")
 {
-  wex::vi_mode mode(&get_stc()->get_vi());
+  auto*        vi = new wex::vi(get_stc());
+  wex::vi_mode mode(vi);
 
   REQUIRE(!mode.insert_commands().empty());
 

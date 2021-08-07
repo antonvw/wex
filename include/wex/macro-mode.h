@@ -45,7 +45,7 @@ namespace wex
     const std::string get_macro() const;
 
     /// Returns the macros collection.
-    auto* get_macros() { return m_macros; };
+    auto* get_macros() { return m_macros; }
 
     /// Are we playing back?
     bool is_playback() const;

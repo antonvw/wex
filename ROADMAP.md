@@ -1,15 +1,10 @@
 # roadmap
-- global with empty pattern
 
 ## backlog
-- add more README.md to libs
-- move some impl, e.g. file -> stream
-  and current stream should be renamed
-- allow dynamic libs
+- use modules
+- add general validator (e.g. use in tcpview)
+
+- supply process input if requested (as with svn password)
 - start up with recent project, close project
   -> windows appear
-- use spaceship operator
-  and modules
-- process-imp should be in core
-- invest use wxTextCompleter
-- use abstract factory design pattern
+- use boost JSON (requires boost 1.76)

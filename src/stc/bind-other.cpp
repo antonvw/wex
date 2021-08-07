@@ -7,11 +7,12 @@
 
 #include <boost/algorithm/string.hpp>
 #include <vector>
+#include <wex/auto-complete.h>
 #include <wex/config.h>
-#include <wex/debug.h>
+#include <wex/debug-entry.h>
+#include <wex/frame.h>
 #include <wex/frd.h>
 #include <wex/log.h>
-#include <wex/managed-frame.h>
 #include <wex/menu.h>
 #include <wex/stc-bind.h>
 #include <wex/stc.h>
@@ -20,208 +21,247 @@
 
 namespace wex
 {
-  void hypertext(stc* stc)
+void hypertext(stc* stc)
+{
+  if (const auto match_pos = stc->FindText(
+        stc->GetCurrentPos() - 1,
+        stc->PositionFromLine(stc->get_current_line()),
+        "<");
+      match_pos != wxSTC_INVALID_POSITION &&
+      stc->GetCharAt(match_pos + 1) != '!')
   {
-    if (const auto match_pos = stc->FindText(
-          stc->GetCurrentPos() - 1,
-          stc->PositionFromLine(stc->get_current_line()),
-          "<");
-        match_pos != wxSTC_INVALID_POSITION &&
-        stc->GetCharAt(match_pos + 1) != '!')
+    if (const auto match(stc->get_word_at_pos(match_pos + 1));
+        match.find("/") != 0 &&
+        stc->GetCharAt(stc->GetCurrentPos() - 2) != '/' &&
+        (stc->get_lexer().language() == "xml" ||
+         stc->get_lexer().is_keyword(match)) &&
+        !stc->SelectionIsRectangle())
     {
-      if (const auto match(stc->get_word_at_pos(match_pos + 1));
-          match.find("/") != 0 &&
-          stc->GetCharAt(stc->GetCurrentPos() - 2) != '/' &&
-          (stc->get_lexer().language() == "xml" ||
-           stc->get_lexer().is_keyword(match)) &&
-          !stc->SelectionIsRectangle())
+      if (const std::string add("</" + match + ">"); stc->get_vi().is_active())
       {
-        if (const std::string add("</" + match + ">");
-            stc->get_vi().is_active())
+        if (
+          !stc->get_vi().command(add) ||
+          !stc->get_vi().command(std::string(1, WXK_ESCAPE)) ||
+          !stc->get_vi().command("%") || !stc->get_vi().command("i"))
         {
-          if (
-            !stc->get_vi().command(add) ||
-            !stc->get_vi().command(std::string(1, WXK_ESCAPE)) ||
-            !stc->get_vi().command("%") || !stc->get_vi().command("i"))
-          {
-            log::status("Autocomplete failed");
-          }
+          log::status("Autocomplete failed");
         }
-        else
-        {
-          stc->InsertText(stc->GetCurrentPos(), add);
-        }
+      }
+      else
+      {
+        stc->InsertText(stc->GetCurrentPos(), add);
       }
     }
   }
+}
 }; // namespace wex
 
 void wex::stc::bind_other()
 {
-  Bind(wxEVT_CHAR, [=, this](wxKeyEvent& event) {
-    key_action(event);
-  });
-
-  Bind(wxEVT_FIND, [=, this](wxFindDialogEvent& event) {
-    find_next(false);
-  });
-
-  Bind(wxEVT_FIND_NEXT, [=, this](wxFindDialogEvent& event) {
-    find_next(false);
-  });
-
-  Bind(wxEVT_FIND_REPLACE, [=, this](wxFindDialogEvent& event) {
-    replace_next(false);
-  });
-
-  Bind(wxEVT_FIND_REPLACE_ALL, [=, this](wxFindDialogEvent& event) {
-    auto* frd = find_replace_data::get();
-    replace_all(frd->get_find_string(), frd->get_replace_string());
-  });
-
-  Bind(wxEVT_KEY_DOWN, [=, this](wxKeyEvent& event) {
-    if (is_hexmode())
+  Bind(
+    wxEVT_CHAR,
+    [=, this](wxKeyEvent& event)
     {
-      if (event.GetKeyCode() == WXK_LEFT || event.GetKeyCode() == WXK_RIGHT)
-      {
-        m_hexmode.set_pos(event);
-      }
-    }
+      key_action(event);
+    });
 
-    if (m_vi->on_key_down(event))
+  Bind(
+    wxEVT_FIND,
+    [=, this](wxFindDialogEvent& event)
+    {
+      find_next(false);
+    });
+
+  Bind(
+    wxEVT_FIND_NEXT,
+    [=, this](wxFindDialogEvent& event)
+    {
+      find_next(false);
+    });
+
+  Bind(
+    wxEVT_FIND_REPLACE,
+    [=, this](wxFindDialogEvent& event)
+    {
+      replace_next(false);
+    });
+
+  Bind(
+    wxEVT_FIND_REPLACE_ALL,
+    [=, this](wxFindDialogEvent& event)
+    {
+      auto* frd = find_replace_data::get();
+      replace_all(frd->get_find_string(), frd->get_replace_string());
+    });
+
+  Bind(
+    wxEVT_KEY_DOWN,
+    [=, this](wxKeyEvent& event)
+    {
+      if (is_hexmode())
+      {
+        if (event.GetKeyCode() == WXK_LEFT || event.GetKeyCode() == WXK_RIGHT)
+        {
+          m_hexmode.set_pos(event);
+        }
+      }
+
+      if (m_vi->on_key_down(event))
+      {
+        event.Skip();
+      }
+
+      if (event.GetKeyCode() == WXK_BACK || event.GetKeyCode() == WXK_RETURN)
+      {
+        m_auto_complete->on_char(event.GetKeyCode());
+      }
+    });
+
+  Bind(
+    wxEVT_KEY_UP,
+    [=, this](wxKeyEvent& event)
     {
       event.Skip();
-    }
+      check_brace();
+    });
 
-    if (event.GetKeyCode() == WXK_BACK || event.GetKeyCode() == WXK_RETURN)
+  Bind(
+    wxEVT_LEFT_DCLICK,
+    [=, this](wxMouseEvent& event)
     {
-      m_auto_complete.on_char(event.GetKeyCode());
-    }
-  });
+      mouse_action(event);
+    });
 
-  Bind(wxEVT_KEY_UP, [=, this](wxKeyEvent& event) {
-    event.Skip();
-    check_brace();
-    m_fold_level = get_fold_level();
-  });
-
-  Bind(wxEVT_LEFT_DCLICK, [=, this](wxMouseEvent& event) {
-    mouse_action(event);
-  });
-
-  Bind(wxEVT_LEFT_UP, [=, this](wxMouseEvent& event) {
-    mouse_action(event);
-  });
+  Bind(
+    wxEVT_LEFT_UP,
+    [=, this](wxMouseEvent& event)
+    {
+      mouse_action(event);
+    });
 
   if (m_data.menu().any())
   {
-    Bind(wxEVT_RIGHT_UP, [=, this](wxMouseEvent& event) {
-      mouse_action(event);
-    });
+    Bind(
+      wxEVT_RIGHT_UP,
+      [=, this](wxMouseEvent& event)
+      {
+        mouse_action(event);
+      });
   }
 
-  Bind(wxEVT_SET_FOCUS, [=, this](wxFocusEvent& event) {
-    m_frame->set_find_focus(this);
-    event.Skip();
-  });
-
-  Bind(wxEVT_STC_AUTOCOMP_COMPLETED, [=, this](wxStyledTextEvent& event) {
-    m_auto_complete.activate(event.GetText().ToStdString());
-  });
-
-  Bind(wxEVT_STC_CHARADDED, [=, this](wxStyledTextEvent& event) {
-    event.Skip();
-    auto_indentation(event.GetKey());
-  });
-
-  Bind(wxEVT_STC_DO_DROP, [=, this](wxStyledTextEvent& event) {
-    if (is_hexmode() || GetReadOnly())
+  Bind(
+    wxEVT_SET_FOCUS,
+    [=, this](wxFocusEvent& event)
     {
-      event.SetDragResult(wxDragNone);
-    }
-    event.Skip();
-  });
+      m_frame->set_find_focus(this);
+      event.Skip();
+    });
 
-  Bind(wxEVT_STC_START_DRAG, [=, this](wxStyledTextEvent& event) {
-    if (is_hexmode() || GetReadOnly())
+  Bind(
+    wxEVT_STC_AUTOCOMP_COMPLETED,
+    [=, this](wxStyledTextEvent& event)
     {
-      event.SetDragAllowMove(false);
-    }
-    event.Skip();
-  });
+      m_auto_complete->complete(event.GetText().ToStdString());
+    });
 
-  Bind(wxEVT_STC_DWELLEND, [=, this](wxStyledTextEvent& event) {
-    if (CallTipActive())
+  Bind(
+    wxEVT_STC_CHARADDED,
+    [=, this](wxStyledTextEvent& event)
     {
-      CallTipCancel();
-    }
-  });
+      event.Skip();
+      auto_indentation(event.GetKey());
+    });
+
+  Bind(
+    wxEVT_STC_DO_DROP,
+    [=, this](wxStyledTextEvent& event)
+    {
+      if (is_hexmode() || GetReadOnly())
+      {
+        event.SetDragResult(wxDragNone);
+      }
+      event.Skip();
+    });
+
+  Bind(
+    wxEVT_STC_START_DRAG,
+    [=, this](wxStyledTextEvent& event)
+    {
+      if (is_hexmode() || GetReadOnly())
+      {
+        event.SetDragAllowMove(false);
+      }
+      event.Skip();
+    });
+
+  Bind(
+    wxEVT_STC_DWELLEND,
+    [=, this](wxStyledTextEvent& event)
+    {
+      if (CallTipActive())
+      {
+        CallTipCancel();
+      }
+    });
 
   // if we support automatic fold, this can be removed,
   // not yet possible for wx3.0. And add wxSTC_AUTOMATICFOLD_CLICK
   // to config_dialog, and SetAutomaticFold.
-  Bind(wxEVT_STC_MARGINCLICK, [=, this](wxStyledTextEvent& event) {
-    margin_action(event);
-  });
-
-  Bind(wxEVT_STC_MARGIN_RIGHT_CLICK, [=, this](wxStyledTextEvent& event) {
-    if (event.GetMargin() == m_margin_text_number)
+  Bind(
+    wxEVT_STC_MARGINCLICK,
+    [=, this](wxStyledTextEvent& event)
     {
-      auto* menu = new wex::menu({{id::stc::margin_text_hide, "&Hide"}, {}});
-      auto* author =
-        menu->AppendCheckItem(id::stc::margin_text_author, "&Show Author");
-      auto* date =
-        menu->AppendCheckItem(id::stc::margin_text_date, "&Show Date");
-      auto* id = menu->AppendCheckItem(id::stc::margin_text_id, "&Show Id");
+      margin_action(event);
+    });
 
-      if (config("blame.author").get(true))
-        author->Check();
-      if (config("blame.date").get(true))
-        date->Check();
-      if (config("blame.id").get(true))
-        id->Check();
-
-      PopupMenu(menu);
-      delete menu;
-    }
-  });
-
-  Bind(wxEVT_STC_UPDATEUI, [=, this](wxStyledTextEvent& event) {
-    event.Skip();
-
-    if (event.GetUpdated() & wxSTC_UPDATE_SELECTION)
+  Bind(
+    wxEVT_STC_MARGIN_RIGHT_CLICK,
+    [=, this](wxStyledTextEvent& event)
     {
-      m_frame->update_statusbar(this, "PaneInfo");
-    }
-  });
+      if (event.GetMargin() == m_margin_text_number)
+      {
+        auto* menu = new wex::menu({{id::stc::margin_text_hide, "&Hide"}, {}});
+        auto* author =
+          menu->AppendCheckItem(id::stc::margin_text_author, "&Show Author");
+        auto* date =
+          menu->AppendCheckItem(id::stc::margin_text_date, "&Show Date");
+        auto* id = menu->AppendCheckItem(id::stc::margin_text_id, "&Show Id");
+
+        if (config("blame.author").get(true))
+          author->Check();
+        if (config("blame.date").get(true))
+          date->Check();
+        if (config("blame.id").get(true))
+          id->Check();
+
+        PopupMenu(menu);
+        delete menu;
+      }
+    });
+
+  Bind(
+    wxEVT_STC_UPDATEUI,
+    [=, this](wxStyledTextEvent& event)
+    {
+      event.Skip();
+
+      if (event.GetUpdated() & wxSTC_UPDATE_SELECTION)
+      {
+        m_frame->update_statusbar(this, "PaneInfo");
+      }
+    });
 }
 
 void wex::stc::key_action(wxKeyEvent& event)
 {
-  if (!m_vi->is_active())
+  if (m_vi->is_active() && m_vi->mode().is_insert())
   {
-    if (isalnum(event.GetUnicodeKey()))
-    {
-      m_adding_chars = true;
-    }
-  }
-  else if (m_vi->mode().is_insert())
-  {
-    if (isalnum(event.GetUnicodeKey()))
-    {
-      m_adding_chars = true;
-    }
-
-    m_auto_complete.on_char(event.GetUnicodeKey());
-  }
-  else
-  {
-    m_adding_chars = false;
+    m_auto_complete->on_char(event.GetUnicodeKey());
   }
 
-  if (m_ex->is_active())
+  if (m_vi->visual() == ex::OFF)
   {
-    // prevent skip
+    event.Skip();
   }
   else if (m_vi->on_char(event))
   {
@@ -245,13 +285,15 @@ void wex::stc::key_action(wxKeyEvent& event)
 
     if (!m_vi->is_active())
     {
-      m_auto_complete.on_char(event.GetUnicodeKey());
+      m_auto_complete->on_char(event.GetUnicodeKey());
     }
 
     event.Skip();
   }
 
-  if (event.GetUnicodeKey() == '>' && m_lexer.scintilla_lexer() == "hypertext")
+  if (
+    event.GetUnicodeKey() == '>' &&
+    get_lexer().scintilla_lexer() == "hypertext")
   {
     hypertext(this);
   }
@@ -277,10 +319,10 @@ void wex::stc::margin_action(wxStyledTextEvent& event)
 
     if (config("blame.id").get(true))
     {
-      wex::vcs vcs{{get_filename()}};
+      wex::vcs vcs{{path()}};
 
       if (std::string margin(MarginGetText(line));
-          !margin.empty() && vcs.entry().log(get_filename(), get_word(margin)))
+          !margin.empty() && vcs.entry().log(path(), get_word(margin)))
       {
         AnnotationSetText(
           line,
@@ -295,9 +337,9 @@ void wex::stc::margin_action(wxStyledTextEvent& event)
   }
   else if (event.GetMargin() == m_margin_divider_number)
   {
-    if (m_frame->get_debug() != nullptr && m_frame->get_debug()->is_active())
+    if (m_frame->debug_is_active())
     {
-      m_frame->get_debug()->toggle_breakpoint(line, this);
+      m_frame->debug_toggle_breakpoint(line, this);
       m_skip = true;
     }
     else
@@ -321,15 +363,12 @@ void wex::stc::mouse_action(wxMouseEvent& event)
 
       event.Skip();
       check_brace();
-      m_adding_chars = false;
-      m_fold_level   = get_fold_level();
 
       if (
-        !m_skip && m_frame->get_debug() != nullptr &&
-        m_frame->get_debug()->is_active() &&
+        !m_skip && m_frame->debug_is_active() &&
         matches_one_of(
-          get_filename().extension(),
-          m_frame->get_debug()->debug_entry().extensions()))
+          path().extension(),
+          m_frame->debug_entry()->extensions()))
       {
         const auto& word =
           (!GetSelectedText().empty() ? GetSelectedText().ToStdString() :
@@ -337,7 +376,7 @@ void wex::stc::mouse_action(wxMouseEvent& event)
 
         if (!word.empty() && isalnum(word[0]))
         {
-          m_frame->get_debug()->print(word);
+          m_frame->debug_print(word);
         }
       }
 
@@ -345,7 +384,8 @@ void wex::stc::mouse_action(wxMouseEvent& event)
     }
     else if (event.RightUp())
     {
-      menu::menu_t style(menu::menu_t().set(menu::IS_POPUP));
+      menu::menu_t style(
+        menu::menu_t().set(menu::IS_POPUP).set(menu::IS_LINES));
 
       if (GetReadOnly() || is_hexmode())
         style.set(menu::IS_READ_ONLY);
@@ -353,7 +393,7 @@ void wex::stc::mouse_action(wxMouseEvent& event)
         style.set(menu::IS_SELECTED);
       if (GetTextLength() == 0)
         style.set(menu::IS_EMPTY);
-      if (m_visual)
+      if (m_vi->visual() == ex::VISUAL)
         style.set(menu::IS_VISUAL);
       if (CanPaste())
         style.set(menu::CAN_PASTE);
