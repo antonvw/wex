@@ -15,6 +15,8 @@
 #include <wex/tokenize.h>
 #include <wex/version.h>
 #include <wx/app.h>
+#include <wx/timer.h>
+#include <wx/window.h>
 
 #include "cmdline-imp.h"
 
@@ -49,19 +51,30 @@ wex::cmdline_imp::cmdline_imp(bool add_standard_options, config& cfg)
   : m_desc()
   , m_cfg(cfg)
 {
-  m_desc.add_options()("help,h", "displays usage information and exits");
-
   if (add_standard_options)
   {
     // clang-format off
+    // options are sorted on short option if present, long option
     m_desc.add_options()
-      ("version", "displays version information and exits")
+      ("logfile,D", po::value<std::string>(), "sets log file")
+      ("echo,e", "echo commands")
+      ("help,h", "displays usage information and exits")
+      ("quit,q", po::value<int>(),
+         "quits after specified number of seconds")
+      ("version,r", "displays version information and exits")
+      ("verbose,v", "activates maximum (trace) verbosity")
       ("level,V", po::value<int>()->default_value(log::level_t_def()),
         std::string("activates verbosity down from verbose level\n" +
           log::get_level_info()).c_str())
-      ("verbose,v", "activates maximum (trace) verbosity")
-      ("logfile,D", po::value<std::string>(), "sets log file");
+      ("scriptout,w", po::value<std::string>(), 
+         "script out append (echo to file <arg>)")
+      ("echo-output,x", "echo output commands (process, statusbar)")
+      ("output,X", po::value<std::string>(), "output commands append to file");
     // clang-format on
+  }
+  else
+  {
+    m_desc.add_options()("help,h", "displays usage information and exits");
   }
 }
 
@@ -119,7 +132,48 @@ bool wex::cmdline_imp::parse(data::cmdline& data)
 
     return false;
   }
-  else if (m_vm.count("verbose"))
+
+  if (m_vm.count("echo"))
+  {
+    m_is_echo = true;
+  }
+
+  if (m_vm.count("echo-output"))
+  {
+    m_is_output = true;
+  }
+
+  if (m_vm.count("output"))
+  {
+    m_output = m_vm["output"].as<std::string>();
+  }
+
+  if (m_vm.count("quit"))
+  {
+    if (const auto quit(m_vm["quit"].as<int>()); quit > 0)
+    {
+      const auto id_quit = wxWindowBase::NewControlId();
+
+      auto* timer_start = new wxTimer(wxTheApp, id_quit);
+
+      timer_start->StartOnce(1000 * quit);
+
+      wxTheApp->Bind(
+        wxEVT_TIMER,
+        [=, this](wxTimerEvent& event)
+        {
+          wxTheApp->Exit();
+        },
+        id_quit);
+    }
+  }
+
+  if (m_vm.count("scriptout"))
+  {
+    m_scriptout = m_vm["scriptout"].as<std::string>();
+  }
+
+  if (m_vm.count("verbose"))
   {
     loglevel = log::LEVEL_TRACE;
   }

@@ -143,7 +143,7 @@ public:
 
   /// Allows you to perform action for a (vi) command.
   /// This method is invoked after command is executed.
-  virtual void record(const std::string& command) { ; }
+  virtual void record(const std::string& command);
 
   /// Restores a previous saved current page.
   /// Returns restored page (default returns nullptr).
@@ -306,6 +306,7 @@ public:
   std::string get_statustext(const std::string& pane) const override;
   factory::stc*
   open_file(const path& filename, const data::stc& data = data::stc()) override;
+  bool output(const std::string& text) const override;
   void set_recent_file(const path& path) override;
   void statusbar_clicked_right(const std::string&) override;
   bool
@@ -330,6 +331,7 @@ protected:
 private:
   bool     add_toolbar_panes(const panes_t& panes);
   wxPanel* create_ex_panel();
+  void     provide_output(const std::string& text) const;
 
   std::string m_perspective;
 

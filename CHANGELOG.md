@@ -1,5 +1,8 @@
 # changes
 
+**v22.04**
+- added methods to allow testing wex applications
+
 **v21.10**
 - boost::algorithm lib used
 - boost::tokenizer lib used

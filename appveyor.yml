@@ -1,4 +1,4 @@
-version: 21.10.0.{build}
+version: 22.04.0.{build}
 
 clone_folder: c:\projects\wex
 

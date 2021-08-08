@@ -15,7 +15,7 @@ function substitute
   ${_sed} -e "s/SOME.*/wex localization file $1/" -i "$1"
   ${_sed} -e "s/YEAR/2017-2021/" -i "$1" 
   ${_sed} -e "s/PACKAGE/wex/" -i "$1" 
-  ${_sed} -e "s/VERSION/21.10/" -i "$1" 
+  ${_sed} -e "s/VERSION/22.04/" -i "$1" 
   ${_sed} -e "/FIRST AUTHOR.*/d" -i "$1" 
   ${_sed} -e "s/charset=CHARSET/charset=UTF-8/" -i "$1" 
 }
