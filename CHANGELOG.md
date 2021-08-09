@@ -1,6 +1,6 @@
 # changes
 
-**v21.10**
+**v21.10** *September 12, 2021*
 - boost::algorithm lib used
 - boost::tokenizer lib used
 - added wex::factory namespace, renamed wex::report namespace into wex::del
