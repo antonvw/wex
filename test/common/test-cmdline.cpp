@@ -34,7 +34,7 @@ TEST_CASE("wex::cmdline")
     }
   }
 
-  SUBCASE("constructor")
+  SUBCASE("constructor-no-standard-options")
   {
     int         a{0};
     float       b{0};
@@ -91,7 +91,8 @@ TEST_CASE("wex::cmdline")
          p = v[0];
          q = v[1];
          r = v[2];
-       }});
+       }},
+      false);
 
     SUBCASE("help")
     {
@@ -140,5 +141,40 @@ TEST_CASE("wex::cmdline")
       REQUIRE(cmdl.parse_set(data.string("s1?")));
       REQUIRE(cmdl.parse_set(data.string("nos1")));
     }
+  }
+
+  SUBCASE("constructor-standard-options")
+  {
+    bool        s{false};
+    std::string a;
+
+    wex::cmdline cmdl(
+      {{{"s1,s", "bool"},
+        [&](bool on)
+        {
+          s = on;
+        }}},
+      {{{"o1,a", "int"},
+        {wex::cmdline::INT,
+         [&](const std::any& i)
+         {
+           a = std::any_cast<int>(i);
+         }}}});
+
+    wex::data::cmdline data("-a 10 -s");
+    REQUIRE(cmdl.parse(data));
+
+    REQUIRE(wex::cmdline::get_output().empty());
+    REQUIRE(wex::cmdline::get_scriptout().empty());
+    REQUIRE(!wex::cmdline::is_echo());
+    REQUIRE(!wex::cmdline::is_output());
+
+    wex::data::cmdline data2("-a 10 -e -s -w www -x -X xxx");
+    REQUIRE(cmdl.parse(data2));
+
+    REQUIRE(wex::cmdline::get_output() == "xxx");
+    REQUIRE(wex::cmdline::get_scriptout() == "www");
+    REQUIRE(wex::cmdline::is_echo());
+    REQUIRE(wex::cmdline::is_output());
   }
 }

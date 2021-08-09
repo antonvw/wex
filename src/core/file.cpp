@@ -236,9 +236,17 @@ const std::string* wex::file::read(std::streampos seek_position)
   }
 
   m_buffer = std::make_unique<std::string>();
+  
+#ifndef __WXMSW__
   m_buffer->resize(m_path.m_stat.st_size - seek_position);
-
   m_fs.read(m_buffer->data(), m_buffer->size());
+#else
+  char c;
+  while (m_fs.get(c))
+  {
+    m_buffer->push_back(c);
+  }
+#endif
 
   if (m_fs.bad())
   {

@@ -1,6 +1,9 @@
 # changes
 
-**v21.10**
+**v22.04**
+- added methods to allow testing wex applications
+
+**v21.10** *September 12, 2021*
 - boost::algorithm lib used
 - boost::tokenizer lib used
 - added wex::factory namespace, renamed wex::report namespace into wex::del

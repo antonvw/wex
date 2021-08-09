@@ -150,6 +150,16 @@ void wex::cmdline::get_all(std::string& help) const
             });
 }
 
+std::string wex::cmdline::get_output()
+{
+  return cmdline_imp::m_output;
+}
+
+std::string wex::cmdline::get_scriptout()
+{
+  return cmdline_imp::m_scriptout;
+}
+
 bool wex::cmdline::get_single(
   const std::vector<std::string>& v,
   std::string&                    help) const
@@ -173,6 +183,16 @@ bool wex::cmdline::get_single(
   }
 
   return false;
+}
+
+bool wex::cmdline::is_echo()
+{
+  return cmdline_imp::m_is_echo;
+}
+
+bool wex::cmdline::is_output()
+{
+  return cmdline_imp::m_is_output;
 }
 
 void wex::cmdline::init()
@@ -251,7 +271,7 @@ bool wex::cmdline::parse(data::cmdline& data)
   }
   catch (...)
   {
-    log::trace("unknown exception");
+    log("unsupported flags");
   }
 
   return false;
