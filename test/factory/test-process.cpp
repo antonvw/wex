@@ -5,8 +5,8 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/factory/process.h>
 #include <iostream>
+#include <wex/factory/process.h>
 
 #include "../test.h"
 
@@ -68,11 +68,11 @@ TEST_CASE("wex::factory::process")
 
     SUBCASE("input")
     {
-//      REQUIRE(process.system("wc", "./") == 0);
-//      freopen("newstdin", "w", stdin);
-//      fprintf(stdin, "1 2 3");
-//      fclose(stdin);
-//      std::cout << process.get_stdout() << "\n";
+      //      REQUIRE(process.system("wc", "./") == 0);
+      //      freopen("newstdin", "w", stdin);
+      //      fprintf(stdin, "1 2 3");
+      //      fclose(stdin);
+      //      std::cout << process.get_stdout() << "\n";
     }
 #endif
 

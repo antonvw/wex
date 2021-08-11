@@ -643,6 +643,8 @@ bool wex::shell::set_command_from_history(const std::string& short_command)
 
 void wex::shell::set_process(factory::process* process)
 {
+  clear();
+
   m_process = process;
 
   if (process != nullptr)

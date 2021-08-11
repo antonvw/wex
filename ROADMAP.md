@@ -1,5 +1,8 @@
 # roadmap
 - supply process input if requested (as with svn password)
+- error XInitThread has not beel called
+  after or during Fif
+  test on Linux
 
 ## backlog
 - add general validator (e.g. use in tcpview)
