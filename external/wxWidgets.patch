@@ -59,3 +59,32 @@ index 050287205e..bdacfb2a85 100644
 +wx_lib_link_libraries(wxqa PUBLIC)
  
  wx_finalize_lib(wxqa)
+diff --git a/src/gtk/app.cpp b/src/gtk/app.cpp
+index afae00e006..daa1d658c8 100644
+--- a/src/gtk/app.cpp
++++ b/src/gtk/app.cpp
+@@ -6,6 +6,7 @@
+ // Licence:     wxWindows licence
+ /////////////////////////////////////////////////////////////////////////////
+ 
++
+ // For compilers that support precompilation, includes "wx.h".
+ #include "wx/wxprec.h"
+ 
+@@ -21,6 +22,8 @@
+ 
+ #include "wx/thread.h"
+ 
++#include <X11/Xlib.h>
++
+ #ifdef __WXGPE__
+     #include <gpe/init.h>
+ #endif
+@@ -186,6 +189,7 @@ wxIMPLEMENT_DYNAMIC_CLASS(wxApp,wxEvtHandler);
+ 
+ wxApp::wxApp()
+ {
++    XInitThreads();
+     m_isInAssert = false;
+     m_idleSourceId = 0;
+ }

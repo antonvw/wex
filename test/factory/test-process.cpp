@@ -5,11 +5,10 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream>
 #include <wex/factory/process.h>
 
 #include "../test.h"
-
-TEST_SUITE_BEGIN("wex::process");
 
 TEST_CASE("wex::factory::process")
 {
@@ -66,6 +65,15 @@ TEST_CASE("wex::factory::process")
       REQUIRE(wxGetCwd().Contains("data"));
       wex::path::current(cwd.original());
     }
+
+    SUBCASE("input")
+    {
+      //      REQUIRE(process.system("wc", "./") == 0);
+      //      freopen("newstdin", "w", stdin);
+      //      fprintf(stdin, "1 2 3");
+      //      fclose(stdin);
+      //      std::cout << process.get_stdout() << "\n";
+    }
 #endif
 
 #ifndef __WXMSW__
@@ -78,5 +86,3 @@ TEST_CASE("wex::factory::process")
 #endif
   }
 }
-
-TEST_SUITE_END();

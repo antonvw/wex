@@ -156,23 +156,18 @@ int wex::factory::process::system(
 
   try
   {
-#if BOOST_VERSION / 100 % 1000 == 72
-    const int ec = bp::system(bp::start_dir = start_dir, exe);
-    error        = "boost version 1.72 error, please change version";
-#else
     std::future<std::string> of, ef;
 
     const int ec = bp::system(
       bp::start_dir = start_dir,
       exe,
-      bp::std_out > of,
+      bp::std_in<stdin, bp::std_out> of,
       bp::std_err > ef);
 
     if (of.valid())
       m_stdout = of.get();
     if (ef.valid())
       m_stderr = ef.get();
-#endif
 
     if (!ec)
     {
