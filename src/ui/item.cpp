@@ -373,6 +373,17 @@ wxFlexGridSizer* wex::item::add_static_text(wxSizer* sizer) const
   return nullptr;
 }
 
+bool wex::item::apply(bool save) const
+{
+  if (m_data.apply() != nullptr)
+  {
+    (m_data.apply())(m_window, get_value(), save);
+    return true;
+  }
+
+  return false;
+}
+
 bool wex::item::create_window(wxWindow* parent, bool readonly)
 {
   if (m_type != USER && m_window != nullptr)
@@ -1061,6 +1072,32 @@ const std::any wex::item::get_value() const
   return any;
 }
 
+std::string wex::item::get_value_as_string() const
+{
+  switch (m_type)
+  {
+    case COMBOBOX:
+    {
+      auto ar(std::any_cast<wxArrayString>(get_value()));
+
+      if (!ar.empty())
+      {
+        return ar.Item(0).ToStdString();
+      }
+    }
+    break;
+
+    case TEXTCTRL:
+      return std::any_cast<std::string>(get_value());
+      break;
+
+    default:
+      wex::log("not yet implemented for") << (int)m_type;
+  }
+
+  return std::string();
+}
+
 bool wex::item::is_notebook() const
 {
   return m_type >= NOTEBOOK && m_type <= NOTEBOOK_WEX;
@@ -1288,4 +1325,38 @@ bool wex::item::set_value(const std::any& value) const
   }
 
   return true;
+}
+
+bool wex::item::validate() const
+{
+  if (m_data.validate() != nullptr)
+  {
+    return m_data.validate()(get_value_as_string());
+  }
+
+  if (m_data.is_regex())
+  {
+    try
+    {
+      std::regex r(get_value_as_string());
+    }
+    catch (std::exception& e)
+    {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+bool wex::item::validate(const std::string& regex) const
+{
+  try
+  {
+    return std::regex_match(get_value_as_string(), std::regex(regex));
+  }
+  catch (std::exception e)
+  {
+    return false;
+  }
 }

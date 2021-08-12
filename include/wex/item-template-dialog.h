@@ -55,113 +55,18 @@ public:
     /// number of rows (if 0 add similar items on next row)
     int rows = 0,
     /// number of columns
-    int cols = 1)
-    : dialog(data)
-    , m_force_checkbox_checked(false)
-    , m_items(v)
-  {
-    T::set_dialog(this);
-    layout(rows, cols);
-    Bind(wxEVT_BUTTON, &item_template_dialog::on_command, this, wxID_APPLY);
-    Bind(wxEVT_BUTTON, &item_template_dialog::on_command, this, wxID_CANCEL);
-    Bind(wxEVT_BUTTON, &item_template_dialog::on_command, this, wxID_CLOSE);
-    Bind(wxEVT_BUTTON, &item_template_dialog::on_command, this, wxID_OK);
-    Bind(
-      wxEVT_UPDATE_UI,
-      &item_template_dialog::on_update_ui,
-      this,
-      wxID_APPLY);
-    Bind(wxEVT_UPDATE_UI, &item_template_dialog::on_update_ui, this, wxID_OK);
-  };
+    int cols = 1);
 
   /// Adds an item to the temp vector.
   void add(const T& item) { m_items_tmp.emplace_back(item); }
 
   /// If this item is related to a button, bind to event handler.
   /// Returns true if bind was done.
-  bool bind_button(const T& item)
-  {
-    if (item.window() == nullptr)
-      return false;
-    switch (item.type())
-    {
-      case item::BUTTON:
-      case item::COMMANDLINKBUTTON:
-        Bind(
-          wxEVT_BUTTON,
-          [&, this](const wxCommandEvent& event)
-          {
-            if (!item.apply())
-              click(event);
-          },
-          item.window()->GetId());
-        break;
-      case item::COMBOBOX_DIR:
-        Bind(
-          wxEVT_BUTTON,
-          [&, this](const wxCommandEvent& event)
-          {
-            auto*       browse = reinterpret_cast<wxComboBox*>(item.window());
-            wxDirDialog dlg(
-              this,
-              _(wxDirSelectorPromptStr),
-              browse->GetValue(),
-              wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
-            DO_DIALOG;
-          },
-          item.window()->GetId());
-        break;
-      case item::COMBOBOX_FILE:
-        Bind(
-          wxEVT_BUTTON,
-          [&, this](const wxCommandEvent& event)
-          {
-            auto*        browse = reinterpret_cast<wxComboBox*>(item.window());
-            const path   path(browse->GetValue());
-            wxFileDialog dlg(
-              this,
-              _(wxFileSelectorPromptStr),
-              path.parent_path(),
-              path.filename(),
-              wxFileSelectorDefaultWildcardStr,
-              wxFD_DEFAULT_STYLE | wxFD_FILE_MUST_EXIST);
-            DO_DIALOG;
-          },
-          item.window()->GetId());
-        break;
-      case item::TOGGLEBUTTON:
-        Bind(
-          wxEVT_TOGGLEBUTTON,
-          [&, this](const wxCommandEvent& event)
-          {
-            if (!item.apply())
-              click(event);
-          },
-          item.window()->GetId());
-        break;
-      default:
-        return false;
-    }
-    return true;
-  };
+  bool bind_button(const T& item);
 
   /// Returns the (first) item that has specified label,
   /// or empty item if item does not exist.
-  const T find(const std::string& label) const
-  {
-    if (const auto& it = std::find_if(
-          m_items.begin(),
-          m_items.end(),
-          [label](const auto& p)
-          {
-            return label == p.label();
-          });
-        it != m_items.end())
-    {
-      return *it;
-    }
-    return T();
-  };
+  const T find(const std::string& label) const;
 
   /// If you specified some checkboxes, calling this method
   /// requires that one of them should be checked for the OK button
@@ -170,12 +75,7 @@ public:
     /// specify the (part of) the name of the checkbox
     const std::string& contains = std::string(),
     /// specify on which page
-    const std::string& page = std::string())
-  {
-    m_force_checkbox_checked = true;
-    m_contains               = contains;
-    m_page                   = page;
-  };
+    const std::string& page = std::string());
 
   /// Returns all items.
   const auto& get_items() const { return m_items; }
@@ -188,184 +88,331 @@ public:
   };
 
   /// Sets the item actual value for specified label.
-  bool set_item_value(const std::string& label, const std::any& value) const
-  {
-    for (auto& item : m_items)
-    {
-      if (item.label() == label)
-      {
-        return item.set_value(value);
-      }
-    };
-    return false;
-  };
+  bool set_item_value(const std::string& label, const std::any& value) const;
 
 private:
-  void click(const wxCommandEvent& event) const
+  void click(const wxCommandEvent& event) const;
+  void layout(int rows, int cols);
+  void on_command(wxCommandEvent& event);
+  void on_update_ui(wxUpdateUIEvent& event);
+
+  std::vector<T> m_items, m_items_tmp;
+
+  bool m_force_checkbox_checked{false};
+
+  wxString m_contains, m_page;
+};
+
+// implementation
+
+template <class T>
+wex::item_template_dialog<T>::item_template_dialog(
+  const std::vector<T>& v,
+  const data::window&   data,
+  int                   rows,
+  int                   cols)
+  : dialog(data)
+  , m_items(v)
+{
+  T::set_dialog(this);
+  layout(rows, cols);
+
+  Bind(wxEVT_BUTTON, &item_template_dialog::on_command, this, wxID_APPLY);
+  Bind(wxEVT_BUTTON, &item_template_dialog::on_command, this, wxID_CANCEL);
+  Bind(wxEVT_BUTTON, &item_template_dialog::on_command, this, wxID_CLOSE);
+  Bind(wxEVT_BUTTON, &item_template_dialog::on_command, this, wxID_OK);
+  Bind(wxEVT_UPDATE_UI, &item_template_dialog::on_update_ui, this, wxID_APPLY);
+  Bind(wxEVT_UPDATE_UI, &item_template_dialog::on_update_ui, this, wxID_OK);
+};
+
+template <class T> bool wex::item_template_dialog<T>::bind_button(const T& item)
+{
+  if (item.window() == nullptr)
+    return false;
+
+  switch (item.type())
   {
-    if (auto* frame =
-          dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
-        frame != nullptr)
-    {
-      frame->on_command_item_dialog(GetId(), event);
-    }
-  };
+    case item::BUTTON:
+    case item::COMMANDLINKBUTTON:
+      Bind(
+        wxEVT_BUTTON,
+        [&, this](const wxCommandEvent& event)
+        {
+          if (!item.apply())
+            click(event);
+        },
+        item.window()->GetId());
+      break;
 
-  void layout(int rows, int cols)
+    case item::COMBOBOX_DIR:
+      Bind(
+        wxEVT_BUTTON,
+        [&, this](const wxCommandEvent& event)
+        {
+          auto*       browse = reinterpret_cast<wxComboBox*>(item.window());
+          wxDirDialog dlg(
+            this,
+            _(wxDirSelectorPromptStr),
+            browse->GetValue(),
+            wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
+          DO_DIALOG;
+        },
+        item.window()->GetId());
+      break;
+
+    case item::COMBOBOX_FILE:
+      Bind(
+        wxEVT_BUTTON,
+        [&, this](const wxCommandEvent& event)
+        {
+          auto*        browse = reinterpret_cast<wxComboBox*>(item.window());
+          const path   path(browse->GetValue());
+          wxFileDialog dlg(
+            this,
+            _(wxFileSelectorPromptStr),
+            path.parent_path(),
+            path.filename(),
+            wxFileSelectorDefaultWildcardStr,
+            wxFD_DEFAULT_STYLE | wxFD_FILE_MUST_EXIST);
+          DO_DIALOG;
+        },
+        item.window()->GetId());
+      break;
+
+    case item::TOGGLEBUTTON:
+      Bind(
+        wxEVT_TOGGLEBUTTON,
+        [&, this](const wxCommandEvent& event)
+        {
+          if (!item.apply())
+            click(event);
+        },
+        item.window()->GetId());
+      break;
+
+    default:
+      return false;
+  }
+
+  return true;
+};
+
+template <class T>
+void wex::item_template_dialog<T>::click(const wxCommandEvent& event) const
+{
+  if (auto* frame =
+        dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
+      frame != nullptr)
   {
-    wxFlexGridSizer* previous_item_sizer = nullptr;
-    wxFlexGridSizer* sizer =
-      (rows > 0 ? new wxFlexGridSizer(rows, cols, 0, 0) :
-                  new wxFlexGridSizer(cols));
+    frame->on_command_item_dialog(GetId(), event);
+  }
+};
 
-    for (int i = 0; i < cols; i++)
-    {
-      sizer->AddGrowableCol(i);
-    }
-    int previous_type = -1;
-    for (auto& item : m_items)
-    {
-      if (item.empty())
-        continue;
-
-      // If this item has same type as previous type use previous sizer,
-      // otherwise use no sizer (layout will create a new one).
-      wxFlexGridSizer* current_item_sizer =
-        (item.type() == previous_type && cols == 1 ? previous_item_sizer :
-                                                     nullptr);
-
-      // layout the item.
-      previous_item_sizer = item.layout(
-        this,
-        sizer,
-        data().button() == wxCANCEL,
-        current_item_sizer);
-      previous_type = item.type();
-
-      if (
-        sizer->GetEffectiveRowsCount() >= 1 &&
-        !sizer->IsRowGrowable(sizer->GetEffectiveRowsCount() - 1) &&
-        item.is_row_growable())
-      {
-        sizer->AddGrowableRow(sizer->GetEffectiveRowsCount() - 1);
-      }
-      bind_button(item);
-    }
-    add_user_sizer(sizer);
-    layout_sizers();
-    m_items.insert(m_items.end(), m_items_tmp.begin(), m_items_tmp.end());
-    m_items_tmp.clear();
-  };
-
-  void on_command(wxCommandEvent& event)
+template <class T>
+const T wex::item_template_dialog<T>::find(const std::string& label) const
+{
+  if (const auto& it = std::find_if(
+        m_items.begin(),
+        m_items.end(),
+        [label](const auto& p)
+        {
+          return label == p.label();
+        });
+      it != m_items.end())
   {
+    return *it;
+  }
+
+  return T();
+};
+
+template <class T>
+void wex::item_template_dialog<T>::force_checkbox_checked(
+  const std::string& contains,
+  const std::string& page)
+{
+  m_force_checkbox_checked = true;
+  m_contains               = contains;
+  m_page                   = page;
+};
+
+template <class T> void wex::item_template_dialog<T>::layout(int rows, int cols)
+{
+  wxFlexGridSizer* previous_item_sizer = nullptr;
+  wxFlexGridSizer* sizer =
+    (rows > 0 ? new wxFlexGridSizer(rows, cols, 0, 0) :
+                new wxFlexGridSizer(cols));
+
+  for (int i = 0; i < cols; i++)
+  {
+    sizer->AddGrowableCol(i);
+  }
+
+  int previous_type = -1;
+
+  for (auto& item : m_items)
+  {
+    if (item.empty())
+      continue;
+
+    // If this item has same type as previous type use previous sizer,
+    // otherwise use no sizer (layout will create a new one).
+    wxFlexGridSizer* current_item_sizer =
+      (item.type() == previous_type && cols == 1 ? previous_item_sizer :
+                                                   nullptr);
+
+    // layout the item.
+    previous_item_sizer =
+      item.layout(this, sizer, data().button() == wxCANCEL, current_item_sizer);
+    previous_type = item.type();
+
     if (
-      event.GetId() == wxID_APPLY ||
-      ((event.GetId() == wxID_OK || event.GetId() == wxID_CANCEL) &&
-       !IsModal()))
+      sizer->GetEffectiveRowsCount() >= 1 &&
+      !sizer->IsRowGrowable(sizer->GetEffectiveRowsCount() - 1) &&
+      item.is_row_growable())
     {
-      click(event);
+      sizer->AddGrowableRow(sizer->GetEffectiveRowsCount() - 1);
     }
-    event.Skip();
-  };
+    bind_button(item);
+  }
 
-  void on_update_ui(wxUpdateUIEvent& event)
+  add_user_sizer(sizer);
+  layout_sizers();
+
+  m_items.insert(m_items.end(), m_items_tmp.begin(), m_items_tmp.end());
+  m_items_tmp.clear();
+};
+
+template <class T>
+void wex::item_template_dialog<T>::on_command(wxCommandEvent& event)
+{
+  if (
+    event.GetId() == wxID_APPLY ||
+    ((event.GetId() == wxID_OK || event.GetId() == wxID_CANCEL) && !IsModal()))
   {
-    bool one_checkbox_checked = false;
-    for (const auto& item : m_items)
+    click(event);
+  }
+
+  event.Skip();
+};
+
+template <class T>
+void wex::item_template_dialog<T>::on_update_ui(wxUpdateUIEvent& event)
+{
+  bool one_checkbox_checked = false;
+
+  for (const auto& item : m_items)
+  {
+    switch (item.type())
     {
-      switch (item.type())
-      {
-        case item::CHECKBOX:
-          if (m_force_checkbox_checked)
+      case item::CHECKBOX:
+        if (m_force_checkbox_checked)
+        {
+          if (auto* cb = reinterpret_cast<wxCheckBox*>(item.window());
+              wxString(item.label()).Lower().Contains(m_contains.Lower()) &&
+              cb->IsChecked() && item.page() == m_page)
           {
-            if (auto* cb = reinterpret_cast<wxCheckBox*>(item.window());
-                wxString(item.label()).Lower().Contains(m_contains.Lower()) &&
-                cb->IsChecked() && item.page() == m_page)
+            one_checkbox_checked = true;
+          }
+        }
+        break;
+
+      case item::CHECKLISTBOX_BOOL:
+        if (m_force_checkbox_checked)
+        {
+          auto* clb = reinterpret_cast<wxCheckListBox*>(item.window());
+          for (size_t i = 0; i < clb->GetCount(); i++)
+          {
+            if (
+              clb->GetString(i).Lower().Contains(m_contains.Lower()) &&
+              clb->IsChecked(i) && item.page() == m_page)
             {
               one_checkbox_checked = true;
             }
           }
-          break;
+        }
+        break;
 
-        case item::CHECKLISTBOX_BOOL:
-          if (m_force_checkbox_checked)
+      case item::COMBOBOX:
+      case item::COMBOBOX_DIR:
+      case item::COMBOBOX_FILE:
+        if (auto* cb = reinterpret_cast<wxComboBox*>(item.window());
+            cb != nullptr)
+        {
+          if (
+            !item.validate() ||
+            (!item.data().validate_re().empty() &&
+             !item.validate(item.data().validate_re())) ||
+            (item.data().control().is_required() && cb->GetValue().empty()))
           {
-            auto* clb = reinterpret_cast<wxCheckListBox*>(item.window());
-            for (size_t i = 0; i < clb->GetCount(); i++)
-            {
-              if (
-                clb->GetString(i).Lower().Contains(m_contains.Lower()) &&
-                clb->IsChecked(i) && item.page() == m_page)
-              {
-                one_checkbox_checked = true;
-              }
-            }
+            event.Enable(false);
+            return;
           }
-          break;
+        }
+        break;
 
-        case item::COMBOBOX:
-        case item::COMBOBOX_DIR:
-        case item::COMBOBOX_FILE:
-          if (auto* cb = reinterpret_cast<wxComboBox*>(item.window());
-              item.data().control().is_required())
+      case item::TEXTCTRL:
+      case item::TEXTCTRL_FLOAT:
+      case item::TEXTCTRL_INT:
+        if (auto* tc = reinterpret_cast<wxTextCtrl*>(item.window());
+            tc != nullptr)
+        {
+          if (
+            !item.validate() ||
+            (!item.data().validate_re().empty() &&
+             !item.validate(item.data().validate_re())) ||
+            (item.data().control().is_required() && tc->GetValue().empty()))
           {
-            if (cb->GetValue().empty())
-            {
-              event.Enable(false);
-              return;
-            }
+            event.Enable(false);
+            return;
           }
-          break;
+        }
+        break;
 
-        case item::TEXTCTRL:
-        case item::TEXTCTRL_FLOAT:
-        case item::TEXTCTRL_INT:
-          if (auto* tc = reinterpret_cast<wxTextCtrl*>(item.window());
-              item.data().control().is_required())
+      case item::DIRPICKERCTRL:
+        if (auto* pc = reinterpret_cast<wxDirPickerCtrl*>(item.window());
+            item.data().control().is_required())
+        {
+          if (pc->GetPath().empty())
           {
-            if (tc->GetValue().empty())
-            {
-              event.Enable(false);
-              return;
-            }
+            event.Enable(false);
+            return;
           }
-          break;
+        }
+        break;
 
-        case item::DIRPICKERCTRL:
-          if (auto* pc = reinterpret_cast<wxDirPickerCtrl*>(item.window());
-              item.data().control().is_required())
+      case item::FILEPICKERCTRL:
+        if (auto* pc = reinterpret_cast<wxFilePickerCtrl*>(item.window());
+            item.data().control().is_required())
+        {
+          if (pc->GetPath().empty())
           {
-            if (pc->GetPath().empty())
-            {
-              event.Enable(false);
-              return;
-            }
+            event.Enable(false);
+            return;
           }
-          break;
+        }
+        break;
 
-        case item::FILEPICKERCTRL:
-          if (auto* pc = reinterpret_cast<wxFilePickerCtrl*>(item.window());
-              item.data().control().is_required())
-          {
-            if (pc->GetPath().empty())
-            {
-              event.Enable(false);
-              return;
-            }
-          }
-          break;
-
-        default:; // do nothing
-      }
+      default:; // do nothing
     }
-    event.Enable(m_force_checkbox_checked ? one_checkbox_checked : true);
+  }
+
+  event.Enable(m_force_checkbox_checked ? one_checkbox_checked : true);
+};
+
+template <class T>
+bool wex::item_template_dialog<T>::set_item_value(
+  const std::string& label,
+  const std::any&    value) const
+{
+  for (auto& item : m_items)
+  {
+    if (item.label() == label)
+    {
+      return item.set_value(value);
+    }
   };
 
-  std::vector<T> m_items, m_items_tmp;
-
-  bool m_force_checkbox_checked;
-
-  wxString m_contains, m_page;
+  return false;
 };
 }; // namespace wex

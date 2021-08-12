@@ -20,8 +20,6 @@
 #include "test-item.h"
 #include "test.h"
 
-TEST_SUITE_BEGIN("wex::item");
-
 TEST_CASE("wex::item")
 {
   auto* panel = new wxScrolledWindow(frame());
@@ -407,6 +405,16 @@ TEST_CASE("wex::item")
       wxPostEvent(dlg, wxCommandEvent(wxEVT_BUTTON, wxOK));
     }
   }
-}
 
-TEST_SUITE_END();
+  SUBCASE("validate")
+  {
+    wex::item item(
+      "item",
+      "testxxx",
+      wex::item::TEXTCTRL,
+      wex::data::item(wex::data::control().is_required(true)));
+
+    REQUIRE(item.validate("[a-z]+"));
+    REQUIRE(!item.validate("[0-9]+"));
+  }
+}
