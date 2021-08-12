@@ -90,6 +90,12 @@ wex::data::item& wex::data::item::image_list(wxImageList* il)
   return *this;
 }
 
+wex::data::item& wex::data::item::validate(const user_validate_t rhs)
+{
+  m_validate = rhs;
+  return *this;
+}
+
 wex::data::item&
 wex::data::item::user_window_create(const user_window_create_t rhs)
 {

@@ -11,13 +11,19 @@
 
 TEST_CASE("wex::data::item")
 {
-  SUBCASE("Constructor")
+  SUBCASE("constructor")
   {
+    REQUIRE(wex::data::item().apply() == nullptr);
     REQUIRE(wex::data::item().columns() == 1);
+    REQUIRE(wex::data::item().image_list() == nullptr);
+    REQUIRE(std::any_cast<int>(wex::data::item().inc()) == 1);
+    REQUIRE(wex::data::item().label_type() == wex::data::item::LABEL_LEFT);
+    REQUIRE(std::any_cast<int>(wex::data::item().min()) == 0);
+    REQUIRE(std::any_cast<int>(wex::data::item().max()) == 1);
+    REQUIRE(wex::data::item().validate() == nullptr);
+
     REQUIRE(wex::data::item(wex::data::control().is_required(true))
               .control()
               .is_required());
-    REQUIRE(wex::data::item().label_type() == wex::data::item::LABEL_LEFT);
-    REQUIRE(wex::data::item().image_list() == nullptr);
   }
 }
