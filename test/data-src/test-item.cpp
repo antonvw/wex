@@ -16,6 +16,7 @@ TEST_CASE("wex::data::item")
     REQUIRE(wex::data::item().apply() == nullptr);
     REQUIRE(wex::data::item().columns() == 1);
     REQUIRE(wex::data::item().image_list() == nullptr);
+    REQUIRE(!wex::data::item().is_regex());
     REQUIRE(std::any_cast<int>(wex::data::item().inc()) == 1);
     REQUIRE(wex::data::item().label_type() == wex::data::item::LABEL_LEFT);
     REQUIRE(std::any_cast<int>(wex::data::item().min()) == 0);
@@ -25,5 +26,15 @@ TEST_CASE("wex::data::item")
     REQUIRE(wex::data::item(wex::data::control().is_required(true))
               .control()
               .is_required());
+  }
+
+  SUBCASE("set")
+  {
+    wex::data::item item;
+    item.is_regex(true);
+    item.label_type(wex::data::item::LABEL_NONE);
+
+    REQUIRE(item.is_regex());
+    REQUIRE(item.label_type() == wex::data::item::LABEL_NONE);
   }
 }

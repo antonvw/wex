@@ -78,7 +78,7 @@ public:
   /// Sets image list.
   item& image_list(wxImageList* il);
 
-  /// increment value if appropriate
+  /// Returns increment value;
   const auto& inc() const { return m_inc; }
 
   /// Sets inc.
@@ -86,6 +86,12 @@ public:
 
   /// Returns the initial value.
   const auto& initial() const { return m_initial; }
+
+  /// Returns is_regex.
+  const bool is_regex() const { return m_is_regex; }
+
+  /// Sets is_regex.
+  item& is_regex(bool rhs);
 
   /// Returns label type.
   const auto label_type() const { return m_label_type; }
@@ -117,6 +123,12 @@ public:
   /// Sets validator.
   item& validate(const user_validate_t rhs);
 
+  /// Returns validate regex.
+  const auto& validate_re() const { return m_validate_re; }
+
+  /// Sets validator regex.
+  item& validate_re(const std::string& rhs);
+
   /// Returns the process callback for window config
   auto& user_window_to_config() const { return m_user_window_to_config_t; }
 
@@ -135,6 +147,10 @@ private:
   std::any m_initial, m_min{0}, m_max{1}, m_inc{1};
   int      m_major_dimension{1};
   label_t  m_label_type{LABEL_LEFT};
+
+  std::string m_validate_re;
+
+  bool m_is_regex{false};
 
   wxImageList* m_image_list{nullptr};
 

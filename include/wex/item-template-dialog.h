@@ -337,9 +337,13 @@ void wex::item_template_dialog<T>::on_update_ui(wxUpdateUIEvent& event)
       case item::COMBOBOX_DIR:
       case item::COMBOBOX_FILE:
         if (auto* cb = reinterpret_cast<wxComboBox*>(item.window());
-            item.data().control().is_required())
+            cb != nullptr)
         {
-          if (cb->GetValue().empty())
+          if (
+            !item.validate() ||
+            (!item.data().validate_re().empty() &&
+             !item.validate(item.data().validate_re())) ||
+            (item.data().control().is_required() && cb->GetValue().empty()))
           {
             event.Enable(false);
             return;
@@ -351,9 +355,13 @@ void wex::item_template_dialog<T>::on_update_ui(wxUpdateUIEvent& event)
       case item::TEXTCTRL_FLOAT:
       case item::TEXTCTRL_INT:
         if (auto* tc = reinterpret_cast<wxTextCtrl*>(item.window());
-            item.data().control().is_required())
+            tc != nullptr)
         {
-          if (tc->GetValue().empty())
+          if (
+            !item.validate() ||
+            (!item.data().validate_re().empty() &&
+             !item.validate(item.data().validate_re())) ||
+            (item.data().control().is_required() && tc->GetValue().empty()))
           {
             event.Enable(false);
             return;

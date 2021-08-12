@@ -438,16 +438,8 @@ public:
   }
 
   /// If apply callback has been provided calls apply.
-  /// Otherwise return false.
-  bool apply(bool save = true) const
-  {
-    if (m_data.apply() != nullptr)
-    {
-      (m_data.apply())(m_window, get_value(), save);
-      return true;
-    }
-    return false;
-  }
+  /// Otherwise returns false.
+  bool apply(bool save = true) const;
 
   /// Returns item data.
   const auto& data() const { return m_data; }
@@ -506,6 +498,13 @@ public:
   /// Returns the type.
   auto type() const { return m_type; }
 
+  /// If validate callback has been provided calls validate.
+  /// Otherwise returns true.
+  bool validate() const;
+
+  /// Validates current value against supplied regex.
+  bool validate(const std::string& regex) const;
+
   /// Returns the window (first call layout, to create it,
   /// otherwise it is nullptr).
   auto* window() const { return m_window; }
@@ -530,6 +529,8 @@ private:
     bool               readonly);
 
   bool create_window(wxWindow* parent, bool readonly);
+
+  std::string get_value_as_string() const;
 
   bool m_is_row_growable = false;
 
