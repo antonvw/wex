@@ -320,6 +320,9 @@ wex::regex::regex(
 - boost::algorithm lib
   uses replace_all, to_upper, trim
 
+- boost::json lib
+  to implement wex::config
+
 - boost::log lib
   to implement wex::log
 

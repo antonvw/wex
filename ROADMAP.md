@@ -1,5 +1,4 @@
 # roadmap
-- use boost JSON (requires boost 1.76)
 
 ## backlog
 - use modules

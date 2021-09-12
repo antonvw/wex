@@ -252,7 +252,6 @@ get_filename_component(wexSETUP_DIR_H ${wexSETUP_DIR_H} DIRECTORY)
 list(APPEND wxTOOLKIT_INCLUDE_DIRS 
   ${wexSETUP_DIR_H}
   include 
-  external/json/single_include
   external/pugixml/src
   external/ctags/libreadtags/
   external/wxWidgets/include

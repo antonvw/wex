@@ -2,12 +2,11 @@
 // Name:      version.cpp
 // Purpose:   Implementation of wex::version_info
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/version.hpp>
 #include <iomanip>
-#include <nlohmann/json.hpp>
 #include <pugixml.hpp>
 #include <regex>
 #include <sstream>
@@ -57,8 +56,6 @@ const std::string wex::version_info::description() const
 
 const std::stringstream wex::version_info::external_libraries() const
 {
-  const auto& json(nlohmann::json::meta());
-
   std::stringstream ss;
 
   ss << wex::get_version_info().description() << ": " << get()
@@ -68,11 +65,6 @@ const std::stringstream wex::version_info::external_libraries() const
      << "Boost library: " << BOOST_VERSION / 100000 << "." // major version
      << BOOST_VERSION / 100 % 1000 << "."                  // minor version
      << BOOST_VERSION % 100                                // patch level
-     << "\n"
-
-     // json
-     << skip_quotes(json.meta()["name"])
-     << " library: " << skip_quotes(json.meta()["version"]["string"])
      << "\n"
 
      // pugi

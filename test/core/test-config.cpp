@@ -2,10 +2,11 @@
 // Name:      test-config.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/config.h>
+#include <wx/font.h>
 
 #include "../test.h"
 
@@ -52,6 +53,8 @@ TEST_CASE("wex::config")
     REQUIRE(std::get<1>(wex::config("sb").get(sb)[1]).front() == "flat");
     REQUIRE(std::get<2>(wex::config("sb").get(sb)[1]) == 4);
     REQUIRE(wex::config("sbg").get(wex::config::statusbar_t{}).empty());
+
+    wex::config::save();
   }
 
   SUBCASE("setters")
@@ -78,13 +81,28 @@ TEST_CASE("wex::config")
     wex::config("y").erase();
     REQUIRE(!wex::config("y").exists());
 
+    wex::config("stc.Default font")
+      .set(wxFont(
+        12,
+        wxFONTFAMILY_DEFAULT,
+        wxFONTSTYLE_NORMAL,
+        wxFONTWEIGHT_NORMAL));
+
+    wex::config("stc.Cursor line").set(true);
+
+    REQUIRE(wex::config("stc.Print flags").get(3) == 3);
+
     const wex::config::statusbar_t sb{
-      {"three", {"normal"}, 2},
+      {"three", {"normal", "flat"}, 2},
       {"four", {"flat"}, 4}};
 
     REQUIRE(!std::get<0>(wex::config("sbs").get(sb)[0]).empty());
+
     wex::config("sbs").set(sb);
     REQUIRE(std::get<0>(wex::config("sbs").get(sb)[0]) == "three");
+    REQUIRE(std::get<2>(wex::config("sbs").get(sb)[0]) == 2);
+
+    wex::config::save();
   }
 
   SUBCASE("constructor child")
@@ -127,9 +145,14 @@ TEST_CASE("wex::config")
 
   SUBCASE("dotted-item")
   {
-    wex::config("sc.z").set(8);
-    REQUIRE(!wex::config("sc.z").is_child());
-    REQUIRE(wex::config("sc.z").get(9) == 8);
+    wex::config("number.v").set(8);
+    REQUIRE(!wex::config("number.v").is_child());
+    REQUIRE(!wex::config("number.v").is_child());
+    REQUIRE(wex::config("number.v").exists());
+    REQUIRE(wex::config("number.v").get(9) == 8);
+
+    wex::config("vector.v").set(std::vector<int>{1, 2, 3});
+    REQUIRE(wex::config("vector.v").get(std::vector<int>{}).size() == 3);
   }
 
   SUBCASE("hierarchy")

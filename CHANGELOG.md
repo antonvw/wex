@@ -1,6 +1,7 @@
 # changes
 
 **v22.04**
+- boost::json lib instead of nlohmann/json lib, requiring boost 1.75
 - added methods to allow testing wex applications
 
 **v21.10** *September 12, 2021*

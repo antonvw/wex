@@ -10,6 +10,3 @@
 [submodule "external/ctags"]
 	path = external/ctags
 	url = https://github.com/universal-ctags/ctags.git
-[submodule "external/json"]
-	path = external/json
-	url = https://github.com/nlohmann/json.git

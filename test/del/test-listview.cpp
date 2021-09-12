@@ -34,6 +34,8 @@ TEST_CASE("wex::del::listview")
     lv->Select(0);
     lv->Select(1);
 
+    wex::config(_("list.Comparator")).set("diff");
+
 #ifndef __WXMSW__
     for (auto id : std::vector<int>{
            wex::ID_EDIT_OPEN,
