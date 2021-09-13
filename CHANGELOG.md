@@ -3,6 +3,7 @@
 **v22.04**
 - boost::json lib instead of nlohmann/json lib, requiring boost 1.75
 - added methods to allow testing wex applications
+- c++20 standard
 
 **v21.10** *September 12, 2021*
 - boost::algorithm lib used
@@ -14,7 +15,7 @@
 **v21.04** *March 7, 2021*
 - added FindWEX.cmake to assist using wex library using cmake projects
 - boost::log lib instead of easylogging++ lib
-- c++20 standard, c++17 available as tag
+- c++2a standard, c++17 available as tag
 - support of ex mode handling of files
 - moved apps folder to gitlab
 

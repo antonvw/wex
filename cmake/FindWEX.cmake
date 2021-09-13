@@ -147,7 +147,7 @@ else()
     set(wx_LIBRARIES ${wx_LIBRARIES} wxscintilla-3.1)
   endif()
 
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2a -g")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -g")
 endif()
 
 if (CMAKE_BUILD_TYPE EQUAL "Debug")
