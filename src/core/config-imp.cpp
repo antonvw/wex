@@ -2,22 +2,22 @@
 // Name:      config-imp.cpp
 // Purpose:   Implementation of class wex::config_imp
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <fstream>
 #include <iomanip>
-#include <nlohmann/json.hpp>
+#include <iostream>
+
+#include <boost/json/src.hpp>
 
 #include <wex/config.h>
 #include <wex/core.h>
+#include <wex/file.h>
 #include <wex/log.h>
-#include <wex/tokenize.h>
 #include <wx/app.h>
 
 #include "config-imp.h"
-
-using json = nlohmann::json;
 
 wex::config_imp::config_imp()
   : m_json({})
@@ -25,48 +25,20 @@ wex::config_imp::config_imp()
 }
 
 wex::config_imp::config_imp(const config_imp* c, const std::string& item)
-  : m_json(c == nullptr ? json({}) : c->m_json)
+  : m_json(c == nullptr ? json::object() : c->m_json)
   , m_item(item)
 {
   if (!item.empty())
   {
-    if (const auto& it = m_json.find(item); it != m_json.end())
+    if (const auto& it = m_json.find(item);
+        it != m_json.end() && it->value().is_object())
     {
-      m_json = *it;
+      m_json = it->value().as_object();
     }
     else
     {
-      m_json.clear();
+      m_json = json::object();
     }
-  }
-}
-
-json& wex::config_imp::accessor(const std::string& item)
-{
-  switch (const auto& v(tokenize<std::vector<std::string>>(item, "."));
-          v.size())
-  {
-    case 0:
-      return m_json;
-
-    case 1:
-      return m_json[v[0]];
-
-    case 2:
-      return m_json[v[0]][v[1]];
-
-    case 3:
-      return m_json[v[0]][v[1]][v[2]];
-
-    case 4:
-      return m_json[v[0]][v[1]][v[2]][v[3]];
-
-    case 5:
-      return m_json[v[0]][v[1]][v[2]][v[3]][v[4]];
-
-    default:
-      log("too deeply nested") << v.size() << "hierarchy for:" << item;
-      return m_json;
   }
 }
 
@@ -77,29 +49,59 @@ size_t wex::config_imp::elements() const
   return total;
 }
 
-void wex::config_imp::elements(const json& o, size_t& total) const
+void wex::config_imp::elements(const json::object& o, size_t& total) const
 {
   total += o.size();
 
-  for (const auto& x : o.items())
+  for (const auto& x : o)
   {
-    if (x.value().type() == json::value_t::object)
+    if (x.value().is_object())
     {
-      elements(x.value(), total);
+      elements(x.value().as_object(), total);
     }
   }
 }
 
-bool wex::config_imp::exists(const std::string& item)
+bool wex::config_imp::exists(const std::string& item) const
 {
   if (item.find('.') == std::string::npos)
   {
     return m_json.contains(item);
   }
+  else if (const auto& v(tokenize<std::vector<std::string>>(item, "."));
+           v.size() == 0)
+  {
+    return m_json.contains(item);
+  }
   else
   {
-    json& access(accessor(before(item, '.', false)));
-    return !access.is_null() && access.contains(after(item, '.', false));
+    const auto& it = m_json.find(v[0]);
+
+    if (it == m_json.end())
+    {
+      return false;
+    }
+    else
+    {
+      const auto* jv(&it->value());
+
+      for (size_t i = 1; i < v.size(); i++)
+      {
+        if (!jv->is_null() && jv->is_object())
+        {
+          const auto& it = jv->as_object().find(v[i]);
+
+          if (it == jv->as_object().end())
+          {
+            return false;
+          }
+
+          jv = &it->value();
+        }
+      }
+
+      return !jv->is_null();
+    }
   }
 }
 
@@ -110,11 +112,14 @@ void wex::config_imp::read()
     m_path = wex::path(config::dir(), wxTheApp->GetAppName().Lower() + ".json");
   }
 
-  if (std::ifstream fs(m_path.string()); fs.is_open())
+  if (wex::file fs(m_path, std::ios_base::in); fs.is_open())
   {
     try
     {
-      fs >> m_json;
+      if (const auto buffer(fs.read()); buffer != nullptr)
+      {
+        m_json = json::parse(*buffer).as_object();
+      }
     }
     catch (std::exception& e)
     {

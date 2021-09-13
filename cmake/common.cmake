@@ -242,7 +242,7 @@ else ()
   endif ()
   
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
-    -std=c++2a -Wno-overloaded-virtual -Wno-reorder -Wno-write-strings \
+    -std=c++20 -Wno-overloaded-virtual -Wno-reorder -Wno-write-strings \
     -Wno-deprecated-declarations -Wno-unused-result")
 endif ()
 
@@ -252,7 +252,6 @@ get_filename_component(wexSETUP_DIR_H ${wexSETUP_DIR_H} DIRECTORY)
 list(APPEND wxTOOLKIT_INCLUDE_DIRS 
   ${wexSETUP_DIR_H}
   include 
-  external/json/single_include
   external/pugixml/src
   external/ctags/libreadtags/
   external/wxWidgets/include
