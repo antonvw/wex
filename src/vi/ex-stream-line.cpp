@@ -149,7 +149,8 @@ wex::ex_stream_line::handle_t wex::ex_stream_line::handle(char* line, int& pos)
 
             pch++;
             m_actions++;
-            pos += m_data.replacement().size() - m_data.pattern().size();
+            pos +=
+              (int)m_data.replacement().size() - (int)m_data.pattern().size();
           } while (m_data.is_global() &&
                    (pch = strstr(pch, m_data.pattern().c_str())) != nullptr);
 

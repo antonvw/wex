@@ -1340,7 +1340,7 @@ bool wex::item::validate() const
     {
       std::regex r(get_value_as_string());
     }
-    catch (std::exception& e)
+    catch (std::exception&)
     {
       return false;
     }
