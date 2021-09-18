@@ -5,9 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <algorithm>
 #include <boost/algorithm/string.hpp>
-#include <vector>
 #include <wex/config.h>
 #include <wex/debug-entry.h>
 #include <wex/ex-stream.h>
@@ -17,6 +15,8 @@
 #include <wex/process.h>
 #include <wex/shell.h>
 #include <wx/valtext.h>
+
+import<algorithm>;
 
 /* NOLINTNEXTLINE */
 std::string wex::process::m_working_dir_key = _("Process folder");

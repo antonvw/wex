@@ -7,16 +7,17 @@
 
 #pragma once
 
-#include <any>
-#include <map>
-#include <set>
-#include <string>
-#include <utility>
-#include <vector>
 #include <wex/data/item.h>
 #include <wex/data/listview.h>
 #include <wx/sizer.h> // for wxSizer, and wxSizerFlags
 #include <wx/slider.h>
+
+import<any>;
+import<map>;
+import<set>;
+import<string>;
+import<utility>;
+import<vector>;
 
 class wxFlexGridSizer;
 class wxWindow;

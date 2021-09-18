@@ -7,8 +7,6 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/exception/diagnostic_information.hpp>
-#include <iostream>
-#include <numeric>
 #include <wex/cmdline.h>
 #include <wex/config.h>
 #include <wex/core.h>
@@ -16,6 +14,9 @@
 #include <wex/regex.h>
 
 #include "cmdline-imp.h"
+
+import<iostream>;
+import<numeric>;
 
 namespace wex
 {

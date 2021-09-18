@@ -6,12 +6,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
-#include <charconv>
 
 #include <wex/lexers.h>
 #include <wex/log.h>
 #include <wex/presentation.h>
 #include <wx/stc/stc.h>
+
+import<charconv>;
 
 wex::presentation::presentation(presentation_t type, const pugi::xml_node& node)
   : m_type(type)

@@ -6,8 +6,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
-#include <chrono>
 #include <wex/file.h>
+
+import<chrono>;
 
 TEST_CASE("wex::file")
 {

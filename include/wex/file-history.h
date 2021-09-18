@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <vector>
 #include <wex/path.h>
 #include <wx/window.h>
 

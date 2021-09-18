@@ -7,12 +7,13 @@
 
 #pragma once
 
-#include <bitset>
-#include <filesystem>
-#include <sstream>
-#include <string>
-#include <vector>
 #include <wex/stat.h>
+
+import<bitset>;
+import<filesystem>;
+import<sstream>;
+import<string>;
+import<vector>;
 
 namespace wex
 {

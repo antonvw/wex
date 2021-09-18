@@ -7,9 +7,9 @@
 
 #pragma once
 
-#include <string>
 #include <sys/stat.h>
-#include <wex/chrono.h>
+// import gives error
+#include <string>
 
 namespace wex
 {
@@ -19,18 +19,21 @@ namespace wex
 class file_stat : public stat
 {
 public:
+  /// See also chrono, uses same format.
+  static inline const std::string TIME_FORMAT = "%Y-%m-%d %H:%M:%S";
+
   /// Default constructor. Calls sync.
   explicit file_stat(const std::string& path = std::string()) { sync(path); }
 
   /// Returns the creation time.
   const std::string get_creation_time(
     /// the format as used by std::put_time
-    const std::string& format = chrono::TIME_FORMAT) const;
+    const std::string& format = TIME_FORMAT) const;
 
   /// Returns the modification time.
   const std::string get_modification_time(
     /// the format as used by std::put_time
-    const std::string& format = chrono::TIME_FORMAT) const;
+    const std::string& format = TIME_FORMAT) const;
 
   /// Returns true if the stat is okay (last sync was okay).
   bool is_ok() const { return m_is_ok; }

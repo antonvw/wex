@@ -6,8 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
-#include <numeric>
-#include <vector>
 #include <wex/beautify.h>
 #include <wex/bind.h>
 #include <wex/config.h>
@@ -30,6 +28,9 @@
 #include <wx/accel.h>
 #include <wx/msgdlg.h>
 #include <wx/numdlg.h>
+
+import<numeric>;
+import<vector>;
 
 namespace wex
 {

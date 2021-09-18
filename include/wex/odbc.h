@@ -9,9 +9,10 @@
 
 #if wexUSE_ODBC
 
-#include <memory>
 #include <wex/data/window.h>
 #include <wex/version.h>
+
+import<memory>;
 
 class wxGrid;
 class wxStyledTextCtrl;

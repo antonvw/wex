@@ -5,12 +5,13 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <vector>
 #include <wex/config.h>
 #include <wex/menu.h>
 #include <wex/vcs.h>
 
 #include "../test.h"
+
+import<vector>;
 
 TEST_SUITE_BEGIN("wex::vcs");
 

@@ -7,12 +7,13 @@
 
 #pragma once
 
-#include <any>
-#include <vector>
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/item.h>
 #include <wex/log.h>
+
+import<any>;
+import<vector>;
 
 namespace wex
 {

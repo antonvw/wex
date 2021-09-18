@@ -7,11 +7,12 @@
 
 #pragma once
 
-#include <list>
-#include <vector>
 #include <wex/data/dir.h>
 #include <wex/data/stc.h>
 #include <wx/combobox.h>
+
+import<list>;
+import<vector>;
 
 class wxArrayString;
 namespace pugi

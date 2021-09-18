@@ -5,7 +5,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <thread>
 #include <wex/accelerators.h>
 #include <wex/bind.h>
 #include <wex/cmdline.h>
@@ -29,6 +28,8 @@
 #include <wex/tostring.h>
 #include <wex/util.h>
 #include <wex/vcs.h>
+
+import<thread>;
 
 namespace wex
 {

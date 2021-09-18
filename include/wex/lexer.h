@@ -7,12 +7,13 @@
 
 #pragma once
 
-#include <map>
-#include <set>
-#include <string>
-#include <vector>
 #include <wex/property.h>
 #include <wex/style.h>
+
+import<map>;
+import<set>;
+import<string>;
+import<vector>;
 
 namespace pugi
 {

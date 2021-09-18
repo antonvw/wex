@@ -7,8 +7,9 @@
 
 #pragma once
 
-#include <map>
 #include <wx/artprov.h> // for wxArtID
+
+import<map>;
 
 namespace wex
 {

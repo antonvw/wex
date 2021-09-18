@@ -5,11 +5,9 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <algorithm>
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
-#include <numeric>
-#include <regex>
+
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/log.h>
@@ -17,6 +15,10 @@
 #include <wx/choicdlg.h>
 #include <wx/clipbrd.h>
 #include <wx/generic/dirctrlg.h> // for wxFileIconsTable
+
+import<algorithm>;
+import<numeric>;
+import<regex>;
 
 const std::string wex::after(const std::string& text, char c, bool first)
 {

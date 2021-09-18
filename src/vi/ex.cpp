@@ -6,7 +6,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <sstream>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -35,6 +34,8 @@
 #include <wex/statusbar.h>
 #include <wex/type-to-value.h>
 #include <wex/version.h>
+
+import<sstream>;
 
 #define POST_CLOSE(ID, VETO)                      \
   {                                               \

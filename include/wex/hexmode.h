@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <string>
 #include <wex/factory/hexmode.h>
 #include <wx/event.h>
 

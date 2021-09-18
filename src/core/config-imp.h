@@ -8,7 +8,6 @@
 #pragma once
 
 #include <boost/json.hpp>
-#include <string>
 
 #include <wex/core.h>
 #include <wex/log.h>

@@ -7,11 +7,12 @@
 
 #pragma once
 
-#include <fstream>
-#include <istream>
-#include <memory>
 #include <wex/path.h>
 #include <wex/stat.h>
+
+import<fstream>;
+import<istream>;
+import<memory>;
 
 namespace wex
 {

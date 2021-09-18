@@ -7,80 +7,81 @@
 
 #pragma once
 
-#include <atomic>
-#include <condition_variable>
-#include <mutex>
-#include <queue>
-#include <thread>
-#include <vector>
 #include <wex/log.h>
+
+import<atomic>;
+import<condition_variable>;
+import<mutex>;
+import<queue>;
+import<thread>;
+import<vector>;
 
 namespace wex
 {
-  /// This class offers a templatized queue you can put events in,
-  /// and a thread pool that retrieves the events and
-  /// publishes them through the event handler.
-  /// Type T is the type of event to be processed
-  template <typename T> class queue_thread
+/// This class offers a templatized queue you can put events in,
+/// and a thread pool that retrieves the events and
+/// publishes them through the event handler.
+/// Type T is the type of event to be processed
+template <typename T> class queue_thread
+{
+public:
+  /// This event handler class must be subclassed and passed in to the
+  /// queue thread constructor (in order to process events of type T).
+  class event_handler
   {
   public:
-    /// This event handler class must be subclassed and passed in to the
-    /// queue thread constructor (in order to process events of type T).
-    class event_handler
-    {
-    public:
-      /// Default constructor.
-      event_handler(){}
-
-      /// Destructor.
-      virtual ~event_handler() = default;
-
-      /// This method must be overridden to take care that
-      /// the event is processed.
-      virtual void process(std::unique_ptr<T>& event) = 0;
-    };
-
-    /// Constructor.
-    queue_thread(
-      /// event handler
-      event_handler& event_handler_instance,
-      /// timeout im milliseconds used
-      unsigned int timeout_ms = 500);
+    /// Default constructor.
+    event_handler() {}
 
     /// Destructor.
-    ~queue_thread(){}
+    virtual ~event_handler() = default;
 
-    /// Emplaces event on the queue.
-    /// The thread pool takes care of reading and clearing
-    /// the queue, and sending it to the event handler
-    /// (be sure you have invoked start).
-    void emplace(std::unique_ptr<T>& event);
-
-    /// Returns true if queue is empty.
-    bool empty();
-
-    /// Returns true if event loop is started.
-    bool is_running() const { return m_running.load(); }
-
-    // Starts the threads.
-    void start(unsigned int pool_size = 1);
-
-    /// Stops the threads (and processing of events).
-    void stop();
-
-  private:
-    void thread_main();
-
-    event_handler&            m_event_handler;
-    std::atomic_bool          m_running{false};
-    std::chrono::milliseconds m_timeout;
-    std::condition_variable   m_queue_condition;
-
-    std::mutex m_queue_mutex, m_thread_mutex;
-
-    std::queue<std::unique_ptr<T>> m_event_queue;
-    std::vector<std::thread>       m_threads;
+    /// This method must be overridden to take care that
+    /// the event is processed.
+    virtual void process(std::unique_ptr<T>& event) = 0;
   };
+
+  /// Constructor.
+  queue_thread(
+    /// event handler
+    event_handler& event_handler_instance,
+    /// timeout im milliseconds used
+    unsigned int timeout_ms = 500);
+
+  /// Destructor.
+  ~queue_thread() {}
+
+  /// Emplaces event on the queue.
+  /// The thread pool takes care of reading and clearing
+  /// the queue, and sending it to the event handler
+  /// (be sure you have invoked start).
+  void emplace(std::unique_ptr<T>& event);
+
+  /// Returns true if queue is empty.
+  bool empty();
+
+  /// Returns true if event loop is started.
+  bool is_running() const { return m_running.load(); }
+
+  // Starts the threads.
+  void start(unsigned int pool_size = 1);
+
+  /// Stops the threads (and processing of events).
+  void stop();
+
+private:
+  void thread_main();
+
+  event_handler&            m_event_handler;
+  std::atomic_bool          m_running{false};
+  std::chrono::milliseconds m_timeout;
+  std::condition_variable   m_queue_condition;
+
+  std::mutex m_queue_mutex, m_thread_mutex;
+
+  std::queue<std::unique_ptr<T>> m_event_queue;
+  std::vector<std::thread>       m_threads;
+};
 }; // namespace wex
 
 // implementation

@@ -7,8 +7,6 @@
 
 #pragma once
 
-#include <bitset>
-#include <vector>
 #include <wex/data/stc.h>
 #include <wex/factory/stc.h>
 #include <wex/hexmode.h>
@@ -17,6 +15,8 @@
 #include <wex/stc-file.h>
 #include <wex/vi.h>
 #include <wx/prntbase.h>
+
+import<vector>;
 
 namespace wex
 {

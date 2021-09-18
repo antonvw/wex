@@ -7,9 +7,10 @@
 
 #pragma once
 
-#include <list>
-#include <string>
 #include <wex/ex-command.h>
+
+import<list>;
+import<string>;
 
 namespace wex
 {

@@ -5,13 +5,14 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <algorithm>
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
 #include <wex/config.h>
+#include <wex/factory/stc.h>
 #include <wex/log.h>
 #include <wex/sort.h>
-#include <wex/factory/stc.h>
+
+import<algorithm>;
 
 wex::sort::sort(sort_t sort_t, size_t pos, size_t len)
   : m_sort_t(sort_t)

@@ -5,11 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <algorithm>
 #include <boost/tokenizer.hpp>
-#include <charconv>
-#include <functional>
-#include <numeric>
 #include <pugixml.hpp>
 #include <wex/config.h>
 #include <wex/core.h>
@@ -18,6 +14,10 @@
 #include <wex/lexers.h>
 #include <wex/log.h>
 #include <wx/platinfo.h>
+
+import<algorithm>;
+import<charconv>;
+import<numeric>;
 
 namespace wex
 {

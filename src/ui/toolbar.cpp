@@ -5,7 +5,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <list>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -23,6 +22,8 @@
 #include <wex/menu.h>
 #include <wex/textctrl.h>
 #include <wex/toolbar.h>
+
+import<list>;
 
 namespace wex
 {

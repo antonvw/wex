@@ -5,13 +5,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <filesystem>
-
-#include <wx/clipbrd.h>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wex/app.h>
 #include <wex/config.h>
 #include <wex/core.h>
@@ -19,7 +12,10 @@
 #include <wex/log.h>
 #include <wex/printing.h>
 #include <wex/version.h>
+#include <wx/clipbrd.h>
 #include <wx/stdpaths.h>
+
+import<filesystem>;
 
 namespace fs = std::filesystem;
 

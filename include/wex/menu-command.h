@@ -7,10 +7,10 @@
 
 #pragma once
 
-#include <bitset>
-#include <string>
-
 #include <pugixml.hpp>
+
+import<bitset>;
+import<string>;
 
 namespace wex
 {

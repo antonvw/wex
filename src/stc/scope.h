@@ -7,12 +7,11 @@
 
 #pragma once
 
-#include <bitset>
-#include <map>
-#include <string>
-#include <vector>
-
 #include <wex/ctags-entry.h>
+
+import<bitset>;
+import<map>;
+import<vector>;
 
 namespace wex
 {

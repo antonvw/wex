@@ -7,8 +7,9 @@
 
 #pragma once
 
-#include <vector>
 #include <wx/event.h>
+
+import<vector>;
 
 class wxFindReplaceData;
 

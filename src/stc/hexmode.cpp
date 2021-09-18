@@ -5,8 +5,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <regex>
-
 #include <wex/config.h>
 #include <wex/factory/stc.h>
 #include <wex/hexmode.h>
@@ -17,6 +15,8 @@
 #include <wx/spinctrl.h>
 
 #include "hexmode-line.h"
+
+import<regex>;
 
 namespace wex
 {

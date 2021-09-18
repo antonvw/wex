@@ -7,9 +7,10 @@
 
 #pragma once
 
-#include <map>
-#include <string>
 #include <wex/defs.h>
+
+import<map>;
+import<string>;
 
 namespace wex
 {

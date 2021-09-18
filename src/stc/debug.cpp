@@ -5,7 +5,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <fstream>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -25,6 +24,8 @@
 #include <wex/menus.h>
 #include <wex/regex.h>
 #include <wex/stc.h>
+
+import<fstream>;
 
 #ifdef __WXGTK__
 namespace wex

@@ -5,7 +5,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <thread>
 #include <wex/core.h>
 #include <wex/dir.h>
 #include <wex/factory/frame.h>
@@ -13,6 +12,8 @@
 #include <wex/stream.h>
 #include <wx/app.h>
 #include <wx/translation.h>
+
+import<thread>;
 
 namespace fs = std::filesystem;
 

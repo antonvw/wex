@@ -5,9 +5,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <regex>
-#include <stdio.h>
-#include <string.h>
 #include <wex/addressrange.h>
 #include <wex/core.h>
 #include <wex/ex-stream.h>
@@ -62,6 +59,8 @@
       return false;                                                           \
     }                                                                         \
   }
+
+import<regex>;
 
 const int default_line_size = 1000;
 

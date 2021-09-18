@@ -5,7 +5,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <numeric>
 #include <wex/bind.h>
 #include <wex/del/defs.h>
 #include <wex/del/dirctrl.h>
@@ -25,6 +24,8 @@
     event.Skip();                                     \
     return;                                           \
   }
+
+import<numeric>;
 
 const int idShowHidden = wxWindow::NewControlId();
 

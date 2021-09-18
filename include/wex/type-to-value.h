@@ -7,8 +7,9 @@
 
 #pragma once
 
-#include <string>
 #include <wex/log.h>
+
+import<string>;
 
 namespace wex
 {

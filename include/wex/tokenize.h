@@ -8,25 +8,26 @@
 #pragma once
 
 #include <boost/tokenizer.hpp>
-#include <string>
+
+import<string>;
 
 namespace wex
 {
-  /// Tokenizes the complete string into a templatized class
-  /// (e.g. vector<std::string>).
-  /// Returns the filled in container.
-  template <typename T>
-  T tokenize(const std::string& text, const char* sep = " \t\r\n")
+/// Tokenizes the complete string into a templatized class
+/// (e.g. vector<std::string>).
+/// Returns the filled in container.
+template <typename T>
+T tokenize(const std::string& text, const char* sep = " \t\r\n")
+{
+  T tokens;
+
+  for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
+         text,
+         boost::char_separator<char>(sep)))
   {
-    T tokens;
+    tokens.emplace_back(it);
+  }
 
-    for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
-           text,
-           boost::char_separator<char>(sep)))
-    {
-      tokens.emplace_back(it);
-    }
-
-    return tokens;
-  };
+  return tokens;
+};
 } // namespace wex

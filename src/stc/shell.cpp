@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
-#include <numeric>
 #include <wex/auto-complete.h>
 #include <wex/bind.h>
 #include <wex/config.h>
@@ -16,6 +15,8 @@
 #include <wex/frame.h>
 #include <wex/log.h>
 #include <wex/shell.h>
+
+import<numeric>;
 
 wex::shell::shell(
   const data::stc&   data,

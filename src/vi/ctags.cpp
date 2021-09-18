@@ -6,9 +6,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <algorithm>
-#include <vector>
-
 #include <boost/algorithm/string.hpp>
 #include <readtags.h>
 
@@ -22,6 +19,9 @@
 #include <wex/path.h>
 #include <wx/app.h>
 #include <wx/choicdlg.h>
+
+import<algorithm>;
+import<vector>;
 
 namespace wex
 {

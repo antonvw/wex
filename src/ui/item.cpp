@@ -5,8 +5,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <sstream>
-
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -44,12 +42,14 @@
 #include <wex/tocontainer.h>
 #include <wex/util.h>
 
+import<sstream>;
+
 namespace wex
 {
 template <typename S, typename T>
 T* create_spinctrl(wxWindow* parent, const data::item& data, bool readonly)
 {
-  T* window = new T(
+  auto* window = new T(
     parent,
     data.window().id(),
     wxEmptyString,

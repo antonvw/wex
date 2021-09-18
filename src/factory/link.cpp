@@ -5,7 +5,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <algorithm>
 #include <boost/algorithm/string.hpp>
 #include <wex/config.h>
 #include <wex/core.h>
@@ -14,6 +13,8 @@
 #include <wex/lexer.h>
 #include <wex/path.h>
 #include <wex/regex.h>
+
+import<algorithm>;
 
 namespace wex::factory
 {

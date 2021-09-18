@@ -5,7 +5,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <vector>
 #include <wex/beautify.h>
 #include <wex/config.h>
 #include <wex/core.h>

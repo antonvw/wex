@@ -5,11 +5,12 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <chrono>
 #include <wex/dir.h>
 #include <wex/frd.h>
 
 #include "test.h"
+
+import<chrono>;
 
 void find_in_files(const std::vector<wex::path>& v, wex::del::listview* lv)
 {

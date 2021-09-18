@@ -7,11 +7,11 @@
 
 #pragma once
 
-#include <algorithm>
-#include <map>
-#include <string>
-#include <utility>
-#include <vector>
+import<algorithm>;
+import<map>;
+import<string>;
+import<utility>;
+import<vector>;
 
 namespace wex
 {

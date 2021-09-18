@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <string>
+import<string>;
 
 class wxTextEntry;
 

@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <vector>
 #include <wex/dialog.h>
 #include <wex/factory/frame.h>
 #include <wex/item.h>
@@ -31,6 +30,8 @@
         item == wxNOT_FOUND ? browse->Append(value) : item); \
     }                                                        \
   }
+
+import<vector>;
 
 namespace wex
 {

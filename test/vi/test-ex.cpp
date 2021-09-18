@@ -5,8 +5,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <vector>
-
 #include <wex/core.h>
 #include <wex/ex.h>
 #include <wex/frd.h>

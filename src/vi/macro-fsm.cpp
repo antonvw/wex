@@ -9,7 +9,6 @@
 #include <boost/statechart/custom_reaction.hpp>
 #include <boost/statechart/state.hpp>
 #include <boost/statechart/transition.hpp>
-#include <fstream>
 #include <pugixml.hpp>
 #include <wex/config.h>
 #include <wex/ex.h>
@@ -22,6 +21,8 @@
 #include <wex/variable.h>
 
 #include "macro-fsm.h"
+
+import<fstream>;
 
 namespace mpl = boost::mpl;
 

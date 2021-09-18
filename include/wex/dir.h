@@ -7,15 +7,13 @@
 
 #pragma once
 
-#include <filesystem>
-#include <memory>
-#include <string>
-
 #include <wex/data/dir.h>
 #include <wex/interruptible.h>
 #include <wex/path.h>
 #include <wex/stream-statistics.h>
 #include <wex/tool.h>
+
+import<filesystem>;
 
 class wxEvtHandler;
 

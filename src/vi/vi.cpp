@@ -3,13 +3,11 @@
 // Purpose:   Implementation of class wex::vi
 //            http://pubs.opengroup.org/onlinepubs/9699919799/utilities/vi.html
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
-#include <functional>
-#include <sstream>
 #include <wex/addressrange.h>
 #include <wex/app.h>
 #include <wex/config.h>
@@ -24,6 +22,8 @@
 #include <wex/macros.h>
 #include <wex/regex.h>
 #include <wex/vi.h>
+
+import<sstream>;
 
 namespace wex
 {

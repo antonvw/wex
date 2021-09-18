@@ -5,17 +5,17 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <algorithm>
-#include <charconv>
-#include <functional>
-#include <numeric>
-#include <regex>
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/factory/stc.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
 #include <wex/regex.h>
+
+import<algorithm>;
+import<charconv>;
+import<functional>;
+import<numeric>;
 
 // Constructor for lexers from specified filename.
 // This must be an existing xml file containing all lexers.

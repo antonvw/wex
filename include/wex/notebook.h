@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <map>
 #include <wex/config.h>
 #include <wex/data/notebook.h>
 #include <wex/data/window.h>
@@ -17,6 +16,8 @@
 #include <wex/frame.h>
 #include <wx/aui/auibook.h>
 #include <wx/wupdlock.h>
+
+import<map>;
 
 namespace wex
 {

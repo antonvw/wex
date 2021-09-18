@@ -9,6 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wex/chrono.h>
 #include <wex/core.h>
 #include <wex/printing.h>
 #include <wx/stc/stc.h>

@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <string>
 #include <wex/menu-command.h>
 
 namespace wex

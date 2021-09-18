@@ -7,8 +7,6 @@
 
 #pragma once
 
-#include <utility>
-#include <vector>
 #include <wex/data/stc.h>
 #include <wex/data/window.h>
 #include <wex/factory/frame.h>
@@ -17,6 +15,9 @@
 #include <wex/statusbar-pane.h>
 #include <wex/statusbar.h>
 #include <wx/aui/framemanager.h>
+
+import<utility>;
+import<vector>;
 
 class wxFindReplaceDialog;
 class wxPanel;

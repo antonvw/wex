@@ -243,7 +243,7 @@ else ()
   
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
     -std=c++20 -Wno-overloaded-virtual -Wno-reorder -Wno-write-strings \
-    -Wno-deprecated-declarations -Wno-unused-result")
+    -Wno-deprecated-declarations -Wno-unused-result -fmodules")
 endif ()
 
 get_filename_component(wexSETUP_DIR_H ${wexSETUP_H} DIRECTORY)

@@ -6,8 +6,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <pugixml.hpp>
-#include <thread>
 #include <wex/bind.h>
+#include <wex/chrono.h>
 #include <wex/config.h>
 #include <wex/del/defs.h>
 #include <wex/del/frame.h>
@@ -16,6 +16,8 @@
 #include <wex/log.h>
 #include <wex/menu.h>
 #include <wex/util.h>
+
+import<thread>;
 
 wex::del::file::file(const wex::path& p, const data::listview& data)
   : del::listview(data::listview(data).type(data::listview::FILE))

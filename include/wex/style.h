@@ -8,7 +8,8 @@
 #pragma once
 
 #include <pugixml.hpp>
-#include <set>
+
+import<set>;
 
 class wxStyledTextCtrl;
 

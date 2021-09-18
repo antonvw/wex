@@ -5,11 +5,12 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <numeric>
 #include <wex/style.h>
 #include <wx/stc/stc.h>
 
 #include "../test.h"
+
+import<numeric>;
 
 TEST_CASE("wex::style")
 {

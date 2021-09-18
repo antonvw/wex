@@ -8,7 +8,6 @@
 #pragma once
 
 #include <doctest.h>
-#include <string>
 #include <wex/app.h>
 #include <wex/path.h>
 #include <wx/platform.h>

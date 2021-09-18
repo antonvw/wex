@@ -7,11 +7,11 @@
 
 #pragma once
 
-#include <fstream>
-#include <map>
-#include <string>
-
 #include <wex/factory/text-window.h>
+
+import<fstream>;
+import<map>;
+import<string>;
 
 namespace wex
 {

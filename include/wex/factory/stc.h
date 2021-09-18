@@ -7,13 +7,14 @@
 
 #pragma once
 
-#include <bitset>
 #include <wex/ex-command.h>
 #include <wex/factory/text-window.h>
 #include <wex/lexer.h>
 #include <wex/path.h>
 #include <wx/print.h>
 #include <wx/stc/stc.h>
+
+import<bitset>;
 
 namespace wex
 {

@@ -7,16 +7,16 @@
 
 #pragma once
 
-#include <list>
-#include <map>
-#include <string>
-#include <vector>
-
 #include <wex/data/listview.h>
 #include <wex/factory/listview.h>
 #include <wex/path-match.h>
 
 #include <wx/artprov.h> // for wxArtID
+
+import<list>;
+import<map>;
+import<string>;
+import<vector>;
 
 namespace wex
 {

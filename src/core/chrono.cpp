@@ -6,9 +6,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <iomanip>
-#include <sstream>
 #include <wex/chrono.h>
+
+import<iomanip>;
+import<sstream>;
 
 using namespace ::std::chrono;
 
@@ -65,7 +66,7 @@ std::string wex::chrono::get_time(const timespec& ts) const
 
   ss << get_time(ts.tv_sec);
 
-  if (m_precision != PRECISION_DEFAULT)
+  if (m_precision != PRECISION_SEC)
   {
     switch (const auto tp = timespec_to_time_point(ts); m_precision)
     {

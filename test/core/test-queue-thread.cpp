@@ -6,8 +6,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
-#include <chrono>
 #include <wex/queue-thread.h>
+
+import<chrono>;
 
 namespace wex
 {

@@ -5,7 +5,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <vector>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -15,6 +14,8 @@
 #include <wex/vcs-command.h>
 
 #include "test.h"
+
+import<vector>;
 
 TEST_CASE("wex::util" * doctest::may_fail())
 {

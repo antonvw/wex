@@ -2,11 +2,12 @@
 // Name:      macro-fsm.h
 // Purpose:   Declaration of class wex::macro_fsm
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/statechart/state_machine.hpp>
-#include <string>
+
+import<string>;
 
 namespace sc = boost::statechart;
 

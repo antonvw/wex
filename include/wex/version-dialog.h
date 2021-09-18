@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <string>
 #include <wex/version.h>
 #include <wx/aboutdlg.h>
 

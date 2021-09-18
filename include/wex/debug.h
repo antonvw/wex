@@ -7,12 +7,13 @@
 
 #pragma once
 
-#include <map>
-#include <string>
-#include <tuple>
 #include <wex/debug-entry.h>
 #include <wex/marker.h>
 #include <wex/path.h>
+
+import<map>;
+import<string>;
+import<tuple>;
 
 namespace wex
 {

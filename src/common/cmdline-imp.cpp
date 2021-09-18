@@ -5,9 +5,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
-#include <sstream>
-
 #include <wex/cmdline.h>
 #include <wex/config.h>
 #include <wex/core.h>
@@ -19,6 +16,9 @@
 #include <wx/window.h>
 
 #include "cmdline-imp.h"
+
+import <iostream>;
+import <sstream>;
 
 #define WEX_CALLBACK(TYPE, FIELD)        \
   v->second.FIELD(it.second.as<TYPE>()); \

@@ -7,8 +7,9 @@
 
 #pragma once
 
-#include <functional>
 #include <wex/data.h>
+
+import<functional>;
 
 namespace wex
 {

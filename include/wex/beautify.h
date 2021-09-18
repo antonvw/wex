@@ -7,11 +7,12 @@
 
 #pragma once
 
-#include <string>
 #include <wex/config.h>
 #include <wex/lexer.h>
 #include <wex/path.h>
 #include <wex/stc.h>
+
+import<string>;
 
 namespace wex
 {

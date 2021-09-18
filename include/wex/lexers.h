@@ -7,11 +7,6 @@
 
 #pragma once
 
-#include <array>
-#include <map>
-#include <set>
-#include <vector>
-
 #include <pugixml.hpp>
 
 #include <wex/indicator.h>
@@ -20,6 +15,11 @@
 #include <wex/path.h>
 #include <wex/property.h>
 #include <wex/style.h>
+
+import<array>;
+import<map>;
+import<set>;
+import<vector>;
 
 class wxWindow;
 

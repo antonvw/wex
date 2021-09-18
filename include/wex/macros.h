@@ -7,14 +7,14 @@
 
 #pragma once
 
-#include <map>
-#include <string>
-#include <vector>
-
 #include <pugixml.hpp>
 
 #include <wex/macro-mode.h>
 #include <wex/variable.h>
+
+import<map>;
+import<string>;
+import<vector>;
 
 namespace wex
 {

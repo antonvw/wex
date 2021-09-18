@@ -7,13 +7,14 @@
 
 #pragma once
 
-#include <functional>
-#include <map>
-#include <string>
-#include <utility>
-#include <vector>
 #include <wex/ex-command.h>
 #include <wex/marker.h>
+
+import<functional>;
+import<map>;
+import<string>;
+import<utility>;
+import<vector>;
 
 namespace wex
 {

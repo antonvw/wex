@@ -7,11 +7,11 @@
 
 #pragma once
 
-#include <regex>
-#include <string>
-
 #include <wex/data/window.h>
 #include <wex/dialog.h>
+
+import<regex>;
+import<string>;
 
 namespace wex
 {

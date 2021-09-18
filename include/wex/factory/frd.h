@@ -1,4 +1,4 @@
-/////////////////////////////////////////////////functionality///////////////////
+////////////////////////////////////////////////////////////////////////////////
 // Name:      frd.h
 // Purpose:   Declaration of wex::find_replace_data class
 // Author:    Anton van Wezenbeek
@@ -7,9 +7,9 @@
 
 #pragma once
 
-#include <list>
-#include <regex>
-#include <string>
+import<list>;
+import<regex>;
+import<string>;
 
 class wxFindReplaceData;
 

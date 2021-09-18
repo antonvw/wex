@@ -7,11 +7,12 @@
 
 #pragma once
 
-#include <memory>
-#include <vector>
 #include <wex/path-lexer.h>
 #include <wx/html/htmprint.h>
 #include <wx/print.h>
+
+import<memory>;
+import<vector>;
 
 class wxStyledTextCtrl;
 

@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <vector>
 #include <wex/vcs-entry.h>
 
 namespace wex

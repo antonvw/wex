@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <memory>
 #include <wex/data/window.h>
 #include <wex/factory/process.h>
 

@@ -5,8 +5,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <map>
-#include <numeric>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -28,6 +26,9 @@
   }                                                              \
                                                                  \
   m_entry = find_entry(m_entries);
+
+import<map>;
+import<numeric>;
 
 namespace wex
 {

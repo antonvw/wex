@@ -7,13 +7,13 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
-
 #include <pugixml.hpp>
 
 #include <wex/log.h>
 #include <wex/menus.h>
+
+import<string>;
+import<vector>;
 
 namespace wex
 {

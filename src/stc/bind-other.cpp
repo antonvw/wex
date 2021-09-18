@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
-#include <vector>
 #include <wex/auto-complete.h>
 #include <wex/config.h>
 #include <wex/debug-entry.h>
@@ -18,6 +17,8 @@
 #include <wex/stc.h>
 #include <wex/vcs.h>
 #include <wx/fdrepdlg.h> // for wxFindDialogEvent
+
+import<vector>;
 
 namespace wex
 {

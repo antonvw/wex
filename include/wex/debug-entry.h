@@ -7,10 +7,11 @@
 
 #pragma once
 
-#include <map>
 #include <pugixml.hpp>
 #include <wex/menu-command.h>
 #include <wex/menu-commands.h>
+
+import<map>;
 
 namespace wex
 {

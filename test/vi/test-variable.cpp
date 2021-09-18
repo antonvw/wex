@@ -5,9 +5,10 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <tuple>
 #include <wex/ex.h>
 #include <wex/variable.h>
+
+import<tuple>;
 
 #include "test.h"
 

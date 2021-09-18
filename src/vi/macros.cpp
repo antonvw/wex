@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
-#include <numeric>
 #include <wex/app.h>
 #include <wex/config.h>
 #include <wex/core.h>
@@ -17,6 +16,8 @@
 #include <wex/path.h>
 #include <wex/type-to-value.h>
 #include <wex/util.h>
+
+import<numeric>;
 
 wex::macros::macros()
   : m_mode(this)

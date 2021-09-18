@@ -5,7 +5,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <vector>
 #include <wex/addressrange.h>
 #include <wex/ex-stream.h>
 #include <wex/vi.h>

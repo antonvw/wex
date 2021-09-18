@@ -7,9 +7,10 @@
 
 #pragma once
 
-#include <sstream>
-#include <string>
 #include <wx/versioninfo.h>
+
+import<sstream>;
+import<string>;
 
 namespace wex
 {

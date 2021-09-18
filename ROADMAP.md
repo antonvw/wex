@@ -1,5 +1,5 @@
 # roadmap
-- use modules
+- use c++ modules
 - use boost::test
 
 ## backlog

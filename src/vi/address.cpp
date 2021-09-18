@@ -5,7 +5,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <memory>
 #include <wex/address.h>
 #include <wex/core.h>
 #include <wex/ex-stream.h>

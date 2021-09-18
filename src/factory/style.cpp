@@ -7,13 +7,14 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
-#include <charconv>
 
 #include <wex/config.h>
 #include <wex/lexers.h>
 #include <wex/log.h>
 #include <wex/style.h>
 #include <wx/stc/stc.h>
+
+import<charconv>;
 
 void wex::style::apply(wxStyledTextCtrl* stc) const
 {

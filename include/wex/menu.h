@@ -7,9 +7,10 @@
 
 #pragma once
 
-#include <bitset>
 #include <wex/menu-item.h>
 #include <wx/menu.h>
+
+import<bitset>;
 
 namespace wex
 {

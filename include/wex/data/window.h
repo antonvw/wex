@@ -7,10 +7,11 @@
 
 #pragma once
 
-#include <string>
 #include <wex/data.h>
 #include <wx/filedlg.h>
 #include <wx/window.h>
+
+import<string>;
 
 namespace wex::data
 {

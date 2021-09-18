@@ -5,7 +5,6 @@
 // Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <thread>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -24,6 +23,8 @@
   wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_EDIT_FILE_ACTION); \
   event.SetInt(ACTION);                                                   \
   wxPostEvent(m_stc, event);
+
+import<thread>;
 
 namespace wex
 {
@@ -74,8 +75,7 @@ bool wex::stc_file::do_file_load(bool synced)
   }
 
   const bool hexmode =
-    dlg.is_hexmode() || 
-    m_stc->data().flags().test(data::stc::WIN_HEX) ||
+    dlg.is_hexmode() || m_stc->data().flags().test(data::stc::WIN_HEX) ||
     (config(_("stc.Ex mode show hex")).get(false) && !m_stc->is_visual());
 
   const std::streampos offset =

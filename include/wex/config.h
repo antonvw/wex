@@ -7,15 +7,15 @@
 
 #pragma once
 
-#include <list>
-#include <string>
-#include <tuple>
-#include <vector>
-
 #include <wex/path.h>
 
 class wxColour;
 class wxFont;
+
+import<list>;
+import<string>;
+import<tuple>;
+import<vector>;
 
 namespace wex
 {

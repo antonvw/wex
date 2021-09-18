@@ -5,11 +5,6 @@
 // Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <filesystem>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wex/config.h>
 #include <wex/core.h>
 #include <wex/file-history.h>
@@ -19,6 +14,9 @@
 #include <wx/filehistory.h>
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/imaglist.h>
+#include <wx/stockitem.h>
+
+import<filesystem>;
 
 namespace wex
 {

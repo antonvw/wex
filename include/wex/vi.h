@@ -2,17 +2,18 @@
 // Name:      vi.h
 // Purpose:   Declaration of class wex::vi
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <functional>
-#include <string>
-#include <vector>
 #include <wex/ex.h>
 #include <wex/vi-mode.h>
 #include <wx/event.h>
+
+import<functional>;
+import<string>;
+import<vector>;
 
 namespace wex
 {

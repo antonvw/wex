@@ -7,9 +7,10 @@
 
 #pragma once
 
-#include <list>
-#include <vector>
 #include <wex/stc.h>
+
+import<list>;
+import<vector>;
 
 namespace wex
 {

@@ -7,13 +7,13 @@
 
 #pragma once
 
-#include <any>
-#include <functional>
-#include <string>
-#include <utility>
-#include <vector>
-
 #include <wex/data/cmdline.h>
+
+import<any>;
+import<functional>;
+import<string>;
+import<utility>;
+import<vector>;
 
 namespace wex
 {

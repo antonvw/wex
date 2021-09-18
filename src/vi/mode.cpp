@@ -5,7 +5,6 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <algorithm>
 #include <boost/mpl/list.hpp>
 #include <boost/statechart/custom_reaction.hpp>
 #include <boost/statechart/state.hpp>
@@ -20,6 +19,8 @@
 #include <wex/statusbar.h>
 #include <wex/vi-mode.h>
 #include <wex/vi.h>
+
+import<algorithm>;
 
 namespace mpl = boost::mpl;
 namespace sc  = boost::statechart;

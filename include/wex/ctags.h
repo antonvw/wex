@@ -2,14 +2,15 @@
 // Name:      ctags.h
 // Purpose:   Declaration of class wex::ctags
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <map>
-#include <string>
 #include <wex/ctags-entry.h>
+
+import<map>;
+import<string>;
 
 typedef struct sTagFile tagFile;
 

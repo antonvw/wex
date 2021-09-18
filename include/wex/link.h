@@ -7,21 +7,21 @@
 
 #pragma once
 
-#include <string>
-
 #include <wex/factory/link.h>
+
+import<string>;
 
 namespace wex
 {
-  /// Offers a class holding info about a link, and implementing virtual
-  /// methods from base class.
-  class link : public factory::link
-  {
-  public:
-    /// Default constructor.
-    link();
+/// Offers a class holding info about a link, and implementing virtual
+/// methods from base class.
+class link : public factory::link
+{
+public:
+  /// Default constructor.
+  link();
 
-  private:
-    std::string get_link_pairs(const std::string& text) const override;
-  };
+private:
+  std::string get_link_pairs(const std::string& text) const override;
+};
 }; // namespace wex

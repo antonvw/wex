@@ -5,10 +5,6 @@
 // Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <fstream>
-#include <iomanip>
-#include <iostream>
-
 #include <boost/json/src.hpp>
 
 #include <wex/config.h>
@@ -18,6 +14,9 @@
 #include <wx/app.h>
 
 #include "config-imp.h"
+
+import<fstream>;
+import<iomanip>;
 
 wex::config_imp::config_imp()
   : m_json({})
