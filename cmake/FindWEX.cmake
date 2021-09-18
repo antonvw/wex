@@ -147,7 +147,11 @@ else()
     set(wx_LIBRARIES ${wx_LIBRARIES} wxscintilla-3.1)
   endif()
 
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -g -fmodules")
+  if (APPLE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -g -fmodules")
+  else ()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -g -fmodules-ts")
+  endif ()
 endif()
 
 if (CMAKE_BUILD_TYPE EQUAL "Debug")
