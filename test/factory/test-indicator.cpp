@@ -12,27 +12,27 @@
 
 TEST_CASE("wex::indicator")
 {
-  SUBCASE("constructor") { REQUIRE(!wex::indicator().is_ok()); }
+  SUBCASE("default-constructor") { REQUIRE(!wex::indicator().is_ok()); }
 
-  SUBCASE("constructor-2")
+  SUBCASE("constructor")
   {
-    wex::indicator indx(5, 2);
-    wex::indicator indy(7, 5);
+    const wex::indicator indx(5, 2);
+    const wex::indicator indy(7, 5);
 
     REQUIRE(!wex::indicator(5).is_ok());
     REQUIRE(indx.is_ok());
     REQUIRE(indy.is_ok());
     REQUIRE(indx < indy);
+    REQUIRE((indx != indy));
     REQUIRE(indx == indx);
-    REQUIRE(indx != indy);
     REQUIRE(wex::indicator(5) == wex::indicator(5));
-    REQUIRE(wex::indicator(5) == wex::indicator(5, 2));
+    REQUIRE(wex::indicator(5) != wex::indicator(5, 2));
     REQUIRE(wex::indicator(5) != wex::indicator(4));
     REQUIRE(wex::indicator(5, 2) == wex::indicator(5, 2));
     REQUIRE(wex::indicator(5, 1) != wex::indicator(5, 2));
   }
 
-  SUBCASE("constructor-3")
+  SUBCASE("constructor-xml")
   {
     pugi::xml_document     doc;
     pugi::xml_parse_result result =
@@ -52,7 +52,7 @@ TEST_CASE("wex::indicator")
     REQUIRE(ind.is_ok());
   }
 
-  SUBCASE("constructor-4")
+  SUBCASE("constructor-xml-invalid")
   {
     pugi::xml_document doc;
     REQUIRE(doc.load_string("<indicator no = \"x\"></indicator>"));

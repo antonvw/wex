@@ -12,13 +12,13 @@
 
 TEST_CASE("wex::presentation")
 {
-  SUBCASE("Constructor")
+  SUBCASE("constructor")
   {
     REQUIRE(wex::presentation(wex::presentation::MARKER).name() == "marker");
     REQUIRE(!wex::presentation(wex::presentation::MARKER).is_ok());
   }
 
-  SUBCASE("Constructor using no, style")
+  SUBCASE("constructor-no")
   {
     wex::presentation px(wex::presentation::MARKER, 5, 2);
     wex::presentation py(wex::presentation::MARKER, 7, 5);
@@ -33,7 +33,7 @@ TEST_CASE("wex::presentation")
       wex::presentation(wex::presentation::MARKER, 5) ==
       wex::presentation(wex::presentation::MARKER, 5));
     REQUIRE(
-      wex::presentation(wex::presentation::MARKER, 5) ==
+      wex::presentation(wex::presentation::MARKER, 5) !=
       wex::presentation(wex::presentation::MARKER, 5, 2));
     REQUIRE(
       wex::presentation(wex::presentation::MARKER, 5) !=
@@ -46,7 +46,7 @@ TEST_CASE("wex::presentation")
       wex::presentation(wex::presentation::MARKER, 5, 2));
   }
 
-  SUBCASE("Constructor xml")
+  SUBCASE("constructor-xml")
   {
     pugi::xml_document     doc;
     pugi::xml_parse_result result =
@@ -65,7 +65,7 @@ TEST_CASE("wex::presentation")
     REQUIRE(p.is_ok());
   }
 
-  SUBCASE("Constructor xml invalid no")
+  SUBCASE("constructor-xml-invalid")
   {
     pugi::xml_document doc;
     REQUIRE(doc.load_string("<marker no = \"x\"></marker>"));

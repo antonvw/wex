@@ -1,9 +1,9 @@
 # roadmap
 - use c++ modules
+- file_stat use stat as member, and default = operator
 - use ranges library
 - use concepts library
 - use coroutines
-- use three way comparison
 - use boost::test
 
 ## backlog

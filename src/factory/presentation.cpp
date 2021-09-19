@@ -79,17 +79,6 @@ wex::presentation::presentation(presentation_t type, int no, int style)
 {
 }
 
-bool wex::presentation::operator<(const wex::presentation& i) const
-{
-  return m_no < i.m_no;
-}
-
-bool wex::presentation::operator==(const wex::presentation& i) const
-{
-  return m_style == -1 ? m_no == i.m_no :
-                         m_no == i.m_no && m_style == i.m_style;
-}
-
 void wex::presentation::apply(wxStyledTextCtrl* stc) const
 {
   if (is_ok() && stc->GetParent() != nullptr)

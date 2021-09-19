@@ -55,6 +55,9 @@ public:
     const regex_v_c_t&    regex,
     std::regex::flag_type flags = std::regex::ECMAScript);
 
+  /// Returns reference to the requested submatch element.
+  const auto& operator[](size_t pos) const { return m_matches[pos]; }
+
   /// Regular expression match.
   /// Returns:
   /// - -1: if text does not match or there is an error
@@ -64,9 +67,6 @@ public:
 
   /// Returns the (sub)matches.
   const auto& matches() const { return m_matches; }
-
-  /// Returns reference to the requested submatch element.
-  const std::string& operator[](size_t pos) const { return m_matches[pos]; }
 
   /// After match or search, replace text with replacement.
   /// Returns true if a regex is available, and regex_replace was invoked.

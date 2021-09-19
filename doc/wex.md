@@ -318,6 +318,8 @@ wex::regex::regex(
 ```
   this ensures that the function is kept in sync with base class
 
+- spaceship operator (c++20)
+
 ## boost c++ libraries
 - boost::algorithm lib
   uses replace_all, to_upper, trim
