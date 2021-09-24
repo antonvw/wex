@@ -9,7 +9,10 @@
 #include <wex/file.h>
 #include <wex/log.h>
 
-wex::file::file() {}
+wex::file::file()
+  : m_stat(std::string())
+{
+}
 
 wex::file::file(const wex::path& p)
   : m_path(p, path::log_t().set(path::LOG_PATH))
@@ -35,6 +38,7 @@ wex::file::file(const char* filename, std::ios_base::openmode mode)
 }
 
 wex::file::file(const file& rhs)
+  : m_stat(rhs.m_stat)
 {
   *this = rhs;
 }
@@ -74,7 +78,7 @@ bool wex::file::check_sync()
   {
     bool sync_needed = false;
 
-    if (m_path.m_stat.st_mtime != m_stat.st_mtime)
+    if (m_path.m_stat.get_st_mtime() != m_stat.get_st_mtime())
     {
       // Do not check return value,
       // we sync anyhow, to force nex time no sync.
@@ -236,9 +240,9 @@ const std::string* wex::file::read(std::streampos seek_position)
   }
 
   m_buffer = std::make_unique<std::string>();
-  
+
 #ifndef __WXMSW__
-  m_buffer->resize(m_path.m_stat.st_size - seek_position);
+  m_buffer->resize(m_path.m_stat.get_st_size() - seek_position);
   m_fs.read(m_buffer->data(), m_buffer->size());
 #else
   char c;

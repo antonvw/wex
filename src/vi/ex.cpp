@@ -1151,9 +1151,10 @@ void wex::ex::show_dialog(
 
 void wex::ex::use(mode_t mode)
 {
-  m_mode = mode;
+  log::trace("ex mode from")
+    << static_cast<int>(m_mode) << "to:" << static_cast<int>(mode);
 
-  log::trace("ex mode") << static_cast<int>(m_mode);
+  m_mode = mode;
 }
 
 bool wex::ex::yank(char name) const

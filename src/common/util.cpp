@@ -148,7 +148,7 @@ bool wex::compare_file(const path& file1, const path& file2)
   }
 
   if (const auto arguments =
-        (file1.stat().st_mtime < file2.stat().st_mtime) ?
+        (file1.stat().get_st_mtime() < file2.stat().get_st_mtime()) ?
           "\"" + file1.string() + "\" \"" + file2.string() + "\"" :
           "\"" + file2.string() + "\" \"" + file1.string() + "\"";
       factory::process().system(

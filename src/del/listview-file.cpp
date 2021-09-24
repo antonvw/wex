@@ -173,7 +173,7 @@ bool wex::del::file::do_file_load(bool synced)
         pugi::parse_default | pugi::parse_comments);
       !result)
   {
-    if (path().stat().st_size == 0)
+    if (path().stat().get_st_size() == 0)
     {
       clear();
       return true;

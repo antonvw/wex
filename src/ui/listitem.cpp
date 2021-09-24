@@ -157,7 +157,7 @@ void wex::listitem::update()
 
     if (m_path.file_exists())
     {
-      set_item(_("Size"), std::to_string(m_path.stat().st_size));
+      set_item(_("Size"), std::to_string(m_path.stat().get_st_size()));
     }
   }
 }

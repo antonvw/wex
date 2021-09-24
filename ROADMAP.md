@@ -1,10 +1,9 @@
 # roadmap
-- use c++ modules
-- file_stat use stat as member, and default = operator
+- c++ modules: fix gcc, test msvc
+- use boost::test
 - use ranges library
 - use concepts library
 - use coroutines
-- use boost::test
 
 ## backlog
 - start up with recent project, close project

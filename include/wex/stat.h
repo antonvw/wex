@@ -13,10 +13,9 @@
 
 namespace wex
 {
-/// Adds is_ok to the stat base class, several methods
-/// to get/update on the stat members, and sync to sync
-/// the stat from disk.
-class file_stat : public stat
+/// Adds several methods to get/update the file status,
+/// and sync to sync the status from disk.
+class file_stat : private stat
 {
 public:
   /// See also chrono, uses same format.
@@ -34,6 +33,18 @@ public:
   const std::string get_modification_time(
     /// the format as used by std::put_time
     const std::string& format = TIME_FORMAT) const;
+
+  /// Returns atime.
+  auto get_st_atime() const { return st_atime; }
+
+  /// Returns ctime.
+  auto get_st_ctime() const { return st_ctime; }
+
+  /// Returns mtime.
+  auto get_st_mtime() const { return st_mtime; }
+
+  /// Returns size.
+  auto get_st_size() const { return st_size; }
 
   /// Returns true if the stat is okay (last sync was okay).
   bool is_ok() const { return m_is_ok; }

@@ -7,7 +7,6 @@
 
 #include <wex/core.h>
 #include <wex/ex.h>
-#include <wex/frd.h>
 #include <wex/macro-mode.h>
 #include <wex/macros.h>
 #include <wex/path.h>
@@ -271,25 +270,6 @@ TEST_CASE("wex::ex")
   {
     REQUIRE((ex->search_flags() & wxSTC_FIND_REGEXP) > 0);
   }
-
-#ifdef __UNIX__
-  SUBCASE("source")
-  {
-    SUBCASE("so")
-    {
-      // necesary for the ~ in test-source
-      wex::find_replace_data::get()->set_find_string("xx");
-
-      ex->command(":so test-source.txt");
-    }
-
-    SUBCASE("full") { ex->command(":source test-source.txt"); }
-
-    SUBCASE("not-existing") { REQUIRE(!ex->command(":so test-surce.txt")); }
-
-    SUBCASE("invalid") { REQUIRE(!ex->command(":so test-source-2.txt")); }
-  }
-#endif
 
   SUBCASE("substitute")
   {

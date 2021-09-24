@@ -113,7 +113,12 @@ void wex::stc::config_get()
 
   if (!iv.find<bool>(_("stc.vi mode")))
   {
-    get_vi().use(ex::OFF);
+    config(_("stc.vi mode")).get(true);
+
+    if (!m_data.flags().test(data::stc::WIN_EX))
+    {
+      get_vi().use(ex::OFF);
+    }
   }
 
   show_line_numbers(iv.find<bool>(_("stc.Line numbers")));
