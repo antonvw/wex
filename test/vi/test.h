@@ -8,7 +8,7 @@
 #pragma once
 
 #include <wex/factory/stc.h>
-#include <wex/frame.h>
+#include <wex/ui/frame.h>
 
 #include "../test.h"
 

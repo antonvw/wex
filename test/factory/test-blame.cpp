@@ -2,12 +2,12 @@
 // Name:      test-blame.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2019-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
-#include <wex/blame.h>
-#include <wex/config.h>
+#include <wex/core/config.h>
+#include <wex/factory/blame.h>
 
 TEST_CASE("wex::blame")
 {

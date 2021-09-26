@@ -5,17 +5,17 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/address.h>
-#include <wex/core.h>
-#include <wex/ex-stream.h>
-#include <wex/ex.h>
+#include <wex/core/core.h>
+#include <wex/core/file.h>
+#include <wex/core/log.h>
+#include <wex/core/regex.h>
 #include <wex/factory/process.h>
 #include <wex/factory/stc.h>
-#include <wex/file.h>
-#include <wex/frame.h>
-#include <wex/log.h>
-#include <wex/macros.h>
-#include <wex/regex.h>
+#include <wex/ui/frame.h>
+#include <wex/vi/address.h>
+#include <wex/vi/ex-stream.h>
+#include <wex/vi/ex.h>
+#include <wex/vi/macros.h>
 
 #define SEARCH_TARGET                                                         \
   if (ex->get_stc()->SearchInTarget(text) != -1)                              \

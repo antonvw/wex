@@ -7,7 +7,7 @@
 
 #include <boost/version.hpp>
 #include <pugixml.hpp>
-#include <wex/version.h>
+#include <wex/core/version.h>
 #include <wx/translation.h>
 #include <wx/utils.h>
 

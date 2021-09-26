@@ -6,11 +6,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <stdlib.h>
-#include <wex/config.h>
-#include <wex/frd.h>
-#include <wex/log.h>
-#include <wex/textctrl-input.h>
-#include <wex/textctrl.h>
+#include <wex/core/config.h>
+#include <wex/core/log.h>
+#include <wex/ui/frd.h>
+#include <wex/ui/textctrl-input.h>
+#include <wex/ui/textctrl.h>
 
 import<charconv>;
 

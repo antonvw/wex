@@ -7,11 +7,11 @@
 
 #define DOCTEST_CONFIG_IMPLEMENT
 
-#include <wex/cmdline.h>
-#include <wex/config.h>
-#include <wex/frame.h>
-#include <wex/lexers.h>
-#include <wex/log.h>
+#include <wex/common/cmdline.h>
+#include <wex/core/config.h>
+#include <wex/core/log.h>
+#include <wex/factory/lexers.h>
+#include <wex/ui/frame.h>
 #include <wx/timer.h>
 
 #include "test.h"

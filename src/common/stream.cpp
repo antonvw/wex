@@ -6,16 +6,16 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
-#include <wex/config.h>
+#include <wex/common/stream.h>
+#include <wex/core/config.h>
+#include <wex/core/log.h>
 #include <wex/factory/frd.h>
-#include <wex/log.h>
-#include <wex/stream.h>
 #include <wx/msgdlg.h>
 
-import <cctype>;
-import <algorithm>;
-import <fstream>;
-import <functional>;
+import<cctype>;
+import<algorithm>;
+import<fstream>;
+import<functional>;
 
 wex::stream::stream(
   factory::find_replace_data* frd,

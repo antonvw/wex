@@ -11,14 +11,14 @@
 #endif
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
-#include <wex/bind.h>
-#include <wex/core.h>
-#include <wex/defs.h>
+#include <wex/core/core.h>
+#include <wex/factory/defs.h>
 #include <wex/factory/frame.h>
-#include <wex/frd.h>
-#include <wex/grid.h>
-#include <wex/lexers.h>
-#include <wex/printing.h>
+#include <wex/factory/lexers.h>
+#include <wex/factory/printing.h>
+#include <wex/ui/bind.h>
+#include <wex/ui/frd.h>
+#include <wex/ui/grid.h>
 #include <wx/dnd.h>
 
 import<sstream>;

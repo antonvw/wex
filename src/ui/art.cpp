@@ -2,14 +2,14 @@
 // Name:      art.cpp
 // Purpose:   Implementation of wex::stockart class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018 Anton van Wezenbeek
+// Copyright: (c) 2018-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wex/art.h>
+#include <wex/ui/art.h>
 
 std::map<wxWindowID, wxArtID> wex::stockart::m_art_ids;
 
@@ -50,13 +50,13 @@ wex::stockart::stockart(wxWindowID id)
 }
 
 void wex::stockart::add(int id, const wxArtID& art)
-{    
+{
   m_art_ids.insert({(wxWindowID)id, art});
 }
 
 const wxBitmap wex::stockart::get_bitmap(
   const wxArtClient& client,
-  const wxSize& bitmap_size) const
+  const wxSize&      bitmap_size) const
 {
   if (wxIsStockID(m_id))
   {
@@ -65,10 +65,7 @@ const wxBitmap wex::stockart::get_bitmap(
 
     if (art_it != m_art_ids.end())
     {
-      return wxArtProvider::GetBitmap(
-        art_it->second, 
-        client, 
-        bitmap_size);
+      return wxArtProvider::GetBitmap(art_it->second, client, bitmap_size);
     }
   }
 

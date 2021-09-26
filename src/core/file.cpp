@@ -5,9 +5,9 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/config.h>
-#include <wex/file.h>
-#include <wex/log.h>
+#include <wex/core/config.h>
+#include <wex/core/file.h>
+#include <wex/core/log.h>
 
 wex::file::file()
   : m_stat(std::string())

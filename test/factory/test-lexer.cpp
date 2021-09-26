@@ -6,8 +6,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
-#include <wex/lexer.h>
-#include <wex/lexers.h>
+#include <wex/factory/lexer.h>
+#include <wex/factory/lexers.h>
 
 import<regex>;
 

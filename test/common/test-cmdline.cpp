@@ -5,7 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/cmdline.h>
+#include <wex/common/cmdline.h>
 
 #include "../test.h"
 

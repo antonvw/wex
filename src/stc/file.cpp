@@ -9,13 +9,13 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wex/config.h>
-#include <wex/defs.h>
-#include <wex/ex-stream.h>
-#include <wex/file-dialog.h>
-#include <wex/path-lexer.h>
-#include <wex/stc-file.h>
-#include <wex/stc.h>
+#include <wex/core/config.h>
+#include <wex/factory/defs.h>
+#include <wex/factory/path-lexer.h>
+#include <wex/stc/file.h>
+#include <wex/stc/stc.h>
+#include <wex/ui/file-dialog.h>
+#include <wex/vi/ex-stream.h>
 
 //#define USE_THREAD 1
 

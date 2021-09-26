@@ -5,8 +5,8 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/ex.h>
-#include <wex/variable.h>
+#include <wex/vi/ex.h>
+#include <wex/vi/variable.h>
 
 import<tuple>;
 

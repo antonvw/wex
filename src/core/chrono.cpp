@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <wex/chrono.h>
+#include <wex/core/chrono.h>
 
 import<iomanip>;
 import<sstream>;

@@ -7,10 +7,10 @@
 
 #pragma once
 
-#include <wex/ex-command.h>
+#include <wex/core/path.h>
+#include <wex/factory/ex-command.h>
+#include <wex/factory/lexer.h>
 #include <wex/factory/text-window.h>
-#include <wex/lexer.h>
-#include <wex/path.h>
 #include <wx/print.h>
 #include <wx/stc/stc.h>
 

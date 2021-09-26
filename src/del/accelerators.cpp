@@ -5,10 +5,10 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/accelerators.h>
-#include <wex/debug.h>
-#include <wex/defs.h>
+#include <wex/del/accelerators.h>
 #include <wex/del/frame.h>
+#include <wex/factory/defs.h>
+#include <wex/stc/debug.h>
 #include <wx/app.h>
 #include <wx/window.h>
 

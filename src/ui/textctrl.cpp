@@ -5,8 +5,8 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/frame.h>
-#include <wex/textctrl.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/textctrl.h>
 
 #include "textctrl-imp.h"
 

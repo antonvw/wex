@@ -5,7 +5,7 @@
 // Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/hexmode.h>
+#include <wex/stc/hexmode.h>
 #include <wx/event.h>
 #include <wx/stc/stc.h>
 

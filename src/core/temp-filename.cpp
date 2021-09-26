@@ -5,9 +5,9 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/log.h>
-#include <wex/path.h>
-#include <wex/temp-filename.h>
+#include <wex/core/log.h>
+#include <wex/core/path.h>
+#include <wex/core/temp-filename.h>
 
 import<filesystem>;
 

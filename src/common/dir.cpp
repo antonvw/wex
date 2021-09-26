@@ -5,11 +5,11 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/core.h>
-#include <wex/dir.h>
+#include <wex/common/dir.h>
+#include <wex/common/stream.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
 #include <wex/factory/frame.h>
-#include <wex/log.h>
-#include <wex/stream.h>
 #include <wx/app.h>
 #include <wx/translation.h>
 

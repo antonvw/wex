@@ -5,11 +5,11 @@
 // Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/core.h>
-#include <wex/ctags-entry.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
+#include <wex/core/regex.h>
 #include <wex/factory/stc.h>
-#include <wex/log.h>
-#include <wex/regex.h>
+#include <wex/vi/ctags-entry.h>
 #include <wx/artprov.h>
 
 wex::ctags_entry& wex::ctags_entry::access(const std::string& v)

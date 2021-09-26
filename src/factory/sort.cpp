@@ -7,10 +7,10 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
-#include <wex/config.h>
+#include <wex/core/config.h>
+#include <wex/core/log.h>
+#include <wex/factory/sort.h>
 #include <wex/factory/stc.h>
-#include <wex/log.h>
-#include <wex/sort.h>
 
 import<algorithm>;
 

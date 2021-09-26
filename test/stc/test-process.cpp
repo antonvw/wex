@@ -5,8 +5,8 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/process.h>
-#include <wex/shell.h>
+#include <wex/stc/process.h>
+#include <wex/stc/shell.h>
 
 #include "test.h"
 

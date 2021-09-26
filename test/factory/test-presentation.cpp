@@ -5,7 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/presentation.h>
+#include <wex/factory/presentation.h>
 #include <wx/stc/stc.h>
 
 #include "../test.h"

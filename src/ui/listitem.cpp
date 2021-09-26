@@ -2,18 +2,18 @@
 // Name:      listitem.cpp
 // Purpose:   Implementation of class 'wex::listitem'
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wex/config.h>
-#include <wex/core.h>
-#include <wex/lexers.h>
-#include <wex/listitem.h>
-#include <wex/log.h>
+#include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
+#include <wex/factory/lexers.h>
+#include <wex/ui/listitem.h>
 
 // Do not give an error if columns do not exist.
 // E.g. the LIST_PROCESS has none of the file columns.

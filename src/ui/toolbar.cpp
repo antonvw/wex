@@ -9,19 +9,19 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wex/art.h>
-#include <wex/bind.h>
-#include <wex/config.h>
-#include <wex/core.h>
-#include <wex/defs.h>
+#include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/factory/defs.h>
 #include <wex/factory/stc.h>
-#include <wex/frame.h>
-#include <wex/frd.h>
-#include <wex/grid.h>
-#include <wex/listview.h>
-#include <wex/menu.h>
-#include <wex/textctrl.h>
-#include <wex/toolbar.h>
+#include <wex/ui/art.h>
+#include <wex/ui/bind.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/frd.h>
+#include <wex/ui/grid.h>
+#include <wex/ui/listview.h>
+#include <wex/ui/menu.h>
+#include <wex/ui/textctrl.h>
+#include <wex/ui/toolbar.h>
 
 import<list>;
 

@@ -6,9 +6,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
-#include <wex/item-vector.h>
-#include <wex/link.h>
-#include <wex/stc.h>
+#include <wex/stc/link.h>
+#include <wex/stc/stc.h>
+#include <wex/ui/item-vector.h>
 
 wex::link::link()
   : factory::link()

@@ -10,8 +10,8 @@
 #include <wx/wx.h>
 #endif
 #include "../test.h"
-#include <wex/frame.h>
-#include <wex/item-dialog.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/item-dialog.h>
 
 import<vector>;
 

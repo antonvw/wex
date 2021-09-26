@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
-#include <wex/beautify.h>
+#include <wex/stc/beautify.h>
 
 TEST_CASE("wex::beautify")
 {

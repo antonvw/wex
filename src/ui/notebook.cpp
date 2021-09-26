@@ -9,9 +9,9 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wex/item-dialog.h>
-#include <wex/item-vector.h>
-#include <wex/notebook.h>
+#include <wex/ui/item-dialog.h>
+#include <wex/ui/item-vector.h>
+#include <wex/ui/notebook.h>
 
 #define PAGE_DATA                                                      \
   data.page(), (data.caption().empty() ? data.key() : data.caption()), \

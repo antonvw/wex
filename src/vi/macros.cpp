@@ -6,16 +6,16 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
-#include <wex/app.h>
-#include <wex/config.h>
-#include <wex/core.h>
-#include <wex/frame.h>
-#include <wex/lexer-props.h>
-#include <wex/log.h>
-#include <wex/macros.h>
-#include <wex/path.h>
-#include <wex/type-to-value.h>
-#include <wex/util.h>
+#include <wex/common/app.h>
+#include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
+#include <wex/core/path.h>
+#include <wex/core/type-to-value.h>
+#include <wex/core/util.h>
+#include <wex/factory/lexer-props.h>
+#include <wex/ui/frame.h>
+#include <wex/vi/macros.h>
 
 import<numeric>;
 

@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
-#include <wex/version.h>
+#include <wex/core/version.h>
 
 TEST_CASE("wex::version")
 {

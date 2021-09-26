@@ -9,12 +9,12 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wex/config.h>
-#include <wex/item-dialog.h>
-#include <wex/menus.h>
-#include <wex/path-lexer.h>
-#include <wex/util.h>
-#include <wex/vcs.h>
+#include <wex/core/config.h>
+#include <wex/core/util.h>
+#include <wex/factory/path-lexer.h>
+#include <wex/stc/vcs.h>
+#include <wex/ui/item-dialog.h>
+#include <wex/ui/menus.h>
 
 #define SET_ENTRY                                                \
   if (                                                           \

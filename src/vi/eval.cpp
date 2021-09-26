@@ -10,9 +10,9 @@
 #include <boost/spirit/home/x3.hpp>
 #include <boost/spirit/home/x3/support/ast/variant.hpp>
 
-#include <wex/ex-stream.h>
-#include <wex/ex.h>
 #include <wex/factory/stc.h>
+#include <wex/vi/ex-stream.h>
+#include <wex/vi/ex.h>
 
 #include "eval.h"
 

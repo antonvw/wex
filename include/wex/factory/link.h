@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include <wex/line-data.h>
-#include <wex/path.h>
+#include <wex/core/path.h>
+#include <wex/factory/line-data.h>
 
 import<memory>;
 

@@ -5,8 +5,8 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/common/stream.h>
 #include <wex/factory/frd.h>
-#include <wex/stream.h>
 
 #include "../test.h"
 

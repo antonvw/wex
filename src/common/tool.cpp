@@ -6,9 +6,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
-#include <wex/log.h>
-#include <wex/statistics.h>
-#include <wex/tool.h>
+#include <wex/common/statistics.h>
+#include <wex/common/tool.h>
+#include <wex/core/log.h>
 #include <wx/translation.h>
 
 std::map<wex::window_id, wex::tool_info> wex::tool::m_tool_info{

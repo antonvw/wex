@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <wex/data.h>
+#include <wex/data/defs.h>
 #include <wx/filedlg.h>
 #include <wx/window.h>
 

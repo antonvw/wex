@@ -5,10 +5,10 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/ex.h>
+#include <wex/core/log.h>
 #include <wex/factory/stc.h>
-#include <wex/log.h>
-#include <wex/macros.h>
+#include <wex/vi/ex.h>
+#include <wex/vi/macros.h>
 #include <wx/defs.h>
 
 bool wex::marker_and_register_expansion(const ex* ex, std::string& text)

@@ -5,8 +5,8 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/config.h>
-#include <wex/link.h>
+#include <wex/core/config.h>
+#include <wex/stc/link.h>
 
 #include "test.h"
 

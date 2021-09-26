@@ -5,16 +5,16 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/chrono.h>
-#include <wex/ex.h>
+#include <wex/core/chrono.h>
+#include <wex/core/log.h>
+#include <wex/core/regex.h>
 #include <wex/factory/process.h>
 #include <wex/factory/stc.h>
-#include <wex/frame.h>
-#include <wex/log.h>
-#include <wex/macro-mode.h>
-#include <wex/macros.h>
-#include <wex/regex.h>
-#include <wex/variable.h>
+#include <wex/ui/frame.h>
+#include <wex/vi/ex.h>
+#include <wex/vi/macro-mode.h>
+#include <wex/vi/macros.h>
+#include <wex/vi/variable.h>
 #include <wx/app.h>
 
 // Several types of variables are supported.

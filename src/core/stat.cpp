@@ -5,8 +5,8 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/chrono.h>
-#include <wex/stat.h>
+#include <wex/core/chrono.h>
+#include <wex/core/stat.h>
 
 #ifdef _MSC_VER
 #include <io.h>

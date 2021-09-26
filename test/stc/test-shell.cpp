@@ -5,7 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/shell.h>
+#include <wex/stc/shell.h>
 
 #include "test.h"
 

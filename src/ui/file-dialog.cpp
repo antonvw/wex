@@ -9,10 +9,10 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wex/core.h>
-#include <wex/file-dialog.h>
-#include <wex/file.h>
-#include <wex/lexers.h>
+#include <wex/core/core.h>
+#include <wex/core/file.h>
+#include <wex/factory/lexers.h>
+#include <wex/ui/file-dialog.h>
 #include <wx/checklst.h>
 
 class extra_panel : public wxPanel

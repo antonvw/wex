@@ -5,13 +5,13 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/app.h>
-#include <wex/config.h>
-#include <wex/core.h>
-#include <wex/lexers.h>
-#include <wex/log.h>
-#include <wex/printing.h>
-#include <wex/version.h>
+#include <wex/common/app.h>
+#include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
+#include <wex/core/version.h>
+#include <wex/factory/lexers.h>
+#include <wex/factory/printing.h>
 #include <wx/clipbrd.h>
 #include <wx/stdpaths.h>
 

@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
-#include <wex/queue-thread.h>
+#include <wex/core/queue-thread.h>
 
 import<chrono>;
 

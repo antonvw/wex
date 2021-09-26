@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <pugixml.hpp>
-#include <wex/lexer.h>
+#include <wex/factory/lexer.h>
 
 void wex::node_properties(
   const pugi::xml_node*  node,

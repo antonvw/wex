@@ -6,8 +6,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
+#include <wex/factory/sort.h>
 #include <wex/factory/stc.h>
-#include <wex/sort.h>
 
 #include "../test.h"
 

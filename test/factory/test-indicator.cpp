@@ -5,7 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/indicator.h>
+#include <wex/factory/indicator.h>
 #include <wx/stc/stc.h>
 
 #include "../test.h"

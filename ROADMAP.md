@@ -1,4 +1,6 @@
 # roadmap
+- s/$/>/  does not work
+- test-ex-command move to factory
 - c++ modules: fix gcc, test msvc
 - use boost::test
 - use ranges library

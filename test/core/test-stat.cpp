@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
-#include <wex/stat.h>
+#include <wex/core/stat.h>
 
 TEST_CASE("wex::file_stat")
 {

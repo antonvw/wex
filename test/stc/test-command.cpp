@@ -5,7 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/ex-command.h>
+#include <wex/factory/ex-command.h>
 
 #include "test.h"
 

@@ -9,9 +9,9 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wex/config.h>
-#include <wex/util.h>
-#include <wex/vcs-command.h>
+#include <wex/core/config.h>
+#include <wex/core/util.h>
+#include <wex/core/vcs-command.h>
 
 #include "test.h"
 

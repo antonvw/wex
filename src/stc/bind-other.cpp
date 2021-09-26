@@ -6,16 +6,16 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
-#include <wex/auto-complete.h>
-#include <wex/config.h>
-#include <wex/debug-entry.h>
-#include <wex/frame.h>
-#include <wex/frd.h>
-#include <wex/log.h>
-#include <wex/menu.h>
-#include <wex/stc-bind.h>
-#include <wex/stc.h>
-#include <wex/vcs.h>
+#include <wex/core/config.h>
+#include <wex/core/log.h>
+#include <wex/stc/auto-complete.h>
+#include <wex/stc/stc.h>
+#include <wex/stc/vcs.h>
+#include <wex/ui/debug-entry.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/frd.h>
+#include <wex/ui/menu.h>
+#include <wex/ui/stc-bind.h>
 #include <wx/fdrepdlg.h> // for wxFindDialogEvent
 
 import<vector>;

@@ -7,10 +7,10 @@
 
 #include <boost/json/src.hpp>
 
-#include <wex/config.h>
-#include <wex/core.h>
-#include <wex/file.h>
-#include <wex/log.h>
+#include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/core/file.h>
+#include <wex/core/log.h>
 #include <wx/app.h>
 
 #include "config-imp.h"

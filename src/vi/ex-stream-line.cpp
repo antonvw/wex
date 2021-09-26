@@ -6,12 +6,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cassert>
-#include <wex/addressrange.h>
-#include <wex/ex.h>
-#include <wex/frd.h>
-#include <wex/log.h>
-#include <wex/macros.h>
-#include <wex/regex.h>
+#include <wex/core/log.h>
+#include <wex/core/regex.h>
+#include <wex/ui/frd.h>
+#include <wex/vi/addressrange.h>
+#include <wex/vi/ex.h>
+#include <wex/vi/macros.h>
 
 #include "ex-stream-line.h"
 

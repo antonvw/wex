@@ -7,9 +7,9 @@
 
 #include <boost/tokenizer.hpp>
 
-#include <wex/lexers.h>
-#include <wex/log.h>
-#include <wex/presentation.h>
+#include <wex/core/log.h>
+#include <wex/factory/lexers.h>
+#include <wex/factory/presentation.h>
 #include <wx/stc/stc.h>
 
 import<charconv>;

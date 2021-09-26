@@ -5,8 +5,8 @@
 // Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/config.h>
-#include <wex/log.h>
+#include <wex/core/config.h>
+#include <wex/core/log.h>
 #include <wx/app.h>
 #include <wx/colour.h>
 #include <wx/font.h>

@@ -7,10 +7,10 @@
 
 #pragma once
 
+#include <wex/core/file.h>
+#include <wex/core/path.h>
 #include <wex/factory/stc.h>
-#include <wex/file.h>
-#include <wex/frame.h>
-#include <wex/path.h>
+#include <wex/ui/frame.h>
 
 #include "../test.h"
 

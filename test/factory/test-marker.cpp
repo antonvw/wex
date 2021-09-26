@@ -5,7 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/marker.h>
+#include <wex/factory/marker.h>
 #include <wx/stc/stc.h>
 
 #include "../test.h"

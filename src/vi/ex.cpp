@@ -13,27 +13,27 @@
 #include "eval.h"
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
-#include <wex/address.h>
-#include <wex/addressrange.h>
-#include <wex/cmdline.h>
-#include <wex/config.h>
-#include <wex/core.h>
-#include <wex/ctags.h>
-#include <wex/defs.h>
-#include <wex/ex-stream.h>
-#include <wex/ex.h>
+#include <wex/common/cmdline.h>
+#include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/core/file.h>
+#include <wex/core/log.h>
+#include <wex/core/regex.h>
+#include <wex/core/type-to-value.h>
+#include <wex/core/version.h>
+#include <wex/factory/defs.h>
+#include <wex/factory/lexer-props.h>
+#include <wex/factory/lexers.h>
 #include <wex/factory/stc.h>
-#include <wex/file.h>
-#include <wex/frame.h>
-#include <wex/frd.h>
-#include <wex/lexer-props.h>
-#include <wex/lexers.h>
-#include <wex/log.h>
-#include <wex/macros.h>
-#include <wex/regex.h>
-#include <wex/statusbar.h>
-#include <wex/type-to-value.h>
-#include <wex/version.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/frd.h>
+#include <wex/ui/statusbar.h>
+#include <wex/vi/address.h>
+#include <wex/vi/addressrange.h>
+#include <wex/vi/ctags.h>
+#include <wex/vi/ex-stream.h>
+#include <wex/vi/ex.h>
+#include <wex/vi/macros.h>
 
 import<sstream>;
 

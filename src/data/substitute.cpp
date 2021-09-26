@@ -7,8 +7,8 @@
 
 #include <boost/algorithm/string.hpp>
 #include <wex/data/substitute.h>
-#include <wex/log.h>
-#include <wex/regex.h>
+#include <wex/core/log.h>
+#include <wex/core/regex.h>
 
 wex::data::substitute::substitute(const std::string& text)
 {

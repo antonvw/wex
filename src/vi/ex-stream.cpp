@@ -5,15 +5,15 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/addressrange.h>
-#include <wex/core.h>
-#include <wex/ex-stream.h>
-#include <wex/ex.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
+#include <wex/core/temp-filename.h>
 #include <wex/factory/stc.h>
-#include <wex/frame.h>
-#include <wex/frd.h>
-#include <wex/log.h>
-#include <wex/temp-filename.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/frd.h>
+#include <wex/vi/addressrange.h>
+#include <wex/vi/ex-stream.h>
+#include <wex/vi/ex.h>
 
 #include "ex-stream-line.h"
 

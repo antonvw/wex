@@ -6,10 +6,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
-#include <wex/del/defs.h>
-#include <wex/frame.h>
-#include <wex/item-template-dialog.h>
-#include <wex/item.h>
+#include <wex/factory/defs.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/item-template-dialog.h>
+#include <wex/ui/item.h>
 
 import<vector>;
 

@@ -7,12 +7,12 @@
 
 #include <boost/tokenizer.hpp>
 #include <pugixml.hpp>
-#include <wex/config.h>
-#include <wex/core.h>
+#include <wex/core/config.h>
+#include <wex/core/core.h>
 #include <wex/factory/stc.h>
-#include <wex/lexer.h>
-#include <wex/lexers.h>
-#include <wex/log.h>
+#include <wex/factory/lexer.h>
+#include <wex/factory/lexers.h>
+#include <wex/core/log.h>
 #include <wx/platinfo.h>
 
 import<algorithm>;

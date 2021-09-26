@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
-#include <wex/interruptible.h>
+#include <wex/core/interruptible.h>
 
 TEST_CASE("wex::interruptible")
 {

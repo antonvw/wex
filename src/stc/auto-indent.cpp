@@ -5,10 +5,10 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/auto-indent.h>
-#include <wex/config.h>
-#include <wex/log.h>
-#include <wex/stc.h>
+#include <wex/core/config.h>
+#include <wex/core/log.h>
+#include <wex/stc/auto-indent.h>
+#include <wex/stc/stc.h>
 
 wex::auto_indent::auto_indent(wex::stc* stc)
   : m_stc(stc)

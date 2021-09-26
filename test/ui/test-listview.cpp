@@ -9,8 +9,8 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wex/defs.h>
-#include <wex/listview.h>
+#include <wex/factory/defs.h>
+#include <wex/ui/listview.h>
 
 #include "test.h"
 

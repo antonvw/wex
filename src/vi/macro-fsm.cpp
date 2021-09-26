@@ -10,15 +10,15 @@
 #include <boost/statechart/state.hpp>
 #include <boost/statechart/transition.hpp>
 #include <pugixml.hpp>
-#include <wex/config.h>
-#include <wex/ex.h>
+#include <wex/core/config.h>
+#include <wex/core/log.h>
 #include <wex/factory/stc.h>
-#include <wex/frame.h>
-#include <wex/log.h>
-#include <wex/macro-mode.h>
-#include <wex/macros.h>
-#include <wex/statusbar.h>
-#include <wex/variable.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/statusbar.h>
+#include <wex/vi/ex.h>
+#include <wex/vi/macro-mode.h>
+#include <wex/vi/macros.h>
+#include <wex/vi/variable.h>
 
 #include "macro-fsm.h"
 

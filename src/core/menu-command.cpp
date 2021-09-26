@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
-#include <wex/menu-command.h>
+#include <wex/core/menu-command.h>
 
 import<algorithm>;
 

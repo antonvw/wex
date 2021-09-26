@@ -6,13 +6,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
-#include <wex/config.h>
-#include <wex/core.h>
+#include <wex/core/config.h>
+#include <wex/core/core.h>
 #include <wex/factory/link.h>
 #include <wex/factory/stc.h>
-#include <wex/lexer.h>
-#include <wex/path.h>
-#include <wex/regex.h>
+#include <wex/factory/lexer.h>
+#include <wex/core/path.h>
+#include <wex/core/regex.h>
 
 import<algorithm>;
 

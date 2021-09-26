@@ -5,8 +5,8 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/textctrl-input.h>
-#include <wex/textctrl.h>
+#include <wex/ui/textctrl-input.h>
+#include <wex/ui/textctrl.h>
 
 #include "test.h"
 

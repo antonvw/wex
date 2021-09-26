@@ -5,12 +5,12 @@
 // Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/auto-complete.h>
-#include <wex/config.h>
-#include <wex/core.h>
-#include <wex/ctags.h>
-#include <wex/log.h>
-#include <wex/stc.h>
+#include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
+#include <wex/stc/auto-complete.h>
+#include <wex/stc/stc.h>
+#include <wex/vi/ctags.h>
 
 #include "scope.h"
 

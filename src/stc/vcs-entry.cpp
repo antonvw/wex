@@ -7,13 +7,13 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
-#include <wex/config.h>
-#include <wex/log.h>
-#include <wex/menu.h>
-#include <wex/menus.h>
-#include <wex/shell.h>
-#include <wex/util.h>
-#include <wex/vcs-entry.h>
+#include <wex/core/config.h>
+#include <wex/core/log.h>
+#include <wex/core/util.h>
+#include <wex/stc/shell.h>
+#include <wex/stc/vcs-entry.h>
+#include <wex/ui/menu.h>
+#include <wex/ui/menus.h>
 
 wex::vcs_entry::vcs_entry(const pugi::xml_node& node)
   : process()

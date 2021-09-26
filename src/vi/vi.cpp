@@ -8,20 +8,20 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
-#include <wex/addressrange.h>
-#include <wex/app.h>
-#include <wex/config.h>
-#include <wex/core.h>
-#include <wex/ctags.h>
+#include <wex/common/app.h>
+#include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
+#include <wex/core/regex.h>
+#include <wex/factory/lexers.h>
 #include <wex/factory/stc.h>
-#include <wex/frame.h>
-#include <wex/frd.h>
-#include <wex/lexers.h>
-#include <wex/log.h>
-#include <wex/macro-mode.h>
-#include <wex/macros.h>
-#include <wex/regex.h>
-#include <wex/vi.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/frd.h>
+#include <wex/vi/addressrange.h>
+#include <wex/vi/ctags.h>
+#include <wex/vi/macro-mode.h>
+#include <wex/vi/macros.h>
+#include <wex/vi/vi.h>
 
 import<sstream>;
 

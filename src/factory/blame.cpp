@@ -5,31 +5,31 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/blame.h>
-#include <wex/chrono.h>
-#include <wex/config.h>
-#include <wex/log.h>
-#include <wex/regex.h>
+#include <wex/core/chrono.h>
+#include <wex/core/config.h>
+#include <wex/core/log.h>
+#include <wex/core/regex.h>
+#include <wex/factory/blame.h>
 
 namespace wex
 {
-  std::string
-  build(const std::string& key, const std::string& field, bool first = false)
+std::string
+build(const std::string& key, const std::string& field, bool first = false)
+{
+  std::string add;
+
+  if (config("blame." + key).get(true))
   {
-    std::string add;
-
-    if (config("blame." + key).get(true))
+    if (!first)
     {
-      if (!first)
-      {
-        add += " ";
-      }
-
-      add += field;
+      add += " ";
     }
 
-    return add;
+    add += field;
   }
+
+  return add;
+}
 } // namespace wex
 
 wex::blame::blame(const pugi::xml_node& node)

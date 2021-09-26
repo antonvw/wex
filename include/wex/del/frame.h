@@ -7,11 +7,11 @@
 
 #pragma once
 
-#include <wex/config.h>
+#include <wex/core/config.h>
 #include <wex/del/defs.h>
 #include <wex/del/listview.h>
-#include <wex/file-history.h>
-#include <wex/frame.h>
+#include <wex/ui/file-history.h>
+#include <wex/ui/frame.h>
 
 import<set>;
 

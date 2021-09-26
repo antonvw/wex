@@ -5,7 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/tokenize.h>
+#include <wex/core/tokenize.h>
 
 #include "../test.h"
 

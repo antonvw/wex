@@ -5,12 +5,12 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/config.h>
-#include <wex/core.h>
-#include <wex/frd.h>
-#include <wex/macro-mode.h>
-#include <wex/macros.h>
-#include <wex/vi.h>
+#include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/ui/frd.h>
+#include <wex/vi/macro-mode.h>
+#include <wex/vi/macros.h>
+#include <wex/vi/vi.h>
 
 #include "test.h"
 

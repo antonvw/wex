@@ -5,7 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/statusbar.h>
+#include <wex/ui/statusbar.h>
 
 #include "test.h"
 

@@ -5,7 +5,7 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/vcs-command.h>
+#include <wex/core/vcs-command.h>
 
 bool wex::vcs_command::is_add() const
 {

@@ -9,8 +9,8 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wex/defs.h>
-#include <wex/notebook.h>
+#include <wex/factory/defs.h>
+#include <wex/ui/notebook.h>
 
 #include "test.h"
 

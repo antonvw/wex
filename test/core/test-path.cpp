@@ -5,7 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/path.h>
+#include <wex/core/path.h>
 
 #include "../test.h"
 
