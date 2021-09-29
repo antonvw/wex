@@ -11,6 +11,8 @@
 
 namespace wex
 {
+const long NUMBER_NOT_SET = 0;
+
 const int DEBUG_MAX_DEBUGS = 25;
 const int FIND_MAX_FINDS   = 25;
 const int VCS_MAX_COMMANDS = 25;

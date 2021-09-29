@@ -35,7 +35,7 @@
 #include <wex/common/tocontainer.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
-#include <wex/core/util.h>
+#include <wex/common/util.h>
 #include <wex/ui/grid.h>
 #include <wex/ui/item-template-dialog.h>
 #include <wex/ui/item.h>

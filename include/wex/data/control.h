@@ -17,8 +17,8 @@ import<string>;
 
 namespace wex::data
 {
-/// Offers user data to be used by ctrl classes (as listctrl, styledtextctrl).
-/// First you can set the data using Col, Line, Find etc.,
+/// Offers user data to be used by ctrl classes (as listview, stc).
+/// First you can set the data using col, command, line, etc.,
 /// then call inject to perform the action.
 /// You can set several items, inject prioritizes the actions.
 class control : public line_data

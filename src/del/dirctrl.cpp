@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/tostring.h>
-#include <wex/core/util.h>
+#include <wex/common/util.h>
 #include <wex/del/defs.h>
 #include <wex/del/dirctrl.h>
 #include <wex/del/frame.h>

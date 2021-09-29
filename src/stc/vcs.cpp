@@ -10,7 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <wex/core/config.h>
-#include <wex/core/util.h>
+#include <wex/common/util.h>
 #include <wex/factory/path-lexer.h>
 #include <wex/stc/vcs.h>
 #include <wex/ui/item-dialog.h>

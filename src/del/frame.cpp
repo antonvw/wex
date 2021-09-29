@@ -9,7 +9,7 @@
 #include <wex/common/stream.h>
 #include <wex/common/tostring.h>
 #include <wex/core/regex.h>
-#include <wex/core/util.h>
+#include <wex/common/util.h>
 #include <wex/del/wex.h>
 #include <wex/factory/lexers.h>
 #include <wex/stc/wex.h>

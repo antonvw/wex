@@ -7,7 +7,7 @@
 
 #include <wex/common/dir.h>
 #include <wex/common/stream.h>
-#include <wex/core/util.h>
+#include <wex/common/util.h>
 #include <wex/del/wex.h>
 #include <wex/stc/vcs.h>
 #include <wex/ui/bind.h>

@@ -9,7 +9,7 @@
 #include <wex/core/chrono.h>
 #include <wex/core/config.h>
 #include <wex/core/log.h>
-#include <wex/core/util.h>
+#include <wex/common/util.h>
 #include <wex/del/defs.h>
 #include <wex/del/frame.h>
 #include <wex/del/listview-file.h>

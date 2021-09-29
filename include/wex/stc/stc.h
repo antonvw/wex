@@ -27,7 +27,6 @@ class item_dialog;
 class link;
 class frame;
 class menu;
-class path;
 class stc_entry_dialog;
 class vcs_entry;
 

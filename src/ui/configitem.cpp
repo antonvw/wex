@@ -8,7 +8,7 @@
 #include <wex/common/tostring.h>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
-#include <wex/core/util.h>
+#include <wex/common/util.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/item.h>
 #include <wx/checkbox.h>

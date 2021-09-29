@@ -17,3 +17,4 @@
 #include <wex/common/tocontainer.h>
 #include <wex/common/tool.h>
 #include <wex/common/tostring.h>
+#include <wex/common/util.h>

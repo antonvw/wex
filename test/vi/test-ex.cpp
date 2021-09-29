@@ -274,39 +274,49 @@ TEST_CASE("wex::ex")
   SUBCASE("substitute")
   {
     stc->set_text("we have ccccc yyyy zzzz");
-    REQUIRE(ex->command(":%s/ccccc/ddd"));
-    REQUIRE(stc->get_text() == "we have ddd yyyy zzzz");
-    stc->set_text("we have xxxx yyyy zzzz");
-    ex->reset_search_flags();
-    REQUIRE(ex->command(":%s/(x+) *(y+)/\\\\2 \\\\1"));
-    REQUIRE(stc->get_text() == "we have yyyy xxxx zzzz");
-    stc->set_text("we have xxxx 'zzzz'");
-    REQUIRE(ex->command(":%s/'//g"));
-    REQUIRE(stc->get_text() == "we have xxxx zzzz");
-    REQUIRE(!ex->command(":.s/x*//g"));
-    REQUIRE(!ex->command(":.s/ *//g"));
-  }
 
-  SUBCASE("tilde")
-  {
-    stc->set_text("we have xxxxx yyyyy zzzzz");
-    REQUIRE(ex->command(":%s/x+/vvvvv/"));
-    REQUIRE(stc->get_text() == "we have vvvvv yyyyy zzzzz");
+    SUBCASE("eol")
+    {
+      REQUIRE(ex->command(":%s/z$/z>"));
+      REQUIRE(stc->get_text() == "we have ccccc yyyy zzzz>");
+    }
 
-    // tilde for replacement
-    stc->set_text("we have xxxxx yyyyy zzzzz");
-    REQUIRE(ex->command(":%s/y+/~"));
-    REQUIRE(stc->get_text() == "we have xxxxx vvvvv zzzzz");
+    SUBCASE("regular")
+    {
+      REQUIRE(ex->command(":%s/ccccc/ddd"));
+      REQUIRE(stc->get_text() == "we have ddd yyyy zzzz");
+      stc->set_text("we have xxxx yyyy zzzz");
+      ex->reset_search_flags();
+      REQUIRE(ex->command(":%s/(x+) *(y+)/\\\\2 \\\\1"));
+      REQUIRE(stc->get_text() == "we have yyyy xxxx zzzz");
+      stc->set_text("we have xxxx 'zzzz'");
+      REQUIRE(ex->command(":%s/'//g"));
+      REQUIRE(stc->get_text() == "we have xxxx zzzz");
+      REQUIRE(!ex->command(":.s/x*//g"));
+      REQUIRE(!ex->command(":.s/ *//g"));
+    }
 
-    // tilde for target and replacement
-    stc->set_text("we have xxxxx yyyyy zzzzz");
-    REQUIRE(ex->command(":%s/~"));
-    REQUIRE(stc->get_text() == "we have xxxxx vvvvv zzzzz");
+    SUBCASE("tilde")
+    {
+      stc->set_text("we have xxxxx yyyyy zzzzz");
+      REQUIRE(ex->command(":%s/x+/vvvvv/"));
+      REQUIRE(stc->get_text() == "we have vvvvv yyyyy zzzzz");
 
-    // tilde for complete last subtitute
-    stc->set_text("we have xxxxx yyyyy zzzzz");
-    REQUIRE(ex->command(":~"));
-    REQUIRE(stc->get_text() == "we have xxxxx vvvvv zzzzz");
+      // tilde for replacement
+      stc->set_text("we have xxxxx yyyyy zzzzz");
+      REQUIRE(ex->command(":%s/y+/~"));
+      REQUIRE(stc->get_text() == "we have xxxxx vvvvv zzzzz");
+
+      // tilde for target and replacement
+      stc->set_text("we have xxxxx yyyyy zzzzz");
+      REQUIRE(ex->command(":%s/~"));
+      REQUIRE(stc->get_text() == "we have xxxxx vvvvv zzzzz");
+
+      // tilde for complete last subtitute
+      stc->set_text("we have xxxxx yyyyy zzzzz");
+      REQUIRE(ex->command(":~"));
+      REQUIRE(stc->get_text() == "we have xxxxx vvvvv zzzzz");
+    }
   }
 
   SUBCASE("text input")

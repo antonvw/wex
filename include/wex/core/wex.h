@@ -22,7 +22,6 @@
 #include <wex/core/temp-filename.h>
 #include <wex/core/tokenize.h>
 #include <wex/core/type-to-value.h>
-#include <wex/core/util.h>
 #include <wex/core/vcs-command.h>
 #include <wex/core/version-dialog.h>
 #include <wex/core/version.h>

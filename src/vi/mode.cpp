@@ -17,7 +17,7 @@
 #include <wex/ui/statusbar.h>
 #include <wex/vi/macro-mode.h>
 #include <wex/vi/macros.h>
-#include <wex/vi/vi-mode.h>
+#include <wex/vi/mode.h>
 #include <wex/vi/vi.h>
 
 import<algorithm>;

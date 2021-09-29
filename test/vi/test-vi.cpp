@@ -344,6 +344,20 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->command(" "));
   }
 
+  SUBCASE("playback")
+  {
+    REQUIRE(vi->command("qa"));
+
+    REQUIRE(vi->command("atest"));
+    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+
+    REQUIRE(vi->command("q"));
+
+    stc->set_text("");
+    REQUIRE(vi->command("@a"));
+    REQUIRE(stc->get_text() == "test");
+  }
+
   SUBCASE("put")
   {
     stc->set_text("the chances of anything coming from mars\n");

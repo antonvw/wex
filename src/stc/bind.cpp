@@ -8,7 +8,7 @@
 #include <boost/tokenizer.hpp>
 #include <wex/core/config.h>
 #include <wex/core/log.h>
-#include <wex/core/util.h>
+#include <wex/common/util.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/lexer-props.h>
 #include <wex/factory/lexers.h>

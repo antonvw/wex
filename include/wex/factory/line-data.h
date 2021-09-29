@@ -7,16 +7,13 @@
 
 #pragma once
 
-#include <wex/data/defs.h>
+#include <wex/factory/defs.h>
 
 import<functional>;
 
 namespace wex
 {
-/// Offers user data to be used by ctrl classes (as listctrl, styledtextctrl).
-/// First you can set the data using Col, Line, Find etc.,
-/// then call inject to perform the action.
-/// You can set several items, inject prioritizes the actions.
+/// Offers user data to be used by factory classes.
 class line_data
 {
 public:

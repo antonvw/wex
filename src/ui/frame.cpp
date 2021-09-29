@@ -9,7 +9,7 @@
 #include <wex/common/tostring.h>
 #include <wex/core/config.h>
 #include <wex/core/file.h>
-#include <wex/core/util.h>
+#include <wex/common/util.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/lexers.h>
 #include <wex/factory/listview.h>

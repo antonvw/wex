@@ -11,7 +11,7 @@
 #endif
 #include <wex/common/tostring.h>
 #include <wex/core/log.h>
-#include <wex/core/util.h>
+#include <wex/common/util.h>
 #include <wex/factory/frame.h>
 #include <wex/stc/entry-dialog.h>
 #include <wex/stc/open-files-dialog.h>

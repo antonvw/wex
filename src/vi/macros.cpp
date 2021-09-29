@@ -12,7 +12,7 @@
 #include <wex/core/log.h>
 #include <wex/core/path.h>
 #include <wex/core/type-to-value.h>
-#include <wex/core/util.h>
+#include <wex/common/util.h>
 #include <wex/factory/lexer-props.h>
 #include <wex/ui/frame.h>
 #include <wex/vi/macros.h>

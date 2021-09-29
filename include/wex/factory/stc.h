@@ -19,7 +19,6 @@ import<bitset>;
 namespace wex
 {
 class indicator;
-class lexer;
 
 namespace data
 {

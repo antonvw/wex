@@ -12,14 +12,13 @@
 #endif
 #include <wex/common/dir.h>
 #include <wex/common/tostring.h>
+#include <wex/common/util.h>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/core/path.h>
 #include <wex/core/regex.h>
-#include <wex/core/util.h>
 #include <wex/core/vcs-command.h>
-#include <wex/factory/blame.h>
 #include <wex/factory/frame.h>
 #include <wex/factory/lexer.h>
 #include <wex/factory/lexers.h>

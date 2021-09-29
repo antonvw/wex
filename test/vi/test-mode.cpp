@@ -5,7 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/vi/vi-mode.h>
+#include <wex/vi/mode.h>
 #include <wex/vi/vi.h>
 
 #include "test.h"

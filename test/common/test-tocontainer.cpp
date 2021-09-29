@@ -10,7 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <wex/common/tostring.h>
-#include <wex/core/util.h>
+#include <wex/common/util.h>
 #include <wx/generic/dirctrlg.h>
 
 #include "test.h"
