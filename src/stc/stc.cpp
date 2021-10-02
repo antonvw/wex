@@ -651,7 +651,10 @@ bool wex::stc::open(const wex::path& p, const data::stc& data)
     m_data.inject();
   }
 
-  m_frame->set_recent_file(p);
+  if (data.recent())
+  {
+    m_frame->set_recent_file(p);
+  }
 
   return true;
 }

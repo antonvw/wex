@@ -1,4 +1,6 @@
 # roadmap
+- inline notebook
+- git status does not open
 - branch feature/boost-test: use boost::test
 - use ranges library
 - use concepts library

@@ -42,10 +42,6 @@ void wex::bind::command(
         m_handler->Bind(wxEVT_MENU, it.first, it.second, ID_TOOL_HIGHEST);
         break;
 
-      case wxID_SORT_ASCENDING:
-        m_handler->Bind(wxEVT_MENU, it.first, it.second, wxID_SORT_ASCENDING);
-        break;
-
       default:
         if (it.second == id::stc::eol_dos)
         {
@@ -56,6 +52,16 @@ void wex::bind::command(
           m_handler->Bind(wxEVT_MENU, it.first, it.second);
         }
     }
+  }
+}
+
+void wex::bind::command(
+  std::vector<std::tuple<std::function<void(wxCommandEvent&)>, int, int>> v)
+{
+  for (const auto& it : v)
+  {
+    m_handler
+      ->Bind(wxEVT_MENU, std::get<0>(it), std::get<1>(it), std::get<2>(it));
   }
 }
 

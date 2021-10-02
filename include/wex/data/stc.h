@@ -136,6 +136,16 @@ public:
   /// Sets menu flags.
   stc& menu(menu_t flags, data::control::action_t action = data::control::SET);
 
+  /// Returns whether recent is on, for allowing set_recent_file.
+  bool recent() const { return m_recent; }
+
+  /// Sets recent.
+  stc& recent(bool recent)
+  {
+    m_recent = recent;
+    return *this;
+  };
+
   /// Returns window data.
   const auto& window() const { return m_data.window(); }
 
@@ -158,6 +168,8 @@ private:
                         .set(MENU_VCS)};
   window_t      m_win_flags{0};
   event_data    m_event_data;
+
+  bool m_recent{true};
 };
 }; // namespace data
 }; // namespace wex

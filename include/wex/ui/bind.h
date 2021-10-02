@@ -9,6 +9,7 @@
 
 #include <wx/event.h>
 
+import<tuple>;
 import<vector>;
 
 class wxFindReplaceData;
@@ -27,6 +28,14 @@ public:
                  /// the callback
                  std::function<void(wxCommandEvent&)>,
                  /// the window id, or first for a range of id's (see defs.h)
+                 int>>);
+
+  /// Binds a range of command events to handler.
+  void command(std::vector<std::tuple<
+                 /// the callback
+                 std::function<void(wxCommandEvent&)>,
+                 /// the range of id's
+                 int,
                  int>>);
 
   /// Binds find replace data to handler.

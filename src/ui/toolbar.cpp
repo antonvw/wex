@@ -253,6 +253,8 @@ void wex::toolbar::add_standard(bool realize)
   add_tool(
     {{wxID_NEW},
      {wxID_OPEN},
+     {wxID_BACKWARD},
+     {wxID_FORWARD},
      {wxID_SAVE},
      {wxID_PRINT},
      {wxID_UNDO},
@@ -295,6 +297,14 @@ void wex::toolbar::add_standard(bool realize)
       SetToolSticky(event.GetId(), false);
     },
     wxID_OPEN);
+
+  bind(this).command(
+    {{[=, this](wxCommandEvent& event)
+      {
+        m_frame->open_file_same_page(event);
+      },
+      wxID_FORWARD,
+      wxID_BACKWARD}});
 
   if (realize)
   {

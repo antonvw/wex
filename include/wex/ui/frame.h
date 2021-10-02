@@ -125,8 +125,10 @@ public:
   virtual bool exec_ex_command(ex_command& command) { return false; }
 
   /// Called if the notebook changed page.
-  /// Default sets the focus to page and adds page as recently used.
   virtual void on_notebook(wxWindowID id, wxWindow* page) { ; }
+
+  /// Called on browse forward, backward.
+  virtual void open_file_same_page(wxCommandEvent& event) { ; }
 
   /// Allows you to override print ex.
   virtual bool print_ex(factory::stc* stc, const std::string& text)
