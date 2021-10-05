@@ -22,18 +22,18 @@ private:
 };
 
 void link(
-  const wex::factory::link& link,
-  const std::string&        path,
-  const std::string&        expect         = std::string(),
-  int                       expect_line_no = 0,
-  int                       expect_col_no  = 0);
+  wex::factory::link& link,
+  const std::string&  path,
+  const std::string&  expect         = std::string(),
+  int                 expect_line_no = 0,
+  int                 expect_col_no  = 0);
 
 void link(
-  const wex::factory::link& link,
-  const std::string&        path,
-  const std::string&        expect,
-  int                       expect_line_no,
-  int                       expect_col_no)
+  wex::factory::link& link,
+  const std::string&  path,
+  const std::string&  expect,
+  int                 expect_line_no,
+  int                 expect_col_no)
 {
   wex::line_data data;
 

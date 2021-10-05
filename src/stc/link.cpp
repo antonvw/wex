@@ -8,6 +8,7 @@
 #include <boost/algorithm/string.hpp>
 #include <wex/stc/link.h>
 #include <wex/stc/stc.h>
+#include <wex/stc/vcs.h>
 #include <wex/ui/item-vector.h>
 
 wex::link::link()
@@ -32,4 +33,15 @@ std::string wex::link::get_link_pairs(const std::string& text) const
   }
 
   return std::string();
+}
+
+const wex::path
+wex::link::get_path(const std::string& text, line_data& data, factory::stc* stc)
+{
+  if (vcs v; v.use() && v.toplevel().dir_exists())
+  {
+    add_path(v.toplevel());
+  }
+
+  return factory::link::get_path(text, data, stc);
 }

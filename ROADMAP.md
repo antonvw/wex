@@ -1,7 +1,10 @@
 # roadmap
+- printf used 2 times, double code
+  - and update help file
+- path update
 - inline notebook
-- git status does not open
 - branch feature/boost-test: use boost::test
+
 - use ranges library
 - use concepts library
 - use coroutines

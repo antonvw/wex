@@ -43,15 +43,20 @@ public:
 
   /// Returns a path from text, using paths if necessary,
   /// returns empty path if no path could be found.
-  const path get_path(
+  virtual const path get_path(
     /// text containing a path somewhere
     const std::string& text,
     /// data to be filled in
     line_data& data,
     /// stc component
-    factory::stc* stc = nullptr) const;
+    factory::stc* stc = nullptr);
 
 protected:
+  /// Adds a search path.
+  /// Returns false if path does not exist, or is already present.
+  /// Otherwise returns true and the path is added.
+  bool add_path(const path& p);
+
   /// Returns link pairs.
   virtual std::string get_link_pairs(const std::string& text) const
   {

@@ -21,6 +21,15 @@ public:
   /// Default constructor.
   link();
 
+  /// Adds opening link from vcs output text.
+  const path get_path(
+    /// (vcs) text containing a path somewhere
+    const std::string& text,
+    /// data to be filled in
+    line_data& data,
+    /// stc component
+    factory::stc* stc = nullptr) override;
+
 private:
   std::string get_link_pairs(const std::string& text) const override;
 };
