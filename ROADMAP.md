@@ -1,6 +1,4 @@
 # roadmap
-- printf used 2 times, double code
-  - and update help file
 - path update
 - inline notebook
 - branch feature/boost-test: use boost::test

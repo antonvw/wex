@@ -242,6 +242,7 @@ It benefits from the following c++ features:
 
 ```cpp
   std::from_chars (c++17)
+  std::to_chars (c++17)
 ```
 
   This method can be used as replacement for e.g. stol.

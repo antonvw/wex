@@ -136,15 +136,10 @@ bool wex::address::adjust_window(const std::string& text) const
   }
 
   std::string output;
-  SEPARATE;
-  for (int i = begin; i < begin + count; i++)
-  {
-    char buffer[8];
-    snprintf(buffer, sizeof(buffer), "%6d ", i);
 
-    output += (flags.find("#") != std::string::npos ? buffer : "") +
-              m_ex->get_stc()->GetLine(i - 1);
-  }
+  SEPARATE;
+  output +=
+    wex::write_lines(m_ex->get_stc(), begin - 1, begin + count - 1, flags);
   SEPARATE;
 
   m_ex->print(output);
@@ -291,6 +286,7 @@ bool wex::address::parse(const std::string& command, const std::string& text)
       }
 
     case 'k':
+    case 'm':
       return !text.empty() ? marker_add(text[0]) : false;
 
     case 'p':
@@ -397,13 +393,14 @@ const std::string wex::address::regex_commands() const
 {
   // Command Descriptions in ex.
   // 1addr commands
-  return std::string("(append\\b|"
-                     "insert\\b|"
-                     "mark\\b|ma\\b|"
+  return std::string("(append\\b|a\\b|"
+                     "insert\\b|i\\b|"
+                     "mark\\b|ma\\b|k|"
                      "pu\\b|"
-                     "read\\b|"
+                     "read\\b|r\\b|"
                      "visual\\b|vi\\b|"
-                     "[aikrz=])([\\s\\S]*)");
+                     "z\\b|"
+                     "=)([\\s\\S]*)");
 }
 
 void wex::address::set_line(int line)

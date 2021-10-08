@@ -112,6 +112,20 @@ TEST_CASE("wex::ex")
 
     REQUIRE(ex->command(":c|changed"));
     REQUIRE(stc->get_text().find("changed") != std::string::npos);
+
+    const int lines = stc->get_line_count();
+
+    REQUIRE(ex->command(":1,2co$"));
+    REQUIRE(stc->get_line_count() == lines + 2);
+    REQUIRE(ex->command(":1,2copy$"));
+    REQUIRE(stc->get_line_count() == lines + 4);
+    REQUIRE(ex->command(":1,2t$"));
+    REQUIRE(stc->get_line_count() == lines + 4);
+    
+    REQUIRE(ex->command(":1,2nu"));
+    REQUIRE(ex->command(":1,2number"));
+    REQUIRE(!ex->command(":1,2nuber"));
+    REQUIRE(ex->command(":1,2#"));
   }
 
   SUBCASE("invalid commands")
@@ -121,6 +135,8 @@ TEST_CASE("wex::ex")
     for (const auto& command : std::vector<std::string>{
            // We have only one document, so :n, :prev return false.
            ":n",
+           ":axx",
+           ":ixx",
            ":prev",
            ":.k",
            ":pk",

@@ -11,12 +11,12 @@
 #endif
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
+#include <wex/common/util.h>
 #include <wex/core/core.h>
 #include <wex/core/file.h>
 #include <wex/core/log.h>
 #include <wex/core/regex.h>
 #include <wex/core/temp-filename.h>
-#include <wex/common/util.h>
 #include <wex/factory/process.h>
 #include <wex/factory/sort.h>
 #include <wex/factory/stc.h>
@@ -572,21 +572,28 @@ bool wex::addressrange::parse(
       return false;
 
     case 'c':
-      if (text.find('|') != std::string::npos)
+    case 't':
+      if (command != "co" && command != "copy")
       {
-        return change(after(text, '|'));
+        if (text.find('|') != std::string::npos)
+        {
+          return change(after(text, '|'));
+        }
+        else
+        {
+          return m_ex->frame()->show_ex_input(m_ex->get_stc(), command[0]);
+        }
       }
-      else
-      {
-        return m_ex->frame()->show_ex_input(m_ex->get_stc(), command[0]);
-      }
+
+      im = info_message_t::COPY;
+      return copy(address(m_ex, text));
 
     case 'd':
       im = info_message_t::DEL;
       return erase();
 
-    case 'v':
     case 'g':
+    case 'v':
       return global(text, command[0] == 'v');
 
     case 'j':
@@ -607,10 +614,6 @@ bool wex::addressrange::parse(
 
     case 'S':
       return sort(text);
-
-    case 't':
-      im = info_message_t::COPY;
-      return copy(address(m_ex, text));
 
     case 'w':
       if (!text.empty())
@@ -641,6 +644,7 @@ bool wex::addressrange::parse(
       return execute(text);
 
     case '#':
+    case 'n':
       return (m_stc->GetName() != "Print" ? print("#" + text) : false);
 
     default:
@@ -656,18 +660,8 @@ bool wex::addressrange::print(const std::string& flags) const
     return false;
   }
 
-  std::string text;
-
-  for (auto i = m_begin.get_line() - 1; i < m_end.get_line(); i++)
-  {
-    char buffer[8];
-    snprintf(buffer, sizeof(buffer), "%6d ", i + 1);
-
-    text += (flags.find("#") != std::string::npos ? buffer : std::string()) +
-            m_stc->GetLine(i);
-  }
-
-  m_ex->print(text);
+  m_ex->print(
+    wex::write_lines(m_stc, m_begin.get_line() - 1, m_end.get_line(), flags));
 
   return true;
 }
@@ -675,19 +669,19 @@ bool wex::addressrange::print(const std::string& flags) const
 const std::string wex::addressrange::regex_commands() const
 {
   // 2addr commands
-  return std::string("(change\\b|"
-                     "copy\\b|co\\b|"
-                     "delete\\b|"
-                     "global\\b|"
-                     "join\\b|"
-                     "list\\b|"
-                     "move\\b|"
-                     "number\\b|nu\\b|"
-                     "print\\b|"
-                     "substitute\\b|"
-                     "write\\b|"
-                     "yank\\b|ya\\b|"
-                     "[cdgjlmpsStvwy<>\\!&~@#])([\\s\\S]*)");
+  return std::string("(change|c\\b|"
+                     "copy|co|t|"
+                     "delete|d|"
+                     "global|"
+                     "join|j|"
+                     "list|l|"
+                     "move|m|"
+                     "number|nu|"
+                     "print|p|"
+                     "substitute|s|"
+                     "write|w|"
+                     "yank|ya|"
+                     "[gSvy<>\\!&~@#])([\\s\\S]*)");
 }
 
 void wex::addressrange::set(int begin, int end)

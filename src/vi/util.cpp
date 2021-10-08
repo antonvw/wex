@@ -87,3 +87,23 @@ bool wex::marker_and_register_expansion(const ex* ex, std::string& text)
 
   return true;
 }
+
+std::string wex::write_lines(
+  factory::stc*      stc,
+  int                start,
+  int                end,
+  const std::string& flags)
+{
+  std::string text;
+
+  for (auto i = start; i < end; i++)
+  {
+    char buffer[8];
+    snprintf(buffer, sizeof(buffer), "%6d ", i + 1);
+
+    text += (flags.find("#") != std::string::npos ? buffer : std::string()) +
+            stc->GetLine(i);
+  }
+
+  return text;
+}

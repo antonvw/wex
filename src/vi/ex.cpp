@@ -416,7 +416,7 @@ bool wex::ex::address_parse(
   std::string& cmd,
   address_t&   type)
 {
-  if (text.compare(0, 5, "'<,'>") == 0)
+  if (text.starts_with("'<,'>"))
   {
     if (get_stc()->get_selected_text().empty())
     {
@@ -463,7 +463,7 @@ bool wex::ex::address_parse(
                   {
                     type  = address_t::ONE;
                     range = m[0];
-                    cmd   = (m[1] == "mark" ? "k" : m[1]);
+                    cmd   = m[1];
                     text  = boost::algorithm::trim_left_copy(m[2]);
                   }},
                  // 2addr
@@ -472,21 +472,8 @@ bool wex::ex::address_parse(
                   {
                     type  = address_t::RANGE;
                     range = m[0] + m[1];
-
-                    if (m[2].substr(0, 2) == "co")
-                    {
-                      cmd = "t";
-                    }
-                    else if (m[2].substr(0, 2) == "nu")
-                    {
-                      cmd = "#";
-                    }
-                    else
-                    {
-                      cmd = m[2];
-                    }
-
-                    text = m[3];
+                    cmd   = m[2];
+                    text  = m[3];
                   }}});
         v.match(text) <= 1)
     {
