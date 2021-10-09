@@ -572,7 +572,6 @@ bool wex::addressrange::parse(
       return false;
 
     case 'c':
-    case 't':
       if (command != "co" && command != "copy")
       {
         if (text.find('|') != std::string::npos)
@@ -584,7 +583,9 @@ bool wex::addressrange::parse(
           return m_ex->frame()->show_ex_input(m_ex->get_stc(), command[0]);
         }
       }
+      [[fallthrough]];
 
+    case 't':
       im = info_message_t::COPY;
       return copy(address(m_ex, text));
 

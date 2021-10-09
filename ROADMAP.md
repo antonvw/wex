@@ -1,6 +1,7 @@
 # roadmap
-- path update
-- inline notebook
+- simplify ex parsing
+- undo module import
+
 - branch feature/boost-test: use boost::test
 
 - use ranges library

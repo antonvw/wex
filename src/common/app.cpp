@@ -56,6 +56,8 @@ bool wex::app::OnInit()
     }
   }
 
+  wxLogNull logNo; // prevent wxLog
+
   // Init the localization, from now on things will be translated.
   // Do not load wxstd, we load all files ourselves,
   // and do not want messages about loading non existing wxstd files.

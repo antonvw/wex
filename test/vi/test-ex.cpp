@@ -120,8 +120,8 @@ TEST_CASE("wex::ex")
     REQUIRE(ex->command(":1,2copy$"));
     REQUIRE(stc->get_line_count() == lines + 4);
     REQUIRE(ex->command(":1,2t$"));
-    REQUIRE(stc->get_line_count() == lines + 4);
-    
+    REQUIRE(stc->get_line_count() == lines + 6);
+
     REQUIRE(ex->command(":1,2nu"));
     REQUIRE(ex->command(":1,2number"));
     REQUIRE(!ex->command(":1,2nuber"));

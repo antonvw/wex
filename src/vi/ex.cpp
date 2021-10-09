@@ -441,11 +441,7 @@ bool wex::ex::address_parse(
       // (5) (6) regex find, non-greedy!
       "[\\?/].*?[\\?/]");
 
-    // Command Descriptions in ex.
-    // 1addr commands
     const auto& cmds_1addr(address(this).regex_commands());
-
-    // 2addr commands
     const auto& cmds_2addr(addressrange(this).regex_commands());
 
     if (regex v({// 2addr % range

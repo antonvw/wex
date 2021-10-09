@@ -177,7 +177,7 @@ bool wex::address::flags_supported(const std::string& flags) const
     return true;
   }
 
-  if (regex("([-+#pl])").match(flags) < 0)
+  if (regex("([-+#pl]+)").match(flags) < 0)
   {
     log::status("Unsupported flags") << flags;
     return false;
