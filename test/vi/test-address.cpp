@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/vi/address.h>
+#include <wex/vi/command-parser.h>
 #include <wex/vi/ex.h>
 #include <wex/vi/macros.h>
 
@@ -100,10 +101,11 @@ TEST_CASE("wex::address")
 
   SUBCASE("parse")
   {
-    REQUIRE(!wex::address(ex, "3").parse(""));
-    REQUIRE(wex::address(ex, "3").parse("z"));
-    REQUIRE(wex::address(ex, "3").parse("z", "="));
-    REQUIRE(!wex::address(ex, "3").parse("z", "P"));
+    wex::command_parser cp(ex, "3z");
+    wex::command_parser cp2(ex, "3z");
+
+    REQUIRE(!wex::address(ex).parse(wex::command_parser(ex, "3")));
+    REQUIRE(!wex::address(ex).parse(wex::command_parser(ex, "3zP")));
   }
 
   SUBCASE("put")

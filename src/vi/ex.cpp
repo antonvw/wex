@@ -11,7 +11,6 @@
 #include <wx/wx.h>
 #endif
 #include "eval.h"
-#include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
 #include <wex/common/cmdline.h>
 #include <wex/core/config.h>
@@ -28,8 +27,7 @@
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/statusbar.h>
-#include <wex/vi/address.h>
-#include <wex/vi/addressrange.h>
+#include <wex/vi/command-parser.h>
 #include <wex/vi/ctags.h>
 #include <wex/vi/ex-stream.h>
 #include <wex/vi/ex.h>
@@ -151,13 +149,6 @@ bool source(ex* ex, const std::string& cmd)
   return result;
 };
 }; // namespace wex
-
-enum class wex::ex::address_t
-{
-  NONE,
-  ONE,
-  RANGE,
-};
 
 wex::macros wex::ex::m_macros;
 
@@ -410,83 +401,6 @@ wex::ex::~ex()
   delete m_ex_stream;
 }
 
-bool wex::ex::address_parse(
-  std::string& text,
-  std::string& range,
-  std::string& cmd,
-  address_t&   type)
-{
-  if (text.starts_with("'<,'>"))
-  {
-    if (get_stc()->get_selected_text().empty())
-    {
-      return false;
-    }
-
-    type  = address_t::RANGE;
-    range = "'<,'>";
-    cmd   = text.substr(5);
-    text  = text.substr(6);
-  }
-  else
-  {
-    marker_and_register_expansion(this, text);
-
-    // Addressing in ex.
-    const std::string addr(
-      // (1) . (2) $ (3) decimal number, + or - (7)
-      "[\\.\\$0-9\\+\\-]+|"
-      // (4) marker
-      "'[a-z]|"
-      // (5) (6) regex find, non-greedy!
-      "[\\?/].*?[\\?/]");
-
-    const auto& cmds_1addr(address(this).regex_commands());
-    const auto& cmds_2addr(addressrange(this).regex_commands());
-
-    if (regex v({// 2addr % range
-                 {"^%" + cmds_2addr,
-                  [&](const regex::match_t& m)
-                  {
-                    type  = address_t::RANGE;
-                    range = "%";
-                    cmd   = m[0];
-                    text  = m[1];
-                  }},
-                 // 1addr (or none)
-                 {"^(" + addr + ")?" + cmds_1addr,
-                  [&](const regex::match_t& m)
-                  {
-                    type  = address_t::ONE;
-                    range = m[0];
-                    cmd   = m[1];
-                    text  = boost::algorithm::trim_left_copy(m[2]);
-                  }},
-                 // 2addr
-                 {"^(" + addr + ")?(," + addr + ")?" + cmds_2addr,
-                  [&](const regex::match_t& m)
-                  {
-                    type  = address_t::RANGE;
-                    range = m[0] + m[1];
-                    cmd   = m[2];
-                    text  = m[3];
-                  }}});
-        v.match(text) <= 1)
-    {
-      type = address_t::NONE;
-      const auto line(address(this, text).get_line());
-      return get_stc()->inject(data::control().line(line));
-    }
-
-    if (range.empty() && cmd != '!')
-    {
-      range = (cmd == "g" || cmd == 'v' || cmd == 'w' ? "%" : ".");
-    }
-  }
-
-  return true;
-}
-
 bool wex::ex::auto_write()
 {
   if (!m_auto_write || !get_stc()->IsModified())
@@ -535,7 +449,9 @@ bool wex::ex::command(const std::string& cmd)
   {
     return m_frame->show_ex_command(get_stc(), command);
   }
-  else if (!command_handle(command) && !command_address(command.substr(1)))
+  else if (
+    !command_handle(command) &&
+    !command_parser(this, command.substr(1)).is_ok())
   {
     m_command.clear();
     return false;
@@ -548,54 +464,6 @@ bool wex::ex::command(const std::string& cmd)
   m_command.clear();
 
   return auto_write();
-}
-
-bool wex::ex::command_address(const std::string& command)
-{
-  std::string range, cmd, rest(command);
-  address_t   type;
-
-  if (!address_parse(rest, range, cmd, type))
-  {
-    return false;
-  }
-
-  try
-  {
-    switch (type)
-    {
-      case address_t::NONE:
-        break;
-
-      case address_t::ONE:
-        if (!address(this, range).parse(cmd, rest))
-        {
-          return false;
-        }
-        break;
-
-      case address_t::RANGE:
-        if (info_message_t im; !addressrange(this, range).parse(cmd, rest, im))
-        {
-          return false;
-        }
-        else if (im != info_message_t::NONE)
-        {
-          info_message(register_text(), im);
-        }
-        break;
-
-      default:
-        assert(0);
-    }
-  }
-  catch (std::exception& e)
-  {
-    log(e) << command;
-    return false;
-  }
-
-  return true;
 }
 
 bool wex::ex::command_handle(const std::string& command) const

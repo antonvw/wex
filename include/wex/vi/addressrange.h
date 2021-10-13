@@ -14,6 +14,7 @@
 namespace wex
 {
 enum class info_message_t;
+class command_parser;
 class global_env;
 
 namespace factory
@@ -88,13 +89,10 @@ public:
   /// Returns end address.
   auto& get_end() const { return m_end; }
 
-  /// Performs the global command on this range.
-  bool global(
-    /// command
-    const std::string& command,
-    /// normally performs command on each match, if inverse
-    /// performs command if line does not match
-    bool inverse = false) const;
+  /// Performs the global command (g) on this range.
+  /// normally performs command on each match, if inverse
+  /// performs (v) command if line does not match
+  bool global(const command_parser& cp) const;
 
   /// Is this range ok.
   bool is_ok() const;
@@ -105,13 +103,11 @@ public:
   /// moves range to destination.
   bool move(const address& destination) const;
 
-  /// Parses this addressrange based on command, and text.
+  /// Parses this addressrange based on command parser.
   /// Returns true if command is valid.
   bool parse(
-    /// mostly a one letter string like "p" for print
-    const std::string& command,
-    /// text, as required by command
-    const std::string& text,
+    /// the command parser
+    const command_parser& cp,
     /// extra information in case command failed
     info_message_t& msg);
 
@@ -133,29 +129,27 @@ public:
   ///  - x,y sorts rectangle within range: x start col, y end col (exclusive).
   bool sort(const std::string& parameters = std::string()) const;
 
-  /// substitutes range.
-  bool substitute(
-    /// text format: /pattern/replacement/options
-    /// Pattern might contain:
-    /// - $ to match a line end
-    /// Replacement might contain:
-    /// - & or \\0 to represent the target in the replacement
-    /// - \\U to convert target to uppercase
-    /// - \\L to convert target to lowercase
-    /// Options can be:
-    /// - c : Ask for confirm
-    /// - i : Case insensitive
-    /// - g : Do global on line, without this flag replace first match only
-    /// e.g. /$/EOL appends the string EOL at the end of each line.
-    /// Merging is not yet possible using a \n target,
-    /// you can create a macro for that.
-    const std::string& text,
-    /// cmd is one of s, & or ~
-    /// - s : default, normal substitute
-    /// - & : repeat last substitute (text contains options)
-    /// - ~ : repeat last substitute with pattern from find replace data
-    ///      (text contains options)
-    char cmd = 's');
+  /// Substitutes range.
+  /// text format: /pattern/replacement/options
+  /// Pattern might contain:
+  /// - $ to match a line end
+  /// Replacement might contain:
+  /// - & or \\0 to represent the target in the replacement
+  /// - \\U to convert target to uppercase
+  /// - \\L to convert target to lowercase
+  /// Options can be:
+  /// - c : Ask for confirm
+  /// - i : Case insensitive
+  /// - g : Do global on line, without this flag replace first match only
+  /// e.g. /$/EOL appends the string EOL at the end of each line.
+  /// Merging is not yet possible using a \n target,
+  /// you can create a macro for that.
+  /// cmd is one of s, & or ~
+  /// - s : default, normal substitute
+  /// - & : repeat last substitute (text contains options)
+  /// - ~ : repeat last substitute with pattern from find replace data
+  ///      (text contains options)
+  bool substitute(const command_parser& cp);
 
   /// Writes range to filename.
   bool write(const std::string& filename) const;
@@ -171,6 +165,7 @@ private:
   void set(const std::string& begin, const std::string& end);
   void set(int begin, int end);
   void set(address& begin, address& end, int lines) const;
+  void set_range(const std::string& range);
   bool set_selection() const;
 
   static inline data::substitute m_substitute;

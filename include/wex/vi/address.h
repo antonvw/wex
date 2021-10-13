@@ -12,6 +12,7 @@ import<string>;
 namespace wex
 {
 class addressrange;
+class command_parser;
 class ex;
 
 /// Offers an address class to be used by vi address ranges.
@@ -67,13 +68,9 @@ public:
   /// Deletes marker (if this address concerns a marker).
   bool marker_delete() const;
 
-  /// Parse this address based on command, and text.
+  /// Parse this address based on command parser.
   /// Returns true if command is valid.
-  bool parse(
-    /// mostly a one letter string like "z" for adjust_window
-    const std::string& command,
-    /// text, as required by command
-    const std::string& text = std::string()) const;
+  bool parse(const command_parser& cp);
 
   /// Append text from the specified register at this address,
   /// default uses yank register.

@@ -27,6 +27,9 @@ public:
   /// Returns whether options indicate ignore case.
   bool is_ignore_case() const;
 
+  /// Returns whether inverse option is present (for set_global).
+  bool is_inverse() const { return m_inverse; }
+
   /// Returns commands.
   auto& commands() const { return m_commands; }
 
@@ -48,5 +51,7 @@ public:
 
 private:
   std::string m_commands, m_options, m_pattern, m_replacement;
+
+  bool m_inverse{false};
 };
 } // namespace wex::data

@@ -1,6 +1,8 @@
 # roadmap
-- simplify ex parsing
 - undo module import
+
+- g//d
+ -> should take a previous pattern
 
 - branch feature/boost-test: use boost::test
 
