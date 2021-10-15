@@ -9,6 +9,16 @@
 #include <wex/core/file.h>
 #include <wex/core/log.h>
 
+namespace fs = std::filesystem;
+
+namespace wex
+{
+bool copy(const wex::path& from, const wex::path& to)
+{
+  return fs::copy_file(from.data(), to.data());
+}
+} // namespace wex
+
 wex::file::file()
   : m_stat(std::string())
 {
@@ -117,6 +127,14 @@ bool wex::file::close()
   return !m_fs.is_open();
 }
 
+void wex::file::do_file_save(bool save_as)
+{
+  if (save_as)
+  {
+    copy(m_path_prev, m_path);
+  }
+}
+
 bool wex::file::file_load(bool synced)
 {
   if (synced && !open(std::ios_base::in | std::ios_base::out))
@@ -170,6 +188,7 @@ bool wex::file::file_save(const wex::path& p)
 
   if (!p.empty())
   {
+    m_path_prev = m_path;
     assign(p);
     save_as = true;
   }

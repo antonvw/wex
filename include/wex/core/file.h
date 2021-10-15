@@ -124,7 +124,8 @@ protected:
 
   /// Invoked by file_save, allows you to save the file.
   /// The file is already opened.
-  virtual void do_file_save(bool save_as = false) { ; }
+  /// The default save_as copies the file to new file.
+  virtual void do_file_save(bool save_as = false);
 
 private:
   void assign(const wex::path& p);
@@ -133,7 +134,7 @@ private:
 
   bool m_is_loaded{false}, m_is_written{false}, m_use_stream{false};
 
-  wex::path                    m_path;
+  wex::path                    m_path, m_path_prev;
   file_stat                    m_stat; // used to check for sync
   std::fstream                 m_fs;
   std::unique_ptr<std::string> m_buffer;
