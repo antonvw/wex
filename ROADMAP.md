@@ -1,6 +1,7 @@
 # roadmap
 - undo module import
 
+- use filesystem::file_status
 - g//d
  -> should take a previous pattern
 

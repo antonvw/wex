@@ -10,6 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <boost/algorithm/string.hpp>
+#include <wex/common/cmdline.h>
 #include <wex/common/util.h>
 #include <wex/core/core.h>
 #include <wex/core/file.h>
@@ -444,13 +445,20 @@ bool wex::addressrange::parse(const command_parser& cp, info_message_t& im)
       return sort(cp.text());
 
     case 'w':
-      if (!cp.text().empty())
+      if (!cp.text().empty() && !cmdline::use_events())
       {
-        return write(cp.text());
+        m_stc->position_save();
+        const bool r = write(cp.text());
+        m_stc->SelectNone();
+        m_stc->position_restore();
+        return r;
       }
       else
       {
-        wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVE);
+        wxCommandEvent event(
+          wxEVT_COMMAND_MENU_SELECTED,
+          cp.text().empty() ? wxID_SAVE : wxID_SAVEAS);
+        event.SetString(boost::algorithm::trim_left_copy(cp.text()));
         wxPostEvent(wxTheApp->GetTopWindow(), event);
         return true;
       }

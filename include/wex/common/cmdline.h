@@ -85,6 +85,10 @@ public:
   /// Returns output.
   static bool is_output();
 
+  /// For some tests events can be preferred over direct code.
+  /// Returns this setting, default events are not preferred.
+  static bool use_events();
+
   /// Default constructor, adds standard options.
   cmdline(
     /// switches

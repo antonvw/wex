@@ -435,3 +435,8 @@ bool wex::cmdline::set_option(const std::vector<std::string>& v, bool save)
 
   return false;
 }
+
+bool wex::cmdline::use_events()
+{
+  return cmdline_imp::m_use_events;
+}

@@ -67,7 +67,7 @@ private:
 
   config& m_cfg;
 
-  static inline bool        m_is_echo{false}, m_is_output{false};
+  static inline bool m_is_echo{false}, m_is_output{false}, m_use_events{false};
   static inline std::string m_output, m_scriptout;
 };
 }; // namespace wex

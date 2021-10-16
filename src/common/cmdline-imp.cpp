@@ -152,6 +152,8 @@ bool wex::cmdline_imp::parse(data::cmdline& data)
   {
     if (const auto quit(m_vm["quit"].as<int>()); quit > 0)
     {
+      m_use_events = true;
+
       const auto id_quit = wxWindowBase::NewControlId();
 
       auto* timer_start = new wxTimer(wxTheApp, id_quit);
