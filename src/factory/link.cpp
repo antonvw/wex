@@ -14,7 +14,7 @@
 #include <wex/factory/link.h>
 #include <wex/factory/stc.h>
 
-import<algorithm>;
+#include <algorithm>
 
 namespace wex::factory
 {

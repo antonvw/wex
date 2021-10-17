@@ -9,7 +9,7 @@
 #include <wex/data/find.h>
 #include <wex/factory/stc.h>
 
-import<regex>;
+#include <regex>
 
 wex::data::find::find(
   wex::factory::stc* stc,

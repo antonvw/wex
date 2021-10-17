@@ -10,8 +10,8 @@
 #include <wex/data/control.h>
 #include <wx/imaglist.h>
 
-import<any>;
-import<functional>;
+#include <any>
+#include <functional>
 
 namespace wex::data
 {

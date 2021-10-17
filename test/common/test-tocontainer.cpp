@@ -15,8 +15,8 @@
 
 #include "test.h"
 
-import<list>;
-import<vector>;
+#include <list>
+#include <vector>
 
 TEST_CASE("wex::to_container")
 {

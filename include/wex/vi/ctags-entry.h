@@ -7,7 +7,7 @@
 
 #pragma once
 
-import<string>;
+#include <string>
 
 #include <readtags.h>
 

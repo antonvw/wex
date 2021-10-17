@@ -10,11 +10,11 @@
 #include <wex/factory/ex-command.h>
 #include <wex/factory/marker.h>
 
-import<functional>;
-import<map>;
-import<string>;
-import<utility>;
-import<vector>;
+#include <functional>
+#include <map>
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace wex
 {

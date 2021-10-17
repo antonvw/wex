@@ -25,7 +25,7 @@
     return;                                           \
   }
 
-import<numeric>;
+#include <numeric>
 
 const int idShowHidden = wxWindow::NewControlId();
 

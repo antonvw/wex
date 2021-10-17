@@ -10,7 +10,7 @@
 
 #include "scope.h"
 
-import<algorithm>;
+#include <algorithm>
 
 wex::scope::scope(stc* s)
   : m_stc(s)

@@ -42,7 +42,7 @@
 #include <wex/ui/listview.h>
 #include <wex/ui/notebook.h>
 
-import<sstream>;
+#include <sstream>
 
 namespace wex
 {

@@ -17,7 +17,7 @@
 #include <wx/app.h>
 #include <wx/log.h>
 
-import<iomanip>;
+#include <iomanip>
 
 namespace logging = boost::log;
 

@@ -11,7 +11,7 @@
 #include <wex/ui/item-template-dialog.h>
 #include <wex/ui/item.h>
 
-import<vector>;
+#include <vector>
 
 namespace wex
 {

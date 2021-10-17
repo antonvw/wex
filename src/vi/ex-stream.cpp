@@ -60,7 +60,7 @@
     }                                                                         \
   }
 
-import<regex>;
+#include <regex>
 
 const int default_line_size = 1000;
 

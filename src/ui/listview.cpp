@@ -36,7 +36,7 @@
 #include <wx/imaglist.h>
 #include <wx/numdlg.h> // for wxGetNumberFromUser
 
-import<cctype>;
+#include <cctype>
 
 namespace wex
 {

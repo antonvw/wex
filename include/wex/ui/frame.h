@@ -16,8 +16,8 @@
 #include <wex/ui/statusbar.h>
 #include <wx/aui/framemanager.h>
 
-import<utility>;
-import<vector>;
+#include <utility>
+#include <vector>
 
 class wxFindReplaceDialog;
 class wxPanel;

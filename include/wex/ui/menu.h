@@ -10,7 +10,7 @@
 #include <wex/ui/menu-item.h>
 #include <wx/menu.h>
 
-import<bitset>;
+#include <bitset>
 
 namespace wex
 {

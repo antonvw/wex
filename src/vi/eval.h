@@ -7,7 +7,7 @@
 
 #pragma once
 
-import<tuple>;
+#include <tuple>
 
 namespace wex
 {

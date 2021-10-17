@@ -20,8 +20,8 @@
 #include <wx/app.h>
 #include <wx/choicdlg.h>
 
-import<algorithm>;
-import<vector>;
+#include <algorithm>
+#include <vector>
 
 namespace wex
 {

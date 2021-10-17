@@ -9,8 +9,8 @@
 
 #include <wex/factory/defs.h>
 
-import<map>;
-import<string>;
+#include <map>
+#include <string>
 
 namespace wex
 {

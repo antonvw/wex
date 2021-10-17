@@ -16,9 +16,9 @@
 #include <wx/clipbrd.h>
 #include <wx/generic/dirctrlg.h> // for wxFileIconsTable
 
-import<algorithm>;
-import<numeric>;
-import<regex>;
+#include <algorithm>
+#include <numeric>
+#include <regex>
 
 const std::string wex::after(const std::string& text, char c, bool first)
 {

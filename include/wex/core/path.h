@@ -9,11 +9,11 @@
 
 #include <wex/core/stat.h>
 
-import<bitset>;
-import<filesystem>;
-import<sstream>;
-import<string>;
-import<vector>;
+#include <bitset>
+#include <filesystem>
+#include <sstream>
+#include <string>
+#include <vector>
 
 namespace wex
 {

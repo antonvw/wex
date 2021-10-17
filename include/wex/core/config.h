@@ -12,10 +12,10 @@
 class wxColour;
 class wxFont;
 
-import<list>;
-import<string>;
-import<tuple>;
-import<vector>;
+#include <list>
+#include <string>
+#include <tuple>
+#include <vector>
 
 namespace wex
 {

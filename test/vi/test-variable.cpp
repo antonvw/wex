@@ -8,7 +8,7 @@
 #include <wex/vi/ex.h>
 #include <wex/vi/variable.h>
 
-import<tuple>;
+#include <tuple>
 
 #include "test.h"
 

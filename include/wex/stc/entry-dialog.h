@@ -10,8 +10,8 @@
 #include <wex/data/window.h>
 #include <wex/ui/dialog.h>
 
-import<regex>;
-import<string>;
+#include <regex>
+#include <string>
 
 namespace wex
 {

@@ -248,7 +248,7 @@ else ()
   else ()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
       -std=c++20 -Wno-overloaded-virtual -Wno-reorder -Wno-write-strings \
-      -Wno-deprecated-declarations -Wno-unused-result -fmodules-ts")
+      -Wno-deprecated-declarations -Wno-unused-result")
   endif ()
 endif ()
 

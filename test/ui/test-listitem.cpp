@@ -9,7 +9,7 @@
 
 #include "test.h"
 
-import<chrono>;
+#include <chrono>
 
 TEST_CASE("wex::listitem")
 {

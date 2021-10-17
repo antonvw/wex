@@ -12,7 +12,7 @@
 #include <wex/ui/textctrl-input.h>
 #include <wex/ui/textctrl.h>
 
-import<charconv>;
+#include <charconv>
 
 wex::textctrl_input::textctrl_input(ex_command::type_t type)
   : m_type(type)

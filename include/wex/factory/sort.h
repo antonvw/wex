@@ -7,7 +7,7 @@
 
 #pragma once
 
-import<bitset>;
+#include <bitset>
 
 namespace wex
 {

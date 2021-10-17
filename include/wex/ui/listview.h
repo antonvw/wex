@@ -13,10 +13,10 @@
 
 #include <wx/artprov.h> // for wxArtID
 
-import<list>;
-import<map>;
-import<string>;
-import<vector>;
+#include <list>
+#include <map>
+#include <string>
+#include <vector>
 
 namespace wex
 {

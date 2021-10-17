@@ -8,8 +8,8 @@
 #include <assert.h>
 #include <wex/core/chrono.h>
 
-import<iomanip>;
-import<sstream>;
+#include <iomanip>
+#include <sstream>
 
 using namespace ::std::chrono;
 

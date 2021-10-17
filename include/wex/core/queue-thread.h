@@ -9,12 +9,12 @@
 
 #include <wex/core/log.h>
 
-import<atomic>;
-import<condition_variable>;
-import<mutex>;
-import<queue>;
-import<thread>;
-import<vector>;
+#include <atomic>
+#include <condition_variable>
+#include <mutex>
+#include <queue>
+#include <thread>
+#include <vector>
 
 namespace wex
 {

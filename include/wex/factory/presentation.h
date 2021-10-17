@@ -9,7 +9,7 @@
 
 #include <pugixml.hpp>
 
-import<compare>;
+#include <compare>
 
 class wxStyledTextCtrl;
 

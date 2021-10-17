@@ -14,7 +14,7 @@
 #include <wx/print.h>
 #include <wx/stc/stc.h>
 
-import<bitset>;
+#include <bitset>
 
 namespace wex
 {

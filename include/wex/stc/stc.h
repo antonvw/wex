@@ -16,7 +16,7 @@
 #include <wex/vi/vi.h>
 #include <wx/prntbase.h>
 
-import<vector>;
+#include <vector>
 
 namespace wex
 {

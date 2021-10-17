@@ -12,10 +12,10 @@
 #include <wex/core/log.h>
 #include <wex/core/regex.h>
 
-import<algorithm>;
-import<charconv>;
-import<functional>;
-import<numeric>;
+#include <algorithm>
+#include <charconv>
+#include <functional>
+#include <numeric>
 
 // Constructor for lexers from specified filename.
 // This must be an existing xml file containing all lexers.

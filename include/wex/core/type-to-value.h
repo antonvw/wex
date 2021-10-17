@@ -9,7 +9,7 @@
 
 #include <wex/core/log.h>
 
-import<string>;
+#include <string>
 
 namespace wex
 {

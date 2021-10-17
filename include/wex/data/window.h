@@ -11,7 +11,7 @@
 #include <wx/filedlg.h>
 #include <wx/window.h>
 
-import<string>;
+#include <string>
 
 namespace wex::data
 {

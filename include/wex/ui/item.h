@@ -12,12 +12,12 @@
 #include <wx/sizer.h> // for wxSizer, and wxSizerFlags
 #include <wx/slider.h>
 
-import<any>;
-import<map>;
-import<set>;
-import<string>;
-import<utility>;
-import<vector>;
+#include <any>
+#include <map>
+#include <set>
+#include <string>
+#include <utility>
+#include <vector>
 
 class wxFlexGridSizer;
 class wxWindow;

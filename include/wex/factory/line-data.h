@@ -9,7 +9,7 @@
 
 #include <wex/factory/defs.h>
 
-import<functional>;
+#include <functional>
 
 namespace wex
 {

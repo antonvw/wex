@@ -31,7 +31,7 @@
     }                                                        \
   }
 
-import<vector>;
+#include <vector>
 
 namespace wex
 {

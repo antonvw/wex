@@ -14,10 +14,10 @@
 #include <wex/factory/lexer.h>
 #include <wex/factory/marker.h>
 
-import<array>;
-import<map>;
-import<set>;
-import<vector>;
+#include <array>
+#include <map>
+#include <set>
+#include <vector>
 
 class wxWindow;
 

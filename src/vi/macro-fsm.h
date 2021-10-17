@@ -7,7 +7,7 @@
 
 #include <boost/statechart/state_machine.hpp>
 
-import<string>;
+#include <string>
 
 namespace sc = boost::statechart;
 

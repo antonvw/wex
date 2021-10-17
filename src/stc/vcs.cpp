@@ -27,8 +27,8 @@
                                                                  \
   m_entry = find_entry(m_entries);
 
-import<map>;
-import<numeric>;
+#include <map>
+#include <numeric>
 
 namespace wex
 {

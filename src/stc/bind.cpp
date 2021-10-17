@@ -29,8 +29,8 @@
 #include <wx/msgdlg.h>
 #include <wx/numdlg.h>
 
-import<numeric>;
-import<vector>;
+#include <numeric>
+#include <vector>
 
 namespace wex
 {

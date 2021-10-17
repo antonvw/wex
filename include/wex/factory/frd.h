@@ -7,9 +7,9 @@
 
 #pragma once
 
-import<list>;
-import<regex>;
-import<string>;
+#include <list>
+#include <regex>
+#include <string>
 
 class wxFindReplaceData;
 

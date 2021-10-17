@@ -7,9 +7,9 @@
 
 #pragma once
 
-import<chrono>;
-import<string>;
-import<tuple>;
+#include <chrono>
+#include <string>
+#include <tuple>
 
 namespace wex
 {

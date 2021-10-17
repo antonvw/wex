@@ -9,8 +9,8 @@
 
 #include <wx/event.h>
 
-import<tuple>;
-import<vector>;
+#include <tuple>
+#include <vector>
 
 class wxFindReplaceData;
 

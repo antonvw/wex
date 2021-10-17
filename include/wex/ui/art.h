@@ -9,7 +9,7 @@
 
 #include <wx/artprov.h> // for wxArtID
 
-import<map>;
+#include <map>
 
 namespace wex
 {

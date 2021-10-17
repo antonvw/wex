@@ -10,7 +10,7 @@
 #include <wex/core/path.h>
 #include <wex/factory/line-data.h>
 
-import<memory>;
+#include <memory>
 
 namespace wex
 {

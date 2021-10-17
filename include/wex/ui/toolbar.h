@@ -11,8 +11,8 @@
 #include <wex/data/window.h>
 #include <wx/aui/auibar.h>
 
-import<tuple>;
-import<vector>;
+#include <tuple>
+#include <vector>
 
 class wxCheckBox;
 

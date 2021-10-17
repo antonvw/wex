@@ -9,7 +9,7 @@
 
 #include <wx/accel.h>
 
-import<vector>;
+#include <vector>
 
 class wxWindow;
 

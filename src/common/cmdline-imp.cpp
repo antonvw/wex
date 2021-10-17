@@ -17,8 +17,8 @@
 
 #include "cmdline-imp.h"
 
-import<iostream>;
-import<sstream>;
+#include <iostream>
+#include <sstream>
 
 #define WEX_CALLBACK(TYPE, FIELD)        \
   v->second.FIELD(it.second.as<TYPE>()); \

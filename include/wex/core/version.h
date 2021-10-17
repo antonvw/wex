@@ -9,8 +9,8 @@
 
 #include <wx/versioninfo.h>
 
-import<sstream>;
-import<string>;
+#include <sstream>
+#include <string>
 
 namespace wex
 {

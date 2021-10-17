@@ -13,9 +13,9 @@
 
 #include <ctags/main/ctags.h>
 
-import<iomanip>;
-import<regex>;
-import<sstream>;
+#include <iomanip>
+#include <regex>
+#include <sstream>
 
 namespace wex
 {

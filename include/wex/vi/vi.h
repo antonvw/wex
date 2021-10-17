@@ -11,9 +11,9 @@
 #include <wex/vi/mode.h>
 #include <wx/event.h>
 
-import<functional>;
-import<string>;
-import<vector>;
+#include <functional>
+#include <string>
+#include <vector>
 
 namespace wex
 {

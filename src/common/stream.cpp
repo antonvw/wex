@@ -12,10 +12,10 @@
 #include <wex/factory/frd.h>
 #include <wx/msgdlg.h>
 
-import<cctype>;
-import<algorithm>;
-import<fstream>;
-import<functional>;
+#include <cctype>
+#include <algorithm>
+#include <fstream>
+#include <functional>
 
 wex::stream::stream(
   factory::find_replace_data* frd,

@@ -9,8 +9,8 @@
 
 #include <wex/vi/ctags-entry.h>
 
-import<map>;
-import<string>;
+#include <map>
+#include <string>
 
 typedef struct sTagFile tagFile;
 

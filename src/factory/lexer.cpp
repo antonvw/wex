@@ -15,9 +15,9 @@
 #include <wex/core/log.h>
 #include <wx/platinfo.h>
 
-import<algorithm>;
-import<charconv>;
-import<numeric>;
+#include <algorithm>
+#include <charconv>
+#include <numeric>
 
 namespace wex
 {

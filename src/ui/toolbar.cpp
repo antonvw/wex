@@ -23,7 +23,7 @@
 #include <wex/ui/textctrl.h>
 #include <wex/ui/toolbar.h>
 
-import<list>;
+#include <list>
 
 namespace wex
 {

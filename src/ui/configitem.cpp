@@ -27,7 +27,7 @@
       set_value((TYPE)config(m_label).get(DEFAULT));         \
   }
 
-import<filesystem>;
+#include <filesystem>
 
 namespace wex
 {

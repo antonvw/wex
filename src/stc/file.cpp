@@ -24,7 +24,7 @@
   event.SetInt(ACTION);                                                   \
   wxPostEvent(m_stc, event);
 
-import<thread>;
+#include <thread>
 
 namespace wex
 {

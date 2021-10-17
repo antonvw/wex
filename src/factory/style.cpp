@@ -14,7 +14,7 @@
 #include <wex/factory/style.h>
 #include <wx/stc/stc.h>
 
-import<charconv>;
+#include <charconv>
 
 void wex::style::apply(wxStyledTextCtrl* stc) const
 {

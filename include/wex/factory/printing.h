@@ -11,8 +11,8 @@
 #include <wx/html/htmprint.h>
 #include <wx/print.h>
 
-import<memory>;
-import<vector>;
+#include <memory>
+#include <vector>
 
 class wxStyledTextCtrl;
 

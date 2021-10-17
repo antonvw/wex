@@ -11,8 +11,8 @@
 #include <wex/data/stc.h>
 #include <wx/combobox.h>
 
-import<list>;
-import<vector>;
+#include <list>
+#include <vector>
 
 class wxArrayString;
 namespace pugi

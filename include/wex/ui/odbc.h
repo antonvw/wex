@@ -12,7 +12,7 @@
 #include <wex/core/version.h>
 #include <wex/data/window.h>
 
-import<memory>;
+#include <memory>
 
 class wxGrid;
 class wxStyledTextCtrl;

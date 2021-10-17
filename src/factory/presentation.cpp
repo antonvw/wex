@@ -12,7 +12,7 @@
 #include <wex/factory/presentation.h>
 #include <wx/stc/stc.h>
 
-import<charconv>;
+#include <charconv>
 
 wex::presentation::presentation(presentation_t type, const pugi::xml_node& node)
   : m_type(type)

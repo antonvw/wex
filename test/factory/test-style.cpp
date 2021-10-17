@@ -10,7 +10,7 @@
 
 #include "../test.h"
 
-import<numeric>;
+#include <numeric>
 
 TEST_CASE("wex::style")
 {

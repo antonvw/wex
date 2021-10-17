@@ -13,7 +13,7 @@
 #include <wex/ui/file-history.h>
 #include <wex/ui/frame.h>
 
-import<set>;
+#include <set>
 
 namespace wex
 {

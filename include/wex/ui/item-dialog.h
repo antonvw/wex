@@ -10,7 +10,7 @@
 #include <wex/ui/item-template-dialog.h>
 #include <wex/ui/item.h>
 
-import<utility>;
+#include <utility>
 
 namespace wex
 {

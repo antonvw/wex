@@ -12,7 +12,7 @@
 #include <wex/factory/sort.h>
 #include <wex/factory/stc.h>
 
-import<algorithm>;
+#include <algorithm>
 
 wex::sort::sort(sort_t sort_t, size_t pos, size_t len)
   : m_sort_t(sort_t)

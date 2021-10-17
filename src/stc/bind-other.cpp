@@ -18,7 +18,7 @@
 #include <wex/ui/stc-bind.h>
 #include <wx/fdrepdlg.h> // for wxFindDialogEvent
 
-import<vector>;
+#include <vector>
 
 namespace wex
 {

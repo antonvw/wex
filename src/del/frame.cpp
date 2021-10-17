@@ -17,7 +17,7 @@
 #include <wex/vi/ctags.h>
 #include <wex/vi/macros.h>
 
-import<thread>;
+#include <thread>
 
 namespace wex
 {

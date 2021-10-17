@@ -22,7 +22,7 @@
 
 #include "macro-fsm.h"
 
-import<fstream>;
+#include <fstream>
 
 namespace mpl = boost::mpl;
 

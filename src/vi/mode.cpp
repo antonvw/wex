@@ -20,7 +20,7 @@
 #include <wex/vi/mode.h>
 #include <wex/vi/vi.h>
 
-import<algorithm>;
+#include <algorithm>
 
 namespace mpl = boost::mpl;
 namespace sc  = boost::statechart;

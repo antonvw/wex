@@ -9,7 +9,7 @@
 
 #include <wx/listctrl.h>
 
-import<vector>;
+#include <vector>
 
 namespace wex
 {

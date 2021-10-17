@@ -12,9 +12,9 @@
 #include <wex/vi/macro-mode.h>
 #include <wex/vi/variable.h>
 
-import<map>;
-import<string>;
-import<vector>;
+#include <map>
+#include <string>
+#include <vector>
 
 namespace wex
 {

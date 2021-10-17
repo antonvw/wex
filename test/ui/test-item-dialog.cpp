@@ -13,7 +13,7 @@
 #include <wex/ui/frame.h>
 #include <wex/ui/item-dialog.h>
 
-import<vector>;
+#include <vector>
 
 TEST_SUITE_BEGIN("wex::item");
 

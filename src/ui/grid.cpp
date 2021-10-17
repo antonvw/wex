@@ -21,7 +21,7 @@
 #include <wex/ui/grid.h>
 #include <wx/dnd.h>
 
-import<sstream>;
+#include <sstream>
 
 namespace wex
 {

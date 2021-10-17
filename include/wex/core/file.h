@@ -10,9 +10,9 @@
 #include <wex/core/path.h>
 #include <wex/core/stat.h>
 
-import<fstream>;
-import<istream>;
-import<memory>;
+#include <fstream>
+#include <istream>
+#include <memory>
 
 namespace wex
 {

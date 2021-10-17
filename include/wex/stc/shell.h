@@ -9,8 +9,8 @@
 
 #include <wex/stc/stc.h>
 
-import<list>;
-import<vector>;
+#include <list>
+#include <vector>
 
 namespace wex
 {

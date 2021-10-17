@@ -7,11 +7,11 @@
 
 #pragma once
 
-import<functional>;
-import<regex>;
-import<string>;
-import<tuple>;
-import<vector>;
+#include <functional>
+#include <regex>
+#include <string>
+#include <tuple>
+#include <vector>
 
 namespace wex
 {

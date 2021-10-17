@@ -9,8 +9,8 @@
 
 #include <pugixml.hpp>
 
-import<bitset>;
-import<string>;
+#include <bitset>
+#include <string>
 
 namespace wex
 {

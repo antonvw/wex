@@ -16,7 +16,7 @@
 #include <wex/ui/bind.h>
 #include <wex/ui/frame.h>
 
-import<numeric>;
+#include <numeric>
 
 wex::shell::shell(
   const data::stc&   data,

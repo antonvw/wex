@@ -9,7 +9,7 @@
 
 #include <boost/tokenizer.hpp>
 
-import<string>;
+#include <string>
 
 namespace wex
 {

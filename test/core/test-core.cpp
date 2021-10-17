@@ -8,7 +8,7 @@
 #include "../test.h"
 #include <wex/core/core.h>
 
-import<vector>;
+#include <vector>
 
 TEST_CASE("wex::core")
 {

@@ -9,9 +9,9 @@
 
 #include <wex/factory/text-window.h>
 
-import<fstream>;
-import<map>;
-import<string>;
+#include <fstream>
+#include <map>
+#include <string>
 
 namespace wex
 {

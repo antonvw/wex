@@ -13,10 +13,10 @@
 #include <wex/core/log.h>
 #include <wx/event.h>
 
-import<algorithm>;
-import<atomic>;
-import<queue>;
-import<thread>;
+#include <algorithm>
+#include <atomic>
+#include <queue>
+#include <thread>
 
 namespace bp = boost::process;
 

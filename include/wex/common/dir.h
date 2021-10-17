@@ -13,7 +13,7 @@
 #include <wex/core/path.h>
 #include <wex/data/dir.h>
 
-import<filesystem>;
+#include <filesystem>
 
 class wxEvtHandler;
 

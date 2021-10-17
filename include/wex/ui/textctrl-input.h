@@ -9,8 +9,8 @@
 
 #include <wex/factory/ex-command.h>
 
-import<list>;
-import<string>;
+#include <list>
+#include <string>
 
 namespace wex
 {

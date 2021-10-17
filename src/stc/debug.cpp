@@ -25,7 +25,7 @@
 #include <wex/ui/menu.h>
 #include <wex/ui/menus.h>
 
-import<fstream>;
+#include <fstream>
 
 #ifdef __WXGTK__
 namespace wex

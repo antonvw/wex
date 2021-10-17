@@ -11,7 +11,7 @@
 #include <wex/core/menu-command.h>
 #include <wex/ui/menu-commands.h>
 
-import<map>;
+#include <map>
 
 namespace wex
 {

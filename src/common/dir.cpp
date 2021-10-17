@@ -13,7 +13,7 @@
 #include <wx/app.h>
 #include <wx/translation.h>
 
-import<thread>;
+#include <thread>
 
 namespace fs = std::filesystem;
 

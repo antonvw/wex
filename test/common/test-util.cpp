@@ -15,7 +15,7 @@
 
 #include "test.h"
 
-import<vector>;
+#include <vector>
 
 TEST_CASE("wex::util" * doctest::may_fail())
 {

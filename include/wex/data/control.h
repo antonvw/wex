@@ -11,9 +11,9 @@
 #include <wex/factory/line-data.h>
 #include <wx/validate.h>
 
-import<bitset>;
-import<functional>;
-import<string>;
+#include <bitset>
+#include <functional>
+#include <string>
 
 namespace wex::data
 {

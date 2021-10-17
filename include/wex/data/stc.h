@@ -9,7 +9,7 @@
 
 #include <wex/data/control.h>
 
-import<bitset>;
+#include <bitset>
 
 namespace wex
 {

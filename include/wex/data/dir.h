@@ -9,8 +9,8 @@
 
 #include <wex/factory/frd.h>
 
-import<bitset>;
-import<string>;
+#include <bitset>
+#include <string>
 
 namespace wex::data
 {

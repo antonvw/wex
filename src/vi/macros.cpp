@@ -17,7 +17,7 @@
 #include <wex/ui/frame.h>
 #include <wex/vi/macros.h>
 
-import<numeric>;
+#include <numeric>
 
 wex::macros::macros()
   : m_mode(this)

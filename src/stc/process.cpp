@@ -16,7 +16,7 @@
 #include <wex/vi/ex-stream.h>
 #include <wx/valtext.h>
 
-import<algorithm>;
+#include <algorithm>
 
 /* NOLINTNEXTLINE */
 std::string wex::process::m_working_dir_key = _("Process folder");

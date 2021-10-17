@@ -15,8 +15,8 @@
 
 #include "config-imp.h"
 
-import<fstream>;
-import<iomanip>;
+#include <fstream>
+#include <iomanip>
 
 wex::config_imp::config_imp()
   : m_json({})

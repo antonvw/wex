@@ -12,8 +12,8 @@
 #include <wex/core/log.h>
 #include <wex/ui/menus.h>
 
-import<string>;
-import<vector>;
+#include <string>
+#include <vector>
 
 namespace wex
 {

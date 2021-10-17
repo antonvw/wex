@@ -7,9 +7,9 @@
 
 #pragma once
 
-import<bitset>;
-import<set>;
-import<vector>;
+#include <bitset>
+#include <set>
+#include <vector>
 
 class wxWindow;
 

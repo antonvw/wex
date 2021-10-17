@@ -23,7 +23,7 @@
 #include <wex/vi/macros.h>
 #include <wex/vi/vi.h>
 
-import<sstream>;
+#include <sstream>
 
 namespace wex
 {

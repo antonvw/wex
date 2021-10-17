@@ -9,7 +9,7 @@
 
 #include <wex/factory/link.h>
 
-import<string>;
+#include <string>
 
 namespace wex
 {

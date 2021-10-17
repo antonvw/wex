@@ -10,8 +10,8 @@
 #include <wex/common/tocontainer.h>
 #include <wex/core/path.h>
 
-import<list>;
-import<vector>;
+#include <list>
+#include <vector>
 
 namespace wex
 {

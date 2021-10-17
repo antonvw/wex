@@ -7,7 +7,7 @@
 
 #pragma once
 
-import<string>;
+#include <string>
 #include <wx/bitmap.h>
 #include <wx/defs.h>
 

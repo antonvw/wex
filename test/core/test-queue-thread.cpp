@@ -8,7 +8,7 @@
 #include "../test.h"
 #include <wex/core/queue-thread.h>
 
-import<chrono>;
+#include <chrono>
 
 namespace wex
 {

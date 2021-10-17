@@ -7,10 +7,10 @@
 
 #pragma once
 
-import<functional>;
-import<memory>;
-import<string>;
-import<vector>;
+#include <functional>
+#include <memory>
+#include <string>
+#include <vector>
 
 namespace wex
 {

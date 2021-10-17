@@ -9,9 +9,9 @@
 
 #include <wex/vi/ctags-entry.h>
 
-import<bitset>;
-import<map>;
-import<vector>;
+#include <bitset>
+#include <map>
+#include <vector>
 
 namespace wex
 {

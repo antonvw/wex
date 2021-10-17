@@ -17,7 +17,7 @@
 #include <wex/ui/listitem.h>
 #include <wex/ui/menu.h>
 
-import<thread>;
+#include <thread>
 
 wex::del::file::file(const wex::path& p, const data::listview& data)
   : del::listview(data::listview(data).type(data::listview::FILE))

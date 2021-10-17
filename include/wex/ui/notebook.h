@@ -17,7 +17,7 @@
 #include <wx/aui/auibook.h>
 #include <wx/wupdlock.h>
 
-import<map>;
+#include <map>
 
 namespace wex
 {

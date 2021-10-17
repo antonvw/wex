@@ -8,7 +8,7 @@
 #include "../test.h"
 #include <wex/core/file.h>
 
-import<chrono>;
+#include <chrono>
 
 TEST_CASE("wex::file")
 {

@@ -15,8 +15,8 @@
 
 #include "cmdline-imp.h"
 
-import<iostream>;
-import<numeric>;
+#include <iostream>
+#include <numeric>
 
 namespace wex
 {

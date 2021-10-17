@@ -9,7 +9,7 @@
 #include <wex/core/path.h>
 #include <wex/core/temp-filename.h>
 
-import<filesystem>;
+#include <filesystem>
 
 wex::temp_filename::temp_filename(bool cleanup)
   : m_cleanup(cleanup)

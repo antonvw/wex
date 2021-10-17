@@ -7,8 +7,8 @@
 
 #pragma once
 
-import<memory>;
-import<string>;
+#include <memory>
+#include <string>
 
 class wxEvtHandler;
 

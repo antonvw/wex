@@ -16,9 +16,9 @@
 
 #include "eval.h"
 
-import<list>;
-import<numeric>;
-import<regex>;
+#include <list>
+#include <numeric>
+#include <regex>
 
 namespace x3 = boost::spirit::x3;
 

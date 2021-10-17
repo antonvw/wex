@@ -11,7 +11,7 @@
 
 #include "../test.h"
 
-import<vector>;
+#include <vector>
 
 TEST_SUITE_BEGIN("wex::vcs");
 

@@ -9,7 +9,7 @@
 
 #include "../test.h"
 
-import<chrono>;
+#include <chrono>
 
 bool log_contains(const wex::path::log_t& flags, const std::string& text)
 {

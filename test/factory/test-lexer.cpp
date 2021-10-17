@@ -9,7 +9,7 @@
 #include <wex/factory/lexer.h>
 #include <wex/factory/lexers.h>
 
-import<regex>;
+#include <regex>
 
 TEST_CASE("wex::lexer")
 {

@@ -10,7 +10,7 @@
 
 #include "../test.h"
 
-import<chrono>;
+#include <chrono>
 
 void find_prep(wex::stream& s, wex::factory::find_replace_data* frd)
 {

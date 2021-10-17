@@ -12,7 +12,7 @@
 #include <wex/factory/lexer.h>
 #include <wex/stc/stc.h>
 
-import<string>;
+#include <string>
 
 namespace wex
 {

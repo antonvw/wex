@@ -8,7 +8,7 @@
 #include <boost/algorithm/string.hpp>
 #include <wex/core/menu-command.h>
 
-import<algorithm>;
+#include <algorithm>
 
 wex::menu_command::menu_command(const pugi::xml_node& node)
   : m_command(boost::algorithm::trim_copy(std::string(node.text().get())))

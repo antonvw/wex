@@ -9,7 +9,7 @@
 
 #include <pugixml.hpp>
 
-import<set>;
+#include <set>
 
 class wxStyledTextCtrl;
 

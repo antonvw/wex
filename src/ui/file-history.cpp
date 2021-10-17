@@ -16,7 +16,7 @@
 #include <wx/imaglist.h>
 #include <wx/stockitem.h>
 
-import<filesystem>;
+#include <filesystem>
 
 namespace wex
 {

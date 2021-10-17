@@ -15,7 +15,7 @@
 
 #include "hexmode-line.h"
 
-import<regex>;
+#include <regex>
 
 namespace wex
 {

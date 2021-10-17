@@ -11,9 +11,9 @@
 #include <wex/factory/marker.h>
 #include <wex/ui/debug-entry.h>
 
-import<map>;
-import<string>;
-import<tuple>;
+#include <map>
+#include <string>
+#include <tuple>
 
 namespace wex
 {

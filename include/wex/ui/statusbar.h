@@ -11,8 +11,8 @@
 #include <wex/core/statusbar-pane.h>
 #include <wx/statusbr.h>
 
-import<tuple>;
-import<vector>;
+#include <tuple>
+#include <vector>
 
 namespace wex
 {

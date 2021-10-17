@@ -10,10 +10,10 @@
 #include <wex/factory/property.h>
 #include <wex/factory/style.h>
 
-import<map>;
-import<set>;
-import<string>;
-import<vector>;
+#include <map>
+#include <set>
+#include <string>
+#include <vector>
 
 namespace pugi
 {

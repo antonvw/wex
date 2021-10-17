@@ -33,7 +33,7 @@
 #include <wex/vi/ex.h>
 #include <wex/vi/macros.h>
 
-import<sstream>;
+#include <sstream>
 
 #define POST_CLOSE(ID, VETO)                      \
   {                                               \
