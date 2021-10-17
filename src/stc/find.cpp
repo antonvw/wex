@@ -5,14 +5,14 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/config.h>
-#include <wex/core.h>
+#include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
 #include <wex/data/find.h>
-#include <wex/ex-stream.h>
-#include <wex/frame.h>
-#include <wex/frd.h>
-#include <wex/log.h>
-#include <wex/stc.h>
+#include <wex/stc/stc.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/frd.h>
+#include <wex/vi/ex-stream.h>
 
 namespace wex
 {

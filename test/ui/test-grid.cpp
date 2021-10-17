@@ -9,7 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wex/grid.h>
+#include <wex/ui/grid.h>
 
 #include "test.h"
 

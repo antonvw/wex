@@ -5,10 +5,10 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/config.h>
-#include <wex/ex-command.h>
-#include <wex/frd.h>
-#include <wex/log.h>
+#include <wex/core/config.h>
+#include <wex/core/log.h>
+#include <wex/factory/ex-command.h>
+#include <wex/ui/frd.h>
 #include <wx/fdrepdlg.h>
 
 wex::find_replace_data::find_replace_data()

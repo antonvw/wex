@@ -5,16 +5,14 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <vector>
-#include <wex/beautify.h>
-#include <wex/config.h>
-#include <wex/core.h>
-#include <wex/item-dialog.h>
-#include <wex/item-vector.h>
-#include <wex/lexers.h>
-#include <wex/link.h>
-#include <wex/stc-entry-dialog.h>
-#include <wex/stc.h>
+#include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/factory/lexers.h>
+#include <wex/stc/beautify.h>
+#include <wex/stc/entry-dialog.h>
+#include <wex/stc/link.h>
+#include <wex/ui/item-dialog.h>
+#include <wex/ui/item-vector.h>
 #include <wx/settings.h>
 #include <wx/stockitem.h>
 
@@ -114,7 +112,12 @@ void wex::stc::config_get()
 
   if (!iv.find<bool>(_("stc.vi mode")))
   {
-    get_vi().use(ex::OFF);
+    config(_("stc.vi mode")).get(true);
+
+    if (!m_data.flags().test(data::stc::WIN_EX))
+    {
+      get_vi().use(ex::OFF);
+    }
   }
 
   show_line_numbers(iv.find<bool>(_("stc.Line numbers")));

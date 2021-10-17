@@ -5,10 +5,10 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/addressrange.h>
-#include <wex/beautify.h>
+#include <wex/factory/path-lexer.h>
 #include <wex/factory/process.h>
-#include <wex/path-lexer.h>
+#include <wex/stc/beautify.h>
+#include <wex/vi/addressrange.h>
 
 bool wex::beautify::file(const path& p) const
 {

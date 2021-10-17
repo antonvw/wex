@@ -5,7 +5,7 @@
 // Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/interruptible.h>
+#include <wex/core/interruptible.h>
 
 bool wex::interruptible::cancel()
 {

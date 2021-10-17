@@ -6,12 +6,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cassert>
-#include <wex/addressrange.h>
-#include <wex/ex.h>
-#include <wex/frd.h>
-#include <wex/log.h>
-#include <wex/macros.h>
-#include <wex/regex.h>
+#include <wex/core/log.h>
+#include <wex/core/regex.h>
+#include <wex/ui/frd.h>
+#include <wex/vi/addressrange.h>
+#include <wex/vi/ex.h>
+#include <wex/vi/macros.h>
 
 #include "ex-stream-line.h"
 
@@ -149,7 +149,8 @@ wex::ex_stream_line::handle_t wex::ex_stream_line::handle(char* line, int& pos)
 
             pch++;
             m_actions++;
-            pos += m_data.replacement().size() - m_data.pattern().size();
+            pos +=
+              (int)m_data.replacement().size() - (int)m_data.pattern().size();
           } while (m_data.is_global() &&
                    (pch = strstr(pch, m_data.pattern().c_str())) != nullptr);
 

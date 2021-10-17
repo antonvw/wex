@@ -5,61 +5,62 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <sstream>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
-#include <wex/bind.h>
-#include <wex/core.h>
-#include <wex/defs.h>
+#include <wex/core/core.h>
+#include <wex/factory/defs.h>
 #include <wex/factory/frame.h>
-#include <wex/frd.h>
-#include <wex/grid.h>
-#include <wex/lexers.h>
-#include <wex/printing.h>
+#include <wex/factory/lexers.h>
+#include <wex/factory/printing.h>
+#include <wex/ui/bind.h>
+#include <wex/ui/frd.h>
+#include <wex/ui/grid.h>
 #include <wx/dnd.h>
+
+#include <sstream>
 
 namespace wex
 {
-  // A support class for implementing drag/drop on a grid.
-  class text_droptarget : public wxTextDropTarget
-  {
-  public:
-    explicit text_droptarget(grid* grid);
+// A support class for implementing drag/drop on a grid.
+class text_droptarget : public wxTextDropTarget
+{
+public:
+  explicit text_droptarget(grid* grid);
 
-  private:
-    bool  OnDropText(wxCoord x, wxCoord y, const wxString& data) override;
-    grid* m_grid;
-  };
+private:
+  bool  OnDropText(wxCoord x, wxCoord y, const wxString& data) override;
+  grid* m_grid;
+};
 
-  text_droptarget::text_droptarget(grid* grid)
-    : wxTextDropTarget()
-    , m_grid(grid)
+text_droptarget::text_droptarget(grid* grid)
+  : wxTextDropTarget()
+  , m_grid(grid)
+{
+}
+
+bool text_droptarget::OnDropText(wxCoord x, wxCoord y, const wxString& data)
+{
+  const auto row = m_grid->YToRow(y - m_grid->GetColLabelSize());
+  const auto col = m_grid->XToCol(x - m_grid->GetRowLabelSize());
+
+  if (row == wxNOT_FOUND || col == wxNOT_FOUND)
   {
+    return false;
   }
 
-  bool text_droptarget::OnDropText(wxCoord x, wxCoord y, const wxString& data)
+  const wxGridCellCoords coord(row, col);
+
+  if (!m_grid->is_allowed_drop_selection(coord, data))
   {
-    const auto row = m_grid->YToRow(y - m_grid->GetColLabelSize());
-    const auto col = m_grid->XToCol(x - m_grid->GetRowLabelSize());
-
-    if (row == wxNOT_FOUND || col == wxNOT_FOUND)
-    {
-      return false;
-    }
-
-    const wxGridCellCoords coord(row, col);
-
-    if (!m_grid->is_allowed_drop_selection(coord, data))
-    {
-      return false;
-    }
-
-    return m_grid->drop_selection(coord, data);
+    return false;
   }
+
+  return m_grid->drop_selection(coord, data);
+}
 }; // namespace wex
 
 wex::grid::grid(const data::window& data)
@@ -75,133 +76,161 @@ wex::grid::grid(const data::window& data)
   SetDropTarget(new text_droptarget(this));
 
   lexers::get()->apply_default_style(
-    [=, this](const std::string& back) {
+    [=, this](const std::string& back)
+    {
       SetDefaultCellBackgroundColour(wxColour(back));
     },
-    [=, this](const std::string& fore) {
+    [=, this](const std::string& fore)
+    {
       SetDefaultCellTextColour(wxColour(fore));
     });
 
   bind(this).command(
-    {{[=, this](wxCommandEvent& event) {
+    {{[=, this](wxCommandEvent& event)
+      {
         empty_selection();
       },
       wxID_DELETE},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         SelectAll();
       },
       wxID_SELECTALL},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         ClearSelection();
       },
       ID_EDIT_SELECT_NONE},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         copy_selected_cells_to_clipboard();
       },
       wxID_COPY},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         copy_selected_cells_to_clipboard();
         empty_selection();
       },
       wxID_CUT},
-     {[=, this](wxCommandEvent& event) {
+     {[=, this](wxCommandEvent& event)
+      {
         paste_cells_from_clipboard();
       },
       wxID_PASTE}});
 
   bind(this).frd(
     find_replace_data::get()->wx(),
-    [=, this](const std::string& s, bool b) {
+    [=, this](const std::string& s, bool b)
+    {
       find_next(s, b);
     });
 
-  Bind(wxEVT_GRID_CELL_LEFT_CLICK, [=, this](wxGridEvent& event) {
-    // Removed extra check for !IsEditable(),
-    // drag/drop is different from editing, so allow that.
-    if (!IsSelection())
+  Bind(
+    wxEVT_GRID_CELL_LEFT_CLICK,
+    [=, this](wxGridEvent& event)
     {
-      event.Skip();
-      return;
-    }
-
-    if (m_use_drag_and_drop)
-    {
-      // This is because drag/drop is not really supported by the wxGrid.
-      // Even the wxEVT_GRID_CELL_BEGIN_DRAG does not seem to come in.
-      // Therefore, we are really dragging if you click again in
-      // your selection and move mouse and drop elsewhere.
-      // So, if not clicked in the selection, do nothing, this was no drag.
-      if (!IsInSelection(event.GetRow(), event.GetCol()))
+      // Removed extra check for !IsEditable(),
+      // drag/drop is different from editing, so allow that.
+      if (!IsSelection())
       {
         event.Skip();
         return;
       }
 
-      // Start drag operation.
-      wxTextDataObject textData(get_selected_cells_value());
-      wxDropSource     source(textData, this);
-      wxDragResult     result = source.DoDragDrop(wxDrag_DefaultMove);
-
-      if (
-        result != wxDragError && result != wxDragNone && result != wxDragCancel)
+      if (m_use_drag_and_drop)
       {
-        // The old contents is not deleted, as should be by moving.
-        // To fix this, do not call Skip so selection remains active,
-        // and call empty_selection.
-        //  event.Skip();
-        empty_selection();
-        ClearSelection();
+        // This is because drag/drop is not really supported by the wxGrid.
+        // Even the wxEVT_GRID_CELL_BEGIN_DRAG does not seem to come in.
+        // Therefore, we are really dragging if you click again in
+        // your selection and move mouse and drop elsewhere.
+        // So, if not clicked in the selection, do nothing, this was no drag.
+        if (!IsInSelection(event.GetRow(), event.GetCol()))
+        {
+          event.Skip();
+          return;
+        }
+
+        // Start drag operation.
+        wxTextDataObject textData(get_selected_cells_value());
+        wxDropSource     source(textData, this);
+        wxDragResult     result = source.DoDragDrop(wxDrag_DefaultMove);
+
+        if (
+          result != wxDragError && result != wxDragNone &&
+          result != wxDragCancel)
+        {
+          // The old contents is not deleted, as should be by moving.
+          // To fix this, do not call Skip so selection remains active,
+          // and call empty_selection.
+          //  event.Skip();
+          empty_selection();
+          ClearSelection();
+        }
+        else
+        {
+          // Do not call Skip so selection remains active.
+          // event.Skip();
+        }
       }
       else
       {
-        // Do not call Skip so selection remains active.
-        // event.Skip();
+        event.Skip();
       }
-    }
-    else
+    });
+
+  Bind(
+    wxEVT_GRID_CELL_RIGHT_CLICK,
+    [=, this](wxGridEvent& event)
+    {
+      menu::menu_t style(menu::menu_t().set(menu::IS_POPUP));
+
+      if (!IsEditable())
+        style.set(wex::menu::IS_READ_ONLY);
+      if (IsSelection())
+        style.set(wex::menu::IS_SELECTED);
+
+      wex::menu menu(style);
+      build_popup_menu(menu);
+      PopupMenu(&menu);
+    });
+
+  Bind(
+    wxEVT_GRID_SELECT_CELL,
+    [=, this](wxGridEvent& event)
+    {
+      auto* frame =
+        dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
+      frame->statustext(
+        std::to_string(1 + event.GetCol()) + "," +
+          std::to_string(1 + event.GetRow()),
+        "PaneInfo");
+      event.Skip();
+    });
+
+  Bind(
+    wxEVT_GRID_RANGE_SELECT,
+    [=, this](wxGridRangeSelectEvent& event)
     {
       event.Skip();
-    }
-  });
+      auto* frame =
+        dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
+      frame->statustext(
+        std::to_string(GetSelectedCells().GetCount()),
+        "PaneInfo");
+    });
 
-  Bind(wxEVT_GRID_CELL_RIGHT_CLICK, [=, this](wxGridEvent& event) {
-    menu::menu_t style(menu::menu_t().set(menu::IS_POPUP));
-
-    if (!IsEditable())
-      style.set(wex::menu::IS_READ_ONLY);
-    if (IsSelection())
-      style.set(wex::menu::IS_SELECTED);
-
-    wex::menu menu(style);
-    build_popup_menu(menu);
-    PopupMenu(&menu);
-  });
-
-  Bind(wxEVT_GRID_SELECT_CELL, [=, this](wxGridEvent& event) {
-    auto* frame = dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
-    frame->statustext(
-      std::to_string(1 + event.GetCol()) + "," +
-        std::to_string(1 + event.GetRow()),
-      "PaneInfo");
-    event.Skip();
-  });
-
-  Bind(wxEVT_GRID_RANGE_SELECT, [=, this](wxGridRangeSelectEvent& event) {
-    event.Skip();
-    auto* frame = dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
-    frame->statustext(
-      std::to_string(GetSelectedCells().GetCount()),
-      "PaneInfo");
-  });
-
-  Bind(wxEVT_SET_FOCUS, [=, this](wxFocusEvent& event) {
-    auto* frame = dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
-    if (frame != nullptr)
+  Bind(
+    wxEVT_SET_FOCUS,
+    [=, this](wxFocusEvent& event)
     {
-      frame->set_find_focus(this);
-    }
-    event.Skip();
-  });
+      auto* frame =
+        dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
+      if (frame != nullptr)
+      {
+        frame->set_find_focus(this);
+      }
+      event.Skip();
+    });
 }
 
 const std::string wex::grid::build_page()

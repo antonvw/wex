@@ -5,10 +5,10 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <vector>
-
 #include "../test.h"
-#include <wex/core.h>
+#include <wex/core/core.h>
+
+#include <vector>
 
 TEST_CASE("wex::core")
 {

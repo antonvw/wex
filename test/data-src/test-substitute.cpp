@@ -59,9 +59,13 @@ TEST_CASE("wex::data::substitute")
   {
     wex::data::substitute sub;
     REQUIRE(!sub.set_global("xxyy"));
-    REQUIRE(sub.set_global("/xx/yy"));
+    REQUIRE(!sub.set_global("u/xx/yy"));
+    REQUIRE(sub.set_global("g/xx/yy"));
+    REQUIRE(!sub.is_inverse());
+    REQUIRE(sub.set_global("v/xx/yy"));
     REQUIRE(sub.pattern() == "xx");
     REQUIRE(sub.commands() == "yy");
+    REQUIRE(sub.is_inverse());
   }
 
   SUBCASE("set_options")

@@ -6,15 +6,16 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/version.hpp>
-#include <iomanip>
 #include <pugixml.hpp>
-#include <regex>
-#include <sstream>
-#include <wex/version.h>
+#include <wex/core/version.h>
 #include <wx/translation.h>
 #include <wx/utils.h>
 
 #include <ctags/main/ctags.h>
+
+#include <iomanip>
+#include <regex>
+#include <sstream>
 
 namespace wex
 {

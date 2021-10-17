@@ -5,10 +5,10 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/ex.h>
+#include <wex/core/log.h>
 #include <wex/factory/stc.h>
-#include <wex/log.h>
-#include <wex/macros.h>
+#include <wex/vi/ex.h>
+#include <wex/vi/macros.h>
 #include <wx/defs.h>
 
 bool wex::marker_and_register_expansion(const ex* ex, std::string& text)
@@ -86,4 +86,45 @@ bool wex::marker_and_register_expansion(const ex* ex, std::string& text)
   }
 
   return true;
+}
+
+std::string wex::write_lines(
+  factory::stc*      stc,
+  int                start,
+  int                end,
+  const std::string& flags)
+{
+  std::string text;
+
+  for (auto i = start; i < end; i++)
+  {
+    if (flags.find("#") != std::string::npos)
+    {
+      // If the # flag is specified or the number edit option is set,
+      // each line shall be preceded by its line number in the following format
+      // "%6d", <line number>
+      char buffer[8];
+      snprintf(buffer, sizeof(buffer), "%6d ", i + 1);
+
+      text += buffer;
+    }
+
+    if (flags.find("l") != std::string::npos)
+    {
+      // If the l flag is specified or the list edit option is set:
+      // The end of each line shall be marked with a '$',
+      // and literal '$' characters within the line shall be written with a
+      // preceding <backslash>.
+      text += stc->GetTextRange(
+                stc->PositionFromLine(i),
+                stc->GetLineEndPosition(i)) +
+              "$" + "\n";
+    }
+    else
+    {
+      text += stc->GetLine(i);
+    }
+  }
+
+  return text;
 }

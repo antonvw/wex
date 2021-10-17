@@ -5,15 +5,13 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/macro-mode.h>
-#include <wex/macros.h>
-#include <wex/vi.h>
+#include <wex/vi/macro-mode.h>
+#include <wex/vi/macros.h>
+#include <wex/vi/vi.h>
 
 #include "test.h"
 
 #define ESC "\x1b"
-
-TEST_SUITE_BEGIN("wex::vi");
 
 TEST_CASE("wex::macros" * doctest::may_fail())
 {
@@ -42,7 +40,7 @@ TEST_CASE("wex::macros" * doctest::may_fail())
     REQUIRE(!macros.get_keys_map().empty());
   }
 
-  SUBCASE("record and playback")
+  SUBCASE("record-and-playback")
   {
     vi->mode().escape();
     vi->get_stc()->set_text("hello");
@@ -77,17 +75,15 @@ TEST_CASE("wex::macros" * doctest::may_fail())
     vi->get_stc()->set_text("");
     REQUIRE(vi->mode().is_command());
     REQUIRE(macros.mode().transition("@a", vi) == 2);
-    REQUIRE(vi->get_stc()->get_text() == "test");
 
+    // the macro does not result in chaning stc text,
+    // see playback in wex::vi
     vi->get_stc()->set_text("");
     REQUIRE(!macros.mode().transition("@a", vi, true, 0));
     REQUIRE(!macros.mode().transition("@a", vi, true, -8));
-    REQUIRE(vi->get_stc()->get_text().find("test") == std::string::npos);
     REQUIRE(macros.mode().transition("@a", vi, true, 10));
-    REQUIRE(
-      vi->get_stc()->get_text().find("testtesttesttest") != std::string::npos);
-
     REQUIRE(macros.mode().transition("@b", vi) == 2);
+
     REQUIRE(!macros.get().empty());
   }
 
@@ -114,7 +110,7 @@ TEST_CASE("wex::macros" * doctest::may_fail())
     REQUIRE(macros.mode().transition("@a", vi));
   }
 
-  SUBCASE("builtin variables")
+  SUBCASE("builtin-variables")
   {
     for (auto& builtin : get_builtin_variables())
     {
@@ -128,7 +124,7 @@ TEST_CASE("wex::macros" * doctest::may_fail())
     REQUIRE(!macros.mode().expand(vi, wex::variable("x"), expanded));
   }
 
-  SUBCASE("environment variables")
+  SUBCASE("environment-variables")
   {
 #ifdef __UNIX__
     for (auto& env : std::vector<std::string>{"HOME", "PWD"})
@@ -187,5 +183,3 @@ TEST_CASE("wex::macros" * doctest::may_fail())
     REQUIRE(macros.save_document());
   }
 }
-
-TEST_SUITE_END();

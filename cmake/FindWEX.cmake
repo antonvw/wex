@@ -25,7 +25,7 @@ endif ()
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 
-find_package(Boost 1.69.0 COMPONENTS 
+find_package(Boost 1.75.0 COMPONENTS 
   log_setup log filesystem program_options date_time regex REQUIRED)
 
 find_package(ODBC QUIET)
@@ -147,7 +147,11 @@ else()
     set(wx_LIBRARIES ${wx_LIBRARIES} wxscintilla-3.1)
   endif()
 
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -g")
+  if (APPLE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -g -fmodules")
+  else ()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -g")
+  endif ()
 endif()
 
 if (CMAKE_BUILD_TYPE EQUAL "Debug")

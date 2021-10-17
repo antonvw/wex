@@ -5,7 +5,7 @@
 // Copyright: (c) 2019-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/log.h>
+#include <wex/core/log.h>
 
 #include "../test.h"
 

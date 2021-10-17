@@ -5,8 +5,8 @@
 // Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/stc-entry-dialog.h>
-#include <wex/stc.h>
+#include <wex/stc/entry-dialog.h>
+#include <wex/stc/stc.h>
 
 #include "../test.h"
 

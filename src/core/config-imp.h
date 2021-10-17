@@ -8,12 +8,11 @@
 #pragma once
 
 #include <boost/json.hpp>
-#include <string>
 
-#include <wex/core.h>
-#include <wex/log.h>
-#include <wex/path.h>
-#include <wex/tokenize.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
+#include <wex/core/path.h>
+#include <wex/core/tokenize.h>
 
 namespace json = boost::json;
 

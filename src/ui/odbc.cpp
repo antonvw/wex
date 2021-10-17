@@ -9,13 +9,13 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wex/config.h>
-#include <wex/core.h>
+#include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
 #include <wex/factory/stc.h>
-#include <wex/frame.h>
-#include <wex/item-dialog.h>
-#include <wex/log.h>
-#include <wex/odbc.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/item-dialog.h>
+#include <wex/ui/odbc.h>
 #include <wx/grid.h>
 
 #if wexUSE_ODBC

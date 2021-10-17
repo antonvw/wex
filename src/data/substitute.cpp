@@ -6,9 +6,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
+#include <wex/core/log.h>
+#include <wex/core/regex.h>
 #include <wex/data/substitute.h>
-#include <wex/log.h>
-#include <wex/regex.h>
 
 wex::data::substitute::substitute(const std::string& text)
 {
@@ -88,16 +88,16 @@ bool wex::data::substitute::set(const std::string& command_org)
 
 bool wex::data::substitute::set_global(const std::string& text)
 {
-  regex v("^(\\s*)/(.*?)/(.*)");
-
   // [2addr] g[lobal] /pattern/ [commands]
   // [2addr] v /pattern/ [commands]
-  // the g or v part is already parsed, and not present, v[0] is empty, or ws
+  regex v("^(\\s*[gv]|global)/(.*?)/(.*)"); // non-greedy
+
   if (v.match(text) < 3)
   {
     return false;
   }
 
+  m_inverse  = v[0].starts_with('v');
   m_pattern  = v[1];
   m_commands = v[2];
 

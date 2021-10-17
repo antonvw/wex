@@ -9,14 +9,14 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wex/config.h>
-#include <wex/core.h>
+#include <wex/core/config.h>
+#include <wex/core/core.h>
 #include <wex/factory/frame.h>
 #include <wex/factory/grid.h>
 #include <wex/factory/listview.h>
 #include <wex/factory/stc.h>
-#include <wex/lexers.h>
-#include <wex/path.h>
+#include <wex/factory/lexers.h>
+#include <wex/core/path.h>
 
 #define wxCAST_TO(classname)                                     \
   /* NOLINTNEXTLINE */                                           \

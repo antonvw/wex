@@ -5,8 +5,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <sstream>
-
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -34,22 +32,24 @@
 #include <wx/valtext.h>
 #include <wx/window.h>
 
-#include <wex/core.h>
-#include <wex/grid.h>
-#include <wex/item-template-dialog.h>
-#include <wex/item.h>
-#include <wex/listview.h>
-#include <wex/log.h>
-#include <wex/notebook.h>
-#include <wex/tocontainer.h>
-#include <wex/util.h>
+#include <wex/common/tocontainer.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
+#include <wex/common/util.h>
+#include <wex/ui/grid.h>
+#include <wex/ui/item-template-dialog.h>
+#include <wex/ui/item.h>
+#include <wex/ui/listview.h>
+#include <wex/ui/notebook.h>
+
+#include <sstream>
 
 namespace wex
 {
 template <typename S, typename T>
 T* create_spinctrl(wxWindow* parent, const data::item& data, bool readonly)
 {
-  T* window = new T(
+  auto* window = new T(
     parent,
     data.window().id(),
     wxEmptyString,
@@ -1340,7 +1340,7 @@ bool wex::item::validate() const
     {
       std::regex r(get_value_as_string());
     }
-    catch (std::exception& e)
+    catch (std::exception&)
     {
       return false;
     }

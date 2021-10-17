@@ -5,12 +5,12 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/auto-complete.h>
-#include <wex/config.h>
-#include <wex/defs.h>
-#include <wex/frd.h>
-#include <wex/indicator.h>
-#include <wex/lexers.h>
+#include <wex/core/config.h>
+#include <wex/factory/defs.h>
+#include <wex/factory/indicator.h>
+#include <wex/factory/lexers.h>
+#include <wex/stc/auto-complete.h>
+#include <wex/ui/frd.h>
 
 #include "test.h"
 

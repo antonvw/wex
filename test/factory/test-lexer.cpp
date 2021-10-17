@@ -5,11 +5,11 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <regex>
-
 #include "../test.h"
-#include <wex/lexer.h>
-#include <wex/lexers.h>
+#include <wex/factory/lexer.h>
+#include <wex/factory/lexers.h>
+
+#include <regex>
 
 TEST_CASE("wex::lexer")
 {

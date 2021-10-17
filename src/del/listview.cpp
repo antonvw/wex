@@ -5,16 +5,14 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/accelerators.h>
-#include <wex/bind.h>
-#include <wex/del/frame.h>
-#include <wex/del/listview.h>
-#include <wex/dir.h>
-#include <wex/frd.h>
-#include <wex/listitem.h>
-#include <wex/stream.h>
-#include <wex/util.h>
-#include <wex/vcs.h>
+#include <wex/common/dir.h>
+#include <wex/common/stream.h>
+#include <wex/common/util.h>
+#include <wex/del/wex.h>
+#include <wex/stc/vcs.h>
+#include <wex/ui/bind.h>
+#include <wex/ui/frd.h>
+#include <wex/ui/listitem.h>
 #include <wx/app.h>
 
 wex::del::listview::listview(const data::listview& data)

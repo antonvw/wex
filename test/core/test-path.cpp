@@ -5,10 +5,11 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <chrono>
-#include <wex/path.h>
+#include <wex/core/path.h>
 
 #include "../test.h"
+
+#include <chrono>
 
 bool log_contains(const wex::path::log_t& flags, const std::string& text)
 {

@@ -5,12 +5,12 @@
 // Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <algorithm>
-
-#include <wex/log.h>
-#include <wex/stc.h>
+#include <wex/core/log.h>
+#include <wex/stc/stc.h>
 
 #include "scope.h"
+
+#include <algorithm>
 
 wex::scope::scope(stc* s)
   : m_stc(s)

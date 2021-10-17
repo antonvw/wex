@@ -5,19 +5,17 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <filesystem>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wex/config.h>
-#include <wex/core.h>
-#include <wex/frd.h>
-#include <wex/item.h>
-#include <wex/tostring.h>
-#include <wex/util.h>
+#include <wex/common/tostring.h>
+#include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/common/util.h>
+#include <wex/ui/frd.h>
+#include <wex/ui/item.h>
+#include <wx/checkbox.h>
 #include <wx/checklst.h>
 #include <wx/clrpicker.h>
+#include <wx/radiobox.h>
+#include <wx/settings.h>
 #include <wx/spinctrl.h>
 #include <wx/window.h>
 
@@ -28,6 +26,8 @@
     else                                                     \
       set_value((TYPE)config(m_label).get(DEFAULT));         \
   }
+
+#include <filesystem>
 
 namespace wex
 {

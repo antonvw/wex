@@ -7,9 +7,9 @@
 
 #pragma once
 
-#include <wex/config.h>
-#include <wex/item.h>
-#include <wex/log.h>
+#include <wex/core/config.h>
+#include <wex/core/log.h>
+#include <wex/ui/item.h>
 
 #include <wx/html/htmlwin.h>
 #include <wx/textctrl.h>

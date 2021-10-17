@@ -5,7 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/lexers.h>
+#include <wex/factory/lexers.h>
 
 #include "../test.h"
 

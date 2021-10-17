@@ -6,22 +6,22 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <algorithm>
-#include <vector>
-
 #include <boost/algorithm/string.hpp>
 #include <readtags.h>
 
-#include <wex/config.h>
-#include <wex/ctags.h>
-#include <wex/ex.h>
+#include <wex/core/config.h>
+#include <wex/core/log.h>
+#include <wex/core/path.h>
 #include <wex/factory/stc.h>
-#include <wex/frame.h>
-#include <wex/frd.h>
-#include <wex/log.h>
-#include <wex/path.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/frd.h>
+#include <wex/vi/ctags.h>
+#include <wex/vi/ex.h>
 #include <wx/app.h>
 #include <wx/choicdlg.h>
+
+#include <algorithm>
+#include <vector>
 
 namespace wex
 {

@@ -5,18 +5,17 @@
 // Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <thread>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wex/config.h>
-#include <wex/defs.h>
-#include <wex/ex-stream.h>
-#include <wex/file-dialog.h>
-#include <wex/path-lexer.h>
-#include <wex/stc-file.h>
-#include <wex/stc.h>
+#include <wex/core/config.h>
+#include <wex/factory/defs.h>
+#include <wex/factory/path-lexer.h>
+#include <wex/stc/file.h>
+#include <wex/stc/stc.h>
+#include <wex/ui/file-dialog.h>
+#include <wex/vi/ex-stream.h>
 
 //#define USE_THREAD 1
 
@@ -24,6 +23,8 @@
   wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_EDIT_FILE_ACTION); \
   event.SetInt(ACTION);                                                   \
   wxPostEvent(m_stc, event);
+
+#include <thread>
 
 namespace wex
 {
@@ -68,18 +69,18 @@ bool wex::stc_file::do_file_load(bool synced)
   m_stc->keep_event_data(synced);
 
   if (
-    m_stc->path().stat().st_size > config("stc.max.Size visual").get(10000000))
+    m_stc->path().stat().get_st_size() >
+    config("stc.max.Size visual").get(10000000))
   {
     m_stc->visual(false);
   }
 
   const bool hexmode =
-    dlg.is_hexmode() || 
-    m_stc->data().flags().test(data::stc::WIN_HEX) ||
+    dlg.is_hexmode() || m_stc->data().flags().test(data::stc::WIN_HEX) ||
     (config(_("stc.Ex mode show hex")).get(false) && !m_stc->is_visual());
 
   const std::streampos offset =
-    m_previous_size < m_stc->path().stat().st_size &&
+    m_previous_size < m_stc->path().stat().get_st_size() &&
         m_stc->data().event().is_synced_log() ?
       m_previous_size :
       std::streampos(0);
@@ -89,7 +90,7 @@ bool wex::stc_file::do_file_load(bool synced)
     m_stc->clear();
   }
 
-  m_previous_size = m_stc->path().stat().st_size;
+  m_previous_size = m_stc->path().stat().get_st_size();
 
 #ifdef USE_THREAD
   std::thread t(

@@ -5,10 +5,11 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/log.h>
+#include <wex/core/path.h>
+#include <wex/core/temp-filename.h>
+
 #include <filesystem>
-#include <wex/log.h>
-#include <wex/path.h>
-#include <wex/temp-filename.h>
 
 wex::temp_filename::temp_filename(bool cleanup)
   : m_cleanup(cleanup)

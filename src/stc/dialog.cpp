@@ -9,14 +9,14 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wex/common/tostring.h>
+#include <wex/core/log.h>
+#include <wex/common/util.h>
 #include <wex/factory/frame.h>
-#include <wex/file-dialog.h>
-#include <wex/log.h>
-#include <wex/open-files-dialog.h>
-#include <wex/stc-entry-dialog.h>
-#include <wex/stc.h>
-#include <wex/tostring.h>
-#include <wex/util.h>
+#include <wex/stc/entry-dialog.h>
+#include <wex/stc/open-files-dialog.h>
+#include <wex/stc/stc.h>
+#include <wex/ui/file-dialog.h>
 
 wex::stc_entry_dialog::stc_entry_dialog(
   const std::string&  text,

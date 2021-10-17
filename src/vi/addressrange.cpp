@@ -10,136 +10,28 @@
 #include <wx/wx.h>
 #endif
 #include <boost/algorithm/string.hpp>
-#include <boost/tokenizer.hpp>
-#include <wex/addressrange.h>
-#include <wex/core.h>
-#include <wex/ex-stream.h>
-#include <wex/ex.h>
+#include <wex/common/cmdline.h>
+#include <wex/common/util.h>
+#include <wex/core/core.h>
+#include <wex/core/file.h>
+#include <wex/core/log.h>
+#include <wex/core/regex.h>
+#include <wex/core/temp-filename.h>
 #include <wex/factory/process.h>
+#include <wex/factory/sort.h>
 #include <wex/factory/stc.h>
-#include <wex/file.h>
-#include <wex/frame.h>
-#include <wex/frd.h>
-#include <wex/log.h>
-#include <wex/macros.h>
-#include <wex/regex.h>
-#include <wex/sort.h>
-#include <wex/temp-filename.h>
-#include <wex/util.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/frd.h>
+#include <wex/vi/addressrange.h>
+#include <wex/vi/command-parser.h>
+#include <wex/vi/ex-stream.h>
+#include <wex/vi/ex.h>
+#include <wex/vi/macros.h>
+
+#include "global-env.h"
 
 namespace wex
 {
-class global_env
-{
-public:
-  explicit global_env(const addressrange* ar)
-    : m_ex(ar->m_ex)
-    , m_ar(ar)
-  {
-    m_ex->get_stc()->set_search_flags(m_ex->search_flags());
-    m_ex->get_stc()->BeginUndoAction();
-
-    for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
-           addressrange::data().commands(),
-           boost::char_separator<char>("|")))
-    {
-      // Prevent recursive global.
-      if (it[0] != 'g' && it[0] != 'v')
-      {
-        if (it[0] == 'd' || it[0] == 'm')
-        {
-          m_changes++;
-        }
-
-        m_commands.emplace_back(it);
-      }
-    }
-  }
-
-  ~global_env()
-  {
-    m_ex->get_stc()->EndUndoAction();
-    m_ex->marker_delete('%');
-  }
-
-  auto changes() const { return m_changes; }
-
-  bool commands() const { return !m_commands.empty(); }
-
-  bool for_each(int line) const
-  {
-    if (!commands())
-    {
-      m_ex->get_stc()->set_indicator(
-        m_ar->m_find_indicator,
-        m_ex->get_stc()->GetTargetStart(),
-        m_ex->get_stc()->GetTargetEnd());
-      return true;
-    }
-    else
-    {
-      return std::all_of(
-        m_commands.begin(),
-        m_commands.end(),
-        [this, line](const std::string& it)
-        {
-          if (!m_ex->command(":" + std::to_string(line + 1) + it))
-          {
-            m_ex->frame()->show_ex_message(
-              m_ex->get_command().command() + " failed");
-            return false;
-          }
-          return true;
-        });
-    }
-  }
-
-  bool for_each(int start, int& end, int& hits) const
-  {
-    if (start < end)
-    {
-      for (int i = start; i < end && i < m_ex->get_stc()->get_line_count() - 1;)
-      {
-        if (commands())
-        {
-          if (!for_each(i))
-            return false;
-        }
-        else
-        {
-          m_ex->get_stc()->set_indicator(
-            m_ar->m_find_indicator,
-            m_ex->get_stc()->PositionFromLine(i),
-            m_ex->get_stc()->GetLineEndPosition(i));
-        }
-
-        if (m_changes == 0)
-        {
-          i++;
-        }
-        else
-        {
-          end -= m_changes;
-        }
-
-        hits++;
-      }
-    }
-    else
-    {
-      end++;
-    }
-
-    return true;
-  }
-
-private:
-  const addressrange*      m_ar;
-  std::vector<std::string> m_commands;
-  int                      m_changes{0};
-  ex*                      m_ex;
-};
-
 void convert_case(factory::stc* stc, std::string& target, char c)
 {
   c == 'U' ? boost::algorithm::to_upper(target) :
@@ -171,24 +63,7 @@ wex::addressrange::addressrange(wex::ex* ex, const std::string& range)
   , m_ex(ex)
   , m_stc(ex->get_stc())
 {
-  if (range == "%")
-  {
-    set("1", "$");
-  }
-  else if (range == "*")
-  {
-    set(
-      m_stc->GetFirstVisibleLine() + 1,
-      m_stc->GetFirstVisibleLine() + m_stc->LinesOnScreen() + 1);
-  }
-  else if (range.find(",") != std::string::npos)
-  {
-    set(range.substr(0, range.find(",")), range.substr(range.find(",") + 1));
-  }
-  else
-  {
-    set(range, range);
-  }
+  set_range(range);
 }
 
 const std::string
@@ -422,83 +297,34 @@ bool wex::addressrange::general(
   return true;
 }
 
-bool wex::addressrange::global(const std::string& text, bool inverse) const
+bool wex::addressrange::global(const command_parser& cp) const
 {
-  if (!m_substitute.set_global(text))
+  if (!m_substitute.set_global(cp.command() + cp.text()))
   {
     return false;
   }
 
   if (m_substitute.pattern().empty())
   {
+    m_stc->IndicatorClearRange(0, m_stc->GetTextLength() - 1);
     return true;
   }
 
-  const std::string& commands(m_substitute.commands());
+  global_env g(this);
 
-  m_stc->IndicatorClearRange(0, m_stc->GetTextLength() - 1);
-
-  const global_env g(this);
-  m_ex->marker_add('%', m_end.get_line() - 1);
-  m_stc->SetTargetRange(
-    m_stc->PositionFromLine(m_begin.get_line() - 1),
-    m_stc->GetLineEndPosition(m_ex->marker_line('%')));
-
-  const bool infinite =
-    (g.changes() > 0 && commands != "$" && commands != "1" && commands != "d");
-  int hits  = 0;
-  int start = 0;
-
-  while (m_stc->SearchInTarget(m_substitute.pattern()) != -1)
+  if (!g.global(m_substitute))
   {
-    auto match = m_stc->LineFromPosition(m_stc->GetTargetStart());
-
-    if (!inverse)
-    {
-      if (!g.for_each(match))
-        return false;
-      hits++;
-    }
-    else
-    {
-      if (!g.for_each(start, match, hits))
-        return false;
-      start = match + 1;
-    }
-
-    if (hits > 50 && infinite)
-    {
-      m_ex->frame()->show_ex_message(
-        "possible infinite loop at " + std::to_string(match));
-      return false;
-    }
-
-    m_stc->SetTargetRange(
-      g.changes() > 0 ? m_stc->PositionFromLine(match) : m_stc->GetTargetEnd(),
-      m_stc->GetLineEndPosition(m_ex->marker_line('%')));
-
-    if (m_stc->GetTargetStart() >= m_stc->GetTargetEnd())
-    {
-      break;
-    }
+    return false;
   }
 
-  if (inverse)
+  if (g.hits() > 0)
   {
-    if (auto match = m_stc->get_line_count(); !g.for_each(start, match, hits))
-    {
-      return false;
-    }
-  }
-
-  if (hits > 0)
-  {
-    if (g.commands())
+    if (g.has_commands())
       m_ex->frame()->show_ex_message(
-        "executed: " + std::to_string(hits) + " commands");
+        "executed: " + std::to_string(g.hits()) + " commands");
     else
       m_ex->frame()->show_ex_message(
-        "found: " + std::to_string(hits) + " matches");
+        "found: " + std::to_string(g.hits()) + " matches");
   }
 
   return true;
@@ -559,74 +385,87 @@ bool wex::addressrange::move(const address& destination) const
     });
 }
 
-bool wex::addressrange::parse(
-  const std::string& command,
-  const std::string& text,
-  info_message_t&    im)
+bool wex::addressrange::parse(const command_parser& cp, info_message_t& im)
 {
+  if (!cp.range().empty())
+  {
+    set_range(cp.range());
+  }
+
   im = info_message_t::NONE;
 
-  switch (command[0])
+  switch (cp.command()[0])
   {
     case 0:
       return false;
 
     case 'c':
-      if (text.find('|') != std::string::npos)
+      if (cp.command() != "co" && cp.command() != "copy")
       {
-        return change(after(text, '|'));
+        if (cp.text().find('|') != std::string::npos)
+        {
+          return change(after(cp.text(), '|'));
+        }
+        else
+        {
+          return m_ex->frame()->show_ex_input(m_ex->get_stc(), cp.command()[0]);
+        }
       }
-      else
-      {
-        return m_ex->frame()->show_ex_input(m_ex->get_stc(), command[0]);
-      }
+      [[fallthrough]];
+
+    case 't':
+      im = info_message_t::COPY;
+      return copy(address(m_ex, cp.text()));
 
     case 'd':
       im = info_message_t::DEL;
       return erase();
 
-    case 'v':
     case 'g':
-      return global(text, command[0] == 'v');
+    case 'v':
+      return global(cp);
 
     case 'j':
       return join();
 
     case 'm':
       im = info_message_t::MOVE;
-      return move(address(m_ex, text));
+      return move(address(m_ex, cp.text()));
 
     case 'l':
     case 'p':
-      return (m_stc->GetName() != "Print" ? print(text) : false);
+      return (m_stc->GetName() != "Print" ? print(cp.text()) : false);
 
     case 's':
     case '&':
     case '~':
-      return substitute(text, command[0]);
+      return substitute(cp);
 
     case 'S':
-      return sort(text);
-
-    case 't':
-      im = info_message_t::COPY;
-      return copy(address(m_ex, text));
+      return sort(cp.text());
 
     case 'w':
-      if (!text.empty())
+      if (!cp.text().empty() && !cmdline::use_events())
       {
-        return write(text);
+        m_stc->position_save();
+        const bool r = write(cp.text());
+        m_stc->SelectNone();
+        m_stc->position_restore();
+        return r;
       }
       else
       {
-        wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVE);
+        wxCommandEvent event(
+          wxEVT_COMMAND_MENU_SELECTED,
+          cp.text().empty() ? wxID_SAVE : wxID_SAVEAS);
+        event.SetString(boost::algorithm::trim_left_copy(cp.text()));
         wxPostEvent(wxTheApp->GetTopWindow(), event);
         return true;
       }
 
     case 'y':
       im = info_message_t::YANK;
-      return yank(text.empty() ? '0' : static_cast<char>(text[0]));
+      return yank(cp.text().empty() ? '0' : static_cast<char>(cp.text()[0]));
 
     case '>':
       return shift_right();
@@ -635,16 +474,17 @@ bool wex::addressrange::parse(
       return shift_left();
 
     case '!':
-      return escape(text);
+      return escape(cp.text());
 
     case '@':
-      return execute(text);
+      return execute(cp.text());
 
     case '#':
-      return (m_stc->GetName() != "Print" ? print("#" + text) : false);
+    case 'n':
+      return (m_stc->GetName() != "Print" ? print("#" + cp.text()) : false);
 
     default:
-      log::status("Unknown range command") << command;
+      log::status("Unknown range command") << cp.command();
       return false;
   }
 }
@@ -656,18 +496,8 @@ bool wex::addressrange::print(const std::string& flags) const
     return false;
   }
 
-  std::string text;
-
-  for (auto i = m_begin.get_line() - 1; i < m_end.get_line(); i++)
-  {
-    char buffer[8];
-    snprintf(buffer, sizeof(buffer), "%6d ", i + 1);
-
-    text += (flags.find("#") != std::string::npos ? buffer : std::string()) +
-            m_stc->GetLine(i);
-  }
-
-  m_ex->print(text);
+  m_ex->print(
+    wex::write_lines(m_stc, m_begin.get_line() - 1, m_end.get_line(), flags));
 
   return true;
 }
@@ -675,19 +505,19 @@ bool wex::addressrange::print(const std::string& flags) const
 const std::string wex::addressrange::regex_commands() const
 {
   // 2addr commands
-  return std::string("(change\\b|"
-                     "copy\\b|co\\b|"
-                     "delete\\b|"
-                     "global\\b|"
-                     "join\\b|"
-                     "list\\b|"
-                     "move\\b|"
-                     "number\\b|nu\\b|"
-                     "print\\b|"
-                     "substitute\\b|"
-                     "write\\b|"
-                     "yank\\b|ya\\b|"
-                     "[cdgjlmpsStvwy<>\\!&~@#])([\\s\\S]*)");
+  return std::string("(change|c\\b|"
+                     "copy|co|t|"
+                     "delete|d|"
+                     "global|g|"
+                     "join|j|"
+                     "list|l|"
+                     "move|m|"
+                     "number|nu|"
+                     "print|p|"
+                     "substitute|s|"
+                     "write|w|"
+                     "yank|ya|"
+                     "[Svy<>\\!&~@#])([\\s\\S]*)");
 }
 
 void wex::addressrange::set(int begin, int end)
@@ -717,6 +547,28 @@ void wex::addressrange::set(address& begin, address& end, int lines) const
 {
   begin.set_line(m_stc->LineFromPosition(m_stc->GetCurrentPos()) + 1);
   end.set_line(begin.get_line() + lines - 1);
+}
+
+void wex::addressrange::set_range(const std::string& range)
+{
+  if (range == "%")
+  {
+    set("1", "$");
+  }
+  else if (range == "*")
+  {
+    set(
+      m_stc->GetFirstVisibleLine() + 1,
+      m_stc->GetFirstVisibleLine() + m_stc->LinesOnScreen() + 1);
+  }
+  else if (range.find(",") != std::string::npos)
+  {
+    set(range.substr(0, range.find(",")), range.substr(range.find(",") + 1));
+  }
+  else
+  {
+    set(range, range);
+  }
 }
 
 bool wex::addressrange::set_selection() const
@@ -792,7 +644,7 @@ bool wex::addressrange::sort(const std::string& parameters) const
   return wex::sort(sort_t, pos, len).selection(m_stc);
 }
 
-bool wex::addressrange::substitute(const std::string& text, char cmd)
+bool wex::addressrange::substitute(const command_parser& cp)
 {
   if ((m_stc->is_visual() && m_stc->GetReadOnly()) || !is_ok())
   {
@@ -800,6 +652,9 @@ bool wex::addressrange::substitute(const std::string& text, char cmd)
   }
 
   data::substitute data(m_substitute);
+
+  char        cmd = cp.command()[0];
+  const auto& text(cp.text());
 
   switch (cmd)
   {

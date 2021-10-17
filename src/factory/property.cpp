@@ -5,8 +5,8 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/log.h>
-#include <wex/property.h>
+#include <wex/core/log.h>
+#include <wex/factory/property.h>
 
 wex::property::property(const pugi::xml_node& node)
 {

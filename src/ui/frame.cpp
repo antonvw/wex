@@ -5,22 +5,23 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/bind.h>
-#include <wex/cmdline.h>
-#include <wex/config.h>
-#include <wex/defs.h>
+#include <wex/common/cmdline.h>
+#include <wex/common/tostring.h>
+#include <wex/core/config.h>
+#include <wex/core/file.h>
+#include <wex/common/util.h>
+#include <wex/factory/defs.h>
+#include <wex/factory/lexers.h>
 #include <wex/factory/listview.h>
+#include <wex/factory/printing.h>
 #include <wex/factory/stc.h>
-#include <wex/file.h>
-#include <wex/frame.h>
-#include <wex/frd.h>
-#include <wex/grid.h>
-#include <wex/lexers.h>
-#include <wex/printing.h>
-#include <wex/textctrl.h>
-#include <wex/toolbar.h>
-#include <wex/tostring.h>
-#include <wex/util.h>
+#include <wex/ui/bind.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/frd.h>
+#include <wex/ui/grid.h>
+#include <wex/ui/textctrl.h>
+#include <wex/ui/toolbar.h>
+
 #include <wx/app.h>
 #include <wx/fdrepdlg.h>
 #include <wx/panel.h>

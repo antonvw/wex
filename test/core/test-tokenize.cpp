@@ -5,11 +5,12 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <list>
-#include <vector>
-#include <wex/tokenize.h>
+#include <wex/core/tokenize.h>
 
 #include "../test.h"
+
+#include <list>
+#include <vector>
 
 TEST_CASE("wex::tokenizer")
 {

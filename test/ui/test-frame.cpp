@@ -5,9 +5,9 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/defs.h>
-#include <wex/menu.h>
-#include <wex/toolbar.h>
+#include <wex/factory/defs.h>
+#include <wex/ui/menu.h>
+#include <wex/ui/toolbar.h>
 
 #include "test.h"
 

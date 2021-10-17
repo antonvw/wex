@@ -6,16 +6,18 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <pugixml.hpp>
-#include <thread>
-#include <wex/bind.h>
-#include <wex/config.h>
+#include <wex/core/chrono.h>
+#include <wex/core/config.h>
+#include <wex/core/log.h>
+#include <wex/common/util.h>
 #include <wex/del/defs.h>
 #include <wex/del/frame.h>
 #include <wex/del/listview-file.h>
-#include <wex/listitem.h>
-#include <wex/log.h>
-#include <wex/menu.h>
-#include <wex/util.h>
+#include <wex/ui/bind.h>
+#include <wex/ui/listitem.h>
+#include <wex/ui/menu.h>
+
+#include <thread>
 
 wex::del::file::file(const wex::path& p, const data::listview& data)
   : del::listview(data::listview(data).type(data::listview::FILE))
@@ -171,7 +173,7 @@ bool wex::del::file::do_file_load(bool synced)
         pugi::parse_default | pugi::parse_comments);
       !result)
   {
-    if (path().stat().st_size == 0)
+    if (path().stat().get_st_size() == 0)
     {
       clear();
       return true;

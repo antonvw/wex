@@ -5,8 +5,8 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/defs.h>
-#include <wex/vcs-entry.h>
+#include <wex/factory/defs.h>
+#include <wex/stc/vcs-entry.h>
 
 #include "../test.h"
 

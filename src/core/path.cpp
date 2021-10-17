@@ -6,9 +6,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
-#include <wex/core.h>
-#include <wex/log.h>
-#include <wex/path.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
+#include <wex/core/path.h>
 #include <wx/mimetype.h>
 #include <wx/translation.h>
 #include <wx/url.h>

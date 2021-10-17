@@ -5,7 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/core.h>
+#include <wex/core/core.h>
 #include <wex/factory/stc.h>
 
 const std::string wex::factory::stc::eol() const

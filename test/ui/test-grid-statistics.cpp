@@ -5,7 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/grid-statistics.h>
+#include <wex/ui/grid-statistics.h>
 
 #include "test.h"
 

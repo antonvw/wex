@@ -8,7 +8,7 @@
 #pragma once
 
 #include <wex/data/window.h>
-#include <wex/path.h>
+#include <wex/core/path.h>
 #include <wx/generic/dirctrlg.h>
 
 namespace wex::del

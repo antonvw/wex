@@ -5,16 +5,17 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <algorithm>
 #include <boost/algorithm/string.hpp>
+#include <wex/common/stream.h>
+#include <wex/core/config.h>
+#include <wex/core/log.h>
+#include <wex/factory/frd.h>
+#include <wx/msgdlg.h>
+
 #include <cctype>
+#include <algorithm>
 #include <fstream>
 #include <functional>
-#include <wex/config.h>
-#include <wex/factory/frd.h>
-#include <wex/log.h>
-#include <wex/stream.h>
-#include <wx/msgdlg.h>
 
 wex::stream::stream(
   factory::find_replace_data* frd,

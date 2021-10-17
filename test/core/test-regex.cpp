@@ -6,8 +6,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
-#include <wex/log.h>
-#include <wex/regex.h>
+#include <wex/core/log.h>
+#include <wex/core/regex.h>
 
 TEST_CASE("wex::regex")
 {
@@ -36,10 +36,13 @@ TEST_CASE("wex::regex")
   {
     wex::regex r(
       {{"99xx77",
-        [](const wex::regex::match_t&) {
+        [](const wex::regex::match_t&)
+        {
           wex::log::trace("1");
         }},
-       {"([0-9]+)([a-z]+)([0-9]+)", [](const wex::regex::match_t&) {
+       {"([0-9]+)([a-z]+)([0-9]+)",
+        [](const wex::regex::match_t&)
+        {
           wex::log::trace("2");
         }}});
 

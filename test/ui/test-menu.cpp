@@ -9,8 +9,8 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wex/config.h>
-#include <wex/menu.h>
+#include <wex/core/config.h>
+#include <wex/ui/menu.h>
 
 #include "test.h"
 

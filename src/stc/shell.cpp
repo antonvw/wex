@@ -6,16 +6,17 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
-#include <numeric>
-#include <wex/auto-complete.h>
-#include <wex/bind.h>
-#include <wex/config.h>
-#include <wex/core.h>
-#include <wex/defs.h>
+#include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
+#include <wex/factory/defs.h>
 #include <wex/factory/process.h>
-#include <wex/frame.h>
-#include <wex/log.h>
-#include <wex/shell.h>
+#include <wex/stc/auto-complete.h>
+#include <wex/stc/shell.h>
+#include <wex/ui/bind.h>
+#include <wex/ui/frame.h>
+
+#include <numeric>
 
 wex::shell::shell(
   const data::stc&   data,

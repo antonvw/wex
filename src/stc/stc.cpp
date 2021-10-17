@@ -6,25 +6,25 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
-#include <wex/address.h>
-#include <wex/auto-complete.h>
-#include <wex/auto-indent.h>
-#include <wex/blame.h>
-#include <wex/config.h>
-#include <wex/ex-stream.h>
-#include <wex/frame.h>
-#include <wex/frd.h>
-#include <wex/indicator.h>
-#include <wex/item-vector.h>
-#include <wex/lexers.h>
-#include <wex/link.h>
-#include <wex/macros.h>
-#include <wex/path.h>
-#include <wex/printing.h>
-#include <wex/regex.h>
-#include <wex/stc-entry-dialog.h>
-#include <wex/stc.h>
-#include <wex/vcs-entry.h>
+#include <wex/core/config.h>
+#include <wex/core/path.h>
+#include <wex/core/regex.h>
+#include <wex/factory/blame.h>
+#include <wex/factory/indicator.h>
+#include <wex/factory/lexers.h>
+#include <wex/factory/printing.h>
+#include <wex/stc/auto-complete.h>
+#include <wex/stc/auto-indent.h>
+#include <wex/stc/entry-dialog.h>
+#include <wex/stc/link.h>
+#include <wex/stc/stc.h>
+#include <wex/stc/vcs-entry.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/frd.h>
+#include <wex/ui/item-vector.h>
+#include <wex/vi/address.h>
+#include <wex/vi/ex-stream.h>
+#include <wex/vi/macros.h>
 #include <wx/app.h>
 #include <wx/settings.h>
 
@@ -651,7 +651,10 @@ bool wex::stc::open(const wex::path& p, const data::stc& data)
     m_data.inject();
   }
 
-  m_frame->set_recent_file(p);
+  if (data.recent())
+  {
+    m_frame->set_recent_file(p);
+  }
 
   return true;
 }

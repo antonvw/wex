@@ -7,10 +7,10 @@
 
 #pragma once
 
+#include <wex/common/dir.h>
+#include <wex/core/file.h>
 #include <wex/del/listview.h>
-#include <wex/dir.h>
-#include <wex/file.h>
-#include <wex/item-dialog.h>
+#include <wex/ui/item-dialog.h>
 
 namespace wex::del
 {

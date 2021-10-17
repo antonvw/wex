@@ -5,16 +5,17 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <vector>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wex/config.h>
-#include <wex/util.h>
-#include <wex/vcs-command.h>
+#include <wex/core/config.h>
+#include <wex/common/util.h>
+#include <wex/core/vcs-command.h>
 
 #include "test.h"
+
+#include <vector>
 
 TEST_CASE("wex::util" * doctest::may_fail())
 {

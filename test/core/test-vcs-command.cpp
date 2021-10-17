@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
-#include <wex/vcs-command.h>
+#include <wex/core/vcs-command.h>
 
 TEST_SUITE_BEGIN("wex::vcs");
 

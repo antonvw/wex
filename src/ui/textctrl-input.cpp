@@ -5,13 +5,14 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <charconv>
 #include <stdlib.h>
-#include <wex/config.h>
-#include <wex/frd.h>
-#include <wex/log.h>
-#include <wex/textctrl-input.h>
-#include <wex/textctrl.h>
+#include <wex/core/config.h>
+#include <wex/core/log.h>
+#include <wex/ui/frd.h>
+#include <wex/ui/textctrl-input.h>
+#include <wex/ui/textctrl.h>
+
+#include <charconv>
 
 wex::textctrl_input::textctrl_input(ex_command::type_t type)
   : m_type(type)

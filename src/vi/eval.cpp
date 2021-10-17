@@ -5,20 +5,20 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <list>
-#include <numeric>
-#include <regex>
-
 #include <boost/config/warning_disable.hpp>
 #include <boost/fusion/include/adapt_struct.hpp>
 #include <boost/spirit/home/x3.hpp>
 #include <boost/spirit/home/x3/support/ast/variant.hpp>
 
-#include <wex/ex-stream.h>
-#include <wex/ex.h>
 #include <wex/factory/stc.h>
+#include <wex/vi/ex-stream.h>
+#include <wex/vi/ex.h>
 
 #include "eval.h"
+
+#include <list>
+#include <numeric>
+#include <regex>
 
 namespace x3 = boost::spirit::x3;
 

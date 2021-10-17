@@ -5,10 +5,11 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
 #include <wex/factory/process.h>
 
 #include "../test.h"
+
+// import <iostream>;
 
 TEST_CASE("wex::factory::process")
 {

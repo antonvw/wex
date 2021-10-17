@@ -5,20 +5,20 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
-#include <sstream>
-
-#include <wex/cmdline.h>
-#include <wex/config.h>
-#include <wex/core.h>
-#include <wex/log.h>
-#include <wex/tokenize.h>
-#include <wex/version.h>
+#include <wex/common/cmdline.h>
+#include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
+#include <wex/core/tokenize.h>
+#include <wex/core/version.h>
 #include <wx/app.h>
 #include <wx/timer.h>
 #include <wx/window.h>
 
 #include "cmdline-imp.h"
+
+#include <iostream>
+#include <sstream>
 
 #define WEX_CALLBACK(TYPE, FIELD)        \
   v->second.FIELD(it.second.as<TYPE>()); \
@@ -152,6 +152,8 @@ bool wex::cmdline_imp::parse(data::cmdline& data)
   {
     if (const auto quit(m_vm["quit"].as<int>()); quit > 0)
     {
+      m_use_events = true;
+
       const auto id_quit = wxWindowBase::NewControlId();
 
       auto* timer_start = new wxTimer(wxTheApp, id_quit);

@@ -8,10 +8,8 @@
 #pragma once
 
 #include <doctest.h>
-#include <string>
-#include <wex/app.h>
-#include <wex/path.h>
-#include <wx/platform.h>
+#include <wex/common/app.h>
+#include <wex/core/path.h>
 
 namespace wex
 {

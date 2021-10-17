@@ -5,18 +5,16 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <map>
-#include <numeric>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wex/config.h>
-#include <wex/item-dialog.h>
-#include <wex/menus.h>
-#include <wex/path-lexer.h>
-#include <wex/util.h>
-#include <wex/vcs.h>
+#include <wex/core/config.h>
+#include <wex/common/util.h>
+#include <wex/factory/path-lexer.h>
+#include <wex/stc/vcs.h>
+#include <wex/ui/item-dialog.h>
+#include <wex/ui/menus.h>
 
 #define SET_ENTRY                                                \
   if (                                                           \
@@ -28,6 +26,9 @@
   }                                                              \
                                                                  \
   m_entry = find_entry(m_entries);
+
+#include <map>
+#include <numeric>
 
 namespace wex
 {

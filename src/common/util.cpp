@@ -10,22 +10,21 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wex/blame.h>
-#include <wex/config.h>
-#include <wex/core.h>
-#include <wex/dir.h>
+#include <wex/common/dir.h>
+#include <wex/common/tostring.h>
+#include <wex/common/util.h>
+#include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
+#include <wex/core/path.h>
+#include <wex/core/regex.h>
+#include <wex/core/vcs-command.h>
 #include <wex/factory/frame.h>
+#include <wex/factory/lexer.h>
+#include <wex/factory/lexers.h>
 #include <wex/factory/link.h>
 #include <wex/factory/process.h>
 #include <wex/factory/stc.h>
-#include <wex/lexer.h>
-#include <wex/lexers.h>
-#include <wex/log.h>
-#include <wex/path.h>
-#include <wex/regex.h>
-#include <wex/tostring.h>
-#include <wex/util.h>
-#include <wex/vcs-command.h>
 #include <wx/app.h>
 #include <wx/wupdlock.h>
 
@@ -148,7 +147,7 @@ bool wex::compare_file(const path& file1, const path& file2)
   }
 
   if (const auto arguments =
-        (file1.stat().st_mtime < file2.stat().st_mtime) ?
+        (file1.stat().get_st_mtime() < file2.stat().get_st_mtime()) ?
           "\"" + file1.string() + "\" \"" + file2.string() + "\"" :
           "\"" + file2.string() + "\" \"" + file1.string() + "\"";
       factory::process().system(

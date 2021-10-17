@@ -5,18 +5,20 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <algorithm>
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
-#include <numeric>
-#include <regex>
-#include <wex/config.h>
-#include <wex/core.h>
-#include <wex/log.h>
-#include <wex/path.h>
+
+#include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
+#include <wex/core/path.h>
 #include <wx/choicdlg.h>
 #include <wx/clipbrd.h>
 #include <wx/generic/dirctrlg.h> // for wxFileIconsTable
+
+#include <algorithm>
+#include <numeric>
+#include <regex>
 
 const std::string wex::after(const std::string& text, char c, bool first)
 {

@@ -5,14 +5,14 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/config.h>
-#include <wex/core.h>
+#include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
 #include <wex/factory/stc.h>
-#include <wex/frame.h>
-#include <wex/frd.h>
-#include <wex/log.h>
-#include <wex/textctrl-input.h>
-#include <wex/textctrl.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/frd.h>
+#include <wex/ui/textctrl-input.h>
+#include <wex/ui/textctrl.h>
 #include <wx/control.h>
 #include <wx/settings.h>
 

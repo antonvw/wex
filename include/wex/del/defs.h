@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <wex/defs.h>
+#include <wex/factory/defs.h>
 
 namespace wex::del
 {

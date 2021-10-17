@@ -5,21 +5,17 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <filesystem>
-
+#include <wex/common/app.h>
+#include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
+#include <wex/core/version.h>
+#include <wex/factory/lexers.h>
+#include <wex/factory/printing.h>
 #include <wx/clipbrd.h>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wex/app.h>
-#include <wex/config.h>
-#include <wex/core.h>
-#include <wex/lexers.h>
-#include <wex/log.h>
-#include <wex/printing.h>
-#include <wex/version.h>
 #include <wx/stdpaths.h>
+
+#include <filesystem>
 
 namespace fs = std::filesystem;
 
@@ -59,6 +55,8 @@ bool wex::app::OnInit()
       log("unknown language") << lang;
     }
   }
+
+  wxLogNull logNo; // prevent wxLog
 
   // Init the localization, from now on things will be translated.
   // Do not load wxstd, we load all files ourselves,

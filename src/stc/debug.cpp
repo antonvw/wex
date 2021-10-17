@@ -5,26 +5,27 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <fstream>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 #include <boost/tokenizer.hpp>
-#include <wex/bind.h>
-#include <wex/config.h>
-#include <wex/core.h>
-#include <wex/debug.h>
-#include <wex/defs.h>
-#include <wex/dir.h>
+#include <wex/common/dir.h>
+#include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/core/regex.h>
+#include <wex/factory/defs.h>
 #include <wex/factory/process.h>
-#include <wex/frame.h>
-#include <wex/item-dialog.h>
-#include <wex/listview.h>
-#include <wex/menu.h>
-#include <wex/menus.h>
-#include <wex/regex.h>
-#include <wex/stc.h>
+#include <wex/stc/debug.h>
+#include <wex/stc/stc.h>
+#include <wex/ui/bind.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/item-dialog.h>
+#include <wex/ui/listview.h>
+#include <wex/ui/menu.h>
+#include <wex/ui/menus.h>
+
+#include <fstream>
 
 #ifdef __WXGTK__
 namespace wex

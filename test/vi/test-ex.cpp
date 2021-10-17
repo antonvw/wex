@@ -5,14 +5,11 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <vector>
-
-#include <wex/core.h>
-#include <wex/ex.h>
-#include <wex/frd.h>
-#include <wex/macro-mode.h>
-#include <wex/macros.h>
-#include <wex/path.h>
+#include <wex/core/core.h>
+#include <wex/core/path.h>
+#include <wex/vi/ex.h>
+#include <wex/vi/macro-mode.h>
+#include <wex/vi/macros.h>
 
 #include "test.h"
 
@@ -115,6 +112,20 @@ TEST_CASE("wex::ex")
 
     REQUIRE(ex->command(":c|changed"));
     REQUIRE(stc->get_text().find("changed") != std::string::npos);
+
+    const int lines = stc->get_line_count();
+
+    REQUIRE(ex->command(":1,2co$"));
+    REQUIRE(stc->get_line_count() == lines + 2);
+    REQUIRE(ex->command(":1,2copy$"));
+    REQUIRE(stc->get_line_count() == lines + 4);
+    REQUIRE(ex->command(":1,2t$"));
+    REQUIRE(stc->get_line_count() == lines + 6);
+
+    REQUIRE(ex->command(":1,2nu"));
+    REQUIRE(ex->command(":1,2number"));
+    REQUIRE(!ex->command(":1,2nuber"));
+    REQUIRE(ex->command(":1,2#"));
   }
 
   SUBCASE("invalid commands")
@@ -124,6 +135,8 @@ TEST_CASE("wex::ex")
     for (const auto& command : std::vector<std::string>{
            // We have only one document, so :n, :prev return false.
            ":n",
+           ":axx",
+           ":ixx",
            ":prev",
            ":.k",
            ":pk",
@@ -274,61 +287,52 @@ TEST_CASE("wex::ex")
     REQUIRE((ex->search_flags() & wxSTC_FIND_REGEXP) > 0);
   }
 
-#ifdef __UNIX__
-  SUBCASE("source")
-  {
-    SUBCASE("so")
-    {
-      // necesary for the ~ in test-source
-      wex::find_replace_data::get()->set_find_string("xx");
-
-      ex->command(":so test-source.txt");
-    }
-
-    SUBCASE("full") { ex->command(":source test-source.txt"); }
-
-    SUBCASE("not-existing") { REQUIRE(!ex->command(":so test-surce.txt")); }
-
-    SUBCASE("invalid") { REQUIRE(!ex->command(":so test-source-2.txt")); }
-  }
-#endif
-
   SUBCASE("substitute")
   {
     stc->set_text("we have ccccc yyyy zzzz");
-    REQUIRE(ex->command(":%s/ccccc/ddd"));
-    REQUIRE(stc->get_text() == "we have ddd yyyy zzzz");
-    stc->set_text("we have xxxx yyyy zzzz");
-    ex->reset_search_flags();
-    REQUIRE(ex->command(":%s/(x+) *(y+)/\\\\2 \\\\1"));
-    REQUIRE(stc->get_text() == "we have yyyy xxxx zzzz");
-    stc->set_text("we have xxxx 'zzzz'");
-    REQUIRE(ex->command(":%s/'//g"));
-    REQUIRE(stc->get_text() == "we have xxxx zzzz");
-    REQUIRE(!ex->command(":.s/x*//g"));
-    REQUIRE(!ex->command(":.s/ *//g"));
-  }
 
-  SUBCASE("tilde")
-  {
-    stc->set_text("we have xxxxx yyyyy zzzzz");
-    REQUIRE(ex->command(":%s/x+/vvvvv/"));
-    REQUIRE(stc->get_text() == "we have vvvvv yyyyy zzzzz");
+    SUBCASE("eol")
+    {
+      REQUIRE(ex->command(":%s/z$/z>"));
+      REQUIRE(stc->get_text() == "we have ccccc yyyy zzzz>");
+    }
 
-    // tilde for replacement
-    stc->set_text("we have xxxxx yyyyy zzzzz");
-    REQUIRE(ex->command(":%s/y+/~"));
-    REQUIRE(stc->get_text() == "we have xxxxx vvvvv zzzzz");
+    SUBCASE("regular")
+    {
+      REQUIRE(ex->command(":%s/ccccc/ddd"));
+      REQUIRE(stc->get_text() == "we have ddd yyyy zzzz");
+      stc->set_text("we have xxxx yyyy zzzz");
+      ex->reset_search_flags();
+      REQUIRE(ex->command(":%s/(x+) *(y+)/\\\\2 \\\\1"));
+      REQUIRE(stc->get_text() == "we have yyyy xxxx zzzz");
+      stc->set_text("we have xxxx 'zzzz'");
+      REQUIRE(ex->command(":%s/'//g"));
+      REQUIRE(stc->get_text() == "we have xxxx zzzz");
+      REQUIRE(!ex->command(":.s/x*//g"));
+      REQUIRE(!ex->command(":.s/ *//g"));
+    }
 
-    // tilde for target and replacement
-    stc->set_text("we have xxxxx yyyyy zzzzz");
-    REQUIRE(ex->command(":%s/~"));
-    REQUIRE(stc->get_text() == "we have xxxxx vvvvv zzzzz");
+    SUBCASE("tilde")
+    {
+      stc->set_text("we have xxxxx yyyyy zzzzz");
+      REQUIRE(ex->command(":%s/x+/vvvvv/"));
+      REQUIRE(stc->get_text() == "we have vvvvv yyyyy zzzzz");
 
-    // tilde for complete last subtitute
-    stc->set_text("we have xxxxx yyyyy zzzzz");
-    REQUIRE(ex->command(":~"));
-    REQUIRE(stc->get_text() == "we have xxxxx vvvvv zzzzz");
+      // tilde for replacement
+      stc->set_text("we have xxxxx yyyyy zzzzz");
+      REQUIRE(ex->command(":%s/y+/~"));
+      REQUIRE(stc->get_text() == "we have xxxxx vvvvv zzzzz");
+
+      // tilde for target and replacement
+      stc->set_text("we have xxxxx yyyyy zzzzz");
+      REQUIRE(ex->command(":%s/~"));
+      REQUIRE(stc->get_text() == "we have xxxxx vvvvv zzzzz");
+
+      // tilde for complete last subtitute
+      stc->set_text("we have xxxxx yyyyy zzzzz");
+      REQUIRE(ex->command(":~"));
+      REQUIRE(stc->get_text() == "we have xxxxx vvvvv zzzzz");
+    }
   }
 
   SUBCASE("text input")

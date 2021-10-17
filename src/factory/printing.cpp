@@ -9,8 +9,9 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wex/core.h>
-#include <wex/printing.h>
+#include <wex/core/chrono.h>
+#include <wex/core/core.h>
+#include <wex/factory/printing.h>
 #include <wx/stc/stc.h>
 
 const std::string wex::print_caption(const path& filename)

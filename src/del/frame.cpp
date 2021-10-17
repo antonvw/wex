@@ -5,30 +5,19 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/common/cmdline.h>
+#include <wex/common/stream.h>
+#include <wex/common/tostring.h>
+#include <wex/core/regex.h>
+#include <wex/common/util.h>
+#include <wex/del/wex.h>
+#include <wex/factory/lexers.h>
+#include <wex/stc/wex.h>
+#include <wex/ui/wex.h>
+#include <wex/vi/ctags.h>
+#include <wex/vi/macros.h>
+
 #include <thread>
-#include <wex/accelerators.h>
-#include <wex/bind.h>
-#include <wex/cmdline.h>
-#include <wex/ctags.h>
-#include <wex/debug.h>
-#include <wex/del/frame.h>
-#include <wex/del/listview-file.h>
-#include <wex/file-dialog.h>
-#include <wex/frd.h>
-#include <wex/item-dialog.h>
-#include <wex/lexers.h>
-#include <wex/listitem.h>
-#include <wex/macros.h>
-#include <wex/open-files-dialog.h>
-#include <wex/process.h>
-#include <wex/regex.h>
-#include <wex/stc-entry-dialog.h>
-#include <wex/stc.h>
-#include <wex/stream.h>
-#include <wex/textctrl.h>
-#include <wex/tostring.h>
-#include <wex/util.h>
-#include <wex/vcs.h>
 
 namespace wex
 {

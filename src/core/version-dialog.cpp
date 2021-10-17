@@ -7,8 +7,7 @@
 
 #include <wx/app.h>
 
-#include <wex/frame.h>
-#include <wex/version-dialog.h>
+#include <wex/core/version-dialog.h>
 
 wex::about_info& wex::about_info::icon(const wxIcon& rhs)
 {

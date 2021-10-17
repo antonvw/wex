@@ -7,10 +7,11 @@
 
 #pragma once
 
-#include <any>
-#include <functional>
 #include <wex/data/control.h>
 #include <wx/imaglist.h>
+
+#include <any>
+#include <functional>
 
 namespace wex::data
 {

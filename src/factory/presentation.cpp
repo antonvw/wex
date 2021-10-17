@@ -6,12 +6,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
-#include <charconv>
 
-#include <wex/lexers.h>
-#include <wex/log.h>
-#include <wex/presentation.h>
+#include <wex/core/log.h>
+#include <wex/factory/lexers.h>
+#include <wex/factory/presentation.h>
 #include <wx/stc/stc.h>
+
+#include <charconv>
 
 wex::presentation::presentation(presentation_t type, const pugi::xml_node& node)
   : m_type(type)
@@ -76,17 +77,6 @@ wex::presentation::presentation(presentation_t type, int no, int style)
   , m_no(no)
   , m_style(style)
 {
-}
-
-bool wex::presentation::operator<(const wex::presentation& i) const
-{
-  return m_no < i.m_no;
-}
-
-bool wex::presentation::operator==(const wex::presentation& i) const
-{
-  return m_style == -1 ? m_no == i.m_no :
-                         m_no == i.m_no && m_style == i.m_style;
 }
 
 void wex::presentation::apply(wxStyledTextCtrl* stc) const

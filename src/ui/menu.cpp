@@ -9,14 +9,14 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wex/core.h>
+#include <wex/common/tool.h>
+#include <wex/core/core.h>
+#include <wex/factory/lexers.h>
 #include <wex/factory/listview.h>
+#include <wex/factory/printing.h>
 #include <wex/factory/stc.h>
-#include <wex/frame.h>
-#include <wex/lexers.h>
-#include <wex/menu.h>
-#include <wex/printing.h>
-#include <wex/tool.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/menu.h>
 
 #define PRINT_COMPONENT(ID, ACTION)                                  \
   {                                                                  \

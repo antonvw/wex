@@ -5,15 +5,16 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <algorithm>
 #include <boost/algorithm/string.hpp>
-#include <wex/config.h>
-#include <wex/core.h>
+#include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/core/path.h>
+#include <wex/core/regex.h>
+#include <wex/factory/lexer.h>
 #include <wex/factory/link.h>
 #include <wex/factory/stc.h>
-#include <wex/lexer.h>
-#include <wex/path.h>
-#include <wex/regex.h>
+
+#include <algorithm>
 
 namespace wex::factory
 {
@@ -25,6 +26,17 @@ public:
   {
     ;
   };
+
+  bool add_path(const path& p)
+  {
+    if (p.dir_exists() && !find(p))
+    {
+      m_paths.push_back(p.string());
+      return true;
+    }
+
+    return false;
+  }
 
   path find(const std::string& path) const
   {
@@ -39,8 +51,21 @@ public:
     return wex::path();
   };
 
+  bool find(const path& p) const
+  {
+    for (const auto& it : m_paths)
+    {
+      if (p.string() == it)
+      {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
 private:
-  const config::strings_t m_paths;
+  config::strings_t m_paths;
 };
 }; // namespace wex::factory
 
@@ -50,6 +75,11 @@ wex::factory::link::link()
 }
 
 wex::factory::link::~link() {}
+
+bool wex::factory::link::add_path(const path& p)
+{
+  return m_paths->add_path(p);
+}
 
 void wex::factory::link::config_get()
 {
@@ -78,6 +108,14 @@ const wex::path wex::factory::link::find_between(
   if (regex v("^source (.*)"); stc != nullptr &&
                                stc->get_lexer().scintilla_lexer() == "bash" &&
                                v.search(text) > 0)
+  {
+    return path(v[0]);
+  }
+
+  // Path in git status.
+  if (regex v(": +(.*)"); stc != nullptr &&
+                          stc->get_lexer().scintilla_lexer().empty() &&
+                          v.search(text) > 0)
   {
     return path(v[0]);
   }
@@ -186,7 +224,7 @@ const wex::path wex::factory::link::find_url_or_mime(
 const wex::path wex::factory::link::get_path(
   const std::string& text,
   line_data&         data,
-  factory::stc*      stc) const
+  factory::stc*      stc)
 {
   // mime or url
   if (data.line() == LINE_OPEN_MIME || data.line() == LINE_OPEN_URL)

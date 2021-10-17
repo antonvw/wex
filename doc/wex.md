@@ -4,13 +4,6 @@ It benefits from the following c++ features:
 
 ## c++ libraries
 
-- Filesystem library (c++17)
-```cpp
-  std::filesystem
-  std::filesystem::directory_iterator
-  std::filesystem::recursive_directory_iterator
-```
-
 - Algorithms library
 ```cpp
   std::all_of (c++11)
@@ -49,6 +42,37 @@ It benefits from the following c++ features:
           log("directory_iterator") << m_dir;
         }
       }
+```
+
+- Filesystem library (c++17)
+```cpp
+  std::filesystem
+  std::filesystem::directory_iterator
+  std::filesystem::recursive_directory_iterator
+```
+
+- Input/output library
+```cpp
+  std::fstream
+```
+  The base of all io uses a std::fstream class.
+
+- Numerics library
+```cpp
+  std::accumulate
+```
+  The std::accumulate is used e.g. within the vi macros to
+  return a string containing all elements of the requested
+  register (the find returns a std::vector<std::string>).
+
+  example:
+```cpp
+  const auto& it = m_macros.find(std::string(1, name));
+  return it != m_macros.end() ? std::accumulate(
+                                  it->second.begin(),
+                                  it->second.end(),
+                                  std::string()) :
+                                std::string();
 ```
 
 - Regular expressions library (c++11)
@@ -218,6 +242,7 @@ It benefits from the following c++ features:
 
 ```cpp
   std::from_chars (c++17)
+  std::to_chars (c++17)
 ```
 
   This method can be used as replacement for e.g. stol.
@@ -241,30 +266,6 @@ It benefits from the following c++ features:
     }
 ```
   
-- Input/output library
-```cpp
-  std::fstream
-```
-  The base of all io uses a std::fstream class.
-
-- Numerics library
-```cpp
-  std::accumulate
-```
-  The std::accumulate is used e.g. within the vi macros to
-  return a string containing all elements of the requested
-  register (the find returns a std::vector<std::string>).
-
-  example:
-```cpp
-  const auto& it = m_macros.find(std::string(1, name));
-  return it != m_macros.end() ? std::accumulate(
-                                  it->second.begin(),
-                                  it->second.end(),
-                                  std::string()) :
-                                std::string();
-```
-
 ## c++ language
 
 - init_statement in if and case statements (c++17)
@@ -300,6 +301,8 @@ wex::regex::regex(
 }
 ```
 
+- modules (c++20)
+
 - nested namespaces (c++17)
 ```cpp
   namespace wex::core
@@ -315,6 +318,8 @@ wex::regex::regex(
     bool command(const std::string& command) final;
 ```
   this ensures that the function is kept in sync with base class
+
+- spaceship operator (c++20)
 
 ## boost c++ libraries
 - boost::algorithm lib

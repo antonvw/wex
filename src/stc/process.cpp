@@ -5,18 +5,18 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <algorithm>
 #include <boost/algorithm/string.hpp>
-#include <vector>
-#include <wex/config.h>
-#include <wex/debug-entry.h>
-#include <wex/ex-stream.h>
-#include <wex/frame.h>
-#include <wex/item-dialog.h>
-#include <wex/log.h>
-#include <wex/process.h>
-#include <wex/shell.h>
+#include <wex/core/config.h>
+#include <wex/core/log.h>
+#include <wex/stc/process.h>
+#include <wex/stc/shell.h>
+#include <wex/ui/debug-entry.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/item-dialog.h>
+#include <wex/vi/ex-stream.h>
 #include <wx/valtext.h>
+
+#include <algorithm>
 
 /* NOLINTNEXTLINE */
 std::string wex::process::m_working_dir_key = _("Process folder");

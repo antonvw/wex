@@ -5,7 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/property.h>
+#include <wex/factory/property.h>
 
 #include "../test.h"
 

@@ -5,11 +5,11 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/config.h>
+#include <wex/core/config.h>
+#include <wex/core/path.h>
 #include <wex/data/stc.h>
+#include <wex/factory/indicator.h>
 #include <wex/factory/stc.h>
-#include <wex/indicator.h>
-#include <wex/path.h>
 
 wex::data::stc::stc(wex::factory::stc* stc)
   : m_stc(stc)
@@ -38,11 +38,12 @@ wex::data::stc& wex::data::stc::operator=(const data::stc& r)
 {
   if (this != &r)
   {
-    m_indicator_no = r.m_indicator_no;
     m_data         = r.m_data;
-    m_menu_flags   = r.m_menu_flags;
-    m_win_flags    = r.m_win_flags;
     m_event_data   = r.m_event_data;
+    m_indicator_no = r.m_indicator_no;
+    m_menu_flags   = r.m_menu_flags;
+    m_recent       = r.m_recent;
+    m_win_flags    = r.m_win_flags;
 
     if (m_stc != nullptr && r.m_stc != nullptr)
     {

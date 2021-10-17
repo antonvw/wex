@@ -7,15 +7,16 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/exception/diagnostic_information.hpp>
-#include <iostream>
-#include <numeric>
-#include <wex/cmdline.h>
-#include <wex/config.h>
-#include <wex/core.h>
-#include <wex/log.h>
-#include <wex/regex.h>
+#include <wex/common/cmdline.h>
+#include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
+#include <wex/core/regex.h>
 
 #include "cmdline-imp.h"
+
+#include <iostream>
+#include <numeric>
 
 namespace wex
 {
@@ -433,4 +434,9 @@ bool wex::cmdline::set_option(const std::vector<std::string>& v, bool save)
   }
 
   return false;
+}
+
+bool wex::cmdline::use_events()
+{
+  return cmdline_imp::m_use_events;
 }

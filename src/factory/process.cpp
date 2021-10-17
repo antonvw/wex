@@ -8,14 +8,15 @@
 #include <boost/process.hpp>
 #include <boost/version.hpp>
 
+#include <wex/factory/defs.h>
+#include <wex/factory/process.h>
+#include <wex/core/log.h>
+#include <wx/event.h>
+
 #include <algorithm>
 #include <atomic>
 #include <queue>
 #include <thread>
-#include <wex/defs.h>
-#include <wex/factory/process.h>
-#include <wex/log.h>
-#include <wx/event.h>
 
 namespace bp = boost::process;
 

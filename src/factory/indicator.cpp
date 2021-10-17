@@ -2,10 +2,10 @@
 // Name:      indicator.cpp
 // Purpose:   Implementation of class wex::indicator
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2019-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/indicator.h>
+#include <wex/factory/indicator.h>
 
 wex::indicator::indicator(const pugi::xml_node& node)
   : presentation(INDICATOR, node)

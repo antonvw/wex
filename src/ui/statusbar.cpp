@@ -9,11 +9,11 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wex/config.h>
-#include <wex/defs.h>
+#include <wex/core/config.h>
+#include <wex/factory/defs.h>
 #include <wex/factory/frame.h>
-#include <wex/item-dialog.h>
-#include <wex/statusbar.h>
+#include <wex/ui/item-dialog.h>
+#include <wex/ui/statusbar.h>
 
 const int FIELD_NOT_SHOWN = -1;
 

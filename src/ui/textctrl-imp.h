@@ -7,69 +7,69 @@
 
 #pragma once
 
-#include <wex/ex-command.h>
+#include <wex/factory/ex-command.h>
 #include <wx/textctrl.h>
 #include <wx/timer.h>
 
 namespace wex
 {
-  class textctrl;
-  class textctrl_input;
+class textctrl;
+class textctrl_input;
 
-  /// Offers textctrl implementation.
-  class textctrl_imp : public wxTextCtrl
-  {
-  public:
-    /// Constructor. Creates empty control.
-    textctrl_imp(textctrl* tc, wxControl* prefix, const data::window& data);
+/// Offers textctrl implementation.
+class textctrl_imp : public wxTextCtrl
+{
+public:
+  /// Constructor. Creates empty control.
+  textctrl_imp(textctrl* tc, wxControl* prefix, const data::window& data);
 
-    /// Constructor. Skips prefix.
-    textctrl_imp(
-      textctrl*           tc,
-      const std::string&  value = std::string(),
-      const data::window& data  = data::window());
+  /// Constructor. Skips prefix.
+  textctrl_imp(
+    textctrl*           tc,
+    const std::string&  value = std::string(),
+    const data::window& data  = data::window());
 
-    /// other methods
+  /// other methods
 
-    /// Returns text.
-    const std::string get_text();
+  /// Returns text.
+  const std::string get_text();
 
-    /// Handles string command.
-    bool handle(const std::string& command);
+  /// Handles string command.
+  bool handle(const std::string& command);
 
-    /// Handles chr command.
-    bool handle(char command);
+  /// Handles chr command.
+  bool handle(char command);
 
-    /// Sets text.
-    void set_text(const std::string& text);
+  /// Sets text.
+  void set_text(const std::string& text);
 
-    /// Virtual interface
+  /// Virtual interface
 
-    bool Destroy() override;
-    void SelectAll() override;
+  bool Destroy() override;
+  void SelectAll() override;
 
-  private:
-    void bind();
-    void cut();
-    bool input_mode_finish() const;
-    bool is_ex_mode() const;
+private:
+  void bind();
+  void cut();
+  bool input_mode_finish() const;
+  bool is_ex_mode() const;
 
-    textctrl_input* tci();
+  textctrl_input* tci();
 
-    const int m_id_register;
+  const int m_id_register;
 
-    wxControl* m_prefix{nullptr};
-    textctrl*  m_tc;
-    wxTimer    m_timer;
+  wxControl* m_prefix{nullptr};
+  textctrl*  m_tc;
+  wxTimer    m_timer;
 
-    char m_input{0};
+  char m_input{0};
 
-    bool m_all_selected{false}, m_control_r{false}, m_mode_visual{false},
-      m_user_input{false};
+  bool m_all_selected{false}, m_control_r{false}, m_mode_visual{false},
+    m_user_input{false};
 
-    textctrl_input *m_calcs{nullptr}, *m_commands{nullptr},
-      *m_commands_ex{nullptr}, *m_escapes{nullptr}, *m_find_margins{nullptr};
+  textctrl_input *m_calcs{nullptr}, *m_commands{nullptr},
+    *m_commands_ex{nullptr}, *m_escapes{nullptr}, *m_find_margins{nullptr};
 
-    ex_command m_command;
-  };
+  ex_command m_command;
+};
 }; // namespace wex

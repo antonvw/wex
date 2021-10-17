@@ -5,10 +5,10 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/debug.h>
-#include <wex/defs.h>
-#include <wex/menu.h>
-#include <wex/process.h>
+#include <wex/factory/defs.h>
+#include <wex/stc/debug.h>
+#include <wex/stc/process.h>
+#include <wex/ui/menu.h>
 
 #include "test.h"
 

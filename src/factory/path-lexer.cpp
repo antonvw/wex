@@ -5,8 +5,8 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/lexers.h>
-#include <wex/path-lexer.h>
+#include <wex/factory/lexers.h>
+#include <wex/factory/path-lexer.h>
 
 namespace fs = std::filesystem;
 

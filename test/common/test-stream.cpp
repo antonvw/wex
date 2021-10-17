@@ -5,11 +5,12 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <chrono>
+#include <wex/common/stream.h>
 #include <wex/factory/frd.h>
-#include <wex/stream.h>
 
 #include "../test.h"
+
+#include <chrono>
 
 void find_prep(wex::stream& s, wex::factory::find_replace_data* frd)
 {

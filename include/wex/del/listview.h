@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include <wex/listview.h>
-#include <wex/tool.h>
+#include <wex/common/tool.h>
+#include <wex/ui/listview.h>
 
 namespace wex::del
 {

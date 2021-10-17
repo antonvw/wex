@@ -6,8 +6,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
-#include <wex/statistics.h>
-#include <wex/tool.h>
+#include <wex/common/statistics.h>
+#include <wex/common/tool.h>
 
 TEST_CASE("wex::tool")
 {

@@ -5,15 +5,15 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/address.h>
-#include <wex/addressrange.h>
+#include <wex/core/file.h>
+#include <wex/core/log.h>
 #include <wex/data/substitute.h>
-#include <wex/ex-stream.h>
-#include <wex/ex.h>
-#include <wex/file.h>
-#include <wex/frd.h>
-#include <wex/log.h>
-#include <wex/macros.h>
+#include <wex/ui/frd.h>
+#include <wex/vi/address.h>
+#include <wex/vi/addressrange.h>
+#include <wex/vi/ex-stream.h>
+#include <wex/vi/ex.h>
+#include <wex/vi/macros.h>
 
 #include "test.h"
 

@@ -2,18 +2,18 @@
 // Name:      test-item.h
 // Purpose:   Declaration and implementation of test_items
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wex/item.h>
+#include <wex/ui/item.h>
 
 // Returns a notebook item (no subnotebook yet).
 const auto test_notebook_item(
-  wex::item::type_t       style = wex::item::NOTEBOOK,
+  wex::item::type_t        style = wex::item::NOTEBOOK,
   wex::data::item::label_t label = wex::data::item::LABEL_LEFT,
-  wxImageList*            il    = nullptr)
+  wxImageList*             il    = nullptr)
 {
   return wex::item(
     "notebook",

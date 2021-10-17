@@ -5,9 +5,9 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/auto-indent.h>
-#include <wex/config.h>
-#include <wex/defs.h>
+#include <wex/core/config.h>
+#include <wex/factory/defs.h>
+#include <wex/stc/auto-indent.h>
 
 #include "test.h"
 

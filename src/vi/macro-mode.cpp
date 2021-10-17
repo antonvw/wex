@@ -11,14 +11,14 @@
 #endif
 #include "macro-fsm.h"
 #include <boost/algorithm/string.hpp>
-#include <wex/core.h>
-#include <wex/ex.h>
+#include <wex/core/core.h>
+#include <wex/core/regex.h>
 #include <wex/factory/stc.h>
-#include <wex/frame.h>
-#include <wex/macro-mode.h>
-#include <wex/macros.h>
-#include <wex/regex.h>
-#include <wex/statusbar.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/statusbar.h>
+#include <wex/vi/ex.h>
+#include <wex/vi/macro-mode.h>
+#include <wex/vi/macros.h>
 
 bool show_dialog(
   wxWindow*          parent,
