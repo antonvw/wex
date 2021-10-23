@@ -16,7 +16,7 @@
 
 #define ESC "\x1b"
 
-// See stc/test-vi.cpp for testing goto
+// See stc/test-vi.cpp for testing goto and vim
 
 void change_mode(
   wex::vi*              vi,

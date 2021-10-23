@@ -447,10 +447,19 @@ bool wex::addressrange::parse(const command_parser& cp, info_message_t& im)
     case 'w':
       if (!cp.text().empty() && !cmdline::use_events())
       {
+        const bool se = m_stc->GetSelectionEmpty();
+
         m_stc->position_save();
+
         const bool r = write(cp.text());
-        m_stc->SelectNone();
+
         m_stc->position_restore();
+
+        if (se)
+        {
+          m_stc->SelectNone();
+        }
+
         return r;
       }
       else

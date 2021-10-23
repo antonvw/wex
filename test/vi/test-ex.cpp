@@ -239,8 +239,7 @@ TEST_CASE("wex::ex")
     stc->LineDownExtend();
     REQUIRE(ex->command(":'<,'>w test-ex.txt"));
     REQUIRE(ex->command(":'<,'><"));
-
-    ex->command(":'<,'>>");
+    REQUIRE(ex->command(":'<,'>>"));
 
 #ifndef __WXMSW__
     ex->command(":'<,'>!sort");

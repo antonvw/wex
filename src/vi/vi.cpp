@@ -25,6 +25,9 @@
 
 #include <sstream>
 
+#include "motion.h"
+#include "vim.h"
+
 namespace wex
 {
 constexpr int c_strcmp(char const* lhs, char const* rhs)
@@ -127,17 +130,6 @@ const std::string _s(wxKeyCode key)
     get_stc()->EndUndoAction();   \
   }
 
-namespace wex
-{
-enum class vi::motion_t
-{
-  MOTION_CHANGE,
-  MOTION_DELETE,
-  MOTION_NAVIGATE,
-  MOTION_YANK,
-};
-};
-
 wex::vi::vi(wex::factory::stc* arg, mode_t ex_mode)
   : ex(arg, ex_mode)
   , m_mode(
@@ -165,7 +157,7 @@ wex::vi::vi(wex::factory::stc* arg, mode_t ex_mode)
         get_stc()->EndUndoAction();
       })
   , m_last_commands{{"!", "<", ">", "A", "C", "D", "I", "J", "O",
-                     "P", "R", "S", "X", "Y", "a", "c", "d", "i",
+                     "P", "R", "S", "X", "Y", "a", "c", "d", "g", "i",
                      "o", "p", "r", "s", "x", "y", "~"}}
   , m_motion_commands{{"h",
                        [&](const std::string& command) {
@@ -1125,21 +1117,24 @@ void wex::vi::filter_count(std::string& command)
   }
 }
 
-wex::vi::motion_t wex::vi::get_motion(char c) const
+wex::vi::motion_t wex::vi::get_motion(const std::string& command) const
 {
-  switch (c)
+  switch (command[0])
   {
     case 'c':
-      return motion_t::MOTION_CHANGE;
+      return motion_t::CHANGE;
 
     case 'd':
-      return motion_t::MOTION_DELETE;
+      return motion_t::DELETE;
+
+    case 'g':
+      return command_g_motion(command);
 
     case 'y':
-      return motion_t::MOTION_YANK;
+      return motion_t::YANK;
 
     default:
-      return motion_t::MOTION_NAVIGATE;
+      return motion_t::NAVIGATE;
   }
 }
 
@@ -1380,11 +1375,11 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
 {
   if (!get_stc()->get_selected_text().empty() && command.size() <= 1)
   {
-    if (type == motion_t::MOTION_YANK)
+    if (type == motion_t::YANK)
     {
       return addressrange(this, m_count).yank();
     }
-    else if (type == motion_t::MOTION_DELETE || type == motion_t::MOTION_CHANGE)
+    else if (type == motion_t::DELETE || type == motion_t::CHANGE)
     {
       return addressrange(this, m_count).erase();
     }
@@ -1416,12 +1411,18 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
     return false;
   }
 
+  if (type < motion_t::NAVIGATE && get_stc()->GetReadOnly())
+  {
+    command.clear();
+    return true;
+  }
+
   int  parsed = 0;
   auto start  = get_stc()->GetCurrentPos();
 
   switch (type)
   {
-    case motion_t::MOTION_CHANGE:
+    case motion_t::CHANGE:
       if (!get_stc()->get_selected_text().empty())
       {
         get_stc()->SetCurrentPos(get_stc()->GetSelectionStart());
@@ -1437,25 +1438,30 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
       delete_range(start, get_stc()->GetCurrentPos());
       break;
 
-    case motion_t::MOTION_DELETE:
-      if (get_stc()->GetReadOnly())
-      {
-        command.clear();
-        return true;
-      }
-
+    case motion_t::DELETE:
       if ((parsed = it->second(command)) == 0)
         return false;
 
       delete_range(start, get_stc()->GetCurrentPos());
       break;
 
-    case motion_t::MOTION_NAVIGATE:
+    case motion_t::G:
+      return false;
+      break;
+
+    case motion_t::G_aa... motion_t::G_ZZ:
+      if ((parsed = it->second(command)) == 0)
+        return false;
+
+      command_g(this, type, start);
+      break;
+
+    case motion_t::NAVIGATE:
       if ((parsed = it->second(command)) == 0)
         return false;
       break;
 
-    case motion_t::MOTION_YANK:
+    case motion_t::YANK:
       if (!m_mode.is_visual())
       {
         std::string visual("v");
@@ -1464,44 +1470,10 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
 
       if ((parsed = it->second(command)) == 0)
       {
-        log("parse error") << command;
         return false;
       }
 
-      if (auto end = get_stc()->GetCurrentPos(); end - start > 0)
-      {
-        get_stc()->CopyRange(start, end - start);
-        get_stc()->SetSelection(start, end);
-      }
-      else
-      {
-        // reposition end at start of selection
-        if (!get_stc()->GetSelectedText().empty())
-        {
-          end = get_stc()->GetSelectionStart();
-        }
-        else
-        {
-          end--;
-        }
-
-        get_stc()->CopyRange(end, start - end);
-        get_stc()->SetSelection(end, start);
-      }
-
-      m_mode.escape();
-
-      if (!register_name())
-      {
-        set_register_yank(get_stc()->get_selected_text());
-      }
-      else
-      {
-        get_macros().set_register(
-          register_name(),
-          get_stc()->get_selected_text());
-        get_stc()->SelectNone();
-      }
+      yank_range(start);
       break;
   }
 
@@ -1762,7 +1734,7 @@ bool wex::vi::parse_command(std::string& command)
     return false;
   }
 
-  const motion_t motion = get_motion(command[0]);
+  const motion_t motion = get_motion(command);
 
   bool check_other = true;
 
@@ -1771,10 +1743,10 @@ bool wex::vi::parse_command(std::string& command)
     case 1:
       if (
         m_mode.is_visual() &&
-        (motion == motion_t::MOTION_CHANGE ||
-         motion == motion_t::MOTION_DELETE || motion == motion_t::MOTION_YANK))
+        (motion == motion_t::CHANGE || motion == motion_t::DELETE ||
+         motion == motion_t::YANK))
       {
-        if (motion == motion_t::MOTION_CHANGE)
+        if (motion == motion_t::CHANGE)
         {
           m_mode.escape();
           std::string s("i");
@@ -1805,16 +1777,23 @@ bool wex::vi::parse_command(std::string& command)
 
       switch (motion)
       {
-        case motion_t::MOTION_CHANGE:
+        case motion_t::CHANGE:
           m_mode.transition(command);
           break;
 
-        case motion_t::MOTION_DELETE:
-        case motion_t::MOTION_YANK:
+        case motion_t::G_aa... motion_t::G_ZZ:
+          if (command.size() > 2)
+          {
+            command.erase(0, 2);
+          }
+          break;
+
+        case motion_t::DELETE:
+        case motion_t::YANK:
           command.erase(0, 1);
           break;
 
-        case motion_t::MOTION_NAVIGATE:
+        case motion_t::NAVIGATE:
           if (m_mode.transition(command))
           {
             check_other = false;
@@ -1826,7 +1805,8 @@ bool wex::vi::parse_command(std::string& command)
           break;
 
         default:
-          assert(0);
+          // do nothing
+          break;
       }
   }
 
@@ -1909,8 +1889,11 @@ void wex::vi::set_last_command(const std::string& command)
         command.substr(first, 1));
       it != m_last_commands.end())
   {
-    m_last_command = command;
-    log::trace("last command") << m_last_command;
+    if (command != "gg")
+    {
+      m_last_command = command;
+      log::trace("last command") << m_last_command;
+    }
   }
 }
 
@@ -1963,5 +1946,41 @@ void wex::vi::visual_extend(int begin_pos, int end_pos) const
 
     default:
       break;
+  }
+}
+
+void wex::vi::yank_range(int start)
+{
+  if (auto end = get_stc()->GetCurrentPos(); end - start > 0)
+  {
+    get_stc()->CopyRange(start, end - start);
+    get_stc()->SetSelection(start, end);
+  }
+  else
+  {
+    // reposition end at start of selection
+    if (!get_stc()->GetSelectedText().empty())
+    {
+      end = get_stc()->GetSelectionStart();
+    }
+    else
+    {
+      end--;
+    }
+
+    get_stc()->CopyRange(end, start - end);
+    get_stc()->SetSelection(end, start);
+  }
+
+  m_mode.escape();
+
+  if (!register_name())
+  {
+    set_register_yank(get_stc()->get_selected_text());
+  }
+  else
+  {
+    get_macros().set_register(register_name(), get_stc()->get_selected_text());
+    get_stc()->SelectNone();
   }
 }

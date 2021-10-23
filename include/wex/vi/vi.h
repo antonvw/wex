@@ -21,6 +21,8 @@ namespace wex
 class vi : public ex
 {
 public:
+  enum class motion_t;
+
   /// Constructor.
   explicit vi(wex::factory::stc* stc, mode_t mode = VISUAL);
 
@@ -76,13 +78,11 @@ private:
     std::function<size_t(const std::string& command)>>>
     commands_t;
 
-  enum class motion_t;
-
   void     command_reg(const std::string& reg);
   char     convert_key_event(const wxKeyEvent& event) const;
   bool     delete_range(int start, int end);
   void     filter_count(std::string& command);
-  motion_t get_motion(char c) const;
+  motion_t get_motion(const std::string& command) const;
   bool     insert_mode(const std::string& text);
   void     insert_mode_normal(const std::string& text);
   bool     motion_command(motion_t type, std::string& command);
@@ -90,6 +90,7 @@ private:
   bool     parse_command(std::string& command);
   bool     put(bool after);
   void     set_last_command(const std::string& command);
+  void     yank_range(int start);
 
   static inline std::string m_last_command;
   static inline std::string m_last_find_char_command;

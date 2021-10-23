@@ -301,8 +301,6 @@ wex::regex::regex(
 }
 ```
 
-- modules (c++20)
-
 - nested namespaces (c++17)
 ```cpp
   namespace wex::core
