@@ -1,8 +1,5 @@
 # roadmap
-- use filesystem::file_status
-- g//d
- -> should take a previous pattern
-
+- update syncped-help
 - branch feature/boost-test: use boost::test
 
 - use ranges library

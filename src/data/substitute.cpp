@@ -98,17 +98,25 @@ bool wex::data::substitute::set_global(const std::string& text)
   }
 
   m_inverse  = v[0].starts_with('v');
-  m_pattern  = v[1];
+  auto pattern = v[1];
   m_commands = v[2];
 
-  if (m_pattern.empty())
+  if (pattern.empty())
   {
     if (!m_commands.empty())
     {
-      log::status("Pattern is empty");
-      return false;
+      // an empty pattern refers to the previous pattern.
+      pattern = m_pattern;
+      
+      if (pattern.empty())
+      {
+        log::status("Pattern is empty");
+        return false;
+      }
     }
   }
+
+  m_pattern = pattern;
 
   return true;
 }

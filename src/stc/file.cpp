@@ -69,7 +69,7 @@ bool wex::stc_file::do_file_load(bool synced)
   m_stc->keep_event_data(synced);
 
   if (
-    m_stc->path().stat().get_st_size() >
+    m_stc->path().stat().get_size() >
     config("stc.max.Size visual").get(10000000))
   {
     m_stc->visual(false);
@@ -80,7 +80,7 @@ bool wex::stc_file::do_file_load(bool synced)
     (config(_("stc.Ex mode show hex")).get(false) && !m_stc->is_visual());
 
   const std::streampos offset =
-    m_previous_size < m_stc->path().stat().get_st_size() &&
+    m_previous_size < m_stc->path().stat().get_size() &&
         m_stc->data().event().is_synced_log() ?
       m_previous_size :
       std::streampos(0);
@@ -90,7 +90,7 @@ bool wex::stc_file::do_file_load(bool synced)
     m_stc->clear();
   }
 
-  m_previous_size = m_stc->path().stat().get_st_size();
+  m_previous_size = m_stc->path().stat().get_size();
 
 #ifdef USE_THREAD
   std::thread t(

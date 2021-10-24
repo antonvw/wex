@@ -100,6 +100,10 @@ TEST_CASE("wex::ex")
     stc->set_text("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
     REQUIRE(!ex->command(":g/d/m$")); // possible infinite loop
     REQUIRE(stc->get_text().find("d") != std::string::npos);
+
+    stc->set_text("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
+    REQUIRE(ex->command(":g/d/p"));
+    REQUIRE(ex->command(":g//d"));
   }
 
   SUBCASE("input mode")

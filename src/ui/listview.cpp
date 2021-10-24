@@ -199,7 +199,7 @@ wex::listview::listview(const data::listview& data)
         {
           if (listitem item(this, m_item_number);
               item.path().file_exists() &&
-              (item.path().stat().get_modification_time() !=
+              (item.path().stat().get_modification_time_str() !=
                  get_item_text(m_item_number, _("Modified")) ||
                item.path().stat().is_readonly() != item.is_readonly()))
           {
