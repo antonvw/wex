@@ -151,7 +151,7 @@ std::stringstream wex::path::log() const
       const std::string what =
         (m_log.test(LOG_SYNC) ? _("Synchronized") : _("Modified"));
 
-      ss << " " << what << " " << stat().get_modification_time();
+      ss << " " << what << " " << stat().get_modification_time_str();
     }
   }
 
