@@ -104,6 +104,8 @@ TEST_CASE("wex::ex")
     stc->set_text("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
     REQUIRE(ex->command(":g/d/p"));
     REQUIRE(ex->command(":g//d"));
+    REQUIRE(ex->command(":g//"));
+    REQUIRE(ex->command(":g//p"));
   }
 
   SUBCASE("input mode")

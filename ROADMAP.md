@@ -1,5 +1,4 @@
 # roadmap
-- update syncped-help
 - branch feature/boost-test: use boost::test
 
 - use ranges library

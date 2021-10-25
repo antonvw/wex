@@ -304,7 +304,7 @@ bool wex::addressrange::global(const command_parser& cp) const
     return false;
   }
 
-  if (m_substitute.pattern().empty())
+  if (m_substitute.is_clear())
   {
     m_stc->IndicatorClearRange(0, m_stc->GetTextLength() - 1);
     return true;
