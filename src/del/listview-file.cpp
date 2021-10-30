@@ -6,10 +6,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <pugixml.hpp>
+#include <wex/common/util.h>
 #include <wex/core/chrono.h>
 #include <wex/core/config.h>
 #include <wex/core/log.h>
-#include <wex/common/util.h>
 #include <wex/del/defs.h>
 #include <wex/del/frame.h>
 #include <wex/del/listview-file.h>
@@ -173,7 +173,7 @@ bool wex::del::file::do_file_load(bool synced)
         pugi::parse_default | pugi::parse_comments);
       !result)
   {
-    if (path().stat().get_st_size() == 0)
+    if (path().stat().get_size() == 0)
     {
       clear();
       return true;

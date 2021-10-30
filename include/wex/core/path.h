@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <wex/core/stat.h>
+#include <wex/core/file-status.h>
 
 #include <bitset>
 #include <filesystem>
@@ -22,7 +22,7 @@ class file;
 /// Offers functionality to handle paths.
 class path
 {
-  friend class file; // it might update file_stat
+  friend class file; // it might update file_status
 public:
   /// Flags for path logging.
   /// Default only logs the filename (all flags are off).
@@ -149,7 +149,7 @@ public:
 private:
   std::filesystem::path m_path, m_path_original;
 
-  file_stat   m_stat;
+  file_status m_stat;
   const log_t m_log{0};
 };
 }; // namespace wex

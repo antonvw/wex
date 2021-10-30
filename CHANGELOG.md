@@ -4,6 +4,7 @@
 - boost::json lib instead of nlohmann/json lib, requiring boost 1.75
 - added methods to allow testing wex applications
 - c++20 standard
+- added a few vim g commands
 
 **v21.10** *September 12, 2021*
 - boost::algorithm lib used

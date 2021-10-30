@@ -29,7 +29,7 @@ const std::string wex::print_header(const path_lexer& filename)
   if (filename.file_exists())
   {
     return get_endoftext(
-      filename.string() + " " + filename.stat().get_modification_time(),
+      filename.string() + " " + filename.stat().get_modification_time_str(),
       filename.lexer().line_size());
   }
   else

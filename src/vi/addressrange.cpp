@@ -304,7 +304,7 @@ bool wex::addressrange::global(const command_parser& cp) const
     return false;
   }
 
-  if (m_substitute.pattern().empty())
+  if (m_substitute.is_clear())
   {
     m_stc->IndicatorClearRange(0, m_stc->GetTextLength() - 1);
     return true;
@@ -447,10 +447,19 @@ bool wex::addressrange::parse(const command_parser& cp, info_message_t& im)
     case 'w':
       if (!cp.text().empty() && !cmdline::use_events())
       {
+        const bool se = m_stc->GetSelectionEmpty();
+
         m_stc->position_save();
+
         const bool r = write(cp.text());
-        m_stc->SelectNone();
+
         m_stc->position_restore();
+
+        if (se)
+        {
+          m_stc->SelectNone();
+        }
+
         return r;
       }
       else

@@ -81,7 +81,7 @@ TEST_CASE("wex::listview")
     {
       REQUIRE(lv->insert_item(
         {std::to_string(i),
-         wex::test::get_path("test.h").stat().get_modification_time(),
+         wex::test::get_path("test.h").stat().get_modification_time_str(),
          std::to_string(static_cast<float>(i) / 2.0),
          "hello " + std::to_string(i)}));
     }

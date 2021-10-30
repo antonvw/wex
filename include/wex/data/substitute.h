@@ -18,6 +18,12 @@ public:
   /// Default constructor, calls set.
   substitute(const std::string& text = std::string());
 
+  /// Returns commands.
+  auto& commands() const { return m_commands; }
+
+  /// Returns whether clear indicator was asked (:g//)
+  bool is_clear() const { return m_clear; }
+
   /// Returns whether options indicate confirmed.
   bool is_confirmed() const;
 
@@ -29,9 +35,6 @@ public:
 
   /// Returns whether inverse option is present (for set_global).
   bool is_inverse() const { return m_inverse; }
-
-  /// Returns commands.
-  auto& commands() const { return m_commands; }
 
   /// Returns pattern.
   auto& pattern() const { return m_pattern; }
@@ -52,6 +55,6 @@ public:
 private:
   std::string m_commands, m_options, m_pattern, m_replacement;
 
-  bool m_inverse{false};
+  bool m_clear{false}, m_inverse{false};
 };
 } // namespace wex::data

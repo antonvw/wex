@@ -100,6 +100,12 @@ TEST_CASE("wex::ex")
     stc->set_text("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
     REQUIRE(!ex->command(":g/d/m$")); // possible infinite loop
     REQUIRE(stc->get_text().find("d") != std::string::npos);
+
+    stc->set_text("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
+    REQUIRE(ex->command(":g/d/p"));
+    REQUIRE(ex->command(":g//d"));
+    REQUIRE(ex->command(":g//"));
+    REQUIRE(ex->command(":g//p"));
   }
 
   SUBCASE("input mode")
@@ -239,8 +245,7 @@ TEST_CASE("wex::ex")
     stc->LineDownExtend();
     REQUIRE(ex->command(":'<,'>w test-ex.txt"));
     REQUIRE(ex->command(":'<,'><"));
-
-    ex->command(":'<,'>>");
+    REQUIRE(ex->command(":'<,'>>"));
 
 #ifndef __WXMSW__
     ex->command(":'<,'>!sort");

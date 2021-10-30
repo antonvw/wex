@@ -153,11 +153,11 @@ void wex::listitem::update()
   {
     set_item(_("Type"), m_path.dir_exists() ? m_file_spec : m_path.extension());
     set_item(_("In Folder"), m_path.parent_path());
-    set_item(_("Modified"), m_path.stat().get_modification_time());
+    set_item(_("Modified"), m_path.stat().get_modification_time_str());
 
     if (m_path.file_exists())
     {
-      set_item(_("Size"), std::to_string(m_path.stat().get_st_size()));
+      set_item(_("Size"), std::to_string(m_path.stat().get_size()));
     }
   }
 }

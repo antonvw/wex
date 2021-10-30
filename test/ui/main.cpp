@@ -68,7 +68,9 @@ bool wex::test::ui::OnInit()
      {"PaneMode"},
      {"PaneFileType"},
      {"LastPane"}});
-  m_stc = new ui_stc();
+  wex::data::window data;
+  data.parent(m_frame);
+  m_stc = new ui_stc(data);
   m_frame->Show();
   m_frame->pane_add(m_stc);
 

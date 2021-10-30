@@ -8,9 +8,9 @@
 #include <boost/process.hpp>
 #include <boost/version.hpp>
 
+#include <wex/core/log.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/process.h>
-#include <wex/core/log.h>
 #include <wx/event.h>
 
 #include <algorithm>

@@ -301,8 +301,8 @@ bool wex::variable::expand_builtin(ex* ex, std::string& expanded) const
           ex->get_stc()->path().stat().is_ok())
       {
         expanded =
-          (m_format.empty() ? file.stat().get_creation_time() :
-                              file.stat().get_creation_time(m_format));
+          (m_format.empty() ? file.stat().get_creation_time_str() :
+                              file.stat().get_creation_time_str(m_format));
       }
       else
       {

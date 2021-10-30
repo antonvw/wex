@@ -88,7 +88,7 @@ bool wex::file::check_sync()
   {
     bool sync_needed = false;
 
-    if (m_path.m_stat.get_st_mtime() != m_stat.get_st_mtime())
+    if (m_path.m_stat.get_modification_time() != m_stat.get_modification_time())
     {
       // Do not check return value,
       // we sync anyhow, to force nex time no sync.
@@ -261,7 +261,7 @@ const std::string* wex::file::read(std::streampos seek_position)
   m_buffer = std::make_unique<std::string>();
 
 #ifndef __WXMSW__
-  m_buffer->resize(m_path.m_stat.get_st_size() - seek_position);
+  m_buffer->resize(m_path.m_stat.get_size() - seek_position);
   m_fs.read(m_buffer->data(), m_buffer->size());
 #else
   char c;
