@@ -2,7 +2,7 @@
 // Name:      util.h
 // Purpose:   Include file for wex utility functions
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -14,12 +14,12 @@
 #include <list>
 #include <vector>
 
-class wxArrayString;
 namespace pugi
 {
-class xml_node;
 struct xml_parse_result;
 }; // namespace pugi
+
+class wxArrayString;
 
 namespace wex
 {

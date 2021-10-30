@@ -9,7 +9,6 @@
 
 #include <wx/versioninfo.h>
 
-#include <sstream>
 #include <string>
 
 namespace wex
@@ -26,9 +25,6 @@ public:
 
   /// Returns description.
   const std::string description() const;
-
-  /// Returns external libraries used.
-  const std::stringstream external_libraries() const;
 
   /// Returns string version.
   const std::string get() const;

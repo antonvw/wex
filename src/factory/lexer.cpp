@@ -6,13 +6,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
-#include <pugixml.hpp>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
-#include <wex/factory/stc.h>
+#include <wex/core/log.h>
 #include <wex/factory/lexer.h>
 #include <wex/factory/lexers.h>
-#include <wex/core/log.h>
+#include <wex/factory/stc.h>
+#include <wex/factory/util.h>
 #include <wx/platinfo.h>
 
 #include <algorithm>

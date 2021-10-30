@@ -5,8 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <pugixml.hpp>
-#include <wex/factory/lexer.h>
+#include <wex/factory/util.h>
 
 void wex::node_properties(
   const pugi::xml_node*  node,

@@ -7,10 +7,11 @@
 
 #include <wex/core/config.h>
 #include <wex/core/core.h>
-#include <wex/factory/stc.h>
-#include <wex/factory/lexers.h>
 #include <wex/core/log.h>
 #include <wex/core/regex.h>
+#include <wex/factory/lexers.h>
+#include <wex/factory/stc.h>
+#include <wex/factory/util.h>
 
 #include <algorithm>
 #include <charconv>
