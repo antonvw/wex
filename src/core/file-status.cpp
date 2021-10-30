@@ -57,7 +57,7 @@ bool wex::file_status::is_readonly() const
   // e.g -rw-r--r--  1 root  wheel  213 Jan  1  2020 /etc/hosts
   // has w for owner, but we should check access for current user
 #ifdef _MSC_VER
-  return (m_is_ok && ((st_mode & wxS_IWUSR) == 0));
+  return (m_is_ok && ((m_file_status.st_mode & wxS_IWUSR) == 0));
 #else
   return (m_is_ok && access(m_fullpath.c_str(), W_OK) == -1);
 #endif

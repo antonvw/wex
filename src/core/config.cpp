@@ -272,7 +272,7 @@ void wex::config::set(const std::string& v)
 
 void wex::config::set(const char* v)
 {
-  get_store()->set(m_item, v);
+  get_store()->set(m_item, std::string(v));
 }
 
 void wex::config::set(bool v)

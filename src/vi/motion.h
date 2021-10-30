@@ -15,7 +15,7 @@ enum class vi::motion_t
 {
   // motions not allowed on readonly document
   CHANGE,
-  DELETE,
+  DEL,
 
   // special motions, not vi, but vim related
   G,

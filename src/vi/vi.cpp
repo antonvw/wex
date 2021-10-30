@@ -1125,7 +1125,7 @@ wex::vi::motion_t wex::vi::get_motion(const std::string& command) const
       return motion_t::CHANGE;
 
     case 'd':
-      return motion_t::DELETE;
+      return motion_t::DEL;
 
     case 'g':
       return command_g_motion(command);
@@ -1379,7 +1379,7 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
     {
       return addressrange(this, m_count).yank();
     }
-    else if (type == motion_t::DELETE || type == motion_t::CHANGE)
+    else if (type == motion_t::DEL || type == motion_t::CHANGE)
     {
       return addressrange(this, m_count).erase();
     }
@@ -1420,7 +1420,14 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
   int  parsed = 0;
   auto start  = get_stc()->GetCurrentPos();
 
-  switch (type)
+  if (type > motion_t::G_aa && type < motion_t::G_ZZ)
+  {
+      if ((parsed = it->second(command)) == 0)
+        return false;
+
+      command_g(this, type, start);
+  }
+  else switch (type)
   {
     case motion_t::CHANGE:
       if (!get_stc()->get_selected_text().empty())
@@ -1438,7 +1445,7 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
       delete_range(start, get_stc()->GetCurrentPos());
       break;
 
-    case motion_t::DELETE:
+    case motion_t::DEL:
       if ((parsed = it->second(command)) == 0)
         return false;
 
@@ -1449,14 +1456,7 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
       return false;
       break;
 
-    case motion_t::G_aa... motion_t::G_ZZ:
-      if ((parsed = it->second(command)) == 0)
-        return false;
-
-      command_g(this, type, start);
-      break;
-
-    case motion_t::NAVIGATE:
+   case motion_t::NAVIGATE:
       if ((parsed = it->second(command)) == 0)
         return false;
       break;
@@ -1475,6 +1475,9 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
 
       yank_range(start);
       break;
+      
+    default: 
+      assert(0);
   }
 
   if (!m_insert_command.empty())
@@ -1743,7 +1746,7 @@ bool wex::vi::parse_command(std::string& command)
     case 1:
       if (
         m_mode.is_visual() &&
-        (motion == motion_t::CHANGE || motion == motion_t::DELETE ||
+        (motion == motion_t::CHANGE || motion == motion_t::DEL ||
          motion == motion_t::YANK))
       {
         if (motion == motion_t::CHANGE)
@@ -1775,20 +1778,20 @@ bool wex::vi::parse_command(std::string& command)
         return true;
       }
 
-      switch (motion)
+      if (motion > motion_t::G_aa && motion < motion_t::G_ZZ)
+      {
+          if (command.size() > 2)
+          {
+            command.erase(0, 2);
+          }
+      }
+      else switch (motion)
       {
         case motion_t::CHANGE:
           m_mode.transition(command);
           break;
 
-        case motion_t::G_aa... motion_t::G_ZZ:
-          if (command.size() > 2)
-          {
-            command.erase(0, 2);
-          }
-          break;
-
-        case motion_t::DELETE:
+        case motion_t::DEL:
         case motion_t::YANK:
           command.erase(0, 1);
           break;

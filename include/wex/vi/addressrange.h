@@ -11,6 +11,8 @@
 #include <wex/factory/indicator.h>
 #include <wex/vi/address.h>
 
+#include <functional>
+
 namespace wex
 {
 enum class info_message_t;
