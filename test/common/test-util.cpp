@@ -5,12 +5,8 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wex/core/config.h>
 #include <wex/common/util.h>
+#include <wex/core/config.h>
 #include <wex/core/vcs-command.h>
 
 #include "test.h"

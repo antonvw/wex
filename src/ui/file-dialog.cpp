@@ -5,15 +5,15 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wex/core/core.h>
 #include <wex/core/file.h>
 #include <wex/factory/lexers.h>
 #include <wex/ui/file-dialog.h>
+#include <wx/checkbox.h>
 #include <wx/checklst.h>
+#include <wx/msgdlg.h>
+#include <wx/sizer.h>
+#include <wx/stattext.h>
 
 class extra_panel : public wxPanel
 {

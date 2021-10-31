@@ -145,8 +145,8 @@ function(wex_process_po_files)
   endif()
 endfunction()  
 
-macro(wex_target_link_all)
-  set (extra_macro_args ${ARGN})
+function(wex_target_link_all)
+  set (use_libs ${ARGN})
 
   if (CENTOS)
     set (cpp_std_LIBRARIES 
@@ -161,7 +161,13 @@ macro(wex_target_link_all)
   endif ()
 
   set (wxWidgets_LIBRARIES wxaui wxstc wxhtml wxcore wxnet wxbase wxscintilla)
-  set (wex_LIBRARIES wex-del wex-stc wex-vi wex-ui wex-common wex-data wex-factory wex-core)
+  
+  if (${ARGC} STREQUAL "0")
+    set (wex_LIBRARIES wex-del wex-stc wex-vi wex-ui wex-common wex-data wex-factory wex-core)
+  else ()
+    set (wex_LIBRARIES ${use_libs})
+    separate_arguments(wex_LIBRARIES)
+  endif ()  
           
   if (WIN32)
     target_link_libraries(
@@ -169,7 +175,6 @@ macro(wex_target_link_all)
       ${wex_LIBRARIES}
       ${wxWidgets_LIBRARIES}
       ${Boost_LIBRARIES}
-      ${extra_macro_args}
       )
   elseif (APPLE)
     target_link_libraries(
@@ -177,7 +182,6 @@ macro(wex_target_link_all)
       ${wex_LIBRARIES}
       ${wxWidgets_LIBRARIES} 
       ${Boost_LIBRARIES}
-      ${extra_macro_args}
       stdc++
       )
   else ()
@@ -186,28 +190,27 @@ macro(wex_target_link_all)
       ${wex_LIBRARIES}
       ${wxWidgets_LIBRARIES} 
       ${Boost_LIBRARIES}
-      ${extra_macro_args}
       ${cpp_std_LIBRARIES}
       m
       )
   endif ()
-endmacro()  
+endfunction()
 
-function(wex_test_app)
+function(wex_test_app libs)
   add_executable(
     ${PROJECT_NAME} 
     ${SRCS})
 
   if (ODBC_FOUND)
-    wex_target_link_all(${ODBC_LIBRARIES})
+    wex_target_link_all(${libs})
+    wex_target_link_all(${libs} ${ODBC_LIBRARIES})
   else ()
-    wex_target_link_all()
   endif()
   
   add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME}
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src)
 endfunction()
-          
+  
 # general setup
     
 if (WIN32)

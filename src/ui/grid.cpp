@@ -5,10 +5,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
 #include <wex/core/core.h>
@@ -19,6 +15,7 @@
 #include <wex/ui/bind.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/grid.h>
+#include <wx/app.h>
 #include <wx/dnd.h>
 
 #include <sstream>

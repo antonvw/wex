@@ -5,10 +5,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wex/core/chrono.h>
 #include <wex/core/core.h>
 #include <wex/factory/printing.h>

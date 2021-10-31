@@ -5,10 +5,6 @@
 // Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include "../test.h"
 #include <wex/ui/frame.h>
 #include <wex/ui/item-dialog.h>

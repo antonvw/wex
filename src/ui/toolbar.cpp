@@ -5,10 +5,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/factory/defs.h>
@@ -22,6 +18,8 @@
 #include <wex/ui/menu.h>
 #include <wex/ui/textctrl.h>
 #include <wex/ui/toolbar.h>
+#include <wx/checkbox.h>
+#include <wx/stockitem.h>
 
 #include <list>
 

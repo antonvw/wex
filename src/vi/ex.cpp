@@ -6,11 +6,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include "eval.h"
 #include <boost/tokenizer.hpp>
 #include <wex/common/cmdline.h>
 #include <wex/core/config.h>
@@ -32,8 +27,11 @@
 #include <wex/vi/ex-stream.h>
 #include <wex/vi/ex.h>
 #include <wex/vi/macros.h>
+#include <wx/app.h>
 
 #include <sstream>
+
+#include "eval.h"
 
 #define POST_CLOSE(ID, VETO)                      \
   {                                               \

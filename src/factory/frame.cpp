@@ -5,18 +5,14 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wex/core/config.h>
 #include <wex/core/core.h>
+#include <wex/core/path.h>
 #include <wex/factory/frame.h>
 #include <wex/factory/grid.h>
+#include <wex/factory/lexers.h>
 #include <wex/factory/listview.h>
 #include <wex/factory/stc.h>
-#include <wex/factory/lexers.h>
-#include <wex/core/path.h>
 
 #define wxCAST_TO(classname)                                     \
   /* NOLINTNEXTLINE */                                           \

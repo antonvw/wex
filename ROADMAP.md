@@ -1,4 +1,8 @@
 # roadmap
+- improve test libs
+- rect replace char, delete char
+- lexer for make process
+
 - branch feature/boost-test: use boost::test
 
 ## backlog

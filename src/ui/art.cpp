@@ -5,11 +5,8 @@
 // Copyright: (c) 2018-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wex/ui/art.h>
+#include <wx/stockitem.h>
 
 std::map<wxWindowID, wxArtID> wex::stockart::m_art_ids;
 
