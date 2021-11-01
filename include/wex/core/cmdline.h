@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <wex/data/cmdline.h>
+#include <wex/core/cmdline-data.h>
 
 #include <any>
 #include <functional>

@@ -5,11 +5,11 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/common/cmdline.h>
 #include <wex/common/tostring.h>
+#include <wex/common/util.h>
+#include <wex/core/cmdline.h>
 #include <wex/core/config.h>
 #include <wex/core/file.h>
-#include <wex/common/util.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/lexers.h>
 #include <wex/factory/listview.h>

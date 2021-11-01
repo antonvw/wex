@@ -7,7 +7,10 @@
 
 #pragma once
 
+#include <wex/core/app.h>
 #include <wex/core/chrono.h>
+#include <wex/core/cmdline-data.h>
+#include <wex/core/cmdline.h>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/file-status.h>

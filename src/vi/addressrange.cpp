@@ -6,8 +6,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
-#include <wex/common/cmdline.h>
 #include <wex/common/util.h>
+#include <wex/core/cmdline.h>
 #include <wex/core/core.h>
 #include <wex/core/file.h>
 #include <wex/core/log.h>

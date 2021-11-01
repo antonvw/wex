@@ -1,5 +1,4 @@
 # roadmap
-- improve test libs
 - rect replace char, delete char
 - lexer for make process
 

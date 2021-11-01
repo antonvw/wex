@@ -24,6 +24,7 @@
 #include <wx/spinctrl.h>
 #include <wx/statbox.h>
 #include <wx/statline.h>
+#include <wx/stattext.h>
 #include <wx/tglbtn.h>
 #include <wx/toolbook.h>
 #include <wx/valnum.h>

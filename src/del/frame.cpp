@@ -5,13 +5,14 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/common/cmdline.h>
 #include <wex/common/stream.h>
 #include <wex/common/tostring.h>
-#include <wex/core/regex.h>
 #include <wex/common/util.h>
+#include <wex/core/cmdline.h>
+#include <wex/core/regex.h>
 #include <wex/del/wex.h>
 #include <wex/factory/lexers.h>
+#include <wex/factory/printing.h>
 #include <wex/stc/wex.h>
 #include <wex/ui/wex.h>
 #include <wex/vi/ctags.h>
@@ -114,6 +115,9 @@ wex::del::frame::frame(
       m_project_history.save();
       stc::on_exit();
       ctags::close();
+      delete lexers::set(nullptr);
+      delete printing::set(nullptr);
+
       config("show.MenuBar")
         .set(GetMenuBar() != nullptr && GetMenuBar()->IsShown());
       delete m_debug;

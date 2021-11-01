@@ -8,7 +8,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
-#include <wex/common/app.h>
+#include <wex/core/app.h>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
@@ -1422,63 +1422,64 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
 
   if (type > motion_t::G_aa && type < motion_t::G_ZZ)
   {
-      if ((parsed = it->second(command)) == 0)
-        return false;
-
-      command_g(this, type, start);
-  }
-  else switch (type)
-  {
-    case motion_t::CHANGE:
-      if (!get_stc()->get_selected_text().empty())
-      {
-        get_stc()->SetCurrentPos(get_stc()->GetSelectionStart());
-        start = get_stc()->GetCurrentPos();
-      }
-
-      if ((parsed = it->second(command)) == 0)
-      {
-        m_mode.escape();
-        return false;
-      }
-
-      delete_range(start, get_stc()->GetCurrentPos());
-      break;
-
-    case motion_t::DEL:
-      if ((parsed = it->second(command)) == 0)
-        return false;
-
-      delete_range(start, get_stc()->GetCurrentPos());
-      break;
-
-    case motion_t::G:
+    if ((parsed = it->second(command)) == 0)
       return false;
-      break;
 
-   case motion_t::NAVIGATE:
-      if ((parsed = it->second(command)) == 0)
-        return false;
-      break;
-
-    case motion_t::YANK:
-      if (!m_mode.is_visual())
-      {
-        std::string visual("v");
-        m_mode.transition(visual);
-      }
-
-      if ((parsed = it->second(command)) == 0)
-      {
-        return false;
-      }
-
-      yank_range(start);
-      break;
-      
-    default: 
-      assert(0);
+    command_g(this, type, start);
   }
+  else
+    switch (type)
+    {
+      case motion_t::CHANGE:
+        if (!get_stc()->get_selected_text().empty())
+        {
+          get_stc()->SetCurrentPos(get_stc()->GetSelectionStart());
+          start = get_stc()->GetCurrentPos();
+        }
+
+        if ((parsed = it->second(command)) == 0)
+        {
+          m_mode.escape();
+          return false;
+        }
+
+        delete_range(start, get_stc()->GetCurrentPos());
+        break;
+
+      case motion_t::DEL:
+        if ((parsed = it->second(command)) == 0)
+          return false;
+
+        delete_range(start, get_stc()->GetCurrentPos());
+        break;
+
+      case motion_t::G:
+        return false;
+        break;
+
+      case motion_t::NAVIGATE:
+        if ((parsed = it->second(command)) == 0)
+          return false;
+        break;
+
+      case motion_t::YANK:
+        if (!m_mode.is_visual())
+        {
+          std::string visual("v");
+          m_mode.transition(visual);
+        }
+
+        if ((parsed = it->second(command)) == 0)
+        {
+          return false;
+        }
+
+        yank_range(start);
+        break;
+
+      default:
+        assert(0);
+    }
 
   if (!m_insert_command.empty())
   {
@@ -1780,37 +1781,38 @@ bool wex::vi::parse_command(std::string& command)
 
       if (motion > motion_t::G_aa && motion < motion_t::G_ZZ)
       {
-          if (command.size() > 2)
-          {
-            command.erase(0, 2);
-          }
+        if (command.size() > 2)
+        {
+          command.erase(0, 2);
+        }
       }
-      else switch (motion)
-      {
-        case motion_t::CHANGE:
-          m_mode.transition(command);
-          break;
+      else
+        switch (motion)
+        {
+          case motion_t::CHANGE:
+            m_mode.transition(command);
+            break;
 
-        case motion_t::DEL:
-        case motion_t::YANK:
-          command.erase(0, 1);
-          break;
+          case motion_t::DEL:
+          case motion_t::YANK:
+            command.erase(0, 1);
+            break;
 
-        case motion_t::NAVIGATE:
-          if (m_mode.transition(command))
-          {
-            check_other = false;
-          }
-          else
-          {
-            m_insert_command.clear();
-          }
-          break;
+          case motion_t::NAVIGATE:
+            if (m_mode.transition(command))
+            {
+              check_other = false;
+            }
+            else
+            {
+              m_insert_command.clear();
+            }
+            break;
 
-        default:
-          // do nothing
-          break;
-      }
+          default:
+            // do nothing
+            break;
+        }
   }
 
   if (

@@ -7,7 +7,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
-#include <wex/common/cmdline.h>
+#include <wex/core/cmdline.h>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/file.h>

@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <wex/data/cmdline.h>
 #include <wex/data/control.h>
 #include <wex/data/dir.h>
 #include <wex/data/find.h>

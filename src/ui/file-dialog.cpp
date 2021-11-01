@@ -12,6 +12,7 @@
 #include <wx/checkbox.h>
 #include <wx/checklst.h>
 #include <wx/msgdlg.h>
+#include <wx/panel.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 
