@@ -202,9 +202,9 @@ function(wex_test_app libs)
     ${SRCS})
 
   if (ODBC_FOUND)
-    wex_target_link_all(${libs})
     wex_target_link_all(${libs} ${ODBC_LIBRARIES})
   else ()
+    wex_target_link_all(${libs})
   endif()
   
   add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME}

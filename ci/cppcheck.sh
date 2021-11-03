@@ -1,10 +1,10 @@
 #!/usr/bin/env sh
-# This script is used to run cppcheck
-# We are already in the build dir
+# This script is used to run cppcheck from root repo
 
 cppcheck --version
 
-cppcheck --quiet --enable=all \
+cppcheck --std=c++20 \
+  --quiet --enable=all \
   --suppress=constStatement \
   --suppress=cppcheckError \
   --suppress=cstyleCast \
@@ -16,4 +16,4 @@ cppcheck --quiet --enable=all \
   --suppress=unknownMacro \
   --suppress=unusedScopedObject \
   --suppress=unusedFunction\
-  ../src -i LexAda.cxx -i odbc.cpp -I ../include
+  src -i LexAda.cxx -i odbc.cpp -I include

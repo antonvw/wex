@@ -39,7 +39,7 @@ TEST_CASE("wex::lexers")
 
   SUBCASE("properties") { REQUIRE(wex::lexers::get()->properties().empty()); }
 
-  SUBCASE("findBy")
+  SUBCASE("find_by")
   {
     REQUIRE(
       wex::lexers::get()

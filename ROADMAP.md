@@ -2,7 +2,7 @@
 - update README
 
 - rect replace char, delete char
-- lexer for make process
+- lexer for make process and for cppcheck process
 
 - branch feature/boost-test: use boost::test
 

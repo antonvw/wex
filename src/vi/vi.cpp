@@ -1428,6 +1428,7 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
     command_g(this, type, start);
   }
   else
+  {
     switch (type)
     {
       case motion_t::CHANGE:
@@ -1480,6 +1481,7 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
       default:
         assert(0);
     }
+  }
 
   if (!m_insert_command.empty())
   {
@@ -1787,6 +1789,7 @@ bool wex::vi::parse_command(std::string& command)
         }
       }
       else
+      {
         switch (motion)
         {
           case motion_t::CHANGE:
@@ -1813,6 +1816,7 @@ bool wex::vi::parse_command(std::string& command)
             // do nothing
             break;
         }
+      }
   }
 
   if (

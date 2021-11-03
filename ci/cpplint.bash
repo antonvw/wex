@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
-# This script is used to run cpplint manually from root repo
+# This script is used to run cpplint from root repo
+# e.g. ci/cpplint.bash src/*/*.cpp
 
 /usr/local/bin/cpplint --quiet --exclude=src/lexers --filter=\
 -build,\
