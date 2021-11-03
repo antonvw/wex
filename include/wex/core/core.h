@@ -13,16 +13,9 @@
 
 class wxWindow;
 
-namespace pugi
-{
-class xml_node;
-struct xml_parse_result;
-}; // namespace pugi
-
 namespace wex
 {
 class path;
-class property;
 
 /*! \file */
 

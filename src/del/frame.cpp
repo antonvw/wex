@@ -372,7 +372,7 @@ wex::config::strings_t wex::del::frame::default_extensions() const
   {
     if (!it.extensions().empty())
     {
-      l.push_back(it.extensions());
+      l.emplace_back(it.extensions());
     }
   }
 
@@ -922,7 +922,7 @@ void wex::del::frame::statusbar_clicked_right(const std::string& pane)
   }
   else if (pane == "PaneDBG" || pane == "PaneVCS")
   {
-    std::string match(get_statustext(pane));
+    auto match(get_statustext(pane));
 
     if (stc != nullptr)
     {

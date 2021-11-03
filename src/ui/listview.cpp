@@ -1200,7 +1200,7 @@ const std::list<std::string> wex::listview::save() const
 
   for (auto i = 0; i < GetItemCount(); i++)
   {
-    l.push_back(item_to_text(i));
+    l.emplace_back(item_to_text(i));
   }
 
   return l;

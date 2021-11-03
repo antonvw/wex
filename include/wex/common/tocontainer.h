@@ -100,7 +100,7 @@ public:
         {
           const std::string cb_element(cb->GetString(i));
           if (cb_element != cb->GetValue())
-            m_container.push_back(cb_element);
+            m_container.emplace_back(cb_element);
         }
     }
   };

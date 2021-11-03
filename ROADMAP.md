@@ -1,4 +1,6 @@
 # roadmap
+- update README
+
 - rect replace char, delete char
 - lexer for make process
 
