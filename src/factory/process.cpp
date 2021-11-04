@@ -5,18 +5,17 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
+#include <atomic>
+#include <queue>
+#include <thread>
+
 #include <boost/process.hpp>
-#include <boost/version.hpp>
 
 #include <wex/core/log.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/process.h>
 #include <wx/event.h>
-
-#include <algorithm>
-#include <atomic>
-#include <queue>
-#include <thread>
 
 namespace bp = boost::process;
 

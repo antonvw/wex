@@ -7,6 +7,7 @@
 - branch feature/boost-test: use boost::test
 
 ## backlog
+- searching in Process git output window
 - c++ modules: fix gcc (gcc-12), test msvc
 - start up with recent project, close project
   -> windows appear
