@@ -97,8 +97,7 @@ TEST_CASE("wex::debug")
     REQUIRE(!dbg.apply_breakpoints(stc));
 
     process.stop();
-
-    wxMilliSleep(10);
+    process.async_sleep_for(std::chrono::milliseconds(10));
 
     REQUIRE(!dbg.is_active());
 

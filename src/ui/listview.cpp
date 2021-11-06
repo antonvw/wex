@@ -553,6 +553,11 @@ void wex::listview::build_popup_menu(wex::menu& menu)
 
 void wex::listview::clear()
 {
+  if (GetItemCount() == 0)
+  {
+    return;
+  }
+
   DeleteAllItems();
 
   sort_column_reset();

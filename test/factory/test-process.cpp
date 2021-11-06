@@ -42,6 +42,7 @@ TEST_CASE("wex::factory::process")
       REQUIRE(process.stop());
       REQUIRE(!process.is_running());
       process.stop();
+      process.async_sleep_for(std::chrono::milliseconds(10));
       REQUIRE(!process.write("xx"));
     }
 
