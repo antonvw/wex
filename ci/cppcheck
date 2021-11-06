@@ -1,5 +1,7 @@
-#!/usr/bin/env sh
+#!/bin/bash
 # This script is used to run cppcheck from root repo
+
+. ~/.bash_profile
 
 cppcheck --version
 

@@ -1,6 +1,5 @@
 # roadmap
 - rect replace char, delete char
-- lexer for make process and for cppcheck process
 - list click and detail
 - use new wxWidgets functionality, use wxUILocale, improve wex::app
 - linux crash when startup outside git repo

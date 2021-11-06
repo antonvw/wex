@@ -1,7 +1,5 @@
 #!/usr/bin/env sh
 
-../ci/codespell.sh
-
 # A normal build, including tests, triggers the max time limit:
 # The job exceeded the maximum time limit for jobs, and has been terminated.
   

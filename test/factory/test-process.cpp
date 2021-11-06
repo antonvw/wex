@@ -9,8 +9,6 @@
 
 #include "../test.h"
 
-// import <iostream>;
-
 TEST_CASE("wex::factory::process")
 {
   wex::factory::process process;

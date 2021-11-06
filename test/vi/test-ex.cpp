@@ -64,13 +64,11 @@ TEST_CASE("wex::ex")
   SUBCASE("commands")
   {
     // Most commands are tested using the :so command.
-    for (const auto& command : std::vector<std::pair<std::string, bool>>{
-           {":ab", true},
-           {":ve", false},
-           {":1,$s/s/w/", true}})
+    for (const auto& command :
+         std::vector<std::string>{":ab", ":ve", ":1,$s/s/w/"})
     {
       CAPTURE(command);
-      REQUIRE(ex->command(command.first));
+      REQUIRE(ex->command(command));
     }
   }
 

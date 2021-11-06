@@ -117,6 +117,7 @@ bool wex::process::async_system(
   }
 
   m_shell->set_process(this);
+
   path::current(path(cwd));
 
   if (
