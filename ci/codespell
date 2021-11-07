@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# shellcheck source=src/util.sh
 . ~/.bash_profile
 
 codespell src \
