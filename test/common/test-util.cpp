@@ -5,12 +5,8 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wex/core/config.h>
 #include <wex/common/util.h>
+#include <wex/core/config.h>
 #include <wex/core/vcs-command.h>
 
 #include "test.h"
@@ -20,6 +16,20 @@
 TEST_CASE("wex::util" * doctest::may_fail())
 {
   std::list<std::string> l{"x", "y", "z"};
+
+  SUBCASE("auto_complete_filename")
+  {
+    REQUIRE(std::get<0>(wex::auto_complete_filename("te")));
+    REQUIRE(std::get<1>(wex::auto_complete_filename("te")) == "st");
+    REQUIRE(!std::get<0>(wex::auto_complete_filename("XX")));
+
+#ifdef __UNIX__
+    REQUIRE(std::get<0>(wex::auto_complete_filename("/usr/local/l")));
+
+    // we are in wex/test/data
+    REQUIRE(std::get<0>(wex::auto_complete_filename("../../src/v")));
+#endif
+  }
 
   SUBCASE("combobox_as")
   {

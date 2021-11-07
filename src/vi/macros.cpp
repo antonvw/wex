@@ -6,13 +6,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
-#include <wex/common/app.h>
+#include <wex/common/util.h>
+#include <wex/core/app.h>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/core/path.h>
 #include <wex/core/type-to-value.h>
-#include <wex/common/util.h>
 #include <wex/factory/lexer-props.h>
 #include <wex/ui/frame.h>
 #include <wex/vi/macros.h>

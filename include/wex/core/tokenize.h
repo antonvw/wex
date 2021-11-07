@@ -9,6 +9,7 @@
 
 #include <boost/tokenizer.hpp>
 
+#include <algorithm>
 #include <string>
 
 namespace wex
@@ -21,12 +22,11 @@ T tokenize(const std::string& text, const char* sep = " \t\r\n")
 {
   T tokens;
 
-  for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
-         text,
-         boost::char_separator<char>(sep)))
-  {
-    tokens.emplace_back(it);
-  }
+  const auto& in(boost::tokenizer<boost::char_separator<char>>(
+    text,
+    boost::char_separator<char>(sep)));
+
+  std::copy(in.begin(), in.end(), back_inserter(tokens));
 
   return tokens;
 };

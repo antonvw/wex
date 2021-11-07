@@ -5,11 +5,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <pugixml.hpp>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wex/common/dir.h>
 #include <wex/common/tostring.h>
 #include <wex/common/util.h>

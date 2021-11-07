@@ -5,10 +5,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wex/common/tool.h>
 #include <wex/core/core.h>
 #include <wex/factory/lexers.h>
@@ -17,6 +13,7 @@
 #include <wex/factory/stc.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/menu.h>
+#include <wx/app.h>
 
 #define PRINT_COMPONENT(ID, ACTION)                                  \
   {                                                                  \

@@ -2,7 +2,7 @@
 // Name:      util.h
 // Purpose:   Include file for wex utility functions
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -14,12 +14,12 @@
 #include <list>
 #include <vector>
 
-class wxArrayString;
 namespace pugi
 {
-class xml_node;
 struct xml_parse_result;
 }; // namespace pugi
+
+class wxArrayString;
 
 namespace wex
 {
@@ -35,6 +35,21 @@ class stc;
 }; // namespace factory
 
 /*! \file */
+
+/// Tries to auto_complete filename,
+/// the result is stored in the tuple.
+std::tuple<
+  /// true if a match was found
+  bool,
+  /// expansion of text to matching filename
+  /// (if only 1 match exists)
+  /// or common part of matching filenames
+  const std::string,
+  /// vector containing completed file name(s)
+  const std::vector<std::string>>
+auto_complete_filename(
+  /// text containing start of a filename
+  const std::string& text);
 
 /// Adds entries to a combobox from a container.
 template <typename T> void combobox_as(wxComboBox* cb, const T& t)

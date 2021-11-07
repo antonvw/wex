@@ -13,37 +13,15 @@
 
 class wxWindow;
 
-namespace pugi
-{
-class xml_node;
-struct xml_parse_result;
-}; // namespace pugi
-
 namespace wex
 {
 class path;
-class property;
 
 /*! \file */
 
 /// Returns string after first or last occurrence of c
 /// Returns the whole string if c is not found.
 const std::string after(const std::string& text, char c, bool first = true);
-
-/// Tries to auto_complete filename,
-/// the result is stored in the tuple.
-std::tuple<
-  /// true if a match was found
-  bool,
-  /// expansion of text to matching filename
-  /// (if only 1 match exists)
-  /// or common part of matching filenames
-  const std::string,
-  /// vector containing completed file name(s)
-  const std::vector<std::string>>
-auto_complete_filename(
-  /// text containing start of a filename
-  const std::string& text);
 
 /// Tries to auto_complete text from a vector of strings,
 /// result stored in the string.

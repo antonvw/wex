@@ -5,6 +5,8 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <thread>
+
 #include <wex/core/log.h>
 #include <wex/del/defs.h>
 #include <wex/stc/process.h>
@@ -33,6 +35,8 @@ TEST_CASE("wex::del::frame")
       {wex::test::get_path("test.h")},
       wex::tool(wex::ID_TOOL_REPORT_FIND),
       false));
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
     REQUIRE(
       !del_frame()->find_in_files_title(wex::ID_TOOL_REPORT_FIND).empty());
@@ -78,6 +82,7 @@ TEST_CASE("wex::del::frame")
   {
     wex::process::prepare_output(del_frame());
     REQUIRE(wex::addressrange(&get_stc()->get_vi(), "").escape("ls"));
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }
 
   SUBCASE("set_recent")

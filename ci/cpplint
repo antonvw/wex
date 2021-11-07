@@ -1,0 +1,18 @@
+#!/bin/bash
+# This script is used to run cpplint from root repo
+# e.g. ci/cpplint.bash src/*/*.cpp
+
+# shellcheck source=src/util.sh
+. ~/.bash_profile
+
+cpplint --quiet --exclude=src/lexers --filter=\
+-build,\
+-readability/casting,\
+-readability/fn_size,\
+-readability/multiline_string,\
+-runtime/explicit,\
+-runtime/indentation_namespace,\
+-runtime/int,\
+-runtime/references,\
+-whitespace\
+ "$@"

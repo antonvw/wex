@@ -5,10 +5,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wx/aui/auibook.h>
 #include <wx/bookctrl.h>
 #include <wx/button.h>
@@ -23,9 +19,12 @@
 #include <wx/listbook.h>
 #include <wx/notebook.h>
 #include <wx/persist/treebook.h>
+#include <wx/radiobox.h>
 #include <wx/simplebook.h>
 #include <wx/spinctrl.h>
+#include <wx/statbox.h>
 #include <wx/statline.h>
+#include <wx/stattext.h>
 #include <wx/tglbtn.h>
 #include <wx/toolbook.h>
 #include <wx/valnum.h>
@@ -33,9 +32,9 @@
 #include <wx/window.h>
 
 #include <wex/common/tocontainer.h>
+#include <wex/common/util.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
-#include <wex/common/util.h>
 #include <wex/ui/grid.h>
 #include <wex/ui/item-template-dialog.h>
 #include <wex/ui/item.h>
@@ -1355,7 +1354,7 @@ bool wex::item::validate(const std::string& regex) const
   {
     return std::regex_match(get_value_as_string(), std::regex(regex));
   }
-  catch (std::exception e)
+  catch (std::exception& e)
   {
     return false;
   }

@@ -2,12 +2,11 @@
 // Name:      test-lexer.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
 #include <wex/factory/lexer.h>
-#include <wex/factory/lexers.h>
 
 #include <regex>
 
@@ -48,13 +47,11 @@ TEST_CASE("wex::lexer")
     REQUIRE(lexer.attrib(_("Tab width")) == 12);
   }
 
-  SUBCASE("align")
+  SUBCASE("align_text")
   {
     REQUIRE(
-      wex::lexers::get()
-        ->find("cpp")
-        .align_text("test", "header", true, true)
-        .size() == std::string("// headertest").size());
+      wex::lexer("cpp").align_text("test", "header", true, true).size() ==
+      std::string("// headertest").size());
   }
 
   SUBCASE("set")
@@ -69,16 +66,14 @@ TEST_CASE("wex::lexer")
     REQUIRE(lexer2.display_lexer() == "pascal");
     REQUIRE(lexer2.scintilla_lexer() == "pascal");
 
-    REQUIRE(!lexer.set(wex::lexers::get()->find_by_text("XXXX")));
+    REQUIRE(!lexer.set(wex::lexer("XXXX")));
     REQUIRE(lexer.display_lexer().empty());
     REQUIRE(!lexer.is_ok());
-    REQUIRE(lexer.set(wex::lexers::get()->find_by_text("<html>")));
-    REQUIRE(lexer.is_ok());
+    REQUIRE(lexer.set(wex::lexer("hypertext")));
     REQUIRE(lexer.scintilla_lexer() == "hypertext");
     REQUIRE(lexer.display_lexer() == "hypertext");
     REQUIRE(lexer.is_previewable());
-    REQUIRE(lexer.set(
-      wex::lexers::get()->find_by_text("// this is a cpp comment text")));
+    REQUIRE(lexer.set(wex::lexer("cpp")));
     REQUIRE(lexer.is_ok());
     REQUIRE(wex::lexer(lexer).is_ok());
     REQUIRE(lexer.display_lexer() == "cpp");
@@ -95,37 +90,6 @@ TEST_CASE("wex::lexer")
     REQUIRE(lexer.scintilla_lexer().empty());
     REQUIRE(lexer.attribs().empty());
     REQUIRE(lexer.attrib(_("Edge line")) == -1);
-  }
-
-  SUBCASE("node_properties")
-  {
-    std::vector<wex::property> properties;
-    pugi::xml_document         doc;
-
-    REQUIRE(doc.load_string("<properties>"
-                            "  <property name = \"fold.comment\">2</property>"
-                            "</properties>"));
-    auto node = doc.document_element();
-
-    wex::node_properties(&node, properties);
-
-    REQUIRE(properties.size() == 1);
-  }
-
-  SUBCASE("node_styles")
-  {
-    std::vector<wex::style> styles;
-    pugi::xml_document      doc;
-
-    REQUIRE(doc.load_string("<styles>"
-                            "  <style no = \"2\">string</style>"
-                            "</styles>"));
-
-    auto node = doc.document_element();
-
-    wex::node_styles(&node, "cpp", styles);
-
-    REQUIRE(styles.size() == 1);
   }
 
   SUBCASE("several methods")
@@ -192,7 +156,7 @@ TEST_CASE("wex::lexer")
     REQUIRE(lexer.properties().back().value() == "one");
   }
 
-  SUBCASE("comment complete")
+  SUBCASE("comment_complete")
   {
     REQUIRE(lexer.set("pascal"));
     REQUIRE(lexer.display_lexer() == "pascal");

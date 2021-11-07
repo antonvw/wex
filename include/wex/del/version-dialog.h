@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      version-dialog.h
-// Purpose:   Declaration of class wex::version_info_dialog
+// Purpose:   Declaration of class wex::version_info_dialog and about_info
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -12,8 +12,10 @@
 
 namespace wex
 {
-class frame;
+/// Returns a stringstream with the external libraries used.
+const std::stringstream external_libraries();
 
+/// This class offers info for the version_info_dialog.
 class about_info : public wxAboutDialogInfo
 {
 public:

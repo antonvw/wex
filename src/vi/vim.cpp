@@ -23,7 +23,7 @@ std::string reverse(const std::string& text)
     std::begin(s),
     std::end(s),
     std::begin(s),
-    [](auto& c)
+    [](const auto& c)
     {
       return std::islower(c) ? std::toupper(c) : std::tolower(c);
     });

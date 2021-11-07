@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      data/cmdline.h
+// Name:      core/cmdline-data.h
 // Purpose:   Declaration of wex::data::cmdline class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020-2021 Anton van Wezenbeek

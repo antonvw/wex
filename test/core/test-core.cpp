@@ -23,20 +23,6 @@ TEST_CASE("wex::core")
     REQUIRE(wex::after("some space and more", 'm', false) == "ore");
   }
 
-  SUBCASE("auto_complete_filename")
-  {
-    REQUIRE(std::get<0>(wex::auto_complete_filename("te")));
-    REQUIRE(std::get<1>(wex::auto_complete_filename("te")) == "st");
-    REQUIRE(!std::get<0>(wex::auto_complete_filename("XX")));
-
-#ifdef __UNIX__
-    REQUIRE(std::get<0>(wex::auto_complete_filename("/usr/local/l")));
-
-    // we are in wex/test/data
-    REQUIRE(std::get<0>(wex::auto_complete_filename("../../src/v")));
-#endif
-  }
-
   SUBCASE("before")
   {
     REQUIRE(wex::before("nospace", ' ', false) == "nospace");

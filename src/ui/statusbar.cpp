@@ -5,10 +5,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wex/core/config.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/frame.h>
@@ -48,7 +44,7 @@ public:
       }
       else
       {
-        l.push_back(it.second);
+        l.emplace_back(it.second);
       }
     }
 
@@ -155,7 +151,7 @@ void wex::statusbar::handle(wxMouseEvent& event, const statusbar_pane& pane)
                                     .get(pane_styles().find(it.GetStyle()))))
             .show(it.is_shown());
 
-          v_p.push_back(p);
+          v_p.emplace_back(p);
         }
 
         setup(m_frame, v_p);

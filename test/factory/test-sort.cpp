@@ -5,6 +5,8 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <thread>
+
 #include <boost/algorithm/string.hpp>
 #include <wex/factory/sort.h>
 #include <wex/factory/stc.h>
@@ -67,7 +69,7 @@ TEST_CASE("wex::sort")
 
     s->SetText("aaaaa\nbbbbb\nccccc\n");
     s->SelectAll();
-    wxMilliSleep(10);
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
     REQUIRE(wex::sort().selection(s));
     REQUIRE(wex::sort(0, 3, 10).selection(s));
     REQUIRE(!wex::sort(0, 20, 10).selection(s));

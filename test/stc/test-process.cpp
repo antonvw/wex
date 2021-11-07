@@ -31,7 +31,7 @@ TEST_CASE("wex::process")
 
   SUBCASE("dialog")
   {
-    process.config_dialog(wex::data::window().button(wxAPPLY | wxCANCEL));
+    wex::process::config_dialog(wex::data::window().button(wxAPPLY | wxCANCEL));
   }
 
 #ifdef __UNIX__
@@ -48,7 +48,7 @@ TEST_CASE("wex::process")
     SUBCASE("invalid")
     {
       REQUIRE(process.async_system("xxxx"));
-      wxSleep(1);
+      process.async_sleep_for(std::chrono::milliseconds(2500));
       REQUIRE(!process.is_running());
     }
   }
@@ -64,7 +64,7 @@ TEST_CASE("wex::process")
       REQUIRE(!process.get_stdout().empty());
       REQUIRE(process.get_stderr().empty());
       REQUIRE(!process.is_running());
-      REQUIRE(!process.get_exe().empty());
+      REQUIRE(process.get_exe().empty());
       process.show_output();
     }
 

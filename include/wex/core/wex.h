@@ -7,7 +7,10 @@
 
 #pragma once
 
+#include <wex/core/app.h>
 #include <wex/core/chrono.h>
+#include <wex/core/cmdline-data.h>
+#include <wex/core/cmdline.h>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/file-status.h>
@@ -23,5 +26,4 @@
 #include <wex/core/tokenize.h>
 #include <wex/core/type-to-value.h>
 #include <wex/core/vcs-command.h>
-#include <wex/core/version-dialog.h>
 #include <wex/core/version.h>

@@ -3544,6 +3544,9 @@ Copyright: (c) 2020, Anton van Wezenbeek
   <lexer name="errorlist" edgemode="none">
     <styles>
       <style no="ctag"> fore:lightblue </style>
+      <style no="gcc"> fore:red,italic,eol </style>
+      <style no="ms"> fore:red,italic,eol </style>
+      <style no="cmd"> fore:red,italic,eol </style>
     </styles>
   </lexer>
   <lexer name="escript"/>

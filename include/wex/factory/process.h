@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <chrono>
 #include <memory>
 #include <string>
 
@@ -47,8 +48,11 @@ public:
 
   /// Other methods
 
-  /// Returns last or current exe.
-  const auto& get_exe() const { return m_exe; }
+  /// Sleeps for some milliseconds time.
+  void async_sleep_for(const std::chrono::milliseconds& ms);
+
+  /// Returns last or current async exe.
+  const std::string get_exe() const;
 
   /// Returns the stderr.
   const auto& get_stderr() const { return m_stderr; }
@@ -77,9 +81,6 @@ public:
   int system(
     const std::string& exe,
     const std::string& start_dir = std::string());
-
-protected:
-  std::string m_exe;
 
 private:
   std::string m_stderr, m_stdout;

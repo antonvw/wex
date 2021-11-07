@@ -18,7 +18,7 @@
 namespace pugi
 {
 class xml_node;
-};
+}; // namespace pugi
 
 namespace wex
 {
@@ -26,17 +26,6 @@ namespace factory
 {
 class stc;
 };
-
-/// Parses properties node.
-void node_properties(
-  const pugi::xml_node*  node,
-  std::vector<property>& properties);
-
-/// Parses style node.
-void node_styles(
-  const pugi::xml_node* node,
-  const std::string&    lexer,
-  std::vector<style>&   styles);
 
 /// This class defines a lexer using file extensions,
 /// syntax colouring and comment definitions.

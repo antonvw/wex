@@ -5,25 +5,21 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/common/app.h>
+#include <wex/core/app.h>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/core/version.h>
-#include <wex/factory/lexers.h>
-#include <wex/factory/printing.h>
 #include <wx/clipbrd.h>
 #include <wx/stdpaths.h>
 
 #include <filesystem>
+#include <iostream>
 
 namespace fs = std::filesystem;
 
 int wex::app::OnExit()
 {
-  delete lexers::set(nullptr);
-  delete printing::set(nullptr);
-
   try
   {
     config::on_exit();

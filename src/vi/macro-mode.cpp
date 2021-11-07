@@ -5,11 +5,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include "macro-fsm.h"
 #include <boost/algorithm/string.hpp>
 #include <wex/core/core.h>
 #include <wex/core/regex.h>
@@ -19,6 +14,10 @@
 #include <wex/vi/ex.h>
 #include <wex/vi/macro-mode.h>
 #include <wex/vi/macros.h>
+#include <wx/app.h>
+#include <wx/choicdlg.h>
+
+#include "macro-fsm.h"
 
 bool show_dialog(
   wxWindow*          parent,

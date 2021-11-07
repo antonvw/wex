@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
-#include <wex/core/version-dialog.h>
+#include <wex/del/version-dialog.h>
 
 TEST_CASE("wex::about_info")
 {

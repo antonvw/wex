@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
-#include <wex/core/config.h>
 #include <wex/core/log.h>
 #include <wex/stc/process.h>
 #include <wex/stc/shell.h>
@@ -24,7 +23,6 @@ std::string wex::process::m_working_dir_key = _("Process folder");
 wex::process::process()
   : m_frame(dynamic_cast<frame*>(wxTheApp->GetTopWindow()))
 {
-  m_exe = config(_("Process")).get_first_of();
 }
 
 wex::process::~process() {}
@@ -50,10 +48,11 @@ wex::process& wex::process::operator=(const process& p)
 }
 
 bool wex::process::async_system(
-  const std::string& exe,
+  const std::string& exe_in,
   const std::string& start_dir)
 {
   auto cwd(start_dir);
+  auto exe(exe_in);
 
   if (exe.empty())
   {
@@ -65,13 +64,11 @@ bool wex::process::async_system(
       }
     }
 
-    m_exe = config(_("Process")).get_first_of();
-    cwd   = config(m_working_dir_key).get_first_of();
+    cwd = config(m_working_dir_key).get_first_of();
+    exe = config(_("Process")).get_first_of();
   }
   else
   {
-    m_exe = exe;
-
     if (auto* stc = dynamic_cast<wex::stc*>(m_frame->get_stc()); stc != nullptr)
     {
       if (exe.find("%LINES") != std::string::npos)
@@ -79,7 +76,7 @@ bool wex::process::async_system(
         if (!stc->is_visual())
         {
           boost::algorithm::replace_all(
-            m_exe,
+            exe,
             "%LINES",
             std::to_string(std::max(
               (size_t)1,
@@ -92,7 +89,7 @@ bool wex::process::async_system(
         else if (const std::string sel(stc->GetSelectedText()); !sel.empty())
         {
           boost::algorithm::replace_all(
-            m_exe,
+            exe,
             "%LINES",
             std::to_string(
               stc->LineFromPosition(stc->GetSelectionStart()) + 1) +
@@ -103,7 +100,7 @@ bool wex::process::async_system(
         else
         {
           boost::algorithm::replace_all(
-            m_exe,
+            exe,
             "%LINES",
             std::to_string(stc->get_current_line() + 1) + "," +
               std::to_string(stc->get_current_line() + 1));
@@ -120,9 +117,11 @@ bool wex::process::async_system(
   }
 
   m_shell->set_process(this);
+
   path::current(path(cwd));
 
   if (
+    m_frame->debug_entry() != nullptr &&
     !m_frame->debug_entry()->name().empty() &&
     m_frame->debug_entry()->name() == before(get_exe(), ' '))
   {
@@ -135,7 +134,7 @@ bool wex::process::async_system(
     m_frame->show_process(true);
   }
 
-  return factory::process::async_system(m_exe, cwd);
+  return factory::process::async_system(exe, cwd);
 }
 
 int wex::process::config_dialog(const data::window& par)

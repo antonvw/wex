@@ -5,13 +5,9 @@
 // Copyright: (c) 2015-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <boost/algorithm/string.hpp>
-#include <wex/common/cmdline.h>
 #include <wex/common/util.h>
+#include <wex/core/cmdline.h>
 #include <wex/core/core.h>
 #include <wex/core/file.h>
 #include <wex/core/log.h>
@@ -27,6 +23,8 @@
 #include <wex/vi/ex-stream.h>
 #include <wex/vi/ex.h>
 #include <wex/vi/macros.h>
+#include <wx/app.h>
+#include <wx/msgdlg.h>
 
 #include "global-env.h"
 

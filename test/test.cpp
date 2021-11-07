@@ -7,11 +7,10 @@
 
 #define DOCTEST_CONFIG_IMPLEMENT
 
-#include <wex/common/cmdline.h>
+#include <wex/core/cmdline.h>
 #include <wex/core/config.h>
 #include <wex/core/log.h>
-#include <wex/factory/lexers.h>
-#include <wex/ui/frame.h>
+#include <wx/frame.h>
 #include <wx/timer.h>
 
 #include "test.h"
@@ -44,8 +43,6 @@ bool wex::test::app::OnInit()
     log("no such dir") << m_path;
     return false;
   }
-
-  lexers::get();
 
   config(_("stc.vi mode")).set(true);
   config(_("stc.Auto complete")).set(true);

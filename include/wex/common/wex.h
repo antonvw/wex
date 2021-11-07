@@ -7,8 +7,6 @@
 
 #pragma once
 
-#include <wex/common/app.h>
-#include <wex/common/cmdline.h>
 #include <wex/common/dir.h>
 #include <wex/common/path-match.h>
 #include <wex/common/statistics.h>

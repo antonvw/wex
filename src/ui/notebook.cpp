@@ -5,13 +5,10 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wex/ui/item-dialog.h>
 #include <wex/ui/item-vector.h>
 #include <wex/ui/notebook.h>
+#include <wx/settings.h>
 
 #define PAGE_DATA                                                      \
   data.page(), (data.caption().empty() ? data.key() : data.caption()), \

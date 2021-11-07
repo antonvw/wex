@@ -73,8 +73,8 @@ public:
   auto* get_frame() { return m_frame; }
 
 private:
-  static std::string   m_working_dir_key;
   static inline shell* m_shell = nullptr;
+  static std::string   m_working_dir_key;
 
   frame* m_frame;
 };

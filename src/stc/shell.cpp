@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
+#include <wex/common/util.h>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
@@ -653,6 +654,8 @@ void wex::shell::set_process(factory::process* process)
     enable(true);
     process->set_handler_out(this);
     SetName(process->get_exe());
+      
+    get_lexer().set("errorlist");
   }
 }
 

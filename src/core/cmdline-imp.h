@@ -8,7 +8,7 @@
 #pragma once
 
 #include <boost/program_options.hpp>
-#include <wex/common/cmdline.h>
+#include <wex/core/cmdline.h>
 #include <wex/core/config.h>
 
 namespace po = boost::program_options;

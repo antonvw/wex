@@ -132,7 +132,7 @@ static void colourise(
 
     if (keyword != "EX")
     {
-      special_keywords.push_back(keyword);
+      special_keywords.emplace_back(keyword);
     }
     else
     {

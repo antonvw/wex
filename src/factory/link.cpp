@@ -31,7 +31,7 @@ public:
   {
     if (p.dir_exists() && !find(p))
     {
-      m_paths.push_back(p.string());
+      m_paths.emplace_back(p.string());
       return true;
     }
 

@@ -8,7 +8,7 @@
 #pragma once
 
 #include <doctest.h>
-#include <wex/common/app.h>
+#include <wex/core/app.h>
 #include <wex/core/path.h>
 
 namespace wex

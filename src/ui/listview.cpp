@@ -5,10 +5,6 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
 #include <wex/core/chrono.h>
@@ -35,6 +31,7 @@
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/imaglist.h>
 #include <wx/numdlg.h> // for wxGetNumberFromUser
+#include <wx/settings.h>
 
 #include <cctype>
 
@@ -556,6 +553,11 @@ void wex::listview::build_popup_menu(wex::menu& menu)
 
 void wex::listview::clear()
 {
+  if (GetItemCount() == 0)
+  {
+    return;
+  }
+
   DeleteAllItems();
 
   sort_column_reset();
@@ -1203,7 +1205,7 @@ const std::list<std::string> wex::listview::save() const
 
   for (auto i = 0; i < GetItemCount(); i++)
   {
-    l.push_back(item_to_text(i));
+    l.emplace_back(item_to_text(i));
   }
 
   return l;

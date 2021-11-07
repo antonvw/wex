@@ -5,13 +5,9 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wex/common/tostring.h>
-#include <wex/core/log.h>
 #include <wex/common/util.h>
+#include <wex/core/log.h>
 #include <wex/factory/frame.h>
 #include <wex/stc/entry-dialog.h>
 #include <wex/stc/open-files-dialog.h>

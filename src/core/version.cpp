@@ -5,13 +5,8 @@
 // Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <boost/version.hpp>
-#include <pugixml.hpp>
 #include <wex/core/version.h>
 #include <wx/translation.h>
-#include <wx/utils.h>
-
-#include <ctags/main/ctags.h>
 
 #include <iomanip>
 #include <regex>
@@ -53,35 +48,6 @@ const std::string wex::version_info::copyright() const
 const std::string wex::version_info::description() const
 {
   return m_version.GetDescription();
-}
-
-const std::stringstream wex::version_info::external_libraries() const
-{
-  std::stringstream ss;
-
-  ss << wex::get_version_info().description() << ": " << get()
-     << "\n"
-
-     // boost
-     << "Boost library: " << BOOST_VERSION / 100000 << "." // major version
-     << BOOST_VERSION / 100 % 1000 << "."                  // minor version
-     << BOOST_VERSION % 100                                // patch level
-     << "\n"
-
-     // pugi
-     << "pugixml library: " << PUGIXML_VERSION / 1000 << "." // major version
-     << PUGIXML_VERSION % 1000 / 10 << "."                   // minor version
-     << PUGIXML_VERSION % 10                                 // patch level
-     << "\n"
-
-     // ctags
-     << PROGRAM_NAME << ": " << PROGRAM_VERSION
-     << "\n"
-
-     // wxWidgets
-     << wxGetLibraryVersionInfo().GetDescription().c_str();
-
-  return ss;
 }
 
 const std::string wex::version_info::get() const
