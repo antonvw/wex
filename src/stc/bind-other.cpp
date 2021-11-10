@@ -18,6 +18,7 @@
 #include <wex/ui/stc-bind.h>
 #include <wx/fdrepdlg.h> // for wxFindDialogEvent
 
+#include <chrono>
 #include <vector>
 
 namespace wex
@@ -123,7 +124,35 @@ void wex::stc::bind_other()
     [=, this](wxKeyEvent& event)
     {
       event.Skip();
+
       check_brace();
+
+      static bool first_click = false;
+
+      // Check whether to generate shift double.
+      if (event.GetKeyCode() == WXK_SHIFT)
+      {
+        static std::chrono::time_point<std::chrono::system_clock> start;
+
+        if (!first_click)
+        {
+          start       = std::chrono::system_clock::now();
+          first_click = true;
+        }
+        else
+        {
+          const auto milli =
+            std::chrono::duration_cast<std::chrono::milliseconds>(
+              std::chrono::system_clock::now() - start);
+
+          if (milli.count() < 500)
+          {
+            m_frame->shift_double_click();
+          }
+
+          first_click = false;
+        }
+      }
     });
 
   Bind(

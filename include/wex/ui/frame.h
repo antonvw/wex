@@ -158,6 +158,9 @@ public:
   /// Saves the current page, to restore later on.
   virtual bool save_current_page(const std::string& key) { return false; }
 
+  /// Act on a double shift click.
+  virtual void shift_double_click() { ; }
+
   /// Shows or hides the ex bar.
   /// Default it hides the ex bar and
   /// sets focus back to stc component associated with current ex.
