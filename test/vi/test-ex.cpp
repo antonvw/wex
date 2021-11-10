@@ -6,9 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
-#include <wex/core/path.h>
 #include <wex/vi/ex.h>
-#include <wex/vi/macro-mode.h>
 #include <wex/vi/macros.h>
 
 #include "test.h"

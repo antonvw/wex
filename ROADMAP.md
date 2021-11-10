@@ -1,6 +1,4 @@
 # roadmap
-- rect replace char, delete char
-- list click and detail
 - use new wxWidgets functionality, use wxUILocale, improve wex::app
 - linux crash when startup outside git repo
   - and print setup asserts

@@ -5,11 +5,25 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <regex>
+
 #include <wex/core/log.h>
 #include <wex/factory/stc.h>
 #include <wex/vi/ex.h>
 #include <wex/vi/macros.h>
 #include <wx/defs.h>
+
+#include "defs.h"
+
+const std::string wex::esc()
+{
+  return std::string("\x1b");
+}
+
+const std::string wex::k_s(wxKeyCode key)
+{
+  return std::string(1, key);
+}
 
 bool wex::marker_and_register_expansion(const ex* ex, std::string& text)
 {
@@ -127,4 +141,9 @@ std::string wex::write_lines(
   }
 
   return text;
+}
+
+bool wex::one_letter_after(const std::string& text, const std::string& letter)
+{
+  return std::regex_match(letter, std::regex("^" + text + "[a-zA-Z]$"));
 }

@@ -8,7 +8,6 @@
 #include <boost/tokenizer.hpp>
 #include <wex/core/config.h>
 #include <wex/core/path.h>
-#include <wex/core/regex.h>
 #include <wex/factory/blame.h>
 #include <wex/factory/indicator.h>
 #include <wex/factory/lexers.h>

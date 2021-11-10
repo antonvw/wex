@@ -40,7 +40,7 @@ void wex::factory::process_imp::async_system(
 
   bp::async_system(
     *m_io.get(),
-    [&](boost::system::error_code error, int i)
+    [this, exe, start_dir, p](boost::system::error_code error, int i)
     {
       m_is_running.store(false);
 
@@ -58,7 +58,7 @@ void wex::factory::process_imp::async_system(
     bp::std_in<m_os, bp::std_err> m_es,
     m_group);
 
-  log::debug("async_system") << exe << m_debug.load();
+  log::debug("async_system") << exe << "debug:" << m_debug.load();
 
   m_exe = exe;
   m_is_running.store(true);

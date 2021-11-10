@@ -307,11 +307,6 @@ bool wex::matches_one_of(
   return false;
 }
 
-bool wex::one_letter_after(const std::string& text, const std::string& letter)
-{
-  return std::regex_match(letter, std::regex("^" + text + "[a-zA-Z]$"));
-}
-
 const std::string wex::quoted(const std::string& text)
 {
   return "'" + text + "'";
