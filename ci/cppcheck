@@ -1,7 +1,7 @@
 #!/bin/bash
 # This script is used to run cppcheck from root repo
 
-# shellcheck disable=SC1091
+# shellcheck disable=SC1090
 . ~/.bash_profile
 
 cppcheck --version

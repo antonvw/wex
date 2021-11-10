@@ -2,7 +2,7 @@
 # This script is used to run cpplint from root repo
 # e.g. ci/cpplint.bash src/*/*.cpp
 
-# shellcheck disable=SC1091
+# shellcheck disable=SC1090
 . ~/.bash_profile
 
 cpplint --quiet --exclude=src/lexers --filter=\
