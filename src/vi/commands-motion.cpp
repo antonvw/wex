@@ -26,6 +26,7 @@ constexpr int c_strcmp(char const* lhs, char const* rhs)
          (lhs[0] != rhs[0])                     ? (lhs[0] - rhs[0]) :
                                                   c_strcmp(lhs + 1, rhs + 1);
 }
+
 } // namespace wex
 
 #define MOTION(SCOPE, DIRECTION, COND, WRAP)                                \
@@ -149,59 +150,7 @@ wex::vi::commands_t wex::vi::commands_motion()
     {"fFtT,;",
      [&](const std::string& command)
      {
-       if (command.empty())
-         return (size_t)0;
-       char c; // char to find
-       if (command.size() == 1)
-       {
-         if (command[0] == ';' || command[0] == ',')
-         {
-           if (m_last_find_char_command.empty())
-             return (size_t)0;
-           c = m_last_find_char_command.back();
-         }
-         else
-         {
-           return (size_t)0;
-         }
-       }
-       else
-       {
-         c = command[1];
-       }
-       char d; // char specifying direction
-       switch (command[0])
-       {
-         case ';':
-           d = m_last_find_char_command.front();
-           break;
-         case ',':
-           d = m_last_find_char_command.front();
-           if (islower(d))
-             d = toupper(d);
-           else
-             d = tolower(d);
-           break;
-         default:
-           if (command.size() > 1)
-             d = command.front();
-           else
-             d = m_last_find_char_command.front();
-       }
-       REPEAT(if (!get_stc()->find(std::string(1, c), 0, islower(d) > 0))
-              {
-                m_command.clear();
-                return (size_t)0;
-              });
-       if (command[0] != ',' && command[0] != ';')
-       {
-         m_last_find_char_command = command;
-       }
-       if (tolower(d) == 't')
-       {
-         get_stc()->CharLeft();
-       }
-       return command.size();
+       return find_char(command);
      }},
     {"nN",
      [&](const std::string& command)
@@ -257,50 +206,7 @@ wex::vi::commands_t wex::vi::commands_motion()
     {"/?",
      [&](const std::string& command)
      {
-       m_search_forward = command.front() == '/';
-
-       if (command.size() > 1)
-       {
-         if (command[1] == WXK_CONTROL_R)
-         {
-           if (command.size() < 3)
-           {
-             return (size_t)0;
-           }
-
-           if (!get_stc()->find(
-                 get_macros().get_register(command[2]),
-                 search_flags(),
-                 m_search_forward))
-             return (size_t)0;
-           find_replace_data::get()->set_find_string(
-             get_macros().get_register(command[2]));
-           return command.size();
-         }
-
-         // This is a previous entered command.
-         // The trim is to enable find after -E option in
-         // syncped.
-         const auto text(
-           command.back() != '\n' ?
-             command.substr(1) :
-             boost::algorithm::trim_copy(command.substr(1)));
-
-         if (!get_stc()->find(text, search_flags(), m_search_forward))
-           return (size_t)0;
-         if (get_stc()->get_margin_text_click() == -1)
-           find_replace_data::get()->set_find_string(text);
-         return command.size();
-       }
-       else
-       {
-         return get_stc()->is_visual() &&
-                    frame()->show_ex_command(
-                      get_stc(),
-                      command + (m_mode.is_visual() ? "'<,'>" : "")) ?
-                  command.size() :
-                  (size_t)0;
-       }
+       return find_command(command);
      }},
     {"\'",
      [&](const std::string& command)
@@ -458,6 +364,123 @@ wex::vi::commands_t wex::vi::commands_motion()
      {
        MOTION(Line, ScrollUp, false, false);
      }}};
+}
+
+size_t wex::vi::find_char(const std::string& command)
+{
+  if (command.empty())
+  {
+    return (size_t)0;
+  }
+
+  char c; // char to find
+
+  if (command.size() == 1)
+  {
+    if (command[0] == ';' || command[0] == ',')
+    {
+      if (m_last_find_char_command.empty())
+        return (size_t)0;
+      c = m_last_find_char_command.back();
+    }
+    else
+    {
+      return (size_t)0;
+    }
+  }
+  else
+  {
+    c = command[1];
+  }
+
+  char d; // char specifying direction
+
+  switch (command[0])
+  {
+    case ';':
+      d = m_last_find_char_command.front();
+      break;
+    case ',':
+      d = m_last_find_char_command.front();
+      if (islower(d))
+        d = toupper(d);
+      else
+        d = tolower(d);
+      break;
+    default:
+      if (command.size() > 1)
+        d = command.front();
+      else
+        d = m_last_find_char_command.front();
+  }
+
+  REPEAT(if (!get_stc()->find(std::string(1, c), 0, islower(d) > 0))
+         {
+           m_command.clear();
+           return (size_t)0;
+         });
+
+  if (command[0] != ',' && command[0] != ';')
+  {
+    m_last_find_char_command = command;
+  }
+
+  if (tolower(d) == 't')
+  {
+    get_stc()->CharLeft();
+  }
+
+  return command.size();
+}
+
+size_t wex::vi::find_command(const std::string& command)
+{
+  m_search_forward = command.front() == '/';
+
+  if (command.size() > 1)
+  {
+    if (command[1] == WXK_CONTROL_R)
+    {
+      if (command.size() < 3)
+      {
+        return (size_t)0;
+      }
+
+      if (!get_stc()->find(
+            get_macros().get_register(command[2]),
+            search_flags(),
+            m_search_forward))
+        return (size_t)0;
+
+      find_replace_data::get()->set_find_string(
+        get_macros().get_register(command[2]));
+
+      return command.size();
+    }
+
+    // This is a previous entered command.
+    // The trim is to enable find after -E option in
+    // syncped.
+    const auto text(
+      command.back() != '\n' ? command.substr(1) :
+                               boost::algorithm::trim_copy(command.substr(1)));
+
+    if (!get_stc()->find(text, search_flags(), m_search_forward))
+      return (size_t)0;
+    if (get_stc()->get_margin_text_click() == -1)
+      find_replace_data::get()->set_find_string(text);
+
+    return command.size();
+  }
+  else
+  {
+    return get_stc()->is_visual() &&
+               frame()->show_ex_command(
+                 get_stc(),
+                 command + (m_mode.is_visual() ? "'<,'>" : "")) ?
+             command.size() :
+             (size_t)0;
+  }
 }
 
 bool wex::vi::motion_command(motion_t type, std::string& command)

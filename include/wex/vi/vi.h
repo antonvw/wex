@@ -84,13 +84,17 @@ private:
   char       convert_key_event(const wxKeyEvent& event) const;
   bool       delete_range(int start, int end);
   void       filter_count(std::string& command);
+  size_t     find_char(const std::string& command);
+  size_t     find_command(const std::string& command);
   motion_t   get_motion(const std::string& command) const;
+  size_t     inc_or_dec(const std::string& command);
   bool       insert_mode(const std::string& text);
   void       insert_mode_normal(const std::string& text);
   bool       motion_command(motion_t type, std::string& command);
   bool       other_command(std::string& command);
   bool       parse_command(std::string& command);
   bool       put(bool after);
+  size_t     reverse_case(const std::string& command);
   void       set_last_command(const std::string& command);
   void       yank_range(int start);
 

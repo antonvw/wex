@@ -23,6 +23,52 @@
 
 namespace wex
 {
+size_t fold(wex::factory::stc* stc, const std::string command)
+{
+  if (command.size() <= 1)
+    return (size_t)0;
+
+  const auto level = stc->GetFoldLevel(stc->get_current_line());
+
+  const auto line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?
+                              stc->get_current_line() :
+                              stc->GetFoldParent(stc->get_current_line());
+
+  switch (command[1])
+  {
+    case 'c':
+    case 'o':
+      if (
+        stc->GetFoldExpanded(line_to_fold) &&
+        boost::algorithm::trim_copy(command) == "zc")
+        stc->ToggleFold(line_to_fold);
+      else if (
+        !stc->GetFoldExpanded(line_to_fold) &&
+        boost::algorithm::trim_copy(command) == "zo")
+        stc->ToggleFold(line_to_fold);
+      break;
+    case 'f':
+      stc->get_lexer().set_property("fold", "1");
+      stc->get_lexer().apply();
+      stc->fold(true);
+      break;
+    case 'E':
+      stc->get_lexer().set_property("fold", "0");
+      stc->get_lexer().apply();
+      stc->fold(false);
+      break;
+    case 'M':
+      stc->fold(true);
+      break;
+    case 'R':
+      for (int i = 0; i < stc->get_line_count(); i++)
+        stc->EnsureVisible(i);
+      break;
+  }
+
+  return command.size();
+}
+
 bool replace_char(factory::stc* stc, char c, int count)
 {
   if (stc->is_hexmode())
@@ -63,6 +109,57 @@ bool replace_char(factory::stc* stc, char c, int count)
   }
 
   return true;
+}
+
+size_t shift(vi* vi, int count, const std::string& command)
+{
+  switch (vi->mode().get())
+  {
+    case vi_mode::state_t::COMMAND:
+      command == ">" ? addressrange(vi, count).shift_right() :
+                       addressrange(vi, count).shift_left();
+      break;
+    case vi_mode::state_t::VISUAL:
+    case vi_mode::state_t::VISUAL_LINE:
+    case vi_mode::state_t::VISUAL_BLOCK:
+      command == ">" ? addressrange(vi, "'<,'>").shift_right() :
+                       addressrange(vi, "'<,'>").shift_left();
+      break;
+    default:
+      break;
+  }
+
+  return 1;
+}
+
+size_t word_action(vi* vi, const std::string& command)
+{
+  const auto start =
+    vi->get_stc()->WordStartPosition(vi->get_stc()->GetCurrentPos(), true);
+  const auto end =
+    vi->get_stc()->WordEndPosition(vi->get_stc()->GetCurrentPos(), true);
+
+  if (const std::string word(
+        vi->get_stc()->GetSelectedText().empty() ?
+          vi->get_stc()->GetTextRange(start, end).ToStdString() :
+          vi->get_stc()->GetSelectedText().ToStdString());
+      !word.empty())
+  {
+    if (command == "U")
+    {
+      browser_search(word);
+    }
+    else
+    {
+      find_replace_data::get()->set_find_string(word);
+      vi->get_stc()->find(
+        find_replace_data::get()->get_find_string(),
+        vi->search_flags() | wxSTC_FIND_WHOLEWORD,
+        command == "*");
+    }
+  }
+
+  return 1;
 }
 } // namespace wex
 
@@ -248,47 +345,7 @@ wex::vi::commands_t wex::vi::commands_other()
     {"z",
      [&](const std::string& command)
      {
-       if (command.size() <= 1)
-         return (size_t)0;
-       const auto level =
-         get_stc()->GetFoldLevel(get_stc()->get_current_line());
-       const auto line_to_fold =
-         (level & wxSTC_FOLDLEVELHEADERFLAG) ?
-           get_stc()->get_current_line() :
-           get_stc()->GetFoldParent(get_stc()->get_current_line());
-
-       switch (command[1])
-       {
-         case 'c':
-         case 'o':
-           if (
-             get_stc()->GetFoldExpanded(line_to_fold) &&
-             boost::algorithm::trim_copy(command) == "zc")
-             get_stc()->ToggleFold(line_to_fold);
-           else if (
-             !get_stc()->GetFoldExpanded(line_to_fold) &&
-             boost::algorithm::trim_copy(command) == "zo")
-             get_stc()->ToggleFold(line_to_fold);
-           break;
-         case 'f':
-           get_stc()->get_lexer().set_property("fold", "1");
-           get_stc()->get_lexer().apply();
-           get_stc()->fold(true);
-           break;
-         case 'E':
-           get_stc()->get_lexer().set_property("fold", "0");
-           get_stc()->get_lexer().apply();
-           get_stc()->fold(false);
-           break;
-         case 'M':
-           get_stc()->fold(true);
-           break;
-         case 'R':
-           for (int i = 0; i < get_stc()->get_line_count(); i++)
-             get_stc()->EnsureVisible(i);
-           break;
-       };
-       return command.size();
+       return fold(get_stc(), command);
      }},
     {".",
      [&](const std::string& command)
@@ -305,72 +362,17 @@ wex::vi::commands_t wex::vi::commands_other()
     {"~",
      [&](const std::string& command)
      {
-       if (
-         get_stc()->GetLength() == 0 || get_stc()->GetReadOnly() ||
-         get_stc()->is_hexmode())
-         return 0;
-       REPEAT_WITH_UNDO(
-         if (get_stc()->GetCurrentPos() == get_stc()->GetLength()) return 0;
-         auto text(get_stc()->GetTextRange(
-           get_stc()->GetCurrentPos(),
-           get_stc()->GetCurrentPos() + 1));
-         if (text.empty()) return 0;
-         islower(text[0]) ? text.UpperCase() : text.LowerCase();
-         get_stc()->wxStyledTextCtrl::Replace(
-           get_stc()->GetCurrentPos(),
-           get_stc()->GetCurrentPos() + 1,
-           text);
-         get_stc()->CharRight());
-       return 1;
+       return reverse_case(command);
      }},
     {"><",
      [&](const std::string& command)
      {
-       switch (m_mode.get())
-       {
-         case vi_mode::state_t::COMMAND:
-           command == ">" ? addressrange(this, m_count).shift_right() :
-                            addressrange(this, m_count).shift_left();
-           break;
-         case vi_mode::state_t::VISUAL:
-         case vi_mode::state_t::VISUAL_LINE:
-         case vi_mode::state_t::VISUAL_BLOCK:
-           command == ">" ? addressrange(this, "'<,'>").shift_right() :
-                            addressrange(this, "'<,'>").shift_left();
-           break;
-         default:
-           break;
-       }
-       return 1;
+       return shift(this, m_count, command);
      }},
     {"*#U",
      [&](const std::string& command)
      {
-       const auto start =
-         get_stc()->WordStartPosition(get_stc()->GetCurrentPos(), true);
-       const auto end =
-         get_stc()->WordEndPosition(get_stc()->GetCurrentPos(), true);
-
-       if (const std::string word(
-             get_stc()->GetSelectedText().empty() ?
-               get_stc()->GetTextRange(start, end).ToStdString() :
-               get_stc()->GetSelectedText().ToStdString());
-           !word.empty())
-       {
-         if (command == "U")
-         {
-           browser_search(word);
-         }
-         else
-         {
-           find_replace_data::get()->set_find_string(word);
-           get_stc()->find(
-             find_replace_data::get()->get_find_string(),
-             search_flags() | wxSTC_FIND_WHOLEWORD,
-             command == "*");
-         }
-       }
-       return 1;
+       return word_action(this, command);
      }},
     {"\t",
      [&](const std::string& command)
@@ -393,32 +395,7 @@ wex::vi::commands_t wex::vi::commands_other()
     {k_s(WXK_CONTROL_J) + k_s(WXK_CONTROL_L),
      [&](const std::string& command)
      {
-       /* NOLINTNEXTLINE */
-       REPEAT_WITH_UNDO(
-         if (get_stc()->is_hexmode()) return 1; try
-         {
-           const auto start =
-             get_stc()->WordStartPosition(get_stc()->GetCurrentPos(), true);
-           const auto sign = (get_stc()->GetCharAt(start) == '-' ? 1 : 0);
-           const auto end  = get_stc()->WordEndPosition(
-             get_stc()->GetCurrentPos() + sign,
-             true);
-           const std::string word(
-             get_stc()->GetTextRange(start, end).ToStdString());
-           auto       number = std::stoi(word, nullptr, 0);
-           const auto next =
-             (command == k_s(WXK_CONTROL_J) ? ++number : --number);
-           std::ostringstream format;
-           format.fill(' ');
-           format.width(end - start);
-           if (word.substr(0, 2) == "0x")
-             format << std::hex;
-           else if (word[0] == '0')
-             format << std::oct;
-           format << std::showbase << next;
-           get_stc()->wxStyledTextCtrl::Replace(start, end, format.str());
-         } catch (...){})
-       return 1;
+       return inc_or_dec(command);
      }},
     {k_s(WXK_CONTROL_R),
      [&](const std::string& command)
@@ -444,6 +421,39 @@ wex::vi::commands_t wex::vi::commands_other()
          get_stc()->GetCurrentPos() + m_count);
        return 1;
      }}};
+}
+
+size_t wex::vi::inc_or_dec(const std::string& command)
+{
+  /* NOLINTNEXTLINE */
+  REPEAT_WITH_UNDO(
+    if (get_stc()->is_hexmode()) return 1;
+
+    try
+    {
+      const auto start =
+        get_stc()->WordStartPosition(get_stc()->GetCurrentPos(), true);
+      const auto sign = (get_stc()->GetCharAt(start) == '-' ? 1 : 0);
+      const auto end =
+        get_stc()->WordEndPosition(get_stc()->GetCurrentPos() + sign, true);
+      const std::string word(get_stc()->GetTextRange(start, end).ToStdString());
+      auto              number = std::stoi(word, nullptr, 0);
+      const auto next = (command == k_s(WXK_CONTROL_J) ? ++number : --number);
+
+      std::ostringstream format;
+      format.fill(' ');
+      format.width(end - start);
+
+      if (word.substr(0, 2) == "0x")
+        format << std::hex;
+      else if (word[0] == '0')
+        format << std::oct;
+      format << std::showbase << next;
+
+      get_stc()->wxStyledTextCtrl::Replace(start, end, format.str());
+    } catch (...){})
+
+  return 1;
 }
 
 bool wex::vi::other_command(std::string& command)
@@ -485,4 +495,29 @@ bool wex::vi::other_command(std::string& command)
   }
 
   return false;
+}
+
+size_t wex::vi::reverse_case(const std::string& command)
+{
+  if (
+    get_stc()->GetLength() == 0 || get_stc()->GetReadOnly() ||
+    get_stc()->is_hexmode())
+  {
+    return 0;
+  }
+
+  REPEAT_WITH_UNDO(
+    if (get_stc()->GetCurrentPos() == get_stc()->GetLength()) return 0;
+    auto text(get_stc()->GetTextRange(
+      get_stc()->GetCurrentPos(),
+      get_stc()->GetCurrentPos() + 1));
+    if (text.empty()) return 0;
+    islower(text[0]) ? text.UpperCase() : text.LowerCase();
+    get_stc()->wxStyledTextCtrl::Replace(
+      get_stc()->GetCurrentPos(),
+      get_stc()->GetCurrentPos() + 1,
+      text);
+    get_stc()->CharRight());
+
+  return 1;
 }
