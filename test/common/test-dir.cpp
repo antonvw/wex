@@ -5,6 +5,8 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <thread>
+
 #include <wex/common/dir.h>
 #include <wex/common/tool.h>
 #include <wex/factory/defs.h>
@@ -86,7 +88,8 @@ TEST_CASE("wex::dir")
       REQUIRE(dir.find_files(wex::tool(wex::ID_TOOL_REPORT_FIND)));
 
       wex::interruptible::stop();
-      wxYield();
+
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
   }
 

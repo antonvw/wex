@@ -99,14 +99,31 @@ TEST_CASE("wex::vi")
 
   SUBCASE("change")
   {
-    change_prep("cw", vi, stc);
-    REQUIRE(stc->GetLineText(0) == "zzzsecond third");
+    SUBCASE("normal")
+    {
+      change_prep("cw", vi, stc);
+      REQUIRE(stc->GetLineText(0) == "zzzsecond third");
 
-    change_prep("ce", vi, stc);
-    REQUIRE(stc->GetLineText(0) == "zzz second third");
+      change_prep("ce", vi, stc);
+      REQUIRE(stc->GetLineText(0) == "zzz second third");
 
-    change_prep("2ce", vi, stc);
-    REQUIRE(stc->GetLineText(0) == "zzz third");
+      change_prep("2ce", vi, stc);
+      REQUIRE(stc->GetLineText(0) == "zzz third");
+    }
+
+    SUBCASE("block")
+    {
+      stc->set_text("xxxxxxxxxx second third\nxxxxxxxxxx\naaaaaaaaaa\n");
+
+      REQUIRE(vi->command("K"));
+      REQUIRE(vi->mode().get() == wex::vi_mode::state_t::VISUAL_BLOCK);
+      REQUIRE(vi->command("j"));
+      REQUIRE(vi->command("j"));
+      REQUIRE(vi->command(" "));
+      REQUIRE(vi->command("ce"));
+      REQUIRE(vi->command("uu"));
+      REQUIRE(stc->get_text() == "uu second third\nuu\nuu\n");
+    }
   }
 
   SUBCASE("find")

@@ -3415,7 +3415,7 @@ Copyright: (c) 2020, Anton van Wezenbeek
   <lexer name="avs"/>
   <lexer display="awk" name="bash" extensions="*.awk">
     <keywords set-0="csh">
-      BEGIN END FS function length printf sprintf substr
+      BEGIN END FS RS function length printf sprintf substr
     </keywords>
   </lexer>
   <lexer name="baan"/>

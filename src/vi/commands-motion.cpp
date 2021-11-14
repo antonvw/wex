@@ -57,6 +57,7 @@ constexpr int c_strcmp(char const* lhs, char const* rhs)
             get_stc()->SCOPE##DIRECTION##Extend();                          \
           break;                                                            \
         case wex::vi_mode::state_t::VISUAL_BLOCK:                           \
+        case wex::vi_mode::state_t::INSERT_BLOCK:                           \
           get_stc()->SCOPE##DIRECTION##RectExtend();                        \
           break;                                                            \
         default:                                                            \
