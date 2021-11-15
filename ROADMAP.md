@@ -1,12 +1,6 @@
 # roadmap
-- block mode ce
-- on_key_down
-  insert_mode
-  ar::parse_symbol
-  
-- the OS line endings do not have a checkbox
-
 - improve ui lib
+  - the OS line endings do not have a checkbox
 
 - use new wxWidgets functionality, use wxUILocale, improve wex::app
 - linux crash when startup outside git repo
