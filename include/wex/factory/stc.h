@@ -283,7 +283,7 @@ public:
   void ParaDownRectExtend() { ; }
   void WordLeftRectExtend();
   void WordRightRectExtend();
-  void WordRightEndRectExtend() { ; }
+  void WordRightEndRectExtend();
 
   /// Override methods from text_window.
 

@@ -21,10 +21,10 @@ public:
   static auto* frame() { return m_frame; }
   static auto* get_stc() { return m_stc; }
 
+private:
   /// Virtual interface
   bool OnInit() override;
 
-private:
   inline static wex::frame* m_frame = nullptr;
   inline static wex::stc*   m_stc   = nullptr;
 };

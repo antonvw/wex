@@ -31,10 +31,10 @@ public:
   static auto* get_statusbar() { return m_statusbar; }
   static auto* get_stc() { return m_stc; }
 
+private:
   /// Virtual interface
   bool OnInit() override;
 
-private:
   inline static wex::frame*   m_frame     = nullptr;
   inline static statusbar*    m_statusbar = nullptr;
   inline static factory::stc* m_stc       = nullptr;

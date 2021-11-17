@@ -7,10 +7,8 @@
 
 #include <boost/algorithm/string.hpp>
 #include <wex/core/log.h>
-#include <wex/core/regex.h>
 #include <wex/data/control.h>
 #include <wex/factory/stc.h>
-#include <wex/vi/address.h>
 #include <wex/vi/addressrange.h>
 #include <wex/vi/command-parser.h>
 
@@ -86,7 +84,8 @@ bool wex::command_parser::parse(ex* ex)
 
     if (m_range.empty() && m_cmd != '!')
     {
-      m_range = (m_cmd.starts_with("g") || m_cmd == 'v' || m_cmd == 'w' ? "%" : ".");
+      m_range =
+        (m_cmd.starts_with("g") || m_cmd == 'v' || m_cmd == 'w' ? "%" : ".");
     }
   }
 

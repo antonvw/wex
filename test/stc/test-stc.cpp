@@ -315,6 +315,14 @@ TEST_CASE("wex::stc")
     REQUIRE(stc->position_restore());
   }
 
+  SUBCASE("shift-double-click")
+  {
+    stc->set_text("hello stc");
+    event(stc, WXK_SHIFT, wxEVT_KEY_DOWN);
+    event(stc, WXK_SHIFT, wxEVT_KEY_DOWN);
+    // result is not yet checked
+  }
+
   SUBCASE("text")
   {
     stc->set_text("hello stc");

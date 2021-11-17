@@ -37,6 +37,48 @@ void convert_case(factory::stc* stc, std::string& target, char c)
 
   stc->Replace(stc->GetTargetStart(), stc->GetTargetEnd(), target);
 }
+
+bool prep(data::substitute& data, int searchFlags, const command_parser& cp)
+{
+  char        cmd = cp.command()[0];
+  const auto& text(cp.text());
+
+  switch (cmd)
+  {
+    case 's':
+      if (!data.set(text))
+      {
+        return false;
+      }
+      break;
+
+    case '&':
+    case '~':
+      data.set_options(text);
+      break;
+
+    default:
+      log::debug("substitute unhandled command") << cmd;
+      return false;
+  }
+
+  if (data.pattern().empty())
+  {
+    log::status("Pattern is empty");
+    log::debug("substitute") << cmd << "empty pattern" << text;
+    return false;
+  }
+
+  if (
+    (searchFlags & wxSTC_FIND_REGEXP) && data.pattern().size() == 2 &&
+    data.pattern().back() == '*' && data.replacement().empty())
+  {
+    log::status("Replacement leads to infinite loop");
+    return false;
+  }
+
+  return true;
+}
 }; // namespace wex
 
 wex::addressrange::addressrange(wex::ex* ex, int lines)
@@ -659,46 +701,10 @@ bool wex::addressrange::substitute(const command_parser& cp)
   }
 
   data::substitute data(m_substitute);
+  auto             searchFlags = m_ex->search_flags();
 
-  char        cmd = cp.command()[0];
-  const auto& text(cp.text());
-
-  switch (cmd)
+  if (!prep(data, searchFlags, cp))
   {
-    case 's':
-      if (!data.set(text))
-      {
-        return false;
-      }
-      break;
-
-    case '&':
-    case '~':
-      data.set_options(text);
-      break;
-
-    default:
-      log::debug("substitute unhandled command") << cmd;
-      return false;
-  }
-
-  if (data.pattern().empty())
-  {
-    log::status("Pattern is empty");
-    log::debug("substitute") << cmd << "empty pattern" << text;
-    return false;
-  }
-
-  auto searchFlags = m_ex->search_flags();
-
-  if (data.is_ignore_case())
-    searchFlags &= ~wxSTC_FIND_MATCHCASE;
-
-  if (
-    (searchFlags & wxSTC_FIND_REGEXP) && data.pattern().size() == 2 &&
-    data.pattern().back() == '*' && data.replacement().empty())
-  {
-    log::status("Replacement leads to infinite loop");
     return false;
   }
 
@@ -733,8 +739,10 @@ bool wex::addressrange::substitute(const command_parser& cp)
     return false;
   }
 
-  m_substitute = data;
+  if (data.is_ignore_case())
+    searchFlags &= ~wxSTC_FIND_MATCHCASE;
 
+  m_substitute = data;
   m_stc->set_search_flags(searchFlags);
   m_stc->BeginUndoAction();
   m_stc->SetTargetRange(

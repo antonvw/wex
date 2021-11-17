@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# shellcheck source=src/util.sh
+# shellcheck disable=SC1090
 . ~/.bash_profile
 
 codespell src \

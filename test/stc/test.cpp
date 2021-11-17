@@ -24,11 +24,11 @@ void event(wxWindow* win, const std::string& ids)
   wxYield();
 }
 
-void event(wxWindow* win, int id)
+void event(wxWindow* win, int id, wxEventType type)
 {
-  wxKeyEvent keyd(wxEVT_KEY_DOWN);
-  keyd.m_keyCode = id;
-  wxPostEvent(win, keyd);
+  wxKeyEvent ke(type);
+  ke.m_keyCode = id;
+  wxPostEvent(win, ke);
 
   wxYield();
 }

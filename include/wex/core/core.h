@@ -118,9 +118,6 @@ bool is_codeword_separator(int c);
 /// fields in specified pattern (fields separated by ; sign).
 bool matches_one_of(const std::string& fullname, const std::string& patterns);
 
-/// Returns whether there is one letter after.
-bool one_letter_after(const std::string& text, const std::string& letter);
-
 /// Returns quotes around the text.
 const std::string quoted(const std::string& text);
 

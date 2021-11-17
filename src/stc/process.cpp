@@ -112,7 +112,7 @@ bool wex::process::async_system(
   // We need a shell for output.
   if (m_shell == nullptr)
   {
-    log("execute") << "no shell";
+    log("async_system") << "no shell";
     return false;
   }
 
@@ -123,8 +123,9 @@ bool wex::process::async_system(
   if (
     m_frame->debug_entry() != nullptr &&
     !m_frame->debug_entry()->name().empty() &&
-    m_frame->debug_entry()->name() == before(get_exe(), ' '))
+    m_frame->debug_entry()->name() == before(exe, ' '))
   {
+    log::debug("async_system debug handler") << m_frame->debug_entry()->name();
     set_handler_dbg(m_frame->debug_handler());
     m_shell->get_lexer().set(m_frame->debug_entry()->name());
   }
