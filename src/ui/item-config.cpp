@@ -6,18 +6,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/tostring.h>
-#include <wex/core/config.h>
-#include <wex/core/core.h>
 #include <wex/common/util.h>
+#include <wex/core/config.h>
 #include <wex/ui/frd.h>
-#include <wex/ui/item.h>
-#include <wx/checkbox.h>
-#include <wx/checklst.h>
-#include <wx/clrpicker.h>
-#include <wx/radiobox.h>
 #include <wx/settings.h>
-#include <wx/spinctrl.h>
-#include <wx/window.h>
 
 #define PERSISTENT(TYPE, DEFAULT)                            \
   {                                                          \
@@ -29,11 +21,13 @@
 
 #include <filesystem>
 
+#include "item.h"
+
 namespace wex
 {
-bool update(wxCheckListBox* clb, int item, bool save)
+bool persistent_checkbox_frd(wxCheckListBox* clb, int item, bool save)
 {
-  find_replace_data* frd = find_replace_data::get();
+  auto* frd = find_replace_data::get();
 
   if (const std::string field(clb->GetString(item));
       field == frd->text_match_word())
@@ -63,6 +57,108 @@ bool update(wxCheckListBox* clb, int item, bool save)
 
   return true;
 }
+
+void persistent_checkbox(const wex::item* item, bool save)
+{
+  if (auto* clb = reinterpret_cast<wxCheckListBox*>(item->window());
+      clb != nullptr)
+  {
+    size_t i = 0;
+
+    for (const auto& c :
+         std::any_cast<item::choices_bool_t>(item->data().initial()))
+    {
+      if (!persistent_checkbox_frd(clb, i, save))
+      {
+        if (save)
+          config(before(c, ',')).set(clb->IsChecked(i));
+        else
+          clb->Check(i, config(before(c, ',')).get(clb->IsChecked(i)));
+      }
+
+      i++;
+    }
+  }
+}
+
+void persistent_combobox(const wex::item* item, bool save)
+{
+  const int max_items{25};
+
+  if (auto* cb = reinterpret_cast<wxComboBox*>(item->window()); save)
+  {
+    if (const auto l = to_list_string(cb, max_items).get();
+        item->label() == find_replace_data::get()->text_find())
+    {
+      find_replace_data::get()->set_find_strings(l);
+    }
+    else if (item->label() == find_replace_data::get()->text_replace_with())
+    {
+      find_replace_data::get()->set_replace_strings(l);
+    }
+    else
+    {
+      config(item->label()).set(l);
+    }
+  }
+  else
+  {
+    combobox_from_list(
+      cb,
+      config(item->label())
+        .get(
+          !item->data().initial().has_value() ?
+            config::strings_t{} :
+            std::any_cast<config::strings_t>(item->data().initial())));
+  }
+}
+
+void persistent_filepicker(const wex::item* item, bool save)
+{
+  if (save)
+  {
+    config(item->label()).set(std::any_cast<std::string>(item->get_value()));
+  }
+  else
+  {
+    std::string initial;
+
+#ifdef __WXGTK__
+    initial = "/usr/bin/" + item->label();
+
+    if (!std::filesystem::is_regular_file(initial))
+    {
+      initial.clear();
+    }
+#endif
+    item->set_value(config(item->label()).get(initial));
+  }
+}
+
+void persistent_radiobox(const wex::item* item, bool save)
+{
+  if (auto* rb = reinterpret_cast<wxRadioBox*>(item->window()); save)
+  {
+    for (const auto& b : std::any_cast<item::choices_t>(item->data().initial()))
+    {
+      if (before(b.second, ',') == rb->GetStringSelection())
+      {
+        config(item->label()).set(b.first);
+      }
+    }
+  }
+  else
+  {
+    const auto& choices(std::any_cast<item::choices_t>(item->data().initial()));
+
+    if (const auto c =
+          choices.find(config(item->label()).get(rb->GetSelection()));
+        c != choices.end())
+    {
+      rb->SetStringSelection(before(c->second, ','));
+    }
+  }
+}
 } // namespace wex
 
 bool wex::item::to_config(bool save) const
@@ -83,24 +179,7 @@ bool wex::item::to_config(bool save) const
       break;
 
     case CHECKLISTBOX_BOOL:
-      if (auto* clb = reinterpret_cast<wxCheckListBox*>(m_window);
-          clb != nullptr)
-      {
-        size_t i = 0;
-
-        for (const auto& c : std::any_cast<choices_bool_t>(m_data.initial()))
-        {
-          if (!update(clb, i, save))
-          {
-            if (save)
-              config(before(c, ',')).set(clb->IsChecked(i));
-            else
-              clb->Check(i, config(before(c, ',')).get(clb->IsChecked(i)));
-          }
-
-          i++;
-        }
-      }
+      persistent_checkbox(this, save);
       break;
 
     case COLOURPICKERWIDGET:
@@ -112,31 +191,7 @@ bool wex::item::to_config(bool save) const
     case COMBOBOX:
     case COMBOBOX_DIR:
     case COMBOBOX_FILE:
-      if (auto* cb = reinterpret_cast<wxComboBox*>(m_window); save)
-      {
-        if (const auto l = to_list_string(cb, m_max_items).get();
-            m_label == find_replace_data::get()->text_find())
-        {
-          find_replace_data::get()->set_find_strings(l);
-        }
-        else if (m_label == find_replace_data::get()->text_replace_with())
-        {
-          find_replace_data::get()->set_replace_strings(l);
-        }
-        else
-        {
-          config(m_label).set(l);
-        }
-      }
-      else
-      {
-        combobox_from_list(
-          cb,
-          config(m_label).get(
-            !m_data.initial().has_value() ?
-              config::strings_t{} :
-              std::any_cast<config::strings_t>(m_data.initial())));
-      }
+      persistent_combobox(this, save);
       break;
 
     case DIRPICKERCTRL:
@@ -144,24 +199,7 @@ bool wex::item::to_config(bool save) const
       break;
 
     case FILEPICKERCTRL:
-      if (save)
-      {
-        config(m_label).set(std::any_cast<std::string>(get_value()));
-      }
-      else
-      {
-        std::string initial;
-
-#ifdef __WXGTK__
-        initial = "/usr/bin/" + m_label;
-
-        if (!std::filesystem::is_regular_file(initial))
-        {
-          initial.clear();
-        }
-#endif
-        set_value(config(m_label).get(initial));
-      }
+      persistent_filepicker(this, save);
       break;
 
     case FONTPICKERCTRL:
@@ -186,27 +224,7 @@ bool wex::item::to_config(bool save) const
       break;
 
     case RADIOBOX:
-      if (auto* rb = reinterpret_cast<wxRadioBox*>(m_window); save)
-      {
-        for (const auto& b : std::any_cast<choices_t>(m_data.initial()))
-        {
-          if (before(b.second, ',') == rb->GetStringSelection())
-          {
-            config(m_label).set(b.first);
-          }
-        }
-      }
-      else
-      {
-        const auto& choices(std::any_cast<choices_t>(m_data.initial()));
-
-        if (const auto c =
-              choices.find(config(m_label).get(rb->GetSelection()));
-            c != choices.end())
-        {
-          rb->SetStringSelection(before(c->second, ','));
-        }
-      }
+      persistent_radiobox(this, save);
       break;
 
     case SLIDER:

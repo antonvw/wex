@@ -145,6 +145,8 @@ protected:
   virtual void build_popup_menu(menu& menu);
 
 private:
+  void bind_other();
+
   const std::string build_page();
   const std::string context(const std::string& line, int pos) const;
   void              copy_selection_to_clipboard();
@@ -157,8 +159,13 @@ private:
   column       get_column(const std::string& name) const;
   void         item_activated(long item_number);
   bool         on_command(wxCommandEvent& event);
-  void         process_match(wxCommandEvent& event);
-  bool         set_item_image(long item_number, int iconid)
+
+  void process_idle(wxIdleEvent& event);
+  void process_list(wxListEvent& event, wxEventType type);
+  void process_match(wxCommandEvent& event);
+  void process_mouse(wxMouseEvent& event);
+
+  bool set_item_image(long item_number, int iconid)
   {
     return (
       m_data.image() == data::listview::IMAGE_FILE_ICON ?

@@ -361,6 +361,8 @@ TEST_CASE("wex::item")
     for (int style = wex::item::NOTEBOOK; style <= wex::item::NOTEBOOK_WEX;
          style++)
     {
+      CAPTURE(titles[style - wex::item::NOTEBOOK]);
+
       wxImageList* il = nullptr;
 
       if (style == wex::item::NOTEBOOK_TOOL)

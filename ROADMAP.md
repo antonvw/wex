@@ -1,7 +1,11 @@
 # roadmap
 - improve ui lib
-  - the OS line endings do not have a checkbox
+  - fix some msw test errors?
 
+- studio-2022
+  - use visual studio 2022
+  - fix some msw test error (path)
+  
 - use new wxWidgets functionality, use wxUILocale, improve wex::app
 - linux crash when startup outside git repo
   - and print setup asserts

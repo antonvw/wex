@@ -54,6 +54,12 @@ private:
   bool input_mode_finish() const;
   bool is_ex_mode() const;
 
+  void process_char(wxKeyEvent& event);
+  void process_key_down(wxKeyEvent& event);
+  void process_text(wxCommandEvent& event);
+  void process_text_enter(wxCommandEvent& event);
+  void process_text_paste(wxCommandEvent& event);
+
   textctrl_input* tci();
 
   const int m_id_register;

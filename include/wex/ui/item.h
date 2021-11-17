@@ -535,8 +535,6 @@ private:
 
   bool m_is_row_growable = false;
 
-  int m_max_items{25};
-
   type_t m_type;
 
   std::string m_label, m_label_window, m_page;
