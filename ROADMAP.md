@@ -11,6 +11,7 @@
   - and print setup asserts
 
 ## backlog
+- "x and rf highlight not ok
 - searching in Process git output window
 - c++ modules: fix gcc (gcc-12), test msvc
 - start up with recent project, close project

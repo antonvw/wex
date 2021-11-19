@@ -445,6 +445,9 @@ public:
   /// Returns item data.
   const auto& data() const { return m_data; }
 
+  /// Returns item listview data.
+  const auto& data_listview() const { return m_data_listview; }
+
   /// Returns true if this item is empty.
   bool empty() const { return m_type == EMPTY; }
 
@@ -460,6 +463,9 @@ public:
 
   /// Returns the label.
   const auto& label() const { return m_label; }
+
+  /// Returns the label window.
+  const auto& label_window() const { return m_label_window; }
 
   /// layouts this item (creates the window) on the specified sizer.
   /// It returns the flex grid sizer that was used for creating the item

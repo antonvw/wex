@@ -69,6 +69,12 @@ wex::data::item& wex::data::item::inc(const std::any& rhs)
   return *this;
 }
 
+wex::data::item& wex::data::item::is_readonly(bool rhs)
+{
+  m_is_readonly = rhs;
+  return *this;
+}
+
 wex::data::item& wex::data::item::is_regex(bool rhs)
 {
   m_is_regex = rhs;

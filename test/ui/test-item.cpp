@@ -189,7 +189,7 @@ TEST_CASE("wex::item")
       new wxTextCtrl(),
       wex::data::item()
         .user_window_create(
-          [=](wxWindow* user, wxWindow* parent, bool readonly)
+          [=](wxWindow* user, wxWindow* parent)
           {
             (reinterpret_cast<wxTextCtrl*>(user))->Create(parent, 100);
           })
