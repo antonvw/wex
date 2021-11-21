@@ -121,7 +121,7 @@ const auto test_config_items(int rows = 0, int cols = 0)
        {{"wxHtmlWindow",
          new wxHtmlWindow(),
          wex::data::item().user_window_create(
-           [=](wxWindow* user, wxWindow* parent, bool readonly)
+           [=](wxWindow* user, wxWindow* parent)
            {
              (reinterpret_cast<wxHtmlWindow*>(user))
                ->Create(parent, 100, wxDefaultPosition, wxSize(200, 200));
@@ -133,7 +133,7 @@ const auto test_config_items(int rows = 0, int cols = 0)
          new wxTextCtrl(),
          wex::data::item()
            .user_window_create(
-             [=](wxWindow* user, wxWindow* parent, bool readonly)
+             [=](wxWindow* user, wxWindow* parent)
              {
                (reinterpret_cast<wxTextCtrl*>(user))
                  ->Create(parent, 100, "Hello world");

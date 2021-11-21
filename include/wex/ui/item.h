@@ -445,6 +445,9 @@ public:
   /// Returns item data.
   const auto& data() const { return m_data; }
 
+  /// Returns item listview data.
+  const auto& data_listview() const { return m_data_listview; }
+
   /// Returns true if this item is empty.
   bool empty() const { return m_type == EMPTY; }
 
@@ -460,6 +463,9 @@ public:
 
   /// Returns the label.
   const auto& label() const { return m_label; }
+
+  /// Returns the label window.
+  const auto& label_window() const { return m_label_window; }
 
   /// layouts this item (creates the window) on the specified sizer.
   /// It returns the flex grid sizer that was used for creating the item
@@ -511,6 +517,10 @@ public:
   auto* window() const { return m_window; }
 
 private:
+  typedef std::vector<std::function<
+    void(wxWindow* parent, wxWindow*& window, const wex::item& item)>>
+    create_t;
+
   /// Delegate constructor.
   item(
     type_t             type,
@@ -529,13 +539,14 @@ private:
     std::vector<item>& v,
     bool               readonly);
 
-  bool create_window(wxWindow* parent, bool readonly);
+  bool     create_window(wxWindow* parent, bool readonly);
+  create_t creators();
 
   std::string get_value_as_string() const;
 
-  bool m_is_row_growable = false;
+  bool persist(bool save) const;
 
-  int m_max_items{25};
+  bool m_is_row_growable = false;
 
   type_t m_type;
 
@@ -546,6 +557,8 @@ private:
 
   wxSizerFlags m_sizer_flags;
   wxWindow*    m_window{nullptr};
+
+  create_t m_creators;
 
   static inline item_template_dialog<item>* m_dialog     = nullptr;
   static inline bool                        m_use_config = true;

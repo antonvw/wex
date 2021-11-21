@@ -38,7 +38,7 @@ public:
 
   /// A function that you can provide to specify what needs to
   /// be done for creating a user item.
-  typedef std::function<void(wxWindow* user, wxWindow* parent, bool readonly)>
+  typedef std::function<void(wxWindow* user, wxWindow* parent)>
     user_window_create_t;
 
   /// A function that you can provide to specify what needs to
@@ -88,8 +88,14 @@ public:
   /// Returns the initial value.
   const auto& initial() const { return m_initial; }
 
+  /// Returns is_readonly.
+  const bool is_readonly() const { return m_is_readonly; }
+
   /// Returns is_regex.
   const bool is_regex() const { return m_is_regex; }
+
+  /// Sets is_readonly.
+  item& is_readonly(bool rhs);
 
   /// Sets is_regex.
   item& is_regex(bool rhs);
@@ -151,7 +157,7 @@ private:
 
   std::string m_validate_re;
 
-  bool m_is_regex{false};
+  bool m_is_readonly{false}, m_is_regex{false};
 
   wxImageList* m_image_list{nullptr};
 
