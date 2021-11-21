@@ -14,12 +14,26 @@
      CONTROL(parent, window, item);                                \
    }},
 
+#define IPS                                              \
+  item.data().window().id(), item.data().window().pos(), \
+    item.data().window().size()
+
 #define PSS                                                \
   item.data().window().pos(), item.data().window().size(), \
     item.data().window().style()
 
 namespace wex
 {
+void handle(const std::string& s, wxCheckListBox* clb, size_t& item_no)
+{
+  if (after(s, ',') == "1")
+  {
+    clb->Check(item_no);
+  }
+
+  item_no++;
+}
+
 wxArrayString
 initial(const data::item& data, std::function<void(wxArrayString& as)> f)
 {
@@ -60,9 +74,7 @@ void create_checklistbox_bit(
 {
   auto* clb = new wxCheckListBox(
     parent,
-    item.data().window().id(),
-    item.data().window().pos(),
-    item.data().window().size(),
+    IPS,
     initial(
       item.data(),
       [&](wxArrayString& as)
@@ -79,12 +91,7 @@ void create_checklistbox_bit(
 
   for (const auto& it : std::any_cast<item::choices_t>(item.data().initial()))
   {
-    if (after(it.second, ',') == "1")
-    {
-      clb->Check(item_no);
-    }
-
-    item_no++;
+    handle(it.second, clb, item_no);
   }
 
   window = clb;
@@ -97,9 +104,7 @@ void create_checklistbox_bool(
 {
   auto* clb = new wxCheckListBox(
     parent,
-    item.data().window().id(),
-    item.data().window().pos(),
-    item.data().window().size(),
+    IPS,
     initial(
       item.data(),
       [&](wxArrayString& as)
@@ -117,12 +122,7 @@ void create_checklistbox_bool(
   for (const auto& c :
        std::any_cast<item::choices_bool_t>(item.data().initial()))
   {
-    if (after(c, ',') == "1")
-    {
-      clb->Check(item_no);
-    }
-
-    item_no++;
+    handle(c, clb, item_no);
   }
 
   window = clb;
@@ -247,11 +247,8 @@ void create_font_picker_control(
     parent,
     item.data().window().id(),
     wxNullFont,
-    item.data().window().pos(),
-    item.data().window().size(),
-    item.data().window().style() == data::NUMBER_NOT_SET ?
-      wxFNTP_DEFAULT_STYLE :
-      item.data().window().style());
+    PSS == data::NUMBER_NOT_SET ? wxFNTP_DEFAULT_STYLE :
+                                  item.data().window().style());
 
   window = pc;
   pc->SetPickerCtrlGrowable();
@@ -288,11 +285,8 @@ void create_hyperlink_control(
     item.data().window().id(),
     item.label_window(),
     std::any_cast<std::string>(item.data().initial()),
-    item.data().window().pos(),
-    item.data().window().size(),
-    item.data().window().style() == data::NUMBER_NOT_SET ?
-      wxHL_DEFAULT_STYLE :
-      item.data().window().style());
+    PSS == data::NUMBER_NOT_SET ? wxHL_DEFAULT_STYLE :
+                                  item.data().window().style());
 }
 
 void create_radiobox(wxWindow* parent, wxWindow*& window, const wex::item& item)
