@@ -24,6 +24,18 @@
 
 namespace wex
 {
+void finish_picker(wxPickerBase* pc, const wex::item& item, wxWindow*& window)
+{
+  window = pc;
+
+  pc->SetPickerCtrlGrowable();
+  
+  if (pc->GetTextCtrl() != nullptr && item.data().is_readonly())
+  {
+    pc->GetTextCtrl()->SetWindowStyleFlag(wxTE_READONLY);
+  }
+}
+
 void handle(const std::string& s, wxCheckListBox* clb, size_t& item_no)
 {
   if (after(s, ',') == "1")
@@ -45,6 +57,18 @@ initial(const data::item& data, std::function<void(wxArrayString& as)> f)
   }
 
   return as;
+}
+
+wxCheckListBox* create_checklistbox(
+  wxWindow*                              parent,
+  const wex::item&                       item,
+  std::function<void(wxArrayString& as)> f)
+{
+  return new wxCheckListBox(
+    parent,
+    IPS,
+    initial(item.data(), f),
+    item.data().window().style());
 }
 
 void create_button(wxWindow* parent, wxWindow*& window, const wex::item& item)
@@ -72,20 +96,17 @@ void create_checklistbox_bit(
   wxWindow*&       window,
   const wex::item& item)
 {
-  auto* clb = new wxCheckListBox(
+  auto* clb = create_checklistbox(
     parent,
-    IPS,
-    initial(
-      item.data(),
-      [&](wxArrayString& as)
+    item,
+    [&](wxArrayString& as)
+    {
+      for (const auto& it :
+           std::any_cast<item::choices_t>(item.data().initial()))
       {
-        for (const auto& it :
-             std::any_cast<item::choices_t>(item.data().initial()))
-        {
-          as.Add(after(before(it.second, ','), '.', false));
-        }
-      }),
-    item.data().window().style());
+        as.Add(after(before(it.second, ','), '.', false));
+      }
+    });
 
   size_t item_no = 0;
 
@@ -102,20 +123,17 @@ void create_checklistbox_bool(
   wxWindow*&       window,
   const wex::item& item)
 {
-  auto* clb = new wxCheckListBox(
+  auto* clb = create_checklistbox(
     parent,
-    IPS,
-    initial(
-      item.data(),
-      [&](wxArrayString& as)
+    item,
+    [&](wxArrayString& as)
+    {
+      for (const auto& it :
+           std::any_cast<item::choices_bool_t>(item.data().initial()))
       {
-        for (const auto& it :
-             std::any_cast<item::choices_bool_t>(item.data().initial()))
-        {
-          as.Add(after(before(it, ','), '.', false));
-        }
-      }),
-    item.data().window().style());
+        as.Add(after(before(it, ','), '.', false));
+      }
+    });
 
   size_t item_no = 0;
 
@@ -192,12 +210,7 @@ void create_dir_picker_control(
     PSS == data::NUMBER_NOT_SET ? wxDIRP_DEFAULT_STYLE :
                                   item.data().window().style());
 
-  window = pc;
-
-  if (pc->GetTextCtrl() != nullptr && item.data().is_readonly())
-  {
-    pc->GetTextCtrl()->SetWindowStyleFlag(wxTE_READONLY);
-  }
+  finish_picker(pc, item, window);
 }
 
 void create_empty_or_spacer_control(
@@ -229,13 +242,8 @@ void create_file_picker_control(
     wc,
     PSS == data::NUMBER_NOT_SET ? wxFLP_DEFAULT_STYLE :
                                   item.data().window().style());
-
-  window = pc;
-
-  if (pc->GetTextCtrl() != nullptr && item.data().is_readonly())
-  {
-    pc->GetTextCtrl()->SetWindowStyleFlag(wxTE_READONLY);
-  }
+                                  
+  finish_picker(pc, item, window);
 }
 
 void create_font_picker_control(
@@ -250,13 +258,7 @@ void create_font_picker_control(
     PSS == data::NUMBER_NOT_SET ? wxFNTP_DEFAULT_STYLE :
                                   item.data().window().style());
 
-  window = pc;
-  pc->SetPickerCtrlGrowable();
-
-  if (pc->GetTextCtrl() != nullptr && item.data().is_readonly())
-  {
-    pc->GetTextCtrl()->SetWindowStyleFlag(wxTE_READONLY);
-  }
+  finish_picker(pc, item, window);
 }
 
 void create_grid_control(
