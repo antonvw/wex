@@ -1,10 +1,8 @@
 # roadmap
-- item get_value, to_config
-
 - studio-2022
   - use visual studio 2022
   - fix some msw test error (path)
-  
+
 - use new wxWidgets functionality, use wxUILocale, improve wex::app
 - linux crash when startup outside git repo
   - and print setup asserts

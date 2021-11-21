@@ -19,6 +19,11 @@
       set_value((TYPE)config(m_label).get(DEFAULT));         \
   }
 
+#define PERSISTENT_FOR(ITEM_TYPE, ITEM_CAST, METHOD) \
+  case ITEM_TYPE:                                    \
+    PERSISTENT(ITEM_CAST, METHOD);                   \
+    break;
+
 #include <filesystem>
 
 #include "item.h"
@@ -159,7 +164,53 @@ void persistent_radiobox(const wex::item* item, bool save)
     }
   }
 }
+
 } // namespace wex
+
+bool wex::item::persist(bool save) const
+{
+  switch (m_type)
+  {
+    PERSISTENT_FOR(
+      CHECKBOX,
+      bool,
+      (reinterpret_cast<wxCheckBox*>(m_window))->GetValue());
+    PERSISTENT_FOR(CHECKLISTBOX_BIT, long, std::any_cast<long>(get_value()));
+    PERSISTENT_FOR(
+      COLOURPICKERWIDGET,
+      wxColour,
+      (reinterpret_cast<wxColourPickerWidget*>(m_window))->GetColour());
+    PERSISTENT_FOR(DIRPICKERCTRL, std::string, m_label);
+    PERSISTENT_FOR(
+      FONTPICKERCTRL,
+      wxFont,
+      wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+    PERSISTENT_FOR(
+      SLIDER,
+      int,
+      (reinterpret_cast<wxSlider*>(m_window))->GetValue());
+    PERSISTENT_FOR(
+      SPINCTRL,
+      int,
+      (reinterpret_cast<wxSpinCtrl*>(m_window))->GetValue());
+    PERSISTENT_FOR(
+      SPINCTRLDOUBLE,
+      double,
+      (reinterpret_cast<wxSpinCtrlDouble*>(m_window))->GetValue());
+    PERSISTENT_FOR(
+      TEXTCTRL,
+      std::string,
+      std::any_cast<std::string>(get_value()));
+    PERSISTENT_FOR(TEXTCTRL_FLOAT, double, std::any_cast<double>(get_value()));
+    PERSISTENT_FOR(TEXTCTRL_INT, long, std::any_cast<long>(get_value()));
+    PERSISTENT_FOR(TOGGLEBUTTON, bool, false);
+
+    default:
+      return false;
+  }
+
+  return true;
+}
 
 bool wex::item::to_config(bool save) const
 {
@@ -168,107 +219,58 @@ bool wex::item::to_config(bool save) const
     return false;
   }
 
-  switch (type())
+  if (!persist(save))
   {
-    case CHECKBOX:
-      PERSISTENT(bool, (reinterpret_cast<wxCheckBox*>(m_window))->GetValue());
-      break;
+    switch (m_type)
+    {
+      case CHECKLISTBOX_BOOL:
+        persistent_checkbox(this, save);
+        break;
 
-    case CHECKLISTBOX_BIT:
-      PERSISTENT(long, std::any_cast<long>(get_value()));
-      break;
+      case COMBOBOX:
+      case COMBOBOX_DIR:
+      case COMBOBOX_FILE:
+        persistent_combobox(this, save);
+        break;
 
-    case CHECKLISTBOX_BOOL:
-      persistent_checkbox(this, save);
-      break;
+      case FILEPICKERCTRL:
+        persistent_filepicker(this, save);
+        break;
 
-    case COLOURPICKERWIDGET:
-      PERSISTENT(
-        wxColour,
-        (reinterpret_cast<wxColourPickerWidget*>(m_window))->GetColour());
-      break;
+      case GRID:
+        if (save)
+          config(m_label).set(std::any_cast<std::string>(get_value()));
+        else
+          set_value(config(m_label).get());
+        break;
 
-    case COMBOBOX:
-    case COMBOBOX_DIR:
-    case COMBOBOX_FILE:
-      persistent_combobox(this, save);
-      break;
+      case LISTVIEW:
+        if (save)
+          config(m_label).set(std::any_cast<config::strings_t>(get_value()));
+        else
+          set_value(config(m_label).get(
+            !m_data.initial().has_value() ?
+              config::strings_t{} :
+              std::any_cast<config::strings_t>(m_data.initial())));
+        break;
 
-    case DIRPICKERCTRL:
-      PERSISTENT(std::string, m_label);
-      break;
+      case RADIOBOX:
+        persistent_radiobox(this, save);
+        break;
 
-    case FILEPICKERCTRL:
-      persistent_filepicker(this, save);
-      break;
+      case USER:
+        if (
+          m_data.user_window_to_config() != nullptr &&
+          !(m_data.user_window_to_config())(m_window, save))
+        {
+          return false;
+        }
+        break;
 
-    case FONTPICKERCTRL:
-      PERSISTENT(wxFont, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
-      break;
-
-    case GRID:
-      if (save)
-        config(m_label).set(std::any_cast<std::string>(get_value()));
-      else
-        set_value(config(m_label).get());
-      break;
-
-    case LISTVIEW:
-      if (save)
-        config(m_label).set(std::any_cast<config::strings_t>(get_value()));
-      else
-        set_value(config(m_label).get(
-          !m_data.initial().has_value() ?
-            config::strings_t{} :
-            std::any_cast<config::strings_t>(m_data.initial())));
-      break;
-
-    case RADIOBOX:
-      persistent_radiobox(this, save);
-      break;
-
-    case SLIDER:
-      PERSISTENT(int, (reinterpret_cast<wxSlider*>(m_window))->GetValue());
-      break;
-
-    case SPINCTRL:
-      PERSISTENT(int, (reinterpret_cast<wxSpinCtrl*>(m_window))->GetValue());
-      break;
-
-    case SPINCTRLDOUBLE:
-      PERSISTENT(
-        double,
-        (reinterpret_cast<wxSpinCtrlDouble*>(m_window))->GetValue());
-      break;
-
-    case TEXTCTRL:
-      PERSISTENT(std::string, std::any_cast<std::string>(get_value()));
-      break;
-
-    case TEXTCTRL_FLOAT:
-      PERSISTENT(double, std::any_cast<double>(get_value()));
-      break;
-
-    case TEXTCTRL_INT:
-      PERSISTENT(long, std::any_cast<long>(get_value()));
-      break;
-
-    case TOGGLEBUTTON:
-      PERSISTENT(bool, false);
-      break;
-
-    case USER:
-      if (
-        m_data.user_window_to_config() != nullptr &&
-        !(m_data.user_window_to_config())(m_window, save))
-      {
+      default:
+        // the other types (including STC) have no persistent info
         return false;
-      }
-      break;
-
-    default:
-      // the other types (including STC) have no persistent info
-      return false;
+    }
   }
 
   if (m_data.apply() != nullptr)

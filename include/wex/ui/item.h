@@ -544,6 +544,8 @@ private:
 
   std::string get_value_as_string() const;
 
+  bool persist(bool save) const;
+
   bool m_is_row_growable = false;
 
   type_t m_type;
