@@ -147,6 +147,7 @@ TEST_CASE("wex::item")
 
       if (it.type() != wex::item::EMPTY && it.type() != wex::item::SPACER)
       {
+        CAPTURE(it.type());
         REQUIRE(it.window() != nullptr);
       }
     }
@@ -185,7 +186,7 @@ TEST_CASE("wex::item")
       false);
     const wex::item ci_cl_n({"This", "Or", "Other"});
     const wex::item ci_user(
-      "ci-usr",
+      "ci-user",
       new wxTextCtrl(),
       wex::data::item()
         .user_window_create(

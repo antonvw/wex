@@ -1,12 +1,22 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      item.cpp
-// Purpose:   Implementation of wex::item class
+// Purpose:   Implementation of wex::item::create_window
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "item.h"
 #include "ui.h"
+
+#define CREATE_CTRL(CONTROL)                                       \
+  {[&](wxWindow* parent, wxWindow*& window, const wex::item& item) \
+   {                                                               \
+     CONTROL(parent, window, item);                                \
+   }},
+
+#define PSS                                                \
+  item.data().window().pos(), item.data().window().size(), \
+    item.data().window().style()
 
 namespace wex
 {
@@ -26,26 +36,15 @@ initial(const data::item& data, std::function<void(wxArrayString& as)> f)
 void create_button(wxWindow* parent, wxWindow*& window, const wex::item& item)
 {
   // Using a label is necessary for wxGTK.
-  window = new wxButton(
-    parent,
-    item.data().window().id(),
-    "default",
-    item.data().window().pos(),
-    item.data().window().size(),
-    item.data().window().style());
+  window = new wxButton(parent, item.data().window().id(), "default", PSS);
 
   (reinterpret_cast<wxButton*>(window))->SetLabelMarkup(item.label_window());
 }
 
 void create_checkbox(wxWindow* parent, wxWindow*& window, const wex::item& item)
 {
-  window = new wxCheckBox(
-    parent,
-    item.data().window().id(),
-    item.label_window(),
-    item.data().window().pos(),
-    item.data().window().size(),
-    item.data().window().style());
+  window =
+    new wxCheckBox(parent, item.data().window().id(), item.label_window(), PSS);
 
   if (item.data().initial().has_value())
   {
@@ -55,115 +54,114 @@ void create_checkbox(wxWindow* parent, wxWindow*& window, const wex::item& item)
 }
 
 void create_checklistbox_bit(
-  wxWindow*         parent,
-  wxWindow*&        window,
-  const data::item& data)
+  wxWindow*        parent,
+  wxWindow*&       window,
+  const wex::item& item)
 {
   auto* clb = new wxCheckListBox(
     parent,
-    data.window().id(),
-    data.window().pos(),
-    data.window().size(),
+    item.data().window().id(),
+    item.data().window().pos(),
+    item.data().window().size(),
     initial(
-      data,
+      item.data(),
       [&](wxArrayString& as)
       {
-        for (const auto& it : std::any_cast<item::choices_t>(data.initial()))
+        for (const auto& it :
+             std::any_cast<item::choices_t>(item.data().initial()))
         {
           as.Add(after(before(it.second, ','), '.', false));
         }
       }),
-    data.window().style());
+    item.data().window().style());
 
-  size_t item = 0;
+  size_t item_no = 0;
 
-  for (const auto& it : std::any_cast<item::choices_t>(data.initial()))
+  for (const auto& it : std::any_cast<item::choices_t>(item.data().initial()))
   {
     if (after(it.second, ',') == "1")
     {
-      clb->Check(item);
+      clb->Check(item_no);
     }
 
-    item++;
+    item_no++;
   }
 
   window = clb;
 }
 
 void create_checklistbox_bool(
-  wxWindow*         parent,
-  wxWindow*&        window,
-  const data::item& data)
+  wxWindow*        parent,
+  wxWindow*&       window,
+  const wex::item& item)
 {
   auto* clb = new wxCheckListBox(
     parent,
-    data.window().id(),
-    data.window().pos(),
-    data.window().size(),
+    item.data().window().id(),
+    item.data().window().pos(),
+    item.data().window().size(),
     initial(
-      data,
+      item.data(),
       [&](wxArrayString& as)
       {
         for (const auto& it :
-             std::any_cast<item::choices_bool_t>(data.initial()))
+             std::any_cast<item::choices_bool_t>(item.data().initial()))
         {
           as.Add(after(before(it, ','), '.', false));
         }
       }),
-    data.window().style());
+    item.data().window().style());
 
-  size_t item = 0;
+  size_t item_no = 0;
 
-  for (const auto& c : std::any_cast<item::choices_bool_t>(data.initial()))
+  for (const auto& c :
+       std::any_cast<item::choices_bool_t>(item.data().initial()))
   {
     if (after(c, ',') == "1")
     {
-      clb->Check(item);
+      clb->Check(item_no);
     }
 
-    item++;
+    item_no++;
   }
 
   window = clb;
 }
 
-void create_combobox(
-  wxWindow*         parent,
-  wxWindow*&        window,
-  const data::item& data)
+void create_combobox(wxWindow* parent, wxWindow*& window, const wex::item& item)
 {
   window = new wxComboBox(
     parent,
-    data.window().id(),
+    item.data().window().id(),
     wxEmptyString,
-    data.window().pos(),
-    data.window().size(),
+    item.data().window().pos(),
+    item.data().window().size(),
     initial(
-      data,
+      item.data(),
       [&](wxArrayString& as)
       {
-        for (const auto& it : std::any_cast<config::strings_t>(data.initial()))
+        for (const auto& it :
+             std::any_cast<config::strings_t>(item.data().initial()))
         {
           as.Add(it);
         }
       }),
-    data.window().style());
+    item.data().window().style());
 }
 
 void create_colour_picket_widget(
-  wxWindow*         parent,
-  wxWindow*&        window,
-  const data::item& data)
+  wxWindow*        parent,
+  wxWindow*&       window,
+  const wex::item& item)
 {
   window = new wxColourPickerWidget(
     parent,
-    data.window().id(),
-    data.initial().has_value() ? std::any_cast<wxColour>(data.initial()) :
-                                 *wxBLACK,
-    data.window().pos(),
-    data.window().size(),
-    data.window().style() == data::NUMBER_NOT_SET ? wxCLRP_DEFAULT_STYLE :
-                                                    data.window().style());
+    item.data().window().id(),
+    item.data().initial().has_value() ?
+      std::any_cast<wxColour>(item.data().initial()) :
+      *wxBLACK,
+    PSS == data::NUMBER_NOT_SET ? wxCLRP_DEFAULT_STYLE :
+                                  item.data().window().style());
 }
 
 void create_commandlink_button(
@@ -176,39 +174,44 @@ void create_commandlink_button(
     item.data().window().id(),
     before(item.label_window(), '\t'),
     after(item.label_window(), '\t'),
-    item.data().window().pos(),
-    item.data().window().size(),
-    item.data().window().style());
+    PSS);
 }
 
 void create_dir_picker_control(
-  wxWindow*         parent,
-  wxWindow*&        window,
-  const data::item& data)
+  wxWindow*        parent,
+  wxWindow*&       window,
+  const wex::item& item)
 {
   auto* pc = new wxDirPickerCtrl(
     parent,
-    data.window().id(),
-    !data.initial().has_value() ? std::string() :
-                                  std::any_cast<std::string>(data.initial()),
+    item.data().window().id(),
+    !item.data().initial().has_value() ?
+      std::string() :
+      std::any_cast<std::string>(item.data().initial()),
     wxDirSelectorPromptStr,
-    data.window().pos(),
-    data.window().size(),
-    data.window().style() == data::NUMBER_NOT_SET ? wxDIRP_DEFAULT_STYLE :
-                                                    data.window().style());
+    PSS == data::NUMBER_NOT_SET ? wxDIRP_DEFAULT_STYLE :
+                                  item.data().window().style());
 
   window = pc;
 
-  if (pc->GetTextCtrl() != nullptr && data.is_readonly())
+  if (pc->GetTextCtrl() != nullptr && item.data().is_readonly())
   {
     pc->GetTextCtrl()->SetWindowStyleFlag(wxTE_READONLY);
   }
 }
 
+void create_empty_or_spacer_control(
+  wxWindow*        parent,
+  wxWindow*&       window,
+  const wex::item& item)
+{
+  window = nullptr;
+}
+
 void create_file_picker_control(
-  wxWindow*         parent,
-  wxWindow*&        window,
-  const data::item& data)
+  wxWindow*        parent,
+  wxWindow*&       window,
+  const wex::item& item)
 {
 #if defined(__WXMSW__)
   const std::string wc("*.exe");
@@ -218,60 +221,60 @@ void create_file_picker_control(
 
   auto* pc = new wxFilePickerCtrl(
     parent,
-    data.window().id(),
-    !data.initial().has_value() ? std::string() :
-                                  std::any_cast<std::string>(data.initial()),
+    item.data().window().id(),
+    !item.data().initial().has_value() ?
+      std::string() :
+      std::any_cast<std::string>(item.data().initial()),
     wxFileSelectorPromptStr,
     wc,
-    data.window().pos(),
-    data.window().size(),
-    data.window().style() == data::NUMBER_NOT_SET ? wxFLP_DEFAULT_STYLE :
-                                                    data.window().style());
+    PSS == data::NUMBER_NOT_SET ? wxFLP_DEFAULT_STYLE :
+                                  item.data().window().style());
 
   window = pc;
 
-  if (pc->GetTextCtrl() != nullptr && data.is_readonly())
+  if (pc->GetTextCtrl() != nullptr && item.data().is_readonly())
   {
     pc->GetTextCtrl()->SetWindowStyleFlag(wxTE_READONLY);
   }
 }
 
 void create_font_picker_control(
-  wxWindow*         parent,
-  wxWindow*&        window,
-  const data::item& data)
+  wxWindow*        parent,
+  wxWindow*&       window,
+  const wex::item& item)
 {
   auto* pc = new wxFontPickerCtrl(
     parent,
-    data.window().id(),
+    item.data().window().id(),
     wxNullFont,
-    data.window().pos(),
-    data.window().size(),
-    data.window().style() == data::NUMBER_NOT_SET ? wxFNTP_DEFAULT_STYLE :
-                                                    data.window().style());
+    item.data().window().pos(),
+    item.data().window().size(),
+    item.data().window().style() == data::NUMBER_NOT_SET ?
+      wxFNTP_DEFAULT_STYLE :
+      item.data().window().style());
 
   window = pc;
   pc->SetPickerCtrlGrowable();
 
-  if (pc->GetTextCtrl() != nullptr && data.is_readonly())
+  if (pc->GetTextCtrl() != nullptr && item.data().is_readonly())
   {
     pc->GetTextCtrl()->SetWindowStyleFlag(wxTE_READONLY);
   }
 }
 
 void create_grid_control(
-  wxWindow*         parent,
-  wxWindow*&        window,
-  const data::item& data)
+  wxWindow*        parent,
+  wxWindow*&       window,
+  const wex::item& item)
 {
-  auto win(data.window());
+  auto win(item.data().window());
   win.parent(parent);
   auto* gr = new grid(win);
-  
+
   gr->CreateGrid(0, 0);
   gr->AppendCols(26);
   gr->AppendRows(100);
-  
+
   window = gr;
 }
 
@@ -290,18 +293,6 @@ void create_hyperlink_control(
     item.data().window().style() == data::NUMBER_NOT_SET ?
       wxHL_DEFAULT_STYLE :
       item.data().window().style());
-}
-
-void create_listview(wxWindow* parent, wxWindow*& window, const wex::item& item)
-{
-  auto* lv = new listview(item.data_listview());
-
-  lv->load(
-    !item.data().initial().has_value() ?
-      config::strings_t() :
-      std::any_cast<config::strings_t>(item.data().initial()));
-
-  window = lv;
 }
 
 void create_radiobox(wxWindow* parent, wxWindow*& window, const wex::item& item)
@@ -340,55 +331,53 @@ void create_radiobox(wxWindow* parent, wxWindow*& window, const wex::item& item)
   window = rb;
 }
 
-void create_slider(wxWindow* parent, wxWindow*& window, const data::item& data)
+void create_slider(wxWindow* parent, wxWindow*& window, const wex::item& item)
 {
   window = new wxSlider(
     parent,
-    data.window().id(),
-    std::any_cast<int>(data.initial()),
-    std::any_cast<int>(data.min()),
-    std::any_cast<int>(data.max()),
-    data.window().pos(),
-    data.window().size(),
-    data.window().style());
+    item.data().window().id(),
+    std::any_cast<int>(item.data().initial()),
+    std::any_cast<int>(item.data().min()),
+    std::any_cast<int>(item.data().max()),
+    PSS);
 }
 
 template <typename S, typename T>
-void create_spinctrl(
-  wxWindow*         parent,
-  wxWindow*&        window,
-  const data::item& data)
+void create_spinctrl(wxWindow* parent, wxWindow*& window, const wex::item& item)
 {
   auto* ctrl = new T(
     parent,
-    data.window().id(),
+    item.data().window().id(),
     wxEmptyString,
-    data.window().pos(),
-    data.window().size(),
-    data.window().style() | (data.is_readonly() ? wxTE_READONLY : 0),
-    std::any_cast<S>(data.min()),
-    std::any_cast<S>(data.max()),
-    !data.initial().has_value() ? std::any_cast<S>(data.min()) :
-                                  std::any_cast<S>(data.initial()));
+    PSS | (item.data().is_readonly() ? wxTE_READONLY : 0),
+    std::any_cast<S>(item.data().min()),
+    std::any_cast<S>(item.data().max()),
+    !item.data().initial().has_value() ?
+      std::any_cast<S>(item.data().min()) :
+      std::any_cast<S>(item.data().initial()));
 
 #ifndef __WXMSW__
-  ctrl->SetIncrement(std::any_cast<S>(data.inc()));
+  ctrl->SetIncrement(std::any_cast<S>(item.data().inc()));
 #endif
 
   window = ctrl;
 }
 
-void create_staticline(
-  wxWindow*         parent,
-  wxWindow*&        window,
-  const data::item& data)
+void create_staticbox(
+  wxWindow*        parent,
+  wxWindow*&       window,
+  const wex::item& item)
 {
-  window = new wxStaticLine(
-    parent,
-    data.window().id(),
-    data.window().pos(),
-    data.window().size(),
-    data.window().style());
+  window =
+    new wxStaticBox(parent, item.data().window().id(), item.label_window());
+}
+
+void create_staticline(
+  wxWindow*        parent,
+  wxWindow*&       window,
+  const wex::item& item)
+{
+  window = new wxStaticLine(parent, item.data().window().id(), PSS);
 }
 
 void create_statictext(
@@ -396,13 +385,8 @@ void create_statictext(
   wxWindow*&       window,
   const wex::item& item)
 {
-  window = new wxStaticText(
-    parent,
-    item.data().window().id(),
-    wxEmptyString,
-    item.data().window().pos(),
-    item.data().window().size(),
-    item.data().window().style());
+  window =
+    new wxStaticText(parent, item.data().window().id(), wxEmptyString, PSS);
 
   (reinterpret_cast<wxStaticText*>(window))
     ->SetLabelMarkup(item.label_window());
@@ -416,10 +400,7 @@ void create_textctrl(wxWindow* parent, wxWindow*& window, const wex::item& item)
     !item.data().initial().has_value() ?
       std::string() :
       std::any_cast<std::string>(item.data().initial()),
-    item.data().window().pos(),
-    item.data().window().size(),
-    item.data().window().style() |
-      (item.data().is_readonly() ? wxTE_READONLY : 0) |
+    PSS | (item.data().is_readonly() ? wxTE_READONLY : 0) |
       (item.type() == item::TEXTCTRL_FLOAT ||
            item.type() == item::TEXTCTRL_INT ?
          wxTE_RIGHT :
@@ -435,9 +416,7 @@ void create_togglebutton(
     parent,
     item.data().window().id(),
     item.label_window(),
-    item.data().window().pos(),
-    item.data().window().size(),
-    item.data().window().style());
+    PSS);
 }
 
 void set_validator(wex::item* item)
@@ -454,13 +433,90 @@ void set_validator(wex::item* item)
   {
     item->window()->SetValidator(wxIntegerValidator<int>());
   }
-
-  if (!item->empty() && item->type() != item::SPACER)
-  {
-    assert(item->window() != nullptr);
-  }
 }
 } // namespace wex
+
+wex::item::create_t wex::item::creators()
+{
+  // clang-format off
+  return {
+    CREATE_CTRL(create_button) 
+    CREATE_CTRL(create_checkbox) 
+    CREATE_CTRL(create_checklistbox_bit) 
+    CREATE_CTRL(create_checklistbox_bool) 
+    CREATE_CTRL(create_colour_picket_widget)
+    CREATE_CTRL(create_combobox) 
+    CREATE_CTRL(create_combobox) 
+    CREATE_CTRL(create_combobox) 
+    CREATE_CTRL(create_commandlink_button)
+    CREATE_CTRL(create_dir_picker_control)
+    CREATE_CTRL(create_empty_or_spacer_control) 
+    CREATE_CTRL(create_file_picker_control) 
+    CREATE_CTRL(create_font_picker_control)
+    CREATE_CTRL(create_grid_control)
+    CREATE_CTRL(create_hyperlink_control)
+    {[&](wxWindow* parent, wxWindow*& window, const wex::item& item)
+      {
+        auto* lv = new listview(m_data_listview.window(
+          data::window(m_data.window()).parent(parent)));
+        lv->load(
+          !item.data().initial().has_value() ?
+            config::strings_t() :
+            std::any_cast<config::strings_t>(item.data().initial()));
+        window = lv;
+      }
+    },
+    CREATE_CTRL(create_book_control<wxNotebook>)
+    {[&](wxWindow* parent, wxWindow*& window, const wex::item& item)
+      {
+        if (m_data.window().style() == data::NUMBER_NOT_SET)
+        {
+          data::window style(m_data.window());
+          style.style(wxAUI_NB_DEFAULT_STYLE);
+          m_data.window(style);
+        }
+      create_book_control<wxAuiNotebook>(parent, window, item);
+      }
+    },
+    CREATE_CTRL(create_book_control<wxChoicebook>)
+    CREATE_CTRL(create_book_control<wxListbook>)
+    CREATE_CTRL(create_book_control<wxSimplebook>)
+    CREATE_CTRL(create_book_control<wxToolbook>)
+    CREATE_CTRL(create_book_control<wxTreebook>)
+    {
+      [&](wxWindow* parent, wxWindow*& window, const wex::item& item)
+      {
+        window = new notebook(
+          m_data.window(data::window().parent(parent)).window());
+      }
+    },
+    CREATE_CTRL(create_radiobox)
+    CREATE_CTRL(create_slider)
+    CREATE_CTRL(create_empty_or_spacer_control)
+    {[&](wxWindow* parent, wxWindow*& window, const wex::item& item)
+      {
+        create_spinctrl<int, wxSpinCtrl>(parent, window, item);
+      }},
+    {[&](wxWindow* parent, wxWindow*& window, const wex::item& item)
+     {
+       create_spinctrl<double, wxSpinCtrlDouble>(parent, window, item);
+     }},
+    CREATE_CTRL(create_staticbox)
+    CREATE_CTRL(create_staticline)
+    CREATE_CTRL(create_statictext) 
+    CREATE_CTRL(create_textctrl)
+    CREATE_CTRL(create_textctrl) 
+    CREATE_CTRL(create_textctrl)
+    CREATE_CTRL(create_togglebutton)
+    {[&](wxWindow* parent, wxWindow*& window, const wex::item& item)
+      {
+        if (m_data.user_window_create() != nullptr)
+        {
+          (m_data.user_window_create())(m_window, parent);
+        }
+      }}};
+  // clang-format on
+}
 
 bool wex::item::create_window(wxWindow* parent, bool readonly)
 {
@@ -469,157 +525,20 @@ bool wex::item::create_window(wxWindow* parent, bool readonly)
     return false;
   }
 
+  if (m_creators.empty())
+  {
+    m_creators = creators();
+  }
+
+  assert(m_type < m_creators.size());
+
   m_data.is_readonly(readonly);
 
-  switch (m_type)
-  {
-    case EMPTY:
-    case SPACER:
-      break;
+  m_creators[m_type](parent, m_window, *this);
 
-    case BUTTON:
-      create_button(parent, m_window, *this);
-      break;
-
-    case CHECKBOX:
-      create_checkbox(parent, m_window, *this);
-      break;
-
-    case CHECKLISTBOX_BIT:
-      create_checklistbox_bit(parent, m_window, m_data);
-      break;
-
-    case CHECKLISTBOX_BOOL:
-      create_checklistbox_bool(parent, m_window, m_data);
-      break;
-
-    case COLOURPICKERWIDGET:
-      create_colour_picket_widget(parent, m_window, m_data);
-      break;
-
-    case COMBOBOX:
-    case COMBOBOX_DIR:
-    case COMBOBOX_FILE:
-      create_combobox(parent, m_window, m_data);
-      break;
-
-    case COMMANDLINKBUTTON:
-      create_commandlink_button(parent, m_window, *this);
-      break;
-
-    case DIRPICKERCTRL:
-      create_dir_picker_control(parent, m_window, m_data);
-      break;
-
-    case FILEPICKERCTRL:
-      create_file_picker_control(parent, m_window, m_data);
-      break;
-
-    case FONTPICKERCTRL:
-      create_font_picker_control(parent, m_window, m_data);
-      break;
-
-    case GRID:
-      create_grid_control(parent, m_window, m_data);
-      break;
-
-    case HYPERLINKCTRL:
-      create_hyperlink_control(parent, m_window, *this);
-      break;
-
-    case LISTVIEW:
-      m_data_listview.window(data::window(m_data.window()).parent(parent));
-      create_listview(parent, m_window, *this);
-      break;
-
-    case NOTEBOOK:
-      create_book_control<wxNotebook>(parent, m_window, m_data);
-      break;
-
-    case NOTEBOOK_AUI:
-      if (m_data.window().style() == data::NUMBER_NOT_SET)
-      {
-        data::window style(m_data.window());
-        style.style(wxAUI_NB_DEFAULT_STYLE);
-        m_data.window(style);
-      }
-      create_book_control<wxAuiNotebook>(parent, m_window, m_data);
-      break;
-
-    case NOTEBOOK_CHOICE:
-      create_book_control<wxChoicebook>(parent, m_window, m_data);
-      break;
-
-    case NOTEBOOK_LIST:
-      create_book_control<wxListbook>(parent, m_window, m_data);
-      break;
-
-    case NOTEBOOK_SIMPLE:
-      create_book_control<wxSimplebook>(parent, m_window, m_data);
-      break;
-
-    case NOTEBOOK_TOOL:
-      create_book_control<wxToolbook>(parent, m_window, m_data);
-      break;
-
-    case NOTEBOOK_TREE:
-      create_book_control<wxTreebook>(parent, m_window, m_data);
-      break;
-
-    case NOTEBOOK_WEX:
-      m_window =
-        new notebook(m_data.window(data::window().parent(parent)).window());
-      break;
-
-    case RADIOBOX:
-      create_radiobox(parent, m_window, *this);
-      break;
-
-    case SLIDER:
-      create_slider(parent, m_window, m_data);
-      break;
-
-    case SPINCTRL:
-      create_spinctrl<int, wxSpinCtrl>(parent, m_window, m_data);
-      break;
-
-    case SPINCTRLDOUBLE:
-      create_spinctrl<double, wxSpinCtrlDouble>(parent, m_window, m_data);
-      break;
-
-    case STATICBOX:
-      m_window = new wxStaticBox(parent, m_data.window().id(), m_label_window);
-      break;
-
-    case STATICLINE:
-      create_staticline(parent, m_window, m_data);
-      break;
-
-    case STATICTEXT:
-      create_statictext(parent, m_window, *this);
-      break;
-
-    case TEXTCTRL:
-    case TEXTCTRL_FLOAT:
-    case TEXTCTRL_INT:
-      create_textctrl(parent, m_window, *this);
-      break;
-
-    case TOGGLEBUTTON:
-      create_togglebutton(parent, m_window, *this);
-      break;
-
-    case USER:
-      if (m_data.user_window_create() != nullptr)
-      {
-        assert(m_window != nullptr);
-        (m_data.user_window_create())(m_window, parent);
-      }
-      break;
-
-    default:
-      assert(0);
-  }
+  assert(
+    m_type == EMPTY || m_type == SPACER ? m_window == nullptr :
+                                          m_window != nullptr);
 
   set_validator(this);
 

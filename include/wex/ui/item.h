@@ -517,6 +517,10 @@ public:
   auto* window() const { return m_window; }
 
 private:
+  typedef std::vector<std::function<
+    void(wxWindow* parent, wxWindow*& window, const wex::item& item)>>
+    create_t;
+
   /// Delegate constructor.
   item(
     type_t             type,
@@ -535,7 +539,8 @@ private:
     std::vector<item>& v,
     bool               readonly);
 
-  bool create_window(wxWindow* parent, bool readonly);
+  bool     create_window(wxWindow* parent, bool readonly);
+  create_t creators();
 
   std::string get_value_as_string() const;
 
@@ -550,6 +555,8 @@ private:
 
   wxSizerFlags m_sizer_flags;
   wxWindow*    m_window{nullptr};
+
+  create_t m_creators;
 
   static inline item_template_dialog<item>* m_dialog     = nullptr;
   static inline bool                        m_use_config = true;

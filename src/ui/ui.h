@@ -15,29 +15,29 @@
 #include <wx/simplebook.h>
 #include <wx/toolbook.h>
 
-#include <wex/data/item.h>
+#include <wex/ui/item.h>
 #include <wex/ui/notebook.h>
 
 namespace wex
 {
 template <typename T>
 void create_book_control(
-  wxWindow*              parent,
-  wxWindow*&             win,
-  const wex::data::item& data)
+  wxWindow*        parent,
+  wxWindow*&       win,
+  const wex::item& item)
 {
   auto* bookctrl = new T(
     parent,
-    data.window().id(),
-    data.window().pos(),
-    data.window().size(),
-    data.window().style());
+    item.data().window().id(),
+    item.data().window().pos(),
+    item.data().window().size(),
+    item.data().window().style());
 
   win = bookctrl;
 
-  if (data.image_list() != nullptr)
+  if (item.data().image_list() != nullptr)
   {
-    bookctrl->SetImageList(data.image_list());
+    bookctrl->SetImageList(item.data().image_list());
   }
 }
 } // namespace wex

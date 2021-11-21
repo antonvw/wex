@@ -508,7 +508,7 @@ const std::any wex::item::get_value() const
   }
   catch (std::bad_cast& e)
   {
-    wex::log(e) << *this << "get_value";
+    wex::log(e) << "get_value" << *this;
   }
 
   return any;
@@ -625,11 +625,11 @@ wxFlexGridSizer* wex::item::layout(
   }
   catch (std::bad_cast& e)
   {
-    wex::log(e) << *this << "layout";
+    wex::log(e) << "layout" << *this;
   }
   catch (std::exception& e)
   {
-    wex::log(e) << *this << "layout";
+    wex::log(e) << "layout" << *this;
   }
 
   return nullptr;
@@ -762,7 +762,7 @@ bool wex::item::set_value(const std::any& value) const
   }
   catch (std::bad_cast& e)
   {
-    wex::log(e) << *this << "set_value";
+    wex::log(e) << "set_value" << *this;
     return false;
   }
 

@@ -1,6 +1,5 @@
 # roadmap
-- improve ui lib
-  - fix some msw test errors?
+- item get_value, to_config
 
 - studio-2022
   - use visual studio 2022
