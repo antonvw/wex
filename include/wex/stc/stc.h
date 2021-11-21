@@ -269,6 +269,7 @@ private:
   void bind_all();
   void bind_other();
   void build_popup_menu(menu& menu);
+  void build_popup_menu_edit(menu& menu);
   void check_brace();
   bool check_brace(int pos);
   void eol_action(const wxCommandEvent& event);

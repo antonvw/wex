@@ -1,6 +1,4 @@
 # roadmap
-- improve stc-lib
-
 - studio-2022
   - use visual studio 2022
   - fix some msw test error (path)

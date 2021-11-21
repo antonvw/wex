@@ -49,20 +49,6 @@ wex::shell::shell(
 
   auto_complete()->use(false); // we have our own auto_complete
 
-  Bind(
-    wxEVT_CHAR,
-    [=, this](wxKeyEvent& event)
-    {
-      if (m_enabled)
-      {
-        process_char(event.GetKeyCode());
-      }
-      if (m_echo)
-      {
-        event.Skip();
-      }
-    });
-
   bind(this).command(
     {{[=, this](wxCommandEvent& event)
       {
@@ -81,19 +67,39 @@ wex::shell::shell(
       },
       ID_SHELL_COMMAND}});
 
+  bind_other();
+}
+
+wex::shell::~shell() {}
+
+void wex::shell::AppendText(const wxString& text)
+{
+  const bool pos_at_end = (GetCurrentPos() >= GetTextLength());
+
+  stc::AppendText(text);
+
+  m_command_start_pos = GetTextLength();
+
+  EmptyUndoBuffer();
+
+  if (pos_at_end)
+  {
+    DocumentEnd();
+    EnsureCaretVisible();
+  }
+}
+
+void wex::shell::bind_other()
+{
   Bind(
-    wxEVT_MIDDLE_UP,
-    [=, this](wxMouseEvent& event)
+    wxEVT_CHAR,
+    [=, this](wxKeyEvent& event)
     {
-      if (event.MiddleUp())
+      if (m_enabled)
       {
-        if (CanCopy())
-        {
-          Copy();
-          Paste();
-        }
+        process_char(event.GetKeyCode());
       }
-      else
+      if (m_echo)
       {
         event.Skip();
       }
@@ -103,152 +109,14 @@ wex::shell::shell(
     wxEVT_KEY_DOWN,
     [=, this](wxKeyEvent& event)
     {
-      if (!m_enabled)
-      {
-        if (get_vi().mode().is_insert())
-        {
-          DocumentEnd();
-          get_vi().mode().escape();
-        }
-        if (
-          GetCurrentPos() >= m_command_start_pos &&
-          (m_process == nullptr || m_process->is_running()))
-        {
-          enable(true);
-        }
-        else
-        {
-          event.Skip();
-          return;
-        }
-      }
-      else
-      {
-        if (
-          config(_("stc.vi mode")).get(true) &&
-          (GetCurrentPos() < m_command_start_pos))
-        {
-          enable(false);
-          event.Skip();
-          return;
-        }
-      }
+      on_key_down(event);
+    });
 
-      bool skip = true;
-
-      switch (const int key = event.GetKeyCode(); key)
-      {
-        case WXK_RETURN:
-        case WXK_TAB:
-          if (m_echo && process_char(key))
-            event.Skip();
-          break;
-
-        // Up or down key pressed, and at the end of document (and auto_complete
-        // active)
-        case WXK_UP:
-        case WXK_DOWN:
-          if (GetCurrentPos() == GetTextLength() && !AutoCompActive())
-          {
-            show_command(key);
-          }
-          else
-          {
-            event.Skip();
-          }
-          break;
-
-        case WXK_HOME:
-          Home();
-          if (GetLine(get_current_line()).StartsWith(m_prompt))
-          {
-            GotoPos(GetCurrentPos() + m_prompt.length());
-          }
-          break;
-
-        // Shift-Insert key pressed, used for pasting.
-        case WXK_INSERT:
-          if (event.GetModifiers() == wxMOD_SHIFT)
-          {
-            Paste();
-          }
-          break;
-
-        // Middle mouse button, to paste, though actually OnMouse is used.
-        case WXK_MBUTTON:
-          Paste();
-          break;
-
-        // Backspace or delete key pressed.
-        case WXK_BACK:
-        case WXK_DELETE:
-          if (GetCurrentPos() <= m_command_start_pos)
-          {
-            // Ignore, so do nothing.
-          }
-          else
-          {
-            // Allow.
-            process_char(key);
-            if (m_echo)
-              event.Skip();
-          }
-          break;
-
-        case WXK_ESCAPE:
-          if (AutoCompActive())
-          {
-            AutoCompCancel();
-          }
-          else
-          {
-            event.Skip();
-          }
-          break;
-
-        default:
-          // Ctrl-C pressed.
-          if (event.GetModifiers() == wxMOD_CONTROL && key == 'C')
-          {
-            skip = false;
-            if (m_process != nullptr)
-            {
-              m_process->stop();
-            }
-          }
-          // Ctrl-Q pressed, used to stop processing.
-          else if (event.GetModifiers() == wxMOD_CONTROL && key == 'Q')
-          {
-            skip = false;
-            if (m_process != nullptr)
-            {
-              m_process->stop();
-            }
-            else
-            {
-              wxCommandEvent event(
-                wxEVT_COMMAND_MENU_SELECTED,
-                ID_SHELL_COMMAND_STOP);
-              wxPostEvent(GetParent(), event);
-            }
-          }
-          // Ctrl-V pressed, used for pasting.
-          else if (event.GetModifiers() == wxMOD_CONTROL && key == 'V')
-          {
-            Paste();
-          }
-          // If we enter regular text and not already building a command, first
-          // goto end.
-          else if (
-            event.GetModifiers() == wxMOD_NONE && key < WXK_START &&
-            GetCurrentPos() < m_command_start_pos)
-          {
-            DocumentEnd();
-          }
-          m_commands_iterator = m_commands.end();
-          if (m_echo && skip)
-            event.Skip();
-      }
+  Bind(
+    wxEVT_MIDDLE_UP,
+    [=, this](wxMouseEvent& event)
+    {
+      on_mouse(event);
     });
 
   Bind(
@@ -287,25 +155,6 @@ wex::shell::shell(
       event.SetDragAllowMove(false);
       event.Skip();
     });
-}
-
-wex::shell::~shell() {}
-
-void wex::shell::AppendText(const wxString& text)
-{
-  const bool pos_at_end = (GetCurrentPos() >= GetTextLength());
-
-  stc::AppendText(text);
-
-  m_command_start_pos = GetTextLength();
-
-  EmptyUndoBuffer();
-
-  if (pos_at_end)
-  {
-    DocumentEnd();
-    EnsureCaretVisible();
-  }
 }
 
 void wex::shell::enable(bool enabled)
@@ -413,6 +262,172 @@ void wex::shell::keep_command()
   if (m_commands_save_in_config > 0)
   {
     config("Shell").set(m_commands);
+  }
+}
+
+void wex::shell::on_key_down(wxKeyEvent& event)
+{
+  if (!m_enabled)
+  {
+    if (get_vi().mode().is_insert())
+    {
+      DocumentEnd();
+      get_vi().mode().escape();
+    }
+    if (
+      GetCurrentPos() >= m_command_start_pos &&
+      (m_process == nullptr || m_process->is_running()))
+    {
+      enable(true);
+    }
+    else
+    {
+      event.Skip();
+      return;
+    }
+  }
+  else
+  {
+    if (
+      config(_("stc.vi mode")).get(true) &&
+      (GetCurrentPos() < m_command_start_pos))
+    {
+      enable(false);
+      event.Skip();
+      return;
+    }
+  }
+
+  bool skip = true;
+
+  switch (const int key = event.GetKeyCode(); key)
+  {
+    case WXK_RETURN:
+    case WXK_TAB:
+      if (m_echo && process_char(key))
+        event.Skip();
+      break;
+
+    // Up or down key pressed, and at the end of document (and auto_complete
+    // active)
+    case WXK_UP:
+    case WXK_DOWN:
+      if (GetCurrentPos() == GetTextLength() && !AutoCompActive())
+      {
+        show_command(key);
+      }
+      else
+      {
+        event.Skip();
+      }
+      break;
+
+    case WXK_HOME:
+      Home();
+      if (GetLine(get_current_line()).StartsWith(m_prompt))
+      {
+        GotoPos(GetCurrentPos() + m_prompt.length());
+      }
+      break;
+
+    // Shift-Insert key pressed, used for pasting.
+    case WXK_INSERT:
+      if (event.GetModifiers() == wxMOD_SHIFT)
+      {
+        Paste();
+      }
+      break;
+
+    // Middle mouse button, to paste, though actually OnMouse is used.
+    case WXK_MBUTTON:
+      Paste();
+      break;
+
+    // Backspace or delete key pressed.
+    case WXK_BACK:
+    case WXK_DELETE:
+      if (GetCurrentPos() <= m_command_start_pos)
+      {
+        // Ignore, so do nothing.
+      }
+      else
+      {
+        // Allow.
+        process_char(key);
+        if (m_echo)
+          event.Skip();
+      }
+      break;
+
+    case WXK_ESCAPE:
+      if (AutoCompActive())
+      {
+        AutoCompCancel();
+      }
+      else
+      {
+        event.Skip();
+      }
+      break;
+
+    default:
+      // Ctrl-C pressed.
+      if (event.GetModifiers() == wxMOD_CONTROL && key == 'C')
+      {
+        skip = false;
+        if (m_process != nullptr)
+        {
+          m_process->stop();
+        }
+      }
+      // Ctrl-Q pressed, used to stop processing.
+      else if (event.GetModifiers() == wxMOD_CONTROL && key == 'Q')
+      {
+        skip = false;
+        if (m_process != nullptr)
+        {
+          m_process->stop();
+        }
+        else
+        {
+          wxCommandEvent event(
+            wxEVT_COMMAND_MENU_SELECTED,
+            ID_SHELL_COMMAND_STOP);
+          wxPostEvent(GetParent(), event);
+        }
+      }
+      // Ctrl-V pressed, used for pasting.
+      else if (event.GetModifiers() == wxMOD_CONTROL && key == 'V')
+      {
+        Paste();
+      }
+      // If we enter regular text and not already building a command, first
+      // goto end.
+      else if (
+        event.GetModifiers() == wxMOD_NONE && key < WXK_START &&
+        GetCurrentPos() < m_command_start_pos)
+      {
+        DocumentEnd();
+      }
+      m_commands_iterator = m_commands.end();
+      if (m_echo && skip)
+        event.Skip();
+  }
+}
+
+void wex::shell::on_mouse(wxMouseEvent& event)
+{
+  if (event.MiddleUp())
+  {
+    if (CanCopy())
+    {
+      Copy();
+      Paste();
+    }
+  }
+  else
+  {
+    event.Skip();
   }
 }
 
@@ -654,7 +669,7 @@ void wex::shell::set_process(factory::process* process)
     enable(true);
     process->set_handler_out(this);
     SetName(process->get_exe());
-      
+
     get_lexer().set("errorlist");
   }
 }

@@ -157,6 +157,11 @@ public:
   };
 
 private:
+  bool inject_col() const;
+  bool inject_command() const;
+  bool inject_find() const;
+  bool inject_line() const;
+
   factory::stc* m_stc{nullptr};
 
   data::control m_data;
