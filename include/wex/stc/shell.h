@@ -105,6 +105,7 @@ private:
   void expand();
   void keep_command();
   void on_key_down(wxKeyEvent& event);
+  bool on_key_down_continue(wxKeyEvent& event);
   void on_key_down_others(wxKeyEvent& event);
   void on_mouse(wxMouseEvent& event);
   void process_char_default(int key);

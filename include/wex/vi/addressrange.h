@@ -162,6 +162,7 @@ public:
 private:
   const std::string build_replacement(const std::string& text) const;
   int confirm(const std::string& pattern, const std::string& replacement) const;
+  bool copy(const command_parser& cp);
   bool general(const address& destination, std::function<bool()> f) const;
   bool indent(bool forward = true) const;
   void set(const std::string& begin, const std::string& end);
@@ -169,6 +170,7 @@ private:
   void set(address& begin, address& end, int lines) const;
   void set_range(const std::string& range);
   bool set_selection() const;
+  bool write(const command_parser& cp);
 
   static inline data::substitute m_substitute;
 

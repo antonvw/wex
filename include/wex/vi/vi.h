@@ -89,10 +89,16 @@ private:
   motion_t   get_motion(const std::string& command) const;
   size_t     inc_or_dec(const std::string& command);
   bool       insert_mode(const std::string& text);
+  void       insert_mode_escape(const std::string& command);
+  bool       insert_mode_hex(const std::string& command);
   void       insert_mode_normal(const std::string& text);
+  bool       insert_mode_other(const std::string& text);
+  bool       insert_mode_register(const std::string& text);
   bool       motion_command(motion_t type, std::string& command);
   bool       other_command(std::string& command);
   bool       parse_command(std::string& command);
+  bool       process_macro_key(const wxKeyEvent& event);
+  bool       process_special_key(const wxKeyEvent& event);
   bool       put(bool after);
   size_t     reverse_case(const std::string& command);
   void       set_last_command(const std::string& command);

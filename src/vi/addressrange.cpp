@@ -203,6 +203,23 @@ int wex::addressrange::confirm(
   return msgDialog.ShowModal();
 }
 
+bool wex::addressrange::copy(const command_parser& cp)
+{
+  if (cp.command() != "co" && cp.command() != "copy")
+  {
+    if (cp.text().find('|') != std::string::npos)
+    {
+      return change(after(cp.text(), '|'));
+    }
+    else
+    {
+      return m_ex->frame()->show_ex_input(m_ex->get_stc(), cp.command()[0]);
+    }
+  }
+
+  return false;
+}
+
 bool wex::addressrange::copy(const wex::address& destination) const
 {
   return general(
@@ -440,16 +457,9 @@ bool wex::addressrange::parse(const command_parser& cp, info_message_t& im)
       return false;
 
     case 'c':
-      if (cp.command() != "co" && cp.command() != "copy")
+      if (copy(cp))
       {
-        if (cp.text().find('|') != std::string::npos)
-        {
-          return change(after(cp.text(), '|'));
-        }
-        else
-        {
-          return m_ex->frame()->show_ex_input(m_ex->get_stc(), cp.command()[0]);
-        }
+        return true;
       }
       [[fallthrough]];
 
@@ -485,32 +495,7 @@ bool wex::addressrange::parse(const command_parser& cp, info_message_t& im)
       return sort(cp.text());
 
     case 'w':
-      if (!cp.text().empty() && !cmdline::use_events())
-      {
-        const bool se = m_stc->GetSelectionEmpty();
-
-        m_stc->position_save();
-
-        const bool r = write(cp.text());
-
-        m_stc->position_restore();
-
-        if (se)
-        {
-          m_stc->SelectNone();
-        }
-
-        return r;
-      }
-      else
-      {
-        wxCommandEvent event(
-          wxEVT_COMMAND_MENU_SELECTED,
-          cp.text().empty() ? wxID_SAVE : wxID_SAVEAS);
-        event.SetString(boost::algorithm::trim_left_copy(cp.text()));
-        wxPostEvent(wxTheApp->GetTopWindow(), event);
-        return true;
-      }
+      return write(cp);
 
     case 'y':
       im = info_message_t::YANK;
@@ -819,6 +804,36 @@ bool wex::addressrange::substitute(const command_parser& cp)
   m_stc->IndicatorClearRange(0, m_stc->GetTextLength() - 1);
 
   return true;
+}
+
+bool wex::addressrange::write(const command_parser& cp)
+{
+  if (!cp.text().empty() && !cmdline::use_events())
+  {
+    const bool se = m_stc->GetSelectionEmpty();
+
+    m_stc->position_save();
+
+    const bool r = write(cp.text());
+
+    m_stc->position_restore();
+
+    if (se)
+    {
+      m_stc->SelectNone();
+    }
+
+    return r;
+  }
+  else
+  {
+    wxCommandEvent event(
+      wxEVT_COMMAND_MENU_SELECTED,
+      cp.text().empty() ? wxID_SAVE : wxID_SAVEAS);
+    event.SetString(boost::algorithm::trim_left_copy(cp.text()));
+    wxPostEvent(wxTheApp->GetTopWindow(), event);
+    return true;
+  }
 }
 
 bool wex::addressrange::write(const std::string& text) const

@@ -267,35 +267,9 @@ void wex::shell::keep_command()
 
 void wex::shell::on_key_down(wxKeyEvent& event)
 {
-  if (!m_enabled)
+  if (!on_key_down_continue(event))
   {
-    if (get_vi().mode().is_insert())
-    {
-      DocumentEnd();
-      get_vi().mode().escape();
-    }
-    if (
-      GetCurrentPos() >= m_command_start_pos &&
-      (m_process == nullptr || m_process->is_running()))
-    {
-      enable(true);
-    }
-    else
-    {
-      event.Skip();
-      return;
-    }
-  }
-  else
-  {
-    if (
-      config(_("stc.vi mode")).get(true) &&
-      (GetCurrentPos() < m_command_start_pos))
-    {
-      enable(false);
-      event.Skip();
-      return;
-    }
+    return;
   }
 
   switch (const auto key = event.GetKeyCode(); key)
@@ -371,6 +345,42 @@ void wex::shell::on_key_down(wxKeyEvent& event)
     default:
       on_key_down_others(event);
   }
+}
+
+bool wex::shell::on_key_down_continue(wxKeyEvent& event)
+{
+  if (!m_enabled)
+  {
+    if (get_vi().mode().is_insert())
+    {
+      DocumentEnd();
+      get_vi().mode().escape();
+    }
+    if (
+      GetCurrentPos() >= m_command_start_pos &&
+      (m_process == nullptr || m_process->is_running()))
+    {
+      enable(true);
+    }
+    else
+    {
+      event.Skip();
+      return false;
+    }
+  }
+  else
+  {
+    if (
+      config(_("stc.vi mode")).get(true) &&
+      (GetCurrentPos() < m_command_start_pos))
+    {
+      enable(false);
+      event.Skip();
+      return false;
+    }
+  }
+
+  return true;
 }
 
 void wex::shell::on_key_down_others(wxKeyEvent& event)

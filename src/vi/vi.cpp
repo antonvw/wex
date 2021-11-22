@@ -29,6 +29,19 @@ bool is_block_insert(vi* vi)
          (vi->get_stc()->SelectionIsRectangle() ||
           vi->get_stc()->GetSelectionMode() == wxSTC_SEL_THIN);
 }
+
+bool process_modifier(vi* vi, macros::key_t type, const wxKeyEvent& event)
+{
+  if (const auto& it =
+        ex::get_macros().get_keys_map(type).find(event.GetKeyCode());
+      it != ex::get_macros().get_keys_map(type).end())
+  {
+    vi->command(it->second);
+    return false;
+  }
+
+  return true;
+}
 } // namespace wex
 
 wex::vi::vi(wex::factory::stc* arg, mode_t ex_mode)
@@ -360,19 +373,7 @@ bool wex::vi::insert_mode(const std::string& command)
   }
   else if (get_stc()->is_hexmode())
   {
-    if (static_cast<int>(command.back()) == WXK_ESCAPE)
-    {
-      if (m_mode.escape())
-      {
-        get_stc()->SetOvertype(false);
-      }
-
-      return true;
-    }
-    else
-    {
-      return get_stc()->get_hexmode_insert(command, get_stc()->GetCurrentPos());
-    }
+    return insert_mode_hex(command);
   }
   // add control chars
   else if (command.size() == 2 && command[1] == 0)
@@ -389,131 +390,71 @@ bool wex::vi::insert_mode(const std::string& command)
   }
   else if (command.find(k_s(WXK_CONTROL_R)) != std::string::npos)
   {
-    if (command.size() < 2)
-    {
-      return false;
-    }
-
-    std::string text(command);
-    marker_and_register_expansion(this, text);
-    insert_mode(text);
-    return true;
+    return insert_mode_register(command);
   }
 
-  switch (command.back())
+  return insert_mode_other(command);
+}
+
+void wex::vi::insert_mode_escape(const std::string& command)
+{
+  // Add extra inserts if necessary.
+  if (!m_insert_text.empty())
   {
-    case WXK_BACK:
-      if (!m_insert_text.empty())
+    for (auto i = 1; i < m_count; i++)
+    {
+      insert_mode_normal(m_insert_text);
+    }
+
+    set_register_insert(m_insert_text);
+  }
+
+  // If we have text to be added.
+  if (command.size() > 1)
+  {
+    if (const auto rest(command.substr(0, command.size() - 1));
+        !get_stc()->GetSelectedText().empty())
+    {
+      get_stc()->ReplaceSelection(rest);
+    }
+    else
+    {
+      if (!get_stc()->GetOvertype())
       {
-        m_insert_text.pop_back();
-      }
-      get_stc()->DeleteBack();
-      break;
-
-    case WXK_CONTROL_R:
-      append_insert_text(command);
-      break;
-
-    case WXK_DELETE:
-      delete_range(get_stc()->GetCurrentPos(), get_stc()->GetCurrentPos() + 1);
-      break;
-
-    case WXK_ESCAPE:
-      // Add extra inserts if necessary.
-      if (!m_insert_text.empty())
-      {
-        for (auto i = 1; i < m_count; i++)
-        {
-          insert_mode_normal(m_insert_text);
-        }
-
-        set_register_insert(m_insert_text);
-      }
-
-      // If we have text to be added.
-      if (command.size() > 1)
-      {
-        if (const auto rest(command.substr(0, command.size() - 1));
-            !get_stc()->GetSelectedText().empty())
-        {
-          get_stc()->ReplaceSelection(rest);
-        }
-        else
-        {
-          if (!get_stc()->GetOvertype())
-          {
-            REPEAT(get_stc()->add_text(rest));
-          }
-          else
-          {
-            std::string text;
-            get_stc()->SetTargetStart(get_stc()->GetCurrentPos());
-            REPEAT(text += rest;);
-            get_stc()->SetTargetEnd(get_stc()->GetCurrentPos() + text.size());
-            get_stc()->ReplaceTarget(text);
-          }
-        }
-      }
-
-      if (m_mode.escape())
-      {
-        get_stc()->SetOvertype(false);
-      }
-      break;
-
-    default:
-      if (
-        m_last_command.find('c') != std::string::npos && m_insert_text.empty())
-      {
-        get_stc()->ReplaceSelection(wxEmptyString);
-      }
-
-      if (!m_insert_text.empty() && m_insert_text.back() == WXK_CONTROL_R)
-      {
-        get_stc()->ReplaceSelection(wxEmptyString);
-
-        if (command.back() != '.')
-        {
-          append_insert_text(command);
-        }
-        else
-        {
-          m_insert_text.pop_back();
-        }
-
-        command_reg(std::string(1, command.back()));
-        return false;
+        REPEAT(get_stc()->add_text(rest));
       }
       else
       {
-        if (
-          command.size() == 1 &&
-          (static_cast<int>(command.back()) == WXK_RETURN ||
-           static_cast<int>(command.back()) == WXK_NUMPAD_ENTER))
-        {
-          get_stc()->NewLine();
-
-          if (!get_stc()->AutoCompActive())
-          {
-            append_insert_text(get_stc()->eol());
-          }
-        }
-        else
-        {
-          if (!get_stc()->GetOvertype())
-          {
-            insert_mode_normal(command);
-          }
-
-          if (!m_dot)
-          {
-            append_insert_text(command);
-          }
-        }
+        std::string text;
+        get_stc()->SetTargetStart(get_stc()->GetCurrentPos());
+        REPEAT(text += rest;);
+        get_stc()->SetTargetEnd(get_stc()->GetCurrentPos() + text.size());
+        get_stc()->ReplaceTarget(text);
       }
+    }
   }
 
-  return true;
+  if (m_mode.escape())
+  {
+    get_stc()->SetOvertype(false);
+  }
+}
+
+bool wex::vi::insert_mode_hex(const std::string& command)
+{
+  if (static_cast<int>(command.back()) == WXK_ESCAPE)
+  {
+    if (m_mode.escape())
+    {
+      get_stc()->SetOvertype(false);
+    }
+
+    return true;
+  }
+  else
+  {
+    return get_stc()->get_hexmode_insert(command, get_stc()->GetCurrentPos());
+  }
 }
 
 void wex::vi::insert_mode_normal(const std::string& text)
@@ -583,6 +524,99 @@ void wex::vi::insert_mode_normal(const std::string& text)
   {
     get_stc()->add_text(text);
   }
+}
+
+bool wex::vi::insert_mode_other(const std::string& command)
+{
+  switch (command.back())
+  {
+    case WXK_BACK:
+      if (!m_insert_text.empty())
+      {
+        m_insert_text.pop_back();
+      }
+      get_stc()->DeleteBack();
+      break;
+
+    case WXK_CONTROL_R:
+      append_insert_text(command);
+      break;
+
+    case WXK_DELETE:
+      delete_range(get_stc()->GetCurrentPos(), get_stc()->GetCurrentPos() + 1);
+      break;
+
+    case WXK_ESCAPE:
+      insert_mode_escape(command);
+      break;
+
+    default:
+      if (
+        m_last_command.find('c') != std::string::npos && m_insert_text.empty())
+      {
+        get_stc()->ReplaceSelection(wxEmptyString);
+      }
+
+      if (!m_insert_text.empty() && m_insert_text.back() == WXK_CONTROL_R)
+      {
+        get_stc()->ReplaceSelection(wxEmptyString);
+
+        if (command.back() != '.')
+        {
+          append_insert_text(command);
+        }
+        else
+        {
+          m_insert_text.pop_back();
+        }
+
+        command_reg(std::string(1, command.back()));
+        return false;
+      }
+      else
+      {
+        if (
+          command.size() == 1 &&
+          (static_cast<int>(command.back()) == WXK_RETURN ||
+           static_cast<int>(command.back()) == WXK_NUMPAD_ENTER))
+        {
+          get_stc()->NewLine();
+
+          if (!get_stc()->AutoCompActive())
+          {
+            append_insert_text(get_stc()->eol());
+          }
+        }
+        else
+        {
+          if (!get_stc()->GetOvertype())
+          {
+            insert_mode_normal(command);
+          }
+
+          if (!m_dot)
+          {
+            append_insert_text(command);
+          }
+        }
+      }
+  }
+
+  return true;
+}
+
+bool wex::vi::insert_mode_register(const std::string& command)
+{
+  if (command.size() < 2)
+  {
+    return false;
+  }
+
+  std::string text(command);
+  marker_and_register_expansion(this, text);
+  insert_mode(text);
+
+  return true;
 }
 
 bool wex::vi::on_char(const wxKeyEvent& event)
@@ -664,19 +698,7 @@ bool wex::vi::on_key_down(const wxKeyEvent& event)
   }
   else if (!m_command.empty() && m_command.front() == '@')
   {
-    if (event.GetKeyCode() == WXK_BACK)
-    {
-      m_command.pop_back();
-      frame()->statustext(m_command.command().substr(1), "PaneMacro");
-    }
-    else if (event.GetKeyCode() == WXK_ESCAPE)
-    {
-      m_command.clear();
-      m_insert_command.clear();
-      frame()->statustext(get_macros().mode().get_macro(), "PaneMacro");
-    }
-
-    return true;
+    return process_macro_key(event);
   }
   else if (is_block_insert(this) && event.GetKeyCode() != WXK_ESCAPE)
   {
@@ -695,40 +717,12 @@ bool wex::vi::on_key_down(const wxKeyEvent& event)
        event.GetKeyCode() == WXK_RIGHT || event.GetKeyCode() == WXK_PAGEUP ||
        event.GetKeyCode() == WXK_PAGEDOWN))))
   {
-    if (event.GetKeyCode() == WXK_BACK)
-    {
-      if (!m_insert_text.empty())
-      {
-        m_insert_text.pop_back();
-      }
-    }
-    else if (m_command.append_exec(convert_key_event(event)))
-    {
-      m_command.clear();
-
-      if (!m_mode.is_insert())
-      {
-        m_insert_command.clear();
-      }
-
-      return false;
-    }
-
-    return true;
+    return process_special_key(event);
   }
   else if (
     (event.GetModifiers() & wxMOD_CONTROL) && event.GetKeyCode() != WXK_NONE)
   {
-    if (const auto& it = get_macros()
-                           .get_keys_map(macros::key_t::KEY_CONTROL)
-                           .find(event.GetKeyCode());
-        it != get_macros().get_keys_map(macros::key_t::KEY_CONTROL).end())
-    {
-      command(it->second);
-      return false;
-    }
-
-    return true;
+    return process_modifier(this, macros::key_t::KEY_CONTROL, event);
   }
   else if ((event.GetModifiers() & wxMOD_ALT) && event.GetKeyCode() != WXK_NONE)
   {
@@ -737,21 +731,53 @@ bool wex::vi::on_key_down(const wxKeyEvent& event)
       command(esc());
     }
 
-    if (const auto& it = get_macros()
-                           .get_keys_map(macros::key_t::KEY_ALT)
-                           .find(event.GetKeyCode());
-        it != get_macros().get_keys_map(macros::key_t::KEY_ALT).end())
-    {
-      command(it->second);
-      return false;
-    }
-
-    return true;
+    return process_modifier(this, macros::key_t::KEY_ALT, event);
   }
   else
   {
     return true;
   }
+}
+
+bool wex::vi::process_macro_key(const wxKeyEvent& event)
+{
+  if (event.GetKeyCode() == WXK_BACK)
+  {
+    m_command.pop_back();
+    frame()->statustext(m_command.command().substr(1), "PaneMacro");
+  }
+  else if (event.GetKeyCode() == WXK_ESCAPE)
+  {
+    m_command.clear();
+    m_insert_command.clear();
+    frame()->statustext(get_macros().mode().get_macro(), "PaneMacro");
+  }
+
+  return true;
+}
+
+bool wex::vi::process_special_key(const wxKeyEvent& event)
+{
+  if (event.GetKeyCode() == WXK_BACK)
+  {
+    if (!m_insert_text.empty())
+    {
+      m_insert_text.pop_back();
+    }
+  }
+  else if (m_command.append_exec(convert_key_event(event)))
+  {
+    m_command.clear();
+
+    if (!m_mode.is_insert())
+    {
+      m_insert_command.clear();
+    }
+
+    return false;
+  }
+
+  return true;
 }
 
 bool wex::vi::put(bool after)
