@@ -96,13 +96,17 @@ private:
   bool       insert_mode_register(const std::string& text);
   bool       motion_command(motion_t type, std::string& command);
   bool       other_command(std::string& command);
-  bool       parse_command(std::string& command);
-  bool       process_macro_key(const wxKeyEvent& event);
-  bool       process_special_key(const wxKeyEvent& event);
-  bool       put(bool after);
-  size_t     reverse_case(const std::string& command);
-  void       set_last_command(const std::string& command);
-  void       yank_range(int start);
+
+  bool parse_command(std::string& command);
+  void
+  parse_command_motion(motion_t type, std::string& command, bool& check_other);
+
+  bool   process_macro_key(const wxKeyEvent& event);
+  bool   process_special_key(const wxKeyEvent& event);
+  bool   put(bool after);
+  size_t reverse_case(const std::string& command);
+  void   set_last_command(const std::string& command);
+  void   yank_range(int start);
 
   static inline std::string m_last_command;
   static inline std::string m_last_find_char_command;

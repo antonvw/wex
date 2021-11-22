@@ -89,6 +89,29 @@ bool get_value_simple(wex::item::type_t t, wxWindow* window, std::any& any)
   return true;
 }
 
+bool no_value(wex::item::type_t t)
+{
+  switch (t)
+  {
+    case item::BUTTON:
+    case item::STATICBOX:
+    case item::STATICLINE:
+    case item::STATICTEXT:
+      break;
+
+    case item::CHECKLISTBOX_BOOL:
+    case item::RADIOBOX:
+    case item::USER:
+      // Not yet implemented
+      break;
+
+    default:
+      return false;
+  }
+
+  return true;
+}
+
 const std::string str(const std::string& name, const std::any& any)
 {
   std::stringstream s;
@@ -399,7 +422,7 @@ const std::any wex::item::get_value() const
     return get_value_prim(this);
   }
 
-  if (is_notebook())
+  if (is_notebook() || no_value(m_type))
   {
     return std::any();
   }
@@ -476,12 +499,6 @@ const std::any wex::item::get_value() const
           any = ((wex::listview*)m_window)->save();
           break;
 
-        case CHECKLISTBOX_BOOL:
-        case RADIOBOX:
-        case USER:
-          // Not yet implemented
-          break;
-
         case TEXTCTRL:
           any =
             (reinterpret_cast<wxTextCtrl*>(m_window))->GetValue().ToStdString();
@@ -513,12 +530,6 @@ const std::any wex::item::get_value() const
           {
             any = 0l;
           }
-          break;
-
-        case BUTTON:
-        case STATICBOX:
-        case STATICLINE:
-        case STATICTEXT:
           break;
 
         default:

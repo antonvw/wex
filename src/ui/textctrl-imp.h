@@ -56,6 +56,7 @@ private:
 
   void process_char(wxKeyEvent& event);
   void process_key_down(wxKeyEvent& event);
+  void process_key_down_page(wxKeyEvent& event);
   void process_text(wxCommandEvent& event);
   void process_text_enter(wxCommandEvent& event);
   void process_text_paste(wxCommandEvent& event);

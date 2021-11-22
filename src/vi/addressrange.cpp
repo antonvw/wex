@@ -482,10 +482,6 @@ bool wex::addressrange::parse(const command_parser& cp, info_message_t& im)
       im = info_message_t::MOVE;
       return move(address(m_ex, cp.text()));
 
-    case 'l':
-    case 'p':
-      return (m_stc->GetName() != "Print" ? print(cp.text()) : false);
-
     case 's':
     case '&':
     case '~':
@@ -499,7 +495,7 @@ bool wex::addressrange::parse(const command_parser& cp, info_message_t& im)
 
     case 'y':
       im = info_message_t::YANK;
-      return yank(cp.text().empty() ? '0' : static_cast<char>(cp.text()[0]));
+      return yank(cp);
 
     case '>':
       return shift_right();
@@ -513,14 +509,24 @@ bool wex::addressrange::parse(const command_parser& cp, info_message_t& im)
     case '@':
       return execute(cp.text());
 
+    case 'l':
+    case 'p':
     case '#':
     case 'n':
-      return (m_stc->GetName() != "Print" ? print("#" + cp.text()) : false);
+      return print(cp);
 
     default:
       log::status("Unknown range command") << cp.command();
       return false;
   }
+}
+
+bool wex::addressrange::print(const command_parser& cp)
+{
+  const std::string arg(
+    cp.command()[0] == '#' || cp.command()[0] == 'n' ? "#" : std::string());
+
+  return (m_stc->GetName() != "Print" ? print(arg + cp.text()) : false);
 }
 
 bool wex::addressrange::print(const std::string& flags) const
@@ -870,6 +876,11 @@ bool wex::addressrange::write(const std::string& text) const
                std::ios::out)
       .write(m_stc->get_selected_text());
   }
+}
+
+bool wex::addressrange::yank(const command_parser& cp)
+{
+  return yank(cp.text().empty() ? '0' : static_cast<char>(cp.text()[0]));
 }
 
 bool wex::addressrange::yank(char name) const

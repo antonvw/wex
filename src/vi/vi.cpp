@@ -705,19 +705,9 @@ bool wex::vi::on_key_down(const wxKeyEvent& event)
     m_command.clear();
     return true;
   }
-  else if (
-    !event.HasAnyModifiers() &&
-    (event.GetKeyCode() == WXK_ESCAPE || event.GetKeyCode() == WXK_BACK ||
-     event.GetKeyCode() == WXK_RETURN ||
-     event.GetKeyCode() == WXK_NUMPAD_ENTER ||
-     (!m_mode.is_visual() && event.GetKeyCode() == WXK_TAB) ||
-     (!m_mode.is_insert() &&
-      (event.GetKeyCode() == WXK_LEFT || event.GetKeyCode() == WXK_DELETE ||
-       event.GetKeyCode() == WXK_DOWN || event.GetKeyCode() == WXK_UP ||
-       event.GetKeyCode() == WXK_RIGHT || event.GetKeyCode() == WXK_PAGEUP ||
-       event.GetKeyCode() == WXK_PAGEDOWN))))
+  else if (process_special_key(event))
   {
-    return process_special_key(event);
+    return true;
   }
   else if (
     (event.GetModifiers() & wxMOD_CONTROL) && event.GetKeyCode() != WXK_NONE)
@@ -758,26 +748,41 @@ bool wex::vi::process_macro_key(const wxKeyEvent& event)
 
 bool wex::vi::process_special_key(const wxKeyEvent& event)
 {
-  if (event.GetKeyCode() == WXK_BACK)
+  if (
+    !event.HasAnyModifiers() &&
+    (event.GetKeyCode() == WXK_ESCAPE || event.GetKeyCode() == WXK_BACK ||
+     event.GetKeyCode() == WXK_RETURN ||
+     event.GetKeyCode() == WXK_NUMPAD_ENTER ||
+     (!m_mode.is_visual() && event.GetKeyCode() == WXK_TAB) ||
+     (!m_mode.is_insert() &&
+      (event.GetKeyCode() == WXK_LEFT || event.GetKeyCode() == WXK_DELETE ||
+       event.GetKeyCode() == WXK_DOWN || event.GetKeyCode() == WXK_UP ||
+       event.GetKeyCode() == WXK_RIGHT || event.GetKeyCode() == WXK_PAGEUP ||
+       event.GetKeyCode() == WXK_PAGEDOWN))))
   {
-    if (!m_insert_text.empty())
+    if (event.GetKeyCode() == WXK_BACK)
     {
-      m_insert_text.pop_back();
+      if (!m_insert_text.empty())
+      {
+        m_insert_text.pop_back();
+      }
     }
-  }
-  else if (m_command.append_exec(convert_key_event(event)))
-  {
-    m_command.clear();
-
-    if (!m_mode.is_insert())
+    else if (m_command.append_exec(convert_key_event(event)))
     {
-      m_insert_command.clear();
+      m_command.clear();
+
+      if (!m_mode.is_insert())
+      {
+        m_insert_command.clear();
+      }
+
+      return false;
     }
 
-    return false;
+    return true;
   }
 
-  return true;
+  return false;
 }
 
 bool wex::vi::put(bool after)
