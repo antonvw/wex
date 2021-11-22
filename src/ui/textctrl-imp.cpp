@@ -488,14 +488,11 @@ void wex::textctrl_imp::process_key_down_page(wxKeyEvent& event)
     default:
       if (m_command.type() == ex_command::type_t::FIND)
       {
-        find_replace_data::get()->m_find_strings.set(
-          event.GetKeyCode(),
-          m_tc);
+        find_replace_data::get()->m_find_strings.set(event.GetKeyCode(), m_tc);
       }
       else if (m_input == 0)
       {
-        if (const auto& val = tci()->get();
-            !val.empty() && GetValue().empty())
+        if (const auto& val = tci()->get(); !val.empty() && GetValue().empty())
         {
           set_text(val);
           SelectAll();

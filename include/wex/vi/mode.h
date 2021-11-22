@@ -90,6 +90,8 @@ public:
   bool transition(std::string& command);
 
 private:
+  bool transition_prep(std::string& command);
+
   vi*                                                      m_vi;
   std::unique_ptr<vi_fsm>                                  m_fsm;
   const std::vector<std::pair<int, std::function<void()>>> m_insert_commands;

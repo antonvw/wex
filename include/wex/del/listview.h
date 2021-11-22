@@ -13,6 +13,7 @@
 namespace wex::del
 {
 class frame;
+struct menu_env;
 
 /// Adds a del::frame to listview.
 /// It also adds a tool menu if appropriate.
@@ -33,6 +34,9 @@ protected:
   auto* get_frame() { return m_frame; }
 
 private:
+  void build_popup_menu_multiple(const menu_env* env, menu& menu);
+  void build_popup_menu_single(const menu_env* env, menu& menu);
+
   const data::listview::menu_t m_menu_flags;
   class frame*                 m_frame;
 };

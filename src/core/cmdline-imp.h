@@ -59,6 +59,10 @@ public:
   bool parse(data::cmdline& data);
 
 private:
+  bool parse_args(data::cmdline& data);
+  void parse_help(data::cmdline& data);
+  void parse_quit(data::cmdline& data);
+
   std::map<std::string, function_t> m_functions;
 
   po::options_description            m_desc;

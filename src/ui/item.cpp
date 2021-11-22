@@ -175,47 +175,46 @@ wex::item::item(
   , m_label_window(after(label, '.', false))
   , m_sizer_flags(wxSizerFlags().Border().Left())
 {
-  switch (m_type)
+  if (is_notebook())
   {
-    case CHECKLISTBOX_BIT:
-    case CHECKLISTBOX_BOOL:
-    case GRID:
-    case LISTVIEW:
-    case NOTEBOOK:
-    case NOTEBOOK_AUI:
-    case NOTEBOOK_LIST:
-    case NOTEBOOK_SIMPLE:
-    case NOTEBOOK_TOOL:
-    case NOTEBOOK_TREE:
-    case NOTEBOOK_WEX:
-    case RADIOBOX:
-    case STATICBOX:
-      m_is_row_growable = true;
-      m_sizer_flags.Expand();
-      break;
-
-    case STATICTEXT:
-    case TEXTCTRL:
-    case TEXTCTRL_FLOAT:
-    case TEXTCTRL_INT:
-      m_is_row_growable = (m_data.window().style() & wxTE_MULTILINE) > 0;
-      m_sizer_flags.Expand();
-      break;
-
-    case CHECKBOX:
-    case COMBOBOX:
-    case COMBOBOX_DIR:
-    case COMBOBOX_FILE:
-    case DIRPICKERCTRL:
-    case FILEPICKERCTRL:
-    case SPACER:
-    case STATICLINE:
-    case USER:
-      m_sizer_flags.Expand();
-      break;
-
-    default:; // prevent warning
+    m_is_row_growable = true;
+    m_sizer_flags.Expand();
   }
+  else
+    switch (m_type)
+    {
+      case CHECKLISTBOX_BIT:
+      case CHECKLISTBOX_BOOL:
+      case GRID:
+      case LISTVIEW:
+      case RADIOBOX:
+      case STATICBOX:
+        m_is_row_growable = true;
+        m_sizer_flags.Expand();
+        break;
+
+      case STATICTEXT:
+      case TEXTCTRL:
+      case TEXTCTRL_FLOAT:
+      case TEXTCTRL_INT:
+        m_is_row_growable = (m_data.window().style() & wxTE_MULTILINE) > 0;
+        m_sizer_flags.Expand();
+        break;
+
+      case CHECKBOX:
+      case COMBOBOX:
+      case COMBOBOX_DIR:
+      case COMBOBOX_FILE:
+      case DIRPICKERCTRL:
+      case FILEPICKERCTRL:
+      case SPACER:
+      case STATICLINE:
+      case USER:
+        m_sizer_flags.Expand();
+        break;
+
+      default:; // prevent warning
+    }
 }
 
 wex::item::item(const std::string& label, type_t type, const data::item& data)

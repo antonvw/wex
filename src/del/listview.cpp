@@ -15,6 +15,14 @@
 #include <wex/ui/listitem.h>
 #include <wx/app.h>
 
+namespace wex::del
+{
+struct menu_env
+{
+  bool is_ok = true, is_folder = false, is_make = false, is_readonly = false;
+};
+} // namespace wex::del
+
 wex::del::listview::listview(const data::listview& data)
   : wex::listview(data)
   , m_frame(dynamic_cast<del::frame*>(wxTheApp->GetTopWindow()))
@@ -142,22 +150,23 @@ wex::del::listview::listview(const data::listview& data)
 
 void wex::del::listview::build_popup_menu(wex::menu& menu)
 {
-  bool exists = true, is_folder = false, is_make = false, readonly = false;
+  menu_env env;
 
   if (const auto index = GetFirstSelected(); index != -1)
   {
     const listitem item(this, index);
 
-    exists    = item.path().stat().is_ok();
-    is_folder = item.path().dir_exists();
-    readonly  = item.path().stat().is_readonly();
-    is_make   = path_lexer(item.path()).lexer().scintilla_lexer() == "makefile";
+    env.is_ok       = item.path().stat().is_ok();
+    env.is_folder   = item.path().dir_exists();
+    env.is_readonly = item.path().stat().is_readonly();
+    env.is_make =
+      path_lexer(item.path()).lexer().scintilla_lexer() == "makefile";
   }
 
   wex::listview::build_popup_menu(menu);
 
   if (
-    GetSelectedItemCount() > 1 && exists &&
+    GetSelectedItemCount() > 1 && env.is_ok &&
     !config(_("list.Comparator")).empty())
   {
     menu.append({{}, {ID_LIST_COMPARE, _("C&ompare") + "\tCtrl+O"}});
@@ -165,87 +174,101 @@ void wex::del::listview::build_popup_menu(wex::menu& menu)
 
   if (GetSelectedItemCount() == 1)
   {
-    if (is_make)
-    {
-      menu.append({{}, {ID_LIST_RUN_MAKE, _("&Make")}});
-    }
-
-    if (
-      data().type() != data::listview::FILE && !wex::vcs().use() && exists &&
-      !is_folder)
-    {
-      if (auto* list = m_frame->activate(data::listview::FILE);
-          list != nullptr && list->GetSelectedItemCount() == 1)
-      {
-        listitem   thislist(this, GetFirstSelected());
-        const auto current_file = thislist.path().string();
-
-        listitem otherlist(list, list->GetFirstSelected());
-
-        if (const std::string with_file = otherlist.path().string();
-            current_file != with_file && !config(_("list.Comparator")).empty())
-        {
-          menu.append(
-            {{},
-             {ID_LIST_COMPARE,
-              _("&Compare With").ToStdString() + " " +
-                get_endoftext(with_file)}});
-        }
-      }
-    }
+    build_popup_menu_single(&env, menu);
   }
 
   if (GetSelectedItemCount() >= 1)
   {
-    if (exists && !is_folder)
-    {
-      if (vcs::dir_exists(listitem(this, GetFirstSelected()).path()))
-      {
-        bool restore = false;
-
-        // The xml menus is_selected for text parts,
-        // so override.
-        if (menu.style().test(menu::IS_SELECTED))
-        {
-          menu.style().set(menu::IS_SELECTED, false);
-          restore = true;
-        }
-
-        menu.append({{}, {listitem(this, GetFirstSelected()).path(), m_frame}});
-
-        if (restore)
-        {
-          menu.style().set(menu::IS_SELECTED);
-        }
-      }
-    }
-
-    // Finding in the data::listview::FIND would result in recursive calls, do
-    // not add it.
-    if (
-      exists && data().type() != data::listview::FIND &&
-      m_menu_flags.test(data::listview::MENU_REPORT_FIND))
-    {
-      menu.append(
-        {{},
-         {ID_TOOL_REPORT_FIND,
-          ellipsed(m_frame->find_in_files_title(ID_TOOL_REPORT_FIND))}});
-
-      if (!readonly)
-      {
-        menu.append(
-          {{ID_TOOL_REPLACE,
-            ellipsed(m_frame->find_in_files_title(ID_TOOL_REPLACE))}});
-      }
-    }
+    build_popup_menu_multiple(&env, menu);
   }
 
   if (
-    GetSelectedItemCount() > 0 && exists &&
+    GetSelectedItemCount() > 0 && env.is_ok &&
     m_menu_flags.test(data::listview::MENU_TOOL) &&
     !lexers::get()->get_lexers().empty())
   {
     menu.append({{}, {menu_item::TOOLS}});
+  }
+}
+
+void wex::del::listview::build_popup_menu_multiple(
+  const menu_env* env,
+  wex::menu&      menu)
+{
+  if (env->is_ok && !env->is_folder)
+  {
+    if (vcs::dir_exists(listitem(this, GetFirstSelected()).path()))
+    {
+      bool restore = false;
+
+      // The xml menus is_selected for text parts,
+      // so override.
+      if (menu.style().test(menu::IS_SELECTED))
+      {
+        menu.style().set(menu::IS_SELECTED, false);
+        restore = true;
+      }
+
+      menu.append({{}, {listitem(this, GetFirstSelected()).path(), m_frame}});
+
+      if (restore)
+      {
+        menu.style().set(menu::IS_SELECTED);
+      }
+    }
+  }
+
+  // Finding in the data::listview::FIND would result in recursive calls, do
+  // not add it.
+  if (
+    env->is_ok && data().type() != data::listview::FIND &&
+    m_menu_flags.test(data::listview::MENU_REPORT_FIND))
+  {
+    menu.append(
+      {{},
+       {ID_TOOL_REPORT_FIND,
+        ellipsed(m_frame->find_in_files_title(ID_TOOL_REPORT_FIND))}});
+
+    if (!env->is_readonly)
+    {
+      menu.append(
+        {{ID_TOOL_REPLACE,
+          ellipsed(m_frame->find_in_files_title(ID_TOOL_REPLACE))}});
+    }
+  }
+}
+
+void wex::del::listview::build_popup_menu_single(
+  const menu_env* env,
+  wex::menu&      menu)
+{
+  if (env->is_make)
+  {
+    menu.append({{}, {ID_LIST_RUN_MAKE, _("&Make")}});
+  }
+
+  if (
+    data().type() != data::listview::FILE && !wex::vcs().use() && env->is_ok &&
+    !env->is_folder)
+  {
+    if (auto* list = m_frame->activate(data::listview::FILE);
+        list != nullptr && list->GetSelectedItemCount() == 1)
+    {
+      listitem   thislist(this, GetFirstSelected());
+      const auto current_file = thislist.path().string();
+
+      listitem otherlist(list, list->GetFirstSelected());
+
+      if (const std::string with_file = otherlist.path().string();
+          current_file != with_file && !config(_("list.Comparator")).empty())
+      {
+        menu.append(
+          {{},
+           {ID_LIST_COMPARE,
+            _("&Compare With").ToStdString() + " " +
+              get_endoftext(with_file)}});
+      }
+    }
   }
 }
 
