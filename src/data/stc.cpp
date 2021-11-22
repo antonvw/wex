@@ -160,12 +160,12 @@ bool wex::data::stc::inject_col() const
 
   return true;
 }
-    
+
 bool wex::data::stc::inject_command() const
 {
   return m_stc->vi_command(m_data.command());
 }
-    
+
 bool wex::data::stc::inject_find() const
 {
   if (m_data.line() > 0)
@@ -189,7 +189,7 @@ bool wex::data::stc::inject_find() const
   {
     m_stc->find(m_data.find(), m_data.find_flags(), false);
   }
-  
+
   return true;
 }
 
@@ -220,9 +220,8 @@ bool wex::data::stc::inject_line() const
       m_stc->set_indicator(
         indicator(m_indicator_no),
         std::max(m_stc->PositionFromLine(line), 0),
-        m_data.col() > 0 ?
-          m_stc->PositionFromLine(line) + m_data.col() - 1 :
-          m_stc->GetLineEndPosition(line));
+        m_data.col() > 0 ? m_stc->PositionFromLine(line) + m_data.col() - 1 :
+                           m_stc->GetLineEndPosition(line));
     }
   }
   else if (m_data.line() == NUMBER_NOT_SET)
@@ -233,10 +232,10 @@ bool wex::data::stc::inject_line() const
   {
     m_stc->DocumentEnd();
   }
-  
+
   return true;
 }
-    
+
 wex::data::stc&
 wex::data::stc::menu(menu_t flags, data::control::action_t action)
 {

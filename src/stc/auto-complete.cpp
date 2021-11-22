@@ -86,11 +86,36 @@ bool wex::auto_complete::on_char(char c)
     return false;
   }
 
-  bool shw_inserts  = true;
-  bool shw_keywords = true;
-
   m_scope->sync();
 
+  actions ac;
+
+  if (!determine_actions(c, ac))
+  {
+    return false;
+  }
+
+  if (const auto wsp = m_stc->WordStartPosition(m_stc->GetCurrentPos(), true);
+      (m_stc->GetCharAt(wsp - 1) == '.') ||
+      (m_stc->GetCharAt(wsp - 1) == '>' && m_stc->GetCharAt(wsp - 2) == '-'))
+  {
+    ac.m_show_inserts  = false;
+    ac.m_show_keywords = false;
+  }
+
+  if (
+    !show_ctags() && !show_inserts(ac.m_show_inserts) &&
+    !show_keywords(ac.m_show_keywords))
+  {
+    m_stc->AutoCompCancel();
+    return false;
+  }
+
+  return true;
+}
+
+bool wex::auto_complete::determine_actions(char c, actions& ac)
+{
   switch (c)
   {
     case WXK_BACK:
@@ -127,8 +152,8 @@ bool wex::auto_complete::on_char(char c)
           }
         }
 
-        shw_inserts  = false;
-        shw_keywords = false;
+        ac.m_show_inserts  = false;
+        ac.m_show_keywords = false;
       }
       break;
 
@@ -170,21 +195,6 @@ bool wex::auto_complete::on_char(char c)
           m_insert += c;
         }
       }
-  }
-
-  if (const auto wsp = m_stc->WordStartPosition(m_stc->GetCurrentPos(), true);
-      (m_stc->GetCharAt(wsp - 1) == '.') ||
-      (m_stc->GetCharAt(wsp - 1) == '>' && m_stc->GetCharAt(wsp - 2) == '-'))
-  {
-    shw_inserts  = false;
-    shw_keywords = false;
-  }
-
-  if (
-    !show_ctags() && !show_inserts(shw_inserts) && !show_keywords(shw_keywords))
-  {
-    m_stc->AutoCompCancel();
-    return false;
   }
 
   return true;

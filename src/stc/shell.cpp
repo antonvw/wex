@@ -298,9 +298,7 @@ void wex::shell::on_key_down(wxKeyEvent& event)
     }
   }
 
-  bool skip = true;
-
-  switch (const int key = event.GetKeyCode(); key)
+  switch (const auto key = event.GetKeyCode(); key)
   {
     case WXK_RETURN:
     case WXK_TAB:
@@ -371,47 +369,59 @@ void wex::shell::on_key_down(wxKeyEvent& event)
       break;
 
     default:
-      // Ctrl-C pressed.
-      if (event.GetModifiers() == wxMOD_CONTROL && key == 'C')
-      {
-        skip = false;
-        if (m_process != nullptr)
-        {
-          m_process->stop();
-        }
-      }
-      // Ctrl-Q pressed, used to stop processing.
-      else if (event.GetModifiers() == wxMOD_CONTROL && key == 'Q')
-      {
-        skip = false;
-        if (m_process != nullptr)
-        {
-          m_process->stop();
-        }
-        else
-        {
-          wxCommandEvent event(
-            wxEVT_COMMAND_MENU_SELECTED,
-            ID_SHELL_COMMAND_STOP);
-          wxPostEvent(GetParent(), event);
-        }
-      }
-      // Ctrl-V pressed, used for pasting.
-      else if (event.GetModifiers() == wxMOD_CONTROL && key == 'V')
-      {
-        Paste();
-      }
-      // If we enter regular text and not already building a command, first
-      // goto end.
-      else if (
-        event.GetModifiers() == wxMOD_NONE && key < WXK_START &&
-        GetCurrentPos() < m_command_start_pos)
-      {
-        DocumentEnd();
-      }
-      m_commands_iterator = m_commands.end();
-      if (m_echo && skip)
-        event.Skip();
+      on_key_down_others(event);
+  }
+}
+
+void wex::shell::on_key_down_others(wxKeyEvent& event)
+{
+  const auto key  = event.GetKeyCode();
+  bool       skip = true;
+
+  // Ctrl-C pressed.
+  if (event.GetModifiers() == wxMOD_CONTROL && key == 'C')
+  {
+    skip = false;
+
+    if (m_process != nullptr)
+    {
+      m_process->stop();
+    }
+  }
+  // Ctrl-Q pressed, used to stop processing.
+  else if (event.GetModifiers() == wxMOD_CONTROL && key == 'Q')
+  {
+    skip = false;
+
+    if (m_process != nullptr)
+    {
+      m_process->stop();
+    }
+    else
+    {
+      wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND_STOP);
+      wxPostEvent(GetParent(), event);
+    }
+  }
+  // Ctrl-V pressed, used for pasting.
+  else if (event.GetModifiers() == wxMOD_CONTROL && key == 'V')
+  {
+    Paste();
+  }
+  // If we enter regular text and not already building a command, first
+  // goto end.
+  else if (
+    event.GetModifiers() == wxMOD_NONE && key < WXK_START &&
+    GetCurrentPos() < m_command_start_pos)
+  {
+    DocumentEnd();
+  }
+
+  m_commands_iterator = m_commands.end();
+
+  if (m_echo && skip)
+  {
+    event.Skip();
   }
 }
 
