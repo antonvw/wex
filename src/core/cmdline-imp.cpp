@@ -108,28 +108,7 @@ bool wex::cmdline_imp::parse(data::cmdline& data)
 
   if (m_vm.count("help") || m_vm.count("version"))
   {
-    if (data.av() != nullptr)
-    {
-      if (m_vm.count("help"))
-        std::cout << m_desc;
-      else
-        std::cout << wxTheApp->GetAppName() << " " << get_version_info().get()
-                  << "\n";
-    }
-    else
-    {
-      if (m_vm.count("help"))
-      {
-        std::stringstream ss;
-        ss << m_desc;
-        data.help(ss.str());
-      }
-      else
-      {
-        data.help(get_version_info().get());
-      }
-    }
-
+    parse_help(data);
     return false;
   }
 
@@ -150,24 +129,7 @@ bool wex::cmdline_imp::parse(data::cmdline& data)
 
   if (m_vm.count("quit"))
   {
-    if (const auto quit(m_vm["quit"].as<int>()); quit > 0)
-    {
-      m_use_events = true;
-
-      const auto id_quit = wxWindowBase::NewControlId();
-
-      auto* timer_start = new wxTimer(wxTheApp, id_quit);
-
-      timer_start->StartOnce(1000 * quit);
-
-      wxTheApp->Bind(
-        wxEVT_TIMER,
-        [=, this](wxTimerEvent& event)
-        {
-          wxTheApp->Exit();
-        },
-        id_quit);
-    }
+    parse_quit(data);
   }
 
   if (m_vm.count("scriptout"))
@@ -180,6 +142,20 @@ bool wex::cmdline_imp::parse(data::cmdline& data)
     loglevel = log::LEVEL_TRACE;
   }
 
+  if (!parse_args(data))
+  {
+    return false;
+  }
+
+  log::init(
+    (log::level_t)loglevel,
+    m_vm.count("logfile") ? m_vm["logfile"].as<std::string>() : std::string());
+
+  return true;
+}
+
+bool wex::cmdline_imp::parse_args(data::cmdline& data)
+{
   for (const auto& it : m_vm)
   {
     if (!it.second.defaulted())
@@ -232,9 +208,52 @@ bool wex::cmdline_imp::parse(data::cmdline& data)
     }
   }
 
-  log::init(
-    (log::level_t)loglevel,
-    m_vm.count("logfile") ? m_vm["logfile"].as<std::string>() : std::string());
-
   return true;
+}
+
+void wex::cmdline_imp::parse_help(data::cmdline& data)
+{
+  if (data.av() != nullptr)
+  {
+    if (m_vm.count("help"))
+      std::cout << m_desc;
+    else
+      std::cout << wxTheApp->GetAppName() << " " << get_version_info().get()
+                << "\n";
+  }
+  else
+  {
+    if (m_vm.count("help"))
+    {
+      std::stringstream ss;
+      ss << m_desc;
+      data.help(ss.str());
+    }
+    else
+    {
+      data.help(get_version_info().get());
+    }
+  }
+}
+
+void wex::cmdline_imp::parse_quit(data::cmdline& data)
+{
+  if (const auto quit(m_vm["quit"].as<int>()); quit > 0)
+  {
+    m_use_events = true;
+
+    const auto id_quit = wxWindowBase::NewControlId();
+
+    auto* timer_start = new wxTimer(wxTheApp, id_quit);
+
+    timer_start->StartOnce(1000 * quit);
+
+    wxTheApp->Bind(
+      wxEVT_TIMER,
+      [=, this](wxTimerEvent& event)
+      {
+        wxTheApp->Exit();
+      },
+      id_quit);
+  }
 }

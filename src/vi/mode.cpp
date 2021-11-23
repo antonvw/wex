@@ -322,23 +322,9 @@ bool wex::vi_mode::is_visual() const
 
 bool wex::vi_mode::transition(std::string& command)
 {
-  if (command.empty())
+  if (!transition_prep(command))
   {
     return false;
-  }
-  else if (command[0] == 'c')
-  {
-    if (command.size() == 1)
-    {
-      return false;
-    }
-    else
-    {
-      if (command.size() == 2 && (command[1] == 'f' || command[1] == 'F'))
-      {
-        return false;
-      }
-    }
   }
 
   if (
@@ -434,6 +420,30 @@ bool wex::vi_mode::transition(std::string& command)
   m_vi->frame()->statustext(str(), "PaneMode");
 
   command.erase(0, 1);
+
+  return true;
+}
+
+bool wex::vi_mode::transition_prep(std::string& command)
+{
+  if (command.empty())
+  {
+    return false;
+  }
+  else if (command[0] == 'c')
+  {
+    if (command.size() == 1)
+    {
+      return false;
+    }
+    else
+    {
+      if (command.size() == 2 && (command[1] == 'f' || command[1] == 'F'))
+      {
+        return false;
+      }
+    }
+  }
 
   return true;
 }

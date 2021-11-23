@@ -73,6 +73,9 @@ public:
     int repeat = 1);
 
 private:
+  int transition_q(std::string& macro, ex* ex, bool complete);
+  int transition_at(std::string& macro, ex* ex, bool complete, int repeat);
+
   macro_fsm* m_fsm;
   macros*    m_macros;
 };

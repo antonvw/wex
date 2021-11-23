@@ -29,7 +29,7 @@ void finish_picker(wxPickerBase* pc, const wex::item& item, wxWindow*& window)
   window = pc;
 
   pc->SetPickerCtrlGrowable();
-  
+
   if (pc->GetTextCtrl() != nullptr && item.data().is_readonly())
   {
     pc->GetTextCtrl()->SetWindowStyleFlag(wxTE_READONLY);
@@ -242,7 +242,7 @@ void create_file_picker_control(
     wc,
     PSS == data::NUMBER_NOT_SET ? wxFLP_DEFAULT_STYLE :
                                   item.data().window().style());
-                                  
+
   finish_picker(pc, item, window);
 }
 

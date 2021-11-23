@@ -101,8 +101,13 @@ public:
   bool set_prompt(const std::string& prompt, bool do_prompt = true);
 
 private:
+  void bind_other();
   void expand();
   void keep_command();
+  void on_key_down(wxKeyEvent& event);
+  bool on_key_down_continue(wxKeyEvent& event);
+  void on_key_down_others(wxKeyEvent& event);
+  void on_mouse(wxMouseEvent& event);
   void process_char_default(int key);
   void send_command();
   /// Set command for command specified as number or as start of command,

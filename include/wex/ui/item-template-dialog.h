@@ -96,10 +96,16 @@ private:
   void layout(int rows, int cols);
   void on_command(wxCommandEvent& event);
   void on_update_ui(wxUpdateUIEvent& event);
+  void process_checkbox(const T& item);
+  void process_checklistbox(const T& item);
+  bool process_combobox(const T& item, wxUpdateUIEvent& event);
+  bool process_dirpickerctrl(const T& item, wxUpdateUIEvent& event);
+  bool process_filepickerctrl(const T& item, wxUpdateUIEvent& event);
+  bool process_textctrl(const T& item, wxUpdateUIEvent& event);
 
   std::vector<T> m_items, m_items_tmp;
 
-  bool m_force_checkbox_checked{false};
+  bool m_force_checkbox_checked{false}, m_one_checkbox_checked{false};
 
   wxString m_contains, m_page;
 };
@@ -300,97 +306,49 @@ void wex::item_template_dialog<T>::on_command(wxCommandEvent& event)
 template <class T>
 void wex::item_template_dialog<T>::on_update_ui(wxUpdateUIEvent& event)
 {
-  bool one_checkbox_checked = false;
+  m_one_checkbox_checked = false;
 
   for (const auto& item : m_items)
   {
     switch (item.type())
     {
       case item::CHECKBOX:
-        if (m_force_checkbox_checked)
-        {
-          if (auto* cb = reinterpret_cast<wxCheckBox*>(item.window());
-              wxString(item.label()).Lower().Contains(m_contains.Lower()) &&
-              cb->IsChecked() && item.page() == m_page)
-          {
-            one_checkbox_checked = true;
-          }
-        }
+        process_checkbox(item);
         break;
 
       case item::CHECKLISTBOX_BOOL:
-        if (m_force_checkbox_checked)
-        {
-          auto* clb = reinterpret_cast<wxCheckListBox*>(item.window());
-          for (size_t i = 0; i < clb->GetCount(); i++)
-          {
-            if (
-              clb->GetString(i).Lower().Contains(m_contains.Lower()) &&
-              clb->IsChecked(i) && item.page() == m_page)
-            {
-              one_checkbox_checked = true;
-            }
-          }
-        }
+        process_checklistbox(item);
         break;
 
       case item::COMBOBOX:
       case item::COMBOBOX_DIR:
       case item::COMBOBOX_FILE:
-        if (auto* cb = reinterpret_cast<wxComboBox*>(item.window());
-            cb != nullptr)
+        if (process_combobox(item, event))
         {
-          if (
-            !item.validate() ||
-            (!item.data().validate_re().empty() &&
-             !item.validate(item.data().validate_re())) ||
-            (item.data().control().is_required() && cb->GetValue().empty()))
-          {
-            event.Enable(false);
-            return;
-          }
+          return;
         }
         break;
 
       case item::TEXTCTRL:
       case item::TEXTCTRL_FLOAT:
       case item::TEXTCTRL_INT:
-        if (auto* tc = reinterpret_cast<wxTextCtrl*>(item.window());
-            tc != nullptr)
+        if (process_textctrl(item, event))
         {
-          if (
-            !item.validate() ||
-            (!item.data().validate_re().empty() &&
-             !item.validate(item.data().validate_re())) ||
-            (item.data().control().is_required() && tc->GetValue().empty()))
-          {
-            event.Enable(false);
-            return;
-          }
+          return;
         }
         break;
 
       case item::DIRPICKERCTRL:
-        if (auto* pc = reinterpret_cast<wxDirPickerCtrl*>(item.window());
-            item.data().control().is_required())
+        if (process_dirpickerctrl(item, event))
         {
-          if (pc->GetPath().empty())
-          {
-            event.Enable(false);
-            return;
-          }
+          return;
         }
         break;
 
       case item::FILEPICKERCTRL:
-        if (auto* pc = reinterpret_cast<wxFilePickerCtrl*>(item.window());
-            item.data().control().is_required())
+        if (process_filepickerctrl(item, event))
         {
-          if (pc->GetPath().empty())
-          {
-            event.Enable(false);
-            return;
-          }
+          return;
         }
         break;
 
@@ -398,8 +356,118 @@ void wex::item_template_dialog<T>::on_update_ui(wxUpdateUIEvent& event)
     }
   }
 
-  event.Enable(m_force_checkbox_checked ? one_checkbox_checked : true);
+  event.Enable(m_force_checkbox_checked ? m_one_checkbox_checked : true);
 };
+
+template <class T>
+void wex::item_template_dialog<T>::process_checkbox(const T& item)
+{
+  if (m_force_checkbox_checked)
+  {
+    if (auto* cb = reinterpret_cast<wxCheckBox*>(item.window());
+        wxString(item.label()).Lower().Contains(m_contains.Lower()) &&
+        cb->IsChecked() && item.page() == m_page)
+    {
+      m_one_checkbox_checked = true;
+    }
+  }
+}
+
+template <class T>
+void wex::item_template_dialog<T>::process_checklistbox(const T& item)
+{
+  if (m_force_checkbox_checked)
+  {
+    auto* clb = reinterpret_cast<wxCheckListBox*>(item.window());
+    for (size_t i = 0; i < clb->GetCount(); i++)
+    {
+      if (
+        clb->GetString(i).Lower().Contains(m_contains.Lower()) &&
+        clb->IsChecked(i) && item.page() == m_page)
+      {
+        m_one_checkbox_checked = true;
+      }
+    }
+  }
+}
+
+template <class T>
+bool wex::item_template_dialog<T>::process_combobox(
+  const T&         item,
+  wxUpdateUIEvent& event)
+{
+  if (auto* cb = reinterpret_cast<wxComboBox*>(item.window()); cb != nullptr)
+  {
+    if (
+      !item.validate() ||
+      (!item.data().validate_re().empty() &&
+       !item.validate(item.data().validate_re())) ||
+      (item.data().control().is_required() && cb->GetValue().empty()))
+    {
+      event.Enable(false);
+      return true;
+    }
+  }
+
+  return false;
+}
+
+template <class T>
+bool wex::item_template_dialog<T>::process_dirpickerctrl(
+  const T&         item,
+  wxUpdateUIEvent& event)
+{
+  if (auto* pc = reinterpret_cast<wxDirPickerCtrl*>(item.window());
+      item.data().control().is_required())
+  {
+    if (pc->GetPath().empty())
+    {
+      event.Enable(false);
+      return true;
+    }
+  }
+
+  return false;
+}
+
+template <class T>
+bool wex::item_template_dialog<T>::process_filepickerctrl(
+  const T&         item,
+  wxUpdateUIEvent& event)
+{
+  if (auto* pc = reinterpret_cast<wxFilePickerCtrl*>(item.window());
+      item.data().control().is_required())
+  {
+    if (pc->GetPath().empty())
+    {
+      event.Enable(false);
+      return true;
+    }
+  }
+
+  return false;
+}
+
+template <class T>
+bool wex::item_template_dialog<T>::process_textctrl(
+  const T&         item,
+  wxUpdateUIEvent& event)
+{
+  if (auto* tc = reinterpret_cast<wxTextCtrl*>(item.window()); tc != nullptr)
+  {
+    if (
+      !item.validate() ||
+      (!item.data().validate_re().empty() &&
+       !item.validate(item.data().validate_re())) ||
+      (item.data().control().is_required() && tc->GetValue().empty()))
+    {
+      event.Enable(false);
+      return true;
+    }
+  }
+
+  return false;
+}
 
 template <class T>
 bool wex::item_template_dialog<T>::set_item_value(

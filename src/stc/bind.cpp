@@ -6,9 +6,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
+#include <wex/common/util.h>
 #include <wex/core/config.h>
 #include <wex/core/log.h>
-#include <wex/common/util.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/lexer-props.h>
 #include <wex/factory/lexers.h>
@@ -549,59 +549,13 @@ void wex::stc::build_popup_menu(menu& menu)
   if (!get_vi().is_active() && GetTextLength() > 0)
   {
     menu.append({{}, {wxID_FIND}});
-
-    if (!GetReadOnly())
-    {
-      menu.append({{wxID_REPLACE}});
-    }
   }
 
   menu.append({{}, {menu_item::EDIT}});
 
-  const bool beautify_add(beautify().is_active() && !beautify().is_auto());
-
   if (!GetReadOnly())
   {
-    if (!sel.empty())
-    {
-      auto* menuSelection = new wex::menu(
-        menu.style(),
-        {{id::stc::uppercase, _("&Uppercase\tF11")},
-         {id::stc::lowercase, _("&Lowercase\tF12")}});
-
-      if (beautify_add)
-      {
-        menuSelection->append({{}, {id::stc::beautify, _("&Beautify")}});
-      }
-
-      if (get_number_of_lines(sel) > 1)
-      {
-        menuSelection->append(
-          {{},
-           {new wex::menu(
-              menu.style(),
-              {{wxID_SORT_ASCENDING}, {wxID_SORT_DESCENDING}}),
-            _("&Sort")}});
-      }
-
-      menu.append({{}, {menuSelection, _("&Selection")}});
-    }
-  }
-
-  if (!GetReadOnly() && (CanUndo() || CanRedo()))
-  {
-    menu.append({{}});
-    if (CanUndo())
-      menu.append({{wxID_UNDO}});
-    if (CanRedo())
-      menu.append({{wxID_REDO}});
-  }
-
-  if (
-    !GetReadOnly() && sel.empty() && beautify_add &&
-    beautify().is_supported(get_lexer()))
-  {
-    menu.append({{}, {id::stc::beautify, _("&Beautify")}});
+    build_popup_menu_edit(menu);
   }
 
   // Folding if nothing selected, property is set,
@@ -615,6 +569,62 @@ void wex::stc::build_popup_menu(menu& menu)
        {id::stc::toggle_fold, _("&Toggle Fold\tCtrl+T")},
        {id::stc::fold_all, _("&Fold All Lines\tF9")},
        {id::stc::unfold_all, _("&Unfold All Lines\tF10")}});
+  }
+}
+
+void wex::stc::build_popup_menu_edit(menu& menu)
+{
+  const bool beautify_add(beautify().is_active() && !beautify().is_auto());
+  const auto sel(GetSelectedText().ToStdString());
+
+  if (!get_vi().is_active() && GetTextLength() > 0)
+  {
+    menu.append({{wxID_REPLACE}});
+  }
+
+  if (!sel.empty())
+  {
+    auto* menuSelection = new wex::menu(
+      menu.style(),
+      {{id::stc::uppercase, _("&Uppercase\tF11")},
+       {id::stc::lowercase, _("&Lowercase\tF12")}});
+
+    if (beautify_add)
+    {
+      menuSelection->append({{}, {id::stc::beautify, _("&Beautify")}});
+    }
+
+    if (get_number_of_lines(sel) > 1)
+    {
+      menuSelection->append(
+        {{},
+         {new wex::menu(
+            menu.style(),
+            {{wxID_SORT_ASCENDING}, {wxID_SORT_DESCENDING}}),
+          _("&Sort")}});
+    }
+
+    menu.append({{}, {menuSelection, _("&Selection")}});
+  }
+
+  if (CanUndo() || CanRedo())
+  {
+    menu.append({{}});
+
+    if (CanUndo())
+    {
+      menu.append({{wxID_UNDO}});
+    }
+
+    if (CanRedo())
+    {
+      menu.append({{wxID_REDO}});
+    }
+  }
+
+  if (sel.empty() && beautify_add && beautify().is_supported(get_lexer()))
+  {
+    menu.append({{}, {id::stc::beautify, _("&Beautify")}});
   }
 }
 

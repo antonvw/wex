@@ -86,42 +86,7 @@ bool wex::vi::parse_command(std::string& command)
         return true;
       }
 
-      if (motion > motion_t::G_aa && motion < motion_t::G_ZZ)
-      {
-        if (command.size() > 2)
-        {
-          command.erase(0, 2);
-        }
-      }
-      else
-      {
-        switch (motion)
-        {
-          case motion_t::CHANGE:
-            m_mode.transition(command);
-            break;
-
-          case motion_t::DEL:
-          case motion_t::YANK:
-            command.erase(0, 1);
-            break;
-
-          case motion_t::NAVIGATE:
-            if (m_mode.transition(command))
-            {
-              check_other = false;
-            }
-            else
-            {
-              m_insert_command.clear();
-            }
-            break;
-
-          default:
-            // do nothing
-            break;
-        }
-      }
+      parse_command_motion(motion, command, check_other);
   }
 
   if (
@@ -151,4 +116,47 @@ bool wex::vi::parse_command(std::string& command)
   }
 
   return true;
+}
+
+void wex::vi::parse_command_motion(
+  motion_t     motion,
+  std::string& command,
+  bool&        check_other)
+{
+  if (motion > motion_t::G_aa && motion < motion_t::G_ZZ)
+  {
+    if (command.size() > 2)
+    {
+      command.erase(0, 2);
+    }
+  }
+  else
+  {
+    switch (motion)
+    {
+      case motion_t::CHANGE:
+        m_mode.transition(command);
+        break;
+
+      case motion_t::DEL:
+      case motion_t::YANK:
+        command.erase(0, 1);
+        break;
+
+      case motion_t::NAVIGATE:
+        if (m_mode.transition(command))
+        {
+          check_other = false;
+        }
+        else
+        {
+          m_insert_command.clear();
+        }
+        break;
+
+      default:
+        // do nothing
+        break;
+    }
+  }
 }

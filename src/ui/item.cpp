@@ -89,6 +89,29 @@ bool get_value_simple(wex::item::type_t t, wxWindow* window, std::any& any)
   return true;
 }
 
+bool no_value(wex::item::type_t t)
+{
+  switch (t)
+  {
+    case item::BUTTON:
+    case item::STATICBOX:
+    case item::STATICLINE:
+    case item::STATICTEXT:
+      break;
+
+    case item::CHECKLISTBOX_BOOL:
+    case item::RADIOBOX:
+    case item::USER:
+      // Not yet implemented
+      break;
+
+    default:
+      return false;
+  }
+
+  return true;
+}
+
 const std::string str(const std::string& name, const std::any& any)
 {
   std::stringstream s;
@@ -152,47 +175,46 @@ wex::item::item(
   , m_label_window(after(label, '.', false))
   , m_sizer_flags(wxSizerFlags().Border().Left())
 {
-  switch (m_type)
+  if (is_notebook())
   {
-    case CHECKLISTBOX_BIT:
-    case CHECKLISTBOX_BOOL:
-    case GRID:
-    case LISTVIEW:
-    case NOTEBOOK:
-    case NOTEBOOK_AUI:
-    case NOTEBOOK_LIST:
-    case NOTEBOOK_SIMPLE:
-    case NOTEBOOK_TOOL:
-    case NOTEBOOK_TREE:
-    case NOTEBOOK_WEX:
-    case RADIOBOX:
-    case STATICBOX:
-      m_is_row_growable = true;
-      m_sizer_flags.Expand();
-      break;
-
-    case STATICTEXT:
-    case TEXTCTRL:
-    case TEXTCTRL_FLOAT:
-    case TEXTCTRL_INT:
-      m_is_row_growable = (m_data.window().style() & wxTE_MULTILINE) > 0;
-      m_sizer_flags.Expand();
-      break;
-
-    case CHECKBOX:
-    case COMBOBOX:
-    case COMBOBOX_DIR:
-    case COMBOBOX_FILE:
-    case DIRPICKERCTRL:
-    case FILEPICKERCTRL:
-    case SPACER:
-    case STATICLINE:
-    case USER:
-      m_sizer_flags.Expand();
-      break;
-
-    default:; // prevent warning
+    m_is_row_growable = true;
+    m_sizer_flags.Expand();
   }
+  else
+    switch (m_type)
+    {
+      case CHECKLISTBOX_BIT:
+      case CHECKLISTBOX_BOOL:
+      case GRID:
+      case LISTVIEW:
+      case RADIOBOX:
+      case STATICBOX:
+        m_is_row_growable = true;
+        m_sizer_flags.Expand();
+        break;
+
+      case STATICTEXT:
+      case TEXTCTRL:
+      case TEXTCTRL_FLOAT:
+      case TEXTCTRL_INT:
+        m_is_row_growable = (m_data.window().style() & wxTE_MULTILINE) > 0;
+        m_sizer_flags.Expand();
+        break;
+
+      case CHECKBOX:
+      case COMBOBOX:
+      case COMBOBOX_DIR:
+      case COMBOBOX_FILE:
+      case DIRPICKERCTRL:
+      case FILEPICKERCTRL:
+      case SPACER:
+      case STATICLINE:
+      case USER:
+        m_sizer_flags.Expand();
+        break;
+
+      default:; // prevent warning
+    }
 }
 
 wex::item::item(const std::string& label, type_t type, const data::item& data)
@@ -399,7 +421,7 @@ const std::any wex::item::get_value() const
     return get_value_prim(this);
   }
 
-  if (is_notebook())
+  if (is_notebook() || no_value(m_type))
   {
     return std::any();
   }
@@ -476,12 +498,6 @@ const std::any wex::item::get_value() const
           any = ((wex::listview*)m_window)->save();
           break;
 
-        case CHECKLISTBOX_BOOL:
-        case RADIOBOX:
-        case USER:
-          // Not yet implemented
-          break;
-
         case TEXTCTRL:
           any =
             (reinterpret_cast<wxTextCtrl*>(m_window))->GetValue().ToStdString();
@@ -513,12 +529,6 @@ const std::any wex::item::get_value() const
           {
             any = 0l;
           }
-          break;
-
-        case BUTTON:
-        case STATICBOX:
-        case STATICLINE:
-        case STATICTEXT:
           break;
 
         default:

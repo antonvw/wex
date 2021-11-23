@@ -61,7 +61,14 @@ public:
   const std::string variable(const std::string& name) const;
 
 private:
+  struct actions
+  {
+    bool m_show_inserts{true};
+    bool m_show_keywords{true};
+  };
+
   void clear_insert();
+  bool determine_actions(char c, actions& a);
   bool show_ctags();
   bool show_inserts(bool show) const;
   bool show_keywords(bool show) const;
