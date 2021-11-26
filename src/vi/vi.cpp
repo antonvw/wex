@@ -123,6 +123,7 @@ bool wex::vi::command(const std::string& command)
 
   if (
     m_mode.is_visual() && command.find("'<,'>") == std::string::npos &&
+    !get_stc()->get_selected_text().empty() &&
     ex::command(command + "'<,'>"))
   {
     return auto_write();

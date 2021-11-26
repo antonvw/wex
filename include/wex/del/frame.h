@@ -138,14 +138,17 @@ public:
   bool          debug_print(const std::string& text) override;
   bool          debug_toggle_breakpoint(int line, factory::stc* stc) override;
 
+  bool is_address(factory::stc* stc, const std::string& text) override;
+
   void on_command_item_dialog(wxWindowID dialogid, const wxCommandEvent& event)
     override;
   void on_notebook(wxWindowID id, wxWindow* page) override;
-  void set_recent_file(const path& path) override;
 
   bool process_async_system(
     const std::string& command,
     const std::string& start_dir = std::string()) override;
+
+  void set_recent_file(const path& path) override;
 
   void show_ex_bar(int action = HIDE_BAR_FOCUS_STC, factory::stc* stc = nullptr)
     override;

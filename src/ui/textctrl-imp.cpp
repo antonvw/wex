@@ -224,12 +224,15 @@ bool wex::textctrl_imp::handle(const std::string& command)
         set_text("!");
         SetInsertionPointEnd();
       }
-      else if (!tci()->get().empty())
+      else if (const auto& current(tci()->get()); !current.empty())
       {
+        const auto is_address(
+          m_tc->get_frame()->is_address(m_tc->stc(), current));
+
         set_text(
-          m_mode_visual && tci()->get().find(range) != 0 ?
-            range + tci()->get() :
-            tci()->get());
+          m_mode_visual && current.find(range) != 0 && is_address ?
+            range + current :
+            current);
         SelectAll();
       }
       else

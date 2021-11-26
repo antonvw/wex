@@ -124,6 +124,12 @@ public:
   /// allowing you to override any command.
   virtual bool exec_ex_command(ex_command& command) { return false; }
 
+  /// Allows you to override is_address.
+  virtual bool is_address(factory::stc* stc, const std::string& text)
+  {
+    return false;
+  };
+
   /// Called if the notebook changed page.
   virtual void on_notebook(wxWindowID id, wxWindow* page) { ; }
 
