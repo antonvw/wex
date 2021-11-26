@@ -79,6 +79,7 @@ TEST_CASE("wex::ex_stream")
   SUBCASE("erase")
   {
     wex::file      ifs(open_file());
+    REQUIRE(ifs.open());
     wex::ex_stream exs(ex);
     exs.stream(ifs);
 
@@ -111,7 +112,7 @@ TEST_CASE("wex::ex_stream")
     wex::find_replace_data::get()->set_regex(true);
     exs.goto_line(0);
     REQUIRE(exs.find(std::string("o.e")));
-    REQUIRE(!exs.find(std::string("o{e")));
+    REQUIRE(!exs.find(std::string("oxe")));
 
     wex::find_replace_data::get()->set_regex(false);
     exs.goto_line(0);
@@ -121,6 +122,7 @@ TEST_CASE("wex::ex_stream")
   SUBCASE("find-noeol")
   {
     wex::file      ifs(open_file(false));
+    REQUIRE(ifs.open());
     wex::ex_stream exs(ex);
     exs.stream(ifs);
 
@@ -137,6 +139,7 @@ TEST_CASE("wex::ex_stream")
   SUBCASE("insert")
   {
     wex::file      ifs(open_file());
+    REQUIRE(ifs.open());
     wex::ex_stream exs(ex);
     exs.stream(ifs);
 
@@ -157,6 +160,7 @@ TEST_CASE("wex::ex_stream")
     REQUIRE(ar.get_end().get_line() == 3);
 
     wex::file       ifs(open_file());
+    REQUIRE(ifs.open());
     wex::ex_stream* exs(ex->ex_stream());
     ifs.open();
     exs->stream(ifs);
@@ -172,6 +176,7 @@ TEST_CASE("wex::ex_stream")
   SUBCASE("markers")
   {
     wex::file      ifs(open_file());
+    REQUIRE(ifs.open());
     wex::ex_stream exs(ex);
     exs.stream(ifs);
 
@@ -203,6 +208,7 @@ TEST_CASE("wex::ex_stream")
   SUBCASE("previous-noeol")
   {
     wex::file      ifs(open_file(false));
+    REQUIRE(ifs.open());
     wex::ex_stream exs(ex);
     exs.stream(ifs);
     exs.goto_line(100);
@@ -250,6 +256,7 @@ TEST_CASE("wex::ex_stream")
   SUBCASE("substitute")
   {
     wex::file      ifs(open_file());
+    REQUIRE(ifs.open());
     wex::ex_stream exs(ex);
     exs.stream(ifs);
     wex::find_replace_data::get()->set_regex(false);
@@ -263,6 +270,7 @@ TEST_CASE("wex::ex_stream")
   SUBCASE("write")
   {
     wex::file      ifs(open_file());
+    REQUIRE(ifs.open());
     wex::ex_stream exs(ex);
     exs.stream(ifs);
 
@@ -273,6 +281,7 @@ TEST_CASE("wex::ex_stream")
   SUBCASE("yank")
   {
     wex::file      ifs(open_file());
+    REQUIRE(ifs.open());
     wex::ex_stream exs(ex);
     exs.stream(ifs);
 

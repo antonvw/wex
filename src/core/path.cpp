@@ -37,7 +37,7 @@ wex::path::path(const fs::path& p, log_t t)
 }
 
 wex::path::path(const path& p, const std::string& name, log_t t)
-  : path(fs::path(substitute_tilde(p.string())).append(name).string(), t)
+  : path(fs::path(p.string()).append(name), t)
 {
 }
 
@@ -51,8 +51,8 @@ wex::path::path(const char* p, log_t t)
 {
 }
 
-wex::path::path(const path& r, log_t t)
-  : path(r.data(), t)
+wex::path::path(const path& r)
+  : path(r.data(), r.m_log)
 {
 }
 
@@ -80,6 +80,7 @@ wex::path& wex::path::operator=(const wex::path& r)
     m_path          = r.data();
     m_path_original = r.m_path_original;
     m_stat          = r.m_stat;
+    m_log           = r.m_log;
   }
 
   return *this;

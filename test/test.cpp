@@ -125,10 +125,10 @@ int wex::test::main(int argc, char* argv[], wex::test::app* app)
 
     if (wex::data::cmdline c(text); !wex::cmdline().parse(c))
     {
-      return false;
+      return 0;
     }
 
-    return app->OnInit() && app->OnRun();
+    return app->OnInit() && app->OnRun() ? 1 : 0;
   }
   catch (const std::exception& e)
   {

@@ -47,7 +47,7 @@ public:
   void set_context(doctest::Context* context);
 
 private:
-  doctest::Context*  m_context;
+  doctest::Context*  m_context{nullptr};
   static inline path m_path;
 };
 

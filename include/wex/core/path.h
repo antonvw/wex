@@ -67,7 +67,7 @@ public:
   path(const path& p, const std::string& name, log_t = 0);
 
   /// Copy constructor.
-  path(const path& r, log_t = 0);
+  path(const path& r);
 
   /// Assignment operator.
   path& operator=(const path& r);
@@ -150,6 +150,6 @@ private:
   std::filesystem::path m_path, m_path_original;
 
   file_status m_stat;
-  const log_t m_log{0};
+  log_t m_log{0};
 };
 }; // namespace wex

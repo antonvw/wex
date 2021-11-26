@@ -1,8 +1,4 @@
 # roadmap
-- studio-2022
-  - use visual studio 2022, for appveyor as well
-  - fix some msw test error (path)
-
 - use new wxWidgets functionality, use wxUILocale, improve wex::app
 - linux crash when startup outside git repo
   - and print setup asserts
