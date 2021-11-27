@@ -4,7 +4,7 @@
 
 set BOOST=77
 set YEAR=2022
-set VS=C:\Program Files (x86)\Microsoft Visual Studio
+set VS=C:\Program Files\Microsoft Visual Studio
 
 call "%VS%\%YEAR%\Community\VC\Auxiliary\Build\vcvars32.bat"
 
