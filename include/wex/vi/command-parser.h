@@ -22,10 +22,19 @@ public:
     TWO_ADDR, ///< two addresses related
   };
 
+  enum class parse_t
+  {
+    PARSE, ///< check and parse text
+    CHECK, ///< check only
+  };
+
   /// Default constructor, provide the complete ex command (after colon),
   /// e.g. "5p".
   /// It invokes the parser, and sets members.
-  command_parser(ex* ex, const std::string& text = std::string());
+  command_parser(
+    ex*                ex,
+    const std::string& text = std::string(),
+    parse_t            type = parse_t::PARSE);
 
   /// The command.
   /// mostly a one letter string like "z" for adjust_window
@@ -48,7 +57,7 @@ private:
   /// Parse the text into the components, and calls
   /// the address or addressrange parsing.
   /// Returns true if parsing was ok.
-  bool parse(ex* ex);
+  bool parse(ex* ex, parse_t);
 
   bool        m_is_ok{false};
   std::string m_cmd, m_range, m_text;

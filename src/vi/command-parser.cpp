@@ -12,13 +12,16 @@
 #include <wex/vi/addressrange.h>
 #include <wex/vi/command-parser.h>
 
-wex::command_parser::command_parser(ex* ex, const std::string& text)
+wex::command_parser::command_parser(
+  ex*                ex,
+  const std::string& text,
+  parse_t            type)
   : m_text(text)
 {
-  m_is_ok = parse(ex);
+  m_is_ok = m_text.empty() ? false : parse(ex, type);
 }
 
-bool wex::command_parser::parse(ex* ex)
+bool wex::command_parser::parse(ex* ex, parse_t type)
 {
   if (m_text.starts_with("'<,'>"))
   {
@@ -78,8 +81,6 @@ bool wex::command_parser::parse(ex* ex)
         v.match(m_text) <= 1)
     {
       m_type = address_t::NO_ADDR;
-      const auto line(address(ex, m_text).get_line());
-      return ex->get_stc()->inject(data::control().line(line));
     }
 
     if (m_range.empty() && m_cmd != '!')
@@ -89,12 +90,21 @@ bool wex::command_parser::parse(ex* ex)
     }
   }
 
+  if (type == parse_t::CHECK)
+  {
+    return true;
+  }
+
   try
   {
     switch (m_type)
     {
       case address_t::NO_ADDR:
-        break;
+      {
+        m_range.clear();
+        const auto line(address(ex, m_text).get_line());
+        return ex->get_stc()->inject(data::control().line(line));
+      }
 
       case address_t::ONE_ADDR:
         return address(ex).parse(*this);

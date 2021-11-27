@@ -608,10 +608,13 @@ bool wex::del::frame::is_address(factory::stc* stc, const std::string& text)
 {
   if (auto* wexstc = dynamic_cast<wex::stc*>(stc); wexstc != nullptr)
   {
-    const command_parser cp(&wexstc->get_vi(), text);
+    const command_parser cp(
+      &wexstc->get_vi(),
+      text,
+      command_parser::parse_t::CHECK);
     return cp.type() != command_parser::address_t::NO_ADDR;
   }
-  
+
   return false;
 }
 
