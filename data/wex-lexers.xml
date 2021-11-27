@@ -3783,11 +3783,6 @@ Copyright: (c) 2020, Anton van Wezenbeek
     </properties>
   </lexer>
   <lexer display="lilypond" name="latex" extensions="*.ly">
-    <properties>
-      <property name="fold"> 1 </property>
-      <property name="fold.compact"> 1 </property>
-      <property name="fold.comment"> 1 </property>
-    </properties>
   </lexer>
   <lexer name="lisp">
     <properties>

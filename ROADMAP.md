@@ -1,6 +1,5 @@
 # roadmap
 - editing xml files corrupts the file, and writes before enter?
-- properties dialog has no vi mode  
 - use new wxWidgets functionality, use wxUILocale, improve wex::app
   - and test new file open dialog
 - file read back for MSW (as we are using VS 2022)

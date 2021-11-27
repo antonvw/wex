@@ -156,7 +156,8 @@ wex::lexer::lexer(const pugi::xml_node* node)
       {
         if (!m_properties.empty())
         {
-          wex::log("properties already available") << child;
+          wex::log("properties already available")
+            << m_scintilla_lexer << child;
         }
 
         node_properties(&child, m_properties);
