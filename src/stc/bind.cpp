@@ -843,6 +843,7 @@ void wex::stc::show_properties()
   }
   else
   {
+    m_prop_dialog->get_stc()->get_vi().mode().command();
     m_prop_dialog->get_stc()->set_text(properties);
   }
 

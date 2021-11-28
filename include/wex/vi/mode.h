@@ -62,6 +62,9 @@ public:
   /// Destructor.
   ~vi_mode();
 
+  /// Transitions to command mode.
+  void command();
+
   /// escapes current mode.
   bool escape();
 

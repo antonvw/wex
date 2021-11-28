@@ -1,6 +1,7 @@
 # roadmap
 - use new wxWidgets functionality, use wxUILocale, improve wex::app
   - and test new file open dialog
+  - fix msw get_item for float
 - file read back for MSW (as we are using VS 2022)
 - linux crash when startup outside git repo
   - and print setup asserts

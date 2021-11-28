@@ -38,6 +38,8 @@ TEST_CASE("wex::vi_mode")
   REQUIRE(mode.str() == "insert");
   REQUIRE(mode.escape());
   REQUIRE(mode.is_command());
+  mode.command();
+  REQUIRE(mode.is_command());
   REQUIRE(mode.get() == wex::vi_mode::state_t::COMMAND);
 
   command = "cc";

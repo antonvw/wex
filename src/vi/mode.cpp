@@ -299,6 +299,28 @@ wex::vi_mode::vi_mode(
 
 wex::vi_mode::~vi_mode() {}
 
+void wex::vi_mode::command()
+{
+  if (get() == COMMAND)
+  {
+    return;
+  }
+
+  escape();
+
+  if (get() == COMMAND)
+  {
+    return;
+  }
+
+  escape();
+
+  if (get() != COMMAND)
+  {
+    log("vi command mode") << m_fsm->state_string();
+  }
+}
+
 bool wex::vi_mode::escape()
 {
   std::string command("\x1b");
