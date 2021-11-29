@@ -9,6 +9,7 @@
 
 #include <wex/vi/address.h>
 #include <wex/vi/addressrange.h>
+#include <wex/vi/command-parser.h>
 #include <wex/vi/ctags-entry.h>
 #include <wex/vi/ctags.h>
 #include <wex/vi/ex-stream.h>

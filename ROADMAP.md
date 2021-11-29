@@ -1,15 +1,15 @@
 # roadmap
-- studio-2022
-  - use visual studio 2022, for appveyor as well
-  - fix some msw test error (path)
-
 - use new wxWidgets functionality, use wxUILocale, improve wex::app
+  - and test new file open dialog
+  - fix msw get_item for float
+- file read back for MSW (as we are using VS 2022)
 - linux crash when startup outside git repo
   - and print setup asserts
 
 ## backlog
 - "x and rf highlight not ok
 - searching in Process git output window
+- use c++20 designated initializers
 - c++ modules: fix gcc (gcc-12), test msvc
 - start up with recent project, close project
   -> windows appear

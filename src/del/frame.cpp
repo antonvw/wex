@@ -15,6 +15,7 @@
 #include <wex/factory/printing.h>
 #include <wex/stc/wex.h>
 #include <wex/ui/wex.h>
+#include <wex/vi/command-parser.h>
 #include <wex/vi/ctags.h>
 #include <wex/vi/macros.h>
 
@@ -601,6 +602,20 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
   dir.find_files(tool);
 
   return true;
+}
+
+bool wex::del::frame::is_address(factory::stc* stc, const std::string& text)
+{
+  if (auto* wexstc = dynamic_cast<wex::stc*>(stc); wexstc != nullptr)
+  {
+    const command_parser cp(
+      &wexstc->get_vi(),
+      text,
+      command_parser::parse_t::CHECK);
+    return cp.type() != command_parser::address_t::NO_ADDR;
+  }
+
+  return false;
 }
 
 void wex::del::frame::on_command_item_dialog(

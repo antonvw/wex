@@ -742,11 +742,11 @@ bool wex::listview::insert_item(
             break;
 
           case column::FLOAT:
-            std::stof(col);
+            (void)std::stof(col);
             break;
 
           case column::INT:
-            std::stoi(col);
+            (void)std::stoi(col);
             break;
 
           case column::STRING:
@@ -1341,11 +1341,11 @@ bool wex::listview::set_item(
         break;
 
       case column::FLOAT:
-        std::stof(text);
+        (void)std::stof(text);
         break;
 
       case column::INT:
-        std::stoi(text);
+        (void)std::stoi(text);
         break;
 
       case column::STRING:

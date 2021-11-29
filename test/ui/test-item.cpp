@@ -99,7 +99,11 @@ TEST_CASE("wex::item")
     wex::item item_float(
       "float",
       wex::item::TEXTCTRL_FLOAT,
-      std::string("100.001"));
+#ifdef __WXMSW__
+    std::string("100,001"));
+#else
+    std::string("100.001"));
+#endif
     REQUIRE(item_float.type() == wex::item::TEXTCTRL_FLOAT);
     item_float.layout(panel, sizer);
     REQUIRE(std::any_cast<double>(item_float.get_value()) == 100.001);

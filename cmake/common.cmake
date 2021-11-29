@@ -25,10 +25,14 @@ function(wex_config)
       # Visual studio 2017:
       file(GLOB_RECURSE dlls 
         "C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/redist/x86/*.dll")
-    else()
+    elseif(${MSVC_TOOLSET_VERSION} LESS 143)
       # Visual studio 2019:
       file(GLOB_RECURSE dlls 
         "C:/Program Files (x86)/Microsoft Visual Studio/2019/vcruntime14*.dll")
+    else ()
+      # Visual studio 2022:
+      file(GLOB_RECURSE dlls 
+        "C:/Program Files/Microsoft Visual Studio/2022/vcruntime14*.dll")
     endif()
 
     install(FILES ${dlls} DESTINATION ${CONFIG_INSTALL_DIR})

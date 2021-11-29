@@ -1,6 +1,7 @@
 # changes
 
 **v22.04**
+- Microsoft Visual Studio 2022
 - boost::json lib instead of nlohmann/json lib, requiring boost 1.75
 - added methods to allow testing wex applications
 - c++20 standard

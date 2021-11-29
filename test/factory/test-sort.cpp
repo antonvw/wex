@@ -70,9 +70,10 @@ TEST_CASE("wex::sort")
     s->SetText("aaaaa\nbbbbb\nccccc\n");
     s->SelectAll();
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
     REQUIRE(wex::sort().selection(s));
     REQUIRE(wex::sort(0, 3, 10).selection(s));
-    REQUIRE(!wex::sort(0, 20, 10).selection(s));
+    REQUIRE(!wex::sort(0, 25, 10).selection(s));
   }
 
   SUBCASE("block")

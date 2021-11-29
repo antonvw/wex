@@ -15,9 +15,26 @@ namespace wex
 class command_parser
 {
 public:
+  enum class address_t
+  {
+    NO_ADDR,  ///< not address related
+    ONE_ADDR, ///< one address related
+    TWO_ADDR, ///< two addresses related
+  };
+
+  enum class parse_t
+  {
+    PARSE, ///< check and parse text
+    CHECK, ///< check only
+  };
+
   /// Default constructor, provide the complete ex command (after colon),
   /// e.g. "5p".
-  command_parser(ex* ex, const std::string& text = std::string());
+  /// It invokes the parser, and sets members.
+  command_parser(
+    ex*                ex,
+    const std::string& text = std::string(),
+    parse_t            type = parse_t::PARSE);
 
   /// The command.
   /// mostly a one letter string like "z" for adjust_window
@@ -31,24 +48,19 @@ public:
   auto& range() const { return m_range; }
 
   /// The text (rest), not the original supplied text.
-  /// text, as required by command
   auto& text() const { return m_text; }
+
+  /// The type that is parsed.
+  auto type() const { return m_type; }
 
 private:
   /// Parse the text into the components, and calls
   /// the address or addressrange parsing.
   /// Returns true if parsing was ok.
-  bool parse(ex* ex);
-
-  enum class address_t
-  {
-    NO_ADDR,
-    ONE_ADDR,
-    TWO_ADDR,
-  };
+  bool parse(ex* ex, parse_t);
 
   bool        m_is_ok{false};
   std::string m_cmd, m_range, m_text;
-  address_t   m_type;
+  address_t   m_type{address_t::NO_ADDR};
 };
 }; // namespace wex
