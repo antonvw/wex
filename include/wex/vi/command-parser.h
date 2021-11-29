@@ -61,6 +61,6 @@ private:
 
   bool        m_is_ok{false};
   std::string m_cmd, m_range, m_text;
-  address_t   m_type;
+  address_t   m_type{address_t::NO_ADDR};
 };
 }; // namespace wex
