@@ -97,5 +97,4 @@ wex::factory::stc* get_stc()
 TEST_CASE("wex::test::app")
 {
   wxGetApp().get_catalog_dir();
-  wxGetApp().get_locale().IsOk();
 }

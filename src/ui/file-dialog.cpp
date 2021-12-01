@@ -57,25 +57,12 @@ static wxWindow* create_extra_panel(wxWindow* parent)
   return new extra_panel(parent);
 }
 
-wex::file_dialog::file_dialog(const data::window& data)
-  : wxFileDialog(
-      data.parent(),
-      data.title(),
-      std::string(),
-      std::string(),
-      data.wildcard(),
-      data.style(),
-      data.pos(),
-      data.size())
-{
-}
-
 wex::file_dialog::file_dialog(wex::file* file, const data::window& data)
   : wxFileDialog(
       data.parent(),
       data.title(),
-      file->path().parent_path(),
-      file->path().filename(),
+      file != nullptr ? file->path().parent_path(): std::string(),
+      file != nullptr ? file->path().filename(): std::string(),
       data.wildcard(),
       data.style(),
       data.pos(),
@@ -84,6 +71,7 @@ wex::file_dialog::file_dialog(wex::file* file, const data::window& data)
   , m_file(file)
 {
   if (
+    m_file != nullptr &&
     data.wildcard() == wxFileSelectorDefaultWildcardStr &&
     m_file->path().stat().is_ok())
   {

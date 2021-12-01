@@ -18,6 +18,70 @@
 
 namespace fs = std::filesystem;
 
+void wex::app::add_catalogs() const
+{
+  wxLogNull logNo; // prevent wxLog
+
+  if (const auto& dir(get_catalog_dir());
+      fs::is_directory(dir) && get_language() != wxLANGUAGE_DEFAULT)
+  {
+    for (const auto& p : fs::recursive_directory_iterator(dir))
+    {
+      if (
+        fs::is_regular_file(p.path()) &&
+        matches_one_of(p.path().filename().string(), "*.mo"))
+      {
+        if (!wxTranslations::Get()->AddCatalog(p.path().stem().string()))
+        {
+          log("could not add catalog") << p.path().stem().string();
+        }
+      }
+    }
+  }
+}
+
+const std::string wex::app::get_catalog_dir() const
+{
+  const std::string dir(wxStandardPaths::Get().GetLocalizedResourcesDir(
+    get_locale().GetLanguageCanonicalName(get_language())
+#ifndef __WXMSW__
+      ,
+    wxStandardPaths::ResourceCat_Messages
+#endif
+    ));
+
+  if (!fs::is_directory(dir) && get_language() != wxLANGUAGE_DEFAULT)
+  {
+    log("missing locale files for")
+      << get_locale().GetName().ToStdString() << "in" << dir;
+  }
+
+  return dir;
+}
+
+wxLanguage wex::app::get_language() const
+{
+  const wxLanguageInfo* info = nullptr;
+
+  if (const auto& lang(config("Language").get()); !lang.empty())
+  {
+    if ((info = wxUILocale::FindLanguageInfo(lang)) == nullptr)
+    {
+      log("unknown language") << lang;
+    }
+  }
+
+  const auto lang =
+    (info != nullptr ? (wxLanguage)info->Language : wxLANGUAGE_DEFAULT);
+
+  return lang;
+}
+
+const wxUILocale& wex::app::get_locale()
+{
+  return wxUILocale::GetCurrent();
+}
+
 int wex::app::OnExit()
 {
   try
@@ -42,68 +106,16 @@ bool wex::app::OnInit()
 
   config::on_init();
 
-  const wxLanguageInfo* info = nullptr;
-
-  if (const auto& lang(config("Language").get()); !lang.empty())
+  if (!wxUILocale::UseDefault())
   {
-    if ((info = wxLocale::FindLanguageInfo(lang)) == nullptr)
-    {
-      log("unknown language") << lang;
-    }
+    log("could not set locale");
   }
 
-  wxLogNull logNo; // prevent wxLog
+  // Construct translation, from now on things will be translated.
+  wxTranslations::Set(new wxTranslations());
+  wxTranslations::Get()->SetLanguage(get_language());
 
-  // Init the localization, from now on things will be translated.
-  // Do not load wxstd, we load all files ourselves,
-  // and do not want messages about loading non existing wxstd files.
-  if (const auto lang = (info != nullptr ? info->Language : wxLANGUAGE_DEFAULT);
-      !m_locale.Init(lang, wxLOCALE_DONT_LOAD_DEFAULT))
-  {
-    log::debug("could not init locale for")
-      << (!wxLocale::GetLanguageName(lang).empty() ?
-            wxLocale::GetLanguageName(lang).ToStdString() :
-            std::to_string(lang));
-  }
-  else
-  {
-    m_catalog_dir = "/usr/local/share/locale/" +
-                    m_locale.GetName().ToStdString() + "/LC_MESSAGES";
-
-    if (!fs::is_directory(m_catalog_dir))
-    {
-      m_catalog_dir = wxStandardPaths::Get().GetLocalizedResourcesDir(
-        m_locale.GetCanonicalName()
-#ifndef __WXMSW__
-          ,
-        wxStandardPaths::ResourceCat_Messages
-#endif
-      );
-    }
-
-    if (fs::is_directory(m_catalog_dir))
-    {
-      // If there are catalogs in the catalog_dir, then add them to the
-      // m_locale.
-      for (const auto& p : fs::recursive_directory_iterator(m_catalog_dir))
-      {
-        if (
-          fs::is_regular_file(p.path()) &&
-          matches_one_of(p.path().filename().string(), "*.mo"))
-        {
-          if (!m_locale.AddCatalog(p.path().stem().string()))
-          {
-            log("could not add catalog") << p.path().stem().string();
-          }
-        }
-      }
-    }
-    else if (info != nullptr)
-    {
-      log("missing locale files for")
-        << m_locale.GetName().ToStdString() << m_catalog_dir;
-    }
-  }
+  add_catalogs();
 
   // Necessary for auto_complete images.
   wxInitAllImageHandlers();
