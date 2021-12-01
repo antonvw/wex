@@ -2,44 +2,46 @@
 // Name:      app.h
 // Purpose:   Include file for wex::app class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2019-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wx/app.h>
-#include <wx/intl.h> // for wxLocale
+#include <wx/uilocale.h>
 
 namespace wex
 {
-  /// Offers the application, with lib specific init and exit.
-  /// It also keeps the locale and the catalog dir.
-  /// Your application should be derived from this class.
-  class app : public wxApp
-  {
-  public:
-    /// Virtual interface
+/// Offers the application, with lib specific init and exit,
+/// and provies access to the locale and the catalog dir.
+/// Your application should be derived from this class.
+class app : public wxApp
+{
+public:
+  /// Static interface.
 
-    /// Constructs the config, initializes the locale, loads the VCS file.
-    /// In your own OnInit first set the app name,
-    /// as it uses this name for the config,
-    /// and then call this base class method.
-    bool OnInit() override;
+  /// Returns the locale.
+  static const wxUILocale& get_locale();
 
-    /// Deletes all global objects and cleans up things if necessary.
-    /// You should normally don't need to override it.
-    int OnExit() override;
+  /// Virtual interface
 
-    /// Other methods
+  /// Constructs the config, initializes the locale, loads the VCS file.
+  /// In your own OnInit first set the app name,
+  /// as it uses this name for the config,
+  /// and then call this base class method.
+  bool OnInit() override;
 
-    /// Returns the catalog dir.
-    const auto& get_catalog_dir() const { return m_catalog_dir; }
+  /// Deletes all global objects and cleans up things if necessary.
+  /// You should normally don't need to override it.
+  int OnExit() override;
 
-    /// Returns the locale.
-    const auto& get_locale() const { return m_locale; }
+  /// Other methods
 
-  private:
-    std::string m_catalog_dir;
-    wxLocale    m_locale;
-  };
+  /// Returns the catalog dir.
+  const std::string get_catalog_dir() const;
+
+private:
+  void       add_catalogs() const;
+  wxLanguage get_language() const;
+};
 }; // namespace wex

@@ -59,7 +59,7 @@ bool app::OnInit()
   f->Show(true);
 
   wex::log::status("Locale")
-    << get_locale().GetLocale().ToStdString() << "dir" << get_catalog_dir();
+    << get_locale().GetName().ToStdString() << "dir" << get_catalog_dir();
 
   return true;
 }

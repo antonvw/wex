@@ -15,40 +15,35 @@
 
 namespace wex
 {
-  class file;
+class file;
 
-  /// Adds a file and / or a hexmode checkbox to wxFileDialog.
-  /// The hexmode option can be set by setting wxFD_HEX_MODE
-  /// in the window::data.
-  class file_dialog : public wxFileDialog
-  {
-  public:
-    /// Default constructor.
-    file_dialog(
-      /// window data
-      const data::window& data = data::window().style(wxFD_DEFAULT_STYLE));
+/// Adds a file and / or a hexmode checkbox to wxFileDialog.
+/// The hexmode option can be set by setting wxFD_HEX_MODE
+/// in the window::data.
+class file_dialog : public wxFileDialog
+{
+public:
+  /// Constructor.
+  file_dialog(
+    /// specify file (might be nullptr)
+    file* file,
+    /// window data
+    const data::window& data = data::window().style(wxFD_DEFAULT_STYLE));
 
-    /// Constructor for file.
-    file_dialog(
-      /// specify file
-      file* file,
-      /// window data
-      const data::window& data = data::window().style(wxFD_DEFAULT_STYLE));
+  /// Virtual interface.
+  int ShowModal() override;
 
-    /// Virtual interface.
-    int ShowModal() override;
+  /// Other methods.
 
-    /// Other methods.
+  /// Returns true if hexmode checkbox is (was) checked.
+  bool is_hexmode() const { return m_hexmode; }
 
-    /// Returns true if hexmode checkbox is (was) checked.
-    bool is_hexmode() const { return m_hexmode; }
+  /// Shows the dialog depending on the changes on the file.
+  /// If you specify show_modal then dialog is always shown.
+  int show_modal_if_changed(bool show_modal = false);
 
-    /// Shows the dialog depending on the changes on the file.
-    /// If you specify show_modal then dialog is always shown.
-    int show_modal_if_changed(bool show_modal = false);
-
-  private:
-    file* m_file{nullptr};
-    bool  m_hexmode{false};
-  };
+private:
+  file* m_file{nullptr};
+  bool  m_hexmode{false};
+};
 }; // namespace wex

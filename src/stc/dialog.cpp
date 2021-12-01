@@ -136,7 +136,7 @@ void wex::open_files_dialog(
   }
   else
   {
-    file_dialog dlg(data::window(data.window()).title(caption));
+    file_dialog dlg(nullptr, data::window(data.window()).title(caption));
 
     if (dlg.ShowModal() == wxID_CANCEL)
       return;
