@@ -11,6 +11,7 @@ namespace wex
 {
 class addressrange;
 class ex;
+class block_lines;
 
 /// This class offers a class to do global commands on a addressrange.
 class global_env
@@ -19,10 +20,7 @@ public:
   /// Constructor.
   explicit global_env(const addressrange* ar);
 
-  /// Destructor.
-  ~global_env();
-
-  /// Runs the global command using specified data.
+  /// Runs the global commands using specified data.
   bool global(const data::substitute& data);
 
   // Returns true if commands were found.
@@ -32,17 +30,16 @@ public:
   auto hits() const { return m_hits; }
 
 private:
-  /// Do global on specified line.
-  bool for_each(int line) const;
-
-  /// Do global on range from start to end line (excluded).
-  bool for_each(int start, int& end, int& hits) const;
+  bool for_each(const block_lines& match) const;
+  bool process(const block_lines& block);
+  bool process_inverse(const block_lines& block, block_lines& inverse);
+  bool run(const block_lines& block, const std::string& command) const;
 
   const addressrange* m_ar;
 
   std::vector<std::string> m_commands;
 
-  int           m_changes{0}, m_hits{0};
+  int           m_hits{0};
   ex*           m_ex;
   factory::stc* m_stc;
 };

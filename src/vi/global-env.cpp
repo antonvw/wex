@@ -11,17 +11,16 @@
 #include <wex/vi/addressrange.h>
 #include <wex/vi/ex.h>
 
+#include "addressrange-mark.h"
+#include "block-lines.h"
 #include "global-env.h"
 
 wex::global_env::global_env(const addressrange* ar)
-  : m_ex(ar->m_ex)
+  : m_ex(ar->get_ex())
   , m_ar(ar)
   , m_stc(m_ex->get_stc())
 {
-  m_stc->IndicatorClearRange(0, m_stc->GetTextLength() - 1);
   m_stc->set_search_flags(m_ex->search_flags());
-  m_stc->BeginUndoAction();
-  m_ex->marker_add('%', m_ar->get_end().get_line() - 1);
 
   for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
          addressrange::data().commands(),
@@ -30,141 +29,128 @@ wex::global_env::global_env(const addressrange* ar)
     // Prevent recursive global.
     if (it[0] != 'g' && it[0] != 'v')
     {
-      if (it[0] == 'd' || it[0] == 'm')
-      {
-        m_changes++;
-      }
-
       m_commands.emplace_back(it);
     }
   }
 }
 
-wex::global_env::~global_env()
+bool wex::global_env::for_each(const block_lines& match) const
 {
-  m_stc->EndUndoAction();
-  m_ex->marker_delete('%');
+  return !has_commands() ? m_stc->set_indicator(
+                             m_ar->get_find_indicator(),
+                             m_stc->GetTargetStart(),
+                             m_stc->GetTargetEnd()) :
+                           std::all_of(
+                             m_commands.begin(),
+                             m_commands.end(),
+                             [this, match](const std::string& it)
+                             {
+                               return run(match, it);
+                             });
 }
 
-bool wex::global_env::for_each(int line) const
-{
-  if (!has_commands())
-  {
-    m_stc->set_indicator(
-      m_ar->m_find_indicator,
-      m_stc->GetTargetStart(),
-      m_stc->GetTargetEnd());
-    return true;
-  }
-  else
-  {
-    return std::all_of(
-      m_commands.begin(),
-      m_commands.end(),
-      [this, line](const std::string& it)
-      {
-        if (!m_ex->command(":" + std::to_string(line + 1) + it))
-        {
-          m_ex->frame()->show_ex_message(
-            m_ex->get_command().command() + " failed");
-          return false;
-        }
-        return true;
-      });
-  }
-}
-
-bool wex::global_env::for_each(int start, int& end, int& hits) const
-{
-  if (start < end)
-  {
-    for (int i = start; i < end && i < m_stc->get_line_count() - 1;)
-    {
-      if (has_commands())
-      {
-        if (!for_each(i))
-          return false;
-      }
-      else
-      {
-        m_stc->set_indicator(
-          m_ar->m_find_indicator,
-          m_stc->PositionFromLine(i),
-          m_stc->GetLineEndPosition(i));
-      }
-
-      if (m_changes == 0)
-      {
-        i++;
-      }
-      else
-      {
-        end -= m_changes;
-      }
-
-      hits++;
-    }
-  }
-  else
-  {
-    end++;
-  }
-
-  return true;
-}
-
+// clang-format off
+/*
+example for global inverse
+v/yy/d
+line   text  mbs    ibs    ibe   ex action  
+0      xx    0      0      13
+1      xx    1             2      yy    2      0      2     -> :1,2d2      xx    03      yy    1      0      1     -> :1d      4      yy    2      2      5      yy    3      3      
+6      yy    4      4      7      yy    5      5      8      yy    6      6      9      xx    7             10     xx    8    
+11     yy    9      7      8     -> :7,8d12     yy    8      8                      13     pp    9                   -> :9d*/// clang-format on
 bool wex::global_env::global(const data::substitute& data)
 {
-  m_stc->SetTargetRange(
-    m_stc->PositionFromLine(m_ar->get_begin().get_line() - 1),
-    m_stc->GetLineEndPosition(m_ex->marker_line('%')));
+  addressrange_mark am(*m_ar);
 
-  const bool infinite =
-    (m_changes > 0 && data.commands() != "$" && data.commands() != "1" &&
-     data.commands() != "d");
+  if (!am.set())
+  {
+    log("global could not set marker");
+    return false;
+  }
 
-  int start = 0;
+  block_lines ib(m_ex, -1, m_stc->get_line_count() - 1);
+  block_lines mb(m_ex);
 
   while (m_stc->SearchInTarget(data.pattern()) != -1)
   {
-    auto match = m_stc->LineFromPosition(m_stc->GetTargetStart());
+    mb = am.get_block_lines();
 
     if (!data.is_inverse())
     {
-      if (!for_each(match))
+      if (!process(mb))
+      {
         return false;
-      m_hits++;
+      }
     }
     else
     {
-      if (!for_each(start, match, m_hits))
+      if (!process_inverse(mb, ib))
+      {
         return false;
-      start = match + 1;
+      }
     }
 
-    if (m_hits > 50 && infinite)
-    {
-      m_ex->frame()->show_ex_message(
-        "possible infinite loop at " + std::to_string(match));
-      return false;
-    }
-
-    m_stc->SetTargetRange(
-      m_changes > 0 ? m_stc->PositionFromLine(match) : m_stc->GetTargetEnd(),
-      m_stc->GetLineEndPosition(m_ex->marker_line('%')));
-
-    if (m_stc->GetTargetStart() >= m_stc->GetTargetEnd())
+    if (!am.update())
     {
       break;
     }
   }
 
-  if (data.is_inverse())
+  ib = mb;
+
+  if (ib.end(m_stc->get_line_count() - 1);
+      ib.is_available() && data.is_inverse() && !process(ib))
   {
-    if (auto match = m_stc->get_line_count(); !for_each(start, match, m_hits))
+    return false;
+  }
+
+  am.end();
+
+  return true;
+}
+
+bool wex::global_env::process(const block_lines& block)
+{
+  block.log();
+
+  if (!for_each(block))
+  {
+    return false;
+  }
+
+  m_hits += block.size();
+
+  return true;
+}
+
+bool wex::global_env::process_inverse(const block_lines& mb, block_lines& ib)
+{
+  // If there is a previous inverse block, process it.
+  if (ib.is_available() && ib < mb)
+  {
+    if (ib.finish(mb); !process(ib))
     {
       return false;
     }
+
+    ib.reset();
+  }
+  else
+  {
+    ib = mb;
+  }
+
+  return true;
+}
+
+bool wex::global_env::run(const block_lines& block, const std::string& command)
+  const
+{
+  if (const std::string cmd(":" + block.get_range() + command);
+      !m_ex->command(cmd))
+  {
+    m_ex->frame()->show_ex_message(cmd + " failed");
+    return false;
   }
 
   return true;

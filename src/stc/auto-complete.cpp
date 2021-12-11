@@ -99,8 +99,7 @@ bool wex::auto_complete::on_char(char c)
       (m_stc->GetCharAt(wsp - 1) == '.') ||
       (m_stc->GetCharAt(wsp - 1) == '>' && m_stc->GetCharAt(wsp - 2) == '-'))
   {
-    ac.m_show_inserts  = false;
-    ac.m_show_keywords = false;
+    ac.reset();
   }
 
   if (
@@ -152,8 +151,7 @@ bool wex::auto_complete::determine_actions(char c, actions& ac)
           }
         }
 
-        ac.m_show_inserts  = false;
-        ac.m_show_keywords = false;
+        ac.reset();
       }
       break;
 
@@ -295,4 +293,10 @@ bool wex::auto_complete::use() const
 const std::string wex::auto_complete::variable(const std::string& name) const
 {
   return m_scope->class_name(name);
+}
+
+void wex::auto_complete::actions::reset()
+{
+  m_show_inserts  = false;
+  m_show_keywords = false;
 }

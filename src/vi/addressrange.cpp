@@ -26,6 +26,7 @@
 #include <wx/app.h>
 #include <wx/msgdlg.h>
 
+#include "addressrange-mark.h"
 #include "global-env.h"
 
 namespace wex
@@ -408,6 +409,11 @@ bool wex::addressrange::is_ok() const
          m_begin.get_line() <= m_end.get_line();
 }
 
+bool wex::addressrange::is_selection() const
+{
+  return m_begin.m_address == "'<" && m_end.m_address == "'>";
+}
+
 bool wex::addressrange::join() const
 {
   if (!m_stc->is_visual())
@@ -686,15 +692,10 @@ bool wex::addressrange::sort(const std::string& parameters) const
 
 bool wex::addressrange::substitute(const command_parser& cp)
 {
-  if ((m_stc->is_visual() && m_stc->GetReadOnly()) || !is_ok())
-  {
-    return false;
-  }
-
   data::substitute data(m_substitute);
   auto             searchFlags = m_ex->search_flags();
 
-  if (!prep(data, searchFlags, cp))
+  if (!is_ok() || !prep(data, searchFlags, cp))
   {
     return false;
   }
@@ -703,30 +704,16 @@ bool wex::addressrange::substitute(const command_parser& cp)
   {
     return m_ex->ex_stream()->substitute(*this, data);
   }
-
-  if (!m_ex->marker_add('#', m_begin.get_line() - 1))
+  else if (m_stc->GetReadOnly())
   {
-    log::debug("substitute could not add marker");
     return false;
   }
 
-  int  corrected = 0;
-  auto end_line  = m_end.get_line() - 1;
+  addressrange_mark am(*this);
 
-  if (!m_stc->GetSelectedText().empty())
+  if (!am.set())
   {
-    if (
-      m_stc->GetLineSelEndPosition(end_line) ==
-      m_stc->PositionFromLine(end_line))
-    {
-      end_line--;
-      corrected = 1;
-    }
-  }
-
-  if (!m_ex->marker_add('$', end_line))
-  {
-    log::debug("substitute could not add marker");
+    log::debug("substitute could not set marker");
     return false;
   }
 
@@ -735,10 +722,6 @@ bool wex::addressrange::substitute(const command_parser& cp)
 
   m_substitute = data;
   m_stc->set_search_flags(searchFlags);
-  m_stc->BeginUndoAction();
-  m_stc->SetTargetRange(
-    m_stc->PositionFromLine(m_ex->marker_line('#')),
-    m_stc->GetLineEndPosition(m_ex->marker_line('$')));
 
   int        nr_replacements = 0;
   int        result          = wxID_YES;
@@ -774,40 +757,17 @@ bool wex::addressrange::substitute(const command_parser& cp)
       nr_replacements++;
     }
 
-    m_stc->SetTargetRange(
-      data.is_global() ? m_stc->GetTargetEnd() :
-                         m_stc->GetLineEndPosition(
-                           m_stc->LineFromPosition(m_stc->GetTargetEnd())),
-      m_stc->GetLineEndPosition(m_ex->marker_line('$')));
-
-    if (m_stc->GetTargetStart() >= m_stc->GetTargetEnd())
+    if (!am.update())
     {
       break;
     }
   }
 
-  if (m_stc->is_hexmode())
-  {
-    m_stc->get_hexmode_sync();
-  }
-
-  m_stc->EndUndoAction();
-
-  if (m_begin.m_address == "'<" && m_end.m_address == "'>")
-  {
-    m_stc->SetSelection(
-      m_stc->PositionFromLine(m_ex->marker_line('#')),
-      m_stc->PositionFromLine(m_ex->marker_line('$') + corrected));
-  }
-
-  m_ex->marker_delete('#');
-  m_ex->marker_delete('$');
+  am.end();
 
   m_ex->frame()->show_ex_message(
     "Replaced: " + std::to_string(nr_replacements) +
     " occurrences of: " + data.pattern());
-
-  m_stc->IndicatorClearRange(0, m_stc->GetTextLength() - 1);
 
   return true;
 }

@@ -17,7 +17,6 @@ namespace wex
 {
 enum class info_message_t;
 class command_parser;
-class global_env;
 
 namespace factory
 {
@@ -32,8 +31,6 @@ class stc;
 /// All methods return false if the range is not ok.
 class addressrange
 {
-  friend class global_env;
-
 public:
   /// Static methods.
 
@@ -91,6 +88,12 @@ public:
   /// Returns end address.
   auto& get_end() const { return m_end; }
 
+  /// Returns ex component.
+  ex* get_ex() const { return m_ex; }
+
+  /// Returns find indicator.
+  auto& get_find_indicator() const { return m_find_indicator; }
+
   /// Performs the global command (g) on this range.
   /// normally performs command on each match, if inverse
   /// performs (v) command if line does not match
@@ -98,6 +101,9 @@ public:
 
   /// Is this range ok.
   bool is_ok() const;
+
+  /// Is the begin and address '< and '>.
+  bool is_selection() const;
 
   /// joins range.
   bool join() const;

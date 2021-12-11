@@ -160,6 +160,46 @@ TEST_CASE("wex::ex")
     }
   }
 
+  SUBCASE("inverse")
+  {
+    SUBCASE("example")
+    {
+      stc->set_text("xx\n"
+                    "xx\n"
+                    "yy\n"
+                    "xx\n"
+                    "yy\n"
+                    "yy\n"
+                    "yy\n"
+                    "yy\n"
+                    "yy\n"
+                    "yy\n"
+                    "xx\n"
+                    "xx\n"
+                    "yy\n"
+                    "yy\n"
+                    "pp\n");
+
+      REQUIRE(ex->command(":v/yy/d"));
+//      REQUIRE(stc->get_line_count() == 10);
+    }
+
+    SUBCASE("extra")
+    {
+      stc->set_text("");
+
+      const int max = 10;
+      for (int i = 0; i < max; i++)
+      {
+        stc->AppendText("line xxxx added\n");
+        stc->AppendText("line yyyy added\n");
+      }
+
+      REQUIRE(ex->command(":v/xxxx/d"));
+//      REQUIRE(stc->get_line_count() == max + 1);
+    }
+  }
+
   SUBCASE("is_active")
   {
     REQUIRE(ex->is_active());
