@@ -3758,7 +3758,7 @@ Copyright: (c) 2009-2021, Anton van Wezenbeek
   <lexer display="javascript" name="cpp" extensions="*.js">
     <keywords set="javascript"/>
   </lexer>
-  <lexer name="json" extensions="*.json">
+  <lexer name="json" wrapline="word" extensions="*.json">
     <properties>
       <property name="lexer.json.allow.comments"> 1 </property>
       <property name="fold"> 1 </property>
