@@ -11,11 +11,12 @@
 
 #include "block-lines.h"
 
-wex::block_lines::block_lines(ex* ex, int start_pos, int end_pos)
+wex::block_lines::block_lines(ex* ex, int start, int end)
   : m_ex(ex)
   , m_stc(ex->get_stc())
-  , m_start(start_pos)
-  , m_end(end_pos)
+  , m_start(start)
+  , m_end(end)
+  , m_name(start == -1 ? "ib" : "mb")
 {
 }
 
@@ -30,9 +31,9 @@ wex::block_lines& wex::block_lines::operator=(const wex::block_lines& r)
   return *this;
 }
 
-void wex::block_lines::end(int pos)
+void wex::block_lines::end(int line)
 {
-  m_end = pos;
+  m_end = line;
 }
 
 void wex::block_lines::finish(const block_lines& block)
@@ -55,13 +56,7 @@ bool wex::block_lines::is_available() const
 
 void wex::block_lines::log() const
 {
-  log::trace("block lines") << "start:" << m_start << "end:" << m_end;
-}
-
-void wex::block_lines::reset()
-{
-  m_end   = LINE_RESET;
-  m_start = LINE_RESET;
+  log::trace("block lines " + m_name) << "start:" << m_start << "end:" << m_end;
 }
 
 wex::block_lines wex::block_lines::single() const
@@ -73,6 +68,11 @@ wex::block_lines wex::block_lines::single() const
 size_t wex::block_lines::size() const
 {
   return std::max(1, m_end - m_start);
+}
+
+void wex::block_lines::start(int start)
+{
+  m_start = start;
 }
 
 wex::block_lines wex::block_lines::target() const

@@ -82,7 +82,7 @@ bool prep(data::substitute& data, int searchFlags, const command_parser& cp)
 }
 }; // namespace wex
 
-wex::addressrange::addressrange(wex::ex* ex, int lines)
+wex::addressrange::addressrange(ex* ex, int lines)
   : m_begin(ex)
   , m_end(ex)
   , m_ex(ex)
@@ -98,7 +98,7 @@ wex::addressrange::addressrange(wex::ex* ex, int lines)
   }
 }
 
-wex::addressrange::addressrange(wex::ex* ex, const std::string& range)
+wex::addressrange::addressrange(ex* ex, const std::string& range)
   : m_begin(ex)
   , m_end(ex)
   , m_ex(ex)
@@ -221,7 +221,7 @@ bool wex::addressrange::copy(const command_parser& cp)
   return false;
 }
 
-bool wex::addressrange::copy(const wex::address& destination) const
+bool wex::addressrange::copy(const address& destination) const
 {
   return general(
     destination,
@@ -543,7 +543,7 @@ bool wex::addressrange::print(const std::string& flags) const
   }
 
   m_ex->print(
-    wex::write_lines(m_stc, m_begin.get_line() - 1, m_end.get_line(), flags));
+    write_lines(m_stc, m_begin.get_line() - 1, m_end.get_line(), flags));
 
   return true;
 }
@@ -642,7 +642,7 @@ bool wex::addressrange::sort(const std::string& parameters) const
     return false;
   }
 
-  sort::sort_t sort_t = 0;
+  factory::sort::sort_t sort_t = 0;
 
   size_t pos = 0, len = std::string::npos;
 
@@ -665,9 +665,9 @@ bool wex::addressrange::sort(const std::string& parameters) const
     }
 
     if (parameters.find("r") != std::string::npos)
-      sort_t.set(sort::SORT_DESCENDING);
+      sort_t.set(factory::sort::SORT_DESCENDING);
     if (parameters.find("u") != std::string::npos)
-      sort_t.set(sort::SORT_UNIQUE);
+      sort_t.set(factory::sort::SORT_UNIQUE);
 
     if (isdigit(parameters[0]))
     {
@@ -687,7 +687,7 @@ bool wex::addressrange::sort(const std::string& parameters) const
     }
   }
 
-  return wex::sort(sort_t, pos, len).selection(m_stc);
+  return factory::sort(sort_t, pos, len).selection(m_stc);
 }
 
 bool wex::addressrange::substitute(const command_parser& cp)
@@ -709,7 +709,10 @@ bool wex::addressrange::substitute(const command_parser& cp)
     return false;
   }
 
-  addressrange_mark am(*this);
+  if (data.is_ignore_case())
+    searchFlags &= ~wxSTC_FIND_MATCHCASE;
+
+  addressrange_mark am(*this, data);
 
   if (!am.set())
   {
@@ -717,21 +720,18 @@ bool wex::addressrange::substitute(const command_parser& cp)
     return false;
   }
 
-  if (data.is_ignore_case())
-    searchFlags &= ~wxSTC_FIND_MATCHCASE;
-
   m_substitute = data;
   m_stc->set_search_flags(searchFlags);
 
   int        nr_replacements = 0;
   int        result          = wxID_YES;
-  const bool build =
+  const bool do_build =
     (data.replacement().find_first_of("&0LU\\") != std::string::npos);
   auto replacement(data.replacement());
 
-  while (m_stc->SearchInTarget(data.pattern()) != -1 && result != wxID_CANCEL)
+  while (am.search(data) && result != wxID_CANCEL)
   {
-    if (build)
+    if (do_build)
     {
       replacement = build_replacement(data.replacement());
     }
@@ -810,8 +810,7 @@ bool wex::addressrange::write(const std::string& text) const
   }
 
   auto filename(boost::algorithm::trim_left_copy(
-    text.find(">>") != std::string::npos ? wex::after(text, '>', false) :
-                                           text));
+    text.find(">>") != std::string::npos ? after(text, '>', false) : text));
 
 #ifdef __UNIX__
   if (filename.find("~") != std::string::npos)
@@ -829,7 +828,7 @@ bool wex::addressrange::write(const std::string& text) const
   }
   else
   {
-    return wex::file(
+    return file(
              path(filename),
              text.find(">>") != std::string::npos ?
                std::ios::out | std::ios_base::app :

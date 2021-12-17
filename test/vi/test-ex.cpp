@@ -94,7 +94,7 @@ TEST_CASE("wex::ex")
 
     // Test global move.
     stc->set_text("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
-    REQUIRE(!ex->command(":g/d/m$")); // possible infinite loop
+    REQUIRE(ex->command(":g/d/m$")); // possible infinite loop
     REQUIRE(stc->get_text().find("d") != std::string::npos);
 
     stc->set_text("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
@@ -164,24 +164,24 @@ TEST_CASE("wex::ex")
   {
     SUBCASE("example")
     {
-      stc->set_text("xx\n"
-                    "xx\n"
-                    "yy\n"
-                    "xx\n"
-                    "yy\n"
-                    "yy\n"
-                    "yy\n"
-                    "yy\n"
-                    "yy\n"
-                    "yy\n"
-                    "xx\n"
-                    "xx\n"
-                    "yy\n"
-                    "yy\n"
-                    "pp\n");
+      stc->set_text("xx0\n"
+                    "xx1\n"
+                    "yy2\n"
+                    "xx3\n"
+                    "yy4\n"
+                    "yy5\n"
+                    "yy6\n"
+                    "yy7\n"
+                    "yy8\n"
+                    "yy9\n"
+                    "xx10\n"
+                    "xx11\n"
+                    "yy12\n"
+                    "yy13\n"
+                    "pp14\n");
 
       REQUIRE(ex->command(":v/yy/d"));
-//      REQUIRE(stc->get_line_count() == 10);
+      REQUIRE(stc->get_line_count() == 10);
     }
 
     SUBCASE("extra")
@@ -196,7 +196,7 @@ TEST_CASE("wex::ex")
       }
 
       REQUIRE(ex->command(":v/xxxx/d"));
-//      REQUIRE(stc->get_line_count() == max + 1);
+      REQUIRE(stc->get_line_count() == max + 1);
     }
   }
 
@@ -346,7 +346,7 @@ TEST_CASE("wex::ex")
       ex->reset_search_flags();
       REQUIRE(ex->command(":%s/(x+) *(y+)/\\\\2 \\\\1"));
       REQUIRE(stc->get_text() == "we have yyyy xxxx zzzz");
-      stc->set_text("we have xxxx 'zzzz'");
+      stc->set_text("we have 'x'xxx 'zzzz'");
       REQUIRE(ex->command(":%s/'//g"));
       REQUIRE(stc->get_text() == "we have xxxx zzzz");
       REQUIRE(!ex->command(":.s/x*//g"));

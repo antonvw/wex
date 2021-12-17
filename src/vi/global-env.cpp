@@ -29,6 +29,11 @@ wex::global_env::global_env(const addressrange* ar)
     // Prevent recursive global.
     if (it[0] != 'g' && it[0] != 'v')
     {
+      if (it[0] == 'd' || it[0] == 'm')
+      {
+        m_recursive = true;
+      }
+
       m_commands.emplace_back(it);
     }
   }
@@ -53,14 +58,15 @@ bool wex::global_env::for_each(const block_lines& match) const
 /*
 example for global inverse
 v/yy/d
-line   text  mbs    ibs    ibe   ex action  
-0      xx    0      0      13
-1      xx    1             2      yy    2      0      2     -> :1,2d2      xx    03      yy    1      0      1     -> :1d      4      yy    2      2      5      yy    3      3      
-6      yy    4      4      7      yy    5      5      8      yy    6      6      9      xx    7             10     xx    8    
-11     yy    9      7      8     -> :7,8d12     yy    8      8                      13     pp    9                   -> :9d*/// clang-format on
+text   mbs    ibs    ibe   ex action  
+xx0    
+xx1                  yy2    2      0      2     -> :1,2dxx3     yy4    2      1      2     -> :2d      yy5    2      2      yy6    3      3      
+yy7    4      4      yy8    5      5      yy9    6      6      xx10   xx11   
+yy12   9      7      9     -> :8,9dyy13   8      8                      pp14   
+                           -> :10d*/// clang-format on
 bool wex::global_env::global(const data::substitute& data)
 {
-  addressrange_mark am(*m_ar);
+  addressrange_mark am(*m_ar, data);
 
   if (!am.set())
   {
@@ -68,26 +74,35 @@ bool wex::global_env::global(const data::substitute& data)
     return false;
   }
 
-  block_lines ib(m_ex, -1, m_stc->get_line_count() - 1);
+  const bool infinite =
+    (m_recursive && data.commands() != "$" && data.commands() != "1" &&
+     data.commands() != "d");
+
+  block_lines ib(m_ex, -1);
   block_lines mb(m_ex);
 
-  while (m_stc->SearchInTarget(data.pattern()) != -1)
+  while (am.search(data))
   {
-    mb = am.get_block_lines();
-
-    if (!data.is_inverse())
+    if (mb = am.get_block_lines(); data.is_inverse())
     {
-      if (!process(mb))
+      if (!process_inverse(mb, ib))
       {
         return false;
       }
     }
     else
     {
-      if (!process_inverse(mb, ib))
+      if (!process(mb))
       {
         return false;
       }
+    }
+
+    if (m_hits > 50 && infinite)
+    {
+      m_ex->frame()->show_ex_message(
+        "possible infinite loop at " + mb.get_range());
+      return false;
     }
 
     if (!am.update())
@@ -96,12 +111,15 @@ bool wex::global_env::global(const data::substitute& data)
     }
   }
 
-  ib = mb;
-
-  if (ib.end(m_stc->get_line_count() - 1);
-      ib.is_available() && data.is_inverse() && !process(ib))
+  if (data.is_inverse())
   {
-    return false;
+    ib.start(m_ex->marker_line('T') + 1);
+    ib.end(m_stc->get_line_count() - 1);
+
+    if (ib.is_available() && !process(ib))
+    {
+      return false;
+    }
   }
 
   am.end();
@@ -133,7 +151,7 @@ bool wex::global_env::process_inverse(const block_lines& mb, block_lines& ib)
       return false;
     }
 
-    ib.reset();
+    ib.start(m_ex->marker_line('T'));
   }
   else
   {

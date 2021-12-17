@@ -854,10 +854,10 @@ void wex::stc::sort_action(const wxCommandEvent& event)
 {
   if (SelectionIsRectangle())
   {
-    sort(
+    factory::sort(
       event.GetId() == wxID_SORT_ASCENDING ?
-        sort::sort_t() :
-        sort::sort_t().set(sort::SORT_DESCENDING))
+        factory::sort::sort_t() :
+        factory::sort::sort_t().set(factory::sort::SORT_DESCENDING))
       .selection(this);
   }
   else if (const auto pos(wxGetNumberFromUser(
@@ -870,10 +870,10 @@ void wex::stc::sort_action(const wxCommandEvent& event)
              this));
            pos > 0)
   {
-    sort(
+    factory::sort(
       event.GetId() == wxID_SORT_ASCENDING ?
-        sort::sort_t() :
-        sort::sort_t().set(sort::SORT_DESCENDING),
+        factory::sort::sort_t() :
+        factory::sort::sort_t().set(factory::sort::SORT_DESCENDING),
       pos - 1)
       .selection(this);
   }

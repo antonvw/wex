@@ -47,14 +47,14 @@ public:
   /// Logs components.
   void log() const;
 
-  /// Resets start line end end line.
-  void reset();
-
   /// Returns block_lines as the first single line from target.
   block_lines single() const;
 
   /// Return number of lines in the block.
   size_t size() const;
+
+  /// Updates start line.
+  void start(int start_line);
 
   /// Returns block_lines from target.
   block_lines target() const;
@@ -62,9 +62,11 @@ public:
 private:
   static inline const int LINE_RESET = {-2};
 
+  std::string m_name;
+
   int m_start{LINE_RESET}, m_end{LINE_RESET};
 
-  wex::ex*      m_ex;
+  ex*           m_ex;
   factory::stc* m_stc;
 };
 }; // namespace wex

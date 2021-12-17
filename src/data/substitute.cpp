@@ -55,6 +55,8 @@ bool wex::data::substitute::set(const std::string& command_org)
     }
   }
 
+  m_global_command = false;
+
   if (regex r({{"/(.*)/(.*)/([cgi]*)"}, {"/(.*)/(.*)"}, {"/(.*)"}});
       r.search(command) > 0)
   {
@@ -97,9 +99,10 @@ bool wex::data::substitute::set_global(const std::string& text)
     return false;
   }
 
-  m_inverse    = v[0].starts_with('v');
-  auto pattern = v[1];
-  m_commands   = v[2];
+  m_global_command = true;
+  m_inverse        = v[0].starts_with('v');
+  auto pattern     = v[1];
+  m_commands       = v[2];
 
   if (pattern.empty())
   {
