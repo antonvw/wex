@@ -63,6 +63,7 @@ public:
 private:
   struct actions
   {
+    void reset();
     bool m_show_inserts{true};
     bool m_show_keywords{true};
   };

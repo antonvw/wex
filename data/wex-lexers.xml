@@ -5,7 +5,7 @@ Name:      wex-lexers.xml
 Purpose:   Lexers configuration for wex.
            See scintilla 3.7.2 (www.scintilla.org).
 Author:    Anton van Wezenbeek
-Copyright: (c) 2020, Anton van Wezenbeek
+Copyright: (c) 2009-2021, Anton van Wezenbeek
 -->
 
 <lexers>
@@ -4002,6 +4002,29 @@ Copyright: (c) 2020, Anton van Wezenbeek
   <lexer name="r"/>
   <lexer name="rebol"/>
   <lexer name="registry"/>
+  <lexer display="rfwv" name="rfw"
+    extensions="*vi.robot;*.resource"
+    edgemode="none"
+    tabmode="use"
+    tabwidth="8">
+    <styles>
+      <style no="testcase"> fore:sky blue,underline </style>
+    </styles>
+    <properties>
+      <property name="fold"> 1 </property>
+      <property name="fold.compact"> 1 </property>
+      <property name="fold.comment"> 1 </property>
+      <property name="fold.pipes"> 1 </property>
+      <property name="fold.tabs"> 1 </property>
+      <property name="vi.Script"> 1 </property>
+    </properties>
+    <keywords set-1="rfw-core"> 
+      [Arguments] Documentation [Documentation] Return [Tags]
+      Default Force Library Metadata Postcondition Precondition Resource 
+      Template Timeout 
+      IF ELSE END 
+    </keywords>
+  </lexer>
   <lexer name="rfw" 
     extensions="*.robot;*.resource"
     edgemode="none"

@@ -30,10 +30,14 @@ public:
   /// Returns whether options indicate global.
   bool is_global() const;
 
+  /// Returns whether command indicates global.
+  bool is_global_command() const { return m_global_command; }
+
   /// Returns whether options indicate ignore case.
   bool is_ignore_case() const;
 
-  /// Returns whether inverse option is present (for set_global).
+  /// Returns whether inverse option is present (for set_global,
+  /// is_global_command).
   bool is_inverse() const { return m_inverse; }
 
   /// Returns pattern.
@@ -55,6 +59,6 @@ public:
 private:
   std::string m_commands, m_options, m_pattern, m_replacement;
 
-  bool m_clear{false}, m_inverse{false};
+  bool m_clear{false}, m_global_command{false}, m_inverse{false};
 };
 } // namespace wex::data

@@ -123,8 +123,7 @@ bool wex::vi::command(const std::string& command)
 
   if (
     m_mode.is_visual() && command.find("'<,'>") == std::string::npos &&
-    !get_stc()->get_selected_text().empty() &&
-    ex::command(command + "'<,'>"))
+    !get_stc()->get_selected_text().empty() && ex::command(command + "'<,'>"))
   {
     return auto_write();
   }
@@ -881,4 +880,6 @@ void wex::vi::yank_range(int start)
     get_macros().set_register(register_name(), get_stc()->get_selected_text());
     get_stc()->SelectNone();
   }
+
+  info_message(get_stc()->get_selected_text(), wex::info_message_t::YANK);
 }

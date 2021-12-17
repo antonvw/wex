@@ -14,7 +14,6 @@ namespace wex
 namespace factory
 {
 class stc;
-};
 
 /// Offers a sort class to sort text blocks, from strings or stc component.
 class sort
@@ -59,4 +58,5 @@ private:
   const sort_t m_sort_t{0};
   size_t       m_len, m_pos;
 };
+} // namespace factory
 } // namespace wex

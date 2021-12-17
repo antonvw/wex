@@ -93,6 +93,8 @@ static void colourise(
   WordList*     keywordlists[],
   Accessor&     styler)
 {
+  const bool is_vi = styler.GetPropertyInt("vi.Script") != 0;
+
   WordList cmdDelimiter;
   cmdDelimiter.Set("| || |& & && ; ;; ( ) { }");
 
@@ -253,8 +255,8 @@ static void colourise(
             testCaseSectionPos != -1 && sc.currentPos > testCaseSectionPos &&
             std::regex_search(words, m, std::regex(re_keyw, std::regex::icase)))
           {
-            testCaseSectionEndPos =
-              sc.currentPos - sc.LengthCurrent() - std::string(m[0]).size();
+            testCaseSectionEndPos = sc.currentPos - (size_t)sc.LengthCurrent() -
+                                    std::string(m[0]).size();
           }
           else if (std::regex_search(
                      words,
@@ -455,7 +457,7 @@ static void colourise(
             {
               quoteStack.push(sc.ch, RFW_DELIM_LITERAL);
             }
-            else if (sc.ch == '\"')
+            else if (sc.ch == '\"' && !is_vi)
             {
               quoteStack.push(sc.ch, RFW_DELIM_STRING);
             }
@@ -470,7 +472,7 @@ static void colourise(
                 sc.Forward();
                 quoteStack.push(sc.ch, RFW_DELIM_CSTRING);
               }
-              else if (sc.chNext == '\"')
+              else if (sc.chNext == '\"' && !is_vi)
               {
                 sc.Forward();
                 quoteStack.push(sc.ch, RFW_DELIM_LSTRING);
@@ -620,7 +622,7 @@ static void colourise(
           }
         }
       }
-      else if (sc.ch == '\"')
+      else if (sc.ch == '\"' && !is_vi)
       {
         sc.SetState(SCE_SH_STRING);
         quoteStack.start(sc.ch, RFW_DELIM_STRING);
