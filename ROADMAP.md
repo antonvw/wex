@@ -1,5 +1,4 @@
 # roadmap
-- update listctrl, use new sort methods
 - editing the vi bar
 - file read back for MSW (as we are now using VS 2022)
 - linux crash when startup outside git repo

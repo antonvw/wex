@@ -165,6 +165,7 @@ private:
   void process_match(wxCommandEvent& event);
   void process_mouse(wxMouseEvent& event);
 
+  bool report_view(const std::string& text);
   bool set_item_image(long item_number, int iconid)
   {
     return (

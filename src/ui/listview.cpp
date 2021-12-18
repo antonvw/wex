@@ -23,7 +23,6 @@
 #include <wex/ui/frd.h>
 #include <wex/ui/item-dialog.h>
 #include <wex/ui/item-vector.h>
-#include <wex/ui/item.h>
 #include <wex/ui/listitem.h>
 #include <wex/ui/listview.h>
 #include <wex/ui/menu.h>
@@ -80,18 +79,6 @@ template <typename T> int compare(T x, T y)
     return 0;
 }
 
-std::string ignore_case(const std::string& text)
-{
-  std::string output(text);
-
-  if (!wex::find_replace_data::get()->match_case())
-  {
-    boost::algorithm::to_upper(output);
-  }
-
-  return output;
-};
-
 const std::vector<item> config_items()
 {
   return std::vector<item>(
@@ -119,6 +106,17 @@ const std::vector<item> config_items()
           *wxLIGHT_GREY}}}}}});
 }
 
+std::string ignore_case(const std::string& text)
+{
+  std::string output(text);
+
+  if (!wex::find_replace_data::get()->match_case())
+  {
+    boost::algorithm::to_upper(output);
+  }
+
+  return output;
+};
 }; // namespace wex
 
 wex::listview::listview(const data::listview& data)
@@ -903,51 +901,9 @@ bool wex::listview::item_from_text(const std::string& text)
         {
           listitem(this, path(it)).insert();
         }
-        else
+        else if (!report_view(it))
         {
-          boost::tokenizer<boost::char_separator<char>> tok(
-            it,
-            boost::char_separator<char>(
-              std::string(1, m_field_separator).c_str()));
-
-          if (auto tt = tok.begin(); tt != tok.end())
-          {
-            if (path fn(*tt); fn.file_exists())
-            {
-              listitem item(this, fn);
-              item.insert();
-
-              // And try to set the rest of the columns
-              // (that are not already set by inserting).
-              int col = 1;
-              while (++tt != tok.end() && col < GetColumnCount() - 1)
-              {
-                if (
-                  col != find_column(_("Type")) &&
-                  col != find_column(_("In Folder")) &&
-                  col != find_column(_("Size")) &&
-                  col != find_column(_("Modified")))
-                {
-                  if (!set_item(item.GetId(), col, *tt))
-                    return false;
-                }
-
-                col++;
-              }
-            }
-            else
-            {
-              // Now we need only the first column (containing findfiles). If
-              // more columns are present, these are ignored.
-              const auto findfiles =
-                (std::next(tt) != tok.end() ? *(std::next(tt)) : it);
-              listitem(this, path(*tt), findfiles).insert();
-            }
-          }
-          else
-          {
-            listitem(this, path(it)).insert();
-          }
+          return false;
         }
     }
   }
@@ -1232,6 +1188,53 @@ void wex::listview::process_mouse(wxMouseEvent& event)
   }
 }
 
+bool wex::listview::report_view(const std::string& text)
+{
+  boost::tokenizer<boost::char_separator<char>> tok(
+    text,
+    boost::char_separator<char>(std::string(1, m_field_separator).c_str()));
+
+  if (auto tt = tok.begin(); tt != tok.end())
+  {
+    if (path fn(*tt); fn.file_exists())
+    {
+      listitem item(this, fn);
+      item.insert();
+
+      // And try to set the rest of the columns
+      // (that are not already set by inserting).
+      int col = 1;
+      while (++tt != tok.end() && col < GetColumnCount() - 1)
+      {
+        if (
+          col != find_column(_("Type")) && col != find_column(_("In Folder")) &&
+          col != find_column(_("Size")) && col != find_column(_("Modified")))
+        {
+          if (!set_item(item.GetId(), col, *tt))
+            return false;
+        }
+
+        col++;
+      }
+    }
+    else
+    {
+      // Now we need only the first column (containing findfiles). If
+      // more columns are present, these are ignored.
+      const auto& findfiles =
+        (std::next(tt) != tok.end() ? *(std::next(tt)) : text);
+
+      listitem(this, path(*tt), findfiles).insert();
+    }
+  }
+  else
+  {
+    listitem(this, path(text)).insert();
+  }
+
+  return true;
+}
+
 const std::list<std::string> wex::listview::save() const
 {
   std::list<std::string> l;
@@ -1401,23 +1404,16 @@ bool wex::listview::sort_column(int column_no, sort_t sort_method)
     SetItemData(i, i);
   }
 
-  const wxIntPtr sortdata =
-    (sorted_col.is_sorted_ascending() ? sorted_col.type() :
-                                        (0 - sorted_col.type()));
-
   try
   {
+    const auto sortdata =
+      (sorted_col.is_sorted_ascending() ? sorted_col.type() :
+                                        (0 - sorted_col.type()));
+
     SortItems(compare_cb, sortdata);
+    ShowSortIndicator(column_no, sorted_col.is_sorted_ascending());
 
     m_sorted_column_no = column_no;
-
-    if (m_data.image() != data::listview::IMAGE_NONE)
-    {
-      SetColumnImage(
-        column_no,
-        get_art_id(
-          sorted_col.is_sorted_ascending() ? wxART_GO_DOWN : wxART_GO_UP));
-    }
 
     if (GetItemCount() > 0)
     {
@@ -1426,22 +1422,20 @@ bool wex::listview::sort_column(int column_no, sort_t sort_method)
     }
 
     log::status(_("Sorted on")) << sorted_col.GetText().ToStdString();
+    return true;
   }
   catch (std::exception& e)
   {
     log(e) << "sort:" << sorted_col.GetText().ToStdString();
     return false;
   }
-
-  return true;
 }
 
 void wex::listview::sort_column_reset()
 {
-  // only if we are using images
-  if (m_sorted_column_no != -1 && !m_art_ids.empty())
+  if (m_sorted_column_no != -1)
   {
-    ClearColumnImage(m_sorted_column_no);
+    RemoveSortIndicator();
     m_sorted_column_no = -1;
   }
 }

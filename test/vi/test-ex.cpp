@@ -182,6 +182,8 @@ TEST_CASE("wex::ex")
 
       REQUIRE(ex->command(":v/yy/d"));
       REQUIRE(stc->get_line_count() == 10);
+      REQUIRE(stc->get_text().find("xx") == std::string::npos);
+      REQUIRE(stc->get_text().find("pp") == std::string::npos);
     }
 
     SUBCASE("extra")
@@ -197,6 +199,7 @@ TEST_CASE("wex::ex")
 
       REQUIRE(ex->command(":v/xxxx/d"));
       REQUIRE(stc->get_line_count() == max + 1);
+      REQUIRE(stc->get_text().find("yy") == std::string::npos);
     }
   }
 
