@@ -36,11 +36,12 @@ wex::textctrl_imp::textctrl_imp(
   , m_prefix(prefix)
   , m_tc(tc)
   , m_timer(this)
-  , m_calcs(new textctrl_input(ex_command::type_t::CALC))
-  , m_commands(new textctrl_input(ex_command::type_t::COMMAND))
-  , m_commands_ex(new textctrl_input(ex_command::type_t::COMMAND_EX))
-  , m_escapes(new textctrl_input(ex_command::type_t::ESCAPE))
-  , m_find_margins(new textctrl_input(ex_command::type_t::FIND_MARGIN))
+  , m_tcis{
+      new textctrl_input(ex_command::type_t::COMMAND),
+      new textctrl_input(ex_command::type_t::CALC),
+      new textctrl_input(ex_command::type_t::COMMAND_EX),
+      new textctrl_input(ex_command::type_t::ESCAPE),
+      new textctrl_input(ex_command::type_t::FIND_MARGIN)}
 {
   SetFont(config(_("stc.Text font"))
             .get(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
@@ -49,14 +50,14 @@ wex::textctrl_imp::textctrl_imp(
     wxEVT_CHAR,
     [=, this](wxKeyEvent& event)
     {
-      process_char(event);
+      on_char(event);
     });
 
   Bind(
     wxEVT_KEY_DOWN,
     [=, this](wxKeyEvent& event)
     {
-      process_key_down(event);
+      on_key_down(event);
     });
 
   Bind(
@@ -83,7 +84,7 @@ wex::textctrl_imp::textctrl_imp(
     wxEVT_TEXT,
     [=, this](wxCommandEvent& event)
     {
-      process_text(event);
+      on_text(event);
     });
 
   Bind(
@@ -97,14 +98,14 @@ wex::textctrl_imp::textctrl_imp(
     wxEVT_TEXT_ENTER,
     [=, this](wxCommandEvent& event)
     {
-      process_text_enter(event);
+      on_text_enter(event);
     });
 
   Bind(
     wxEVT_TEXT_PASTE,
     [=, this](wxClipboardTextEvent& event)
     {
-      process_text_paste(event);
+      on_text_paste(event);
     });
 
   bind();
@@ -131,17 +132,6 @@ wex::textctrl_imp::textctrl_imp(
   bind();
 }
 
-bool wex::textctrl_imp::Destroy()
-{
-  delete m_calcs;
-  delete m_commands;
-  delete m_commands_ex;
-  delete m_escapes;
-  delete m_find_margins;
-
-  return wxTextCtrl::Destroy();
-}
-
 void wex::textctrl_imp::bind()
 {
   Bind(
@@ -161,6 +151,16 @@ void wex::textctrl_imp::cut()
 
     wxTextCtrl::Cut();
   }
+}
+
+bool wex::textctrl_imp::Destroy()
+{
+  for (auto it : m_tcis)
+  {
+    delete it;
+  }
+
+  return wxTextCtrl::Destroy();
 }
 
 // A GetValue().ToStdString() should suffice, but that
@@ -208,6 +208,39 @@ bool wex::textctrl_imp::handle(const std::string& command)
     m_prefix->SetLabel(std::string(1, m_command.str().back()));
   }
 
+  if (!handle_type(command, range))
+  {
+    return false;
+  }
+
+  Show();
+  SetFocus();
+
+  return true;
+}
+
+bool wex::textctrl_imp::handle(char command)
+{
+  m_control_r = false;
+  m_input     = command;
+
+  Clear();
+
+  m_command.reset();
+
+  m_tc->get_frame()->pane_set(
+    "VIBAR",
+    wxAuiPaneInfo().BestSize(
+      -1,
+      4 * GetFont().GetPixelSize().GetHeight() + 10));
+
+  return true;
+}
+
+bool wex::textctrl_imp::handle_type(
+  const std::string& command,
+  const std::string& range)
+{
   switch (m_command.type())
   {
     case ex_command::type_t::CALC:
@@ -260,27 +293,6 @@ bool wex::textctrl_imp::handle(const std::string& command)
       return false;
   }
 
-  Show();
-  SetFocus();
-
-  return true;
-}
-
-bool wex::textctrl_imp::handle(char command)
-{
-  m_control_r = false;
-  m_input     = command;
-
-  Clear();
-
-  m_command.reset();
-
-  m_tc->get_frame()->pane_set(
-    "VIBAR",
-    wxAuiPaneInfo().BestSize(
-      -1,
-      4 * GetFont().GetPixelSize().GetHeight() + 10));
-
   return true;
 }
 
@@ -307,7 +319,7 @@ void wex::textctrl_imp::set_text(const std::string& text)
   ChangeValue(text);
 }
 
-void wex::textctrl_imp::process_char(wxKeyEvent& event)
+void wex::textctrl_imp::on_char(wxKeyEvent& event)
 {
   if (event.GetUnicodeKey() == WXK_NONE)
   {
@@ -380,7 +392,7 @@ void wex::textctrl_imp::process_char(wxKeyEvent& event)
   }
 }
 
-void wex::textctrl_imp::process_key_down(wxKeyEvent& event)
+void wex::textctrl_imp::on_key_down(wxKeyEvent& event)
 {
   switch (event.GetKeyCode())
   {
@@ -413,7 +425,7 @@ void wex::textctrl_imp::process_key_down(wxKeyEvent& event)
     case WXK_PAGEUP:
     case WXK_RIGHT:
     case WXK_UP:
-      process_key_down_page(event);
+      on_key_down_page(event);
       break;
 
     case WXK_BACK:
@@ -450,7 +462,7 @@ void wex::textctrl_imp::process_key_down(wxKeyEvent& event)
   }
 }
 
-void wex::textctrl_imp::process_key_down_page(wxKeyEvent& event)
+void wex::textctrl_imp::on_key_down_page(wxKeyEvent& event)
 {
   switch (event.GetKeyCode())
   {
@@ -512,7 +524,7 @@ void wex::textctrl_imp::process_key_down_page(wxKeyEvent& event)
   }
 }
 
-void wex::textctrl_imp::process_text(wxCommandEvent& event)
+void wex::textctrl_imp::on_text(wxCommandEvent& event)
 {
   event.Skip();
 
@@ -533,9 +545,9 @@ void wex::textctrl_imp::process_text(wxCommandEvent& event)
   }
 }
 
-void wex::textctrl_imp::process_text_enter(wxCommandEvent& event)
+void wex::textctrl_imp::on_text_enter(wxCommandEvent& event)
 {
-  if (!process_text_enter_prep(event))
+  if (!on_text_enter_prep(event))
   {
     return;
   }
@@ -603,7 +615,7 @@ void wex::textctrl_imp::process_text_enter(wxCommandEvent& event)
   }
 }
 
-bool wex::textctrl_imp::process_text_enter_prep(wxCommandEvent& event)
+bool wex::textctrl_imp::on_text_enter_prep(wxCommandEvent& event)
 {
   if (get_text().empty())
   {
@@ -637,7 +649,7 @@ bool wex::textctrl_imp::process_text_enter_prep(wxCommandEvent& event)
   return true;
 }
 
-void wex::textctrl_imp::process_text_paste(wxCommandEvent& event)
+void wex::textctrl_imp::on_text_paste(wxCommandEvent& event)
 {
   if (const auto text(clipboard_get()); !text.empty())
   {
@@ -668,21 +680,8 @@ void wex::textctrl_imp::SelectAll()
 
 wex::textctrl_input* wex::textctrl_imp::tci()
 {
-  switch (m_command.type())
-  {
-    case ex_command::type_t::CALC:
-      return m_calcs;
-
-    case ex_command::type_t::COMMAND_EX:
-      return m_commands_ex;
-
-    case ex_command::type_t::ESCAPE:
-      return m_escapes;
-
-    case ex_command::type_t::FIND_MARGIN:
-      return m_find_margins;
-
-    default:
-      return m_commands;
-  }
-};
+  return static_cast<int>(m_command.type()) >=
+             static_cast<int>(ex_command::type_t::NONE) ?
+           m_tcis[static_cast<int>(ex_command::type_t::COMMAND)] :
+           m_tcis[static_cast<int>(m_command.type())];
+}

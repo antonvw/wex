@@ -51,16 +51,17 @@ public:
 private:
   void bind();
   void cut();
+  bool handle_type(const std::string& command, const std::string& range);
   bool input_mode_finish() const;
   bool is_ex_mode() const;
 
-  void process_char(wxKeyEvent& event);
-  void process_key_down(wxKeyEvent& event);
-  void process_key_down_page(wxKeyEvent& event);
-  void process_text(wxCommandEvent& event);
-  void process_text_enter(wxCommandEvent& event);
-  bool process_text_enter_prep(wxCommandEvent& event);
-  void process_text_paste(wxCommandEvent& event);
+  void on_char(wxKeyEvent& event);
+  void on_key_down(wxKeyEvent& event);
+  void on_key_down_page(wxKeyEvent& event);
+  void on_text(wxCommandEvent& event);
+  void on_text_enter(wxCommandEvent& event);
+  bool on_text_enter_prep(wxCommandEvent& event);
+  void on_text_paste(wxCommandEvent& event);
 
   textctrl_input* tci();
 
@@ -75,8 +76,7 @@ private:
   bool m_all_selected{false}, m_control_r{false}, m_mode_visual{false},
     m_user_input{false};
 
-  textctrl_input *m_calcs{nullptr}, *m_commands{nullptr},
-    *m_commands_ex{nullptr}, *m_escapes{nullptr}, *m_find_margins{nullptr};
+  std::vector<textctrl_input*> m_tcis;
 
   ex_command m_command;
 };
