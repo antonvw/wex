@@ -250,9 +250,6 @@ void wex::config::on_init()
 {
   m_store = new config_imp();
   m_store->read();
-
-  log::trace("config") << "top size:" << size()
-                       << "elements:" << m_store->elements();
 }
 
 const wex::path wex::config::path()

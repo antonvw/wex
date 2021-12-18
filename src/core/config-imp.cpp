@@ -118,6 +118,9 @@ void wex::config_imp::read()
       if (const auto buffer(fs.read()); buffer != nullptr)
       {
         m_json = json::parse(*buffer).as_object();
+
+        log::trace("config") << m_path.string() << "top size:" << m_json.size()
+                             << "elements:" << elements();
       }
     }
     catch (std::exception& e)
