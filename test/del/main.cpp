@@ -25,9 +25,6 @@ private:
   del::listview*
   activate(data::listview::type_t listview_type, const lexer* lexer) override
   {
-    // only for coverage
-    del::frame::activate(listview_type, lexer);
-
     if (m_lv == nullptr)
     {
       m_lv = new del::listview(data::listview().type(data::listview::FIND));
@@ -38,7 +35,7 @@ private:
   }
 
 private:
-  del::listview* m_lv;
+  del::listview* m_lv{nullptr};
 };
 
 class del : public app
