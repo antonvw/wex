@@ -37,11 +37,11 @@ wex::textctrl_imp::textctrl_imp(
   , m_tc(tc)
   , m_timer(this)
   , m_tcis{
-      new textctrl_input(ex_command::type_t::COMMAND),
-      new textctrl_input(ex_command::type_t::CALC),
-      new textctrl_input(ex_command::type_t::COMMAND_EX),
-      new textctrl_input(ex_command::type_t::ESCAPE),
-      new textctrl_input(ex_command::type_t::FIND_MARGIN)}
+      new textctrl_input(ex_command::type_t::COMMAND, "ex-cmd.command"),
+      new textctrl_input(ex_command::type_t::CALC, "ex-cmd.calc"),
+      new textctrl_input(ex_command::type_t::COMMAND_EX, "ex-cmd.command-ex"),
+      new textctrl_input(ex_command::type_t::ESCAPE, "ex-cmd.escape"),
+      new textctrl_input(ex_command::type_t::FIND_MARGIN, "ex-cmd.margin")}
 {
   SetFont(config(_("stc.Text font"))
             .get(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
@@ -149,7 +149,7 @@ void wex::textctrl_imp::cut()
   {
     m_command.handle(this, wxID_CUT);
 
-    wxTextCtrl::Cut();
+    Cut();
   }
 }
 

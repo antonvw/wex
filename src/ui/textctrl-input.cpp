@@ -14,38 +14,11 @@
 
 #include <charconv>
 
-wex::textctrl_input::textctrl_input(ex_command::type_t type)
+wex::textctrl_input::textctrl_input(
+  ex_command::type_t type,
+  const std::string& name)
   : m_type(type)
-  , m_name(
-      [](ex_command::type_t type)
-      {
-        switch (type)
-        {
-          case ex_command::type_t::CALC:
-            return std::string("ex-cmd.calc");
-
-          case ex_command::type_t::COMMAND:
-            return std::string("ex-cmd.command");
-
-          case ex_command::type_t::COMMAND_EX:
-            return std::string("ex-cmd.command-ex");
-
-          case ex_command::type_t::ESCAPE:
-            return std::string("ex-cmd.escape");
-
-          case ex_command::type_t::FIND:
-            return find_replace_data::text_find();
-
-          case ex_command::type_t::FIND_MARGIN:
-            return std::string("ex-cmd.margin");
-
-          case ex_command::type_t::REPLACE:
-            return find_replace_data::text_replace_with();
-
-          default:
-            return std::string("ex-cmd.other");
-        }
-      }(type))
+  , m_name(name)
   , m_values(config(m_name).get(values_t{}))
   , m_iterator(m_values.cbegin())
 {
