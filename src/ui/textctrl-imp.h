@@ -21,10 +21,13 @@ class textctrl_imp : public wxTextCtrl
 {
 public:
   /// Constructor. Creates empty control.
-  textctrl_imp(textctrl* tc, wxControl* prefix, const data::window& data);
+  explicit textctrl_imp(
+    textctrl*           tc,
+    wxControl*          prefix,
+    const data::window& data);
 
   /// Constructor. Skips prefix.
-  textctrl_imp(
+  explicit textctrl_imp(
     textctrl*           tc,
     const std::string&  value = std::string(),
     const data::window& data  = data::window());

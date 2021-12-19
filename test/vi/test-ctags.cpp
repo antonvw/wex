@@ -58,7 +58,6 @@ TEST_CASE("wex::ctags")
     REQUIRE(!wex::ctags::find("xxxx"));
     REQUIRE(wex::ctags::find("test_app"));
     REQUIRE(!wex::ctags::next());
-    auto* ex = new wex::ex(get_stc());
     REQUIRE(wex::ctags(ex).separator() != ' ');
   }
 }
