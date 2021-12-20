@@ -12,8 +12,10 @@
 #include <wx/fdrepdlg.h>
 
 wex::find_replace_data::find_replace_data()
-  : m_find_strings(ex_command::type_t::FIND)
-  , m_replace_strings(ex_command::type_t::REPLACE)
+  : m_find_strings(ex_command::type_t::FIND, find_replace_data::text_find())
+  , m_replace_strings(
+      ex_command::type_t::REPLACE,
+      find_replace_data::text_replace_with())
 {
   set_find_strings(config(text_find()).get(textctrl_input::values_t{}));
   set_replace_strings(

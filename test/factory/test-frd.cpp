@@ -14,7 +14,7 @@ TEST_CASE("wex::factory::frd")
   wex::factory::find_replace_data find_replace_data;
   auto*                           frd = &find_replace_data;
 
-  REQUIRE(frd != nullptr);
+  assert(frd != nullptr);
 
   frd->set_match_case(true);
   REQUIRE(frd->match_case());

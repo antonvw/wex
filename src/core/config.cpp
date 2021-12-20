@@ -364,6 +364,7 @@ size_t wex::config::size()
 
 bool wex::config::toggle(bool def)
 {
-  get_store()->set(m_item, !get(def));
+  // scintilla lexer does not support bool json
+  get_store()->set(m_item, (int)!get(def));
   return get(def);
 }

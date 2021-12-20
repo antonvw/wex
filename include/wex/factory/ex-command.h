@@ -25,13 +25,15 @@ public:
   /// The type of ex command.
   enum class type_t
   {
-    CALC,        ///< a calculation command (control-r =)
+    // these types are indexed in textctrl_imp
     COMMAND,     ///< a normal (ex) command (:)
+    CALC,        ///< a calculation command (control-r =)
     COMMAND_EX,  ///< a normal (ex) command, entered in explicit ex mode (:)
     ESCAPE,      ///< an escape command (!)
-    FIND,        ///< a find command (/ or ?)
     FIND_MARGIN, ///< a find command (/ or ?) entered on text margin
+    // the rest
     NONE,        ///< an empty command
+    FIND,        ///< a find command (/ or ?)
     REPLACE,     ///< a replace command (no ex command)
     VI,          ///< a vi command (no ex command)
   };

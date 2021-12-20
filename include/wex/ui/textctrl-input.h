@@ -28,7 +28,9 @@ public:
   /// to retrieve the values.
   textctrl_input(
     /// the ex_command type used to get config values
-    ex_command::type_t type);
+    ex_command::type_t type,
+    /// the name, as used in config to store values
+    const std::string& name = "ex-cmd.other");
 
   /// Destructor, writes values (with a max for integers on the list) to config.
   ~textctrl_input();

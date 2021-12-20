@@ -18,11 +18,6 @@
 
 TEST_CASE("wex::del::frame")
 {
-  auto* list = new wex::del::listview(
-    wex::data::listview().type(wex::data::listview::HISTORY));
-
-  del_frame()->pane_add(list);
-
   SUBCASE("find_in_files")
   {
     wex::find_replace_data::get()->set_find_string("wex::test_app");
@@ -60,7 +55,6 @@ TEST_CASE("wex::del::frame")
   {
     auto* menu = new wex::menu();
     del_frame()->get_project_history().use_menu(1000, menu);
-    list->Show();
   }
 
   SUBCASE("open_file")
@@ -78,7 +72,7 @@ TEST_CASE("wex::del::frame")
     //    wex::data::stc().flags(wex::data::stc::WIN_IS_PROJECT)));
   }
 
-  SUBCASE("process_async_system")
+  SUBCASE("prepare_output")
   {
     wex::process::prepare_output(del_frame());
     REQUIRE(wex::addressrange(&get_stc()->get_vi(), "").escape("ls"));
@@ -101,8 +95,6 @@ TEST_CASE("wex::del::frame")
     del_frame()->show_ex_bar(wex::frame::HIDE_BAR_FORCE_FOCUS_STC);
   }
 
-  SUBCASE("stc") { auto* stc = get_stc(); }
-
   SUBCASE("stc_entry_dialog")
   {
     REQUIRE(del_frame()->stc_entry_dialog_component() != nullptr);
@@ -110,7 +102,14 @@ TEST_CASE("wex::del::frame")
     REQUIRE(del_frame()->stc_entry_dialog_title() == "hello world");
   }
 
-  SUBCASE("use_file_history") { del_frame()->use_file_history_list(list); }
+  SUBCASE("use_file_history")
+  {
+    auto* list = new wex::del::listview(
+      wex::data::listview().type(wex::data::listview::HISTORY));
+    del_frame()->pane_add(list);
+    list->Show();
+    del_frame()->use_file_history_list(list);
+  }
 
   SUBCASE("visual")
   {
