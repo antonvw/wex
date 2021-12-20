@@ -318,6 +318,7 @@ wex::regex::regex(
   this ensures that the function is kept in sync with base class
 
 - spaceship operator (c++20)
+  see presentation.h or block-lines.h
 
 ## boost c++ libraries
 - boost::algorithm lib

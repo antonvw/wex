@@ -708,7 +708,7 @@ void wex::del::frame::on_idle(wxIdleEvent& event)
 
 void wex::del::frame::on_notebook(wxWindowID id, wxWindow* page)
 {
-  if (is_closing())
+  if (is_closing() || !IsShown())
   {
     return;
   }
@@ -719,16 +719,7 @@ void wex::del::frame::on_notebook(wxWindowID id, wxWindow* page)
 
     set_recent_file(stc->path());
 
-    const vcs v({stc->path()});
-
-    if (const auto& b(v.get_branch()); !b.empty())
-    {
-      statustext(b, "PaneVCS");
-    }
-    else
-    {
-      statustext(v.name(), "PaneVCS");
-    }
+    statustext_vcs(stc);
   }
 }
 
@@ -850,6 +841,11 @@ void wex::del::frame::show_ex_message(const std::string& text)
   statustext(text, std::string());
 }
 
+int wex::del::frame::show_stc_entry_dialog(bool modal)
+{
+  return modal ? entry_dialog()->ShowModal() : entry_dialog()->Show();
+}
+
 void wex::del::frame::statusbar_clicked(const std::string& pane)
 {
   if (auto* stc = dynamic_cast<wex::stc*>(get_stc()); pane == "PaneDBG")
@@ -954,9 +950,18 @@ void wex::del::frame::statusbar_clicked_right(const std::string& pane)
   }
 }
 
-int wex::del::frame::show_stc_entry_dialog(bool modal)
+void wex::del::frame::statustext_vcs(factory::stc* stc)
 {
-  return modal ? entry_dialog()->ShowModal() : entry_dialog()->Show();
+  const vcs v({stc->path()});
+
+  if (const auto& b(v.get_branch()); !b.empty())
+  {
+    statustext(b, "PaneVCS");
+  }
+  else
+  {
+    statustext(v.name(), "PaneVCS");
+  }
 }
 
 wex::factory::stc* wex::del::frame::stc_entry_dialog_component()
