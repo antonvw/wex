@@ -22,8 +22,7 @@ void wex::app::add_catalogs() const
 {
   wxLogNull logNo; // prevent wxLog
 
-  if (const auto& dir(get_catalog_dir());
-      fs::is_directory(dir) && get_language() != wxLANGUAGE_DEFAULT)
+  if (const auto& dir(get_catalog_dir()); fs::is_directory(dir))
   {
     for (const auto& p : fs::recursive_directory_iterator(dir))
     {
@@ -38,43 +37,16 @@ void wex::app::add_catalogs() const
       }
     }
   }
-}
-
-const std::string wex::app::get_catalog_dir() const
-{
-  const std::string dir(wxStandardPaths::Get().GetLocalizedResourcesDir(
-    get_locale().GetLanguageCanonicalName(get_language())
-#ifndef __WXMSW__
-      ,
-    wxStandardPaths::ResourceCat_Messages
-#endif
-    ));
-
-  if (!fs::is_directory(dir) && get_language() != wxLANGUAGE_DEFAULT)
+  else
   {
     log("missing locale files for")
       << get_locale().GetName().ToStdString() << "in" << dir;
   }
-
-  return dir;
 }
 
-wxLanguage wex::app::get_language() const
+const std::string wex::app::get_catalog_dir() const
 {
-  const wxLanguageInfo* info = nullptr;
-
-  if (const auto& lang(config("Language").get()); !lang.empty())
-  {
-    if ((info = wxUILocale::FindLanguageInfo(lang)) == nullptr)
-    {
-      log("unknown language") << lang;
-    }
-  }
-
-  const auto lang =
-    (info != nullptr ? (wxLanguage)info->Language : wxLANGUAGE_DEFAULT);
-
-  return lang;
+  return wxStandardPaths::Get().GetResourcesDir();
 }
 
 const wxUILocale& wex::app::get_locale()
@@ -112,10 +84,14 @@ bool wex::app::OnInit()
   }
 
   // Construct translation, from now on things will be translated.
+  set_language();
   wxTranslations::Set(new wxTranslations());
-  wxTranslations::Get()->SetLanguage(get_language());
+  wxTranslations::Get()->SetLanguage(m_language);
 
-  add_catalogs();
+  if (m_language != wxLANGUAGE_UNKNOWN && m_language != wxLANGUAGE_DEFAULT)
+  {
+    add_catalogs();
+  }
 
   // Necessary for auto_complete images.
   wxInitAllImageHandlers();
@@ -123,4 +99,24 @@ bool wex::app::OnInit()
   wxTheClipboard->UsePrimarySelection(true);
 
   return true; // do not call base class: we have our own cmd line processing
+}
+
+void wex::app::set_language()
+{
+  if (const auto& lang(config("Language").get()); !lang.empty())
+  {
+    if (const auto* info = wxUILocale::FindLanguageInfo(lang); info == nullptr)
+    {
+      log("unknown language") << lang;
+      m_language = wxLANGUAGE_UNKNOWN;
+    }
+    else
+    {
+      m_language = (wxLanguage)info->Language;
+    }
+  }
+  else
+  {
+    m_language = wxLANGUAGE_DEFAULT;
+  }
 }
