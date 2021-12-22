@@ -1,7 +1,5 @@
 # roadmap
-- fix block change if block is selected
 - linux print setup asserts
-- improve wex.md
 
 ## backlog
 - use boost python for scripting
