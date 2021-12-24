@@ -15,6 +15,7 @@ namespace wex
 class command_parser
 {
 public:
+  /// The possible ex address types.
   enum class address_t
   {
     NO_ADDR,  ///< not address related
@@ -22,6 +23,7 @@ public:
     TWO_ADDR, ///< two addresses related
   };
 
+  /// The possible ex parse types.
   enum class parse_t
   {
     PARSE, ///< check and parse text

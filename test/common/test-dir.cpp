@@ -87,7 +87,7 @@ TEST_CASE("wex::dir")
 
       REQUIRE(dir.find_files(wex::tool(wex::ID_TOOL_REPORT_FIND)));
 
-      wex::interruptible::stop();
+      wex::interruptible::end();
 
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
@@ -112,5 +112,5 @@ TEST_CASE("wex::dir")
     REQUIRE(!dir.get_path().dir_exists());
   }
 
-  wex::interruptible::stop();
+  wex::interruptible::end();
 }

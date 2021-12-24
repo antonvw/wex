@@ -206,7 +206,7 @@ bool wex::dir::on_file(const path& p) const
 
       if (!s.run_tool())
       {
-        cancel();
+        end();
         return false;
       }
 
@@ -297,7 +297,7 @@ int wex::dir::run() const
                          << "flags:" << m_data.type()
                          << "matches:" << matches();
 
-  stop();
+  end();
 
   find_files_end();
 
@@ -338,7 +338,7 @@ bool wex::dir::traverse(const fs::directory_entry& e) const
     return false;
   }
 
-  return !interruptible::is_cancelled();
+  return interruptible::is_running();
 }
 
 std::vector<std::string>
