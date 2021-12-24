@@ -73,7 +73,7 @@ private:
   void thread_main();
 
   event_handler&            m_event_handler;
-  std::atomic_bool          m_running{false};
+  std::atomic<bool>         m_running{false};
   std::chrono::milliseconds m_timeout;
   std::condition_variable   m_queue_condition;
 

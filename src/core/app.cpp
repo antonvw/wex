@@ -7,6 +7,7 @@
 
 #include <wex/core/app.h>
 #include <wex/core/config.h>
+#include <wex/core/interruptible.h>
 #include <wex/core/log.h>
 #include <wex/core/version.h>
 #include <wx/clipbrd.h>
@@ -32,6 +33,7 @@ int wex::app::OnExit()
 {
   try
   {
+    interruptible::on_exit();
     config::on_exit();
 
     log::info("exit");
@@ -51,6 +53,7 @@ bool wex::app::OnInit()
                        << get_version_info().get();
 
   config::on_init();
+  interruptible::on_init();
 
   // Construct translation, from now on things will be translated.
   set_language();
@@ -62,7 +65,6 @@ bool wex::app::OnInit()
     wxTranslations::Set(new wxTranslations());
     wxTranslations::Get()->SetLanguage(m_language);
     wxTranslations::Get()->SetLoader(loader);
-    wxTranslations::Get()->AddCatalog("nl");
 
     loader->add_catalogs(m_language);
   }

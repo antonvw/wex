@@ -9,28 +9,36 @@
 
 namespace wex
 {
-  /// Offers methods to start, stop things.
-  class interruptible
-  {
-  public:
-    /// Cancel interruptible process.
-    /// Returns false if process was not running.
-    static bool cancel();
+class interruptible_imp;
 
-    /// Check whether process was cancelled.
-    static bool is_cancelled() { return m_cancelled; }
+/// Offers methods to start, stop, cancel things.
+class interruptible
+{
+public:
+  /// Cleans up the class.
+  static void on_exit();
 
-    /// Is process running.
-    static bool is_running() { return m_running; }
+  /// Initializes the class.
+  static void on_init();
 
-    /// Starts interruptible process.
-    /// Returns false if process is already running.
-    static bool start();
+  /// Starts the interruptible process.
+  /// Returns false if process is already running.
+  static bool start();
 
-    /// Stops interruptible process.
-    static void stop();
+  /// Stops the interruptible process.
+  static void stop();
 
-  private:
-    static inline bool m_cancelled{false}, m_running{false};
-  };
+  /// Cancel interruptible process.
+  /// Returns false if process is not running.
+  static bool cancel();
+
+  /// Returns true if process was cancelled.
+  static bool is_cancelled();
+
+  /// Returns true if process is running.
+  static bool is_running();
+
+private:
+  static inline interruptible_imp* m_imp{nullptr};
+};
 }; // namespace wex

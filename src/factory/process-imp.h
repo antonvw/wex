@@ -53,8 +53,8 @@ private:
   std::shared_ptr<boost::asio::io_context> m_io;
   std::shared_ptr<std::queue<std::string>> m_queue;
 
-  std::atomic_bool m_debug{false};
-  std::atomic_bool m_is_running{false};
+  std::atomic<bool> m_debug{false};
+  std::atomic<bool> m_is_running{false};
 
   std::string m_exe;
 
