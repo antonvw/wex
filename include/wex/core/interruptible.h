@@ -2,7 +2,7 @@
 // Name:      interruptible.h
 // Purpose:   Declaration of class wex::interruptible
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2015-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
