@@ -150,6 +150,6 @@ private:
   std::filesystem::path m_path, m_path_original;
 
   file_status m_stat;
-  log_t m_log{0};
+  log_t       m_log{0};
 };
 }; // namespace wex
