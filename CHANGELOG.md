@@ -31,7 +31,7 @@
 - added wex::data namespace
 
 **v20.04** *March 15, 2020*
-- scintilla is compiled to use std::regex (ECMAScript)
+- scintilla is compiled to use `std::regex` (ECMAScript)
 - The Open Group Base Specifications Issue 7, 2018 edition
 - Microsoft Visual Studio 2019
 - usage of test suites
@@ -78,7 +78,7 @@
 - c++14 standard
 - wxWidgets 3.1.0
 - catch lib instead of cppunit lib
-- cmake build system
+- cmake build tool
 - Microsoft Visual Studio 2015
 - The Open Group Base Specifications Issue 7, 2013 edition
 

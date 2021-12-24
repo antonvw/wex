@@ -78,7 +78,7 @@ TEST_CASE("wex::ex_stream")
 
   SUBCASE("erase")
   {
-    wex::file      ifs(open_file());
+    wex::file ifs(open_file());
     REQUIRE(ifs.open());
     wex::ex_stream exs(ex);
     exs.stream(ifs);
@@ -121,7 +121,7 @@ TEST_CASE("wex::ex_stream")
 
   SUBCASE("find-noeol")
   {
-    wex::file      ifs(open_file(false));
+    wex::file ifs(open_file(false));
     REQUIRE(ifs.open());
     wex::ex_stream exs(ex);
     exs.stream(ifs);
@@ -138,7 +138,7 @@ TEST_CASE("wex::ex_stream")
 
   SUBCASE("insert")
   {
-    wex::file      ifs(open_file());
+    wex::file ifs(open_file());
     REQUIRE(ifs.open());
     wex::ex_stream exs(ex);
     exs.stream(ifs);
@@ -159,7 +159,7 @@ TEST_CASE("wex::ex_stream")
     REQUIRE(ar.get_begin().get_line() == 2);
     REQUIRE(ar.get_end().get_line() == 3);
 
-    wex::file       ifs(open_file());
+    wex::file ifs(open_file());
     REQUIRE(ifs.open());
     wex::ex_stream* exs(ex->ex_stream());
     ifs.open();
@@ -175,7 +175,7 @@ TEST_CASE("wex::ex_stream")
 
   SUBCASE("markers")
   {
-    wex::file      ifs(open_file());
+    wex::file ifs(open_file());
     REQUIRE(ifs.open());
     wex::ex_stream exs(ex);
     exs.stream(ifs);
@@ -197,7 +197,7 @@ TEST_CASE("wex::ex_stream")
     exs.stream(ifs);
     exs.goto_line(10);
 
-    REQUIRE(exs.find(std::string("markdown document"), -1, false));
+    REQUIRE(exs.find(std::string("Markdown document"), -1, false));
     REQUIRE(!exs.is_modified());
     REQUIRE(exs.get_current_line() == 1);
     REQUIRE(exs.find(std::string("one")));
@@ -207,7 +207,7 @@ TEST_CASE("wex::ex_stream")
 
   SUBCASE("previous-noeol")
   {
-    wex::file      ifs(open_file(false));
+    wex::file ifs(open_file(false));
     REQUIRE(ifs.open());
     wex::ex_stream exs(ex);
     exs.stream(ifs);
@@ -255,7 +255,7 @@ TEST_CASE("wex::ex_stream")
 
   SUBCASE("substitute")
   {
-    wex::file      ifs(open_file());
+    wex::file ifs(open_file());
     REQUIRE(ifs.open());
     wex::ex_stream exs(ex);
     exs.stream(ifs);
@@ -269,7 +269,7 @@ TEST_CASE("wex::ex_stream")
 
   SUBCASE("write")
   {
-    wex::file      ifs(open_file());
+    wex::file ifs(open_file());
     REQUIRE(ifs.open());
     wex::ex_stream exs(ex);
     exs.stream(ifs);
@@ -280,7 +280,7 @@ TEST_CASE("wex::ex_stream")
 
   SUBCASE("yank")
   {
-    wex::file      ifs(open_file());
+    wex::file ifs(open_file());
     REQUIRE(ifs.open());
     wex::ex_stream exs(ex);
     exs.stream(ifs);

@@ -22,6 +22,8 @@ jobs:
         # we use escape sequence in wex-macros.xml
         VALIDATE_XML: false
 
+        VALIDATE_SQLFLUFF: false
+
         # exclude xsl, all externals
         FILTER_REGEX_EXCLUDE: .*data/*.xsl|external|src/lexers|locale/po-sync.sh
 

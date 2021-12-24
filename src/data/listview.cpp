@@ -6,8 +6,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/data/listview.h>
-#include <wex/factory/listview.h>
 #include <wex/factory/lexer.h>
+#include <wex/factory/listview.h>
 
 wex::data::listview::listview(factory::listview* lv)
   : m_listview(lv)

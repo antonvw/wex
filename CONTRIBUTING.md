@@ -18,11 +18,11 @@
   - to translate wex copy the wex.pot file to the correct language po
     file, and fill in the translation.
 
-  - The place where to put your po files can be found by adding -l command line switch.
+  - The place where to put your po files can be found by adding -l command-line switch.
     You can also test other languages using the special Language config item,
     e.g. setting it to french allows you to test french translation.
     Normally you check the current locale by running locale on the
-    command line. Running locale -a shows all your available locales, if your
+    command-line. Running locale -a shows all your available locales, if your
     locale is not present, add it using locale-gen (provided it is in
     the list of all locales (/usr/share/i18n/SUPPORTED).
     Then you do export LANG=..., or change the /etc/default/locale.
@@ -31,7 +31,7 @@
   
 ## Analyse it
 
-At github some code analysers will do this, it is also possible to do
+At GitHub some code analysers will do this, it is also possible to do
 some local checks:
 
 - codespell.sh
