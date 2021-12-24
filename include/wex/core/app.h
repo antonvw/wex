@@ -44,7 +44,6 @@ public:
   auto get_language() const { return m_language; }
 
 private:
-  void add_catalogs() const;
   void set_language();
 
   wxLanguage m_language;

@@ -7,46 +7,20 @@
 
 #include <wex/core/app.h>
 #include <wex/core/config.h>
-#include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/core/version.h>
 #include <wx/clipbrd.h>
-#include <wx/stdpaths.h>
 
 #include <filesystem>
 #include <iostream>
 
+#include "app-locale.h"
+
 namespace fs = std::filesystem;
-
-void wex::app::add_catalogs() const
-{
-  wxLogNull logNo; // prevent wxLog
-
-  if (const auto& dir(get_catalog_dir()); fs::is_directory(dir))
-  {
-    for (const auto& p : fs::recursive_directory_iterator(dir))
-    {
-      if (
-        fs::is_regular_file(p.path()) &&
-        matches_one_of(p.path().filename().string(), "*.mo"))
-      {
-        if (!wxTranslations::Get()->AddCatalog(p.path().stem().string()))
-        {
-          log("could not add catalog") << p.path().stem().string();
-        }
-      }
-    }
-  }
-  else
-  {
-    log("missing locale files for")
-      << get_locale().GetName().ToStdString() << "in" << dir;
-  }
-}
 
 const std::string wex::app::get_catalog_dir() const
 {
-  return wxStandardPaths::Get().GetResourcesDir();
+  return file_translations_loader::catalog_dir();
 }
 
 const wxUILocale& wex::app::get_locale()
@@ -78,19 +52,19 @@ bool wex::app::OnInit()
 
   config::on_init();
 
-  if (!wxUILocale::UseDefault())
-  {
-    log("could not set locale");
-  }
-
   // Construct translation, from now on things will be translated.
   set_language();
-  wxTranslations::Set(new wxTranslations());
-  wxTranslations::Get()->SetLanguage(m_language);
 
   if (m_language != wxLANGUAGE_UNKNOWN && m_language != wxLANGUAGE_DEFAULT)
   {
-    add_catalogs();
+    auto* loader = new file_translations_loader();
+    wxUILocale::FromTag(wxUILocale::GetLanguageCanonicalName(m_language));
+    wxTranslations::Set(new wxTranslations());
+    wxTranslations::Get()->SetLanguage(m_language);
+    wxTranslations::Get()->SetLoader(loader);
+    wxTranslations::Get()->AddCatalog("nl");
+
+    loader->add_catalogs(m_language);
   }
 
   // Necessary for auto_complete images.
@@ -113,6 +87,8 @@ void wex::app::set_language()
     else
     {
       m_language = (wxLanguage)info->Language;
+      log::trace("canonical name")
+        << wxUILocale::GetLanguageCanonicalName(m_language).ToStdString();
     }
   }
   else
