@@ -9,39 +9,24 @@ It benefits from the following c++ features:
   std::all_of (c++11)
 ```
 
-  As wex allows you to search in files or replace in files, this
-  functionality is used.
+  E.g. when doing a global command on all of it's subcommands
 
   example:
 ```cpp
-    int wex::dir::find_files()
-    {
-      int matches = 0;
-
-      if (m_data.type().test(data::dir::RECURSIVE))
-      {
-        fs::recursive_directory_iterator rdi(
-          m_dir.data(),
-          fs::directory_options::skip_permission_denied),
-          end;
-
-        if (!std::all_of(rdi, end, [&](const fs::directory_entry& p) {
-              return traverse(p, this, matches);
-            }))
-        {
-          log("recursive_directory_iterator") << m_dir;
-        }
-      }
-      else
-      {
-        fs::directory_iterator di(m_dir.data()), end;
-        if (!std::all_of(di, end, [&](const fs::directory_entry& p) {
-              return traverse(p, this, matches);
-            }))
-        {
-          log("directory_iterator") << m_dir;
-        }
-      }
+bool wex::global_env::for_each(const block_lines& match) const
+{
+  return !has_commands() ? m_stc->set_indicator(
+                             m_ar->get_find_indicator(),
+                             m_stc->GetTargetStart(),
+                             m_stc->GetTargetEnd()) :
+                           std::all_of(
+                             m_commands.begin(),
+                             m_commands.end(),
+                             [this, match](const std::string& it)
+                             {
+                               return run(match, it);
+                             });
+}
 ```
 
 - Filesystem library (c++17)
@@ -154,7 +139,10 @@ It benefits from the following c++ features:
   starts_with (c++20)
 ```
 
-  A recent added function.
+  vi/vi.cpp:
+```cpp
+  if (command.starts_with(k_s(WXK_CONTROL_R) + "="))
+```
 
 - Thread support library (c++17)
 ```cpp
@@ -269,16 +257,20 @@ It benefits from the following c++ features:
 ## c++ language
 
 - init_statement in if and case statements (c++17)
-  vi/command.cpp:
-    ui/textctrl-input.cpp:
+  ui/textctrl-input.cpp:
 ```cpp
       switch (const int page = 10; key)
 ```
 
+  vi/command-ex.cpp:
+```cpp
+      if (const std::string line(it); !line.empty())
+```
+  
 - initializer_list (c++11)
 
 - lambda expressions (c++11)
-  used of lof, e.g. useful to assign result of expression to a constant class
+  e.g. useful to assign result of expression to a constant class
   member in a constructor.
   core/regex.cpp:
 
@@ -318,6 +310,13 @@ wex::regex::regex(
   this ensures that the function is kept in sync with base class
 
 - spaceship operator (c++20)
+  see presentation.h or block-lines.h
+```cpp
+  auto operator<=>(const block_lines& r) const
+  {
+    return m_start <=> r.m_start - 1;
+  }
+```
 
 ## boost c++ libraries
 - boost::algorithm lib

@@ -40,8 +40,12 @@ public:
   /// Returns the catalog dir.
   const std::string get_catalog_dir() const;
 
+  /// Returns locale language.
+  auto get_language() const { return m_language; }
+
 private:
-  void       add_catalogs() const;
-  wxLanguage get_language() const;
+  void set_language();
+
+  wxLanguage m_language;
 };
 }; // namespace wex

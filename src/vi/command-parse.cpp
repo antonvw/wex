@@ -53,16 +53,16 @@ bool wex::vi::parse_command(std::string& command)
   {
     case 1:
       if (
-        m_mode.is_visual() && !get_stc()->GetSelectedText().empty() &&
+        m_mode.is_visual() && !get_stc()->get_selected_text().empty() &&
         (motion == motion_t::CHANGE || motion == motion_t::DEL ||
          motion == motion_t::YANK))
       {
         if (motion == motion_t::CHANGE)
         {
-          m_mode.escape();
           std::string s("i");
           m_mode.transition(s);
           command.erase(0, 1);
+          return true;
         }
         else
         {

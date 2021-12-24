@@ -119,6 +119,9 @@ public:
   /// Updates project history.
   void set_recent_project(const path& path) { m_project_history.append(path); }
 
+  /// Shows vcs info on statusbar.
+  void statustext_vcs(factory::stc* stc);
+
   /// Uses specified history list, and adds all elements from file history
   /// to the list.
   void use_file_history_list(listview* list);

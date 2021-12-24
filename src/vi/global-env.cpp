@@ -59,11 +59,24 @@ bool wex::global_env::for_each(const block_lines& match) const
 example for global inverse
 v/yy/d
 text   mbs    ibs    ibe   ex action  
-xx0    
-xx1                  yy2    2      0      2     -> :1,2dxx3     yy4    2      1      2     -> :2d      yy5    2      2      yy6    3      3      
-yy7    4      4      yy8    5      5      yy9    6      6      xx10   xx11   
-yy12   9      7      9     -> :8,9dyy13   8      8                      pp14   
-                           -> :10d*/// clang-format on
+xx0
+xx1
+yy2    2      0      2     -> :1,2d
+xx3
+yy4    2      1      2     -> :2d
+yy5    2      2
+yy6    3      3
+yy7    4      4
+yy8    5      5
+yy9    6      6
+xx10
+xx11
+yy12   9      7      9     -> :8,9d
+yy13   8      8
+pp14
+                           -> :10d
+*/
+// clang-format on
 bool wex::global_env::global(const data::substitute& data)
 {
   addressrange_mark am(*m_ar, data);
