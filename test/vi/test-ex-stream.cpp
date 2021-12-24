@@ -238,7 +238,7 @@ TEST_CASE("wex::ex_stream")
 
     wex::ex_stream exs(ex);
     exs.stream(ifs);
-    REQUIRE(stc->get_text() == "# markdown\n");
+    REQUIRE(stc->get_text() == "# Markdown\n");
     REQUIRE(exs.get_current_line() == 0);
 
     exs.goto_line(3);
