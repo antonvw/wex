@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include <wex/factory/lexer.h>
 #include <wex/core/path.h>
+#include <wex/factory/lexer.h>
 
 namespace wex
 {

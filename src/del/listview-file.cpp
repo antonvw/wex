@@ -208,7 +208,7 @@ bool wex::del::file::do_file_load(bool synced)
             .insert();
         }
 
-        if (interruptible::is_cancelled())
+        if (!interruptible::is_running())
           break;
       }
 

@@ -9,16 +9,9 @@
 
 #include "interruptible-imp.h"
 
-bool wex::interruptible::cancel()
+void wex::interruptible::end()
 {
-  if (!m_imp->is_running())
-  {
-    return false;
-  }
-
-  m_imp->cancel();
-
-  return true;
+  m_imp->end();
 }
 
 void wex::interruptible::on_exit()
@@ -29,11 +22,6 @@ void wex::interruptible::on_exit()
 void wex::interruptible::on_init()
 {
   m_imp = new interruptible_imp;
-}
-
-bool wex::interruptible::is_cancelled()
-{
-  return m_imp->is_cancelled();
 }
 
 bool wex::interruptible::is_running()
@@ -51,9 +39,4 @@ bool wex::interruptible::start()
   m_imp->start();
 
   return true;
-}
-
-void wex::interruptible::stop()
-{
-  m_imp->stop();
 }

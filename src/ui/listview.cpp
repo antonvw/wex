@@ -1408,7 +1408,7 @@ bool wex::listview::sort_column(int column_no, sort_t sort_method)
   {
     const auto sortdata =
       (sorted_col.is_sorted_ascending() ? sorted_col.type() :
-                                        (0 - sorted_col.type()));
+                                          (0 - sorted_col.type()));
 
     SortItems(compare_cb, sortdata);
     ShowSortIndicator(column_no, sorted_col.is_sorted_ascending());

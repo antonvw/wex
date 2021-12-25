@@ -625,8 +625,9 @@ void wex::del::frame::on_command_item_dialog(
   switch (event.GetId())
   {
     case wxID_CANCEL:
-      if (interruptible::cancel())
+      if (interruptible::is_running())
       {
+        interruptible::end();
         log::status(_("Cancelled"));
       }
       break;

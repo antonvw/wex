@@ -134,7 +134,7 @@ private:
   bool m_is_loaded{false}, m_is_written{false}, m_use_stream{false};
 
   wex::path                    m_path, m_path_prev;
-  file_status                    m_stat; // used to check for sync
+  file_status                  m_stat; // used to check for sync
   std::fstream                 m_fs;
   std::unique_ptr<std::string> m_buffer;
 };

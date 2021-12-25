@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include <wex/data/window.h>
 #include <wex/core/statusbar-pane.h>
+#include <wex/data/window.h>
 #include <wx/statusbr.h>
 
 #include <tuple>

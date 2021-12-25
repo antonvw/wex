@@ -7,9 +7,9 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
+#include <wex/common/util.h>
 #include <wex/core/config.h>
 #include <wex/core/log.h>
-#include <wex/common/util.h>
 #include <wex/stc/shell.h>
 #include <wex/stc/vcs-entry.h>
 #include <wex/ui/menu.h>

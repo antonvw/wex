@@ -12,8 +12,8 @@
 #include <wex/factory/frd.h>
 #include <wx/msgdlg.h>
 
-#include <cctype>
 #include <algorithm>
+#include <cctype>
 #include <fstream>
 #include <functional>
 

@@ -274,7 +274,7 @@ void wex::del::listview::build_popup_menu_single(
 
 bool wex::del::listview::Destroy()
 {
-  interruptible::cancel();
+  interruptible::end();
   return wex::listview::Destroy();
 }
 

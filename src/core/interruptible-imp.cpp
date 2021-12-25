@@ -7,20 +7,12 @@
 
 #include "interruptible-imp.h"
 
-void wex::interruptible_imp::cancel()
+void wex::interruptible_imp::end()
 {
-  m_cancelled.store(true);
   m_running.store(false);
 }
 
 void wex::interruptible_imp::start()
 {
-  m_cancelled.store(false);
   m_running.store(true);
-}
-
-void wex::interruptible_imp::stop()
-{
-  m_cancelled.store(false);
-  m_running.store(false);
 }

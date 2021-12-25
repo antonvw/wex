@@ -98,9 +98,8 @@ TEST_CASE("wex::path")
 
     SUBCASE("path-bit")
     {
-      REQUIRE(log_contains(
-        wex::path::log_t().set(wex::path::LOG_PATH),
-        "data"));
+      REQUIRE(
+        log_contains(wex::path::log_t().set(wex::path::LOG_PATH), "data"));
       REQUIRE(
         !log_contains(wex::path::log_t().set(wex::path::LOG_PATH), "Modified"));
     }
