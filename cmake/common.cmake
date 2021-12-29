@@ -113,8 +113,7 @@ function(wex_install)
 endfunction()
 
 function(wex_process_po_files)
-  # travis has problem with gettext
-  if (GETTEXT_FOUND AND NOT DEFINED ENV{TRAVIS})
+  if (GETTEXT_FOUND)
       file(GLOB files *.po)
       
       foreach(filename ${files})

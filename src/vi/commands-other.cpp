@@ -147,7 +147,10 @@ size_t word_action(vi* vi, const std::string& command)
   {
     if (command == "U")
     {
-      browser_search(word);
+      if (!browser_search(word))
+      {
+        return 0;
+      }
     }
     else
     {

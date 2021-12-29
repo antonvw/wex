@@ -206,10 +206,10 @@ wxFont wex::config::get(const wxFont& def) const
   return wx;
 }
 
-const std::string wex::config::get_first_of() const
+const std::string wex::config::get_first_of(const std::string& def) const
 {
   const auto& l(get(strings_t{}));
-  return l.empty() ? std::string() : l.front();
+  return l.empty() ? def : l.front();
 }
 
 wex::config_imp* wex::config::get_store() const

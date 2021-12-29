@@ -530,15 +530,15 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
     return true;
   }
 
-  int  parsed = 0;
-  auto start  = get_stc()->GetCurrentPos();
+  size_t parsed = 0;
+  auto   start  = get_stc()->GetCurrentPos();
 
-  if (type > motion_t::G_aa && type < motion_t::G_ZZ)
+  if (wex::vim vim(this, command, type); vim.is_vim())
   {
-    if ((parsed = it->second(command)) == 0)
+    if (!vim.handle(start, parsed, it->second))
+    {
       return false;
-
-    command_g(this, type, start);
+    }
   }
   else
   {

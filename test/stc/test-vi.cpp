@@ -162,20 +162,6 @@ TEST_CASE("wex::vi")
     stc->visual(true);
   }
 
-  SUBCASE("vim")
-  {
-    stc->set_text("xxxxxxxxxx second\nxxxxxxxx");
-
-    REQUIRE(vi->command("gUw"));
-    REQUIRE(vi->get_stc()->get_text() == "XXXXXXXXXX second\nxxxxxxxx");
-
-    REQUIRE(vi->command("gub"));
-    REQUIRE(vi->get_stc()->get_text() == "xxxxxxxxxx second\nxxxxxxxx");
-
-    REQUIRE(vi->command("g~w"));
-    REQUIRE(vi->get_stc()->get_text() == "XXXXXXXXXX second\nxxxxxxxx");
-  }
-
   SUBCASE("visual")
   {
     stc->set_text("this text contains xx");

@@ -1,6 +1,6 @@
 # roadmap
-- gA should move to ctag entry
-- add doxygen doc to interruptible
+- vi ex-stream 224 ok, next false
+- add range based for loop init
 - linux print setup asserts
 
 ## backlog

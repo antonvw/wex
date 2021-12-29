@@ -371,7 +371,7 @@ wex::vi::motion_t wex::vi::get_motion(const std::string& command) const
       return motion_t::DEL;
 
     case 'g':
-      return command_g_motion(command);
+      return vim::get_motion(command);
 
     case 'y':
       return motion_t::YANK;

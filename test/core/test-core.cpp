@@ -33,12 +33,6 @@ TEST_CASE("wex::core")
       wex::before("some space and more", 'm', false) == "some space and ");
   }
 
-  SUBCASE("browser_search")
-  {
-    // Causes travis to hang.
-    // REQUIRE( wex::browser_search("test"));
-  }
-
   SUBCASE("clipboard")
   {
     REQUIRE(wex::clipboard_add("test"));

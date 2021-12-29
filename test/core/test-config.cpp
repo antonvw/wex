@@ -43,6 +43,7 @@ TEST_CASE("wex::config")
     REQUIRE(wex::config("x").get("space") == "space");
     REQUIRE(wex::config("l").get(std::list<std::string>{}).empty());
     REQUIRE(wex::config("l").get_first_of().empty());
+    REQUIRE(wex::config("l").get_first_of("k") == "k");
     REQUIRE(wex::config("l").empty());
     REQUIRE(!wex::config("m").get(std::list<std::string>{"one"}).empty());
 

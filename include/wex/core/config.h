@@ -176,7 +176,7 @@ public:
   const statusbar_t get(const statusbar_t& def) const;
 
   /// Returns first of a list of strings from item.
-  const std::string get_first_of() const;
+  const std::string get_first_of(const std::string& def = std::string()) const;
 
   /// Returns true if this item is a child.
   bool is_child() const;

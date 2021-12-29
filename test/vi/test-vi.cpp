@@ -622,7 +622,7 @@ TEST_CASE("wex::vi")
       {
         for (auto c : other_command.first)
         {
-          // prevent wex::browser_search (for travis)
+          // prevent wex::browser_search
           if (c == 'U')
           {
             continue;
