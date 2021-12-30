@@ -358,8 +358,7 @@ wex::vi::commands_t wex::vi::commands_other()
          return 1;
        }
        m_dot = true;
-       REPEAT_WITH_UNDO (vi::command(m_last_command))
-         ;
+       REPEAT_WITH_UNDO(vi::command(m_last_command));
        m_dot = false;
        return 1;
      }},
