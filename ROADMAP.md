@@ -1,5 +1,4 @@
 # roadmap
-- vi ex-stream 224 ok, next false
 - linux print setup asserts
 
 ## backlog

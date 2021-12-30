@@ -358,7 +358,8 @@ wex::vi::commands_t wex::vi::commands_other()
          return 1;
        }
        m_dot = true;
-       REPEAT_WITH_UNDO(vi::command(m_last_command));
+       REPEAT_WITH_UNDO (vi::command(m_last_command))
+         ;
        m_dot = false;
        return 1;
      }},
@@ -428,11 +429,13 @@ wex::vi::commands_t wex::vi::commands_other()
 
 size_t wex::vi::inc_or_dec(const std::string& command)
 {
+  // clang-format off
   /* NOLINTNEXTLINE */
-  REPEAT_WITH_UNDO(
+  REPEAT_WITH_UNDO (
     if (get_stc()->is_hexmode()) return 1;
 
-    try {
+    try
+    {
       const auto start =
         get_stc()->WordStartPosition(get_stc()->GetCurrentPos(), true);
       const auto sign = (get_stc()->GetCharAt(start) == '-' ? 1 : 0);
@@ -453,9 +456,12 @@ size_t wex::vi::inc_or_dec(const std::string& command)
       format << std::showbase << next;
 
       get_stc()->wxStyledTextCtrl::Replace(start, end, format.str());
-    } catch (...){})
+    }
+    catch (...)
+    {})
 
-  return 1;
+    return 1;
+  // clang-format on
 }
 
 bool wex::vi::other_command(std::string& command)
@@ -508,7 +514,8 @@ size_t wex::vi::reverse_case(const std::string& command)
     return 0;
   }
 
-  REPEAT_WITH_UNDO(
+  // clang-format off
+  REPEAT_WITH_UNDO (
     if (get_stc()->GetCurrentPos() == get_stc()->GetLength()) return 0;
     auto text(get_stc()->GetTextRange(
       get_stc()->GetCurrentPos(),
@@ -519,7 +526,9 @@ size_t wex::vi::reverse_case(const std::string& command)
       get_stc()->GetCurrentPos(),
       get_stc()->GetCurrentPos() + 1,
       text);
-    get_stc()->CharRight());
+    get_stc()->CharRight())
+    ;
+  // clang-format on
 
   return 1;
 }
