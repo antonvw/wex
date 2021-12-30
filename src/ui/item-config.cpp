@@ -68,10 +68,8 @@ void persistent_checkbox(const wex::item* item, bool save)
   if (auto* clb = reinterpret_cast<wxCheckListBox*>(item->window());
       clb != nullptr)
   {
-    size_t i = 0;
-
-    for (const auto& c :
-         std::any_cast<item::choices_bool_t>(item->data().initial()))
+    for (size_t i = 0; const auto& c : std::any_cast<item::choices_bool_t>(
+                         item->data().initial()))
     {
       if (!persistent_checkbox_frd(clb, i, save))
       {

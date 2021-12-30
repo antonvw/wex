@@ -108,9 +108,8 @@ void create_checklistbox_bit(
       }
     });
 
-  size_t item_no = 0;
-
-  for (const auto& it : std::any_cast<item::choices_t>(item.data().initial()))
+  for (size_t      item_no = 0;
+       const auto& it : std::any_cast<item::choices_t>(item.data().initial()))
   {
     handle(it.second, clb, item_no);
   }
@@ -135,10 +134,8 @@ void create_checklistbox_bool(
       }
     });
 
-  size_t item_no = 0;
-
-  for (const auto& c :
-       std::any_cast<item::choices_bool_t>(item.data().initial()))
+  for (size_t item_no = 0; const auto& c : std::any_cast<item::choices_bool_t>(
+                             item.data().initial()))
   {
     handle(c, clb, item_no);
   }

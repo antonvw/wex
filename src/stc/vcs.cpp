@@ -159,9 +159,7 @@ int wex::vcs::config_dialog(const data::window& par) const
     choices.insert({(long)VCS_AUTO, "Auto"});
   }
 
-  long i = VCS_START;
-
-  for (const auto& it : m_entries)
+  for (long i = VCS_START; const auto& it : m_entries)
   {
     choices.insert({i++, it.name()});
   }

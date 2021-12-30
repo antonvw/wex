@@ -1,6 +1,5 @@
 # roadmap
 - vi ex-stream 224 ok, next false
-- add range based for loop init
 - linux print setup asserts
 
 ## backlog

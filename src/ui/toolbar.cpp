@@ -47,12 +47,10 @@ void find_popup_menu(
   const textctrl_input::values_t& l,
   const wxPoint&                  pos)
 {
-  auto* menu = new wex::menu();
-
+  auto*     menu     = new wex::menu();
   const int max_size = 25;
-  int       i        = 0;
 
-  for (const auto& it : l)
+  for (int i = 0; const auto& it : l)
   {
     menu->append(
       {{wex::ID_FIND_FIRST + i++,

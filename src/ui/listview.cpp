@@ -723,10 +723,9 @@ bool wex::listview::insert_item(
     return false;
   }
 
-  int  no    = 0;
   long index = 0;
 
-  for (const auto& col : item)
+  for (int no = 0; const auto& col : item)
   {
     try
     {

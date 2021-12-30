@@ -432,8 +432,7 @@ size_t wex::vi::inc_or_dec(const std::string& command)
   REPEAT_WITH_UNDO(
     if (get_stc()->is_hexmode()) return 1;
 
-    try
-    {
+    try {
       const auto start =
         get_stc()->WordStartPosition(get_stc()->GetCurrentPos(), true);
       const auto sign = (get_stc()->GetCharAt(start) == '-' ? 1 : 0);

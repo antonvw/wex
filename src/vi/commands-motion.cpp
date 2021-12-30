@@ -163,11 +163,10 @@ wex::vi::commands_t wex::vi::commands_motion()
                   !get_stc()->find(
                     find,
                     search_flags(),
-                    command == "n" == m_search_forward))
-              {
-                m_command.clear();
-                return (size_t)0;
-              });
+                    command == "n" == m_search_forward)) {
+         m_command.clear();
+         return (size_t)0;
+       });
        return (size_t)1;
      }},
     {"G",
@@ -235,11 +234,10 @@ wex::vi::commands_t wex::vi::commands_motion()
      [&](const std::string& command)
      {
        // related to regex ECMAScript
-       REPEAT(if (!get_stc()->find("\\{", search_flags(), command == "]"))
-              {
-                m_command.clear();
-                return 0;
-              })
+       REPEAT(if (!get_stc()->find("\\{", search_flags(), command == "]")) {
+         m_command.clear();
+         return 0;
+       })
        return 1;
      }},
     {"({",
@@ -415,11 +413,10 @@ size_t wex::vi::find_char(const std::string& command)
         d = m_last_find_char_command.front();
   }
 
-  REPEAT(if (!get_stc()->find(std::string(1, c), 0, islower(d) > 0))
-         {
-           m_command.clear();
-           return (size_t)0;
-         });
+  REPEAT(if (!get_stc()->find(std::string(1, c), 0, islower(d) > 0)) {
+    m_command.clear();
+    return (size_t)0;
+  });
 
   if (command[0] != ',' && command[0] != ';')
   {
