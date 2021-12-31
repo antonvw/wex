@@ -200,6 +200,9 @@ public:
   /// Sets the text.
   virtual void set_text(const std::string& value) { SetText(value); }
 
+  /// Shows decimal or hex info of word under cursor.
+  virtual void show_ascii_value() { ; }
+
   /// Shows or hides line numbers.
   virtual void show_line_numbers(bool show) { ; }
 

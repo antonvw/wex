@@ -256,7 +256,7 @@ bool wex::global_env::for_each(const block_lines& match) const
   
 ## c++ language
 
-- init_statement in if and case statements (c++17)
+- init_statement in if, case statements (c++17), and for range(c++20)
   ui/textctrl-input.cpp:
 ```cpp
       switch (const int page = 10; key)
@@ -266,6 +266,12 @@ bool wex::global_env::for_each(const block_lines& match) const
 ```cpp
       if (const std::string line(it); !line.empty())
 ```
+
+  ui/item.cpp
+```cpp
+    for (int item  = 0; const auto& b : std::any_cast<choices_t>(m_data.initial()))
+```
+  
   
 - initializer_list (c++11)
 

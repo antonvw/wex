@@ -156,19 +156,23 @@ wex::vi::commands_t wex::vi::commands_motion()
     {"nN",
      [&](const std::string& command)
      {
-       REPEAT(if (const std::string find(
-                    get_stc()->get_margin_text_click() > 0 ?
-                      config("ex-cmd.margin").get(config::strings_t{}).front() :
-                      find_replace_data::get()->get_find_string());
-                  !get_stc()->find(
-                    find,
-                    search_flags(),
-                    command == "n" == m_search_forward))
-              {
-                m_command.clear();
-                return (size_t)0;
-              });
+       // clang-format off
+       REPEAT (
+         if (const std::string find(
+               get_stc()->get_margin_text_click() > 0 ?
+                 config("ex-cmd.margin").get(config::strings_t{}).front() :
+                 find_replace_data::get()->get_find_string());
+             !get_stc()->find(
+               find,
+               search_flags(),
+               command == "n" == m_search_forward))
+         {
+           m_command.clear();
+           return (size_t)0;
+         })
+         ;
        return (size_t)1;
+       // clang-format on
      }},
     {"G",
      [&](const std::string& command)
@@ -235,12 +239,14 @@ wex::vi::commands_t wex::vi::commands_motion()
      [&](const std::string& command)
      {
        // related to regex ECMAScript
-       REPEAT(if (!get_stc()->find("\\{", search_flags(), command == "]"))
-              {
-                m_command.clear();
-                return 0;
-              })
-       return 1;
+       // clang-format off
+       REPEAT (if (!get_stc()->find("\\{", search_flags(), command == "]"))
+       {
+         m_command.clear();
+         return 0;
+       })
+         return 1;
+       // clang-format on
      }},
     {"({",
      [&](const std::string& command)
@@ -415,11 +421,13 @@ size_t wex::vi::find_char(const std::string& command)
         d = m_last_find_char_command.front();
   }
 
-  REPEAT(if (!get_stc()->find(std::string(1, c), 0, islower(d) > 0))
-         {
-           m_command.clear();
-           return (size_t)0;
-         });
+  // clang-format off
+  REPEAT (if (!get_stc()->find(std::string(1, c), 0, islower(d) > 0))
+  {
+    m_command.clear();
+    return (size_t)0;
+  }) ;
+  // clang-format on
 
   if (command[0] != ',' && command[0] != ';')
   {
@@ -530,15 +538,15 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
     return true;
   }
 
-  int  parsed = 0;
-  auto start  = get_stc()->GetCurrentPos();
+  size_t parsed = 0;
+  auto   start  = get_stc()->GetCurrentPos();
 
-  if (type > motion_t::G_aa && type < motion_t::G_ZZ)
+  if (wex::vim vim(this, command, type); vim.is_vim())
   {
-    if ((parsed = it->second(command)) == 0)
+    if (!vim.handle(start, parsed, it->second))
+    {
       return false;
-
-    command_g(this, type, start);
+    }
   }
   else
   {

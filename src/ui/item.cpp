@@ -35,7 +35,6 @@ const std::any get_value_prim(const wex::item* item)
     case item::RADIOBOX:
     {
       long value = 0;
-
       for (const auto& b :
            std::any_cast<wex::item::choices_t>(item->data().initial()))
       {
@@ -360,9 +359,8 @@ void wex::item::add_items(
   bool               readonly)
 {
   wxFlexGridSizer* previous_item_sizer = nullptr;
-  int              previous_type       = -1;
 
-  for (auto& item : v)
+  for (int previous_type = -1; auto& item : v)
   {
     // If this item has same type as previous type use previous sizer,
     // otherwise use no sizer (layout will create a new one).
@@ -438,9 +436,9 @@ const std::any wex::item::get_value() const
         {
           auto* clb   = reinterpret_cast<wxCheckListBox*>(m_window);
           long  value = 0;
-          int   item  = 0;
 
-          for (const auto& b : std::any_cast<choices_t>(m_data.initial()))
+          for (int         item = 0;
+               const auto& b : std::any_cast<choices_t>(m_data.initial()))
           {
             if (clb->IsChecked(item))
             {
@@ -700,10 +698,10 @@ bool wex::item::set_value(const std::any& value) const
 
       case CHECKLISTBOX_BIT:
       {
-        auto* clb  = reinterpret_cast<wxCheckListBox*>(m_window);
-        int   item = 0;
+        auto* clb = reinterpret_cast<wxCheckListBox*>(m_window);
 
-        for (const auto& b : std::any_cast<choices_t>(m_data.initial()))
+        for (int         item = 0;
+             const auto& b : std::any_cast<choices_t>(m_data.initial()))
         {
           clb->Check(item, (std::any_cast<long>(value) & b.first) > 0);
           item++;

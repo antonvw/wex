@@ -100,76 +100,6 @@ void edit_control_char(stc* stc)
   value = new_value;
 }
 
-void show_calltip(stc* stc)
-{
-  if (stc->CallTipActive())
-    stc->CallTipCancel();
-
-  const auto pos = stc->GetCurrentPos();
-
-  if (stc->is_hexmode())
-  {
-    stc->CallTipShow(pos, stc->get_hexmode().get_info());
-    return;
-  }
-
-  const auto word =
-    (!stc->GetSelectedText().empty() ? stc->GetSelectedText().ToStdString() :
-                                       stc->get_word_at_pos(pos));
-
-  if (word.empty())
-  {
-    return;
-  }
-
-  std::stringstream stream;
-
-  if (const int c = word[0]; c < 32 || c > 125)
-  {
-    stream << "bin: " << c;
-  }
-  else
-  {
-    long base10_val, base16_val;
-    bool base10_ok = true;
-    bool base16_ok = true;
-
-    try
-    {
-      base10_val = std::stol(word);
-      base10_ok  = (base10_val != 0);
-    }
-    catch (std::exception&)
-    {
-      base10_ok = false;
-    }
-
-    try
-    {
-      base16_val = std::stol(word, nullptr, 16);
-    }
-    catch (std::exception&)
-    {
-      base16_ok = false;
-    }
-
-    if (base10_ok || base16_ok)
-    {
-      if (base10_ok && !base16_ok)
-        stream << "hex: " << std::hex << base10_val;
-      else if (!base10_ok && base16_ok)
-        stream << "dec: " << base16_val;
-      else if (base10_ok && base16_ok)
-        stream << "dec: " << base16_val << " hex: " << std::hex << base10_val;
-    }
-  }
-
-  if (!stream.str().empty())
-  {
-    stc->CallTipShow(pos, stream.str());
-    clipboard_add(stream.str());
-  }
-}
 } // namespace wex
 
 void wex::stc::bind_all()
@@ -318,7 +248,7 @@ void wex::stc::bind_all()
 
      {[=, this](wxCommandEvent& event)
       {
-        show_calltip(this);
+        show_ascii_value();
       },
       id::stc::hex_dec_calltip},
 
@@ -790,6 +720,77 @@ void wex::stc::jump_action()
   {
     m_data.control().line(val);
     data::stc(data::control().line(val), this).inject();
+  }
+}
+
+void wex::stc::show_ascii_value()
+{
+  if (CallTipActive())
+    CallTipCancel();
+
+  const auto pos = GetCurrentPos();
+
+  if (is_hexmode())
+  {
+    CallTipShow(pos, get_hexmode().get_info());
+    return;
+  }
+
+  const auto word =
+    (!GetSelectedText().empty() ? GetSelectedText().ToStdString() :
+                                  get_word_at_pos(pos));
+
+  if (word.empty())
+  {
+    return;
+  }
+
+  std::stringstream stream;
+
+  if (const int c = word[0]; c < 32 || c > 125)
+  {
+    stream << "bin: " << c;
+  }
+  else
+  {
+    long base10_val, base16_val;
+    bool base10_ok = true;
+    bool base16_ok = true;
+
+    try
+    {
+      base10_val = std::stol(word);
+      base10_ok  = (base10_val != 0);
+    }
+    catch (std::exception&)
+    {
+      base10_ok = false;
+    }
+
+    try
+    {
+      base16_val = std::stol(word, nullptr, 16);
+    }
+    catch (std::exception&)
+    {
+      base16_ok = false;
+    }
+
+    if (base10_ok || base16_ok)
+    {
+      if (base10_ok && !base16_ok)
+        stream << "hex: " << std::hex << base10_val;
+      else if (!base10_ok && base16_ok)
+        stream << "dec: " << base16_val;
+      else if (base10_ok && base16_ok)
+        stream << "dec: " << base16_val << " hex: " << std::hex << base10_val;
+    }
+  }
+
+  if (!stream.str().empty())
+  {
+    CallTipShow(pos, stream.str());
+    clipboard_add(stream.str());
   }
 }
 

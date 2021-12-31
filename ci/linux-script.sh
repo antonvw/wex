@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# This script is used to build wex on travis using linux
+# This script is used to build wex using linux
 # We are already in the build dir
 
 # build

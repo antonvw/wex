@@ -597,9 +597,8 @@ void wex::grid::set_cells_value(
   const wxGridCellCoords& start_coords,
   const std::string&      data)
 {
-  auto start_at_row = start_coords.GetRow();
-
-  for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
+  for (auto        start_at_row = start_coords.GetRow();
+       const auto& it : boost::tokenizer<boost::char_separator<char>>(
          data,
          boost::char_separator<char>("\n")))
   {

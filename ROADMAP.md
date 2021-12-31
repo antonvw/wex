@@ -1,6 +1,4 @@
 # roadmap
-- gA should move to ctag entry
-- add doxygen doc to interruptible
 - linux print setup asserts
 
 ## backlog

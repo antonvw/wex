@@ -10,6 +10,7 @@
 #include <wex/vi/vi.h>
 
 #include "motion.h"
+#include "vim.h"
 
 bool wex::vi::parse_command(std::string& command)
 {
@@ -86,7 +87,10 @@ bool wex::vi::parse_command(std::string& command)
         return true;
       }
 
-      parse_command_motion(motion, command, check_other);
+      if (parse_command_motion(motion, command, check_other))
+      {
+        return true;
+      }
   }
 
   if (
@@ -118,16 +122,16 @@ bool wex::vi::parse_command(std::string& command)
   return true;
 }
 
-void wex::vi::parse_command_motion(
+bool wex::vi::parse_command_motion(
   motion_t     motion,
   std::string& command,
   bool&        check_other)
 {
-  if (motion > motion_t::G_aa && motion < motion_t::G_ZZ)
+  if (wex::vim vim(this, command, motion); vim.is_vim())
   {
-    if (command.size() > 2)
+    if (vim.handle())
     {
-      command.erase(0, 2);
+      return true;
     }
   }
   else
@@ -159,4 +163,6 @@ void wex::vi::parse_command_motion(
         break;
     }
   }
+
+  return false;
 }

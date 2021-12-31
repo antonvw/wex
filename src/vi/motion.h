@@ -20,6 +20,11 @@ enum class vi::motion_t
   // special motions, not vi, but vim related
   G,
   G_aa,
+  G_a,
+  G_d,
+  G_f,
+  G_star,
+  G_hash,
   G_tilde,
   G_u,
   G_U,

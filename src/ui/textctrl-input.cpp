@@ -33,11 +33,9 @@ wex::textctrl_input::~textctrl_input()
   if (!m_values.empty())
   {
     const int max_ints{5};
-    int       current{0};
+    values_t  filtered;
 
-    values_t filtered;
-
-    for (const auto& v : m_values)
+    for (int current{0}; const auto& v : m_values)
     {
       // If this value is an int, ignore value if we reached max
       if (int value = 0;

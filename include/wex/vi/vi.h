@@ -21,13 +21,16 @@ namespace wex
 class vi : public ex
 {
 public:
+  /// function type.
+  typedef std::function<size_t(const std::string& command)> function_t;
+
   /// commands to be used in lambda
   typedef std::vector<std::pair<
     /// the command
     const std::string,
     /// command callback, returns number of chars processed
     /// by this command
-    std::function<size_t(const std::string& command)>>>
+    function_t>>
     commands_t;
 
   enum class motion_t;
@@ -98,7 +101,7 @@ private:
   bool       other_command(std::string& command);
 
   bool parse_command(std::string& command);
-  void
+  bool
   parse_command_motion(motion_t type, std::string& command, bool& check_other);
 
   bool   process_macro_key(const wxKeyEvent& event);

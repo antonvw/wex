@@ -72,13 +72,15 @@ bool wex::browser(const std::string& url)
 
 bool wex::browser_search(const std::string& text)
 {
-  if (const auto& search_engine(config(_("stc.Search engine")).get_first_of());
+  if (const auto& search_engine(
+        config(_("stc.Search engine")).get_first_of("https://duckduckgo.com"));
       !search_engine.empty())
   {
     return browser(search_engine + "?q=" + text);
   }
   else
   {
+    log("browser_search engine empty") << text;
     return false;
   }
 }

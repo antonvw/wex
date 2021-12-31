@@ -202,9 +202,8 @@ bool wex::stream::run_tool()
   else
   {
     m_asked = false;
-
-    int         line_no = 0;
     std::string s;
+    int         line_no = 0;
 
     for (std::string line; std::getline(fs, line);)
     {

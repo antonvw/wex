@@ -68,9 +68,7 @@ int wex::regex::find(const std::string& text, find_t how)
     return -1;
   }
 
-  int index = 0;
-
-  for (const auto& reg : m_regex)
+  for (int index = 0; const auto& reg : m_regex)
   {
     try
     {

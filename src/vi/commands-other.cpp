@@ -147,7 +147,10 @@ size_t word_action(vi* vi, const std::string& command)
   {
     if (command == "U")
     {
-      browser_search(word);
+      if (!browser_search(word))
+      {
+        return 0;
+      }
     }
     else
     {
@@ -425,8 +428,9 @@ wex::vi::commands_t wex::vi::commands_other()
 
 size_t wex::vi::inc_or_dec(const std::string& command)
 {
+  // clang-format off
   /* NOLINTNEXTLINE */
-  REPEAT_WITH_UNDO(
+  REPEAT_WITH_UNDO (
     if (get_stc()->is_hexmode()) return 1;
 
     try
@@ -451,9 +455,12 @@ size_t wex::vi::inc_or_dec(const std::string& command)
       format << std::showbase << next;
 
       get_stc()->wxStyledTextCtrl::Replace(start, end, format.str());
-    } catch (...){})
+    }
+    catch (...)
+    {})
 
-  return 1;
+    return 1;
+  // clang-format on
 }
 
 bool wex::vi::other_command(std::string& command)
@@ -506,7 +513,8 @@ size_t wex::vi::reverse_case(const std::string& command)
     return 0;
   }
 
-  REPEAT_WITH_UNDO(
+  // clang-format off
+  REPEAT_WITH_UNDO (
     if (get_stc()->GetCurrentPos() == get_stc()->GetLength()) return 0;
     auto text(get_stc()->GetTextRange(
       get_stc()->GetCurrentPos(),
@@ -517,7 +525,9 @@ size_t wex::vi::reverse_case(const std::string& command)
       get_stc()->GetCurrentPos(),
       get_stc()->GetCurrentPos() + 1,
       text);
-    get_stc()->CharRight());
+    get_stc()->CharRight())
+    ;
+  // clang-format on
 
   return 1;
 }

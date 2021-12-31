@@ -634,9 +634,8 @@ bool wex::shell::set_command_from_history(const std::string& short_command)
   try
   {
     const auto no_asked_for = std::stoi(short_command);
-    int        no           = 1;
 
-    for (const auto& it : m_commands)
+    for (int no = 1; const auto& it : m_commands)
     {
       if (no == no_asked_for)
       {
@@ -748,9 +747,7 @@ void wex::shell::show_command(int key)
 
 void wex::shell::show_history()
 {
-  int command_no = 1;
-
-  for (const auto& it : m_commands)
+  for (int command_no = 1; const auto& it : m_commands)
   {
     AppendText("\n" + std::to_string(command_no++) + " " + it);
   }
