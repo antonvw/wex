@@ -2,7 +2,7 @@
 // Name:      core/util.cpp
 // Purpose:   Implementation of wex core utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -146,6 +146,21 @@ wex::ellipsed(const std::string& text, const std::string& control, bool ellipse)
          (!control.empty() ? "\tCtrl+" + control : std::string());
 }
 
+const std::string wex::find_tail(const std::string& text, size_t max_chars)
+{
+  if (text.size() > max_chars)
+  {
+    const size_t corr = (4 + text.size() - max_chars < text.size() ? 3 : 0);
+    const auto   tail = boost::algorithm::find_tail(text, max_chars - corr);
+    return (corr ? "..." : std::string()) +
+           std::string(tail.begin(), tail.end());
+  }
+  else
+  {
+    return text;
+  }
+}
+
 const std::string wex::first_of(
   const std::string& text,
   const std::string& chars,
@@ -164,25 +179,6 @@ const std::string wex::first_of(
   {
     return pos == std::string::npos ? text : text.substr(0, pos);
   }
-}
-
-const std::string wex::get_endoftext(const std::string& text, size_t max_chars)
-{
-  auto text_out(text);
-
-  if (text_out.length() > max_chars)
-  {
-    if (4 + text_out.length() - max_chars < text_out.length())
-    {
-      text_out = "..." + text_out.substr(4 + text_out.length() - max_chars);
-    }
-    else
-    {
-      text_out = text.substr(text.length() - max_chars);
-    }
-  }
-
-  return text_out;
 }
 
 const std::string wex::get_find_result(
@@ -226,7 +222,7 @@ int wex::get_number_of_lines(const std::string& text, bool trim)
     return 0;
   }
 
-  const auto trimmed = (trim ? boost::algorithm::trim_copy(text) : text);
+  const auto& trimmed = (trim ? boost::algorithm::trim_copy(text) : text);
 
   if (const int c = std::count(trimmed.begin(), trimmed.end(), '\n') + 1;
       c != 1)

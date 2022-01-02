@@ -2,7 +2,7 @@
 // Name:      menu.cpp
 // Purpose:   Implementation of wex::menu class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/tool.h>
@@ -87,10 +87,6 @@ size_t wex::menu::append(const menu_items_t& items)
         append_separator();
         break;
 
-      case menu_item::TOOLS:
-        append_tools();
-        break;
-
       default:
         item.append(this);
     }
@@ -168,27 +164,4 @@ void wex::menu::append_separator()
   }
 
   AppendSeparator();
-}
-
-void wex::menu::append_tools()
-{
-  if (lexers::get()->get_lexers().empty())
-  {
-    return;
-  }
-
-  auto* menuTool = new wex::menu(m_style);
-
-  for (const auto& it : tool::get_tool_info())
-  {
-    if (!it.second.text().empty())
-    {
-      menuTool->append(
-        {{it.first,
-          it.second.text(),
-          data::menu().help_text(it.second.help_text())}});
-    }
-  }
-
-  append({{menuTool, _("&Tools"), wxID_ANY}});
 }

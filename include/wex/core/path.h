@@ -2,7 +2,7 @@
 // Name:      path.h
 // Purpose:   Declaration of class wex::path
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -139,6 +139,9 @@ public:
 
   /// Replaces filename.
   path& replace_filename(const std::string& filename);
+
+  /// Sets new log type.
+  void set_log(log_t t) { m_log = t; }
 
   /// Returns the stat.
   const auto& stat() const { return m_stat; }

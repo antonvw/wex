@@ -2,7 +2,7 @@
 // Name:      listitem.cpp
 // Purpose:   Implementation of class 'wex::listitem'
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -20,8 +20,11 @@ wex::listitem::listitem(listview* lv, long itemnumber)
            !lv->get_item_text(itemnumber, _("In Folder")).empty() ?
          wex::path(
            wex::path(lv->get_item_text(itemnumber, _("In Folder"))),
-           lv->get_item_text(itemnumber, _("File Name"))) :
-         wex::path(lv->get_item_text(itemnumber))))
+           lv->get_item_text(itemnumber, _("File Name")),
+           path::log_t().set(path::LOG_MOD)) :
+         wex::path(
+           lv->get_item_text(itemnumber),
+           path::log_t().set(path::LOG_MOD))))
   , m_file_spec(lv->get_item_text(itemnumber, _("Type")))
 {
   SetId(itemnumber);

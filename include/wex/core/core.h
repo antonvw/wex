@@ -2,7 +2,7 @@
 // Name:      core.h
 // Purpose:   Include file for wex core utility functions
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -68,6 +68,11 @@ enum
 
 typedef std::bitset<3> first_of_t;
 
+/// If text length exceeds max_chars,
+/// returns an ellipse prefix followed by the last max_chars from the text,
+/// otherwise just returns the text.
+const std::string find_tail(const std::string& text, size_t max_chars = 15);
+
 /// Returns substring after (or before) first occurrence of one of specified
 /// chars.
 const std::string first_of(
@@ -79,11 +84,6 @@ const std::string first_of(
   const size_t start_pos = 0,
   /// start searching at begin, or at end
   first_of_t flags = first_of_t().set(FIRST_OF_AFTER_FROM_BEGIN));
-
-/// If text length exceeds max_chars,
-/// returns an ellipse prefix followed by the last max_chars from the text,
-/// otherwise just returns the text.
-const std::string get_endoftext(const std::string& text, size_t max_chars = 15);
 
 /// Returns a search result, that might be shown in the statusbar.
 const std::string

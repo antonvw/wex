@@ -2,7 +2,7 @@
 // Name:      test-core.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
@@ -44,6 +44,15 @@ TEST_CASE("wex::core")
     REQUIRE(wex::ellipsed("xxx").find("...") != std::string::npos);
   }
 
+  SUBCASE("find_tail")
+  {
+    REQUIRE(wex::find_tail("test") == std::string("test"));
+    REQUIRE(wex::find_tail("test", 3) == std::string("est"));
+    REQUIRE(wex::find_tail("testtest", 3) == std::string("est"));
+    REQUIRE(wex::find_tail("testtest", 6) == std::string("...est"));
+    REQUIRE(wex::find_tail("testtest", 9) == std::string("testtest"));
+  }
+
   SUBCASE("first_of")
   {
     REQUIRE(wex::first_of("this is ok", "x") == std::string());
@@ -67,12 +76,6 @@ TEST_CASE("wex::core")
         "x",
         0,
         wex::first_of_t().set(wex::FIRST_OF_BEFORE)) == "this is ok");
-  }
-
-  SUBCASE("get_endoftext")
-  {
-    REQUIRE(wex::get_endoftext("test", 3).size() == 3);
-    REQUIRE(wex::get_endoftext("testtest", 3).size() == 3);
   }
 
   SUBCASE("get_find_result")

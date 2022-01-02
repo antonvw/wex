@@ -2,7 +2,7 @@
 // Name:      listview.cpp
 // Purpose:   Implementation of class wex::del::listview
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/dir.h>
@@ -101,38 +101,36 @@ wex::del::listview::listview(const data::listview& data)
         {
           return;
         }
-        del::listview* lv;
 
-        if ((lv = m_frame->activate(listview::type_tool(tool))) == nullptr)
+        if (auto* lv = m_frame->activate(listview::type_tool(tool));
+            lv != nullptr)
         {
-          return;
-        }
+          statistics<int> stats;
 
-        statistics<int> stats;
-
-        for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
-        {
-          const listitem item(this, i);
-          log::status() << item.path();
-
-          if (item.path().file_exists())
+          for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
           {
-            wex::stream file(find_replace_data::get(), item.path(), tool, lv);
-            file.run_tool();
-            stats += file.get_statistics().get_elements();
-          }
-          else
-          {
-            wex::dir dir(
-              item.path(),
-              data::dir().file_spec(item.file_spec()),
-              lv);
-            dir.find_files(tool);
-            stats += dir.get_statistics().get_elements();
-          }
-        }
+            const listitem item(this, i);
+            log::status() << item.path();
 
-        log::status(tool.info(&stats));
+            if (item.path().file_exists())
+            {
+              wex::stream file(find_replace_data::get(), item.path(), tool, lv);
+              file.run_tool();
+              stats += file.get_statistics().get_elements();
+            }
+            else
+            {
+              wex::dir dir(
+                item.path(),
+                data::dir().file_spec(item.file_spec()),
+                lv);
+              dir.find_files(tool);
+              stats += dir.get_statistics().get_elements();
+            }
+          }
+
+          log::status(tool.info(&stats));
+        }
       },
       ID_TOOL_LOWEST},
 
@@ -180,14 +178,6 @@ void wex::del::listview::build_popup_menu(wex::menu& menu)
   if (GetSelectedItemCount() >= 1)
   {
     build_popup_menu_multiple(&env, menu);
-  }
-
-  if (
-    GetSelectedItemCount() > 0 && env.is_ok &&
-    m_menu_flags.test(data::listview::MENU_TOOL) &&
-    !lexers::get()->get_lexers().empty())
-  {
-    menu.append({{}, {menu_item::TOOLS}});
   }
 }
 
@@ -247,26 +237,23 @@ void wex::del::listview::build_popup_menu_single(
     menu.append({{}, {ID_LIST_RUN_MAKE, _("&Make")}});
   }
 
-  if (
-    data().type() != data::listview::FILE && !wex::vcs().use() && env->is_ok &&
-    !env->is_folder)
+  if (data().type() != data::listview::FILE && env->is_ok && !env->is_folder)
   {
     if (auto* list = m_frame->activate(data::listview::FILE);
         list != nullptr && list->GetSelectedItemCount() == 1)
     {
-      listitem   thislist(this, GetFirstSelected());
-      const auto current_file = thislist.path().string();
+      listitem    thislist(this, GetFirstSelected());
+      const auto& current_file = thislist.path().string();
 
       listitem otherlist(list, list->GetFirstSelected());
 
-      if (const std::string with_file = otherlist.path().string();
+      if (const auto& with_file = otherlist.path().string();
           current_file != with_file && !config(_("list.Comparator")).empty())
       {
         menu.append(
           {{},
            {ID_LIST_COMPARE,
-            _("&Compare With").ToStdString() + " " +
-              get_endoftext(with_file)}});
+            _("&Compare With").ToStdString() + " " + find_tail(with_file)}});
       }
     }
   }

@@ -2,7 +2,7 @@
 // Name:      menu-item.h
 // Purpose:   Declaration of wex::menu_item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -58,16 +58,13 @@ public:
     /// a submenu item
     SUBMENU,
 
-    /// tools menu items
-    TOOLS,
-
     /// vcs menu items
     VCS,
   };
 
   /// Default constructor, for a SEPARATOR.
   menu_item(
-    /// EDIT, EDIT_INVERT, EXIT, PANES, PRINT, TOOLS menu item
+    /// EDIT, EDIT_INVERT, EXIT, PANES, PRINT menu item
     type_t = SEPARATOR);
 
   /// Constructor for a normal MENU item.
