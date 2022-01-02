@@ -2,7 +2,7 @@
 // Name:      common/util.cpp
 // Purpose:   Implementation of wex common utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/dir.h>
@@ -73,7 +73,7 @@ wex::auto_complete_filename(const std::string& text)
   // path:   /usr/include
   // prefix: s
   // And text might be prefixed by a command, e.g.: e src/vi
-  path path(after(text, ' ', false));
+  path path(find_after(text, " ", false));
 
   if (path.is_relative())
   {

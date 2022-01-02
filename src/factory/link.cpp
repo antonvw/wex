@@ -2,7 +2,7 @@
 // Name:      link.cpp
 // Purpose:   Implementation of class wex::link
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -168,7 +168,7 @@ const wex::path wex::factory::link::find_filename(
 
     path p(boost::algorithm::trim_copy(prefix + link));
 
-    if (const path q(before(p.string(), ':')); q.file_exists())
+    if (const path q(find_before(p.string(), ":")); q.file_exists())
     {
       return p.make_absolute();
     }

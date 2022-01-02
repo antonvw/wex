@@ -2,7 +2,7 @@
 // Name:      comands-ex.cpp
 // Purpose:   Implementation of class wex::ex::commands_ex
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -50,7 +50,7 @@ enum class command_arg_t
 
 command_arg_t get_command_arg(const std::string& command)
 {
-  if (const auto& post(wex::after(command, ' ')); post == command)
+  if (const auto& post(wex::find_after(command, " ")); post == command)
   {
     return command_arg_t::NONE;
   }
@@ -352,7 +352,7 @@ wex::ex::commands_t wex::ex::commands_ex()
      {
        if (command.find(" ") != std::string::npos)
        {
-         m_macros.set_abbreviation(after(command, ' '), "");
+         m_macros.set_abbreviation(find_after(command, " "), "");
        }
        return true;
      }},
@@ -364,12 +364,12 @@ wex::ex::commands_t wex::ex::commands_ex()
          switch (get_command_arg(command))
          {
            case wex::command_arg_t::INT:
-             m_macros.set_key_map(after(command, ' '), "");
+             m_macros.set_key_map(find_after(command, " "), "");
              break;
            case wex::command_arg_t::NONE:
              break;
            case wex::command_arg_t::OTHER:
-             m_macros.set_map(after(command, ' '), "");
+             m_macros.set_map(find_after(command, " "), "");
              break;
          }
        }

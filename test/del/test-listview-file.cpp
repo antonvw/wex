@@ -59,7 +59,10 @@ TEST_CASE("wex::del::file")
   SUBCASE("load-save")
   {
     REQUIRE(lv->file_load(get_project()));
+#ifndef __WXMSW__
+    // the project file is a unix file
     REQUIRE(lv->GetItemCount() > 10);
+#endif
     REQUIRE(lv->file_save(wex::path("test-del.prj.bck")));
     REQUIRE(remove("test-del.prj.bck") == 0);
   }

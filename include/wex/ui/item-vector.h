@@ -2,7 +2,7 @@
 // Name:      item-vector.h
 // Purpose:   Declaration of wex::item_vector class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -100,7 +100,7 @@ bool wex::item_vector::find(
       for (const auto& choice :
            std::any_cast<item::choices_bool_t>(item.data().initial()))
       {
-        if (before(choice, ',') == label)
+        if (find_before(choice, ",") == label)
         {
           value = std::any_cast<T>(choice.find(",") != std::string::npos);
           return true;

@@ -2,7 +2,7 @@
 // Name:      address.cpp
 // Purpose:   Implementation of class wex::address
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
@@ -270,7 +270,7 @@ bool wex::address::parse(const command_parser& cp)
     case 'a':
       if (cp.text().find('|') != std::string::npos)
       {
-        return append(after(cp.text(), '|'));
+        return append(find_after(cp.text(), "|"));
       }
       else
       {
@@ -280,7 +280,7 @@ bool wex::address::parse(const command_parser& cp)
     case 'i':
       if (cp.text().find('|') != std::string::npos)
       {
-        return insert(after(cp.text(), '|'));
+        return insert(find_after(cp.text(), "|"));
       }
       else
       {

@@ -2,7 +2,7 @@
 // Name:      lexers.cpp
 // Purpose:   Implementation of wex::lexers class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -384,8 +384,9 @@ bool wex::lexers::load_document()
 
 void wex::lexers::parse_node_folding(const pugi::xml_node& node)
 {
-  m_folding_background_colour = apply_macro(before(node.text().get(), ','));
-  m_folding_foreground_colour = apply_macro(after(node.text().get(), ','));
+  m_folding_background_colour =
+    apply_macro(find_before(node.text().get(), ","));
+  m_folding_foreground_colour = apply_macro(find_after(node.text().get(), ","));
 }
 
 void wex::lexers::parse_node_global(const pugi::xml_node& node)

@@ -1,6 +1,5 @@
 # roadmap
 - more boost
-  - improve before, use find_first and find_last
 
 ## backlog
 - linux print setup asserts

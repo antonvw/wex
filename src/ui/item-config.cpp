@@ -2,7 +2,7 @@
 // Name:      config_item.cpp
 // Purpose:   Implementation of wex::item class config methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/tostring.h>
@@ -74,9 +74,9 @@ void persistent_checkbox(const wex::item* item, bool save)
       if (!persistent_checkbox_frd(clb, i, save))
       {
         if (save)
-          config(before(c, ',')).set(clb->IsChecked(i));
+          config(find_before(c, ",")).set(clb->IsChecked(i));
         else
-          clb->Check(i, config(before(c, ',')).get(clb->IsChecked(i)));
+          clb->Check(i, config(find_before(c, ",")).get(clb->IsChecked(i)));
       }
 
       i++;
@@ -144,7 +144,7 @@ void persistent_radiobox(const wex::item* item, bool save)
   {
     for (const auto& b : std::any_cast<item::choices_t>(item->data().initial()))
     {
-      if (before(b.second, ',') == rb->GetStringSelection())
+      if (find_before(b.second, ",") == rb->GetStringSelection())
       {
         config(item->label()).set(b.first);
       }
@@ -158,7 +158,7 @@ void persistent_radiobox(const wex::item* item, bool save)
           choices.find(config(item->label()).get(rb->GetSelection()));
         c != choices.end())
     {
-      rb->SetStringSelection(before(c->second, ','));
+      rb->SetStringSelection(find_before(c->second, ","));
     }
   }
 }

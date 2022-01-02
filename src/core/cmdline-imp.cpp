@@ -2,7 +2,7 @@
 // Name:      cmdline-imp.cpp
 // Purpose:   Implementation of wex::cmdline_imp class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/cmdline.h>
@@ -23,7 +23,7 @@
 #define WEX_CALLBACK(TYPE, FIELD)        \
   v->second.FIELD(it.second.as<TYPE>()); \
   if (data.save())                       \
-    m_cfg.item(before(it.first, ',')).set(it.second.as<TYPE>());
+    m_cfg.item(find_before(it.first, ",")).set(it.second.as<TYPE>());
 
 wex::cmdline_imp::function_t::function_t(
   std::function<void(const std::any&)> f,
@@ -82,7 +82,7 @@ void wex::cmdline_imp::add_function(
   const std::string& name,
   const function_t&  t)
 {
-  m_functions.insert({before(name, ','), t});
+  m_functions.insert({find_before(name, ","), t});
 }
 
 bool wex::cmdline_imp::parse(data::cmdline& data)
@@ -194,7 +194,7 @@ bool wex::cmdline_imp::parse_args(data::cmdline& data)
 
               if (data.save())
               {
-                m_cfg.item(before(it.first, ',')).set(val);
+                m_cfg.item(find_before(it.first, ",")).set(val);
               }
               break;
           }

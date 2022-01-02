@@ -2,7 +2,7 @@
 // Name:      shell.cpp
 // Purpose:   Implementation of class wex::shell
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -191,7 +191,7 @@ void wex::shell::expand()
   // path:   src/vi
   // subdir: src
   // prefix: vi
-  wex::path   path(after(m_command, ' ', false));
+  wex::path   path(find_after(m_command, " ", false));
   std::string expansion;
 
   if (const auto prefix(path.filename()); AutoCompActive())

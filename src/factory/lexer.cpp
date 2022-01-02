@@ -2,7 +2,7 @@
 // Name:      lexer.cpp
 // Purpose:   Implementation of wex::lexer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -157,8 +157,8 @@ bool wex::lexer::add_keywords(const std::string& value, int setno)
 
     if (line.find(":") != std::string::npos)
     {
-      keyword = before(line, ':');
-      const auto a_l(after(line, ':'));
+      keyword = find_before(line, ":");
+      const auto a_l(find_after(line, ":"));
 
       try
       {

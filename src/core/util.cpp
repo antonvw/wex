@@ -20,12 +20,6 @@
 #include <numeric>
 #include <regex>
 
-const std::string wex::after(const std::string& text, char c, bool first)
-{
-  const auto pos = (first ? text.find(c) : text.rfind(c));
-  return (pos == std::string::npos ? text : text.substr(pos + 1));
-}
-
 bool wex::auto_complete_text(
   const std::string&              text,
   const std::vector<std::string>& v,
@@ -43,19 +37,6 @@ bool wex::auto_complete_text(
   }
 
   return (matches == 1);
-}
-
-const std::string wex::before(const std::string& text, char c, bool first)
-{
-  if (const auto pos = (first ? text.find(c) : text.rfind(c));
-      pos != std::string::npos)
-  {
-    return text.substr(0, pos);
-  }
-  else
-  {
-    return text;
-  }
 }
 
 bool wex::browser(const std::string& url)
@@ -144,6 +125,27 @@ wex::ellipsed(const std::string& text, const std::string& control, bool ellipse)
 {
   return text + (ellipse ? "..." : std::string()) +
          (!control.empty() ? "\tCtrl+" + control : std::string());
+}
+
+const std::string
+wex::find_after(const std::string& text, const std::string& seq, bool first)
+{
+  const auto pos = (first ? text.find(seq) : text.rfind(seq));
+  return (pos == std::string::npos ? text : text.substr(pos + 1));
+}
+
+const std::string
+wex::find_before(const std::string& text, const std::string& seq, bool first)
+{
+  if (const auto pos = (first ? text.find(seq) : text.rfind(seq));
+      pos != std::string::npos)
+  {
+    return text.substr(0, pos);
+  }
+  else
+  {
+    return text;
+  }
 }
 
 const std::string wex::find_tail(const std::string& text, size_t max_chars)

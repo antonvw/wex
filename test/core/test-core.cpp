@@ -14,25 +14,6 @@ TEST_CASE("wex::core")
 {
   std::vector<int> cs{'(', ')', '{', '<', '>'};
 
-  SUBCASE("after")
-  {
-    REQUIRE(wex::after("nospace", ' ', false) == "nospace");
-    REQUIRE(wex::after("nospace", ' ', true) == "nospace");
-    REQUIRE(wex::after("some space and more", ' ', false) == "more");
-    REQUIRE(wex::after("some space and more", ' ', true) == "space and more");
-    REQUIRE(wex::after("some space and more", 'm', false) == "ore");
-  }
-
-  SUBCASE("before")
-  {
-    REQUIRE(wex::before("nospace", ' ', false) == "nospace");
-    REQUIRE(wex::before("nospace", ' ', true) == "nospace");
-    REQUIRE(wex::before("some space and more", ' ', false) == "some space and");
-    REQUIRE(wex::before("some space and more", ' ', true) == "some");
-    REQUIRE(
-      wex::before("some space and more", 'm', false) == "some space and ");
-  }
-
   SUBCASE("clipboard")
   {
     REQUIRE(wex::clipboard_add("test"));
@@ -42,6 +23,27 @@ TEST_CASE("wex::core")
   SUBCASE("ellipsed")
   {
     REQUIRE(wex::ellipsed("xxx").find("...") != std::string::npos);
+  }
+
+  SUBCASE("find_after")
+  {
+    REQUIRE(wex::find_after("nospace", " ", false) == "nospace");
+    REQUIRE(wex::find_after("nospace", " ", true) == "nospace");
+    REQUIRE(wex::find_after("some space and more", " ", false) == "more");
+    REQUIRE(
+      wex::find_after("some space and more", " ", true) == "space and more");
+    REQUIRE(wex::find_after("some space and more", "m", false) == "ore");
+  }
+
+  SUBCASE("find_before")
+  {
+    REQUIRE(wex::find_before("nospace", " ", false) == "nospace");
+    REQUIRE(wex::find_before("nospace", " ", true) == "nospace");
+    REQUIRE(
+      wex::find_before("some space and more", " ", false) == "some space and");
+    REQUIRE(wex::find_before("some space and more", " ", true) == "some");
+    REQUIRE(
+      wex::find_before("some space and more", "m", false) == "some space and ");
   }
 
   SUBCASE("find_tail")

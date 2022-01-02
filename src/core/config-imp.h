@@ -2,7 +2,7 @@
 // Name:      config-imp.h
 // Purpose:   Implementation of class wex::config_imp
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -136,15 +136,16 @@ void wex::config_imp::set(const std::string& item, const T& v)
       }
       else
       {
-        auto& jv = accessor(before(item, '.', false), v);
+        auto& jv = accessor(find_before(item, ".", false), v);
 
         if (jv.is_object())
         {
-          jv.as_object()[after(item, '.', false)] = json::value_from(v);
+          jv.as_object()[find_after(item, ".", false)] = json::value_from(v);
         }
         else
         {
-          jv.emplace_object()[after(item, '.', false)] = json::value_from(v);
+          jv.emplace_object()[find_after(item, ".", false)] =
+            json::value_from(v);
         }
       }
     }
@@ -158,7 +159,7 @@ void wex::config_imp::set(const std::string& item, const T& v)
 template <typename T>
 const T wex::config_imp::value(const std::string& item, const T& def)
 {
-  const auto& ai(after(item, '.', false));
+  const auto& ai(find_after(item, ".", false));
 
   try
   {
@@ -176,7 +177,7 @@ const T wex::config_imp::value(const std::string& item, const T& def)
     }
     else
     {
-      if (auto& a(accessor(before(item, '.', false), def)); !a.is_null())
+      if (auto& a(accessor(find_before(item, ".", false), def)); !a.is_null())
       {
         if (a.is_object())
         {

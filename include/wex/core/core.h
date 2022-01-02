@@ -19,10 +19,6 @@ class path;
 
 /*! \file */
 
-/// Returns string after first or last occurrence of c
-/// Returns the whole string if c is not found.
-const std::string after(const std::string& text, char c, bool first = true);
-
 /// Tries to auto_complete text from a vector of strings,
 /// result stored in the string.
 /// Returns true if a unique match was found.
@@ -33,10 +29,6 @@ bool auto_complete_text(
   const std::vector<std::string>& v,
   /// expansion of text to one of the strings from the vector
   std::string& s);
-
-/// Returns string before first or last occurrence of c
-/// Returns the whole string if c is not found.
-const std::string before(const std::string& text, char c, bool first = true);
 
 /// Launch default browser.
 /// Returns false if no browser configured.
@@ -59,6 +51,25 @@ const std::string ellipsed(
   const std::string& control = std::string(),
   bool               ellipse = true);
 
+/// Returns string after first or last occurrence of sequence
+/// Returns the whole string if c is not found.
+const std::string find_after(
+  const std::string& text,
+  const std::string& sequence,
+  bool               first = true);
+
+/// Returns string before first or last occurrence of sequence
+/// Returns the whole string if c is not found.
+const std::string find_before(
+  const std::string& text,
+  const std::string& sequence,
+  bool               first = true);
+
+/// If text length exceeds max_chars,
+/// returns an ellipse prefix followed by the last max_chars from the text,
+/// otherwise just returns the text.
+const std::string find_tail(const std::string& text, size_t max_chars = 15);
+
 enum
 {
   FIRST_OF_AFTER_FROM_BEGIN = 0, ///< substring after match, from begin
@@ -67,11 +78,6 @@ enum
 };
 
 typedef std::bitset<3> first_of_t;
-
-/// If text length exceeds max_chars,
-/// returns an ellipse prefix followed by the last max_chars from the text,
-/// otherwise just returns the text.
-const std::string find_tail(const std::string& text, size_t max_chars = 15);
 
 /// Returns substring after (or before) first occurrence of one of specified
 /// chars.
