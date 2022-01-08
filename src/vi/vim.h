@@ -23,18 +23,24 @@ public:
   /// Constructor.
   vim(vi* vi, std::string& command, vi::motion_t t);
 
-  /// Handles some commands.
-  bool handle();
-
-  /// Handles the motion commands.
-  bool handle(int start_pos, size_t& parsed, vi::function_t t);
+  /// Returns true if this is a vim motion command.
+  bool is_vim_motion() const;
 
   /// Returns true if this is a vim special command.
-  bool is_vim() const;
+  bool is_vim_special() const;
+
+  /// Handles the motion commands.
+  bool motion(int start_pos, size_t& parsed, vi::function_t t);
+
+  /// Prepares the motion commands.
+  void motion_prep();
+
+  /// Handles the special commands.
+  bool special();
 
 private:
-  bool command();
   bool command_motion(int pos_start);
+  bool command_special();
 
   vi* m_vi;
 

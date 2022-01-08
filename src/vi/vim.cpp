@@ -3,7 +3,7 @@
 // Purpose:   Implementation of wex::vim
 //            http://www.viemu.com/vi-vim-cheat-sheet.gif
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/stc.h>
@@ -38,48 +38,6 @@ wex::vim::vim(wex::vi* vi, std::string& command, vi::motion_t t)
   , m_command(command)
   , m_motion(t)
 {
-}
-
-bool wex::vim::command()
-{
-  switch (m_motion)
-  {
-    case vi::motion_t::G_a:
-      m_vi->get_stc()->show_ascii_value();
-      break;
-
-    case vi::motion_t::G_d:
-      ctags::find(
-        m_vi->get_stc()->get_word_at_pos(m_vi->get_stc()->GetCurrentPos()),
-        m_vi);
-      break;
-
-    case vi::motion_t::G_f:
-      m_vi->get_stc()->link_open();
-      break;
-
-    case vi::motion_t::G_star:
-      find_replace_data::get()->set_find_string(
-        m_vi->get_stc()->get_word_at_pos(m_vi->get_stc()->GetCurrentPos()));
-      m_vi->get_stc()->find(
-        find_replace_data::get()->get_find_string(),
-        m_vi->search_flags());
-      break;
-
-    case vi::motion_t::G_hash:
-      find_replace_data::get()->set_find_string(
-        m_vi->get_stc()->get_word_at_pos(m_vi->get_stc()->GetCurrentPos()));
-      m_vi->get_stc()->find(
-        find_replace_data::get()->get_find_string(),
-        m_vi->search_flags(),
-        false);
-      break;
-
-    default:
-      assert(0);
-  }
-
-  return true;
 }
 
 bool wex::vim::command_motion(int start_pos)
@@ -120,8 +78,7 @@ bool wex::vim::command_motion(int start_pos)
       break;
 
     default:
-      ok = false;
-      break;
+      assert(0);
   }
 
   m_vi->get_stc()->EndUndoAction();
@@ -129,6 +86,50 @@ bool wex::vim::command_motion(int start_pos)
   m_vi->get_stc()->position_restore();
 
   return ok;
+}
+
+bool wex::vim::command_special()
+{
+  switch (m_motion)
+  {
+    case vi::motion_t::G_a:
+      m_vi->get_stc()->show_ascii_value();
+      break;
+
+    case vi::motion_t::G_d:
+      ctags::find(
+        m_vi->get_stc()->get_word_at_pos(m_vi->get_stc()->GetCurrentPos()),
+        m_vi);
+      break;
+
+    case vi::motion_t::G_f:
+      m_vi->get_stc()->link_open();
+      break;
+
+    case vi::motion_t::G_star:
+      find_replace_data::get()->set_find_string(
+        m_vi->get_stc()->get_word_at_pos(m_vi->get_stc()->GetCurrentPos()));
+      m_vi->get_stc()->find(
+        find_replace_data::get()->get_find_string(),
+        m_vi->search_flags());
+      break;
+
+    case vi::motion_t::G_hash:
+      find_replace_data::get()->set_find_string(
+        m_vi->get_stc()->get_word_at_pos(m_vi->get_stc()->GetCurrentPos()));
+      m_vi->get_stc()->find(
+        find_replace_data::get()->get_find_string(),
+        m_vi->search_flags(),
+        false);
+      break;
+
+    default:
+      assert(0);
+  }
+
+  m_command.erase(0, 2);
+
+  return true;
 }
 
 wex::vi::motion_t wex::vim::get_motion(const std::string& command)
@@ -171,43 +172,48 @@ wex::vi::motion_t wex::vim::get_motion(const std::string& command)
   }
 }
 
-bool wex::vim::handle()
+bool wex::vim::is_vim_motion() const
 {
-  if (m_motion < vi::motion_t::G_aa || m_motion > vi::motion_t::G_ZZ)
-  {
-    return false;
-  }
-
-  if (m_command.size() < 2)
-  {
-    return false;
-  }
-  else if (m_command.size() > 2)
-  {
-    m_command.erase(0, 2);
-    return false;
-  }
-  else
-  {
-    command();
-    m_command.erase(0, 2);
-    return true;
-  }
+  return m_motion >= vi::motion_t::G_tilde && m_motion <= vi::motion_t::G_U;
 }
 
-bool wex::vim::handle(int start_pos, size_t& parsed, vi::function_t f)
+bool wex::vim::is_vim_special() const
 {
+  return m_motion >= vi::motion_t::G_a && m_motion <= vi::motion_t::G_star;
+}
+
+bool wex::vim::motion(int start_pos, size_t& parsed, vi::function_t f)
+{
+  if (!is_vim_motion())
+  {
+    return false;
+  }
+
   if ((parsed = f(m_command)) == 0)
   {
     return false;
   }
 
-  command_motion(start_pos);
-
-  return true;
+  return command_motion(start_pos);
 }
 
-bool wex::vim::is_vim() const
+void wex::vim::motion_prep()
 {
-  return m_motion > vi::motion_t::G_aa && m_motion < vi::motion_t::G_ZZ;
+  if (is_vim_motion() && m_command.size() > 2)
+  {
+    m_command.erase(0, 2);
+  }
+}
+
+bool wex::vim::special()
+{
+  if (is_vim_special() && m_command.size() == 2)
+  {
+    command_special();
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }

@@ -1,4 +1,6 @@
 # roadmap
+- check listview add filetype
+- add numbers to lib, as wex-core22.4.so
 - more boost
 
 ## backlog

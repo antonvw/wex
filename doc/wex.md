@@ -256,7 +256,7 @@ bool wex::global_env::for_each(const block_lines& match) const
   
 ## c++ language
 
-- init_statement in if, case statements (c++17), and for range(c++20)
+- init_statement in if, case statements (c++17), and for range (c++20)
   ui/textctrl-input.cpp:
 ```cpp
       switch (const int page = 10; key)
