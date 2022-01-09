@@ -2,8 +2,12 @@
 // Name:      eval.cpp
 // Purpose:   Implementation of class wex::evaluator
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
+
+#include <list>
+#include <numeric>
+#include <regex>
 
 #include <boost/config/warning_disable.hpp>
 #include <boost/fusion/include/adapt_struct.hpp>
@@ -15,10 +19,7 @@
 #include <wex/vi/ex.h>
 
 #include "eval.h"
-
-#include <list>
-#include <numeric>
-#include <regex>
+#include "util.h"
 
 namespace x3 = boost::spirit::x3;
 

@@ -2,7 +2,7 @@
 // Name:      commands-motion.cpp
 // Purpose:   Implementation of wex::vi::commands_motion
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -14,8 +14,8 @@
 #include <wex/vi/macros.h>
 #include <wex/vi/vi.h>
 
-#include "defs.h"
 #include "motion.h"
+#include "util.h"
 #include "vim.h"
 
 namespace wex

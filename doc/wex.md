@@ -326,7 +326,7 @@ wex::regex::regex(
 
 ## boost c++ libraries
 - boost::algorithm lib
-  uses replace_all, to_upper, trim
+  uses find_tail, replace_all, to_upper, trim
 
 - boost::json lib
   to implement wex::config

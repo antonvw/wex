@@ -163,26 +163,6 @@ const std::string wex::find_tail(const std::string& text, size_t max_chars)
   }
 }
 
-const std::string wex::first_of(
-  const std::string& text,
-  const std::string& chars,
-  size_t             start_pos,
-  first_of_t         flags)
-{
-  const auto pos = !flags[FIRST_OF_FROM_END] ?
-                     text.find_first_of(chars, start_pos) :
-                     text.find_last_of(chars, start_pos);
-
-  if (!flags[FIRST_OF_BEFORE])
-  {
-    return pos == std::string::npos ? std::string() : text.substr(pos + 1);
-  }
-  else
-  {
-    return pos == std::string::npos ? text : text.substr(0, pos);
-  }
-}
-
 const std::string wex::get_find_result(
   const std::string& find_text,
   bool               find_next,

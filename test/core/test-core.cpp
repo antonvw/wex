@@ -55,31 +55,6 @@ TEST_CASE("wex::core")
     REQUIRE(wex::find_tail("testtest", 9) == std::string("testtest"));
   }
 
-  SUBCASE("first_of")
-  {
-    REQUIRE(wex::first_of("this is ok", "x") == std::string());
-    REQUIRE(wex::first_of("this is ok", " ;,") == "is ok");
-    REQUIRE(wex::first_of("this is ok", " ;,i") == "s is ok");
-    REQUIRE(
-      wex::first_of(
-        "this is ok",
-        " ;,i",
-        std::string::npos,
-        wex::first_of_t().set(wex::FIRST_OF_FROM_END)) == "ok");
-    REQUIRE(
-      wex::first_of(
-        "this is ok",
-        " ",
-        0,
-        wex::first_of_t().set(wex::FIRST_OF_BEFORE)) == "this");
-    REQUIRE(
-      wex::first_of(
-        "this is ok",
-        "x",
-        0,
-        wex::first_of_t().set(wex::FIRST_OF_BEFORE)) == "this is ok");
-  }
-
   SUBCASE("get_find_result")
   {
     REQUIRE(

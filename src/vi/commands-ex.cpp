@@ -5,6 +5,8 @@
 // Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <sstream>
+
 #include <boost/tokenizer.hpp>
 #include <wex/core/core.h>
 #include <wex/core/file.h>
@@ -18,7 +20,7 @@
 #include <wex/vi/macros.h>
 #include <wx/app.h>
 
-#include <sstream>
+#include "util.h"
 
 #define POST_CLOSE(ID, VETO)                      \
   {                                               \
@@ -79,7 +81,7 @@ bool source(ex* ex, const std::string& cmd)
     return false;
   }
 
-  wex::path path(wex::first_of(cmd, " "));
+  wex::path path(wex::find_first_of(cmd, " "));
 
   if (path.is_relative())
   {
@@ -168,7 +170,7 @@ wex::ex::commands_t wex::ex::commands_ex()
      {
        if (command.find(" ") == std::string::npos)
          return true;
-       wex::path::current(path(wex::first_of(command, " ")));
+       wex::path::current(path(wex::find_first_of(command, " ")));
        return true;
      }},
     {":close",
@@ -179,7 +181,7 @@ wex::ex::commands_t wex::ex::commands_ex()
     {":de",
      [&](const std::string& command)
      {
-       m_frame->debug_exe(wex::first_of(command, " "), get_stc());
+       m_frame->debug_exe(wex::find_first_of(command, " "), get_stc());
        return true;
      }},
     {":e",
@@ -344,7 +346,7 @@ wex::ex::commands_t wex::ex::commands_ex()
     {":ta",
      [&](const std::string& command)
      {
-       ctags::find(wex::first_of(command, " "));
+       ctags::find(wex::find_first_of(command, " "));
        return true;
      }},
     {":una",

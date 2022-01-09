@@ -2,7 +2,7 @@
 // Name:      comands-other.cpp
 // Purpose:   Implementation of wex::vi::commands_other
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
@@ -19,7 +19,7 @@
 #include <wex/vi/vi.h>
 #include <wx/app.h>
 
-#include "defs.h"
+#include "util.h"
 
 namespace wex
 {

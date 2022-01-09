@@ -18,6 +18,8 @@
 #include <wex/vi/ex.h>
 #include <wex/vi/macros.h>
 
+#include "util.h"
+
 #define SEARCH_TARGET                                                         \
   if (ex->get_stc()->SearchInTarget(text) != -1)                              \
   {                                                                           \
@@ -140,7 +142,7 @@ bool wex::address::adjust_window(const std::string& text) const
 
   SEPARATE;
   output +=
-    wex::write_lines(m_ex->get_stc(), begin - 1, begin + count - 1, flags);
+    wex::get_lines(m_ex->get_stc(), begin - 1, begin + count - 1, flags);
   SEPARATE;
 
   m_ex->print(output);

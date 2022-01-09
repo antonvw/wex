@@ -28,6 +28,7 @@
 
 #include "addressrange-mark.h"
 #include "global-env.h"
+#include "util.h"
 
 namespace wex
 {
@@ -543,7 +544,7 @@ bool wex::addressrange::print(const std::string& flags) const
   }
 
   m_ex->print(
-    write_lines(m_stc, m_begin.get_line() - 1, m_end.get_line(), flags));
+    get_lines(m_stc, m_begin.get_line() - 1, m_end.get_line(), flags));
 
   return true;
 }

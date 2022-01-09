@@ -1,7 +1,5 @@
 # roadmap
-- check listview add filetype
-- add numbers to lib, as wex-core22.4.so
-- more boost
+- add numbers to lib, as wex-core-22.4.so
 
 ## backlog
 - linux print setup asserts

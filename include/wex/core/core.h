@@ -70,27 +70,6 @@ const std::string find_before(
 /// otherwise just returns the text.
 const std::string find_tail(const std::string& text, size_t max_chars = 15);
 
-enum
-{
-  FIRST_OF_AFTER_FROM_BEGIN = 0, ///< substring after match, from begin
-  FIRST_OF_BEFORE           = 1, ///< substring before match
-  FIRST_OF_FROM_END         = 2, ///< substring from end
-};
-
-typedef std::bitset<3> first_of_t;
-
-/// Returns substring after (or before) first occurrence of one of specified
-/// chars.
-const std::string first_of(
-  /// text to be searched
-  const std::string& text,
-  /// chars to be found
-  const std::string& chars,
-  /// start pos (from start or end of text, depending on flags)
-  const size_t start_pos = 0,
-  /// start searching at begin, or at end
-  first_of_t flags = first_of_t().set(FIRST_OF_AFTER_FROM_BEGIN));
-
 /// Returns a search result, that might be shown in the statusbar.
 const std::string
 get_find_result(const std::string& find_text, bool find_next, bool recursive);
