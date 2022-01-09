@@ -28,11 +28,8 @@ const std::string wex::find_first_of(
   return match == std::string::npos ? std::string() : text.substr(match + 1);
 }
 
-std::string wex::get_lines(
-  factory::stc*      stc,
-  int                start,
-  int                end,
-  const std::string& flags)
+std::string
+wex::get_lines(factory::stc* stc, int start, int end, const std::string& flags)
 {
   std::string text;
 
