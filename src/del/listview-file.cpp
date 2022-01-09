@@ -2,7 +2,7 @@
 // Name:      listview-file.cpp
 // Purpose:   Implementation of class wex::del::file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <pugixml.hpp>
@@ -40,6 +40,8 @@ wex::del::file::file(const wex::path& p, const data::listview& data)
         .id(wxID_ADD)))
 {
   file_load(p);
+
+  path().set_log(path::log_t().set(path::LOG_MOD));
 
   Bind(wxEVT_IDLE, &del::file::on_idle, this);
 
@@ -187,6 +189,8 @@ bool wex::del::file::do_file_load(bool synced)
 
   clear();
 
+  interruptible::start();
+
 #ifdef FIX__WXMSW__
   std::thread t(
     [=, this]
@@ -217,6 +221,7 @@ bool wex::del::file::do_file_load(bool synced)
         log::status() << path();
       }
 
+      interruptible::end();
       get_frame()->set_recent_project(path());
 
 #ifdef FIX__WXMSW__

@@ -2,7 +2,7 @@
 // Name:      core.h
 // Purpose:   Include file for wex core utility functions
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -19,10 +19,6 @@ class path;
 
 /*! \file */
 
-/// Returns string after first or last occurrence of c
-/// Returns the whole string if c is not found.
-const std::string after(const std::string& text, char c, bool first = true);
-
 /// Tries to auto_complete text from a vector of strings,
 /// result stored in the string.
 /// Returns true if a unique match was found.
@@ -33,10 +29,6 @@ bool auto_complete_text(
   const std::vector<std::string>& v,
   /// expansion of text to one of the strings from the vector
   std::string& s);
-
-/// Returns string before first or last occurrence of c
-/// Returns the whole string if c is not found.
-const std::string before(const std::string& text, char c, bool first = true);
 
 /// Launch default browser.
 /// Returns false if no browser configured.
@@ -59,31 +51,24 @@ const std::string ellipsed(
   const std::string& control = std::string(),
   bool               ellipse = true);
 
-enum
-{
-  FIRST_OF_AFTER_FROM_BEGIN = 0, ///< substring after match, from begin
-  FIRST_OF_BEFORE           = 1, ///< substring before match
-  FIRST_OF_FROM_END         = 2, ///< substring from end
-};
-
-typedef std::bitset<3> first_of_t;
-
-/// Returns substring after (or before) first occurrence of one of specified
-/// chars.
-const std::string first_of(
-  /// text to be searched
+/// Returns string after first or last occurrence of sequence
+/// Returns the whole string if c is not found.
+const std::string find_after(
   const std::string& text,
-  /// chars to be found
-  const std::string& chars,
-  /// start pos (from start or end of text, depending on flags)
-  const size_t start_pos = 0,
-  /// start searching at begin, or at end
-  first_of_t flags = first_of_t().set(FIRST_OF_AFTER_FROM_BEGIN));
+  const std::string& sequence,
+  bool               first = true);
+
+/// Returns string before first or last occurrence of sequence
+/// Returns the whole string if c is not found.
+const std::string find_before(
+  const std::string& text,
+  const std::string& sequence,
+  bool               first = true);
 
 /// If text length exceeds max_chars,
 /// returns an ellipse prefix followed by the last max_chars from the text,
 /// otherwise just returns the text.
-const std::string get_endoftext(const std::string& text, size_t max_chars = 15);
+const std::string find_tail(const std::string& text, size_t max_chars = 15);
 
 /// Returns a search result, that might be shown in the statusbar.
 const std::string

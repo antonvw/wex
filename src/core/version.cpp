@@ -2,27 +2,14 @@
 // Name:      version.cpp
 // Purpose:   Implementation of wex::version_info
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/version.h>
 #include <wx/translation.h>
 
 #include <iomanip>
-#include <regex>
 #include <sstream>
-
-namespace wex
-{
-const std::string skip_quotes(const std::string& text)
-{
-  return std::regex_replace(
-    text,
-    std::regex("\"+"),
-    "",
-    std::regex_constants::format_sed);
-}
-} // namespace wex
 
 const wex::version_info wex::get_version_info()
 {
@@ -32,7 +19,7 @@ const wex::version_info wex::get_version_info()
      4,
      0,
      _("wex library (a library that offers windows ex and vi components)"),
-     "(c) 1998-2021, Anton van Wezenbeek." + _("All rights reserved.")});
+     "(c) 1998-2022, Anton van Wezenbeek." + _("All rights reserved.")});
 }
 
 wex::version_info::version_info(const wxVersionInfo& info)

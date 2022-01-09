@@ -17,18 +17,20 @@ enum class vi::motion_t
   CHANGE,
   DEL,
 
-  // special motions, not vi, but vim related
+  // all vim commands
   G,
-  G_aa,
+
+  // vim special
   G_a,
   G_d,
   G_f,
-  G_star,
   G_hash,
+  G_star,
+
+  // vim motion
   G_tilde,
   G_u,
   G_U,
-  G_ZZ,
 
   // motions always allowed
   NAVIGATE,

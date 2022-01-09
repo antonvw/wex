@@ -2,7 +2,7 @@
 // Name:      toolbar.cpp
 // Purpose:   Implementation of wex::toolbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -183,7 +183,7 @@ void wex::toolbar::add_find(bool realize)
 
   add_checkboxes(
     {{NewControlId(),
-      after(find_replace_data::get()->text_match_word(), '.', false),
+      find_after(find_replace_data::get()->text_match_word(), ".", false),
       "",
       "",
       _("Search matching words"),
@@ -193,7 +193,7 @@ void wex::toolbar::add_find(bool realize)
         find_replace_data::get()->set_match_word(cb->GetValue());
       }},
      {NewControlId(),
-      after(find_replace_data::get()->text_match_case(), '.', false),
+      find_after(find_replace_data::get()->text_match_case(), ".", false),
       "",
       "",
       _("Search case sensitive"),
@@ -203,7 +203,7 @@ void wex::toolbar::add_find(bool realize)
         find_replace_data::get()->set_match_case(cb->GetValue());
       }},
      {NewControlId(),
-      after(find_replace_data::get()->text_regex(), '.', false),
+      find_after(find_replace_data::get()->text_regex(), ".", false),
       "",
       "",
       _("Search using regular expressions"),

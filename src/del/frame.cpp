@@ -2,8 +2,10 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex::del::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
+
+#include <thread>
 
 #include <wex/common/stream.h>
 #include <wex/common/tostring.h>
@@ -18,8 +20,6 @@
 #include <wex/vi/command-parser.h>
 #include <wex/vi/ctags.h>
 #include <wex/vi/macros.h>
-
-#include <thread>
 
 namespace wex
 {

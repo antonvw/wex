@@ -2,7 +2,7 @@
 // Name:      printing.cpp
 // Purpose:   Implementation of wex::printing class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/chrono.h>
@@ -24,7 +24,7 @@ const std::string wex::print_header(const path_lexer& filename)
 {
   if (filename.file_exists())
   {
-    return get_endoftext(
+    return find_tail(
       filename.string() + " " + filename.stat().get_modification_time_str(),
       filename.lexer().line_size());
   }

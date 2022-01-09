@@ -2,7 +2,7 @@
 // Name:      cmdline.cpp
 // Purpose:   Implementation of wex::cmdline class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -35,7 +35,7 @@ std::string get_option(
     std::pair<cmdline::option_t, std::function<void(const std::any& any)>>>& p,
   wex::config* cfg)
 {
-  const std::string name(before(p.first[0], ','));
+  const std::string name(find_before(p.first[0], ","));
   const std::string key(p.first[1]);
 
   try
@@ -71,7 +71,7 @@ std::string get_switch(
                p,
   wex::config* cfg)
 {
-  const std::string& name(before(p.first[0], ','));
+  const std::string& name(find_before(p.first[0], ","));
   const std::string& key(p.first[1]);
 
   try
@@ -166,7 +166,7 @@ bool wex::cmdline::get_single(
 {
   for (const auto& it : m_options)
   {
-    if (v[0] == before(it.first[0], ','))
+    if (v[0] == find_before(it.first[0], ","))
     {
       help += get_option(it, m_cfg);
       return true;
@@ -175,7 +175,7 @@ bool wex::cmdline::get_single(
 
   for (const auto& it : m_switches)
   {
-    if (v[0] == before(it.first[0], ','))
+    if (v[0] == find_before(it.first[0], ","))
     {
       help += get_switch(it, m_cfg);
       return true;
@@ -363,7 +363,7 @@ bool wex::cmdline::set_no_option(const std::vector<std::string>& v, bool save)
 {
   for (const auto& it : m_switches)
   {
-    if (v[0] == before(it.first[0], ','))
+    if (v[0] == find_before(it.first[0], ","))
     {
       if (save)
       {
@@ -389,7 +389,7 @@ bool wex::cmdline::set_option(const std::vector<std::string>& v, bool save)
 
     for (const auto& it : m_options)
     {
-      if (v[0] == before(it.first[0], ','))
+      if (v[0] == find_before(it.first[0], ","))
       {
         switch (it.second.first)
         {
@@ -418,7 +418,7 @@ bool wex::cmdline::set_option(const std::vector<std::string>& v, bool save)
   {
     for (const auto& it : m_switches)
     {
-      if (v[0] == before(it.first[0], ','))
+      if (v[0] == find_before(it.first[0], ","))
       {
         if (save)
         {

@@ -2,7 +2,7 @@
 // Name:      addressrange.cpp
 // Purpose:   Implementation of class wex::addressrange
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2021 Anton van Wezenbeek
+// Copyright: (c) 2015-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -28,6 +28,7 @@
 
 #include "addressrange-mark.h"
 #include "global-env.h"
+#include "util.h"
 
 namespace wex
 {
@@ -210,7 +211,7 @@ bool wex::addressrange::copy(const command_parser& cp)
   {
     if (cp.text().find('|') != std::string::npos)
     {
-      return change(after(cp.text(), '|'));
+      return change(find_after(cp.text(), "|"));
     }
     else
     {
@@ -543,7 +544,7 @@ bool wex::addressrange::print(const std::string& flags) const
   }
 
   m_ex->print(
-    write_lines(m_stc, m_begin.get_line() - 1, m_end.get_line(), flags));
+    get_lines(m_stc, m_begin.get_line() - 1, m_end.get_line(), flags));
 
   return true;
 }
@@ -810,7 +811,8 @@ bool wex::addressrange::write(const std::string& text) const
   }
 
   auto filename(boost::algorithm::trim_left_copy(
-    text.find(">>") != std::string::npos ? after(text, '>', false) : text));
+    text.find(">>") != std::string::npos ? find_after(text, ">", false) :
+                                           text));
 
 #ifdef __UNIX__
   if (filename.find("~") != std::string::npos)

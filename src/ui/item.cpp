@@ -2,7 +2,7 @@
 // Name:      item.cpp
 // Purpose:   Implementation of wex::item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/tocontainer.h>
@@ -171,7 +171,7 @@ wex::item::item(
   : m_type(type)
   , m_data(data, value)
   , m_label(label)
-  , m_label_window(after(label, '.', false))
+  , m_label_window(find_after(label, ".", false))
   , m_sizer_flags(wxSizerFlags().Border().Left())
 {
   if (is_notebook())

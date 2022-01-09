@@ -3,7 +3,7 @@
 // Purpose:   Implementation of class wex::vi
 //            http://pubs.opengroup.org/onlinepubs/9699919799/utilities/vi.html
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -15,8 +15,8 @@
 #include <wex/vi/macros.h>
 #include <wex/vi/vi.h>
 
-#include "defs.h"
 #include "motion.h"
+#include "util.h"
 #include "vim.h"
 
 // without this code adding tab in block insert mode fails, it only

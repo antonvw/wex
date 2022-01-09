@@ -2,7 +2,7 @@
 // Name:      ctags-entry.cpp
 // Purpose:   Implementation of class wex::ctags_entry
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
@@ -50,7 +50,7 @@ bool wex::ctags_entry::entry_equal(
   {
     if (std::string value(valuep); value.find("::") != std::string::npos)
     {
-      value = wex::after(value, ':', false);
+      value = wex::find_after(value, ":", false);
       return text == value;
     }
   }
@@ -111,7 +111,7 @@ wex::ctags_entry& wex::ctags_entry::filter(const ctags_entry& entry)
     if (const auto* value = tagsField(&entry.m_entry, "typeref");
         value != nullptr)
     {
-      kind("f").class_name(wex::before(wex::after(value, ':'), ' '));
+      kind("f").class_name(wex::find_before(wex::find_after(value, ":"), " "));
     }
   }
   else

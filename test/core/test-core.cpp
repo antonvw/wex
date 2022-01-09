@@ -2,7 +2,7 @@
 // Name:      test-core.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
@@ -13,25 +13,6 @@
 TEST_CASE("wex::core")
 {
   std::vector<int> cs{'(', ')', '{', '<', '>'};
-
-  SUBCASE("after")
-  {
-    REQUIRE(wex::after("nospace", ' ', false) == "nospace");
-    REQUIRE(wex::after("nospace", ' ', true) == "nospace");
-    REQUIRE(wex::after("some space and more", ' ', false) == "more");
-    REQUIRE(wex::after("some space and more", ' ', true) == "space and more");
-    REQUIRE(wex::after("some space and more", 'm', false) == "ore");
-  }
-
-  SUBCASE("before")
-  {
-    REQUIRE(wex::before("nospace", ' ', false) == "nospace");
-    REQUIRE(wex::before("nospace", ' ', true) == "nospace");
-    REQUIRE(wex::before("some space and more", ' ', false) == "some space and");
-    REQUIRE(wex::before("some space and more", ' ', true) == "some");
-    REQUIRE(
-      wex::before("some space and more", 'm', false) == "some space and ");
-  }
 
   SUBCASE("clipboard")
   {
@@ -44,35 +25,34 @@ TEST_CASE("wex::core")
     REQUIRE(wex::ellipsed("xxx").find("...") != std::string::npos);
   }
 
-  SUBCASE("first_of")
+  SUBCASE("find_after")
   {
-    REQUIRE(wex::first_of("this is ok", "x") == std::string());
-    REQUIRE(wex::first_of("this is ok", " ;,") == "is ok");
-    REQUIRE(wex::first_of("this is ok", " ;,i") == "s is ok");
+    REQUIRE(wex::find_after("nospace", " ", false) == "nospace");
+    REQUIRE(wex::find_after("nospace", " ", true) == "nospace");
+    REQUIRE(wex::find_after("some space and more", " ", false) == "more");
     REQUIRE(
-      wex::first_of(
-        "this is ok",
-        " ;,i",
-        std::string::npos,
-        wex::first_of_t().set(wex::FIRST_OF_FROM_END)) == "ok");
-    REQUIRE(
-      wex::first_of(
-        "this is ok",
-        " ",
-        0,
-        wex::first_of_t().set(wex::FIRST_OF_BEFORE)) == "this");
-    REQUIRE(
-      wex::first_of(
-        "this is ok",
-        "x",
-        0,
-        wex::first_of_t().set(wex::FIRST_OF_BEFORE)) == "this is ok");
+      wex::find_after("some space and more", " ", true) == "space and more");
+    REQUIRE(wex::find_after("some space and more", "m", false) == "ore");
   }
 
-  SUBCASE("get_endoftext")
+  SUBCASE("find_before")
   {
-    REQUIRE(wex::get_endoftext("test", 3).size() == 3);
-    REQUIRE(wex::get_endoftext("testtest", 3).size() == 3);
+    REQUIRE(wex::find_before("nospace", " ", false) == "nospace");
+    REQUIRE(wex::find_before("nospace", " ", true) == "nospace");
+    REQUIRE(
+      wex::find_before("some space and more", " ", false) == "some space and");
+    REQUIRE(wex::find_before("some space and more", " ", true) == "some");
+    REQUIRE(
+      wex::find_before("some space and more", "m", false) == "some space and ");
+  }
+
+  SUBCASE("find_tail")
+  {
+    REQUIRE(wex::find_tail("test") == std::string("test"));
+    REQUIRE(wex::find_tail("test", 3) == std::string("est"));
+    REQUIRE(wex::find_tail("testtest", 3) == std::string("est"));
+    REQUIRE(wex::find_tail("testtest", 6) == std::string("...est"));
+    REQUIRE(wex::find_tail("testtest", 9) == std::string("testtest"));
   }
 
   SUBCASE("get_find_result")

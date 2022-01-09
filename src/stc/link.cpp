@@ -2,7 +2,7 @@
 // Name:      link.cpp
 // Purpose:   Implementation of class wex::link
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -21,8 +21,8 @@ std::string wex::link::get_link_pairs(const std::string& text) const
   for (const auto& p : item_vector(stc::config_items())
                          .find<config::strings_t>(_("stc.link.Pairs")))
   {
-    const auto pos1 = text.find(before(p, '\t'));
-    const auto pos2 = text.rfind(after(p, '\t'));
+    const auto pos1 = text.find(find_before(p, "\t"));
+    const auto pos2 = text.rfind(find_after(p, "\t"));
 
     if (pos1 != std::string::npos && pos2 != std::string::npos && pos2 > pos1)
     {

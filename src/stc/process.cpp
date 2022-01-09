@@ -2,7 +2,7 @@
 // Name:      process.cpp
 // Purpose:   Implementation of class wex::process
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -123,7 +123,7 @@ bool wex::process::async_system(
   if (
     m_frame->debug_entry() != nullptr &&
     !m_frame->debug_entry()->name().empty() &&
-    m_frame->debug_entry()->name() == before(exe, ' '))
+    m_frame->debug_entry()->name() == find_before(exe, " "))
   {
     log::debug("async_system debug handler") << m_frame->debug_entry()->name();
     set_handler_dbg(m_frame->debug_handler());

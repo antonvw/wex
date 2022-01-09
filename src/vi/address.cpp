@@ -2,7 +2,7 @@
 // Name:      address.cpp
 // Purpose:   Implementation of class wex::address
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
@@ -17,6 +17,8 @@
 #include <wex/vi/ex-stream.h>
 #include <wex/vi/ex.h>
 #include <wex/vi/macros.h>
+
+#include "util.h"
 
 #define SEARCH_TARGET                                                         \
   if (ex->get_stc()->SearchInTarget(text) != -1)                              \
@@ -140,7 +142,7 @@ bool wex::address::adjust_window(const std::string& text) const
 
   SEPARATE;
   output +=
-    wex::write_lines(m_ex->get_stc(), begin - 1, begin + count - 1, flags);
+    wex::get_lines(m_ex->get_stc(), begin - 1, begin + count - 1, flags);
   SEPARATE;
 
   m_ex->print(output);
@@ -270,7 +272,7 @@ bool wex::address::parse(const command_parser& cp)
     case 'a':
       if (cp.text().find('|') != std::string::npos)
       {
-        return append(after(cp.text(), '|'));
+        return append(find_after(cp.text(), "|"));
       }
       else
       {
@@ -280,7 +282,7 @@ bool wex::address::parse(const command_parser& cp)
     case 'i':
       if (cp.text().find('|') != std::string::npos)
       {
-        return insert(after(cp.text(), '|'));
+        return insert(find_after(cp.text(), "|"));
       }
       else
       {

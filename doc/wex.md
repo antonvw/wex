@@ -256,7 +256,7 @@ bool wex::global_env::for_each(const block_lines& match) const
   
 ## c++ language
 
-- init_statement in if, case statements (c++17), and for range(c++20)
+- init_statement in if, case statements (c++17), and for range (c++20)
   ui/textctrl-input.cpp:
 ```cpp
       switch (const int page = 10; key)
@@ -326,7 +326,7 @@ wex::regex::regex(
 
 ## boost c++ libraries
 - boost::algorithm lib
-  uses replace_all, to_upper, trim
+  uses find_tail, replace_all, to_upper, trim
 
 - boost::json lib
   to implement wex::config

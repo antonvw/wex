@@ -2,7 +2,7 @@
 // Name:      commands-motion.cpp
 // Purpose:   Implementation of wex::vi::commands_motion
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -14,8 +14,8 @@
 #include <wex/vi/macros.h>
 #include <wex/vi/vi.h>
 
-#include "defs.h"
 #include "motion.h"
+#include "util.h"
 #include "vim.h"
 
 namespace wex
@@ -513,6 +513,13 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
 
   filter_count(command);
 
+  wex::vim vim(this, command, type);
+
+  if (vim.is_vim_motion())
+  {
+    vim.motion_prep();
+  }
+
   const auto& it = std::find_if(
     m_motion_commands.begin(),
     m_motion_commands.end(),
@@ -541,9 +548,9 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
   size_t parsed = 0;
   auto   start  = get_stc()->GetCurrentPos();
 
-  if (wex::vim vim(this, command, type); vim.is_vim())
+  if (vim.is_vim_motion())
   {
-    if (!vim.handle(start, parsed, it->second))
+    if (!vim.motion(start, parsed, it->second))
     {
       return false;
     }

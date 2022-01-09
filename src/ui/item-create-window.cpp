@@ -2,7 +2,7 @@
 // Name:      item.cpp
 // Purpose:   Implementation of wex::item::create_window
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "item.h"
@@ -38,7 +38,7 @@ void finish_picker(wxPickerBase* pc, const wex::item& item, wxWindow*& window)
 
 void handle(const std::string& s, wxCheckListBox* clb, size_t& item_no)
 {
-  if (after(s, ',') == "1")
+  if (find_after(s, ",") == "1")
   {
     clb->Check(item_no);
   }
@@ -104,7 +104,7 @@ void create_checklistbox_bit(
       for (const auto& it :
            std::any_cast<item::choices_t>(item.data().initial()))
       {
-        as.Add(after(before(it.second, ','), '.', false));
+        as.Add(find_after(find_before(it.second, ","), ".", false));
       }
     });
 
@@ -130,7 +130,7 @@ void create_checklistbox_bool(
       for (const auto& it :
            std::any_cast<item::choices_bool_t>(item.data().initial()))
       {
-        as.Add(after(before(it, ','), '.', false));
+        as.Add(find_after(find_before(it, ","), ".", false));
       }
     });
 
@@ -187,8 +187,8 @@ void create_commandlink_button(
   window = new wxCommandLinkButton(
     parent,
     item.data().window().id(),
-    before(item.label_window(), '\t'),
-    after(item.label_window(), '\t'),
+    find_before(item.label_window(), "\t"),
+    find_after(item.label_window(), "\t"),
     PSS);
 }
 
@@ -303,7 +303,7 @@ void create_radiobox(wxWindow* parent, wxWindow*& window, const wex::item& item)
         for (const auto& it :
              std::any_cast<item::choices_t>(item.data().initial()))
         {
-          as.Add(before(it.second, ','));
+          as.Add(find_before(it.second, ","));
         }
       }),
     item.data().columns(),
@@ -313,7 +313,7 @@ void create_radiobox(wxWindow* parent, wxWindow*& window, const wex::item& item)
 
   for (const auto& c : std::any_cast<item::choices_t>(item.data().initial()))
   {
-    if (after(c.second, ',') == "1")
+    if (find_after(c.second, ",") == "1")
     {
       rb->SetSelection(item_no);
     }

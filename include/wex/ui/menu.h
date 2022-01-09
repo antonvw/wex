@@ -2,7 +2,7 @@
 // Name:      menu.h
 // Purpose:   Declaration of wex::menu class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -64,7 +64,6 @@ private:
   void append_edit(bool add_invert = false);
   void append_print();
   void append_separator();
-  void append_tools();
 
   menu_t m_style;
 };

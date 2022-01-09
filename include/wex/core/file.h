@@ -2,7 +2,7 @@
 // Name:      file.h
 // Purpose:   Declaration of class wex::file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -84,6 +84,9 @@ public:
 
   /// Returns the path.
   const auto& path() const { return m_path; }
+
+  /// Returns the path.
+  auto& path() { return m_path; }
 
   /// Writes char.
   void put(char c) { m_fs.put(c); }
