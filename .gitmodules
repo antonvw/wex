@@ -1,6 +1,6 @@
 [submodule "external/doctest"]
 	path = external/doctest
-	url = https://github.com/onqtam/doctest.git
+	url = https://github.com/doctest/doctest.git
 [submodule "external/pugixml"]
 	path = external/pugixml
 	url = https://github.com/zeux/pugixml.git

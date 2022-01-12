@@ -1,4 +1,8 @@
-# wex library is written in the c++ language
+# wex library
+This ibrary is written in the c++ language, and offers classes
+to add vi or ex functionality as specified in
+"The Open Group Base Specifications Issue 7, 2018 edition"
+to your apps.
 
 It benefits from the following c++ features:
 

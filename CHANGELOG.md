@@ -6,6 +6,7 @@
 - added methods to allow testing wex applications
 - c++20 standard
 - added a few vim g commands
+- added version info to wex libs
 
 **v21.10** *September 12, 2021*
 - boost::algorithm lib used
