@@ -191,7 +191,7 @@ void wex::shell::expand()
   // path:   src/vi
   // subdir: src
   // prefix: vi
-  wex::path   path(find_after(m_command, " ", false));
+  wex::path   path(rfind_after(m_command, " "));
   std::string expansion;
 
   if (const auto prefix(path.filename()); AutoCompActive())

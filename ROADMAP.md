@@ -1,5 +1,4 @@
 # roadmap
-- find_before, find_after update API
 
 ## backlog
 - linux print setup asserts

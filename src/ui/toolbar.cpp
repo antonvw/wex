@@ -183,7 +183,7 @@ void wex::toolbar::add_find(bool realize)
 
   add_checkboxes(
     {{NewControlId(),
-      find_after(find_replace_data::get()->text_match_word(), ".", false),
+      rfind_after(find_replace_data::get()->text_match_word(), "."),
       "",
       "",
       _("Search matching words"),
@@ -193,7 +193,7 @@ void wex::toolbar::add_find(bool realize)
         find_replace_data::get()->set_match_word(cb->GetValue());
       }},
      {NewControlId(),
-      find_after(find_replace_data::get()->text_match_case(), ".", false),
+      rfind_after(find_replace_data::get()->text_match_case(), "."),
       "",
       "",
       _("Search case sensitive"),
@@ -203,7 +203,7 @@ void wex::toolbar::add_find(bool realize)
         find_replace_data::get()->set_match_case(cb->GetValue());
       }},
      {NewControlId(),
-      find_after(find_replace_data::get()->text_regex(), ".", false),
+      rfind_after(find_replace_data::get()->text_regex(), "."),
       "",
       "",
       _("Search using regular expressions"),

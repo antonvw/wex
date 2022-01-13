@@ -145,3 +145,10 @@ bool wex::one_letter_after(const std::string& text, const std::string& letter)
 {
   return std::regex_match(letter, std::regex("^" + text + "[a-zA-Z]$"));
 }
+
+bool wex::register_after(const std::string& text, const std::string& letter)
+{
+  return std::regex_match(
+    letter,
+    std::regex("^" + text + "[0-9=\"a-z%._\\*]$"));
+}

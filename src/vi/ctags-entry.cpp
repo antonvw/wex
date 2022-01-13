@@ -50,7 +50,7 @@ bool wex::ctags_entry::entry_equal(
   {
     if (std::string value(valuep); value.find("::") != std::string::npos)
     {
-      value = wex::find_after(value, ":", false);
+      value = wex::rfind_after(value, ":");
       return text == value;
     }
   }

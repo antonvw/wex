@@ -73,7 +73,7 @@ wex::auto_complete_filename(const std::string& text)
   // path:   /usr/include
   // prefix: s
   // And text might be prefixed by a command, e.g.: e src/vi
-  path path(find_after(text, " ", false));
+  path path(rfind_after(text, " "));
 
   if (path.is_relative())
   {

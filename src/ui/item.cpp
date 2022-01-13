@@ -171,7 +171,7 @@ wex::item::item(
   : m_type(type)
   , m_data(data, value)
   , m_label(label)
-  , m_label_window(find_after(label, ".", false))
+  , m_label_window(rfind_after(label, "."))
   , m_sizer_flags(wxSizerFlags().Border().Left())
 {
   if (is_notebook())

@@ -408,7 +408,8 @@ wex::vi::commands_t wex::vi::commands_other()
          command_reg(command);
          return command.size();
        }
-       else if (command.size() == 2 && regafter(k_s(WXK_CONTROL_R), command))
+       else if (
+         command.size() == 2 && register_after(k_s(WXK_CONTROL_R), command))
        {
          command_reg(command);
          return command.size();

@@ -811,8 +811,7 @@ bool wex::addressrange::write(const std::string& text) const
   }
 
   auto filename(boost::algorithm::trim_left_copy(
-    text.find(">>") != std::string::npos ? find_after(text, ">", false) :
-                                           text));
+    text.find(">>") != std::string::npos ? rfind_after(text, ">") : text));
 
 #ifdef __UNIX__
   if (filename.find("~") != std::string::npos)

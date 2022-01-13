@@ -136,16 +136,15 @@ void wex::config_imp::set(const std::string& item, const T& v)
       }
       else
       {
-        auto& jv = accessor(find_before(item, ".", false), v);
+        auto& jv = accessor(rfind_before(item, "."), v);
 
         if (jv.is_object())
         {
-          jv.as_object()[find_after(item, ".", false)] = json::value_from(v);
+          jv.as_object()[rfind_after(item, ".")] = json::value_from(v);
         }
         else
         {
-          jv.emplace_object()[find_after(item, ".", false)] =
-            json::value_from(v);
+          jv.emplace_object()[rfind_after(item, ".")] = json::value_from(v);
         }
       }
     }
@@ -159,7 +158,7 @@ void wex::config_imp::set(const std::string& item, const T& v)
 template <typename T>
 const T wex::config_imp::value(const std::string& item, const T& def)
 {
-  const auto& ai(find_after(item, ".", false));
+  const auto& ai(rfind_after(item, "."));
 
   try
   {
@@ -177,7 +176,7 @@ const T wex::config_imp::value(const std::string& item, const T& def)
     }
     else
     {
-      if (auto& a(accessor(find_before(item, ".", false), def)); !a.is_null())
+      if (auto& a(accessor(rfind_before(item, "."), def)); !a.is_null())
       {
         if (a.is_object())
         {

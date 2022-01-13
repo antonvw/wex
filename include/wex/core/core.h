@@ -51,19 +51,15 @@ const std::string ellipsed(
   const std::string& control = std::string(),
   bool               ellipse = true);
 
-/// Returns string after first or last occurrence of sequence
-/// Returns the whole string if c is not found.
-const std::string find_after(
-  const std::string& text,
-  const std::string& sequence,
-  bool               first = true);
+/// Returns string after first occurrence of sequence
+/// Returns the whole string if seq is not found.
+const std::string
+find_after(const std::string& text, const std::string& sequence);
 
-/// Returns string before first or last occurrence of sequence
-/// Returns the whole string if c is not found.
-const std::string find_before(
-  const std::string& text,
-  const std::string& sequence,
-  bool               first = true);
+/// Returns string before first occurrence of sequence
+/// Returns the whole string if seq is not found.
+const std::string
+find_before(const std::string& text, const std::string& sequence);
 
 /// If text length exceeds max_chars,
 /// returns an ellipse prefix followed by the last max_chars from the text,
@@ -106,8 +102,15 @@ bool matches_one_of(const std::string& fullname, const std::string& patterns);
 /// Returns quotes around the text.
 const std::string quoted(const std::string& text);
 
-/// Returns true if a register is specified after letter in text.
-bool regafter(const std::string& text, const std::string& letter);
+/// Returns string after last occurrence of sequence
+/// Returns the whole string if seq is not found.
+const std::string
+rfind_after(const std::string& text, const std::string& sequence);
+
+/// Returns string before last occurrence of sequence
+/// Returns the whole string if seq is not found.
+const std::string
+rfind_before(const std::string& text, const std::string& sequence);
 
 /// Presents a dialog to choose one string out of an array.
 bool single_choice_dialog(
