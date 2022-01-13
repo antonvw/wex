@@ -1,5 +1,5 @@
 # roadmap
-- add numbers to lib, as wex-core-22.4.so
+- find_before, find_after update API
 
 ## backlog
 - linux print setup asserts

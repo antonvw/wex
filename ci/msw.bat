@@ -20,7 +20,7 @@ echo %configuration%
 devenv wex.sln /build %configuration%
 
 :: test it
-ctest -C %configuration% -V
+ctest -C %configuration% -VV
 
 :: install it
 :: does not work with Debug, but Release gives invalid return after ui test
