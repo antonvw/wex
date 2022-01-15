@@ -180,6 +180,7 @@ wex::item::item(
     m_sizer_flags.Expand();
   }
   else
+  {
     switch (m_type)
     {
       case CHECKLISTBOX_BIT:
@@ -214,6 +215,7 @@ wex::item::item(
 
       default:; // prevent warning
     }
+  }
 }
 
 wex::item::item(const std::string& label, type_t type, const data::item& data)
