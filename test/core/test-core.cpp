@@ -27,23 +27,20 @@ TEST_CASE("wex::core")
 
   SUBCASE("find_after")
   {
-    REQUIRE(wex::find_after("nospace", " ", false) == "nospace");
-    REQUIRE(wex::find_after("nospace", " ", true) == "nospace");
-    REQUIRE(wex::find_after("some space and more", " ", false) == "more");
-    REQUIRE(
-      wex::find_after("some space and more", " ", true) == "space and more");
-    REQUIRE(wex::find_after("some space and more", "m", false) == "ore");
+    REQUIRE(wex::rfind_after("nospace", " ") == "nospace");
+    REQUIRE(wex::find_after("nospace", " ") == "nospace");
+    REQUIRE(wex::rfind_after("some space and more", " ") == "more");
+    REQUIRE(wex::find_after("some space and more", " ") == "space and more");
+    REQUIRE(wex::rfind_after("some space and more", "m") == "ore");
   }
 
   SUBCASE("find_before")
   {
-    REQUIRE(wex::find_before("nospace", " ", false) == "nospace");
-    REQUIRE(wex::find_before("nospace", " ", true) == "nospace");
-    REQUIRE(
-      wex::find_before("some space and more", " ", false) == "some space and");
-    REQUIRE(wex::find_before("some space and more", " ", true) == "some");
-    REQUIRE(
-      wex::find_before("some space and more", "m", false) == "some space and ");
+    REQUIRE(wex::rfind_before("nospace", " ") == "nospace");
+    REQUIRE(wex::find_before("nospace", " ") == "nospace");
+    REQUIRE(wex::rfind_before("some space and more", " ") == "some space and");
+    REQUIRE(wex::find_before("some space and more", " ") == "some");
+    REQUIRE(wex::rfind_before("some space and more", "m") == "some space and ");
   }
 
   SUBCASE("find_tail")

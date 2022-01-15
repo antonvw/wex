@@ -171,7 +171,7 @@ wex::item::item(
   : m_type(type)
   , m_data(data, value)
   , m_label(label)
-  , m_label_window(find_after(label, ".", false))
+  , m_label_window(rfind_after(label, "."))
   , m_sizer_flags(wxSizerFlags().Border().Left())
 {
   if (is_notebook())
@@ -180,6 +180,7 @@ wex::item::item(
     m_sizer_flags.Expand();
   }
   else
+  {
     switch (m_type)
     {
       case CHECKLISTBOX_BIT:
@@ -214,6 +215,7 @@ wex::item::item(
 
       default:; // prevent warning
     }
+  }
 }
 
 wex::item::item(const std::string& label, type_t type, const data::item& data)

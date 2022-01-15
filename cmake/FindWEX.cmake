@@ -109,7 +109,6 @@ if (APPLE)
     -framework WebKit \
     -framework CoreFoundation \
     -framework Security \
-    -framework Carbon \
     -framework Cocoa \
     -framework IOKit")
 endif()

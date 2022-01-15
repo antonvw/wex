@@ -128,24 +128,17 @@ wex::ellipsed(const std::string& text, const std::string& control, bool ellipse)
 }
 
 const std::string
-wex::find_after(const std::string& text, const std::string& seq, bool first)
+wex::find_after(const std::string& text, const std::string& seq)
 {
-  const auto pos = (first ? text.find(seq) : text.rfind(seq));
-  return (pos == std::string::npos ? text : text.substr(pos + 1));
+  const auto pos = text.find(seq);
+  return pos == std::string::npos ? text : text.substr(pos + 1);
 }
 
 const std::string
-wex::find_before(const std::string& text, const std::string& seq, bool first)
+wex::find_before(const std::string& text, const std::string& seq)
 {
-  if (const auto pos = (first ? text.find(seq) : text.rfind(seq));
-      pos != std::string::npos)
-  {
-    return text.substr(0, pos);
-  }
-  else
-  {
-    return text;
-  }
+  const auto pos = text.find(seq);
+  return pos == std::string::npos ? text : text.substr(0, pos);
 }
 
 const std::string wex::find_tail(const std::string& text, size_t max_chars)
@@ -292,11 +285,18 @@ const std::string wex::quoted(const std::string& text)
   return "'" + text + "'";
 }
 
-bool wex::regafter(const std::string& text, const std::string& letter)
+const std::string
+wex::rfind_after(const std::string& text, const std::string& seq)
 {
-  return std::regex_match(
-    letter,
-    std::regex("^" + text + "[0-9=\"a-z%._\\*]$"));
+  const auto pos = text.rfind(seq);
+  return pos == std::string::npos ? text : text.substr(pos + 1);
+}
+
+const std::string
+wex::rfind_before(const std::string& text, const std::string& seq)
+{
+  const auto pos = text.rfind(seq);
+  return pos == std::string::npos ? text : text.substr(0, pos);
 }
 
 bool wex::single_choice_dialog(

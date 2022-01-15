@@ -60,4 +60,7 @@ const std::string k_s(wxKeyCode key);
 
 /// Returns whether there is one letter after.
 bool one_letter_after(const std::string& text, const std::string& letter);
+
+/// Returns true if a register is specified after letter in text.
+bool register_after(const std::string& text, const std::string& letter);
 } // namespace wex

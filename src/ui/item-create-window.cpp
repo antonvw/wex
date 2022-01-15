@@ -104,7 +104,7 @@ void create_checklistbox_bit(
       for (const auto& it :
            std::any_cast<item::choices_t>(item.data().initial()))
       {
-        as.Add(find_after(find_before(it.second, ","), ".", false));
+        as.Add(rfind_after(find_before(it.second, ","), "."));
       }
     });
 
@@ -130,7 +130,7 @@ void create_checklistbox_bool(
       for (const auto& it :
            std::any_cast<item::choices_bool_t>(item.data().initial()))
       {
-        as.Add(find_after(find_before(it, ","), ".", false));
+        as.Add(rfind_after(find_before(it, ","), "."));
       }
     });
 

@@ -15,12 +15,6 @@ if (CMAKE_BUILD_TYPE MATCHES "Coverage")
     # generate local files
     COMMAND genhtml --no-branch-coverage --title "${PROJECT_NAME}" app.run
     COMMENT "Running lcov" VERBATIM)    
-  
-  add_custom_target(lcov-coveralls
-    # update coveralls
-    COMMAND coveralls-lcov app.run
-    # cleanup
-    COMMAND rm -f app.base app.run)
 endif ()
 
 add_subdirectory(core)
