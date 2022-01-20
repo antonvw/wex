@@ -1,4 +1,4 @@
 #!/bin/bash
 
-files=`ls *.robot | wc -l`
-echo $files
+files=$(find ./*robot* | wc -l | xargs)
+echo "$files"
