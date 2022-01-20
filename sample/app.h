@@ -2,7 +2,7 @@
 // Name:      app.h
 // Purpose:   Declaration of wex sample classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/wex.h>
@@ -10,8 +10,13 @@
 /// Derive your application from wex::app.
 class app : public wex::app
 {
+public:
+  auto& data() { return m_data; }
+
 private:
   bool OnInit() final;
+
+  wex::data::stc m_data;
 };
 
 class dir : public wex::dir
@@ -30,7 +35,11 @@ class frame : public wex::del::frame
 public:
   frame();
 
+  void update(app* a);
+
 private:
+  void add_data();
+  void bind_all();
   void on_command(wxCommandEvent& event);
 
   wex::del::listview* activate(
@@ -44,13 +53,13 @@ private:
     const wex::path&      file,
     const wex::data::stc& data = wex::data::stc()) final;
 
-  wex::notebook*             m_notebook;
-  wex::stc *                 m_stc, *m_stc_lexers;
-  wex::grid*                 m_grid;
-  wex::listview*             m_listview;
-  wex::process*              m_process;
-  wex::shell*                m_shell;
-  wex::grid_statistics<int>* m_statistics;
+  wex::notebook*             m_notebook{nullptr};
+  wex::stc *                 m_stc{nullptr}, *m_stc_lexers{nullptr};
+  wex::grid*                 m_grid{nullptr};
+  wex::listview*             m_listview{nullptr};
+  wex::process*              m_process{nullptr};
+  wex::shell*                m_shell{nullptr};
+  wex::grid_statistics<int>* m_statistics{nullptr};
 
   long m_flags_stc = 0;
 };

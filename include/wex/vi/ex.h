@@ -141,9 +141,6 @@ public:
   /// Prints text in the dialog.
   void print(const std::string& text);
 
-  /// Returns current register name.
-  auto register_name() const { return m_register; }
-
   /// Returns text from current register (or yank register if no register
   /// active).
   const std::string register_text() const;
@@ -168,6 +165,9 @@ protected:
   /// If autowrite is on and document is modified,
   /// save the document.
   bool auto_write();
+
+  /// Returns current register name.
+  auto register_name() const { return m_register; }
 
   /// Sets register name.
   /// Setting register 0 results in

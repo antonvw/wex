@@ -2,7 +2,7 @@
 // Name:      stc.cpp
 // Purpose:   Implementation of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -121,8 +121,6 @@ wex::stc::stc(const std::string& text, const data::stc& data)
     is_hexmode() ? m_hexmode.append_text(text) : set_text(text);
     guess_type_and_modeline();
   }
-
-  m_data.inject();
 }
 
 wex::stc::~stc()

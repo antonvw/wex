@@ -1,6 +1,8 @@
 # roadmap
 
 ## backlog
+- use std::contains for maps
+- add forward, backward functionality to sample
 - linux print setup asserts
 - use boost python for scripting
 - current stc uses old scintilla

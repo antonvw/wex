@@ -2,7 +2,7 @@
 // Name:      test-macros.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/vi/macro-mode.h>
@@ -18,26 +18,97 @@ TEST_CASE("wex::macros" * doctest::may_fail())
   auto* stc = get_stc();
   auto* vi  = new wex::vi(stc);
 
+  wex::macros macros;
+
   SUBCASE("constructor")
   {
-    wex::macros macros;
     REQUIRE(macros.get_abbreviations().empty());
     REQUIRE(!macros.path().empty());
     REQUIRE(macros.size() == 0);
+    REQUIRE(macros.get_map().empty());
+    REQUIRE(macros.get_variables().empty());
     REQUIRE(!macros.is_modified());
     REQUIRE(!macros.is_recorded("a"));
     REQUIRE(!macros.is_recorded_macro("a"));
     REQUIRE(!macros.mode().is_recording());
   }
 
-  wex::macros macros;
   REQUIRE(macros.load_document());
+
+  SUBCASE("abbreviations")
+  {
+    for (auto& abbrev : wex::test::get_abbreviations())
+    {
+      macros.set_abbreviation(abbrev.first, abbrev.second);
+
+      const auto& it = macros.get_abbreviations().find(abbrev.first);
+
+      if (it != macros.get_abbreviations().end())
+      {
+        REQUIRE(abbrev.second == it->second);
+      }
+    }
+
+    REQUIRE(
+      macros.get_abbreviations().size() >
+      wex::test::get_abbreviations().size());
+    REQUIRE(macros.is_modified());
+    REQUIRE(macros.save_document());
+  }
+
+  SUBCASE("add-erase")
+  {
+    macros.mode().transition("qA", vi);
+    macros.record("w");
+    macros.record("/test");
+    macros.mode().transition("q", vi);
+
+    REQUIRE(!macros.is_recorded("A"));
+    REQUIRE(macros.is_recorded("a"));
+    REQUIRE(!macros.get_macro_commands("a").empty());
+    REQUIRE(macros.erase());
+    REQUIRE(!macros.is_recorded("a"));
+    REQUIRE(!macros.erase());
+  }
+
+  SUBCASE("builtin-variables")
+  {
+    for (auto& builtin : get_builtin_variables())
+    {
+      CAPTURE(builtin);
+      REQUIRE(macros.mode().transition("@" + builtin + "@", vi));
+    }
+
+    std::string expanded;
+
+    REQUIRE(!macros.mode().expand(vi, wex::variable(), expanded));
+    REQUIRE(!macros.mode().expand(vi, wex::variable("x"), expanded));
+  }
+
+  SUBCASE("environment-variables")
+  {
+#ifdef __UNIX__
+    for (auto& env : std::vector<std::string>{"HOME", "PWD"})
+    {
+      REQUIRE(macros.mode().transition("@" + env, vi));
+    }
+#endif
+  }
 
   SUBCASE("load")
   {
     REQUIRE(macros.size() > 0);
     REQUIRE(!macros.is_recorded("x"));
     REQUIRE(!macros.get_keys_map().empty());
+  }
+
+  SUBCASE("map")
+  {
+    macros.set_key_map("4", "www");
+    macros.set_map("Z", "www");
+    REQUIRE(!macros.get_map().empty());
+    REQUIRE(macros.get_keys_map().find(4) != macros.get_keys_map().end());
+    REQUIRE(macros.get_keys_map().find(444) == macros.get_keys_map().end());
   }
 
   SUBCASE("record-and-playback")
@@ -87,19 +158,6 @@ TEST_CASE("wex::macros" * doctest::may_fail())
     REQUIRE(!macros.get().empty());
   }
 
-  SUBCASE("keysmap") { macros.set_key_map("4", "www"); }
-
-  SUBCASE("append")
-  {
-    macros.mode().transition("qA", vi);
-    macros.record("w");
-    macros.record("/test");
-    macros.mode().transition("q", vi);
-
-    REQUIRE(!macros.is_recorded("A"));
-    REQUIRE(macros.is_recorded("a"));
-  }
-
   SUBCASE("recursive")
   {
     macros.mode().transition("qA", vi);
@@ -108,44 +166,6 @@ TEST_CASE("wex::macros" * doctest::may_fail())
     macros.mode().transition("q", vi);
 
     REQUIRE(macros.mode().transition("@a", vi));
-  }
-
-  SUBCASE("builtin-variables")
-  {
-    for (auto& builtin : get_builtin_variables())
-    {
-      CAPTURE(builtin);
-      REQUIRE(macros.mode().transition("@" + builtin + "@", vi));
-    }
-
-    std::string expanded;
-
-    REQUIRE(!macros.mode().expand(vi, wex::variable(), expanded));
-    REQUIRE(!macros.mode().expand(vi, wex::variable("x"), expanded));
-  }
-
-  SUBCASE("environment-variables")
-  {
-#ifdef __UNIX__
-    for (auto& env : std::vector<std::string>{"HOME", "PWD"})
-    {
-      REQUIRE(macros.mode().transition("@" + env, vi));
-    }
-#endif
-  }
-
-  // Test input macro variables (requires input).
-  // Test template macro variables (requires input).
-
-  SUBCASE("save")
-  {
-    macros.set_abbreviation("TEST", "document is_modified");
-    REQUIRE(macros.is_modified());
-    REQUIRE(macros.save_document());
-    REQUIRE(!macros.is_modified());
-
-    // A second save is not necessary.
-    REQUIRE(!macros.save_document());
   }
 
   SUBCASE("registers")
@@ -164,22 +184,19 @@ TEST_CASE("wex::macros" * doctest::may_fail())
     REQUIRE(macros.get_register('_').empty());
   }
 
-  SUBCASE("abbreviations")
+  // Test input macro variables (requires input).
+  // Test template macro variables (requires input).
+
+  SUBCASE("save")
   {
-    for (auto& abbrev : get_abbreviations())
-    {
-      macros.set_abbreviation(abbrev.first, abbrev.second);
-
-      const auto& it = macros.get_abbreviations().find(abbrev.first);
-
-      if (it != macros.get_abbreviations().end())
-      {
-        REQUIRE(abbrev.second == it->second);
-      }
-    }
-
-    REQUIRE(macros.get_abbreviations().size() > get_abbreviations().size());
+    macros.set_abbreviation("TEST", "document is_modified");
     REQUIRE(macros.is_modified());
     REQUIRE(macros.save_document());
+    REQUIRE(!macros.is_modified());
+
+    // A second save is not necessary.
+    REQUIRE(!macros.save_document());
+
+    REQUIRE(!macros.save_macro("zZ"));
   }
 }
