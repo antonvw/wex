@@ -13,6 +13,22 @@ empty
 	Appl
 	Output Contains	1
 
+edit
+	Input	:e other.txt
+	...	:f
+	Appl
+	# the :e command is handled by event, so other.txt not yet active
+	Output Contains	${file-startup}
+
+info
+	Input	:a|line has text
+	...	:f
+	Appl
+	Output Contains	${file-startup}
+	Output Contains	1
+	Output Contains	%
+	Output Contains	level
+
 mdi
 	Input	:a|line has text
 	...	:e other.txt
@@ -29,7 +45,7 @@ saveas
 	${size}=	Get File Size	test-ex.robot
 	Input Many	:e test-ex.robot	1
 	Input Many	:w copy.txt	1
-	Appl	5
+	Appl	1
 	File Should Exist	copy.txt
 	${size-copy}=	Get File Size	copy.txt
 	Should Be Equal	${size}	${size-copy}

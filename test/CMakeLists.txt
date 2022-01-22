@@ -3,6 +3,7 @@ project(wex-test)
 include_directories(../include/)
 include_directories(../external/doctest/doctest)
   
+add_subdirectory(app)
 add_subdirectory(core)
 add_subdirectory(factory)
 add_subdirectory(data-src)

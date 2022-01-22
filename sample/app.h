@@ -12,11 +12,13 @@ class app : public wex::app
 {
 public:
   auto& data() { return m_data; }
+  auto& get_files() const { return m_files; }
 
 private:
   bool OnInit() final;
 
-  wex::data::stc m_data;
+  std::vector<wex::path> m_files;
+  wex::data::stc         m_data;
 };
 
 class dir : public wex::dir

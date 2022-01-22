@@ -19,6 +19,7 @@ ${APPL}
 ${file-contents}	contents.txt
 ${file-input}	input.txt
 ${file-output}	output.txt
+${file-startup}	empty.txt
 ${file-stdout}	stdout.txt
 
 
@@ -48,6 +49,7 @@ Appl
 	...	-s	${file-input}
 	...	-V	${level}
 	...	-X	${file-output}
+	...	${file-startup}
 	...	stdout=${file-stdout}
 
 Contents Contains

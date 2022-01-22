@@ -63,7 +63,17 @@ bool app::OnInit()
             {
               m_data.control(wex::data::control().command(
                 ":so " + std::any_cast<std::string>(s)));
-            }}}})
+            }}}},
+         {{"files",
+           "input file[:line number][:column number]\n"
+           "or project files is -p was specified\n"
+           "or executable file if -d was specified and last file has no known "
+           "extension"},
+          [&](const std::vector<std::string>& v)
+          {
+            for (const auto& f : v)
+              m_files.emplace_back(f);
+          }})
          .parse(c) ||
       !wex::app::OnInit())
   {
@@ -147,8 +157,6 @@ frame::frame()
          {ID_STC_SPLIT, "Split"}}),
       "&STC"},
      {new wex::menu({{wxID_ABOUT, ""}}), "&Help"}}));
-
-  m_stc_lexers->open(wex::lexers::get()->path());
 
   m_grid->CreateGrid(0, 0);
   m_grid->AppendCols(2);
@@ -573,13 +581,16 @@ void frame::update(app* a)
         .CloseButton(false)}});
 
   m_stc = new wex::stc(
-    std::string(),
+    !a->get_files().empty() ? a->get_files().front() : wex::path(),
     wex::data::stc(a->data()).window(wex::data::window().parent(m_notebook)));
   m_notebook->add_page(
     wex::data::notebook().page(m_stc).key("wex::stc").select());
   m_notebook->add_page(wex::data::notebook()
                          .page(m_stc_lexers)
                          .key(wex::lexers::get()->path().filename()));
+
+  m_stc_lexers->open(wex::lexers::get()->path());
+
   m_notebook->add_page(
     wex::data::notebook().page(m_listview).key("wex::listview"));
   m_notebook->add_page(wex::data::notebook().page(m_grid).key("wex::grid"));
