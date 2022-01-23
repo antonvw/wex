@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-to_container.cpp
+// Name:      test-tocontainer.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/tostring.h>
@@ -32,6 +32,7 @@ TEST_CASE("wex::to_container")
   REQUIRE(!wex::to_vector_string(dir).get().empty());
 #endif
   REQUIRE(wex::to_vector_string(a).get().size() == 4);
+  REQUIRE(wex::to_vector_path(a).get().size() == 4);
   REQUIRE(wex::to_vector_string("test test test").get().size() == 3);
   REQUIRE(wex::to_vector_string("test\\ test test").get().size() == 2);
 

@@ -1,6 +1,10 @@
 # roadmap
 
 ## backlog
+- use std::contains for maps
+- v -> deselect '<.'> and improve
+- add more rfw tests
+- add forward, backward functionality to sample
 - linux print setup asserts
 - use boost python for scripting
 - current stc uses old scintilla

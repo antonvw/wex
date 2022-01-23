@@ -2,7 +2,7 @@
 // Name:      test.h
 // Purpose:   Declaration of classes for unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -60,8 +60,7 @@ private:
 /// }
 int main(int argc, char* argv[], app* app);
 
-}; // namespace test
-}; // namespace wex
-
 /// Returns abbreviations.
 std::vector<std::pair<std::string, std::string>> get_abbreviations();
+}; // namespace test
+}; // namespace wex

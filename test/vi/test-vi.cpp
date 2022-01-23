@@ -2,7 +2,7 @@
 // Name:      test-vi.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -401,6 +401,8 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->command(" "));
   }
 
+  // on_char(), on_key_down() : see stc/test-vi.cpp
+
   SUBCASE("playback")
   {
     REQUIRE(vi->command("qa"));
@@ -515,6 +517,7 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->command("Q"));
     REQUIRE(vi->command("\x17"));
     vi->append_insert_command("xyz");
+    vi->append_insert_text("hello world");
   }
 
   SUBCASE("variable")
@@ -573,7 +576,7 @@ TEST_CASE("wex::vi")
   SUBCASE("others")
   {
     // Test abbreviate.
-    for (auto& abbrev : get_abbreviations())
+    for (auto& abbrev : wex::test::get_abbreviations())
     {
       REQUIRE(vi->command(":ab " + abbrev.first + " " + abbrev.second));
       REQUIRE(vi->command("iabbreviation " + abbrev.first + " "));

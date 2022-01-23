@@ -67,13 +67,18 @@ TEST_CASE("wex::ex")
     {
       CAPTURE(command);
       REQUIRE(ex->command(command));
+      REQUIRE(ex->get_command().command().empty());
     }
   }
+
+  SUBCASE("ctags") { REQUIRE(ex->ctags() != nullptr); }
 
   SUBCASE("general")
   {
     REQUIRE(ex->frame() == frame());
     REQUIRE(!ex->get_macros().mode().is_recording());
+    REQUIRE(ex->ex_stream() != nullptr);
+    ex->info_message("hello world", wex::info_message_t::ADD);
   }
 
   SUBCASE("global")

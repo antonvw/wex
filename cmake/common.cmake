@@ -108,6 +108,12 @@ function(wex_install)
     endif ()
   endif ()
   
+  # install wex-keywords.resource
+  if (wexBUILD_SAMPLES AND wexBUILD_TESTS)
+    install(FILES ${CMAKE_SOURCE_DIR}/test/app/wex-keywords.resource
+      DESTINATION "lib")
+  endif ()
+
   install(FILES ${wex_LIBS} 
     DESTINATION "lib")
 endfunction()

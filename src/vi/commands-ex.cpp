@@ -302,7 +302,7 @@ wex::ex::commands_t wex::ex::commands_ex()
          output += it;
        }
        output += l.make_section("Filename buffer");
-       output += l.make_key("%", get_command().get_stc()->path().filename());
+       output += l.make_key("%", m_command.get_stc()->path().filename());
        show_dialog("Registers", output, l.scintilla_lexer());
        return true;
      }},

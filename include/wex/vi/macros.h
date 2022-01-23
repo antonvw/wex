@@ -2,7 +2,7 @@
 // Name:      macros.h
 // Purpose:   Declaration of class wex::macros
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2021 Anton van Wezenbeek
+// Copyright: (c) 2019-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -136,7 +136,8 @@ public:
   bool save_document(bool only_if_modified = true);
 
   /// Saves macro (and calls save_document).
-  void save_macro(const std::string& macro);
+  /// Returns false if macro does not exist.
+  bool save_macro(const std::string& macro);
 
   /// Sets abbreviation (overwrites existing abbreviation).
   void set_abbreviation(const std::string& name, const std::string& value);

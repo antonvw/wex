@@ -2,7 +2,7 @@
 // Name:      main.cpp
 // Purpose:   main for wex del unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "test.h"
@@ -50,17 +50,17 @@ public:
 
     m_frame = new test::frame();
     m_frame->more_coverage();
-    m_frame->Show();
 
     SetTopWindow(m_frame);
 
     m_stc = new wex::stc();
+    m_frame->Show();
 
     return true;
   }
 
-  static auto* stc() { return m_stc; }
   static auto* frame() { return m_frame; }
+  static auto* stc() { return m_stc; }
 
 private:
   inline static wex::stc*    m_stc   = nullptr;

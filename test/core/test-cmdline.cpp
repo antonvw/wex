@@ -2,7 +2,7 @@
 // Name:      test-cmdline.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/cmdline.h>
@@ -168,13 +168,15 @@ TEST_CASE("wex::cmdline")
     REQUIRE(wex::cmdline::get_scriptout().empty());
     REQUIRE(!wex::cmdline::is_echo());
     REQUIRE(!wex::cmdline::is_output());
+    REQUIRE(!wex::cmdline::use_events());
 
-    wex::data::cmdline data2("-a 10 -e -s -w www -x -X xxx");
+    wex::data::cmdline data2("-a 10 -e -s -w www -x -X xxx -q 100");
     REQUIRE(cmdl.parse(data2));
 
     REQUIRE(wex::cmdline::get_output() == "xxx");
     REQUIRE(wex::cmdline::get_scriptout() == "www");
     REQUIRE(wex::cmdline::is_echo());
     REQUIRE(wex::cmdline::is_output());
+    REQUIRE(wex::cmdline::use_events());
   }
 }

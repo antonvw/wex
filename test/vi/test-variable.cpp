@@ -134,10 +134,13 @@ TEST_CASE("wex::variable")
       REQUIRE(var.get_name() == std::get<0>(it));
       REQUIRE(var.get_value().empty());
       REQUIRE(var.is_builtin());
+      REQUIRE(!var.is_input());
 
       std::string content;
       REQUIRE(var.expand(content, ex));
       REQUIRE(content == std::get<3>(it));
     }
   }
+
+  SUBCASE("static") { wex::variable::set_argument("hello world"); }
 }
