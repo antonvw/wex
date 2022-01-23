@@ -3,7 +3,7 @@ Documentation	Testcases for wex vi
 Test Setup	Test Setup
 Suite Setup	Suite Setup
 Suite Teardown	Suite Teardown
-Resource	keywords.resource
+Resource	wex-keywords.resource
 
 
 *** Test Cases ***
