@@ -1,11 +1,14 @@
 # roadmap
+- fix handling wex-template-test.txt
+- ./vnc-env.sh does not show link
+- add forward, backward functionality to sample
+  - and fix undo in sample
+- ex escape use stdout to procees instead of tmp file, and fix undo
+- config for lcov, min percentage
+- linux print setup asserts
+- robot not found
 
 ## backlog
-- use std::contains for maps
-- v -> deselect '<.'> and improve
-- add more rfw tests
-- add forward, backward functionality to sample
-- linux print setup asserts
 - use boost python for scripting
 - current stc uses old scintilla
   - does not support json bool, see config.cpp

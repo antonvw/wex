@@ -148,11 +148,25 @@ mode-visual
 	...	v
 	...	35j
 	...	d
+	Input	:1
+	...	v
+	...	G
+	...	y
 	Appl
 	Output Contains	10
 	Output Contains	35
 	Output Contains	fewer
 	Output Does Not Contain	9
+
+mode-visual-yank-range
+	Input Many	:a|line has text	50
+	Input	:1
+	...	v
+	...	G
+	...	y
+	Appl
+	Output Contains	50
+	Output Contains	yanked
 
 navigate
 	Input Many	:a|line has text	50
@@ -161,6 +175,13 @@ navigate
 	...	:.=
 	Appl
 	Output Contains	8
+
+undo
+	Input Many	:a|line	10
+	Input	:1
+	...	u
+	Appl
+	Contents Does Not Contain	line
 
 yank
 	Input Many	:a|line	100
