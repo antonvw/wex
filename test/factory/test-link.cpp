@@ -81,6 +81,7 @@ TEST_CASE("wex::factory::link")
     const std::string test("/test/data/test.h");
     link(lnk, "test.h", test);
     link(lnk, "  test.h", test);
+    link(lnk, "xxx ./test.h yyy", "./test.h");
 
     const std::string special("/test/data/test-special.h");
     link(lnk, "test-special.h", special);

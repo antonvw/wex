@@ -315,7 +315,14 @@ wex::vi::commands_t wex::vi::commands_motion()
        }
        else if (get_stc()->is_visual())
        {
-         frame()->show_ex_command(get_stc(), command);
+         if (!get_stc()->get_selected_text().empty())
+         {
+           frame()->show_ex_command(get_stc(), ":'<,'>" + command);
+         }
+         else
+         {
+           frame()->show_ex_command(get_stc(), command);
+         }
          return (size_t)1;
        }
        else

@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation	Testcases for appl ex
+Documentation	Testcases for wex ex
 Test Setup	Test Setup
 Suite Setup	Suite Setup
 Suite Teardown	Suite Teardown

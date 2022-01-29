@@ -2,7 +2,7 @@
 // Name:      test-ex-command.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/ex-command.h>
@@ -15,9 +15,14 @@ class c_stc : public wex::factory::stc
 public:
   c_stc() { Create(wxTheApp->GetTopWindow(), -1); }
 
+  bool is_visual() const override { return m_visual; }
+  void visual(bool on) override { m_visual = on; }
+
 private:
   const wex::path& path() const override { return m_path; };
   wex::path        m_path;
+
+  bool m_visual{true};
 };
 
 // See also stc::test-command
@@ -169,20 +174,38 @@ TEST_CASE("wex::ex_command")
     REQUIRE(command.type() == wex::ex_command::type_t::COMMAND);
     REQUIRE(command.str() == ":");
 
+    stc->visual(false);
+    command.set(":100");
+    REQUIRE(command.type() == wex::ex_command::type_t::COMMAND_EX);
+    REQUIRE(command.str() == ":");
+    stc->visual(true);
+
     command.set(std::string(1, WXK_CONTROL_R) + "=");
     REQUIRE(command.type() == wex::ex_command::type_t::CALC);
+    REQUIRE(command.str() == std::string(1, WXK_CONTROL_R) + "=");
 
     command.set("!");
     REQUIRE(command.type() == wex::ex_command::type_t::ESCAPE);
+    REQUIRE(command.str() == "!");
 
-    command.set("/");
+    command.set("/xxx");
     REQUIRE(command.type() == wex::ex_command::type_t::FIND);
+    REQUIRE(command.str() == "/");
 
-    command.set("?");
+    command.set("?yyy");
     REQUIRE(command.type() == wex::ex_command::type_t::FIND);
+    REQUIRE(command.str() == "?");
 
     command.set("w");
     REQUIRE(command.type() == wex::ex_command::type_t::VI);
     REQUIRE(command.str() == "w");
+
+    command.set(":'<,'>y");
+    REQUIRE(command.type() == wex::ex_command::type_t::COMMAND_RANGE);
+    REQUIRE(command.str() == ":'<,'>");
+
+    command.set(":'<,'>!pwd");
+    REQUIRE(command.type() == wex::ex_command::type_t::ESCAPE_RANGE);
+    REQUIRE(command.str() == ":'<,'>!");
   }
 }

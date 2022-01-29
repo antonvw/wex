@@ -2,7 +2,7 @@
 // Name:      textctrl-imp.h
 // Purpose:   Declaration of wex::textctrl_imp class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -53,6 +53,7 @@ public:
 
 private:
   void bind();
+  void bind_timer();
   void cut();
   bool handle_type(const std::string& command, const std::string& range);
   bool input_mode_finish() const;
@@ -65,6 +66,7 @@ private:
   void on_text_enter(wxCommandEvent& event);
   bool on_text_enter_prep(wxCommandEvent& event);
   void on_text_paste(wxCommandEvent& event);
+  void set_prefix();
 
   textctrl_input* tci();
 

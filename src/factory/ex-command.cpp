@@ -2,7 +2,7 @@
 // Name:      ex/command.cpp
 // Purpose:   Implementation of class wex::ex_command
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/ex-command.h>
@@ -218,6 +218,14 @@ std::string wex::ex_command::str() const
       case type_t::CALC:
         return m_text.substr(0, 2);
 
+      // :'<,'>
+      case type_t::COMMAND_RANGE:
+        return m_text.substr(0, 6);
+
+      // :'<,'>!
+      case type_t::ESCAPE_RANGE:
+        return m_text.substr(0, 7);
+
       default:
         return m_text.substr(0, 1);
     }
@@ -238,8 +246,22 @@ wex::ex_command::type_t wex::ex_command::type() const
                                                        type_t::NONE;
 
       case ':':
-        return m_stc != nullptr && !m_stc->is_visual() ? type_t::COMMAND_EX :
-                                                         type_t::COMMAND;
+        if (m_stc != nullptr && !m_stc->is_visual())
+        {
+          return type_t::COMMAND_EX;
+        }
+        else if (m_text.starts_with(":'<,'>!"))
+        {
+          return type_t::ESCAPE_RANGE;
+        }
+        else if (m_text.starts_with(":'<,'>"))
+        {
+          return type_t::COMMAND_RANGE;
+        }
+        else
+        {
+          return type_t::COMMAND;
+        }
 
       case '!':
         return type_t::ESCAPE;

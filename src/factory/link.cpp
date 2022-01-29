@@ -137,23 +137,32 @@ const wex::path wex::factory::link::find_filename(
     return path();
   }
 
-  std::string link(text);
+  std::string text_filter(text);
+
   // The harddrive letter is filtered, it does not work
   // when adding it to match.
   std::string prefix;
 
 #ifdef __WXMSW__
-  if (link.size() > 1 && isalpha(link[0]) && link[1] == ':')
+  if (
+    text_filter.size() > 1 && isalpha(text_filter[0]) && text_filter[1] == ':')
   {
-    prefix = link.substr(0, 1);
-    link   = link.substr(2);
+    prefix      = text_filter.substr(0, 1);
+    text_filter = text_filter.substr(2);
   }
 #endif
 
   // file[:line[:column]]
-  if (regex v("^([\\0-9A-Za-z _/.-]+):([0-9]*):?([0-9]*)"); v.search(link) > 0)
+  // the first is to match file names without spaces,
+  // to match xx ./vnc.env.sh yy
+  const regex::regex_v_t t(
+    {"(\\.[\\0-9A-Za-z_/.-]+) .*",
+     "^([\\0-9A-Za-z _/.-]+):([0-9]*):?([0-9]*)"});
+
+  if (regex v(t); v.search(text_filter) > 0)
   {
-    link = v[0];
+    const auto& link(v.which_no() == 0 ? find_before(v[0], " ") : v[0]);
+
     data.reset();
 
     if (v.size() > 1 && !v[1].empty())

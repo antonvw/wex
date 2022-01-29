@@ -11,7 +11,6 @@
 #include <wex/core/core.h>
 #include <wex/core/file.h>
 #include <wex/core/log.h>
-#include <wex/core/regex.h>
 #include <wex/core/temp-filename.h>
 #include <wex/factory/process.h>
 #include <wex/factory/sort.h>

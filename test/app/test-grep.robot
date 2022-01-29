@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation	Testcases for appl grep
+Documentation	Testcases for wex grep
 Test Setup	Test Setup
 Suite Setup	Suite Setup
 Suite Teardown	Suite Teardown

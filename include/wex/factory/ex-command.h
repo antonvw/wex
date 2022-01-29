@@ -2,7 +2,7 @@
 // Name:      ex-command.h
 // Purpose:   Declaration of class wex::ex_command
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -26,11 +26,13 @@ public:
   enum class type_t
   {
     // these types are indexed in textctrl_imp
-    COMMAND,     ///< a normal (ex) command (:)
-    CALC,        ///< a calculation command (control-r =)
-    COMMAND_EX,  ///< a normal (ex) command, entered in explicit ex mode (:)
-    ESCAPE,      ///< an escape command (!)
-    FIND_MARGIN, ///< a find command (/ or ?) entered on text margin
+    COMMAND,       ///< a normal (ex) command (:)
+    COMMAND_RANGE, ///< a normal (ex) command on a range (:'<,'>)
+    CALC,          ///< a calculation command (control-r =)
+    COMMAND_EX,    ///< a normal (ex) command, entered in explicit ex mode (:)
+    ESCAPE,        ///< an escape command (!)
+    ESCAPE_RANGE,  ///< an escape command on a range (:'<,'>!)
+    FIND_MARGIN,   ///< a find command (/ or ?) entered on text margin
 
     // the rest
     NONE,    ///< an empty command

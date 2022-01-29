@@ -2,7 +2,7 @@
 // Name:      textctrl-imp.cpp
 // Purpose:   Implementation of wex::textctrl_imp class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/util.h>
@@ -40,12 +40,45 @@ wex::textctrl_imp::textctrl_imp(
       new textctrl_input(ex_command::type_t::COMMAND, "ex-cmd.command"),
       new textctrl_input(ex_command::type_t::CALC, "ex-cmd.calc"),
       new textctrl_input(ex_command::type_t::COMMAND_EX, "ex-cmd.command-ex"),
+      new textctrl_input(
+        ex_command::type_t::COMMAND_RANGE,
+        "ex-cmd.command-ex-range"),
       new textctrl_input(ex_command::type_t::ESCAPE, "ex-cmd.escape"),
+      new textctrl_input(
+        ex_command::type_t::ESCAPE_RANGE,
+        "ex-cmd.escape-range"),
       new textctrl_input(ex_command::type_t::FIND_MARGIN, "ex-cmd.margin")}
 {
   SetFont(config(_("stc.Text font"))
             .get(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
 
+  bind();
+  bind_timer();
+}
+
+wex::textctrl_imp::textctrl_imp(
+  textctrl*           tc,
+  const std::string&  value,
+  const data::window& data)
+  : wxTextCtrl(
+      data.parent(),
+      data.id(),
+      value,
+      data.pos(),
+      data.size(),
+      data.style() | wxTE_PROCESS_ENTER)
+  , m_id_register(0)
+  , m_tc(tc)
+  , m_timer(this)
+{
+  m_command.no_type();
+  m_command.set(value);
+
+  bind_timer();
+}
+
+void wex::textctrl_imp::bind()
+{
   Bind(
     wxEVT_CHAR,
     [=, this](wxKeyEvent& event)
@@ -107,32 +140,9 @@ wex::textctrl_imp::textctrl_imp(
     {
       on_text_paste(event);
     });
-
-  bind();
 }
 
-wex::textctrl_imp::textctrl_imp(
-  textctrl*           tc,
-  const std::string&  value,
-  const data::window& data)
-  : wxTextCtrl(
-      data.parent(),
-      data.id(),
-      value,
-      data.pos(),
-      data.size(),
-      data.style() | wxTE_PROCESS_ENTER)
-  , m_id_register(0)
-  , m_tc(tc)
-  , m_timer(this)
-{
-  m_command.no_type();
-  m_command.set(value);
-
-  bind();
-}
-
-void wex::textctrl_imp::bind()
+void wex::textctrl_imp::bind_timer()
 {
   Bind(
     wxEVT_TIMER,
@@ -199,14 +209,11 @@ bool wex::textctrl_imp::handle(const std::string& command)
   m_mode_visual = !range.empty();
   m_control_r   = false;
 
+  set_prefix();
+
   m_tc->get_frame()->pane_set(
     "VIBAR",
     wxAuiPaneInfo().BestSize(-1, GetFont().GetPixelSize().GetHeight() + 10));
-
-  if (m_prefix != nullptr && !m_command.str().empty())
-  {
-    m_prefix->SetLabel(std::string(1, m_command.str().back()));
-  }
 
   if (!handle_type(command, range))
   {
@@ -244,7 +251,9 @@ bool wex::textctrl_imp::handle_type(
   switch (m_command.type())
   {
     case ex_command::type_t::CALC:
+    case ex_command::type_t::COMMAND_RANGE:
     case ex_command::type_t::ESCAPE:
+    case ex_command::type_t::ESCAPE_RANGE:
     case ex_command::type_t::FIND_MARGIN:
       set_text(tci()->get());
       SelectAll();
@@ -675,6 +684,23 @@ void wex::textctrl_imp::SelectAll()
   {
     wxTextCtrl::SelectAll();
     m_all_selected = true;
+  }
+}
+
+void wex::textctrl_imp::set_prefix()
+{
+  if (m_prefix != nullptr && !m_command.str().empty())
+  {
+    if (
+      m_command.type() == ex_command::type_t::COMMAND_RANGE ||
+      m_command.type() == ex_command::type_t::ESCAPE_RANGE)
+    {
+      m_prefix->SetLabelText(m_command.str());
+    }
+    else
+    {
+      m_prefix->SetLabelText(std::string(1, m_command.str().back()));
+    }
   }
 }
 
