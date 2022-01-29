@@ -1,6 +1,5 @@
 # roadmap
 - fix handling wex-template-test.txt
-- ./vnc-env.sh does not show link
 - add forward, backward functionality to sample
   - and fix undo in sample
 - ex escape use stdout to procees instead of tmp file, and fix undo

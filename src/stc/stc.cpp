@@ -489,6 +489,26 @@ bool wex::stc::link_open(link_t mode, std::string* filename)
 
   const std::string text = (!sel.empty() ? sel : GetCurLine().ToStdString());
 
+  if (mode[LINK_OPEN])
+  {
+    data::control data;
+
+    if (const wex::path path(m_link->get_path(text, data, this));
+        !path.string().empty())
+    {
+      if (filename != nullptr)
+      {
+        *filename = path.filename();
+      }
+      else if (!mode[LINK_CHECK])
+      {
+        m_frame->open_file(path, data);
+      }
+
+      return true;
+    }
+  }
+
   if (mode[LINK_OPEN_MIME])
   {
     if (const wex::path path(m_link->get_path(
@@ -513,30 +533,6 @@ bool wex::stc::link_open(link_t mode, std::string* filename)
       if (!mode[LINK_CHECK])
       {
         return mime.open_mime();
-      }
-
-      return true;
-    }
-  }
-
-  if (mode[LINK_OPEN])
-  {
-    data::control data;
-
-    if (const wex::path path(m_link->get_path(text, data, this));
-        !path.string().empty())
-    {
-      if (filename != nullptr)
-      {
-        *filename = path.filename();
-      }
-      else if (!mode[LINK_CHECK])
-      {
-        m_frame->open_file(path, data);
-      }
-      else if (!mode[LINK_CHECK])
-      {
-        open(path, data);
       }
 
       return true;
