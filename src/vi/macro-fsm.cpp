@@ -2,7 +2,7 @@
 // Name:      macro-fsm.cpp
 // Purpose:   Implementation of class wex::macro_fsm
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/mpl/list.hpp>
@@ -314,7 +314,8 @@ std::string wex::macro_fsm::read_variable(
     {
       if (value.empty())
       {
-        log(variable) << "is empty";
+        log::trace(variable) << "is empty";
+        value = "?";
       }
 
       return value;

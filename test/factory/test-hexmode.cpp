@@ -2,27 +2,16 @@
 // Name:      test-hexmode.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/hexmode.h>
-#include <wex/factory/stc.h>
 
-#include "../test.h"
-
-class c_stc : public wex::factory::stc
-{
-public:
-  c_stc() { Create(wxTheApp->GetTopWindow(), -1); }
-
-private:
-  const wex::path& path() const override { return m_path; };
-  wex::path        m_path;
-};
+#include "test.h"
 
 TEST_CASE("wex::factory::hexmode")
 {
-  auto* stc = new c_stc();
+  auto* stc = new wex::test::stc();
 
   SUBCASE("constructor")
   {

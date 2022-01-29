@@ -1,6 +1,7 @@
 *** Settings ***
 Documentation	Testcases for wex vi
 Test Setup	Test Setup
+Library	DateTime
 Suite Setup	Suite Setup
 Suite Teardown	Suite Teardown
 Resource	wex-keywords.resource
@@ -68,6 +69,7 @@ info
 	Output Contains	level
 
 macro
+	${date}=  Get Current Date	result_format=%Y-%m-%d
 	Input	@Template-test@
 	Appl
 	Contents Does Not Contain	@Created@
@@ -76,6 +78,8 @@ macro
 	Contents Does Not Contain	@Datetime@
 	Contents Does Not Contain	@Process@
 	Contents Does Not Contain	@Year@
+	Contents Contains	date:${SPACE*5}${date}
+	Contents Contains	fullname:${SPACE}${file-startup}
 
 macro-record
 	Input	:a|10 1123
