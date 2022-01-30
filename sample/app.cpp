@@ -2,10 +2,9 @@
 // Name:      app.cpp
 // Purpose:   Implementation of wex sample classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2011-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/aboutdlg.h>
 #include <wx/generic/numdlgg.h>
 
 #ifndef __WXMSW__
@@ -19,16 +18,6 @@
 // Uncomment this to add initial data to some controls.
 //#define ADD_INITIAL ON
 
-#define PRINT_COMPONENT(ID)                                                \
-  wxEVT_UPDATE_UI,                                                         \
-    [=, this](wxUpdateUIEvent& event)                                      \
-  {                                                                        \
-    event.Enable(                                                          \
-      (get_listview() != nullptr && get_listview()->GetItemCount() > 0) || \
-      (get_stc() != nullptr && get_stc()->GetLength() > 0));               \
-  },                                                                       \
-    ID
-
 enum
 {
   ID_DLG_CONFIG_ITEM = wex::del::ID_HIGHEST + 1,
@@ -36,7 +25,6 @@ enum
   ID_DLG_CONFIG_ITEM_READONLY,
   ID_DLG_ITEM,
   ID_DLG_LISTVIEW,
-  ID_DLG_STC_CONFIG,
   ID_DLG_STC_ENTRY,
   ID_DLG_VCS,
   ID_RECENTFILE_MENU,
@@ -146,7 +134,7 @@ frame::frame()
          {},
          {ID_DLG_LISTVIEW, wex::ellipsed("List Dialog")},
          {},
-         {ID_DLG_STC_CONFIG, wex::ellipsed("STC Dialog")},
+         {wxID_PREFERENCES},
          {ID_DLG_STC_ENTRY, wex::ellipsed("STC Entry Dialog")},
          {},
          {ID_DLG_VCS, wex::ellipsed("VCS Dialog")}}),
@@ -174,7 +162,11 @@ frame::frame()
   get_toolbar()->add_standard();
   get_options_toolbar()->add_checkboxes_standard();
 
-  setup_statusbar({{"PaneFileType", 50}, {"PaneInfo", 100}, {"PaneLexer", 60}});
+  setup_statusbar(
+    {{"PaneFileType", 50},
+     {"PaneInfo", 100},
+     {"PaneLexer", 60},
+     {"PaneMacro", 50}});
 }
 
 wex::del::listview*
@@ -339,9 +331,10 @@ void frame::bind_all()
       ID_DLG_LISTVIEW},
      {[=, this](wxCommandEvent& event)
       {
-        wex::stc::config_dialog(wex::data::window().button(wxAPPLY | wxCANCEL));
+        wex::stc::config_dialog(
+          wex::data::window().id(wxID_PREFERENCES).button(wxAPPLY | wxCANCEL));
       },
-      ID_DLG_STC_CONFIG},
+      wxID_PREFERENCES},
      {[=, this](wxCommandEvent& event)
       {
         std::string text;
@@ -416,10 +409,6 @@ void frame::bind_all()
         m_process->async_system();
       },
       wxID_EXECUTE}});
-
-  Bind(PRINT_COMPONENT(wxID_PRINT));
-
-  Bind(PRINT_COMPONENT(wxID_PREVIEW));
 }
 
 wex::listview* frame::get_listview()
@@ -563,6 +552,46 @@ wex::stc* frame::open_file(const wex::path& file, const wex::data::stc& data)
   return m_stc;
 }
 
+void frame::open_file_same_page(wxCommandEvent& event)
+{
+  if (file_history().size() > 1)
+  {
+    if (event.GetId() == wxID_FORWARD)
+    {
+      if (m_browse_index < file_history().size() - 1)
+      {
+        m_browse_index++;
+      }
+      else if (m_browse_index > file_history().size() - 1)
+      {
+        m_browse_index = file_history().size() - 1;
+        return;
+      }
+      else
+      {
+        return;
+      }
+    }
+    else
+    {
+      if (m_browse_index > 0)
+      {
+        m_browse_index--;
+      }
+      else
+      {
+        return;
+      }
+    }
+
+    const auto& p(file_history()[m_browse_index]);
+
+    m_stc->open(p, wex::data::stc().recent(false));
+    m_stc->get_lexer().set(wex::path_lexer(p).lexer().display_lexer(), true);
+    m_stc->properties_message();
+  }
+}
+
 void frame::update(app* a)
 {
   pane_add(
@@ -583,6 +612,7 @@ void frame::update(app* a)
   m_stc = new wex::stc(
     !a->get_files().empty() ? a->get_files().front() : wex::path(),
     wex::data::stc(a->data()).window(wex::data::window().parent(m_notebook)));
+
   m_notebook->add_page(
     wex::data::notebook().page(m_stc).key("wex::stc").select());
   m_notebook->add_page(wex::data::notebook()
