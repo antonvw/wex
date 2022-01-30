@@ -1,11 +1,7 @@
 # roadmap
-- fix handling wex-template-test.txt
-- add forward, backward functionality to sample
-  - and fix undo in sample
 - ex escape use stdout to procees instead of tmp file, and fix undo
 - config for lcov, min percentage
 - linux print setup asserts
-- robot not found
 
 ## backlog
 - use boost python for scripting

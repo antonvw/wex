@@ -2,7 +2,7 @@
 // Name:      main.cpp
 // Purpose:   main for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/stc/process.h>
@@ -13,7 +13,7 @@ namespace wex
 {
 namespace test
 {
-class stc : public app
+class stc_app : public app
 {
 public:
   /// Static methods
@@ -31,14 +31,14 @@ private:
 }; // namespace test
 }; // namespace wex
 
-IMPLEMENT_APP_NO_MAIN(wex::test::stc);
+IMPLEMENT_APP_NO_MAIN(wex::test::stc_app);
 
 int main(int argc, char* argv[])
 {
-  return wex::test::main(argc, argv, new wex::test::stc());
+  return wex::test::main(argc, argv, new wex::test::stc_app());
 }
 
-bool wex::test::stc::OnInit()
+bool wex::test::stc_app::OnInit()
 {
   if (!test::app::OnInit())
   {
@@ -60,10 +60,10 @@ bool wex::test::stc::OnInit()
 
 wex::frame* frame()
 {
-  return wex::test::stc::frame();
+  return wex::test::stc_app::frame();
 }
 
 wex::stc* get_stc()
 {
-  return wex::test::stc::get_stc();
+  return wex::test::stc_app::get_stc();
 }

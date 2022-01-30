@@ -2,7 +2,7 @@
 // Name:      stc/config.cpp
 // Purpose:   Implementation of config related methods of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -118,6 +118,10 @@ void wex::stc::config_get()
     {
       get_vi().use(ex::OFF);
     }
+  }
+  else if (!m_data.flags().test(data::stc::WIN_EX))
+  {
+    get_vi().use(ex::VISUAL);
   }
 
   show_line_numbers(iv.find<bool>(_("stc.Line numbers")));

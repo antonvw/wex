@@ -6,30 +6,14 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/ex-command.h>
-#include <wex/factory/stc.h>
 
-#include "../test.h"
-
-class c_stc : public wex::factory::stc
-{
-public:
-  c_stc() { Create(wxTheApp->GetTopWindow(), -1); }
-
-  bool is_visual() const override { return m_visual; }
-  void visual(bool on) override { m_visual = on; }
-
-private:
-  const wex::path& path() const override { return m_path; };
-  wex::path        m_path;
-
-  bool m_visual{true};
-};
+#include "test.h"
 
 // See also stc::test-command
 
 TEST_CASE("wex::ex_command")
 {
-  auto* stc = new c_stc();
+  auto* stc = new wex::test::stc();
   stc->set_text("more text\notherline\nother line");
 
   SUBCASE("constructor")
