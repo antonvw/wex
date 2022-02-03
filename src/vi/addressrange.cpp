@@ -277,8 +277,8 @@ bool wex::addressrange::escape(const std::string& command)
     return false;
   }
   else if (factory::process process;
-           process.system(
-             wex::process_data(command).stdin(m_stc->get_selected_text())) == 0)
+           process.system(wex::process_data(command).std_in(
+             m_stc->get_selected_text())) == 0)
   {
     if (!process.get_stdout().empty())
     {

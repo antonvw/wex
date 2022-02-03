@@ -34,10 +34,10 @@ public:
   process_data& start_dir(const std::string& rhs);
 
   /// Returns stdin.
-  const auto& stdin() const { return m_stdin; }
+  const auto& std_in() const { return m_stdin; }
 
   /// Sets stdin.
-  process_data& stdin(const std::string& rhs);
+  process_data& std_in(const std::string& rhs);
 
 private:
   std::string m_exe, m_start_dir, m_stdin;

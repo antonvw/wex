@@ -16,8 +16,8 @@ TEST_CASE("wex::factory::process_data")
     wex::process_data data;
 
     REQUIRE(data.exe().empty());
-    REQUIRE(data.stdin().empty());
     REQUIRE(data.start_dir().empty());
+    REQUIRE(data.std_in().empty());
   }
 
   SUBCASE("constructor")
@@ -25,8 +25,8 @@ TEST_CASE("wex::factory::process_data")
     wex::process_data data("xx");
 
     REQUIRE(data.exe() == "xx");
-    REQUIRE(data.stdin().empty());
     REQUIRE(data.start_dir().empty());
+    REQUIRE(data.std_in().empty());
   }
 
   SUBCASE("log")
@@ -40,10 +40,10 @@ TEST_CASE("wex::factory::process_data")
   {
     wex::process_data data("xx");
 
-    data.exe("yy").stdin("zz").start_dir("ww");
+    data.exe("yy").std_in("zz").start_dir("ww");
 
     REQUIRE(data.exe() == "yy");
-    REQUIRE(data.stdin() == "zz");
     REQUIRE(data.start_dir() == "ww");
+    REQUIRE(data.std_in() == "zz");
   }
 }

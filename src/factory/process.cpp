@@ -82,11 +82,11 @@ int wex::factory::process::system(const process_data& data)
     std::future<std::string> of, ef;
 
     FILE* in = stdin;
-    
-    if (!data.stdin().empty())
+
+    if (!data.std_in().empty())
     {
       temp_filename tmp(true);
-      wex::file(path(tmp.name()), std::ios::out).write(data.stdin());
+      wex::file(path(tmp.name()), std::ios::out).write(data.std_in());
       in = fopen(tmp.name().c_str(), "r");
     }
 
@@ -98,7 +98,7 @@ int wex::factory::process::system(const process_data& data)
       bp::std_out > of,
       bp::std_err > ef);
     // clang-format on
-  
+
     fclose(in);
 
     if (of.valid())

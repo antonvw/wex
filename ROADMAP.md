@@ -1,6 +1,7 @@
 # roadmap
 - add bp::search_path to git from commandline
 - fix test-vi escape
+- see also dup2 error in test-del
 
 - config for lcov, min percentage
 - linux print setup asserts

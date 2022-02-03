@@ -33,7 +33,7 @@ wex::process_data& wex::process_data::start_dir(const std::string& rhs)
   return *this;
 }
 
-wex::process_data& wex::process_data::stdin(const std::string& rhs)
+wex::process_data& wex::process_data::std_in(const std::string& rhs)
 {
   m_stdin = rhs;
   return *this;

@@ -70,7 +70,7 @@ TEST_CASE("wex::factory::process")
 #ifdef __UNIX__
     SUBCASE("stdin")
     {
-      REQUIRE(process.system(wex::process_data("wc -c").stdin("xxxxxx")) == 0);
+      REQUIRE(process.system(wex::process_data("wc -c").std_in("xxxxxx")) == 0);
       CAPTURE(process.get_stdout());
       REQUIRE(process.get_stdout().find("6") != std::string::npos);
     }
