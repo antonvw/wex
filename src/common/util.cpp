@@ -184,10 +184,11 @@ bool wex::make(const path& makefile)
 {
   auto* process = new wex::factory::process;
 
-  return process->async_system(
-    config("Make").get("make") + " " + config("MakeSwitch").get("-f") + " " +
-      makefile.string(),
-    makefile.parent_path());
+  return process->async_system(process_data(
+                                 config("Make").get("make") + " " +
+                                 config("MakeSwitch").get("-f") + " " +
+                                 makefile.string())
+                                 .start_dir(makefile.parent_path()));
 }
 
 int wex::open_files(

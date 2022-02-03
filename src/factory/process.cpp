@@ -2,10 +2,12 @@
 // Name:      process.cpp
 // Purpose:   Implementation of class wex::factory::process
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/file.h>
 #include <wex/core/log.h>
+#include <wex/core/temp-filename.h>
 #include <wex/factory/process.h>
 
 #include "process-imp.h"
@@ -25,25 +27,22 @@ void wex::factory::process::async_sleep_for(const std::chrono::milliseconds& ms)
   m_imp->async_sleep_for(ms);
 }
 
-bool wex::factory::process::async_system(
-  const std::string& exe,
-  const std::string& start_dir)
+bool wex::factory::process::async_system(const process_data& data)
 {
-  if (m_eh_out == nullptr)
-  {
-    return false;
-  }
-
   try
   {
-    m_imp->async_system(exe, start_dir, this);
-    return true;
+    if (m_eh_out != nullptr)
+    {
+      m_imp->async_system(this, data); // this is a void
+      return true;
+    }
   }
   catch (std::exception& e)
   {
-    log(e) << exe << "start_dir:" << start_dir;
-    return false;
+    log(e) << data.log();
   }
+
+  return false;
 }
 
 const std::string wex::factory::process::get_exe() const
@@ -76,54 +75,67 @@ bool wex::factory::process::stop()
   return m_imp->stop();
 }
 
-int wex::factory::process::system(
-  const std::string& exe,
-  const std::string& start_dir)
+int wex::factory::process::system(const process_data& data)
 {
-  const std::string log_dir(
-    !start_dir.empty() ? "start_dir: " + start_dir : std::string());
-
   try
   {
     std::future<std::string> of, ef;
 
+    FILE* in = stdin;
+    
+    if (!data.stdin().empty())
+    {
+      temp_filename tmp(true);
+      wex::file(path(tmp.name()), std::ios::out).write(data.stdin());
+      in = fopen(tmp.name().c_str(), "r");
+    }
+
+    // clang-format off
     const int ec = bp::system(
-      bp::start_dir = start_dir,
-      exe,
-      bp::std_in<stdin, bp::std_out> of,
+      bp::start_dir = data.start_dir(),
+      data.exe(),
+      bp::std_in < in,
+      bp::std_out > of,
       bp::std_err > ef);
+    // clang-format on
+  
+    fclose(in);
 
     if (of.valid())
+    {
       m_stdout = of.get();
+    }
+
     if (ef.valid())
+    {
       m_stderr = ef.get();
+    }
 
     if (!ec)
     {
-      log::debug("system") << exe << log_dir;
+      log::debug("system") << data.log();
     }
     else
     {
-      const std::string text(
-        !m_stderr.empty() ? ":" + m_stderr : std::string());
-      log("system") << exe << log_dir << "ec:" << ec << text;
+      const auto& text(!m_stderr.empty() ? ":" + m_stderr : std::string());
+      log("system") << data.log() << "ec:" << ec << text;
     }
 
     return ec;
   }
   catch (std::exception& e)
   {
-    log(e) << exe << log_dir;
+    log(e) << data.log();
 
     m_stdout.clear();
     m_stderr = e.what();
-    return 1;
   }
   catch (...)
   {
-    log("system unknown exception") << exe;
-    return 1;
+    log("system unknown exception") << data.log();
   }
+
+  return 1;
 }
 
 bool wex::factory::process::write(const std::string& text)

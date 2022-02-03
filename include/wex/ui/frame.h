@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Declaration of wex::frame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -27,6 +27,7 @@ namespace wex
 class debug_entry;
 class ex_command;
 class menu_item;
+class process_data;
 class textctrl;
 class toolbar;
 
@@ -143,12 +144,7 @@ public:
   };
 
   /// Runs async process.
-  virtual bool process_async_system(
-    const std::string& command,
-    const std::string& start_dir = std::string())
-  {
-    return false;
-  };
+  virtual bool process_async_system(const process_data& data) { return false; };
 
   /// Allows you to perform action for a (vi) command.
   /// This method is invoked after command is executed.

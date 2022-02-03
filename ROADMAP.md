@@ -1,9 +1,12 @@
 # roadmap
-- ex escape use stdout to procees instead of tmp file, and fix undo
+- add bp::search_path to git from commandline
+- fix test-vi escape
+
 - config for lcov, min percentage
 - linux print setup asserts
 
 ## backlog
+- add undo_action
 - use boost python for scripting
 - current stc uses old scintilla
   - does not support json bool, see config.cpp

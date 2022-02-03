@@ -11,7 +11,6 @@
 #include <wex/core/core.h>
 #include <wex/core/file.h>
 #include <wex/core/log.h>
-#include <wex/core/temp-filename.h>
 #include <wex/factory/process.h>
 #include <wex/factory/sort.h>
 #include <wex/factory/stc.h>
@@ -264,8 +263,7 @@ bool wex::addressrange::escape(const std::string& command)
     else
     {
       return m_ex->frame()->process_async_system(
-        expanded,
-        m_stc->path().parent_path());
+        process_data(expanded).start_dir(m_stc->path().parent_path()));
     }
   }
 
@@ -274,13 +272,13 @@ bool wex::addressrange::escape(const std::string& command)
     return false;
   }
 
-  if (temp_filename tmp(true);
-      m_stc->GetReadOnly() || m_stc->is_hexmode() || !write(tmp.name()))
+  if (m_stc->GetReadOnly() || m_stc->is_hexmode() || !set_selection())
   {
     return false;
   }
   else if (factory::process process;
-           process.system(command + " " + tmp.name()) == 0)
+           process.system(
+             wex::process_data(command).stdin(m_stc->get_selected_text())) == 0)
   {
     if (!process.get_stdout().empty())
     {

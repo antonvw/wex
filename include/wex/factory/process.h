@@ -2,7 +2,7 @@
 // Name:      factory/process.h
 // Purpose:   Declaration of class wex::factory::process
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,6 +10,8 @@
 #include <chrono>
 #include <memory>
 #include <string>
+
+#include <wex/factory/process-data.h>
 
 class wxEvtHandler;
 
@@ -39,9 +41,7 @@ public:
   /// The output streams of the executing process are sent to these
   /// event handlers using wxPostEvent.
   /// Returns true if the async process is started.
-  virtual bool async_system(
-    const std::string& exe,
-    const std::string& start_dir = std::string());
+  virtual bool async_system(const process_data& data);
 
   // Writes data to the input of the async process.
   virtual bool write(const std::string& text);
@@ -78,15 +78,12 @@ public:
   /// Runs the sync process, collecting output in stdout and stderr.
   /// It will execute the process and wait for it's exit,
   /// then return the exit_code.
-  int system(
-    const std::string& exe,
-    const std::string& start_dir = std::string());
+  int system(const process_data& data);
 
 private:
   std::string m_stderr, m_stdout;
 
-  wxEvtHandler* m_eh_debug{nullptr};
-  wxEvtHandler* m_eh_out{nullptr};
+  wxEvtHandler *m_eh_debug{nullptr}, *m_eh_out{nullptr};
 
   std::unique_ptr<process_imp> m_imp;
 };

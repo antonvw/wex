@@ -2,7 +2,7 @@
 // Name:      process-imp.h
 // Purpose:   Declaration of class wex::factory::process_imp
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -29,10 +29,7 @@ public:
   void async_sleep_for(const std::chrono::milliseconds& ms);
 
   /// Runs the exe as a async process.
-  void async_system(
-    const std::string& exe,
-    const std::string& start_dir,
-    process*           p);
+  void async_system(process* p, const process_data& data);
 
   /// Returns the exe.
   const auto& exe() const { return m_exe; }

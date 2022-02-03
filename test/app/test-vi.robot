@@ -42,6 +42,16 @@ delete-d
 	Appl
 	Contents Does Not Contain	some text
 
+escape
+	Input Many	:a|line has text	50
+	Input	:1
+	...	v
+	...	10j
+	...	:!wc -l
+	...	
+	Appl
+	Contents Contains	10
+
 find-not
 	Input	:a|x
 	...	:a|y

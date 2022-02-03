@@ -406,7 +406,7 @@ void frame::bind_all()
       ID_STC_FLAGS},
      {[=, this](wxCommandEvent& event)
       {
-        m_process->async_system();
+        m_process->async_system(wex::process_data());
       },
       wxID_EXECUTE}});
 }

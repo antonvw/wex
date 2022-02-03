@@ -2,7 +2,7 @@
 // Name:      test-process.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/process.h>
@@ -26,14 +26,17 @@ TEST_CASE("wex::factory::process")
 #ifndef __WXMSW__
   SUBCASE("async_system")
   {
-    SUBCASE("no handler") { REQUIRE(!process.async_system("bash")); }
+    SUBCASE("no handler")
+    {
+      REQUIRE(!process.async_system(wex::process_data("bash")));
+    }
 
     wxEvtHandler out;
     process.set_handler_out(&out);
 
     SUBCASE("exe")
     {
-      REQUIRE(process.async_system("bash"));
+      REQUIRE(process.async_system(wex::process_data("bash")));
       REQUIRE(process.get_exe() == "bash");
       REQUIRE(process.is_running());
       REQUIRE(process.write("xx"));
@@ -46,7 +49,7 @@ TEST_CASE("wex::factory::process")
 
     SUBCASE("invalid")
     {
-      REQUIRE(process.async_system("xxxx"));
+      REQUIRE(process.async_system(wex::process_data("xxxx")));
       process.stop();
       REQUIRE(!process.is_running());
     }
@@ -55,33 +58,31 @@ TEST_CASE("wex::factory::process")
 
   SUBCASE("system")
   {
-    wex::path cwd;
-
-#ifdef __UNIX__
-    SUBCASE("start_dir")
-    {
-      REQUIRE(process.system("ls -l", "/") == 0);
-      REQUIRE(!process.get_stdout().empty());
-      REQUIRE(wxGetCwd().Contains("data"));
-      wex::path::current(cwd.original());
-    }
-
-    SUBCASE("input")
-    {
-      //      REQUIRE(process.system("wc", "./") == 0);
-      //      freopen("newstdin", "w", stdin);
-      //      fprintf(stdin, "1 2 3");
-      //      fclose(stdin);
-      //      std::cout << process.get_stdout() << "\n";
-    }
-#endif
-
 #ifndef __WXMSW__
     SUBCASE("invalid")
     {
-      REQUIRE(process.system("xxxx") != 0);
+      REQUIRE(process.system(wex::process_data("xxxx")) != 0);
       REQUIRE(process.get_stdout().empty());
       REQUIRE(!process.get_stderr().empty());
+    }
+#endif
+
+#ifdef __UNIX__
+    SUBCASE("stdin")
+    {
+      REQUIRE(process.system(wex::process_data("wc -c").stdin("xxxxxx")) == 0);
+      CAPTURE(process.get_stdout());
+      REQUIRE(process.get_stdout().find("6") != std::string::npos);
+    }
+
+    SUBCASE("start_dir")
+    {
+      wex::path cwd;
+
+      REQUIRE(process.system(wex::process_data("ls -l").start_dir("/")) == 0);
+      REQUIRE(!process.get_stdout().empty());
+      REQUIRE(wxGetCwd().Contains("data"));
+      wex::path::current(cwd.original());
     }
 #endif
   }

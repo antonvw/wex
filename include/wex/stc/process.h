@@ -2,7 +2,7 @@
 // Name:      process.h
 // Purpose:   Declaration of class wex::process
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -59,9 +59,7 @@ public:
   /// Return value is false if process could not execute,
   /// or if config dialog was invoked and cancelled, or prepare_output
   /// not yet invoked.
-  bool async_system(
-    const std::string& exe       = std::string(),
-    const std::string& start_dir = std::string()) override;
+  bool async_system(const process_data& data) override;
 
   /// Writes text to stdin of process.
   /// The response stdout is collected in the shell.
