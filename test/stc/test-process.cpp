@@ -59,10 +59,10 @@ TEST_CASE("wex::process")
     {
       REQUIRE(process.system(wex::process_data("ls -l")) == 0);
       REQUIRE(!process.write("hello world"));
-      REQUIRE(!process.get_stdout().empty());
-      REQUIRE(process.get_stderr().empty());
+      REQUIRE(!process.std_out().empty());
+      REQUIRE(process.std_err().empty());
       REQUIRE(!process.is_running());
-      REQUIRE(process.get_exe().empty());
+      REQUIRE(process.exe().empty());
       process.show_output();
     }
 
@@ -70,13 +70,13 @@ TEST_CASE("wex::process")
     {
       REQUIRE(process.system(wex::process_data("ls -l")) == 0);
       REQUIRE(!process.is_running());
-      REQUIRE(!process.get_stdout().empty());
+      REQUIRE(!process.std_out().empty());
     }
 
     SUBCASE("working directory")
     {
       REQUIRE(process.system(wex::process_data("ls -l").start_dir("/")) == 0);
-      REQUIRE(!process.get_stdout().empty());
+      REQUIRE(!process.std_out().empty());
       REQUIRE(wxGetCwd().Contains("data"));
     }
 
@@ -85,8 +85,8 @@ TEST_CASE("wex::process")
     {
       REQUIRE(process.system(wex::process_data("xxxx")) != 0);
       REQUIRE(!process.is_running());
-      REQUIRE(!process.get_stderr().empty());
-      REQUIRE(process.get_stdout().empty());
+      REQUIRE(!process.std_err().empty());
+      REQUIRE(process.std_out().empty());
     }
 #endif
 

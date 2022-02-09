@@ -15,14 +15,24 @@ namespace wex
 class process_data
 {
 public:
-  /// Default constructor.
+  /// Default constructor, sets the exe (and possible 
+  /// options).
   process_data(const std::string& exe = std::string());
+
+  /// Returns args as a vector of strings,
+  /// or empty vector if no args were provided to the exe.
+  const std::vector<std::string> args() const;
 
   /// Returns exe.
   const auto& exe() const { return m_exe; }
 
   /// Sets exe.
   process_data& exe(const std::string& rhs);
+
+  /// Returns exe component as a possible path.
+  /// It searches the search path for the exe, and
+  /// adds the path as prefix if found.
+  const std::string exe_path() const;
 
   /// Logs info.
   const std::string log() const;

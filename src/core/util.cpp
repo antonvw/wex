@@ -285,6 +285,11 @@ const std::string wex::quoted(const std::string& text)
   return "'" + text + "'";
 }
 
+const std::string wex::quoted_find(const std::string& text, char c)
+{
+  return text.find(c) != std::string::npos ? "\"" + text + "\"" : text;
+}
+
 const std::string
 wex::rfind_after(const std::string& text, const std::string& seq)
 {

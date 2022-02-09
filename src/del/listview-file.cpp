@@ -262,8 +262,7 @@ void wex::del::file::do_file_save(bool save_as)
 
   for (int i = 0; i < GetItemCount(); i++)
   {
-    const wex::path fn = listitem(this, i).path();
-
+    const auto fn = listitem(this, i).path();
     auto node = root.append_child(fn.file_exists() ? "file" : "folder");
     node.text().set(fn.string().c_str());
 

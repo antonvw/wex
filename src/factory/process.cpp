@@ -5,11 +5,10 @@
 // Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/core/file.h>
 #include <wex/core/log.h>
-#include <wex/core/temp-filename.h>
 #include <wex/factory/process.h>
 
+#include "data-to-stdin.h"
 #include "process-imp.h"
 
 wex::factory::process::process()
@@ -45,7 +44,7 @@ bool wex::factory::process::async_system(const process_data& data)
   return false;
 }
 
-const std::string wex::factory::process::get_exe() const
+const std::string wex::factory::process::exe() const
 {
   return m_imp->exe();
 }
@@ -80,26 +79,17 @@ int wex::factory::process::system(const process_data& data)
   try
   {
     std::future<std::string> of, ef;
-
-    FILE* in = stdin;
-
-    if (!data.std_in().empty())
-    {
-      temp_filename tmp(true);
-      wex::file(path(tmp.name()), std::ios::out).write(data.std_in());
-      in = fopen(tmp.name().c_str(), "r");
-    }
+    data_to_std_in           data_std_in(data);
 
     // clang-format off
     const int ec = bp::system(
+      data.exe_path(),
+      bp::args = data.args(),
       bp::start_dir = data.start_dir(),
-      data.exe(),
-      bp::std_in < in,
+      bp::std_in < data_std_in.std_in(),
       bp::std_out > of,
       bp::std_err > ef);
     // clang-format on
-
-    fclose(in);
 
     if (of.valid())
     {

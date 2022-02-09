@@ -2,7 +2,7 @@
 // Name:      vcs.cpp
 // Purpose:   Implementation of wex::vcs class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/util.h>
@@ -256,14 +256,14 @@ bool wex::vcs::execute()
         std::string(),
         [](const std::string& a, const wex::path& b)
         {
-          return a + "\"" + b.string() + "\" ";
+          return a + quoted_find(b.string()) + " ";
         }));
     }
     else if (m_entry.name() == "git")
     {
       if (filename.file_exists() && !filename.filename().empty())
       {
-        args = "\"" + filename.filename() + "\"";
+        args = quoted_find(filename.filename());
       }
 
       if (wd.file_exists())
@@ -273,7 +273,7 @@ bool wex::vcs::execute()
     }
     else
     {
-      args = "\"" + filename.string() + "\"";
+      args = quoted_find(filename.string());
     }
 
     return m_entry.execute(args, filename.lexer(), wd.string());
@@ -494,18 +494,18 @@ void wex::vcs_execute(
       {
         if (wex::vcs vcs({it}, id); vcs.execute())
         {
-          if (!vcs.entry().get_stdout().empty())
+          if (!vcs.entry().std_out().empty())
           {
             frame->open_file(it, vcs.entry(), data::stc());
           }
-          else if (!vcs.entry().get_stderr().empty())
+          else if (!vcs.entry().std_err().empty())
           {
-            log() << vcs.entry().get_stderr();
+            log() << vcs.entry().std_err();
           }
           else
           {
             log::status("No output");
-            log::debug("no output from") << vcs.entry().get_exe();
+            log::debug("no output from") << vcs.entry().exe();
           }
         }
       }

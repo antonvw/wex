@@ -280,23 +280,23 @@ bool wex::addressrange::escape(const std::string& command)
            process.system(wex::process_data(command).std_in(
              m_stc->get_selected_text())) == 0)
   {
-    if (!process.get_stdout().empty())
+    if (const auto& out(process.std_out()); !out.empty())
     {
       m_stc->BeginUndoAction();
 
       if (erase())
       {
-        m_stc->add_text(process.get_stdout());
+        m_stc->add_text(out);
       }
 
       m_stc->EndUndoAction();
 
       return true;
     }
-    else if (!process.get_stderr().empty())
+    else if (const auto err(process.std_err()); !err.empty())
     {
-      m_ex->frame()->show_ex_message(process.get_stderr());
-      log("escape") << process.get_stderr();
+      m_ex->frame()->show_ex_message(err);
+      log("escape") << err;
     }
   }
 

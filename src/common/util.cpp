@@ -144,8 +144,8 @@ bool wex::compare_file(const path& file1, const path& file2)
   if (const auto arguments =
         (file1.stat().get_modification_time() <
          file2.stat().get_modification_time()) ?
-          "\"" + file1.string() + "\" \"" + file2.string() + "\"" :
-          "\"" + file2.string() + "\" \"" + file1.string() + "\"";
+          quoted_find(file1.string()) + " " + quoted_find(file2.string()) :
+          quoted_find(file2.string()) + " " + quoted_find(file1.string());
       factory::process().system(
         config(_("list.Comparator")).get() + " " + arguments) != 0)
   {
@@ -267,7 +267,7 @@ bool wex::shell_expansion(std::string& command)
     }
     else
     {
-      r.replace(command, process.get_stdout());
+      r.replace(command, process.std_out());
     }
   }
 

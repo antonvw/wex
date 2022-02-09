@@ -277,27 +277,27 @@ TEST_CASE("wex::ex")
     REQUIRE(ex->command(":1,2>"));
 
     stc->SelectNone();
-    REQUIRE(!ex->command(":'<,'>>"));
+    REQUIRE(!ex->command(":" + wex::ex_command::selection_range() + ">>"));
 
     stc->GotoLine(2);
     stc->LineDownExtend();
-    REQUIRE(ex->command(":'<,'>m1"));
+    REQUIRE(ex->command(":" + wex::ex_command::selection_range() + "m1"));
 
     stc->GotoLine(2);
     stc->LineDownExtend();
     stc->LineDownExtend();
     stc->LineDownExtend();
-    REQUIRE(ex->command(":'<,'>w test-ex.txt"));
-    REQUIRE(ex->command(":'<,'><"));
-    REQUIRE(ex->command(":'<,'>>"));
+    REQUIRE(ex->command(":" + wex::ex_command::selection_range() + "w test-ex.txt"));
+    REQUIRE(ex->command(":" + wex::ex_command::selection_range() + "<"));
+    REQUIRE(ex->command(":" + wex::ex_command::selection_range() + ">"));
 
 #ifndef __WXMSW__
-    ex->command(":'<,'>!sort");
+    ex->command(":" + wex::ex_command::selection_range() +"!sort");
 #endif
 
     stc->GotoLine(2);
     stc->LineDownExtend();
-    REQUIRE(!ex->command(":'<,'>x"));
+    REQUIRE(!ex->command(":" + wex::ex_command::selection_range() + "x"));
   }
 
   SUBCASE("read")

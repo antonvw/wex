@@ -2,7 +2,7 @@
 // Name:      variable.cpp
 // Purpose:   Implementation of class wex::variable
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/chrono.h>
@@ -235,7 +235,7 @@ bool wex::variable::expand(std::string& value, ex* ex) const
       }
       else
       {
-        value = p.get_stdout();
+        value = p.std_out();
         m_argument.clear();
       }
       break;

@@ -184,6 +184,11 @@ void wex::ex_command::restore(const ex_command& c)
   }
 }
 
+const std::string wex::ex_command::selection_range()
+{
+  return "'<,'>";
+}
+
 wex::ex_command& wex::ex_command::set(const std::string& text)
 {
   m_text = text;
@@ -218,13 +223,13 @@ std::string wex::ex_command::str() const
       case type_t::CALC:
         return m_text.substr(0, 2);
 
-      // :'<,'>
+      // : + selection_range
       case type_t::COMMAND_RANGE:
-        return m_text.substr(0, 6);
+        return m_text.substr(0, selection_range().size() + 1);
 
-      // :'<,'>!
+      // : + selection_range + !
       case type_t::ESCAPE_RANGE:
-        return m_text.substr(0, 7);
+        return m_text.substr(0, selection_range().size() + 2);
 
       default:
         return m_text.substr(0, 1);
@@ -250,11 +255,11 @@ wex::ex_command::type_t wex::ex_command::type() const
         {
           return type_t::COMMAND_EX;
         }
-        else if (m_text.starts_with(":'<,'>!"))
+        else if (m_text.starts_with(":" + selection_range() + "!"))
         {
           return type_t::ESCAPE_RANGE;
         }
-        else if (m_text.starts_with(":'<,'>"))
+        else if (m_text.starts_with(":" + selection_range()))
         {
           return type_t::COMMAND_RANGE;
         }

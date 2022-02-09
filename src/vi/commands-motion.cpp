@@ -317,7 +317,7 @@ wex::vi::commands_t wex::vi::commands_motion()
        {
          if (!get_stc()->get_selected_text().empty())
          {
-           frame()->show_ex_command(get_stc(), ":'<,'>" + command);
+           frame()->show_ex_command(get_stc(), ":" + ex_command::selection_range() + command);
          }
          else
          {
@@ -493,7 +493,7 @@ size_t wex::vi::find_command(const std::string& command)
     return get_stc()->is_visual() &&
                frame()->show_ex_command(
                  get_stc(),
-                 command + (m_mode.is_visual() ? "'<,'>" : "")) ?
+                 command + (m_mode.is_visual() ? ex_command::selection_range() : "")) ?
              command.size() :
              (size_t)0;
   }

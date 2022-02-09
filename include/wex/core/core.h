@@ -102,6 +102,10 @@ bool matches_one_of(const std::string& fullname, const std::string& patterns);
 /// Returns quotes around the text.
 const std::string quoted(const std::string& text);
 
+/// Returns double quotes around the text,
+/// otherwise returns text.
+const std::string quoted_find(const std::string& text, char c = ' ');
+
 /// Returns string after last occurrence of sequence
 /// Returns the whole string if seq is not found.
 const std::string

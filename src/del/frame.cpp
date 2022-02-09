@@ -438,7 +438,7 @@ bool wex::del::frame::find_in_files(
     return false;
   }
 
-  if (const wex::path filename(files[0]);
+  if (const auto& filename(files[0]);
       show_dialog &&
       find_in_files_dialog(
         tool,
@@ -765,7 +765,7 @@ bool wex::del::frame::process_async_system(const process_data& data)
   {
     if (m_process->is_running())
     {
-      log::trace("escape") << data.exe() << "stops" << m_process->get_exe();
+      log::trace("escape") << data.exe() << "stops" << m_process->exe();
     }
 
     delete m_process;
@@ -953,9 +953,9 @@ void wex::del::frame::statustext_vcs(factory::stc* stc)
 {
   const vcs v({stc->path()});
 
-  if (const auto& b(v.get_branch()); !b.empty())
+  if (const auto& text(v.get_branch()); !text.empty())
   {
-    statustext(b, "PaneVCS");
+    statustext(text, "PaneVCS");
   }
   else
   {

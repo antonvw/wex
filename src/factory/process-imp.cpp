@@ -52,11 +52,12 @@ void wex::factory::process_imp::async_system(
     },
 
     // clang-format off
+    data.exe_path(),
+    bp::args = data.args(),
     bp::start_dir = data.start_dir(),
-    data.exe(),
-    bp::std_out > m_is,
-    bp::std_in < m_os, 
     bp::std_err > m_es,
+    bp::std_in < m_os, 
+    bp::std_out > m_is,
     m_group);
   // clang-format on
 

@@ -961,7 +961,7 @@ bool wex::stc::show_blame(const vcs_entry* vcs)
     return false;
   }
 
-  if (vcs->get_stdout().empty())
+  if (vcs->std_out().empty())
   {
     log::debug("no vcs output");
     return false;
@@ -976,7 +976,7 @@ bool wex::stc::show_blame(const vcs_entry* vcs)
   const auto        margin_blame(iv.find<int>(_("stc.margin.Text")));
 
   for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
-         vcs->get_stdout(),
+         vcs->std_out(),
          boost::char_separator<char>("\r\n")))
   {
     if (const auto& [r, bl, t, l] = vcs->get_blame().get(it); bl != prev && r)

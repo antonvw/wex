@@ -135,7 +135,7 @@ const std::string wex::vcs_entry::get_branch(const std::string& wd) const
     if (process p; p.system(process_data(bin() + " branch").start_dir(wd)) == 0)
     {
       for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
-             p.get_stdout(),
+             p.std_out(),
              boost::char_separator<char>("\r\n")))
       {
         if (it.starts_with('*'))
@@ -172,7 +172,7 @@ bool wex::vcs_entry::log(const path& p, const std::string& id)
 
 void wex::vcs_entry::show_output(const std::string& caption) const
 {
-  if (!get_stdout().empty() && get_shell() != nullptr)
+  if (!std_out().empty() && get_shell() != nullptr)
   {
     if (get_flags().find("xml") != std::string::npos)
     {

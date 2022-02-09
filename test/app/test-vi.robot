@@ -162,7 +162,7 @@ mode-visual
 	...	v
 	...	35j
 	...	d
-	Input	:1
+	...	:1
 	...	v
 	...	G
 	...	y

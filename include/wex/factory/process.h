@@ -52,13 +52,7 @@ public:
   void async_sleep_for(const std::chrono::milliseconds& ms);
 
   /// Returns last or current async exe.
-  const std::string get_exe() const;
-
-  /// Returns the stderr.
-  const auto& get_stderr() const { return m_stderr; }
-
-  /// Returns the stdout.
-  const auto& get_stdout() const { return m_stdout; }
+  const std::string exe() const;
 
   /// Is this a debug process.
   bool is_debug() const;
@@ -71,6 +65,12 @@ public:
 
   /// Sets out event handler.
   void set_handler_out(wxEvtHandler* eh);
+
+  /// Returns the stderr.
+  const auto& std_err() const { return m_stderr; }
+
+  /// Returns the stdout.
+  const auto& std_out() const { return m_stdout; }
 
   // Stops the async process.
   bool stop();

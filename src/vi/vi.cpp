@@ -58,6 +58,27 @@ bool process_modifier(vi* vi, macros::key_t type, const wxKeyEvent& event)
 
   return true;
 }
+
+bool visual_ex_command(const std::string& command, ex* ex)
+{
+  const auto& sel_command(
+    command[0] + ex_command::selection_range() + command.substr(1));
+
+  return ex->command(sel_command);
+}
+
+bool visual_vi_command(const std::string& command, vi* vi)
+{
+  if (
+    vi->mode().is_visual() &&
+    command.find(ex_command::selection_range()) == std::string::npos &&
+    !vi->get_stc()->get_selected_text().empty() && command[0] == ':')
+  {
+    return visual_ex_command(command, vi);
+  }
+
+  return false;
+}
 } // namespace wex
 
 wex::vi::vi(wex::factory::stc* arg, mode_t ex_mode)
@@ -121,9 +142,7 @@ bool wex::vi::command(const std::string& command)
     log::trace("vi command") << command;
   }
 
-  if (
-    m_mode.is_visual() && command.find("'<,'>") == std::string::npos &&
-    !get_stc()->get_selected_text().empty() && ex::command(command + "'<,'>"))
+  if (visual_vi_command(command, this))
   {
     return auto_write();
   }

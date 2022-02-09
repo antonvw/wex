@@ -15,11 +15,11 @@ TEST_CASE("wex::factory::process")
 
   SUBCASE("constructor")
   {
-    REQUIRE(process.get_stdout().empty());
-    REQUIRE(process.get_stderr().empty());
+    REQUIRE(process.std_out().empty());
+    REQUIRE(process.std_err().empty());
     REQUIRE(!process.is_debug());
     REQUIRE(!process.is_running());
-    REQUIRE(process.get_exe().empty());
+    REQUIRE(process.exe().empty());
     REQUIRE(!process.write("xx"));
   }
 
@@ -37,7 +37,7 @@ TEST_CASE("wex::factory::process")
     SUBCASE("exe")
     {
       REQUIRE(process.async_system(wex::process_data("bash")));
-      REQUIRE(process.get_exe() == "bash");
+      REQUIRE(process.exe() == "bash");
       REQUIRE(process.is_running());
       REQUIRE(process.write("xx"));
       REQUIRE(process.stop());
@@ -62,8 +62,8 @@ TEST_CASE("wex::factory::process")
     SUBCASE("invalid")
     {
       REQUIRE(process.system(wex::process_data("xxxx")) != 0);
-      REQUIRE(process.get_stdout().empty());
-      REQUIRE(!process.get_stderr().empty());
+      REQUIRE(process.std_out().empty());
+      REQUIRE(!process.std_err().empty());
     }
 #endif
 
@@ -71,8 +71,8 @@ TEST_CASE("wex::factory::process")
     SUBCASE("stdin")
     {
       REQUIRE(process.system(wex::process_data("wc -c").std_in("xxxxxx")) == 0);
-      CAPTURE(process.get_stdout());
-      REQUIRE(process.get_stdout().find("6") != std::string::npos);
+      CAPTURE(process.std_out());
+      REQUIRE(process.std_out().find("6") != std::string::npos);
     }
 
     SUBCASE("start_dir")
@@ -80,7 +80,7 @@ TEST_CASE("wex::factory::process")
       wex::path cwd;
 
       REQUIRE(process.system(wex::process_data("ls -l").start_dir("/")) == 0);
-      REQUIRE(!process.get_stdout().empty());
+      REQUIRE(!process.std_out().empty());
       REQUIRE(wxGetCwd().Contains("data"));
       wex::path::current(cwd.original());
     }

@@ -109,7 +109,7 @@ bool wex::macro_fsm::expand_template(
     }
     else
     {
-      if (const std::string exp(read_variable(ifs, '@', ex, var)); !exp.empty())
+      if (const auto& exp(read_variable(ifs, '@', ex, var)); !exp.empty())
       {
         expanded += exp;
       }
@@ -282,7 +282,7 @@ std::string wex::macro_fsm::read_variable(
         // other separator
         else if (c == '\'')
         {
-          if (const std::string exp(read_variable(ifs, c, ex, current));
+          if (const auto& exp(read_variable(ifs, c, ex, current));
               !exp.empty())
           {
             variable::set_argument(exp);

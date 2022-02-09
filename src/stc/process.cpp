@@ -175,10 +175,10 @@ wex::shell* wex::process::prepare_output(wxWindow* parent)
 
 void wex::process::show_output(const std::string& caption) const
 {
-  if ((!get_stdout().empty() || !get_stderr().empty()) && m_shell != nullptr)
+  if ((!std_out().empty() || !std_err().empty()) && m_shell != nullptr)
   {
     m_frame->show_process(true);
-    m_shell->AppendText(!get_stdout().empty() ? get_stdout() : get_stderr());
+    m_shell->AppendText(!std_out().empty() ? std_out() : std_err());
   }
 }
 

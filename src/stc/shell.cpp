@@ -687,7 +687,7 @@ void wex::shell::set_process(factory::process* process)
   {
     enable(true);
     process->set_handler_out(this);
-    SetName(process->get_exe());
+    SetName(process->exe());
 
     get_lexer().set("errorlist");
   }

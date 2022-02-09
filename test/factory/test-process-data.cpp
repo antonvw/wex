@@ -9,31 +9,37 @@
 
 #include "../test.h"
 
-TEST_CASE("wex::factory::process_data")
+TEST_CASE("wex::process_data")
 {
   SUBCASE("constructor-default")
   {
     wex::process_data data;
 
+    REQUIRE(data.args().empty());
     REQUIRE(data.exe().empty());
+    REQUIRE(data.exe_path().empty());
     REQUIRE(data.start_dir().empty());
     REQUIRE(data.std_in().empty());
   }
 
   SUBCASE("constructor")
   {
-    wex::process_data data("xx");
+    wex::process_data data("wc yy");
 
-    REQUIRE(data.exe() == "xx");
+    REQUIRE(data.args().size() == 1);
+    REQUIRE(data.args().front() == "yy");
+    REQUIRE(data.exe() == "wc yy");
+    REQUIRE(data.exe_path() == "/usr/bin/wc");
+    REQUIRE(data.log() == "exe: /usr/bin/wc args: yy");
     REQUIRE(data.start_dir().empty());
     REQUIRE(data.std_in().empty());
   }
 
   SUBCASE("log")
   {
-    wex::process_data data("xx");
+    wex::process_data data("xx -c -v");
 
-    REQUIRE(data.log() == "exe: xx");
+    REQUIRE(data.log() == "exe: xx args: -c -v");
   }
 
   SUBCASE("set")

@@ -1,13 +1,11 @@
 # roadmap
-- add bp::search_path to git from commandline
-- fix test-vi escape
-- see also dup2 error in test-del
-
+- commands-motion.cpp:496 selection_range?
+- red text after grep
 - config for lcov, min percentage
 - linux print setup asserts
 
 ## backlog
-- add undo_action
+- add undo_action class, to implement Begin and EndUndoAction
 - use boost python for scripting
 - current stc uses old scintilla
   - does not support json bool, see config.cpp
