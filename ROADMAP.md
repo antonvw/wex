@@ -1,10 +1,10 @@
 # roadmap
-- commands-motion.cpp:496 selection_range?
 - config for lcov, min percentage
 - linux print setup asserts
 - fix checkboard, xml 2022
 
 ## backlog
+- version 22.10
 - add undo_action class, to implement Begin and EndUndoAction
 - use boost python for scripting
 - current stc uses old scintilla

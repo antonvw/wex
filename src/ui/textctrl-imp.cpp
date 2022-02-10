@@ -288,7 +288,9 @@ bool wex::textctrl_imp::handle_type(
       if (m_tc->stc() != nullptr)
       {
         set_text(
-          !m_mode_visual ? m_tc->stc()->get_find_string() : std::string());
+          !m_mode_visual || range == ex_command::selection_range() ?
+            m_tc->stc()->get_find_string() :
+            std::string());
       }
       else
       {
