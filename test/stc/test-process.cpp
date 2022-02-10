@@ -62,7 +62,7 @@ TEST_CASE("wex::process")
       REQUIRE(!process.std_out().empty());
       REQUIRE(process.std_err().empty());
       REQUIRE(!process.is_running());
-      REQUIRE(process.exe().empty());
+      REQUIRE(process.data().exe().empty());
       process.show_output();
     }
 

@@ -8,6 +8,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 namespace wex
 {
@@ -15,7 +16,7 @@ namespace wex
 class process_data
 {
 public:
-  /// Default constructor, sets the exe (and possible 
+  /// Default constructor, sets the exe (and possible
   /// options).
   process_data(const std::string& exe = std::string());
 

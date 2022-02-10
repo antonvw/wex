@@ -31,8 +31,8 @@ public:
   /// Runs the exe as a async process.
   void async_system(process* p, const process_data& data);
 
-  /// Returns the exe.
-  const auto& exe() const { return m_exe; }
+  /// Returns the data.
+  const auto& data() const { return m_data; }
 
   /// Returns true if this is a debug process.
   bool is_debug() const { return m_debug; }
@@ -53,7 +53,7 @@ private:
   std::atomic<bool> m_debug{false};
   std::atomic<bool> m_is_running{false};
 
-  std::string m_exe;
+  process_data m_data;
 
   bp::ipstream m_es, m_is;
   bp::opstream m_os;

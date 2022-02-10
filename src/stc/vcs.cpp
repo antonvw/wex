@@ -505,7 +505,7 @@ void wex::vcs_execute(
           else
           {
             log::status("No output");
-            log::debug("no output from") << vcs.entry().exe();
+            log::debug("no output from") << vcs.entry().data().exe();
           }
         }
       }

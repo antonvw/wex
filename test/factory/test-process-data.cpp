@@ -29,8 +29,10 @@ TEST_CASE("wex::process_data")
     REQUIRE(data.args().size() == 1);
     REQUIRE(data.args().front() == "yy");
     REQUIRE(data.exe() == "wc yy");
+#ifdef __UNIX__
     REQUIRE(data.exe_path() == "/usr/bin/wc");
     REQUIRE(data.log() == "exe: /usr/bin/wc args: yy");
+#endif
     REQUIRE(data.start_dir().empty());
     REQUIRE(data.std_in().empty());
   }

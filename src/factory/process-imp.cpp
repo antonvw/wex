@@ -61,9 +61,9 @@ void wex::factory::process_imp::async_system(
     m_group);
   // clang-format on
 
-  m_exe = data.exe();
+  m_data = data;
 
-  log::debug("async_system") << m_exe << "debug:" << m_debug.load();
+  log::debug("async_system") << m_data.exe() << "debug:" << m_debug.load();
 
   m_is_running.store(true);
 
@@ -190,7 +190,7 @@ bool wex::factory::process_imp::stop()
   }
   catch (std::exception& e)
   {
-    log(e) << "stop" << m_exe;
+    log(e) << "stop" << m_data.exe();
   }
 
   return false;

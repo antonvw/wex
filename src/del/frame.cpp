@@ -765,7 +765,7 @@ bool wex::del::frame::process_async_system(const process_data& data)
   {
     if (m_process->is_running())
     {
-      log::trace("escape") << data.exe() << "stops" << m_process->exe();
+      log::trace("escape") << data.exe() << "stops" << m_process->data().exe();
     }
 
     delete m_process;

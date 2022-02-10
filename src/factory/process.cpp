@@ -44,9 +44,9 @@ bool wex::factory::process::async_system(const process_data& data)
   return false;
 }
 
-const std::string wex::factory::process::exe() const
+const wex::process_data& wex::factory::process::data() const
 {
-  return m_imp->exe();
+  return m_imp->data();
 }
 
 bool wex::factory::process::is_debug() const

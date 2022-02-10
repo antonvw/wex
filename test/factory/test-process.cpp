@@ -19,7 +19,7 @@ TEST_CASE("wex::factory::process")
     REQUIRE(process.std_err().empty());
     REQUIRE(!process.is_debug());
     REQUIRE(!process.is_running());
-    REQUIRE(process.exe().empty());
+    REQUIRE(process.data().exe().empty());
     REQUIRE(!process.write("xx"));
   }
 
@@ -37,7 +37,7 @@ TEST_CASE("wex::factory::process")
     SUBCASE("exe")
     {
       REQUIRE(process.async_system(wex::process_data("bash")));
-      REQUIRE(process.exe() == "bash");
+      REQUIRE(process.data().exe() == "bash");
       REQUIRE(process.is_running());
       REQUIRE(process.write("xx"));
       REQUIRE(process.stop());

@@ -51,8 +51,8 @@ public:
   /// Sleeps for some milliseconds time.
   void async_sleep_for(const std::chrono::milliseconds& ms);
 
-  /// Returns last or current async exe.
-  const std::string exe() const;
+  /// Returns last or current data used by async_system.
+  const process_data& data() const;
 
   /// Is this a debug process.
   bool is_debug() const;
@@ -77,7 +77,7 @@ public:
 
   /// Runs the sync process, collecting output in stdout and stderr.
   /// It will execute the process and wait for it's exit,
-  /// then return the exit_code.
+  /// then returns the exit_code.
   int system(const process_data& data);
 
 private:

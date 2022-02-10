@@ -1,8 +1,8 @@
 # roadmap
 - commands-motion.cpp:496 selection_range?
-- red text after grep
 - config for lcov, min percentage
 - linux print setup asserts
+- fix checkboard, xml 2022
 
 ## backlog
 - add undo_action class, to implement Begin and EndUndoAction
