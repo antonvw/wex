@@ -438,7 +438,7 @@ bool wex::del::frame::find_in_files(
     return false;
   }
 
-  if (const wex::path filename(files[0]);
+  if (const auto& filename(files[0]);
       show_dialog &&
       find_in_files_dialog(
         tool,
@@ -759,15 +759,13 @@ void wex::del::frame::open_from_event(
   }
 }
 
-bool wex::del::frame::process_async_system(
-  const std::string& command,
-  const std::string& start_dir)
+bool wex::del::frame::process_async_system(const process_data& data)
 {
   if (m_process != nullptr)
   {
     if (m_process->is_running())
     {
-      log::trace("escape") << command << "stops" << m_process->get_exe();
+      log::trace("escape") << data.exe() << "stops" << m_process->data().exe();
     }
 
     delete m_process;
@@ -775,7 +773,7 @@ bool wex::del::frame::process_async_system(
 
   m_process = new wex::process();
 
-  return m_process->async_system(command, start_dir);
+  return m_process->async_system(data);
 }
 
 void wex::del::frame::set_recent_file(const wex::path& path)
@@ -955,9 +953,9 @@ void wex::del::frame::statustext_vcs(factory::stc* stc)
 {
   const vcs v({stc->path()});
 
-  if (const auto& b(v.get_branch()); !b.empty())
+  if (const auto& text(v.get_branch()); !text.empty())
   {
-    statustext(b, "PaneVCS");
+    statustext(text, "PaneVCS");
   }
   else
   {

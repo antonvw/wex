@@ -56,13 +56,15 @@ if (wexENABLE_GETTEXT)
   include(FindGettext)
 endif ()
 
-find_package(ODBC)
+if (wexENABLE_ODBC)
+  find_package(ODBC)
 
-if (ODBC_FOUND AND NOT MSVC)
-  add_definitions(-DwexUSE_ODBC)
-  
-  include_directories(${ODBC_INCLUDE_DIR})
-  include_directories(external/otl)
+  if (ODBC_FOUND AND NOT MSVC)
+    add_definitions(-DwexUSE_ODBC)
+    
+    include_directories(${ODBC_INCLUDE_DIR})
+    include_directories(external/otl)
+  endif ()
 endif ()
 
 enable_testing()

@@ -2,7 +2,7 @@
 // Name:      stc/bind-other.cpp
 // Purpose:   Implementation of class wex::stc method bind_other
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -357,11 +357,11 @@ void wex::stc::margin_action(wxStyledTextEvent& event)
         AnnotationSetText(
           line,
           lexer().make_comment(
-            boost::algorithm::trim_copy(vcs.entry().get_stdout())));
+            boost::algorithm::trim_copy(vcs.entry().std_out())));
       }
-      else if (!vcs.entry().get_stderr().empty())
+      else if (!vcs.entry().std_err().empty())
       {
-        log("margin") << vcs.entry().get_stderr();
+        log("margin") << vcs.entry().std_err();
       }
     }
   }

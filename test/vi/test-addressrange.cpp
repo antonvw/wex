@@ -2,7 +2,7 @@
 // Name:      test-addressrange.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ui/frd.h>
@@ -56,7 +56,7 @@ TEST_CASE("wex::addressrange")
     REQUIRE(!wex::addressrange(ex, "3,@").copy(wex::address(ex, "2")));
     REQUIRE(!wex::addressrange(ex, "3,x").write("flut"));
     REQUIRE(!wex::addressrange(ex, " ,").yank());
-    REQUIRE(!wex::addressrange(ex, "'<,'>").is_ok());
+    REQUIRE(!wex::addressrange(ex, wex::ex_command::selection_range()).is_ok());
     REQUIRE(!wex::addressrange(ex, "/xx/,/2/").is_ok());
     REQUIRE(!wex::addressrange(ex, "?2?,?1?").is_ok());
   }
@@ -66,7 +66,7 @@ TEST_CASE("wex::addressrange")
     stc->SelectAll();
 
     REQUIRE(wex::addressrange(ex, 5).is_ok());
-    REQUIRE(wex::addressrange(ex, "'<,'>").is_ok());
+    REQUIRE(wex::addressrange(ex, wex::ex_command::selection_range()).is_ok());
     stc->SelectNone();
   }
 
@@ -109,7 +109,7 @@ TEST_CASE("wex::addressrange")
     REQUIRE(stc->get_line_count() == 3);
     stc->set_text("a\nb\nc\nd\ne\nf\ng\n");
     stc->SelectAll();
-    REQUIRE(wex::addressrange(ex, "'<,'>").erase());
+    REQUIRE(wex::addressrange(ex, wex::ex_command::selection_range()).erase());
     REQUIRE(stc->get_line_count() == 1);
     stc->SelectNone();
   }

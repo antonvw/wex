@@ -25,7 +25,7 @@ wex::command_parser::command_parser(
 
 bool wex::command_parser::parse(ex* ex, parse_t type)
 {
-  if (m_text.starts_with("'<,'>"))
+  if (m_text.starts_with(ex_command::selection_range()))
   {
     if (ex->get_stc()->get_selected_text().empty())
     {
@@ -33,7 +33,7 @@ bool wex::command_parser::parse(ex* ex, parse_t type)
     }
 
     m_type  = address_t::TWO_ADDR;
-    m_range = "'<,'>";
+    m_range = ex_command::selection_range();
     m_cmd   = m_text.substr(5);
     m_text  = m_text.substr(6);
   }

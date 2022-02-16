@@ -184,12 +184,12 @@ TEST_CASE("wex::ex_command")
     REQUIRE(command.type() == wex::ex_command::type_t::VI);
     REQUIRE(command.str() == "w");
 
-    command.set(":'<,'>y");
+    command.set(":" + wex::ex_command::selection_range() + "y");
     REQUIRE(command.type() == wex::ex_command::type_t::COMMAND_RANGE);
-    REQUIRE(command.str() == ":'<,'>");
+    REQUIRE(command.str() == ":" + wex::ex_command::selection_range());
 
-    command.set(":'<,'>!pwd");
+    command.set(":" + wex::ex_command::selection_range() + "!pwd");
     REQUIRE(command.type() == wex::ex_command::type_t::ESCAPE_RANGE);
-    REQUIRE(command.str() == ":'<,'>!");
+    REQUIRE(command.str() == ":" + wex::ex_command::selection_range() + "!");
   }
 }

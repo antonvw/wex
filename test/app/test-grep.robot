@@ -16,11 +16,9 @@ help
 text	[Documentation]	grep (without quit), and quit after some time
 	${result}=	Run Process
 	...	./count.sh
-
 	Input Many	:grep rfw *.robot ./	1
-
-	Appl	5
-
+	Appl	2000
+	Sleep	1s
 	Output Contains	Found 1 matches in ${result.stdout} file(s)
 
 

@@ -1,9 +1,10 @@
 # roadmap
-- ex escape use stdout to procees instead of tmp file, and fix undo
-- config for lcov, min percentage
 - linux print setup asserts
 
 ## backlog
+- version 22.10
+- add undo_action class, to implement Begin and EndUndoAction
+- set_indicator does not need parameter 2, 3
 - use boost python for scripting
 - current stc uses old scintilla
   - does not support json bool, see config.cpp

@@ -60,7 +60,7 @@ wex::cmdline_imp::cmdline_imp(bool add_standard_options, config& cfg)
       ("echo,e", "echo commands")
       ("help,h", "displays usage information and exits")
       ("quit,q", po::value<int>(),
-         "quits after specified number of seconds")
+         "quits after specified number of milliseconds")
       ("version,r", "displays version information and exits")
       ("verbose,v", "activates maximum (trace) verbosity")
       ("level,V", po::value<int>()->default_value(log::level_t_def()),
@@ -129,7 +129,7 @@ bool wex::cmdline_imp::parse(data::cmdline& data)
 
   if (m_vm.count("quit"))
   {
-    parse_quit(data);
+    parse_quit();
   }
 
   if (m_vm.count("scriptout"))
@@ -236,23 +236,29 @@ void wex::cmdline_imp::parse_help(data::cmdline& data)
   }
 }
 
-void wex::cmdline_imp::parse_quit(data::cmdline& data)
+void wex::cmdline_imp::parse_quit()
 {
   if (const auto quit(m_vm["quit"].as<int>()); quit > 0)
   {
     m_use_events = true;
 
-    const auto id_quit = wxWindowBase::NewControlId();
+    const auto id_quit     = wxWindowBase::NewControlId();
+    auto*      timer_start = new wxTimer(wxTheApp, id_quit);
 
-    auto* timer_start = new wxTimer(wxTheApp, id_quit);
-
-    timer_start->StartOnce(1000 * quit);
+    timer_start->StartOnce(quit);
 
     wxTheApp->Bind(
       wxEVT_TIMER,
       [=, this](wxTimerEvent& event)
       {
-        wxTheApp->Exit();
+        if (auto* win = wxTheApp->GetTopWindow(); win != nullptr)
+        {
+          win->Destroy();
+        }
+        else
+        {
+          wxExit();
+        }
       },
       id_quit);
   }

@@ -2,7 +2,7 @@
 // Name:      global-env.cpp
 // Purpose:   Implementation of class wex::global_env
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2021 Anton van Wezenbeek
+// Copyright: (c) 2015-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -135,7 +135,7 @@ bool wex::global_env::global(const data::substitute& data)
     }
   }
 
-  am.end();
+  am.end(has_commands());
 
   return true;
 }
@@ -177,8 +177,7 @@ bool wex::global_env::process_inverse(const block_lines& mb, block_lines& ib)
 bool wex::global_env::run(const block_lines& block, const std::string& command)
   const
 {
-  if (const std::string cmd(":" + block.get_range() + command);
-      !m_ex->command(cmd))
+  if (const auto cmd(":" + block.get_range() + command); !m_ex->command(cmd))
   {
     m_ex->frame()->show_ex_message(cmd + " failed");
     return false;

@@ -2,7 +2,7 @@
 // Name:      process-imp.cpp
 // Purpose:   Implementation of class wex::factory::process
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -32,19 +32,18 @@ void wex::factory::process_imp::async_sleep_for(
 }
 
 void wex::factory::process_imp::async_system(
-  const std::string& exe,
-  const std::string& start_dir,
-  process*           p)
+  process*            p,
+  const process_data& data)
 {
   m_debug.store(p->m_eh_debug != nullptr);
 
   bp::async_system(
     *m_io.get(),
-    [this, exe, start_dir, p](boost::system::error_code error, int i)
+    [this, p, data](boost::system::error_code error, int i)
     {
       m_is_running.store(false);
 
-      log::debug("async_system") << "exit" << exe;
+      log::debug("async_system") << "exit" << data.exe();
 
       if (m_debug.load())
       {
@@ -52,15 +51,20 @@ void wex::factory::process_imp::async_system(
       }
     },
 
-    bp::start_dir = start_dir,
-    exe,
+    // clang-format off
+    data.exe_path(),
+    bp::args = data.args(),
+    bp::start_dir = data.start_dir(),
+    bp::std_err > m_es,
+    bp::std_in < m_os, 
     bp::std_out > m_is,
-    bp::std_in<m_os, bp::std_err> m_es,
     m_group);
+  // clang-format on
 
-  log::debug("async_system") << exe << "debug:" << m_debug.load();
+  m_data = data;
 
-  m_exe = exe;
+  log::debug("async_system") << m_data.exe() << "debug:" << m_debug.load();
+
   m_is_running.store(true);
 
   std::thread t(
@@ -170,27 +174,26 @@ void wex::factory::process_imp::async_system(
 
 bool wex::factory::process_imp::stop()
 {
-  if (!m_is_running.load())
-  {
-    return false;
-  }
-
   try
   {
-    if (m_group.valid())
+    if (m_is_running.load())
     {
-      m_group.terminate();
-    }
+      if (m_group.valid())
+      {
+        m_group.terminate();
+      }
 
-    m_io->stop();
-    m_is_running.store(false);
-    return true;
+      m_io->stop();
+      m_is_running.store(false);
+      return true;
+    }
   }
   catch (std::exception& e)
   {
-    log(e) << "stop" << m_exe;
-    return false;
+    log(e) << "stop" << m_data.exe();
   }
+
+  return false;
 }
 
 bool wex::factory::process_imp::write(const std::string& text)

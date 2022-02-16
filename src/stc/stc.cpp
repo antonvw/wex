@@ -898,12 +898,13 @@ bool wex::stc::set_indicator(const indicator& indicator, int start, int end)
   {
     if (!loaded)
     {
-      log("indicator") << indicator.number() << " not loaded";
+      log("indicator") << indicator.number() << "not loaded";
     }
     else
     {
-      log("set_indicator") << indicator.number() << start << end;
+      log("indicator") << indicator.number() << start << end;
     }
+
     return false;
   }
 
@@ -913,10 +914,8 @@ bool wex::stc::set_indicator(const indicator& indicator, int start, int end)
   {
     IndicatorFillRange(start, end - start);
   }
-  else if (end - start == 0)
-  {
-    log::trace("indicator") << start << end;
-  }
+
+  log::trace("indicator") << start << end << GetIndicatorCurrent();
 
   return true;
 }
@@ -961,7 +960,7 @@ bool wex::stc::show_blame(const vcs_entry* vcs)
     return false;
   }
 
-  if (vcs->get_stdout().empty())
+  if (vcs->std_out().empty())
   {
     log::debug("no vcs output");
     return false;
@@ -976,7 +975,7 @@ bool wex::stc::show_blame(const vcs_entry* vcs)
   const auto        margin_blame(iv.find<int>(_("stc.margin.Text")));
 
   for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
-         vcs->get_stdout(),
+         vcs->std_out(),
          boost::char_separator<char>("\r\n")))
   {
     if (const auto& [r, bl, t, l] = vcs->get_blame().get(it); bl != prev && r)

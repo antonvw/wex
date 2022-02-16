@@ -144,8 +144,8 @@ bool wex::compare_file(const path& file1, const path& file2)
   if (const auto arguments =
         (file1.stat().get_modification_time() <
          file2.stat().get_modification_time()) ?
-          "\"" + file1.string() + "\" \"" + file2.string() + "\"" :
-          "\"" + file2.string() + "\" \"" + file1.string() + "\"";
+          quoted_find(file1.string()) + " " + quoted_find(file2.string()) :
+          quoted_find(file2.string()) + " " + quoted_find(file1.string());
       factory::process().system(
         config(_("list.Comparator")).get() + " " + arguments) != 0)
   {
@@ -184,10 +184,11 @@ bool wex::make(const path& makefile)
 {
   auto* process = new wex::factory::process;
 
-  return process->async_system(
-    config("Make").get("make") + " " + config("MakeSwitch").get("-f") + " " +
-      makefile.string(),
-    makefile.parent_path());
+  return process->async_system(process_data(
+                                 config("Make").get("make") + " " +
+                                 config("MakeSwitch").get("-f") + " " +
+                                 makefile.string())
+                                 .start_dir(makefile.parent_path()));
 }
 
 int wex::open_files(
@@ -266,7 +267,7 @@ bool wex::shell_expansion(std::string& command)
     }
     else
     {
-      r.replace(command, process.get_stdout());
+      r.replace(command, process.std_out());
     }
   }
 

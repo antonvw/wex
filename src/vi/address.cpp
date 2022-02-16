@@ -357,7 +357,7 @@ bool wex::address::read(const std::string& arg) const
       return false;
     }
 
-    return append(process.get_stdout());
+    return append(process.std_out());
   }
   else
   {

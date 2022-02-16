@@ -122,8 +122,8 @@ size_t shift(vi* vi, int count, const std::string& command)
     case vi_mode::state_t::VISUAL:
     case vi_mode::state_t::VISUAL_LINE:
     case vi_mode::state_t::VISUAL_BLOCK:
-      command == ">" ? addressrange(vi, "'<,'>").shift_right() :
-                       addressrange(vi, "'<,'>").shift_left();
+      command == ">" ? addressrange(vi, ex_command::selection_range()).shift_right() :
+                       addressrange(vi, ex_command::selection_range()).shift_left();
       break;
     default:
       break;

@@ -45,7 +45,8 @@ saveas
 	${size}=	Get File Size	test-ex.robot
 	Input Many	:e test-ex.robot	1
 	Input Many	:w copy.txt	1
-	Appl	1
+	Appl	1000
+	Sleep	1
 	File Should Exist	copy.txt
 	${size-copy}=	Get File Size	copy.txt
 	Should Be Equal	${size}	${size-copy}

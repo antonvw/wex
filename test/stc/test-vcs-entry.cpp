@@ -2,7 +2,7 @@
 // Name:      test-vcsentry.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/defs.h>
@@ -48,7 +48,7 @@ TEST_CASE("wex::vcs_entry")
 #ifndef __WXMSW__
     // the get_branch gives error on msw
     REQUIRE(!entry.get_branch().empty());
-    REQUIRE(!entry.get_stdout().empty());
+    REQUIRE(!entry.std_out().empty());
 #endif
     entry.show_output();
 
@@ -62,9 +62,9 @@ TEST_CASE("wex::vcs_entry")
 
     REQUIRE(entry.get_commands().size() == 2);
     REQUIRE(entry.get_flags().empty());
-    REQUIRE(!entry.get_stdout().empty());
+    REQUIRE(!entry.std_out().empty());
     REQUIRE(entry.execute()); // executes just git, shows help
-    REQUIRE(entry.get_stdout().find("usage: ") != std::string::npos);
+    REQUIRE(entry.std_out().find("usage: ") != std::string::npos);
     entry.show_output();
 
     auto* other = new wex::vcs_entry(doc.document_element());

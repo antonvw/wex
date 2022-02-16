@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Include file for wex::del::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -147,9 +147,7 @@ public:
     override;
   void on_notebook(wxWindowID id, wxWindow* page) override;
 
-  bool process_async_system(
-    const std::string& command,
-    const std::string& start_dir = std::string()) override;
+  bool process_async_system(const process_data& data) override;
 
   void set_recent_file(const path& path) override;
 

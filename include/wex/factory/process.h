@@ -2,7 +2,7 @@
 // Name:      factory/process.h
 // Purpose:   Declaration of class wex::factory::process
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,6 +10,8 @@
 #include <chrono>
 #include <memory>
 #include <string>
+
+#include <wex/factory/process-data.h>
 
 class wxEvtHandler;
 
@@ -39,9 +41,7 @@ public:
   /// The output streams of the executing process are sent to these
   /// event handlers using wxPostEvent.
   /// Returns true if the async process is started.
-  virtual bool async_system(
-    const std::string& exe,
-    const std::string& start_dir = std::string());
+  virtual bool async_system(const process_data& data);
 
   // Writes data to the input of the async process.
   virtual bool write(const std::string& text);
@@ -51,14 +51,8 @@ public:
   /// Sleeps for some milliseconds time.
   void async_sleep_for(const std::chrono::milliseconds& ms);
 
-  /// Returns last or current async exe.
-  const std::string get_exe() const;
-
-  /// Returns the stderr.
-  const auto& get_stderr() const { return m_stderr; }
-
-  /// Returns the stdout.
-  const auto& get_stdout() const { return m_stdout; }
+  /// Returns last or current data used by async_system.
+  const process_data& data() const;
 
   /// Is this a debug process.
   bool is_debug() const;
@@ -72,21 +66,24 @@ public:
   /// Sets out event handler.
   void set_handler_out(wxEvtHandler* eh);
 
+  /// Returns the stderr.
+  const auto& std_err() const { return m_stderr; }
+
+  /// Returns the stdout.
+  const auto& std_out() const { return m_stdout; }
+
   // Stops the async process.
   bool stop();
 
   /// Runs the sync process, collecting output in stdout and stderr.
   /// It will execute the process and wait for it's exit,
-  /// then return the exit_code.
-  int system(
-    const std::string& exe,
-    const std::string& start_dir = std::string());
+  /// then returns the exit_code.
+  int system(const process_data& data);
 
 private:
   std::string m_stderr, m_stdout;
 
-  wxEvtHandler* m_eh_debug{nullptr};
-  wxEvtHandler* m_eh_out{nullptr};
+  wxEvtHandler *m_eh_debug{nullptr}, *m_eh_out{nullptr};
 
   std::unique_ptr<process_imp> m_imp;
 };

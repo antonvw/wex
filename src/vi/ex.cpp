@@ -90,7 +90,7 @@ bool wex::ex::command(const std::string& cmd)
     m_command.clear();
     return auto_write();
   }
-  else if (command == ":" || command == ":'<,'>" || command == ":!")
+  else if (command == ":" || command == ":" + ex_command::selection_range() || command == ":!")
   {
     return m_frame->show_ex_command(get_stc(), command);
   }

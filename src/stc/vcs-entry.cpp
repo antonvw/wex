@@ -2,7 +2,7 @@
 // Name:      vcs-entry.cpp
 // Purpose:   Implementation of wex::vcs_entry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -107,10 +107,10 @@ bool wex::vcs_entry::execute(
     my_args.clear();
   }
 
-  return process::system(
-           bin() + " " + prefix + get_command().get_command() + " " +
-             subcommand + flags + comment + my_args,
-           wd) == 0;
+  return process::system(process_data(
+                           bin() + " " + prefix + get_command().get_command() +
+                           " " + subcommand + flags + comment + my_args)
+                           .start_dir(wd)) == 0;
 }
 
 bool wex::vcs_entry::execute(const std::string& command, const std::string& wd)
@@ -124,17 +124,18 @@ bool wex::vcs_entry::execute(const std::string& command, const std::string& wd)
     flags = " " + vc.flags();
   }
 
-  return process::system(bin() + " " + command + flags, wd) == 0;
+  return process::system(
+           process_data(bin() + " " + command + flags).start_dir(wd)) == 0;
 }
 
 const std::string wex::vcs_entry::get_branch(const std::string& wd) const
 {
   if (name() == "git")
   {
-    if (process p; p.system(bin() + " branch", wd) == 0)
+    if (process p; p.system(process_data(bin() + " branch").start_dir(wd)) == 0)
     {
       for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
-             p.get_stdout(),
+             p.std_out(),
              boost::char_separator<char>("\r\n")))
       {
         if (it.starts_with('*'))
@@ -166,12 +167,12 @@ bool wex::vcs_entry::log(const path& p, const std::string& id)
       bin() + " log " + m_log_flags + " " + id :
       bin() + " log " + id + " " + m_log_flags;
 
-  return process::system(command, p.parent_path()) == 0;
+  return process::system(process_data(command).start_dir(p.parent_path())) == 0;
 }
 
 void wex::vcs_entry::show_output(const std::string& caption) const
 {
-  if (!get_stdout().empty() && get_shell() != nullptr)
+  if (!std_out().empty() && get_shell() != nullptr)
   {
     if (get_flags().find("xml") != std::string::npos)
     {

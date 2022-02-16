@@ -41,6 +41,9 @@ public:
     VI,      ///< a vi command (no ex command)
   };
 
+  /// Returns string used to retrieve addressrange for selection.
+  static const std::string selection_range();
+
   /// Default constructor.
   ex_command();
 
