@@ -898,12 +898,13 @@ bool wex::stc::set_indicator(const indicator& indicator, int start, int end)
   {
     if (!loaded)
     {
-      log("indicator") << indicator.number() << " not loaded";
+      log("indicator") << indicator.number() << "not loaded";
     }
     else
     {
-      log("set_indicator") << indicator.number() << start << end;
+      log("indicator") << indicator.number() << start << end;
     }
+
     return false;
   }
 
@@ -913,10 +914,8 @@ bool wex::stc::set_indicator(const indicator& indicator, int start, int end)
   {
     IndicatorFillRange(start, end - start);
   }
-  else if (end - start == 0)
-  {
-    log::trace("indicator") << start << end;
-  }
+
+  log::trace("indicator") << start << end << GetIndicatorCurrent();
 
   return true;
 }

@@ -91,3 +91,8 @@ cd boost_<>*
 sudo ./b2 install --prefix=<path> --with=all
 cmake -DBOOST_ROOT=<path>
 ```
+
+## ODBC build
+
+- Add wexENABLE_ODBC to use wex::odbc class, that offers odbc
+  functionality.

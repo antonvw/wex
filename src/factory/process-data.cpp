@@ -8,6 +8,8 @@
 #include <filesystem>
 #include <numeric>
 
+
+#define BOOST_ASIO_HAS_STD_INVOKE_RESULT ON
 #include <boost/process.hpp>
 #include <boost/tokenizer.hpp>
 

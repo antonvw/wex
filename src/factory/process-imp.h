@@ -9,6 +9,7 @@
 #include <atomic>
 #include <queue>
 
+#define BOOST_ASIO_HAS_STD_INVOKE_RESULT ON
 #include <boost/process.hpp>
 
 namespace bp = boost::process;

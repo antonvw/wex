@@ -6,20 +6,47 @@ if (CMAKE_BUILD_TYPE MATCHES "Coverage")
   
   add_custom_target(lcov-prep
     # prepare initial tracefile
-    lcov --base-directory ./ --gcov-tool gcov --capture --initial --directory ./ --output-file app.base)
+    lcov 
+      --base-directory ./ 
+      --gcov-tool gcov 
+      --capture 
+      --initial 
+      --directory ./ 
+      --output-file app.base)
     
   add_custom_target(lcov
     # capture results
-    COMMAND lcov --base-directory ./ --gcov-tool gcov --capture --directory ./ --output-file app.run
+    COMMAND lcov 
+      --base-directory ./ 
+      --gcov-tool gcov 
+      --capture 
+      --directory ./ 
+      --output-file app.run
+
     # combine tracefiles
-    COMMAND lcov --gcov-tool gcov --add-tracefile app.base --add-tracefile app.run --output-file app.run
+    COMMAND lcov 
+      --gcov-tool gcov 
+      --add-tracefile app.base 
+      --add-tracefile app.run 
+      --output-file app.run
+
     # remove output that we are not interested in
     COMMAND lcov 
       --gcov-tool gcov 
       --remove app.run "*/usr/*" "*sample*" "*external/*" "*/test/*" "*factory/grid*"
       --output-file app.run
+
     # generate local files
-    COMMAND genhtml --no-branch-coverage --title "${PROJECT_NAME}" app.run
+    COMMAND genhtml 
+      # coverage rate limits for line coverage
+      --rc genhtml_hi_limit=50
+      --rc genhtml_med_limit=35
+      # coverage rate limits for function coverage
+      --rc genhtml_function_hi_limit=80
+      --rc genhtml_function_med_limit=50
+      --no-branch-coverage 
+      --title "${PROJECT_NAME}" app.run
+
     COMMENT "Running lcov" VERBATIM)    
 endif ()
 
