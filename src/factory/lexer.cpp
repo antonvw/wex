@@ -217,7 +217,7 @@ const std::string wex::lexer::align_text(
   const auto line_length = usable_chars_per_line();
 
   // Use the header, with one space extra to separate, or no header at all.
-  const auto header_with_spaces =
+  const auto& header_with_spaces =
     (header.empty()) ? std::string() : std::string(header.size(), ' ');
 
   bool        at_begin = true;
@@ -414,7 +414,7 @@ const std::string wex::lexer::comment_complete(const std::string& comment) const
   }
   else
   {
-    const auto blanks = std::string(n, ' ');
+    const auto& blanks = std::string(n, ' ');
     return blanks + m_command_end;
   }
 }

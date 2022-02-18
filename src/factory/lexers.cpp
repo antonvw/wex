@@ -222,7 +222,7 @@ const wex::lexer& wex::lexers::find_by_text(const std::string& text) const
 
   try
   {
-    const std::string filtered(std::regex_replace(
+    const auto& filtered(std::regex_replace(
       text,
       std::regex("[ \t\n\v\f\r]+$"),
       "",

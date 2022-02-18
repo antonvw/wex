@@ -2,7 +2,7 @@
 // Name:      test-stream.cpp
 // Purpose:   Implementation for wex del unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/stream.h>
@@ -28,6 +28,7 @@ TEST_CASE("wex::stream")
     lv);
 
   REQUIRE(textFile.run_tool());
+  REQUIRE(textFile.get_tool().id() == tool.id());
   REQUIRE(!textFile.get_statistics().get_elements().get_items().empty());
 
   REQUIRE(textFile.run_tool()); // do the same test
