@@ -2,7 +2,7 @@
 // Name:      test-listview.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/defs.h>
@@ -25,6 +25,8 @@ TEST_CASE("wex::listview")
     REQUIRE(lv->data().image() == wex::data::listview::IMAGE_ART);
 
     lv->config_get();
+
+    REQUIRE(lv->field_separator() != 0);
 
     wex::column intcol(wex::column("Int", wex::column::INT));
     REQUIRE(!intcol.is_sorted_ascending());
@@ -56,6 +58,8 @@ TEST_CASE("wex::listview")
 
     REQUIRE(lv->item_to_text(0).find("95") != std::string::npos);
     REQUIRE(!lv->item_to_text(-1).empty());
+
+    REQUIRE(lv->set_item(0, 3, "new"));
   }
 
   SUBCASE("clear")
@@ -63,6 +67,36 @@ TEST_CASE("wex::listview")
     lv->clear();
     lv->items_update();
     REQUIRE(lv->GetItemCount() == 0);
+  }
+
+  SUBCASE("events")
+  {
+    for (auto id : std::vector<int>{0})
+    {
+      auto* event        = new wxListEvent(wxEVT_LIST_ITEM_ACTIVATED);
+      event->m_itemIndex = id; // for wxWidgets 3.0 compatibility
+      wxQueueEvent(lv, event);
+    }
+
+    for (auto id :
+         std::vector<int>{wex::ID_EDIT_SELECT_INVERT, wex::ID_EDIT_SELECT_NONE})
+    {
+      auto* event = new wxCommandEvent(wxEVT_MENU, id);
+      wxQueueEvent(lv, event);
+    }
+  }
+
+  SUBCASE("item_from_to_text")
+  {
+    REQUIRE(lv->append_columns({{"String", wex::column::STRING}}));
+
+    REQUIRE(lv->item_from_text("test.h\ntest.h"));
+    REQUIRE(lv->set_item_image(0, wxART_WARNING));
+    lv->items_update();
+    REQUIRE(lv->data().image() == wex::data::listview::IMAGE_ART);
+    REQUIRE(!lv->data().type_description().empty());
+    REQUIRE(!lv->item_to_text(0).empty());
+    REQUIRE(!lv->item_to_text(-1).empty());
   }
 
   SUBCASE("sorting")
@@ -101,36 +135,6 @@ TEST_CASE("wex::listview")
     REQUIRE(lv->sort_column("Date"));
   }
 
-  SUBCASE("item_from_to_text")
-  {
-    REQUIRE(lv->append_columns({{"String", wex::column::STRING}}));
-
-    REQUIRE(lv->item_from_text("test.h\ntest.h"));
-    REQUIRE(lv->set_item_image(0, wxART_WARNING));
-    lv->items_update();
-    REQUIRE(lv->data().image() == wex::data::listview::IMAGE_ART);
-    REQUIRE(!lv->data().type_description().empty());
-    REQUIRE(!lv->item_to_text(0).empty());
-    REQUIRE(!lv->item_to_text(-1).empty());
-  }
-
-  SUBCASE("events")
-  {
-    for (auto id : std::vector<int>{0})
-    {
-      auto* event        = new wxListEvent(wxEVT_LIST_ITEM_ACTIVATED);
-      event->m_itemIndex = id; // for wxWidgets 3.0 compatibility
-      wxQueueEvent(lv, event);
-    }
-
-    for (auto id :
-         std::vector<int>{wex::ID_EDIT_SELECT_INVERT, wex::ID_EDIT_SELECT_NONE})
-    {
-      auto* event = new wxCommandEvent(wxEVT_MENU, id);
-      wxQueueEvent(lv, event);
-    }
-  }
-
   SUBCASE("TSV")
   {
     auto* lv =
@@ -142,5 +146,8 @@ TEST_CASE("wex::listview")
     REQUIRE(lv->load({"x\ty\tz", "v\tw\tx", "a\tb\tc", "f\tg\th"}));
     REQUIRE(lv->GetColumnCount() == 3);
     REQUIRE(lv->GetItemCount() == 4);
+
+    auto save(lv->save());
+    REQUIRE(save.front() == "x\ty\tz");
   }
 }

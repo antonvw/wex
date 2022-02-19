@@ -2,7 +2,7 @@
 // Name:      test-version.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
@@ -11,6 +11,8 @@
 TEST_CASE("wex::about_info")
 {
   wex::about_info about;
+  
+  about.icon(wxIcon());
 
   REQUIRE(about.GetDescription().empty());
   REQUIRE(about.GetDevelopers().empty());
@@ -40,4 +42,9 @@ TEST_CASE("wex::version_dialog")
 
     REQUIRE(info.about().GetDescription().find("hello") != std::string::npos);
   }
+}
+
+TEST_CASE("wex::version_dialog")
+{
+  REQUIRE(wex::external_libraries().str().find("wex") != std::string::npos);
 }

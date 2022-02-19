@@ -219,14 +219,8 @@ const wex::path wex::factory::link::find_url_or_mime(
   }
 
   // previewable (MIME) file
-  if (stc != nullptr && stc->get_lexer().is_previewable())
-  {
-    return stc->path();
-  }
-  else
-  {
-    return path();
-  }
+  return (stc != nullptr && stc->get_lexer().is_previewable()) ? stc->path() :
+                                                                 path();
 }
 
 // text contains selected text, or current line
@@ -242,16 +236,16 @@ const wex::path wex::factory::link::get_path(
   }
 
   // if text starts with file:[line[:col]]
-  if (const path p(find_filename(text, data)); !p.empty())
+  if (const auto& p(find_filename(text, data)); !p.empty())
   {
     return p;
   }
 
   // if we have something in between
-  const wex::path between(find_between(text, stc));
+  const auto& between(find_between(text, stc));
 
   // if between text now starts with file:line:no
-  if (const path p(find_filename(between.string(), data)); !p.empty())
+  if (const auto& p(find_filename(between.string(), data)); !p.empty())
   {
     return p;
   }
@@ -290,7 +284,7 @@ const wex::path wex::factory::link::get_path(
       return word.make_absolute();
     }
 
-    if (const path p(find_filename(word.string(), data)); !p.empty())
+    if (const auto& p(find_filename(word.string(), data)); !p.empty())
     {
       return p;
     }

@@ -2,7 +2,7 @@
 // Name:      menus.h
 // Purpose:   Declaration of wex::menus class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -53,6 +53,10 @@ public:
 private:
   template <typename T>
   static void add_command(const pugi::xml_node& node, T& commands);
+
+  static void add_menu(const menu_command& mc, menu* menu);
+
+  static inline int m_id{0};
 };
 
 // implementation
@@ -73,10 +77,7 @@ size_t wex::menus::add_commands(const pugi::xml_node& node, T& commands)
 template <typename T>
 size_t wex::menus::build_menu(const T& commands, int base_id, menu* menu)
 {
-  wex::menu*        submenu   = nullptr;
-  const std::string unused    = "XXXXX";
-  std::string       prev_menu = unused;
-  int               i         = 0;
+  m_id = base_id;
 
   for (const auto& it : commands)
   {
@@ -115,37 +116,10 @@ size_t wex::menus::build_menu(const T& commands, int base_id, menu* menu)
 
     if (add)
     {
-      if (!it.submenu().empty() && prev_menu != it.submenu())
-      {
-        submenu   = new wex::menu();
-        prev_menu = it.submenu();
-        menu->append({{}, {submenu, it.submenu()}});
-      }
-      else if (it.submenu().empty())
-      {
-        if (prev_menu != unused)
-        {
-          prev_menu = unused;
-          menu->append({{}});
-        }
-        submenu = nullptr;
-      }
-
-      wex::menu* usemenu = (submenu == nullptr ? menu : submenu);
-      usemenu->append(
-        {{base_id + i,
-          ellipsed(
-            it.text().empty() ? it.get_command(menu_command::INCLUDE_ACCELL) :
-                                it.text(),
-            it.control(),
-            it.type().test(menu_command::ELLIPSES))}});
-
-      if (it.type().test(menu_command::SEPARATOR))
-      {
-        usemenu->append({{}});
-      }
+      add_menu(it, menu);
     }
-    i++;
+
+    m_id++;
   }
 
   return menu->GetMenuItemCount();

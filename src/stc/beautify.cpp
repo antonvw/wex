@@ -2,7 +2,7 @@
 // Name:      beautify.cpp
 // Purpose:   Implementation of wex::beautify class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/path-lexer.h>
@@ -51,7 +51,7 @@ bool wex::beautify::stc(wex::stc& s) const
     return false;
   }
 
-  const std::string& lines(
+  const auto& lines(
     s.GetSelectedText().empty() ?
       std::string() :
       " --lines " +

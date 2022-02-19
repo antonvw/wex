@@ -68,6 +68,9 @@ TEST_CASE("wex::ex_command")
     command.append("ww");
     REQUIRE(command.command() == "wwww");
     REQUIRE(command.get_stc() == stc);
+
+    REQUIRE(!command.append_exec('w'));
+    REQUIRE(command.command() == "wwwww");
   }
 
   SUBCASE("erase")
