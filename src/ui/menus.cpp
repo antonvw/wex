@@ -33,7 +33,7 @@ void wex::menus::add_menu(const menu_command& mc, menu* menu)
   auto* usemenu = (submenu == nullptr ? menu : submenu);
 
   usemenu->append(
-    {{m_id++,
+    {{m_id,
       ellipsed(
         mc.text().empty() ? mc.get_command(menu_command::INCLUDE_ACCELL) :
                             mc.text(),

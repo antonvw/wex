@@ -7,7 +7,6 @@
 
 #include <thread>
 
-#include <wex/core/log.h>
 #include <wex/del/defs.h>
 #include <wex/stc/process.h>
 #include <wex/ui/frd.h>

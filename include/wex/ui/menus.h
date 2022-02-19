@@ -118,6 +118,8 @@ size_t wex::menus::build_menu(const T& commands, int base_id, menu* menu)
     {
       add_menu(it, menu);
     }
+
+    m_id++;
   }
 
   return menu->GetMenuItemCount();

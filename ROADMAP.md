@@ -13,6 +13,7 @@
 - process-imp should test whether event handler is ok, see test-process.
 - is the define BOOST_ASIO_HAS_STD_INVOKE_RESULT ON necessary?
 - menus is a template class, is this really necessary
+- REPORT_FIRST, REPORT_LAST no longer necessary
 - use boost python for scripting
 - current stc uses old scintilla
   - does not support json bool, see config.cpp
