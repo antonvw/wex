@@ -56,6 +56,28 @@ void hypertext(stc* stc)
     }
   }
 }
+
+menu::menu_t get_style(stc* stc)
+{
+  menu::menu_t style(menu::menu_t().set(menu::IS_POPUP).set(menu::IS_LINES));
+
+  if (stc->GetReadOnly() || stc->is_hexmode())
+    style.set(menu::IS_READ_ONLY);
+
+  if (!stc->GetSelectedText().empty())
+    style.set(menu::IS_SELECTED);
+
+  if (stc->GetTextLength() == 0)
+    style.set(menu::IS_EMPTY);
+
+  if (stc->get_vi().visual() == ex::VISUAL)
+    style.set(menu::IS_VISUAL);
+
+  if (stc->CanPaste())
+    style.set(menu::CAN_PASTE);
+
+  return style;
+}
 }; // namespace wex
 
 void wex::stc::bind_other()
@@ -414,21 +436,7 @@ void wex::stc::mouse_action(wxMouseEvent& event)
     }
     else if (event.RightUp())
     {
-      menu::menu_t style(
-        menu::menu_t().set(menu::IS_POPUP).set(menu::IS_LINES));
-
-      if (GetReadOnly() || is_hexmode())
-        style.set(menu::IS_READ_ONLY);
-      if (!GetSelectedText().empty())
-        style.set(menu::IS_SELECTED);
-      if (GetTextLength() == 0)
-        style.set(menu::IS_EMPTY);
-      if (m_vi->visual() == ex::VISUAL)
-        style.set(menu::IS_VISUAL);
-      if (CanPaste())
-        style.set(menu::CAN_PASTE);
-
-      menu menu(style);
+      menu menu(get_style(this));
       build_popup_menu(menu);
 
       if (menu.GetMenuItemCount() > 0)

@@ -481,12 +481,7 @@ void wex::stc::build_popup_menu(menu& menu)
     menu.append({{}, {wxID_FIND}});
   }
 
-  menu.append({{}, {menu_item::EDIT}});
-
-  if (!GetReadOnly())
-  {
-    build_popup_menu_edit(menu);
-  }
+  build_popup_menu_edit(menu);
 
   // Folding if nothing selected, property is set,
   // and we have a lexer.
@@ -504,6 +499,13 @@ void wex::stc::build_popup_menu(menu& menu)
 
 void wex::stc::build_popup_menu_edit(menu& menu)
 {
+  menu.append({{}, {menu_item::EDIT}});
+
+  if (GetReadOnly())
+  {
+    return;
+  }
+
   const bool beautify_add(beautify().is_active() && !beautify().is_auto());
   const auto sel(GetSelectedText().ToStdString());
 
