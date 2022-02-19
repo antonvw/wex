@@ -2,22 +2,20 @@
 // Name:      lexer.cpp
 // Purpose:   Implementation of wex::lexer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <algorithm>
 #include <boost/tokenizer.hpp>
-#include <charconv>
-#include <functional>
-#include <numeric>
-#include <pugixml.hpp>
-#include <wex/config.h>
-#include <wex/core.h>
+#include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
+#include <wex/factory/lexer.h>
+#include <wex/factory/lexers.h>
 #include <wex/factory/stc.h>
-#include <wex/lexer.h>
-#include <wex/lexers.h>
-#include <wex/log.h>
+#include <wex/factory/util.h>
 #include <wx/platinfo.h>
+
+#include <charconv>
 
 namespace wex
 {
@@ -103,74 +101,7 @@ wex::lexer::lexer(const pugi::xml_node* node)
       m_command_end   = "-->";
     }
 
-    for (const auto& child : node->children())
-    {
-      if (strcmp(child.name(), "styles") == 0)
-      {
-        node_styles(&child, m_scintilla_lexer, m_styles);
-      }
-      else if (strcmp(child.name(), "keywords") == 0)
-      {
-        // Add all direct keywords
-        if (const std::string direct(child.text().get());
-            !direct.empty() && !add_keywords(direct))
-        {
-          wex::log("keywords")
-            << direct << " could not be set" << child << m_scintilla_lexer;
-        }
-
-        // Add all keywords that point to a keyword set.
-        for (const auto& att : child.attributes())
-        {
-          const std::string nm(att.name());
-          const auto        pos = nm.find("-");
-
-          try
-          {
-            int setno = 0;
-
-            if (pos != std::string::npos)
-            {
-              const auto subs(nm.substr(pos + 1));
-              std::from_chars(subs.data(), subs.data() + subs.size(), setno);
-            }
-
-            const auto keywords = lexers::get()->keywords(att.value());
-
-            if (keywords.empty())
-            {
-              wex::log("empty keywords for") << att.value() << child;
-            }
-
-            if (!add_keywords(keywords, setno))
-            {
-              wex::log("keywords for")
-                << att.value() << "could not be set" << child;
-            }
-          }
-          catch (std::exception& e)
-          {
-            wex::log(e) << "keyword:" << att.name();
-          }
-        }
-      }
-      else if (strcmp(child.name(), "properties") == 0)
-      {
-        if (!m_properties.empty())
-        {
-          wex::log("properties already available") << child;
-        }
-
-        node_properties(&child, m_properties);
-      }
-      else if (strcmp(child.name(), "comments") == 0)
-      {
-        m_comment_begin  = child.attribute("begin1").value();
-        m_command_end    = child.attribute("end1").value();
-        m_comment_begin2 = child.attribute("begin2").value();
-        m_command_end2   = child.attribute("end2").value();
-      }
-    }
+    parse_childen(node);
   }
 }
 
@@ -226,8 +157,8 @@ bool wex::lexer::add_keywords(const std::string& value, int setno)
 
     if (line.find(":") != std::string::npos)
     {
-      keyword = before(line, ':');
-      const auto a_l(after(line, ':'));
+      keyword = find_before(line, ":");
+      const auto a_l(find_after(line, ":"));
 
       try
       {
@@ -286,7 +217,7 @@ const std::string wex::lexer::align_text(
   const auto line_length = usable_chars_per_line();
 
   // Use the header, with one space extra to separate, or no header at all.
-  const auto header_with_spaces =
+  const auto& header_with_spaces =
     (header.empty()) ? std::string() : std::string(header.size(), ' ');
 
   bool        at_begin = true;
@@ -483,7 +414,7 @@ const std::string wex::lexer::comment_complete(const std::string& comment) const
   }
   else
   {
-    const auto blanks = std::string(n, ' ');
+    const auto& blanks = std::string(n, ' ');
     return blanks + m_command_end;
   }
 }
@@ -782,6 +713,78 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
            stc->SetWrapMode(attrib);
          }
        }});
+  }
+}
+
+void wex::lexer::parse_childen(const pugi::xml_node* node)
+{
+  for (const auto& child : node->children())
+  {
+    if (strcmp(child.name(), "styles") == 0)
+    {
+      node_styles(&child, m_scintilla_lexer, m_styles);
+    }
+    else if (strcmp(child.name(), "keywords") == 0)
+    {
+      // Add all direct keywords
+      if (const std::string direct(child.text().get());
+          !direct.empty() && !add_keywords(direct))
+      {
+        wex::log("keywords")
+          << direct << " could not be set" << child << m_scintilla_lexer;
+      }
+
+      // Add all keywords that point to a keyword set.
+      for (const auto& att : child.attributes())
+      {
+        const std::string nm(att.name());
+        const auto        pos = nm.find("-");
+
+        try
+        {
+          int setno = 0;
+
+          if (pos != std::string::npos)
+          {
+            const auto subs(nm.substr(pos + 1));
+            std::from_chars(subs.data(), subs.data() + subs.size(), setno);
+          }
+
+          const auto keywords = lexers::get()->keywords(att.value());
+
+          if (keywords.empty())
+          {
+            wex::log("empty keywords for") << att.value() << child;
+          }
+
+          if (!add_keywords(keywords, setno))
+          {
+            wex::log("keywords for")
+              << att.value() << "could not be set" << child;
+          }
+        }
+        catch (std::exception& e)
+        {
+          wex::log(e) << "keyword:" << att.name();
+        }
+      }
+    }
+    else if (strcmp(child.name(), "properties") == 0)
+    {
+      if (!m_properties.empty())
+      {
+        wex::log("properties already available") << m_scintilla_lexer << child;
+      }
+
+      node_properties(&child, m_properties);
+    }
+    else if (strcmp(child.name(), "comments") == 0)
+    {
+      m_comment_begin  = child.attribute("begin1").value();
+      m_command_end    = child.attribute("end1").value();
+      m_comment_begin2 = child.attribute("begin2").value();
+      m_command_end2   = child.attribute("end2").value();
+    }
   }
 }
 

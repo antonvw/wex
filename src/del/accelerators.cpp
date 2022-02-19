@@ -5,10 +5,10 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/accelerators.h>
-#include <wex/debug.h>
-#include <wex/defs.h>
+#include <wex/del/accelerators.h>
 #include <wex/del/frame.h>
+#include <wex/factory/defs.h>
+#include <wex/stc/debug.h>
 #include <wx/app.h>
 #include <wx/window.h>
 
@@ -23,8 +23,7 @@ wex::accelerators::accelerators(
     (debug ? frame->get_debug()->debug_entry().get_commands().size() : 0);
 
   m_entries = new wxAcceleratorEntry[m_size];
-
-  int i = 0;
+  int i     = 0;
 
   for (const auto& it : v)
   {
@@ -33,9 +32,8 @@ wex::accelerators::accelerators(
 
   if (debug)
   {
-    int j = ID_EDIT_DEBUG_FIRST;
-
-    for (const auto& e : frame->get_debug()->debug_entry().get_commands())
+    for (int         j = ID_EDIT_DEBUG_FIRST;
+         const auto& e : frame->get_debug()->debug_entry().get_commands())
     {
       if (!e.control().empty())
       {

@@ -5,18 +5,14 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
+#include <wex/common/tostring.h>
+#include <wex/common/util.h>
+#include <wex/core/log.h>
 #include <wex/factory/frame.h>
-#include <wex/file-dialog.h>
-#include <wex/log.h>
-#include <wex/open-files-dialog.h>
-#include <wex/stc-entry-dialog.h>
-#include <wex/stc.h>
-#include <wex/tostring.h>
-#include <wex/util.h>
+#include <wex/stc/entry-dialog.h>
+#include <wex/stc/open-files-dialog.h>
+#include <wex/stc/stc.h>
+#include <wex/ui/file-dialog.h>
 
 wex::stc_entry_dialog::stc_entry_dialog(
   const std::string&  text,
@@ -140,7 +136,7 @@ void wex::open_files_dialog(
   }
   else
   {
-    file_dialog dlg(data::window(data.window()).title(caption));
+    file_dialog dlg(nullptr, data::window(data.window()).title(caption));
 
     if (dlg.ShowModal() == wxID_CANCEL)
       return;

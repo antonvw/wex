@@ -1,5 +1,13 @@
 # changes
 
+**v22.04**
+- Microsoft Visual Studio 2022
+- boost::json lib instead of nlohmann/json lib, requiring boost 1.75
+- added methods to allow testing wex applications
+- c++20 standard
+- added a few vim g commands
+- added version info to wex libs
+
 **v21.10** *September 12, 2021*
 - boost::algorithm lib used
 - boost::tokenizer lib used
@@ -10,7 +18,7 @@
 **v21.04** *March 7, 2021*
 - added FindWEX.cmake to assist using wex library using cmake projects
 - boost::log lib instead of easylogging++ lib
-- c++20 standard, c++17 available as tag
+- c++2a standard, c++17 available as tag
 - support of ex mode handling of files
 - moved apps folder to gitlab
 
@@ -24,7 +32,7 @@
 - added wex::data namespace
 
 **v20.04** *March 15, 2020*
-- scintilla is compiled to use std::regex (ECMAScript)
+- scintilla is compiled to use `std::regex` (ECMAScript)
 - The Open Group Base Specifications Issue 7, 2018 edition
 - Microsoft Visual Studio 2019
 - usage of test suites
@@ -71,7 +79,7 @@
 - c++14 standard
 - wxWidgets 3.1.0
 - catch lib instead of cppunit lib
-- cmake build system
+- cmake build tool
 - Microsoft Visual Studio 2015
 - The Open Group Base Specifications Issue 7, 2013 edition
 

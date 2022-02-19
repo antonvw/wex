@@ -5,21 +5,22 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <algorithm>
 #include <boost/mpl/list.hpp>
 #include <boost/statechart/custom_reaction.hpp>
 #include <boost/statechart/state.hpp>
 #include <boost/statechart/state_machine.hpp>
 #include <boost/statechart/transition.hpp>
-#include <wex/config.h>
+#include <wex/core/config.h>
+#include <wex/core/log.h>
 #include <wex/factory/stc.h>
-#include <wex/frame.h>
-#include <wex/log.h>
-#include <wex/macro-mode.h>
-#include <wex/macros.h>
-#include <wex/statusbar.h>
-#include <wex/vi-mode.h>
-#include <wex/vi.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/statusbar.h>
+#include <wex/vi/macro-mode.h>
+#include <wex/vi/macros.h>
+#include <wex/vi/mode.h>
+#include <wex/vi/vi.h>
+
+#include <algorithm>
 
 namespace mpl = boost::mpl;
 namespace sc  = boost::statechart;
@@ -298,6 +299,28 @@ wex::vi_mode::vi_mode(
 
 wex::vi_mode::~vi_mode() {}
 
+void wex::vi_mode::command()
+{
+  if (get() == COMMAND)
+  {
+    return;
+  }
+
+  escape();
+
+  if (get() == COMMAND)
+  {
+    return;
+  }
+
+  escape();
+
+  if (get() != COMMAND)
+  {
+    log("vi command mode") << m_fsm->state_string();
+  }
+}
+
 bool wex::vi_mode::escape()
 {
   std::string command("\x1b");
@@ -321,23 +344,9 @@ bool wex::vi_mode::is_visual() const
 
 bool wex::vi_mode::transition(std::string& command)
 {
-  if (command.empty())
+  if (!transition_prep(command))
   {
     return false;
-  }
-  else if (command[0] == 'c')
-  {
-    if (command.size() == 1)
-    {
-      return false;
-    }
-    else
-    {
-      if (command.size() == 2 && (command[1] == 'f' || command[1] == 'F'))
-      {
-        return false;
-      }
-    }
   }
 
   if (
@@ -433,6 +442,30 @@ bool wex::vi_mode::transition(std::string& command)
   m_vi->frame()->statustext(str(), "PaneMode");
 
   command.erase(0, 1);
+
+  return true;
+}
+
+bool wex::vi_mode::transition_prep(std::string& command)
+{
+  if (command.empty())
+  {
+    return false;
+  }
+  else if (command[0] == 'c')
+  {
+    if (command.size() == 1)
+    {
+      return false;
+    }
+    else
+    {
+      if (command.size() == 2 && (command[1] == 'f' || command[1] == 'F'))
+      {
+        return false;
+      }
+    }
+  }
 
   return true;
 }

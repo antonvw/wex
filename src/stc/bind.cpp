@@ -6,30 +6,31 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
-#include <numeric>
-#include <vector>
-#include <wex/beautify.h>
-#include <wex/bind.h>
-#include <wex/config.h>
-#include <wex/debug-entry.h>
-#include <wex/defs.h>
-#include <wex/frame.h>
-#include <wex/frd.h>
-#include <wex/item-vector.h>
-#include <wex/lexer-props.h>
-#include <wex/lexers.h>
-#include <wex/log.h>
-#include <wex/menu.h>
-#include <wex/path-lexer.h>
-#include <wex/sort.h>
-#include <wex/stc-bind.h>
-#include <wex/stc-entry-dialog.h>
-#include <wex/stc.h>
-#include <wex/util.h>
-#include <wex/vcs.h>
+#include <wex/common/util.h>
+#include <wex/core/config.h>
+#include <wex/core/log.h>
+#include <wex/factory/defs.h>
+#include <wex/factory/lexer-props.h>
+#include <wex/factory/lexers.h>
+#include <wex/factory/path-lexer.h>
+#include <wex/factory/sort.h>
+#include <wex/stc/beautify.h>
+#include <wex/stc/entry-dialog.h>
+#include <wex/stc/stc.h>
+#include <wex/stc/vcs.h>
+#include <wex/ui/bind.h>
+#include <wex/ui/debug-entry.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/frd.h>
+#include <wex/ui/item-vector.h>
+#include <wex/ui/menu.h>
+#include <wex/ui/stc-bind.h>
 #include <wx/accel.h>
 #include <wx/msgdlg.h>
 #include <wx/numdlg.h>
+
+#include <numeric>
+#include <vector>
 
 namespace wex
 {
@@ -99,76 +100,6 @@ void edit_control_char(stc* stc)
   value = new_value;
 }
 
-void show_calltip(stc* stc)
-{
-  if (stc->CallTipActive())
-    stc->CallTipCancel();
-
-  const auto pos = stc->GetCurrentPos();
-
-  if (stc->is_hexmode())
-  {
-    stc->CallTipShow(pos, stc->get_hexmode().get_info());
-    return;
-  }
-
-  const auto word =
-    (!stc->GetSelectedText().empty() ? stc->GetSelectedText().ToStdString() :
-                                       stc->get_word_at_pos(pos));
-
-  if (word.empty())
-  {
-    return;
-  }
-
-  std::stringstream stream;
-
-  if (const int c = word[0]; c < 32 || c > 125)
-  {
-    stream << "bin: " << c;
-  }
-  else
-  {
-    long base10_val, base16_val;
-    bool base10_ok = true;
-    bool base16_ok = true;
-
-    try
-    {
-      base10_val = std::stol(word);
-      base10_ok  = (base10_val != 0);
-    }
-    catch (std::exception&)
-    {
-      base10_ok = false;
-    }
-
-    try
-    {
-      base16_val = std::stol(word, nullptr, 16);
-    }
-    catch (std::exception&)
-    {
-      base16_ok = false;
-    }
-
-    if (base10_ok || base16_ok)
-    {
-      if (base10_ok && !base16_ok)
-        stream << "hex: " << std::hex << base10_val;
-      else if (!base10_ok && base16_ok)
-        stream << "dec: " << base16_val;
-      else if (base10_ok && base16_ok)
-        stream << "dec: " << base16_val << " hex: " << std::hex << base10_val;
-    }
-  }
-
-  if (!stream.str().empty())
-  {
-    stc->CallTipShow(pos, stream.str());
-    clipboard_add(stream.str());
-  }
-}
 } // namespace wex
 
 void wex::stc::bind_all()
@@ -317,7 +248,7 @@ void wex::stc::bind_all()
 
      {[=, this](wxCommandEvent& event)
       {
-        show_calltip(this);
+        show_ascii_value();
       },
       id::stc::hex_dec_calltip},
 
@@ -548,60 +479,9 @@ void wex::stc::build_popup_menu(menu& menu)
   if (!get_vi().is_active() && GetTextLength() > 0)
   {
     menu.append({{}, {wxID_FIND}});
-
-    if (!GetReadOnly())
-    {
-      menu.append({{wxID_REPLACE}});
-    }
   }
 
-  menu.append({{}, {menu_item::EDIT}});
-
-  const bool beautify_add(beautify().is_active() && !beautify().is_auto());
-
-  if (!GetReadOnly())
-  {
-    if (!sel.empty())
-    {
-      auto* menuSelection = new wex::menu(
-        menu.style(),
-        {{id::stc::uppercase, _("&Uppercase\tF11")},
-         {id::stc::lowercase, _("&Lowercase\tF12")}});
-
-      if (beautify_add)
-      {
-        menuSelection->append({{}, {id::stc::beautify, _("&Beautify")}});
-      }
-
-      if (get_number_of_lines(sel) > 1)
-      {
-        menuSelection->append(
-          {{},
-           {new wex::menu(
-              menu.style(),
-              {{wxID_SORT_ASCENDING}, {wxID_SORT_DESCENDING}}),
-            _("&Sort")}});
-      }
-
-      menu.append({{}, {menuSelection, _("&Selection")}});
-    }
-  }
-
-  if (!GetReadOnly() && (CanUndo() || CanRedo()))
-  {
-    menu.append({{}});
-    if (CanUndo())
-      menu.append({{wxID_UNDO}});
-    if (CanRedo())
-      menu.append({{wxID_REDO}});
-  }
-
-  if (
-    !GetReadOnly() && sel.empty() && beautify_add &&
-    beautify().is_supported(get_lexer()))
-  {
-    menu.append({{}, {id::stc::beautify, _("&Beautify")}});
-  }
+  build_popup_menu_edit(menu);
 
   // Folding if nothing selected, property is set,
   // and we have a lexer.
@@ -614,6 +494,69 @@ void wex::stc::build_popup_menu(menu& menu)
        {id::stc::toggle_fold, _("&Toggle Fold\tCtrl+T")},
        {id::stc::fold_all, _("&Fold All Lines\tF9")},
        {id::stc::unfold_all, _("&Unfold All Lines\tF10")}});
+  }
+}
+
+void wex::stc::build_popup_menu_edit(menu& menu)
+{
+  menu.append({{}, {menu_item::EDIT}});
+
+  if (GetReadOnly())
+  {
+    return;
+  }
+
+  const bool beautify_add(beautify().is_active() && !beautify().is_auto());
+  const auto sel(GetSelectedText().ToStdString());
+
+  if (!get_vi().is_active() && GetTextLength() > 0)
+  {
+    menu.append({{wxID_REPLACE}});
+  }
+
+  if (!sel.empty())
+  {
+    auto* menuSelection = new wex::menu(
+      menu.style(),
+      {{id::stc::uppercase, _("&Uppercase\tF11")},
+       {id::stc::lowercase, _("&Lowercase\tF12")}});
+
+    if (beautify_add)
+    {
+      menuSelection->append({{}, {id::stc::beautify, _("&Beautify")}});
+    }
+
+    if (get_number_of_lines(sel) > 1)
+    {
+      menuSelection->append(
+        {{},
+         {new wex::menu(
+            menu.style(),
+            {{wxID_SORT_ASCENDING}, {wxID_SORT_DESCENDING}}),
+          _("&Sort")}});
+    }
+
+    menu.append({{}, {menuSelection, _("&Selection")}});
+  }
+
+  if (CanUndo() || CanRedo())
+  {
+    menu.append({{}});
+
+    if (CanUndo())
+    {
+      menu.append({{wxID_UNDO}});
+    }
+
+    if (CanRedo())
+    {
+      menu.append({{wxID_REDO}});
+    }
+  }
+
+  if (sel.empty() && beautify_add && beautify().is_supported(get_lexer()))
+  {
+    menu.append({{}, {id::stc::beautify, _("&Beautify")}});
   }
 }
 
@@ -782,6 +725,77 @@ void wex::stc::jump_action()
   }
 }
 
+void wex::stc::show_ascii_value()
+{
+  if (CallTipActive())
+    CallTipCancel();
+
+  const auto pos = GetCurrentPos();
+
+  if (is_hexmode())
+  {
+    CallTipShow(pos, get_hexmode().get_info());
+    return;
+  }
+
+  const auto word =
+    (!GetSelectedText().empty() ? GetSelectedText().ToStdString() :
+                                  get_word_at_pos(pos));
+
+  if (word.empty())
+  {
+    return;
+  }
+
+  std::stringstream stream;
+
+  if (const int c = word[0]; c < 32 || c > 125)
+  {
+    stream << "bin: " << c;
+  }
+  else
+  {
+    long base10_val, base16_val;
+    bool base10_ok = true;
+    bool base16_ok = true;
+
+    try
+    {
+      base10_val = std::stol(word);
+      base10_ok  = (base10_val != 0);
+    }
+    catch (std::exception&)
+    {
+      base10_ok = false;
+    }
+
+    try
+    {
+      base16_val = std::stol(word, nullptr, 16);
+    }
+    catch (std::exception&)
+    {
+      base16_ok = false;
+    }
+
+    if (base10_ok || base16_ok)
+    {
+      if (base10_ok && !base16_ok)
+        stream << "hex: " << std::hex << base10_val;
+      else if (!base10_ok && base16_ok)
+        stream << "dec: " << base16_val;
+      else if (base10_ok && base16_ok)
+        stream << "dec: " << base16_val << " hex: " << std::hex << base10_val;
+    }
+  }
+
+  if (!stream.str().empty())
+  {
+    CallTipShow(pos, stream.str());
+    clipboard_add(stream.str());
+  }
+}
+
 void wex::stc::show_properties()
 {
   const std::string propnames(PropertyNames());
@@ -828,9 +842,11 @@ void wex::stc::show_properties()
       std::string(),
       data::window().size({300, 450}).button(wxOK).title(_("Properties")));
     m_prop_dialog->get_stc()->get_lexer().set(l);
+    m_prop_dialog->get_stc()->get_vi().use(ex::VISUAL);
   }
   else
   {
+    m_prop_dialog->get_stc()->get_vi().mode().command();
     m_prop_dialog->get_stc()->set_text(properties);
   }
 
@@ -841,10 +857,10 @@ void wex::stc::sort_action(const wxCommandEvent& event)
 {
   if (SelectionIsRectangle())
   {
-    sort(
+    factory::sort(
       event.GetId() == wxID_SORT_ASCENDING ?
-        sort::sort_t() :
-        sort::sort_t().set(sort::SORT_DESCENDING))
+        factory::sort::sort_t() :
+        factory::sort::sort_t().set(factory::sort::SORT_DESCENDING))
       .selection(this);
   }
   else if (const auto pos(wxGetNumberFromUser(
@@ -857,10 +873,10 @@ void wex::stc::sort_action(const wxCommandEvent& event)
              this));
            pos > 0)
   {
-    sort(
+    factory::sort(
       event.GetId() == wxID_SORT_ASCENDING ?
-        sort::sort_t() :
-        sort::sort_t().set(sort::SORT_DESCENDING),
+        factory::sort::sort_t() :
+        factory::sort::sort_t().set(factory::sort::SORT_DESCENDING),
       pos - 1)
       .selection(this);
   }

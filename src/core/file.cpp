@@ -5,20 +5,33 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/config.h>
-#include <wex/file.h>
-#include <wex/log.h>
+#include <wex/core/config.h>
+#include <wex/core/file.h>
+#include <wex/core/log.h>
 
-wex::file::file() {}
+namespace fs = std::filesystem;
+
+namespace wex
+{
+bool copy(const wex::path& from, const wex::path& to)
+{
+  return fs::copy_file(from.data(), to.data());
+}
+} // namespace wex
+
+wex::file::file()
+  : m_stat(std::string())
+{
+}
 
 wex::file::file(const wex::path& p)
-  : m_path(p, path::log_t().set(path::LOG_PATH))
+  : m_path(p)
   , m_stat(m_path.string())
 {
 }
 
 wex::file::file(const wex::path& p, std::ios_base::openmode mode)
-  : m_path(p, path::log_t().set(path::LOG_PATH))
+  : m_path(p)
   , m_stat(m_path.string())
   , m_fs(m_path.data(), mode)
 {
@@ -35,6 +48,7 @@ wex::file::file(const char* filename, std::ios_base::openmode mode)
 }
 
 wex::file::file(const file& rhs)
+  : m_stat(rhs.m_stat)
 {
   *this = rhs;
 }
@@ -74,7 +88,7 @@ bool wex::file::check_sync()
   {
     bool sync_needed = false;
 
-    if (m_path.m_stat.st_mtime != m_stat.st_mtime)
+    if (m_path.m_stat.get_modification_time() != m_stat.get_modification_time())
     {
       // Do not check return value,
       // we sync anyhow, to force nex time no sync.
@@ -111,6 +125,14 @@ bool wex::file::close()
   m_fs.close();
 
   return !m_fs.is_open();
+}
+
+void wex::file::do_file_save(bool save_as)
+{
+  if (save_as)
+  {
+    copy(m_path_prev, m_path);
+  }
 }
 
 bool wex::file::file_load(bool synced)
@@ -166,6 +188,7 @@ bool wex::file::file_save(const wex::path& p)
 
   if (!p.empty())
   {
+    m_path_prev = m_path;
     assign(p);
     save_as = true;
   }
@@ -236,9 +259,9 @@ const std::string* wex::file::read(std::streampos seek_position)
   }
 
   m_buffer = std::make_unique<std::string>();
-  
+
 #ifndef __WXMSW__
-  m_buffer->resize(m_path.m_stat.st_size - seek_position);
+  m_buffer->resize(m_path.m_stat.get_size() - seek_position);
   m_fs.read(m_buffer->data(), m_buffer->size());
 #else
   char c;

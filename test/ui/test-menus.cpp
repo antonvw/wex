@@ -2,17 +2,13 @@
 // Name:      test-menus.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include "../test.h"
-#include <wex/menu-command.h>
-#include <wex/menu-commands.h>
-#include <wex/menus.h>
+#include <wex/core/menu-command.h>
+#include <wex/ui/menu-commands.h>
+#include <wex/ui/menus.h>
 
 TEST_CASE("wex::menus")
 {

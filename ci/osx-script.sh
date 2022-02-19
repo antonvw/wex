@@ -1,12 +1,8 @@
 #!/usr/bin/env sh
 
-../ci/codespell.sh
+. ../ci/use-clang.sh
 
-# A normal build, including tests, triggers the max time limit:
-# The job exceeded the maximum time limit for jobs, and has been terminated.
-  
-# no tests, to reduce time
-cmake -DCMAKE_CXX_COMPILER="${CXX}" -DwexBUILD_SHARED=ON ..
+cmake -DCMAKE_CXX_COMPILER="${CXX}" -DwexBUILD_SAMPLES=ON -DwexBUILD_TESTS=ON -DwexBUILD_SHARED=ON ..
 
 # only make wex targets, to reduce time
-make -j 4 wex-core wex-factory wex-data wex-common wex-ui wex-vi wex-stc wex-del
+#make -j 4 wex-core wex-factory wex-data wex-common wex-ui wex-vi wex-stc wex-del

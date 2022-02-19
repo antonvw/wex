@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.6.3)
+cmake_minimum_required(VERSION 3.17)
 
 project(wex)
 
@@ -19,8 +19,8 @@ endif ()
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 
-find_package(Boost 1.69.0 COMPONENTS 
-  log_setup log filesystem program_options date_time regex REQUIRED)
+find_package(Boost 1.75.0 COMPONENTS 
+  log_setup log filesystem program_options date_time regex json REQUIRED)
 
 # to support older cmake versions that do not known 17.
 # set(CMAKE_CXX_STANDARD 17)
@@ -56,13 +56,15 @@ if (wexENABLE_GETTEXT)
   include(FindGettext)
 endif ()
 
-find_package(ODBC)
+if (wexENABLE_ODBC)
+  find_package(ODBC)
 
-if (ODBC_FOUND AND NOT MSVC)
-  add_definitions(-DwexUSE_ODBC)
-  
-  include_directories(${ODBC_INCLUDE_DIR})
-  include_directories(external/otl)
+  if (ODBC_FOUND AND NOT MSVC)
+    add_definitions(-DwexUSE_ODBC)
+    
+    include_directories(${ODBC_INCLUDE_DIR})
+    include_directories(external/otl)
+  endif ()
 endif ()
 
 enable_testing()

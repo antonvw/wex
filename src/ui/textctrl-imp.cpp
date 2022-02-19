@@ -2,17 +2,18 @@
 // Name:      textctrl-imp.cpp
 // Purpose:   Implementation of wex::textctrl_imp class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/config.h>
-#include <wex/core.h>
+#include <wex/common/util.h>
+#include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
 #include <wex/factory/stc.h>
-#include <wex/frame.h>
-#include <wex/frd.h>
-#include <wex/log.h>
-#include <wex/textctrl-input.h>
-#include <wex/textctrl.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/frd.h>
+#include <wex/ui/textctrl-input.h>
+#include <wex/ui/textctrl.h>
 #include <wx/control.h>
 #include <wx/settings.h>
 
@@ -35,224 +36,61 @@ wex::textctrl_imp::textctrl_imp(
   , m_prefix(prefix)
   , m_tc(tc)
   , m_timer(this)
-  , m_calcs(new textctrl_input(ex_command::type_t::CALC))
-  , m_commands(new textctrl_input(ex_command::type_t::COMMAND))
-  , m_commands_ex(new textctrl_input(ex_command::type_t::COMMAND_EX))
-  , m_escapes(new textctrl_input(ex_command::type_t::ESCAPE))
-  , m_find_margins(new textctrl_input(ex_command::type_t::FIND_MARGIN))
+  , m_tcis{
+      new textctrl_input(ex_command::type_t::COMMAND, "ex-cmd.command"),
+      new textctrl_input(ex_command::type_t::CALC, "ex-cmd.calc"),
+      new textctrl_input(ex_command::type_t::COMMAND_EX, "ex-cmd.command-ex"),
+      new textctrl_input(
+        ex_command::type_t::COMMAND_RANGE,
+        "ex-cmd.command-ex-range"),
+      new textctrl_input(ex_command::type_t::ESCAPE, "ex-cmd.escape"),
+      new textctrl_input(
+        ex_command::type_t::ESCAPE_RANGE,
+        "ex-cmd.escape-range"),
+      new textctrl_input(ex_command::type_t::FIND_MARGIN, "ex-cmd.margin")}
 {
   SetFont(config(_("stc.Text font"))
             .get(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
 
+  bind();
+  bind_timer();
+}
+
+wex::textctrl_imp::textctrl_imp(
+  textctrl*           tc,
+  const std::string&  value,
+  const data::window& data)
+  : wxTextCtrl(
+      data.parent(),
+      data.id(),
+      value,
+      data.pos(),
+      data.size(),
+      data.style() | wxTE_PROCESS_ENTER)
+  , m_id_register(0)
+  , m_tc(tc)
+  , m_timer(this)
+{
+  m_command.no_type();
+  m_command.set(value);
+
+  bind_timer();
+}
+
+void wex::textctrl_imp::bind()
+{
   Bind(
     wxEVT_CHAR,
     [=, this](wxKeyEvent& event)
     {
-      if (event.GetUnicodeKey() == WXK_NONE)
-      {
-        return;
-      }
-
-      switch (event.GetKeyCode())
-      {
-        case WXK_RETURN:
-          event.Skip();
-
-          if (m_input != 0)
-          {
-            m_command.handle(this, event.GetKeyCode());
-          }
-          break;
-
-        case WXK_TAB:
-          if (m_tc->stc() != nullptr && m_tc->stc()->path().file_exists())
-          {
-            path::current(m_tc->stc()->path().data().parent_path());
-          }
-
-          if (const auto& [r, e, v] =
-                auto_complete_filename(m_command.command());
-              r)
-          {
-            AppendText(e);
-            m_command.append(e);
-          }
-          break;
-
-        default:
-          bool skip = true;
-
-          if (m_control_r)
-          {
-            skip             = false;
-            const char     c = event.GetUnicodeKey();
-            wxCommandEvent event(wxEVT_MENU, m_id_register);
-
-            if (c == '%')
-            {
-              if (m_tc->stc() != nullptr)
-              {
-                event.SetString(m_tc->stc()->path().filename());
-              }
-            }
-            else
-            {
-              event.SetString(m_tc->stc()->vi_register(c));
-            }
-
-            if (!event.GetString().empty())
-            {
-              m_command.insert(
-                GetInsertionPoint(),
-                std::string(1, WXK_CONTROL_R));
-              m_command.insert(GetInsertionPoint() + 1, std::string(1, c));
-
-              wxPostEvent(this, event);
-            }
-          }
-
-          m_user_input = true;
-          m_control_r  = false;
-
-          if (skip)
-          {
-            event.Skip();
-            m_command.handle(this, event.GetKeyCode());
-          }
-      }
+      on_char(event);
     });
 
   Bind(
     wxEVT_KEY_DOWN,
     [=, this](wxKeyEvent& event)
     {
-      switch (event.GetKeyCode())
-      {
-        case 'r':
-        case 'R':
-          cut();
-
-#ifdef __WXMAC__
-          /* NOLINTNEXTLINE */
-          if (event.GetModifiers() & wxMOD_RAW_CONTROL)
-#else
-          /* NOLINTNEXTLINE */
-          if (event.GetModifiers() & wxMOD_CONTROL)
-#endif
-          {
-            m_user_input = true;
-            m_control_r  = true;
-          }
-          else
-          {
-            event.Skip();
-          }
-          break;
-
-        case WXK_DOWN:
-        case WXK_END:
-        case WXK_HOME:
-        case WXK_LEFT:
-        case WXK_PAGEDOWN:
-        case WXK_PAGEUP:
-        case WXK_RIGHT:
-        case WXK_UP:
-          switch (event.GetKeyCode())
-          {
-            case WXK_LEFT:
-              if (m_all_selected)
-              {
-                SetInsertionPoint(0);
-              }
-              else if (const auto ip(GetInsertionPoint()); ip > 0)
-              {
-                SetInsertionPoint(ip - 1);
-              }
-              else
-              {
-                SelectNone();
-              }
-
-              m_all_selected = false;
-              break;
-
-            case WXK_RIGHT:
-              if (m_all_selected)
-              {
-                SetInsertionPointEnd();
-              }
-              else if (const auto ip(GetInsertionPoint());
-                       ip < GetLastPosition())
-              {
-                SetInsertionPoint(ip + 1);
-              }
-              else
-              {
-                SelectNone();
-              }
-
-              m_all_selected = false;
-              break;
-
-            default:
-              if (m_command.type() == ex_command::type_t::FIND)
-              {
-                find_replace_data::get()->m_find_strings.set(
-                  event.GetKeyCode(),
-                  m_tc);
-              }
-              else if (m_input == 0)
-              {
-                if (const auto& val = tci()->get();
-                    !val.empty() && GetValue().empty())
-                {
-                  set_text(val);
-                  SelectAll();
-                }
-                else
-                {
-                  tci()->set(event.GetKeyCode(), m_tc);
-                }
-              }
-              else
-              {
-                event.Skip();
-              }
-          }
-          break;
-
-        case WXK_BACK:
-          m_command.handle(this, event.GetKeyCode());
-          event.Skip();
-          break;
-
-        case WXK_ESCAPE:
-          if (is_ex_mode())
-          {
-            Clear();
-            m_command = ex_command(":");
-          }
-          else if (m_tc->stc() != nullptr)
-          {
-            m_tc->stc()->position_restore();
-          }
-
-          if (!is_ex_mode())
-          {
-            m_tc->get_frame()->show_ex_bar(frame::HIDE_BAR_FORCE_FOCUS_STC);
-          }
-
-          m_control_r  = false;
-          m_user_input = false;
-          break;
-
-        default:
-          if (isascii(event.GetKeyCode()) && event.GetKeyCode() != WXK_RETURN)
-          {
-            cut();
-          }
-          event.Skip();
-      }
+      on_key_down(event);
     });
 
   Bind(
@@ -279,23 +117,7 @@ wex::textctrl_imp::textctrl_imp(
     wxEVT_TEXT,
     [=, this](wxCommandEvent& event)
     {
-      event.Skip();
-
-      if (get_text().size() == 0 && m_input == 0)
-      {
-        m_command.reset();
-      }
-
-      if (
-        m_user_input && m_tc->stc() != nullptr &&
-        m_command.type() == ex_command::type_t::FIND)
-      {
-        m_tc->stc()->position_restore();
-        m_tc->stc()->find(
-          get_text(),
-          m_tc->stc()->vi_search_flags(),
-          m_command.str() == "/");
-      }
+      on_text(event);
     });
 
   Bind(
@@ -309,150 +131,18 @@ wex::textctrl_imp::textctrl_imp(
     wxEVT_TEXT_ENTER,
     [=, this](wxCommandEvent& event)
     {
-      if (get_text().empty())
-      {
-        if (m_tc->stc() == nullptr)
-        {
-          log::debug("no stc");
-          return;
-        }
-
-        if (is_ex_mode())
-        {
-          m_command.reset();
-          m_tc->stc()->vi_command(":.+1");
-          SetFocus();
-        }
-        else
-        {
-          m_tc->get_frame()->show_ex_bar(frame::HIDE_BAR_FORCE_FOCUS_STC);
-        }
-        return;
-      }
-
-      if (
-        m_user_input && m_command.type() == ex_command::type_t::FIND &&
-        m_tc->stc() != nullptr)
-      {
-        m_tc->stc()->vi_record(m_command.str() + get_text());
-      }
-
-      if (input_mode_finish())
-      {
-        if (const auto text(
-              m_command.command().substr(1, m_command.size() - 3));
-            m_command.command() != ":." && !text.empty())
-        {
-          m_tc->stc()->vi_command(
-            ":" + std::string(1, m_input) + "|" + text + m_tc->stc()->eol());
-        }
-
-        m_tc->get_frame()->show_ex_bar();
-      }
-      else if (m_input != 0)
-      {
-        event.Skip();
-      }
-      else if (
-        (m_user_input && m_command.type() == ex_command::type_t::FIND) ||
-        m_command.exec())
-      {
-        int focus =
-          (m_command.type() == ex_command::type_t::FIND ?
-             frame::HIDE_BAR_FORCE_FOCUS_STC :
-             frame::HIDE_BAR_FOCUS_STC);
-
-        if (m_command.type() == ex_command::type_t::FIND)
-        {
-          find_replace_data::get()->set_find_string(get_text());
-        }
-        else
-        {
-          tci()->set(m_tc);
-
-          if (
-            m_command.type() == ex_command::type_t::COMMAND ||
-            m_command.type() == ex_command::type_t::COMMAND_EX)
-          {
-            if (
-              get_text() == "gt" || get_text() == "n" || get_text() == "prev" ||
-              get_text().starts_with("ta"))
-            {
-              focus = frame::HIDE_BAR_FORCE;
-            }
-            else if (get_text().starts_with("!"))
-            {
-              focus = frame::HIDE_BAR;
-            }
-          }
-        }
-
-        if (is_ex_mode())
-        {
-          Clear();
-          m_command = ex_command(":");
-          SetFocus();
-        }
-
-        if (m_input == 0 && !is_ex_mode())
-        {
-          m_tc->get_frame()->show_ex_bar(focus);
-        }
-      }
+      on_text_enter(event);
     });
 
   Bind(
     wxEVT_TEXT_PASTE,
     [=, this](wxClipboardTextEvent& event)
     {
-      if (const auto text(clipboard_get()); !text.empty())
-      {
-        if (!GetStringSelection().empty())
-        {
-          m_command.handle(this, wxID_CUT);
-        }
-
-        m_command.insert(GetInsertionPoint(), text);
-        event.Skip();
-      }
+      on_text_paste(event);
     });
-
-  bind();
 }
 
-wex::textctrl_imp::textctrl_imp(
-  textctrl*           tc,
-  const std::string&  value,
-  const data::window& data)
-  : wxTextCtrl(
-      data.parent(),
-      data.id(),
-      value,
-      data.pos(),
-      data.size(),
-      data.style() | wxTE_PROCESS_ENTER)
-  , m_id_register(0)
-  , m_tc(tc)
-  , m_timer(this)
-{
-  m_command.no_type();
-  m_command.set(value);
-
-  bind();
-}
-
-bool wex::textctrl_imp::Destroy()
-{
-  delete m_calcs;
-  delete m_commands;
-  delete m_commands_ex;
-  delete m_escapes;
-  delete m_find_margins;
-
-  return wxTextCtrl::Destroy();
-}
-
-void wex::textctrl_imp::bind()
+void wex::textctrl_imp::bind_timer()
 {
   Bind(
     wxEVT_TIMER,
@@ -469,8 +159,18 @@ void wex::textctrl_imp::cut()
   {
     m_command.handle(this, wxID_CUT);
 
-    wxTextCtrl::Cut();
+    Cut();
   }
+}
+
+bool wex::textctrl_imp::Destroy()
+{
+  for (auto it : m_tcis)
+  {
+    delete it;
+  }
+
+  return wxTextCtrl::Destroy();
 }
 
 // A GetValue().ToStdString() should suffice, but that
@@ -509,62 +209,15 @@ bool wex::textctrl_imp::handle(const std::string& command)
   m_mode_visual = !range.empty();
   m_control_r   = false;
 
+  set_prefix();
+
   m_tc->get_frame()->pane_set(
     "VIBAR",
     wxAuiPaneInfo().BestSize(-1, GetFont().GetPixelSize().GetHeight() + 10));
 
-  if (m_prefix != nullptr && !m_command.str().empty())
+  if (!handle_type(command, range))
   {
-    m_prefix->SetLabel(std::string(1, m_command.str().back()));
-  }
-
-  switch (m_command.type())
-  {
-    case ex_command::type_t::CALC:
-    case ex_command::type_t::ESCAPE:
-    case ex_command::type_t::FIND_MARGIN:
-      set_text(tci()->get());
-      SelectAll();
-      break;
-
-    case ex_command::type_t::COMMAND:
-    case ex_command::type_t::COMMAND_EX:
-      if (command == ":!")
-      {
-        set_text("!");
-        SetInsertionPointEnd();
-      }
-      else if (!tci()->get().empty())
-      {
-        set_text(
-          m_mode_visual && tci()->get().find(range) != 0 ?
-            range + tci()->get() :
-            tci()->get());
-        SelectAll();
-      }
-      else
-      {
-        set_text(range);
-        SelectAll();
-      }
-      break;
-
-    case ex_command::type_t::FIND:
-      if (m_tc->stc() != nullptr)
-      {
-        set_text(
-          !m_mode_visual ? m_tc->stc()->get_find_string() : std::string());
-      }
-      else
-      {
-        set_text(std::string());
-      }
-
-      SelectAll();
-      break;
-
-    default:
-      return false;
+    return false;
   }
 
   Show();
@@ -587,6 +240,69 @@ bool wex::textctrl_imp::handle(char command)
     wxAuiPaneInfo().BestSize(
       -1,
       4 * GetFont().GetPixelSize().GetHeight() + 10));
+
+  return true;
+}
+
+bool wex::textctrl_imp::handle_type(
+  const std::string& command,
+  const std::string& range)
+{
+  switch (m_command.type())
+  {
+    case ex_command::type_t::CALC:
+    case ex_command::type_t::COMMAND_RANGE:
+    case ex_command::type_t::ESCAPE:
+    case ex_command::type_t::ESCAPE_RANGE:
+    case ex_command::type_t::FIND_MARGIN:
+      set_text(tci()->get());
+      SelectAll();
+      break;
+
+    case ex_command::type_t::COMMAND:
+    case ex_command::type_t::COMMAND_EX:
+      if (command == ":!")
+      {
+        set_text("!");
+        SetInsertionPointEnd();
+      }
+      else if (const auto& current(tci()->get()); !current.empty())
+      {
+        const auto is_address(
+          m_tc->get_frame()->is_address(m_tc->stc(), current));
+
+        set_text(
+          m_mode_visual && current.find(range) != 0 && is_address ?
+            range + current :
+            current);
+        SelectAll();
+      }
+      else
+      {
+        set_text(range);
+        SelectAll();
+      }
+      break;
+
+    case ex_command::type_t::FIND:
+      if (m_tc->stc() != nullptr)
+      {
+        set_text(
+          !m_mode_visual || range == ex_command::selection_range() ?
+            m_tc->stc()->get_find_string() :
+            std::string());
+      }
+      else
+      {
+        set_text(std::string());
+      }
+
+      SelectAll();
+      break;
+
+    default:
+      return false;
+  }
 
   return true;
 }
@@ -614,6 +330,350 @@ void wex::textctrl_imp::set_text(const std::string& text)
   ChangeValue(text);
 }
 
+void wex::textctrl_imp::on_char(wxKeyEvent& event)
+{
+  if (event.GetUnicodeKey() == WXK_NONE)
+  {
+    return;
+  }
+
+  switch (event.GetKeyCode())
+  {
+    case WXK_RETURN:
+      event.Skip();
+
+      if (m_input != 0)
+      {
+        m_command.handle(this, event.GetKeyCode());
+      }
+      break;
+
+    case WXK_TAB:
+      if (m_tc->stc() != nullptr && m_tc->stc()->path().file_exists())
+      {
+        path::current(m_tc->stc()->path().data().parent_path());
+      }
+
+      if (const auto& [r, e, v] = auto_complete_filename(m_command.command());
+          r)
+      {
+        AppendText(e);
+        m_command.append(e);
+      }
+      break;
+
+    default:
+      bool skip = true;
+
+      if (m_control_r)
+      {
+        skip             = false;
+        const char     c = event.GetUnicodeKey();
+        wxCommandEvent event(wxEVT_MENU, m_id_register);
+
+        if (c == '%')
+        {
+          if (m_tc->stc() != nullptr)
+          {
+            event.SetString(m_tc->stc()->path().filename());
+          }
+        }
+        else
+        {
+          event.SetString(m_tc->stc()->vi_register(c));
+        }
+
+        if (!event.GetString().empty())
+        {
+          m_command.insert(GetInsertionPoint(), std::string(1, WXK_CONTROL_R));
+          m_command.insert(GetInsertionPoint() + 1, std::string(1, c));
+
+          wxPostEvent(this, event);
+        }
+      }
+
+      m_user_input = true;
+      m_control_r  = false;
+
+      if (skip)
+      {
+        event.Skip();
+        m_command.handle(this, event.GetKeyCode());
+      }
+  }
+}
+
+void wex::textctrl_imp::on_key_down(wxKeyEvent& event)
+{
+  switch (event.GetKeyCode())
+  {
+    case 'r':
+    case 'R':
+      cut();
+
+#ifdef __WXMAC__
+      /* NOLINTNEXTLINE */
+      if (event.GetModifiers() & wxMOD_RAW_CONTROL)
+#else
+      /* NOLINTNEXTLINE */
+      if (event.GetModifiers() & wxMOD_CONTROL)
+#endif
+      {
+        m_user_input = true;
+        m_control_r  = true;
+      }
+      else
+      {
+        event.Skip();
+      }
+      break;
+
+    case WXK_DOWN:
+    case WXK_END:
+    case WXK_HOME:
+    case WXK_LEFT:
+    case WXK_PAGEDOWN:
+    case WXK_PAGEUP:
+    case WXK_RIGHT:
+    case WXK_UP:
+      on_key_down_page(event);
+      break;
+
+    case WXK_BACK:
+      m_command.handle(this, event.GetKeyCode());
+      event.Skip();
+      break;
+
+    case WXK_ESCAPE:
+      if (is_ex_mode())
+      {
+        Clear();
+        m_command = ex_command(":");
+      }
+      else if (m_tc->stc() != nullptr)
+      {
+        m_tc->stc()->position_restore();
+      }
+
+      if (!is_ex_mode())
+      {
+        m_tc->get_frame()->show_ex_bar(frame::HIDE_BAR_FORCE_FOCUS_STC);
+      }
+
+      m_control_r  = false;
+      m_user_input = false;
+      break;
+
+    default:
+      if (isascii(event.GetKeyCode()) && event.GetKeyCode() != WXK_RETURN)
+      {
+        cut();
+      }
+      event.Skip();
+  }
+}
+
+void wex::textctrl_imp::on_key_down_page(wxKeyEvent& event)
+{
+  switch (event.GetKeyCode())
+  {
+    case WXK_LEFT:
+      if (m_all_selected)
+      {
+        SetInsertionPoint(0);
+      }
+      else if (const auto ip(GetInsertionPoint()); ip > 0)
+      {
+        SetInsertionPoint(ip - 1);
+      }
+      else
+      {
+        SelectNone();
+      }
+
+      m_all_selected = false;
+      break;
+
+    case WXK_RIGHT:
+      if (m_all_selected)
+      {
+        SetInsertionPointEnd();
+      }
+      else if (const auto ip(GetInsertionPoint()); ip < GetLastPosition())
+      {
+        SetInsertionPoint(ip + 1);
+      }
+      else
+      {
+        SelectNone();
+      }
+
+      m_all_selected = false;
+      break;
+
+    default:
+      if (m_command.type() == ex_command::type_t::FIND)
+      {
+        find_replace_data::get()->m_find_strings.set(event.GetKeyCode(), m_tc);
+      }
+      else if (m_input == 0)
+      {
+        if (const auto& val = tci()->get(); !val.empty() && GetValue().empty())
+        {
+          set_text(val);
+          SelectAll();
+        }
+        else
+        {
+          tci()->set(event.GetKeyCode(), m_tc);
+        }
+      }
+      else
+      {
+        event.Skip();
+      }
+  }
+}
+
+void wex::textctrl_imp::on_text(wxCommandEvent& event)
+{
+  event.Skip();
+
+  if (get_text().size() == 0 && m_input == 0)
+  {
+    m_command.reset();
+  }
+
+  if (
+    m_user_input && m_tc->stc() != nullptr &&
+    m_command.type() == ex_command::type_t::FIND)
+  {
+    m_tc->stc()->position_restore();
+    m_tc->stc()->find(
+      get_text(),
+      m_tc->stc()->vi_search_flags(),
+      m_command.str() == "/");
+  }
+}
+
+void wex::textctrl_imp::on_text_enter(wxCommandEvent& event)
+{
+  if (!on_text_enter_prep(event))
+  {
+    return;
+  }
+
+  if (input_mode_finish())
+  {
+    if (const auto text(m_command.command().substr(1, m_command.size() - 3));
+        m_command.command() != ":." && !text.empty())
+    {
+      m_tc->stc()->vi_command(
+        ":" + std::string(1, m_input) + "|" + text + m_tc->stc()->eol());
+    }
+
+    m_tc->get_frame()->show_ex_bar();
+  }
+  else if (m_input != 0)
+  {
+    event.Skip();
+  }
+  else if (
+    (m_user_input && m_command.type() == ex_command::type_t::FIND) ||
+    m_command.exec())
+  {
+    int focus =
+      (m_command.type() == ex_command::type_t::FIND ?
+         frame::HIDE_BAR_FORCE_FOCUS_STC :
+         frame::HIDE_BAR_FOCUS_STC);
+
+    if (m_command.type() == ex_command::type_t::FIND)
+    {
+      find_replace_data::get()->set_find_string(get_text());
+    }
+    else
+    {
+      tci()->set(m_tc);
+
+      if (
+        m_command.type() == ex_command::type_t::COMMAND ||
+        m_command.type() == ex_command::type_t::COMMAND_EX)
+      {
+        if (
+          get_text() == "gt" || get_text() == "n" || get_text() == "prev" ||
+          get_text().starts_with("ta"))
+        {
+          focus = frame::HIDE_BAR_FORCE;
+        }
+        else if (get_text().starts_with("!"))
+        {
+          focus = frame::HIDE_BAR;
+        }
+      }
+    }
+
+    if (is_ex_mode())
+    {
+      Clear();
+      m_command = ex_command(":");
+      SetFocus();
+    }
+
+    if (m_input == 0 && !is_ex_mode())
+    {
+      m_tc->get_frame()->show_ex_bar(focus);
+    }
+  }
+}
+
+bool wex::textctrl_imp::on_text_enter_prep(wxCommandEvent& event)
+{
+  if (get_text().empty())
+  {
+    if (m_tc->stc() == nullptr)
+    {
+      log::debug("no stc");
+      return false;
+    }
+
+    if (is_ex_mode())
+    {
+      m_command.reset();
+      m_tc->stc()->vi_command(":.+1");
+      SetFocus();
+    }
+    else
+    {
+      m_tc->get_frame()->show_ex_bar(frame::HIDE_BAR_FORCE_FOCUS_STC);
+    }
+
+    return false;
+  }
+
+  if (
+    m_user_input && m_command.type() == ex_command::type_t::FIND &&
+    m_tc->stc() != nullptr)
+  {
+    m_tc->stc()->vi_record(m_command.str() + get_text());
+  }
+
+  return true;
+}
+
+void wex::textctrl_imp::on_text_paste(wxCommandEvent& event)
+{
+  if (const auto text(clipboard_get()); !text.empty())
+  {
+    if (!GetStringSelection().empty())
+    {
+      m_command.handle(this, wxID_CUT);
+    }
+
+    m_command.insert(GetInsertionPoint(), text);
+    event.Skip();
+  }
+}
+
 void wex::textctrl_imp::SelectAll()
 {
   if (
@@ -629,23 +689,27 @@ void wex::textctrl_imp::SelectAll()
   }
 }
 
+void wex::textctrl_imp::set_prefix()
+{
+  if (m_prefix != nullptr && !m_command.str().empty())
+  {
+    if (
+      m_command.type() == ex_command::type_t::COMMAND_RANGE ||
+      m_command.type() == ex_command::type_t::ESCAPE_RANGE)
+    {
+      m_prefix->SetLabelText(m_command.str());
+    }
+    else
+    {
+      m_prefix->SetLabelText(std::string(1, m_command.str().back()));
+    }
+  }
+}
+
 wex::textctrl_input* wex::textctrl_imp::tci()
 {
-  switch (m_command.type())
-  {
-    case ex_command::type_t::CALC:
-      return m_calcs;
-
-    case ex_command::type_t::COMMAND_EX:
-      return m_commands_ex;
-
-    case ex_command::type_t::ESCAPE:
-      return m_escapes;
-
-    case ex_command::type_t::FIND_MARGIN:
-      return m_find_margins;
-
-    default:
-      return m_commands;
-  }
-};
+  return static_cast<int>(m_command.type()) >=
+             static_cast<int>(ex_command::type_t::NONE) ?
+           m_tcis[static_cast<int>(ex_command::type_t::COMMAND)] :
+           m_tcis[static_cast<int>(m_command.type())];
+}

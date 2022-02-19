@@ -7,7 +7,7 @@
 
 #include <wex/del/defs.h>
 #include <wex/del/listview.h>
-#include <wex/listitem.h>
+#include <wex/ui/listitem.h>
 
 #include "test.h"
 
@@ -33,6 +33,8 @@ TEST_CASE("wex::del::listview")
 
     lv->Select(0);
     lv->Select(1);
+
+    wex::config(_("list.Comparator")).set("diff");
 
 #ifndef __WXMSW__
     for (auto id : std::vector<int>{

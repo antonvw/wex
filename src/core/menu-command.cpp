@@ -5,9 +5,10 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <algorithm>
 #include <boost/algorithm/string.hpp>
-#include <wex/menu-command.h>
+#include <wex/core/menu-command.h>
+
+#include <algorithm>
 
 wex::menu_command::menu_command(const pugi::xml_node& node)
   : m_command(boost::algorithm::trim_copy(std::string(node.text().get())))

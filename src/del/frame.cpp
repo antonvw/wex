@@ -2,33 +2,24 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex::del::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
-#include <wex/accelerators.h>
-#include <wex/bind.h>
-#include <wex/cmdline.h>
-#include <wex/ctags.h>
-#include <wex/debug.h>
-#include <wex/del/frame.h>
-#include <wex/del/listview-file.h>
-#include <wex/file-dialog.h>
-#include <wex/frd.h>
-#include <wex/item-dialog.h>
-#include <wex/lexers.h>
-#include <wex/listitem.h>
-#include <wex/macros.h>
-#include <wex/open-files-dialog.h>
-#include <wex/process.h>
-#include <wex/regex.h>
-#include <wex/stc-entry-dialog.h>
-#include <wex/stc.h>
-#include <wex/stream.h>
-#include <wex/textctrl.h>
-#include <wex/tostring.h>
-#include <wex/util.h>
-#include <wex/vcs.h>
+
+#include <wex/common/stream.h>
+#include <wex/common/tostring.h>
+#include <wex/common/util.h>
+#include <wex/core/cmdline.h>
+#include <wex/core/regex.h>
+#include <wex/del/wex.h>
+#include <wex/factory/lexers.h>
+#include <wex/factory/printing.h>
+#include <wex/stc/wex.h>
+#include <wex/ui/wex.h>
+#include <wex/vi/command-parser.h>
+#include <wex/vi/ctags.h>
+#include <wex/vi/macros.h>
 
 namespace wex
 {
@@ -125,6 +116,9 @@ wex::del::frame::frame(
       m_project_history.save();
       stc::on_exit();
       ctags::close();
+      delete lexers::set(nullptr);
+      delete printing::set(nullptr);
+
       config("show.MenuBar")
         .set(GetMenuBar() != nullptr && GetMenuBar()->IsShown());
       delete m_debug;
@@ -379,7 +373,7 @@ wex::config::strings_t wex::del::frame::default_extensions() const
   {
     if (!it.extensions().empty())
     {
-      l.push_back(it.extensions());
+      l.emplace_back(it.extensions());
     }
   }
 
@@ -444,7 +438,7 @@ bool wex::del::frame::find_in_files(
     return false;
   }
 
-  if (const wex::path filename(files[0]);
+  if (const auto& filename(files[0]);
       show_dialog &&
       find_in_files_dialog(
         tool,
@@ -610,6 +604,20 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
   return true;
 }
 
+bool wex::del::frame::is_address(factory::stc* stc, const std::string& text)
+{
+  if (auto* wexstc = dynamic_cast<wex::stc*>(stc); wexstc != nullptr)
+  {
+    const command_parser cp(
+      &wexstc->get_vi(),
+      text,
+      command_parser::parse_t::CHECK);
+    return cp.type() != command_parser::address_t::NO_ADDR;
+  }
+
+  return false;
+}
+
 void wex::del::frame::on_command_item_dialog(
   wxWindowID            dialogid,
   const wxCommandEvent& event)
@@ -617,8 +625,9 @@ void wex::del::frame::on_command_item_dialog(
   switch (event.GetId())
   {
     case wxID_CANCEL:
-      if (interruptible::cancel())
+      if (interruptible::is_running())
       {
+        interruptible::end();
         log::status(_("Cancelled"));
       }
       break;
@@ -700,7 +709,7 @@ void wex::del::frame::on_idle(wxIdleEvent& event)
 
 void wex::del::frame::on_notebook(wxWindowID id, wxWindow* page)
 {
-  if (is_closing())
+  if (is_closing() || !IsShown())
   {
     return;
   }
@@ -711,16 +720,7 @@ void wex::del::frame::on_notebook(wxWindowID id, wxWindow* page)
 
     set_recent_file(stc->path());
 
-    const vcs v({stc->path()});
-
-    if (const auto& b(v.get_branch()); !b.empty())
-    {
-      statustext(b, "PaneVCS");
-    }
-    else
-    {
-      statustext(v.name(), "PaneVCS");
-    }
+    statustext_vcs(stc);
   }
 }
 
@@ -759,15 +759,13 @@ void wex::del::frame::open_from_event(
   }
 }
 
-bool wex::del::frame::process_async_system(
-  const std::string& command,
-  const std::string& start_dir)
+bool wex::del::frame::process_async_system(const process_data& data)
 {
   if (m_process != nullptr)
   {
     if (m_process->is_running())
     {
-      log::trace("escape") << command << "stops" << m_process->get_exe();
+      log::trace("escape") << data.exe() << "stops" << m_process->data().exe();
     }
 
     delete m_process;
@@ -775,7 +773,7 @@ bool wex::del::frame::process_async_system(
 
   m_process = new wex::process();
 
-  return m_process->async_system(command, start_dir);
+  return m_process->async_system(data);
 }
 
 void wex::del::frame::set_recent_file(const wex::path& path)
@@ -840,6 +838,11 @@ void wex::del::frame::show_ex_message(const std::string& text)
   }
 
   statustext(text, std::string());
+}
+
+int wex::del::frame::show_stc_entry_dialog(bool modal)
+{
+  return modal ? entry_dialog()->ShowModal() : entry_dialog()->Show();
 }
 
 void wex::del::frame::statusbar_clicked(const std::string& pane)
@@ -929,7 +932,7 @@ void wex::del::frame::statusbar_clicked_right(const std::string& pane)
   }
   else if (pane == "PaneDBG" || pane == "PaneVCS")
   {
-    std::string match(get_statustext(pane));
+    auto match(get_statustext(pane));
 
     if (stc != nullptr)
     {
@@ -946,9 +949,18 @@ void wex::del::frame::statusbar_clicked_right(const std::string& pane)
   }
 }
 
-int wex::del::frame::show_stc_entry_dialog(bool modal)
+void wex::del::frame::statustext_vcs(factory::stc* stc)
 {
-  return modal ? entry_dialog()->ShowModal() : entry_dialog()->Show();
+  const vcs v({stc->path()});
+
+  if (const auto& text(v.get_branch()); !text.empty())
+  {
+    statustext(text, "PaneVCS");
+  }
+  else
+  {
+    statustext(v.name(), "PaneVCS");
+  }
 }
 
 wex::factory::stc* wex::del::frame::stc_entry_dialog_component()

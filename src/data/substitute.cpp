@@ -6,9 +6,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
+#include <wex/core/log.h>
+#include <wex/core/regex.h>
 #include <wex/data/substitute.h>
-#include <wex/log.h>
-#include <wex/regex.h>
 
 wex::data::substitute::substitute(const std::string& text)
 {
@@ -55,6 +55,8 @@ bool wex::data::substitute::set(const std::string& command_org)
     }
   }
 
+  m_global_command = false;
+
   if (regex r({{"/(.*)/(.*)/([cgi]*)"}, {"/(.*)/(.*)"}, {"/(.*)"}});
       r.search(command) > 0)
   {
@@ -88,26 +90,38 @@ bool wex::data::substitute::set(const std::string& command_org)
 
 bool wex::data::substitute::set_global(const std::string& text)
 {
-  regex v("^(\\s*)/(.*?)/(.*)");
-
   // [2addr] g[lobal] /pattern/ [commands]
   // [2addr] v /pattern/ [commands]
-  // the g or v part is already parsed, and not present, v[0] is empty, or ws
+  regex v("^(\\s*[gv]|global)/(.*?)/(.*)"); // non-greedy
+
   if (v.match(text) < 3)
   {
     return false;
   }
 
-  m_pattern  = v[1];
-  m_commands = v[2];
+  m_global_command = true;
+  m_inverse        = v[0].starts_with('v');
+  auto pattern     = v[1];
+  m_commands       = v[2];
+
+  if (pattern.empty())
+  {
+    // an empty pattern refers to the previous pattern.
+    pattern = m_pattern;
+
+    m_clear = (m_commands.empty());
+  }
+  else
+  {
+    m_clear = false;
+  }
+
+  m_pattern = pattern;
 
   if (m_pattern.empty())
   {
-    if (!m_commands.empty())
-    {
-      log::status("Pattern is empty");
-      return false;
-    }
+    log::status("Pattern is empty");
+    return false;
   }
 
   return true;

@@ -7,10 +7,9 @@
 
 #pragma once
 
-#include <string.h>
-#include <wex/addressrange.h>
+#include <wex/core/file.h>
 #include <wex/data/substitute.h>
-#include <wex/file.h>
+#include <wex/vi/addressrange.h>
 
 namespace wex
 {

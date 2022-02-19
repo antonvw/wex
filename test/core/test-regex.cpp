@@ -1,13 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-core.cpp
+// Name:      test-regex.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
-#include <wex/log.h>
-#include <wex/regex.h>
+#include <wex/core/log.h>
+#include <wex/core/regex.h>
 
 TEST_CASE("wex::regex")
 {
@@ -35,17 +35,24 @@ TEST_CASE("wex::regex")
   SUBCASE("matches")
   {
     wex::regex r(
-      {{"99xx77",
-        [](const wex::regex::match_t&) {
+      {{"(\\.[\\0-7A-Za-z_/.-]+) .*",
+        [](const wex::regex::match_t&)
+        {
           wex::log::trace("1");
         }},
-       {"([0-9]+)([a-z]+)([0-9]+)", [](const wex::regex::match_t&) {
+       {"([0-9]+)([a-z]+)([0-9]+)",
+        [](const wex::regex::match_t&)
+        {
           wex::log::trace("2");
         }}});
 
     REQUIRE(r.match("99xx88") == 3);
     REQUIRE(std::get<2>(r.which()) == "([0-9]+)([a-z]+)([0-9]+)");
     REQUIRE(r.which_no() == 1);
+
+    REQUIRE(r.search("aaa .77xx77 xx") == 1);
+    REQUIRE(r.which_no() == 0);
+    REQUIRE(r[0] == ".77xx77");
   }
 
   SUBCASE("operator")

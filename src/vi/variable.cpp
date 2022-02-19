@@ -2,19 +2,19 @@
 // Name:      variable.cpp
 // Purpose:   Implementation of class wex::variable
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/chrono.h>
-#include <wex/ex.h>
+#include <wex/core/chrono.h>
+#include <wex/core/log.h>
+#include <wex/core/regex.h>
 #include <wex/factory/process.h>
 #include <wex/factory/stc.h>
-#include <wex/frame.h>
-#include <wex/log.h>
-#include <wex/macro-mode.h>
-#include <wex/macros.h>
-#include <wex/regex.h>
-#include <wex/variable.h>
+#include <wex/ui/frame.h>
+#include <wex/vi/ex.h>
+#include <wex/vi/macro-mode.h>
+#include <wex/vi/macros.h>
+#include <wex/vi/variable.h>
 #include <wx/app.h>
 
 // Several types of variables are supported.
@@ -235,7 +235,7 @@ bool wex::variable::expand(std::string& value, ex* ex) const
       }
       else
       {
-        value = p.get_stdout();
+        value = p.std_out();
         m_argument.clear();
       }
       break;
@@ -301,8 +301,8 @@ bool wex::variable::expand_builtin(ex* ex, std::string& expanded) const
           ex->get_stc()->path().stat().is_ok())
       {
         expanded =
-          (m_format.empty() ? file.stat().get_creation_time() :
-                              file.stat().get_creation_time(m_format));
+          (m_format.empty() ? file.stat().get_creation_time_str() :
+                              file.stat().get_creation_time_str(m_format));
       }
       else
       {

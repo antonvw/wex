@@ -5,9 +5,9 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/config.h>
-#include <wex/grid.h>
-#include <wex/odbc.h>
+#include <wex/core/config.h>
+#include <wex/ui/grid.h>
+#include <wex/ui/odbc.h>
 
 #include "test.h"
 

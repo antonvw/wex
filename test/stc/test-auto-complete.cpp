@@ -5,7 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/auto-complete.h>
+#include <wex/stc/auto-complete.h>
 #include <wx/uiaction.h>
 
 #include "test.h"

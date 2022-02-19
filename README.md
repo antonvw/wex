@@ -33,13 +33,11 @@ and do `find_package(WEX)` in your CMakeLists.txt. This will provide the
 
 ## Build process
 
-  [![Travis](https://travis-ci.org/antonvw/wex.png?branch=develop)](https://travis-ci.org/antonvw/wex)
   [![Appveyor](https://ci.appveyor.com/api/projects/status/a346d8537whyrjev?svg=true)](https://ci.appveyor.com/project/antonvw/wex)
 
 ## Uses
 
-- [doctest lib](https://github.com/onqtam/doctest)
-- [json lib](https://github.com/nlohmann/json)
+- [doctest lib](https://github.com/doctest/doctest)
 - [OTL database lib](http://otl.sourceforge.net/)
 - [pugixml lib](https://github.com/zeux/pugixml)
 - [universal-ctags lib](https://github.com/universal-ctags/ctags)

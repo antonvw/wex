@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include <wex/frame.h>
-#include <wex/stc.h>
+#include <wex/stc/stc.h>
+#include <wex/ui/frame.h>
 
 #include "../test.h"
 
@@ -25,4 +25,4 @@ void event(wxWindow* win, char id);
 void event(wxWindow* win, const std::string& ids);
 
 /// Sends key event to window.
-void event(wxWindow* win, int id);
+void event(wxWindow* win, int id, wxEventType eventType = wxEVT_KEY_DOWN);

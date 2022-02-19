@@ -5,10 +5,11 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <chrono>
-#include <wex/path.h>
+#include <wex/core/path.h>
 
 #include "../test.h"
+
+#include <chrono>
 
 bool log_contains(const wex::path::log_t& flags, const std::string& text)
 {
@@ -63,41 +64,55 @@ TEST_CASE("wex::path")
 
   SUBCASE("log")
   {
-    REQUIRE(log_contains(wex::path::log_t(), "test.h"));
-    REQUIRE(!log_contains(wex::path::log_t(), "Modified"));
-    REQUIRE(!log_contains(wex::path::log_t(), "test/data/test.h"));
-    REQUIRE(!log_contains(wex::path::log_t(), "Synchronized"));
+    SUBCASE("no-bits")
+    {
+      REQUIRE(log_contains(wex::path::log_t(), "test.h"));
+      REQUIRE(!log_contains(wex::path::log_t(), "Modified"));
+      REQUIRE(!log_contains(wex::path::log_t(), "test/data/test.h"));
+      REQUIRE(!log_contains(wex::path::log_t(), "Synchronized"));
+    }
 
-    REQUIRE(log_contains(
-      wex::path::log_t().set(wex::path::LOG_SYNC),
-      "Synchronized"));
-    REQUIRE(
-      !log_contains(wex::path::log_t().set(wex::path::LOG_SYNC), "Modified"));
-    REQUIRE(!log_contains(
-      wex::path::log_t().set(wex::path::LOG_SYNC),
-      "test/data/test.h"));
+    SUBCASE("sync-bit")
+    {
+      REQUIRE(log_contains(
+        wex::path::log_t().set(wex::path::LOG_SYNC),
+        "Synchronized"));
+      REQUIRE(
+        !log_contains(wex::path::log_t().set(wex::path::LOG_SYNC), "Modified"));
+      REQUIRE(!log_contains(
+        wex::path::log_t().set(wex::path::LOG_SYNC),
+        "test/data/test.h"));
+    }
 
-    REQUIRE(
-      log_contains(wex::path::log_t().set(wex::path::LOG_MOD), "Modified"));
-    REQUIRE(!log_contains(
-      wex::path::log_t().set(wex::path::LOG_MOD),
-      "Synchronized"));
-    REQUIRE(!log_contains(
-      wex::path::log_t().set(wex::path::LOG_MOD),
-      "test/data/test.h"));
+    SUBCASE("mod-bit")
+    {
+      REQUIRE(
+        log_contains(wex::path::log_t().set(wex::path::LOG_MOD), "Modified"));
+      REQUIRE(!log_contains(
+        wex::path::log_t().set(wex::path::LOG_MOD),
+        "Synchronized"));
+      REQUIRE(!log_contains(
+        wex::path::log_t().set(wex::path::LOG_MOD),
+        "test/data/test.h"));
+    }
 
-    REQUIRE(log_contains(
-      wex::path::log_t().set(wex::path::LOG_PATH),
-      "test/data/test.h"));
-    REQUIRE(
-      !log_contains(wex::path::log_t().set(wex::path::LOG_PATH), "Modified"));
+    SUBCASE("path-bit")
+    {
+      REQUIRE(
+        log_contains(wex::path::log_t().set(wex::path::LOG_PATH), "data"));
+      REQUIRE(
+        !log_contains(wex::path::log_t().set(wex::path::LOG_PATH), "Modified"));
+    }
 
-    REQUIRE(log_contains(
-      wex::path::log_t().set(wex::path::LOG_PATH).set(wex::path::LOG_MOD),
-      "test/data/test.h"));
-    REQUIRE(log_contains(
-      wex::path::log_t().set(wex::path::LOG_PATH).set(wex::path::LOG_MOD),
-      "Modified"));
+    SUBCASE("combine")
+    {
+      REQUIRE(log_contains(
+        wex::path::log_t().set(wex::path::LOG_PATH).set(wex::path::LOG_MOD),
+        "data"));
+      REQUIRE(log_contains(
+        wex::path::log_t().set(wex::path::LOG_PATH).set(wex::path::LOG_MOD),
+        "Modified"));
+    }
   }
 
   SUBCASE("mime")

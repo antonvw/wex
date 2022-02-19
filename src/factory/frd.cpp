@@ -5,9 +5,9 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/config.h>
+#include <wex/core/config.h>
+#include <wex/core/log.h>
 #include <wex/factory/frd.h>
-#include <wex/log.h>
 #include <wx/fdrepdlg.h>
 #include <wx/translation.h>
 

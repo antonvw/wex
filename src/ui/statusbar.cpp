@@ -5,15 +5,11 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wex/config.h>
-#include <wex/defs.h>
+#include <wex/core/config.h>
+#include <wex/factory/defs.h>
 #include <wex/factory/frame.h>
-#include <wex/item-dialog.h>
-#include <wex/statusbar.h>
+#include <wex/ui/item-dialog.h>
+#include <wex/ui/statusbar.h>
 
 const int FIELD_NOT_SHOWN = -1;
 
@@ -48,7 +44,7 @@ public:
       }
       else
       {
-        l.push_back(it.second);
+        l.emplace_back(it.second);
       }
     }
 
@@ -155,7 +151,7 @@ void wex::statusbar::handle(wxMouseEvent& event, const statusbar_pane& pane)
                                     .get(pane_styles().find(it.GetStyle()))))
             .show(it.is_shown());
 
-          v_p.push_back(p);
+          v_p.emplace_back(p);
         }
 
         setup(m_frame, v_p);
@@ -191,9 +187,7 @@ void wex::statusbar::on_mouse(wxMouseEvent& event)
 {
   event.Skip();
 
-  int pane_no = 0;
-
-  for (const auto& it : m_panes)
+  for (int pane_no = 0; const auto& it : m_panes)
   {
     if (it.is_shown())
     {
@@ -219,10 +213,9 @@ std::tuple<bool, int, int>
 wex::statusbar::pane_info(const std::string& pane) const
 {
   const std::string use_pane      = pane.empty() ? "PaneText" : pane;
-  int               pane_no       = 0;
   int               shown_pane_no = 0;
 
-  for (const auto& it : m_panes)
+  for (int pane_no = 0; const auto& it : m_panes)
   {
     if (it.is_shown())
     {
@@ -251,11 +244,12 @@ bool wex::statusbar::pane_show(const std::string& pane, bool show)
 {
   assert(!m_panes.empty());
 
-  auto*                    widths      = new int[m_panes.size()];
-  auto*                    styles      = new int[m_panes.size()];
-  int                      panes_shown = 0;
+  auto* widths      = new int[m_panes.size()];
+  auto* styles      = new int[m_panes.size()];
+  bool  changed     = false;
+  int   panes_shown = 0;
+
   std::vector<std::string> changes;
-  bool                     changed = false;
 
   for (auto& it : m_panes)
   {
@@ -396,8 +390,7 @@ wex::statusbar* wex::statusbar::setup(
   auto* styles      = new int[sb_config.size()];
   auto* widths      = new int[sb_config.size()];
 
-  int i = 0;
-  for (const auto& it : sb_config)
+  for (int i = 0; const auto& it : sb_config)
   {
     if (m_panes[i].is_shown())
     {

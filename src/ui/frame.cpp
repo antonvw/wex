@@ -5,20 +5,23 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/bind.h>
-#include <wex/config.h>
-#include <wex/defs.h>
+#include <wex/common/tostring.h>
+#include <wex/common/util.h>
+#include <wex/core/cmdline.h>
+#include <wex/core/config.h>
+#include <wex/core/file.h>
+#include <wex/factory/defs.h>
+#include <wex/factory/lexers.h>
 #include <wex/factory/listview.h>
+#include <wex/factory/printing.h>
 #include <wex/factory/stc.h>
-#include <wex/frame.h>
-#include <wex/frd.h>
-#include <wex/grid.h>
-#include <wex/lexers.h>
-#include <wex/printing.h>
-#include <wex/textctrl.h>
-#include <wex/toolbar.h>
-#include <wex/tostring.h>
-#include <wex/util.h>
+#include <wex/ui/bind.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/frd.h>
+#include <wex/ui/grid.h>
+#include <wex/ui/textctrl.h>
+#include <wex/ui/toolbar.h>
+
 #include <wx/app.h>
 #include <wx/fdrepdlg.h>
 #include <wx/panel.h>
@@ -423,6 +426,28 @@ wex::frame::open_file(const path& file, const data::stc& data)
   return nullptr;
 }
 
+bool wex::frame::output(const std::string& text) const
+{
+  provide_output(text);
+  return factory::frame::output(text);
+}
+
+void wex::frame::provide_output(const std::string& text) const
+{
+  if (cmdline::is_output())
+  {
+    std::cout << text;
+  }
+
+  if (!cmdline::get_output().empty())
+  {
+    wex::file(
+      wex::path(cmdline::get_output()),
+      std::ios_base::out | std::ios_base::app)
+      .write(text);
+  }
+}
+
 const std::string wex::frame::pane_add(wxWindow* pane)
 {
   static int no = 0;
@@ -537,6 +562,22 @@ size_t wex::frame::panes() const
   return const_cast<frame*>(this)->m_manager.GetAllPanes().GetCount();
 }
 
+void wex::frame::record(const std::string& command)
+{
+  if (cmdline::is_echo())
+  {
+    std::cout << command << "\n";
+  }
+
+  if (!cmdline::get_scriptout().empty())
+  {
+    wex::file(
+      wex::path(cmdline::get_scriptout()),
+      std::ios_base::out | std::ios_base::app)
+      .write(command + "\n");
+  }
+}
+
 void wex::frame::set_recent_file(const path& path)
 {
   m_file_history.append(path);
@@ -553,6 +594,11 @@ wex::statusbar* wex::frame::setup_statusbar(
 bool wex::frame::statustext(const std::string& text, const std::string& pane)
   const
 {
+  if (pane.empty())
+  {
+    provide_output(text);
+  }
+
   return (
     m_is_closing || m_statusbar == nullptr ?
       false :

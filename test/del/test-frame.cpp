@@ -2,24 +2,25 @@
 // Name:      test-frame.cpp
 // Purpose:   Implementation for wex del unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/addressrange.h>
+#include <thread>
+
 #include <wex/del/defs.h>
-#include <wex/frd.h>
-#include <wex/log.h>
-#include <wex/menu.h>
-#include <wex/process.h>
+#include <wex/stc/process.h>
+#include <wex/ui/frd.h>
+#include <wex/ui/menu.h>
+#include <wex/vi/addressrange.h>
 
 #include "test.h"
 
 TEST_CASE("wex::del::frame")
 {
-  auto* list = new wex::del::listview(
-    wex::data::listview().type(wex::data::listview::HISTORY));
-
-  del_frame()->pane_add(list);
+  SUBCASE("default_extensions")
+  {
+    REQUIRE(!del_frame()->default_extensions().empty());
+  }
 
   SUBCASE("find_in_files")
   {
@@ -33,6 +34,8 @@ TEST_CASE("wex::del::frame")
       {wex::test::get_path("test.h")},
       wex::tool(wex::ID_TOOL_REPORT_FIND),
       false));
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
     REQUIRE(
       !del_frame()->find_in_files_title(wex::ID_TOOL_REPORT_FIND).empty());
@@ -52,11 +55,12 @@ TEST_CASE("wex::del::frame")
 #endif
   }
 
+  SUBCASE("get_debug") { REQUIRE(del_frame()->get_debug() != nullptr); }
+
   SUBCASE("get_project_history")
   {
     auto* menu = new wex::menu();
     del_frame()->get_project_history().use_menu(1000, menu);
-    list->Show();
   }
 
   SUBCASE("open_file")
@@ -68,16 +72,13 @@ TEST_CASE("wex::del::frame")
     REQUIRE(
       del_frame()->file_history()[0].string().find("../test.h") ==
       std::string::npos);
-
-    //  REQUIRE(!del_frame()->open_file(
-    //    wex::path(get_project()),
-    //    wex::data::stc().flags(wex::data::stc::WIN_IS_PROJECT)));
   }
 
-  SUBCASE("process_async_system")
+  SUBCASE("prepare_output")
   {
     wex::process::prepare_output(del_frame());
     REQUIRE(wex::addressrange(&get_stc()->get_vi(), "").escape("ls"));
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }
 
   SUBCASE("set_recent")
@@ -96,7 +97,7 @@ TEST_CASE("wex::del::frame")
     del_frame()->show_ex_bar(wex::frame::HIDE_BAR_FORCE_FOCUS_STC);
   }
 
-  SUBCASE("stc") { auto* stc = get_stc(); }
+  SUBCASE("statustext_vcs") { del_frame()->statustext_vcs(get_stc()); }
 
   SUBCASE("stc_entry_dialog")
   {
@@ -105,7 +106,80 @@ TEST_CASE("wex::del::frame")
     REQUIRE(del_frame()->stc_entry_dialog_title() == "hello world");
   }
 
-  SUBCASE("use_file_history") { del_frame()->use_file_history_list(list); }
+  SUBCASE("sync")
+  {
+    del_frame()->sync(false);
+    del_frame()->sync(true);
+  }
+
+  SUBCASE("use_file_history")
+  {
+    auto* list = new wex::del::listview(
+      wex::data::listview().type(wex::data::listview::HISTORY));
+    del_frame()->pane_add(list);
+    list->Show();
+    del_frame()->use_file_history_list(list);
+  }
+
+  SUBCASE("virtual")
+  {
+    auto*          menu = new wex::menu();
+    wex::menu_item item;
+
+    del_frame()->append_vcs(menu, &item);
+
+    const std::vector<wxAcceleratorEntry> v{};
+    del_frame()->bind_accelerators(del_frame(), v);
+
+    del_frame()->debug_add_menu(*menu, true);
+
+    del_frame()->debug_exe(100, get_stc());
+
+    del_frame()->debug_exe("gdb", get_stc());
+
+    REQUIRE(del_frame()->debug_handler() != nullptr);
+
+    REQUIRE(!del_frame()->debug_is_active());
+
+    REQUIRE(!del_frame()->debug_print("hello"));
+
+    REQUIRE(!del_frame()->debug_toggle_breakpoint(100, get_stc()));
+
+    REQUIRE(!del_frame()->is_address(get_stc(), "xx"));
+    REQUIRE(del_frame()->is_address(get_stc(), "1,5y"));
+    REQUIRE(del_frame()->is_address(get_stc(), "%y"));
+
+    del_frame()->on_command_item_dialog(
+      wxID_ADD,
+      wxCommandEvent(wxEVT_NULL, wxID_OK));
+
+    del_frame()->on_notebook(100, nullptr);
+
+#ifndef __WXMSW__
+    del_frame()->process_async_system(wex::process_data("ls"));
+#endif
+
+    del_frame()->set_recent_file(wex::path("file"));
+
+    del_frame()->show_ex_bar(wex::frame::HIDE_BAR_FOCUS_STC);
+    del_frame()->show_ex_bar(wex::frame::HIDE_BAR_FOCUS_STC, get_stc());
+
+    del_frame()->show_ex_message("hello");
+
+    del_frame()->statusbar_clicked("text");
+
+    del_frame()->statusbar_clicked_right("text");
+
+    REQUIRE(del_frame()->show_stc_entry_dialog());
+
+    REQUIRE(del_frame()->stc_entry_dialog_component() != nullptr);
+
+    del_frame()->stc_entry_dialog_title("hello world");
+
+    REQUIRE(del_frame()->stc_entry_dialog_title() == "hello world");
+
+    del_frame()->stc_entry_dialog_validator("choose [0-9]");
+  }
 
   SUBCASE("visual")
   {

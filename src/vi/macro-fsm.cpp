@@ -2,26 +2,27 @@
 // Name:      macro-fsm.cpp
 // Purpose:   Implementation of class wex::macro_fsm
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/mpl/list.hpp>
 #include <boost/statechart/custom_reaction.hpp>
 #include <boost/statechart/state.hpp>
 #include <boost/statechart/transition.hpp>
-#include <fstream>
 #include <pugixml.hpp>
-#include <wex/config.h>
-#include <wex/ex.h>
+#include <wex/core/config.h>
+#include <wex/core/log.h>
 #include <wex/factory/stc.h>
-#include <wex/frame.h>
-#include <wex/log.h>
-#include <wex/macro-mode.h>
-#include <wex/macros.h>
-#include <wex/statusbar.h>
-#include <wex/variable.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/statusbar.h>
+#include <wex/vi/ex.h>
+#include <wex/vi/macro-mode.h>
+#include <wex/vi/macros.h>
+#include <wex/vi/variable.h>
 
 #include "macro-fsm.h"
+
+#include <fstream>
 
 namespace mpl = boost::mpl;
 
@@ -108,7 +109,7 @@ bool wex::macro_fsm::expand_template(
     }
     else
     {
-      if (const std::string exp(read_variable(ifs, '@', ex, var)); !exp.empty())
+      if (const auto& exp(read_variable(ifs, '@', ex, var)); !exp.empty())
       {
         expanded += exp;
       }
@@ -281,7 +282,7 @@ std::string wex::macro_fsm::read_variable(
         // other separator
         else if (c == '\'')
         {
-          if (const std::string exp(read_variable(ifs, c, ex, current));
+          if (const auto& exp(read_variable(ifs, c, ex, current));
               !exp.empty())
           {
             variable::set_argument(exp);
@@ -313,7 +314,8 @@ std::string wex::macro_fsm::read_variable(
     {
       if (value.empty())
       {
-        log(variable) << "is empty";
+        log::trace(variable) << "is empty";
+        value = "?";
       }
 
       return value;

@@ -2,30 +2,24 @@
 // Name:      common/util.cpp
 // Purpose:   Implementation of wex common utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <pugixml.hpp>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wex/blame.h>
-#include <wex/config.h>
-#include <wex/core.h>
-#include <wex/dir.h>
+#include <wex/common/dir.h>
+#include <wex/common/tostring.h>
+#include <wex/common/util.h>
+#include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
+#include <wex/core/path.h>
+#include <wex/core/regex.h>
+#include <wex/core/vcs-command.h>
 #include <wex/factory/frame.h>
+#include <wex/factory/lexer.h>
+#include <wex/factory/lexers.h>
 #include <wex/factory/link.h>
 #include <wex/factory/process.h>
 #include <wex/factory/stc.h>
-#include <wex/lexer.h>
-#include <wex/lexers.h>
-#include <wex/log.h>
-#include <wex/path.h>
-#include <wex/regex.h>
-#include <wex/tostring.h>
-#include <wex/util.h>
-#include <wex/vcs-command.h>
 #include <wx/app.h>
 #include <wx/wupdlock.h>
 
@@ -79,7 +73,7 @@ wex::auto_complete_filename(const std::string& text)
   // path:   /usr/include
   // prefix: s
   // And text might be prefixed by a command, e.g.: e src/vi
-  path path(after(text, ' ', false));
+  path path(rfind_after(text, " "));
 
   if (path.is_relative())
   {
@@ -148,9 +142,10 @@ bool wex::compare_file(const path& file1, const path& file2)
   }
 
   if (const auto arguments =
-        (file1.stat().st_mtime < file2.stat().st_mtime) ?
-          "\"" + file1.string() + "\" \"" + file2.string() + "\"" :
-          "\"" + file2.string() + "\" \"" + file1.string() + "\"";
+        (file1.stat().get_modification_time() <
+         file2.stat().get_modification_time()) ?
+          quoted_find(file1.string()) + " " + quoted_find(file2.string()) :
+          quoted_find(file2.string()) + " " + quoted_find(file1.string());
       factory::process().system(
         config(_("list.Comparator")).get() + " " + arguments) != 0)
   {
@@ -189,10 +184,11 @@ bool wex::make(const path& makefile)
 {
   auto* process = new wex::factory::process;
 
-  return process->async_system(
-    config("Make").get("make") + " " + config("MakeSwitch").get("-f") + " " +
-      makefile.string(),
-    makefile.parent_path());
+  return process->async_system(process_data(
+                                 config("Make").get("make") + " " +
+                                 config("MakeSwitch").get("-f") + " " +
+                                 makefile.string())
+                                 .start_dir(makefile.parent_path()));
 }
 
 int wex::open_files(
@@ -271,7 +267,7 @@ bool wex::shell_expansion(std::string& command)
     }
     else
     {
-      r.replace(command, process.get_stdout());
+      r.replace(command, process.std_out());
     }
   }
 

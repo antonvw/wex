@@ -5,8 +5,8 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/log.h>
-#include <wex/regex.h>
+#include <wex/core/log.h>
+#include <wex/core/regex.h>
 
 enum class wex::regex::find_t
 {
@@ -68,9 +68,7 @@ int wex::regex::find(const std::string& text, find_t how)
     return -1;
   }
 
-  int index = 0;
-
-  for (const auto& reg : m_regex)
+  for (int index = 0; const auto& reg : m_regex)
   {
     try
     {

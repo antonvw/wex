@@ -5,10 +5,11 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <chrono>
-#include <wex/listitem.h>
+#include <wex/ui/listitem.h>
 
 #include "test.h"
+
+#include <chrono>
 
 TEST_CASE("wex::listitem")
 {

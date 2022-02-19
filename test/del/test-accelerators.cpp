@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "test.h"
-#include <wex/accelerators.h>
+#include <wex/del/accelerators.h>
 
 TEST_CASE("wex::accelerators")
 {

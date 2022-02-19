@@ -7,18 +7,18 @@
 
 #pragma once
 
-#include <bitset>
-#include <wex/ex-command.h>
+#include <wex/core/path.h>
+#include <wex/factory/ex-command.h>
+#include <wex/factory/lexer.h>
 #include <wex/factory/text-window.h>
-#include <wex/lexer.h>
-#include <wex/path.h>
 #include <wx/print.h>
 #include <wx/stc/stc.h>
+
+#include <bitset>
 
 namespace wex
 {
 class indicator;
-class lexer;
 
 namespace data
 {
@@ -200,6 +200,9 @@ public:
   /// Sets the text.
   virtual void set_text(const std::string& value) { SetText(value); }
 
+  /// Shows decimal or hex info of word under cursor.
+  virtual void show_ascii_value() { ; }
+
   /// Shows or hides line numbers.
   virtual void show_line_numbers(bool show) { ; }
 
@@ -283,7 +286,7 @@ public:
   void ParaDownRectExtend() { ; }
   void WordLeftRectExtend();
   void WordRightRectExtend();
-  void WordRightEndRectExtend() { ; }
+  void WordRightEndRectExtend();
 
   /// Override methods from text_window.
 

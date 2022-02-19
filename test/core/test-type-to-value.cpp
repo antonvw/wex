@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
-#include <wex/type-to-value.h>
+#include <wex/core/type-to-value.h>
 
 TEST_CASE("wex::type_to_value")
 {

@@ -5,15 +5,16 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wex/core.h>
-#include <wex/file-dialog.h>
-#include <wex/file.h>
-#include <wex/lexers.h>
+#include <wex/core/core.h>
+#include <wex/core/file.h>
+#include <wex/factory/lexers.h>
+#include <wex/ui/file-dialog.h>
+#include <wx/checkbox.h>
 #include <wx/checklst.h>
+#include <wx/msgdlg.h>
+#include <wx/panel.h>
+#include <wx/sizer.h>
+#include <wx/stattext.h>
 
 class extra_panel : public wxPanel
 {
@@ -56,25 +57,12 @@ static wxWindow* create_extra_panel(wxWindow* parent)
   return new extra_panel(parent);
 }
 
-wex::file_dialog::file_dialog(const data::window& data)
-  : wxFileDialog(
-      data.parent(),
-      data.title(),
-      std::string(),
-      std::string(),
-      data.wildcard(),
-      data.style(),
-      data.pos(),
-      data.size())
-{
-}
-
 wex::file_dialog::file_dialog(wex::file* file, const data::window& data)
   : wxFileDialog(
       data.parent(),
       data.title(),
-      file->path().parent_path(),
-      file->path().filename(),
+      file != nullptr ? file->path().parent_path() : std::string(),
+      file != nullptr ? file->path().filename() : std::string(),
       data.wildcard(),
       data.style(),
       data.pos(),
@@ -83,7 +71,7 @@ wex::file_dialog::file_dialog(wex::file* file, const data::window& data)
   , m_file(file)
 {
   if (
-    data.wildcard() == wxFileSelectorDefaultWildcardStr &&
+    m_file != nullptr && data.wildcard() == wxFileSelectorDefaultWildcardStr &&
     m_file->path().stat().is_ok())
   {
     std::string wildcards = _("All Files") + " (" +

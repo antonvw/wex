@@ -5,7 +5,7 @@
 // Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/marker.h>
+#include <wex/factory/marker.h>
 
 wex::marker::marker(const pugi::xml_node& node)
   : presentation(MARKER, node)

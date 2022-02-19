@@ -2,27 +2,23 @@
 // Name:      core/util.cpp
 // Purpose:   Implementation of wex core utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <algorithm>
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
-#include <numeric>
-#include <regex>
-#include <wex/config.h>
-#include <wex/core.h>
-#include <wex/log.h>
-#include <wex/path.h>
+
+#include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
+#include <wex/core/path.h>
 #include <wx/choicdlg.h>
 #include <wx/clipbrd.h>
 #include <wx/generic/dirctrlg.h> // for wxFileIconsTable
 
-const std::string wex::after(const std::string& text, char c, bool first)
-{
-  const auto pos = (first ? text.find(c) : text.rfind(c));
-  return (pos == std::string::npos ? text : text.substr(pos + 1));
-}
+#include <algorithm>
+#include <numeric>
+#include <regex>
 
 bool wex::auto_complete_text(
   const std::string&              text,
@@ -43,19 +39,6 @@ bool wex::auto_complete_text(
   return (matches == 1);
 }
 
-const std::string wex::before(const std::string& text, char c, bool first)
-{
-  if (const auto pos = (first ? text.find(c) : text.rfind(c));
-      pos != std::string::npos)
-  {
-    return text.substr(0, pos);
-  }
-  else
-  {
-    return text;
-  }
-}
-
 bool wex::browser(const std::string& url)
 {
   if (!wxLaunchDefaultBrowser(url))
@@ -70,13 +53,15 @@ bool wex::browser(const std::string& url)
 
 bool wex::browser_search(const std::string& text)
 {
-  if (const auto& search_engine(config(_("stc.Search engine")).get_first_of());
+  if (const auto& search_engine(
+        config(_("stc.Search engine")).get_first_of("https://duckduckgo.com"));
       !search_engine.empty())
   {
     return browser(search_engine + "?q=" + text);
   }
   else
   {
+    log("browser_search engine empty") << text;
     return false;
   }
 }
@@ -142,43 +127,33 @@ wex::ellipsed(const std::string& text, const std::string& control, bool ellipse)
          (!control.empty() ? "\tCtrl+" + control : std::string());
 }
 
-const std::string wex::first_of(
-  const std::string& text,
-  const std::string& chars,
-  size_t             start_pos,
-  first_of_t         flags)
+const std::string
+wex::find_after(const std::string& text, const std::string& seq)
 {
-  const auto pos = !flags[FIRST_OF_FROM_END] ?
-                     text.find_first_of(chars, start_pos) :
-                     text.find_last_of(chars, start_pos);
+  const auto pos = text.find(seq);
+  return pos == std::string::npos ? text : text.substr(pos + 1);
+}
 
-  if (!flags[FIRST_OF_BEFORE])
+const std::string
+wex::find_before(const std::string& text, const std::string& seq)
+{
+  const auto pos = text.find(seq);
+  return pos == std::string::npos ? text : text.substr(0, pos);
+}
+
+const std::string wex::find_tail(const std::string& text, size_t max_chars)
+{
+  if (text.size() > max_chars)
   {
-    return pos == std::string::npos ? std::string() : text.substr(pos + 1);
+    const size_t corr = (4 + text.size() - max_chars < text.size() ? 3 : 0);
+    const auto   tail = boost::algorithm::find_tail(text, max_chars - corr);
+    return (corr ? "..." : std::string()) +
+           std::string(tail.begin(), tail.end());
   }
   else
   {
-    return pos == std::string::npos ? text : text.substr(0, pos);
+    return text;
   }
-}
-
-const std::string wex::get_endoftext(const std::string& text, size_t max_chars)
-{
-  auto text_out(text);
-
-  if (text_out.length() > max_chars)
-  {
-    if (4 + text_out.length() - max_chars < text_out.length())
-    {
-      text_out = "..." + text_out.substr(4 + text_out.length() - max_chars);
-    }
-    else
-    {
-      text_out = text.substr(text.length() - max_chars);
-    }
-  }
-
-  return text_out;
 }
 
 const std::string wex::get_find_result(
@@ -222,7 +197,7 @@ int wex::get_number_of_lines(const std::string& text, bool trim)
     return 0;
   }
 
-  const auto trimmed = (trim ? boost::algorithm::trim_copy(text) : text);
+  const auto& trimmed = (trim ? boost::algorithm::trim_copy(text) : text);
 
   if (const int c = std::count(trimmed.begin(), trimmed.end(), '\n') + 1;
       c != 1)
@@ -305,21 +280,28 @@ bool wex::matches_one_of(
   return false;
 }
 
-bool wex::one_letter_after(const std::string& text, const std::string& letter)
-{
-  return std::regex_match(letter, std::regex("^" + text + "[a-zA-Z]$"));
-}
-
 const std::string wex::quoted(const std::string& text)
 {
   return "'" + text + "'";
 }
 
-bool wex::regafter(const std::string& text, const std::string& letter)
+const std::string wex::quoted_find(const std::string& text, char c)
 {
-  return std::regex_match(
-    letter,
-    std::regex("^" + text + "[0-9=\"a-z%._\\*]$"));
+  return text.find(c) != std::string::npos ? "\"" + text + "\"" : text;
+}
+
+const std::string
+wex::rfind_after(const std::string& text, const std::string& seq)
+{
+  const auto pos = text.rfind(seq);
+  return pos == std::string::npos ? text : text.substr(pos + 1);
+}
+
+const std::string
+wex::rfind_before(const std::string& text, const std::string& seq)
+{
+  const auto pos = text.rfind(seq);
+  return pos == std::string::npos ? text : text.substr(0, pos);
 }
 
 bool wex::single_choice_dialog(

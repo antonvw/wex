@@ -5,36 +5,38 @@
 // Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/interruptible.h>
+#include <wex/core/interruptible.h>
 
-bool wex::interruptible::cancel()
+#include "interruptible-imp.h"
+
+void wex::interruptible::end()
 {
-  if (!m_running)
-  {
-    return false;
-  }
+  m_imp->end();
+}
 
-  m_cancelled = true;
-  m_running   = false;
+void wex::interruptible::on_exit()
+{
+  delete m_imp;
+}
 
-  return true;
+void wex::interruptible::on_init()
+{
+  m_imp = new interruptible_imp;
+}
+
+bool wex::interruptible::is_running()
+{
+  return m_imp->is_running();
 }
 
 bool wex::interruptible::start()
 {
-  if (m_running)
+  if (is_running())
   {
     return false;
   }
 
-  m_cancelled = false;
-  m_running   = true;
+  m_imp->start();
 
   return true;
-}
-
-void wex::interruptible::stop()
-{
-  m_cancelled = false;
-  m_running   = false;
 }

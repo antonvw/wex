@@ -2,18 +2,14 @@
 // Name:      listitem.cpp
 // Purpose:   Implementation of class 'wex::listitem'
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wex/config.h>
-#include <wex/core.h>
-#include <wex/lexers.h>
-#include <wex/listitem.h>
-#include <wex/log.h>
+#include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
+#include <wex/factory/lexers.h>
+#include <wex/ui/listitem.h>
 
 // Do not give an error if columns do not exist.
 // E.g. the LIST_PROCESS has none of the file columns.
@@ -24,8 +20,11 @@ wex::listitem::listitem(listview* lv, long itemnumber)
            !lv->get_item_text(itemnumber, _("In Folder")).empty() ?
          wex::path(
            wex::path(lv->get_item_text(itemnumber, _("In Folder"))),
-           lv->get_item_text(itemnumber, _("File Name"))) :
-         wex::path(lv->get_item_text(itemnumber))))
+           lv->get_item_text(itemnumber, _("File Name")),
+           path::log_t().set(path::LOG_MOD)) :
+         wex::path(
+           lv->get_item_text(itemnumber),
+           path::log_t().set(path::LOG_MOD))))
   , m_file_spec(lv->get_item_text(itemnumber, _("Type")))
 {
   SetId(itemnumber);
@@ -153,11 +152,11 @@ void wex::listitem::update()
   {
     set_item(_("Type"), m_path.dir_exists() ? m_file_spec : m_path.extension());
     set_item(_("In Folder"), m_path.parent_path());
-    set_item(_("Modified"), m_path.stat().get_modification_time());
+    set_item(_("Modified"), m_path.stat().get_modification_time_str());
 
     if (m_path.file_exists())
     {
-      set_item(_("Size"), std::to_string(m_path.stat().st_size));
+      set_item(_("Size"), std::to_string(m_path.stat().get_size()));
     }
   }
 }

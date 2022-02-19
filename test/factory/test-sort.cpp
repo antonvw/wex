@@ -5,9 +5,11 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <thread>
+
 #include <boost/algorithm/string.hpp>
+#include <wex/factory/sort.h>
 #include <wex/factory/stc.h>
-#include <wex/sort.h>
 
 #include "../test.h"
 
@@ -38,15 +40,18 @@ TEST_CASE("wex::sort")
 #ifndef __WXMSW__
   SUBCASE("string")
   {
-    REQUIRE(wex::sort().string("z\ny\nx\n", "\n") == "x\ny\nz\n");
+    REQUIRE(wex::factory::sort().string("z\ny\nx\n", "\n") == "x\ny\nz\n");
     REQUIRE(
-      wex::sort(wex::sort::sort_t().set(wex::sort::SORT_DESCENDING))
+      wex::factory::sort(
+        wex::factory::sort::sort_t().set(wex::factory::sort::SORT_DESCENDING))
         .string("z\ny\nx\n", "\n") == "z\ny\nx\n");
-    REQUIRE(wex::sort().string("z\nz\ny\nx\n", "\n") == "x\ny\nz\nz\n");
     REQUIRE(
-      wex::sort(wex::sort::sort_t().set(wex::sort::SORT_UNIQUE))
+      wex::factory::sort().string("z\nz\ny\nx\n", "\n") == "x\ny\nz\nz\n");
+    REQUIRE(
+      wex::factory::sort(
+        wex::factory::sort::sort_t().set(wex::factory::sort::SORT_UNIQUE))
         .string("z\nz\ny\nx\n", "\n") == "x\ny\nz\n");
-    REQUIRE(wex::sort(0, 3, 5).string(rect, "\n") == sorted);
+    REQUIRE(wex::factory::sort(0, 3, 5).string(rect, "\n") == sorted);
   }
 #endif
 
@@ -63,14 +68,15 @@ TEST_CASE("wex::sort")
   SUBCASE("selection")
   {
     s->SelectNone();
-    REQUIRE(!wex::sort().selection(s));
+    REQUIRE(!wex::factory::sort().selection(s));
 
     s->SetText("aaaaa\nbbbbb\nccccc\n");
     s->SelectAll();
-    wxMilliSleep(10);
-    REQUIRE(wex::sort().selection(s));
-    REQUIRE(wex::sort(0, 3, 10).selection(s));
-    REQUIRE(!wex::sort(0, 20, 10).selection(s));
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+    REQUIRE(wex::factory::sort().selection(s));
+    REQUIRE(wex::factory::sort(0, 3, 10).selection(s));
+    REQUIRE(!wex::factory::sort(0, 25, 10).selection(s));
   }
 
   SUBCASE("block")
@@ -94,13 +100,17 @@ TEST_CASE("wex::sort")
     s->CharRightRectExtend();
     s->CharRightRectExtend();
 
-    REQUIRE(wex::sort(0, 3, 5).selection(s));
+    REQUIRE(wex::factory::sort(0, 3, 5).selection(s));
 
     REQUIRE(
       boost::algorithm::trim_copy(s->GetText().ToStdString()) ==
       boost::algorithm::trim_copy(sorted));
-    REQUIRE(wex::sort(wex::sort::sort_t().set(wex::sort::SORT_DESCENDING), 3, 5)
-              .selection(s));
+    REQUIRE(
+      wex::factory::sort(
+        wex::factory::sort::sort_t().set(wex::factory::sort::SORT_DESCENDING),
+        3,
+        5)
+        .selection(s));
     REQUIRE(s->GetText() != sorted);
   }
 }

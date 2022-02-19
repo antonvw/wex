@@ -5,7 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/core.h>
+#include <wex/core/core.h>
 #include <wex/factory/stc.h>
 
 const std::string wex::factory::stc::eol() const
@@ -181,6 +181,18 @@ void wex::factory::stc::WordLeftRectExtend()
 }
 
 void wex::factory::stc::WordRightRectExtend()
+{
+  // For now same as WordRightEndRectExtend, there is no
+  // WordRightEndPosition.
+  const auto repeat = WordEndPosition(GetCurrentPos(), false) - GetCurrentPos();
+
+  for (auto i = 0; i < repeat; i++)
+  {
+    CharRightRectExtend();
+  }
+}
+
+void wex::factory::stc::WordRightEndRectExtend()
 {
   const auto repeat = WordEndPosition(GetCurrentPos(), false) - GetCurrentPos();
 

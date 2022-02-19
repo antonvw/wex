@@ -5,14 +5,15 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <thread>
-#include <wex/core.h>
-#include <wex/dir.h>
+#include <wex/common/dir.h>
+#include <wex/common/stream.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
 #include <wex/factory/frame.h>
-#include <wex/log.h>
-#include <wex/stream.h>
 #include <wx/app.h>
 #include <wx/translation.h>
+
+#include <thread>
 
 namespace fs = std::filesystem;
 
@@ -75,16 +76,20 @@ private:
   std::vector<path>& m_container;
 };
 
-bool allow_hidden(const fs::directory_entry& e, const data::dir& data)
+bool allow_hidden(const std::filesystem::path& p, const data::dir& data)
 {
-  // If this is not a hidden file, return true.
-  if (!e.path().filename().string().starts_with("."))
+  for (auto it = p.begin(); it != p.end(); ++it)
   {
-    return true;
+    if (
+      it->string() != ".." && it->string() != "." &&
+      it->string().starts_with("."))
+    {
+      // This file is hidden, only allow if flag HIDDEN is set.
+      return data.type().test(data::dir::HIDDEN);
+    }
   }
 
-  // This file is hidden, only allow if flag HIDDEN is set.
-  return data.type().test(data::dir::HIDDEN);
+  return true;
 }
 }; // namespace wex
 
@@ -201,7 +206,7 @@ bool wex::dir::on_file(const path& p) const
 
       if (!s.run_tool())
       {
-        cancel();
+        end();
         return false;
       }
 
@@ -239,12 +244,26 @@ int wex::dir::run() const
             fs::directory_options::skip_permission_denied),
           end;
 #endif
+
           !std::all_of(
             rdi,
             end,
             [&](const fs::directory_entry& p)
             {
-              return traverse(p);
+              if (
+                p.path().filename().string().starts_with(".") &&
+                fs::is_directory(p.path()) &&
+                !m_data.type().test(data::dir::HIDDEN))
+              {
+                // This does not really work, there extra code in allow_hidden,
+                // but that should not be necessary.
+                rdi.disable_recursion_pending();
+                return true;
+              }
+              else
+              {
+                return traverse(p);
+              }
             }))
       {
         log::trace("iterating aborted");
@@ -278,7 +297,7 @@ int wex::dir::run() const
                          << "flags:" << m_data.type()
                          << "matches:" << matches();
 
-  stop();
+  end();
 
   find_files_end();
 
@@ -290,7 +309,7 @@ bool wex::dir::traverse(const fs::directory_entry& e) const
   if (fs::is_regular_file(e.path()))
   {
     if (
-      m_data.type().test(data::dir::FILES) && allow_hidden(e, m_data) &&
+      m_data.type().test(data::dir::FILES) && allow_hidden(e.path(), m_data) &&
       matches_one_of(e.path().filename().string(), m_data.file_spec()))
     {
       if (on_file(e.path()))
@@ -301,7 +320,7 @@ bool wex::dir::traverse(const fs::directory_entry& e) const
   }
   else if (
     m_data.type().test(data::dir::DIRS) && fs::is_directory(e.path()) &&
-    allow_hidden(e, m_data) &&
+    allow_hidden(e.path(), m_data) &&
     (m_data.dir_spec().empty() ||
      matches_one_of(e.path().filename().string(), m_data.dir_spec())))
   {
@@ -319,7 +338,7 @@ bool wex::dir::traverse(const fs::directory_entry& e) const
     return false;
   }
 
-  return !interruptible::is_cancelled();
+  return interruptible::is_running();
 }
 
 std::vector<std::string>

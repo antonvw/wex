@@ -2,15 +2,12 @@
 // Name:      printing.cpp
 // Purpose:   Implementation of wex::printing class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wex/core.h>
-#include <wex/printing.h>
+#include <wex/core/chrono.h>
+#include <wex/core/core.h>
+#include <wex/factory/printing.h>
 #include <wx/stc/stc.h>
 
 const std::string wex::print_caption(const path& filename)
@@ -27,8 +24,8 @@ const std::string wex::print_header(const path_lexer& filename)
 {
   if (filename.file_exists())
   {
-    return get_endoftext(
-      filename.string() + " " + filename.stat().get_modification_time(),
+    return find_tail(
+      filename.string() + " " + filename.stat().get_modification_time_str(),
       filename.lexer().line_size());
   }
   else

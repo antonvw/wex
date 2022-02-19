@@ -5,7 +5,7 @@ Name:      wex-lexers.xml
 Purpose:   Lexers configuration for wex.
            See scintilla 3.7.2 (www.scintilla.org).
 Author:    Anton van Wezenbeek
-Copyright: (c) 2020, Anton van Wezenbeek
+Copyright: (c) 2009-2021, Anton van Wezenbeek
 -->
 
 <lexers>
@@ -2884,8 +2884,8 @@ Copyright: (c) 2020, Anton van Wezenbeek
       const constexpr const_cast continue decltype default
       delete do double dynamic_cast else enum
       explicit export extern false final float
-      for friend goto if inline int
-      long mutable namespace new noexcept not
+      for friend goto if import inline int
+      long module mutable namespace new noexcept not
       not_eq nullptr operator or or_eq override
       private protected public register reinterpret_cast requires
       return short signed sizeof static static_assert
@@ -3415,7 +3415,7 @@ Copyright: (c) 2020, Anton van Wezenbeek
   <lexer name="avs"/>
   <lexer display="awk" name="bash" extensions="*.awk">
     <keywords set-0="csh">
-      BEGIN END FS function length printf sprintf substr
+      BEGIN END FS RS function length printf sprintf substr
     </keywords>
   </lexer>
   <lexer name="baan"/>
@@ -3544,6 +3544,9 @@ Copyright: (c) 2020, Anton van Wezenbeek
   <lexer name="errorlist" edgemode="none">
     <styles>
       <style no="ctag"> fore:lightblue </style>
+      <style no="gcc"> fore:red,italic,eol </style>
+      <style no="ms"> fore:red,italic,eol </style>
+      <style no="cmd"> fore:red,italic,eol </style>
     </styles>
   </lexer>
   <lexer name="escript"/>
@@ -3755,7 +3758,7 @@ Copyright: (c) 2020, Anton van Wezenbeek
   <lexer display="javascript" name="cpp" extensions="*.js">
     <keywords set="javascript"/>
   </lexer>
-  <lexer name="json" extensions="*.json">
+  <lexer name="json" wrapline="word" extensions="*.json">
     <properties>
       <property name="lexer.json.allow.comments"> 1 </property>
       <property name="fold"> 1 </property>
@@ -3778,6 +3781,8 @@ Copyright: (c) 2020, Anton van Wezenbeek
       <property name="fold.compact"> 1 </property>
       <property name="fold.comment"> 1 </property>
     </properties>
+  </lexer>
+  <lexer display="lilypond" name="latex" extensions="*.ly">
   </lexer>
   <lexer name="lisp">
     <properties>
@@ -3969,7 +3974,7 @@ Copyright: (c) 2020, Anton van Wezenbeek
       <property name="fold.comment"> 1 </property>
     </properties>
   </lexer>
-  <lexer name="props" extensions="*.ini;*.conf;*.desktop;*.rc;.clang-format" edgemode="none">
+  <lexer name="props" extensions="*.ini;*.conf;*.desktop;*.rc;.clang-format;hosts*" edgemode="none">
     <styles>
     <style no="section"> fore:sky blue </style>
     <style no="assignment"> fore:khaki</style>
@@ -3997,6 +4002,29 @@ Copyright: (c) 2020, Anton van Wezenbeek
   <lexer name="r"/>
   <lexer name="rebol"/>
   <lexer name="registry"/>
+  <lexer display="rfwv" name="rfw"
+    extensions="*vi.robot;*.resource"
+    edgemode="none"
+    tabmode="use"
+    tabwidth="8">
+    <styles>
+      <style no="testcase"> fore:sky blue,underline </style>
+    </styles>
+    <properties>
+      <property name="fold"> 1 </property>
+      <property name="fold.compact"> 1 </property>
+      <property name="fold.comment"> 1 </property>
+      <property name="fold.pipes"> 1 </property>
+      <property name="fold.tabs"> 1 </property>
+      <property name="vi.Script"> 1 </property>
+    </properties>
+    <keywords set-1="rfw-core"> 
+      [Arguments] Documentation [Documentation] Return [Tags]
+      Default Force Library Metadata Postcondition Precondition Resource 
+      Template Timeout 
+      IF ELSE END 
+    </keywords>
+  </lexer>
   <lexer name="rfw" 
     extensions="*.robot;*.resource"
     edgemode="none"

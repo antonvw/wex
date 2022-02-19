@@ -2,15 +2,11 @@
 // Name:      test-menu.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wex/config.h>
-#include <wex/menu.h>
+#include <wex/core/config.h>
+#include <wex/ui/menu.h>
 
 #include "test.h"
 
@@ -32,7 +28,6 @@ TEST_CASE("wex::menu")
        {wex::menu_item::EDIT},
        {wex::menu_item::EDIT_INVERT},
        {wex::menu_item::PRINT},
-       {wex::menu_item::TOOLS},
        {wex::path(), frame(), false},
        {wex::path(wex::path::current()), frame(), false},
        {wxID_SAVE, "mysave"},

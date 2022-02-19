@@ -5,11 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wex/toolbar.h>
+#include <wex/ui/toolbar.h>
 
 #include "test.h"
 
@@ -33,7 +29,8 @@ TEST_CASE("wex::toolbar")
         "",
         "this is button 1",
         true,
-        [](wxCheckBox*) {
+        [](wxCheckBox*)
+        {
           ;
         }},
        {wxWindowBase::NewControlId(),

@@ -2,14 +2,67 @@
 // Name:      vi/util.cpp
 // Purpose:   Implementation of wex common utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/ex.h>
+#include <regex>
+
+#include <wex/core/log.h>
 #include <wex/factory/stc.h>
-#include <wex/log.h>
-#include <wex/macros.h>
-#include <wx/defs.h>
+#include <wex/vi/ex.h>
+#include <wex/vi/macros.h>
+
+#include "util.h"
+
+const std::string wex::esc()
+{
+  return std::string("\x1b");
+}
+
+const std::string wex::find_first_of(
+  const std::string& text,
+  const std::string& chars,
+  size_t             pos)
+{
+  const auto match = text.find_first_of(chars, pos);
+  return match == std::string::npos ? std::string() : text.substr(match + 1);
+}
+
+std::string
+wex::get_lines(factory::stc* stc, int start, int end, const std::string& flags)
+{
+  std::string text;
+
+  for (auto i = start; i < end; i++)
+  {
+    if (flags.find("#") != std::string::npos)
+    {
+      char buffer[8];
+      snprintf(buffer, sizeof(buffer), "%6d ", i + 1);
+
+      text += buffer;
+    }
+
+    if (flags.find("l") != std::string::npos)
+    {
+      text += stc->GetTextRange(
+                stc->PositionFromLine(i),
+                stc->GetLineEndPosition(i)) +
+              "$" + "\n";
+    }
+    else
+    {
+      text += stc->GetLine(i);
+    }
+  }
+
+  return text;
+}
+
+const std::string wex::k_s(wxKeyCode key)
+{
+  return std::string(1, key);
+}
 
 bool wex::marker_and_register_expansion(const ex* ex, std::string& text)
 {
@@ -86,4 +139,16 @@ bool wex::marker_and_register_expansion(const ex* ex, std::string& text)
   }
 
   return true;
+}
+
+bool wex::one_letter_after(const std::string& text, const std::string& letter)
+{
+  return std::regex_match(letter, std::regex("^" + text + "[a-zA-Z]$"));
+}
+
+bool wex::register_after(const std::string& text, const std::string& letter)
+{
+  return std::regex_match(
+    letter,
+    std::regex("^" + text + "[0-9=\"a-z%._\\*]$"));
 }

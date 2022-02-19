@@ -2,17 +2,18 @@
 // Name:      frame.h
 // Purpose:   Include file for wex::del::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <set>
-#include <wex/config.h>
+#include <wex/core/config.h>
 #include <wex/del/defs.h>
 #include <wex/del/listview.h>
-#include <wex/file-history.h>
-#include <wex/frame.h>
+#include <wex/ui/file-history.h>
+#include <wex/ui/frame.h>
+
+#include <set>
 
 namespace wex
 {
@@ -118,6 +119,9 @@ public:
   /// Updates project history.
   void set_recent_project(const path& path) { m_project_history.append(path); }
 
+  /// Shows vcs info on statusbar.
+  void statustext_vcs(factory::stc* stc);
+
   /// Uses specified history list, and adds all elements from file history
   /// to the list.
   void use_file_history_list(listview* list);
@@ -137,14 +141,15 @@ public:
   bool          debug_print(const std::string& text) override;
   bool          debug_toggle_breakpoint(int line, factory::stc* stc) override;
 
+  bool is_address(factory::stc* stc, const std::string& text) override;
+
   void on_command_item_dialog(wxWindowID dialogid, const wxCommandEvent& event)
     override;
   void on_notebook(wxWindowID id, wxWindow* page) override;
-  void set_recent_file(const path& path) override;
 
-  bool process_async_system(
-    const std::string& command,
-    const std::string& start_dir = std::string()) override;
+  bool process_async_system(const process_data& data) override;
+
+  void set_recent_file(const path& path) override;
 
   void show_ex_bar(int action = HIDE_BAR_FOCUS_STC, factory::stc* stc = nullptr)
     override;

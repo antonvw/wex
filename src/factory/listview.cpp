@@ -5,7 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/core.h>
+#include <wex/core/core.h>
 #include <wex/factory/listview.h>
 
 wex::column::column()

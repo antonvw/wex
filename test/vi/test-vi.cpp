@@ -2,22 +2,21 @@
 // Name:      test-vi.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <vector>
-#include <wex/config.h>
-#include <wex/core.h>
-#include <wex/frd.h>
-#include <wex/macro-mode.h>
-#include <wex/macros.h>
-#include <wex/vi.h>
+#include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/ui/frd.h>
+#include <wex/vi/macro-mode.h>
+#include <wex/vi/macros.h>
+#include <wex/vi/vi.h>
 
 #include "test.h"
 
 #define ESC "\x1b"
 
-// See stc/test-vi.cpp for testing goto
+// See stc/test-vi.cpp for testing goto and vim
 
 void change_mode(
   wex::vi*              vi,
@@ -28,15 +27,14 @@ void change_mode(
   REQUIRE(vi->mode().get() == mode);
 }
 
-void change_prep(const std::string& command, wex::factory::stc* stc)
+void change_prep(
+  const std::string& command,
+  wex::vi*           vi,
+  wex::factory::stc* stc)
 {
   stc->set_text("xxxxxxxxxx second third\nxxxxxxxx\naaaaaaaaaa\n");
   REQUIRE(stc->get_line_count() == 4);
 
-  auto* vi = new wex::vi(get_stc());
-  REQUIRE(vi->is_active());
-  // this is a factory stc, inject is not overriden to implement inject
-  REQUIRE(!vi->command(":1"));
   REQUIRE(vi->command(command));
   REQUIRE(vi->mode().is_insert());
   REQUIRE(vi->command("zzz"));
@@ -76,16 +74,74 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->command(""));
   }
 
+  SUBCASE("delete")
+  {
+    stc->set_text("XXXXX\nYYYYY\nZZZZZ\n");
+
+    SUBCASE("normal")
+    {
+      REQUIRE(vi->command("x"));
+      REQUIRE(stc->get_text() == "XXXX\nYYYYY\nZZZZZ\n");
+    }
+
+    SUBCASE("block")
+    {
+      REQUIRE(vi->command("K"));
+      REQUIRE(vi->mode().get() == wex::vi_mode::state_t::VISUAL_BLOCK);
+      REQUIRE(vi->command("j"));
+      REQUIRE(vi->command("j"));
+      REQUIRE(vi->command(" "));
+      REQUIRE(vi->command("x"));
+      REQUIRE(stc->get_text() == "XXXX\nYYYY\nZZZZ\n");
+      change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+    }
+  }
+
   SUBCASE("change")
   {
-    change_prep("cw", stc);
-    REQUIRE(stc->GetLineText(0) == "zzzsecond third");
+    SUBCASE("normal")
+    {
+      change_prep("cw", vi, stc);
+      REQUIRE(stc->GetLineText(0) == "zzzsecond third");
 
-    change_prep("ce", stc);
-    REQUIRE(stc->GetLineText(0) == "zzz second third");
+      change_prep("ce", vi, stc);
+      REQUIRE(stc->GetLineText(0) == "zzz second third");
 
-    change_prep("2ce", stc);
-    REQUIRE(stc->GetLineText(0) == "zzz third");
+      change_prep("2ce", vi, stc);
+      REQUIRE(stc->GetLineText(0) == "zzz third");
+    }
+
+    SUBCASE("block")
+    {
+      stc->set_text("xxxxxxxxxx second third\nxxxxxxxxxx\naaaaaaaaaa\n");
+
+      REQUIRE(vi->command("K"));
+      REQUIRE(vi->mode().get() == wex::vi_mode::state_t::VISUAL_BLOCK);
+      REQUIRE(vi->command("j"));
+      REQUIRE(vi->command("j"));
+      // Next should be the OK..
+      // REQUIRE(vi->command("ce"));
+      // REQUIRE(vi->mode().get() == wex::vi_mode::state_t::INSERT_BLOCK);
+      // REQUIRE(vi->command("uu"));
+      // REQUIRE(stc->get_text() == "uu second third\nuu\nuu\n");
+      change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+    }
+
+    SUBCASE("block-select")
+    {
+      stc->set_text("xxxxxxxxxx second third\nxxxxxxxxxx\naaaaaaaaaa\n");
+
+      REQUIRE(vi->command("K"));
+      REQUIRE(vi->mode().get() == wex::vi_mode::state_t::VISUAL_BLOCK);
+      REQUIRE(vi->command("j"));
+      REQUIRE(vi->command("j"));
+      REQUIRE(vi->command("l"));
+      REQUIRE(vi->command("l"));
+      REQUIRE(vi->command("c"));
+      REQUIRE(vi->mode().get() == wex::vi_mode::state_t::INSERT_BLOCK);
+      vi->mode().command();
+      REQUIRE(vi->mode().get() == wex::vi_mode::state_t::COMMAND);
+    }
   }
 
   SUBCASE("find")
@@ -97,12 +153,6 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->command("yb"));
     REQUIRE(vi->mode().is_command());
     REQUIRE(!vi->command("/xfind"));
-  }
-
-  SUBCASE("invalid command")
-  {
-    REQUIRE(!vi->command(":xxx"));
-    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
   }
 
   SUBCASE("insert")
@@ -183,6 +233,12 @@ TEST_CASE("wex::vi")
     change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
     REQUIRE(vi->inserted_text() == "\n\n\n\n");
     REQUIRE(!vi->mode().is_insert());
+  }
+
+  SUBCASE("invalid command")
+  {
+    REQUIRE(!vi->command(":xxx"));
+    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
   }
 
   SUBCASE("is_active")
@@ -273,7 +329,7 @@ TEST_CASE("wex::vi")
         CAPTURE(nc);
         REQUIRE(vi->command(nc));
 
-        // test navigate while in rect mode
+        // test navigate while in block mode
         change_mode(vi, "K", wex::vi_mode::state_t::VISUAL_BLOCK);
         REQUIRE(vi->command(nc));
         REQUIRE(vi->mode().is_visual());
@@ -345,6 +401,22 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->command(" "));
   }
 
+  // on_char(), on_key_down() : see stc/test-vi.cpp
+
+  SUBCASE("playback")
+  {
+    REQUIRE(vi->command("qa"));
+
+    REQUIRE(vi->command("atest"));
+    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+
+    REQUIRE(vi->command("q"));
+
+    stc->set_text("");
+    REQUIRE(vi->command("@a"));
+    REQUIRE(stc->get_text() == "test");
+  }
+
   SUBCASE("put")
   {
     stc->set_text("the chances of anything coming from mars\n");
@@ -400,6 +472,27 @@ TEST_CASE("wex::vi")
     REQUIRE(stc->get_text().find("XXXXX") != std::string::npos);
   }
 
+  SUBCASE("replace")
+  {
+    stc->set_text("XXXXX\nYYYYY\nZZZZZ\n");
+
+    SUBCASE("normal")
+    {
+      REQUIRE(vi->command("3rx"));
+      REQUIRE(stc->get_text() == "xxxXX\nYYYYY\nZZZZZ\n");
+    }
+
+    SUBCASE("block")
+    {
+      REQUIRE(vi->command("K"));
+      REQUIRE(vi->command("j"));
+      REQUIRE(vi->command("j"));
+      REQUIRE(vi->command("3rx"));
+      REQUIRE(stc->get_text() == "xxxXX\nxxxYY\nxxxZZ\n");
+      change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+    }
+  }
+
   SUBCASE("substitute")
   {
     stc->set_text("999");
@@ -424,6 +517,7 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->command("Q"));
     REQUIRE(vi->command("\x17"));
     vi->append_insert_command("xyz");
+    vi->append_insert_text("hello world");
   }
 
   SUBCASE("variable")
@@ -482,7 +576,7 @@ TEST_CASE("wex::vi")
   SUBCASE("others")
   {
     // Test abbreviate.
-    for (auto& abbrev : get_abbreviations())
+    for (auto& abbrev : wex::test::get_abbreviations())
     {
       REQUIRE(vi->command(":ab " + abbrev.first + " " + abbrev.second));
       REQUIRE(vi->command("iabbreviation " + abbrev.first + " "));
@@ -531,7 +625,7 @@ TEST_CASE("wex::vi")
       {
         for (auto c : other_command.first)
         {
-          // prevent wex::browser_search (for travis)
+          // prevent wex::browser_search
           if (c == 'U')
           {
             continue;

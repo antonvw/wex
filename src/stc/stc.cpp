@@ -2,29 +2,28 @@
 // Name:      stc.cpp
 // Purpose:   Implementation of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
-#include <wex/address.h>
-#include <wex/auto-complete.h>
-#include <wex/auto-indent.h>
-#include <wex/blame.h>
-#include <wex/config.h>
-#include <wex/ex-stream.h>
-#include <wex/frame.h>
-#include <wex/frd.h>
-#include <wex/indicator.h>
-#include <wex/item-vector.h>
-#include <wex/lexers.h>
-#include <wex/link.h>
-#include <wex/macros.h>
-#include <wex/path.h>
-#include <wex/printing.h>
-#include <wex/regex.h>
-#include <wex/stc-entry-dialog.h>
-#include <wex/stc.h>
-#include <wex/vcs-entry.h>
+#include <wex/core/config.h>
+#include <wex/core/path.h>
+#include <wex/factory/blame.h>
+#include <wex/factory/indicator.h>
+#include <wex/factory/lexers.h>
+#include <wex/factory/printing.h>
+#include <wex/stc/auto-complete.h>
+#include <wex/stc/auto-indent.h>
+#include <wex/stc/entry-dialog.h>
+#include <wex/stc/link.h>
+#include <wex/stc/stc.h>
+#include <wex/stc/vcs-entry.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/frd.h>
+#include <wex/ui/item-vector.h>
+#include <wex/vi/address.h>
+#include <wex/vi/ex-stream.h>
+#include <wex/vi/macros.h>
 #include <wx/app.h>
 #include <wx/settings.h>
 
@@ -122,8 +121,6 @@ wex::stc::stc(const std::string& text, const data::stc& data)
     is_hexmode() ? m_hexmode.append_text(text) : set_text(text);
     guess_type_and_modeline();
   }
-
-  m_data.inject();
 }
 
 wex::stc::~stc()
@@ -492,6 +489,26 @@ bool wex::stc::link_open(link_t mode, std::string* filename)
 
   const std::string text = (!sel.empty() ? sel : GetCurLine().ToStdString());
 
+  if (mode[LINK_OPEN])
+  {
+    data::control data;
+
+    if (const wex::path path(m_link->get_path(text, data, this));
+        !path.string().empty())
+    {
+      if (filename != nullptr)
+      {
+        *filename = path.filename();
+      }
+      else if (!mode[LINK_CHECK])
+      {
+        m_frame->open_file(path, data);
+      }
+
+      return true;
+    }
+  }
+
   if (mode[LINK_OPEN_MIME])
   {
     if (const wex::path path(m_link->get_path(
@@ -516,30 +533,6 @@ bool wex::stc::link_open(link_t mode, std::string* filename)
       if (!mode[LINK_CHECK])
       {
         return mime.open_mime();
-      }
-
-      return true;
-    }
-  }
-
-  if (mode[LINK_OPEN])
-  {
-    data::control data;
-
-    if (const wex::path path(m_link->get_path(text, data, this));
-        !path.string().empty())
-    {
-      if (filename != nullptr)
-      {
-        *filename = path.filename();
-      }
-      else if (!mode[LINK_CHECK])
-      {
-        m_frame->open_file(path, data);
-      }
-      else if (!mode[LINK_CHECK])
-      {
-        open(path, data);
       }
 
       return true;
@@ -651,7 +644,10 @@ bool wex::stc::open(const wex::path& p, const data::stc& data)
     m_data.inject();
   }
 
-  m_frame->set_recent_file(p);
+  if (data.recent())
+  {
+    m_frame->set_recent_file(p);
+  }
 
   return true;
 }
@@ -902,12 +898,13 @@ bool wex::stc::set_indicator(const indicator& indicator, int start, int end)
   {
     if (!loaded)
     {
-      log("indicator") << indicator.number() << " not loaded";
+      log("indicator") << indicator.number() << "not loaded";
     }
     else
     {
-      log("set_indicator") << indicator.number() << start << end;
+      log("indicator") << indicator.number() << start << end;
     }
+
     return false;
   }
 
@@ -917,10 +914,8 @@ bool wex::stc::set_indicator(const indicator& indicator, int start, int end)
   {
     IndicatorFillRange(start, end - start);
   }
-  else if (end - start == 0)
-  {
-    log::trace("indicator") << start << end;
-  }
+
+  log::trace("indicator") << start << end << GetIndicatorCurrent();
 
   return true;
 }
@@ -965,7 +960,7 @@ bool wex::stc::show_blame(const vcs_entry* vcs)
     return false;
   }
 
-  if (vcs->get_stdout().empty())
+  if (vcs->std_out().empty())
   {
     log::debug("no vcs output");
     return false;
@@ -980,7 +975,7 @@ bool wex::stc::show_blame(const vcs_entry* vcs)
   const auto        margin_blame(iv.find<int>(_("stc.margin.Text")));
 
   for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
-         vcs->get_stdout(),
+         vcs->std_out(),
          boost::char_separator<char>("\r\n")))
   {
     if (const auto& [r, bl, t, l] = vcs->get_blame().get(it); bl != prev && r)

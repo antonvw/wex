@@ -5,8 +5,8 @@
 // Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/config.h>
-#include <wex/log.h>
+#include <wex/core/config.h>
+#include <wex/core/log.h>
 #include <wx/app.h>
 #include <wx/colour.h>
 #include <wx/font.h>
@@ -36,6 +36,8 @@ bool wex::config::change_path(const wex::path& p)
   {
     return false;
   }
+
+  assert(m_store);
 
   m_store->save();
 
@@ -136,7 +138,8 @@ const std::string wex::config::get(const std::string& def) const
 
 bool wex::config::get(bool def) const
 {
-  return get_store()->value(m_item, def);
+  // scintilla lexer does not support bool json
+  return get_store()->value(m_item, (int)def);
 }
 
 long wex::config::get(long def) const
@@ -203,14 +206,16 @@ wxFont wex::config::get(const wxFont& def) const
   return wx;
 }
 
-const std::string wex::config::get_first_of() const
+const std::string wex::config::get_first_of(const std::string& def) const
 {
   const auto& l(get(strings_t{}));
-  return l.empty() ? std::string() : l.front();
+  return l.empty() ? def : l.front();
 }
 
 wex::config_imp* wex::config::get_store() const
 {
+  assert(m_store);
+
   if (m_item.find(".") != std::string::npos)
   {
     return m_store;
@@ -245,9 +250,6 @@ void wex::config::on_init()
 {
   m_store = new config_imp();
   m_store->read();
-
-  log::trace("config") << "top size:" << size()
-                       << "elements:" << m_store->elements();
 }
 
 const wex::path wex::config::path()
@@ -257,11 +259,13 @@ const wex::path wex::config::path()
 
 void wex::config::read()
 {
+  assert(m_store);
   m_store->read();
 }
 
 void wex::config::save()
 {
+  assert(m_store);
   m_store->save();
 }
 
@@ -272,12 +276,13 @@ void wex::config::set(const std::string& v)
 
 void wex::config::set(const char* v)
 {
-  get_store()->set(m_item, v);
+  get_store()->set(m_item, std::string(v));
 }
 
 void wex::config::set(bool v)
 {
-  get_store()->set(m_item, v);
+  // scintilla lexer does not support bool json
+  get_store()->set(m_item, (int)v);
 }
 
 void wex::config::set(long v)
@@ -353,11 +358,13 @@ void wex::config::set_path(const wex::path& p)
 
 size_t wex::config::size()
 {
+  assert(m_store);
   return m_store->get_json().size();
 }
 
 bool wex::config::toggle(bool def)
 {
-  get_store()->set(m_item, !get_store()->value(m_item, def));
-  return get_store()->value(m_item, def);
+  // scintilla lexer does not support bool json
+  get_store()->set(m_item, (int)!get(def));
+  return get(def);
 }

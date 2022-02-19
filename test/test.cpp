@@ -2,16 +2,18 @@
 // Name:      test.cpp
 // Purpose:   Implementation of general test functions.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #define DOCTEST_CONFIG_IMPLEMENT
 
-#include <wex/cmdline.h>
-#include <wex/config.h>
-#include <wex/frame.h>
-#include <wex/lexers.h>
-#include <wex/log.h>
+// Outcomment this macro to use rfw testing
+#define USE_DOCTEST ON
+
+#include <wex/core/cmdline.h>
+#include <wex/core/config.h>
+#include <wex/core/log.h>
+#include <wx/frame.h>
 #include <wx/timer.h>
 
 #include "test.h"
@@ -45,8 +47,6 @@ bool wex::test::app::OnInit()
     return false;
   }
 
-  lexers::get();
-
   config(_("stc.vi mode")).set(true);
   config(_("stc.Auto complete")).set(true);
   config(_("locale")).set(get_locale().GetName().ToStdString()); // for coverage
@@ -59,26 +59,29 @@ bool wex::test::app::OnInit()
 
 int wex::test::app::OnRun()
 {
-  const int id_start    = wxWindow::NewControlId();
-  auto*     timer_start = new wxTimer(this, id_start);
+  if (m_context != nullptr)
+  {
+    const int id_start    = wxWindow::NewControlId();
+    auto*     timer_start = new wxTimer(this, id_start);
 
-  timer_start->StartOnce(1000);
+    timer_start->StartOnce(1000);
 
-  Bind(
-    wxEVT_TIMER,
-    [=, this](wxTimerEvent& event)
-    {
-      m_context->run();
-
-      config("AllowSync").set(false);
-
-      if (m_context->shouldExit())
+    Bind(
+      wxEVT_TIMER,
+      [=, this](wxTimerEvent& event)
       {
-        remove("test-ex.txt");
-        Exit();
-      }
-    },
-    id_start);
+        m_context->run();
+
+        config("AllowSync").set(false);
+
+        if (m_context->shouldExit())
+        {
+          remove("test-ex.txt");
+          Exit();
+        }
+      },
+      id_start);
+  }
 
   return wex::app::OnRun();
 }
@@ -88,7 +91,7 @@ void wex::test::app::set_context(doctest::Context* context)
   m_context = context;
 }
 
-std::vector<std::pair<std::string, std::string>> get_abbreviations()
+std::vector<std::pair<std::string, std::string>> wex::test::get_abbreviations()
 {
   return std::vector<std::pair<std::string, std::string>>{
     {"XX", "GREAT"}, // see also test-source.txt
@@ -107,6 +110,7 @@ int wex::test::main(int argc, char* argv[], wex::test::app* app)
     wxApp::SetInstance(app);
     wxEntryStart(argc, argv);
 
+#ifdef USE_DOCTEST
     doctest::Context context;
     context.setOption("exit", true);
     context.applyCommandLine(argc, argv);
@@ -128,10 +132,16 @@ int wex::test::main(int argc, char* argv[], wex::test::app* app)
 
     if (wex::data::cmdline c(text); !wex::cmdline().parse(c))
     {
-      return false;
+      return 0;
     }
+#else
+    if (wex::data::cmdline c(argc, argv); !wex::cmdline().parse(c))
+    {
+      return 0;
+    }
+#endif
 
-    return app->OnInit() && app->OnRun();
+    return app->OnInit() && app->OnRun() ? 1 : 0;
   }
   catch (const std::exception& e)
   {

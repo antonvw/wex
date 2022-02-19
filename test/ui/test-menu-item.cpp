@@ -5,9 +5,9 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/file-history.h>
-#include <wex/menu-item.h>
-#include <wex/menu.h>
+#include <wex/ui/file-history.h>
+#include <wex/ui/menu-item.h>
+#include <wex/ui/menu.h>
 
 #include "test.h"
 

@@ -2,92 +2,90 @@
 // Name:      factory/process.h
 // Purpose:   Declaration of class wex::factory::process
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
+#include <chrono>
 #include <memory>
 #include <string>
+
+#include <wex/factory/process-data.h>
 
 class wxEvtHandler;
 
 namespace wex
 {
-  namespace factory
-  {
-    class process_imp;
+namespace factory
+{
+class process_imp;
 
-    /// This class offers core process.
-    class process
-    {
-      friend class process_imp;
+/// This class offers core process.
+class process
+{
+  friend class process_imp;
 
-    public:
-      /// Default constructor.
-      process();
+public:
+  /// Default constructor.
+  process();
 
-      /// Destructor, stops running process.
-      virtual ~process();
+  /// Destructor, stops running process.
+  virtual ~process();
 
-      /// Virtual interface
+  /// Virtual interface
 
-      /// Starts the async process, collecting output
-      /// into the out handler, and debug info in debug handler.
-      /// You should have called set_handler_out or dbg before to set these.
-      /// The output streams of the executing process are sent to these
-      /// event handlers using wxPostEvent.
-      /// Returns true if the async process is started.
-      virtual bool async_system(
-        const std::string& exe,
-        const std::string& start_dir = std::string());
+  /// Starts the async process, collecting output
+  /// into the out handler, and debug info in debug handler.
+  /// You should have called set_handler_out or dbg before to set these.
+  /// The output streams of the executing process are sent to these
+  /// event handlers using wxPostEvent.
+  /// Returns true if the async process is started.
+  virtual bool async_system(const process_data& data);
 
-      // Writes data to the input of the async process.
-      virtual bool write(const std::string& text);
+  // Writes data to the input of the async process.
+  virtual bool write(const std::string& text);
 
-      /// Other methods
+  /// Other methods
 
-      /// Returns last or current exe.
-      const auto& get_exe() const { return m_exe; }
+  /// Sleeps for some milliseconds time.
+  void async_sleep_for(const std::chrono::milliseconds& ms);
 
-      /// Returns the stderr.
-      const auto& get_stderr() const { return m_stderr; }
+  /// Returns last or current data used by async_system.
+  const process_data& data() const;
 
-      /// Returns the stdout.
-      const auto& get_stdout() const { return m_stdout; }
+  /// Is this a debug process.
+  bool is_debug() const;
 
-      /// Is this a debug process.
-      bool is_debug() const;
+  /// Is this process running.
+  bool is_running() const;
 
-      /// Is this process running.
-      bool is_running() const;
+  /// Sets debug event handler.
+  void set_handler_dbg(wxEvtHandler* eh);
 
-      /// Sets debug event handler.
-      void set_handler_dbg(wxEvtHandler* eh);
+  /// Sets out event handler.
+  void set_handler_out(wxEvtHandler* eh);
 
-      /// Sets out event handler.
-      void set_handler_out(wxEvtHandler* eh);
+  /// Returns the stderr.
+  const auto& std_err() const { return m_stderr; }
 
-      // Stops the async process.
-      bool stop();
+  /// Returns the stdout.
+  const auto& std_out() const { return m_stdout; }
 
-      /// Runs the sync process, collecting output in stdout and stderr.
-      /// It will execute the process and wait for it's exit,
-      /// then return the exit_code.
-      int system(
-        const std::string& exe,
-        const std::string& start_dir = std::string());
+  // Stops the async process.
+  bool stop();
 
-    protected:
-      std::string m_exe;
+  /// Runs the sync process, collecting output in stdout and stderr.
+  /// It will execute the process and wait for it's exit,
+  /// then returns the exit_code.
+  int system(const process_data& data);
 
-    private:
-      std::string m_stderr, m_stdout;
+private:
+  std::string m_stderr, m_stdout;
 
-      wxEvtHandler* m_eh_debug{nullptr};
-      wxEvtHandler* m_eh_out{nullptr};
+  wxEvtHandler *m_eh_debug{nullptr}, *m_eh_out{nullptr};
 
-      std::unique_ptr<process_imp> m_imp;
-    };
-  } // namespace factory
+  std::unique_ptr<process_imp> m_imp;
+};
+} // namespace factory
 } // namespace wex

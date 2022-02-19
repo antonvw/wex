@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
-#include <wex/temp-filename.h>
+#include <wex/core/temp-filename.h>
 
 TEST_CASE("wex::temp_filename")
 {

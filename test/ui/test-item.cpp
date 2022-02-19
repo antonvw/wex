@@ -5,22 +5,17 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wex/config.h>
-#include <wex/item-dialog.h>
-#include <wex/item.h>
-#include <wex/log.h>
+#include <wex/core/config.h>
+#include <wex/core/log.h>
+#include <wex/ui/item-dialog.h>
+#include <wex/ui/item.h>
 #include <wx/artprov.h>
 #include <wx/imaglist.h>
+#include <wx/numformatter.h>
 
 #include "test-configitem.h"
 #include "test-item.h"
 #include "test.h"
-
-TEST_SUITE_BEGIN("wex::item");
 
 TEST_CASE("wex::item")
 {
@@ -102,13 +97,20 @@ TEST_CASE("wex::item")
     {
     }
 
+    std::cout << "sep: "
+              << std::string(1, wxNumberFormatter::GetDecimalSeparator())
+              << "\n";
     wex::item item_float(
       "float",
       wex::item::TEXTCTRL_FLOAT,
-      std::string("100.001"));
+      std::string("100") +
+        std::string(1, wxNumberFormatter::GetDecimalSeparator()) +
+        std::string("001"));
+
     REQUIRE(item_float.type() == wex::item::TEXTCTRL_FLOAT);
     item_float.layout(panel, sizer);
-    REQUIRE(std::any_cast<double>(item_float.get_value()) == 100.001);
+    // wxTextCtrl does not yet respect the locale?
+    REQUIRE(std::any_cast<double>(item_float.get_value()) <= 100.001);
 
     wex::item
       item_spin("spindouble", 20.0, 30.0, 25.0, wex::data::item().inc(0.1));
@@ -153,6 +155,7 @@ TEST_CASE("wex::item")
 
       if (it.type() != wex::item::EMPTY && it.type() != wex::item::SPACER)
       {
+        CAPTURE(it.type());
         REQUIRE(it.window() != nullptr);
       }
     }
@@ -191,11 +194,11 @@ TEST_CASE("wex::item")
       false);
     const wex::item ci_cl_n({"This", "Or", "Other"});
     const wex::item ci_user(
-      "ci-usr",
+      "ci-user",
       new wxTextCtrl(),
       wex::data::item()
         .user_window_create(
-          [=](wxWindow* user, wxWindow* parent, bool readonly)
+          [=](wxWindow* user, wxWindow* parent)
           {
             (reinterpret_cast<wxTextCtrl*>(user))->Create(parent, 100);
           })
@@ -367,6 +370,8 @@ TEST_CASE("wex::item")
     for (int style = wex::item::NOTEBOOK; style <= wex::item::NOTEBOOK_WEX;
          style++)
     {
+      CAPTURE(titles[style - wex::item::NOTEBOOK]);
+
       wxImageList* il = nullptr;
 
       if (style == wex::item::NOTEBOOK_TOOL)
@@ -407,6 +412,16 @@ TEST_CASE("wex::item")
       wxPostEvent(dlg, wxCommandEvent(wxEVT_BUTTON, wxOK));
     }
   }
-}
 
-TEST_SUITE_END();
+  SUBCASE("validate")
+  {
+    wex::item item(
+      "item",
+      "testxxx",
+      wex::item::TEXTCTRL,
+      wex::data::item(wex::data::control().is_required(true)));
+
+    REQUIRE(item.validate("[a-z]+"));
+    REQUIRE(!item.validate("[0-9]+"));
+  }
+}

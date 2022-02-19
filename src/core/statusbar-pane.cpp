@@ -5,38 +5,38 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/statusbar-pane.h>
+#include <wex/core/statusbar-pane.h>
 
 namespace wex
 {
-  std::string
-  determine_help_text(const std::string& name, const std::string& text)
+std::string
+determine_help_text(const std::string& name, const std::string& text)
+{
+  if (name == "PaneDBG")
   {
-    if (name == "PaneDBG")
-    {
-      return _("Debugger");
-    }
-    else if (name == "PaneFileType")
-    {
-      return _("File Type");
-    }
-    else if (name == "PaneInfo")
-    {
-      return _("Lines or Items");
-    }
-    else if (name == "PaneMode")
-    {
-      return "vi mode";
-    }
-    else if (name == "PaneTheme")
-    {
-      return _("Theme");
-    }
-    else
-    {
-      return text.empty() ? name.substr(name.find('e') + 1) : text;
-    }
+    return _("Debugger");
   }
+  else if (name == "PaneFileType")
+  {
+    return _("File Type");
+  }
+  else if (name == "PaneInfo")
+  {
+    return _("Lines or Items");
+  }
+  else if (name == "PaneMode")
+  {
+    return "vi mode";
+  }
+  else if (name == "PaneTheme")
+  {
+    return _("Theme");
+  }
+  else
+  {
+    return text.empty() ? name.substr(name.find('e') + 1) : text;
+  }
+}
 } // namespace wex
 
 wex::statusbar_pane::statusbar_pane(

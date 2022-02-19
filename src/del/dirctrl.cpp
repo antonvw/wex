@@ -5,16 +5,15 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <numeric>
-#include <wex/bind.h>
+#include <wex/common/tostring.h>
+#include <wex/common/util.h>
 #include <wex/del/defs.h>
 #include <wex/del/dirctrl.h>
 #include <wex/del/frame.h>
-#include <wex/lexers.h>
-#include <wex/path-lexer.h>
-#include <wex/tostring.h>
-#include <wex/util.h>
-#include <wex/vcs.h>
+#include <wex/factory/lexers.h>
+#include <wex/factory/path-lexer.h>
+#include <wex/stc/vcs.h>
+#include <wex/ui/bind.h>
 #include <wx/stockitem.h> // for wxGetStockLabel
 
 #define GET_VECTOR_FILES                              \
@@ -25,6 +24,8 @@
     event.Skip();                                     \
     return;                                           \
   }
+
+#include <numeric>
 
 const int idShowHidden = wxWindow::NewControlId();
 

@@ -1,8 +1,37 @@
-# wex library is written in the c++ language
+# wex library
+This ibrary is written in the c++ language, and offers classes
+to add vi or ex functionality as specified in
+"The Open Group Base Specifications Issue 7, 2018 edition"
+to your apps.
 
 It benefits from the following c++ features:
 
 ## c++ libraries
+
+- Algorithms library
+```cpp
+  std::all_of (c++11)
+```
+
+  E.g. when doing a global command on all of it's subcommands
+
+  example:
+```cpp
+bool wex::global_env::for_each(const block_lines& match) const
+{
+  return !has_commands() ? m_stc->set_indicator(
+                             m_ar->get_find_indicator(),
+                             m_stc->GetTargetStart(),
+                             m_stc->GetTargetEnd()) :
+                           std::all_of(
+                             m_commands.begin(),
+                             m_commands.end(),
+                             [this, match](const std::string& it)
+                             {
+                               return run(match, it);
+                             });
+}
+```
 
 - Filesystem library (c++17)
 ```cpp
@@ -11,44 +40,28 @@ It benefits from the following c++ features:
   std::filesystem::recursive_directory_iterator
 ```
 
-- Algorithms library
+- Input/output library
 ```cpp
-  std::all_of (c++11)
+  std::fstream
 ```
+  The base of all io uses a std::fstream class.
 
-  As wex allows you to search in files or replace in files, this
-  functionality is used.
+- Numerics library
+```cpp
+  std::accumulate
+```
+  The std::accumulate is used e.g. within the vi macros to
+  return a string containing all elements of the requested
+  register (the find returns a std::vector<std::string>).
 
   example:
 ```cpp
-    int wex::dir::find_files()
-    {
-      int matches = 0;
-
-      if (m_data.type().test(data::dir::RECURSIVE))
-      {
-        fs::recursive_directory_iterator rdi(
-          m_dir.data(),
-          fs::directory_options::skip_permission_denied),
-          end;
-
-        if (!std::all_of(rdi, end, [&](const fs::directory_entry& p) {
-              return traverse(p, this, matches);
-            }))
-        {
-          log("recursive_directory_iterator") << m_dir;
-        }
-      }
-      else
-      {
-        fs::directory_iterator di(m_dir.data()), end;
-        if (!std::all_of(di, end, [&](const fs::directory_entry& p) {
-              return traverse(p, this, matches);
-            }))
-        {
-          log("directory_iterator") << m_dir;
-        }
-      }
+  const auto& it = m_macros.find(std::string(1, name));
+  return it != m_macros.end() ? std::accumulate(
+                                  it->second.begin(),
+                                  it->second.end(),
+                                  std::string()) :
+                                std::string();
 ```
 
 - Regular expressions library (c++11)
@@ -130,7 +143,10 @@ It benefits from the following c++ features:
   starts_with (c++20)
 ```
 
-  A recent added function.
+  vi/vi.cpp:
+```cpp
+  if (command.starts_with(k_s(WXK_CONTROL_R) + "="))
+```
 
 - Thread support library (c++17)
 ```cpp
@@ -218,6 +234,7 @@ It benefits from the following c++ features:
 
 ```cpp
   std::from_chars (c++17)
+  std::to_chars (c++17)
 ```
 
   This method can be used as replacement for e.g. stol.
@@ -241,43 +258,29 @@ It benefits from the following c++ features:
     }
 ```
   
-- Input/output library
-```cpp
-  std::fstream
-```
-  The base of all io uses a std::fstream class.
-
-- Numerics library
-```cpp
-  std::accumulate
-```
-  The std::accumulate is used e.g. within the vi macros to
-  return a string containing all elements of the requested
-  register (the find returns a std::vector<std::string>).
-
-  example:
-```cpp
-  const auto& it = m_macros.find(std::string(1, name));
-  return it != m_macros.end() ? std::accumulate(
-                                  it->second.begin(),
-                                  it->second.end(),
-                                  std::string()) :
-                                std::string();
-```
-
 ## c++ language
 
-- init_statement in if and case statements (c++17)
-  vi/command.cpp:
-    ui/textctrl-input.cpp:
+- init_statement in if, case statements (c++17), and for range (c++20)
+  ui/textctrl-input.cpp:
 ```cpp
       switch (const int page = 10; key)
 ```
 
+  vi/command-ex.cpp:
+```cpp
+      if (const std::string line(it); !line.empty())
+```
+
+  ui/item.cpp
+```cpp
+    for (int item  = 0; const auto& b : std::any_cast<choices_t>(m_data.initial()))
+```
+  
+  
 - initializer_list (c++11)
 
 - lambda expressions (c++11)
-  used of lof, e.g. useful to assign result of expression to a constant class
+  e.g. useful to assign result of expression to a constant class
   member in a constructor.
   core/regex.cpp:
 
@@ -316,9 +319,21 @@ wex::regex::regex(
 ```
   this ensures that the function is kept in sync with base class
 
+- spaceship operator (c++20)
+  see presentation.h or block-lines.h
+```cpp
+  auto operator<=>(const block_lines& r) const
+  {
+    return m_start <=> r.m_start - 1;
+  }
+```
+
 ## boost c++ libraries
 - boost::algorithm lib
-  uses replace_all, to_upper, trim
+  uses find_tail, replace_all, to_upper, trim
+
+- boost::json lib
+  to implement wex::config
 
 - boost::log lib
   to implement wex::log

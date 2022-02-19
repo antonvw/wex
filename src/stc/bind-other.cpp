@@ -2,22 +2,24 @@
 // Name:      stc/bind-other.cpp
 // Purpose:   Implementation of class wex::stc method bind_other
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
-#include <vector>
-#include <wex/auto-complete.h>
-#include <wex/config.h>
-#include <wex/debug-entry.h>
-#include <wex/frame.h>
-#include <wex/frd.h>
-#include <wex/log.h>
-#include <wex/menu.h>
-#include <wex/stc-bind.h>
-#include <wex/stc.h>
-#include <wex/vcs.h>
+#include <wex/core/config.h>
+#include <wex/core/log.h>
+#include <wex/stc/auto-complete.h>
+#include <wex/stc/stc.h>
+#include <wex/stc/vcs.h>
+#include <wex/ui/debug-entry.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/frd.h>
+#include <wex/ui/menu.h>
+#include <wex/ui/stc-bind.h>
 #include <wx/fdrepdlg.h> // for wxFindDialogEvent
+
+#include <chrono>
+#include <vector>
 
 namespace wex
 {
@@ -53,6 +55,28 @@ void hypertext(stc* stc)
       }
     }
   }
+}
+
+menu::menu_t get_style(stc* stc)
+{
+  menu::menu_t style(menu::menu_t().set(menu::IS_POPUP).set(menu::IS_LINES));
+
+  if (stc->GetReadOnly() || stc->is_hexmode())
+    style.set(menu::IS_READ_ONLY);
+
+  if (!stc->GetSelectedText().empty())
+    style.set(menu::IS_SELECTED);
+
+  if (stc->GetTextLength() == 0)
+    style.set(menu::IS_EMPTY);
+
+  if (stc->get_vi().visual() == ex::VISUAL)
+    style.set(menu::IS_VISUAL);
+
+  if (stc->CanPaste())
+    style.set(menu::CAN_PASTE);
+
+  return style;
 }
 }; // namespace wex
 
@@ -122,7 +146,35 @@ void wex::stc::bind_other()
     [=, this](wxKeyEvent& event)
     {
       event.Skip();
+
       check_brace();
+
+      static bool first_click = false;
+
+      // Check whether to generate shift double.
+      if (event.GetKeyCode() == WXK_SHIFT)
+      {
+        static std::chrono::time_point<std::chrono::system_clock> start;
+
+        if (!first_click)
+        {
+          start       = std::chrono::system_clock::now();
+          first_click = true;
+        }
+        else
+        {
+          const auto milli =
+            std::chrono::duration_cast<std::chrono::milliseconds>(
+              std::chrono::system_clock::now() - start);
+
+          if (milli.count() < 500)
+          {
+            m_frame->shift_double_click();
+          }
+
+          first_click = false;
+        }
+      }
     });
 
   Bind(
@@ -327,11 +379,11 @@ void wex::stc::margin_action(wxStyledTextEvent& event)
         AnnotationSetText(
           line,
           lexer().make_comment(
-            boost::algorithm::trim_copy(vcs.entry().get_stdout())));
+            boost::algorithm::trim_copy(vcs.entry().std_out())));
       }
-      else if (!vcs.entry().get_stderr().empty())
+      else if (!vcs.entry().std_err().empty())
       {
-        log("margin") << vcs.entry().get_stderr();
+        log("margin") << vcs.entry().std_err();
       }
     }
   }
@@ -384,21 +436,7 @@ void wex::stc::mouse_action(wxMouseEvent& event)
     }
     else if (event.RightUp())
     {
-      menu::menu_t style(
-        menu::menu_t().set(menu::IS_POPUP).set(menu::IS_LINES));
-
-      if (GetReadOnly() || is_hexmode())
-        style.set(menu::IS_READ_ONLY);
-      if (!GetSelectedText().empty())
-        style.set(menu::IS_SELECTED);
-      if (GetTextLength() == 0)
-        style.set(menu::IS_EMPTY);
-      if (m_vi->visual() == ex::VISUAL)
-        style.set(menu::IS_VISUAL);
-      if (CanPaste())
-        style.set(menu::CAN_PASTE);
-
-      menu menu(style);
+      menu menu(get_style(this));
       build_popup_menu(menu);
 
       if (menu.GetMenuItemCount() > 0)

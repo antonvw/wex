@@ -1,0 +1,22 @@
+#!/bin/bash
+# This script is used to run cppcheck from root repo
+
+# shellcheck disable=SC1090
+. ~/.bash_profile
+
+cppcheck --version
+
+cppcheck --std=c++20 \
+  --quiet --enable=all \
+  --suppress=constStatement \
+  --suppress=cppcheckError \
+  --suppress=cstyleCast \
+  --suppress=internalAstError \
+  --suppress=noCopyConstructor \
+  --suppress=noExplicitConstructor \
+  --suppress=noOperatorEq \
+  --suppress=ignoredReturnValue \
+  --suppress=unknownMacro \
+  --suppress=unusedScopedObject \
+  --suppress=unusedFunction\
+  src -i LexAda.cxx -i odbc.cpp -I include

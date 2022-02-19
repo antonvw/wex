@@ -2,18 +2,19 @@
 // Name:      link.cpp
 // Purpose:   Implementation of class wex::link
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <algorithm>
 #include <boost/algorithm/string.hpp>
-#include <wex/config.h>
-#include <wex/core.h>
+#include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/core/path.h>
+#include <wex/core/regex.h>
+#include <wex/factory/lexer.h>
 #include <wex/factory/link.h>
 #include <wex/factory/stc.h>
-#include <wex/lexer.h>
-#include <wex/path.h>
-#include <wex/regex.h>
+
+#include <algorithm>
 
 namespace wex::factory
 {
@@ -25,6 +26,17 @@ public:
   {
     ;
   };
+
+  bool add_path(const path& p)
+  {
+    if (p.dir_exists() && !find(p))
+    {
+      m_paths.emplace_back(p.string());
+      return true;
+    }
+
+    return false;
+  }
 
   path find(const std::string& path) const
   {
@@ -39,8 +51,21 @@ public:
     return wex::path();
   };
 
+  bool find(const path& p) const
+  {
+    for (const auto& it : m_paths)
+    {
+      if (p.string() == it)
+      {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
 private:
-  const config::strings_t m_paths;
+  config::strings_t m_paths;
 };
 }; // namespace wex::factory
 
@@ -50,6 +75,11 @@ wex::factory::link::link()
 }
 
 wex::factory::link::~link() {}
+
+bool wex::factory::link::add_path(const path& p)
+{
+  return m_paths->add_path(p);
+}
 
 void wex::factory::link::config_get()
 {
@@ -82,6 +112,14 @@ const wex::path wex::factory::link::find_between(
     return path(v[0]);
   }
 
+  // Path in git status.
+  if (regex v(": +(.*)"); stc != nullptr &&
+                          stc->get_lexer().scintilla_lexer().empty() &&
+                          v.search(text) > 0)
+  {
+    return path(v[0]);
+  }
+
   if (const auto& lp = get_link_pairs(text); !lp.empty())
   {
     return path(lp);
@@ -99,23 +137,32 @@ const wex::path wex::factory::link::find_filename(
     return path();
   }
 
-  std::string link(text);
+  std::string text_filter(text);
+
   // The harddrive letter is filtered, it does not work
   // when adding it to match.
   std::string prefix;
 
 #ifdef __WXMSW__
-  if (link.size() > 1 && isalpha(link[0]) && link[1] == ':')
+  if (
+    text_filter.size() > 1 && isalpha(text_filter[0]) && text_filter[1] == ':')
   {
-    prefix = link.substr(0, 1);
-    link   = link.substr(2);
+    prefix      = text_filter.substr(0, 1);
+    text_filter = text_filter.substr(2);
   }
 #endif
 
   // file[:line[:column]]
-  if (regex v("^([\\0-9A-Za-z _/.-]+):([0-9]*):?([0-9]*)"); v.search(link) > 0)
+  // the first is to match file names without spaces,
+  // to match xx ./vnc.env.sh yy
+  const regex::regex_v_t t(
+    {"(\\.[\\0-9A-Za-z_/.-]+) .*",
+     "^([\\0-9A-Za-z _/.-]+):([0-9]*):?([0-9]*)"});
+
+  if (regex v(t); v.search(text_filter) > 0)
   {
-    link = v[0];
+    const auto& link(v.which_no() == 0 ? find_before(v[0], " ") : v[0]);
+
     data.reset();
 
     if (v.size() > 1 && !v[1].empty())
@@ -130,7 +177,7 @@ const wex::path wex::factory::link::find_filename(
 
     path p(boost::algorithm::trim_copy(prefix + link));
 
-    if (const path q(before(p.string(), ':')); q.file_exists())
+    if (const path q(find_before(p.string(), ":")); q.file_exists())
     {
       return p.make_absolute();
     }
@@ -172,21 +219,15 @@ const wex::path wex::factory::link::find_url_or_mime(
   }
 
   // previewable (MIME) file
-  if (stc != nullptr && stc->get_lexer().is_previewable())
-  {
-    return stc->path();
-  }
-  else
-  {
-    return path();
-  }
+  return (stc != nullptr && stc->get_lexer().is_previewable()) ? stc->path() :
+                                                                 path();
 }
 
 // text contains selected text, or current line
 const wex::path wex::factory::link::get_path(
   const std::string& text,
   line_data&         data,
-  factory::stc*      stc) const
+  factory::stc*      stc)
 {
   // mime or url
   if (data.line() == LINE_OPEN_MIME || data.line() == LINE_OPEN_URL)
@@ -195,16 +236,16 @@ const wex::path wex::factory::link::get_path(
   }
 
   // if text starts with file:[line[:col]]
-  if (const path p(find_filename(text, data)); !p.empty())
+  if (const auto& p(find_filename(text, data)); !p.empty())
   {
     return p;
   }
 
   // if we have something in between
-  const wex::path between(find_between(text, stc));
+  const auto& between(find_between(text, stc));
 
   // if between text now starts with file:line:no
-  if (const path p(find_filename(between.string(), data)); !p.empty())
+  if (const auto& p(find_filename(between.string(), data)); !p.empty())
   {
     return p;
   }
@@ -243,7 +284,7 @@ const wex::path wex::factory::link::get_path(
       return word.make_absolute();
     }
 
-    if (const path p(find_filename(word.string(), data)); !p.empty())
+    if (const auto& p(find_filename(word.string(), data)); !p.empty())
     {
       return p;
     }

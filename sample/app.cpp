@@ -2,10 +2,9 @@
 // Name:      app.cpp
 // Purpose:   Implementation of wex sample classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2011-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/aboutdlg.h>
 #include <wx/generic/numdlgg.h>
 
 #ifndef __WXMSW__
@@ -16,15 +15,8 @@
 #include "../test/ui/test-item.h"
 #include "app.h"
 
-#define PRINT_COMPONENT(ID)                                                \
-  wxEVT_UPDATE_UI,                                                         \
-    [=, this](wxUpdateUIEvent& event)                                      \
-  {                                                                        \
-    event.Enable(                                                          \
-      (get_listview() != nullptr && get_listview()->GetItemCount() > 0) || \
-      (get_stc() != nullptr && get_stc()->GetLength() > 0));               \
-  },                                                                       \
-    ID
+// Uncomment this to add initial data to some controls.
+//#define ADD_INITIAL ON
 
 enum
 {
@@ -33,7 +25,6 @@ enum
   ID_DLG_CONFIG_ITEM_READONLY,
   ID_DLG_ITEM,
   ID_DLG_LISTVIEW,
-  ID_DLG_STC_CONFIG,
   ID_DLG_STC_ENTRY,
   ID_DLG_VCS,
   ID_RECENTFILE_MENU,
@@ -50,16 +41,39 @@ bool app::OnInit()
   SetAppName("wex-sample");
 
   if (wex::data::cmdline c(argc, argv);
-      !wex::cmdline().parse(c) || !wex::app::OnInit())
+      !wex::cmdline(
+         // --- boolean options ---
+         wex::cmdline::cmd_switches_t(),
+         {// --- options with arguments ---
+          {{"scriptin,s", "script in (:so <arg> applied on any file opened)"},
+           {wex::cmdline::STRING,
+            [&](const std::any& s)
+            {
+              m_data.control(wex::data::control().command(
+                ":so " + std::any_cast<std::string>(s)));
+            }}}},
+         {{"files",
+           "input file[:line number][:column number]\n"
+           "or project files is -p was specified\n"
+           "or executable file if -d was specified and last file has no known "
+           "extension"},
+          [&](const std::vector<std::string>& v)
+          {
+            for (const auto& f : v)
+              m_files.emplace_back(f);
+          }})
+         .parse(c) ||
+      !wex::app::OnInit())
   {
     return false;
   }
 
   auto* f = new frame();
   f->Show(true);
+  f->update(this);
 
   wex::log::status("Locale")
-    << get_locale().GetLocale().ToStdString() << "dir" << get_catalog_dir();
+    << get_locale().GetName().ToStdString() << "dir" << get_catalog_dir();
 
   return true;
 }
@@ -73,7 +87,6 @@ frame::frame()
   , m_statistics(
       new wex::grid_statistics<int>({}, wex::data::window().parent(m_notebook)))
   , m_shell(new wex::shell(wex::data::stc(), ">"))
-  , m_stc(new wex::stc())
   , m_stc_lexers(new wex::stc())
 {
   wex::process::prepare_output(this);
@@ -121,7 +134,7 @@ frame::frame()
          {},
          {ID_DLG_LISTVIEW, wex::ellipsed("List Dialog")},
          {},
-         {ID_DLG_STC_CONFIG, wex::ellipsed("STC Dialog")},
+         {wxID_PREFERENCES},
          {ID_DLG_STC_ENTRY, wex::ellipsed("STC Entry Dialog")},
          {},
          {ID_DLG_VCS, wex::ellipsed("VCS Dialog")}}),
@@ -133,45 +146,50 @@ frame::frame()
       "&STC"},
      {new wex::menu({{wxID_ABOUT, ""}}), "&Help"}}));
 
-  pane_add(
-    {{m_notebook,
-      wxAuiPaneInfo()
-        .Name("NOTEBOOK")
-        .CloseButton(false)
-        .CenterPane()
-        .MinSize(wxSize(250, 250))},
-     {m_process->get_shell(),
-      wxAuiPaneInfo()
-        .Bottom()
-        .Name("PROCESS")
-        .MinSize(250, 100)
-        .Caption(_("Process"))
-        .CloseButton(false)}});
-
-  m_stc_lexers->open(wex::lexers::get()->path());
-
-  m_notebook->add_page(wex::data::notebook()
-                         .page(m_stc_lexers)
-                         .key(wex::lexers::get()->path().filename()));
-  m_notebook->add_page(
-    wex::data::notebook().page(m_listview).key("wex::listview"));
-  m_notebook->add_page(wex::data::notebook().page(m_grid).key("wex::grid"));
-  m_notebook->add_page(wex::data::notebook().page(m_stc).key("wex::stc"));
-  m_notebook->add_page(wex::data::notebook().page(m_shell).key("wex::shell"));
-
   m_grid->CreateGrid(0, 0);
   m_grid->AppendCols(2);
 
-  dir dir(wex::path::current(), "*.*", m_grid);
-  dir.find_files();
-
-  m_grid->AutoSizeColumns();
+#ifdef ADD_INITIAL
+  add_data();
+#endif
 
   m_listview->append_columns(
     {{"String", wex::column::STRING},
      {"Number", wex::column::INT},
      {"Float", wex::column::FLOAT},
      {"Date", wex::column::DATE}});
+
+  get_toolbar()->add_standard();
+  get_options_toolbar()->add_checkboxes_standard();
+
+  setup_statusbar(
+    {{"PaneFileType", 50},
+     {"PaneInfo", 100},
+     {"PaneLexer", 60},
+     {"PaneMacro", 50}});
+}
+
+wex::del::listview*
+frame::activate(wex::data::listview::type_t type, const wex::lexer* lexer)
+{
+  for (size_t i = 0; i < m_notebook->GetPageCount(); i++)
+  {
+    wex::del::listview* vw = (wex::del::listview*)m_notebook->GetPage(i);
+
+    if (vw->data().type() == type)
+    {
+      return vw;
+    }
+  }
+
+  return nullptr;
+}
+
+void frame::add_data()
+{
+  dir dir(wex::path::current(), "*.*", m_grid);
+  dir.find_files();
+  m_grid->AutoSizeColumns();
 
   const int items = 50;
 
@@ -202,24 +220,6 @@ frame::frame()
       m_listview->set_item_image(i, wxART_TICK_MARK);
   }
 
-  get_toolbar()->add_standard();
-  get_options_toolbar()->add_checkboxes_standard();
-
-  setup_statusbar({{"PaneFileType", 50}, {"PaneInfo", 100}, {"PaneLexer", 60}});
-
-  const wex::lexer lexer(wex::lexers::get()->find("cpp"));
-
-  for (int i = wex::data::listview::FOLDER; i <= wex::data::listview::FILE; i++)
-  {
-    auto* vw = new wex::del::listview(
-      wex::data::listview().type((wex::data::listview::type_t)i).lexer(&lexer));
-
-    m_notebook->add_page(wex::data::notebook()
-                           .page(vw)
-                           .key(vw->data().type_description())
-                           .select());
-  }
-
   {
     wex::dir dir(
       wex::path(wex::path::current()),
@@ -238,6 +238,33 @@ frame::frame()
 
     item.insert();
   }
+}
+
+bool frame::allow_close(wxWindowID id, wxWindow* page)
+{
+  if (page == file_history_list() || page == get_listview())
+  {
+    // prevent possible crash, if set_recent_file tries
+    // to add listitem to deleted history list.
+    return false;
+  }
+  else
+  {
+    return wex::del::frame::allow_close(id, page);
+  }
+}
+
+void frame::bind_all()
+{
+  // The on_command keeps statistics.
+  Bind(wxEVT_MENU, &frame::on_command, this, wxID_COPY);
+  Bind(wxEVT_MENU, &frame::on_command, this, wxID_CUT);
+  Bind(wxEVT_MENU, &frame::on_command, this, wxID_EXECUTE);
+  Bind(wxEVT_MENU, &frame::on_command, this, wxID_JUMP_TO);
+  Bind(wxEVT_MENU, &frame::on_command, this, wxID_PASTE);
+  Bind(wxEVT_MENU, &frame::on_command, this, wxID_OPEN, wxID_SAVEAS);
+  Bind(wxEVT_MENU, &frame::on_command, this, wxID_UNDO, wxID_REDO);
+  Bind(wxEVT_MENU, &frame::on_command, this, ID_STC_SPLIT);
 
   wex::bind(this).command(
     {{[=, this](wxCommandEvent& event)
@@ -304,9 +331,10 @@ frame::frame()
       ID_DLG_LISTVIEW},
      {[=, this](wxCommandEvent& event)
       {
-        wex::stc::config_dialog(wex::data::window().button(wxAPPLY | wxCANCEL));
+        wex::stc::config_dialog(
+          wex::data::window().id(wxID_PREFERENCES).button(wxAPPLY | wxCANCEL));
       },
-      ID_DLG_STC_CONFIG},
+      wxID_PREFERENCES},
      {[=, this](wxCommandEvent& event)
       {
         std::string text;
@@ -378,43 +406,9 @@ frame::frame()
       ID_STC_FLAGS},
      {[=, this](wxCommandEvent& event)
       {
-        m_process->async_system();
+        m_process->async_system(wex::process_data());
       },
       wxID_EXECUTE}});
-
-  Bind(PRINT_COMPONENT(wxID_PRINT));
-
-  Bind(PRINT_COMPONENT(wxID_PREVIEW));
-}
-
-wex::del::listview*
-frame::activate(wex::data::listview::type_t type, const wex::lexer* lexer)
-{
-  for (size_t i = 0; i < m_notebook->GetPageCount(); i++)
-  {
-    wex::del::listview* vw = (wex::del::listview*)m_notebook->GetPage(i);
-
-    if (vw->data().type() == type)
-    {
-      return vw;
-    }
-  }
-
-  return nullptr;
-}
-
-bool frame::allow_close(wxWindowID id, wxWindow* page)
-{
-  if (page == file_history_list() || page == get_listview())
-  {
-    // prevent possible crash, if set_recent_file tries
-    // to add listitem to deleted history list.
-    return false;
-  }
-  else
-  {
-    return wex::del::frame::allow_close(id, page);
-  }
 }
 
 wex::listview* frame::get_listview()
@@ -440,21 +434,36 @@ void frame::on_command(wxCommandEvent& event)
     case wxID_NEW:
       m_stc->get_file().file_new(wex::path());
       break;
+
     case wxID_OPEN:
     {
-      wex::file_dialog dlg(&m_stc->get_file());
-      if (dlg.show_modal_if_changed(true) == wxID_CANCEL)
-        return;
       const auto start = std::chrono::system_clock::now();
-      m_stc->open(
-        wex::path(dlg.GetPath().ToStdString()),
-        wex::data::stc().flags((wex::data::stc::window_t)m_flags_stc));
+
+      if (event.GetString().empty())
+      {
+        wex::file_dialog dlg(&m_stc->get_file());
+
+        if (dlg.show_modal_if_changed(true) == wxID_CANCEL)
+          return;
+
+        m_stc->open(
+          wex::path(dlg.GetPath().ToStdString()),
+          wex::data::stc().flags((wex::data::stc::window_t)m_flags_stc));
+      }
+      else
+      {
+        m_stc->open(
+          wex::path(event.GetString()),
+          wex::data::stc().flags((wex::data::stc::window_t)m_flags_stc));
+      }
+
       const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(
         std::chrono::system_clock::now() - start);
       wex::log::status("Open")
         << milli.count() << "milliseconds" << m_stc->GetTextLength() << "bytes";
     }
     break;
+
     case wxID_SAVE:
       m_stc->get_file().file_save();
 
@@ -466,6 +475,10 @@ void frame::on_command(wxCommandEvent& event)
         // As the lexer might have changed, update status bar field as well.
         update_statusbar(m_stc, "PaneLexer");
       }
+      break;
+
+    case wxID_SAVEAS:
+      m_stc->get_file().file_save(wex::path(event.GetString()));
       break;
 
     case wxID_COPY:
@@ -514,7 +527,7 @@ void frame::on_command_item_dialog(
 {
   if (dialogid == wxID_PREFERENCES)
   {
-    if (event.GetId() != wxID_CANCEL)
+    if (event.GetId() != wxID_CANCEL && m_stc != nullptr)
     {
       m_stc->config_get();
       m_stc_lexers->config_get();
@@ -537,6 +550,94 @@ wex::stc* frame::open_file(const wex::path& file, const wex::data::stc& data)
   m_stc->open(file, wex::data::stc(data).flags(0));
 
   return m_stc;
+}
+
+void frame::open_file_same_page(wxCommandEvent& event)
+{
+  if (file_history().size() > 1)
+  {
+    if (event.GetId() == wxID_FORWARD)
+    {
+      if (m_browse_index < file_history().size() - 1)
+      {
+        m_browse_index++;
+      }
+      else if (m_browse_index > file_history().size() - 1)
+      {
+        m_browse_index = file_history().size() - 1;
+        return;
+      }
+      else
+      {
+        return;
+      }
+    }
+    else
+    {
+      if (m_browse_index > 0)
+      {
+        m_browse_index--;
+      }
+      else
+      {
+        return;
+      }
+    }
+
+    const auto& p(file_history()[m_browse_index]);
+
+    m_stc->open(p, wex::data::stc().recent(false));
+    m_stc->get_lexer().set(wex::path_lexer(p).lexer().display_lexer(), true);
+    m_stc->properties_message();
+  }
+}
+
+void frame::update(app* a)
+{
+  pane_add(
+    {{m_notebook,
+      wxAuiPaneInfo()
+        .Name("NOTEBOOK")
+        .CloseButton(false)
+        .CenterPane()
+        .MinSize(wxSize(250, 250))},
+     {m_process->get_shell(),
+      wxAuiPaneInfo()
+        .Bottom()
+        .Name("PROCESS")
+        .MinSize(250, 100)
+        .Caption(_("Process"))
+        .CloseButton(false)}});
+
+  m_stc = new wex::stc(
+    !a->get_files().empty() ? a->get_files().front() : wex::path(),
+    wex::data::stc(a->data()).window(wex::data::window().parent(m_notebook)));
+
+  m_notebook->add_page(
+    wex::data::notebook().page(m_stc).key("wex::stc").select());
+  m_notebook->add_page(wex::data::notebook()
+                         .page(m_stc_lexers)
+                         .key(wex::lexers::get()->path().filename()));
+
+  m_stc_lexers->open(wex::lexers::get()->path());
+
+  m_notebook->add_page(
+    wex::data::notebook().page(m_listview).key("wex::listview"));
+  m_notebook->add_page(wex::data::notebook().page(m_grid).key("wex::grid"));
+  m_notebook->add_page(wex::data::notebook().page(m_shell).key("wex::shell"));
+
+  const wex::lexer lexer(wex::lexers::get()->find("cpp"));
+
+  for (int i = wex::data::listview::FOLDER; i <= wex::data::listview::FILE; i++)
+  {
+    auto* vw = new wex::del::listview(
+      wex::data::listview().type((wex::data::listview::type_t)i).lexer(&lexer));
+
+    m_notebook->add_page(
+      wex::data::notebook().page(vw).key(vw->data().type_description()));
+  }
+
+  bind_all();
 }
 
 dir::dir(const wex::path& path, const std::string& findfiles, wex::grid* grid)

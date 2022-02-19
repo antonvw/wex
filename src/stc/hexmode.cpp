@@ -5,18 +5,17 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <regex>
-
-#include <wex/config.h>
+#include <wex/core/config.h>
+#include <wex/factory/lexers.h>
 #include <wex/factory/stc.h>
-#include <wex/hexmode.h>
-#include <wex/item-dialog.h>
-#include <wex/item.h>
-#include <wex/lexers.h>
+#include <wex/stc/hexmode.h>
+#include <wex/ui/item-dialog.h>
 #include <wx/numdlg.h>
 #include <wx/spinctrl.h>
 
 #include "hexmode-line.h"
+
+#include <regex>
 
 namespace wex
 {

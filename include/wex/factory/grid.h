@@ -11,11 +11,11 @@
 
 namespace wex::factory
 {
-  /// Offers interface to wxGrid.
-  class grid : public wxGrid
-  {
-  public:
-    /// Destructor.
-    virtual ~grid() = default;
-  };
+/// Offers interface to wxGrid.
+class grid : public wxGrid
+{
+public:
+  /// Destructor.
+  virtual ~grid() = default;
+};
 }; // namespace wex::factory

@@ -5,7 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/lexers.h>
+#include <wex/factory/lexers.h>
 
 #include "../test.h"
 
@@ -39,7 +39,7 @@ TEST_CASE("wex::lexers")
 
   SUBCASE("properties") { REQUIRE(wex::lexers::get()->properties().empty()); }
 
-  SUBCASE("findBy")
+  SUBCASE("find_by")
   {
     REQUIRE(
       wex::lexers::get()

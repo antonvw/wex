@@ -5,19 +5,19 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iomanip>
-
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/log/utility/setup/file.hpp>
 
-#include <wex/config.h>
-#include <wex/log.h>
-#include <wex/path.h>
+#include <wex/core/config.h>
+#include <wex/core/log.h>
+#include <wex/core/path.h>
 #include <wx/app.h>
 #include <wx/log.h>
+
+#include <iomanip>
 
 namespace logging = boost::log;
 

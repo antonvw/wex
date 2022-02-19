@@ -13,131 +13,126 @@ class wxListView;
 
 namespace wex
 {
-  class path;
-  class vcs_entry;
+class path;
+class vcs_entry;
 
-  namespace data
+namespace data
+{
+class stc;
+};
+
+namespace factory
+{
+class grid;
+class listview;
+class process;
+class stc;
+
+/// Offers a frame with easy statusbar methods,
+/// find/replace, and allows for file dropping.
+/// Also helps in maintaining access to the base controls
+/// (grid, listview and stc).
+class frame : public wxFrame
+{
+public:
+  /// Destructor.
+  virtual ~frame() = default;
+
+  /// Virtual interface
+
+  /// Returns a grid.
+  virtual factory::grid* get_grid();
+
+  /// Returns a listview.
+  virtual factory::listview* get_listview();
+
+  /// Allows you to e.g. add debugging.
+  /// Default returns nullptr.
+  virtual factory::process* get_process(const std::string& command)
   {
-    class stc;
+    return nullptr;
   };
 
-  namespace factory
+  /// Returns text on specified pane.
+  /// Don't forget to call setup_statusbar first.
+  virtual std::string get_statustext(const std::string& pane) const
   {
-    class grid;
-    class listview;
-    class process;
-    class stc;
+    return std::string();
+  };
 
-    /// Offers a frame with easy statusbar methods,
-    /// find/replace, and allows for file dropping.
-    /// Also helps in maintaining access to the base controls
-    /// (grid, listview and stc).
-    class frame : public wxFrame
-    {
-    public:
-      /// Destructor.
-      virtual ~frame() = default;
+  /// Returns an stc.
+  virtual factory::stc* get_stc();
 
-      /// Virtual interface
+  /// Returns true if file is opened in a window.
+  virtual bool is_open(const path& filename);
 
-      /// Returns a grid.
-      virtual factory::grid* get_grid();
+  /// Called when an item dialog command event is triggered.
+  virtual void on_command_item_dialog(wxWindowID, const wxCommandEvent&) {}
 
-      /// Returns a listview.
-      virtual factory::listview* get_listview();
+  /// Default opens the file using get_stc.
+  /// Returns stc component opened, or nullptr.
+  virtual factory::stc* open_file(const path& filename, const data::stc& data);
 
-      /// Allows you to e.g. add debugging.
-      /// Default returns nullptr.
-      virtual factory::process* get_process(const std::string& command)
-      {
-        return nullptr;
-      };
+  /// Allows you to open a filename with specified contents.
+  /// Returns stc component opened, or nullptr.
+  virtual factory::stc* open_file(
+    const path&        filename,
+    const std::string& text,
+    const data::stc&   data);
 
-      /// Returns text on specified pane.
-      /// Don't forget to call setup_statusbar first.
-      virtual std::string get_statustext(const std::string& pane) const
-      {
-        return std::string();
-      };
+  /// Allows you to open a filename with info from vcs.
+  /// Returns stc component opened, or nullptr.
+  virtual factory::stc*
+  open_file(const path& filename, const vcs_entry& vcs, const data::stc& data)
+  {
+    return nullptr;
+  };
 
-      /// Returns an stc.
-      virtual factory::stc* get_stc();
+  /// Allows you to handle output text, .e.g. from a process.
+  virtual bool output(const std::string& text) const { return false; }
 
-      /// Returns true if file is opened in a window.
-      virtual bool is_open(const path& filename);
+  /// Allows derived class to update file history.
+  virtual void set_recent_file(const path& path) { ; }
 
-      /// Called when an item dialog command event is triggered.
-      virtual void on_command_item_dialog(wxWindowID, const wxCommandEvent&){}
+  /// When (left) clicked, uses the get_stc() for some dialogs.
+  virtual void statusbar_clicked(const std::string& pane);
 
-      /// Default opens the file using get_stc.
-      /// Returns stc component opened, or nullptr.
-      virtual factory::stc*
-      open_file(const path& filename, const data::stc& data);
+  /// Do something when statusbar is (right) clicked.
+  virtual void statusbar_clicked_right(const std::string&) {}
 
-      /// Allows you to open a filename with specified contents.
-      /// Returns stc component opened, or nullptr.
-      virtual factory::stc* open_file(
-        const path&        filename,
-        const std::string& text,
-        const data::stc&   data);
+  /// Sets text on specified pane.
+  /// Don't forget to call setup_statusbar first.
+  virtual bool
+  statustext(const std::string& text, const std::string& pane) const
+  {
+    return false;
+  };
 
-      /// Allows you to open a filename with info from vcs.
-      /// Returns stc component opened, or nullptr.
-      virtual factory::stc* open_file(
-        const path&      filename,
-        const vcs_entry& vcs,
-        const data::stc& data)
-      {
-        return nullptr;
-      };
+  /// Other methods
 
-      /// Allows you to handle output text, .e.g. from a process.
-      /// Default no action is taken, and false is returned,
-      /// and some methods default send output to stdout.
-      virtual bool output(const std::string& text) const { return false; }
+  /// Are we closing?
+  bool is_closing() const { return m_is_closing; }
 
-      /// Allows derived class to update file history.
-      virtual void set_recent_file(const path& path) { ; }
+  /// Sets the find focus to specified window.
+  void set_find_focus(wxWindow* focus) { m_find_focus = focus; }
 
-      /// When (left) clicked, uses the get_stc() for some dialogs.
-      virtual void statusbar_clicked(const std::string& pane);
+  /// Updates statusbar pane items pane with values from specified listview.
+  bool update_statusbar(const wxListView* lv);
 
-      /// Do something when statusbar is (right) clicked.
-      virtual void statusbar_clicked_right(const std::string&){}
+  /// Updates the specified statusbar pane with values from specified stc.
+  bool update_statusbar(factory::stc* stc, const std::string& pane);
 
-      /// Sets text on specified pane.
-      /// Don't forget to call setup_statusbar first.
-      virtual bool
-      statustext(const std::string& text, const std::string& pane) const
-      {
-        return false;
-      };
+  /// Override from base class.
 
-      /// Other methods
+  void SetMenuBar(wxMenuBar* bar) override;
 
-      /// Are we closing?
-      bool is_closing() const { return m_is_closing; }
+protected:
+  wxWindow* m_find_focus{nullptr};
 
-      /// Sets the find focus to specified window.
-      void set_find_focus(wxWindow* focus) { m_find_focus = focus; }
+  bool m_is_closing{false};
+  bool m_is_command{false};
 
-      /// Updates statusbar pane items pane with values from specified listview.
-      bool update_statusbar(const wxListView* lv);
-
-      /// Updates the specified statusbar pane with values from specified stc.
-      bool update_statusbar(factory::stc* stc, const std::string& pane);
-
-      /// Override from base class.
-
-      void SetMenuBar(wxMenuBar* bar) override;
-
-    protected:
-      wxWindow* m_find_focus{nullptr};
-
-      bool m_is_closing{false};
-      bool m_is_command{false};
-
-      wxMenuBar* m_menubar{nullptr};
-    };
-  }; // namespace factory
+  wxMenuBar* m_menubar{nullptr};
+};
+}; // namespace factory
 } // namespace wex

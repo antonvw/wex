@@ -5,16 +5,16 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/marker.h>
+#include <wex/factory/marker.h>
 #include <wx/stc/stc.h>
 
 #include "../test.h"
 
 TEST_CASE("wex::marker")
 {
-  SUBCASE("Default constructor") { REQUIRE(!wex::marker().is_ok()); }
+  SUBCASE("default-constructor") { REQUIRE(!wex::marker().is_ok()); }
 
-  SUBCASE("Constructor using no, symbol")
+  SUBCASE("constructor")
   {
     REQUIRE(!wex::marker(1, 100).is_ok());
     REQUIRE(wex::marker(1, wxSTC_MARK_CHARACTER).is_ok());
@@ -30,7 +30,7 @@ TEST_CASE("wex::marker")
     REQUIRE(markerx < markery);
     REQUIRE(markerx == markerx);
     REQUIRE(wex::marker(5) == wex::marker(5));
-    REQUIRE(wex::marker(5) == wex::marker(5, 2));
+    REQUIRE(wex::marker(5) != wex::marker(5, 2));
     REQUIRE(wex::marker(5) != wex::marker(4));
     REQUIRE(wex::marker(5, 2) == wex::marker(5, 2));
     REQUIRE(wex::marker(5, 1) != wex::marker(5, 2));
@@ -39,7 +39,7 @@ TEST_CASE("wex::marker")
     markerx.apply(&s);
   }
 
-  SUBCASE("Constructor xml")
+  SUBCASE("constructor-xml")
   {
     pugi::xml_document doc;
     REQUIRE(doc.load_string(
@@ -53,7 +53,7 @@ TEST_CASE("wex::marker")
     REQUIRE(marker.is_ok());
   }
 
-  SUBCASE("Constructor xml invalid no")
+  SUBCASE("constructor-xml-invalid")
   {
     pugi::xml_document doc;
     REQUIRE(doc.load_string("<marker no = \"x\"></marker>"));

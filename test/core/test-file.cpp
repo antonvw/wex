@@ -6,8 +6,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
+#include <wex/core/file.h>
+
 #include <chrono>
-#include <wex/file.h>
 
 TEST_CASE("wex::file")
 {
@@ -26,9 +27,8 @@ TEST_CASE("wex::file")
 
     file.reset_contents_changed();
 
-    REQUIRE(!file.file_save());
-    REQUIRE(!file.file_save(wex::path("test-save")));
-    REQUIRE(!file.path().stat().is_ok());
+    REQUIRE(file.path().stat().is_ok());
+
     // The fullpath should be normalized, test it.
     REQUIRE(file.path().string() != "./test.h");
     REQUIRE(!file.path().stat().is_readonly());
@@ -64,8 +64,19 @@ TEST_CASE("wex::file")
   SUBCASE("remove")
   {
     REQUIRE(remove("test-create") == 0);
-    REQUIRE(remove("test-save") != 0);
     REQUIRE(remove("test-xxx") == 0);
+  }
+
+  SUBCASE("save")
+  {
+    wex::file file(
+      wex::test::get_path("test.h"),
+      std::ios_base::in | std::ios_base::out);
+
+    REQUIRE(!file.file_save());
+    REQUIRE(file.file_save(wex::path("test-save")));
+
+    REQUIRE(remove("test-save") == 0);
   }
 
   SUBCASE("timing")

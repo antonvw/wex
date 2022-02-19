@@ -5,22 +5,24 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <algorithm>
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
-#include <wex/config.h>
-#include <wex/log.h>
-#include <wex/sort.h>
+#include <wex/core/config.h>
+#include <wex/core/log.h>
+#include <wex/factory/sort.h>
 #include <wex/factory/stc.h>
 
-wex::sort::sort(sort_t sort_t, size_t pos, size_t len)
+#include <algorithm>
+
+wex::factory::sort::sort(sort_t sort_t, size_t pos, size_t len)
   : m_sort_t(sort_t)
   , m_pos(pos)
   , m_len(len)
 {
 }
 
-template <typename T> const std::string wex::sort::get_column(T first, T last)
+template <typename T>
+const std::string wex::factory::sort::get_column(T first, T last)
 {
   std::string text;
 
@@ -33,7 +35,8 @@ template <typename T> const std::string wex::sort::get_column(T first, T last)
 }
 
 template <typename T>
-const std::string wex::sort::get_lines(std::vector<std::string>& lines, T ii)
+const std::string
+wex::factory::sort::get_lines(std::vector<std::string>& lines, T ii)
 {
   std::string text;
 
@@ -46,7 +49,7 @@ const std::string wex::sort::get_lines(std::vector<std::string>& lines, T ii)
   return text;
 }
 
-bool wex::sort::selection(factory::stc* stc)
+bool wex::factory::sort::selection(factory::stc* stc)
 {
   bool error = false;
 
@@ -66,7 +69,7 @@ bool wex::sort::selection(factory::stc* stc)
   return !error;
 }
 
-bool wex::sort::selection_block(factory::stc* stc)
+bool wex::factory::sort::selection_block(factory::stc* stc)
 {
   const auto start_pos = stc->GetSelectionNStart(0);
 
@@ -127,7 +130,7 @@ bool wex::sort::selection_block(factory::stc* stc)
   return true;
 }
 
-bool wex::sort::selection_other(factory::stc* stc)
+bool wex::factory::sort::selection_other(factory::stc* stc)
 {
   const auto start_pos = stc->GetSelectionStart();
 
@@ -149,7 +152,7 @@ bool wex::sort::selection_other(factory::stc* stc)
 }
 
 const std::string
-wex::sort::string(const std::string& input, const std::string& sep)
+wex::factory::sort::string(const std::string& input, const std::string& sep)
 {
   if (!std::all_of(sep.begin(), sep.end(), isspace))
   {

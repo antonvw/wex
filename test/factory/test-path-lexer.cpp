@@ -5,7 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/path-lexer.h>
+#include <wex/factory/path-lexer.h>
 
 #include "../test.h"
 

@@ -7,9 +7,10 @@
 
 #pragma once
 
+#include <wex/factory/frd.h>
+
 #include <bitset>
 #include <string>
-#include <wex/factory/frd.h>
 
 namespace wex::data
 {

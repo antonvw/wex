@@ -5,10 +5,10 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <vector>
-#include <wex/addressrange.h>
-#include <wex/ex-stream.h>
-#include <wex/vi.h>
+#include <wex/ui/frd.h>
+#include <wex/vi/addressrange.h>
+#include <wex/vi/ex-stream.h>
+#include <wex/vi/vi.h>
 
 #include "test.h"
 
@@ -117,6 +117,27 @@ TEST_CASE("wex::vi")
     change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
     REQUIRE(stc->get_text() == "test.h");
   }
+
+#ifdef __UNIX__
+  SUBCASE("source")
+  {
+    stc->set_text("xx\nxx\nyy\nzz\n");
+
+    SUBCASE("so")
+    {
+      // necesary for the ~ in test-source
+      wex::find_replace_data::get()->set_find_string("xx");
+
+      vi->command(":so test-source.txt");
+    }
+
+    SUBCASE("full") { vi->command(":source test-source.txt"); }
+
+    SUBCASE("not-existing") { REQUIRE(!vi->command(":so test-surce.txt")); }
+
+    SUBCASE("invalid") { REQUIRE(!vi->command(":so test-source-2.txt")); }
+  }
+#endif
 
   SUBCASE("stream")
   {

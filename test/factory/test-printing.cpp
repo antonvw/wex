@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
-#include <wex/printing.h>
+#include <wex/factory/printing.h>
 
 TEST_CASE("wex::printing")
 {

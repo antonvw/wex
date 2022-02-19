@@ -5,7 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/ctags-entry.h>
+#include <wex/vi/ctags-entry.h>
 
 #include "../test.h"
 

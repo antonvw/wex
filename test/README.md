@@ -22,4 +22,7 @@ some functions are not tested:
   - has a main.cpp, that either directly calls wex::test::app
     or an instance of a class derived from it
 
-  - has a separate binary
+  - has a separate binary that executes unit tests using doctest
+  
+  - except for app, that executes integration tests
+    using robotframework on the wex-sample

@@ -2,10 +2,10 @@
 // Name:      ex/command.cpp
 // Purpose:   Implementation of class wex::ex_command
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/ex-command.h>
+#include <wex/factory/ex-command.h>
 #include <wex/factory/stc.h>
 #include <wx/textentry.h>
 
@@ -184,6 +184,11 @@ void wex::ex_command::restore(const ex_command& c)
   }
 }
 
+const std::string wex::ex_command::selection_range()
+{
+  return "'<,'>";
+}
+
 wex::ex_command& wex::ex_command::set(const std::string& text)
 {
   m_text = text;
@@ -218,6 +223,14 @@ std::string wex::ex_command::str() const
       case type_t::CALC:
         return m_text.substr(0, 2);
 
+      // : + selection_range
+      case type_t::COMMAND_RANGE:
+        return m_text.substr(0, selection_range().size() + 1);
+
+      // : + selection_range + !
+      case type_t::ESCAPE_RANGE:
+        return m_text.substr(0, selection_range().size() + 2);
+
       default:
         return m_text.substr(0, 1);
     }
@@ -238,8 +251,22 @@ wex::ex_command::type_t wex::ex_command::type() const
                                                        type_t::NONE;
 
       case ':':
-        return m_stc != nullptr && !m_stc->is_visual() ? type_t::COMMAND_EX :
-                                                         type_t::COMMAND;
+        if (m_stc != nullptr && !m_stc->is_visual())
+        {
+          return type_t::COMMAND_EX;
+        }
+        else if (m_text.starts_with(":" + selection_range() + "!"))
+        {
+          return type_t::ESCAPE_RANGE;
+        }
+        else if (m_text.starts_with(":" + selection_range()))
+        {
+          return type_t::COMMAND_RANGE;
+        }
+        else
+        {
+          return type_t::COMMAND;
+        }
 
       case '!':
         return type_t::ESCAPE;

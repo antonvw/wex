@@ -11,42 +11,54 @@
 
 namespace wex::data
 {
-  /// Holds substitute data for addressrange.
-  class substitute
-  {
-  public:
-    /// Default constructor, calls set.
-    substitute(const std::string& text = std::string());
+/// Holds substitute data for addressrange.
+class substitute
+{
+public:
+  /// Default constructor, calls set.
+  substitute(const std::string& text = std::string());
 
-    /// Returns whether options indicate confirmed.
-    bool is_confirmed() const;
+  /// Returns commands.
+  auto& commands() const { return m_commands; }
 
-    /// Returns whether options indicate global.
-    bool is_global() const;
+  /// Returns whether clear indicator was asked (:g//)
+  bool is_clear() const { return m_clear; }
 
-    /// Returns whether options indicate ignore case.
-    bool is_ignore_case() const;
+  /// Returns whether options indicate confirmed.
+  bool is_confirmed() const;
 
-    /// Returns commands.
-    auto& commands() const { return m_commands; }
+  /// Returns whether options indicate global.
+  bool is_global() const;
 
-    /// Returns pattern.
-    auto& pattern() const { return m_pattern; }
+  /// Returns whether command indicates global.
+  bool is_global_command() const { return m_global_command; }
 
-    /// Returns replacement.
-    auto& replacement() const { return m_replacement; }
+  /// Returns whether options indicate ignore case.
+  bool is_ignore_case() const;
 
-    /// Sets pattern, replacement, options from text:
-    /// s/pattern/text/options
-    bool set(const std::string& text);
+  /// Returns whether inverse option is present (for set_global,
+  /// is_global_command).
+  bool is_inverse() const { return m_inverse; }
 
-    /// Sets pattern, commands from text (for global substitute).
-    bool set_global(const std::string& text);
+  /// Returns pattern.
+  auto& pattern() const { return m_pattern; }
 
-    /// Sets options only.
-    void set_options(const std::string& text);
+  /// Returns replacement.
+  auto& replacement() const { return m_replacement; }
 
-  private:
-    std::string m_commands, m_options, m_pattern, m_replacement;
-  };
+  /// Sets pattern, replacement, options from text:
+  /// s/pattern/text/options
+  bool set(const std::string& text);
+
+  /// Sets pattern, commands from text (for global substitute).
+  bool set_global(const std::string& text);
+
+  /// Sets options only.
+  void set_options(const std::string& text);
+
+private:
+  std::string m_commands, m_options, m_pattern, m_replacement;
+
+  bool m_clear{false}, m_global_command{false}, m_inverse{false};
+};
 } // namespace wex::data

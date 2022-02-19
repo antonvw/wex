@@ -1,30 +1,31 @@
 name: Lint Code Base
+  on: [push]
 
-on: [push]
+  jobs:
+    build:
 
-jobs:
-  build:
+      runs-on: ubuntu-latest
 
-    runs-on: ubuntu-latest
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v2
 
-    steps:
-    - name: Checkout Code
-      uses: actions/checkout@v2
+        - name: Lint code base
+          uses: docker://github/super-linter:v4
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Lint Code Base
-      uses: docker://github/super-linter:v3
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                
-        # until C_CPPLINT_ARGUMENTS variable works?
-        VALIDATE_CPP: false
+            # until C_CPPLINT_ARGUMENTS variable works?
+            VALIDATE_CPP: false
 
-        # we use escape sequence in wex-macros.xml
-        VALIDATE_XML: false
+            # we use escape sequence in wex-macros.xml
+            VALIDATE_XML: false
 
-        # exclude xsl, all externals
-        FILTER_REGEX_EXCLUDE: .*data/*.xsl|external|src/lexers|locale/po-sync.sh
+            VALIDATE_SQLFLUFF: false
 
-        # cpplint
-        C_CPPLINT_ARGUMENTS: --quiet --filter=-build,-readability/fn_size,-readability/multiline_string,-runtime/explicit,-runtime/indentation_namespace,-runtime/int,-runtime/references,-whitespace
-        C_CPPLINT_FILTER_REGEX_INCLUDE: (src|include|test)
+            # exclude xsl, all externals
+            FILTER_REGEX_EXCLUDE: .*data/*.xsl|external|src/lexers|locale/po-sync.sh
+
+            # cpplint
+            C_CPPLINT_ARGUMENTS: --quiet --filter=-build,-readability/fn_size,-readability/multiline_string,-runtime/explicit,-runtime/indentation_namespace,-runtime/int,-runtime/references,-whitespace
+            C_CPPLINT_FILTER_REGEX_INCLUDE: (src|include|test)

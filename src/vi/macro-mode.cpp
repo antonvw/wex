@@ -2,23 +2,23 @@
 // Name:      macro-mode.cpp
 // Purpose:   Implementation of class wex::macro_mode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include "macro-fsm.h"
 #include <boost/algorithm/string.hpp>
-#include <wex/core.h>
-#include <wex/ex.h>
+#include <wex/core/core.h>
+#include <wex/core/regex.h>
 #include <wex/factory/stc.h>
-#include <wex/frame.h>
-#include <wex/macro-mode.h>
-#include <wex/macros.h>
-#include <wex/regex.h>
-#include <wex/statusbar.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/statusbar.h>
+#include <wex/vi/ex.h>
+#include <wex/vi/macro-mode.h>
+#include <wex/vi/macros.h>
+#include <wx/app.h>
+#include <wx/choicdlg.h>
+
+#include "macro-fsm.h"
+#include "util.h"
 
 bool show_dialog(
   wxWindow*          parent,
@@ -100,8 +100,7 @@ int wex::macro_mode::transition(
     return 0;
   }
 
-  wxWindow* parent = (ex != nullptr ? ex->get_stc() : wxTheApp->GetTopWindow());
-  auto*     frame  = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
+  auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
 
   std::string      macro(boost::algorithm::trim_copy(command));
   const ex_command cmd(ex != nullptr ? ex->get_command() : ex_command());
@@ -111,99 +110,17 @@ int wex::macro_mode::transition(
   switch (macro[0])
   {
     case 'q':
-      macro.erase(0, 1);
-
-      if (complete)
+      if (int x = transition_q(macro, ex, complete); x >= 0)
       {
-        if (macro.empty())
-        {
-          frame->stc_entry_dialog_component()->set_text(get_macro());
-          frame->stc_entry_dialog_title(_("Enter Macro"));
-          frame->stc_entry_dialog_validator("[A-Za-z0-9][a-z0-9]*");
-
-          if (
-            frame->show_stc_entry_dialog(true) != wxID_OK ||
-            (macro = frame->stc_entry_dialog_component()->get_text()) ==
-              std::string())
-          {
-            return 0;
-          }
-        }
+        return x;
       }
-      else if (m_fsm->get() == macro_fsm::state_t::IDLE && macro.empty())
-      {
-        return 0;
-      }
-      m_fsm->record(macro, ex);
       break;
 
     case '@':
-      if (macro == "@")
+      if (int x = transition_at(macro, ex, complete, repeat); x >= 0)
       {
-        if (complete)
-        {
-          if (!show_dialog(parent, get_macro(), macro))
-          {
-            return 1;
-          }
-        }
-        else
-        {
-          return 0;
-        }
+        return x;
       }
-      else if (macro == "@@")
-      {
-        if (
-          (macro = get_macro()) == std::string() &&
-          !show_dialog(parent, get_macro(), macro))
-        {
-          return 2;
-        }
-      }
-      else if (regafter("@", macro))
-      {
-        macro = macro.back();
-
-        if (!ex::get_macros().is_recorded(macro))
-        {
-          return 2;
-        }
-      }
-      else
-      {
-        if (regex v("@([a-zA-Z].+)@"); v.match(macro) > 0)
-        {
-          macro = v[0];
-        }
-        else if (ex::get_macros().starts_with(macro.substr(1)))
-        {
-          if (std::string s;
-              auto_complete_text(macro.substr(1), ex::get_macros().get(), s))
-          {
-            frame->statustext(s, "PaneMacro");
-            macro = s;
-          }
-          else
-          {
-            frame->statustext(macro.substr(1), "PaneMacro");
-            return 0;
-          }
-        }
-        else
-        {
-          if (ex != nullptr)
-          {
-            frame->statustext(get_macro(), "PaneMacro");
-          }
-          return macro.size();
-        }
-      }
-
-      if (ex::get_macros().is_recorded_macro(macro))
-        m_fsm->playback(macro, ex, repeat);
-      else
-        m_fsm->expand_variable(macro, ex);
       break;
 
     default:
@@ -214,4 +131,116 @@ int wex::macro_mode::transition(
     ex->m_command.restore(cmd);
 
   return command.size();
+}
+
+int wex::macro_mode::transition_q(std::string& macro, ex* ex, bool complete)
+{
+  macro.erase(0, 1);
+
+  if (complete)
+  {
+    if (macro.empty())
+    {
+      auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
+      frame->stc_entry_dialog_component()->set_text(get_macro());
+      frame->stc_entry_dialog_title(_("Enter Macro"));
+      frame->stc_entry_dialog_validator("[A-Za-z0-9][a-z0-9]*");
+
+      if (
+        frame->show_stc_entry_dialog(true) != wxID_OK ||
+        (macro = frame->stc_entry_dialog_component()->get_text()) ==
+          std::string())
+      {
+        return 0;
+      }
+    }
+  }
+  else if (m_fsm->get() == macro_fsm::state_t::IDLE && macro.empty())
+  {
+    return 0;
+  }
+
+  m_fsm->record(macro, ex);
+
+  return -1;
+}
+
+int wex::macro_mode::transition_at(
+  std::string& macro,
+  ex*          ex,
+  bool         complete,
+  int          repeat)
+{
+  wxWindow* parent = (ex != nullptr ? ex->get_stc() : wxTheApp->GetTopWindow());
+
+  if (macro == "@")
+  {
+    if (complete)
+    {
+      if (!show_dialog(parent, get_macro(), macro))
+      {
+        return 1;
+      }
+    }
+    else
+    {
+      return 0;
+    }
+  }
+  else if (macro == "@@")
+  {
+    if (
+      (macro = get_macro()) == std::string() &&
+      !show_dialog(parent, get_macro(), macro))
+    {
+      return 2;
+    }
+  }
+  else if (register_after("@", macro))
+  {
+    macro = macro.back();
+
+    if (!ex::get_macros().is_recorded(macro))
+    {
+      return 2;
+    }
+  }
+  else
+  {
+    auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
+
+    if (regex v("@([a-zA-Z].+)@"); v.match(macro) > 0)
+    {
+      macro = v[0];
+    }
+    else if (ex::get_macros().starts_with(macro.substr(1)))
+    {
+      if (std::string s;
+          auto_complete_text(macro.substr(1), ex::get_macros().get(), s))
+      {
+        frame->statustext(s, "PaneMacro");
+        macro = s;
+      }
+      else
+      {
+        frame->statustext(macro.substr(1), "PaneMacro");
+        return 0;
+      }
+    }
+    else
+    {
+      if (ex != nullptr)
+      {
+        frame->statustext(get_macro(), "PaneMacro");
+      }
+      return macro.size();
+    }
+  }
+
+  if (ex::get_macros().is_recorded_macro(macro))
+    m_fsm->playback(macro, ex, repeat);
+  else
+    m_fsm->expand_variable(macro, ex);
+
+  return -1;
 }

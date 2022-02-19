@@ -2,16 +2,14 @@
 // Name:      test.h
 // Purpose:   Declaration of classes for unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <doctest.h>
-#include <string>
-#include <wex/app.h>
-#include <wex/path.h>
-#include <wx/platform.h>
+#include <wex/core/app.h>
+#include <wex/core/path.h>
 
 namespace wex
 {
@@ -49,7 +47,7 @@ public:
   void set_context(doctest::Context* context);
 
 private:
-  doctest::Context*  m_context;
+  doctest::Context*  m_context{nullptr};
   static inline path m_path;
 };
 
@@ -62,8 +60,7 @@ private:
 /// }
 int main(int argc, char* argv[], app* app);
 
-}; // namespace test
-}; // namespace wex
-
 /// Returns abbreviations.
 std::vector<std::pair<std::string, std::string>> get_abbreviations();
+}; // namespace test
+}; // namespace wex

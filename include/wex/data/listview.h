@@ -7,8 +7,9 @@
 
 #pragma once
 
-#include <bitset>
 #include <wex/data/control.h>
+
+#include <bitset>
 
 namespace wex
 {

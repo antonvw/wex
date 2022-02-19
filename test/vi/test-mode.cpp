@@ -5,8 +5,8 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/vi-mode.h>
-#include <wex/vi.h>
+#include <wex/vi/mode.h>
+#include <wex/vi/vi.h>
 
 #include "test.h"
 
@@ -37,6 +37,8 @@ TEST_CASE("wex::vi_mode")
   REQUIRE(mode.get() == wex::vi_mode::state_t::INSERT);
   REQUIRE(mode.str() == "insert");
   REQUIRE(mode.escape());
+  REQUIRE(mode.is_command());
+  mode.command();
   REQUIRE(mode.is_command());
   REQUIRE(mode.get() == wex::vi_mode::state_t::COMMAND);
 

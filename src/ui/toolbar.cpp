@@ -2,27 +2,26 @@
 // Name:      toolbar.cpp
 // Purpose:   Implementation of wex::toolbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <list>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wex/art.h>
-#include <wex/bind.h>
-#include <wex/config.h>
-#include <wex/core.h>
-#include <wex/defs.h>
+#include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/factory/defs.h>
 #include <wex/factory/stc.h>
-#include <wex/frame.h>
-#include <wex/frd.h>
-#include <wex/grid.h>
-#include <wex/listview.h>
-#include <wex/menu.h>
-#include <wex/textctrl.h>
-#include <wex/toolbar.h>
+#include <wex/ui/art.h>
+#include <wex/ui/bind.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/frd.h>
+#include <wex/ui/grid.h>
+#include <wex/ui/listview.h>
+#include <wex/ui/menu.h>
+#include <wex/ui/textctrl.h>
+#include <wex/ui/toolbar.h>
+#include <wx/checkbox.h>
+#include <wx/stockitem.h>
+
+#include <list>
 
 namespace wex
 {
@@ -48,12 +47,10 @@ void find_popup_menu(
   const textctrl_input::values_t& l,
   const wxPoint&                  pos)
 {
-  auto* menu = new wex::menu();
-
+  auto*     menu     = new wex::menu();
   const int max_size = 25;
-  int       i        = 0;
 
-  for (const auto& it : l)
+  for (int i = 0; const auto& it : l)
   {
     menu->append(
       {{wex::ID_FIND_FIRST + i++,
@@ -186,7 +183,7 @@ void wex::toolbar::add_find(bool realize)
 
   add_checkboxes(
     {{NewControlId(),
-      after(find_replace_data::get()->text_match_word(), '.', false),
+      rfind_after(find_replace_data::get()->text_match_word(), "."),
       "",
       "",
       _("Search matching words"),
@@ -196,7 +193,7 @@ void wex::toolbar::add_find(bool realize)
         find_replace_data::get()->set_match_word(cb->GetValue());
       }},
      {NewControlId(),
-      after(find_replace_data::get()->text_match_case(), '.', false),
+      rfind_after(find_replace_data::get()->text_match_case(), "."),
       "",
       "",
       _("Search case sensitive"),
@@ -206,7 +203,7 @@ void wex::toolbar::add_find(bool realize)
         find_replace_data::get()->set_match_case(cb->GetValue());
       }},
      {NewControlId(),
-      after(find_replace_data::get()->text_regex(), '.', false),
+      rfind_after(find_replace_data::get()->text_regex(), "."),
       "",
       "",
       _("Search using regular expressions"),
@@ -252,6 +249,8 @@ void wex::toolbar::add_standard(bool realize)
   add_tool(
     {{wxID_NEW},
      {wxID_OPEN},
+     {wxID_BACKWARD},
+     {wxID_FORWARD},
      {wxID_SAVE},
      {wxID_PRINT},
      {wxID_UNDO},
@@ -294,6 +293,14 @@ void wex::toolbar::add_standard(bool realize)
       SetToolSticky(event.GetId(), false);
     },
     wxID_OPEN);
+
+  bind(this).command(
+    {{[=, this](wxCommandEvent& event)
+      {
+        m_frame->open_file_same_page(event);
+      },
+      wxID_FORWARD,
+      wxID_BACKWARD}});
 
   if (realize)
   {

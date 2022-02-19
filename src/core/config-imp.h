@@ -2,22 +2,23 @@
 // Name:      config-imp.h
 // Purpose:   Implementation of class wex::config_imp
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <nlohmann/json.hpp>
-#include <string>
+#include <boost/json.hpp>
 
-#include <wex/core.h>
-#include <wex/log.h>
-#include <wex/path.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
+#include <wex/core/path.h>
+#include <wex/core/tokenize.h>
 
-using json = nlohmann::json;
+namespace json = boost::json;
 
 namespace wex
 {
+/// This class implements the wex config, by using boost json.
 class config_imp
 {
 public:
@@ -42,14 +43,14 @@ public:
   size_t elements() const;
 
   /// Returns true if this item is present.
-  bool exists(const std::string& item);
+  bool exists(const std::string& item) const;
 
   /// Returns item.
   auto& get_item() const { return m_item; }
 
-  /// Returns json.
-  const json& get_json() const { return m_json; }
-  json&       get_json() { return m_json; }
+  /// Returns boost json object.
+  const auto& get_json() const { return m_json; }
+  auto&       get_json() { return m_json; }
 
   /// Reads json file.
   void read();
@@ -58,53 +59,156 @@ public:
   void save() const;
 
   /// Sets value for item.
-  template <typename T> void set(const std::string& item, const T& v)
-  {
-    try
-    {
-      if (item.find('.') == std::string::npos)
-      {
-        m_json[item] = v;
-      }
-      else
-      {
-        accessor(before(item, '.', false))[after(item, '.', false)] = v;
-      }
-    }
-    catch (std::exception& e)
-    {
-      log(e) << "config::set" << item;
-    }
-  }
+  /// set("x.y.z", 8)
+  /// -> boost json object x, y boost json value z 8
+  /// set("x.y.z", std::vector{1, 2 3})
+  /// -> boost json object x, y, z
+  template <typename T> void set(const std::string& item, const T& v);
 
   /// Returns value for item.
-  template <typename T> const T value(const std::string& item, const T& def)
-  {
-    try
-    {
-      if (item.find('.') == std::string::npos)
-      {
-        return m_json.value(item, def);
-      }
-      else
-      {
-        auto& a(accessor(before(item, '.', false)));
-        return !a.is_null() ? a.value(after(item, '.', false), def) : def;
-      }
-    }
-    catch (std::exception& e)
-    {
-      log(e) << "config::value" << item;
-      return def;
-    }
-  }
+  /// If item is present, returns current value, otherwise the default one.
+  /// value("x.y.z", 9) -> 9
+  /// set("x.y.z", 8)
+  /// value("x.y.z", 9) -> 8
+  template <typename T> const T value(const std::string& item, const T& def);
 
 private:
-  json& accessor(const std::string& item);
-  void  elements(const json& o, size_t& total) const;
+  template <typename T>
+  json::value& accessor(const std::string& item, const T& def);
 
-  json                    m_json;
+  void elements(const json::object& o, size_t& total) const;
+
+  json::object            m_json;
   static inline wex::path m_path;
   const std::string       m_item;
 };
 }; // namespace wex
+
+// implementation
+
+template <typename T>
+json::value& wex::config_imp::accessor(const std::string& item, const T& t)
+{
+  if (const auto& v(tokenize<std::vector<std::string>>(item, "."));
+      v.size() == 0)
+  {
+    return m_json[item];
+  }
+  else
+  {
+    auto* jv(&m_json[v[0]]);
+
+    for (size_t i = 1; i < v.size(); i++)
+    {
+      if (!jv->is_null() && jv->is_object())
+      {
+        jv = &jv->as_object()[v[i]];
+      }
+      else
+      {
+        jv = &jv->emplace_object()[v[i]];
+      }
+    }
+
+    if (jv->is_null())
+    {
+      *jv = json::value_from(t);
+    }
+
+    return *jv;
+  }
+}
+
+template <typename T>
+void wex::config_imp::set(const std::string& item, const T& v)
+{
+  try
+  {
+    if (item.find('.') == std::string::npos)
+    {
+      m_json[item] = json::value_from(v);
+    }
+    else
+    {
+      if (exists(item))
+      {
+        accessor(item, v) = json::value_from(v);
+      }
+      else
+      {
+        auto& jv = accessor(rfind_before(item, "."), v);
+
+        if (jv.is_object())
+        {
+          jv.as_object()[rfind_after(item, ".")] = json::value_from(v);
+        }
+        else
+        {
+          jv.emplace_object()[rfind_after(item, ".")] = json::value_from(v);
+        }
+      }
+    }
+  }
+  catch (std::exception& e)
+  {
+    log(e) << "config::set" << item;
+  }
+}
+
+template <typename T>
+const T wex::config_imp::value(const std::string& item, const T& def)
+{
+  const auto& ai(rfind_after(item, "."));
+
+  try
+  {
+    if (item.find('.') == std::string::npos)
+    {
+      if (!exists(item))
+      {
+        return def;
+      }
+      else
+      {
+        const auto& jv(m_json.at(item));
+        return json::value_to<T>(jv);
+      }
+    }
+    else
+    {
+      if (auto& a(accessor(rfind_before(item, "."), def)); !a.is_null())
+      {
+        if (a.is_object())
+        {
+          if (!a.as_object().contains(ai))
+          {
+            a.as_object()[ai] = json::value_from(def);
+            return def;
+          }
+          else
+          {
+            return json::value_to<T>(a.as_object()[ai]);
+          }
+
+          if (const auto& l(a.at(ai)); !l.is_null())
+          {
+            return json::value_to<T>(l);
+          }
+        }
+
+        a.emplace_object()[ai] = json::value_from(def);
+        return def;
+      }
+      else
+      {
+        a.emplace_object()[ai] = json::value_from(def);
+        return def;
+      }
+    }
+  }
+  catch (std::exception& e)
+  {
+    log(e) << "config::value" << item;
+    return def;
+  }
+}

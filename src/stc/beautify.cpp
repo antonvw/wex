@@ -2,13 +2,13 @@
 // Name:      beautify.cpp
 // Purpose:   Implementation of wex::beautify class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/addressrange.h>
-#include <wex/beautify.h>
+#include <wex/factory/path-lexer.h>
 #include <wex/factory/process.h>
-#include <wex/path-lexer.h>
+#include <wex/stc/beautify.h>
+#include <wex/vi/addressrange.h>
 
 bool wex::beautify::file(const path& p) const
 {
@@ -51,7 +51,7 @@ bool wex::beautify::stc(wex::stc& s) const
     return false;
   }
 
-  const std::string& lines(
+  const auto& lines(
     s.GetSelectedText().empty() ?
       std::string() :
       " --lines " +

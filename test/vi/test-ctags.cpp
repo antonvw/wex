@@ -5,8 +5,8 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/ctags.h>
-#include <wex/ex.h>
+#include <wex/vi/ctags.h>
+#include <wex/vi/ex.h>
 
 #include "test.h"
 
@@ -58,7 +58,6 @@ TEST_CASE("wex::ctags")
     REQUIRE(!wex::ctags::find("xxxx"));
     REQUIRE(wex::ctags::find("test_app"));
     REQUIRE(!wex::ctags::next());
-    auto* ex = new wex::ex(get_stc());
     REQUIRE(wex::ctags(ex).separator() != ' ');
   }
 }

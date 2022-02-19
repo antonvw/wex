@@ -2,20 +2,22 @@
 // Name:      listview-file.cpp
 // Purpose:   Implementation of class wex::del::file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <pugixml.hpp>
-#include <thread>
-#include <wex/bind.h>
-#include <wex/config.h>
+#include <wex/common/util.h>
+#include <wex/core/chrono.h>
+#include <wex/core/config.h>
+#include <wex/core/log.h>
 #include <wex/del/defs.h>
 #include <wex/del/frame.h>
 #include <wex/del/listview-file.h>
-#include <wex/listitem.h>
-#include <wex/log.h>
-#include <wex/menu.h>
-#include <wex/util.h>
+#include <wex/ui/bind.h>
+#include <wex/ui/listitem.h>
+#include <wex/ui/menu.h>
+
+#include <thread>
 
 wex::del::file::file(const wex::path& p, const data::listview& data)
   : del::listview(data::listview(data).type(data::listview::FILE))
@@ -38,6 +40,8 @@ wex::del::file::file(const wex::path& p, const data::listview& data)
         .id(wxID_ADD)))
 {
   file_load(p);
+
+  path().set_log(path::log_t().set(path::LOG_MOD));
 
   Bind(wxEVT_IDLE, &del::file::on_idle, this);
 
@@ -171,7 +175,7 @@ bool wex::del::file::do_file_load(bool synced)
         pugi::parse_default | pugi::parse_comments);
       !result)
   {
-    if (path().stat().st_size == 0)
+    if (path().stat().get_size() == 0)
     {
       clear();
       return true;
@@ -184,6 +188,8 @@ bool wex::del::file::do_file_load(bool synced)
   }
 
   clear();
+
+  interruptible::start();
 
 #ifdef FIX__WXMSW__
   std::thread t(
@@ -206,7 +212,7 @@ bool wex::del::file::do_file_load(bool synced)
             .insert();
         }
 
-        if (interruptible::is_cancelled())
+        if (!interruptible::is_running())
           break;
       }
 
@@ -215,6 +221,7 @@ bool wex::del::file::do_file_load(bool synced)
         log::status() << path();
       }
 
+      interruptible::end();
       get_frame()->set_recent_project(path());
 
 #ifdef FIX__WXMSW__
@@ -255,8 +262,7 @@ void wex::del::file::do_file_save(bool save_as)
 
   for (int i = 0; i < GetItemCount(); i++)
   {
-    const wex::path fn = listitem(this, i).path();
-
+    const auto fn = listitem(this, i).path();
     auto node = root.append_child(fn.file_exists() ? "file" : "folder");
     node.text().set(fn.string().c_str());
 

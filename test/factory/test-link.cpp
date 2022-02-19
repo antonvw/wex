@@ -5,7 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/config.h>
+#include <wex/core/config.h>
 #include <wex/factory/link.h>
 #include <wex/factory/stc.h>
 
@@ -22,18 +22,18 @@ private:
 };
 
 void link(
-  const wex::factory::link& link,
-  const std::string&        path,
-  const std::string&        expect         = std::string(),
-  int                       expect_line_no = 0,
-  int                       expect_col_no  = 0);
+  wex::factory::link& link,
+  const std::string&  path,
+  const std::string&  expect         = std::string(),
+  int                 expect_line_no = 0,
+  int                 expect_col_no  = 0);
 
 void link(
-  const wex::factory::link& link,
-  const std::string&        path,
-  const std::string&        expect,
-  int                       expect_line_no,
-  int                       expect_col_no)
+  wex::factory::link& link,
+  const std::string&  path,
+  const std::string&  expect,
+  int                 expect_line_no,
+  int                 expect_col_no)
 {
   wex::line_data data;
 
@@ -81,6 +81,7 @@ TEST_CASE("wex::factory::link")
     const std::string test("/test/data/test.h");
     link(lnk, "test.h", test);
     link(lnk, "  test.h", test);
+    link(lnk, "xxx ./test.h yyy", "./test.h");
 
     const std::string special("/test/data/test-special.h");
     link(lnk, "test-special.h", special);

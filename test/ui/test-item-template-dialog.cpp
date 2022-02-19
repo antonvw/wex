@@ -6,11 +6,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
+#include <wex/factory/defs.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/item-template-dialog.h>
+#include <wex/ui/item.h>
+
 #include <vector>
-#include <wex/del/defs.h>
-#include <wex/frame.h>
-#include <wex/item-template-dialog.h>
-#include <wex/item.h>
 
 namespace wex
 {

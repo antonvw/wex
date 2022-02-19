@@ -2,21 +2,23 @@
 // Name:      address.cpp
 // Purpose:   Implementation of class wex::address
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <memory>
-#include <wex/address.h>
-#include <wex/core.h>
-#include <wex/ex-stream.h>
-#include <wex/ex.h>
+#include <wex/core/core.h>
+#include <wex/core/file.h>
+#include <wex/core/log.h>
+#include <wex/core/regex.h>
 #include <wex/factory/process.h>
 #include <wex/factory/stc.h>
-#include <wex/file.h>
-#include <wex/frame.h>
-#include <wex/log.h>
-#include <wex/macros.h>
-#include <wex/regex.h>
+#include <wex/ui/frame.h>
+#include <wex/vi/address.h>
+#include <wex/vi/command-parser.h>
+#include <wex/vi/ex-stream.h>
+#include <wex/vi/ex.h>
+#include <wex/vi/macros.h>
+
+#include "util.h"
 
 #define SEARCH_TARGET                                                         \
   if (ex->get_stc()->SearchInTarget(text) != -1)                              \
@@ -137,15 +139,10 @@ bool wex::address::adjust_window(const std::string& text) const
   }
 
   std::string output;
-  SEPARATE;
-  for (int i = begin; i < begin + count; i++)
-  {
-    char buffer[8];
-    snprintf(buffer, sizeof(buffer), "%6d ", i);
 
-    output += (flags.find("#") != std::string::npos ? buffer : "") +
-              m_ex->get_stc()->GetLine(i - 1);
-  }
+  SEPARATE;
+  output +=
+    wex::get_lines(m_ex->get_stc(), begin - 1, begin + count - 1, flags);
   SEPARATE;
 
   m_ex->print(output);
@@ -183,7 +180,7 @@ bool wex::address::flags_supported(const std::string& flags) const
     return true;
   }
 
-  if (regex("([-+#pl])").match(flags) < 0)
+  if (regex("([-+#pl]+)").match(flags) < 0)
   {
     log::status("Unsupported flags") << flags;
     return false;
@@ -263,41 +260,43 @@ bool wex::address::marker_delete() const
          m_ex->marker_delete(m_address[1]);
 }
 
-bool wex::address::parse(const std::string& command, const std::string& text)
-  const
+bool wex::address::parse(const command_parser& cp)
 {
-  switch (command[0])
+  m_address = cp.range();
+
+  switch (cp.command()[0])
   {
     case 0:
       return false;
 
     case 'a':
-      if (text.find('|') != std::string::npos)
+      if (cp.text().find('|') != std::string::npos)
       {
-        return append(after(text, '|'));
+        return append(find_after(cp.text(), "|"));
       }
       else
       {
-        return m_ex->frame()->show_ex_input(m_ex->get_stc(), command[0]);
+        return m_ex->frame()->show_ex_input(m_ex->get_stc(), cp.command()[0]);
       }
 
     case 'i':
-      if (text.find('|') != std::string::npos)
+      if (cp.text().find('|') != std::string::npos)
       {
-        return insert(after(text, '|'));
+        return insert(find_after(cp.text(), "|"));
       }
       else
       {
-        return m_ex->frame()->show_ex_input(m_ex->get_stc(), command[0]);
+        return m_ex->frame()->show_ex_input(m_ex->get_stc(), cp.command()[0]);
       }
 
     case 'k':
-      return !text.empty() ? marker_add(text[0]) : false;
+    case 'm':
+      return !cp.text().empty() ? marker_add(cp.text()[0]) : false;
 
     case 'p':
-      if (command == "pu")
+      if (cp.command() == "pu")
       {
-        return !text.empty() ? put(text[0]) : put();
+        return !cp.text().empty() ? put(cp.text()[0]) : put();
       }
       else
       {
@@ -305,20 +304,20 @@ bool wex::address::parse(const std::string& command, const std::string& text)
       }
 
     case 'r':
-      return read(text);
+      return read(cp.text());
 
     case 'v':
       m_ex->get_stc()->visual(true);
       return true;
 
     case 'z':
-      return adjust_window(text);
+      return adjust_window(cp.text());
 
     case '=':
       return write_line_number();
 
     default:
-      log::status("Unknown address command") << command;
+      log::status("Unknown address command") << cp.command();
       return false;
   }
 }
@@ -358,7 +357,7 @@ bool wex::address::read(const std::string& arg) const
       return false;
     }
 
-    return append(process.get_stdout());
+    return append(process.std_out());
   }
   else
   {
@@ -398,13 +397,14 @@ const std::string wex::address::regex_commands() const
 {
   // Command Descriptions in ex.
   // 1addr commands
-  return std::string("(append\\b|"
-                     "insert\\b|"
-                     "mark\\b|ma\\b|"
+  return std::string("(append\\b|a\\b|"
+                     "insert\\b|i\\b|"
+                     "mark\\b|ma\\b|k|"
                      "pu\\b|"
-                     "read\\b|"
+                     "read\\b|r\\b|"
                      "visual\\b|vi\\b|"
-                     "[aikrz=])([\\s\\S]*)");
+                     "z\\b|"
+                     "=)([\\s\\S]*)");
 }
 
 void wex::address::set_line(int line)

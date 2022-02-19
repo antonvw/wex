@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
-#include <wex/menu-command.h>
+#include <wex/core/menu-command.h>
 
 TEST_CASE("wex::menu_command")
 {

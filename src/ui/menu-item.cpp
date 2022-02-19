@@ -5,16 +5,10 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <wex/art.h>
-#include <wex/defs.h>
-#include <wex/frame.h>
-#include <wex/menu-item.h>
-#include <wex/menu.h>
-#include <wx/menu.h>
+#include <wex/factory/defs.h>
+#include <wex/ui/art.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/menu.h>
 
 wex::menu_item::menu_item(type_t type)
   : m_type(type)

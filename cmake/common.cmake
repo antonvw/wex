@@ -25,10 +25,14 @@ function(wex_config)
       # Visual studio 2017:
       file(GLOB_RECURSE dlls 
         "C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/redist/x86/*.dll")
-    else()
+    elseif(${MSVC_TOOLSET_VERSION} LESS 143)
       # Visual studio 2019:
       file(GLOB_RECURSE dlls 
         "C:/Program Files (x86)/Microsoft Visual Studio/2019/vcruntime14*.dll")
+    else ()
+      # Visual studio 2022:
+      file(GLOB_RECURSE dlls 
+        "C:/Program Files/Microsoft Visual Studio/2022/vcruntime14*.dll")
     endif()
 
     install(FILES ${dlls} DESTINATION ${CONFIG_INSTALL_DIR})
@@ -97,20 +101,25 @@ function(wex_install)
       if (APPLE)
         file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.dylib)
       else ()
-        file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.so)
+        file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.so*)
       endif ()
     else ()
       file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.a)
     endif ()
   endif ()
   
+  # install wex-keywords.resource
+  if (wexBUILD_SAMPLES AND wexBUILD_TESTS)
+    install(FILES ${CMAKE_SOURCE_DIR}/test/app/wex-keywords.resource
+      DESTINATION "lib")
+  endif ()
+
   install(FILES ${wex_LIBS} 
     DESTINATION "lib")
 endfunction()
 
 function(wex_process_po_files)
-  # travis has problem with gettext
-  if (GETTEXT_FOUND AND NOT DEFINED ENV{TRAVIS})
+  if (GETTEXT_FOUND)
       file(GLOB files *.po)
       
       foreach(filename ${files})
@@ -145,8 +154,8 @@ function(wex_process_po_files)
   endif()
 endfunction()  
 
-macro(wex_target_link_all)
-  set (extra_macro_args ${ARGN})
+function(wex_target_link_all)
+  set (use_libs ${ARGN})
 
   if (CENTOS)
     set (cpp_std_LIBRARIES 
@@ -161,7 +170,13 @@ macro(wex_target_link_all)
   endif ()
 
   set (wxWidgets_LIBRARIES wxaui wxstc wxhtml wxcore wxnet wxbase wxscintilla)
-  set (wex_LIBRARIES wex-del wex-stc wex-vi wex-ui wex-common wex-data wex-factory wex-core)
+  
+  if (${ARGC} STREQUAL "0")
+    set (wex_LIBRARIES wex-del wex-stc wex-vi wex-ui wex-common wex-data wex-factory wex-core)
+  else ()
+    set (wex_LIBRARIES ${use_libs})
+    separate_arguments(wex_LIBRARIES)
+  endif ()  
           
   if (WIN32)
     target_link_libraries(
@@ -169,7 +184,6 @@ macro(wex_target_link_all)
       ${wex_LIBRARIES}
       ${wxWidgets_LIBRARIES}
       ${Boost_LIBRARIES}
-      ${extra_macro_args}
       )
   elseif (APPLE)
     target_link_libraries(
@@ -177,7 +191,6 @@ macro(wex_target_link_all)
       ${wex_LIBRARIES}
       ${wxWidgets_LIBRARIES} 
       ${Boost_LIBRARIES}
-      ${extra_macro_args}
       stdc++
       )
   else ()
@@ -186,28 +199,27 @@ macro(wex_target_link_all)
       ${wex_LIBRARIES}
       ${wxWidgets_LIBRARIES} 
       ${Boost_LIBRARIES}
-      ${extra_macro_args}
       ${cpp_std_LIBRARIES}
       m
       )
   endif ()
-endmacro()  
+endfunction()
 
-function(wex_test_app)
+function(wex_test_app libs)
   add_executable(
     ${PROJECT_NAME} 
     ${SRCS})
 
   if (ODBC_FOUND)
-    wex_target_link_all(${ODBC_LIBRARIES})
+    wex_target_link_all(${libs} ${ODBC_LIBRARIES})
   else ()
-    wex_target_link_all()
+    wex_target_link_all(${libs})
   endif()
   
   add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME}
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src)
 endfunction()
-          
+  
 # general setup
     
 if (WIN32)
@@ -241,9 +253,15 @@ else ()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0")
   endif ()
   
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
-    -std=c++2a -Wno-overloaded-virtual -Wno-reorder -Wno-write-strings \
-    -Wno-deprecated-declarations -Wno-unused-result")
+  if (APPLE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+      -std=c++20 -Wno-overloaded-virtual -Wno-reorder -Wno-write-strings \
+      -Wno-deprecated-declarations -Wno-unused-result -fmodules")
+  else ()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+      -std=c++20 -Wno-overloaded-virtual -Wno-reorder -Wno-write-strings \
+      -Wno-deprecated-declarations -Wno-unused-result")
+  endif ()
 endif ()
 
 get_filename_component(wexSETUP_DIR_H ${wexSETUP_H} DIRECTORY)
@@ -252,7 +270,6 @@ get_filename_component(wexSETUP_DIR_H ${wexSETUP_DIR_H} DIRECTORY)
 list(APPEND wxTOOLKIT_INCLUDE_DIRS 
   ${wexSETUP_DIR_H}
   include 
-  external/json/single_include
   external/pugixml/src
   external/ctags/libreadtags/
   external/wxWidgets/include
