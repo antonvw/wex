@@ -15,6 +15,7 @@
 - menus is a template class, is this really necessary
 - REPORT_FIRST, REPORT_LAST no longer necessary
 - add wex::accumulate
+  - see also cmdline for find_if template
 - codiga improvements
 - use boost python for scripting
 - current stc uses old scintilla

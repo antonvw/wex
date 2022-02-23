@@ -2,7 +2,7 @@
 // Name:      cmdline.h
 // Purpose:   Declaration of wex::cmdline class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -121,6 +121,10 @@ private:
   void init();
   bool set_no_option(const std::vector<std::string>& v, bool save) const;
   bool set_option(const std::vector<std::string>& v, bool save) const;
+  bool set_option_check(
+    const std::vector<std::string>& v,
+    bool                            save,
+    bool                            check) const;
 
   const bool m_add_standard_options;
 
