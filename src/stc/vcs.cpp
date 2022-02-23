@@ -5,6 +5,8 @@
 // Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
+
 #include <wex/common/util.h>
 #include <wex/core/config.h>
 #include <wex/factory/path-lexer.h>
@@ -88,18 +90,17 @@ const vcs_entry find_entry(const std::vector<vcs_entry>& entries, const path& p)
   {
     if (!p.empty())
     {
-      for (const auto& it : entries)
+      if (const auto& it = std::find_if(
+            entries.begin(),
+            entries.end(),
+            [p](auto const& i)
+            {
+              const vcs_admin va(i.admin_dir(), p);
+              return va.is_toplevel() || va.exists();
+            });
+          it != entries.end())
       {
-        const vcs_admin va(it.admin_dir(), p);
-
-        if (va.is_toplevel())
-        {
-          return it;
-        }
-        else if (va.exists())
-        {
-          return it;
-        }
+        return *it;
       }
     }
   }
@@ -490,25 +491,28 @@ void wex::vcs_execute(
   {
     if (vcs.show_dialog() == wxID_OK)
     {
-      for (const auto& it : files)
-      {
-        if (wex::vcs vcs({it}, id); vcs.execute())
+      std::for_each(
+        files.begin(),
+        files.end(),
+        [frame, id](const auto& it)
         {
-          if (!vcs.entry().std_out().empty())
+          if (wex::vcs vcs({it}, id); vcs.execute())
           {
-            frame->open_file(it, vcs.entry(), data::stc());
+            if (!vcs.entry().std_out().empty())
+            {
+              frame->open_file(it, vcs.entry(), data::stc());
+            }
+            else if (!vcs.entry().std_err().empty())
+            {
+              log() << vcs.entry().std_err();
+            }
+            else
+            {
+              log::status("No output");
+              log::debug("no output from") << vcs.entry().data().exe();
+            }
           }
-          else if (!vcs.entry().std_err().empty())
-          {
-            log() << vcs.entry().std_err();
-          }
-          else
-          {
-            log::status("No output");
-            log::debug("no output from") << vcs.entry().data().exe();
-          }
-        }
-      }
+        });
     }
   }
   else

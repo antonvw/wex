@@ -5,6 +5,7 @@
 // Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
 #include <sstream>
 
 #include <boost/algorithm/string.hpp>
@@ -23,7 +24,7 @@
 
 namespace wex
 {
-size_t fold(wex::factory::stc* stc, const std::string command)
+size_t fold(wex::factory::stc* stc, const std::string& command)
 {
   if (command.size() <= 1)
     return (size_t)0;
@@ -122,8 +123,9 @@ size_t shift(vi* vi, int count, const std::string& command)
     case vi_mode::state_t::VISUAL:
     case vi_mode::state_t::VISUAL_LINE:
     case vi_mode::state_t::VISUAL_BLOCK:
-      command == ">" ? addressrange(vi, ex_command::selection_range()).shift_right() :
-                       addressrange(vi, ex_command::selection_range()).shift_left();
+      command == ">" ?
+        addressrange(vi, ex_command::selection_range()).shift_right() :
+        addressrange(vi, ex_command::selection_range()).shift_left();
       break;
     default:
       break;

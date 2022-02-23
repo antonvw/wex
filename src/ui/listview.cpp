@@ -2,7 +2,7 @@
 // Name:      listview.cpp
 // Purpose:   Implementation of wex::listview and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -32,6 +32,7 @@
 #include <wx/numdlg.h> // for wxGetNumberFromUser
 #include <wx/settings.h>
 
+#include <algorithm>
 #include <cctype>
 
 namespace wex
@@ -685,12 +686,16 @@ unsigned int wex::listview::get_art_id(const wxArtID& artid)
 
 wex::column wex::listview::get_column(const std::string& name) const
 {
-  for (const auto& it : m_columns)
+  if (const auto& it = std::find_if(
+        m_columns.begin(),
+        m_columns.end(),
+        [name](auto const& it)
+        {
+          return it.GetText() == name;
+        });
+      it != m_columns.end())
   {
-    if (it.GetText() == name)
-    {
-      return it;
-    }
+    return *it;
   }
 
   return column();
@@ -763,9 +768,8 @@ bool wex::listview::insert_item(
             log("listview insert") << "index:" << index << "col:" << col;
             return false;
           }
-
-          if (regex v(",fore:(.*)");
-              v.match(lexers::get()->get_default_style().value()) > 0)
+          else if (regex v(",fore:(.*)");
+                   v.match(lexers::get()->get_default_style().value()) > 0)
           {
             SetItemTextColour(index, wxColour(v[0]));
           }
@@ -989,12 +993,15 @@ bool wex::listview::load(const std::list<std::string>& l)
       l.front(),
       boost::char_separator<char>("\t"));
 
-    const auto cols = std::distance(tok.begin(), tok.end());
+    int i = 0;
 
-    for (auto i = std::distance(tok.begin(), tok.begin()); i < cols; i++)
-    {
-      append_columns({{std::to_string(i + 1), column::STRING, 50}});
-    }
+    std::for_each(
+      tok.begin(),
+      tok.end(),
+      [this, &i](const auto&)
+      {
+        append_columns({{std::to_string(i++ + 1), column::STRING, 50}});
+      });
   }
 
   for (const auto& it : l)

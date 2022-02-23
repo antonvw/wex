@@ -13,8 +13,6 @@ TEST_CASE("wex::frd")
 {
   auto* frd = wex::find_replace_data::get();
 
-  REQUIRE(frd != nullptr);
-
   frd->set_regex(true);
   frd->set_find_string("find[0-9]");
   REQUIRE(frd->is_regex());

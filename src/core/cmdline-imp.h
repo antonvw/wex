@@ -16,10 +16,10 @@ namespace po = boost::program_options;
 namespace wex
 {
 /// Returns default option value.
-const std::string def_option(const std::vector<std::string> v);
+const std::string def_option(const std::vector<std::string>& v);
 
 /// Returns default switch value.
-const std::string def_switch(const std::vector<std::string> v);
+const std::string def_switch(const std::vector<std::string>& v);
 
 /// Support class to implement program options.
 class cmdline_imp
@@ -59,7 +59,7 @@ public:
   bool parse(data::cmdline& data);
 
 private:
-  bool parse_args(data::cmdline& data);
+  bool parse_args(const data::cmdline& data);
   void parse_help(data::cmdline& data);
   void parse_quit();
 

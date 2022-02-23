@@ -2,7 +2,7 @@
 // Name:      addressrange-mark.cpp
 // Purpose:   Implementation of class wex::addressrange_mark
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/stc.h>
@@ -58,7 +58,7 @@ wex::block_lines wex::addressrange_mark::get_block_lines() const
 }
 
 wex::addressrange_mark::mark_t
-wex::addressrange_mark::get_type(const data::substitute data) const
+wex::addressrange_mark::get_type(const data::substitute& data) const
 {
   if (data.is_global_command())
   {

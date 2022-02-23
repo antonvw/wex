@@ -2,7 +2,7 @@
 // Name:      toolbar.h
 // Purpose:   Declaration of wex::toolbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -63,7 +63,7 @@ public:
 
   /// Adds a vector of general toolbar items to this toolbar.
   /// Returns false if one of the items could not be added.
-  bool add_tool(std::vector<data::toolbar_item> v, bool realize = true);
+  bool add_tool(const std::vector<data::toolbar_item>& v, bool realize = true);
 
   /// Sets checkbox state of checkboxes added using add_checkboxes.
   /// Returns true if checkbox was found.

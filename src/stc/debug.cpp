@@ -2,7 +2,7 @@
 // Name:      debug.cpp
 // Purpose:   Implementation of class wex::debug
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -21,6 +21,7 @@
 #include <wex/ui/menu.h>
 #include <wex/ui/menus.h>
 
+#include <algorithm>
 #include <fstream>
 
 #ifdef __WXGTK__
@@ -518,24 +519,21 @@ void wex::debug::set_entry(const std::string& debugger)
     {
       m_entry = v[0];
     }
+    else if (const auto& it = std::find_if(
+               v.begin(),
+               v.end(),
+               [debugger](auto const& e)
+               {
+                 return e.name() == debugger;
+               });
+             it != v.end())
+    {
+      m_entry = *it;
+    }
     else
     {
-      bool found = false;
-
-      for (const auto& it : v)
-      {
-        if (it.name() == debugger)
-        {
-          m_entry = it;
-          found   = true;
-          break;
-        }
-      }
-
-      if (!found)
-      {
-        log("unknown debugger") << debugger;
-      }
+      log("unknown debugger") << debugger;
+      return;
     }
 
     m_frame->set_debug_entry(&m_entry);
@@ -550,10 +548,14 @@ bool wex::debug::show_dialog(wxWindow* parent)
   std::vector<wex::debug_entry> v;
   menus::load("debug", v);
 
-  for (const auto& it : v)
-  {
-    s.emplace_back(it.name());
-  }
+  std::transform(
+    v.begin(),
+    v.end(),
+    std::back_inserter(s),
+    [](const auto& i)
+    {
+      return i.name();
+    });
 
   if (auto debugger = m_entry.name();
       !single_choice_dialog(parent, _("Enter Debugger"), s, debugger))

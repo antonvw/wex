@@ -2,7 +2,7 @@
 // Name:      addressrange-mark.h
 // Purpose:   Declaration of class wex::addressrange_mark
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -54,7 +54,7 @@ private:
     MARK_NORMAL,
   };
 
-  mark_t get_type(const data::substitute subs) const;
+  mark_t get_type(const data::substitute& subs) const;
 
   ex*           m_ex;
   factory::stc* m_stc;

@@ -2,8 +2,10 @@
 // Name:      statusbar.cpp
 // Purpose:   Implementation of wex::statusbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
+
+#include <algorithm>
 
 #include <wex/core/config.h>
 #include <wex/factory/defs.h>
@@ -54,12 +56,16 @@ public:
   /// Returns the style for the first element on the list.
   int style(const config::strings_t& styles) const
   {
-    for (const auto& it : m_styles)
+    if (const auto& it = std::find_if(
+          m_styles.begin(),
+          m_styles.end(),
+          [styles](auto const& i)
+          {
+            return i.second == styles.front();
+          });
+        it != m_styles.end())
     {
-      if (it.second == styles.front())
-      {
-        return it.first;
-      }
+      return it->first;
     }
 
     return wxSB_NORMAL;
@@ -365,8 +371,7 @@ wex::statusbar* wex::statusbar::setup(
   m_panes.insert(std::end(m_panes), std::begin(panes), std::end(panes));
 
   const bool first(frame->GetStatusBar() == nullptr);
-
-  statusbar* sb =
+  auto*      sb =
     (frame->GetStatusBar() == nullptr ?
        reinterpret_cast<statusbar*>(frame->CreateStatusBar(
          m_panes.size(),

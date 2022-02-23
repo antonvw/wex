@@ -148,7 +148,7 @@ TEST_CASE("wex::core")
   SUBCASE("quoted_find")
   {
     REQUIRE(wex::quoted_find("test") == "test");
-    REQUIRE(wex::quoted_find("te st") == "\" te st\"");
+    REQUIRE(wex::quoted_find("te st") == "\"te st\"");
   }
 
   SUBCASE("translate")
