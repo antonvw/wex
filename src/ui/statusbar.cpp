@@ -30,7 +30,8 @@ const std::vector<item> add_header(const std::vector<std::string>& names)
         {name,
          std::string(),
          item::STATICTEXT,
-         data::control().window(data::window().style(wxALIGN_RIGHT))});
+         data::control().window(
+           data::window().style(wxALIGN_CENTRE_HORIZONTAL))});
     });
 
   return v;

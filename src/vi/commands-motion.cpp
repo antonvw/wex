@@ -523,44 +523,50 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
 
   filter_count(command);
 
-  wex::vim vim(this, command, type);
-
-  if (vim.is_vim_motion())
+  if (wex::vim vim(this, command, type); vim.is_vim_motion())
   {
     vim.motion_prep();
   }
 
-  const auto& it = std::find_if(
-    m_motion_commands.begin(),
-    m_motion_commands.end(),
-    [&](auto const& e)
-    {
-      return std::any_of(
-        e.first.begin(),
-        e.first.end(),
-        [command](const auto& p)
+  if (const auto& it = std::find_if(
+        m_motion_commands.begin(),
+        m_motion_commands.end(),
+        [&](auto const& e)
         {
-          return p == command[0];
+          return std::any_of(
+            e.first.begin(),
+            e.first.end(),
+            [command](const auto& p)
+            {
+              return p == command[0];
+            });
         });
-    });
-
-  if (it == m_motion_commands.end())
+      it == m_motion_commands.end())
   {
     return false;
   }
-
-  if (type < motion_t::NAVIGATE && get_stc()->GetReadOnly())
+  else if (type < motion_t::NAVIGATE && get_stc()->GetReadOnly())
   {
     command.clear();
     return true;
   }
+  else
+  {
+    return motion_command_handle(type, command, it->second);
+  }
+}
 
+bool wex::vi::motion_command_handle(
+  motion_t     type,
+  std::string& command,
+  function_t   f_type)
+{
   size_t parsed = 0;
   auto   start  = get_stc()->GetCurrentPos();
 
-  if (vim.is_vim_motion())
+  if (wex::vim vim(this, command, type); vim.is_vim_motion())
   {
-    if (!vim.motion(start, parsed, it->second))
+    if (!vim.motion(start, parsed, f_type))
     {
       return false;
     }
@@ -576,7 +582,7 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
           start = get_stc()->GetCurrentPos();
         }
 
-        if ((parsed = it->second(command)) == 0)
+        if ((parsed = f_type(command)) == 0)
         {
           m_mode.escape();
           return false;
@@ -586,7 +592,7 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
         break;
 
       case motion_t::DEL:
-        if ((parsed = it->second(command)) == 0)
+        if ((parsed = f_type(command)) == 0)
           return false;
 
         delete_range(start, get_stc()->GetCurrentPos());
@@ -597,7 +603,7 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
         break;
 
       case motion_t::NAVIGATE:
-        if ((parsed = it->second(command)) == 0)
+        if ((parsed = f_type(command)) == 0)
           return false;
         break;
 
@@ -608,7 +614,7 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
           m_mode.transition(visual);
         }
 
-        if ((parsed = it->second(command)) == 0)
+        if ((parsed = f_type(command)) == 0)
         {
           return false;
         }
