@@ -198,10 +198,7 @@ int wex::addressrange::confirm(
     "Line " + std::to_string(line + 1) + ": " + m_stc->GetLineText(line));
 
   m_stc->goto_line(line);
-  m_stc->set_indicator(
-    m_find_indicator,
-    m_stc->GetTargetStart(),
-    m_stc->GetTargetEnd());
+  m_stc->set_indicator(m_find_indicator);
 
   return msgDialog.ShowModal();
 }

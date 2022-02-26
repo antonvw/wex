@@ -892,27 +892,20 @@ void wex::stc::SelectNone()
 
 bool wex::stc::set_indicator(const indicator& indicator, int start, int end)
 {
-  if (const bool loaded(lexers::get()->indicator_is_loaded(indicator));
-      !loaded || start == -1 || end == -1 || end < start)
-  {
-    if (!loaded)
-    {
-      log("indicator") << indicator.number() << "not loaded";
-    }
-    else
-    {
-      log("indicator") << indicator.number() << start << end;
-    }
+  if (start == -1)
+    start = GetTargetStart();
+  if (end == -1)
+    end = GetTargetEnd();
 
+  if (const bool loaded(lexers::get()->indicator_is_loaded(indicator));
+      !loaded || start == -1 || end == -1 || end <= start)
+  {
+    log("indicator") << indicator.number() << loaded << start << end;
     return false;
   }
 
   SetIndicatorCurrent(indicator.number());
-
-  if (end - start > 0)
-  {
-    IndicatorFillRange(start, end - start);
-  }
+  IndicatorFillRange(start, end - start);
 
   log::trace("indicator") << start << end << GetIndicatorCurrent();
 

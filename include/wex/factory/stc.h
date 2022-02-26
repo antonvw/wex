@@ -183,7 +183,13 @@ public:
 
   /// Sets an indicator at specified start and end pos.
   /// Default false, not implemented.
-  virtual bool set_indicator(const indicator& indicator, int start, int end)
+  virtual bool set_indicator(
+    /// indicator to use
+    const indicator& indicator,
+    /// start pos, if -1 GetTargetStart is used
+    int start = -1,
+    /// end pos, if -1 GetTargetEnd is used
+    int end = -1)
   {
     return false;
   };
