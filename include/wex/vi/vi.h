@@ -104,6 +104,11 @@ private:
   bool motion_command_handle(motion_t type, std::string& command, function_t t);
   bool other_command(std::string& command);
   bool parse_command(std::string& command);
+  bool parse_command_handle(const std::string& org, std::string& command);
+  bool parse_command_handle_single(
+    motion_t     type,
+    std::string& command,
+    bool&        check_other);
   bool
   parse_command_motion(motion_t type, std::string& command, bool& check_other);
 
