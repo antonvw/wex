@@ -60,12 +60,15 @@ private:
   bool is_ex_mode() const;
 
   void on_char(wxKeyEvent& event);
+  void on_char_others(wxKeyEvent& event);
   void on_key_down(wxKeyEvent& event);
   void on_key_down_page(wxKeyEvent& event);
   void on_text(wxCommandEvent& event);
   void on_text_enter(wxCommandEvent& event);
-  bool on_text_enter_prep(wxCommandEvent& event);
+  void on_text_enter_do();
+  bool on_text_enter_prep();
   void on_text_paste(wxCommandEvent& event);
+
   void set_prefix();
 
   textctrl_input* tci();

@@ -2,7 +2,7 @@
 // Name:      addressrange.h
 // Purpose:   Declaration of class wex::addressrange
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2021 Anton van Wezenbeek
+// Copyright: (c) 2015-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -166,23 +166,40 @@ public:
   bool yank(char name = '0') const;
 
 private:
+  typedef std::function<bool(
+    /// the command parser
+    const command_parser& cp,
+    /// extra information in case command failed
+    info_message_t& msg)>
+    function_t;
+
+  typedef std::vector<std::pair<
+    /// the command chars
+    const std::string,
+    /// command callback
+    function_t>>
+    commands_t;
+
   const std::string build_replacement(const std::string& text) const;
   int confirm(const std::string& pattern, const std::string& replacement) const;
   bool copy(const command_parser& cp);
   bool general(const address& destination, std::function<bool()> f) const;
   bool indent(bool forward = true) const;
-  bool print(const command_parser& cp);
-  void set(const std::string& begin, const std::string& end);
-  void set(int begin, int end);
-  void set(address& begin, address& end, int lines) const;
-  void set_range(const std::string& range);
-  bool set_selection() const;
-  bool write(const command_parser& cp);
-  bool yank(const command_parser& cp);
+  const commands_t init_commands();
+  bool             print(const command_parser& cp);
+  void             set(const std::string& begin, const std::string& end);
+  void             set(int begin, int end);
+  void             set(address& begin, address& end, int lines) const;
+  void             set_range(const std::string& range);
+  bool             set_selection() const;
+  bool             write(const command_parser& cp);
+  bool             yank(const command_parser& cp);
 
   static inline data::substitute m_substitute;
 
   const indicator m_find_indicator{indicator(0)};
+
+  const commands_t m_commands;
 
   address m_begin, m_end;
 

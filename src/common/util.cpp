@@ -162,10 +162,14 @@ bool wex::lexers_dialog(factory::stc* stc)
 {
   std::vector<std::string> s;
 
-  for (const auto& it : lexers::get()->get_lexers())
-  {
-    s.emplace_back(it.display_lexer());
-  }
+  std::transform(
+    lexers::get()->get_lexers().begin(),
+    lexers::get()->get_lexers().end(),
+    std::back_inserter(s),
+    [](const auto& i)
+    {
+      return i.display_lexer();
+    });
 
   if (auto lexer = stc->get_lexer().display_lexer();
       !single_choice_dialog(stc, _("Enter Lexer"), s, lexer))

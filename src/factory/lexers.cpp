@@ -604,10 +604,14 @@ bool wex::lexers::show_theme_dialog(wxWindow* parent)
 {
   std::vector<std::string> v;
 
-  for (const auto& it : m_theme_macros)
-  {
-    v.emplace_back(it.first);
-  }
+  std::transform(
+    m_theme_macros.begin(),
+    m_theme_macros.end(),
+    std::back_inserter(v),
+    [](const auto& i)
+    {
+      return i.first;
+    });
 
   if (!single_choice_dialog(parent, _("Enter Theme"), v, m_theme))
     return false;

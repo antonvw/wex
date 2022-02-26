@@ -1,10 +1,9 @@
 # roadmap
-- linux print setup asserts
-
-## backlog
 - version 22.10
 - add undo_action class, to implement Begin and EndUndoAction
 - set_indicator does not need parameter 2, 3
+- move add_header from statusbar to public API
+  - and the set_hidden_text should be hidden_text, return object
 - del::frame reorder API
 - improve doc for is_address
 - add spaceship compare to wex::tool, use in del::test-stream.cpp
@@ -14,9 +13,14 @@
 - is the define BOOST_ASIO_HAS_STD_INVOKE_RESULT ON necessary?
 - menus is a template class, is this really necessary
 - REPORT_FIRST, REPORT_LAST no longer necessary
+- add wex::accumulate
+  - see also cmdline for find_if template
+- add version to static libs as well
+- codiga improvements
 - use boost python for scripting
 - current stc uses old scintilla
   - does not support json bool, see config.cpp
+- linux print setup asserts
 - c++ modules: fix gcc (gcc-12), test msvc
 - c++23 
   - use std::to_underlying instead of static_cast

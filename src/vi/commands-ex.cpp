@@ -296,7 +296,7 @@ wex::ex::commands_t wex::ex::commands_ex()
      [&](const std::string& command)
      {
        const lexer_props l;
-       std::string       output(l.make_section("Named buffers"));
+       auto              output(l.make_section("Named buffers"));
        for (const auto& it : m_macros.get_registers())
        {
          output += it;

@@ -19,4 +19,7 @@ cppcheck --std=c++20 \
   --suppress=unknownMacro \
   --suppress=unusedScopedObject \
   --suppress=unusedFunction\
+  --suppress=shadowArgument\
+  --suppress=shadowVariable\
+  --suppress=virtualCallInConstructor\
   src -i LexAda.cxx -i odbc.cpp -I include

@@ -53,15 +53,13 @@ public:
 
   bool find(const path& p) const
   {
-    for (const auto& it : m_paths)
-    {
-      if (p.string() == it)
+    return std::any_of(
+      m_paths.begin(),
+      m_paths.end(),
+      [p](const auto& it)
       {
-        return true;
-      }
-    }
-
-    return false;
+        return p.string() == it;
+      });
   };
 
 private:

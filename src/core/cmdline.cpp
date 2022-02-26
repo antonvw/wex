@@ -14,29 +14,42 @@
 
 #include "cmdline-imp.h"
 
+#include <algorithm>
 #include <iostream>
 #include <numeric>
 
 namespace wex
 {
-const std::string def_option(const std::vector<std::string> v)
+const std::string def_option(const std::vector<std::string>& v)
 {
-  return (v.size() > 2 ? v.back() : std::string());
+  return v.size() > 2 ? v.back() : std::string();
 }
 
-const std::string def_switch(const std::vector<std::string> v)
+const std::string def_switch(const std::vector<std::string>& v)
 {
-  return (v.size() > 2 ? v.back() : std::string("0"));
+  return v.size() > 2 ? v.back() : std::string("0");
+}
+
+template <typename T>
+const auto find_if(const T& t, const std::vector<std::string>& v)
+{
+  return std::find_if(
+    t.begin(),
+    t.end(),
+    [v](auto const& i)
+    {
+      return v[0] == find_before(i.first[0], ",");
+    });
 }
 
 std::string get_option(
   const std::pair<
     const std::vector<std::string>,
     std::pair<cmdline::option_t, std::function<void(const std::any& any)>>>& p,
-  wex::config* cfg)
+  config* cfg)
 {
-  const std::string name(find_before(p.first[0], ","));
-  const std::string key(p.first[1]);
+  const auto& name(find_before(p.first[0], ","));
+  const auto& key(p.first[1]);
 
   try
   {
@@ -56,6 +69,9 @@ std::string get_option(
 
       case cmdline::STRING:
         return name + "=" + cfg->item(key).get(def_option(p.first)) + "\n";
+
+      default:
+        assert(0);
     }
   }
   catch (std::exception& e)
@@ -68,22 +84,18 @@ std::string get_option(
 
 std::string get_switch(
   const std::pair<const std::vector<std::string>, std::function<void(bool on)>>&
-               p,
-  wex::config* cfg)
+          p,
+  config* cfg)
 {
-  const std::string& name(find_before(p.first[0], ","));
-  const std::string& key(p.first[1]);
+  const auto& name(find_before(p.first[0], ","));
+  const auto& key(p.first[1]);
 
   try
   {
-    if (!cfg->item(key).get(static_cast<bool>(std::stoi(def_switch(p.first)))))
-    {
-      return "no" + name + "\n";
-    }
-    else
-    {
-      return name + "\n";
-    }
+    return !cfg->item(key).get(
+             static_cast<bool>(std::stoi(def_switch(p.first)))) ?
+             "no" + name + "\n" :
+             name + "\n";
   }
   catch (std::exception& e)
   {
@@ -95,16 +107,16 @@ std::string get_switch(
 }; // namespace wex
 
 #define ADD(TYPE, CONV)                        \
-  if (!def_option(it->first).empty())          \
+  if (!def_option(it.first).empty())           \
     m_parser->m_desc.add_options()(            \
-      it->first[p_n].c_str(),                  \
+      it.first[p_n].c_str(),                   \
       po::value<TYPE>()->implicit_value(CONV), \
-      it->first[p_d].c_str());                 \
+      it.first[p_d].c_str());                  \
   else                                         \
     m_parser->m_desc.add_options()(            \
-      it->first[p_n].c_str(),                  \
+      it.first[p_n].c_str(),                   \
       po::value<TYPE>(),                       \
-      it->first[p_d].c_str());
+      it.first[p_d].c_str());
 
 wex::cmdline::cmdline(
   const cmd_switches_t& s,
@@ -164,22 +176,16 @@ bool wex::cmdline::get_single(
   const std::vector<std::string>& v,
   std::string&                    help) const
 {
-  for (const auto& it : m_options)
+  if (const auto& it = find_if(m_options, v); it != m_options.end())
   {
-    if (v[0] == find_before(it.first[0], ","))
-    {
-      help += get_option(it, m_cfg);
-      return true;
-    }
+    help += get_option(*it, m_cfg);
+    return true;
   }
 
-  for (const auto& it : m_switches)
+  if (const auto& it = find_if(m_switches, v); it != m_switches.end())
   {
-    if (v[0] == find_before(it.first[0], ","))
-    {
-      help += get_switch(it, m_cfg);
-      return true;
-    }
+    help += get_switch(*it, m_cfg);
+    return true;
   }
 
   return false;
@@ -201,34 +207,42 @@ void wex::cmdline::init()
   {
     const size_t p_n{0}, p_d{1}; // par name, description
 
-    for (auto it = m_switches.begin(); it != m_switches.end(); ++it)
-    {
-      m_parser->m_desc.add_options()(
-        it->first[p_n].c_str(),
-        po::bool_switch(),
-        it->first[p_d].c_str());
-      m_parser->add_function(it->first[p_n], it->second);
-    }
-
-    for (auto it = m_options.begin(); it != m_options.end(); ++it)
-    {
-      m_parser->add_function(
-        it->first[p_n],
-        {it->second.second, it->second.first});
-
-      switch (it->second.first)
+    std::for_each(
+      m_switches.begin(),
+      m_switches.end(),
+      [this](const auto& it)
       {
-        case FLOAT:
-          ADD(float, (float)std::stod(def_option(it->first)));
-          break;
-        case INT:
-          ADD(int, std::stoi(def_option(it->first)));
-          break;
-        case STRING:
-          ADD(std::string, def_option(it->first));
-          break;
-      }
-    }
+        m_parser->m_desc.add_options()(
+          it.first[p_n].c_str(),
+          po::bool_switch(),
+          it.first[p_d].c_str());
+        m_parser->add_function(it.first[p_n], it.second);
+      });
+
+    std::for_each(
+      m_options.begin(),
+      m_options.end(),
+      [this](const auto& it)
+      {
+        m_parser->add_function(
+          it.first[p_n],
+          {it.second.second, it.second.first});
+
+        switch (it.second.first)
+        {
+          case FLOAT:
+            ADD(float, (float)std::stod(def_option(it.first)));
+            break;
+          case INT:
+            ADD(int, std::stoi(def_option(it.first)));
+            break;
+          case STRING:
+            ADD(std::string, def_option(it.first));
+            break;
+          default:
+            assert(0);
+        }
+      });
 
     if (!m_params.first.first.empty())
     {
@@ -361,22 +375,7 @@ bool wex::cmdline::parse_set(data::cmdline& data) const
 bool wex::cmdline::set_no_option(const std::vector<std::string>& v, bool save)
   const
 {
-  for (const auto& it : m_switches)
-  {
-    if (v[0] == find_before(it.first[0], ","))
-    {
-      if (save)
-      {
-        m_cfg->item(it.first[1]).set(false);
-      }
-
-      if (it.second != nullptr)
-        it.second(false);
-      return true;
-    }
-  }
-
-  return false;
+  return set_option_check(v, save, false);
 }
 
 bool wex::cmdline::set_option(const std::vector<std::string>& v, bool save)
@@ -385,7 +384,7 @@ bool wex::cmdline::set_option(const std::vector<std::string>& v, bool save)
   if (v.size() > 1 && v[1][0] == '=')
   {
     // skip the =
-    const std::string val(v[1].substr(1));
+    const auto val(v[1].substr(1));
 
     for (const auto& it : m_options)
     {
@@ -410,26 +409,39 @@ bool wex::cmdline::set_option(const std::vector<std::string>& v, bool save)
             if (it.second.second != nullptr)
               it.second.second(val);
             return true;
+
+          default:
+            assert(0);
         }
       }
     }
   }
   else
   {
-    for (const auto& it : m_switches)
-    {
-      if (v[0] == find_before(it.first[0], ","))
-      {
-        if (save)
-        {
-          m_cfg->item(it.first[1]).set(true);
-        }
+    return set_option_check(v, save, true);
+  }
 
-        if (it.second != nullptr)
-          it.second(true);
-        return true;
-      }
+  return false;
+}
+
+bool wex::cmdline::set_option_check(
+  const std::vector<std::string>& v,
+  bool                            save,
+  bool                            check) const
+{
+  if (const auto& it = find_if(m_switches, v); it != m_switches.end())
+  {
+    if (save)
+    {
+      m_cfg->item(it->first[1]).set(check);
     }
+
+    if (it->second != nullptr)
+    {
+      it->second(check);
+    }
+
+    return true;
   }
 
   return false;

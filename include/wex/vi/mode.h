@@ -2,7 +2,7 @@
 // Name:      vi-mode.h
 // Purpose:   Declaration of class wex::vi_mode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -93,7 +93,7 @@ public:
   bool transition(std::string& command);
 
 private:
-  bool transition_prep(std::string& command);
+  bool transition_prep(const std::string& command);
 
   vi*                                                      m_vi;
   std::unique_ptr<vi_fsm>                                  m_fsm;
