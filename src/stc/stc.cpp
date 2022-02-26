@@ -12,6 +12,7 @@
 #include <wex/factory/indicator.h>
 #include <wex/factory/lexers.h>
 #include <wex/factory/printing.h>
+#include <wex/factory/stc-undo.h>
 #include <wex/stc/auto-complete.h>
 #include <wex/stc/auto-indent.h>
 #include <wex/stc/entry-dialog.h>
@@ -776,7 +777,7 @@ int wex::stc::replace_all(
 
   int nr_replacements = 0;
   set_search_flags(-1);
-  BeginUndoAction();
+  stc_undo undo(this);
 
   while (SearchInTarget(find_text) != -1)
   {
@@ -822,8 +823,6 @@ int wex::stc::replace_all(
       break;
     }
   }
-
-  EndUndoAction();
 
   log::status(_("Replaced"))
     << nr_replacements << "occurrences of" << find_text;

@@ -13,6 +13,7 @@
 #include <wex/core/log.h>
 #include <wex/factory/process.h>
 #include <wex/factory/sort.h>
+#include <wex/factory/stc-undo.h>
 #include <wex/factory/stc.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
@@ -284,14 +285,12 @@ bool wex::addressrange::escape(const std::string& command)
   {
     if (const auto& out(process.std_out()); !out.empty())
     {
-      m_stc->BeginUndoAction();
+      stc_undo undo(m_stc);
 
       if (erase())
       {
         m_stc->add_text(out);
       }
-
-      m_stc->EndUndoAction();
 
       return true;
     }
@@ -314,7 +313,7 @@ bool wex::addressrange::execute(const std::string& reg) const
 
   bool error = false;
 
-  m_stc->BeginUndoAction();
+  stc_undo undo(m_stc);
 
   for (auto i = m_begin.get_line() - 1; i < m_end.get_line() && !error; i++)
   {
@@ -323,8 +322,6 @@ bool wex::addressrange::execute(const std::string& reg) const
       error = true;
     }
   }
-
-  m_stc->EndUndoAction();
 
   return !error;
 }
@@ -342,15 +339,13 @@ bool wex::addressrange::general(
     return false;
   }
 
-  m_stc->BeginUndoAction();
+  stc_undo ndo(m_stc);
 
   if (f())
   {
     m_stc->goto_line(dest_line - 1);
     m_stc->add_text(m_ex->register_text());
   }
-
-  m_stc->EndUndoAction();
 
   return true;
 }
@@ -396,9 +391,8 @@ bool wex::addressrange::indent(bool forward) const
     return false;
   }
 
-  m_stc->BeginUndoAction();
+  stc_undo undo(m_stc);
   m_stc->SendMsg(forward ? wxSTC_CMD_TAB : wxSTC_CMD_BACKTAB);
-  m_stc->EndUndoAction();
 
   return true;
 }
@@ -515,14 +509,12 @@ bool wex::addressrange::join() const
     return false;
   }
 
-  m_stc->BeginUndoAction();
+  stc_undo undo(m_stc);
 
   m_stc->SetTargetRange(
     m_stc->PositionFromLine(m_begin.get_line() - 1),
     m_stc->PositionFromLine(m_end.get_line() - 1));
   m_stc->LinesJoin();
-
-  m_stc->EndUndoAction();
 
   return true;
 }
@@ -820,20 +812,10 @@ bool wex::addressrange::write(const command_parser& cp)
 {
   if (!cp.text().empty() && !cmdline::use_events())
   {
-    const bool se = m_stc->GetSelectionEmpty();
-
-    m_stc->position_save();
-
-    const bool r = write(cp.text());
-
-    m_stc->position_restore();
-
-    if (se)
-    {
-      m_stc->SelectNone();
-    }
-
-    return r;
+    stc_undo undo(
+      m_stc,
+      stc_undo::undo_t().set(stc_undo::UNDO_POS).set(stc_undo::UNDO_SEL_NONE));
+    return write(cp.text());
   }
   else
   {

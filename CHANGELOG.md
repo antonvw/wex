@@ -1,5 +1,7 @@
 # changes
 
+**v22.10**
+
 **v22.04** *March 6, 2022*
 - Microsoft Visual Studio 2022
 - boost::json lib instead of nlohmann/json lib, requiring boost 1.75

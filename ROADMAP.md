@@ -1,6 +1,4 @@
 # roadmap
-- version 22.10
-- add undo_action class, to implement Begin and EndUndoAction
 - set_indicator does not need parameter 2, 3
 - move add_header from statusbar to public API
   - and the set_hidden_text should be hidden_text, return object

@@ -11,6 +11,7 @@
 #include <boost/algorithm/string.hpp>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
+#include <wex/factory/stc-undo.h>
 #include <wex/factory/stc.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
@@ -88,8 +89,8 @@ bool replace_char(factory::stc* stc, char c, int count)
 
     const auto start = stc->GetSelectionStart();
     const auto end   = stc->GetSelectionEnd();
+    stc_undo   undo(stc);
 
-    stc->BeginUndoAction();
     stc->Cut();
 
     for (int line = stc->LineFromPosition(start);
@@ -100,8 +101,6 @@ bool replace_char(factory::stc* stc, char c, int count)
         stc->PositionFromLine(line) + stc->GetColumn(start),
         std::string(count, c));
     }
-
-    stc->EndUndoAction();
   }
   else
   {

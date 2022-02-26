@@ -6,6 +6,7 @@
 // Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/factory/stc-undo.h>
 #include <wex/factory/stc.h>
 #include <wex/ui/frd.h>
 #include <wex/vi/ctags.h>
@@ -47,10 +48,10 @@ bool wex::vim::command_motion(int start_pos)
     return false;
   }
 
-  bool ok = true;
-
-  m_vi->get_stc()->BeginUndoAction();
-  m_vi->get_stc()->position_save();
+  bool     ok = true;
+  stc_undo undo(
+    m_vi->get_stc(),
+    stc_undo::undo_t().set(stc_undo::UNDO_ACTION).set(stc_undo::UNDO_POS));
 
   if (const auto end_pos = m_vi->get_stc()->GetCurrentPos();
       end_pos - start_pos > 0)
@@ -81,9 +82,7 @@ bool wex::vim::command_motion(int start_pos)
       assert(0);
   }
 
-  m_vi->get_stc()->EndUndoAction();
   m_vi->get_stc()->SelectNone();
-  m_vi->get_stc()->position_restore();
 
   return ok;
 }
