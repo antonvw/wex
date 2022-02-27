@@ -112,15 +112,15 @@ public:
     return grep(line, true);
   };
 
-  /// Starts or stops syncing.
-  /// Default syncing is started during construction.
-  void sync(bool start);
-
   /// Updates project history.
   void set_recent_project(const path& path) { m_project_history.append(path); }
 
   /// Shows vcs info on statusbar.
   void statustext_vcs(factory::stc* stc);
+
+  /// Starts or stops syncing.
+  /// Default syncing is started during construction.
+  void sync(bool start);
 
   /// Uses specified history list, and adds all elements from file history
   /// to the list.

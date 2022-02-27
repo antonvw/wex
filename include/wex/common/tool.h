@@ -2,7 +2,7 @@
 // Name:      tool.h
 // Purpose:   Declaration of wex::tool classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -76,6 +76,9 @@ public:
     ;
   };
 
+  /// Spaceship operator.
+  auto operator<=>(const tool& r) const { return m_id <=> r.m_id; }
+
   /// Returns the tool id.
   auto id() const { return m_id; }
 
@@ -89,12 +92,6 @@ public:
   bool is_find_type() const
   {
     return m_id == ID_TOOL_REPORT_FIND || m_id == ID_TOOL_REPLACE;
-  }
-
-  /// Is this tool a report type.
-  bool is_report_type() const
-  {
-    return m_id > ID_TOOL_REPORT_FIRST && m_id < ID_TOOL_REPORT_LAST;
   }
 
 private:
