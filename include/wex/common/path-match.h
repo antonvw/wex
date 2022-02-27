@@ -2,7 +2,7 @@
 // Name:      path-match.h
 // Purpose:   Declaration of class wex::path_match
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -23,7 +23,7 @@ public:
   }
 
   /// Constructor.
-  path_match(
+  explicit path_match(
     /// path containing match
     const path& p,
     /// matching line

@@ -1,10 +1,6 @@
 # roadmap
-- improve doc for is_address
-- add a blame for previous version, as in github
-- process-imp should test whether event handler is ok, see test-process.
-- is the define BOOST_ASIO_HAS_STD_INVOKE_RESULT ON necessary?
 - menus is a template class, is this really necessary
-- more cppcheck (explicit constructor)
+- add a blame for previous version, as in github
 - spaceship operator in test-stream tool gives compile error
 - add wex::accumulate
   - see also cmdline for find_if template
@@ -17,3 +13,5 @@
 - c++23 
   - use std::to_underlying instead of static_cast
   - use string::contains at various places instead of find != npos
+- is the define BOOST_ASIO_HAS_STD_INVOKE_RESULT ON necessary?
+  - next boost version (> 1.76)
