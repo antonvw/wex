@@ -2,7 +2,7 @@
 // Name:      vcs-entry.h
 // Purpose:   Declaration of wex::vcs_entry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2010-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -17,6 +17,7 @@
 namespace wex
 {
 class menu;
+class process_data;
 
 /// This class collects a single vcs.
 class vcs_entry
@@ -44,10 +45,10 @@ public:
     /// menu to be built
     menu* menu) const;
 
-  /// Executes the current vcs command (from SetCommand), or
-  /// the first command if SetCommand was not yet invoked.
+  /// Executes the current vcs command (from set_command), or
+  /// the first command if set_command was not yet invoked.
   /// Might ask for vcs binary if it is not yet known.
-  /// Return code is code from process Execute,
+  /// Return code is code from process execute,
   /// and also can be false if dialog for vcs bin was cancelled.
   bool execute(
     /// args, like filenames, or vcs flags
@@ -59,11 +60,7 @@ public:
 
   /// Executes the command.
   /// Return value is false if process could not execute.
-  bool execute(
-    /// command to be executed
-    const std::string& command,
-    /// working dir
-    const std::string& wd);
+  bool execute(const process_data& data);
 
   /// Returns flags location.
   auto flags_location() const { return m_flags_location; }

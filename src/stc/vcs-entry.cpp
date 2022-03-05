@@ -113,19 +113,19 @@ bool wex::vcs_entry::execute(
                            .start_dir(wd)) == 0;
 }
 
-bool wex::vcs_entry::execute(const std::string& command, const std::string& wd)
+bool wex::vcs_entry::execute(const process_data& data)
 {
   // Get flags if available.
   std::string flags;
-  std::string cmd(command);
+  std::string cmd(data.exe());
 
   if (const vcs_command & vc(find(get_word(cmd))); !vc.get_command().empty())
   {
     flags = " " + vc.flags();
   }
 
-  return process::system(
-           process_data(bin() + " " + command + flags).start_dir(wd)) == 0;
+  return process::system(process_data(bin() + " " + data.exe() + flags)
+                           .start_dir(data.start_dir())) == 0;
 }
 
 const std::string wex::vcs_entry::get_branch(const std::string& wd) const

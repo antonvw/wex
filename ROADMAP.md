@@ -1,7 +1,7 @@
 # roadmap
-- use process_data in vcs_entry and vcs instead of exe and dir
-  - fix comment SetCommand in vcs-entry.h
-- shift double click not ok after single click
+-> test and commit
+
+- /blame/,/this/y
 - menus is a template class, is this really necessary
 - add wex::accumulate
   - see also cmdline for find_if template

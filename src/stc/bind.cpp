@@ -436,9 +436,10 @@ void wex::stc::bind_all()
 void wex::stc::blame_revision()
 {
   std::string  revision(MarginGetText(m_margin_text_click));
+  const auto   renamed(find_after(revision, "RENAMED: "));
   wex::process p;
 
-  if (const auto renamed(find_after(revision, "RENAMED: ")); !renamed.empty())
+  if (!renamed.empty())
   {
     if (
       p.system(
@@ -456,7 +457,11 @@ void wex::stc::blame_revision()
     return;
   }
 
-  ((wex::factory::frame*)m_frame)->open_file(path(), p, m_data);
+  ((wex::factory::frame*)m_frame)
+    ->open_file(
+      !renamed.empty() ? wex::path(renamed) : path(),
+      p,
+      m_data.control().line(m_margin_text_click));
 }
 
 void wex::stc::build_popup_menu(menu& menu)
