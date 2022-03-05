@@ -25,7 +25,10 @@ wex::block_lines& wex::block_lines::operator=(const wex::block_lines& r)
   if (this != &r)
   {
     m_end   = r.m_end;
+    m_ex    = r.m_ex;
+    m_name  = r.m_name;
     m_start = r.m_start;
+    m_stc   = r.m_ex->get_stc();
   }
 
   return *this;

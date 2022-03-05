@@ -2,7 +2,7 @@
 // Name:      test-frd.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/frd.h>
@@ -13,8 +13,6 @@ TEST_CASE("wex::factory::frd")
 {
   wex::factory::find_replace_data find_replace_data;
   auto*                           frd = &find_replace_data;
-
-  assert(frd != nullptr);
 
   frd->set_match_case(true);
   REQUIRE(frd->match_case());

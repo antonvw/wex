@@ -2,7 +2,7 @@
 // Name:      statusbar.h
 // Purpose:   Declaration of wex::statusbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -77,6 +77,7 @@ public:
 private:
   void handle(wxMouseEvent& event, const statusbar_pane& statusbar_pane);
   void on_mouse(wxMouseEvent& event);
+  void pane_dialog();
 
   std::tuple<bool, int, int> pane_info(const std::string& pane) const;
 

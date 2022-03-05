@@ -86,6 +86,7 @@ wex::addressrange::addressrange(ex* ex, int lines)
   , m_end(ex)
   , m_ex(ex)
   , m_stc(ex->get_stc())
+  , m_commands(init_commands())
 {
   if (lines > 0)
   {
@@ -102,6 +103,7 @@ wex::addressrange::addressrange(ex* ex, const std::string& range)
   , m_end(ex)
   , m_ex(ex)
   , m_stc(ex->get_stc())
+  , m_commands(init_commands())
 {
   set_range(range);
 }
@@ -401,6 +403,95 @@ bool wex::addressrange::indent(bool forward) const
   return true;
 }
 
+const wex::addressrange::commands_t wex::addressrange::init_commands()
+{
+  return {
+    {"c",
+     [&](const command_parser& cp, info_message_t& msg)
+     {
+       if (copy(cp))
+       {
+         return true;
+       }
+       msg = info_message_t::COPY;
+       return copy(address(m_ex, cp.text()));
+     }},
+    {"d",
+     [&](const command_parser& cp, info_message_t& msg)
+     {
+       msg = info_message_t::DEL;
+       return erase();
+     }},
+    {"gv",
+     [&](const command_parser& cp, info_message_t& msg)
+     {
+       return global(cp);
+     }},
+    {"j",
+     [&](const command_parser& cp, info_message_t& msg)
+     {
+       return join();
+     }},
+    {"lp#n",
+     [&](const command_parser& cp, info_message_t& msg)
+     {
+       return print(cp);
+     }},
+    {"m",
+     [&](const command_parser& cp, info_message_t& msg)
+     {
+       msg = info_message_t::MOVE;
+       return move(address(m_ex, cp.text()));
+     }},
+    {"s&~",
+     [&](const command_parser& cp, info_message_t& msg)
+     {
+       return substitute(cp);
+     }},
+    {"S",
+     [&](const command_parser& cp, info_message_t& msg)
+     {
+       return sort(cp.text());
+     }},
+    {"t",
+     [&](const command_parser& cp, info_message_t& msg)
+     {
+       msg = info_message_t::COPY;
+       return copy(address(m_ex, cp.text()));
+     }},
+    {"w",
+     [&](const command_parser& cp, info_message_t& msg)
+     {
+       return write(cp);
+     }},
+    {"y",
+     [&](const command_parser& cp, info_message_t& msg)
+     {
+       msg = info_message_t::YANK;
+       return yank(cp);
+     }},
+    {">",
+     [&](const command_parser& cp, info_message_t& msg)
+     {
+       return shift_right();
+     }},
+    {"<",
+     [&](const command_parser& cp, info_message_t& msg)
+     {
+       return shift_left();
+     }},
+    {"!",
+     [&](const command_parser& cp, info_message_t& msg)
+     {
+       return escape(cp.text());
+     }},
+    {"@",
+     [&](const command_parser& cp, info_message_t& msg)
+     {
+       return execute(cp.text());
+     }}};
+}
+
 bool wex::addressrange::is_ok() const
 {
   return m_begin.get_line() > 0 && m_end.get_line() > 0 &&
@@ -455,73 +546,27 @@ bool wex::addressrange::parse(const command_parser& cp, info_message_t& im)
 
   im = info_message_t::NONE;
 
-  switch (cp.command()[0])
+  if (const auto& it = std::find_if(
+        m_commands.begin(),
+        m_commands.end(),
+        [&](auto const& e)
+        {
+          return std::any_of(
+            e.first.begin(),
+            e.first.end(),
+            [cp](const auto& p)
+            {
+              return p == cp.command()[0];
+            });
+        });
+      it != m_commands.end())
   {
-    case 0:
-      return false;
-
-    case 'c':
-      if (copy(cp))
-      {
-        return true;
-      }
-      [[fallthrough]];
-
-    case 't':
-      im = info_message_t::COPY;
-      return copy(address(m_ex, cp.text()));
-
-    case 'd':
-      im = info_message_t::DEL;
-      return erase();
-
-    case 'g':
-    case 'v':
-      return global(cp);
-
-    case 'j':
-      return join();
-
-    case 'm':
-      im = info_message_t::MOVE;
-      return move(address(m_ex, cp.text()));
-
-    case 's':
-    case '&':
-    case '~':
-      return substitute(cp);
-
-    case 'S':
-      return sort(cp.text());
-
-    case 'w':
-      return write(cp);
-
-    case 'y':
-      im = info_message_t::YANK;
-      return yank(cp);
-
-    case '>':
-      return shift_right();
-
-    case '<':
-      return shift_left();
-
-    case '!':
-      return escape(cp.text());
-
-    case '@':
-      return execute(cp.text());
-
-    case 'l':
-    case 'p':
-    case '#':
-    case 'n':
-      return print(cp);
-
-    default:
-      log::status("Unknown range command") << cp.command();
-      return false;
+    return it->second(cp, im);
+  }
+  else
+  {
+    log::status("Unknown range command") << cp.command();
+    return false;
   }
 }
 
@@ -625,12 +670,13 @@ bool wex::addressrange::set_selection() const
   {
     return false;
   }
-
-  m_stc->SetSelection(
-    m_stc->PositionFromLine(m_begin.get_line() - 1),
-    m_stc->PositionFromLine(m_end.get_line()));
-
-  return true;
+  else
+  {
+    m_stc->SetSelection(
+      m_stc->PositionFromLine(m_begin.get_line() - 1),
+      m_stc->PositionFromLine(m_end.get_line()));
+    return true;
+  }
 }
 
 bool wex::addressrange::sort(const std::string& parameters) const

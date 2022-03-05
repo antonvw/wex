@@ -309,8 +309,8 @@ void wex::toolbar::add_standard(bool realize)
 }
 
 bool wex::toolbar::add_tool(
-  const std::vector<data::toolbar_item> v,
-  bool                                  realize)
+  const std::vector<data::toolbar_item>& v,
+  bool                                   realize)
 {
   for (const auto& it : v)
   {

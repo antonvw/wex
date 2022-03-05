@@ -2,7 +2,7 @@
 // Name:      macros.cpp
 // Purpose:   Implementation of class wex::macros
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -17,6 +17,7 @@
 #include <wex/ui/frame.h>
 #include <wex/vi/macros.h>
 
+#include <algorithm>
 #include <numeric>
 
 wex::macros::macros()
@@ -66,10 +67,14 @@ const std::vector<std::string> wex::macros::get() const
     }
   }
 
-  for (const auto& it : m_variables)
-  {
-    v.emplace_back(it.first);
-  }
+  std::transform(
+    m_variables.begin(),
+    m_variables.end(),
+    std::back_inserter(v),
+    [](const auto& i)
+    {
+      return i.first;
+    });
 
   std::sort(v.begin(), v.end());
 

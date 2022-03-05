@@ -198,7 +198,7 @@ void wex::stc::bind_all()
       },
       wxID_REPLACE},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         sort_action(event);
       },
@@ -210,7 +210,7 @@ void wex::stc::bind_all()
       },
       ID_EDIT_DEBUG_FIRST},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         file_action(event);
       },
@@ -382,7 +382,7 @@ void wex::stc::bind_all()
       },
       ID_EDIT_VCS_LOWEST},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         eol_action(event);
       },

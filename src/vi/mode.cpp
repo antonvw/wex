@@ -2,7 +2,7 @@
 // Name:      vi/mode.cpp
 // Purpose:   Implementation of class wex::vi_mode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/mpl/list.hpp>
@@ -446,7 +446,7 @@ bool wex::vi_mode::transition(std::string& command)
   return true;
 }
 
-bool wex::vi_mode::transition_prep(std::string& command)
+bool wex::vi_mode::transition_prep(const std::string& command)
 {
   if (command.empty())
   {

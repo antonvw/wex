@@ -154,7 +154,7 @@ bool wex::cmdline_imp::parse(data::cmdline& data)
   return true;
 }
 
-bool wex::cmdline_imp::parse_args(data::cmdline& data)
+bool wex::cmdline_imp::parse_args(const data::cmdline& data)
 {
   for (const auto& it : m_vm)
   {

@@ -2,7 +2,7 @@
 // Name:      shell.h
 // Purpose:   Declaration of class wex::shell
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -104,9 +104,14 @@ private:
   void bind_other();
   void expand();
   void keep_command();
+
+  void on_key_back_delete(wxKeyEvent& event);
   void on_key_down(wxKeyEvent& event);
   bool on_key_down_continue(wxKeyEvent& event);
   void on_key_down_others(wxKeyEvent& event);
+  void on_key_home();
+  void on_key_up_down(wxKeyEvent& event);
+
   void on_mouse(wxMouseEvent& event);
   void process_char_default(int key);
   void send_command();

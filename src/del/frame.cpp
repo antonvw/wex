@@ -127,7 +127,7 @@ wex::del::frame::frame(
     });
 
   bind(this).command(
-    {{[=, this](wxCommandEvent& event)
+    {{[=, this](const wxCommandEvent& event)
       {
         m_is_command = true;
         open_from_event(event, std::string());

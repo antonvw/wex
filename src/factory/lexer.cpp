@@ -15,6 +15,7 @@
 #include <wex/factory/util.h>
 #include <wx/platinfo.h>
 
+#include <algorithm>
 #include <charconv>
 
 namespace wex
