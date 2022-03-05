@@ -2,10 +2,11 @@
 // Name:      test-stc.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
+#include <wex/factory/blame.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/indicator.h>
 #include <wex/factory/lexers.h>
@@ -241,10 +242,9 @@ TEST_CASE("wex::stc")
     stc->open(wex::test::get_path());
     wex::lexers::get()->apply_global_styles(stc);
     wex::lexers::get()->apply(stc);
-    wex::lexers::get()->apply_margin_text_style(
-      stc,
-      30,
-      wex::lexers::margin_style_t::DAY);
+
+    wex::blame blame;
+    wex::lexers::get()->apply_margin_text_style(stc, &blame);
 
     stc->get_file().reset_contents_changed();
   }

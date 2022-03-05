@@ -2,7 +2,7 @@
 // Name:      statusbar-pane.h
 // Purpose:   Declaration of wex::statusbar-pane class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -13,7 +13,7 @@ namespace wex
 {
 /// This class defines our statusbar panes, used by
 /// wex::frame::setup_statusbar. It just adds some members to the base class
-/// (that offers GetText(), style() and GetWidth()).
+/// (that offers GetText(), GetStyle() and GetWidth()).
 class statusbar_pane : public wxStatusBarPane
 {
 public:
@@ -47,12 +47,6 @@ public:
     /// show pane
     bool show = true);
 
-  /// Returns hidden text.
-  const auto& get_hidden_text() const { return m_hidden; }
-
-  /// Returns statusbar pane name.
-  const auto& get_name() const { return m_name; }
-
   /// Sets helptext.
   /// helptext shown as a tooltip
   /// If you do no provide helptext, it is derived from the name, by using
@@ -62,11 +56,17 @@ public:
   /// Returns statusbar pane help text.
   const auto& help_text() const { return m_help_text; }
 
+  /// Returns hidden text.
+  const auto& hidden_text() const { return m_hidden; }
+
+  /// Sets hidden text.
+  statusbar_pane& hidden_text(const std::string& text);
+
   /// Returns whether this pane is shown.
   bool is_shown() const { return m_is_shown; }
 
-  /// Sets hidden text.
-  void set_hidden_text(const std::string& text) { m_hidden = text; }
+  /// Returns statusbar pane name.
+  const auto& name() const { return m_name; }
 
   /// Sets whether this pane is shown.
   /// Resets the hidden text if show is true.

@@ -124,9 +124,9 @@ wex::del::file::~file()
 }
 
 void wex::del::file::add_items(
-  const std::string& folder,
-  const std::string& files,
-  data::dir::type_t  flags)
+  const std::string&       folder,
+  const std::string&       files,
+  const data::dir::type_t& flags)
 {
   Unbind(wxEVT_IDLE, &file::on_idle, this);
 
@@ -262,8 +262,8 @@ void wex::del::file::do_file_save(bool save_as)
 
   for (int i = 0; i < GetItemCount(); i++)
   {
-    const auto fn = listitem(this, i).path();
-    auto node = root.append_child(fn.file_exists() ? "file" : "folder");
+    const auto fn   = listitem(this, i).path();
+    auto       node = root.append_child(fn.file_exists() ? "file" : "folder");
     node.text().set(fn.string().c_str());
 
     if (fn.dir_exists())

@@ -4,7 +4,7 @@ Name:      wex-menus.xml
 Purpose:   setup of dynamic menus, like debuggers 
            and version control systems
 Author:    Anton van Wezenbeek
-Copyright: (c) 2021 Anton van Wezenbeek
+Copyright: (c) 2021-2022 Anton van Wezenbeek
 -->
 
 <menus>
@@ -164,7 +164,7 @@ Copyright: (c) 2021 Anton van Wezenbeek
     name="git"
     admin-dir=".git"
     log-flags="-n 1"
-    blame-format="(^[a-zA-Z0-9^]+) .*?\((.+)\s+([0-9]{2,4}.[0-9]{2}.[0-9]{2}.[0-9:]{8}) .[0-9]+\s+([0-9]+)\)"
+    blame-format="(^[a-zA-Z0-9^]+) (.*?)\((.+)\s+([0-9]{2,4}.[0-9]{2}.[0-9]{2}.[0-9:]{8}) .[0-9]+\s+([0-9]+)\) (.*)"
     date-format="%Y-%m-%d %H:%M:%S"
     date-print="10">
 

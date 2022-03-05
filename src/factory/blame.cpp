@@ -2,9 +2,10 @@
 // Name:      blame.cpp
 // Purpose:   Implementation of class wex::blame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/algorithm/string.hpp>
 #include <wex/core/chrono.h>
 #include <wex/core/config.h>
 #include <wex/core/log.h>
@@ -37,30 +38,6 @@ wex::blame::blame(const pugi::xml_node& node)
   , m_date_format(node.attribute("date-format").value())
   , m_date_print(node.attribute("date-print").as_uint())
 {
-}
-
-std::tuple<bool, const std::string, wex::lexers::margin_style_t, int>
-wex::blame::get(const std::string& text) const
-{
-  try
-  {
-    if (regex r(m_blame_format); r.search(text) >= 3)
-    {
-      const std::string info(
-        build("id", r[0], true) + build("author", r[1]) +
-        build("date", r[2].substr(0, m_date_print)));
-
-      const auto line(r.size() == 4 ? std::stoi(r[3]) - 1 : -1);
-
-      return {true, info.empty() ? " " : info, get_style(r[2]), line};
-    }
-  }
-  catch (std::exception& e)
-  {
-    log(e) << "blame:" << text;
-  }
-
-  return {false, std::string(), lexers::margin_style_t::OTHER, 0};
 }
 
 wex::lexers::margin_style_t wex::blame::get_style(const std::string& text) const
@@ -107,4 +84,79 @@ wex::lexers::margin_style_t wex::blame::get_style(const std::string& text) const
   }
 
   return style;
+}
+
+bool wex::blame::parse(const std::string& text)
+{
+  try
+  {
+    if (regex r(m_blame_format); r.search(text) >= 3)
+    {
+      if (r.matches().size() == 3)
+      {
+        return parse_compact(text, r);
+      }
+      else if (r.matches().size() == 6)
+      {
+        return parse_full(text, r);
+      }
+      else
+      {
+        log("blame parsing") << r.matches().size();
+        return false;
+      }
+    }
+  }
+  catch (std::exception& e)
+  {
+    log(e) << "blame:" << text;
+  }
+
+  return false;
+}
+
+// svn
+// 0 -> id
+// 1 -> author
+// 2 -> date
+bool wex::blame::parse_compact(const std::string& line, const regex& r)
+{
+  m_info = build("id", r[0], true) + build("author", r[1]) +
+           build("date", r[2].substr(0, m_date_print));
+
+  if (m_info.empty())
+  {
+    m_info = " ";
+  }
+
+  m_skip_info = false;
+  m_style     = get_style(r[2]);
+
+  return true;
+}
+
+// git
+// 0 -> id
+// 1 -> path, or empty
+// 2 -> author
+// 3 -> date
+// 4 -> line no
+// 5 -> original line text
+bool wex::blame::parse_full(const std::string& line, const regex& r)
+{
+  m_info = build("id", r[0], true) + build("author", r[2]) +
+           build("date", r[3].substr(0, m_date_print));
+
+  if (m_info.empty())
+  {
+    m_info = " ";
+  }
+
+  m_skip_info = false;
+  m_path      = boost::algorithm::trim_copy(r[1]);
+  m_style     = get_style(r[3]);
+  m_line_no   = std::stoi(r[4]) - 1;
+  m_line_text = r[5];
+
+  return true;
 }

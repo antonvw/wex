@@ -10,6 +10,7 @@
 #include <wex/core/config.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/frame.h>
+#include <wex/ui/item-build.h>
 #include <wex/ui/item-dialog.h>
 #include <wex/ui/statusbar.h>
 
@@ -17,26 +18,6 @@ const int FIELD_NOT_SHOWN = -1;
 
 namespace wex
 {
-const std::vector<item> add_header(const std::vector<std::string>& names)
-{
-  std::vector<item> v;
-
-  std::for_each(
-    names.begin(),
-    names.end(),
-    [&v](const auto& name)
-    {
-      v.push_back(
-        {name,
-         std::string(),
-         item::STATICTEXT,
-         data::control().window(
-           data::window().style(wxALIGN_CENTRE_HORIZONTAL))});
-    });
-
-  return v;
-}
-
 /// This class contains all pane styles and some methods
 /// to convert between lists and styles.
 class pane_styles
@@ -128,18 +109,18 @@ void wex::statusbar::handle(wxMouseEvent& event, const statusbar_pane& pane)
 {
   if (event.LeftUp())
   {
-    if (pane.get_name() == "PaneText")
+    if (pane.name() == "PaneText")
     {
       pane_dialog();
     }
     else
     {
-      m_frame->statusbar_clicked(pane.get_name());
+      m_frame->statusbar_clicked(pane.name());
     }
   }
   else if (event.RightUp())
   {
-    m_frame->statusbar_clicked_right(pane.get_name());
+    m_frame->statusbar_clicked_right(pane.name());
   }
   // Show tooltip if tooltip is available, and not yet presented.
   else if (event.Moving())
@@ -192,12 +173,12 @@ void wex::statusbar::pane_dialog()
       if (it.is_shown())
       {
         v_i.push_back(
-          {"statusbar.widths." + it.get_name(),
+          {"statusbar.widths." + it.name(),
            item::TEXTCTRL_INT,
            std::to_string(it.GetWidth())});
 
         v_i.push_back(
-          {"statusbar.styles." + it.get_name(),
+          {"statusbar.styles." + it.name(),
            item::COMBOBOX,
            pane_styles().find(it.GetStyle()),
            data::item(
@@ -219,10 +200,10 @@ void wex::statusbar::pane_dialog()
       [](const auto& it)
       {
         statusbar_pane p(
-          it.get_name(),
-          config("statusbar.widths." + it.get_name()).get(it.GetWidth()));
+          it.name(),
+          config("statusbar.widths." + it.name()).get(it.GetWidth()));
         p.help(it.help_text())
-          .style(pane_styles().style(config("statusbar.styles." + it.get_name())
+          .style(pane_styles().style(config("statusbar.styles." + it.name())
                                        .get(pane_styles().find(it.GetStyle()))))
           .show(it.is_shown());
         return p;
@@ -246,7 +227,7 @@ wex::statusbar::pane_info(const std::string& pane) const
   {
     if (it.is_shown())
     {
-      if (it.get_name() == use_pane)
+      if (it.name() == use_pane)
       {
         return {true, shown_pane_no, pane_no};
       }
@@ -255,7 +236,7 @@ wex::statusbar::pane_info(const std::string& pane) const
     }
     else
     {
-      if (it.get_name() == use_pane)
+      if (it.name() == use_pane)
       {
         return {true, FIELD_NOT_SHOWN, pane_no};
       }
@@ -280,13 +261,13 @@ bool wex::statusbar::pane_show(const std::string& pane, bool show)
 
   for (auto& it : m_panes)
   {
-    if (it.get_name() == pane)
+    if (it.name() == pane)
     {
       if (show)
       {
         if (!it.is_shown())
         {
-          changes.emplace_back(it.get_hidden_text());
+          changes.emplace_back(it.hidden_text());
 
           it.show(true);
 
@@ -364,7 +345,7 @@ bool wex::statusbar::set_statustext(
   }
   else if (shown_pane_no == FIELD_NOT_SHOWN)
   {
-    m_panes[pane_no].set_hidden_text(text);
+    m_panes[pane_no].hidden_text(text);
     return false;
   }
   else
@@ -406,7 +387,7 @@ wex::statusbar* wex::statusbar::setup(
   for (const auto& it : m_panes)
   {
     sb_def.push_back(
-      {it.get_name(), pane_styles().find(it.GetStyle()), it.GetWidth()});
+      {it.name(), pane_styles().find(it.GetStyle()), it.GetWidth()});
   }
 
   const auto sb_config(config("statusbar").get(sb_def));

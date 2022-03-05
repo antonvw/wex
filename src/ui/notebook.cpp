@@ -2,7 +2,7 @@
 // Name:      notebook.cpp
 // Purpose:   Implementation of class wex::notebook
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ui/item-dialog.h>
@@ -173,8 +173,7 @@ bool wex::notebook::delete_page(const std::string& key)
 
 const std::string wex::notebook::current_page_key()
 {
-  auto* page = GetCurrentPage();
-  return key_by_page(page);
+  return key_by_page(GetCurrentPage());
 }
 
 wxWindow* wex::notebook::insert_page(const data::notebook& data)

@@ -36,6 +36,7 @@ void wex::factory::process_imp::async_system(
   const process_data& data)
 {
   m_debug.store(p->m_eh_debug != nullptr);
+  m_data = data;
 
   bp::async_system(
     *m_io.get(),
@@ -61,9 +62,7 @@ void wex::factory::process_imp::async_system(
     m_group);
   // clang-format on
 
-  m_data = data;
-
-  log::debug("async_system") << m_data.exe() << "debug:" << m_debug.load();
+  log::debug("async_system") << data.exe() << "debug:" << m_debug.load();
 
   m_is_running.store(true);
 

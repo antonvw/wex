@@ -2,7 +2,7 @@
 // Name:      statusbar-pane.cpp
 // Purpose:   Implementation of wex::statusbar_pane class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/statusbar-pane.h>
@@ -53,7 +53,12 @@ wex::statusbar_pane::statusbar_pane(
 wex::statusbar_pane& wex::statusbar_pane::help(const std::string& rhs)
 {
   m_help_text = rhs;
+  return *this;
+}
 
+wex::statusbar_pane& wex::statusbar_pane::hidden_text(const std::string& rhs)
+{
+  m_hidden = rhs;
   return *this;
 }
 

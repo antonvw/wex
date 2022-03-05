@@ -12,6 +12,7 @@
 #include <wex/factory/indicator.h>
 #include <wex/factory/lexers.h>
 #include <wex/factory/printing.h>
+#include <wex/factory/stc-undo.h>
 #include <wex/stc/auto-complete.h>
 #include <wex/stc/auto-indent.h>
 #include <wex/stc/entry-dialog.h>
@@ -470,7 +471,7 @@ bool wex::stc::IsModified() const
 
 bool wex::stc::is_visual() const
 {
-  return m_vi->visual() == ex::VISUAL;
+  return m_vi->visual() != ex::EX;
 }
 
 bool wex::stc::link_open()
@@ -776,7 +777,7 @@ int wex::stc::replace_all(
 
   int nr_replacements = 0;
   set_search_flags(-1);
-  BeginUndoAction();
+  stc_undo undo(this);
 
   while (SearchInTarget(find_text) != -1)
   {
@@ -822,8 +823,6 @@ int wex::stc::replace_all(
       break;
     }
   }
-
-  EndUndoAction();
 
   log::status(_("Replaced"))
     << nr_replacements << "occurrences of" << find_text;
@@ -893,31 +892,45 @@ void wex::stc::SelectNone()
 
 bool wex::stc::set_indicator(const indicator& indicator, int start, int end)
 {
-  if (const bool loaded(lexers::get()->indicator_is_loaded(indicator));
-      !loaded || start == -1 || end == -1 || end < start)
-  {
-    if (!loaded)
-    {
-      log("indicator") << indicator.number() << "not loaded";
-    }
-    else
-    {
-      log("indicator") << indicator.number() << start << end;
-    }
+  if (start == -1)
+    start = GetTargetStart();
+  if (end == -1)
+    end = GetTargetEnd();
 
+  if (const bool loaded(lexers::get()->indicator_is_loaded(indicator));
+      !loaded || start == -1 || end == -1 || end <= start)
+  {
+    log("indicator") << indicator.number() << loaded << start << end;
     return false;
   }
 
   SetIndicatorCurrent(indicator.number());
-
-  if (end - start > 0)
-  {
-    IndicatorFillRange(start, end - start);
-  }
+  IndicatorFillRange(start, end - start);
 
   log::trace("indicator") << start << end << GetIndicatorCurrent();
 
   return true;
+}
+
+void wex::stc::set_margin(const wex::blame* blame)
+{
+  const item_vector iv(m_config_items);
+  const auto        margin_blame(iv.find<int>(_("stc.margin.Text")));
+  const int         w(std::max(
+    config(_("stc.Default font"))
+        .get(wxFont(
+          12,
+          wxFONTFAMILY_DEFAULT,
+          wxFONTSTYLE_NORMAL,
+          wxFONTWEIGHT_NORMAL))
+        .GetPixelSize()
+        .GetWidth() +
+      1,
+    5));
+
+  SetMarginWidth(
+    m_margin_text_number,
+    margin_blame == -1 ? blame->info().size() * w : margin_blame);
 }
 
 void wex::stc::set_search_flags(int flags)
@@ -953,71 +966,65 @@ void wex::stc::set_text(const std::string& value)
   EmptyUndoBuffer();
 }
 
-bool wex::stc::show_blame(const vcs_entry* vcs)
+bool wex::stc::show_blame(vcs_entry* vcs, const std::string& std_out)
 {
   if (!vcs->get_blame().use())
   {
     return false;
   }
 
-  if (vcs->std_out().empty())
+  const std::string& use_out = !std_out.empty() ? std_out : vcs->std_out();
+
+  if (use_out.empty())
   {
-    log::debug("no vcs output");
+    log::debug("no blame output");
     return false;
   }
 
+  if (!std_out.empty())
+  {
+    clear();
+  }
+
   std::string prev("!@#$%");
-  bool        first = true;
-  int         line  = 0;
-
   SetWrapMode(wxSTC_WRAP_NONE);
-  const item_vector iv(m_config_items);
-  const auto        margin_blame(iv.find<int>(_("stc.margin.Text")));
+  wex::blame* blame = &vcs->get_blame();
+  bool        first = true;
 
-  for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
-         vcs->std_out(),
+  for (int         line = 0;
+       const auto& it : boost::tokenizer<boost::char_separator<char>>(
+         use_out,
          boost::char_separator<char>("\r\n")))
   {
-    if (const auto& [r, bl, t, l] = vcs->get_blame().get(it); bl != prev && r)
+    blame->parse(it);
+
+    if (first)
     {
-      if (first)
-      {
-        const int w(std::max(
-          config(_("stc.Default font"))
-              .get(wxFont(
-                12,
-                wxFONTFAMILY_DEFAULT,
-                wxFONTSTYLE_NORMAL,
-                wxFONTWEIGHT_NORMAL))
-              .GetPixelSize()
-              .GetWidth() +
-            1,
-          5));
+      set_margin(blame);
+      first = false;
+    }
 
-        SetMarginWidth(
-          m_margin_text_number,
-          margin_blame == -1 ? bl.size() * w : margin_blame);
-
-        first = false;
-      }
-
-      const int real_line(
-        is_visual() ? l : l - get_current_line() + GetLineCount() - 2);
-
-      lexers::get()->apply_margin_text_style(
-        this,
-        real_line >= 0 ? real_line : line,
-        t,
-        bl);
-      prev = bl;
+    if (blame->info() != prev)
+    {
+      prev = blame->info();
     }
     else
     {
-      lexers::get()->apply_margin_text_style(
-        this,
-        l >= 0 ? l : line,
-        r ? t : lexers::margin_style_t::OTHER);
+      blame->skip_info(true);
     }
+
+    if (!is_visual())
+    {
+      blame->line_no(
+        blame->line_no() - get_current_line() + GetLineCount() - 2);
+    }
+
+    if (!std_out.empty())
+    {
+      add_text(blame->line_text() + "\n");
+    }
+
+    lexers::get()->apply_margin_text_style(this, blame);
 
     line++;
   }

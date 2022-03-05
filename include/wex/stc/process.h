@@ -61,6 +61,9 @@ public:
   /// not yet invoked.
   bool async_system(const process_data& data) override;
 
+  /// See factory::process.
+  int system(const process_data& data) override;
+
   /// Writes text to stdin of process.
   /// The response stdout is collected in the shell.
   bool write(const std::string& text) override;

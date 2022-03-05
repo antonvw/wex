@@ -5,17 +5,17 @@
 // Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <boost/algorithm/string.hpp>
 #include <wex/core/log.h>
 #include <wex/stc/process.h>
 #include <wex/stc/shell.h>
 #include <wex/ui/debug-entry.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/item-dialog.h>
-#include <wex/vi/ex-stream.h>
 #include <wx/valtext.h>
 
 #include <algorithm>
+
+#include "util.h"
 
 /* NOLINTNEXTLINE */
 std::string wex::process::m_working_dir_key = _("Process folder");
@@ -68,41 +68,7 @@ bool wex::process::async_system(const process_data& data_in)
   {
     if (auto* stc = dynamic_cast<wex::stc*>(m_frame->get_stc()); stc != nullptr)
     {
-      if (data.exe().find("%LINES") != std::string::npos)
-      {
-        if (!stc->is_visual())
-        {
-          data.exe(boost::algorithm::replace_all_copy(
-            data.exe(),
-            "%LINES",
-            std::to_string(std::max(
-              (size_t)1,
-              (size_t)stc->get_current_line() + 1 -
-                std::min(
-                  (size_t)stc->GetLineCount(),
-                  stc->get_file().ex_stream()->get_context_lines()))) +
-              "," + std::to_string(stc->get_current_line() + 1)));
-        }
-        else if (const std::string sel(stc->GetSelectedText()); !sel.empty())
-        {
-          data.exe(boost::algorithm::replace_all_copy(
-            data.exe(),
-            "%LINES",
-            std::to_string(
-              stc->LineFromPosition(stc->GetSelectionStart()) + 1) +
-              "," +
-              std::to_string(
-                stc->LineFromPosition(stc->GetSelectionEnd()) + 1)));
-        }
-        else
-        {
-          data.exe(boost::algorithm::replace_all_copy(
-            data.exe(),
-            "%LINES",
-            std::to_string(stc->get_current_line() + 1) + "," +
-              std::to_string(stc->get_current_line() + 1)));
-        }
-      }
+      expand_macro(data, stc);
     }
   }
 
@@ -180,6 +146,18 @@ void wex::process::show_output(const std::string& caption) const
     m_frame->show_process(true);
     m_shell->AppendText(!std_out().empty() ? std_out() : std_err());
   }
+}
+
+int wex::process::system(const process_data& data_in)
+{
+  process_data data(data_in);
+
+  if (auto* stc = dynamic_cast<wex::stc*>(m_frame->get_stc()); stc != nullptr)
+  {
+    expand_macro(data, stc);
+  }
+
+  return factory::process::system(data);
 }
 
 bool wex::process::write(const std::string& text)

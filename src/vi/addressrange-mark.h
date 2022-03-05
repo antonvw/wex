@@ -8,6 +8,7 @@
 #pragma once
 
 #include <wex/data/substitute.h>
+#include <wex/factory/stc-undo.h>
 
 namespace wex
 {
@@ -61,6 +62,8 @@ private:
 
   const mark_t        m_type;
   const addressrange& m_ar;
+
+  stc_undo m_undo;
 
   int m_corrected{0};
 };

@@ -2,7 +2,7 @@
 // Name:      data/listview.h
 // Purpose:   Declaration of wex::data::listview
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017-2021 Anton van Wezenbeek
+// Copyright: (c) 2017-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once

@@ -19,6 +19,7 @@ wex::addressrange_mark::addressrange_mark(
   , m_type(get_type(subs))
   , m_ex(ar.get_ex())
   , m_stc(ar.get_ex()->get_stc())
+  , m_undo(m_stc)
 {
   m_stc->IndicatorClearRange(0, m_stc->GetTextLength() - 1);
 }
@@ -36,8 +37,6 @@ void wex::addressrange_mark::end(bool indicator_clear)
   {
     m_stc->get_hexmode_sync();
   }
-
-  m_stc->EndUndoAction();
 
   if (indicator_clear)
   {
@@ -96,8 +95,6 @@ bool wex::addressrange_mark::set()
   {
     return false;
   }
-
-  m_stc->BeginUndoAction();
 
   m_stc->SetTargetRange(
     m_stc->PositionFromLine(m_ex->marker_line('#')),

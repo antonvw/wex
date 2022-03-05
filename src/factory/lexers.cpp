@@ -9,6 +9,7 @@
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/core/regex.h>
+#include <wex/factory/blame.h>
 #include <wex/factory/lexers.h>
 #include <wex/factory/stc.h>
 #include <wex/factory/util.h>
@@ -132,41 +133,47 @@ const std::string wex::lexers::apply_macro(
     return text;
 }
 
-void wex::lexers::apply_margin_text_style(
-  factory::stc*      stc,
-  int                line,
-  margin_style_t     style,
-  const std::string& text) const
+void wex::lexers::apply_margin_text_style(factory::stc* stc, const blame* blame)
+  const
 {
-  switch (style)
+  switch (blame->style())
   {
     case margin_style_t::DAY:
-      stc->MarginSetStyle(line, m_style_no_text_margin_day);
+      stc->MarginSetStyle(blame->line_no(), m_style_no_text_margin_day);
       break;
 
     case margin_style_t::MONTH:
-      stc->MarginSetStyle(line, m_style_no_text_margin_month);
+      stc->MarginSetStyle(blame->line_no(), m_style_no_text_margin_month);
       break;
 
     case margin_style_t::OTHER:
-      stc->MarginSetStyle(line, m_style_no_text_margin);
+      stc->MarginSetStyle(blame->line_no(), m_style_no_text_margin);
       break;
 
     case margin_style_t::WEEK:
-      stc->MarginSetStyle(line, m_style_no_text_margin_week);
+      stc->MarginSetStyle(blame->line_no(), m_style_no_text_margin_week);
       break;
 
     case margin_style_t::YEAR:
-      stc->MarginSetStyle(line, m_style_no_text_margin_year);
+      stc->MarginSetStyle(blame->line_no(), m_style_no_text_margin_year);
       break;
 
     case margin_style_t::UNKNOWN:
       break;
   }
 
-  if (!text.empty())
+  if (!blame->info().empty() && !blame->skip_info())
   {
-    stc->MarginSetText(line, text);
+    if (blame->is_path())
+    {
+      stc->MarginSetText(
+        blame->line_no(),
+        blame->info() + " :RENAMED: " + blame->path());
+    }
+    else
+    {
+      stc->MarginSetText(blame->line_no(), blame->info());
+    }
   }
 }
 

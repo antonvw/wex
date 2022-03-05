@@ -52,7 +52,7 @@ TEST_CASE("wex::factory::process")
       REQUIRE(process.async_system(wex::process_data("xxxx")));
       process.stop();
       REQUIRE(!process.is_running());
-      process.set_handler_dbg(&out); // if after out, crash
+      process.set_handler_dbg(&out); // if directly after out: crash
     }
   }
 #endif

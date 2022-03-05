@@ -12,6 +12,7 @@
 #include <pugixml.hpp>
 #include <wex/core/config.h>
 #include <wex/core/log.h>
+#include <wex/factory/stc-undo.h>
 #include <wex/factory/stc.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/statusbar.h>
@@ -215,7 +216,7 @@ void wex::macro_fsm::playback(const std::string& macro, ex* ex, int repeat)
     return;
   }
 
-  ex->get_stc()->BeginUndoAction();
+  stc_undo(ex->get_stc());
   set_ask_for_input();
   m_playback = true;
   bool error = false;
@@ -245,8 +246,6 @@ void wex::macro_fsm::playback(const std::string& macro, ex* ex, int repeat)
       error = true;
     }
   }
-
-  ex->get_stc()->EndUndoAction();
 
   if (!error)
   {
@@ -282,8 +281,7 @@ std::string wex::macro_fsm::read_variable(
         // other separator
         else if (c == '\'')
         {
-          if (const auto& exp(read_variable(ifs, c, ex, current));
-              !exp.empty())
+          if (const auto& exp(read_variable(ifs, c, ex, current)); !exp.empty())
           {
             variable::set_argument(exp);
           }

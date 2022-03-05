@@ -2,7 +2,7 @@
 // Name:      regex.h
 // Purpose:   Include file for class wex::regex
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -36,23 +36,23 @@ public:
     const std::string&    regex,
     std::regex::flag_type flags = std::regex::ECMAScript);
 
-  /// Constructor, provide regular expression string, callback and
-  /// regex flags.
-  regex(
-    const std::string&    regex,
-    function_t            f,
-    std::regex::flag_type flags = std::regex::ECMAScript);
-
   /// Constructor, provide vector with regular expressions and
   /// regex flags.
-  regex(
+  explicit regex(
     const regex_v_t&      regex,
     std::regex::flag_type flags = std::regex::ECMAScript);
 
   /// Constructor, provide vector with regular expressions, callbacks
   /// and regex flags.
-  regex(
+  explicit regex(
     const regex_v_c_t&    regex,
+    std::regex::flag_type flags = std::regex::ECMAScript);
+
+  /// Constructor, provide regular expression string, callback and
+  /// regex flags.
+  regex(
+    const std::string&    regex,
+    function_t            f,
     std::regex::flag_type flags = std::regex::ECMAScript);
 
   /// Returns reference to the requested submatch element.

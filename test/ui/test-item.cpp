@@ -2,7 +2,7 @@
 // Name:      test-item.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -97,9 +97,6 @@ TEST_CASE("wex::item")
     {
     }
 
-    std::cout << "sep: "
-              << std::string(1, wxNumberFormatter::GetDecimalSeparator())
-              << "\n";
     wex::item item_float(
       "float",
       wex::item::TEXTCTRL_FLOAT,

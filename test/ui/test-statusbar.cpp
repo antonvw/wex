@@ -2,7 +2,7 @@
 // Name:      test-statusbar.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ui/statusbar.h>
@@ -32,13 +32,13 @@ TEST_CASE("wex::statusbar")
   REQUIRE(get_statusbar()->get_statustext("Panexxx").empty());
 
   REQUIRE(get_statusbar()->pane_show("Pane0", false));
-  REQUIRE(get_statusbar()->get_pane(0).get_name() == "PaneText");
+  REQUIRE(get_statusbar()->get_pane(0).name() == "PaneText");
   REQUIRE(
     (reinterpret_cast<wxStatusBar*>(get_statusbar()))->GetStatusText(1) ==
     "hello1");
   REQUIRE(!get_statusbar()->pane_show("Pane0", false));
   REQUIRE(get_statusbar()->pane_show("Pane3", false));
-  REQUIRE(get_statusbar()->get_pane(1).get_name() == "Pane0");
+  REQUIRE(get_statusbar()->get_pane(1).name() == "Pane0");
   REQUIRE(
     (reinterpret_cast<wxStatusBar*>(get_statusbar()))->GetStatusText(1) ==
     "hello1");
@@ -57,18 +57,18 @@ TEST_CASE("wex::statusbar")
   wex::statusbar_pane pane1("PaneInfo", 15);
   pane1.help("hello");
 
-  REQUIRE(pane1.get_name() == "PaneInfo");
+  REQUIRE(pane1.name() == "PaneInfo");
   REQUIRE(pane1.help_text() == "hello");
-  REQUIRE(pane1.get_hidden_text().empty());
+  REQUIRE(pane1.hidden_text().empty());
   REQUIRE(pane1.GetWidth() == 15);
   REQUIRE(pane1.is_shown());
-  pane1.set_hidden_text("hidden");
-  REQUIRE(pane1.get_hidden_text() == "hidden");
+  pane1.hidden_text("hidden");
+  REQUIRE(pane1.hidden_text() == "hidden");
 
   get_statusbar()->setup(
     frame(),
     {pane1, {"PaneLexer"}, {"PaneFileType"}, {"Pane1"}, {"Pane2"}});
 
-  REQUIRE(get_statusbar()->get_pane(0).get_name() == "PaneInfo");
+  REQUIRE(get_statusbar()->get_pane(0).name() == "PaneInfo");
   REQUIRE(get_statusbar()->GetFieldsCount() == 5);
 }

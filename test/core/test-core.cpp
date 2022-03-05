@@ -31,7 +31,9 @@ TEST_CASE("wex::core")
     REQUIRE(wex::find_after("nospace", " ") == "nospace");
     REQUIRE(wex::rfind_after("some space and more", " ") == "more");
     REQUIRE(wex::find_after("some space and more", " ") == "space and more");
+    REQUIRE(wex::find_after("some space and more", "space") == " and more");
     REQUIRE(wex::rfind_after("some space and more", "m") == "ore");
+    REQUIRE(wex::rfind_after("some space and more", " m") == "ore");
   }
 
   SUBCASE("find_before")

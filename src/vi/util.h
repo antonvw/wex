@@ -15,11 +15,10 @@
     }                                  \
   }
 
-#define REPEAT_WITH_UNDO(TEXT)    \
-  {                               \
-    get_stc()->BeginUndoAction(); \
-    REPEAT(TEXT);                 \
-    get_stc()->EndUndoAction();   \
+#define REPEAT_WITH_UNDO(TEXT) \
+  {                            \
+    stc_undo undo(get_stc());  \
+    REPEAT(TEXT);              \
   }
 
 namespace wex
