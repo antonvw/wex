@@ -2,7 +2,7 @@
 // Name:      stc/bind.cpp
 // Purpose:   Implementation of class wex::stc method bind_all
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -312,6 +312,12 @@ void wex::stc::bind_all()
 
      {[=, this](wxCommandEvent& event)
       {
+        blame_revision();
+      },
+      id::stc::margin_text_blame_revision},
+
+     {[=, this](wxCommandEvent& event)
+      {
         config("blame.date").toggle(true);
       },
       id::stc::margin_text_date},
@@ -425,6 +431,32 @@ void wex::stc::bind_all()
       id::stc::marker_previous}});
 
   bind_other();
+}
+
+void wex::stc::blame_revision()
+{
+  std::string  revision(MarginGetText(m_margin_text_click));
+  wex::process p;
+
+  if (const auto renamed(find_after(revision, "RENAMED: ")); !renamed.empty())
+  {
+    if (
+      p.system(
+        process_data("git blame " + get_word(revision) + " -- " + renamed)
+          .start_dir(vcs().toplevel().string())) != 0)
+    {
+      return;
+    }
+  }
+  else if (
+    p.system(
+      process_data("git blame " + path().string() + " " + get_word(revision))
+        .start_dir(path().parent_path())) != 0)
+  {
+    return;
+  }
+
+  ((wex::factory::frame*)m_frame)->open_file(path(), p, m_data);
 }
 
 void wex::stc::build_popup_menu(menu& menu)

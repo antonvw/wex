@@ -131,7 +131,7 @@ const std::string
 wex::find_after(const std::string& text, const std::string& seq)
 {
   const auto pos = text.find(seq);
-  return pos == std::string::npos ? text : text.substr(pos + 1);
+  return pos == std::string::npos ? text : text.substr(pos + seq.size());
 }
 
 const std::string
@@ -294,7 +294,7 @@ const std::string
 wex::rfind_after(const std::string& text, const std::string& seq)
 {
   const auto pos = text.rfind(seq);
-  return pos == std::string::npos ? text : text.substr(pos + 1);
+  return pos == std::string::npos ? text : text.substr(pos + seq.size());
 }
 
 const std::string

@@ -71,6 +71,9 @@ public:
   /// Returns blame info.
   const blame& get_blame() const { return m_blame; }
 
+  /// Returns blame info.
+  blame& get_blame() { return m_blame; }
+
   /// Returns the name of current branch.
   const std::string get_branch(const std::string& wd = std::string()) const;
 

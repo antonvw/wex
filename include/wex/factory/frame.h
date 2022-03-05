@@ -2,7 +2,7 @@
 // Name:      factory/frame.h
 // Purpose:   Declaration of wex::factory::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -83,7 +83,15 @@ public:
   /// Allows you to open a filename with info from vcs.
   /// Returns stc component opened, or nullptr.
   virtual factory::stc*
-  open_file(const path& filename, const vcs_entry& vcs, const data::stc& data)
+  open_file(const path& filename, vcs_entry& vcs, const data::stc& data)
+  {
+    return nullptr;
+  };
+
+  /// Allows you to open a filename with info from process.
+  /// Returns stc component opened, or nullptr.
+  virtual factory::stc*
+  open_file(const path& filename, factory::process& p, const data::stc& data)
   {
     return nullptr;
   };

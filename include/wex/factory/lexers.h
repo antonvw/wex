@@ -2,7 +2,7 @@
 // Name:      lexers.h
 // Purpose:   Declaration of wex::lexers class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -23,6 +23,8 @@ class wxWindow;
 
 namespace wex
 {
+class blame;
+
 namespace factory
 {
 class stc;
@@ -86,12 +88,8 @@ public:
   void apply_margin_text_style(
     /// stc component
     factory::stc* stc,
-    /// line no
-    int line,
-    /// style type
-    margin_style_t style,
-    /// text to be set in the margin
-    const std::string& text = std::string()) const;
+    /// blame info to use
+    const blame* info) const;
 
   /// Clears the theme.
   void clear_theme();

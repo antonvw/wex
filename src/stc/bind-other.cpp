@@ -78,6 +78,38 @@ menu::menu_t get_style(stc* stc)
 
   return style;
 }
+
+void margin_menu(stc* stc)
+{
+  auto* menu = new wex::menu(
+    {{id::stc::margin_text_blame_revision, "&Blame Revision"},
+     {id::stc::margin_text_hide, "&Hide"},
+     {}});
+
+  if (auto* author =
+        menu->AppendCheckItem(id::stc::margin_text_author, "&Show Author");
+      config("blame.author").get(true))
+  {
+    author->Check();
+  }
+
+  if (auto* date =
+        menu->AppendCheckItem(id::stc::margin_text_date, "&Show Date");
+      config("blame.date").get(true))
+  {
+    date->Check();
+  }
+
+  if (auto* id = menu->AppendCheckItem(id::stc::margin_text_id, "&Show Id");
+      config("blame.id").get(true))
+  {
+    id->Check();
+  }
+
+  stc->PopupMenu(menu);
+
+  delete menu;
+}
 }; // namespace wex
 
 void wex::stc::bind_other()
@@ -272,22 +304,8 @@ void wex::stc::bind_other()
     {
       if (event.GetMargin() == m_margin_text_number)
       {
-        auto* menu = new wex::menu({{id::stc::margin_text_hide, "&Hide"}, {}});
-        auto* author =
-          menu->AppendCheckItem(id::stc::margin_text_author, "&Show Author");
-        auto* date =
-          menu->AppendCheckItem(id::stc::margin_text_date, "&Show Date");
-        auto* id = menu->AppendCheckItem(id::stc::margin_text_id, "&Show Id");
-
-        if (config("blame.author").get(true))
-          author->Check();
-        if (config("blame.date").get(true))
-          date->Check();
-        if (config("blame.id").get(true))
-          id->Check();
-
-        PopupMenu(menu);
-        delete menu;
+        m_margin_text_click = LineFromPosition(event.GetPosition());
+        margin_menu(this);
       }
     });
 

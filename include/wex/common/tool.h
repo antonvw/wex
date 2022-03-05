@@ -76,9 +76,6 @@ public:
     ;
   };
 
-  /// Spaceship operator.
-  auto operator<=>(const tool& r) const { return m_id <=> r.m_id; }
-
   /// Returns the tool id.
   auto id() const { return m_id; }
 

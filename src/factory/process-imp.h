@@ -32,9 +32,6 @@ public:
   /// Runs the exe as a async process.
   void async_system(process* p, const process_data& data);
 
-  /// Returns the data.
-  const auto& data() const { return m_data; }
-
   /// Returns true if this is a debug process.
   bool is_debug() const { return m_debug; }
 
@@ -54,10 +51,10 @@ private:
   std::atomic<bool> m_debug{false};
   std::atomic<bool> m_is_running{false};
 
-  process_data m_data;
-
   bp::ipstream m_es, m_is;
   bp::opstream m_os;
   bp::group    m_group;
+
+  process_data m_data;
 };
 }; // namespace wex::factory

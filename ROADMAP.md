@@ -1,7 +1,8 @@
 # roadmap
+- use process_data in vcs_entry and vcs instead of exe and dir
+  - fix comment SetCommand in vcs-entry.h
+- shift double click not ok after single click
 - menus is a template class, is this really necessary
-- add a blame for previous version, as in github
-- spaceship operator in test-stream tool gives compile error
 - add wex::accumulate
   - see also cmdline for find_if template
 - add version to static libs as well

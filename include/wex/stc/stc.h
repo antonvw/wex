@@ -2,7 +2,7 @@
 // Name:      stc.h
 // Purpose:   Declaration of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2021 Anton van Wezenbeek
+// Copyright: (c) 2008-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -21,6 +21,7 @@
 namespace wex
 {
 class auto_complete;
+class blame;
 class indicator;
 class item;
 class item_dialog;
@@ -171,7 +172,12 @@ public:
 
   /// Shows blame info for vcs in the text margin.
   /// Returns true if info was added.
-  bool show_blame(const vcs_entry* vcs);
+  bool show_blame(
+    /// vcs to use
+    vcs_entry* vcs,
+    /// default the std_out from vcs is used, if
+    /// this std_out is not empty this one is used
+    const std::string& std_out = std::string());
 
   /// Virtual methods from wxWidgets.
 
@@ -269,6 +275,7 @@ private:
 
   void bind_all();
   void bind_other();
+  void blame_revision();
   void build_popup_menu(menu& menu);
   void build_popup_menu_edit(menu& menu);
   void check_brace();
@@ -286,6 +293,7 @@ private:
   void mark_modified(const wxStyledTextEvent& event);
   void on_idle(wxIdleEvent& event);
   void on_styled_text(wxStyledTextEvent& event);
+  void set_margin(const blame* blame);
   void show_properties();
   void sort_action(const wxCommandEvent& event);
 

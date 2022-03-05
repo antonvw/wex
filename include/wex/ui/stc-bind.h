@@ -2,7 +2,7 @@
 // Name:      stc-bind.h
 // Purpose:   Declaration of bind id's
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -24,6 +24,7 @@ enum stc
   hex_dec_calltip,
   lowercase,
   margin_text_author,
+  margin_text_blame_revision,
   margin_text_date,
   margin_text_hide,
   margin_text_id,

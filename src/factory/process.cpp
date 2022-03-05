@@ -32,6 +32,7 @@ bool wex::factory::process::async_system(const process_data& data)
   {
     if (m_eh_out != nullptr)
     {
+      m_data = data;
       m_imp->async_system(this, data); // this is a void
       return true;
     }
@@ -42,11 +43,6 @@ bool wex::factory::process::async_system(const process_data& data)
   }
 
   return false;
-}
-
-const wex::process_data& wex::factory::process::data() const
-{
-  return m_imp->data();
 }
 
 bool wex::factory::process::is_debug() const
@@ -110,6 +106,8 @@ int wex::factory::process::system(const process_data& data)
       const auto& text(!m_stderr.empty() ? ":" + m_stderr : std::string());
       log("system") << data.log() << "ec:" << ec << text;
     }
+
+    m_data = data;
 
     return ec;
   }

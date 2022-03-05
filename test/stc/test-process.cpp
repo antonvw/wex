@@ -27,11 +27,6 @@ TEST_CASE("wex::process")
 
   SUBCASE("constructor") { REQUIRE(process.get_frame() != nullptr); }
 
-  SUBCASE("dialog")
-  {
-    wex::process::config_dialog(wex::data::window().button(wxAPPLY | wxCANCEL));
-  }
-
 #ifdef __UNIX__
   SUBCASE("async_system")
   {
@@ -39,6 +34,7 @@ TEST_CASE("wex::process")
     {
       REQUIRE(process.async_system(wex::process_data("bash")));
       REQUIRE(process.is_running());
+      REQUIRE(!process.data().exe().empty());
       REQUIRE(process.stop());
       REQUIRE(!process.is_running());
     }
@@ -46,11 +42,21 @@ TEST_CASE("wex::process")
     SUBCASE("invalid")
     {
       REQUIRE(process.async_system(wex::process_data("xxxx")));
-      process.async_sleep_for(std::chrono::milliseconds(2500));
+      process.async_sleep_for(std::chrono::milliseconds(25));
       REQUIRE(!process.is_running());
+    }
+
+    SUBCASE("macro")
+    {
+      REQUIRE(process.async_system(wex::process_data("echo %LINES")));
     }
   }
 #endif
+
+  SUBCASE("dialog")
+  {
+    wex::process::config_dialog(wex::data::window().button(wxAPPLY | wxCANCEL));
+  }
 
 #ifdef __UNIX__
   SUBCASE("system")
@@ -62,8 +68,25 @@ TEST_CASE("wex::process")
       REQUIRE(!process.std_out().empty());
       REQUIRE(process.std_err().empty());
       REQUIRE(!process.is_running());
-      REQUIRE(process.data().exe().empty());
+      REQUIRE(!process.data().exe().empty());
       process.show_output();
+    }
+
+    SUBCASE("macro")
+    {
+      if (process.get_shell() != nullptr)
+      {
+        REQUIRE(process.system(wex::process_data("echo %LINES")) == 0);
+        CAPTURE(process.std_out());
+        REQUIRE(process.std_out().find("%LINES") == std::string::npos);
+        REQUIRE(process.std_out().find("15,15") != std::string::npos);
+
+        process.get_shell()->SetSelection(1, 5);
+        REQUIRE(process.system(wex::process_data("echo %LINES")) == 0);
+        CAPTURE(process.std_out());
+        REQUIRE(process.std_out().find("%LINES") == std::string::npos);
+        REQUIRE(process.std_out().find("1,1") != std::string::npos);
+      }
     }
 
     SUBCASE("repeat")
