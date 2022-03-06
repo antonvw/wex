@@ -1,7 +1,6 @@
 # roadmap
--> test and commit
-
 - /blame/,/this/y
+
 - menus is a template class, is this really necessary
 - add wex::accumulate
   - see also cmdline for find_if template

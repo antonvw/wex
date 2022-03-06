@@ -441,11 +441,20 @@ void wex::stc::blame_revision()
 
   if (!renamed.empty())
   {
-    if (
-      p.system(
-        process_data("git blame " + get_word(revision) + " -- " + renamed)
-          .start_dir(vcs().toplevel().string())) != 0)
+    if (const auto rev(get_word(revision)); rev != find_before(renamed, " "))
     {
+      if (
+        p.system(process_data("git blame " + rev + " -- " + renamed)
+                   .start_dir(vcs().toplevel().string())) != 0)
+      {
+        log::status("blame") << "error";
+        return;
+      }
+    }
+    else
+    {
+      log::status("blame") << "at oldest: " << rev;
+      log::trace("blame equal") << rev << renamed;
       return;
     }
   }
@@ -454,6 +463,7 @@ void wex::stc::blame_revision()
       process_data("git blame " + path().string() + " " + get_word(revision))
         .start_dir(path().parent_path())) != 0)
   {
+    log::status("blame") << "error";
     return;
   }
 
@@ -466,24 +476,9 @@ void wex::stc::blame_revision()
 
 void wex::stc::build_popup_menu(menu& menu)
 {
-  const auto sel(GetSelectedText().ToStdString());
-
   if (get_current_line() == 0 && !lexers::get()->get_lexers().empty())
   {
     menu.append({{id::stc::show_properties, _("Properties")}});
-  }
-
-  if (m_data.menu().test(data::stc::MENU_OPEN_LINK))
-  {
-    if (sel.empty() && link_open(link_t().set(LINK_OPEN_MIME).set(LINK_CHECK)))
-    {
-      menu.append({{}, {id::stc::open_mime, _("&Preview")}});
-    }
-    else if (std::string filename;
-             link_open(link_t().set(LINK_OPEN).set(LINK_CHECK), &filename))
-    {
-      menu.append({{}, {id::stc::open_link, _("Open") + " " + filename}});
-    }
   }
 
   if (GetEdgeMode() == wxSTC_EDGE_MULTILINE)
@@ -494,10 +489,7 @@ void wex::stc::build_popup_menu(menu& menu)
        {id::stc::edge_clear, _("Edge Column Reset")}});
   }
 
-  if (m_data.menu().test(data::stc::MENU_OPEN_WWW) && !sel.empty())
-  {
-    menu.append({{}, {id::stc::open_www, _("&Search")}});
-  }
+  build_popup_menu_link(menu);
 
   if (
     m_data.menu().test(data::stc::MENU_DEBUG) &&
@@ -523,8 +515,8 @@ void wex::stc::build_popup_menu(menu& menu)
   // Folding if nothing selected, property is set,
   // and we have a lexer.
   if (
-    sel.empty() && GetProperty("fold") == "1" && get_lexer().is_ok() &&
-    !get_lexer().scintilla_lexer().empty())
+    GetSelectedText().ToStdString().empty() && GetProperty("fold") == "1" &&
+    get_lexer().is_ok() && !get_lexer().scintilla_lexer().empty())
   {
     menu.append(
       {{},
@@ -594,6 +586,29 @@ void wex::stc::build_popup_menu_edit(menu& menu)
   if (sel.empty() && beautify_add && beautify().is_supported(get_lexer()))
   {
     menu.append({{}, {id::stc::beautify, _("&Beautify")}});
+  }
+}
+
+void wex::stc::build_popup_menu_link(menu& menu)
+{
+  const auto sel(GetSelectedText().ToStdString());
+
+  if (m_data.menu().test(data::stc::MENU_OPEN_LINK))
+  {
+    if (sel.empty() && link_open(link_t().set(LINK_OPEN_MIME).set(LINK_CHECK)))
+    {
+      menu.append({{}, {id::stc::open_mime, _("&Preview")}});
+    }
+    else if (std::string filename;
+             link_open(link_t().set(LINK_OPEN).set(LINK_CHECK), &filename))
+    {
+      menu.append({{}, {id::stc::open_link, _("Open") + " " + filename}});
+    }
+  }
+
+  if (m_data.menu().test(data::stc::MENU_OPEN_WWW) && !sel.empty())
+  {
+    menu.append({{}, {id::stc::open_www, _("&Search")}});
   }
 }
 

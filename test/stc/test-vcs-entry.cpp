@@ -10,8 +10,6 @@
 
 #include "../test.h"
 
-TEST_SUITE_BEGIN("wex::vcs");
-
 TEST_CASE("wex::vcs_entry")
 {
   SUBCASE("default constructor")
@@ -67,11 +65,11 @@ TEST_CASE("wex::vcs_entry")
     REQUIRE(entry.std_out().find("usage: ") != std::string::npos);
     entry.show_output();
 
+    REQUIRE(entry.system(wex::process_data("help")) == 0);
+
     auto* other = new wex::vcs_entry(doc.document_element());
     REQUIRE(other->execute(std::string(), wex::lexer()));
     other->show_output();
 #endif
   }
 }
-
-TEST_SUITE_END();

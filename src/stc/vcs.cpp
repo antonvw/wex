@@ -283,8 +283,8 @@ bool wex::vcs::execute()
 
 bool wex::vcs::execute(const std::string& command)
 {
-  return m_entry.execute(
-    process_data(command).start_dir(current_path().parent_path()));
+  return m_entry.system(
+           process_data(command).start_dir(current_path().parent_path())) == 0;
 }
 
 const std::string wex::vcs::get_branch() const

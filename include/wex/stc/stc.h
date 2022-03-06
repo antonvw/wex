@@ -278,6 +278,7 @@ private:
   void blame_revision();
   void build_popup_menu(menu& menu);
   void build_popup_menu_edit(menu& menu);
+  void build_popup_menu_link(menu& menu);
   void check_brace();
   bool check_brace(int pos);
   void eol_action(const wxCommandEvent& event);
