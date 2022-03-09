@@ -2,7 +2,7 @@
 // Name:      address.h
 // Purpose:   Declaration of class wex::address
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -57,7 +57,9 @@ public:
   /// This is the vi line number,
   /// so subtract 1 for stc line number.
   /// Returns 0 on error in address.
-  int get_line() const;
+  /// Default it uses current position to start determine line
+  /// number, you can specify another pos as well.
+  int get_line(int start_pos = -1) const;
 
   /// Inserts text at this address.
   bool insert(const std::string& text) const;

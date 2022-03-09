@@ -70,15 +70,27 @@ bool wex::command_parser::parse(ex* ex, parse_t type)
                     m_range = m[0];
                     m_cmd   = m[1];
                     m_text  = boost::algorithm::trim_left_copy(m[2]);
+                    log::trace("ex 1addr") << m_range;
                   }},
                  // 2addr
-                 {"^(" + addr + ")?(," + addr + ")?" + cmds_2addr,
+                 {"^(" + addr + "),(" + addr + ")" + cmds_2addr,
                   [&](const regex::match_t& m)
                   {
                     m_type  = address_t::TWO_ADDR;
-                    m_range = m[0] + m[1];
+                    m_range = m[0] + "," + m[1];
                     m_cmd   = m[2];
                     m_text  = m[3];
+                    log::trace("ex 2addr") << m_range;
+                  }},
+                 // 2addr
+                 {"^(" + addr + ")?" + cmds_2addr,
+                  [&](const regex::match_t& m)
+                  {
+                    m_type  = address_t::TWO_ADDR;
+                    m_range = m[0];
+                    m_cmd   = m[1];
+                    m_text  = m[2];
+                    log::trace("ex 2addr") << m_range;
                   }}});
         v.match(m_text) <= 1)
     {

@@ -35,30 +35,26 @@
 
 namespace wex
 {
-int find_stc(ex* ex, const std::string& text, bool forward)
+int find_stc(ex* ex, const std::string& text, int start_pos, bool forward)
 {
   if (forward)
   {
-    ex->get_stc()->SetTargetRange(
-      ex->get_stc()->GetCurrentPos(),
-      ex->get_stc()->GetTextLength());
+    ex->get_stc()->SetTargetRange(start_pos, ex->get_stc()->GetTextLength());
   }
   else
   {
-    ex->get_stc()->SetTargetRange(ex->get_stc()->GetCurrentPos(), 0);
+    ex->get_stc()->SetTargetRange(start_pos, 0);
   }
 
   SEARCH_TARGET;
 
   if (forward)
   {
-    ex->get_stc()->SetTargetRange(0, ex->get_stc()->GetCurrentPos());
+    ex->get_stc()->SetTargetRange(0, start_pos);
   }
   else
   {
-    ex->get_stc()->SetTargetRange(
-      ex->get_stc()->GetTextLength(),
-      ex->get_stc()->GetCurrentPos());
+    ex->get_stc()->SetTargetRange(ex->get_stc()->GetTextLength(), start_pos);
   }
 
   SEARCH_TARGET;
@@ -189,7 +185,7 @@ bool wex::address::flags_supported(const std::string& flags) const
   return true;
 }
 
-int wex::address::get_line() const
+int wex::address::get_line(int start_pos) const
 {
   // We already have a line number, return that one.
   if (m_line >= 1)
@@ -203,13 +199,15 @@ int wex::address::get_line() const
   // match.
   if (regex v({std::string("/(.*)/$"), "\\?(.*)\\?$"}); v.match(m_address) > 0)
   {
+    const auto use_pos =
+      start_pos == -1 ? m_ex->get_stc()->GetCurrentPos() : start_pos;
+
     return !m_ex->get_stc()->is_visual() ?
              find_stream(m_ex, v[0], m_address[0] == '/') :
-             find_stc(m_ex, v[0], m_address[0] == '/');
+             find_stc(m_ex, v[0], use_pos, m_address[0] == '/');
   }
-
   // Try address calculation.
-  if (const auto sum = m_ex->calculator(m_address); sum < 0)
+  else if (const auto sum = m_ex->calculator(m_address); sum < 0)
   {
     return 1;
   }

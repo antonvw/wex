@@ -528,9 +528,9 @@ bool wex::addressrange::move(const address& destination) const
 
 bool wex::addressrange::parse(const command_parser& cp, info_message_t& im)
 {
-  if (!cp.range().empty())
+  if (!cp.range().empty() && !set_range(cp.range()))
   {
-    set_range(cp.range());
+    return false;
   }
 
   im = info_message_t::NONE;
@@ -584,17 +584,17 @@ const std::string wex::addressrange::regex_commands() const
 {
   // 2addr commands
   return std::string("(change|c\\b|"
-                     "copy|co|t|"
-                     "delete|d|"
-                     "global|g|"
-                     "join|j|"
-                     "list|l|"
-                     "move|m|"
-                     "number|nu|"
-                     "print|p|"
-                     "substitute|s|"
-                     "write|w|"
-                     "yank|ya|"
+                     "copy|co\\b|t\\b|"
+                     "delete|d\\b|"
+                     "global|g\\b|"
+                     "join|j\\b|"
+                     "list|l\\b|"
+                     "move|m\\b|"
+                     "number|nu\\b|"
+                     "print|p\\b|"
+                     "substitute|s\\b|"
+                     "write|w\\b|"
+                     "yank|ya\\b|"
                      "[Svy<>\\!&~@#])([\\s\\S]*)");
 }
 
@@ -604,21 +604,10 @@ void wex::addressrange::set(int begin, int end)
   m_end.set_line(end);
 }
 
-void wex::addressrange::set(const std::string& begin, const std::string& end)
+bool wex::addressrange::set(const std::string& begin, const std::string& end)
 {
-  m_begin.m_address = begin;
-
-  if (const auto begin_line = m_begin.get_line(); begin_line > 0)
-  {
-    m_begin.set_line(begin_line);
-  }
-
-  m_end.m_address = end;
-
-  if (const auto end_line = m_end.get_line(); end_line > 0)
-  {
-    m_end.set_line(end_line);
-  }
+  return set_single(begin, m_stc->GetCurrentPos(), m_begin) &&
+         set_single(end, m_stc->GetTargetEnd(), m_end);
 }
 
 void wex::addressrange::set(address& begin, address& end, int lines) const
@@ -627,25 +616,26 @@ void wex::addressrange::set(address& begin, address& end, int lines) const
   end.set_line(begin.get_line() + lines - 1);
 }
 
-void wex::addressrange::set_range(const std::string& range)
+bool wex::addressrange::set_range(const std::string& range)
 {
   if (range == "%")
   {
-    set("1", "$");
+    return set("1", "$");
   }
   else if (range == "*")
   {
     set(
       m_stc->GetFirstVisibleLine() + 1,
       m_stc->GetFirstVisibleLine() + m_stc->LinesOnScreen() + 1);
+    return true;
   }
-  else if (range.find(",") != std::string::npos)
+  else if (const auto comma(range.find(",")); comma != std::string::npos)
   {
-    set(range.substr(0, range.find(",")), range.substr(range.find(",") + 1));
+    return set(range.substr(0, comma), range.substr(comma + 1));
   }
   else
   {
-    set(range, range);
+    return set(range, range);
   }
 }
 
@@ -665,6 +655,25 @@ bool wex::addressrange::set_selection() const
       m_stc->PositionFromLine(m_begin.get_line() - 1),
       m_stc->PositionFromLine(m_end.get_line()));
     return true;
+  }
+}
+
+bool wex::addressrange::set_single(
+  const std::string& line,
+  int                start_pos,
+  address&           addr)
+{
+  addr.m_address = line;
+
+  if (const auto line_no = addr.get_line(start_pos); line_no > 0)
+  {
+    addr.set_line(line_no);
+    return true;
+  }
+  else
+  {
+    log::debug("addressrange line") << line;
+    return false;
   }
 }
 
