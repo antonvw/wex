@@ -8,7 +8,6 @@
 #include <filesystem>
 #include <numeric>
 
-
 #define BOOST_ASIO_HAS_STD_INVOKE_RESULT ON
 #include <boost/process.hpp>
 #include <boost/tokenizer.hpp>
@@ -29,7 +28,7 @@ const std::vector<std::string> wex::process_data::args() const
 {
   if (const auto pos = m_exe.find(" "); pos == std::string::npos)
   {
-    return std::vector <std::string> {};
+    return std::vector<std::string>{};
   }
   else
   {
@@ -63,12 +62,16 @@ const std::string wex::process_data::log() const
   const auto& arg_v(args());
 
   return "exe: " + exe_path() +
-    (!arg_v.empty() ? " args:" +
-         std::accumulate(arg_v.begin(), arg_v.end(), std::string(""),
-          [](const std::string& a, const std::string& b)
-            {
-              return a + " " + b;
-            }): std::string()) +
+         (!arg_v.empty() ?
+            " args:" + std::accumulate(
+                         arg_v.begin(),
+                         arg_v.end(),
+                         std::string(""),
+                         [](const std::string& a, const std::string& b)
+                         {
+                           return a + " " + b;
+                         }) :
+            std::string()) +
          (!m_start_dir.empty() ? " dir: " + m_start_dir : std::string()) +
          (!m_stdin.empty() ? " stdin: " + m_stdin : std::string());
 }

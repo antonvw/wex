@@ -21,14 +21,22 @@ class address
   friend addressrange;
 
 public:
-  /// Constructor for an address from a line.
+  /// The kind of addres this one is.
+  enum address_t
+  {
+    IS_BEGIN,  ///< part of range, the begin
+    IS_END,    ///< part of range, the end
+    IS_SINGLE, ///< not part of range
+  };
+
+  /// Constructor for an address from a line number.
   address(
     /// the ex (or vi) component
     ex* ex,
     /// the address
     int line);
 
-  /// Constructor for an address.
+  /// Constructor for an address from a line string.
   address(
     /// the ex (or vi) component
     ex* ex,
@@ -84,6 +92,9 @@ public:
   /// Supported 1addr commands.
   const std::string regex_commands() const;
 
+  /// Return type of adress.
+  address_t type() const { return m_type; }
+
   /// Shows this address in the ex bar.
   bool write_line_number() const;
 
@@ -93,6 +104,7 @@ private:
 
   ex*         m_ex;
   int         m_line = 0;
+  address_t   m_type{IS_SINGLE};
   std::string m_address; // set by address range
 };
 }; // namespace wex

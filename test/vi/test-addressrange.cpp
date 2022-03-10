@@ -184,6 +184,11 @@ TEST_CASE("wex::addressrange")
     REQUIRE(wex::addressrange(ex, "/blame/,/this/").is_ok());
     REQUIRE(wex::addressrange(ex, "/blame/,/yank/").is_ok());
     REQUIRE(wex::addressrange(ex, "?1?,?2?").is_ok());
+
+    wex::addressrange ar(ex, "/blame/,/yank/");
+    REQUIRE(ar.is_ok());
+    REQUIRE(ar.get_begin().type() == wex::address::IS_BEGIN);
+    REQUIRE(ar.get_end().type() == wex::address::IS_END);
   }
 
   SUBCASE("range-selection")

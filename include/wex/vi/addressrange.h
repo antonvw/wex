@@ -194,7 +194,7 @@ private:
   void set(address& begin, address& end, int lines) const;
   bool set_range(const std::string& range);
   bool set_selection() const;
-  bool set_single(const std::string& line, int start_pos, address& addr);
+  bool set_single(const std::string& line, address& addr);
   bool write(const command_parser& cp);
   bool yank(const command_parser& cp);
 

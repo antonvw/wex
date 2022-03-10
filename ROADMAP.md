@@ -1,7 +1,4 @@
 # roadmap
-- address should have a member to indicate it is used as begin or end
-  and update set_single
-- FF shouwl hav a close button, or escape
 - menus is a template class, is this really necessary
 - add wex::accumulate
   - see also cmdline for find_if template

@@ -28,6 +28,7 @@ TEST_CASE("wex::address")
 
   SUBCASE("constructor")
   {
+    REQUIRE(wex::address(ex).type() == wex::address::IS_SINGLE);
     REQUIRE(wex::address(ex).get_line() == 0);
     REQUIRE(wex::address(ex, 5).get_line() == 5);
 
@@ -80,7 +81,7 @@ TEST_CASE("wex::address")
       address.marker_delete();
       REQUIRE(address.get_line() == 0);
     }
-  
+
     SUBCASE("number")
     {
       REQUIRE(wex::address(ex).get_line() == 0);
@@ -88,7 +89,7 @@ TEST_CASE("wex::address")
       REQUIRE(wex::address(ex, "1").get_line() == 1);
       REQUIRE(wex::address(ex, "100").get_line() == lines);
     }
-    
+
     SUBCASE("text")
     {
       wex::address address(ex, "/hello2/");
