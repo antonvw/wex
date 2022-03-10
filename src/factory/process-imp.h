@@ -45,6 +45,11 @@ public:
   bool write(const std::string& text);
 
 private:
+  void boost_async_system(process* p, const process_data& data);
+  void thread_error(process* p);
+  void thread_input(process* p);
+  void thread_output(process* p);
+
   std::shared_ptr<boost::asio::io_context> m_io;
   std::shared_ptr<std::queue<std::string>> m_queue;
 
