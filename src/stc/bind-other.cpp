@@ -23,6 +23,39 @@
 
 namespace wex
 {
+void check_double_click(stc* stc, wxKeyEvent& event)
+{
+  static bool first_click = false;
+
+  // Check whether to generate shift double.
+  if (event.GetKeyCode() == WXK_SHIFT)
+  {
+    static std::chrono::time_point<std::chrono::system_clock> start;
+
+    if (!first_click)
+    {
+      start       = std::chrono::system_clock::now();
+      first_click = true;
+    }
+    else
+    {
+      if (const auto milli =
+            std::chrono::duration_cast<std::chrono::milliseconds>(
+              std::chrono::system_clock::now() - start);
+          milli.count() < 500)
+      {
+        stc->get_frame()->shift_double_click();
+      }
+
+      first_click = false;
+    }
+  }
+  else
+  {
+    first_click = false;
+  }
+}
+
 void hypertext(stc* stc)
 {
   if (const auto match_pos = stc->FindText(
@@ -178,35 +211,8 @@ void wex::stc::bind_other()
     [=, this](wxKeyEvent& event)
     {
       event.Skip();
-
       check_brace();
-
-      static bool first_click = false;
-
-      // Check whether to generate shift double.
-      if (event.GetKeyCode() == WXK_SHIFT)
-      {
-        static std::chrono::time_point<std::chrono::system_clock> start;
-
-        if (!first_click)
-        {
-          start       = std::chrono::system_clock::now();
-          first_click = true;
-        }
-        else
-        {
-          const auto milli =
-            std::chrono::duration_cast<std::chrono::milliseconds>(
-              std::chrono::system_clock::now() - start);
-
-          if (milli.count() < 500)
-          {
-            m_frame->shift_double_click();
-          }
-
-          first_click = false;
-        }
-      }
+      check_double_click(this, event);
     });
 
   Bind(

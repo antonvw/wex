@@ -1,6 +1,7 @@
 # changes
 
 **v22.10**
+- added blame revision
 
 **v22.04** *March 6, 2022*
 - Microsoft Visual Studio 2022

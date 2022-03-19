@@ -5,7 +5,6 @@
 // Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/ui/frd.h>
 #include <wex/vi/addressrange.h>
 #include <wex/vi/command-parser.h>
 #include <wex/vi/macros.h>
@@ -19,67 +18,13 @@ TEST_CASE("wex::addressrange")
 
   auto* stc = get_stc();
 
-  stc->set_text("hello\nhello1\nhello2");
+  stc->set_text("hello\nhello11\nhello22\ntest\ngcc\nblame\nthis\nyank\ncopy");
 
   auto* ex = new wex::vi(stc);
   ex->marker_add('x', 1);
   ex->marker_add('y', 2);
   ex->get_macros().set_register('*', "ls");
   stc->GotoLine(2);
-
-  SUBCASE("range no selection")
-  {
-    REQUIRE(wex::addressrange(ex).is_ok());
-    REQUIRE(wex::addressrange(ex, -1).is_ok());
-    REQUIRE(wex::addressrange(ex, 5).is_ok());
-    REQUIRE(wex::addressrange(ex, "%").is_ok());
-    REQUIRE(wex::addressrange(ex, "*").is_ok());
-    REQUIRE(wex::addressrange(ex, ".").is_ok());
-    REQUIRE(wex::addressrange(ex, "1,2").is_ok());
-    REQUIRE(wex::addressrange(ex, "/1/,/2/").is_ok());
-    REQUIRE(wex::addressrange(ex, "?1?,?2?").is_ok());
-  }
-
-  SUBCASE("invalid range no selection")
-  {
-    REQUIRE(!wex::addressrange(ex, 0).is_ok());
-    REQUIRE(!wex::addressrange(ex, "0").is_ok());
-    REQUIRE(!wex::addressrange(ex, "x").is_ok());
-    REQUIRE(!wex::addressrange(ex, "x,3").is_ok());
-    REQUIRE(!wex::addressrange(ex, "x,3").erase());
-    REQUIRE(!wex::addressrange(ex, "3,x").escape("ls"));
-    REQUIRE(!wex::addressrange(ex, "3,x").shift_right());
-    REQUIRE(!wex::addressrange(ex, "3,!").is_ok());
-    REQUIRE(!wex::addressrange(ex, "3,@").move(wex::address(ex, "2")));
-    REQUIRE(!wex::addressrange(ex, "1,2").move(wex::address(ex, "x")));
-    REQUIRE(!wex::addressrange(ex, "1,3").move(wex::address(ex, "2")));
-    REQUIRE(!wex::addressrange(ex, "3,@").copy(wex::address(ex, "2")));
-    REQUIRE(!wex::addressrange(ex, "3,x").write("flut"));
-    REQUIRE(!wex::addressrange(ex, " ,").yank());
-    REQUIRE(!wex::addressrange(ex, wex::ex_command::selection_range()).is_ok());
-    REQUIRE(!wex::addressrange(ex, "/xx/,/2/").is_ok());
-    REQUIRE(!wex::addressrange(ex, "?2?,?1?").is_ok());
-  }
-
-  SUBCASE("range selection")
-  {
-    stc->SelectAll();
-
-    REQUIRE(wex::addressrange(ex, 5).is_ok());
-    REQUIRE(wex::addressrange(ex, wex::ex_command::selection_range()).is_ok());
-    stc->SelectNone();
-  }
-
-  SUBCASE("invalid range selection")
-  {
-    stc->SelectAll();
-
-    REQUIRE(!wex::addressrange(ex, 0).is_ok());
-    REQUIRE(!wex::addressrange(ex, "0").is_ok());
-    REQUIRE(!wex::addressrange(ex, "x").is_ok());
-    REQUIRE(!wex::addressrange(ex, "x,3").is_ok());
-    stc->SelectNone();
-  }
 
   SUBCASE("change")
   {
@@ -156,6 +101,38 @@ TEST_CASE("wex::addressrange")
   }
 #endif
 
+  SUBCASE("invalid-range")
+  {
+    REQUIRE(!wex::addressrange(ex, 0).is_ok());
+    REQUIRE(!wex::addressrange(ex, "0").is_ok());
+    REQUIRE(!wex::addressrange(ex, "x").is_ok());
+    REQUIRE(!wex::addressrange(ex, "x,3").is_ok());
+    REQUIRE(!wex::addressrange(ex, "x,3").erase());
+    REQUIRE(!wex::addressrange(ex, "3,x").escape("ls"));
+    REQUIRE(!wex::addressrange(ex, "3,x").shift_right());
+    REQUIRE(!wex::addressrange(ex, "3,!").is_ok());
+    REQUIRE(!wex::addressrange(ex, "3,@").move(wex::address(ex, "2")));
+    REQUIRE(!wex::addressrange(ex, "1,2").move(wex::address(ex, "x")));
+    REQUIRE(!wex::addressrange(ex, "1,3").move(wex::address(ex, "2")));
+    REQUIRE(!wex::addressrange(ex, "3,@").copy(wex::address(ex, "2")));
+    REQUIRE(!wex::addressrange(ex, "3,x").write("flut"));
+    REQUIRE(!wex::addressrange(ex, " ,").yank());
+    REQUIRE(!wex::addressrange(ex, wex::ex_command::selection_range()).is_ok());
+    REQUIRE(!wex::addressrange(ex, "/xx/,/2/").is_ok());
+    REQUIRE(!wex::addressrange(ex, "?2?,?1?").is_ok());
+  }
+
+  SUBCASE("invalid-range-selection")
+  {
+    stc->SelectAll();
+
+    REQUIRE(!wex::addressrange(ex, 0).is_ok());
+    REQUIRE(!wex::addressrange(ex, "0").is_ok());
+    REQUIRE(!wex::addressrange(ex, "x").is_ok());
+    REQUIRE(!wex::addressrange(ex, "x,3").is_ok());
+    stc->SelectNone();
+  }
+
   SUBCASE("join")
   {
     stc->set_text("a\nb\nc\nd\ne\nf\ng\n");
@@ -189,6 +166,38 @@ TEST_CASE("wex::addressrange")
   {
     stc->set_text(contents);
     REQUIRE(wex::addressrange(ex, 5).print());
+  }
+
+  SUBCASE("range")
+  {
+    REQUIRE(wex::addressrange(ex).is_ok());
+    REQUIRE(wex::addressrange(ex, -1).is_ok());
+    REQUIRE(wex::addressrange(ex, 5).is_ok());
+    REQUIRE(wex::addressrange(ex, "%").is_ok());
+    REQUIRE(wex::addressrange(ex, "*").is_ok());
+    REQUIRE(wex::addressrange(ex, ".").is_ok());
+    REQUIRE(wex::addressrange(ex, "1,2").is_ok());
+    REQUIRE(wex::addressrange(ex, "/1/,/2/").is_ok());
+    REQUIRE(wex::addressrange(ex, "/11/,/22/").is_ok());
+    REQUIRE(wex::addressrange(ex, "/test/,/gcc/").is_ok());
+    REQUIRE(wex::addressrange(ex, "/blame/,/copy/").is_ok());
+    REQUIRE(wex::addressrange(ex, "/blame/,/this/").is_ok());
+    REQUIRE(wex::addressrange(ex, "/blame/,/yank/").is_ok());
+    REQUIRE(wex::addressrange(ex, "?1?,?2?").is_ok());
+
+    wex::addressrange ar(ex, "/blame/,/yank/");
+    REQUIRE(ar.is_ok());
+    REQUIRE(ar.get_begin().type() == wex::address::IS_BEGIN);
+    REQUIRE(ar.get_end().type() == wex::address::IS_END);
+  }
+
+  SUBCASE("range-selection")
+  {
+    stc->SelectAll();
+
+    REQUIRE(wex::addressrange(ex, 5).is_ok());
+    REQUIRE(wex::addressrange(ex, wex::ex_command::selection_range()).is_ok());
+    stc->SelectNone();
   }
 
   SUBCASE("shift")

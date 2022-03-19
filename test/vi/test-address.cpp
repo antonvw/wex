@@ -2,7 +2,7 @@
 // Name:      test-address.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/vi/address.h>
@@ -26,10 +26,10 @@ TEST_CASE("wex::address")
   wex::data::stc(stc).control(wex::data::control().line(2)).inject();
   ex->marker_add('b');
 
-  REQUIRE(wex::address(ex).get_line() == 0);
-
   SUBCASE("constructor")
   {
+    REQUIRE(wex::address(ex).type() == wex::address::IS_SINGLE);
+    REQUIRE(wex::address(ex).get_line() == 0);
     REQUIRE(wex::address(ex, 5).get_line() == 5);
 
     for (const auto& it : std::vector<std::pair<std::string, int>>{
@@ -45,10 +45,9 @@ TEST_CASE("wex::address")
     }
   }
 
-  wex::address address(ex, "5");
-
   SUBCASE("adjust_window")
   {
+    wex::address address(ex, "5");
     REQUIRE(address.adjust_window(""));
     REQUIRE(address.adjust_window("-"));
     REQUIRE(address.adjust_window("+"));
@@ -60,12 +59,14 @@ TEST_CASE("wex::address")
 
   SUBCASE("append")
   {
+    wex::address address(ex, "5");
     REQUIRE(address.append("appended text"));
     REQUIRE(stc->get_text().find("appended text") != std::string::npos);
   }
 
   SUBCASE("flags")
   {
+    wex::address address(ex, "5");
     REQUIRE(address.flags_supported(""));
     REQUIRE(address.flags_supported("#"));
     REQUIRE(!address.flags_supported("x"));
@@ -73,16 +74,32 @@ TEST_CASE("wex::address")
 
   SUBCASE("get_line")
   {
-    REQUIRE(wex::address(ex).get_line() == 0);
-    REQUIRE(wex::address(ex, "-1").get_line() == 1);
-    REQUIRE(wex::address(ex, "1").get_line() == 1);
-    REQUIRE(wex::address(ex, "100").get_line() == lines);
+    SUBCASE("marker")
+    {
+      wex::address address(ex, "'a");
+      REQUIRE(address.get_line() == 1);
+      address.marker_delete();
+      REQUIRE(address.get_line() == 0);
+    }
 
-    wex::address address2(ex, "'a");
-    REQUIRE(address2.get_line() == 1);
-    address2.marker_delete();
-    REQUIRE(address2.get_line() == 0);
+    SUBCASE("number")
+    {
+      REQUIRE(wex::address(ex).get_line() == 0);
+      REQUIRE(wex::address(ex, "-1").get_line() == 1);
+      REQUIRE(wex::address(ex, "1").get_line() == 1);
+      REQUIRE(wex::address(ex, "100").get_line() == lines);
+    }
+
+    SUBCASE("text")
+    {
+      wex::address address(ex, "/hello2/");
+      REQUIRE(address.get_line() == 3);
+      REQUIRE(address.get_line(25) == 7);
+      REQUIRE(address.get_line() == 3);
+    }
   }
+
+  wex::address address(ex, "5");
 
   SUBCASE("insert")
   {

@@ -1,11 +1,9 @@
 # roadmap
-- use process_data in vcs_entry and vcs instead of exe and dir
-  - fix comment SetCommand in vcs-entry.h
-- shift double click not ok after single click
 - menus is a template class, is this really necessary
 - add wex::accumulate
   - see also cmdline for find_if template
 - add version to static libs as well
+- svn also supports blame previous revision
 - use boost python for scripting
 - current stc uses old scintilla
   - does not support json bool, see config.cpp

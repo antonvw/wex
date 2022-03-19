@@ -898,10 +898,16 @@ bool wex::stc::set_indicator(const indicator& indicator, int start, int end)
     end = GetTargetEnd();
 
   if (const bool loaded(lexers::get()->indicator_is_loaded(indicator));
-      !loaded || start == -1 || end == -1 || end <= start)
+      !loaded || start == -1 || end == -1)
   {
     log("indicator") << indicator.number() << loaded << start << end;
     return false;
+  }
+
+  if (end == start)
+  {
+    m_vi->marker_add('l', LineFromPosition(start));
+    return true;
   }
 
   SetIndicatorCurrent(indicator.number());

@@ -2,7 +2,7 @@
 // Name:      vcs-entry.h
 // Purpose:   Declaration of wex::vcs_entry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2010-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -17,6 +17,7 @@
 namespace wex
 {
 class menu;
+class process_data;
 
 /// This class collects a single vcs.
 class vcs_entry
@@ -33,6 +34,17 @@ public:
   /// Default constructor using xml node.
   vcs_entry(const pugi::xml_node& node = pugi::xml_node());
 
+  /// Virtual overrides.
+
+  /// Executes the command synchronously.
+  /// You just need to specify the flags, the binary itself is
+  /// prefixed by wex. Flags available from git menu commands xml
+  /// are also added.
+  /// Return value is the process exit code.
+  int system(const process_data& data) override;
+
+  /// Other methods.
+
   /// Returns the administrative directory.
   const auto& admin_dir() const { return m_admin_dir; }
 
@@ -44,10 +56,10 @@ public:
     /// menu to be built
     menu* menu) const;
 
-  /// Executes the current vcs command (from SetCommand), or
-  /// the first command if SetCommand was not yet invoked.
+  /// Executes the current vcs command synchronously (from set_command), or
+  /// the first command if set_command was not yet invoked.
   /// Might ask for vcs binary if it is not yet known.
-  /// Return code is code from process Execute,
+  /// Return code is code from process execute,
   /// and also can be false if dialog for vcs bin was cancelled.
   bool execute(
     /// args, like filenames, or vcs flags
@@ -56,14 +68,6 @@ public:
     const lexer& lexer = wex::lexer(),
     /// working directory
     const std::string& wd = std::string());
-
-  /// Executes the command.
-  /// Return value is false if process could not execute.
-  bool execute(
-    /// command to be executed
-    const std::string& command,
-    /// working dir
-    const std::string& wd);
 
   /// Returns flags location.
   auto flags_location() const { return m_flags_location; }

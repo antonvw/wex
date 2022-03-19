@@ -7,6 +7,20 @@ Resource	wex-keywords.resource
 
 
 *** Test Cases ***
+addressing
+	Input	:a|line has text
+	...	:a|line has a tiger
+	...	:a|line has a tiger
+	...	:a|line has a tiger
+	...	:a|line has a tiger
+	...	:a|line has a tiger
+	...	:a|line has a tiger
+	...	:a|line has simon and simon and garfunkel
+	...	:a|line has no match
+	...	:/text/,/u/y
+	Appl
+	Output Contains	8
+
 empty
 	Input	:1000
 	...	:.=

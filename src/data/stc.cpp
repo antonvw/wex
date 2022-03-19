@@ -2,7 +2,7 @@
 // Name:      data/stc.cpp
 // Purpose:   Implementation of wex::data::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -214,9 +214,9 @@ bool wex::data::stc::inject_line() const
 
     m_stc->goto_line(line);
 
-    if (m_stc->is_visual())
+    if (const auto len(m_stc->GetTextLength()); m_stc->is_visual() && len > 0)
     {
-      m_stc->IndicatorClearRange(0, m_stc->GetTextLength() - 1);
+      m_stc->IndicatorClearRange(0, len - 1);
       m_stc->set_indicator(
         indicator(m_indicator_no),
         std::max(m_stc->PositionFromLine(line), 0),
