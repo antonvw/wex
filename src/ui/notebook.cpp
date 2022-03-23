@@ -5,6 +5,7 @@
 // Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/log.h>
 #include <wex/ui/item-dialog.h>
 #include <wex/ui/item-vector.h>
 #include <wex/ui/notebook.h>

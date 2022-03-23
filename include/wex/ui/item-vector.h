@@ -9,7 +9,6 @@
 
 #include <wex/core/config.h>
 #include <wex/core/core.h>
-#include <wex/core/log.h>
 #include <wex/ui/item.h>
 
 #include <any>
@@ -34,6 +33,8 @@ private:
   template <typename T>
   bool find(const std::vector<item>* items, const std::string& label, T& value)
     const;
+  void log_error(const std::string& text) const;
+  void log_error(const std::string& text, const std::exception& e) const;
 
   const std::vector<item>* m_v;
 };
@@ -60,12 +61,12 @@ const T wex::item_vector::find(const std::string& label) const
   {
     if (!find<T>(m_v, label, value))
     {
-      log("unknown item") << label;
+      log_error(label);
     }
   }
   catch (std::bad_cast& e)
   {
-    log(e) << label;
+    log_error(label, e);
   }
 
   return value;

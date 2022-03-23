@@ -9,6 +9,7 @@
 #include <boost/tokenizer.hpp>
 #include <wex/common/util.h>
 #include <wex/core/config.h>
+#include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/stc/shell.h>
 #include <wex/stc/vcs-entry.h>

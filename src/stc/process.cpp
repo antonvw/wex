@@ -5,6 +5,8 @@
 // Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/config.h>
+#include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/stc/process.h>
 #include <wex/stc/shell.h>

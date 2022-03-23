@@ -8,8 +8,6 @@
 #pragma once
 
 #include <pugixml.hpp>
-#include <wex/core/config.h>
-#include <wex/core/core.h>
 #include <wex/core/menu-command.h>
 #include <wex/ui/menu.h>
 
@@ -45,16 +43,15 @@ public:
   template <typename T> static bool load(const std::string& name, T& entries);
 
   /// Returns the xml filename.
-  static const wex::path path()
-  {
-    return wex::path(config::dir(), "wex-menus.xml");
-  }
+  static const wex::path path();
 
 private:
   template <typename T>
   static void add_command(const pugi::xml_node& node, T& commands);
 
   static void add_menu(const menu_command& mc, menu* menu);
+  static bool allow_add_menu(const menu_command& mc, const menu* menu);
+  static void no_commands_added(const pugi::xml_node& node);
 
   static inline int m_id{0};
 };
@@ -64,14 +61,23 @@ private:
 template <typename T>
 size_t wex::menus::add_commands(const pugi::xml_node& node, T& commands)
 {
+  size_t added = 0;
+
   for (const auto& child : node.children())
   {
     if (strcmp(child.name(), "commands") == 0)
     {
       add_command(child, commands);
+      added++;
     }
   }
-  return commands.size();
+
+  if (added == 0)
+  {
+    no_commands_added(node);
+  }
+
+  return added;
 }
 
 template <typename T>
@@ -81,40 +87,7 @@ size_t wex::menus::build_menu(const T& commands, int base_id, menu* menu)
 
   for (const auto& it : commands)
   {
-    bool add = false;
-    if (
-      it.type().test(menu_command::IS_POPUP) &&
-      it.type().test(menu_command::IS_MAIN))
-      add = true;
-    else if (it.type().test(menu_command::IS_POPUP))
-      add = menu->style().test(menu::IS_POPUP);
-    else if (it.type().test(menu_command::IS_MAIN))
-      add = !menu->style().test(menu::IS_POPUP);
-
-    if (
-      (menu->style().test(menu::IS_SELECTED) &&
-       !it.type().test(menu_command::IS_SELECTED)) ||
-      (!menu->style().test(menu::IS_SELECTED) &&
-       it.type().test(menu_command::IS_SELECTED)))
-    {
-      add = false;
-    }
-
-    if (
-      !menu->style().test(menu::IS_LINES) &&
-      it.type().test(menu_command::IS_LINES))
-    {
-      add = false;
-    }
-
-    if (
-      !menu->style().test(menu::IS_VISUAL) &&
-      it.type().test(menu_command::IS_VISUAL))
-    {
-      add = false;
-    }
-
-    if (add)
+    if (allow_add_menu(it, menu))
     {
       add_menu(it, menu);
     }

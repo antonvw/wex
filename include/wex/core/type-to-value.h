@@ -2,17 +2,18 @@
 // Name:      type-to-value.h
 // Purpose:   Declaration of class wex::type_to_value
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
-
-#include <wex/core/log.h>
 
 #include <string>
 
 namespace wex
 {
+/// Helper for log errors.
+void log_type_to_value_error(const std::exception& e, const std::string& text);
+
 /// Convert a general type to string, for int or string type.
 template <typename T> class type_to_value
 {
@@ -73,12 +74,12 @@ public:
     }
     catch (std::exception& e)
     {
-      log(e) << "value:" << m_s;
+      log_type_to_value_error(e, m_s);
       return m_i;
     }
   };
 
-  /// Returns value a string.
+  /// Returns value as a string.
   const auto get_string() const
   {
     if (!m_s.empty())
@@ -101,13 +102,13 @@ public:
     }
     catch (std::exception& e)
     {
-      log(e) << "value:" << m_i;
+      log_type_to_value_error(e, std::to_string(m_i));
       return m_s;
     }
   };
 
 private:
   const int         m_i{0};
-  const std::string m_s{std::string()};
+  const std::string m_s;
 };
 }; // namespace wex

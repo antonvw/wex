@@ -9,6 +9,7 @@
 #include <wex/common/dir.h>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
+#include <wex/core/log.h>
 #include <wex/core/regex.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/process.h>
