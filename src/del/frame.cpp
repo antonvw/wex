@@ -11,6 +11,7 @@
 #include <wex/common/tostring.h>
 #include <wex/common/util.h>
 #include <wex/core/cmdline.h>
+#include <wex/core/log.h>
 #include <wex/core/regex.h>
 #include <wex/del/wex.h>
 #include <wex/factory/lexers.h>

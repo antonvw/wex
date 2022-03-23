@@ -1015,7 +1015,7 @@ bool wex::listview::load(const std::list<std::string>& l)
 bool wex::listview::on_command(wxCommandEvent& event)
 {
   switch (const long new_index =
-            GetSelectedItemCount() > 0 ? GetFirstSelected() : -1;
+            GetSelectedItemCount() > 0 ? GetFirstSelected() : 0;
           data().type())
   {
     case data::listview::TSV:
@@ -1024,7 +1024,7 @@ bool wex::listview::on_command(wxCommandEvent& event)
 
       if (m_frame->show_stc_entry_dialog(true) == wxID_OK)
       {
-        insert_item(
+        return insert_item(
           tokenize<std::vector<std::string>>(
             m_frame->stc_entry_dialog_component()->get_text(),
             std::string(1, field_separator()).c_str()),

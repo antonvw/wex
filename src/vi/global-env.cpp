@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
+#include <wex/core/log.h>
 #include <wex/factory/stc.h>
 #include <wex/ui/frame.h>
 #include <wex/vi/addressrange.h>

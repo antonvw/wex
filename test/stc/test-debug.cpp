@@ -2,9 +2,10 @@
 // Name:      test-debug.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/config.h>
 #include <wex/factory/defs.h>
 #include <wex/stc/debug.h>
 #include <wex/stc/process.h>

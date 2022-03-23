@@ -9,6 +9,8 @@
 
 #include <wex/common/util.h>
 #include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
 #include <wex/factory/path-lexer.h>
 #include <wex/stc/vcs.h>
 #include <wex/ui/item-dialog.h>

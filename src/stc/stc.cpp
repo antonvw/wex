@@ -7,6 +7,7 @@
 
 #include <boost/tokenizer.hpp>
 #include <wex/core/config.h>
+#include <wex/core/log.h>
 #include <wex/core/path.h>
 #include <wex/factory/blame.h>
 #include <wex/factory/indicator.h>

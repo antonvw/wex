@@ -2,18 +2,17 @@
 // Name:      menu-commands.h
 // Purpose:   Declaration of class wex::menu_commands
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <pugixml.hpp>
-
-#include <wex/core/log.h>
-#include <wex/ui/menus.h>
-
 #include <string>
 #include <vector>
+
+#include <pugixml.hpp>
+
+#include <wex/ui/menus.h>
 
 namespace wex
 {
@@ -38,10 +37,7 @@ public:
   {
     if (!m_name.empty())
     {
-      if (menus::add_commands(node, m_commands) == 0)
-      {
-        log("no commands found for") << m_name;
-      }
+      menus::add_commands(node, m_commands);
     }
   };
 

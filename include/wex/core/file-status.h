@@ -2,14 +2,13 @@
 // Name:      file-status.h
 // Purpose:   Declaration of wex::file_status class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2010-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <sys/stat.h>
-// import gives error
 #include <string>
+#include <sys/stat.h>
 
 namespace wex
 {
@@ -51,9 +50,6 @@ public:
 
   /// Returns true if this stat is readonly.
   bool is_readonly() const;
-
-  /// Returns path.
-  const auto& path() const { return m_fullpath; }
 
   /// Sets (syncs) this stat, returns result and keeps it in is_ok.
   bool sync();
