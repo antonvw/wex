@@ -174,7 +174,7 @@ frame::activate(wex::data::listview::type_t type, const wex::lexer* lexer)
 {
   for (size_t i = 0; i < m_notebook->GetPageCount(); i++)
   {
-    wex::del::listview* vw = (wex::del::listview*)m_notebook->GetPage(i);
+    auto* vw = (wex::del::listview*)m_notebook->GetPage(i);
 
     if (vw->data().type() == type)
     {

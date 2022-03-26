@@ -1,24 +1,24 @@
 name: github-ci
-  on: [push]
+on: [push]
 
-  jobs:
-    build:
+jobs:
+  build:
 
-      runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
-      steps:
-        - uses: actions/checkout@v2
-          with:
-            submodules: recursive
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
 
-        - name: Install boost and gtk3
-          run: sudo apt-get update && sudo apt-get install -yq libboost-all-dev liblzma5 libjbig0 libgtk-3-dev
+      - name: Install boost and gtk3
+        run: sudo apt-get update && sudo apt-get install -yq libboost-all-dev liblzma5 libjbig0 libgtk-3-dev
 
-        - name: Install gcc-11
-          run: sudo apt-get install -yq gcc-11 g++-11
+      - name: Install gcc-11
+        run: sudo apt-get install -yq gcc-11 g++-11
 
-        - name: Configure
-          run: export CC=gcc-11 && export CXX=g++-11 && mkdir build && cd build && cmake ..
+      - name: Configure
+        run: export CC=gcc-11 && export CXX=g++-11 && mkdir build && cd build && cmake ..
 
-        - name: Make
-          run: cd build && make
+      - name: Make
+        run: cd build && make

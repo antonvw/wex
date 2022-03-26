@@ -3,7 +3,7 @@
 // Purpose:   Implementation of class wex::ex
 //            http://pubs.opengroup.org/onlinepubs/9699919799/utilities/ex.html
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -90,7 +90,9 @@ bool wex::ex::command(const std::string& cmd)
     m_command.clear();
     return auto_write();
   }
-  else if (command == ":" || command == ":" + ex_command::selection_range() || command == ":!")
+  else if (
+    command == ":" || command == ":" + ex_command::selection_range() ||
+    command == ":!")
   {
     return m_frame->show_ex_command(get_stc(), command);
   }

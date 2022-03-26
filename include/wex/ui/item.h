@@ -2,7 +2,7 @@
 // Name:      item.h
 // Purpose:   Declaration of wex::item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2015-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -84,6 +84,9 @@ public:
 
     /// wex::grid item
     GRID,
+
+    /// group item, containing vector of subitems
+    GROUP,
 
     /// wxHyperlinkCtrl item
     HYPERLINKCTRL,
@@ -167,7 +170,9 @@ public:
   /// Choices for listboxes with toggle options.
   typedef std::set<std::string> choices_bool_t;
 
-  // A group is a pair of text with a vector of items.
+  /// A group is a pair of text with a vector of items.
+  /// If the text is empty, a group is used, otherwise a static box,
+  /// if used by a notebook, the text is the page text.
   typedef std::pair<std::string, std::vector<item>> group_t;
 
   /// A notebook is a vector of groups.
@@ -333,13 +338,15 @@ public:
   {
   }
 
-  /// Constructor for a STATICBOX item.
+  /// Constructor for a STATICBOX or GROUP item.
+  /// If the group text is empty, a GROUP item is created, otherwise a
+  /// STATIXBOX item.
   item(
     /// group items
-    const group_t& v,
+    const group_t& g,
     /// item data
     const data::item& data = data::item().label_type(data::item::LABEL_NONE))
-    : item(STATICBOX, v.first, v, data)
+    : item(g.first.empty() ? GROUP : STATICBOX, g.first, g, data)
   {
   }
 

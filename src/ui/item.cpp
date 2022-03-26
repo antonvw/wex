@@ -5,163 +5,21 @@
 // Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <sstream>
+
 #include <wex/common/tocontainer.h>
 #include <wex/common/util.h>
 #include <wex/core/log.h>
 #include <wex/ui/item-template-dialog.h>
 
-#include <sstream>
-
 #include "item.h"
 #include "ui.h"
 
-namespace wex
-{
-const std::any get_value_prim(const wex::item* item)
-{
-  switch (item->type())
-  {
-    case item::CHECKBOX:
-      if (item->data().initial().has_value())
-      {
-        return std::any_cast<bool>(item->data().initial());
-      }
-      else
-      {
-        return false;
-      }
-
-    case item::CHECKLISTBOX_BIT:
-    case item::RADIOBOX:
-    {
-      long value = 0;
-      for (const auto& b :
-           std::any_cast<wex::item::choices_t>(item->data().initial()))
-      {
-        if (b.second.find(",") != std::string::npos)
-        {
-          value |= b.first;
-        }
-      }
-
-      return std::any(value);
-    }
-
-    default:
-      return item->data().initial();
-  }
-}
-
-template <typename T> std::any get_value_simple(wxWindow* window)
-{
-  return (reinterpret_cast<T>(window))->GetValue();
-}
-
-bool get_value_simple(wex::item::type_t t, wxWindow* window, std::any& any)
-{
-  switch (t)
-  {
-    case item::CHECKBOX:
-      any = get_value_simple<wxCheckBox*>(window);
-      break;
-
-    case item::SLIDER:
-      any = get_value_simple<wxSlider*>(window);
-      break;
-
-    case item::SPINCTRL:
-      any = get_value_simple<wxSpinCtrl*>(window);
-      break;
-
-    case item::SPINCTRLDOUBLE:
-      any = get_value_simple<wxSpinCtrlDouble*>(window);
-      break;
-
-    case item::TOGGLEBUTTON:
-      any = get_value_simple<wxToggleButton*>(window);
-      break;
-
-    default:
-      return false;
-  }
-
-  return true;
-}
-
-bool no_value(wex::item::type_t t)
-{
-  switch (t)
-  {
-    case item::BUTTON:
-    case item::STATICBOX:
-    case item::STATICLINE:
-    case item::STATICTEXT:
-      break;
-
-    case item::CHECKLISTBOX_BOOL:
-    case item::RADIOBOX:
-    case item::USER:
-      // Not yet implemented
-      break;
-
-    default:
-      return false;
-  }
-
-  return true;
-}
-
-const std::string str(const std::string& name, const std::any& any)
-{
-  std::stringstream s;
-
-  s << name << "{internal type: " << any.type().name() << ", value: ";
-
-  if (any.has_value())
-  {
-    try
-    {
-      if (any.type() == typeid(int))
-      {
-        s << std::any_cast<int>(any);
-      }
-      else if (any.type() == typeid(long))
-      {
-        s << std::any_cast<long>(any);
-      }
-      else if (any.type() == typeid(double))
-      {
-        s << std::any_cast<double>(any);
-      }
-      else if (any.type() == typeid(std::string))
-      {
-        s << std::any_cast<std::string>(any);
-      }
-      else
-      {
-        s << "<no cast available>";
-      }
-    }
-    catch (std::bad_cast& e)
-    {
-      s << "<log bad cast: " << e.what() << ">";
-    }
-  }
-  else
-  {
-    s << "<no value>";
-  }
-
-  s << "} ";
-
-  return s.str();
-}
-
-const item::type_t use_type(const std::string& label, item::type_t t)
-{
-  return label.find(':') != std::string::npos ? item::STATICTEXT : t;
-}
-} // namespace wex
+// When using a wxGridBagSizer instead of a wxFlexGridSizer:
+// wxWidgets/src/common/gbsizer.cpp(781):
+// assert ""Assert failure"" failed in Insert():
+// Insert should not be used with wxGridBagSizer.
+// during sizer->Add, and all item dialogs are incorrect
 
 wex::item::item(
   type_t             type,
@@ -207,6 +65,7 @@ wex::item::item(
       case COMBOBOX_FILE:
       case DIRPICKERCTRL:
       case FILEPICKERCTRL:
+      case GROUP:
       case SPACER:
       case STATICLINE:
       case USER:
@@ -241,8 +100,6 @@ wex::item::item(
 
 wxFlexGridSizer* wex::item::add(wxSizer* sizer, wxFlexGridSizer* current) const
 {
-  assert(m_window != nullptr);
-
   if (current == nullptr)
   {
     current = new wxFlexGridSizer(
@@ -256,7 +113,10 @@ wxFlexGridSizer* wex::item::add(wxSizer* sizer, wxFlexGridSizer* current) const
     add_static_text(current);
   }
 
-  current->Add(m_window, m_sizer_flags);
+  if (m_window != nullptr)
+  {
+    current->Add(m_window, m_sizer_flags);
+  }
 
   if (m_is_row_growable && current->GetEffectiveRowsCount() >= 1)
   {
@@ -347,6 +207,14 @@ void wex::item::add_items(group_t& page, bool readonly)
     auto* fgz = new wxFlexGridSizer(use_cols);
     add_items(sb, fgz, page.second, readonly);
     sb->SetSizerAndFit(fgz);
+  }
+  else if (m_type == GROUP)
+  {
+    auto* panel = dynamic_cast<wxPanel*>(m_window);
+    auto* fgz   = new wxFlexGridSizer(page.second.size());
+    fgz->AddGrowableCol(0);
+    add_items(panel, fgz, page.second, readonly);
+    panel->SetSizerAndFit(fgz);
   }
   else
   {
@@ -606,6 +474,7 @@ wxFlexGridSizer* wex::item::layout(
         sizer->AddSpacer(m_data.window().style());
         return fgz;
 
+      case GROUP:
       case STATICBOX:
       {
         auto group(std::any_cast<group_t>(m_data.initial()));

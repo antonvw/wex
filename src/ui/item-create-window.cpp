@@ -288,6 +288,11 @@ void create_hyperlink_control(
                                   item.data().window().style());
 }
 
+void create_panel(wxWindow* parent, wxWindow*& window, const wex::item& item)
+{
+  window = new wxPanel(parent, item.data().window().id());
+}
+
 void create_radiobox(wxWindow* parent, wxWindow*& window, const wex::item& item)
 {
   auto* rb = new wxRadioBox(
@@ -447,6 +452,7 @@ wex::item::create_t wex::item::creators()
     CREATE_CTRL(create_file_picker_control) 
     CREATE_CTRL(create_font_picker_control)
     CREATE_CTRL(create_grid_control)
+    CREATE_CTRL(create_panel) 
     CREATE_CTRL(create_hyperlink_control)
     {[&](wxWindow* parent, wxWindow*& window, const wex::item& item)
       {
