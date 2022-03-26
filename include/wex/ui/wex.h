@@ -2,7 +2,7 @@
 // Name:      ui/wex.h
 // Purpose:   General wex include file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -17,6 +17,7 @@
 #include <wex/ui/frd.h>
 #include <wex/ui/grid-statistics.h>
 #include <wex/ui/grid.h>
+#include <wex/ui/item-build.h>
 #include <wex/ui/item-dialog.h>
 #include <wex/ui/item-template-dialog.h>
 #include <wex/ui/item-vector.h>

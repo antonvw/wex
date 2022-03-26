@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 
+# shellcheck source=../ci/use-clang.sh
 . ../ci/use-clang.sh
 
 cmake -DCMAKE_CXX_COMPILER="${CXX}" -DwexBUILD_SAMPLES=ON -DwexBUILD_TESTS=ON -DwexBUILD_SHARED=ON ..

@@ -9,6 +9,17 @@
 
 #include <wex/ui/item-build.h>
 
+const wex::item wex::add_combobox_with_max(
+  const std::string& name_combo,
+  const std::string& name_max,
+  const data::item&  data)
+{
+  return {
+    {"",
+     {{name_combo, wex::item::COMBOBOX, std::any(), data},
+      {name_max, -1, INT_MAX}}}};
+}
+
 const std::vector<wex::item>
 wex::add_header(const std::vector<std::string>& names)
 {

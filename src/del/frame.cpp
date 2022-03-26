@@ -94,10 +94,11 @@ wex::del::frame::frame(
 
   m_rif_dialog = new item_dialog(
     {f.at(0),
-     {find_replace_data::get()->text_replace_with(), item::COMBOBOX},
+     add_combobox_with_max(
+       find_replace_data::get()->text_replace_with(),
+       _("fif.Max")),
      f.at(1),
      f.at(2),
-     {_("fif.Max replacements"), -1, INT_MAX},
      m_info},
     data::window()
       .button(wxAPPLY | wxCANCEL)

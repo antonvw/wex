@@ -287,18 +287,19 @@ TEST_CASE("wex::ex")
     stc->LineDownExtend();
     stc->LineDownExtend();
     stc->LineDownExtend();
-    REQUIRE(ex->command(":" + wex::ex_command::selection_range() + "w test-ex.txt"));
+    REQUIRE(
+      ex->command(":" + wex::ex_command::selection_range() + "w test-ex.txt"));
     REQUIRE(ex->command(":" + wex::ex_command::selection_range() + "<"));
     REQUIRE(ex->command(":" + wex::ex_command::selection_range() + ">"));
 
 #ifndef __WXMSW__
-    ex->command(":" + wex::ex_command::selection_range() +"!sort");
+    ex->command(":" + wex::ex_command::selection_range() + "!sort");
 #endif
 
     stc->GotoLine(2);
     stc->LineDownExtend();
     REQUIRE(!ex->command(":" + wex::ex_command::selection_range() + "x"));
-    
+
     stc->set_text("blame\n\ncopy chances");
     REQUIRE(ex->command(":/blame/,/copy/y"));
     REQUIRE(ex->command(":/blame/,/y/y"));

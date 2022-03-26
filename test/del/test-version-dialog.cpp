@@ -11,7 +11,7 @@
 TEST_CASE("wex::about_info")
 {
   wex::about_info about;
-  
+
   about.icon(wxIcon());
 
   REQUIRE(about.GetDescription().empty());

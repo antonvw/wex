@@ -59,7 +59,7 @@ public:
 
   /// Sets yank register.
   static void set_register_yank(const std::string& value);
-  
+
   /// Other methods.
 
   /// The visual modes.
