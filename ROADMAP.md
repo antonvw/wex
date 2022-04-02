@@ -1,6 +1,8 @@
 # roadmap
+- fix the shown revision comment (make_comment error)
+- test blame and ex mode
+
 - add version to static libs as well
-- svn also supports blame previous revision
 - use boost python for scripting
 - current stc uses old scintilla
   - does not support json bool, see config.cpp

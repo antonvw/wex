@@ -25,10 +25,12 @@ class vcs_entry
   , public menu_commands<vcs_command>
 {
 public:
+  /// Flags location flags, indicate where flags from xml
+  /// should be placed when building vcs commands.
   enum
   {
-    FLAGS_LOCATION_POSTFIX,
-    FLAGS_LOCATION_PREFIX
+    FLAGS_LOCATION_POSTFIX, /// after e.g. id
+    FLAGS_LOCATION_PREFIX   /// before e.g. id
   };
 
   /// Default constructor using xml node.

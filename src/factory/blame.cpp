@@ -26,7 +26,7 @@ build(const std::string& key, const std::string& field, bool first = false)
       add += " ";
     }
 
-    add += field;
+    add += boost::algorithm::trim_copy(field);
   }
 
   return add;
@@ -37,6 +37,7 @@ wex::blame::blame(const pugi::xml_node& node)
   : m_blame_format(node.attribute("blame-format").value())
   , m_date_format(node.attribute("date-format").value())
   , m_date_print(node.attribute("date-print").as_uint())
+  , m_name(node.attribute("name").value())
 {
 }
 
@@ -90,9 +91,9 @@ bool wex::blame::parse(const std::string& text)
 {
   try
   {
-    if (regex r(m_blame_format); r.search(text) >= 3)
+    if (regex r(m_blame_format); r.search(text) >= 4)
     {
-      if (r.matches().size() == 3)
+      if (m_name == "svn" && r.matches().size() == 4)
       {
         return parse_compact(text, r);
       }
@@ -102,7 +103,7 @@ bool wex::blame::parse(const std::string& text)
       }
       else
       {
-        log("blame parsing") << r.matches().size();
+        log("blame parsing") << m_name << r.matches().size();
         return false;
       }
     }
@@ -119,6 +120,7 @@ bool wex::blame::parse(const std::string& text)
 // 0 -> id
 // 1 -> author
 // 2 -> date
+// 3 -> original line text
 bool wex::blame::parse_compact(const std::string& line, const regex& r)
 {
   m_info = build("id", r[0], true) + build("author", r[1]) +
@@ -130,7 +132,12 @@ bool wex::blame::parse_compact(const std::string& line, const regex& r)
   }
 
   m_skip_info = false;
-  m_style     = get_style(r[2]);
+  m_path.clear(); // not present in svn blame
+  m_style = get_style(r[2]);
+  m_line_no++; // not present in svn blame
+  m_line_text = r[3];
+
+  log::trace("parse_compact") << m_info << "no:" << m_line_no;
 
   return true;
 }
@@ -157,6 +164,8 @@ bool wex::blame::parse_full(const std::string& line, const regex& r)
   m_style     = get_style(r[3]);
   m_line_no   = std::stoi(r[4]) - 1;
   m_line_text = r[5];
+
+  log::trace("parse_full") << m_info;
 
   return true;
 }

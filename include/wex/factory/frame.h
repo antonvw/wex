@@ -88,14 +88,6 @@ public:
     return nullptr;
   };
 
-  /// Allows you to open a filename with info from process.
-  /// Returns stc component opened, or nullptr.
-  virtual factory::stc*
-  open_file(const path& filename, factory::process& p, const data::stc& data)
-  {
-    return nullptr;
-  };
-
   /// Allows you to handle output text, .e.g. from a process.
   virtual bool output(const std::string& text) const { return false; }
 

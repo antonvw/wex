@@ -11,6 +11,7 @@
 #include <wex/factory/indicator.h>
 #include <wex/factory/lexers.h>
 #include <wex/stc/auto-complete.h>
+#include <wex/stc/vcs.h>
 #include <wex/ui/frd.h>
 
 #include "test.h"
@@ -39,6 +40,27 @@ TEST_CASE("wex::stc")
     REQUIRE(stc->data().flags() == 0);
     const auto& buffer = stc->get_text();
     REQUIRE(buffer.length() == 40);
+  }
+
+  SUBCASE("blame")
+  {
+    wex::blame blame;
+    wex::lexers::get()->apply_margin_text_style(stc, &blame);
+
+    pugi::xml_document doc;
+    REQUIRE(doc.load_string("<vcs name=\"git\" admin-dir=\"./\" log-flags=\"-n "
+                            "1\" blame-format=\" yyyy\">"
+                            "</vcs>"));
+    wex::vcs_entry entry(doc.document_element());
+    REQUIRE(entry.name() == "git");
+    REQUIRE(!stc->show_blame(&entry));
+
+    REQUIRE(
+      entry.system(wex::process_data().args(
+        "blame " + wex::test::get_path("test.h").string())) == 0);
+    REQUIRE(stc->show_blame(&entry));
+
+    stc->get_file().reset_contents_changed();
   }
 
   SUBCASE("config_dialog")
@@ -242,9 +264,6 @@ TEST_CASE("wex::stc")
     stc->open(wex::test::get_path());
     wex::lexers::get()->apply_global_styles(stc);
     wex::lexers::get()->apply(stc);
-
-    wex::blame blame;
-    wex::lexers::get()->apply_margin_text_style(stc, &blame);
 
     stc->get_file().reset_contents_changed();
   }
