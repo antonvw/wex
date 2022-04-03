@@ -55,10 +55,12 @@ TEST_CASE("wex::stc")
     REQUIRE(entry.name() == "git");
     REQUIRE(!stc->show_blame(&entry));
 
+#ifndef __WXMSW__
     REQUIRE(
       entry.system(wex::process_data().args(
         "blame " + wex::test::get_path("test.h").string())) == 0);
     REQUIRE(stc->show_blame(&entry));
+#endif
 
     stc->get_file().reset_contents_changed();
   }
