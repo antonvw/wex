@@ -16,13 +16,24 @@ namespace wex
 class process_data
 {
 public:
-  /// Default constructor, sets the exe (and possible
-  /// options).
-  process_data(const std::string& exe = std::string());
+  /// Default constructor, sets the exe (and possible args).
+  /// You can choose to specify the args as cmdline option after the exe,
+  /// or as separate args.
+  process_data(
+    /// the exe
+    const std::string& exe = std::string(),
+    // the args
+    const std::string& args = std::string());
 
   /// Returns args as a vector of strings,
   /// or empty vector if no args were provided to the exe.
   const std::vector<std::string> args() const;
+
+  /// Sets args member.
+  process_data& args(const std::string& rhs);
+
+  /// Returns (the explicit separately specified or set) args as a string.
+  const auto& args_str() const { return m_args; }
 
   /// Returns exe.
   const auto& exe() const { return m_exe; }
@@ -51,6 +62,6 @@ public:
   process_data& std_in(const std::string& rhs);
 
 private:
-  std::string m_exe, m_start_dir, m_stdin;
+  std::string m_args, m_exe, m_start_dir, m_stdin;
 };
 } // namespace wex

@@ -172,12 +172,7 @@ public:
 
   /// Shows blame info for vcs in the text margin.
   /// Returns true if info was added.
-  bool show_blame(
-    /// vcs to use
-    vcs_entry* vcs,
-    /// default the std_out from vcs is used, if
-    /// this std_out is not empty this one is used
-    const std::string& std_out = std::string());
+  bool show_blame(vcs_entry* vcs);
 
   /// Virtual methods from wxWidgets.
 

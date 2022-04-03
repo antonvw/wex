@@ -435,42 +435,64 @@ void wex::stc::bind_all()
 
 void wex::stc::blame_revision()
 {
-  std::string  revision(MarginGetText(m_margin_text_click));
-  const auto   renamed(find_after(revision, "RENAMED: "));
-  wex::process p;
+  std::string revision(MarginGetText(m_margin_text_click));
+  const auto  rev(get_word(revision));
+  auto        renamed(find_after(revision, "RENAMED: "));
+  wex::vcs    vcs({path()});
 
-  if (!renamed.empty())
+  log::trace("blame revision") << vcs.entry().name();
+
+  if (vcs.entry().name() == "git")
   {
-    if (const auto rev(get_word(revision)); rev != find_before(renamed, " "))
+    if (!renamed.empty() && renamed != revision)
     {
-      if (
-        p.system(process_data("git blame " + rev + " -- " + renamed)
-                   .start_dir(vcs().toplevel().string())) != 0)
+      if (rev != find_before(renamed, " "))
       {
-        log::status("blame") << "error";
+        if (
+          vcs.entry().system(process_data()
+                               .args("blame " + rev + " -- " + renamed)
+                               .start_dir(vcs.toplevel().string())) != 0)
+        {
+          log::status("blame") << "error";
+          return;
+        }
+      }
+      else
+      {
+        log::status("blame") << "at oldest: " << rev;
+        log::trace("blame equal") << rev << renamed;
         return;
       }
     }
-    else
+    else if (
+      vcs.entry().system(process_data()
+                           .args("blame " + path().string() + " " + rev)
+                           .start_dir(path().parent_path())) != 0)
     {
-      log::status("blame") << "at oldest: " << rev;
-      log::trace("blame equal") << rev << renamed;
+      log::status("blame") << "error";
       return;
     }
   }
-  else if (
-    p.system(
-      process_data("git blame " + path().string() + " " + get_word(revision))
-        .start_dir(path().parent_path())) != 0)
+  else if (vcs.entry().name() == "svn")
   {
-    log::status("blame") << "error";
-    return;
+    if (
+      vcs.entry().system(process_data()
+                           .args("blame " + path().string() + " -v -r " + rev)
+                           .start_dir(path().parent_path())) != 0)
+    {
+      log::status("blame") << "error";
+      return;
+    }
+
+    renamed = rev + " " + path().string();
   }
+
+  vcs.entry().get_blame().caption("blame " + rev + " " + path().filename());
 
   ((wex::factory::frame*)m_frame)
     ->open_file(
       !renamed.empty() ? wex::path(renamed) : path(),
-      p,
+      vcs.entry(),
       m_data.control().line(m_margin_text_click));
 }
 

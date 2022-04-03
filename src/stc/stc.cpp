@@ -973,34 +973,26 @@ void wex::stc::set_text(const std::string& value)
   EmptyUndoBuffer();
 }
 
-bool wex::stc::show_blame(vcs_entry* vcs, const std::string& std_out)
+bool wex::stc::show_blame(vcs_entry* vcs)
 {
-  if (!vcs->get_blame().use())
+  if (!vcs->get_blame().use() || vcs->std_out().empty())
   {
+    log::debug("no blame (or no output)");
     return false;
   }
 
-  const std::string& use_out = !std_out.empty() ? std_out : vcs->std_out();
+  log::trace("blame show") << vcs->name();
 
-  if (use_out.empty())
-  {
-    log::debug("no blame output");
-    return false;
-  }
-
-  if (!std_out.empty())
-  {
-    clear();
-  }
-
+  const bool  is_empty(GetTextLength() == 0);
   std::string prev("!@#$%");
   SetWrapMode(wxSTC_WRAP_NONE);
   wex::blame* blame = &vcs->get_blame();
   bool        first = true;
 
-  for (int         line = 0;
-       const auto& it : boost::tokenizer<boost::char_separator<char>>(
-         use_out,
+  blame->line_no(-1);
+
+  for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
+         vcs->std_out(),
          boost::char_separator<char>("\r\n")))
   {
     blame->parse(it);
@@ -1026,14 +1018,12 @@ bool wex::stc::show_blame(vcs_entry* vcs, const std::string& std_out)
         blame->line_no() - get_current_line() + GetLineCount() - 2);
     }
 
-    if (!std_out.empty())
+    if (is_empty)
     {
       add_text(blame->line_text() + "\n");
     }
 
     lexers::get()->apply_margin_text_style(this, blame);
-
-    line++;
   }
 
   return true;

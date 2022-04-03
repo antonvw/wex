@@ -24,6 +24,12 @@ public:
   /// Default constructor using xml node.
   explicit blame(const pugi::xml_node& node = pugi::xml_node());
 
+  /// Returns the suitable blame caption.
+  const auto& caption() const { return m_caption; };
+
+  /// Sets a suitable blame caption.
+  void caption(const std::string& text) { m_caption = text; };
+
   /// Returns blame info will contain id, author, date depending on
   /// settings in the config.
   const auto& info() const { return m_info; };
@@ -38,7 +44,7 @@ public:
   void line_no(int no) { m_line_no = no; };
 
   /// Returns rest of line text (without blame).
-  const auto line_text() const { return m_line_text; };
+  const auto& line_text() const { return m_line_text; };
 
   /// Parses blame text and returns false if there was an error
   bool parse(const std::string& line);
@@ -60,13 +66,17 @@ public:
   /// Style for blame margin based on commit date.
   lexers::margin_style_t style() const { return m_style; };
 
+  /// Returns vcs name for which this blaming is done.
+  const auto& vcs_name() const { return m_name; };
+
 private:
   bool parse_compact(const std::string& line, const regex& r);
   bool parse_full(const std::string& line, const regex& r);
 
   lexers::margin_style_t get_style(const std::string& text) const;
 
-  std::string m_blame_format, m_date_format, m_info, m_line_text, m_path;
+  std::string m_blame_format, m_caption, m_date_format, m_info, m_line_text,
+    m_name, m_path;
 
   lexers::margin_style_t m_style{lexers::margin_style_t::UNKNOWN};
 

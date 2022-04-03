@@ -16,6 +16,7 @@ TEST_CASE("wex::process_data")
     wex::process_data data;
 
     REQUIRE(data.args().empty());
+    REQUIRE(data.args_str().empty());
     REQUIRE(data.exe().empty());
     REQUIRE(data.exe_path().empty());
     REQUIRE(data.start_dir().empty());
@@ -27,6 +28,7 @@ TEST_CASE("wex::process_data")
     wex::process_data data("wc yy");
 
     REQUIRE(data.args().size() == 1);
+    REQUIRE(data.args_str().empty());
     REQUIRE(data.args().front() == "yy");
     REQUIRE(data.exe() == "wc yy");
 #ifdef __UNIX__
@@ -35,6 +37,14 @@ TEST_CASE("wex::process_data")
 #endif
     REQUIRE(data.start_dir().empty());
     REQUIRE(data.std_in().empty());
+  }
+
+  SUBCASE("constructor-args")
+  {
+    wex::process_data data("wc", "yy -l");
+
+    REQUIRE(data.args().size() == 2);
+    REQUIRE(data.args_str() == "yy -l");
   }
 
   SUBCASE("log")
@@ -48,9 +58,10 @@ TEST_CASE("wex::process_data")
   {
     wex::process_data data("xx");
 
-    data.exe("yy").std_in("zz").start_dir("ww");
+    data.exe("yy").std_in("zz").start_dir("ww").args("xx");
 
     REQUIRE(data.exe() == "yy");
+    REQUIRE(data.args_str() == "xx");
     REQUIRE(data.start_dir() == "ww");
     REQUIRE(data.std_in() == "zz");
   }

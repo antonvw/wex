@@ -105,6 +105,7 @@ int wex::factory::process::system(const process_data& data)
     {
       const auto& text(!m_stderr.empty() ? ":" + m_stderr : std::string());
       log("system") << data.log() << "ec:" << ec << text;
+      log::status("system") << text << data.log();
     }
 
     m_data = data;

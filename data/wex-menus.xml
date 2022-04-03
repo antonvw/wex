@@ -119,8 +119,8 @@ Copyright: (c) 2021-2022 Anton van Wezenbeek
    Default blame is shown in a separate window, but when 
    supplying a blame-format it is shown on the text margin.
    It can have:
-   - 'blame-format': should contain at least 3 regex groups to 
-      parse the id, author, date, and possibly a line number as 4th regex.
+   - 'blame-format': should contain at least 4 regex groups to 
+      parse the id, author, date, and text, and possibly a line number as 5th regex.
    - 'date-format': allows you to specify
       the date-time info in the blame info.
    - 'date-print': determines how many chars of the date-format
@@ -225,7 +225,7 @@ Copyright: (c) 2021-2022 Anton van Wezenbeek
     name="svn"
     admin-dir=".svn"
     log-flags="-r"
-    blame-format="(^\s*[0-9]+)\s*(.+?)\s+([0-9]{2,4}.[0-9]{2}.[0-9]{2}.[0-9:]{8})"
+    blame-format="(^\s*[0-9]+)\s*(.+?)\s+([0-9]{2,4}.[0-9]{2}.[0-9]{2}.[0-9:]{8}) \+[0-9]{4} \(.*\) (.*)"
     date-format="%Y-%m-%d %H:%M:%S"
     date-print="10">
 

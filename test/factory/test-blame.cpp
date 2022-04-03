@@ -11,16 +11,18 @@
 
 TEST_CASE("wex::blame")
 {
-  SUBCASE("default constructor and get")
+  SUBCASE("default-constructor")
   {
     REQUIRE(!wex::blame().use());
+    REQUIRE(wex::blame().caption().empty());
     REQUIRE(!wex::blame().parse(""));
     REQUIRE(wex::blame().info().empty());
     REQUIRE(!wex::blame().is_path());
     REQUIRE(wex::blame().style() == wex::lexers::margin_style_t::UNKNOWN);
+    REQUIRE(wex::blame().vcs_name().empty());
   }
 
-  SUBCASE("constructor xml node and get")
+  SUBCASE("constructor-xml")
   {
     pugi::xml_document doc;
 
@@ -37,6 +39,7 @@ TEST_CASE("wex::blame")
     wex::blame blame(doc.document_element());
 
     REQUIRE(blame.use());
+    REQUIRE(blame.vcs_name() == "git");
 
     const std::string text(
       ""
@@ -75,6 +78,13 @@ TEST_CASE("wex::blame")
     wex::config("blame", "author").set(false);
     REQUIRE(blame.parse(text));
     REQUIRE(blame.info().find("A unknown user") == std::string::npos);
+  }
+
+  SUBCASE("set")
+  {
+    wex::blame blame;
+    blame.caption("hello world");
+    REQUIRE(wex::blame().caption() == "hello world");
   }
 
   SUBCASE("skip_info")

@@ -100,7 +100,7 @@ void wex::menus::no_commands_added(const pugi::xml_node& node)
 
   if (!name.empty())
   {
-    log("no commands found for") << name;
+    log::debug("no commands found for") << name;
   }
 }
 

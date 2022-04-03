@@ -144,7 +144,7 @@ bool wex::vcs_entry::log(const path& p, const std::string& id)
 {
   if (m_log_flags.empty())
   {
-    wex::log("log flags empty") << name();
+    log::debug("log flags empty") << name();
     return false;
   }
 
@@ -180,15 +180,23 @@ void wex::vcs_entry::show_output(const std::string& caption) const
 
 int wex::vcs_entry::system(const process_data& data)
 {
-  // Get flags if available.
-  std::string flags;
-  std::string cmd(data.exe());
+  std::string args;
 
-  if (const vcs_command & vc(find(get_word(cmd))); !vc.get_command().empty())
+  if (!data.args_str().empty())
   {
-    flags = " " + vc.flags();
+    args = data.args_str();
+  }
+  else
+  {
+    std::string cmd(data.exe());
+    args = cmd;
+
+    if (const vcs_command & vc(find(get_word(cmd))); !vc.get_command().empty())
+    {
+      args += " " + vc.flags();
+    }
   }
 
   return process::system(
-    process_data(bin() + " " + data.exe() + flags).start_dir(data.start_dir()));
+    process_data(bin() + " " + args).start_dir(data.start_dir()));
 }
