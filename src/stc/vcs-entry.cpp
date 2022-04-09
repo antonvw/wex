@@ -142,16 +142,12 @@ const std::string wex::vcs_entry::get_flags() const
 
 bool wex::vcs_entry::log(const path& p, const std::string& id)
 {
-  if (m_log_flags.empty())
-  {
-    log::debug("log flags empty") << name();
-    return false;
-  }
+  std::string command   = bin() + " log ";
+  std::string separator = (!m_log_flags.empty() ? " " : std::string());
 
-  const std::string command =
-    m_flags_location == FLAGS_LOCATION_PREFIX || name() == "svn" ?
-      bin() + " log " + m_log_flags + " " + id :
-      bin() + " log " + id + " " + m_log_flags;
+  command += m_flags_location == FLAGS_LOCATION_PREFIX || name() == "svn" ?
+               m_log_flags + separator + id :
+               id + separator + m_log_flags;
 
   return process::system(process_data(command).start_dir(p.parent_path())) == 0;
 }

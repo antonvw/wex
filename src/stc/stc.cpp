@@ -544,6 +544,17 @@ bool wex::stc::link_open(link_t mode, std::string* filename)
   return false;
 }
 
+std::string wex::stc::margin_get_revision_id() const
+{
+  std::string revision(MarginGetText(m_margin_text_click));
+  return get_word(revision);
+}
+
+std::string wex::stc::margin_get_revision_renamed() const
+{
+  return blame::margin_renamed(this);
+}
+
 bool wex::stc::marker_delete_all_change()
 {
   if (!lexers::get()->marker_is_loaded(m_marker_change))
@@ -990,12 +1001,13 @@ bool wex::stc::show_blame(vcs_entry* vcs)
   bool        first = true;
 
   blame->line_no(-1);
+  int ex_line_no = 0;
 
   for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
          vcs->std_out(),
          boost::char_separator<char>("\r\n")))
   {
-    blame->parse(it);
+    blame->parse(path(), it);
 
     if (first)
     {
@@ -1014,8 +1026,7 @@ bool wex::stc::show_blame(vcs_entry* vcs)
 
     if (!is_visual())
     {
-      blame->line_no(
-        blame->line_no() - get_current_line() + GetLineCount() - 2);
+      blame->line_no(ex_line_no++);
     }
 
     if (is_empty)

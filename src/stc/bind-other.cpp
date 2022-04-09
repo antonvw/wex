@@ -115,10 +115,14 @@ menu::menu_t get_style(stc* stc)
 
 void margin_menu(stc* stc)
 {
-  auto* menu = new wex::menu(
-    {{id::stc::margin_text_blame_revision, "&Blame Revision"},
-     {id::stc::margin_text_hide, "&Hide"},
-     {}});
+  auto* menu = new wex::menu({{id::stc::margin_text_hide, "&Hide"}});
+
+  if (stc->is_visual())
+  {
+    menu->append({{id::stc::margin_text_blame_revision, "&Blame Revision"}});
+  }
+
+  menu->append({{}});
 
   if (auto* author =
         menu->AppendCheckItem(id::stc::margin_text_author, "&Show Author");
@@ -396,10 +400,10 @@ void wex::stc::margin_action(wxStyledTextEvent& event)
 
     if (config("blame.id").get(true))
     {
-      wex::vcs vcs{{path()}};
+      wex::vcs vcs{{!m_data.head_path().empty() ? m_data.head_path() : path()}};
 
-      if (std::string margin(MarginGetText(line));
-          !margin.empty() && vcs.entry().log(path(), get_word(margin)))
+      if (const auto& revision(margin_get_revision_id());
+          !revision.empty() && vcs.entry().log(path(), revision))
       {
         AnnotationSetText(
           line,

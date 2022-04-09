@@ -268,30 +268,32 @@ private:
 
   typedef std::bitset<3> link_t;
 
-  void bind_all();
-  void bind_other();
-  void blame_revision();
-  void build_popup_menu(menu& menu);
-  void build_popup_menu_edit(menu& menu);
-  void build_popup_menu_link(menu& menu);
-  void check_brace();
-  bool check_brace(int pos);
-  void eol_action(const wxCommandEvent& event);
-  void file_action(const wxCommandEvent& event);
-  bool file_readonly_attribute_changed();
-  void fold_all();
-  void guess_type_and_modeline();
-  void jump_action();
-  void key_action(wxKeyEvent& event);
-  bool link_open(link_t mode, std::string* filename = nullptr);
-  void margin_action(wxStyledTextEvent& event);
-  void mouse_action(wxMouseEvent& event);
-  void mark_modified(const wxStyledTextEvent& event);
-  void on_idle(wxIdleEvent& event);
-  void on_styled_text(wxStyledTextEvent& event);
-  void set_margin(const blame* blame);
-  void show_properties();
-  void sort_action(const wxCommandEvent& event);
+  void        bind_all();
+  void        bind_other();
+  void        blame_revision();
+  void        build_popup_menu(menu& menu);
+  void        build_popup_menu_edit(menu& menu);
+  void        build_popup_menu_link(menu& menu);
+  void        check_brace();
+  bool        check_brace(int pos);
+  void        eol_action(const wxCommandEvent& event);
+  void        file_action(const wxCommandEvent& event);
+  bool        file_readonly_attribute_changed();
+  void        fold_all();
+  void        guess_type_and_modeline();
+  void        jump_action();
+  void        key_action(wxKeyEvent& event);
+  bool        link_open(link_t mode, std::string* filename = nullptr);
+  void        margin_action(wxStyledTextEvent& event);
+  std::string margin_get_revision_id() const;
+  std::string margin_get_revision_renamed() const;
+  void        mouse_action(wxMouseEvent& event);
+  void        mark_modified(const wxStyledTextEvent& event);
+  void        on_idle(wxIdleEvent& event);
+  void        on_styled_text(wxStyledTextEvent& event);
+  void        set_margin(const blame* blame);
+  void        show_properties();
+  void        sort_action(const wxCommandEvent& event);
 
   const int m_margin_divider_number{1}, m_margin_folding_number{2},
     m_margin_line_number{0}, m_margin_text_number{3};

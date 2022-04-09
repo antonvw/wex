@@ -22,13 +22,13 @@ wex::data::stc::stc(wex::factory::stc* stc, const data::stc& r)
   *this = r;
 }
 
-wex::data::stc::stc(data::control& data, wex::factory::stc* stc)
+wex::data::stc::stc(const data::control& data, wex::factory::stc* stc)
   : m_data(data)
   , m_stc(stc)
 {
 }
 
-wex::data::stc::stc(data::window& data, wex::factory::stc* stc)
+wex::data::stc::stc(const data::window& data, wex::factory::stc* stc)
   : m_data(data::control().window(data))
   , m_stc(stc)
 {
@@ -41,6 +41,7 @@ wex::data::stc& wex::data::stc::operator=(const data::stc& r)
     m_data         = r.m_data;
     m_event_data   = r.m_event_data;
     m_indicator_no = r.m_indicator_no;
+    m_head_path    = r.m_head_path;
     m_menu_flags   = r.m_menu_flags;
     m_recent       = r.m_recent;
     m_win_flags    = r.m_win_flags;

@@ -12,7 +12,13 @@
 
 namespace wex
 {
+class path;
 class regex;
+
+namespace factory
+{
+class stc;
+};
 
 /// Offers a blame class for some vcs. The vcs used is configured
 /// using the xml_node constructor (see wex-menus.xml),
@@ -21,6 +27,14 @@ class regex;
 class blame
 {
 public:
+  /// Static interface.
+
+  /// Returns a renamed path present in the stc margin,
+  /// or empty string if no rename present.
+  static std::string margin_renamed(const factory::stc* stc);
+
+  /// Other methods.
+
   /// Default constructor using xml node.
   explicit blame(const pugi::xml_node& node = pugi::xml_node());
 
@@ -31,11 +45,9 @@ public:
   void caption(const std::string& text) { m_caption = text; };
 
   /// Returns blame info will contain id, author, date depending on
-  /// settings in the config.
-  const auto& info() const { return m_info; };
-
-  /// Returns true if path is present.
-  bool is_path() const { return !m_path.empty(); };
+  /// settings in the config. Also adds a renamed path if a changed
+  /// path is present.
+  const std::string info() const;
 
   /// Returns line number (starting with line 0).
   const auto line_no() const { return m_line_no; };
@@ -47,12 +59,11 @@ public:
   const auto& line_text() const { return m_line_text; };
 
   /// Parses blame text and returns false if there was an error
-  bool parse(const std::string& line);
-
-  /// If blame file was changed, then the old name
-  /// is present on the git blame line, and it will
-  /// be stored in the path.
-  const auto& path() const { return m_path; };
+  bool parse(
+    /// original path
+    const path& p,
+    /// line to parse
+    const std::string& line);
 
   /// Sets the skip info member, until next parse.
   void skip_info(bool rhs) { m_skip_info = rhs; };
@@ -70,6 +81,7 @@ public:
   const auto& vcs_name() const { return m_name; };
 
 private:
+  bool is_renamed_path() const;
   bool parse_compact(const std::string& line, const regex& r);
   bool parse_full(const std::string& line, const regex& r);
 
@@ -77,6 +89,8 @@ private:
 
   std::string m_blame_format, m_caption, m_date_format, m_info, m_line_text,
     m_name, m_path;
+
+  wex::path m_path_original;
 
   lexers::margin_style_t m_style{lexers::margin_style_t::UNKNOWN};
 

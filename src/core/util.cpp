@@ -230,6 +230,12 @@ const std::string wex::get_word(std::string& text)
     boost::char_separator<char>(" \t"));
 
   std::string token;
+  boost::algorithm::trim_left(text);
+
+  if (text.empty())
+  {
+    return text;
+  }
 
   if (auto it = tok.begin(); it != tok.end())
   {

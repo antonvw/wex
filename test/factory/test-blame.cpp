@@ -5,7 +5,7 @@
 // Copyright: (c) 2019-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
+#include "test.h"
 #include <wex/core/config.h>
 #include <wex/factory/blame.h>
 
@@ -14,10 +14,10 @@ TEST_CASE("wex::blame")
   SUBCASE("default-constructor")
   {
     REQUIRE(!wex::blame().use());
+    REQUIRE(!wex::blame().use());
     REQUIRE(wex::blame().caption().empty());
-    REQUIRE(!wex::blame().parse(""));
+    REQUIRE(!wex::blame().parse(wex::path(), ""));
     REQUIRE(wex::blame().info().empty());
-    REQUIRE(!wex::blame().is_path());
     REQUIRE(wex::blame().style() == wex::lexers::margin_style_t::UNKNOWN);
     REQUIRE(wex::blame().vcs_name().empty());
   }
@@ -58,17 +58,11 @@ TEST_CASE("wex::blame")
     REQUIRE(wex::config("blame.date").get(false));
     REQUIRE(wex::config("blame.id").get(false));
 
-    REQUIRE(!blame.parse(""));
-    REQUIRE(!blame.parse(std::string()));
-
-    REQUIRE(blame.parse(text));
+    REQUIRE(blame.parse(wex::path(), text));
 
     REQUIRE(blame.info().find("A unknown user") != std::string::npos);
     REQUIRE(blame.info().find("2019-02-01") != std::string::npos);
     REQUIRE(blame.info().find("bf5d87cc") != std::string::npos);
-
-    REQUIRE(blame.path() == "src/http_travel.cpp");
-    REQUIRE(blame.is_path());
 
     REQUIRE(blame.style() != wex::lexers::margin_style_t::UNKNOWN);
 
@@ -76,7 +70,7 @@ TEST_CASE("wex::blame")
     REQUIRE(blame.line_text().find("get_country") != std::string::npos);
 
     wex::config("blame", "author").set(false);
-    REQUIRE(blame.parse(text));
+    REQUIRE(blame.parse(wex::path(), text));
     REQUIRE(blame.info().find("A unknown user") == std::string::npos);
   }
 
@@ -84,7 +78,7 @@ TEST_CASE("wex::blame")
   {
     wex::blame blame;
     blame.caption("hello world");
-    REQUIRE(wex::blame().caption() == "hello world");
+    REQUIRE(blame.caption() == "hello world");
   }
 
   SUBCASE("skip_info")
@@ -94,5 +88,13 @@ TEST_CASE("wex::blame")
 
     blame.skip_info(true);
     REQUIRE(blame.skip_info());
+  }
+
+  SUBCASE("static")
+  {
+    auto* stc = new wex::test::stc();
+    stc->set_text("more text\notherline\nother line");
+
+    REQUIRE(wex::blame::margin_renamed(stc).empty());
   }
 }
